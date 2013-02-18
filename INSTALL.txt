@@ -15,7 +15,7 @@ Installation instructions:
    selecting "File/Set Path..." from the main or Command window menus, or with
    the command "pathtool". We recommend that you select the "Save" button on
    this dialog so that Chebfun is on the path automatically in future MATLAB
-   sessions.  (Alternatively, you can put an "addpath" command in your startup.m 
+   sessions. (Alternatively, you can put an "addpath" command in your startup.m 
    file, as described in the MATLAB documentation.)
 
 3. A restart of MATLAB may be needed if you want to access the user guides via 
