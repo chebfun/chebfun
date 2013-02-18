@@ -12,7 +12,7 @@ Installation instructions:
    MATLAB.)
 
 2. In MATLAB, add the chebfun directory to your path. This can be done by
-   selecting "File/Set Path..." from the main or Command window menus, or with
+   selecting "File/Set Path..." from the main or command window menus, or with
    the command "pathtool". We recommend that you select the "Save" button on
    this dialog so that Chebfun is on the path automatically in future MATLAB
    sessions. (Alternatively, you can put an "addpath" command in your startup.m 
