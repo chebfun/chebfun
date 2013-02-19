@@ -24,7 +24,7 @@ if ( nargin < 4 )
 end
 
 % Points of 2nd kind:
-n = length(values);
+n = size(values, 1);
 x = funcheb2.chebpts(n); 
 
 % Set a tolerence:

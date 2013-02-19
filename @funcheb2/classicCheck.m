@@ -131,7 +131,7 @@ function [testLength, epslevel] = ...
 %HAPPINESSREQUIREMENTS   Define what it means for a FUNCHEB2 to be happy.
 %   See documentation above.
 
-n = length(values);
+n = size(values, 1);
 testLength = min(n, max(5, round((n-1)/8))); % Length of tail to test (see above)
 
 minPrec = 1e-4; % Worst case precision! 
