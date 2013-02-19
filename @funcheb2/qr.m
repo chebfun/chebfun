@@ -12,8 +12,8 @@ m = size(f, 2);
 
 % If F has only one column we simply scale it.
 if ( m == 1 )
-    R = sum(f.*f);
-    f = f./sqrt(R);
+    R = sqrt(sum(f.*f));
+    f = f./R;
     E = 1;
     return
 end
