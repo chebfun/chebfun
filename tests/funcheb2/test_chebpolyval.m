@@ -1,4 +1,5 @@
-function pass = chebpolyval(varargin)
+% Test file for funcheb2/chebpolyval.
+function pass = test_chebpolyval(varargin)
 
 % Set a tolerance (pref.eps doesn't matter)
 tol = 100*eps;
@@ -7,9 +8,7 @@ tol = 100*eps;
 % Test that a single coefficient is converted correctly
 c = sqrt(2);
 v = funcheb2.chebpolyval(c);
-pass(1) = c == v;
-
-% return
+pass(1) = (c == v);
 
 %%
 % Some simple data 
