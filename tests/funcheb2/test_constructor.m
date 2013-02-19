@@ -22,7 +22,7 @@ pref.funcheb2.refinementFunction = 'nested';
 [values, coeffs, vscale, epslevel] = funcheb2.constructor(f, [], pref);
 x = funcheb2.chebpts(length(values));
 pass(3) = norm(f(x) - values, inf) < tol;
-pass(4) = vscale == sin(1) && logical(epslevel);
+pass(4) = norm(vscale - sin(1), inf) < tol && logical(epslevel);
 
 pref.funcheb2.extrapolate = 0;
 pref.funcheb2.refinementFunction = 'resampling';
@@ -36,7 +36,7 @@ pref.funcheb2.refinementFunction = 'resampling';
 [values, coeffs, vscale, epslevel] = funcheb2.constructor(f, [], pref);
 x = funcheb2.chebpts(length(values));
 pass(7) = norm(f(x) - values, inf) < tol;
-pass(8) = vscale == sin(1) && logical(epslevel);
+pass(8) = norm(vscale - sin(1), inf) < tol && logical(epslevel);
 
 %%
 % Test on a vector-valued function:

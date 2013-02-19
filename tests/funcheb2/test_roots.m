@@ -36,7 +36,7 @@ pass(2) = norm(r-(-n:n)'/n, inf) < length(f)*f.epslevel;
 %% Test a perturbed polynomial:
 f = funcheb2( @(x) (x-.1).*(x+.9).*x.*(x-.9) + 1e-14*x.^5, pref );
 r = roots(f);
-pass(3) = length(r) == 4 && norm(feval(f, r), inf) < length(f)*f.epslevel;
+pass(3) = length(r) == 4 && norm(feval(f, r), inf) < 10*length(f)*f.epslevel;
 
 %% Test a some simple polynomials:
 f = funcheb2([-1 ; 1], pref);
