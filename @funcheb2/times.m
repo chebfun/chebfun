@@ -22,7 +22,8 @@ if ( ~isa(f, 'funcheb2') )      % Ensure F is a FUNCHEB2
 elseif ( isa(g, 'double') )     % FUNCHEB2 * double
     
     % Check dimensions:
-    if ( size(g, 1) > 1 || size(f.values, 2) ~= size(g, 2) )
+    if ( (size(g, 1) > 1) || ...
+         ((size(g, 2) > 1) && (size(f.values, 2) ~= size(g, 2))) )
         error('CHEBFUN:FUNCHEB2:times:dim', ...
             'Inner matrix dimensions must agree.');
     end
