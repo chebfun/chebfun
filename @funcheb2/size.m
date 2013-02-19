@@ -1,7 +1,7 @@
 function [siz1, siz2] = size(f, varargin)
 %SIZE	Size of a FUNCHEB2.
 %   [S1, S2] = SIZE(F) returns S1, the number of values at Chebyshev points used
-%   to define F, and S2, the number of columns in the F.
+%   to define F, and S2, the number of columns in F.
 %
 %   S = SIZE(F) returns the same as above in a 1x2 vector, S = [S1, S2].
 %

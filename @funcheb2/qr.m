@@ -2,7 +2,8 @@ function [f, R, E] = qr(f, flag)
 %QR     QR factorisation of a multivalued FUNCHEB2.
 %   [Q, R] = QR(F) returns a QR factorisation of F such that F = Q*R, where the
 %   FUNCHEB2 Q is orthogonal (wrt the continuous L^2 norm on [-1,1]) and of the
-%   same size as F and R is an m x m matrix when F has m columns.
+%   same size as F and R is an m x m upper-triangular matrix when F has m
+%   columns.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.

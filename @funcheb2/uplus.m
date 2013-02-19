@@ -1,5 +1,5 @@
 function f = uplus(f)
-%UPLUS   Unary plus for FUNCHEB2.
+%UPLUS   Unary plus of a FUNCHEB2.
 %   UPLUS(F) = F.
 %
 % See also UMINUS, PLUS.

@@ -1,5 +1,5 @@
 function f = rdivide(f, c, pref)
-%./   Right array divide for a FUNCHEB2
+%./   Right array divide for a FUNCHEB2.
 %   F ./ C Divides the FUNCHEB2 F by a an array C. If F is a vectorised FUNCHEB2
 %   with M columns, then C must be either a scalar or a 1xM array. 
 

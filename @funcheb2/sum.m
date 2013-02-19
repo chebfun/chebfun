@@ -5,8 +5,8 @@ function out = sum(f, dim)
 %   If F is a vector-valued FUNCHEB2 then the result is a row vector containing
 %   the definite integrals of each column.
 %
-%   SUM(F, 2) sums over the second dimension of F, i.e., adds each of its
-%   columns. If F is a scalar-valued FUNCHEB2, this simply returns F.
+%   SUM(F, 2) sums over the second dimension of F, i.e., adds up its columns. If
+%   F is a scalar-valued FUNCHEB2, this simply returns F.
 %
 % See also CUMSUM, DIFF.
 

@@ -1,7 +1,7 @@
 function f = cumsum(f, pref)
-%CUMSUM    Indefinite integral of a FUNCHEB2
-%   CUMSUM(F) is the indefinite integral of the FUNCHEB2 F. The unknown constant
-%   of integration is chosen so that F(-1) = 0.
+%CUMSUM    Indefinite integral of a FUNCHEB2.
+%   CUMSUM(F) is the indefinite integral of the FUNCHEB2 F. The constant of
+%   integration is chosen so that F(-1) = 0.
 %
 % See also DIFF, SUM.
 

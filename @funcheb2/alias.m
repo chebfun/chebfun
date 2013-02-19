@@ -1,6 +1,6 @@
 function coeffs = alias(coeffs, m)
 %ALIAS  Alias Chebyshev coefficients of the 1st kind.
-%   C = ALIAS(C, M) will alias the Chebyshev coefficients stroed in the column
+%   C = ALIAS(C, M) will alias the Chebyshev coefficients stored in the column
 %   vector C to have length M. If M > length(C), the coefficients are padded
 %   with zeros. If C is a matrix of coefficents, each of the columns are
 %   aliased to length M.

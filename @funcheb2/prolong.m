@@ -1,11 +1,11 @@
 function g = prolong(g, nOut)
-%PROLONG Manually adjust the number of points used in a FUNCHEB2.
+%PROLONG    Manually adjust the number of points used in a FUNCHEB2.
 %
 %   GOUT = PROLONG(G, NOUT) returns a FUNCHEB2 GOUT where length(GOUT) = NOUT.
 %   GOUT represents the same function as G, but using more interpolation
 %   points/Chebyshev coefficients then were stored in G.
 %
-%   If NOUT < length(G) then the representation is compressed (by aliasing the
+%   If NOUT < length(G) than the representation is compressed (by aliasing the
 %   coefficients), which may result in loss of accuracy.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
