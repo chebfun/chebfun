@@ -10,8 +10,8 @@ function X = mldivide(A, B)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( ~isa(A, 'funcheb2') || ~isa(B, 'funcheb2') )
-    error('CHEBFUN:FUNCHEB2:mldivide:dim', ...
-        'Matrix dimensions must agree.');
+    error('CHEBFUN:FUNCHEB2:mldivide:funcheb2MldivideUnknown', ...
+        'Arguments to FUNCHEB2 mldivide must both be FUNCHEB2 objects.');
 end
 
 % NOTE: A*X = (Q*R)*X = B ==> R*X = Q'*B ==> X = R*(Q'*B) = R*innerProduct(Q, B)
