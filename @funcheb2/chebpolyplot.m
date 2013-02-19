@@ -53,7 +53,7 @@ n = size(absc, 1);
 
 if ( plotepslevel )
     % Plot the coeffs AND the epslevel:
-    h = semilogy(n:-1:1, absc, [1 n], f.epslevel*[1, 1], args{:});
+    h = semilogy(n-1:-1:0, absc, [0 n-1], f.vscale*f.epslevel*[1, 1], args{:});
     set(h(end), 'linestyle', '--', 'linewidth', 1, 'color', 'r', ...
         'marker', 'none')
 else
