@@ -27,7 +27,7 @@ pref.funcheb2.eps = max(pref.funcheb2.eps, f.epslevel);
     funcheb2.happinessCheck([], f.values, f.coeffs, f.vscale, pref);
 
 % Trim/alias it with prolong:
-f.ishappy = ishappy;
+f.ishappy = ishappy | f.ishappy;
 f.epslevel = epslevel;
 f = prolong(f, cutoff); 
     
