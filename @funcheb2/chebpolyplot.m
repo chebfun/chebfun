@@ -61,6 +61,11 @@ else
     h = semilogy(n:-1:1, absc, args{:});
 end
 
+% For constant functions, plot a dot!
+if ( n == 1 )
+    set(h, 'marker', 'o');
+end
+
 % Do a loglog plot:
 if ( loglogplot )
     set(gca, 'XScale', 'log')
