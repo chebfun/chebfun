@@ -1,4 +1,5 @@
-function pass = chebpoly(varargin)
+% Test file for funcheb2/chebpoly.
+function pass = test_chebpoly(varargin)
 
 % Set a tolerance (pref.eps doesn't matter)
 tol = 100*eps;
@@ -7,7 +8,7 @@ tol = 100*eps;
 % Test that a single value is converted correctly
 v = sqrt(2);
 c = funcheb2.chebpoly(v);
-pass(1) = v == c;
+pass(1) = (v == c);
 
 %%
 % Some simple data 
