@@ -8,7 +8,8 @@ if (nargin < 1)
 end
 
 % Generate a few random points to use as test values.
-rand('seed', 6178); %#ok<RAND>
+rngstate = rng();
+rng(6178);
 x = 2 * rand(100, 1) - 1;
 
 % Random numbers to use as arbitrary multiplicative constants.
@@ -144,6 +145,11 @@ g = funcheb2(g_op, pref);
 h1 = f .* g;
 h2 = funcheb2(@(x) f_op(x) .* g_op(x), pref);
 pass(23) = norm(h1.values - h2.values, 'inf') < tol;
+
+%%
+% Restore the RNG state.
+
+rng(rngstate);
 
 end
 

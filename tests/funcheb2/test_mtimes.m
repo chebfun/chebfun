@@ -8,7 +8,8 @@ if ( nargin < 1 )
 end
 
 % Generate a few random points to use as test values.
-rand('seed', 6178); %#ok<RAND>
+rngstate = rng();
+rng(6178);
 x = 2 * rand(100, 1) - 1;
 
 % A random number to use as an arbitrary scalar multiplier.
@@ -92,6 +93,11 @@ try
 catch ME
     pass(12) = strcmp(ME.message, 'mtimes does not know how to multiply a FUNCHEB2 and a uint8.');
 end
+
+%%
+% Restore the RNG state.
+
+rng(rngstate);
 
 end
 

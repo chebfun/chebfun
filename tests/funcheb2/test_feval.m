@@ -8,7 +8,8 @@ if ( nargin < 1 )
 end
 
 % Generate a few random points to use as test values.
-rand('seed', 7681);
+rngstate = rng();
+rng(7681);
 x = 2 * rand(1000, 1) - 1;
 
 %%
@@ -58,5 +59,10 @@ pass(8) = all(max(abs(err)) < 10*f.epslevel);
 
 % [TODO]:  Write a test for evaluating vectorized funcheb2 objects at matrix
 % arguments if the operation makes sense.
+
+%%
+% Restore the RNG state.
+
+rng(rngstate);
 
 end
