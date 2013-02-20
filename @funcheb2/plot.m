@@ -21,7 +21,7 @@ function varargout = plot(f,varargin)
 %                                h     hexagram
 %   The entries from the centre columns are plotted at the Chebyshev grid being
 %   used to represent F. If no options from this column are chosen, 'o' is
-%   chosen by default.
+%   chosen by default if length(f)<256;
 %
 %   The X,Y pairs, or X,Y,S triples, can be followed by parameter/value pairs to
 %   specify additional properties of the lines. For example, 
@@ -39,8 +39,9 @@ holdState = ishold;
 
 %%
 % Plot the curve (prolonging is faster than evaluating on a equispaced grid):
-xx = funcheb2.chebpts(2001);
-g = prolong(f, 2001);
+npts = max(2001, round(2*pi*length(f)));
+xx = funcheb2.chebpts(npts);
+g = prolong(f, npts);
 ff = g.values;
 if ( isreal(ff) )
     h1 = plot(xx, ff, varargin{:}); 
@@ -63,7 +64,7 @@ end
 
 % Change the style accordingly:
 set(h2,'LineStyle', 'none')
-if ( all(strcmp(get(h2, 'Marker'),'none')) )
+if ( all(strcmp(get(h2, 'Marker'),'none')) ) && length(f) < 256
     set(h2,'Marker', 'o')
 end
 
