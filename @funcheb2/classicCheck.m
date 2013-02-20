@@ -94,13 +94,13 @@ if ( max(ac(1:testLength)) < epslevel )    % We have converged! Now chop tail
     % [TODO]: Figure out what the heck this does, and explain it.
     % Trim the coefficients:
 %     ac = ac(1:Tloc);                      % Restrict to coeffs of interest
-%     ac(1) = max(ac(1), .25*eps/vscale);   % Compute the cumulative max of 
+%     ac(1) = max(ac(1), .25*eps);          % Compute the cumulative max of 
 %     for k = 2:Tloc                        %   eps/4/vscale and the tail entries
 %         ac(k) = max(ac(k), ac(k-1));
 %     end
     
-    % Compute the cumulative max of eps/4/vscale and the tail entries
-    t = .25*eps/vscale;                   
+    % Compute the cumulative max of eps/4 and the tail entries:
+    t = .25*eps;                   
     ac = ac(1:Tloc);                      % Restrict to coeffs of interest
     for k = 1:length(ac)                  % Cumulative max.
         if ( ac(k) < t )
