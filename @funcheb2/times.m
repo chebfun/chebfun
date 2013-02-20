@@ -30,7 +30,7 @@ elseif ( isa(g, 'double') )     % FUNCHEB2 * double
     
     % Do the multiply:
     if ( size(g, 2) > 1 )
-        n = length(f.values);
+        n = size(f.values, 1);
         f.values = f.values.*repmat(g, n, 1);
         f.coeffs = f.coeffs.*repmat(g, n, 1);
         f.vscale = f.vscale*norm(g, inf);

@@ -111,7 +111,7 @@ if ( max(ac(1:testLength)) < epslevel )    % We have converged! Now chop tail
     end
     
     % Tbpb = Bang/buck of chopping at each pos:
-    Tbpb = log(1e3*epslevel./ac) ./ (length(coeffs) - (1:Tloc)');    
+    Tbpb = log(1e3*epslevel./ac) ./ (size(coeffs, 1) - (1:Tloc)');    
     [~, Tchop] = max(Tbpb(3:Tloc));       % Tchop = pos at which to chop
 
     % We want to keep [c(0), c(1),  ..., c(cutoff)]:

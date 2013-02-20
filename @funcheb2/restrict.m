@@ -2,7 +2,7 @@ function f = restrict(f, s, pref)
 %RESTRICT Restrict a FUNCHEB2 to a subinterval.
 %   RESCTRICT(F, S) returns a FUNCHEB2 that is restricted to the subinterval
 %   [S(1),S(2)] of [-1, 1]. Note that that since FUNCHEB2 only live on [-1,1], a
-%   linear change of variables is applied.
+%   linear change of variables is implicitly fapplied.
 %
 %   If length(S) > 2, i.e., S = [S1, S2, S3, ...], then RESCTRICT(F, S) returns
 %   a multivalued FUNCHEB2 where each column of F is restricted to each of the
