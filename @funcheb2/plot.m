@@ -64,7 +64,7 @@ end
 
 % Change the style accordingly:
 set(h2,'LineStyle', 'none')
-if ( all(strcmp(get(h2, 'Marker'),'none')) ) && length(f) < 256
+if ( all(strcmp(get(h2, 'Marker'),'none')) ) && length(f) < 257
     set(h2,'Marker', 'o')
 end
 
