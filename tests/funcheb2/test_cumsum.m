@@ -71,8 +71,8 @@ pass(7) = (std(err) < tol)  && ~feval(h, -1);
 %%
 % Check operation for vectorized funcheb2 objects.
 
-f = funcheb2(@(x) [sin(x) x.^2 exp(i*x)], [], pref);
-F_exact = funcheb2(@(x) [(-cos(x)) (x.^3/3) (exp(i*x)/i)], [], pref);
+f = funcheb2(@(x) [sin(x) x.^2 exp(1i*x)], [], pref);
+F_exact = funcheb2(@(x) [(-cos(x)) (x.^3/3) (exp(1i*x)/1i)], [], pref);
 F = cumsum(f);
 err = std(feval(F, x) - feval(F_exact, x));
 pass(8) = (norm(err, 'inf') < tol)  && ~any(feval(F, -1));

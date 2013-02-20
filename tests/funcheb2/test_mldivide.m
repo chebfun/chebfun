@@ -32,7 +32,6 @@ pass(4) = max(abs(err.values(:))) < tol;
 f = funcheb2(@(x) [ones(size(x)) x x.^2 x.^3], pref);
 g = funcheb2(@(x) x.^4 + x.^3 + x + 1, pref);
 x = f \ g;
-err = g - f*x;
 pass(5) = max(abs(x - [32/35 ; 1 ; 6/7 ; 1])) < tol;
 
 %%

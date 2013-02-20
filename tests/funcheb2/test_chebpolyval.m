@@ -1,4 +1,4 @@
-function pass = chebpolyval(varargin)
+function pass = test_chebpolyval(varargin)
 
 % Set a tolerance (pref.eps doesn't matter)
 tol = 100*eps;

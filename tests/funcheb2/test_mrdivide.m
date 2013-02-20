@@ -7,9 +7,6 @@ if (nargin < 1)
     pref = funcheb2.pref();
 end
 
-% Set a tolerance.  (pref.eps does not matter here.)
-tol = 10*eps;
-
 % Generate a few random points to use as test values.
 rngstate = rng();
 rng(6178);

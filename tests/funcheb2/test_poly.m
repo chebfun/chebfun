@@ -12,7 +12,7 @@ end
 
 f = funcheb2(@(x) 3*ones(size(x)), [], pref);
 p = poly(f);
-pass(1) = (norm(p - [3], 'inf') < 10*f.epslevel);
+pass(1) = (norm(p - 3, 'inf') < 10*f.epslevel);
 
 f = funcheb2(@(x) 6.4*x - 3i, [], pref);
 p = poly(f);

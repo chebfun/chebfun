@@ -53,7 +53,7 @@ pass(8) = (abs(sum(dg) - (feval(g, 1) - feval(g, -1))) < tol);
 %%
 % Check operation for vectorized funcheb2 objects.
 
-f = funcheb2(@(x) [sin(x) x.^2 exp(i*x)], [], pref);
+f = funcheb2(@(x) [sin(x) x.^2 exp(1i*x)], [], pref);
 I = sum(f);
 I_exact = [0 2/3 2*sin(1)];
 pass(9) = (max(abs(I - I_exact)) < tol);
@@ -65,7 +65,7 @@ x = 2 * rand(100, 1) - 1;
 
 % DIM option with vectorized input.
 g = sum(f, 2);
-h = @(x) sin(x) + x.^2 + exp(i*x);
+h = @(x) sin(x) + x.^2 + exp(1i*x);
 pass(10) = (norm(feval(g, x) - h(x), 'inf') < tol);
 
 % DIM option with non-vectorized input should leave everything alone.

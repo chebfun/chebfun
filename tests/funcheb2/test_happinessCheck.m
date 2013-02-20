@@ -1,4 +1,4 @@
-function pass = test_isHappy(pref)
+function pass = test_happinessCheck(pref)
 
 % Get preferences:
 if ( nargin < 1 )

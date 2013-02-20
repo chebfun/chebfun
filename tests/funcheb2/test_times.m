@@ -160,7 +160,6 @@ function result = test_mult_function_by_scalar(f, f_op, alpha, x)
     g2 = alpha .* f;
     result(1) = isequal(g1, g2);
     g_exact = @(x) f_op(x) .* alpha;
-    result = norm(feval(g1, x) - g_exact(x), 'inf') < 10*g1.epslevel;
     result(2) = norm(feval(g1, x) - g_exact(x), 'inf') < 10*g1.epslevel;
 end
 
