@@ -7,6 +7,12 @@ function out = innerProduct(f, g)
 %   matrix whose i-j entry is the inner product of the ith column of F with the
 %   jth column of G.
 
+% Deal with empty case:
+if ( isempty(f) || isempty(g) )
+    out = [];
+    return
+end
+
 if ( ~isa(f, 'funcheb2') || ~isa(g, 'funcheb2') )
     error('CHEBFUN:FUNCHEB2:InnerProduct:input', ...
         'innerProduct() only operates on two FUNCHEB2 objects.');

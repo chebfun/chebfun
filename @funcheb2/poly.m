@@ -15,6 +15,12 @@ function out = poly(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Deal with empty case:
+if ( isempty(f) )
+    out = [];
+    return
+end
+
 coeffs = f.coeffs;
 [n, m] = size(coeffs);
 

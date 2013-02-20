@@ -48,6 +48,12 @@ function out = roots(f, varargin)
 % [TODO]: Mathematical reference.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Deal with empty case:
+if ( isempty(f) )
+    out = [];
+    return
+end
+
 % Support for vectorised FUNCHEB2 objects.
 if ( size(f.values, 2) > 1 )
     % Copy f into g:

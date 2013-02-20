@@ -34,6 +34,14 @@ function varargout = plot(f,varargin)
 %   [H1, H2] returns a second vector of column handles, this time for each of
 %   the marker plots.
 
+% Deal with an empty input:
+if ( isempty(f) )
+    if ( nargout == 1 )
+        varargout{1} = plot([]);
+    end
+    return
+end
+
 % Store the hold state of the current axis:
 holdState = ishold;
 

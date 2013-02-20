@@ -21,7 +21,7 @@ function f = cumsum(f, pref)
 % (See "Chebyshev Polynomials" by Mason and Handscomb, CRC 2002, pg 32-33.)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Trivial case of an empty funcheb2:
+% Trivial case of an empty FUNCHEB2:
 if ( isempty(f) )
     return
 end

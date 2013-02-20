@@ -6,6 +6,11 @@ function y = feval(f,x)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
+if ( isempty(f) )
+    y = [];
+    return 
+end
+
 % Evaluation is done via the barycentric formula.
 y = funcheb2.bary(x, f.values);
 

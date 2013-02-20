@@ -19,6 +19,14 @@ function varargout = chebpolyplot(f,varargin)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Deal with an empty input:
+if ( isempty(f) )
+    if ( nargout == 1 )
+        varargout{1} = plot([]);
+    end
+    return
+end
+
 % Set defaults:
 loglogplot = false;
 plotepslevel = true;

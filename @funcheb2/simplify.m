@@ -14,6 +14,11 @@ function f = simplify(f, pref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Deal with empty case:
+if ( isempty(f) )
+    return
+end
+
 % Grab some preferences:
 if ( nargin < 2 )
     pref = funcheb2.pref;

@@ -13,6 +13,11 @@ function f = restrict(f, s, pref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Deal with empty case:
+if ( isempty(f) )
+    return
+end
+
 % Check if subint is actually a subinterval
 if ( s(1) < -1 || s(end) > 1 || any(diff(s) <= 0) )
     error('FUN:restrict:badinterval', 'Not a valid interval.')

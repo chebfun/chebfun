@@ -8,6 +8,13 @@ function [f, R, E] = qr(f, flag)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Deal with empty case:
+if ( isempty(f) )
+    R = [];
+    E = [];
+    return
+end
+
 % Grab the size of f:
 m = size(f, 2);
 
