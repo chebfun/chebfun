@@ -37,7 +37,7 @@ end
 
 % Append new data to an empty funcheb2:
 g = funcheb2();
-g.vscale = max([f.vscale]);
+g.vscale = ([f.vscale]);
 g.ishappy = min([f.ishappy]);
 g.epslevel = max([f.epslevel]);
 g.values = cell2mat(values);

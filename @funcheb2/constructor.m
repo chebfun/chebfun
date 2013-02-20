@@ -84,7 +84,8 @@ while ( 1 )
     % Update vertical scale: (Only include sampled finite values)
     valuesTemp = values;
     valuesTemp(~isfinite(values)) = 0;
-    vscale = max(vscale, norm(valuesTemp(:), inf));
+    vscale = max(vscale, max(abs(valuesTemp)));
+%     vscale = max(vscale, norm(valuesTemp(:), inf));
     
     % Extrapolate out NaNs:
     [values, maskNaN, maskInf] = funcheb2.extrapolate(values);
@@ -110,9 +111,9 @@ while ( 1 )
 end
 
 % Update vertical scale one last time:
-vscale = max( vscale, norm(values(:), inf) );
+vscale = max(vscale, max(abs(values)));
 
-% Extrapolate should have already dealt with NaNs and Infs if happy.
+% Extrapolate should have already dealt with NaNs and Infs if we were happy.
 if ( ishappy )
     return
 end
@@ -125,7 +126,7 @@ end
 
 % Check for NaNs: (if not happy)
 if ( pref.funcheb2.extrapolate )
-    % Check for NaNs in interior only:
+    % Check for NaNs in interior only: (because extrapolate was on!)
     if ( any(any(isnan(values(2:end-1,:)))))
         error('CHEBFUN:FUNCHEB2:constructor:naneval', ...
             'Function returned NaN when evaluated.')

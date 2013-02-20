@@ -52,11 +52,11 @@ end
 
 % Grab vscale:
 if ( nargin < 3 || isempty(vscale) )
-    vscale = norm(values(:), inf);
+    vscale = max(abs(values));
 end
 
 % Check the vertical scale:
-if ( vscale == 0 )
+if ( max(vscale) == 0 )
     % This is the zero function, so we must be happy!
     cutoff = 1;
     return
@@ -74,11 +74,14 @@ end
 
 % Check for convergence and chop location --------------------------------------
 
+% Absolute value of coefficients, relative to vscale: (max across columns)
+ac = max(bsxfun(@rdivide, abs(coeffs), vscale), [], 2);
+
+% Take the minimum of the vscales:
+vscale = max(vscale);
+
 % Happiness requirements:
 [testLength, epslevel] = happinessRequirements(values, coeffs, vscale, pref);
-
-% Absolute value of coefficients, relative to vscale: (max across columns)
-ac = max(abs(coeffs), [], 2)/vscale;
 
 if ( max(ac(1:testLength)) < epslevel )    % We have converged! Now chop tail
     
@@ -94,13 +97,13 @@ if ( max(ac(1:testLength)) < epslevel )    % We have converged! Now chop tail
     % [TODO]: Figure out what the heck this does, and explain it.
     % Trim the coefficients:
 %     ac = ac(1:Tloc);                      % Restrict to coeffs of interest
-%     ac(1) = max(ac(1), .25*eps);          % Compute the cumulative max of 
+%     ac(1) = max(ac(1), .25*eps/vscale);   % Compute the cumulative max of 
 %     for k = 2:Tloc                        %   eps/4/vscale and the tail entries
 %         ac(k) = max(ac(k), ac(k-1));
 %     end
     
-    % Compute the cumulative max of eps/4 and the tail entries:
-    t = .25*eps;                   
+    % Compute the cumulative max of eps/4 and the tail entries
+    t = .25*eps;
     ac = ac(1:Tloc);                      % Restrict to coeffs of interest
     for k = 1:length(ac)                  % Cumulative max.
         if ( ac(k) < t )

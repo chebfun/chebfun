@@ -46,28 +46,28 @@ f = @(x) [sin(x) cos(x) exp(x)];
 [values, coeffs, vscale, epslevel] = funcheb2.constructor(f, [], pref);
 x = funcheb2.chebpts(length(values));
 pass(9) = norm(f(x) - values, inf) < tol;
-pass(10) = vscale == exp(1) && logical(epslevel);
+pass(10) = all(vscale == [sin(1) cos(0) exp(1)]) && logical(epslevel);
 
 pref.funcheb2.extrapolate = 1;
 pref.funcheb2.refinementFunction = 'nested';
 [values, coeffs, vscale, epslevel] = funcheb2.constructor(f, [], pref);
 x = funcheb2.chebpts(length(values));
 pass(11) = norm(f(x) - values, inf) < tol;
-pass(12) = norm(vscale - exp(1), inf) < tol && logical(epslevel);
+pass(12) = norm(vscale - [sin(1) cos(0) exp(1)], inf) < tol && logical(epslevel);
 
 pref.funcheb2.extrapolate = 0;
 pref.funcheb2.refinementFunction = 'resampling';
 [values, coeffs, vscale, epslevel] = funcheb2.constructor(f, [], pref);
 x = funcheb2.chebpts(length(values));
 pass(13) = norm(f(x) - values, inf) < tol;
-pass(14) = vscale == exp(1) && logical(epslevel);
+pass(14) = all(vscale == [sin(1) cos(0) exp(1)]) && logical(epslevel);
 
 pref.funcheb2.extrapolate = 1;
 pref.funcheb2.refinementFunction = 'resampling';
 [values, coeffs, vscale, epslevel] = funcheb2.constructor(f, [], pref);
 x = funcheb2.chebpts(length(values));
 pass(15) = norm(f(x) - values, inf) < tol;
-pass(16) = norm(vscale - exp(1), inf) < tol && logical(epslevel);
+pass(16) = norm(vscale - [sin(1) cos(0) exp(1)], inf) < tol && logical(epslevel);
 
 %%
 % Some other tests:

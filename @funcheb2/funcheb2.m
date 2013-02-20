@@ -105,7 +105,7 @@ classdef funcheb2 < funcheb
         % largest value sampled from the given operator OP during the
         % construction process. It is updated via subsequent FUNCHEB2
         % operations in a natural way.
-        vscale % (double >= 0)
+        vscale % (1xm double >= 0)
         
         % Boolean value designating whether the FUNCHEB2 is 'happy' or not. See
         % HAPPINESSCHECK.m for full documentation.
@@ -164,7 +164,7 @@ classdef funcheb2 < funcheb
                 % Nonadaptive contruction: (op is a vector of values)
                 values = op;
                 coeffs = funcheb2.chebpoly(values);
-                vscale = norm(values(:), inf);
+                vscale = max(abs(values));
                 [ishappy, epslevel] = ...
                     funcheb2.happinessCheck(op, values, coeffs, vscale, pref);
             end

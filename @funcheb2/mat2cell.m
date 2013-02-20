@@ -49,6 +49,7 @@ end
 % Split the values and the coeffs into cells of the correct size:
 values = mat2cell(f.values, n*M, N);
 coeffs = mat2cell(f.coeffs, n*M, N);
+vscale = mat2cell(f.vscale, M, N);
 
 % Initialise the funcheb2 array:
 g(numel(M),numel(N)) = funcheb2();
@@ -57,7 +58,7 @@ g(numel(M),numel(N)) = funcheb2();
 for k = 1:numel(N)
     g(k).epslevel = f.epslevel;
     g(k).ishappy = f.ishappy;
-    g(k).vscale = f.vscale;
+    g(k).vscale = vscale{k};
     g(k).values = values{k};
     g(k).coeffs = coeffs{k};
 end

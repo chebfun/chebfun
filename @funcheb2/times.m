@@ -105,7 +105,9 @@ else
 end
 
 % Update scales:
-vscale = norm([f.vscale ; g.vscale ; norm(values(:), inf)], inf);
+% vscale = norm([f.vscale ; g.vscale ; norm(values(:), inf)], inf);
+vscale = max(f.vscale, g.vscale);
+vscale = max(vscale, max(abs(values)));
 epslevel = max(f.epslevel, g.epslevel);
 
 % Assign back to f:

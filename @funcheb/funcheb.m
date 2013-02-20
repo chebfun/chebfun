@@ -9,8 +9,8 @@ classdef (Abstract) funcheb < smoothfun
 %   FUNCHEB.CONSTRUCTOR(OP) constructs a FUNCHEB object from the function handle
 %   OP. OP should be vectorised (i.e., accept a vector input) and ouput a vector
 %   of the same length. FUNCHEB objects allow for vectorised construction (i.e.,
-%   of multi-valued function), in which case OP should accept a column vector of
-%   length N and return a matrix of size NxM.
+%   of multi-valued functions), in which case OP should accept a column vector
+%   of length N and return a matrix of size NxM.
 %
 %   FUNCHEB.CONSTRUCTOR(OP, VSCALE) constructs a FUNCHEB with 'happiness'
 %   relative to the maximum of the given vertical scale VSCALE and the infinity

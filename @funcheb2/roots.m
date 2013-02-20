@@ -58,6 +58,7 @@ if ( size(f.values, 2) > 1 )
     for j = 1:size(f.values, 2)
         g.values = f.values(:,j);
         g.coeffs = f.coeffs(:,j);
+        g.vscale = f.vscale(j);
         r{j} = roots(g, varargin{:}); 
     end
     % Find the max length of r:

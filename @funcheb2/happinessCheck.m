@@ -31,7 +31,7 @@ function  [ishappy, epslevel, cutoff] = ...
 
 % Make sure we have a vscale:
 if ( nargin < 4 || isempty(vscale) )
-    vscale = norm(values(:), inf);
+    vscale = max(abs(values));
 end
 
 % Make sure we have coefficients:

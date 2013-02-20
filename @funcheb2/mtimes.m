@@ -35,7 +35,7 @@ elseif ( isa(c, 'double') )         % FUNCHEB2 * double
     
     f.values = f.values*c;
     f.coeffs = f.coeffs*c;
-    f.vscale = norm(c(:), inf)*f.vscale;
+    f.vscale = f.vscale*abs(c);
     
     % If the vertical scale is zero, then set the FUNCHEB2 to zero:
     if ( f.vscale == 0 )

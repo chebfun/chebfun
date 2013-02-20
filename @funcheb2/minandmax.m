@@ -34,17 +34,21 @@ else
     % Store coefficients and values:
     values = f.values;
     coeffs = f.coeffs;
+    vscale = f.vscale;
     values2 = fp.values;
     coeffs2 = fp.coeffs;
- 
+    vscale2 = fp.vscale;
+    
     % Loop over columns:
     for k = 1:sizef2    
     
         % Copy data to a single FUNCHEB2 column:
         f.values = values(:,k);
         f.coeffs = coeffs(:,k);
+        f.vscale = vscale(k);
         fp.values = values2(:,k);
         fp.coeffs = coeffs2(:,k);
+        fp.vscale = vscale2(k);
 
         % Find max of this column:
         [vals(:,k), pos(:,k)] = minandmaxColumn(f, fp, xpts);

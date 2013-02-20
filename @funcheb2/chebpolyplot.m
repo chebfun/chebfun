@@ -46,16 +46,19 @@ holdState = ishold;
 % The coefficients:
 absc = abs(f.coeffs);
 % Add a tiny amount to zeros to make plots look nicer:
-absc(~absc) = eps*max(absc(:));
+% absc(~absc) = eps*max(absc(:));
+absc(~absc) = f.epslevel*min(f.vscale);
 
 % Get the size:
-n = size(absc, 1);
+[n, m] = size(absc);
 
 if ( plotepslevel )
     % Plot the coeffs AND the epslevel:
-    h = semilogy(n-1:-1:0, absc, [0 n-1], f.vscale*f.epslevel*[1, 1], args{:});
-    set(h(end), 'linestyle', '--', 'linewidth', 1, 'color', 'r', ...
-        'marker', 'none')
+    h = semilogy(n-1:-1:0, absc, [0 n-1], repmat(f.vscale, 2, 1)*f.epslevel, args{:});
+    for k = 1:m
+        c = get(h(k), 'color');
+        set(h(m+k), 'linestyle', ':', 'linewidth', 1, 'marker', 'none', 'color', c);
+    end
 else
     % Plot just the coeffs:
     h = semilogy(n:-1:1, absc, args{:});
