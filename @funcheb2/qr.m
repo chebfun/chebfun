@@ -4,6 +4,15 @@ function [f, R, E] = qr(f, flag)
 %   FUNCHEB2 Q is orthogonal (wrt the continuous L^2 norm on [-1,1]) and of the
 %   same size as F and R is an m x m upper-triangular matrix when F has m
 %   columns.
+%
+%   [Q, R, E] = qr(A) produces unitary Q, upper-triangular R and a permutation
+%   matrix E so that A*E = Q*R. The column permutation E is chosen to reduce
+%   fill-in in R.
+%
+%   [Q, R, e] = qr(A, 'vector') returns the permutation information as a vector
+%   instead of a matrix.  That is, e is a row vector such that A(:,e) = Q*R.
+%   Similarly, [Q, R, E] = qr(A, 'matrix') returns a permutation matrix E. This
+%   is the default behavior.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -59,6 +68,7 @@ R = S*R;                    % Fix R.
 
 f.values = Q;                           % Adjust values of f.
 f.coeffs = funcheb2.chebpoly(Q);        % Compute new coeffs.
+f.vscale = max(abs(Q));
 
 end
 
