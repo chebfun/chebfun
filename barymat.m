@@ -1,5 +1,5 @@
 function B = barymat(y, x, w)
-%BARYMAT  Barycentric Interpolation Matrix   
+%BARYMAT  Barycentric Interpolation Matrix.
 %   BARYMAT(Y, X, W), where Y is a column vector of length(M) and X and W are
 %   column and row vectors of length(N) respectively, returns the M*N matrix
 %   which interpolates data from the grid X to the grid Y using barycentric

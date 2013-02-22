@@ -87,11 +87,13 @@ classdef (Abstract) smoothfun
         
     end
     
-    methods % Methods implimented by SMOOTHFUN class.
+    % Methods implimented by SMOOTHFUN class.
+    methods 
         
     end
     
-    methods ( Static = true ) % Static methods implimented by SMOOTHFUN class.
+    % Static methods implimented by SMOOTHFUN class.
+    methods ( Static = true ) 
         
         % Retrieve and modify preferences for this class.
         prefs = pref(varargin)

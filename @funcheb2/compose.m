@@ -1,11 +1,15 @@
 function f = compose(f, op, g, pref)
 %COMPOSE  Compostition of FUNCHEB2 objects.
-%   COMPOSE(F, OP) returns a FUNCHEB2 representing OP(G) where G is also a
+%   COMPOSE(F, OP) returns a FUNCHEB2 representing OP(F) where F is also a
 %   FUNCHEB2 object, and OP is a function handle.
 %
-%   COMPOSE(G1, OP, G2) returns OP(G1, G2) where F and G are FUNCHEB2 objects,
+%   COMPOSE(F, OP, G) returns OP(F, G) where F and G are FUNCHEB2 objects,
 %   and OP is a function handle.
-
+%
+%   COMPOSE(F, G) returns a FUNCHEB2 representing G(F), where both F and G are
+%   also FUNCHEB2 objects. If the range of F is not in [-1, 1] then an error is
+%   thrown.
+%
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
@@ -43,6 +47,11 @@ elseif ( isa(op, 'funcheb2') )
     if ( size(op, 2) > 1 && size(f, 2) > 1)
         error('CHEBFUN:FUNCHEB2:compose:multival', ...
             'Cannot compose two multivalued FUNCHEB2 objects.')
+    end
+    if ( norm(f.values(:), inf) > 1 )
+        error('CHEBFUN:FUNCHEB2:compose:range', ...
+            ['The range of f (approx [' num2str(min(f.values)), ', ', ...
+            num2str(max(f.values)), ']) is not in the domain of G ([-1,1])'])
     end
     vscale = max(vscale, op.vscale);
     pref.funcheb2.minSamples = max(pref.funcheb2.minSamples, length(op));
@@ -204,6 +213,7 @@ function [values, giveUp] = composeRefNested1(op, values, pref, f)
         % Update f values:
         f = prolong(f, n);
         v1 = f.values(2:2:end-1,:);
+        x = f.chebpts(n);
 
         % Shift the stored values:
         values(1:2:n,:) = values;

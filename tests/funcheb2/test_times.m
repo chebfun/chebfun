@@ -39,7 +39,7 @@ try
     g = f .* [1 2 ; 3 4];
     pass(6) = false;
 catch ME
-    pass(6) = strcmp(ME.identifier, 'CHEBFUN:FUNCHEB2:times:dim');
+    pass(6) = strcmp(ME.identifier, 'CHEBFUN:FUNCHEB:times:dim');
 end
 
 % This should fail with a dimension mismatch error.
@@ -47,7 +47,7 @@ try
     g = f .* [1 2 3];
     pass(7) = false;
 catch ME
-    pass(7) = strcmp(ME.identifier, 'CHEBFUN:FUNCHEB2:times:dim');
+    pass(7) = strcmp(ME.identifier, 'CHEBFUN:FUNCHEB:times:dim');
 end
 
 %%
@@ -68,7 +68,7 @@ try
     h = test_mult_function_by_function(f, f_op, g, g_op, x, false);
     pass(9) = false;
 catch ME
-    pass(9) = strcmp(ME.identifier, 'CHEBFUN:FUNCHEB2:mtimes:size2');
+    pass(9) = strcmp(ME.identifier, 'CHEBFUN:FUNCHEB:mtimes:size2');
 end
 
 %%
@@ -117,7 +117,7 @@ try
     h = f .* g;
     pass(17) = false;
 catch ME
-    pass(17) = strcmp(ME.identifier, 'CHEBFUN:FUNCHEB2:times:dim2');
+    pass(17) = strcmp(ME.identifier, 'CHEBFUN:FUNCHEB:times:dim2');
 end
 
 %%

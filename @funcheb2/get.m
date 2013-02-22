@@ -7,6 +7,8 @@ function out = get(f, prop)
 %       'VSCALE' - Vertical scale of F.
 %       'EPSLEVEL' - Happiness level of F.
 %       'POINTS' - 2nd-kind Chebyshev grid corresponding to F.
+%       'LVAL'
+%       'RVAL'
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.

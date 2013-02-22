@@ -50,12 +50,16 @@ classdef (Abstract) onefun
 % See http://www.chebfun.org/ for Chebfun information.
 
     methods (Static)
-        function y = constructor(op, pref)
+        function y = constructor(op, vscale, pref)
             
-            if ( nargin < 2 )
+            if ( nargin < 3 )
                 pref = onefun.pref;
             else
                 pref = onefun.pref(pref);
+            end
+            
+            if ( nargin < 2 )
+                vscale = 0;
             end
 
             % Call the relevent constructor
@@ -73,10 +77,10 @@ classdef (Abstract) onefun
                 
             else
                 
-                pref = ONEFUN.pref(pref, pref.onefun);
+                pref = smoothfun.pref(pref, pref.onefun);
                 
                 % Call ONEFUN constructor
-                y = ONEFUN.constructor(op, pref);
+                y = smoothfun.constructor(op, vscale, pref);
                 
             end
         
@@ -84,6 +88,9 @@ classdef (Abstract) onefun
         
         % Retrieve and modify preferences for this class.
         prefs = pref(varargin)
+        
+        % Edge detector.
+        [edge, vscale] = detectedge(op, hscale, vscale, der, pref)
         
     end
     

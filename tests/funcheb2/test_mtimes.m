@@ -63,7 +63,7 @@ try
     f = funcheb2(@(x) exp(x));
     h = [1 2 3]*f;
 catch ME
-    pass(9) = strcmp(ME.identifier, 'CHEBFUN:FUNCHEB2:mtimes:size') ...
+    pass(9) = strcmp(ME.identifier, 'CHEBFUN:FUNCHEB:mtimes:size') ...
         && strcmp(ME.message, 'Inner matrix dimensions must agree.');
 end
 
@@ -73,7 +73,7 @@ try
     h = f*[1 ; 2 ; 3];
     pass(10) = false;
 catch ME
-    pass(10) = strcmp(ME.identifier, 'CHEBFUN:FUNCHEB2:mtimes:size2') ...
+    pass(10) = strcmp(ME.identifier, 'CHEBFUN:FUNCHEB:mtimes:size2') ...
         && strcmp(ME.message, 'Inner matrix dimensions must agree.');
 end
 
@@ -83,7 +83,7 @@ try
     h = f*g;
     pass(11) = false;
 catch ME
-    pass(11) = strcmp(ME.message, 'Use .* to multiply FUNCHEB2s.');
+    pass(11) = strcmp(ME.message, 'Use .* to multiply FUNCHEB objects.');
 end
 
 % Using * to multiply a funcheb2 and something else.
@@ -91,7 +91,8 @@ try
     h = f*uint8(128);
     pass(12) = false;
 catch ME
-    pass(12) = strcmp(ME.message, 'mtimes does not know how to multiply a FUNCHEB2 and a uint8.');
+    pass(12) = strcmp(ME.message, ...
+        'mtimes does not know how to multiply a FUNCHEB and a uint8.');
 end
 
 %%
