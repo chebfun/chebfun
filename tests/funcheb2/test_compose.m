@@ -84,4 +84,13 @@ catch ME
     pass(11) = strcmp(ME.identifier, 'CHEBFUN:FUNCHEB2:compose:dim');
 end
 
+try
+    f = funcheb2(@(x) sin(x));
+    g = funcheb2(@(x) 100*cos(x));
+    compose(g,f);
+    pass(12) = false;
+catch ME
+    pass(12) = strcmp(ME.identifier, 'CHEBFUN:FUNCHEB2:compose:range');
+end
+
 end

@@ -82,7 +82,7 @@ try
     g = f ./ [1 ; 2];
     pass(12) = false;
 catch ME
-    pass(12) = strcmp(ME.identifier, 'CHEBUFN:FUNCHEB2:rdivide:size');
+    pass(12) = strcmp(ME.identifier, 'CHEBUFN:FUNCHEB:rdivide:size');
 end
 
 % Can't divide by a scalar row matrix if the column counts don't match.
@@ -91,7 +91,7 @@ try
     g = f ./ [1 2 3];
     pass(13) = false;
 catch ME
-    pass(13) = strcmp(ME.identifier, 'CHEBUFN:FUNCHEB2:rdivide:size');
+    pass(13) = strcmp(ME.identifier, 'CHEBUFN:FUNCHEB:rdivide:size');
 end
 
 % Can't divide by a function which has roots inside [-1, 1].
@@ -101,7 +101,7 @@ try
     h = f ./ g;
     pass(14) = false;
 catch ME
-    pass(14) = strcmp(ME.identifier, 'CHEBFUN:FUNCHEB2:rdivide:DivideByZeros');
+    pass(14) = strcmp(ME.identifier, 'CHEBFUN:FUNCHEB:rdivide:DivideByZeros');
 end
 
 %%

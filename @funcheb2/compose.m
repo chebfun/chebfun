@@ -48,7 +48,7 @@ elseif ( isa(op, 'funcheb2') )
         error('CHEBFUN:FUNCHEB2:compose:multival', ...
             'Cannot compose two multivalued FUNCHEB2 objects.')
     end
-    if ( norm(f.values, inf) > 1 )
+    if ( norm(f.values(:), inf) > 1 )
         error('CHEBFUN:FUNCHEB2:compose:range', ...
             ['The range of f (approx [' num2str(min(f.values)), ', ', ...
             num2str(max(f.values)), ']) is not in the domain of G ([-1,1])'])
@@ -213,6 +213,7 @@ function [values, giveUp] = composeRefNested1(op, values, pref, f)
         % Update f values:
         f = prolong(f, n);
         v1 = f.values(2:2:end-1,:);
+        x = f.chebpts(n);
 
         % Shift the stored values:
         values(1:2:n,:) = values;

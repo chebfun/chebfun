@@ -14,18 +14,24 @@ classdef funcheb2 < funcheb
 %
 %   FUNCHEB2(OP, VSCALE) constructs a FUNCHEB2 with 'happiness' (see
 %   HAPPINESSCHECK.m) relative to the maximum of the given vertical scale VSCALE
-%   and the infinity norm of the sampled function values of OP. If not given,
-%   the VSCALE defaults to 0 initially.
+%   and the (column-wsie) infinity norm of the sampled function values of OP. If
+%   not given, the VSCALE defaults to 0 initially.
 %
-%   FUNCHEB2(OP, VSCALE, PREF) overrides the default behavior with that given by
-%   the preference structure PREF. The constructor will also accept inputs of
-%   the form FUNCHEB2(OP, PREF), but this usage is not advised. Similarly, one
-%   can pass FUNCHEB2(OP, VSCALE, EPS), which is equivalent to the call
-%   FUNCHEB2(OP, VSCALE, FUNCHEB2.PREF('eps',EPS)).
+%   FUNCHEB2(OP, VSCALE, HSCALE) uses a 'happiness' to both the vertical scale
+%   VSCALE (as above) and the horizontal scale HSCALE. If not given, this
+%   defaults to 1.
 %
-%   FUNCHEB2(VALUES) or FUNCHEB2(VALUES, VSCALE, PREF) returns a FUNCHEB2 object
-%   which interpolates the values in the columns of VALUES at 2nd-kind Chebyshev
-%   points.
+%   FUNCHEB2(OP, VSCALE, HSCALE, PREF) overrides the default behavior with that
+%   given by the preference structure PREF. The constructor will also accept
+%   inputs of the form FUNCHEB2(OP, PREF), but this usage is not advised.
+%   Similarly, one can pass FUNCHEB2(OP, VSCALE, PREF). Furthermore, one can
+%   replace PREF by TOL, the desired tolerance of the construction, which is
+%   equivelent to passing a PREF with PREF.FUNCHEB2.eps = TOL.
+%
+%   FUNCHEB2(VALUES, ...) returns a FUNCHEB2 object which interpolates the
+%   values in the columns of VALUES at 2nd-kind Chebyshev points and
+%   FUNCHEB2({VALUES, COEFFS}, ... ) uses the Chebyshev coefficients passed in
+%   COEFFS rather than computing them.
 %
 % Examples:
 %   % Basic construction:
@@ -61,11 +67,6 @@ classdef funcheb2 < funcheb
 % VSCALE may be optionally passed during to the constructor (if not, it defaults
 % to 0), and during construction it is updated to be the maximum magnitude of
 % the sampled function values.
-%
-% FUNCHEB2 objects have no notion of horizontal scale invariance (since they
-% always live on [-1,1]). However, if the input OP has been implicitly mapped
-% one can enforce construction relative to some horizontal scale HSCALE by using
-% the preference FUNCHEB2.pref('hscale', HSCALE).
 %
 % If the input operator OP evaluates to NaN or Inf at any of the sample points
 % used by the constructor, then a suitable replacement is found by extrapolating
@@ -105,7 +106,15 @@ classdef funcheb2 < funcheb
         % largest value sampled from the given operator OP during the
         % construction process. It is updated via subsequent FUNCHEB2
         % operations in a natural way.
-        vscale % (1xm double >= 0)
+        vscale = 0 % (1xm double >= 0)
+        
+        % Horizontal scale of the FUNCHEB2. Although FUNCHEB2 objects have in
+        % principle no notion of horizontal scale invariance (since they always
+        % live on [-1,1]), the input OP has been implicitly mapped. HSCALE is
+        % then used to enforce horizontal scale invariance in construction and
+        % other subsequent operations that require it. It defaults to 1, and is
+        % never updated.
+        hscale = 1 % (scalar > 0)        
         
         % Boolean value designating whether the FUNCHEB2 is 'happy' or not. See
         % HAPPINESSCHECK.m for full documentation.
@@ -120,7 +129,7 @@ classdef funcheb2 < funcheb
     %% Methods implemented by this m-file.
     methods
         
-        function obj = funcheb2(op, vscale, pref)
+        function obj = funcheb2(op, vscale, hscale, pref)
             %Constructor for the FUNCHEB2 class.
             
             % Return an empty FUNCHEB2 on null input:
@@ -132,13 +141,21 @@ classdef funcheb2 < funcheb
             if ( nargin < 2 || isempty(vscale) )
                 vscale = 0;
             end
+            if ( nargin < 3 || isempty(hscale) )
+                hscale = 1;
+            end
             
             % Obtain preferences:
             if ( nargin == 2 && isstruct(vscale) )
                 % vscale was actually a preference.
                 pref = funcheb2.pref(vscale);
                 vscale = 0;
-            elseif ( nargin < 3 )
+                hscale = 1;
+            elseif ( nargin == 3 && isstruct(hscale) )
+                % hscale was actually a preference.
+                pref = funcheb2.pref(hscale);
+                hscale = 1;                
+            elseif ( nargin < 4 )
                 % Create:
                 pref = funcheb2.pref;
             elseif ( ~isstruct(pref) )
@@ -156,25 +173,25 @@ classdef funcheb2 < funcheb
             end
             
             % Actual construction takes place here:
-            if ( ~isnumeric(op) )
-                % Adaptive contruction:
-                [values, coeffs, vscale, ishappy, epslevel] = ...
-                    funcheb2.constructor(op, vscale, pref); %#ok<*PROP>
-            else
-                % Nonadaptive contruction: (op is a vector of values)
-                values = op;
-                coeffs = funcheb2.chebpoly(values);
-                vscale = max(abs(values));
-                [ishappy, epslevel] = ...
-                    funcheb2.happinessCheck(op, values, coeffs, vscale, pref);
-            end
+            obj = populate(obj, op, vscale, hscale, pref);
             
-            % Assign to FUNCHEB2 object:
-            obj.values = values;
-            obj.coeffs = coeffs;
-            obj.vscale = vscale;
-            obj.ishappy = ishappy;
-            obj.epslevel = epslevel;
+            % Check for NaNs: (if not happy)
+            if ( ~obj.ishappy && pref.funcheb2.extrapolate )
+                % Check for NaNs in interior only: (because extrapolate was on!)
+                if ( any(any(isnan(obj.values(2:end-1,:)))))
+                    error('CHEBFUN:FUNCHEB2:constructor:naneval', ...
+                        'Function returned NaN when evaluated.')
+                end
+                % We make sure not to return NaNs at +1 and -1.
+                valuesTemp = funcheb2.extrapolate(obj.values);
+                obj.values([1, end],:) = valuesTemp([1, end],:);
+            elseif ( ~obj.ishappy )
+                % Here we throw an error if NaNs were encountered anywhere.
+                if ( any(isnan(obj.values(:))) )
+                    error('CHEBFUN:FUNCHEB2:constructor:naneval2', ...
+                        'Function returned NaN when evaluated.')
+                end
+            end
             
         end
         
@@ -183,9 +200,6 @@ classdef funcheb2 < funcheb
     %% Static methods implemented by FUNCHEB2 class.
     % (This list is alphabetical)
     methods ( Static = true )
-        
-        % Alias Chebyshev coefficients.
-        coeffs = alias(coeffs, m);
         
         % Evaluate a Chebyshev interpolant using barycentric formula.
         out = bary(x, values, kind)
@@ -203,45 +217,26 @@ classdef funcheb2 < funcheb
         % (w) and barycentric (v) weights.
         [x, w, v] = chebpts(n)
         
-        % The constructor for the FUNCHEB2 class.
-        [values, coeffs, vscale, ishappy, epslevel] = ...
-            constructor(op, vscale, pref)
-        
-        % Evaluate a Chebyshev polynomial using Clenshaw's algorithm.
-        out = clenshaw(x, coeffs)
-        
-        % Default happiness in FUNCHEB2 (from Chebfun v4).
-        [cutoff, epslevel] = classicCheck(values, coeffs, vscale, pref)        
-        
         % Extrapolate (for NaNs / endpoints).
         [values, maskNaN, maskInf] = extrapolate(values)
-        
-        % Happiness checker.
-        [ishappy, epslevel, cutoff] = ...
-            happinessCheck(op, values, coeffs, vscale, pref)
-        
-        % Loose happiness check.
-        [ishappy, epslevel, cotoff] = ...
-            looseCheck(op, values, coeffs, vscale, pref)        
         
         % Retrieve and modify preferences for this class.
         prefs = pref(varargin)
         
         % Refinement function for FUNCHEB2 construction. (Evaluates OP on grid)
-        [values, giveUp] = refine(op, values, pref)
+        [values, opints, giveUp] = refine(op, values, pref)
         
         % Compute Chebyshev quadrature weights.
         w = quadwts(n)
         
-        % Test a sample evaluation of an interpolant against op evaluation.
-        pass = sampleTest(op, values, vscale, epslevel, pref)
-        
-        % Strict happiness check.
-        [ishappy, epslevel, cotoff] = ...
-            strictCheck(op, values, coeffs, vscale, pref)
-        
         % Test the FUNCHEB2 class.
         pass = test(varargin);
+        
+        % Make a FUNCHEB2. (Constructor shortcut)
+        f = make(varargin);
+        
+        % Make an empty FUNCHEB2. (Constructor shortcut)
+        f = makeEmpty();
         
     end
     

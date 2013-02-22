@@ -13,14 +13,14 @@ else                                                % No
     prefs = struct();
 end
 
-% If it was, did it have a FUNCHEB2 field?
+% If it was, did it have a FUNCHEB field?
 if ( isfield(prefs, classname) )  % It does, so either:
     if ( numel(varargin) == 0 )
         return                    % a) No props to change, return
     else
-        p = prefs.(classname);    % b) Grab funcheb2 prefs
+        p = prefs.(classname);    % b) Grab funcheb prefs
     end
-else                              % No funcheb2 prefs found, so make some:
+else                              % No funcheb prefs found, so make some:
     p.tech        = 'cheb2';
     p.eps         = 2^-52;
 end
@@ -59,7 +59,7 @@ if ( numel(varargin) == 1 )
     return
 end
 
-% Property names have been passed, so alter/add FUNCHEB2/MISC properties.
+% Property names have been passed, so alter/add FUNCHEB/MISC properties.
 for k = 1:2:numel(varargin)
     if ( isfield(p, varargin{k}) )
         p.(varargin{k}) = varargin{k+1};
@@ -68,7 +68,7 @@ for k = 1:2:numel(varargin)
     end
 end
 
-% Append FUNCHEB2 preferences to the prefence structure prefs for output.
+% Append FUNCHEB preferences to the prefence structure prefs for output.
 prefs.(classname) = p;
 
 % Append MISC preferences to the prefence structure prefs for output.

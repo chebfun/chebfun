@@ -42,7 +42,7 @@ classdef (Abstract) funcheb < smoothfun
 % on the interval [-1,1] via interpolated function values at Chebyshev points
 % and coefficients of the corresponding first-kind Chebyshev series expansion.
 %
-% There are two main instances on the FUNCHEB class; FUNCHEB1 and FUNCHEB2,
+% There are two main instances on the FUNCHEB class; FUNCHEB1 and FUNCHEB,
 % which interpolate on Chebyshev grids of the first and second kind
 % respectively. Note that although they use different Chebyshev grids in 'value'
 % space, their coefficients are always from an expansion in first-kind Chebyshev
@@ -91,10 +91,10 @@ classdef (Abstract) funcheb < smoothfun
 
             % Call the relevent constructor
             if ( strcmpi(pref.funcheb.tech, 'cheb1') )
-                pref = funcheb1.pref(pref, pref.smoothfun);
+                pref = funcheb1.pref(pref, pref.funcheb);
                 obj = funcheb1(op, vscale, pref);
             else
-                pref = funcheb2.pref(pref, pref.smoothfun);
+                pref = funcheb2.pref(pref, pref.funcheb);
                 obj = funcheb2(op, vscale, pref);
             end
             
@@ -106,10 +106,22 @@ classdef (Abstract) funcheb < smoothfun
         
     end
     
-    methods ( Static = true ) % Static methods implimented by SMOOTHFUN class.
+    methods ( Static = true ) % Static methods implimented by FUNCHEB class.
+        
+        % Retrieve and modify preferences for this class.
+        coeffs = alias(coeffs, m)
+        
+        % Evaluate a Chebyshev polynomial using Barycentric interpolation.
+        fx = bary(x, gvals, xk, vk, kind)
+
+        % Evaluate a Chebyshev polynomial using Clenshaw's algorithm.
+        out = clenshaw(x, coeffs)  
         
         % Retrieve and modify preferences for this class.
         prefs = pref(varargin)
+        
+        % Test a sample evaluation of an interpolant against op evaluation.
+        pass = sampleTest(op, op2, values, points, vscale, hscale, epslevel)
         
     end
     
