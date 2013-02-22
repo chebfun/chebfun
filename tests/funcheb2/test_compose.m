@@ -71,7 +71,7 @@ try
     compose(f, g);
     pass(10) = false;
 catch ME 
-    pass(10) = strcmp(ME.identifier, 'CHEBFUN:FUNCHEB2:compose:multival');
+    pass(10) = strcmp(ME.identifier, 'CHEBFUN:FUNCHEB:compose:multival');
 end
 
 % We cannot expect to compose two multivalued FUNCHEB2 objects in this way:
@@ -81,7 +81,7 @@ try
     compose(f, @plus, g)
     pass(11) = false;
 catch ME
-    pass(11) = strcmp(ME.identifier, 'CHEBFUN:FUNCHEB2:compose:dim');
+    pass(11) = strcmp(ME.identifier, 'CHEBFUN:FUNCHEB:compose:dim');
 end
 
 try
@@ -90,7 +90,7 @@ try
     compose(g,f);
     pass(12) = false;
 catch ME
-    pass(12) = strcmp(ME.identifier, 'CHEBFUN:FUNCHEB2:compose:range');
+    pass(12) = strcmp(ME.identifier, 'CHEBFUN:FUNCHEB:compose:range');
 end
 
 end
