@@ -38,32 +38,7 @@ end
 function v = realcoeffs(c) % Real case - Chebyshev points of the 1st kind
 n = size(c,1);
 m = size(c,2);
-%%%%%%%%% without FFT %%%%%%%%%%%%%%%%%%%
-% c = flipud(c);
-% k = 0:n-1;
-% K = pi*k/(2*n);
-% v = zeros(1,n);
-% 
-% for j = 0:n-1
-%        v(j+1) = cos(K*(2*j+1))*c;    
-% end
-% v = v.';
-% v = v(n:-1:1,:);
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 
-% %b = repmat(exp(-1i*(n-1:-1:0)*pi/(2*n)).',1,m);
-% N = n-1;
-% b = exp(-1i*pi*(0:N)'/(N+1));
-% c = flipud(c);
-% C = c.*b;
-% C = [C;-C];
-% 
-% % Mirror the data
-% %c = [c(n:-1:1,:); zeros(1,m); c(1:n-1,:)];
-% % c(1,:) = c(1,:)/2; c(n,:) = c(n,:)/2;
-% v = real(fft(C));
-% v = v(n:-1:1,:)/2;
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 coeffs = flipud(c); 
 w = exp(1i*(0:n-1)*pi/(2*n)).';
 if m > 1

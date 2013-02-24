@@ -8,9 +8,9 @@ function [values, giveUp] = refine(op, values, pref)
 %   flag where TRUE means the refinement procedure has failed (typically when
 %   the maximum number of samples, PREF.FUNCHEB1.MAXSAMPLES, has been reached).
 %
-%   The only built-in refinement strategies is 'default'. It makes use of grids
-%   of the form 2^(3:6 6:.5:16)+1 and resamples all of the values each time N 
-%   is increased.
+%   As opposed to FUNCHEB2, the only built-in refinement strategies is 'default'.
+%   It makes use of grids of the form 2^(3:6 6:.5:16)+1 and resamples all of the 
+%   values each time N is increased.
 %
 %   Alternative refinement strategies can be used by pasing a function handle in
 %   the pref.funcheb1.refinementStrategy field. The function handle should point

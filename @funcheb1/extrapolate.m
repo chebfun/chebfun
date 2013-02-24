@@ -1,14 +1,16 @@
 function [values, maskNaN, maskInf] = extrapolate(values)
-%EXTRAPOLATE  Extrapolate data values from values at Chebyshev points.
-%   EXTRAPOLATE(VALUES) extrapolates the given data VALUES at data points
-%   wherever a NaN or an Inf is encountered using the barycentric interpolant
-%   through the remaining numeric values. 
+%EXTRAPOLATE  Extrapolate data values from values at Chebyshev points of 
+%   1st kind.
 %
-%   EXTRAPOLATE(VALUES, PREF) will do the same, as well as auotmatically
-%   extrapolate the data at -1 and +1 if the pref.funcheb1('extrapolate', true).
+%   EXTRAPOLATE(VALUES) uses barycentric interpolants to extrapolate out 
+%   NaNs or Infs from the numeric data in VALUES.
 %
-%   [VALUESOUT, MASKNAN, MASKINF] = EXTRAPOLATE(VALUESIN) returns also logical
-%   vectors indicating when NaNs or Infs were encountered in VALUESIN.
+%   [VALUESOUT, MASKNAN, MASKINF] = EXTRAPOLATE(VALUESIN) returns logical
+%   vectors indicating when a NaN or Inf was encountered in rows of VALUESIN.
+%
+%   Note that if any column of a multivalued function returns to NaN or Inf,
+%   then _all_ columns are extrapolated at the point. Thus MASKNAN and MASKINF
+%   are always column vectors, even if VALUES is a matrix.
 %
 % See also FUNCHEB1.pref.
 
