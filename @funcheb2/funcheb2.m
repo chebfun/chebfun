@@ -234,10 +234,6 @@ classdef funcheb2 < funcheb
         
         % Make a FUNCHEB2. (Constructor shortcut)
         f = make(varargin);
-        
-        % Make an empty FUNCHEB2. (Constructor shortcut)
-        f = makeEmpty();
-        
     end
     
     %% Private static methods implemented by FUNCHEB2 class.

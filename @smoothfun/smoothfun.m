@@ -78,9 +78,10 @@ classdef (Abstract) smoothfun
                 % Merge
                 pref = smoothfun.pref(pref);
             end
-
+            
             % Call the relevent constructor
             pref = funcheb.pref(pref, pref.smoothfun);
+            
             obj = funcheb.constructor(op, vscale, hscale, pref);
             
         end

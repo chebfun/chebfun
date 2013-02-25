@@ -1,4 +1,4 @@
-classdef (Abstract) funcheb < smoothfun
+classdef funcheb < smoothfun
 %FUNCHEB   Approximate smooth functions on [-1,1] with Chebyshev interpolants. 
 %
 %   Class for approximating smooth functions on the interval [-1,1] using
@@ -111,11 +111,51 @@ classdef (Abstract) funcheb < smoothfun
         
     end
     
-    methods % Methods implimented by SMOOTHFUN class.
+    % Abstract (non-static) methods required by FUNCHEB class. 
+    methods (Abstract)
         
     end
     
-    methods ( Static = true ) % Static methods implimented by FUNCHEB class.
+    % Abstract static methods required by FUNCHEB class. 
+    methods (Abstract, Static)
+        
+        % Compute Chebyshev barycentric weights.
+        w = barywts(n)
+        
+        % Convert values to coefficients.
+        coeffs = chebpoly(values)
+        
+        % Convert coefficients to values.
+        values = chebpolyval(coeffs)
+        
+        % Compute Chebyshev points (x) and optionally quadrature (w) and
+        % barycentric (v) weights.
+        [x, w, v] = chebpts(n)
+        
+        % Extrapolate (for NaNs / endpoints).
+        [values, maskNaN, maskInf] = extrapolate(values)
+        
+        % Retrieve and modify preferences for this class.
+        prefs = pref(varargin)
+        
+        % Refinement function for FUNCHEB construction. (Evaluates OP on grid)
+        [values, opints, giveUp] = refine(op, values, pref)
+        
+        % Compute Chebyshev quadrature weights.
+        w = quadwts(n)
+        
+        % Make a FUNCHEB. (Constructor shortcut)
+        f = make(varargin);
+        
+    end
+    
+    % Methods implimented by FUNCHEB class.
+    methods 
+        
+    end
+    
+    % Static methods implimented by FUNCHEB class.
+    methods ( Static = true ) 
         
         % Retrieve and modify preferences for this class.
         coeffs = alias(coeffs, m)
@@ -125,9 +165,6 @@ classdef (Abstract) funcheb < smoothfun
 
         % Evaluate a Chebyshev polynomial using Clenshaw's algorithm.
         out = clenshaw(x, coeffs)  
-        
-        % Retrieve and modify preferences for this class.
-        prefs = pref(varargin)
         
         % Test a sample evaluation of an interpolant against op evaluation.
         pass = sampleTest(op, op2, values, points, vscale, hscale, epslevel)
