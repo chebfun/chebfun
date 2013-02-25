@@ -203,10 +203,6 @@ classdef funcheb1 < funcheb
         
         % Compute Chebyshev barycentric weights.
         w = barywts(n)
-        
-        % Barycentric Interpolation matrix using Chebyshev points of 1st 
-        % kind.
-        B = barymat(y, x, w)
 
         % Convert values to coefficients.
         coeffs = chebpoly(values)
@@ -235,10 +231,7 @@ classdef funcheb1 < funcheb
         
         % Make a FUNCHEB1. (Constructor shortcut)
         f = make(varargin);
-        
-        % Make an empty FUNCHEB1. (Constructor shortcut)
-        f = makeEmpty();
-        
+
     end
     
     %% Private static methods implemented by FUNCHEB1 class.
