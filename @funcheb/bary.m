@@ -1,5 +1,5 @@
 function fx = bary(x, gvals, xk, vk, kind)
-%BARY  Barycentric interpolation on a 2nd-kind Chebyshev grid.
+%BARY  Barycentric interpolation.
 %   BARY(X, GVALS, XK, VK) evaluates the barycentric interpolant (with weights
 %   VK) of the interpolant (at the points XK) to the values in the columns of
 %   GVALS at the points X.
@@ -12,9 +12,6 @@ function fx = bary(x, gvals, xk, vk, kind)
 %   interpolant to use, where KIND may be on of 1 or 2. By default the 2nd-kind
 %   barycentric formula when evaluating within [-1, 1], and the 1st-kind formula
 %   for outside the interval or in the complex plane. (See [1] for details).
-%
-%   BARY(X, GVALS, KIND) overrides the default behaviour and uses the KIND
-%   barycentric formula, where KIND may be either 1 or 2. 
 %
 %   Example:
 %     xcheb = funcheb2.chebpts(14);

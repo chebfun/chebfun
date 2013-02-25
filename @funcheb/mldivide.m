@@ -14,7 +14,7 @@ if ( ~isa(A, 'funcheb') || ~isa(B, 'funcheb') )
         'Matrix dimensions must agree.');
 end
 
-% NOTE: A*X = (Q*R)*X = B ==> R*X = Q'*B ==> X = R*(Q'*B) = R*innerProduct(Q, B)
+% NOTE: A*X = (Q*R)*X = B ==> R*X = Q'*B ==> X = R\(Q'*B) = R\innerProduct(Q, B)
 
 % Compute QR factorisation of A:
 [Q, R] = qr(A, 0);

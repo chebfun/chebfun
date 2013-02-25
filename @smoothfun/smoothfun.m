@@ -50,7 +50,7 @@ classdef (Abstract) smoothfun
     
     methods (Static)
         
-        function obj = constructor(op, vscale, pref)
+        function obj = constructor(op, vscale, hscale, pref)
             % Constructor for the SMOOTHFUN class.
             
             % We can't return an empty SMOOTHFUN, so pass an empty OP down.
@@ -81,7 +81,7 @@ classdef (Abstract) smoothfun
 
             % Call the relevent constructor
             pref = funcheb.pref(pref, pref.smoothfun);
-            obj = funcheb.constructor(op, vscale, pref);
+            obj = funcheb.constructor(op, vscale, hscale, pref);
             
         end
         

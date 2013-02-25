@@ -1,4 +1,4 @@
-function varargout = chebpolyplot(f,varargin)
+function varargout = chebpolyplot(f, varargin)
 %CHEBPOLYPLOT    Display Chebyshev coefficients graphically.
 %
 %   CHEBPOLYPLOT(F) plots the Chebyshev coefficients of a FUNCHEB F on a
@@ -62,7 +62,7 @@ absc(~absc) = f.epslevel*min(f.vscale);
 
 if ( plotepslevel )
     % Plot the coeffs AND the epslevel:
-    h = semilogy(n-1:-1:0, absc, [0 n-1], repmat(f.vscale, 2, 1)*f.epslevel, args{:});
+    h = semilogy(n-1:-1:0, absc, args{:}, [0 n-1], repmat(f.vscale, 2, 1)*f.epslevel, args{:});
     for k = 1:m
         c = get(h(k), 'color');
         set(h(m+k), 'linestyle', ':', 'linewidth', 1, 'marker', 'none', 'color', c);

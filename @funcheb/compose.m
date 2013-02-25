@@ -10,6 +10,11 @@ function f = compose(f, op, g, pref)
 %   also FUNCHEB objects. If the range of F is not in [-1, 1] then an error is
 %   thrown.
 %
+%   COMPOSE(F, OP, PREF), COMPOSE(F, OP, G, PREF), or COMPOSE(F, G, PREF) uses
+%   the options passed by the prefences structure PREF. In particular, one can
+%   pass a PREF.(class(F)).refinmentFunction which takes advantage of the fact
+%   that F (and possibly OP or G) are FUNCHEB objects.
+%
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 

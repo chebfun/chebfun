@@ -60,7 +60,7 @@ classdef (Abstract) funcheb < smoothfun
     
     methods (Static)
         
-        function obj = constructor(op, vscale, pref)
+        function obj = constructor(op, vscale, hscale, pref)
             % Constructor for the SMOOTHFUN class.
             
             % We can't return an empty FUNCHEB, so pass an empty OP down.
@@ -72,13 +72,22 @@ classdef (Abstract) funcheb < smoothfun
             if ( nargin < 2 || isempty(vscale) )
                 vscale = 0;
             end
+            % Define vscale if none given.
+            if ( nargin < 3 || isempty(hscale) )
+                hscale = 1;
+            end
             
             % Obtain preferences.
             if ( nargin == 2 && isstruct(vscale) )
                 % vscale was actually a preference.
                 pref = funcheb.pref(vscale);
                 vscale = 0;
-            elseif ( nargin < 3 )
+                hscale = 1;
+            elseif ( nargin == 3 && isstruct(hscale) )
+                % vscale was actually a preference.
+                pref = funcheb.pref(hscale);
+                hscale = 1;
+            elseif ( nargin < 4 )
                 % Create
                 pref = funcheb.pref;
             elseif ( ~isstruct(pref) )
@@ -92,10 +101,10 @@ classdef (Abstract) funcheb < smoothfun
             % Call the relevent constructor
             if ( strcmpi(pref.funcheb.tech, 'cheb1') )
                 pref = funcheb1.pref(pref, pref.funcheb);
-                obj = funcheb1(op, vscale, pref);
+                obj = funcheb1(op, vscale, hscale, pref);
             else
                 pref = funcheb2.pref(pref, pref.funcheb);
-                obj = funcheb2(op, vscale, pref);
+                obj = funcheb2(op, vscale, hscale, pref);
             end
             
         end

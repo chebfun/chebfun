@@ -155,7 +155,6 @@ function [values, giveUp] = composeNested1(op, values, pref, f)
         % Update f values:
         f = prolong(f, n);
         v1 = f.values(2:2:end-1,:);
-        x = f.chebpts(n);
 
         % Shift the stored values:
         values(1:2:n,:) = values;

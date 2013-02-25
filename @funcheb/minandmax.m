@@ -14,7 +14,7 @@ function [vals, pos] = minandmax(f)
 % Compute derivative:
 fp = diff(f);
 
-% Make the Chebyshev grid (used in manandmaxColumn).
+% Make the Chebyshev grid (used in minandmaxColumn).
 xpts = f.chebpts(length(f));
 
 % Check if f is a column FUNCHEB:
