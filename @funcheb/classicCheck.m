@@ -43,12 +43,14 @@ function [cutoff, epslevel] = classicCheck(f, pref)
 n = length(f);
 
 % Grab some preferences:
-if ( nargin < 4 )
+if ( nargin == 1 )
     pref = f.pref();
     epslevel = pref.(class(f)).eps;
 elseif ( isnumeric(f) )
     epslevel = pref;
 %     pref = f.pref();
+else
+    epslevel = pref.(class(f)).eps;
 end
 
 % Deal with the trivial case 
@@ -84,9 +86,9 @@ vscale = max(f.vscale);
 
 % Happiness requirements:
 [testLength, epslevel] = ...
-    happinessRequirements(f.values, f.coeffs, f.chebpts(length(f)), vscale, f.hscale, epslevel);
+    happinessRequirements(f.values, f.coeffs, f.points(), vscale, f.hscale, epslevel);
 
-if ( max(ac(1:testLength)) < epslevel )    % We have converged! Now chop tail
+if ( max(ac(1:testLength)) < epslevel )    % We have converged! Now chop tail:
     
     % Find first entry above epslevel:
     Tloc = find(ac >= epslevel, 1, 'first') - 1;
@@ -97,17 +99,9 @@ if ( max(ac(1:testLength)) < epslevel )    % We have converged! Now chop tail
         return
     end
     
-    % [TODO]: Figure out what the heck this does, and explain it.
-    % Trim the coefficients:
-%     ac = ac(1:Tloc);                      % Restrict to coeffs of interest
-%     ac(1) = max(ac(1), .25*eps/vscale);   % Compute the cumulative max of 
-%     for k = 2:Tloc                        %   eps/4/vscale and the tail entries
-%         ac(k) = max(ac(k), ac(k-1));
-%     end
-    
-    % Compute the cumulative max of eps/4 and the tail entries
+    % Compute the cumulative max of eps/4 and the tail entries:
     t = .25*eps;
-    ac = ac(1:Tloc);                      % Restrict to coeffs of interest
+    ac = ac(1:Tloc);                      % Restrict to coeffs of interest.
     for k = 1:length(ac)                  % Cumulative max.
         if ( ac(k) < t )
             ac(k) = t;
@@ -118,7 +112,7 @@ if ( max(ac(1:testLength)) < epslevel )    % We have converged! Now chop tail
     
     % Tbpb = Bang/buck of chopping at each pos:
     Tbpb = log(1e3*epslevel./ac) ./ (size(f.coeffs, 1) - (1:Tloc)');    
-    [~, Tchop] = max(Tbpb(3:Tloc));       % Tchop = pos at which to chop
+    [~, Tchop] = max(Tbpb(3:Tloc));       % Tchop = pos at which to chop.
 
     % We want to keep [c(0), c(1),  ..., c(cutoff)]:
     cutoff = n - Tchop - 2;
@@ -137,8 +131,11 @@ function [testLength, epslevel] = ...
 %HAPPINESSREQUIREMENTS   Define what it means for a FUNCHEB to be happy.
 %   See documentation above.
 
+% Grab the size:
 n = size(values, 1);
-testLength = min(n, max(5, round((n-1)/8))); % Length of tail to test (see above)
+
+% Length of tail to test.
+testLength = min(n, max(5, round((n-1)/8))); 
 
 minPrec = 1e-4; % Worst case precision! 
 
@@ -146,9 +143,7 @@ minPrec = 1e-4; % Worst case precision!
 tailErr = min(minPrec, eps*testLength^(2/3));
 
 % Look at finite difference gradient to loosen tolerance:
-dx = max(diff(x), eps*hscale);
-% dx = repmat(dx, 1, size(values, 2))
-dx = dx*ones(1, size(values, 2));
+dx = diff(x)*ones(1, size(values, 2));
 grad = (hscale/vscale) * norm(diff(values)./dx, inf);
 gradErr = min(minPrec, eps*grad);
 
@@ -156,8 +151,3 @@ gradErr = min(minPrec, eps*grad);
 epslevel = max([epslevel, gradErr, tailErr]);
 
 end
-
-
-
-
-

@@ -86,46 +86,6 @@ classdef funcheb2 < funcheb
 %
 % Class diagram: [<<funcheb>>] <-- [FUNCHEB2]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-    %% Properties of FUNCHEB2 objects.
-    properties ( Access = public )
-        
-        % Values of FUNCHEB2 at 2nd-kind Chebyshev points. Values are stored in
-        % order from left to right (i.e., values(1,:) = feval(FUNCHEB2, -1)).
-        % For vectorised FUNCHEB2 objects, each column represents the
-        % interpolated values of a single function.
-        values % (nxm double)
-        
-        % Coefficients in 1st-kind Chebyshev series expansion of the FUNCHEB2 on
-        % [-1,1]. The coefficients are stored in descending order so that c_N is
-        % the first entry and c_0 is the last. For vectorised FUNCHEB2 objects,
-        % each column represents the coefficients of a single function.
-        coeffs % (nxm double)
-        
-        % Vertical scale of the FUNCHEB2. Typically the is the magnitude of the
-        % largest value sampled from the given operator OP during the
-        % construction process. It is updated via subsequent FUNCHEB2
-        % operations in a natural way.
-        vscale = 0 % (1xm double >= 0)
-        
-        % Horizontal scale of the FUNCHEB2. Although FUNCHEB2 objects have in
-        % principle no notion of horizontal scale invariance (since they always
-        % live on [-1,1]), the input OP has been implicitly mapped. HSCALE is
-        % then used to enforce horizontal scale invariance in construction and
-        % other subsequent operations that require it. It defaults to 1, and is
-        % never updated.
-        hscale = 1 % (scalar > 0)        
-        
-        % Boolean value designating whether the FUNCHEB2 is 'happy' or not. See
-        % HAPPINESSCHECK.m for full documentation.
-        ishappy % (logical)
-        
-        % Happiness level to which the FUNCHEB2 was constructed, or a rough
-        % accuracy estimate of subsequent operations. See HAPPINESSCHECK.m for
-        % full documentation.
-        epslevel % (double >= 0)
-    end
-    
     %% Methods implemented by this m-file.
     methods
         
@@ -165,7 +125,7 @@ classdef funcheb2 < funcheb
                 % Merge:
                 pref = funcheb2.pref(pref);
             end
-            
+
             % Force nonadaptive construction if pref.funcheb2.n is numeric:
             if ( ~isempty(pref.funcheb2.n) && ~isnan(pref.funcheb2.n) )
                 % Evaluate the op on the Chebyshev grid of given size:
@@ -238,6 +198,8 @@ classdef funcheb2 < funcheb
     
     %% Private static methods implemented by FUNCHEB2 class.
     methods ( Access = public, Static = true )
+        
+        %
         
     end
     

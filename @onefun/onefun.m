@@ -1,33 +1,32 @@
-classdef (Abstract) onefun
+classdef onefun % (Abstract) 
 %ONEFUN     Approximate smooth functions on [-1,1]. 
 %   Abstract (interface) class for approximating functions on the interval
 %   [-1,1].
 %
 % Constructor inputs:
-%   ONEFUN(OP) constructs a ONEFUN object from the function handle OP. OP
-%   should be vectorised (i.e., accept a vector input) and ouput a vector of the
-%   same length. Most ONEFUN objects allow for vectorised construction (i.e.,
-%   of multi-valued function), in which case OP should accept a vector of length
-%   N and return a matrix of size NxM.
+%   ONEFUN.CONSTRUCTOR(OP) constructs a ONEFUN object from the function handle
+%   OP. OP should be vectorised (i.e., accept a vector input) and ouput a vector
+%   of the same length. Most ONEFUN objects allow for vectorised construction
+%   (i.e., of multi-valued function), in which case OP should accept a vector of
+%   length N and return a matrix of size NxM.
 %
-%   ONEFUN.CONSTRUCTOR(OP, VSCALE) constructs a ONEFUN with 'happiness'
-%   relative to the maximum of the given vertical scale VSCALE and the infinity
-%   norm of the sampled function values of OP. If not given, the VSCALE defaults
-%   to 0 initially.
+%   ONEFUN.CONSTRUCTOR(OP, VSCALE, HSCALE) constructs a ONEFUN with 'happiness'
+%   relative to the maximum of the given vertical scale VSCALE (which is updated
+%   by the infinity norm of the sampled function values of OP during
+%   construction), and the fixed horizontal scale HSCALE. If not given, the
+%   VSCALE defaults to 0 initially, and HSCALE defaults to 1.
 %
-%   ONEFUN.CONSTRUCTOR(OP, VSCALE, PREF) overrides the default behavior with
-%   that given by the preference structure PREF. The constructor will also
-%   accept inputs of the form ONEFUN(OP, PREF), but this usage is not
-%   advised. Similarly, one can pass ONEFUN(OP, VSCALE, EPS), which is
-%   equivalent to the call ONEFUN(OP, VSCALE, ONEFUN.PREF('eps',EPS))
+%   ONEFUN.CONSTRUCTOR(OP, VSCALE, HSCALE, PREF) overrides the default behavior
+%   with that given by the preference structure PREF. The constructor will also
+%   accept inputs of the form ONEFUN(OP, PREF), but this usage is not advised.
+%   Similarly, one can pass ONEFUN(OP, VSCALE, HSCALE, EPS), which is equivalent
+%   to the call ONEFUN(OP, VSCALE, HSCALE, ONEFUN.PREF('eps',EPS))
 %
-%   ONEFUN.CONSTRUCTOR(VALUES, VSCALE, PREF) returns a ONEFUN object which
-%   interpolates the values in the columns of VALUES. The points at which this
-%   interpolation occurs is defined by PREF.ONEFUN.TECH.
+%   ONEFUN.CONSTRUCTOR(VALUES, VSCALE, HSCALE, PREF) returns a ONEFUN object
+%   which interpolates the values in the columns of VALUES. The points at which
+%   this interpolation occurs is defined by PREF.ONEFUN.TECH.
 %
 % See also ONEFUN.pref, ONEFUN.chebpts, onefun.
-
-% [TODO]: Document this file.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -52,34 +51,64 @@ classdef (Abstract) onefun
     methods (Static)
         function y = constructor(op, vscale, hscale, pref)
             
-            if ( nargin < 3 )
-                pref = onefun.pref;
-            else
-                pref = onefun.pref(pref);
+            % We can't return an empty ONEFUN, so pass an empty OP down.
+            if ( nargin == 0 )
+                op = [];
             end
             
-            if ( nargin < 2 )
+            % Define vscale if none given:
+            if ( nargin < 2 || isempty(vscale) )
                 vscale = 0;
             end
+            % Define vscale if none given:
+            if ( nargin < 3 || isempty(hscale) )
+                hscale = 1;
+            end
+            
+            % Obtain preferences.
+            if ( nargin == 2 && isstruct(vscale) )
+                % vscale was actually a preference.
+                pref = onefun.pref(vscale);
+                vscale = 0;
+                hscale = 1;
+            elseif ( nargin == 3 && isstruct(hscale) )
+                % hscale was actually a preference.
+                pref = onefun.pref(hscale);
+                hscale = 1;
+            elseif ( nargin < 4 )
+                % Create:
+                pref = onefun.pref;
+            elseif ( ~isstruct(pref) )
+                % An eps was passed.
+                pref = onefun.pref('eps', pref);
+            else
+                % Merge:
+                pref = onefun.pref(pref);
+            end
 
-            % Call the relevent constructor
+            % Call the relevent constructor:
             if ( pref.onefun.blowup )
+                % BLOWUP mode; Call SINGFUN.
                 
+                % Merge preferences:
                 pref = singfun.pref(pref, pref.onefun);
+                exponents = pref.singfun.exponents;
                 
-                % Call singfun constructor
-                y = singfun(op, exponents, pref);
+                % Call singfun constructor:
+                y = singfun(op, vscale, hscale, exponents, pref);
                 
-                % Return just a fun if no singularities found
+                % Return just a fun if no singularities found:
                 if ( ~any(y.exps) )
                     y = y.fun; 
                 end 
                 
             else
+                % STANDARD mode; Call SMOOTHFUN.
                 
+                % Merge preferences:
                 pref = smoothfun.pref(pref, pref.onefun);
                 
-                % Call SMOOTHFUN constructor
+                % Call SMOOTHFUN constructor:
                 y = smoothfun.constructor(op, vscale, hscale, pref);
                 
             end

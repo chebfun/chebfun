@@ -26,7 +26,7 @@ if ( m == 1 )
     e = ones(1, ceil(n/2)); 
     e(2:2:end) = -1;
     coeffs = e*coeffs(1:2:end,:);
-elseif ( m > n/2 ) % [TODO]: Check this more carefully!
+elseif ( m > n/2 )
     % If m > n/2, only single coefficients are aliased, and we can vectorise.
     j = (m + 1):n;
     k = abs( mod( j + m - 3, 2*m - 2 ) - m + 2 ) + 1;
@@ -41,6 +41,5 @@ end
 
 % Flip the coefficients back again:
 coeffs = coeffs(m:-1:1,:);
-
 
 end

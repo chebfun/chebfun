@@ -45,7 +45,13 @@ function out = roots(f, varargin)
 % For polynomials of degree larger than 512, the interval is bisected by
 % evaluating on the left and right intervals using the Clenshaw algorithm.
 %
-% [TODO]: Mathematical reference.
+% [Mathematical references]:
+%  * I. J. Good, "The colleague matrix, a Chebyshev analogue of the companion
+%    matrix", Quarterly Journal of Mathematics 12 (1961).
+%
+%  * J. A. Boyd, "Computing zeros on a real interval through Chebyshev expansion
+%    and polynomial rootfinding", SIAM Journal on Numerical Analysis 40 (2002).
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Deal with empty case:

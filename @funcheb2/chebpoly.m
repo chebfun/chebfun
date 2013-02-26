@@ -16,7 +16,7 @@ function coeffs = chebpoly(values)
 %   See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 %   [Mathematical reference]: Section 4.7 Mason & Handscomb, "Chebyshev
-%   Polynomials".
+%   Polynomials". CHAPMAN & HALL/CRC (2003).
 
 % Get the length of the input:
 n = size(values, 1);
