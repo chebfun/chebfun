@@ -18,7 +18,7 @@ elseif ( isa(g, 'double') ) % FUNCHEB + double
     % Update coeffs:
     f.coeffs(end,:) = f.coeffs(end,:) + g;
     % Update scale:
-    f.vscale = max(f.vscale, norm(f.values(:), inf)); 
+    f.vscale = max(f.vscale, max(abs(f.values), [], 1));
     
 elseif ( isa(f,'double') ) % double + FUNCHEB
     
@@ -46,7 +46,7 @@ else % FUNCHEB + FUNCHEB
     f.epslevel = max(f.epslevel, g.epslevel);
     
     % Update scales:
-    f.vscale = max([f.vscale, g.vscale, norm(f.values(:), inf)]);
+    f.vscale = max(max(f.vscale, g.vscale), max(abs(f.values), [], 1));
     
     % Look for a zero output:
     if ( ~any(f.values(:)) || ~any(f.coeffs(:)) )

@@ -8,6 +8,9 @@ function varargout = test(pref)
 %% 
 % Set up.
 
+% Initialise the random number generator:
+rng('default')
+
 % Store the current directory (we will return here when we're done).
 currdir = pwd;
 

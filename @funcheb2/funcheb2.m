@@ -184,7 +184,7 @@ classdef funcheb2 < funcheb
         prefs = pref(varargin)
         
         % Refinement function for FUNCHEB2 construction. (Evaluates OP on grid)
-        [values, opints, giveUp] = refine(op, values, pref)
+        [values, points, giveUp] = refine(op, values, pref)
         
         % Compute Chebyshev quadrature weights.
         w = quadwts(n)

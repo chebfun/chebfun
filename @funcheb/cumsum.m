@@ -44,7 +44,7 @@ f.values = f.chebpolyval(C);
 f.coeffs = C;
 
 % Update vscale:
-f.vscale = max(f.vscale, max(abs(f.values)));
+f.vscale = max(f.vscale, max(abs(f.values), [], 1));
 
 % Simplify! (as suggested in #128)
 if ( nargin  == 1 )

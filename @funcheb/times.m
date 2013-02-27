@@ -30,10 +30,9 @@ elseif ( isa(g, 'double') )     % FUNCHEB * double
     
     % Do the multiply:
     if ( size(g, 2) > 1 )
-        n = size(f.values, 1);
-        f.values = f.values.*repmat(g, n, 1);
-        f.coeffs = f.coeffs.*repmat(g, n, 1);
-        f.vscale = f.vscale*norm(g, inf);
+        f.values = bsxfun(@times, f.values, g);
+        f.coeffs = bsxfun(@times, f.coeffs, g);
+        f.vscale = f.vscale.*abs(g);
     else
         f.values = f.values*g;
         f.coeffs = f.coeffs*g;
@@ -43,14 +42,12 @@ elseif ( isa(g, 'double') )     % FUNCHEB * double
     return
     
 elseif ( size(f.values, 1) == 1 ) % constant FUNCHEB * FUNCHEB
-    
-    f = mtimes(f.values, g);
+    f = times(g, f.values);
     f.epslevel = max(f.epslevel, g.epslevel);
     return
     
-elseif ( size(g.values,1 ) == 1)  % FUNCHEB * constant FUNCHEB
-    
-    f = mtimes(f, g.values); 
+elseif ( size(g.values, 1) == 1)  % FUNCHEB * constant FUNCHEB
+    f = times(f, g.values); 
     f.epslevel = max(f.epslevel, g.epslevel);
     return
     

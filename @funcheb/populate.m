@@ -83,7 +83,7 @@ if ( isnumeric(op) || iscell(op) )
         f.coeffs = op{2};
     end
     % Update vscale:
-    f.vscale = max(abs(f.values));
+    f.vscale = max(abs(f.values), [], 1);
     % Check for happiness:
     [f.ishappy, f.epslevel] = happinessCheck(f, [], pref);
     return

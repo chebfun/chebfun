@@ -25,8 +25,9 @@ end
 
 % Constant case:
 if ( nIn == 1 )
-    f.values = f.values*ones(nOut, 1);
-    f.coeffs = [zeros(nOut-1,1) ; f.coeffs(1)];
+    m = size(f.values, 2);
+    f.values = repmat(f.values, nOut, 1);
+    f.coeffs = [zeros(nOut-1, m) ; f.coeffs(1,:)];
     return
 end
 
