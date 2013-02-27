@@ -28,7 +28,18 @@ fx = [sin(10*x(1)) airy(x(2)) (x(3) - 0.25).^3.*cosh(x(3))];
 pass(6) = (all(abs(y - exact_max) < 10*f.epslevel) && ...
            all(abs(fx - exact_max) < 10*f.epslevel));
 
-% TODO:  Test for complex-valued funcheb2 objects?
+%%
+% Test for complex-valued funcheb2 objects.
+pass(7) = test_spotcheck_max(@(x) x.*(exp(1i*x)+1i*sin(x)), ...
+    -0.540302305868140 + 1.682941969615793i, pref);
+    
+fun_op = @(x) [sin(1i*x) tan(-1i*x)];
+f = funcheb2(fun_op, pref);
+[y, x] = max(f);
+exact_max = [1.175201193643801i 0.761594155955765i];
+fx = [sin(1i*x(1)) tan(-1i*x(2))];
+pass(8) = (all(abs(y - exact_max) < 10*f.epslevel) && ...
+           all(abs(fx - exact_max) < 10*f.epslevel));
 
 end
 
@@ -38,7 +49,7 @@ function result = test_spotcheck_max(fun_op, exact_max, pref)
 f = funcheb2(fun_op, [], pref);
 [y, x] = max(f);
 fx = fun_op(x);
-result = ((abs(y - exact_max) < 10*f.epslevel) && ... 
-          (abs(fx - exact_max) < 10*f.epslevel));
+result = (all(abs(y - exact_max) < 10*f.epslevel) && ... 
+          all(abs(fx - exact_max) < 10*f.epslevel));
 
 end

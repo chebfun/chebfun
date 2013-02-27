@@ -29,7 +29,18 @@ fx = -[sin(10*x(1)) airy(x(2)) (x(3) - 0.25).^3.*cosh(x(3))];
 pass(6) = (all(abs(y - exact_max) < 10*f.epslevel) && ...
            all(abs(fx - exact_max) < 10*f.epslevel));
 
-% TODO:  Test for complex-valued funcheb2 objects?
+% Test for complex-valued funcheb2 objects.
+pass(7) = test_spotcheck_min(@(x) exp(1i*x)-.5i*sin(x)+x, ...
+    0.074968381369117 - 0.319744137826069i, pref);
+    
+fun_op = @(x) [exp(1i*x)-.5i*sin(x)+x (1+.5*(x-.1).^2).*exp(1i*x)];
+f = funcheb2(fun_op, pref);
+[y, x] = min(f);
+exact_max = [0.074968381369117-0.319744137826069i, ...
+    0.995004165278026+0.099833416646827i];
+fx = fun_op(x); fx = fx([1 4]);
+pass(8) = (all(abs(y - exact_max) < 100*f.epslevel) && ...
+           all(abs(fx - exact_max) < 100*f.epslevel));
 
 end
 

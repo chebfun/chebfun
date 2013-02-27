@@ -30,15 +30,17 @@ y_exact = [-1 airy(1)  (-1.25)^3*cosh(-1);
 pass(6) = all(abs(y(:) - y_exact(:)) < 10*f.epslevel);
 
 % Check that the points x are indeed extreme points of the function operator.
-for (k = 1:1:size(f.coeffs, 2))
+for k = 1:1:size(f.coeffs, 2)
     fx = fun_op(x(:, k));
-    if (max(abs(fx(:, k) - y_exact(:, k))) > 10*f.epslevel)
+    if ( max(abs(fx(:, k) - y_exact(:, k))) > 10*f.epslevel )
         pass(6) = 0;
         break;
     end
 end
 
-% TODO:  Test for complex-valued funcheb2 objects?
+% Test for complex-valued funcheb2 objects:
+% These are tested sufficiently in test_min and test_max.
+
 
 end
 

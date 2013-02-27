@@ -3,7 +3,11 @@ function [minVal, minPos] = min(f)
 %   MINVAL = MIN(F) is the global minimum MINVAL of the FUNCHEB F on [-1,1].
 %
 %   [MINVAL, MINPOS] = MIN(F) returns also the value MAXPOS such that MINVAL =
-%   G(MINPOS).
+%   F(MINPOS).
+%
+%   If F is complex-valued then absolute values are taken to determine maxima
+%   but the resulting value corresponds to that of the original function. That
+%   is MINVAL = feval(F, MINPOS) where [~, MINPOS] = MIN(abs(F)).
 %
 % See also MAX, MINANDMAX.
 

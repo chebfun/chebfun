@@ -3,7 +3,11 @@ function [maxVal, maxPos] = max(f)
 %   MAXVAL = MAX(F) is the global maximum MAXVAL of the FUNCHEB F on [-1,1].
 %
 %   [MAXVAL, MAXPOS] = MAX(F) returns also the value MAXPOS such that MAXVAL =
-%   G(MAXPOS).
+%   F(MAXPOS).
+%
+%   If F is complex-valued then absolute values are taken to determine maxima
+%   but the resulting value corresponds to that of the original function. That
+%   is, MAXVAL = feval(F, MAXPOS) where [~, MAXPOS] = MIN(abs(F)); 
 %
 % See also MIN, MINANDMAX.
 

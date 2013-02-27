@@ -6,10 +6,25 @@ function [vals, pos] = minandmax(f)
 %   [VAL, POS] = MINANDMAX(F) returns also the 2-vector POS where the minima and
 %   maxima of F occur.
 %
+%   If F is complex-valued the absolute values are taken to determine maxima but
+%   the resulting values correspond to those of the original function. That is,
+%   VAL = feval(F, POS) where [~, POS] = MINANDMAX(abs(F)).
+%
 % See also MIN, MAX.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
+
+if ( ~isreal(f) )
+    realf = real(f);
+    imagf = imag(f);
+    h = realf.*realf + imagf.*imagf;
+    h = simplify(h);
+    [vals, pos] = minandmax(h);
+    vals = feval(f, pos);
+    vals = vals(:,1:size(pos,2)+1:end);
+    return
+end
 
 % Compute derivative:
 fp = diff(f);
