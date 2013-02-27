@@ -59,7 +59,8 @@ I_exact = [0 2/3 2*sin(1)];
 pass(9) = (max(abs(I - I_exact)) < tol);
 
 % Generate a few random points to use as test values.
-rng('default'); rng(0);
+rngstate = rng();
+rng(6178);
 x = 2 * rand(100, 1) - 1;
 
 % DIM option with vectorized input.
@@ -71,5 +72,10 @@ pass(10) = (norm(feval(g, x) - h(x), 'inf') < tol);
 h = funcheb2(@(x) cos(x));
 sumh2 = sum(h, 2);
 pass(11) = all((h.values == sumh2.values) & (h.coeffs == sumh2.coeffs));
+
+%%
+% Restore the RNG state.
+
+rng(rngstate);
 
 end

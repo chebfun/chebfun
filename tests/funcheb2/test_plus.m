@@ -8,7 +8,8 @@ if ( nargin < 1 )
 end
 
 % Generate a few random points to use as test values.
-rand('seed', 6178); %#ok<RAND>
+rngstate = rng();
+rng(6178);
 x = 2 * rand(100, 1) - 1;
 
 % A random number to use as an arbitrary additive constant.
@@ -84,6 +85,11 @@ g = funcheb2(@(x) cos(x) - 1, pref);
 h1 = f + g;
 h2 = funcheb2(@(x) x + cos(x) - 1, pref);
 pass(19) = norm(h1.values - h2.values, 'inf') < tol;
+
+%%
+% Restore the RNG state.
+
+rng(rngstate);
 
 end
 

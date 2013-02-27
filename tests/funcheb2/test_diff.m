@@ -8,10 +8,11 @@ if ( nargin < 1 )
 end
 
 % Set a tolerance.
-tol = 1e2*pref.funcheb2.eps;
+tol = 1e3*pref.funcheb2.eps;
 
 % Generate a few random points to use as test values.
-rand('seed', 6178);
+rngstate = rng();
+rng(6178);
 x = 2 * rand(100, 1) - 1;
 
 %%
@@ -110,6 +111,11 @@ pass(13) = (norm(err(:), 'inf') < tol);
 f = funcheb2(@(x) x.^3);
 dim2df = diff(f, 1, 2);
 pass(14) = (isempty(dim2df.values) && isempty(dim2df.coeffs));
+
+%%
+% Restore the RNG state.
+
+rng(rngstate);
 
 end
 
