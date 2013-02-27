@@ -1,7 +1,5 @@
 function pass = test_alias(varargin)
 
-% [TODO]: Test aliasing a large tail (multiple aliasing).
-
 % Set a tolerance (pref.eps doesn't matter)
 tol = 100*eps;
 
@@ -41,5 +39,19 @@ pass(8) = norm([12 25 18 ; 10 30 15]'  - c3, inf) == 0;
 % Compare against result of evaluating on a smaller grid:
 pass(9) = norm(funcheb2.chebpoly(funcheb.clenshaw(funcheb2.chebpts(9), cc)) - c2, inf) < tol;
 pass(10) = norm(funcheb2.chebpoly(funcheb.clenshaw(funcheb2.chebpts(3), cc)) - c3, inf) < tol;
+
+%%
+% Test aliasing a large tail.
+c0 = 1./(1:1000).^5.';
+n = 17;
+c1 = funcheb.alias(c0, n);
+% This should give the same result as evaluating via bary.
+v0 = funcheb2.chebpolyval(c0);
+v2 = funcheb2.bary(funcheb2.chebpts(n), v0);
+c2 = funcheb2.chebpoly(v2);
+% Check in the infinity norm:
+pass(11) = norm(c1 - c2, inf) < n*tol;
+
+
 
 end

@@ -79,7 +79,7 @@ pass(11) = test_div_function_by_function(f, f_op, g, g_op, x);
 % Can't divide by a scalar matrix with multiple rows.
 try
     f = funcheb2(@(x) sin(x), pref);
-    g = f ./ [1 ; 2];
+    disp(f ./ [1 ; 2]);
     pass(12) = false;
 catch ME
     pass(12) = strcmp(ME.identifier, 'CHEBUFN:FUNCHEB:rdivide:size');
@@ -88,7 +88,7 @@ end
 % Can't divide by a scalar row matrix if the column counts don't match.
 try
     f = funcheb2(@(x) [sin(x) cos(x)], pref);
-    g = f ./ [1 2 3];
+    disp(f ./ [1 2 3]);
     pass(13) = false;
 catch ME
     pass(13) = strcmp(ME.identifier, 'CHEBUFN:FUNCHEB:rdivide:size');
@@ -98,7 +98,7 @@ end
 try
     f = funcheb2(@(x) exp(x));
     g = funcheb2(@(x) sin(x));
-    h = f ./ g;
+    disp(f ./ g);
     pass(14) = false;
 catch ME
     pass(14) = strcmp(ME.identifier, 'CHEBFUN:FUNCHEB:rdivide:DivideByZeros');

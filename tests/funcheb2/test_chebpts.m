@@ -1,4 +1,4 @@
-function pass = chebpts(varargin)
+function pass = test_chebpts(varargin)
 
 % Set a tolerance (pref.eps doesn't matter)
 tol = 10*eps;

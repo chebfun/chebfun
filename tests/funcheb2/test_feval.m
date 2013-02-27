@@ -8,29 +8,27 @@ if ( nargin < 1 )
 end
 
 % Generate a few random points to use as test values.
-rand('seed', 7681);
+rng('default'), rng(0);
 x = 2 * rand(1000, 1) - 1;
 
 %%
 % Spot-check values for a couple of functions.  We can only expect accuracy on
 % the order of the truncation level, so we use this as our criterion.
-%
-% [TODO]:  Is this criterion appropriate, or should we use a fixed tolerance?
 
-f = funcheb2(@(x) exp(x) - 1, [], pref);
+f = funcheb2(@(x) exp(x) - 1, pref);
 f_exact = @(x) exp(x) - 1;
 pass(1) = (norm(feval(f, x) - f_exact(x), 'inf') < 10*f.epslevel);
 
-f = funcheb2(@(x) 1./(1 + x.^2), [], pref);
+f = funcheb2(@(x) 1./(1 + x.^2), pref);
 f_exact = @(x) 1./(1 + x.^2);
 pass(2) = (norm(feval(f, x) - f_exact(x), 'inf') < 10*f.epslevel);
 
-f = funcheb2(@(x) cos(1e4*x), [], pref);
+f = funcheb2(@(x) cos(1e4*x), pref);
 f_exact = @(x) cos(1e4*x);
 pass(3) = (norm(feval(f, x) - f_exact(x), 'inf') < 10*f.epslevel);
 
 z = exp(2*pi*1i/6);
-f = funcheb2(@(t) sinh(t*z), [], pref);
+f = funcheb2(@(t) sinh(t*z), pref);
 f_exact = @(t) sinh(t*z);
 pass(4) = (norm(feval(f, x) - f_exact(x), 'inf') < 10*f.epslevel);
 
@@ -51,12 +49,19 @@ pass(7) = (all(size(err) == [10 10 10])) && (norm(err(:), 'inf') < 10*f.epslevel
 %%
 % Check operation for vectorized funcheb2 objects.
 
-f = funcheb2(@(x) [sin(x) x.^2 exp(1i*x)], [], pref);
+f = funcheb2(@(x) [sin(x) x.^2 exp(1i*x)], pref);
 f_exact = @(x) [sin(x) x.^2 exp(1i*x)];
 err = feval(f, x) - f_exact(x);
 pass(8) = all(max(abs(err)) < 10*f.epslevel);
 
-% [TODO]:  Write a test for evaluating vectorized funcheb2 objects at matrix
-% arguments if the operation makes sense.
+%%
+% Test for evaluating vectorized funcheb2 objects at matrix arguments if the
+% operation makes sense.
+f = funcheb2(@(x) [sin(pi*x) cos(pi*x) exp(pi*x)], pref);
+x = [-1 0 1 ; .25 .5 .75];
+fx = feval(f, x);
+f_exact = [0 0 0 -1 1 -1 exp(-pi) 1 exp(pi)
+          [1 sqrt(2) 1 1 0 -1]/sqrt(2) exp(pi.*[.25 .5 .75])];
+pass(9) = all(all(abs(fx - f_exact) < 10*f.epslevel));
 
 end

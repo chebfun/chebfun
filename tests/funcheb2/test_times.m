@@ -8,7 +8,7 @@ if (nargin < 1)
 end
 
 % Generate a few random points to use as test values.
-rand('seed', 6178); %#ok<RAND>
+rng('default'), rng(0); rng(0);
 x = 2 * rand(100, 1) - 1;
 
 % Random numbers to use as arbitrary multiplicative constants.
@@ -35,7 +35,7 @@ pass(4:5) = test_mult_function_by_scalar(f, f_op, alpha, x);
 
 % Can't multiply by matrix of scalars with more than one row.
 try 
-    g = f .* [1 2 ; 3 4];
+    disp(f .* [1 2 ; 3 4]);
     pass(6) = false;
 catch ME
     pass(6) = strcmp(ME.identifier, 'CHEBFUN:FUNCHEB:times:dim');
@@ -43,7 +43,7 @@ end
 
 % This should fail with a dimension mismatch error.
 try
-    g = f .* [1 2 3];
+    disp(f .* [1 2 3]);
     pass(7) = false;
 catch ME
     pass(7) = strcmp(ME.identifier, 'CHEBFUN:FUNCHEB:times:dim');
@@ -59,16 +59,11 @@ g = funcheb2(g_op, pref);
 pass(8) = test_mult_function_by_function(f, f_op, g, g_op, x, false);
 
 % This should fail with a dimension mismatch error from funcheb2.mtimes().
-try
-    f_op = @(x) [sin(x) cos(x)];
-    f = funcheb2(f_op, pref);
-    g_op = @(x) repmat([alpha, beta], size(x, 1), 1);
-    g = funcheb2(g_op, pref);
-    h = test_mult_function_by_function(f, f_op, g, g_op, x, false);
-    pass(9) = false;
-catch ME
-    pass(9) = strcmp(ME.identifier, 'CHEBFUN:FUNCHEB:mtimes:size2');
-end
+f_op = @(x) [sin(x) cos(x)];
+f = funcheb2(f_op, pref);
+g_op = @(x) repmat([alpha, beta], size(x, 1), 1);
+g = funcheb2(g_op, pref);
+pass(9) = test_mult_function_by_function(f, f_op, g, g_op, x, false);
 
 %%
 % Spot-check multiplication of two funcheb2 objects for a few test functions.
@@ -113,7 +108,7 @@ pass(16) = max(abs(err(:))) < 10*h.epslevel;
 % This should fail with a dimension mismatch error.
 try
     g = funcheb2(@(x) [sinh(x) cosh(x)], pref);
-    h = f .* g;
+    disp(f .* g);
     pass(17) = false;
 catch ME
     pass(17) = strcmp(ME.identifier, 'CHEBFUN:FUNCHEB:times:dim2');
@@ -157,10 +152,10 @@ function result = test_mult_function_by_scalar(f, f_op, alpha, x)
     result(2) = norm(feval(g1, x) - g_exact(x), 'inf') < 10*g1.epslevel;
 end
 
-% Test the addition of two FUNCHEB2 objects F and G, specified by F_OP and
-% G_OP, using a grid of points X in [-1  1] for testing samples.  If CHECKPOS
-% is TRUE, an additional check is performed to ensure that the values of the
-% result are all nonnegative; otherwise, this check is skipped.
+% Test the multiplication of two FUNCHEB2 objects F and G, specified by F_OP and
+% G_OP, using a grid of points X in [-1  1] for testing samples.  If CHECKPOS is
+% TRUE, an additional check is performed to ensure that the values of the result
+% are all nonnegative; otherwise, this check is skipped.
 function result = test_mult_function_by_function(f, f_op, g, g_op, x, checkpos)
     h = f .* g;
     h_exact = @(x) f_op(x) .* g_op(x);

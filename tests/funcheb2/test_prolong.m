@@ -6,7 +6,7 @@ end
 tol = 10*pref.funcheb2.eps;
 
 F = @sin;
-f = funcheb2(@(x) F(x), [], pref);
+f = funcheb2(@(x) F(x), pref);
 
 n = 11;
 g = prolong(f, n);
@@ -20,7 +20,7 @@ g = prolong(f,2);
 pass(3) = size(g,1) == 2 && norm(g.values - sin(1)*[-1 ; 1], inf) < tol;
 
 F = @sin;
-f = funcheb2(@(x) [F(x), -F(x)], [], pref);
+f = funcheb2(@(x) [F(x), -F(x)], pref);
 n = 11;
 g = prolong(f, n);
 x = funcheb2.chebpts(n);
@@ -46,7 +46,7 @@ x = funcheb2.chebpts(n);
 pass(9) = norm(g.values - [F(x), -F(x)], inf) < tol;
 
 F = @(x) sin(1000*x);
-f = funcheb2(@(x) [F(x), -F(x)], [], pref);
+f = funcheb2(@(x) [F(x), -F(x)], pref);
 n = 32;
 g = prolong(f, n);
 x = funcheb2.chebpts(n);
@@ -64,12 +64,17 @@ g = prolong(f,2);
 pass(13) = size(g, 1) == 2 && norm(g.values - sin(1000)*[-1 1 ; 1 -1], inf) < tol;
 
 F = @(x) cos(1000*x);
-f = funcheb2(@(x) [F(x), -F(x)], [], pref);
+f = funcheb2(@(x) [F(x), -F(x)], pref);
 
 g = prolong(f,1);
 pass(14) = size(g, 1) == 1 && norm(g.values - [1, -1], inf) < tol;
 
 g = prolong(f,2);
 pass(15) = length(g) == 2 && norm(g.values - cos(1000)*[1 -1 ; 1 -1], inf) < tol;
+
+v = [1 2 3];
+f = funcheb2(v, pref);
+g = prolong(f, 5);
+pass(16) = norm(g.values - repmat([1 2 3], 5, 1), inf) < tol;
 
 end

@@ -22,7 +22,7 @@ pass(5) = test_spotcheck_minmax(@(x) (x - 0.25).^3.*cosh(x), ...
 % Check operation for vectorized inputs.
 
 fun_op = @(x) [sin(10*x) airy(x) (x - 0.25).^3.*cosh(x)];
-f = funcheb2(fun_op, [], pref);
+f = funcheb2(fun_op, pref);
 [y, x] = minandmax(f);
 y_exact = [-1 airy(1)  (-1.25)^3*cosh(-1);
             1 airy(-1) 0.75^3*cosh(1)];
@@ -47,7 +47,7 @@ end
 % Spot-check the results for a given function.
 function result = test_spotcheck_minmax(fun_op, exact_min, exact_max, pref)
 
-f = funcheb2(fun_op, [], pref);
+f = funcheb2(fun_op, pref);
 [y, x] = minandmax(f);
 y_exact = [exact_min ; exact_max];
 fx = fun_op(x);

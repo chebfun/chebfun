@@ -1,4 +1,4 @@
-function pass = clenshaw(varargin)
+function pass = test_clenshaw(varargin)
 
 % Set a tolerance (pref.eps doesn't matter)
 tol = 10*eps;

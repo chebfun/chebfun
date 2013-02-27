@@ -32,13 +32,13 @@ for k = 1:2
 
     % Extrapolate left end:
     values = sign(x+1);
-    values([1], :) = NaN;
+    values(1, :) = NaN;
     newValues = funcheb2.extrapolate(values);
     pass(3 + s) = all( abs(newValues(1,:) - 1) < tol );
     
     % Extrapolate right end:
     values = sign(x-1);
-    values([end], :) = NaN;
+    values(end, :) = NaN;
     newValues = funcheb2.extrapolate(values);
     pass(4 + s) = all( abs(newValues(end,:) + 1) < tol );
 

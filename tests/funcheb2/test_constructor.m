@@ -92,8 +92,12 @@ end
 
 % Test that the extrapolation option avoids endpoint evaluations.
 pref.funcheb2.extrapolate = 1;
-populate(funcheb2, @(x) [F(x) F(x)], [], [], pref);
-pass(19) = true;
+try 
+    populate(funcheb2, @(x) [F(x) F(x)], [], [], pref);
+    pass(19) = true;
+catch ME %#ok<NASGU>
+    pass(19) = false;
+end
 
     function y = F(x)
         if ( any(abs(x) == 1) )
