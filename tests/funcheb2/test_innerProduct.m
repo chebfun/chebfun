@@ -73,13 +73,13 @@ pass(10) = norm(ip(:) - exact(:), 'inf') < 10*max(f.epslevel, g.epslevel);
 
 %%
 % Check error conditions.
+
+% Can't take the inner product of a funcheb2 and a non-funcheb2.
 try
     ip = innerProduct(f, 2);
     pass(11) = false;
 catch ME
-    pass(11) = strcmp(ME.identifier, 'CHEBFUN:FUNCHEB2:InnerProduct:input');
+    pass(11) = strcmp(ME.identifier, 'CHEBFUN:FUNCHEB:InnerProduct:input');
 end
-
-% Can't take the inner product of a funcheb2 and a non-funcheb2.
 
 end

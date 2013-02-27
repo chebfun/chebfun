@@ -58,7 +58,7 @@ try
     g = f / [1 2 3];
     pass(7) = false;
 catch ME
-    pass(7) = strcmp(ME.identifier, 'CHEBFUN:FUNCHEB2:mrdivide:size');
+    pass(7) = strcmp(ME.identifier, 'CHEBFUN:FUNCHEB:mrdivide:size');
 end
 
 % Can't do f/g if both f and g are funcheb2 objects.
@@ -68,7 +68,7 @@ try
     h = f / g;
     pass(8) = false;
 catch ME
-    pass(8) = strcmp(ME.identifier, 'CHEBFUN:FUNCHEB2:mrdivide:funfun');
+    pass(8) = strcmp(ME.identifier, 'CHEBFUN:FUNCHEB:mrdivide:funfun');
 end
 
 % Can't call mldivide on a funcheb2 and a non-funcheb2 or non-double object.
@@ -77,7 +77,7 @@ try
     g = f / true;
     pass(9) = false;
 catch ME
-    pass(9) = strcmp(ME.identifier, 'CHEBFUN:FUNCHEB2:mrdivide:derp');
+    pass(9) = strcmp(ME.identifier, 'CHEBFUN:FUNCHEB:mrdivide:derp');
 end
 
 %%

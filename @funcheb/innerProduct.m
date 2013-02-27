@@ -29,4 +29,9 @@ w = f.quadwts(n);
 % Compute the inner product via a weighted discrete inner product:
 out = bsxfun(@times, w.', f.values)' * g.values;
 
+% Force real output in case the inputs are equal.
+if ( isequal(f, g) )
+    out = real(out);
+end
+
 end
