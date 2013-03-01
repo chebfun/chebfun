@@ -46,7 +46,8 @@ f = @(x) [sin(x) cos(x) exp(x)];
 g = populate(funcheb2, f, [], [], pref);
 x = funcheb2.chebpts(length(g.values));
 pass(9) = norm(f(x) - g.values, inf) < tol;
-pass(10) = all(g.vscale == [sin(1) cos(0) exp(1)]) && logical(g.epslevel);
+pass(10) = norm(g.vscale - [sin(1) cos(0) exp(1)], inf) < 10*g.epslevel ...
+    && logical(g.epslevel);
 
 pref.funcheb2.extrapolate = 1;
 pref.funcheb2.refinementFunction = 'nested';
@@ -60,7 +61,8 @@ pref.funcheb2.refinementFunction = 'resampling';
 g = populate(funcheb2, f, [], [], pref);
 x = funcheb2.chebpts(length(g.values));
 pass(13) = norm(f(x) - g.values, inf) < tol;
-pass(14) = all(g.vscale == [sin(1) cos(0) exp(1)]) && logical(g.epslevel);
+pass(14) = norm(g.vscale - [sin(1) cos(0) exp(1)], inf) < 10*g.epslevel ...
+    && logical(g.epslevel);
 
 pref.funcheb2.extrapolate = 1;
 pref.funcheb2.refinementFunction = 'resampling';

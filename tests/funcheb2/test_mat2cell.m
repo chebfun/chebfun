@@ -11,7 +11,7 @@ h = funcheb2(@(x) [cos(x) exp(x)], pref);
 F = mat2cell(f, 1, [1 2]);
 pass(1) = sum(F(1) - g) < g.epslevel;
 pass(2) = all( sum(F(1) - g) < h.vscale*h.epslevel );
-pass(3) = F(1).vscale == sin(1);
-pass(4) = all( F(2).vscale == [cos(0) exp(1)] );
+pass(3) = abs(F(1).vscale - sin(1)) < 10*F(1).epslevel;
+pass(4) = all( abs(F(2).vscale - [cos(0) exp(1)]) < 10*F(2).epslevel );
 
 end
