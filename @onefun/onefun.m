@@ -49,7 +49,7 @@ classdef onefun % (Abstract)
 % See http://www.chebfun.org/ for Chebfun information.
 
     methods (Static)
-        function y = constructor(op, vscale, hscale, pref)
+        function obj = constructor(op, vscale, hscale, pref)
             
             % We can't return an empty ONEFUN, so pass an empty OP down.
             if ( nargin == 0 )
@@ -87,7 +87,11 @@ classdef onefun % (Abstract)
             end
 
             % Call the relevent constructor:
-            if ( pref.onefun.blowup )
+            if ( isa(op, 'onefun') )
+                % OP is already a ONEFUN!
+                obj = op;
+                
+            elseif ( pref.onefun.blowup )
                 % BLOWUP mode; Call SINGFUN.
                 
                 % Merge preferences:
@@ -95,11 +99,11 @@ classdef onefun % (Abstract)
                 exponents = pref.singfun.exponents;
                 
                 % Call singfun constructor:
-                y = singfun(op, vscale, hscale, exponents, pref);
+                obj = singfun(op, vscale, hscale, exponents, pref);
                 
                 % Return just a fun if no singularities found:
-                if ( ~any(y.exps) )
-                    y = y.fun; 
+                if ( ~any(obj.exps) )
+                    obj = obj.fun; 
                 end 
                 
             else
@@ -109,7 +113,7 @@ classdef onefun % (Abstract)
                 pref = smoothfun.pref(pref, pref.onefun);
                 
                 % Call SMOOTHFUN constructor:
-                y = smoothfun.constructor(op, vscale, hscale, pref);
+                obj = smoothfun.constructor(op, vscale, hscale, pref);
                 
             end
         

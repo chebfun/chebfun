@@ -84,7 +84,7 @@ if ( isnumeric(op) || iscell(op) )
     end
     % Update vscale:
     f.vscale = max(abs(f.values), [], 1);
-    % Check for happiness:
+    % Check for happiness: (no OP to compare against)
     [f.ishappy, f.epslevel] = happinessCheck(f, [], pref);
     return
 end
@@ -106,7 +106,7 @@ while ( 1 )
     % Update vertical scale: (Only include sampled finite values)
     valuesTemp = values;
     valuesTemp(~isfinite(values)) = 0;
-    vscale = max(vscale, max(abs(valuesTemp)));
+    vscale = max(vscale, max(abs(valuesTemp), [], 1));
     
     % Extrapolate out NaNs:
     [values, maskNaN, maskInf] = f.extrapolate(values);
@@ -134,7 +134,7 @@ while ( 1 )
 end
 
 % Update vertical scale one last time:
-vscale = max(vscale, max(abs(values)));
+vscale = max(vscale, max(abs(values), [], 1));
 
 % Assign to FUNCHEB object:
 f.values = values;

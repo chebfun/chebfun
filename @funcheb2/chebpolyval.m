@@ -10,7 +10,7 @@ function values = chebpolyval(coeffs)
 %
 %   See also chebpoly, chebpts.
 %
-%   [Mathematical reference]: Section 4.7 Mason & Handscomb, "Chebyshev
+%   [Mathematical reference]: Sections 4.7 and 6.3 Mason & Handscomb, "Chebyshev
 %   Polynomials". CHAPMAN & HALL/CRC (2003).
 
 %   Copyright 2013 by The University of Oxford and The Chebfun Developers. 
