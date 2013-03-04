@@ -39,7 +39,7 @@ if isreal(values)
 elseif isreal(1i*values)
     coeffs = 1i*realvalues(imag(values));
 else
-    coeffs = realvalues(real(values))+1i*realcoeffs(imag(values));
+    coeffs = realvalues(real(values))+1i*realvalues(imag(values));
 end
 
 end
