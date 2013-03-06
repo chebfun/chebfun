@@ -41,7 +41,7 @@ if ( nOutMinusnIn < 0 && nOut < 33 && nIn < 1000)
 else
     % Use FFTs: (in alias.m)
 
-    f.coeffs = funcheb.alias(f.coeffs, nOut);
+    f.coeffs = f.alias(f.coeffs, nOut);
     f.values = f.chebpolyval(f.coeffs); 
         
 end

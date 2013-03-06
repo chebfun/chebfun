@@ -99,7 +99,7 @@ if ( ((ndimsx > 2) || (sizex(2) > 1)) && (m == 1) )
     fx = reshape(fx, sizex);
     
 elseif ( ((ndimsx == 2) || (sizex(2) > 1)) && (m > 1))
-    fx = reshape(fx, sizex(1), size(gvals, 2)*numel(x)/sizex(1));
+    fx = reshape(fx, sizex(1), m*numel(x)/sizex(1));
     
 end
 

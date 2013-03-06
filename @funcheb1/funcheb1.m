@@ -87,45 +87,6 @@ classdef funcheb1 < funcheb
 % Class diagram: [funcheb] <-- [funcheb1]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    %% Properties of FUNCHEB1 objects.
-    properties ( Access = public )
-        
-        % Values of FUNCHEB1 at 1st-kind Chebyshev points. Values are stored in
-        % order from left to right (i.e., values(1,:) = feval(FUNCHEB1,-1)).
-        % For vectorised FUNCHEB1 objects, each column represents the
-        % interpolated values of a single function.
-        values % (n x m double)
-        
-        % Coefficients in 1st-kind Chebyshev series expansion of the FUNCHEB1 on
-        % [-1,1]. The coefficients are stored in descending order so that c_N is
-        % the first entry and c_0 is the last. For vectorised FUNCHEB1 objects,
-        % each column represents the coefficients of a single function.
-        coeffs % (n x m double)
-        
-        % Vertical scale of the FUNCHEB1. Typically the is the magnitude of the
-        % largest value sampled from the given operator OP during the
-        % construction process. It is updated via subsequent FUNCHEB1
-        % operations in a natural way.
-        vscale = 0 % (1 x m double >= 0)
-        
-        % Horizontal scale of the FUNCHEB1. Although FUNCHEB1 objects have in
-        % principle no notion of horizontal scale invariance (since they always
-        % live on [-1,1]), the input OP has been implicitly mapped. HSCALE is
-        % then used to enforce horizontal scale invariance in construction and
-        % other subsequent operations that require it. It defaults to 1, and is
-        % never updated.
-        hscale = 1 % (scalar > 0)        
-
-        % Boolean value designating whether the FUNCHEB1 is 'happy' or not. See
-        % HAPPINESSCHECK.m for full documentation.
-        ishappy % (logical)
-        
-        % Happiness level to which the FUNCHEB1 was constructed, or a rough
-        % accuracy estimate of subsequent operations. See HAPPINESSCHECK.m for
-        % full documentation.
-        epslevel % (double >= 0)
-    end
-    
     %% Methods implemented by this m-file.
     methods
         
