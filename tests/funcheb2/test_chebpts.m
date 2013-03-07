@@ -16,7 +16,7 @@ x = funcheb2.chebpts(2);
 pass(3) = ( all(size(x) == [2, 1]) && all(x == [-1 ; 1]) );
 [x, w, v] = funcheb2.chebpts(2);
 pass(4) = ( all(size(w) == [1, 2]) && all(w == [1, 1]) );
-pass(5) = ( all(size(v) == [2, 1]) && all(v == .5*[1 ; -1]) );
+pass(5) = ( all(size(v) == [2, 1]) && all(v == .5*[-1 ; 1]) );
 
 % Test that n = 3 returns [-1 ; 0 ; 1]:
 x = funcheb2.chebpts(3);

@@ -1,8 +1,11 @@
-function fx = bary(x, gvals, xk, vk, kind)
+function fx = bary(x, gvals, xk, vk, kind, p)
 %BARY  Barycentric interpolation.
-%   BARY(X, GVALS, XK, VK) evaluates the barycentric interpolant (with weights
+%   BARY(X, GVALS, XK, VK, P) evaluates the barycentric interpolant (with weights
 %   VK) of the interpolant (at the points XK) to the values in the columns of
-%   GVALS at the points X.
+%   GVALS at the points X. P is the a correction factor for barycentric
+%   weight if the barycentric formula of the first kind is adopted and its
+%   value for the first kind Chebyshev points and that for the second kind 
+%   Chebyshev points are NOT same.
 %    
 %   If size(GVALS, 2) > 1 then X should be a column vector. If it is not, a
 %   warning is displayed and BARY attempts to return values in the form [G_1(X),
@@ -66,7 +69,7 @@ end
 
 % Call a barycentric formula of type 1 or 2:
 if ( kind == 1 )
-    fx = bary1(x, gvals, xk, vk);
+    fx = bary1(x, gvals, xk, vk, p);
     
 elseif ( kind == 2 )
     fx = bary2(x, gvals, xk, vk);
@@ -77,7 +80,7 @@ elseif ( bary1flag )
     ind1 = find(any(mask,2));
     if ( ~isempty(ind1) )
         fx = NaN(size(x, 1), size(gvals, 2));
-        fx(ind1,:) = bary1(x(ind1), gvals, xk, vk);
+        fx(ind1,:) = bary1(x(ind1), gvals, xk, vk, p);
         ind2 = find(any(isnan(fx), 2));
         fx(ind2,:) = bary2(x(ind2), gvals, xk, vk);
     else
@@ -137,15 +140,14 @@ end
 
 %% KIND1
 
-function fx = bary1(x, gvals, xk, vk)
+function fx = bary1(x, gvals, xk, vk, p)
 % Evaluate the first-kind barycentric formula. Typically we use this formula for
 % evaluating outside the interval [-1, 1]. If the number of nodes is >= 600, we
 % compute the log of the nodal polynomial in order to avoid under-/overflow.
 
 n = length(xk);
-scale = 2; 
-x = scale*x; 
-xk = scale*xk;
+x = 2*x; 
+xk = 2*xk;
 fx = zeros(size(x, 1), size(gvals, 2));  % Initialise return value
 
 if ( numel(x) < n )     % Loop over evaluation points
@@ -189,7 +191,7 @@ else
     end
 end
 
-% Combine for the result:
-fx = bsxfun(@times, fx, ell) * ( 1/(scale*(1-n)) * (-2/scale)^(n-2) );
-
+% Combine for the result. p is the factor depending on the kind of 
+% Chebyshev points we are using:
+fx = bsxfun(@times, fx, ell)*p;
 end

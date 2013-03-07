@@ -16,7 +16,7 @@ elseif ( n == 1 )                  % Special case (single point)
     v = 1;
 else
     v = sin( (2*(n-1:-1:0)+1)*pi/(2*n) ).';
-    v(2:2:end) = -v(2:2:end);
+    v(end-1:-2:1) = -v(end-1:-2:1);
 end
 
 end

@@ -15,9 +15,14 @@ if ( n == 0 )                      % Special case (no points!)
 elseif ( n == 1 )                  % Special case (single point)
     v = 1;
 else                               % General case
-    v = [.5 ; ones(n-1,1)];
-    v(2:2:end) = -1; 
-    v(end) = .5*v(end);
+%     v = [.5 ; ones(n-1,1)];
+%     v(2:2:end) = -1; 
+%     v(end) = .5*v(end);
+    
+    v = ones(n,1);
+    v(end-1:-2:1) = -1;
+    v(end) = 0.5;
+    v(1) = v(1)*0.5;
 end
 
 end

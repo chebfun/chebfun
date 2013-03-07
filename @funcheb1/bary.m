@@ -49,6 +49,6 @@ if ( nargin < 3 )
 end
 
 % Call the superclass method.
-fx = bary@funcheb(x, gvals, xk, vk, kind);
+fx = bary@funcheb(x, gvals, xk, vk, kind, 1/n);
 
 end

@@ -25,6 +25,4 @@ pass(2) = norm( funcheb2.bary(y, [fx fx], 2) - [fy fy] ) < tol;
 pass(3) = norm( funcheb2.bary(y, fx, 1) - fy ) < tol;
 pass(4) = norm( funcheb2.bary(y, [fx fx], 1) - [fy fy] ) < tol;
 
-funcheb2.bary([y y], fx);
-
 end

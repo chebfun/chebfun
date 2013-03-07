@@ -220,12 +220,9 @@ classdef funcheb %< smoothfun % (Abstract)
     
     %% STATIC METHODS IMPLEMENTED BY THIS CLASS.
     methods ( Static = true ) 
-        
-        % Retrieve and modify preferences for this class.
-        coeffs = alias(coeffs, m)
-        
+          
         % Evaluate a Chebyshev polynomial using barycentric interpolation.
-        fx = bary(x, gvals, xk, vk, kind)
+        fx = bary(x, gvals, xk, vk, kind, p)
 
         % Evaluate a Chebyshev polynomial using Clenshaw's algorithm.
         out = clenshaw(x, coeffs)  
