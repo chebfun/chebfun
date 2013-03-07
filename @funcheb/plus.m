@@ -2,6 +2,9 @@ function f = plus(f, g)
 %+	Addition of two FUNCHEB objects.
 %   F + G adds F and G, where F and G may be FUNCHEB objects or scalars.
 %
+%   If F is a vector-valued funcheb, then F + C is supported if C is a vector
+%   of doubles with the same number of columns a F.
+%
 % See also MINUS, UPLUS.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
@@ -14,7 +17,7 @@ if ( isempty(f) || isempty(g) ) % FUNCHEB + [] = []
 elseif ( isa(g, 'double') ) % FUNCHEB + double
     
     % Update values:
-    f.values = f.values + g; 
+    f.values = bsxfun(@plus, f.values, g); % (For when f and g are vectors).
     % Update coeffs:
     f.coeffs(end,:) = f.coeffs(end,:) + g;
     % Update scale:
