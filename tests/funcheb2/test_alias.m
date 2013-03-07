@@ -8,13 +8,13 @@ tol = 100*eps;
 c0 = (1:10)';
 
 % Padding:
-c1 = funcheb.alias(c0, 11);
+c1 = funcheb2.alias(c0, 11);
 pass(1) = norm([0 ; c0] - c1, inf) == 0;
 
 % Aliasing:
-c2 = funcheb.alias(c0, 9);
+c2 = funcheb2.alias(c0, 9);
 pass(2) = norm([2, 4, 4:10]' - c2, inf) == 0;
-c3 = funcheb.alias(c0, 3);
+c3 = funcheb2.alias(c0, 3);
 pass(3) = norm([12 25 18]' - c3, inf) == 0;
 
 % Compare against result of evaluating on a smaller grid:
@@ -27,13 +27,13 @@ pass(5) = norm(funcheb2.chebpoly(funcheb.clenshaw(funcheb2.chebpts(3), c0)) - c3
 cc = [c0 c0(end:-1:1)];
 
 % Padding:
-c1 = funcheb.alias(cc, 11);
+c1 = funcheb2.alias(cc, 11);
 pass(6) = norm([0 0 ; cc]  - c1, inf) == 0;
 
 % Aliasing:
-c2 = funcheb.alias(cc, 9);
+c2 = funcheb2.alias(cc, 9);
 pass(7) = norm([2 4 4:10 ; 9 18 7:-1:1]'  - c2, inf) == 0;
-c3 = funcheb.alias(cc, 3);
+c3 = funcheb2.alias(cc, 3);
 pass(8) = norm([12 25 18 ; 10 30 15]'  - c3, inf) == 0;
 
 % Compare against result of evaluating on a smaller grid:
@@ -44,7 +44,7 @@ pass(10) = norm(funcheb2.chebpoly(funcheb.clenshaw(funcheb2.chebpts(3), cc)) - c
 % Test aliasing a large tail.
 c0 = 1./(1:1000).^5.';
 n = 17;
-c1 = funcheb.alias(c0, n);
+c1 = funcheb2.alias(c0, n);
 % This should give the same result as evaluating via bary.
 v0 = funcheb2.chebpolyval(c0);
 v2 = funcheb2.bary(funcheb2.chebpts(n), v0);
