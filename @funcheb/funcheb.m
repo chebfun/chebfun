@@ -1,4 +1,4 @@
-classdef funcheb < smoothfun % (Abstract)
+classdef funcheb %< smoothfun % (Abstract)
 %FUNCHEB   Approximate smooth functions on [-1,1] with Chebyshev interpolants. 
 %
 %   Class for approximating smooth functions on the interval [-1,1] using
