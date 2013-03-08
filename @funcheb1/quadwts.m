@@ -22,9 +22,8 @@ function w = quadwts(n)
 if ( n == 1 )                      % Special case (single point)
     w = 2;
 else                               % General case
-    L = (0:n-1)';
-    m = min(L,n-L);    % auxiliary vector
-    r = 2./(1-4*m.^2); % auxiliary vector
+    L = 0:n-1;
+    r = 2./(1-4*min(L,n-L).^2); % auxiliary vector
     
     s1 = sign(n/2-L);  % auxiliary vector
     v1 = s1.*r.*exp(1i*pi/n*L);
