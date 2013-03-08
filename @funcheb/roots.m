@@ -144,7 +144,7 @@ end
         
         % Wrap (i.e., alias), don't just truncate.
         if ( n > 1 && n < length(c) )
-            c = funcheb.alias(c(end:-1:1), n);
+            c = funcheb2.alias(c(end:-1:1), n);
             c = c(end:-1:1);
         end
 
