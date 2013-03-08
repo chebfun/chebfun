@@ -161,6 +161,9 @@ classdef funcheb2 < funcheb
     % (This list is alphabetical)
     methods ( Static = true )
         
+        % aliasing.
+        coeffs = alias(coeffs, m)
+        
         % Evaluate a Chebyshev interpolant using barycentric formula.
         out = bary(x, values, kind)
         
