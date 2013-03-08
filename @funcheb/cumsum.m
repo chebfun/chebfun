@@ -53,7 +53,8 @@ end
 f = simplify(f, pref);
 
 % Ensure f(-1) = 0:
-f.coeffs(1,:) = f.coeffs(1,:) - f.values(1,:);
-f.values = bsxfun(@minus, f.values, f.values(1,:));
+lval = get(f,'lval');
+f.coeffs(end,:) = f.coeffs(end,:) - lval;
+f.values = bsxfun(@minus, f.values, lval);
 
 end
