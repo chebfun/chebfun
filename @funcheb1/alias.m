@@ -1,9 +1,55 @@
 function coeffs = alias(coeffs, m)
-%ALIAS  Alias Chebyshev coefficients of the 1st kind.
+%ALIAS  Alias Chebyshev coefficients on the 1st kind Chebyshev grid.
 %   ALIAS(C, M) will alias the Chebyshev coefficients stored in the column
 %   vector C to have length M. If M > length(C), the coefficients are padded
 %   with zeros. If C is a matrix of coefficents, each of the columns are aliased
 %   to length M.
+
+% Note that the alias for 1st kind Chebyshev grid is different from its
+% counterpart for 2nd kind Chebyshev grid, though it seems that they both
+% live in the coefficient space with respect to Chebyshev polynomials of 
+% 1st kind. For more information about aliasing and de-aliasing on the 
+% Chebyshev points of 1st kind, please read on.
+
+% Aliasing of Chebyshev polynomials of the first kind T_m on Chebyshev 
+% points of the first kind x_k = cos(pi*(2k+1)/(2(n+1))
+%
+% The following Statements are adapted from Theorem 4.1 in ATAP.
+%
+% (1) For any n >= 1 and 0 <= m <= n, the following Chebyshev polynomials
+% take the same values on the (n+1)-point Chebyshev grid:
+%
+% T_m, -T_{2n+2-m}, -T_{2n+2+m}, T_{4n+4-m}, T_{4n+4+m}, -T_{6n+2-m}, 
+% -T_{6n+6+m}, ...
+%
+% (2) Equivalently, for any k >= 0, T_k takes the same value on the grid
+% as (-1)^p*T_m with
+%
+% m = abs( mod((k+n), 2(n+1)) - n ),                           (I)
+%
+% a number in the range 0 <= m <= n. Here, p = floor( (n+1+m)/(2(n+1)) ).
+%
+% Proof:
+%
+% (1) The first assertion is clear if we notice that 
+% T_m(x_k) = cos( m*pi*(2k+1)/(2(n+1))
+%          = (-1)^p * cos( (2*p*(n+1) (+/-) m) * ( pi*(2k+1)/(2(n+1)) ) )
+%          = (-1)^p T_{2p(n+1) (+/-) m} (x_k)
+%
+% (2) Suppose first that 0 <= mod(k, 2(n+1)) <= n+1. Then 
+% n <= mod(k+n, 2(n+1)) <= 2n+1, so Eqn (I) reduces to m = mod(k, 2(n+1)), 
+% with 0 <= m <= n+1, and we have just shown that this implies that 
+% (-1)^p*T_k and T_m take the same values on the grid. On the other hand,
+% suppose that n+2 <= mod(k, 2(n+1)) <= 2n+1. Then 
+% 0 <= mod(k+n, 2(n+1)) <= n-1, so the absolute value becomes a negation 
+% and Eqn (I) reduces to m = 2(n+1)-mod(k, 2(n+1)), with 1 <= m <= n. Again
+% we have just shown that this implies that (-1)^p*T_k and T_m take the 
+% same values on the grid.
+%
+% Remark: Note that on a (n+1)-point Chebyshev grid of 1st kind, T_{j(n+1)}
+% for j = 1,3,5,... are blind spots of aliasing, since their values on the
+% 1st kind Chebyshev grid are not coincident with the values of any T_m for
+% 0 <= m <= n.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
