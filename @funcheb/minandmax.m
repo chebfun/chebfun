@@ -20,7 +20,7 @@ if ( ~isreal(f) )
     imagf = imag(f);
     h = realf.*realf + imagf.*imagf;
     h = simplify(h);
-    [vals, pos] = minandmax(h);
+    [~, pos] = minandmax(h);
     vals = feval(f, pos);
     vals = vals(:,1:size(pos,2)+1:end);
     return
