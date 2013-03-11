@@ -256,11 +256,11 @@ end
             v = funcheb.clenshaw( [ chebptsAB(n, [-1, splitpoint]) ; chebptsAB(n, [splitpoint, 1]) ], c(end:-1:1) );
 
             % Get the coefficients on the left
-            cleft = f.chebpoly(v(1:n));
+            cleft = funcheb2.chebpoly(v(1:n));
             cleft = cleft(end:-1:1);
 
             % Get the coefficients on the right
-            cright = f.chebpoly(v(n+1:end));
+            cright = funcheb2.chebpoly(v(n+1:end));
             cright = cright(end:-1:1);
 
             % recurse
@@ -276,7 +276,7 @@ end
 
         a = ab(1);
         b = ab(2);
-        x = f.chebpts(n);                 % [-1,1] grid
+        x = funcheb2.chebpts(n);          % [-1,1] grid
         y = b*(x+1)/2 + a*(1-x)/2;        % new grid
 
     end
