@@ -13,6 +13,14 @@ function f = compose(f, op, g, pref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% This file defines the refinement functions which are called by the constructor
+% at the @funcheb level. There are refinement functions for both nested and
+% resampled grids, both for compositions of the form op(f) and op(f, g).
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 nfuns = 2;
 % Parse inputs:
 if ( nargin > 2 && isstruct(g) )

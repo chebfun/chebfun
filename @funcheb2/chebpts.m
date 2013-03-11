@@ -6,16 +6,17 @@ function [x, w, v] = chebpts(n)
 %   Clenshaw-Curtis quadrature (computed using Waldvogel's technique: [1], [2]).
 %
 %   [X, W, V] = CHEBPTS(N) returns, in addition to X and W, the barycentric
-%   weights V corresponding to the Chebyshev points X.
+%   weights V corresponding to the Chebyshev points X. The barycentric weights
+%   are nomralised to have inifinity norm equal to 1 and a positive first entry.
+%
+%      [1] Jorg Waldvogel, "Fast construction of the Fejer and Clenshaw-Curtis
+%      quadrature rules", BIT Numerical Mathematics 46 (2006), pp 195-202.
+%      [2] Jorg Waldvogel, www.chebfun.org/and_beyond/programme/slides/wald.pdf
 %
 %   See also BARY, QUADWTS, BARYWTS, LEGPTS, JACPTS, LAGPTS, and HERMPTS.
 
 %   Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 %   See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
-
-%   [1] Jorg Waldvogel, "Fast construction of the Fejer and Clenshaw-Curtis
-%   quadrature rules", BIT Numerical Mathematics 46 (2006), pp 195-202.
-%   [2] Jorg Waldvogel, www.chebfun.org/and_beyond/programme/slides/wald.pdf
 
 if ( n == 0 )     % Special case (no points!)
     x = []; 

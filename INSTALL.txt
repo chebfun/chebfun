@@ -19,7 +19,8 @@ Installation instructions:
    file, as described in the MATLAB documentation.)
 
 3. A restart of MATLAB may be needed if you want to access the user guides via 
-   the Help browser.
+   the Help browser, or a call to "clear classes" if you had a previous version 
+   of Chebfun installed.
 
 Point your web browser to the guide/html directory of the Chebfun installation
 in order to read the user guides.

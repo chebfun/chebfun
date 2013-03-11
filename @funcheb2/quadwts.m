@@ -1,13 +1,13 @@
 function w = quadwts(n)
 %QUADWTS % 2nd-kind Chebyshev quadrature weights.
 %   QUADWTS(N) returns the N weights for Clenshaw-Curtis quadrature on 2nd-kind
-%   Chebyshev points.
+%   Chebyshev points using the algorithm of Waldvogel.
 %
-% See also FUN2.CHEBPTS.
-
 %   [1] Jorg Waldvogel, "Fast construction of the Fejer and Clenshaw-Curtis
 %   quadrature rules", BIT Numerical Mathematics 46 (2006), pp 195-202.
 %   [2] Jorg Waldvogel, www.chebfun.org/and_beyond/programme/slides/wald.pdf
+%
+% See also FUNCHEB2.CHEBPTS, FUNCHEB2.BARYWTS.
 
 if ( n == 0 )                      % Special case (no points!)
     w = [];
