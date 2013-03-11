@@ -2,11 +2,13 @@ function  [ishappy, epslevel, cutoff] = happinessCheck(f, op, pref)
 %HAPPINESSCHECK Happiness test for a FUNCHEB
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = HAPPINESSCHECK(F, OP) tests if the FUNCHEB
 %   with values F.VALUES and coefficients F.COEFFS would be a 'happy'
-%   approximation (in the sense defined below) to the function handle OP
-%   (relative to F.VSCALE and F.HSCALE). If the approximation is happy, the
+%   approximation (in the sense defined below and relative to F.VSCALE and
+%   F.HSCALE) to the function handle OP. If the approximation is happy, the
 %   output ISHAPPY is logical TRUE, the happiness level is returned in EPSLEVEL,
-%   and CUTOFF indicates the degree to which the coefficients COEFFS may be
-%   truncated.
+%   and CUTOFF indicates the point to which the coefficients COEFFS may be
+%   truncated. Even if ISHAPPY is FALSE, the attempted happiness level is still
+%   returned in EPSLEVEL (i.e., we attempted to be happy at EPSLEVEL but failed)
+%   and CUTOFF is returned as size(f.values, 1).
 %
 %   HAPPINESSCHECK(F, OP, PREF) allows different preferences to be used; in
 %   particular PREF.(class(F)).eps as the target tolerance for happiness.
@@ -24,7 +26,7 @@ function  [ishappy, epslevel, cutoff] = happinessCheck(f, op, pref)
 %   m-files.
 %
 %   Regardless of the happiness definition, HAPPINESSCHECK also performs a
-%   SAMPLETEST unless PREF.(class(F).sampleTest is false or OP is empty.
+%   SAMPLETEST unless PREF.(class(F)).sampleTest is false or OP is empty.
 %
 % See also classicCheck.m, looseCheck.m, strictCheck.m, sampleTest.m.
 
@@ -47,15 +49,8 @@ if ( strcmpi(pref.(class(f)).happinessCheck, 'classic') )
     % Use the default happiness check procedure from Chebfun V4.
     
     % Check the coefficients are happy:
-    [cutoff, epslevel] = classicCheck(f, pref);
-    
-    % Happiness here means that the length of the coeffs is decreased:
-    if ( cutoff < size(f.values, 1) || cutoff == 1)
-        ishappy = true;  % Yay! :)
-    else
-        ishappy = false; % Boo. :(
-    end
-    
+    [ishappy, cutoff, epslevel] = classicCheck(f, pref);
+
 elseif ( strcmpi(pref.(class(f)).happinessCheck, 'strict') )
     % Use the 'strict' happiness check:
     [ishappy, epslevel, cutoff] = strictCheck(f, pref);
@@ -74,7 +69,7 @@ end
 % Check also that sampleTest is happy:
 if ( ishappy && ~isempty(op) && ~isnumeric(op) && pref.(class(f)).sampletest )
     f.epslevel = epslevel;
-    ishappy = funcheb.sampleTest(op, f);
+    ishappy = sampleTest(op, f);
     if ( ~ishappy )
         % It wasn't. Revert cutoff. :(
         cutoff = size(f.values, 1);

@@ -1,12 +1,13 @@
-function [cutoff, epslevel] = classicCheck(f, pref)
+function [ishappy, cutoff, epslevel] = classicCheck(f, pref)
 %CLASSICCHECK  Attempt to trim trailing Chebyshev coefficients in a FUNCHEB.
-%   [CUTOFF, EPSLEVEL] = CLASSICCHECK(F) returns an estimated location the
-%   CUTOFF at which the FUNCHEB F could be truncated to maintain an accuracy of
-%   EPSLEVEL relative to F.vscale and F.hscale.
+%   [ISHAPPY, CUTOFF, EPSLEVEL] = CLASSICCHECK(F) returns an estimated location
+%   the CUTOFF at which the FUNCHEB F could be truncated to maintain an accuracy
+%   of EPSLEVEL relative to F.vscale and F.hscale. ISHAPPY is logical TRUE if
+%   cutoff < length(F.values) and FALSE otherwise.
 %
-%   [CUTOFF, EPSLEVEL] = CLASSICCHECK(F, PREF) allows additional preferences to
-%   be passed. In particular, one can adjust the target accuracy with
-%   PREF.FUNCHEB.EPS.
+%   [ISHAPPY, CUTOFF, EPSLEVEL] = CLASSICCHECK(F, PREF) allows additional
+%   preferences to be passed. In particular, one can adjust the target accuracy
+%   with PREF.(class(F)).EPS.
 %
 %   CLASSICCHECK first queries HAPPINESSREQUIREMENTS to obtain TESTLENGTH and
 %   EPSLEVEL (see documentation below). If |F.COEFFS(1:TESTLENGTH)|/VSCALE <
@@ -42,6 +43,9 @@ function [cutoff, epslevel] = classicCheck(f, pref)
 % Determine n (the length of the input).
 n = length(f);
 
+% Assume we're not happy. (N'aww! :( )
+ishappy = false; 
+
 % Grab some preferences:
 if ( nargin == 1 )
     pref = f.pref();
@@ -62,6 +66,7 @@ end
 % Check the vertical scale:
 if ( max(f.vscale) == 0 )
     % This is the zero function, so we must be happy!
+    ishappy = true;
     cutoff = 1;
     return
 elseif ( any(isinf(f.vscale)) )
@@ -90,8 +95,12 @@ vscale = max(f.vscale);
 
 if ( max(ac(1:testLength)) < epslevel )    % We have converged! Now chop tail:
     
+    % We must be happy.
+    ishappy = true;
+    
     % Find first entry above epslevel:
     Tloc = find(ac >= epslevel, 1, 'first') - 1;
+    
     
     % Check for the zero function!
     if ( isempty(Tloc) )                 
