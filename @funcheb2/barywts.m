@@ -1,7 +1,8 @@
 function v = barywts(n)
 %BARYWTS % 2nd-kind Chebyshev barycentric weights.
 %   BARYWTS(N) returns the N barycentric weights for polynomial interpolation on
-%   a Chebyshev grid of the 2nd kind.
+%   a Chebyshev grid of the 2nd kind. The weights are normalised so that they
+%   have infinity norm equal to 1 and the first entry is positive.
 %
 % See also FUNCHEB2.BARY.m, FUN2.CHEBPTS.   
 

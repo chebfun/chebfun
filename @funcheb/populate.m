@@ -3,10 +3,10 @@ function f = populate(f, op, vscale, hscale, pref)
 %   F = F.POPULATE(OP) returns a FUNCHEB representation populated with values
 %   F.values of the function OP evaluated on a Chebyshev grid. The fields
 %   F.ishappy and F.epslevel denote whether the representation is deemed 'happy'
-%   (see HAPPINESSCHECK.m). Essentially this means that such an interpolant is a
-%   sufficiently accurate (i.e., to a relative accuracy of F.epsvlevel)
-%   approximation to OP. If F.ishappy is zero or logical false, then POPULATE
-%   was not able to obtain a happy result.
+%   and to what accuracy (see HAPPINESSCHECK.m). Essentially this means that
+%   such an interpolant is a sufficiently accurate (i.e., to a relative accuracy
+%   of F.epsvlevel) approximation to OP. If F.ishappy is zero or logical false,
+%   then POPULATE was not able to obtain a happy result.
 %
 %   OP should be vectorized (i.e., accept a vector input), and ouput a vector of
 %   the same length. Futhermore, OP may be a multi-valued function, in which
@@ -22,9 +22,9 @@ function f = populate(f, op, vscale, hscale, pref)
 %   specified in the preference structure PREF (see funcheb.PREF).
 %
 %   F.POPULATE(VALUES, ...) (or F.POPULATE({VALUES, COEFFS}, ...)) populates F
-%   nonadaptively with the VALUES (and COEFFS) passed. These values are still
-%   tested for happiness in the same way, but the length of the representation
-%   is not reduced.
+%   non-adaptively with the VALUES (and COEFFS) passed. These values are still
+%   tested for happiness in the same way as described above, but the length of
+%   the representation is not reduced.
 %
 % See also FUNCHEB, FUNCHEB.pref, FUNCHEB.happinessCheck.
 
@@ -48,10 +48,10 @@ function f = populate(f, op, vscale, hscale, pref)
 %   |        |
 %   |        v
 %    -<--[ISHAPPY?]    [ISHAPPY, EPSLEVEL, CUTOFF] = pref.happinessCheck(f, op,
-%            |         pref). Default check calls classicCheck() (previously 
+%     no     |         pref). Default check calls classicCheck() (previously 
 %            | yes     'simplify.m') and sampleTest().
 %            v
-%      [alias COEFFS]  COEFFS = alias(COEFFS, TAIL)
+%      [alias COEFFS]  COEFFS = alias(COEFFS, CUTOFF)
 %            |
 %            v
 %     [compute VALUES] VALUES = chebpolyval(COEFFS)
@@ -71,7 +71,7 @@ if ( nargin < 5 )
     pref = f.pref();
 end
 
-% Non adaptive construction. Values (and possibly coeffs) have been given.
+% Non-adaptive construction. Values (and possibly coeffs) have been given.
 if ( isnumeric(op) || iscell(op) )
     if ( isnumeric(op) )
         % OP is just the values.
@@ -81,6 +81,9 @@ if ( isnumeric(op) || iscell(op) )
         % OP is a cell {values, coeffs}
         f.values = op{1};
         f.coeffs = op{2};
+        if ( isempty(f.values) )
+            f.values = f.chebpolyval(f.coeffs);
+        end
     end
     % Update vscale:
     f.vscale = max(abs(f.values), [], 1);
@@ -95,7 +98,7 @@ values = [];
 % Loop until ISHAPPY or GIVEUP:
 while ( 1 )
 
-    % Call the appropriate refinement routine:   
+    % Call the appropriate refinement routine: (in pref.refinementStrategy)
     [values, giveUp] = f.refine(op, values, pref);
 
     % We're giving up! :(
@@ -143,8 +146,8 @@ f.vscale = vscale;
 f.ishappy = ishappy;
 f.epslevel = epslevel;
 
-% Extrapolate should have already dealt with NaNs and Infs if we were happy.
 if ( ishappy )
+    % We're done, and can return.
     return
 end
 

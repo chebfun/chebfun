@@ -21,7 +21,7 @@ classdef funcheb %< smoothfun % (Abstract)
 %   FUNCHEB.CONSTRUCTOR(OP, VSCALE, HSCALE, PREF) overrides the default behavior
 %   with that given by the preference structure PREF. The constructor will also
 %   accept inputs of the form FUNCHEB(OP, PREF), but this usage is not advised.
-%   Similarly, one can pass FUNCHEB(OP, VSCALE, HSCALE< EPS), which is
+%   Similarly, one can pass FUNCHEB(OP, VSCALE, HSCALE, EPS), which is
 %   equivalent to the call FUNCHEB(OP, VSCALE, HSCALE, FUNCHEB.PREF('eps',EPS)).
 %
 %   The FUNCHEB class supports construction via interpolation at first- and
@@ -33,7 +33,8 @@ classdef funcheb %< smoothfun % (Abstract)
 %   which interpolates the data in the columns of VALUES on a Chebyshev grid.
 %   Whether this grid is of first- or second-kind points is determined by
 %   PREF.FUNCHEB.tech, as above. FUNCHEB.CONSTRUCTOR({VALUES, COEFFS} allows for
-%   the corresponding Chebyshev coefficients to be passed also.
+%   the corresponding Chebyshev coefficients to be passed also, and if VALUES is
+%   empty the FUNCHEB is constructed directly from the COEFFS.
 %
 % Examples:
 %   % Basic construction:
@@ -58,14 +59,72 @@ classdef funcheb %< smoothfun % (Abstract)
 % on the interval [-1,1] via interpolated function values at Chebyshev points
 % and coefficients of the corresponding first-kind Chebyshev series expansion.
 %
-% There are two main instances on the FUNCHEB class; FUNCHEB1 and FUNCHEB,
-% which interpolate on Chebyshev grids of the first and second kind
-% respectively. Note that although they use different Chebyshev grids in 'value'
-% space, their coefficients are always from an expansion in first-kind Chebyshev
-% polynomials (i.e., those usualy denoted by $T_k(x)$).
+% There are two main instances on the FUNCHEB class; FUNCHEB1 and FUNCHEB2,
+% which interpolate on Chebyshev grids of the 1st and 2nd kind respectively.
+% Note that although they use different Chebyshev grids in 'value' space, their
+% coefficients are always from an expansion in first-kind Chebyshev polynomials
+% (i.e., those usualy denoted by $T_k(x)$).
 %
-% The decision to use funcheb1 or funcheb2 is decided by the funcheb.pref.tech
+% The decision to use FUNCHEB1 or FUNCHEB2 is decided by the funcheb.pref.tech
 % property, which should be either of the strings 'cheb1' or 'cheb2'.
+%
+% The vertical scale VSCALE is used to enforce scale invariance in FUNCHEB
+% construction and subsequent operations. For example, that 
+%  funcheb.constructor(@(x) 2^300*f(x)) = 2^300*funcheb2.constructor(@(x) f(x)). 
+% VSCALE may be optionally passed during to the constructor (if not, it defaults
+% to 0), and during construction it is updated to be the maximum magnitude of
+% the sampled function values. Similarly the horizontal scale HSCALE is used to
+% enforce scale invariance when the input OP has been implicitly mapped from a
+% domain other than [-1 1] before being passed to a FUNCHEB constructor.
+%
+% EPSLEVEL is the happiness level to which the FUNCHEB was constructed (See
+% HAPPINESSCHECK.m for full documentation) or a rough accuracy estimate of
+% subsequent operations. Here is a rough guide to how scale and accuracy
+% information is propogated in subsequent operations after construction:
+%   h = f + c:      
+%     h.hscale = f.hscale;
+%     h.vscale = max(h.values, [], 1);
+%     h.epslevel = max(f.epslevel*f.vscale, c*eps)/h.vscale; % c*eps(c)/c?
+%     h.epslevel = max(eps, h.epslevel);                     % eps(c)/c?
+%     % Note that h.epslevel should not be better than any of its inputs!
+%                  
+%   h = f * c:      
+%     h.hscale = f.hscale;
+%     h.vscale = max(h.values, [], 1);
+%     h.epslevel = f.epslevel;
+% 
+%   h = f + g:      
+%     h.hscale = min(f.hscale, g.hscale);
+%     h.vscale = max(abs(h.values), [], 1);
+%     h.epslevel = max(f.epslevel*f.vscale, g.epslevel*g.vscale)/h.vscale
+%     h.epslevel = max(min(f.epslevel, g.epslevel), h.epslevel) 
+%     % Note that h.epslevel should not be better than any of its inputs!
+% 
+%   h = f .* g:
+%     h.hscale = min(f.hscale, g.hscale);
+%     h.vscale = max(abs(h.values), [], 1);
+%     h.epslevel = max(f.epslevel*f.vscale, g.epslevel*g.vscale)/h.vscale
+% 
+%   h = diff(f):
+%     h.hscale = f.hscale;
+%     h.vscale = max(abs(h.values), [], 1);
+%     h.epslevel = n*f.epslevel*f.vscale; % *(h.vscale/h.vscale)
+%     % We don't divide by h.vscale here as we must also multiply by it.
+%
+% If the input operator OP evaluates to NaN or Inf at any of the sample points
+% used by the constructor, then a suitable replacement is found by extrapolating
+% (globally) from the numeric values (see EXTRAPOLATE.M). If the preference
+% funcheb.pref('extrapolate', TRUE) is set, then the endpoint values -1 and +1
+% are always extrapolated (i.e., regardless of whether they evaluate to NaN).
+%
+% The FUNCHEB classes support the representation of vector-valued functions (for
+% example, f = funcheb.constructor(@(x) [sin(x), cos(x)])). In such cases, the
+% values and coefficients are stored in a matrix (column-wise), and as such each
+% component of the multi-valued function is truncated to the same length, even
+% if the demands of 'happiness' imply that one of the components could be
+% truncated to a shorter length than the others. All FUNCHEB methods should
+% accept such vectorised forms. Note that this representation is distinct from
+% an array of FUNCHEB objects, for which there is little to no support.
 %
 % Class diagram: [<<smoothfun>>] <-- [<<FUNCHEB>>] <-- [funcheb1]
 %                                                  <-- [funcheb2]
@@ -90,10 +149,8 @@ classdef funcheb %< smoothfun % (Abstract)
         % each column represents the coefficients of a single function.
         coeffs % (nxm double)
         
-        % Vertical scale of the FUNCHEB. Typically the is the magnitude of the
-        % largest value sampled from the given operator OP during the
-        % construction process. It is updated via subsequent FUNCHEB operations
-        % in a natural way.
+        % Vertical scale of the FUNCHEB. The is the magnitude of the largest
+        % entry in VALUES. It is convenient to store this as a property.
         vscale = 0 % (1xm double >= 0)
         
         % Horizontal scale of the FUNCHEB. Although FUNCHEB objects have in
@@ -108,9 +165,9 @@ classdef funcheb %< smoothfun % (Abstract)
         % HAPPINESSCHECK.m for full documentation.
         ishappy % (logical)
         
-        % Happiness level to which the FUNCHEB was constructed, or a rough
-        % accuracy estimate of subsequent operations. See HAPPINESSCHECK.m for
-        % full documentation.
+        % Happiness level to which the FUNCHEB was constructed (See
+        % HAPPINESSCHECK.m for full documentation) or a rough accuracy estimate
+        % of subsequent operations (See FUNCHEB class documentaion for details).
         epslevel % (double >= 0)
     end
     
@@ -128,7 +185,7 @@ classdef funcheb %< smoothfun % (Abstract)
             if ( nargin < 2 || isempty(vscale) )
                 vscale = 0;
             end
-            % Define vscale if none given:
+            % Define hscale if none given:
             if ( nargin < 3 || isempty(hscale) )
                 hscale = 1;
             end
@@ -154,7 +211,7 @@ classdef funcheb %< smoothfun % (Abstract)
                 pref = funcheb.pref(pref);
             end
 
-            % Call the relevent constructor
+            % Call the relevent constructor:
             if ( strcmpi(pref.funcheb.tech, 'cheb1') )
                 % Merge preferences:
                 pref = funcheb1.pref(pref, pref.funcheb);
@@ -173,8 +230,15 @@ classdef funcheb %< smoothfun % (Abstract)
     
     %% ABSTRACT (NON-STATIC) METHODS REQUIRED BY THIS CLASS. 
     methods (Abstract)
+       
+        % Compose method. (Not implemented here as refinement is defined also).
+        h = compose(f, op, g, pref)
+
+        % Get method. [TODO]: Requirement should be inherited from smoothfun.
+        val = get(f, prop);
         
-        %
+        % Set method. [TODO]: Requirement should be inherited from smoothfun.
+%         f = set(f, prop, val); % [TODO]: Do we actually need a set method?
         
     end
     
@@ -197,6 +261,9 @@ classdef funcheb %< smoothfun % (Abstract)
         % Extrapolate (for NaNs / endpoints).
         [values, maskNaN, maskInf] = extrapolate(values)
         
+        % Make a FUNCHEB. (Constructor shortcut)
+        f = make(varargin);
+        
         % Retrieve and modify preferences for this class.
         prefs = pref(varargin)
         
@@ -206,16 +273,149 @@ classdef funcheb %< smoothfun % (Abstract)
         % Compute Chebyshev quadrature weights.
         w = quadwts(n)
         
-        % Make a FUNCHEB. (Constructor shortcut)
-        f = make(varargin);
+        % Test this class.
+        pass = test(); % [TODO]: This should be inherited from smoothfun.
         
     end
     
     %% METHODS IMPLEMENTED BY THIS CLASS.
     methods 
         
-        %
+        % Convert an array of FUNCHEB objects into a vector-valued FUNCHEB.
+        f = cell2mat(f)
         
+        % Plot (semilogy) the Chebyshev coefficients of a FUNCHEB object.
+        h = chebpolyplot(f)
+        
+        % Check the happiness of a FUNCHEB. (Classic definition).
+        [ishappy, cutoff, epslevel] = classicCheck(f, pref)
+        
+        % Complex conjugate of a FUNCHEB.
+        f = conj(f)
+
+        % Indefinite integral of a FUNCHEB.
+        f = cumsum(f, pref)
+
+        % Derivative of a FUNCHEB.
+        f = diff(f, k, dim)
+
+        % Evaluate a FUNCHEB.
+        y = feval(f,x)
+        
+        % Flip columns of a vectorised FUNCHEB object.
+        f = fliplr(f)
+        
+        % Happiness test for a FUNCHEB
+        [ishappy, epslevel, cutoff] = happinessCheck(f, op, pref)
+        
+        % Imaginary part of a FUNCHEB.
+        f = imag(f)
+
+        % Compute the inner product of two FUNCHEB objects.
+        out = innerProduct(f, g)
+
+        % True for an empty FUNCHEB.
+        out = isempty(f)
+
+        % Test if FUNCHEB objects are equal.
+        out = isequal(f, g)
+
+        % Test if a FUNCHEB is bounded.
+        out = isfinite(f)
+        
+        % Test if a FUNCHEB is unbounded.
+        out = isinf(f)
+
+        % Test if a FUNCHEB is has any NaN values.
+        out = isnan(f)
+        
+        % True for real FUNCHEB.
+        out = isreal(f)
+
+        % Length of a FUNCHEB.
+        len = length(f)
+
+        % [TODO]: Implement looseCheck.
+        [ishappy, epslevel, cutoff] = looseCheck(f, pref)
+        
+        % Convert a vector-valued FUNCHEB into an ARRAY of FUNCHEB objects.
+        g = mat2cell(f, M, N)
+        
+        % Global maximum of a FUNCHEB on [-1,1].
+        [maxVal, maxPos] = max(f)
+        
+        % Global minimum of a FUNCHEB on [-1,1].
+        [minVal, minPos] = min(f)
+        
+        % Global minimum and maximum on [-1,1].
+        [vals, pos] = minandmax(f)
+
+        % Subtraction of two FUNCHEB objects.
+        f = minus(f, g)
+
+        % Left matrix divide for FUNCHEB objects.
+        X = mldivide(A, B)
+
+        % Right matrix divide for a FUNCHEB.
+        X = mrdivide(B, A)
+        
+        % Multiplication of FUNCHEB objects.
+        f = mtimes(f, c)
+        
+        % Basic linear plot for FUNCHEB objects.
+        varargout = plot(f, varargin)
+        
+        % Addition of two FUNCHEB objects.
+        f = plus(f, g)
+        
+        % Return the points used by a FUNCHEB.
+        out = points(f)
+
+        % Polynomial coefficients of a FUNCHEB.
+        out = poly(f)
+
+        % Populate a FUNCHEB class with values.
+        f = populate(f, op, vscale, hscale, pref)
+        
+        % QR factorisation of a multivalued FUNCHEB.
+        [f, R, E] = qr(f, flag)
+        
+        % Right array divide for a FUNCHEB.
+        f = rdivide(f, c, pref)
+
+        % Real part of a FUNCHEB.
+        f = real(f)
+
+        % Restrict a FUNCHEB to a subinterval.
+        f = restrict(f, s)
+
+        % Roots of a FUNCHEB in the interval [-1,1].
+        out = roots(f, varargin)
+        
+        % Test an evaluation of the input OP against a FUNCHEB approx.
+        pass = sampleTest(op, f)
+        
+        % Trim trailing Chebyshev coefficients of a FUNCHEB object. 
+        f = simplify(f, pref)
+        
+        % Size of a FUNCHEB.
+        [siz1, siz2] = size(f, varargin)
+
+        % [TODO]: Implement strictCheck
+        [ishappy, epslevel, cutoff] = strictCheck(f, pref)
+        
+        % Definite integral of a FUNCHEB on the interval [-1,1].
+        out = sum(f, dim)
+        
+        % FUNCHEB multiplication.
+        f = times(f, g, varargin)
+        
+        % Unary minus of a FUNCHEB.
+        f = uminus(f)
+
+        % Unary plus of a FUNCHEB.
+        f = uplus(f)
+
     end
     
     %% STATIC METHODS IMPLEMENTED BY THIS CLASS.
@@ -224,11 +424,8 @@ classdef funcheb %< smoothfun % (Abstract)
         % Evaluate a Chebyshev polynomial using barycentric interpolation.
         fx = bary(x, gvals, xk, vk, kind, p)
 
-        % Evaluate a Chebyshev polynomial using Clenshaw's algorithm.
+        % Clenshaw's algorithm for evaluating a Chebyshev polynomial.
         out = clenshaw(x, coeffs)  
-        
-        % Test a sample evaluation of a FUNCHEB against and op evaluation.
-        pass = sampleTest(op, f)
         
     end
     

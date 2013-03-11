@@ -62,10 +62,14 @@ absc(~absc) = f.epslevel*min(f.vscale);
 
 if ( plotepslevel )
     % Plot the coeffs AND the epslevel:
-    h = semilogy(n-1:-1:0, absc, args{:}, [0 n-1], repmat(f.vscale, 2, 1)*f.epslevel, args{:});
+    h = semilogy(n-1:-1:0, absc, args{:});
+    hold on
+    h2 = semilogy([0 n-1], repmat(f.vscale, 2, 1)*f.epslevel, args{:});
+    h = [h ; h2];
     for k = 1:m
         c = get(h(k), 'color');
-        set(h(m+k), 'linestyle', ':', 'linewidth', 1, 'marker', 'none', 'color', c);
+%         set(h(m+k), 'linestyle', ':', 'linewidth', 2, 'marker', 'none', 'color', c);
+        set(h(m+k), 'marker', 'none', 'color', c);
     end
 else
     % Plot just the coeffs:

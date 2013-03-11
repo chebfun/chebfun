@@ -1,4 +1,4 @@
-function varargout = plot(f,varargin)
+function varargout = plot(f, varargin)
 %PLOT   Basic linear plot for FUNCHEB objects. 
 %   PLOT(F) plots the FUNCHEB object F.
 %
