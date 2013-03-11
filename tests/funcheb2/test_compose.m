@@ -1,9 +1,9 @@
 function pass = test_compose(pref)
 
 if ( nargin < 1 )
-    pref = funcheb2.pref;
+    pref = funcheb.pref;
 end
-tol = 10*pref.funcheb2.eps;
+tol = 10*pref.funcheb.eps;
 
 % % Compose a scalar-valued FUNCHEB2 object with sin(x):
 f = funcheb2(@(x) x);
@@ -20,13 +20,13 @@ pass(2) = norm(h.values - g.values, inf) < tol;
 % Compose a multi-valued FUNCHEB2 object with sin(x):
 f = funcheb2(@(x) [x x.^2]);
 g = compose(f, @sin, pref);
-x = funcheb2.chebpts(length(g));
+x = g.points();
 pass(3) = norm(sin([x, x.^2])- g.values, inf) < tol;
 
 % Compose a multivalued FUNCHEB2 object with sin(x):
 f = funcheb2(@(x) [x x x.^2]);
 g = compose(f, @sin, pref);
-x = funcheb2.chebpts(length(g));
+x = g.points();
 pass(4) = norm(sin([x x x.^2]) - g.values, inf) < tol;
 
 % Compose 2 FUNCHEB2 objects with a binary function:

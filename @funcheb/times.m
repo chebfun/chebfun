@@ -55,7 +55,7 @@ end
 
 % Determine a tolerance if none is given:
 if ( nargin < 3 )
-    pref = f.pref; 
+    pref = funcheb.pref; 
 else
     pref = varargin{1};
 end

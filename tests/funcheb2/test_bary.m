@@ -3,10 +3,10 @@ function pass = test_bary(pref)
 % [TODO]: This test is rubbish!
 
 if ( nargin < 1 )
-    pref = funcheb2.pref;
+    pref = funcheb.pref;
 end
 
-tol = 10*pref.funcheb2.eps;
+tol = 10*pref.funcheb.eps;
 
 n = 14;
 m = 10;

@@ -68,7 +68,7 @@ else
     f.hscale = hscale;
 end
 if ( nargin < 5 )
-    pref = f.pref();
+    pref = funcheb.pref();
 end
 
 % Non-adaptive construction. Values (and possibly coeffs) have been given.

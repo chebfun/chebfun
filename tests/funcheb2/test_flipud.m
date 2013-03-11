@@ -1,9 +1,9 @@
 function pass = test_flipud(pref)
 
 if ( nargin < 1 )
-    pref = funcheb2.pref;
+    pref = funcheb.pref;
 end
-tol = 10*pref.funcheb2.eps;
+tol = 10*pref.funcheb.eps;
 
 f = funcheb2(@(x) sin(x+.5), 0, pref);
 g = funcheb2(@(x) sin(-x+.5), 0, pref);

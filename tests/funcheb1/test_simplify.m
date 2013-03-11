@@ -3,17 +3,17 @@ function pass = test_simplify(pref)
 
 % Get preferences:
 if ( nargin < 1 )
-    pref = funcheb1.pref;
+    pref = funcheb.pref;
 end
 
 % Set the tolerance:
-tol = 10*pref.funcheb1.eps;
+tol = 10*pref.funcheb.eps;
 
 %%
 % Test on a scalar-valued function:
 
 f = @(x) sin(x);
-pref.funcheb1.n = 33;
+pref.funcheb.n = 33;
 g = funcheb1(f, 0, pref);
 h = simplify(g);
 x = funcheb1.chebpts(14);
@@ -23,7 +23,7 @@ pass(1) = length(g) == 33 && length(h) == 14 && norm(f(x) - h.values, inf) < tol
 % Test on a vector-valued function:
 
 f = @(x) [ sin(x), cos(x), exp(x) ];
-pref.funcheb1.n = 33;
+pref.funcheb.n = 33;
 g = funcheb1(f, 0, pref);
 h = simplify(g);
 x = funcheb1.chebpts(15);

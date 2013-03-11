@@ -26,7 +26,7 @@ classdef funcheb1 < funcheb
 %   inputs of the form FUNCHEB1(OP, PREF), but this usage is not advised.
 %   Similarly, one can pass FUNCHEB1(OP, VSCALE, PREF). Furthermore, one can
 %   replace PREF by TOL, the desired tolerance of the construction, which is
-%   equivelent to passing a PREF with PREF.FUNCHEB1.eps = TOL.
+%   equivelent to passing a PREF with PREF.FUNCHEB.eps = TOL.
 %
 %   FUNCHEB1(VALUES, ...) returns a FUNCHEB1 object which interpolates the
 %   values in the columns of VALUES at 1st-kind Chebyshev points and
@@ -38,13 +38,13 @@ classdef funcheb1 < funcheb
 %   f = funcheb1(@(x) sin(x))
 %
 %   % Construction with preferences
-%   p = funcheb1.pref('sampletest', 0); % See help('funcheb1.pref') for details
+%   p = funcheb.pref('sampletest', 0); % See help('funcheb.pref') for details
 %   f = funcheb1(@(x) sin(x), p)
 %
 %   % Vector-valued construction:
-%   f = funcheb1(@(x) [sin(x), cos(x), exp(x)])
+%   f = funcheb1(@(x) [sin(x), cos(x), expfuncheb.pref(x)])
 %
-% See also FUNCHEB1.pref, FUNCHEB1.chebpts, FUNCHEB1.happinesscheck, FUNCHEB1.refine.
+% See also funcheb.pref, FUNCHEB1.chebpts, FUNCHEB1.happinesscheck, FUNCHEB1.refine.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -71,7 +71,7 @@ classdef funcheb1 < funcheb
 % If the input operator OP evaluates to NaN or Inf at any of the sample points
 % used by the constructor, then a suitable replacement is found by extrapolating
 % (globally) from the numeric values (see EXTRAPOLATE.M). If the preference
-% funcheb1.pref('extrapolate', TRUE) is set, then the endpoint values -1 and +1
+% funcheb.pref('extrapolate', TRUE) is set, then the endpoint values -1 and +1
 % are always extrapolated (i.e., regardless of whether they evaluate to NaN).
 %
 % The FUNCHEB1 class supports the representation of vector-valued functions
@@ -109,46 +109,42 @@ classdef funcheb1 < funcheb
             % Obtain preferences:
             if ( nargin == 2 && isstruct(vscale) )
                 % vscale was actually a preference.
-                pref = funcheb1.pref(vscale);
+                pref = funcheb.pref(vscale);
                 vscale = 0;
                 hscale = 1;
             elseif ( nargin == 3 && isstruct(hscale) )
                 % hscale was actually a preference.
-                pref = funcheb1.pref(hscale);
+                pref = funcheb.pref(hscale);
                 hscale = 1;                
             elseif ( nargin < 4 )
                 % Create:
-                pref = funcheb1.pref;
+                pref = funcheb.pref;
             elseif ( ~isstruct(pref) )
                 % An eps was passed.
-                pref = funcheb1.pref('eps', pref);
+                pref = funcheb.pref('eps', pref);
             else
                 % Merge:
-                pref = funcheb1.pref(pref);
+                pref = funcheb.pref(pref);
             end
             
-            % Force nonadaptive construction if pref.funcheb1.n is numeric:
-            if ( ~isempty(pref.funcheb1.n) && ~isnan(pref.funcheb1.n) )
+            % Force nonadaptive construction if pref.funcheb.n is numeric:
+            if ( ~isempty(pref.funcheb.n) && ~isnan(pref.funcheb.n) )
                 % Evaluate the op on the Chebyshev grid of given size:
-                op = feval(op, funcheb1.chebpts(pref.funcheb1.n));
+                op = feval(op, funcheb1.chebpts(pref.funcheb.n));
             end
             
             % Actual construction takes place here:
             obj = populate(obj, op, vscale, hscale, pref);
             
+            % In cases other than these, we will check for NaN values:
+            if ( obj.ishappy || iscell(op) || isnumeric(op) )
+                return
+            end
+            
             % Check for NaNs: (if not happy)
-            if ( ~obj.ishappy )
-                % Check for NaNs:
-                if ( any(any(isnan(obj.values(:)))) )
-                    error('CHEBFUN:FUNCHEB1:constructor:naneval', ...
-                        'Function returned NaN when evaluated.')
-                end
-            elseif ( ~obj.ishappy )
-                % Here we throw an error if NaNs were encountered anywhere.
-                if ( any(isnan(obj.values(:))) )
-                    error('CHEBFUN:FUNCHEB1:constructor:naneval2', ...
-                        'Function returned NaN when evaluated.')
-                end
+            if ( any(isnan(obj.values(:))) )
+                error('CHEBFUN:FUNCHEB1:constructor:naneval', ...
+                    'Function returned NaN when evaluated.')
             end
             
         end
@@ -181,6 +177,9 @@ classdef funcheb1 < funcheb
         % Extrapolate (for NaNs / endpoints).
         [values, maskNaN, maskInf] = extrapolate(values)
         
+        % Make a FUNCHEB1. (Constructor shortcut)
+        f = make(varargin);
+        
         % Retrieve and modify preferences for this class.
         prefs = pref(varargin)
         
@@ -192,9 +191,6 @@ classdef funcheb1 < funcheb
         
         % Test the FUNCHEB1 class.
         pass = test(varargin);
-        
-        % Make a FUNCHEB1. (Constructor shortcut)
-        f = make(varargin);
 
     end
     

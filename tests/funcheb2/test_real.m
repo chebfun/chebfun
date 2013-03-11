@@ -1,9 +1,9 @@
 function pass = test_real(pref)
 
 if ( nargin < 1 )
-    pref = funcheb2.pref;
+    pref = funcheb.pref;
 end
-tol = 10*pref.funcheb2.eps;
+tol = 10*pref.funcheb.eps;
 
 % Test a scalar-valued function:
 f = funcheb2(@(x) cos(x) + 1i*sin(x), 0, pref);

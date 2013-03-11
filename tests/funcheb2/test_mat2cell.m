@@ -1,7 +1,7 @@
 function pass = test_mat2cell(pref)
 
 if ( nargin < 2 )
-    pref = funcheb2.pref;
+    pref = funcheb.pref;
 end
 
 f = funcheb2(@(x) [sin(x) cos(x) exp(x)], pref);

@@ -48,7 +48,7 @@ else
     
     % Obtain preferencess:
     if ( nargin < 3 )
-        pref = c.pref; % c is a FUNCHEB.
+        pref = funcheb.pref; % c is a FUNCHEB.
     end
     
     % Check if c (the denominator) has any roots.

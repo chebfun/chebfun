@@ -2,37 +2,37 @@ function pass = test_constructor(pref)
 
 % Get preferences:
 if ( nargin < 1 )
-    pref = funcheb2.pref;
+    pref = funcheb.pref;
 end
 % Set the tolerance:
-tol = 100*pref.funcheb2.eps;
+tol = 100*pref.funcheb.eps;
 
 %%
 % Test on a scalar-valued function:
-pref.funcheb2.extrapolate = 0;
-pref.funcheb2.refinementFunction = 'nested';
+pref.funcheb.extrapolate = 0;
+pref.funcheb.refinementFunction = 'nested';
 f = @(x) sin(x);
 g = populate(funcheb2, f, [], [], pref);
 x = funcheb2.chebpts(length(g.values));
 pass(1) = norm(f(x) - g.values, inf) < tol;
 pass(2) = g.vscale == sin(1) && g.ishappy && g.epslevel < tol;
 
-pref.funcheb2.extrapolate = 1;
-pref.funcheb2.refinementFunction = 'nested';
+pref.funcheb.extrapolate = 1;
+pref.funcheb.refinementFunction = 'nested';
 g = populate(funcheb2, f, [], [], pref);
 x = funcheb2.chebpts(length(g.values));
 pass(3) = norm(f(x) - g.values, inf) < tol;
 pass(4) = norm(g.vscale - sin(1), inf) < tol && logical(g.epslevel);
 
-pref.funcheb2.extrapolate = 0;
-pref.funcheb2.refinementFunction = 'resampling';
+pref.funcheb.extrapolate = 0;
+pref.funcheb.refinementFunction = 'resampling';
 g = populate(funcheb2, f, [], [], pref);
 x = funcheb2.chebpts(length(g.values));
 pass(5) = norm(f(x) - g.values, inf) < tol;
 pass(6) = g.vscale == sin(1) && logical(g.epslevel);
 
-pref.funcheb2.extrapolate = 1;
-pref.funcheb2.refinementFunction = 'resampling';
+pref.funcheb.extrapolate = 1;
+pref.funcheb.refinementFunction = 'resampling';
 g = populate(funcheb2, f, [], [], pref);
 x = funcheb2.chebpts(length(g.values));
 pass(7) = norm(f(x) - g.values, inf) < tol;
@@ -40,8 +40,8 @@ pass(8) = norm(g.vscale - sin(1), inf) < tol && logical(g.epslevel);
 
 %%
 % Test on a vector-valued function:
-pref.funcheb2.extrapolate = 0;
-pref.funcheb2.refinementFunction = 'nested';
+pref.funcheb.extrapolate = 0;
+pref.funcheb.refinementFunction = 'nested';
 f = @(x) [sin(x) cos(x) exp(x)];
 g = populate(funcheb2, f, [], [], pref);
 x = funcheb2.chebpts(length(g.values));
@@ -49,23 +49,23 @@ pass(9) = norm(f(x) - g.values, inf) < tol;
 pass(10) = norm(g.vscale - [sin(1) cos(0) exp(1)], inf) < 10*g.epslevel ...
     && logical(g.epslevel);
 
-pref.funcheb2.extrapolate = 1;
-pref.funcheb2.refinementFunction = 'nested';
+pref.funcheb.extrapolate = 1;
+pref.funcheb.refinementFunction = 'nested';
 g = populate(funcheb2, f, [], [], pref);
 x = funcheb2.chebpts(length(g.values));
 pass(11) = norm(f(x) - g.values, inf) < tol;
 pass(12) = norm(g.vscale - [sin(1) cos(0) exp(1)], inf) < tol && logical(g.epslevel);
 
-pref.funcheb2.extrapolate = 0;
-pref.funcheb2.refinementFunction = 'resampling';
+pref.funcheb.extrapolate = 0;
+pref.funcheb.refinementFunction = 'resampling';
 g = populate(funcheb2, f, [], [], pref);
 x = funcheb2.chebpts(length(g.values));
 pass(13) = norm(f(x) - g.values, inf) < tol;
 pass(14) = norm(g.vscale - [sin(1) cos(0) exp(1)], inf) < 10*g.epslevel ...
     && logical(g.epslevel);
 
-pref.funcheb2.extrapolate = 1;
-pref.funcheb2.refinementFunction = 'resampling';
+pref.funcheb.extrapolate = 1;
+pref.funcheb.refinementFunction = 'resampling';
 g = populate(funcheb2, f, [], [], pref);
 x = funcheb2.chebpts(length(g.values));
 pass(15) = norm(f(x) - g.values, inf) < tol;
@@ -93,7 +93,7 @@ catch ME
 end
 
 % Test that the extrapolation option avoids endpoint evaluations.
-pref.funcheb2.extrapolate = 1;
+pref.funcheb.extrapolate = 1;
 try 
     populate(funcheb2, @(x) [F(x) F(x)], [], [], pref);
     pass(19) = true;

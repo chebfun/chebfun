@@ -4,11 +4,11 @@ function pass = test_sum(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = funcheb2.pref();
+    pref = funcheb.pref();
 end
 
 % Set a tolerance.
-tol = 10*pref.funcheb2.eps;
+tol = 10*pref.funcheb.eps;
 
 %%
 % Spot-check integrals for a couple of functions.

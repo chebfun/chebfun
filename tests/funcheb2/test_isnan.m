@@ -1,7 +1,7 @@
 function pass = test_isnan(pref)
 
 if ( nargin < 1 )
-    pref = funcheb2.pref;
+    pref = funcheb.pref;
 end
 p = pref;
 
@@ -31,14 +31,14 @@ end
 
 % Test a NaN vector-valued function:
 try
-    f = funcheb2(@(x) myfun(x));
+    f = funcheb2(@(x) myfun(x))
     pass(5) = isnan(f);
 catch ME
     pass(5) = strcmpi(ME.message, 'Function returned NaN when evaluated.');
 end
 
 % Test a non-adaptive construction
-p.funcheb2.n = 11;
+p.funcheb.n = 11;
 try
     f = funcheb2(@(x) myfun(x), p);
     pass(6) = isnan(f);

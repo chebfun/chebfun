@@ -6,8 +6,8 @@ function f = simplify(f, pref)
 %   G = SIMPLIFY(F, PREF) does the same, but using some of the preferences in
 %   the preference structure PREF. In particular, SIMPLIFY will use classicCheck
 %   by default, but an alternative can be passed in the
-%   PREF.(class(f)).happinessCheck field. Additionally, G will be computed to
-%   satisfy ||G - F|| < max(F.epslevel, PREF.(class(f)).eps).
+%   PREF.funcheb.happinessCheck field. Additionally, G will be computed to
+%   satisfy ||G - F|| < max(F.epslevel, PREF.funcheb.eps).
 %
 % See also funcheb.happinessCheck, classicCehck, funcheb.pref.
 
@@ -21,11 +21,11 @@ end
 
 % Grab some preferences:
 if ( nargin < 2 )
-    pref = f.pref();
+    pref = funcheb.pref();
 end
 
 % Take max of pref.eps and epslevel:
-pref.(class(f)).eps = max(pref.(class(f)).eps, f.epslevel);
+pref.funcheb.eps = max(pref.funcheb.eps, f.epslevel);
 
 % Check to see if we can trim the tail:
 [ishappy, epslevel, cutoff] = happinessCheck(f, pref);

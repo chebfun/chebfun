@@ -1,9 +1,9 @@
 function pass = test_compose(pref)
 
 if ( nargin < 1 )
-    pref = funcheb1.pref;
+    pref = funcheb.pref;
 end
-tol = 10*pref.funcheb1.eps;
+tol = 10*pref.funcheb.eps;
 
 % % Compose a scalar-valued FUNCHEB1 object with sin(x):
 f = funcheb1(@(x) x);

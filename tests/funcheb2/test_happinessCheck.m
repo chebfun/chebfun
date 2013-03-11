@@ -2,10 +2,10 @@ function pass = test_happinessCheck(pref)
 
 % Get preferences:
 if ( nargin < 1 )
-    pref = funcheb2.pref;
+    pref = funcheb.pref;
 end
 % Set the tolerance:
-tol = 10*pref.funcheb2.eps;
+tol = 10*pref.funcheb.eps;
 
 %%
 % Test on a scalar-valued function:
@@ -31,13 +31,13 @@ x = funcheb2.chebpts(n+1);
 f = @(x) cos((2*n+m)*acos(x));
 
 % This should be happy, as aliasing fools the happiness test:
-pref.funcheb2.sampletest = 0;
+pref.funcheb.sampletest = 0;
 g = funcheb2(f(x));
 [ishappy, epslevel, tail] = happinessCheck(g, f, pref);
 pass(5) = ( ishappy && tail == 17);
 
 % This should be unhappy, as sampletest fixes things:
-pref.funcheb2.sampletest = 1;
+pref.funcheb.sampletest = 1;
 g = funcheb2(f(x));
 [ishappy, epslevel, tail] = happinessCheck(g, f, pref);
 pass(6) = ~ishappy && tail == 33;

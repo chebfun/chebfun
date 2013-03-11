@@ -1,7 +1,7 @@
 function pass = test_roots(pref)
 
 if ( nargin < 1 )
-    pref = funcheb2.pref;
+    pref = funcheb.pref;
 end
 
 %% Test roots of a bessel function:

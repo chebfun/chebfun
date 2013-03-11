@@ -4,7 +4,7 @@ function pass = test_max(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = funcheb2.pref();
+    pref = funcheb.pref;
 end
 
 %%

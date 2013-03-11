@@ -48,7 +48,7 @@ f.vscale = max(f.vscale, max(abs(f.values), [], 1));
 
 % Simplify! (as suggested in #128)
 if ( nargin  == 1 )
-    pref = f.pref();
+    pref = funcheb.pref();
 end
 f = simplify(f, pref);
 

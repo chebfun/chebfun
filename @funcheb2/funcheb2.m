@@ -35,13 +35,13 @@ classdef funcheb2 < funcheb
 %   f = funcheb2(@(x) sin(x))
 %
 %   % Construction with preferences:
-%   p = funcheb2.pref('sampletest', 0); % See help('funcheb2.pref') for details
+%   p = funcheb.pref('sampletest', 0); % See help('funcheb.pref') for details
 %   f = funcheb2(@(x) sin(x), p)
 %
 %   % Vector-valued construction:
 %   f = funcheb2(@(x) [sin(x), cos(x), exp(x)])
 %
-% See also FUNCHEB, FUNCHEB2.pref, FUNCHEB2.chebpts, FUNCHEB2.happinesscheck, FUNCHEB2.refine.
+% See also FUNCHEB, FUNCHEB.pref, FUNCHEB2.chebpts, FUNCHEB2.happinesscheck, FUNCHEB2.refine.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -85,28 +85,28 @@ classdef funcheb2 < funcheb
             % Obtain preferences:
             if ( nargin == 2 && isstruct(vscale) )
                 % vscale was actually a preference.
-                pref = funcheb2.pref(vscale);
+                pref = funcheb.pref(vscale);
                 vscale = 0;
                 hscale = 1;
             elseif ( nargin == 3 && isstruct(hscale) )
                 % hscale was actually a preference.
-                pref = funcheb2.pref(hscale);
+                pref = funcheb.pref(hscale);
                 hscale = 1;                
             elseif ( nargin < 4 )
                 % Create:
-                pref = funcheb2.pref;
+                pref = funcheb.pref;
             elseif ( ~isstruct(pref) )
                 % An eps was passed.
-                pref = funcheb2.pref('eps', pref);
+                pref = funcheb.pref('eps', pref);
             else
                 % Merge:
-                pref = funcheb2.pref(pref);
+                pref = funcheb.pref(pref);
             end
 
             % Force nonadaptive construction if pref.funcheb2.n is numeric:
-            if ( ~isempty(pref.funcheb2.n) && ~isnan(pref.funcheb2.n) )
+            if ( ~isempty(pref.funcheb.n) && ~isnan(pref.funcheb.n) )
                 % Evaluate the op on the Chebyshev grid of given size:
-                op = feval(op, funcheb2.chebpts(pref.funcheb2.n));
+                op = feval(op, funcheb2.chebpts(pref.funcheb.n));
             end
             
             % Actual construction takes place here:
@@ -118,7 +118,7 @@ classdef funcheb2 < funcheb
             end
             
             % Check for NaNs: (if not happy)
-            if ( pref.funcheb2.extrapolate )
+            if ( pref.funcheb.extrapolate )
                 % Check for NaNs in interior only: (because extrapolate was on!)
                 if ( any(any(isnan(obj.values(2:end-1,:)))) )
                     error('CHEBFUN:FUNCHEB2:constructor:naneval', ...
@@ -166,7 +166,7 @@ classdef funcheb2 < funcheb
         f = make(varargin);
         
         % Retrieve and modify preferences for this class.
-        prefs = pref(varargin)
+%         prefs = pref(varargin)
         
         % Refinement function for FUNCHEB2 construction. (Evaluates OP on grid)
         [values, points, giveUp] = refine(op, values, pref)

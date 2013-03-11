@@ -1,7 +1,7 @@
 function pass = test_isreal(pref)
 
 if ( nargin < 1 )
-    pref = funcheb1.pref;
+    pref = funcheb.pref;
 end
 p = pref;
 

@@ -12,7 +12,7 @@ function f = compose(f, op, g, pref)
 %
 %   COMPOSE(F, OP, PREF), COMPOSE(F, OP, G, PREF), or COMPOSE(F, G, PREF) uses
 %   the options passed by the prefences structure PREF. In particular, one can
-%   pass a PREF.(class(F)).refinmentFunction which takes advantage of the fact
+%   pass a PREF.funcheb.refinmentFunction which takes advantage of the fact
 %   that F (and possibly OP or G) are FUNCHEB objects.
 %
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
@@ -34,9 +34,9 @@ end
 
 % Set some preferences:
 vscale = f.vscale;
-pref.(class(f)).minSamples = max(pref.(class(f)).minSamples, length(f));
-pref.(class(f)).eps = max(pref.(class(f)).eps, f.epslevel);
-pref.(class(f)).sampletest = false;
+pref.funcheb.minSamples = max(pref.funcheb.minSamples, length(f));
+pref.funcheb.eps = max(pref.funcheb.eps, f.epslevel);
+pref.funcheb.sampletest = false;
 if ( nfuns == 2 )
     if ( size(f, 2) ~= size(g, 2) )
         error('CHEBFUN:FUNCHEB:compose:dim', ...
@@ -44,8 +44,8 @@ if ( nfuns == 2 )
     end
     % Grab some data from G2:
     vscale = max(vscale, g.vscale);
-    pref.(class(f)).minSamples = max(pref.(class(f)).minSamples, length(g));
-    pref.(class(f)).eps = max(pref.(class(f)).eps, g.epslevel);
+    pref.funcheb.minSamples = max(pref.funcheb.minSamples, length(g));
+    pref.funcheb.eps = max(pref.funcheb.eps, g.epslevel);
 elseif ( isa(op, 'funcheb') )
     % If OP is a FUNCHEB, we grab some of its data:
     if ( size(op, 2) > 1 && size(f, 2) > 1)
@@ -58,13 +58,13 @@ elseif ( isa(op, 'funcheb') )
             num2str(max(f.values)), ']) is not in the domain of G ([-1,1])'])
     end
     vscale = max(vscale, op.vscale);
-    pref.(class(f)).minSamples = max(pref.(class(f)).minSamples, length(op));
-    pref.(class(f)).eps = max(pref.(class(f)).eps, op.epslevel);
+    pref.funcheb.minSamples = max(pref.funcheb.minSamples, length(op));
+    pref.funcheb.eps = max(pref.funcheb.eps, op.epslevel);
 %     op = @(x) feval(op, x); % This isn't needed, as we use FEVAL in refFunc.
 end
 
 % Use a naive evaluation procedure is a custon refinement has not been passed.
-if ( ischar(pref.(class(f)).refinementFunction) )
+if ( ischar(pref.funcheb.refinementFunction) )
     if ( nfuns == 1 )
         op = @(x) feval(op, feval(f, x));
     else

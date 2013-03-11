@@ -29,7 +29,7 @@ function [values, giveUp] = refine(op, values, pref)
 
 % Obtain some preferences:
 if ( nargin < 3 )
-    pref = funcheb2.pref;
+    pref = funcheb2.pref();
 end
 % No values were given:
 if ( nargin < 2 )
@@ -37,7 +37,7 @@ if ( nargin < 2 )
 end
 
 % Grab the refinement function from the preferences:
-refFunc = pref.funcheb2.refinementFunction;
+refFunc = pref.funcheb.refinementFunction;
 
 % Decide which refinement to use:
 if ( strcmpi(refFunc, 'nested') )
@@ -58,7 +58,7 @@ function [values, giveUp] = refineResampling(op, values, pref)
 
     if ( isempty(values) )
         % Choose initial n based upon minSamples:
-        n = 2^ceil(log2(pref.funcheb2.minSamples) - 1) + 1;
+        n = 2^ceil(log2(pref.funcheb.minSamples) - 1) + 1;
     else
         % (Approximately) powers of sqrt(2):
         pow = log2(size(values, 1) - 1);
@@ -71,7 +71,7 @@ function [values, giveUp] = refineResampling(op, values, pref)
     end
     
     % n is too large!
-    if ( n > pref.funcheb2.maxSamples )
+    if ( n > pref.funcheb.maxSamples )
         giveUp = true;
         return
     else
@@ -82,7 +82,7 @@ function [values, giveUp] = refineResampling(op, values, pref)
     x = funcheb2.chebpts(n);
 
     % Evaluate the operator:
-    if ( pref.funcheb2.extrapolate )
+    if ( pref.funcheb.extrapolate )
         valuesTemp = feval(op, x(2:n-1));
         nans = NaN(1, size(valuesTemp, 2));
         values = [nans ; valuesTemp ; nans];
@@ -106,7 +106,7 @@ function [values, giveUp] = refineNested(op, values, pref)
         n = 2*size(values, 1) - 1;
         
         % n is too large!
-        if ( n > pref.funcheb2.maxSamples )
+        if ( n > pref.funcheb.maxSamples )
             giveUp = true;
             return
         else

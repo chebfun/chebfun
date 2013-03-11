@@ -213,13 +213,9 @@ classdef funcheb %< smoothfun % (Abstract)
 
             % Call the relevent constructor:
             if ( strcmpi(pref.funcheb.tech, 'cheb1') )
-                % Merge preferences:
-                pref = funcheb1.pref(pref, pref.funcheb);
                 % Construct:
                 obj = funcheb1(op, vscale, hscale, pref);
             else
-                % Merge preferences:
-                pref = funcheb2.pref(pref, pref.funcheb);
                 % Construct:
                 obj = funcheb2(op, vscale, hscale, pref);
             end
@@ -263,9 +259,6 @@ classdef funcheb %< smoothfun % (Abstract)
         
         % Make a FUNCHEB. (Constructor shortcut)
         f = make(varargin);
-        
-        % Retrieve and modify preferences for this class.
-        prefs = pref(varargin)
         
         % Refinement function for FUNCHEB construction. (Evaluates OP on grid)
         [values, opints, giveUp] = refine(op, values, pref)
@@ -426,6 +419,10 @@ classdef funcheb %< smoothfun % (Abstract)
 
         % Clenshaw's algorithm for evaluating a Chebyshev polynomial.
         out = clenshaw(x, coeffs)  
+        
+        % Retrieve and modify preferences for this class.
+        prefs = pref(varargin)
+        
         
     end
     

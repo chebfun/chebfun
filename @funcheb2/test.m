@@ -24,7 +24,7 @@ files = {files.name};                               % Ony want the name.
 
 % Load some preferences:
 if ( nargin == 0 )
-    pref = funcheb2.pref;
+    pref = funcheb.pref();
 end    
 
 % For making the output string align nicely:

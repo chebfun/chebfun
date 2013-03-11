@@ -20,7 +20,7 @@ if ( nargin > 2 && isstruct(g) )
     g = [];
     nfuns = 1;
 elseif ( nargin < 4 )
-    pref = funcheb1.pref();
+    pref = funcheb.pref();
 end
 if ( nargin < 3 || isempty(g) )
     nfuns = 1;
@@ -28,9 +28,9 @@ if ( nargin < 3 || isempty(g) )
 end
 
 % Choose a sampling strategy:
-if ( ~ischar(pref.funcheb1.refinementFunction) )
+if ( ~ischar(pref.funcheb.refinementFunction) )
     % A user-defined refinement has been passed.
-    refFunc = pref.funcheb1.refinementFunction;
+    refFunc = pref.funcheb.refinementFunction;
 else
     if ( nfuns == 1 )   % OP(G1) resampling.
         refFunc = @(op, values, pref) composeResample1(op, values, pref, f);
@@ -40,7 +40,7 @@ else
 end
 
 % Assign to preference structure:
-pref.funcheb1.refinementFunction = refFunc;
+pref.funcheb.refinementFunction = refFunc;
 
 % Call superclass compose:
 f = compose@funcheb(f, op, g, pref);
@@ -52,7 +52,7 @@ function [values, giveUp] = composeResample1(op, values, pref, f)
     
     if ( isempty(values) )
         % Choose initial n based upon minSamples.
-        n = 2^ceil(log2(pref.funcheb1.minSamples - 1)) + 1;
+        n = 2^ceil(log2(pref.funcheb.minSamples - 1)) + 1;
     else
         % (Approximately) powers of sqrt(2):
         pow = log2(size(values, 1) - 1);
@@ -65,7 +65,7 @@ function [values, giveUp] = composeResample1(op, values, pref, f)
     end
     
     % n is too large!
-    if ( n > pref.funcheb1.maxSamples )
+    if ( n > pref.funcheb.maxSamples )
         giveUp = true;
         return
     else
@@ -84,7 +84,7 @@ function [values, giveUp] = composeResample2(op, values, pref, f, g)
     
     if ( isempty(values) )
         % Choose initial n based upon minSamples.
-        n = 2^ceil(log2(pref.funcheb1.minSamples - 1)) + 1;
+        n = 2^ceil(log2(pref.funcheb.minSamples - 1)) + 1;
     else
         % (Approximately) powers of sqrt(2):
         pow = log2(size(values, 1) - 1);
@@ -97,7 +97,7 @@ function [values, giveUp] = composeResample2(op, values, pref, f, g)
     end
     
     % n is too large!
-    if ( n > pref.funcheb1.maxSamples )
+    if ( n > pref.funcheb.maxSamples )
         giveUp = true;
         return
     else
