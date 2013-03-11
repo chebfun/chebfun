@@ -45,11 +45,14 @@ else % FUNCHEB + FUNCHEB
     f.values = f.values + g.values;
     f.coeffs = f.coeffs + g.coeffs;
     
-    % Update epslevel:
-    f.epslevel = max(f.epslevel, g.epslevel);
-    
-    % Update scales:
-    f.vscale = max(max(f.vscale, g.vscale), max(abs(f.values), [], 1));
+    % Update vscale and epslevel:
+%     f.epslevel = max(f.epslevel, g.epslevel);
+%     f.vscale = max(max(f.vscale, g.vscale), max(abs(f.values), [], 1));
+    vscale = max(abs(f.values), [], 1);
+    epslevel = max(f.epslevel*f.vscale, g.epslevel*g.vscale)./vscale;
+    epslevel = max(epslevel);
+    f.epslevel = max(min(f.epslevel, g.epslevel), epslevel);
+    f.vscale = vscale;
     
     % Look for a zero output:
     if ( ~any(f.values(:)) || ~any(f.coeffs(:)) )

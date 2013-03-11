@@ -85,16 +85,24 @@ while ( k > 0 )
     
     % Length of polynomial has decreased by 1:
     n = n - 1;
+    
+    % Update:
+    f.epslevel = n*f.epslevel*f.vscale;
+%     v = f.chebpolyval(c);
+%     f.vscale = max(abs(v), [], 1);
 end
+v = f.chebpolyval(c);
+    f.vscale = max(abs(v), [], 1);
+% Store new coefficients and values:
+f.coeffs = c;
+f.values = v;
 
 % Compute new values:
-f.values = f.chebpolyval(c);
+% f.values = f.chebpolyval(c);
 
-% Store new coefficients:
-f.coeffs = c;
-
-% Update the vertical scale:
-f.vscale = max(f.vscale, max(f.values(:)));
+% % Update the vertical scale:
+% % f.vscale = max(f.vscale, max(abs(f.values), [], 1));
+% f.vscale = max(abs(f.values), [], 1);
 
 end
       
