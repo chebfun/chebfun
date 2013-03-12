@@ -69,7 +69,8 @@ R = S*R;                    % Fix R.
 
 f.values = Q;                           % Adjust values of f.
 f.coeffs = f.chebpoly(Q);               % Compute new coeffs.
-f.vscale = max(abs(Q));
+f.vscale = max(abs(Q), [], 1);
+% [TODO]: Update epslevel.
 
 end
 
