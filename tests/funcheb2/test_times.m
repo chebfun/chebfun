@@ -4,7 +4,7 @@ function pass = test_times(pref)
 
 % Get preferences.
 if (nargin < 1)
-    pref = funcheb2.pref();
+    pref = funcheb.pref;
 end
 
 % Generate a few random points to use as test values.
@@ -139,6 +139,7 @@ g_op = @(x) 1./(1 + x.^2);
 g = funcheb2(g_op, pref);
 h1 = f .* g;
 h2 = funcheb2(@(x) f_op(x) .* g_op(x), pref);
+h2 = prolong(h2, length(h1));
 pass(23) = norm(h1.values - h2.values, 'inf') < tol;
 
 %%

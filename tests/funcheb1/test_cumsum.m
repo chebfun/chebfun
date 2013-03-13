@@ -4,11 +4,11 @@ function pass = test_cumsum(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = funcheb1.pref();
+    pref = funcheb.pref;
 end
 
 % Set a tolerance.
-tol = 50*pref.funcheb1.eps;
+tol = 50*pref.funcheb.eps;
 
 % Generate a few random points to use as test values.
 rng(0);
@@ -24,7 +24,7 @@ f = funcheb1(@(x) exp(x) - 1, pref);
 F = cumsum(f);
 F_ex = @(x) exp(x) - x;
 err = feval(F, x) - F_ex(x);
-pass(1) = (std(err) < tol) && ~feval(F, -1);
+pass(1) = (std(err) < tol) && abs(feval(F, -1)) < tol;
 
 f = funcheb1(@(x) 1./(1 + x.^2), pref);
 F = cumsum(f);
@@ -53,7 +53,7 @@ f = funcheb1(@(x) sin(4*x).^2, pref);
 F = funcheb1(@(x) 0.5*x - 0.0625*sin(8*x), pref);
 G = cumsum(f);
 err = G - F;
-pass(5) = (std(err.values) < tol) && ~feval(G, -1);
+pass(5) = (std(err.values) < tol) && abs(feval(G, -1)) < tol;
 
 %%
 % Check that diff(cumsum(f)) == f and that cumsum(diff(f)) == f up to a 

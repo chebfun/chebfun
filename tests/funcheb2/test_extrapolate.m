@@ -4,11 +4,11 @@ function pass = test_extrapolate(varargin)
 if ( nargin == 1 )
     pref = varargin{1};
 else
-    pref = funcheb2.pref;
+    pref = funcheb.pref;
 end
     
 % Set a tolerance:
-tol = 100*pref.funcheb2.eps;
+tol = 100*pref.funcheb.eps;
 
 % Initialise:
 pass = zeros(1,12);

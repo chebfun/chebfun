@@ -23,6 +23,7 @@ if ( isa(c, 'double') )
     end
     
     if ( ~any(c(:)) )  
+        % Division by zero produces a NaN funcheb:
         f = f.make(NaN(1, size(f, 2)));
         
     elseif ( numel(c) == 1 )
@@ -36,10 +37,11 @@ if ( isa(c, 'double') )
         n = size(f.values, 1);   
         f.values = f.values./repmat(c, n, 1);   % Divide values
         f.coeffs = f.coeffs./repmat(c, n, 1);   % Divide coeffs
-        f.vscale = f.vscale/norm(c, inf);       % Divide vscale
+        f.vscale = f.vscale./abs(c);            % Divide vscale
         
         f.values(:, c == 0) = NaN;
         f.coeffs(:, c == 0) = NaN;
+        f.vscale(:, c == 0) = NaN;
         
     end
     
@@ -48,7 +50,7 @@ else
     
     % Obtain preferencess:
     if ( nargin < 3 )
-        pref = c.pref; % c is a FUNCHEB.
+        pref = funcheb.pref; % c is a FUNCHEB.
     end
     
     % Check if c (the denominator) has any roots.

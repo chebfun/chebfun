@@ -5,7 +5,7 @@ function f = diff(f, k, dim)
 %   DIFF(F, K, DIM), where DIM is one of 1 or 2, takes the Kth difference along
 %   dimension DIM. For DIM = 1, this is the same as above. For DIM = 2, this
 %   is a finite difference along the columns of a vectorised FUNCHEB.
-%   If F has L columns, an empty FUNCHEB will be returned for K > L.
+%   If F has L columns, an empty FUNCHEB will be returned for K >= L.
 %
 % See also SUM, CUMSUM.
 
@@ -83,18 +83,28 @@ while ( k > 0 )
     % Compute new coefficients using recurrence:
     c = newcoeffs_der(c);
     
+    c(abs(c)<f.epslevel) = 0;
+    
     % Length of polynomial has decreased by 1:
     n = n - 1;
+    
+    % Update:
+    f.epslevel = n.*log(n)*f.epslevel*f.vscale;
+    v = f.chebpolyval(c);
+    f.vscale = max(abs(v), [], 1);
+    
 end
 
-% Compute new values:
-f.values = f.chebpolyval(c);
-
-% Store new coefficients:
+% Store new coefficients and values:
 f.coeffs = c;
+f.values = v;
 
-% Update the vertical scale:
-f.vscale = max(f.vscale, max(f.values(:)));
+% Compute new values:
+% f.values = f.chebpolyval(c);
+
+% % Update the vertical scale:
+% % f.vscale = max(f.vscale, max(abs(f.values), [], 1));
+% f.vscale = max(abs(f.values), [], 1);
 
 end
       

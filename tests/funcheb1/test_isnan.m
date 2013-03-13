@@ -1,7 +1,7 @@
 function pass = test_isnan(pref)
 
 if ( nargin < 1 )
-    pref = funcheb1.pref;
+    pref = funcheb.pref;
 end
 p = pref;
 

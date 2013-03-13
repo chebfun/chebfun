@@ -14,37 +14,34 @@ classdef funcheb2 < funcheb
 %
 %   FUNCHEB2(OP, VSCALE) constructs a FUNCHEB2 with 'happiness' (see
 %   HAPPINESSCHECK.m) relative to the maximum of the given vertical scale VSCALE
-%   and the (column-wsie) infinity norm of the sampled function values of OP. If
-%   not given, the VSCALE defaults to 0 initially.
-%
-%   FUNCHEB2(OP, VSCALE, HSCALE) uses a 'happiness' to both the vertical scale
-%   VSCALE (as above) and the horizontal scale HSCALE. If not given, this
-%   defaults to 1.
+%   and the (column-wise) infinity norm of the sampled function values of OP,
+%   and the fixed horizontal scale HSCALE. If not given, the VSCALE defaults to
+%   0 initially, and HSCALE defaults to 1.
 %
 %   FUNCHEB2(OP, VSCALE, HSCALE, PREF) overrides the default behavior with that
-%   given by the preference structure PREF. The constructor will also accept
-%   inputs of the form FUNCHEB2(OP, PREF), but this usage is not advised.
-%   Similarly, one can pass FUNCHEB2(OP, VSCALE, PREF). Furthermore, one can
-%   replace PREF by TOL, the desired tolerance of the construction, which is
-%   equivelent to passing a PREF with PREF.FUNCHEB2.eps = TOL.
+%   given by the preference structure PREF. The constructor will also
+%   accept inputs of the form FUNCHEB(OP, PREF), but this usage is not advised.
+%   Similarly, one can pass FUNCHEB(OP, VSCALE, HSCALE, EPS), which is
+%   equivalent to the call FUNCHEB(OP, VSCALE, HSCALE, FUNCHEB.PREF('eps',EPS)).
 %
 %   FUNCHEB2(VALUES, ...) returns a FUNCHEB2 object which interpolates the
 %   values in the columns of VALUES at 2nd-kind Chebyshev points and
 %   FUNCHEB2({VALUES, COEFFS}, ... ) uses the Chebyshev coefficients passed in
-%   COEFFS rather than computing them.
+%   COEFFS rather than computing them from VALUES. If VALUES, is empty then the
+%   FUNCHEB2 is constructed directly from the COEFFS.
 %
 % Examples:
 %   % Basic construction:
 %   f = funcheb2(@(x) sin(x))
 %
 %   % Construction with preferences:
-%   p = funcheb2.pref('sampletest', 0); % See help('funcheb2.pref') for details
+%   p = funcheb.pref('sampletest', 0); % See help('funcheb.pref') for details
 %   f = funcheb2(@(x) sin(x), p)
 %
 %   % Vector-valued construction:
 %   f = funcheb2(@(x) [sin(x), cos(x), exp(x)])
 %
-% See also FUNCHEB2.pref, FUNCHEB2.chebpts, FUNCHEB2.happinesscheck, FUNCHEB2.refine.
+% See also FUNCHEB, FUNCHEB.pref, FUNCHEB2.chebpts, FUNCHEB2.happinesscheck, FUNCHEB2.refine.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -54,39 +51,18 @@ classdef funcheb2 < funcheb
 %
 % The FUNCHEB2 class represents smooth functions on the interval [-1,1] using
 % function values at 2nd-kind Chebyshev points and coefficients of the
-% corresponding first-kind Chebyshev series expansion.
+% corresponding 1st-kind Chebyshev series expansion.
 %
 % The constructor is supplied with a handle that evaluates a given function on
 % an increasingly fine Chebyshev 2nd-kind grid (see REFINE.m) until the
 % representation is deemed 'happy' (see HAPPINESSCHECK.m). The resulting object
 % can be used to evaluate and operate on the input function.
 %
-% The vertical scale VSCALE is used to enforce scale invariance in FUNCHEB2
-% construction and subsequent operations. For example, that 
-%          funcheb2(@(x) 2^300*f(x)) = 2^300*funcheb2(@(x) f(x)). 
-% VSCALE may be optionally passed during to the constructor (if not, it defaults
-% to 0), and during construction it is updated to be the maximum magnitude of
-% the sampled function values.
-%
-% If the input operator OP evaluates to NaN or Inf at any of the sample points
-% used by the constructor, then a suitable replacement is found by extrapolating
-% (globally) from the numeric values (see EXTRAPOLATE.M). If the preference
-% funcheb2.pref('extrapolate', TRUE) is set, then the endpoint values -1 and +1
-% are always extrapolated (i.e., regardless of whether they evaluate to NaN).
-%
-% The FUNCHEB2 class supports the representation of vector-valued functions
-% (for example, f = funcheb2(@(x) [sin(x), cos(x)])). In such cases, the values
-% and coefficients are stored in a matrix (column-wise), and as such each
-% component of the multi-valued function is truncated to the same length, even
-% if the demands of 'happiness' imply that one of the components could be
-% truncated to a shorter length than the others. All FUNCHEB2 methods should
-% accept such vectorised forms. Note that this representation is distinct from
-% an array of funcheb2 objects, such as [funcheb2(@(x) sin(x), funcheb2(@(x)
-% cos(x)], for which there is little to no support.
+% More information can be found in the FUNCH class definition.
 %
 % Class diagram: [<<funcheb>>] <-- [FUNCHEB2]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% Methods implemented by this m-file.
+    %% METHODS IMPLEMENTED BY THIS M-FILE:
     methods
         
         function obj = funcheb2(op, vscale, hscale, pref)
@@ -101,6 +77,7 @@ classdef funcheb2 < funcheb
             if ( nargin < 2 || isempty(vscale) )
                 vscale = 0;
             end
+            % Define hscale if none given:
             if ( nargin < 3 || isempty(hscale) )
                 hscale = 1;
             end
@@ -108,57 +85,59 @@ classdef funcheb2 < funcheb
             % Obtain preferences:
             if ( nargin == 2 && isstruct(vscale) )
                 % vscale was actually a preference.
-                pref = funcheb2.pref(vscale);
+                pref = funcheb.pref(vscale);
                 vscale = 0;
                 hscale = 1;
             elseif ( nargin == 3 && isstruct(hscale) )
                 % hscale was actually a preference.
-                pref = funcheb2.pref(hscale);
+                pref = funcheb.pref(hscale);
                 hscale = 1;                
             elseif ( nargin < 4 )
                 % Create:
-                pref = funcheb2.pref;
+                pref = funcheb.pref;
             elseif ( ~isstruct(pref) )
                 % An eps was passed.
-                pref = funcheb2.pref('eps', pref);
+                pref = funcheb.pref('eps', pref);
             else
                 % Merge:
-                pref = funcheb2.pref(pref);
+                pref = funcheb.pref(pref);
             end
 
             % Force nonadaptive construction if pref.funcheb2.n is numeric:
-            if ( ~isempty(pref.funcheb2.n) && ~isnan(pref.funcheb2.n) )
+            if ( ~isempty(pref.funcheb.n) && ~isnan(pref.funcheb.n) )
                 % Evaluate the op on the Chebyshev grid of given size:
-                op = feval(op, funcheb2.chebpts(pref.funcheb2.n));
+                op = feval(op, funcheb2.chebpts(pref.funcheb.n));
             end
             
             % Actual construction takes place here:
             obj = populate(obj, op, vscale, hscale, pref);
             
+            if ( obj.ishappy || isnumeric(op) || iscell(op) )
+                % No need to error check if we are happy!
+                return
+            end
+            
             % Check for NaNs: (if not happy)
-            if ( ~obj.ishappy && pref.funcheb2.extrapolate )
+            if ( pref.funcheb.extrapolate )
                 % Check for NaNs in interior only: (because extrapolate was on!)
-                if ( any(any(isnan(obj.values(2:end-1,:)))))
+                if ( any(any(isnan(obj.values(2:end-1,:)))) )
                     error('CHEBFUN:FUNCHEB2:constructor:naneval', ...
                         'Function returned NaN when evaluated.')
                 end
                 % We make sure not to return NaNs at +1 and -1.
                 valuesTemp = funcheb2.extrapolate(obj.values);
                 obj.values([1, end],:) = valuesTemp([1, end],:);
-            elseif ( ~obj.ishappy )
+            elseif ( any(isnan(obj.values(:))) )
                 % Here we throw an error if NaNs were encountered anywhere.
-                if ( any(isnan(obj.values(:))) )
-                    error('CHEBFUN:FUNCHEB2:constructor:naneval2', ...
-                        'Function returned NaN when evaluated.')
-                end
+                error('CHEBFUN:FUNCHEB2:constructor:naneval2', ...
+                    'Function returned NaN when evaluated.')
             end
             
         end
         
     end
     
-    %% Static methods implemented by FUNCHEB2 class.
-    % (This list is alphabetical)
+    %% STATIC METHODS IMPLEMENTED BY THIS CLASS:
     methods ( Static = true )
         
         % aliasing.
@@ -183,8 +162,11 @@ classdef funcheb2 < funcheb
         % Extrapolate (for NaNs / endpoints).
         [values, maskNaN, maskInf] = extrapolate(values)
         
+        % Make a FUNCHEB2. (Constructor shortcut)
+        f = make(varargin);
+        
         % Retrieve and modify preferences for this class.
-        prefs = pref(varargin)
+%         prefs = pref(varargin)
         
         % Refinement function for FUNCHEB2 construction. (Evaluates OP on grid)
         [values, points, giveUp] = refine(op, values, pref)
@@ -195,14 +177,19 @@ classdef funcheb2 < funcheb
         % Test the FUNCHEB2 class.
         pass = test(varargin);
         
-        % Make a FUNCHEB2. (Constructor shortcut)
-        f = make(varargin);
     end
     
-    %% Private static methods implemented by FUNCHEB2 class.
-    methods ( Access = public, Static = true )
+    %% METHODS IMPLEMENTED BY THIS CLASS:
+    methods
         
-        %
+        % Compose two FUNCHEB2 objects or a FUNCHEB2 with a function_handle.
+        h = compose(f, op, g, pref)
+        
+        % Get method.
+        val = get(f, prop);
+        
+        % Set method.
+%         f = set(f, prop, val); % [TODO]: Do we actually need a set method?
         
     end
     

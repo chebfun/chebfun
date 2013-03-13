@@ -23,6 +23,14 @@ if ( isfield(prefs, classname) )  % It does, so either:
 else                              % No funcheb prefs found, so make some:
     p.tech        = 'cheb2';
     p.eps         = 2^-52;
+    p.extrapolate = false;
+    p.hscale      = 1;
+    p.minSamples  = 9;    
+    p.maxSamples  = 2^16+1;
+    p.n           = NaN;
+    p.sampletest  = true;
+    p.refinementFunction = 'nested';
+    p.happinessCheck = 'classic';
 end
 % p is now the preference substructure relating to the FUN class.
 

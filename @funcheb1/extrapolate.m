@@ -12,7 +12,7 @@ function [values, maskNaN, maskInf] = extrapolate(values)
 %   then _all_ columns are extrapolated at the point. Thus MASKNAN and MASKINF
 %   are always column vectors, even if VALUES is a matrix.
 %
-% See also FUNCHEB1.pref.
+% See also funcheb.pref.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebun.org/ for Chebfun information.

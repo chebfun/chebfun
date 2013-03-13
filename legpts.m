@@ -71,9 +71,9 @@ elseif ( n == 1 )
     t = 1; 
     return
 elseif ( n == 2 )
-    x = [-1 1]/sqrt(3); 
+    x = [-1 ; 1]/sqrt(3); 
     w = [1 1]; 
-    v = [1 -1]; 
+    v = [1 ; -1]; 
     t = acos(x); 
     return
 end

@@ -4,11 +4,11 @@ function pass = test_diff(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = funcheb1.pref();
+    pref = funcheb.pref;
 end
 
 % Set a tolerance.
-tol = 5e2*pref.funcheb1.eps;
+tol = 5e2*pref.funcheb.eps;
 
 % Generate a few random points to use as test values.
 rand('seed', 6178);

@@ -6,7 +6,7 @@ if ( nargin < 1 )
     pref = funcheb1.pref;
 end
 
-tol = 20*pref.funcheb1.eps;
+tol = 20*pref.funcheb.eps;
 
 n = 14;
 m = 10;

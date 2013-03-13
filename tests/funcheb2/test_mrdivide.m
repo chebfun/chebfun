@@ -4,7 +4,7 @@ function pass = test_mrdivide(pref)
 
 % Get preferences.
 if (nargin < 1)
-    pref = funcheb2.pref();
+    pref = funcheb.pref;
 end
 
 % Generate a few random points to use as test values.

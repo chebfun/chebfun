@@ -20,8 +20,13 @@ elseif ( isa(g, 'double') ) % FUNCHEB + double
     f.values = bsxfun(@plus, f.values, g); % (For when f and g are vectors).
     % Update coeffs:
     f.coeffs(end,:) = f.coeffs(end,:) + g;
+    
     % Update scale:
-    f.vscale = max(f.vscale, max(abs(f.values), [], 1));
+    vscale = max(f.vscale, max(abs(f.values), [], 1));
+    f.epslevel = (f.epslevel*f.vscale + g*eps)./vscale;
+    f.epslevel = max(f.epslevel); % [TODO]: Vector epslevel;
+    f.vscale = vscale;
+    
     
 elseif ( isa(f,'double') ) % double + FUNCHEB
     
@@ -45,11 +50,11 @@ else % FUNCHEB + FUNCHEB
     f.values = f.values + g.values;
     f.coeffs = f.coeffs + g.coeffs;
     
-    % Update epslevel:
-    f.epslevel = max(f.epslevel, g.epslevel);
-    
-    % Update scales:
-    f.vscale = max(max(f.vscale, g.vscale), max(abs(f.values), [], 1));
+    % Update vscale and epslevel:
+    vscale = max(abs(f.values), [], 1);
+    f.epslevel = (f.epslevel*f.vscale + g.epslevel*g.vscale)./vscale;
+    f.epslevel = max(f.epslevel); % [TODO]: Vector epslevel;
+    f.vscale = vscale;
     
     % Look for a zero output:
     if ( ~any(f.values(:)) || ~any(f.coeffs(:)) )

@@ -1,9 +1,9 @@
 function pass = test_prolong(pref)
 
 if ( nargin < 1 )
-    pref = funcheb2.pref;
+    pref = funcheb.pref;
 end
-tol = 10*pref.funcheb2.eps;
+tol = 10*pref.funcheb.eps;
 
 F = @sin;
 f = funcheb2(@(x) F(x), pref);

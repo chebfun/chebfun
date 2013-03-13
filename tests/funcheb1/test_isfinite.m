@@ -1,18 +1,18 @@
 function pass = test_isfinite(pref)
 
 if ( nargin < 1 )
-    pref = funcheb1.pref;
+    pref = funcheb.pref;
 end
 p = pref;
 
 % Test a scalar-valued function:
-p.funcheb1.n = 11;
-y = funcheb1.chebpts(p.funcheb1.n);
+p.funcheb.n = 11;
+y = funcheb1.chebpts(p.funcheb.n);
 f = funcheb1(@(x) 1./(x-y(4)), 0, p);
 pass(1) = ~isfinite(f);
 
 % Test a vector-valued function:
-p.funcheb1.n = 11;
+p.funcheb.n = 11;
 f = funcheb1(@(x) [1./(x-y(4)), x], 0, p);
 pass(2) = ~isfinite(f);
 

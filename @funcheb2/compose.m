@@ -13,6 +13,14 @@ function f = compose(f, op, g, pref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% This file defines the refinement functions which are called by the constructor
+% at the @funcheb level. There are refinement functions for both nested and
+% resampled grids, both for compositions of the form op(f) and op(f, g).
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 nfuns = 2;
 % Parse inputs:
 if ( nargin > 2 && isstruct(g) )
@@ -20,7 +28,7 @@ if ( nargin > 2 && isstruct(g) )
     g = [];
     nfuns = 1;
 elseif ( nargin < 4 )
-    pref = funcheb2.pref();
+    pref = funcheb.pref();
 end
 if ( nargin < 3 || isempty(g) )
     nfuns = 1;
@@ -28,10 +36,10 @@ if ( nargin < 3 || isempty(g) )
 end
 
 % Choose a sampling strategy:
-if ( ~ischar(pref.funcheb2.refinementFunction) )
+if ( ~ischar(pref.funcheb.refinementFunction) )
     % A user-defined refinement has been passed.
-    refFunc = pref.funcheb2.refinementFunction;
-elseif ( strcmp( pref.funcheb2.refinementFunction, 'resampling') )
+    refFunc = pref.funcheb.refinementFunction;
+elseif ( strcmp( pref.funcheb.refinementFunction, 'resampling') )
     if ( nfuns == 1 )   % OP(G1) resampling.
         refFunc = @(op, values, pref) composeResample1(op, values, pref, f);
     else                % OP(G1, G2) resampling.
@@ -45,7 +53,7 @@ else
     end
 end
 % Assign to preference structure:
-pref.funcheb2.refinementFunction = refFunc;
+pref.funcheb.refinementFunction = refFunc;
 
 % Call parent compose:
 f = compose@funcheb(f, op, g, pref);
@@ -57,7 +65,7 @@ function [values, giveUp] = composeResample1(op, values, pref, f)
     
     if ( isempty(values) )
         % Choose initial n based upon minSamples.
-        n = 2^ceil(log2(pref.funcheb2.minSamples - 1)) + 1;
+        n = 2^ceil(log2(pref.funcheb.minSamples - 1)) + 1;
     else
         % (Approximately) powers of sqrt(2):
         pow = log2(size(values, 1) - 1);
@@ -70,7 +78,7 @@ function [values, giveUp] = composeResample1(op, values, pref, f)
     end
     
     % n is too large!
-    if ( n > pref.funcheb2.maxSamples )
+    if ( n > pref.funcheb.maxSamples )
         giveUp = true;
         return
     else
@@ -82,7 +90,7 @@ function [values, giveUp] = composeResample1(op, values, pref, f)
     v1 = f.values;
 
     % Evaluate the operator
-    if ( pref.funcheb2.extrapolate )
+    if ( pref.funcheb.extrapolate )
         % Avoid evaluating the endpoints:
         valuesTemp = feval(op, v1(2:n-1,:));
         nans = NaN(1, size(valuesTemp, 2));
@@ -97,7 +105,7 @@ function [values, giveUp] = composeResample2(op, values, pref, f, g)
     
     if ( isempty(values) )
         % Choose initial n based upon minSamples.
-        n = 2^ceil(log2(pref.funcheb2.minSamples - 1)) + 1;
+        n = 2^ceil(log2(pref.funcheb.minSamples - 1)) + 1;
     else
         % (Approximately) powers of sqrt(2):
         pow = log2(size(values, 1) - 1);
@@ -110,7 +118,7 @@ function [values, giveUp] = composeResample2(op, values, pref, f, g)
     end
     
     % n is too large!
-    if ( n > pref.funcheb2.maxSamples )
+    if ( n > pref.funcheb.maxSamples )
         giveUp = true;
         return
     else
@@ -123,7 +131,7 @@ function [values, giveUp] = composeResample2(op, values, pref, f, g)
     g = prolong(g, n);
     v2 = g.values;
 
-    if ( pref.funcheb2.extrapolate )
+    if ( pref.funcheb.extrapolate )
         % Avoid evaluating the endpoints:
         valuesTemp = feval(op, v1(2:n-1,:), v2(2:n-1));
         nans = NaN(1, size(valuesTemp, 2));
@@ -145,7 +153,7 @@ function [values, giveUp] = composeNested1(op, values, pref, f)
         n = 2*size(values, 1) - 1;
         
         % n is too large!
-        if ( n > pref.funcheb2.maxSamples )
+        if ( n > pref.funcheb.maxSamples )
             giveUp = true;
             return
         else
@@ -176,7 +184,7 @@ function [values, giveUp] = composeNested2(op, values, pref, f, g)
         n = 2*size(values, 1) - 1;
         
         % n is too large!
-        if ( n > pref.funcheb2.maxSamples )
+        if ( n > pref.funcheb.maxSamples )
             giveUp = true;
             return
         else

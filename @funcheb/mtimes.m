@@ -35,7 +35,13 @@ elseif ( isa(c, 'double') )         % FUNCHEB * double
     
     f.values = f.values*c;
     f.coeffs = f.coeffs*c;
-    f.vscale = f.vscale*abs(c);
+    if ( numel(c) == 1 )
+        f.vscale = f.vscale*abs(c);
+        f.epslevel = f.epslevel + eps;
+    else
+        f.vscale = max(abs(f.values), [], 1);
+        % [TODO]: Figure out epslevel.
+    end
     
     % If the vertical scale is zero, then set the FUNCHEB to zero:
     if ( all(f.vscale == 0) )
