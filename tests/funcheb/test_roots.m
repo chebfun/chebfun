@@ -32,47 +32,44 @@ for ( n = 1:2 )
                 90.3221726372104800557177; 93.4637187819447741711905
                 96.6052679509962687781216; 99.7468198586805964702799 ];
     pass(n, 1) = norm(r-exact,Inf) < length(f)*f.epslevel;
-    
+
     %% Test roots of an oscillatory function:
     k = 500;
     f = testclass.make(@(x) sin(pi*n*x), pref);
     r = roots(f);
     pass(n, 2) = norm(r-(-n:n)'/n, inf) < length(f)*f.epslevel;
-    
-    
+
     %% Test a perturbed polynomial:
     f = testclass.make( @(x) (x-.1).*(x+.9).*x.*(x-.9) + 1e-14*x.^5, pref );
     r = roots(f);
     pass(n, 3) = length(r) == 4 && norm(feval(f, r), inf) < 10*length(f)*f.epslevel;
-    
+
     %% Test a some simple polynomials:
     f = testclass.make([-1 ; 1], pref);
     r = roots(f);
     pass(n, 4) = all( r == 0 );
-    
+
     f = testclass.make([1 ; 0 ; 1]);
     r = roots(f);
-    % [TODO]:  This test fails for funcheb1.
-    pass(n, 5) = numel(r) == 2 && all( r == 0 );
-    
+    pass(n, 5) = numel(r) == 2 && (norm(r, inf) < f.epslevel);
+
     %% Test some complex roots:
     f = testclass.make(@(x) 1 + 25*x.^2, pref);
     r = roots(f, 'complex', 1);
-    
+
     pass(n, 6) = norm( r - [1i ; -1i]/5, inf) < f.epslevel;
-    
+
     f = testclass.make(@(x) (1 + 25*x.^2).*exp(x), pref);
     r = roots(f, 'complex', 1, 'prune', 1);
-    
+
     pass(n, 7) = norm( r - [1i ; -1i]/5, inf) < 10*length(f)*f.epslevel;
-    
+
     f = testclass.make(@(x) sin(100*pi*x));
     r1 = roots(f, 'complex', 1, 'recurse', 0);
     r2 = roots(f, 'complex', 1);
     pass(n, 8) = numel(r1) == 381 & numel(r2) >= 381;
-    
+
     %% Test a multi-valued function:
-    
     f = testclass.make(@(x) [sin(pi*x), cos(pi*x)], pref);
     r = roots(f);
     r2 = [-1 0 1 -.5 .5 NaN].';

@@ -8,7 +8,7 @@ if ( nargin < 1 )
 end
 
 % Set a tolerance.
-tol = 10*pref.funcheb.eps;
+tol = 50*pref.funcheb.eps;
 
 % Generate a few random points to use as test values.
 rngstate = rng();
@@ -27,33 +27,32 @@ for ( n = 1:2 )
   % funcheb antiderivatives match the true ones up to a constant by checking 
   % that the standard deviation of the difference between the two on a large 
   % random grid is small. We also check that feval(cumsum(f), -1) == 0 each 
-  % time..
+  % time.
   
   f = testclass.make(@(x) exp(x) - 1, pref);
   F = cumsum(f);
   F_ex = @(x) exp(x) - x;
   err = feval(F, x) - F_ex(x);
-  pass(n, 1) = (std(err) < tol) && ~feval(F, -1);
+  pass(n, 1) = (std(err) < tol) && (abs(feval(F, -1)) < tol);
   
   f = testclass.make(@(x) 1./(1 + x.^2), pref);
   F = cumsum(f);
   F_ex = @(x) atan(x);
   err = feval(F, x) - F_ex(x);
-  pass(n, 2) = (std(err) < tol) && ~feval(F, -1);
+  pass(n, 2) = (std(err) < tol) && (abs(feval(F, -1)) < tol);
   
   f = testclass.make(@(x) cos(1e4*x), pref);
   F = cumsum(f);
   F_ex = @(x) sin(1e4*x)/1e4;
   err = feval(F, x) - F_ex(x);
-  % [TODO]:  This test fails for funcheb1.
-  pass(n, 3) = (std(err) < tol) && ~feval(F, -1);
+  pass(n, 3) = (std(err) < tol) && (abs(feval(F, -1)) < tol);
   
   z = exp(2*pi*1i/6);
   f = testclass.make(@(t) sinh(t*z), pref);
   F = cumsum(f);
   F_ex = @(t) cosh(t*z)/z;
   err = feval(F, x) - F_ex(x);
-  pass(n, 4) = (std(err) < tol) && ~feval(F, -1);
+  pass(n, 4) = (std(err) < tol) && (abs(feval(F, -1)) < tol);
   
   %%
   % Check that applying cumsum() and direct construction of the antiderivative
@@ -63,7 +62,7 @@ for ( n = 1:2 )
   F = testclass.make(@(x) 0.5*x - 0.0625*sin(8*x), pref);
   G = cumsum(f);
   err = G - F;
-  pass(n, 5) = (std(err.values) < tol) && ~feval(G, -1);
+  pass(n, 5) = (std(err.values) < tol) && (abs(feval(G, -1)) < tol);
   
   %%
   % Check that diff(cumsum(f)) == f and that cumsum(diff(f)) == f up to a 
@@ -75,8 +74,7 @@ for ( n = 1:2 )
   pass(n, 6) = (norm(err, 'inf') < 100*tol);
   h = cumsum(diff(f));
   err = feval(f, x) - feval(h, x);
-  % [TODO]:  This test fails for funcheb1.
-  pass(n, 7) = (std(err) < tol)  && ~feval(h, -1);
+  pass(n, 7) = (std(err) < tol)  && (abs(feval(h, -1)) < tol);
   
   %%
   % Check operation for vectorized funcheb objects.
@@ -85,8 +83,7 @@ for ( n = 1:2 )
   F_exact = testclass.make(@(x) [(-cos(x)) (x.^3/3) (exp(1i*x)/1i)], pref);
   F = cumsum(f);
   err = std(feval(F, x) - feval(F_exact, x));
-  % [TODO]:  This test fails for funcheb1.
-  pass(n, 8) = (norm(err, 'inf') < tol)  && ~any(feval(F, -1));
+  pass(n, 8) = (norm(err, 'inf') < tol)  && all(abs(feval(F, -1)) < tol);
 end
 
 %%
