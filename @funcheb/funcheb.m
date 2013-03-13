@@ -79,9 +79,12 @@ classdef funcheb %< smoothfun % (Abstract)
 %
 % EPSLEVEL is the happiness level to which the FUNCHEB was constructed (See
 % HAPPINESSCHECK.m for full documentation) or a rough accuracy estimate of
-% subsequent operations, both relative to VSCALE. Here is a rough guide to how
-% scale and accuracy information is propogated in subsequent operations after
-% construction:
+% subsequent operations, both relative to VSCALE. Therefore EPSLEVEL could be
+% regarded as the number of correct digits in the sampled value that created
+% VSCALE. 
+%
+% Here is a rough guide to how scale and accuracy information is propogated in
+% subsequent operations after construction:
 %   h = f + c:      
 %     h.vscale = max(h.values, [], 1);
 %     h.epslevel = (f.epslevel*f.vscale + c*eps)/h.vscale;   % eps(c)/c?
@@ -93,11 +96,10 @@ classdef funcheb %< smoothfun % (Abstract)
 %   h = f + g:      
 %     h.vscale = max(abs(h.values), [], 1);
 %     h.epslevel = (f.epslevel*f.vscale + g.epslevel*g.vscale)/h.vscale
-%     % Note that h.epslevel should not be better than any of its inputs!
 % 
 %   h = f .* g:
 %     h.vscale = max(abs(h.values), [], 1);
-%     h.epslevel = (f.epslevel*g.vscale + g.epslevel*f.vscale)/h.vscale
+%     h.epslevel = (f.epslevel + g.epslevel) * (f.vscale*g.vscale)/h.vscale
 % 
 %   h = diff(f):
 %     h.vscale = max(abs(h.values), [], 1);
@@ -274,7 +276,7 @@ classdef funcheb %< smoothfun % (Abstract)
         h = chebpolyplot(f, varargin)
         
         % Check the happiness of a FUNCHEB. (Classic definition).
-        [ishappy, cutoff, epslevel] = classicCheck(f, pref)
+        [ishappy, epslevel, cutoff] = classicCheck(f, pref)
         
         % Complex conjugate of a FUNCHEB.
         f = conj(f)
