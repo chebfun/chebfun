@@ -189,9 +189,6 @@ classdef funcheb1 < funcheb
         % Compute Chebyshev quadrature weights.
         w = quadwts(n)
         
-        % Test the FUNCHEB1 class.
-        pass = test(varargin);
-
     end
     
     %% Private static methods implemented by FUNCHEB1 class.

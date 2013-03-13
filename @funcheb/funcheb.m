@@ -261,9 +261,6 @@ classdef funcheb %< smoothfun % (Abstract)
         % Compute Chebyshev quadrature weights.
         w = quadwts(n)
         
-        % Test this class.
-        pass = test(); % [TODO]: This should be inherited from smoothfun.
-        
     end
     
     %% METHODS IMPLEMENTED BY THIS CLASS.

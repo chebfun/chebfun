@@ -174,9 +174,6 @@ classdef funcheb2 < funcheb
         % Compute Chebyshev quadrature weights.
         w = quadwts(n)
         
-        % Test the FUNCHEB2 class.
-        pass = test(varargin);
-        
     end
     
     %% METHODS IMPLEMENTED BY THIS CLASS:
