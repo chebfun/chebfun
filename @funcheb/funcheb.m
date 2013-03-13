@@ -79,36 +79,31 @@ classdef funcheb %< smoothfun % (Abstract)
 %
 % EPSLEVEL is the happiness level to which the FUNCHEB was constructed (See
 % HAPPINESSCHECK.m for full documentation) or a rough accuracy estimate of
-% subsequent operations. Here is a rough guide to how scale and accuracy
-% information is propogated in subsequent operations after construction:
+% subsequent operations, both relative to VSCALE. Therefore EPSLEVEL could be
+% regarded as the number of correct digits in the sampled value that created
+% VSCALE. 
+%
+% Here is a rough guide to how scale and accuracy information is propogated in
+% subsequent operations after construction:
 %   h = f + c:      
-%     h.hscale = f.hscale;
 %     h.vscale = max(h.values, [], 1);
-%     h.epslevel = max(f.epslevel*f.vscale, c*eps)/h.vscale; % c*eps(c)/c?
-%     h.epslevel = max(eps, h.epslevel);                     % eps(c)/c?
-%     % Note that h.epslevel should not be better than any of its inputs!
+%     h.epslevel = (f.epslevel*f.vscale + c*eps)/h.vscale;   % eps(c)/c?
 %                  
 %   h = f * c:      
-%     h.hscale = f.hscale;
-%     h.vscale = max(h.values, [], 1);
-%     h.epslevel = f.epslevel;
+%     h.vscale = max(abs(h.values), [], 1) = abs(c)*f.vscale;
+%     h.epslevel = f.epslevel + eps; % eps(c)/c?
 % 
 %   h = f + g:      
-%     h.hscale = min(f.hscale, g.hscale);
 %     h.vscale = max(abs(h.values), [], 1);
-%     h.epslevel = max(f.epslevel*f.vscale, g.epslevel*g.vscale)/h.vscale
-%     h.epslevel = max(min(f.epslevel, g.epslevel), h.epslevel) 
-%     % Note that h.epslevel should not be better than any of its inputs!
+%     h.epslevel = (f.epslevel*f.vscale + g.epslevel*g.vscale)/h.vscale
 % 
 %   h = f .* g:
-%     h.hscale = min(f.hscale, g.hscale);
 %     h.vscale = max(abs(h.values), [], 1);
-%     h.epslevel = max(f.epslevel*f.vscale, g.epslevel*g.vscale)/h.vscale
+%     h.epslevel = (f.epslevel + g.epslevel) * (f.vscale*g.vscale)/h.vscale
 % 
 %   h = diff(f):
-%     h.hscale = f.hscale;
 %     h.vscale = max(abs(h.values), [], 1);
-%     h.epslevel = n*f.epslevel*f.vscale; % *(h.vscale/h.vscale)
+%     h.epslevel = n*log(n)f.epslevel*f.vscale; % *(h.vscale/h.vscale)
 %     % We don't divide by h.vscale here as we must also multiply by it.
 %
 % If the input operator OP evaluates to NaN or Inf at any of the sample points
@@ -278,10 +273,10 @@ classdef funcheb %< smoothfun % (Abstract)
         f = cell2mat(f)
         
         % Plot (semilogy) the Chebyshev coefficients of a FUNCHEB object.
-        h = chebpolyplot(f)
+        h = chebpolyplot(f, varargin)
         
         % Check the happiness of a FUNCHEB. (Classic definition).
-        [ishappy, cutoff, epslevel] = classicCheck(f, pref)
+        [ishappy, epslevel, cutoff] = classicCheck(f, pref)
         
         % Complex conjugate of a FUNCHEB.
         f = conj(f)
@@ -389,7 +384,7 @@ classdef funcheb %< smoothfun % (Abstract)
         pass = sampleTest(op, f)
         
         % Trim trailing Chebyshev coefficients of a FUNCHEB object. 
-        f = simplify(f, pref)
+        f = simplify(f, pref, force)
         
         % Size of a FUNCHEB.
         [siz1, siz2] = size(f, varargin)

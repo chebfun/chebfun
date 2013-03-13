@@ -38,6 +38,7 @@ elseif ( isa(g, 'double') )     % FUNCHEB * double
         f.coeffs = f.coeffs*g;
         f.vscale = f.vscale*abs(g);
     end
+    f.epslevel = f.epslevel + eps;
     
     return
     
@@ -101,15 +102,15 @@ else
    values = fNew.values.*gNew.values;
 end
 
-% Update scales:
-vscale = max(abs(values), [], 1);
-epslevel = max(f.epslevel, g.epslevel);
-
-% Assign back to f:
+% Assign values and coeffs back to f:
 f.values = values;
 f.coeffs = f.chebpoly(values);
+
+% Update scales:
+vscale = max(abs(f.values), [], 1);
+f.epslevel = (f.epslevel + g.epslevel) * (f.vscale.*g.vscale./vscale);
+f.epslevel = max(f.epslevel); % [TODO]: Vector epslevel;
 f.vscale  = vscale;
-f.epslevel = epslevel;
 
 % Simplify!
 f = simplify(f, pref);

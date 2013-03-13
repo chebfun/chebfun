@@ -1,4 +1,4 @@
-function f = simplify(f, pref)
+function f = simplify(f, pref, type)
 %SIMPLIFY  Trim trailing Chebyshev coefficients of a FUNCHEB object. 
 %   G = SIMPLIFY(F) attempts to compute a 'simplified' version G of the FUNCHEB
 %   object F such that length(G) <= length(F) but ||G - F|| < F.epslevel.
@@ -22,6 +22,13 @@ end
 % Grab some preferences:
 if ( nargin < 2 )
     pref = funcheb.pref();
+elseif ( isnumeric(pref) )
+    pref = funcheb.pref('eps', pref);
+elseif ( ~isstruct(pref) )
+    pref = funcheb.pref('happinessCheck', pref);
+end
+if ( nargin == 3 )
+    pref.funcheb.happinessCheck = type;
 end
 
 % Take max of pref.eps and epslevel:
@@ -29,10 +36,9 @@ pref.funcheb.eps = max(pref.funcheb.eps, f.epslevel);
 
 % Check to see if we can trim the tail:
 [ishappy, epslevel, cutoff] = happinessCheck(f, pref);
-
 % Trim/alias it with prolong:
 f.ishappy = ishappy | f.ishappy;
 f.epslevel = epslevel;
-f = prolong(f, cutoff); 
-    
+f = prolong(f, cutoff);
+ 
 end

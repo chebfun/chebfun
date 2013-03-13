@@ -49,7 +49,7 @@ if ( strcmpi(pref.funcheb.happinessCheck, 'classic') )
     % Use the default happiness check procedure from Chebfun V4.
     
     % Check the coefficients are happy:
-    [ishappy, cutoff, epslevel] = classicCheck(f, pref);
+    [ishappy, epslevel, cutoff] = classicCheck(f, pref);
 
 elseif ( strcmpi(pref.funcheb.happinessCheck, 'strict') )
     % Use the 'strict' happiness check:

@@ -1,17 +1,17 @@
-function [ishappy, cutoff, epslevel] = classicCheck(f, pref)
+function [ishappy, epslevel, cutoff] = classicCheck(f, pref)
 %CLASSICCHECK  Attempt to trim trailing Chebyshev coefficients in a FUNCHEB.
-%   [ISHAPPY, CUTOFF, EPSLEVEL] = CLASSICCHECK(F) returns an estimated location
+%   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F) returns an estimated location
 %   the CUTOFF at which the FUNCHEB F could be truncated to maintain an accuracy
 %   of EPSLEVEL relative to F.vscale and F.hscale. ISHAPPY is logical TRUE if
-%   cutoff < length(F.values) and FALSE otherwise.
+%   CUTOFF < min(length(F.values),2) or F.vscale = 0, and FALSE otherwise
 %
-%   [ISHAPPY, CUTOFF, EPSLEVEL] = CLASSICCHECK(F, PREF) allows additional
+%   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F, PREF) allows additional
 %   preferences to be passed. In particular, one can adjust the target accuracy
 %   with PREF.funcheb.EPS.
 %
 %   CLASSICCHECK first queries HAPPINESSREQUIREMENTS to obtain TESTLENGTH and
 %   EPSLEVEL (see documentation below). If |F.COEFFS(1:TESTLENGTH)|/VSCALE <
-%   EPSLEVEL, then the representation defined by F>VALUES and F.COEFFS is
+%   EPSLEVEL, then the representation defined by F.VALUES and F.COEFFS is
 %   deemed happy. The value returned in CUTOFF is essentially that from
 %   TESTLENGTH (although it can be reduced if there are further COEFFS which
 %   fall below EPSLEVEL).
