@@ -17,41 +17,43 @@ function [values, maskNaN, maskInf] = extrapolate(values)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebun.org/ for Chebfun information.
 
+% Bookkeep all bad points including NaNs and Infs.
+
 maskNaN = any(isnan(values), 2);
 maskInf = any(isinf(values), 2);
 mask = maskNaN | maskInf;
 
-if ( any(mask) )
+if ( any(mask) )  % Do extrapolation if there is any bad point.
     
-    % Obtain Chebyshev points
+    % Compute the Chebyshev points of 1st kind
     n = size(values, 1);
     x = funcheb1.chebpts(n);
 
-    % The good:
+    % The good points:
     xgood = x(~mask);
     if ( isempty(xgood) )
         error('CHEBFUN:FUNCHEB1:extrapolate:nans', ...
             'Too many NaNs to handle.')
     end
     
-    % The bad:
+    % The bad points:
     xnan = x(mask);
     
-    % Compute barycentric weights:
-    w = funcheb1.barywts(n);
-    w = w(~mask);
+    % Compute the modified barycentric weights:
+    w = funcheb1.barywts(n); % barycentric weights
+    w = w(~mask); % barycentric weights corresponding to good points
     for k = 1:length(xnan)
-        w = w.*( xgood - xnan(k) );
+        w = w.*( xgood - xnan(k) ); % compute the modified barycentric weights
     end
     
     % Barycentric formula of the second (true) kind:
-    newvals = zeros(length(xnan), size(values, 2));
+    newvals = zeros(length(xnan), size(values, 2)); % preallocate the storage for extrapolated values at the bad points.
     for k = 1:length(xnan)
-        w2 = w./(xnan(k) - xgood);
+        w2 = w./(xnan(k) - xgood); % compute the weights
         newvals(k,:) = (w2.'*values(~mask,:)) / sum(w2);
     end
     
-    % Update the values:
+    % Update the values at the bad points:
     values(mask,:) = newvals;
     
 end
