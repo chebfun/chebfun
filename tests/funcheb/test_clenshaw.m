@@ -7,18 +7,18 @@ tol = 10*eps;
 % Test that a single coefficient is evaluated correctly:
 % For a scalar evaluation:
 c = sqrt(2);
-v = testclass.clenshaw(0, c);
-pass(n, 1) = c == v;
+v = funcheb.clenshaw(0, c);
+pass(1) = c == v;
 
 % For a vector evaluation:
 x = [-.5 ; 1];
-v = testclass.clenshaw(x, c);
-pass(n, 2) = ( all(size(v) == [2, 1]) && all(c == v) );
+v = funcheb.clenshaw(x, c);
+pass(2) = ( all(size(v) == [2, 1]) && all(c == v) );
 
 % For a row vector evaluation with column coefficients:
 c = [c, c, c];
-v = testclass.clenshaw(x, c);
-pass(n, 3) = ( all(size(v) == [2, 3]) && norm(repmat(c, 2, 1) - v) == 0);
+v = funcheb.clenshaw(x, c);
+pass(3) = ( all(size(v) == [2, 3]) && norm(repmat(c, 2, 1) - v) == 0);
 
 %%
 % Test that a vector coefficient is evaluated correctly:
@@ -27,14 +27,14 @@ c = (1:5).';
 x = [-.5 ; -.1 ; 1];
 
 % Scalar coefficient
-v = testclass.clenshaw(x, c);
+v = funcheb.clenshaw(x, c);
 % Exact values:
 vTrue = [3 ; 3.1728 ; 15];
-pass(n, 4) = norm(v - vTrue, inf) < tol;
+pass(4) = norm(v - vTrue, inf) < tol;
 
 % In vectorised form:
 vTrue2 = [0 ; 3.6480 ; 15];
-v = testclass.clenshaw(x, [c, c(end:-1:1)]);
-pass(n, 5) = norm(v - [vTrue, vTrue2], inf) < tol;
+v = funcheb.clenshaw(x, [c, c(end:-1:1)]);
+pass(5) = norm(v - [vTrue, vTrue2], inf) < tol;
 
 end

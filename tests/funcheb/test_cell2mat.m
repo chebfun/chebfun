@@ -17,9 +17,6 @@ for (n = 1:2)
     
     F = cell2mat([g h]);
     pass(n, 1) = all( sum(F - f) < f.vscale*f.epslevel );
-
-    % [TODO]:  This test fails for funcheb1.
-    %pass(n, 2) = all( F.vscale == [sin(1) cos(0) exp(1)] );
 end
 
 end
