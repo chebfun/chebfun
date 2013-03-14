@@ -16,7 +16,6 @@ for ( n = 1:2 )
 
     %%
     % Spot-check the extrema for a few functions.
-
     pass(n, 1) = test_spotcheck_max(testclass, @(x) ...
         ((x-0.2).^3 -(x-0.2) + 1).*sec(x-0.2), ...
         1.884217141925336, pref);
@@ -28,7 +27,6 @@ for ( n = 1:2 )
 
     %%
     % Check operation for vectorized inputs.
-
     fun_op = @(x) [sin(10*x) airy(x) (x - 0.25).^3.*cosh(x)];
     f = testclass.make(fun_op, pref);
     [y, x] = max(f);
@@ -40,8 +38,8 @@ for ( n = 1:2 )
     %%
     % Test for complex-valued funcheb objects.
     pass(n, 7) = test_spotcheck_max(testclass, ...
-        @(x) x.*(exp(1i*x)+1i*sin(x)), ...
-        -0.540302305868140 + 1.682941969615793i, pref);
+        @(x) (x - 0.2).*(exp(1i*(x - 0.2))+1i*sin(x - 0.2)), ...
+        -0.434829305372008 + 2.236893806321343i, pref);
 
     z = @(x) (x - 0.3 + 1i).^3 - 2i;
     fun_op = @(x) [sin(z(x)) sinh(z(x))];
@@ -49,7 +47,6 @@ for ( n = 1:2 )
     [y, x] = max(f);
     exact_max = [-10.017874927409903i 3.626860407847019];
     fx = [sin(z(x(1))) sinh(z(x(2)))];
-    % [TODO]:  This test fails for funcheb1.
     pass(n, 8) = (all(abs(y - exact_max) < 50*f.epslevel) && ...
                   all(abs(fx - exact_max) < 50*f.epslevel));
 end
