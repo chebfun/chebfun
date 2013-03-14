@@ -14,12 +14,14 @@ for ( n = 1:2 )
 
     % Test a scalar-valued function:
     p.funcheb.n = 11;
-    f = testclass.make(@(x) 1./x, 0, p);
+    y = testclass.chebpts(p.funcheb.n); % Force singularity to fall on grid.
+    f = testclass.make(@(x) 1./(x - y(4)), 0, p);
     pass(n, 1) = ~isfinite(f);
     
     % Test a vector-valued function:
     p.funcheb.n = 11;
-    f = testclass.make(@(x) [1./x, x], 0, p);
+    y = testclass.chebpts(p.funcheb.n); % Force singularity to fall on grid.
+    f = testclass.make(@(x) [1./(x - y(4)), x], 0, p);
     pass(n, 2) = ~isfinite(f);
     
     % Test a finite scalar-valued function:
