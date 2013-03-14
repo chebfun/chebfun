@@ -10,7 +10,7 @@ end
 for ( n = 1:2 )
     if ( n == 1 )
         testclass = funcheb1();
-    else 
+    else
         testclass = funcheb2();
     end
 
@@ -43,14 +43,15 @@ for ( n = 1:2 )
         @(x) x.*(exp(1i*x)+1i*sin(x)), ...
         -0.540302305868140 + 1.682941969615793i, pref);
 
-    fun_op = @(x) [sin(1i*x) tan(-1i*x)];
+    z = @(x) (x - 0.3 + 1i).^3 - 2i;
+    fun_op = @(x) [sin(z(x)) sinh(z(x))];
     f = testclass.make(fun_op, pref);
     [y, x] = max(f);
-    exact_max = [1.175201193643801i 0.761594155955765i];
-    fx = [sin(1i*x(1)) tan(-1i*x(2))];
+    exact_max = [-10.017874927409903i 3.626860407847019];
+    fx = [sin(z(x(1))) sinh(z(x(2)))];
     % [TODO]:  This test fails for funcheb1.
-    pass(n, 8) = (all(abs(y - exact_max) < 10*f.epslevel) && ...
-               all(abs(fx - exact_max) < 10*f.epslevel));
+    pass(n, 8) = (all(abs(y - exact_max) < 50*f.epslevel) && ...
+                  all(abs(fx - exact_max) < 50*f.epslevel));
 end
 
 end
@@ -61,7 +62,7 @@ function result = test_spotcheck_max(testclass, fun_op, exact_max, pref)
 f = testclass.make(fun_op, pref);
 [y, x] = max(f);
 fx = fun_op(x);
-result = (all(abs(y - exact_max) < 10*f.epslevel) && ... 
+result = (all(abs(y - exact_max) < 10*f.epslevel) && ...
           all(abs(fx - exact_max) < 10*f.epslevel));
 
 end
