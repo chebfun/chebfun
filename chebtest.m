@@ -176,7 +176,6 @@ timeFile = sum(timeFile);
 end
 
 
-% [TODO]:  Add documentation.
 function printTestInfo(testDir, testFile, k, maxLength)
 %PRINTTESTINFO  Pretty print test info for a given test file.
 %
@@ -189,8 +188,8 @@ function printTestInfo(testDir, testFile, k, maxLength)
 % TESTFILE in TESTDIR is aligned.
 %
 % Furthermore, PRINTTESTINFO tests to see if the Matlab desktop is running and
-% will support HTML. If it is, the displayed the displayed TESTDIR/TESTFILE.m is 
-% hyeperlinked to open TESTFILE.m in the Matlab editor.
+% will support HTML. If it is, the displayed the displayed TESTDIR/TESTFILE.m
+% is hyperlinked to open TESTFILE.m in the Matlab editor.
 
 if ( usejava('jvm') && usejava('desktop') )
     % Use HTML links if Java is enabled. 
@@ -207,9 +206,8 @@ fprintf('  Test #%3.3d: %s ...%s', k, link, ws);       % Print to screen.
 end
 
 
-% [TODO]:  Add documentation.
 function [pass, time, resultStr] = runTest(testFile)
-%runTest Runs all the given test.
+%RUNTEST Runs the given test file.
 %   [PASS, TIME, RESULTSTR] = RUNTEST(TESTFILE) executes the file TESTFILE.
 %   TESTFILE should return a vector or matrix of logical values. 
 %
