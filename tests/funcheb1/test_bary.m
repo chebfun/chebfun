@@ -3,7 +3,7 @@ function pass = test_bary(pref)
 % [TODO]: This test is rubbish!
 
 if ( nargin < 1 )
-    pref = funcheb1.pref;
+    pref = funcheb.pref;
 end
 
 tol = 20*pref.funcheb.eps;
