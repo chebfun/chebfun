@@ -23,7 +23,7 @@ function [ishappy, epslevel, cutoff] = strictCheck(f, pref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Deal with special cases -------------------------------------------------------
+% Deal with special cases ------------------------------------------------------
 
 % Determine n (the length of the input).
 n = length(f);

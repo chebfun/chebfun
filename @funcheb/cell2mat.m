@@ -1,7 +1,7 @@
 function g = cell2mat(f)
-%MAT2CELL  Convert an ARRAY of FUNCHEB objects into a vector-valued FUNCHEB.
+%CELL2MAT  Convert an array of FUNCHEB objects into a vector-valued FUNCHEB.
 %
-%   G = CELL2MAT(F) converts the FUNCHEB array F in to a single vector-valued
+%   G = CELL2MAT(F) converts the FUNCHEB array F into a single vector-valued
 %   FUNCHEB G. F should be a vector array (i.e., not a matrix).
 %
 % Example:

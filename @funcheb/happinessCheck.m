@@ -11,13 +11,13 @@ function  [ishappy, epslevel, cutoff] = happinessCheck(f, op, pref)
 %   and CUTOFF is returned as size(f.values, 1).
 %
 %   HAPPINESSCHECK(F, OP, PREF) allows different preferences to be used; in
-%   particular PREF.funcheb.eps as the target tolerance for happiness.
+%   particular PREF.funcheb.eps sets the target tolerance for happiness.
 %
 %   Furthermore, alternative definitions of happiness can be chosen by setting
 %   the PREF.funcheb.happinessCheck field. This field may be one of the built
-%   in checks: 'CLASSIC', 'STRICT', 'LOOSE', or a function handle pointing the a
+%   in checks: 'CLASSIC', 'STRICT', 'LOOSE', or a function handle pointing to a
 %   function with the template [ISHAPPY, EPSLEVEL, CUTOFF] = @(F, PREF). The
-%   built in check are:
+%   built in checks are:
 %      CLASSIC: Chooses an EPSLEVEL based upon the length on the 'tail' and a
 %               finite difference gradient approximation.
 %      STRICT : The tail _must_ be below that specified by PREF.funcheb.eps.

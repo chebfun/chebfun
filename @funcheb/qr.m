@@ -1,9 +1,9 @@
 function [f, R, E] = qr(f, flag)
 %QR     QR factorisation of a multivalued FUNCHEB.
 %   [Q, R] = QR(F) returns a QR factorisation of F such that F = Q*R, where the
-%   FUNCHEB Q is orthogonal (wrt the continuous L^2 norm on [-1,1]) and of the
-%   same size as F and R is an m x m upper-triangular matrix when F has m
-%   columns.
+%   FUNCHEB Q is orthogonal (with respect to the continuous L^2 norm on [-1,1])
+%   and of the same size as F and R is an m x m upper-triangular matrix when F
+%   has m columns.
 %
 %   [Q, R, E] = qr(A) produces unitary Q, upper-triangular R, and a permutation
 %   matrix E so that A*E = Q*R. The column permutation E is chosen to reduce

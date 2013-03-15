@@ -1,8 +1,8 @@
 function X = mldivide(A, B)
 %\	Left matrix divide for FUNCHEB objects.
 %
-%   A\B returns the least squares solution (wrt the continuous L^2 norm) of A*X
-%   = B where A and B FUNCHEB objects.
+%   A\B returns the least squares solution (with respect to the continuous L^2
+%   norm) of A*X = B where A and B FUNCHEB objects.
 %
 % See also QR, MRDIVIDE.
 

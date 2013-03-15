@@ -3,7 +3,7 @@ function out = roots(f, varargin)
 %   ROOTS(F) returns the real roots of the FUNCHEB F in the interval [-1,1].
 %
 %   ROOTS(F, PROP1, VAL1, PROP2, VAL2, ...) modifies the default ROOTS
-%   properties. The PROPs and VALs may be any of the following:
+%   properties. The PROPs (strings) and VALs may be any of the following:
 %
 %   ALL: 
 %       [0] - Return only real-valued roots in [-1,1]
