@@ -50,23 +50,29 @@ if ( any(mask) ) % Do extrapolation if there is any bad point.
         xnan = x(mask);
         
         % Compute the modified barycentric weights:
-        w = funcheb2.barywts(n); % barycentric weights
-        w = w(~mask); % barycentric weights corresponding to good points
+        w = funcheb2.barywts(n); % Standard weights.
+        w = w(~mask); % Barycentric weights corresponding to good points.
         for k = 1:length(xnan)
-            w = w.*( xgood - xnan(k) ); % compute the modified barycentric weights
+            % Compute the modified barycentric weights for the bad points:
+            w = w.*( xgood - xnan(k) );
         end
         
+        % Preallocate the storage for extrapolated values at the bad points.
+        newvals = zeros(length(xnan), size(values, 2)); 
         % Barycentric formula of the second (true) kind:
-        newvals = zeros(length(xnan), size(values, 2)); % preallocate the storage for extrapolated values at the bad points.
         for k = 1:length(xnan)
-            w2 = w./(xnan(k) - xgood); % compute the weights
+            % Compute the weights:
+            w2 = w./(xnan(k) - xgood); 
+            % Sum the values:
             newvals(k,:) = (w2.'*values(~mask,:)) / sum(w2);
         end
    
         % Update the values at the bad points:
         values(mask,:) = newvals;
         
-    else % Force extrapolation at the endpoints anyway, even though there isn't any interior bad point. 
+    else
+        % Force extrapolation at the endpoints anyway, even though there aren't
+        % any bad interior points.
         
         % We compute the modified barycentric weights for extrapolating the
         % endpoints from the scratch instead of calling barywts.
