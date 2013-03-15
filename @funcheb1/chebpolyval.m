@@ -1,17 +1,17 @@
 function values = chebpolyval(coeffs)
 %CHEBPOLYVAL   Convert Chebyshev coefficients to values at Chebyshev points
-%   of 1st kind.
+%of the 1st kind.
 %
 %   V = CHEBPOLYVAL(C) returns the values of the polynomial 
 %          P_j(x) = C(1,j)*T_{N-1}(x) + C(2,j)*T_{N-2}(x) + ... + C(N,j) 
 %   at 1st-kind Chebyshev nodes so that V(i,j) = P_j(x_i).
 %
 %   See also chebpoly, chebpts.
-%
-%   [Mathmatical reference]
 
 %   Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 %   See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+
+%   [Mathematical reference]
 
 % Get the length of the input
 n = size(coeffs, 1);

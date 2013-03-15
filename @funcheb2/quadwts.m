@@ -1,5 +1,5 @@
 function w = quadwts(n)
-%QUADWTS % 2nd-kind Chebyshev quadrature weights.
+%QUADWTS  2nd-kind Chebyshev quadrature weights.
 %   QUADWTS(N) returns the N weights for Clenshaw-Curtis quadrature on 2nd-kind
 %   Chebyshev points using the algorithm of Waldvogel.
 %

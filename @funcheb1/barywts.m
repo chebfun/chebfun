@@ -1,5 +1,5 @@
 function v = barywts(n)
-%BARYWTS % barycentric weights for Chebyshev points of 1st kind.
+%BARYWTS  Barycentric weights for Chebyshev points of 1st kind.
 %   BARYWTS(N) returns the N barycentric weights for polynomial interpolation on
 %   a Chebyshev grid of the 1st kind.
 %
