@@ -1,5 +1,5 @@
 function pass = sampleTest(op, f)
-%SAMPLETEST  Test an evaluation of the input OP against a FUNCHEB approx.
+%SAMPLETEST  Test an evaluation of the input OP against a FUNCHEB approximation.
 %   SAMPLETEST(OP, F) evaluates the both the function OP and its FUNCHEB
 %   representation F at one or more points within [-1,1]. The difference of
 %   these values is compared, and if this is is sufficiently small (relative to

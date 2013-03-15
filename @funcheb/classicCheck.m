@@ -1,9 +1,10 @@
 function [ishappy, epslevel, cutoff] = classicCheck(f, pref)
 %CLASSICCHECK  Attempt to trim trailing Chebyshev coefficients in a FUNCHEB.
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F) returns an estimated location
-%   the CUTOFF at which the FUNCHEB F could be truncated to maintain an accuracy
-%   of EPSLEVEL relative to F.vscale and F.hscale. ISHAPPY is logical TRUE if
-%   CUTOFF < min(length(F.values),2) or F.vscale = 0, and FALSE otherwise
+%   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F) returns an estimated
+%   location, the CUTOFF, at which the FUNCHEB F could be truncated to maintain
+%   an accuracy of EPSLEVEL relative to F.vscale and F.hscale. ISHAPPY is
+%   logical TRUE if CUTOFF < min(length(F.values),2) or F.vscale = 0, and FALSE
+%   otherwise
 %
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F, PREF) allows additional
 %   preferences to be passed. In particular, one can adjust the target accuracy
@@ -33,18 +34,21 @@ function [ishappy, epslevel, cutoff] = classicCheck(f, pref)
 %                   f.vscale and f.hscale).
 %       * pref.funcheb.eps
 %
+%   Note that the accuracy check implemented in this function is the same as
+%   that employed in Chebfun v4.x.
+%
 % See also strictCheck.m, looseCheck.m.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Deal with special cases -------------------------------------------------------
+% Deal with special cases ------------------------------------------------------
 
 % Determine n (the length of the input).
 n = length(f);
 
 % Assume we're not happy. (N'aww! :( )
-ishappy = false; 
+ishappy = false;
 
 % Grab some preferences:
 if ( nargin == 1 )
@@ -57,7 +61,7 @@ else
     epslevel = pref.funcheb.eps;
 end
 
-% Deal with the trivial case 
+% Deal with the trivial case
 if ( n < 2 ) % (Can't be simpler than a constant!)
     cutoff = n;
     return
@@ -94,20 +98,20 @@ vscale = max(f.vscale);
     happinessRequirements(f.values, f.coeffs, f.points(), vscale, f.hscale, epslevel);
 
 if ( max(ac(1:testLength)) < epslevel )    % We have converged! Now chop tail:
-    
+
     % We must be happy.
     ishappy = true;
-    
+
     % Find first entry above epslevel:
     Tloc = find(ac >= epslevel, 1, 'first') - 1;
-    
-    
+
+
     % Check for the zero function!
-    if ( isempty(Tloc) )                 
+    if ( isempty(Tloc) )
         cutoff = 1;
         return
     end
-    
+
     % Compute the cumulative max of eps/4 and the tail entries:
     t = .25*eps;
     ac = ac(1:Tloc);                      % Restrict to coeffs of interest.
@@ -118,19 +122,19 @@ if ( max(ac(1:testLength)) < epslevel )    % We have converged! Now chop tail:
             t = ac(k);
         end
     end
-    
+
     % Tbpb = Bang/buck of chopping at each pos:
-    Tbpb = log(1e3*epslevel./ac) ./ (size(f.coeffs, 1) - (1:Tloc)');    
+    Tbpb = log(1e3*epslevel./ac) ./ (size(f.coeffs, 1) - (1:Tloc)');
     [~, Tchop] = max(Tbpb(3:Tloc));       % Tchop = pos at which to chop.
 
     % We want to keep [c(0), c(1),  ..., c(cutoff)]:
     cutoff = n - Tchop - 2;
-    
+
 else
-    
+
     % We're unhappy. :(
     cutoff = n;
-    
+
 end
 
 end
@@ -144,9 +148,9 @@ function [testLength, epslevel] = ...
 n = size(values, 1);
 
 % Length of tail to test.
-testLength = min(n, max(5, round((n-1)/8))); 
+testLength = min(n, max(5, round((n-1)/8)));
 
-minPrec = 1e-4; % Worst case precision! 
+minPrec = 1e-4; % Worst case precision!
 
 % Look at length of tail to loosen tolerance:
 tailErr = min(minPrec, eps*testLength^(2/3));

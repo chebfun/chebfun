@@ -2,7 +2,7 @@ function f = rdivide(f, c, pref)
 %./   Right array divide for a FUNCHEB.
 %   F ./ C Divides the FUNCHEB F by a an array C. If F is a vectorised FUNCHEB
 %   with M columns, then C must be either a scalar or a 1xM array. 
-
+%
 %   Alternatively if C is a FUNCHEB with the same number of columns as F, or if
 %   F is a scalar, the resulting division is returned if C is found to have no
 %   roots in [-1,1]. The division is performed columnwise.

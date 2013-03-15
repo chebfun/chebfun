@@ -3,9 +3,12 @@ function f = cumsum(f, pref)
 %   CUMSUM(F) is the indefinite integral of the FUNCHEB F. The constant of
 %   integration is chosen so that F(-1) = 0.
 %
+%   CUMSUM(F, PREF) uses options from the preference structure PREF when
+%   building the output FUNCHEB.
+%
 % See also DIFF, SUM.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -35,7 +38,7 @@ C = zeros(n-1, m);                % Initialize vector C = {C_r}
 % Compute C_(n+1) ... C_2:
 C(1:n-1,:) = (c(3:end-1,:) - c(1:end-3,:)) ./ repmat(2*(n:-1:2)', 1, m);
 C(n,:) = c(end,:) - c(end-2,:)/2; % Compute C_1
-v = ones(1,n); 
+v = ones(1,n);
 v(end-1:-2:1) = -1;
 C(n+1,:) = v*C;                   % Compute C_0
 

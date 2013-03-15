@@ -7,7 +7,7 @@ function [maxVal, maxPos] = max(f)
 %
 %   If F is complex-valued then absolute values are taken to determine maxima
 %   but the resulting value corresponds to that of the original function. That
-%   is, MAXVAL = feval(F, MAXPOS) where [~, MAXPOS] = MIN(abs(F)); 
+%   is, MAXVAL = feval(F, MAXPOS) where [~, MAXPOS] = MAX(abs(F));
 %
 % See also MIN, MINANDMAX.
 
