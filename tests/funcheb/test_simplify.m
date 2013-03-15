@@ -6,7 +6,7 @@ if ( nargin < 1 )
     pref = funcheb.pref;
 end
 
-for ( n = 1:2 )
+for n = 1:2
     if ( n == 1 )
         testclass = funcheb1();
     else 
@@ -23,9 +23,10 @@ for ( n = 1:2 )
     pref.funcheb.n = 33;
     g = testclass.make(f, 0, pref);
     h = simplify(g);
-    x = testclass.chebpts(14);
-    pass(n, 1) = length(g) == 33 && length(h) == 14 && ...
-        norm(f(x) - h.values, inf) < tol;
+    x = testclass.chebpts(length(h));
+    pass(n, 1) = length(g) == 33;
+    pass(n, 2) = length(h) == 14;
+    pass(n, 3) = norm(f(x) - h.values, inf) < tol;
     
     %%
     % Test on a vector-valued function:
@@ -34,9 +35,10 @@ for ( n = 1:2 )
     pref.funcheb.n = 33;
     g = testclass.make(f, 0, pref);
     h = simplify(g);
-    x = testclass.chebpts(15);
-    pass(n, 2) = length(g) == 33 && length(h) == 15 && ...
-        norm(f(x) - h.values, inf) < tol;
+    x = testclass.chebpts(length(h));
+    pass(n, 4) = length(g) == 33;
+    pass(n, 5) = abs(length(h) - 15) < 2;
+    pass(n, 6) = norm(f(x) - h.values, inf) < tol;
 end
 
 end

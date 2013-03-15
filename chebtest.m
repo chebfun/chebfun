@@ -97,17 +97,17 @@ else
     % There's been a failure. List the directories which failed.
     if ( sum(~passDir) == 1 )
         % A single directory:
-        fprintf('Tests failed/crashed in directory: tests/%s.\n\n', ...
+        fprintf('Tests failed/crashed in directory:\n   tests/%s.\n\n', ...
             testDirNames{~passDir});
     else
         % Multiple directories:
         failedDirsStr = '';
-        for k = find(~passDir)
+        for k = find(~passDir)'
             % Convert the list to a string:
-            failedDirsStr = [failedDirsStr ' tests/' ...
+            failedDirsStr = [failedDirsStr '\n   tests/' ...
                 testDirNames{k}]; %#ok<AGROW>
         end
-        fprintf('Tests failed in directories: %s.\n\n', failedDirsStr);
+        fprintf(['Tests failed in directories:'  failedDirsStr '.\n\n']);
     end
 end
 

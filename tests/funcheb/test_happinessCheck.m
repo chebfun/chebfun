@@ -29,7 +29,7 @@ for ( n = 1:2 )
     f = @(x) [sin(x) cos(x) exp(x)];
     g = testclass.make(f(x));
     [ishappy, epslevel, tail] = happinessCheck(g, f, pref);
-    pass(n, 3) = tail == 15;
+    pass(n, 3) = abs(tail - 15) < 2;
     pass(n, 4) = ishappy && epslevel < tol;
     
     %%
