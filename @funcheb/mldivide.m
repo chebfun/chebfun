@@ -1,17 +1,17 @@
 function X = mldivide(A, B)
 %\	Left matrix divide for FUNCHEB objects.
 %
-%   A\B returns the least squares solution (wrt the continuous L^2 norm) of A*X
-%   = B where A and B FUNCHEB objects.
+%   A\B returns the least squares solution (with respect to the continuous L^2
+%   norm) of A*X = B where A and B FUNCHEB objects.
 %
 % See also QR, MRDIVIDE.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( ~isa(A, 'funcheb2') || ~isa(B, 'funcheb2') )
-    error('CHEBFUN:FUNCHEB2:mldivide:funcheb2MldivideUnknown', ...
-        'Arguments to FUNCHEB2 mldivide must both be FUNCHEB2 objects.');
+if ( ~isa(A, 'funcheb') || ~isa(B, 'funcheb') || (~strcmp(class(A), class(B))) )
+    error('CHEBFUN:FUNCHEB:mldivide:funchebMldivideUnknown', ...
+        'Arguments to FUNCHEB mldivide must both be FUNCHEB objects of the same type.');
 end
 
 % NOTE: A*X = (Q*R)*X = B ==> R*X = Q'*B ==> X = R\(Q'*B) = R\innerProduct(Q, B)

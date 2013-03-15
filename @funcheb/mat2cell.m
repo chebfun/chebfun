@@ -11,7 +11,7 @@ function g = mat2cell(f, M, N)
 %
 %   G = MAT2CELL(F, M, N) is similar to above, but allows three input arguments
 %   so as to be consistent with the built in MAT2CELL function. Here N takes the
-%   role of C above, and M should be either the scalar value 1.
+%   role of C above, and M should be the scalar value 1.
 %
 % Example:
 %   f = funcheb.constructor(@(x) [sin(x), cos(x), exp(x), x])

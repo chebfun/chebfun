@@ -2,9 +2,9 @@ function X = mrdivide(B, A)
 %/	Right matrix divide for a FUNCHEB.
 %
 %   B/A divides the FUNCHEB B by a scalar A. More generally, it gives the least
-%   squares solution (wrt the continuous L^2 norm) to X*A = B when either A or B
-%   is a FUNCHEB. NOTE: In the latter case, formally it is X.' that is returned
-%   (as FUNCHEB objects are always columns).
+%   squares solution (with respect to the continuous L^2 norm) to X*A = B when
+%   either A or B is a FUNCHEB.  Note that in the latter case, formally it is
+%   X.' that is returned, as FUNCHEB objects are always columns.
 %
 % See also QR, RDIVIDE, MLDIVIDE.
 

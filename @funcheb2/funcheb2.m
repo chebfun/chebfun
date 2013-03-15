@@ -15,14 +15,11 @@ classdef funcheb2 < funcheb
 %   FUNCHEB2(OP, VSCALE) constructs a FUNCHEB2 with 'happiness' (see
 %   HAPPINESSCHECK.m) relative to the maximum of the given vertical scale VSCALE
 %   and the (column-wise) infinity norm of the sampled function values of OP,
-%   and the fixed horizontal scale HSCALE. If not given, the VSCALE defaults to
-%   0 initially, and HSCALE defaults to 1.
+%   and the fixed horizontal scale HSCALE. If not given (or given as empty), the
+%   VSCALE defaults to 0 initially, and HSCALE defaults to 1.
 %
 %   FUNCHEB2(OP, VSCALE, HSCALE, PREF) overrides the default behavior with that
-%   given by the preference structure PREF. The constructor will also
-%   accept inputs of the form FUNCHEB(OP, PREF), but this usage is not advised.
-%   Similarly, one can pass FUNCHEB(OP, VSCALE, HSCALE, EPS), which is
-%   equivalent to the call FUNCHEB(OP, VSCALE, HSCALE, FUNCHEB.PREF('eps',EPS)).
+%   given by the preference structure PREF. See FUNCHEB.pref for details.
 %
 %   FUNCHEB2(VALUES, ...) returns a FUNCHEB2 object which interpolates the
 %   values in the columns of VALUES at 2nd-kind Chebyshev points and
@@ -36,7 +33,7 @@ classdef funcheb2 < funcheb
 %
 %   % Construction with preferences:
 %   p = funcheb.pref('sampletest', 0); % See help('funcheb.pref') for details
-%   f = funcheb2(@(x) sin(x), p)
+%   f = funcheb2(@(x) sin(x), [], [], p)
 %
 %   % Vector-valued construction:
 %   f = funcheb2(@(x) [sin(x), cos(x), exp(x)])
@@ -81,25 +78,10 @@ classdef funcheb2 < funcheb
             if ( nargin < 3 || isempty(hscale) )
                 hscale = 1;
             end
-            
-            % Obtain preferences:
-            if ( nargin == 2 && isstruct(vscale) )
-                % vscale was actually a preference.
-                pref = funcheb.pref(vscale);
-                vscale = 0;
-                hscale = 1;
-            elseif ( nargin == 3 && isstruct(hscale) )
-                % hscale was actually a preference.
-                pref = funcheb.pref(hscale);
-                hscale = 1;                
-            elseif ( nargin < 4 )
-                % Create:
+            % Determine preferences if not given, merge if some are given:
+            if ( nargin < 4 || isempty(pref) )
                 pref = funcheb.pref;
-            elseif ( ~isstruct(pref) )
-                % An eps was passed.
-                pref = funcheb.pref('eps', pref);
             else
-                % Merge:
                 pref = funcheb.pref(pref);
             end
 
@@ -173,9 +155,6 @@ classdef funcheb2 < funcheb
         
         % Compute Chebyshev quadrature weights.
         w = quadwts(n)
-        
-        % Test the FUNCHEB2 class.
-        pass = test(varargin);
         
     end
     

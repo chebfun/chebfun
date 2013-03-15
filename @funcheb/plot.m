@@ -19,6 +19,7 @@ function varargout = plot(f, varargin)
 %                                >     triangle (right)
 %                                p     pentagram
 %                                h     hexagram
+%
 %   The entries from the centre columns are plotted at the Chebyshev grid being
 %   used to represent F. If no options from this column are chosen, 'o' is
 %   chosen by default if length(f)<256;

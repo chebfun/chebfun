@@ -1,4 +1,68 @@
 function prefs = pref(varargin)
+%PREF Prefence settings for FUNCHEB.
+% FUNCHEB.PREF(PREFNAME) returns the value corresponding to the preference
+% named in the string PREFNAME.
+%
+% P = FUNCHEB.PREF returns a structure P with a field P.FUNCHEB which contains
+% the default FUNCHEB preferences as fields/values. This structure may be
+% passed to the FUNCHEB constructor.
+%
+% P = FUNCHEB.PREF(P) will check to see whether the input preference structure
+% P already has a FUNCHEB field. If it does not, one is appended.
+%
+% P = FUNCHEB.PREF('PREFNAME1', VAL1, 'PREFNAME1', VAL2, ...) returns the same
+% structure as above, but with the default FUNCHEB preferences 'PREFNAME1',
+% 'PREFNAME1', replaced by the values in VAL1, VAL2, etc.
+%
+% P = FUNCHEB.PREF(P, 'PREFNAME1', VAL1, 'PREFNAME1', VAL2, ...) appends a
+% FUNCHEB preference field to P if required, and modifies the FUNCHEB
+% properties 'PREFNAME1' and 'PREFNAME1'.
+%
+% Note that no checking of either the input PREFNAMEs or VALs takes place.
+%
+% FUNCHEB PREFERENCES (case sensitive)
+%
+%     eps          -  Relative tolerance used in construction and subsequent
+%      [2^-52]        operations. See FUNCHEB.HAPPINESSCHECK for more details.
+%
+%     extrapolate
+%       ['on']     -  Function values at endpoints may be extrapolated from
+%                     interior values rather than sampled.
+%       'off'      -  Do not extrapolate values at endpoints.
+%
+%     hscale       -  Horizontal scale. This preference can be used to ensure
+%        [1]          horizontal scale invariance when using the FUNCHEB
+%                     constructor to implicitly represent functions defined on
+%                     domains other than [-1, 1].
+%
+%     minSamples   -  Minimum number of points used by the constructor. Should
+%        [9]          be of the form 2^n+1 (if not, it is rounded as such).
+%
+%     maxSamples   -  Maximum number of points used by the constructor.
+%      [2^16+1]   
+%
+%         n        -  Fixed number of points used by constructor. NaN allows
+%       [NaN]         adaptive constuction.
+%
+%     sampletest
+%       ['on']     -  Tests the function at one more arbitrary point to
+%                     minimize the risk of missing signals between grid
+%                     points.
+%        'off'     -  Do not test.
+%
+%   refinementFunction - Define function for refining sample values.
+%     ['nested']       - Use the default process (nested evaluation).
+%      'resampling'    - Every function value is computed afresh as the
+%                        constructor tries grids of size 9, 17, 33, etc.
+%   function_handle    - A user-defined refinement. See REFINE.m
+%
+%   happinessCheck     - Define function for testing happiness.
+%     ['classic']      - Use the default process from Chebfun V4.
+%      'strict'        - Strict tolerance for coeffs.
+%      'loose'         - A looser tolerance for coeffs.
+%     function_handle  - A user defined happiness. See HAPPINESSCHECK.m
+%
+% See also FUNCHEB1, FUNCHEB2
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.

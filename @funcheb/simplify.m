@@ -5,7 +5,7 @@ function f = simplify(f, pref, type)
 %
 %   G = SIMPLIFY(F, PREF) does the same, but using some of the preferences in
 %   the preference structure PREF. In particular, SIMPLIFY will use classicCheck
-%   by default, but an alternative can be passed in the
+%   to test for accuracy by default, but an alternative can be passed in the
 %   PREF.funcheb.happinessCheck field. Additionally, G will be computed to
 %   satisfy ||G - F|| < max(F.epslevel, PREF.funcheb.eps).
 %

@@ -3,12 +3,12 @@ function [vals, pos] = minandmax(f)
 %   VAL = MINANDMAX(F) returns a 2-vector VAL = [min(F); max(F)] with the global
 %   minimum and maximum of the FUNCHEB G on [-1,1].
 %
-%   [VAL, POS] = MINANDMAX(F) returns also the 2-vector POS where the minima and
-%   maxima of F occur.
+%   [VAL, POS] = MINANDMAX(F) returns also the 2-vector POS where the minimum
+%   and maximum of F occur.
 %
-%   If F is complex-valued the absolute values are taken to determine maxima but
-%   the resulting values correspond to those of the original function. That is,
-%   VAL = feval(F, POS) where [~, POS] = MINANDMAX(abs(F)).
+%   If F is complex-valued the absolute values are taken to determine extrema
+%   but the resulting values correspond to those of the original function. That
+%   is, VAL = feval(F, POS) where [~, POS] = MINANDMAX(abs(F)).
 %
 % See also MIN, MAX.
 
