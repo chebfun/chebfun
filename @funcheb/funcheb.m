@@ -130,8 +130,8 @@ classdef funcheb %< smoothfun % (Abstract)
     %% Properties of FUNCHEB objects.
     properties ( Access = public )
 
-        % Values (stored in order from left to right) of FUNCHEB at Chebyshev
-        % points. The particular Chebyshev points used depend on the instance of
+        % Values of FUNCHEB at Chebyshev points (stored in order from left to
+        % right). The particular Chebyshev points used depend on the instance of
         % the concrete class (1st kind for FUNCHEB1 and 2nd kind for FUNCHEB2).
         % For vectorised FUNCHEB objects, each column represents the
         % interpolated values of a single function.
