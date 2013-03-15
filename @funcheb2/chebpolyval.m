@@ -1,5 +1,7 @@
 function values = chebpolyval(coeffs)
-%CHEBPOLYVAL   Convert Chebyshev coefficients to values at Chebyshev points.
+%CHEBPOLYVAL   Convert Chebyshev coefficients to values at Chebyshev points
+%of the 2nd kind.
+%
 %   V = CHEBPOLYVAL(C) returns the values of the polynomial V(i,1) = P(x_i) =
 %   C(1,1)*T_{N-1}(x_i) + C(2,1)*T_{N-2}(x_i) + ... + C(N,1), where the x_i are
 %   2nd-kind Chebyshev nodes.

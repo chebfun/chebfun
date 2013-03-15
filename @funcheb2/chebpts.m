@@ -7,7 +7,7 @@ function [x, w, v] = chebpts(n)
 %
 %   [X, W, V] = CHEBPTS(N) returns, in addition to X and W, the barycentric
 %   weights V corresponding to the Chebyshev points X. The barycentric weights
-%   are nomralised to have inifinity norm equal to 1 and a positive first entry.
+%   are normalised to have inifinity norm equal to 1 and a positive first entry.
 %
 %      [1] Jorg Waldvogel, "Fast construction of the Fejer and Clenshaw-Curtis
 %      quadrature rules", BIT Numerical Mathematics 46 (2006), pp 195-202.

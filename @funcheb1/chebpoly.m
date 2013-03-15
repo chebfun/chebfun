@@ -3,12 +3,12 @@ function coeffs = chebpoly(values)
 %   coefficients of the corresponding series of Chebyshev polynomial of 1st 
 %   kind. 
 %
-%   C = chebpoly(V) returns the (N+1)x1 vector of coefficients such that
+%   C = CHEBPOLY(V) returns the (N+1)x1 vector of coefficients such that
 %   F(x) = C(1)*T_N(x) + ... + C(N)*T_1(x) + C(N+1)*T_0(x), (where T_k(x)
 %   denotes the k-th 1st-kind Chebyshev polynomial) interpolates the data
 %   [V(1) ; ... ; V(N+1)] at Chebyshev points of the 1st kind. 
 %
-%   If the input V is an (N+1)*M matrix, then C = chebpoly(V) returns the
+%   If the input V is an (N+1)*M matrix, then C = CHEBPOLY(V) returns the
 %   (N+1)xM matrix of coefficients C such that F_j(x) = C(1,j)*T_N(x) + ... 
 %   + C(N,j)*T_1(x) + C(N+1)*T_0(x) interpolates [V(1,j) ; ... ; V(N+1,j)]
 %   for j = 1:M.

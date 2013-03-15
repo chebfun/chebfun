@@ -1,7 +1,7 @@
 function [values, maskNaN, maskInf] = extrapolate(values)
 %EXTRAPOLATE  Extrapolate data values from values at Chebyshev points.
-%   EXTRAPOLATE(VALUES) uses barycentric interpolants to extrapolate out NaNs or
-%   Infs from the numeric data in VALUES.
+%   EXTRAPOLATE(VALUES) uses barycentric interpolation to extrapolate out NaNs 
+%   or Infs from the numeric data in VALUES.
 %
 %   [VALUESOUT, MASKNAN, MASKINF] = EXTRAPOLATE(VALUESIN) returns logical
 %   vectors indicating when a NaN or Inf was encountered in rows of VALUESIN.
