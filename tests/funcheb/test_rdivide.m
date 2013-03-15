@@ -27,14 +27,14 @@ for ( n = 1:2 )
     % Check division by single scalars.
     
     f_op = @(x) sin(x);
-    f = testclass.make(f_op, pref);
+    f = testclass.make(f_op, [], [], pref);
     pass(n, 1) = test_div_function_by_scalar(f, f_op, alpha, x);
     
     g = f ./ 0;
     pass(n, 2) = isnan(g);
     
     f_op = @(x) [sin(x) cos(x)];
-    f = testclass.make(f_op, pref);
+    f = testclass.make(f_op, [], [], pref);
     pass(n, 3) = test_div_function_by_scalar(f, f_op, alpha, x);
     
     g = f ./ 0;
@@ -56,29 +56,29 @@ for ( n = 1:2 )
     % Check division of a scalar by a funcheb object.
     
     f_op = @(x) exp(x);
-    f = testclass.make(@(x) exp(x), pref);
+    f = testclass.make(@(x) exp(x), [], [], pref);
     pass(n, 7) = test_div_scalar_by_function(alpha, f, f_op, x);
     
     %%
     % Check division of two funcheb objects.
     
     g_op = @(x) exp(x);
-    g = testclass.make(g_op, pref);
+    g = testclass.make(g_op, [], [], pref);
     
     f_op = @(x) exp(x) - 1;
-    f = testclass.make(f_op, pref);
+    f = testclass.make(f_op, [], [], pref);
     pass(n, 8) = test_div_function_by_function(f, f_op, g, g_op, x);
     
     f_op = @(x) 1./(1 + x.^2);
-    f = testclass.make(f_op, pref);
+    f = testclass.make(f_op, [], [], pref);
     pass(n, 9) = test_div_function_by_function(f, f_op, g, g_op, x);
     
     f_op = @(x) cos(1e4*x);
-    f = testclass.make(f_op, pref);
+    f = testclass.make(f_op, [], [], pref);
     pass(n, 10) = test_div_function_by_function(f, f_op, g, g_op, x);
     
     f_op = @(t) sinh(t*exp(2*pi*1i/6));
-    f = testclass.make(f_op, pref);
+    f = testclass.make(f_op, [], [], pref);
     pass(n, 11) = test_div_function_by_function(f, f_op, g, g_op, x);
     
     %%
@@ -86,7 +86,7 @@ for ( n = 1:2 )
     
     % Can't divide by a scalar matrix with multiple rows.
     try
-        f = testclass.make(@(x) sin(x), pref);
+        f = testclass.make(@(x) sin(x), [], [], pref);
         disp(f ./ [1 ; 2]);
         pass(n, 12) = false;
     catch ME
@@ -95,7 +95,7 @@ for ( n = 1:2 )
     
     % Can't divide by a scalar row matrix if the column counts don't match.
     try
-        f = testclass.make(@(x) [sin(x) cos(x)], pref);
+        f = testclass.make(@(x) [sin(x) cos(x)], [], [], pref);
         disp(f ./ [1 2 3]);
         pass(n, 13) = false;
     catch ME
@@ -118,14 +118,14 @@ for ( n = 1:2 )
     
     tol = 100*eps;
     
-    f = testclass.make(@(x) sin(x), pref);
+    f = testclass.make(@(x) sin(x), [], [], pref);
     h1 = f ./ alpha;
-    h2 = testclass.make(@(x) sin(x) ./ alpha, pref);
+    h2 = testclass.make(@(x) sin(x) ./ alpha, [], [], pref);
     pass(n, 15) = norm(h1.values - h2.values, 'inf') < tol;
     
-    g = testclass.make(@(x) exp(x), pref);
+    g = testclass.make(@(x) exp(x), [], [], pref);
     h1 = f ./ g;
-    h2 = testclass.make(@(x) sin(x) ./ exp(x), pref);
+    h2 = testclass.make(@(x) sin(x) ./ exp(x), [], [], pref);
     pass(n, 16) = norm(h1.values - h2.values, 'inf') < tol;
 end
 

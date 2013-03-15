@@ -27,18 +27,18 @@ for ( n = 1:2 )
     % Check operation in the face of empty arguments.
     
     f = testclass.make();
-    g = testclass.make(@(x) x, pref);
+    g = testclass.make(@(x) x, [], [], pref);
     pass(n, 1) = (isempty(f .* f) && isempty(f .* g) && isempty(g .* f));
     
     %%
     % Check multiplication by scalars.
     
     f_op = @(x) sin(x);
-    f = testclass.make(f_op, pref);
+    f = testclass.make(f_op, [], [], pref);
     pass(n, 2:3) = test_mult_function_by_scalar(f, f_op, alpha, x);
     
     f_op = @(x) [sin(x) cos(x)];
-    f = testclass.make(f_op, pref);
+    f = testclass.make(f_op, [], [], pref);
     pass(n, 4:5) = test_mult_function_by_scalar(f, f_op, alpha, x);
     
     % Can't multiply by matrix of scalars with more than one row.
@@ -61,16 +61,16 @@ for ( n = 1:2 )
     % Check multiplication by constant functions.
     
     f_op = @(x) sin(x);
-    f = testclass.make(f_op, pref);
+    f = testclass.make(f_op, [], [], pref);
     g_op = @(x) alpha*ones(size(x));
-    g = testclass.make(g_op, pref);
+    g = testclass.make(g_op, [], [], pref);
     pass(n, 8) = test_mult_function_by_function(f, f_op, g, g_op, x, false);
     
     % This should fail with a dimension mismatch error from funcheb.mtimes().
     f_op = @(x) [sin(x) cos(x)];
-    f = testclass.make(f_op, pref);
+    f = testclass.make(f_op, [], [], pref);
     g_op = @(x) repmat([alpha, beta], size(x, 1), 1);
-    g = testclass.make(g_op, pref);
+    g = testclass.make(g_op, [], [], pref);
     pass(n, 9) = test_mult_function_by_function(f, f_op, g, g_op, x, false);
     
     %%
@@ -78,29 +78,29 @@ for ( n = 1:2 )
     % functions.
     
     f_op = @(x) ones(size(x));
-    f = testclass.make(f_op, pref);
+    f = testclass.make(f_op, [], [], pref);
     pass(n, 10) = test_mult_function_by_function(f, f_op, f, f_op, x, false);
     
     f_op = @(x) exp(x) - 1;
-    f = testclass.make(f_op, pref);
+    f = testclass.make(f_op, [], [], pref);
     
     g_op = @(x) 1./(1 + x.^2);
-    g = testclass.make(g_op, pref);
+    g = testclass.make(g_op, [], [], pref);
     pass(n, 11) = test_mult_function_by_function(f, f_op, g, g_op, x, false);
     
     g_op = @(x) cos(1e4*x);
-    g = testclass.make(g_op, pref);
+    g = testclass.make(g_op, [], [], pref);
     pass(n, 12) = test_mult_function_by_function(f, f_op, g, g_op, x, false);
     
     g_op = @(t) sinh(t*exp(2*pi*1i/6));
-    g = testclass.make(g_op, pref);
+    g = testclass.make(g_op, [], [], pref);
     pass(n, 13) = test_mult_function_by_function(f, f_op, g, g_op, x, false);
     
     %%
     % Check operation for vectorized funcheb objects.
     
-    f = testclass.make(@(x) [sin(x) cos(x) exp(x)], pref);
-    g = testclass.make(@(x) tanh(x), pref);
+    f = testclass.make(@(x) [sin(x) cos(x) exp(x)], [], [], pref);
+    g = testclass.make(@(x) tanh(x), [], [], pref);
     h1 = f .* g;
     h2 = g .* f;
     pass(n, 14) = isequal(h1, h2);
@@ -108,7 +108,7 @@ for ( n = 1:2 )
     err = feval(h1, x) - h_exact(x);
     pass(n, 15) = max(abs(err(:))) < 10*h1.epslevel;
     
-    g = testclass.make(@(x) [sinh(x) cosh(x) tanh(x)], pref);
+    g = testclass.make(@(x) [sinh(x) cosh(x) tanh(x)], [], [], pref);
     h = f .* g;
     h_exact = @(x) [sinh(x).*sin(x) cosh(x).*cos(x) tanh(x).*exp(x)];
     err = feval(h, x) - h_exact(x);
@@ -116,7 +116,7 @@ for ( n = 1:2 )
     
     % This should fail with a dimension mismatch error.
     try
-        g = testclass.make(@(x) [sinh(x) cosh(x)], pref);
+        g = testclass.make(@(x) [sinh(x) cosh(x)], [], [], pref);
         disp(f .* g);
         pass(n, 17) = false;
     catch ME
@@ -128,7 +128,7 @@ for ( n = 1:2 )
     % positivity is performed.
     
     f_op = @(t) sinh(t*exp(2*pi*1i/6));
-    f = testclass.make(f_op, pref);
+    f = testclass.make(f_op, [], [], pref);
     pass(n, 18) = test_mult_function_by_function(f, f_op, f, f_op, x, false);
     
     g_op = @(t) conj(sinh(t*exp(2*pi*1i/6)));
@@ -136,7 +136,7 @@ for ( n = 1:2 )
     pass(n, 19:20) = test_mult_function_by_function(f, f_op, g, g_op, x, true);
     
     f_op = @(x) exp(x) - 1;
-    f = testclass.make(f_op, pref);
+    f = testclass.make(f_op, [], [], pref);
     pass(n, 21:22) = test_mult_function_by_function(f, f_op, f, f_op, x, true);
     
     %%
@@ -144,9 +144,9 @@ for ( n = 1:2 )
     
     tol = 10*eps;
     g_op = @(x) 1./(1 + x.^2);
-    g = testclass.make(g_op, pref);
+    g = testclass.make(g_op, [], [], pref);
     h1 = f .* g;
-    h2 = testclass.make(@(x) f_op(x) .* g_op(x), pref);
+    h2 = testclass.make(@(x) f_op(x) .* g_op(x), [], [], pref);
     h2 = prolong(h2, length(h1));
     pass(n, 23) = norm(h1.values - h2.values, 'inf') < tol;
 end

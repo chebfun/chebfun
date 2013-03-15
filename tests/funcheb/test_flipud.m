@@ -12,23 +12,23 @@ for ( n = 1:2 )
         testclass = funcheb2();
     end
 
-    f = testclass.make(@(x) sin(x+.5), 0, pref);
-    g = testclass.make(@(x) sin(-x+.5), 0, pref);
+    f = testclass.make(@(x) sin(x+.5), [], [], pref);
+    g = testclass.make(@(x) sin(-x+.5), [], [], pref);
     h = flipud(f);
     pass(n, 1) = norm(g.values - h.values, inf) < tol;
     
-    f = testclass.make(@(x) [sin(x+.5), exp(x)], 0, pref);
-    g = testclass.make(@(x) [sin(-x+.5), exp(-x)], 0, pref);
+    f = testclass.make(@(x) [sin(x+.5), exp(x)], [], [], pref);
+    g = testclass.make(@(x) [sin(-x+.5), exp(-x)], [], [], pref);
     h = flipud(f);
     pass(n, 2) = norm(g.values - h.values, inf) < tol;
     
-    f = testclass.make(@(x) sin(1i*x+.5), 0, pref);
-    g = testclass.make(@(x) sin(-1i*x+.5), 0, pref);
+    f = testclass.make(@(x) sin(1i*x+.5), [], [], pref);
+    g = testclass.make(@(x) sin(-1i*x+.5), [], [], pref);
     h = flipud(f);
     pass(n, 3) = norm(g.values - h.values, inf) < tol;
     
-    f = testclass.make(@(x) [sin(x+.5), exp(1i*x)], 0, pref);
-    g = testclass.make(@(x) [sin(-x+.5), exp(-1i*x)], 0, pref);
+    f = testclass.make(@(x) [sin(x+.5), exp(1i*x)], [], [], pref);
+    g = testclass.make(@(x) [sin(-x+.5), exp(-1i*x)], [], [], pref);
     h = flipud(f);
     pass(n, 4) = norm(g.values - h.values, inf) < tol;
 end

@@ -21,7 +21,7 @@ for n = 1:2
     
     f = @(x) sin(x);
     pref.funcheb.n = 33;
-    g = testclass.make(f, 0, pref);
+    g = testclass.make(f, [], [], pref);
     h = simplify(g);
     x = testclass.chebpts(length(h));
     pass(n, 1) = length(g) == 33;
@@ -33,7 +33,7 @@ for n = 1:2
     
     f = @(x) [ sin(x), cos(x), exp(x) ];
     pref.funcheb.n = 33;
-    g = testclass.make(f, 0, pref);
+    g = testclass.make(f, [], [], pref);
     h = simplify(g);
     x = testclass.chebpts(length(h));
     pass(n, 4) = length(g) == 33;

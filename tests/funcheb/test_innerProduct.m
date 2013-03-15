@@ -24,18 +24,18 @@ for ( n = 1:2 )
     %%
     % Spot-check a few known results.
     
-    f = testclass.make(@(x) sin(2*pi*x), pref);
-    g = testclass.make(@(x) cos(2*pi*x), pref);
+    f = testclass.make(@(x) sin(2*pi*x), [], [], pref);
+    g = testclass.make(@(x) cos(2*pi*x), [], [], pref);
     pass(n, 1) = abs(innerProduct(f, g)) < 10*max(f.epslevel, g.epslevel);
     
-    g = testclass.make(@(x) cos(4*pi*x), pref);
+    g = testclass.make(@(x) cos(4*pi*x), [], [], pref);
     pass(n, 2) = abs(innerProduct(f, g)) < 10*max(f.epslevel, g.epslevel);
     
-    f = testclass.make(@(x) exp(x), pref);
-    g = testclass.make(@(x) exp(-x), pref);
+    f = testclass.make(@(x) exp(x), [], [], pref);
+    g = testclass.make(@(x) exp(-x), [], [], pref);
     pass(n, 3) = abs(innerProduct(f, g) - 2) < 10*max(f.epslevel, g.epslevel);
     
-    g = testclass.make(@(x) sin(x), pref);
+    g = testclass.make(@(x) sin(x), [], [], pref);
     exact = exp(1)*(sin(1) - cos(1))/2 - exp(-1)*(sin(-1) - cos(-1))/2;
     pass(n, 4) = abs(innerProduct(f, g) - exact) < 10*max(f.epslevel, ...
         g.epslevel);

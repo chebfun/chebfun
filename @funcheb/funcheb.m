@@ -15,17 +15,14 @@ classdef funcheb %< smoothfun % (Abstract)
 %   FUNCHEB.CONSTRUCTOR(OP, VSCALE, HSCALE) constructs a FUNCHEB with
 %   'happiness' relative to the maximum of the given vertical scale VSCALE
 %   (which is updated by the infinity norm of the sampled function values of OP
-%   during construction), and the fixed horizontal scale HSCALE. If not given,
-%   the VSCALE defaults to 0 initially, and HSCALE defaults to 1.
+%   during construction), and the fixed horizontal scale HSCALE. If not given
+%   (or given as empty), the VSCALE defaults to 0 initially, and HSCALE defaults
+%   to 1.
 %
 %   FUNCHEB.CONSTRUCTOR(OP, VSCALE, HSCALE, PREF) overrides the default behavior
-%   with that given by the preference structure PREF. The constructor will also
-%   accept inputs of the form FUNCHEB(OP, PREF), but this usage is not advised.
-%   Similarly, one can pass FUNCHEB(OP, VSCALE, HSCALE, EPS), which is
-%   equivalent to the call FUNCHEB(OP, VSCALE, HSCALE, FUNCHEB.PREF('eps',EPS)).
-%
-%   The FUNCHEB class supports construction via interpolation at first- and
-%   second-kind Chebyshev points with the classes FUNCHEB1 and FUNCHEB2
+%   with that given by the preference structure PREF. See FUNCHEB.pref for
+%   details. The FUNCHEB class supports construction via interpolation at first-
+%   and second-kind Chebyshev points with the classes FUNCHEB1 and FUNCHEB2
 %   respectively. The default procedure is to use 2nd-kind points, but this can
 %   be overwritted with the preferences PREF = FUNCHEB('tech', cheb1').
 %
@@ -42,7 +39,7 @@ classdef funcheb %< smoothfun % (Abstract)
 %
 %   % Construction with preferences:
 %   p = funcheb.pref('tech', 'cheb2'); % See help('funcheb.pref') for details.
-%   f = funcheb.constructor(@(x) cos(x), p)
+%   f = funcheb.constructor(@(x) cos(x), [], [], p)
 %
 %   % Vector-valued construction:
 %   f = funcheb.constructor(@(x) [sin(x), cos(x), exp(x)])
@@ -187,25 +184,10 @@ classdef funcheb %< smoothfun % (Abstract)
             if ( nargin < 3 || isempty(hscale) )
                 hscale = 1;
             end
-
-            % Obtain preferences.
-            if ( nargin == 2 && isstruct(vscale) )
-                % vscale was actually a preference.
-                pref = funcheb.pref(vscale);
-                vscale = 0;
-                hscale = 1;
-            elseif ( nargin == 3 && isstruct(hscale) )
-                % hscale was actually a preference.
-                pref = funcheb.pref(hscale);
-                hscale = 1;
-            elseif ( nargin < 4 )
-                % Create:
+            % Determine preferences if not given, merge if some are given:
+            if ( nargin < 4 || isempty(pref) )
                 pref = funcheb.pref;
-            elseif ( ~isstruct(pref) )
-                % An eps was passed.
-                pref = funcheb.pref('eps', pref);
             else
-                % Merge:
                 pref = funcheb.pref(pref);
             end
 

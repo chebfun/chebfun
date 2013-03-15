@@ -26,7 +26,7 @@ for ( n = 1:2 )
     % Check division of a funcheb object by a numeric array.
     
     f_op = @(x) [sin(x) cos(x)];
-    f = testclass.make(f_op, pref);
+    f = testclass.make(f_op, [], [], pref);
     pass(n, 1) = isnan(f / 0);
     
     g = f / alpha;

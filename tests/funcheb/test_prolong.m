@@ -13,7 +13,7 @@ for ( n = 1:2 )
     end
 
     F = @sin;
-    f = testclass.make(@(x) F(x), pref);
+    f = testclass.make(@(x) F(x), [], [], pref);
 
     k = 11;
     g = prolong(f, k);
@@ -28,7 +28,7 @@ for ( n = 1:2 )
     pass(n, 3) = size(g,1) == 2 && norm(g.values - exact_values, inf) < tol;
 
     F = @sin;
-    f = testclass.make(@(x) [F(x), -F(x)], pref);
+    f = testclass.make(@(x) [F(x), -F(x)], [], [], pref);
     k = 11;
     g = prolong(f, k);
     x = testclass.chebpts(k);
@@ -57,7 +57,7 @@ for ( n = 1:2 )
     pass(n, 9) = norm(g.values - [F(x), -F(x)], inf) < tol;
 
     F = @(x) sin(1000*x);
-    f = testclass.make(@(x) [F(x), -F(x)], pref);
+    f = testclass.make(@(x) [F(x), -F(x)], [], [], pref);
     k = 32;
     g = prolong(f, k);
     x = testclass.chebpts(k);
@@ -78,7 +78,7 @@ for ( n = 1:2 )
         norm(g.values - exact_values, inf) < length(f)*tol;
 
     F = @(x) cos(1000*x);
-    f = testclass.make(@(x) [F(x), -F(x)], pref);
+    f = testclass.make(@(x) [F(x), -F(x)], [], [], pref);
 
     g = prolong(f,1);
     pass(n, 14) = size(g, 1) == 1 && norm(g.values - [1, -1], inf) < tol;
@@ -90,7 +90,7 @@ for ( n = 1:2 )
         norm(g.values - exact_values, inf) < length(f)*tol;
 
     v = [1 2 3];
-    f = testclass.make(v, pref);
+    f = testclass.make(v, [], [], pref);
     g = prolong(f, 5);
     pass(n, 16) = norm(g.values - repmat([1 2 3], 5, 1), inf) < tol;
 end

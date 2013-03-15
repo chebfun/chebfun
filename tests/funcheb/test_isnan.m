@@ -13,11 +13,11 @@ for ( n = 1:2 )
     end
 
     % Test a scalar-valued function:
-    f = testclass.make(@(x) x, p);
+    f = testclass.make(@(x) x, [], [], p);
     pass(n, 1) = ~isnan(f);
 
     % Test a vector-valued function:
-    f = testclass.make(@(x) [x, x.^2], p);
+    f = testclass.make(@(x) [x, x.^2], [], [], p);
     pass(n, 2) = ~isnan(f);
 
     % Test a NaN scalar-valued function:
@@ -48,7 +48,7 @@ for ( n = 1:2 )
     % Test a non-adaptive construction
     p.funcheb.n = 11;
     try
-        f = testclass.make(@(x) myfun(x), p);
+        f = testclass.make(@(x) myfun(x), [], [], p);
         pass(n, 6) = isnan(f);
     catch ME
         pass(n, 6) = strcmpi(ME.message, ...

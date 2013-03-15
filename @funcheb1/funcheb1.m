@@ -18,15 +18,11 @@ classdef funcheb1 < funcheb
 %   the VSCALE defaults to 0 initially.
 %
 %   FUNCHEB1(OP, VSCALE, HSCALE) uses a 'happiness' to both the vertical scale
-%   VSCALE (as above) and the horizontal scale HSCALE. If not given, this
-%   defaults to 1.
+%   VSCALE (as above) and the horizontal scale HSCALE. If not given (or given as
+%   empty), this defaults to 1.
 %
 %   FUNCHEB1(OP, VSCALE, HSCALE, PREF) overrides the default behavior with that
-%   given by the preference structure PREF. The constructor will also accept
-%   inputs of the form FUNCHEB1(OP, PREF), but this usage is not advised.
-%   Similarly, one can pass FUNCHEB1(OP, VSCALE, PREF). Furthermore, one can
-%   replace PREF by TOL, the desired tolerance of the construction, which is
-%   equivelent to passing a PREF with PREF.FUNCHEB.eps = TOL.
+%   given by the preference structure PREF.
 %
 %   FUNCHEB1(VALUES, ...) returns a FUNCHEB1 object which interpolates the
 %   values in the columns of VALUES at 1st-kind Chebyshev points and
@@ -102,28 +98,14 @@ classdef funcheb1 < funcheb
             if ( nargin < 2 || isempty(vscale) )
                 vscale = 0;
             end
+            % Define hscale if none given:
             if ( nargin < 3 || isempty(hscale) )
                 hscale = 1;
             end
-            
-            % Obtain preferences:
-            if ( nargin == 2 && isstruct(vscale) )
-                % vscale was actually a preference.
-                pref = funcheb.pref(vscale);
-                vscale = 0;
-                hscale = 1;
-            elseif ( nargin == 3 && isstruct(hscale) )
-                % hscale was actually a preference.
-                pref = funcheb.pref(hscale);
-                hscale = 1;                
-            elseif ( nargin < 4 )
-                % Create:
+            % Determine preferences if not given, merge if some are given:
+            if ( nargin < 4 || isempty(pref) )
                 pref = funcheb.pref;
-            elseif ( ~isstruct(pref) )
-                % An eps was passed.
-                pref = funcheb.pref('eps', pref);
             else
-                % Merge:
                 pref = funcheb.pref(pref);
             end
             

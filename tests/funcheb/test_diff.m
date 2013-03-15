@@ -25,26 +25,26 @@ for ( n = 1:2 )
     %%
     % Spot-check derivatives for a couple of functions.
     
-    f = testclass.make(@(x) exp(x) - x, pref);
+    f = testclass.make(@(x) exp(x) - x, [], [], pref);
     df = diff(f);
     df_exact = @(x) exp(x) - 1;
     err = df_exact(x) - feval(df, x);
     pass(n, 1) = (norm(err, 'inf') < tol);
     
-    f = testclass.make(@(x) atan(x), pref);
+    f = testclass.make(@(x) atan(x), [], [], pref);
     df = diff(f);
     df_exact = @(x) 1./(1 + x.^2);
     err = df_exact(x) - feval(df, x);
     pass(n, 2) = (norm(err, 'inf') < tol);
     
-    f = testclass.make(@(x) sin(x), pref);
+    f = testclass.make(@(x) sin(x), [], [], pref);
     df = diff(f);
     df_exact = @(x) cos(x);
     err = df_exact(x) - feval(df, x);
     pass(n, 3) = (norm(err, 'inf') < tol);
     
     z = exp(2*pi*1i/3);
-    f = testclass.make(@(t) airy(z*t), pref);
+    f = testclass.make(@(t) airy(z*t), [], [], pref);
     df = diff(f);
     df_exact = @(t) z*airy(1, z*t);
     err = df_exact(x) - feval(df, x);
@@ -53,17 +53,17 @@ for ( n = 1:2 )
     %%
     % Verify that calling diff() gives the same answer as direct construction.
     
-    f = testclass.make(@(x) 0.5*x - 0.0625*sin(8*x), pref);
-    df = testclass.make(@(x) sin(4*x).^2, pref);
+    f = testclass.make(@(x) 0.5*x - 0.0625*sin(8*x), [], [], pref);
+    df = testclass.make(@(x) sin(4*x).^2, [], [], pref);
     err = diff(f) - df;
     pass(n, 5) = (norm(err.values, 'inf') < tol);
     
     %%
     % Verify basic differentiation rules.
     
-    f = testclass.make(@(x) x.*sin(x.^2) - 1, pref);
+    f = testclass.make(@(x) x.*sin(x.^2) - 1, [], [], pref);
     df = diff(f);
-    g = testclass.make(@(x) exp(-x.^2), pref);
+    g = testclass.make(@(x) exp(-x.^2), [], [], pref);
     dg = diff(g);
     
     errfn = diff(f + g) - (df + dg);
@@ -74,7 +74,7 @@ for ( n = 1:2 )
     err = feval(errfn, x);
     pass(n, 7) = (norm(err, 'inf') < length(f)*tol);
     
-    const = testclass.make(@(x) ones(size(x)), pref);
+    const = testclass.make(@(x) ones(size(x)), [], [], pref);
     dconst = diff(const);
     err = feval(dconst, x);
     pass(n, 8) = (norm(err, 'inf') < tol);
@@ -83,13 +83,13 @@ for ( n = 1:2 )
     % Check higher-order derivatives.  (NB:  We relax the tolerance by n + 1
     % factors of 10, where n is the number of derivatives taken.)
     
-    f = testclass.make(@(x) x.*atan(x) - x - 0.5*log(1 + x.^2), pref);
+    f = testclass.make(@(x) x.*atan(x) - x - 0.5*log(1 + x.^2), [], [], pref);
     df2 = diff(f, 2);
     df2_exact = @(x) 1./(1 + x.^2);
     err = df2_exact(x) - feval(df2, x);
     pass(n, 9) = (norm(err, 'inf') < 1e3*tol);
     
-    f = testclass.make(@(x) sin(x), pref);
+    f = testclass.make(@(x) sin(x), [], [], pref);
     df4 = diff(f, 4);
     df4_exact = @(x) sin(x);
     err = df4_exact(x) - feval(df4, x);
@@ -98,7 +98,7 @@ for ( n = 1:2 )
     %%
     % Check operation for vectorized funcheb objects.
     
-    f = testclass.make(@(x) [sin(x) x.^2 exp(1i*x)], pref);
+    f = testclass.make(@(x) [sin(x) x.^2 exp(1i*x)], [], [], pref);
     df_exact = @(x) [cos(x) 2*x 1i*exp(1i*x)];
     err = feval(diff(f), x) - df_exact(x);
     pass(n, 11) = (norm(err(:), 'inf') < tol);

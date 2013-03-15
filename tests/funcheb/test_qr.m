@@ -22,21 +22,21 @@ for ( n = 1:2 )
     %%
     % Do a few spot-checks.
     
-    f = testclass.make(@(x) sin(x), pref);
+    f = testclass.make(@(x) sin(x), [], [], pref);
     pass(n, 1:2) = test_one_qr(f, x);
     pass(n, 3:4) = test_one_qr_with_perm(f, x);
     
-    f = testclass.make(@(x) [cos(x) exp(x)], pref);
+    f = testclass.make(@(x) [cos(x) exp(x)], [], [], pref);
     pass(n, 5:6) = test_one_qr(f, x);
     pass(n, 7:8) = test_one_qr_with_perm(f, x);
     
     f = testclass.make(@(x) [ones(size(x)) x x.^2 x.^3 x.^4 x.^5 x.^6 x.^7], ...
-        pref);
+        [], [], pref);
     pass(n, 9:10) = test_one_qr(f, x);
     pass(n, 11:12) = test_one_qr_with_perm(f, x);
     
     f = testclass.make(@(x) [1./(1+1i*x.^2) sinh((1-1i)*x) (exp(x) - x.^3)], ...
-        pref);
+        [], [], pref);
     pass(n, 13:14) = test_one_qr(f, x);
     pass(n, 15:16) = test_one_qr_with_perm(f, x);
     
