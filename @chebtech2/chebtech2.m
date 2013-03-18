@@ -38,7 +38,8 @@ classdef chebtech2 < chebtech
 %   % Vector-valued construction:
 %   f = chebtech2(@(x) [sin(x), cos(x), exp(x)])
 %
-% See also CHEBTECH, CHEBTECH.pref, CHEBTECH2.chebpts, CHEBTECH2.happinesscheck, CHEBTECH2.refine.
+% See also CHEBTECH, CHEBTECH.pref, CHEBTECH2.chebpts, CHEBTECH2.happinesscheck, 
+% CHEBTECH2.refine.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -146,9 +147,6 @@ classdef chebtech2 < chebtech
         
         % Make a CHEBTECH2. (Constructor shortcut)
         f = make(varargin);
-        
-        % Retrieve and modify preferences for this class.
-%         prefs = pref(varargin)
         
         % Refinement function for CHEBTECH2 construction. (Evaluates OP on grid)
         [values, points, giveUp] = refine(op, values, pref)

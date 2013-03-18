@@ -162,9 +162,6 @@ classdef chebtech1 < chebtech
         % Make a CHEBTECH1. (Constructor shortcut)
         f = make(varargin);
         
-        % Retrieve and modify preferences for this class.
-        prefs = pref(varargin)
-        
         % Refinement function for CHEBTECH1 construction. (Evaluates OP on grid)
         [values, opints, giveUp] = refine(op, values, pref)
         

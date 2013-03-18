@@ -371,7 +371,7 @@ classdef chebtech %< smoothfun % (Abstract)
         % Size of a CHEBTECH.
         [siz1, siz2] = size(f, varargin)
 
-        % [TODO]: Implement strictCheck
+        % Strict happiness check.
         [ishappy, epslevel, cutoff] = strictCheck(f, pref)
 
         % Definite integral of a CHEBTECH on the interval [-1,1].

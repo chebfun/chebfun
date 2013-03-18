@@ -40,7 +40,7 @@ elseif ( isa(c, 'double') )         % CHEBTECH * double
         f.epslevel = f.epslevel + eps;
     else
         f.vscale = max(abs(f.values), [], 1);
-        % [TODO]: Figure out epslevel.
+        % [TODO]: Figure out vector epslevel.
     end
     
     % If the vertical scale is zero, then set the CHEBTECH to zero:
