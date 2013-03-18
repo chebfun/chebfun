@@ -17,22 +17,22 @@ function chebtest(varargin)
 %   is deemed to have 'failed'. If a test results in an error being thrown it is
 %   reported as 'crashed'. Therefore, an output from CHEBTEST might take the
 %   form:
-%     Test #001: funcheb1/test_alias.m ...          passed in 0.0094s
-%     Test #002: funcheb1/test_bary.m ...           FAILED
-%     Test #003: funcheb1/test_cell2mat.m ...       CRASHED
+%     Test #001: chebtech1/test_alias.m ...          passed in 0.0094s
+%     Test #002: chebtech1/test_bary.m ...           FAILED
+%     Test #003: chebtech1/test_cell2mat.m ...       CRASHED
 %     ...
 %
 %   If all test from a particular directory pass, the total execution time is
 %   returned:
-%     All funcheb1 tests passed in 3.1096s.
+%     All chebtech1 tests passed in 3.1096s.
 %   If not, the number of failed tests is reported:
-%     1 failed test in funcheb2 directory.
+%     1 failed test in chebtech2 directory.
 %
 %   Similarly, if all tests pass in all directories the total execution time is
 %   returned at the end of the test:
 %     All tests passed in 6.213s.
 %   If not, then a list of the failed directories is reported:
-%     Tests failed/crashed in directory: tests/funcheb2.
+%     Tests failed/crashed in directory: tests/chebtech2.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
