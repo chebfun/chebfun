@@ -5,7 +5,7 @@ classdef bndfun < fun
 % BNDFUN Class Description:
 %
 % The FUN class is an abstract class for representations of functions on the
-% finite interval [a, b]. It acheives this my taking a onefun on [-1, 1] and
+% finite interval [a, b]. It achieves this by taking a onefun on [-1, 1] and
 % applying a linear mapping.
 %
 % Class diagram: [<<fun>>] <-- [<<bndfun>>] <>-- [<<onefun>>]

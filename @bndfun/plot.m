@@ -47,6 +47,9 @@ holdState = ishold;
 
 %%
 % Plot the curve, evaluating at an equispaced grid
+% TODO: Introduce a "plotData" method ad the onefun level, to supply points and
+% values for pointing more quickly (e.g., in the chebtech case, we'd like to use
+% prolong).
 xx = linspace(f.domain(1), f.domain(2), 2001).';
 ff = feval(f, xx);
 if ( isreal(ff) )
