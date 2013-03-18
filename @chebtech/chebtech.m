@@ -234,14 +234,11 @@ classdef chebtech %< smoothfun % (Abstract)
         % barycentric (v) weights.
         [x, w, v] = chebpts(n)
 
-        % Extrapolate (for NaNs / endpoints).
-        [values, maskNaN, maskInf] = extrapolate(values)
-
         % Make a CHEBTECH. (Constructor shortcut)
         f = make(varargin);
 
         % Refinement function for CHEBTECH construction. (Evaluates OP on grid)
-        [values, opints, giveUp] = refine(op, values, pref)
+        [values, points, giveUp] = refine(op, values, pref)
 
         % Compute Chebyshev quadrature weights.
         w = quadwts(n)
@@ -268,6 +265,9 @@ classdef chebtech %< smoothfun % (Abstract)
 
         % Derivative of a CHEBTECH.
         f = diff(f, k, dim)
+        
+        % Extrapolate (for NaNs / Infs).
+        [values, maskNaN, maskInf] = extrapolate(f)
 
         % Evaluate a CHEBTECH.
         y = feval(f, x)

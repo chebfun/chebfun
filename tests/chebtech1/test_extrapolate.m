@@ -18,18 +18,19 @@ s = 0;
 
 n = 17;
 x = chebtech1.chebpts(n);
+f = chebtech1;
 
 for k = 1:2
     % Test once for a vector of coeffs and against for a matrix.
 
     % Interior NaN;
-    values = sin(x-x(4))./(x-x(4));
-    newValues = chebtech1.extrapolate(values);
+    f.values = sin(x-x(4))./(x-x(4));
+    newValues = f.extrapolate();
     pass(1 + s) = all( abs(newValues(4,:) - 1) < tol );
     
     % Interior Inf;
-    values = sin(x-x(4)-eps)./(x-x(4));
-    newValues = chebtech1.extrapolate(values);
+    f.values = sin(x-x(4)-eps)./(x-x(4));
+    newValues = f.extrapolate();
     pass(2 + s) = all( abs(newValues(4,:) - 1) < tol );
     
     % Make x a matrix and repeat:

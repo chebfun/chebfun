@@ -93,13 +93,13 @@ if ( isnumeric(op) || iscell(op) )
 end
 
 % Initialise empty values to pass to refine:
-values = [];
+f.values = [];
 
 % Loop until ISHAPPY or GIVEUP:
 while ( 1 )
 
     % Call the appropriate refinement routine: (in pref.refinementStrategy)
-    [values, giveUp] = f.refine(op, values, pref);
+    [f.values, giveUp] = f.refine(op, f.values, pref);
 
     % We're giving up! :(
     if ( giveUp ) 
@@ -107,18 +107,17 @@ while ( 1 )
     end    
     
     % Update vertical scale: (Only include sampled finite values)
-    valuesTemp = values;
-    valuesTemp(~isfinite(values)) = 0;
+    valuesTemp = f.values;
+    valuesTemp(~isfinite(f.values)) = 0;
     vscale = max(vscale, max(abs(valuesTemp), [], 1));
     
     % Extrapolate out NaNs:
-    [values, maskNaN, maskInf] = f.extrapolate(values);
+    [f.values, maskNaN, maskInf] = f.extrapolate();
 
     % Compute the Chebyshev coefficients:
-    coeffs = f.chebpoly(values);
+    coeffs = f.chebpoly(f.values);
     
     % Check for happiness:
-    f.values = values;
     f.coeffs = coeffs;
     f.vscale = vscale;
     [ishappy, epslevel, cutoff] = happinessCheck(f, op, pref); 
@@ -126,21 +125,20 @@ while ( 1 )
     % We're happy! :)
     if ( ishappy ) 
         coeffs = f.alias(coeffs, cutoff); % Alias the discarded coeffs.
-        values = f.chebpolyval(coeffs);   % Compute values on this grid.
+        f.values = f.chebpolyval(coeffs);   % Compute values on this grid.
         break
     end
     
     % Replace any NaNs or Infs we may have extrapolated:
-    values(maskNaN,:) = NaN;
-    values(maskInf,:) = Inf;
+    f.values(maskNaN,:) = NaN;
+    f.values(maskInf,:) = Inf;
 
 end
 
 % Update vertical scale one last time:
-vscale = max(vscale, max(abs(values), [], 1));
+vscale = max(vscale, max(abs(f.values), [], 1));
 
 % Assign to CHEBTECH object:
-f.values = values;
 f.coeffs = coeffs;
 f.vscale = vscale;
 f.ishappy = ishappy;

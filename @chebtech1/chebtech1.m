@@ -156,9 +156,6 @@ classdef chebtech1 < chebtech
         % quadrature (w) and barycentric (v) weights.
         [x, w, v] = chebpts(n)
         
-        % Extrapolate (for NaNs / endpoints).
-        [values, maskNaN, maskInf] = extrapolate(values)
-        
         % Make a CHEBTECH1. (Constructor shortcut)
         f = make(varargin);
         
