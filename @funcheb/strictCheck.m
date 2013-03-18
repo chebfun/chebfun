@@ -74,5 +74,6 @@ tail = f.coeffs(1:testLength,:);
 if ( ~any(tail(:)) )
     cutoff = n - find(max(f.coeffs, [], 2) > 0, 1, 'first') + 1;
     ishappy = true;
-    return
+else
+    cutoff = n;
 end
