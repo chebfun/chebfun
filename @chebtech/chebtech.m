@@ -264,13 +264,13 @@ classdef chebtech %< smoothfun % (Abstract)
         f = conj(f)
 
         % Indefinite integral of a CHEBTECH.
-        f = cumsum(f, pref)
+        f = cumsum(f, m, pref)
 
         % Derivative of a CHEBTECH.
         f = diff(f, k, dim)
 
         % Evaluate a CHEBTECH.
-        y = feval(f,x)
+        y = feval(f, x)
 
         % Flip columns of a vectorised CHEBTECH object.
         f = fliplr(f)
