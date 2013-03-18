@@ -136,7 +136,7 @@ rng(rngstate);
 
 end
 
-% Test the division of a FUNCHEB2 F, specified by F_OP, by a scalar ALPHA using
+% Test the division of a FUNCHEB F, specified by F_OP, by a scalar ALPHA using
 % a grid of points X in [-1  1] for testing samples.
 function result = test_div_function_by_scalar(f, f_op, alpha, x)
     g = f ./ alpha;
@@ -144,7 +144,7 @@ function result = test_div_function_by_scalar(f, f_op, alpha, x)
     result = norm(feval(g, x) - g_exact(x), 'inf') < 10*g.epslevel;
 end
 
-% Test the division of a scalar ALPHA by a FUNCHEB2, specified by F_OP, using
+% Test the division of a scalar ALPHA by a FUNCHEB, specified by F_OP, using
 % a grid of points X in [-1  1] for testing samples.
 function result = test_div_scalar_by_function(alpha, f, f_op, x)
     g = alpha ./ f;
@@ -152,7 +152,7 @@ function result = test_div_scalar_by_function(alpha, f, f_op, x)
     result = norm(feval(g, x) - g_exact(x), 'inf') < 10*g.epslevel;
 end
 
-% Test the division of two FUNCHEB2 objects F and G, specified by F_OP and
+% Test the division of two FUNCHEB objects F and G, specified by F_OP and
 % G_OP, using a grid of points X in [-1  1] for testing samples.
 function result = test_div_function_by_function(f, f_op, g, g_op, x)
     h = f ./ g;

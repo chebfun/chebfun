@@ -56,7 +56,7 @@ rng(rngstate);
 
 end
 
-% Tests the QR decomposition for a FUNCHEB2 object F using a grid of points X
+% Tests the QR decomposition for a FUNCHEB object F using a grid of points X
 % in [-1  1] for testing samples.
 function result = test_one_qr(f, x)
     N = size(f, 2);

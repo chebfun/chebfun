@@ -1,3 +1,5 @@
+% Test file for funcheb/prolong.m
+
 function pass = test_prolong(pref)
 
 if ( nargin < 1 )

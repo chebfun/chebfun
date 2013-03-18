@@ -1,3 +1,5 @@
+% Test file for funcheb/isnan.m
+
 function pass = test_isnan(pref)
 
 if ( nargin < 1 )

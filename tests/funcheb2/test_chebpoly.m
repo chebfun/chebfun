@@ -1,4 +1,5 @@
-% Test file for funcheb2/chebpoly.
+% Test file for funcheb2/chebpoly.m
+
 function pass = test_chebpoly(varargin)
 
 % Set a tolerance (pref.eps doesn't matter)

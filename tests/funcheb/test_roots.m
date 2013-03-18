@@ -1,3 +1,5 @@
+% Test file for funcheb/roots.m
+
 function pass = test_roots(pref)
 
 if ( nargin < 1 )

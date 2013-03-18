@@ -1,4 +1,4 @@
-% Test file for funcheb/restrict.
+% Test file for funcheb/restrict.m
 
 function pass = test_restrict(pref)
 

@@ -1,3 +1,5 @@
+% Test file for funcheb/flipud.
+
 function pass = test_flipud(pref)
 
 if ( nargin < 1 )

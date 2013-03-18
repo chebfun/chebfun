@@ -1,3 +1,5 @@
+% Test file for funcheb2/alias.m
+
 function pass = test_alias(varargin)
 
 % Set a tolerance (pref.eps doesn't matter)

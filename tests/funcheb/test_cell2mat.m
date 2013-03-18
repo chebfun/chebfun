@@ -1,3 +1,5 @@
+% Test file for funcheb/cell2mat.
+
 function pass = test_cell2mat(pref)
 
 if ( nargin < 2 )

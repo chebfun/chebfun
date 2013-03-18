@@ -1,3 +1,5 @@
+% Test file for funcheb2/chebpts.m
+
 function pass = test_chebpts(varargin)
 
 % Set a tolerance (pref.eps doesn't matter)

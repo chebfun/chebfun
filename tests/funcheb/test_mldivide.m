@@ -44,7 +44,7 @@ for ( n = 1:2 )
     %%
     % Check error conditions.
 
-    % mldivide doesn't work between a FUNCHEB2 and a non-FUNCHEB2.
+    % mldivide doesn't work between a FUNCHEB and a non-FUNCHEB.
     try
         f = testclass.make(@(x) [sin(x) cos(x) exp(x)], [], [], pref);
         f \ 2;

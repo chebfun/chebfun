@@ -1,3 +1,5 @@
+% Test file for funcheb2 constructor.
+
 function pass = test_constructor(pref)
 
 % Get preferences:

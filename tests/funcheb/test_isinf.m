@@ -1,3 +1,5 @@
+% Test file for funcheb/isinf.m
+
 function pass = test_isinf(pref)
 
 if ( nargin < 1 )

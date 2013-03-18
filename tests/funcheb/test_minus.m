@@ -101,7 +101,7 @@ rng(rngstate);
 
 end
 
-% Test the subtraction of a FUNCHEB2 F, specified by F_OP, to and from a scalar
+% Test the subtraction of a FUNCHEB F, specified by F_OP, to and from a scalar
 % ALPHA using a grid of points X in [-1  1] for testing samples.
 function result = test_sub_function_and_scalar(f, f_op, alpha, x)
     g1 = f - alpha;
@@ -111,7 +111,7 @@ function result = test_sub_function_and_scalar(f, f_op, alpha, x)
     result(2) = norm(feval(g1, x) - g_exact(x), 'inf') < 10*g1.epslevel;
 end
 
-% Test the subraction of two FUNCHEB2 objects F and G, specified by F_OP and
+% Test the subraction of two FUNCHEB objects F and G, specified by F_OP and
 % G_OP, using a grid of points X in [-1  1] for testing samples.
 function result = test_sub_function_and_function(f, f_op, g, g_op, x)
     h1 = f - g;

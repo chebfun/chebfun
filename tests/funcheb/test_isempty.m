@@ -1,3 +1,5 @@
+% Test file for funcheb/isempty.m
+
 function pass = test_isempty(varargin)
 
 for ( n = 1:2 )

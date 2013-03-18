@@ -1,3 +1,5 @@
+% Test file for funcheb/imag.
+
 function pass = test_imag(pref)
 
 if ( nargin < 1 )

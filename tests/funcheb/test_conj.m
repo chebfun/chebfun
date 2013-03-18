@@ -1,3 +1,5 @@
+% Test file for funcheb/conj.
+
 function pass = test_conj(pref)
 
 if ( nargin < 1 )

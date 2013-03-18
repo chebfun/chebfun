@@ -1,3 +1,5 @@
+% Test file for funcheb/bary.
+
 function pass = test_bary(pref)
 
 % [TODO]: This test is rubbish!

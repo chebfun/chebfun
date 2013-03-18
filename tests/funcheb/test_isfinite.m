@@ -1,3 +1,5 @@
+% Test file for funcheb/isfinite.m
+
 function pass = test_isfinite(pref)
 
 if ( nargin < 1 )

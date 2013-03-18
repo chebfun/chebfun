@@ -1,3 +1,5 @@
+% Test file for funcheb/happinessCheck.
+
 function pass = test_happinessCheck(pref)
 
 % Get preferences:

@@ -1,3 +1,5 @@
+% Test file for funcheb/isreal.m
+
 function pass = test_isreal(pref)
 
 if ( nargin < 1 )

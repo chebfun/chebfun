@@ -1,3 +1,5 @@
+% Test file for funcheb/real.m
+
 function pass = test_real(pref)
 
 if ( nargin < 1 )

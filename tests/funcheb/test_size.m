@@ -1,3 +1,5 @@
+% Test file for funcheb/size.m
+
 function pass = test_size(pref)
 
 if ( nargin < 1 )

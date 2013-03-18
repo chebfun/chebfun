@@ -1,3 +1,5 @@
+% Test file for funcheb1/extrapolate.m
+
 function pass = test_extrapolate(varargin)
 
 % Obtain preferences

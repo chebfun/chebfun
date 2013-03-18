@@ -158,7 +158,7 @@ rng(rngstate);
 
 end
 
-% Test the multiplication of a FUNCHEB2 F, specified by F_OP, by a scalar ALPHA
+% Test the multiplication of a FUNCHEB F, specified by F_OP, by a scalar ALPHA
 % using a grid of points X in [-1  1] for testing samples.
 function result = test_mult_function_by_scalar(f, f_op, alpha, x)
     g1 = f .* alpha;
@@ -168,7 +168,7 @@ function result = test_mult_function_by_scalar(f, f_op, alpha, x)
     result(2) = norm(feval(g1, x) - g_exact(x), 'inf') < 10*g1.epslevel;
 end
 
-% Test the multiplication of two FUNCHEB2 objects F and G, specified by F_OP and
+% Test the multiplication of two FUNCHEB objects F and G, specified by F_OP and
 % G_OP, using a grid of points X in [-1  1] for testing samples.  If CHECKPOS is
 % TRUE, an additional check is performed to ensure that the values of the result
 % are all nonnegative; otherwise, this check is skipped.
