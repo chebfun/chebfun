@@ -89,12 +89,18 @@ while ( k > 0 )
     n = n - 1;
     
     % Update:
-    mu = -1/n*log(f.epslevel);
-    M = f.vscale;
+    v = f.chebpolyval(c);
+    
+%     mu = -1/n*log(f.epslevel);
+%     M = f.vscale;
 %     f.epslevel =  4*sqrt(sinh(mu)/M)*n*log(n)*f.epslevel*f.vscale;
     
+%     rho = exp(mu);
+%     phi = sqrt(rho^4+1)/(rho-1).^2;
+%     f.epslevel =  (f.epslevel*f.vscale)*(rho-1)*phi*n/sinh(mu)*coth(mu*n)/max(abs(v), [], 1);
+    
     f.epslevel = n.*log(n)*f.epslevel*f.vscale;
-    v = f.chebpolyval(c);
+    
     f.vscale = max(abs(v), [], 1);
     
 end
