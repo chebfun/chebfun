@@ -15,79 +15,74 @@ function [values, maskNaN, maskInf] = extrapolate(values)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebun.org/ for Chebfun information.
 
-% Bookkeep all bad points including NaNs and Infs.
-
 maskNaN = any(isnan(values), 2);
 maskInf = any(isinf(values), 2);
 mask = maskNaN | maskInf;
 
-if ( any(mask) ) % Do extrapolation if there is any bad point.
+if ( any(mask) )
     
-    % Compute the Chebyshev points of 2nd kind
+    % Obtain Chebyshev points
     n = size(values, 1);
     x = funcheb2.chebpts(n);
     
-    % If there is any interior bad point, do extrapolation at BOTH interior
-    % point(s) and endpoints (i.e. -1 and 1) using the barycentric weights 
-    % computed by calling barywts@funcheb2. Otherwise only the value of the
-    % function at the endpoints (i.e. -1 and 1) is extrapolated using newly
-    % computed barycentric weights, since the weights can be much more 
-    % easily and simply obtained in this way, instead of by calling barywts.    
-    
-    if ( any(mask(2:end-1)) )   % Interior bad points, if there is any.
+    if ( any(mask(2:end-1)) )   % Interior NaNs
         
-        % Force extrapolation at the endpoints for time-being.
+        % Store information at the ends (will be replaced below if poss.)
+        maskends = mask([1, end]);
+        indxends = [1 ; n]; 
+        indxends = indxends(~maskends);
+        vends = values([1, end],:);
+        
+        % Force extrapolation at end points for now:
         mask([1, end]) = true;
     
-        % The good points:
+        % The good:
         xgood = x(~mask);
         if ( isempty(xgood) )
             error('CHEBFUN:FUNCHEB2:extrapolate:nans', ...
                 'Too many NaNs to handle.')
         end
         
-        % The bad points:
+        % The bad:
         xnan = x(mask);
         
-        % Compute the modified barycentric weights:
-        w = funcheb2.barywts(n); % Standard weights.
-        w = w(~mask); % Barycentric weights corresponding to good points.
+        % Compute barycentric weights:
+        w = ones(size(xgood));
         for k = 1:length(xnan)
-            % Compute the modified barycentric weights for the bad points:
-            w = w.*( xgood - xnan(k) );
+            w = w.*abs(xnan(k) - xgood);
         end
+        w(2:2:end) = -w(2:2:end);
         
-        % Preallocate the storage for extrapolated values at the bad points.
-        newvals = zeros(length(xnan), size(values, 2)); 
-        % Barycentric formula of the second (true) kind:
+        % Mini barycentric formula:
+        newvals = zeros(length(xnan), size(values, 2));
         for k = 1:length(xnan)
-            % Compute the weights:
-            w2 = w./(xnan(k) - xgood); 
-            % Sum the values:
+            w2 = w./(xnan(k) - xgood);
             newvals(k,:) = (w2.'*values(~mask,:)) / sum(w2);
         end
-   
-        % Update the values at the bad points:
+        
+        % Update the values:
         values(mask,:) = newvals;
         
-    else
-        % Force extrapolation at the endpoints anyway, even though there aren't
-        % any bad interior points.
+        % Keep the ends if possible:
+        values(indxends,:) = vends(~maskends,:);
         
-        % We compute the modified barycentric weights for extrapolating the
-        % endpoints from the scratch instead of calling barywts.
+    else               % Force extrapolation at endpoints anyway
+        
+        % Extrapolate at endpoints if needed using "Fejer's 2nd rule" type of
+        % barycentric formula.
         
         xi = x(2:end-1); % Interior nodes
         
-        % Barycentric weights for extrapolating at -1.
+        % Barycentric weights for left evaluation.
         w = 1 - xi;                 
-        w(2:2:end) = -w(1:2:end);
+        w(2:2:end) = -w(2:2:end);
         values(1,:) = (w.'*values(2:end-1,:)) / sum(w);   % Values at x = -1;
         
-        % Barycentric weights for extrapolating at 1.
+        % Barycentric weights for right evaluation.
         w = 1 + xi;                 
-        w(2:2:end) = -w(1:2:end);
+        w(2:2:end) = -w(2:2:end);
         values(end,:) = (w.'*values(2:end-1,:)) / sum(w); % Values at x = 1;
+
         
     end
 

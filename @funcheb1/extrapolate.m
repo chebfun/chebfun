@@ -17,26 +17,24 @@ function [values, maskNaN, maskInf] = extrapolate(values)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebun.org/ for Chebfun information.
 
-% Bookkeep all bad points including NaNs and Infs.
-
 maskNaN = any(isnan(values), 2);
 maskInf = any(isinf(values), 2);
 mask = maskNaN | maskInf;
 
-if ( any(mask) )  % Do extrapolation if there is any bad point.
+if ( any(mask) )
     
-    % Compute the Chebyshev points of 1st kind
+    % Obtain Chebyshev points
     n = size(values, 1);
     x = funcheb1.chebpts(n);
 
-    % The good points:
+    % The good:
     xgood = x(~mask);
     if ( isempty(xgood) )
         error('CHEBFUN:FUNCHEB1:extrapolate:nans', ...
             'Too many NaNs to handle.')
     end
     
-    % The bad points:
+    % The bad:
     xnan = x(mask);
     
     % Compute the modified barycentric weights:
@@ -57,7 +55,7 @@ if ( any(mask) )  % Do extrapolation if there is any bad point.
         newvals(k,:) = (w2.'*values(~mask,:)) / sum(w2);
     end
     
-    % Update the values at the bad points:
+    % Update the values:
     values(mask,:) = newvals;
     
 end
