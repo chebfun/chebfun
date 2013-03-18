@@ -4,7 +4,8 @@ function f = cumsum(f, m, pref)
 %   integration is chosen so that F(-1) = 0. 
 %
 %   CUMSUM(F, M) will compute the Mth definite integral with the constant of
-%   integration chosen so that each intermediary integral evaluates to 0 at -1.
+%   integration chosen so that each intermediary integral evaluates to 0 at -1
+%   so that CUMSUM(F, 2) is equivalent to CUMSUM(CUMSUM(F)).
 %
 %   CUMSUM(F, PREF) or CUMSUM(F, M,  PREF) uses options from the preference
 %   structure PREF when building the output CHEBTECH.
