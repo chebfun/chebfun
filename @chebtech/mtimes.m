@@ -51,7 +51,7 @@ elseif ( isa(c, 'double') )         % CHEBTECH * double
     
 elseif ( isa(c, 'chebtech') )       % CHEBTECH * CHEBTECH
     
-    error('CHEBFUN:CHEBTECH:mtimes:chebtechMtimesFuncheb', ...
+    error('CHEBFUN:CHEBTECH:mtimes:chebtechMtimesChebtech', ...
         'Use .* to multiply CHEBTECH objects.');
     
 else                                % CHEBTECH * ???
