@@ -12,8 +12,9 @@ function y = clenshaw(x, c)
 
 % X should be a column vector
 if ( size(x, 2) > 1 )
-    error('CHEBFUN:CHEBTECH:clenshaw:xDim', ...
+    warning('CHEBFUN:CHEBTECH:clenshaw:xDim', ...
         'Evaluation points should be a column vector.');
+    x = x(:);
 end
 
 % Scalar or vector-valued function?
