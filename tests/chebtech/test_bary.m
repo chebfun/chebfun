@@ -27,12 +27,8 @@ for ( n = 1:2 )
     fy = f(y);
 
     % second kind formula
-    pass(n, 1) = norm( testclass.bary(y, fx, 2) - fy ) < tol;
-    pass(n, 2) = norm( testclass.bary(y, [fx fx], 2) - [fy fy] ) < tol;
-
-    % First kind formula
-    pass(n, 3) = norm( testclass.bary(y, fx, 1) - fy ) < tol;
-    pass(n, 4) = norm( testclass.bary(y, [fx fx], 1) - [fy fy] ) < tol;
+    pass(n, 1) = norm( testclass.bary(y, fx) - fy ) < tol;
+    pass(n, 2) = norm( testclass.bary(y, [fx fx]) - [fy fy] ) < tol;
 end
 
 end

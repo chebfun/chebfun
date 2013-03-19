@@ -140,8 +140,8 @@ classdef chebtech1 < chebtech
         % aliasing.
         coeffs = alias(coeffs, m)
         
-        % Evaluate a Chebyshev interpolant using barycentric formula.
-        out = bary(x, values, kind)
+        % Evaluate a Chebyshev interpolant using 2nd form barycentric formula.
+        out = bary(x, values)
         
         % Compute Chebyshev barycentric weights.
         w = barywts(n)

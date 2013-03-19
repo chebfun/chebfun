@@ -6,11 +6,11 @@ classdef chebtech %< smoothfun % (Abstract)
 %   1st-kind Chebyshev series expansion.
 %
 % Constructor inputs:
-%   CHEBTECH.CONSTRUCTOR(OP) constructs a CHEBTECH object from the function handle
-%   OP. OP should be vectorised (i.e., accept a vector input) and ouput a vector
-%   of the same length. CHEBTECH objects allow for vectorised construction (i.e.,
-%   of multi-valued functions), in which case OP should accept a column vector
-%   of length N and return a matrix of size NxM.
+%   CHEBTECH.CONSTRUCTOR(OP) constructs a CHEBTECH object from the function
+%   handle OP. OP should be vectorised (i.e., accept a vector input) and ouput a
+%   vector of the same length. CHEBTECH objects allow for vector-valued
+%   functions, in which case OP should accept a column vector of length N and
+%   return a matrix of size NxM.
 %
 %   CHEBTECH.CONSTRUCTOR(OP, VSCALE, HSCALE) constructs a CHEBTECH with
 %   'happiness' relative to the maximum of the given vertical scale VSCALE
@@ -391,8 +391,8 @@ classdef chebtech %< smoothfun % (Abstract)
     %% STATIC METHODS IMPLEMENTED BY THIS CLASS.
     methods ( Static = true )
 
-        % Evaluate a Chebyshev polynomial using barycentric interpolation.
-        fx = bary(x, gvals, xk, vk, kind, p)
+        % Evaluation using 2nd form barycentric interpolation formula.
+        fx = bary(x, gvals, xk, vk)
 
         % Clenshaw's algorithm for evaluating a Chebyshev polynomial.
         out = clenshaw(x, coeffs)
