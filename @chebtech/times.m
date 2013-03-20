@@ -106,11 +106,12 @@ end
 f.values = values;
 f.coeffs = f.chebpoly(values);
 
-% Update scales:
+% Update vscale, epslevel, and ishappy:
 vscale = max(abs(f.values), [], 1);
 f.epslevel = (f.epslevel + g.epslevel) * (f.vscale.*g.vscale./vscale);
 f.epslevel = max(f.epslevel); % [TODO]: Vector epslevel;
 f.vscale  = vscale;
+f.ishappy = f.ishappy && g.ishappy;
 
 % Simplify!
 f = simplify(f, pref);

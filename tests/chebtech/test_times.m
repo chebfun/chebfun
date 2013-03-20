@@ -149,6 +149,17 @@ for ( n = 1:2 )
     h2 = testclass.make(@(x) f_op(x) .* g_op(x), [], [], pref);
     h2 = prolong(h2, length(h1));
     pass(n, 23) = norm(h1.values - h2.values, 'inf') < tol;
+
+    %%
+    % Check that multiplying a CHEBTECH by an unhappy CHEBTECH gives an unhappy
+    % result.  
+
+    f = chebtech.constructor(@(x) cos(x+1));    % Happy
+    g = chebtech.constructor(@(x) sqrt(x+1));   % Unhappy
+    h = f.*g;  % Multiply unhappy by happy.
+    pass(n, 24) = (~g.ishappy) && (~h.ishappy);
+    h = g.*f;  % Multiply happy by unhappy.
+    pass(n, 25) = (~g.ishappy) && (~h.ishappy);
 end
 
 %%

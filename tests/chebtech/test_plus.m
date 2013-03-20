@@ -92,6 +92,17 @@ for ( n = 1:2 )
     h1 = f + g;
     h2 = testclass.make(@(x) x + cos(x) - 1, [], [], pref);
     pass(n, 19) = norm(h1.values - h2.values, 'inf') < tol;
+
+    %%
+    % Check that adding a CHEBTECH to an unhappy CHEBTECH gives an unhappy
+    % result.  
+
+    f = chebtech.constructor(@(x) cos(x+1));    % Happy
+    g = chebtech.constructor(@(x) sqrt(x+1));   % Unhappy
+    h = f + g;  % Add unhappy to happy.
+    pass(n, 20) = (~g.ishappy) && (~h.ishappy);
+    h = g + f;  % Add happy to unhappy.
+    pass(n, 21) = (~g.ishappy) && (~h.ishappy);
 end
 
 %%
