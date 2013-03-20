@@ -1,5 +1,5 @@
 function f = real(f)
-%REAL	Real part of a CHEBTECH.
+%REAL   Real part of a CHEBTECH.
 %   REAL(F) is the real part of F.
 %
 %   See also ISREAL, IMAG, CONJ.
@@ -11,15 +11,11 @@ function f = real(f)
 f.values = real(f.values);
 
 if ( ~any(f.values(:)) )
-    
     % Input was imaginary, so output a zero CHEBTECH:
     f = f.make(zeros(1, size(f.values, 2)), f.vscale, f.epslevel);
-    
 else
-    
-    % Compute real part of the coeffs:
+    % Compute real part of the coefficients:
     f.coeffs = real(f.coeffs);
-
 end
 
 end

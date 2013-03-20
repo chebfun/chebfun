@@ -1,8 +1,8 @@
 function f = mtimes(f, c)
-%*	Multiplication of CHEBTECH objects.
+%*   Multiplication of CHEBTECH objects.
 %   F*C or C*F multiplies a CHEBTECH F by a scalar or matrix C.
 %
-%   If F is a verctorised CHEBTECH and C is a matrix of appropriate dimension,
+%   If F is a vectorised CHEBTECH and C is a matrix of appropriate dimension,
 %   then the natural matrix multiplication is performed.
 %
 % See also TIMES.
@@ -13,7 +13,7 @@ function f = mtimes(f, c)
 if ( isempty(f) || isempty(c) )     % CHEBTECH * [] = []
     f = []; 
     return
-elseif ( ~isa(f, 'chebtech') )       % CHEBTECH is not the first input
+elseif ( ~isa(f, 'chebtech') )      % CHEBTECH is not the first input
 
     % DOUBLE*CHEBTECH will require that the double is scalar.
     if ( numel(f) > 1 )
@@ -27,8 +27,8 @@ elseif ( ~isa(f, 'chebtech') )       % CHEBTECH is not the first input
     
 elseif ( isa(c, 'double') )         % CHEBTECH * double
     
-    % Check dimensions
-    if ( size(f.values, 2) ~= size(c, 1) && numel(c) > 1)
+    % Check dimensions:
+    if ( (size(f.values, 2) ~= size(c, 1)) && (numel(c) > 1) )
         error('CHEBFUN:CHEBTECH:mtimes:size2', ...
             'Inner matrix dimensions must agree.');
     end
@@ -43,7 +43,7 @@ elseif ( isa(c, 'double') )         % CHEBTECH * double
         % [TODO]: Figure out vector epslevel.
     end
     
-    % If the vertical scale is zero, then set the CHEBTECH to zero:
+    % If the vertical scale is zero, set the CHEBTECH to zero:
     if ( all(f.vscale == 0) )
         f.values = zeros(size(f.values, 1), 1);
         f.coeffs = zeros(size(f.values, 1), 1);
@@ -59,4 +59,6 @@ else                                % CHEBTECH * ???
     error('CHEBFUN:CHEBTECH:mtimes:chebtechMtimesUnknown',...
         'mtimes does not know how to multiply a CHEBTECH and a %s.', class(c));
     
+end
+
 end

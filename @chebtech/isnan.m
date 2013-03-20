@@ -1,6 +1,6 @@
 function out = isnan(f)
-%ISNAN  Test if a CHEBTECH is has any NaN values.
-%   ISNAN(F) returns true if F has any NaN values and false otherwise.
+%ISNAN   Test if a CHEBTECH is has any NaN values.
+%   ISNAN(F) returns TRUE if F has any NaN values and FALSE otherwise.
 %
 % See also ISFINITE, ISINF.
 

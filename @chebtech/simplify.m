@@ -1,15 +1,15 @@
 function f = simplify(f, pref, type)
-%SIMPLIFY  Trim trailing Chebyshev coefficients of a CHEBTECH object. 
+%SIMPLIFY   Trim trailing Chebyshev coefficients of a CHEBTECH object. 
 %   G = SIMPLIFY(F) attempts to compute a 'simplified' version G of the CHEBTECH
-%   object F such that length(G) <= length(F) but ||G - F|| < F.epslevel.
+%   object F such that LENGTH(G) <= LENGTH(F) but ||G - F|| < F.EPSLEVEL.
 %
 %   G = SIMPLIFY(F, PREF) does the same, but using some of the preferences in
-%   the preference structure PREF. In particular, SIMPLIFY will use classicCheck
+%   the preference structure PREF. In particular, SIMPLIFY will use CLASSICCHECK
 %   to test for accuracy by default, but an alternative can be passed in the
-%   PREF.chebtech.happinessCheck field. Additionally, G will be computed to
-%   satisfy ||G - F|| < max(F.epslevel, PREF.chebtech.eps).
+%   PREF.CHEBTECH.HAPPINESSCHECK field. Additionally, G will be computed to
+%   satisfy ||G - F|| < MAX(F.EPSLEVEL, PREF.CHEBTECH.EPS).
 %
-% See also chebtech.happinessCheck, classicCehck, chebtech.pref.
+% See also HAPPINESSCHECK, CLASSICCHECK, PREF.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -31,13 +31,13 @@ if ( nargin == 3 )
     pref.chebtech.happinessCheck = type;
 end
 
-% Take max of pref.eps and epslevel:
+% Take max of PREF.EPS and EPSLEVEL:
 pref.chebtech.eps = max(pref.chebtech.eps, f.epslevel);
 
 % Check to see if we can trim the tail:
 [ishappy, epslevel, cutoff] = happinessCheck(f, pref);
 % Trim/alias it with prolong:
-f.ishappy = ishappy | f.ishappy;
+f.ishappy = ishappy || f.ishappy;
 f.epslevel = epslevel;
 f = prolong(f, cutoff);
  

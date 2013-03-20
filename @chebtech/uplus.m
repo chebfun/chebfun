@@ -7,6 +7,6 @@ function f = uplus(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org for Chebfun information.
 
-% This line is intentionally left blank.
+% This function does not change anything.
 
 end

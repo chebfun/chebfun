@@ -1,5 +1,5 @@
 function len = length(f)
-%LENGTH	  Length of a CHEBTECH.
+%LENGTH   Length of a CHEBTECH.
 %   LENGTH(F) is the number of values at Chebyshev points used to represent F.
 %
 %   See also SIZE.

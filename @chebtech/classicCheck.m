@@ -1,14 +1,14 @@
 function [ishappy, epslevel, cutoff] = classicCheck(f, pref)
-%CLASSICCHECK  Attempt to trim trailing Chebyshev coefficients in a CHEBTECH.
+%CLASSICCHECK   Attempt to trim trailing Chebyshev coefficients in a CHEBTECH.
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F) returns an estimated
 %   location, the CUTOFF, at which the CHEBTECH F could be truncated to maintain
-%   an accuracy of EPSLEVEL relative to F.vscale and F.hscale. ISHAPPY is
-%   logical TRUE if CUTOFF < min(length(F.values),2) or F.vscale = 0, and FALSE
-%   otherwise
+%   an accuracy of EPSLEVEL relative to F.VSCALE and F.HSCALE. ISHAPPY is
+%   TRUE if CUTOFF < MIN(LENGTH(F.VALUES),2) or F.VSCALE = 0, and FALSE
+%   otherwise.
 %
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F, PREF) allows additional
 %   preferences to be passed. In particular, one can adjust the target accuracy
-%   with PREF.chebtech.EPS.
+%   with PREF.CHEBTECH.EPS.
 %
 %   CLASSICCHECK first queries HAPPINESSREQUIREMENTS to obtain TESTLENGTH and
 %   EPSLEVEL (see documentation below). If |F.COEFFS(1:TESTLENGTH)|/VSCALE <
@@ -37,7 +37,7 @@ function [ishappy, epslevel, cutoff] = classicCheck(f, pref)
 %   Note that the accuracy check implemented in this function is the same as
 %   that employed in Chebfun v4.x.
 %
-% See also strictCheck.m, looseCheck.m.
+% See also STRICTCHECK, LOOSECHECK.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -61,7 +61,7 @@ else
     epslevel = pref.chebtech.eps;
 end
 
-% Deal with the trivial case
+% Deal with the trivial case:
 if ( n < 2 ) % (Can't be simpler than a constant!)
     cutoff = n;
     return
@@ -79,7 +79,7 @@ elseif ( any(isinf(f.vscale)) )
     return
 end
 
-% NaNs are not allowed
+% NaNs are not allowed.
 if ( any(isnan(f.coeffs(:))) )
     error('CHEBFUN:FUN:classicCheck:NaNeval', ...
         'Function returned NaN when evaluated.')
@@ -105,7 +105,6 @@ if ( max(ac(1:testLength)) < epslevel )    % We have converged! Now chop tail:
     % Find first entry above epslevel:
     Tloc = find(ac >= epslevel, 1, 'first') - 1;
 
-
     % Check for the zero function!
     if ( isempty(Tloc) )
         cutoff = 1;
@@ -114,8 +113,8 @@ if ( max(ac(1:testLength)) < epslevel )    % We have converged! Now chop tail:
 
     % Compute the cumulative max of eps/4 and the tail entries:
     t = .25*eps;
-    ac = ac(1:Tloc);                      % Restrict to coeffs of interest.
-    for k = 1:length(ac)                  % Cumulative max.
+    ac = ac(1:Tloc);               % Restrict to coefficients of interest.
+    for k = 1:length(ac)           % Cumulative max.
         if ( ac(k) < t )
             ac(k) = t;
         else
@@ -125,7 +124,7 @@ if ( max(ac(1:testLength)) < epslevel )    % We have converged! Now chop tail:
 
     % Tbpb = Bang/buck of chopping at each pos:
     Tbpb = log(1e3*epslevel./ac) ./ (size(f.coeffs, 1) - (1:Tloc)');
-    [~, Tchop] = max(Tbpb(3:Tloc));       % Tchop = pos at which to chop.
+    [ignored, Tchop] = max(Tbpb(3:Tloc));  % Tchop = position at which to chop.
 
     % We want to keep [c(0), c(1),  ..., c(cutoff)]:
     cutoff = n - Tchop - 2;

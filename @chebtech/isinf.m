@@ -1,6 +1,6 @@
 function out = isinf(f)
-%ISINF  Test if a CHEBTECH is unbounded.
-%   ISINF(F) returns true if F has any infinite values and false otherwise.
+%ISINF   Test if a CHEBTECH is unbounded.
+%   ISINF(F) returns TRUE if F has any infinite values and FALSE otherwise.
 %
 % See also ISFINITE, ISNAN.
 

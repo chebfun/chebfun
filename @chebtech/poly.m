@@ -1,10 +1,10 @@
 function out = poly(f)
-%POLY	Polynomial coefficients of a CHEBTECH.
+%POLY   Polynomial coefficients of a CHEBTECH.
 %   C = POLY(F) returns the polynomial coefficients of F so that 
 %           F(x) = C(N+1)*x^N + C(N)*x^(N-1) + ... + C(2)*x + C(1)
 %   
 %   Note that unlike the MATLAB POLY command, CHEBTECH/POLY can operate on
-%   vector-valued CHEBTECH objects, and hence product a matrix output. In such
+%   vector-valued CHEBTECH objects, and hence produce a matrix output. In such
 %   instances, the rows of C correspond to the columns of F = [F1, F2, ...].
 %   That is, 
 %           F1(x) = C(1,N+1)*x^N + C(1,N)*x^(N-1) + ... + C(1,2)*x + C(1,1)
@@ -51,14 +51,14 @@ else
     out = zeros(m, n);
     
     % Initial step:
-    out(:,[1 2]) = [zer coeffs(:,end).*tnold2(:,1)] + ...
-        bsxfun(@times, coeffs(:,end-1), tnold1(:,[2, 1]));
+    out(:,[1,2]) = [ zer coeffs(:,end).*tnold2(:,1) ] + ...
+        bsxfun(@times, coeffs(:,end-1), tnold1(:,[2,1]));
 
     % Recurrence:
     for k = 3:n
-        tn(:,1:k)  = [zer 2*tnold1(:,1:k-1)] - [tnold2(:,1:k-2), zer, zer];
+        tn(:,1:k)  = [ zer 2*tnold1(:,1:k-1) ] - [ tnold2(:,1:k-2), zer, zer ];
         out(:,1:k) = bsxfun(@times, coeffs(:,end-k+1), tn(:,k:-1:1)) + ...
-                        [zer, out(:,1:k-1)];                 
+                        [ zer, out(:,1:k-1) ];                 
         tnold2 = tnold1;
         tnold1 = tn;
     end

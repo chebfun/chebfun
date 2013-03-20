@@ -1,7 +1,7 @@
 function X = mldivide(A, B)
-%\	Left matrix divide for CHEBTECH objects.
+%\   Left matrix divide for CHEBTECH objects.
 %
-%   A\B returns the least squares solution (with respect to the continuous L^2
+%   A\B returns the least-squares solution (with respect to the continuous L^2
 %   norm) of A*X = B where A and B CHEBTECH objects.
 %
 % See also QR, MRDIVIDE.
@@ -19,7 +19,7 @@ end
 % Compute QR factorisation of A:
 [Q, R] = qr(A, 0);
 
-% Compute x:
+% Compute X:
 X = R\innerProduct(Q, B);
 
 end

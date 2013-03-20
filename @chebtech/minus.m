@@ -1,6 +1,6 @@
 function f = minus(f, g)
-%-	Subtraction of two CHEBTECH objects.
-%   F - G subtracts G from F, where F and G may be CHEBTECH objects or scalars.
+%-   Subtraction of two CHEBTECH objects.
+%   F - G subtracts G from F, where F and G are CHEBTECH objects or scalars.
 %
 % See also PLUS, UMINUS.
 
@@ -11,4 +11,3 @@ function f = minus(f, g)
 f = plus(f, uminus(g)); 
 
 end
-

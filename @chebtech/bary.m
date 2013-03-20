@@ -1,5 +1,5 @@
 function fx = bary(x, fvals, xk, vk)
-%BARY  Barycentric interpolation formula.
+%BARY   Barycentric interpolation formula.
 %   BARY(X, FVALS, XK, VK) uses the 2nd form barycentric formula with weights
 %   given by the column vector VK to evaluate a polynomial at the points in the
 %   column vector X, where the polynomial interpolates the values in the columns
@@ -26,13 +26,13 @@ if ( ndimsx > 2 || sizex(2) > 1 )
     x = x(:);
 end
 
-% The function is a constant!
+% The function is a constant.
 if ( n == 1 )
     fx = repmat(fvals, length(x), 1);
     return
 end
 
-% The function is NaN!
+% The function is NaN.
 if ( any(isnan(fvals)) )
     fx = NaN(length(x), m);
     return
@@ -42,6 +42,7 @@ end
 if ( numel(x) < length(xk) )  % Loop over evaluation points
     % Initialise return value:
     fx = zeros(size(x, 1), m);
+
     % Loop:
     for j = 1:numel(x),
         xx = vk ./ (x(j) - xk);
@@ -51,6 +52,7 @@ else                         % Loop over barycentric nodes
     % Initialise:
     num = zeros(size(x, 1), m);
     denom = num;
+
     % Loop:
     for j = 1:length(xk),
         tmp = (vk(j) ./ (x - xk(j)));
@@ -62,11 +64,10 @@ end
 
 % Try to clean up NaNs:
 for k = find(isnan(fx(:,1)))'
-    indx = find(x(k) == xk,1);
-    if ( ~isempty(indx) )
-        fx(k,:) = fvals(indx,:);
+    index = find(x(k) == xk, 1);
+    if ( ~isempty(index) )
+        fx(k,:) = fvals(index,:);
     end
 end
 
 end
-

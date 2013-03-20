@@ -1,16 +1,16 @@
 function y = clenshaw(x, c)
-%CLENSHAW Clenshaw's algorithm for evaluating a Chebyshev polynomial.
+%CLENSHAW   Clenshaw's algorithm for evaluating a Chebyshev polynomial.
 %   Y = CLENSHAW(X, C) evaluates the Chebyshev expansion
 %     Y = P_N(X) = C(1,1)*T_N(X) + ... + C(N,1)*T_1(X) + C(N+1,1)*T_0(X)
 %   using Clenshaw's algorithm. X must be a column vector.
 %
-%   If C is an (N+1)xM matrix, then CLENSHAW interprets each of the columns of C
-%   as coefficients of a degree N polynomial.
+%   If C is an (N+1) x M matrix, then CLENSHAW interprets each of the columns
+%   of C as coefficients of a degree N polynomial.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% X should be a column vector
+% X should be a column vector.
 if ( size(x, 2) > 1 )
     warning('CHEBFUN:CHEBTECH:clenshaw:xDim', ...
         'Evaluation points should be a column vector.');
@@ -27,7 +27,7 @@ end
 end
 
 function y = clenshaw_scl(x, c)
-% Clenshaw scheme for scalar valued functions.
+% Clenshaw scheme for scalar-valued functions.
 bk1 = zeros(size(x)); 
 bk2 = bk1;
 x = 2*x;
@@ -40,7 +40,7 @@ y = c(end) + .5*x.*bk1 - bk2;
 end
 
 function y = clenshaw_vec(x, c)
-% Clenshaw scheme for vector valued functions.
+% Clenshaw scheme for vector-valued functions.
 x = repmat(x(:), 1, size(c, 2));
 bk1 = zeros(size(x, 1), size(c, 2)); 
 bk2 = bk1;
@@ -53,4 +53,3 @@ for k = 1:size(c,1)-1
 end
 y = e*c(end,:) + .5*x.*bk1 - bk2;
 end
-

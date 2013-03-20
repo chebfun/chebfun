@@ -7,8 +7,8 @@ classdef chebtech %< smoothfun % (Abstract)
 %
 % Constructor inputs:
 %   CHEBTECH.CONSTRUCTOR(OP) constructs a CHEBTECH object from the function
-%   handle OP. OP should be vectorised (i.e., accept a vector input) and ouput a
-%   vector of the same length. CHEBTECH objects allow for vector-valued
+%   handle OP. OP should be vectorised (i.e., accept a vector input) and output
+%   a vector of the same length. CHEBTECH objects allow for vector-valued
 %   functions, in which case OP should accept a column vector of length N and
 %   return a matrix of size NxM.
 %
@@ -24,12 +24,12 @@ classdef chebtech %< smoothfun % (Abstract)
 %   details. The CHEBTECH class supports construction via interpolation at first-
 %   and second-kind Chebyshev points with the classes CHEBTECH1 and CHEBTECH2
 %   respectively. The default procedure is to use 2nd-kind points, but this can
-%   be overwritted with the preferences PREF = CHEBTECH('tech', cheb1').
+%   be overwritten with the preferences PREF = CHEBTECH('tech', 'cheb1').
 %
 %   CHEBTECH.CONSTRUCTOR(VALUES, VSCALE, HSCALE, PREF) returns a CHEBTECH object
 %   which interpolates the data in the columns of VALUES on a Chebyshev grid.
 %   Whether this grid is of first- or second-kind points is determined by
-%   PREF.CHEBTECH.tech, as above. CHEBTECH.CONSTRUCTOR({VALUES, COEFFS}, ...)
+%   PREF.CHEBTECH.TECH, as above. CHEBTECH.CONSTRUCTOR({VALUES, COEFFS}, ...)
 %   allows for the corresponding Chebyshev coefficients to be passed also, and
 %   if VALUES is empty the CHEBTECH is constructed directly from the COEFFS.
 %
@@ -38,7 +38,7 @@ classdef chebtech %< smoothfun % (Abstract)
 %   f = chebtech.constructor(@(x) sin(x))
 %
 %   % Construction with preferences:
-%   p = chebtech.pref('tech', 'cheb2'); % See help('chebtech.pref') for details.
+%   p = chebtech.pref('tech', 'cheb2'); % See HELP('chebtech.pref') for details.
 %   f = chebtech.constructor(@(x) cos(x), [], [], p)
 %
 %   % Vector-valued construction:
@@ -60,9 +60,9 @@ classdef chebtech %< smoothfun % (Abstract)
 % CHEBTECH2--which interpolate on Chebyshev grids of the 1st and 2nd kind,
 % respectively.  Note that although they use different Chebyshev grids in
 % 'value' space, their coefficients are always from an expansion in first-kind
-% Chebyshev polynomials (i.e., those usualy denoted by $T_k(x)$).
+% Chebyshev polynomials (i.e., those usually denoted by $T_k(x)$).
 %
-% The decision to use CHEBTECH1 or CHEBTECH2 is decided by the chebtech.pref.tech
+% The decision to use CHEBTECH1 or CHEBTECH2 is decided by the CHEBTECH.PREF.TECH
 % property, which should be either of the strings 'cheb1' or 'cheb2'.
 %
 % The vertical scale VSCALE is used to enforce scale invariance in CHEBTECH
@@ -82,7 +82,7 @@ classdef chebtech %< smoothfun % (Abstract)
 % regarded as the number of correct digits in the sampled value that created
 % VSCALE.
 %
-% Here is a rough guide to how scale and accuracy information is propogated in
+% Here is a rough guide to how scale and accuracy information is propagated in
 % subsequent operations after construction:
 %   h = f + c:
 %     h.vscale = max(h.values, [], 1);
@@ -108,7 +108,7 @@ classdef chebtech %< smoothfun % (Abstract)
 % If the input operator OP evaluates to NaN or Inf at any of the sample points
 % used by the constructor, then a suitable replacement is found by extrapolating
 % (globally) from the numeric values (see EXTRAPOLATE.M). If the preference
-% chebtech.pref('extrapolate', TRUE) is set, then the endpoint values -1 and +1
+% CHEBTECH.PREF('extrapolate', TRUE) is set, then the endpoint values -1 and +1
 % are always extrapolated (i.e., regardless of whether they evaluate to NaN).
 %
 % The CHEBTECH classes support the representation of vector-valued functions (for
@@ -162,7 +162,7 @@ classdef chebtech %< smoothfun % (Abstract)
 
         % Happiness level to which the CHEBTECH was constructed (See
         % HAPPINESSCHECK.m for full documentation) or a rough accuracy estimate
-        % of subsequent operations (See CHEBTECH class documentaion for details).
+        % of subsequent operations (See CHEBTECH class documentation for details).
         epslevel % (double >= 0)
     end
 
@@ -191,7 +191,7 @@ classdef chebtech %< smoothfun % (Abstract)
                 pref = chebtech.pref(pref);
             end
 
-            % Call the relevent constructor:
+            % Call the relevant constructor:
             if ( strcmpi(pref.chebtech.tech, 'cheb1') )
                 % Construct:
                 obj = chebtech1(op, vscale, hscale, pref);
@@ -210,10 +210,10 @@ classdef chebtech %< smoothfun % (Abstract)
         % Compose method. (Not implemented here as refinement is defined also).
         h = compose(f, op, g, pref)
 
-        % Get method. [TODO]: Requirement should be inherited from smoothfun.
+        % Get method. [TODO]: Requirement should be inherited from SMOOTHFUN.
         val = get(f, prop);
 
-        % Set method. [TODO]: Requirement should be inherited from smoothfun.
+        % Set method. [TODO]: Requirement should be inherited from SMOOTHFUN.
 %         f = set(f, prop, val); % [TODO]: Do we actually need a set method?
 
     end
@@ -400,9 +400,6 @@ classdef chebtech %< smoothfun % (Abstract)
         % Retrieve and modify preferences for this class.
         prefs = pref(varargin)
 
-
     end
 
 end
-
-

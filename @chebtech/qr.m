@@ -1,17 +1,17 @@
 function [f, R, E] = qr(f, flag)
-%QR     QR factorisation of a multivalued CHEBTECH.
+%QR   QR factorisation of a multivalued CHEBTECH.
 %   [Q, R] = QR(F) returns a QR factorisation of F such that F = Q*R, where the
 %   CHEBTECH Q is orthogonal (with respect to the continuous L^2 norm on [-1,1])
 %   and of the same size as F and R is an m x m upper-triangular matrix when F
 %   has m columns.
 %
-%   [Q, R, E] = qr(A) produces unitary Q, upper-triangular R, and a permutation
+%   [Q, R, E] = QR(A) produces unitary Q, upper-triangular R, and a permutation
 %   matrix E so that A*E = Q*R. The column permutation E is chosen to reduce
 %   fill-in in R.
 %
-%   [Q, R, e] = qr(A, 'vector') returns the permutation information as a vector
-%   instead of a matrix.  That is, e is a row vector such that A(:,e) = Q*R.
-%   Similarly, [Q, R, E] = qr(A, 'matrix') returns a permutation matrix E. This
+%   [Q, R, E] = QR(A, 'vector') returns the permutation information as a vector
+%   instead of a matrix.  That is, E is a row vector such that A(:,E) = Q*R.
+%   Similarly, [Q, R, E] = QR(A, 'matrix') returns a permutation matrix E. This
 %   is the default behavior.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
@@ -27,7 +27,7 @@ end
 % Grab the size of f:
 m = size(f, 2);
 
-% If F has only one column we simply scale it.
+% If f has only one column we simply scale it.
 if ( m == 1 )
     R = sqrt(innerProduct(f,f));
     f = f./R;
@@ -50,8 +50,8 @@ W = spdiags(sqrt(wl.'), 0, n, n);
 % Compute the weighted QR factorisation:
 if ( nargout == 3 )
     [Q, R, E] = qr(W * P * f.values, 0);
-    % For consistency with MATLAB's QR behavior:
-    if ( nargin == 1 || ~( strcmpi(flag, 'vector') || flag == 0 ) )
+    % For consistency with the MATLAB QR behavior:
+    if ( (nargin == 1) || ~(strcmpi(flag, 'vector') || (flag == 0)) )
         % Return E in matrix form:
         I = eye(m);
         E = I(:,E);
@@ -68,12 +68,8 @@ Q = Pinv*Winv*Q*S;          % Fix Q.
 R = S*R;                    % Fix R.
 
 f.values = Q;                           % Adjust values of f.
-f.coeffs = f.chebpoly(Q);               % Compute new coeffs.
+f.coeffs = f.chebpoly(Q);               % Compute new coefficients.
 f.vscale = max(abs(Q), [], 1);
 % [TODO]: Update epslevel.
 
 end
-
-
-
-

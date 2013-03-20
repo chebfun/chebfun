@@ -1,11 +1,11 @@
 function f = rdivide(f, c, pref)
 %./   Right array divide for a CHEBTECH.
-%   F ./ C Divides the CHEBTECH F by a an array C. If F is a vectorised CHEBTECH
+%   F ./ C Divides the CHEBTECH F by an array C. If F is a vectorised CHEBTECH
 %   with M columns, then C must be either a scalar or a 1xM array. 
 %
 %   Alternatively if C is a CHEBTECH with the same number of columns as F, or if
 %   F is a scalar, the resulting division is returned if C is found to have no
-%   roots in [-1,1]. The division is performed columnwise.
+%   roots in [-1,1]. The division is performed column-wise.
 %
 % See also MRDIVIDE, TIMES.
 
@@ -16,22 +16,20 @@ if ( isa(c, 'double') )
     % Dividing by a constant is easy.
     
     % This can never work (as size(f, 1) == inf):
-    if ( size(c, 1) > 1 || ...
-           ( numel(c) > 1 && size(f.values, 2) ~= size(c, 2) ) )
+    if ( (size(c, 1) > 1) || ...
+           ( (numel(c) > 1) && (size(f.values, 2) ~= size(c, 2)) ) )
         error('CHEBUFN:CHEBTECH:rdivide:size', ...
             'Matrix dimensions must agree.');
     end
     
     if ( ~any(c(:)) )  
-        % Division by zero produces a NaN chebtech:
+        % Division by zero produces a NaN CHEBTECH:
         f = f.make(NaN(1, size(f, 2)));
-        
     elseif ( numel(c) == 1 )
         % Scalar
         f.values = f.values/c;      % Divide values
         f.coeffs = f.coeffs/c;      % Divide coeffs
         f.vscale = f.vscale/abs(c); % Divide vscale
-        
     else
         % Vectorised 
         n = size(f.values, 1);   
@@ -42,13 +40,11 @@ if ( isa(c, 'double') )
         f.values(:, c == 0) = NaN;
         f.coeffs(:, c == 0) = NaN;
         f.vscale(:, c == 0) = NaN;
-        
     end
-    
 else
     % Dividing by another CHEBTECH is harder. Call COMPOSE.
     
-    % Obtain preferencess:
+    % Obtain preferences:
     if ( nargin < 3 )
         pref = chebtech.pref; % c is a CHEBTECH.
     end
@@ -63,9 +59,9 @@ else
     end
     
     % Call COMPOSE.
-    if ( isa(f, 'chebtech') )   % chebtech / chebtech
+    if ( isa(f, 'chebtech') )   % CHEBTECH / CHEBTECH
         f = compose(f, @rdivide, c, pref);
-    else                       % double / chebtech
+    else                       % DOUBLE / CHEBTECH
         op = @(x) f./x;
         f = compose(c, op, pref);
     end

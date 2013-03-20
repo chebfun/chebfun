@@ -1,26 +1,26 @@
 function prefs = pref(varargin)
-%PREF Prefence settings for CHEBTECH.
-% CHEBTECH.PREF(PREFNAME) returns the value corresponding to the preference
-% named in the string PREFNAME.
+%PREF   Preference settings for CHEBTECH.
+%   CHEBTECH.PREF(PREFNAME) returns the value corresponding to the preference
+%   named in the string PREFNAME.
 %
-% P = CHEBTECH.PREF returns a structure P with a field P.CHEBTECH which contains
-% the default CHEBTECH preferences as fields/values. This structure may be
-% passed to the CHEBTECH constructor.
+%   P = CHEBTECH.PREF returns a structure P with a field P.CHEBTECH which contains
+%   the default CHEBTECH preferences as fields/values. This structure may be
+%   passed to the CHEBTECH constructor.
 %
-% P = CHEBTECH.PREF(P) will check to see whether the input preference structure
-% P already has a CHEBTECH field. If it does not, one is appended.
+%   P = CHEBTECH.PREF(P) will check to see whether the input preference structure
+%   P already has a CHEBTECH field. If it does not, one is appended.
 %
-% P = CHEBTECH.PREF('PREFNAME1', VAL1, 'PREFNAME1', VAL2, ...) returns the same
-% structure as above, but with the default CHEBTECH preferences 'PREFNAME1',
-% 'PREFNAME1', replaced by the values in VAL1, VAL2, etc.
+%   P = CHEBTECH.PREF('PREFNAME1', VAL1, 'PREFNAME1', VAL2, ...) returns the same
+%   structure as above, but with the default CHEBTECH preferences 'PREFNAME1',
+%   'PREFNAME1', replaced by the values in VAL1, VAL2, etc.
 %
-% P = CHEBTECH.PREF(P, 'PREFNAME1', VAL1, 'PREFNAME1', VAL2, ...) appends a
-% CHEBTECH preference field to P if required, and modifies the CHEBTECH
-% properties 'PREFNAME1' and 'PREFNAME1'.
+%   P = CHEBTECH.PREF(P, 'PREFNAME1', VAL1, 'PREFNAME1', VAL2, ...) appends a
+%   CHEBTECH preference field to P if required, and modifies the CHEBTECH
+%   properties 'PREFNAME1' and 'PREFNAME1'.
 %
-% Note that no checking of either the input PREFNAMEs or VALs takes place.
+%   Note that no checking of either the input PREFNAMEs or VALs takes place.
 %
-% CHEBTECH PREFERENCES (case sensitive)
+%   CHEBTECH PREFERENCES (case sensitive)
 %
 %     eps          -  Relative tolerance used in construction and subsequent
 %      [2^-52]        operations. See CHEBTECH.HAPPINESSCHECK for more details.
@@ -42,7 +42,7 @@ function prefs = pref(varargin)
 %      [2^16+1]   
 %
 %         n        -  Fixed number of points used by constructor. NaN allows
-%       [NaN]         adaptive constuction.
+%       [NaN]         adaptive construction.
 %
 %     sampletest
 %       ['on']     -  Tests the function at one more arbitrary point to
@@ -58,8 +58,8 @@ function prefs = pref(varargin)
 %
 %   happinessCheck     - Define function for testing happiness.
 %     ['classic']      - Use the default process from Chebfun V4.
-%      'strict'        - Strict tolerance for coeffs.
-%      'loose'         - A looser tolerance for coeffs.
+%      'strict'        - Strict tolerance for coefficients.
+%      'loose'         - A looser tolerance for coefficients.
 %     function_handle  - A user defined happiness. See HAPPINESSCHECK.m
 %
 % See also CHEBTECH1, CHEBTECH2
@@ -82,9 +82,9 @@ if ( isfield(prefs, classname) )  % It does, so either:
     if ( numel(varargin) == 0 )
         return                    % a) No props to change, return
     else
-        p = prefs.(classname);    % b) Grab chebtech prefs
+        p = prefs.(classname);    % b) Grab CHEBTECH prefs
     end
-else                              % No chebtech prefs found, so make some:
+else                              % No CHEBTECH prefs found, so make some:
     p.tech        = 'cheb2';
     p.eps         = 2^-52;
     p.extrapolate = false;
@@ -103,7 +103,7 @@ if ( isfield(prefs,'misc') )
 else
     q = struct();
 end
-% q is now the preference substructure for MISC preferences
+% q is now the preference substructure for MISC preferences.
 
 for names = fieldnames(q)'
     if isfield(p,names)
@@ -140,9 +140,10 @@ for k = 1:2:numel(varargin)
     end
 end
 
-% Append CHEBTECH preferences to the prefence structure prefs for output.
+% Append CHEBTECH preferences to the preference structure prefs for output.
 prefs.(classname) = p;
 
-% Append MISC preferences to the prefence structure prefs for output.
+% Append MISC preferences to the preference structure prefs for output.
 prefs.misc = q;
 
+end

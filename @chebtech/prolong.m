@@ -1,11 +1,11 @@
 function f = prolong(f, nOut)
-%PROLONG    Manually adjust the number of points used in a CHEBTECH.
+%PROLONG   Manually adjust the number of points used in a CHEBTECH.
 %
-%   FOUT = PROLONG(F, NOUT) returns a CHEBTECH FOUT where length(FOUT) = NOUT.
+%   FOUT = PROLONG(F, NOUT) returns a CHEBTECH FOUT where LENGTH(FOUT) = NOUT.
 %   FOUT represents the same function as F, but using more interpolation
 %   points/Chebyshev coefficients then were stored in F.
 %
-%   If NOUT < length(F) than the representation is compressed (by aliasing the
+%   If NOUT < LENGTH(F) than the representation is compressed (by aliasing the
 %   coefficients), which may result in loss of accuracy.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
@@ -32,16 +32,14 @@ if ( nIn == 1 )
 end
 
 % Prolong the points; Barycentric formula when n is small, FFT when large.
-if ( nOutMinusnIn < 0 && nOut < 33 && nIn < 1000)
-    % Use bary to compress:
-    
+if ( (nOutMinusnIn < 0) && (nOut < 33) && (nIn < 1000) )
+    % Use BARY to compress:
     f.values = f.bary(f.chebpts(nOut), f.values);
     f.coeffs = f.chebpoly(f.values);
-    
 else
     % Use FFTs: (in alias.m)
-
     f.coeffs = f.alias(f.coeffs, nOut);
     f.values = f.chebpolyval(f.coeffs); 
-        
+end
+
 end

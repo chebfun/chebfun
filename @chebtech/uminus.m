@@ -12,4 +12,3 @@ f.values = -f.values;
 f.coeffs = -f.coeffs;
 
 end
-

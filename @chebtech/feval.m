@@ -1,8 +1,8 @@
 function y = feval(f, x)
-%FEVAL	 Evaluate a CHEBTECH.
+%FEVAL   Evaluate a CHEBTECH.
 %   Y = FEVAL(F, X) Evaluation of the CHEBTECH F at points X. If X is real (or
-%   has small imaginary part) it is evaluated via CHEBTECH.bary. For X outside
-%   of [-1, 1], F.clenshaw is used.
+%   has small imaginary part) it is evaluated via BARY. For X outside
+%   of [-1, 1], F.CLENSHAW is used.
 %
 %   If size(F, 2) > 1 then FEVAL returns values in the form [F_1(X), F_2(X),
 %   ...], where size(F_k(X)) = size(X).
@@ -17,7 +17,7 @@ function y = feval(f, x)
 %     view(0,90), shg
 %     colormap(hsv)
 %
-% See also CHEBTECH.BARY, CHEBTECH.CLENSHAW.
+% See also BARY, CLENSHAW.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -27,7 +27,7 @@ if ( isempty(f) )
     return 
 end
 
-% Reshape x to be a column vector for passing to bary and clenshaw:
+% Reshape x to be a column vector for passing to BARY and CLENSHAW:
 [n, m] = size(f);
 sizex = size(x);
 ndimsx = ndims(x);
@@ -51,11 +51,10 @@ if ( ~all(realmask) )
 end
 
 % Reshape the output if possible:
-if ( m == 1 && ( ndimsx > 2 || sizex(2) > 1 ) )
+if ( (m == 1) && ( (ndimsx > 2) || (sizex(2) > 1) ) )
     y = reshape(y, sizex);
-elseif ( m > 1 && ( ndimsx == 2 || sizex(2) > 1 ) )
+elseif ( (m > 1) && ( (ndimsx == 2) || (sizex(2) > 1) ) )
     y = reshape(y, sizex(1), m*numel(x)/sizex(1));
 end
 
 end
-

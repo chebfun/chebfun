@@ -1,15 +1,16 @@
 function f = populate(f, op, vscale, hscale, pref)
+% [TODO] The team agreed that this code needs a more descriptive name.
 %POPULATE    Populate a CHEBTECH class with values.
 %   F = F.POPULATE(OP) returns a CHEBTECH representation populated with values
-%   F.values of the function OP evaluated on a Chebyshev grid. The fields
-%   F.ishappy and F.epslevel denote whether the representation is deemed 'happy'
+%   F.VALUES of the function OP evaluated on a Chebyshev grid. The fields
+%   F.ISHAPPY and F.EPSLEVEL indicate whether the representation is deemed 'happy'
 %   and to what accuracy (see HAPPINESSCHECK.m). Essentially this means that
 %   such an interpolant is a sufficiently accurate (i.e., to a relative accuracy
-%   of F.epsvlevel) approximation to OP. If F.ishappy is zero or logical false,
+%   of F.EPSLEVEL) approximation to OP. If F.ISHAPPY is FALSE,
 %   then POPULATE was not able to obtain a happy result.
 %
-%   OP should be vectorized (i.e., accept a vector input), and ouput a vector of
-%   the same length. Futhermore, OP may be a multi-valued function, in which
+%   OP should be vectorized (i.e., accept a vector input), and output a vector
+%   of the same length. Furthermore, OP may be a multi-valued function, in which
 %   case it should accept a vector of length N and return a matrix of size NxM.
 %
 %   F.POPULATE(OP, VSCALE, HSCALE) enforces that the happiness check is relative
@@ -44,25 +45,25 @@ function f = populate(f, op, vscale, hscale, pref)
 %   |   [EXTRAPOLATE]  Remove NaNs/Infs and (optionally) extrapolate endpoints.
 %   |        |
 %   |        v
-%   | [compute COEFFS] COEFFS = chebpoly(VALUES)
+%   | [compute COEFFS] COEFFS = CHEBPOLY(VALUES)
 %   |        |
 %   |        v
-%    -<--[ISHAPPY?]    [ISHAPPY, EPSLEVEL, CUTOFF] = pref.happinessCheck(f, op,
-%     no     |         pref). Default check calls classicCheck() (previously 
-%            | yes     'simplify.m') and sampleTest().
+%    -<--[ISHAPPY?]    [ISHAPPY, EPSLEVEL, CUTOFF] = PREF.HAPPINESSCHECK(F, OP,
+%     no     |         PREF). Default check calls CLASSICCHECK() (previously 
+%            | yes     'simplify.m') and SAMPLETEST().
 %            v
-%      [alias COEFFS]  COEFFS = alias(COEFFS, CUTOFF)
+%      [alias COEFFS]  COEFFS = ALIAS(COEFFS, CUTOFF)
 %            |
 %            v
-%     [compute VALUES] VALUES = chebpolyval(COEFFS)
+%     [compute VALUES] VALUES = CHEBPOLYVAL(COEFFS)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Parse inputs:
-if ( nargin < 3 || isempty(vscale) )
+if ( (nargin < 3) || isempty(vscale) )
     vscale = 0;
 end
-if ( nargin < 4 || isempty(hscale) )
+if ( (nargin < 4) || isempty(hscale) )
     f.hscale = 1;
 else
     f.hscale = hscale;
@@ -71,7 +72,7 @@ if ( nargin < 5 )
     pref = chebtech.pref();
 end
 
-% Non-adaptive construction. Values (and possibly coeffs) have been given.
+% Non-adaptive construction. Values (and possibly coefficients) have been given.
 if ( isnumeric(op) || iscell(op) )
     if ( isnumeric(op) )
         % OP is just the values.
@@ -98,7 +99,7 @@ f.values = [];
 % Loop until ISHAPPY or GIVEUP:
 while ( 1 )
 
-    % Call the appropriate refinement routine: (in pref.refinementStrategy)
+    % Call the appropriate refinement routine: (in PREF.REFINEMENTSTRATEGY)
     [f.values, giveUp] = f.refine(op, f.values, pref);
 
     % We're giving up! :(
@@ -124,8 +125,8 @@ while ( 1 )
         
     % We're happy! :)
     if ( ishappy ) 
-        coeffs = f.alias(coeffs, cutoff); % Alias the discarded coeffs.
-        f.values = f.chebpolyval(coeffs);   % Compute values on this grid.
+        coeffs = f.alias(coeffs, cutoff);  % Alias the discarded coefficients.
+        f.values = f.chebpolyval(coeffs);  % Compute values on this grid.
         break
     end
     
@@ -156,4 +157,3 @@ if ( any(isinf(vscale)) )
 end
 
 end
-

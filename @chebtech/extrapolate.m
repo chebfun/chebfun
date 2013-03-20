@@ -3,21 +3,21 @@ function [values, maskNaN, maskInf] = extrapolate(f)
 %   1st kind.
 %
 %   EXTRAPOLATE(F) uses barycentric interpolants to extrapolate out 
-%   NaNs or Infs from the numeric data in F.values.
+%   NaNs or Infs from the numeric data in F.VALUES.
 %
 %   [VALUES, MASKNAN, MASKINF] = EXTRAPOLATE(F) returns logical
-%   vectors indicating when a NaN or Inf was encountered in rows of F.values.
+%   vectors indicating when a NaN or Inf was encountered in rows of F.VALUES.
 %
-%   Note that if any column of a multivalued function returns to NaN or Inf,
+%   Note that if any column of a multivalued function returns NaN or Inf,
 %   then _all_ columns are extrapolated at the point. Thus MASKNAN and MASKINF
-%   are always column vectors, even if F.values is a matrix.
+%   are always column vectors, even if F.VALUES is a matrix.
 %
-%   The F.coeffs field is not used/required; only F.values is needed.
+%   The F.COEFFS field is not used/required; only F.VALUES is needed.
 %
-% See also chebtech.pref.
+% See also PREF.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebun.org/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 values = f.values;
 maskNaN = any(isnan(values), 2);
@@ -25,8 +25,7 @@ maskInf = any(isinf(values), 2);
 mask = maskNaN | maskInf;
 
 if ( any(mask) )
-    
-    % Obtain Chebyshev points
+    % Obtain Chebyshev points:
     n = size(values, 1);
     x = f.chebpts(n);
 
@@ -50,7 +49,7 @@ if ( any(mask) )
     
     % Preallocate the storage for extrapolated values at the bad points:
     newvals = zeros(length(xnan), size(values, 2)); 
-    % Barycentric formula of the second (true) kind:
+    % Barycentric formula of the second kind:
     for k = 1:length(xnan)
         % Compute the weights:
         w2 = w./(xnan(k) - xgood);
@@ -64,6 +63,3 @@ if ( any(mask) )
 end
 
 end
-
-    
-
