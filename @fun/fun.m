@@ -1,4 +1,4 @@
-classdef (Abstract) fun
+classdef fun % (Abstract)
 %FUN  Abstract FUN class for representing global functions on [a, b].
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
