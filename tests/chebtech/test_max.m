@@ -47,8 +47,8 @@ for ( n = 1:2 )
     [y, x] = max(f);
     exact_max = [-10.017874927409903i 3.626860407847019];
     fx = [sin(z(x(1))) sinh(z(x(2)))];
-    pass(n, 8) = (all(abs(y - exact_max) < 50*f.epslevel) && ...
-                  all(abs(fx - exact_max) < 50*f.epslevel));
+    pass(n, 8) = (all(abs(y - exact_max) < 100*f.epslevel) && ...
+                  all(abs(fx - exact_max) < 100*f.epslevel));
 end
 
 end
