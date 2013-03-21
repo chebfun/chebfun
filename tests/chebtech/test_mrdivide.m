@@ -8,8 +8,7 @@ if (nargin < 1)
 end
 
 % Generate a few random points to use as test values.
-rngstate = rng();
-rng(6178);
+seedRNG(6178);
 x = 2 * rand(100, 1) - 1;
 
 % Random number to use as a scalar constant.
@@ -88,11 +87,6 @@ for ( n = 1:2 )
         pass(n, 9) = strcmp(ME.identifier, 'CHEBFUN:CHEBTECH:mrdivide:derp');
     end
 end
-
-%%
-% Restore the RNG state.
-
-rng(rngstate);
 
 end
 

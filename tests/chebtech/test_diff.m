@@ -11,8 +11,7 @@ end
 tol = 1e3*pref.chebtech.eps;
 
 % Generate a few random points to use as test values.
-rngstate = rng();
-rng(6178);
+seedRNG(6178);
 x = 2 * rand(100, 1) - 1;
 
 for ( n = 1:2 )
@@ -119,10 +118,6 @@ for ( n = 1:2 )
     dim2df = diff(f, 1, 2);
     pass(n, 14) = (isempty(dim2df.values) && isempty(dim2df.coeffs));
 end
-
-%%
-% Restore the RNG state.
-rng(rngstate);
 
 end
 

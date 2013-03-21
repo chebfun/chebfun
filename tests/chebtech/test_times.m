@@ -8,8 +8,7 @@ if (nargin < 1)
 end
 
 % Generate a few random points to use as test values.
-rngstate = rng();
-rng(6178);
+seedRNG(6178);
 x = 2 * rand(100, 1) - 1;
 
 % Random numbers to use as arbitrary multiplicative constants.
@@ -161,11 +160,6 @@ for ( n = 1:2 )
     h = g.*f;  % Multiply happy by unhappy.
     pass(n, 25) = (~g.ishappy) && (~h.ishappy);
 end
-
-%%
-% Restore the RNG state.
-
-rng(rngstate);
 
 end
 

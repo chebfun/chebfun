@@ -64,8 +64,7 @@ for ( n = 1:2 )
     pass(n, 9) = (max(abs(I - I_exact)) < tol);
 
     % Generate a few random points to use as test values.
-    rngstate = rng();
-    rng(6178);
+    seedRNG(6178);
     x = 2 * rand(100, 1) - 1;
 
     % DIM option with vectorized input.
@@ -78,10 +77,5 @@ for ( n = 1:2 )
     sumh2 = sum(h, 2);
     pass(n, 11) = all((h.values == sumh2.values) & (h.coeffs == sumh2.coeffs));
 end
-
-%%
-% Restore the RNG state.
-
-rng(rngstate);
 
 end

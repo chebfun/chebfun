@@ -11,8 +11,7 @@ end
 tol = 50*pref.chebtech.eps;
 
 % Generate a few random points to use as test values.
-rngstate = rng();
-rng(6178);
+seedRNG(6178);
 x = 2 * rand(100, 1) - 1;
 
 for ( n = 1:2 )
@@ -85,10 +84,5 @@ for ( n = 1:2 )
   err = std(feval(F, x) - feval(F_exact, x));
   pass(n, 8) = (norm(err, 'inf') < tol)  && all(abs(feval(F, -1)) < tol);
 end
-
-%%
-% Restore the RNG state.
-
-rng(rngstate);
 
 end

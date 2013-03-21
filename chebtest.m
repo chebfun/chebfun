@@ -39,10 +39,6 @@ function chebtest(varargin)
 
 % [TODO]:  Preferences.
 
-% Save current RNG state and re-initialize:
-rngState = rng();
-rng('default')
-
 % Find directory in which Chebfun was installed:
 installDir = fileparts(which('chebtest'));
 
@@ -111,8 +107,7 @@ else
     end
 end
 
-% Restore RNG state and current directory and return:
-rng(rngState);
+% Return to current directory and return:
 cd(currDir);
 
 end

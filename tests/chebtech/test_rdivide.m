@@ -8,8 +8,7 @@ if ( nargin < 1 )
 end
 
 % Generate a few random points to use as test values.
-rngstate = rng();
-rng(6178);
+seedRNG(6178);
 x = 2 * rand(100, 1) - 1;
 
 % Random numbers to use as arbitrary constants.
@@ -128,11 +127,6 @@ for ( n = 1:2 )
     h2 = testclass.make(@(x) sin(x) ./ exp(x), [], [], pref);
     pass(n, 16) = norm(h1.values - h2.values, 'inf') < tol;
 end
-
-%%
-% Restore the RNG state.
-
-rng(rngstate);
 
 end
 

@@ -8,8 +8,7 @@ if ( nargin < 1 )
 end
 
 % Generate a few random points to use as test values.
-rngstate = rng();
-rng(7681);
+seedRNG(7681);
 x = 2 * rand(1000, 1) - 1;
 
 for ( n = 1:2 )
@@ -76,10 +75,5 @@ for ( n = 1:2 )
               [1 sqrt(2) 1 1 0 -1]/sqrt(2) exp(pi.*[.25 .5 .75])];
     pass(n, 9) = all(all(abs(fx - f_exact) < 10*f.epslevel));
 end
-
-%%
-% Restore the RNG state.
-
-rng(rngstate);
 
 end
