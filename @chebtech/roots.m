@@ -1,4 +1,5 @@
 function out = roots(f, varargin)
+% [TODO]: Why does this code call chebtech2 several times (rather than chebtech) ?
 %ROOTS   Roots of a CHEBTECH in the interval [-1,1].
 %   ROOTS(F) returns the real roots of the CHEBTECH F in the interval [-1,1].
 %

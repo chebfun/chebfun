@@ -1,9 +1,9 @@
 function f = make(varargin)
 %MAKE   Constructor shortcut for CHEBTECH2 objects.
 %
-%   For chebtech2 methods implented at the chebtech level, it is not possible to
-%   call the class constructor file corresponding to a chebtech object directly.
-%   F = MAKE(VARARGIN) allows us to get around this and construct a chebtech2.
+%   For CHEBTECH2 methods implemented at the CHEBTECH level, it is not possible to
+%   call the class constructor file corresponding to a CHEBTECH object directly.
+%   F = MAKE(VARARGIN) allows us to get around this and construct a CHEBTECH2.
 
 f = chebtech2(varargin{:}); 
 

@@ -1,5 +1,5 @@
 classdef chebtech1 < chebtech
-%CHEBTECH1 Approximate smooth functions on [-1,1] with Chebyshev interpolants.
+%CHEBTECH1   Approximate smooth functions on [-1,1] with Chebyshev interpolants.
 %
 %   Class for approximating smooth functions on the interval [-1,1]
 %   using function values at 1st-kind Chebyshev points and coefficients of the
@@ -13,7 +13,7 @@ classdef chebtech1 < chebtech
 %   N and return a matrix of size NxM.
 %
 %   CHEBTECH1(OP, VSCALE) constructs a CHEBTECH1 with 'happiness' (see
-%   chebtech1.HAPPINESSCHECK.m) relative to the maximum of the given vertical scale (VSCALE)
+%   CHEBTECH1.HAPPINESSCHECK) relative to the maximum of the given vertical scale (VSCALE)
 %   and the (column-wise) infinity norm of the sampled function values of OP. If not given,
 %   the VSCALE defaults to 0 initially.
 %
@@ -30,88 +30,91 @@ classdef chebtech1 < chebtech
 %   COEFFS rather than computing them.
 %
 % Examples:
-%   % Basic construction
+%   % Basic construction:
 %   f = chebtech1(@(x) sin(x))
 %
-%   % Construction with preferences
+%   % Construction with preferences:
 %   p = chebtech.pref('sampletest', 0); % See help('chebtech.pref') for details
 %   f = chebtech1(@(x) sin(x), p)
 %
 %   % Vector-valued construction:
 %   f = chebtech1(@(x) [sin(x), cos(x), expchebtech.pref(x)])
 %
-% See also chebtech.pref, CHEBTECH1.chebpts, CHEBTECH1.happinesscheck, CHEBTECH1.refine.
+% See also CHEBTECH.PREF, CHEBPTS, HAPPINESSCHECK, REFINE.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   [TODO]: There is great and probably unnecessary duplication between
+%   a lot of this documentation and what you find in CHEBTECH2.  
 % CHEBTECH1 Class Description:
 %
 % The CHEBTECH1 class represents smooth functions on the interval [-1,1] using
 % function values at 1st-kind Chebyshev points and coefficients of the
-% corresponding first-kind Chebyshev series expansion.
+% corresponding 1st-kind Chebyshev series expansion.
 %
 % The constructor is supplied with a handle that evaluates a given function on
-% an increasingly fine Chebyshev 1st-kind grid (see chebtech1.REFINE.m) until the
-% representation is deemed 'happy' (see chebtech1.HAPPINESSCHECK.m). The resulting
+% an increasingly fine Chebyshev 1st-kind grid (see CHEBTECH1.REFINE) until the
+% representation is deemed 'happy' (see CHEBTECH1.HAPPINESSCHECK). The resulting
 % object can be used to evaluate and operate on the input function.
 %
 % The vertical scale VSCALE is used to enforce scale invariance in CHEBTECH1
-% construction and subsequent operations. For example, that 
+% construction and subsequent operations, for example, to enforce that 
 %          chebtech1(@(x) 2^300*f(x)) = 2^300*chebtech1(@(x) f(x)). 
-% VSCALE may be optionally passed during to the constructor (if not, it
+%
+% VSCALE may be optionally passed to the constructor (if not, it
 % defaults to 0), and during construction it is updated to be the maximum
 % magnitude of the sampled function values.
 %
 % If the input operator OP evaluates to NaN or Inf at any of the sample points
 % used by the constructor, then a suitable replacement is found by extrapolating
-% (globally) from the numeric values (see EXTRAPOLATE.M). If the preference
-% chebtech.pref('extrapolate', TRUE) is set, then the endpoint values -1 and +1
+% (globally) from the numeric values (see EXTRAPOLATE). If the preference
+% CHEBTECH.PREF.EXTRAPOLATE is TRUE, then the values at the endpoints -1 and +1
 % are always extrapolated (i.e., regardless of whether they evaluate to NaN).
 %
 % The CHEBTECH1 class supports the representation of vector-valued functions
 % (for example, f = chebtech1(@(x) [sin(x), cos(x)])). In such cases, the values
-% and coefficients are stored in a matrix (column-wise), and as such each
+% and coefficients are stored in a matrix (column-wise), and each
 % component of the multi-valued function is truncated to the same length, even
 % if the demands of 'happiness' imply that one of the components could be
 % truncated to a shorter length than the others. All CHEBTECH1 methods should
-% accept such vectorised forms. Note that this representation is distinct from
-% an array of chebtech1 objects, such as [chebtech1(@(x) sin(x), chebtech1(@(x)
+% accept vectorised forms. Note that this representation is distinct from
+% an array of CHEBTECH1 objects, such as [chebtech1(@(x) sin(x), chebtech1(@(x)
 % cos(x)], for which there is little to no support.
 %
-% Class diagram: [chebtech] <-- [chebtech1]
+% Class diagram: [<<CHEBTECH>>] <-- [CHEBTECH1]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    %% Methods implemented by this m-file.
+    %% Methods implemented by this m-file:
     methods
         
         function obj = chebtech1(op, vscale, hscale, pref)
-            %Constructor for the CHEBTECH1 class.
+            % Constructor for the CHEBTECH1 class.
             
             % Return an empty CHEBTECH1 on null input:
-            if ( nargin == 0 || isempty(op) )
+            if ( (nargin == 0) || isempty(op) )
                 return
             end
            
             % Define vscale if none given:
-            if ( nargin < 2 || isempty(vscale) )
+            if ( (nargin < 2) || isempty(vscale) )
                 vscale = 0;
             end
             % Define hscale if none given:
-            if ( nargin < 3 || isempty(hscale) )
+            if ( (nargin < 3) || isempty(hscale) )
                 hscale = 1;
             end
             % Determine preferences if not given, merge if some are given:
-            if ( nargin < 4 || isempty(pref) )
+            if ( (nargin < 4) || isempty(pref) )
                 pref = chebtech.pref;
             else
                 pref = chebtech.pref(pref);
             end
             
-            % Force nonadaptive construction if pref.chebtech.n is numeric:
+            % Force nonadaptive construction if PREF.CHEBTECH.N is numeric:
             if ( ~isempty(pref.chebtech.n) && ~isnan(pref.chebtech.n) )
-                % Evaluate the op on the Chebyshev grid of given size:
+                % Evaluate op on the Chebyshev grid of given size:
                 op = feval(op, chebtech1.chebpts(pref.chebtech.n));
             end
             
@@ -123,7 +126,7 @@ classdef chebtech1 < chebtech
                 return
             end
             
-            % Check for NaNs: (if not happy)
+            % Check for NaNs (if not happy):
             if ( any(isnan(obj.values(:))) )
                 error('CHEBFUN:CHEBTECH1:constructor:naneval', ...
                     'Function returned NaN when evaluated.')
@@ -134,41 +137,36 @@ classdef chebtech1 < chebtech
     end
     
     %% Static methods implemented by CHEBTECH1 class.
-    % (This list is alphabetical)
+    % (This list is alphabetical.)
     methods ( Static = true )
         
-        % aliasing.
+        % Aliasing:
         coeffs = alias(coeffs, m)
         
-        % Evaluate a Chebyshev interpolant using 2nd form barycentric formula.
+        % Evaluate a Chebyshev interpolant using 2nd form barycentric formula:
         out = bary(x, values)
         
-        % Compute Chebyshev barycentric weights.
+        % Compute Chebyshev barycentric weights:
         w = barywts(n)
 
-        % Convert values to coefficients.
+        % Convert values to coefficients:
         coeffs = chebpoly(values)
         
-        % Convert coefficients to values.
+        % Convert coefficients to values:
         values = chebpolyval(coeffs)
         
-        % Compute Chebyshev points of first kind (x) and optionally
-        % quadrature (w) and barycentric (v) weights.
+        % Compute Chebyshev points (x) and optionally quadrature (w)
+        % and barycentric (v) weights.
         [x, w, v] = chebpts(n)
         
-        % Make a CHEBTECH1. (Constructor shortcut)
+        % Make a CHEBTECH1 (constructor shortcut):
         f = make(varargin);
         
-        % Refinement function for CHEBTECH1 construction. (Evaluates OP on grid)
+        % Refinement function for CHEBTECH1 construction (evaluates OP on grid):
         [values, opints, giveUp] = refine(op, values, pref)
         
-        % Compute Chebyshev quadrature weights.
+        % Compute Chebyshev quadrature weights:
         w = quadwts(n)
-        
-    end
-    
-    %% Private static methods implemented by CHEBTECH1 class.
-    methods ( Access = private, Static = true )
         
     end
     

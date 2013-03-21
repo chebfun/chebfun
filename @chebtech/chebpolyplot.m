@@ -1,20 +1,20 @@
 function varargout = chebpolyplot(f, varargin)
-%CHEBPOLYPLOT    Display Chebyshev coefficients graphically.
+%CHEBPOLYPLOT   Display Chebyshev coefficients graphically.
 %
 %   CHEBPOLYPLOT(F) plots the Chebyshev coefficients of a CHEBTECH F on a
-%   semilogy scale. A horizontal line at the epslevel of F is also plotted. If F
+%   semilogy scale. A horizontal line at the EPSLEVEL of F is also plotted. If F
 %   is a vectorised CHEBTECH then a curve is plotted for each component (column)
 %   of F.
 %
 %   CHEBPOLYPLOT(F, S) allows further plotting options, such as linestyle,
 %   linecolor, etc, in the standard MATLAB manner. If S contains a string
 %   'LOGLOG', the coefficients will be displayed on a log-log scale. If S
-%   contains a string 'NOEPSLEVEL' the epslevel is not plotted.
+%   contains a string 'NOEPSLEVEL', the EPSLEVEL is not plotted.
 %
 %   H = CHEBPOLYPLOT(F) returns a column vector of handles to lineseries
-%   objects. The final entry is that of the epslevel plot.
+%   objects. The final entry is that of the EPSLEVEL plot.
 %
-% See also CHEBTECH.CHEBPOLY, CHEBTECH/PLOT
+% See also CHEBPOLY, PLOT.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -28,8 +28,8 @@ if ( isempty(f) )
 end
 
 % Set defaults:
-loglogplot = false;
-plotepslevel = true;
+loglogPlot = false;
+plotEpsLevel = true;
 
 % Copy input arguments:
 args = varargin;
@@ -38,10 +38,10 @@ args = varargin;
 j = 1;
 while ( j <= length(args) )
     if ( strcmpi(args{j},'loglog') )
-        loglogplot = true; 
+        loglogPlot = true; 
         args(j) = [];
     elseif ( strcmpi(args{j},'noepslevel') )
-        plotepslevel = false; 
+        plotEpsLevel = false; 
         args(j) = [];
     else
         j = j + 1;
@@ -53,6 +53,7 @@ holdState = ishold;
 
 % The coefficients:
 absc = abs(f.coeffs);
+
 % Add a tiny amount to zeros to make plots look nicer:
 % absc(~absc) = eps*max(absc(:));
 absc(~absc) = f.epslevel*min(f.vscale);
@@ -60,7 +61,7 @@ absc(~absc) = f.epslevel*min(f.vscale);
 % Get the size:
 [n, m] = size(absc);
 
-if ( plotepslevel )
+if ( plotEpsLevel )
     % Plot the coeffs AND the epslevel:
     h = semilogy(n-1:-1:0, absc, args{:});
     hold on
@@ -72,17 +73,17 @@ if ( plotepslevel )
         set(h(m+k), 'marker', 'none', 'color', c);
     end
 else
-    % Plot just the coeffs:
+    % Plot just the coefficients:
     h = semilogy(n:-1:1, absc, args{:});
 end
 
-% For constant functions, plot a dot!
+% For constant functions, plot a dot:
 if ( n == 1 )
     set(h, 'marker', 'o');
 end
 
 % Do a loglog plot:
-if ( loglogplot )
+if ( loglogPlot )
     set(gca, 'XScale', 'log')
 end
 

@@ -1,5 +1,5 @@
 function f = compose(f, op, g, pref)
-%COMPOSE  Compostition of CHEBTECH1 objects.
+%COMPOSE   Composition of CHEBTECH1 objects.
 %   COMPOSE(F, OP) returns a CHEBTECH1 representing OP(F) where F is also a
 %   CHEBTECH1 object, and OP is a function handle.
 %
@@ -15,14 +15,14 @@ function f = compose(f, op, g, pref)
 
 nfuns = 2;
 % Parse inputs:
-if ( nargin > 2 && isstruct(g) )
+if ( (nargin > 2) && isstruct(g) )
     pref = g;
     g = [];
     nfuns = 1;
 elseif ( nargin < 4 )
     pref = chebtech.pref();
 end
-if ( nargin < 3 || isempty(g) )
+if ( (nargin < 3) || isempty(g) )
     nfuns = 1;
     g = [];
 end
@@ -42,13 +42,13 @@ end
 % Assign to preference structure:
 pref.chebtech.refinementFunction = refFunc;
 
-% Call superclass compose:
+% Call superclass COMPOSE:
 f = compose@chebtech(f, op, g, pref);
 
 end
 
 function [values, giveUp] = composeResample1(op, values, pref, f)
-%COMPOSERESAMPLE1 Refinement function for composing a CHEBTECH1 with resampling.
+%COMPOSERESAMPLE1   Refinement function for composing a CHEBTECH1 with resampling.
     
     if ( isempty(values) )
         % Choose initial n based upon minSamples.
@@ -56,15 +56,15 @@ function [values, giveUp] = composeResample1(op, values, pref, f)
     else
         % (Approximately) powers of sqrt(2):
         pow = log2(size(values, 1) - 1);
-        if ( pow == floor(pow) && pow > 5 )
+        if ( (pow == floor(pow)) && (pow > 5) )
             n = round(2^(floor(pow) + .5)) + 1;
             n = n - mod(n, 2) + 1;
         else
-            n = 2^(floor(pow)+1) + 1;
+            n = 2^(floor(pow) + 1) + 1;
         end
     end
     
-    % n is too large!
+    % n is too large.
     if ( n > pref.chebtech.maxSamples )
         giveUp = true;
         return
@@ -80,7 +80,7 @@ function [values, giveUp] = composeResample1(op, values, pref, f)
 end
 
 function [values, giveUp] = composeResample2(op, values, pref, f, g)
-%COMPOSERESAMPLE2  Refinement function for composing CHEBTECH1s with resampling.
+%COMPOSERESAMPLE2   Refinement function for composing CHEBTECH1s with resampling.
     
     if ( isempty(values) )
         % Choose initial n based upon minSamples.
@@ -88,15 +88,15 @@ function [values, giveUp] = composeResample2(op, values, pref, f, g)
     else
         % (Approximately) powers of sqrt(2):
         pow = log2(size(values, 1) - 1);
-        if ( pow == floor(pow) && pow > 5 )
+        if ( (pow == floor(pow)) && (pow > 5) )
             n = round(2^(floor(pow) + .5)) + 1;
             n = n - mod(n, 2) + 1;
         else
-            n = 2^(floor(pow)+1) + 1;
+            n = 2^(floor(pow) + 1) + 1;
         end
     end
     
-    % n is too large!
+    % n is too large:
     if ( n > pref.chebtech.maxSamples )
         giveUp = true;
         return

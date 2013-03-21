@@ -27,7 +27,7 @@ function f = populate(f, op, vscale, hscale, pref)
 %   tested for happiness in the same way as described above, but the length of
 %   the representation is not reduced.
 %
-% See also CHEBTECH, CHEBTECH.pref, CHEBTECH.happinessCheck.
+% See also CHEBTECH, PREF, HAPPINESSCHECK.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.

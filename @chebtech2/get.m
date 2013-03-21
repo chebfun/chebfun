@@ -1,5 +1,5 @@
 function out = get(f, prop)
-%GET    GET method for the CHEBTECH2 class
+%GET   GET method for the CHEBTECH2 class.
 %   P = GET(F,PROP) returns the property P specified in the string PROP from
 %   the fun F. Valid entries for the string PROP are:
 %       'VALUES' - Values of F at Chebyshev points.
@@ -15,18 +15,20 @@ function out = get(f, prop)
 
 switch prop
     case fieldnames(f)
-        % Allow access to any of F's properties via GET.
+        % Allow access to any of the properties of F via GET:
         out = f.(prop);
     case 'points'
-        % GET the Chebyshev grid corresponding to the VALUES.
+        % Get the Chebyshev grid corresponding to the VALUES:
         out = f.points();
     case 'lval'
-        % The value at -1.
+        % The value at -1:
         out = f.values(1,:);
     case 'rval'
-        % The value at +1.
+        % The value at +1:
         out = f.values(end,:);
     otherwise
         error('CHEBFUN:CHEBTECH2:GET:proname', ...
             'Unknown property name ''%s'' for object of type chebtech2.', prop);
+end
+
 end

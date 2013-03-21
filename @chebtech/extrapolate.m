@@ -32,7 +32,7 @@ if ( any(mask) )
     % The good:
     xgood = x(~mask);
     if ( isempty(xgood) )
-        error('CHEBFUN:CHEBTECH1:extrapolate:nans', ...
+        error('CHEBFUN:CHEBTECH:extrapolate:nans', ...
             'Too many NaNs to handle.')
     end
     

@@ -17,14 +17,14 @@ function fx = bary(x, fvals)
 %     set(h, 'edgealpha', 0)
 %     view(0,90), shg
 %
-% See also CHEBTECH.BARY, CHEBTECH2.CHEBPTS, CHEBTECH2.BARYWTS, CHEBTECH2.FEVAL.
+% See also CHEBTECH.BARY, CHEBPTS, BARYWTS, FEVAL.
 
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% This method is bascically a wrapper for @chebtech/bary.m
+% This method is basically a wrapper for @chebtech/bary.m.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

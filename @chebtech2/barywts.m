@@ -1,17 +1,17 @@
 function v = barywts(n)
-%BARYWTS % 2nd-kind Chebyshev barycentric weights.
+%BARYWTS   Barycentric weights for Chebyshev points of 2nd kind.
 %   BARYWTS(N) returns the N barycentric weights for polynomial interpolation on
 %   a Chebyshev grid of the 2nd kind. The weights are normalised so that they
 %   have infinity norm equal to 1 and the final entry is positive.
 %
-% See also CHEBTECH2.BARY.m, FUN2.CHEBPTS.   
+% See also BARY, CHEBPTS.   
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% See Thm. 5.2 of Trefethen: Approximation Theory and Approximation Practice, 
-% SIAM, (2013) for more information.
+% See Thm. 5.2 of Trefethen, Approximation Theory and Approximation Practice, 
+% SIAM, 2013 for more information.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-if ( n == 0 )                      % Special case (no points!)
+if ( n == 0 )                      % Special case (no points)
     v = [];
 elseif ( n == 1 )                  % Special case (single point)
     v = 1;
@@ -22,5 +22,3 @@ else                               % General case
 end
 
 end
-
-

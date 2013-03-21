@@ -22,12 +22,12 @@ function varargout = plot(f, varargin)
 %
 %   The entries from the centre columns are plotted at the Chebyshev grid being
 %   used to represent F. If no options from this column are chosen, 'o' is
-%   chosen by default if length(f)<256;
+%   chosen by default if LENGTH(F) < 256.
 %
 %   The X,Y pairs, or X,Y,S triples, can be followed by parameter/value pairs to
 %   specify additional properties of the lines. For example, 
-%            F = chebtech.constructor(@sin);
-%            plot(F, 'LineWidth', 2, 'Color', [.6 0 0]) 
+%            f = chebtech.constructor(@sin);
+%            plot(f, 'LineWidth', 2, 'Color', [.6 0 0]) 
 %   will create a plot with a dark red line width of 2 points.
 %
 %   H1 = PLOT(F) returns a column vector of handles to lineseries objects, one
@@ -73,8 +73,8 @@ end
 
 % Change the style accordingly:
 set(h2,'LineStyle', 'none')
-if ( all(strcmp(get(h2, 'Marker'),'none')) ) && length(f) < 257
-    set(h2,'Marker', 'o')
+if ( all(strcmp(get(h2, 'Marker'), 'none')) && (length(f) < 257) )
+    set(h2, 'Marker', 'o')
 end
 
 %%

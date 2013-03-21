@@ -1,6 +1,6 @@
 function [vals, pos] = minandmax(f)
-%MINANDMAX	 Global minimum and maximum on [-1,1].
-%   VAL = MINANDMAX(F) returns a 2-vector VAL = [min(F); max(F)] with the global
+%MINANDMAX   Global minimum and maximum on [-1,1].
+%   VAL = MINANDMAX(F) returns a 2-vector VAL = [MIN(F); MAX(F)] with the global
 %   minimum and maximum of the CHEBTECH G on [-1,1].
 %
 %   [VAL, POS] = MINANDMAX(F) returns also the 2-vector POS where the minimum
@@ -8,7 +8,7 @@ function [vals, pos] = minandmax(f)
 %
 %   If F is complex-valued the absolute values are taken to determine extrema
 %   but the resulting values correspond to those of the original function. That
-%   is, VAL = feval(F, POS) where [~, POS] = MINANDMAX(abs(F)).
+%   is, VAL = FEVAL(F, POS) where [~, POS] = MINANDMAX(ABS(F)).
 %
 % See also MIN, MAX.
 
@@ -36,11 +36,11 @@ xpts = f.chebpts(length(f));
 sizef2 = size(f, 2);
 
 if ( sizef2 == 1)
-    % If it isn't, then things are simple.
+    % If f is a single column, then things are simple.
     [vals, pos] = minandmaxColumn(f, fp, xpts);
     
 else
-    % If not, we must loop over the columns.
+    % If f has multiple columns, we must loop over them.
     
     % Initialise output vectors:
     pos = zeros(2, sizef2);
@@ -56,7 +56,6 @@ else
     
     % Loop over columns:
     for k = 1:sizef2    
-    
         % Copy data to a single CHEBTECH column:
         f.values = values(:,k);
         f.coeffs = coeffs(:,k);
@@ -67,9 +66,7 @@ else
 
         % Find max of this column:
         [vals(:,k), pos(:,k)] = minandmaxColumn(f, fp, xpts);
-    
     end
-
 end
 
 end
@@ -77,32 +74,34 @@ end
 function [vals, pos] = minandmaxColumn(f, fp, xpts)
 
    % Initialise output
-   pos = [0 ; 0];
-   vals = [0 ; 0];
+   pos = [ 0; 0 ];
+   vals = [ 0; 0 ];
 
-   % Compute turning points
+   % Compute turning points:
     r = roots(fp);
-    r = [-1 ; r ; 1];
+    r = [ -1; r; 1 ];
     v = feval(f, r);
 
     % min
     [vals(1), idx] = min(v);
     pos(1) = r(idx);
-    % Take the min of the computed min and the function values.
-    [vmin, vidx] = min([vals(1) ; f.values]);
+
+    % Take the minimum of the computed minimum and the function values:
+    [vmin, vidx] = min([ vals(1); f.values ]);
     if ( vmin < vals(1) )
         vals(1) = vmin;
-        pos(1) = xpts(vidx-1);
+        pos(1) = xpts(vidx - 1);
     end
 
     % max
     [vals(2), idx] = max(v);
     pos(2) = r(idx);
-    % Take the max of the computed max and the function values.
-    [vmax, vidx] = min([vals(2) ; f.values]);
+
+    % Take the maximum of the computed maximum and the function values:
+    [vmax, vidx] = min([ vals(2); f.values ]);
     if ( vmax > vals(2) )
         vals(2) = vmax;
-        pos(2) = xpts(vidx-1);
+        pos(2) = xpts(vidx - 1);
     end
 
 end

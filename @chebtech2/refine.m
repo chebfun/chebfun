@@ -1,5 +1,5 @@
 function [values, giveUp] = refine(op, values, pref)
-%REFINE Refinement method for CHEBTECH2 construction.
+%REFINE   Refinement method for CHEBTECH2 construction.
 %   VALUES = REFINE(OP, VALUES, PREF) determines the new VALUES of the operator
 %   OP to be checked for happiness in the CHEBTECH2 construction process. The
 %   exact procedure used is determined by PREF.CHEBTECH2.REFINEMENTFUNCTION.
@@ -16,8 +16,8 @@ function [values, giveUp] = refine(op, values, pref)
 %   option should be used for functions which are not sampleable, for example,
 %   anything that depends on the length of the input to OP.
 %
-%   Alternative refinement strategies can be used by pasing a function handle in
-%   the pref.chebtech2.refinementStrategy field. The function handle should point
+%   Alternative refinement strategies can be used by passing a function handle in
+%   the PREF.CHEBTECH2.REFINEMENTSTRATEGY field. The function handle should point
 %   to a function with the template [VALUES, GIVEUP] = @(OP, VALUES, PREF) ...
 %   which accepts a function handle OP, previously sampled values VALUES of OP
 %   at a 2nd-kind Chebyshev grid, and PREF, a preference structure containing
@@ -31,6 +31,7 @@ function [values, giveUp] = refine(op, values, pref)
 if ( nargin < 3 )
     pref = chebtech2.pref();
 end
+
 % No values were given:
 if ( nargin < 2 )
     values = [];
@@ -54,7 +55,7 @@ end
 end
 
 function [values, giveUp] = refineResampling(op, values, pref)
-%REFINERESAMPLING  Default refinement function for resampling scheme.
+%REFINERESAMPLING   Default refinement function for resampling scheme.
 
     if ( isempty(values) )
         % Choose initial n based upon minSamples:
@@ -62,15 +63,15 @@ function [values, giveUp] = refineResampling(op, values, pref)
     else
         % (Approximately) powers of sqrt(2):
         pow = log2(size(values, 1) - 1);
-        if ( pow == floor(pow) && pow > 5 )
+        if ( (pow == floor(pow)) && (pow > 5) )
             n = round(2^(floor(pow) + .5)) + 1;
             n = n - mod(n, 2) + 1;
         else
-            n = 2^(floor(pow)+1) + 1;
+            n = 2^(floor(pow) + 1) + 1;
         end
     end
     
-    % n is too large!
+    % n is too large:
     if ( n > pref.chebtech.maxSamples )
         giveUp = true;
         return
@@ -78,14 +79,14 @@ function [values, giveUp] = refineResampling(op, values, pref)
         giveUp = false;
     end
    
-    % 2nd-kind Chebyshev grid
+    % 2nd-kind Chebyshev grid:
     x = chebtech2.chebpts(n);
 
     % Evaluate the operator:
     if ( pref.chebtech.extrapolate )
         valuesTemp = feval(op, x(2:n-1));
         nans = NaN(1, size(valuesTemp, 2));
-        values = [nans ; valuesTemp ; nans];
+        values = [ nans; valuesTemp; nans ];
     else
         values = feval(op, x);
     end
@@ -96,8 +97,8 @@ function [values, giveUp] = refineNested(op, values, pref)
 %REFINENESTED  Default refinement function for single ('nested') sampling.
 
     if ( isempty(values) )
-        % The first time we are called, there are no values and refineSingle is
-        % the same as refineDouble.
+        % The first time we are called, there are no values
+        % and REFINENESTED is the same as REFINERESAMPLING.
         [values, giveUp] = refineResampling(op, values, pref);
 
     else
@@ -105,7 +106,7 @@ function [values, giveUp] = refineNested(op, values, pref)
         % Compute new n by doubling (we must do this when not resampling).
         n = 2*size(values, 1) - 1;
         
-        % n is too large!
+        % n is too large:
         if ( n > pref.chebtech.maxSamples )
             giveUp = true;
             return
@@ -125,4 +126,3 @@ function [values, giveUp] = refineNested(op, values, pref)
 
     end
 end
-

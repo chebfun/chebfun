@@ -1,12 +1,15 @@
 function coeffs = alias(coeffs, m)
-%ALIAS  Alias Chebyshev coefficients on the 1st kind Chebyshev grid.
-%   ALIAS(C, M) will alias the Chebyshev coefficients stored in the column
-%   vector C to have length M. If M > length(C), the coefficients are padded
-%   with zeros. If C is a matrix of coefficents, each of the columns are aliased
+%ALIAS   Alias Chebyshev coefficients on the 1st kind Chebyshev grid.
+%   ALIAS(C, M) aliases the Chebyshev coefficients stored in the column
+%   vector C to have length M. If M > LENGTH(C), the coefficients are padded
+%   with zeros. If C is a matrix of coefficients, each of the columns is aliased
 %   to length M.
 
-% Note that the alias for 1st kind Chebyshev grid is different from its
-% counterpart for 2nd kind Chebyshev grid, though it seems that they both
+% [TODO]: Simplify these comments and include an appropriate reference
+% if we can find one.
+
+% Note that aliasing for the 1st kind Chebyshev grid is different from its
+% counterpart for 2nd kind Chebyshev grid, though they both
 % live in the coefficient space with respect to Chebyshev polynomials of 
 % 1st kind. For more information about aliasing and de-aliasing on the 
 % Chebyshev points of 1st kind, please read on.
@@ -14,7 +17,7 @@ function coeffs = alias(coeffs, m)
 % Aliasing of Chebyshev polynomials of the first kind T_m on Chebyshev 
 % points of the first kind x_k = cos(pi*(2k+1)/(2(n+1))
 %
-% The following Statements are adapted from Theorem 4.1 in ATAP.
+% The following statements are adapted from Theorem 4.1 in ATAP.
 %
 % (1) For any n >= 1 and 0 <= m <= n, the following Chebyshev polynomials
 % take the same values on the (n+1)-point Chebyshev grid:
@@ -55,35 +58,34 @@ function coeffs = alias(coeffs, m)
 % See http://www.chebfun.org/ for Chebfun information.
 
 n = size(coeffs, 1);
-n2 = size(coeffs,2);
+n2 = size(coeffs, 2);
 
 % Pad with zeros:
 if ( m > n )
-    coeffs = [zeros(m-n, size(coeffs, 2)) ; coeffs];
+    coeffs = [ zeros(m-n, size(coeffs, 2)); coeffs ];
     return
 end
 
 % It's more natural to work with the coefficients in the other order:
 coeffs = coeffs(end:-1:1,:);
 
-% Alias coefficients: (see eq. (4.4) of Trefethen, Approximation Theory and
-% Approximation Practice, SIAM, 2013):
+% Alias coefficients (see discussion above):
 if ( m == 1 )
-    % Reduce to a single point.
+    % Reduce to a single point:
     e = ones(1, ceil(n/2)); 
     e(2:2:end) = -1;
     coeffs = e*coeffs(1:2:end,:);
 elseif ( m > n/2 )
     % If m > n/2, only single coefficients are aliased, and we can vectorise.
     j = ((m + 1):n).';
-    k = abs( mod( j + m - 2, 2*m ) - m + 1 ) + 1;
+    k = abs(mod(j + m - 2, 2*m) - m + 1) + 1;
     p = floor((j-1+m)/(2*m));
     t = (-1).^p;
     coeffs(k,:) = coeffs(k,:) + repmat(t,1,n2).*coeffs(j,:);
 else
     % Otherwise we must do everything in a tight loop. (Which is slower!)
     for j = (m + 1):n
-        k = abs( mod( j + m - 2, 2*m ) - m + 1 ) + 1;
+        k = abs(mod(j + m - 2, 2*m) - m + 1) + 1;
         p = floor((j-1+m)/(2*m));
         t = (-1)^p;
         coeffs(k,:) = coeffs(k,:) + t*coeffs(j,:);

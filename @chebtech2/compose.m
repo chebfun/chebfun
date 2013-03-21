@@ -1,5 +1,5 @@
 function f = compose(f, op, g, pref)
-%COMPOSE  Compostition of CHEBTECH2 objects.
+%COMPOSE   Composition of CHEBTECH2 objects.
 %   COMPOSE(F, OP) returns a CHEBTECH2 representing OP(F) where F is also a
 %   CHEBTECH2 object, and OP is a function handle.
 %
@@ -23,14 +23,14 @@ function f = compose(f, op, g, pref)
 
 nfuns = 2;
 % Parse inputs:
-if ( nargin > 2 && isstruct(g) )
+if ( (nargin > 2) && isstruct(g) )
     pref = g;
     g = [];
     nfuns = 1;
 elseif ( nargin < 4 )
     pref = chebtech.pref();
 end
-if ( nargin < 3 || isempty(g) )
+if ( (nargin < 3) || isempty(g) )
     nfuns = 1;
     g = [];
 end
@@ -55,13 +55,13 @@ end
 % Assign to preference structure:
 pref.chebtech.refinementFunction = refFunc;
 
-% Call parent compose:
+% Call parent COMPOSE:
 f = compose@chebtech(f, op, g, pref);
 
 end
 
 function [values, giveUp] = composeResample1(op, values, pref, f)
-%COMPOSERESAMPLE1 Refinement function for composing a CHEBTECH2 with resampling.
+%COMPOSERESAMPLE1   Refinement function for composing a CHEBTECH2 with resampling.
     
     if ( isempty(values) )
         % Choose initial n based upon minSamples.
@@ -69,15 +69,15 @@ function [values, giveUp] = composeResample1(op, values, pref, f)
     else
         % (Approximately) powers of sqrt(2):
         pow = log2(size(values, 1) - 1);
-        if ( pow == floor(pow) && pow > 5 )
+        if ( (pow == floor(pow)) && (pow > 5) )
             n = round(2^(floor(pow) + .5)) + 1;
             n = n - mod(n, 2) + 1;
         else
-            n = 2^(floor(pow)+1) + 1;
+            n = 2^(floor(pow) + 1) + 1;
         end
     end
     
-    % n is too large!
+    % n is too large.
     if ( n > pref.chebtech.maxSamples )
         giveUp = true;
         return
@@ -94,7 +94,7 @@ function [values, giveUp] = composeResample1(op, values, pref, f)
         % Avoid evaluating the endpoints:
         valuesTemp = feval(op, v1(2:n-1,:));
         nans = NaN(1, size(valuesTemp, 2));
-        values = [nans ; valuesTemp ; nans];
+        values = [ nans; valuesTemp; nans ];
     else
         values = feval(op, v1);
     end
@@ -109,15 +109,15 @@ function [values, giveUp] = composeResample2(op, values, pref, f, g)
     else
         % (Approximately) powers of sqrt(2):
         pow = log2(size(values, 1) - 1);
-        if ( pow == floor(pow) && pow > 5 )
+        if ( (pow == floor(pow)) && (pow > 5) )
             n = round(2^(floor(pow) + .5)) + 1;
             n = n - mod(n, 2) + 1;
         else
-            n = 2^(floor(pow)+1) + 1;
+            n = 2^(floor(pow) + 1) + 1;
         end
     end
     
-    % n is too large!
+    % n is too large:
     if ( n > pref.chebtech.maxSamples )
         giveUp = true;
         return
@@ -135,14 +135,14 @@ function [values, giveUp] = composeResample2(op, values, pref, f, g)
         % Avoid evaluating the endpoints:
         valuesTemp = feval(op, v1(2:n-1,:), v2(2:n-1));
         nans = NaN(1, size(valuesTemp, 2));
-        values = [nans ; valuesTemp ; nans];
+        values = [ nans; valuesTemp; nans ];
     else
         values = feval(op, v1, v2);
     end
 end
 
 function [values, giveUp] = composeNested1(op, values, pref, f)
-%COMPOSENESTED1 Refinement function for composing a CHEBTECH2 without resampling.
+%COMPOSENESTED1   Refinement function for composing a CHEBTECH2 without resampling.
 
     if ( isempty(values) )  % We're just starting out:
         [values, giveUp] = composeResample1(op, values, pref, f);
@@ -152,7 +152,7 @@ function [values, giveUp] = composeNested1(op, values, pref, f)
         % Compute new n by doubling (we must do this when not resampling).
         n = 2*size(values, 1) - 1;
         
-        % n is too large!
+        % n is too large:
         if ( n > pref.chebtech.maxSamples )
             giveUp = true;
             return
@@ -166,24 +166,26 @@ function [values, giveUp] = composeNested1(op, values, pref, f)
 
         % Shift the stored values:
         values(1:2:n,:) = values;
-        % Compute and insert new ones:
+
+        % Compute and insert new values:
         values(2:2:end-1,:) = feval(op, v1);
 
     end
 end
 
 function [values, giveUp] = composeNested2(op, values, pref, f, g)
-%COMPOSENESTED2 Refinement function for composing CHEBTECH2s without resampling.
+%COMPOSENESTED2   Refinement function for composing CHEBTECH2
+%objects without resampling.
     
     if ( isempty(values) )  % We're just starting out:
         [values, giveUp] = composeResample2(op, values, pref, f, g);
         
     else                    % We already have some values
     
-        % Compute new n by doubling (we must do this when not resampling).
+        % Compute new n by doubling (we must do this when not resampling):
         n = 2*size(values, 1) - 1;
         
-        % n is too large!
+        % n is too large.
         if ( n > pref.chebtech.maxSamples )
             giveUp = true;
             return
@@ -199,7 +201,8 @@ function [values, giveUp] = composeNested2(op, values, pref, f, g)
         
         % Shift the stored values:
         values(1:2:n,:) = values;
-        % Compute and insert new ones:
+
+        % Compute and insert new values:
         values(2:2:end-1,:) = feval(op, v1, v2);
 
     end

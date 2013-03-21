@@ -1,5 +1,5 @@
 function fx = bary(x, fvals)
-%BARY  Barycentric interpolation on a 1st-kind Chebyshev grid.
+%BARY   Barycentric interpolation on a 1st-kind Chebyshev grid.
 %   BARY(X, FVALS) evaluates F(X) using the 2nd form barycentric interpolation
 %   formula, where F is the polynomial interpolant on a 1st-kind Chebyshev grid
 %   to the values stored in the columns of FVALS. X should be a column vector.
@@ -17,14 +17,14 @@ function fx = bary(x, fvals)
 %     set(h, 'edgealpha', 0)
 %     view(0,90), shg
 %
-% See also CHEBTECH.BARY, CHEBTECH1.CHEBPTS, CHEBTECH1.BARYWTS, CHEBTECH1.FEVAL.
+% See also CHEBTECH.BARY, CHEBPTS, BARYWTS, FEVAL.
 
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% This method is bascically a wrapper for @chebtech/bary.m
+% This method is basically a wrapper for @chebtech/bary.m.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
