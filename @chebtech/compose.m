@@ -72,7 +72,7 @@ if ( ischar(pref.chebtech.refinementFunction) )
     end   
 end
 
-% Call the chebtech2 constructor:
+% Call the chebtech constructor:
 f = f.make(op, vscale, f.hscale, pref);
 
 % Throw a warning:
