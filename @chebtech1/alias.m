@@ -5,9 +5,9 @@ function coeffs = alias(coeffs, m)
 %   padded with zeros. If C is a matrix of coefficients, each of the 
 %   columns is aliased to length M.
 
-% Note that aliasing for the 1st kind Chebyshev grid is different from its
-% counterpart for 2nd kind Chebyshev grid, though they both live in the 
-% coefficient space with respect to Chebyshev polynomials of 1st kind. 
+% Note that the formula for aliasing on the 1st-kind Chebyshev grid is
+% different from that for the 2nd-kind grid, even though the coefficients 
+% being aliased are for 1st-kind Chebyshev polynomials in both cases. 
 
 %   References:
 %
@@ -16,8 +16,6 @@ function coeffs = alias(coeffs, m)
 %
 %   [2] Mason, J. C. and Handscomb, D. C., Chebyshev polynomials, Chapman 
 %   & Hall/CRC, Boca Raton, FL, 2003.  (pp. 153)
-%
-%   [3] Chebfun 5v Working Note, 03/05/2013.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
