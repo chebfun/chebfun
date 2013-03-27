@@ -600,7 +600,7 @@ function [vals, ders] = feval_asy1(n, t , mint, flag) %#ok<INUSD>
 
 end
 
-function [x, w, v, t] = asy2(n, npts)
+function [x, w, v, t, ders] = asy2(n, npts)
     % Boundary method.
 
     if npts > ceil((n+1)/2)
