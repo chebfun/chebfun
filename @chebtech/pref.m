@@ -10,25 +10,30 @@ function prefs = pref(varargin)
 %   P = CHEBTECH.PREF(P) will check to see whether the input preference structure
 %   P already has a CHEBTECH field. If it does not, one is appended.
 %
-%   P = CHEBTECH.PREF('PREFNAME1', VAL1, 'PREFNAME1', VAL2, ...) returns the same
+%   P = CHEBTECH.PREF('PREFNAME1', VAL1, 'PREFNAME2', VAL2, ...) returns the same
 %   structure as above, but with the default CHEBTECH preferences 'PREFNAME1',
-%   'PREFNAME1', replaced by the values in VAL1, VAL2, etc.
+%   'PREFNAME2', replaced by the values in VAL1, VAL2, etc.
 %
-%   P = CHEBTECH.PREF(P, 'PREFNAME1', VAL1, 'PREFNAME1', VAL2, ...) appends a
+%   P = CHEBTECH.PREF(P, 'PREFNAME1', VAL1, 'PREFNAME2', VAL2, ...) appends a
 %   CHEBTECH preference field to P if required, and modifies the CHEBTECH
-%   properties 'PREFNAME1' and 'PREFNAME1'.
+%   properties 'PREFNAME1' and 'PREFNAME2'.
 %
 %   Note that no checking of either the input PREFNAMEs or VALs takes place.
 %
 %   CHEBTECH PREFERENCES (case sensitive)
 %
+%     tech         -  Select the type of Chebyshev grid on which the function
+%                     is sampled.
+%      ['cheb2']   -  Use a grid of second-kind Chebyshev points.
+%       'cheb1'    -  Use a grid of first-kind Chebyshev points.
+%
 %     eps          -  Relative tolerance used in construction and subsequent
 %      [2^-52]        operations. See CHEBTECH.HAPPINESSCHECK for more details.
 %
 %     extrapolate
-%       ['on']     -  Function values at endpoints may be extrapolated from
+%        true      -  Function values at endpoints may be extrapolated from
 %                     interior values rather than sampled.
-%       'off'      -  Do not extrapolate values at endpoints.
+%       [false]    -  Do not extrapolate values at endpoints.
 %
 %     hscale       -  Horizontal scale. This preference can be used to ensure
 %        [1]          horizontal scale invariance when using the CHEBTECH
@@ -45,10 +50,10 @@ function prefs = pref(varargin)
 %       [NaN]         adaptive construction.
 %
 %     sampletest
-%       ['on']     -  Tests the function at one more arbitrary point to
+%       [true]     -  Tests the function at one more arbitrary point to
 %                     minimize the risk of missing signals between grid
 %                     points.
-%        'off'     -  Do not test.
+%        false     -  Do not test.
 %
 %   refinementFunction - Define function for refining sample values.
 %     ['nested']       - Use the default process (nested evaluation).

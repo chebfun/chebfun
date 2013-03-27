@@ -55,7 +55,7 @@ classdef chebtech2 < chebtech
 % representation is deemed 'happy' (see HAPPINESSCHECK.m). The resulting object
 % can be used to evaluate and operate on the input function.
 %
-% More information can be found in the FUNCH class definition.
+% More information can be found in the CHEBTECH class definition.
 %
 % Class diagram: [<<CHEBTECH>>] <-- [CHEBTECH2]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
