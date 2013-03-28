@@ -71,9 +71,9 @@ elseif ( n == 1 )
     t = 1; 
     return
 elseif ( n == 2 )
-    x = [-1 1]/sqrt(3); 
+    x = [-1 ; 1]/sqrt(3); 
     w = [1 1]; 
-    v = [1 -1]; 
+    v = [1 ; -1]; 
     t = acos(x); 
     return
 end
@@ -600,7 +600,7 @@ function [vals, ders] = feval_asy1(n, t , mint, flag) %#ok<INUSD>
 
 end
 
-function [x, w, v, t] = asy2(n, npts)
+function [x, w, v, t, ders] = asy2(n, npts)
     % Boundary method.
 
     if npts > ceil((n+1)/2)
