@@ -1,5 +1,4 @@
 function out = roots(f, varargin)
-% [TODO]: Why does this code call chebtech2 several times (rather than chebtech) ?
 %ROOTS   Roots of a CHEBTECH in the interval [-1,1].
 %   ROOTS(F) returns the real roots of the CHEBTECH F in the interval [-1,1].
 %
@@ -17,10 +16,6 @@ function out = roots(f, varargin)
 %   PRUNE:
 %       [0]
 %        1  - Prune 'spurious' complex roots if ALL == 1 and RECURSE == 0.
-%
-%   HSCALE:
-%       [1] - Horizontal scale for adjusting relative tolerances.
-%     double
 %
 %   If F is a vector-valued CHEBTECH then there is no reason to expect each
 %   column to have the same number of roots. In order to return a useful output,
@@ -92,7 +87,7 @@ if ( size(f.values, 2) > 1 )
 end
 
 % Default preferences:
-rootspref = struct('all', 0, 'recurse', 1, 'prune', 0, 'hscale', 1);
+rootspref = struct('all', 0, 'recurse', 1, 'prune', 0);
 splitPoint = -0.004849834917525;   % This is an arbitrary number.
 
 % Filter out the arguments:
@@ -122,10 +117,8 @@ end
 % Get scaled coefficients for the recursive call:
 c = flipud(f.coeffs)/f.vscale;
 
-hscale = rootspref.hscale;
-
 % Call the recursive rootsunit function:
-r = rootsunit_coeffs(c, 100*eps*max(hscale, 1));
+r = rootsunit_coeffs(c, 100*eps*max(f.hscale, 1));
 
 % Prune the roots, if required:
 if ( rootspref.prune && ~rootspref.recurse )
