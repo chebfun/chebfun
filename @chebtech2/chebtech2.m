@@ -107,7 +107,7 @@ classdef chebtech2 < chebtech
                         'Function returned NaN when evaluated.')
                 end
                 % We make sure not to return NaNs at +1 and -1.
-                valuesTemp = chebtech2.extrapolate(obj.values);
+                valuesTemp = extrapolate(obj);
                 obj.values([1,end],:) = valuesTemp([1,end],:);
             elseif ( any(isnan(obj.values(:))) )
                 % Here we throw an error if NaNs were encountered anywhere.
