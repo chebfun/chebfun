@@ -16,10 +16,10 @@ function f = cumsum(f, m, pref)
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% If the fun G of length n is represented as
+% If the CHEBTECH G of length n is represented as
 %       \sum_{r=0}^{n-1} c_r T_r(x)
-% its integral is represented with a fun of length n+1 given by
-%       \sum_{r=0}^{n} C_r T_r (x)
+% its integral is represented with a CHEBTECH of length n+1 given by
+%       \sum_{r=0}^{n} C_r T_r(x)
 % where C_0 is determined from the constant of integration as
 %       C_0 = \sum_{r=1}^{n} (-1)^(r+1) C_r;
 % C_1 = c_0 - c_2/2, and for r > 0,
@@ -36,7 +36,7 @@ end
 % Parse inputs:
 if ( nargin == 1 )
     m = 1;
-    pref = chebtech.pref;
+    pref = chebtech.pref();
 elseif ( nargin < 3 )
     if ( isstruct(m) )
         pref = m;
@@ -75,9 +75,6 @@ f.coeffs = C;
 f.vscale = max(f.vscale, max(abs(f.values), [], 1));
 
 % Simplify (as suggested in Chebfun ticket #128)
-if ( nargin  == 1 )
-    pref = chebtech.pref();
-end
 f = simplify(f, pref);
 
 % Ensure f(-1) = 0:

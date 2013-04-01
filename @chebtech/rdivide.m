@@ -1,6 +1,6 @@
 function f = rdivide(f, c, pref)
 %./   Right array divide for a CHEBTECH.
-%   F ./ C Divides the CHEBTECH F by an array C. If F is a vectorised CHEBTECH
+%   F ./ C divides the CHEBTECH F by an array C. If F is a vectorised CHEBTECH
 %   with M columns, then C must be either a scalar or a 1xM array. 
 %
 %   Alternatively if C is a CHEBTECH with the same number of columns as F, or if
@@ -53,9 +53,6 @@ else
     if ( ~isempty(roots(c)) )
         error('CHEBFUN:CHEBTECH:rdivide:DivideByZeros', ...
         'Cannot divide by a CHEBTECH with roots in [-1, 1].');
-    else
-%         warning('CHEBFUN:CHEBTECH:RDIVIDE:DivideByFun2', ...
-%         'Division by a CHEBTECH');
     end
     
     % Call COMPOSE.

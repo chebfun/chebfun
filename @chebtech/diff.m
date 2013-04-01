@@ -16,7 +16,7 @@ function f = diff(f, k, dim)
 % If the CHEBTECH G of length n is represented as
 %       \sum_{r=0}^{n-1} C_r T_r(x)
 % its derivative is represented with a CHEBTECH of length n-1 given by
-%       \sum_{r=0}^{n-2} c_r T_r (x)
+%       \sum_{r=0}^{n-2} c_r T_r(x)
 % where c_0 is determined by
 %       c_0 = c_2/2 + C_1;
 % and for r > 0,
@@ -81,7 +81,7 @@ while ( k > 0 )
     end
     
     % Compute new coefficients using recurrence:
-    c = newcoeffs_der(c);
+    c = computeDerCoeffs(c);
     
     c(abs(c)<f.epslevel) = 0;
     
@@ -108,9 +108,6 @@ end
 f.coeffs = c;
 f.values = v;
 
-% Compute new values:
-% f.values = f.chebpolyval(c);
-
 % [TODO] If these should be retained, please add a comment explaining. 
 % % Update the vertical scale:
 % % f.vscale = max(f.vscale, max(abs(f.values), [], 1));
@@ -118,12 +115,11 @@ f.values = v;
 
 end
       
-%%
-% Recurrence relation for coefficients of derivative.
-function cout = newcoeffs_der(c)
-    % C is the vector of coefficients of a Chebyshev polynomial.
-    % COUT are the coefficients of its derivative.
-% [TODO] These comments should be updated to explain the vectorised case.
+function cout = computeDerCoeffs(c)
+%COMPUTEDERCOEFFS   Recurrence relation for coefficients of derivative.
+%   C is the matrix of Chebyshev coefficients of a (possibly vector-valued)
+%   CHEBTECH object.  COUT is the matrix of coefficients for a CHEBTECH object
+%   whose columns are the derivatives of those of the original.
     
     [n, m] = size(c);
     cout = zeros(n+1, m);                     % Initialize vector {c_r}

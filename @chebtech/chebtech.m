@@ -293,7 +293,7 @@ classdef chebtech %< smoothfun % (Abstract)
         % Test if a CHEBTECH is unbounded.
         out = isinf(f)
 
-        % Test if a CHEBTECH is has any NaN values.
+        % Test if a CHEBTECH has any NaN values.
         out = isnan(f)
 
         % True for real CHEBTECH.

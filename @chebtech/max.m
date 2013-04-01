@@ -1,6 +1,8 @@
 function [maxVal, maxPos] = max(f)
 %MAX   Global maximum of a CHEBTECH on [-1,1].
-%   MAXVAL = MAX(F) returns the global maximum of the CHEBTECH F on [-1,1].
+%   MAXVAL = MAX(F) returns the global maximum of the CHEBTECH F on [-1,1].  If
+%   F is a vector-valued CHEBTECH, MAXVAL is a row vector whose Kth entry is the
+%   global maximum of the Kth column of F.
 %
 %   [MAXVAL, MAXPOS] = MAX(F) returns also a value such that MAXVAL = F(MAXPOS).
 %

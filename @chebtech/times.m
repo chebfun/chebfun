@@ -3,6 +3,9 @@ function f = times(f, g, varargin)
 %   F.*G multiplies CHEBTECH objects F and G or a CHEBTECH by a scalar
 %   if either F or G is a scalar.
 %
+%   If F is a vector-valued CHEBTECH, then F.*C is supported if C is a row
+%   vector of doubles with the same number of columns as F.
+%
 % See also MTIMES, RDIVIDE.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.

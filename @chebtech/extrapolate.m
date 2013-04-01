@@ -41,7 +41,7 @@ if ( any(mask) )
     
     % Compute the modified barycentric weights:
     w = f.barywts(n); % Standard weights.
-    w = w(~mask);     % Barycentric weights corresponding to good points.
+    w = w(~mask);     % Barycentric weights corresponding to the good points.
     for k = 1:length(xnan)
         % Compute the modified barycentric weights for the bad points:
         w = w.*( xgood - xnan(k) );

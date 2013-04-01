@@ -2,8 +2,8 @@ function f = plus(f, g)
 %+   Addition of two CHEBTECH objects.
 %   F + G adds F and G, where F and G may be CHEBTECH objects or scalars.
 %
-%   If F is a vector-valued CHEBTECH, then F + C is supported if C is a vector
-%   of doubles with the same number of columns as F.
+%   If F is a vector-valued CHEBTECH, then F + C is supported if C is a row
+%   vector of doubles with the same number of columns as F.
 %
 % See also MINUS, UPLUS.
 
@@ -13,8 +13,9 @@ function f = plus(f, g)
 if ( isempty(f) || isempty(g) ) % CHEBTECH + [] = []
     f = [];
 elseif ( isa(g, 'double') ) % CHEBTECH + double
-    % Update values:
-    f.values = bsxfun(@plus, f.values, g); % (For when f and g are vectors).
+    % Update values (use bsxfun() to handle the case in which g is a vector
+    % and f is a vector-valued CHEBTECH):
+    f.values = bsxfun(@plus, f.values, g);
     % Update coeffs:
     f.coeffs(end,:) = f.coeffs(end,:) + g;
     
@@ -23,19 +24,19 @@ elseif ( isa(g, 'double') ) % CHEBTECH + double
     f.epslevel = (f.epslevel*f.vscale + abs(g)*eps)./vscale;
     f.epslevel = max(f.epslevel); % [TODO]: Vector epslevel;
     f.vscale = vscale;
-elseif ( isa(f,'double') ) % double + CHEBTECH
+elseif ( isa(f, 'double') ) % double + CHEBTECH
     % Switch argument order and call CHEBTECH/PLUS again:
     f = plus(g, f);
 else % CHEBTECH + CHEBTECH
     % Make both CHEBTECH objects have the same length:
-    nf1 = size(f.values, 1);
-    nf2 = size(g.values, 1);
-    if ( nf1 > nf2 )
-        % Increase the length of f2 (via PROLONG):
-        g = prolong(g, nf1);
-    elseif ( nf1 < nf2 )
-        % Increase the length of f1 (via PROLONG):
-        f = prolong(f, nf2);
+    nf = size(f.values, 1);
+    ng = size(g.values, 1);
+    if ( nf > ng )
+        % Increase the length of g (via PROLONG):
+        g = prolong(g, nf);
+    elseif ( nf < ng )
+        % Increase the length of f (via PROLONG):
+        f = prolong(f, ng);
     end
     
     % Update values and coefficients:

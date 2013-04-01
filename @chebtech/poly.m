@@ -1,14 +1,14 @@
 function out = poly(f)
 %POLY   Polynomial coefficients of a CHEBTECH.
 %   C = POLY(F) returns the polynomial coefficients of F so that 
-%           F(x) = C(N+1)*x^N + C(N)*x^(N-1) + ... + C(2)*x + C(1)
+%           F(x) = C(1)*x^N + C(2)*x^(N-1) + ... + C(N)*x + C(N+1)
 %   
 %   Note that unlike the MATLAB POLY command, CHEBTECH/POLY can operate on
 %   vector-valued CHEBTECH objects, and hence produce a matrix output. In such
 %   instances, the rows of C correspond to the columns of F = [F1, F2, ...].
 %   That is, 
-%           F1(x) = C(1,N+1)*x^N + C(1,N)*x^(N-1) + ... + C(1,2)*x + C(1,1)
-%           F2(x) = C(2,N+1)*x^N + C(2,N)*x^(N-1) + ... + C(2,2)*x + C(2,1).
+%           F1(x) = C(1,1)*x^N + C(1,2)*x^(N-1) + ... + C(1,N)*x + C(1,N+1)
+%           F2(x) = C(2,1)*x^N + C(2,2)*x^(N-1) + ... + C(2,N)*x + C(2,N+1).
 %   This strange behaviour is a result of MATLAB's decision to return a row
 %   vector from the POLY command, even for column vector input.
 

@@ -74,7 +74,8 @@ for ( n = 1:2 )
         h = f / g;
         pass(n, 8) = false;
     catch ME
-        pass(n, 8) = strcmp(ME.identifier, 'CHEBFUN:CHEBTECH:mrdivide:funfun');
+        pass(n, 8) = strcmp(ME.identifier, ...
+            'CHEBFUN:CHEBTECH:mrdivide:chebtechDivChebtech');
     end
     
     % Can't call mldivide on a chebtech and a non-chebtech or non-double 
@@ -84,7 +85,7 @@ for ( n = 1:2 )
         g = f / true;
         pass(n, 9) = false;
     catch ME
-        pass(n, 9) = strcmp(ME.identifier, 'CHEBFUN:CHEBTECH:mrdivide:derp');
+        pass(n, 9) = strcmp(ME.identifier, 'CHEBFUN:CHEBTECH:mrdivide:badArg');
     end
 end
 

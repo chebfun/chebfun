@@ -14,7 +14,7 @@ if ( isempty(f) || isempty(g) )
 end
 
 if ( ~isa(f, 'chebtech') || ~isa(g, 'chebtech') )
-    error('CHEBFUN:CHEBTECH:InnerProduct:input', ...
+    error('CHEBFUN:CHEBTECH:innerProduct:input', ...
         'innerProduct() only operates on two CHEBTECH objects.');
 end
 

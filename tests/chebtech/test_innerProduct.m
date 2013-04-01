@@ -89,7 +89,7 @@ for ( n = 1:2 )
         pass(n, 11) = false;
     catch ME
         pass(n, 11) = strcmp(ME.identifier, ...
-            'CHEBFUN:CHEBTECH:InnerProduct:input');
+            'CHEBFUN:CHEBTECH:innerProduct:input');
     end
 
 end

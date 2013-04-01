@@ -1,10 +1,10 @@
 function X = mrdivide(B, A)
 %/   Right matrix divide for a CHEBTECH.
 %
-%   B/A divides the CHEBTECH B by a scalar A. More generally, it gives the least-
-%   squares solution (with respect to the continuous L^2 norm) to X*A = B when
-%   either A or B is a CHEBTECH.  Note that in the latter case, formally it is
-%   X.' that is returned, as CHEBTECH objects are always columns.
+%   B/A divides the CHEBTECH B by a scalar A. More generally, it gives the
+%   least-squares solution (with respect to the continuous L^2 norm) to X*A = B
+%   when either A or B is a CHEBTECH.  Note that in the latter case, formally
+%   it is X.' that is returned, as CHEBTECH objects are always columns.
 %
 % See also QR, RDIVIDE, MLDIVIDE.
 
@@ -40,10 +40,10 @@ elseif ( isa(B, 'double') )  % double / CHEBTECH
     % Return the transpose for the output.
     X = Q*(B/R).';
 elseif ( isa(A, 'chebtech') && isa(B, 'chebtech') )
-    error('CHEBFUN:CHEBTECH:mrdivide:funfun', ...
+    error('CHEBFUN:CHEBTECH:mrdivide:chebtechDivChebtech', ...
         'Use ./ to divide by a CHEBTECH.');
 else
-    error('CHEBFUN:CHEBTECH:mrdivide:derp', '%s/%s is not well-defined.', ...
+    error('CHEBFUN:CHEBTECH:mrdivide:badArg', '%s/%s is not well-defined.', ...
         class(B), class(A));
 
 end
