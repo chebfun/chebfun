@@ -97,7 +97,7 @@ end
 
 end
 
-function r = roots_scalar(f, varargin)
+function out = roots_scalar(f, varargin)
 
 % Default preferences:
 rootspref = struct('all', 0, 'recurse', 1, 'prune', 0);
