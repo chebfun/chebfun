@@ -65,32 +65,39 @@ if ( isempty(f) )
     return
 end
 
-% Support for vectorised CHEBTECH objects.
-if ( size(f.values, 2) > 1 )
-    % Copy f into g:
-    g = f;
+if ( size(f.values, 2) == 1 )   % F is a scalar-value CHEBTECH.
+    
+    % Simply call roots_scalar():
+    out = roots_scalar(f, varargin{:});
+    
+else                            % Support for vectorised CHEBTECH objects.
 
     % Initialise a cell array to hold roots of each column:
     r = cell(1, size(f.values, 2));
+    
+    % Copy columns of f into an array g:
+    g = mat2cell(f);
 
-    % Loop over the columns:
+    % Loop over the columns of f / elements of g:
     for j = 1:size(f.values, 2)
-        g.values = f.values(:,j);
-        g.coeffs = f.coeffs(:,j);
-        g.vscale = f.vscale(j);
-        r{j} = roots(g, varargin{:}); 
+        r{j} = roots_scalar(g(j), varargin{:}); 
     end
 
     % Find the max length of r:
     mlr = max(cellfun(@length, r)); 
 
     % Pad the columns in r with NaNs:
-    r = cellfun(@(x) [x ; NaN(mlr-length(x), 1)], r, 'UniformOutput', false);
+    r = cellfun(@(x) [x ; NaN(mlr - length(x), 1)], r, 'UniformOutput', false);
 
     % Convert to an array for output:
     out = cell2mat(r);
-    return
+
 end
+    
+
+end
+
+function r = roots_scalar(f, varargin)
 
 % Default preferences:
 rootspref = struct('all', 0, 'recurse', 1, 'prune', 0);
@@ -295,14 +302,14 @@ end
 
     end
 
-    function y = chebptsAB(n, ab)
-    % Y = CHEBPTSAB(N, [A, B]) is the N-point Chebyshev grid mapped to [A,B].
+end
 
-        a = ab(1);
-        b = ab(2);
-        x = chebtech2.chebpts(n);          % [-1,1] grid
-        y = b*(x + 1)/2 + a*(1 - x)/2;     % new grid
+function y = chebptsAB(n, ab)
+% Y = CHEBPTSAB(N, [A, B]) is the N-point Chebyshev grid mapped to [A,B].
 
-    end
+    a = ab(1);
+    b = ab(2);
+    x = chebtech2.chebpts(n);          % [-1,1] grid
+    y = b*(x + 1)/2 + a*(1 - x)/2;     % new grid
 
 end
