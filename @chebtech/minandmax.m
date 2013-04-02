@@ -11,7 +11,9 @@ function [vals, pos] = minandmax(f)
 %
 %   If F is complex-valued the absolute values are taken to determine extrema
 %   but the resulting values correspond to those of the original function. That
-%   is, VALS = FEVAL(F, POS) where [~, POS] = MINANDMAX(ABS(F)).
+%   is, VALS = FEVAL(F, POS) where [~, POS] = MINANDMAX(ABS(F)). (In fact,
+%   MINANDMAX actually computes [~, POS] = MINANDMAX(ABS(F).^2), to avoid
+%   introducing singularlities to the function).
 %
 % See also MIN, MAX.
 
@@ -19,13 +21,14 @@ function [vals, pos] = minandmax(f)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( ~isreal(f) )
+    % We compute sqrt(max(|f|^2))to avoid intruducing a singularity.
     realf = real(f);
     imagf = imag(f);
     h = realf.*realf + imagf.*imagf;
     h = simplify(h);
-    [~, pos] = minandmax(h);
+    [ignored, pos] = minandmax(h);
     vals = feval(f, pos);
-    vals = vals(:,1:size(pos,2)+1:end);
+    vals = vals(:, 1:(size(pos, 2)+1):end);
     return
 end
 
@@ -48,28 +51,17 @@ else
     % Initialise output vectors:
     pos = zeros(2, sizef2);
     vals = zeros(2, sizef2);
-    
-    % Store coefficients and values:
-    values = f.values;
-    coeffs = f.coeffs;
-    vscale = f.vscale;
-    values2 = fp.values;
-    coeffs2 = fp.coeffs;
-    vscale2 = fp.vscale;
-    
+
+    % Convert f and f' into arrays of scalar-valued CHEBTECH objects:
+    g = mat2cell(f);
+    gp = mat2cell(fp);
+
     % Loop over columns:
     for k = 1:sizef2    
-        % Copy data to a single CHEBTECH column:
-        f.values = values(:,k);
-        f.coeffs = coeffs(:,k);
-        f.vscale = vscale(k);
-        fp.values = values2(:,k);
-        fp.coeffs = coeffs2(:,k);
-        fp.vscale = vscale2(k);
-
         % Find max of this column:
-        [vals(:,k), pos(:,k)] = minandmaxColumn(f, fp, xpts);
+        [vals(:,k), pos(:,k)] = minandmaxColumn(g(k), gp(k), xpts);
     end
+
 end
 
 end
