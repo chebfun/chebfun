@@ -69,7 +69,7 @@ for ( n = 1:2 )
     f = testclass.make(@(x) sin(100*pi*x));
     r1 = roots(f, 'complex', 1, 'recurse', 0);
     r2 = roots(f, 'complex', 1);
-    pass(n, 8) = numel(r1) == 381 & numel(r2) >= 381;
+    pass(n, 8) = numel(r1) == 383 & numel(r2) >= 383;
 
     %% Test a multi-valued function:
     f = testclass.make(@(x) [sin(pi*x), cos(pi*x)], [], [], pref);
