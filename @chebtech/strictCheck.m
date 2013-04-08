@@ -11,12 +11,16 @@ function [ishappy, epslevel, cutoff] = strictCheck(f, pref)
 %
 %   STRICTCHECK tests to see if the absolute values of the entries in the tail
 %   of coeffs, i.e., f.coeffs(1:TESTLENGTH,:), where
-%       TESTLENGTH = n,             for n = 1:3
-%       TESTLENGTH = 3,             for n = 4:25
-%       TESTLENGTH = round((n-1)/8) for n > 25
+%       TESTLENGTH = n,             for n = 1:4
+%       TESTLENGTH = 5,             for n = 5:44
+%       TESTLENGTH = round((n-1)/8) for n > 44
 %   all lie below the value in PREF.chebtech.eps. This value is returned in
 %   EPSLEVEL and CUTOFF is the location of the first entry above EPSLEVEL in
 %   absolute value.
+%
+%   STRICKCHECK differs from CLASSICCHECK() in that the tolerance on EPSLEVEL is
+%   not relaxed by the length of the representation of F or by any finite
+%   difference approximation of the gradient of F.
 %
 % See also STRICTCHECK, LOOSECHECK.
 

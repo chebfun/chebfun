@@ -85,7 +85,7 @@ classdef chebtech2 < chebtech
                 pref = chebtech.pref(pref);
             end
 
-            % Force nonadaptive construction if PREF.CHEBTECH2.N is numeric:
+            % Force nonadaptive construction if PREF.CHEBTECH.N is numeric:
             if ( ~isempty(pref.chebtech.n) && ~isnan(pref.chebtech.n) )
                 % Evaluate op on the Chebyshev grid of given size:
                 op = feval(op, chebtech2.chebpts(pref.chebtech.n));
@@ -125,7 +125,7 @@ classdef chebtech2 < chebtech
         % Aliasing:
         coeffs = alias(coeffs, m)
         
-        % Evaluate a Chebyshev interpolant using 2nd form barycentric formula:
+        % Evaluate a Chebyshev interpolant using the barycentric formula:
         out = bary(x, values)
         
         % Compute Chebyshev barycentric weights:
@@ -144,11 +144,11 @@ classdef chebtech2 < chebtech
         % Make a CHEBTECH2 (constructor shortcut):
         f = make(varargin);
         
-        % Refinement function for CHEBTECH2 construction (evaluates OP on grid):
-        [values, points, giveUp] = refine(op, values, pref)
-        
         % Compute Chebyshev quadrature weights:
         w = quadwts(n)
+        
+        % Refinement function for CHEBTECH2 construction (evaluates OP on grid):
+        [values, points, giveUp] = refine(op, values, pref)
         
     end
     

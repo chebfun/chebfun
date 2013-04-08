@@ -23,9 +23,9 @@ function [ishappy, epslevel, cutoff] = classicCheck(f, pref)
 %   'happy' if the coefficients COEFFS(1:TESTLENGTH) (recall that COEFFS are
 %   stored in descending order) are all below EPSLEVEL. The default choice of
 %   the test length is:
-%       TESTLENGTH = n,             for n = 1:3
-%       TESTLENGTH = 3,             for n = 4:25
-%       TESTLENGTH = round((n-1)/8) for n > 25
+%       TESTLENGTH = n,             for n = 1:4
+%       TESTLENGTH = 5,             for n = 5:44
+%       TESTLENGTH = round((n-1)/8) for n > 44
 %
 %   EPSLEVEL is essentially the maximum of:
 %       * eps*TESTLENGTH^(2/3)
@@ -56,7 +56,6 @@ if ( nargin == 1 )
     epslevel = pref.chebtech.eps;
 elseif ( isnumeric(f) )
     epslevel = pref;
-%     pref = f.pref();
 else
     epslevel = pref.chebtech.eps;
 end
@@ -90,7 +89,7 @@ end
 % Absolute value of coefficients, relative to vscale: (max across columns)
 ac = max(bsxfun(@rdivide, abs(f.coeffs), f.vscale), [], 2);
 
-% Take the minimum of the vscales:
+% Take the maximum of the vscales: [TODO]: Should we do this?
 vscale = max(f.vscale);
 
 % Happiness requirements:
@@ -122,6 +121,7 @@ if ( max(ac(1:testLength)) < epslevel )    % We have converged! Now chop tail:
         end
     end
 
+    % [TODO]: What does this mean?
     % Tbpb = Bang/buck of chopping at each pos:
     Tbpb = log(1e3*epslevel./ac) ./ (size(f.coeffs, 1) - (1:Tloc)');
     [ignored, Tchop] = max(Tbpb(3:Tloc));  % Tchop = position at which to chop.

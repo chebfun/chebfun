@@ -2,11 +2,11 @@ function [values, giveUp] = refine(op, values, pref)
 %REFINE   Refinement method for CHEBTECH2 construction.
 %   VALUES = REFINE(OP, VALUES, PREF) determines the new VALUES of the operator
 %   OP to be checked for happiness in the CHEBTECH2 construction process. The
-%   exact procedure used is determined by PREF.CHEBTECH2.REFINEMENTFUNCTION.
+%   exact procedure used is determined by PREF.CHEBTECH.REFINEMENTFUNCTION.
 %
 %   [VALUES, GIVEUP] = REFINE(OP, VALUES, PREF) returns also a binary GIVEUP
 %   flag where TRUE means the refinement procedure has failed (typically when
-%   the maximum number of samples, PREF.CHEBTECH2.MAXSAMPLES, has been reached).
+%   the maximum number of samples, PREF.CHEBTECH.MAXSAMPLES, has been reached).
 %
 %   The two built-in refinement strategies are 'NESTED' and 'RESAMPLING'. The
 %   former makes use of the nested property of the 2nd-kind grid by taking N
@@ -16,20 +16,20 @@ function [values, giveUp] = refine(op, values, pref)
 %   option should be used for functions which are not sampleable, for example,
 %   anything that depends on the length of the input to OP.
 %
-%   Alternative refinement strategies can be used by passing a function handle in
-%   the PREF.CHEBTECH2.REFINEMENTSTRATEGY field. The function handle should point
-%   to a function with the template [VALUES, GIVEUP] = @(OP, VALUES, PREF) ...
-%   which accepts a function handle OP, previously sampled values VALUES of OP
-%   at a 2nd-kind Chebyshev grid, and PREF, a preference structure containing
-%   CHEBTECH2 preferences. It should return either a new set of VALUES (typically
-%   on a finer grid) or set the GIVEUP flag to TRUE.
+%   Alternative refinement strategies can be used by passing a function handle
+%   in the PREF.CHEBTECH.REFINEMENTSTRATEGY field. The function handle should
+%   point to a function with the template [VALUES, GIVEUP] = @(OP, VALUES, PREF)
+%   ... which accepts a function handle OP, previously sampled values VALUES of
+%   OP at a 2nd-kind Chebyshev grid, and PREF, a preference structure containing
+%   CHEBTECH preferences. It should return either a new set of VALUES
+%   (typically on a finer grid) or set the GIVEUP flag to TRUE.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Obtain some preferences:
 if ( nargin < 3 )
-    pref = chebtech2.pref();
+    pref = chebtech.pref();
 end
 
 % No values were given:
@@ -42,7 +42,7 @@ refFunc = pref.chebtech.refinementFunction;
 
 % Decide which refinement to use:
 if ( strcmpi(refFunc, 'nested') )
-    % Single/nested sampling:
+    % Nested ('single') sampling:
     [values, giveUp] = refineNested(op, values, pref);
 elseif ( strcmpi(refFunc, 'resampling') )
     % Double sampling:

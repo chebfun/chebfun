@@ -1,13 +1,13 @@
-function isz = iszero(f)
+function out = iszero(f)
 %ISZERO    True for zero CHEBTECH objects.
 %   ISZERO(F) returns logical TRUE is F.values has only zero entries and logical
 %   FALSE otherwise.
 
-isz = ~any(f.values, 1);
+out = ~any(f.values, 1);
 
-if ( any(isz) )
+if ( any(out) )
     % We need this as any(NaN) = 0, which will pass the test above.
-    isz = isz & ~any(isnan(f.values), 1);
+    out = out & ~any(isnan(f.values), 1);
     return
 end
 

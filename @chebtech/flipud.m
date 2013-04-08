@@ -1,5 +1,5 @@
 function f = flipud(f)
-%FLIPUD   Flip/reverse a CHEBTECH.
+%FLIPUD   Flip/reverse a CHEBTECH object.
 %   G = FLIPUD(F) returns G such that G(x) = F(-x) for all x in [-1,1].
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 

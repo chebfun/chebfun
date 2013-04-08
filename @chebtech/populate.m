@@ -25,7 +25,7 @@ function f = populate(f, op, vscale, hscale, pref)
 %   F.POPULATE(VALUES, ...) (or F.POPULATE({VALUES, COEFFS}, ...)) populates F
 %   non-adaptively with the VALUES (and COEFFS) passed. These values are still
 %   tested for happiness in the same way as described above, but the length of
-%   the representation is not reduced.
+%   the representation is not altered.
 %
 % See also CHEBTECH, PREF, HAPPINESSCHECK.
 
@@ -35,9 +35,9 @@ function f = populate(f, op, vscale, hscale, pref)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % The (adaptive) CHEBTECH construction process is as follows:
 %
-%    --->[REFINE]      [values, flag] = pref.refinementStrategy(op, values, ...
-%   |        |         pref). Allows refinements for: single sampling, 
-%   |        |         resampling, and composition (see refine.m & compose.m).
+%    --->[REFINE]      [values, flag] = pref.refinementFunction(op, values, ...
+%   |        |         pref). Allows refinements for: nested sampling, 
+%   |        |         resampling, and composition (see REFINE.m & COMPOSE.m).
 %   |        v
 %   |  [update VSCALE] VSCALE should only be computed from _sampled_ values, 
 %   |        |         not extrapolated ones.
@@ -49,8 +49,8 @@ function f = populate(f, op, vscale, hscale, pref)
 %   |        |
 %   |        v
 %    -<--[ISHAPPY?]    [ISHAPPY, EPSLEVEL, CUTOFF] = PREF.HAPPINESSCHECK(F, OP,
-%     no     |         PREF). Default check calls CLASSICCHECK() (previously 
-%            | yes     'simplify.m') and SAMPLETEST().
+%     no     |         PREF). Default calls CLASSICCHECK() and SAMPLETEST().
+%            | yes     
 %            v
 %      [alias COEFFS]  COEFFS = ALIAS(COEFFS, CUTOFF)
 %            |
