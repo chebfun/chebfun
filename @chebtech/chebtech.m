@@ -168,7 +168,7 @@ classdef chebtech %< smoothfun % (Abstract)
     end
 
     %% CLASS CONSTRUCTOR:
-    methods (Static)
+    methods ( Static = true )
         function obj = constructor(op, vscale, hscale, pref)
             % Constructor for the CHEBTECH class.
 
@@ -206,7 +206,7 @@ classdef chebtech %< smoothfun % (Abstract)
 
 
     %% ABSTRACT (NON-STATIC) METHODS REQUIRED BY THIS CLASS.
-    methods (Abstract)
+    methods ( Abstract = true )
 
         % Compose method. (Not implemented here as refinement is defined also).
         h = compose(f, op, g, pref)
@@ -220,7 +220,7 @@ classdef chebtech %< smoothfun % (Abstract)
     end
 
     %% ABSTRACT STATIC METHODS REQUIRED BY THIS CLASS.
-    methods (Abstract, Static)
+    methods ( Abstract = true, Static = true )
         
         % Alias Chebyshev coefficients.
         coeffs = alias(coeffs, m)
