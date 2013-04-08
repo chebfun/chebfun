@@ -43,19 +43,24 @@ else % CHEBTECH + CHEBTECH
     f.values = f.values + g.values;
     f.coeffs = f.coeffs + g.coeffs;
     
-    % Update vscale, epslevel, and ishappy:
-    vscale = max(abs(f.values), [], 1);
-    f.epslevel = (f.epslevel*f.vscale + g.epslevel*g.vscale)./vscale;
-    f.epslevel = max(f.epslevel);  % [TODO]: Vector epslevel;
-    f.vscale = vscale;
-    f.ishappy = f.ishappy && g.ishappy;
-    
     % Look for a zero output:
     if ( ~any(f.values(:)) || ~any(f.coeffs(:)) )
         % Create a zero CHEBTECH:
-        f = f.make(zeros(1, size(f.values, 2)), f.vscale, f.epslevel);
+        epslevel = max(f.epslevel, g.epslevel);
+        ishappy = f.ishappy && g.ishappy;
+        z = zeros(1, size(f.values, 2));
+        f = f.make(z, z, f.hscale);
+        f.epslevel = epslevel;
+        f.ishappy = ishappy;
+    else
+        % Update vscale, epslevel, and ishappy:
+        vscale = max(abs(f.values), [], 1);
+        f.epslevel = (f.epslevel*f.vscale + g.epslevel*g.vscale)./vscale;
+        f.epslevel = max(f.epslevel);  % [TODO]: Vector epslevel;
+        f.vscale = vscale;
+        f.ishappy = f.ishappy && g.ishappy;
     end
-  
+    
 end
 
 end
