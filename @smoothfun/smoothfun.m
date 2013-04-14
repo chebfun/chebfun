@@ -87,9 +87,9 @@ classdef smoothfun < onefun % (Abstract)
             end
             
             % Merge preferences:
-            pref = funcheb.pref(pref, pref.smoothfun);
-            % Call the FUNCHEB constructor
-            obj = funcheb.constructor(op, vscale, hscale, pref);
+            pref = chebtech.pref(pref, pref.smoothfun);
+            % Call the CHEBTECH constructor
+            obj = chebtech.constructor(op, vscale, hscale, pref);
             
         end
         
