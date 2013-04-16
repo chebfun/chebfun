@@ -20,25 +20,25 @@ for ( n = 1:3 )
 
     % Compose a scalar-valued CHEBTECH object with sin(x):
     f = testclass.make(@(x) x);
-    g = compose(f, @sin, pref);
+    g = compose(f, @sin, [], pref);
     h = testclass.make(@sin);
     pass(n, 1) = norm(h.values - g.values, inf) < tol;
 
     % Compose a multi-valued CHEBTECH object with sin(x):
     f = testclass.make(@(x) [x x]);
-    g = compose(f, @sin, pref);
+    g = compose(f, @sin, [], pref);
     h = testclass.make(@(x) [sin(x) sin(x)]);
     pass(n, 2) = norm(h.values - g.values, inf) < tol;
 
     % Compose a multi-valued CHEBTECH object with sin(x):
     f = testclass.make(@(x) [x x.^2]);
-    g = compose(f, @sin, pref);
+    g = compose(f, @sin, [], pref);
     x = g.points();
     pass(n, 3) = norm(sin([x, x.^2])- g.values, inf) < tol;
     
     % Compose a multivalued CHEBTECH object with sin(x):
     f = testclass.make(@(x) [x x x.^2]);
-    g = compose(f, @sin, pref);
+    g = compose(f, @sin, [], pref);
     x = g.points();
     pass(n, 4) = norm(sin([x x x.^2]) - g.values, inf) < tol;
     

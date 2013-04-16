@@ -30,17 +30,13 @@ function f = compose(f, op, g, pref)
 nfuns = 2;
 
 % Parse inputs:
-if ( (nargin > 2) && isstruct(g) )
-    pref = g;
-    g = [];
-    nfuns = 1;
-elseif ( nargin < 4 )
-    pref = chebtech.pref();
-end
-
 if ( (nargin < 3) || isempty(g) )
     nfuns = 1;
     g = [];
+end
+
+if ( (nargin < 4) || isempty(pref) )
+    pref = chebtech.pref();
 end
 
 % Choose a sampling strategy:
