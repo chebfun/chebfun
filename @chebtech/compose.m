@@ -10,25 +10,22 @@ function f = compose(f, op, g, pref)
 %   also CHEBTECH objects. If the range of F is not in [-1, 1] then an error is
 %   thrown.
 %
-%   COMPOSE(F, OP, PREF), COMPOSE(F, OP, G, PREF), and COMPOSE(F, G, PREF) use
-%   the options passed by the preferences structure PREF to build the returned
-%   CHEBTECH.  In particular, one can set PREF.CHEBTECH.REFINMENTFUNCTION to be
-%   a function which takes advantage of F and possibly OP or G being CHEBTECH
-%   objects.
+%   COMPOSE(F, OP, G, PREF) or COMPOSE(F, OP, [], PREF) uses the options passed
+%   by the preferences structure PREF to build the returned CHEBTECH.  In
+%   particular, one can set PREF.CHEBTECH.REFINMENTFUNCTION to be a function
+%   which takes advantage of F and possibly OP or G being CHEBTECH objects.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-nfuns = 2;
-
 % Parse inputs:
-if ( (nargin < 3) || isempty(g) )
-    nfuns = 1;
-    g = [];
-end
-
-if ( (nargin < 4) || isempty(pref) )
+if ( nargin < 4 )
     pref = f.pref();
+end
+if ( nargin < 3 )
+    nfuns = 1;
+else
+    nfuns = 2;
 end
 
 % Set some preferences:
