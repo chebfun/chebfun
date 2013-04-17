@@ -18,7 +18,7 @@ if ( isa(c, 'double') )
     % This can never work (as size(f, 1) == inf):
     if ( (size(c, 1) > 1) || ...
            ( (numel(c) > 1) && (size(f.values, 2) ~= size(c, 2)) ) )
-        error('CHEBUFN:CHEBTECH:rdivide:size', ...
+        error('CHEBFUN:CHEBTECH:rdivide:size', ...
             'Matrix dimensions must agree.');
     end
     
@@ -31,7 +31,7 @@ if ( isa(c, 'double') )
         f.coeffs = f.coeffs/c;      % Divide coeffs
         f.vscale = f.vscale/abs(c); % Divide vscale
     else
-        % Vectorised 
+        % Array-valued CHEBTECH
         n = size(f.values, 1);   
         f.values = f.values./repmat(c, n, 1);   % Divide values
         f.coeffs = f.coeffs./repmat(c, n, 1);   % Divide coeffs

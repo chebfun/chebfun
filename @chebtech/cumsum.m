@@ -5,7 +5,7 @@ function f = cumsum(f, m, pref)
 %
 %   CUMSUM(F, M) will compute the Mth definite integral with the constant of
 %   integration chosen so that each intermediary integral evaluates to 0 at -1.
-%   Thus CUMSUM(F, 2) is equivalent to CUMSUM(CUMSUM(F)).
+%   Thus, CUMSUM(F, 2) is equivalent to CUMSUM(CUMSUM(F)).
 %
 %   CUMSUM(F, PREF) or CUMSUM(F, M,  PREF) uses options from the preference
 %   structure PREF when building the output CHEBTECH.
@@ -22,8 +22,9 @@ function f = cumsum(f, m, pref)
 %       \sum_{r=0}^{n} C_r T_r(x)
 % where C_0 is determined from the constant of integration as
 %       C_0 = \sum_{r=1}^{n} (-1)^(r+1) C_r;
-% C_1 = c_0 - c_2/2, and for r > 0,
-%       C_r = (c_{r-1} - c_{r+1})/(2r),
+% and other coefficients are given by
+%       C_1 = c_0 - c_2/2, 
+%       C_r = (c_{r-1} - c_{r+1})/(2r) for r > 0,
 % with c_{n+1} = c_{n+2} = 0.
 % (See "Chebyshev Polynomials" by Mason and Handscomb, CRC 2002, pp. 32-33.)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

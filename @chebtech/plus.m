@@ -21,6 +21,8 @@ elseif ( isa(g, 'double') ) % CHEBTECH + double
     
     % Update scale:
     vscale = max(f.vscale, max(abs(f.values), [], 1));
+    % [TODO]: Add a discussion about the epslevel, or a reference to where it's
+    % discussed.
     f.epslevel = (f.epslevel*f.vscale + abs(g)*eps)./vscale;
     f.epslevel = max(f.epslevel); % [TODO]: Vector epslevel;
     f.vscale = vscale;
@@ -55,6 +57,8 @@ else % CHEBTECH + CHEBTECH
     else
         % Update vscale, epslevel, and ishappy:
         vscale = max(abs(f.values), [], 1);
+        % [TODO]: Add a discussion about the epslevel, or a reference to where it's
+        % discussed.
         f.epslevel = (f.epslevel*f.vscale + g.epslevel*g.vscale)./vscale;
         f.epslevel = max(f.epslevel);  % [TODO]: Vector epslevel;
         f.vscale = vscale;
