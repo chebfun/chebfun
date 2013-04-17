@@ -55,6 +55,7 @@ holdState = ishold;
 absc = abs(f.coeffs);
 
 % Add a tiny amount to zeros to make plots look nicer:
+%[TODO: ?]
 % absc(~absc) = eps*max(absc(:));
 absc(~absc) = f.epslevel*min(f.vscale);
 
@@ -69,6 +70,7 @@ if ( plotEpsLevel )
     h = [h ; h2];
     for k = 1:m
         c = get(h(k), 'color');
+        %[TODO: ?]
 %         set(h(m+k), 'linestyle', ':', 'linewidth', 2, 'marker', 'none', 'color', c);
         set(h(m+k), 'marker', 'none', 'color', c);
     end

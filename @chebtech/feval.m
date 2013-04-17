@@ -27,7 +27,7 @@ if ( isempty(f) )
     return 
 end
 
-% Reshape x to be a column vector for passing to BARY and CLENSHAW:
+% Reshape x to be a column vector for passing to BARY() and CLENSHAW():
 [n, m] = size(f);
 sizex = size(x);
 ndimsx = ndims(x);
