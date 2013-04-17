@@ -30,8 +30,10 @@ function f = compose(f, op, g, pref)
 if ( nargin < 4 )
     pref = f.pref();
 end
-if ( nargin < 3 )
+
+if ( (nargin < 3) || isempty(g) )
     nfuns = 1;
+    g = [];
 else
     nfuns = 2;
 end
