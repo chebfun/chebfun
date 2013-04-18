@@ -39,7 +39,8 @@ pass(6) = norm(v - (1+1i)*vTrue, inf) < tol;
 %%
 % Test for array input
 v = chebtech2.chebpolyval([c, c(end:-1:1)]);
-tmp = ones(size(vTrue)); tmp(end-1:-2:1) = -1;
+tmp = ones(size(vTrue));
+tmp(end-1:-2:1) = -1;
 pass(7) = norm(v(:,1) - vTrue, inf) < tol && ...
           norm(v(:,2) - tmp.*vTrue, inf) < tol;
       

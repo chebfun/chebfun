@@ -30,17 +30,19 @@ end
 % should correspond to rightmost Chebyshev point of the 1st kind in [-1 1]. 
 
 if ( isreal(coeffs) )
-    values = realcoeffs(coeffs);
+    values = chebpolyvalReal(coeffs);
 elseif ( isreal(1i*coeffs) )
-    values = 1i*realcoeffs(imag(coeffs));
+    values = 1i*chebpolyvalReal(imag(coeffs));
 else
-    values = realcoeffs(real(coeffs)) + 1i*realcoeffs(imag(coeffs));
+    values = chebpolyvalReal(real(coeffs)) + 1i*chebpolyvalReal(imag(coeffs));
 end
 
 end
 
-% Real case - Chebyshev points of the 1st kind:
-function v = realcoeffs(c)
+function v = chebpolyvalReal(c)
+%CHEBPOLYVALREAL   Convert Chebyshev coefficients to values at Chebyshev points
+%of the first kind when the coefficients are real.
+
 n = size(c, 1);
 m = size(c, 2);
 
@@ -49,6 +51,7 @@ w = exp(1i*(0:n-1)*pi/(2*n)).';
 w = repmat(w, 1, m);
 coeffs = w.*coeffs;
 vv = n*real(ifft(coeffs));
+
 if ( rem(n, 2) == 0 ) % Even case
     v(1:2:n-1,:) = vv(1:n/2,:);
     v(n:-2:2,:) = vv(n/2+1:n,:);
@@ -56,6 +59,7 @@ else                  % Odd case
     v(1:2:n,:) = vv(1:(n+1)/2,:);
     v(n-1:-2:2,:) = vv((n+1)/2+1:n,:);
 end
+
 v = flipud(v);
 
 end

@@ -28,20 +28,22 @@ end
 
 % Flip the input data up to down. The first row of the resulting data 
 % should correspond to rightmost Chebyshev point of 1st kind in [-1 1]. 
-
 values = values(end:-1:1,:);
 
 if ( isreal(values) )
-    coeffs = realvalues(values);
+    coeffs = chebpolyReal(values);
 elseif ( isreal(1i*values) )
-    coeffs = 1i*realvalues(imag(values));
+    coeffs = 1i*chebpolyReal(imag(values));
 else
-    coeffs = realvalues(real(values))+1i*realvalues(imag(values));
+    coeffs = chebpolyReal(real(values)) + 1i*chebpolyReal(imag(values));
 end
 
 end
 
-function c = realvalues(v) % Real case - Chebyshev points of the 1st kind
+function c = chebpolyReal(v)
+%CHEBPOLYREAL   Convert values at Chebyshev points to Chebyshev coefficients
+%when values are real.
+
 n = size(v,1);
 m = size(v,2);
 w = repmat((2/n)*exp(-1i*(0:n-1)*pi/(2*n)).',1,m);
@@ -54,9 +56,9 @@ w = repmat((2/n)*exp(-1i*(0:n-1)*pi/(2*n)).',1,m);
 % the data in order to achieve the effect of a DCT with
 % an FFT. Even and odd cases are treated differently.
 
-if rem(n,2) == 0 % Even n case
+if ( rem(n, 2) == 0 ) % Even n case
     vv = [ v(1:2:n-1,:); v(n:-2:2,:) ];
-else             % Odd n case
+else                  % Odd n case
     vv = [ v(1:2:n,:); v(n-1:-2:2,:) ];
 end
 c = real(w.*fft(vv));
