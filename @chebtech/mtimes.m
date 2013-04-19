@@ -34,7 +34,7 @@ elseif ( isa(c, 'double') )         % CHEBTECH * double
     f.values = f.values*c;
     f.coeffs = f.coeffs*c;
     if ( numel(c) == 1 )
-        f.vscale = f.vscale*abs(c);]
+        f.vscale = f.vscale*abs(c);
         % [TODO]: This needs explaining, or reference to how we treat the
         % epslevels.
         f.epslevel = f.epslevel + eps;

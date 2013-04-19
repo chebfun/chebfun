@@ -89,7 +89,7 @@ for ( n = 1:2 )
         disp(f ./ [1 ; 2]);
         pass(n, 12) = false;
     catch ME
-        pass(n, 12) = strcmp(ME.identifier, 'CHEBUFN:CHEBTECH:rdivide:size');
+        pass(n, 12) = strcmp(ME.identifier, 'CHEBFUN:CHEBTECH:rdivide:size');
     end
     
     % Can't divide by a scalar row matrix if the column counts don't match.
@@ -98,7 +98,9 @@ for ( n = 1:2 )
         disp(f ./ [1 2 3]);
         pass(n, 13) = false;
     catch ME
-        pass(n, 13) = strcmp(ME.identifier, 'CHEBUFN:CHEBTECH:rdivide:size');
+        ME.identifier
+
+        pass(n, 13) = strcmp(ME.identifier, 'CHEBFUN:CHEBTECH:rdivide:size');
     end
     
     % Can't divide by a function which has roots inside [-1, 1].
