@@ -7,7 +7,8 @@ if (nargin < 1)
     pref = chebtech.pref;
 end
 
-for ( n = 1:2 )
+pass = zeros(2,12); % Pre-allocate pass matrix
+for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();
     else
@@ -27,21 +28,21 @@ for ( n = 1:2 )
     pass(n, 2) = isequal(f, g);
 
     try
-        g = restrict(f, [-1, 3]);
+        g = restrict(f, [-1, 3]); %#ok<NASGU>
         pass(n, 3) = 0;
     catch ME
         pass(n, 3) = strcmp(ME.identifier, 'CHEBTECH:restrict:badinterval');
     end
 
     try
-        g = restrict(f, [-2, 1]);
+        g = restrict(f, [-2, 1]); %#ok<NASGU>
         pass(n, 4) = 0;
     catch ME
         pass(n, 4) = strcmp(ME.identifier, 'CHEBTECH:restrict:badinterval');
     end
 
     try
-        g = restrict(f, [-1 -0.25 0.3 0.1 1]);
+        g = restrict(f, [-1 -0.25 0.3 0.1 1]); %#ok<NASGU>
         pass(n, 5) = 0;
     catch ME
         pass(n, 5) = strcmp(ME.identifier, 'CHEBTECH:restrict:badinterval');

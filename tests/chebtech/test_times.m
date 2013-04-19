@@ -15,7 +15,8 @@ x = 2 * rand(100, 1) - 1;
 alpha = -0.194758928283640 + 0.075474485412665i;
 beta = -0.526634844879922 - 0.685484380523668i;
 
-for ( n = 1:2 )
+pass = zeros(2,25); % Pre-allocate pass matrix
+for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();
     else 
@@ -156,7 +157,7 @@ for ( n = 1:2 )
     f = chebtech.constructor(@(x) cos(x+1));    % Happy
     g = chebtech.constructor(@(x) sqrt(x+1));   % Unhappy
     h = f.*g;  % Multiply unhappy by happy.
-    pass(n, 24) = (~g.ishappy) && (~h.ishappy);
+    pass(n, 24) = (~g.ishappy) && (~h.ishappy); %#ok<*BDSCI,*BDLGI>
     h = g.*f;  % Multiply happy by unhappy.
     pass(n, 25) = (~g.ishappy) && (~h.ishappy);
 end

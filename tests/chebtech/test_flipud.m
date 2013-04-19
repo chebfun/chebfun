@@ -7,13 +7,15 @@ if ( nargin < 1 )
 end
 tol = 10*pref.chebtech.eps;
 
-for ( n = 1:2 )
+pass = zeros(2,4); % Pre-allocate pass matrix
+for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();
     else 
         testclass = chebtech2();
     end
-
+    
+    % Try some standard calls to flipud 
     f = testclass.make(@(x) sin(x+.5), [], [], pref);
     g = testclass.make(@(x) sin(-x+.5), [], [], pref);
     h = flipud(f);
