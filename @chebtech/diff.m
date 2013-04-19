@@ -14,13 +14,13 @@ function f = diff(f, k, dim)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % If the CHEBTECH G of length n is represented as
-%       \sum_{r=0}^{n-1} C_r T_r(x)
+%       \sum_{r=0}^{n-1} b_r T_r(x)
 % its derivative is represented with a CHEBTECH of length n-1 given by
 %       \sum_{r=0}^{n-2} c_r T_r(x)
 % where c_0 is determined by
-%       c_0 = c_2/2 + C_1;
+%       c_0 = c_2/2 + b_1;
 % and for r > 0,
-%       c_r = c_{r+2} + 2*(r+1)*C_{r+1},
+%       c_r = c_{r+2} + 2*(r+1)*b_{r+1},
 % with c_n = c_{n+1} = 0.
 % (See "Chebyshev Polynomials" by Mason and Handscomb, CRC 2002, p. 34.)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
