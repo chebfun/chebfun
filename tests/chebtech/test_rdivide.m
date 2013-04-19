@@ -15,7 +15,8 @@ x = 2 * rand(100, 1) - 1;
 alpha = -0.194758928283640 + 0.075474485412665i;
 beta = -0.526634844879922 - 0.685484380523668i;
 
-for ( n = 1:2 )
+pass = zeros(2,16); % Pre-allocate pass matrix
+for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();
     else 
@@ -98,8 +99,6 @@ for ( n = 1:2 )
         disp(f ./ [1 2 3]);
         pass(n, 13) = false;
     catch ME
-        ME.identifier
-
         pass(n, 13) = strcmp(ME.identifier, 'CHEBFUN:CHEBTECH:rdivide:size');
     end
     

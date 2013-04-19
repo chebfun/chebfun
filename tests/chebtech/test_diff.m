@@ -14,7 +14,8 @@ tol = 1e3*pref.chebtech.eps;
 seedRNG(6178);
 x = 2 * rand(100, 1) - 1;
 
-for ( n = 1:2 )
+pass = zeros(2,14); % Pre-allocate pass matrix
+for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();
     else 

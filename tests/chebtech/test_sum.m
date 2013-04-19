@@ -10,7 +10,8 @@ end
 % Set a tolerance.
 tol = 10*pref.chebtech.eps;
 
-for ( n = 1:2 )
+pass = zeros(2,11); % Pre-allocate pass matrix
+for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();
     else 

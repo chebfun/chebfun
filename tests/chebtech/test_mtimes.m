@@ -14,7 +14,8 @@ x = 2 * rand(100, 1) - 1;
 % A random number to use as an arbitrary scalar multiplier.
 alpha = randn() + 1i*randn();
 
-for ( n = 1:2 )
+pass = zeros(2,12); % Pre-allocate pass matrix
+for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();
     else 
@@ -73,7 +74,7 @@ for ( n = 1:2 )
             && strcmp(ME.message, 'Inner matrix dimensions must agree.');
     end
     
-    % Multiply chebtech and non-sclar double with mismatching dimensions.
+    % Multiply chebtech and non-scalar double with mismatching dimensions.
     try
         f = testclass.make(@(x) [sin(x) cos(x)]);
         disp(f*[1 ; 2 ; 3]);
