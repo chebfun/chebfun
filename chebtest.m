@@ -114,10 +114,11 @@ end
 
 function [passFile, timeFile] = runTestsInDirectory(testDir)
 %RUNTESTSINDIRECTORY   Run all the tests in the given directory.
-%   RUNTESTSINDIRECTORY(TESTDIR) will cd to the directory TESTDIR, locate all
-%   the *.m files within it using dir, and execute each of these in turn (in
-%   alphabetical order). If any of the tests crash (i.e., throw an error), this
-%   will be caught in a try-catch statement and not throw an error.
+%   RUNTESTSINDIRECTORY(TESTDIR) will change the current working directory to
+%   TESTDIR, locate all the *.m files within it using dir, and execute each of
+%   these in turn (in alphabetical order). If any of the tests crash (i.e.,
+%   throw an error), it will be caught in a try-catch statement, and the error
+%   will not be rethrown.
 %
 %   If all the tests in TESTDIR pass, then the total execution time for this
 %   directory is also printed to screen.
@@ -139,7 +140,7 @@ passFile = zeros(numFiles, 1);
 timeFile = zeros(numFiles, 1);
 
 % Attempt to run all of the tests:
-try % Note, we try-ctach as we've CD'd and really don't want to end up elsewhere
+try % Note, we try-catch as we've CD'd and really don't want to end up elsewhere
     % Loop over the test files:
     for k = 1:numFiles
         % Next file to test: (.m extension is removed).
@@ -218,10 +219,10 @@ function [pass, time, resultStr] = runTest(testFile)
 
 % Attempt to run the test;
 try
-    tic();
+    tstart = tic();
     pass = feval(testFile);
     pass = all(pass(:));
-    time = toc();
+    time = toc(tstart);
         
     % Did we pass?
     if ( pass )
