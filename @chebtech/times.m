@@ -28,7 +28,7 @@ elseif ( isa(g, 'double') )     % CHEBTECH * double
             'Inner matrix dimensions must agree.');
     end
     
-    % Do the multiply:
+    % Do the multiplication:
     if ( size(g, 2) > 1 )
         f.values = bsxfun(@times, f.values, g);
         f.coeffs = bsxfun(@times, f.coeffs, g);
@@ -111,6 +111,8 @@ f.coeffs = f.chebpoly(values);
 
 % Update vscale, epslevel, and ishappy:
 vscale = max(abs(f.values), [], 1);
+% [TODO]: Add a discussion about the epslevel, or a reference to where it's
+% discussed.
 f.epslevel = (f.epslevel + g.epslevel) * (f.vscale.*g.vscale./vscale);
 f.epslevel = max(f.epslevel); % [TODO]: Vector epslevel;
 f.vscale  = vscale;

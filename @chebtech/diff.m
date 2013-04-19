@@ -33,7 +33,7 @@ if ( isempty(f) )
 end
 
 if ( nargin < 2 || isempty(k) )
-    % Assume 1st derivative by default:
+    % Order of derivative not passed in. Assume 1st derivative by default:
     k = 1; 
 elseif ( k == 0 )
     % Nothing to do here!
