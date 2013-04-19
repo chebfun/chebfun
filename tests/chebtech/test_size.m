@@ -15,10 +15,10 @@ for n = 1:2
     end
 
     f = testclass.make(@(x) sin(x), [], [], pref);
-    pass(n, 1) = all(size(f) == [14, 1]);
+    pass(n, 1) = all(size(f) == size(f.values));
     
     f = testclass.make(@(x) [sin(x), cos(x), 1i*exp(x)], [], [], pref);
-    pass(n, 2) = all(size(f) == [15, 3]);
+    pass(n, 2) = all(size(f) == size(f.values));
     
     p = pref;
     p.chebtech.n = 101;
