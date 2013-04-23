@@ -1,5 +1,5 @@
 function [f, R, E] = qr(f, flag)
-%QR   QR factorisation of a multivalued CHEBTECH.
+%QR   QR factorisation of an array-valued CHEBTECH.
 %   [Q, R] = QR(F) returns a QR factorisation of F such that F = Q*R, where the
 %   CHEBTECH Q is orthogonal (with respect to the continuous L^2 norm on [-1,1])
 %   and of the same size as F and R is an m x m upper-triangular matrix when F
@@ -70,6 +70,6 @@ R = S*R;                    % Fix R.
 f.values = Q;                           % Adjust values of f.
 f.coeffs = f.chebpoly(Q);               % Compute new coefficients.
 f.vscale = max(abs(Q), [], 1);
-% [TODO]: Update epslevel.
+% [TODO]: Update epslevel?
 
 end

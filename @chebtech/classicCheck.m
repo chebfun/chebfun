@@ -89,7 +89,7 @@ end
 % Absolute value of coefficients, relative to vscale: (max across columns)
 ac = max(bsxfun(@rdivide, abs(f.coeffs), f.vscale), [], 2);
 
-% Take the maximum of the vscales: [TODO]: Should we do this?
+% Take the maximum of the vscales:
 vscale = max(f.vscale);
 
 % Happiness requirements:

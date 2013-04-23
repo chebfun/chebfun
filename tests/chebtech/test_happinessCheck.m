@@ -7,7 +7,7 @@ if ( nargin < 1 )
     pref = chebtech.pref;
 end
 
-for ( n = 1:2 )
+for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();
     else 

@@ -46,9 +46,7 @@ m = size(c, 2);
 
 coeffs = flipud(c); 
 w = exp(1i*(0:n-1)*pi/(2*n)).';
-if ( m > 1 )    % [TODO:] Delete this if block
-    w = repmat(w, 1, m);
-end
+w = repmat(w, 1, m);
 coeffs = w.*coeffs;
 vv = n*real(ifft(coeffs));
 if ( rem(n, 2) == 0 ) % Even case

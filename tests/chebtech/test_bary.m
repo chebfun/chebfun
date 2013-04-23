@@ -2,7 +2,7 @@
 
 function pass = test_bary(pref)
 
-% [TODO]: This test is rubbish!
+% Note. Bary is tested fairly extensively by TEST_FEVAL().
 
 if ( nargin < 1 )
     pref = chebtech.pref;
@@ -10,7 +10,7 @@ end
 
 tol = 20*pref.chebtech.eps;
 
-for ( n = 1:2 )
+for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();
     else
@@ -26,7 +26,7 @@ for ( n = 1:2 )
     fx = f(x);
     fy = f(y);
 
-    % second kind formula
+    % Second kind formula
     pass(n, 1) = norm( testclass.bary(y, fx) - fy ) < tol;
     pass(n, 2) = norm( testclass.bary(y, [fx fx]) - [fy fy] ) < tol;
 end

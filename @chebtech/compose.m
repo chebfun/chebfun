@@ -49,7 +49,7 @@ elseif ( isa(op, 'chebtech') )
     % If OP is a CHEBTECH, we grab some of its data:
     if ( (size(op, 2) > 1) && (size(f, 2) > 1) )
         error('CHEBFUN:CHEBTECH:compose:multival', ...
-            'Cannot compose two multivalued CHEBTECH objects.')
+            'Cannot compose two array-valued CHEBTECH objects.')
     end
 
     if ( norm(f.values(:), inf) > 1 )

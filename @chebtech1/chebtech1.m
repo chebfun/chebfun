@@ -28,7 +28,8 @@ classdef chebtech1 < chebtech
 %   CHEBTECH1(VALUES, ...) returns a CHEBTECH1 object which interpolates the
 %   values in the columns of VALUES at 1st-kind Chebyshev points and
 %   CHEBTECH1({VALUES, COEFFS}, ... ) uses the Chebyshev coefficients passed in
-%   COEFFS rather than computing them.
+%   COEFFS rather than computing them. If COEFFS are passed, the resulting
+%   CHEBTECH1 is always deemed 'happy'.
 %
 % Examples:
 %   % Basic construction:
@@ -154,10 +155,7 @@ classdef chebtech1 < chebtech
         
         % Get method:
         val = get(f, prop);
-        
-        % Set method:
-%         f = set(f, prop, val); % [TODO]: Do we actually need a set method?
-        
+
     end
     
 end

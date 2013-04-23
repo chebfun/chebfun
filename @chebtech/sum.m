@@ -2,7 +2,7 @@ function out = sum(f, dim)
 %SUM   Definite integral of a CHEBTECH on the interval [-1,1].
 %   SUM(F) is the integral of F from -1 to 1.
 %
-%   If F is a vector-valued CHEBTECH, then the result is a row vector
+%   If F is a array-valued CHEBTECH, then the result is a row vector
 %   containing the definite integrals of each column.
 %
 %   SUM(F, 2) sums over the second dimension of F, i.e., adds up its columns.

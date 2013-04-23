@@ -17,7 +17,7 @@ function out = roots(f, varargin)
 %       [0]
 %        1  - Prune 'spurious' complex roots if ALL == 1 and RECURSE == 0.
 %
-%   If F is a vector-valued CHEBTECH then there is no reason to expect each
+%   If F is a array-valued CHEBTECH then there is no reason to expect each
 %   column to have the same number of roots. In order to return a useful output,
 %   the roots of each column are computed and then padded with NaNs so that a
 %   matrix may be returned. The columns of R = ROOTS(F) correspond to the

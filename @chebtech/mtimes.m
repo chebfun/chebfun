@@ -34,11 +34,11 @@ elseif ( isa(c, 'double') )         % CHEBTECH * double
     f.values = f.values*c;
     f.coeffs = f.coeffs*c;
     if ( numel(c) == 1 )
+        % See CHEBTECH CLASSDEF file for documentation on this.
         f.vscale = f.vscale*abs(c);
-        % [TODO]: This needs explaining, or reference to how we treat the
-        % epslevels.
         f.epslevel = f.epslevel + eps;
     else
+        % See CHEBTECH CLASSDEF file for documentation on this.
         f.vscale = max(abs(f.values), [], 1);
         % [TODO]: Figure out vector epslevel.
     end

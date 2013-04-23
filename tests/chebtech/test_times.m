@@ -15,7 +15,7 @@ x = 2 * rand(100, 1) - 1;
 alpha = -0.194758928283640 + 0.075474485412665i;
 beta = -0.526634844879922 - 0.685484380523668i;
 
-pass = zeros(2,25); % Pre-allocate pass matrix
+pass = zeros(2,23); % Pre-allocate pass matrix
 for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();
@@ -41,22 +41,6 @@ for n = 1:2
     f = testclass.make(f_op, [], [], pref);
     pass(n, 4:5) = test_mult_function_by_scalar(f, f_op, alpha, x);
     
-    % Can't multiply by matrix of scalars with more than one row.
-    try 
-        disp(f .* [1 2 ; 3 4]);
-        pass(n, 6) = false;
-    catch ME
-        pass(n, 6) = strcmp(ME.identifier, 'CHEBFUN:CHEBTECH:times:dim');
-    end
-    
-    % This should fail with a dimension mismatch error.
-    try
-        disp(f .* [1 2 3]);
-        pass(n, 7) = false;
-    catch ME
-        pass(n, 7) = strcmp(ME.identifier, 'CHEBFUN:CHEBTECH:times:dim');
-    end
-    
     %%
     % Check multiplication by constant functions.
     
@@ -64,14 +48,14 @@ for n = 1:2
     f = testclass.make(f_op, [], [], pref);
     g_op = @(x) alpha*ones(size(x));
     g = testclass.make(g_op, [], [], pref);
-    pass(n, 8) = test_mult_function_by_function(f, f_op, g, g_op, x, false);
+    pass(n, 6) = test_mult_function_by_function(f, f_op, g, g_op, x, false);
     
     % This should fail with a dimension mismatch error from chebtech.mtimes().
     f_op = @(x) [sin(x) cos(x)];
     f = testclass.make(f_op, [], [], pref);
     g_op = @(x) repmat([alpha, beta], size(x, 1), 1);
     g = testclass.make(g_op, [], [], pref);
-    pass(n, 9) = test_mult_function_by_function(f, f_op, g, g_op, x, false);
+    pass(n, 7) = test_mult_function_by_function(f, f_op, g, g_op, x, false);
     
     %%
     % Spot-check multiplication of two chebtech objects for a few test 
@@ -79,22 +63,22 @@ for n = 1:2
     
     f_op = @(x) ones(size(x));
     f = testclass.make(f_op, [], [], pref);
-    pass(n, 10) = test_mult_function_by_function(f, f_op, f, f_op, x, false);
+    pass(n, 8) = test_mult_function_by_function(f, f_op, f, f_op, x, false);
     
     f_op = @(x) exp(x) - 1;
     f = testclass.make(f_op, [], [], pref);
     
     g_op = @(x) 1./(1 + x.^2);
     g = testclass.make(g_op, [], [], pref);
-    pass(n, 11) = test_mult_function_by_function(f, f_op, g, g_op, x, false);
+    pass(n, 9) = test_mult_function_by_function(f, f_op, g, g_op, x, false);
     
     g_op = @(x) cos(1e4*x);
     g = testclass.make(g_op, [], [], pref);
-    pass(n, 12) = test_mult_function_by_function(f, f_op, g, g_op, x, false);
+    pass(n, 10) = test_mult_function_by_function(f, f_op, g, g_op, x, false);
     
     g_op = @(t) sinh(t*exp(2*pi*1i/6));
     g = testclass.make(g_op, [], [], pref);
-    pass(n, 13) = test_mult_function_by_function(f, f_op, g, g_op, x, false);
+    pass(n, 11) = test_mult_function_by_function(f, f_op, g, g_op, x, false);
     
     %%
     % Check operation for vectorized chebtech objects.
@@ -103,24 +87,24 @@ for n = 1:2
     g = testclass.make(@(x) tanh(x), [], [], pref);
     h1 = f .* g;
     h2 = g .* f;
-    pass(n, 14) = isequal(h1, h2);
+    pass(n, 12) = isequal(h1, h2);
     h_exact = @(x) [tanh(x).*sin(x) tanh(x).*cos(x) tanh(x).*exp(x)];
     err = feval(h1, x) - h_exact(x);
-    pass(n, 15) = max(abs(err(:))) < 10*h1.epslevel;
+    pass(n, 13) = max(abs(err(:))) < 10*h1.epslevel;
     
     g = testclass.make(@(x) [sinh(x) cosh(x) tanh(x)], [], [], pref);
     h = f .* g;
     h_exact = @(x) [sinh(x).*sin(x) cosh(x).*cos(x) tanh(x).*exp(x)];
     err = feval(h, x) - h_exact(x);
-    pass(n, 16) = max(abs(err(:))) < 10*h.epslevel;
+    pass(n, 14) = max(abs(err(:))) < 10*h.epslevel;
     
     % This should fail with a dimension mismatch error.
     try
         g = testclass.make(@(x) [sinh(x) cosh(x)], [], [], pref);
         disp(f .* g);
-        pass(n, 17) = false;
+        pass(n, 15) = false;
     catch ME
-        pass(n, 17) = strcmp(ME.identifier, 'CHEBFUN:CHEBTECH:times:dim2');
+        pass(n, 15) = strcmp(ME.identifier, 'CHEBFUN:CHEBTECH:times:dim2');
     end
     
     %%
@@ -129,15 +113,15 @@ for n = 1:2
     
     f_op = @(t) sinh(t*exp(2*pi*1i/6));
     f = testclass.make(f_op, [], [], pref);
-    pass(n, 18) = test_mult_function_by_function(f, f_op, f, f_op, x, false);
+    pass(n, 16) = test_mult_function_by_function(f, f_op, f, f_op, x, false);
     
     g_op = @(t) conj(sinh(t*exp(2*pi*1i/6)));
     g = conj(f);
-    pass(n, 19:20) = test_mult_function_by_function(f, f_op, g, g_op, x, true);
+    pass(n, 17:18) = test_mult_function_by_function(f, f_op, g, g_op, x, true);
     
     f_op = @(x) exp(x) - 1;
     f = testclass.make(f_op, [], [], pref);
-    pass(n, 21:22) = test_mult_function_by_function(f, f_op, f, f_op, x, true);
+    pass(n, 19:20) = test_mult_function_by_function(f, f_op, f, f_op, x, true);
     
     %%
     % Check that multiplication and direct construction give similar results.
@@ -148,7 +132,7 @@ for n = 1:2
     h1 = f .* g;
     h2 = testclass.make(@(x) f_op(x) .* g_op(x), [], [], pref);
     h2 = prolong(h2, length(h1));
-    pass(n, 23) = norm(h1.values - h2.values, 'inf') < tol;
+    pass(n, 21) = norm(h1.values - h2.values, 'inf') < tol;
 
     %%
     % Check that multiplying a CHEBTECH by an unhappy CHEBTECH gives an unhappy
@@ -157,9 +141,9 @@ for n = 1:2
     f = chebtech.constructor(@(x) cos(x+1));    % Happy
     g = chebtech.constructor(@(x) sqrt(x+1));   % Unhappy
     h = f.*g;  % Multiply unhappy by happy.
-    pass(n, 24) = (~g.ishappy) && (~h.ishappy); %#ok<*BDSCI,*BDLGI>
+    pass(n, 22) = (~g.ishappy) && (~h.ishappy); %#ok<*BDSCI,*BDLGI>
     h = g.*f;  % Multiply happy by unhappy.
-    pass(n, 25) = (~g.ishappy) && (~h.ishappy);
+    pass(n, 23) = (~g.ishappy) && (~h.ishappy);
 end
 
 end

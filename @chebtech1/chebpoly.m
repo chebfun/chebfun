@@ -46,7 +46,7 @@ n = size(v,1);
 m = size(v,2);
 w = repmat((2/n)*exp(-1i*(0:n-1)*pi/(2*n)).',1,m);
 
-% [TODO]: confirm whether the difference between the two cases suggested
+% [TODO KX]: confirm whether the difference between the two cases suggested
 % by the remark below about "no need" is genuine.
 %
 % Form the vector whose data are periodic. Note that in contrast to the

@@ -31,7 +31,7 @@ function varargout = plot(f, varargin)
 %   will create a plot with a dark red line width of 2 points.
 %
 %   H1 = PLOT(F) returns a column vector of handles to lineseries objects, one
-%   handle per plotted line (in the case of vector-valued CHEBTECH objects).
+%   handle per plotted line (in the case of array-valued CHEBTECH objects).
 %   [H1, H2] returns a second vector of column handles, this time for each of
 %   the marker plots.
 

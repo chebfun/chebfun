@@ -1,7 +1,7 @@
 function g = mat2cell(f, M, N)
-%MAT2CELL   Convert a vector-valued CHEBTECH into an ARRAY of CHEBTECH objects.
+%MAT2CELL   Convert a array-valued CHEBTECH into an ARRAY of CHEBTECH objects.
 %
-%   G = MAT2CELL(F, C) breaks up the vector-valued CHEBTECH F into a single row
+%   G = MAT2CELL(F, C) breaks up the array-valued CHEBTECH F into a single row
 %   cell array G of CHEBTECH objects. C is the vector of column sizes, and if F
 %   has COL columns this must sum to COL. The elements of C determine the size
 %   of each cell in G, subject to the following formula for I = 1:LENGTH(C),

@@ -2,7 +2,7 @@ function [vals, pos] = minandmax(f)
 %MINANDMAX   Global minimum and maximum on [-1,1].
 %   VALS = MINANDMAX(F) returns a 2-vector VALS = [MIN(F); MAX(F)] with the
 %   global minimum and maximum of the CHEBTECH F on [-1,1].  If F is a
-%   vector-valued CHEBTECH, VALS is a 2-by-N matrix, where N is the number of
+%   array-valued CHEBTECH, VALS is a 2-by-N matrix, where N is the number of
 %   columns of F.  VALS(1, K) is the global minimum of the Kth column of F on
 %   [-1, 1], and VALS(2, K) is the global maximum of the same.
 %
@@ -28,6 +28,8 @@ if ( ~isreal(f) )
     h = simplify(h);
     [ignored, pos] = minandmax(h);
     vals = feval(f, pos);
+    % FEVAL() will not return a matrix argument of the correct dimensions if f
+    % is array-valued. This line corrects this:
     vals = vals(:, 1:(size(pos, 2)+1):end);
     return
 end
@@ -36,9 +38,9 @@ end
 fp = diff(f);
 
 % Make the Chebyshev grid (used in minandmaxColumn).
-xpts = f.chebpts(length(f));
+xpts = f.points();
 
-% Check if f has only one column (i.e., is not vector-valued):
+% Check if f has only one column (i.e., is not array-valued):
 sizef2 = size(f, 2);
 
 if ( sizef2 == 1)

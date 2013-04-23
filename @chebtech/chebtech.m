@@ -34,7 +34,8 @@ classdef chebtech %< smoothfun % (Abstract)
 %   allows for the corresponding Chebyshev coefficients to be passed also, and
 %   if VALUES is empty the CHEBTECH is constructed directly from the COEFFS. No
 %   adaptivity takes place with this form of construction, but VALUES are still
-%   checked for happiness.
+%   checked for happiness. If COEFFS are passed, the resulting CHEBTECH is
+%   always deemed 'happy'.
 %
 % Examples:
 %   % Basic construction:
@@ -44,7 +45,7 @@ classdef chebtech %< smoothfun % (Abstract)
 %   p = chebtech.pref('tech', 'cheb2'); % See HELP('chebtech.pref') for details.
 %   f = chebtech.constructor(@(x) cos(x), [], [], p)
 %
-%   % Vector-valued construction:
+%   % Array-valued construction:
 %   f = chebtech.constructor(@(x) [sin(x), cos(x), exp(x)])
 %
 % See also CHEBTECH.PREF, HAPPINESSCHECK, CHEBTECH1, CHEBTECH2.
@@ -109,16 +110,20 @@ classdef chebtech %< smoothfun % (Abstract)
 %     h.epslevel = n*log(n)f.epslevel*f.vscale; % *(h.vscale/h.vscale)
 %     % We don't divide by h.vscale here as we must also multiply by it.
 %
+%   h = cumsum(f):
+%     h.vscale = max(abs(h.values), [], 1);
+%     [TODO]: h.epslevel = ???
+%
 % If the input operator OP evaluates to NaN or Inf at any of the sample points
 % used by the constructor, then a suitable replacement is found by extrapolating
 % (globally) from the numeric values (see EXTRAPOLATE.M). If the preference
 % CHEBTECH.PREF('extrapolate', TRUE) is set, then the endpoint values -1 and +1
 % are always extrapolated (i.e., regardless of whether they evaluate to NaN).
 %
-% The CHEBTECH classes support the representation of vector-valued functions (for
+% The CHEBTECH classes support the representation of array-valued functions (for
 % example, f = chebtech.constructor(@(x) [sin(x), cos(x)])). In such cases, the
 % values and coefficients are stored in a matrix (column-wise), and as such each
-% component of the multi-valued function is truncated to the same length, even
+% component of the array-valued function is truncated to the same length, even
 % if the demands of 'happiness' imply that one of the components could be
 % truncated to a shorter length than the others. All CHEBTECH methods should
 % accept such vectorised forms. Note that this representation is distinct from
@@ -211,11 +216,8 @@ classdef chebtech %< smoothfun % (Abstract)
         % Compose method. (Not implemented here as refinement is defined also).
         h = compose(f, op, g, pref)
 
-        % Get method. [TODO]: Requirement should be inherited from SMOOTHFUN.
+        % Get method.
         val = get(f, prop);
-
-        % Set method. [TODO]: Requirement should be inherited from SMOOTHFUN.
-%         f = set(f, prop, val); % [TODO]: Do we actually need a set method?
 
     end
 
@@ -252,7 +254,7 @@ classdef chebtech %< smoothfun % (Abstract)
     %% METHODS IMPLEMENTED BY THIS CLASS.
     methods
 
-        % Convert an array of CHEBTECH objects into a vector-valued CHEBTECH.
+        % Convert an array of CHEBTECH objects into a array-valued CHEBTECH.
         f = cell2mat(f)
 
         % Plot (semilogy) the Chebyshev coefficients of a CHEBTECH object.
@@ -321,7 +323,7 @@ classdef chebtech %< smoothfun % (Abstract)
         % [TODO]: Implement looseCheck.
         [ishappy, epslevel, cutoff] = looseCheck(f, pref)
 
-        % Convert a vector-valued CHEBTECH into an ARRAY of CHEBTECH objects.
+        % Convert a array-valued CHEBTECH into an ARRAY of CHEBTECH objects.
         g = mat2cell(f, M, N)
 
         % Global maximum of a CHEBTECH on [-1,1].
@@ -363,7 +365,7 @@ classdef chebtech %< smoothfun % (Abstract)
         % Adjust the number of points used in a CHEBTECH.
         f = prolong(f, n)
 
-        % QR factorisation of a multivalued CHEBTECH.
+        % QR factorisation of an array-valued CHEBTECH.
         [f, R, E] = qr(f, flag)
 
         % Right array divide for a CHEBTECH.

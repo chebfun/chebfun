@@ -26,7 +26,9 @@ function f = cumsum(f, m, pref)
 %       b_1 = c_0 - c_2/2, 
 %       b_r = (c_{r-1} - c_{r+1})/(2r) for r > 0,
 % with c_{n+1} = c_{n+2} = 0.
-% (See "Chebyshev Polynomials" by Mason and Handscomb, CRC 2002, pp. 32-33.)
+%
+% [Reference]: Pages 32-33 of Mason & Handscomb, "Chebyshev Polynomials".
+% Chapman & Hall/CRC (2003).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Trivial case of an empty CHEBTECH:
@@ -74,6 +76,7 @@ f.coeffs = c;
 
 % Update vscale:
 f.vscale = max(f.vscale, max(abs(f.values), [], 1));
+% [TODO]: Update epslevel?
 
 % Simplify (as suggested in Chebfun ticket #128)
 f = simplify(f, pref);

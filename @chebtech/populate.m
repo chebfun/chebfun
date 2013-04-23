@@ -10,8 +10,9 @@ function f = populate(f, op, vscale, hscale, pref)
 %   then POPULATE was not able to obtain a happy result.
 %
 %   OP should be vectorized (i.e., accept a vector input), and output a vector
-%   of the same length. Furthermore, OP may be a multi-valued function, in which
-%   case it should accept a vector of length N and return a matrix of size NxM.
+%   of the same length. Furthermore, OP may be an array-valued function, in
+%   which case it should accept a vector of length N and return a matrix of size
+%   NxM.
 %
 %   F.POPULATE(OP, VSCALE, HSCALE) enforces that the happiness check is relative
 %   to the initial vertical scale VSCALE and horizontal scale HSCALE. These
@@ -78,6 +79,10 @@ if ( isnumeric(op) || iscell(op) )
         % OP is just the values.
         f.values = op;
         f.coeffs = f.chebpoly(op);
+        % Update vscale:
+        f.vscale = max(abs(f.values), [], 1);
+        % Check for happiness: (no OP to compare against)
+        [f.ishappy, f.epslevel] = happinessCheck(f, [], pref);
     else                 
         % OP is a cell {values, coeffs}
         f.values = op{1};
@@ -85,11 +90,13 @@ if ( isnumeric(op) || iscell(op) )
         if ( isempty(f.values) )
             f.values = f.chebpolyval(f.coeffs);
         end
+        % Update vscale:
+        f.vscale = max(abs(f.values), [], 1);
+        % We're always happy if given coefficients:
+        f.ishappy = true;
+        f.epslevel = pref.chebtech.eps;
     end
-    % Update vscale:
-    f.vscale = max(abs(f.values), [], 1);
-    % Check for happiness: (no OP to compare against)
-    [f.ishappy, f.epslevel] = happinessCheck(f, [], pref);
+
     return
 end
 

@@ -1,8 +1,8 @@
-function X = mrdivide(B, A)
+function X = mrdivide(A, B)
 %/   Right matrix divide for a CHEBTECH.
 %
-%   B/A divides the CHEBTECH B by a scalar A. More generally, it gives the
-%   least-squares solution (with respect to the continuous L^2 norm) to X*A = B
+%   A/B divides the CHEBTECH A by a scalar B. More generally, it gives the
+%   least-squares solution (with respect to the continuous L^2 norm) to X*B = A
 %   when either A or B is a CHEBTECH.  Note that in the latter case, formally
 %   it is X.' that is returned, as CHEBTECH objects are always columns.
 %
@@ -12,39 +12,39 @@ function X = mrdivide(B, A)
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Case A is a matrix: X*A = B  ==> X = B/A = (Q*R)/A = Q*(R/A) 
+% Case B is a matrix: X*B = A  ==> X = A/B = (Q*R)/B = Q*(R/A) 
 %
-% Case B is a matrix: X*A = X*(Q*R) = B ==> X = (B/R)*Q' ==> X' = Q*(B/R)'
+% Case A is a matrix: X*B = X*(Q*R) = A ==> X = (A/R)*Q' ==> X' = Q*(A/R)'
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-if ( (size(A, 2) ~= size(B, 2)) && ~(isa(A, 'double') && isscalar(A)) )
+if ( (size(B, 2) ~= size(A, 2)) && ~(isa(B, 'double') && isscalar(B)) )
     error('CHEBFUN:CHEBTECH:mrdivide:size', 'Matrix dimensions must agree.');
-elseif ( isa(A, 'double') )  % CHEBTECH / double
-    if ( ~any(A(:)) )  
-        X = B.make(NaN(1, size(B, 2)));
-    elseif ( isscalar(A) )
+elseif ( isa(B, 'double') )  % CHEBTECH / double
+    if ( ~any(B(:)) )  
+        X = A.make(NaN(1, size(A, 2)));
+    elseif ( isscalar(B) )
         % Scalar case is easy:
-        X = B;                              % Copy B to X
-        X.values = B.values/A;              % Divide values
-        X.coeffs = B.coeffs/A;              % Divide coeffs
-        X.vscale = B.vscale/abs(A);         % Divide vscale
+        X = A;                              % Copy A to X
+        X.values = A.values/B;              % Divide values
+        X.coeffs = A.coeffs/B;              % Divide coeffs
+        X.vscale = A.vscale/abs(B);         % Divide vscale
     else
         % For matrix case, we do least squares via QR:
-        [Q, R] = qr(B, 0);
-        X = Q*(R/A);
+        [Q, R] = qr(A, 0);
+        X = Q*(R/B);
     end
-elseif ( isa(B, 'double') )  % double / CHEBTECH
-    % Here B is a double and A is a CHEBTECH. Do least squares via QR:
-    [Q, R] = qr(A, 0);
+elseif ( isa(A, 'double') )  % double / CHEBTECH
+    % Here A is a double and B is a CHEBTECH. Do least squares via QR:
+    [Q, R] = qr(B, 0);
     
     % Return the transpose for the output.
-    X = Q*(B/R).';
-elseif ( isa(A, 'chebtech') && isa(B, 'chebtech') )
+    X = Q*(A/R).';
+elseif ( isa(B, 'chebtech') && isa(A, 'chebtech') )
     error('CHEBFUN:CHEBTECH:mrdivide:chebtechDivChebtech', ...
         'Use ./ to divide by a CHEBTECH.');
 else
     error('CHEBFUN:CHEBTECH:mrdivide:badArg', '%s/%s is not well-defined.', ...
-        class(B), class(A));
+        class(A), class(B));
 
 end
 

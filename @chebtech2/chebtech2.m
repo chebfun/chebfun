@@ -25,7 +25,8 @@ classdef chebtech2 < chebtech
 %   values in the columns of VALUES at 2nd-kind Chebyshev points and
 %   CHEBTECH2({VALUES, COEFFS}, ... ) uses the Chebyshev coefficients passed in
 %   COEFFS rather than computing them from VALUES. If VALUES, is empty then the
-%   CHEBTECH2 is constructed directly from the COEFFS.
+%   CHEBTECH2 is constructed directly from the COEFFS. If COEFFS are passed, the
+%   resulting CHEBTECH2 is always deemed 'happy'.
 %
 % Examples:
 %   % Basic construction:
@@ -160,9 +161,6 @@ classdef chebtech2 < chebtech
         
         % Get method:
         val = get(f, prop);
-        
-        % Set method:
-%         f = set(f, prop, val); % [TODO]: Do we actually need a set method?
         
     end
     
