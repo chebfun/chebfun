@@ -5,7 +5,7 @@ function coeffs = chebpoly(values)
 %   k-th 1st-kind Chebyshev polynomial) interpolates the data [V(1) ; ... ;
 %   V(N+1)] at Chebyshev points of the 2nd kind.
 %
-%   If the input V is an (N+1)*M matrix, then C = CHEBPOLY(V) returns the
+%   If the input V is an (N+1)xM matrix, then C = CHEBPOLY(V) returns the
 %   (N+1)xM matrix of coefficients C such that F_j(x) = C(1,j)*T_N(x) + ... +
 %   C(N,j)*T_1(x) + C(N+1,j)*T_0(x) interpolates [V(1,j) ; ... ; V(N+1,j)] for j
 %   = 1:M.
@@ -29,7 +29,7 @@ if ( n == 1 )
     return
 end
 
-% Mirror the coefficients (to fake a DCT using an FFT):
+% Mirror the values (to fake a DCT using an FFT):
 tmp = [values(end:-1:2,:) ; values(1:end-1,:)];
 
 if ( isreal(values) )
