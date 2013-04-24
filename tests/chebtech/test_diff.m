@@ -14,7 +14,7 @@ tol = 1e3*pref.chebtech.eps;
 seedRNG(6178);
 x = 2 * rand(100, 1) - 1;
 
-pass = zeros(2, 14); % Pre-allocate pass matrix
+pass = zeros(2, 15); % Pre-allocate pass matrix
 for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();
@@ -94,6 +94,12 @@ for n = 1:2
     df4_exact = @(x) sin(x);
     err = df4_exact(x) - feval(df4, x);
     pass(n, 10) = (norm(err, inf) < 1e5*tol);
+
+    f = testclass.make(@(x) x.^5 + 3*x.^3 - 2*x.^2 + 4, [], [], pref);
+    df6 = diff(f, 6);
+    df6_exact = @(x) zeros(size(x));
+    err = df6_exact(x) - feval(df6, x);
+    pass(n, 11) = (norm(err, inf) < 1e7*tol);
     
     %%
     % Check operation for vectorized chebtech objects.
@@ -101,23 +107,23 @@ for n = 1:2
     f = testclass.make(@(x) [sin(x) x.^2 exp(1i*x)], [], [], pref);
     df_exact = @(x) [cos(x) 2*x 1i*exp(1i*x)];
     err = feval(diff(f), x) - df_exact(x);
-    pass(n, 11) = (norm(err(:), inf) < tol);
+    pass(n, 12) = (norm(err(:), inf) < tol);
     
     % DIM option.
     dim2df = diff(f, 1, 2);
     g = @(x) [(x.^2 - sin(x)) (exp(1i*x) - x.^2)];
     err = feval(dim2df, x) - g(x);
-    pass(n, 12) = (norm(err(:), inf) < tol);
+    pass(n, 13) = (norm(err(:), inf) < tol);
     
     dim2df2 = diff(f, 2, 2);
     g = @(x) exp(1i*x) - 2*x.^2 + sin(x);
     err = feval(dim2df2, x) - g(x);
-    pass(n, 13) = (norm(err(:), inf) < tol);
+    pass(n, 14) = (norm(err(:), inf) < tol);
     
     % DIM option should return an empty chebtech for non-vectorized input.
     f = testclass.make(@(x) x.^3);
     dim2df = diff(f, 1, 2);
-    pass(n, 14) = (isempty(dim2df.values) && isempty(dim2df.coeffs));
+    pass(n, 15) = (isempty(dim2df.values) && isempty(dim2df.coeffs));
 end
 
 end
