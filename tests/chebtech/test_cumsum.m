@@ -1,4 +1,4 @@
-% Test file for chebtech/cumsum.
+% Test file for chebtech/cumsum.m
 
 function pass = test_cumsum(pref)
 

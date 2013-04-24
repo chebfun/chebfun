@@ -1,4 +1,4 @@
-% Test file for chebtech/feval.
+% Test file for chebtech/feval.m
 
 function pass = test_feval(pref)
 

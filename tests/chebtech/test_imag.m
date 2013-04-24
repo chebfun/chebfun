@@ -1,4 +1,4 @@
-% Test file for chebtech/imag.
+% Test file for chebtech/imag.m
 
 function pass = test_imag(pref)
 

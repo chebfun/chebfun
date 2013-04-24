@@ -1,4 +1,4 @@
-% Test file for chebtech/bary.
+% Test file for chebtech/bary.m
 
 function pass = test_bary(pref)
 

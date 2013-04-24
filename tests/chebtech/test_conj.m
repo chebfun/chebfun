@@ -1,4 +1,4 @@
-% Test file for chebtech/conj.
+% Test file for chebtech/conj.m
 
 function pass = test_conj(pref)
 

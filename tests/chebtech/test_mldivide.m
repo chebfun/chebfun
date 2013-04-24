@@ -1,4 +1,4 @@
-% Test file for chebtech/mldivide.
+% Test file for chebtech/mldivide.m
 
 function pass = test_mldivide(pref)
 

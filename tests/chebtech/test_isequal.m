@@ -1,4 +1,4 @@
-% Test file for chebtech/isequal.
+% Test file for chebtech/isequal.m
 
 function pass = test_isequal(pref)
 

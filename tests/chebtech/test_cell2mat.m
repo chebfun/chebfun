@@ -1,4 +1,4 @@
-% Test file for chebtech/cell2mat.
+% Test file for chebtech/cell2mat.m
 
 function pass = test_cell2mat(pref)
 

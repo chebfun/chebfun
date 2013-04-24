@@ -1,4 +1,4 @@
-% Test file for chebtech/happinessCheck.
+% Test file for chebtech/happinessCheck.m
 
 function pass = test_happinessCheck(pref)
 

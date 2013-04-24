@@ -1,4 +1,4 @@
-% Test file for chebtech/minus.
+% Test file for chebtech/minus.m
 
 function pass = test_minus(pref)
 

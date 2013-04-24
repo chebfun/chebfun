@@ -1,4 +1,4 @@
-% Test file for chebtech/mtimes.
+% Test file for chebtech/mtimes.m
 
 function pass = test_mtimes(pref)
 

@@ -1,4 +1,4 @@
-% Test file for chebtech/min.
+% Test file for chebtech/min.m
 
 function pass = test_min(pref)
 

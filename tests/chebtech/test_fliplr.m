@@ -1,4 +1,4 @@
-% Test file for chebtech/fliplr.
+% Test file for chebtech/fliplr.m
 
 function pass = test_fliplr(pref)
 

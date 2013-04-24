@@ -1,4 +1,4 @@
-% Test file for chebtech/compose.
+% Test file for chebtech/compose.m
 
 function pass = test_compose(pref)
 

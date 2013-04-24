@@ -1,4 +1,4 @@
-% Test file for chebtech/clenshaw.
+% Test file for chebtech/clenshaw.m
 
 function pass = test_clenshaw(varargin)
 

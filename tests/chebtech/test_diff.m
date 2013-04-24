@@ -1,4 +1,4 @@
-% Test file for chebtech/diff.
+% Test file for chebtech/diff.m
 
 function pass = test_diff(pref)
 

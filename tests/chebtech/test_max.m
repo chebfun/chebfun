@@ -1,4 +1,4 @@
-% Test file for chebtech/max.
+% Test file for chebtech/max.m
 
 function pass = test_max(pref)
 
