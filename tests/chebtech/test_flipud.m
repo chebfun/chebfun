@@ -7,7 +7,7 @@ if ( nargin < 1 )
 end
 tol = 10*pref.chebtech.eps;
 
-pass = zeros(2,4); % Pre-allocate pass matrix
+pass = zeros(2, 4); % Pre-allocate pass matrix
 for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();

@@ -14,7 +14,7 @@ x = 2 * rand(100, 1) - 1;
 % A random number to use as an arbitrary additive constant.
 alpha = randn() + 1i*randn();
 
-pass = zeros(2,21); % Pre-allocate pass matrix
+pass = zeros(2, 21); % Pre-allocate pass matrix
 for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();

@@ -6,7 +6,8 @@ if ( nargin < 2 )
     pref = chebtech.pref;
 end
 
-for (n = 1:2)
+pass = zeros(2, 1); % Pre-allocate pass matrix.
+for n = 1:2
     if (n == 1);
         testclass = chebtech1();
     else

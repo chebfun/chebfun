@@ -5,6 +5,8 @@ function pass = test_chebpoly(varargin)
 % Set a tolerance (pref.eps doesn't matter)
 tol = 100*eps;
 
+pass = zeros(1, 7); % Pre-allocate pass matrix
+
 %%
 % Test that a single value is converted correctly
 v = sqrt(2);

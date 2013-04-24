@@ -4,6 +4,8 @@ if ( nargin == 0 )
     pref = chebtech.pref();
 end
 
+pass = zeros(1, 5); % Pre-allocate pass matrix.
+
 f = chebtech.constructor(0, pref);
 f.values = [0 1 0 ; 0 0 NaN];
 
