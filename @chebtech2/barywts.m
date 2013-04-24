@@ -6,11 +6,14 @@ function v = barywts(n)
 %
 % See also BARY, CHEBPTS.   
 
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % See Thm. 5.2 of Trefethen, Approximation Theory and Approximation Practice, 
 % SIAM, 2013 for more information.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
+
 if ( n == 0 )                      % Special case (no points)
     v = [];
 elseif ( n == 1 )                  % Special case (single point)

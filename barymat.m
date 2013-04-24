@@ -55,7 +55,7 @@ else
     for k = 1:N
         B(:,k) = w(k)./B(:,k);   % w(k)/(y(j)-x(k))
     end
-    c = 1./sum(B,2);             % Normalisation ('denom' in bary-speak).
+    c = 1./sum(B, 2);            % Normalisation ('denom' in bary-speak).
     for j = 1:M
         B(j,:) = B(j,:)*c(j);
     end
@@ -65,11 +65,3 @@ end
 % Where points coincide there will be division by zeros (as with bary.m). 
 % Replace these entries with the identity:
 B(isnan(B)) = 1;
-
-
-
-
-
-
-
-
