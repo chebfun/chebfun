@@ -17,14 +17,14 @@ for n = 1:2
     end
 
     % Test a scalar-valued function:
-    f = testclass.make(@(x) cos(x) + 1i*sin(x), [], [], pref);
+    f = testclass.make(@(x) exp(x) + 1i*sin(x), [], [], pref);
     g = testclass.make(@(x) sin(x), [], [], pref);
     h = imag(f);
     h = prolong(h, length(g));
     pass(n, 1) = norm(h.values - g.values, inf) < tol;
     
     % Test a multi-valued function:
-    f = testclass.make(@(x) [cos(x) + 1i*sin(x), -exp(1i*x)], [], [], pref);
+    f = testclass.make(@(x) [exp(x) + 1i*sin(x), -exp(1i*x)], [], [], pref);
     g = testclass.make(@(x) [sin(x), -imag(exp(1i*x))], [], [], pref);
     h = imag(f);
     h = prolong(h, length(g));

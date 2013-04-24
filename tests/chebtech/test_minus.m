@@ -30,14 +30,14 @@ for n = 1:2
     pass(n, 1) = (isempty(f - f) && isempty(f - g) && isempty(g - f));
     
     %%
-    % Check addition with scalars.
+    % Check subtraction with scalars.
     
     f_op = @(x) sin(x);
     f = testclass.make(f_op, [], [], pref);
     pass(n, 2:3) = test_sub_function_and_scalar(f, f_op, alpha, x);
     
     %%
-    % Check addition of two chebtech objects.
+    % Check subtraction of two chebtech objects.
     
     f_op = @(x) zeros(size(x));
     f = testclass.make(f_op, [], [], pref);

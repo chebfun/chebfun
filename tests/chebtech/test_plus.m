@@ -12,7 +12,7 @@ seedRNG(6178);
 x = 2 * rand(100, 1) - 1;
 
 % A random number to use as an arbitrary additive constant.
-alpha = randn() + 1i*randn();
+alpha = -0.194758928283640 + 0.075474485412665i;
 
 pass = zeros(2, 21); % Pre-allocate pass matrix
 for n = 1:2
