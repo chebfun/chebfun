@@ -37,7 +37,7 @@ for n = 1:2
     g2 = f*alpha;
     pass(n, 2) = isequal(g1, g2);
     g_exact = @(x) alpha*sin(x);
-    pass(n, 3) = norm(feval(g1, x) - g_exact(x), 'inf') < 10*g1.epslevel;
+    pass(n, 3) = norm(feval(g1, x) - g_exact(x), inf) < 10*g1.epslevel;
     
     g = 0*f;
     pass(n, 4) = all(g.values == 0) && all(g.coeffs == 0);

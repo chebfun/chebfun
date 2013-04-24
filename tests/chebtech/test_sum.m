@@ -71,7 +71,7 @@ for n = 1:2
     % DIM option with vectorized input.
     g = sum(f, 2);
     h = @(x) sin(x) + x.^2 + exp(1i*x);
-    pass(n, 10) = (norm(feval(g, x) - h(x), 'inf') < tol);
+    pass(n, 10) = (norm(feval(g, x) - h(x), inf) < tol);
 
     % DIM option with non-vectorized input should leave everything alone.
     h = testclass.make(@(x) cos(x));

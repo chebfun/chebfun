@@ -132,7 +132,7 @@ for n = 1:2
     h1 = f .* g;
     h2 = testclass.make(@(x) f_op(x) .* g_op(x), [], [], pref);
     h2 = prolong(h2, length(h1));
-    pass(n, 21) = norm(h1.values - h2.values, 'inf') < tol;
+    pass(n, 21) = norm(h1.values - h2.values, inf) < tol;
 
     %%
     % Check that multiplying a CHEBTECH by an unhappy CHEBTECH gives an unhappy
@@ -155,7 +155,7 @@ function result = test_mult_function_by_scalar(f, f_op, alpha, x)
     g2 = alpha .* f;
     result(1) = isequal(g1, g2);
     g_exact = @(x) f_op(x) .* alpha;
-    result(2) = norm(feval(g1, x) - g_exact(x), 'inf') < 10*g1.epslevel;
+    result(2) = norm(feval(g1, x) - g_exact(x), inf) < 10*g1.epslevel;
 end
 
 % Test the multiplication of two CHEBTECH objects F and G, specified by F_OP and
@@ -165,7 +165,7 @@ end
 function result = test_mult_function_by_function(f, f_op, g, g_op, x, checkpos)
     h = f .* g;
     h_exact = @(x) f_op(x) .* g_op(x);
-    result(1) = norm(feval(h, x) - h_exact(x), 'inf') < 10*h.epslevel;
+    result(1) = norm(feval(h, x) - h_exact(x), inf) < 10*h.epslevel;
     if ( checkpos )
         result(2) = all(h.values >= 0);
     end

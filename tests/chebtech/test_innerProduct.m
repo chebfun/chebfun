@@ -78,7 +78,7 @@ for n = 1:2
     ip = innerProduct(f, g);
     exact = [0.663493666631241 0                 -0.135033172317858;
              1.933421496200713 1.365866063614065  0.592109441404267];
-    pass(n, 10) = norm(ip(:) - exact(:), 'inf') < 10*max(f.epslevel, ...
+    pass(n, 10) = norm(ip(:) - exact(:), inf) < 10*max(f.epslevel, ...
         g.epslevel);
     
     %%

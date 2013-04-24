@@ -26,36 +26,36 @@ for n = 1:2
     
     f = testclass.make(@(x) exp(x) - 1, [], [], pref);
     f_exact = @(x) exp(x) - 1;
-    pass(n, 1) = (norm(feval(f, x) - f_exact(x), 'inf') < 10*f.epslevel);
+    pass(n, 1) = (norm(feval(f, x) - f_exact(x), inf) < 10*f.epslevel);
     
     f = testclass.make(@(x) 1./(1 + x.^2), [], [], pref);
     f_exact = @(x) 1./(1 + x.^2);
-    pass(n, 2) = (norm(feval(f, x) - f_exact(x), 'inf') < 10*f.epslevel);
+    pass(n, 2) = (norm(feval(f, x) - f_exact(x), inf) < 10*f.epslevel);
     
     f = testclass.make(@(x) cos(1e4*x), [], [], pref);
     f_exact = @(x) cos(1e4*x);
-    pass(n, 3) = (norm(feval(f, x) - f_exact(x), 'inf') < 10*f.epslevel);
+    pass(n, 3) = (norm(feval(f, x) - f_exact(x), inf) < 10*f.epslevel);
     
     z = exp(2*pi*1i/6);
     f = testclass.make(@(t) sinh(t*z), [], [], pref);
     f_exact = @(t) sinh(t*z);
-    pass(n, 4) = (norm(feval(f, x) - f_exact(x), 'inf') < 10*f.epslevel);
+    pass(n, 4) = (norm(feval(f, x) - f_exact(x), inf) < 10*f.epslevel);
     
     %%
     % Check row vector and matrix input.
     
     err = feval(f, x.') - f_exact(x.');
-    pass(n, 5) = (all(size(err) == [1 1000])) && (norm(err(:), 'inf') < ...
+    pass(n, 5) = (all(size(err) == [1 1000])) && (norm(err(:), inf) < ...
         10*f.epslevel);
     
     x_mtx = reshape(x, [100 10]);
     err = feval(f, x_mtx) - f_exact(x_mtx);
-    pass(n, 6) = (all(size(err) == [100 10])) && (norm(err(:), 'inf') < ...
+    pass(n, 6) = (all(size(err) == [100 10])) && (norm(err(:), inf) < ...
         10*f.epslevel);
     
     x_3mtx = reshape(x, [10 10 10]);
     err = feval(f, x_3mtx) - f_exact(x_3mtx);
-    pass(n, 7) = (all(size(err) == [10 10 10])) && (norm(err(:), 'inf') < ...
+    pass(n, 7) = (all(size(err) == [10 10 10])) && (norm(err(:), inf) < ...
         10*f.epslevel);
     
     %%

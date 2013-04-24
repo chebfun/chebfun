@@ -31,7 +31,7 @@ for n = 1:2
     
     g = f / alpha;
     g_exact = @(x) f_op(x) ./ alpha;
-    pass(n, 2) = norm(feval(g, x) - g_exact(x), 'inf') < 10*g.epslevel;
+    pass(n, 2) = norm(feval(g, x) - g_exact(x), inf) < 10*g.epslevel;
     
     % A "least-squares" case where the solution is obvious.
     I = eye(2);
@@ -43,7 +43,7 @@ for n = 1:2
     A = [1 1];
     g = f / A;
     g_exact = @(x) (sin(x) + cos(x))/2;
-    pass(n, 4) = norm(feval(g, x) - g_exact(x), 'inf') < 10*g.epslevel;
+    pass(n, 4) = norm(feval(g, x) - g_exact(x), inf) < 10*g.epslevel;
     
     %%
     % Check division of a numeric array by a chebtech object.
@@ -55,7 +55,7 @@ for n = 1:2
     f = testclass.make(@(x) [sin(2*pi*x) cos(2*pi*x)]);
     g = [1 1]/f;
     g_exact = @(x) (sin(2*pi*x) + cos(2*pi*x));
-    pass(n, 6) = norm(feval(g, x) - g_exact(x), 'inf') < 10*g.epslevel;
+    pass(n, 6) = norm(feval(g, x) - g_exact(x), inf) < 10*g.epslevel;
     
     %%
     % Check error conditions.
