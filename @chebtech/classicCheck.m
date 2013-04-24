@@ -159,6 +159,8 @@ tailErr = min(minPrec, eps*testLength^(2/3));
 % grad = (hscale/vscale) * norm(diff(values)./dx, inf);
 % gradErr = min(minPrec, eps*grad);
 
+% [TODO]: This is highly experimental!
+% Approximate gradient of the function:
 coeffsDer = computeDerCoeffs(coeffs);
 grad = max(sum(abs(coeffsDer)));
 gradErr = min(minPrec, eps*grad/log(n));
