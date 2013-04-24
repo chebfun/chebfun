@@ -55,7 +55,8 @@ holdState = ishold;
 absc = abs(f.coeffs);
 
 % Add a tiny amount to zeros to make plots look nicer:
-absc(~absc) = f.epslevel*min(f.vscale);
+% (Min of epslevel*vscale and the miniumum non-zero coefficient)
+absc(~absc) = min(f.epslevel*min(f.vscale), min(absc(logical(absc))));
 
 % Get the size:
 [n, m] = size(absc);
