@@ -44,7 +44,7 @@ if ( M >= 500 && N >= 1000 )     % <-- Experimentally determined.
     
 % Testing shows BSXFUN is faster in this regime    
     B = bsxfun(@minus, y, x');   % Repmat(Y-X')
-    B = bsxfun(@rdivide, w', B); % w(k)/(y(j)-x(k))
+    B = bsxfun(@rdivide, w, B); % w(k)/(y(j)-x(k))
     c = 1./sum(B, 2);            % Normalisation ('denom' in bary-speak).
     B = bsxfun(@times, B, c);
     
