@@ -162,7 +162,7 @@ tailErr = min(minPrec, eps*testLength^(2/3));
 % [TODO]: This is highly experimental!
 % Approximate gradient of the function:
 coeffsDer = computeDerCoeffs(coeffs);
-grad = max(sum(abs(coeffsDer)))/max(sum(abs(coeffs)));
+grad = max(sum(abs(coeffsDer)))/max(abs(coeffs(:)));
 gradErr = min(minPrec, eps*grad/log(n));
 
 % Choose maximum between prescribed tolerance and estimated rounding errors:
