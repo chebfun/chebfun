@@ -14,7 +14,7 @@ v = chebtech1.chebpolyval(c);
 pass(1) = (c == v);
 
 %%
-% Some simple data 
+% Simple data (even case)
 c = (1:6).';
 % Exact values
 vTrue = [ -3*sqrt(6)/2-5/sqrt(2)+2*sqrt(3)+7 ; 4 - sqrt(2)/2 ; -3*sqrt(6)/2+5/sqrt(2)-2*sqrt(3)+7 ; 3*sqrt(6)/2-5/sqrt(2)-2*sqrt(3)+7 ; 4 + sqrt(2)/2 ; 3*sqrt(6)/2+5/sqrt(2)+2*sqrt(3)+7];
@@ -40,6 +40,35 @@ pass(6) = norm(v - (1+1i)*vTrue, inf) < tol;
 % Test for array input
 v = chebtech1.chebpolyval([c, -c]);
 pass(7) = norm(v(:,1) - vTrue, inf) < tol && ...
+          norm(v(:,2) + vTrue, inf) < tol;
+      
+%%
+% Simple data (odd case)
+c = (1:5).';
+% Exact values
+vTrue = [ 11/2+sqrt(5)-2*sqrt((5+sqrt(5))/2)-sqrt((5-sqrt(5))/2) ; 11/2-sqrt(5)-2*sqrt((5-sqrt(5))/2)+sqrt((5+sqrt(5))/2) ; 3 ; 11/2-sqrt(5)+2*sqrt((5-sqrt(5))/2)-sqrt((5+sqrt(5))/2) ; 11/2+sqrt(5)+2*sqrt((5+sqrt(5))/2)+sqrt((5-sqrt(5))/2) ];
+
+%%
+% Test real branch
+v = chebtech1.chebpolyval(c);
+pass(8) = norm(v - vTrue, inf) < tol;
+pass(9) = ~any(imag(v));
+
+%%
+% Test imaginary branch
+v = chebtech1.chebpolyval(1i*c);
+pass(10) = norm(v - 1i*vTrue, inf) < tol;
+pass(11) = ~any(real(v));
+
+%%
+% Test general branch
+v = chebtech1.chebpolyval((1+1i)*c);
+pass(12) = norm(v - (1+1i)*vTrue, inf) < tol;
+
+%%
+% Test for array input
+v = chebtech1.chebpolyval([c, -c]);
+pass(13) = norm(v(:,1) - vTrue, inf) < tol && ...
           norm(v(:,2) + vTrue, inf) < tol;
       
 end
