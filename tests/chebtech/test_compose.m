@@ -47,7 +47,8 @@ for n = 1:3
     f1 = testclass.make(@(x) sin(x));
     f2 = testclass.make(@(x) cos(x));
     g = compose(f1, @plus, f2, pref);
-    h = testclass.make(@(x) sin(x) + cos(x));
+    x = g.points;
+    h = testclass.make(sin(x) + cos(x));
     pass(n, 5) = norm(h.values - g.values, inf) < tol;
     
     % Compose 2 multivalued CHEBTECH objects with a binary function:

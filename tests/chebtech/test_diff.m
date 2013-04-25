@@ -35,7 +35,7 @@ for n = 1:2
     df = diff(f);
     df_exact = @(x) 1./(1 + x.^2);
     err = df_exact(x) - feval(df, x);
-    pass(n, 2) = (norm(err, inf) < tol);
+    pass(n, 2) = (norm(err, inf) < 10*tol);
     
     f = testclass.make(@(x) sin(x), [], [], pref);
     df = diff(f);
