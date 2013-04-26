@@ -1,5 +1,5 @@
 function out = isnan(f)
-%ISNAN   Test if a BNDFUN is has any NaN values.
+%ISNAN   Test if a FUN is has any NaN values.
 %   ISNAN(F) returns TRUE if F has any NaN values and FALSE otherwise.
 %
 % See also ISFINITE, ISINF.

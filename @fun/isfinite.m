@@ -1,5 +1,5 @@
 function out = isfinite(f)
-%ISFINITE   Test if a BNDFUN is bounded.
+%ISFINITE   Test if a FUN is bounded.
 %   ISFINITE(F) returns FALSE if F has any infinite values and TRUE otherwise.
 %
 % See also ISINF, ISNAN.

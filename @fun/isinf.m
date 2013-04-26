@@ -1,5 +1,5 @@
 function out = isinf(f)
-%ISINF   Test if a BNDFUN is unbounded.
+%ISINF   Test if a FUN is unbounded.
 %   ISINF(F) returns TRUE if F has any infinite values and FALSE otherwise.
 %
 % See also ISFINITE, ISNAN.
