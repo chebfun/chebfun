@@ -1,7 +1,7 @@
 function [minVal, minPos] = min(f)
-%MIN   Global minimum of a BNDFUN on [a,b].
-%   MINVAL = MIN(F) returns the global minimum of the BNDFUN F on [a,b].  If
-%   F is a array-valued BNDFUN, MINVAL is a row vector whose Kth entry is the
+%MIN   Global minimum of a FUN on [a,b].
+%   MINVAL = MIN(F) returns the global minimum of the FUN F on [a,b].  If
+%   F is a array-valued FUN, MINVAL is a row vector whose Kth entry is the
 %   global minimum of the Kth column of F.
 %
 %   [MINVAL, MINPOS] = MIN(F) returns also a value such that MINVAL = F(MINPOS).

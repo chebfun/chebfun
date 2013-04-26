@@ -1,4 +1,5 @@
 function map = linear(ends)
+% TODO: Why do we need a fun/linear method?
 %LINEARMAP creates a map structure for chebfuns
 %   MAP = LINEARMAP(ENDS) returns a structure that defines a linear map. 
 %   The structure MAP consists of three function handles and one string.

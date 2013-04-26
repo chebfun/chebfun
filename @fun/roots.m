@@ -1,13 +1,13 @@
 function r = roots(f, varargin)
-%ROOTS   Roots of a BNDFUN in the interval [a,b].
-%   ROOTS(F) returns the real roots of the CHEBTECH F in the interval [-1,1].
+%ROOTS   Roots of a FUN in the interval [a,b].
+%   ROOTS(F) returns the real roots of the CHEBTECH F in the interval [a,b].
 %
 %   ROOTS(F, PROP1, VAL1, PROP2, VAL2, ...) modifies the default ROOTS
 %   properties. The PROPs (strings) and VALs may be any of the following:
 %
 %   ALL: 
-%       [0] - Return only real-valued roots in [-1,1].
-%        1  - Return roots outside of [-1,1] (including complex roots).
+%       [0] - Return only real-valued roots in [a,b].
+%        1  - Return roots outside of [a,b] (including complex roots).
 %
 %   RECURSE:
 %        0  - Compute roots without bisection (slower).
@@ -36,7 +36,7 @@ if ( isempty(f) )
 end
 
 % Find the roots of the onefun of f
-r11 = roots(f.onefun);
+r11 = roots(f.onefun,varargin);
 
 % Map the roots found on [-1,1] to the interval [a,b]
 r = f.mapping.for(r11);

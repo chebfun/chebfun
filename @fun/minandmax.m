@@ -1,10 +1,10 @@
 function [vals, pos] = minandmax(f)
-%MINANDMAX   Global minimum and maximum of a BNDFUN on [a,b].
+%MINANDMAX   Global minimum and maximum of a FUN on [a,b].
 %   VALS = MINANDMAX(F) returns a 2-vector VALS = [MIN(F); MAX(F)] with the
-%   global minimum and maximum of the BNDFUN F on [a,b].  If F is a
-%   array-valued BNDFUN, VALS is a 2-by-N matrix, where N is the number of
-%   columns of F.  VALS(1, K) is the global minimum of the Kth column of F on
-%   [a,b], and VALS(2, K) is the global maximum of the same.
+%   global minimum and maximum of the FUN F on [a,b].  If F is a array-valued
+%   FUN, VALS is a 2-by-N matrix, where N is the number of columns of F.
+%   VALS(1, K) is the global minimum of the Kth column of F on [a,b], and
+%   VALS(2, K) is the global maximum of the same.
 %
 %   [VALS, POS] = MINANDMAX(F) returns also the 2-vector POS where the minimum
 %   and maximum of F occur.

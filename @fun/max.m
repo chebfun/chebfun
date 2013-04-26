@@ -1,8 +1,8 @@
 function [maxVal, maxPos] = max(f)
-%MAX   Global maximum of a BNDFUN on [-1,1].
-%   MAXVAL = MAX(F) returns the global maximum of the BNDFUN F on [a,b].  If
-%   F is a array-valued BNDFUN, MAXVAL is a row vector whose Kth entry is the
-%   global maximum of the Kth column of F.
+%MAX   Global maximum of a FUN on [a,b].
+%   MAXVAL = MAX(F) returns the global maximum of the FUN F on [a,b].  If F is a
+%   array-valued FUN, MAXVAL is a row vector whose Kth entry is the global
+%   maximum of the Kth column of F.
 %
 %   [MAXVAL, MAXPOS] = MAX(F) returns also a value such that MAXVAL = F(MAXPOS).
 %
