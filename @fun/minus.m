@@ -1,6 +1,6 @@
 function f = minus(f, g)
-%-	Subtraction of two BNDFUN objects.
-%   F - G subtracts G from F, where F and G may be BNDFUN objects or
+%-	Subtraction of two FUN objects.
+%   F - G subtracts G from F, where F and G may be FUN objects or
 %   scalars.
 %
 % See also PLUS, UMINUS.

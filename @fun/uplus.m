@@ -1,5 +1,5 @@
 function f = uplus(f)
-%UMINUS   Unary plus of a BNDFUN.
+%UMINUS   Unary plus of a FUN.
 %   UPLUS(F) = F.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 

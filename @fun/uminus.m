@@ -1,5 +1,5 @@
 function f = uminus(f)
-%UMINUS   Unary minus of a BNDFUN.
+%UMINUS   Unary minus of a FUN.
 %   UMINUS(F) is the negative of F.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
