@@ -9,7 +9,7 @@ classdef chebtech1 < chebtech
 %   CHEBTECH1(OP) constructs a CHEBTECH1 object from the function handle OP. OP
 %   should be vectorized (i.e., accept a vector input) and ouput a vector of
 %   the same length. CHEBTECH1 objects allow for vectorised construction (i.e.,
-%   of multi-valued function), in which case OP should accept a vector of length
+%   of array-valued function), in which case OP should accept a vector of length
 %   N and return a matrix of size NxM, where M is number of columns of the multi
 %   -valued function.
 %
