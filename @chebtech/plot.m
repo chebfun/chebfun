@@ -35,6 +35,9 @@ function varargout = plot(f, varargin)
 %   [H1, H2] returns a second vector of column handles, this time for each of
 %   the marker plots.
 
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Deal with an empty input:
 if ( isempty(f) )
     if ( nargout == 1 )
@@ -46,12 +49,13 @@ end
 % Store the hold state of the current axis:
 holdState = ishold;
 
+% Get the data from PLOTDATA():
+data = plotData(f);
+
 %%
-% Plot the curve (prolonging is faster than evaluating on a equispaced grid):
-npts = max(2001, round(2*pi*length(f)));
-xx = f.chebpts(npts);
-g = prolong(f, npts);
-ff = g.values;
+% Plot the curve:
+xx = data{1};
+ff = data{2};
 if ( isreal(ff) )
     h1 = plot(xx, ff, varargin{:}); 
 else
@@ -63,8 +67,8 @@ hold on
 %%
 
 % Plot the points:
-xk = f.chebpts(length(f));
-fk = f.values;
+xk = data{3};
+fk = data{4};
 if ( isreal(ff) )
     h2 = plot(xk, fk, varargin{:});
 else
