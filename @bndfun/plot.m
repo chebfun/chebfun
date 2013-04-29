@@ -45,13 +45,13 @@ end
 % Store the hold state of the current axis:
 holdState = ishold;
 
+% Get the data for plotting:
+data = plotData(f);
+
 %%
-% Plot the curve, evaluating at an equispaced grid
-% TODO: Introduce a "plotData" method ad the onefun level, to supply points and
-% values for pointing more quickly (e.g., in the chebtech case, we'd like to use
-% prolong).
-xx = linspace(f.domain(1), f.domain(2), 2001).';
-ff = feval(f, xx);
+% Plot the curve:
+xx = data{1};
+ff = data{2};
 if ( isreal(ff) )
     h1 = plot(xx, ff, varargin{:}); 
 else
@@ -63,8 +63,8 @@ hold on
 %%
 
 % Plot the points:
-xk = get(f, 'points');
-fk = get(f, 'values');
+xk = data{3};
+fk = data{4};
 if ( isreal(ff) )
     h2 = plot(xk, fk, varargin{:});
 else
@@ -73,7 +73,7 @@ end
 
 % Change the style accordingly:
 set(h2,'LineStyle', 'none')
-if ( all(strcmp(get(h2, 'Marker'),'none')) ) && length(f) < 257
+if ( all(strcmp(get(h2, 'Marker'), 'none')) ) && length(f) < 257
     set(h2,'Marker', 'o')
 end
 
