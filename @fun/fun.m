@@ -58,7 +58,7 @@ classdef fun % (Abstract)
             if ( nargin < 4 )
                 vscale = 0;
             end
-
+            
             % Call constructor depending on domain:
             if ( ~any(isinf(domain)) )
                 pref = bndfun.pref(pref, pref.fun);
@@ -79,7 +79,10 @@ classdef fun % (Abstract)
         prefs = pref(varargin);
         
         % Linear map from [-1, 1] to bounded domain.
-        m = linear(domain);  
+        m = linear(domain); 
+        
+        % Noninear map from [-1, 1] to an unbounded domain.
+        m = unbounded(domain); 
         
         % Edge detector.
         [edge, vscale] = detectedge(op, domain, hscale, vscale, pref, d)

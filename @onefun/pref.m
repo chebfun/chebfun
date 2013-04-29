@@ -46,9 +46,11 @@ if ( numel(varargin) > 0 && isstruct(varargin{1}) ) % Yes
     r = varargin{1};
     varargin(1) = [];
     for names = fieldnames(r).'
+        field = names{:};
         if isfield(p,names)
-            field = names{:};
             p.(field) = r.(field);
+        else
+            q.(field) = r.(field);
         end
     end
 end

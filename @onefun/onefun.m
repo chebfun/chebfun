@@ -85,7 +85,7 @@ classdef onefun % (Abstract)
                 % Merge:
                 pref = onefun.pref(pref);
             end
-
+       
             % Call the relevent constructor:
             if ( isa(op, 'onefun') )
                 % OP is already a ONEFUN!

@@ -30,13 +30,12 @@ if ( isfield(prefs,'misc') )
 else
     q = struct();
 end
-% q is now the preference substructure for MISC preferences
-
+% q is now the preference substructure for MISC preferencesf
 for names = fieldnames(q)'
-    if isfield(p,names)
+    if ( isfield(p,names) )
         field = names{:};
         p.(field) = q.(field);
-        q = rmfield(q,field);
+        q = rmfield(q, field);
     end
 end
 
@@ -45,9 +44,11 @@ if ( numel(varargin) > 0 && isstruct(varargin{1}) ) % Yes
     r = varargin{1};
     varargin(1) = [];
     for names = fieldnames(r).'
-        if isfield(p,names)
-            field = names{:};
+        field = names{:};
+        if ( isfield(p, names) )
             p.(field) = r.(field);
+        else
+            q.(field) = r.(field);
         end
     end
 end
@@ -58,7 +59,7 @@ if ( numel(varargin) == 1 )
     return
 end
 
-% Property names have been passed, so alter/add FUNCHEB2/MISC properties.
+% Property names have been passed, so alter/add SMOOTHFUN/MISC properties.
 for k = 1:2:numel(varargin)
     if ( isfield(p, varargin{k}) )
         p.(varargin{k}) = varargin{k+1};
@@ -67,7 +68,7 @@ for k = 1:2:numel(varargin)
     end
 end
 
-% Append FUNCHEB2 preferences to the prefence structure prefs for output.
+% Append SMOOTHFUN preferences to the prefence structure prefs for output.
 prefs.(classname) = p;
 
 % Append MISC preferences to the prefence structure prefs for output.
