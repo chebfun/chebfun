@@ -25,7 +25,7 @@ for n = 1:2
     f = testclass.make(@(x) sin(x), [], [], p);
     pass(n, 3) = isreal(f);
     
-    % Test a multi-valued function:
+    % Test an array-valued function:
     f = testclass.make(@(x) [sin(x) + 1i*cos(x), exp(x)], [], [], p);
     pass(n, 4) = ~isreal(f);
     

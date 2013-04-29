@@ -72,7 +72,7 @@ for n = 1:2
     r2 = roots(f, 'complex', 1);
     pass(n, 8) = numel(r1) == 383 & numel(r2) >= 383;
 
-    %% Test a multi-valued function:
+    %% Test an array-valued function:
     f = testclass.make(@(x) [sin(pi*x), cos(pi*x)], [], [], pref);
     r = roots(f);
     r2 = [-1 0 1 -.5 .5 NaN].';

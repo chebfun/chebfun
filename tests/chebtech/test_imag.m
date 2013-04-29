@@ -23,7 +23,7 @@ for n = 1:2
     h = prolong(h, length(g));
     pass(n, 1) = norm(h.values - g.values, inf) < tol;
     
-    % Test a multi-valued function:
+    % Test an array-valued function:
     f = testclass.make(@(x) [exp(x) + 1i*sin(x), -exp(1i*x)], [], [], pref);
     g = testclass.make(@(x) [sin(x), -imag(exp(1i*x))], [], [], pref);
     h = imag(f);
@@ -35,7 +35,7 @@ for n = 1:2
     g = imag(f);
     pass(n, 3) = numel(g.values) == 1 && g.values == 0;
     
-    % Test a multivalued real function:
+    % Test an array-valued real function:
     f = testclass.make(@(x) [cos(x), sin(x), exp(x)], [], [], pref);
     g = imag(f);
     pass(n, 4) = all(size(g.values) == [1, 3]) && all(g.values == 0);

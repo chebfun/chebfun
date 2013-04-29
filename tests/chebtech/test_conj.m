@@ -22,7 +22,7 @@ for n = 1:2
     h = conj(f);
     pass(n, 1) = norm(h.values - g.values, inf) < tol;
     
-    % Test a multi-valued function:
+    % Test an array-valued function:
     f = testclass.make(@(x) [cos(x) + 1i*sin(x), -exp(1i*x)], [], [], pref);
     g = testclass.make(@(x) cos(x) - 1i*sin(x), [], [], pref);
     h = conj(f);
