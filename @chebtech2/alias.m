@@ -1,9 +1,9 @@
 function coeffs = alias(coeffs, m)
 %ALIAS   Alias Chebyshev coefficients on the 2nd kind Chebyshev grid.
-%   ALIAS(C, M) aliases the Chebyshev coefficients stored in the column
-%   vector C to have length M. If M > LENGTH(C), the coefficients are padded
-%   with zeros. If C is a matrix of coefficients, each of the columns is aliased
-%   to length M.
+%   ALIAS(C, M) aliases the Chebyshev coefficients stored in the column vector C
+%   to have length M. If M > LENGTH(C), the coefficients are padded with zeros.
+%   If C is a matrix of coefficients, each of the columns is aliased to length
+%   M.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

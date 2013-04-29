@@ -9,6 +9,8 @@ end
 % Set the tolerance:
 tol = 100*pref.chebtech.eps;
 
+pass = zeros(1, 4); % Pre-allocate pass matrix
+
 %%
 % Test on a scalar-valued function:
 pref.chebtech.refinementFunction = 'default';

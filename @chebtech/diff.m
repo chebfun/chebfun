@@ -14,15 +14,17 @@ function f = diff(f, k, dim)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % If the CHEBTECH G of length n is represented as
-%       \sum_{r=0}^{n-1} C_r T_r(x)
+%       \sum_{r=0}^{n-1} b_r T_r(x)
 % its derivative is represented with a CHEBTECH of length n-1 given by
-%       \sum_{r=0}^{n-2} c_r T_r (x)
+%       \sum_{r=0}^{n-2} c_r T_r(x)
 % where c_0 is determined by
-%       c_0 = c_2/2 + C_1;
+%       c_0 = c_2/2 + b_1;
 % and for r > 0,
-%       c_r = c_{r+2} + 2*(r+1)*C_{r+1},
+%       c_r = c_{r+2} + 2*(r+1)*b_{r+1},
 % with c_n = c_{n+1} = 0.
-% (See "Chebyshev Polynomials" by Mason and Handscomb, CRC 2002, p. 34.)
+%
+% [Reference]: Page 34 of Mason & Handscomb, "Chebyshev Polynomials". Chapman &
+% Hall/CRC (2003).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Check the inputs:
@@ -33,7 +35,7 @@ if ( isempty(f) )
 end
 
 if ( nargin < 2 || isempty(k) )
-    % Assume 1st derivative by default:
+    % Order of derivative not passed in. Assume 1st derivative by default:
     k = 1; 
 elseif ( k == 0 )
     % Nothing to do here!
@@ -69,6 +71,13 @@ n = size(f.values,1);
 % Get the coefficients:
 c = f.coeffs;
 
+% If k >= n, we know the result will be the zero function:
+if ( k >= n ) 
+    z = zeros(size(f, 2));
+    f = f.make(z, z, f.hscale);
+    return
+end
+
 % Loop for higher derivatives:
 while ( k > 0 )
     % Decrease k
@@ -81,7 +90,7 @@ while ( k > 0 )
     end
     
     % Compute new coefficients using recurrence:
-    c = newcoeffs_der(c);
+    c = computeDerCoeffs(c);
     
     c(abs(c)<f.epslevel) = 0;
     
@@ -91,15 +100,8 @@ while ( k > 0 )
     % Update:
     v = f.chebpolyval(c);
     
-% [TODO] If these should be retained, please add a comment explaining. 
-%     mu = -1/n*log(f.epslevel);
-%     M = f.vscale;
-%     f.epslevel =  4*sqrt(sinh(mu)/M)*n*log(n)*f.epslevel*f.vscale;
-    
-%     rho = exp(mu);
-%     phi = sqrt(rho^4+1)/(rho-1).^2;
-%     f.epslevel =  (f.epslevel*f.vscale)*(rho-1)*phi*n/sinh(mu)*coth(mu*n)/max(abs(v), [], 1);
-    
+    % Update epslevel and the vertical scale: (See CHEBTECH CLASSDEF file for
+    % documentation)
     f.epslevel = n*log(n)*f.epslevel*f.vscale;
     f.vscale = max(abs(v), [], 1);
 end
@@ -108,22 +110,13 @@ end
 f.coeffs = c;
 f.values = v;
 
-% Compute new values:
-% f.values = f.chebpolyval(c);
-
-% [TODO] If these should be retained, please add a comment explaining. 
-% % Update the vertical scale:
-% % f.vscale = max(f.vscale, max(abs(f.values), [], 1));
-% f.vscale = max(abs(f.values), [], 1);
-
 end
       
-%%
-% Recurrence relation for coefficients of derivative.
-function cout = newcoeffs_der(c)
-    % C is the vector of coefficients of a Chebyshev polynomial.
-    % COUT are the coefficients of its derivative.
-% [TODO] These comments should be updated to explain the vectorised case.
+function cout = computeDerCoeffs(c)
+%COMPUTEDERCOEFFS   Recurrence relation for coefficients of derivative.
+%   C is the matrix of Chebyshev coefficients of a (possibly array-valued)
+%   CHEBTECH object.  COUT is the matrix of coefficients for a CHEBTECH object
+%   whose columns are the derivatives of those of the original.
     
     [n, m] = size(c);
     cout = zeros(n+1, m);                     % Initialize vector {c_r}

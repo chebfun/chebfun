@@ -6,7 +6,7 @@ function values = chebpolyval(coeffs)
 %   C(1,1)*T_{N-1}(x_i) + C(2,1)*T_{N-2}(x_i) + ... + C(N,1), where the x_i are
 %   2nd-kind Chebyshev nodes.
 %
-%   If the input C is an (N+1)*M matrix then V = CHEBPOLYVAL(C) returns the
+%   If the input C is an (N+1)xM matrix then V = CHEBPOLYVAL(C) returns the
 %   (N+1)xM matrix of values V such that V(i,j) = P_j(x_i) = C(1,j)*T_{N-1}(x_i)
 %   + C(2,j)*T_{N-2}(x_i) + ... + C(N,j)
 %

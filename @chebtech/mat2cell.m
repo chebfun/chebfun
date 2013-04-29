@@ -1,11 +1,11 @@
 function g = mat2cell(f, M, N)
-%MAT2CELL   Convert a vector-valued CHEBTECH into an ARRAY of CHEBTECH objects.
+%MAT2CELL   Convert an array-valued CHEBTECH into an array of CHEBTECH objects.
 %
-%   G = MAT2CELL(F, C) breaks up the vector-valued CHEBTECH F into a single row
+%   G = MAT2CELL(F, C) breaks up the array-valued CHEBTECH F into a single row
 %   cell array G of CHEBTECH objects. C is the vector of column sizes, and if F
 %   has COL columns this must sum to COL. The elements of C determine the size
 %   of each cell in G, subject to the following formula for I = 1:LENGTH(C),
-%   SIZE(C{I},2) == C(I).
+%   SIZE(G{I},2) == C(I).
 %
 %   G = MAT2CELL(F) will assume that C = ones(1, COL).
 %
@@ -42,17 +42,17 @@ end
 
 if ( ~isscalar(M) || (M ~= 1) )
     error('CHEBFUN:CHEBTECH:mat2cell:size', ...
-        ['Input arguments, D1 through D2, must sum to each dimension of the', ...
+        ['Input arguments M and N must sum to each dimension of the', ...
         ' input matrix size, [1,%d].'], size(f.values, 2));
 end
 
 % Split the values and the coefficients into cells of the correct size:
-values = mat2cell(f.values, n*M, N);
-coeffs = mat2cell(f.coeffs, n*M, N);
-vscale = mat2cell(f.vscale, M, N);
+values = mat2cell(f.values, n, N);
+coeffs = mat2cell(f.coeffs, n, N);
+vscale = mat2cell(f.vscale, 1, N);
 
 % Initialise the CHEBTECH array:
-g(numel(M),numel(N)) = f.make();
+g(1,numel(N)) = f.make();
 
 % Append the data to the new entries in the array:
 for k = 1:numel(N)

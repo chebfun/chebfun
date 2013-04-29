@@ -5,6 +5,8 @@ function pass = test_chebpts(varargin)
 % Set a tolerance (pref.eps doesn't matter)
 tol = 10*eps;
 
+pass = zeros(1, 11); % Pre-allocate pass matrix.
+
 % Test that n = 0 returns empty results:
 [x, w, v] = chebtech2.chebpts(0);
 pass(1) = ( isempty(x) && isempty(w) && isempty(v) );

@@ -6,7 +6,8 @@ if ( nargin < 1 )
     pref = chebtech.pref;
 end
 
-for ( n = 1:2 )
+pass = zeros(2, 9); % Pre-allocate pass matrix
+for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();
     else 
@@ -69,9 +70,9 @@ for ( n = 1:2 )
     f = testclass.make(@(x) sin(100*pi*x));
     r1 = roots(f, 'complex', 1, 'recurse', 0);
     r2 = roots(f, 'complex', 1);
-    pass(n, 8) = numel(r1) == 381 & numel(r2) >= 381;
+    pass(n, 8) = numel(r1) == 383 & numel(r2) >= 383;
 
-    %% Test a multi-valued function:
+    %% Test an array-valued function:
     f = testclass.make(@(x) [sin(pi*x), cos(pi*x)], [], [], pref);
     r = roots(f);
     r2 = [-1 0 1 -.5 .5 NaN].';

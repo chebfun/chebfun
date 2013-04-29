@@ -15,13 +15,13 @@ function fx = bary(x, fvals, xk, vk)
 sizex = size(x);
 ndimsx = ndims(x);
 
-if ( ~all(size(x)) )
+if ( ~all(sizex) )
     fx = x;
     return
 end
 
 % Check that input is a column vector:
-if ( ndimsx > 2 || sizex(2) > 1 ) 
+if ( (ndimsx > 2) || (sizex(2) > 1) ) 
     warning('CHEBFUN:chebtech:bary:colvec', 'Input should be a column vector.');
     x = x(:);
 end

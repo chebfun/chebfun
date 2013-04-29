@@ -1,4 +1,4 @@
-% Test file for chebtech/mldivide.
+% Test file for chebtech/mldivide.m
 
 function pass = test_mldivide(pref)
 
@@ -10,7 +10,8 @@ end
 % Set a tolerance.  (pref.eps does not matter here.)
 tol = 10*eps;
 
-for ( n = 1:2 )
+pass = zeros(2, 6); % Pre-allocate pass matrix
+for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();
     else 
@@ -47,7 +48,7 @@ for ( n = 1:2 )
     % mldivide doesn't work between a CHEBTECH and a non-CHEBTECH.
     try
         f = testclass.make(@(x) [sin(x) cos(x) exp(x)], [], [], pref);
-        f \ 2;
+        f \ 2; %#ok<VUNUS>
         pass(n, 6) = 0;
     catch ME
         pass(n, 6) = strcmp(ME.identifier, ...

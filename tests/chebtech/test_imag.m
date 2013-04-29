@@ -1,4 +1,4 @@
-% Test file for chebtech/imag.
+% Test file for chebtech/imag.m
 
 function pass = test_imag(pref)
 
@@ -8,7 +8,8 @@ end
 
 tol = 10*pref.chebtech.eps;
 
-for ( n = 1:2 )
+pass = zeros(2, 4); % Pre-allocate pass matrix
+for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();
     else 
@@ -16,14 +17,14 @@ for ( n = 1:2 )
     end
 
     % Test a scalar-valued function:
-    f = testclass.make(@(x) cos(x) + 1i*sin(x), [], [], pref);
+    f = testclass.make(@(x) exp(x) + 1i*sin(x), [], [], pref);
     g = testclass.make(@(x) sin(x), [], [], pref);
     h = imag(f);
     h = prolong(h, length(g));
     pass(n, 1) = norm(h.values - g.values, inf) < tol;
     
-    % Test a multi-valued function:
-    f = testclass.make(@(x) [cos(x) + 1i*sin(x), -exp(1i*x)], [], [], pref);
+    % Test an array-valued function:
+    f = testclass.make(@(x) [exp(x) + 1i*sin(x), -exp(1i*x)], [], [], pref);
     g = testclass.make(@(x) [sin(x), -imag(exp(1i*x))], [], [], pref);
     h = imag(f);
     h = prolong(h, length(g));
@@ -34,7 +35,7 @@ for ( n = 1:2 )
     g = imag(f);
     pass(n, 3) = numel(g.values) == 1 && g.values == 0;
     
-    % Test a multivalued real function:
+    % Test an array-valued real function:
     f = testclass.make(@(x) [cos(x), sin(x), exp(x)], [], [], pref);
     g = imag(f);
     pass(n, 4) = all(size(g.values) == [1, 3]) && all(g.values == 0);

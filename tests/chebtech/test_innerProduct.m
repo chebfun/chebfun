@@ -10,11 +10,12 @@ end
 % Set a tolerance.  (pref.eps doesn't matter here.)
 tol = 10*eps;
 
-% Random numbers to use as arbitrary multiplicative constants.
+% Fixed arbitrary numbers to use as multiplicative constants.
 alpha = -0.194758928283640 + 0.075474485412665i;
 beta = -0.526634844879922 - 0.685484380523668i;
 
-for ( n = 1:2 )
+pass = zeros(2, 11); % Pre-allocate pass matrix
+for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();
     else 
@@ -77,7 +78,7 @@ for ( n = 1:2 )
     ip = innerProduct(f, g);
     exact = [0.663493666631241 0                 -0.135033172317858;
              1.933421496200713 1.365866063614065  0.592109441404267];
-    pass(n, 10) = norm(ip(:) - exact(:), 'inf') < 10*max(f.epslevel, ...
+    pass(n, 10) = norm(ip(:) - exact(:), inf) < 10*max(f.epslevel, ...
         g.epslevel);
     
     %%
@@ -85,11 +86,11 @@ for ( n = 1:2 )
     
     % Can't take the inner product of a chebtech and a non-chebtech.
     try
-        ip = innerProduct(f, 2);
+        ip = innerProduct(f, 2); %#ok<NASGU>
         pass(n, 11) = false;
     catch ME
         pass(n, 11) = strcmp(ME.identifier, ...
-            'CHEBFUN:CHEBTECH:InnerProduct:input');
+            'CHEBFUN:CHEBTECH:innerProduct:input');
     end
 
 end

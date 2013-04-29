@@ -5,6 +5,8 @@ function pass = test_alias(varargin)
 % Set a tolerance (pref.eps doesn't matter)
 tol = 2e2*eps;
 
+pass = zeros(1, 11); % Pre-allocate pass matrix
+
 %%
 % Testing a vector of coefficients.
 c0 = (1:10)';

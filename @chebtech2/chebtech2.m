@@ -9,7 +9,7 @@ classdef chebtech2 < chebtech
 %   CHEBTECH2(OP) constructs a CHEBTECH2 object from the function handle OP. OP
 %   should be vectorised (i.e., accept a vector input) and ouput a vector of the
 %   same length. CHEBTECH2 objects allow for vectorised construction (i.e., of a
-%   multi-valued function), in which case OP should accept a column vector of
+%   array-valued function), in which case OP should accept a column vector of
 %   length N and return a matrix of size NxM.
 %
 %   CHEBTECH2(OP, VSCALE) constructs a CHEBTECH2 with 'happiness' (see
@@ -25,7 +25,8 @@ classdef chebtech2 < chebtech
 %   values in the columns of VALUES at 2nd-kind Chebyshev points and
 %   CHEBTECH2({VALUES, COEFFS}, ... ) uses the Chebyshev coefficients passed in
 %   COEFFS rather than computing them from VALUES. If VALUES, is empty then the
-%   CHEBTECH2 is constructed directly from the COEFFS.
+%   CHEBTECH2 is constructed directly from the COEFFS. If COEFFS are passed, the
+%   resulting CHEBTECH2 is always deemed 'happy'.
 %
 % Examples:
 %   % Basic construction:
@@ -85,7 +86,7 @@ classdef chebtech2 < chebtech
                 pref = chebtech.pref(pref);
             end
 
-            % Force nonadaptive construction if PREF.CHEBTECH2.N is numeric:
+            % Force nonadaptive construction if PREF.CHEBTECH.N is numeric:
             if ( ~isempty(pref.chebtech.n) && ~isnan(pref.chebtech.n) )
                 % Evaluate op on the Chebyshev grid of given size:
                 op = feval(op, chebtech2.chebpts(pref.chebtech.n));
@@ -107,7 +108,7 @@ classdef chebtech2 < chebtech
                         'Function returned NaN when evaluated.')
                 end
                 % We make sure not to return NaNs at +1 and -1.
-                valuesTemp = chebtech2.extrapolate(obj.values);
+                valuesTemp = extrapolate(obj);
                 obj.values([1,end],:) = valuesTemp([1,end],:);
             elseif ( any(isnan(obj.values(:))) )
                 % Here we throw an error if NaNs were encountered anywhere.
@@ -125,7 +126,7 @@ classdef chebtech2 < chebtech
         % Aliasing:
         coeffs = alias(coeffs, m)
         
-        % Evaluate a Chebyshev interpolant using 2nd form barycentric formula:
+        % Evaluate a Chebyshev interpolant using the barycentric formula:
         out = bary(x, values)
         
         % Compute Chebyshev barycentric weights:
@@ -144,11 +145,11 @@ classdef chebtech2 < chebtech
         % Make a CHEBTECH2 (constructor shortcut):
         f = make(varargin);
         
-        % Refinement function for CHEBTECH2 construction (evaluates OP on grid):
-        [values, points, giveUp] = refine(op, values, pref)
-        
         % Compute Chebyshev quadrature weights:
         w = quadwts(n)
+        
+        % Refinement function for CHEBTECH2 construction (evaluates OP on grid):
+        [values, points, giveUp] = refine(op, values, pref)
         
     end
     
@@ -160,9 +161,6 @@ classdef chebtech2 < chebtech
         
         % Get method:
         val = get(f, prop);
-        
-        % Set method:
-%         f = set(f, prop, val); % [TODO]: Do we actually need a set method?
         
     end
     

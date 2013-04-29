@@ -1,4 +1,4 @@
-% Test file for chebtech/sum.
+% Test file for chebtech/sum.m
 
 function pass = test_sum(pref)
 
@@ -10,7 +10,8 @@ end
 % Set a tolerance.
 tol = 10*pref.chebtech.eps;
 
-for ( n = 1:2 )
+pass = zeros(2, 11); % Pre-allocate pass matrix
+for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();
     else 
@@ -70,7 +71,7 @@ for ( n = 1:2 )
     % DIM option with vectorized input.
     g = sum(f, 2);
     h = @(x) sin(x) + x.^2 + exp(1i*x);
-    pass(n, 10) = (norm(feval(g, x) - h(x), 'inf') < tol);
+    pass(n, 10) = (norm(feval(g, x) - h(x), inf) < tol);
 
     % DIM option with non-vectorized input should leave everything alone.
     h = testclass.make(@(x) cos(x));

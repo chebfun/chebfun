@@ -9,10 +9,11 @@ function f = imag(f)
 
 % Compute the imaginary part of the values:
 f.values = imag(f.values);
+f.vscale = max(abs(f.values));
 
 if ( ~any(f.values(:)) )
     % Input was real, so output a zero CHEBTECH:
-    f = f.make(zeros(1, size(f.values, 2)), f.vscale, f.epslevel);
+    f = f.make(zeros(1, size(f.values, 2)), f.vscale, f.hscale);
 else
     % Compute imaginary part of the coefficients:
     f.coeffs = imag(f.coeffs);

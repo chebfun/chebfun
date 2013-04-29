@@ -10,8 +10,9 @@ function f = populate(f, op, vscale, hscale, pref)
 %   then POPULATE was not able to obtain a happy result.
 %
 %   OP should be vectorized (i.e., accept a vector input), and output a vector
-%   of the same length. Furthermore, OP may be a multi-valued function, in which
-%   case it should accept a vector of length N and return a matrix of size NxM.
+%   of the same length. Furthermore, OP may be an array-valued function, in
+%   which case it should accept a vector of length N and return a matrix of size
+%   NxM.
 %
 %   F.POPULATE(OP, VSCALE, HSCALE) enforces that the happiness check is relative
 %   to the initial vertical scale VSCALE and horizontal scale HSCALE. These
@@ -25,7 +26,7 @@ function f = populate(f, op, vscale, hscale, pref)
 %   F.POPULATE(VALUES, ...) (or F.POPULATE({VALUES, COEFFS}, ...)) populates F
 %   non-adaptively with the VALUES (and COEFFS) passed. These values are still
 %   tested for happiness in the same way as described above, but the length of
-%   the representation is not reduced.
+%   the representation is not altered.
 %
 % See also CHEBTECH, PREF, HAPPINESSCHECK.
 
@@ -35,9 +36,9 @@ function f = populate(f, op, vscale, hscale, pref)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % The (adaptive) CHEBTECH construction process is as follows:
 %
-%    --->[REFINE]      [values, flag] = pref.refinementStrategy(op, values, ...
-%   |        |         pref). Allows refinements for: single sampling, 
-%   |        |         resampling, and composition (see refine.m & compose.m).
+%    --->[REFINE]      [values, flag] = pref.refinementFunction(op, values, ...
+%   |        |         pref). Allows refinements for: nested sampling, 
+%   |        |         resampling, and composition (see REFINE.m & COMPOSE.m).
 %   |        v
 %   |  [update VSCALE] VSCALE should only be computed from _sampled_ values, 
 %   |        |         not extrapolated ones.
@@ -49,8 +50,8 @@ function f = populate(f, op, vscale, hscale, pref)
 %   |        |
 %   |        v
 %    -<--[ISHAPPY?]    [ISHAPPY, EPSLEVEL, CUTOFF] = PREF.HAPPINESSCHECK(F, OP,
-%     no     |         PREF). Default check calls CLASSICCHECK() (previously 
-%            | yes     'simplify.m') and SAMPLETEST().
+%     no     |         PREF). Default calls CLASSICCHECK() and SAMPLETEST().
+%            | yes     
 %            v
 %      [alias COEFFS]  COEFFS = ALIAS(COEFFS, CUTOFF)
 %            |
@@ -78,6 +79,10 @@ if ( isnumeric(op) || iscell(op) )
         % OP is just the values.
         f.values = op;
         f.coeffs = f.chebpoly(op);
+        % Update vscale:
+        f.vscale = max(abs(f.values), [], 1);
+        % Check for happiness: (no OP to compare against)
+        [f.ishappy, f.epslevel] = happinessCheck(f, [], pref);
     else                 
         % OP is a cell {values, coeffs}
         f.values = op{1};
@@ -85,11 +90,13 @@ if ( isnumeric(op) || iscell(op) )
         if ( isempty(f.values) )
             f.values = f.chebpolyval(f.coeffs);
         end
+        % Update vscale:
+        f.vscale = max(abs(f.values), [], 1);
+        % We're always happy if given coefficients:
+        f.ishappy = true;
+        f.epslevel = pref.chebtech.eps;
     end
-    % Update vscale:
-    f.vscale = max(abs(f.values), [], 1);
-    % Check for happiness: (no OP to compare against)
-    [f.ishappy, f.epslevel] = happinessCheck(f, [], pref);
+
     return
 end
 

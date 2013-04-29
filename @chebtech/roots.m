@@ -1,5 +1,4 @@
 function out = roots(f, varargin)
-% [TODO]: Why does this code call chebtech2 several times (rather than chebtech) ?
 %ROOTS   Roots of a CHEBTECH in the interval [-1,1].
 %   ROOTS(F) returns the real roots of the CHEBTECH F in the interval [-1,1].
 %
@@ -11,18 +10,14 @@ function out = roots(f, varargin)
 %        1  - Return roots outside of [-1,1] (including complex roots).
 %
 %   RECURSE:
-%        0  - Compute roots without bisection (slower).
-%       [1] - Bisect until length(F) < 50. (fast, but additional complex roots).
+%        0  - Compute roots without interval subdivision (slower).
+%       [1] - Subdivide until length(F) < 50. (causes additional complex roots).
 %
 %   PRUNE:
 %       [0]
 %        1  - Prune 'spurious' complex roots if ALL == 1 and RECURSE == 0.
 %
-%   HSCALE:
-%       [1] - Horizontal scale for adjusting relative tolerances.
-%     double
-%
-%   If F is a vector-valued CHEBTECH then there is no reason to expect each
+%   If F is a array-valued CHEBTECH then there is no reason to expect each
 %   column to have the same number of roots. In order to return a useful output,
 %   the roots of each column are computed and then padded with NaNs so that a
 %   matrix may be returned. The columns of R = ROOTS(F) correspond to the
@@ -32,19 +27,25 @@ function out = roots(f, varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% ROOTS works by recursively bisecting the interval until the resulting CHEBTECH
-% is of degree less than 50, at which point a companion matrix is constructed to
-% compute the roots.
+% ROOTS works by recursively subdividing the interval until the resulting
+% CHEBTECH is of degree less than 50, at which point a colleage matrix is
+% constructed to compute the roots.
 %
 % ROOTS performs all operations in coefficient space. In this representation,
-% two matrices, TLEFT and TRIGHT, are constructed such that TLEFT*C and TRIGHT*C
-% are the coefficients of the polynomials in the left and right intervals
-% respectively. This is faster than evaluating the polynomial using barycentric
-% interpolation in the respective intervals despite both computations requiring
-% O(N^2) operations.
+% two matrices, TLEFT and TRIGHT (both of size 512 by 512), are constructed such
+% that TLEFT*C and TRIGHT*C are the coefficients of the polynomials in the left
+% and right intervals respectively. This is faster than evaluating the
+% polynomial using the barycentric formula or Clenshaw's algorithm in the
+% respective intervals despite both computations requiring O(N^2) operations.
 %
-% For polynomials of degree larger than 512, the interval is bisected by
-% evaluating on the left and right intervals using the Clenshaw algorithm.
+% For polynomials of degree larger than 512, the interval is subdivided by
+% evaluating on the left and right intervals using the Clenshaw algorithm. The
+% subdivision occurs at an arbitrary point _near_ but not _at_ the centre of the
+% domain (in fact, -0.004849834917525 on [-1 1]) to avoid introducing additional
+% suprious roots (since x = 0 is often a special point).
+%
+% Note that ROOTS uses CHEBTECH2 technology to subdivide the interval,
+% regardless of whether F is a CHEBTECH1 or a CHEBTECH2.
 %
 % [Mathematical references]:
 %  * I. J. Good, "The colleague matrix, a Chebyshev analogue of the companion
@@ -64,35 +65,43 @@ if ( isempty(f) )
     return
 end
 
-% Support for vectorised CHEBTECH objects.
-if ( size(f.values, 2) > 1 )
-    % Copy f into g:
-    g = f;
+if ( size(f.values, 2) == 1 )   % F is a scalar-value CHEBTECH.
+    
+    % Simply call roots_scalar():
+    out = roots_scalar(f, varargin{:});
+    
+else                            % Support for vectorised CHEBTECH objects.
 
     % Initialise a cell array to hold roots of each column:
     r = cell(1, size(f.values, 2));
+    
+    % Copy columns of f into an array g:
+    g = mat2cell(f);
 
-    % Loop over the columns:
+    % Loop over the columns of f / elements of g:
     for j = 1:size(f.values, 2)
-        g.values = f.values(:,j);
-        g.coeffs = f.coeffs(:,j);
-        g.vscale = f.vscale(j);
-        r{j} = roots(g, varargin{:}); 
+        r{j} = roots_scalar(g(j), varargin{:}); 
     end
 
     % Find the max length of r:
     mlr = max(cellfun(@length, r)); 
 
     % Pad the columns in r with NaNs:
-    r = cellfun(@(x) [x ; NaN(mlr-length(x), 1)], r, 'UniformOutput', false);
+    r = cellfun(@(x) [x ; NaN(mlr - length(x), 1)], r, 'UniformOutput', false);
 
     % Convert to an array for output:
     out = cell2mat(r);
-    return
+
+end
+    
+
 end
 
+function out = roots_scalar(f, varargin)
+
 % Default preferences:
-rootspref = struct('all', 0, 'recurse', 1, 'prune', 0, 'hscale', 1);
+rootspref = struct('all', 0, 'recurse', 1, 'prune', 0);
+% Subdivision maps [-1,1] into [-1, splitPoint] and [splitPoint, 1].
 splitPoint = -0.004849834917525;   % This is an arbitrary number.
 
 % Filter out the arguments:
@@ -111,9 +120,11 @@ end
 
 % Trivial case for f constant:
 if ( length(f) == 1 )
-    if ( f.values(1) == 0 ) % return a root at centre of domain
+    if ( f.values(1) == 0 )
+        % Return a root at centre of domain:
         out = 0;
     else
+        % Return empty:
         out = [];
     end
     return
@@ -122,10 +133,8 @@ end
 % Get scaled coefficients for the recursive call:
 c = flipud(f.coeffs)/f.vscale;
 
-hscale = rootspref.hscale;
-
 % Call the recursive rootsunit function:
-r = rootsunit_coeffs(c, 100*eps*max(hscale, 1));
+r = rootsunit_coeffs(c, 100*eps*max(f.hscale, 1));
 
 % Prune the roots, if required:
 if ( rootspref.prune && ~rootspref.recurse )
@@ -142,40 +151,51 @@ end
     % c on the unit interval.
 
         % Define these as persistent, need to compute only once.
-        persistent Tleft Tright;
+        persistent Tleft Tright
 
         % Simplify the coefficients:
-        n = length(c);
-        tailMmax = 1e-15*norm(c,1);
-        while ( (n > 1) && (abs(c(n)) <= tailMmax) )
-            n = n - 1; 
-        end
-        
-        % Wrap (i.e., alias), don't just truncate.
+        tailMmax = eps*norm(c, 1);
+        % Find the final coefficient about tailMax:
+        n = find(abs(c) > tailMmax, 1, 'last');
+
+        % [TODO]: Should we alias or truncate here?
+        % Wrap (i.e., alias), don't just truncate:
         if ( (n > 1) && (n < length(c)) )
             c = chebtech2.alias(c(end:-1:1), n);
             c = c(end:-1:1);
         end
 
-        % Trivial case, n == 1
-        if ( n == 1 )
+%         % Truncate the coefficients (rather than alias):
+%         if ( (n > 1) && (n < length(c)) )
+%             c = c(1:n);
+%         end
 
-            % If the function is zero, then place a root in the middle
+        % Trivial case, n == []:
+        if ( isempty(n) )
+            
+            % If the function is zero, then place a root in the middle:
+            r = 0;
+            
+        % Trivial case, n == 1:
+        elseif ( n == 1 )
+
+            % If the function is zero, then place a root in the middle:
             if ( c(1) == 0 )
-                r = 0.0;
+                r = 0;
             else
+                % Else return empty:
                 r = [];
             end
 
-        % Trivial case, n == 2
+        % Trivial case, n == 2:
         elseif ( n == 2 )
 
             % Is the root in [-1,1]?
-            r = -c(1) / c(2);
+            r = -c(1)/c(2);
             if ( ~rootspref.all )
                 if ( (abs(imag(r)) > htol) || ...
-                     (r < -(1+htol)) || ...
-                     (r > (1+htol)) )
+                     (r < -(1 + htol)) || ...
+                     (r > (1 + htol)) )
                     r = [];
                 else
                     r = max(min(real(r), 1), -1);
@@ -188,7 +208,7 @@ end
             % Adjust the coefficients for the colleague matrix:
             c = -0.5 * c(1:end-1) / c(end);
             c(end-1) = c(end-1) + 0.5;
-            oh = 0.5 * ones(length(c)-1,1);
+            oh = 0.5 * ones(length(c)-1, 1);
 
             % Modified colleague matrix:
             A = diag(oh, 1) + diag(oh, -1);
@@ -206,10 +226,10 @@ end
                 r = real( r(mask) );
                 
                 % Keep roots inside [-1 1]:
-                r = sort( r(abs(r) <= 1+2*htol) );
+                r = sort( r(abs(r) <= 1 + htol) );
                 
                 % Correct roots over ends:
-                if ~isempty(r)
+                if ( ~isempty(r) )
                     r(1) = max(r(1), -1);
                     r(end) = min(r(end), 1);
                 end
@@ -217,17 +237,18 @@ end
             % Prune?
             elseif ( rootspref.prune )
                 rho = sqrt(eps)^(-1/n);
-                rho_roots = abs(r+sqrt(r.^2-1));
-                rho_roots(rho_roots < 1) = 1./rho_roots(rho_roots<1);
+                rho_roots = abs(r + sqrt(r.^2 - 1));
+                rho_roots(rho_roots < 1) = 1./rho_roots(rho_roots < 1);
                 r = r(rho_roots <= rho);
             end
-            
-        % Can we compute the new coefficients with a cheap matrix-vector
-        % multiplication?
+
+        % If n <= 513 then we can compute the new coefficients with a
+        % matrix-vector product.
         elseif ( n <= 513 )
-            % Have we assembled the matrices Tleft and Tright?
+            
+            % Have we assembled the matrices TLEFT and TRIGHT?
             if ( isempty(Tleft) )
-                % Create the coefficients for Tleft using the FFT directly:
+                % Create the coefficients for TLEFT using the FFT directly:
                 x = chebptsAB(513, [-1, splitPoint]);
                 Tleft = ones(513); 
                 Tleft(:,2) = x;
@@ -235,10 +256,10 @@ end
                     Tleft(:,k) = 2 * x .* Tleft(:,k-1) - Tleft(:,k-2); 
                 end
                 Tleft = [ Tleft(513:-1:2,:) ; Tleft(1:512,:) ];
-                Tleft = real( fft( Tleft ) / 512 );
+                Tleft = real(fft(Tleft) / 512);
                 Tleft = triu( [ 0.5*Tleft(1,:) ; Tleft(2:512,:) ; 0.5*Tleft(513,:) ] );
 
-                % Create the coefficients for Tright much in the same way:
+                % Create the coefficients for TRIGHT much in the same way:
                 x = chebptsAB(513, [splitPoint,1]);
                 Tright = ones(513); 
                 Tright(:,2) = x;
@@ -246,20 +267,19 @@ end
                     Tright(:,k) = 2 * x .* Tright(:,k-1) - Tright(:,k-2); 
                 end
                 Tright = [ Tright(513:-1:2,:) ; Tright(1:512,:) ];
-                Tright = real( fft( Tright ) / 512 );
+                Tright = real(fft(Tright) / 512);
                 Tright = triu( [ 0.5*Tright(1,:) ; Tright(2:512,:) ; 0.5*Tright(513,:) ] );
-
-            end % isempty(Tleft)
+            end
 
             % Compute the new coefficients:
             cleft = Tleft(1:n,1:n) * c;
             cright = Tright(1:n,1:n) * c;
 
             % Recurse:
-            r = [ (splitPoint - 1)/2 + (splitPoint + 1)/2*rootsunit_coeffs(cleft, 2*htol)
+            r = [ (splitPoint - 1)/2 + (splitPoint + 1)/2*rootsunit_coeffs(cleft, 2*htol) ;
                   (splitPoint + 1)/2 + (1 - splitPoint)/2*rootsunit_coeffs(cright, 2*htol) ];
 
-        % Otherwise, split using more traditional methods:
+        % Otherwise, split using more traditional methods (i.e., Clenshaw):
         else
             
             % Evaluate the polynomial on both intervals:
@@ -270,26 +290,26 @@ end
             cleft = chebtech2.chebpoly(v(1:n));
             cleft = cleft(end:-1:1);
 
-            % Get the coefficients on the right
+            % Get the coefficients on the right:
             cright = chebtech2.chebpoly(v(n+1:end));
             cright = cright(end:-1:1);
 
             % Recurse:
-            r = [ (splitPoint - 1)/2 + (splitPoint + 1)/2*rootsunit_coeffs(cleft, 2*htol)
+            r = [ (splitPoint - 1)/2 + (splitPoint + 1)/2*rootsunit_coeffs(cleft, 2*htol) ;
                   (splitPoint + 1)/2 + (1 - splitPoint)/2*rootsunit_coeffs(cright, 2*htol) ];
 
         end
 
     end
 
-    function y = chebptsAB(n, ab)
-    % Y = CHEBPTSAB(N, [A, B]) is the N-point Chebyshev grid mapped to [A,B].
+end
 
-        a = ab(1);
-        b = ab(2);
-        x = chebtech2.chebpts(n);          % [-1,1] grid
-        y = b*(x + 1)/2 + a*(1 - x)/2;     % new grid
+function y = chebptsAB(n, ab)
+% Y = CHEBPTSAB(N, [A, B]) is the N-point Chebyshev grid mapped to [A,B].
 
-    end
+    a = ab(1);
+    b = ab(2);
+    x = chebtech2.chebpts(n);          % [-1,1] grid
+    y = b*(x + 1)/2 + a*(1 - x)/2;     % new grid
 
 end

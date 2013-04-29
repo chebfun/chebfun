@@ -1,7 +1,7 @@
 function g = cell2mat(f)
-%CELL2MAT   Convert an array of CHEBTECH objects into a vector-valued CHEBTECH.
+%CELL2MAT   Convert an array of CHEBTECH objects into an array-valued CHEBTECH.
 %
-%   G = CELL2MAT(F) converts the CHEBTECH array F into a single vector-valued
+%   G = CELL2MAT(F) converts the CHEBTECH array F into a single array-valued
 %   CHEBTECH G. F should be a vector array (i.e., not a matrix).
 %
 % Example:

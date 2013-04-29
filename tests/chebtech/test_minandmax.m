@@ -1,4 +1,4 @@
-% Test file for chebtech/minandmax.
+% Test file for chebtech/minandmax.m
 
 function pass = test_minandmax(pref)
 
@@ -7,7 +7,8 @@ if ( nargin < 1 )
     pref = chebtech.pref;
 end
 
-for ( n = 1:2 )
+pass = zeros(2, 8); % Pre-allocate pass matrix.
+for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();
     else 
@@ -49,6 +50,18 @@ for ( n = 1:2 )
             break;
         end
     end
+
+    % Test complex-vector-valued CHEBTECH objects.
+    f = chebtech.constructor(@(x) [exp(sin(2*x)), 1i*cos(20*x)]);
+    [vals, pos] = minandmax(f);
+    f1 = chebtech.constructor(@(x) exp(sin(2*x)));
+    [vals1, pos1] = minandmax(f1);
+    f2 = chebtech.constructor(@(x) 1i*cos(20*x));
+    [vals2, pos2] = minandmax(f2);
+    pass(n, 7) = norm(abs(vals) - abs([vals1 vals2]), inf) < 10*f.epslevel;
+    % Note, we don't expect pos(:,2) = pos2 as the min and max are not unique.
+    pass(n, 8) = norm(pos(:,1) - pos1, inf) < 100*f.epslevel;
+
 end
 
 end

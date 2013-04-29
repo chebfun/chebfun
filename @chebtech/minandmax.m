@@ -1,14 +1,19 @@
 function [vals, pos] = minandmax(f)
 %MINANDMAX   Global minimum and maximum on [-1,1].
-%   VAL = MINANDMAX(F) returns a 2-vector VAL = [MIN(F); MAX(F)] with the global
-%   minimum and maximum of the CHEBTECH G on [-1,1].
+%   VALS = MINANDMAX(F) returns a 2-vector VALS = [MIN(F); MAX(F)] with the
+%   global minimum and maximum of the CHEBTECH F on [-1,1].  If F is a
+%   array-valued CHEBTECH, VALS is a 2-by-N matrix, where N is the number of
+%   columns of F.  VALS(1, K) is the global minimum of the Kth column of F on
+%   [-1, 1], and VALS(2, K) is the global maximum of the same.
 %
-%   [VAL, POS] = MINANDMAX(F) returns also the 2-vector POS where the minimum
+%   [VALS, POS] = MINANDMAX(F) returns also the 2-vector POS where the minimum
 %   and maximum of F occur.
 %
 %   If F is complex-valued the absolute values are taken to determine extrema
 %   but the resulting values correspond to those of the original function. That
-%   is, VAL = FEVAL(F, POS) where [~, POS] = MINANDMAX(ABS(F)).
+%   is, VALS = FEVAL(F, POS) where [~, POS] = MINANDMAX(ABS(F)). (In fact,
+%   MINANDMAX actually computes [~, POS] = MINANDMAX(ABS(F).^2), to avoid
+%   introducing singularlities to the function).
 %
 % See also MIN, MAX.
 
@@ -16,13 +21,16 @@ function [vals, pos] = minandmax(f)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( ~isreal(f) )
+    % We compute sqrt(max(|f|^2))to avoid intruducing a singularity.
     realf = real(f);
     imagf = imag(f);
     h = realf.*realf + imagf.*imagf;
     h = simplify(h);
-    [~, pos] = minandmax(h);
+    [ignored, pos] = minandmax(h);
     vals = feval(f, pos);
-    vals = vals(:,1:size(pos,2)+1:end);
+    % FEVAL() will not return a matrix argument of the correct dimensions if f
+    % is array-valued. This line corrects this:
+    vals = vals(:, 1:(size(pos, 2)+1):end);
     return
 end
 
@@ -30,9 +38,9 @@ end
 fp = diff(f);
 
 % Make the Chebyshev grid (used in minandmaxColumn).
-xpts = f.chebpts(length(f));
+xpts = f.points();
 
-% Check if f is a column CHEBTECH:
+% Check if f has only one column (i.e., is not array-valued):
 sizef2 = size(f, 2);
 
 if ( sizef2 == 1)
@@ -45,63 +53,52 @@ else
     % Initialise output vectors:
     pos = zeros(2, sizef2);
     vals = zeros(2, sizef2);
-    
-    % Store coefficients and values:
-    values = f.values;
-    coeffs = f.coeffs;
-    vscale = f.vscale;
-    values2 = fp.values;
-    coeffs2 = fp.coeffs;
-    vscale2 = fp.vscale;
-    
+
+    % Convert f and f' into arrays of scalar-valued CHEBTECH objects:
+    g = mat2cell(f);
+    gp = mat2cell(fp);
+
     % Loop over columns:
     for k = 1:sizef2    
-        % Copy data to a single CHEBTECH column:
-        f.values = values(:,k);
-        f.coeffs = coeffs(:,k);
-        f.vscale = vscale(k);
-        fp.values = values2(:,k);
-        fp.coeffs = coeffs2(:,k);
-        fp.vscale = vscale2(k);
-
         % Find max of this column:
-        [vals(:,k), pos(:,k)] = minandmaxColumn(f, fp, xpts);
+        [vals(:,k), pos(:,k)] = minandmaxColumn(g(k), gp(k), xpts);
     end
+
 end
 
 end
 
 function [vals, pos] = minandmaxColumn(f, fp, xpts)
 
-   % Initialise output
-   pos = [ 0; 0 ];
-   vals = [ 0; 0 ];
+    % Initialise output
+    pos = [ 0; 0 ];
+    vals = [ 0; 0 ];
 
-   % Compute turning points:
+    % Compute turning points:
     r = roots(fp);
     r = [ -1; r; 1 ];
     v = feval(f, r);
 
     % min
-    [vals(1), idx] = min(v);
-    pos(1) = r(idx);
+    [vals(1), index] = min(v);
+    pos(1) = r(index);
 
     % Take the minimum of the computed minimum and the function values:
-    [vmin, vidx] = min([ vals(1); f.values ]);
+    [vmin, vindex] = min([ vals(1); f.values ]);
     if ( vmin < vals(1) )
         vals(1) = vmin;
-        pos(1) = xpts(vidx - 1);
+        pos(1) = xpts(vindex - 1);
     end
 
     % max
-    [vals(2), idx] = max(v);
-    pos(2) = r(idx);
+    [vals(2), index] = max(v);
+    pos(2) = r(index);
 
     % Take the maximum of the computed maximum and the function values:
-    [vmax, vidx] = min([ vals(2); f.values ]);
+    [vmax, vindex] = min([ vals(2); f.values ]);
     if ( vmax > vals(2) )
         vals(2) = vmax;
-        pos(2) = xpts(vidx - 1);
+        pos(2) = xpts(vindex - 1);
     end
 
 end

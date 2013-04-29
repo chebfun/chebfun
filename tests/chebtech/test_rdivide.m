@@ -1,4 +1,4 @@
-% Test file for chebtech/rdivide.
+% Test file for chebtech/rdivide.m
 
 function pass = test_rdivide(pref)
 
@@ -15,7 +15,8 @@ x = 2 * rand(100, 1) - 1;
 alpha = -0.194758928283640 + 0.075474485412665i;
 beta = -0.526634844879922 - 0.685484380523668i;
 
-for ( n = 1:2 )
+pass = zeros(2, 16); % Pre-allocate pass matrix
+for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();
     else 
@@ -45,7 +46,7 @@ for ( n = 1:2 )
     
     g = f ./ [alpha beta];
     g_exact = @(x) [sin(x)./alpha cos(x)./beta];
-    pass(n, 5) = norm(feval(g, x) - g_exact(x), 'inf') < 10*g.epslevel;
+    pass(n, 5) = norm(feval(g, x) - g_exact(x), inf) < 10*g.epslevel;
     
     g = f ./ [alpha 0];
     pass(n, 6) = isnan(g) && ~any(isnan(g.values(:, 1))) ...
@@ -89,7 +90,7 @@ for ( n = 1:2 )
         disp(f ./ [1 ; 2]);
         pass(n, 12) = false;
     catch ME
-        pass(n, 12) = strcmp(ME.identifier, 'CHEBUFN:CHEBTECH:rdivide:size');
+        pass(n, 12) = strcmp(ME.identifier, 'CHEBFUN:CHEBTECH:rdivide:size');
     end
     
     % Can't divide by a scalar row matrix if the column counts don't match.
@@ -98,7 +99,7 @@ for ( n = 1:2 )
         disp(f ./ [1 2 3]);
         pass(n, 13) = false;
     catch ME
-        pass(n, 13) = strcmp(ME.identifier, 'CHEBUFN:CHEBTECH:rdivide:size');
+        pass(n, 13) = strcmp(ME.identifier, 'CHEBFUN:CHEBTECH:rdivide:size');
     end
     
     % Can't divide by a function which has roots inside [-1, 1].
@@ -120,12 +121,12 @@ for ( n = 1:2 )
     f = testclass.make(@(x) sin(x), [], [], pref);
     h1 = f ./ alpha;
     h2 = testclass.make(@(x) sin(x) ./ alpha, [], [], pref);
-    pass(n, 15) = norm(h1.values - h2.values, 'inf') < tol;
+    pass(n, 15) = norm(h1.values - h2.values, inf) < tol;
     
     g = testclass.make(@(x) exp(x), [], [], pref);
     h1 = f ./ g;
     h2 = testclass.make(@(x) sin(x) ./ exp(x), [], [], pref);
-    pass(n, 16) = norm(h1.values - h2.values, 'inf') < tol;
+    pass(n, 16) = norm(h1.values - h2.values, inf) < tol;
 end
 
 end
@@ -135,7 +136,7 @@ end
 function result = test_div_function_by_scalar(f, f_op, alpha, x)
     g = f ./ alpha;
     g_exact = @(x) f_op(x) ./ alpha;
-    result = norm(feval(g, x) - g_exact(x), 'inf') < 10*g.epslevel;
+    result = norm(feval(g, x) - g_exact(x), inf) < 10*g.epslevel;
 end
 
 % Test the division of a scalar ALPHA by a CHEBTECH, specified by F_OP, using
@@ -143,7 +144,7 @@ end
 function result = test_div_scalar_by_function(alpha, f, f_op, x)
     g = alpha ./ f;
     g_exact = @(x) alpha ./ f_op(x);
-    result = norm(feval(g, x) - g_exact(x), 'inf') < 10*g.epslevel;
+    result = norm(feval(g, x) - g_exact(x), inf) < 10*g.epslevel;
 end
 
 % Test the division of two CHEBTECH objects F and G, specified by F_OP and
@@ -151,6 +152,6 @@ end
 function result = test_div_function_by_function(f, f_op, g, g_op, x)
     h = f ./ g;
     h_exact = @(x) f_op(x) ./ g_op(x);
-    norm(feval(h, x) - h_exact(x), 'inf');
-    result = norm(feval(h, x) - h_exact(x), 'inf') < 10*h.epslevel;
+    norm(feval(h, x) - h_exact(x), inf);
+    result = norm(feval(h, x) - h_exact(x), inf) < 10*h.epslevel;
 end

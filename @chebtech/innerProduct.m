@@ -3,7 +3,7 @@ function out = innerProduct(f, g)
 %   INNERPRODUCT(F, G) returns the L2 inner product (on [-1,1]) of the two
 %   CHEBTECH objects F and G (conjugate linear in F).
 %
-%   If F and/or G are vector-valued CHEBTECH objects, then the result is a matrix
+%   If F and/or G are array-valued CHEBTECH objects, then the result is a matrix
 %   whose i,j entry is the inner product of the ith column of F with the jth
 %   column of G.
 
@@ -14,7 +14,7 @@ if ( isempty(f) || isempty(g) )
 end
 
 if ( ~isa(f, 'chebtech') || ~isa(g, 'chebtech') )
-    error('CHEBFUN:CHEBTECH:InnerProduct:input', ...
+    error('CHEBFUN:CHEBTECH:innerProduct:input', ...
         'innerProduct() only operates on two CHEBTECH objects.');
 end
 

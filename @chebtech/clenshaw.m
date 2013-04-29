@@ -17,7 +17,7 @@ if ( size(x, 2) > 1 )
     x = x(:);
 end
 
-% Scalar or vector-valued function?
+% Scalar or array-valued function?
 if ( size(c, 2) == 1 )
     y = clenshaw_scl(x, c);
 else
@@ -40,13 +40,13 @@ y = c(end) + .5*x.*bk1 - bk2;
 end
 
 function y = clenshaw_vec(x, c)
-% Clenshaw scheme for vector-valued functions.
+% Clenshaw scheme for array-valued functions.
 x = repmat(x(:), 1, size(c, 2));
 bk1 = zeros(size(x, 1), size(c, 2)); 
 bk2 = bk1;
 e = ones(size(x, 1), 1);
 x = 2*x;
-for k = 1:size(c,1)-1
+for k = 1:size(c, 1)-1
     bk = e*c(k,:) + x.*bk1 - bk2;
     bk2 = bk1; 
     bk1 = bk;

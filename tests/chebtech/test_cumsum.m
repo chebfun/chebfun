@@ -1,4 +1,4 @@
-% Test file for chebtech/cumsum.
+% Test file for chebtech/cumsum.m
 
 function pass = test_cumsum(pref)
 
@@ -14,7 +14,8 @@ tol = 50*pref.chebtech.eps;
 seedRNG(6178);
 x = 2 * rand(100, 1) - 1;
 
-for ( n = 1:2 )
+pass = zeros(2, 10); % Pre-allocate pass matrix
+for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();
     else 
@@ -70,7 +71,7 @@ for ( n = 1:2 )
   f = testclass.make(@(x) x.*(x - 1).*sin(x) + 1, [], [], pref);
   g = diff(cumsum(f));
   err = feval(f, x) - feval(g, x);
-  pass(n, 6) = (norm(err, 'inf') < 100*tol);
+  pass(n, 6) = (norm(err, inf) < 100*tol);
   h = cumsum(diff(f));
   err = feval(f, x) - feval(h, x);
   pass(n, 7) = (std(err) < tol)  && (abs(feval(h, -1)) < tol);
@@ -82,7 +83,24 @@ for ( n = 1:2 )
   F_exact = testclass.make(@(x) [(-cos(x)) (x.^3/3) (exp(1i*x)/1i)], [], [], pref);
   F = cumsum(f);
   err = std(feval(F, x) - feval(F_exact, x));
-  pass(n, 8) = (norm(err, 'inf') < tol)  && all(abs(feval(F, -1)) < tol);
+  pass(n, 8) = (norm(err, inf) < tol)  && all(abs(feval(F, -1)) < tol);
+  
+  %%
+  % Check operation for second and third order cumsums.
+  f = testclass.make(@(x) sin(x), [], [], pref);
+  F2_exact = testclass.make(@(x) -sin(x)+x.*cos(-1)+sin(-1)+cos(-1), ...
+      [], [], pref);
+  F2 = cumsum(f,2);
+  err = std(feval(F2, x) - feval(F2_exact, x));
+  pass(n, 9) = (norm(err, inf) < tol)  && abs(feval(F2, -1) < tol);
+  
+  F3_exact = testclass.make(@(x) cos(x)+x.^2*cos(-1)/2+x*(sin(-1)+cos(-1)) - ...
+      (cos(-1)/2-sin(-1)), [], [], pref);
+  F3 = cumsum(f,3);
+  err = std(feval(F3, x) - feval(F3_exact, x));
+  pass(n, 10) = (norm(err, inf) < tol)  && abs(feval(F3, -1) < tol);
+  
+  
 end
 
 end

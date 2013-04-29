@@ -9,13 +9,14 @@ classdef chebtech1 < chebtech
 %   CHEBTECH1(OP) constructs a CHEBTECH1 object from the function handle OP. OP
 %   should be vectorized (i.e., accept a vector input) and ouput a vector of
 %   the same length. CHEBTECH1 objects allow for vectorised construction (i.e.,
-%   of multi-valued function), in which case OP should accept a vector of length
-%   N and return a matrix of size NxM.
+%   of array-valued function), in which case OP should accept a vector of length
+%   N and return a matrix of size NxM, where M is number of columns of the multi
+%   -valued function.
 %
 %   CHEBTECH1(OP, VSCALE) constructs a CHEBTECH1 with 'happiness' (see
-%   CHEBTECH1.HAPPINESSCHECK) relative to the maximum of the given vertical scale (VSCALE)
-%   and the (column-wise) infinity norm of the sampled function values of OP. If not given,
-%   the VSCALE defaults to 0 initially.
+%   CHEBTECH.HAPPINESSCHECK) relative to the maximum of the given vertical scale 
+%   (VSCALE) and the (column-wise) infinity norm of the sampled function values 
+%   of OP. If not given, the VSCALE defaults to 0 initially.
 %
 %   CHEBTECH1(OP, VSCALE, HSCALE) uses a 'happiness' to both the vertical scale
 %   VSCALE (as above) and the horizontal scale HSCALE. If not given (or given as
@@ -27,7 +28,8 @@ classdef chebtech1 < chebtech
 %   CHEBTECH1(VALUES, ...) returns a CHEBTECH1 object which interpolates the
 %   values in the columns of VALUES at 1st-kind Chebyshev points and
 %   CHEBTECH1({VALUES, COEFFS}, ... ) uses the Chebyshev coefficients passed in
-%   COEFFS rather than computing them.
+%   COEFFS rather than computing them. If COEFFS are passed, the resulting
+%   CHEBTECH1 is always deemed 'happy'.
 %
 % Examples:
 %   % Basic construction:
@@ -35,19 +37,17 @@ classdef chebtech1 < chebtech
 %
 %   % Construction with preferences:
 %   p = chebtech.pref('sampletest', 0); % See help('chebtech.pref') for details
-%   f = chebtech1(@(x) sin(x), p)
+%   f = chebtech1(@(x) sin(x), [], [], p)
 %
 %   % Vector-valued construction:
-%   f = chebtech1(@(x) [sin(x), cos(x), expchebtech.pref(x)])
+%   f = chebtech1(@(x) [sin(x), cos(x), exp(x)])
 %
-% See also CHEBTECH.PREF, CHEBPTS, HAPPINESSCHECK, REFINE.
+% See also CHEBTECH, CHEBTECH.PREF, CHEBPTS, HAPPINESSCHECK, REFINE.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   [TODO]: There is great and probably unnecessary duplication between
-%   a lot of this documentation and what you find in CHEBTECH2.  
 % CHEBTECH1 Class Description:
 %
 % The CHEBTECH1 class represents smooth functions on the interval [-1,1] using
@@ -55,38 +55,15 @@ classdef chebtech1 < chebtech
 % corresponding 1st-kind Chebyshev series expansion.
 %
 % The constructor is supplied with a handle that evaluates a given function on
-% an increasingly fine Chebyshev 1st-kind grid (see CHEBTECH1.REFINE) until the
-% representation is deemed 'happy' (see CHEBTECH1.HAPPINESSCHECK). The resulting
+% an increasingly fine Chebyshev 1st-kind grid (see REFINE.m) until the
+% representation is deemed 'happy' (see HAPPINESSCHECK). The resulting
 % object can be used to evaluate and operate on the input function.
 %
-% The vertical scale VSCALE is used to enforce scale invariance in CHEBTECH1
-% construction and subsequent operations, for example, to enforce that 
-%          chebtech1(@(x) 2^300*f(x)) = 2^300*chebtech1(@(x) f(x)). 
-%
-% VSCALE may be optionally passed to the constructor (if not, it
-% defaults to 0), and during construction it is updated to be the maximum
-% magnitude of the sampled function values.
-%
-% If the input operator OP evaluates to NaN or Inf at any of the sample points
-% used by the constructor, then a suitable replacement is found by extrapolating
-% (globally) from the numeric values (see EXTRAPOLATE). If the preference
-% CHEBTECH.PREF.EXTRAPOLATE is TRUE, then the values at the endpoints -1 and +1
-% are always extrapolated (i.e., regardless of whether they evaluate to NaN).
-%
-% The CHEBTECH1 class supports the representation of vector-valued functions
-% (for example, f = chebtech1(@(x) [sin(x), cos(x)])). In such cases, the values
-% and coefficients are stored in a matrix (column-wise), and each
-% component of the multi-valued function is truncated to the same length, even
-% if the demands of 'happiness' imply that one of the components could be
-% truncated to a shorter length than the others. All CHEBTECH1 methods should
-% accept vectorised forms. Note that this representation is distinct from
-% an array of CHEBTECH1 objects, such as [chebtech1(@(x) sin(x), chebtech1(@(x)
-% cos(x)], for which there is little to no support.
+% More information can be found in the CHEBTECH class definition.
 %
 % Class diagram: [<<CHEBTECH>>] <-- [CHEBTECH1]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-    %% Methods implemented by this m-file:
+    %% METHODS IMPLEMENTED BY THIS M-FILE:
     methods
         
         function obj = chebtech1(op, vscale, hscale, pref)
@@ -111,7 +88,7 @@ classdef chebtech1 < chebtech
             else
                 pref = chebtech.pref(pref);
             end
-            
+
             % Force nonadaptive construction if PREF.CHEBTECH.N is numeric:
             if ( ~isempty(pref.chebtech.n) && ~isnan(pref.chebtech.n) )
                 % Evaluate op on the Chebyshev grid of given size:
@@ -121,13 +98,14 @@ classdef chebtech1 < chebtech
             % Actual construction takes place here:
             obj = populate(obj, op, vscale, hscale, pref);
             
-            % In cases other than these, we will check for NaN values:
-            if ( obj.ishappy || iscell(op) || isnumeric(op) )
+            if ( obj.ishappy || isnumeric(op) || iscell(op) )
+                % No need to error check if we are happy:
                 return
             end
             
             % Check for NaNs (if not happy):
             if ( any(isnan(obj.values(:))) )
+                % Here we throw an error if NaNs were encountered anywhere.
                 error('CHEBFUN:CHEBTECH1:constructor:naneval', ...
                     'Function returned NaN when evaluated.')
             end
@@ -136,14 +114,13 @@ classdef chebtech1 < chebtech
         
     end
     
-    %% Static methods implemented by CHEBTECH1 class.
-    % (This list is alphabetical.)
+    %% STATIC METHODS IMPLEMENTED BY THIS CLASS:
     methods ( Static = true )
         
         % Aliasing:
         coeffs = alias(coeffs, m)
         
-        % Evaluate a Chebyshev interpolant using 2nd form barycentric formula:
+        % Evaluate a Chebyshev interpolant using proper barycentric formula:
         out = bary(x, values)
         
         % Compute Chebyshev barycentric weights:
@@ -161,13 +138,24 @@ classdef chebtech1 < chebtech
         
         % Make a CHEBTECH1 (constructor shortcut):
         f = make(varargin);
-        
-        % Refinement function for CHEBTECH1 construction (evaluates OP on grid):
-        [values, opints, giveUp] = refine(op, values, pref)
-        
+
         % Compute Chebyshev quadrature weights:
         w = quadwts(n)
         
+        % Refinement function for CHEBTECH1 construction (evaluates OP on grid):
+        [values, points, giveUp] = refine(op, values, pref)
+        
+    end
+    
+    %% METHODS IMPLEMENTED BY THIS CLASS:
+    methods
+        
+        % Compose two CHEBTECH1 objects or a CHEBTECH1 with a function handle:
+        h = compose(f, op, g, pref)
+        
+        % Get method:
+        val = get(f, prop);
+
     end
     
 end

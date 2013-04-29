@@ -1,4 +1,4 @@
-% Test file for chebtech/mrdivide.
+% Test file for chebtech/mrdivide.m
 
 function pass = test_mrdivide(pref)
 
@@ -14,7 +14,8 @@ x = 2 * rand(100, 1) - 1;
 % Random number to use as a scalar constant.
 alpha = -0.194758928283640 + 0.075474485412665i;
 
-for ( n = 1:2 )
+pass = zeros(2, 9); % Pre-allocate pass matrix
+for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();
     else 
@@ -30,7 +31,7 @@ for ( n = 1:2 )
     
     g = f / alpha;
     g_exact = @(x) f_op(x) ./ alpha;
-    pass(n, 2) = norm(feval(g, x) - g_exact(x), 'inf') < 10*g.epslevel;
+    pass(n, 2) = norm(feval(g, x) - g_exact(x), inf) < 10*g.epslevel;
     
     % A "least-squares" case where the solution is obvious.
     I = eye(2);
@@ -42,7 +43,7 @@ for ( n = 1:2 )
     A = [1 1];
     g = f / A;
     g_exact = @(x) (sin(x) + cos(x))/2;
-    pass(n, 4) = norm(feval(g, x) - g_exact(x), 'inf') < 10*g.epslevel;
+    pass(n, 4) = norm(feval(g, x) - g_exact(x), inf) < 10*g.epslevel;
     
     %%
     % Check division of a numeric array by a chebtech object.
@@ -54,7 +55,7 @@ for ( n = 1:2 )
     f = testclass.make(@(x) [sin(2*pi*x) cos(2*pi*x)]);
     g = [1 1]/f;
     g_exact = @(x) (sin(2*pi*x) + cos(2*pi*x));
-    pass(n, 6) = norm(feval(g, x) - g_exact(x), 'inf') < 10*g.epslevel;
+    pass(n, 6) = norm(feval(g, x) - g_exact(x), inf) < 10*g.epslevel;
     
     %%
     % Check error conditions.
@@ -74,7 +75,8 @@ for ( n = 1:2 )
         h = f / g;
         pass(n, 8) = false;
     catch ME
-        pass(n, 8) = strcmp(ME.identifier, 'CHEBFUN:CHEBTECH:mrdivide:funfun');
+        pass(n, 8) = strcmp(ME.identifier, ...
+            'CHEBFUN:CHEBTECH:mrdivide:chebtechDivChebtech');
     end
     
     % Can't call mldivide on a chebtech and a non-chebtech or non-double 
@@ -84,7 +86,7 @@ for ( n = 1:2 )
         g = f / true;
         pass(n, 9) = false;
     catch ME
-        pass(n, 9) = strcmp(ME.identifier, 'CHEBFUN:CHEBTECH:mrdivide:derp');
+        pass(n, 9) = strcmp(ME.identifier, 'CHEBFUN:CHEBTECH:mrdivide:badArg');
     end
 end
 

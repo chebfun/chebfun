@@ -13,7 +13,7 @@ end
 tol = 100*pref.chebtech.eps;
 
 % Initialise:
-pass = zeros(1,12);
+pass = zeros(1, 12);
 s = 0;
 
 n = 17;

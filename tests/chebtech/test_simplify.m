@@ -1,13 +1,16 @@
 % Test file for chebtech/simplify.m
 
 function pass = test_simplify(pref)
-% [TODO] Make this test more extensive.
+
+% SIMPLIFY() is tested quite extensively in TEST_HAPPINESSCHECK() and
+% TEST_PROLONG().
 
 % Get preferences:
 if ( nargin < 1 )
     pref = chebtech.pref;
 end
 
+pass = zeros(2, 6); % Pre-allocate pass matrix
 for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();

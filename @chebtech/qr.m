@@ -1,17 +1,17 @@
 function [f, R, E] = qr(f, flag)
-%QR   QR factorisation of a multivalued CHEBTECH.
+%QR   QR factorisation of an array-valued CHEBTECH.
 %   [Q, R] = QR(F) returns a QR factorisation of F such that F = Q*R, where the
 %   CHEBTECH Q is orthogonal (with respect to the continuous L^2 norm on [-1,1])
 %   and of the same size as F and R is an m x m upper-triangular matrix when F
 %   has m columns.
 %
-%   [Q, R, E] = QR(A) produces unitary Q, upper-triangular R, and a permutation
-%   matrix E so that A*E = Q*R. The column permutation E is chosen to reduce
+%   [Q, R, E] = QR(F) produces unitary Q, upper-triangular R, and a permutation
+%   matrix E so that F*E = Q*R. The column permutation E is chosen to reduce
 %   fill-in in R.
 %
-%   [Q, R, E] = QR(A, 'vector') returns the permutation information as a vector
-%   instead of a matrix.  That is, E is a row vector such that A(:,E) = Q*R.
-%   Similarly, [Q, R, E] = QR(A, 'matrix') returns a permutation matrix E. This
+%   [Q, R, E] = QR(F, 'vector') returns the permutation information as a vector
+%   instead of a matrix.  That is, E is a row vector such that F(:,E) = Q*R.
+%   Similarly, [Q, R, E] = QR(F, 'matrix') returns a permutation matrix E. This
 %   is the default behavior.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
@@ -70,6 +70,6 @@ R = S*R;                    % Fix R.
 f.values = Q;                           % Adjust values of f.
 f.coeffs = f.chebpoly(Q);               % Compute new coefficients.
 f.vscale = max(abs(Q), [], 1);
-% [TODO]: Update epslevel.
+% [TODO]: Update epslevel?
 
 end

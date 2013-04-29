@@ -1,7 +1,10 @@
 function f = times(f, g, varargin)
 %.*   CHEBTECH multiplication.
-%   F.*G multiplies CHEBTECH objects F and G or a CHEBTECH by a scalar
-%   if either F or G is a scalar.
+%   F.*G multiplies CHEBTECH objects F and G or a CHEBTECH by a scalar if either
+%   F or G is a scalar.
+%
+%   If F is a array-valued CHEBTECH, then F.*C is supported if C is a row
+%   vector of doubles with the same number of columns as F.
 %
 % See also MTIMES, RDIVIDE.
 
@@ -18,14 +21,8 @@ if ( ~isa(f, 'chebtech') )      % Ensure F is a CHEBTECH
     f = times(g, f, varargin{:});
     return
 elseif ( isa(g, 'double') )     % CHEBTECH * double
-    % Check dimensions:
-    if ( (size(g, 1) > 1) || ...
-        ((size(g, 2) > 1) && (size(f.values, 2) ~= size(g, 2))) )
-        error('CHEBFUN:CHEBTECH:times:dim', ...
-            'Inner matrix dimensions must agree.');
-    end
     
-    % Do the multiply:
+    % Do the multiplication:
     if ( size(g, 2) > 1 )
         f.values = bsxfun(@times, f.values, g);
         f.coeffs = bsxfun(@times, f.coeffs, g);
@@ -40,15 +37,15 @@ elseif ( isa(g, 'double') )     % CHEBTECH * double
     return
     
 elseif ( size(f.values, 1) == 1 )
-    % If we have (constant CHEBTECH)*CHEBTECH, reverse the order
-    % and call TIMES again:
+    % If we have (constant CHEBTECH)*CHEBTECH, reverse the order and call TIMES
+    % again:
     f = times(g, f.values);
     f.epslevel = max(f.epslevel, g.epslevel);
     return
     
 elseif ( size(g.values, 1) == 1)
-    % If we have CHEBTECH*(constant CHEBTECH), convert the
-    % (constant CHEBTECH) to a scalar and call TIMES again:
+    % If we have CHEBTECH*(constant CHEBTECH), convert the (constant CHEBTECH)
+    % to a scalar and call TIMES again:
     f = times(f, g.values); 
     f.epslevel = max(f.epslevel, g.epslevel);
     return
@@ -108,6 +105,7 @@ f.coeffs = f.chebpoly(values);
 
 % Update vscale, epslevel, and ishappy:
 vscale = max(abs(f.values), [], 1);
+% See CHEBTECH CLASSDEF file for documentation on this:
 f.epslevel = (f.epslevel + g.epslevel) * (f.vscale.*g.vscale./vscale);
 f.epslevel = max(f.epslevel); % [TODO]: Vector epslevel;
 f.vscale  = vscale;
@@ -117,8 +115,8 @@ f.ishappy = f.ishappy && g.ishappy;
 f = simplify(f, pref);
 
 if ( pos )
-    % Here we know that the product of F and G should be positive.
-    % However, SIMPLIFY may have destroyed this property, so we enforce it.
+    % Here we know that the product of F and G should be positive. However,
+    % SIMPLIFY may have destroyed this property, so we enforce it.
     f.values = abs(f.values); 
     f.coeffs = f.chebpoly(f.values);
 end

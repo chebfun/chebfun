@@ -1,4 +1,4 @@
-% Test file for chebtech/cell2mat.
+% Test file for chebtech/cell2mat.m
 
 function pass = test_cell2mat(pref)
 
@@ -6,7 +6,10 @@ if ( nargin < 2 )
     pref = chebtech.pref;
 end
 
-for (n = 1:2)
+pass = zeros(2, 1); % Pre-allocate pass matrix.
+
+for n = 1:2
+    
     if (n == 1);
         testclass = chebtech1();
     else

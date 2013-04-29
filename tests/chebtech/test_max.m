@@ -1,4 +1,4 @@
-% Test file for chebtech/max.
+% Test file for chebtech/max.m
 
 function pass = test_max(pref)
 
@@ -7,7 +7,8 @@ if ( nargin < 1 )
     pref = chebtech.pref;
 end
 
-for ( n = 1:2 )
+pass = zeros(2, 8); % Pre-allocate pass matrix.
+for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();
     else

@@ -11,7 +11,8 @@ end
 seedRNG(6178);
 x = 2 * rand(100, 1) - 1;
 
-for ( n = 1:2 )
+pass = zeros(2, 17); % Pre-allocate pass matrix
+for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();
     else 
@@ -62,7 +63,7 @@ function result = test_one_qr(f, x)
 
     % Check that the factorization is accurate.
     err = Q*R - f;
-    result(2) = norm(feval(err, x), 'inf') < 100*f.epslevel;
+    result(2) = norm(feval(err, x), inf) < 100*f.epslevel;
 end
 
 % Same as the previous function but this time uses the QR factorization with
@@ -77,5 +78,5 @@ function result = test_one_qr_with_perm(f, x)
 
     % Check that the factorization is accurate.
     err = Q*R - f*E;
-    result(2) = norm(feval(err, x), 'inf') < 100*f.epslevel;
+    result(2) = norm(feval(err, x), inf) < 100*f.epslevel;
 end

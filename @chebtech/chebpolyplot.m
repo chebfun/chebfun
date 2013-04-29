@@ -55,8 +55,8 @@ holdState = ishold;
 absc = abs(f.coeffs);
 
 % Add a tiny amount to zeros to make plots look nicer:
-% absc(~absc) = eps*max(absc(:));
-absc(~absc) = f.epslevel*min(f.vscale);
+% (Min of epslevel*vscale and the miniumum non-zero coefficient)
+absc(~absc) = min(f.epslevel*min(f.vscale), min(absc(logical(absc))));
 
 % Get the size:
 [n, m] = size(absc);
@@ -69,8 +69,7 @@ if ( plotEpsLevel )
     h = [h ; h2];
     for k = 1:m
         c = get(h(k), 'color');
-%         set(h(m+k), 'linestyle', ':', 'linewidth', 2, 'marker', 'none', 'color', c);
-        set(h(m+k), 'marker', 'none', 'color', c);
+        set(h(m+k), 'linestyle', ':', 'linewidth', 1, 'marker', 'none', 'color', c);
     end
 else
     % Plot just the coefficients:

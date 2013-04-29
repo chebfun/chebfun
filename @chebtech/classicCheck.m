@@ -23,9 +23,9 @@ function [ishappy, epslevel, cutoff] = classicCheck(f, pref)
 %   'happy' if the coefficients COEFFS(1:TESTLENGTH) (recall that COEFFS are
 %   stored in descending order) are all below EPSLEVEL. The default choice of
 %   the test length is:
-%       TESTLENGTH = n,             for n = 1:3
-%       TESTLENGTH = 3,             for n = 4:25
-%       TESTLENGTH = round((n-1)/8) for n > 25
+%       TESTLENGTH = n,             for n = 1:4
+%       TESTLENGTH = 5,             for n = 5:44
+%       TESTLENGTH = round((n-1)/8) for n > 44
 %
 %   EPSLEVEL is essentially the maximum of:
 %       * eps*TESTLENGTH^(2/3)
@@ -56,7 +56,6 @@ if ( nargin == 1 )
     epslevel = pref.chebtech.eps;
 elseif ( isnumeric(f) )
     epslevel = pref;
-%     pref = f.pref();
 else
     epslevel = pref.chebtech.eps;
 end
@@ -90,7 +89,7 @@ end
 % Absolute value of coefficients, relative to vscale: (max across columns)
 ac = max(bsxfun(@rdivide, abs(f.coeffs), f.vscale), [], 2);
 
-% Take the minimum of the vscales:
+% Take the maximum of the vscales:
 vscale = max(f.vscale);
 
 % Happiness requirements:
@@ -122,6 +121,7 @@ if ( max(ac(1:testLength)) < epslevel )    % We have converged! Now chop tail:
         end
     end
 
+    % [TODO]: What does this mean?
     % Tbpb = Bang/buck of chopping at each pos:
     Tbpb = log(1e3*epslevel./ac) ./ (size(f.coeffs, 1) - (1:Tloc)');
     [ignored, Tchop] = max(Tbpb(3:Tloc));  % Tchop = position at which to chop.
@@ -155,11 +155,34 @@ minPrec = 1e-4; % Worst case precision!
 tailErr = min(minPrec, eps*testLength^(2/3));
 
 % Look at finite difference gradient to loosen tolerance:
-dx = diff(x)*ones(1, size(values, 2));
-grad = (hscale/vscale) * norm(diff(values)./dx, inf);
-gradErr = min(minPrec, eps*grad);
+% dx = diff(x)*ones(1, size(values, 2));
+% grad = (hscale/vscale) * norm(diff(values)./dx, inf);
+% gradErr = min(minPrec, eps*grad);
+
+% [TODO]: This is highly experimental!
+% Approximate gradient of the function:
+coeffsDer = computeDerCoeffs(coeffs);
+grad = max(sum(abs(coeffsDer)))/max(abs(coeffs(:)));
+gradErr = min(minPrec, eps*grad/log(n));
 
 % Choose maximum between prescribed tolerance and estimated rounding errors:
 epslevel = max([epslevel, gradErr, tailErr]);
 
+end
+
+function cout = computeDerCoeffs(c)
+%COMPUTEDERCOEFFS   Recurrence relation for coefficients of derivative.
+%   C is the matrix of Chebyshev coefficients of a (possibly array-valued)
+%   CHEBTECH object.  COUT is the matrix of coefficients for a CHEBTECH object
+%   whose columns are the derivatives of those of the original.
+    
+    [n, m] = size(c);
+    cout = zeros(n+1, m);                     % Initialize vector {c_r}
+    w = repmat(2*(n-1:-1:1)', 1, m);
+    v = [zeros(2, m) ; w.*c(1:end-1,:)];      % Temporal vector
+    cout(1:2:end,:) = cumsum(v(1:2:end,:));   % Compute c_{n-2}, c_{n-4},...
+    cout(2:2:end,:) = cumsum(v(2:2:end,:));   % Compute c_{n-3}, c_{n-5},...
+    cout(end,:) = .5*cout(end,:);             % Adjust the value for c_0
+    cout = cout(3:end,:);                     % Trim unneeded coefficients
+    
 end

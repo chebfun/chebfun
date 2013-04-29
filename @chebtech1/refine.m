@@ -8,17 +8,20 @@ function [values, giveUp] = refine(op, values, pref)
 %   flag where TRUE means the refinement procedure has failed (typically when
 %   the maximum number of samples, PREF.CHEBTECH.MAXSAMPLES, has been reached).
 %
-%   As opposed to CHEBTECH2, the only built-in refinement strategy is 'default'.
-%   It makes use of grids of the form 2^(3:6 6:.5:16)+1 and resamples all of the 
-%   values each time N is increased.
+%   As opposed to CHEBTECH2, the only built-in refinement strategy is 
+%   'RESAMPLING'. It makes use of grids of the form 2^(3:6 6:.5:16)+1 and 
+%   resamples all of the values each time N is increased. When 
+%   PREF.CHEBTECH.REFINEMENTFUNCTION is a character string, resampling will be
+%   be carried out.
 %
-%   Alternative refinement strategies can be used by passing a function handle in
-%   the PREF.CHEBTECH.REFINEMENTSTRATEGY field. The function handle should point
-%   to a function with the template [VALUES, GIVEUP] = @(OP, VALUES, PREF) ...
-%   which accepts a function handle OP, previously sampled values VALUES of OP
-%   at a 1st-kind Chebyshev grid, and PREF, a preference structure containing
-%   CHEBTECH1 preferences. It should return either a new set of VALUES (typically
-%   on a finer grid) or set the GIVEUP flag to TRUE.
+%   Alternative refinement strategies can be used if the 
+%   PREF.CHEBTECH.REFINEMENTFUNCTION field is a function handle. The function 
+%   handle should point to a function with the template [VALUES, GIVEUP] = 
+%   @(OP, VALUES, PREF) ... which accepts a function handle OP, previously 
+%   sampled values VALUES of OP at a 1st-kind Chebyshev grid, and PREF, a 
+%   preference structure containing CHEBTECH preferences. It should return 
+%   either a new set of VALUES (typically on a finer grid) or set the GIVEUP 
+%   flag to TRUE.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.

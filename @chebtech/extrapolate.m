@@ -8,7 +8,7 @@ function [values, maskNaN, maskInf] = extrapolate(f)
 %   [VALUES, MASKNAN, MASKINF] = EXTRAPOLATE(F) returns logical
 %   vectors indicating when a NaN or Inf was encountered in rows of F.VALUES.
 %
-%   Note that if any column of a multivalued function returns NaN or Inf,
+%   Note that if any column of a array-valued function returns NaN or Inf,
 %   then _all_ columns are extrapolated at the point. Thus MASKNAN and MASKINF
 %   are always column vectors, even if F.VALUES is a matrix.
 %
@@ -41,7 +41,7 @@ if ( any(mask) )
     
     % Compute the modified barycentric weights:
     w = f.barywts(n); % Standard weights.
-    w = w(~mask);     % Barycentric weights corresponding to good points.
+    w = w(~mask);     % Barycentric weights corresponding to the good points.
     for k = 1:length(xnan)
         % Compute the modified barycentric weights for the bad points:
         w = w.*( xgood - xnan(k) );

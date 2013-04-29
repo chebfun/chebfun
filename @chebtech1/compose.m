@@ -3,28 +3,39 @@ function f = compose(f, op, g, pref)
 %   COMPOSE(F, OP) returns a CHEBTECH1 representing OP(F) where F is also a
 %   CHEBTECH1 object, and OP is a function handle.
 %
-%   COMPOSE(F, OP, G) returns OP(F, G) where F and G are CHEBTECH1 objects,
-%   and OP is a function handle.
+%   COMPOSE(F, OP, G) returns a CHEBTECH1 representing OP(F, G) where F and G
+%   are CHEBTECH objects, and OP is a function handle.
 %
 %   COMPOSE(F, G) returns a CHEBTECH1 representing G(F), where both F and G are
 %   also CHEBTECH objects. If the range of F is not in [-1, 1] then an error is
 %   thrown.
 %
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+%   COMPOSE(F, OP, G, PREF) or COMPOSE(F, OP, [], PREF) uses the options passed
+%   by the preferences structure PREF to build the returned CHEBTECH1.  In
+%   particular, one can set PREF.CHEBTECH.REFINMENTFUNCTION to be a function
+%   which takes advantage of F and possibly OP or G being CHEBTECH objects.
+
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-nfuns = 2;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% This file defines the refinement functions which are called by the
+% constructor at the @chebtech level. There are refinement functions for
+% resampled grids only, both for compositions of the form op(f) and op(f, g).
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 % Parse inputs:
-if ( (nargin > 2) && isstruct(g) )
-    pref = g;
-    g = [];
-    nfuns = 1;
-elseif ( nargin < 4 )
-    pref = chebtech.pref();
+if ( nargin < 4 )
+    pref = f.pref();
 end
+
 if ( (nargin < 3) || isempty(g) )
     nfuns = 1;
     g = [];
+else
+    nfuns = 2;
 end
 
 % Choose a sampling strategy:
@@ -48,7 +59,8 @@ f = compose@chebtech(f, op, g, pref);
 end
 
 function [values, giveUp] = composeResample1(op, values, pref, f)
-%COMPOSERESAMPLE1   Refinement function for composing a CHEBTECH1 with resampling.
+%COMPOSERESAMPLE1   Refinement function for composing a CHEBTECH1 with
+%resampling.
     
     if ( isempty(values) )
         % Choose initial n based upon minSamples.
@@ -80,7 +92,8 @@ function [values, giveUp] = composeResample1(op, values, pref, f)
 end
 
 function [values, giveUp] = composeResample2(op, values, pref, f, g)
-%COMPOSERESAMPLE2   Refinement function for composing CHEBTECH1s with resampling.
+%COMPOSERESAMPLE2   Refinement function for composing CHEBTECH1 objects with
+%resampling.
     
     if ( isempty(values) )
         % Choose initial n based upon minSamples.

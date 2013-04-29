@@ -8,8 +8,8 @@ function f = restrict(f, s)
 %   an array of CHEBTECH objects, where the entries hold F restricted to each of
 %   the subintervals defined by S.
 %
-%   If F is a vector-valued function, say [F1, F2], then the restrict(F, S =
-%   [S1, S2, S3]) returns the vector-valued CHEBTECH {restrict(F1,S).
+%   If F is a array-valued function, say [F1, F2], then the restrict(F, S =
+%   [S1, S2, S3]) returns the array-valued CHEBTECH {restrict(F1,S).
 %   restrict(F2, S)}.
 %
 %   Note that restrict does not 'simplify' its output.
@@ -39,7 +39,7 @@ x = f.chebpts(n);                            % old grid
 y = .5*[1-x, 1+x] * [s(1:end-1) ; s(2:end)]; % new grid
 values = feval(f, y);                        % new values
 
-% If F is multivalued, we must rearrange the order of the columns:
+% If F is array-valued, we must rearrange the order of the columns:
 % (e.g., [a1 a2 b1 b2 c1 c2] -> [a1 b1 c1 a2 b2 c3] => index = [1 3 5 2 4 6].
 if ( m > 1 )
     numCols = m*numInts;

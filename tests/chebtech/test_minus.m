@@ -1,4 +1,4 @@
-% Test file for chebtech/minus.
+% Test file for chebtech/minus.m
 
 function pass = test_minus(pref)
 
@@ -14,7 +14,8 @@ x = 2 * rand(100, 1) - 1;
 % A random number to use as an arbitrary additive constant.
 alpha = randn() + 1i*randn();
 
-for ( n = 1:2 )
+pass = zeros(2, 21); % Pre-allocate pass matrix
+for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();
     else 
@@ -29,14 +30,14 @@ for ( n = 1:2 )
     pass(n, 1) = (isempty(f - f) && isempty(f - g) && isempty(g - f));
     
     %%
-    % Check addition with scalars.
+    % Check subtraction with scalars.
     
     f_op = @(x) sin(x);
     f = testclass.make(f_op, [], [], pref);
     pass(n, 2:3) = test_sub_function_and_scalar(f, f_op, alpha, x);
     
     %%
-    % Check addition of two chebtech objects.
+    % Check subtraction of two chebtech objects.
     
     f_op = @(x) zeros(size(x));
     f = testclass.make(f_op, [], [], pref);
@@ -90,7 +91,7 @@ for ( n = 1:2 )
     g = testclass.make(@(x) cos(x) - 1, [], [], pref);
     h1 = f - g;
     h2 = testclass.make(@(x) x - (cos(x) - 1), [], [], pref);
-    pass(n, 19) = norm(h1.values - h2.values, 'inf') < tol;
+    pass(n, 19) = norm(h1.values - h2.values, inf) < tol;
 
     %%
     % Check that subtracting a CHEBTECH and an unhappy CHEBTECH gives an
@@ -113,7 +114,7 @@ function result = test_sub_function_and_scalar(f, f_op, alpha, x)
     g2 = alpha - f;
     result(1) = isequal(g1, -g2);
     g_exact = @(x) f_op(x) - alpha;
-    result(2) = norm(feval(g1, x) - g_exact(x), 'inf') < 10*g1.epslevel;
+    result(2) = norm(feval(g1, x) - g_exact(x), inf) < 10*g1.epslevel;
 end
 
 % Test the subraction of two CHEBTECH objects F and G, specified by F_OP and
@@ -123,6 +124,6 @@ function result = test_sub_function_and_function(f, f_op, g, g_op, x)
     h2 = g - f;
     result(1) = isequal(h1, -h2);
     h_exact = @(x) f_op(x) - g_op(x);
-    norm(feval(h1, x) - h_exact(x), 'inf');
-    result(2) = norm(feval(h1, x) - h_exact(x), 'inf') < 10*h1.epslevel;
+    norm(feval(h1, x) - h_exact(x), inf);
+    result(2) = norm(feval(h1, x) - h_exact(x), inf) < 10*h1.epslevel;
 end

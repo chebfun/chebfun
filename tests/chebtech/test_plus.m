@@ -1,4 +1,4 @@
-% Test file for chebtech/plus.
+% Test file for chebtech/plus.m
 
 function pass = test_plus(pref)
 
@@ -12,9 +12,10 @@ seedRNG(6178);
 x = 2 * rand(100, 1) - 1;
 
 % A random number to use as an arbitrary additive constant.
-alpha = randn() + 1i*randn();
+alpha = -0.194758928283640 + 0.075474485412665i;
 
-for ( n = 1:2 )
+pass = zeros(2, 21); % Pre-allocate pass matrix
+for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();
     else 
@@ -90,7 +91,7 @@ for ( n = 1:2 )
     g = testclass.make(@(x) cos(x) - 1, [], [], pref);
     h1 = f + g;
     h2 = testclass.make(@(x) x + cos(x) - 1, [], [], pref);
-    pass(n, 19) = norm(h1.values - h2.values, 'inf') < tol;
+    pass(n, 19) = norm(h1.values - h2.values, inf) < tol;
 
     %%
     % Check that adding a CHEBTECH to an unhappy CHEBTECH gives an unhappy
@@ -113,7 +114,7 @@ function result = test_add_function_to_scalar(f, f_op, alpha, x)
     g2 = alpha + f;
     result(1) = isequal(g1, g2);
     g_exact = @(x) f_op(x) + alpha;
-    result(2) = norm(feval(g1, x) - g_exact(x), 'inf') < 10*g1.epslevel;
+    result(2) = norm(feval(g1, x) - g_exact(x), inf) < 10*g1.epslevel;
 end
 
 % Test the addition of two CHEBTECH objects F and G, specified by F_OP and
@@ -123,6 +124,6 @@ function result = test_add_function_to_function(f, f_op, g, g_op, x)
     h2 = g + f;
     result(1) = isequal(h1, h2);
     h_exact = @(x) f_op(x) + g_op(x);
-    norm(feval(h1, x) - h_exact(x), 'inf');
-    result(2) = norm(feval(h1, x) - h_exact(x), 'inf') < 10*h1.epslevel;
+    norm(feval(h1, x) - h_exact(x), inf);
+    result(2) = norm(feval(h1, x) - h_exact(x), inf) < 10*h1.epslevel;
 end
