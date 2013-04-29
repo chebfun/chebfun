@@ -48,7 +48,7 @@ if ( nfuns == 2 )
 elseif ( isa(op, 'chebtech') )
     % If OP is a CHEBTECH, we grab some of its data:
     if ( (size(op, 2) > 1) && (size(f, 2) > 1) )
-        error('CHEBFUN:CHEBTECH:compose:multival', ...
+        error('CHEBFUN:CHEBTECH:compose:arrval', ...
             'Cannot compose two array-valued CHEBTECH objects.')
     end
 

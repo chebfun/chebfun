@@ -51,7 +51,7 @@ for n = 1:3
     h = testclass.make(sin(x) + cos(x));
     pass(n, 5) = norm(h.values - g.values, inf) < tol;
     
-    % Compose 2 multivalued CHEBTECH objects with a binary function:
+    % Compose 2 array-valued CHEBTECH objects with a binary function:
     f1 = testclass.make(@(x) [sin(x) cos(x)]);
     f2 = testclass.make(@(x) [cos(x) exp(x)]);
     g = compose(f1, @times, f2, pref);
@@ -65,31 +65,31 @@ for n = 1:3
     x = testclass.chebpts(length(h));
     pass(n, 7) = norm(h.values - sin(x.^2), inf) < tol;
     
-    % Compose f(g), when f and g are CHEBTECH objects and g is multivalued:
+    % Compose f(g), when f and g are CHEBTECH objects and g is array-valued:
     f = testclass.make(@(x) x.^2);
     g = testclass.make(@(x) [sin(x) cos(x)]);
     h = compose(f, g);
     x = testclass.chebpts(length(h));
     pass(n, 8) = norm(h.values - [sin(x.^2) cos(x.^2)], inf) < tol;
     
-    % Compose f(g), when f and g are CHEBTECH objects and f is multivalued:
+    % Compose f(g), when f and g are CHEBTECH objects and f is array-valued:
     f = testclass.make(@(x) [x x.^2]);
     g = testclass.make(@(x) sin(x));
     h = compose(f, g);
     x = testclass.chebpts(length(h));
     pass(n, 9) = norm(h.values - [sin(x) sin(x.^2)], inf) < tol;
     
-    % We cannot expect to compose two multivalued CHEBTECH objects f(g):
+    % We cannot expect to compose two array-valued CHEBTECH objects f(g):
     try 
         f = testclass.make(@(x) [x x.^2]);
         g = testclass.make(@(x) [sin(x), cos(x)]);
         compose(f, g);
         pass(n, 10) = false;
     catch ME 
-        pass(n, 10) = strcmp(ME.identifier, 'CHEBFUN:CHEBTECH:compose:multival');
+        pass(n, 10) = strcmp(ME.identifier, 'CHEBFUN:CHEBTECH:compose:arrval');
     end
     
-    % We cannot expect to compose two multivalued CHEBTECH objects in this way:
+    % We cannot expect to compose two array-valued CHEBTECH objects in this way:
     try 
         f = testclass.make(@(x) [x x.^2]);
         g = testclass.make(@(x) sin(x));
