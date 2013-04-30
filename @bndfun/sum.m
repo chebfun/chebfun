@@ -2,7 +2,7 @@ function out = sum(f,dim)
 %SUM	Definite integral of a BNDFUN on its interval [a,b]
 %   S = SUM(F) is the integral from a to b of F.
 %
-%   If F is a vector-valued BNDFUN then the result is a row vector containing
+%   If F is an array-valued BNDFUN then the result is a row vector containing
 %   the definite integrals of each column.
 %
 %   SUM(F, 2) sums over the second dimension of F, i.e., adds up its columns. If
@@ -25,9 +25,9 @@ end
 % Otherwise, compute the sum column-wise.
 
 % Rescaling factor, (b-a)/2
-dab05k = (.5*diff(f.domain));
+rescaleFactor = (.5*diff(f.domain));
 
 % Assign the output to be the sum of the onefun of the input, rescaled.
-out = sum(f.onefun)*dab05k;
+out = sum(f.onefun)*rescaleFactor;
 
 end

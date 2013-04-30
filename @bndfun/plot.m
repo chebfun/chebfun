@@ -25,12 +25,12 @@ function varargout = plot(f,varargin)
 %
 %   The X,Y pairs, or X,Y,S triples, can be followed by parameter/value
 %   pairs to specify additional properties of the lines. For example,
-%            F = funcheb.constructor(@sin);
+%            F = funcheb.constructor(@sin,[-2 7]);
 %            plot(F, 'LineWidth', 2, 'Color', [.6 0 0]) 
 %   will create a plot with a dark red line width of 2 points.
 %
 %   H1 = PLOT(F) returns a column vector of handles to lineseries objects,
-%   one handle per plotted line (in the case of vector-valued BNDFUN
+%   one handle per plotted line (in the case of array-valued BNDFUN
 %   objects). [H1, H2] returns a second vector of column handles, this time
 %   for each of the marker plots.
 
