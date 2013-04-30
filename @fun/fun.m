@@ -61,10 +61,8 @@ classdef fun % (Abstract)
             
             % Call constructor depending on domain:
             if ( ~any(isinf(domain)) )
-                pref = bndfun.pref(pref, pref.fun);
                 obj = bndfun(op, domain, hscale, vscale, pref);
             else
-                pref = unbndfun.pref(pref, pref.fun);
                 obj = unbndfun(op, domain, hscale, vscale, pref);
             end
             
