@@ -10,7 +10,7 @@ function r = roots(f, varargin)
 %        1  - Return roots outside of [a,b] (including complex roots).
 %
 %   RECURSE:
-%        0  - Compute roots without bisection (slower).
+%        0  - Compute roots without domain bisection (slower).
 %       [1] - Bisect until length(F) < 50. (fast, but additional complex roots).
 %
 %   PRUNE:
@@ -21,7 +21,7 @@ function r = roots(f, varargin)
 %       [1] - Horizontal scale for adjusting relative tolerances.
 %     double
 %
-%   If F is a vector-valued BNDFUN then there is no reason to expect each column
+%   If F is a array-valued BNDFUN then there is no reason to expect each column
 %   to have the same number of roots. In order to return a useful output, the
 %   roots of each column are computed and then padded with NaNs so that a matrix
 %   may be returned. The columns of R = ROOTS(F) correspond to the columns of F.
@@ -36,9 +36,9 @@ if ( isempty(f) )
 end
 
 % Find the roots of the onefun of f
-r11 = roots(f.onefun,varargin);
+onefunRoots = roots(f.onefun,varargin);
 
 % Map the roots found on [-1,1] to the interval [a,b]
-r = f.mapping.for(r11);
+r = f.mapping.for(onefunRoots);
 
 end

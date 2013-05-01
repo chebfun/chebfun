@@ -1,7 +1,7 @@
 function f = compose(f, op, g, pref)
 %COMPOSE  Compostition of BNDFUN objects.
 %   COMPOSE(F, OP) returns a BNDFUN representing OP(F) where F is also a
-%   BNDFUN2 object, and OP is a function handle.
+%   BNDFUN object, and OP is a function handle.
 %
 %   COMPOSE(F, OP, G) returns OP(F, G) where F and G are BNDFUN objects,
 %   and OP is a function handle.
