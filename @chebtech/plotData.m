@@ -1,4 +1,4 @@
-function data = plotData(f)
+function data = plotData(f, pref)
 %PLOTDATA    Useful data values for plotting a CHEBTECH object.
 %   DATA = PLOTDATA(F) returns a cell array of data values that can be used for
 %   plotting F. In particular, DATA is a 4x1 cell array of the form {xLine,
@@ -9,8 +9,12 @@ function data = plotData(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+if ( nargin == 1 )
+    pref = chebtech.pref();
+end
+
 % Get the number of points: (Oversample the wavelength)
-npts = max(2001, round(4*pi*length(f)));
+npts = min(max(501, round(4*pi*length(f))), pref.chebtech.maxSamples);
 
 % Values on oversampled Chebyshev grid (faster than evaluating a uniform grid!).
 xLine = f.chebpts(npts);
