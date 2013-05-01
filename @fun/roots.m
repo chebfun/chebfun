@@ -36,7 +36,7 @@ if ( isempty(f) )
 end
 
 % Find the roots of the onefun of f
-onefunRoots = roots(f.onefun,varargin);
+onefunRoots = roots(f.onefun, varargin{:});
 
 % Map the roots found on [-1,1] to the interval [a,b]
 r = f.mapping.for(onefunRoots);
