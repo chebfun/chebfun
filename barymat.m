@@ -16,7 +16,7 @@ if ( isempty(y) || isempty(x) )
     return
 end
 
-if ( min(size(x)) > 1 || min(size(y)) > 1 )
+if ( size(x, 2) > 1 || size(y, 2) > 1 )
     error('CHEBFUN:barymat:dims', 'Inputs should be column vectors.');
 end
 
@@ -36,21 +36,19 @@ if ( nargin < 3 )
     w(2:2:end) = -1; 
     w([1, N]) = 0.5*w([1, N]);
 end
-% Make sure everything is orientated correctly:
+
+% Make sure everything is oriented correctly:
 w = w(:).';
 
 % Construct the matrix
 if ( M >= 500 && N >= 1000 )     % <-- Experimentally determined.
-    
-% Testing shows BSXFUN is faster in this regime    
+    % Testing shows BSXFUN is faster in this regime
     B = bsxfun(@minus, y, x');   % Repmat(Y-X')
     B = bsxfun(@rdivide, w, B); % w(k)/(y(j)-x(k))
     c = 1./sum(B, 2);            % Normalisation ('denom' in bary-speak).
     B = bsxfun(@times, B, c);
-    
-else    
-    
-% Else use FOR loops
+else
+    % Else use FOR loops
     B = bsxfun(@minus, y, x');   % Repmat(Y-X')
     for k = 1:N
         B(:,k) = w(k)./B(:,k);   % w(k)/(y(j)-x(k))
@@ -59,9 +57,8 @@ else
     for j = 1:M
         B(j,:) = B(j,:)*c(j);
     end
-    
 end
 
-% Where points coincide there will be division by zeros (as with bary.m). 
+% Where points coincide there will be division by zeros (as with bary.m).
 % Replace these entries with the identity:
 B(isnan(B)) = 1;
