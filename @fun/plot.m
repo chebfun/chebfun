@@ -1,6 +1,6 @@
 function varargout = plot(f,varargin)
-%PLOT   Basic linear plot for BNDFUN objects. 
-%   PLOT(F) plots the BNDFUN object F.
+%PLOT   Basic linear plot for FUN objects. 
+%   PLOT(F) plots the FUN object F.
 %
 %   PLOT(F, S) allows various line types, plot symbols, and colors to be
 %   used when S is a character string made from one element from any or all
