@@ -78,12 +78,16 @@ classdef fun % (Abstract)
         % Retrieve and modify preferences for this class.
         prefs = pref(varargin);
         
-        % Linear map from [-1, 1] to bounded domain.
-        m = linear(domain);  
         
         % Edge detector.
         [edge, vscale] = detectedge(op, domain, hscale, vscale, pref, d)
 
     end
-
+    
+    methods(Abstract = true, Static = true)
+                
+        % Map from [-1, 1] to the domain of the FUN.
+        m = createMap(domain);  
+        
+    end
 end
