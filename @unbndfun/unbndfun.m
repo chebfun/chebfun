@@ -47,7 +47,7 @@ classdef unbndfun < fun
                 vscale = 0; 
             end
 
-            m = fun.unbounded(domain);
+            m = obj.createMap(domain);
             % Include nonlinear mapping from [-1,1] to [a,b] in the op:
             if ( isa(op, 'function_handle') && ~all(domain == [-1 1]) ...
                                             && ~isnumeric(op) )
@@ -76,6 +76,9 @@ classdef unbndfun < fun
         
         % Make method
         f = make(varargin)
+        
+        % Noninear map from [-1, 1] to the domain of the UNBNDFUN.
+        m = createMap(domain);  
         
     end
     

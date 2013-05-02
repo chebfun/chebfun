@@ -45,7 +45,7 @@ classdef bndfun < fun
                 vscale = 0; 
             end
 
-            linmap = fun.linear(domain);
+            linmap = bndfun.createMap(domain);
             % Include linear mapping from [-1,1] to [a,b] in the op:
             if ( isa(op, 'function_handle') && ~all(domain == [-1 1]) && ~isnumeric(op) )
                 op = @(x) op(linmap.for(x));
@@ -69,6 +69,8 @@ classdef bndfun < fun
         % Retrieve and modify preferences for this class.
         prefs = pref(varargin)
         
+        % Linear map from [-1, 1] to the domain of the BNDFUN.
+        m = createMap(domain);  
     end
     
     

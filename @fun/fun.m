@@ -76,15 +76,15 @@ classdef fun % (Abstract)
         % Retrieve and modify preferences for this class.
         prefs = pref(varargin);
         
-        % Linear map from [-1, 1] to bounded domain.
-        m = linear(domain); 
-        
-        % Noninear map from [-1, 1] to an unbounded domain.
-        m = unbounded(domain); 
-        
         % Edge detector.
         [edge, vscale] = detectedge(op, domain, hscale, vscale, pref, d)
 
     end
-
+    
+    methods (Abstract = true, Static = true)
+                
+        % Map from [-1, 1] to the domain of the FUN.
+        m = createMap(domain);  
+        
+    end
 end

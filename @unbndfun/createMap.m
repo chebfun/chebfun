@@ -1,6 +1,6 @@
-function m = unbounded(ends)
-%UNBOUNDEDMAP creates a map structure for chebfuns
-%   M = UNBOUNDEDMAP(ENDS) returns a structure that defines a nonlinear map
+function m = createMap(ends)
+%CREATEMAP creates a map structure for chebfuns
+%   M = CREATEMAP(ENDS) returns a structure that defines a nonlinear map
 %   from [-1 1] to the unbounded domain [ENDS(1) ENDS(2)].
 %   The structure MAP consists of three function handles and one string.
 %   M.FOR is a function that maps [-1,1] to ENDS.
@@ -8,8 +8,8 @@ function m = unbounded(ends)
 %   M.DER is the derivative of the map defined in MAP.FOR
 %   M.NAME is a string that identifies the map.
 
-% Copyright 2011 by The University of Oxford and The Chebfun Developers. 
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.:
+% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org for Chebfun information.
 
 % The domain:
 a = ends(1); b = ends(2);
