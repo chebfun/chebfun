@@ -27,19 +27,19 @@ if ( a == -inf && b == inf )
     m.for = @(y) 5*s*y./(1 - min(y.^2, 1)) + c;
     m.inv = @(x) 2*x./(5*s + sqrt(25*s^2 + 4*x.^2));
     m.der = @(y) 5*s*(1 + y.^2)./(1 - y.^2).^2;
-
+    
 elseif ( a == -inf )
     
-     m.inv = @(x) (15*s + x - b)./(15*s - x + b);
-     m.for = @(y) 15*s*(y - 1)./(y + 1) + b;
-     m.der = @(y) 15*s*2./(y + 1).^2;
-
+    m.for = @(y) 15*s*(y - 1)./(y + 1) + b;
+    m.inv = @(x) (15*s + x - b)./(15*s - x + b);
+    m.der = @(y) 15*s*2./(y + 1).^2;
+    
 elseif ( b == inf )
     
-     m.inv = @(x) (-15*s + x - a)./(15*s + x - a);
-     m.for = @(y) 15*s*(y + 1)./(1 - y)+a;
-     m.der = @(y) 15*s*2./(y - 1).^2;
-
+    m.for = @(y) 15*s*(y + 1)./(1 - y)+a;
+    m.inv = @(x) (-15*s + x - a)./(15*s + x - a);
+    m.der = @(y) 15*s*2./(y - 1).^2;
+    
 else
     
     error('FUN:unbounded:input', 'Error: Check input')

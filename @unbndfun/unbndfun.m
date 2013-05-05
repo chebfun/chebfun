@@ -28,13 +28,13 @@ classdef unbndfun < fun
             
             % Use default domain if none given:
             if ( nargin < 2 || isempty(domain) )
-                domain = pref.bndfun.domain;
+                domain = pref.unbndfun.domain;
             end
             
             % Check domain
             if ( ~any(isinf(domain)) )
                 error('CHEBFUN:UNBNDFUN:BoundedDomain',...
-                    'Should not encounter bounded domain in bndfun class.');
+                    'Should not encounter bounded domain in unbndfun class.');
             end
             
             % Define scales if none given.

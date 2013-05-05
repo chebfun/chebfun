@@ -86,6 +86,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % If we reach here, the function decays sufficiently fast that we can apply the
 % chain rule directly:
+
 % pref.fun.extrapolate = true; 
 % pref = onefun.pref(pref, pref.fun);
 p = chebtech.pref;

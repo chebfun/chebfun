@@ -4,8 +4,10 @@ function g = restrict(f, s, pref)
 %   [S(1), S(2)] of F.domain.
 %
 %   If length(S) > 2, i.e., S = [S1, S2, S3, ...], then RESCTRICT(F, S) returns
-%   an array of FUN objects, where the cells contain F restricted to each of the
-%   subintervals defined by S.
+%   an array of FUN objects, where the cells contain F restricted to each of 
+%   the subintervals defined by S. If there is only one FUN to be returned,
+%   that is, length(S) == 2, then the FUN object g is returned. This 
+%   facilitates the use of the result by other functions, e.g. plot etc.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
