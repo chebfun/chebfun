@@ -11,7 +11,7 @@ classdef bndfun < fun
 % Class diagram: [<<fun>>] <-- [<<bndfun>>] <>-- [<<onefun>>]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    
+    %% CLASS CONSTRUCTOR:
     methods
         
         function obj = bndfun(op, domain, hscale, vscale, pref)
@@ -63,7 +63,7 @@ classdef bndfun < fun
 
     end
     
-    % Static methods implimented by BNDFUN class.
+    %% STATIC METHODS IMPLEMENTED BY BNDFUN CLASS.
     methods ( Static = true ) 
         
         % Retrieve and modify preferences for this class.
@@ -73,6 +73,29 @@ classdef bndfun < fun
         m = createMap(domain);  
     end
     
-    
+    %% METHODS IMPLEMENTED BY THIS CLASS.
+    methods
+        
+        % Compose a BNDFUN with an operator or another BNDFUN
+        f = compose(f, op, g, pref)
+        
+        % Indefinite integral of a BNDFUN.
+        f = cumsum(f, m, pref)
+        
+        % Derivative of a BNDFUN.
+        f = diff(f, k, dim)
+       
+        % Change of domains of BNDFUN via linear change of variables
+        f = changeMap(f,newdom)
+        
+        % Flip/reverse a FUN object.
+        f = flipud(f)
+
+        % Restrict a BNDFUN to a subinterval.
+        f = restrict(f, s)
+        
+        % Definite integral of a BNDFUN on the interval [a,b].
+        out = sum(f, dim)
+    end
 end
    
