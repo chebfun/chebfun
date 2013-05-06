@@ -57,7 +57,7 @@ classdef unbndfun < fun
             end
             
             % Call the ONEFUN constructor:
-            pref = onefun.pref(pref, pref.bndfun);
+            pref = onefun.pref(pref, pref.unbndfun);
             obj.onefun = onefun.constructor(op, vscale, hscale, pref);
             
             % Add the domain and mapping:
@@ -68,7 +68,7 @@ classdef unbndfun < fun
 
     end
     
-    % Static methods implimented by UNBNDFUN class.
+    %% STATIC METHODS IMPLEMENTED BY BNDFUN CLASS.
     methods ( Static = true ) 
         
         % Retrieve and modify preferences for this class.
@@ -80,6 +80,31 @@ classdef unbndfun < fun
         % Noninear map from [-1, 1] to the domain of the UNBNDFUN.
         m = createMap(domain);  
         
+    end
+       
+    %% METHODS IMPLEMENTED BY THIS CLASS.
+    methods
+        
+        % [TODO]: Compose an UNBNDFUN with an operator or another UNBNDFUN.
+%         f = compose(f, op, g, pref)
+        
+        % Indefinite integral of an UNBNDFUN.
+        f = cumsum(f, m, pref)
+        
+        % Derivative of an UNBNDFUN.
+        f = diff(f, k, dim)
+       
+        % Change of domains of UNBNDFUN via linear change of variables.
+        f = changeMap(f,newdom)
+        
+        % Flip/reverse an UNBNDFUN object.
+        f = flipud(f)
+
+        % Restrict an UNBNDFUN to a subinterval.
+        f = restrict(f, s)
+        
+        % Definite integral of an UNBNDFUN on the its domain.
+        out = sum(f, dim)
     end
     
     
