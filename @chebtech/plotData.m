@@ -1,10 +1,12 @@
 function data = plotData(f, pref)
 %PLOTDATA    Useful data values for plotting a CHEBTECH object.
-%   DATA = PLOTDATA(F) returns a cell array of data values that can be used for
-%   plotting F. In particular, DATA is a 4x1 cell array of the form {xLine,
-%   fLine, xPoints, fPoints}, where xLine-fLine are a data pair for plotting the
-%   continuous function F and xPoints-fPoints are the data pair for plotting
-%   values of F on the underlying Chebyshev grid.
+%   OUT = PLOTDATA(F) returns a struct containing data that can be used for
+%   plotting F. In particular, DATA.xLine and DATA.fLine are for plotting smooth
+%   curves (usually passed to plot with '-') and DATA.xPoints and DATA.yPoints
+%   contain the (x, F(x)) data at the Chebyshev grid F.POINTS() used to
+%   represent F.
+%
+% See also PLOT.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -16,15 +18,15 @@ end
 % Get the number of points: (Oversample the wavelength)
 npts = min(max(501, round(4*pi*length(f))), pref.chebtech.maxSamples);
 
+% Initialise the output structure:
+data = struct('xLine', [], 'fLine', [], 'xPoints', [], 'fPoints', []);
+
 % Values on oversampled Chebyshev grid (faster than evaluating a uniform grid!).
-xLine = f.chebpts(npts);
-fLine = get(prolong(f, npts), 'values');
+data.xLine = f.chebpts(npts);
+data.fLine = get(prolong(f, npts), 'values');
 
 % Values on the Cheyshev grid tied to the CHEBTECH F:
-xPoints = f.points();
-fPoints = f.values;
-
-% Wrap the data in a cell array:
-data = {xLine, fLine, xPoints, fPoints};
+data.xPoints = f.points();
+data.fPoints = f.values;
 
 end
