@@ -39,6 +39,12 @@ end
 f = simplify(f);
 n = size(f, 1);
 
+% However, we must enforce that f.values has at least as many rows as columns:
+if ( n < m )
+    f = prolong(f, m);
+    n = m;
+end
+
 % Project the values onto a Legendre grid: (where integrals of polynomials
 % p_n*q_n will be computed exactly and on an n-point grid)
 xc = f.chebpts(n);
