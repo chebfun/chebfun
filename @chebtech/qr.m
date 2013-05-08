@@ -13,6 +13,8 @@ function [f, R, E] = qr(f, flag)
 %   instead of a matrix.  That is, E is a row vector such that F(:,E) = Q*R.
 %   Similarly, [Q, R, E] = QR(F, 'matrix') returns a permutation matrix E. This
 %   is the default behavior.
+%
+% See also CHEBTECH/QR2.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
