@@ -120,7 +120,7 @@ while ( 1 )
     vscale = max(vscale, max(abs(valuesTemp), [], 1));
     
     % Extrapolate out NaNs:
-    [f.values, maskNaN, maskInf] = f.extrapolate();
+    [f.values, maskNaN, maskInf] = extrapolate(f);
 
     % Compute the Chebyshev coefficients:
     coeffs = f.chebpoly(f.values);
