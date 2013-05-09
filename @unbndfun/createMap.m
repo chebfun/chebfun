@@ -36,7 +36,7 @@ elseif ( a == -inf )
     
 elseif ( b == inf )
     
-    m.for = @(y) 15*s*(y + 1)./(1 - y)+a;
+    m.for = @(y) 15*s*(y + 1)./(1 - y) + a;
     m.inv = @(x) (-15*s + x - a)./(15*s + x - a);
     m.der = @(y) 15*s*2./(y - 1).^2;
     
