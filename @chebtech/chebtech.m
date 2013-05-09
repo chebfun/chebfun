@@ -346,9 +346,15 @@ classdef chebtech %< smoothfun % (Abstract)
 
         % Multiplication of CHEBTECH objects.
         f = mtimes(f, c)
+        
+        % Compute a Legendre series expansion of a CHEBTECH object:
+        c = legpoly(f)
 
         % Basic linear plot for CHEBTECH objects.
         varargout = plot(f, varargin)
+        
+        % Obtain data used for plotting a CHEBTECH object:
+        data = plotData(f)
 
         % Addition of two CHEBTECH objects.
         f = plus(f, g)
