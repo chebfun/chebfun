@@ -26,9 +26,8 @@ classdef fun % (Abstract)
     end
     
     %% CLASS CONSTRUCTOR:
-    methods (Static)
-        
-        function obj = constructor(op, domain, hscale, vscale, pref)
+    methods (Static = true)
+        function obj = constructor(op, domain, vscale, hscale, pref)
             
             % Construct an empty fun:
             if ( nargin == 0 )
@@ -41,33 +40,37 @@ classdef fun % (Abstract)
             else
                 pref = fun.pref(pref);
             end
-           
+            
             % Get domain if none given:
-            if ( nargin < 2 )
-                domain = pref.fun.domain;
+            if ( nargin < 2 || isempty(domain) )
+                domain = pref.domain;
             end
-
+            
             % Get scales if none given:
-            if ( nargin < 3 || isstruct(hscale) )
-                if ( nargin > 2 && isstruct(hscale) )
-                    pref = hscale; 
+            if ( nargin < 3 || isstruct(vscale) )
+                
+            % Allow the third argument to be preference
+                if ( nargin > 2 && isstruct(vscale) )
+                    pref = fun.pref(vscale);
                 end
-                hscale = norm(domain, inf); 
-                if ( isinf(hscale) )
-                    hscale = 1; 
-                end
-            end
-            if ( nargin < 4 )
                 vscale = 0;
             end
-
+            
+            if ( nargin < 4 || isempty(vscale) )
+                hscale = norm(domain, inf);
+            end
+            
+            if ( isinf(hscale) )
+                hscale = 1;
+            end
+            
             % Call constructor depending on domain:
             if ( ~any(isinf(domain)) )
                 pref = bndfun.pref(pref, pref.fun);
-                obj = bndfun(op, domain, hscale, vscale, pref);
+                obj = bndfun(op, domain, vscale, hscale, pref);
             else
                 pref = unbndfun.pref(pref, pref.fun);
-                obj = unbndfun(op, domain, hscale, vscale, pref);
+                obj = unbndfun(op, domain, vscale, hscale, pref);
             end
             
         end
@@ -79,10 +82,6 @@ classdef fun % (Abstract)
         
         % Retrieve and modify preferences for this class.
         prefs = pref(varargin);
-        
-        
-        % Edge detector.
-        [edge, vscale] = detectedge(op, domain, hscale, vscale, pref, d)
 
     end
     
