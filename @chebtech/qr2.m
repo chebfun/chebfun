@@ -45,7 +45,7 @@ tol = pref.chebtech.eps;
 f = simplify(f, pref);
 n = size(f, 1);
 
-% Create the chebyshev nodes and quadrature weights of double the length:
+% Create the Chebyshev nodes and quadrature weights of double the length:
 x = f.chebpts(2*n);
 w = f.quadwts(2*n);
 
@@ -53,22 +53,22 @@ w = f.quadwts(2*n);
 A = get(prolong(f, 2*n), 'values');
 
     % Define the inner product as a nested function:
-    function res = innerprod( a , b )
-        res = w * ( conj( a ) .* b );
+    function res = innerprod(a, b)
+        res = w*(conj(a).*b);
     end
 
 % Pre-allocate memory for R and V:
 R = zeros(m);
-V = zeros( 2*n , m );
+V = zeros(2*n, m);
 
 % Generate a discrete Legendre matrix E via the standard recurrence:
-E = ones( 2*n , m );
+E = ones(2*n, m);
 E(:,2) = x;
 for k = 3:m
-    E(:,k) = ( (2*k-3)*x.*E(:,k-1) - (k - 2)*E(:,k-2) ) / (k - 1);
+    E(:,k) = ((2*k-3)*x.*E(:,k-1) - (k - 2)*E(:,k-2)) / (k - 1);
 end
 for k = 1:m
-    E(:,k) = E(:,k) * sqrt( k-.5 );
+    E(:,k) = E(:,k) * sqrt(k - .5);
 end
 
 % Discretised version of code from Trefethen's paper:
@@ -80,7 +80,7 @@ for k = 1:n
     scl = max(max(abs(E(:,k))), max(abs(A(:,k))));
     
     % Multiply the kth column of A with the basis in E:
-    ex = innerprod(E(:,k) , A(:,k));
+    ex = innerprod(E(:,k), A(:,k));
     aex = abs(ex);
     
     % Adjust the sign of the kth column in E:
@@ -99,7 +99,7 @@ for k = 1:n
     v = r*E(:,k) - A(:,k);
     % Make it more orthogonal:
     for j = I
-        ev = innerprod( E(:,j) , v );
+        ev = innerprod(E(:,j), v);
         v = v - E(:,j)*ev;
     end
     

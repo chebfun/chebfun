@@ -31,7 +31,7 @@ m = size(f, 2);
 
 % If f has only one column we simply scale it.
 if ( m == 1 )
-    R = sqrt(innerProduct(f,f));
+    R = sqrt(innerProduct(f, f));
     f = f./R;
     E = 1;
     return
