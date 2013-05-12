@@ -7,37 +7,33 @@ classdef chebtech2 < chebtech
 %
 % Constructor inputs:
 %   CHEBTECH2(OP) constructs a CHEBTECH2 object from the function handle OP. OP
-%   should be vectorised (i.e., accept a vector input) and ouput a vector of the
-%   same length. CHEBTECH2 objects allow for vectorised construction (i.e., of a
-%   array-valued function), in which case OP should accept a column vector of
-%   length N and return a matrix of size NxM.
+%   should be vectorised (i.e., accept a vector input) and ouput a vector of
+%   the same length. CHEBTECH2 objects allow for array-valued construction
+%   (i.e., of a array-valued function), in which case OP should accept a column
+%   vector of length N and return a matrix of size NxM.
 %
 %   CHEBTECH2(OP, VSCALE) constructs a CHEBTECH2 with 'happiness' (see
-%   HAPPINESSCHECK.m) relative to the maximum of the given vertical scale VSCALE
-%   and the (column-wise) infinity norm of the sampled function values of OP,
-%   and the fixed horizontal scale HSCALE. If not given (or given as empty), the
-%   VSCALE defaults to 0 initially, and HSCALE defaults to 1.
+%   HAPPINESSCHECK.m) relative to the maximum of the given vertical scale
+%   VSCALE and the (column-wise) infinity norm of the sampled function values
+%   of OP, and the fixed horizontal scale HSCALE. If not given (or given as
+%   empty), the VSCALE defaults to 0 initially, and HSCALE defaults to 1.
 %
-%   CHEBTECH2(OP, VSCALE, HSCALE, PREF) overrides the default behavior with that
-%   given by the preference structure PREF. See CHEBTECH.PREF for details.
+%   CHEBTECH2(OP, VSCALE, HSCALE, PREF) overrides the default behavior with
+%   that given by the preference structure PREF. See CHEBTECH.PREF for details.
 %
 %   CHEBTECH2(VALUES, ...) returns a CHEBTECH2 object which interpolates the
 %   values in the columns of VALUES at 2nd-kind Chebyshev points and
 %   CHEBTECH2({VALUES, COEFFS}, ... ) uses the Chebyshev coefficients passed in
 %   COEFFS rather than computing them from VALUES. If VALUES, is empty then the
-%   CHEBTECH2 is constructed directly from the COEFFS. If COEFFS are passed, the
-%   resulting CHEBTECH2 is always deemed 'happy'.
+%   CHEBTECH2 is constructed directly from the COEFFS. If COEFFS are passed,
+%   the resulting CHEBTECH2 is always deemed 'happy'.
 %
-% Examples:
-%   % Basic construction:
-%   f = chebtech2(@(x) sin(x))
+% Examples: % Basic construction: f = chebtech2(@(x) sin(x))
 %
-%   % Construction with preferences:
-%   p = chebtech.pref('sampletest', 0); % See help('chebtech.pref') for details
-%   f = chebtech2(@(x) sin(x), [], [], p)
+%   % Construction with preferences: p = chebtech.pref('sampletest', 0); % See
+%   help('chebtech.pref') for details f = chebtech2(@(x) sin(x), [], [], p)
 %
-%   % Vector-valued construction:
-%   f = chebtech2(@(x) [sin(x), cos(x), exp(x)])
+%   % Vector-valued construction: f = chebtech2(@(x) [sin(x), cos(x), exp(x)])
 %
 % See also CHEBTECH, CHEBTECH.PREF, CHEBPTS, HAPPINESSCHECK, REFINE.
 

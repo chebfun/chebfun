@@ -70,7 +70,7 @@ if ( size(f.values, 2) == 1 )   % F is a scalar-value CHEBTECH.
     % Simply call roots_scalar():
     out = roots_scalar(f, varargin{:});
     
-else                            % Support for vectorised CHEBTECH objects.
+else                            % Support for array-valued CHEBTECH objects.
 
     % Initialise a cell array to hold roots of each column:
     r = cell(1, size(f.values, 2));

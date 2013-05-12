@@ -77,7 +77,7 @@ for n = 1:2
   pass(n, 7) = (std(err) < tol)  && (abs(feval(h, -1)) < tol);
   
   %%
-  % Check operation for vectorized chebtech objects.
+  % Check operation for array-valued chebtech objects.
   
   f = testclass.make(@(x) [sin(x) x.^2 exp(1i*x)], [], [], pref);
   F_exact = testclass.make(@(x) [(-cos(x)) (x.^3/3) (exp(1i*x)/1i)], [], [], pref);
