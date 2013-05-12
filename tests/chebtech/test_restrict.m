@@ -71,7 +71,7 @@ for n = 1:2
     pass(n, 10) = all(err1(:) == 0) && all(err2(:) == 0);
 
     %%
-    % Check operation for vector-valued functions.
+    % Check operation for array-valued functions.
     pass(n, 11) = test_spotcheck_restrict(testclass, ...
         @(x) [sin(x) cos(x) exp(x)], [-1 -0.7], pref);
 

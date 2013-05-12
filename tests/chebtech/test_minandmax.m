@@ -51,7 +51,7 @@ for n = 1:2
         end
     end
 
-    % Test complex-vector-valued CHEBTECH objects.
+    % Test complex-array-valued CHEBTECH objects.
     f = chebtech.constructor(@(x) [exp(sin(2*x)), 1i*cos(20*x)]);
     [vals, pos] = minandmax(f);
     f1 = chebtech.constructor(@(x) exp(sin(2*x)));

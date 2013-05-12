@@ -30,10 +30,12 @@ classdef chebtech2 < chebtech
 %
 % Examples: % Basic construction: f = chebtech2(@(x) sin(x))
 %
-%   % Construction with preferences: p = chebtech.pref('sampletest', 0); % See
-%   help('chebtech.pref') for details f = chebtech2(@(x) sin(x), [], [], p)
+%   % Construction with preferences:
+%   p = chebtech.pref('sampletest', 0); % See help('chebtech.pref') for details
+%   f = chebtech2(@(x) sin(x), [], [], p)
 %
-%   % Vector-valued construction: f = chebtech2(@(x) [sin(x), cos(x), exp(x)])
+%   % Array-valued construction:
+%   f = chebtech2(@(x) [sin(x), cos(x), exp(x)])
 %
 % See also CHEBTECH, CHEBTECH.PREF, CHEBPTS, HAPPINESSCHECK, REFINE.
 

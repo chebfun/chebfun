@@ -19,7 +19,7 @@ for n = 1:2
     f = testclass.make(@(x) x, [], [], p);
     pass(n, 1) = ~isnan(f);
 
-    % Test a vector-valued function:
+    % Test a array-valued function:
     f = testclass.make(@(x) [x, x.^2], [], [], p);
     pass(n, 2) = ~isnan(f);
 
@@ -31,7 +31,7 @@ for n = 1:2
         pass(n, 3) = strcmpi(ME.message, 'Too many NaNs to handle.');
     end
 
-    % Test a NaN vector-valued function:
+    % Test a NaN array-valued function:
     try
         f = testclass.make(@(x) [x, x + NaN]);
         pass(n, 4) = isnan(f);
@@ -39,7 +39,7 @@ for n = 1:2
         pass(n, 4) = strcmpi(ME.message, 'Too many NaNs to handle.');
     end
 
-    % Test a NaN vector-valued function:
+    % Test a NaN array-valued function:
     try
         f = testclass.make(@(x) myfun(x));
         pass(n, 5) = isnan(f);
