@@ -1,4 +1,4 @@
-function f = simplify(f, pref, type)
+function f = simplify(f, pref)
 %SIMPLIFY   Trim trailing Chebyshev coefficients of a CHEBTECH object. 
 %   G = SIMPLIFY(F) attempts to compute a 'simplified' version G of the CHEBTECH
 %   object F such that LENGTH(G) <= LENGTH(F) but ||G - F|| < F.EPSLEVEL.
@@ -26,9 +26,6 @@ elseif ( isnumeric(pref) )
     pref = chebtech.pref('eps', pref);
 elseif ( ~isstruct(pref) )
     pref = chebtech.pref('happinessCheck', pref);
-end
-if ( nargin == 3 )
-    pref.chebtech.happinessCheck = type;
 end
 
 % Take max of PREF.EPS and EPSLEVEL:
