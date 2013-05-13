@@ -15,20 +15,20 @@ function b = legpoly(f)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % This is currently implemented by 'inverting' the Vandermonde-type matrix. In
-% fact the matrix can be inverted explicitly by nothing that D*P'W*P = I, where
-% P is the Legendre Vandemonde matrix evaluated on a Chebyshev grid of size
+% fact the matrix can be inverted explicitly by noting that D*P'W*P = I, where
+% P is the Legendre-Vandemonde matrix evaluated on a Chebyshev grid of size
 % 2*n+1, W is a diagonal matrix of the corresponding Clenshaw-Curtis weights,
 % and the matrix D is the diagonal scaling ((0:n)'+1/2);
 %
-% In theory, the O(N^2) coefficient-based bethod due to Piessen's [1] should be
+% In theory, the O(N^2) coefficient-based bethod due to Piessens' [1] should be
 % faster (i.e., have a smaller implied constant), but the tight FOR loop is
 % prohibitively slow in MATLAB.
 %
 % [1] R. Piessens, "Computation of Legendre series coefficients", Communications
 % of the ACM, Volume 17 Issue 1, Jan. 1974, Page 25.
 %
-% [TODO]: Perhaps it's better to evaluate on a Legendre grid? Then there's need
-% to make P have double the length, however you do have to evaluate f on a
+% [TODO]: Perhaps it's better to evaluate on a Legendre grid? Then there's no
+% need to make P have double the length, however you do have to evaluate f on a
 % Legendre grid (for which the weights would also need to be computed).
 %    
 % [TODO]: Develop a fast algorithm for this transformation.
