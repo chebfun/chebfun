@@ -57,26 +57,20 @@ if ( m == 1 )
 end
 
 % Simplify so that we don't do any extra work: (QR is O(m*n^2)? :/ )
-f = simplify(f);
+f = simplify(f);   
 
-% Decide which method to use:
-if ( nargin == 3 && strcmp(methodFlag, 'builtin') )
-    [Q, R, E] = qr_builtin(f, outputFlag);
-else
-    [Q, R, E] = qr_householder(f, outputFlag);
-end
-
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function [Q, R, E] = qr_builtin(f, flag)
-
-[n, m] = size(f, 1);
 % We must enforce that f.values has at least as many rows as columns:
+[n, m] = size(f);
 if ( n < m )
     f = prolong(f, m);
     n = m;
+end
+
+% Call Trefethen's Householder implementation:
+if ( nargin == 3 && strcmpi(methodFlag, 'householder') )
+    if ( isempty(outputFlag) ), outputFlag = 'matrix'; end
+    [f, R, E] = qr_householder(f, outputFlag);
+    return
 end
 
 % Project the values onto a Legendre grid: (where integrals of polynomials
@@ -91,7 +85,7 @@ W = spdiags(sqrt(wl.'), 0, n, n);
 if ( nargout == 3 )
     [Q, R, E] = qr(W * P * f.values, 0);
     % For consistency with the MATLAB QR behavior:
-    if ( (nargin == 1) || ~(strcmpi(flag, 'vector') || (flag == 0)) )
+    if ( (nargin == 1) || ~(strcmpi(outputFlag, 'vector') || (outputFlag == 0)) )
         % Return E in matrix form:
         I = eye(m);
         E = I(:,E);
@@ -116,7 +110,15 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [Q, R, E] = qr_householder(f, flag)
+function [f, R, E] = qr_householder(f, flag)
+
+% Specify a tolerance:
+pref = chebtech.pref;
+tol = pref.chebtech.eps;
+
+% Grab the size:
+[n, m] = size(f);
+
 % Create the Chebyshev nodes and quadrature weights of double the length:
 % (Note: we double the size so that sum(f*f) is exact for f in P_{n}.)
 x = f.chebpts(2*n);
@@ -145,11 +147,11 @@ R = zeros(m);
 V = zeros(2*n, m);
 
 % Discretised version of code from Trefethen's paper:
-for k = 1:n
+for k = 1:m
     
     % Indices of the previous and following columns:
     I = 1:k-1; 
-    J = k+1:n;
+    J = k+1:m;
     scl = max(max(abs(E(:,k))), max(abs(A(:,k))));
     
     % Multiply the kth column of A with the basis in E:
@@ -198,28 +200,30 @@ end
 
 % Form a discrete Q from the columns of V:
 Q = E;
-for k = n:-1:1
-    for j = k:n
+for k = m:-1:1
+    for j = k:m
         vq = innerprod(V(:,k), Q(:,j));
         Q(:,j) = Q(:,j) - 2*V(:,k)*vq;
     end
 end
 
-% Compute the corresponding Chebyshev coefficients:
+% Compute the corresponding Chebysehv coefficients:
 f.coeffs = f.chebpoly(Q);
 % Trim the unneeded ones:
 f.coeffs(1:n,:) = [];
 % Comute new values:
 f.values = f.chebpolyval(f.coeffs);
+
 % Update the vscale:
 f.vscale = max(abs(Q), [], 1);
-% [TODO]: Update epslevel?
 
 % Additional output argument:
-if ( nargin == 2 && strcmp(flag, 'vector') )
-    E = 1:m;
-else
-    E = eye(m);
+if ( nargout == 3 )
+    if ( nargin == 2 && strcmp(flag, 'vector') )
+        E = 1:m;
+    else
+        E = eye(m);
+    end
 end
 
 end
