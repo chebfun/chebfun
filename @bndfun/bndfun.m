@@ -14,7 +14,7 @@ classdef bndfun < fun
     %% CLASS CONSTRUCTOR:
     methods
         
-        function obj = bndfun(op, domain, hscale, vscale, pref)
+        function obj = bndfun(op, domain, vscale, hscale, pref)
             
             % Construct an empty bndfun
             if ( nargin == 0 || isempty(op) )
@@ -22,8 +22,10 @@ classdef bndfun < fun
             end
             
             % Obtain preferences if none given:
-            if ( nargin < 5 )
+            if ( nargin < 5 || isempty(pref))
                 pref = bndfun.pref;
+            else
+                pref = bndfun.pref(pref);
             end
             
             % Use default domain if none given:
@@ -38,11 +40,11 @@ classdef bndfun < fun
             end
             
             % Define scales if none given.
-            if ( nargin < 3 )
-                hscale = norm(domain,inf); 
+            if ( nargin < 3 || isempty(vscale) )
+                vscale = norm(domain,inf); 
             end
-            if ( nargin < 4 )
-                vscale = 0; 
+            if ( nargin < 4 || isempty(hscale) )
+                hscale = 0; 
             end
 
             linmap = bndfun.createMap(domain);
@@ -70,7 +72,11 @@ classdef bndfun < fun
         prefs = pref(varargin)
         
         % Linear map from [-1, 1] to the domain of the BNDFUN.
-        m = createMap(domain);  
+        m = createMap(domain);
+        
+        % Make a BNDFUN (constructor shortcut):
+        f = make(varargin);
+        
     end
     
     %% METHODS IMPLEMENTED BY THIS CLASS.
