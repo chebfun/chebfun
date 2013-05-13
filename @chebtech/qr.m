@@ -14,25 +14,27 @@ function [f, R, E] = qr(f, outputflag, methodflag)
 %   Similarly, [Q, R, E] = QR(F, 'matrix') returns a permutation matrix E. This
 %   is the default behavior.
 %
-%   QR(F, 'vector', METHOD) or QR(F, 'vector', METHOD) specifies which method to
-%   use in comuting the QR factorisation. METHOD = 'builtin' will for a weighted
-%   Legendre-Vandermonde matrix and orthogonalise this with the standard Matlab
-%   QR algorithm. METHOD = 'householder' uses the technique described in [1].
+%   QR(F, 'vector', METHOD) or QR(F, 'vector', METHOD) specifies which method
+%   to use in computing the QR factorisation. METHOD = 'builtin' will for a
+%   weighted Legendre-Vandermonde matrix and orthogonalise this with the
+%   standard Matlab QR algorithm. METHOD = 'householder' uses the technique
+%   described in [1].  Note that the E output is not meaningful when METHOD is
+%   set to 'householder'.
 %
 %   [1] L.N. Trefethen, "Householder triangularization of a quasimatrix", IMA J
 %   Numer Anal (2010) 30 (4): 887-897.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% Devloper note: Typically 'householder' will be slower than 'builtin', but
+% Developer note: Typically 'householder' will be slower than 'builtin', but
 % should be more stable.
 %
-% Devloper note: In the builtin approach, one could use a CHebyshev grid of
+% Developer note: In the builtin approach, one could use a Chebyshev grid of
 % double the size (rather than the Legendre grid), but given the complexity
-% costs of QR vs. the const of the transformation, it seems Legendre is
+% costs of QR vs. the cost of the transformation, it seems Legendre is
 % preferable.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -204,7 +206,7 @@ for k = n:-1:1
     end
 end
 
-% Compute the corresponding Chebysehv coefficients:
+% Compute the corresponding Chebyshev coefficients:
 f.coeffs = f.chebpoly(Q);
 % Trim the unneeded ones:
 f.coeffs(1:n,:) = [];

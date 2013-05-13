@@ -20,7 +20,7 @@ function b = legpoly(f)
 % 2*n+1, W is a diagonal matrix of the corresponding Clenshaw-Curtis weights,
 % and the matrix D is the diagonal scaling ((0:n)'+1/2);
 %
-% In theory, the O(N^2) coefficient-based bethod due to Piessens' [1] should be
+% In theory, the O(N^2) coefficient-based bethod due to Piessens [1] should be
 % faster (i.e., have a smaller implied constant), but the tight FOR loop is
 % prohibitively slow in MATLAB.
 %
