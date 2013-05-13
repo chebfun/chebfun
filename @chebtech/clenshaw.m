@@ -6,9 +6,21 @@ function y = clenshaw(x, c)
 %
 %   If C is an (N+1) x M matrix, then CLENSHAW interprets each of the columns
 %   of C as coefficients of a degree N polynomial.
+%
+% See also CHEBTECH.FEVAL, CHEBTECH.BARY.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Developer note: Clenshaw is not typically called directly, but by FEVAL().
+%
+% Developer note: The algorithm is implemented both for scalar and for vector
+% inputs. Of course, the vector implementation could also be used for the scalar
+% case, but the additional overheads make it a factor of 2-4 slower. Since the
+% code is short, we live with the minor duplication.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % X should be a column vector.
 if ( size(x, 2) > 1 )
