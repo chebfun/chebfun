@@ -46,22 +46,19 @@ f = simplify(f, pref);
 n = size(f, 1);
 
 % Create the Chebyshev nodes and quadrature weights of double the length:
+% (Note: we double the size so that sum(f*f) is exact for f in P_{n}.)
 x = f.chebpts(2*n);
 w = f.quadwts(2*n);
-
-% Make the discrete analog of A (containing function values on doubled grid):
-A = get(prolong(f, 2*n), 'values');
 
     % Define the inner product as a nested function:
     function res = innerprod(a, b)
         res = w*(conj(a).*b);
     end
 
-% Pre-allocate memory for R and V:
-R = zeros(m);
-V = zeros(2*n, m);
+% Make the matrix of function values on a doubled grid so that Q*R=A:
+A = get(prolong(f, 2*n), 'values');
 
-% Generate a discrete Legendre matrix E via the standard recurrence:
+% Generate the Legendre-Vandermonde matrix E via the standard recurrence:
 E = ones(2*n, m);
 E(:,2) = x;
 for k = 3:m
@@ -70,6 +67,10 @@ end
 for k = 1:m
     E(:,k) = E(:,k) * sqrt(k - .5);
 end
+
+% Pre-allocate memory for R and V:
+R = zeros(m);
+V = zeros(2*n, m);
 
 % Discretised version of code from Trefethen's paper:
 for k = 1:n
@@ -123,7 +124,7 @@ for k = 1:n
     
 end
 
-% Form a discrete Q from the columns of V.
+% Form a discrete Q from the columns of V:
 Q = E;
 for k = n:-1:1
     for j = k:n

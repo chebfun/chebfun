@@ -1,5 +1,4 @@
 function f = populate(f, op, vscale, hscale, pref)
-% [TODO] The team agreed that this code needs a more descriptive name.
 %POPULATE   Populate a CHEBTECH class with values.
 %   F = F.POPULATE(OP) returns a CHEBTECH representation populated with values
 %   F.VALUES of the function OP evaluated on a Chebyshev grid. The fields
