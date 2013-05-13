@@ -41,7 +41,7 @@ for n = 1:2
     pass(n, 4) = isnan(g);
     
     %%
-    % Check division by a row matrix of scalars in the case of a vectorized
+    % Check division by a row matrix of scalars in the case of an array-valued
     % chebtech object.
     
     g = f ./ [alpha beta];

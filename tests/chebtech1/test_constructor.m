@@ -20,7 +20,7 @@ x = chebtech1.chebpts(length(g.values));
 pass(1) = norm(f(x) - g.values, inf) < tol;
 
 %%
-% Test on a vector-valued function:
+% Test on a array-valued function:
 pref.chebtech.refinementFunction = 'default';
 f = @(x) [sin(x) cos(x) exp(x)];
 g = populate(chebtech1, f, [], [], pref);

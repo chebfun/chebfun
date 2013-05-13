@@ -58,7 +58,7 @@ for n = 1:2
     pass(n, 8) = (abs(sum(dg) - (feval(g, 1) - feval(g, -1))) < tol);
 
     %%
-    % Check operation for vectorized chebtech objects.
+    % Check operation for array-valued chebtech objects.
     f = testclass.make(@(x) [sin(x) x.^2 exp(1i*x)], [], [], pref);
     I = sum(f);
     I_exact = [0 2/3 2*sin(1)];
@@ -68,12 +68,12 @@ for n = 1:2
     seedRNG(6178);
     x = 2 * rand(100, 1) - 1;
 
-    % DIM option with vectorized input.
+    % DIM option with array-valued input.
     g = sum(f, 2);
     h = @(x) sin(x) + x.^2 + exp(1i*x);
     pass(n, 10) = (norm(feval(g, x) - h(x), inf) < tol);
 
-    % DIM option with non-vectorized input should leave everything alone.
+    % DIM option with non-array-valued input should leave everything alone.
     h = testclass.make(@(x) cos(x));
     sumh2 = sum(h, 2);
     pass(n, 11) = all((h.values == sumh2.values) & (h.coeffs == sumh2.coeffs));

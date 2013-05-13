@@ -15,7 +15,7 @@ pass = zeros(2, 17); % Pre-allocate pass matrix
 for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();
-    else 
+    else
         testclass = chebtech2();
     end
 

@@ -3,8 +3,8 @@ function varargout = chebpolyplot(f, varargin)
 %
 %   CHEBPOLYPLOT(F) plots the Chebyshev coefficients of a CHEBTECH F on a
 %   semilogy scale. A horizontal line at the EPSLEVEL of F is also plotted. If F
-%   is a vectorised CHEBTECH then a curve is plotted for each component (column)
-%   of F.
+%   is an array-valued CHEBTECH then a curve is plotted for each component
+%   (column) of F.
 %
 %   CHEBPOLYPLOT(F, S) allows further plotting options, such as linestyle,
 %   linecolor, etc, in the standard MATLAB manner. If S contains a string

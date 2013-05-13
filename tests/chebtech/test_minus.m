@@ -59,7 +59,7 @@ for n = 1:2
     pass(n, 10:11) = test_sub_function_and_function(f, f_op, g, g_op, x);
     
     %%
-    % Check operation for vectorized chebtech objects.
+    % Check operation for array-valued chebtech objects.
     
     f_op = @(x) [zeros(size(x)) zeros(size(x)) zeros(size(x))];
     f = testclass.make(f_op, [], [], pref);

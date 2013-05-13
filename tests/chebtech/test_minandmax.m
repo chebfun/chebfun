@@ -31,7 +31,7 @@ for n = 1:2
         (-1.25)^3*cosh(-1), 0.75^3*cosh(1), pref);
 
     %%
-    % Check operation for vectorized inputs.
+    % Check operation for array-valued inputs.
     
     fun_op = @(x) [sin(10*x) airy(x) (x - 0.25).^3.*cosh(x)];
     f = testclass.make(fun_op, [], [], pref);
@@ -51,7 +51,7 @@ for n = 1:2
         end
     end
 
-    % Test complex-vector-valued CHEBTECH objects.
+    % Test complex-array-valued CHEBTECH objects.
     f = chebtech.constructor(@(x) [exp(sin(2*x)), 1i*cos(20*x)]);
     [vals, pos] = minandmax(f);
     f1 = chebtech.constructor(@(x) exp(sin(2*x)));

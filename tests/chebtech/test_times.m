@@ -81,7 +81,7 @@ for n = 1:2
     pass(n, 11) = test_mult_function_by_function(f, f_op, g, g_op, x, false);
     
     %%
-    % Check operation for vectorized chebtech objects.
+    % Check operation for array-valued chebtech objects.
     
     f = testclass.make(@(x) [sin(x) cos(x) exp(x)], [], [], pref);
     g = testclass.make(@(x) tanh(x), [], [], pref);

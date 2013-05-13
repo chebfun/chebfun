@@ -36,7 +36,7 @@ for n = 1:2
         < 10*f.epslevel);
     
     %%
-    % Verify operation for vectorized chebtech objects.
+    % Verify operation for array-valued chebtech objects.
     
     f = testclass.make(@(x) [3*ones(size(x)), (6.4*x - 3i), ... 
         (4*x.^2 - 2i*x + 3.7)], [], [], pref);
