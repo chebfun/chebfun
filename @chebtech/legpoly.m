@@ -27,7 +27,10 @@ function b = legpoly(f)
 % [1] R. Piessens, "Computation of Legendre series coefficients", Communications
 % of the ACM, Volume 17 Issue 1, Jan. 1974, Page 25.
 %
-% [TODO]: Perhaps it's better to evaluate on a Legendre grid? Then no doubling.
+% [TODO]: Perhaps it's better to evaluate on a Legendre grid? Then there's need
+% to make P have double the length, however you do have to evaluate f on a
+% Legendre grid (for which the weights would also need to be computed).
+%    
 % [TODO]: Develop a fast algorithm for this transformation.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
