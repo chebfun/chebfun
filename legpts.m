@@ -48,6 +48,8 @@ function [x, w, v, t] = legpts(n, int, meth)
 %   [3] N. Hale and A. Townsend, "Fast computation of Gauss-Jacobi 
 %       quadrature nodes and weights",In preparation, 2012.
 
+% [TODO]: This code needs major clean up.
+
 % Defaults
 interval = [-1, 1];
 method = 'default';

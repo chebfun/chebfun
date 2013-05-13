@@ -164,7 +164,6 @@ end
             c = chebtech2.alias(c(end:-1:1), n);
             c = c(end:-1:1);
         end
-
 %         % Truncate the coefficients (rather than alias):
 %         if ( (n > 1) && (n < length(c)) )
 %             c = c(1:n);
@@ -211,6 +210,7 @@ end
             oh = 0.5 * ones(length(c)-1, 1);
 
             % Modified colleague matrix:
+            % [TODO]: Would the upper-Hessenberg form be better?
             A = diag(oh, 1) + diag(oh, -1);
             A(end-1,end) = 1;
             A(:,1) = flipud(c);

@@ -28,7 +28,7 @@ elseif ( ~isstruct(pref) )
     pref = chebtech.pref('happinessCheck', pref);
 end
 
-% Take max of PREF.EPS and EPSLEVEL:
+% Take max of PREF.CHEBTECH.EPS and EPSLEVEL:
 pref.chebtech.eps = max(pref.chebtech.eps, f.epslevel);
 
 % Check to see if we can trim the tail:

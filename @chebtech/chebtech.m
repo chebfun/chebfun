@@ -320,7 +320,7 @@ classdef chebtech %< smoothfun % (Abstract)
         % Length of a CHEBTECH.
         len = length(f)
 
-        % [TODO]: Implement looseCheck.
+        % A 'loose' (i.e., not too strict) check for happiness.
         [ishappy, epslevel, cutoff] = looseCheck(f, pref)
 
         % Convert a array-valued CHEBTECH into an ARRAY of CHEBTECH objects.

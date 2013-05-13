@@ -48,13 +48,13 @@ n = size(v,1);
 m = size(v,2);
 w = repmat((2/n)*exp(-1i*(0:n-1)*pi/(2*n)).',1,m);
 
-% [TODO KX]: confirm whether the difference between the two cases suggested
+% [TODO KX]: Confirm whether the difference between the two cases suggested
 % by the remark below about "no need" is genuine.
 %
 % Form the vector whose data are periodic. Note that in contrast to the
-% situation with 2nd kind Chebyshev points, here there is no need to mirror
-% the data in order to achieve the effect of a DCT with
-% an FFT. Even and odd cases are treated differently.
+% situation with 2nd kind Chebyshev points, here there is no need to mirror the
+% data in order to achieve the effect of a DCT with an FFT. Even and odd cases
+% are treated differently.
 
 if ( rem(n, 2) == 0 ) % Even n case
     vv = [ v(1:2:n-1,:); v(n:-2:2,:) ];
