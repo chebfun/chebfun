@@ -1,4 +1,4 @@
-function [f, R, E] = qr(f, outputflag, methodflag)
+function [f, R, E] = qr(f, outputFlag, methodFlag)
 %QR   QR factorisation of an array-valued CHEBTECH.
 %   [Q, R] = QR(F) returns a QR factorisation of F such that F = Q*R, where the
 %   CHEBTECH Q is orthogonal (with respect to the continuous L^2 norm on [-1,1])
@@ -18,8 +18,7 @@ function [f, R, E] = qr(f, outputflag, methodflag)
 %   to use in computing the QR factorisation. METHOD = 'builtin' will for a
 %   weighted Legendre-Vandermonde matrix and orthogonalise this with the
 %   standard Matlab QR algorithm. METHOD = 'householder' uses the technique
-%   described in [1].  Note that the E output is not meaningful when METHOD is
-%   set to 'householder'.
+%   described in [1].
 %
 %   [1] L.N. Trefethen, "Householder triangularization of a quasimatrix", IMA J
 %   Numer Anal (2010) 30 (4): 887-897.
@@ -62,9 +61,9 @@ f = simplify(f);
 
 % Decide which method to use:
 if ( nargin == 3 && strcmp(methodFlag, 'builtin') )
-    [Q, R, E] = qr_builtin(f, flag);
+    [Q, R, E] = qr_builtin(f, outputFlag);
 else
-    [Q, R, E] = qr_householder(f, flag);
+    [Q, R, E] = qr_householder(f, outputFlag);
 end
 
 end
