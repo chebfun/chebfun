@@ -1,10 +1,9 @@
 function data = plotData(f)
-%PLOTDATA    Useful data values for plotting a CHEBTECH object.
-%   DATA = PLOTDATA(F) returns a cell array of data values that can be used for
-%   plotting F. In particular, DATA is a 4x1 cell array of the form {xLine,
-%   fLine, xPoints, fPoints}, where xLine-fLine are a data pair for plotting the
-%   continuous function F and xPoints-fPoints are the data pair for plotting
-%   values of F on the underlying Chebyshev grid.
+%PLOTDATA    Useful data values for plotting a BNDFUN object.
+%   OUT = PLOTDATA(F) returns a struct containing data that can be used for
+%   plotting F. In particular, DATA.xLine and DATA.fLine are for plotting smooth
+%   curves (usually passed to plot with '-') and DATA.xPoints and DATA.yPoints
+%   contain the (x, F(x)) data used to represent F.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -13,7 +12,7 @@ function data = plotData(f)
 data = plotData(f.onefun);
 
 % Map the 'x' data using f.mapping.for:
-data{1} = f.mapping.for(data{1});
-data{3} = f.mapping.for(data{3});
+data.xLine = f.mapping.for(data.xLine);
+data.xPoints = f.mapping.for(data.xPoints);
 
 end
