@@ -36,7 +36,7 @@ try
     populate(chebtech1, f, [], [], pref);
     pass(3) = false;
 catch ME
-    pass(3) = strcmp(ME.message, 'Too many NaNs to handle.');
+    pass(3) = strcmp(ME.message, 'Too many NaNs/Infs to handle.');
 end
 
 % As should this:
@@ -45,5 +45,5 @@ try
     populate(chebtech1, f, [], [], pref);
     pass(4) = false;
 catch ME
-    pass(4) = strcmp(ME.message, 'Too many NaNs to handle.');
+    pass(4) = strcmp(ME.message, 'Too many NaNs/Infs to handle.');
 end

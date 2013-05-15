@@ -28,7 +28,7 @@ for n = 1:2
         f = testclass.make(@(x) x + NaN);
         pass(n, 3) = isnan(f);
     catch ME
-        pass(n, 3) = strcmpi(ME.message, 'Too many NaNs to handle.');
+        pass(n, 3) = strcmpi(ME.message, 'Too many NaNs/Infs to handle.');
     end
 
     % Test a NaN array-valued function:
@@ -36,7 +36,7 @@ for n = 1:2
         f = testclass.make(@(x) [x, x + NaN]);
         pass(n, 4) = isnan(f);
     catch ME
-        pass(n, 4) = strcmpi(ME.message, 'Too many NaNs to handle.');
+        pass(n, 4) = strcmpi(ME.message, 'Too many NaNs/Infs to handle.');
     end
 
     % Test a NaN array-valued function:
