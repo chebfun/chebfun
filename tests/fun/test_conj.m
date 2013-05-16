@@ -11,13 +11,12 @@ pass = zeros(1,2);
 for n = 1:1 % [TODO]: unbndfun
     if (n == 1)
         testclass = bndfun();
+        tol = 10*pref.fun.eps;
+        dom = [-2 7];
     else 
         testclass = unbndfun();
     end
 
-    tol = 10*pref.fun.eps;
-    dom = [-2 7];
-    
     % Test a scalar-valued function:
     f = testclass.make(@(x) cos(x) + 1i*sin(x), dom, [], [], pref);
     g = testclass.make(@(x) cos(x) - 1i*sin(x), dom, [], [], pref);

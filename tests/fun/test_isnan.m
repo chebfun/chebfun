@@ -11,19 +11,19 @@ pass = zeros(1, 6); % Pre-allocate pass matrix
 for n = 1:1 %[TODO]: unbndfun
     if ( n == 1 )
         testclass = bndfun();
-    else 
+        dom = [-2 7];
+    else
         testclass = unbndfun();
     end
     
-    dom = [-2 7];
     % Test a scalar-valued function:
     f = testclass.make(@(x) x, dom, [], [], p);
     pass(n, 1) = ~isnan(f);
-
+    
     % Test a vector-valued function:
     f = testclass.make(@(x) [x, x.^2], dom, [], [], p);
     pass(n, 2) = ~isnan(f);
-
+    
     % Test a NaN scalar-valued function:
     try
         f = testclass.make(@(x) x + NaN, dom, [], [], p);
@@ -31,7 +31,7 @@ for n = 1:1 %[TODO]: unbndfun
     catch ME
         pass(n, 3) = strcmpi(ME.message, 'Too many NaNs to handle.');
     end
-
+    
     % Test a NaN vector-valued function:
     try
         f = testclass.make(@(x) [x, x + NaN], dom, [], [], p);

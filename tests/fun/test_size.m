@@ -10,11 +10,11 @@ pass = zeros(1, 3); % Pre-allocate pass matrix
 for n = 1:1 %[TODO]: unbndfun
     if ( n == 1 )
         testclass = bndfun();
-    else 
+        dom = [-2 7];
+    else
         testclass = unbndfun();
     end
     
-    dom = [-2 7];
     f = testclass.make(@(x) sin(x), dom, [], [], pref);
     pass(n, 1) = all(size(f) == size(f.onefun.values));
     

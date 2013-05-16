@@ -10,15 +10,13 @@ end
 pass = zeros(1, 5); % Pre-allocate pass matrix
 for n = 1:1 %[TODO]: unbndfun
     if ( n == 1 )
-        testclass = bndfun();
+        testclass = bndfun();    
+        dom = [-2 7];
     else 
         testclass = unbndfun();
     end
 
-    %%
     % Run a few very straightforward tests.
-    
-    dom = [-2 7];
     f = testclass.make(@(x) sin(x), dom, [], [], pref);
     g = f;
     pass(n, 1) = isequal(f, g) && isequal(g, f);

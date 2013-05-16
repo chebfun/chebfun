@@ -11,12 +11,12 @@ tol = 500*pref.fun.eps;
 pass = zeros(1, 4); % Pre-allocate pass matrix
 for n = 1:1 %[TODO]: unbndfun
     if ( n == 1 )
-        testclass = bndfun();
+        testclass = bndfun();    
+        dom = [-2 7];
     else 
         testclass = unbndfun();
     end
 
-    dom = [-2 7];
     % Test a scalar-valued function:
     f = testclass.make(@(x) exp(x) + 1i*sin(x), dom, [], [], pref);
     g = testclass.make(@(x) sin(x), dom, [], [], pref);

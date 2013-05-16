@@ -10,12 +10,11 @@ pass = zeros(1, 4); % Pre-allocate pass matrix
 for n = 1:1 %[TODO]: unbndfun
     if ( n == 1 )
         testclass = bndfun();
+        dom = [-2 7];
     else 
         testclass = unbndfun();
     end
 
-    dom = [-2 7];
-    
     % Test a scalar-valued function:
     pref = chebtech.pref(pref);
     pref.chebtech.n = 11;
