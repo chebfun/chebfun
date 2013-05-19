@@ -97,8 +97,8 @@ for n = 1:2
     % Check that subtracting a CHEBTECH and an unhappy CHEBTECH gives an
     % unhappy result.  
 
-    f = chebtech.constructor(@(x) cos(x+1));    % Happy
-    g = chebtech.constructor(@(x) sqrt(x+1));   % Unhappy
+    f = testclass.make(@(x) cos(x+1));    % Happy
+    g = testclass.make(@(x) sqrt(x+1));   % Unhappy
     h = f - g;  % Subtract unhappy from happy.
     pass(n, 20) = (~g.ishappy) && (~h.ishappy);
     h = g - f;  % Subtract happy from unhappy.

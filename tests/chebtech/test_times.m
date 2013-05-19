@@ -138,8 +138,8 @@ for n = 1:2
     % Check that multiplying a CHEBTECH by an unhappy CHEBTECH gives an unhappy
     % result.  
 
-    f = chebtech.constructor(@(x) cos(x+1));    % Happy
-    g = chebtech.constructor(@(x) sqrt(x+1));   % Unhappy
+    f = testclass.make(@(x) cos(x+1));    % Happy
+    g = testclass.make(@(x) sqrt(x+1));   % Unhappy
     h = f.*g;  % Multiply unhappy by happy.
     pass(n, 22) = (~g.ishappy) && (~h.ishappy); %#ok<*BDSCI,*BDLGI>
     h = g.*f;  % Multiply happy by unhappy.

@@ -52,11 +52,11 @@ for n = 1:2
     end
 
     % Test complex-array-valued CHEBTECH objects.
-    f = chebtech.constructor(@(x) [exp(sin(2*x)), 1i*cos(20*x)]);
+    f = testclass.make(@(x) [exp(sin(2*x)), 1i*cos(20*x)]);
     [vals, pos] = minandmax(f);
-    f1 = chebtech.constructor(@(x) exp(sin(2*x)));
+    f1 = testclass.make(@(x) exp(sin(2*x)));
     [vals1, pos1] = minandmax(f1);
-    f2 = chebtech.constructor(@(x) 1i*cos(20*x));
+    f2 = testclass.make(@(x) 1i*cos(20*x));
     [vals2, pos2] = minandmax(f2);
     pass(n, 7) = norm(abs(vals) - abs([vals1 vals2]), inf) < 10*f.epslevel;
     % Note, we don't expect pos(:,2) = pos2 as the min and max are not unique.
