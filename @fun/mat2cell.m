@@ -1,8 +1,8 @@
 function g = mat2cell(f, M, N)
-%MAT2CELL  Convert a vector-valued BNDFUN into an ARRAY of BNDFUN objects.
+%MAT2CELL  Convert a vector-valued FUN into an ARRAY of FUN objects.
 %
-%   G = MAT2CELL(F, C) breaks up the vector-valued BNDFUN F into a single row
-%   cell array G of BNDFUN objects. C is the vector of column sizes, and if F
+%   G = MAT2CELL(F, C) breaks up the vector-valued FUN F into a single row
+%   cell array G of FUN objects. C is the vector of column sizes, and if F
 %   has COL columns this must sum to COL. The elements of C determine the size
 %   of each cell in G, subject to the following formula for I = 1:LENGTH(C),
 %               SIZE(C{I},2) == C(I).
@@ -41,7 +41,7 @@ elseif ( nargin == 2)
 end
 
 if ( ~isscalar(M) || M ~= 1)
-    error('CHEBFUN:BNDFUN:mat2cell:size', ...
+    error('CHEBFUN:FUN:mat2cell:size', ...
         ['Input arguments, D1 through D2, must sum to each dimension of the', ...
         ' input matrix size, [1,%d].'], size(f.values, 2));
 end
@@ -49,15 +49,15 @@ end
 % Split the values and the coeffs into cells of the correct size:
 oneFuns = mat2cell(f.onefun,M,N);
 
-% Create a cell for storing the BNDFUN objects
+% Create a cell for storing the FUN objects
 g = cell(1, numel(N));
 
 % Append the data to the new entries in the cell:
 for k = 1:numel(N)
-    % Create a BNDFUN
+    % Create a FUN
     gk = f.make();
     
-    % Assign values to the fields of the BNDFUN
+    % Assign values to the fields of the FUN
     gk.domain = f.domain;
     gk.onefun = oneFuns{k};
     gk.mapping = f.mapping;
