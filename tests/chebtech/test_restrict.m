@@ -66,8 +66,8 @@ for n = 1:2
     h1 = restrict(f, [-0.7 0.3]);
     h2 = restrict(f, [0.3 0.8]);
     x = linspace(-1, 1, 100).';
-    err1 = feval(g(1) - h1, x);
-    err2 = feval(g(2) - h2, x);
+    err1 = feval(g{1} - h1, x);
+    err2 = feval(g{2} - h2, x);
     pass(n, 10) = all(err1(:) == 0) && all(err2(:) == 0);
 
     %%
@@ -80,8 +80,8 @@ for n = 1:2
     h1 = restrict(f, [-0.6 0.1]);
     h2 = restrict(f, [0.1 1]);
     x = linspace(-1, 1, 100).';
-    err1 = feval(g(1) - h1, x);
-    err2 = feval(g(2) - h2, x);
+    err1 = feval(g{1} - h1, x);
+    err2 = feval(g{2} - h2, x);
     pass(n, 12) = all(err1(:) == 0) && all(err2(:) == 0);
 end
 

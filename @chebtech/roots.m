@@ -80,7 +80,7 @@ else                            % Support for vectorised CHEBTECH objects.
 
     % Loop over the columns of f / elements of g:
     for j = 1:size(f.values, 2)
-        r{j} = roots_scalar(g(j), varargin{:}); 
+        r{j} = roots_scalar(g{j}, varargin{:}); 
     end
 
     % Find the max length of r:

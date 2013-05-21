@@ -61,7 +61,7 @@ else
     % Loop over columns:
     for k = 1:sizef2    
         % Find max of this column:
-        [vals(:,k), pos(:,k)] = minandmaxColumn(g(k), gp(k), xpts);
+        [vals(:,k), pos(:,k)] = minandmaxColumn(g{k}, gp{k}, xpts);
     end
 
 end
