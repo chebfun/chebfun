@@ -91,6 +91,8 @@ classdef fun % (Abstract)
         % Map from [-1, 1] to the domain of the FUN.
         m = createMap(domain);  
         
+        % Make a FUN. (Constructor shortcut)
+        f = make(varargin);
     end
     
     %% METHODS IMPLEMENTED BY THIS CLASS.
