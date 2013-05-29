@@ -8,6 +8,6 @@ function match = checkDomain(f , g)
 tol = max(get(f,'hscale'), get(g,'hscale'))*eps;
 
 % Check whether the difference of the endpoints is less than the tolerance
-match = all(abs(f.domain - g.domain) < tol);
+match = all(abs(f.domain - g.domain) <= tol);
 
 end
