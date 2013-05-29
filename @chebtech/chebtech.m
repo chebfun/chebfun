@@ -372,7 +372,7 @@ classdef chebtech %< smoothfun % (Abstract)
         f = prolong(f, n)
 
         % QR factorisation of an array-valued CHEBTECH.
-        [f, R, E] = qr(f, flag)
+        [f, R, E] = qr(f, flag, methodFlag)
 
         % Right array divide for a CHEBTECH.
         f = rdivide(f, c, pref)

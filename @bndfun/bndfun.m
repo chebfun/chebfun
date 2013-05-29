@@ -94,9 +94,11 @@ classdef bndfun < fun
         % Change of domains of BNDFUN via linear change of variables
         f = changeMap(f,newdom)
         
-        % Flip/reverse a FUN object.
+        % Flip/reverse a BNDFUN object.
         f = flipud(f)
-
+        
+        % QR factorisation of an array-valued BNDFUN.
+        [f, R, E] = qr(f, flag)
         % Restrict a BNDFUN to a subinterval.
         f = restrict(f, s)
         

@@ -179,9 +179,6 @@ classdef fun % (Abstract)
         % Polynomial coefficients of a FUN.
         out = poly(f)
 
-        % QR factorisation of an array-valued FUN.
-        [f, R, E] = qr(f, flag)
-
         % Right array divide for a FUN.
         f = rdivide(f, c, pref)
 
