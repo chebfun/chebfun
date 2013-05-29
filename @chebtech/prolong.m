@@ -15,11 +15,11 @@ function f = prolong(f, nOut)
 % Store the number of values the input function has:
 nIn = size(f.values, 1);
 
-% nOutMinusnIn is the number of new values needed (negative if compressing).
-nOutMinusnIn = nOut - nIn;
+% nDiff is the number of new values needed (negative if compressing).
+nDiff = nOut - nIn;
 
 % Trivial case
-if ( nOutMinusnIn == 0 )
+if ( nDiff == 0 )
     % Nothing to do here!
     return
 end
@@ -28,18 +28,18 @@ end
 if ( nIn == 1 )
     m = size(f.values, 2);
     f.values = repmat(f.values, nOut, 1);
-    f.coeffs = [zeros(nOutMinusnIn, m) ; f.coeffs(1,:)];
+    f.coeffs = [zeros(nDiff, m) ; f.coeffs(1,:)];
     return
 end
 
 % Prolong the points; 
-%  Barycentric formula when n is small or when compressing, FFT when large.
-if ( (nOutMinusnIn < 0) && (nOut < 33) && (nIn < 1000) )
+% Barycentric formula when n is small or when compressing, FFT when large.
+if ( (nDiff < 0) && (nOut < 33) && (nIn < 1000) ) % <- Determined experimentally
     % Use BARY to compress:
     f.values = f.bary(f.chebpts(nOut), f.values);
     f.coeffs = f.chebpoly(f.values);
 else
-    % Use FFTs: (in alias.m)
+    % Use FFTs:
     f.coeffs = f.alias(f.coeffs, nOut);
     f.values = f.chebpolyval(f.coeffs); 
 end

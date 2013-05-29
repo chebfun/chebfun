@@ -1,8 +1,8 @@
 function f = restrict(f, s)
 %RESTRICT   Restrict a CHEBTECH to a subinterval.
 %   RESCTRICT(F, S) returns a CHEBTECH that is restricted to the subinterval
-%   [S(1),S(2)] of [-1, 1]. Note that that since CHEBTECH only live on [-1,1], a
-%   linear change of variables is implicitly applied.
+%   [S(1),S(2)] of [-1, 1]. Note that that since CHEBTECH objects only live on
+%   [-1,1], a linear change of variables is implicitly applied.
 %
 %   If length(S) > 2, i.e., S = [S1, S2, S3, ...], then RESCTRICT(F, S) returns
 %   a cell-array of CHEBTECH objects, where the entries hold F restricted to
@@ -23,9 +23,9 @@ if ( isempty(f) )
 end
 
 % Check if s is actually a subinterval:
-if ( s(1) < -1 || s(end) > 1 || any(diff(s) <= 0) )
+if ( (s(1) < -1) || (s(end) > 1) || (any(diff(s) <= 0)) )
     error('CHEBTECH:restrict:badinterval', 'Not a valid interval.')
-elseif ( numel(s) == 2 && all(s == [-1, 1]) )
+elseif ( (numel(s) == 2) && all(s == [-1, 1]) )
     % Nothing to do here!
     return
 end
@@ -35,12 +35,12 @@ end
 numInts = numel(s) - 1;
 
 % Compute new values on the grid:
-x = f.chebpts(n);                            % old grid
-y = .5*[1-x, 1+x] * [s(1:end-1) ; s(2:end)]; % new grid
-values = feval(f, y);                        % new values
+x = f.chebpts(n);                                % old grid
+y = .5*[1 - x, 1 + x] * [s(1:end-1) ; s(2:end)]; % new grid
+values = feval(f, y);                            % new values
 
 % If F is array-valued, we must rearrange the order of the columns:
-% (e.g., [a1 a2 b1 b2 c1 c2] -> [a1 b1 c1 a2 b2 c3] => index = [1 3 5 2 4 6].
+% (e.g., [a1 a2 b1 b2 c1 c2] -> [a1 b1 c1 a2 b2 c2] => index = [1 3 5 2 4 6].
 if ( m > 1 )
     numCols = m*numInts;
     index = reshape(reshape(1:numCols, numInts, m)', 1, numCols);

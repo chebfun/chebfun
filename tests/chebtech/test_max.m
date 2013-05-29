@@ -27,7 +27,7 @@ for n = 1:2
         0.75^3*cosh(1), pref);
 
     %%
-    % Check operation for vectorized inputs.
+    % Check operation for array-valued inputs.
     fun_op = @(x) [sin(10*x) airy(x) (x - 0.25).^3.*cosh(x)];
     f = testclass.make(fun_op, [], [], pref);
     [y, x] = max(f);

@@ -17,7 +17,7 @@ function out = sum(f, dim)
 n = size(f.values, 1);
 
 %%
-% Sum across vectorised CHEBTECH columns if dim = 2:
+% Sum across array-valued CHEBTECH columns if dim = 2:
 if ( nargin > 1 && dim == 2 )
     f.values = sum(f.values, dim);
     f.coeffs = sum(f.coeffs, dim);

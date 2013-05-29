@@ -70,7 +70,7 @@ if ( size(f.values, 2) == 1 )   % F is a scalar-value CHEBTECH.
     % Simply call roots_scalar():
     out = roots_scalar(f, varargin{:});
     
-else                            % Support for vectorised CHEBTECH objects.
+else                            % Support for array-valued CHEBTECH objects.
 
     % Initialise a cell array to hold roots of each column:
     r = cell(1, size(f.values, 2));
@@ -164,7 +164,6 @@ end
             c = chebtech2.alias(c(end:-1:1), n);
             c = c(end:-1:1);
         end
-
 %         % Truncate the coefficients (rather than alias):
 %         if ( (n > 1) && (n < length(c)) )
 %             c = c(1:n);
@@ -211,6 +210,7 @@ end
             oh = 0.5 * ones(length(c)-1, 1);
 
             % Modified colleague matrix:
+            % [TODO]: Would the upper-Hessenberg form be better?
             A = diag(oh, 1) + diag(oh, -1);
             A(end-1,end) = 1;
             A(:,1) = flipud(c);

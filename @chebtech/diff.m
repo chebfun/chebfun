@@ -4,7 +4,7 @@ function f = diff(f, k, dim)
 %
 %   DIFF(F, K, DIM), where DIM is one of 1 or 2, takes the Kth difference along
 %   dimension DIM. For DIM = 1, this is the same as above. For DIM = 2, this
-%   is a finite difference along the columns of a vectorised CHEBTECH.
+%   is a finite difference along the columns of an array-valued CHEBTECH.
 %   If F has L columns, an empty CHEBTECH will be returned for K >= L.
 %
 % See also SUM, CUMSUM.

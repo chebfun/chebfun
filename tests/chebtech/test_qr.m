@@ -15,7 +15,7 @@ pass = zeros(2, 17); % Pre-allocate pass matrix
 for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();
-    else 
+    else
         testclass = chebtech2();
     end
 
@@ -47,6 +47,15 @@ for n = 1:2
     [Q2, R2, E2] = qr(f, 'vector');
     err = E1(:, E2) - eye(N);
     pass(n, 17) = all(err(:) == 0);
+    
+    %%
+    % Check a rank-deficient problem:
+    f = testclass.make(@(x) [x x x], [], [], pref);
+    [Q, R] = qr(f);
+    pass(n, 18) = all(size(Q) == 3) && all(size(R) == 3);
+    I = eye(3); I(end) = 0;
+    pass(n, 19) = norm(innerProduct(Q, Q) - I, inf) < 10*f.epslevel;
+    
 end
 
 end

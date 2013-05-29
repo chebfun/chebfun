@@ -34,7 +34,7 @@ for n = 1:2
     pass(n, 3) = norm(f(x) - h.values, inf) < tol;
     
     %%
-    % Test on a vector-valued function:
+    % Test on a array-valued function:
     
     f = @(x) [ sin(x), cos(x), exp(x) ];
     pref.chebtech.n = 33;

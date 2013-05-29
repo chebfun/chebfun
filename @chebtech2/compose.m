@@ -1,9 +1,9 @@
 function f = compose(f, op, g, pref)
 %COMPOSE   Composition of CHEBTECH2 objects.
-%   COMPOSE(F, OP) returns a CHEBTECH2 representing OP(F) where F is also a
+%   COMPOSE(F, OP) returns a CHEBTECH2 representing OP(F), where F is also a
 %   CHEBTECH2 object, and OP is a function handle.
 %
-%   COMPOSE(F, OP, G) returns a CHEBTECH2 representing OP(F, G) where F and G
+%   COMPOSE(F, OP, G) returns a CHEBTECH2 representing OP(F, G), where F and G
 %   are CHEBTECH objects, and OP is a function handle.
 %
 %   COMPOSE(F, G) returns a CHEBTECH2 representing G(F), where both F and G are

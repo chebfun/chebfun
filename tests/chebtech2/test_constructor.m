@@ -43,7 +43,7 @@ pass(7) = norm(f(x) - g.values, inf) < tol;
 pass(8) = norm(g.vscale - sin(1), inf) < tol && logical(g.epslevel);
 
 %%
-% Test on a vector-valued function:
+% Test on a array-valued function:
 pref.chebtech.extrapolate = 0;
 pref.chebtech.refinementFunction = 'nested';
 f = @(x) [sin(x) cos(x) exp(x)];
@@ -84,7 +84,7 @@ try
     populate(chebtech2, f);
     pass(17) = false;
 catch ME
-    pass(17) = strcmp(ME.message, 'Too many NaNs to handle.');
+    pass(17) = strcmp(ME.message, 'Too many NaNs/Infs to handle.');
 end
 
 % As should this:
@@ -93,7 +93,7 @@ try
     populate(chebtech2, f);
     pass(18) = false;
 catch ME
-    pass(18) = strcmp(ME.message, 'Too many NaNs to handle.');
+    pass(18) = strcmp(ME.message, 'Too many NaNs/Infs to handle.');
 end
 
 % Test that the extrapolation option avoids endpoint evaluations.

@@ -32,27 +32,28 @@ if ( any(mask) )
     % The good:
     xgood = x(~mask);
     if ( isempty(xgood) )
-        error('CHEBFUN:CHEBTECH:extrapolate:nans', ...
-            'Too many NaNs to handle.')
+        error('CHEBFUN:CHEBTECH:extrapolate:nansinfs', ...
+            'Too many NaNs/Infs to handle.')
     end
     
     % The bad:
-    xnan = x(mask);
+    xbad = x(mask);
     
     % Compute the modified barycentric weights:
     w = f.barywts(n); % Standard weights.
     w = w(~mask);     % Barycentric weights corresponding to the good points.
-    for k = 1:length(xnan)
+    for k = 1:length(xbad)
         % Compute the modified barycentric weights for the bad points:
-        w = w.*( xgood - xnan(k) );
+        % (Recall that w_k = 1/prod_{j~=k)(x_j-x_k) )
+        w = w.*( xgood - xbad(k) );
     end
     
     % Preallocate the storage for extrapolated values at the bad points:
-    newvals = zeros(length(xnan), size(values, 2)); 
+    newvals = zeros(length(xbad), size(values, 2)); 
     % Barycentric formula of the second kind:
-    for k = 1:length(xnan)
+    for k = 1:length(xbad)
         % Compute the weights:
-        w2 = w./(xnan(k) - xgood);
+        w2 = w./(xbad(k) - xgood);
         % Sum the values:
         newvals(k,:) = (w2.'*values(~mask,:)) / sum(w2);
     end

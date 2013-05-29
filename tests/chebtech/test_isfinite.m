@@ -21,7 +21,7 @@ for n = 1:2
     f = testclass.make(@(x) 1./(x - y(4)), [], [], p);
     pass(n, 1) = ~isfinite(f);
     
-    % Test a vector-valued function:
+    % Test a array-valued function:
     p.chebtech.n = 11;
     y = testclass.chebpts(p.chebtech.n); % Force singularity to fall on grid.
     f = testclass.make(@(x) [1./(x - y(4)), x], [], [], p);
@@ -32,7 +32,7 @@ for n = 1:2
     f = testclass.make(@(x) x, [], [], p);
     pass(n, 3) = isfinite(f);
     
-    % Test a finite vector-valued function:
+    % Test a finite array-valued function:
     f = testclass.make(@(x) [x, x], [], [], p);
     pass(n, 4) = isfinite(f);
 end

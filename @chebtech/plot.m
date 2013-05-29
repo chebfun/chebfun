@@ -54,12 +54,10 @@ data = plotData(f);
 
 %%
 % Plot the curve:
-xx = data{1};
-ff = data{2};
-if ( isreal(ff) )
-    h1 = plot(xx, ff, varargin{:}); 
+if ( isreal(data.fLine) )
+    h1 = plot(data.xLine, data.fLine, varargin{:}); 
 else
-    h1 = plot(ff, varargin{:}); 
+    h1 = plot(data.fLine, varargin{:}); 
 end
 set(h1, 'Marker', 'none') 
 hold on
@@ -67,12 +65,10 @@ hold on
 %%
 
 % Plot the points:
-xk = data{3};
-fk = data{4};
-if ( isreal(ff) )
-    h2 = plot(xk, fk, varargin{:});
+if ( isreal(data.fLine) )
+    h2 = plot(data.xPoints, data.fPoints, varargin{:});
 else
-    h2 = plot(fk, varargin{:});
+    h2 = plot(data.fPoints, varargin{:});
 end
 
 % Change the style accordingly:
