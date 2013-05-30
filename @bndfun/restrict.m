@@ -12,6 +12,7 @@ function g = restrict(f, s)
 
 % Deal with empty case:
 if ( isempty(f) )
+    g = f;
     return
 end
 
@@ -20,6 +21,7 @@ if ( s(1) < f.domain(1) || s(end) > f.domain(2) || any(diff(s) <= 0) )
     error('BNDFUN:restrict:badinterval', 'Not a valid interval.')
 elseif ( numel(s) == 2 && all(s == f.domain) )
     % Nothing to do here!
+    g = f;
     return
 end
 

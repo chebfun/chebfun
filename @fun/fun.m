@@ -43,7 +43,7 @@ classdef fun % (Abstract)
             
             % Get domain if none given:
             if ( nargin < 2 || isempty(domain) )
-                domain = pref.domain;
+                domain = pref.fun.domain;
             end
             
             % Get scales if none given:
