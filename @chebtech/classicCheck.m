@@ -1,10 +1,10 @@
 function [ishappy, epslevel, cutoff] = classicCheck(f, pref)
 %CLASSICCHECK   Attempt to trim trailing Chebyshev coefficients in a CHEBTECH.
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F) returns an estimated
-%   location, the CUTOFF, at which the CHEBTECH F could be truncated to maintain
-%   an accuracy of EPSLEVEL relative to F.VSCALE and F.HSCALE. ISHAPPY is
-%   TRUE if CUTOFF < MIN(LENGTH(F.VALUES),2) or F.VSCALE = 0, and FALSE
-%   otherwise.
+%   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F) returns an estimated location,
+%   the CUTOFF, at which the CHEBTECH F could be truncated to maintain an
+%   accuracy of EPSLEVEL relative to F.VSCALE and F.HSCALE. ISHAPPY is TRUE if
+%   CUTOFF < MIN(LENGTH(F.VALUES),2)-TESTLENGTH (see below) or F.VSCALE = 0, and
+%   FALSE otherwise.
 %
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F, PREF) allows additional
 %   preferences to be passed. In particular, one can adjust the target accuracy
@@ -134,7 +134,9 @@ if ( max(ac(1:testLength)) < epslevel )    % We have converged! Now chop tail:
 else
 
     % We're unhappy. :(
-    cutoff = n;
+    % cutoff = n;
+    % However, still trim trailing coeffs that are below the given epslevel:
+    cutoff = n - find(ac >= epslevel, 1, 'first') + 1;
 
 end
 

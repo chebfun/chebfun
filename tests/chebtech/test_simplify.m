@@ -25,8 +25,9 @@ for n = 1:2
     % Test on a scalar-valued function:
     
     f = @(x) sin(x);
-    pref.chebtech.n = 33;
-    g = testclass.make(f, [], [], pref);
+    pref2 = pref;
+    pref2.chebtech.n = 33;
+    g = testclass.make(f, [], [], pref2);
     h = simplify(g);
     x = testclass.chebpts(length(h));
     pass(n, 1) = length(g) == 33;
@@ -37,13 +38,21 @@ for n = 1:2
     % Test on a array-valued function:
     
     f = @(x) [ sin(x), cos(x), exp(x) ];
-    pref.chebtech.n = 33;
-    g = testclass.make(f, [], [], pref);
+    pref2 = pref;
+    pref2.chebtech.n = 33;
+    g = testclass.make(f, [], [], pref2);
     h = simplify(g);
     x = testclass.chebpts(length(h));
     pass(n, 4) = length(g) == 33;
     pass(n, 5) = abs(length(h) - 15) < 2;
     pass(n, 6) = norm(f(x) - h.values, inf) < tol;
+    
+    %%
+    % Test that simplifying to smaller tolerance shrinks the chebtech:
+    f = testclass.make(@(x) sin(1000*(x + 0.1)), [], [], pref);
+    g = simplify(f, sqrt(f.epslevel));
+    pass(n, 7) = length(g) < length(f);
+   
 end
 
 end
