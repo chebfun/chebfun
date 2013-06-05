@@ -9,10 +9,16 @@ function X = mldivide(A, B)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Compute X. Note that since the inner product between functions on [a,b] is
-% just a scaling of the inner product between functions on [-1,1], the
-% least-squares solution will have the same coefficients as we obtain from
-% calling \ on the ONEFUN objects of A and B.
-X = A.onefun\B.onefun;
+% NOTE: A*X = (Q*R)*X = B ==> R*X = Q'*B ==> X = R\(Q'*B) = R\innerProduct(Q, B)
+% Compute QR factorisation of A:
+[Q, R] = qr(A, 0);
+
+% Compute X:
+X = R\innerProduct(Q, B);
+
+% TODO: Do we want to compute MLDIVIDE using the method above, or call MLDIVIDE
+% at the ONEFUN level, e.g. via
+% X = A.onefun\B.onefun;
+
 
 end
