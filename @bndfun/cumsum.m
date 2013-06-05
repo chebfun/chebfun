@@ -39,6 +39,11 @@ rescaleFactorm = (.5*diff(f.domain))^m;
 
 % Compute the cumsum of all of f's onefuns, multiply by the rescaling factor,
 % and assign to the onefun field of f.
+
+% Create a preference structure that the cumsum method of the ONEFUN class can
+% work with. This is achieved by calling the static pref method of f.onefun,
+% which will call the pref method of the correct class.
+pref = f.onefun.pref(pref, pref.bndfun);
 f.onefun = cumsum(f.onefun,m,pref)*rescaleFactorm;
 
 end
