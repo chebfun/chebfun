@@ -42,12 +42,12 @@ for n = 1:1  %[TODO]: unbndfun
 %     f = chebtech.constructor(@(x) sin(pi*k*x), [], [], chebtech.pref);
     f = testclass.make(@(x) sin(pi*k*x), dom, [], [], pref);
     r = roots(f);
-    pass(n, 2) = norm(r-(-2*k:7*k)'/k, inf) < length(f)*f.onefun.epslevel;
+    pass(n, 2) = norm(r-(-2*k:7*k)'/k, inf) < f.onefun.vscale*f.onefun.epslevel;
 
     %% Test a perturbed polynomial:
     f = testclass.make( @(x) (x-.1).*(x+.9).*x.*(x-.9) + 1e-14*x.^5, dom, [], [], pref);
     r = roots(f);
-    pass(n, 3) = length(r) == 4 && norm(feval(f, r), inf) < 250*length(f)*f.onefun.epslevel;
+    pass(n, 3) = length(r) == 4 && norm(feval(f, r), inf) < f.onefun.vscale*f.onefun.epslevel;
 
     %% Test a some simple polynomials:
     f = testclass.make([-2 ; 7], dom, [], [], pref);
@@ -62,12 +62,12 @@ for n = 1:1  %[TODO]: unbndfun
     f = testclass.make(@(x) 1 + x.^2, dom, [], [], pref);
     r = roots(f, 'complex', 1);
 
-    pass(n, 6) = norm( r - [1i ; -1i], inf) < length(f)*f.onefun.epslevel;
+    pass(n, 6) = norm( r - [1i ; -1i], inf) < f.onefun.vscale*f.onefun.epslevel;
 
     f = testclass.make(@(x) (1 + 25*x.^2).*exp(x), [-1 1], [], [], pref);
     r = roots(f, 'complex', 1, 'prune', 1);
 
-    pass(n, 7) = norm( r - [1i ; -1i]/5, inf) < 10*length(f)*f.onefun.epslevel;
+    pass(n, 7) = norm( r - [1i ; -1i]/5, inf) < f.onefun.vscale*f.onefun.epslevel;
 
     f = testclass.make(@(x) sin(10*pi*x), dom);
     r1 = roots(f, 'complex', 1, 'recurse', 0);
@@ -78,7 +78,7 @@ for n = 1:1  %[TODO]: unbndfun
     f = testclass.make(@(x) [sin(pi*x), cos(pi*x), x.^2+1], dom, [], [], pref);
     r = roots(f);
     r2 = [-2:7 -1.5:6.5 NaN(1,11)].';
-    pass(n, 9) = all( r(:) - r2 < 10*length(f)*f.onefun.epslevel | isnan(r2) );
+    pass(n, 9) = all( r(:) - r2 < max(f.onefun.vscale)*f.onefun.epslevel | isnan(r2) );
 end
 
 end

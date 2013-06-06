@@ -11,10 +11,13 @@ pref = chebtech.pref(pref);
 % Set a tolerance.
 tol = 1e3*pref.chebtech.eps;
 
+% Set the domain.
+dom = [-2 7];
+
 % Generate a few random points to use as test values.
 seedRNG(6178);
-x = 2 * rand(100, 1) - 1;
-dom = [-2 7];
+x = diff(dom) * rand(100, 1) + dom(1);
+
 pass = zeros(1, 15); % Pre-allocate pass matrix
 
 %%
@@ -22,7 +25,7 @@ pass = zeros(1, 15); % Pre-allocate pass matrix
 
 f = bndfun(@(x) exp(x/10) - x, dom, [], [], pref);
 df = diff(f);
-df_exact = @(x) exp(x/10) - 1;
+df_exact = @(x) exp(x/10)./10 - 1;
 err = df_exact(x) - feval(df, x);
 pass(1) = (norm(err, inf) < tol);
 
@@ -30,7 +33,7 @@ f = bndfun(@(x) atan(x), dom, [], [], pref);
 df = diff(f);
 df_exact = @(x) 1./(1 + x.^2);
 err = df_exact(x) - feval(df, x);
-pass(2) = (norm(err, inf) < 10*tol);
+pass(2) = (norm(err, inf) < f.onefun.vscale*tol);
 
 f = bndfun(@(x) sin(x), dom, [], [], pref);
 df = diff(f);
@@ -43,7 +46,7 @@ f = bndfun(@(t) airy(z*t), dom, [], [], pref);
 df = diff(f);
 df_exact = @(t) z*airy(1, z*t);
 err = df_exact(x) - feval(df, x);
-pass(4) = (norm(err, inf) < tol);
+pass(4) = (norm(err, inf) < f.onefun.vscale*tol);
 
 %%
 % Verify that calling diff() gives the same answer as direct construction.
@@ -51,7 +54,7 @@ pass(4) = (norm(err, inf) < tol);
 f = bndfun(@(x) 0.5*x - 0.0625*sin(8*x), dom, [], [], pref);
 df = bndfun(@(x) sin(4*x).^2, dom, [], [], pref);
 err = diff(f) - df;
-pass(5) = (norm(err.values, inf) < tol);
+pass(5) = (err.onefun.vscale < tol);
 
 %%
 % Verify basic differentiation rules.
@@ -67,7 +70,7 @@ pass(6) = (norm(err, inf) < tol);
 
 errfn = diff(f.*g) - (f.*dg + g.*df);
 err = feval(errfn, x);
-pass(7) = (norm(err, inf) < length(f)*tol);
+pass(7) = (norm(err, inf) < f.onefun.vscale*tol);
 
 const = bndfun(@(x) ones(size(x)), dom, [], [], pref);
 dconst = diff(const);
@@ -82,27 +85,27 @@ f = bndfun(@(x) x.*atan(x) - x - 0.5*log(1 + x.^2), dom, [], [], pref);
 df2 = diff(f, 2);
 df2_exact = @(x) 1./(1 + x.^2);
 err = df2_exact(x) - feval(df2, x);
-pass(9) = (norm(err, inf) < 1e3*tol);
+pass(9) = (norm(err, inf) < 300*f.onefun.vscale*tol);
 
 f = bndfun(@(x) sin(x), dom, [], [], pref);
 df4 = diff(f, 4);
 df4_exact = @(x) sin(x);
 err = df4_exact(x) - feval(df4, x);
-pass(10) = (norm(err, inf) < 1e5*tol);
+pass(10) = (norm(err, inf) < 1e4*tol);
 
 f = bndfun(@(x) x.^5 + 3*x.^3 - 2*x.^2 + 4, dom, [], [], pref);
 df6 = diff(f, 6);
 df6_exact = @(x) zeros(size(x));
 err = df6_exact(x) - feval(df6, x);
-pass(11) = (norm(err, inf) < 1e7*tol);
+pass(11) = (norm(err, inf) < 1e6*tol);
 
 %%
-% Check operation for vectorized chebtech objects.
+% Check operation for vectorized bndfun objects.
 
 f = bndfun(@(x) [sin(x) x.^2 exp(1i*x)], dom, [], [], pref);
 df_exact = @(x) [cos(x) 2*x 1i*exp(1i*x)];
 err = feval(diff(f), x) - df_exact(x);
-pass(12) = (norm(err(:), inf) < tol);
+pass(12) = (norm(err(:), inf) < 2*tol);
 
 % DIM option.
 dim2df = diff(f, 1, 2);
@@ -118,7 +121,7 @@ pass(14) = (norm(err(:), inf) < tol);
 % DIM option should return an empty chebtech for non-vectorized input.
 f = bndfun(@(x) x.^3, dom);
 dim2df = diff(f, 1, 2);
-pass(15) = (isempty(dim2df.values) && isempty(dim2df.coeffs));
+pass(15) = (isempty(dim2df.onefun.values) && isempty(dim2df.onefun.coeffs));
 
 end
 

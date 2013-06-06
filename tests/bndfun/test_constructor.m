@@ -8,7 +8,7 @@ if ( nargin < 1 )
 end
 % Set the tolerance:
 pref = chebtech.pref(pref);
-tol = 100*pref.chebtech.eps;
+tol = pref.chebtech.eps;
 
 pass = zeros(1, 8); % Pre-allocate pass matrix.
 
@@ -19,12 +19,12 @@ f = @(x) sin(x);
 dom = [-2 7];
 g = bndfun(f, dom, [], [], pref);
 x = get(g,'points');
-pass(1) = norm(f(x) - g.onefun.values, inf) < tol;
+pass(1) = norm(f(x) - g.onefun.values, inf) < max(g.onefun.vscale)*tol;
 
 % Test on a scalar-valued function for interpolation:
 f = @(x) sin(x)./x;
 g = bndfun(f, dom, [], [], pref);
-pass(2) = abs(1 - feval(g,0)) < tol;
+pass(2) = abs(1 - feval(g,0)) < max(g.onefun.vscale)*tol;
 
 %%
 % Test on an array-valued function for extrapolation:
@@ -32,13 +32,13 @@ pref.chebtech.extrapolate = 1;
 f = @(x) [sin(x) cos(x) exp(x)];
 g = bndfun(f, dom, [], [], pref);
 x = get(g,'points');
-pass(3) = norm(f(x) - g.onefun.values, inf) < 30*tol;
+pass(3) = norm(f(x) - g.onefun.values, inf) < 2*max(g.onefun.vscale)*tol;
 
 % Test on an array-valued function for interpolation:
 f = @(x) [sin(x)./x sin(x-3)./(x-3)];
 g = bndfun(f, dom, [], [], pref);
 gv = [feval(g,0) feval(g,3)];
-pass(4) = norm(ones(1,2) - [gv(1) gv(4)], inf) < tol;
+pass(4) = norm(ones(1,2) - [gv(1) gv(4)], inf) < max(g.onefun.vscale)*tol;
 
 %%
 % Test on chebtech preferences:
@@ -60,7 +60,7 @@ try
     bndfun(f, dom, [], [], pref);
     pass(6) = false;
 catch ME
-    pass(6) = strcmp(ME.message, 'Too many NaNs to handle.');
+    pass(6) = strcmp(ME.message, 'Too many NaNs/Infs to handle.');
 end
 
 % As should this:
@@ -69,7 +69,7 @@ try
     bndfun(f, dom, [], [], pref);
     pass(7) = false;
 catch ME
-    pass(7) = strcmp(ME.message, 'Too many NaNs to handle.');
+    pass(7) = strcmp(ME.message, 'Too many NaNs/Infs to handle.');
 end
 
 % Test that the extrapolation option avoids endpoint evaluations.

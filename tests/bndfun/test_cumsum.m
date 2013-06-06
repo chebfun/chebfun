@@ -13,89 +13,88 @@ tol = 50*pref.chebtech.eps;
 
 % Set a domain
 dom = [-2 7];
+a = dom(1);
+b = dom(2);
 
 % Generate a few random points to use as test values.
 seedRNG(6178);
-x = (diff(dom)/2) * rand(100, 1) + mean(dom);
+x = diff(dom) * rand(100, 1) + dom(1);
 
 pass = zeros(1, 10); % Pre-allocate pass matrix
 
 %%
-% Spot-check antiderivatives for a couple of functions.  We verify that the
-% bndfun antiderivatives match the true ones up to a constant by checking
-% that the standard deviation of the difference between the two on a large
-% random grid is small. We also check that feval(cumsum(f), -1) == 0 each
-% time.
+% Spot-check antiderivatives for a couple of functions. We also check that 
+% feval(cumsum(f), a) == 0 each time.
 
 f = bndfun(@(x) exp(x/10) - 1, dom, [], [], pref);
 F = cumsum(f);
-F_ex = @(x) 10*exp(x/10) - x;
+F_ex = @(x) 10*exp(x/10) - x - (10*exp(a/10) - a);
 err = feval(F, x) - F_ex(x);
-pass(n, 1) = (std(err) < tol) && (abs(feval(F, -1)) < tol);
+pass(1) = (norm(err, inf) < tol) && (abs(feval(F, a)) < tol);
 
 f = bndfun(@(x) 1./(1 + x.^2), dom, [], [], pref);
 F = cumsum(f);
-F_ex = @(x) atan(x);
+F_ex = @(x) atan(x)-atan(a);
 err = feval(F, x) - F_ex(x);
-pass(n, 2) = (std(err) < tol) && (abs(feval(F, -1)) < tol);
+pass(2) = (norm(err, inf) < tol) && (abs(feval(F, a)) < tol);
 
 f = bndfun(@(x) cos(1e4*x), dom, [], [], pref);
 F = cumsum(f);
-F_ex = @(x) sin(1e4*x)/1e4;
+F_ex = @(x) (sin(1e4*x)-sin(1e4*a))/1e4;
 err = feval(F, x) - F_ex(x);
-pass(n, 3) = (std(err) < tol) && (abs(feval(F, -1)) < tol);
+pass(3) = (norm(err, inf) < tol) && (abs(feval(F, a)) < tol);
 
 z = exp(2*pi*1i/6);
 f = bndfun(@(t) sinh(t*z), dom, [], [], pref);
 F = cumsum(f);
-F_ex = @(t) cosh(t*z)/z;
+F_ex = @(t) cosh(t*z)/z - (cosh(a*z)/z);
 err = feval(F, x) - F_ex(x);
-pass(n, 4) = (std(err) < tol) && (abs(feval(F, -1)) < tol);
+pass(4) = (norm(err, inf) < 4*tol) && (abs(feval(F, a)) < tol);
 
 %%
 % Check that applying cumsum() and direct construction of the antiderivative
 % give the same results (up to a constant).
 
 f = bndfun(@(x) sin(4*x).^2, dom, [], [], pref);
-F = bndfun(@(x) 0.5*x - 0.0625*sin(8*x), dom, [], [], pref);
+F = bndfun(@(x) 0.5*x - 0.0625*sin(8*x) - (a/2-sin(8*a)/16), dom, [], [], pref);
 G = cumsum(f);
 err = G - F;
-pass(n, 5) = (std(err.onefun.values) < tol) && (abs(feval(G, -1)) < tol);
+pass(5) = (std(err.onefun.values) < 2*tol) && (abs(feval(G, a)) < tol);
 
 %%
 % Check that diff(cumsum(f)) == f and that cumsum(diff(f)) == f up to a
 % constant.
 
-f = bndfun(@(x) x.*(x - 1).*sin(x) + 1, dom, [], [], pref);
+f = bndfun(@(x) x.*(x - 1).*sin(x) - (a*(a-1)*sin(a)), dom, [], [], pref);
 g = diff(cumsum(f));
 err = feval(f, x) - feval(g, x);
-pass(n, 6) = (norm(err, inf) < 100*tol);
+pass(6) = (norm(err, inf) < 2*norm(feval(f,x), inf)*tol);
 h = cumsum(diff(f));
 err = feval(f, x) - feval(h, x);
-pass(n, 7) = (std(err) < tol)  && (abs(feval(h, -1)) < tol);
+pass(7) = (norm(err, inf) < norm(feval(g,x), inf)*norm(feval(f,x), inf)*tol)  && (abs(feval(h, a)) < tol);
 
 %%
 % Check operation for array-valued chebtech objects.
 
 f = bndfun(@(x) [sin(x) x.^2 exp(1i*x)], dom, [], [], pref);
-F_exact = bndfun(@(x) [(-cos(x)) (x.^3/3) (exp(1i*x)/1i)], dom, [], [], pref);
+F_exact = bndfun(@(x) [(-cos(x)+cos(a)) (x.^3/3-a^3/3) ((exp(1i*x)-exp(1i*a))/1i)], dom, [], [], pref);
 F = cumsum(f);
 err = std(feval(F, x) - feval(F_exact, x));
-pass(n, 8) = (norm(err, inf) < tol)  && all(abs(feval(F, -1)) < tol);
+pass(8) = (norm(err, inf) < 2*tol)  && all(abs(feval(F, a)) < 2*tol);
 
 %%
 % Check operation for second and third order cumsums.
 f = bndfun(@(x) sin(x), dom, [], [], pref);
-F2_exact = bndfun(@(x) -sin(x)+x.*cos(dom(1))+sin(dom(1))+cos(dom(1)), ...
+F2_exact = bndfun(@(x) -sin(x)+x.*cos(a)+sin(a)-a*cos(a), ...
     dom, [], [], pref);
 F2 = cumsum(f,2);
 err = std(feval(F2, x) - feval(F2_exact, x));
-pass(n, 9) = (norm(err, inf) < tol)  && abs(feval(F2, dom(1)) < tol);
+pass(9) = (norm(err, inf) < 5*tol)  && abs(feval(F2, a) < tol);
 
-F3_exact = bndfun(@(x) cos(x)+x.^2*cos(dom(1))/2+x*(sin(dom(1))+cos(dom(1))) - ...
-    (cos(dom(1))/2-sin(dom(1))), [], [], pref);
+F3_exact = bndfun(@(x) cos(x)+x.^2*cos(a)/2+x*(sin(a)-a*cos(a)) - ...
+    (cos(a)/2-sin(a)), dom, [], [], pref);
 F3 = cumsum(f,3);
 err = std(feval(F3, x) - feval(F3_exact, x));
-pass(n, 10) = (norm(err, inf) < tol)  && abs(feval(F3, dom(1)) < tol);
+pass(10) = (norm(err, inf) < tol)  && abs(feval(F3, a) < tol);
 
 end

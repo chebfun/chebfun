@@ -6,7 +6,7 @@ if ( nargin < 1 )
     pref = fun.pref;
 end
 
-tol = 500*pref.fun.eps;
+tol = pref.fun.eps;
 
 pass = zeros(1, 4); % Pre-allocate pass matrix
 for n = 1:1 %[TODO]: unbndfun
@@ -22,14 +22,14 @@ for n = 1:1 %[TODO]: unbndfun
     g = testclass.make(@(x) sin(x), dom, [], [], pref);
     h = imag(f);
     h.onefun = prolong(h.onefun, length(g));
-    pass(n, 1) = norm(h.onefun.values - g.onefun.values, inf) < tol;
+    pass(n, 1) = norm(h.onefun.values - g.onefun.values, inf) < max(f.onefun.vscale,g.onefun.vscale)*tol;
     
     % Test an array-valued function:
     f = testclass.make(@(x) [exp(x) + 1i*sin(x), -exp(1i*x)], dom, [], [], pref);
     g = testclass.make(@(x) [sin(x), -imag(exp(1i*x))], dom, [], [], pref);
     h = imag(f);
     h.onefun = prolong(h.onefun, length(g));
-    pass(n, 2) = norm(h.onefun.values - g.onefun.values, inf) < tol;
+    pass(n, 2) = norm(h.onefun.values - g.onefun.values, inf) < max([f.onefun.vscale g.onefun.vscale])*tol;
     
     % Test a real function:
     f = testclass.make(@(x) cos(x), dom, [], [], pref);

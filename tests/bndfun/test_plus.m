@@ -7,12 +7,12 @@ if ( nargin < 1 )
     pref = bndfun.pref;
 end
 
-% Generate a few random points to use as test values.
-seedRNG(6178);
-x = 2 * rand(100, 1) - 1;
-
 % Set a domain
 dom = [-2 7];
+
+% Generate a few random points to use as test values.
+seedRNG(6178);
+x = diff(dom) * rand(100, 1) + dom(1);
 
 % A random number to use as an arbitrary additive constant.
 alpha = -0.194758928283640 + 0.075474485412665i;
@@ -88,7 +88,7 @@ f = bndfun(@(x) x, dom, [], [], pref);
 g = bndfun(@(x) cos(x) - 1, dom, [], [], pref);
 h1 = f + g;
 h2 = bndfun(@(x) x + cos(x) - 1, dom, [], [], pref);
-pass(19) = norm(h1.values - h2.values, inf) < tol;
+pass(19) = norm(h1.onefun.values - h2.onefun.values, inf) < 2*tol;
 
 %%
 % Check that adding a BNDFUN to an unhappy BNDFUN gives an unhappy
@@ -97,9 +97,9 @@ pass(19) = norm(h1.values - h2.values, inf) < tol;
 f = bndfun(@(x) cos(x+1), dom);    % Happy
 g = bndfun(@(x) sqrt(x+1), dom);   % Unhappy
 h = f + g;  % Add unhappy to happy.
-pass(20) = (~g.ishappy) && (~h.ishappy);
+pass(20) = (~g.onefun.ishappy) && (~h.onefun.ishappy);
 h = g + f;  % Add happy to unhappy.
-pass(21) = (~g.ishappy) && (~h.ishappy);
+pass(21) = (~g.onefun.ishappy) && (~h.onefun.ishappy);
 
 end
 
@@ -110,7 +110,7 @@ function result = test_add_function_to_scalar(f, f_op, alpha, x)
     g2 = alpha + f;
     result(1) = isequal(g1, g2);
     g_exact = @(x) f_op(x) + alpha;
-    result(2) = norm(feval(g1, x) - g_exact(x), inf) < 10*g1.onefun.epslevel;
+    result(2) = norm(feval(g1, x) - g_exact(x), inf) < max(g1.onefun.vscale)*g1.onefun.epslevel;
 end
 
 % Test the addition of two BNDFUN objects F and G, specified by F_OP and
@@ -120,6 +120,5 @@ function result = test_add_function_to_function(f, f_op, g, g_op, x)
     h2 = g + f;
     result(1) = isequal(h1, h2);
     h_exact = @(x) f_op(x) + g_op(x);
-    norm(feval(h1, x) - h_exact(x), inf);
-    result(2) = norm(feval(h1, x) - h_exact(x), inf) < 10*h1.onefun.epslevel;
+    result(2) = ( norm(feval(h1, x) - h_exact(x), inf) <= 10*max(h1.onefun.vscale)*h1.onefun.epslevel );
 end
