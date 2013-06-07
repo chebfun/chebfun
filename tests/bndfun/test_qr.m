@@ -10,7 +10,7 @@ end
 % Create seed for random number generator
 seedRNG(6178);
 
-pass = zeros(2, 17); % Pre-allocate pass matrix
+pass = zeros(1, 17); % Pre-allocate pass matrix
 for n = 1:1 %[TODO]: unbndfun
     if ( n == 1 )
         testclass = bndfun();
@@ -56,8 +56,8 @@ for n = 1:1 %[TODO]: unbndfun
     f = testclass.make(@(x) [x x x], dom, [], [], pref);
     [Q, R] = qr(f);
     pass(n, 18) = all(size(Q) == 3) && all(size(R) == 3);
-    I = eye(3); I(end) = 0;
-    pass(n, 19) = norm(innerProduct(Q, Q) - I, inf) < 10*f.epslevel;
+    I = zeros(3); I(1,1) = 1;
+    pass(n, 19) = norm(innerProduct(Q, Q) - I, inf) < f.onefun.epslevel;
     
 end
 
@@ -75,7 +75,7 @@ function result = test_one_qr(f, x)
 
     % Check that the factorization is accurate.
     err = Q*R - f;
-    result(2) = norm(feval(err, x), inf) < max(f.onefun.vscale)*f.onefun.epslevel;
+    result(2) = norm(feval(err, x), inf) < 2*max(f.onefun.vscale)*f.onefun.epslevel;
 end
 
 % Same as the previous function but this time uses the QR factorization with
@@ -90,5 +90,5 @@ function result = test_one_qr_with_perm(f, x)
 
     % Check that the factorization is accurate.
     err = Q*R - f*E;
-    result(2) = norm(feval(err, x), inf) < max(f.onefun.vscale)*f.onefun.epslevel;
+    result(2) = norm(feval(err, x), inf) < 2*max(f.onefun.vscale)*f.onefun.epslevel;
 end
