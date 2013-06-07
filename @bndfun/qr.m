@@ -1,5 +1,5 @@
 function [Q, R, E] = qr(f, varargin)
-%QR   QR factorisation of an array-valued CHEBTECH.
+%QR   QR factorisation of an array-valued BNDFUN.
 %   [Q, R] = QR(F) returns a QR factorisation of F such that F = Q*R, where the
 %   CHEBTECH Q is orthogonal (with respect to the continuous L^2 norm on [-1,1])
 %   and of the same size as F and R is an m x m upper-triangular matrix when F
@@ -29,7 +29,7 @@ end
 Q = f;
 
 % Rescaling factor, (b-a)/2
-rescaleFactor = (.5*diff(f.domain));
+rescaleFactor = .5*diff(f.domain);
 
 % Call QR on the ONEFUN of f.
 if nargout == 3
@@ -42,7 +42,7 @@ end
 Q.onefun = Qone;
 
 % Rescale so that columns of Q will be orthonormal, rather than orthogonal.
-Q = Q*(1/sqrt(rescaleFactor));
+Q = Q/sqrt(rescaleFactor);
 % Need to rescale R as well so that f = QR
 R = R*sqrt(rescaleFactor);
 
