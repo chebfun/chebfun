@@ -29,7 +29,7 @@ if ( isempty(f) )
 end
 
 % Get the size of the values matrix:
-[ignored, m] = size(f.onefun);
+m = size(f.onefun,2);
 
 % Parse the inputs:
 if ( nargin == 1 )
