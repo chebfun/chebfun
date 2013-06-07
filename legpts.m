@@ -770,3 +770,49 @@ rows = 1:N+1;                    % Output upper half only
 C = real( [ F(rows,N+1) F(rows,N:-1:2)+F(rows,N+2:2*N) F(rows,1) ] ) / N;
 C([1 N+1],:) = 0.5*C([1 N+1],:); % Halve the ends
 end
+
+function D = diffmat(N)  
+%DIFFMAT   Chebyshev differentiation matrix
+% D = DIFFMAT(N) is the matrix that maps function values at N Chebyshev
+% points to values of the derivative of the interpolating polynomial at
+% those points. 
+%
+% The matrices are computed using the 'hybrid' formula of Schneider & 
+% Werner [1] and Welfert [2] proposed by Tee [3].
+
+% References:
+%  [1] Schneider, C. and Werner, W., "Some new aspects of rational 
+%   interpolation", Math. Comp. (47) 285--299, 1986.
+%  [2] Welfert, B. D., "Generation of pseudospectral matrices I", SINUM,
+%   (34) 1640--1657.
+%  [3] Tee, T. W., "An adaptive rational spectral method for differential
+%   equations with rapidly varying solutions", Oxford DPhil Thesis, 2006.
+
+% Trivial cases:
+if ( N == 0 )
+    D = []; 
+    return
+end
+if ( N == 1 )
+    D = 0; 
+    return
+end
+
+% Construct Chebyshev grid and weights
+x = chebtech2.chebpts(N);
+w = chebtech2.barywts(N);
+
+% Construct the differntiation matrix:
+ii = (1:N+1:N^2)';              % indices of diagonal
+Dx = bsxfun(@minus, x, x');     % all pairwise differences
+Dx(ii) = Dx(ii) + 1;            % add identity
+Dxi = 1./Dx;                    % reciprocal 
+Dw = bsxfun(@rdivide, w.', w);  % pairwise divisions
+Dw(ii) = Dw(ii) - 1;            % subtract identity
+D = Dw .* Dxi;                  % combine
+
+% Negative sum trick:
+D(ii) = 0; 
+D(ii) = - sum(D,2);              
+
+end
