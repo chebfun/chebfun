@@ -1,7 +1,7 @@
 function g = mat2cell(f, M, N)
-%MAT2CELL  Convert a vector-valued FUN into an ARRAY of FUN objects.
+%MAT2CELL  Convert an array-valued FUN into an ARRAY of FUN objects.
 %
-%   G = MAT2CELL(F, C) breaks up the vector-valued FUN F into a single row
+%   G = MAT2CELL(F, C) breaks up the array-valued FUN F into a single row
 %   cell array G of FUN objects. C is the vector of column sizes, and if F
 %   has COL columns this must sum to COL. The elements of C determine the size
 %   of each cell in G, subject to the following formula for I = 1:LENGTH(C),
@@ -11,10 +11,10 @@ function g = mat2cell(f, M, N)
 %
 %   G = MAT2CELL(F, M, N) is similar to above, but allows three input arguments
 %   so as to be consistent with the built in MAT2CELL function. Here N takes the
-%   role of C above, and M should be either the scalar value 1.
+%   role of C above, and M should be the scalar value 1.
 %
 % Example:
-%   f = bndfun(@(x) [sin(x), cos(x), exp(x), x],[0 pi])
+%   f = bndfun(@(x) [sin(x), cos(x), exp(x), x], [0 pi])
 %   g = mat2cell(f, 1, [1 2 1])
 %
 % See also CELL2MAT.
@@ -29,13 +29,13 @@ if ( isempty(f) )
 end
 
 % Get the size of the values matrix:
-[n, m] = size(f.onefun);
+[ignored, m] = size(f.onefun);
 
 % Parse the inputs:
 if ( nargin == 1 )
     M = 1;
     N = ones(1, m);
-elseif ( nargin == 2) 
+elseif ( nargin == 2 ) 
     N = M;
     M = 1;
 end
