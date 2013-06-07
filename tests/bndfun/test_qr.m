@@ -63,7 +63,7 @@ end
 
 end
 
-% Tests the QR decomposition for a CHEBTECH object F using a grid of points X
+% Tests the QR decomposition for a BNDFUN object F using a grid of points X
 % in [-1  1] for testing samples.
 function result = test_one_qr(f, x)
     N = size(f, 2);
