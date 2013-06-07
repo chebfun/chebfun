@@ -104,7 +104,7 @@ pass(21) = (~g.onefun.ishappy) && (~h.onefun.ishappy);
 end
 
 % Test the addition of a BNDFUN F, specified by F_OP, to a scalar ALPHA using
-% a grid of points X in [-1  1] for testing samples.
+% a grid of points X in [a  b] for testing samples.
 function result = test_add_function_to_scalar(f, f_op, alpha, x)
     g1 = f + alpha;
     g2 = alpha + f;
