@@ -20,12 +20,18 @@ function f = compose(f, op, g, pref)
 
 % Parse inputs:
 if nargin == 2
-    f.onefun = compose(f.onefun,op);
+    if ( strcmp(class(op), 'bndfun') ) 
+        % op is a bndfun!
+        f.onefun = compose(f.onefun, op.onefun);
+    else
+        % op is an operator!
+        f.onefun = compose(f.onefun, op);
+    end
 elseif nargin == 3
     if ( isstruct(g) )
-        % Third argument passed was a preference structure.
+        % Third argument passed is a preference structure.
         
-        f.onefun = compose(f.onefun,op,g);
+        f.onefun = compose(f.onefun,op, [], g);
     else
         % Third argument passed was a bndfun
         if ( ~checkDomain(f, g))
@@ -38,7 +44,7 @@ elseif nargin == 3
         f.onefun = compose(f.onefun,op,g.onefun);
     end
 else
-    f.onefun = compose(f.onefun,op.g.onefun,pref);
+    f.onefun = compose(f.onefun,op,g.onefun,pref);
 end
 
 end
