@@ -1,4 +1,4 @@
-function [X Xtemp] = mrdivide(A, B)
+function X = mrdivide(A, B)
 %/   Right matrix divide for a BNDFUN.
 %
 %   A/B divides the BNDFUN A by a scalar B. More generally, it gives the

@@ -20,5 +20,4 @@ X = R\innerProduct(Q, B);
 % at the ONEFUN level, e.g. via
 % X = A.onefun\B.onefun;
 
-
 end
