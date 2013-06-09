@@ -29,23 +29,22 @@ end
 
 % Call poly() on the ONEFUN of f
 onefunPoly = poly(f.onefun);
-n = length(onefunPoly);
-
+[m, n] = size(onefunPoly);
 
 % Obtain endpoints of domain, and rescale coefficients if necessary
 a = f.domain(1);
 b = f.domain(2);
 
+% Constants for rescaling
+alpha = 2/(b-a);
+beta = -(b+a)/(b-a);
+
 % Convert coefficients on [-1,1] to [a,b].
 % TODO: Explain why this formula works/give reference.
 if ( a~=-1 || b~=1 )
     % Flip coefficients
-    out = onefunPoly(end:-1:1);
+    out = onefunPoly(:,end:-1:1);
     
-    % Constants for rescaling
-    alpha = 2/(b-a); 
-    beta = -(b+a)/(b-a);
-
     % Rescale coefficients to actual interval
     for j = 0:n-1
         % Need to update coefficients with k>=j.
@@ -53,13 +52,16 @@ if ( a~=-1 || b~=1 )
         
         % Binomial coefficients, which seem to be more accurate than using
         % MATLAB's NCHOOSEK.
-        binom = round(exp(gammaln(k+1)-gammaln(k-j+1)-gammaln(j+1))); 
+        binom = round(exp(gammaln(k+1)-gammaln(k-j+1)-gammaln(j+1)));
+        
+        % Compute the modified coefficients
+        bba = repmat(binom.*beta.^(k-j).*(alpha^j),m,1);
         
         % Adjust coefficients
-        out(j+1) = sum(out(k+1).*binom.*beta.^(k-j).*alpha^(j));
+        out(:,j+1) = sum(out(:,k+1).*bba,2);
     end
     
     % Flip coefficients back
-    out = out(end:-1:1);
+    out = out(:,end:-1:1);
 end
 
