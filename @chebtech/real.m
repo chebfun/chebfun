@@ -14,6 +14,7 @@ f.vscale = max(abs(f.values));
 if ( ~any(f.values(:)) )
     % Input was imaginary, so output a zero CHEBTECH:
     f = f.make(zeros(1, size(f.values, 2)), f.vscale, f.hscale);
+    f.ishappy = 1;
 else
     % Compute real part of the coefficients:
     f.coeffs = real(f.coeffs);
