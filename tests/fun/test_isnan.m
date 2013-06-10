@@ -29,7 +29,7 @@ for n = 1:1 %[TODO]: unbndfun
         f = testclass.make(@(x) x + NaN, dom, [], [], p);
         pass(n, 3) = isnan(f);
     catch ME
-        pass(n, 3) = strcmpi(ME.message, 'Too many NaNs to handle.');
+        pass(n, 3) = strcmpi(ME.message, 'Too many NaNs/Infs to handle.');
     end
     
     % Test a NaN vector-valued function:
@@ -37,7 +37,7 @@ for n = 1:1 %[TODO]: unbndfun
         f = testclass.make(@(x) [x, x + NaN], dom, [], [], p);
         pass(n, 4) = isnan(f);
     catch ME
-        pass(n, 4) = strcmpi(ME.message, 'Too many NaNs to handle.');
+        pass(n, 4) = strcmpi(ME.message, 'Too many NaNs/Infs to handle.');
     end
 
     % Test a NaN vector-valued function:
