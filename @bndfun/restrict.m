@@ -29,7 +29,7 @@ end
 t = f.mapping.inv(s);
 
 % Restrict the ONEFUN field of f.
-restrictedOnefuns = restrict(f.onefun, t); 
+restrictedOnefuns = restrict(f.onefun, t);
 
 % In case S = [S1, S2], i.e., we are only restricting to a one subinterval,
 % restrictedOnefuns will be a CHEBTECH. In case S = [S1, S2, ..., SN], i.e., we
@@ -39,7 +39,12 @@ restrictedOnefuns = restrict(f.onefun, t);
 % on how many subintervals we are restricting to.
 if ( length(s) == 2 )
     % Only restricting to one subinterval -- return a BNDFUN.
-    g = bndfun(restrictedOnefuns, s);
+    
+    % g = bndfun(restrictedOnefuns, s); [TODO]: This line is planned to be removed.
+    g = bndfun();
+    g.onefun = restrictedOnefuns;
+    g.domain = s;
+    g.mapping = bndfun.createMap(s);
 else
     % Restricting to multiple subintervals -- return a cell-array of BNDFUN
     % objects.
@@ -50,7 +55,12 @@ else
     % Loop over each of the new subintervals, make a bndfun with new mapping,
     % and store in the cell returned:
     for k = 1:(numel(s) - 1)
-        g{k} = bndfun(restrictedOnefuns{k}, s(k:k+1));
+        g_tmp = bndfun();
+        g_tmp.onefun = restrictedOnefuns{k};
+        g_tmp.domain = s(k:k+1);
+        g_tmp.mapping = bndfun.createMap(s(k:k+1));
+        g{k} = g_tmp;
+        % g{k} = bndfun(restrictedOnefuns{k}, s(k:k+1)); [TODO]: planned to be removed.
     end
 end
 
