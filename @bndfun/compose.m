@@ -20,7 +20,7 @@ function f = compose(f, op, g, pref)
 
 % Parse inputs:
 if nargin == 2
-    if ( strcmp(class(op), 'bndfun') ) 
+    if ( isa(op, 'bndfun') ) 
         % op is a bndfun!
         f.onefun = compose(f.onefun, op.onefun);
     else

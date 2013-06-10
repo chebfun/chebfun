@@ -1,9 +1,9 @@
 function [Q, R, E] = qr(f, varargin)
 %QR   QR factorisation of an array-valued BNDFUN.
 %   [Q, R] = QR(F) returns a QR factorisation of F such that F = Q*R, where the
-%   CHEBTECH Q is orthogonal (with respect to the continuous L^2 norm on [-1,1])
-%   and of the same size as F and R is an m x m upper-triangular matrix when F
-%   has m columns.
+%   BNDFUN Q is orthogonal (with respect to the continuous L^2 norm on the 
+%   domain of F) and of the same size as F and R is an m x m upper-triangular 
+%   matrix when F has m columns.
 %
 %   [Q, R, E] = QR(F) produces unitary Q, upper-triangular R, and a permutation
 %   matrix E so that F*E = Q*R. The column permutation E is chosen to reduce

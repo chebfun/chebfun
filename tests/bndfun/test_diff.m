@@ -6,10 +6,9 @@ function pass = test_diff(pref)
 if ( nargin < 1 )
     pref = bndfun.pref;
 end
-pref = chebtech.pref(pref);
 
 % Set a tolerance.
-tol = 1e3*pref.chebtech.eps;
+tol = 1e3*pref.bndfun.eps;
 
 % Set the domain.
 dom = [-2 7];
@@ -27,7 +26,7 @@ f = bndfun(@(x) exp(x/10) - x, dom, [], [], pref);
 df = diff(f);
 df_exact = @(x) exp(x/10)./10 - 1;
 err = df_exact(x) - feval(df, x);
-pass(1) = (norm(err, inf) < tol);
+pass(1) = (norm(err, inf) < f.onefun.vscale*tol);
 
 f = bndfun(@(x) atan(x), dom, [], [], pref);
 df = diff(f);
@@ -39,7 +38,7 @@ f = bndfun(@(x) sin(x), dom, [], [], pref);
 df = diff(f);
 df_exact = @(x) cos(x);
 err = df_exact(x) - feval(df, x);
-pass(3) = (norm(err, inf) < tol);
+pass(3) = (norm(err, inf) < f.onefun.vscale*tol);
 
 z = exp(2*pi*1i/3);
 f = bndfun(@(t) airy(z*t), dom, [], [], pref);
@@ -54,7 +53,7 @@ pass(4) = (norm(err, inf) < f.onefun.vscale*tol);
 f = bndfun(@(x) 0.5*x - 0.0625*sin(8*x), dom, [], [], pref);
 df = bndfun(@(x) sin(4*x).^2, dom, [], [], pref);
 err = diff(f) - df;
-pass(5) = (err.onefun.vscale < tol);
+pass(5) = (err.onefun.vscale < f.onefun.vscale*tol);
 
 %%
 % Verify basic differentiation rules.
@@ -66,11 +65,11 @@ dg = diff(g);
 
 errfn = diff(f + g) - (df + dg);
 err = feval(errfn, x);
-pass(6) = (norm(err, inf) < tol);
+pass(6) = (norm(err, inf) < (f.onefun.vscale+g.onefun.vscale)*tol);
 
 errfn = diff(f.*g) - (f.*dg + g.*df);
 err = feval(errfn, x);
-pass(7) = (norm(err, inf) < f.onefun.vscale*tol);
+pass(7) = (norm(err, inf) < f.onefun.vscale*g.onefun.vscale*tol);
 
 const = bndfun(@(x) ones(size(x)), dom, [], [], pref);
 dconst = diff(const);
@@ -85,19 +84,19 @@ f = bndfun(@(x) x.*atan(x) - x - 0.5*log(1 + x.^2), dom, [], [], pref);
 df2 = diff(f, 2);
 df2_exact = @(x) 1./(1 + x.^2);
 err = df2_exact(x) - feval(df2, x);
-pass(9) = (norm(err, inf) < 300*f.onefun.vscale*tol);
+pass(9) = (norm(err, inf) < 30*(f.onefun.vscale)^2*tol);
 
 f = bndfun(@(x) sin(x), dom, [], [], pref);
 df4 = diff(f, 4);
 df4_exact = @(x) sin(x);
 err = df4_exact(x) - feval(df4, x);
-pass(10) = (norm(err, inf) < 1e4*tol);
+pass(10) = (norm(err, inf) < 2*(f.onefun.vscale)^4*tol);
 
 f = bndfun(@(x) x.^5 + 3*x.^3 - 2*x.^2 + 4, dom, [], [], pref);
 df6 = diff(f, 6);
 df6_exact = @(x) zeros(size(x));
 err = df6_exact(x) - feval(df6, x);
-pass(11) = (norm(err, inf) < 1e6*tol);
+pass(11) = (norm(err, inf) < (f.onefun.vscale)^6*tol);
 
 %%
 % Check operation for vectorized bndfun objects.
@@ -105,23 +104,22 @@ pass(11) = (norm(err, inf) < 1e6*tol);
 f = bndfun(@(x) [sin(x) x.^2 exp(1i*x)], dom, [], [], pref);
 df_exact = @(x) [cos(x) 2*x 1i*exp(1i*x)];
 err = feval(diff(f), x) - df_exact(x);
-pass(12) = (norm(err(:), inf) < 2*tol);
+pass(12) = (norm(err(:), inf) < max(f.onefun.vscale)*tol);
 
 % DIM option.
 dim2df = diff(f, 1, 2);
 g = @(x) [(x.^2 - sin(x)) (exp(1i*x) - x.^2)];
 err = feval(dim2df, x) - g(x);
-pass(13) = (norm(err(:), inf) < tol);
+pass(13) = (norm(err(:), inf) < max(f.onefun.vscale)*tol);
 
 dim2df2 = diff(f, 2, 2);
 g = @(x) exp(1i*x) - 2*x.^2 + sin(x);
 err = feval(dim2df2, x) - g(x);
-pass(14) = (norm(err(:), inf) < tol);
+pass(14) = (norm(err(:), inf) < max(f.onefun.vscale)*tol);
 
-% DIM option should return an empty chebtech for non-vectorized input.
+% DIM option should return an empty bndfun for non-vectorized input.
 f = bndfun(@(x) x.^3, dom);
 dim2df = diff(f, 1, 2);
-pass(15) = (isempty(dim2df.onefun.values) && isempty(dim2df.onefun.coeffs));
+pass(15) = (isempty(dim2df));
 
 end
-

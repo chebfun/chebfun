@@ -1,6 +1,6 @@
 function r = roots(f, varargin)
 %ROOTS   Roots of a FUN in the interval [a,b].
-%   ROOTS(F) returns the real roots of the CHEBTECH F in the interval [a,b].
+%   ROOTS(F) returns the real roots of the FUN F in the interval [a,b].
 %
 %   ROOTS(F, PROP1, VAL1, PROP2, VAL2, ...) modifies the default ROOTS
 %   properties. The PROPs (strings) and VALs may be any of the following:
@@ -21,7 +21,7 @@ function r = roots(f, varargin)
 %       [1] - Horizontal scale for adjusting relative tolerances.
 %     double
 %
-%   If F is a array-valued BNDFUN then there is no reason to expect each column
+%   If F is an array-valued BNDFUN then there is no reason to expect each column
 %   to have the same number of roots. In order to return a useful output, the
 %   roots of each column are computed and then padded with NaNs so that a matrix
 %   may be returned. The columns of R = ROOTS(F) correspond to the columns of F.

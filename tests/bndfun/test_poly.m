@@ -33,7 +33,7 @@ pass(4) = (norm(p - [2i (-3.2) 0 2 0 -(1.2 + 3i)], inf) ...
     < f.onefun.vscale*f.onefun.epslevel);
 
 %%
-% Verify operation for array-valued chebtech objects.
+% Verify operation for array-valued bndfun objects.
 
 f = bndfun(@(x) [3*ones(size(x)), (6.4*x - 3i), ...
     (4*x.^2 - 2i*x + 3.7)], dom, [], [], pref);

@@ -6,8 +6,6 @@ function pass = test_createmap(pref)
 if ( nargin < 1 )
     pref = bndfun.pref;
 end
-% Set the tolerance:
-pref = chebtech.pref(pref);
 
 pass = zeros(1, 2); % Pre-allocate pass matrix.
 

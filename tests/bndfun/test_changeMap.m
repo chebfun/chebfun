@@ -7,8 +7,7 @@ if ( nargin < 1 )
     pref = bndfun.pref;
 end
 % Set the tolerance:
-pref = chebtech.pref(pref);
-tol = 10*pref.chebtech.eps;
+tol = pref.bndfun.eps;
 
 % test with two domains
 pass = zeros(1, 2); % Pre-allocate pass matrix.
@@ -26,7 +25,7 @@ y = ((d-c)/2) * rand(100, 1) + (d+c)/2;
 gv = feval(g,y);
 x = a*(d-y)/(d-c) + b*(y-c)/(d-c);
 fv = feval(f,x);
-pass(1) = norm( gv - fv, inf) < tol
+pass(1) = norm( gv - fv, inf) < f.onefun.vscale*tol
 
 % back
 f = changeMap(g, dom1);
@@ -34,4 +33,4 @@ y = ((b-a)/2) * rand(100, 1) + (b+a)/2;
 fv = feval(f,y);
 x = c*(b-y)/(b-a) + d*(y-a)/(b-a);
 gv = feval(g,x);
-pass(2) = norm( fv - gv, inf) < tol
+pass(2) = norm( fv - gv, inf) < f.onefun.vscale*tol

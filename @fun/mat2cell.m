@@ -62,7 +62,7 @@ for k = 1:numel(N)
     gk.onefun = oneFuns{k};
     gk.mapping = f.mapping;
 
-    % Store the CHEBTECH in the cell-array returned.
+    % Store the FUN in the cell-array returned.
     g{k} = gk;
 end
 
