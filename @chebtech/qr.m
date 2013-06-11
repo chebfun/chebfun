@@ -57,7 +57,9 @@ if ( m == 1 )
 end
 
 % Simplify so that we don't do any extra work: (QR is O(m*n^2)? :/ )
-f = simplify(f);   
+if ( f.ishappy )
+    f = simplify(f);
+end
 
 % We must enforce that f.values has at least as many rows as columns:
 [n, m] = size(f);

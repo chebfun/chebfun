@@ -79,7 +79,9 @@ f.vscale = max(f.vscale, max(abs(f.values), [], 1));
 % [TODO]: Update epslevel?
 
 % Simplify (as suggested in Chebfun ticket #128)
-f = simplify(f);
+if ( f.ishappy )
+    f = simplify(f);
+end
 
 % Ensure f(-1) = 0:
 lval = get(f, 'lval');

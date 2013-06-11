@@ -112,7 +112,9 @@ f.vscale  = vscale;
 f.ishappy = f.ishappy && g.ishappy;
 
 % Simplify!
-f = simplify(f);
+if ( f.ishappy )
+    f = simplify(f);
+end
 
 if ( pos )
     % Here we know that the product of F and G should be positive. However,
