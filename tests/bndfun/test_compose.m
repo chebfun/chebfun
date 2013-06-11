@@ -91,7 +91,7 @@ for n = 1:3
         compose(f, g);
         pass(n, 10) = false;
     catch ME 
-        pass(n, 10) = strcmp(ME.identifier, 'CHEBFUN:CHEBTECH:compose:arrval');
+        pass(n, 10) = strcmp(ME.identifier, 'BNDFUN:compose:domainMismatch');
     end
     
     % We cannot expect to compose two array-valued BNDFUN objects in this way:
@@ -110,7 +110,7 @@ for n = 1:3
         compose(g,f);
         pass(n, 12) = false;
     catch ME
-        pass(n, 12) = strcmp(ME.identifier, 'CHEBFUN:CHEBTECH:compose:range');
+        pass(n, 12) = strcmp(ME.identifier, 'BNDFUN:compose:domainMismatch');
     end
 end
 

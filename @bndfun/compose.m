@@ -15,14 +15,37 @@ function f = compose(f, op, g, pref)
 %   pass a PREF.(class(F)).refinmentFunction which takes advantage of the fact
 %   that F (and possibly OP or G) are BNDFUN objects.
 %
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Parse inputs:
 if nargin == 2
-    if ( isa(op, 'bndfun') ) 
+    if ( isa(op, 'bndfun') )
         % op is a bndfun!
-        f.onefun = compose(f.onefun, op.onefun);
+        
+        % Check their domains:
+        
+        % The tolerance of the match is determined by the hscale of F and G.
+        tol = max(get(f,'hscale'), get(op,'hscale'))*eps;
+        mvals = minandmax(f);
+        c = mvals(1,:);
+        d = mvals(2,:);
+        dom = op.domain;
+        a = dom(1);
+        b = dom(2);
+        
+        if ( any(c < (a - tol) ) || any(d > (b + tol)) )
+            % Throw an error if domains don't match:
+            error('BNDFUN:compose:domainMismatch',...
+                'For composition G(F), the range of F must lie in the domain of G.')
+        end
+        
+        % Map the range of F to a range which lies in [-1 1].
+        f_mppd = (2*f.onefun - (a + b))./(b - a);
+
+        % Do the composition
+        f.onefun = compose(f_mppd, op.onefun);
+        
     else
         % op is an operator!
         f.onefun = compose(f.onefun, op);
