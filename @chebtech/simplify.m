@@ -7,13 +7,13 @@ function f = simplify(f, tol)
 %   trailing zero coefficients. G.EPSLEVEL is set to the maximum of F.EPSLEVEL
 %   and the default CHEBTECH EPS.
 %
-%   If F is not happy (i.e., F.ishappy = 0), then a warning is returned.
+%   If F is not happy (i.e., F.ishappy = 0), then a warning is issued.
 %
-%   G = SIMPLIFY(F, TOL) does the same as above, but uses TOL as the threshold
+%   G = SIMPLIFY(F, TOL) does the same as above but uses TOL as the threshold
 %   level for deciding whether a coefficient is small enough to be zeroed.
-%   Here G.EPSLEVEL is set to the maximum of F.EPSLEVEL and TOL.
+%   Here, G.EPSLEVEL is set to the maximum of F.EPSLEVEL and TOL.
 %
-% See also HAPPINESSCHECK.M,
+% See also HAPPINESSCHECK.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
