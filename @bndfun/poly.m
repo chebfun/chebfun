@@ -63,5 +63,8 @@ if ( a~=-1 || b~=1 )
     
     % Flip coefficients back
     out = out(:,end:-1:1);
+else
+    out = onefunPoly;
 end
+    
 

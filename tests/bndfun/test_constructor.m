@@ -8,7 +8,7 @@ if ( nargin < 1 )
 end
 % Set the tolerance:
 pref = chebtech.pref(pref);
-tol = pref.bndfun.eps;
+tol = 10*pref.bndfun.eps;
 
 pass = zeros(1, 8); % Pre-allocate pass matrix.
 
