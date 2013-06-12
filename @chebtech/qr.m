@@ -57,7 +57,7 @@ if ( m == 1 )
 end
 
 % Simplify so that we don't do any extra work: (QR is O(m*n^2)? :/ )
-f = simplify(f);   
+f = simplify(f);
 
 % We must enforce that f.values has at least as many rows as columns:
 [n, m] = size(f);
@@ -97,13 +97,19 @@ end
 % Revert to the Chebyshev grid (and remove the weight and enforce diag(R) >= 0).
 Winv = diag(1./sqrt(wl));   % Undo the weighting used for QR.
 Pinv = barymat(xc, xl, vl); % Revert to Chebyshev grid (from Legendre).
-S = spdiags(sign(diag(R)), 0, m, m);    % Enforce diag(R) >= 0.
+
+% Enforce diag(R) >= 0.
+s = sign(diag(R));
+s(~s) = 1;
+S = spdiags(s, 0, m, m);
 Q = Pinv*Winv*Q*S;          % Fix Q.
 R = S*R;                    % Fix R.
 
+% Apply data to chebtech:
 f.values = Q;                           % Adjust values of f.
 f.coeffs = f.chebpoly(Q);               % Compute new coefficients.
 f.vscale = max(abs(Q), [], 1);
+
 % [TODO]: Update epslevel?
 
 end

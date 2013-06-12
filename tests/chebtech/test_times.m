@@ -138,12 +138,14 @@ for n = 1:2
     % Check that multiplying a CHEBTECH by an unhappy CHEBTECH gives an unhappy
     % result.  
 
+    warning off; % Suppress expected warnings about unhappy operations.
     f = testclass.make(@(x) cos(x+1));    % Happy
     g = testclass.make(@(x) sqrt(x+1));   % Unhappy
     h = f.*g;  % Multiply unhappy by happy.
     pass(n, 22) = (~g.ishappy) && (~h.ishappy); %#ok<*BDSCI,*BDLGI>
     h = g.*f;  % Multiply happy by unhappy.
     pass(n, 23) = (~g.ishappy) && (~h.ishappy);
+    warning on; % Re-enable warnings.
 end
 
 end

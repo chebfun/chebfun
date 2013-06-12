@@ -50,12 +50,12 @@ for n = 1:2
     
     %%
     % Check a rank-deficient problem:
+    % [TODO]: Is this correct?
     f = testclass.make(@(x) [x x x], [], [], pref);
     [Q, R] = qr(f);
     pass(n, 18) = all(size(Q) == 3) && all(size(R) == 3);
-    I = eye(3); I(end) = 0;
+    I = eye(3);
     pass(n, 19) = norm(innerProduct(Q, Q) - I, inf) < 10*f.epslevel;
-    
 end
 
 end
