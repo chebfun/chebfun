@@ -25,9 +25,7 @@ if ( ~isreal(f) )
     realf = real(f);
     imagf = imag(f);
     h = realf.*realf + imagf.*imagf;
-    if ( f.ishappy )
-        h = simplify(h);
-    end
+    h = simplify(h);
     [ignored, pos] = minandmax(h); %#ok<ASGLU>
     vals = feval(f, pos);
     % FEVAL() will not return a matrix argument of the correct dimensions if f

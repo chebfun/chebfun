@@ -1,5 +1,5 @@
 function f = simplify(f, tol)
-%SIMPLIFY   Zero small Chebyshev coefficients of a CHEBTECH object.
+%SIMPLIFY   Zero small Chebyshev coefficients of a happy CHEBTECH object.
 %   G = SIMPLIFY(F) attempts to compute a 'simplified' version G of the happy
 %   CHEBTECH object F such that LENGTH(G) <= LENGTH(F) but ||G - F|| <
 %   F.EPSLEVEL. It does this by zeroing out all coefficients of F smaller in
@@ -7,7 +7,7 @@ function f = simplify(f, tol)
 %   trailing zero coefficients. G.EPSLEVEL is set to the maximum of F.EPSLEVEL
 %   and the default CHEBTECH EPS.
 %
-%   If F is not happy (i.e., F.ishappy = 0), then a warning is issued.
+%   If F is not happy, F is returned unchanged.
 %
 %   G = SIMPLIFY(F, TOL) does the same as above but uses TOL as the threshold
 %   level for deciding whether a coefficient is small enough to be zeroed.
@@ -23,8 +23,9 @@ if ( isempty(f) )
     return
 end
 
+% Do nothing to an unhappy CHEBTECH.  ([TODO]:  Is this the right thing to do?)
 if ( ~f.ishappy )
-    warning('Attempting to simplify an unhappy chebtech.');
+    return;
 end
 
 % Use the default tolerance if none was supplied:
