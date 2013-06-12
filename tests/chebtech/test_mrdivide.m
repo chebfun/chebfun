@@ -79,7 +79,7 @@ for n = 1:2
             'CHEBFUN:CHEBTECH:mrdivide:chebtechDivChebtech');
     end
     
-    % Can't call mldivide on a chebtech and a non-chebtech or non-double 
+    % Can't call mrdivide on a chebtech and a non-chebtech or non-double 
     % object.
     try
         f = testclass.make(@(x) sin(x));

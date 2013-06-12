@@ -1,17 +1,21 @@
-function f = simplify(f, pref)
-%SIMPLIFY   Trim trailing Chebyshev coefficients of a CHEBTECH object. 
-%   G = SIMPLIFY(F) attempts to compute a 'simplified' version G of the CHEBTECH
-%   object F such that LENGTH(G) <= LENGTH(F) but ||G - F|| < F.EPSLEVEL.
+function f = simplify(f, tol)
+%SIMPLIFY   Zero small Chebyshev coefficients of a happy CHEBTECH object.
+%   G = SIMPLIFY(F) attempts to compute a 'simplified' version G of the happy
+%   CHEBTECH object F such that LENGTH(G) <= LENGTH(F) but ||G - F|| <
+%   F.EPSLEVEL. It does this by zeroing out all coefficients of F smaller in
+%   magnitude than the default CHEBTECH EPS preference and then removing all
+%   trailing zero coefficients. G.EPSLEVEL is set to the maximum of F.EPSLEVEL
+%   and the default CHEBTECH EPS.
 %
-%   G = SIMPLIFY(F, PREF) does the same, but using some of the preferences in
-%   the preference structure PREF. In particular, SIMPLIFY will use CLASSICCHECK
-%   to test for accuracy by default, but an alternative can be passed in the
-%   PREF.CHEBTECH.HAPPINESSCHECK field. Additionally, G will be computed to
-%   satisfy ||G - F|| < MAX(F.EPSLEVEL, PREF.CHEBTECH.EPS).
+%   If F is not happy, F is returned unchanged.
 %
-% See also HAPPINESSCHECK, CLASSICCHECK, PREF.
+%   G = SIMPLIFY(F, TOL) does the same as above but uses TOL as the threshold
+%   level for deciding whether a coefficient is small enough to be zeroed.
+%   Here, G.EPSLEVEL is set to the maximum of F.EPSLEVEL and TOL.
+%
+% See also HAPPINESSCHECK.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with empty case:
@@ -19,23 +23,27 @@ if ( isempty(f) )
     return
 end
 
-% Grab some preferences:
-if ( nargin < 2 )
-    pref = chebtech.pref();
-elseif ( isnumeric(pref) )
-    pref = chebtech.pref('eps', pref);
-elseif ( ~isstruct(pref) )
-    pref = chebtech.pref('happinessCheck', pref);
+% Do nothing to an unhappy CHEBTECH.  ([TODO]:  Is this the right thing to do?)
+if ( ~f.ishappy )
+    return;
 end
 
-% Take max of PREF.CHEBTECH.EPS and EPSLEVEL:
-pref.chebtech.eps = max(pref.chebtech.eps, f.epslevel);
+% Use the default tolerance if none was supplied:
+if ( nargin < 2 )
+    pref = chebtech.pref();
+    tol = pref.chebtech.eps;
+end
 
-% Check to see if we can trim the tail:
-[ishappy, epslevel, cutoff] = happinessCheck(f, pref);
-% Trim/alias it with prolong:
-f.ishappy = ishappy || f.ishappy;
-f.epslevel = epslevel;
-f = prolong(f, cutoff);
- 
+% Zero all coefficients smaller than the tolerance:
+f.coeffs(abs(f.coeffs) < tol) = 0;
+
+% Remove zero coefficients from the tail:
+[ignored, numCoeffsToRemove] = find(f.coeffs.' ~= 0, 1);
+if ( numCoeffsToRemove > 1 )
+    f = prolong(f, length(f) - numCoeffsToRemove + 1);
+end
+
+% Update epslevel:
+f.epslevel = max(f.epslevel, tol);
+
 end
