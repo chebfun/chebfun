@@ -9,7 +9,7 @@ end
 
 % Set a tolerance.
 pref = chebtech.pref(pref);
-tol = pref.bndfun.eps;
+tol = 10*pref.bndfun.eps;
 
 % Set a domain
 dom = [-2 7];

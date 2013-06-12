@@ -47,7 +47,7 @@ for n = 1:1  %[TODO]: unbndfun
     %% Test a perturbed polynomial:
     f = testclass.make( @(x) (x-.1).*(x+.9).*x.*(x-.9) + 1e-14*x.^5, dom, [], [], pref);
     r = roots(f);
-    pass(n, 3) = length(r) == 4 && norm(feval(f, r), inf) < f.onefun.vscale*f.onefun.epslevel;
+    pass(n, 3) = length(r) == 4 && norm(feval(f, r), inf) < 10*f.onefun.vscale*f.onefun.epslevel;
 
     %% Test a some simple polynomials:
     f = testclass.make([-2 ; 7], dom, [], [], pref);

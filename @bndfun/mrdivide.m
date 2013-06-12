@@ -30,16 +30,16 @@ elseif ( isa(B, 'double') )  % BNDFUN / double
         X = Q*(R/B);
     end
 elseif ( isa(A, 'double') )  % double / BNDFUN
-    % Do least squares via QR:
-    [Q, R] = qr(B, 0);
+%     % Call MRDIVIDE at the ONEFUN level:
+    X = B;
+    X.onefun = (A/B.onefun);
+    X = X/(.5*diff(B.domain));
     
-    % Return the transpose for the output.
-    X = Q*(A/R).';
-    
-    % TODO: Do we want to compute MRDIVIDE using the method above, or call
-    % MRDIVIDE  at the ONEFUN level, e.g. via
-    %     X = B;
-    %     X.onefun = A/B.onefun*.5*diff(B.domain);
+%     % Alternatively we could call QR() at the BNDFUN level:
+%     % Do least squares via QR:
+%     [Q, R] = qr(B, 0);
+%     % Return the transpose for the output.
+%     X = Q*(A/R).';
     
 elseif ( isa(B, 'BNDFUN') && isa(A, 'BNDFUN') )
     error('CHEBFUN:BNDFUN:mrdivide:BndfunDivBndfun', ...
