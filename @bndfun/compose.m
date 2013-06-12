@@ -21,16 +21,18 @@ function f = compose(f, op, g, pref)
 % Parse inputs:
 if nargin == 2
     if ( isa(op, 'bndfun') )
-        % op is a bndfun!
+        % op is a bndfun! Rename it to g for clarity
+        g = op;
         
-        % Check their domains:
+        % For composition to work with two BNDFUN objects, the range of F must
+        % be within the domain of G. Check whether that is the case.
         
         % The tolerance of the match is determined by the hscale of F and G.
-        tol = max(get(f,'hscale'), get(op,'hscale'))*eps;
+        tol = max(get(f,'hscale'), get(g,'hscale'))*eps;
         mvals = minandmax(f);
         c = mvals(1,:);
         d = mvals(2,:);
-        dom = op.domain;
+        dom = g.domain;
         a = dom(1);
         b = dom(2);
         
@@ -44,26 +46,19 @@ if nargin == 2
         f_mppd = (2*f.onefun - (a + b))./(b - a);
 
         % Do the composition
-        f.onefun = compose(f_mppd, op.onefun);
+        f.onefun = compose(f_mppd, g.onefun);
         
     else
-        % op is an operator!
+        % OP is an operator!
         f.onefun = compose(f.onefun, op);
     end
 elseif nargin == 3
     if ( isstruct(g) )
-        % Third argument passed is a preference structure.
-        
+        % Third argument passed was a preference structure.        
         f.onefun = compose(f.onefun,op, [], g);
     else
-        % Third argument passed was a bndfun
-        if ( ~checkDomain(f, g))
-            
-            % Throw an error if domains don't match:
-            error('BNDFUN:compose:domainMismatch',...
-                'Bndfuns domains must agree.')
-        end
-        % Compose the onefun of f with the onefun of g:
+        % Third argument passed was a bndfun. Compose the onefun of f with the
+        % onefun of g:
         f.onefun = compose(f.onefun,op,g.onefun);
     end
 else

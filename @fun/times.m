@@ -6,6 +6,10 @@ function f = times(f, g, varargin)
 %   If F is a array-valued FUN, then F.*C is supported if C is a row
 %   vector of doubles with the same number of columns as F.
 %
+%   If F and G are both FUN objects, they are assumed to have the same domain.
+%   The method gives no warning if their domains don't agree, but the output of
+%   the method will be gibberish.
+%
 % See also MTIMES, RDIVIDE.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.

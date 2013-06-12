@@ -12,6 +12,10 @@ classdef fun % (Abstract)
 % to represent functions on bounded domains, whereas the latter are able to
 % represent some functions on unbounded domains.
 %
+% Note that all binary FUN operators (methods which can take two FUN arguments)
+% assume that the domains of the FUN objects agree. The methods will not throw
+% warning in case the domains don't agree, but their output will be gibberish.
+%
 % Class diagram: [chebfun] <>-- [<<FUN>>] <>-- [<<onefun>>]
 %                                 ^   ^
 %                                /     \

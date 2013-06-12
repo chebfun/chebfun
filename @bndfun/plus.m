@@ -1,7 +1,11 @@
 function f = plus(f, g)
 %+	Addition of two BNDFUN objects.
-%   F + G adds F and G, where F and G may be FUNCHEB objects or scalars.
+%   F + G adds F and G, where F and G may be BNDFUN objects or scalars.
 %
+%   If F and G are both BNDFUN objects, they are assumed to have the same
+%   domain. The method gives no warning if their domains don't agree, but the
+%   output of the method will be gibberish.
+
 % See also MINUS, UPLUS.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
@@ -28,16 +32,9 @@ elseif ( isa(f,'double') ) % double + FUNCHEB
     
 else % BNDFUN + BNDFUN
     
-    % Make sure both BNDFUN objects have the same domain.
-    if ( ~checkDomain(f, g))
-        
-        % Throw an error if domains don't match:
-        error('BNDFUN:plus:domainMismatch',...
-            'Bndfuns domains must agree.')
-    end
-
-    % Domains match, and since we're only working with BNDFUNs, their linear
-    % mappings must match as well. Hence, we just need to add the onefuns:
+    % Domains are assumed to match, and since we're only working with BNDFUNs,
+    % their linear mappings must match as well. Hence, we just need to add the
+    % onefuns:
     f.onefun = f.onefun + g.onefun;
       
 end

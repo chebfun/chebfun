@@ -8,6 +8,11 @@ classdef bndfun < fun
 % finite interval [a, b]. It achieves this by taking a onefun on [-1, 1] and
 % applying a linear mapping.
 %
+% Note that all binary BNDFUN operators (methods which can take two BNDFUN
+% arguments) assume that the domains of the BNDFUN objects agree. The methods
+% will not throw warning in case the domains don't agree, but their output will
+% be gibberish.
+%
 % Class diagram: [<<fun>>] <-- [<<bndfun>>] <>-- [<<onefun>>]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     

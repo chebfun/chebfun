@@ -8,6 +8,10 @@ function f = rdivide(f, g, varargin)
 %   in [a, b], where [a, b] is the domain of F and C. The division is performed
 %   column-wise.
 %
+%   If F and G are both FUN objects, they are assumed to have the same domain.
+%   The method gives no warning if their domains don't agree, but the output of
+%   the method will be gibberish.
+%
 % See also MRDIVIDE, TIMES.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
