@@ -40,7 +40,8 @@ restrictedOnefuns = restrict(f.onefun, t);
 if ( length(s) == 2 )
     % Only restricting to one subinterval -- return a BNDFUN.
     
-    % g = bndfun(restrictedOnefuns, s); [TODO]: This line is planned to be removed.
+    % Create an empty BNDFUN, and assign fields directly. This is faster than
+    % using the BNDFUN constructor.
     g = bndfun();
     g.onefun = restrictedOnefuns;
     g.domain = s;
@@ -55,12 +56,13 @@ else
     % Loop over each of the new subintervals, make a bndfun with new mapping,
     % and store in the cell returned:
     for k = 1:(numel(s) - 1)
-        g_tmp = bndfun();
-        g_tmp.onefun = restrictedOnefuns{k};
-        g_tmp.domain = s(k:k+1);
-        g_tmp.mapping = bndfun.createMap(s(k:k+1));
-        g{k} = g_tmp;
-        % g{k} = bndfun(restrictedOnefuns{k}, s(k:k+1)); [TODO]: planned to be removed.
+        % Create an empty temporary BNDFUN, and assign fields directly. This is
+        % faster than using the BNDFUN constructor.
+        gTemp = bndfun();
+        gTemp.onefun = restrictedOnefuns{k};
+        gTemp.domain = s(k:k+1);
+        gTemp.mapping = bndfun.createMap(s(k:k+1));
+        g{k} = gTemp;
     end
 end
 
