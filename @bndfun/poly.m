@@ -35,13 +35,13 @@ onefunPoly = poly(f.onefun);
 a = f.domain(1);
 b = f.domain(2);
 
-% Constants for rescaling
-alpha = 2/(b-a);
-beta = -(b+a)/(b-a);
-
 % Convert coefficients on [-1,1] to [a,b].
 % TODO: Explain why this formula works/give reference.
 if ( a~=-1 || b~=1 )
+    % Constants for rescaling
+    alpha = 2/(b-a);
+    beta = -(b+a)/(b-a);
+    
     % Flip coefficients
     out = onefunPoly(:,end:-1:1);
     
