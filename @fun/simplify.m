@@ -3,8 +3,8 @@ function f = simplify(f, varargin)
 %   G = SIMPLIFY(F) attempts to compute a 'simplified' version G of the FUN
 %   object F, as defined by the SIMPLIFY method of the ONEFUN of F.
 %
-%   G = SIMPLIFY(F, PREF) does the same, but using some of the preferences in
-%   the preference structure PREF.
+%   G = SIMPLIFY(F, TOL) does the same, but simplifies according to the
+%   tolerance TOL.
 %
 % See also PREF.
 
