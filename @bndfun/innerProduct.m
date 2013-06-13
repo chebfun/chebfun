@@ -6,6 +6,10 @@ function out = innerProduct(f, g)
 %   If F and/or G are array-valued BNDFUN objects, then the result is a matrix
 %   whose i,j entry is the inner product of the ith column of F with the jth
 %   column of G.
+%
+%   The BNDFUN objects F and G are assumed to have the same domain. The method
+%   gives no warning if their domains don't agree, but the output of the method
+%   will be gibberish.
 
 % Deal with empty case:
 if ( isempty(f) || isempty(g) )

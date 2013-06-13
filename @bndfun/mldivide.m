@@ -4,6 +4,10 @@ function X = mldivide(A, B)
 %   A\B returns the least-squares solution (with respect to the continuous L^2
 %   norm) of A*X = B where A and B are BNDFUN objects.
 %
+%   The BNDFUN objects A and B are assumed to have the same domain. The method
+%   gives no warning if their domains don't agree, but the output of the method
+%   will be gibberish.
+%
 % See also QR, MRDIVIDE.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
