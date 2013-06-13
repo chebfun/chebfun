@@ -24,26 +24,25 @@ end
 % Parse inputs:
 if ( nargin == 1 )
     m = 1;
-    % Create a preference structure that the cumsum method of the ONEFUN class
-    % can work with. This is achieved by calling the static pref method of
-    % f.onefun, which will call the pref method of the correct class, using an
-    % input of the preference structure of the BNDFUN class.
-    pref = f.onefun.pref(bndfun.pref());
-    % TODO: Should this be moved down until after the input parsing? If a user
-    % passed his/her own pref, can we assume that it's of the correct form, or
-    % do we need to convert it to a ONEFUN pref structure?
-
+    % Obtain preferences
+    pref = bndfun.pref();
 elseif ( nargin < 3 )
     if ( isstruct(m) )
         pref = m;
         m = 1;
     else
-        pref = f.onefun.pref(bndfun.pref());
+        pref = bndfun.pref();
     end
 end
 
 % Rescaling factor, (b-a)/2, to the mth power.
 rescaleFactorm = (.5*diff(f.domain))^m;
+
+% Create a preference structure that the cumsum method of the ONEFUN class
+% can work with. This is achieved by calling the static pref method of
+% f.onefun, which will call the pref method of the correct class, using an
+% input of the preference structure of the BNDFUN class.
+pref = f.onefun.pref(pref, pref.bndfun);
 
 % Compute the cumsum of all of f's onefuns, multiply by the rescaling factor,
 % and assign to the onefun field of f.
