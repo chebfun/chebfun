@@ -56,8 +56,8 @@ for n = 1:1 %[TODO]: unbndfun
     f = testclass.make(@(x) [x x x], dom, [], [], pref);
     [Q, R] = qr(f);
     pass(n, 18) = all(size(Q) == 3) && all(size(R) == 3);
-    I = zeros(3); I(1,1) = 1;
-    pass(n, 19) = norm(innerProduct(Q, Q) - I, inf) < f.onefun.epslevel;
+    I = eye(3);
+    pass(n, 19) = norm(innerProduct(Q, Q) - I, inf) < max(f.onefun.vscale)*f.onefun.epslevel;
     
 end
 
