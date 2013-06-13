@@ -37,7 +37,7 @@ pass(4) = max(abs(err.onefun.values(:))) < tol;
 f = bndfun(@(x) [ones(size(x)) x x.^2 x.^3], dom, [], [], pref);
 g = bndfun(@(x) x.^4 + x.^3 + x + 1, dom, [], [], pref);
 x = f \ g;
-pass(5) = max(abs(x - [32/35 ; 1 ; 6/7 ; 1])) < tol;
+pass(5) = max(abs(x - [2469/70 ; -163/7 ; -141/7 ; 11])) < 100*tol;
 
 %%
 % Check error conditions.
@@ -49,7 +49,7 @@ try
     pass(6) = 0;
 catch ME
     pass(6) = strcmp(ME.identifier, ...
-        'CHEBFUN:FUN:innerProduct:input');
+       'CHEBFUN:BNDFUN:mldivide:bndfunMldivideUnknown');
 end
 
 end

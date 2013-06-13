@@ -13,15 +13,24 @@ function X = mldivide(A, B)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% NOTE: A*X = (Q*R)*X = B ==> R*X = Q'*B ==> X = R\(Q'*B) = R\innerProduct(Q, B)
-% Compute QR factorisation of A:
-[Q, R] = qr(A, 0);
+% Require both inputs to be BNDFUN objects.
+if ( ~isa(A, 'bndfun') || ~isa(B, 'bndfun') )
+    error('CHEBFUN:BNDFUN:mldivide:bndfunMldivideUnknown', ...
+            'Arguments to BNDFUN mldivide must both be BNDFUN objects');
+end
 
-% Compute X:
-X = R\innerProduct(Q, B);
+% Call MLDIVIDE of the onefun fields of A and B.
+X = A.onefun\B.onefun;
 
-% TODO: Do we want to compute MLDIVIDE using the method above, or call MLDIVIDE
-% at the ONEFUN level, e.g. via
-% X = A.onefun\B.onefun;
+
+% % Alternatively we could call QR() at the BNDFUN level, since 
+% %  A*X = (Q*R)*X = B ==> R*X = Q'*B ==> X = R\(Q'*B) = R\innerProduct(Q, B)
+% which gives
+% % Compute QR factorisation of A:
+% % [Q, R] = qr(A, 0);
+% 
+% % Compute X:
+% % X = R\innerProduct(Q, B);
+
 
 end
