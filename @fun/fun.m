@@ -192,8 +192,8 @@ classdef fun % (Abstract)
         % Roots of a FUN in the interval [a,b].
         out = roots(f, varargin)
 
-%         % Trim trailing Chebyshev coefficients of a FUN object.
-%         f = simplify(f, pref, force)
+        % Simplify the ONEFUN of a FUN object.
+        f = simplify(f, tol)
 
         % Size of a FUN.
         [siz1, siz2] = size(f, varargin)
