@@ -40,7 +40,7 @@ for n = 1:2
     f = testclass.make(@(x) [ones(size(x)) x x.^2 x.^3], [], [], pref);
     g = testclass.make(@(x) x.^4 + x.^3 + x + 1, [], [], pref);
     x = f \ g;
-    pass(n, 5) = max(abs(x - [32/35 ; 1 ; 6/7 ; 1])) < tol;
+    pass(n, 5) = max(abs(x - [32/35 ; 1 ; 6/7 ; 1])) < 10*tol;
 
     %%
     % Check error conditions.
