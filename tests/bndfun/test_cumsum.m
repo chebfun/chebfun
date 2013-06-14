@@ -37,14 +37,14 @@ f = bndfun(@(x) 1./(1 + x.^2), dom, [], [], pref);
 F = cumsum(f);
 F_ex = @(x) atan(x)-atan(a);
 err = feval(F, x) - F_ex(x);
-pass(2) = (norm(err, inf) < 5*f.onefun.vscale*tol) && ...
+pass(2) = (norm(err, inf) < 20*f.onefun.vscale*tol) && ...
     (abs(feval(F, a)) < f.onefun.vscale*tol);
 
 f = bndfun(@(x) cos(1e4*x), dom, [], [], pref);
 F = cumsum(f);
 F_ex = @(x) (sin(1e4*x)-sin(1e4*a))/1e4;
 err = feval(F, x) - F_ex(x);
-pass(3) = (norm(err, inf) < f.onefun.vscale*tol) && ...
+pass(3) = (norm(err, inf) < 1e4*f.onefun.vscale*tol) && ...
     (abs(feval(F, a)) < f.onefun.vscale*tol);
 
 z = exp(2*pi*1i/6);
@@ -52,7 +52,7 @@ f = bndfun(@(t) sinh(t*z), dom, [], [], pref);
 F = cumsum(f);
 F_ex = @(t) cosh(t*z)/z - (cosh(a*z)/z);
 err = feval(F, x) - F_ex(x);
-pass(4) = (norm(err, inf) < 10*f.onefun.vscale*tol) && ...
+pass(4) = (norm(err, inf) < 20*f.onefun.vscale*tol) && ...
     (abs(feval(F, a)) < f.onefun.vscale*tol);
 
 %%
@@ -73,7 +73,7 @@ pass(5) = (std(err.onefun.values) < 10*f.onefun.vscale*tol) && ...
 f = bndfun(@(x) x.*(x - 1).*sin(x) - (a*(a-1)*sin(a)), dom, [], [], pref);
 g = diff(cumsum(f));
 err = feval(f, x) - feval(g, x);
-pass(6) = (norm(err, inf) < 3*g.onefun.vscale*f.onefun.vscale*tol);
+pass(6) = (norm(err, inf) < 20*g.onefun.vscale*f.onefun.vscale*tol);
 h = cumsum(diff(f));
 err = feval(f, x) - feval(h, x);
 pass(7) = (norm(err, inf) < 30*g.onefun.vscale*f.onefun.vscale*tol) && ...
