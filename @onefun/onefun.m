@@ -4,29 +4,17 @@ classdef onefun % (Abstract)
 %   [-1,1].
 %
 % Constructor inputs:
-%   ONEFUN.CONSTRUCTOR(OP) constructs a ONEFUN object from the function handle
-%   OP. OP should be vectorised (i.e., accept a vector input) and ouput a vector
-%   of the same length. Most ONEFUN objects allow for vectorised construction
-%   (i.e., of multi-valued function), in which case OP should accept a vector of
-%   length N and return a matrix of size NxM.
+%   ONEFUN.CONSTRUCTOR(OP, VSCALE, HSCALE, PREF) creates a representation of the
+%   operator OP defined on the interval [-1,1]. If PREF.ONEFUN.BLOWUP = 1 (which
+%   is the default) then the ONEFUN constructor calls
+%    SINGFUN.CONSTRUCTOR(OP, VSCALE, HSCALE, PREF2), else it calls
+%    SMOOTHFUN.CONSTRUCTOR(OP, VSCALE, HSCALE, PREF2) if PREF.ONEFUN.BLOWUP = 0, 
+%   where in both cases PREF2 is a merge of PREF with the default SINGFUN and
+%   ONEFUN preferences, respectively.
 %
-%   ONEFUN.CONSTRUCTOR(OP, VSCALE, HSCALE) constructs a ONEFUN with 'happiness'
-%   relative to the maximum of the given vertical scale VSCALE (which is updated
-%   by the infinity norm of the sampled function values of OP during
-%   construction), and the fixed horizontal scale HSCALE. If not given, the
-%   VSCALE defaults to 0 initially, and HSCALE defaults to 1.
+%   See SMOOTHFUN and SINGFUN for further documentation.
 %
-%   ONEFUN.CONSTRUCTOR(OP, VSCALE, HSCALE, PREF) overrides the default behavior
-%   with that given by the preference structure PREF. The constructor will also
-%   accept inputs of the form ONEFUN(OP, PREF), but this usage is not advised.
-%   Similarly, one can pass ONEFUN(OP, VSCALE, HSCALE, EPS), which is equivalent
-%   to the call ONEFUN(OP, VSCALE, HSCALE, ONEFUN.PREF('eps',EPS))
-%
-%   ONEFUN.CONSTRUCTOR(VALUES, VSCALE, HSCALE, PREF) returns a ONEFUN object
-%   which interpolates the values in the columns of VALUES. The points at which
-%   this interpolation occurs is defined by PREF.ONEFUN.TECH.
-%
-% See also ONEFUN.pref, ONEFUN.chebpts, onefun.
+% See also ONEFUN.pref, SINGFUN, SMOOTHFUN.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -48,6 +36,33 @@ classdef onefun % (Abstract)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
+    %% Properties of ONEFUN objects.
+    properties ( Access = public )
+
+        % Vertical scale of the ONEFUN. This is an estimate for the magnitude of
+        % the largest entry of the ONEFUN. For an array-valued ONEFUN, VSCALE is
+        % an row vector and the kth entry corresponds to the kth column in the
+        % ONEFUN.
+        vscale = 0 % (1xm double >= 0)
+
+        % Horizontal scale of the ONEFUN. Although ONEFUN objects have in
+        % principle no notion of horizontal scale invariance (since they always
+        % live on [-1,1]), the input OP may have been implicitly mapped. HSCALE
+        % is then used to enforce horizontal scale invariance in construction
+        % and other subsequent operations that require it. It defaults to 1 and
+        % is never updated.
+        hscale = 1 % (scalar > 0)
+
+        % Boolean value designating whether the ONEFUN is a 'happy'
+        % representation or not. (See subclasses for further documentation.)
+        ishappy % (logical)
+
+        % Happiness level to which the ONEFUN was constructed, or a rough
+        % accuracy estimate of subsequent operations. (See subclasses for
+        % further documentation.)
+        epslevel % (double >= 0)
+    end
+
     methods (Static)
         function obj = constructor(op, vscale, hscale, pref)
             
@@ -60,29 +75,14 @@ classdef onefun % (Abstract)
             if ( nargin < 2 || isempty(vscale) )
                 vscale = 0;
             end
-            % Define vscale if none given:
+            % Define hscale if none given:
             if ( nargin < 3 || isempty(hscale) )
                 hscale = 1;
             end
-            
-            % Obtain preferences.
-            if ( nargin == 2 && isstruct(vscale) )
-                % vscale was actually a preference.
-                pref = onefun.pref(vscale);
-                vscale = 0;
-                hscale = 1;
-            elseif ( nargin == 3 && isstruct(hscale) )
-                % hscale was actually a preference.
-                pref = onefun.pref(hscale);
-                hscale = 1;
-            elseif ( nargin < 4 )
-                % Create:
+            % Determine preferences if not given, merge if some are given:
+            if ( nargin < 4 || isempty(pref) )
                 pref = onefun.pref;
-            elseif ( ~isstruct(pref) )
-                % An eps was passed.
-                pref = onefun.pref('eps', pref);
             else
-                % Merge:
                 pref = onefun.pref(pref);
             end
 
@@ -96,14 +96,13 @@ classdef onefun % (Abstract)
                 
                 % Merge preferences:
                 pref = singfun.pref(pref, pref.onefun);
-                exponents = pref.singfun.exponents;
                 
                 % Call singfun constructor:
-                obj = singfun(op, vscale, hscale, exponents, pref);
+                obj = singfun(op, vscale, hscale, pref);
                 
-                % Return just a fun if no singularities found:
+                % Return just a FUN if no singularities found:
                 if ( ~any(obj.exps) )
-                    obj = obj.fun; 
+                    obj = obj.smoothfun; 
                 end 
                 
             else
@@ -119,8 +118,157 @@ classdef onefun % (Abstract)
         
         end
         
+    end
+    
+    %% ABSTRACT (NON-STATIC) METHODS REQUIRED BY ONEFUN CLASS.
+    methods ( Abstract = true )
+        
+        % Convert an array of ONEFUN objects into a array-valued ONEFUN.
+        f = cell2mat(f)
+
+        % Complex conjugate of a ONEFUN.
+        f = conj(f)
+        
+        % ONEFUN obects are not transposable.
+        f = ctranspose(f)
+
+        % Indefinite integral of a ONEFUN.
+        f = cumsum(f, m, pref)
+
+        % Derivative of a ONEFUN.
+        f = diff(f, k, dim)
+        
+        % Evaluate a ONEFUN.
+        y = feval(f, x)
+
+        % Flip columns of an array-valued ONEFUN object.
+        f = fliplr(f)
+        
+        % Flip/reverse a ONEFUN object.
+        f = flipud(f)
+
+        % Imaginary part of a ONEFUN.
+        f = imag(f)
+
+        % Compute the inner product of two ONEFUN objects.
+        out = innerProduct(f, g)
+
+        % True for an empty ONEFUN.
+        out = isempty(f)
+
+        % Test if ONEFUN objects are equal.
+        out = isequal(f, g)
+
+        % Test if a ONEFUN is bounded.
+        out = isfinite(f)
+
+        % Test if a ONEFUN is unbounded.
+        out = isinf(f)
+
+        % Test if a ONEFUN has any NaN values.
+        out = isnan(f)
+
+        % True for real ONEFUN.
+        out = isreal(f)
+        
+        % True for zero ONEFUN objects
+        out = iszero(f)
+        
+        % Length of a ONEFUN.
+        len = length(f)
+
+        % Convert a array-valued ONEFUN into an ARRAY of ONEFUN objects.
+        g = mat2cell(f, M, N)
+
+        % Global maximum of a ONEFUN on [-1,1].
+        [maxVal, maxPos] = max(f)
+
+        % Global minimum of a ONEFUN on [-1,1].
+        [minVal, minPos] = min(f)
+
+        % Global minimum and maximum on [-1,1].
+        [vals, pos] = minandmax(f)
+
+        % Subtraction of two ONEFUN objects.
+        f = minus(f, g)
+
+        % Left matrix divide for ONEFUN objects.
+        X = mldivide(A, B)
+
+        % Right matrix divide for a ONEFUN.
+        X = mrdivide(B, A)
+
+        % Multiplication of ONEFUN objects.
+        f = mtimes(f, c)
+        
+        % Compute a Legendre series expansion of a ONEFUN object:
+        c = legpoly(f)
+
+        % Basic linear plot for ONEFUN objects.
+        varargout = plot(f, varargin)
+        
+        % Obtain data used for plotting a ONEFUN object:
+        data = plotData(f)
+
+        % Addition of two ONEFUN objects.
+        f = plus(f, g)
+
+        % Polynomial coefficients of a ONEFUN.
+        out = poly(f)
+
+        % QR factorisation of an array-valued ONEFUN.
+        [f, R, E] = qr(f, flag, methodFlag)
+
+        % Right array divide for a ONEFUN.
+        f = rdivide(f, c, pref)
+
+        % Real part of a ONEFUN.
+        f = real(f)
+
+        % Restrict a ONEFUN to a subinterval.
+        f = restrict(f, s)
+
+        % Roots of a ONEFUN in the interval [-1,1].
+        out = roots(f, varargin)
+
+        % Simplify the representation of a ONEFUN.
+        f = simplify(f, pref, force)
+
+        % Size of a ONEFUN.
+        [siz1, siz2] = size(f, varargin)
+
+        % Definite integral of a ONEFUN on the interval [-1,1].
+        out = sum(f, dim)
+
+        % ONEFUN multiplication.
+        f = times(f, g, varargin)
+        
+        % ONEFUN obects are not transposable.
+        f = transpose(f)
+
+        % Unary minus of a ONEFUN.
+        f = uminus(f)
+
+        % Unary plus of a ONEFUN.
+        f = uplus(f)
+
+    end
+
+    %% ABSTRACT STATIC METHODS REQUIRED BY ONEFUN CLASS.
+    methods ( Abstract = true, Static = true )
+        
         % Retrieve and modify preferences for this class.
         prefs = pref(varargin)
+        
+    end
+    
+    %% Methods implimented by ONEFUN class.
+    methods 
+        
+    end
+    
+    %% Static methods implimented by ONEFUN class.
+    methods ( Static = true ) 
         
     end
     

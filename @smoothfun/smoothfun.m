@@ -5,29 +5,13 @@ classdef smoothfun < onefun % (Abstract)
 %   interval [-1,1].
 %
 % Constructor inputs:
-%   SMOOTHFUN.CONSTRUCTOR(OP) constructs a SMOOTHFUN object from the function
-%   handle OP. OP should be vectorised (i.e., accept a vector input) and ouput a
-%   vector of the same length. Most SMOOTHFUN objects allow for vectorised
-%   construction (i.e., of multi-valued function), in which case OP should
-%   accept a vector of length N and return a matrix of size NxM.
+%   SMOOTHFUN.CONSTRUCTOR(OP, VSCALE, HSCALE, PREF) constructs a SMOOTHFUN
+%   object on the interval [-1,1] from the function handle OP. Currently the
+%   only subclass of SMOOTHFUN is CHEBTECH, so SMOOTHFUN will call
+%   CHEBTECH.CONSTRUCTOR(OP, VSCALE, HSCALE, PREF2), where PREF2 is PREF merged
+%   with the default CHEBTECH preferences.
 %
-%   SMOOTHFUN.CONSTRUCTOR(OP, VSCALE, HSCALE) constructs a SMOOTHFUN with
-%   'happiness' relative to the maximum of the given vertical scale VSCALE
-%   (which is updated by the infinity norm of the sampled function values of OP
-%   during construction), and the fixed horizontal scale HSCALE. If not given,
-%   the VSCALE defaults to 0 initially, and HSCALE defaults to 1.
-%
-%   SMOOTHFUN.CONSTRUCTOR(OP, VSCALE, HSCALE,PREF) overrides the default
-%   behavior with that given by the preference structure PREF. The constructor
-%   will also accept inputs of the form SMOOTHFUN(OP, PREF), but this usage is
-%   not advised. Similarly, one can pass SMOOTHFUN(OP, VSCALE, EPS), which is
-%   equivalent to the call SMOOTHFUN(OP, VSCALE, SMOOTHFUN.PREF('eps',EPS))
-%
-%   SMOOTHFUN.CONSTRUCTOR(VALUES, VSCALE, HSCALE, PREF) returns a SMOOTHFUN
-%   object which interpolates the values in the columns of VALUES. It is up to
-%   the subclasses of SMOOTHFUN to decide what these values mean.
-%
-% See also SMOOTHFUN.pref, SMOOTHFUN.chebpts, ONEFUN, FUNCHEB.
+% See also SMOOTHFUN.PREF, CHEBTECH.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -38,14 +22,11 @@ classdef smoothfun < onefun % (Abstract)
 % The SMOOTHFUN class is an abstract class for representations of smooth
 % functions on the interval [-1,1].
 %
-% Currently the only types of SMOOTHFUNs are funcheb objects, which represent
+% Currently the only types of SMOOTHFUNs are CHEBTECH objects, which represent
 % the smooth functions by Chebyshev interpolants.
 %
-% Class diagram: [<<onefun>>] <-- [<<SMOOTHFUN>>] <-- [<<funcheb>>]
+% Class diagram: [<<onefun>>] <-- [<<SMOOTHFUN>>] <-- [<<chebtech>>]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org/ for Chebfun information.
     
     %% Constructor for the SMOOTHFUN class.
     methods (Static)
@@ -56,33 +37,19 @@ classdef smoothfun < onefun % (Abstract)
                 op = [];
             end
             
+
             % Define vscale if none given:
             if ( nargin < 2 || isempty(vscale) )
                 vscale = 0;
             end
-            % Define vscale if none given:
+            % Define hscale if none given:
             if ( nargin < 3 || isempty(hscale) )
                 hscale = 1;
             end
-            
-            % Obtain preferences.
-            if ( nargin == 2 && isstruct(vscale) )
-                % vscale was actually a preference.
-                pref = smoothfun.pref(vscale);
-                vscale = 0;
-                hscale = 1;
-            elseif ( nargin == 3 && isstruct(hscale) )
-                % hscale was actually a preference.
-                pref = smoothfun.pref(hscale);
-                hscale = 1;
-            elseif ( nargin < 4 )
-                % Create:
+            % Determine preferences if not given, merge if some are given:
+            if ( nargin < 4 || isempty(pref) )
                 pref = smoothfun.pref;
-            elseif ( ~isstruct(pref) )
-                % An eps was passed.
-                pref = smoothfun.pref('eps', pref);
             else
-                % Merge:
                 pref = smoothfun.pref(pref);
             end
             
@@ -92,6 +59,16 @@ classdef smoothfun < onefun % (Abstract)
             obj = chebtech.constructor(op, vscale, hscale, pref);
             
         end
+        
+    end
+    
+    %% ABSTRACT (NON-STATIC) METHODS REQUIRED BY SMOOTHFUN CLASS.
+    methods ( Abstract = true )
+
+    end
+
+    %% ABSTRACT STATIC METHODS REQUIRED BY SMOOTHFUN CLASS.
+    methods ( Abstract = true, Static = true )
         
     end
     
