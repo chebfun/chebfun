@@ -18,8 +18,8 @@ pref.chebtech.extrapolate = 1;
 f = @(x) sin(x);
 dom = [-2 7];
 g = bndfun(f, dom, [], [], pref);
-x = get(g,'points');
-pass(1) = norm(f(x) - g.onefun.values, inf) < max(g.onefun.vscale)*tol;
+x = linspace(dom(1), dom(2), 100);
+pass(1) = norm(f(x) - feval(g,x), inf) < max(g.onefun.vscale)*tol;
 
 % Test on a scalar-valued function for interpolation:
 f = @(x) sin(x)./x;
@@ -31,8 +31,8 @@ pass(2) = abs(1 - feval(g,0)) < max(g.onefun.vscale)*tol;
 pref.chebtech.extrapolate = 1;
 f = @(x) [sin(x) cos(x) exp(x)];
 g = bndfun(f, dom, [], [], pref);
-x = get(g,'points');
-pass(3) = norm(f(x) - g.onefun.values, inf) < 2*max(g.onefun.vscale)*tol;
+x = linspace(dom(1), dom(2), 100);
+pass(3) = norm(f(x) - feval(g,x), inf) < 2*max(g.onefun.vscale)*tol;
 
 % Test on an array-valued function for interpolation:
 f = @(x) [sin(x)./x sin(x-3)./(x-3)];
@@ -45,8 +45,8 @@ pass(4) = norm(ones(1,2) - [gv(1) gv(4)], inf) < max(g.onefun.vscale)*tol;
 pref.chebtech.n = 50;
 f = @(x) [sin(x) cos(x) exp(x)];
 g = bndfun(f, dom, [], [], pref);
-x = get(g,'points');
-pass(5) = ( norm(f(x) - g.onefun.values, inf) < tol && size(g,1) == 50 );
+x = linspace(-1,1 , 100);
+pass(5) = ( norm(f(x) - feval(g,x), inf) < 50*tol && size(g,1) == 50 );
 
 %%
 % Some other tests:
