@@ -93,7 +93,7 @@ g = bndfun(@(x) [sinh(x) cosh(x) tanh(x)], dom, [], [], pref);
 h = f .* g;
 h_exact = @(x) [sinh(x).*sin(x) cosh(x).*cos(x) tanh(x).*exp(x)];
 err = feval(h, x) - h_exact(x);
-pass(14) = max(abs(err(:))) < 20*h.onefun.epslevel;
+pass(14) = max(abs(err(:))) < max(h.onefun.vscale)*h.onefun.epslevel;
 
 % This should fail with a dimension mismatch error.
 try
