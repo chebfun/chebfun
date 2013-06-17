@@ -1,13 +1,13 @@
 function f = real(f)
-%IMAG	Imaginary part of a FUN.
-%   IMAG(F) is the imaginary part of F.
+%REAL	Real part of a FUN.
+%   REAL(F) is the real part of F.
 %
-%   See also REAL, ISREAL, CONJ.
+% See also IMAG, ISREAL, CONJ.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org for Chebfun information.
 
-% Assign the onefun to be the real part of the onefun of the input:
+% Assign the ONEFUN to be the real part of the ONEFUN of the input:
 f.onefun = real(f.onefun);
 
 end

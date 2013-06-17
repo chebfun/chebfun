@@ -35,10 +35,10 @@ if ( isempty(f) )
     return
 end
 
-% Find the roots of the onefun of f
+% Find the roots of the ONEFUN of f:
 onefunRoots = roots(f.onefun, varargin{:});
 
-% Map the roots found on [-1,1] to the interval [a,b]
+% Map the roots found on [-1,1] to the interval [a,b]:
 r = f.mapping.for(onefunRoots);
 
 end

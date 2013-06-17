@@ -73,7 +73,7 @@ for n = 1:1 %[TODO]: unbndfun
         f = testclass.make(@(x) exp(x), dom);
         disp([1 2 3]*f)
     catch ME
-        pass(n, 9) = strcmp(ME.identifier, 'CHEBFUN:BNDFUN:mtimes:size') ...
+        pass(n, 9) = strcmp(ME.identifier, 'CHEBFUN:FUN:mtimes:size') ...
             && strcmp(ME.message, 'Inner matrix dimensions must agree.');
     end
     

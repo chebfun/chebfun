@@ -1,16 +1,13 @@
 function f = rdivide(f, g, varargin)
 %./   Right array divide for a FUN.
-%   F ./ C divides the FUN F by an array C. If F is a vectorised FUN with M
+%   F ./ C divides the FUN F by a double C. If F is am array-valued FUN with M
 %   columns, then C must be either a scalar or a 1xM array.
 %
-%   Alternatively if C is a FUN with the same number of columns as F, or if F is
-%   a scalar, the resulting division is returned if C is found to have no roots
-%   in [a, b], where [a, b] is the domain of F and C. The division is performed
-%   column-wise.
-%
-%   If F and G are both FUN objects, they are assumed to have the same domain.
-%   The method gives no warning if their domains don't agree, but the output of
-%   the method will be gibberish.
+%   Alternatively if C is a FUN with the same number of columns as F or F is a
+%   scalar, then the resulting division is returned if C is found to have no
+%   roots in its domain. The division is performed column-wise. Note that F and
+%   C are assumed to have the same domain. The method gives no warning if their
+%   domains don't agree, but the output of the method will be gibberish.
 %
 % See also MRDIVIDE, TIMES.
 
@@ -23,17 +20,23 @@ if ( isempty(f) || isempty(g) )
     return
 end
 
-% Look at different cases
+% Look at different cases:
+
 if ( isa(g, 'double') )         % FUN ./ DOUBLE
+    
+    % Divide the ONEFUN:
     f.onefun = rdivide(f.onefun, g, varargin{:});
+    
 elseif isa(f, 'double')         % DOUBLE ./ FUN
-    % In this case, g is the FUN. But if g has roots in [a, b], we're going to
-    % get an error, so enclose in a try-catch in order to be able to throw a
-    % reasonable error message
+    
+    % If g has roots in [a, b] we're going to get an error. We enclose the call
+    % to the ONEFUN method in a try-catch in order to be able to throw a
+    % reasonable error message:
     try
+        % Call RDIVIDE of the ONEFUN:
         g.onefun = rdivide(f, g.onefun, varargin{:});
     catch ME
-        if strcmp(ME.identifier,'CHEBFUN:CHEBTECH:rdivide:DivideByZeros')
+        if ( strcmp(ME.identifier, 'CHEBFUN:CHEBTECH:rdivide:DivideByZeros') )
             % The right argument has roots on [a ,b].
             error('CHEBFUN:FUN:rdivide:DivideByZeros', ...
                 'Cannot divide by a FUN with roots in [%.5g, %.5g].', ...
@@ -43,15 +46,19 @@ elseif isa(f, 'double')         % DOUBLE ./ FUN
             rethrow(ME)
         end
     end
+    
     % Assign g to be the output argument
     f = g;
+    
 else                            % FUN ./ FUN
-    % Both f and g are FUN objects. Similarly as above, enclose in a try-catch
-    % loop in case g has roots on [a, b].
+    
+    % Both f and g are FUN objects. Similar to above, enclose in a try-catch
+    % statement in case g has roots on [a, b].
     try
+        % Call RDIVIDE of the ONEFUN:
         f.onefun = rdivide(f.onefun, g.onefun, varargin{:});
     catch ME
-        if strcmp(ME.identifier,'CHEBFUN:CHEBTECH:rdivide:DivideByZeros')
+        if ( strcmp(ME.identifier, 'CHEBFUN:CHEBTECH:rdivide:DivideByZeros') )
             % The right argument has roots on [a ,b].
             error('CHEBFUN:FUN:rdivide:DivideByZeros', ...
                 'Cannot divide by a FUN with roots in [%.5g, %.5g].', ...
@@ -61,6 +68,7 @@ else                            % FUN ./ FUN
             rethrow(ME)
         end
     end
+    
 end
 
 end

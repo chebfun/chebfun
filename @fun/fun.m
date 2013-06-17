@@ -1,11 +1,11 @@
 classdef fun % (Abstract)
-%FUN  Abstract FUN class for representing global functions on [a, b].
+%FUN   Abstract FUN class for representing global functions on [a, b].
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FUN Class Description:
 %
 % The FUN class is an abstract class for representations of functions on the
-% interval [a, b]. It acheives this my taking a onefun on [-1, 1] and applying
+% interval [a, b]. It acheives this my taking a ONEFUN on [-1, 1] and applying
 % a mapping.
 %
 % The current instances of FUNs are BNDFUNS and UNBNDFUNS. The former are used
@@ -33,8 +33,8 @@ classdef fun % (Abstract)
     methods (Static = true)
         function obj = constructor(op, domain, vscale, hscale, pref)
             
-            % Construct an empty fun:
-            if ( nargin == 0 )
+            % We can't return an empty FUN, so pass an empty OP down.
+            if ( nargin == 0  )
                 op = [];
             end
             
@@ -50,31 +50,31 @@ classdef fun % (Abstract)
                 domain = pref.fun.domain;
             end
             
-            % Get scales if none given:
+            % Get vscale if none given:
             if ( nargin < 3 || isstruct(vscale) )
-                
-            % Allow the third argument to be preference
-                if ( nargin > 2 && isstruct(vscale) )
-                    pref = fun.pref(vscale);
-                end
                 vscale = 0;
             end
             
+            % Get hscale if none given:
             if ( nargin < 4 || isempty(vscale) )
                 hscale = norm(domain, inf);
             end
-            
+            % [TODO]: Explain this.
             if ( isinf(hscale) )
                 hscale = 1;
             end
-            
+
             % Call constructor depending on domain:
             if ( ~any(isinf(domain)) )
+                % Construct a BNDFUN object:
                 pref = bndfun.pref(pref, pref.fun);
                 obj = bndfun(op, domain, vscale, hscale, pref);
+                
             else
+                % Construct an UNBNDFUN object:
                 pref = unbndfun.pref(pref, pref.fun);
                 obj = unbndfun(op, domain, vscale, hscale, pref);
+                
             end
             
         end

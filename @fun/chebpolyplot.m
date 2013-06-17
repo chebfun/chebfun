@@ -1,5 +1,5 @@
 function varargout = chebpolyplot(f, varargin)
-%CHEBPOLYPLOT   Display Chebyshev coefficients graphically.
+%CHEBPOLYPLOT    Display Chebyshev coefficients graphically.
 %
 %   CHEBPOLYPLOT(F) plots the Chebyshev coefficients of the ONEFUN of a FUN F on
 %   a semilogy scale. A horizontal line at the EPSLEVEL of F.ONEFUN is also
