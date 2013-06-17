@@ -92,7 +92,7 @@ for n = 1:1 %[TODO]: unbndfun
     g = testclass.make(@(x) cos(x) - 1, dom, [], [], pref);
     h1 = f - g;
     h2 = testclass.make(@(x) x - (cos(x) - 1), dom, [], [], pref);
-    pass(n, 19) = norm(h1.onefun.values - h2.onefun.values, inf) < tol;
+    pass(n, 19) = normest(h1-h2) < tol;
 
     %%
     % Check that subtracting a BNDFUN and an unhappy BNDFUN gives an
@@ -101,9 +101,9 @@ for n = 1:1 %[TODO]: unbndfun
     f = testclass.make(@(x) cos(x+1), dom);    % Happy
     g = testclass.make(@(x) sqrt(x+1), dom);   % Unhappy
     h = f - g;  % Subtract unhappy from happy.
-    pass(n, 20) = (~g.onefun.ishappy) && (~h.onefun.ishappy);
+    pass(n, 20) = (~get(g, 'ishappy')) && (~get(h, 'ishappy'));
     h = g - f;  % Subtract happy from unhappy.
-    pass(n, 21) = (~g.onefun.ishappy) && (~h.onefun.ishappy);
+    pass(n, 21) = (~get(g, 'ishappy')) && (~get(h, 'ishappy'));
 end
 
 end
@@ -115,7 +115,7 @@ function result = test_sub_function_and_scalar(f, f_op, alpha, x)
     g2 = alpha - f;
     result(1) = isequal(g1, -g2);
     g_exact = @(x) f_op(x) - alpha;
-    result(2) = norm(feval(g1, x) - g_exact(x), inf) < max(f.onefun.vscale)*g1.onefun.epslevel;
+    result(2) = norm(feval(g1, x) - g_exact(x), inf) < max(get(f,'vscale'))*get(g1, 'epslevel');
 end
 
 % Test the subraction of two BNDFUN objects F and G, specified by F_OP and
@@ -126,5 +126,5 @@ function result = test_sub_function_and_function(f, f_op, g, g_op, x)
     result(1) = isequal(h1, -h2);
     h_exact = @(x) f_op(x) - g_op(x);
     norm(feval(h1, x) - h_exact(x), inf);
-    result(2) = norm(feval(h1, x) - h_exact(x), inf) <= 10*max(h1.onefun.vscale)*h1.onefun.epslevel;
+    result(2) = norm(feval(h1, x) - h_exact(x), inf) <= 10*max(get(h1,'vscale'))*get(h1,'epslevel');
 end

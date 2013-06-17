@@ -1,10 +1,12 @@
 function f = simplify(f, varargin)
 %SIMPLIFY   Simplify the ONEFUN of the FUN object F. 
 %   G = SIMPLIFY(F) attempts to compute a 'simplified' version G of the FUN
-%   object F, as defined by the SIMPLIFY method of the ONEFUN of F.
+%   object F. The difference between F and G should be small, in the sense that
+%   ||G - F|| < get(G,'EPSLEVEL')*get(G,'VSCALE'), but the representation of G
+%   should more compact (for example, requiring fewer coefficients).
 %
 %   G = SIMPLIFY(F, TOL) does the same, but simplifies according to the
-%   tolerance TOL.
+%   tolerance TOL on the righthand side of the above inequality.
 %
 % See also PREF.
 
@@ -16,7 +18,7 @@ if ( isempty(f) )
     return
 end
 
-% Simplify the onefun of f.
-f.onefun = simplify(f.onefun,varargin{:});
+% Simplify the ONEFUN of f.
+f.onefun = simplify(f.onefun, varargin{:});
  
 end

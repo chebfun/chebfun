@@ -11,7 +11,7 @@ function f = minus(f, g)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TO avoid duplication, we note that (f - g) = f + (-g):
+% To avoid duplication, we note that (f - g) = f + (-g):
 f = plus(f, uminus(g)); 
 
 end

@@ -1,6 +1,10 @@
 classdef fun % (Abstract)
 %FUN   Abstract FUN class for representing global functions on [a, b].
 
+% [TODO]: Docs for this file.
+
+% [TODO]: Test for minandmax, rdivide.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FUN Class Description:
 %
@@ -99,14 +103,24 @@ classdef fun % (Abstract)
         f = make(varargin);
     end
     
+    %% ABSTRACT METHODS REQUIRED BY THIS CLASS.
+    methods(Abstract = true)
+                
+        % Evaluate a FUN.
+        y = feval(f, x)
+        
+        % Compute the inner product of two FUN objects.
+        out = innerProduct(f, g)
+        
+        % [TODO]: Many others.
+        
+    end           
+    
     %% METHODS IMPLEMENTED BY THIS CLASS.
     methods
-
-%         % Convert an array of FUN objects into a array-valued FUN.
-%         f = cell2mat(f)
         
-%         % Plot (semilogy) the Chebyshev coefficients of a FUN object.
-%         h = chebpolyplot(f, varargin)
+        % Plot (semilogy) the Chebyshev coefficients of a FUN object.
+        h = chebpolyplot(f, varargin)
 
         % Complex conjugate of a FUN.
         f = conj(f)
@@ -114,17 +128,14 @@ classdef fun % (Abstract)
         % FUN objects are not transposable.
         f = ctranspose(f)
 
-        % Evaluate a FUN.
-        y = feval(f, x)
-
         % Flip columns of a vectorised FUN object.
         f = fliplr(f)
         
+        % Get properties of a FUN.
+        f = get(prop, val);
+        
         % Imaginary part of a FUN.
         f = imag(f)
-
-        % Compute the inner product of two FUN objects.
-        out = innerProduct(f, g)
 
         % True for an empty FUN.
         out = isempty(f)
@@ -165,11 +176,11 @@ classdef fun % (Abstract)
         % Subtraction of two FUN objects.
         f = minus(f, g)
 
-        % Left matrix divide for FUN objects.
-        X = mldivide(A, B)
+%         % [TODO]: Left matrix divide for FUN objects.
+%         X = mldivide(A, B)
 
-        % Right matrix divide for a FUN.
-        X = mrdivide(B, A)
+        % [TODO]: Right matrix divide for a FUN.
+%         X = mrdivide(B, A)
 
         % Multiplication of FUN objects.
         f = mtimes(f, c)
@@ -177,11 +188,8 @@ classdef fun % (Abstract)
         % Basic linear plot for FUN objects.
         varargout = plot(f, varargin)
 
-        % Addition of two FUN objects.
-        f = plus(f, g)
-
-        % Polynomial coefficients of a FUN.
-        out = poly(f)
+        % [TODO]: Addition of two FUN objects.
+%         f = plus(f, g)
 
         % Right array divide for a FUN.
         f = rdivide(f, c, pref)
@@ -196,7 +204,7 @@ classdef fun % (Abstract)
         f = simplify(f, tol)
 
         % Size of a FUN.
-        [siz1, siz2] = size(f, varargin)
+        [size1, size2] = size(f, varargin)
 
         % FUN multiplication.
         f = times(f, g, varargin)

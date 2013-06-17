@@ -87,13 +87,13 @@ h2 = g .* f;
 pass(12) = isequal(h1, h2);
 h_exact = @(x) [tanh(x).*sin(x) tanh(x).*cos(x) tanh(x).*exp(x)];
 err = feval(h1, x) - h_exact(x);
-pass(13) = max(abs(err(:))) < 10*h1.onefun.epslevel;
+pass(13) = max(abs(err(:))) < 10*max(get(h1, 'vscale'))*get(h1, 'epslevel');
 
 g = bndfun(@(x) [sinh(x) cosh(x) tanh(x)], dom, [], [], pref);
 h = f .* g;
 h_exact = @(x) [sinh(x).*sin(x) cosh(x).*cos(x) tanh(x).*exp(x)];
 err = feval(h, x) - h_exact(x);
-pass(14) = max(abs(err(:))) < max(h.onefun.vscale)*h.onefun.epslevel;
+pass(14) = max(abs(err(:))) < max(get(h, 'vscale'))*get(h, 'epslevel');
 
 % This should fail with a dimension mismatch error.
 try
@@ -128,8 +128,7 @@ g_op = @(x) 1./(1 + x.^2);
 g = bndfun(g_op, dom, [], [], pref);
 h1 = f .* g;
 h2 = bndfun(@(x) f_op(x) .* g_op(x), dom, [], [], pref);
-h2.onefun = prolong(h2.onefun, length(h1));
-pass(21) = norm(h1.onefun.values - h2.onefun.values, inf) < tol;
+pass(21) = normest(h1 - h2) < tol;
 
 %%
 % Check that multiplying a BNDFUN by an unhappy BNDFUN gives an unhappy
@@ -138,9 +137,9 @@ pass(21) = norm(h1.onefun.values - h2.onefun.values, inf) < tol;
 f = bndfun(@(x) cos(x+1), dom);    % Happy
 g = bndfun(@(x) sqrt(x+1), dom);   % Unhappy
 h = f.*g;  % Multiply unhappy by happy.
-pass(22) = (~g.onefun.ishappy) && (~h.onefun.ishappy); %#ok<*BDSCI,*BDLGI>
+pass(22) = (~get(g, 'ishappy')) && (~get(h, 'ishappy')); %#ok<*BDSCI,*BDLGI>
 h = g.*f;  % Multiply happy by unhappy.
-pass(23) = (~g.onefun.ishappy) && (~h.onefun.ishappy);
+pass(23) = (~get(g, 'ishappy')) && (~get(h, 'ishappy'));
 
 end
 
@@ -151,7 +150,8 @@ g1 = f .* alpha;
 g2 = alpha .* f;
 result(1) = isequal(g1, g2);
 g_exact = @(x) f_op(x) .* alpha;
-result(2) = norm(feval(g1, x) - g_exact(x), inf) < max(g1.onefun.vscale)*g1.onefun.epslevel;
+tol = max(get(g1, 'vscale'))*get(g1, 'epslevel');
+result(2) = norm(feval(g1, x) - g_exact(x), inf) < tol;
 end
 
 % Test the multiplication of two BNDFUN objects F and G, specified by F_OP and
@@ -161,7 +161,8 @@ end
 function result = test_mult_function_by_function(f, f_op, g, g_op, x, checkpos)
 h = f .* g;
 h_exact = @(x) f_op(x) .* g_op(x);
-result(1) = all(max(abs(feval(h, x) - h_exact(x))) < h.onefun.epslevel.*max(f.onefun.vscale)*max(g.onefun.vscale));
+tol = get(h, 'epslevel')*max(get(f, 'vscale'))*max(get(g, 'vscale'));
+result(1) = all(max(abs(feval(h, x) - h_exact(x))) < tol);
 if ( checkpos )
     result(2) = all(h.onefun.values >= 0);
 end

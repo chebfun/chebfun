@@ -3,8 +3,8 @@ function varargout = chebpolyplot(f, varargin)
 %
 %   CHEBPOLYPLOT(F) plots the Chebyshev coefficients of the ONEFUN of a FUN F on
 %   a semilogy scale. A horizontal line at the EPSLEVEL of F.ONEFUN is also
-%   plotted. If F is a vectorised FUN then a curve is plotted for each
-%   component (column) of F.
+%   plotted. If F is a vectorised FUN then a curve is plotted for each component
+%   (column) of F.
 %
 %   CHEBPOLYPLOT(F, S) allows further plotting options, such as linestyle,
 %   linecolor, etc, in the standard MATLAB manner. If S contains a string
@@ -15,6 +15,8 @@ function varargout = chebpolyplot(f, varargin)
 %   objects. The final entry is that of the EPSLEVEL plot.
 %
 % See also CHEBPOLY, PLOT.
+
+% [TODO]: How to document this file?
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -27,8 +29,8 @@ if ( isempty(f) )
     return
 end
 
-% Call chebpolyplot one ONEFUN of F.
-h = chebpolyplot(f.onefun,varargin{:});
+% Call CHEBPOLYPLOT() on the ONEFUN of F.
+h = chebpolyplot(f.onefun, varargin{:});
 
 % Give an output if one was requested:
 if ( nargout > 0 )

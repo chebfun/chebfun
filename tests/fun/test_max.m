@@ -31,8 +31,9 @@ for n = 1:1 %[TODO]: unbndfun
     [y, x] = max(f);
     exact_max = [1 0.535656656015700 0.7^3*cosh(0.7)];
     fx = [sin(10*x(1)) airy(x(2)) (x(3)/10).^3.*cosh(x(3)/10)];
-    pass(n, 5) = (all(abs(y - exact_max) < f.onefun.vscale*f.onefun.epslevel) && ...
-               all(abs(fx - exact_max) < f.onefun.vscale*f.onefun.epslevel));
+    tol = get(f, 'vscale')*get(f, 'epslevel');
+    pass(n, 5) = (all(abs(y - exact_max) < tol) && ...
+               all(abs(fx - exact_max) < tol));
 
     %%
     % Test for complex-valued fun objects.
@@ -47,8 +48,9 @@ for n = 1:1 %[TODO]: unbndfun
     exact_max = [-6.789310982858273-2.543178400749744i 15.919763683943538+5.963314870723537i];
     fx = [((x(1)-2).^2/4+1).*exp(1i*(x(1)/2)) ... 
          -((x(2)+1).^2/4+1).*exp(1i*(x(2)/2))];
-    pass(n, 7) = (all(abs(y - exact_max) < abs(exact_max)*f.onefun.epslevel) && ...
-                  all(abs(fx - exact_max) < abs(exact_max)*f.onefun.epslevel));
+    tol = get(f, 'vscale')*get(f, 'epslevel');
+    pass(n, 7) = (all(abs(y - exact_max) < tol) && ...
+                  all(abs(fx - exact_max) < tol));
 end
 
 end
@@ -59,7 +61,8 @@ function result = test_spotcheck_max(testclass, fun_op, dom, exact_max, pref)
 f = testclass.make(fun_op, dom, [], [], pref);
 [y, x] = max(f);
 fx = fun_op(x);
-result = (all(abs(y - exact_max) < f.onefun.vscale*f.onefun.epslevel) && ...
-          all(abs(fx - exact_max) < f.onefun.vscale*f.onefun.epslevel));
+tol = get(f, 'vscale')*get(f, 'epslevel');
+result = (all(abs(y - exact_max) < tol) && ...
+          all(abs(fx - exact_max) < tol));
 
 end
