@@ -1,10 +1,10 @@
 function f = diff(f, k, dim)
 %DIFF   Derivative of a BNDFUN.
-%   DIFF(F) is the derivative of F, and DIFF(F, K) is the K-th derivative.
+%   DIFF(F) is the derivative of F, and DIFF(F, K) is the Kth derivative.
 %
 %   DIFF(F, K, DIM), where DIM is one of 1 or 2, takes the Kth difference
 %   along dimension DIM. For DIM = 1, this is the same as above. For DIM =
-%   2, this is a finite difference along the columns of a vectorised
+%   2, this is a finite difference along the columns of an array-valued
 %   BNDFUN. If F has L columns, a BNDFUN with an empty ONEFUN property
 %   will be returned for K >= L.
 %
@@ -13,14 +13,13 @@ function f = diff(f, k, dim)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org for Chebfun information.
 
-% Store number of input arguments
-narg = nargin;
-if ( narg < 2 || isempty(k) )
+% Parse inputs:
+if ( (nargin < 2) || isempty(k) )
     % Assume first derivative by default
     k = 1;
 end
 
-if narg < 3
+if ( nargin < 3 )
     % Assume dim = 1 by default
     dim = 1;
 end
@@ -33,9 +32,9 @@ rescaleFactork = (.5*diff(f.domain))^k;
 % dim = 2), we only wanted to compute difference between columns, in which case,
 % we should not rescale the result.
 if ( dim == 1 )
-    f.onefun = diff(f.onefun,k,dim)/rescaleFactork;
+    f.onefun = diff(f.onefun, k, dim)/rescaleFactork;
 else
-    f.onefun = diff(f.onefun,k,dim);
+    f.onefun = diff(f.onefun, k, dim);
 end
 
 end

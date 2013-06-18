@@ -18,8 +18,8 @@ if ( isempty(f) || isempty(g) )
 end
 
 if ( ~isa(f, 'bndfun') || ~isa(g, 'bndfun') )
-    error('CHEBFUN:FUN:innerProduct:input', ...
-        'innerProduct() only operates on two FUN objects.');
+    error('CHEBFUN:BNDFUN:innerProduct:input', ...
+        'innerProduct() only operates on two BNDFUN objects.');
 end
 
 % Rescaling factor, (b-a)/2

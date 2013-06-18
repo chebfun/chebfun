@@ -40,19 +40,21 @@ for n = 1:3
     % Compose an array-valued BNDFUN object with sin(x):
     f = bndfun(@(x) [x x.^2], dom);
     g = compose(f, @sin, pref);
-    pass(n, 3) = norm(sin([x, x.^2]) - feval(g, x), inf) < max(g.onefun.vscale)*tol;
-    
+    pass(n, 3) = norm(sin([x, x.^2]) - feval(g, x), inf) < ...
+        max(g.onefun.vscale)*tol;
+
     % Compose an array-valued BNDFUN object with sin(x):
     f = bndfun(@(x) [x x x.^2], dom);
     g = compose(f, @sin, pref);
-    pass(n, 4) = norm(sin([x x x.^2]) - feval(g, x), inf) < max(g.onefun.vscale)*tol;
-    
+    pass(n, 4) = norm(sin([x x x.^2]) - feval(g, x), inf) < ...
+        max(g.onefun.vscale)*tol;
+
     % Compose 2 BNDFUN objects with a binary function:
     f1 = bndfun(@(x) sin(x), dom);
     f2 = bndfun(@(x) cos(x), dom);
     g = compose(f1, @plus, f2, pref);
     h = @(x) sin(x) + cos(x);
-    pass(n, 5) = norm(h(x) - feval(g,x), inf) < 2*tol;
+    pass(n, 5) = norm(h(x) - feval(g, x), inf) < 2*tol;
     
     % Compose 2 array-valued BNDFUN objects with a binary function:
     f1 = bndfun(@(x) [sin(x) cos(x)], dom);
@@ -71,14 +73,16 @@ for n = 1:3
     f = bndfun(@(x) x.^2, dom);
     g = bndfun(@(x) [sin(x) cos(x)], [0 dom(2)^2]);
     h = compose(f, g);
-    pass(n, 8) = norm(feval(h, x) - [sin(x.^2) cos(x.^2)], inf) < max(h.onefun.vscale)*tol;
-    
+    pass(n, 8) = norm(feval(h, x) - [sin(x.^2) cos(x.^2)], inf) < ...
+        max(h.onefun.vscale)*tol;
+
     % Compose f(g), when f and g are BNDFUN objects and f is array-valued:
     f = bndfun(@(x) [x x.^2], dom);
     g = bndfun(@(x) sin(x), [dom(1) dom(2)^2]);
     h = compose(f, g);
-    pass(n, 9) = norm(feval(h, x) - [sin(x) sin(x.^2)], inf) < max(h.onefun.vscale)*tol;
-    
+    pass(n, 9) = norm(feval(h, x) - [sin(x) sin(x.^2)], inf) < ...
+        max(h.onefun.vscale)*tol;
+
     % We cannot expect to compose two array-valued BNDFUN objects f(g):
     try 
         f = bndfun(@(x) [x x.^2], dom);
@@ -98,11 +102,13 @@ for n = 1:3
     catch ME
         pass(n, 11) = strcmp(ME.identifier, 'CHEBFUN:CHEBTECH:compose:dim');
     end
-    
+
+    % Can't compose two BNDFUN objects f(g) if the range of g does not lie in
+    % the domain of f:
     try
         f = bndfun(@(x) sin(x), dom);
         g = bndfun(@(x) 100*cos(x), dom);
-        compose(g,f);
+        compose(g, f);
         pass(n, 12) = false;
     catch ME
         pass(n, 12) = strcmp(ME.identifier, 'BNDFUN:compose:domainMismatch');

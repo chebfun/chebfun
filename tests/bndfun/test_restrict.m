@@ -25,7 +25,7 @@ g = restrict(f, dom);
 pass(2) = isequal(f, g);
 
 try
-    g = restrict(f, [dom(1)-1, dom(2)+1]); %#ok<NASGU>
+    g = restrict(f, [dom(1) - 1, dom(2) + 1]); %#ok<NASGU>
     pass(3) = 0;
 catch ME
     pass(3) = strcmp(ME.identifier, 'BNDFUN:restrict:badinterval');
@@ -50,7 +50,8 @@ end
 pass(6) = test_spotcheck_restrict(@(x) exp(x) - 1, dom, [-2 4], pref);
 pass(7) = test_spotcheck_restrict(@(x) 1./(1 + x.^2), dom, [-0.7 0.9], pref);
 pass(8) = test_spotcheck_restrict(@(x) cos(1e3*x), dom, [0.1 0.5], pref);
-pass(9) = test_spotcheck_restrict(@(t) sinh(t*exp(2*pi*1i/6)), dom, [-0.4 1], pref);
+pass(9) = test_spotcheck_restrict(@(t) sinh(t*exp(2*pi*1i/6)), dom, ...
+    [-0.4 1], pref);
 
 %%
 % Check multiple subinterval restriction.
@@ -65,7 +66,8 @@ pass(10) = all(err1(:) == 0) && all(err2(:) == 0);
 
 %%
 % Check operation for array-valued functions.
-pass(11) = test_spotcheck_restrict(@(x) [sin(x) cos(x) exp(x)], dom, [-1 -0.7], pref);
+pass(11) = test_spotcheck_restrict(@(x) [sin(x) cos(x) exp(x)], dom, ...
+    [-1 -0.7], pref);
 
 f = bndfun(@(x) [sin(x) cos(x)], dom, [], [], pref);
 g = restrict(f, [-0.6 0.1 1]);
@@ -92,5 +94,6 @@ x = linspace(a, b, 100).';
 y_exact = fun_op(x);
 y_approx = feval(g, x);
 
-result = norm(y_exact - y_approx, Inf) < 10*max(f.onefun.vscale)*f.onefun.epslevel;
+result = norm(y_exact - y_approx, Inf) < ...
+    10*max(f.onefun.vscale)*f.onefun.epslevel;
 end

@@ -1,4 +1,4 @@
-function f = changeMap(f,newdom)
+function f = changeMap(f, newdom)
 %CHANGEMAP   Map the domain of a BNDFUN via a linear change of variable.
 %   G = MAP(F,NEWDOM), where the BNDFUN F has a domain [a, b], returns a
 %   BNDFUN G defined on [c, d], where c = NEWDOM(1), d = NEWDOM(2), such that

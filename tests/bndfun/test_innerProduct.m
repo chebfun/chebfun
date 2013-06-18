@@ -24,19 +24,22 @@ pass = zeros(1, 11); % Pre-allocate pass matrix
 
 f = bndfun(@(x) sin(2*pi*x), dom, [], [], pref);
 g = bndfun(@(x) cos(2*pi*x), dom, [], [], pref);
-pass(1) = abs(innerProduct(f, g)) < 10*max(f.onefun.epslevel, g.onefun.epslevel);
+pass(1) = abs(innerProduct(f, g)) < ...
+    10*max(f.onefun.epslevel, g.onefun.epslevel);
 
 g = bndfun(@(x) cos(4*pi*x), dom, [], [], pref);
-pass(2) = abs(innerProduct(f, g)) < 10*max(f.onefun.epslevel, g.onefun.epslevel);
+pass(2) = abs(innerProduct(f, g)) < ...
+    10*max(f.onefun.epslevel, g.onefun.epslevel);
 
 f = bndfun(@(x) exp(x), dom, [], [], pref);
 g = bndfun(@(x) exp(-x), dom, [], [], pref);
-pass(3) = abs(innerProduct(f, g) - 9) < max(f.onefun.vscale,g.onefun.vscale)*max(f.onefun.epslevel, g.onefun.epslevel);
+pass(3) = abs(innerProduct(f, g) - 9) < max(f.onefun.vscale, ...
+    g.onefun.vscale)*max(f.onefun.epslevel, g.onefun.epslevel);
 
 g = bndfun(@(x) sin(x), dom, [], [], pref);
 exact = exp(7)*(sin(7) - cos(7))/2 - exp(-2)*(sin(-2) - cos(-2))/2;
-pass(4) = abs(innerProduct(f, g) - exact) < max(f.onefun.vscale,g.onefun.vscale)*max(f.onefun.epslevel, ...
-    g.onefun.epslevel);
+pass(4) = abs(innerProduct(f, g) - exact) < max(f.onefun.vscale, ...
+    g.onefun.vscale)*max(f.onefun.epslevel, g.onefun.epslevel);
 
 %%
 % Check a few known properties.
@@ -55,17 +58,20 @@ pass(6) = abs(ip1 - conj(ip2)) < tol;
 
 ip1 = innerProduct(f + g, h);
 ip2 = innerProduct(f, h) + innerProduct(g, h);
-pass(7) = abs(ip1 - ip2) < max((f.onefun.vscale+g.onefun.vscale),h.onefun.vscale)*tol;
+pass(7) = abs(ip1 - ip2) < ...
+    max((f.onefun.vscale + g.onefun.vscale), h.onefun.vscale)*tol;
 
 ip1 = innerProduct(f, g + h);
 ip2 = innerProduct(f, g) + innerProduct(f, h);
-pass(8) = abs(ip1 - ip2) < max((g.onefun.vscale+h.onefun.vscale),f.onefun.vscale)*tol;
+pass(8) = abs(ip1 - ip2) < ...
+    max((g.onefun.vscale + h.onefun.vscale), f.onefun.vscale)*tol;
 
 nf2 = innerProduct(f, f);
 ng2 = innerProduct(g, g);
 nh2 = innerProduct(h, h);
 n2vals = [nf2 ; ng2 ; nh2];
 pass(9) = isreal(n2vals) && all(n2vals >= 0);
+
 %%
 % Check operation for array-valued bndfun objects.
 
@@ -85,7 +91,7 @@ try
     pass(11) = false;
 catch ME
     pass(11) = strcmp(ME.identifier, ...
-        'CHEBFUN:FUN:innerProduct:input');
+        'CHEBFUN:BNDFUN:innerProduct:input');
 end
 
 end

@@ -32,9 +32,9 @@ t = f.mapping.inv(s);
 restrictedOnefuns = restrict(f.onefun, t);
 
 % In case S = [S1, S2], i.e., we are only restricting to a one subinterval,
-% restrictedOnefuns will be a CHEBTECH. In case S = [S1, S2, ..., SN], i.e., we
+% restrictedOnefuns will be a ONEFUN. In case S = [S1, S2, ..., SN], i.e., we
 % are restricting to multiple subinterval, restrictedOnefuns will be a
-% cell-array of CHEBTECH objects. We need to treat the cases differently, as we
+% cell-array of ONEFUN objects. We need to treat the cases differently, as we
 % also want to either return a BNDFUN or cell-array of BNDFUN objects depending
 % on how many subintervals we are restricting to.
 if ( length(s) == 2 )

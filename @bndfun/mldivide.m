@@ -21,7 +21,6 @@ end
 % Call MLDIVIDE of the onefun fields of A and B.
 X = A.onefun\B.onefun;
 
-
 % % Alternatively we could call QR() at the BNDFUN level, since 
 % %  A*X = (Q*R)*X = B ==> R*X = Q'*B ==> X = R\(Q'*B) = R\innerProduct(Q, B)
 % which gives
@@ -30,6 +29,5 @@ X = A.onefun\B.onefun;
 % 
 % % Compute X:
 % % X = R\innerProduct(Q, B);
-
 
 end

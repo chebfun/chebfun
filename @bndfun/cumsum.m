@@ -8,7 +8,7 @@ function f = cumsum(f, m, varargin)
 %   Thus CUMSUM(F, 2) is equivalent to CUMSUM(CUMSUM(F)).
 %
 %   CUMSUM(F, PREF) or CUMSUM(F, M,  PREF) uses options from the preference
-%   structure PREF when building the output CHEBTECH.
+%   structure PREF when building the output BNDFUN.
 %
 % See also DIFF, SUM.
 
@@ -46,6 +46,6 @@ pref = f.onefun.pref(pref, pref.bndfun);
 
 % Compute the CUMSUM of all of f's ONEFUNs, multiply by the rescaling factor,
 % and assign to the ONEFUN field of f.
-f.onefun = cumsum(f.onefun,m,pref)*rescaleFactorm;
+f.onefun = cumsum(f.onefun, m, pref)*rescaleFactorm;
 
 end

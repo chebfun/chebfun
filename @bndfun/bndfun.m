@@ -4,9 +4,9 @@ classdef bndfun < fun
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % BNDFUN Class Description:
 %
-% The BNDFUN class is a class for representations of functions on the finite
-% interval [a, b]. It achieves this by taking a ONEFUN on [-1, 1] and applying
-% a linear mapping.
+% The BNDFUN class is a class for representations of globally smooth functions
+% on a finite interval [a, b]. It achieves this by taking a ONEFUN on [-1, 1]
+% and applying a linear mapping to re-scale its domain.
 %
 % Note that all binary BNDFUN operators (methods which can take two BNDFUN
 % arguments) assume that the domains of the BNDFUN objects agree. The methods
@@ -22,19 +22,19 @@ classdef bndfun < fun
         function obj = bndfun(op, domain, vscale, hscale, pref)
             
             % Construct an empty bndfun:
-            if ( nargin == 0 || isempty(op) )
+            if ( (nargin == 0) || isempty(op) )
                 return
             end
             
             % Obtain preferences if none given:
-            if ( nargin < 5 || isempty(pref))
+            if ( (nargin < 5) || isempty(pref))
                 pref = bndfun.pref;
             else
                 pref = bndfun.pref(pref);
             end
             
             % Use default domain if none given:
-            if ( nargin < 2 || isempty(domain) )
+            if ( (nargin < 2) || isempty(domain) )
                 domain = pref.bndfun.domain;
             end
             
@@ -45,10 +45,10 @@ classdef bndfun < fun
             end
             
             % Define scales if none given:
-            if ( nargin < 3 || isempty(vscale) )
-                vscale = norm(domain,inf); 
+            if ( (nargin < 3) || isempty(vscale) )
+                vscale = norm(domain, inf);
             end
-            if ( nargin < 4 || isempty(hscale) )
+            if ( (nargin < 4) || isempty(hscale) )
                 hscale = 0; 
             end
 
@@ -58,7 +58,7 @@ classdef bndfun < fun
                 op = @(x) op(linmap.for(x));
             end
             
-            % Call the OneFun constructor:
+            % Call the ONEFUN constructor:
             pref = onefun.pref(pref, pref.bndfun);
             obj.onefun = onefun.constructor(op, vscale, hscale, pref);
             

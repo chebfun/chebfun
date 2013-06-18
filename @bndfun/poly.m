@@ -39,8 +39,8 @@ b = f.domain(2);
 % TODO: Explain why this formula works/give reference.
 if ( (a ~= -1) || (b ~= 1) )
     % Constants for rescaling
-    alpha = 2/(b-a);
-    beta = -(b+a)/(b-a);
+    alpha = 2/(b - a);
+    beta = -(b + a)/(b - a);
     
     % Flip coefficients
     out = onefunPoly(:,end:-1:1);
@@ -52,13 +52,14 @@ if ( (a ~= -1) || (b ~= 1) )
         
         % Binomial coefficients, which seem to be more accurate than using
         % MATLAB's NCHOOSEK.
-        binom = round(exp(gammaln(k+1)-gammaln(k-j+1)-gammaln(j+1)));
+        binom = round(exp(gammaln(k + 1) - gammaln(k - j + 1) ...
+            - gammaln(j + 1)));
         
         % Compute the modified coefficients
-        bba = repmat(binom.*beta.^(k-j).*(alpha^j),m,1);
+        bba = repmat(binom.*beta.^(k - j).*(alpha^j), m, 1);
         
         % Adjust coefficients
-        out(:,j+1) = sum(out(:,k+1).*bba,2);
+        out(:,j+1) = sum(out(:,k+1).*bba, 2);
     end
     
     % Flip coefficients back

@@ -1,4 +1,4 @@
-function out = sum(f,dim)
+function out = sum(f, dim)
 %SUM   Definite integral of a BNDFUN on its interval [a,b]
 %   S = SUM(F) is the integral from a to b of F.
 %
@@ -15,8 +15,8 @@ function out = sum(f,dim)
 
 %%
 % Sum across array-valued BNDFUN columns if dim = 2:
-if ( nargin > 1 && dim == 2 )
-    f.onefun = sum(f.onefun,dim);
+if ( (nargin > 1) && (dim == 2) )
+    f.onefun = sum(f.onefun, dim);
     out = f;
     return
 end
