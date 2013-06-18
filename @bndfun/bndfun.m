@@ -1,17 +1,17 @@
 classdef bndfun < fun
-%BNDFUN  BNDFUN class for representing global functions on bounded [a, b].
+%BNDFUN   Represent globally smooth functions on a bounded interval [a, b].
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % BNDFUN Class Description:
 %
-% The FUN class is an abstract class for representations of functions on the
-% finite interval [a, b]. It achieves this by taking a onefun on [-1, 1] and
-% applying a linear mapping.
+% The BNDFUN class is a class for representations of functions on the finite
+% interval [a, b]. It achieves this by taking a ONEFUN on [-1, 1] and applying
+% a linear mapping.
 %
 % Note that all binary BNDFUN operators (methods which can take two BNDFUN
 % arguments) assume that the domains of the BNDFUN objects agree. The methods
-% will not throw warning in case the domains don't agree, but their output will
-% be gibberish.
+% will not issue warnings if this condition is violated, but the results will
+% not be meaningful.
 %
 % Class diagram: [<<fun>>] <-- [<<bndfun>>] <>-- [<<onefun>>]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -21,7 +21,7 @@ classdef bndfun < fun
         
         function obj = bndfun(op, domain, vscale, hscale, pref)
             
-            % Construct an empty bndfun
+            % Construct an empty bndfun:
             if ( nargin == 0 || isempty(op) )
                 return
             end
@@ -38,13 +38,13 @@ classdef bndfun < fun
                 domain = pref.bndfun.domain;
             end
             
-            % Check domain
+            % Check domain:
             if ( any(isinf(domain)) )
                 error('CHEBFUN:BNDFUN:UNBND',...
                     'Should not encounter unbounded domain in bndfun class.');
             end
             
-            % Define scales if none given.
+            % Define scales if none given:
             if ( nargin < 3 || isempty(vscale) )
                 vscale = norm(domain,inf); 
             end
@@ -104,6 +104,7 @@ classdef bndfun < fun
         
         % QR factorisation of an array-valued BNDFUN.
         [f, R, E] = qr(f, flag)
+
         % Restrict a BNDFUN to a subinterval.
         f = restrict(f, s)
         

@@ -27,7 +27,7 @@ if ( isempty(f) )
     return
 end
 
-% Call poly() on the ONEFUN of f
+% Call POLY() on the ONEFUN of f
 onefunPoly = poly(f.onefun);
 [m, n] = size(onefunPoly);
 
@@ -37,7 +37,7 @@ b = f.domain(2);
 
 % Convert coefficients on [-1,1] to [a,b].
 % TODO: Explain why this formula works/give reference.
-if ( a~=-1 || b~=1 )
+if ( (a ~= -1) || (b ~= 1) )
     % Constants for rescaling
     alpha = 2/(b-a);
     beta = -(b+a)/(b-a);
@@ -47,7 +47,7 @@ if ( a~=-1 || b~=1 )
     
     % Rescale coefficients to actual interval
     for j = 0:n-1
-        % Need to update coefficients with k>=j.
+        % Need to update coefficients with k >= j.
         k = j:n-1;
         
         % Binomial coefficients, which seem to be more accurate than using

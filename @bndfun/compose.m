@@ -1,5 +1,5 @@
 function f = compose(f, op, g, pref)
-%COMPOSE  Compostition of BNDFUN objects.
+%COMPOSE   Compostition of BNDFUN objects.
 %   H = COMPOSE(F, OP) returns a BNDFUN representing OP(F) where F is also a
 %   BNDFUN object, and OP is a function handle.
 %
@@ -20,7 +20,7 @@ function f = compose(f, op, g, pref)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Parse inputs:
-if nargin == 2
+if ( nargin == 2 )
     if ( isa(op, 'bndfun') )
         % op is a bndfun! Rename it to g for clarity
         g = op;
@@ -46,8 +46,7 @@ if nargin == 2
         gA = dom(1);
         gB = dom(2);
         
-        
-        if ( fMinVal < (gA - tol) || fMaxVal > (gB + tol) )
+        if ( (fMinVal < (gA - tol)) || (fMaxVal > (gB + tol)) )
             % Throw an error if domains don't match:
             error('BNDFUN:compose:domainMismatch', ...
                 ['For composition G(F), the range of F must be enclosed ', ...
@@ -74,7 +73,7 @@ if nargin == 2
         f.onefun = compose(f.onefun, op);
     end
     
-elseif nargin == 3
+elseif ( nargin == 3 )
     
     if ( isstruct(g) )
         % Third argument passed was a preference structure.
