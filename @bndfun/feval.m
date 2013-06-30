@@ -1,6 +1,6 @@
-function out = feval(f,x)
-% FEVAL	 Evaluate the specfied function
-% Y = FEVAL(G,X) Evaluation of a bndfun G at points X. 
+function out = feval(f, x)
+%FEVAL   Evaluate the specfied function
+%   Y = FEVAL(G, X) Evaluation of a BNDFUN G at points X. 
 
 % Copyright 2011 by The University of Oxford and The Chebfun Developers. 
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.

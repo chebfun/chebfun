@@ -166,4 +166,5 @@ result(1) = all(max(abs(feval(h, x) - h_exact(x))) < tol);
 if ( checkpos )
     result(2) = all(h.onefun.values >= 0);
 end
+
 end

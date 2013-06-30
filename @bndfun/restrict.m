@@ -1,9 +1,9 @@
 function g = restrict(f, s)
-%RESTRICT Restrict a BNDFUN to a subinterval.
+%RESTRICT   Restrict a BNDFUN to a subinterval.
 %   RESCTRICT(F, S) returns a BNDFUN that is restricted to the subinterval
 %   [S(1), S(2)] of F.domain.
 %
-%   If length(S) > 2, i.e., S = [S1, S2, S3, ...], then RESCTRICT(F, S) returns
+%   If LENGTH(S) > 2, i.e., S = [S1, S2, S3, ...], then RESCTRICT(F, S) returns
 %   a cell-array of BNDFUN objects, where the cells contain F restricted to each
 %   of the subintervals defined by S.
 
@@ -17,9 +17,9 @@ if ( isempty(f) )
 end
 
 % Check if subint is actually a subinterval:
-if ( s(1) < f.domain(1) || s(end) > f.domain(2) || any(diff(s) <= 0) )
+if ( (s(1) < f.domain(1)) || (s(end) > f.domain(2)) || (any(diff(s) <= 0)) )
     error('BNDFUN:restrict:badinterval', 'Not a valid interval.')
-elseif ( numel(s) == 2 && all(s == f.domain) )
+elseif ( (numel(s) == 2) && all(s == f.domain) )
     % Nothing to do here!
     g = f;
     return
@@ -32,9 +32,9 @@ t = f.mapping.inv(s);
 restrictedOnefuns = restrict(f.onefun, t);
 
 % In case S = [S1, S2], i.e., we are only restricting to a one subinterval,
-% restrictedOnefuns will be a CHEBTECH. In case S = [S1, S2, ..., SN], i.e., we
+% restrictedOnefuns will be a ONEFUN. In case S = [S1, S2, ..., SN], i.e., we
 % are restricting to multiple subinterval, restrictedOnefuns will be a
-% cell-array of CHEBTECH objects. We need to treat the cases differently, as we
+% cell-array of ONEFUN objects. We need to treat the cases differently, as we
 % also want to either return a BNDFUN or cell-array of BNDFUN objects depending
 % on how many subintervals we are restricting to.
 if ( length(s) == 2 )

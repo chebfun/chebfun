@@ -1,10 +1,10 @@
 function out = innerProduct(f, g)
 %INNERPRODUCT   Compute the inner product of two BNDFUN objects.
-%   INNERPRODUCT(F, G) returns the L2 inner product (on [a,b]) of the two
+%   INNERPRODUCT(F, G) returns the L2 inner product (on [a, b]) of the two
 %   BNDFUN objects F and G (conjugate linear in F).
 %
 %   If F and/or G are array-valued BNDFUN objects, then the result is a matrix
-%   whose i,j entry is the inner product of the ith column of F with the jth
+%   whose (i,j) entry is the inner product of the ith column of F with the jth
 %   column of G.
 %
 %   The BNDFUN objects F and G are assumed to have the same domain. The method
@@ -18,8 +18,8 @@ if ( isempty(f) || isempty(g) )
 end
 
 if ( ~isa(f, 'bndfun') || ~isa(g, 'bndfun') )
-    error('CHEBFUN:FUN:innerProduct:input', ...
-        'innerProduct() only operates on two FUN objects.');
+    error('CHEBFUN:BNDFUN:innerProduct:input', ...
+        'innerProduct() only operates on two BNDFUN objects.');
 end
 
 % Rescaling factor, (b-a)/2

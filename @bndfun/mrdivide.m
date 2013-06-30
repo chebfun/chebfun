@@ -1,6 +1,5 @@
 function X = mrdivide(A, B)
 %/   Right matrix divide for a BNDFUN.
-%
 %   A/B divides the BNDFUN A by a scalar B. More generally, it gives the
 %   least-squares solution (with respect to the continuous L^2 norm) to X*B = A
 %   when either A or B is a BNDFUN.  Note that in the latter case, formally

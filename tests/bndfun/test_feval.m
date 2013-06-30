@@ -15,7 +15,7 @@ pass = zeros(1, 9); % Pre-allocate pass matrix.
 
 %%
 % Spot-check values for a couple of functions.  We can only expect
-% accuracy on % the order of the truncation level, so we use this as our
+% accuracy on the order of the truncation level, so we use this as our
 % criterion.
 
 f = bndfun(@(x) exp(x) - 1, dom, [], [], pref);
@@ -63,6 +63,7 @@ pass(8) = all(max(abs(err)) < f.onefun.vscale*f.onefun.epslevel);
 %%
 % Test for evaluating array-valued bndfun objects at matrix arguments if
 % the operation makes sense.
+
 f = bndfun(@(x) [sin(pi*x) cos(pi*x)], dom, [], [], pref);
 x2 = [-1 0 1 ; .25 .5 .75];
 fx = feval(f, x2);

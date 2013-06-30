@@ -35,14 +35,14 @@ pass(1) = (norm(err, inf) < 5*f.onefun.vscale*tol) && ...
 
 f = bndfun(@(x) 1./(1 + x.^2), dom, [], [], pref);
 F = cumsum(f);
-F_ex = @(x) atan(x)-atan(a);
+F_ex = @(x) atan(x) - atan(a);
 err = feval(F, x) - F_ex(x);
 pass(2) = (norm(err, inf) < 20*f.onefun.vscale*tol) && ...
     (abs(feval(F, a)) < f.onefun.vscale*tol);
 
 f = bndfun(@(x) cos(1e4*x), dom, [], [], pref);
 F = cumsum(f);
-F_ex = @(x) (sin(1e4*x)-sin(1e4*a))/1e4;
+F_ex = @(x) (sin(1e4*x) - sin(1e4*a))/1e4;
 err = feval(F, x) - F_ex(x);
 pass(3) = (norm(err, inf) < 1e4*f.onefun.vscale*tol) && ...
     (abs(feval(F, a)) < f.onefun.vscale*tol);
@@ -60,7 +60,8 @@ pass(4) = (norm(err, inf) < 20*f.onefun.vscale*tol) && ...
 % give the same results (up to a constant).
 
 f = bndfun(@(x) sin(4*x).^2, dom, [], [], pref);
-F = bndfun(@(x) 0.5*x - 0.0625*sin(8*x) - (a/2-sin(8*a)/16), dom, [], [], pref);
+F = bndfun(@(x) 0.5*x - 0.0625*sin(8*x) - (a/2 - sin(8*a)/16), ...
+    dom, [], [], pref);
 G = cumsum(f);
 err = G - F;
 pass(5) = (std(err.onefun.values) < 10*f.onefun.vscale*tol) && ...
@@ -70,7 +71,7 @@ pass(5) = (std(err.onefun.values) < 10*f.onefun.vscale*tol) && ...
 % Check that diff(cumsum(f)) == f and that cumsum(diff(f)) == f up to a
 % constant.
 
-f = bndfun(@(x) x.*(x - 1).*sin(x) - (a*(a-1)*sin(a)), dom, [], [], pref);
+f = bndfun(@(x) x.*(x - 1).*sin(x) - (a*(a - 1)*sin(a)), dom, [], [], pref);
 g = diff(cumsum(f));
 err = feval(f, x) - feval(g, x);
 pass(6) = (norm(err, inf) < 20*g.onefun.vscale*f.onefun.vscale*tol);
@@ -83,8 +84,8 @@ pass(7) = (norm(err, inf) < 30*g.onefun.vscale*f.onefun.vscale*tol) && ...
 % Check operation for array-valued bndfun objects.
 
 f = bndfun(@(x) [sin(x) x.^2 exp(1i*x)], dom, [], [], pref);
-F_exact = bndfun(@(x) [(-cos(x)+cos(a)) (x.^3/3-a^3/3) ...
-    ((exp(1i*x)-exp(1i*a))/1i)], dom, [], [], pref);
+F_exact = bndfun(@(x) [(-cos(x) + cos(a)) (x.^3/3 - a^3/3) ...
+    ((exp(1i*x) - exp(1i*a))/1i)], dom, [], [], pref);
 F = cumsum(f);
 err = std(feval(F, x) - feval(F_exact, x));
 pass(8) = (norm(err, inf) < 2*max(f.onefun.vscale)*tol) && ...
@@ -93,16 +94,16 @@ pass(8) = (norm(err, inf) < 2*max(f.onefun.vscale)*tol) && ...
 %%
 % Check operation for second and third order cumsums.
 f = bndfun(@(x) sin(x), dom, [], [], pref);
-F2_exact = bndfun(@(x) -sin(x)+x.*cos(a)+sin(a)-a*cos(a), ...
+F2_exact = bndfun(@(x) -sin(x) + x.*cos(a) + sin(a) - a*cos(a), ...
     dom, [], [], pref);
-F2 = cumsum(f,2);
+F2 = cumsum(f, 2);
 err = std(feval(F2, x) - feval(F2_exact, x));
 pass(9) = (norm(err, inf) < 5*(f.onefun.vscale)^2*tol) && ...
     abs(feval(F2, a) < (f.onefun.vscale)^2*tol);
 
-F3_exact = bndfun(@(x) cos(x)+x.^2*cos(a)/2+x*(sin(a)-a*cos(a)) - ...
-    (cos(a)/2-sin(a)), dom, [], [], pref);
-F3 = cumsum(f,3);
+F3_exact = bndfun(@(x) cos(x) + x.^2*cos(a)/2 + x*(sin(a) - a*cos(a)) - ...
+    (cos(a)/2 - sin(a)), dom, [], [], pref);
+F3 = cumsum(f, 3);
 err = std(feval(F3, x) - feval(F3_exact, x));
 pass(10) = (norm(err, inf) < (f.onefun.vscale)^3*tol) && ...
     abs(feval(F3, a) < (f.onefun.vscale)^3*tol);

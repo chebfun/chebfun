@@ -94,8 +94,8 @@ pass(19) = norm(h1.onefun.values - h2.onefun.values, inf) < 2*tol;
 % Check that adding a BNDFUN to an unhappy BNDFUN gives an unhappy
 % result.
 
-f = bndfun(@(x) cos(x+1), dom);    % Happy
-g = bndfun(@(x) sqrt(x+1), dom);   % Unhappy
+f = bndfun(@(x) cos(x + 1), dom);    % Happy
+g = bndfun(@(x) sqrt(x + 1), dom);   % Unhappy
 h = f + g;  % Add unhappy to happy.
 pass(20) = (~g.onefun.ishappy) && (~h.onefun.ishappy);
 h = g + f;  % Add happy to unhappy.
@@ -110,7 +110,8 @@ function result = test_add_function_to_scalar(f, f_op, alpha, x)
     g2 = alpha + f;
     result(1) = isequal(g1, g2);
     g_exact = @(x) f_op(x) + alpha;
-    result(2) = norm(feval(g1, x) - g_exact(x), inf) < max(g1.onefun.vscale)*g1.onefun.epslevel;
+    result(2) = norm(feval(g1, x) - g_exact(x), inf) < ...
+        max(g1.onefun.vscale)*g1.onefun.epslevel;
 end
 
 % Test the addition of two BNDFUN objects F and G, specified by F_OP and
@@ -120,5 +121,6 @@ function result = test_add_function_to_function(f, f_op, g, g_op, x)
     h2 = g + f;
     result(1) = isequal(h1, h2);
     h_exact = @(x) f_op(x) + g_op(x);
-    result(2) = ( norm(feval(h1, x) - h_exact(x), inf) <= 10*max(h1.onefun.vscale)*h1.onefun.epslevel );
+    result(2) = norm(feval(h1, x) - h_exact(x), inf) <= ...
+        10*max(h1.onefun.vscale)*h1.onefun.epslevel;
 end
