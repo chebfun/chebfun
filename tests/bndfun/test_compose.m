@@ -5,6 +5,8 @@ function pass = test_compose(pref)
 if ( nargin < 1 )
     pref = bndfun.pref;
 end
+% [TODO]: Are we allowed to access chebtech preferences so directly here, and at
+% the start of the for loop below? Should we be going through the onefun route?
 pref = chebtech.pref(pref);
 
 % Set the tolerance
@@ -52,7 +54,7 @@ for n = 1:3
     f2 = bndfun(@(x) cos(x), dom);
     g = compose(f1, @plus, f2, pref);
     h = @(x) sin(x) + cos(x);
-    pass(n, 5) = norm(h(x) - feval(g,x), inf) < tol;
+    pass(n, 5) = norm(h(x) - feval(g,x), inf) < 5*tol;
     
     % Compose 2 array-valued BNDFUN objects with a binary function:
     f1 = bndfun(@(x) [sin(x) cos(x)], dom);
