@@ -42,12 +42,12 @@ for n = 1:3
     % Compose an array-valued BNDFUN object with sin(x):
     f = bndfun(@(x) [x x.^2], dom);
     g = compose(f, @sin, pref);
-    pass(n, 3) = norm(sin([x, x.^2]) - feval(g, x), inf) < max(g.onefun.vscale)*tol;
+    pass(n, 3) = normest(sin([x, x.^2]) - feval(g, x), inf) < max(g.onefun.vscale)*tol;
     
     % Compose an array-valued BNDFUN object with sin(x):
     f = bndfun(@(x) [x x x.^2], dom);
     g = compose(f, @sin, pref);
-    pass(n, 4) = norm(sin([x x x.^2]) - feval(g, x), inf) < max(g.onefun.vscale)*tol;
+    pass(n, 4) = normest(sin([x x x.^2]) - feval(g, x), inf) < max(g.onefun.vscale)*tol;
     
     % Compose 2 BNDFUN objects with a binary function:
     f1 = bndfun(@(x) sin(x), dom);

@@ -62,8 +62,8 @@ pass(4) = (norm(err, inf) < 20*f.onefun.vscale*tol) && ...
 f = bndfun(@(x) sin(4*x).^2, dom, [], [], pref);
 F = bndfun(@(x) 0.5*x - 0.0625*sin(8*x) - (a/2-sin(8*a)/16), dom, [], [], pref);
 G = cumsum(f);
-err = G - F;
-pass(5) = (std(err.onefun.values) < 10*f.onefun.vscale*tol) && ...
+err = feval(G - F, x);
+pass(5) = (norm(err, inf) < 3*f.onefun.vscale*tol) && ...
     (abs(feval(G, a)) < f.onefun.vscale*tol);
 
 %%
@@ -86,8 +86,8 @@ f = bndfun(@(x) [sin(x) x.^2 exp(1i*x)], dom, [], [], pref);
 F_exact = bndfun(@(x) [(-cos(x)+cos(a)) (x.^3/3-a^3/3) ...
     ((exp(1i*x)-exp(1i*a))/1i)], dom, [], [], pref);
 F = cumsum(f);
-err = std(feval(F, x) - feval(F_exact, x));
-pass(8) = (norm(err, inf) < 2*max(f.onefun.vscale)*tol) && ...
+err = feval(F, x) - feval(F_exact, x);
+pass(8) = (norm(err, inf) < 5*max(f.onefun.vscale)*tol) && ...
     all(abs(feval(F, a) < 2*max(f.onefun.vscale)*tol));
 
 %%
@@ -96,15 +96,15 @@ f = bndfun(@(x) sin(x), dom, [], [], pref);
 F2_exact = bndfun(@(x) -sin(x)+x.*cos(a)+sin(a)-a*cos(a), ...
     dom, [], [], pref);
 F2 = cumsum(f,2);
-err = std(feval(F2, x) - feval(F2_exact, x));
+err = feval(F2, x) - feval(F2_exact, x);
 pass(9) = (norm(err, inf) < 5*(f.onefun.vscale)^2*tol) && ...
     abs(feval(F2, a) < (f.onefun.vscale)^2*tol);
 
-F3_exact = bndfun(@(x) cos(x)+x.^2*cos(a)/2+x*(sin(a)-a*cos(a)) - ...
-    (cos(a)/2-sin(a)), dom, [], [], pref);
+F3_exact = bndfun(@(x) cos(x)+x.^2*cos(a)/2+x*(sin(a)-a*cos(a)) + ...
+    (-cos(a)+a^2*cos(a)/2-a*sin(a)), dom, [], [], pref);
 F3 = cumsum(f,3);
-err = std(feval(F3, x) - feval(F3_exact, x));
-pass(10) = (norm(err, inf) < (f.onefun.vscale)^3*tol) && ...
+err = feval(F3, x) - feval(F3_exact, x);
+pass(10) = (norm(err, inf) < 2*(f.onefun.vscale)^3*tol) && ...
     abs(feval(F3, a) < (f.onefun.vscale)^3*tol);
 
 end

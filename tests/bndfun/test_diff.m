@@ -77,8 +77,7 @@ err = feval(dconst, x);
 pass(8) = (norm(err, inf) < tol);
 
 %%
-% Check higher-order derivatives.  (NB:  We relax the tolerance by n + 1
-% factors of 10, where n is the number of derivatives taken.)
+% Check higher-order derivatives.
 
 f = bndfun(@(x) x.*atan(x) - x - 0.5*log(1 + x.^2), dom, [], [], pref);
 df2 = diff(f, 2);
