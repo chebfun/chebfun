@@ -39,8 +39,9 @@ f = bndfun(@(x) [3*ones(size(x)), (6.4*x - 3i), ...
     (4*x.^2 - 2i*x + 3.7)], dom, [], [], pref);
 p = poly(f);
 p_exact = [0 0     3;
-    0 6.4   (-3i);
-    4 (-2i) 3.7];
-pass(5) = (norm(p(:) - p_exact(:), inf) < max(f.onefun.vscale)*f.onefun.epslevel);
+           0 6.4   (-3i);
+           4 (-2i) 3.7];
+pass(5) = (norm(p(:) - p_exact(:), inf) < ...
+    max(f.onefun.vscale)*f.onefun.epslevel);
 
 end

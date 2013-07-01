@@ -98,7 +98,7 @@ err = df6_exact(x) - feval(df6, x);
 pass(11) = (norm(err, inf) < (f.onefun.vscale)^6*tol);
 
 %%
-% Check operation for vectorized bndfun objects.
+% Check operation for array-valued bndfun objects.
 
 f = bndfun(@(x) [sin(x) x.^2 exp(1i*x)], dom, [], [], pref);
 df_exact = @(x) [cos(x) 2*x 1i*exp(1i*x)];
@@ -116,7 +116,7 @@ g = @(x) exp(1i*x) - 2*x.^2 + sin(x);
 err = feval(dim2df2, x) - g(x);
 pass(14) = (norm(err(:), inf) < max(f.onefun.vscale)*tol);
 
-% DIM option should return an empty bndfun for non-vectorized input.
+% DIM option should return an empty bndfun for non-array-valued input.
 f = bndfun(@(x) x.^3, dom);
 dim2df = diff(f, 1, 2);
 pass(15) = (isempty(dim2df));

@@ -1,6 +1,5 @@
 function X = mldivide(A, B)
 %\   Left matrix divide for BNDFUN objects.
-%
 %   A\B returns the least-squares solution (with respect to the continuous L^2
 %   norm) of A*X = B where A and B are BNDFUN objects.
 %
@@ -22,7 +21,6 @@ end
 % Call MLDIVIDE of the onefun fields of A and B.
 X = A.onefun\B.onefun;
 
-
 % % Alternatively we could call QR() at the BNDFUN level, since 
 % %  A*X = (Q*R)*X = B ==> R*X = Q'*B ==> X = R\(Q'*B) = R\innerProduct(Q, B)
 % which gives
@@ -31,6 +29,5 @@ X = A.onefun\B.onefun;
 % 
 % % Compute X:
 % % X = R\innerProduct(Q, B);
-
 
 end

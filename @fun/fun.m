@@ -128,7 +128,7 @@ classdef fun % (Abstract)
         % FUN objects are not transposable.
         f = ctranspose(f)
 
-        % Flip columns of a vectorised FUN object.
+        % Flip columns of an array-valued FUN object.
         f = fliplr(f)
         
         % Get properties of a FUN.

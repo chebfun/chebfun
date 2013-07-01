@@ -1,11 +1,11 @@
 function f = plus(f, g)
-%+	Addition of two BNDFUN objects.
+%+   Addition of two BNDFUN objects.
 %   F + G adds F and G, where F and G may be BNDFUN objects or scalars.
 %
 %   If F and G are both BNDFUN objects, they are assumed to have the same
 %   domain. The method gives no warning if their domains don't agree, but the
 %   output of the method will be gibberish.
-
+%
 % See also MINUS, UPLUS.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
@@ -17,12 +17,12 @@ if ( isempty(f) || isempty(g) ) % BNDFUN + [] = []
 
 elseif ( isa(g, 'double') ) % BNDFUN + double
     
-    % Update the onefun, everything else stays the same. The onefun plus method
+    % Update the onefun, everything else stays the same. The onefun PLUS method
     % ensures that the dimensions of the BNDFUN argument and the double argument
     % match (that is, their number of columns):
     f.onefun = f.onefun + g; 
     
-elseif ( isa(f,'double') ) % double + FUNCHEB
+elseif ( isa(f,'double') ) % double + BNDFUN
     
     % Call the ONEFUN/plus method for g.onefun:
     g.onefun = g.onefun + f;

@@ -25,7 +25,7 @@ for n = 1:1 %[TODO]: unbndfun
         dom, -0.7^3*cosh(0.7), pref);
     
     %%
-    % Check operation for vectorized inputs.
+    % Check operation for array-valued inputs.
     
     fun_op = @(x) -[sin(10*x) airy(x) (x/10).^3.*cosh(x/10)];
     f = testclass.make(fun_op, dom, [], [], pref);

@@ -28,11 +28,11 @@ end
 % Initialise Q to be a BNDFUN
 Q = f;
 
-% Rescaling factor, (b-a)/2
+% Rescaling factor, (b - a)/2
 rescaleFactor = .5*diff(f.domain);
 
 % Call QR on the ONEFUN of f.
-if nargout == 3
+if ( nargout == 3 )
     [Qone, R, E] = qr(f.onefun, varargin{:});
 else
     [Qone, R] = qr(f.onefun, varargin{:});
@@ -43,6 +43,7 @@ Q.onefun = Qone;
 
 % Rescale so that columns of Q will be orthonormal, rather than orthogonal.
 Q = Q/sqrt(rescaleFactor);
+
 % Need to rescale R as well so that f = QR
 R = R*sqrt(rescaleFactor);
 
