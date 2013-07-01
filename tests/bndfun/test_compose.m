@@ -56,7 +56,7 @@ for n = 1:3
     f2 = bndfun(@(x) cos(x), dom);
     g = compose(f1, @plus, f2, pref);
     h = @(x) sin(x) + cos(x);
-    pass(n, 5) = norm(h(x) - feval(g,x), inf) < 5*tol;
+    pass(n, 5) = norm(h(x) - feval(g, x), inf) < 5*tol;
     
     % Compose 2 array-valued BNDFUN objects with a binary function:
     f1 = bndfun(@(x) [sin(x) cos(x)], dom);
