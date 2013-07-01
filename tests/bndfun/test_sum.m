@@ -4,15 +4,20 @@ function pass = test_sum(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = bndfun.pref();
+    pref = fun.pref();
 end
 
 % Set a tolerance.
-pref = chebtech.pref(pref);
-tol = 10*pref.bndfun.eps;
+tol = 10*pref.fun.eps;
 
 % Set a domain
 dom = [-2 7];
+
+% Create seed for random number generator
+seedRNG(6178);
+
+% Generate a few random points to use as test values.
+x = diff(dom) * rand(1000, 1) + dom(1);
 
 pass = zeros(1, 11); % Pre-allocate pass matrix
 
@@ -66,10 +71,6 @@ I_exact = [(cos(dom(1)) - cos(dom(2))) (dom(2)^3 - dom(1)^3)/3 ...
     1i*(exp(1i*dom(1)) - exp(1i*dom(2)))];
 pass(9) = (max(abs(I - I_exact)) < max(f.onefun.vscale)*tol);
 
-% Generate a few random points to use as test values.
-seedRNG(6178);
-x = 2 * rand(100, 1) - 1;
-
 % DIM option with array-valued input.
 g = sum(f, 2);
 h = @(x) sin(x) + x.^2 + exp(1i*x);
@@ -78,7 +79,6 @@ pass(10) = (norm(feval(g, x) - h(x), inf) < max(g.onefun.vscale)*tol);
 % DIM option with non-array-valued input should leave everything alone.
 h = bndfun(@(x) cos(x), dom);
 sumh2 = sum(h, 2);
-pass(11) = all((h.onefun.values == sumh2.onefun.values) & ...
-    (h.onefun.coeffs == sumh2.onefun.coeffs));
+pass(11) = all((feval(h, x) == feval(sumh2, x)));
 
 end

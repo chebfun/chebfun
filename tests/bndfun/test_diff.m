@@ -4,11 +4,11 @@ function pass = test_diff(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = bndfun.pref;
+    pref = fun.pref;
 end
 
 % Set a tolerance.
-tol = 1e3*pref.bndfun.eps;
+tol = 1e3*pref.fun.eps;
 
 % Set the domain.
 dom = [-2 7];
@@ -83,19 +83,19 @@ f = bndfun(@(x) x.*atan(x) - x - 0.5*log(1 + x.^2), dom, [], [], pref);
 df2 = diff(f, 2);
 df2_exact = @(x) 1./(1 + x.^2);
 err = df2_exact(x) - feval(df2, x);
-pass(9) = (norm(err, inf) < 30*(f.onefun.vscale)^2*tol);
+pass(9) = (norm(err, inf) < 1500*(df2.onefun.vscale)^2*tol);
 
 f = bndfun(@(x) sin(x), dom, [], [], pref);
 df4 = diff(f, 4);
 df4_exact = @(x) sin(x);
 err = df4_exact(x) - feval(df4, x);
-pass(10) = (norm(err, inf) < 2*(f.onefun.vscale)^4*tol);
+pass(10) = (norm(err, inf) < 3000*(df4.onefun.vscale)^4*tol);
 
 f = bndfun(@(x) x.^5 + 3*x.^3 - 2*x.^2 + 4, dom, [], [], pref);
 df6 = diff(f, 6);
 df6_exact = @(x) zeros(size(x));
 err = df6_exact(x) - feval(df6, x);
-pass(11) = (norm(err, inf) < (f.onefun.vscale)^6*tol);
+pass(11) = (norm(err, inf) <= (df6.onefun.vscale)^6*tol);
 
 %%
 % Check operation for array-valued bndfun objects.

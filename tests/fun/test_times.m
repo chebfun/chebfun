@@ -12,7 +12,7 @@ dom = [-2 7];
 
 % Generate a few random points to use as test values.
 seedRNG(6178);
-x = -(diff(dom)/2) * rand(100, 1) + mean(dom);
+x = diff(dom) * rand(1000, 1) + dom(1);
 
 % Random numbers to use as arbitrary multiplicative constants.
 alpha = -0.194758928283640 + 0.075474485412665i;
@@ -150,7 +150,7 @@ g1 = f .* alpha;
 g2 = alpha .* f;
 result(1) = isequal(g1, g2);
 g_exact = @(x) f_op(x) .* alpha;
-tol = max(get(g1, 'vscale'))*get(g1, 'epslevel');
+tol = max(g1.onefun.vscale)*g1.onefun.epslevel;
 result(2) = norm(feval(g1, x) - g_exact(x), inf) < tol;
 end
 
@@ -161,10 +161,10 @@ end
 function result = test_mult_function_by_function(f, f_op, g, g_op, x, checkpos)
 h = f .* g;
 h_exact = @(x) f_op(x) .* g_op(x);
-tol = get(h, 'epslevel')*max(get(f, 'vscale'))*max(get(g, 'vscale'));
-result(1) = all(max(abs(feval(h, x) - h_exact(x))) < tol);
+tol = h.onefun.epslevel*max(f.onefun.vscale)*max(g.onefun.vscale);
+result(1) = all(max(abs(feval(h, x) - h_exact(x))) < 5*tol);
 if ( checkpos )
-    result(2) = all(h.onefun.values >= 0);
+    result(2) = all(feval(h, x) >= 0);
 end
 
 end

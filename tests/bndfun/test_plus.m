@@ -4,7 +4,7 @@ function pass = test_plus(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = bndfun.pref;
+    pref = fun.pref;
 end
 
 % Set a domain
@@ -88,7 +88,7 @@ f = bndfun(@(x) x, dom, [], [], pref);
 g = bndfun(@(x) cos(x) - 1, dom, [], [], pref);
 h1 = f + g;
 h2 = bndfun(@(x) x + cos(x) - 1, dom, [], [], pref);
-pass(19) = norm(h1.onefun.values - h2.onefun.values, inf) < 2*tol;
+pass(19) = norm(feval(h1, x) - feval(h2, x), inf) < 2*tol;
 
 %%
 % Check that adding a BNDFUN to an unhappy BNDFUN gives an unhappy

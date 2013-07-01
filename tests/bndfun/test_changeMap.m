@@ -4,11 +4,11 @@ function pass = test_changeMap(pref)
 
 % Get preferences:
 if ( nargin < 1 )
-    pref = bndfun.pref;
+    pref = fun.pref;
 end
 
 % Set the tolerance:
-tol = pref.bndfun.eps;
+tol = pref.fun.eps;
 
 pass = zeros(1, 2); % Pre-allocate pass matrix.
 

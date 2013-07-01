@@ -4,7 +4,7 @@ function pass = test_mldivide(pref)
 
 % Get preferences.
 if (nargin < 1)
-    pref = bndfun.pref;
+    pref = fun.pref;
 end
 
 % Set a tolerance.  (pref.eps does not matter here.)
@@ -12,6 +12,10 @@ tol = 10*eps;
 
 % Set the domain
 dom = [-2 7];
+
+% Generate a few random points to use as test values.
+seedRNG(6178);
+x = diff(dom) * rand(100, 1) + dom(1);
 
 pass = zeros(1, 6); % Pre-allocate pass matrix
 
@@ -23,7 +27,7 @@ f = bndfun(@(x) sin(x), dom, [], [], pref);
 x = f \ f;
 err = f - x*f;
 pass(1) = abs(x - 1) < tol;
-pass(2) = max(abs(err.onefun.values(:))) < tol;
+pass(2) = max(abs(feval(err, x))) < tol;
 
 % Same here.
 f = bndfun(@(x) [sin(x) cos(x)], dom, [], [], pref);
@@ -31,7 +35,7 @@ g = bndfun(@(x) sin(x + pi/4), dom, [], [], pref);
 x = f \ g;
 err = g - f*x;
 pass(3) = max(abs(x - [1/sqrt(2) ; 1/sqrt(2)])) < tol;
-pass(4) = max(abs(err.onefun.values(:))) < tol;
+pass(4) = max(abs(feval(err, x))) < tol;
 
 % A known least-squares solution.
 f = bndfun(@(x) [ones(size(x)) x x.^2 x.^3], dom, [], [], pref);

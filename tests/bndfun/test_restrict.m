@@ -4,7 +4,7 @@ function pass = test_restrict(pref)
 
 % Get preferences.
 if (nargin < 1)
-    pref = bndfun.pref;
+    pref = fun.pref;
 end
 
 % Set the domain

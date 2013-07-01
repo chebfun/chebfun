@@ -4,12 +4,12 @@ function pass = test_constructor(pref)
 
 % Get preferences:
 if ( nargin < 1 )
-    pref = bndfun.pref;
+    pref = fun.pref;
 end
 
 % Set the tolerance:
-pref = chebtech.pref(pref);
-tol = 10*pref.bndfun.eps;
+% pref = chebtech.pref(pref);
+tol = 10*pref.fun.eps;
 
 pass = zeros(1, 8); % Pre-allocate pass matrix.
 

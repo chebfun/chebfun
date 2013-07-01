@@ -4,7 +4,7 @@ function pass = test_mrdivide(pref)
 
 % Get preferences.
 if (nargin < 1)
-    pref = bndfun.pref;
+    pref = fun.pref;
 end
 
 % Set a domain

@@ -4,12 +4,11 @@ function pass = test_cumsum(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = bndfun.pref;
+    pref = fun.pref;
 end
-pref = chebtech.pref(pref);
 
 % Set a tolerance.
-tol = pref.bndfun.eps;
+tol = pref.fun.eps;
 
 % Set a domain
 dom = [-2 7];
@@ -88,8 +87,8 @@ F_exact = bndfun(@(x) [(-cos(x) + cos(a)) (x.^3/3 - a^3/3) ...
     ((exp(1i*x) - exp(1i*a))/1i)], dom, [], [], pref);
 F = cumsum(f);
 err = feval(F, x) - feval(F_exact, x);
-pass(8) = (norm(err, inf) < 5*max(f.onefun.vscale)*tol) && ...
-    all(abs(feval(F, a) < 2*max(f.onefun.vscale)*tol));
+pass(8) = (norm(err, inf) < max(F.onefun.vscale)*f.onefun.epslevel) && ...
+    all(abs(feval(F, a) < max(F.onefun.vscale)*f.onefun.epslevel));
 
 %%
 % Check operation for second and third order cumsums.
@@ -99,14 +98,14 @@ F2_exact = bndfun(@(x) -sin(x) + x.*cos(a) + sin(a) - a*cos(a), ...
 
 F2 = cumsum(f, 2);
 err = feval(F2, x) - feval(F2_exact, x);
-pass(9) = (norm(err, inf) < 5*(f.onefun.vscale)^2*tol) && ...
-    abs(feval(F2, a) < (f.onefun.vscale)^2*tol);
+pass(9) = (norm(err, inf) < 2*(F2.onefun.vscale)^2*f.onefun.epslevel) && ...
+    abs(feval(F2, a) < (F2.onefun.vscale)^2*f.onefun.epslevel);
 
 F3_exact = bndfun(@(x) cos(x) + x.^2*cos(a)/2 + x*(sin(a) - a*cos(a)) + ...
     (-cos(a) + a^2*cos(a)/2 - a*sin(a)), dom, [], [], pref);
 F3 = cumsum(f, 3);
 err = feval(F3, x) - feval(F3_exact, x);
-pass(10) = (norm(err, inf) < 2*(f.onefun.vscale)^3*tol) && ...
-    abs(feval(F3, a) < (f.onefun.vscale)^3*tol);
+pass(10) = (norm(err, inf) < (F3.onefun.vscale)^3*f.onefun.epslevel) && ...
+    abs(feval(F3, a) < (F3.onefun.vscale)^3*f.onefun.epslevel);
 
 end
