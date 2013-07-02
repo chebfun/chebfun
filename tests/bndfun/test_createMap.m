@@ -2,11 +2,6 @@
 
 function pass = test_createMap(pref)
 
-% Get preferences:
-if ( nargin < 1 )
-    pref = fun.pref;
-end
-
 pass = zeros(1, 2); % Pre-allocate pass matrix.
 
 dom = [-2 7];

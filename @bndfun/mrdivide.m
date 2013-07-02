@@ -18,7 +18,9 @@ function X = mrdivide(A, B)
 
 if ( (size(B, 2) ~= size(A, 2)) && ~(isa(B, 'double') && isscalar(B)) )
     error('CHEBFUN:BNDFUN:mrdivide:size', 'Matrix dimensions must agree.');
+    
 elseif ( isa(B, 'double') )  % BNDFUN / double
+    
     if ( isscalar(B) )
         % Scalar case is easy:
         X = A;                              % Copy A to X
@@ -33,7 +35,9 @@ elseif ( isa(B, 'double') )  % BNDFUN / double
 %         [Q, R] = qr(A, 0);
 %         X = Q*(R/B);
     end
+    
 elseif ( isa(A, 'double') )  % double / BNDFUN
+    
     % Call MRDIVIDE at the ONEFUN level:
     X = B;
     X.onefun = (A/B.onefun);
@@ -45,9 +49,10 @@ elseif ( isa(A, 'double') )  % double / BNDFUN
 %     % Return the transpose for the output.
 %     X = Q*(A/R).';
     
-elseif ( isa(B, 'BNDFUN') && isa(A, 'BNDFUN') )
-    error('CHEBFUN:BNDFUN:mrdivide:BndfunDivBndfun', ...
-        'Use ./ to divide by a BNDFUN.');
+elseif ( isa(B, 'bndfun') && isa(A, 'bndfun') )
+    error('CHEBFUN:BNDFUN:mrdivide:bndfunDivBndfun', ...
+        'Use ./ to divide BNDFUN by a BNDFUN.');
+    
 else
     error('CHEBFUN:BNDFUN:mrdivide:badArg', '%s/%s is not well-defined.', ...
         class(A), class(B));

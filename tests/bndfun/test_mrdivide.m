@@ -20,7 +20,7 @@ alpha = -0.194758928283640 + 0.075474485412665i;
 pass = zeros(1, 9); % Pre-allocate pass matrix
 
 %%
-% Check division of a bndfun object by a numeric array.
+% Check division of a BNDFUN object by a numeric array.
 
 f_op = @(x) [sin(x) cos(x)];
 f = bndfun(f_op, dom, [], [], pref);
@@ -46,7 +46,7 @@ pass(4) = norm(feval(g, x) - g_exact(x), inf) < ...
     max(f.onefun.vscale)*g.onefun.epslevel;
 
 %%
-% Check division of a numeric array by a bndfun object.
+% Check division of a numeric array by a BNDFUN object.
 
 f = bndfun(@(x) sin(x), dom);
 g = alpha / f;
@@ -63,28 +63,28 @@ pass(6) = norm(feval(g, x) - g_exact(x), inf) < ...
 
 % Catch dimension mismatch errors.
 try
-    g = f / [1 2 3];
+    g = f / [1 2 3]; %#ok<NASGU>
     pass(7) = false;
 catch ME
     pass(7) = strcmp(ME.identifier, 'CHEBFUN:BNDFUN:mrdivide:size');
 end
 
-% Can't do f/g if both f and g are bndfun objects.
+% Can't do f/g if both f and g are BNDFUN objects.
 try
     f = bndfun(@(x) sin(x), dom);
     g = bndfun(@(x) cos(x), dom);
-    h = f / g;
+    h = f / g; %#ok<NASGU>
     pass(8) = false;
 catch ME
     pass(8) = strcmp(ME.identifier, ...
-        'CHEBFUN:BNDFUN:mrdivide:badArg');
+        'CHEBFUN:BNDFUN:mrdivide:bndfunDivBndfun');
 end
 
-% Can't call mrdivide on a bndfund and a non-bndfun or non-double
+% Can't call mrdivide on a bndfund and a non-BNDFUN or non-double
 % object.
 try
     f = bndfun(@(x) sin(x), dom);
-    g = f / true;
+    g = f / true; %#ok<NASGU>
     pass(9) = false;
 catch ME
     pass(9) = strcmp(ME.identifier, 'CHEBFUN:BNDFUN:mrdivide:badArg');

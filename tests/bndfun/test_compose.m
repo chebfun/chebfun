@@ -87,7 +87,8 @@ catch ME
     pass(10) = ~isempty(strfind(ME.identifier, 'compose:arrval'));
 end
 
-% We cannot expect to compose two array-valued BNDFUN objects in this way:
+% Composition of two array-valued BNDFUN should fail if their dimenesions don't
+% agree:
 try
     f = bndfun(@(x) [x x.^2], dom);
     g = bndfun(@(x) sin(x), dom);

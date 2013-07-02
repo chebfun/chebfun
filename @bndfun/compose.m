@@ -10,7 +10,7 @@ function f = compose(f, op, g, pref)
 %   will not be useful.
 %
 %   H = COMPOSE(F, G) returns a BNDFUN representing G(F), where both F and G are
-%   also BNDFUN objects. If the range of F is not contained in the domain of G,
+%   also BNDFUN objects. If the range of F is not included in the domain of G,
 %   an error is thrown. Notice that the domain of H will be the same as the
 %   domain of F.
 %
@@ -47,7 +47,7 @@ if ( nargin == 2 )
         catch ME
             if ( ~isempty(strfind(ME.identifier, 'compose:range')) )
                 error('CHEBFUN:BNDFUN:compose:range', ...
-                    'The range of F is not in the domain of G.')
+                    'The range of F is not contained in the domain of G.')
             else
                 rethrow(ME)
             end

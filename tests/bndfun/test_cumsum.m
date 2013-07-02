@@ -13,7 +13,6 @@ tol = pref.fun.eps;
 % Set a domain
 dom = [-2 7];
 a = dom(1);
-b = dom(2);
 
 % Generate a few random points to use as test values.
 seedRNG(6178);
