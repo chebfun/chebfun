@@ -29,14 +29,14 @@ f = bndfun(@(x) exp(x/10) - 1, dom, [], [], pref);
 F = cumsum(f);
 F_ex = @(x) 10*exp(x/10) - x;
 err = feval(F, x) - F_ex(x);
-pass(1) = (norm(diff(err), inf) < 5*f.onefun.vscale*tol) && ...
+pass(1) = (norm(diff(err), inf) < 25*f.onefun.vscale*tol) && ...
     (abs(feval(F, a)) < f.onefun.vscale*tol);
 
 f = bndfun(@(x) 1./(1 + x.^2), dom, [], [], pref);
 F = cumsum(f);
 F_ex = @(x) atan(x);
 err = feval(F, x) - F_ex(x);
-pass(2) = (norm(diff(err), inf) < 20*f.onefun.vscale*tol) && ...
+pass(2) = (norm(diff(err), inf) < 30*f.onefun.vscale*tol) && ...
     (abs(feval(F, a)) < f.onefun.vscale*tol);
 
 f = bndfun(@(x) cos(1e4*x), dom, [], [], pref);
@@ -62,7 +62,7 @@ f = bndfun(@(x) sin(4*x).^2, dom, [], [], pref);
 F = bndfun(@(x) 0.5*x - 0.0625*sin(8*x), dom, [], [], pref);
 G = cumsum(f);
 err = feval(G - F, x);
-pass(5) = (norm(diff(err), inf) < 3*f.onefun.vscale*tol) && ...
+pass(5) = (norm(diff(err), inf) < 20*f.onefun.vscale*tol) && ...
     (abs(feval(G, a)) < f.onefun.vscale*tol);
 
 %%

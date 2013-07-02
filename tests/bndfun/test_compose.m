@@ -59,21 +59,21 @@ pass(6) = norm(feval(h, x) - feval(g, x)) < max(g.onefun.vscale)*tol;
 f = bndfun(@(x) x.^2, dom);
 g = bndfun(@(x) sin(x), [0 dom(2)^2]);
 h = compose(f, g);
-pass(7) = norm(feval(h, x) - sin(x.^2), inf) < max(h.onefun.vscale)*tol;
+pass(7) = norm(feval(h, x) - sin(x.^2), inf) < 5*max(h.onefun.vscale)*tol;
 
 % Compose f(g), when f and g are BNDFUN objects and g is array-valued:
 f = bndfun(@(x) x.^2, dom);
 g = bndfun(@(x) [sin(x) cos(x)], [0 dom(2)^2]);
 h = compose(f, g);
 pass(8) = norm(feval(h, x) - [sin(x.^2) cos(x.^2)], inf) < ...
-    max(h.onefun.vscale)*tol;
+    5*max(h.onefun.vscale)*tol;
 
 % Compose f(g), when f and g are BNDFUN objects and f is array-valued:
 f = bndfun(@(x) [x x.^2], dom);
 g = bndfun(@(x) sin(x), [dom(1) dom(2)^2]);
 h = compose(f, g);
 pass(9) = norm(feval(h, x) - [sin(x) sin(x.^2)], inf) < ...
-    max(h.onefun.vscale)*tol;
+    5*max(h.onefun.vscale)*tol;
 
 % We cannot expect to compose two array-valued BNDFUN objects f(g):
 try

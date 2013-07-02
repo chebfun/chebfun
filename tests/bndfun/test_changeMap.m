@@ -28,7 +28,7 @@ y = ((d - c)/2) * rand(100, 1) + (d + c)/2;
 gv = feval(g, y);
 x = a*(d - y)/(d - c) + b*(y - c)/(d - c);
 fv = feval(f, x);
-pass(1) = norm(gv - fv, inf) < f.onefun.vscale*tol;
+pass(1) = norm(gv - fv, inf) < 5*f.onefun.vscale*tol;
 
 % Change from dom2 to dom1.
 f = changeMap(g, dom1);
@@ -36,6 +36,6 @@ y = ((b - a)/2) * rand(100, 1) + (b + a)/2;
 fv = feval(f, y);
 x = c*(b - y)/(b - a) + d*(y - a)/(b - a);
 gv = feval(g, x);
-pass(2) = norm(fv - gv, inf) < f.onefun.vscale*tol;
+pass(2) = norm(fv - gv, inf) < 5*f.onefun.vscale*tol;
 
 end

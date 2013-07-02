@@ -61,7 +61,7 @@ pass(7) = (all(size(err) == [10 10 10])) && (norm(err(:), inf) < ...
 f = bndfun(@(x) [sin(x) x.^2 exp(1i*x)], dom, [], [], pref);
 f_exact = @(x) [sin(x) x.^2 exp(1i*x)];
 err = feval(f, x) - f_exact(x);
-pass(8) = all(max(abs(err)) < f.onefun.vscale*f.onefun.epslevel);
+pass(8) = all(max(abs(err)) < 2*f.onefun.vscale*f.onefun.epslevel);
 
 %%
 % Test for evaluating array-valued bndfun objects at matrix arguments if

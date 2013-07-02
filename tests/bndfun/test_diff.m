@@ -89,7 +89,7 @@ f = bndfun(@(x) sin(x), dom, [], [], pref);
 df4 = diff(f, 4);
 df4_exact = @(x) sin(x);
 err = df4_exact(x) - feval(df4, x);
-pass(10) = (norm(err, inf) < 3000*(df4.onefun.vscale)^4*tol);
+pass(10) = (norm(err, inf) < 4000*(df4.onefun.vscale)^4*tol);
 
 f = bndfun(@(x) x.^5 + 3*x.^3 - 2*x.^2 + 4, dom, [], [], pref);
 df6 = diff(f, 6);

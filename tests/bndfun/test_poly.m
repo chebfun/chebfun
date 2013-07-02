@@ -17,7 +17,7 @@ pass = zeros(1, 5); % Pre-allocate pass matrix
 
 f = bndfun(@(x) zeros(size(x)), dom, [], [], pref);
 p = poly(f);
-pass(1) = (norm(p, inf) < f.onefun.vscale*f.onefun.epslevel);
+pass(1) = (norm(p, inf) <= f.onefun.vscale*f.onefun.epslevel);
 
 f = bndfun(@(x) 3*ones(size(x)), dom, [], [], pref);
 p = poly(f);
