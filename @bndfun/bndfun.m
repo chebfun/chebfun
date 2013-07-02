@@ -37,9 +37,10 @@ classdef bndfun < fun
             % domain input has correct dimensions
             if ( (nargin < 2) || isempty(domain) )
                 domain = pref.bndfun.domain;
-            elseif ( ~all(size(domain) == [1, 2]) )
+            elseif ( ~all(size(domain) == [1, 2]) ) || diff(domain) <= 0
                 error('CHEBFUN:BNDFUN:domain',...
-                    'Domain argument should be a row vector with two entries.');
+                    ['Domain argument should be a row vector with two ', ...
+                    'entries in increasing order.']);
             end
             
             % Check domain:
