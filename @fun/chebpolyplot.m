@@ -1,10 +1,12 @@
 function varargout = chebpolyplot(f, varargin)
 %CHEBPOLYPLOT    Display Chebyshev coefficients graphically.
 %
-%   CHEBPOLYPLOT(F) plots the Chebyshev coefficients of the ONEFUN of a FUN F on
-%   a semilogy scale. A horizontal line at the EPSLEVEL of F.ONEFUN is also
-%   plotted. If F is a array-valued FUN then a curve is plotted for each
-%   component (column) of F.
+%   CHEBPOLYPLOT(F) assumes that the ONEFUN of F is based on Chebyshev
+%   technology. If not, the method is expected to throw an error. The method
+%   plots the Chebyshev coefficients of the ONEFUN of a FUN F on a semilogy
+%   scale. A horizontal line at the EPSLEVEL of F.ONEFUN is also plotted. If F
+%   is a array-valued FUN then a curve is plotted for each component (column) of
+%   F.
 %
 %   CHEBPOLYPLOT(F, S) allows further plotting options, such as linestyle,
 %   linecolor, etc, in the standard MATLAB manner. If S contains a string
@@ -14,11 +16,11 @@ function varargout = chebpolyplot(f, varargin)
 %   H = CHEBPOLYPLOT(F) returns a column vector of handles to lineseries
 %   objects. The final entry is that of the EPSLEVEL plot.
 %
+%   This method is mainly aimed at Chebfun developers.
+%
 % See also CHEBPOLY, PLOT.
 
-% [TODO]: How to document this file?
-
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with an empty input:
@@ -29,12 +31,18 @@ if ( isempty(f) )
     return
 end
 
-% Call CHEBPOLYPLOT() on the ONEFUN of F.
-h = chebpolyplot(f.onefun, varargin{:});
-
-% Give an output if one was requested:
-if ( nargout > 0 )
-    varargout{1} = h;
+% Check whether CHEBPOLYPLOT exists as a method
+methodsList = methods(f.onefun);
+if ~any(ismember(methodsList,'chebpolyplot'))
+    error('CHEBFUN:BNDFUN:CHEBPOLYPLOT',...
+        'Onefun of F does not have a chebpolyplot method.')
+else
+    % Call CHEBPOLYPLOT() on the ONEFUN of F.
+    h = chebpolyplot(f.onefun, varargin{:});
+    
+    % Give an output if one was requested:
+    if ( nargout > 0 )
+        varargout{1} = h;
+    end
 end
-
 end
