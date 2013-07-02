@@ -4,7 +4,7 @@ function pass = test_minus(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = bndfun.pref;
+    pref = fun.pref;
 end
 
 % Generate a few random points to use as test values.
