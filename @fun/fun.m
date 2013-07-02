@@ -1,15 +1,42 @@
 classdef fun % (Abstract)
-%FUN   Abstract FUN class for representing global functions on [a, b].
+%FUN    Represent global functions on an interval [a, b].
+% 
+% Abstract (interface) class for representing global functions on an interval
+% [a, b], which can either be bounded or unbounded. Functions are approximated
+% via a ONEFUN object, which lives on the interval [-1, 1], stored in the FUN.
+% Forward and inverse maps stored in the FUN object map the interval [-1, 1] to
+% [a, b], and vice versa.
+%
+% Constructor inputs:
+%   FUN.CONSTRUCTOR(OP, DOMAIN) constructs a FUN object from the function handle
+%   OP by mapping the DOMAIN to [-1, 1], and constructing an ONEFUN object to
+%   represent the function prescribed by OP. DOMAIN should be a row vector with
+%   two elements in increasing order. OP should be vectorised (i.e., accept a
+%   vector input) and output a vector of the same length as its input.
+%
+%   FUN.CONSTRUCTOR(OP, DOMAIN, VSCALE, HSCALE) allows the constructor of the
+%   ONEFUN of the FUN to use information about vertical and horizontal scales.
+%   If not given (or given as empty), the VSCALE defaults to 0 initially, and
+%   HSCALE defaults to 1.
+%
+%   FUN.CONSTRUCTOR(OP, DOMAIN, VSCALE, HSCALE, PREF) overrides the default
+%   behavior with that given by the preference structure PREF. See FUN.pref
+%   for details.
+%
+%   FUN.CONSTRUCTOR(VALUES, DOMAIN, VSCALE, HSCALE, PREF) returns a FUN object
+%   with a ONEFUN constructed by the data in the columns of VALUES (if supported
+%   by ONEFUN class constructor).
+%
+% See ONEFUN for further documentation of the ONEFUN class.
+%
+% See also FUN.pref, ONEFUN, BNDFUN, UNBNDFUN.
 
-% [TODO]: Docs for this file.
-
-% [TODO]: Test for minandmax, rdivide.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FUN Class Description:
 %
 % The FUN class is an abstract class for representations of functions on the
-% interval [a, b]. It acheives this my taking a ONEFUN on [-1, 1] and applying
+% interval [a, b]. It achieves this by taking a ONEFUN on [-1, 1] and applying
 % a mapping.
 %
 % The current instances of FUNs are BNDFUNS and UNBNDFUNS. The former are used
@@ -18,7 +45,8 @@ classdef fun % (Abstract)
 %
 % Note that all binary FUN operators (methods which can take two FUN arguments)
 % assume that the domains of the FUN objects agree. The methods will not throw
-% warning in case the domains don't agree, but their output will be gibberish.
+% warning in case the domains don't agree, but their output will not be
+% meaningful.
 %
 % Class diagram: [chebfun] <>-- [<<FUN>>] <>-- [<<onefun>>]
 %                                 ^   ^
@@ -28,8 +56,14 @@ classdef fun % (Abstract)
     
     %% Properties of FUN objects.
     properties (Access = public)
+        % The domain of the FUN object, [a, b].
         domain
+        % The mapping which maps [-1, 1] to [a, b], and vice versa.
         mapping
+        % The ONEFUN of the FUN object, which does the actual approximation of
+        % the function the FUN object represents. The ONEFUN object lives on the
+        % interval [-1, 1], the mapping of the FUN object takes care of mapping
+        % between [-1, 1] and vice versa.
         onefun
     end
     
@@ -63,7 +97,7 @@ classdef fun % (Abstract)
             if ( nargin < 4 || isempty(vscale) )
                 hscale = norm(domain, inf);
             end
-            % [TODO]: Explain this.
+            % [TODO]: Explain this. Only becomes relevant with UNBNDFUN
             if ( isinf(hscale) )
                 hscale = 1;
             end
@@ -105,21 +139,40 @@ classdef fun % (Abstract)
     
     %% ABSTRACT METHODS REQUIRED BY THIS CLASS.
     methods(Abstract = true)
-                
+        % [TODO]: Once UNBNDFUN and CHEBFUN advances, we should revisit this
+        % list, and add/throw away abstract methods as appropriate.
+        
+        % Compose a FUN with an operator or another FUN
+        f = compose(f, op, g, pref)
+        
+        % Indefinite integral of a FUN.
+        f = cumsum(f, m, pref)
+        
+        % Derivative of a FUN.
+        f = diff(f, k, dim)
+        
         % Evaluate a FUN.
         y = feval(f, x)
         
         % Compute the inner product of two FUN objects.
         out = innerProduct(f, g)
         
-        % [TODO]: Many others.
+        % Data for plotting a FUN
+        data = plotData(f);
+        
+        % Restrict a FUN to a subinterval.
+        f = restrict(f, s)
+        
+        % Definite integral of a FUN on its domain of definition.
+        out = sum(f, dim)
         
     end           
     
     %% METHODS IMPLEMENTED BY THIS CLASS.
     methods
         
-        % Plot (semilogy) the Chebyshev coefficients of a FUN object.
+        % Plot (semilogy) the Chebyshev coefficients of a FUN object, if it is
+        % based on Chebyshev technology.
         h = chebpolyplot(f, varargin)
 
         % Complex conjugate of a FUN.
@@ -161,7 +214,7 @@ classdef fun % (Abstract)
         % Length of a FUN.
         len = length(f)
 
-        % Convert a array-valued FUN into an ARRAY of FUN objects.
+        % Convert a array-valued FUN into a cell array of FUN objects.
         g = mat2cell(f, M, N)
 
         % Global maximum of a FUN on [a,b].
@@ -176,20 +229,14 @@ classdef fun % (Abstract)
         % Subtraction of two FUN objects.
         f = minus(f, g)
 
-%         % [TODO]: Left matrix divide for FUN objects.
-%         X = mldivide(A, B)
-
-        % [TODO]: Right matrix divide for a FUN.
-%         X = mrdivide(B, A)
-
         % Multiplication of FUN objects.
         f = mtimes(f, c)
 
         % Basic linear plot for FUN objects.
         varargout = plot(f, varargin)
 
-        % [TODO]: Addition of two FUN objects.
-%         f = plus(f, g)
+        % Addition of two FUN objects.
+        f = plus(f, g)
 
         % Right array divide for a FUN.
         f = rdivide(f, c, pref)
@@ -209,7 +256,7 @@ classdef fun % (Abstract)
         % FUN multiplication.
         f = times(f, g, varargin)
         
-        % FUN obects are not transposable.
+        % FUN objects are not transposable.
         f = transpose(f)
 
         % Unary minus of a FUN.

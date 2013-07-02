@@ -1,5 +1,33 @@
 classdef bndfun < fun
-%BNDFUN   Represent globally smooth functions on a bounded interval [a, b].
+%BNDFUN    Represent global functions on a bounded interval [a, b].
+% 
+% Class for representing global functions on a bounded interval [a, b].
+% Functions are approximated via a ONEFUN object, which lives on the interval
+% [-1, 1], stored in the BNDFUN. Forward and inverse maps stored in the BNDFUN
+% object map the interval [-1, 1] to [a, b], and vice versa.
+%
+% Constructor inputs:
+%   BNDFUN(OP, DOMAIN) constructs a BNDFUN object from the function handle OP by
+%   mapping the DOMAIN to [-1, 1], and constructing an ONEFUN object to
+%   represent the function prescribed by OP. DOMAIN should be a row vector with
+%   two elements in increasing order. OP should be vectorised (i.e., accept a
+%   vector input) and output a vector of the same length as its input.
+%
+%   BNDFUN(OP, DOMAIN, VSCALE, HSCALE) allows the constructor of the ONEFUN of
+%   the BNDFUN to use information about vertical and horizontal scales. If not
+%   given (or given as empty), the VSCALE defaults to 0 initially, and HSCALE
+%   defaults to 1.
+%
+%   BNDFUN(OP, DOMAIN, VSCALE, HSCALE, PREF) overrides the default behavior with
+%   that given by the preference structure PREF. See FUN.pref for details.
+%
+%   BNDFUN(VALUES, DOMAIN, VSCALE, HSCALE, PREF) returns a BNDFUN object with a
+%   ONEFUN constructed by the data in the columns of VALUES (if supported by
+%   ONEFUN class constructor).
+%
+% See ONEFUN for further documentation of the ONEFUN class.
+%
+% See also FUN, FUN.pref, ONEFUN.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % BNDFUN Class Description:
@@ -13,7 +41,10 @@ classdef bndfun < fun
 % will not issue warnings if this condition is violated, but the results will
 % not be meaningful.
 %
-% Class diagram: [<<fun>>] <-- [<<bndfun>>] <>-- [<<onefun>>]
+% Class diagram: [<<FUN>>] <>-- [<<onefun>>]
+%                   ^
+%                   |  
+%                [bndfun]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     %% CLASS CONSTRUCTOR:
@@ -106,12 +137,33 @@ classdef bndfun < fun
         % Change of domains of BNDFUN via linear change of variables
         f = changeMap(f,newdom)
         
+        % Evaluate a BNDFUN.
+        y = feval(f, x)
+        
         % Flip/reverse a BNDFUN object.
         f = flipud(f)
+
+        % Compute the inner product of two BNDFUN objects.
+        out = innerProduct(f, g)
+        
+        % Left matrix divide for BNDFUN objects.
+        X = mldivide(A, B)
+
+        % Right matrix divide for a BNDFUN.
+        X = mrdivide(B, A)
+        
+        % Estimate the Inf-norm of a BNDFUN
+        out = normest(f);
+        
+        % Data for plotting a BNDFUN
+        data = plotData(f);
+                
+        % Polynomial coefficients of a BNDFUN.
+        out = poly(f)
         
         % QR factorisation of an array-valued BNDFUN.
         [f, R, E] = qr(f, flag)
-
+        
         % Restrict a BNDFUN to a subinterval.
         f = restrict(f, s)
         
