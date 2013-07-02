@@ -4,6 +4,8 @@ function pass = test_compose(pref)
 
 if ( nargin < 1 )
     pref = fun.pref;
+    % [TODO]: Once preference structure has been settled, we don't want to be
+    % calling chebtech.pref here.
     pref = chebtech.pref(pref);
 end
 
