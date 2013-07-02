@@ -1,4 +1,6 @@
 function prefs = pref(varargin)
+% [TODO]: Do we actually need this preference method? If so, it needs
+% documentation.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
