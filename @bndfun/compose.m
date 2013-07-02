@@ -4,18 +4,22 @@ function f = compose(f, op, g, pref)
 %   BNDFUN object, and OP is a function handle.
 %
 %   H = COMPOSE(F, OP, G) returns OP(F, G) where F and G are BNDFUN objects, and
-%   OP is a function handle.
+%   OP is a function handle. Note that the inputs are assumed to "make sense",
+%   that is, F and G are assumed to have the same domain. No warning will be
+%   given/error thrown if that is not the case, but the output of the method
+%   will not be useful.
 %
 %   H = COMPOSE(F, G) returns a BNDFUN representing G(F), where both F and G are
 %   also BNDFUN objects. If the range of F is not contained in the domain of G,
 %   an error is thrown. Notice that the domain of H will be the same as the
 %   domain of F.
 %
-%   H = COMPOSE(F, OP, PREF), COMPOSE(F, OP, G, PREF), or COMPOSE(F, G, PREF)
-%   uses the options passed by the prefences structure PREF. In particular, one
-%   can pass a PREF.(class(F)).refinmentFunction which takes advantage of the
-%   fact that F (and possibly OP or G) are have additional structure beyond
-%   just being objects.
+%   H = COMPOSE(F, OP, G, PREF) or H = COMPOSE(F, OP, [], PREF), where F (and G)
+%   are BNDFUN objects, and OP is a function handle, uses the options passed by
+%   the preferences structure PREF to build the returned BNDFUN. In particular,
+%   one can pass a PREF.(class(F.ONEFUN)).refinementFunction which takes
+%   advantage of the fact that F (and possibly OP or G) are have additional
+%   structure beyond just being objects.
 %
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -27,64 +31,47 @@ if ( nargin == 2 )
         g = op;
         
         % For composition to work with two BNDFUN objects, the range of F must
-        % be within the domain of G. Check whether that is the case.
-        
-        % [TODO]: Should BNDFUN compose assume that it's being called with
-        % sensible inputs? Presumably, we're having to match up pieces at a
-        % higher level, and multiple calls to find mins and maxes will be
-        % expensive.
-        
-        % The tolerance of the match is determined by the hscale of F and G.
-        tol = max(get(f, 'hscale'), get(g, 'hscale'))*eps;
-        
-        % min and max values of F
-        mvals = minandmax(f);
-        fMinVal = min(mvals(1,:));
-        fMaxVal = max(mvals(2,:));
-        
-        % Left and right endpoints of the domain of G
-        dom = g.domain;
-        gA = dom(1);
-        gB = dom(2);
-        
-        if ( (fMinVal < (gA - tol)) || (fMaxVal > (gB + tol)) )
-            % Throw an error if domains don't match:
-            error('BNDFUN:compose:domainMismatch', ...
-                ['For composition G(F), the range of F must be contained ', ...
-                 'in the domain of G.'])
-        end
-        
-        % Map the range of F to a range which lies in [-1 1]. Note that we have
-        % already verified that the domain of G, that is [gA,gB], encloses the
-        % range of F, that is [fMinVals, fMaxVals]. Hence, this guarantees that
-        % the values of fMapped, that is, its range, will be within [-1,1],
-        % which is necessary, as the domain of the ONEFUN of G is [-1,1].
+        % be within the domain of G. However, we allow this method to assume
+        % that is the case.
         %
-        % However, notice that it is not necessary that the range of fMapped is
-        % the entire interval [-1,1], it only has to be included in [-1,1]. This
-        % mapping is a linear transformation of the range of the ONEFUN of f
-        % (which in fact is the same as the range of F) to a (subset) of the
-        % domain of the ONEFUN of G, i.e., [-1,1].
-        fMapped = (2*f.onefun - (gA + gB))./(gB - gA);
-        
-        % Do the composition
-        f.onefun = compose(fMapped, g.onefun);    
+        % When we compose F and G, we need to find the appropriate part of the
+        % domain of G on which the range of F lies. Since we then want to work
+        % with the onefun of G, we apply the inverse map for the domain of G to
+        % find the (sub)interval on [-1, 1] on which the range of F (and hence
+        % its ONEFUN) lives.
+        fMapped  = g.mapping.inv(f.onefun);
+        % Try to do the composition, will only work if the range of F lies in
+        % the domain of G.
+        try
+            f.onefun = compose(fMapped, g.onefun);
+        catch ME
+            if ( ~isempty(strfind(ME.identifier, 'compose:range')) )
+                error('CHEBFUN:BNDFUN:compose:range', ...
+                    'The range of F is not in the domain of G.')
+            else
+                rethrow(ME)
+            end
+        end
     else
         % OP is an operator!
         f.onefun = compose(f.onefun, op);
     end
     
 elseif ( nargin == 3 )
-    if ( isstruct(g) )
-        % Third argument passed was a preference structure.
-        f.onefun = compose(f.onefun, op, [], g);
-    else
+    if ( isa(g,'bndfun') )
         % Third argument passed was a bndfun. Compose the onefun of f with the
         % onefun of g:
         f.onefun = compose(f.onefun, op, g.onefun);
+    else
+        % Third argument passed was not a bndfun.
+        f.onefun = compose(f.onefun, op, g);
     end
 else
-    f.onefun = compose(f.onefun, op, g.onefun, pref);
+    if isempty(g)
+        f.onefun = compose(f.onefun, op, g, pref);
+    else
+        f.onefun = compose(f.onefun, op, g.onefun, pref);
+    end
 end
 
 end

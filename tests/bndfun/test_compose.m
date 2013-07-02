@@ -18,26 +18,26 @@ pass = zeros(1, 12); % Pre-allocate pass matrix.
 
 % Compose a scalar-valued BNDFUN object with sin(x):
 f = bndfun(@(x) x, dom);
-g = compose(f, @sin, pref);
+g = compose(f, @sin, [], pref);
 h = bndfun(@sin, dom);
 pass(1) = normest(h - g) < tol;
 
 % Compose an array-valued BNDFUN object with sin(x):
 f = bndfun(@(x) [x x], dom);
-g = compose(f, @sin, pref);
+g = compose(f, @sin, [], pref);
 h = bndfun(@(x) [sin(x) sin(x)], dom);
 pass(2) = normest(h - g) < tol;
 
 % Compose an array-valued BNDFUN object with sin(x):
 f = bndfun(@(x) [x x.^2], dom);
-g = compose(f, @sin, pref);
+g = compose(f, @sin, [], pref);
 
 pass(3) = norm(sin([x, x.^2]) - feval(g, x), inf) < ...
     max(g.onefun.vscale)*tol;
 
 % Compose an array-valued BNDFUN object with sin(x):
 f = bndfun(@(x) [x x x.^2], dom);
-g = compose(f, @sin, pref);
+g = compose(f, @sin, [], pref);
 pass(4) = norm(sin([x x x.^2]) - feval(g, x), inf) < ...
     max(g.onefun.vscale)*tol;
 
@@ -59,21 +59,21 @@ pass(6) = norm(feval(h, x) - feval(g, x)) < max(g.onefun.vscale)*tol;
 f = bndfun(@(x) x.^2, dom);
 g = bndfun(@(x) sin(x), [0 dom(2)^2]);
 h = compose(f, g);
-pass(7) = norm(feval(h, x) - sin(x.^2), inf) < 5*max(h.onefun.vscale)*tol;
+pass(7) = norm(feval(h, x) - sin(x.^2), inf) < 7*max(h.onefun.vscale)*tol;
 
 % Compose f(g), when f and g are BNDFUN objects and g is array-valued:
 f = bndfun(@(x) x.^2, dom);
 g = bndfun(@(x) [sin(x) cos(x)], [0 dom(2)^2]);
 h = compose(f, g);
 pass(8) = norm(feval(h, x) - [sin(x.^2) cos(x.^2)], inf) < ...
-    5*max(h.onefun.vscale)*tol;
+    7*max(h.onefun.vscale)*tol;
 
 % Compose f(g), when f and g are BNDFUN objects and f is array-valued:
 f = bndfun(@(x) [x x.^2], dom);
 g = bndfun(@(x) sin(x), [dom(1) dom(2)^2]);
 h = compose(f, g);
 pass(9) = norm(feval(h, x) - [sin(x) sin(x.^2)], inf) < ...
-    5*max(h.onefun.vscale)*tol;
+    7*max(h.onefun.vscale)*tol;
 
 % We cannot expect to compose two array-valued BNDFUN objects f(g):
 try
@@ -82,7 +82,7 @@ try
     compose(f, g);
     pass(10) = false;
 catch ME
-    pass(10) = strcmp(ME.identifier, 'BNDFUN:compose:domainMismatch');
+    pass(10) = ~isempty(strfind(ME.identifier, 'compose:arrval'));
 end
 
 % We cannot expect to compose two array-valued BNDFUN objects in this way:
@@ -92,7 +92,7 @@ try
     compose(f, @plus, g)
     pass(11) = false;
 catch ME
-    pass(11) = strcmp(ME.identifier, 'CHEBFUN:CHEBTECH:compose:dim');
+    pass(11) =  ~isempty(strfind(ME.identifier, 'compose:dim'));
 end
 
 % Can't compose two BNDFUN objects f(g) if the range of g does not lie in
@@ -103,7 +103,7 @@ try
     compose(g, f);
     pass(12) = false;
 catch ME
-    pass(12) = strcmp(ME.identifier, 'BNDFUN:compose:domainMismatch');
+    pass(12) = strcmp(ME.identifier, 'CHEBFUN:BNDFUN:compose:range');
 end
 
 end
