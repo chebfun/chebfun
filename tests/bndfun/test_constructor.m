@@ -8,48 +8,28 @@ if ( nargin < 1 )
 end
 
 % Set the tolerance:
-% [TODO]: Once preference structure has been settled, we don't want to be
-% calling chebtech.pref here.
-pref = chebtech.pref(pref);
 tol = 10*pref.fun.eps;
 
-pass = zeros(1, 8); % Pre-allocate pass matrix.
+% Set the domain
+dom = [-2 7];
+
+pass = zeros(1, 5); % Pre-allocate pass matrix.
 
 %%
-% Test on a scalar-valued function for extrapolation:
-pref.chebtech.extrapolate = 1;
-f = @(x) sin(x);
-dom = [-2 7];
-g = bndfun(f, dom, [], [], pref);
-x = linspace(dom(1), dom(2), 100);
-pass(1) = norm(f(x) - feval(g, x), inf) < max(g.onefun.vscale)*tol;
 
 % Test on a scalar-valued function for interpolation:
 f = @(x) sin(x)./x;
 g = bndfun(f, dom, [], [], pref);
-pass(2) = abs(1 - feval(g, 0)) < max(g.onefun.vscale)*tol;
+pass(1) = abs(1 - feval(g, 0)) < max(g.onefun.vscale)*tol;
 
 %%
-% Test on an array-valued function for extrapolation:
-pref.chebtech.extrapolate = 1;
-f = @(x) [sin(x) cos(x) exp(x)];
-g = bndfun(f, dom, [], [], pref);
-x = linspace(dom(1), dom(2), 100);
-pass(3) = norm(f(x) - feval(g, x), inf) < 2*max(g.onefun.vscale)*tol;
 
 % Test on an array-valued function for interpolation:
 f = @(x) [sin(x)./x sin(x - 3)./(x - 3)];
 g = bndfun(f, dom, [], [], pref);
 gv = [feval(g, 0) feval(g, 3)];
-pass(4) = norm(ones(1, 2) - [gv(1) gv(4)], inf) < max(g.onefun.vscale)*tol;
+pass(2) = norm(ones(1, 2) - [gv(1) gv(4)], inf) < max(g.onefun.vscale)*tol;
 
-%%
-% Test on CHEBTECH preferences:
-pref.chebtech.n = 50;
-f = @(x) [sin(x) cos(x) exp(x)];
-g = bndfun(f, dom, [], [], pref);
-x = linspace(-1, 1, 100);
-pass(5) = ( (norm(f(x) - feval(g, x), inf) < 50*tol) && size(g, 1) == 50 );
 
 %%
 % Some other tests:
@@ -61,27 +41,27 @@ pref = chebtech.pref(pref);
 try
     f = @(x) x + NaN;
     bndfun(f, dom, [], [], pref);
-    pass(6) = false;
+    pass(3) = false;
 catch ME
-    pass(6) = strcmp(ME.message, 'Too many NaNs/Infs to handle.');
+    pass(3) = strcmp(ME.message, 'Too many NaNs/Infs to handle.');
 end
 
 % As should this:
 try
     f = @(x) x + Inf;
     bndfun(f, dom, [], [], pref);
-    pass(7) = false;
+    pass(4) = false;
 catch ME
-    pass(7) = strcmp(ME.message, 'Too many NaNs/Infs to handle.');
+    pass(4) = strcmp(ME.message, 'Too many NaNs/Infs to handle.');
 end
 
 % Test that the extrapolation option avoids endpoint evaluations.
 pref.chebtech.extrapolate = 1;
 try 
     bndfun(@(x) [F(x) F(x)], dom, [], [], pref);
-    pass(8) = true;
+    pass(5) = true;
 catch ME %#ok<NASGU>
-    pass(8) = false;
+    pass(5) = false;
 end
 
     function y = F(x)
