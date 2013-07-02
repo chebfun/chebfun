@@ -33,9 +33,13 @@ classdef bndfun < fun
                 pref = bndfun.pref(pref);
             end
             
-            % Use default domain if none given:
+            % Use default domain if none given. Otherwise, check whether the
+            % domain input has correct dimensions
             if ( (nargin < 2) || isempty(domain) )
                 domain = pref.bndfun.domain;
+            elseif ( ~all(size(domain) == [1, 2]) )
+                error('CHEBFUN:BNDFUN:domain',...
+                    'Domain argument should be a row vector with two entries.');
             end
             
             % Check domain:
@@ -56,7 +60,7 @@ classdef bndfun < fun
 
             linmap = bndfun.createMap(domain);
             % Include linear mapping from [-1,1] to [a,b] in the op:
-            if ( isa(op, 'function_handle') && ~all(domain == [-1 1]) && ~isnumeric(op) )
+            if ( isa(op, 'function_handle') && ~all(domain == [-1, 1]) && ~isnumeric(op) )
                 op = @(x) op(linmap.for(x));
             end
             
@@ -110,7 +114,7 @@ classdef bndfun < fun
         % Restrict a BNDFUN to a subinterval.
         f = restrict(f, s)
         
-        % Definite integral of a BNDFUN on the interval [a,b].
+        % Definite integral of a BNDFUN on the interval [a, b].
         out = sum(f, dim)
     end
 end
