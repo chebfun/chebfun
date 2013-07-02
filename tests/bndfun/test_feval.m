@@ -68,7 +68,7 @@ pass(8) = all(max(abs(err)) < 2*f.onefun.vscale*f.onefun.epslevel);
 % the operation makes sense.
 
 f = bndfun(@(x) [sin(pi*x) cos(pi*x)], dom, [], [], pref);
-x2 = [-1 0 1 ; .25 .5 .75];
+x2 = [-1 0 5 ; -1.75 .5 4.75];
 fx = feval(f, x2);
 f_exact = [0 0 0 -1 1 -1
     [1 sqrt(2) 1 1 0 -1]/sqrt(2)];

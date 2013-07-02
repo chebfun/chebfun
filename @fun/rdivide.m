@@ -1,6 +1,6 @@
 function f = rdivide(f, g, varargin)
 %./   Right array divide for a FUN.
-%   F ./ C divides the FUN F by a double C. If F is am array-valued FUN with M
+%   F ./ C divides the FUN F by a double C. If F is an array-valued FUN with M
 %   columns, then C must be either a scalar or a 1xM array.
 %
 %   Alternatively if C is a FUN with the same number of columns as F or F is a
