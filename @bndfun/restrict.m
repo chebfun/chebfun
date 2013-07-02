@@ -31,7 +31,7 @@ t = f.mapping.inv(s);
 % Restrict the ONEFUN field of f.
 restrictedOnefuns = restrict(f.onefun, t);
 
-% In case S = [S1, S2], i.e., we are only restricting to a one subinterval,
+% In case S = [S1, S2], i.e., we are only restricting to one subinterval,
 % restrictedOnefuns will be a ONEFUN. In case S = [S1, S2, ..., SN], i.e., we
 % are restricting to multiple subinterval, restrictedOnefuns will be a
 % cell-array of ONEFUN objects. We need to treat the cases differently, as we
