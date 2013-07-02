@@ -1,13 +1,12 @@
 function map = createMap(ends)
 %CREATEMAP   Creates a linear map structure for BNDFUN objects.
-%   MAP = CREATEMAP(ENDS) returns a structure that defines a linear map. 
-%   The structure MAP consists of three function handles and one string:
-%      MAP.FOR is a function that maps [-1,1] to ENDS.
+%   MAP = CREATEMAP(ENDS), where ENDS is a two-vector, returns a structure that
+%   defines a linear map. The structure MAP consists of three function handles:
+%      MAP.FOR is a function that maps [-1,1] to [ENDS(1), ENDS(2)].
 %      MAP.INV is the inverse map.
 %      MAP.DER is the derivative of the map defined in MAP.FOR
-%      MAP.NAME is a string that identifies the map.
 
-% Copyright 2011 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 a = ends(1);

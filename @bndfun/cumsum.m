@@ -3,12 +3,9 @@ function f = cumsum(f, m)
 %   CUMSUM(F) is the indefinite integral of the BNDFUN F on an interval [a,b],
 %   with the constant of integration chosen so that F(a) = 0.
 %
-%   CUMSUM(F, M) will compute the Mth definite integral with the constant of
+%   CUMSUM(F, M) will compute the Mth indefinite integral with the constant of
 %   integration chosen so that each intermediate integral evaluates to 0 at x=a.
 %   Thus CUMSUM(F, 2) is equivalent to CUMSUM(CUMSUM(F)).
-%
-%   CUMSUM(F, PREF) or CUMSUM(F, M,  PREF) uses options from the preference
-%   structure PREF when building the output BNDFUN.
 %
 % See also DIFF, SUM.
 
@@ -23,7 +20,7 @@ end
 
 % Parse inputs:
 if ( nargin == 1 )
-    % Compute first antiderivative by default
+    % Compute first indefinite intergral by default
     m = 1;
 end
 
