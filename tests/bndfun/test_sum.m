@@ -76,7 +76,7 @@ g = sum(f, 2);
 h = @(x) sin(x) + x.^2 + exp(1i*x);
 pass(10) = (norm(feval(g, x) - h(x), inf) < max(g.onefun.vscale)*tol);
 
-% DIM option with non-array-valued input should leave everything alone.
+% DIM option with non-array-valued input should leave everything as it was.
 h = bndfun(@(x) cos(x), dom);
 sumh2 = sum(h, 2);
 pass(11) = all((feval(h, x) == feval(sumh2, x)));
