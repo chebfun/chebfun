@@ -25,7 +25,7 @@ if ( isempty(f) )
     return
 end
 
-% Get the size of the values matrix:
+% Get the size of the onefun array:
 m = size(f.onefun,2);
 
 % Parse the inputs:
@@ -40,8 +40,8 @@ end
 % Check dimensions:
 if ( ~isscalar(M) || M ~= 1)
     error('CHEBFUN:FUN:mat2cell:size', ...
-        ['Input arguments, D1 through D2, must sum to each dimension of the', ...
-        ' input matrix size, [1,%d].'], size(f.values, 2));
+        ['Input arguments, M and N, must sum to each dimension of the', ...
+        ' input size, [1,%d].'], size(f.onefun, 2));
 end
 
 % Call MAT2CELL of the ONEFUN:

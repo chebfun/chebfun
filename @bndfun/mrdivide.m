@@ -24,12 +24,17 @@ elseif ( isa(B, 'double') )  % BNDFUN / double
         X = A;                              % Copy A to X
         X.onefun = X.onefun/B;              % mrdivide of the onefun
     else
-        % For matrix case, we do least squares via QR:
-        [Q, R] = qr(A, 0);
-        X = Q*(R/B);
+        % Call MRDIVIDE at the ONEFUN level
+        X = A;
+        X.onefun = (A.onefun/B);
+        
+%         % Alternatively, we could call QR() at the BNDFUN level
+%         % For matrix case, we do least squares via QR:
+%         [Q, R] = qr(A, 0);
+%         X = Q*(R/B);
     end
 elseif ( isa(A, 'double') )  % double / BNDFUN
-%     % Call MRDIVIDE at the ONEFUN level:
+    % Call MRDIVIDE at the ONEFUN level:
     X = B;
     X.onefun = (A/B.onefun);
     X = X/(.5*diff(B.domain));
