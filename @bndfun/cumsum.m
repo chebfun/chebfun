@@ -1,4 +1,4 @@
-function f = cumsum(f, m, varargin)
+function f = cumsum(f, m)
 %CUMSUM   Indefinite integral of a BNDFUN.
 %   CUMSUM(F) is the indefinite integral of the BNDFUN F on an interval [a,b],
 %   with the constant of integration chosen so that F(a) = 0.
@@ -23,29 +23,15 @@ end
 
 % Parse inputs:
 if ( nargin == 1 )
+    % Compute first antiderivative by default
     m = 1;
-    % Obtain preferences
-    pref = bndfun.pref();
-elseif ( nargin < 3 )
-    if ( isstruct(m) )
-        pref = m;
-        m = 1;
-    else
-        pref = bndfun.pref();
-    end
 end
 
 % Rescaling factor, (b-a)/2, to the mth power.
 rescaleFactorm = (.5*diff(f.domain))^m;
 
-% Create a preference structure that the cumsum method of the ONEFUN class
-% can work with. This is achieved by calling the static PREF method of
-% f.onefun, which will call the PREF method of the correct class, using an
-% input of the preference structure of the BNDFUN class.
-pref = f.onefun.pref(pref, pref.bndfun);
-
 % Compute the CUMSUM of all of f's ONEFUNs, multiply by the rescaling factor,
 % and assign to the ONEFUN field of f.
-f.onefun = cumsum(f.onefun, m, pref)*rescaleFactorm;
+f.onefun = cumsum(f.onefun, m)*rescaleFactorm;
 
 end

@@ -46,10 +46,12 @@ classdef bndfun < fun
             
             % Define scales if none given:
             if ( (nargin < 3) || isempty(vscale) )
-                vscale = norm(domain, inf);
+                vscale = 0;
             end
             if ( (nargin < 4) || isempty(hscale) )
-                hscale = 0; 
+                % [TODO]: Or should this be 1? What does the chebfun level pass
+                % down?
+                hscale = norm(domain, inf); 
             end
 
             linmap = bndfun.createMap(domain);
