@@ -26,7 +26,8 @@ function f = compose(f, op, g, pref)
 
 % Parse inputs:
 if ( nargin == 2 )
-    if ( isa(op, 'bndfun') )
+    if ( isa(op, 'bndfun') )    % Standard composition ( out = op(f) )
+        
         % op is a BNDFUN! Rename it to g for clarity
         g = op;
         
@@ -42,23 +43,15 @@ if ( nargin == 2 )
         fMapped  = g.mapping.inv(f.onefun);
         % Try to do the composition, will only work if the range of F lies in
         % the domain of G.
-        try
-            f.onefun = compose(fMapped, g.onefun);
-        catch ME
-            if ( ~isempty(strfind(ME.identifier, 'compose:range')) )
-                error('CHEBFUN:BNDFUN:compose:range', ...
-                    'The range of F is not contained in the domain of G.')
-            else
-                rethrow(ME)
-            end
-        end
+        f.onefun = compose(fMapped, g.onefun);
     else
         % OP is an operator!
         f.onefun = compose(f.onefun, op);
     end
     
-elseif ( nargin == 3 )
-    if ( isa(g,'bndfun') )
+elseif ( nargin == 3 )          % out = op(f,g). No preferences passed.
+    
+    if ( isa(g, 'bndfun') )
         % Third argument passed was a bndfun. Compose the onefun of f with the
         % onefun of g:
         f.onefun = compose(f.onefun, op, g.onefun);
@@ -66,8 +59,13 @@ elseif ( nargin == 3 )
         % Third argument passed was not a bndfun.
         f.onefun = compose(f.onefun, op, g);
     end
-else
-    if isempty(g)
+    
+else                            % out = op(f,g). Preferences passed.
+    
+    % Merge preferences:
+    pref = f.onefun.pref(pref, pref.fun);
+    % Call compose:
+    if ( isempty(g) )
         f.onefun = compose(f.onefun, op, g, pref);
     else
         f.onefun = compose(f.onefun, op, g.onefun, pref);

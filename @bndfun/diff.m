@@ -2,11 +2,10 @@ function f = diff(f, k, dim)
 %DIFF   Derivative of a BNDFUN.
 %   DIFF(F) is the derivative of F, and DIFF(F, K) is the Kth derivative.
 %
-%   DIFF(F, K, DIM), where DIM is one of 1 or 2, takes the Kth difference
-%   along dimension DIM. For DIM = 1, this is the same as above. For DIM =
-%   2, this is a finite difference along the columns of an array-valued
-%   BNDFUN. If F has L columns, a BNDFUN with an empty ONEFUN property
-%   will be returned for K >= L.
+%   DIFF(F, K, DIM), where DIM is one of 1 or 2, takes the Kth difference along
+%   dimension DIM. For DIM = 1, this is the same as above. For DIM = 2, this is
+%   a finite difference along the columns of an array-valued BNDFUN. If F has L
+%   columns, a BNDFUN with an empty ONEFUN property will be returned for K >= L.
 %
 % See also SUM, CUMSUM.
 

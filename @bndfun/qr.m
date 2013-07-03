@@ -1,8 +1,8 @@
 function [Q, R, E] = qr(f, varargin)
 %QR   QR factorisation of an array-valued BNDFUN.
 %   [Q, R] = QR(F) returns a QR factorisation of F such that F = Q*R, where the
-%   BNDFUN Q is orthogonal (with respect to the continuous L^2 norm on the 
-%   domain of F) and of the same size as F and R is an m x m upper-triangular 
+%   BNDFUN Q is orthogonal (with respect to the continuous L^2 norm on the
+%   domain of F) and of the same size as F and R is an m x m upper-triangular
 %   matrix when F has m columns.
 %
 %   [Q, R, E] = QR(F) produces unitary Q, upper-triangular R, and a permutation
@@ -25,26 +25,23 @@ if ( isempty(f) )
     return
 end
 
-% Initialise Q to be a BNDFUN
+% Initialise Q to be a BNDFUN:
 Q = f;
 
-% Rescaling factor, (b - a)/2
+% Rescaling factor, (b - a)/2.
 rescaleFactor = .5*diff(f.domain);
 
-% Call QR on the ONEFUN of f.
+% Call QR on the ONEFUN of f:
 if ( nargout == 3 )
-    [Qone, R, E] = qr(f.onefun, varargin{:});
+    [Q.onefun, R, E] = qr(f.onefun, varargin{:});
 else
-    [Qone, R] = qr(f.onefun, varargin{:});
+    [Q.onefun, R] = qr(f.onefun, varargin{:});
 end
 
-% Assign the ONEFUN of Q to be the output of the QR command above
-Q.onefun = Qone;
-
-% Rescale so that columns of Q will be orthonormal, rather than orthogonal.
+% Rescale so that columns of Q will be orthonormal (rather than orthogonal):
 Q = Q/sqrt(rescaleFactor);
 
-% Need to rescale R as well so that f = QR
+% Rescale R so that f = QR:
 R = R*sqrt(rescaleFactor);
 
 end
