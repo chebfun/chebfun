@@ -22,11 +22,11 @@ if ( ~isa(f, 'bndfun') || ~isa(g, 'bndfun') )
         'innerProduct() only operates on two BNDFUN objects.');
 end
 
-% Rescaling factor, (b-a)/2
-rescaleFactor = (.5*diff(f.domain));
+% Rescaling factor, (b - a)/2:
+rescaleFactor = 0.5*diff(f.domain);
 
 % Assign the output to be the inner product of the onefuns of the input,
-% rescaled.
+% rescaled:
 out = innerProduct(f.onefun, g.onefun)*rescaleFactor;
 
 end

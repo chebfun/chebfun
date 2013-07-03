@@ -2,8 +2,8 @@ function X = mrdivide(A, B)
 %/   Right matrix divide for a BNDFUN.
 %   A/B divides the BNDFUN A by a scalar B. More generally, it gives the
 %   least-squares solution (with respect to the continuous L^2 norm) to X*B = A
-%   when either A or B is a BNDFUN.  Note that in the latter case, formally
-%   it is X.' that is returned, as BNDFUN objects are always columns.
+%   when either A or B is a BNDFUN.  Note that in the latter case, formally it
+%   is X.' that is returned, as BNDFUN objects are always columns.
 %
 % See also QR, RDIVIDE, MLDIVIDE.
 
@@ -26,7 +26,7 @@ elseif ( isa(B, 'double') )  % BNDFUN / double
         X = A;                              % Copy A to X
         X.onefun = X.onefun/B;              % mrdivide of the onefun
     else
-        % Call MRDIVIDE at the ONEFUN level
+        % Call MRDIVIDE at the ONEFUN level:
         X = A;
         X.onefun = (A.onefun/B);
         

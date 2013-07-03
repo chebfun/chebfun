@@ -16,7 +16,7 @@ if ( isempty(f) )
     return
 end
 
-% Check if subint is actually a subinterval:
+% Check if s is actually a subinterval:
 if ( (s(1) < f.domain(1)) || (s(end) > f.domain(2)) || (any(diff(s) <= 0)) )
     error('BNDFUN:restrict:badinterval', 'Not a valid interval.')
 elseif ( (numel(s) == 2) && all(s == f.domain) )
@@ -53,12 +53,15 @@ else
     % Create a cell to be returned.
     g = cell(1, numel(s) - 1);
     
+    % Create an empty BNDFUN:
+    emptyBndfun = bndfun();
+    
     % Loop over each of the new subintervals, make a bndfun with new mapping,
     % and store in the cell returned:
     for k = 1:(numel(s) - 1)
-        % Create an empty temporary BNDFUN, and assign fields directly. This is
-        % faster than using the BNDFUN constructor.
-        gTemp = bndfun();
+        % Assign fields directly to an empty temporary BNDFUN. This is faster
+        % than using the BNDFUN constructor.
+        gTemp = emptyBndfun;
         gTemp.onefun = restrictedOnefuns{k};
         gTemp.domain = s(k:k+1);
         gTemp.mapping = bndfun.createMap(s(k:k+1));

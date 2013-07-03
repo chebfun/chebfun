@@ -12,6 +12,8 @@ function f = cumsum(f, m)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org for Chebfun information.
 
+% [TODO]: DIFF() uses K but CUMSUM() uses M.
+
 %%
 % Trivial case of an empty BNDFUN:
 if ( isempty(f) )

@@ -25,7 +25,7 @@ end
 % Otherwise, compute the sum column-wise.
 
 % Rescaling factor, (b - a)/2
-rescaleFactor = (.5*diff(f.domain));
+rescaleFactor = 0.5*diff(f.domain);
 
 % Assign the output to be the sum of the onefun of the input, rescaled.
 out = sum(f.onefun)*rescaleFactor;

@@ -26,7 +26,7 @@ if ( isempty(f) )
 end
 
 % Get the size of the onefun array:
-m = size(f.onefun,2);
+m = size(f.onefun, 2);
 
 % Parse the inputs:
 if ( nargin == 1 )

@@ -33,9 +33,9 @@ end
 
 % Check whether CHEBPOLYPLOT exists as a method
 methodsList = methods(f.onefun);
-if ~any(ismember(methodsList,'chebpolyplot'))
+if ( ~any(ismember(methodsList, 'chebpolyplot')) )
     error('CHEBFUN:BNDFUN:CHEBPOLYPLOT',...
-        'Onefun of F does not have a chebpolyplot method.')
+        'ONEFUN of F does not have a CHEBPOLYPLOT() method.')
 else
     % Call CHEBPOLYPLOT() on the ONEFUN of F.
     h = chebpolyplot(f.onefun, varargin{:});
@@ -45,4 +45,5 @@ else
         varargout{1} = h;
     end
 end
+
 end
