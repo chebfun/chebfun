@@ -33,13 +33,13 @@ pass(2) = abs(innerProduct(f, g)) < ...
 
 f = bndfun(@(x) exp(x), dom, [], [], pref);
 g = bndfun(@(x) exp(-x), dom, [], [], pref);
-pass(3) = abs(innerProduct(f, g) - 9) < max(f.onefun.vscale, ...
-    g.onefun.vscale)*max(f.onefun.epslevel, g.onefun.epslevel);
+pass(3) = abs(innerProduct(f, g) - 9) < max(get(f, 'vscale'), ...
+    get(g, 'vscale'))*max(f.onefun.epslevel, g.onefun.epslevel);
 
 g = bndfun(@(x) sin(x), dom, [], [], pref);
 exact = exp(7)*(sin(7) - cos(7))/2 - exp(-2)*(sin(-2) - cos(-2))/2;
-pass(4) = abs(innerProduct(f, g) - exact) < max(f.onefun.vscale, ...
-    g.onefun.vscale)*max(f.onefun.epslevel, g.onefun.epslevel);
+pass(4) = abs(innerProduct(f, g) - exact) < max(get(f, 'vscale'), ...
+    get(g, 'vscale'))*max(f.onefun.epslevel, g.onefun.epslevel);
 
 %%
 % Check a few known properties.
@@ -59,12 +59,12 @@ pass(6) = abs(ip1 - conj(ip2)) < tol;
 ip1 = innerProduct(f + g, h);
 ip2 = innerProduct(f, h) + innerProduct(g, h);
 pass(7) = abs(ip1 - ip2) < ...
-    max((f.onefun.vscale + g.onefun.vscale), h.onefun.vscale)*tol;
+    max((get(f, 'vscale') + get(g, 'vscale')), get(h, 'vscale'))*tol;
 
 ip1 = innerProduct(f, g + h);
 ip2 = innerProduct(f, g) + innerProduct(f, h);
 pass(8) = abs(ip1 - ip2) < ...
-    max((g.onefun.vscale + h.onefun.vscale), f.onefun.vscale)*tol;
+    max((get(g, 'vscale') + get(h, 'vscale')), get(f, 'vscale'))*tol;
 
 nf2 = innerProduct(f, f);
 ng2 = innerProduct(g, g);
@@ -81,7 +81,7 @@ ip = innerProduct(f, g);
 exact = [-53.1070904269318222 0.0025548835039100  -0.4683303433821355;
          773.70343924989359096771 1.3148120368924471 0.6450791915572742];
 pass(10) = norm(ip(:) - exact(:), inf) < 10*max(f.onefun.epslevel, ...
-    g.onefun.epslevel)*max([f.onefun.vscale g.onefun.vscale]);
+    g.onefun.epslevel)*max([get(f, 'vscale') get(g, 'vscale')]);
 
 %%
 % Check error conditition

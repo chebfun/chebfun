@@ -64,7 +64,7 @@ for n = 1:1 %[TODO]: unbndfun
     g = f*A;
     g_exact = @(x) [sin(x) cos(x) exp(x)]*A;
     err = abs(feval(g, x) - g_exact(x));
-    pass(n, 8) = max(err(:)) < 2*max(g.onefun.vscale)*g.onefun.epslevel;
+    pass(n, 8) = max(err(:)) < 2*max(get(g, 'vscale'))*g.onefun.epslevel;
     
     %%
     % Verify error handling and corner cases.
