@@ -26,7 +26,7 @@ function f = compose(f, op, g, pref)
 
 % Parse inputs:
 if ( nargin == 2 )
-    if ( isa(op, 'bndfun') )    % Standard composition ( out = op(f) )
+    if ( isa(op, 'bndfun') )  % Composition of two BNDFUN objects ( out = g(f) )
         
         % op is a BNDFUN! Rename it to g for clarity
         g = op;
@@ -44,21 +44,16 @@ if ( nargin == 2 )
         % Try to do the composition, will only work if the range of F lies in
         % the domain of G.
         f.onefun = compose(fMapped, g.onefun);
-    else
+        
+    else                     % Standard composition ( out = op(f) )
         % OP is an operator!
         f.onefun = compose(f.onefun, op);
     end
     
 elseif ( nargin == 3 )          % out = op(f,g). No preferences passed.
-    
-    if ( isa(g, 'bndfun') )
-        % Third argument passed was a bndfun. Compose the onefun of f with the
-        % onefun of g:
-        f.onefun = compose(f.onefun, op, g.onefun);
-    else
-        % Third argument passed was not a bndfun.
-        f.onefun = compose(f.onefun, op, g);
-    end
+    % Third argument passed must have been a bndfun. Compose the onefun of f
+    % with the onefun of g:
+    f.onefun = compose(f.onefun, op, g.onefun);
     
 else                            % out = op(f,g). Preferences passed.
     
