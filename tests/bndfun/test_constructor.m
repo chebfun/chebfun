@@ -20,7 +20,7 @@ pass = zeros(1, 5); % Pre-allocate pass matrix.
 % Test on a scalar-valued function for interpolation:
 f = @(x) sin(x)./x;
 g = bndfun(f, dom, [], [], pref);
-pass(1) = abs(1 - feval(g, 0)) < max(g.onefun.vscale)*tol;
+pass(1) = abs(1 - feval(g, 0)) < max(get(g, 'vscale'))*tol;
 
 %%
 
@@ -28,7 +28,7 @@ pass(1) = abs(1 - feval(g, 0)) < max(g.onefun.vscale)*tol;
 f = @(x) [sin(x)./x sin(x - 3)./(x - 3)];
 g = bndfun(f, dom, [], [], pref);
 gv = [feval(g, 0) feval(g, 3)];
-pass(2) = norm(ones(1, 2) - [gv(1) gv(4)], inf) < max(g.onefun.vscale)*tol;
+pass(2) = norm(ones(1, 2) - [gv(1) gv(4)], inf) < max(get(g, 'vscale'))*tol;
 
 
 %%

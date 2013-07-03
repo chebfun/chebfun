@@ -161,7 +161,7 @@ end
 function result = test_mult_function_by_function(f, f_op, g, g_op, x, checkpos)
 h = f .* g;
 h_exact = @(x) f_op(x) .* g_op(x);
-tol = h.onefun.epslevel*max(f.onefun.vscale)*max(g.onefun.vscale);
+tol = h.onefun.epslevel*max(get(f, 'vscale'))*max(get(g, 'vscale'));
 result(1) = all(max(abs(feval(h, x) - h_exact(x))) < 5*tol);
 if ( checkpos )
     result(2) = all(feval(h, x) >= 0);

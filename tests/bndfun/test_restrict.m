@@ -107,5 +107,5 @@ y_exact = fun_op(x);
 y_approx = feval(g, x);
 
 result = norm(y_exact - y_approx, Inf) < ...
-    10*max(f.onefun.vscale)*f.onefun.epslevel;
+    10*max(get(f, 'vscale'))*f.onefun.epslevel;
 end

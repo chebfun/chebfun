@@ -26,26 +26,26 @@ f = bndfun(@(x) exp(x/10) - x, dom, [], [], pref);
 df = diff(f);
 df_exact = @(x) exp(x/10)./10 - 1;
 err = df_exact(x) - feval(df, x);
-pass(1) = (norm(err, inf) < f.onefun.vscale*tol);
+pass(1) = (norm(err, inf) < get(f, 'vscale')*tol);
 
 f = bndfun(@(x) atan(x), dom, [], [], pref);
 df = diff(f);
 df_exact = @(x) 1./(1 + x.^2);
 err = df_exact(x) - feval(df, x);
-pass(2) = (norm(err, inf) < f.onefun.vscale*tol);
+pass(2) = (norm(err, inf) < get(f, 'vscale')*tol);
 
 f = bndfun(@(x) sin(x), dom, [], [], pref);
 df = diff(f);
 df_exact = @(x) cos(x);
 err = df_exact(x) - feval(df, x);
-pass(3) = (norm(err, inf) < f.onefun.vscale*tol);
+pass(3) = (norm(err, inf) < get(f, 'vscale')*tol);
 
 z = exp(2*pi*1i/3);
 f = bndfun(@(t) airy(z*t), dom, [], [], pref);
 df = diff(f);
 df_exact = @(t) z*airy(1, z*t);
 err = df_exact(x) - feval(df, x);
-pass(4) = (norm(err, inf) < f.onefun.vscale*tol);
+pass(4) = (norm(err, inf) < get(f, 'vscale')*tol);
 
 %%
 % Verify that calling diff() gives the same answer as direct construction.
@@ -53,7 +53,7 @@ pass(4) = (norm(err, inf) < f.onefun.vscale*tol);
 f = bndfun(@(x) 0.5*x - 0.0625*sin(8*x), dom, [], [], pref);
 df = bndfun(@(x) sin(4*x).^2, dom, [], [], pref);
 err = diff(f) - df;
-pass(5) = (err.onefun.vscale < f.onefun.vscale*tol);
+pass(5) = (err.onefun.vscale < get(f, 'vscale')*tol);
 
 %%
 % Verify basic differentiation rules.
@@ -65,11 +65,11 @@ dg = diff(g);
 
 errfn = diff(f + g) - (df + dg);
 err = feval(errfn, x);
-pass(6) = (norm(err, inf) < (f.onefun.vscale+g.onefun.vscale)*tol);
+pass(6) = (norm(err, inf) < (get(f, 'vscale')+get(g, 'vscale'))*tol);
 
 errfn = diff(f.*g) - (f.*dg + g.*df);
 err = feval(errfn, x);
-pass(7) = (norm(err, inf) < f.onefun.vscale*g.onefun.vscale*tol);
+pass(7) = (norm(err, inf) < get(f, 'vscale')*get(g, 'vscale')*tol);
 
 const = bndfun(@(x) ones(size(x)), dom, [], [], pref);
 dconst = diff(const);
@@ -103,18 +103,18 @@ pass(11) = (norm(err, inf) <= (df6.onefun.vscale)^6*tol);
 f = bndfun(@(x) [sin(x) x.^2 exp(1i*x)], dom, [], [], pref);
 df_exact = @(x) [cos(x) 2*x 1i*exp(1i*x)];
 err = feval(diff(f), x) - df_exact(x);
-pass(12) = (norm(err(:), inf) < max(f.onefun.vscale)*tol);
+pass(12) = (norm(err(:), inf) < max(get(f, 'vscale'))*tol);
 
 % DIM option.
 dim2df = diff(f, 1, 2);
 g = @(x) [(x.^2 - sin(x)) (exp(1i*x) - x.^2)];
 err = feval(dim2df, x) - g(x);
-pass(13) = (norm(err(:), inf) < max(f.onefun.vscale)*tol);
+pass(13) = (norm(err(:), inf) < max(get(f, 'vscale'))*tol);
 
 dim2df2 = diff(f, 2, 2);
 g = @(x) exp(1i*x) - 2*x.^2 + sin(x);
 err = feval(dim2df2, x) - g(x);
-pass(14) = (norm(err(:), inf) < max(f.onefun.vscale)*tol);
+pass(14) = (norm(err(:), inf) < max(get(f, 'vscale'))*tol);
 
 % DIM option should return an empty bndfun for non-array-valued input.
 f = bndfun(@(x) x.^3, dom);
