@@ -54,8 +54,7 @@ elseif ( isa(op, 'chebtech') )
 
     if ( norm(f.values(:), inf) > 1 )
         error('CHEBFUN:CHEBTECH:compose:range', ...
-            [ 'The range of f (approx [' num2str(min(f.values)), ', ', ...
-            num2str(max(f.values)), ']) is not in the domain of G ([-1,1])' ])
+            [ 'The range of f is not contained in the domain of G.' ])
     end
 
     vscale = max(vscale, op.vscale);
