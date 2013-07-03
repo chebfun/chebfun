@@ -16,7 +16,7 @@ tol = 10*pref.fun.eps;
 dom = [-2 7];
 x = linspace(dom(1), dom(2), 1000);
 
-pass = zeros(1, 12); % Pre-allocate pass matrix.
+pass = zeros(1, 9); % Pre-allocate pass matrix.
 
 % Compose a scalar-valued BNDFUN object with sin(x):
 f = bndfun(@(x) x, dom);
@@ -76,38 +76,6 @@ g = bndfun(@(x) sin(x), [dom(1) dom(2)^2]);
 h = compose(f, g);
 pass(9) = norm(feval(h, x) - [sin(x) sin(x.^2)], inf) < ...
     7*max(get(h,'vscale'))*tol;
-
-% We cannot expect to compose two array-valued BNDFUN objects f(g):
-try
-    f = bndfun(@(x) [x x.^2], dom);
-    g = bndfun(@(x) [sin(x), cos(x)], dom);
-    compose(f, g);
-    pass(10) = false;
-catch ME
-    pass(10) = ~isempty(strfind(ME.identifier, 'compose:arrval'));
-end
-
-% Composition of two array-valued BNDFUN should fail if their dimenesions don't
-% agree:
-try
-    f = bndfun(@(x) [x x.^2], dom);
-    g = bndfun(@(x) sin(x), dom);
-    compose(f, @plus, g)
-    pass(11) = false;
-catch ME
-    pass(11) =  ~isempty(strfind(ME.identifier, 'compose:dim'));
-end
-
-% Can't compose two BNDFUN objects f(g) if the range of g does not lie in
-% the domain of f:
-try
-    f = bndfun(@(x) sin(x), dom);
-    g = bndfun(@(x) 100*cos(x), dom);
-    compose(g, f);
-    pass(12) = false;
-catch ME
-    pass(12) = strcmp(ME.identifier, 'CHEBFUN:CHEBTECH:compose:range');
-end
 
 end
 
