@@ -35,13 +35,13 @@ f = bndfun(@(x) [x x.^2], dom);
 g = compose(f, @sin, [], pref);
 
 pass(3) = norm(sin([x, x.^2]) - feval(g, x), inf) < ...
-    max(g.onefun.vscale)*tol;
+    max(get(g,'vscale'))*tol;
 
 % Compose an array-valued BNDFUN object with sin(x):
 f = bndfun(@(x) [x x x.^2], dom);
 g = compose(f, @sin, [], pref);
 pass(4) = norm(sin([x x x.^2]) - feval(g, x), inf) < ...
-    max(g.onefun.vscale)*tol;
+    max(get(g,'vscale'))*tol;
 
 % Compose 2 BNDFUN objects with a binary function:
 f1 = bndfun(@(x) sin(x), dom);
@@ -55,27 +55,27 @@ f1 = bndfun(@(x) [sin(x) cos(x)], dom);
 f2 = bndfun(@(x) [cos(x) exp(x)], dom);
 g = compose(f1, @times, f2, pref);
 h = bndfun(@(x) [sin(x).*cos(x) cos(x).*exp(x)], dom);
-pass(6) = norm(feval(h, x) - feval(g, x)) < 10*max(g.onefun.vscale)*tol;
+pass(6) = norm(feval(h, x) - feval(g, x)) < 10*max(get(g,'vscale'))*tol;
 
 % Compose f(g), when f and g are BNDFUN objects:
 f = bndfun(@(x) x.^2, dom);
 g = bndfun(@(x) sin(x), [0 dom(2)^2]);
 h = compose(f, g);
-pass(7) = norm(feval(h, x) - sin(x.^2), inf) < 7*max(h.onefun.vscale)*tol;
+pass(7) = norm(feval(h, x) - sin(x.^2), inf) < 7*max(get(h,'vscale'))*tol;
 
 % Compose f(g), when f and g are BNDFUN objects and g is array-valued:
 f = bndfun(@(x) x.^2, dom);
 g = bndfun(@(x) [sin(x) cos(x)], [0 dom(2)^2]);
 h = compose(f, g);
 pass(8) = norm(feval(h, x) - [sin(x.^2) cos(x.^2)], inf) < ...
-    10*max(h.onefun.vscale)*tol;
+    10*max(get(h,'vscale'))*tol;
 
 % Compose f(g), when f and g are BNDFUN objects and f is array-valued:
 f = bndfun(@(x) [x x.^2], dom);
 g = bndfun(@(x) sin(x), [dom(1) dom(2)^2]);
 h = compose(f, g);
 pass(9) = norm(feval(h, x) - [sin(x) sin(x.^2)], inf) < ...
-    7*max(h.onefun.vscale)*tol;
+    7*max(get(h,'vscale'))*tol;
 
 % We cannot expect to compose two array-valued BNDFUN objects f(g):
 try
@@ -106,7 +106,7 @@ try
     compose(g, f);
     pass(12) = false;
 catch ME
-    pass(12) = strcmp(ME.identifier, 'CHEBFUN:BNDFUN:compose:range');
+    pass(12) = strcmp(ME.identifier, 'CHEBFUN:CHEBTECH:compose:range');
 end
 
 end
