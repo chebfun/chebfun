@@ -1,10 +1,10 @@
 classdef bndfun < fun
-%BNDFUN    Represent global functions on a bounded interval [a, b].
-% 
-% Class for representing global functions on a bounded interval [a, b].
-% Functions are approximated via a ONEFUN object, which lives on the interval
-% [-1, 1], stored in the BNDFUN. Forward and inverse maps stored in the BNDFUN
-% object map the interval [-1, 1] to [a, b], and vice versa.
+%BNDFUN   Represent global functions on a bounded interval [a, b].
+%
+%   Class for representing global functions on a bounded interval [a, b].
+%   Functions are approximated via a ONEFUN object, which lives on the interval
+%   [-1, 1], stored in the BNDFUN. Forward and inverse maps stored in the
+%   BNDFUN object map the interval [-1, 1] to [a, b], and vice versa.
 %
 % Constructor inputs:
 %   BNDFUN(OP, DOMAIN) constructs a BNDFUN object from the function handle OP by
