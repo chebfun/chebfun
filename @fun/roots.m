@@ -15,8 +15,6 @@ function r = roots(f, varargin)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% [TODO]: This documentation is duplicated. Can it be removed?
-
 % Deal with empty case:
 if ( isempty(f) )
     r = [];
