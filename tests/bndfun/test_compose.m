@@ -67,7 +67,6 @@ pass(7) = norm(feval(h, x) - sin(x.^2), inf) < 7*max(h.onefun.vscale)*tol;
 f = bndfun(@(x) x.^2, dom);
 g = bndfun(@(x) [sin(x) cos(x)], [0 dom(2)^2]);
 h = compose(f, g);
-norm(feval(h, x) - [sin(x.^2) cos(x.^2)], inf)
 pass(8) = norm(feval(h, x) - [sin(x.^2) cos(x.^2)], inf) < ...
     10*max(h.onefun.vscale)*tol;
 
