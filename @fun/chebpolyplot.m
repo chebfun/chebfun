@@ -31,19 +31,13 @@ if ( isempty(f) )
     return
 end
 
-% Check whether CHEBPOLYPLOT exists as a method
-methodsList = methods(f.onefun);
-if ( ~any(ismember(methodsList, 'chebpolyplot')) )
-    error('CHEBFUN:BNDFUN:CHEBPOLYPLOT',...
-        'ONEFUN of F does not have a CHEBPOLYPLOT() method.')
-else
-    % Call CHEBPOLYPLOT() on the ONEFUN of F.
-    h = chebpolyplot(f.onefun, varargin{:});
-    
-    % Give an output if one was requested:
-    if ( nargout > 0 )
-        varargout{1} = h;
-    end
+
+% Call CHEBPOLYPLOT() on the ONEFUN of F.
+h = chebpolyplot(f.onefun, varargin{:});
+
+% Give an output if one was requested:
+if ( nargout > 0 )
+    varargout{1} = h;
 end
 
 end
