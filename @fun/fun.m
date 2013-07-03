@@ -1,11 +1,11 @@
 classdef fun % (Abstract)
-%FUN    Represent global functions on an interval [a, b].
-% 
-% Abstract (interface) class for representing global functions on an interval
-% [a, b], which can either be bounded or unbounded. Functions are approximated
-% via a ONEFUN object, which lives on the interval [-1, 1], stored in the FUN.
-% Forward and inverse maps stored in the FUN object map the interval [-1, 1] to
-% [a, b], and vice versa.
+%FUN   Represent global functions on an interval [a, b].
+%
+%   Abstract (interface) class for representing global functions on an interval
+%   [a, b], which can either be bounded or unbounded. Functions are
+%   approximated via a ONEFUN object, which lives on the interval [-1, 1],
+%   stored in the FUN.  Forward and inverse maps stored in the FUN object map
+%   the interval [-1, 1] to [a, b], and vice versa.
 %
 % Constructor inputs:
 %   FUN.CONSTRUCTOR(OP, DOMAIN) constructs a FUN object from the function handle
@@ -45,7 +45,7 @@ classdef fun % (Abstract)
 %
 % Note that all binary FUN operators (methods which can take two FUN arguments)
 % assume that the domains of the FUN objects agree. The methods will not throw
-% warning in case the domains don't agree, but their output will not be
+% warnings in case the domains don't agree, but their output will not be
 % meaningful.
 %
 % Class diagram: [chebfun] <>-- [<<FUN>>] <>-- [<<onefun>>]
