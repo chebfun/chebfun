@@ -55,7 +55,7 @@ f1 = bndfun(@(x) [sin(x) cos(x)], dom);
 f2 = bndfun(@(x) [cos(x) exp(x)], dom);
 g = compose(f1, @times, f2, pref);
 h = bndfun(@(x) [sin(x).*cos(x) cos(x).*exp(x)], dom);
-pass(6) = norm(feval(h, x) - feval(g, x)) < max(g.onefun.vscale)*tol;
+pass(6) = norm(feval(h, x) - feval(g, x)) < 10*max(g.onefun.vscale)*tol;
 
 % Compose f(g), when f and g are BNDFUN objects:
 f = bndfun(@(x) x.^2, dom);
@@ -68,7 +68,7 @@ f = bndfun(@(x) x.^2, dom);
 g = bndfun(@(x) [sin(x) cos(x)], [0 dom(2)^2]);
 h = compose(f, g);
 pass(8) = norm(feval(h, x) - [sin(x.^2) cos(x.^2)], inf) < ...
-    7*max(h.onefun.vscale)*tol;
+    10*max(h.onefun.vscale)*tol;
 
 % Compose f(g), when f and g are BNDFUN objects and f is array-valued:
 f = bndfun(@(x) [x x.^2], dom);
