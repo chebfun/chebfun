@@ -41,7 +41,7 @@ for n = 1:1 %[TODO]: unbndfun
     g2 = f*alpha;
     pass(n, 2) = isequal(g1, g2);
     g_exact = @(x) alpha*sin(x);
-    pass(n, 3) = norm(feval(g1, x) - g_exact(x), inf) < g1.onefun.vscale*g1.onefun.epslevel;
+    pass(n, 3) = norm(feval(g1, x) - g_exact(x), inf) < get(g1, 'vscale')*get(g1, 'epslevel');
     
     g = 0*f;
     pass(n, 4) = all(feval(g, x) == 0);
@@ -55,7 +55,7 @@ for n = 1:1 %[TODO]: unbndfun
     pass(n, 5) = isequal(g1, g2);
     g_exact = @(x) alpha*[sin(x) cos(x) exp(x)];
     err = abs(feval(g1, x) - g_exact(x));
-    pass(n, 6) = max(err(:)) < max(g1.onefun.vscale)*g1.onefun.epslevel;
+    pass(n, 6) = max(err(:)) < max(get(g1, 'vscale'))*get(g1, 'epslevel');
     
     g = 0*f;
     pass(n, 7) = all(feval(g, x) == 0);
@@ -64,7 +64,7 @@ for n = 1:1 %[TODO]: unbndfun
     g = f*A;
     g_exact = @(x) [sin(x) cos(x) exp(x)]*A;
     err = abs(feval(g, x) - g_exact(x));
-    pass(n, 8) = max(err(:)) < 2*max(get(g, 'vscale'))*g.onefun.epslevel;
+    pass(n, 8) = max(err(:)) < 2*max(get(g, 'vscale'))*get(g, 'epslevel');
     
     %%
     % Verify error handling and corner cases.

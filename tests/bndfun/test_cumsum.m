@@ -84,8 +84,8 @@ f = bndfun(@(x) [sin(x) x.^2 exp(1i*x)], dom, [], [], pref);
 F_exact = bndfun(@(x) [-cos(x) x.^3/3 exp(1i*x)/1i], dom, [], [], pref);
 F = cumsum(f);
 err = feval(F, x) - feval(F_exact, x);
-pass(8) = (norm(diff(err), inf) < max(get(f, 'vscale'))*f.onefun.epslevel) && ...
-    all(abs(feval(F, a) < max(get(f, 'vscale'))*f.onefun.epslevel));
+pass(8) = (norm(diff(err), inf) < max(get(f, 'vscale'))*get(f, 'epslevel')) && ...
+    all(abs(feval(F, a)) < max(get(f, 'vscale'))*get(f, 'epslevel'));
 
 %%
 % Check operation for second and third order cumsums.
@@ -94,14 +94,14 @@ F2_exact = bndfun(@(x) -sin(x) + x.*cos(a), dom, [], [], pref);
 
 F2 = cumsum(f, 2);
 err = feval(F2, x) - feval(F2_exact, x);
-pass(9) = (norm(diff(err), inf) < 2*(F2.onefun.vscale)^2*f.onefun.epslevel) && ...
-    abs(feval(F2, a) < (F2.onefun.vscale)^2*f.onefun.epslevel);
+pass(9) = (norm(diff(err), inf) < 2*get(F2, 'vscale')^2*get(f, 'epslevel')) && ...
+    abs(feval(F2, a)) < get(F2, 'vscale')^2*get(f, 'epslevel');
 
 F3_exact = bndfun(@(x) cos(x) + x.^2*cos(a)/2 + x*(sin(a) - a*cos(a)), ...
     dom, [], [], pref);
 F3 = cumsum(f, 3);
 err = feval(F3, x) - feval(F3_exact, x);
-pass(10) = (norm(diff(err), inf) < (F3.onefun.vscale)^3*f.onefun.epslevel) && ...
-    abs(feval(F3, a) < (F3.onefun.vscale)^3*f.onefun.epslevel);
+pass(10) = (norm(diff(err), inf) < get(F3, 'vscale')^3*get(f, 'epslevel')) && ...
+    abs(feval(F3, a)) < get(F3, 'vscale')^3*get(f, 'epslevel');
 
 end

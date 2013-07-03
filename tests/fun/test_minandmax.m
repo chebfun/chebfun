@@ -36,13 +36,13 @@ for n = 1:1 %[TODO]: unbndfun
     y_exact = [-1 7.492128863997157e-07  (-.2)^3*cosh(-.2);
                 1 0.535656656015700 0.7^3*cosh(0.7)];
     
-    pass(n, 5) = all(abs(y(:) - y_exact(:)) < 10*f.onefun.epslevel);
+    pass(n, 5) = all(abs(y(:) - y_exact(:)) < 10*get(f, 'epslevel'));
 
     % Check that the points x are indeed extreme points of the function 
     % operator.
     for k = 1:1:size(f, 2)
         fx = fun_op(x(:, k));
-        if ( max(abs(fx(:, k) - y_exact(:, k))) > 10*f.onefun.epslevel )
+        if ( max(abs(fx(:, k) - y_exact(:, k))) > 10*get(f, 'epslevel') )
             pass(n, 6) = 0;
             break;
         end
@@ -56,7 +56,7 @@ for n = 1:1 %[TODO]: unbndfun
     [vals1, pos1] = minandmax(f1);
     f2 = testclass.make(@(x) 1i*cos(20*x), dom);
     [vals2, pos2] = minandmax(f2);
-    pass(n, 6) = norm( vals - [vals1 vals2], inf) < 10*f.onefun.epslevel;
+    pass(n, 6) = norm( vals - [vals1 vals2], inf) < 10*get(f, 'epslevel');
 
 end
 
@@ -70,7 +70,7 @@ f = testclass.make(fun_op, dom, [], [], pref);
 [y, x] = minandmax(f);
 y_exact = [exact_min ; exact_max];
 fx = fun_op(x);
-result = ((max(abs(y - y_exact)) < 10*f.onefun.epslevel) && ... 
-          (max(abs(fx - y_exact)) < 10*f.onefun.epslevel));
+result = ((max(abs(y - y_exact)) < 10*get(f, 'epslevel')) && ... 
+          (max(abs(fx - y_exact)) < 10*get(f, 'epslevel')));
 
 end

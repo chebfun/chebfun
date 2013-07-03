@@ -25,21 +25,21 @@ pass = zeros(1, 11); % Pre-allocate pass matrix
 f = bndfun(@(x) sin(2*pi*x), dom, [], [], pref);
 g = bndfun(@(x) cos(2*pi*x), dom, [], [], pref);
 pass(1) = abs(innerProduct(f, g)) < ...
-    10*max(f.onefun.epslevel, g.onefun.epslevel);
+    10*max(get(f, 'epslevel'), get(g, 'epslevel'));
 
 g = bndfun(@(x) cos(4*pi*x), dom, [], [], pref);
 pass(2) = abs(innerProduct(f, g)) < ...
-    10*max(f.onefun.epslevel, g.onefun.epslevel);
+    10*max(get(f, 'epslevel'), get(g, 'epslevel'));
 
 f = bndfun(@(x) exp(x), dom, [], [], pref);
 g = bndfun(@(x) exp(-x), dom, [], [], pref);
 pass(3) = abs(innerProduct(f, g) - 9) < max(get(f, 'vscale'), ...
-    get(g, 'vscale'))*max(f.onefun.epslevel, g.onefun.epslevel);
+    get(g, 'vscale'))*max(get(f, 'epslevel'), get(g, 'epslevel'));
 
 g = bndfun(@(x) sin(x), dom, [], [], pref);
 exact = exp(7)*(sin(7) - cos(7))/2 - exp(-2)*(sin(-2) - cos(-2))/2;
 pass(4) = abs(innerProduct(f, g) - exact) < max(get(f, 'vscale'), ...
-    get(g, 'vscale'))*max(f.onefun.epslevel, g.onefun.epslevel);
+    get(g, 'vscale'))*max(get(f, 'epslevel'), get(g, 'epslevel'));
 
 %%
 % Check a few known properties.
@@ -80,8 +80,8 @@ g = bndfun(@(x) [exp(x) 1./(1 + x.^2) airy(x)], dom);
 ip = innerProduct(f, g);
 exact = [-53.1070904269318222 0.0025548835039100  -0.4683303433821355;
          773.70343924989359096771 1.3148120368924471 0.6450791915572742];
-pass(10) = norm(ip(:) - exact(:), inf) < 10*max(f.onefun.epslevel, ...
-    g.onefun.epslevel)*max([get(f, 'vscale') get(g, 'vscale')]);
+pass(10) = norm(ip(:) - exact(:), inf) < 10*max(get(f, 'epslevel'), ...
+    get(g, 'epslevel'))*max([get(f, 'vscale') get(g, 'vscale')]);
 
 %%
 % Check error conditition
