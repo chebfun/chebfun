@@ -53,7 +53,7 @@ pass(4) = (norm(err, inf) < get(f, 'vscale')*tol);
 f = bndfun(@(x) 0.5*x - 0.0625*sin(8*x), dom, [], [], pref);
 df = bndfun(@(x) sin(4*x).^2, dom, [], [], pref);
 err = diff(f) - df;
-pass(5) = (err.onefun.vscale < get(f, 'vscale')*tol);
+pass(5) = (get(err, 'vscale') < get(f, 'vscale')*tol);
 
 %%
 % Verify basic differentiation rules.
@@ -83,19 +83,19 @@ f = bndfun(@(x) x.*atan(x) - x - 0.5*log(1 + x.^2), dom, [], [], pref);
 df2 = diff(f, 2);
 df2_exact = @(x) 1./(1 + x.^2);
 err = df2_exact(x) - feval(df2, x);
-pass(9) = (norm(err, inf) < 1500*(df2.onefun.vscale)^2*tol);
+pass(9) = (norm(err, inf) < 1500*get(df2, 'vscale')^2*tol);
 
 f = bndfun(@(x) sin(x), dom, [], [], pref);
 df4 = diff(f, 4);
 df4_exact = @(x) sin(x);
 err = df4_exact(x) - feval(df4, x);
-pass(10) = (norm(err, inf) < 4000*(df4.onefun.vscale)^4*tol);
+pass(10) = (norm(err, inf) < 4000*get(df4, 'vscale')^4*tol);
 
 f = bndfun(@(x) x.^5 + 3*x.^3 - 2*x.^2 + 4, dom, [], [], pref);
 df6 = diff(f, 6);
 df6_exact = @(x) zeros(size(x));
 err = df6_exact(x) - feval(df6, x);
-pass(11) = (norm(err, inf) <= (df6.onefun.vscale)^6*tol);
+pass(11) = (norm(err, inf) <= get(df6, 'vscale')^6*tol);
 
 %%
 % Check operation for array-valued bndfun objects.

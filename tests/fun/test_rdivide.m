@@ -49,7 +49,7 @@ for n = 1:1 %[TODO]: unbndfun
     
     g = f ./ [alpha beta];
     g_exact = @(x) [sin(x)./alpha cos(x)./beta];
-    pass(n, 5) = norm(feval(g, x) - g_exact(x), inf) < 10*max(get(g, 'vscale'))*g.onefun.epslevel;
+    pass(n, 5) = norm(feval(g, x) - g_exact(x), inf) < 10*max(get(g, 'vscale'))*get(g, 'epslevel');
     
     g = f ./ [alpha 0];
     isn = isnan(feval(g, x));
@@ -123,12 +123,12 @@ for n = 1:1 %[TODO]: unbndfun
     f = testclass.make(@(x) sin(x), dom, [], [], pref);
     h1 = f ./ alpha;
     h2 = testclass.make(@(x) sin(x) ./ alpha, dom, [], [], pref);
-    pass(n, 15) = norm(feval(h1, x) - feval(h2, x), inf) < h2.onefun.vscale*h2.onefun.epslevel;
+    pass(n, 15) = norm(feval(h1, x) - feval(h2, x), inf) < get(h2, 'vscale')*get(h2, 'epslevel');
     
     g = testclass.make(@(x) exp(x), dom, [], [], pref);
     h1 = f ./ g;
     h2 = testclass.make(@(x) sin(x) ./ exp(x), dom, [], [], pref);
-    pass(n, 16) = norm(feval(h1, x) - feval(h2, x), inf) < 5e2*h2.onefun.vscale*h2.onefun.epslevel;
+    pass(n, 16) = norm(feval(h1, x) - feval(h2, x), inf) < 5e2*get(h2, 'vscale')*get(h2, 'epslevel');
 end
 
 end
@@ -138,7 +138,7 @@ end
 function result = test_div_function_by_scalar(f, f_op, alpha, x)
     g = f ./ alpha;
     g_exact = @(x) f_op(x) ./ alpha;
-    result = norm(feval(g, x) - g_exact(x), inf) < 10*max(get(g, 'vscale'))*g.onefun.epslevel;
+    result = norm(feval(g, x) - g_exact(x), inf) < 10*max(get(g, 'vscale'))*get(g, 'epslevel');
 end
 
 % Test the division of a scalar ALPHA by a FUN, specified by F_OP, using
@@ -146,7 +146,7 @@ end
 function result = test_div_scalar_by_function(alpha, f, f_op, x)
     g = alpha ./ f;
     g_exact = @(x) alpha ./ f_op(x);
-    result = norm(feval(g, x) - g_exact(x), inf) < 10*max(get(g, 'vscale'))*g.onefun.epslevel;
+    result = norm(feval(g, x) - g_exact(x), inf) < 10*max(get(g, 'vscale'))*get(g, 'epslevel');
 end
 
 % Test the division of two FUN objects F and G, specified by F_OP and
@@ -155,5 +155,5 @@ function result = test_div_function_by_function(f, f_op, g, g_op, x)
     h = f ./ g;
     h_exact = @(x) f_op(x) ./ g_op(x);
     norm(feval(h, x) - h_exact(x), inf);
-    result = norm(feval(h, x) - h_exact(x), inf) < 10*max(get(h, 'vscale'))*h.onefun.epslevel;
+    result = norm(feval(h, x) - h_exact(x), inf) < 10*max(get(h, 'vscale'))*get(h, 'epslevel');
 end

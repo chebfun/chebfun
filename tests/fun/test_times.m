@@ -150,7 +150,7 @@ g1 = f .* alpha;
 g2 = alpha .* f;
 result(1) = isequal(g1, g2);
 g_exact = @(x) f_op(x) .* alpha;
-tol = max(g1.onefun.vscale)*g1.onefun.epslevel;
+tol = max(get(g1, 'vscale'))*get(g1, 'epslevel');
 result(2) = norm(feval(g1, x) - g_exact(x), inf) < tol;
 end
 
@@ -161,7 +161,7 @@ end
 function result = test_mult_function_by_function(f, f_op, g, g_op, x, checkpos)
 h = f .* g;
 h_exact = @(x) f_op(x) .* g_op(x);
-tol = h.onefun.epslevel*max(get(f, 'vscale'))*max(get(g, 'vscale'));
+tol = get(h, 'epslevel')*max(get(f, 'vscale'))*max(get(g, 'vscale'));
 result(1) = all(max(abs(feval(h, x) - h_exact(x))) < 5*tol);
 if ( checkpos )
     result(2) = all(feval(h, x) >= 0);
