@@ -26,7 +26,7 @@ if ( ~isreal(f) )
     imagf = imag(f);
     h = realf.*realf + imagf.*imagf;
     h = simplify(h);
-    [ignored, pos] = minandmax(h);
+    [ignored, pos] = minandmax(h); %#ok<ASGLU>
     vals = feval(f, pos);
     % FEVAL() will not return a matrix argument of the correct dimensions if f
     % is array-valued. This line corrects this:
@@ -61,7 +61,7 @@ else
     % Loop over columns:
     for k = 1:sizef2    
         % Find max of this column:
-        [vals(:,k), pos(:,k)] = minandmaxColumn(g(k), gp(k), xpts);
+        [vals(:,k), pos(:,k)] = minandmaxColumn(g{k}, gp{k}, xpts);
     end
 
 end

@@ -7,7 +7,7 @@ function out = isfinite(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Check if the onefun of f is finite:
+% Check if the ONEFUN of f is finite:
 out = isfinite(f.onefun);
 
 end

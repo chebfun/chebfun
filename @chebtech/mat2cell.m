@@ -1,5 +1,6 @@
 function g = mat2cell(f, M, N)
-%MAT2CELL   Convert an array-valued CHEBTECH into an array of CHEBTECH objects.
+%MAT2CELL   Convert an array-valued CHEBTECH into a cell array of CHEBTECH
+%objects.
 %
 %   G = MAT2CELL(F, C) breaks up the array-valued CHEBTECH F into a single row
 %   cell array G of CHEBTECH objects. C is the vector of column sizes, and if F
@@ -51,16 +52,24 @@ values = mat2cell(f.values, n, N);
 coeffs = mat2cell(f.coeffs, n, N);
 vscale = mat2cell(f.vscale, 1, N);
 
-% Initialise the CHEBTECH array:
-g(1,numel(N)) = f.make();
+% Create a cell for storing the CHEBTECH objects
+g = cell(1, numel(N));
 
-% Append the data to the new entries in the array:
+% Append the data to the new entries in the cell:
 for k = 1:numel(N)
-    g(k).epslevel = f.epslevel;
-    g(k).ishappy = f.ishappy;
-    g(k).vscale = vscale{k};
-    g(k).values = values{k};
-    g(k).coeffs = coeffs{k};
+    % Create a CHEBTECH
+    gk = f.make();
+    
+    % Assign values to the fields of the CHEBTECH
+    gk.epslevel = f.epslevel;
+    gk.ishappy = f.ishappy;
+    gk.vscale = vscale{k};
+    gk.values = values{k};
+    gk.coeffs = coeffs{k};
+    
+    % Store the CHEBTECH in the cell-array returned.
+    g{k} = gk;
 end
+
 
 end

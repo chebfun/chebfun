@@ -1,7 +1,7 @@
 function f = rdivide(f, c, pref)
 %./   Right array divide for a CHEBTECH.
-%   F ./ C divides the CHEBTECH F by an array C. If F is a vectorised CHEBTECH
-%   with M columns, then C must be either a scalar or a 1xM array. 
+%   F ./ C divides the CHEBTECH F by an array C. If F is an array-valued
+%   CHEBTECH with M columns, then C must be either a scalar or a 1xM array. 
 %
 %   Alternatively if C is a CHEBTECH with the same number of columns as F, or if
 %   F is a scalar, the resulting division is returned if C is found to have no

@@ -1,4 +1,4 @@
-classdef chebtech %< smoothfun % (Abstract)
+classdef chebtech < smoothfun % (Abstract)
 %CHEBTECH   Approximate smooth functions on [-1,1] with Chebyshev interpolants.
 %
 %   Class for approximating smooth functions on the interval [-1,1] using
@@ -126,7 +126,7 @@ classdef chebtech %< smoothfun % (Abstract)
 % component of the array-valued function is truncated to the same length, even
 % if the demands of 'happiness' imply that one of the components could be
 % truncated to a shorter length than the others. All CHEBTECH methods should
-% accept such vectorised forms. Note that this representation is distinct from
+% accept such array-valued forms. Note that this representation is distinct from
 % an array of CHEBTECH objects, for which there is little to no support.
 %
 % Class diagram: [<<smoothfun>>] <-- [<<CHEBTECH>>] <-- [chebtech1]
@@ -137,22 +137,22 @@ classdef chebtech %< smoothfun % (Abstract)
     properties ( Access = public )
 
         % Values of CHEBTECH at Chebyshev points (stored in order from left to
-        % right). The particular Chebyshev points used depend on the instance of
-        % the concrete class (1st kind for CHEBTECH1 and 2nd kind for CHEBTECH2).
-        % For vectorised CHEBTECH objects, each column represents the
-        % interpolated values of a single function.
+        % right). The particular Chebyshev points used depend on the instance
+        % of the concrete class (1st kind for CHEBTECH1 and 2nd kind for
+        % CHEBTECH2).  % For array-valued CHEBTECH objects, each column
+        % represents the interpolated values of a single function.
         values % (nxm double)
 
         % Coefficients in 1st-kind Chebyshev series expansion of the CHEBTECH on
         % [-1,1]. The coefficients are stored in descending order so that c_N is
-        % the first entry and c_0 is the last. For vectorised CHEBTECH objects,
-        % each column represents the coefficients of a single function.
+        % the first entry and c_0 is the last. For array-valued CHEBTECH
+        % objects, each column represents the coefficients of a single function.
         coeffs % (nxm double)
 
         % Vertical scale of the CHEBTECH. This is a row vector storing the
         % magnitude of the largest entry in each column of VALUES. It is
         % convenient to store this as a property.
-        vscale = 0 % (1xm double >= 0)
+%         vscale = 0 % (1xm double >= 0)
 
         % Horizontal scale of the CHEBTECH. Although CHEBTECH objects have in
         % principle no notion of horizontal scale invariance (since they always
@@ -160,16 +160,16 @@ classdef chebtech %< smoothfun % (Abstract)
         % HSCALE is then used to enforce horizontal scale invariance in
         % construction and other subsequent operations that require it. It
         % defaults to 1 and is never updated.
-        hscale = 1 % (scalar > 0)
+%         hscale = 1 % (scalar > 0)
 
         % Boolean value designating whether the CHEBTECH is 'happy' or not. See
         % HAPPINESSCHECK.m for full documentation.
-        ishappy % (logical)
+%         ishappy % (logical)
 
         % Happiness level to which the CHEBTECH was constructed (See
         % HAPPINESSCHECK.m for full documentation) or a rough accuracy estimate
         % of subsequent operations (See CHEBTECH class documentation for details).
-        epslevel % (double >= 0)
+%         epslevel % (double >= 0)
     end
 
     %% CLASS CONSTRUCTOR:
@@ -281,7 +281,7 @@ classdef chebtech %< smoothfun % (Abstract)
         % Evaluate a CHEBTECH.
         y = feval(f, x)
 
-        % Flip columns of a vectorised CHEBTECH object.
+        % Flip columns of an array-valued CHEBTECH object.
         f = fliplr(f)
         
         % Flip/reverse a CHEBTECH object.
@@ -320,7 +320,7 @@ classdef chebtech %< smoothfun % (Abstract)
         % Length of a CHEBTECH.
         len = length(f)
 
-        % [TODO]: Implement looseCheck.
+        % A 'loose' (i.e., not too strict) check for happiness.
         [ishappy, epslevel, cutoff] = looseCheck(f, pref)
 
         % Convert a array-valued CHEBTECH into an ARRAY of CHEBTECH objects.
@@ -346,9 +346,15 @@ classdef chebtech %< smoothfun % (Abstract)
 
         % Multiplication of CHEBTECH objects.
         f = mtimes(f, c)
+        
+        % Compute a Legendre series expansion of a CHEBTECH object:
+        c = legpoly(f)
 
         % Basic linear plot for CHEBTECH objects.
         varargout = plot(f, varargin)
+        
+        % Obtain data used for plotting a CHEBTECH object:
+        data = plotData(f)
 
         % Addition of two CHEBTECH objects.
         f = plus(f, g)
@@ -366,7 +372,7 @@ classdef chebtech %< smoothfun % (Abstract)
         f = prolong(f, n)
 
         % QR factorisation of an array-valued CHEBTECH.
-        [f, R, E] = qr(f, flag)
+        [f, R, E] = qr(f, flag, methodFlag)
 
         % Right array divide for a CHEBTECH.
         f = rdivide(f, c, pref)

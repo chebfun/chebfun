@@ -7,7 +7,7 @@ function out = isnan(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Check if the onefun of f has any NaN values:
+% Check if the ONEFUN of f has any NaN values:
 out = isnan(f.onefun);
 
 end

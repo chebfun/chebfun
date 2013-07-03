@@ -43,7 +43,7 @@ for n = 1:2
     pass(n, 4) = all(g.values == 0) && all(g.coeffs == 0);
     
     %%
-    % Check operation for vectorized chebtech objects.
+    % Check operation for array-valued chebtech objects.
     
     f = testclass.make(@(x) [sin(x) cos(x) exp(x)], [], [], pref);
     g1 = alpha*f;

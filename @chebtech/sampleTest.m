@@ -14,7 +14,7 @@ n = length(f);
 x = f.chebpts(n);
 
 % Set a tolerance:
-tol = max(f.epslevel, 1e3*eps) * n * (f.vscale/f.hscale);
+tol = max(f.epslevel, 1e3*eps) * n;
 
 % Choose a point to evaluate at:
 if ( n == 1 )
@@ -32,7 +32,8 @@ vFun = feval(f, xeval);
 vOp = feval(op, xeval);
 
 % If the CHEBTECH evaluation differs from the op evaluation, SAMPLETEST failed:
-if ( norm(vOp - vFun, inf) > tol )
+err = bsxfun(@rdivide, abs(vOp - vFun), f.vscale); % Relative (to vscale) error.
+if ( all(max(abs(err)) > tol) )
     pass = false; % :(
 else
     pass = true;  % :)

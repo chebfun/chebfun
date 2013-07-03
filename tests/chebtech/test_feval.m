@@ -59,7 +59,7 @@ for n = 1:2
         10*f.epslevel);
     
     %%
-    % Check operation for vectorized chebtech objects.
+    % Check operation for array-valued chebtech objects.
     
     f = testclass.make(@(x) [sin(x) x.^2 exp(1i*x)], [], [], pref);
     f_exact = @(x) [sin(x) x.^2 exp(1i*x)];
@@ -67,7 +67,7 @@ for n = 1:2
     pass(n, 8) = all(max(abs(err)) < 10*f.epslevel);
     
     %%
-    % Test for evaluating vectorized chebtech objects at matrix arguments if 
+    % Test for evaluating array-valued chebtech objects at matrix arguments if 
     % the operation makes sense.
     f = testclass.make(@(x) [sin(pi*x) cos(pi*x) exp(pi*x)], [], [], pref);
     x2 = [-1 0 1 ; .25 .5 .75];

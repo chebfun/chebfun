@@ -102,7 +102,7 @@ for n = 1:2
     pass(n, 11) = (norm(err, inf) < 1e7*tol);
     
     %%
-    % Check operation for vectorized chebtech objects.
+    % Check operation for array-valued chebtech objects.
     
     f = testclass.make(@(x) [sin(x) x.^2 exp(1i*x)], [], [], pref);
     df_exact = @(x) [cos(x) 2*x 1i*exp(1i*x)];
@@ -120,7 +120,7 @@ for n = 1:2
     err = feval(dim2df2, x) - g(x);
     pass(n, 14) = (norm(err(:), inf) < tol);
     
-    % DIM option should return an empty chebtech for non-vectorized input.
+    % DIM option should return an empty chebtech for non-array-valued input.
     f = testclass.make(@(x) x.^3);
     dim2df = diff(f, 1, 2);
     pass(n, 15) = (isempty(dim2df.values) && isempty(dim2df.coeffs));

@@ -3,8 +3,8 @@ function varargout = chebpolyplot(f, varargin)
 %
 %   CHEBPOLYPLOT(F) plots the Chebyshev coefficients of a CHEBTECH F on a
 %   semilogy scale. A horizontal line at the EPSLEVEL of F is also plotted. If F
-%   is a vectorised CHEBTECH then a curve is plotted for each component (column)
-%   of F.
+%   is an array-valued CHEBTECH then a curve is plotted for each component
+%   (column) of F.
 %
 %   CHEBPOLYPLOT(F, S) allows further plotting options, such as linestyle,
 %   linecolor, etc, in the standard MATLAB manner. If S contains a string
@@ -13,6 +13,10 @@ function varargout = chebpolyplot(f, varargin)
 %
 %   H = CHEBPOLYPLOT(F) returns a column vector of handles to lineseries
 %   objects. The final entry is that of the EPSLEVEL plot.
+%
+%   Note: to make the CHEBPOLYPLOT easier to read, zero coefficients have a
+%   small value added to them (typically F.EPSLEVEL) so that the curve displayed
+%   is continuous.
 %
 % See also CHEBPOLY, PLOT.
 
@@ -52,18 +56,24 @@ end
 holdState = ishold;
 
 % The coefficients:
-absc = abs(f.coeffs);
+absCoeffs = abs(f.coeffs);
 
 % Add a tiny amount to zeros to make plots look nicer:
-% (Min of epslevel*vscale and the miniumum non-zero coefficient)
-absc(~absc) = min(f.epslevel*min(f.vscale), min(absc(logical(absc))));
+if ( f.vscale > 0 )
+    % (Min of epslevel*vscale and the miniumum non-zero coefficient)
+    absCoeffs(~absCoeffs) = min( f.epslevel*min(f.vscale), ...
+                                 min(absCoeffs(logical(absCoeffs))) );
+else
+    % (add epslevel for zero CHEBTECHs)
+    absCoeffs = absCoeffs + f.epslevel;
+end
 
 % Get the size:
-[n, m] = size(absc);
+[n, m] = size(absCoeffs);
 
 if ( plotEpsLevel )
     % Plot the coeffs AND the epslevel:
-    h = semilogy(n-1:-1:0, absc, args{:});
+    h = semilogy(n-1:-1:0, absCoeffs, args{:});
     hold on
     h2 = semilogy([0 n-1], repmat(f.vscale, 2, 1)*f.epslevel, args{:});
     h = [h ; h2];
@@ -73,7 +83,7 @@ if ( plotEpsLevel )
     end
 else
     % Plot just the coefficients:
-    h = semilogy(n:-1:1, absc, args{:});
+    h = semilogy(n:-1:1, absCoeffs, args{:});
 end
 
 % For constant functions, plot a dot:

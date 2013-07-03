@@ -71,7 +71,7 @@ for n = 1:2
     pass(n, 9) = isreal(n2vals) && all(n2vals >= 0);
     
     %% 
-    % Check operation for vectorized chebtech objects.
+    % Check operation for array-valued chebtech objects.
     
     f = testclass.make(@(x) [sin(x) cos(x)]);
     g = testclass.make(@(x) [exp(x) 1./(1 + x.^2) airy(x)]);

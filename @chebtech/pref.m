@@ -67,7 +67,7 @@ function prefs = pref(varargin)
 %      'loose'         - A looser tolerance for coefficients.
 %     function_handle  - A user defined happiness. See HAPPINESSCHECK.m
 %
-% See also CHEBTECH1, CHEBTECH2
+% See also CHEBTECH, CHEBTECH1, CHEBTECH2
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
@@ -82,14 +82,14 @@ else                                                % No
     prefs = struct();
 end
 
-% If it was, did it have a CHEBTECH field?
+% If it was, did it have a field for this class?
 if ( isfield(prefs, classname) )  % It does, so either:
     if ( numel(varargin) == 0 )
         return                    % a) No props to change, return
     else
-        p = prefs.(classname);    % b) Grab CHEBTECH prefs
+        p = prefs.(classname);    % b) Grab prefs for this class.
     end
-else                              % No CHEBTECH prefs found, so make some:
+else                              % No prefs found for this class, so make some:
     p.tech        = 'cheb2';
     p.eps         = 2^-52;
     p.extrapolate = false;
@@ -101,7 +101,7 @@ else                              % No CHEBTECH prefs found, so make some:
     p.refinementFunction = 'nested';
     p.happinessCheck = 'classic';
 end
-% p is now the preference substructure relating to the FUN class.
+% p is now the preference substructure relating to the current class.
 
 if ( isfield(prefs,'misc') ) 
     q = prefs.misc;
@@ -118,7 +118,7 @@ for names = fieldnames(q)'
     end
 end
 
-% Two preference structures were passed. Copy matching fieldnames.
+% Two preference structures were passed. Copy matching fieldnames:
 if ( numel(varargin) > 0 && isstruct(varargin{1}) ) % Yes
     r = varargin{1};
     varargin(1) = [];
@@ -130,13 +130,13 @@ if ( numel(varargin) > 0 && isstruct(varargin{1}) ) % Yes
     end
 end
 
-% A single property has been queried, so return this property
+% A single property has been queried, so return this property:
 if ( numel(varargin) == 1 )
     prefs = p.(varargin{1});
     return
 end
 
-% Property names have been passed, so alter/add CHEBTECH/MISC properties.
+% Property names have been passed, so alter/add <current class>/MISC properties.
 for k = 1:2:numel(varargin)
     if ( isfield(p, varargin{k}) )
         p.(varargin{k}) = varargin{k+1};
@@ -145,10 +145,10 @@ for k = 1:2:numel(varargin)
     end
 end
 
-% Append CHEBTECH preferences to the preference structure prefs for output.
+% Append current class preferences to the preference structure prefs for output:
 prefs.(classname) = p;
 
-% Append MISC preferences to the preference structure prefs for output.
+% Append MISC preferences to the preference structure prefs for output:
 prefs.misc = q;
 
 end

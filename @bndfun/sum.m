@@ -1,5 +1,5 @@
-function out = sum(f,dim)
-%SUM	Definite integral of a BNDFUN on its interval [a,b]
+function out = sum(f, dim)
+%SUM   Definite integral of a BNDFUN on its interval [a,b]
 %   S = SUM(F) is the integral from a to b of F.
 %
 %   If F is an array-valued BNDFUN then the result is a row vector containing
@@ -14,9 +14,9 @@ function out = sum(f,dim)
 % See http://www.chebfun.org for Chebfun information.
 
 %%
-% Sum across vectorised BNDFUN columns if dim = 2:
-if ( nargin > 1 && dim == 2 )
-    f.onefun = sum(f.onefun,dim);
+% Sum across array-valued BNDFUN columns if dim = 2:
+if ( (nargin > 1) && (dim == 2) )
+    f.onefun = sum(f.onefun, dim);
     out = f;
     return
 end
@@ -24,8 +24,8 @@ end
 %%
 % Otherwise, compute the sum column-wise.
 
-% Rescaling factor, (b-a)/2
-rescaleFactor = (.5*diff(f.domain));
+% Rescaling factor, (b - a)/2
+rescaleFactor = 0.5*diff(f.domain);
 
 % Assign the output to be the sum of the onefun of the input, rescaled.
 out = sum(f.onefun)*rescaleFactor;
