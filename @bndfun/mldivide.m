@@ -5,7 +5,7 @@ function X = mldivide(A, B)
 %
 %   The BNDFUN objects A and B are assumed to have the same domain. The method
 %   gives no warning if their domains don't agree, but the output of the method
-%   will be gibberish.
+%   will be meaningless.
 %
 % See also QR, MRDIVIDE.
 

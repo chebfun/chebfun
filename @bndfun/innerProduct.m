@@ -9,7 +9,7 @@ function out = innerProduct(f, g)
 %
 %   The BNDFUN objects F and G are assumed to have the same domain. The method
 %   gives no warning if their domains don't agree, but the output of the method
-%   will be gibberish.
+%   will be meaningless.
 
 % Deal with empty case:
 if ( isempty(f) || isempty(g) )

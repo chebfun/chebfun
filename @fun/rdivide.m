@@ -7,7 +7,7 @@ function f = rdivide(f, g, varargin)
 %   scalar, then the resulting division is returned if C is found to have no
 %   roots in its domain. The division is performed column-wise. Note that F and
 %   C are assumed to have the same domain. The method gives no warning if their
-%   domains don't agree, but the output of the method will be gibberish.
+%   domains don't agree, but the output of the method will be meaningless.
 %
 % See also MRDIVIDE, TIMES.
 

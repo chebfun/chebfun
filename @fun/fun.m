@@ -39,7 +39,7 @@ classdef fun % (Abstract)
 % interval [a, b]. It achieves this by taking a ONEFUN on [-1, 1] and applying
 % a mapping.
 %
-% The current instances of FUNs are BNDFUNS and UNBNDFUNS. The former are used
+% The current instances of FUNs are BNDFUNs and UNBNDFUNs. The former are used
 % to represent functions on bounded domains, whereas the latter are able to
 % represent some functions on unbounded domains.
 %

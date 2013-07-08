@@ -1,5 +1,5 @@
 function f = compose(f, op, g, pref)
-%COMPOSE   Compostition of BNDFUN objects.
+%COMPOSE   Composition of BNDFUN objects.
 %   H = COMPOSE(F, OP) returns a BNDFUN representing OP(F) where F is also a
 %   BNDFUN object, and OP is a function handle.
 %
@@ -28,7 +28,7 @@ function f = compose(f, op, g, pref)
 if ( nargin == 2 )
     if ( isa(op, 'bndfun') )  % Composition of two BNDFUN objects ( out = g(f) )
         
-        % op is a BNDFUN! Rename it to g for clarity
+        % OP is a BNDFUN! Rename it to g for clarity
         g = op;
         
         % For composition to work with two BNDFUN objects, the range of F must
@@ -45,17 +45,17 @@ if ( nargin == 2 )
         % the domain of G.
         f.onefun = compose(fMapped, g.onefun);
         
-    else                     % Standard composition ( out = op(f) )
+    else                     % Standard composition ( out = OP(F) )
         % OP is an operator!
         f.onefun = compose(f.onefun, op);
     end
     
-elseif ( nargin == 3 )          % out = op(f,g). No preferences passed.
+elseif ( nargin == 3 )          % out = OP(F,G). No preferences passed.
     % Third argument passed must have been a bndfun. Compose the onefun of f
     % with the onefun of g:
     f.onefun = compose(f.onefun, op, g.onefun);
     
-else                            % out = op(f,g). Preferences passed.
+else                            % out = OP(F,G). Preferences passed.
     
     % Merge preferences:
     pref = f.onefun.pref(pref, pref.fun);
