@@ -1,12 +1,12 @@
 function f = restrict(f, s)
 %RESTRICT   Restrict a CHEBTECH to a subinterval.
-%   RESCTRICT(F, S) returns a CHEBTECH that is restricted to the subinterval
+%   RESTRICT(F, S) returns a CHEBTECH that is restricted to the subinterval
 %   [S(1),S(2)] of [-1, 1]. Note that that since CHEBTECH objects only live on
 %   [-1,1], a linear change of variables is implicitly applied.
 %
-%   If length(S) > 2, i.e., S = [S1, S2, S3, ...], then RESCTRICT(F, S) returns
-%   an array of CHEBTECH objects, where the entries hold F restricted to each of
-%   the subintervals defined by S.
+%   If length(S) > 2, i.e., S = [S1, S2, S3, ...], then RESTRICT(F, S) returns
+%   a cell-array of CHEBTECH objects, where the entries hold F restricted to
+%   each of the subintervals defined by S.
 %
 %   If F is a array-valued function, say [F1, F2], then the restrict(F, S =
 %   [S1, S2, S3]) returns the array-valued CHEBTECH {restrict(F1,S).
@@ -57,7 +57,9 @@ f.coeffs = coeffs;
 f.vscale = vscale;
 % f.epslevel = f.epslevel; % epslevel does not change (or become a vector yet).
 
-% Convert to an array:
-f = mat2cell(f, repmat(m, 1, numInts));
+if ( numInts > 1 )
+    % Convert to a cell-array:
+    f = mat2cell(f, repmat(m, 1, numInts));
+end
 
 end

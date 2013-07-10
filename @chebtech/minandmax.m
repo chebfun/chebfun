@@ -13,7 +13,7 @@ function [vals, pos] = minandmax(f)
 %   but the resulting values correspond to those of the original function. That
 %   is, VALS = FEVAL(F, POS) where [~, POS] = MINANDMAX(ABS(F)). (In fact,
 %   MINANDMAX actually computes [~, POS] = MINANDMAX(ABS(F).^2), to avoid
-%   introducing singularlities to the function).
+%   introducing singularities to the function).
 %
 % See also MIN, MAX.
 
@@ -61,7 +61,7 @@ else
     % Loop over columns:
     for k = 1:sizef2    
         % Find max of this column:
-        [vals(:,k), pos(:,k)] = minandmaxColumn(g(k), gp(k), xpts);
+        [vals(:,k), pos(:,k)] = minandmaxColumn(g{k}, gp{k}, xpts);
     end
 
 end

@@ -28,7 +28,7 @@ function out = roots(f, varargin)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ROOTS works by recursively subdividing the interval until the resulting
-% CHEBTECH is of degree less than 50, at which point a colleage matrix is
+% CHEBTECH is of degree less than 50, at which point a colleague matrix is
 % constructed to compute the roots.
 %
 % ROOTS performs all operations in coefficient space. In this representation,
@@ -42,7 +42,7 @@ function out = roots(f, varargin)
 % evaluating on the left and right intervals using the Clenshaw algorithm. The
 % subdivision occurs at an arbitrary point _near_ but not _at_ the centre of the
 % domain (in fact, -0.004849834917525 on [-1 1]) to avoid introducing additional
-% suprious roots (since x = 0 is often a special point).
+% spurious roots (since x = 0 is often a special point).
 %
 % Note that ROOTS uses CHEBTECH2 technology to subdivide the interval,
 % regardless of whether F is a CHEBTECH1 or a CHEBTECH2.
@@ -80,7 +80,7 @@ else                            % Support for array-valued CHEBTECH objects.
 
     % Loop over the columns of f / elements of g:
     for j = 1:size(f.values, 2)
-        r{j} = roots_scalar(g(j), varargin{:}); 
+        r{j} = roots_scalar(g{j}, varargin{:}); 
     end
 
     % Find the max length of r:
