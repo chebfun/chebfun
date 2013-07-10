@@ -45,7 +45,7 @@ classdef unbndfun < fun
 %                [unbndfun]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    
+    %% CLASS CONSTRUCTOR:   
     methods
         
         function obj = unbndfun(op, domain, vscale, hscale, pref)
@@ -110,7 +110,7 @@ classdef unbndfun < fun
 
     end
     
-    %% STATIC METHODS IMPLEMENTED BY BNDFUN CLASS.
+    %% STATIC METHODS IMPLEMENTED BY UNBNDFUN CLASS.
     methods ( Static = true ) 
         
         % Retrieve and modify preferences for this class.
@@ -128,7 +128,7 @@ classdef unbndfun < fun
     methods
         
         % [TODO]: Compose an UNBNDFUN with an operator or another UNBNDFUN.
-%         f = compose(f, op, g, pref)
+        f = compose(f, op, g, pref)
         
         % Indefinite integral of an UNBNDFUN.
         f = cumsum(f, m, pref)
