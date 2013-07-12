@@ -46,7 +46,6 @@ s.exponents = f.exponents + g.exponents;
 % [TODO]: Since exponents are negative,
 % it's impossible to remove a singularity
 % by adding the exponents?
-
 tol = singfun.pref.singfun.eps;
 if ( abs(s.exponents(1)) > 100*tol )
     s.isSingEnd(1) = 1;

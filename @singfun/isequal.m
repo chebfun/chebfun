@@ -1,14 +1,15 @@
 function out = isequal(f, g)
-%ISEQUAL   Test if CHEBTECH objects are equal.
-%   ISEQUAL(F, G) returns TRUE if the CHEBTECH objects F and G have the same
-%   length, values, and coefficients. They may have different values of vscale
-%   and epslevel.
+%ISEQUAL   Test if SINGFUN objects are equal.
+%   ISEQUAL(F, G) returns TRUE if the SINGFUN objects F and G have the same
+%   underlyig SMOOTHPART and the same EXPONENTS. The type of singularity
+%   at the ends may be differnet but as long as the EXPONENTS agree within
+%   SINGFUN tolerance, they are considered equal.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-out = all(size(f.values) == size(g.values)) ...
-    && all(f.values(:) == g.values(:)) ...
-    && all(f.coeffs(:) == g.coeffs(:));
+tol = singfun.pref.singfun.eps;
+out = all(abs(f.exponents - g.exponents) < tol) ...
+    && isequal( f.smoothPart, g.smoothPart);
 
 end
