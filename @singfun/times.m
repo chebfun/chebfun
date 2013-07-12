@@ -1,7 +1,7 @@
 function s = times(f,g)
 %.* Multiply two singfuns
 
-% This method will be called only both F and G are SINGFUNS or at the most
+% This method will be called only if both F and G are SINGFUNS or at the most
 % one of F and G is a scalar double.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
@@ -10,11 +10,11 @@ function s = times(f,g)
 %%
 % Check if inputs are other than SINGFUNS or doubles
 if ( ~isa(f, 'singfun') && ~isa(f, 'double') )
-    error( 'singfun:times:Input can only be a singfun or a double' )
+    error( 'SINGFUN:times:Input can only be a singfun or a double' )
 end
 
 if ( ~isa(g, 'singfun') && ~isa(g, 'double') )
-    error( 'singfun:times:Input can only be singfun or a double' )
+    error( 'SINGFUN:times:Input can only be singfun or a double' )
 end
 
 %%
@@ -40,6 +40,13 @@ s.smoothPart = (f.smoothPart).*(g.smoothPart);
 s.exponents = f.exponents + g.exponents;
 
 %%
+% Check if after multiplication the 
+% type of singularity has changed
+% or if it can be removed.
+% [TODO]: Since exponents are negative,
+% it's impossible to remove a singularity
+% by adding the exponents?
+
 tol = singfun.pref.singfun.eps;
 if ( abs(s.exponents(1)) > 100*tol )
     s.isSingEnd(1) = 1;

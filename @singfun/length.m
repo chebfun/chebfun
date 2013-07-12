@@ -1,13 +1,13 @@
 function len = length(f)
-%LENGTH   Length of a CHEBTECH.
-%   LENGTH(F) is the number of values at Chebyshev points used to represent F.
+%LENGTH   Length of a SINGFUN.
+%   LENGTH(F) is the length of the smooth part of contained in F.
 %
 %   See also SIZE.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% The length of a CHEBTECH is the length of its vector of values.
-len = size(f.values, 1);
+% The length of a SINGFUN object is the length of its smooth part.
+len = length(f.smoothPart);
 
 end

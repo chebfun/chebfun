@@ -1,14 +1,8 @@
 function out = iszero(f)
-%ISZERO    True for zero CHEBTECH objects.
-%   ISZERO(F) returns logical TRUE is F.values has only zero entries and logical
-%   FALSE otherwise.
+%ISZERO    True for zero SINGFUN objects.
+%   ISZERO(F) returns logical TRUE if the smooth part of  F
+%   is zero and FALSE otherwise.
 
-out = ~any(f.values, 1);
-
-if ( any(out) )
-    % We need this as any(NaN) = 0, which will pass the test above.
-    out = out & ~any(isnan(f.values), 1);
-    return
-end
+out = iszero(f.smoothPart);
 
 end
