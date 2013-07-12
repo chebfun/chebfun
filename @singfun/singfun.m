@@ -128,7 +128,7 @@ classdef singfun
                 end
             end
             
-            if ( nargin == 4 && isemtpy(exponents) )
+            if ( nargin >= 4 && isempty(exponents) )
                 % copy the information given about singularities in the current object
                 obj.isSingEnd = isSingEnd;
                 obj.singType = singType;                
