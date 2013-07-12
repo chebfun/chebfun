@@ -52,7 +52,7 @@ classdef singfun
     
     %% CLASS CONSTRUCTOR:
     methods ( Static = true )
-        function obj = singfun(op, singFlag, type, pref)           
+        function obj = singfun(op, isSingEnd, singType, pref)           
             %%
             % no input arguments: return an empty object               
             if ( nargin == 0 )   
@@ -65,12 +65,30 @@ classdef singfun
             
             if ( nargin == 1 )
                 % only operator passed, assume a pole at each end point
-                obj.singType = {'pole', 'pole'};
                 obj.isSingEnd = [1, 1];
-            else
+                obj.singType = {'pole', 'pole'};                
+            end
+            
+            if ( nargin == 2 )
+                % singulrity indicator passed but type not given.
+                % Assume fractional poles or branches.
+                if ( isSingEnd(1) )
+                    % if singularity is at the left end point
+                    obj.isSingEnd(1) = 1;
+                    obj.singType{1} = 'branch';
+                end
+                
+                if ( isSingEnd(2) )
+                    % if singularity is at the right end point
+                    obj.isSingEnd(2) = 1;
+                    obj.singType{2} = 'branch';
+                end
+            end
+            
+            if ( nargin == 3 )
                 % copy the information given about singularities in the current object
-                obj.singType = type;
-                obj.isSingEnd = singFlag;
+                obj.isSingEnd = isSingEnd;
+                obj.singType = singType;                
             end
                                    
             % Determine preferences if not given, merge if some are given:
