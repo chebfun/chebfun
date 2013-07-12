@@ -87,7 +87,7 @@ classdef singfun
                 % the information given in exponents.
                 obj.exponents = exponents;
                 tol = pref.singfun.eps;
-                if ( abs(exponents(1)) > 100*tol )
+                if ( exponents(1) < 0 && abs(exponents(1)) > 100*tol )
                     obj.isSingEnd(1) = 1;
                     if( abs(exponents(1)-round(exponents(1))) < 100*tol )
                         obj.singType{1} = 'pole';
@@ -99,7 +99,7 @@ classdef singfun
                     obj.singType{1} = 'none';
                 end
                 
-                if ( abs(exponents(2)) > 100*tol )
+                if ( exponents(2) < 0 && abs(exponents(2)) > 100*tol )
                     obj.isSingEnd(2) = 1;
                     if( abs(exponents(2)-round(exponents(2))) < 100*tol )
                         obj.singType{2} = 'pole';
@@ -157,25 +157,159 @@ classdef singfun
             end
             
             % update the operator based on the values in exponents.
-            op = singfun.singOp2SmoothOp(op, obj.exponents, tol);
+            smoothOp = singfun.singOp2SmoothOp(op, obj.exponents, pref.singfun.eps);
             
             % Construct the smooth part of the SINGFUN object.
             % [TODO]: This will be replaced by the SMOOTHFUN constructor
             prefs = chebtech.pref('tech', 'cheb1', 'extrapolate', false);
             vscale = [];
             hscale = [];
-            obj.smoothPart = chebtech.constructor(op, vscale, hscale, prefs);
+            obj.smoothPart = chebtech.constructor(smoothOp, vscale, hscale, prefs);
         end
     end
     
-    %% Public methods defined in external files.
-    methods ( Access = public )
-        y = feval(f,x)
+    %% METHODS IMPLEMENTED BY THIS CLASS.
+    methods
+        
+        % Complex conjugate of a SINGFUN.
+        f = conj(f)
+        
+        % SINGFUN obects are not transposable.
+        f = ctranspose(f)
+
+        % Indefinite integral of a SINGFUN.
+        f = cumsum(f, m, pref)
+
+        % Derivative of a SINGFUN.
+        f = diff(f, k, dim)
+        
+        % Extrapolate (for NaNs / Infs).
+        [values, maskNaN, maskInf] = extrapolate(f)
+
+        % Evaluate a SINGFUN.
+        y = feval(f, x)
+
+        % Flip columns of an array-valued SINGFUN object.
+        f = fliplr(f)
+        
+        % Flip/reverse a SINGFUN object.
+        f = flipud(f)
+        
+        % Imaginary part of a SINGFUN.
+        f = imag(f)
+     
+        % True for an empty SINGFUN.
+        out = isempty(f)
+
+        % Test if CHEBTECH objects are equal.
+        out = isequal(f, g)
+
+        % Test if a CHEBTECH is bounded.
+        out = isfinite(f)
+
+        % Test if a CHEBTECH is unbounded.
+        out = isinf(f)
+
+        % Test if a CHEBTECH has any NaN values.
+        out = isnan(f)
+
+        % True for real CHEBTECH.
+        out = isreal(f)
+        
+        % True for zero CHEBTECH objects
+        out = iszero(f)
+        
+        % Length of a CHEBTECH.
+        len = length(f)
+
+        % Convert a array-valued CHEBTECH into an ARRAY of CHEBTECH objects.
+        g = mat2cell(f, M, N)
+
+        % Global maximum of a CHEBTECH on [-1,1].
+        [maxVal, maxPos] = max(f)
+
+        % Global minimum of a CHEBTECH on [-1,1].
+        [minVal, minPos] = min(f)
+
+        % Global minimum and maximum on [-1,1].
+        [vals, pos] = minandmax(f)
+
+        % Subtraction of two CHEBTECH objects.
+        f = minus(f, g)
+
+        % Left matrix divide for CHEBTECH objects.
+        X = mldivide(A, B)
+
+        % Right matrix divide for a CHEBTECH.
+        X = mrdivide(B, A)
+
+        % Multiplication of CHEBTECH objects.
+        f = mtimes(f, c)
+        
+        % Basic linear plot for CHEBTECH objects.
+        varargout = plot(f, varargin)
+        
+        % Obtain data used for plotting a CHEBTECH object:
+        data = plotData(f)
+
+        % Addition of two CHEBTECH objects.
+        f = plus(f, g)
+
+        % Return the points used by a CHEBTECH.
+        out = points(f)
+
+        % QR factorisation of an array-valued CHEBTECH.
+        [f, R, E] = qr(f, flag)
+
+        % Right array divide for a CHEBTECH.
+        f = rdivide(f, c, pref)
+
+        % Real part of a SINGFUN.
+        f = real(f)
+
+        % Restrict a CHEBTECH to a subinterval.
+        f = restrict(f, s)
+
+        % Roots of a CHEBTECH in the interval [-1,1].
+        out = roots(f, varargin)
+
+        % Test an evaluation of the input OP against a CHEBTECH approx.
+        pass = sampleTest(op, f)
+
+        % Trim trailing Chebyshev coefficients of a CHEBTECH object.
+        f = simplify(f, pref, force)
+
+        % Size of a CHEBTECH.
+        [siz1, siz2] = size(f, varargin)
+
+        % Strict happiness check.
+        [ishappy, epslevel, cutoff] = strictCheck(f, pref)
+
+        % Definite integral of a CHEBTECH on the interval [-1,1].
+        out = sum(f, dim)
+
+        % CHEBTECH multiplication.
+        f = times(f, g, varargin)
+        
+        % CHEBTECH obects are not transposable.
+        f = transpose(f)
+
+        % Unary minus of a CHEBTECH.
+        f = uminus(f)
+
+        % Unary plus of a CHEBTECH.
+        f = uplus(f)
+
     end
+
     %% STATIC METHODS IMPLEMENTED BY THIS CLASS.
     methods ( Static = true )
         
         exponents = findSingExponents( op, isSingEnd, singType, pref )
+        
+        poleOrder = findPoleOrder( fvals, x, tol)
+        
+        barnchOrder = findBranchOrder( fvals, x, tol)
         
         op = singOp2SmoothOp( op, exponents, tol )
         
