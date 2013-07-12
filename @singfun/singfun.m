@@ -7,16 +7,16 @@ classdef singfun
 %
 % The singfun class represents a function of the form 
 %
-% \[ f(x) = s(x) (1+x)^\alpha (1-x)^\beta \]
+%     f(x) = s(x) (1+x)^a (1-x)^b 
 %
-% on the interval $[-1,1]$. The exponents $\alpha$ and $\beta$ are assumed
+% on the interval [-1,1]. The exponents a and b are assumed
 % to be real and negative. The constructor is supplied with a handle that evaluates the
-% function $f$ at any given points. However, endpoint values will not be
+% function f at any given points. However, endpoint values will not be
 % sampled, due to the likelihood of Inf and NaN results.
 %
-% Ideally, the "smooth" function $s$ is analytic, or at least much more
-% compactly represented than $f$ is. The resulting object can be used to
-% evaluate and operate on the function $f$. If $\alpha$ and $\beta$ are
+% Ideally, the "smooth" function s is analytic, or at least much more
+% compactly represented than f is. The resulting object can be used to
+% evaluate and operate on the function f. If a and b are
 % unknown at the time of construction, the constructor will try to
 % determine appropriate (nonpositive) values automatically by sampling
 % the function handle. Note, however, that this process is not 
@@ -52,7 +52,18 @@ classdef singfun
     
     %% CLASS CONSTRUCTOR:
     methods ( Static = true )
-        function obj = singfun(op, isSingEnd, singType, pref)           
+        function obj = singfun(op, exponents, isSingEnd, singType, pref)           
+            %%
+            % Check for preferences in the very beginning.
+            % Determine preferences if not given, merge if some are given:
+            if ( nargin < 5 || isempty(pref) )
+                pref = singfun.pref;
+            else        
+                pref = singfun.pref(pref);
+            end
+            %%
+            % Check for cases based on the number of arguments            
+            
             %%
             % no input arguments: return an empty object               
             if ( nargin == 0 )   
@@ -63,13 +74,45 @@ classdef singfun
                 return
             end
             
+            %%
             if ( nargin == 1 )
                 % only operator passed, assume a pole at each end point
                 obj.isSingEnd = [1, 1];
                 obj.singType = {'pole', 'pole'};                
             end
-            
-            if ( nargin == 2 )
+            %%
+            if ( nargin == 2 || ~isempty(exponents) )
+                % exponents passed, discard the values
+                % given in isSingEnd, singType and use 
+                % the information given in exponents.
+                obj.exponents = exponents;
+                tol = pref.singfun.eps;
+                if ( abs(exponents(1)) > 100*tol )
+                    obj.isSingEnd(1) = 1;
+                    if( abs(exponents(1)-round(exponents(1))) < 100*tol )
+                        obj.singType{1} = 'pole';
+                    else
+                        obj.singType{1} = 'branch';
+                    end
+                else
+                    obj.isSingEnd(1) = 0;
+                    obj.singType{1} = 'none';
+                end
+                
+                if ( abs(exponents(2)) > 100*tol )
+                    obj.isSingEnd(2) = 1;
+                    if( abs(exponents(2)-round(exponents(2))) < 100*tol )
+                        obj.singType{2} = 'pole';
+                    else
+                        obj.singType{2} = 'branch';
+                    end
+                else
+                    obj.isSingEnd(1) = 0;
+                    obj.singType{1} = 'none';                   
+                end                
+            end
+                
+            if ( nargin == 3 && isempty(exponents) )
                 % singulrity indicator passed but type not given.
                 % Assume fractional poles or branches.
                 if ( isSingEnd(1) )
@@ -85,51 +128,44 @@ classdef singfun
                 end
             end
             
-            if ( nargin == 3 )
+            if ( nargin == 4 && isemtpy(exponents) )
                 % copy the information given about singularities in the current object
                 obj.isSingEnd = isSingEnd;
                 obj.singType = singType;                
-            end
-                                   
-            % Determine preferences if not given, merge if some are given:
-            if ( nargin < 4 || isempty(pref) )
-                pref = singfun.pref;
-            else        
-                pref = singfun.pref(pref);
-            end
+            end          
+
             
             %%
-            % Determine and factor out singular terms.
-            obj.exponents = singfun.findSingExponents(op, obj.isSingEnd, obj.singType, pref);
-            
-            % update ISSINGEND and SINGTYPE based on EXPONENTS
-            tol = pref.singfun.eps;
-            if ( abs(obj.exponents(1)) < 100*tol )
-                % if the singularity exponent is below the tolerance level
-                % remove the singularity
-                obj.isSingEnd(1) = 0;
-                obj.singType{1} = 'none';
-            end            
-            if ( abs(obj.exponents(2)) < 100*tol )
-                % if the singularity exponent is below the tolerance level
-                % remove the singularity
-                obj.isSingEnd(2) = 0;
-                obj.singType{2} = 'none';
+            % Determine and factor out singular terms if exponents 
+            % are not given
+            if ( isempty(exponents) )
+                obj.exponents = singfun.findSingExponents(op, obj.isSingEnd, obj.singType, pref);
+                % update ISSINGEND and SINGTYPE based on EXPONENTS
+                tol = pref.singfun.eps;
+                if ( abs(obj.exponents(1)) < 100*tol )
+                    % if the singularity exponent is below the tolerance level
+                    % remove the singularity
+                    obj.isSingEnd(1) = 0;
+                    obj.singType{1} = 'none';
+                end
+                if ( abs(obj.exponents(2)) < 100*tol )
+                    % if the singularity exponent is below the tolerance level
+                    % remove the singularity
+                    obj.isSingEnd(2) = 0;
+                    obj.singType{2} = 'none';
+                end
             end
                                   
-            % We check for three cases to avoid doubly nesting functions
-            % when both exponents are present. 
-            if ( all(abs(obj.exponents) > 100*tol ) )         
+            if ( all(abs(obj.exponents) > 100*tol ) )
                 % left and right terms
                 op = @(x) op(x)./((1+x).^(obj.exponents(1)).*(1-x).^(obj.exponents(2)));
-            elseif ( abs(obj.exponents(1)) > 100*tol )   
+            elseif ( abs(obj.exponents(1)) > 100*tol )
                 % left only
                 op = @(x) op(x)./(1+x).^(obj.exponents(1));
-            elseif ( abs(obj.exponents(2)) > 100*tol )    
+            elseif ( abs(obj.exponents(2)) > 100*tol )
                 % right only
                 op = @(x) op(x)./(1-x).^(obj.exponents(2));
             end
-            
             % Construct the smooth part of the SINGFUN object.
             % [TODO]: This will be replaced by the SMOOTHFUN constructor
             prefs = chebtech.pref('tech', 'cheb1', 'extrapolate', false);
@@ -147,6 +183,9 @@ classdef singfun
     methods ( Static = true )
         
         exponents = findSingExponents( op, isSingEnd, singType, pref )
+        
+        op = singOp2SmoothOp( op, exponents, tol )
+        
         % Retrieve and modify preferences for this class.
         prefs = pref(varargin)
 
