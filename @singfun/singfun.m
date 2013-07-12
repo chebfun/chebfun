@@ -155,17 +155,10 @@ classdef singfun
                     obj.singType{2} = 'none';
                 end
             end
-                                  
-            if ( all(abs(obj.exponents) > 100*tol ) )
-                % left and right terms
-                op = @(x) op(x)./((1+x).^(obj.exponents(1)).*(1-x).^(obj.exponents(2)));
-            elseif ( abs(obj.exponents(1)) > 100*tol )
-                % left only
-                op = @(x) op(x)./(1+x).^(obj.exponents(1));
-            elseif ( abs(obj.exponents(2)) > 100*tol )
-                % right only
-                op = @(x) op(x)./(1-x).^(obj.exponents(2));
-            end
+            
+            % update the operator based on the values in exponents.
+            op = singfun.singOp2SmoothOp(op, obj.exponents, tol);
+            
             % Construct the smooth part of the SINGFUN object.
             % [TODO]: This will be replaced by the SMOOTHFUN constructor
             prefs = chebtech.pref('tech', 'cheb1', 'extrapolate', false);
