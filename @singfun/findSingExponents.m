@@ -13,7 +13,7 @@ tol = pref.singfun.eps;
 if ( strcmpi( singType{1}, 'pole') )
     exponents = -findPoleOrder(op, isSingEnd);
 else
-    if ( ~strcmpi(singType{1}, 'default') )
+    if ( ~strcmpi(singType{1}, 'branch') )
         warning('CHEBFUN:singfun:findSingExponents:unknownPref',...
             'Blowup preference "%s" unknown; using default',type)
     end

@@ -1,73 +1,66 @@
 function s = times(f,g)
 %.* Multiply two singfuns
 
+% This method will be called only both F and G are SINGFUNS or at the most
+% one of F and G is a scalar double.
+
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Singfuns are superior to doubles and smoothfuns. Those inputs need to be
-% promoted to singfuns with zero exponents.
-if isa(f,'double')
-    %f = smoothfun.constructor(f);
-    f = chebtech.constructor(f, vscale, hscale);
-elseif isa(g,'double')
-    g = smoothfun.constructor(g);
+%%
+% Check if inputs are other than SINGFUNS or doubles
+if ( ~isa(f, 'singfun') && ~isa(f, 'double') )
+    error( 'singfun:times:Input can only be a singfun or a double' )
 end
 
-if isa(f,'smoothfun')
-    f = singfun(f, [0,0]);
-elseif isa(g,'smoothfun')
-    g = singfun(g, [0,0]);
+if ( ~isa(g, 'singfun') && ~isa(g, 'double') )
+    error( 'singfun:times:Input can only be singfun or a double' )
 end
 
-fExps = f.exponents;
-gExps = g.exponents;
-prefs = singfun.pref('smoothInput',1);
+%%
+% scalar multiplication cases
+if ( isa(f,'double') )
+    s = g;
+    s.smoothPart = f * g.smoothPart;
+    return
+end
 
-if ( all( abs(fExps-gExps) < tol ) )
-    % Case 1: Exponents exactly alike. Just add the smooth parts.
-    s = singfun( f.smoothPart + g.smoothPart, f.exponents, prefs );
-    
-elseif ( abs(round(fExps-gExps) - (fExps-gExps) ) < tol )
-    % Case 2: Both exponents differ by integers. Factor out the common
-    % singular parts to leave the sum of smooth quotients.
-    
-    % At each endpoint, the smaller exponent will be factored out
-    % of both summands.
-    
-    % Start off each compensating quotient as 1.
-    factorF = @(x) 1;
-    factorG = @(x) 1;
-    for side = 1:2
-        % The smaller of the two exponents is the exponent of the sum.
-        [e,k] = sort([ fExps(side),gExps(side)] );
-        newExps(side) = e(1);
-        
-        % The quotient factor is the difference in the exponents.
-        if ( side == 1 )
-            newFactor = @(x) (1+x).^diff(e);
-        else
-            newFactor = @(x) (1-x).^diff(e);
-        end
-        
-        % Who had the smaller exponent? The other one gets the factor.
-        if ( k(1) == 1 )
-            factorG = @(x) factorG(x).*newFactor(x);
-        else
-            factorF = @(x) factorF(x).*newFactor(x);
-        end
+if ( isa(g,'double') )
+    s = f;
+    s.smoothPart = g * f.smoothPart;
+    return
+end
+
+%%
+% mutliplication of two singfuns
+s = singfun;
+% multiply the smooth parts
+s.smoothPart = (f.smoothPart).*(g.smoothPart);
+% add the exponents
+s.exponents = f.exponents + g.exponents;
+
+%%
+tol = singfun.pref.singfun.eps;
+if ( abs(s.exponents(1)) > 100*tol )
+    s.isSingEnd(1) = 1;
+    if ( abs(s.exponents(1) - round(s.exponents)) < 100*tol )
+        s.singType{1} = 'pole';
+    else
+        s.singType{1} = 'branch';
     end
-    
-    % FIXME Do we need to worry about scales here?
-    factorF = smoothfun.constructor(factorF);
-    factorG = smoothfun.constructor(factorG);
-    newSmooth = factorF.*f.smoothPart + factorG.*g.smoothPart;
-    s = singfun(newSmooth, newExps, prefs);
-    
 else
-    % Case 3: Nontrivial exponent difference.       
-    error('Chebfun:singfun:badAddition',...
-        'The resulting sum is not of the form (smooth)x(singular endpoints).')
-    
+    s.isSingEnd(1) = 0;
+    s.singType{1} = 'none';
 end
 
+if ( abs(s.exponents(2)) > 100*tol )
+    s.isSingEnd(2) = 1;
+    if ( abs(s.exponents(2) - round(s.exponents)) < 100*tol )
+        s.singType{2} = 'pole';
+    else
+        s.singType{2} = 'branch';
+    end
+else
+    s.isSingEnd(2) = 0;
+    s.singType{2} = 'none';
 end
