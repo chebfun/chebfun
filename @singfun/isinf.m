@@ -1,13 +1,14 @@
 function out = isinf(f)
-%ISINF   Test if a CHEBTECH is unbounded.
-%   ISINF(F) returns TRUE if F has any infinite values and FALSE otherwise.
+%ISINF   Test if a SINGFUN is unbounded.
+%   ISINF(F) returns TRUE if F has any negative EXPONENT values and FALSE otherwise.
 %
 % See also ISFINITE, ISNAN.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Check if any values are infinite:
-out = any(isinf(f.values(:)));
-
+% Check if F has exponents
+% [TODO]: should we use the following:
+% out = without tol/eps OR
+out = any(f.exponents <= -singfun.pref.singfun.eps);
 end

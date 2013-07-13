@@ -1,13 +1,14 @@
 function out = isfinite(f)
-%ISFINITE   Test if a CHEBTECH is bounded.
-%   ISFINITE(F) returns FALSE if F has any infinite values and TRUE otherwise.
+%ISFINITE   Test if a SINGFUN is bounded.
+%   ISFINITE(F) returns FALSE if F has any non trivial EXPONENT values and TRUE otherwise.
 %
 % See also ISINF, ISNAN.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Check if values are finite:
-out = all(isfinite(f.values(:)));
-
+% Check if F has exponents
+% [TODO]: should we use the following:
+% out = without tol/eps OR
+out = all(f.exponents > -singfun.pref.singfun.eps);
 end

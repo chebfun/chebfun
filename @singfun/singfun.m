@@ -76,9 +76,9 @@ classdef singfun
             
             %%
             if ( nargin == 1 )
-                % only operator passed, assume a pole at each end point
+                % only operator passed, assume a fractional pole at each end point
                 obj.isSingEnd = [1, 1];
-                obj.singType = {'pole', 'pole'};                
+                obj.singType = {'branch', 'branch'};                
             end
             %%
             if ( nargin == 2 || ~isempty(exponents) )
@@ -299,11 +299,14 @@ classdef singfun
 
         % Unary plus of a CHEBTECH.
         f = uplus(f)
-
+                
     end
 
     %% STATIC METHODS IMPLEMENTED BY THIS CLASS.
     methods ( Static = true )
+        
+        % Costruct a zero SINGFUN
+        s = zeroSingFun()
         
         exponents = findSingExponents( op, isSingEnd, singType, pref )
         
