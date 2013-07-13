@@ -181,11 +181,8 @@ classdef singfun
         f = cumsum(f, m, pref)
 
         % Derivative of a SINGFUN.
-        f = diff(f, k, dim)
+        f = diff(f, k)
         
-        % Extrapolate (for NaNs / Infs).
-        [values, maskNaN, maskInf] = extrapolate(f)
-
         % Evaluate a SINGFUN.
         y = feval(f, x)
 
@@ -201,103 +198,85 @@ classdef singfun
         % True for an empty SINGFUN.
         out = isempty(f)
 
-        % Test if CHEBTECH objects are equal.
+        % Test if SINGFUN objects are equal.
         out = isequal(f, g)
 
-        % Test if a CHEBTECH is bounded.
+        % Test if a SINGFUN is bounded.
         out = isfinite(f)
 
-        % Test if a CHEBTECH is unbounded.
+        % Test if a SINGFUN is unbounded.
         out = isinf(f)
 
-        % Test if a CHEBTECH has any NaN values.
+        % Test if a SINGFUN has any NaN values.
         out = isnan(f)
 
-        % True for real CHEBTECH.
+        % True for real SINGFUN.
         out = isreal(f)
         
-        % True for zero CHEBTECH objects
+        % True for zero SINGFUN objects
         out = iszero(f)
         
-        % Length of a CHEBTECH.
+        % Length of a SINGFUN.
         len = length(f)
 
-        % Convert a array-valued CHEBTECH into an ARRAY of CHEBTECH objects.
+        % Convert a array-valued SINGFUN into an ARRAY of SINGFUN objects.
         g = mat2cell(f, M, N)
 
-        % Global maximum of a CHEBTECH on [-1,1].
+        % Global maximum of a SINGFUN on [-1,1].
         [maxVal, maxPos] = max(f)
 
-        % Global minimum of a CHEBTECH on [-1,1].
+        % Global minimum of a SINGFUN on [-1,1].
         [minVal, minPos] = min(f)
 
-        % Global minimum and maximum on [-1,1].
+        % Global minimum and maximum of a SINGFUN on [-1,1].
         [vals, pos] = minandmax(f)
 
-        % Subtraction of two CHEBTECH objects.
+        % Subtraction of two SINGFUN objects.
         f = minus(f, g)
 
-        % Left matrix divide for CHEBTECH objects.
+        % Left matrix divide for SINGFUN objects.
         X = mldivide(A, B)
 
-        % Right matrix divide for a CHEBTECH.
+        % Right matrix divide for a SINGFUN.
         X = mrdivide(B, A)
 
-        % Multiplication of CHEBTECH objects.
+        % Multiplication of SINGFUN objects.
         f = mtimes(f, c)
         
-        % Basic linear plot for CHEBTECH objects.
+        % Basic linear plot for SINGFUN objects.
         varargout = plot(f, varargin)
         
-        % Obtain data used for plotting a CHEBTECH object:
+        % Obtain data used for plotting a SINGFUN object.
         data = plotData(f)
 
-        % Addition of two CHEBTECH objects.
+        % Addition of two SINGFUN objects.
         f = plus(f, g)
 
-        % Return the points used by a CHEBTECH.
+        % Return the points used by the smooth part of a SINGFUN.
         out = points(f)
-
-        % QR factorisation of an array-valued CHEBTECH.
-        [f, R, E] = qr(f, flag)
-
-        % Right array divide for a CHEBTECH.
-        f = rdivide(f, c, pref)
 
         % Real part of a SINGFUN.
         f = real(f)
 
-        % Restrict a CHEBTECH to a subinterval.
-        f = restrict(f, s)
-
-        % Roots of a CHEBTECH in the interval [-1,1].
+        % Roots of a SINGFUN in the interval [-1,1].
         out = roots(f, varargin)
 
-        % Test an evaluation of the input OP against a CHEBTECH approx.
-        pass = sampleTest(op, f)
-
-        % Trim trailing Chebyshev coefficients of a CHEBTECH object.
-        f = simplify(f, pref, force)
-
-        % Size of a CHEBTECH.
+        % Size of a SINGFUN.
         [siz1, siz2] = size(f, varargin)
 
-        % Strict happiness check.
-        [ishappy, epslevel, cutoff] = strictCheck(f, pref)
-
-        % Definite integral of a CHEBTECH on the interval [-1,1].
+        % Definite integral of a SINGFUN on the interval [-1,1].
         out = sum(f, dim)
 
-        % CHEBTECH multiplication.
+        % SINGFUN multiplication.
         f = times(f, g, varargin)
         
-        % CHEBTECH obects are not transposable.
+        % SINGFUN obects are not transposable.
         f = transpose(f)
 
-        % Unary minus of a CHEBTECH.
+        % Unary minus of a SINGFUN.
         f = uminus(f)
 
-        % Unary plus of a CHEBTECH.
+        % Unary plus of a SINGFUN.
         f = uplus(f)
                 
     end
@@ -308,12 +287,14 @@ classdef singfun
         % Costruct a zero SINGFUN
         s = zeroSingFun()
         
+        % methods for finding the order of singularities
         exponents = findSingExponents( op, isSingEnd, singType, pref )
         
         poleOrder = findPoleOrder( fvals, x, tol)
         
         barnchOrder = findBranchOrder( fvals, x, tol)
         
+        % method for converting a singular op to a smooth op
         op = singOp2SmoothOp( op, exponents, tol )
         
         % Retrieve and modify preferences for this class.
