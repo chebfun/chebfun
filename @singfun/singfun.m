@@ -141,7 +141,7 @@ classdef singfun
             
             if ( nargin >= 4 && isempty(exponents) )
                 % copy the information given about singularities in the current object
-                if ( isempty( isSingEnd ) )
+                if ( isempty( isSingEnd ) )                    
                     obj.isSingEnd = [1, 1];
                 else
                     obj.isSingEnd = isSingEnd;
@@ -290,7 +290,7 @@ classdef singfun
         % SINGFUN multiplication.
         f = times(f, g, varargin)
         
-        % SINGFUN obects are not transposable.
+        % SINGFUN objects are not transposable.
         f = transpose(f)
 
         % Unary minus of a SINGFUN.
@@ -307,11 +307,13 @@ classdef singfun
         % Costruct a zero SINGFUN
         s = zeroSingFun()
         
-        % methods for finding the order of singularities
+        % method for finding the order of singularities
         exponents = findSingExponents( op, isSingEnd, singType, pref )
         
+        % method for finding integer order singularities, i.e. poles
         poleOrder = findPoleOrder( fvals, x, tol)
         
+        % method for finding fractional order singularities.
         barnchOrder = findBranchOrder( fvals, x, tol)
         
         % method for converting a singular op to a smooth op
@@ -319,7 +321,7 @@ classdef singfun
         
         % Retrieve and modify preferences for this class.
         prefs = pref(varargin)
-
+        
     end
-
+    
 end    
