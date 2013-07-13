@@ -141,8 +141,17 @@ classdef singfun
             
             if ( nargin >= 4 && isempty(exponents) )
                 % copy the information given about singularities in the current object
-                obj.isSingEnd = isSingEnd;
-                obj.singType = singType;                
+                if ( isempty( isSingEnd ) )
+                    obj.isSingEnd = [1, 1];
+                else
+                    obj.isSingEnd = isSingEnd;
+                end
+                
+                if ( isempty( singType ) )
+                    obj.singType = {'branch', 'branch'};
+                else
+                    obj.singType = singType;
+                end                                
             end          
 
             
