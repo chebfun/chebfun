@@ -7,7 +7,8 @@ function out = isinf(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Check if any values are infinite:
-out = any(isinf(f.values(:)));
-
+% Check if F has exponents
+% [TODO]: should we use the following:
+% out = without tol/eps OR
+out = any(f.exponents <= -singfun.pref.singfun.eps);
 end

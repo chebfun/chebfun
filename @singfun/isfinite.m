@@ -9,6 +9,6 @@ function out = isfinite(f)
 
 % Check if F has exponents
 % [TODO]: should we use the following:
-% out = any(f.exponents); OR
-out = all(abs(f.exponents) < singfun.pref.singfun.eps);
+% out = without tol/eps OR
+out = all(f.exponents > -singfun.pref.singfun.eps);
 end
