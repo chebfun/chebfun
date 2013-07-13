@@ -44,7 +44,7 @@ classdef singfun
         exponents   % (1x2 double)
         
         % A cell array telling the type of singularity at the endpoints.
-        singType   % (1x2 cell)
+        singType    % (1x2 cell)
         
         % A logical array indicating which ends are singular.
         isSingEnd   % (1x2 logical)        
@@ -76,7 +76,7 @@ classdef singfun
             
             %%
             if ( nargin == 1 )
-                % only operator passed, assume a fractional pole at each end point
+                % only operator passed, assume a fractional pole at each end point               
                 obj.isSingEnd = [1, 1];
                 obj.singType = {'branch', 'branch'};                
             end
@@ -86,8 +86,8 @@ classdef singfun
                 % given in isSingEnd, singType and use 
                 % the information given in exponents.
                 obj.exponents = exponents;
-                tol = pref.singfun.eps;
-                if ( exponents(1) < 0 && abs(exponents(1)) > 100*tol )
+                tol = singfun.pref.singfun.eps;
+                if ( exponents(1) < -100*tol )
                     obj.isSingEnd(1) = 1;
                     if( abs(exponents(1)-round(exponents(1))) < 100*tol )
                         obj.singType{1} = 'pole';
@@ -99,7 +99,7 @@ classdef singfun
                     obj.singType{1} = 'none';
                 end
                 
-                if ( exponents(2) < 0 && abs(exponents(2)) > 100*tol )
+                if ( exponents(2) < -100*tol )
                     obj.isSingEnd(2) = 1;
                     if( abs(exponents(2)-round(exponents(2))) < 100*tol )
                         obj.singType{2} = 'pole';
@@ -115,16 +115,27 @@ classdef singfun
             if ( nargin == 3 && isempty(exponents) )
                 % singulrity indicator passed but type not given.
                 % Assume fractional poles or branches.
-                if ( isSingEnd(1) )
-                    % if singularity is at the left end point
-                    obj.isSingEnd(1) = 1;
-                    obj.singType{1} = 'branch';
-                end
+                if ( isempty( isSingEnd ) )
+                    obj.isSingEnd = [1, 1];
+                    obj.singType = {'branch', 'branch'};
+                else
+                    if ( isSingEnd(1) )
+                        % if singularity is at the left end point
+                        obj.isSingEnd(1) = 1;
+                        obj.singType{1} = 'branch';
+                    else
+                        obj.isSingEnd(1) = 0;
+                        obj.singType{1} = 'none';
+                    end
                 
-                if ( isSingEnd(2) )
-                    % if singularity is at the right end point
-                    obj.isSingEnd(2) = 1;
-                    obj.singType{2} = 'branch';
+                    if ( isSingEnd(2) )
+                        % if singularity is at the right end point
+                        obj.isSingEnd(2) = 1;
+                        obj.singType{2} = 'branch';
+                    else
+                        obj.isSingEnd(2) = 0;
+                        obj.singType{2} = 'none';                    
+                    end
                 end
             end
             
@@ -138,10 +149,10 @@ classdef singfun
             %%
             % Determine and factor out singular terms if exponents 
             % are not given
-            if ( isempty(exponents) )
+            if ( isempty(obj.exponents) )
                 obj.exponents = singfun.findSingExponents(op, obj.isSingEnd, obj.singType, pref);
                 % update ISSINGEND and SINGTYPE based on EXPONENTS
-                tol = pref.singfun.eps;
+                tol = singfun.pref.singfun.eps;
                 if ( abs(obj.exponents(1)) < 100*tol )
                     % if the singularity exponent is below the tolerance level
                     % remove the singularity
@@ -161,10 +172,10 @@ classdef singfun
             
             % Construct the smooth part of the SINGFUN object.
             % [TODO]: This will be replaced by the SMOOTHFUN constructor
-            prefs = chebtech.pref('tech', 'cheb1', 'extrapolate', false);
+            smoothPrefs = chebtech.pref('tech', 'cheb1', 'extrapolate', false);
             vscale = [];
             hscale = [];
-            obj.smoothPart = chebtech.constructor(smoothOp, vscale, hscale, prefs);
+            obj.smoothPart = chebtech.constructor(smoothOp, vscale, hscale, smoothPrefs);
         end
     end
     
@@ -302,5 +313,4 @@ classdef singfun
 
     end
 
-end
-    
+end    
