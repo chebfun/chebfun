@@ -37,8 +37,8 @@ function branchOrder = branchOrderFinder( fvals, x, poleBound )
 % success.
 
 branchOrder = poleBound-1;
-% decimal search
-tol=1e-12; % what should this be [TODO]
+%% decimal search
+tol= singfun.pref.singfun.eps;
 maxIter = 100;
 % initial grid of size n: assume the order of the 
 % singularity between poleOrder-1 and poleOrder

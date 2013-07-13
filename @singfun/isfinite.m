@@ -1,6 +1,6 @@
 function out = isfinite(f)
-%ISFINITE   Test if a CHEBTECH is bounded.
-%   ISFINITE(F) returns FALSE if F has any infinite values and TRUE otherwise.
+%ISFINITE   Test if a SINGFUN is bounded.
+%   ISFINITE(F) returns FALSE if F has any non trivial EXPONENT values and TRUE otherwise.
 %
 % See also ISINF, ISNAN.
 
