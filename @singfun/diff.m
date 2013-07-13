@@ -29,28 +29,28 @@ elseif ( k == 0 )
     return
 end
 
-%% Differentiate k times the SINGFUN F
+%% Differentiate the SINGFUN F, k times 
 while ( k > 0 )
     % Decrease k
     k = k - 1;
         
     % Apply the product rule to
     % the SINGFUN F:
-    % f = g .* (1-x).^a .* (1+x).^b
+    % f = g .* (1+x).^a .* (1-x).^b
    
     % Three terms of the derivative:
-    % fist term: g' .* (1-x).^a .* (1+x).^b
+    % fist term: g' .* (1+x).^a .* (1-x).^b
     s = f;
     s.smoothPart = diff(s.smoothPart);
     
-    % second term: -a * g .* (1-x).^(a-1) .* (1+x).^b
+    % second term: a * g .* (1+x).^(a-1) .* (1-x).^b
     t = f;
-    t.smoothPart = t.smoothPart * (-t.exponents(1));
+    t.smoothPart = t.smoothPart * t.exponents(1);
     t.exponents(1) = t.exponents(1)-1;
     
-    % third term: b * g .* (1-x).^a .* (1+x).^(b-1)
+    % third term: -b * g .* (1+x).^a .* (1-x).^(b-1)
     u = f;
-    u.smoothPart = u.smoothPart * u.exponents(2);
+    u.smoothPart = u.smoothPart * (-u.exponents(2));
     u.exponents(2) = u.exponents(2)-1;
     
     % The derivative is the sum of

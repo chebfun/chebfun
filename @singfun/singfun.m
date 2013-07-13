@@ -299,11 +299,14 @@ classdef singfun
 
         % Unary plus of a CHEBTECH.
         f = uplus(f)
-
+                
     end
 
     %% STATIC METHODS IMPLEMENTED BY THIS CLASS.
     methods ( Static = true )
+        
+        % Costruct a zero SINGFUN
+        s = zeroSingFun()
         
         exponents = findSingExponents( op, isSingEnd, singType, pref )
         
