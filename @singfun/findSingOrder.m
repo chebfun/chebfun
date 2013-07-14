@@ -1,4 +1,4 @@
-function branchOrder = findBranchOrder( op, isSingEnd )
+function singOrder = findSingOrder( op, SingEnd )
 % One test for blowup - perhaps less robust than test B,
 % but more accurate when it works.  This is based on
 % a test of monotonicity of the function and its derivative.
@@ -8,42 +8,36 @@ function branchOrder = findBranchOrder( op, isSingEnd )
 % by the pole order finder. These will be
 % passed on to the branchOrderFinder as 
 % upperbounds for the singularity order.
-poleBound = findPoleOrder( op, isSingEnd );
+poleBound = findPoleOrder( op, SingEnd );
 
-branchOrder = zeros(1,2);
 % distance of sample points from the end points
 x = eps*(11:-1:2)';
 % if a pole is expected at x = 1
-if ( isnan(isSingEnd(2)) )
+if ( strcmpi(singEnd, 'right') )
     fvalsRight = op(1-x);
-    branchOrder(2) = branchOrderFinder( fvalsRight, x, poleBound(2) );
-else
-    % no singularity
-    branchOrder(2) = 0;
+    singOrder = singOrderFinder( fvalsRight, x, poleBound);
 end
+
 % if a pole is expected at x = -1
-if ( isnan(isSingEnd(1)) )
+if ( strcmpi(singEnd, 'right') )
     fvalsLeft = op(-1+x);
-    branchOrder(1) = branchOrderFinder( fvalsLeft, x, poleBound(1) );
-else
-    % no singularity
-    branchOrder(1) = 0;
+    singOrder = singOrderFinder( fvalsLeft, x, poleBound);
 end
 end
 
-function branchOrder = branchOrderFinder( fvals, x, poleBound )
+function singOrder = singOrderFinder( fvals, x, poleBound )
 % Iteratively increase the proposed value. If
 % the singularity at the right endpoint can be mollified, we can declare
 % success.
 
-branchOrder = poleBound-1;
+singOrder = poleBound-1;
 %% decimal search
 tol= singfun.pref.singfun.eps;
 maxIter = 100;
 % initial grid of size n: assume the order of the 
 % singularity between poleOrder-1 and poleOrder
 n = 10;
-exponentGrid = linspace(branchOrder, branchOrder+1, n);
+exponentGrid = linspace(singOrder, singOrder+1, n);
 absFvals = abs(fvals);
 smoothVals = absFvals;
 nIter = 0;
@@ -56,17 +50,17 @@ while( abs(exponentGrid(end)-exponentGrid(1)) > tol && nIter <= maxIter )
     if( k == n && all(diff(diff(smoothVals)) > 0) )
         % tried all exponents but failed
         warning( 'something' );
-        branchOrder = poleBound;
+        singOrder = poleBound;
     else
         % succeeded for some k, update the estimate and refine the grid
         smoothVals = absFvals;
-        branchOrder = exponentGrid(k);
+        singOrder = exponentGrid(k);
         exponentGrid = linspace( exponentGrid(k-1), exponentGrid(k), n );
         nIter = nIter + 1;
     end
 end
 if ( nIter >= maxIter )
     warning( 'da da da' );
-    branchOrder = poleBound;
+    singOrder = poleBound;
 end
 end
