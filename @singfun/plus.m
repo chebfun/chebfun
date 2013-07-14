@@ -1,11 +1,10 @@
 function s = plus(f,g)
-%PLUS Add singfuns.
+%PLUS Add SINGFUNS F and G.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Singfuns are superior to doubles and smoothfuns. Those inputs need to be
-% promoted to singfuns with zero exponents.
+% if one of the arguments is a double
 if ( isa(f,'double') )
     aDouble = f;
     f = zeroSingFun();
@@ -65,25 +64,25 @@ if ( all(abs(fExps-gExps) < tol ) )
 %     
 else
     % Case 3: Nontrivial exponent difference.       
-    % form a new function handle for the sum from F and G.    
+    % Form a new function handle for the sum from F and G.    
     
-    % function handle of F
+    % Retrieve function handle of F
     s1 = f.smoothPart;
     a1 = f.exponents(1);
     b1 = f.exponents(2);    
     op1 = @(x) feval(s1, x).*(1+x).^a1.*(1-x).^b1;
     
-    % function handle of G
+    % Retrieve function handle of G
     s2 = g.smoothPart;
     a2 = g.exponents(1);
     b2 = g.exponents(2);    
     op2 = @(x) feval(s2, x).*(1+x).^a2.*(1-x).^b2;
     
-    % function handle for the sum
+    % Define a function handle for the sum
     op = @(x) op1(x) + op2(x);
     
     % construct a new SINGFUN for sum
-    s = singfun( op, [], {'sing', 'sing'}, singfun.pref );    
+    s = singfun( op, [], {'sing', 'sing'}, singfun.pref );
 end
 
 end

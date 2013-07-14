@@ -1,6 +1,6 @@
 function len = length(f)
 %LENGTH   Length of a SINGFUN.
-%   LENGTH(F) is the length of the smooth part of contained in F.
+%   LENGTH(F) is the length of the smooth part contained in F.
 %
 %   See also SIZE.
 

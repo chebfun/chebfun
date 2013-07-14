@@ -56,20 +56,6 @@ function prefs = pref(varargin)
 %                     minimize the risk of missing signals between grid
 %                     points.
 %        false     -  Do not test.
-%
-%   refinementFunction - Define function for refining sample values.
-%     ['nested']       - Use the default process (nested evaluation).
-%      'resampling'    - Every function value is computed afresh as the
-%                        constructor tries grids of size 9, 17, 33, etc.
-%   function_handle    - A user-defined refinement. See REFINE.m
-%
-%   happinessCheck     - Define function for testing happiness.
-%     ['classic']      - Use the default process from Chebfun V4.
-%      'strict'        - Strict tolerance for coefficients.
-%      'loose'         - A looser tolerance for coefficients.
-%     function_handle  - A user defined happiness. See HAPPINESSCHECK.m
-%
-% See also CHEBTECH1, CHEBTECH2
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
@@ -89,7 +75,7 @@ if ( isfield(prefs, classname) )  % It does, so either:
     if ( numel(varargin) == 0 )
         return                    % a) No props to change, return
     else
-        p = prefs.(classname);    % b) Grab CHEBTECH prefs
+        p = prefs.(classname);    % b) Grab SINGFUN prefs
     end
 else                              % No SINGFUN prefs found, so make some:
 %    p.tech          = 'cheb2';
