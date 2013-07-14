@@ -1,8 +1,8 @@
 function s = times(f,g)
-%.* Multiply two singfuns
-
-% This method will be called only if both F and G are SINGFUNS or at the most
-% one of F and G is a scalar double.
+%.*   Multiply SINGFUNS with SINGFUNS
+%
+%   This method will be called only if both F and G are SINGFUNS or at the 
+%   most one of F and G is a scalar double.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -36,7 +36,7 @@ if ( isa(g,'double') )
 end
 
 %%
-% mutliplication of two singfuns
+% mutliplication of two SINGFUNS
 s = singfun;
 % multiply the smooth parts
 s.smoothPart = (f.smoothPart).*(g.smoothPart);
@@ -44,33 +44,24 @@ s.smoothPart = (f.smoothPart).*(g.smoothPart);
 s.exponents = f.exponents + g.exponents;
 
 %%
-% Check if after multiplication the 
-% type of singularity has changed
-% or if it can be removed.
-% [TODO]: Since exponents are negative,
-% it's impossible to remove a singularity
-% after mutiplying two SINGFUNS?
+% Check if after multiplication the type of singularity has changed or if 
+% it can be removed.
+% [TODO]: Since exponents are negative, it's impossible to remove a 
+% singularity after mutiplying two SINGFUNS?
 tol = singfun.pref.singfun.eps;
-if ( abs(s.exponents(1)) > 100*tol )
-    s.isSingEnd(1) = 1;
-    if ( abs(s.exponents(1) - round(s.exponents)) < 100*tol )
-        s.singType{1} = 'pole';
+% loop through each end
+for k = 1:2
+    if ( s.exponents(k) < -100*tol )
+        s.isSingEnd(k) = 1;
+        if ( abs(s.exponents(k) - round(s.exponents(k))) < 100*tol )
+            s.singType{k} = 'pole';
+        else
+            s.singType{k} = 'sing';
+        end
     else
-        s.singType{1} = 'branch';
+        s.isSingEnd(k) = 0;
+        s.singType{k} = 'none';
     end
-else
-    s.isSingEnd(1) = 0;
-    s.singType{1} = 'none';
 end
 
-if ( abs(s.exponents(2)) > 100*tol )
-    s.isSingEnd(2) = 1;
-    if ( abs(s.exponents(2) - round(s.exponents)) < 100*tol )
-        s.singType{2} = 'pole';
-    else
-        s.singType{2} = 'branch';
-    end
-else
-    s.isSingEnd(2) = 0;
-    s.singType{2} = 'none';
 end
