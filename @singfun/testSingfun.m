@@ -5,7 +5,7 @@ a = .5; b = 1.5;
 op = @(x) sin(1-x)./((1-x).^(b).*(1+x).^(a));
 exponents = [-a, -b];
 %exponents = [];
-singType = {'branch', 'branch'};
+singType = {'sing', 'sing'};
 pref = [];
 f = singfun( op, exponents, singType, pref )
 plot(f)
@@ -19,8 +19,8 @@ realf = real(f)
 f = singfun( @(x) sin(2*pi*(x+1))./((1-x).^3.*(x+1).^2), [], {'pole', 'pole'}, []  )
 
 %%
-f = singfun( @(x) sin(x)./((1-x).^3.5.*(1+x).^.5), [], [1 1],{'branch', 'branch'}, [] );
-g = singfun( @(x) cos(x)./(1-x), [], [1 1],{'branch', 'branch'}, [] );
+f = singfun( @(x) sin(x)./((1-x).^3.5.*(1+x).^.5), [], {'sing', 'sing'}, [] );
+g = singfun( @(x) cos(x)./(1-x), [], {'sing', 'sing'}, [] );
 s = f + g
 xx = -.9:.01:.9;
 error = feval(s, xx) - (feval(f, xx)+ feval( g, xx));
@@ -28,7 +28,7 @@ norm(error, inf )
 plot(xx, error)
 
 %%
-f = singfun(@(x) 1./(1-x), [], [1 1], {'branch', 'branch'})
+f = singfun(@(x) 1./(1-x), [], {'sing', 'sing'})
 fp = diff(f);
 xx = -.99:.01:.99;
 error = feval(fp, xx) - 1./(1-xx).^2;
@@ -37,7 +37,7 @@ plot(xx, error)
 
 %%
 a = pi;
-f = singfun(@(x) sin(a*x)./(1-x).^2, [], [], [], [] );
+f = singfun(@(x) sin(a*x)./(1-x).^2, [], [], [] );
 fp = diff(f);
 xx = -.99:.01:.99;
 fpExact = @(x) a*cos(a*x)./(1-x).^2 + 2*sin(a*x)./(1-x).^3;
