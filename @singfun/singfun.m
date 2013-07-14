@@ -1,38 +1,42 @@
-classdef singfun
-    
+classdef singfun    
 %SINGFUN Class for functions with singular endpoint behavior.
-%   TODO: User documentation
+%
+%   Class for approximating singular functions on the interval [-1,1] using
+%   a smooth part with no singularities and two singular factors (1+x).^a
+%   and (1-x).^b, where a and b are negative. 
+%
+%   SINGFUN class description
+%
+%   The singfun class represents a function of the form 
+%
+%          f(x) = s(x) (1+x)^a (1-x)^b 
+%
+%   on the interval [-1,1]. The exponents a and b are assumed
+%   to be real and negative. The constructor is supplied with a handle that evaluates the
+%   function f at any given points. However, endpoint values will not be
+%   sampled, due to the likelihood of Inf and NaN results.
+%
+%   Ideally, the "smooth" function s is analytic, or at least much more
+%   compactly represented than f is. The resulting object can be used to
+%   evaluate and operate on the function f. If a and b are
+%   unknown at the time of construction, the constructor will try to
+%   determine appropriate (nonpositive) values automatically by sampling
+%   the function handle. Note, however, that this process is not 
+%   completely robust, and
+%   the singularity terms in general do not perfectly factor out singular
+%   behavior. The constructor can be forced to consider only integer
+%   exponents.
+%
+%   Multiplication and division are as good as the corresponding operations
+%   on the smooth part. Addition and subtraction are much less reliable, as
+%   the sum of two singfuns with different exponents is not necessarily a
+%   singfun, nor a smooth function. If all but integer exponents can be
+%   factored out of the summands, the process is fine, but in other
+%   circumstances the process may throw an error.
+%
+% See also SINGFUN.PREF
 
-%% SINGFUN class description
-%
-% The singfun class represents a function of the form 
-%
-%     f(x) = s(x) (1+x)^a (1-x)^b 
-%
-% on the interval [-1,1]. The exponents a and b are assumed
-% to be real and negative. The constructor is supplied with a handle that evaluates the
-% function f at any given points. However, endpoint values will not be
-% sampled, due to the likelihood of Inf and NaN results.
-%
-% Ideally, the "smooth" function s is analytic, or at least much more
-% compactly represented than f is. The resulting object can be used to
-% evaluate and operate on the function f. If a and b are
-% unknown at the time of construction, the constructor will try to
-% determine appropriate (nonpositive) values automatically by sampling
-% the function handle. Note, however, that this process is not 
-% completely robust, and
-% the singularity terms in general do not perfectly factor out singular
-% behavior. The constructor can be forced to consider only integer
-% exponents.
-%
-% Multiplication and division are as good as the corresponding operations
-% on the smooth part. Addition and subtraction are much less reliable, as
-% the sum of two singfuns with different exponents is not necessarily a
-% singfun, nor a smooth function. If all but integer exponents can be
-% factored out of the summands, the process is fine, but in other
-% circumstances the process may throw an error.
- 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
     %% Properties of SINFGUN objects
@@ -44,7 +48,7 @@ classdef singfun
         exponents   % (1x2 double)
         
         % A cell array telling the type of singularity at the endpoints.
-        singType   % (1x2 cell)
+        singType    % (1x2 cell)
         
         % A logical array indicating which ends are singular.
         isSingEnd   % (1x2 logical)        
@@ -76,7 +80,7 @@ classdef singfun
             
             %%
             if ( nargin == 1 )
-                % only operator passed, assume a fractional pole at each end point
+                % only operator passed, assume a fractional pole at each end point               
                 obj.isSingEnd = [1, 1];
                 obj.singType = {'branch', 'branch'};                
             end
@@ -86,8 +90,8 @@ classdef singfun
                 % given in isSingEnd, singType and use 
                 % the information given in exponents.
                 obj.exponents = exponents;
-                tol = pref.singfun.eps;
-                if ( exponents(1) < 0 && abs(exponents(1)) > 100*tol )
+                tol = singfun.pref.singfun.eps;
+                if ( exponents(1) < -100*tol )
                     obj.isSingEnd(1) = 1;
                     if( abs(exponents(1)-round(exponents(1))) < 100*tol )
                         obj.singType{1} = 'pole';
@@ -99,7 +103,7 @@ classdef singfun
                     obj.singType{1} = 'none';
                 end
                 
-                if ( exponents(2) < 0 && abs(exponents(2)) > 100*tol )
+                if ( exponents(2) < -100*tol )
                     obj.isSingEnd(2) = 1;
                     if( abs(exponents(2)-round(exponents(2))) < 100*tol )
                         obj.singType{2} = 'pole';
@@ -115,33 +119,53 @@ classdef singfun
             if ( nargin == 3 && isempty(exponents) )
                 % singulrity indicator passed but type not given.
                 % Assume fractional poles or branches.
-                if ( isSingEnd(1) )
-                    % if singularity is at the left end point
-                    obj.isSingEnd(1) = 1;
-                    obj.singType{1} = 'branch';
-                end
+                if ( isempty( isSingEnd ) )
+                    obj.isSingEnd = [1, 1];
+                    obj.singType = {'branch', 'branch'};
+                else
+                    if ( isSingEnd(1) )
+                        % if singularity is at the left end point
+                        obj.isSingEnd(1) = 1;
+                        obj.singType{1} = 'branch';
+                    else
+                        obj.isSingEnd(1) = 0;
+                        obj.singType{1} = 'none';
+                    end
                 
-                if ( isSingEnd(2) )
-                    % if singularity is at the right end point
-                    obj.isSingEnd(2) = 1;
-                    obj.singType{2} = 'branch';
+                    if ( isSingEnd(2) )
+                        % if singularity is at the right end point
+                        obj.isSingEnd(2) = 1;
+                        obj.singType{2} = 'branch';
+                    else
+                        obj.isSingEnd(2) = 0;
+                        obj.singType{2} = 'none';                    
+                    end
                 end
             end
             
             if ( nargin >= 4 && isempty(exponents) )
                 % copy the information given about singularities in the current object
-                obj.isSingEnd = isSingEnd;
-                obj.singType = singType;                
+                if ( isempty( isSingEnd ) )                    
+                    obj.isSingEnd = [1, 1];
+                else
+                    obj.isSingEnd = isSingEnd;
+                end
+                
+                if ( isempty( singType ) )
+                    obj.singType = {'branch', 'branch'};
+                else
+                    obj.singType = singType;
+                end                                
             end          
 
             
             %%
             % Determine and factor out singular terms if exponents 
             % are not given
-            if ( isempty(exponents) )
+            if ( isempty(obj.exponents) )
                 obj.exponents = singfun.findSingExponents(op, obj.isSingEnd, obj.singType, pref);
                 % update ISSINGEND and SINGTYPE based on EXPONENTS
-                tol = pref.singfun.eps;
+                tol = singfun.pref.singfun.eps;
                 if ( abs(obj.exponents(1)) < 100*tol )
                     % if the singularity exponent is below the tolerance level
                     % remove the singularity
@@ -161,10 +185,10 @@ classdef singfun
             
             % Construct the smooth part of the SINGFUN object.
             % [TODO]: This will be replaced by the SMOOTHFUN constructor
-            prefs = chebtech.pref('tech', 'cheb1', 'extrapolate', false);
+            smoothPrefs = chebtech.pref('tech', 'cheb1', 'extrapolate', false);
             vscale = [];
             hscale = [];
-            obj.smoothPart = chebtech.constructor(smoothOp, vscale, hscale, prefs);
+            obj.smoothPart = chebtech.constructor(smoothOp, vscale, hscale, smoothPrefs);
         end
     end
     
@@ -270,7 +294,7 @@ classdef singfun
         % SINGFUN multiplication.
         f = times(f, g, varargin)
         
-        % SINGFUN obects are not transposable.
+        % SINGFUN objects are not transposable.
         f = transpose(f)
 
         % Unary minus of a SINGFUN.
@@ -287,11 +311,13 @@ classdef singfun
         % Costruct a zero SINGFUN
         s = zeroSingFun()
         
-        % methods for finding the order of singularities
+        % method for finding the order of singularities
         exponents = findSingExponents( op, isSingEnd, singType, pref )
         
+        % method for finding integer order singularities, i.e. poles
         poleOrder = findPoleOrder( fvals, x, tol)
         
+        % method for finding fractional order singularities.
         barnchOrder = findBranchOrder( fvals, x, tol)
         
         % method for converting a singular op to a smooth op
@@ -299,8 +325,7 @@ classdef singfun
         
         % Retrieve and modify preferences for this class.
         prefs = pref(varargin)
-
+        
     end
-
-end
     
+end    

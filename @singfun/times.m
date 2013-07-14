@@ -20,13 +20,17 @@ end
 %%
 % scalar multiplication cases
 if ( isa(f,'double') )
+    % copy the other input (a SINGUN) in the output
     s = g;
+    % multiply the smooth part with the double and return
     s.smoothPart = f * g.smoothPart;
     return
 end
 
 if ( isa(g,'double') )
+    % copy the other input (a SINGUN) in the output
     s = f;
+    % multiply the smooth part with the double and return
     s.smoothPart = g * f.smoothPart;
     return
 end
@@ -45,7 +49,7 @@ s.exponents = f.exponents + g.exponents;
 % or if it can be removed.
 % [TODO]: Since exponents are negative,
 % it's impossible to remove a singularity
-% by adding the exponents?
+% after mutiplying two SINGFUNS?
 tol = singfun.pref.singfun.eps;
 if ( abs(s.exponents(1)) > 100*tol )
     s.isSingEnd(1) = 1;

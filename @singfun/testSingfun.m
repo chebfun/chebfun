@@ -32,7 +32,18 @@ plot(xx, error)
 %%
 f = singfun(@(x) 1./(1-x), [], [1 1], {'branch', 'branch'})
 fp = diff(f);
-xx = -.9:.01:.9;
+xx = -.99:.01:.99;
 error = feval(fp, xx) - 1./(1-xx).^2;
 norm(error, inf )
 plot(xx, error)
+
+%%
+a = 1;
+f = singfun(@(x) sin(a*x)./(1-x).^2, [], [], [], [] );
+fp = diff(f);
+xx = -.99:.01:.99;
+fpExact = @(x) a*cos(a*x)./(1-x).^2 + 2*sin(a*x)./(1-x).^3;
+error = feval(fp, xx) - fpExact(xx);
+norm(error, inf )
+plot(xx, error)
+ 

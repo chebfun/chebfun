@@ -27,7 +27,7 @@ if ( all(abs(fExps-gExps) < tol ) )
     if ( iszero(s.smoothPart) )
        s = singfun.zeroSingFun();     
     end
-% elseif ( abs(round(fExps-gExps) - (fExps-gExps) ) < tol )
+% elseif ( all(abs(round(fExps-gExps) - (fExps-gExps) ) < tol) )
 %     % Case 2: Both exponents differ by integers. Factor out the common
 %     % singular parts to leave the sum of smooth quotients.
 %     
