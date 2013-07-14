@@ -81,6 +81,7 @@ classdef singfun
             %%
             if ( nargin == 1 )
                 % only operator passed, assume a fractional pole at each end point               
+                exponents = [];
                 obj.isSingEnd = [1, 1];
                 obj.singType = {'branch', 'branch'};                
             end
