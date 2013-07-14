@@ -8,7 +8,7 @@ exponents = [-a, -b];
 singType = {'sing', 'sing'};
 pref = [];
 f = singfun( op, exponents, singType, pref )
-plot(f)
+
 %%
 imagf = imag(f)
 
