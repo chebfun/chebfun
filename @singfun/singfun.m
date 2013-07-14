@@ -56,11 +56,11 @@ classdef singfun
     
     %% CLASS CONSTRUCTOR:
     methods ( Static = true )
-        function obj = singfun(op, exponents, isSingEnd, singType, pref)           
+        function obj = singfun(op, exponents, singType, pref)           
             %%
             % Check for preferences in the very beginning.
             % Determine preferences if not given, merge if some are given:
-            if ( nargin < 5 || isempty(pref) )
+            if ( nargin < 4 || isempty(pref) )
                 pref = singfun.pref;
             else        
                 pref = singfun.pref(pref);
@@ -82,8 +82,7 @@ classdef singfun
             if ( nargin == 1 )
                 % only operator passed, assume a fractional pole at each end point               
                 exponents = [];
-                obj.isSingEnd = [1, 1];
-                obj.singType = {'branch', 'branch'};                
+                obj.singType = {'sing', 'sing'};                
             end
             %%
             if ( nargin == 2 || ~isempty(exponents) )
@@ -97,7 +96,7 @@ classdef singfun
                     if( abs(exponents(1)-round(exponents(1))) < 100*tol )
                         obj.singType{1} = 'pole';
                     else
-                        obj.singType{1} = 'branch';
+                        obj.singType{1} = 'sing';
                     end
                 else
                     obj.isSingEnd(1) = 0;
@@ -109,7 +108,7 @@ classdef singfun
                     if( abs(exponents(2)-round(exponents(2))) < 100*tol )
                         obj.singType{2} = 'pole';
                     else
-                        obj.singType{2} = 'branch';
+                        obj.singType{2} = 'sing';
                     end
                 else
                     obj.isSingEnd(1) = 0;
@@ -117,70 +116,41 @@ classdef singfun
                 end                
             end
                 
-            if ( nargin == 3 && isempty(exponents) )
-                % singulrity indicator passed but type not given.
-                % Assume fractional poles or branches.
-                if ( isempty( isSingEnd ) )
-                    obj.isSingEnd = [1, 1];
-                    obj.singType = {'branch', 'branch'};
+            if ( nargin >= 3 && isempty(exponents) )
+                % singulrity types passed bus exponents not given
+                if ( isempty( singType ) )                    
+                    % Assume fractional poles or generic singularities if not given
+                    obj.singType = {'sing', 'sing'};
                 else
-                    if ( isSingEnd(1) )
-                        % if singularity is at the left end point
-                        obj.isSingEnd(1) = 1;
-                        obj.singType{1} = 'branch';
-                    else
-                        obj.isSingEnd(1) = 0;
-                        obj.singType{1} = 'none';
-                    end
-                
-                    if ( isSingEnd(2) )
-                        % if singularity is at the right end point
-                        obj.isSingEnd(2) = 1;
-                        obj.singType{2} = 'branch';
-                    else
-                        obj.isSingEnd(2) = 0;
-                        obj.singType{2} = 'none';                    
-                    end
-                end
-            end
-            
-            if ( nargin >= 4 && isempty(exponents) )
-                % copy the information given about singularities in the current object
-                if ( isempty( isSingEnd ) )                    
-                    obj.isSingEnd = [1, 1];
-                else
-                    obj.isSingEnd = isSingEnd;
-                end
-                
-                if ( isempty( singType ) )
-                    obj.singType = {'branch', 'branch'};
-                else
+                    % copy the information given about singularities in the current object                    
                     obj.singType = singType;
-                end                                
-            end          
-
+                end
+            end                        
             
             %%
             % Determine and factor out singular terms if exponents 
             % are not given
             if ( isempty(obj.exponents) )
-                obj.exponents = singfun.findSingExponents(op, obj.isSingEnd, obj.singType, pref);
+                obj.exponents = singfun.findSingExponents(op, obj.singType);
                 % update ISSINGEND and SINGTYPE based on EXPONENTS
                 tol = singfun.pref.singfun.eps;
-                if ( abs(obj.exponents(1)) < 100*tol )
-                    % if the singularity exponent is below the tolerance level
-                    % remove the singularity
-                    obj.isSingEnd(1) = 0;
-                    obj.singType{1} = 'none';
-                end
-                if ( abs(obj.exponents(2)) < 100*tol )
-                    % if the singularity exponent is below the tolerance level
-                    % remove the singularity
-                    obj.isSingEnd(2) = 0;
-                    obj.singType{2} = 'none';
+                % loop for each end
+                for k = 1:2
+                    if ( obj.exponents(k) > -100*tol )
+                        % if the singularity exponent is positive or above the tolerance level
+                        % remove the singularity
+                        obj.isSingEnd(k) = 0;
+                        obj.singType{k} = 'none';
+                    else
+                        obj.isSingEnd(k) = 1;
+                        if ( abs(obj.exponents(k) - round(obj.exponents(k))) < 100*tol )
+                            % pole if integer valued exponent
+                            obj.singType{k} = 'pole';
+                        end
+                    end
                 end
             end
-            
+               
             % update the operator based on the values in exponents.
             smoothOp = singfun.singOp2SmoothOp(op, obj.exponents, pref.singfun.eps);
             
@@ -313,13 +283,13 @@ classdef singfun
         s = zeroSingFun()
         
         % method for finding the order of singularities
-        exponents = findSingExponents( op, isSingEnd, singType, pref )
+        exponents = findSingExponents( op, singType )
         
         % method for finding integer order singularities, i.e. poles
-        poleOrder = findPoleOrder( op, isSingEnd)
+        poleOrder = findPoleOrder( op, SingEnd)
         
         % method for finding fractional order singularities.
-        barnchOrder = findBranchOrder( op, isSingEnd)
+        barnchOrder = findSingOrder( op, SingEnd)
         
         % method for converting a singular op to a smooth op
         op = singOp2SmoothOp( op, exponents, tol )

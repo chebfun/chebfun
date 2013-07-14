@@ -1,30 +1,23 @@
-function poleOrder = findPoleOrder(op, isSingEnd)
-% finds the order of the poles of the operator OP at x = -1 and x = 1.
-% SINGFLAG is a 2x1 vector. A NAN indicates whehter a pole at the the point x =-1
-% or x =1 is expected.
+function poleOrder = findPoleOrder(op, singEnd)
 % Given a function f defined on [-1,1], find an integer exponent
 % E such that f*(1-x)^(-E) is bounded at 1-eps.
-
-poleOrder = zeros(1,2);
 
 % distance of sample points from the end points
 x = 10.^(-1:-1:-15)';
 % if a pole is expected at x = 1
-if ( isnan( isSingEnd(2) ) )
+if ( strcmpi(singEnd, 'right') )
     fvalsRight = op(1-x);
-    poleOrder(2) = poleOrderFinder( fvalsRight, x );
-else
-    % no singularity
-    poleOrder(2) = 0;
+    poleOrder = poleOrderFinder( fvalsRight, x);
+else if ( strcmpi(singEnd, 'left') )
+        % if a pole is expected at x = -1
+        fvalsLeft = op(-1+x);
+        poleOrder = poleOrderFinder( fvalsLeft, x);
+    else
+        error('CHEBFUN:SINGFUN:findPoleOrder:unknownPref',...
+                    'Blowup preference "%s" unknown', singEnd )
+    end
 end
-% if a pole is expected at x = -1
-if ( isnan( isSingEnd(1) ) )  
-    fvalsLeft = op(-1+x);
-    poleOrder(1) = poleOrderFinder( fvalsLeft, x );
-else
-    % no singularity
-    poleOrder(1) = 0;
-end
+
 end
 
 function poleOrder = poleOrderFinder( fvals, x )
@@ -33,7 +26,7 @@ function poleOrder = poleOrderFinder( fvals, x )
 % success.
 
 % we take the absolute value here, 
-% and since x is assumed positive,
+% and since (1-x) is assumed positive,
 % we dont' need abs() afterwards.
 smoothVals = abs(fvals);
 poleOrder = 0;
@@ -50,8 +43,9 @@ while( all(smoothVals(2:end)./smoothVals(1:end-1) > testRatio ) && ( poleOrder <
 end
 if ( poleOrder > maxPoleOrder )
     % Failure mode: do nothing.
-    warning('CHEBFUN:singfun:fail',...
+    warning('CHEBFUN:SINGFUN:fail',...
         'Could not detect function singularity.');
     poleOrder = 0;
 end
 end
+

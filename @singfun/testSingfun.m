@@ -5,10 +5,9 @@ a = .5; b = 1.5;
 op = @(x) sin(1-x)./((1-x).^(b).*(1+x).^(a));
 exponents = [-a, -b];
 %exponents = [];
-isSingEnd = [1,1];
 singType = {'branch', 'branch'};
 pref = [];
-f = singfun( op, exponents, isSingEnd, singType, pref )
+f = singfun( op, exponents, singType, pref )
 plot(f)
 %%
 imagf = imag(f)
@@ -17,8 +16,7 @@ imagf = imag(f)
 realf = real(f)
 
 %%
-f = singfun( @(x) sin(2*pi*(x+1))./(x+1), [], [1 0], {'pole', 'pole'}, []  )
-plotData(f)
+f = singfun( @(x) sin(2*pi*(x+1))./((1-x).^3.*(x+1).^2), [], {'pole', 'pole'}, []  )
 
 %%
 f = singfun( @(x) sin(x)./((1-x).^3.5.*(1+x).^.5), [], [1 1],{'branch', 'branch'}, [] );
