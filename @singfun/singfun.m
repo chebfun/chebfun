@@ -1,38 +1,42 @@
-classdef singfun
-    
+classdef singfun    
 %SINGFUN Class for functions with singular endpoint behavior.
-%   TODO: User documentation
+%
+%   Class for approximating singular functions on the interval [-1,1] using
+%   a smooth part with no singularities and two singular factors (1+x).^a
+%   and (1-x).^b, where a and b are negative. 
+%
+%   SINGFUN class description
+%
+%   The singfun class represents a function of the form 
+%
+%          f(x) = s(x) (1+x)^a (1-x)^b 
+%
+%   on the interval [-1,1]. The exponents a and b are assumed
+%   to be real and negative. The constructor is supplied with a handle that evaluates the
+%   function f at any given points. However, endpoint values will not be
+%   sampled, due to the likelihood of Inf and NaN results.
+%
+%   Ideally, the "smooth" function s is analytic, or at least much more
+%   compactly represented than f is. The resulting object can be used to
+%   evaluate and operate on the function f. If a and b are
+%   unknown at the time of construction, the constructor will try to
+%   determine appropriate (nonpositive) values automatically by sampling
+%   the function handle. Note, however, that this process is not 
+%   completely robust, and
+%   the singularity terms in general do not perfectly factor out singular
+%   behavior. The constructor can be forced to consider only integer
+%   exponents.
+%
+%   Multiplication and division are as good as the corresponding operations
+%   on the smooth part. Addition and subtraction are much less reliable, as
+%   the sum of two singfuns with different exponents is not necessarily a
+%   singfun, nor a smooth function. If all but integer exponents can be
+%   factored out of the summands, the process is fine, but in other
+%   circumstances the process may throw an error.
+%
+% See also SINGFUN.PREF
 
-%% SINGFUN class description
-%
-% The singfun class represents a function of the form 
-%
-%     f(x) = s(x) (1+x)^a (1-x)^b 
-%
-% on the interval [-1,1]. The exponents a and b are assumed
-% to be real and negative. The constructor is supplied with a handle that evaluates the
-% function f at any given points. However, endpoint values will not be
-% sampled, due to the likelihood of Inf and NaN results.
-%
-% Ideally, the "smooth" function s is analytic, or at least much more
-% compactly represented than f is. The resulting object can be used to
-% evaluate and operate on the function f. If a and b are
-% unknown at the time of construction, the constructor will try to
-% determine appropriate (nonpositive) values automatically by sampling
-% the function handle. Note, however, that this process is not 
-% completely robust, and
-% the singularity terms in general do not perfectly factor out singular
-% behavior. The constructor can be forced to consider only integer
-% exponents.
-%
-% Multiplication and division are as good as the corresponding operations
-% on the smooth part. Addition and subtraction are much less reliable, as
-% the sum of two singfuns with different exponents is not necessarily a
-% singfun, nor a smooth function. If all but integer exponents can be
-% factored out of the summands, the process is fine, but in other
-% circumstances the process may throw an error.
- 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
     %% Properties of SINFGUN objects

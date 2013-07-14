@@ -43,18 +43,24 @@ while ( k > 0 )
     s = f;
     s.smoothPart = diff(s.smoothPart);
     
-    % second term: a * g .* (1+x).^(a-1) .* (1-x).^b
-    t = f;
-    t.smoothPart = t.smoothPart * t.exponents(1);
-    t.exponents(1) = t.exponents(1)-1;
+    % second term: a * g .* (1+x).^(a-1) .* (1-x).^b    
+    % if the exponent at the left end point is non-zero
+    if ( f.exponents(1) )
+        t = f;    
+        t.smoothPart = t.smoothPart * t.exponents(1);
+        t.exponents(1) = t.exponents(1)-1;
+        s = s + t;
+    end
     
     % third term: -b * g .* (1+x).^a .* (1-x).^(b-1)
-    u = f;
-    u.smoothPart = u.smoothPart * (-u.exponents(2));
-    u.exponents(2) = u.exponents(2)-1;
-    
-    % The derivative is the sum of
-    % the above three functions.
-    f = s + t + u;
+    if ( f.exponents(2) )
+        u = f;
+        u.smoothPart = u.smoothPart * (-u.exponents(2));
+        u.exponents(2) = u.exponents(2)-1;
+        s = s + u;
+    end  
+    % s is the computed derivative, copy in f
+    % and return
+    f = s;
 end
 end
