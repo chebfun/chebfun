@@ -30,30 +30,11 @@ elseif ( (numel(s) == 2) && all(s == [-1, 1]) )
     return
 end
 
-% Compute new values on the grid:
-x = f.chebpts(n);                                % old grid
-y = .5*[1 - x, 1 + x] * [s(1:end-1) ; s(2:end)]; % new grid
-values = feval(f, y);                            % new values
+% define the new operator which will be evaluated in the subinterval by the 
+% singfun ctor.
+op = @(x) feval(f, ((1-x)*s(1)+(1+x)*s(end))/2);
 
-% If F is array-valued, we must rearrange the order of the columns:
-% (e.g., [a1 a2 b1 b2 c1 c2] -> [a1 b1 c1 a2 b2 c2] => index = [1 3 5 2 4 6].
-if ( m > 1 )
-    numCols = m*numInts;
-    index = reshape(reshape(1:numCols, numInts, m)', 1, numCols);
-    values = values(:, index);
-end
-
-% Update coeffs and vscale:
-coeffs = f.chebpoly(values);
-vscale = max(abs(values), [], 1);
-
-% Append data to CHEBTECH:
-f.values = values;
-f.coeffs = coeffs;
-f.vscale = vscale;
-% f.epslevel = f.epslevel; % epslevel does not change (or become a vector yet).
-
-% Convert to an array:
-f = mat2cell(f, repmat(m, 1, numInts));
+% call the singfun constructor
+f = singfun( op, [], {'sing', 'sing'}, [] );
 
 end
