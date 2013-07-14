@@ -252,7 +252,10 @@ classdef singfun
 
         % Real part of a SINGFUN.
         f = real(f)
-
+        
+        % Restrict a SINGFUN to a subinterval.
+        f = restrict(f, s)
+        
         % Roots of a SINGFUN in the interval [-1,1].
         out = roots(f, varargin)
 
