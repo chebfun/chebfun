@@ -83,7 +83,7 @@ else
     op = @(x) op1(x) + op2(x);
     
     % construct a new SINGFUN for sum
-    s = singfun( op, [], [1 1], {'branch', 'branch'}, singfun.pref );    
+    s = singfun( op, [], {'sing', 'sing'}, singfun.pref );    
 end
 
 end
