@@ -1,4 +1,4 @@
-function branchOrder = findBranchOrder( op, singFlag )
+function branchOrder = findBranchOrder( op, isSingEnd )
 % One test for blowup - perhaps less robust than test B,
 % but more accurate when it works.  This is based on
 % a test of monotonicity of the function and its derivative.
@@ -8,13 +8,13 @@ function branchOrder = findBranchOrder( op, singFlag )
 % by the pole order finder. These will be
 % passed on to the branchOrderFinder as 
 % upperbounds for the singularity order.
-poleBound = findPoleOrder( op, singFlag );
+poleBound = findPoleOrder( op, isSingEnd );
 
 branchOrder = zeros(1,2);
 % distance of sample points from the end points
 x = eps*(11:-1:2)';
 % if a pole is expected at x = 1
-if ( isnan(singFlag(2)) )
+if ( isnan(isSingEnd(2)) )
     fvalsRight = op(1-x);
     branchOrder(2) = branchOrderFinder( fvalsRight, x, poleBound(2) );
 else
@@ -22,7 +22,7 @@ else
     branchOrder(2) = 0;
 end
 % if a pole is expected at x = -1
-if ( isnan(singFlag(1)) )
+if ( isnan(isSingEnd(1)) )
     fvalsLeft = op(-1+x);
     branchOrder(1) = branchOrderFinder( fvalsLeft, x, poleBound(1) );
 else
