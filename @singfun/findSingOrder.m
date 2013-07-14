@@ -1,8 +1,8 @@
-function singOrder = findSingOrder( op, singEnd )
+function singOrder = findSingOrder(op, singEnd)
 % One test for blowup - perhaps less robust than test B,
-% but more accurate when it works.  This is based on
-% a test of monotonicity of the function and its derivative.
-% We return 1 if there's a blowup, 0 if not.
+%   but more accurate when it works.  This is based on
+%   a test of monotonicity of the function and its derivative.
+%   We return 1 if there's a blowup, 0 if not.
 
 % First get an estimate of the exponent
 % by the pole order finder. These will be
