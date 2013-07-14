@@ -1,4 +1,4 @@
-function poleOrder = findPoleOrder(op, singFlag)
+function poleOrder = findPoleOrder(op, isSingEnd)
 % finds the order of the poles of the operator OP at x = -1 and x = 1.
 % SINGFLAG is a 2x1 vector. A NAN indicates whehter a pole at the the point x =-1
 % or x =1 is expected.
@@ -10,7 +10,7 @@ poleOrder = zeros(1,2);
 % distance of sample points from the end points
 x = 10.^(-1:-1:-15)';
 % if a pole is expected at x = 1
-if ( isnan( singFlag(2) ) )
+if ( isnan( isSingEnd(2) ) )
     fvalsRight = op(1-x);
     poleOrder(2) = poleOrderFinder( fvalsRight, x );
 else
@@ -18,7 +18,7 @@ else
     poleOrder(2) = 0;
 end
 % if a pole is expected at x = -1
-if ( isnan( singFlag(1) ) )  
+if ( isnan( isSingEnd(1) ) )  
     fvalsLeft = op(-1+x);
     poleOrder(1) = poleOrderFinder( fvalsLeft, x );
 else

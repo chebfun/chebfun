@@ -316,10 +316,10 @@ classdef singfun
         exponents = findSingExponents( op, isSingEnd, singType, pref )
         
         % method for finding integer order singularities, i.e. poles
-        poleOrder = findPoleOrder( fvals, x, tol)
+        poleOrder = findPoleOrder( op, isSingEnd)
         
         % method for finding fractional order singularities.
-        barnchOrder = findBranchOrder( fvals, x, tol)
+        barnchOrder = findBranchOrder( op, isSingEnd)
         
         % method for converting a singular op to a smooth op
         op = singOp2SmoothOp( op, exponents, tol )
