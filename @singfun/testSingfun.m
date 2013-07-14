@@ -38,7 +38,7 @@ norm(error, inf )
 plot(xx, error)
 
 %%
-a = 1;
+a = pi;
 f = singfun(@(x) sin(a*x)./(1-x).^2, [], [], [], [] );
 fp = diff(f);
 xx = -.99:.01:.99;
@@ -46,4 +46,15 @@ fpExact = @(x) a*cos(a*x)./(1-x).^2 + 2*sin(a*x)./(1-x).^3;
 error = feval(fp, xx) - fpExact(xx);
 norm(error, inf )
 plot(xx, error)
- 
+%%
+% works but if we change f to -f, it doesn't
+f = chebfun( @(x) sin(12*pi*(1-x))./(1-x).^2, 'blowup', 'on' )
+plot(f) % the plot is wrong?
+[a, b] = min(f)
+%%
+% f changed to -f
+f = chebfun( @(x) -sin(1-x)./(1-x).^2, 'blowup', 'on' )
+a = min(f)
+
+%%
+f = singfun( @(x) sin(12*pi*(1-x))./(1-x).^2 )
