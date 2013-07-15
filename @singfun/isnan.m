@@ -1,5 +1,5 @@
 function out = isnan(f)
-%ISNAN   Test if a CHEBTECH has any NaN values.
+%ISNAN   Test if a SINGFUN has any NaN values.
 %   ISNAN(F) returns TRUE if F has any NaN values and FALSE otherwise.
 %
 % See also ISFINITE, ISINF.
@@ -8,6 +8,6 @@ function out = isnan(f)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Check if any values are NaN:
-out = any(isnan(f.values(:)));
+out = isnan(f.smoothPart) || isnan(feval(f,1)) || isnan(feval(f,-1));
 
 end

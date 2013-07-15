@@ -9,5 +9,5 @@ function f = fliplr(f)
 % Flip the orders of the columns of the matrices storing the values and
 % coefficients.
 
-%[TODO]: Not done yet
+%[TODO]: Not done yet because this relies on array-valued SINGFUNs
 end

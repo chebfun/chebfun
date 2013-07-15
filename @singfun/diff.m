@@ -16,7 +16,7 @@ function f = diff(f, k)
 
 %% Check the inputs:
 
-% Trivial case of an empty CHEBTECH:
+% Trivial case of an empty SINGFUN:
 if ( isempty(f) )
     return
 end
@@ -59,8 +59,8 @@ while ( k > 0 )
         u.exponents(2) = u.exponents(2)-1;
         s = s + u;
     end  
-    % s is the computed derivative, copy in f
-    % and return
+    % s is the computed derivative, copy it in f and return
     f = s;
 end
+
 end

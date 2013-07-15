@@ -1,7 +1,8 @@
 function f = mtimes(f, c)
 %*   Multiplication of SINGFUN objects.
 %   F*C or C*F multiplies a SINGFUN F by a scalar or matrix C.
-%
+% 
+%   [TODO]: Does the following make senes:
 %   If F is an array-valued SINGFUN and C is a matrix of appropriate dimension,
 %   then the natural matrix multiplication is performed.
 %

@@ -15,10 +15,12 @@ if ( isempty(f) )
     return
 end
 
+%%
 % Store the hold state of the current axis:
 holdState = ishold;
 
-% Get the data from PLOTDATA():
+%%
+% Get the data from SINGFUN.PLOTDATA():
 data = plotData(f);
 
 %%
@@ -32,7 +34,6 @@ set(h1, 'Marker', 'none')
 hold on
 
 %%
-
 % Plot the points:
 if ( isreal(data.fLine) )
     h2 = plot(data.xPoints, data.fPoints, varargin{:});
@@ -40,15 +41,16 @@ else
     h2 = plot(data.fPoints, varargin{:});
 end
 
+%%
 % Change the style accordingly:
 set(h2,'LineStyle', 'none')
 if ( all(strcmp(get(h2, 'Marker'), 'none')) && (length(f) < 257) )
     set(h2, 'Marker', 'o')
 end
 
-%%
-% Since a SINGFUN usually blows up, set the 
-% y-axis limits to [-10,10]?
+%% 
+% [TODO]: This cell may be deleted. Added here for convenience.
+% Since a SINGFUN usually blows up, set the y-axis limits to [-10,10]?
 ylim( [-10, 10] )
 %%
 % Return hold state to what it was before:
@@ -56,6 +58,7 @@ if ( ~holdState )
     hold off
 end
 
+%%
 % Give an output if one was requested:
 if ( nargout > 0 )
     varargout{1} = h1;

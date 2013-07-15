@@ -8,6 +8,9 @@ function data = plotData(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+%%
+% [TODO]: The following code may be simplified by calling SINGFUN.FEVAL()
+% but what should the x-data be? (CHEBTECH uses 501 chebpts).
 data = plotData( f.smoothPart );
 % update extrapolated y-data 
 x = data.xLine;

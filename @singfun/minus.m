@@ -1,5 +1,5 @@
 function s = minus(f,g)
-%MINUS Subtract SINGFUN.
+%MINUS Subtract SINGFUN G from SINGFUN F.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
