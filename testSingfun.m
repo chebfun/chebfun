@@ -79,19 +79,22 @@ norm( feval(g,xx) - (1-xx).^2./cos(pi*xx/2), inf )
 gg = singfun(@(x) (1-x).^2./cos(pi*x/2) )
 norm( feval(g,xx) - feval(gg,xx), inf )
 %% 
-f = singfun( @(x) (1-x).^.5.*(1+x).^.5 )
-1./f
+f = singfun( @(x) (1-x).^.5.*(1+x).^.5, [.5, .5] )
+g = 1./f
+xx = -.99:.01:.99;
+norm( feval(g,xx) - (1-xx).^-.5.*(1+xx).^-.5, inf )
+
 %% 
 f = chebfun(@(x) (1-x).^.5.*(1+x).^.5, 'splitting', 'on')
 g = 1./f
 
 %%
  b = -1; a = -1;
- f = singfun( @(x) (1-x).^b.*(1+x).^a )
+ f = singfun( @(x) (1-x).^b.*(1+x).^a, [], {'pole', 'pole'})
  g = 1./f
  %%
- f = 1./g
- %%g = 1./f
+ f = 1./g 
+ %g = 1./f
  
 %%
 f = singfun( @(x) (1-x).^.5.*(1+x).^.5, [.5 .5] )
