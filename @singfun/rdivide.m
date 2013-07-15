@@ -47,7 +47,8 @@ end
 
 %% SINGFUN./SINGFUN
 % Division of two SINGFUNS
-if ( all(f.exponents - g.exponents > 0 ) )
+exponents = f.exponents - g.exponents;
+if ( all(exponents > 0 ) ) 
     % division results in a smooth function with no singularities.
     s = singfun.zeroSingFun();
     smoothOp = @(x) feval(f, x)./feval(g, x);
@@ -56,8 +57,18 @@ if ( all(f.exponents - g.exponents > 0 ) )
     smoothPrefs = chebtech.pref('tech', 'cheb1', 'extrapolate', false);
     s.smoothPart = chebtech.constructor(smoothOp, vscale, hscale, smoothPrefs);
 else
-    % The result of f./g is a generic SINGFUN with possibly non-trivial exponents
-    s = singfun( @(x) feval(f, x)./feval(g, x), [], {'sing', 'sing'}, singfun.pref);    
+    % Note: Exponents can be zero to generate a singular function. 
+    % Example: f = 1; g = cos(pi/2*x) with trivial exponents. Then
+    % s = f./g is singular with non trivial exponents. So the result of 
+    % f./g in general is a generic SINGFUN with possibly non-trivial 
+    % exponents    
+    
+    % factor out the known exponents
+    op = singfun.singOp2SmoothOp( @(x) feval(f, x)./feval(g, x), exponents );
+    % construct the singfun
+    s = singfun( @(x) op(x), [], {'sing', 'sing'}, singfun.pref);    
+    % add exponents
+    s.exponents = s.exponents + exponents;
 end
 
 end

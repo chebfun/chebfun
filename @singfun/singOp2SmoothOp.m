@@ -12,9 +12,9 @@ if ( all(exponents) )
     % both exponents are non trivial
     op = @(x) op(x)./((1+x).^(exponents(1)).*(1-x).^(exponents(2)));
 elseif ( exponents(1) )
-    % singular factor at the left end point only
+    % (1+x) factor at the left end point
     op = @(x) op(x)./(1+x).^(exponents(1));
 elseif ( exponents(2) )
-    % singular factor at the right end point only
+    % (1-x) factor at the right end point
     op = @(x) op(x)./(1-x).^(exponents(2));
 end

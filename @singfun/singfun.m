@@ -143,7 +143,7 @@ classdef singfun
             end
                
             % update the operator based on the values in exponents.
-            smoothOp = singfun.singOp2SmoothOp(op, obj.exponents, pref.singfun.eps);
+            smoothOp = singfun.singOp2SmoothOp(op, obj.exponents);
             
             % Construct the smooth part of the SINGFUN object.
             % [TODO]: This will be replaced by the SMOOTHFUN constructor
