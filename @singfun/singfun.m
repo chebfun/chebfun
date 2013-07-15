@@ -243,6 +243,7 @@ classdef singfun
 
         % Dividing two SINGFUNs
         f = rdivide(f, g)
+        
         % Real part of a SINGFUN.
         f = real(f)
         
