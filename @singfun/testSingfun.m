@@ -58,5 +58,18 @@ a = min(f)
 f = singfun( @(x) sin(12*pi*(1-x))./(1-x).^2 )
 g = 1./f
 %% 
-f = singfun( @(x) (1-x).*(1+x) )
+f = singfun( @(x) (1-x).^.5.*(1+x).^.5 )
 1./f
+%% 
+f = chebfun(@(x) (1-x).^.5.*(1+x).^.5, 'splitting', 'on')
+g = 1./f
+
+%%
+ b = -1; a = -1;
+ f = singfun( @(x) (1-x).^b.*(1+x).^a )
+ g = 1./f
+ 
+%%
+f = singfun( @(x) (1-x).^.5.*(1+x).^.5, [.5 .5] )
+1./f
+

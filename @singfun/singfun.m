@@ -91,29 +91,20 @@ classdef singfun
                 % the information given in exponents.
                 obj.exponents = exponents;
                 tol = singfun.pref.singfun.eps;
-                if ( exponents(1) < -100*tol )
-                    obj.isSingEnd(1) = 1;
-                    if( abs(exponents(1)-round(exponents(1))) < 100*tol )
-                        obj.singType{1} = 'pole';
+                % loop through each side
+                for k = 1:2
+                    if ( exponents(k) < -100*tol )
+                        obj.isSingEnd(k) = 1;
+                        if( abs(exponents(k)-round(exponents(k))) < 100*tol )
+                            obj.singType{k} = 'pole';
+                        else
+                            obj.singType{k} = 'sing';
+                        end
                     else
-                        obj.singType{1} = 'sing';
+                        obj.isSingEnd(k) = 0;
+                        obj.singType{k} = 'none';
                     end
-                else
-                    obj.isSingEnd(1) = 0;
-                    obj.singType{1} = 'none';
-                end
-                
-                if ( exponents(2) < -100*tol )
-                    obj.isSingEnd(2) = 1;
-                    if( abs(exponents(2)-round(exponents(2))) < 100*tol )
-                        obj.singType{2} = 'pole';
-                    else
-                        obj.singType{2} = 'sing';
-                    end
-                else
-                    obj.isSingEnd(1) = 0;
-                    obj.singType{1} = 'none';                   
-                end                
+                end                                
             end
                 
             if ( nargin >= 3 && isempty(exponents) )
