@@ -56,3 +56,7 @@ a = min(f)
 
 %%
 f = singfun( @(x) sin(12*pi*(1-x))./(1-x).^2 )
+g = 1./f
+%% 
+f = singfun( @(x) (1-x).*(1+x) )
+1./f

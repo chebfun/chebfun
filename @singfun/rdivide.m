@@ -1,4 +1,4 @@
-function s = rdivide(f,g)
+function s = rdivide(f, g)
 %./   Divide SINGFUNS with SINGFUNS
 %
 %   This method will be called only if both F and G are SINGFUNS or at the 
@@ -18,25 +18,21 @@ if ( ~isa(g, 'singfun') && ~isa(g, 'double') )
 end
 
 %%
-tol = singfun.pref.singfun.eps;
 % Reciprocal of a SINGFUN scaled by the double F.
 if ( isa(f,'double') )    
-    % take the scaled reciprocal of the SINGFUN G.
-    if ( any(g.exponents < -100*tol) )
-        % if g is singular the reciprocal of g will be a smooth function 
-        % with no singularities
-        s = singfun.zeroSingFun();
-        smoothOp = @(x) 1./feval(g, x);
-        hscale = [];
-        vscale  = [];
-        smoothPrefs = chebtech.pref('tech', 'cheb1', 'extrapolate', false);
-        s.smoothPart = chebtech.constructor(smoothOp, vscale, hscale, smoothPrefs);
-    else
-        % g has trivial exponents, but the reciporcal of g might be
-        % singular, for example, if the smooth part of g vanishes at an 
-        % end point. So, call the SINGFUN constructor.
-        s = singfun( @(x) 1./feval(g.smoothPart, x), [], {'sing', 'sing'}, singfun.pref);      
-    end
+    % convert f to a SINGFUN and call rdivide again.
+    
+    % Make a zero SINGFUN
+    temp = singfun.zeroSingFun();        
+    % Assign f to it's smooth part
+    hscale = [];
+    vscale  = [];
+    smoothPrefs = chebtech.pref('tech', 'cheb1', 'extrapolate', false);
+    temp.smoothPart = chebtech.constructor(f, vscale, hscale, smoothPrefs);
+    % change f to a SINGFUN
+    f = temp;
+    % call SINGFUN.RDIVIDE again
+    s = f./g;
     return
 end
 
@@ -49,10 +45,10 @@ if ( isa(g,'double') )
     return
 end
 
-%%
+%% SINGFUN./SINGFUN
 % Division of two SINGFUNS
 if ( all(f.exponents - g.exponents > 0 ) )
-    % division results in a smooth function with no singularity
+    % division results in a smooth function with no singularities.
     s = singfun.zeroSingFun();
     smoothOp = @(x) feval(f, x)./feval(g, x);
     hscale = [];
@@ -64,5 +60,4 @@ else
     s = singfun( @(x) feval(f, x)./feval(g, x), [], {'sing', 'sing'}, singfun.pref);    
 end
 
-%%
 end
