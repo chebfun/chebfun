@@ -250,6 +250,8 @@ classdef singfun
         % Return the points used by the smooth part of a SINGFUN.
         out = points(f)
 
+        % Dividing two SINGFUNs
+        f = rdivide(f, g)
         % Real part of a SINGFUN.
         f = real(f)
         
@@ -266,7 +268,7 @@ classdef singfun
         out = sum(f, dim)
 
         % SINGFUN multiplication.
-        f = times(f, g, varargin)
+        f = times(f, g)
         
         % SINGFUN objects are not transposable.
         f = transpose(f)

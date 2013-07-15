@@ -51,34 +51,18 @@ end
 
 %%
 % Division of two SINGFUNS
-s = singfun;
-if ( all(f.exponents - g.exponents >= 0 ) )
+if ( all(f.exponents - g.exponents > 0 ) )
     % division results in a smooth function with no singularity
-    s = singfun( @(x) feval(./feval(g.smoothPart, x), [], {'sing', 'sing'}, singfun.pref);      
-% multiply the smooth parts
-s.smoothPart = (f.smoothPart)./(g.smoothPart);
-% add the exponents
-s.exponents = f.exponents - g.exponents;
-
-%%
-% Check if after division the type of singularity has changed or if 
-% it can be removed.
-% [TODO]: Since exponents are negative, it's impossible to remove a 
-% singularity after mutiplying two SINGFUNS?
-tol = singfun.pref.singfun.eps;
-% loop through each end
-for k = 1:2
-    if ( s.exponents(k) < -100*tol )
-        s.isSingEnd(k) = 1;
-        if ( abs(s.exponents(k) - round(s.exponents(k))) < 100*tol )
-            s.singType{k} = 'pole';
-        else
-            s.singType{k} = 'sing';
-        end
-    else
-        s.isSingEnd(k) = 0;
-        s.singType{k} = 'none';
-    end
+    s = singfun.zeroSingFun();
+    smoothOp = @(x) feval(f, x)./feval(g, x);
+    hscale = [];
+    vscale  = [];
+    smoothPrefs = chebtech.pref('tech', 'cheb1', 'extrapolate', false);
+    s.smoothPart = chebtech.constructor(smoothOp, vscale, hscale, smoothPrefs);
+else
+    % The result of f./g is a generic SINGFUN with possibly non-trivial exponents
+    s = singfun( @(x) feval(f, x)./feval(g, x), [], {'sing', 'sing'}, singfun.pref);    
 end
 
+%%
 end
