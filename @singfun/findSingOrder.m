@@ -42,9 +42,10 @@ function singOrder = singOrderFinder( fvals, x, poleBound )
 %   of the singularity order.
 
 singOrder = poleBound-1;
-n = 10;
+
 % Try fractional exponents in the interval [poleBound-1, poleBound]
 % Take an initial grid of size n: 
+n = 10;
 exponentGrid = linspace(poleBound-1, poleBound, n);
 
 % some initialisations required later
@@ -80,8 +81,12 @@ while( abs(exponentGrid(end)-exponentGrid(1)) > 100*tol && nIter <= maxIter )
             % refine the grid
             smoothVals = absFvals;
             singOrder = exponentGrid(k);
-            exponentGrid = linspace( exponentGrid(k-1), exponentGrid(k), n );
-            nIter = nIter + 1;
+            if ( k == 1 )
+                return;
+            else
+                exponentGrid = linspace( exponentGrid(k-1), exponentGrid(k), n );
+                nIter = nIter + 1;
+            end
         end
     end
 end
