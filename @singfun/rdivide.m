@@ -63,12 +63,8 @@ else
     % f./g in general is a generic SINGFUN with possibly non-trivial 
     % exponents    
     
-    % factor out the known exponents
-    op = singfun.singOp2SmoothOp( @(x) feval(f, x)./feval(g, x), exponents );
     % construct the singfun
-    s = singfun( @(x) op(x), [], {'sing', 'sing'}, singfun.pref);    
-    % add exponents
-    s.exponents = s.exponents + exponents;
+    s = singfun(@(x) feval(f, x)./feval(g, x));
 end
 
 end

@@ -1,12 +1,12 @@
 function [minVal, minPos] = min(f)
-%MIN   Global minimum of a CHEBTECH on [-1,1].
-%   MINVAL = MIN(F) returns the global minimum of the CHEBTECH F on [-1,1].  If
-%   F is a array-valued CHEBTECH, MINVAL is a row vector whose Kth entry is the
-%   global minimum of the Kth column of F.
+%MIN   Global minimum of a SINGFUN on [-1,1].
+%   MINVAL = MIN(F) returns the global minimum of the SINGFUN F on [-1,1].
+%   [TODO]: What If F is am array-valued SINGFUN?, MINVAL is a row vector 
+%   whose Kth entry is the global minimum of the Kth column of F.
 %
 %   [MINVAL, MINPOS] = MIN(F) returns also a value such that MINVAL = F(MINPOS).
 %
-%   If F is complex-valued then absolute values are taken to determine maxima
+%   [TODO]: If F is complex-valued then absolute values are taken to determine maxima
 %   but the resulting value corresponds to that of the original function. That
 %   is, MINVAL = FEVAL(F, MINPOS) where [~, MINPOS] = MIN(ABS(F)).
 %
