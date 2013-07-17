@@ -17,12 +17,12 @@ realf = real(f)
 
 %%
 % works
-f = singfun( @(x) sin(pi*(x+1))./((1-x).^3.*(x+1).^2), [], {'sing', 'pole'}, []  )
+f = singfun( @(x) sin(pi*(x+1))./((1-x).^3.5.*(x+1).^2.5), [], {'sing', 'sing'}, []  )
 %%
 % doesn't work
 f = singfun( @(x) sin(pi*(x+1))./((1-x).^3.*(x+1).^2), [], {'sing', 'sing'}, []  )
 %%
-f = singfun( @(x) 1./(1-x).^2, [], {'sing', 'sing'} )
+f = singfun( @(x) 1./(1-x).^2, [], {'pole', 'sing'} )
 
 %%
 f = singfun( @(x) sin(x)./((1-x).^3.5.*(1+x).^.5), [], {'sing', 'sing'}, [] );
