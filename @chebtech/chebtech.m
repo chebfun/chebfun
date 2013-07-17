@@ -72,7 +72,7 @@ classdef chebtech %< smoothfun % (Abstract)
 % The vertical scale VSCALE is used to enforce scale invariance in CHEBTECH
 % construction and subsequent operations. For example, that
 %
-% chebtech.constructor(@(x) 2^300*f(x)) = 2^300*chebtech2.constructor(@(x) f(x)).
+% chebtech.constructor(@(x) 2^300*f(x)) = 2^300*chebtech.constructor(@(x) f(x)).
 %
 % VSCALE may be optionally passed to the constructor (if not, it defaults to
 % 0), and during construction it is updated to be the maximum magnitude of the
