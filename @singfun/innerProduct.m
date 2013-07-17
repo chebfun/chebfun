@@ -3,9 +3,10 @@ function out = innerProduct(f, g)
 %   INNERPRODUCT(F, G) returns the L2 inner product (on [-1,1]) of the two
 %   SINGFUN objects F and G (conjugate linear in F).
 %
-%   If F and/or G are array-valued SINGFUN objects, then the result is a matrix
-%   whose i,j entry is the inner product of the ith column of F with the jth
-%   column of G.
+% See also SUM.
+
+% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % Deal with empty case:
 if ( isempty(f) || isempty(g) )
@@ -13,21 +14,46 @@ if ( isempty(f) || isempty(g) )
     return
 end
 
-if ( ~isa(f, 'chebtech') || ~isa(g, 'chebtech') )
-    error('CHEBFUN:CHEBTECH:innerProduct:input', ...
-        'innerProduct() only operates on two CHEBTECH objects.');
+if ( ~isa(f, 'singfun') || ~isa(g, 'singfun') )
+    error('CHEBFUN:SINGFUN:innerProduct:input', ...
+        'innerProduct() only operates on two SINGFUN objects.');
 end
 
-% Prolong to sum of current lengths (so that quadrature is exact):
-n = length(f) + length(g);
-f = prolong(f, n);
-g = prolong(g, n);
+exps = f.exponents + g.exponents;
 
-% Compute Clenshaw-Curtis quadrature weights:
-w = f.quadwts(n);
+% The integral is divergent when at least one of exponents of the product is 
+% smaller than or equal to -1. 
 
-% Compute the inner product via a weighted discrete inner product:
-out = bsxfun(@times, w.', f.values)' * g.values;
+if any(exps <= -1)
+    sl = sign(f.vals(1));
+    sr = sign(f.vals(end));
+    if all(exps <= -1)
+        if  sl == sr
+            out = sl.*inf;
+        else
+            out = NaN;
+        end
+        
+    elseif (exps(1) <= -1 && sl == -1) || (exps(2) <= -1 && sr == -1)
+        out = -inf;
+    else
+        out = inf;
+    end
+    
+    return
+end
+
+% When f have trivial exponents, the integral is nothing but the integral of its
+% smooth part. Otherwise, we evaluate the integral by using Gauss-Jacobi points 
+% and weights.
+
+if all(exps == 0)
+    out = sum(f.smoothPart*g.smoothPart);
+else
+    n = length(f.smoothPart) + length(g.smoothPart);
+    [x, w] = jacpts(ceil(n/2)+1, exps(2), exps(1));    
+    out = w*f.smoothPart.feval(x);
+end
 
 % Force real output if the inputs are equal:
 if ( isequal(f, g) )
