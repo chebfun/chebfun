@@ -29,7 +29,7 @@ if ( any(f.exponents) )
     minLoc = [];
     maxLoc = [];   
     if ( f.exponents(1) < -tol )
-        % Case I: singularity at the left end
+        % If there is a singularity at the left end
         fVal = feval(f, -1);
         if ( fVal == inf )
             maxF = inf;
@@ -44,7 +44,7 @@ if ( any(f.exponents) )
     end
     
     if ( f.exponents(2) < -tol )
-        % Case II: singularity at the right end
+        % if there is a singularity at the right end
         fVal = feval(f, 1);
         if ( fVal == inf )
             maxF = inf;
@@ -56,19 +56,32 @@ if ( any(f.exponents) )
             error('CHEBFUN:SINGFUN:minandmax:boundedness', ...
         'function has a singularity but bounded at the right end point');
         end
-    end    
+    end
     
     % if min or max is empty, then we need to do more work
-    if ( isempty( minF ) )       
-        
-    end
-    
-    if ( isemtpy(maxF) )
-    
-    end
+    if ( isempty(minF) || isempty(maxF) )       
+        % find the roots of the derivative for local minima
+        r = roots(diff(f));
+        % append the end points and remove duplicates
+        r = unique([-1;r;1]);
+        if ( isempty(maxF) )
+            % take the maximum of the local maxima
+            [maxF, maxIndex] = max(feval(f,r));            
+            maxLoc = r(maxIndex);
+        end
+        if ( isempty(minF) )
+            % take the minimum of the local minima
+            [minF, minIndex] = min(feval(f,r));          
+            minLoc = r(minIndex);
+        end             
+    end    
     vals = [ minF; maxF ];
     pos = [ minLoc; maxLoc ];
 else
+    % the function is actually smooth. 
     [vals, pos] = minandmax(f.smoothPart);
 end
+  
+end
+
 

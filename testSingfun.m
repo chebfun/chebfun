@@ -56,6 +56,9 @@ f = chebfun( @(x) sin(12*pi*(1-x))./(1-x).^2, 'blowup', 'on' )
 %plot(f) % the plot is wrong?
 [a, b] = min(f)
 %%
+f = singfun( @(x) sin(12*pi*(1-x))./(1-x).^2 )
+[a, b ] = minandmax(f)
+%%
 % f changed to -f doesn't work
 %f = chebfun( @(x) -sin(1-x)./(1-x).^2, 'blowup', 'on' )
 %a = min(f)

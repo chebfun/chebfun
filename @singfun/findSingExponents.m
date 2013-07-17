@@ -1,5 +1,5 @@
 function exponents = findSingExponents(op, singType)
-%FINDEXPONENTS Endpoint singularity detection by sampling values.
+%FINDEXPONENTS   Endpoint singularity detection by sampling values.
 %  Private method of SINGFUN.
 
 % TODO Documentation
