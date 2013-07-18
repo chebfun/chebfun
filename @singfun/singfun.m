@@ -1,5 +1,5 @@
 classdef singfun    
-%SINGFUN Class for functions with singular endpoint behavior.
+%SINGFUN   Class for functions with singular endpoint behavior.
 %
 %   Class for approximating singular functions on the interval [-1,1] using
 %   a smooth part with no singularities and two singular factors (1+x).^a
@@ -12,9 +12,10 @@ classdef singfun
 %          f(x) = s(x) (1+x)^a (1-x)^b 
 %
 %   on the interval [-1,1]. The exponents a and b are assumed
-%   to be real and negative. The constructor is supplied with a handle that evaluates the
-%   function f at any given points. However, endpoint values will not be
-%   sampled, due to the likelihood of Inf and NaN results.
+%   to be real and are usually negative. The constructor is supplied with 
+%   a handle that evaluates the function f at any given points. However, 
+%   endpoint values will not be sampled, due to the likelihood of Inf and 
+%   NaN results.
 %
 %   Ideally, the "smooth" function s is analytic, or at least much more
 %   compactly represented than f is. The resulting object can be used to
@@ -80,7 +81,8 @@ classdef singfun
             
             %%
             if ( nargin == 1 )
-                % only operator passed, assume a fractional pole at each end point               
+                % only operator passed, assume a fractional pole at each 
+                % end point               
                 exponents = [];
                 obj.singType = {'sing', 'sing'};                
             end
@@ -90,15 +92,28 @@ classdef singfun
                 % given in isSingEnd, singType and use 
                 % the information given in exponents.
                 obj.exponents = exponents;
-                tol = singfun.pref.singfun.eps;
+                tol = pref.singfun.eps;
                 % loop through each side
                 for k = 1:2
                     if ( exponents(k) < -100*tol )
                         obj.isSingEnd(k) = 1;
-                        if( abs(exponents(k)-round(exponents(k))) < 100*tol )
-                            obj.singType{k} = 'pole';
+                        if ( isempty(singType) )                            
+                            % if the user has not provided the type of
+                            % singularity, figure it out                        
+                            if( abs(exponents(k)-round(exponents(k))) < 100*tol )
+                                obj.singType{k} = 'pole';
+                            else
+                                obj.singType{k} = 'sing';
+                            end
                         else
-                            obj.singType{k} = 'sing';
+                            % use the provided singularity type. Since the
+                            % singularity is non trivial, it must either be
+                            % a 'pole' or a 'sing'.
+                            if ( any(strcmpi(singType{k}, {'pole', 'sing'})) )
+                                obj.singType{k} = singType{k};                            
+                            else
+                                error( 'CHEBFUN:SINGFUN:constructor', 'singularity type not compatible' );
+                            end
                         end
                     else
                         obj.isSingEnd(k) = 0;
@@ -107,14 +122,23 @@ classdef singfun
                 end                                
             end
                 
-            if ( nargin >= 3 && isempty(exponents) )
-                % singulrity types passed bus exponents not given
-                if ( isempty( singType ) )                    
-                    % Assume fractional poles or generic singularities if not given
+            if ( nargin >= 3 && isempty(exponents) )                
+                if ( isempty(singType) )
+                    % Singulrity types and exponents not given. Assume 
+                    % fractional poles or generic singularities if not given
                     obj.singType = {'sing', 'sing'};
                 else
-                    % copy the information given about singularities in the current object                    
-                    obj.singType = singType;
+                    % Singularity types given, make sure the strings are
+                    % OK.
+                    singTypeCheck(1) = any(strcmpi(singType{1}, {'pole', 'sing', 'none'}));
+                    singTypeCheck(2) = any(strcmpi(singType{2}, {'pole', 'sing', 'none'}));
+                    if ( all(singTypeCheck) )
+                        % if the strings are OK, copy given types in the
+                        % current object.
+                        obj.singType = singType;
+                    else                        
+                        error( 'CHEBFUN:SINGFUN:constructor', 'unknown singularity type' );
+                    end
                 end
             end                        
             
