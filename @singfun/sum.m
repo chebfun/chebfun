@@ -4,15 +4,15 @@ function out = sum(f)
 
 % See also CUMSUM, DIFF.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-% The integral is divergent when at least one of f.exponents is smaller than or 
-% equal to -1. 
+% The integral is divergent when at least one of f.exponents is smaller than or
+% equal to -1.
 
 if any(f.exponents <= -1)
-    sl = sign(f.vals(1));
-    sr = sign(f.vals(end));
+    sl = sign(get(g.smoothPart, 'lval'));
+    sr = sign(get(g.smoothPart, 'rval'));
     if all(f.exponents <= -1)
         if  sl == sr
             out = sl.*inf;
