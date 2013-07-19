@@ -25,8 +25,8 @@ exps = f.exponents + g.exponents;
 % smaller than or equal to -1. 
 
 if any(exps <= -1)
-    sl = sign(f.vals(1));
-    sr = sign(f.vals(end));
+    sl = sign(get(f.smoothPart, 'lval'))*sign(get(g.smoothPart, 'lval'));
+    sr = sign(get(f.smoothPart, 'rval'))*sign(get(f.smoothPart, 'rval'));
     if all(exps <= -1)
         if  sl == sr
             out = sl.*inf;

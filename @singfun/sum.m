@@ -11,8 +11,8 @@ function out = sum(f)
 % equal to -1.
 
 if any(f.exponents <= -1)
-    sl = sign(get(g.smoothPart, 'lval'));
-    sr = sign(get(g.smoothPart, 'rval'));
+    sl = sign(get(f.smoothPart, 'lval'));
+    sr = sign(get(f.smoothPart, 'rval'));
     if all(f.exponents <= -1)
         if  sl == sr
             out = sl.*inf;
