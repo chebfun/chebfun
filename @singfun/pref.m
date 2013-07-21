@@ -65,11 +65,12 @@ if ( isfield(prefs, classname) )  % It does, so either:
     else
         p = prefs.(classname);    % b) Grab SINGFUN prefs
     end
-else                              % No SINGFUN prefs found, so make some:
-%    p.tech          = 'cheb2';
+else
+    % No SINGFUN prefs found, so make some:
+    %    p.tech          = 'cheb2';
+    %    p.extrapolate   = false;
+    %    p.hscale        = 1;   
     p.eps           = 2^-52;
-%    p.extrapolate   = false;
-%    p.hscale        = 1;
 end
 % p is now the preference substructure relating to the FUN class.
 

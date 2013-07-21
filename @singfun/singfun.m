@@ -106,10 +106,13 @@ classdef singfun
                                 obj.singType{k} = 'sing';
                             end
                         else
-                            % use the provided singularity type. Since the
-                            % singularity is non trivial, it must either be
-                            % a 'pole' or a 'sing'.
+                            % use the provided singularity type. 
+                            % Since the singularity is non trivial, it must 
+                            % either be a 'pole' or a 'sing'.
                             if ( any(strcmpi(singType{k}, {'pole', 'sing'})) )
+                                % [TODO]: Add code here if you want to make sure 
+                                % that the nubmer given in exponents
+                                % are in agreement with singtype                                
                                 obj.singType{k} = singType{k};                            
                             else
                                 error( 'CHEBFUN:SINGFUN:constructor', 'singularity type not compatible' );
@@ -133,7 +136,7 @@ classdef singfun
                     singTypeCheck(1) = any(strcmpi(singType{1}, {'pole', 'sing', 'none'}));
                     singTypeCheck(2) = any(strcmpi(singType{2}, {'pole', 'sing', 'none'}));
                     if ( all(singTypeCheck) )
-                        % if the strings are OK, copy given types in the
+                        % if the strings are OK, copy given strings in the
                         % current object.
                         obj.singType = singType;
                     else                        
@@ -148,7 +151,7 @@ classdef singfun
             if ( isempty(obj.exponents) )
                 obj.exponents = singfun.findSingExponents(op, obj.singType);
                 % update ISSINGEND and SINGTYPE based on EXPONENTS
-                tol = singfun.pref.singfun.eps;
+                tol = pref.singfun.eps;
                 % loop for each end
                 for k = 1:2
                     if ( obj.exponents(k) > -100*tol )
