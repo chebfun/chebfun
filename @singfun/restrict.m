@@ -1,7 +1,7 @@
 function f = restrict(f, s)
 %RESTRICT   Restrict a SINGFUN to a subinterval.
-%   RESCTRICT(F, S) returns a CHEBTECH that is restricted to the subinterval
-%   [S(1), S(2)] of [-1, 1]. Note that since CHEBTECH objects only live on
+%   RESCTRICT(F, S) returns a SINGFUN that is restricted to the subinterval
+%   [S(1), S(2)] of [-1, 1]. Note that since SINGFUN objects only live on
 %   [-1, 1], a linear change of variables is implicitly applied.
 %
 %   If length(S) > 2, i.e., S = [S1, S2, S3, ...], then RESCTRICT(F, S) returns
