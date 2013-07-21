@@ -1,5 +1,8 @@
 function prefs = pref(varargin)
-%PREF   Preference settings for SINGFUN.
+%PREF   Preference settings for SINGFUN. [TODO:] SINGFUN will have no 
+%   perefernces, instead the abstract superior class ONEFUN will have all the
+%   preferences in future.
+% 
 %   SINGFUN.PREF(PREFNAME) returns the value corresponding to the preference
 %   named in the string PREFNAME.
 %
@@ -22,12 +25,11 @@ function prefs = pref(varargin)
 %
 %   SINGFUN PREFERENCES (case sensitive)
 %
-%   [TODO] Copied from CHEBTECH, not done yet.
+%   [TODO] Copied from CHEBTECH, not done yet. Some of these might make sense
+%   for SINGFUNs:
 %
 %     tech         -  Select the type of Chebyshev grid on which the function
 %                     is sampled.
-%      ['cheb2']   -  Use a grid of second-kind Chebyshev points.
-%       'cheb1'    -  Use a grid of first-kind Chebyshev points.
 %
 %     eps          -  Relative tolerance used in construction and subsequent
 %      [2^-52]        operations. See CHEBTECH.HAPPINESSCHECK for more details.
@@ -42,20 +44,6 @@ function prefs = pref(varargin)
 %                     constructor to implicitly represent functions defined on
 %                     domains other than [-1, 1].
 %
-%     minSamples   -  Minimum number of points used by the constructor. Should
-%        [9]          be of the form 2^n+1 (if not, it is rounded as such).
-%
-%     maxSamples   -  Maximum number of points used by the constructor.
-%      [2^16+1]   
-%
-%         n        -  Fixed number of points used by constructor. NaN allows
-%       [NaN]         adaptive construction.
-%
-%     sampletest
-%       [true]     -  Tests the function at one more arbitrary point to
-%                     minimize the risk of missing signals between grid
-%                     points.
-%        false     -  Do not test.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
