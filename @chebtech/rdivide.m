@@ -52,7 +52,7 @@ else
     % Check if c (the denominator) has any roots.
     if ( ~isempty(roots(c)) )
         error('CHEBFUN:CHEBTECH:rdivide:DivideByZeros', ...
-        'Cannot divide by a CHEBTECH with roots in [-1, 1].');
+        'Cannot divide by a CHEBTECH with roots in its domain.');
     end
     
     % Call COMPOSE.

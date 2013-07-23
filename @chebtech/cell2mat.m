@@ -14,6 +14,8 @@ function g = cell2mat(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% TODO: This function is probably not needed anymore.
+
 % Return an empty result:
 if ( isempty(f) || numel(f) == 1 )
     g = f;
