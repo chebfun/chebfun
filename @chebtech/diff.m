@@ -49,6 +49,7 @@ end
 
 %% Take difference across 2nd dimension:
 if ( dim == 2 )
+    
     % Differentiate values across dim:
     f.values = diff(f.values, k, dim);
     
@@ -79,15 +80,9 @@ if ( k >= n )
 end
 
 % Loop for higher derivatives:
-while ( k > 0 )
-    % Decrease k
+while ( k > 0 ) % Note that n > k.
+    % Decrease k:
     k = k - 1;
-    
-    % Derivative of a constant is zero:
-    if ( n == 1 )
-        f = f.make(zeros(1, size(f.values, 2)), f.vscale, f.epslevel);
-        return
-    end
     
     % Compute new coefficients using recurrence:
     c = computeDerCoeffs(c);
