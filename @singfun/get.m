@@ -18,9 +18,12 @@ switch prop
         % Allow access to any of the properties of F via GET:
         out = f.(prop);
     
-    case fieldnames(f.chebtech)
+    case fieldnames(f.smoothPart)
         % Allow access to any of the properties of F.onefun via GET:
-        out = f.chebtech.(prop);
+        out = f.smoothPart.(prop);
+        
+    case {'lval', 'rval', 'vscale', 'hscale', 'epslevel'}
+        out = get(f.smoothPart, prop);
 
     otherwise
         error('CHEBFUN:SINGFUN:GET:propname', ...

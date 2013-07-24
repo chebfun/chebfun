@@ -79,6 +79,14 @@ classdef singfun
                 return
             end
             
+            if ( nargin == 1 && isa(op, 'smoothfun') )
+                obj.smoothPart = op;
+                obj.exponents = [0, 0];
+                obj.singType = {'none', 'none'};
+                obj.isSingEnd = [0, 0];
+                return
+            end
+            
             %%
             if ( nargin == 1 )
                 % only operator passed, assume a fractional pole at each 
