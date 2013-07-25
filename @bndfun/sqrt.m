@@ -6,7 +6,6 @@ function f = sqrt(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-
 % If there are roots at the end of the domain, then make the f.onefun a singfun:
 lval = get(f, 'lval');                         % Value at left of domain.
 rval = get(f, 'rval');                         % Value at right of domain.
