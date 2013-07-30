@@ -23,7 +23,7 @@ vends = [get(g, 'lval'), get(g, 'rval')];
 tol = 10*get(g, 'epslevel')*get(g, 'vscale');
 
 %%
-% Case 1: onefun has no singularities.
+% Cases for onefun has no singularities.
 
 if ( isa(g.onefun, 'smoothfun') || ( isa(g.onefun, 'singfun') && (~any(g.onefun.exponents)) ) )
     
@@ -97,6 +97,8 @@ out = sum(integrand);
 
 return
 
+%%
+% Cases for onefun has singularities at the end points.
 elseif ( isa(g.onefun, 'singfun') )
     
     % Now assume that g.onefun is a singfun: g.onefun = (1+x)^a*(1-x)^b*s(x),
@@ -105,7 +107,7 @@ elseif ( isa(g.onefun, 'singfun') )
     % both of the following conditions are met:
     % 1. For a finite boundary, the corresponding exponent of g.onefun is larger
     %    than -1.
-    % 2. For a infinite boundary, the corresponding exponent of g.onefun is 
+    % 2. For an infinite boundary, the corresponding exponent of g.onefun is 
     %    larger than 1.    
     
     % Get the exponents of the singfun.
