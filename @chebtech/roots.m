@@ -17,7 +17,7 @@ function out = roots(f, varargin)
 %       [0]
 %        1  - Prune 'spurious' complex roots if ALL == 1 and RECURSE == 0.
 %
-%   If F is a array-valued CHEBTECH then there is no reason to expect each
+%   If F is an array-valued CHEBTECH then there is no reason to expect each
 %   column to have the same number of roots. In order to return a useful output,
 %   the roots of each column are computed and then padded with NaNs so that a
 %   matrix may be returned. The columns of R = ROOTS(F) correspond to the
@@ -100,18 +100,23 @@ end
 function out = roots_scalar(f, varargin)
 
 % Default preferences:
-rootspref = struct('all', 0, 'recurse', 1, 'prune', 0);
+rootsPref = struct('all', 0, 'recurse', 1, 'prune', 0, 'zeroFun', 1);
 % Subdivision maps [-1,1] into [-1, splitPoint] and [splitPoint, 1].
 splitPoint = -0.004849834917525;   % This is an arbitrary number.
+
+if ( nargin > 1 && isa(varargin{1}, 'struct') )
+    rootsPref = varargin{1};
+    varargin(1) = [];
+end
 
 % Filter out the arguments:
 j = 1;
 while ( j <= length(varargin) )
-    if ( any(strcmp(lower(varargin{j}), fieldnames(rootspref))) ) %#ok<STCI>
-        rootspref.(varargin{j}) = varargin{j+1};
+    if ( any(strcmp(lower(varargin{j}), fieldnames(rootsPref))) ) %#ok<STCI>
+        rootsPref.(varargin{j}) = varargin{j+1};
         j = j + 2;
     elseif ( strcmpi(varargin{j}, 'complex') )
-        rootspref.all = varargin{j+1};
+        rootsPref.all = varargin{j+1};
         j = j + 2;
     else
         j = j + 1;
@@ -120,7 +125,7 @@ end
 
 % Trivial case for f constant:
 if ( length(f) == 1 )
-    if ( f.values(1) == 0 )
+    if ( f.values(1) == 0 && rootsPref.zeroFun )
         % Return a root at centre of domain:
         out = 0;
     else
@@ -137,7 +142,7 @@ c = flipud(f.coeffs)/f.vscale;
 r = rootsunit_coeffs(c, 100*eps*max(f.hscale, 1));
 
 % Prune the roots, if required:
-if ( rootspref.prune && ~rootspref.recurse )
+if ( rootsPref.prune && ~rootsPref.recurse )
     rho = sqrt(eps)^(-1/length(f));
     rho_roots = abs(r + sqrt(r.^2 - 1));
     rho_roots(rho_roots < 1) = 1./rho_roots(rho_roots < 1);
@@ -147,8 +152,8 @@ else
 end
 
     function r = rootsunit_coeffs(c, htol)
-    % Computes the roots of the polynomial given by the coefficients
-    % c on the unit interval.
+    % Computes the roots of the polynomial given by the coefficients c on the
+    % unit interval.
 
         % Define these as persistent, need to compute only once.
         persistent Tleft Tright
@@ -160,26 +165,31 @@ end
 
         % [TODO]: Should we alias or truncate here?
         % Wrap (i.e., alias), don't just truncate:
-        if ( (n > 1) && (n < length(c)) )
+        if ( ~isempty(n) && (n > 1) && (n < length(c)) )
             c = chebtech2.alias(c(end:-1:1), n);
             c = c(end:-1:1);
         end
 %         % Truncate the coefficients (rather than alias):
-%         if ( (n > 1) && (n < length(c)) )
+%         if ( ~isempty(n) && (n > 1) && (n < length(c)) )
 %             c = c(1:n);
 %         end
 
         % Trivial case, n == []:
         if ( isempty(n) )
             
-            % If the function is zero, then place a root in the middle:
-            r = 0;
+            if ( rootsPref.zeroFun )
+                % If the function is zero, then place a root in the middle:
+                r = 0;
+            else
+                % Else return empty:
+                r = [];
+            end
             
         % Trivial case, n == 1:
         elseif ( n == 1 )
 
             % If the function is zero, then place a root in the middle:
-            if ( c(1) == 0 )
+            if ( c(1) == 0 && rootsPref.zeroFun )
                 r = 0;
             else
                 % Else return empty:
@@ -191,7 +201,7 @@ end
 
             % Is the root in [-1,1]?
             r = -c(1)/c(2);
-            if ( ~rootspref.all )
+            if ( ~rootsPref.all )
                 if ( (abs(imag(r)) > htol) || ...
                      (r < -(1 + htol)) || ...
                      (r > (1 + htol)) )
@@ -202,7 +212,7 @@ end
             end
 
         % Is n small enough for the roots to be calculated directly?
-        elseif ( ~rootspref.recurse || (n <= 50) )
+        elseif ( ~rootsPref.recurse || (n <= 50) )
 
             % Adjust the coefficients for the colleague matrix:
             c = -0.5 * c(1:end-1) / c(end);
@@ -219,7 +229,7 @@ end
             r = eig(A);
 
             % Clean the roots up a bit:
-            if ( ~rootspref.all )
+            if ( ~rootsPref.all )
             
                 % Remove dangling imaginary parts:
                 mask = abs(imag(r)) < htol;
@@ -235,7 +245,7 @@ end
                 end
 
             % Prune?
-            elseif ( rootspref.prune )
+            elseif ( rootsPref.prune )
                 rho = sqrt(eps)^(-1/n);
                 rho_roots = abs(r + sqrt(r.^2 - 1));
                 rho_roots(rho_roots < 1) = 1./rho_roots(rho_roots < 1);
