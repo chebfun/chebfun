@@ -42,6 +42,6 @@ elseif ( b == inf )
     
 else
     
-    error('FUN:unbounded:input', 'Error: Check input')
+    error('CHEBFUN:unbounded:input', 'Error: Check input')
     
 end

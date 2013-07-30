@@ -1,4 +1,4 @@
-function g = restrict(f, s, pref)
+function g = restrict(f, s)
 %RESTRICT Restrict an UNBNDFUN to a subinterval.
 %   RESCTRICT(F, S) returns a UNBNDFUN that is restricted to the subinterval
 %   [S(1), S(2)] of F.domain.
@@ -14,30 +14,63 @@ function g = restrict(f, s, pref)
 
 % Deal with empty case:
 if ( isempty(f) )
+    g = f;
     return
 end
 
 % Check if subint is actually a subinterval:
 if ( s(1) < f.domain(1) || s(end) > f.domain(2) || any(diff(s) <= 0) )
-    error('UNBNDFUN:restrict:badinterval', 'Not a valid interval.')
+    error('CHEBFUN:UNBNDFUN:restrict:badinterval', 'Not a valid interval.')
 elseif ( numel(s) == 2 && all(s == f.domain) )
     % Nothing to do here!
+    g = f;
     return
 end
 
-% grab some preferneces:
-if ( nargin < 3 ) 
-    pref = fun.pref;
-end
-    
-% Grab the scales:
-hscale = get(f, 'hscale');
-vscale = get(f, 'vscale');
+% Compute the breaks in [-1,1] space and restrict the onefun:
+t = f.mapping.inv(s);
 
-% Loop over each of the new subintervals and make a new FUN:
-g = cell(1, numel(s) - 1);
-for k = 1:(numel(s) - 1)
-    g{k} = fun.constructor(@(x) feval(f, x), s(k:k+1), hscale, vscale, pref);
-end
+% Restrict the ONEFUN field of f.
+restrictedOnefuns = restrict(f.onefun, t);
+
+if ( length(s) == 2 )
+    % Only restricting to one subinterval -- return a BNDFUN or UNBNDFUN.
+    
+    % Create an empty BNDFUN or UNBNDFUN, and assign fields directly. This is
+    % faster than calling the FUN constructor.
+    if any( isinf(s) )
+        g = unbndfun();
+    else
+        g = bndfun();
+    end
+    g.onefun = restrictedOnefuns;
+    g.domain = s;
+    g.mapping = g.createMap(s);
+else
+    % Restricting to multiple subintervals -- return a cell-array of BNDFUN
+    % objects.
+    
+    % Create the cell to be returned.
+    g = cell(1, numel(s) - 1);
+    
+    % Create an empty BNDFUN:
+    emptyBndfun = bndfun();
+    emptyUnbndfun = unbndfun();
+    
+    % Loop over each of the new subintervals, make a fun with new mapping,
+    % and store in the cell returned:
+    for k = 1:(numel(s) - 1)
+        % Assign fields directly to an empty temporary BNDFUN or UNBNDFUN. This
+        % is faster than calling the FUN constructor.
+        if any( isinf(s(k:k+1)) )
+            gTemp = emptyUnbndfun;
+        else
+            gTemp = emptyBndfun;
+        end
+        gTemp.onefun = restrictedOnefuns{k};
+        gTemp.domain = s(k:k+1);
+        gTemp.mapping = gTemp.createMap(s(k:k+1));
+        g{k} = gTemp;
+    end
 
 end
