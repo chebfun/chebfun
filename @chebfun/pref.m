@@ -13,7 +13,7 @@ else                                                % No
     prefs = struct();
 end
 
-% If it was, did it have a FUNCHEB2 field?
+% If it was, did it have a CHEBFUN field?
 if ( isfield(prefs, classname) )  % It does, so either:
     if ( numel(varargin) == 0 )
         return                    % a) No props to change, return

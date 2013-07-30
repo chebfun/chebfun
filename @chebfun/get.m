@@ -38,6 +38,6 @@ switch prop
     case {'ends'}
         out = f.domain;
     otherwise
-        error('CHEBFUN:FUNCHEB2:GET:proname', ...
-            'Unknown property name ''%s'' for object of type fun.', prop);
+        error('CHEBFUN:CHEBFUN:GET:proname', ...
+            'Unknown property name ''%s'' for object of type chebfun.', prop);
 end
