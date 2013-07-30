@@ -14,13 +14,8 @@ function f = diff(f, k, dim)
 % See http://www.chebfun.org for Chebfun information.
 
 % First derivative by default:
-if ( nargin < 2 )
+if ( nargin < 2 || isempty(k) )
     k = 1;
-end
-
-if ( k == 0 )
-    % Nothing to do here!
-    return
 end
 
 if ( nargin == 3 && dim == 2 )
