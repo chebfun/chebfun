@@ -1,102 +1,219 @@
 function out = sum(g, pref)
 
-% SUM	Definite integral from -1 to 1
-% SUM(G) is the integral from -1 to 1 of G.
+% SUM	Definite integral in semi-infinite or doubly-infinite domain.
+% SUM(G) is the definite integral of G, whose domain can be either semi-infinite
+% or doubly-infinite.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Unbounded domain map. This works somewhat as domain truncation. For functions
-% that decay slowly, this is inaccurate. Exponential decay should work well.
+% Get the domain.
+dom = g.domain;
 
-ends = g.domain;
+% Get the fun class preference if no preference is passed.
 if ( nargin < 2 )
     pref = fun.pref();
 end
 
+% Get the function values at the end of the domain. Note that the end point of
+% the domain can be infinite.
 vends = [get(g, 'lval'), get(g, 'rval')];
+
+% Get the epslevel and vscale of the function g.
 tol = 10*get(g, 'epslevel')*get(g, 'vscale');
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Constant case:
-if ( length(g) == 1 )
-    val = vends(1);
-    if ( abs(val) <= 10*pref.fun.eps*vscale );
-        out = 0;
-    else
-        out = inf*sign(val);
+%%
+% Case 1: onefun has no singularities.
+
+if ( isa(g.onefun, 'smoothfun') || ( isa(g.onefun, 'singfun') && (~any(g.onefun.exponents)) ) )
+    
+    % A dirty checklist to see if the integrand is integrable or not. This 
+    % checklist may potentially be removed, since the singfun is supposed to be 
+    % able to handle functions with positive singularities.
+
+    % Check 1: Check if the function values are vanishing at infinity/ties.
+    unbounded = [];
+    if ( isinf(dom(1)) && abs(vends(1)) > tol )
+        unbounded(1) = sign(vends(1))*inf;
     end
-    return
-end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Check if not zero at infinity: (unbounded integral, simple case)
-unbounded = [];
-if ( isinf(ends(1)) && abs(vends(1)) > tol )
-    unbounded(1) = sign(vends(1))*inf;
-end
-if ( isinf(ends(2)) && abs(vends(2)) > tol )
-    unbounded(2) = sign(vends(2))*inf;
-end
-if ( ~isempty(unbounded) )
-    out = sum(unbounded);
-    return
-end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Check for sufficient decay at infinity: (1/x is not enough).
-
-% Besides having a zero at (+- 1), the fun should decrease towards the endpoint.
-% Decaying faster than 1/x^2 results in a double root, otherwise the integral
-% will be unbounded.
-
-% y = g.onefun.points();
-% unbounded = [];
-% if ( isinf(ends(2)) )
-%     gtmp = g.onefun; 
-%     gtmp.values = gtmp.values./(1-y);
-%     gtmp = extrapolate(gtmp);
-%     if ( abs(gtmp(end)) > 1e3*tol && ...
-%             diff(gtmp((end-1:end))./diff(y(end-1:end))) > -g.onefun.vscale/g.onefun.hscale )
-%         unbounded(1) = inf*sign(g.onefun.values(end-1));
-%     elseif ( abs(gtmp(end)) > tol )
-%         warning('FUN:sum:slowdecay', ...
-%             'Result is likely inaccurate. (Slow decay).')
+    if ( isinf(dom(2)) && abs(vends(2)) > tol )
+        unbounded(2) = sign(vends(2))*inf;
+    end
+    if ( ~isempty(unbounded) )
+        out = sum(unbounded);
+        return
+    end
+    
+    % Check 2: Check for the decay speed at infinity/ties.
+    % The integrand is integrable only when it decays faster than 1/x towards 
+    % infinity/ties.
+  
+    % [NOTE]: Temporarily this is commented out since the following snippet
+    % which is copied from Chebfun v4 is not doing what it is supposed to do!
+    
+%     % Get the points at which the function is sampled.
+%     y = g.onefun.points();
+%     unbounded = [];
+%     if ( isinf(dom(2)) )
+%         gval = g.onefun.values;
+%         gval = gval./(1-y);   % peel off a factor of 1/x
+% %       gval = extrapolate(gval);
+%         if ( abs(gval(end)) > 1e3*tol && ...
+%                 diff(gval((end-1:end))/diff(y(end-1:end))) > -g.onefun.vscale/g.onefun.hscale )
+%             unbounded(1) = inf*sign(g.onefun.values(end-1));
+%         elseif ( abs(gval(end)) > tol )
+%             warning('FUN:sum:slowdecay', ...
+%                 'Result is likely inaccurate. (Slow decay).')
+%         end
 %     end
-% end
-% if ( isinf(ends(1)) )
-%     gtmp = g.onefun; 
-%     gtmp.values = gtmp.values./(1+y);
-%     gtmp = extrapolate(gtmp);
-%     if ( abs(gtmp(1)) > 1e3*tol && ...
-%             diff(gtmp(1:2)./diff(y(1:2))) < g.onefun.vscale/g.onefun.hscale )
-%         unbounded(2) = inf*sign(g.onefun.values(2));
-%     elseif ( abs(gtmp(1)) > tol )
-%         warning('FUN:sum:slowdecay', ...
-%             'Result is likely inaccurate. (Slow decay).')
+%     if ( isinf(dom(1)) )
+%         gval = g.onefun;
+%         gval.values = gval.values./(1+y);
+% %         gval = extrapolate(gval);
+%         if ( abs(gval(1)) > 1e3*tol && ...
+%                 diff(gval(1:2)./diff(y(1:2))) < g.onefun.vscale/g.onefun.hscale )
+%             unbounded(2) = inf*sign(g.onefun.values(2));
+%         elseif ( abs(gval(1)) > tol )
+%             warning('FUN:sum:slowdecay', ...
+%                 'Result is likely inaccurate. (Slow decay).')
+%         end
 %     end
-% end
-% if ( ~isempty(unbounded) )
-%     out = sum(unbounded);
-%     return
-% end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%     if ( ~isempty(unbounded) )
+%         out = sum(unbounded);
+%         return
+%     end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% If we reach here, the function decays sufficiently fast that we can apply the
-% chain rule directly:
+% If we reach here, the function decays sufficiently fast that we can integrate
+% by the onefun sum.
 
-% pref.fun.extrapolate = true; 
-% pref = onefun.pref(pref, pref.fun);
-p = chebtech.pref;
-pref.chebtech = p.chebtech;
-pref.chebtech.tech = 'cheb1';
-g.onefun = onefun.constructor(@(x) feval(g.onefun, x).*g.mapping.der(x), [], [], pref);
-out = sum(g.onefun);
+% Construct the onefun presentation of the derivative of the map.
+mapder = onefun.constructor(@(x) g.mapping.der(x), [], [], pref);
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Form the new integrand.
+integrand = g.onefun*mapder;
 
+% Call the sum at onefun level.
+out = sum(integrand);
+
+return
+
+elseif ( isa(g.onefun, 'singfun') )
+    
+    % Now assume that g.onefun is a singfun: g.onefun = (1+x)^a*(1-x)^b*s(x),
+    % where s(x) is the smooth part and a and b are the powers of the zeros or
+    % orders of the poles/fractional poles. The unbndfun g is integrable only if
+    % both of the following conditions are met:
+    % 1. For a finite boundary, the corresponding exponent of g.onefun is larger
+    %    than -1.
+    % 2. For a infinite boundary, the corresponding exponent of g.onefun is 
+    %    larger than 1.    
+    
+    % Get the exponents of the singfun.
+    exps = g.exponents;
+    
+    % Locate the finite boundary and the infinite boundary/ies.
+    infMask = isinf(dom);
+    fntMask = isfinite(dom);
+    
+    % Locate the nonzero exponents.
+    expMask = ~iszero(exps);
+    
+    if ( ( isempty(fntMask) && all( exps > 1) ) || ...
+            ( ~isempty(fntMask) && exps(fntMask) > -1 && exps(infMask) > 1 ) )
+        
+        % This if branch covers the following cases, in which g is integrable:
+        % 1. semi-infinite domain [d inf] with exponents [a b] where a > -1, 
+        %    b > 1.
+        % 2. semi-infinite domain [inf d] with exponents [a b] where a > 1, 
+        %    b > -1.
+        % 3. doubly-infinite domain [-inf inf] with exponents [a b] where a > 1,
+        %    b > 1.
+        
+        % Absorb integer power of zeros or integer order of poles/fractional
+        % poles into the smooth part of the onefun and leave the exponents of
+        % the onefun fractional.
+        gtmp = replaceRoots(g.onefun);
+        
+        % Construct the onefun presentation of the derivative of the map.
+        mapder = onefun.constructor(@(x) g.mapping.der(x), [], [], pref);
+        
+        % Form the new integrand.
+        integrand = gtmp.onefun*mapder;
+        
+        % Call the onefun sum.
+        out = sum(integrand);
+        
+    elseif ( isempty(fntMask) && ~all( exps <= 1 ) )
+            
+        % This elseif condition covers the following case for which the 
+        % integral is infinite due to the non-integrablity at one of the 
+        % boundaries at infinity:
+
+        % 1. doubly-infinite domain [-inf inf] with exponents [a b] where a > 1,
+        %    b <= 1 or a <= 1, b > 1.
+        
+        % Find the boundary at which the integrand is not integrable.
+        blowMask = exps <= 1;
+        
+        % Set the infinite the correct sign.
+        out = sign(vends(blowMask))*Inf;
+        
+    elseif ( ~isempty(fntMask) && ( exps(fntMask) <= -1 ) && ( exps(infMask) > 1 ) )
+            
+        % This elseif condition covers the following cases for which the 
+        % integral is infinite due to non-integrability at the finite boundary:
+        % 1. semi-infinite domain [d inf] with exponents [a b] where a <= -1, 
+        %    b > 1.
+        % 2. semi-infinite domain [inf d] with exponents [a b] where a > 1, 
+        %    b <= -1.
+        
+        % Set the infinite the correct sign.
+        out = sign(vends(fntMask))*Inf;
+        
+    elseif ( ~isempty(fntMask) && ( exps(fntMask) > -1 ) && ( exps(infMask) <= 1 ) )
+                
+        % This elseif condition covers the following cases for which the 
+        % integral is infinite due to non-integrability at the infinite boundary:
+        % 1. semi-infinite domain [d inf] with exponents [a b] where a > -1, 
+        %    b <= 1.
+        % 2. semi-infinite domain [inf d] with exponents [a b] where a <= 1, 
+        %    b > -1.
+        
+        % Set the infinite the correct sign.
+        out = sign(vends(infMask))*Inf;
+        
+    elseif ( sign(vends(1)) == sign(vends(2)) )
+        % This elseif condition covers the following cases for which the
+        % integral is infinite:
+        % 1. semi-infinite domain [d inf] with exponents [a b] where a <= -1, 
+        %    b <= 1 and sign(s(-1)) = sign(s(1)).
+        % 2. semi-infinite domain [inf d] with exponents [a b] where a <= 1, 
+        %    b <= -1 and sign(s(-1)) = sign(s(1)).
+        % 3. doubly-infinite domain [-inf inf] with exponents [a b] where a <= 1,
+        %    b <= 1 and sign(s(-1)) = sign(s(1)).
+        
+        out = sign(vends(1))*Inf;
+    
+    else
+        % This else condition covers the following cases for which the
+        % integral doesn't exist due to the opposite signs of the function values
+        % at the boundaries where the integrand is not integrable:
+        % 1. semi-infinite domain [d inf] with exponents [a b] where a <= -1, 
+        %    b <= 1 and sign(s(-1)) ~= sign(s(1)).
+        % 2. semi-infinite domain [inf d] with exponents [a b] where a <= 1, 
+        %    b <= -1 and sign(s(-1)) ~= sign(s(1)).
+        % 3. doubly-infinite domain [-inf inf] with exponents [a b] where a <= 1,
+        %    b <= 1 and sign(s(-1)) ~= sign(s(1)).
+        
+        out = NaN;
+        
+    end
+    
+    return
+    
+else
+    error('CHEBFUN:UNBNDFUN:IrrecognizableInput',...
+        'The input can not be recognized.');
 end
 
-
+end
