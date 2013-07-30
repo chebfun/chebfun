@@ -81,7 +81,9 @@ if ( isnumeric(op) || iscell(op) )
         % Update vscale:
         f.vscale = max(abs(f.values), [], 1);
         % Check for happiness: (no OP to compare against)
-        [f.ishappy, f.epslevel] = happinessCheck(f, [], pref);
+        f.ishappy = true;
+        f.epslevel = pref.chebtech.eps;
+%         [f.ishappy, f.epslevel] = happinessCheck(f, [], pref);
     else                 
         % OP is a cell {values, coeffs}
         f.values = op{1};
