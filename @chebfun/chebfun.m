@@ -115,7 +115,7 @@ classdef chebfun
     methods
 
         % Retrieve and modify preferences for this class.
-        varargout = subsasgn(f, varargin);
+        %varargout = subsasgn(f, varargin);
 
     end
 
