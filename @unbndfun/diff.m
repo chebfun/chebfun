@@ -32,8 +32,8 @@ else
     % Differentiate along columns.
     
     % Create an UNBNDFUN of the reciprocal of the derivative of the map:
-    gpinv = f; 
-    gpinv.onefun = onefun.constructor(@(x) 1./f.mapping.der(x));
+    gprcp = f; 
+    gprcp.onefun = onefun.constructor(@(x) 1./f.mapping.der(x));
 
     % Loop for higher derivatives:
     for j = 1:k
@@ -42,7 +42,7 @@ else
         f.onefun = diff(f.onefun);
 
         % Apply the chain rule:
-        f = f.*gpinv;
+        f = f.*gprcp;
 
     end
 

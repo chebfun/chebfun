@@ -9,7 +9,7 @@ if ( numel(f) > 1 )
     % An array cannot be empty.
     out = false;
 elseif ( numel(f) == 1 )
-    % Check if the onefun is empty:
+    % Check if the ONEFUN is empty:
     out = isempty(f.onefun);
 else 
     % numel(f) == 0, so f must be empty.

@@ -59,7 +59,7 @@ for n = 1:2
     pass(n, 10:11) = test_add_function_to_function(f, f_op, g, g_op, x);
     
     %%
-    % Check operation for vectorized chebtech objects.
+    % Check operation for array-valued chebtech objects.
     
     f_op = @(x) [zeros(size(x)) zeros(size(x)) zeros(size(x))];
     f = testclass.make(f_op, [], [], pref);
@@ -97,8 +97,8 @@ for n = 1:2
     % Check that adding a CHEBTECH to an unhappy CHEBTECH gives an unhappy
     % result.  
 
-    f = chebtech.constructor(@(x) cos(x+1));    % Happy
-    g = chebtech.constructor(@(x) sqrt(x+1));   % Unhappy
+    f = testclass.make(@(x) cos(x+1));    % Happy
+    g = testclass.make(@(x) sqrt(x+1));   % Unhappy
     h = f + g;  % Add unhappy to happy.
     pass(n, 20) = (~g.ishappy) && (~h.ishappy);
     h = g + f;  % Add happy to unhappy.

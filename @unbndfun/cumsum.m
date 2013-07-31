@@ -4,7 +4,7 @@ function g = cumsum(g)
 dom = g.domain;
 vscale = get(g, 'vscale');
 vends = [get(g, 'lval'), get(g, 'rval')];
-tol = 10*get(g, 'epslevel')*vscale;
+tol = 10*get(g, 'epslevel')*vscale; %[TODO]: why 10*eps*vscale?
 
 % Constant case
 if ( length(g) == 1 )
@@ -12,7 +12,7 @@ if ( length(g) == 1 )
         g = unbndfun(0, dom);
         return
     else
-        error('FUN:cumsum:unbdblow', ...
+        error('FUN:cumsum:unbndblow', ...
         ['Representation of functions that blowup on unbounded intervals ' ...
             'has not been implemented in this version'])
     end

@@ -1,14 +1,37 @@
 function y = clenshaw(x, c)
 %CLENSHAW   Clenshaw's algorithm for evaluating a Chebyshev polynomial.
-%   Y = CLENSHAW(X, C) evaluates the Chebyshev expansion
-%     Y = P_N(X) = C(1,1)*T_N(X) + ... + C(N,1)*T_1(X) + C(N+1,1)*T_0(X)
-%   using Clenshaw's algorithm. X must be a column vector.
+%   If C is a column vector, Y = CLENSHAW(X, C) evaluates the Chebyshev
+%   expansion
+%
+%     Y = P_N(X) = C(1)*T_N(X) + ... + C(N)*T_1(X) + C(N+1)*T_0(X)
+%
+%   using Clenshaw's algorithm.
 %
 %   If C is an (N+1) x M matrix, then CLENSHAW interprets each of the columns
-%   of C as coefficients of a degree N polynomial.
+%   of C as coefficients of a degree N polynomial and evaluates the M Chebyshev
+%   expansions
+%
+%     Y_m = P_N(X) = C(1,m)*T_N(X) + ... + C(N,m)*T_1(X) + C(N+1,m)*T_0(X)
+%
+%   for 1 <= m <= M, returning the results as columns of a matrix Y =
+%   [Y_1 ... Y_M].
+%
+%   In both cases, X must be a column vector.
+%
+% See also CHEBTECH.FEVAL, CHEBTECH.BARY.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Developer note: Clenshaw is not typically called directly, but by FEVAL().
+%
+% Developer note: The algorithm is implemented both for scalar and for vector
+% inputs. Of course, the vector implementation could also be used for the scalar
+% case, but the additional overheads make it a factor of 2-4 slower. Since the
+% code is short, we live with the minor duplication.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % X should be a column vector.
 if ( size(x, 2) > 1 )

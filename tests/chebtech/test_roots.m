@@ -38,9 +38,9 @@ for n = 1:2
 
     %% Test roots of an oscillatory function:
     k = 500;
-    f = testclass.make(@(x) sin(pi*n*x), [], [], pref);
+    f = testclass.make(@(x) sin(pi*k*x), [], [], pref);
     r = roots(f);
-    pass(n, 2) = norm(r-(-n:n)'/n, inf) < length(f)*f.epslevel;
+    pass(n, 2) = norm(r-(-k:k)'/k, inf) < length(f)*f.epslevel;
 
     %% Test a perturbed polynomial:
     f = testclass.make( @(x) (x-.1).*(x+.9).*x.*(x-.9) + 1e-14*x.^5, [], [], pref);

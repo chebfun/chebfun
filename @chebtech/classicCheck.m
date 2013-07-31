@@ -28,11 +28,13 @@ function [ishappy, epslevel, cutoff] = classicCheck(f, pref)
 %       TESTLENGTH = round((n-1)/8) for n > 44
 %
 %   EPSLEVEL is essentially the maximum of:
-%       * eps*TESTLENGTH^(2/3)
-%       * eps*grad (where grad is a finite difference approximation to the
-%                   gradient of the function from VALUES. This is normalised by
-%                   f.vscale and f.hscale).
 %       * pref.chebtech.eps
+%       * eps*TESTLENGTH^(2/3)
+%       * eps*condEst (where condEst is an estimate of the condition number
+%                      based upon a finite difference approximation to the
+%                      gradient of the function from F.VALUES.).
+%   However, the final two estmiated values can be no larger than 1e-4.
+%
 %
 %   Note that the accuracy check implemented in this function is the same as
 %   that employed in Chebfun v4.x.
@@ -113,7 +115,7 @@ if ( max(ac(1:testLength)) < epslevel )    % We have converged! Now chop tail:
     % Compute the cumulative max of eps/4 and the tail entries:
     t = .25*eps;
     ac = ac(1:Tloc);               % Restrict to coefficients of interest.
-    for k = 1:length(ac)           % Cumulative max.
+    for k = 1:length(ac)           % Cumulative maximum.
         if ( ac(k) < t )
             ac(k) = t;
         else
@@ -121,12 +123,12 @@ if ( max(ac(1:testLength)) < epslevel )    % We have converged! Now chop tail:
         end
     end
 
-    % [TODO]: What does this mean?
-    % Tbpb = Bang/buck of chopping at each pos:
-    Tbpb = log(1e3*epslevel./ac) ./ (size(f.coeffs, 1) - (1:Tloc)');
-    [ignored, Tchop] = max(Tbpb(3:Tloc));  % Tchop = position at which to chop.
+    % Obtain an estimate for much accuracy we'd gain compared to reducing
+    % length ("bang for buck"):
+    Tbpb = log(1e3*epslevel./ac) ./ (n - (1:Tloc)');
+    [ignored, Tchop] = max(Tbpb(3:Tloc));  % Position at which to chop.
 
-    % We want to keep [c(0), c(1),  ..., c(cutoff)]:
+    % We want to keep [c(0), c(1), ..., c(cutoff)]:
     cutoff = n - Tchop - 2;
 
 else
@@ -146,43 +148,25 @@ function [testLength, epslevel] = ...
 % Grab the size:
 n = size(values, 1);
 
+% We will not allow the estimated rounding errors to be cruder than this value:
+minPrec = 1e-4; % Worst case precision!
+
 % Length of tail to test.
 testLength = min(n, max(5, round((n-1)/8)));
 
-minPrec = 1e-4; % Worst case precision!
-
 % Look at length of tail to loosen tolerance:
-tailErr = min(minPrec, eps*testLength^(2/3));
+tailErr = eps*testLength^(2/3);
+tailErr = min(tailErr, minPrec);
 
-% Look at finite difference gradient to loosen tolerance:
-% dx = diff(x)*ones(1, size(values, 2));
-% grad = (hscale/vscale) * norm(diff(values)./dx, inf);
-% gradErr = min(minPrec, eps*grad);
-
-% [TODO]: This is highly experimental!
-% Approximate gradient of the function:
-coeffsDer = computeDerCoeffs(coeffs);
-grad = max(sum(abs(coeffsDer)))/max(abs(coeffs(:)));
-gradErr = min(minPrec, eps*grad/log(n));
+% Estimate the condition number of the input function by
+%    ||f(x+eps(x)) - f(x)||_inf / ||f||_inf ~~ (eps(hscale)/vscale)*f'.
+dy = diff(values);
+dx = diff(x)*ones(1, size(values, 2));
+gradEst = norm(dy./dx, inf);          % Finite difference approx.
+condEst = eps(hscale)/vscale*gradEst; % Condition number estimate.
+condEst = min(condEst, minPrec);      
 
 % Choose maximum between prescribed tolerance and estimated rounding errors:
-epslevel = max([epslevel, gradErr, tailErr]);
+epslevel = max([epslevel, tailErr, condEst]);
 
-end
-
-function cout = computeDerCoeffs(c)
-%COMPUTEDERCOEFFS   Recurrence relation for coefficients of derivative.
-%   C is the matrix of Chebyshev coefficients of a (possibly array-valued)
-%   CHEBTECH object.  COUT is the matrix of coefficients for a CHEBTECH object
-%   whose columns are the derivatives of those of the original.
-    
-    [n, m] = size(c);
-    cout = zeros(n+1, m);                     % Initialize vector {c_r}
-    w = repmat(2*(n-1:-1:1)', 1, m);
-    v = [zeros(2, m) ; w.*c(1:end-1,:)];      % Temporal vector
-    cout(1:2:end,:) = cumsum(v(1:2:end,:));   % Compute c_{n-2}, c_{n-4},...
-    cout(2:2:end,:) = cumsum(v(2:2:end,:));   % Compute c_{n-3}, c_{n-5},...
-    cout(end,:) = .5*cout(end,:);             % Adjust the value for c_0
-    cout = cout(3:end,:);                     % Trim unneeded coefficients
-    
 end

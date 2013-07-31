@@ -1,9 +1,9 @@
 function fx = bary(x, fvals, xk, vk)
 %BARY   Barycentric interpolation formula.
-%   BARY(X, FVALS, XK, VK) uses the 2nd form barycentric formula with weights
-%   given by the column vector VK to evaluate a polynomial at the points in the
-%   column vector X, where the polynomial interpolates the values in the columns
-%   of FVALS on the grid of points in [-1, 1] in the column vector XK.
+%   BARY(X, FVALS, XK, VK) uses the 2nd form barycentric formula with weights VK
+%   to evaluate an interpolant of the data {XK, FVALS(:,k)} at the points X.
+%   Note that X, XK, and VK should be column vectors, and FVALS, XK, and VK
+%   should have the same length.
 %
 % See also CHEBTECH.CHEBPTS, CHEBTECH.BARYWTS, CHEBTECH.FEVAL, CHEBTECH.CLENSHAW.
 
@@ -63,10 +63,10 @@ else                         % Loop over barycentric nodes
 end
 
 % Try to clean up NaNs:
-for k = find(isnan(fx(:,1)))'
-    index = find(x(k) == xk, 1);
+for k = find(isnan(fx(:,1)))'       % (Transpose as Matlab loops over columns)
+    index = find(x(k) == xk, 1);    % Find the corresponding node
     if ( ~isempty(index) )
-        fx(k,:) = fvals(index,:);
+        fx(k,:) = fvals(index,:);   % Set entry/entries to the correct value
     end
 end
 

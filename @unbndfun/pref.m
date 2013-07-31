@@ -13,7 +13,7 @@ else                                                % No
     prefs = struct();
 end
 
-% If it was, has it have a unbndfun field already?
+% If it was, has it have an unbndfun field already?
 if ( isfield(prefs, classname) )  % It does, so either:
     if ( numel(varargin) == 0 )
         return                    % a) No props to change, return

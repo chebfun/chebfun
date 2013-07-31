@@ -1,17 +1,24 @@
-function f = simplify(f, pref, type)
-%SIMPLIFY   Trim trailing Chebyshev coefficients of a CHEBTECH object. 
-%   G = SIMPLIFY(F) attempts to compute a 'simplified' version G of the CHEBTECH
-%   object F such that LENGTH(G) <= LENGTH(F) but ||G - F|| < F.EPSLEVEL.
+function f = simplify(f, tol)
+%SIMPLIFY  Zero small Chebyshev coefficients of a happy CHEBTECH object.
+%  G = SIMPLIFY(F) attempts to compute a 'simplified' version G of the happy
+%  CHEBTECH object F such that LENGTH(G) <= LENGTH(F) but ||G - F|| is small in
+%  a relative sense: ||G - F|| < G.EPSLEVEL*G.VSCALE. It does this by zeroing
+%  out all coefficients of F that are relatively small; more precisely, it sets
+%  to zero all coefficients smaller in magnitude than the product of F.VSCALE
+%  and the default CHEBTECH EPS preference. It then removes all trailing zero
+%  coefficients from F if there are any. G.EPSLEVEL is set to the maximum of
+%  F.EPSLEVEL and the default CHEBTECH EPS.
 %
-%   G = SIMPLIFY(F, PREF) does the same, but using some of the preferences in
-%   the preference structure PREF. In particular, SIMPLIFY will use CLASSICCHECK
-%   to test for accuracy by default, but an alternative can be passed in the
-%   PREF.CHEBTECH.HAPPINESSCHECK field. Additionally, G will be computed to
-%   satisfy ||G - F|| < MAX(F.EPSLEVEL, PREF.CHEBTECH.EPS).
+%  If F is not happy, F is returned unchanged.
 %
-% See also HAPPINESSCHECK, CLASSICCHECK, PREF.
+%  G = SIMPLIFY(F, TOL) does the same as above but uses TOL instead of the
+%  default CHEBTECH EPS preference as the relative threshold level for deciding
+%  whether a coefficient is small enough to be zeroed. Here, G.EPSLEVEL is set
+%  to the maximum of F.EPSLEVEL and TOL.
+%
+% See also HAPPINESSCHECK.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with empty case:
@@ -19,26 +26,36 @@ if ( isempty(f) )
     return
 end
 
-% Grab some preferences:
+% Do nothing to an unhappy CHEBTECH. ([TODO]: Is this the right thing to do?)
+if ( ~f.ishappy )
+    return;
+end
+
+% Use the default tolerance if none was supplied:
 if ( nargin < 2 )
     pref = chebtech.pref();
-elseif ( isnumeric(pref) )
-    pref = chebtech.pref('eps', pref);
-elseif ( ~isstruct(pref) )
-    pref = chebtech.pref('happinessCheck', pref);
-end
-if ( nargin == 3 )
-    pref.chebtech.happinessCheck = type;
+    tol = pref.chebtech.eps;
 end
 
-% Take max of PREF.EPS and EPSLEVEL:
-pref.chebtech.eps = max(pref.chebtech.eps, f.epslevel);
+% Zero all coefficients smaller than the tolerance relative to F.VSCALE:
+f.coeffs(bsxfun(@minus, abs(f.coeffs), tol*f.vscale) < 0) = 0;
 
-% Check to see if we can trim the tail:
-[ishappy, epslevel, cutoff] = happinessCheck(f, pref);
-% Trim/alias it with prolong:
-f.ishappy = ishappy || f.ishappy;
-f.epslevel = epslevel;
-f = prolong(f, cutoff);
- 
+% Check for trailing zero coefficients:
+[ignored, firstNonZeroRow] = find(f.coeffs.' ~= 0, 1);
+
+% If the whole thing's now zero, leave just one coefficient:
+if ( isempty(firstNonZeroRow) )
+    firstNonZeroRow = length(f);
+end
+
+% Remove trailing zeros:
+if ( firstNonZeroRow > 0 )
+    f.coeffs = f.coeffs(firstNonZeroRow:end, :);
+end
+
+% Update values and epslevel:
+f.values = f.chebpolyval(f.coeffs);
+f.vscale = max(abs(f.values));
+f.epslevel = max(f.epslevel, tol);
+
 end

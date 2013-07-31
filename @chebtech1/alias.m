@@ -4,6 +4,8 @@ function coeffs = alias(coeffs, m)
 %   to have length M. If M > LENGTH(C), the coefficients are padded with zeros.
 %   If C is a matrix of coefficients, each of the columns is aliased to length
 %   M.
+%
+% See also PROLONG.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -19,14 +21,14 @@ function coeffs = alias(coeffs, m)
 %
 %   Mason, J. C. and Handscomb, D. C., Chebyshev polynomials, Chapman &
 %   Hall/CRC, Boca Raton, FL, 2003.  (pp. 153)
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 n = size(coeffs, 1);
-n2 = size(coeffs, 2);
 
 % Pad with zeros:
 if ( m > n )
-    coeffs = [ zeros(m-n, size(coeffs, 2)); coeffs ];
+    coeffs = [ zeros(m-n, size(coeffs, 2)) ; coeffs ];
     return
 end
 
@@ -45,7 +47,7 @@ elseif ( m > n/2 )
     k = abs(mod(j + m - 2, 2*m) - m + 1) + 1;
     p = floor((j-1+m)/(2*m));
     t = (-1).^p;
-    coeffs(k,:) = coeffs(k,:) + repmat(t,1,n2).*coeffs(j,:);
+    coeffs(k,:) = coeffs(k,:) + bsxfun(@times, t, coeffs(j,:));
 else
     % Otherwise we must do everything in a tight loop. (Which is slower!)
     for j = (m + 1):n
