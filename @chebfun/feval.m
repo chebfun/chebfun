@@ -46,9 +46,9 @@ if ( nargin > 2 )
     if ( ~any(parse) )
         if ( ischar(lr) )
             error('CHEBFUN:feval:leftrightchar',...
-                'Unknown input argument "%s".',lr);
+                'Unknown input argument "%s".', lr);
         else
-            error('CHEBFUN:feval:leftright','Unknown input argument.');
+            error('CHEBFUN:feval:leftright', 'Unknown input argument.');
         end
     end
     % We deal with this by reassigning imps to be left/right values.
@@ -57,7 +57,7 @@ if ( nargin > 2 )
         for j = 1:numFuns
             f.impulses(j+1,1,1) = get(funs{j}, 'rval');
         end
-    elseif parse(2) || parse(4) % right
+    elseif ( parse(2) || parse(4) ) % right
         f.impulses(:,:,2:end) = []; % Level 2 imps are not needed here
         for j = 1:numFuns
             f.impulses(j,1,1) = get(funs{j}, 'lval');
@@ -94,12 +94,12 @@ end
 
 higherImpulses = f.impulses(:,:,2:end);
 % Only one row:
-if ( size(f.impulses, 3) == 1 || ~any(higherImpulses(:)) )
+if ( (size(f.impulses, 3) == 1) || ~any(higherImpulses(:)) )
     % Loop over the funs:
     for k = 1:numFuns + 1
         idx = x == dom(k);
         if ( any(idx) )
-            fx( x == dom(k), :) = f.impulses(k, :, 1);
+            fx((x == dom(k)),:) = f.impulses(k,:,1);
         end
     end
     
@@ -110,15 +110,10 @@ end
 %% Reshape if possible:
 
 % [TODO]: Document what we return in these cases.
-if ( ndimsx == 2 && sizex(1) == 1 )
+if ( (ndimsx == 2) && (sizex(1) == 1) )
     fx = fx.';
 elseif ( ((ndimsx > 2) || (sizex(2) > 1)) && (numCols == 1) )
     fx = reshape(fx, sizex);
 elseif ( ((ndimsx == 2) || (sizex(2) > 1)) && (numCols > 1))
     fx = reshape(fx, sizex(1), numCols*numel(x)/sizex(1));
-    
 end
-
-
-
-
