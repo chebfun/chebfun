@@ -6,7 +6,7 @@ function f = simplify(f, varargin)
 %   should more compact (for example, requiring fewer coefficients).
 %
 %   G = SIMPLIFY(F, TOL) does the same, but simplifies according to the
-%   tolerance TOL on the righthand side of the above inequality.
+%   tolerance TOL on the right-hand side of the above inequality.
 %
 % See also PREF.
 

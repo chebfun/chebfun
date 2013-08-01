@@ -26,8 +26,8 @@ end
 % Rescaling factor, (b-a)/2, to the kth power
 rescaleFactork = (.5*diff(f.domain))^k;
 
-% Assign the ONEFUN of the output to be the output of the diff method of the
-% ONEFUN of the input. If we called diff with third argument equal to 2 (i.e.
+% Assign the ONEFUN of the output to be the output of the DIFF method of the
+% ONEFUN of the input. If we called DIFF with third argument equal to 2 (i.e.
 % dim = 2), we only wanted to compute difference between columns, in which case,
 % we should not rescale the result.
 if ( dim == 1 )

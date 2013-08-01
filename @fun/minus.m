@@ -4,7 +4,7 @@ function f = minus(f, g)
 %
 %   If F and G are both FUN objects, they are assumed to have the same domain.
 %   The method gives no warning if their domains don't agree, but the output of
-%   the method will be gibberish.
+%   the method will be meaningless.
 %
 % See also PLUS, UMINUS.
 

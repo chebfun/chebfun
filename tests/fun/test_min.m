@@ -19,7 +19,7 @@ for n = 1:1 %[TODO]: unbndfun
     %%
     % Spot-check the extrema for a few functions.
     pass(n, 1) = test_spotcheck_min(testclass, @(x) -sin(10*x), dom, -1, pref);
-    pass(n, 2) = test_spotcheck_min(testclass, @(x) -airy(x), dom, -0.535656656015700, pref);
+    pass(n, 2) = test_spotcheck_min(testclass, @(x) -real(airy(x)), dom, -0.535656656015700, pref);
     pass(n, 3) = test_spotcheck_min(testclass, @(x) 1./(1 + x.^2), dom, 0.02, pref);
     pass(n, 4) = test_spotcheck_min(testclass, @(x) -(x/10).^3.*cosh(x/10), ...
         dom, -0.7^3*cosh(0.7), pref);
@@ -27,7 +27,7 @@ for n = 1:1 %[TODO]: unbndfun
     %%
     % Check operation for array-valued inputs.
     
-    fun_op = @(x) -[sin(10*x) airy(x) (x/10).^3.*cosh(x/10)];
+    fun_op = @(x) -[sin(10*x) real(airy(x)) (x/10).^3.*cosh(x/10)];
     f = testclass.make(fun_op, dom, [], [], pref);
     [y, x] = min(f);
     exact_max = -[1 0.535656656015700 0.7^3*cosh(0.7)];

@@ -1,9 +1,9 @@
 function g = restrict(f, s)
 %RESTRICT   Restrict a BNDFUN to a subinterval.
-%   RESCTRICT(F, S) returns a BNDFUN that is restricted to the subinterval
+%   RESTRICT(F, S) returns a BNDFUN that is restricted to the subinterval
 %   [S(1), S(2)] of F.domain.
 %
-%   If LENGTH(S) > 2, i.e., S = [S1, S2, S3, ...], then RESCTRICT(F, S) returns
+%   If LENGTH(S) > 2, i.e., S = [S1, S2, S3, ...], then RESTRICT(F, S) returns
 %   a cell-array of BNDFUN objects, where the cells contain F restricted to each
 %   of the subintervals defined by S.
 

@@ -61,7 +61,7 @@ f = bndfun(@(x) sin(4*x).^2, dom, [], [], pref);
 F = bndfun(@(x) 0.5*x - 0.0625*sin(8*x), dom, [], [], pref);
 G = cumsum(f);
 err = feval(G - F, x);
-pass(5) = (norm(diff(err), inf) < 20*get(f, 'vscale')*tol) && ...
+pass(5) = (norm(diff(err), inf) < 30*get(f, 'vscale')*tol) && ...
     (abs(feval(G, a)) < get(f, 'vscale')*tol);
 
 %%

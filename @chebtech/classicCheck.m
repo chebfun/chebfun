@@ -33,7 +33,7 @@ function [ishappy, epslevel, cutoff] = classicCheck(f, pref)
 %       * eps*condEst (where condEst is an estimate of the condition number
 %                      based upon a finite difference approximation to the
 %                      gradient of the function from F.VALUES.).
-%   However, the final two estmiated values can be no larger than 1e-4.
+%   However, the final two estimated values can be no larger than 1e-4.
 %
 %
 %   Note that the accuracy check implemented in this function is the same as
