@@ -4,8 +4,8 @@ function [funs, ends] = constructor(op, domain, pref)
 %   "FUNS") used by a CHEBFUN object to represent the function OP on the
 %   interval DOMAIN. OP must be a function_handle, string, numerical vector, or
 %   a cell array containing a combination of these first three data types. In
-%   the later case, the number of elements in the cell array must be one less
-%   than the length of the DOMAIN vector.
+%   the later case, the number of elements in the array must be one less than
+%   the length of the DOMAIN vector.
 %
 %   If OP is a function_handle or a string, it should be vectorised in that it
 %   accepts a column vector of length N and return a matrix of size N x M. If M

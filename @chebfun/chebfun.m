@@ -62,7 +62,7 @@ classdef chebfun
                 end
                 
                 % Call the main constructor:
-                [f.funs, f.domain, op] = chebfun.constructor(op, dom, pref);
+                [f.funs, f.domain] = chebfun.constructor(op, dom, pref);
 
                 % Update values at jumps (first row of imps):
                 f.impulses = chebfun.jumpVals(f.funs, f.domain, op);

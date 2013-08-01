@@ -69,13 +69,13 @@ else
 end
 pref.chebfun.maxSamples = maxn;
 
-% [TODO]: Deal with scales and tolerances properly.
+% Obtain scales of the CHEBFUN:
 vs = vscale(f);
 hs = hscale(f);
 tol = epslevel(f);
 mergedPts = [];
 
-% Store data from input chebfun:
+% Store data from input CHEBFUN:
 oldImps = f.impulses;
 oldDom = f.domain;
 oldFuns = f.funs;
@@ -102,13 +102,13 @@ for k = index
     end
 
     % Prevent merge if nontrivial impulses:
-    if ( any(oldImps(2:end,k), 1) )
+    if ( any(any(oldImps(k, :, 2:end))) )
         % Skip to next breakpoint:
         continue
     end
 
     % Prevent merging if there are jumps:
-    v = [ oldImps(1,k), get(oldFuns{k-1}, 'rval'), get(oldFuns{k}, 'lval') ];
+    v = [ oldImps(k,:,1), get(oldFuns{k-1}, 'rval'), get(oldFuns{k}, 'lval') ];
     if ( norm(v(1) - v(2:3), inf) >= 1e3*tol )
         % Skip to next breakpoint:
         continue
@@ -129,7 +129,7 @@ for k = index
     newFuns{j-1} = mergedFun;   % Insert new fun.
     newFuns(j) = [];            % Remove unneeded fun.
     newDom = [newDom(1:j-1), newDom(j+1:end)];        % Update domain.
-    newImps = [newImps(:,1:j-1), newImps(:,j+1:end)]; % Update impulses.
+    newImps = [newImps(1:j-1,:,:) ; newImps(j+1:end,:,:)]; % Update impulses.
 
 end
 

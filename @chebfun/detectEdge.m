@@ -1,4 +1,4 @@
-function [edge, vscale] = detectEdge(op, domain, hscale, vscale, derHandle)
+function [edge, vscale] = detectEdge(op, domain, vscale, hscale, derHandle)
 %EDGEDETECT   Edge detection.
 %   EDGE = DETECTEDGE(F, DOMAIN, HSCALE, VSCALE) detects a blowup in first,
 %   second, third, or fourth derivatives of F in [A,B]. HSCALE is the horizontal
@@ -50,6 +50,8 @@ if ( nargin < 3 )
 end
 if ( nargin < 4 )
     vscale = 0;
+else
+    vscale = max(vscale);
 end
 % [TODO]: This may be required when we have unbounded maps again.
 if ( nargin < 5 )
@@ -236,7 +238,8 @@ dy = op(x);
 for j = 1:numTestDers
     dy = diff(dy);
     x = ( x(1:end-1) + x(2:end) )/2;
-    [maxDer(j), ind] = max(abs(dy./derHandle(x)));
+    dydH = max(abs(bsxfun(@rdivide, dy, derHandle(x))), [], 2);
+    [maxDer(j), ind] = max(dydH);
     if ( ind > 1)
         na(j) = x(ind-1);
     end
