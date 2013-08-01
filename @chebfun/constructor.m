@@ -1,6 +1,27 @@
-function [funs, ends, op] = constructor(op, domain, pref)
+function [funs, ends] = constructor(op, domain, pref)
 %CONSTRUCTOR    CHEBFUN constructor.
-%   [funs, ends, op] = constructor(op, domain, pref)
+%   FUNS = CONSTRUCTOR(OP, DOMAIN) constructs the piecewise components (known as
+%   "FUNS") used by a CHEBFUN object to represent the function OP on the
+%   interval DOMAIN. OP must be a function_handle, string, numerical vector, or
+%   a cell array containing a combination of these first three data types. In
+%   the later case, the number of elements in the cell array must be one less
+%   than the length of the DOMAIN vector.
+%
+%   If OP is a function_handle or a string, it should be vectorised in that it
+%   accepts a column vector of length N and return a matrix of size N x M. If M
+%   ~= 1, we say the resulting CHEBFUN is "array-vaued".
+%
+%   CONSTRUCTOR(OP, DOMAIN, PREF), where PREF is a structure returned by 
+%   CHEBFUN.PREF(), allows alternative construction preferences to be passed to
+%   the constructor. See >> help chebfun/pref for more details on preferences.
+%
+%   In particular, if PREF.CHEBFUN.SPLITTING = TRUE and OP is a function_handle
+%   or a string, the the constructor adpatively introduces additional
+%   breakpoints into the domain so as the better represent the function. These
+%   are returned as the second output argument in [FUNS, NEWDOMAIN] =
+%   CONSTRUCTOR(OP, DOMAIN).
+%
+% See also CHEBFUN, CHEBFUN/PREF.
 %
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -9,12 +30,18 @@ function [funs, ends, op] = constructor(op, domain, pref)
 ends = domain;
 numIntervals = numel(ends) - 1;
 
-% Set hscale and vscale:
+% Initialise hscale and vscale:
 hscale = norm(domain, inf);
 if ( isinf(hscale) )
     hscale = 1;
 end
 vscale = 0;
+
+% Sanity check:
+if ( iscell(op) && size(op) ~= numIntervals-1 )
+    error('CHEBFUN:constructor:cellInput', ...
+        'Number of cell elements in OP must match the number of intervals in DOMAIN.')
+end    
 
 %% ----------------------------- SPLITTING OFF ---------------------------------
 % In 'OFF' mode, seek only one piece with length < maxdegree.
