@@ -53,14 +53,14 @@ if ( nargin > 2 )
     end
     % We deal with this by reassigning imps to be left/right values.
     if ( parse(1) || parse(3) ) % left
-        f.impulses(2:end,:) = []; % Level 2 imps are not needed here
+        f.impulses(:,:,2:end) = []; % Level 2 imps are not needed here
         for j = 1:numFuns
-            f.impulses(1,j+1) = get(funs{j}, 'rval');
+            f.impulses(j+1,1,1) = get(funs{j}, 'rval');
         end
     elseif parse(2) || parse(4) % right
-        f.impulses(2:end,:) = []; % Level 2 imps are not needed here
+        f.impulses(:,:,2:end) = []; % Level 2 imps are not needed here
         for j = 1:numFuns
-            f.impulses(1,j) = get(funs{j}, 'lval');
+            f.impulses(j,1,1) = get(funs{j}, 'lval');
         end
     end
 end
