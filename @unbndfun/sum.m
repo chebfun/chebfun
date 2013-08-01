@@ -117,9 +117,6 @@ elseif ( isa(g.onefun, 'singfun') )
     infMask = isinf(dom);
     fntMask = isfinite(dom);
     
-    % Locate the nonzero exponents.
-    expMask = ~iszero(exps);
-    
     if ( ( isempty(fntMask) && all( exps > 1) ) || ...
             ( ~isempty(fntMask) && exps(fntMask) > -1 && exps(infMask) > 1 ) )
         
