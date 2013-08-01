@@ -44,13 +44,14 @@ classdef chebfun
                     error('CHEBFUN:chebfun:nargin', ...
                         'Only one input when passing an array of funs.')
                 end
+                
                 f.funs = op;
                 % Collect the domains together:
-                dom = cellfun(@(f) get(f, 'domain'), f.funs, ...
+                dom = cellfun(@(fun) get(fun, 'domain'), f.funs, ...
                     'uniformOutput', false);
                 f.domain = unique([dom{:}]);
-                % Update values at jumps (first row of imps):
-                f.impulses = chebfun.jumpVals(f.funs, f.domain, op);
+                % Update values at jumps (first row of impulses):
+                f.impulses = chebfun.jumpVals(f.funs, f.domain);
 
             else
                 % Construct from function_handle, numeric, or string input:
@@ -59,17 +60,7 @@ classdef chebfun
                 if ( ischar(op) )
                     op = str2op(op);
                 end
-
-                % Can only return stats froma function_handle input:
-                if ( ~isa(op, 'function_handle') )
-                    pref.chebfun.stats = false;
-                end
-                % Initialise statistics and redefine operator:
-                if ( pref.chebfun.stats )
-                    op = @(x) statop(x, op);
-                    op(NaN);
-                end
-
+                
                 % Call the main constructor:
                 [f.funs, f.domain, op] = chebfun.constructor(op, dom, pref);
 
@@ -78,12 +69,7 @@ classdef chebfun
 
                 % Remove unnecessary breaks (but not those that were given):
                 [ignored, index] = setdiff(f.domain, dom);
-%                 f = merge(f, index', pref);
-
-                % Reset statistics data:
-                if ( pref.chebfun.stats )
-                    op('foo');
-                end
+                f = merge(f, index', pref);
 
             end
 
@@ -95,32 +81,59 @@ classdef chebfun
     methods (Static = true)
 
         % Retrieve and modify preferences for this class.
-        prefs = pref(varargin)
+        prefs = pref(varargin);
 
         % Splitting constructor.
-        [funs, domain, op] = constructor(op, domain, pref)
+        [funs, domain, op] = constructor(op, domain, pref);
 
         % Edge detector.
-        [edge, vscale] = detectEdge(op, domain, hscale, vscale, derHandle)
+        [edge, vscale] = detectEdge(op, domain, hscale, vscale, derHandle);
 
         % Determine values of chebfun at breakpoints.
-        vals = jumpVals(funs, ends, op)
+        vals = jumpVals(funs, ends, op);
 
-        % Create a linear chebfun on a domain.
-        out = x(dom, pref);
+    end
+    
+    % Static methods implimented by CHEBFUN class.
+    methods (Static = true, Access = private)
+
+        % Parse the inputs to the CHEBFUN construtor.
+        [op, domain, pref] = inputParser(op, domain, varargin);
+        
+        % Convert a string input to a function_handle.
+        op = str2op(op);
 
     end
 
-
+    % Methods implimented by CHEBFUN class.
     methods
 
-        % Retrieve and modify preferences for this class.
-        %varargout = subsasgn(f, varargin);
+        % Display a CHEBFUN object.
+        display(f);
 
+        % Accuracy estimate of a CHEBFUN object.
+        out = epslevel(f);
+        
+        % Retrieve and modify preferences for this class.
+        out = get(f, prop);
+        
+        % Horizontal scale of a CHEBFUN object.
+        out = hscale(f);
+        
+        % Vertical scale of a CHEBFUN object.
+        out = vscale(f);
+
+        % Size of a CHEBFUN object.
+        [s1, s2] = size(f, dim);   
+        
     end
 
 end
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                (Private) Methods implented in this m-file.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function op = str2op(op)
     % This is here as it's a clean function with no other variables hanging
     % around in the scope.
@@ -130,53 +143,6 @@ function op = str2op(op)
             'Incorrect number of independent variables in string input.');
     end
     op = eval(['@(' depVar{:} ')', op]);
-end
-
-function y = statop(x, op)
-    % Allows statistics to be returns about construction from a function_handle.
-
-    % Persistent variables:
-    persistent store_x
-    persistent caller
-
-    % initialise them to empty cells:
-    if ( isempty(store_x) )
-        store_x = {};
-        caller = {};
-    end
-
-    if ( isnan(x) )
-        % Passing a NaN resets:
-        store_x = {};
-        caller = {};
-
-    elseif ( ischar(x) )
-        % Passing a string displays data:
-        numEvals = sum(cellfun(@numel, store_x));
-        fprintf('Total number of function evaluations = %d\n', numEvals);
-        x = cellfun(@numel, store_x,'uniformoutput', false);
-        disp([caller.' x.'])
-        x = sort(vertcat(store_x{:}));
-        hist(x, 9), shg
-        store_x = {};
-        caller = {};
-    else
-        if ( isempty(x) )
-            return
-        end
-        % Else the operator is evaluated:
-        y = op(x);
-        %  and inputs are stored:
-        store_x = [store_x x];
-        tmp = dbstack;
-        tmp(1:2) = [];
-        if ( strncmpi(tmp(1).name, '@(x)', 4) )
-            tmp(1) = [];
-        end
-        caller = [caller tmp(1).name];
-
-    end
-
 end
 
 function [op, domain, pref] = inputParser(op, domain, varargin)
