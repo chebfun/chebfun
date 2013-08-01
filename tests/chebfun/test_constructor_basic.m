@@ -19,7 +19,7 @@ for j = 1:numel(FF);
     f = chebfun(F, [-1, 1], pref);
     xx = linspace(-1, 1);
     err = norm(feval(f, xx) - F(xx), inf);
-    pass(j, k+1) = err < 10*max(get(f, 'epslevel').*cell2mat(get(f, 'vscale')));
+    pass(j, k+1) = err < 10*epslevel(f)*vscale(f);
     pass(j, k+2) = err < 50*pref.chebfun.eps;
     k = k + 2;
 
@@ -28,7 +28,7 @@ for j = 1:numel(FF);
     f = chebfun(F, pref);
     xx = linspace(-1, 1);
     err = norm(feval(f, xx) - F(xx), inf);
-    pass(j, k+1) = err < 10*max(get(f, 'epslevel').*cell2mat(get(f, 'vscale')));
+    pass(j, k+1) = err < 10*epslevel(f)*vscale(f);
     pass(j, k+2) = err < 500*pref.chebfun.eps;
     k = k + 2;
 
@@ -37,7 +37,7 @@ for j = 1:numel(FF);
     f = chebfun(F, [0, 10000], pref);
     xx = linspace(0, 10000);
     err = norm(feval(f, xx) - F(xx), inf);
-    pass(j, k+1) = err < 100*max(get(f, 'epslevel').*cell2mat(get(f, 'vscale')));
+    pass(j, k+1) = err < 100*epslevel(f)*vscale(f);
     pass(j, k+2) = err < 100*hscale(f)*pref.chebfun.eps;
     k = k + 2;
 
@@ -46,7 +46,7 @@ for j = 1:numel(FF);
     f = chebfun(F, [-1, 0, .5, sqrt(pi/4), 1], pref);
     xx = linspace(-1, 1);
     err = norm(feval(f, xx) - F(xx), inf);
-    pass(j, k+1) = err < 10*max(max(get(f, 'epslevel'))*max(cell2mat(get(f, 'vscale'))));
+    pass(j, k+1) = err < 10*epslevel(f)*vscale(f);
     pass(j, k+2) = err < 100*pref.chebfun.eps;
     k = k + 2;
 end

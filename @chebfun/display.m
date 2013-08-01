@@ -1,10 +1,10 @@
 function display(f)
-%DISPLAY   Display a chebfun.
-%   DISPLAY(f) outputs important information about the chebfun f to the command
+%DISPLAY   Display a chebfun object.
+%   DISPLAY(F) outputs important information about the chebfun F to the command
 %   window, including its domain of definition, its length (number of sample
-%   values used to represent it), and a summary of its values. DISPLAY(f) is
-%   called automatically when the semicolon is not used at the end of a
-%   statement that results in a CHEBFUN.
+%   values used to represent it), and a summary of its values at its endpoints.
+%   DISPLAY(F) is called automatically when the semicolon is not used at the end
+%   of a statement that results in a CHEBFUN.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
@@ -85,8 +85,8 @@ for j = 1:numFuns
 end
 
 % Display epslevel:
-el = max(get(f, 'epslevel'));
-fprintf('Epslevel = %i.', el)
+fprintf('Epslevel = %i.', epslevel(f))
+fprintf('  Vscale = %i.', vscale(f))
 
 % Display total length for piecewise chebfuns:
 if ( numFuns > 1 )

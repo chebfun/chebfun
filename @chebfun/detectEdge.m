@@ -10,10 +10,37 @@ function [edge, vscale] = detectEdge(op, domain, hscale, vscale, derHandle)
 
 %[TODO]: This code will need to be revisited once unbounded domains and blowup
 %        are supported again.
+
 %   DERHANDLE is optional and is the derivative of a map (a function handle). It
 %   is used in the unbounded domain case. If it is not provided, the identity
 %   map is assumed.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PSEUDOCODE. Take from Pachón, Platte and Trefethen, "Piecewise smooth
+% chebfuns" (IMA J. Numer. Anal., 2010)
+
+%  function edge = detectedge(f,a,c) % Find singularity of f in [a; c]
+%  edge = NaN
+%  On a 50-point equispaced grid in [a;c] compute estimates of |f'|,..,|f''''|.
+%  Set b = the gridpoint associated with the maximum estimate of |f''''|.
+%  Set dmax = 4.
+%  while the current interval [a;c] is larger than machine precision
+%    Set a and c to the gridpoints left and right of b, respectively.
+%    Refine 7-fold to a 15-point grid in [a;c], and find the gridpoints 
+%     associated there with the maximum estimates of |f'|,..,|f^(dmax)|
+%    if refinement has not increased the estimates by a factor of 1:2 or more
+%      return (i.e., no edge has been detected)
+%    end if
+%    Set dmax = order of lowest derivative that has increased by such a factor.
+%    Set b = gridpoint associated with maximum value of |f^(dmax)|
+%    if dmax = 1
+%      b = findjump(f,a,c)
+%      return
+%    end if
+%  end while
+%  edge = b
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Parse the inputs:
 if ( nargin < 3 )
     hscale = norm(domain, inf);

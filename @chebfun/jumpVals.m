@@ -38,27 +38,6 @@ elseif ( nargin == 3 && ~iscell(op) ) % Function handle provided.
     % Evaluate the function handle at the breaks:
     jVals(1:numFuns+1,:) = feval(op, ends.');
 
-% elseif ( iscell(op) )                 % Cell given. Check each entry.
-%     % Loop over each endpoint:
-%     for k = 1:numFuns + 1
-%         % Convert from cell to op:
-%         opk = op{min(k, numFuns)};
-%
-%         if ( isa(opk, 'double') )
-%             if ( k == 1 )
-%                 jVals(1,:) = get(funs{1}, 'lval');
-%             elseif ( k == numFuns+1 )
-%                 jVals(numFuns+1,:) = get(funs{numFuns}, 'rval');
-%             else
-%                 % Take the mean of the funs on either side of the break:
-%                 jVals(k,:) = (get(funs{k-1}, 'rval') + get(funs{k}, 'lval'))/2;
-%             end
-%         else
-%             % Evaluate the function handle at the break:
-%             jVals(k,:) = feval(opk, ends(k));
-%         end
-%     end
-%
 end
 
 % [TODO]: Document how .impulses are stored.

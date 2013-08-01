@@ -11,7 +11,9 @@ function [f, mergedPts] = merge(f, index, pref)
 %   vector MERGEDPTS.
 %
 %   MERGE(F, INDEX) attempts to eliminate the endpoints specified in INDEX.
-%   MERGE(F, 'all') is equivalent to MERGE(F, [2:length(F.domain)-1]).
+%   MERGE(F, 'all') is equivalent to MERGE(F, [2:length(F.domain)-1]). (Note
+%   that it doesn't make sense to consider merging the first and final
+%   breakpoints.)
 %
 %   In all cases, elimination is attempted from left to right, and non-trivial
 %   impulses will prevent merging at the corresponding breakpoints.
@@ -68,10 +70,9 @@ end
 pref.chebfun.maxSamples = maxn;
 
 % [TODO]: Deal with scales and tolerances properly.
-vs = get(f, 'vscale');
-vs = max([vs{:}]);
+vs = vscale(f);
 hs = hscale(f);
-tol = get(f, 'epslevel')*vs*hs;
+tol = epslevel(f);
 mergedPts = [];
 
 % Store data from input chebfun:
