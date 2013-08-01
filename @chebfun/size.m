@@ -1,4 +1,4 @@
-function varargout = size(f, k)
+function varargout = size(f, dim)
 %SIZE   Size of a CHEBFUN.
 %   [S1, S2] = SIZE(F) returns S1, the number of piecewise smooth components of
 %   F, and S2, the number of columns in F. If S2 > 1, we say F is
@@ -28,13 +28,13 @@ if ( nargout < 2 )
     if ( nargin == 1 )
         % Output a vector:
         varargout{1} = [numFuns, numCols];
-    elseif ( k == 1 )
+    elseif ( dim == 1 )
         % Output first entry:
         varargout{1} = numFuns;
-    elseif ( k == 2 )
+    elseif ( dim == 2 )
         % Output second entry:
         varargout{1} = numCols;
-    elseif ( logical(round(k) - k) )
+    elseif ( logical(round(dim) - dim) )
         error('CHEBFUN:size:dim', ...
             'Dimension argument must be a positive integer scalar within indexing range.');
     else

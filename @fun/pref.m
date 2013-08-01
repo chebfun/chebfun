@@ -28,7 +28,7 @@ function prefs = pref(varargin)
 %     eps          -  Relative tolerance used in construction and subsequent
 %      [2^-52]        operations.
 
-% See also CHEBTECH, CHEBTECH1, CHEBTECH2
+% See also FUN.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.

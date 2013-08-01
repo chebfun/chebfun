@@ -1,7 +1,7 @@
 function out = get(f, prop)
 %GET    GET method for the CHEBFUN class
 %   P = GET(F,PROP) returns the property P specified in the string PROP from
-%   the fun F. Valid entries for the string PROP are:
+%   the CHEBFUN F. Valid entries for the string PROP are:
 %       'DOMAIN'         - The domain of definintion of F.
 %       'FUNS'           - The piecewise smooth components of F.
 %       'VSCALE'         - Vertical scale of F.
@@ -44,8 +44,7 @@ switch prop
     case 'vscale'
         out = vscale(f);        
     case 'vscale-local'
-        n = numel(f.funs);
-        m = size(f.funs{1}, 2);
+        [n, m] = size(f);
         out = zeros(n, m);
         for k = 1:n
             out(k,:) = get(f.funs{k}, 'vscale');
