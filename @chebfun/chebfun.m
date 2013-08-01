@@ -173,6 +173,11 @@ function [op, domain, pref] = inputParser(op, domain, varargin)
             % chebfun(op, domain, prop1, val1, ...)
             pref = chebfun.pref;
         end
+        
+        % Take the default domain if an empty one was given:
+        if ( isempty(domain) )
+            domain = pref.chebfun.domain;
+        end
 
         % Obtain additional preferences:
         while ( ~isempty(args) )
