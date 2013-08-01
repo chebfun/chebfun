@@ -21,8 +21,11 @@ if ( numFuns == 1 && isempty(funs) )
     return
 end
 
+% Determine the number of columns:
+numCols = size(funs{1}, 2);
+
 % Initialise jVals:
-jVals = zeros(numFuns+1, size(funs{1}, 2));
+jVals = zeros(numFuns+1, numCols);
 
 if ( nargin < 3 || isnumeric(op) || iscell(op) )    % Function handle is not provided.
 
@@ -39,9 +42,5 @@ elseif ( nargin == 3 && ~iscell(op) ) % Function handle provided.
     jVals(1:numFuns+1,:) = feval(op, ends.');
 
 end
-
-% [TODO]: Document how .impulses are stored.
-jVals = reshape(jVals.', 1, numFuns+1, size(jVals, 2));
-% jVals = reshape(jVals.', numFuns+1, size(jVals, 2), 1);
 
 end
