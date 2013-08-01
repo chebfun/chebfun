@@ -78,7 +78,6 @@ end
 
 function [edge, vscale] = detectedgeMain(op, domain, hscale, vscale, derHandle)
 
-% [TODO]: Check blowup:
 % checkblowup = false;
 
 a = domain(1);
@@ -279,8 +278,8 @@ end
 %     elseif ( ind == gridSize1 )
 %         a = x(gridSize1-2);    ya = y(gridSize1-2);
 %     else
-%         a = x(ind-1); ya = y(ind-1); % [TODO]: Check this
-%         b = x(ind+1); yb = y(ind+1); % [TODO]: Check this
+%         a = x(ind-1); ya = y(ind-1);
+%         b = x(ind+1); yb = y(ind+1);
 %     end
 % end
 %
@@ -294,8 +293,8 @@ end
 %     elseif (ind == gridSize234)
 %         a = x(gridSize234-1);     ya = y(gridSize234-2);
 %     else
-%         a = x(ind-1); ya = y(ind-1); % [TODO]: Check this
-%         b = x(ind+1); yb = y(ind+1); % [TODO]: Check this
+%         a = x(ind-1); ya = y(ind-1);
+%         b = x(ind+1); yb = y(ind+1);
 %     end
 % end
 %
