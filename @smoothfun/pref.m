@@ -49,10 +49,11 @@ if ( isfield(prefs, classname) )  % It does, so either:
     end
 else                              % No prefs found for this class, so make some:
     p.eps    = 2^-52;
+    p.tech   = 'chebtech2';
 end
 % p is now the preference substructure relating to the current class.
 
-if ( isfield(prefs,'misc') ) 
+if ( isfield(prefs, 'misc') ) 
     q = prefs.misc;
 else
     q = struct();

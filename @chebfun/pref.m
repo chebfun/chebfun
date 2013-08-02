@@ -93,6 +93,7 @@ else                              % No funcheb2 prefs found, so make some:
     p.maxdegree   = 65536;
     p.maxlength   = 6000;
     p.splitdegree = 129;
+    p.tech        = 'chebtech2';
 end
 % p is now the preference substructure relating to the FUN class.
 
