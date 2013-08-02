@@ -128,7 +128,7 @@ classdef chebfun
             end
             
             % Parse inputs:
-            [op, dom, pref] = inputParser(varargin{:});
+            [op, dom, pref] = parseInputs(varargin{:});
             
             if ( iscell(op) && all(cellfun(@(x) isa(x, 'fun'), op)) )
                 % Construct a CHEBFUN from an array of FUN objects:
@@ -191,7 +191,7 @@ classdef chebfun
     methods (Static = true, Access = private)
         
         % Parse the inputs to the CHEBFUN constructor.
-        [op, domain, pref] = inputParser(op, domain, varargin);
+        [op, domain, pref] = parseInputs(op, domain, varargin);
         
         % Convert a string input to a function_handle.
         op = str2op(op);
@@ -238,7 +238,7 @@ end
 op = eval(['@(' depVar{:} ')', op]);
 end
 
-function [op, domain, pref] = inputParser(op, domain, varargin)
+function [op, domain, pref] = parseInputs(op, domain, varargin)
 % Parse inputs.
 
     args = varargin;
