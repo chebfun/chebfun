@@ -44,7 +44,11 @@ switch prop
     case 'vscale'
         out = vscale(f);        
     case 'vscale-local'
-        [n, m] = size(f);
+        if ( ~f.isTransposed )
+            [n, m] = size(f);
+        else
+            [m, n] = size(f);
+        end
         out = zeros(n, m);
         for k = 1:n
             out(k,:) = get(f.funs{k}, 'vscale');
