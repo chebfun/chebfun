@@ -114,12 +114,12 @@ pass(15) = (all(size(err) == [100 10])) && (norm(err(:), inf) < ...
 x_3mtx = reshape(x, [5 20 10]);
 err = feval(f, x_3mtx) - f_exact(x_3mtx);
 pass(16) = (all(size(err) == [5 20 10])) && (norm(err(:), inf) < ...
-    10*f.epslevel);
+    10*f.epslevel*f.vscale);
 
 x_4mtx = reshape(x, [5 4 5 10]);
 err = feval(f, x_4mtx) - f_exact(x_4mtx);
 pass(17) = (all(size(err) == [5 4 5 10])) && (norm(err(:), inf) < ...
-    10*f.epslevel);
+    10*f.epslevel*f.vscale);
 
 % Check behavior for transposed chebfuns.
 f.isTransposed = 1; % [TODO]:  Replace with call to transpose().
@@ -130,7 +130,7 @@ pass(18) = (all(size(err) == [10 100])) && (norm(err(:), inf) < ...
 
 err = feval(f, x_3mtx) - permute(f_exact(x_3mtx), [2 1 3]);
 pass(19) = (all(size(err) == [20 5 10])) && (norm(err(:), inf) < ...
-    10*f.epslevel);
+    10*f.epslevel*f.vscale);
 
 f.isTransposed = 0; % [TODO]:  Replace with call to transpose().
 
@@ -146,7 +146,7 @@ f = chebfun(f_exact, [], pref);
 
 x = xr;
 err = feval(f, x) - f_exact(x);
-pass(21) = all(max(abs(err)) < 10*f.epslevel);
+pass(21) = all(max(abs(err)) < 10*f.epslevel*f.vscale);
 
 x_mtx = reshape(x, [100 10]);
 pass(22) = all(all(abs(feval(f, x_mtx) - f_exact(x_mtx)) ...
@@ -155,22 +155,22 @@ pass(22) = all(all(abs(feval(f, x_mtx) - f_exact(x_mtx)) ...
 x_3mtx = reshape(x, [5 20 10]);
 err = feval(f, x_3mtx) - f_exact(x_3mtx);
 pass(23) = (all(size(err) == [5 60 10])) && (norm(err(:), inf) < ...
-    10*f.epslevel);
+    10*f.epslevel*f.vscale);
 
 x_4mtx = reshape(x, [5 4 5 10]);
 err = feval(f, x_4mtx) - f_exact(x_4mtx);
 pass(24) = (all(size(err) == [5 12 5 10])) && (norm(err(:), inf) < ...
-    10*f.epslevel);
+    10*f.epslevel*f.vscale);
 
 f.isTransposed = 1;
 err = feval(f, x_4mtx) - permute(f_exact(x_4mtx), [2 1 3 4]);
 pass(25) = (all(size(err) == [12 5 5 10])) && (norm(err(:), inf) < ...
-    10*f.epslevel);
+    10*f.epslevel*f.vscale);
 
 err = feval(f, 'left') - [sin(-1) 1 exp(-1i)].';
-pass(26) = norm(err(:), inf) < 10*f.epslevel;
+pass(26) = norm(err(:), inf) < 10*f.epslevel*f.vscale;
 
 err = feval(f, 'right') - [sin(1) 1 exp(1i)].';
-pass(27) = norm(err(:), inf) < 10*f.epslevel;
+pass(27) = norm(err(:), inf) < 10*f.epslevel*f.vscale;
 
 end
