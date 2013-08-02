@@ -71,7 +71,6 @@ catch ME
 end
 
 % Spot-check a few functions.
-
 pref.chebfun.splitting = 0;
 f_exact = @(x) exp(x) - 1;
 f = chebfun(f_exact, [-1 1], pref);
@@ -98,7 +97,6 @@ x = xr;
 pass(13) = (norm(feval(f, x) - f_exact(x), inf) < 10*f.epslevel*f.vscale);
 
 % Check row vector and matrix input.
-
 pref.chebfun.splitting = 0;
 f_exact = @(x) cos(x - 0.2);
 f = chebfun(f_exact, [-1 1], pref);
@@ -124,7 +122,6 @@ pass(17) = (all(size(err) == [5 4 5 10])) && (norm(err(:), inf) < ...
     10*f.epslevel);
 
 % Check behavior for transposed chebfuns.
-
 f.isTransposed = 1; % [TODO]:  Replace with call to transpose().
 
 err = feval(f, x_mtx) - f_exact(x_mtx).';
@@ -138,13 +135,11 @@ pass(19) = (all(size(err) == [20 5 10])) && (norm(err(:), inf) < ...
 f.isTransposed = 0; % [TODO]:  Replace with call to transpose().
 
 % Check evaluation at points just outside the domain.
-
 x = [(-1 - 1e-6) ; 1e-6 + 1e-6i ; (1 + 1e-6)];
 err = feval(f, x.') - f_exact(x.');
 pass(20) = norm(err(:), inf) < 10*f.epslevel*f.vscale;
 
 % Check operation for array-valued chebfuns.
-
 pref.chebfun.splitting = 1;
 f_exact = @(x) [sin(x) abs(x) exp(1i*x)];
 f = chebfun(f_exact, [], pref);
@@ -171,5 +166,11 @@ f.isTransposed = 1;
 err = feval(f, x_4mtx) - permute(f_exact(x_4mtx), [2 1 3 4]);
 pass(25) = (all(size(err) == [12 5 5 10])) && (norm(err(:), inf) < ...
     10*f.epslevel);
+
+err = feval(f, 'left') - [sin(-1) 1 exp(-1i)].';
+pass(26) = norm(err(:), inf) < 10*f.epslevel;
+
+err = feval(f, 'right') - [sin(1) 1 exp(1i)].';
+pass(27) = norm(err(:), inf) < 10*f.epslevel;
 
 end
