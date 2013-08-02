@@ -33,6 +33,13 @@ sizex = size(x);
 ndimsx = ndims(x);
 x = x(:);
 
+% Un-transpose f if necessary so that the call to size() below returns the
+% right thing.  (We'll compensate for this further down.)
+wasTransposed = f.isTransposed;
+if ( f.isTransposed )
+    f.isTransposed = 0; % [TODO]:  Replace with a call to transpose().
+end
+
 % Initialise:
 [numFuns, numCols] = size(f);
 fx = zeros(size(x, 1), numCols);
@@ -107,13 +114,30 @@ else
     % [TODO]: Multiple imps rows:    
 end
 
-%% Reshape if possible:
+% Reshape fx, which is a column vector or horizontal concatenation of column
+% vectors, to be of the appropriate size, and handle transposition.
+sizefx = sizex;
+sizefx(2) = numCols*sizex(2);
+if ( ndimsx == 2 )
+    % If x was just a matrix or vector, the reshape is straightforward.
+    fx = reshape(fx, sizefx);
 
-% [TODO]: Document what we return in these cases.
-if ( (ndimsx == 2) && (sizex(1) == 1) )
-    fx = fx.';
-elseif ( ((ndimsx > 2) || (sizex(2) > 1)) && (numCols == 1) )
-    fx = reshape(fx, sizex);
-elseif ( ((ndimsx == 2) || (sizex(2) > 1)) && (numCols > 1))
-    fx = reshape(fx, sizex(1), numCols*numel(x)/sizex(1));
+    if ( wasTransposed )
+        fx = fx.';
+    end
+else
+    % If x had more than two dimensions, we have to be more careful.  The
+    % cell2mat(mat2cell(...).') effects a transpose which keeps certain
+    % columnar blocks of the fx matrix intact, putting the entries in the
+    % correct order for reshape().
+    blockLength = sizex(1)*sizex(2);
+    blocksPerCol = prod(sizex(3:end));
+    fx = reshape(cell2mat(mat2cell(fx, blockLength*ones(1, blocksPerCol), ...
+        ones(1, numCols)).'), sizefx);
+
+    % We define "transposition" in this case to mean the switching of the first
+    % two dimensions.  [TODO]:  Is this the right thing to do?
+    if ( wasTransposed )
+        fx = permute(fx, [2 1 3:ndimsx]);
+    end
 end
