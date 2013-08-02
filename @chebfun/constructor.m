@@ -1,5 +1,5 @@
 function [funs, ends] = constructor(op, domain, pref)
-%CONSTRUCTOR    CHEBFUN constructor.
+%CONSTRUCTOR   CHEBFUN constructor.
 %   FUNS = CONSTRUCTOR(OP, DOMAIN) constructs the piecewise components (known as
 %   "FUNS") used by a CHEBFUN object to represent the function OP on the
 %   interval DOMAIN. OP must be a function_handle, string, numerical vector, or

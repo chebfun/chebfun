@@ -1,5 +1,5 @@
 classdef chebfun
-%CHEBFUN    CHEBFUN class for representing functions on [a,b].
+%CHEBFUN   CHEBFUN class for representing functions on [a,b].
 %
 %   Class for approximating functions defined on finite, semi-infinite, or
 %   infinite intervals [a,b]. Functions may be smooth, piecewise smooth, weakly
@@ -20,11 +20,11 @@ classdef chebfun
 % CHEBFUN(A, 'equi') are similar, but here the data is assumed to come from a
 % 1st-kind Chebyshev or equispaced grid linspace(-1,1,N), respectively.
 %
-% CHEBFUN(F, [A, B]) specifies an interval [A,B] in which the CHEBFUN is
-% defined, where A and/or B may be infinite. CHEBFUN(F, ENDS), where DOM is a
+% CHEBFUN(F, [A, B]) specifies an interval [A,B] on which the CHEBFUN is
+% defined, where A and/or B may be infinite. CHEBFUN(F, ENDS), where ENDS is a
 % 1xK+1 vector of unique ascending values, specifies a piecewise smooth CHEBFUN
 % defined on the interval [ENDS(1), ENDS(K+1)] with additional interior breaks
-% at ENDS(2), ..., ENDS(K). Specifiying these breaks can be particularly useful
+% at ENDS(2), ..., ENDS(K). Specifying these breaks can be particularly useful
 % if F is known to have discontinuities. For example,
 %   CHEBFUN(@(x) abs(x), [-1, 0, 1])
 %
@@ -39,15 +39,15 @@ classdef chebfun
 % CHEBFUN(F, [A, B], PROP1, VAL1, PROP2, VAL2, ...). (See CHEBFUN/PREF.m for
 % details the various preference options.). In particular, CHEBFUN(F,
 % 'splitting', 'on') allows the constructor to adaptively determine breakpoints
-% to better represent piesewise smooth functions F. For example,
-%   CHEBFUN(@(x) sign(x-.3), [-1, 1])
+% to better represent piecewise smooth functions F. For example,
+%   CHEBFUN(@(x) sign(x - .3), [-1, 1])
 %
 % CHEBFUN(F, ...), where F is an NxM matrix or an array-valued function handle,
 % returns an "array-valued" CHEBFUN. For example,
 %   CHEBFUN(rand(14, 2))
 % or
 %   CHEBFUN(@(x) [sin(x), cos(x)])
-% Note that each column in an array-valued CHEBFUN object is discretisationed in
+% Note that each column in an array-valued CHEBFUN object is discretized in
 % the same way.
 %
 % See also CHEBFUN/PREF, CHEBPTS.
@@ -58,7 +58,8 @@ classdef chebfun
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % CHEBFUN Class Description:
 %
-% The CHEBFUN class is for representations of functions on the interval [a, b].
+% The CHEBFUN class is for representations of piecewise functions on the
+% interval [a, b].
 %
 % The CHEBFUN class is the main user interface. We do not expect users to
 % directly invoke any objects below this level.
@@ -68,39 +69,51 @@ classdef chebfun
 % piece together FUN objects to form a global approximation. If the input
 % function is globally smooth then the resulting CHEBFUN contains a single FUN
 % object. If the input is not smooth, or breakpoints are passed to the
-% constructor, not CHEBFUN must determine appropriate breakpoints and return a
+% constructor, CHEBFUN must determine appropriate breakpoints and return a
 % piecewise smooth CHEBFUN with multiple FUN objects.
 %
 % This is a user-level class, and all input arguments should be thoroughly
 % sanity checked.
 %
-% Class diagram: [jacfun] <>-- [CHEBFUN] <>-- [<<fun>>]
+% Class diagram: [ADchebfun] <>-- [CHEBFUN] <>-- [<<fun>>]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     properties (Access = public)
+
         % DOMAIN of definition of a CHEBFUN object. If K>1 then the CHEBFUN is
-        % refered to as a "piecewise". CHEBFUN. The entries in this vector
-        % should be strictly increasing.
+        % referred to as a "piecewise". CHEBFUN.  The first and last values of
+        % this vector define the left and right endpoints of the domain,
+        % respectively.  The other values give the locations of the breakpoints
+        % that define the domains of the individual FUN objects comprising the
+        % CHEBFUN.  The entries in this vector should be strictly increasing.
         domain              % (1x(K+1) double)
-        
-        % FUNS are smooth functions and the kth entry in this cell is the
-        % representation used by the CHEBFUN object on the interval (domain(k),
-        % domain(k+1). If M = size(f.funs,2) is greater than 1, then the CHEBFUN
-        % object is refered to as "aray valued".
+
+        % FUNS is a cell array containing the FUN objects that comprise a
+        % piecewise CHEBFUN.  The the kth entry in this cell is the FUN
+        % defining the representation used by the CHEBFUN object on the
+        % interval (domain(k), domain(k+1). If M = size(f.funs, 2) is greater
+        % than 1, then the CHEBFUN object is referred to as "array valued".
         funs                % (Kx1 cell array of FUN objects)
-        
-        % IMPULSES represent the values of the CHEBFUN object at the points in
-        % DOMAIN. The rows correspond to the breakpoints in the DOMAIN vector,
-        % and if M > 1 then the columns correspond the columsn in an
-        % array-valued CHEBFUN. In addition, any higher order delta function
-        % information is stored in the 3rd dimension of this tensor.
+
+        % IMPULSES is a three-dimensional array storing information about the
+        % values of the CHEBFUN object at the points in DOMAIN. The rows
+        % correspond to the breakpoints in the DOMAIN vector, and if M > 1 then
+        % the columns correspond to the columns in an array-valued CHEBFUN.
+        % Thus, F.IMPULSES(:, :, 1) is a matrix consisting of the values of
+        % each column of F at each breakpoint.  The third dimension is used for
+        % storing information about higher-order delta functions that may be
+        % present at breakpoints.
+        %
+        % [TODO]:  Document how higher-order impulses are handled.
         impulses = [];      % ((K+1) x M x (D+1) double)
-        
-        % ISTRANSPOSED determines the difference between "column" CHEBFUN
-        % objects (default), which are considered (infxM) arrays, and "row"
-        % CHEBFUN objects, which are (Mxinf) arrrays. Note that the orientation
-        % of the other properties mentioned above are not affected by this
-        % rotation.
+
+        % ISTRANSPOSED determines whether a (possibly array-valued) CHEBFUN F
+        % should be interpreted as a collection of "column" CHEBFUN objects (if
+        % F.ISTRANSPOSED == 0, the default), which are considered (infxM)
+        % arrays, and "row" CHEBFUN objects (if F.ISTRANSPOSED == 1), which are
+        % (Mxinf) arrrays.  This difference is only behavioral; the other
+        % properties described above are _NOT_ stored differently if this flag
+        % is set.)
         isTransposed = 0;   % (logical)
     end
     
@@ -157,7 +170,7 @@ classdef chebfun
         
     end
     
-    % Static methods implimented by CHEBFUN class.
+    % Static methods implemented by CHEBFUN class.
     methods (Static = true)
         
         % Retrieve and modify preferences for this class.
@@ -174,10 +187,10 @@ classdef chebfun
         
     end
     
-    % Static methods implimented by CHEBFUN class.
+    % Static methods implemented by CHEBFUN class.
     methods (Static = true, Access = private)
         
-        % Parse the inputs to the CHEBFUN construtor.
+        % Parse the inputs to the CHEBFUN constructor.
         [op, domain, pref] = inputParser(op, domain, varargin);
         
         % Convert a string input to a function_handle.
@@ -185,7 +198,7 @@ classdef chebfun
         
     end
     
-    % Methods implimented by CHEBFUN class.
+    % Methods implemented by CHEBFUN class.
     methods
         
         % Display a CHEBFUN object.
@@ -212,7 +225,7 @@ end
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                (Private) Methods implented in this m-file.
+%                (Private) Methods implemented in this m-file.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function op = str2op(op)
 % This is here as it's a clean function with no other variables hanging

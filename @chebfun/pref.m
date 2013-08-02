@@ -144,9 +144,9 @@ for k = 1:2:numel(varargin)
     end
 end
 
-% Append CHEBFUN preferences to the prefence structure prefs for output.
+% Append CHEBFUN preferences to the preference structure prefs for output.
 prefs.(classname) = p;
 
-% Append MISC preferences to the prefence structure prefs for output.
+% Append MISC preferences to the preference structure prefs for output.
 prefs.misc = q;
 

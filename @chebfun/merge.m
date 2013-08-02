@@ -1,6 +1,6 @@
 function [f, mergedPts] = merge(f, index, pref)
-%MERGE    Remove unnecessary breakpoints in from a CHEBFUN.
-%   F = MERGE(F, PREF) removes uneccessary breakpoints from a CHEBFUN F. In
+%MERGE   Remove unnecessary breakpoints in from a CHEBFUN.
+%   F = MERGE(F, PREF) removes unnecessary breakpoints from a CHEBFUN F. In
 %   particular the kth breakpoint is removed if the resulting FUN on the
 %   interval [x_{k-1}, x_{k+1}] can be represented with a fewer than
 %   PREF.CHEBFUN.MAXDEGREE points when PREF.CHEBFUN.SPLITTING = 0 and
@@ -46,11 +46,11 @@ end
 
 % Deal with input arguments:
 if ( isempty(index) )
-    % No indicies requested!
+    % No indices requested!
     return
 
 elseif ( ischar(index) )
-    % 'all' indicies requested:
+    % 'all' indices requested:
     index = 2:numel(f.funs);
 
 else

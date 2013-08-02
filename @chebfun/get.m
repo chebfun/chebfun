@@ -1,5 +1,5 @@
 function out = get(f, prop)
-%GET    GET method for the CHEBFUN class
+%GET   GET method for the CHEBFUN class
 %   P = GET(F,PROP) returns the property P specified in the string PROP from
 %   the CHEBFUN F. Valid entries for the string PROP are:
 %       'DOMAIN'         - The domain of definintion of F.
