@@ -24,8 +24,14 @@ switch prop
         out = f.(prop);
     case {'lval'}
         out = get(f.funs{1}, 'lval');
+        if ( f.isTransposed )
+            out = out.';
+        end
     case {'rval'}
         out = get(f.funs{end}, 'rval');
+        if ( f.isTransposed )
+            out = out.';
+        end
     case 'ishappy'
         n = numel(f.funs);
         out(n,1) = 0;
