@@ -1,81 +1,81 @@
 classdef chebfun
-    %CHEBFUN    CHEBFUN class for representing functions on [a,b].
-    %
-    %   Class for approximating functions defined on finite, semi-infinite, or
-    %   infinite intervals [a,b]. Functions may be smooth, piecewise smooth, weakly
-    %   singular, or blow up on the interval.
-    %
-    % CHEBFUN(F) constructs a CHEBFUN object for representing the function F on the
-    % interval [-1,1]. F can be a string, e.g., 'sin(x)', a function handle, e.g.,
-    % @(x) x.^2 + 2*x +1, or a vector of numbers. In the first two instances, F
-    % should be "vectorized" in the sense that it may be evaluated at a column
-    % vector of points x(:) in [-1, 1] and return an output of size NxM where N =
-    % length(x(:)). If this is not possible then the flag CHEBFUN(F, 'vectorise')
-    % should be passed. CHEBFUN(F, 'vectorcheck', 'off') disables the automatic
-    % checking for vector input. CHEBFUN() returns an empty CHEBFUN object.
-    %
-    % CHEBFUN(A) or CHEBFUN(A, 'chebpts2'), where A is an Nx1 matrix, constructs a
-    % CHEBFUN object which interpolates the data in A on an N-point Chebyshev grid
-    % of the second kind (see >> help chebpts). CHEBFUN(A, 'chebpts1') and
-    % CHEBFUN(A, 'equi') are similar, but here the data is assumed to come from a
-    % 1st-kind Chebyshev or equispaced grid linspace(-1,1,N), respectively.
-    %
-    % CHEBFUN(F, [A, B]) specifies an interval [A,B] in which the CHEBFUN is
-    % defined, where A and/or B may be infinite. CHEBFUN(F, ENDS), where DOM is a
-    % 1xK+1 vector of unique ascending values, specifies a piecewise smooth CHEBFUN
-    % defined on the interval [ENDS(1), ENDS(K+1)] with additional interior breaks
-    % at ENDS(2), ..., ENDS(K). Specifiying these breaks can be particularly useful
-    % if F is known to have discontinuities. For example,
-    %   CHEBFUN(@(x) abs(x), [-1, 0, 1])
-    %
-    % CHEBFUN({F1,...,Fk}, ENDS) constructs a piecewise smooth CHEBFUN which
-    % represents Fj on the interval [ENDS(j), END(j+1)]. Each entry Fj may be a
-    % string, function handle, or vector of doubles. For example
-    %   CHEBFUN({@(x) sin(x), @(x) cos(x)}, [-1, 0, 1])
-    %
-    % CHEBFUN(F, PREF) or CHEBFUN(F, [A,B], PREF) constructs a chebfun object from F
-    % with the options determined in CHEBFUN preference structure PREF. Construction
-    % time options may also be passed directly to the constructor in the form
-    % CHEBFUN(F, [A, B], PROP1, VAL1, PROP2, VAL2, ...). (See CHEBFUN/PREF.m for
-    % details the various preference options.). In particular, CHEBFUN(F,
-    % 'splitting', 'on') allows the constructor to adaptively determine breakpoints
-    % to better represent piesewise smooth functions F. For example,
-    %   CHEBFUN(@(x)% sign(x-.3), [-1, 1])
-    %
-    % CHEBFUN(F, ...), where F is an NxM matrix or an array-valued function handle,
-    % returns an "array-valued" CHEBFUN. For example,
-    %   CHEBFUN(rand(14, 2))
-    % or
-    %   CHEBFUN(@(x) [sin(x), cos(x)])
-    % Note that each column in an array-valued CHEBFUN object is discretisationed in
-    % the same way.
-    %
-    % See also CHEBFUN/PREF, CHEBPTS.
-    
-    % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-    % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % CHEBFUN Class Description:
-    %
-    % The CHEBFUN class is for representations of functions on the interval [a, b].
-    %
-    % The CHEBFUN class is the main user interface. We do not expect users to
-    % directly invoke any objects below this level.
-    %
-    % A CHEBFUN object consists of a collection of FUN objects. There are two main
-    % tasks for the CHEBFUN constructor: (1) parse the user input, and (2) correctly
-    % piece together FUN objects to form a global approximation. If the input
-    % function is globally smooth then the resulting CHEBFUN contains a single FUN
-    % object. If the input is not smooth, or breakpoints are passed to the
-    % constructor, not CHEBFUN must determine appropriate breakpoints and return a
-    % piecewise smooth CHEBFUN with multiple FUN objects.
-    %
-    % This is a user-level class, and all input arguments should be thoroughly
-    % sanity checked.
-    %
-    % Class diagram: [jacfun] <>-- [CHEBFUN] <>-- [<<fun>>]
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%CHEBFUN    CHEBFUN class for representing functions on [a,b].
+%
+%   Class for approximating functions defined on finite, semi-infinite, or
+%   infinite intervals [a,b]. Functions may be smooth, piecewise smooth, weakly
+%   singular, or blow up on the interval.
+%
+% CHEBFUN(F) constructs a CHEBFUN object for representing the function F on the
+% interval [-1,1]. F can be a string, e.g., 'sin(x)', a function handle, e.g.,
+% @(x) x.^2 + 2*x +1, or a vector of numbers. In the first two instances, F
+% should be "vectorized" in the sense that it may be evaluated at a column
+% vector of points x(:) in [-1, 1] and return an output of size NxM where N =
+% length(x(:)). If this is not possible then the flag CHEBFUN(F, 'vectorise')
+% should be passed. CHEBFUN(F, 'vectorcheck', 'off') disables the automatic
+% checking for vector input. CHEBFUN() returns an empty CHEBFUN object.
+%
+% CHEBFUN(A) or CHEBFUN(A, 'chebpts2'), where A is an Nx1 matrix, constructs a
+% CHEBFUN object which interpolates the data in A on an N-point Chebyshev grid
+% of the second kind (see >> help chebpts). CHEBFUN(A, 'chebpts1') and
+% CHEBFUN(A, 'equi') are similar, but here the data is assumed to come from a
+% 1st-kind Chebyshev or equispaced grid linspace(-1,1,N), respectively.
+%
+% CHEBFUN(F, [A, B]) specifies an interval [A,B] in which the CHEBFUN is
+% defined, where A and/or B may be infinite. CHEBFUN(F, ENDS), where DOM is a
+% 1xK+1 vector of unique ascending values, specifies a piecewise smooth CHEBFUN
+% defined on the interval [ENDS(1), ENDS(K+1)] with additional interior breaks
+% at ENDS(2), ..., ENDS(K). Specifiying these breaks can be particularly useful
+% if F is known to have discontinuities. For example,
+%   CHEBFUN(@(x) abs(x), [-1, 0, 1])
+%
+% CHEBFUN({F1,...,Fk}, ENDS) constructs a piecewise smooth CHEBFUN which
+% represents Fj on the interval [ENDS(j), END(j+1)]. Each entry Fj may be a
+% string, function handle, or vector of doubles. For example
+%   CHEBFUN({@(x) sin(x), @(x) cos(x)}, [-1, 0, 1])
+%
+% CHEBFUN(F, PREF) or CHEBFUN(F, [A,B], PREF) constructs a chebfun object from F
+% with the options determined in CHEBFUN preference structure PREF. Construction
+% time options may also be passed directly to the constructor in the form
+% CHEBFUN(F, [A, B], PROP1, VAL1, PROP2, VAL2, ...). (See CHEBFUN/PREF.m for
+% details the various preference options.). In particular, CHEBFUN(F,
+% 'splitting', 'on') allows the constructor to adaptively determine breakpoints
+% to better represent piesewise smooth functions F. For example,
+%   CHEBFUN(@(x) sign(x-.3), [-1, 1])
+%
+% CHEBFUN(F, ...), where F is an NxM matrix or an array-valued function handle,
+% returns an "array-valued" CHEBFUN. For example,
+%   CHEBFUN(rand(14, 2))
+% or
+%   CHEBFUN(@(x) [sin(x), cos(x)])
+% Note that each column in an array-valued CHEBFUN object is discretisationed in
+% the same way.
+%
+% See also CHEBFUN/PREF, CHEBPTS.
+
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CHEBFUN Class Description:
+%
+% The CHEBFUN class is for representations of functions on the interval [a, b].
+%
+% The CHEBFUN class is the main user interface. We do not expect users to
+% directly invoke any objects below this level.
+%
+% A CHEBFUN object consists of a collection of FUN objects. There are two main
+% tasks for the CHEBFUN constructor: (1) parse the user input, and (2) correctly
+% piece together FUN objects to form a global approximation. If the input
+% function is globally smooth then the resulting CHEBFUN contains a single FUN
+% object. If the input is not smooth, or breakpoints are passed to the
+% constructor, not CHEBFUN must determine appropriate breakpoints and return a
+% piecewise smooth CHEBFUN with multiple FUN objects.
+%
+% This is a user-level class, and all input arguments should be thoroughly
+% sanity checked.
+%
+% Class diagram: [jacfun] <>-- [CHEBFUN] <>-- [<<fun>>]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     properties (Access = public)
         % DOMAIN of definition of a CHEBFUN object. If K>1 then the CHEBFUN is
@@ -237,7 +237,7 @@ function [op, domain, pref] = inputParser(op, domain, varargin)
         % chebfun(op, pref)
         pref = domain;
         domain = pref.chebfun.domain;
-    elseif ( ~isnumeric(domain) )
+    elseif ( ~isnumeric(domain) || length(domain) == 1 )
         % chebfun(op, prop1, val1, ...)
         pref = chebfun.pref();
         args = [domain, args];
@@ -267,11 +267,16 @@ function [op, domain, pref] = inputParser(op, domain, varargin)
             elseif ( strcmpi(args{1}, 'chebpts2') )
                 pref = chebfun.pref(pref, 'tech', 'chebtech2');
             elseif ( strcmpi(args{1}, 'equi') )
+                % [TODO]: Should funqui be a tech?
                 pref = chebfun.pref(pref, 'tech', 'funqui');
             end
             args(1) = [];
         elseif ( strcmpi(args{1}, 'vectorize' ) )
-            error('vectorize not yet implemetned');
+            % [TODO]: This.
+            error('vectorize not yet implemented.');
+        elseif ( isnumeric(args{1}) )
+            % [TODO]: This.
+            error('chebfun(@sin, 10) not yet implemented.');            
         else
             % Update these preferences:
             pref = chebfun.pref(pref, args{1}, args{2});

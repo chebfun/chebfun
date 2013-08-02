@@ -7,6 +7,8 @@ function fx = bary(x, fvals, xk, vk)
 %
 % See also CHEBTECH.CHEBPTS, CHEBTECH.BARYWTS, CHEBTECH.FEVAL, CHEBTECH.CLENSHAW.
 
+% [TODO]: Move this to either the trunk/ folder or an @utils class.
+
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
