@@ -169,7 +169,7 @@ e1 = (b + a)/2;
 e0 = e1 + 1;
 
 % Main loop: (Note that maxd = inf whenever dx < realmin)
-while ( ( cont < 2 || maxDer == inf ) && ( e0 ~= e1 ) )
+while ( ( cont < 2 || any(maxDer == inf) ) && ( e0 ~= e1 ) )
     % Evaluate OP at c, the center of the interval [a,b]:
     c = (a+b)/2;
     yc = op(c);
@@ -203,6 +203,7 @@ while ( ( cont < 2 || maxDer == inf ) && ( e0 ~= e1 ) )
     if ( maxDer < maxd1*(1.5) )
         cont = cont + 1;
     end
+    
 end
 
 if ( (e0 - e1) <= eps(e0) )
