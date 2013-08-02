@@ -1,14 +1,30 @@
 function fx = feval(f, x, varargin)
-%FEVAL   Evaluate a chebfun at one or more points.
+%FEVAL   Evaluate a CHEBFUN.
 %
-%   FEVAL(F, X) ...
+%   FX = FEVAL(F, X) evaluates a CHEBFUN F at the points in X.  If F is
+%   array-valued with columns F1, ..., FN, then FX will be [F1(X) ... FN(X)],
+%   the horizontal concatenation of the results of evaluating each column at
+%   the points in X.
 %
-%   FEVAL(F, X, 'left') or FEVAL(F, X, 'right')
+%   FEVAL(F, 'left'), FEVAL(F, 'start'), and FEVAL(F, '-') return the value of
+%   F at the left endpoint of its domain.  FEVAL(F, 'right'), FEVAL(F, 'end'),
+%   and FEVAL(F, '+') do the same for the right endpoint.
+%
+%   FEVAL(F, X, 'left') and FEVAL(F, X, '-') evaluate F at the points in X,
+%   using left-hand limits to evaluate F at any breakpoints.  FEVAL(F, X,
+%   'right') and FEVAL(F, X, '+') do the same but using right-hand limits.
+%
+%   Example:
+%     f = chebfun(@(x) 1./(1 + 25*x.^2));
+%     y = feval(f, linspace(-1, 1, 100));
+%
+% See also @CHEBFUN/SUBSREF.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-% [TODO]: Add support for multi-rowed impulses and deltas.
+% [TODO]: Add support for multi-rowed impulses and deltas and update the
+% preceding text accordingly.
 
 % If F or x are empty, there's nothing to do.
 if ( isempty(f) || isempty(x) )
