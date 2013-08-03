@@ -55,7 +55,7 @@ else
 end
 % [TODO]: This may be required when we have unbounded maps again.
 if ( nargin < 5 )
-    derHandle = @(x) 0*x+1;
+    derHandle = @(x) 0*x + 1;
 end
 
 % Call the main routine:
@@ -97,22 +97,24 @@ gridSize234 = 15; % Grid size for higher derivative computations in loop.
 ends = [new_a(numTestDers), new_b(numTestDers)];
 
 % Main loop:
-while ( maxDer(numTestDers) ~= inf && ~isnan(maxDer(numTestDers)) &&  diff(ends) > eps*hscale )
+while ( (maxDer(numTestDers) ~= inf) && ~isnan(maxDer(numTestDers)) ...
+    &&  (diff(ends) > eps*hscale) )
 
     % Keep track of previous max derivatives:
     maxDerPrev = maxDer(1:numTestDers);
 
     % Compute maximum derivatives on interval:
-    [new_a, new_b, maxDer] = findMaxDer(op, ends(1), ends(2), numTestDers, gridSize234, derHandle);
+    [new_a, new_b, maxDer] = ...
+        findMaxDer(op, ends(1), ends(2), numTestDers, gridSize234, derHandle);
 
     % Choose how many derivatives to test in this iteration:
-    numTestDers = find( (maxDer > (5.5-(1:numTestDers)').*maxDerPrev ) & ...
-        (maxDer > 10*vscale./hscale.^(1:numTestDers)') , 1, 'first' );
+    numTestDers = find((maxDer > (5.5 - (1:numTestDers)').*maxDerPrev ) & ...
+        (maxDer > 10*vscale./hscale.^(1:numTestDers)'), 1, 'first');
 
     if ( isempty(numTestDers) )
         % Derivatives are not growing; return edge = [].
         return
-    elseif ( numTestDers == 1 && diff(ends) < 1e-3*hscale )
+    elseif ( (numTestDers == 1) && (diff(ends) < 1e-3*hscale) )
         % Blow up in first derivative; use findjump().
         edge = findJump(op, ends(1) ,ends(2), hscale, vscale, derHandle);
         return
@@ -152,10 +154,10 @@ ya = y(1,:);
 yb = y(2,:);
 
 % Estimate max abs of the derivative:
-maxDer = abs( ya - yb ) / ( (b - a).*derHandle(b + a)/2);
+maxDer = abs(ya - yb) / ((b - a).*derHandle(b + a)/2);
 
 % If derivative is very small, this is probably a false edge.
-if ( maxDer < 1e-5 * vscale/hscale )
+if ( maxDer < 1e-5*vscale/hscale )
     return
 end
 
@@ -169,14 +171,14 @@ e1 = (b + a)/2;
 e0 = e1 + 1;
 
 % Main loop: (Note that maxd = inf whenever dx < realmin)
-while ( ( cont < 2 || any(maxDer == inf) ) && ( e0 ~= e1 ) )
+while ( ((cont < 2) || any(maxDer == inf)) && (e0 ~= e1) )
     % Evaluate OP at c, the center of the interval [a,b]:
-    c = (a+b)/2;
+    c = (a + b)/2;
     yc = op(c);
 
     % Find the undivided difference on each side of interval
-    dyl = abs(yc-ya) / derHandle((a+c)/2);
-    dyr = abs(yb-yc) / derHandle((b+c)/2);
+    dyl = abs(yc - ya) / derHandle((a + c)/2);
+    dyr = abs(yb - yc) / derHandle((b + c)/2);
 
     % Keep track of maximum value:
     maxd1 = maxDer;
@@ -186,18 +188,18 @@ while ( ( cont < 2 || any(maxDer == inf) ) && ( e0 ~= e1 ) )
         b = c;
         yb = yc;
         % Update maxd:
-        maxDer = dyl/(b-a);
+        maxDer = dyl/(b - a);
     else
         % Blow-up seems to be in [c,b]. Bisect:
         a = c;
         ya = yc;
         % Update maxd:
-        maxDer = dyr/(b-a);
+        maxDer = dyr/(b - a);
     end
 
     % Update edge location:
     e0 = e1;
-    e1 = (a+b)/2;
+    e1 = (a + b)/2;
 
     % Test must fail twice before breaking the loop:
     if ( maxDer < maxd1*(1.5) )
@@ -221,7 +223,8 @@ end
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [na, nb, maxDer] = findMaxDer(op, a, b, numTestDers, gridSize, derHandle)
+function [na, nb, maxDer] = findMaxDer(op, a, b, numTestDers, gridSize, ...
+    derHandle)
 % Compute the norm_inf of derivatives 1:nder of f.
 
 % Initial setup:
@@ -230,14 +233,14 @@ na = a*ones(numTestDers, 1);
 nb = b*ones(numTestDers, 1);
 
 % Generate FD grid points and values
-dx = (b-a)/(gridSize-1);
+dx = (b - a)/(gridSize - 1);
 x = [a + (0:gridSize-2)*dx, b].';
 dy = op(x);
 
 % Main loop (through derivatives), undivided differences:
 for j = 1:numTestDers
     dy = diff(dy);
-    x = ( x(1:end-1) + x(2:end) )/2;
+    x = (x(1:end-1) + x(2:end))/2;
     dydH = max(abs(bsxfun(@rdivide, dy, derHandle(x))), [], 2);
     [maxDer(j), ind] = max(dydH);
     if ( ind > 1)

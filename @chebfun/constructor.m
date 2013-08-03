@@ -38,9 +38,10 @@ end
 vscale = 0;
 
 % Sanity check:
-if ( iscell(op) && size(op) ~= numIntervals-1 )
+if ( iscell(op) && (size(op) ~= numIntervals - 1) )
     error('CHEBFUN:constructor:cellInput', ...
-        'Number of cell elements in OP must match the number of intervals in DOMAIN.')
+        ['Number of cell elements in OP must match the number of', ...
+         'intervals in DOMAIN.'])
 end    
 
 %% ----------------------------- SPLITTING OFF ---------------------------------
@@ -67,7 +68,8 @@ if ( ~pref.chebfun.splitting )
         [funs{k}, ishappy, vscale] = getFun(opk, endsk, vscale, hscale, pref);
         % Warn if unhappy (as we're unable to split the domain to improve):
         if ( ~ishappy && ~warningThrown)
-            warning('CHEBFUN:constructor', ['Function not resolved using %d pts.', ...
+            warning('CHEBFUN:constructor', ...
+                ['Function not resolved using %d pts.', ...
                 ' Have you tried ''splitting on''?'], maxn);
             warningThrown = true;
         end
@@ -89,7 +91,7 @@ pref = fun.pref(pref, pref.chebfun);
 % Initialise the FUN array:
 funs{numIntervals} = fun.constructor();
 % Initialise happiness:
-ishappy = ones(1, numel(ends)-1);
+ishappy = ones(1, numel(ends) - 1);
 
 % Try to get one smooth piece for the entire domain before splitting:
 for k = 1:numIntervals
@@ -99,7 +101,8 @@ for k = 1:numIntervals
     else
         opk = op;
     end
-    [funs{k}, ishappy(k), vscale] = getFun(opk, ends(k:k+1), vscale, hscale, pref);
+    [funs{k}, ishappy(k), vscale] = ...
+        getFun(opk, ends(k:k+1), vscale, hscale, pref);
 end
 sad = ~ishappy;
 
@@ -125,8 +128,10 @@ while ( any(sad) )
     [edge, vscale] = chebfun.detectEdge(opk, [a b], vscale, hscale);
 
     % Try to obtain happy child FUN objects on each new subinterval:
-    [childLeft, happyLeft, vscale] = getFun(opk, [a, edge], vscale, hscale, pref);
-    [childRight, happyRight, vscale] = getFun(opk, [edge, b], vscale, hscale, pref);
+    [childLeft, happyLeft, vscale] = ...
+        getFun(opk, [a, edge], vscale, hscale, pref);
+    [childRight, happyRight, vscale] = ...
+        getFun(opk, [edge, b], vscale, hscale, pref);
 
     % Check for happiness/sadness:
     sad = [sad(1:k-1), ~happyLeft, ~happyRight, sad(k+1:end)];
@@ -154,7 +159,7 @@ end
 function [g, ishappy, vscale] = getFun(op, domain, vscale, hscale, pref)
 %GETFUN controls the construction of funs
 
-% If the interval is very small then skip adaptation treat OP as a constant:
+% If the interval is very small then skip adaptation and treat OP as a constant:
 if ( diff(domain) < 2*1e-14*hscale )
     op = op(mean(domain));
 end

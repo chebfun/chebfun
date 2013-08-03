@@ -36,7 +36,8 @@ if ( nargout < 2 )
         varargout{1} = numCols;
     elseif ( logical(round(dim) - dim) )
         error('CHEBFUN:size:dim', ...
-            'Dimension argument must be a positive integer scalar within indexing range.');
+            ['Dimension argument must be a positive integer scalar' ...
+             ' within indexing range.']);
     else
         % We do not allow tensors, so any further dimensions must have size 1.
         varargout{1} = 1;

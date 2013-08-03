@@ -1,4 +1,4 @@
-% Test file for chebfun/feval.m
+% Test file for @chebfun/feval.m
 
 function pass = test_feval(pref)
 

@@ -1,3 +1,5 @@
+% Test file for chebfun constructor (basic).
+
 function pass = test_constructor_basic(pref)
 
 if ( nargin == 0 )

@@ -16,7 +16,7 @@ function jVals = jumpVals(funs, ends, op)
 numFuns = numel(funs);
 
 % Trivial empty case:
-if ( numFuns == 1 && isempty(funs) )
+if ( (numFuns == 1) && isempty(funs) )
     jVals = [];
     return
 end
@@ -27,7 +27,8 @@ numCols = size(funs{1}, 2);
 % Initialise jVals:
 jVals = zeros(numFuns+1, numCols);
 
-if ( nargin < 3 || isnumeric(op) || iscell(op) )    % Function handle is not provided.
+if ( (nargin < 3) || isnumeric(op) || iscell(op) ) % Function handle not
+                                                   % provided.
 
     jVals(1,:) = get(funs{1}, 'lval');
     % Take the mean of the funs on either side of the break:
@@ -36,7 +37,7 @@ if ( nargin < 3 || isnumeric(op) || iscell(op) )    % Function handle is not pro
     end
     jVals(numFuns+1,:) = get(funs{numFuns}, 'rval');
 
-elseif ( nargin == 3 && ~iscell(op) ) % Function handle provided.
+elseif ( (nargin == 3) && ~iscell(op) ) % Function handle provided.
 
     % Evaluate the function handle at the breaks:
     jVals(1:numFuns+1,:) = feval(op, ends.');

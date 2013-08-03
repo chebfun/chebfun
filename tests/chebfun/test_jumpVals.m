@@ -1,3 +1,5 @@
+% Test file for @chebfun/jumpVals.m.
+
 function pass = test_jumpVals(pref)
 
 if ( nargin == 0 )

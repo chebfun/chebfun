@@ -123,7 +123,7 @@ classdef chebfun
             % The main CHEBFUN constructor!
             
             % Return an empty CHEBFUN:
-            if ( nargin == 0 || isempty(varargin{1}) )
+            if ( (nargin == 0) || isempty(varargin{1}) )
                 return
             end
             
@@ -250,7 +250,7 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
         % chebfun(op, pref)
         pref = domain;
         domain = pref.chebfun.domain;
-    elseif ( ~isnumeric(domain) || length(domain) == 1 )
+    elseif ( ~isnumeric(domain) || (length(domain) == 1) )
         % chebfun(op, prop1, val1, ...)
         pref = chebfun.pref();
         args = [domain, args];
@@ -289,7 +289,7 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
             error('vectorize not yet implemented.');
         elseif ( isnumeric(args{1}) )
             % [TODO]: This.
-            error('chebfun(@sin, 10) not yet implemented.');            
+            error('chebfun(op, n) not yet implemented.');
         else
             % Update these preferences:
             pref = chebfun.pref(pref, args{1}, args{2});

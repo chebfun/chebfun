@@ -57,7 +57,7 @@ else
     % Index of endpoints was provided:
     index = unique(index);
     % Break points must be in in range 2:numel(f.funs)
-    index(index <= 1 | index > numel(f.funs)) = [];
+    index((index <= 1) | (index > numel(f.funs))) = [];
 
 end
 

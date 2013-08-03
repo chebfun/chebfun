@@ -1,3 +1,5 @@
+% Test file for @chebfun/detectEdge.m.
+
 function pass = test_detectEdge(pref)
 
 % We test detectEdge directly by giving it function handles with known
