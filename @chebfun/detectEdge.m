@@ -1,5 +1,5 @@
 function [edge, vscale] = detectEdge(op, domain, vscale, hscale, derHandle)
-%EDGEDETECT   Edge detection.
+%DETECTEDGE   Edge detection.
 %   EDGE = DETECTEDGE(F, DOMAIN, HSCALE, VSCALE) detects a blowup in first,
 %   second, third, or fourth derivatives of F in [A,B]. HSCALE is the horizontal
 %   scale and VSCALE is the vertical scale. If no edge is detected, EDGE = 0 is
@@ -91,7 +91,8 @@ gridSize1 = 50;   % Grid size for 1st finite difference computations.
 gridSize234 = 15; % Grid size for higher derivative computations in loop.
 
 % Compute norm_inf of first numTestDers derivatives.
-[new_a, new_b, maxDer] = findMaxDer(op, a, b, numTestDers, gridSize1, derHandle);
+[new_a, new_b, maxDer] = findMaxDer(op, a, b, numTestDers, gridSize1, ...
+    derHandle);
 
 % Keep track of endpoints:
 ends = [new_a(numTestDers), new_b(numTestDers)];
