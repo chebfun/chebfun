@@ -1,5 +1,5 @@
 function out = isreal(f)
-%ISREAL Real-valued chebfun test.
+%ISREAL   True for real-valued CHEBFUN object.
 %   ISREAL(F) returns logical true if F does not have an imaginary part and
 %   false otherwise.
 %

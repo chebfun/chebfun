@@ -1,10 +1,9 @@
 function varargout = chebpolyplot(f, varargin)
-%CHEBPOLYPLOT    Display Chebyshev coefficients graphically.
-%
-%   CHEBPOLYPLOT(F) plots the Chebyshev coefficients of a FUNCHEB F on a
+%CHEBPOLYPLOT   Display Chebyshev coefficients graphically.
+%   CHEBPOLYPLOT(F) plots the Chebyshev coefficients of a CHEBFUN F on a
 %   semilogy scale. A horizontal line at the epslevel of F is also plotted. If F
-%   is a vectorised FUNCHEB then a curve is plotted for each component (column)
-%   of F.
+%   is an array-valued CHEBFUN, then a curve is plotted for each component
+%   (column) of F.
 %
 %   CHEBPOLYPLOT(F, S) allows further plotting options, such as linestyle,
 %   linecolor, etc, in the standard MATLAB manner. If S contains a string
@@ -14,7 +13,7 @@ function varargout = chebpolyplot(f, varargin)
 %   H = CHEBPOLYPLOT(F) returns a column vector of handles to lineseries
 %   objects. The final entry is that of the epslevel plot.
 %
-% See also FUNCHEB.CHEBPOLY, FUNCHEB/PLOT
+% See also CHEBFUN/PLOT
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -73,9 +72,3 @@ end
 if ( nargout > 0 )
     varargout = {h1, h2};
 end
-
-
-
-
-
-

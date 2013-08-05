@@ -1,5 +1,5 @@
 function data = plotData(f)
-%PLOTDATA    Useful data values for plotting a CHEBFUN object.
+%PLOTDATA   Useful data values for plotting a CHEBFUN object.
 %   OUT = PLOTDATA(F) returns a struct containing data that can be used for
 %   plotting F. In particular, DATA.xLine and DATA.fLine are for plotting smooth
 %   curves (usually passed to plot with '-'), DATA.xPoints and DATA.yPoints
@@ -25,7 +25,8 @@ end
 % Loop over each FUN for Jumps data:
 for k = 1:(numel(f.funs) - 1)
     data.xJumps = [data.xJumps, NaN, f.funs{k}.domain(2) f.funs{k+1}.domain(1)];
-    data.fJumps = [data.fJumps, myNaN', get(f.funs{k}, 'rval')', get(f.funs{k+1}, 'lval')'];
+    data.fJumps = [data.fJumps, myNaN', get(f.funs{k}, 'rval')', ...
+        get(f.funs{k+1}, 'lval')'];
 end
 
 end

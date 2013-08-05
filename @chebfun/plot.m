@@ -1,6 +1,6 @@
 function varargout = plot(f,varargin)
-%PLOT   Basic linear plot for FUNCHEB objects.
-%   PLOT(F) plots the FUNCHEB object F.
+%PLOT   Basic linear plot for CHEBFUN objects.
+%   PLOT(F) plots the CHEBFUN object F.
 %
 %   PLOT(F, S) allows various line types, plot symbols, and colors to be used
 %   when S is a character string made from one element from any or all the
@@ -19,23 +19,24 @@ function varargout = plot(f,varargin)
 %                                >     triangle (right)
 %                                p     pentagram
 %                                h     hexagram
+%
 %   The entries from the centre columns are plotted at the Chebyshev grid being
 %   used to represent F. If no options from this column are chosen, 'o' is
-%   chosen by default if length(f)<256;
+%   chosen by default if length(F)<256;
 %
 %   The X,Y pairs, or X,Y,S triples, can be followed by parameter/value pairs to
 %   specify additional properties of the lines. For example,
-%            F = funcheb.constructor(@sin);
-%            plot(F, 'LineWidth', 2, 'Color', [.6 0 0])
+%            f = chebfun(@sin);
+%            plot(f, 'LineWidth', 2, 'Color', [.6 0 0])
 %   will create a plot with a dark red line width of 2 points.
 %
 %   H1 = PLOT(F) returns a column vector of handles to lineseries objects, one
-%   handle per plotted line (in the case of vector-valued FUNCHEB objects).
+%   handle per plotted line (in the case of vector-valued CHEBFUN objects).
 %   [H1, H2] returns a second vector of column handles, this time for each of
 %   the marker plots.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 % Deal with an empty input:
 if ( isempty(f) )
