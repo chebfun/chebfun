@@ -13,7 +13,7 @@ function coeffs = chebpoly(values)
 %   See also CHEBPOLYVAL, CHEBPTS.
 
 %   Copyright 2013 by The University of Oxford and The Chebfun Developers. 
-%   See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+%   See http://www.chebfun.org for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %   [Mathematical reference]: Section 4.7 Mason & Handscomb, "Chebyshev

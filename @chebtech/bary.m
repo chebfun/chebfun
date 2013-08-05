@@ -8,7 +8,7 @@ function fx = bary(x, fvals, xk, vk)
 % See also CHEBTECH.CHEBPTS, CHEBTECH.BARYWTS, CHEBTECH.FEVAL, CHEBTECH.CLENSHAW.
 
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
-%  See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+%  See http://www.chebfun.org for Chebfun information.
 
 % Parse inputs
 [n, m] = size(fvals);

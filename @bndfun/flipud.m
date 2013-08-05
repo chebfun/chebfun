@@ -5,7 +5,7 @@ function f = flipud(f)
 %   flips the BNDFUN around the center of the domain it is defined on.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 % Flip the onefun:
 f.onefun = flipud(f.onefun);

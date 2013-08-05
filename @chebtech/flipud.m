@@ -3,7 +3,7 @@ function f = flipud(f)
 %   G = FLIPUD(F) returns G such that G(x) = F(-x) for all x in [-1,1].
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 % Flip the values:
 f.values = flipud(f.values);
