@@ -41,13 +41,13 @@ imps = f.impulses;
 discardIntsLeft = oldDomain(2:end) < newDomain(1);
 oldDomain([discardIntsLeft false]) = [];
 funs(discardIntsLeft) = [];
-imps(:,[discardIntsLeft, false]) = [];
+imps([discardIntsLeft, false],:,:) = [];
 
 % Discard intervals to the right:
 discardIntsRright = oldDomain(1:end-1) > newDomain(end);
 oldDomain([false discardIntsRright]) = [];
 funs(discardIntsRright) = [];
-imps(:,[false, discardIntsRright]) = [];
+imps([false, discardIntsRright],:,:) = [];
 
 % Take the union of the new and old domains:
 if ( ~isempty( oldDomain(2:end-1) ) )
@@ -58,7 +58,7 @@ numFuns = numel(funs);
 
 % Initialise storage for new funs and impulses:
 newFuns = cell(1, numel(newDomain)-1);
-newImps = zeros(size(imps, 1), numel(newDomain), size(imps, 3));
+newImps = zeros(numel(newDomain), size(imps, 2), size(imps, 3));
 
 % Loop through each fun and restrict as required:
 l = 0;
@@ -80,11 +80,11 @@ for k = 1:numFuns
 end
 
 % Update the impulses:
-newImps(1,:,:) = chebfun.jumpVals(newFuns);
+newImps(:,:,1) = chebfun.jumpVals(newFuns);
 % Restore existing impulses:
 [mask, locB] = ismember(oldDomain, newDomain);
 locB(~logical(locB)) = [];
-newImps(:,locB) = imps(mask);
+newImps(locB,:,:) = imps(mask,:,:);
 
 % Attach data to chebfun to return as output:
 f.domain = newDomain;
