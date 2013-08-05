@@ -1,19 +1,19 @@
 function r = roots(f, varargin)
-%ROOTS	 Roots of a chebfun.
+%ROOTS   Roots of a CHEBFUN.
 %   ROOTS(F) returns the roots of F in its domain of definition.
 %
 %   ROOTS(F, 'norecursion') deactivates the recursion procedure used to compute
 %   roots (see the Guide 3: Rootfinding and minima and maxima for more
-%   information of this recursion procedure).
+%   information on this recursion procedure).
 %
 %   ROOTS(F, 'all') returns the roots of all the polynomials representing the
 %   smooth pieces of F. Note that by default this disables recursion, and so is
-%   equivalent to ROOTS(F,'all','norecursion').
+%   equivalent to ROOTS(F, 'all', 'norecursion').
 %
 %   ROOTS(F, 'complex') returns the roots of all the polynomials representing
-%   the smooth pieces of F that are inside a chebfun ellipse. This capability
-%   may remove some spurious roots that can appear if using ROOTS(F,'all').
-%   ROOTS(F, 'complex') is equivalent to ROOTS(F,'complex','recursion').
+%   the smooth pieces of F that are inside a CHEBFUN ellipse. This capability
+%   may remove some spurious roots that can appear if using ROOTS(F, 'all').
+%   ROOTS(F, 'complex') is equivalent to ROOTS(F, 'complex', 'recursion').
 %
 %   ROOTS(F, 'all', 'recursion') and ROOTS(F,'complex','norecursion') can be
 %   used to activates and deactivate the recursion procedure respectively, to

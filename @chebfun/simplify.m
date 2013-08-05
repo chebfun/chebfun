@@ -1,5 +1,5 @@
 function f = simplify(f, varargin)
-%SIMPLIFY    Simplfy a chebfun.
+%SIMPLIFY   Simplfy a chebfun.
 %   [TODO]: Document this.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.

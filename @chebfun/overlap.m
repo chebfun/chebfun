@@ -29,9 +29,9 @@ gDom = g.domain;
 % union().)
 newDom = union(fDom, gDom);
 
-if ( length(fDom) ~= length(gDom) || ~all(fDom == gDom) )
+if ( (length(fDom) ~= length(gDom)) || ~all(fDom == gDom) )
     % Breakpoints do not match. We have work to do.
-    % [TODO]: Should we allow a tolerance so as not to introcude tiny intervals?
+    % [TODO]: Should we allow a tolerance so as not to introduce tiny intervals?
 
     % Compute the new objects using RESTRICT():
     f = restrict(f, newDom);

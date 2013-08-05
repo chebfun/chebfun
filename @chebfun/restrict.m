@@ -13,7 +13,7 @@ function f = restrict(f, newDomain)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty case:
-if ( isempty(f) || isempty(newDomain))
+if ( isempty(f) || isempty(newDomain) )
     return
 end
 
@@ -21,13 +21,13 @@ end
 oldDomain = f.domain;
 
 % Trivial case:
-if ( numel(newDomain) == 2 && all(newDomain(1:2) == oldDomain([1 end])) )
+if ( (numel(newDomain) == 2) && isequal(newDomain, oldDomain([1 end])) )
     % The domains are the same!
     return
 end
 
 % Check the domain is valid:
-if ( newDomain(1) < oldDomain(1) || newDomain(end) > oldDomain(end) || ...
+if ( (newDomain(1) < oldDomain(1)) || (newDomain(end) > oldDomain(end)) || ...
         any(diff(newDomain) < 0) )
     % newDom is not a valid subinterval of oldDom!
     error('CHEBFUN:restrict:subdom', 'Not a valid subdomain.');
@@ -51,7 +51,7 @@ imps([false, discardIntsRright],:,:) = [];
 
 % Take the union of the new and old domains:
 if ( ~isempty( oldDomain(2:end-1) ) )
-    % Note that the old endpoints will either be in newDom or are not required.
+    % NB:  the old endpoints will either be in newDomain or are not required.
     newDomain = union(oldDomain(2:end-1), newDomain);
 end
 numFuns = numel(funs);
@@ -64,7 +64,7 @@ newImps = zeros(numel(newDomain), size(imps, 2), size(imps, 3));
 l = 0;
 for k = 1:numFuns
     % Find the breaks which correspond to the kth fun:
-    subsIdx = newDomain >= oldDomain(k) & newDomain <= oldDomain(k+1);
+    subsIdx = (newDomain >= oldDomain(k)) & (newDomain <= oldDomain(k+1));
     if ( sum(subsIdx) == 2 )
         % This interval is already a FUN: (i.e., no new breaks to introduce)
         newFuns(l+1) = funs(k);

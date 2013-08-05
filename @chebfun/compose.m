@@ -7,7 +7,7 @@ function f = compose(f, op, g, pref)
 %   is a function handle.
 %
 %   COMPOSE(F, G) returns a CHEBFUN representing G(F), where both F and G are
-%   also FUNCHEB objects. If the range of F is not in [-1, 1] then an error is
+%   also CHEBFUN objects. If the range of F is not in [-1, 1] then an error is
 %   thrown.
 %
 %   COMPOSE(F, OP, PREF), COMPOSE(F, OP, G, PREF), or COMPOSE(F, G, PREF) uses
@@ -20,7 +20,7 @@ function f = compose(f, op, g, pref)
 % See also RESTRICT.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Here is a small flowchart of how this process works. (In Chebfun V4 there was
@@ -41,14 +41,14 @@ function f = compose(f, op, g, pref)
 
 % Parse inputs:
 numChebfuns = 2;
-if ( nargin > 2 && isstruct(g) )
+if ( (nargin > 2) && isstruct(g) )
     pref = chebfun.pref(g);
     g = [];
     numChebfuns = 1;
-elseif ( nargin < 4 )
+elseif ( (nargin < 4) )
     pref = chebfun.pref();
 end
-if ( nargin < 3 || isempty(g) )
+if ( (nargin < 3) || isempty(g) )
     numChebfuns = 1;
     g = [];
 end
@@ -120,7 +120,8 @@ for k = 1:numFuns
         if ( numChebfuns == 1 )
             newCfun = chebfun(@(x) feval(op, feval(f, x)), domk, pref);
         else
-            newCfun = chebfun(@(x) feval(op, feval(f, x), feval(g, x)), domk, pref);
+            newCfun = chebfun(@(x) feval(op, feval(f, x), feval(g, x)), ...
+                domk, pref);
         end
 
         isHappy = get(newCfun, 'ishappy');

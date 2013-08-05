@@ -8,8 +8,8 @@ function h = composeChebfuns(f, g, pref)
 %           g = chebfun(@(x) asin(.99*x)/asin(.99));
 %           h = compose(f,g);
 
-% Copyright 2011 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org for Chebfun information.
 
 if ( nargin < 3 )
     pref = chebfun.pref();
