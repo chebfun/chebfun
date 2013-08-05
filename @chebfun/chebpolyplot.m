@@ -34,8 +34,8 @@ holdState = ishold;
 numfuns = numel(f.funs);
 n = cell(numfuns, 1);
 c = get(f, 'coeffs');
-v = get(f, 'vscale');
-e = get(f, 'epslevel');
+v = get(f, 'vscale-local');
+e = get(f, 'epslevel-local');
 c = cellfun(@abs, c, 'UniformOutput', false);
 for k = 1:numfuns
     n{k} = (size(c{k}, 1)-1:-1:0).';
@@ -53,7 +53,6 @@ hold on
 n = cellfun(@(x) x([end ; 1]), n, 'UniformOutput', false);
 n = reshape(repmat(n', numcols, 1), numcols*numel(n), 1);
 e = reshape(repmat(e', numcols, 1), numcols*numel(e), 1);
-v = [v{:}].';
 ve = mat2cell(repmat(v.*e, 1, 2), ones(numfuns*numcols,1), 2);
 data = reshape([n ve]', 1, 2*numfuns*numcols);
 
