@@ -21,7 +21,7 @@ function fx = feval(f, x, varargin)
 % See also @CHEBFUN/SUBSREF.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 % [TODO]: Add support for multi-rowed impulses and deltas and update the
 % preceding text accordingly.

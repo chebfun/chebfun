@@ -25,7 +25,7 @@ function [f, mergedPts] = merge(f, index, pref)
 % See also SPLITTING, PREF.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 % Parse the inputs:
 if ( nargin == 1 )

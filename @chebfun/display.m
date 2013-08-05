@@ -7,7 +7,7 @@ function display(f)
 %   of a statement that results in a CHEBFUN.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 % If the 'format loose' setting is enabled, we print additional linebreaks:
 loose = strcmp(get(0, 'FormatSpacing'), 'loose');

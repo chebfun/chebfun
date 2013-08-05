@@ -60,7 +60,7 @@ function prefs = pref(varargin)
 % See also CHEBFUN.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 % blowup - Blowup option:
 %        BLOWUP=0: bounded functions only
