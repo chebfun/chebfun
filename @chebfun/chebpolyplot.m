@@ -1,9 +1,9 @@
 function varargout = chebpolyplot(f, varargin)
 %CHEBPOLYPLOT   Display Chebyshev coefficients graphically.
 %   CHEBPOLYPLOT(F) plots the Chebyshev coefficients of a CHEBFUN F on a
-%   semilogy scale. A horizontal line at the epslevel of F is also plotted. If F
-%   is an array-valued CHEBFUN, then a curve is plotted for each component
-%   (column) of F.
+%   semilogy scale. A horizontal line at the epslevel of F is also plotted. If
+%   F is an array-valued CHEBFUN or has breakpoints, then a curve is plotted
+%   for each FUN of each component (column) of F.
 %
 %   CHEBPOLYPLOT(F, S) allows further plotting options, such as linestyle,
 %   linecolor, etc, in the standard MATLAB manner. If S contains a string
@@ -29,12 +29,10 @@ end
 % Store the hold state of the current axis:
 holdState = ishold;
 
-% Get the data:
+% Get the coeff data:
 numfuns = numel(f.funs);
 n = cell(numfuns, 1);
 c = get(f, 'coeffs');
-v = get(f, 'vscale-local');
-e = get(f, 'epslevel-local');
 c = cellfun(@abs, c, 'UniformOutput', false);
 for k = 1:numfuns
     n{k} = (size(c{k}, 1)-1:-1:0).';
@@ -48,11 +46,16 @@ data = reshape([n c]', 1, 2*numfuns);
 h1 = semilogy(data{:}, varargin{:});
 hold on
 
-% Reshape for epslevel plot:
+% Get data for epslevel plot:
+v = get(f, 'vscale-local');
+e = get(f, 'epslevel-local');
+ve = v.*repmat(e, 1, numcols);
+
+% Reshape data for epslevel plot:
 n = cellfun(@(x) x([end ; 1]), n, 'UniformOutput', false);
 n = reshape(repmat(n', numcols, 1), numcols*numel(n), 1);
-e = reshape(repmat(e', numcols, 1), numcols*numel(e), 1);
-ve = mat2cell(repmat(v.*e, 1, 2), ones(numfuns*numcols,1), 2);
+ve = reshape(ve, numfuns*numcols, 1);
+ve = mat2cell(repmat(ve, 1, 2), ones(numfuns*numcols, 1), 2);
 data = reshape([n ve]', 1, 2*numfuns*numcols);
 
 % Plot the epslevels:
