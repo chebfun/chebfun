@@ -15,17 +15,19 @@ if ( ~domainCheck(f, g) )
         'Inconsistent domains; domain(f) ~= domain(g).')
 end
 
+% If f and g are both empty, there is nothing to do:
+if ( isempty(f) && isempty(g) )
+    return
+end
+
 % Obtain the domains of f and g:
 fDom = f.domain;
 gDom = g.domain;
 
-% Take the union of the two domains: (Neither fDom or gDom will be empty.)
+% Take the union of the two domains: (NB:  At least one of fDom or gDom is
+% nonempty, so we don't need to worry about the orientation of the output of
+% union().)
 newDom = union(fDom, gDom);
-
-% If f and g are both empty, there is nothing to do.
-if ( isempty(newDom) )
-    return
-end
 
 if ( length(fDom) ~= length(gDom) || ~all(fDom == gDom) )
     % Breakpoints do not match. We have work to do.
