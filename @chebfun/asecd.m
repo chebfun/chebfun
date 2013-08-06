@@ -1,7 +1,7 @@
-function g = acos(f, pref)
-%ACOS   Inverse cosine of a chebfun.
+function g = asecd(f, pref)
+%ASECD   Inverse secant of a chebfun, result in degrees.
 %
-% See also COS, ACOSD.
+% See also SECD, ASEC.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. See
 % http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
@@ -12,6 +12,6 @@ if ( nargin == 1 )
 end
 
 % Call the compose method:
-g = compose(f, @acos, pref);
+g = compose(f, @asecd, pref);
 
 end
