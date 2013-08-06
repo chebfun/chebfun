@@ -31,7 +31,7 @@ pass = zeros(1, 7);
 % Spot-check derivatives for a couple of functions.
 
 % fractional root at the left endpoint
-f = singfun(@(x) (1+x).^a.*exp(x), [a 0], {'sing', 'sing'}, pref);
+f = singfun(@(x) (1+x).^a.*exp(x), [a 0], {'sing', 'none'}, pref);
 df = diff(f);
 vals_df = feval(df, x); 
 df_exact = @(x) (1+x).^(a-1).*(a+1+x).*exp(x);
@@ -40,7 +40,7 @@ err = vals_df - vals_exact;
 pass(1) = (norm(err, inf) < tol*norm(vals_exact, inf));
 
 % fractional pole at the left endpoint
-f = singfun(@(x) (1+x).^d.*sin(x), [d 0], {'sing', 'sing'}, pref);
+f = singfun(@(x) (1+x).^d.*sin(x), [d 0], {'sing', 'none'}, pref);
 df = diff(f);
 vals_df = feval(df, x); 
 df_exact = @(x) (1+x).^(d-1).*(d*sin(x)+(1+x).*cos(x));
@@ -49,7 +49,7 @@ err = vals_df - vals_exact;
 pass(2) = (norm(err, inf) < tol*norm(vals_exact, inf));
 
 % fractional root at the right endpoint
-f = singfun(@(x) (1-x).^c.*cos(x), [0 c], {'sing', 'sing'}, pref);
+f = singfun(@(x) (1-x).^c.*cos(x), [0 c], {'none', 'sing'}, pref);
 df = diff(f);
 vals_df = feval(df, x);
 df_exact = @(x) -(1-x).^(c-1).*(c*cos(x)+(1-x).*sin(x));
@@ -58,7 +58,7 @@ err = vals_df - vals_exact;
 pass(3) = (norm(err, inf) < tol*norm(vals_exact, inf));
 
 % fractional pole at the left endpoint
-f = singfun(@(x) (1-x).^b.*(x.^5), [0 b], {'sing', 'sing'}, pref);
+f = singfun(@(x) (1-x).^b.*(x.^5), [0 b], {'none', 'sing'}, pref);
 df = diff(f);
 vals_df = feval(df, x);
 df_exact = @(x) (1-x).^(b-1).*(5-5*x-b*x).*(x.^4);
