@@ -1,14 +1,13 @@
 function fx = feval(f, x, varargin)
 %FEVAL   Evaluate a CHEBFUN.
-%
 %   FX = FEVAL(F, X) evaluates a CHEBFUN F at the points in X.  If F is
 %   array-valued with columns F1, ..., FN, then FX will be [F1(X) ... FN(X)],
-%   the horizontal concatenation of the results of evaluating each column at
-%   the points in X.
+%   the horizontal concatenation of the results of evaluating each column at the
+%   points in X.
 %
-%   FEVAL(F, 'left'), FEVAL(F, 'start'), and FEVAL(F, '-') return the value of
-%   F at the left endpoint of its domain.  FEVAL(F, 'right'), FEVAL(F, 'end'),
-%   and FEVAL(F, '+') do the same for the right endpoint.
+%   FEVAL(F, 'left'), FEVAL(F, 'start'), and FEVAL(F, '-') return the value of F
+%   at the left endpoint of its domain.  FEVAL(F, 'right'), FEVAL(F, 'end'), and
+%   FEVAL(F, '+') do the same for the right endpoint.
 %
 %   FEVAL(F, X, 'left') and FEVAL(F, X, '-') evaluate F at the points in X,
 %   using left-hand limits to evaluate F at any breakpoints.  FEVAL(F, X,
@@ -32,6 +31,7 @@ if ( isempty(f) || isempty(x) )
     return
 end
 
+%% LEFT / RIGHT VALUES:
 % Support for feval(f, 'left') and feval(f, 'end'), etc.
 if ( ischar(x) )
     if ( any(strcmpi(x, {'left', 'start' ,'-'})) )
@@ -44,11 +44,7 @@ if ( ischar(x) )
     return
 end
 
-% Reshape x to be a column vector.
-sizex = size(x);
-ndimsx = ndims(x);
-x = x(:);
-
+%% INITIALISE:
 % Un-transpose f if necessary so that the call to size() below returns the
 % right thing.  (We'll compensate for this further down.)
 wasTransposed = f.isTransposed;
@@ -56,12 +52,18 @@ if ( f.isTransposed )
     f.isTransposed = 0; % [TODO]:  Replace with a call to transpose().
 end
 
-% Initialise:
+% Reshape x to be a column vector.
+sizex = size(x);
+ndimsx = ndims(x);
+x = x(:);
+
+% Initialise output:
 [numFuns, numCols] = size(f);
 fx = zeros(size(x, 1), numCols);
 funs = f.funs;
 dom = f.domain;
 
+%% LEFT AND RIGHT LIMITS:
 % Deal with feval(f, x, 'left') and feval(f, x, 'right'):
 if ( nargin > 2 )
     lr = varargin{1};
@@ -88,12 +90,15 @@ if ( nargin > 2 )
     end
 end
 
+%% VALUES FROM FUNS:
+
 % Points to the left of the domain:
 xReal = real(x);
 I = xReal < dom(1);
 if ( any(I(:)) )
     fx(I,:) = feval(funs{1}, x(I));
 end
+
 % Points within the domain:
 for k = 1:numFuns
     I = ( xReal >= dom(k) ) & ( xReal < dom(k+1) );
@@ -102,13 +107,14 @@ for k = 1:numFuns
         fx(I,:) = feval(funs{k}, x(I));
     end
 end
+
 % Points to the right of the domain:
 I = ( xReal >= dom(end) );
 if ( any(I(:)) )
     fx(I,:) =  feval(funs{end}, x(I));
 end
 
-%% DEALING WITH IMPS:
+%% IMPULSES:
 % If the evaluation point corresponds to a breakpoint, we get the value from
 % imps. If there is only one row, the value is given by the corresponding entry
 % in that row. If the second row is nonzero the value is -inf or inf
@@ -130,6 +136,7 @@ else
     % [TODO]: Multiple imps rows:    
 end
 
+%% RESHAPE FOR OUTPUT:
 % Reshape fx, which is a column vector or horizontal concatenation of column
 % vectors, to be of the appropriate size, and handle transposition.
 sizefx = sizex;
@@ -156,4 +163,6 @@ else
     if ( wasTransposed )
         fx = permute(fx, [2 1 3:ndimsx]);
     end
+end
+
 end
