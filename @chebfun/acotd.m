@@ -4,7 +4,7 @@ function g = acotd(f, pref)
 % See also COTD, ACOT.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. See
-% http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% http://www.chebfun.org for Chebfun information.
 
 % Obtain preferences:
 if ( nargin == 1 )

@@ -4,7 +4,7 @@ function g = atand(f, pref)
 % See also TAND, ATAN2D, ATAN..
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. See
-% http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% http://www.chebfun.org for Chebfun information.
 
 % Obtain preferences:
 if ( nargin == 1 )

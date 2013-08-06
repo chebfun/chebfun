@@ -4,7 +4,7 @@ function g = atan(f, pref)
 % See also TAN, ATAND.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. See
-% http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% http://www.chebfun.org for Chebfun information.
 
 % [TODO]: atan2.m, atan2d.m
 
