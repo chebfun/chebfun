@@ -149,11 +149,6 @@ classdef chebfun
             else
                 % Construct from function_handle, numeric, or string input:
                 
-                % Convert string input to function_handle:
-                if ( ischar(op) )
-                    op = str2op(op);
-                end
-                
                 % Call the main constructor:
                 [f.funs, f.domain] = chebfun.constructor(op, dom, pref);
                 
@@ -272,9 +267,11 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
         domain = pref.chebfun.domain;
     end
 
+    vectorize = false;
     % Obtain additional preferences:
     while ( ~isempty(args) )
         if ( any(strcmpi(args{1}, {'chebpts1', 'chebpts2', 'equi'})) )
+            % Determine tech for sampled values:
             if ( strcmpi(args{1}, 'chebpts1') )
                 pref = chebfun.pref(pref, 'tech', 'chebtech1');
             elseif ( strcmpi(args{1}, 'chebpts2') )
@@ -285,20 +282,47 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
             end
             args(1) = [];
         elseif ( strcmpi(args{1}, 'vectorize' ) )
-            % [TODO]: This.
-            error('vectorize not yet implemented.');
+            % Vectorise flag for function_handles.
+            vectorize = true;
+            args(1) = [];
         elseif ( isnumeric(args{1}) )
-            % [TODO]: This.
-            error('chebfun(op, n) not yet implemented.');
+            % g = chebfun(@(x) f(x), N)
+            % [TODO]: This is abusing PREF a little..
+            pref.chebfun.n = args{1};
+            args(1) = [];
         else
             % Update these preferences:
             pref = chebfun.pref(pref, args{1}, args{2});
             args(1:2) = [];
         end
     end
+    
+    % [TODO]: Should we do the following for all elements in a cell input?
+    % Convert string input to function_handle:
+    if ( ischar(op) )
+        op = str2op(op);
+    end
+    if ( isa(op, 'function_handle') && vectorize )
+        % [TODO]: Should we reinstate VECTORCHECK()?
+        op = vec(op);
+    end
 
 end
 
+function g = vec(f)
+%VEC  Vectorize a function or string expression.
+%   VEC(F), if F is a function handle or anonymous function, returns a function
+%   that returns vector outputs for vector inputs by wrapping F inside a loop.
+g = @loopwrapper;
+% ----------------------------
+    function v = loopwrapper(x)
+        v = zeros(size(x));
+        for j = 1:numel(v)
+            v(j) = f(x(j));
+        end
+    end
+% ----------------------------
+end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% JUNK
