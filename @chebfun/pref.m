@@ -82,9 +82,9 @@ if ( isfield(prefs, classname) )  % It does, so either:
     if ( numel(varargin) == 0 )
         return                    % a) No props to change, return
     else
-        p = prefs.(classname);    % b) Grab funcheb2 prefs
+        p = prefs.(classname);    % b) Grab chebfun prefs
     end
-else                              % No funcheb2 prefs found, so make some:
+else                              % No chebfun prefs found, so make some:
     %p.blowup      = false;
     p.eps         = 2^-52;
     p.extrapolate = true;
