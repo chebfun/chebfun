@@ -83,7 +83,7 @@ end
 if ( isreal(f) )
     h3 = plot(data.xJumps, data.fJumps, varargin{:});
 else
-    h3 = plot(data.fJumps, varargin{:});
+    h3 = plot(data.fJumps.', varargin{:});
 end
 
 % Change the style accordingly:
