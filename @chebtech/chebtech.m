@@ -354,7 +354,7 @@ classdef chebtech < smoothfun % (Abstract)
         varargout = plot(f, varargin)
         
         % Obtain data used for plotting a CHEBTECH object:
-        data = plotData(f)
+        data = plotData(f, g)
 
         % Addition of two CHEBTECH objects.
         f = plus(f, g)

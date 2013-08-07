@@ -38,6 +38,8 @@ function varargout = plot(f,varargin)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
+% [TODO]: Implement plotting of delta functions.
+
 % Deal with an empty input:
 if ( isempty(f) )
     if ( nargout == 1 )
@@ -49,7 +51,26 @@ end
 % Store the hold state of the current axis:
 holdState = ishold;
 
-data = plotData(f);
+%%
+% Get the data for plotting from PLOTDATA():
+if ( nargin > 1 && isa(varargin{1}, 'chebfun') )
+    % Deal with plot(f, g);
+    g = varargin{1};
+    varargin(1) = [];
+    % We can only plot real against real:
+    % [TODO]: Replace this once we have CHEBFUN/REAL() and CHEBFUN/IMAG().
+%     if ( ~isreal(f) || ~isreal(g) )
+%         warning('CHEBFUN:plot:complex', ...
+%            'Warning: Imaginary parts of complex X and/or Y arguments ignored.');
+%     end
+%     f = real(f);
+%     g = real(g);
+    % Call PLOTDATA():
+    data = plotData(f, g);
+else
+    g = [];
+    data = plotData(f);
+end
 
 %%
 % Plot the curve
