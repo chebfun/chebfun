@@ -38,7 +38,7 @@ end
 vscale = 0;
 
 % Sanity check:
-if ( iscell(op) && (size(op) ~= numIntervals - 1) )
+if ( iscell(op) && (numel(op) ~= numIntervals) )
     error('CHEBFUN:constructor:cellInput', ...
         ['Number of cell elements in OP must match the number of', ...
          'intervals in DOMAIN.'])

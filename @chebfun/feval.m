@@ -67,8 +67,8 @@ dom = f.domain;
 % Deal with feval(f, x, 'left') and feval(f, x, 'right'):
 if ( nargin > 2 )
     lr = varargin{1};
-    parse = strcmpi(lr, {'left', 'right', '-', '+'});
-    if ( ~any(parse) )
+    lrFlag = strcmpi(lr, {'left', 'right', '-', '+'});
+    if ( ~any(lrFlag) )
         if ( ischar(lr) )
             error('CHEBFUN:feval:leftrightchar',...
                 'Unknown input argument "%s".', lr);
@@ -77,15 +77,15 @@ if ( nargin > 2 )
         end
     end
     % We deal with this by reassigning imps to be left/right values.
-    if ( parse(1) || parse(3) ) % left
+    if ( lrFlag(1) || lrFlag(3) ) % left
         f.impulses(:,:,2:end) = []; % Level 2 imps are not needed here
         for j = 1:numFuns
-            f.impulses(j+1,1,1) = get(funs{j}, 'rval');
+            f.impulses(j+1,:,1) = get(funs{j}, 'rval');
         end
-    elseif ( parse(2) || parse(4) ) % right
+    elseif ( lrFlag(2) || lrFlag(4) ) % right
         f.impulses(:,:,2:end) = []; % Level 2 imps are not needed here
         for j = 1:numFuns
-            f.impulses(j,1,1) = get(funs{j}, 'lval');
+            f.impulses(j,:,1) = get(funs{j}, 'lval');
         end
     end
 end

@@ -173,4 +173,9 @@ pass(26) = norm(err(:), inf) < 10*f.epslevel*f.vscale;
 err = feval(f, 'right') - [sin(1) 1 exp(1i)].';
 pass(27) = norm(err(:), inf) < 10*f.epslevel*f.vscale;
 
+% Test feval(chebfun, location, 'left'/'right'):
+f = chebfun({@(x) [x, 2*x], @(x) [3*x, 4*x]}, [0 1 2]);
+pass(28) = norm(feval(f, 1, 'left') - [1, 2], inf) < 10*f.epslevel*f.vscale;
+pass(29) = norm(feval(f, 1, 'right') - [3, 4], inf) < 10*f.epslevel*f.vscale;
+
 end

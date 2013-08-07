@@ -61,7 +61,7 @@ pass(6) = norm(feval(h, x) - feval(g, x)) < 10*max(get(g,'vscale'))*tol;
 f = bndfun(@(x) x.^2, dom);
 g = bndfun(@(x) sin(x), [0 dom(2)^2]);
 h = compose(f, g);
-pass(7) = norm(feval(h, x) - sin(x.^2), inf) < 7*max(get(h,'vscale'))*tol;
+pass(7) = norm(feval(h, x) - sin(x.^2), inf) < 10*max(get(h,'vscale'))*tol;
 
 % Compose f(g), when f and g are BNDFUN objects and g is array-valued:
 f = bndfun(@(x) x.^2, dom);
