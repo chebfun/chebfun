@@ -61,7 +61,8 @@ if ( any(f.exponents) )
     % if min or max is empty, then we need to do more work
     if ( isempty(minF) || isempty(maxF) )       
         % find the roots of the derivative for local minima
-        r = roots(diff(f));
+        fp = diff(f);
+        r = roots(fp);
         % append the end points and remove duplicates
         r = unique([-1;r;1]);
         if ( isempty(maxF) )

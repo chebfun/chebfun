@@ -10,11 +10,6 @@ end
 % Set a tolerance.
 tol = 10*pref.singfun.eps;
 
-% Generate a few random points to use as test values.
-seedRNG(6178);
-d = 2;
-x = 2*(1-10^(-d)) * rand(100, 1) - (1-10^(-d));
-
 % The order of the exponents:
 a = 0.56;
 b = -0.56;
