@@ -123,7 +123,7 @@ end
 
 higherImpulses = f.impulses(:,:,2:end);
 % Only one row:
-if ( (size(f.impulses, 3) == 1) || ~any(higherImpulses(:)) )
+if ( ~any(higherImpulses(:)) )
     % Loop over the funs:
     for k = 1:numFuns + 1
         idx = x == dom(k);

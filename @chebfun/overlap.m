@@ -36,6 +36,10 @@ if ( (length(fDom) ~= length(gDom)) || ~all(fDom == gDom) )
     % Breakpoints do not match. Compute the new objects using RESTRICT():
     f = restrict(f, newDom);
     g = restrict(g, newDom);
+    
+    % Get the new impulses:
+    fImps = f.impulses;
+    gImps = g.impulses;
 end
 
 % Pad the impulse arrays so that outputs store impulse data to the same order.
