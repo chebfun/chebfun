@@ -52,45 +52,48 @@ vtol = el*vs;
 dom = f.domain;
 
 % Initialise vector to store roots:
-r = [];
+NaNRow = NaN(1, size(f, 2));
+r = NaNRow;
 
 % Zero impulses are roots.
-if ( any(abs(f.impulses(1,:,1))) < vs*htol )
+idx = any(abs(f.impulses(1,:,1)) < vs*htol);
+if ( any(idx) )
     % Left impulses is zero: (or sufficiently close)
-    r = dom(1);
+    r(idx) = dom(1);
+else
+    r = [];
 end
 
 funs = f.funs;
 nFuns = numel(funs);
 for k = 1:nFuns
 
+    %% Roots within the subdomains:
     % Get the roots of the current fun:
     rk = roots(funs{k}, rootsPref);
-
     % Trim out roots that are repeated on either side of the breakpoint:
     if ( ~isempty(r) )
-        rk(abs(r(end) - rk) < htol) = [];
+        rk(abs(bsxfun(@minus, max(r, [], 1), rk)) < htol) = NaN;
     end
-
     % Append new roots to r:
     r = [ r ; rk ]; %#ok<AGROW>
-
-    % Are any roots at the next breakpoint?
-    if ( ~isempty(r) && abs(r(end) - dom(k+1)) < htol )
-        % The next breakpoint is already in the roots list.
-
-    elseif ( abs(f.impulses(k+1,:,1)) < vtol )
-        % The next impulse is zero (or small). Add a root:
-        r = [ r ; dom(k+1) ];
-
-    elseif ( rootsPref.jumpRoot && k < nFuns && ...
-                get(funs{k}, 'rval') * get(funs{k+1}, 'lval') <= 0 )
-        % The solution jumps in sign across the break. Add a root:
-        r = [ r ; dom(k+1) ];
-
+        
+    %% Look for roots at breakpoints:
+    idx = abs(f.impulses(k+1,:,1)) < vtol;       % Include if zero impulses
+    if ( rootsPref.jumpRoot && k < nFuns )       % Or a change in sign in a jump
+        idx = idx | ( get(funs{k}, 'rval').*get(funs{k+1}, 'lval') <= 0 );
     end
+    idx2 = abs(max(r, [], 1) - dom(k+1)) < htol; % But not already a root!
+    rk = NaNRow;
+    rk(idx & ~idx2) = dom(k+1);
+    % Append new roots to r:
+    r = [ r ; rk ]; %#ok<AGROW>    
 
 end
+
+% Remove unnecessary NaNs:
+r = sort(r);
+r(isnan(max(r, [], 2)),:) = [];
 
 end
 
