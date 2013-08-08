@@ -217,8 +217,11 @@ classdef chebfun
         % Horizontal scale of a CHEBFUN object.
         out = hscale(f);
         
-        % True for real CHEBTECH.
+        % True for real CHEBFUN.
         out = isreal(f);
+        
+        % Length of a CHEBFUN.
+        out = length(f);
         
         % Overlap the domain of two CHEBFUN objects.
         [f, g] = overlap(f, g);
