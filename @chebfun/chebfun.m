@@ -196,8 +196,17 @@ classdef chebfun
     % Methods implemented by CHEBFUN class.
     methods
         
+        % Compose CHEBFUN objects with another function.
+        h = compose(f, op, g, pref)
+        
+        % Compose two CHEBFUN objects (i.e., f(g)).
+        h = composeChebfuns(f, g, pref)
+        
         % Display a CHEBFUN object.
         display(f);
+        
+        % Compare domains of two CHEBFUN objects.
+        pass = domainCheck(f, g);
         
         % Accuracy estimate of a CHEBFUN object.
         out = epslevel(f);
@@ -208,12 +217,27 @@ classdef chebfun
         % Horizontal scale of a CHEBFUN object.
         out = hscale(f);
         
-        % Vertical scale of a CHEBFUN object.
-        out = vscale(f);
+        % True for real CHEBTECH.
+        out = isreal(f);
+        
+        % Overlap the domain of two CHEBFUN objects.
+        [f, g] = overlap(f, g);
+        
+        % Restrict s CHEBFUN object to a subdomain.
+        f = restrict(f, newDomain);
+        
+        % The roots of the CHEBFUN F.
+        r = roots(f, varargin);
+        
+        % Simplify the representation of a CHEBFUN obect.
+        f = simplify(f, tol);
         
         % Size of a CHEBFUN object.
         [s1, s2] = size(f, dim);
         
+        % Vertical scale of a CHEBFUN object.
+        out = vscale(f);
+                
     end
     
 end
