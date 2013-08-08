@@ -1,11 +1,16 @@
 function f = restrict(f, newDomain)
-%RESTRICT    Restrict a chebfun to a subinterval.
-%   G = RESTRICT(F, S) returns a chebfun G with domain [S(1), S(end)] which
-%   agrees with F on that interval. G will contain breakpoints at the same
-%   location as F within [S(1), S(end)]. Additional interior breakpoints can be
-%   included by passing S(2), ..., S(end)-1. G = F{S} is an equivalent syntax.
+%RESTRICT    Restrict a CHEBFUN object to a subinterval.
+%   G = RESTRICT(F, [S1, S2]) returns a CHEBFUN G defined on the interval [S1,
+%   S2] which agrees with F on that interval. Any interior breakpoints in
+%   F.domain within [S1, S2] are kept in G.domain.
 %
-%   If [S(1) >= S(end)] then an error is returned.
+%   G = RESTRICT(F, S), where S is a row vector, will introduce additional
+%   interior breakpoints at S(2:end-2).
+%
+%   In both cases, if S(1) >= S(end), S(1) < F.domain(1), or S(end) >
+%   F.domain(end), then an error is returned.
+%
+%   G = F{S} is an equivalent syntax.
 %
 % See also OVERLAP, SUBSREF, DEFINE.
 
@@ -13,7 +18,10 @@ function f = restrict(f, newDomain)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty case:
-if ( isempty(f) || isempty(newDomain) )
+if ( isempty(f) )
+    return
+elseif ( isempty(newDomain) )
+    f = chebfun();
     return
 end
 
@@ -33,30 +41,30 @@ if ( (newDomain(1) < oldDomain(1)) || (newDomain(end) > oldDomain(end)) || ...
     error('CHEBFUN:restrict:subdom', 'Not a valid subdomain.');
 end
 
-% Obtain funs and impulses from f:
+% Obtain FUN cell and impulses from f:
 funs = f.funs;
 imps = f.impulses;
 
 % Discard intervals to the left:
 discardIntsLeft = oldDomain(2:end) < newDomain(1);
-oldDomain([discardIntsLeft false]) = [];
+oldDomain([discardIntsLeft, false]) = [];
 funs(discardIntsLeft) = [];
 imps([discardIntsLeft, false],:,:) = [];
 
 % Discard intervals to the right:
 discardIntsRright = oldDomain(1:end-1) > newDomain(end);
-oldDomain([false discardIntsRright]) = [];
+oldDomain([false, discardIntsRright]) = [];
 funs(discardIntsRright) = [];
 imps([false, discardIntsRright],:,:) = [];
 
 % Take the union of the new and old domains:
-if ( ~isempty( oldDomain(2:end-1) ) )
-    % NB:  the old endpoints will either be in newDomain or are not required.
+if ( ~isempty( oldDomain(2:end-1) ) ) % Required due to Matlab union() behavior.
+    % NB: the old endpoints will either be in newDomain or are not required.
     newDomain = union(oldDomain(2:end-1), newDomain);
 end
 numFuns = numel(funs);
 
-% Initialise storage for new funs and impulses:
+% Initialise storage for new FUN objects and impulses:
 newFuns = cell(1, numel(newDomain)-1);
 newImps = zeros(numel(newDomain), size(imps, 2), size(imps, 3));
 
@@ -72,7 +80,7 @@ for k = 1:numFuns
     else
         numSubs = sum(subsIdx)-1;
         if ( numSubs > 0 )
-            % Restrict the fun at the corresponding break points:
+            % Restrict the FUN at the corresponding break points:
             newFuns(l+(1:numSubs)) = restrict(funs{k}, newDomain(subsIdx));
             l = l + numSubs;
         end
@@ -86,7 +94,7 @@ newImps(:,:,1) = chebfun.jumpVals(newFuns);
 locB(~logical(locB)) = [];
 newImps(locB,:,:) = imps(mask,:,:);
 
-% Attach data to chebfun to return as output:
+% Attach data to CHEBFUN to return as output:
 f.domain = newDomain;
 f.funs = newFuns;
 f.impulses = newImps;
