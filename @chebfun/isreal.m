@@ -3,8 +3,8 @@ function out = isreal(f)
 %   ISREAL(F) returns logical true if F does not have an imaginary part and
 %   false otherwise.
 %
-%   ~ISREAL(F) detects chebfuns that have an imaginary part even if it is all
-%   zero.
+%   Unlike the built in MATLAB function, ~ISREAL(F) does not detect CHEBFUN
+%   objects that have an all zero imaginary part.
 %
 % See also REAL, IMAG.
 
