@@ -33,13 +33,21 @@ pass(4) = test_one_compose_chebfuns(@(x) sin(x - 0.1), ...
 pass(5) = test_one_compose_chebfuns(@(x) abs(sin(2*(x - 0.1))), ...
     @(x) abs(cos(2*(x + 0.2))), [-1 1], pref_split);
 
+% Single-column chebfun of an array-valued chebfun.
+pass(6) = test_one_compose_chebfuns(@(x) [sin(x - 0.1) cos(x - 0.2)], ...
+    @(x) exp(x), [-1 1], pref);
+
+% Array-valued chebfun of a single-column chebfun.
+pass(7) = test_one_compose_chebfuns(@(x) exp(x)/exp(1), ...
+    @(x) [sin(x - 0.1) cos(x - 0.2)], [-1 1], pref);
+
 % Can't compose two array-valued chebfuns.
 try
     test_one_compose_chebfuns(@(x) [sin(x) cos(x)], @(x) [exp(x) -sin(x)], ...
         [-1 1], pref);
-    pass(6) = false;
+    pass(8) = false;
 catch ME
-    pass(6) = true;
+    pass(8) = true;
 end
 
 end
