@@ -20,30 +20,24 @@ if ( isempty(f) && isempty(g) )
     return
 end
 
-% Obtain the domains of f and g:
-fDom = f.domain;
-gDom = g.domain;
-fImps = f.impulses;
-gImps = g.impulses;
+if ( (length(f.domain) ~= length(g.domain)) || ~all(f.domain == g.domain) )
+    % Tweak the domain to prevent the introduction of tiny intervals:
+    [f, g] = tweakDomain(f, g);
 
-% Take the union of the two domains: (NB:  At least one of fDom or gDom is
-% nonempty, so we don't need to worry about the orientation of the output of
-% union().)
-newDom = union(fDom, gDom);
-
-if ( (length(fDom) ~= length(gDom)) || ~all(fDom == gDom) )
-    % [TODO]: Should we allow a tolerance so as not to introduce tiny intervals?
+    % Take the union of the two domains: (NB: At least one of fDom or gDom is
+    % nonempty, so we don't need to worry about the orientation of the output of
+    % union().)
+    newDomain = union(f.domain, g.domain);
     
     % Breakpoints do not match. Compute the new objects using RESTRICT():
-    f = restrict(f, newDom);
-    g = restrict(g, newDom);
+    f = restrict(f, newDomain);
+    g = restrict(g, newDomain);
     
-    % Get the new impulses:
-    fImps = f.impulses;
-    gImps = g.impulses;
 end
 
 % Pad the impulse arrays so that outputs store impulse data to the same order.
+fImps = f.impulses;
+gImps = g.impulses;
 maxImpOrder = max(size(fImps, 3), size(gImps, 3));
 padF = zeros(size(fImps, 1), size(fImps, 2), maxImpOrder - size(fImps, 3));
 f.impulses = cat(3, fImps, padF);
