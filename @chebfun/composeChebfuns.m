@@ -42,9 +42,33 @@ if ( ~isa(g, 'chebfun') )
     % Call COMPOSE():
     h = compose(f, g, pref);
     return
-elseif ( ~isa(f, 'chebfun') )
+end
+
+%% ERROR CHECKING:
+
+if ( ~isa(f, 'chebfun') )
     error('CHEBFUN:compose:NotAChebfun', ...
         'Cannot compose a function handle and CHEBFUN in this way.');
+end
+
+if ( xor(f.isTransposed, g.isTransposed) )
+    error('CHEBFUN:composeChebfuns:trans', ...
+        'Cannot compose a row CHEBFUN with a column CHEBFUN.');
+end
+
+isTransposed = f.isTransposed;
+if ( isTransposed )
+    % Make everything a column CHEBFUN for now:
+    f.isTransposed = 0;
+    g.isTransposed = 0;
+    % [TODO]: Add this once TRANSPOSE() is implemented.
+%     f = f.';
+%     g = g.';
+end
+
+if ( size(f, 2) > 1 && size(g, 2) > 1 )
+     error('CHEBFUN:composeChebfuns:trans', ...
+        'Cannot compose two array-valued CHEBFUN objects.');
 end
 
 % f must be a real-valued function:
@@ -74,6 +98,8 @@ if ( size(f.impulses, 3) > 1 || size(g.impulses, 3) > 1 )
         'Composition does not handle impulses / delta functions.')
 end
 
+%% Locate breakpoints in G:
+
 % If g has breakpoints, find the corresponding x-points in the domain of f:
 newDom = f.domain;
 if ( numel(g.domain) > 2 )
@@ -89,10 +115,18 @@ newDom = unique(sort(newDom));
 % Restict f to the new domain:
 f = restrict(f, newDom);
 
+%% Call COMPOSE():
+
 % Call compose:
 h = compose(f, @(f) feval(g, f), pref);
 
 % Fix impulse values:
 h.impulses(:,:,1) = feval(g, feval(f, h.domain.'));
+
+if ( isTransposed )
+    h.isTransposed = 1;
+    % [TODO]: Add this once TRANSPOSE() is implemented.
+%     h = h.';
+end
 
 end
