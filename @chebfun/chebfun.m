@@ -196,6 +196,9 @@ classdef chebfun
     % Methods implemented by CHEBFUN class.
     methods
         
+        % Plot information regarding the representation of a CHEBFUN object:
+        h = chebpolyplot(f, varargin);
+        
         % Display a CHEBFUN object.
         display(f);
         
@@ -208,11 +211,23 @@ classdef chebfun
         % Horizontal scale of a CHEBFUN object.
         out = hscale(f);
         
-        % Vertical scale of a CHEBFUN object.
-        out = vscale(f);
+        % Plot a CHEBFUN object on a loglog scale:
+        h = loglog(f, varargin);
+        
+        % Plot a CHEBFUN object:
+        h = plot(f, varargin);
+        
+        % Plot a CHEBFUN object on a log-linear scale:
+        h = semilogx(f, varargin);
+        
+        % Plot a CHEBFUN object on a linear-log scale:
+        h = semilogy(f, varargin);
         
         % Size of a CHEBFUN object.
         [s1, s2] = size(f, dim);
+        
+        % Vertical scale of a CHEBFUN object.
+        out = vscale(f);
         
     end
     
