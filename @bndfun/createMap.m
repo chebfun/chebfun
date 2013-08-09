@@ -7,7 +7,7 @@ function map = createMap(ends)
 %      MAP.DER is the derivative of the map defined in MAP.FOR
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 a = ends(1);
 b = ends(2);
