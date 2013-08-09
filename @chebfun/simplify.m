@@ -18,9 +18,9 @@ end
 
 % Choose a tolerance:
 % [TODO]: This seems to be the best we can do without vector epslevels?
-el = get(f, 'epslevel-local');
-vs = get(f, 'vscale-local');
-tol = max(max(bsxfun(@times, el, vs), tol), [], 2);
+glob_acc = epslevel(f).*vscale(f); % Global error estimate of the CHEBFUN.
+loc_vscl = get(f, 'vscale-local'); % Local vscale of the FUN objects.
+tol = max(max(tol, glob_acc) ./ loc_vscl, [], 2); % Simplification tolerances.
 
 % Simplfy each of the FUN objects:
 for k = 1:numel(f.funs)
