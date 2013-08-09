@@ -56,12 +56,10 @@ NaNRow = NaN(1, size(f, 2));
 r = NaNRow;
 
 % Zero impulses are roots.
-idx = any(abs(f.impulses(1,:,1)) < vs*htol);
+idx = abs(f.impulses(1,:,1)) < vs*htol;
 if ( any(idx) )
     % Left impulses is zero: (or sufficiently close)
     r(idx) = dom(1);
-else
-    r = [];
 end
 
 funs = f.funs;
@@ -78,14 +76,16 @@ for k = 1:nFuns
     % Append new roots to r:
     r = [ r ; rk ]; %#ok<AGROW>
         
-    %% Look for roots at breakpoints:
+    %% Look for roots at next breakpoint:
     idx = abs(f.impulses(k+1,:,1)) < vtol;       % Include if zero impulses
     if ( rootsPref.jumpRoot && k < nFuns )       % Or a change in sign in a jump
         idx = idx | ( get(funs{k}, 'rval').*get(funs{k+1}, 'lval') <= 0 );
     end
-    idx2 = abs(max(r, [], 1) - dom(k+1)) < htol; % But not already a root!
+    if ( ~isempty(r) )
+        idx = idx & ~(abs(max(r, [], 1) - dom(k+1)) < htol); % But not already a root!
+    end
     rk = NaNRow;
-    rk(idx & ~idx2) = dom(k+1);
+    rk(idx) = dom(k+1);
     % Append new roots to r:
     r = [ r ; rk ]; %#ok<AGROW>    
 
