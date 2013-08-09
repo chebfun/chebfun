@@ -34,7 +34,7 @@ end
 % Use the default tolerance if none was supplied:
 if ( nargin < 2 )
     pref = chebtech.pref();
-    tol = pref.chebtech.eps;
+    tol = f.epslevel;
 end
 
 % Zero all coefficients smaller than the tolerance relative to F.VSCALE:
