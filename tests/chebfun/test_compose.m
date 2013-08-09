@@ -48,30 +48,44 @@ pass(6) = test_compose_unary(@(x) sin(10*(x - 0.1)), [-1 1], @abs, pref_split);
 pass(7) = test_compose_unary(@(x) abs(sin(3*(x - 0.1))) - 0.5, ...
     [-1 -0.95 0.1 1], @abs, pref_split);
 
+% Test array-valued chebfun.
+pass(8) = test_compose_unary(@(x) [cos(2*(x + 0.2)), sin(2*(x - 0.1))], ...
+    [-1 1], @exp, pref);
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Test composition with binary operators.
 
 % Smooth operator with smooth functions.
-pass(8) = test_compose_binary(@(x) cos(2*(x + 0.2)), [-1, 1], ...
+pass(9) = test_compose_binary(@(x) cos(2*(x + 0.2)), [-1, 1], ...
     @(x) sin(x - 0.1), [-1 1], @(x, y) x.*y, pref);
 
 % Smooth operator with smooth functions, non-default domain.
-pass(9) = test_compose_binary(@(x) cos(2*(x + 0.2)), [-2, 7], ...
+pass(10) = test_compose_binary(@(x) cos(2*(x + 0.2)), [-2, 7], ...
     @(x) sin(x - 0.1), [-2 7], @(x, y) x.^2 - y.^2, pref);
 
 % Smooth operator with one non-smooth function input.
-pass(10) = test_compose_binary(@(x) cos(2*(x + 0.2)), [-1, 1], ...
+pass(11) = test_compose_binary(@(x) cos(2*(x + 0.2)), [-1, 1], ...
     @(x) abs(x - 0.1), [-1 0.1 1], @(x, y) sin(x.*y), pref);
 
 % Non-smooth operator with smooth functions, splitting enabled.
-pass(11) = test_compose_binary(@(x) cos(2*(x + 0.2)), [-1, 1], ...
+pass(12) = test_compose_binary(@(x) cos(2*(x + 0.2)), [-1, 1], ...
     @(x) sin(x - 0.1), [-1 1], @(x, y) abs(x.*y), pref_split);
 
 % Non-smooth operator with one non-smooth function input.
-pass(12) = test_compose_binary(@(x) cos(2*(x + 0.2)), [-1, 1], ...
+pass(13) = test_compose_binary(@(x) cos(2*(x + 0.2)), [-1, 1], ...
     @(x) abs(x - 0.1), [-1 0.1 1], @(x, y) cos(abs(x.*y) - 0.1), pref_split);
 
-% [TODO]:  Once composeChebfuns() is working, add tests for it.
+% Test array-valued chebfun.
+pass(14) = test_compose_binary(@(x) [cos(2*(x + 0.2)) sin(2*(x - 0.1))], ...
+    [-1 1], @(x) [exp(x) 1./(1 + 25*(x - 0.1).^2)], [-1 1], ...
+    @(x, y) x + 2*y, pref);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Test composition of two chebfuns.
+
+% [TODO]:  Once composeChebfuns() can handle domain checking, test that too.
+
+pass(15) = 
 
 end
 
