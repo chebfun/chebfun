@@ -15,7 +15,7 @@ function coeffs = chebpoly(values)
 %   [Mathematical reference]
 
 %   Copyright 2013 by The University of Oxford and The Chebfun Developers. 
-%   See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+%   See http://www.chebfun.org for Chebfun information.
 
 % Get the length of the input:
 n = size(values, 1);

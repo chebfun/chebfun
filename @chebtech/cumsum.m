@@ -13,7 +13,7 @@ function f = cumsum(f, m, pref)
 % See also DIFF, SUM.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % If the CHEBTECH G of length n is represented as
