@@ -2,7 +2,7 @@ function r = roots(f, varargin)
 %ROOTS   Roots of a CHEBFUN.
 %   ROOTS(F) returns the roots of F in its domain of definition. By default,
 %   roots are returned at jumps in F which pass through zero, and if F is
-%   identically zero on a part of its domain thena single roots is returned at
+%   identically zero on a part of its domain, then a single root is returned at
 %   the midpoint. Each of these behaviours can be modified using the optional
 %   inputs described below:
 %
@@ -42,9 +42,9 @@ function r = roots(f, varargin)
 %  array-valued FUN objects by simply ignoring NaNs whenever we come across
 %  them. In particular, we make use of the fact that the built in MAX() command
 %  ignores NaNs. Once we have looped through all the intervals, we sort the
-%  resulting matrix of roots (note that SORT() also treats NaN as great than any
-%  double, whereas MAX() in effect treats it as less than any double) and then
-%  remove any rows which contain only NaN values.
+%  resulting matrix of roots (note that SORT() also treats NaN as greater than
+%  any double, whereas MAX() in effect treats it as less than any double) and
+%  then remove any rows which contain only NaN values.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Deal with the trivial empty case:
@@ -67,10 +67,10 @@ NaNRow = NaN(1, size(f, 2));
 r = NaNRow;
 
 % Zero impulses are roots.
-idx = abs(f.impulses(1,:,1)) < vs*htol;
-if ( any(idx) )
+index = abs(f.impulses(1,:,1)) < vs*htol;
+if ( any(index) )
     % Left impulses is zero: (or sufficiently close)
-    r(idx) = dom(1);
+    r(index) = dom(1);
 end
 
 funs = f.funs;
@@ -89,15 +89,16 @@ for k = 1:nFuns
     r = [ r ; rk ]; %#ok<AGROW>
         
     %% Look for roots at next breakpoint:
-    idx = abs(f.impulses(k+1,:,1)) < vtol;       % Include if zero impulses
+    index = abs(f.impulses(k+1,:,1)) < vtol;     % Include if zero impulses
     if ( rootsPref.jumpRoot && k < nFuns )       % Or a change in sign in a jump
-        idx = idx | ( get(funs{k}, 'rval').*get(funs{k+1}, 'lval') <= 0 );
+        index = index | ( get(funs{k}, 'rval').*get(funs{k+1}, 'lval') <= 0 );
     end
     if ( ~isempty(r) )
-        idx = idx & ~(abs(max(r, [], 1) - dom(k+1)) < htol); % But not already a root!
+                                                 % But not if already a root!
+        index = index & ~(abs(max(r, [], 1) - dom(k+1)) < htol);
     end
     rk = NaNRow;
-    rk(idx) = dom(k+1);
+    rk(index) = dom(k+1);
     % Append new roots to r:
     r = [ r ; rk ]; %#ok<AGROW>    
 

@@ -1,7 +1,7 @@
 function h = composeChebfuns(f, g, pref)
 %COMPOSECHEBFUNS   Chebfun composition.
-%   COMPOSECHEBFUNS(G, F) returns the composition of the CHEBFUN objects F and
-%   G, G(F). The range of F must be in the domain of Gor else an error is
+%   COMPOSECHEBFUNS(F, G) returns the composition of the CHEBFUN objects F and
+%   G, G(F). The range of F must be in the domain of G or else an error is
 %   thrown. An equivalent syntax is G(F).
 %
 %   COMPOSECHEBFUN(F, G, PREF) uses the CHEBFUN preferences contained in the
@@ -66,7 +66,7 @@ if ( isTransposed )
 %     g = g.';
 end
 
-if ( size(f, 2) > 1 && size(g, 2) > 1 )
+if ( (size(f, 2) > 1) && (size(g, 2) > 1) )
      error('CHEBFUN:composeChebfuns:trans', ...
         'Cannot compose two array-valued CHEBFUN objects.');
 end
@@ -93,7 +93,7 @@ end
 % end
 
 % Delta functions:
-if ( size(f.impulses, 3) > 1 || size(g.impulses, 3) > 1 )
+if ( (size(f.impulses, 3) > 1) || (size(g.impulses, 3) > 1) )
     warning('CHEBFUN:compose:imps',  ...
         'Composition does not handle impulses / delta functions.')
 end
@@ -112,7 +112,7 @@ if ( numel(g.domain) > 2 )
 end
 newDom = unique(sort(newDom));
 
-% Restict f to the new domain:
+% Restrict f to the new domain:
 f = restrict(f, newDom);
 
 %% Call COMPOSE():
