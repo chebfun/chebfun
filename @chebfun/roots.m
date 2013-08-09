@@ -34,7 +34,18 @@ function r = roots(f, varargin)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% [TODO]: Array-valued CHEBFUN objects are dealt with very poory here.
+% [TODO]: Scales and tolerances are quite arbitrary here..
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Developer note: 
+%  Here we get around the fact that FUN/ROOTS will return NaN values for
+%  array-valued FUN objects by simply ignoring NaNs whenever we come across
+%  them. In particular, we make use of the fact that the built in MAX() command
+%  ignores NaNs. Once we have looped through all the intervals, we sort the
+%  resulting matrix of roots (note that SORT() also treats NaN as great than any
+%  double, whereas MAX() in effect treats it as less than any double) and then
+%  remove any rows which contain only NaN values.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Deal with the trivial empty case:
 if ( isempty(f) )
@@ -71,6 +82,7 @@ for k = 1:nFuns
     rk = roots(funs{k}, rootsPref);
     % Trim out roots that are repeated on either side of the breakpoint:
     if ( ~isempty(r) )
+        % NOTE: Here we use the fact that MAX() ignores NaN values!
         rk(abs(bsxfun(@minus, max(r, [], 1), rk)) < htol) = NaN;
     end
     % Append new roots to r:
@@ -92,8 +104,8 @@ for k = 1:nFuns
 end
 
 % Remove unnecessary NaNs:
-r = sort(r);
-r(isnan(max(r, [], 2)),:) = [];
+r = sort(r, 1);             % Sort will place NaNs in the final rows.
+r(all(isnan(r), 2),:) = []; % This removes any rows which contain only NaNs.
 
 end
 

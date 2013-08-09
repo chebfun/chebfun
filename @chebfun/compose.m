@@ -65,11 +65,11 @@ if ( isempty(f) )
     return
 end
 
-% % Call the COMPOSECHEBFUNS method if OP is a CHEBFUN object:
-% if ( isa(op, 'chebfun') )
-%     f = composeChebfuns(f, g, pref);
-%     return
-% end
+% Call the COMPOSECHEBFUNS method if OP is a CHEBFUN object:
+if ( isa(op, 'chebfun') )
+    f = composeChebfuns(f, g, pref);
+    return
+end
 
 %% Initialise:
 

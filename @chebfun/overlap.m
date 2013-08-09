@@ -33,6 +33,7 @@ newDom = union(fDom, gDom);
 
 if ( (length(fDom) ~= length(gDom)) || ~all(fDom == gDom) )
     % [TODO]: Should we allow a tolerance so as not to introduce tiny intervals?
+    
     % Breakpoints do not match. Compute the new objects using RESTRICT():
     f = restrict(f, newDom);
     g = restrict(g, newDom);

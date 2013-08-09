@@ -68,19 +68,6 @@ end
 %         minF, maxF, g.domain(1), g.domain(end))
 % end
 
-% % Check to see if f or g is 'x';
-% % [TODO]: Is this worthwhile?
-% xg = chebfun(@(x) x, g.domain);
-% if ( norm(g - xg, 2) < get(g, 'epslevel') )
-%     h = f;
-%     return
-% end
-% xf = chebfun(@(x) x, f.domain);
-% if ( norm(f - xf, 2) < get(g, 'epslevel') )
-%     h = g;
-%     return
-% end
-
 % Delta functions:
 if ( size(f.impulses, 3) > 1 || size(g.impulses, 3) > 1 )
     warning('CHEBFUN:compose:imps',  ...
@@ -93,8 +80,8 @@ if ( numel(g.domain) > 2 )
     gDom = g.domain(2:end-1);
     for k = 1:length(gDom)
         % [TODO]: This requires @CHEBFUN/MINUS.
-        r = roots(f - gDom(k));
-        newDom = [newDom, r(:).']; %#ok<AGROW>
+%         r = roots(f - gDom(k));
+%         newDom = [newDom, r(:).']; %#ok<AGROW>
     end
 end
 newDom = unique(sort(newDom));
@@ -103,7 +90,7 @@ newDom = unique(sort(newDom));
 f = restrict(f, newDom);
 
 % Call compose:
-h = compose(f, @(f) feval(g, f));
+h = compose(f, @(f) feval(g, f), pref);
 
 % Fix impulse values:
 h.impulses(:,:,1) = feval(g, feval(f, h.domain));
