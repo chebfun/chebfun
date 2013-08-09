@@ -80,19 +80,20 @@ classdef chebfun
     
     properties (Access = public)
 
-        % DOMAIN of definition of a CHEBFUN object. If K>1 then the CHEBFUN is
-        % referred to as a "piecewise". CHEBFUN.  The first and last values of
-        % this vector define the left and right endpoints of the domain,
-        % respectively.  The other values give the locations of the breakpoints
-        % that define the domains of the individual FUN objects comprising the
-        % CHEBFUN.  The entries in this vector should be strictly increasing.
+        % DOMAIN of definition of a CHEBFUN object. If K =length(F.DOMAIN) is
+        % greater than 1 then the CHEBFUN is referred to as a "piecewise".
+        % CHEBFUN. The first and last values of this vector define the left and
+        % right endpoints of the domain, respectively. The other values give the
+        % locations of the interior breakpoints that define the domains of the
+        % individual FUN objects comprising the CHEBFUN. The entries in this
+        % vector should be strictly increasing.
         domain              % (1x(K+1) double)
 
         % FUNS is a cell array containing the FUN objects that comprise a
-        % piecewise CHEBFUN.  The the kth entry in this cell is the FUN
-        % defining the representation used by the CHEBFUN object on the
-        % interval (domain(k), domain(k+1). If M = size(f.funs, 2) is greater
-        % than 1, then the CHEBFUN object is referred to as "array valued".
+        % piecewise CHEBFUN. The the kth entry in this cell is the FUN defining
+        % the representation used by the CHEBFUN object on the open interval
+        % (F.DOMAIN(k), F.DOMAIN(k+1)). If M = size(f.funs, 2) is greater than
+        % 1, then the CHEBFUN object is referred to as "array valued".
         funs                % (Kx1 cell array of FUN objects)
 
         % IMPULSES is a three-dimensional array storing information about the
@@ -100,18 +101,16 @@ classdef chebfun
         % correspond to the breakpoints in the DOMAIN vector, and if M > 1 then
         % the columns correspond to the columns in an array-valued CHEBFUN.
         % Thus, F.IMPULSES(:, :, 1) is a matrix consisting of the values of
-        % each column of F at each breakpoint.  The third dimension is used for
+        % each column of F at each breakpoint. The third dimension is used for
         % storing information about higher-order delta functions that may be
-        % present at breakpoints.
-        %
-        % [TODO]:  Document how higher-order impulses are handled.
+        % present at breakpoints. (See "help dirac" for more details.)
         impulses = [];      % ((K+1) x M x (D+1) double)
 
         % ISTRANSPOSED determines whether a (possibly array-valued) CHEBFUN F
         % should be interpreted as a collection of "column" CHEBFUN objects (if
         % F.ISTRANSPOSED == 0, the default), which are considered (infxM)
         % arrays, and "row" CHEBFUN objects (if F.ISTRANSPOSED == 1), which are
-        % (Mxinf) arrrays.  This difference is only behavioral; the other
+        % (Mxinf) arrrays. This difference is only behavioral; the other
         % properties described above are _NOT_ stored differently if this flag
         % is set.)
         isTransposed = 0;   % (logical)
@@ -131,13 +130,14 @@ classdef chebfun
             [op, dom, pref] = parseInputs(varargin{:});
             
             if ( iscell(op) && all(cellfun(@(x) isa(x, 'fun'), op)) )
-                % Construct a CHEBFUN from an array of FUN objects:
+                % Construct a CHEBFUN from a cell array of FUN objects:
                 
                 if ( nargin > 1 )
                     error('CHEBFUN:chebfun:nargin', ...
                         'Only one input when passing an array of funs.')
                 end
                 
+                % Assign the cell to the .FUNS property:
                 f.funs = op;
                 % Collect the domains together:
                 dom = cellfun(@(fun) get(fun, 'domain'), f.funs, ...
@@ -190,6 +190,9 @@ classdef chebfun
         
         % Convert a string input to a function_handle.
         op = str2op(op);
+        
+        % Vectorise a function handle input.
+        op = vec(op);
         
     end
     
