@@ -160,7 +160,7 @@ function [g, ishappy, vscale] = getFun(op, domain, vscale, hscale, pref)
 %GETFUN controls the construction of funs
 
 % If the interval is very small then skip adaptation and treat OP as a constant:
-if ( diff(domain) < 2*1e-14*hscale )
+if ( diff(domain) < 2*1e-14*hscale && ~isnumeric(op) )
     op = op(mean(domain));
 end
 
