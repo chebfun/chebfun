@@ -44,17 +44,27 @@ function f = compose(f, op, g, pref)
 
 % [TODO]: vscale and tolerance?
 
-%% Parse inputs:
-numChebfuns = 2;
-if ( (nargin == 3) && isstruct(g) ) % compose(f, op, pref)
-    pref = chebfun.pref(g);
-    g = [];
-    numChebfuns = 1;
-elseif ( (nargin < 4) )             % compose(f, op, g)
+% Parse inputs:
+opIsBinary = false;
+
+if ( (nargin == 4) && ~isempty(g) ) % compose(f, op, g, pref)
+    opIsBinary = true;
+end
+
+if ( nargin < 4 )
     pref = chebfun.pref();
 end
-if ( (nargin < 3) || isempty(g) )   % compose(f, op) or compose(f, op, [], pref)
-    numChebfuns = 1;
+
+if ( nargin == 3 )
+    if ( isstruct(g) )              % compose(f, op, pref)
+        pref = chebfun.pref(g);
+        g = [];
+    else                            % compose(f, op, g)
+        opIsBinary = true;
+    end
+end
+
+if ( nargin < 3 )                   % compose(f, op) or compose(f, g)
     g = [];
 end
 
@@ -67,7 +77,7 @@ end
 
 % Call the COMPOSECHEBFUNS method if OP is a CHEBFUN object:
 if ( isa(op, 'chebfun') )
-    f = composeChebfuns(f, g, pref);
+    f = composeChebfuns(f, op, pref);
     return
 end
 
@@ -75,13 +85,13 @@ end
 
 % Initialise impulses. Note that higher-order impulse data is destroyed by
 % compose, so we only require the first impulse 'sheet' (i.e., impulses(:,:,1)):
-if ( numChebfuns == 1 )
-    fevalImps = feval(op, f.impulses(:,:,1));
-    newImps = fevalImps(1,:);
-else
-    % Call OVERLAP() if there are two CHEBFUN inputs:
+if ( opIsBinary )
+    % Call OVERLAP() if we are composing two CHEBFUN inputs with a binary op:
     [f, g] = overlap(f, g);
     fevalImps = feval(op, f.impulses(:,:,1), g.impulses(:,:,1));
+    newImps = fevalImps(1,:);
+else
+    fevalImps = feval(op, f.impulses(:,:,1));
     newImps = fevalImps(1,:);
 end
 
@@ -141,11 +151,11 @@ for k = 1:numInts
 
         % If not happy and splitting is on, get a CHEBFUN for that subinterval:
         domk = f.domain(k:k+1);
-        if ( numChebfuns == 1 )
-            newChebfun = chebfun(@(x) feval(op, feval(f, x)), domk, pref);
-        else
+        if ( opIsBinary )
             newChebfun = chebfun(@(x) feval(op, feval(f, x), feval(g, x)), ...
                 domk, pref);
+        else
+            newChebfun = chebfun(@(x) feval(op, feval(f, x)), domk, pref);
         end
 
         if ( ~get(newChebfun, 'ishappy') ) % Throw a warning if we're not happy:
