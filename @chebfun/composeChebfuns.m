@@ -93,6 +93,6 @@ f = restrict(f, newDom);
 h = compose(f, @(f) feval(g, f), pref);
 
 % Fix impulse values:
-h.impulses(:,:,1) = feval(g, feval(f, h.domain));
+h.impulses(:,:,1) = feval(g, feval(f, h.domain.'));
 
 end
