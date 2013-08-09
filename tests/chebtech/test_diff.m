@@ -7,9 +7,6 @@ if ( nargin < 1 )
     pref = chebtech.pref;
 end
 
-% Set a tolerance.
-tol = 1e3*pref.chebtech.eps;
-
 % Generate a few random points to use as test values.
 seedRNG(6178);
 x = 2 * rand(100, 1) - 1;
@@ -29,26 +26,26 @@ for n = 1:2
     df = diff(f);
     df_exact = @(x) exp(x) - 1;
     err = df_exact(x) - feval(df, x);
-    pass(n, 1) = (norm(err, inf) < tol);
+    pass(n, 1) = (norm(err, inf) < 10*df.vscale.*df.epslevel);
     
     f = testclass.make(@(x) atan(x), [], [], pref);
     df = diff(f);
     df_exact = @(x) 1./(1 + x.^2);
     err = df_exact(x) - feval(df, x);
-    pass(n, 2) = (norm(err, inf) < 10*tol);
+    pass(n, 2) = (norm(err, inf) < 10*df.vscale.*df.epslevel);
     
     f = testclass.make(@(x) sin(x), [], [], pref);
     df = diff(f);
     df_exact = @(x) cos(x);
     err = df_exact(x) - feval(df, x);
-    pass(n, 3) = (norm(err, inf) < tol);
+    pass(n, 3) = (norm(err, inf) < 10*df.vscale.*df.epslevel);
     
     z = exp(2*pi*1i/3);
     f = testclass.make(@(t) airy(z*t), [], [], pref);
     df = diff(f);
     df_exact = @(t) z*airy(1, z*t);
     err = df_exact(x) - feval(df, x);
-    pass(n, 4) = (norm(err, inf) < tol);
+    pass(n, 4) = (norm(err, inf) < 10*df.vscale.*df.epslevel);
     
     %%
     % Verify that calling diff() gives the same answer as direct construction.
@@ -56,7 +53,7 @@ for n = 1:2
     f = testclass.make(@(x) 0.5*x - 0.0625*sin(8*x), [], [], pref);
     df = testclass.make(@(x) sin(4*x).^2, [], [], pref);
     err = diff(f) - df;
-    pass(n, 5) = (norm(err.values, inf) < tol);
+    pass(n, 5) = (norm(err.values, inf) < 100*df.vscale.*df.epslevel);
     
     %%
     % Verify basic differentiation rules.
@@ -65,19 +62,21 @@ for n = 1:2
     df = diff(f);
     g = testclass.make(@(x) exp(-x.^2), [], [], pref);
     dg = diff(g);
+    tol_f = 10*df.vscale.*df.epslevel;
+    tol_g = 10*dg.vscale.*dg.epslevel;
     
     errfn = diff(f + g) - (df + dg);
     err = feval(errfn, x);
-    pass(n, 6) = (norm(err, inf) < tol);
+    pass(n, 6) = (norm(err, inf) < max(tol_f, tol_g));
     
     errfn = diff(f.*g) - (f.*dg + g.*df);
     err = feval(errfn, x);
-    pass(n, 7) = (norm(err, inf) < length(f)*tol);
+    pass(n, 7) = (norm(err, inf) < length(f)*max(tol_f, tol_g));
     
     const = testclass.make(@(x) ones(size(x)), [], [], pref);
     dconst = diff(const);
     err = feval(dconst, x);
-    pass(n, 8) = (norm(err, inf) < tol);
+    pass(n, 8) = (norm(err, inf) == 0);
     
     %%
     % Check higher-order derivatives.  (NB:  We relax the tolerance by n + 1
@@ -87,38 +86,40 @@ for n = 1:2
     df2 = diff(f, 2);
     df2_exact = @(x) 1./(1 + x.^2);
     err = df2_exact(x) - feval(df2, x);
-    pass(n, 9) = (norm(err, inf) < 1e3*tol);
+    pass(n, 9) = (norm(err, inf) < 10*df2.vscale.*df2.epslevel);
     
     f = testclass.make(@(x) sin(x), [], [], pref);
     df4 = diff(f, 4);
     df4_exact = @(x) sin(x);
     err = df4_exact(x) - feval(df4, x);
-    pass(n, 10) = (norm(err, inf) < 1e5*tol);
+    pass(n, 10) = (norm(err, inf) < 10*df4.vscale.*df4.epslevel);
 
     f = testclass.make(@(x) x.^5 + 3*x.^3 - 2*x.^2 + 4, [], [], pref);
     df6 = diff(f, 6);
     df6_exact = @(x) zeros(size(x));
     err = df6_exact(x) - feval(df6, x);
-    pass(n, 11) = (norm(err, inf) < 1e7*tol);
+    pass(n, 11) = (norm(err, inf) == 0);
     
     %%
     % Check operation for array-valued chebtech objects.
     
     f = testclass.make(@(x) [sin(x) x.^2 exp(1i*x)], [], [], pref);
+    df = diff(f);
     df_exact = @(x) [cos(x) 2*x 1i*exp(1i*x)];
-    err = feval(diff(f), x) - df_exact(x);
-    pass(n, 12) = (norm(err(:), inf) < tol);
+    err = feval(df, x) - df_exact(x);
+    pass(n, 12) = (norm(err(:), inf) < 10*max(df.vscale.*df.epslevel));
     
     % DIM option.
     dim2df = diff(f, 1, 2);
     g = @(x) [(x.^2 - sin(x)) (exp(1i*x) - x.^2)];
     err = feval(dim2df, x) - g(x);
-    pass(n, 13) = (norm(err(:), inf) < tol);
+    pass(n, 13) = (norm(err(:), inf) < 10*max(dim2df.vscale.*dim2df.epslevel));
     
     dim2df2 = diff(f, 2, 2);
     g = @(x) exp(1i*x) - 2*x.^2 + sin(x);
     err = feval(dim2df2, x) - g(x);
-    pass(n, 14) = (norm(err(:), inf) < tol);
+    pass(n, 14) = (norm(err(:), inf) < ...
+        10*max(dim2df2.vscale.*dim2df2.epslevel));
     
     % DIM option should return an empty chebtech for non-array-valued input.
     f = testclass.make(@(x) x.^3);
@@ -127,4 +128,3 @@ for n = 1:2
 end
 
 end
-
