@@ -178,8 +178,8 @@ while ( ((cont < 2) || any(maxDer == inf)) && (e0 ~= e1) )
     yc = op(c);
 
     % Find the undivided difference on each side of interval
-    dyl = abs(yc - ya) / derHandle((a + c)/2);
-    dyr = abs(yb - yc) / derHandle((b + c)/2);
+    dyl = max(abs(yc - ya) / derHandle((a + c)/2));
+    dyr = max(abs(yb - yc) / derHandle((b + c)/2));
 
     % Keep track of maximum value:
     maxd1 = maxDer;

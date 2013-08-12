@@ -30,6 +30,14 @@ xx3 = linspace(f3.domain(1)+eps, f3.domain(end)-eps, 100);
 pass(3) = norm(feval(f3, xx3) - feval(F3, xx3), inf) < ...
     tol*max(f3.epslevel.*f3.vscale);
 
+% Test array-valued construction.  (Check for GitHub Issue #4.)
+F4 = @(x) [sin(x) sign(x)];
+f4 = chebfun(F4, [-1 1], pref, 'splitting', 'on', 'blowup', 'off');
+xx4 = linspace(f4.domain(1)+eps, f4.domain(end)-eps, 100);
+pass(4) = (norm(f4.domain - [-1 0 1], inf) < 10*eps) && ...
+    (norm(feval(f4, xx4) - feval(F4, xx4), inf) < ...
+    tol*max(f4.epslevel.*f4.vscale));
+
 % % Test X*LOG(X) on [0 1]:
 % F4 = @(x) x.*log(x);
 % f4 = chebfun(F4, [0, 1], pref, 'splitting', 'on', 'blowup', 'off');
