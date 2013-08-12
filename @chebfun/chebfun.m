@@ -8,9 +8,9 @@ classdef chebfun
 % CHEBFUN(F) constructs a CHEBFUN object for representing the function F on the
 % interval [-1, 1]. F can be a string, e.g., 'sin(x)', a function handle, e.g.,
 % @(x) x.^2 + 2*x +1, or a vector of numbers. In the first two instances, F
-% should be "vectorized" in the sense that it may be evaluated at a column
+% should be "vectorized" in the sense that it should allow evaluation at a column
 % vector of points x(:) in [-1, 1] and return an output of size NxM where N =
-% length(x(:)). If this is not possible then the flag CHEBFUN(F, 'vectorise')
+% length(x(:)). If this is not possible then the flag CHEBFUN(F, 'vectorize')
 % should be passed. CHEBFUN(F, 'vectorcheck', 'off') disables the automatic
 % checking for vector input. CHEBFUN() returns an empty CHEBFUN object.
 %
@@ -21,11 +21,11 @@ classdef chebfun
 % 1st-kind Chebyshev or equispaced grid linspace(-1, 1, N), respectively.
 %
 % CHEBFUN(F, [A, B]) specifies an interval [A, B] on which the CHEBFUN is
-% defined, where A and/or B may be infinite. CHEBFUN(F, ENDS), where ENDS is a
-% 1xK+1 vector of unique ascending values, specifies a piecewise smooth CHEBFUN
-% defined on the interval [ENDS(1), ENDS(K+1)] with additional interior breaks
-% at ENDS(2), ..., ENDS(K). Specifying these breaks can be particularly useful
-% if F is known to have discontinuities. For example,
+% defined, where A and/or B may be infinite. CHEBFUN(F, ENDS), where ENDS, which 
+% is 1xK+1 vector of strictly increasing values, specifies a piecewise smooth 
+% CHEBFUN defined on the interval [ENDS(1), ENDS(K+1)] with additional 
+% interior breaks at ENDS(2), ..., ENDS(K). Specifying these breaks can be 
+% particularly useful if F is known to have discontinuities. For example,
 %   CHEBFUN(@(x) abs(x), [-1, 0, 1])
 %
 % CHEBFUN({F1,...,Fk}, ENDS) constructs a piecewise smooth CHEBFUN which
@@ -48,7 +48,7 @@ classdef chebfun
 % or
 %   CHEBFUN(@(x) [sin(x), cos(x)])
 % Note that each column in an array-valued CHEBFUN object is discretized in the
-% same way (i.e., the same breakpoont locations and the same underlying
+% same way (i.e., the same breakpoint locations and the same underlying
 % representation). Note the difference between 
 %   CHEBFUN(@(x) [sin(x), cos(x)], [-1, 0, 1])
 % and
@@ -179,7 +179,7 @@ classdef chebfun
         % Retrieve and modify preferences for this class.
         prefs = pref(varargin);
         
-        % Splitting constructor.
+        % Main constructor.
         [funs, domain, op] = constructor(op, domain, pref);
         
         % Edge detector.
@@ -289,7 +289,8 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
                 pref = chebfun.pref(pref, 'tech', 'funqui');
             end
             args(1) = [];
-        elseif ( strncmpi(args{1}, 'vectorize', 7) ) % Allows both "z" and "s".
+        elseif ( strcmpi(args{1}, 'vectorize') || ...
+                 strcmpi(args{1}, 'vectorise') )
             % Vectorise flag for function_handles.
             vectorize = true;
             args(1) = [];
