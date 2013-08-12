@@ -16,6 +16,7 @@ data = struct('xLine', [], 'fLine', [], 'xPoints', [], 'fPoints', [], ...
     'xJumps', [], 'fJumps', []);
 
 if ( nargin == 1 || isempty(g) )
+    % PLOT(F)
 
     % Loop over each FUN for Line and Points data:
     for k = 1:numel(f.funs)
@@ -38,6 +39,7 @@ if ( nargin == 1 || isempty(g) )
     end
     
 else
+    % PLOT(F, G)
 
     % [TODO]: Fix this once OVERLAP() is implemented.
     if ( all( f.domain ~= g.domain ) )
@@ -64,7 +66,6 @@ else
         data.fJumps = [data.fJumps, myNaN', get(g.funs{k}, 'rval').', ...
             get(g.funs{k+1}, 'lval').'];        
     end
-    
     
 end
     
