@@ -98,7 +98,6 @@ classdef smoothfun < onefun % (Abstract)
     
 end
 
-
 function f = funqui(vals)
 %FUNQUI    Rational interpolant of equispaced data.
 %   F = FUNQUI(VALS) constructs a function handle F to a rational interpolant of
@@ -126,11 +125,15 @@ x = linspace(-1, 1, n+1)';
 xrm = x;
 rmIndex = [2, n-1];
 xrm(rmIndex) = [];
-fvalsrm = vals;
+
+% Take arbitary linear combination of the columns for array-valued construction:
+linComb = sin((1:size(vals, 2)).');
+fvals = vals*linComb; 
+fvalsrm = fvals;
 fvalsrm(rmIndex) = [];
 
 % Select a d:
-if ( vals(rmIndex) < 2*eps*norm(vals, inf) ) 
+if ( norm(fvals(rmIndex), inf) < 2*eps*norm(fvals, inf) ) 
     % This case fools funqui, so take a small d:
     dOpt = 4;
 else
@@ -138,7 +141,7 @@ else
     for d = 0:min(n-2, maxd) 
         w = fhBaryWts(xrm, d);
         yyrm = chebtech.bary(x(rmIndex), fvalsrm, xrm, w);
-        errs(d+1) = max( abs( yyrm - vals(rmIndex) ) );
+        errs(d+1) = max( abs( yyrm - fvals(rmIndex) ) );
         if ( errs(d+1) > 1000*min(errs(1:d+1)) )
             errs(d+2:end) = [];
             break
