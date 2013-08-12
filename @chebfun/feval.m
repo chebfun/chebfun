@@ -17,7 +17,7 @@ function fx = feval(f, x, varargin)
 %     f = chebfun(@(x) 1./(1 + 25*x.^2));
 %     y = feval(f, linspace(-1, 1, 100));
 %
-% See also @CHEBFUN/SUBSREF.
+% See also CHEBFUN/SUBSREF.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
