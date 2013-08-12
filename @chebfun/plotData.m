@@ -17,8 +17,10 @@ if ( nargin == 1 || isempty(g) )
 
     % Loop over each FUN for Line and Points data:
     for k = 1:numel(f.funs)
+        % Get the data from the FUN:
         dataNew = plotData(f.funs{k});
-        myNaN = NaN(1, size(dataNew.fLine, 2));
+        myNaN = NaN(1, size(dataNew.fLine, 2)); % Array of NaNs.
+        % Insert a NaN (or array of NaNs) and append new data to array:
         data.xLine = [data.xLine ; NaN ; dataNew.xLine];
         data.fLine = [data.fLine ; myNaN ; dataNew.fLine];
         data.xPoints = [data.xPoints ; NaN ; dataNew.xPoints];
@@ -27,7 +29,8 @@ if ( nargin == 1 || isempty(g) )
 
     % Loop over each FUN for Jumps data:
     for k = 1:(numel(f.funs) - 1)
-        data.xJumps = [data.xJumps, NaN, f.funs{k}.domain(2), f.funs{k+1}.domain(1)];
+        data.xJumps = [data.xJumps, NaN, f.funs{k}.domain(2), ...
+            f.funs{k+1}.domain(1)];
         data.fJumps = [data.fJumps, myNaN', get(f.funs{k}, 'rval').', ...
             get(f.funs{k+1}, 'lval').'];
     end
@@ -41,8 +44,10 @@ else
     
     % Loop over each FUN for Line and Points data:
     for k = 1:numel(f.funs)
+        % Get the data from the FUN objects:
         dataNew = plotData(f.funs{k}, g.funs{k});
-        myNaN = NaN(1, size(dataNew.fLine, 2));
+        myNaN = NaN(1, size(dataNew.fLine, 2)); % Array of NaNs.
+        % Insert a NaN (or array of NaNs) and append new data to array:
         data.xLine = [data.xLine ; NaN ; dataNew.xLine];
         data.fLine = [data.fLine ; myNaN ; dataNew.fLine];
         data.xPoints = [data.xPoints ; NaN ; dataNew.xPoints];
@@ -51,6 +56,7 @@ else
 
     % Loop over each FUN for Jumps data:
     for k = 1:(numel(f.funs) - 1)
+        % Append [oldData, NaN, rval_k, lval_{k+1}]:
         data.xJumps = [data.xJumps, myNaN', get(f.funs{k}, 'rval').', ...
             get(f.funs{k+1}, 'lval').'];
         data.fJumps = [data.fJumps, myNaN', get(g.funs{k}, 'rval').', ...
