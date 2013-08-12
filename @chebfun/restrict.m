@@ -75,7 +75,7 @@ for k = 1:numFuns
     subsIdx = (newDomain >= oldDomain(k)) & (newDomain <= oldDomain(k+1));
     if ( sum(subsIdx) == 2 )
         % This interval is already a FUN: (i.e., no new breaks to introduce)
-        newFuns(l+1) = funs(k);
+        newFuns{l+1} = restrict(funs{k}, newDomain(subsIdx));
         l = l + 1;
     else
         numSubs = sum(subsIdx)-1;

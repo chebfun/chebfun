@@ -8,7 +8,7 @@ function f = definePoint(f, s, v)
 %
 %   An equivalent syntax is F(S) = V.
 %
-% See also CHEBFUN/SUBSASGN, CHEBFUN/RESTRICT.
+% See also CHEBFUN/SUBSASGN, CHEBFUN/RESTRICT, CHEBFUN/DEFINEINTERVAL.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -54,6 +54,6 @@ f = restrict(f, ss);
 
 % Assign the values in v to the new impulses;
 [mem, loc] = ismember(s, f.domain);
-f.impulses(1,loc,:) = v(mem, :);
+f.impulses(loc,:,1) = v(mem, :);
 
 end

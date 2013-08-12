@@ -28,13 +28,14 @@ switch index(1).type
     case '()'
 
         % Define a point value:
-        f = definePoint(f, idx, val);
+        % [TODO]: Array-valued?
+        f = definePoint(f, idx{:}, val);
 
     case '{}'
-        % [TODO]: Implement.
-
+        
         % Define an interval:
-        f = defineInterval(f, idx, val);
+        % [TODO]: Array-valued?
+        f = defineInterval(f, [idx{:}], val);
 
     otherwise
         error('CHEBFUN:UnexpectedType',...
