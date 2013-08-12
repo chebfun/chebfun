@@ -9,7 +9,7 @@ function [funs, ends] = constructor(op, domain, pref)
 %
 %   If OP is a function_handle or a string, it should be vectorised in that it
 %   accepts a column vector of length N and return a matrix of size N x M. If M
-%   ~= 1, we say the resulting CHEBFUN is "array-vaued".
+%   ~= 1, we say the resulting CHEBFUN is "array-valued".
 %
 %   CONSTRUCTOR(OP, DOMAIN, PREF), where PREF is a structure returned by 
 %   CHEBFUN.PREF(), allows alternative construction preferences to be passed to
@@ -40,7 +40,7 @@ vscale = 0;
 % Sanity check:
 if ( iscell(op) && (numel(op) ~= numIntervals) )
     error('CHEBFUN:constructor:cellInput', ...
-        ['Number of cell elements in OP must match the number of', ...
+        ['Number of cell elements in OP must match the number of ', ...
          'intervals in DOMAIN.'])
 end    
 
