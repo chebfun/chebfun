@@ -22,7 +22,7 @@ function varargout = plot(f,varargin)
 %
 %   The entries from the centre columns are plotted at the Chebyshev grid being
 %   used to represent F. If no options from this column are chosen, 'o' is
-%   chosen by default if length(F)<256;
+%   chosen by default if length(F)<256.
 %
 %   The X,Y pairs, or X,Y,S triples, can be followed by parameter/value pairs to
 %   specify additional properties of the lines. For example,
@@ -68,7 +68,6 @@ if ( nargin > 1 && isa(varargin{1}, 'chebfun') )
     % Call PLOTDATA():
     data = plotData(f, g);
 else
-    g = [];
     data = plotData(f);
 end
 
