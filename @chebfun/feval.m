@@ -126,14 +126,14 @@ higherImpulses = f.impulses(:,:,2:end);
 if ( ~any(higherImpulses(:)) )
     % Loop over the FUNs:
     for k = 1:numFuns + 1
-        idx = x == dom(k);
-        if ( any(idx) )
-            fx(idx,:) = f.impulses(k,:,1);
+        index = x == dom(k);
+        if ( any(index) )
+            fx(index,:) = f.impulses(k,:,1);
         end
     end
     
 else
-    % [TODO]: Multiple imps rows:    
+    % [TODO]: Higher-order impulses.
 end
 
 %% RESHAPE FOR OUTPUT:

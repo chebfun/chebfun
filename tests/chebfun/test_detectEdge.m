@@ -6,7 +6,7 @@ function pass = test_detectEdge(pref)
 % discontinuities in the 0, ..., 4th derivatives.
 
 % Initialise seed:
-rng(13);
+seedRNG(13);
 
 % Number of points to test:
 M = 10;
