@@ -5,11 +5,13 @@ function data = plotData(f, g)
 %   curves (usually passed to plot with '-'), DATA.xPoints and DATA.yPoints
 %   contain the (x, F(x)) data used to represent F, and DATA.xJumps and
 %   DATA.fJumps are the linear connections between discontinuous pieces.
+%
+% See also PLOT.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Get the data from the FUN objects:
+% Initialise the output structure:
 data = struct('xLine', [], 'fLine', [], 'xPoints', [], 'fPoints', [], ...
     'xJumps', [], 'fJumps', []);
 
