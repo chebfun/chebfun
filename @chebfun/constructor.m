@@ -106,17 +106,23 @@ for k = 1:numIntervals
 end
 sad = ~ishappy;
 
-% MAIN LOOP If the above didn't work, enter main loop and start splitting. (Note
-% that at least one new breakpoint will be introduced).
+% MAIN LOOP. If the above didn't work, enter main loop and start splitting.
+% (Note that at least one new breakpoint will be introduced).
 while ( any(sad) )
-    % If a fun is sad in a subinterval, split this subinterval.
+    % If a FUN is sad in a subinterval, split this subinterval.
 
-    % Choose a fun to improve:
-    % [TODO]: Perhaps we could choose the largest unhappy interval?
-    k = find(sad, 1, 'first');
+    % Choose a subinterval to improve:
+%     % Old choice = the first sad interval:
+%     k = find(sad, 1, 'first');
+    % New choice = the largest sad interval:
+    diffEnds = diff(ends);
+    diffEnds(~sad) = 0;
+    [ignored, k] = max(diffEnds);
+    
+    % Ends of this subinterval:
     a = ends(k);
     b = ends(k+1);
-
+    
     % Unwrap if OP is a cell:
     if ( iscell(op) )
         opk = op{k};
@@ -125,7 +131,7 @@ while ( any(sad) )
     end
 
     % Locate an edge/split location:
-    edge = chebfun.detectEdge(opk, [a b], vscale, hscale);
+    edge = chebfun.detectEdge(opk, [a, b], vscale, hscale);
 
     % Try to obtain happy child FUN objects on each new subinterval:
     [childLeft, happyLeft, vscale] = ...
