@@ -44,10 +44,10 @@ if ( iscell(op) && (numel(op) ~= numIntervals) )
          'intervals in DOMAIN.'])
 end    
 
-%% ----------------------------- SPLITTING OFF ---------------------------------
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%  SPLITTING OFF %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % In 'OFF' mode, seek only one piece with length < maxdegree.
 if ( ~pref.chebfun.splitting )
-    % Set maximum degree:
+    % Set maximum number of sample points:
     maxn = pref.chebfun.maxdegree + 1;
     % Initialise the FUN array:
     funs{numIntervals} = fun.constructor();
@@ -77,7 +77,7 @@ if ( ~pref.chebfun.splitting )
     return
 end
 
-%% ------------------------------ SPLITTING ON ---------------------------------
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%  SPLITTING ON %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % In 'ON' mode, seek only many pieces with total length < maxlength.
 
 % Set the maximum degree:
@@ -125,7 +125,7 @@ while ( any(sad) )
     end
 
     % Locate an edge/split location:
-    [edge, vscale] = chebfun.detectEdge(opk, [a b], vscale, hscale);
+    edge = chebfun.detectEdge(opk, [a b], vscale, hscale);
 
     % Try to obtain happy child FUN objects on each new subinterval:
     [childLeft, happyLeft, vscale] = ...
@@ -155,6 +155,8 @@ while ( any(sad) )
 end
 
 end
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% GETFUN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [g, ishappy, vscale] = getFun(op, domain, vscale, hscale, pref)
 %GETFUN controls the construction of funs
