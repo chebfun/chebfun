@@ -9,6 +9,8 @@ end
 % Some basic test functions:
 FF = {@sin, @(x) [sin(x), cos(x)], @(x) [sin(x), cos(x), exp(-x)]};
 
+pass = zeros(3, numelFF));
+
 for j = 1:numel(FF);
     % Initialise k:
     k = 0;

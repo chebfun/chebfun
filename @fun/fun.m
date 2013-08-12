@@ -185,7 +185,7 @@ classdef fun % (Abstract)
         f = fliplr(f)
         
         % Get properties of a FUN.
-        f = get(prop, val);
+        out = get(f, prop);
         
         % Imaginary part of a FUN.
         f = imag(f)

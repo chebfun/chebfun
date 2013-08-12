@@ -16,8 +16,8 @@ function [funs, ends] = constructor(op, domain, pref)
 %   the constructor. See >> help chebfun/pref for more details on preferences.
 %
 %   In particular, if PREF.CHEBFUN.SPLITTING = TRUE and OP is a function_handle
-%   or a string, the the constructor adpatively introduces additional
-%   breakpoints into the domain so as the better represent the function. These
+%   or a string, then the constructor adaptively introduces additional
+%   breakpoints into the domain so as to better represent the function. These
 %   are returned as the second output argument in [FUNS, NEWDOMAIN] =
 %   CONSTRUCTOR(OP, DOMAIN).
 %
@@ -160,7 +160,7 @@ function [g, ishappy, vscale] = getFun(op, domain, vscale, hscale, pref)
 %GETFUN controls the construction of funs
 
 % If the interval is very small then skip adaptation and treat OP as a constant:
-if ( diff(domain) < 2*1e-14*hscale )
+if ( diff(domain) < 2e-14*hscale )
     op = op(mean(domain));
 end
 

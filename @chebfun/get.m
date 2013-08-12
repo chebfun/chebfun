@@ -22,12 +22,12 @@ switch prop
     case fieldnames(f)
         % Allow access to any of F's properties via GET.
         out = f.(prop);
-    case {'lval'}
+    case 'lval'
         out = get(f.funs{1}, 'lval');
         if ( f.isTransposed )
             out = out.';
         end
-    case {'rval'}
+    case 'rval'
         out = get(f.funs{end}, 'rval');
         if ( f.isTransposed )
             out = out.';
@@ -73,7 +73,7 @@ switch prop
         for k = 1:n
             out{k} = get(f.funs{k}, prop);
         end
-    case {'ends'}
+    case 'ends'
         out = f.domain;
     otherwise
         error('CHEBFUN:CHEBFUN:GET:proname', ...

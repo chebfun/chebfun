@@ -123,12 +123,12 @@ end
 
 higherImpulses = f.impulses(:,:,2:end);
 % Only one row:
-if ( (size(f.impulses, 3) == 1) || ~any(higherImpulses(:)) )
-    % Loop over the funs:
+if ( ~any(higherImpulses(:)) )
+    % Loop over the FUNs:
     for k = 1:numFuns + 1
         idx = x == dom(k);
         if ( any(idx) )
-            fx((x == dom(k)),:) = f.impulses(k,:,1);
+            fx(idx,:) = f.impulses(k,:,1);
         end
     end
     
