@@ -31,7 +31,7 @@ for n = 1:1 %[TODO]: unbndfun
     [y, x] = max(f);
     exact_max = [1 0.535656656015700 0.7^3*cosh(0.7)];
     fx = [sin(10*x(1)) airy(x(2)) (x(3)/10).^3.*cosh(x(3)/10)];
-    tol = get(f, 'vscale')*get(f, 'epslevel');
+    tol = 10*get(f, 'vscale')*get(f, 'epslevel');
     pass(n, 5) = (all(abs(y - exact_max) < tol) && ...
                all(abs(fx - exact_max) < tol));
 
@@ -61,7 +61,7 @@ function result = test_spotcheck_max(testclass, fun_op, dom, exact_max, pref)
 f = testclass.make(fun_op, dom, [], [], pref);
 [y, x] = max(f);
 fx = fun_op(x);
-tol = get(f, 'vscale')*get(f, 'epslevel');
+tol = 10*get(f, 'vscale')*get(f, 'epslevel');
 result = (all(abs(y - exact_max) < tol) && ...
           all(abs(fx - exact_max) < tol));
 

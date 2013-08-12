@@ -28,7 +28,7 @@ function prefs = pref(varargin)
 %     eps          -  Relative tolerance used in construction and subsequent
 %      [2^-52]        operations.
 
-% See also CHEBTECH, CHEBTECH1, CHEBTECH2
+% See also FUN.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org for Chebfun information.
@@ -51,8 +51,8 @@ if ( isfield(prefs, classname) )  % It does, so either:
         p = prefs.(classname);    % b) Grab prefs for this class.
     end
 else                              % No prefs found for this class, so make some:
-    p.domain = [-1, 1];
-    p.eps    = 2^-52;
+    p.domain      = [-1, 1];
+    p.eps         = 2^-52;
 end
 % p is now the preference substructure relating to the current class.
 
@@ -63,8 +63,8 @@ else
 end
 % q is now the preference substructure for MISC preferences.
 
-for names = fieldnames(q)'
-    if isfield(p,names)
+for ( names = fieldnames(q)' )
+    if ( isfield(p,names) )
         field = names{:};
         p.(field) = q.(field);
         q = rmfield(q,field);
@@ -76,9 +76,14 @@ if ( numel(varargin) > 0 && isstruct(varargin{1}) ) % Yes
     r = varargin{1};
     varargin(1) = [];
     for names = fieldnames(r).'
-        if isfield(p,names)
+        if ( isfield(p,names ))
+            % Push field name to p.
             field = names{:};
             p.(field) = r.(field);
+        else
+            % Push field name to misc.
+            field = names{:};
+            q.(field) = r.(field);
         end
     end
 end

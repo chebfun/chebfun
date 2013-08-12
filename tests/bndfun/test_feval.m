@@ -36,24 +36,25 @@ pass(3) = (norm(feval(f, x) - f_exact(x), inf) < 1e4*get(f, 'epslevel'));
 z = exp(2*pi*1i/6);
 f = bndfun(@(t) sinh(t*z), dom, [], [], pref);
 f_exact = @(t) sinh(t*z);
-pass(4) = (norm(feval(f, x) - f_exact(x), inf) < 2*get(f, 'vscale')*get(f, 'epslevel'));
+pass(4) = (norm(feval(f, x) - f_exact(x), inf) < ...
+    10*get(f, 'vscale')*get(f, 'epslevel'));
 
 %%
 % Check row vector and matrix input.
 
 err = feval(f, x.') - f_exact(x.');
 pass(5) = (all(size(err) == [1 1000])) && (norm(err(:), inf) < ...
-    2*get(f, 'vscale')*get(f, 'epslevel'));
+    10*get(f, 'vscale')*get(f, 'epslevel'));
 
 x_mtx = reshape(x, [100 10]);
 err = feval(f, x_mtx) - f_exact(x_mtx);
 pass(6) = (all(size(err) == [100 10])) && (norm(err(:), inf) < ...
-    2*get(f, 'vscale')*get(f, 'epslevel'));
+    10*get(f, 'vscale')*get(f, 'epslevel'));
 
 x_3mtx = reshape(x, [10 10 10]);
 err = feval(f, x_3mtx) - f_exact(x_3mtx);
 pass(7) = (all(size(err) == [10 10 10])) && (norm(err(:), inf) < ...
-    2*get(f, 'vscale')*get(f, 'epslevel'));
+    10*get(f, 'vscale')*get(f, 'epslevel'));
 
 %%
 % Check operation for array-valued bndfun objects.
@@ -61,7 +62,7 @@ pass(7) = (all(size(err) == [10 10 10])) && (norm(err(:), inf) < ...
 f = bndfun(@(x) [sin(x) x.^2 exp(1i*x)], dom, [], [], pref);
 f_exact = @(x) [sin(x) x.^2 exp(1i*x)];
 err = feval(f, x) - f_exact(x);
-pass(8) = all(max(abs(err)) < 2*get(f, 'vscale')*get(f, 'epslevel'));
+pass(8) = all(max(abs(err)) < 10*get(f, 'vscale')*get(f, 'epslevel'));
 
 %%
 % Test for evaluating array-valued bndfun objects at matrix arguments if
