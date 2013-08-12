@@ -93,13 +93,13 @@ for n = 1:1 %[TODO]: unbndfun
     h1 = f ./ alpha;
     h2 = testclass.make(@(x) sin(x) ./ alpha, dom, [], [], pref);
     pass(n, 12) = norm(feval(h1, x) - feval(h2, x), inf) < ...
-        get(h2, 'vscale')*get(h2, 'epslevel');
+        10*get(h2, 'vscale')*get(h2, 'epslevel');
     
     g = testclass.make(@(x) exp(x), dom, [], [], pref);
     h1 = f ./ g;
     h2 = testclass.make(@(x) sin(x) ./ exp(x), dom, [], [], pref);
     pass(n, 13) = norm(feval(h1, x) - feval(h2, x), inf) < ...
-        5e2*get(h2, 'vscale')*get(h2, 'epslevel');
+        5e3*get(h2, 'vscale')*get(h2, 'epslevel');
 end
 
 end
@@ -129,5 +129,5 @@ function result = test_div_function_by_function(f, f_op, g, g_op, x)
     h_exact = @(x) f_op(x) ./ g_op(x);
     norm(feval(h, x) - h_exact(x), inf);
     result = norm(feval(h, x) - h_exact(x), inf) < ...
-        10*max(get(h, 'vscale'))*get(h, 'epslevel');
+        50*max(get(h, 'vscale'))*get(h, 'epslevel');
 end

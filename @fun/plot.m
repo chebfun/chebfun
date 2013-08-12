@@ -48,8 +48,21 @@ end
 % Store the hold state of the current axis:
 holdState = ishold;
 
-% Get the data for plotting:
-data = plotData(f);
+%%
+% Get the data for plotting from PLOTDATA():
+if ( nargin > 1 && isa(varargin{1}, 'fun') )
+    % Deal with plot(f, g);
+    g = varargin{1};
+    varargin(1) = [];
+    % We can only plot real against real:
+    f = real(f); 
+    g = real(g);
+    % Call PLOTDATA():
+    data = plotData(f, g);
+else
+    g = [];
+    data = plotData(f);
+end
 
 %%
 % Plot the curve:
@@ -66,7 +79,6 @@ set(h1, 'Marker', 'none')
 hold on
 
 %%
-
 % Plot the points:
 if ( isreal(f) )
     h2 = plot(data.xPoints, data.fPoints, varargin{:});

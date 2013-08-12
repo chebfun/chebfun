@@ -198,7 +198,7 @@ classdef chebtech < smoothfun % (Abstract)
             end
 
             % Call the relevant constructor:
-            if ( strcmpi(pref.chebtech.tech, 'cheb1') )
+            if ( strcmpi(pref.chebtech.tech, 'chebtech1') )
                 % Construct:
                 obj = chebtech1(op, vscale, hscale, pref);
             else
@@ -354,7 +354,7 @@ classdef chebtech < smoothfun % (Abstract)
         varargout = plot(f, varargin)
         
         % Obtain data used for plotting a CHEBTECH object:
-        data = plotData(f)
+        data = plotData(f, g)
 
         % Addition of two CHEBTECH objects.
         f = plus(f, g)
