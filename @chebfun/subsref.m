@@ -1,19 +1,21 @@
 function varargout = subsref(f, index)
 %SUBSREF   Chebfun subsref.
 % ( )
-%   F(X) returns the values of the chebfun F evaluated on the array X.
-%
-%   If X falls on a breakpoint of F, the corresponding value from F.IMPULSES is
+%   F(X) returns the values of the chebfun F evaluated on the array X. If X
+%   falls on a breakpoint of F, the corresponding value from F.IMPULSES is
 %   returned. F(X, 'left') or F(X, 'right') will evaluate F to the left or right
-%   of the breakpoint respectively.
+%   of the breakpoint respectively. See CHEBFUN/FEVAL for further details.
 %
-%   F(G), where G is also a chebfun, computes the composition of F and G.
+%   F(G), where G is also a chebfun, computes the composition of F and G. See
+%   CHEBFUN/COMPOSE for further details.
 %
 % .
 %   F.PROP returns the property PROP of F as defined by GET(F, 'PROP').
 %
 % {}
-%   F{S1, S2} restricts F to the domain [S1, S2] < [F.ENDS(1), F.ENDS(end)].
+%   F{S1, S2} restricts F to the domain [S1, S2] < [F.ENDS(1), F.ENDS(end)]. See
+%   CHEBFUN/RESTRICT for further details. Note that F{[S1, S2]} is not supported
+%   due to the behaviour of the MATLAB subsref() command.
 %
 % See also FEVAL, COMPOSE, GET, RESTRICT, SUBSREF.
 
@@ -31,10 +33,18 @@ switch index(1).type
 
         % Where to evaluate:
         x = idx{1}; 
-
+        
+        % Deal with row CHEBFUN objects:
+        isTransposed = f.isTransposed;
+        if ( isTransposed )
+            % [TODO]: Replace when CHEBFUN/TRANPOSE() is implemented.
+            f.isTransposed = false;
+%             f = f.';
+        end
+        
         % Initialise:
-        columnIndex = 1:size(f.funs{1}, 2); % For array-valued CHEBFUN objects.
-        varin = {};                         % Additional arguments.
+        columnIndex = 1:size(f, 2); % Column index for array-valued CHEBFUNs.
+        varin = {};                 % Additional arguments.
         
         % Deal with additional arguments:
         if ( length(idx) == 2 ) && ...
@@ -42,7 +52,7 @@ switch index(1).type
             % f(x, 'left') or f(x, 'right'):
             varin = {idx(2)};
             
-        elseif ( length(idx) == 2 ) && max(idx{2}) <= columnIndex(end)
+        elseif ( (length(idx) == 2) && (max(idx{2}) <= columnIndex(end)) )
             % f(x, m), for array-valued CHEBFUN objects:
             columnIndex = idx{2};         
             
@@ -71,6 +81,17 @@ switch index(1).type
               'Cannot evaluate chebfun for non-numeric type.')
           
         end
+        
+        % Deal with row CHEBFUN objects:
+        if ( isTransposed )
+            % [TODO]: Replace when CHEBFUN/TRANPOSE() is implemented.
+            if ( isa(out, 'chebfun') )
+                out.isTransposed = false;
+            else
+                out = out.';
+            end
+%             out = out.';
+        end
     
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% GET %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     case '.'
@@ -90,7 +111,6 @@ switch index(1).type
             if ( isequal(idx{1}, ':') )
                 % F{:} returns F:
                 out = f;
-                return
             else
                 error('CHEBFUN:subsref:baddomain', 'Invalid domain syntax.')
             end
