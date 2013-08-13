@@ -30,11 +30,100 @@ elseif ( (numel(s) == 2) && all(s == [-1, 1]) )
     return
 end
 
-% define the new operator which will be evaluated in the subinterval by the 
-% singfun ctor.
-op = @(x) feval(f, ((1-x)*s(1)+(1+x)*s(end))/2);
+% Number of subintervals:
+numInts = numel(s) - 1;
 
-% call the singfun constructor
-f = singfun( op, [], {'sing', 'sing'}, [] );
+% Preallocate a cell
+f = cell(1, numInts);
+
+% Set the bound which is deemed 'finite'
+fntbnd = realmax;
+
+% function values at the endpoints of the subintervals:
+[lval, rval] = op(s);
+
+if ( ( lval < fntbnd ) && ( rval < fntbnd ) )
+    
+    for j = 1:numInts
+        
+        % define the new operator which will be evaluated in the subinterval by
+        % the singfun ctor.
+        op = @(x) feval(f, ((1-x)*s(j)+(1+x)*s(j+1))/2);
+        
+        % call the singfun constructor
+        g = singfun( op, zeros(1,2), {'none', 'none'}, [] );
+        
+        % put in cell
+        f{j} = g;
+    end
+    
+elseif ( ( s(1) == -1 ) && ( rval < fntbnd ) )
+    
+    % define the new operator
+    op = @(x) feval(f, ((1-x)*s(1)+(1+x)*s(2))/2);
+    
+    % call the singfun constructor
+    g = singfun( op, [f.exponents(1) 0], {'sing', 'none'}, [] );
+    f{j} = g;
+    
+    for j = 2:numInts
+        
+        % define the new operator
+        op = @(x) feval(f, ((1-x)*s(j)+(1+x)*s(j+1))/2);
+        
+        % call the singfun constructor
+        g = singfun( op, zeros(1,2), {'none', 'none'}, [] );
+        
+        % put in cell
+        f{j} = g;
+    end
+    
+    
+elseif ( ( lval < fntbnd ) && ( s(end) == 1 ) )
+    
+    if numInts >1
+        
+        for j = 1:numInts-1
+            
+            % define the new operator
+            op = @(x) feval(f, ((1-x)*s(j)+(1+x)*s(j+1))/2);
+            
+            % call the singfun constructor
+            g = singfun( op, zeros(1,2), {'none', 'none'}, [] );
+            
+            % put in cell
+            f{j} = g;
+        end
+        
+    end
+    
+    % define the new operator
+    op = @(x) feval(f, ((1-x)*s(end-1)+(1+x)*s(end))/2);
+    
+    % call the singfun constructor
+    g = singfun( op, [0 f.exponents(2)], {'none', 'sing'}, [] );
+    
+    % put in cell
+    f{end} = g;
+    
+else
+    
+    for j = 1:numInts
+        
+        % define the new operator
+        op = @(x) feval(f, ((1-x)*s(j)+(1+x)*s(j+1))/2);
+        
+        % call the singfun constructor
+        g = singfun( op, [], {'sing', 'sing'}, [] );
+        
+        % put in cell
+        f{j} = g;
+    end
+end
+
+% If there is only one subinterval, return a singfun, instead of a cell
+if ( numInts == 1 )
+    f = f{:};
+end
 
 end
