@@ -47,7 +47,7 @@ if ( exps(1) > 0 )
         if ( abs(1+out(1)) < tol )
             out(1) = -1;
         else
-            out = [-1 out];
+            out = [-1; out];
         end
     else
         out = -1;
@@ -59,10 +59,10 @@ if ( exps(2) > 0 )
         if ( abs(1-out(end)) < tol )
             out(end) = 1;
         else
-            out = [out 1];
+            out = [out; 1];
         end
     else
-        out = [out 1];
+        out = [out; 1];
     end
 end
 
