@@ -5,7 +5,7 @@ function f = imag(f)
 % See also REAL.
 
 % Copyright 2011 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 % Take imaginary part of the impulses:
 f.impulses = imag(f.impulses);

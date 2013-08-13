@@ -10,7 +10,7 @@ function f = flipud(f)
 % See also chebfun/fliplr.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. See
-% http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% http://www.chebfun.org for Chebfun information.
 
 if ( ~f.isTransposed )
 
