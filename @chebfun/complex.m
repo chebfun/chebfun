@@ -1,7 +1,7 @@
 function C = complex(A, B)
-%COMPLEX   Construct complex chebfun from real and imaginary parts.
-%   COMPLEX(A,B) returns the complex result A + Bi, where A and B are chebfun
-%   objects on the same domain. Alternatively, one of A or B may be a
+%COMPLEX   Construct complex CHEBFUN from real and imaginary parts.
+%   COMPLEX(F, G) returns the complex result F + Gi, where F and G are CHEBFUN
+%   objects on the same domain. Alternatively, one of F or G may be a
 %   real-valued scalar.
 %
 % See also REAL, IMAG.

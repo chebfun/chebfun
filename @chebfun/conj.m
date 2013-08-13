@@ -1,5 +1,5 @@
 function f = conj(f)
-%CONJ	 Complex conjugate of a chebfun object.
+%CONJ	 Complex conjugate of a CHEBFUN object.
 %   CONJ(F) is the complex conjugate of F.
 %
 % See also REAL, IMAG.
@@ -10,7 +10,7 @@ function f = conj(f)
 % Conjugate the impulses:
 f.impulses = conj(f.impulses);
 
-% Conjugate the funs:
+% Conjugate the FUNs:
 for k = 1:numel(f.funs)
     f.funs{k} = conj(f.funs{k});
 end

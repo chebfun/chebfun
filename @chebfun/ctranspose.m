@@ -1,6 +1,6 @@
 function F = ctranspose(F)
 %'    Complex conjugate transpose.
-%   F' is the complex conjugate transpose of F.
+%   F' is the complex conjugate transpose of the CHEBFUN F.
 %
 % See also TRANSPOSE.
 

@@ -1,7 +1,7 @@
 function f = transpose(f)
 %.'   Transpose.
-%   F.' is the non-conjugate transpose of F, i.e., it converts a column chebfun
-%   to a row chebfun and vice versa.
+%   F.' is the non-conjugate transpose of F, i.e., it converts a column CHEBFUN
+%   to a row CHEBFUN and vice versa.
 %
 % See also CTRANSPOSE.
 

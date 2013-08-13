@@ -7,7 +7,7 @@ function f = flipud(f)
 %   FLIPUD(F), where F is an array-valued row chebfun, exchanges the order of
 %   the rows of F.
 %
-% See also chebfun/fliplr.
+% See also FLIPLR.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. See
 % http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
@@ -19,9 +19,9 @@ if ( ~f.isTransposed )
     % Reverse the order of the corresponding impulses:
     f.impulses = fliplr(f.impulses);
 
-    % Reverse the order of funs:
+    % Reverse the order of FUNs:
     f.funs = f.funs(end:-1:1);
-    % and the funs themselves.
+    % and the FUNs themselves.
     for k = 1:numel(f.funs)
         f.funs{k} = flipud(f.funs{k});
         f.funs{k} = map(f.funs{k}, newDomain(k:k+1));

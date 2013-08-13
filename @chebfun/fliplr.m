@@ -1,5 +1,5 @@
 function f = fliplr(f)
-%FLIPUD  Flip/reverse a chebfun.
+%FLIPUD   Flip/reverse a CHEBFUN.
 %   G = FLIPLR(F), where F is a row CHEBFUN, returns a chebfun G with the same
 %   domain as F but reversed; that is, G(x) = F(a+b-x), where the domain is
 %   [a,b].
@@ -7,7 +7,7 @@ function f = fliplr(f)
 %   FLIPLR(F), where F is an array-valued column chebfun, exchanges the order of
 %   the columns of F.
 %
-% See also CHEBFUN/FLIPUD.
+% See also FLIPUD.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. See
 % http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
