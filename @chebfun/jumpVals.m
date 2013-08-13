@@ -16,7 +16,7 @@ function jVals = jumpVals(funs, ends, op)
 numFuns = numel(funs);
 
 % Trivial empty case:
-if ( (numFuns == 1) && isempty(funs) )
+if ( (numFuns == 1) && isempty(funs{1}) )
     jVals = [];
     return
 end

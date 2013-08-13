@@ -7,7 +7,7 @@ function out = isempty(f)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % If there is a .fun and f.funs(1) is not empty the f is not empty.
-if ( (numel(f.funs) > 0) && ~isempty(f.funs(1)) )
+if ( (numel(f.funs) > 0) && ~isempty(f.funs{1}) )
     out = false;
 else
     out = true;
