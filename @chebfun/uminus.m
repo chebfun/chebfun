@@ -5,6 +5,11 @@ function f = uminus(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Handle the empty case.
+if ( isempty(f) )
+    return
+end
+
 % Negate the impuleses:
 f.impulses(1,:) = -f.impulses(1,:);
 
