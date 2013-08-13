@@ -26,12 +26,44 @@ function out = roots(f, varargin)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Set up a tolerance:
+tol = get(f.smoothPart, 'epslevel')*get(f.smoothPart, 'vscale');
+
 % Deal with empty case:
 if ( isempty(f) )
     out = [];
     return
 end
 
-out = roots(f.smoothPart, varargin{:} );    
+out = roots(f.smoothPart, varargin{:} );
+anyRoots = ~isempty(out);
+
+% Grap the exponents:
+exps = f.exponents;
+
+% Determine if the endpoints are roots:
+if ( exps(1) > 0 )
+    if ( anyRoots )
+        if ( abs(1+out(1)) < tol )
+            out(1) = -1;
+        else
+            out = [-1 out];
+        end
+    else
+        out = -1;
+    end
+end
+
+if ( exps(2) > 0 )
+    if ( anyRoots )
+        if ( abs(1-out(end)) < tol )
+            out(end) = 1;
+        else
+            out = [out 1];
+        end
+    else
+        out = [out 1];
+    end
+end
 
 end

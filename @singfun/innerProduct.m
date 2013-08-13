@@ -19,41 +19,11 @@ if ( ~isa(f, 'singfun') || ~isa(g, 'singfun') )
         'innerProduct() only operates on two SINGFUN objects.');
 end
 
-exps = f.exponents + g.exponents;
+f.exponents = f.exponents + g.exponents;
+f.smoothPart = f.smoothPart*g.smoothPart;
 
-% The integral is divergent when at least one of exponents of the product is 
-% smaller than or equal to -1. 
-
-if any(exps <= -1)
-    sl = sign(get(f.smoothPart, 'lval'))*sign(get(g.smoothPart, 'lval'));
-    sr = sign(get(f.smoothPart, 'rval'))*sign(get(f.smoothPart, 'rval'));
-    if all(exps <= -1)
-        if  sl == sr
-            out = sl.*inf;
-        else
-            out = NaN;
-        end
-        
-    elseif (exps(1) <= -1 && sl == -1) || (exps(2) <= -1 && sr == -1)
-        out = -inf;
-    else
-        out = inf;
-    end
-    
-    return
-end
-
-% When f have trivial exponents, the integral is nothing but the integral of its
-% smooth part. Otherwise, we evaluate the integral by using Gauss-Jacobi points 
-% and weights.
-
-if all(exps == 0)
-    out = sum(f.smoothPart*g.smoothPart);
-else
-    n = length(f.smoothPart) + length(g.smoothPart);
-    [x, w] = jacpts(ceil(n/2)+1, exps(2), exps(1));    
-    out = w*f.smoothPart.feval(x);
-end
+% Call sum in singfun:
+out = sum(f);
 
 % Force real output if the inputs are equal:
 if ( isequal(f, g) )
