@@ -1,11 +1,11 @@
 function f = mtimes(f, g)
-%*   Chebfun multiplication.
+%*   CHEBFUN multiplication.
 %   F.*G multiplies the CHEBFUN objects F and G or a CHEBFUN by a scalar if
 %   either F or G is a scalar.
 
 if ( ~isa(f, 'chebfun') )   % ??? * CHEBFUN
 
-    % Ensure chebfun is the first input:
+    % Ensure CHEBFUN is the first input:
     f = times(g, f);
 
 elseif ( isempty(g) )       % CHEBFUN * []
@@ -25,16 +25,16 @@ elseif ( isnumeric(g) )     % CHEBFUN * double
 elseif ( ~isa(g, 'chebfun') )
 
     error('CHEBFUN:times:unknown', ...
-        'Undefined function ''mtimes'' for input arguments of type %s and %s.', ...
-        class(f), class(g));
-    
+          ['Undefined function ''mtimes'' for input arguments of type '] ...
+          ['%s and %s.'], class(f), class(g));
 else                        % CHEBFUN' * CHEBFUN
 
     if ( size(f, 1) ~= size(g, 2) )
-        if ( (~isTransposed(f) && size(f, 2) == size(g, 2)) || ...
-             (isTransposed(f) && size(f, 1) == size(g, 1)) )
+        if ( (~isTransposed(f) && (size(f, 2) == size(g, 2))) || ...
+             (isTransposed(f) && (size(f, 1) == size(g, 1))) )
             error('CHEBFUN:times:dims', ...
-                'Matrix dimensions must agree. Use f.*g to multiply two CHEBFUN objects.');
+                ['Matrix dimensions must agree. Use f.*g to multiply ' ...
+                 'two chebfun objects.']);
         else
             error('CHEBFUN:times:dims', ...
                 'Matrix dimensions must agree.');

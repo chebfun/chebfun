@@ -4,6 +4,8 @@ function out = iszero(f, tol)
 %   false otherwise. If F is an array-valued CHEBFUN, the a true/false value is
 %   returned for each column.
 
+% TODO:  Document the TOL input.
+
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. See
 % http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
@@ -25,9 +27,11 @@ if ( nargin < 2 )
 end
 
 % Impulses:
+% TODO:  What about higher-order impulses?
 out = all(f.impulses(:,:,1) <= tol);
 
 % Loop over each of the FUNs:
+% TODO:  We don't use TOL here?
 k = 0;
 while ( k < numel(f.funs) && any(out) )
     k = k + 1;

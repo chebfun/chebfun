@@ -1,16 +1,16 @@
 function f = flipud(f)
-%FLIPUD  Flip/reverse a chebfun.
-%   G = FLIPUD(F), where F is a column CHEBFUN, returns a chebfun G with the
+%FLIPUD   Flip/reverse a CHEBFUN.
+%   G = FLIPUD(F), where F is a column CHEBFUN, returns a CHEBFUN G with the
 %   same domain as F but reversed; that is, G(x) = F(a+b-x), where the domain is
 %   [a,b].
 %
-%   FLIPUD(F), where F is an array-valued row chebfun, exchanges the order of
+%   FLIPUD(F), where F is an array-valued row CHEBFUN, exchanges the order of
 %   the rows of F.
 %
-% See also FLIPLR.
+% See also CHEBFUN/FLIPLR.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. See
-% http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% http://www.chebfun.org for Chebfun information.
 
 if ( ~f.isTransposed )
 

@@ -5,7 +5,7 @@ function f = real(f)
 % See also IMAG, ISREAL.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 % Take real part of the impulses:
 f.impulses = real(f.impulses);
