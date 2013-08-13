@@ -9,7 +9,7 @@ function f = plus(f, g)
 if ( ~isa(f, 'chebfun') )   % ??? * CHEBFUN
 
     % Ensure CHEBFUN is the first input:
-    f = times(g, f);
+    f = plus(g, f);
     return
 
 elseif ( isempty(g) )       % CHEBFUN + []
