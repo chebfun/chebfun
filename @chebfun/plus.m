@@ -1,23 +1,23 @@
 function f = plus(f, g)
-%+	  Plus.
-%   F + G adds chebfuns F and G, or a scalar to a chebfun if either F or G is a
+%+   CHEBFUN plus.
+%   F + G adds CHEBFUNs F and G, or a scalar to a CHEBFUN if either F or G is a
 %   scalar.
 %
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( ~isa(f, 'chebfun') )   % ??? * chebfun
+if ( ~isa(f, 'chebfun') )   % ??? * CHEBFUN
 
-    % Ensure chebfun is the first input:
+    % Ensure CHEBFUN is the first input:
     f = times(g, f);
     return
 
-elseif ( isempty(g) )       % chebfun + []
+elseif ( isempty(g) )       % CHEBFUN + []
 
     f = [];
     return
 
-elseif ( isnumeric(g) )     % chebfun + double
+elseif ( isnumeric(g) )     % CHEBFUN + double
 
     % Add g to the impulses:
     f.impulses = f.impulses + g;
@@ -28,27 +28,27 @@ elseif ( isnumeric(g) )     % chebfun + double
     end
     return
 
-elseif ( ~isa(g, 'chebfun') ) % chebfun * ???
+elseif ( ~isa(g, 'chebfun') ) % CHEBFUN * ???
 
-    error('CHEBFUN:times:unknown', ...
-        'Undefined function ''times'' for input arguments of type %s and %s.', ...
-        class(f), class(g));
+    error('CHEBFUN:plus:unknown', ...
+          ['Undefined function ''plus'' for input arguments of type %s ' ...
+           'and %s.'], class(f), class(g));
 
-elseif ( isempty(f) )       % empty chebfun + chebfun
+elseif ( isempty(f) )       % empty CHEBFUN + CHEBFUN
 
     return
 
 end
 
-% Only chebfun + chebfun remains.
+% Only CHEBFUN + CHEBFUN remains.
 
-% Check to see if one of the chebfuns is transposed:
+% Check to see if one of the CHEBFUNS is transposed:
 if ( xor(f.isTransposed, g.isTransposed) )
     error('CHEBFUN:plus:matdim', ...
         'Matrix dimensions must agree. (One input is transposed).');
 end
 
-% Overlap the chebfun objects:
+% Overlap the CHEBFUN objects:
 [f, g] = overlap(f, g);
 
 % Add the impulses:

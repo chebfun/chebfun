@@ -1,6 +1,6 @@
 function f = minus(f, g)
-%-	  Minus.
-%   F - G subtracts chebfuns F and G, or a scalar from a chebfun if either F or
+%-   CHEBFUN minus.
+%   F - G subtracts CHEBFUNs F and G, or a scalar from a CHEBFUN if either F or
 %   G is a scalar.
 %
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.

@@ -1,8 +1,8 @@
 function f = imag(f)
-%IMAG   Complex imaginary part.
+%IMAG   Complex imaginary part of a CHEBFUN.
 %   IMAG(F) is the imaginary part of F.
 %
-% See also REAL.
+% See also CHEBFUN/REAL.
 
 % Copyright 2011 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
