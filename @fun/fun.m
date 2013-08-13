@@ -234,6 +234,9 @@ classdef fun % (Abstract)
 
         % Basic linear plot for FUN objects.
         varargout = plot(f, varargin)
+        
+        % 3-D plot for FUN objects.
+        varargout = plot3(f, g, h, varargin)
 
         % Addition of two FUN objects.
         f = plus(f, g)

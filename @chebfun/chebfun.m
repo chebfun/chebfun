@@ -217,6 +217,9 @@ classdef chebfun
         % Plot a CHEBFUN object:
         h = plot(f, varargin);
         
+        % 3-D plot for CHEBFUN objects.
+        varargout = plot3(f, g, h, varargin)
+        
         % Plot a CHEBFUN object on a log-linear scale:
         h = semilogx(f, varargin);
         
