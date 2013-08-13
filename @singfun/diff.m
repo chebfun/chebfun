@@ -34,9 +34,7 @@ while ( k > 0 )
     % Decrease k
     k = k - 1;
         
-    % Apply the product rule to
-    % the SINGFUN F:
-    % f = g .* (1+x).^a .* (1-x).^b
+    % Apply the product rule to the SINGFUN F: f = g .* (1+x).^a .* (1-x).^b
    
     % Three terms of the derivative:
     % fist term: g' .* (1+x).^a .* (1-x).^b
