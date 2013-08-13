@@ -1,35 +1,34 @@
 function f = defineInterval(f, subInt, g)
-%DEFINEINTERVAL   Supply a new definition for a chebfun on a subinterval.
+%DEFINEINTERVAL   Supply a new definition for a CHEBFUN on a subinterval.
 %
 %   F = DEFINEINTERVAL(F, S, G) redefines the CHEBFUN F by the CHEBFUN or double
 %   G in the interval [S(1), S(end)] in F.domain. If F is array-vaued then G
 %   should have the same number of columns, i.e., size(F, 2) = size(G, 2), and
 %   if G is a CHEBFUN it must be defined on a domain containing [S(1), S(end)].
-%   Any new breakpoints S(2:end-1) are also introduced into F.
+%   Any new breakpoints S(2:end-1) are also introduced into F. 
 %
-%   An equivalent syntax is F{S(1), S(2), ..., S(end)} = G.
+%   If G is empty then the interval SS = [S(1), S(end)] is removed from F. If SS
+%   is a strict subset of F.domain, then the breakpoints of F greater than
+%   S(end) are shifted to the left (as a CHEBFUN cannot be defined on a domain
+%   with gaps in it).
 %
-% See also CHEBFUN/SUBSASGN, CHEBFUN/RESTRICT, CHEBFUN/DEFINEPOINT.
+%   S must be a strictly increasing vector. Use F = DEFINEPOINT(F, S, G(S)) to
+%   the define F at a single point.
+%
+%   An equivalent syntax is F{S1, S2} = G or F{S(1), S(2), ..., S(end)} = G.
+%
+% See also SUBSASGN, RESTRICT, DEFINEPOINT.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Not a valid subdomain:
-if ( any(diff(subInt) < 0) )
+if ( any(diff(subInt) <= 0) )
     error('CHEBFUN:defineInterval:invalidDomain', 'Not a valid domain.');
 end
 
-% TODO: Ensure f and g have the same number of colums.
-numColsF = size(f.funs{1}, 2);
-
-% Define at a single point:
-if ( subInt(1) == subInt(end) )
-    if ( isa(g, 'chebfun') )
-        g = feval(g, subInt(1));
-    end
-    f = definePoint(f, subInt(1), g);
-    return
-end
+% Number of columns of F.
+numColsF = size(f, 2 - f.isTransposed);
 
 % Convert a scalar or empty input to a chebfun.
 if ( isnumeric(g) )
@@ -80,7 +79,7 @@ if ( ~isempty(g) )
         
     else                                         % SubInt intersects f.domain
         fLeft = restrict(f, [f.domain(1), subInt(1)]);
-        fRight = restrict(f, [subInt(end), f.domain(2)]);
+        fRight = restrict(f, [subInt(end), f.domain(end)]);
         % Insert FUNs, domain, and impulses:
         f.funs = [fLeft.funs, g.funs, fRight.funs];
         f.domain = [fLeft.domain(1:end-1), g.domain, fRight.domain(2:end)];

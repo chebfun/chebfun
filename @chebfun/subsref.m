@@ -1,5 +1,5 @@
 function varargout = subsref(f, index)
-% SUBSREF   Chebfun subsref.
+%SUBSREF   Chebfun subsref.
 % ( )
 %   F(X) returns the values of the chebfun F evaluated on the array X.
 %
@@ -14,83 +14,106 @@ function varargout = subsref(f, index)
 %
 % {}
 %   F{S1, S2} restricts F to the domain [S1, S2] < [F.ENDS(1), F.ENDS(end)].
-%   F{S1, S2, ..., Sk} restricts F to [S1, Sk] and introduces interior breaks at
-%   S2, ..., S{K-1}. Note, F([S1, ..., Sk]) will not work, as MATLAB expects k
-%   outputs from such a call.
 %
-% See also CHEBFUN/FEVAL, CHEBFUN/GET, CHEBFUN/RESTRICT
+% See also FEVAL, COMPOSE, GET, RESTRICT, SUBSREF.
 
-% Copyright 2011 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+% [TODO]: Should we allow specific access to columns in array-valued CHEBFUN
+% objects? For example, F(0, 2) to evaluate the 2nd columns at x = 0?
 
 idx = index(1).subs;
 switch index(1).type
-    
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% GET %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    case '.'
 
-        % Call get for .PROP access.
-        varargout{1} = get(f, idx);
-        if ( numel(index) > 1 )
-            % Recurse on SUBSREF():
-            index(1) = [];
-            varargout{1} = subsref(varargout{1}, index);
-        end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% FEVAL %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%% FEVAL / COMPOSE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     case '()'
 
         % Where to evaluate:
         x = idx{1}; 
 
-        extractCol = 0;
+        % Initialise:
+        columnIndex = 1:size(f.funs{1}, 2); % For array-valued CHEBFUN objects.
+        varin = {};                         % Additional arguments.
+        
         % Deal with additional arguments:
-        if ( length(idx) == 1 )
-            varin = {};
-        elseif ( length(idx) == 2 ) && ...
+        if ( length(idx) == 2 ) && ...
                 ( any(strcmpi(idx{2}, {'left', 'right', '-', '+'})) )
             % f(x, 'left') or f(x, 'right'):
             varin = {idx(2)};
-        elseif ( length(idx) == 2 ) && max(idx{2}) <= size(f.funs,2)
+            
+        elseif ( length(idx) == 2 ) && max(idx{2}) <= columnIndex(end)
             % f(x, m), for array-valued CHEBFUN objects:
-            varin = {};
-            extractCol = idx{2};         
-        elseif ( length(idx) ~= 1 )
+            columnIndex = idx{2};         
+            
+        elseif ( length(idx) > 1 )
             error('CHEBFUN:subsref:dimensions',...
                 'Index exceeds chebfun dimensions.')
+            
         end
 
+        % Compute the output:
         if ( isnumeric(x) )
-            varargout = { feval(f, x, varin{:}) };
-            if ( extractCol )
-                varargout{1} = varargout{1}(:,extractCol);
-            end
+            % Call FEVAL():
+            out = feval(f, x, varin{:});
+            out = out(:,columnIndex);
+            
         elseif ( isa(x, 'chebfun') || isa(x, 'function_handle') )
-            varargout = { compose(f, x) };
+            % Call COMPOSE():
+            out = compose(f, x);
+            
         elseif ( isequal(x, ':') )
-            varargout = { f };
+            % Return f:
+            out = f;
+            
         else
             error('CHEBFUN:subsref:nonnumeric',...
               'Cannot evaluate chebfun for non-numeric type.')
+          
+        end
+    
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% GET %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    case '.'
+
+        % Call GET() for .PROP access.
+        out = get(f, idx);
+        if ( numel(index) > 1 )
+            % Recurse on SUBSREF():
+            index(1) = [];
+            out = subsref(out, index);
         end
 
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% RESTRICT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     case '{}'
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% RESTRICT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        
         if ( length(idx) == 1 )
             if ( isequal(idx{1}, ':') )
-                varargout = {f};
+                % F{:} returns F:
+                out = f;
                 return
             else
                 error('CHEBFUN:subsref:baddomain', 'Invalid domain syntax.')
             end
-        elseif ( length(idx) == 2 )
+            
+        elseif ( size(idx, 1) == 1 )
+            % F{s1,s2,...,sk} returns RESTRICT(F, [s1,s2,...,sk]):
             x = cat(2, idx{:});
+            out = restrict(f, x);
+            
         else
-            error('CHEBFUN:subsasgn:dimensions',...
+            error('CHEBFUN:subsref:dimensions', ...
                 'Index exceeds chebfun dimensions.')
+            
         end
-        varargout = { restrict(f, x) };
+        
     otherwise
+        
         error('CHEBFUN:UnexpectedType',...
-            ['??? Unexpected index.type of ' index(1).type]);
+            ['??? Unexpected index.type of ', index(1).type]);
 end
+
+% Convert to a cell:
+varargout = {out};
+
+end
+

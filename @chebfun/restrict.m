@@ -7,8 +7,9 @@ function f = restrict(f, newDomain)
 %   G = RESTRICT(F, S), where S is a row vector, will introduce additional
 %   interior breakpoints at S(2:end-2).
 %
-%   In both cases, if S(1) >= S(end), S(1) < F.domain(1), or S(end) >
-%   F.domain(end), then an error is returned.
+%   In both cases, if S(1) > S(end), S(1) < F.domain(1), or S(end) >
+%   F.domain(end), then an error is returned. If S is empty or a scalar, then an
+%   empty CHEBFUN G is returned.
 %
 %   G = F{S} is an equivalent syntax.
 %
@@ -17,10 +18,13 @@ function f = restrict(f, newDomain)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Ignore duplicate entries in newDomain:
+newDomain([false, ~diff(newDomain)]) = [];
+
 % Empty case:
 if ( isempty(f) )
     return
-elseif ( isempty(newDomain) )
+elseif ( isempty(newDomain) || numel(newDomain) == 1 )
     f = chebfun();
     return
 end
