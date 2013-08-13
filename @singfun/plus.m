@@ -26,42 +26,51 @@ if ( all(abs(fExps-gExps) < tol ) )
     if ( iszero(s.smoothPart) )
        s = singfun.zeroSingFun();     
     end
-% elseif ( all(abs(round(fExps-gExps) - (fExps-gExps) ) < tol) )
-%     % Case 2: Both exponents differ by integers. Factor out the common
-%     % singular parts to leave the sum of smooth quotients.
-%     
-%     % At each endpoint, the smaller exponent will be factored out
-%     % of both summands.
-%     
-%     % Start off each compensating quotient as 1.
-%     factorF = @(x) 1;
-%     factorG = @(x) 1;
-%     for side = 1:2
-%         % The smaller of the two exponents is the exponent of the sum.
-%         [e,k] = sort([ fExps(side),gExps(side)] );
-%         newExps(side) = e(1);
-%         
-%         % The quotient factor is the difference in the exponents.
-%         if ( side == 1 )
-%             newFactor = @(x) (1+x).^diff(e);
-%         else
-%             newFactor = @(x) (1-x).^diff(e);
-%         end
-%         
-%         % Who had the smaller exponent? The other one gets the factor.
-%         if ( k(1) == 1 )
-%             factorG = @(x) factorG(x).*newFactor(x);
-%         else
-%             factorF = @(x) factorF(x).*newFactor(x);
-%         end
-%     end
-%     
-%     % FIXME Do we need to worry about scales here?
-%     factorF = smoothfun.constructor(factorF);
-%     factorG = smoothfun.constructor(factorG);
-%     newSmooth = factorF.*f.smoothPart + factorG.*g.smoothPart;
-%     s = singfun(newSmooth, newExps, prefs);
-%     
+elseif ( all(abs(round(fExps-gExps) - (fExps-gExps) ) < tol) )
+    % Case 2: Both exponents differ by integers. Factor out the common
+    % singular parts to leave the sum of smooth quotients.
+    
+    % At each endpoint, the smaller exponent will be factored out
+    % of both summands.
+    
+    % Start off each compensating quotient as 1.
+    factorF = @(x) 1;
+    factorG = @(x) 1;
+    for side = 1:2
+        % The smaller of the two exponents is the exponent of the sum.
+        [e,k] = sort([ fExps(side),gExps(side)] );
+        newExps(side) = e(1);
+        
+        % The quotient factor is the difference in the exponents.
+        if ( side == 1 )
+            newFactor = @(x) (1+x).^diff(e);
+        else
+            newFactor = @(x) (1-x).^diff(e);
+        end
+        
+        % Who had the smaller exponent? The other one gets the factor.
+        if ( k(1) == 1 )
+            factorG = @(x) factorG(x).*newFactor(x);
+        else
+            factorF = @(x) factorF(x).*newFactor(x);
+        end
+    end
+    
+    % Construct the function handle for the new smooth fun
+    sF = f.smoothPart;
+    sG = g.smoothPart;
+    smoothOp = @(x) feval(sF, x).*factorF(x) + feval(sG, x).*factorG(x);
+    
+    % Construct the new smooth fun
+    s = singfun.zeroSingFun();
+    smoothPrefs = chebtech.pref('tech', 'cheb1', 'extrapolate', false);
+    vscale = [];
+    hscale = [];
+    s.smoothPart = chebtech.constructor(smoothOp, vscale, hscale, smoothPrefs);
+    
+    % Assing new exponents
+    s.exponents = newExps;
+    
 else
     % Case 3: Nontrivial exponent difference.       
     % Form a new function handle for the sum from F and G.    

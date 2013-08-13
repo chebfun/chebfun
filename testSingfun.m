@@ -103,3 +103,7 @@ g = 1./f
 f = singfun( @(x) (1-x).^.5.*(1+x).^.5, [.5 .5] )
 1./f
 
+%%
+f = singfun(@(x) 1./(1+x), [], {'pole', 'none'} )
+g = singfun(@(x) 1./(1+x).^2, [], {'pole', 'none'} )
+f + g
