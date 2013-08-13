@@ -12,7 +12,7 @@ function out = isequal(f, g)
 out = false;
 
 % Check the domains match:
-if ( domainCheck(f, g) );
+if ( ~domainCheck(f, g) );
     return
 end
 
