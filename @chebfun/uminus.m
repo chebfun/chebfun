@@ -12,7 +12,7 @@ if ( isempty(f) )
     return
 end
 
-% Negate the impuleses:
+% Negate the impulses:
 f.impulses = -f.impulses;
 
 % Negate each of the FUNs:

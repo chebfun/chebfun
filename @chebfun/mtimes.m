@@ -3,6 +3,9 @@ function f = mtimes(f, g)
 %   F.*G multiplies the CHEBFUN objects F and G or a CHEBFUN by a scalar if
 %   either F or G is a scalar.
 
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org for Chebfun information.
+
 if ( ~isa(f, 'chebfun') )   % ??? * CHEBFUN
 
     % Ensure CHEBFUN is the first input:

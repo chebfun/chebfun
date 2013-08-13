@@ -3,7 +3,7 @@ function f = times(f, g)
 %   F.*G multiplies F and G, where F and G may be CHEBFUN objects or scalars.
 %   If F and/or G is array-valued, the dimensions must match.
 %
-% See also MTIMES.
+% See also CHEBFUN/MTIMES.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
@@ -31,8 +31,8 @@ elseif ( isnumeric(g) )        % CHEBFUN * double
 elseif ( ~isa(g, 'chebfun') )  % CHEBFUN * ???
 
     error('CHEBFUN:times:unknown', ...
-        'Undefined function ''times'' for input arguments of type %s and %s.', ...
-        class(f), class(g));
+          ['Undefined function ''times'' for input arguments of type ' ...
+           '%s and %s.'], class(f), class(g));
 
 elseif ( isempty(f) )          % empty CHEBFUN * CHEBFUN
 

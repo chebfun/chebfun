@@ -14,7 +14,7 @@ function f = fliplr(f)
 
 if ( ~f.isTransposed )
 
-    % Flip the coluns of an array-valued chebfun:
+    % Flip the columns of an array-valued chebfun:
     for k = 1:numel(f.funs)
         f.funs{k} = fliplr(f.funs{k});
     end
