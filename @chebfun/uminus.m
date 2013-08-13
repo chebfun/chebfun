@@ -13,7 +13,7 @@ if ( isempty(f) )
 end
 
 % Negate the impuleses:
-f.impulses(1,:) = -f.impulses(1,:);
+f.impulses = -f.impulses;
 
 % Negate each of the FUNs:
 for k = 1:numel(f.funs)
