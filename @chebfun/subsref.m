@@ -68,9 +68,9 @@ switch index(1).type
             out = feval(f, x, varin{:});
             out = out(:,columnIndex);
             
-        elseif ( isa(x, 'chebfun') || isa(x, 'function_handle') )
+        elseif ( isa(x, 'chebfun') )
             % Call COMPOSE():
-            out = compose(f, x);
+            out = compose(x, f);
             
         elseif ( isequal(x, ':') )
             % Return f:
