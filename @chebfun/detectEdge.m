@@ -16,7 +16,7 @@ function [edge, vscale] = detectEdge(op, domain, vscale, hscale, derHandle)
 %   map is assumed.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% PSEUDOCODE. Take from Pachón, Platte and Trefethen, "Piecewise smooth
+% PSEUDOCODE. Taken from Pachon, Platte and Trefethen, "Piecewise smooth
 % chebfuns" (IMA J. Numer. Anal., 2010)
 
 %  function edge = detectedge(f,a,c) % Find singularity of f in [a; c]
@@ -67,7 +67,7 @@ if ( isempty(edge) )
     edge = mean(domain);
 end
 htol = 1e-14*hscale;
-% If the edge as at the end of the domain, move it in by 1%:
+% If the edge is at the end of the domain, move it in by 1%:
 if ( abs(domain(1) - edge) <= htol )
     edge = domain(1) + diff(domain)/100;
 elseif ( abs(domain(2) - edge) <= htol )
@@ -236,9 +236,10 @@ nb = b*ones(numTestDers, 1);
 % Generate FD grid points and values
 dx = (b - a)/(gridSize - 1);
 x = [a + (0:gridSize-2)*dx, b].';
-dy = op(x);
+y = op(x);
 
 % Main loop (through derivatives), undivided differences:
+dy = y;
 for j = 1:numTestDers
     dy = diff(dy);
     x = (x(1:end-1) + x(2:end))/2;

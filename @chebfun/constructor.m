@@ -31,6 +31,8 @@ ends = domain;
 numIntervals = numel(ends) - 1;
 
 % Initialise hscale and vscale:
+% [TODO]: I have seen the followin code in at least one more location.
+% Should we have a gethScale(domain) method?
 hscale = norm(domain, inf);
 if ( isinf(hscale) )
     hscale = 1;
@@ -165,7 +167,8 @@ end
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% GETFUN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [g, ishappy, vscale] = getFun(op, domain, vscale, hscale, pref)
-%GETFUN controls the construction of funs
+%GETFUN controls the construction of funs [TODO]: This needs to be a little
+%    more descriptive about what "control" means.
 
 % If the interval is very small then skip adaptation and treat OP as a constant:
 if ( diff(domain) < 2e-14*hscale )
