@@ -8,9 +8,9 @@ classdef chebfun
 % CHEBFUN(F) constructs a CHEBFUN object for representing the function F on the
 % interval [-1, 1]. F can be a string, e.g., 'sin(x)', a function handle, e.g.,
 % @(x) x.^2 + 2*x +1, or a vector of numbers. In the first two instances, F
-% should be "vectorized" in the sense that it may be evaluated at a column
+% should be "vectorized" in the sense that it should allow evaluation at a column
 % vector of points x(:) in [-1, 1] and return an output of size NxM where N =
-% length(x(:)). If this is not possible then the flag CHEBFUN(F, 'vectorise')
+% length(x(:)). If this is not possible then the flag CHEBFUN(F, 'vectorize')
 % should be passed. CHEBFUN(F, 'vectorcheck', 'off') disables the automatic
 % checking for vector input. CHEBFUN() returns an empty CHEBFUN object.
 %
@@ -53,7 +53,7 @@ classdef chebfun
 % or
 %   CHEBFUN(@(x) [sin(x), cos(x)])
 % Note that each column in an array-valued CHEBFUN object is discretized in the
-% same way (i.e., the same breakpoont locations and the same underlying
+% same way (i.e., the same breakpoint locations and the same underlying
 % representation). Note the difference between 
 %   CHEBFUN(@(x) [sin(x), cos(x)], [-1, 0, 1])
 % and
@@ -170,7 +170,7 @@ classdef chebfun
                 
                 % Remove unnecessary breaks (but not those that were given):
                 [ignored, index] = setdiff(f.domain, dom);
-                f = merge(f, index.', pref);
+                f = merge(f, index(:).', pref);
                 
             end
             
@@ -180,8 +180,11 @@ classdef chebfun
     
     % Static methods implemented by CHEBFUN class.
     methods (Static = true)
+       
+        % Retrieve and modify preferences for this class.
+        prefs = pref(varargin);
         
-        % Splitting constructor.
+        % Main constructor.
         [funs, domain, op] = constructor(op, domain, pref);
         
         % Edge detector.
@@ -293,7 +296,8 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
                 pref = chebfun.pref(pref, 'tech', 'funqui');
             end
             args(1) = [];
-        elseif ( strncmpi(args{1}, 'vectorize', 7) ) % Allows both "z" and "s".
+        elseif ( strcmpi(args{1}, 'vectorize') || ...
+                 strcmpi(args{1}, 'vectorise') )
             % Vectorise flag for function_handles.
             vectorize = true;
             args(1) = [];

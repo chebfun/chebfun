@@ -1,7 +1,7 @@
 function varargout = size(f, dim)
 %SIZE   Size of a CHEBFUN.
 %   [S1, S2] = SIZE(F) returns S1, the number of piecewise smooth components of
-%   F, and S2, the number of columns in F. If S2 > 1, we say F is
+%   F, and S2, the number of columns in F. If S2 > 1, we say that F is
 %   "array-valued".
 %
 %   S = SIZE(F) returns the same as above in a 1x2 vector, S = [S1, S2].
