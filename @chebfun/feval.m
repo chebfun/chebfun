@@ -132,7 +132,8 @@ if ( ~any(higherImpulses(:)) )
     for k = 1:numFuns + 1
         index = x == dom(k);
         if ( any(index) )
-            fx(index,:) = f.impulses(k,:,1);
+            imps = repmat(f.impulses(k,:,1), sum(index), 1);
+            fx(index,:) = imps;
         end
     end
     
