@@ -14,19 +14,22 @@ classdef chebfun
 % should be passed. CHEBFUN(F, 'vectorcheck', 'off') disables the automatic
 % checking for vector input. CHEBFUN() returns an empty CHEBFUN object.
 %
+% CHEBFUN(F, [A, B]) specifies an interval [A, B] on which the CHEBFUN is
+% defined, where A and/or B may be infinite. CHEBFUN(F, ENDS), where ENDS is a
+% 1xK+1 vector of unique ascending values, specifies a piecewise smooth CHEBFUN
+% defined on the interval [ENDS(1), ENDS(K+1)] with additional interior breaks
+% at ENDS(2), ..., ENDS(K). Specifying these breaks can be particularly useful
+% if F is known to have discontinuities. For example,
+%   CHEBFUN(@(x) abs(x), [-1, 0, 1]).
+% If a domain is passed to the constructor, it should always be the 2nd input.
+%
 % CHEBFUN(A) or CHEBFUN(A, 'chebpts2'), where A is an Nx1 matrix, constructs a
 % CHEBFUN object which interpolates the data in A on an N-point Chebyshev grid
 % of the second kind (see >> help chebpts). CHEBFUN(A, 'chebpts1') and
 % CHEBFUN(A, 'equi') are similar, but here the data is assumed to come from a
 % 1st-kind Chebyshev or equispaced grid linspace(-1, 1, N), respectively.
-%
-% CHEBFUN(F, [A, B]) specifies an interval [A, B] on which the CHEBFUN is
-% defined, where A and/or B may be infinite. CHEBFUN(F, ENDS), where ENDS, which 
-% is 1xK+1 vector of strictly increasing values, specifies a piecewise smooth 
-% CHEBFUN defined on the interval [ENDS(1), ENDS(K+1)] with additional 
-% interior breaks at ENDS(2), ..., ENDS(K). Specifying these breaks can be 
-% particularly useful if F is known to have discontinuities. For example,
-%   CHEBFUN(@(x) abs(x), [-1, 0, 1])
+% CHEBFUN(F, N) or CHEBFUN(F, N, 'chebpts2') is equivalent to CHEBFUN(feval(F,
+% chebpts(N)).
 %
 % CHEBFUN({F1,...,Fk}, ENDS) constructs a piecewise smooth CHEBFUN which
 % represents Fj on the interval [ENDS(j), END(j+1)]. Each entry Fj may be a
@@ -41,6 +44,8 @@ classdef chebfun
 % CHEBFUN(F, 'splitting', 'on') allows the constructor to adaptively determine
 % breakpoints to better represent piecewise smooth functions F. For example,
 %   CHEBFUN(@(x) sign(x - .3), [-1, 1], 'splitting', 'on')
+% It is not possible to mix PROP/VAL and PREF inputs in a single constructor
+% call.
 %
 % CHEBFUN(F, ...), where F is an NxM matrix or an array-valued function handle,
 % returns an "array-valued" CHEBFUN. For example,
@@ -151,8 +156,8 @@ classdef chebfun
                 dom = cellfun(@(fun) get(fun, 'domain'), f.funs, ...
                     'uniformOutput', false);
                 f.domain = unique([dom{:}]);
-                % Update values at jumps (first row of impulses):
-                f.impulses = chebfun.jumpVals(f.funs, f.domain);
+                % Update values at breakpoints (first row of f.impulses):
+                f.impulses = chebfun.getValuesAtBreakpoints(f.funs, f.domain);
                 
             else
                 % Construct from function_handle, numeric, or string input:
@@ -160,12 +165,12 @@ classdef chebfun
                 % Call the main constructor:
                 [f.funs, f.domain] = chebfun.constructor(op, dom, pref);
                 
-                % Update values at jumps (first row of imps):
-                f.impulses = chebfun.jumpVals(f.funs, f.domain, op);
+                % Update values at breakpoints (first row of f.impulses):
+                f.impulses = chebfun.getValuesAtBreakpoints(f.funs, f.domain, op);
                 
                 % Remove unnecessary breaks (but not those that were given):
                 [ignored, index] = setdiff(f.domain, dom);
-                f = merge(f, index.', pref);
+                f = merge(f, index(:).', pref);
                 
             end
             
@@ -175,7 +180,7 @@ classdef chebfun
     
     % Static methods implemented by CHEBFUN class.
     methods (Static = true)
-        
+       
         % Retrieve and modify preferences for this class.
         prefs = pref(varargin);
         
@@ -186,7 +191,10 @@ classdef chebfun
         [edge, vscale] = detectEdge(op, domain, hscale, vscale, derHandle);
         
         % Determine values of chebfun at breakpoints.
-        vals = jumpVals(funs, ends, op);
+        vals = getValuesAtBreakpoints(funs, ends, op);
+        
+        % Retrieve and modify preferences for this class.
+        prefs = pref(varargin);
         
     end
     
@@ -285,7 +293,6 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
             elseif ( strcmpi(args{1}, 'chebpts2') )
                 pref = chebfun.pref(pref, 'tech', 'chebtech2');
             elseif ( strcmpi(args{1}, 'equi') )
-                % [TODO]: Should funqui be a tech?
                 pref = chebfun.pref(pref, 'tech', 'funqui');
             end
             args(1) = [];
@@ -314,6 +321,13 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
     if ( isa(op, 'function_handle') && vectorize )
         % [TODO]: Should we reinstate VECTORCHECK()?
         op = vec(op);
+    end
+    
+    if ( isa(op, 'function_handle') && strcmp(pref.chebfun.tech, 'funqui') )
+        if ( isfield(pref.chebfun, 'n') && ~isnan(pref.chebfun.n) )
+            x = linspace(domain(1), domain(end), pref.chebfun.n).';
+            op = feval(op, x);
+        end
     end
 
 end

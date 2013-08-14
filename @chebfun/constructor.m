@@ -9,7 +9,7 @@ function [funs, ends] = constructor(op, domain, pref)
 %
 %   If OP is a function_handle or a string, it should be vectorised in that it
 %   accepts a column vector of length N and return a matrix of size N x M. If M
-%   ~= 1, we say the resulting CHEBFUN is "array-vaued".
+%   ~= 1, we say the resulting CHEBFUN is "array-valued".
 %
 %   CONSTRUCTOR(OP, DOMAIN, PREF), where PREF is a structure returned by 
 %   CHEBFUN.PREF(), allows alternative construction preferences to be passed to
@@ -40,14 +40,14 @@ vscale = 0;
 % Sanity check:
 if ( iscell(op) && (numel(op) ~= numIntervals) )
     error('CHEBFUN:constructor:cellInput', ...
-        ['Number of cell elements in OP must match the number of', ...
+        ['Number of cell elements in OP must match the number of ', ...
          'intervals in DOMAIN.'])
 end    
 
-%% ----------------------------- SPLITTING OFF ---------------------------------
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%  SPLITTING OFF %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % In 'OFF' mode, seek only one piece with length < maxdegree.
 if ( ~pref.chebfun.splitting )
-    % Set maximum degree:
+    % Set maximum number of sample points:
     maxn = pref.chebfun.maxdegree + 1;
     % Initialise the FUN array:
     funs{numIntervals} = fun.constructor();
@@ -77,7 +77,7 @@ if ( ~pref.chebfun.splitting )
     return
 end
 
-%% ------------------------------ SPLITTING ON ---------------------------------
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%  SPLITTING ON %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % In 'ON' mode, seek only many pieces with total length < maxlength.
 
 % Set the maximum degree:
@@ -106,17 +106,23 @@ for k = 1:numIntervals
 end
 sad = ~ishappy;
 
-% MAIN LOOP If the above didn't work, enter main loop and start splitting. (Note
-% that at least one new breakpoint will be introduced).
+% MAIN LOOP. If the above didn't work, enter main loop and start splitting.
+% (Note that at least one new breakpoint will be introduced).
 while ( any(sad) )
-    % If a fun is sad in a subinterval, split this subinterval.
+    % If a FUN is sad in a subinterval, split this subinterval.
 
-    % Choose a fun to improve:
-    % [TODO]: Perhaps we could choose the largest unhappy interval?
-    k = find(sad, 1, 'first');
+    % Choose a subinterval to improve:
+%     % Old choice = the first sad interval:
+%     k = find(sad, 1, 'first');
+    % New choice = the largest sad interval:
+    diffEnds = diff(ends);
+    diffEnds(~sad) = 0;
+    [ignored, k] = max(diffEnds);
+    
+    % Ends of this subinterval:
     a = ends(k);
     b = ends(k+1);
-
+    
     % Unwrap if OP is a cell:
     if ( iscell(op) )
         opk = op{k};
@@ -125,7 +131,7 @@ while ( any(sad) )
     end
 
     % Locate an edge/split location:
-    [edge, vscale] = chebfun.detectEdge(opk, [a b], vscale, hscale);
+    edge = chebfun.detectEdge(opk, [a, b], vscale, hscale);
 
     % Try to obtain happy child FUN objects on each new subinterval:
     [childLeft, happyLeft, vscale] = ...
@@ -155,6 +161,8 @@ while ( any(sad) )
 end
 
 end
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% GETFUN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [g, ishappy, vscale] = getFun(op, domain, vscale, hscale, pref)
 %GETFUN controls the construction of funs

@@ -54,7 +54,7 @@ function prefs = pref(varargin)
 %    splitdegree   - Maximum degree used by constructor in SPLITTING "ON" mode.
 %       [128] 
 %
-%     maxlength    - Maximum number of points used in SPLITTING "ON" mode.
+%     maxlength    - Maximum total number of points used in SPLITTING "ON" mode.
 %       [6000]
 %
 % See also CHEBFUN.
@@ -90,6 +90,7 @@ else                              % No chebfun prefs found, so make some:
     p.extrapolate = true;
     p.domain      = [-1, 1];
     p.splitting   = false;
+    % TODO: Chebfun should not know about 'degree'.
     p.maxdegree   = 65536;
     p.maxlength   = 6000;
     p.splitdegree = 129;

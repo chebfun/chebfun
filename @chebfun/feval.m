@@ -19,7 +19,7 @@ function fx = feval(f, x, varargin)
 %     f = chebfun(@(x) 1./(1 + 25*x.^2));
 %     y = feval(f, linspace(-1, 1, 100));
 %
-% See also @CHEBFUN/SUBSREF.
+% See also CHEBFUN/SUBSREF.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
@@ -128,14 +128,14 @@ higherImpulses = f.impulses(:,:,2:end);
 if ( ~any(higherImpulses(:)) )
     % Loop over the FUNs:
     for k = 1:numFuns + 1
-        idx = x == dom(k);
-        if ( any(idx) )
-            fx(idx,:) = f.impulses(k,:,1);
+        index = x == dom(k);
+        if ( any(index) )
+            fx(index,:) = f.impulses(k,:,1);
         end
     end
     
 else
-    % [TODO]: Multiple imps rows:    
+    % [TODO]: Higher-order impulses.
 end
 
 %% RESHAPE FOR OUTPUT:

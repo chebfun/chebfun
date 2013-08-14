@@ -1,9 +1,9 @@
 function [edge, vscale] = detectEdge(op, domain, vscale, hscale, derHandle)
 %DETECTEDGE   Edge detection.
-%   EDGE = DETECTEDGE(F, DOMAIN, HSCALE, VSCALE) detects a blowup in first,
+%   EDGE = DETECTEDGE(F, DOMAIN, HSCALE, VSCALE) detects a blowup in the first,
 %   second, third, or fourth derivatives of F in [A,B]. HSCALE is the horizontal
-%   scale and VSCALE is the vertical scale. If no edge is detected, EDGE = 0 is
-%   returned.
+%   scale and VSCALE is the vertical scale. If no edge is detected, EDGE is set
+%   to the midpoint of DOMAIN.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
@@ -83,7 +83,7 @@ function [edge, vscale] = detectedgeMain(op, domain, hscale, vscale, derHandle)
 a = domain(1);
 b = domain(2);
 
-% Assume no edge is found
+% Assume no edge is found:
 edge = [];
 
 numTestDers = 4;  % Maximum number of derivatives to be tested.
@@ -178,8 +178,8 @@ while ( ((cont < 2) || any(maxDer == inf)) && (e0 ~= e1) )
     yc = op(c);
 
     % Find the undivided difference on each side of interval
-    dyl = abs(yc - ya) / derHandle((a + c)/2);
-    dyr = abs(yb - yc) / derHandle((b + c)/2);
+    dyl = max(abs(yc - ya) / derHandle((a + c)/2));
+    dyr = max(abs(yb - yc) / derHandle((b + c)/2));
 
     % Keep track of maximum value:
     maxd1 = maxDer;
@@ -322,3 +322,4 @@ end
 % end
 %
 % end
+
