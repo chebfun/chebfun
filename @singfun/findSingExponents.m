@@ -1,28 +1,14 @@
-function exponents = findSingExponents(op, singType)
-%FINDEXPONENTS   Endpoint singularity detection by sampling values.
+function exponents = findSingExponents(f, singType)
+%FINDSINGEXPONENTS   Endpoint singularity detection by sampling values.
 %  Private method of SINGFUN.
 
 % TODO Documentation
 
-% Copyright 2013 by The University of Oxford and The Chebfun De
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org for Chebfun information.
 
 tol = singfun.pref.singfun.eps;
-exponents = zeros(1,2);
-% loop through each end
-singEnd = {'left', 'right'};
-for k = 1:2
-    if ( strcmpi( singType{k}, 'pole') )
-        exponents(k) = -singfun.findPoleOrder(op, singEnd{k});
-    else
-        if strcmpi( singType{k}, 'sing'  )
-            exponents(k) = -singfun.findSingOrder(op, singEnd{k});
-        else
-            if strcmpi( singType{k}, 'none' )
-                exponents(k) = 0;
-            else
-                error('CHEBFUN:SINGFUN:findSingExponents:unknownPref',...
-                    'Blowup preference "%s" unknown', singType{k})
-            end
-        end
-    end
-end
+
+x1 = eps; x2 = 2*x1;
+exponents(1) = log(f(-1+x2)/f(-1+x1))/log(2);
+exponents(2) = log(f(1-x2)/f(1-x1))/log(2);
