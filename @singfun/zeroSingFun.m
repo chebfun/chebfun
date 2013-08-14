@@ -21,7 +21,6 @@ s.smoothPart = chebtech.constructor(0, vscale, hscale, prefs);
 %%
 % No singularities at any end points.
 s.exponents = [0, 0];
-s.isSingEnd = [0, 0];
 s.singType = {'none', 'none'};
 
 end

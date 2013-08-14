@@ -49,15 +49,12 @@ classdef singfun
         exponents   % (1x2 double)
         
         % A cell array telling the type of singularity at the endpoints.
-        singType    % (1x2 cell)
-        
-        % A logical array indicating which ends are singular.
-        isSingEnd   % (1x2 logical)        
-    end
+        singType = {};   % (1x2 cell)        
+     end
     
     %% CLASS CONSTRUCTOR:
     methods ( Static = true )
-        function obj = singfun(op, exponents, singType, pref)           
+        function obj = singfun(op, exponents, singType, pref) 
             %%
             % Check for preferences in the very beginning.
             % Determine preferences if not given, merge if some are given:
@@ -75,7 +72,6 @@ classdef singfun
                 obj.smoothPart = [];
                 obj.exponents = [];
                 obj.singType = {};
-                obj.isSingEnd = [];
                 return
             end
             
@@ -89,59 +85,33 @@ classdef singfun
             %%
             if ( nargin == 2 || ~isempty(exponents) )
                 % exponents passed, discard the values
-                % given in isSingEnd, singType and use 
-                % the information given in exponents.
+                % given in singType and use the
+                % information given in exponents.
                 obj.exponents = exponents;
-                tol = pref.singfun.eps;
-                % loop through each side
-                for k = 1:2
-                    if ( exponents(k) < -100*tol )
-                        obj.isSingEnd(k) = 1;
-                        if ( isempty(singType) )                            
-                            % if the user has not provided the type of
-                            % singularity, figure it out                        
-                            if( abs(exponents(k)-round(exponents(k))) < 100*tol )
-                                obj.singType{k} = 'pole';
-                            else
-                                obj.singType{k} = 'sing';
-                            end
-                        else
-                            % use the provided singularity type. 
-                            % Since the singularity is non trivial, it must 
-                            % either be a 'pole' or a 'sing'.
-                            if ( any(strcmpi(singType{k}, {'pole', 'sing'})) )
-                                % [TODO]: Add code here if you want to make sure 
-                                % that the nubmer given in exponents
-                                % are in agreement with singtype                                
-                                obj.singType{k} = singType{k};                            
-                            else
-                                error( 'CHEBFUN:SINGFUN:constructor', 'singularity type not compatible' );
-                            end
-                        end
-                    else
-                        obj.isSingEnd(k) = 0;
-                        obj.singType{k} = 'none';
-                    end
-                end                                
+                if ( nargin == 2 || isempty(singType) )
+                    % if the user has not provided the type of
+                    % singularity, figure it out
+                    obj = classifyExponents(obj);
+                else
+                    % Singularity types given, make sure the strings are
+                    % OK.
+                    obj.singType = singType;
+                    checkSingTypes(obj);                    
+                end
+                              
             end
                 
+            %%
             if ( nargin >= 3 && isempty(exponents) )                
                 if ( isempty(singType) )
-                    % Singulrity types and exponents not given. Assume 
+                    % Singulrity types and exponents not given. Assume
                     % fractional poles or generic singularities if not given
                     obj.singType = {'sing', 'sing'};
                 else
                     % Singularity types given, make sure the strings are
                     % OK.
-                    singTypeCheck(1) = any(strcmpi(singType{1}, {'pole', 'sing', 'none'}));
-                    singTypeCheck(2) = any(strcmpi(singType{2}, {'pole', 'sing', 'none'}));
-                    if ( all(singTypeCheck) )
-                        % if the strings are OK, copy given strings in the
-                        % current object.
-                        obj.singType = singType;
-                    else                        
-                        error( 'CHEBFUN:SINGFUN:constructor', 'unknown singularity type' );
-                    end
+                    obj.singType = singType;
+                    checkSingTypes(obj);
                 end
             end                        
             
@@ -150,23 +120,8 @@ classdef singfun
             % are not given
             if ( isempty(obj.exponents) )
                 obj.exponents = singfun.findSingExponents(op, obj.singType);
-                % update ISSINGEND and SINGTYPE based on EXPONENTS
-                tol = pref.singfun.eps;
-                % loop for each end
-                for k = 1:2
-                    if ( obj.exponents(k) > -100*tol )
-                        % if the singularity exponent is positive or above the tolerance level
-                        % remove the singularity
-                        obj.isSingEnd(k) = 0;
-                        obj.singType{k} = 'none';
-                    else
-                        obj.isSingEnd(k) = 1;
-                        if ( abs(obj.exponents(k) - round(obj.exponents(k))) < 100*tol )
-                            % pole if integer valued exponent
-                            obj.singType{k} = 'pole';
-                        end
-                    end
-                end
+                % update SINGTYPE based on EXPONENTS
+                obj.classifyExponents();               
             end
                
             % update the operator based on the values in exponents.
@@ -181,11 +136,20 @@ classdef singfun
         end
     end
     
+    %% 
+
+    
     %% METHODS IMPLEMENTED BY THIS CLASS.
     methods
         
         % Complex conjugate of a SINGFUN.
-        f = conj(f)
+        f = conj(f)                
+        
+        % Classify epxonents of a SINGFUN
+        f = calssifyExponents(f)
+        
+        % Check the strings classifying singTypes
+        out = checkSingTypes(f)
         
         % SINGFUN obects are not transposable.
         f = ctranspose(f)
@@ -301,7 +265,7 @@ classdef singfun
     end
 
     %% STATIC METHODS IMPLEMENTED BY THIS CLASS.
-    methods ( Static = true )
+    methods ( Static = true )                
         
         % Costruct a zero SINGFUN
         s = zeroSingFun()

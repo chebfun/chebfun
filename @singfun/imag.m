@@ -13,7 +13,6 @@ f.smoothPart = imag(f.smoothPart);
 % if F is real, then remove singularities from the imaginary part.
 if ( iszero(f.smoothPart) )
     f.exponents = [0, 0];
-    f.isSingEnd = [0, 0];
     f.singType = {'none', 'none'};
 end
 

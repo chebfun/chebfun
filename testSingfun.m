@@ -1,11 +1,11 @@
 %%
 clear classes
-
+%%
 a = .5; b = 1.5;
 op = @(x) sin(1-x)./((1-x).^(b).*(1+x).^(a));
 exponents = [-a, -b];
 exponents = [];
-singType = {'pole', 'pole'};
+singType = {'sing', 'sing'};
 pref = [];
 f = singfun( op, exponents, singType, pref )
 
