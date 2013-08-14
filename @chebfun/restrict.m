@@ -1,8 +1,8 @@
 function f = restrict(f, newDomain)
-%RESTRICT    Restrict a CHEBFUN object to a subinterval.
+%RESTRICT   Restrict a CHEBFUN object to a subinterval.
 %   G = RESTRICT(F, [S1, S2]) returns a CHEBFUN G defined on the interval [S1,
 %   S2] which agrees with F on that interval. Any interior breakpoints in
-%   F.domain within [S1, S2] are kept in G.domain.
+%   F.DOMAIN within [S1, S2] are kept in G.DOMAIN.
 %
 %   G = RESTRICT(F, S), where S is a row vector, will introduce additional
 %   interior breakpoints at S(2:end-2).

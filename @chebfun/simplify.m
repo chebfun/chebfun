@@ -1,16 +1,17 @@
 function f = simplify(f, tol)
 %SIMPLIFY  Simplify a CHEBFUN.
-%  G = SIMPLIFY(F) attempts to compute a 'simplified' version G such that
-%  length(G) <= length(F), but ||G - F|| is small in a relative sense: ||G - F||
-%  < epslevel(G)*vscale(G).
+%  G = SIMPLIFY(F) attempts to compute a CHEBFUN G which is a 'simplified'
+%  version of F in that length(G) <= length(F), but ||G - F|| is small in a
+%  relative sense: ||G - F|| < EPSLEVEL(G)*VSCALE(G).  The relative error
+%  threshold tolerance is chosen based on F's own global accuracy estimate (via
+%  F.VSCALE and F.EPSLEVEL) and the local VSCALEs of F's individual FUN
+%  objects.
 %
 %  G = SIMPLIFY(F, TOL) does the same as above but uses TOL instead of the
-%  default CHEBFUN.PREF('EPS') preference as the relative threshold level for
-%  deciding whether a coefficient is small enough to be zeroed. Here,
-%  epslevel(G) is the maximum of epslevel(F) and TOL.
+%  default simplification tolerances as the relative threshold level.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 if ( nargin == 1 )
     tol = chebfun.pref('eps');

@@ -12,10 +12,13 @@ function [f, g, newBreaksLocF, newBreaksLocG] = tweakDomain(f, g, tol)
 %   [F, G] = TWEAKDOMAIN(F, G, TOL) uses the specified tolerance TOL for
 %   determining nearby break points.
 %
-%   [F, G, J, K] = TWEAKDOMAIN(F, G) returns the indicies of the modified
+%   [F, G, J, K] = TWEAKDOMAIN(F, G) returns the indices of the modified
 %   entries F.DOMAIN(J) and G.DOMAIN(K).
 %
-% See also OVERLAP.
+% See also CHEBFUN/OVERLAP.
+
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org for Chebfun information.
 
 % Return if either f or g are empty as there is nothing to do here:
 if ( isempty(f) || isempty(g) )
@@ -63,7 +66,7 @@ g.domain(newBreaksLocG) = newBreaks;
 % Change the maps used by FUN objects on either side of new breakpoints:
 % NOTE: This is slightly inefficient if consecutive break points are being
 % adjusted, as the map for one of the FUN objects is being changed twice.
-% However, this is a fairly inexpensive operationso we don't worry too much.
+% However, this is a fairly inexpensive operation, so we don't worry too much.
 newBreaksLocF = find(newBreaksLocF);
 newBreaksLocG = find(newBreaksLocG);
 for k = newBreaksLocF

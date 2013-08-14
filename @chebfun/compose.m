@@ -1,5 +1,5 @@
 function f = compose(f, op, g, pref)
-%COMPOSE  Compostition of CHEBFUN objects.
+%COMPOSE  Composition of CHEBFUN objects.
 %   COMPOSE(F, OP) returns a CHEBFUN representing OP(F), where F is also a
 %   CHEBFUN object and OP is a function handle.
 %
@@ -7,11 +7,11 @@ function f = compose(f, op, g, pref)
 %   is a function handle. The domains of F and G should be compatible.
 %
 %   COMPOSE(F, G) returns a CHEBFUN representing G(F), where both F and G are
-%   also CHEBFUN objects. If the range of F is not in [-1, 1] then an error is
-%   thrown.
+%   also CHEBFUN objects. If the range of F is not contained in the domain of
+%   G, then an error is thrown.
 %
 %   COMPOSE(F, OP, PREF), COMPOSE(F, OP, G, PREF), and COMPOSE(F, G, PREF) use
-%   the options passed by the prefences structure PREF.
+%   the options passed by the preference structure PREF.
 %
 %   Note 1: If the location of required breakpoints in the output are known in
 %   advance, they should be applied to F and/or G using RESTRICT() before the
@@ -51,7 +51,7 @@ if ( (nargin == 4) && ~isempty(g) ) % compose(f, op, g, pref)
     opIsBinary = true;
 end
 
-if ( nargin < 4 )
+if ( (nargin < 4) || ((nargin == 4) && isempty(pref)) )
     pref = chebfun.pref();
 end
 
@@ -77,7 +77,7 @@ end
 
 % Call the COMPOSECHEBFUNS method if OP is a CHEBFUN object:
 if ( isa(op, 'chebfun') )
-    f = composeChebfuns(f, op, pref);
+    f = composeTwoChebfuns(f, op, pref);
     return
 end
 
@@ -187,5 +187,100 @@ end
 f.funs = newFuns;
 f.domain = newDom;
 f.impulses = newImps;
+
+end
+
+function h = composeTwoChebfuns(f, g, pref)
+%COMPOSETWOCHEBFUNS   Composition of two CHEBFUNs.
+%   COMPOSETWOCHEBFUNS(F, G, PREF) returns the composition of the CHEBFUN
+%   objects F and G, G(F) using the CHEBFUN preferences contained in the
+%   preference structure PREF.  The range of F must be in the domain of G or
+%   else an error is thrown.  An equivalent syntax is G(F).
+
+% Deal with the trivial empty case:
+if ( isempty(f) || isempty(g) )
+    h = chebfun();
+    return
+end
+
+%% ERROR CHECKING:
+
+if ( xor(f.isTransposed, g.isTransposed) )
+    error('CHEBFUN:composeChebfuns:trans', ...
+        'Cannot compose a row CHEBFUN with a column CHEBFUN.');
+end
+
+isTransposed = f.isTransposed;
+if ( isTransposed )
+    % Make everything a column CHEBFUN for now:
+    f.isTransposed = 0;
+    g.isTransposed = 0;
+    % [TODO]: Add this once TRANSPOSE() is implemented.
+    % f = f.';
+    % g = g.';
+end
+
+if ( (size(f, 2) > 1) && (size(g, 2) > 1) )
+     error('CHEBFUN:composeChebfuns:trans', ...
+        'Cannot compose two array-valued CHEBFUN objects.');
+end
+
+% f must be a real-valued function:
+if ( ~isreal(f) )
+    error('CHEBFUN:compose:complex', 'F must be real valued to construct G(F).')
+    % warning('CHEBFUN:compose:complex', 'F SHOULD be real valued to construct G(F).');
+end
+
+% [TODO]: Requires MINANDMAX().
+% % Get epslevels and set a tolerance:
+% tol = 10*max(vscale(f).*epslevel(f), vscale(g).*epslevel(g));
+% hsf = hscale(f); 
+% % Find the range of F:
+% mmF = minandmax(f);
+% minF = min(mmF(:));
+% maxF = max(mmF(:));
+% % Range of f must be in the domain of g:
+% if ( g.domain(1) > minF + tol*hsf || g.domain(end) < maxF - tol*hsf )
+%     error('CHEBFUN:compose:domain', ...
+%         'Range of F, [%g, %g], must be in the domain of G, [%g, %g].', ...
+%         minF, maxF, g.domain(1), g.domain(end))
+% end
+
+% Delta functions:
+if ( (size(f.impulses, 3) > 1) || (size(g.impulses, 3) > 1) )
+    warning('CHEBFUN:compose:imps',  ...
+        'Composition does not handle impulses / delta functions.')
+end
+
+%% Locate breakpoints in G:
+
+% If g has breakpoints, find the corresponding x-points in the domain of f:
+newDom = f.domain;
+if ( numel(g.domain) > 2 )
+    gDom = g.domain(2:end-1);
+    for k = 1:length(gDom)
+        % [TODO]: This requires @CHEBFUN/MINUS.
+        % r = roots(f - gDom(k));
+        % newDom = [newDom, r(:).']; %#ok<AGROW>
+    end
+end
+newDom = unique(sort(newDom));
+
+% Restrict f to the new domain:
+f = restrict(f, newDom);
+
+%% Call COMPOSE():
+
+% Call compose:
+h = compose(f, @(f) feval(g, f), pref);
+
+% Fix impulse values:
+h.impulses(:,:,1) = feval(g, feval(f, h.domain.'));
+
+if ( isTransposed )
+    h.isTransposed = 1;
+    % [TODO]: Add this once TRANSPOSE() is implemented.
+    % h = h.';
+end
 
 end
