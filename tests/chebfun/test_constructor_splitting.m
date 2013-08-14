@@ -38,14 +38,6 @@ pass(4) = (norm(f4.domain - [-1 0 1], inf) < 10*eps) && ...
     (norm(feval(f4, xx4) - feval(F4, xx4), inf) < ...
     tol*max(f4.epslevel.*f4.vscale));
 
-% Check for issue with call to merge on a function with multiple breakpoints.
-F5 = @(x) sign(x - 0.1).*abs(x + 0.2).*sin(3*x);
-f5 = chebfun(F5, [-1 1], pref, 'splitting', 'on', 'blowup', 'off');
-xx5 = linspace(f5.domain(1)+eps, f5.domain(end)-eps, 100);
-pass(5) = (norm(f5.domain - [-1 -0.2 0.1 1], inf) < 10*eps) && ...
-    (norm(feval(f5, xx5) - feval(F5, xx5), inf) < ...
-    tol*max(f5.epslevel.*f5.vscale));
-
 % % Test X*LOG(X) on [0 1]:
 % F4 = @(x) x.*log(x);
 % f4 = chebfun(F4, [0, 1], pref, 'splitting', 'on', 'blowup', 'off');
