@@ -106,7 +106,7 @@ switch index(1).type
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% RESTRICT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     case '{}'
-        
+
         if ( length(idx) == 1 )
             if ( isequal(idx{1}, ':') )
                 % F{:} returns F:
@@ -128,7 +128,7 @@ switch index(1).type
         
     otherwise
         
-        error('CHEBFUN:UnexpectedType',...
+        error('CHEBFUN:subsref:unexpectedType',...
             ['??? Unexpected index.type of ', index(1).type]);
 end
 
