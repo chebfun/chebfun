@@ -11,10 +11,12 @@ if ( nargin == 1 )
     pref = chebfun.pref();
 end
 
-if ( ~isfinite(f) )
-    error('CHEBFUN:cos:inf',...
-        'COS is not defined for functions which diverge to infinity');
-end
+% [TODO]:  Restore or change this once we have decided the proper behavior or
+% isfinite() and defined that function.
+%if ( ~isfinite(f) )
+%    error('CHEBFUN:cos:inf',...
+%        'COS is not defined for functions which diverge to infinity');
+%end
 
 % Call the compose method:
 g = compose(f, @cos, pref);

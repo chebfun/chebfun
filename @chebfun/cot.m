@@ -11,6 +11,8 @@ if ( nargin == 1 )
     pref = chebfun.pref();
 end
 
+% [TODO]:  Restore or change this once we have decided the proper behavior or
+% isfinite() and defined that function.
 % if ( ~isfinite(f) )
 %     error('CHEBFUN:cot:inf',...
 %         'COT is not defined for functions which diverge to infinity');
