@@ -1,4 +1,4 @@
-function g = expm1(f)
+function g = expm1(f, pref)
 %EXPM1   Compute EXP(X)-1 of a chebfun accurately.
 %   EXPM1(Z) computes exp(Z)-1 accurately in the case where the chebfun Z is
 %   small on its domain. Complex Z is accepted.
