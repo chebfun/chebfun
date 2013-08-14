@@ -12,6 +12,8 @@ function fx = feval(f, x, varargin)
 %   FEVAL(F, X, 'left') and FEVAL(F, X, '-') evaluate F at the points in X,
 %   using left-hand limits to evaluate F at any breakpoints.  FEVAL(F, X,
 %   'right') and FEVAL(F, X, '+') do the same but using right-hand limits.
+%   [TODO:] Again this is inconsisted with the mathematica definitin of right
+%   and left sided limits. Please see my comments in jumpVals.m
 %
 %   Example:
 %     f = chebfun(@(x) 1./(1 + 25*x.^2));
