@@ -37,6 +37,4 @@ for (k = 1:1:numel(trigFunctions))
     pass(k) = norm(err, inf) < 50*g.vscale.*g.epslevel;
 end
 
-norm(err, inf)
-
 end
