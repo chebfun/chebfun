@@ -181,9 +181,6 @@ classdef chebfun
     % Static methods implemented by CHEBFUN class.
     methods (Static = true)
        
-        % Retrieve and modify preferences for this class.
-        prefs = pref(varargin);
-        
         % Main constructor.
         [funs, domain, op] = constructor(op, domain, pref);
         
