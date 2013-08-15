@@ -158,7 +158,7 @@ classdef fun % (Abstract)
         out = innerProduct(f, g)
         
         % Data for plotting a FUN
-        data = plotData(f);
+        data = plotData(f, g);
         
         % Restrict a FUN to a subinterval.
         f = restrict(f, s)
@@ -234,6 +234,9 @@ classdef fun % (Abstract)
 
         % Basic linear plot for FUN objects.
         varargout = plot(f, varargin)
+        
+        % 3-D plot for FUN objects.
+        varargout = plot3(f, g, h, varargin)
 
         % Addition of two FUN objects.
         f = plus(f, g)

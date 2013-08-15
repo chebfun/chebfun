@@ -353,8 +353,11 @@ classdef chebtech < smoothfun % (Abstract)
         % Basic linear plot for CHEBTECH objects.
         varargout = plot(f, varargin)
         
+        % 3-D plot for CHEBTECH objects.
+        varargout = plot3(f, g, h, varargin)
+        
         % Obtain data used for plotting a CHEBTECH object:
-        data = plotData(f)
+        data = plotData(f, g, h)
 
         % Addition of two CHEBTECH objects.
         f = plus(f, g)
