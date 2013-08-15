@@ -6,12 +6,12 @@ function isf = isfinite(f)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Check for infinite breakpoint values or higher-order impulses.
-if ( any(any(~isfinite(f.impulses(:,:,1)))) || (size(f.impulses, 3) > 1) )
+if ( any(any(~isfinite(f.impulses(:,:,1)))) || any(any(any(f.impulses(:,:,2:end)))) ) 
     isf = false;
     return
 end
 
-% Check for any infinite funs.
+% Check for any infinite FUNs.
 for k = 1:numel(f.funs)
     if ( ~isfinite(f.funs{k}) )
         isf = false;
