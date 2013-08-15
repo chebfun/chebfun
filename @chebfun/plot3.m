@@ -2,12 +2,12 @@ function varargout = plot3(f, g, h, varargin)
 %PLOT3   Plot for CHEBFUN objects in 3-D space. 
 %   PLOT() is a three-dimensional analogue of PLOT().
 %   
-%   PLOT3(X, Y, Z), where Z, Y, and Z are three CHEBFUN objects, plots a line in
+%   PLOT3(X, Y, Z), where X, Y, and Z are three CHEBFUN objects, plots a line in
 %   3-space. X, Y, and Z may be array-valued, but must have the same number of
 %   columns.
 %   
 %   Various line types, plot symbols, and colors may be obtained with PLOT3(X,
-%   Y, Z, S) where S is a 1, 2 or 3 character string made from the characters
+%   Y, Z, S) where S is a string of length 1, 2 or 3 containing characters
 %   listed under the PLOT command.
 %
 %   H1 = PLOT3(F, G, H) returns a column vector of handles to lineseries
@@ -89,4 +89,3 @@ if ( nargout > 0 )
 end
 
 end
-
