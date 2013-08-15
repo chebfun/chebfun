@@ -93,8 +93,7 @@ classdef singfun
                     % singularity, figure it out
                     obj = classifyExponents(obj);
                 else
-                    % Singularity types given, make sure the strings are
-                    % OK.
+                    % Singularity types given, make sure the strings are OK.
                     obj.singType = singType;
                     checkSingTypes(obj);                    
                 end
@@ -108,8 +107,7 @@ classdef singfun
                     % fractional poles or generic singularities if not given
                     obj.singType = {'sing', 'sing'};
                 else
-                    % Singularity types given, make sure the strings are
-                    % OK.
+                    % Singularity types given, make sure the strings are OK.
                     obj.singType = singType;
                     checkSingTypes(obj);
                 end
@@ -121,7 +119,7 @@ classdef singfun
             if ( isempty(obj.exponents) )
                 obj.exponents = singfun.findSingExponents(op, obj.singType);
                 % update SINGTYPE based on EXPONENTS
-                obj.classifyExponents();               
+                obj = classifyExponents(obj);               
             end
                
             % update the operator based on the values in exponents.
@@ -265,10 +263,7 @@ classdef singfun
     end
 
     %% STATIC METHODS IMPLEMENTED BY THIS CLASS.
-    methods ( Static = true )                
-        
-        % Costruct a zero SINGFUN
-        s = zeroSingFun()
+    methods ( Static = true )                                
         
         % method for finding the order of singularities
         exponents = findSingExponents( op, singType )
@@ -285,6 +280,8 @@ classdef singfun
         % Retrieve and modify preferences for this class.
         prefs = pref(varargin)
         
+        % Costruct a zero SINGFUN
+        s = zeroSingFun()        
     end
     
 end    
