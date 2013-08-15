@@ -27,15 +27,18 @@ if ( ~isreal(f) )
     return
 end
 
-% [TODO]: If f is the zero Chebfun, then return zero:
-% g.impulses = 0*g.impulses(1,:);
-% if ( ~any(g) )
-%     % There are nonzero impulses:
-%     if ( any(f.impulses) )
-%         imps = sign(double(f.impulses(1,:)));
-%         idx = [true, logical(imps(2:end-1)), true];
+% % If f is a zero Chebfun, then return zero:
+% g.impulses = 0*g.impulses(:,:,1);
+% if ( iszero(g) )
+%     % Deal with any nonzero impulses:
+%     imps = f.impulses(:,:,1);
+%     if ( any(imps) )
+%         imps = sign(double(imps));
+%         idx = [true ; any(imps(2:end-1,:), 1) ; true];
 %         g = chebfun(0, f.domain(idx));
-%         g.imps = imps(idx);
+%         g.impulses = imps(idx,:);
+%     else
+%         g = chebfun(0, f.domain([1, end]));
 %     end
 %     return
 % end
@@ -51,6 +54,7 @@ numFuns = numel(f.funs);
 numCols = size(f.funs{1}, 2);
 
 % Compute the roots of the CHEBFUN:
+f.impulses = ones(size(imps(:,:,1)));
 r = roots(f, 'nozerofun');
 
 % Since each column of an array-valued CHEBFUN must have the same breakpoints,
@@ -60,12 +64,6 @@ r(isnan(r)) = [];
 
 % % Also discard any roots that are closer than the accuracy of the CHEBFUN:
 r([false ; diff(r) < el*hs*vs]) = [];
-
-% Include the endpoints in the roots list: (since this forms the new domain)
-% if ( isempty(r) )
-%     g = signNoRoots(f);
-%     return
-% end
 
 % Add the domain boundaries to the roots vector:
 if ( ~isempty(r) )
