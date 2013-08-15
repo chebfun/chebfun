@@ -7,6 +7,11 @@ function f = imag(f)
 % Copyright 2011 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
+% Handle the empty case:
+if ( isempty(f) )
+    return
+end
+
 % Take imaginary part of the impulses:
 f.impulses = imag(f.impulses);
 
