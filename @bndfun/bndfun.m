@@ -78,6 +78,9 @@ classdef bndfun < fun
             if ( any(isinf(domain)) )
                 error('CHEBFUN:BNDFUN:UNBND',...
                     'Should not encounter unbounded domain in bndfun class.');
+            elseif ( ~all(size(domain) == [1 2]) )
+                error('CHEBFUN:BNDFUN:UNBND',...
+                    'Domain should be a 1x2 vector.');
             end
             
             % Define scales if none given:
@@ -99,7 +102,7 @@ classdef bndfun < fun
             
             % Call the ONEFUN constructor:
             pref = onefun.pref(pref, pref.bndfun);
-            obj.onefun = onefun.constructor(op, vscale, hscale, pref);
+            obj.onefun = onefun.constructor(op, vscale, hscale/diff(domain), pref);
             
             % Add the domain and mapping:
             obj.domain = domain;

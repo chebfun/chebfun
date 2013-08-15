@@ -87,7 +87,8 @@ f = bndfun(@(x) [sin(x) x.^2 exp(1i*x)], dom, [], [], pref);
 F_exact = bndfun(@(x) [-cos(x) x.^3/3 exp(1i*x)/1i], dom, [], [], pref);
 F = cumsum(f);
 err = feval(F, x) - feval(F_exact, x);
-pass(8) = (norm(diff(err), inf) < max(get(f, 'vscale'))*get(f, 'epslevel')) && ...
+pass(8) = (norm(diff(err), inf) < ...
+    10*max(get(f, 'vscale'))*get(f, 'epslevel')) && ...
     all(abs(feval(F, a)) < max(get(f, 'vscale'))*get(f, 'epslevel'));
 
 %%
