@@ -1,5 +1,5 @@
 function g = sign(f, varargin)
-%SIGN   Sign function of a CHEBFUN.
+%SIGN    Sign function of a CHEBFUN.
 %   G = SIGN(F) returns a piecewise constant CHEBFUN G such that G(x) = 1 in the
 %   interval where F(x) > 0, G(x) = -1 in the interval where F(x) < 0 and G(x) =
 %   0 in the interval where F(x) = 0. Breakpoints in G are introduced at zeros
@@ -7,7 +7,7 @@ function g = sign(f, varargin)
 %
 %   G = SIGN(F, 'reassignImpulses') reassigns the impulses.
 %
-% See also ABS, ROOTS.
+% See also ABS, HEAVISIDE, ROOTS.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
