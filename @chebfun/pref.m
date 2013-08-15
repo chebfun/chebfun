@@ -3,16 +3,16 @@ function prefs = pref(varargin)
 %   CHEBFUN.PREF(PREFNAME) returns the value corresponding to the preference
 %   named in the string PREFNAME.
 %
-%   P = CHEBFUN.PREF returns a structure P with a field P.FUN which contains the
-%   default FUN preferences as fields/values. This structure may be passed to
-%   the CHEBFUN constructor.
+%   P = CHEBFUN.PREF returns a structure P with a field P.CHEBFUN which contains
+%   the default CHEBFUN preferences as fields/values. This structure may be
+%   passed to the CHEBFUN constructor.
 %
 %   P = CHEBFUN.PREF(P) will check to see whether the input preference structure
-%   P already has a FUN field. If it does not, one is appended.
+%   P already has a CHEBFUN field. If it does not, one is appended.
 %
-%   P = FUN.CHEBFUN('PREFNAME1', VAL1, 'PREFNAME2', VAL2, ...) returns the same
-%   structure as above, but with the default FUN preferences 'PREFNAME1',
-%   'PREFNAME2', replaced by the values in VAL1, VAL2, etc.
+%   P = CHEBFUN.CHEBFUN('PREFNAME1', VAL1, 'PREFNAME2', VAL2, ...) returns the
+%   same structure as above, but with the default CHEBFUN preferences
+%   'PREFNAME1', 'PREFNAME2', replaced by the values in VAL1, VAL2, etc.
 %
 %   P = CHEBFUN.PREF(P, 'PREFNAME1', VAL1, 'PREFNAME2', VAL2, ...) appends a
 %   CHEBFUN preference field to P if required, and modifies the FUN properties
@@ -25,36 +25,36 @@ function prefs = pref(varargin)
 %    domain
 %      [-1,1]      - Default domain for FUN construction.
 %
-%     eps          -  Relative tolerance used in construction and subsequent
-%      [2^-52]        operations.
+%     eps          - Relative tolerance used in construction and subsequent
+%      [2^-52]       operations.
 %
 %    extrapolate   - Extrapolation at endpoints.
 %     [0, 'off']     If 'on', function values at endpoints maybe extrapolated
 %      1, 'on'       from interior values rather than sampled. Extrapolation is
 %                    used independently of this option if a function evaluation
-%                    returns NaN. In some cases, however, functions values at
-%                    end points maybe inaccurate or undefined, and enabling
-%                    extrapolation maybe helpful.
+%                    returns NaN. In some cases, however, function values at
+%                    end points may be inaccurate or undefined, and enabling
+%                    extrapolation may be helpful.
 %
 %    minsamples    - Minimum number of points used by the constructor. The 
 %       [9]          constructed CHEBFUN might be shorter as a result of
-%                    the SIMPLFY() command. Must be of the form 2^n+1.
+%                    the SIMPLIFY() command. Must be of the form 2^n+1.
 %
-%    maxdegree     - Maximum degree used by constructor in SPLITTING OFF mode.
+%    maxdegree     - Maximum degree used by constructor in SPLITTING 'OFF' mode.
 %      [2^16]
 %
 %    splitting     - Domain splitting option.
-%     [0, 'off']     If true, breakpoints between funs may be introduced where a
+%     [0, 'off']     If 'on', breakpoints between funs may be introduced where a
 %      1, 'on        discontinuity in a function or a low-order derivative is
 %                    detected, or if a global polynomial representation will be
-%                    too long. If false, breakpoints will be introduced only at
+%                    too long. If 'off', breakpoints will be introduced only at
 %                    points where discontinuities are being created, e.g., by
 %                    ABS(F) at points where a CHEBFUN F passes through zero.
 %
-%    splitdegree   - Maximum degree used by constructor in SPLITTING "ON" mode.
+%    splitdegree   - Maximum degree used by constructor in SPLITTING 'ON' mode.
 %       [128] 
 %
-%     maxlength    - Maximum total number of points used in SPLITTING "ON" mode.
+%     maxlength    - Maximum total number of points used in SPLITTING 'ON' mode.
 %       [6000]
 %
 % See also CHEBFUN.
@@ -80,9 +80,9 @@ end
 % If it was, did it have a CHEBFUN field?
 if ( isfield(prefs, classname) )  % It does, so either:
     if ( numel(varargin) == 0 )
-        return                    % a) No props to change, return
+        return                    % a) No prefs to change, return.
     else
-        p = prefs.(classname);    % b) Grab chebfun prefs
+        p = prefs.(classname);    % b) Grab chebfun prefs.
     end
 else                              % No chebfun prefs found, so make some:
     %p.blowup      = false;
@@ -93,10 +93,10 @@ else                              % No chebfun prefs found, so make some:
     % TODO: Chebfun should not know about 'degree'.
     p.maxdegree   = 65536;
     p.maxlength   = 6000;
-    p.splitdegree = 129;
+    p.splitdegree = 128;
     p.tech        = 'chebtech2';
 end
-% p is now the preference substructure relating to the FUN class.
+% p is now the preference substructure relating to the CHEBFUN class.
 
 if ( isfield(prefs,'misc') )
     q = prefs.misc;

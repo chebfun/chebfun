@@ -56,7 +56,7 @@ for n = 1:1 %[TODO]: unbndfun
     [vals1, pos1] = minandmax(f1);
     f2 = testclass.make(@(x) 1i*cos(20*x), dom);
     [vals2, pos2] = minandmax(f2);
-    pass(n, 6) = norm( vals - [vals1 vals2], inf) < 10*get(f, 'epslevel');
+    pass(n, 6) = norm( abs(vals) - abs([vals1 vals2]), inf) < 10*get(f, 'epslevel');
 
 end
 
