@@ -28,8 +28,8 @@ elseif ( isnumeric(g) )     % CHEBFUN * double
 elseif ( ~isa(g, 'chebfun') )
 
     error('CHEBFUN:times:unknown', ...
-          ['Undefined function ''mtimes'' for input arguments of type '] ...
-          ['%s and %s.'], class(f), class(g));
+          ['Undefined function ''mtimes'' for input arguments of type ' ...
+           '%s and %s.'], class(f), class(g));
 else                        % CHEBFUN' * CHEBFUN
 
     if ( size(f, 1) ~= size(g, 2) )
