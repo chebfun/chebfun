@@ -1,7 +1,7 @@
 function f = classifyExponents(f)
 %CLASSIFYEXPONENTS   Function to assign types of exponents in a SINGFUN object.
 %
-%   Based on the values in F.ExPONENTS, this functions decides the type that 
+%   Based on the values in F.EXPONENTS, this functions decides the type that 
 %   should be assigned to F.SINGTYPE. The valid types can be 'sing', 'pole', 
 %   'branch' or 'none'.
 %

@@ -4,6 +4,16 @@ function s = plus(f,g)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
+
+%%
+% if one of the arguments is empty
+if ( isempty(f) || isempty(g) )
+    % create an empty singfun and return
+    s = singfun;
+    return;
+end
+
+%%
 % if one of the arguments is a double
 if ( isa(f,'double') )
     aDouble = f;
@@ -19,6 +29,7 @@ fExps = f.exponents;
 gExps = g.exponents;
 tol = singfun.pref.singfun.eps;
 
+%%
 if ( all(abs(fExps-gExps) < tol ) )
     % Case 1: Exponents exactly alike. Just add the smooth parts.
     s = f;
@@ -36,6 +47,7 @@ elseif ( all(abs(round(fExps-gExps) - (fExps-gExps) ) < tol) )
     % Start off each compensating quotient as 1.
     factorF = @(x) 1;
     factorG = @(x) 1;
+    newExps = zeros(1, 2);    
     for side = 1:2
         % The smaller of the two exponents is the exponent of the sum.
         [e,k] = sort([ fExps(side),gExps(side)] );
@@ -72,7 +84,7 @@ elseif ( all(abs(round(fExps-gExps) - (fExps-gExps) ) < tol) )
     s.exponents = newExps;
     
 else
-    % Case 3: Nontrivial exponent difference.       
+    % Case 3: Nontrivial difference in the exponents of F and G.
     % Form a new function handle for the sum from F and G.    
     
     % Retrieve function handle of F
