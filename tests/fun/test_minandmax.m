@@ -29,19 +29,19 @@ for n = 1:1 %[TODO]: unbndfun
 
     %%
     % Check operation for array-valued inputs.
-    
     fun_op = @(x) [sin(10*x) real(airy(x)) (x/10).^3.*cosh(x/10)];
     f = testclass.make(fun_op, dom, [], [], pref);
     [y, x] = minandmax(f);
     y_exact = [-1 7.492128863997157e-07  (-.2)^3*cosh(-.2);
                 1 0.535656656015700 0.7^3*cosh(0.7)];
-    
     pass(n, 5) = all(abs(y(:) - y_exact(:)) < 10*get(f, 'epslevel'));
 
     % Check that the points x are indeed extreme points of the function 
     % operator.
+    pass(n, 6) = 1;
     for k = 1:1:size(f, 2)
         fx = fun_op(x(:, k));
+        max(abs(fx(:, k)) - y_exact(:, k));
         if ( max(abs(fx(:, k) - y_exact(:, k))) > 10*get(f, 'epslevel') )
             pass(n, 6) = 0;
             break;
@@ -56,7 +56,8 @@ for n = 1:1 %[TODO]: unbndfun
     [vals1, pos1] = minandmax(f1);
     f2 = testclass.make(@(x) 1i*cos(20*x), dom);
     [vals2, pos2] = minandmax(f2);
-    pass(n, 6) = norm( vals - [vals1 vals2], inf) < 10*get(f, 'epslevel');
+    pass(n, 7) = norm(abs(vals) - abs([vals1 vals2]), inf) < ...
+        10*max(get(f, 'vscale')*get(f, 'epslevel'));
 
 end
 
