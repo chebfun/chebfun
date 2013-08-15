@@ -2,10 +2,15 @@ function f = imag(f)
 %IMAG   Complex imaginary part of a CHEBFUN.
 %   IMAG(F) is the imaginary part of F.
 %
-% See also CHEBFUN/REAL.
+% See also REAL.
 
-% Copyright 2011 by The University of Oxford and The Chebfun Developers.
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
+
+% Handle the empty case:
+if ( isempty(f) )
+    return
+end
 
 % Take imaginary part of the impulses:
 f.impulses = imag(f.impulses);

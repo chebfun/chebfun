@@ -3,16 +3,23 @@ function out = isequal(f, g)
 %   ISEQUAL(F, G) returns logical 1 (TRUE) if the CHEBFUN objects F and G
 %   contain identical breakpoints and funs, and logical 0 (FALSE) otherwise.
 %
-% See also CHEBFUN/EQ.
+% See also EQ.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Intialise output as false:
+% Check the empty case:
+if ( isempty(f) && isempty(g) )
+    out = true;
+    return
+end
+
+% Otherwise, intialise output as false:
 out = false;
 
-% Check the domains match:
-if ( ~domainCheck(f, g) );
+% Check the domains, sizes, and transpose states match:
+if ( ~domainCheck(f, g) || ~isequal(size(f), size(g)) || ...
+     ~isequal(f.isTransposed, g.isTransposed) )
     return
 end
 
