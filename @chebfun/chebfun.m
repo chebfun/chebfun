@@ -180,7 +180,7 @@ classdef chebfun
     
     % Static methods implemented by CHEBFUN class.
     methods (Static = true)
-       
+        
         % Main constructor.
         [funs, domain, op] = constructor(op, domain, pref);
         

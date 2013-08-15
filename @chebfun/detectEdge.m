@@ -2,8 +2,8 @@ function [edge, vscale] = detectEdge(op, domain, vscale, hscale, derHandle)
 %DETECTEDGE   Edge detection.
 %   EDGE = DETECTEDGE(F, DOMAIN, HSCALE, VSCALE) detects a blowup in the first,
 %   second, third, or fourth derivatives of F in [A,B]. HSCALE is the horizontal
-%   scale and VSCALE is the vertical scale. If no edge is detected, EDGE is set
-%   to the midpoint of DOMAIN.
+%   scale and VSCALE is the vertical scale (note that both are required). If no
+%   edge is detected, EDGE is set to the midpoint of DOMAIN.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
@@ -41,18 +41,7 @@ function [edge, vscale] = detectEdge(op, domain, vscale, hscale, derHandle)
 %  edge = b
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Parse the inputs:
-if ( nargin < 3 )
-    hscale = norm(domain, inf);
-    if ( isinf(hscale) )
-        hscale = 1;
-    end
-end
-if ( nargin < 4 )
-    vscale = 0;
-else
-    vscale = max(vscale);
-end
+
 % [TODO]: This may be required when we have unbounded maps again.
 if ( nargin < 5 )
     derHandle = @(x) 0*x + 1;
