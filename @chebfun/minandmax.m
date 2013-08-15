@@ -8,6 +8,7 @@ function [y, x] = minandmax(f, flag)
 %
 %   [Y, X] = MINANDMAX(F, 'local') returns not just the global minimum and
 %   maximum values, but all of the local extrema (i.e., local min and max).
+%   Note that point values (i.e., impulses) are not regarded as local extrema.
 %
 %   If F is complex-valued, absolute values are taken to determine extrema, but
 %   the resulting values correspond to those of the original function.
@@ -54,24 +55,34 @@ if ( ~isreal(f) )
     imagf = imag(f);
     g = realf.*realf + imagf.*imagf;
     g = simplify(g);
-    [y, x] = minandmax(g);
+    [ignored, x] = minandmax(g);
     y = feval(f, x);
     return
 end
+
+% NOTE: From here onwards, f will only be a scalar-valued CHEBFUN.
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% IMPULSES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 y = [inf, -inf];
 x = [inf, inf];
 
+% Only lowest-order nontrivial impulses are relevant:
+for k = 1:numel(f.funs)
+    % Locate lowest-order nontrivial impulse:
+    indx = find(f.impulses(k,1,2:end), 1);
+    % Throw away higher-order impulses:
+    f.impulses(k,1,indx+2:end) = 0;
+end
+
 % Negative impulse, return y(1) = -inf
-ind = find(min(f.impulses(:,:,2:end), [], 1) < 0 ,1 , 'first');
+ind = find(min(f.impulses(:,1,2:end), [], 1) < 0 , 1, 'first');
 if ( ~isempty(ind) )
     y(1) = -inf;
     x(1) = f.domain(ind);
 end
 
-% Positive impulse, return y(2) = -inf
-ind = find(max(f.impulses(:,:,2:end), [], 1) > 0, 1, 'first');
+% Positive impulse, return y(2) = inf
+ind = find(max(f.impulses(:,1,2:end), [], 1) > 0, 1, 'first');
 if ( ~isempty(ind) )
     y(2) = inf;
     x(2) = f.domain(ind);
@@ -79,6 +90,10 @@ end
 
 if ( all(isfinite(x)) )
     % We're done.
+    
+    % Output column vector:
+    y = y.';
+    x = x.';
     return
 end
 
@@ -96,17 +111,21 @@ end
 x(1) = xx(I1,1);
 x(2) = xx(I2,2);
 
-% Check values at end points:
-ind = find(f.impulses(1,:) < y(1));
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%% BREAKPOINT VALUES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ind = find(f.impulses(:,1,1) < y(1));
 if ( ~isempty(ind) )
-    [y(1), k] = min(f.impulses(1,ind));
+    [y(1), k] = min(f.impulses(ind,1,1));
     x(1) = dom(ind(k));
 end
-ind = find(f.impulses(1,:) > y(2));
+ind = find(f.impulses(:,1,1) > y(2));
 if ~isempty(ind)
-    [y(2), k] = max(f.impulses(1,ind));
+    [y(2), k] = max(f.impulses(ind,1,1));
     x(2) = dom(ind(k));
 end
+
+% Output column vector:
+y = y.';
+x = x.';
 
 end
 
