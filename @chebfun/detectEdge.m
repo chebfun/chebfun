@@ -1,4 +1,4 @@
-function [edge, vscale] = detectEdge(op, domain, vscale, hscale, derHandle)
+function edge = detectEdge(op, domain, vscale, hscale, derHandle)
 %DETECTEDGE   Edge detection.
 %   EDGE = DETECTEDGE(F, DOMAIN, HSCALE, VSCALE) detects a blowup in the first,
 %   second, third, or fourth derivatives of F in [A,B]. HSCALE is the horizontal
@@ -47,8 +47,11 @@ if ( nargin < 5 )
     derHandle = @(x) 0*x + 1;
 end
 
+% Take the maximum of the vscales if a vector is given:
+vscale = max(vscale); % [TODO]: Is this right?
+
 % Call the main routine:
-[edge, vscale] = detectedgeMain(op, domain, hscale, vscale, derHandle);
+edge = detectedgeMain(op, domain, vscale, hscale, derHandle);
 
 % Tidy the results:
 % If we didn't detect an edge, then bisect:
@@ -65,7 +68,7 @@ end
 
 end
 
-function [edge, vscale] = detectedgeMain(op, domain, hscale, vscale, derHandle)
+function edge = detectedgeMain(op, domain, vscale, hscale, derHandle)
 
 % checkblowup = false;
 
@@ -96,7 +99,6 @@ while ( (maxDer(numTestDers) ~= inf) && ~isnan(maxDer(numTestDers)) ...
     % Compute maximum derivatives on interval:
     [new_a, new_b, maxDer] = ...
         findMaxDer(op, ends(1), ends(2), numTestDers, gridSize234, derHandle);
-
     % Choose how many derivatives to test in this iteration:
     numTestDers = find((maxDer > (5.5 - (1:numTestDers)').*maxDerPrev ) & ...
         (maxDer > 10*vscale./hscale.^(1:numTestDers)'), 1, 'first');
@@ -106,7 +108,7 @@ while ( (maxDer(numTestDers) ~= inf) && ~isnan(maxDer(numTestDers)) ...
         return
     elseif ( (numTestDers == 1) && (diff(ends) < 1e-3*hscale) )
         % Blow up in first derivative; use findjump().
-        edge = findJump(op, ends(1) ,ends(2), hscale, vscale, derHandle);
+        edge = findJump(op, ends(1) ,ends(2), vscale, hscale, derHandle);
         return
     end
 
@@ -132,7 +134,7 @@ edge = mean(ends);
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function edge = findJump(op, a, b, hscale, vscale, derHandle)
+function edge = findJump(op, a, b, vscale, hscale, derHandle)
 % Detect blowup in first the derivative and use bisection to locate the edge.
 
 % Assume no edge has been found:
