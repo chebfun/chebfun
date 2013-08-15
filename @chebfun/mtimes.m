@@ -1,7 +1,12 @@
 function f = mtimes(f, g)
 %*   CHEBFUN multiplication.
-%   F.*G multiplies the CHEBFUN objects F and G or a CHEBFUN by a scalar if
-%   either F or G is a scalar.
+%   A*F and F*A multiplies the CHEBFUN F by the scalar A.
+%
+%   If F is an m-by-Inf row CHEBFUN and G is an Inf-by-n column CHEBFUN, F*G
+%   returns the m-by-n matrix of pairwise inner products.  F and G must have
+%   the same domain.
+%
+%   See also TIMES.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
@@ -59,7 +64,7 @@ else                        % CHEBFUN' * CHEBFUN
         % Output in f:
         f = S;
     else                                     % Column times row.
-        % [TODO]:  Implement this once we have CHEBFUN2.
+        % [TODO]:  Implement (and document) this once we have CHEBFUN2.
         error('CHEBFUN:mtimes:colTimesRow', ...
               'Support for (column)*(row) products not yet implemented.');
     end

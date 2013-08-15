@@ -1,10 +1,10 @@
 function C = complex(A, B)
 %COMPLEX   Construct complex CHEBFUN from real and imaginary parts.
-%   COMPLEX(A, B) returns the complex result A + Bi, where A and B are CHEBFUN
-%   objects on the same domain. Alternatively, one of A or B may be a
-%   real-valued scalar.
+%   COMPLEX(A, B) returns the complex result A + Bi, where A and B are
+%   real-valued CHEBFUN objects on the same domain. Alternatively, one of A or
+%   B may be a real-valued scalar.
 %
-% See also CHEBFUN/REAL, CHEBFUN/IMAG.
+% See also REAL, IMAG.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

@@ -3,7 +3,7 @@ function out = isequal(f, g)
 %   ISEQUAL(F, G) returns logical 1 (TRUE) if the CHEBFUN objects F and G
 %   contain identical breakpoints and funs, and logical 0 (FALSE) otherwise.
 %
-% See also CHEBFUN/EQ.
+% See also EQ.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

@@ -3,7 +3,7 @@ function f = times(f, g)
 %   F.*G multiplies F and G, where F and G may be CHEBFUN objects or scalars.
 %   If F and/or G is array-valued, the dimensions must match.
 %
-% See also CHEBFUN/MTIMES.
+% See also MTIMES.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.

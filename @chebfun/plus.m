@@ -6,7 +6,7 @@ function f = plus(f, g)
 %   H = PLUS(F, G) is called for the syntax 'F + G'.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 if ( ~isa(f, 'chebfun') )   % ??? + CHEBFUN
 

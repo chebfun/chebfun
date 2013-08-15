@@ -4,10 +4,10 @@ function f = flipud(f)
 %   same domain as F but reversed; that is, G(x) = F(a+b-x), where the domain is
 %   [a,b].
 %
-%   FLIPUD(F), where F is an array-valued row CHEBFUN, exchanges the order of
+%   FLIPUD(F), where F is an array-valued row CHEBFUN, reverses the order of
 %   the rows of F.
 %
-% See also CHEBFUN/FLIPLR.
+% See also FLIPLR.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
