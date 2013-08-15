@@ -1,5 +1,9 @@
 function g = atand(f, pref)
-%ATAN   Inverse tangent of a chebfun, result in degrees.
+%ATAN   Inverse tangent of a CHEBFUN, result in degrees.
+%   ATAN(F) computes the inverse tangent (in degrees) of the CHEBFUN F.
+%
+%   ATAN(F, PREF) does the same but uses the preference structure PREF when
+%   computing the composition.
 %
 % See also TAND, ATAN2D, ATAN..
 

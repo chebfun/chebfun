@@ -1,5 +1,5 @@
 function p = atan2(y, x, pref)
-%ATAN2    Four quadrant inverse tangent of a chebfun.
+%ATAN2    Four quadrant inverse tangent of a CHEBFUN.
 %   ATAN2(Y, X) is the four quadrant arctangent of the real parts of the chebfun
 %   objects X and Y.  -pi <= ATAN2(Y,X) <= pi.
 %

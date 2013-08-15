@@ -1,5 +1,9 @@
 function g = sinh(f, pref)
-%SINH   Hyperbpolic sine of a chebfun.
+%SINH   Hyperbolic sine of a CHEBFUN.
+%   SINH(F) computes the hyperbolic sine of the CHEBFUN F.
+%
+%   SINH(F, PREF) does the same but uses the preference structure PREF when
+%   computing the composition.
 %
 % See also SIN.
 

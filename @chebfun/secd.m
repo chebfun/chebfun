@@ -1,5 +1,9 @@
 function g = secd(f, pref)
-%SECD   Secant of a chebfun, result in degrees.
+%SECD   Secant of a CHEBFUN, result in degrees.
+%   SECD(F) computes the secant (in degrees) of the CHEBFUN F.
+%
+%   SECD(F, PREF) does the same but uses the preference structure PREF when
+%   computing the composition.
 %
 % See also ASECD, SEC.
 

@@ -1,5 +1,9 @@
 function g = tanh(f, pref)
-%TANH   Hyperbolic tangent of a chebfun.
+%TANH   Hyperbolic tangent of a CHEBFUN.
+%   TANH(F) computes the hyperbolic tangent of the CHEBFUN F.
+%
+%   TANH(F, PREF) does the same but uses the preference structure PREF when
+%   computing the composition.
 %
 % See also ATAN, TAND.
 

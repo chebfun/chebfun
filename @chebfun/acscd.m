@@ -1,5 +1,9 @@
 function g = acscd(f, pref)
-%ACSCD   Inverse cosecant of a chebfun, result in degrees.
+%ACSCD   Inverse cosecant of a CHEBFUN, result in degrees.
+%   ACSCD(F) computes the inverse cosecant (in degrees) of the CHEBFUN F.
+%
+%   ACSCD(F, PREF) does the same but uses the preference structure PREF when
+%   computing the composition.
 %
 % See also CSCD, ACSC.
 

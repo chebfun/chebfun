@@ -1,5 +1,9 @@
 function g = acotd(f, pref)
-%ACOTD   Inverse cotangent of a chebfun, result in degrees.
+%ACOTD   Inverse cotangent of a CHEBFUN, result in degrees.
+%   ACOTD(F) computes the inverse cotangent (in degrees) of the CHEBFUN F.
+%
+%   ACOTD(F, PREF) does the same but uses the preference structure PREF when
+%   computing the composition.
 %
 % See also COTD, ACOT.
 

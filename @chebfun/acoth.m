@@ -1,5 +1,9 @@
 function g = acoth(f, pref)
-%ACOTH   Inverse hyperbolic otangent of a chebfun.
+%ACOTH   Inverse hyperbolic cotangent of a CHEBFUN.
+%   ACOTH(F) computes the inverse hyperbolic cotangent of the CHEBFUN F.
+%
+%   ACOTH(F, PREF) does the same but uses the preference structure PREF when
+%   computing the composition.
 %
 % See also COTH.
 

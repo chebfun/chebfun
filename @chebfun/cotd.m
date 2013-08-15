@@ -1,5 +1,9 @@
 function g = cotd(f, pref)
-%COSD   Cotangent of a chebfun, result in degrees.
+%COSD   Cotangent of a CHEBFUN, result in degrees.
+%   COSD(F) computes the cotangent (in degrees) of the CHEBFUN F.
+%
+%   COSD(F, PREF) does the same but uses the preference structure PREF when
+%   computing the composition.
 %
 % See also ACOTD, COT.
 

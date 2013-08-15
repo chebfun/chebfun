@@ -1,5 +1,9 @@
 function g = acosd(f, pref)
-%ACOSD   Cosine of a chebfun, result in degrees.
+%ACOSD   Cosine of a CHEBFUN, result in degrees.
+%   ACOSD(F) computes the cosine (in degrees) of the CHEBFUN F.
+%
+%   ACOSD(F, PREF) does the same but uses the preference structure PREF when
+%   computing the composition.
 %
 % See also ACOS, COS.
 

@@ -1,5 +1,9 @@
 function g = sin(f, pref)
-%SIN   Sine of a chebfun.
+%SIN   Sine of a CHEBFUN.
+%   SIN(F) computes the sine of the CHEBFUN F.
+%
+%   SIN(F, PREF) does the same but uses the preference structure PREF when
+%   computing the composition.
 %
 % See also ASIN, SIND.
 

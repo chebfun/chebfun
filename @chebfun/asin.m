@@ -1,5 +1,9 @@
 function g = asin(f, pref)
-%ASIN   Inverse sine of a chebfun.
+%ASIN   Inverse sine of a CHEBFUN.
+%   ASIN(F) computes the inverse sine of the CHEBFUN F.
+%
+%   ASIN(F, PREF) does the same but uses the preference structure PREF when
+%   computing the composition.
 %
 % See also SIN, ASIND.
 

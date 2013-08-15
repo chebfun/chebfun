@@ -1,5 +1,9 @@
 function g = acot(f, pref)
-%ACOT   Inverse cotangent of a chebfun.
+%ACOT   Inverse cotangent of a CHEBFUN.
+%   ACOT(F) computes the inverse cotangent of the CHEBFUN F.
+%
+%   ACOT(F, PREF) does the same but uses the preference structure PREF when
+%   computing the composition.
 %
 % See also COT, ACOTD.
 

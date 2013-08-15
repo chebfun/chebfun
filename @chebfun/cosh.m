@@ -1,5 +1,9 @@
 function g = cosh(f, pref)
-%COSH   Hyperbolic cosine of a chebfun.
+%COSH   Hyperbolic cosine of a CHEBFUN.
+%   COSH(F) computes the hyperbolic cosine of the CHEBFUN F.
+%
+%   COSH(F, PREF) does the same but uses the preference structure PREF when
+%   computing the composition.
 %
 % See also COS.
 

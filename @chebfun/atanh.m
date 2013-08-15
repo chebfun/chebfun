@@ -1,5 +1,9 @@
 function g = atanh(f, pref)
-%ATANH   Inverse hyperbolic tangent of a chebfun.
+%ATANH   Inverse hyperbolic tangent of a CHEBFUN.
+%   ATANH(F) computes the inverse hyperbolic tangent of the CHEBFUN F.
+%
+%   ATANH(F, PREF) does the same but uses the preference structure PREF when
+%   computing the composition.
 %
 % See also TANH.
 

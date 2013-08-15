@@ -1,5 +1,9 @@
 function g = coth(f, pref)
-%COTH   Hyperbolic cotangent of a chebfun.
+%COTH   Hyperbolic cotangent of a CHEBFUN.
+%   COTH(F) computes the hyperbolic cotangent of the CHEBFUN F.
+%
+%   COTH(F, PREF) does the same but uses the preference structure PREF when
+%   computing the composition.
 %
 % See also COT.
 

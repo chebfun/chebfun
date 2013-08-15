@@ -1,5 +1,9 @@
 function g = acos(f, pref)
-%ACOS   Inverse cosine of a chebfun.
+%ACOS   Inverse cosine of a CHEBFUN.
+%   ACOS(F) computes the inverse cosine of the CHEBFUN F.
+%
+%   ACOS(F, PREF) does the same but uses the preference structure PREF when
+%   computing the composition.
 %
 % See also COS, ACOSD.
 

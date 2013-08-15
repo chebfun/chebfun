@@ -1,5 +1,9 @@
 function g = csc(f, pref)
-%CSC   Cosecant of a chebfun.
+%CSC   Cosecant of a CHEBFUN.
+%   CSC(F) computes the cosecant of the CHEBFUN F.
+%
+%   CSC(F, PREF) does the same but uses the preference structure PREF when
+%   computing the composition.
 %
 % See also ACSC, CSCD.
 

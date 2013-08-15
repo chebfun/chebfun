@@ -1,5 +1,9 @@
 function g = sech(f, pref)
-%SECH   Hyperbolic secant of a chebfun.
+%SECH   Hyperbolic secant of a CHEBFUN.
+%   SECH(F) computes the hyperbolic secant of the CHEBFUN F.
+%
+%   SECH(F, PREF) does the same but uses the preference structure PREF when
+%   computing the composition.
 %
 % See also ASECH.
 

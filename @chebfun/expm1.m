@@ -1,9 +1,12 @@
 function g = expm1(f, pref)
-%EXPM1   Compute EXP(X)-1 of a chebfun accurately.
-%   EXPM1(Z) computes exp(Z)-1 accurately in the case where the chebfun Z is
-%   small on its domain. Complex Z is accepted.
+%EXPM1   Compute EXP(F)-1 of a CHEBFUN accurately.
+%   EXPM1(F) computes EXP(F)-1 accurately in the case where the CHEBFUN Z is
+%   small on its domain. Complex F is accepted.
 %
-% See also EXPM1, CHEBFUN/LOG1P.
+%   EXPM1(F, PREF) does the same but uses the preference structure PREF when
+%   computing the composition.
+%
+% See also EXP, LOG1P.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.

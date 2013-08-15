@@ -1,5 +1,9 @@
 function g = cos(f, pref)
-%COS   Cosine of a chebfun.
+%COS   Cosine of a CHEBFUN.
+%   COS(F) computes the cosine of the CHEBFUN F.
+%
+%   COS(F, PREF) does the same but uses the preference structure PREF when
+%   computing the composition.
 %
 % See also ACOS, COSD.
 

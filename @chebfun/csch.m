@@ -1,5 +1,9 @@
 function g = csch(f, pref)
-%CSCH   Hyperbolic cosecant of a chebfun.
+%CSCH   Hyperbolic cosecant of a CHEBFUN.
+%   CSCH(F) computes the hyperbolic cosecant of the CHEBFUN F.
+%
+%   CSCH(F, PREF) does the same but uses the preference structure PREF when
+%   computing the composition.
 %
 % See also ACSCH.
 

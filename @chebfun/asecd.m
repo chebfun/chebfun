@@ -1,5 +1,9 @@
 function g = asecd(f, pref)
-%ASECD   Inverse secant of a chebfun, result in degrees.
+%ASECD   Inverse secant of a CHEBFUN, result in degrees.
+%   ASECD(F) computes the inverse secant (in degrees) of the CHEBFUN F.
+%
+%   ASECD(F, PREF) does the same but uses the preference structure PREF when
+%   computing the composition.
 %
 % See also SECD, ASEC.
 

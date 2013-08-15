@@ -1,5 +1,9 @@
 function g = tand(f, pref)
-%TAND   Tangent of a chebfun, result in degrees.
+%TAND   Tangent of a CHEBFUN, result in degrees.
+%   TAND(F) computes the tangent (in degrees) of the CHEBFUN F.
+%
+%   TAND(F, PREF) does the same but uses the preference structure PREF when
+%   computing the composition.
 %
 % See also ATAND, TAN.
 

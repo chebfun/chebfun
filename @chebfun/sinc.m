@@ -1,5 +1,9 @@
 function g = sinc(f, pref)
-%SINC   Sinc function of a chebfun.
+%SINC   Sinc function of a CHEBFUN.
+%   SINC(F) computes the sinc function of the CHEBFUN F.
+%
+%   SINC(F, PREF) does the same but uses the preference structure PREF when
+%   computing the composition.
 %
 % See also SIN.
 

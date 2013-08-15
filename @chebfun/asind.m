@@ -1,5 +1,9 @@
 function g = asind(f, pref)
-%ASIND   Inverse sine of a chebfun, result in degrees.
+%ASIND   Inverse sine of a CHEBFUN, result in degrees.
+%   ASIND(F) computes the inverse sine (in degrees) of the CHEBFUN F.
+%
+%   ASIND(F, PREF) does the same but uses the preference structure PREF when
+%   computing the composition.
 %
 % See also SIND, ASIN.
 

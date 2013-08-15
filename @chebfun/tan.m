@@ -1,5 +1,9 @@
 function g = tan(f, pref)
-%TAN   Tangent of a chebfun.
+%TAN   Tangent of a CHEBFUN.
+%   TAN(F) computes the tangent of the CHEBFUN F.
+%
+%   TAN(F, PREF) does the same but uses the preference structure PREF when
+%   computing the composition.
 %
 % See also ATAN, TAND.
 

@@ -1,5 +1,9 @@
 function g = sind(f, pref)
-%SIND   Sine of a chebfun, result in degrees.
+%SIND   Sine of a CHEBFUN, result in degrees.
+%   SIND(F) computes the sine (in degrees) of the CHEBFUN F.
+%
+%   SIND(F, PREF) does the same but uses the preference structure PREF when
+%   computing the composition.
 %
 % See also ASIND, SIN.
 

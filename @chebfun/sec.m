@@ -1,5 +1,9 @@
 function g = sec(f, pref)
-%SEC   Secant of a chebfun.
+%SEC   Secant of a CHEBFUN.
+%   SEC(F) computes the secant of the CHEBFUN F.
+%
+%   SEC(F, PREF) does the same but uses the preference structure PREF when
+%   computing the composition.
 %
 % See also ASEC, SECD.
 

@@ -1,5 +1,9 @@
 function g = asinh(f, pref)
-%ASINH   Inverse hyperbolic sine of a chebfun.
+%ASINH   Inverse hyperbolic sine of a CHEBFUN.
+%   ASINH(F) computes the inverse hyperbolic sine of the CHEBFUN F.
+%
+%   ASINH(F, PREF) does the same but uses the preference structure PREF when
+%   computing the composition.
 %
 % See also SINH.
 

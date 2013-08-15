@@ -1,5 +1,9 @@
 function g = acsch(f, pref)
-%ACSCH   Inverse hyperbolic cosecant of a chebfun.
+%ACSCH   Inverse hyperbolic cosecant of a CHEBFUN.
+%   ACSCH(F) computes the inverse hyperbolic cosecant of the CHEBFUN F.
+%
+%   ACSCH(F, PREF) does the same but uses the preference structure PREF when
+%   computing the composition.
 %
 % See also CSCH.
 
