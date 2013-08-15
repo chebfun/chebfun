@@ -9,8 +9,12 @@ function f = fliplr(f)
 %
 % See also CHEBFUN/FLIPUD.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. See
-% http://www.chebfun.org for Chebfun information.
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org for Chebfun information.
+
+if ( isempty(f) )
+    return
+end
 
 if ( ~f.isTransposed )
 
@@ -19,9 +23,14 @@ if ( ~f.isTransposed )
         f.funs{k} = fliplr(f.funs{k});
     end
 
+    % Flip the impulses:
+    for k = 1:size(f.impulses, 3)
+        f.impulses(:,:,k) = fliplr(f.impulses(:,:,k));
+    end
+
 else
 
     % Transpose f and call FLIPUD():
-    f = transpose(flipud(transpose(f)));
+    f = flipud(f.').';
 
 end
