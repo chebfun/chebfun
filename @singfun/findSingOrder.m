@@ -3,8 +3,7 @@ function singOrder = findSingOrder(op, singEnd)
 %   pole) in the function handle OP at x = 1 or -1 depending upon the string
 %   'left' or 'right' passed in SINGEND. The method also works for poles, 
 %   i.e. if the orderof the singularity is an integer.
-%   
-% Example:
+%    Example:
 %   p = singfun.findSingOrder(@(x) 1./(1-x).^1.5, 'right' )
 %   p = singfun.findSingOrder(@(x) 1./(1+x).^2.5, 'left' )
 %   p = singfun.findSingOrder(@(x) 1./(1+x).^5, 'left' )
@@ -33,7 +32,8 @@ else if ( strcmpi(singEnd, 'left') )
                     'Blowup preference "%s" unknown', singEnd )
     end
 end
-
+% singOrder is a negative number
+singOrder = -singOrder;
 end
 
 function singOrder = singOrderFinder( fvals, x, poleBound )
