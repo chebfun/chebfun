@@ -19,19 +19,31 @@ end
 
 % Three cases: Real, imaginary, and complex.
 
-if ( isreal(f) )                % Real case
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% REAL CASE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+if ( isreal(f) )
 
     % Abs is singular at roots, so locate these:
     r = roots(f, 'nozerofun');
+    
+    % Since each column of an array-valued CHEBFUN must have the same breakpoints,
+    % we simply take unique(r(:)) and remove any remaining NaNs.
+    r = unique(r(:));
+    r(isnan(r)) = [];
+
+    % Also discard any roots that are closer than the accuracy of the CHEBFUN:
+    el = epslevel(f);
+    vs = vscale(f);
+    hs = hscale(f);
+    r([false ; diff(r) < el*hs*vs]) = [];
 
     % Avoid adding new breaks where not needed:
     if ( ~isempty(r) )
-
+        
         % Choose a tolerance:
-        rtol = 100*pref.chebfun.eps.*max(min(diff(f.domain)), 1);
+        rtol = el*vs*max(min(diff(f.domain)), 1);
 
         % Remove if sufficiently close to an existing break points:
-        [rem, ignored] = find(abs(bsxfun(@minus, r , f.domain)) < rtol); %#ok<NASGU>
+        [rem, ignored] = find(abs(bsxfun(@minus, r , f.domain)) < rtol);
         r(rem) = [];
 
     end
@@ -47,13 +59,17 @@ if ( isreal(f) )                % Real case
     for k = 1:numel(f.funs)
         f.funs{k} = abs(f.funs{k});
     end
+    
+    % Impulses are dealt with below.
 
-elseif ( isreal(1i*f) )         % Imaginary case
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%% IMAGINARY CASE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+elseif ( isreal(1i*f) )
 
     % 1i*f will be real and abs(1i*f) = abs(f), so call ABS again with 1i*f.
     f = abs(1i*f, pref);
 
-else                            % Complex case
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%% COMPLEX CASE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+else
 
     % SQRT will deal with introducing breakpoints.
     f = sqrt(conj(f).*f, pref);
@@ -61,6 +77,6 @@ else                            % Complex case
 end
 
 % Take the absolute value of the impulses in the first row:
-f.impulses(1,:) = abs(f.impulses(1,:));
+f.impulses(:,:,1) = abs(f.impulses(:,:,1));
 
 end

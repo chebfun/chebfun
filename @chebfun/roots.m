@@ -104,6 +104,9 @@ for k = 1:nFuns
 
 end
 
+% Set any ridiculously small roots to zero:
+r(abs(r) < el*vs*hs/10) = 0;
+
 % Remove unnecessary NaNs:
 r = sort(r, 1);             % Sort will place NaNs in the final rows.
 r(all(isnan(r), 2),:) = []; % This removes any rows which contain only NaNs.
