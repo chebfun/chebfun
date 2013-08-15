@@ -5,16 +5,16 @@ classdef chebfun
 %   doubly-infinite intervals [a,b]. Functions may be smooth, piecewise smooth,
 %   weakly singular, or blow up on the interval.
 %
-% CHEBFUN(F) constructs a CHEBFUN object for representing the function F on the
-% interval [-1, 1]. F can be a string, e.g., 'sin(x)', a function handle, e.g.,
+% CHEBFUN(F) constructs a CHEBFUN object representing the function F on the
+% interval [-1, 1]. F may be a string, e.g., 'sin(x)', a function handle, e.g.,
 % @(x) x.^2 + 2*x +1, or a vector of numbers. In the first two instances, F
-% should be "vectorized" in the sense that it should allow evaluation at a column
-% vector of points x(:) in [-1, 1] and return an output of size NxM where N =
+% should be "vectorized" in the sense that it may beevaluated at a column vector
+% of points x(:) in [-1,1] and return an output of size NxM where N =
 % length(x(:)). If this is not possible then the flag CHEBFUN(F, 'vectorize')
 % should be passed. CHEBFUN(F, 'vectorcheck', 'off') disables the automatic
 % checking for vector input. CHEBFUN() returns an empty CHEBFUN object.
 %
-% CHEBFUN(F, [A, B]) specifies an interval [A, B] on which the CHEBFUN is
+% CHEBFUN(F, [A, B]) specifies an interval [A,B] on which the CHEBFUN is
 % defined, where A and/or B may be infinite. CHEBFUN(F, ENDS), where ENDS is a
 % 1xK+1 vector of unique ascending values, specifies a piecewise smooth CHEBFUN
 % defined on the interval [ENDS(1), ENDS(K+1)] with additional interior breaks
@@ -71,7 +71,7 @@ classdef chebfun
 % CHEBFUN Class Description:
 %
 % The CHEBFUN class is for representations of piecewise functions on the
-% interval [a, b].
+% interval [a,b].
 %
 % The CHEBFUN class is the main user interface. We do not expect users to
 % directly invoke any objects below this level.
