@@ -1,9 +1,8 @@
 function f = defineInterval(f, subInt, g)
 %DEFINEINTERVAL   Supply a new definition for a CHEBFUN on a subinterval.
-%
 %   F = DEFINEINTERVAL(F, S, G) redefines the CHEBFUN F by the CHEBFUN or double
-%   G in the interval [S(1), S(end)] in F.domain. If F is array-vaued then G
-%   should have the same number of columns, i.e., size(F, 2) = size(G, 2), and
+%   G in the interval [S(1), S(end)] in F.DOMAIN. If F is array-valued then G
+%   should have the same number of columns, i.e., SIZE(F, 2) = SIZE(G, 2), and
 %   if G is a CHEBFUN it must be defined on a domain containing [S(1), S(end)].
 %   Any new breakpoints S(2:end-1) are also introduced into F. 
 %
@@ -20,7 +19,7 @@ function f = defineInterval(f, subInt, g)
 % See also SUBSASGN, RESTRICT, DEFINEPOINT.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 % Not a valid subdomain:
 if ( any(diff(subInt) <= 0) )
@@ -40,7 +39,7 @@ if ( isnumeric(g) )
         % An empty CHEBFUN:
         g = chebfun;
     else
-        % An constant CHEBFUN:
+        % A constant CHEBFUN:
         g = chebfun(g, subInt);
     end
 else
@@ -55,7 +54,7 @@ if ( isempty(f) )
 end
 
 % Make sure dimensions add up:
-if ( ~isempty(g) && size(g, 2) ~= numColsF )
+if ( ~isempty(g) && (size(g, 2) ~= numColsF) )
     error('CHEBFUN:defineInterval:numCols', ...
         'Dimensions of matrices being concatenated are not consistent.');
 end
@@ -89,7 +88,7 @@ if ( ~isempty(g) )
     end
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% DELETION %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 else
-    if ( subInt(2) < f.domain(1) || subInt(1) > f.domain(2) )
+    if ( (subInt(2) < f.domain(1)) || (subInt(1) > f.domain(2)) )
         error('CHEBFUN:define:badremoveinterval',...
             'Interval to be removed is outside the domain.')
         

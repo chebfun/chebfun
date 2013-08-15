@@ -49,6 +49,7 @@ f = defineInterval(f, [-.5, .25], g);
 pass(9) = all(f.domain == [-1, -.5, 0, .25, 1]) && ...
     norm(feval(f, .125) - sin(.125)) < 10*epslevel(f) && ...
     norm(feval(f, .625) - .625) < 10*epslevel(f);
+% Use SUBSASGN:
 f{-.5, .25} = g;
 pass(10) = all(f.domain == [-1, -.5, 0, .25, 1]) && ...
     norm(feval(f, .125) - sin(.125)) < 10*epslevel(f) && ...
@@ -60,6 +61,7 @@ g = chebfun(@(x) [-2*x, 2*x], [-.5, .5], pref);
 % Use DEFINEINTERVAL:
 f = defineInterval(f, [-.5, .5], g);
 pass(11) = norm(feval(f, .25) - [-.5, .5]) < 10*epslevel(f);
+% Use SUBSASGN:
 f{-.5, .5} = g;
 pass(12) = norm(feval(f, .25) - [-.5, .5]) < 10*epslevel(f);
 

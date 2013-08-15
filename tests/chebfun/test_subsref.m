@@ -55,7 +55,7 @@ end
 
 try
     index.subs = {[1 2], [3 4]}.';
-    index.type = '{}'
+    index.type = '{}';
     y = subsref(f, index);
     pass(14) = false;
 catch ME
@@ -64,7 +64,7 @@ end
 
 try
     index.subs = [];
-    index.type = '[]'
+    index.type = '[]';
     y = subsref(f, index);
     pass(15) = false;
 catch ME

@@ -1,12 +1,13 @@
 function varargout = subsref(f, index)
-%SUBSREF   Chebfun subsref.
+%SUBSREF   CHEBFUN subsref.
 % ( )
-%   F(X) returns the values of the chebfun F evaluated on the array X. If X
+%   F(X) returns the values of the CHEBFUN F evaluated on the array X. If X
 %   falls on a breakpoint of F, the corresponding value from F.IMPULSES is
-%   returned. F(X, 'left') or F(X, 'right') will evaluate F to the left or right
-%   of the breakpoint respectively. See CHEBFUN/FEVAL for further details.
+%   returned. F(X, 'left') or F(X, 'right') will evaluate F at breakpoints
+%   using left- or right-hand limits, respectively. See CHEBFUN/FEVAL for
+%   further details.
 %
-%   F(G), where G is also a chebfun, computes the composition of F and G. See
+%   F(G), where G is also a CHEBFUN, computes the composition of F and G. See
 %   CHEBFUN/COMPOSE for further details.
 %
 % .
@@ -20,7 +21,7 @@ function varargout = subsref(f, index)
 % See also FEVAL, COMPOSE, GET, RESTRICT, SUBSREF.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 % [TODO]: Should we allow specific access to columns in array-valued CHEBFUN
 % objects? For example, F(0, 2) to evaluate the 2nd columns at x = 0?

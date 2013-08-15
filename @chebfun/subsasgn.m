@@ -1,8 +1,8 @@
 function f = subsasgn(f, index, val)
-%SUBSREF   Chebfun subsref.
+%SUBSASGN   Chebfun SUBSASGN.
 % ( )
 %   F(X) = VAL assigns the values of vector VAL at locations specified in vector
-%   X in the chebfun F. size(X, 1) should be equal to length(VALS) and size(X,
+%   X in the CHEBFUN F. SIZE(X, 1) should be equal to LENGTH(VAL) and SIZE(X,
 %   2) should be the number of columns in F. SUBSASGN introduces new breakpoints
 %   in F at points in X that were not originally in F.DOMAIN. See DEFINEPOINT
 %   for further details.
@@ -17,7 +17,7 @@ function f = subsasgn(f, index, val)
 % See also SUBSREF, DEFINEPOINT, DEFINEINTERVAL.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 idx = index(1).subs;
 
