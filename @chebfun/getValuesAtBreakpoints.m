@@ -21,14 +21,14 @@ end
 % Determine the number of columns:
 numCols = size(funs{1}, 2);
 
-% Initialise jVals:
+% Initialise vals:
 vals = zeros(numFuns+1, numCols);
 
 if ( (nargin < 3) || isnumeric(op) || iscell(op) )
     % Function handle not provided.
 
     vals(1,:) = get(funs{1}, 'lval');
-    % Take the mean of the funs on either side of the break:
+    % Take the mean of the FUNs on either side of the break:
     for k = 2:numFuns
         vals(k,:) = (get(funs{k-1}, 'rval') + get(funs{k}, 'lval'))/2;
     end

@@ -18,8 +18,8 @@ function [funs, ends] = constructor(op, domain, pref)
 %   In particular, if PREF.CHEBFUN.SPLITTING = TRUE and OP is a function_handle
 %   or a string, then the constructor adaptively introduces additional
 %   breakpoints into the domain so as to better represent the function. These
-%   are returned as the second output argument in [FUNS, NEWDOMAIN] =
-%   CONSTRUCTOR(OP, DOMAIN).
+%   are returned as the second output argument in [FUNS, END] = CONSTRUCTOR(OP,
+%   DOMAIN).
 %
 % See also CHEBFUN, CHEBFUN/PREF.
 %
@@ -81,7 +81,7 @@ end
 % In 'ON' mode, seek only many pieces with total length < maxlength.
 
 % Set the maximum degree:
-pref.chebfun.maxSamples = pref.chebfun.splitdegree;
+pref.chebfun.maxSamples = pref.chebfun.splitdegree + 1;
 % We extrapolate when splitting so that we can construct functions like
 % chebfun(@sign,[-1 1]), which otherwise would not be happy at x = 0.
 pref.chebfun.extrapolate = true;

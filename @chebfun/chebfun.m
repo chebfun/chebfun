@@ -6,20 +6,20 @@ classdef chebfun
 %   weakly singular, or blow up on the interval.
 %
 % CHEBFUN(F) constructs a CHEBFUN object representing the function F on the
-% interval [-1, 1]. F may be a string, e.g., 'sin(x)', a function handle, e.g.,
-% @(x) x.^2 + 2*x +1, or a vector of numbers. In the first two instances, F
-% should be "vectorized" in the sense that it may beevaluated at a column vector
-% of points x(:) in [-1,1] and return an output of size NxM where N =
+% interval [-1,1]. F may be a string, e.g., 'sin(x)', a function handle, e.g.,
+% @(x) x.^2 + 2*x + 1, or a vector of numbers. In the first two instances, F
+% should be "vectorized" in the sense that it may be evaluated at a column
+% vector of points x(:) in [-1,1] and return an output of size NxM where N =
 % length(x(:)). If this is not possible then the flag CHEBFUN(F, 'vectorize')
 % should be passed. CHEBFUN(F, 'vectorcheck', 'off') disables the automatic
 % checking for vector input. CHEBFUN() returns an empty CHEBFUN object.
 %
 % CHEBFUN(F, [A, B]) specifies an interval [A,B] on which the CHEBFUN is
 % defined, where A and/or B may be infinite. CHEBFUN(F, ENDS), where ENDS is a
-% 1xK+1 vector of unique ascending values, specifies a piecewise smooth CHEBFUN
-% defined on the interval [ENDS(1), ENDS(K+1)] with additional interior breaks
-% at ENDS(2), ..., ENDS(K). Specifying these breaks can be particularly useful
-% if F is known to have discontinuities. For example,
+% 1x(K+1) vector of unique ascending values, specifies a piecewise smooth
+% CHEBFUN defined on the interval [ENDS(1), ENDS(K+1)] with additional interior
+% breaks at ENDS(2), ..., ENDS(K). Specifying these breaks can be particularly
+% useful if F is known to have discontinuities. For example,
 %   CHEBFUN(@(x) abs(x), [-1, 0, 1]).
 % If a domain is passed to the constructor, it should always be the 2nd input.
 %
@@ -36,11 +36,11 @@ classdef chebfun
 % string, function handle, or vector of doubles. For example
 %   CHEBFUN({@(x) sin(x), @(x) cos(x)}, [-1, 0, 1])
 %
-% CHEBFUN(F, PREF) or CHEBFUN(F, [A, B], PREF) constructs a chebfun object from
-% F with the options determined in CHEBFUN preference structure PREF.
+% CHEBFUN(F, PREF) or CHEBFUN(F, [A, B], PREF) constructs a CHEBFUN object from
+% F with the options determined by the CHEBFUN preference structure PREF.
 % Construction time options may also be passed directly to the constructor in
 % the form CHEBFUN(F, [A, B], PROP1, VAL1, PROP2, VAL2, ...). (See
-% CHEBFUN/PREF.m for details the various preference options.). In particular,
+% CHEBFUN/PREF.m for details of the various preference options.). In particular,
 % CHEBFUN(F, 'splitting', 'on') allows the constructor to adaptively determine
 % breakpoints to better represent piecewise smooth functions F. For example,
 %   CHEBFUN(@(x) sign(x - .3), [-1, 1], 'splitting', 'on')
@@ -93,17 +93,17 @@ classdef chebfun
     properties (Access = public)
 
         % DOMAIN of definition of a CHEBFUN object. If K>1 then the CHEBFUN is
-        % referred to as a "piecewise". CHEBFUN.  The first and last values of
+        % referred to as a "piecewise" CHEBFUN. The first and last values of
         % this vector define the left and right endpoints of the domain,
-        % respectively.  The other values give the locations of the breakpoints
+        % respectively. The other values give the locations of the breakpoints
         % that define the domains of the individual FUN objects comprising the
-        % CHEBFUN.  The entries in this vector should be strictly increasing.
+        % CHEBFUN. The entries in this vector should be strictly increasing.
         domain              % (1x(K+1) double)
 
         % FUNS is a cell array containing the FUN objects that comprise a
-        % piecewise CHEBFUN.  The the kth entry in this cell is the FUN
+        % piecewise CHEBFUN. The the Kth entry in this cell is the FUN
         % defining the representation used by the CHEBFUN object on the
-        % interval (domain(k), domain(k+1). If M = size(f.funs, 2) is greater
+        % interval (domain(K), domain(K+1)). If M = size(f.funs, 2) is greater
         % than 1, then the CHEBFUN object is referred to as "array valued".
         funs                % (Kx1 cell array of FUN objects)
 
@@ -112,7 +112,7 @@ classdef chebfun
         % correspond to the breakpoints in the DOMAIN vector, and if M > 1 then
         % the columns correspond to the columns in an array-valued CHEBFUN.
         % Thus, F.IMPULSES(:, :, 1) is a matrix consisting of the values of
-        % each column of F at each breakpoint.  The third dimension is used for
+        % each column of F at each breakpoint. The third dimension is used for
         % storing information about higher-order delta functions that may be
         % present at breakpoints.
         %
@@ -123,7 +123,7 @@ classdef chebfun
         % should be interpreted as a collection of "column" CHEBFUN objects (if
         % F.ISTRANSPOSED == 0, the default), which are considered (infxM)
         % arrays, or "row" CHEBFUN objects (if F.ISTRANSPOSED == 1), which are
-        % (Mxinf) arrrays.  This difference is only behavioral; the other
+        % (Mxinf) arrays. This difference is only behavioral; the other
         % properties described above are _NOT_ stored differently if this flag
         % is set.)
         isTransposed = 0;   % (logical)
@@ -182,7 +182,7 @@ classdef chebfun
     methods (Static = true)
         
         % Main constructor.
-        [funs, domain, op] = constructor(op, domain, pref);
+        [funs, ends] = constructor(op, domain, pref);
         
         % Edge detector.
         [edge, vscale] = detectEdge(op, domain, hscale, vscale, derHandle);
@@ -290,7 +290,7 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
         args(1) = [];
     else
         % chebfun(op, domain, prop1, val1, ...)
-        pref = chebfun.pref;
+        pref = chebfun.pref();
     end
 
     % Take the default domain if an empty one was given:
@@ -313,7 +313,7 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
             args(1) = [];
         elseif ( strcmpi(args{1}, 'vectorize') || ...
                  strcmpi(args{1}, 'vectorise') )
-            % Vectorise flag for function_handles.
+            % Vectorize flag for function_handles.
             vectorize = true;
             args(1) = [];
         elseif ( isnumeric(args{1}) )
@@ -342,6 +342,7 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
         if ( isfield(pref.chebfun, 'n') && ~isnan(pref.chebfun.n) )
             x = linspace(domain(1), domain(end), pref.chebfun.n).';
             op = feval(op, x);
+            pref.chebfun.n = NaN;
         end
     end
 

@@ -1,7 +1,7 @@
 function fx = feval(f, x, varargin)
 %FEVAL   Evaluate a CHEBFUN.
 %   FX = FEVAL(F, X) evaluates a CHEBFUN F at the points in X.  If F is
-%   array-valued with columns F1, ..., FN, then FX will be [F1(X) ... FN(X)],
+%   array-valued with columns F1, ..., FN, then FX will be [F1(X), ..., FN(X)],
 %   the horizontal concatenation of the results of evaluating each column at the
 %   points in X.
 %
@@ -12,16 +12,12 @@ function fx = feval(f, x, varargin)
 %   FEVAL(F, X, 'left') and FEVAL(F, X, '-') evaluate F at the points in X,
 %   using left-hand limits to evaluate F at any breakpoints. FEVAL(F, X,
 %   'right') and FEVAL(F, X, '+') do the same but using right-hand limits.
-%   [TODO:] FEVAL(F, 'left') and FEVAL(F, X, 'left') mean two different
-%   things. The first one is the *value* at the left end point and the
-%   second one is the *limit* at X from the left side. Is there a better
-%   way to specify these?
 %
 %   Example:
 %     f = chebfun(@(x) 1./(1 + 25*x.^2));
-%     y = feval(f, linspace(-1, 1, 100));
+%     y = feval(f, linspace(-1, 1, 100).');
 %
-% See also CHEBFUN/SUBSREF.
+% See also SUBSREF.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.

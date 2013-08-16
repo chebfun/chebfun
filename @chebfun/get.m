@@ -11,7 +11,6 @@ function out = get(f, prop)
 %       'ISHAPPY'        - Is F happy?
 %       'EPSLEVEL'       - Approximate accuracy estimate of F.
 %       'EPSLEVEL-LOCAL' - Approximate accuracy estimate of F's components.
-%       'POINTS'         - Grid corresponding to F.
 %       'LVAL'           - Value(s) of F at lefthand side of domain.
 %       'RVAL'           - Value(s) of F at righthand side of domain.
 
@@ -69,13 +68,16 @@ switch prop
         end            
     case {'values', 'coeffs', 'points'}
         n = numel(f.funs);
-        out{n,1} = 0;
+        out = cell(n, 1);
         for k = 1:n
             out{k} = get(f.funs{k}, prop);
+        end
+        if (numel(out) == 1)
+            out = out{:};
         end
     case 'ends'
         out = f.domain;
     otherwise
-        error('CHEBFUN:CHEBFUN:GET:proname', ...
-            'Unknown property name ''%s'' for object of type chebfun.', prop);
+        error('CHEBFUN:CHEBFUN:GET:propname', ...
+            'Unknown property name ''%s'' for object of type CHEBFUN.', prop);
 end
