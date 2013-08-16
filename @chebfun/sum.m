@@ -40,25 +40,27 @@ elseif ( nargin == 2 && numel(a) == 1 )
     dim = a;
 end
 
-% Sum over columns:
-if ( xor(f.isTransposed, dim == 2) )
-    for k = 1:numel(f.funs)
-        f.funs{k} = sum(f.funs{k}, 2);
-    end
-    f.impulses = sum(f.impulses, 2);
-    out = f;
-    return
-end
-
-if ( nargin == 3 )          % Integrate over a subdomain:
+if ( xor(f.isTransposed, dim == 2) ) % Sum over the columns:
+    % Call SUMCOLUMNS():
+    out = sumColumns(f);
+elseif ( nargin == 3 )               % Integrate over a subdomain:
     % Call SUMSUBDOMAIN():
     out = sumSubDom(f, a, b);
-else        % Integrate over the whole domain:
+else                                 % Integrate over the whole domain:
     % Call SUMFULLDOMAIN():
     out = sumFullDom(f);
 end
     
+end
 
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%% SUM the columns %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function f = sumColumns(f)
+    % Sum the FUNS across the columns:
+    for k = 1:numel(f.funs)
+        f.funs{k} = sum(f.funs{k}, 2);
+    end
+    % Sum the impulses across the columns:
+    f.impulses = sum(f.impulses, 2);
 end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%% SUM the whole domain %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
