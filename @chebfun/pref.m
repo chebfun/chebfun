@@ -10,13 +10,13 @@ function prefs = pref(varargin)
 %   P = CHEBFUN.PREF(P) will check to see whether the input preference structure
 %   P already has a CHEBFUN field. If it does not, one is appended.
 %
-%   P = CHEBFUN.CHEBFUN('PREFNAME1', VAL1, 'PREFNAME2', VAL2, ...) returns the
+%   P = CHEBFUN.PREF('PREFNAME1', VAL1, 'PREFNAME2', VAL2, ...) returns the
 %   same structure as above, but with the default CHEBFUN preferences
 %   'PREFNAME1', 'PREFNAME2', replaced by the values in VAL1, VAL2, etc.
 %
 %   P = CHEBFUN.PREF(P, 'PREFNAME1', VAL1, 'PREFNAME2', VAL2, ...) appends a
-%   CHEBFUN preference field to P if required, and modifies the FUN properties
-%   'PREFNAME1' and 'PREFNAME2'.
+%   CHEBFUN preference field to P if required, and modifies the CHEBFUN
+%   properties 'PREFNAME1' and 'PREFNAME2'.
 %
 %   Note that no checking of either the input PREFNAMEs or VALs takes place.
 %
@@ -29,7 +29,7 @@ function prefs = pref(varargin)
 %      [2^-52]       operations.
 %
 %    extrapolate   - Extrapolation at endpoints.
-%     [0, 'off']     If 'on', function values at endpoints maybe extrapolated
+%     [0, 'off']     If 'on', function values at endpoints may be extrapolated
 %      1, 'on'       from interior values rather than sampled. Extrapolation is
 %                    used independently of this option if a function evaluation
 %                    returns NaN. In some cases, however, function values at

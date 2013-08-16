@@ -21,7 +21,7 @@ end
 % Determine the number of columns:
 numCols = size(funs{1}, 2);
 
-% Initialise jVals:
+% Initialise vals:
 vals = zeros(numFuns+1, numCols);
 
 if ( (nargin < 3) || isnumeric(op) || iscell(op) )
