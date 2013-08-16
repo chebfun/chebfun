@@ -19,7 +19,7 @@ for k = 1:2
             exponents(k) = singfun.findSingOrder(op, singEnd{k});
         else
             if strcmpi( singType{k}, 'branch' )
-                exponents(k) = singfun.findBranchOrder(op, singEnd{k});
+                exponents(k) = singfun.findSingOrder(op, singEnd{k});
             else
                 if strcmpi( singType{k}, 'none' )
                     exponents(k) = 0;                    
