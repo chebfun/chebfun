@@ -27,10 +27,13 @@ vs = vscale(f);
 hs = hscale(f);
 el = epslevel(f);
 tol = 100*el*vs;
+
 oldDom = f.domain;
 oldImps = f.impulses;
 numFuns = numel(f.funs);
 numCols = size(f.funs{1}, 2);
+isTransposed = f.isTransposed;
+f.isTransposed = false;
 
 %% %%%%%%%%%%%%%%%%%%%%%%% DETERMINE BREAKPOINTS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -52,8 +55,8 @@ r(any(abs(bsxfun(@minus, r, oldDom([1,end]))) < rtol, 2)) = [];
 r = [f.domain(1) ; r ; f.domain(end)];
 
 % Non-trivial impulses should _not_ be removed:
-lvals = feval(f, oldDom.', 'right');
-rvals = feval(f, oldDom.', 'left');
+lvals = [get(f, 'lval-local') ; get(f, 'rval')];
+rvals = [get(f, 'lval') ; get(f, 'rval-local')];
 % Check that the sign of the values is different _and_ values are far apart:
 idxl = sign(oldImps(:,:,1)) ~= sign(lvals) & abs(oldImps(:,:,1) - lvals) > 100*tol;
 idxr = sign(oldImps(:,:,1)) ~= sign(rvals) & abs(oldImps(:,:,1) - rvals) > 100*tol;
@@ -85,5 +88,7 @@ f.impulses(idx2,:) = sign(oldImps(idx,:,1));
 
 % Merge g to simplify unecessary breakpoints:
 f = merge(f, find(idx2));
+
+f.isTransposed = isTransposed;
 
 end
