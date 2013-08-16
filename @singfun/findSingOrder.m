@@ -15,7 +15,7 @@ function singOrder = findSingOrder(op, singEnd)
 
 % First get an estimate of the exponent by the pole order finder. This 
 % will be passed on as upperbound for the singularity order.
-poleBound = singfun.findPoleOrder(op, singEnd );
+poleBound = -singfun.findPoleOrder(op, singEnd );
 
 % distance of sample points from the end points
 x = eps*(11:-1:2)';
