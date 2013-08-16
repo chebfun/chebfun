@@ -342,6 +342,7 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
         if ( isfield(pref.chebfun, 'n') && ~isnan(pref.chebfun.n) )
             x = linspace(domain(1), domain(end), pref.chebfun.n).';
             op = feval(op, x);
+            pref.chebfun.n = NaN;
         end
     end
 
