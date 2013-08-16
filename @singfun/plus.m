@@ -17,11 +17,11 @@ end
 % if one of the arguments is a double
 if ( isa(f,'double') )
     aDouble = f;
-    f = zeroSingFun();
+    f = singfun.zeroSingFun();
     f.smoothPart = chebtech.constructor(aDouble, [], [], []);
 elseif isa(g,'double')
     aDouble = g;
-    g = zeroSingFun();
+    g = singfun.zeroSingFun();
     g.smoothPart = chebtech.constructor(aDouble, [], [], []);
 end
 

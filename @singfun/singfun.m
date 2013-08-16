@@ -94,6 +94,10 @@ classdef singfun
                     obj = classifyExponents(obj);
                 else
                     % Singularity types given, make sure the strings are OK.
+                    if ( ~isa(singType, 'cell') )
+                        error( 'CHEBFUN:SINGFUN:constructor', ...
+                               'singType must be a 1x2 cell with two strings');
+                    end
                     obj.singType = singType;
                     checkSingTypes(obj);                    
                 end
@@ -108,6 +112,10 @@ classdef singfun
                     obj.singType = {'sing', 'sing'};
                 else
                     % Singularity types given, make sure the strings are OK.
+                    if ( ~isa(singType, 'cell') )
+                        error( 'CHEBFUN:SINGFUN:constructor', ...
+                               'singType must be a 1x2 cell with two strings');
+                    end
                     obj.singType = singType;
                     checkSingTypes(obj);
                 end

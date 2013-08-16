@@ -48,7 +48,7 @@ singOrder = poleBound-1;
 n = 10;
 exponentGrid = linspace(poleBound-1, poleBound, n);
 
-% some initialisations required later
+% some initialisations which will be used later
 absFvals = abs(fvals);
 smoothVals = absFvals;
 nIter = 0;
