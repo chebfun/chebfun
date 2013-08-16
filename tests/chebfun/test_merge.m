@@ -33,11 +33,15 @@ pass(7) = norm(feval(h, xx) - feval(p, xx), 'inf') < 10*epslevel(h);
 pass(8) = all(mergedPts == 2);
 
 % Test a function with an impulse:
-% TODO:  Should this be handled by deltafun or its equivalent?
 x = chebfun('x', [-1 0 1], pref);
 % Artificially insert an impulse:
-x.impulses = [-1 0 1 ; 0 1 0];
+x.impulses = cat(3, [-1 0 1].', [0 1 0].');
 % The break at zero should not be removed:
 pass(9) = isequal(merge(x), x);
+
+% Test an array-valued CHEBFUN:
+f = chebfun(@(x) [x, x.^2], [-1 -.1 -.1+eps 0 1]);
+g = merge(f);
+pass(10) = numel(g.domain) == 2 && all(g.domain == [-1 1]);
 
 end

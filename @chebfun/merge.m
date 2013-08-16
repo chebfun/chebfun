@@ -111,8 +111,8 @@ for k = index
     end
 
     % Prevent merging if there are jumps:
-    v = [ oldImps(k,:,1), get(oldFuns{k-1}, 'rval'), get(oldFuns{k}, 'lval') ];
-    if ( norm(v(1) - v(2:3), inf) >= 1e3*tol )
+    v = [ oldImps(k,:,1) ; get(oldFuns{k-1}, 'rval') ; get(oldFuns{k}, 'lval') ];
+    if ( norm(v([1,1],:) - v(2:3,:), inf) >= 1e3*tol )
         % Skip to next breakpoint:
         continue
     end
