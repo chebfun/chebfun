@@ -3,8 +3,7 @@ function singOrder = findSingOrder(op, singEnd)
 %   pole) in the function handle OP at x = 1 or -1 depending upon the string
 %   'left' or 'right' passed in SINGEND. The method also works for poles, 
 %   i.e. if the orderof the singularity is an integer.
-%   
-% Example:
+%    Example:
 %   p = singfun.findSingOrder(@(x) 1./(1-x).^1.5, 'right' )
 %   p = singfun.findSingOrder(@(x) 1./(1+x).^2.5, 'left' )
 %   p = singfun.findSingOrder(@(x) 1./(1+x).^5, 'left' )
@@ -16,7 +15,7 @@ function singOrder = findSingOrder(op, singEnd)
 
 % First get an estimate of the exponent by the pole order finder. This 
 % will be passed on as upperbound for the singularity order.
-poleBound = singfun.findPoleOrder(op, singEnd );
+poleBound = -singfun.findPoleOrder(op, singEnd );
 
 % distance of sample points from the end points
 x = eps*(11:-1:2)';
@@ -33,7 +32,8 @@ else if ( strcmpi(singEnd, 'left') )
                     'Blowup preference "%s" unknown', singEnd )
     end
 end
-
+% singOrder is a negative number
+singOrder = -singOrder;
 end
 
 function singOrder = singOrderFinder( fvals, x, poleBound )
@@ -48,7 +48,7 @@ singOrder = poleBound-1;
 n = 10;
 exponentGrid = linspace(poleBound-1, poleBound, n);
 
-% some initialisations required later
+% some initialisations which will be used later
 absFvals = abs(fvals);
 smoothVals = absFvals;
 nIter = 0;

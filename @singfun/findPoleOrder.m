@@ -35,6 +35,8 @@ else if ( strcmpi(singEnd, 'left') )
     end
 end
 
+% return negative numbers as exponents
+poleOrder = -poleOrder;
 end
 %%
 function poleOrder = poleOrderFinder( fvals, x )
