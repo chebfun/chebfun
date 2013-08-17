@@ -1,4 +1,4 @@
-function f = restrict(f, s)
+function g = restrict(f, s)
 %RESTRICT   Restrict a SINGFUN to a subinterval.
 %   RESCTRICT(F, S) returns a SINGFUN that is restricted to the subinterval
 %   [S(1), S(2)] of [-1, 1]. Note that since SINGFUN objects only live on
@@ -34,96 +34,89 @@ end
 numInts = numel(s) - 1;
 
 % Preallocate a cell
-f = cell(1, numInts);
+g = cell(1, numInts);
 
 % Set the bound which is deemed 'finite'
 fntbnd = realmax;
 
-% function values at the endpoints of the subintervals:
-[lval, rval] = op(s);
+% absolute values at the endpoints of the subintervals:
+endVal = zeros(1, numInts+1);
+for j = 1:numInts+1
+    endVal(j) = abs(feval(f, s(j)));
+end
 
-if ( ( lval < fntbnd ) && ( rval < fntbnd ) )
-    
-    for j = 1:numInts
-        
-        % define the new operator which will be evaluated in the subinterval by
-        % the singfun ctor.
-        op = @(x) feval(f, ((1-x)*s(j)+(1+x)*s(j+1))/2);
-        
-        % call the singfun constructor
-        g = singfun( op, zeros(1,2), {'none', 'none'}, [] );
-        
-        % put in cell
-        f{j} = g;
-    end
-    
-elseif ( ( s(1) == -1 ) && ( rval < fntbnd ) )
+% In the following construction process, we try to make the best of the
+% information stored in the original singfun f.
+
+for j = 1:numInts
+
+% Check if the first subinterval includes the left endpoint of the original 
+% domain, i.e. -1 and if the function value at the right endpoint of the last 
+% subinterval is finite. This rules out the possibility that the right endpoint 
+% of the last subinterval is too close to 1, when a pole is present at 1.   
+if ( ( s(j) == -1 ) && ( endVal(j+1) < fntbnd ) )
     
     % define the new operator
     op = @(x) feval(f, ((1-x)*s(1)+(1+x)*s(2))/2);
     
     % call the singfun constructor
-    g = singfun( op, [f.exponents(1) 0], {'sing', 'none'}, [] );
-    f{j} = g;
+    gtmp = singfun( op, [f.exponents(1) 0], {'sing', 'none'}, [] );
+    g{1} = gtmp;
     
-    for j = 2:numInts
-        
-        % define the new operator
-        op = @(x) feval(f, ((1-x)*s(j)+(1+x)*s(j+1))/2);
-        
-        % call the singfun constructor
-        g = singfun( op, zeros(1,2), {'none', 'none'}, [] );
-        
-        % put in cell
-        f{j} = g;
-    end
+    continue
+end
     
-    
-elseif ( ( lval < fntbnd ) && ( s(end) == 1 ) )
-    
-    if numInts >1
-        
-        for j = 1:numInts-1
-            
-            % define the new operator
-            op = @(x) feval(f, ((1-x)*s(j)+(1+x)*s(j+1))/2);
-            
-            % call the singfun constructor
-            g = singfun( op, zeros(1,2), {'none', 'none'}, [] );
-            
-            % put in cell
-            f{j} = g;
-        end
-        
-    end
+% Check if the last subinterval includes the right endpoint of the original 
+% domain, i.e. 1 and if the function value at the left endpoint of the first 
+% subinterval is finite. This rules out the possibility that the left endpoint 
+% of the first subinterval is too close to -1, when a pole is present at -1.
+if ( ( endVal(j) < fntbnd ) && ( s(j+1) == 1 ) )
     
     % define the new operator
     op = @(x) feval(f, ((1-x)*s(end-1)+(1+x)*s(end))/2);
     
     % call the singfun constructor
-    g = singfun( op, [0 f.exponents(2)], {'none', 'sing'}, [] );
+    gtmp = singfun( op, [0 f.exponents(2)], {'none', 'sing'}, [] );
     
     % put in cell
-    f{end} = g;
-    
-else
-    
-    for j = 1:numInts
-        
-        % define the new operator
-        op = @(x) feval(f, ((1-x)*s(j)+(1+x)*s(j+1))/2);
-        
-        % call the singfun constructor
-        g = singfun( op, [], {'sing', 'sing'}, [] );
-        
-        % put in cell
-        f{j} = g;
-    end
+    g{end} = gtmp;
+ 
+    continue
 end
 
-% If there is only one subinterval, return a singfun, instead of a cell
+% Check if any of s(1) and s(end) is far from a singularity at -1 or 1.
+if ( max(endVal(j:j+1)) < fntbnd )    
+    
+    % define the new operator which will be evaluated in the subinterval by
+    % the singfun ctor.
+    op = @(x) feval(f, ((1-x)*s(j)+(1+x)*s(j+1))/2);
+    
+    % call the singfun constructor
+    gtmp = singfun( op, zeros(1,2), {'none', 'none'}, [] );
+    
+    % put in cell
+    g{j} = gtmp;
+
+    continue
+end
+
+% For all remaining cases, call the constructor. This is mainly used for
+% handling subintervals with one of the endpoints too close to a singularity.
+
+% define the new operator
+op = @(x) feval(f, ((1-x)*s(j)+(1+x)*s(j+1))/2);
+
+% call the singfun constructor
+gtmp = singfun( op, [], {'sing', 'sing'}, [] );
+
+% put in cell
+g{j} = gtmp;
+
+end
+
+% If there is only one subinterval, return the singfun, instead of a cell.
 if ( numInts == 1 )
-    f = f{:};
+    g = g{:};
 end
 
 end
