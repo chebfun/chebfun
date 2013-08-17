@@ -9,7 +9,7 @@ end
 % Set the tolerance:
 tol = 1e4*pref.singfun.eps;
 
-pass = zeros(1, 4); % Pre-allocate pass matrix
+pass = zeros(1, 12); % Pre-allocate pass matrix
 
 %%
 % Select some random points as sample points
@@ -20,19 +20,40 @@ x = -1 + 2*rand(1, 100);
 
 %%
 % Test calling syntax
-a = 1;
-b = .5;
+% Negative fractional exponents
+a = rand();
+b = rand();
 fh = @(x) sin(x)./((1+x).^a.*(1-x).^b);
 f = singfun(fh, [-a, -b]);
-g = singfun(fh, [-a, -b], {'pole', 'sing'});
+g = singfun(fh, [-a, -b], {'sing', 'sing'});
 pass(1) = isequal(f,g);
-pass(2) = norm(feval(fh,x) - feval(f,x), inf) < tol;
+pass(2) = ~any(f.exponents + [a,b]);
+pass(3) = ~any(g.exponents + [a,b]);
+pass(4) = norm(feval(fh,x) - feval(f,x), inf) < tol;
 
 %%
-fh = @(x) sin(x)./((1-x).*(1+x));
-f = singfun(fh, [], {'pole', 'pole'});
-pass(2) = norm(feval(f, x) - feval(fh, x), inf) < tol
-norm(feval(f, x) - feval(fh, x), inf)
+% Positive fractional exponents
+a = rand();
+b = rand();
+fh = @(x) sin(x).*(1+x).^a.*(1-x).^b;
+f = singfun(fh, [a, b]);
+g = singfun(fh, [a, b], {'branch', 'branch'});
+pass(5) = isequal(f,g);
+pass(6) = ~any(f.exponents - [a,b]);
+pass(7) = ~any(g.exponents - [a,b]);
+pass(8) = norm(feval(fh,x) - feval(f,x), inf) < tol;
+
+%%
+% Negative integer exponents
+a = ceil(5*rand);
+b = ceil(5*rand);
+fh = @(x) exp(x)./((1+x).^a.*(1-x).^b);
+f = singfun(fh, [-a, -b]);
+g = singfun(fh, [-a, -b], {'pole', 'pole'});
+pass(9) = isequal(f,g);
+pass(10) = ~any(f.exponents + [a,b]);
+pass(11) = ~any(g.exponents + [a,b]);
+pass(12) = norm(feval(fh,x) - feval(f,x), inf) < 10^max(a,b)*tol;
 
 %%
 %
