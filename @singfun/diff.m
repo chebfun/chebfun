@@ -1,6 +1,7 @@
 function f = diff(f, k)
 %DIFF   Derivative of a SINGFUN.
-%   DIFF(F) is the derivative of F and DIFF(F, K) is the Kth derivative.
+%   DIFF(F) is the derivative of the SINGFUN F, while DIFF(F, K) is its
+%   Kth derivative.
 %   
 %   [TODO]: Will this make sense in SINGFUN:
 %   DIFF(F, K, DIM), where DIM is one of 1 or 2, takes the Kth difference along
@@ -34,14 +35,14 @@ while ( k > 0 )
     % Decrease k
     k = k - 1;
         
-    % Apply the product rule to the SINGFUN F: f = g .* (1+x).^a .* (1-x).^b
+    % Apply the product rule to the SINGFUN F: f = g(x) .* (1+x).^a .* (1-x).^b
    
     % Three terms of the derivative:
-    % fist term: g' .* (1+x).^a .* (1-x).^b
+    % fist term: g'(x) .* (1+x).^a .* (1-x).^b
     s = f;
     s.smoothPart = diff(s.smoothPart);
     
-    % second term: a * g .* (1+x).^(a-1) .* (1-x).^b    
+    % second term: a * g(x) .* (1+x).^(a-1) .* (1-x).^b    
     % if the exponent at the left end point is non-zero
     if ( f.exponents(1) )
         t = f;    
@@ -50,7 +51,7 @@ while ( k > 0 )
         s = s + t;
     end
     
-    % third term: -b * g .* (1+x).^a .* (1-x).^(b-1)
+    % third term: -b * g(x) .* (1+x).^a .* (1-x).^(b-1)
     if ( f.exponents(2) )
         u = f;
         u.smoothPart = u.smoothPart * (-u.exponents(2));

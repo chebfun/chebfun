@@ -5,7 +5,7 @@ function out = checkSingTypes(f)
 %   is different than these four strings (ignoring case), an error message
 %   is thrown.
 %
-% See also CLASSIFYEXPONENTS
+% See also SINGFUN/CLASSIFYEXPONENTS
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

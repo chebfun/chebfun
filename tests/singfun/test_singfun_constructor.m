@@ -4,12 +4,19 @@ function pass = test_singfun_constructor(pref)
 
 % Get preferences:
 if ( nargin < 1 )
-    pref = singfun.pref.singfun;
+    pref = singfun.pref;
 end
 % Set the tolerance:
-tol = 1e3*pref.eps;
+tol = 1e4*pref.singfun.eps;
 
 pass = zeros(1, 4); % Pre-allocate pass matrix
+
+%%
+% Select some random points as sample points
+% These random points are in [-.999, .999]
+seedRNG(7890)
+%x = -.999 + 1.998*rand(1, 100);
+x = -1 + 2*rand(1, 100);
 
 %%
 % Test calling syntax
@@ -19,14 +26,9 @@ fh = @(x) sin(x)./((1+x).^a.*(1-x).^b);
 f = singfun(fh, [-a, -b]);
 g = singfun(fh, [-a, -b], {'pole', 'sing'});
 pass(1) = isequal(f,g);
+pass(2) = norm(feval(fh,x) - feval(f,x), inf) < tol;
 
 %%
-% Select some random points as sample points
-% These random points are in [-.999, .999]
-seedRNG(777)
-%x = -.999 + 1.998*rand(1, 100);
-x = -1 + 2*rand(1, 100);
-
 fh = @(x) sin(x)./((1-x).*(1+x));
 f = singfun(fh, [], {'pole', 'pole'});
 pass(2) = norm(feval(f, x) - feval(fh, x), inf) < tol
