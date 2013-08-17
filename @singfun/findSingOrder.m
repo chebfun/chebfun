@@ -32,8 +32,19 @@ else if ( strcmpi(singEnd, 'left') )
                     'Blowup preference "%s" unknown', singEnd )
     end
 end
-% singOrder is a negative number
+% singOrder is a negative number.
 singOrder = -singOrder;
+
+% The algorithm does not support positive exponents >= 1. Such results are 
+% garbage, so discard them. This is consistent with Chebfun V4. From a
+% practial point of view, this is not a problem since a Chebfun with a
+% barnch singularity of order > 1 converges. For such functions, the 
+% cheb-coefficient decay is algebraic but strong enough to give us a reliable 
+% representation.
+if ( singOrder >= 1 )
+    singOrder = 0;
+end
+
 end
 
 function singOrder = singOrderFinder( fvals, x, poleBound )
