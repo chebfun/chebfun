@@ -64,11 +64,8 @@ absFvals = abs(fvals);
 nIter = 0;
 
 %%
-% This is what we should use
-tol = singfun.pref.singfun.eps;
-% This is what Chebfun V4 uses and it works!
-tol = 1.1 * 1e-11;
-
+% Tolerance for exponents
+tol = singfun.pref.singfun.exponentTol;
 
 % maximum number of iterations allowed
 maxIter = 100; 
