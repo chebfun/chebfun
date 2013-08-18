@@ -1,5 +1,5 @@
 % Test file for singfun/plus.m
-
+% This has been adapted from bndfun test for plus.
 function pass = test_plus(pref)
 
 % Get preferences.
