@@ -44,6 +44,13 @@ function prefs = pref(varargin)
 %                     constructor to implicitly represent functions defined on
 %                     domains other than [-1, 1].
 %
+%     exponentTol  -  Tolerance for exponents. This is the refinement upto
+%    [1.1*1e-11]      which the singularity detector will try to resolve
+%                     the exponent.
+%
+%     maxPoleOrder -  Order of the maximum pole that the singularity
+%       [20]          detector can find.
+%                  
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
@@ -67,10 +74,9 @@ if ( isfield(prefs, classname) )  % It does, so either:
     end
 else
     % No SINGFUN prefs found, so make some:
-    %    p.tech          = 'cheb2';
-    %    p.extrapolate   = false;
-    %    p.hscale        = 1;   
     p.eps           = 2^-52;
+    p.exponentTol   = 1.1*1e-11; % taken from Chebfun V4
+    p.maxPoleOrder  = 20;    
 end
 % p is now the preference substructure relating to the FUN class.
 

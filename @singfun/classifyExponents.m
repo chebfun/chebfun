@@ -5,7 +5,7 @@ function f = classifyExponents(f)
 %   should be assigned to F.SINGTYPE. The valid types can be 'sing', 'pole', 
 %   'branch' or 'none'.
 %
-% See also CHECKSINGTYPES
+% See also SINGFUN/CHECKSINGTYPES
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

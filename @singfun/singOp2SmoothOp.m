@@ -1,5 +1,5 @@
 function op = singOp2SmoothOp( op, exponents )
-%SINGOP2SMOOTHOP   Converts the original functiona handle OP, which is
+%SINGOP2SMOOTHOP   Converts the original function handle OP, which is
 %   presumably singular at the end points to smooth operator by factoring
 %   out the singular factors
 %

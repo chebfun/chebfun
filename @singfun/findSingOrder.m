@@ -32,8 +32,19 @@ else if ( strcmpi(singEnd, 'left') )
                     'Blowup preference "%s" unknown', singEnd )
     end
 end
-% singOrder is a negative number
+% singOrder is a negative number.
 singOrder = -singOrder;
+
+% The algorithm does not support positive exponents >= 1. Such results are 
+% garbage, so discard them. This is consistent with Chebfun V4. From a
+% practial point of view, this is not a problem since a Chebfun with a
+% barnch singularity of order > 1 converges. For such functions, the 
+% cheb-coefficient decay is algebraic but strong enough to give us a reliable 
+% representation.
+if ( singOrder >= 1 )
+    singOrder = 0;
+end
+
 end
 
 function singOrder = singOrderFinder( fvals, x, poleBound )
@@ -45,23 +56,26 @@ singOrder = poleBound-1;
 
 % Try fractional exponents in the interval [poleBound-1, poleBound]
 % Take an initial grid of size n: 
-n = 10;
+n = 11;
 exponentGrid = linspace(poleBound-1, poleBound, n);
 
 % some initialisations which will be used later
 absFvals = abs(fvals);
-smoothVals = absFvals;
 nIter = 0;
-tol = singfun.pref.singfun.eps;
+
+%%
+% Tolerance for exponents
+tol = singfun.pref.singfun.exponentTol;
 
 % maximum number of iterations allowed
 maxIter = 100; 
 % A factor by 10 refinement algorithm for zooming in on the required
 % fractional singularity order.
-while( abs(exponentGrid(end)-exponentGrid(1)) > 100*tol && nIter <= maxIter )
-    k = 0;
-    % This test for blowup is perhaps less robust than the test givne in
-    % SINGFUN. FINDPOLEORDER but more accurate when it works. This is based 
+while( abs(exponentGrid(end)-exponentGrid(1)) > tol && nIter <= maxIter )
+    k = 1;
+    smoothVals = absFvals.*x.^exponentGrid(k);
+    % This test for blowup is perhaps less robust than the test given in
+    % SINGFUN.FINDPOLEORDER() but more accurate when it works. This is based 
     % on determining the convexity of the function via second order
     % differences.
     while( all(diff(diff(smoothVals)) > 0) && k < n )
@@ -69,24 +83,21 @@ while( abs(exponentGrid(end)-exponentGrid(1)) > 100*tol && nIter <= maxIter )
         % Try the next fractional exponent
         smoothVals = absFvals.*x.^exponentGrid(k);
     end
+    
     if( k == n && all(diff(diff(smoothVals)) > 0) )
         % tried all exponents but failed
-        singOrder = poleBound;
+        singOrder = exponentGrid(n);
         return;
-    else if( k == 0 )
-            singOrder = poleBound;
+    else
+        % update the estimate for exponent
+        singOrder = exponentGrid(k);        
+        if( k == 1 )
+            % no further refinement possible.            
             return;
-        else
-            % succeeded for some k, update the exponent estimate and 
-            % refine the grid
-            smoothVals = absFvals;
-            singOrder = exponentGrid(k);
-            if ( k == 1 )
-                return;
-            else
-                exponentGrid = linspace( exponentGrid(k-1), exponentGrid(k), n );
-                nIter = nIter + 1;
-            end
+        else           
+            % refine the grid                        
+            exponentGrid = linspace( exponentGrid(k-1), exponentGrid(k), n );
+            nIter = nIter + 1;
         end
     end
 end
