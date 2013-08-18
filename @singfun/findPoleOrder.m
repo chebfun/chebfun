@@ -55,13 +55,12 @@ if ( any(isnan(smoothVals)) )
     error( 'CHEBFUN:SINGFUN:findPoleOrder', 'function returned NaN while evaluation')
 end
 
-poleOrder = 0;
-
-
 % Test parameters
 testRatio = 1.01;
 maxPoleOrder = singfun.pref.singfun.maxPoleOrder;
 
+poleOrder = 0;
+%smoothVals = smoothVals.*x;
 % Loop to see for which power of x the function values become non-divergent
 % i.e. when the ratio of function values becomes less then the testRatio.
 while( all(smoothVals(2:end)./smoothVals(1:end-1) > testRatio) && ( poleOrder <= maxPoleOrder ) )
@@ -72,7 +71,7 @@ if ( poleOrder > maxPoleOrder )
     % Method failed.
     % [TODO]: Error may be?
     warning('CHEBFUN:SINGFUN:fail',...
-        'Could not detect function singularity.');
+        'Pole order excedes limit for maximum pole order.');
     poleOrder = 0;
 end
 

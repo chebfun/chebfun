@@ -9,7 +9,7 @@ end
 % Set the tolerance:
 tol = 1e3*pref.singfun.eps;
 
-pass = zeros(1, 12); % Pre-allocate pass matrix
+pass = zeros(1, 18); % Pre-allocate pass matrix
 
 %%
 % Select some random points as sample points
@@ -84,4 +84,4 @@ fh = @(x) exp(sin(x.^2))./((1+x).^a.*(1-x).^b);
 f = singfun(fh);
 pass(17) = norm(f.exponents + [a,b], inf) < pref.singfun.exponentTol;
 xx = x(20:80);
-pass(12) = norm(feval(fh,xx) - feval(f,xx), inf) < tol;
+pass(18) = norm(feval(fh,xx) - feval(f,xx), inf) < tol;

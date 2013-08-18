@@ -8,6 +8,9 @@ if ( nargin < 1 )
 end
 
 %%
+% declare pass vector
+pass = zeros(1,5);
+%%
 % creat an empty SINGFUN
 f = singfun;
 g = singfun;
@@ -27,3 +30,19 @@ g = singfun(@(x) 1./(1+x), [-1, 0] );
 
 % Test
 pass(3) = isequal(f,g);
+
+%%
+% create two different non-zero SINGFUN
+f = singfun(@(x) 1./(1+x), [-1, 0], {'pole', 'none'} );
+g = singfun(@(x) 1./(1+x), [-1.0001, 0], {'sing', 'none'} );
+
+% Test
+pass(4) = ~isequal(f,g);
+
+%%
+% create two different non-zero SINGFUN
+f = singfun(@(x) cos(x)./(1+x), [-1, 0], {'pole', 'none'} );
+g = singfun(@(x) sin(x)./(1+x), [-1, 0], {'pole', 'none'} );
+
+% Test
+pass(5) = ~isequal(f,g);
