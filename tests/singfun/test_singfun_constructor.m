@@ -7,7 +7,7 @@ if ( nargin < 1 )
     pref = singfun.pref;
 end
 % Set the tolerance:
-tol = 1e4*pref.singfun.eps;
+tol = 1e3*pref.singfun.eps;
 
 pass = zeros(1, 12); % Pre-allocate pass matrix
 
@@ -24,8 +24,8 @@ x = -1 + 2*rand(1, 100);
 a = rand();
 b = rand();
 fh = @(x) sin(x)./((1+x).^a.*(1-x).^b);
-f = singfun(fh, [-a, -b]);
-g = singfun(fh, [-a, -b], {'sing', 'sing'});
+f = singfun(fh, [-a, -b], [], pref);
+g = singfun(fh, [-a, -b], {'sing', 'sing'}, pref);
 pass(1) = isequal(f,g);
 pass(2) = ~any(f.exponents + [a,b]);
 pass(3) = ~any(g.exponents + [a,b]);
@@ -36,8 +36,8 @@ pass(4) = norm(feval(fh,x) - feval(f,x), inf) < tol;
 a = rand();
 b = rand();
 fh = @(x) sin(x).*(1+x).^a.*(1-x).^b;
-f = singfun(fh, [a, b]);
-g = singfun(fh, [a, b], {'branch', 'branch'});
+f = singfun(fh, [a, b], [], pref);
+g = singfun(fh, [a, b], {'branch', 'branch'}, pref);
 pass(5) = isequal(f,g);
 pass(6) = ~any(f.exponents - [a,b]);
 pass(7) = ~any(g.exponents - [a,b]);
@@ -45,11 +45,11 @@ pass(8) = norm(feval(fh,x) - feval(f,x), inf) < tol;
 
 %%
 % Negative integer exponents
-a = ceil(5*rand);
-b = ceil(5*rand);
+a = ceil(10*rand);
+b = ceil(10*rand);
 fh = @(x) exp(x)./((1+x).^a.*(1-x).^b);
-f = singfun(fh, [-a, -b]);
-g = singfun(fh, [-a, -b], {'pole', 'pole'});
+f = singfun(fh, [-a, -b], [], pref);
+g = singfun(fh, [-a, -b], {'pole', 'pole'}, pref);
 pass(9) = isequal(f,g);
 pass(10) = ~any(f.exponents + [a,b]);
 pass(11) = ~any(g.exponents + [a,b]);
@@ -62,7 +62,7 @@ a = rand();
 b = rand();
 fh = @(x) sin(x)./((1+x).^a.*(1-x).^b);
 f = singfun(fh);
-pass(13) = norm(f.exponents + [a,b], inf) < max(a,b)*tol;
+pass(13) = norm(f.exponents + [a,b], inf) < pref.singfun.exponentTol;
 pass(14) = norm(feval(fh,x) - feval(f,x), inf) < tol;
 
 %%
@@ -70,52 +70,31 @@ pass(14) = norm(feval(fh,x) - feval(f,x), inf) < tol;
 a = rand();
 b = rand();
 fh = @(x) sin(x).*(1+x).^a.*(1-x).^b;
-f = singfun(fh, [a, b]);
-g = singfun(fh, [a, b], {'branch', 'branch'});
-pass(15) = isequal(f,g);
-pass(16) = ~any(f.exponents - [a,b]);
-pass(17) = ~any(g.exponents - [a,b]);
-pass(18) = norm(feval(fh,x) - feval(f,x), inf) < tol;
+f = singfun(fh);
+pass(15) = norm(f.exponents - [a,b], inf) < pref.singfun.exponentTol;
+pass(16) = norm(feval(fh,x) - feval(f,x), inf) < tol;
 
 %%
 % Negative integer exponents
 a = ceil(5*rand);
 b = ceil(5*rand);
 fh = @(x) exp(x)./((1+x).^a.*(1-x).^b);
-f = singfun(fh, [-a, -b]);
-g = singfun(fh, [-a, -b], {'pole', 'pole'});
-pass(19) = isequal(f,g);
-pass(20) = ~any(f.exponents + [a,b]);
-pass(21) = ~any(g.exponents + [a,b]);
-pass(22) = norm(feval(fh,x) - feval(f,x), inf) < 10^max(a,b)*tol;
+f = singfun(fh);
+pass(17) = norm(f.exponents + [a,b], inf) < pref.singfun.exponentTol;
+pass(18) = norm(feval(fh,x) - feval(f,x), inf) < 10^max(a,b)*tol;
 
-% %%
-% clear classes
-% %%
-% a = .5; b = 1.5;
-% op = @(x) sin(1-x)./((1-x).^(b).*(1+x).^(a));
-% exponents = [-a, -b];
-% exponents = [];
-% singType = {'sing', 'sing'};
-% pref = [];
-% f = singfun( op, exponents, singType, pref )
-% 
-% %%
-% imagf = imag(f)
-% 
-% %% 
-% realf = real(f)
-% 
-% %%
+
+%%
 % % works
-% f = singfun( @(x) sin(pi*(x+1))./((1-x).^3.5.*(x+1).^2.5), [], {'sing', 'sing'}, []  )
-% f = chebfun( @(x) sin(pi*(x+1))./((1-x).^3.5.*(x+1).^2.5), 'blowup', 1 )
-% %%
+ f = singfun( @(x) sin(pi*(x+1))./((1-x).^3.5.*(x+1).^2.5), [], {'sing', 'sing'}, []  )
+ f = chebfun( @(x) sin(pi*(x+1))./((1-x).^3.5.*(x+1).^2.5), 'blowup', 1 )
+% 
+%%
 % % doesn't work
-% f = singfun( @(x) sin(pi*(x+1))./((1-x).^3.*(x+1).^2), [], {'sing', 'sing'}, []  )
-% f = chebfun( @(x) sin(pi*(x+1))./((1-x).^3.5.*(x+1).^2.5), 'blowup', 2 )
+ f = singfun( @(x) sin(pi*(x+1))./((1-x).^3.*(x+1).^2), [], {'sing', 'sing'}, []  )
+ f = chebfun( @(x) sin(pi*(x+1))./((1-x).^3.5.*(x+1).^2.5), 'blowup', 2 )
 % %%
-% f = singfun( @(x) 1./(1-x).^2, [], {'pole', 'sing'} )
+ f = singfun( @(x) 1./(1-x).^2, [], {'pole', 'sing'} )
 % 
 % %%
 % f = singfun( @(x) sin(x)./((1-x).^3.5.*(1+x).^.5), [], {'sing', 'sing'}, [] );
