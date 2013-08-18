@@ -26,6 +26,4 @@ f = singfun(@(x) 1./(1+x), [-1, 0] );
 g = singfun(@(x) 1./(1+x), [-1, 0] );
 
 % Test
-pass(1) = isequal(f,g);
-pass(2) = ~isempty(g);
-pass(3) = ~isempty(h);
+pass(3) = isequal(f,g);
