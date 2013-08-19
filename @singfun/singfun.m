@@ -3,7 +3,7 @@ classdef singfun
 %
 %   Class for approximating singular functions on the interval [-1,1] using
 %   a smooth part with no singularities and two singular factors (1+x).^a
-%   and (1-x).^b, where a and b are negative. 
+%   and (1-x).^b, where a and b are negative real number or positive fractions. 
 %
 %   SINGFUN class description
 %
@@ -12,21 +12,18 @@ classdef singfun
 %          f(x) = s(x) (1+x)^a (1-x)^b 
 %
 %   on the interval [-1,1]. The exponents a and b are assumed
-%   to be real and are usually negative. The constructor is supplied with 
-%   a handle that evaluates the function f at any given points. However, 
-%   endpoint values will not be sampled, due to the likelihood of Inf and 
-%   NaN results.
+%   to be real. The constructor is supplied with a handle that evaluates the 
+%   function f at any given points within the interval [-1, 1]. The endpoint 
+%   values are likely to return Inf or NaN results.
 %
 %   Ideally, the "smooth" function s is analytic, or at least much more
 %   compactly represented than f is. The resulting object can be used to
-%   evaluate and operate on the function f. If a and b are
-%   unknown at the time of construction, the constructor will try to
-%   determine appropriate (nonpositive) values automatically by sampling
-%   the function handle. Note, however, that this process is not 
-%   completely robust, and
-%   the singularity terms in general do not perfectly factor out singular
-%   behavior. The constructor can be forced to consider only integer
-%   exponents.
+%   evaluate and operate on the function f. If a and b are unknown at the 
+%   time of construction, the constructor will try to determine appropriate 
+%   values automatically by sampling the function handle. Note, however, that 
+%   this process is not completely robust, and the singularity terms in 
+%   general do not perfectly factor out singular behavior. The constructor 
+%   can be forced to consider only integer exponents.
 %
 %   Multiplication and division are as good as the corresponding operations
 %   on the smooth part. Addition and subtraction are much less reliable, as
@@ -48,7 +45,7 @@ classdef singfun
         % Exponents of the singularities at the two endpoints.
         exponents   % (1x2 double)
         
-        % A cell array telling the type of singularity at the endpoints.
+        % A cell array containing the types of singularities at the endpoints.
         singType = {};   % (1x2 cell)        
      end
     
@@ -279,7 +276,7 @@ classdef singfun
         % method for finding integer order singularities, i.e. poles
         poleOrder = findPoleOrder( op, SingEnd)
         
-        % method for finding fractional order singularities.
+        % method for finding fractional order singularities (+ve or -ve).
         barnchOrder = findSingOrder( op, SingEnd)
         
         % method for converting a singular op to a smooth op
