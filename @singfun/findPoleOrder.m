@@ -14,8 +14,8 @@ function poleOrder = findPoleOrder(op, singEnd)
 
 %%
 % The algorithm tries to find the smallest non-negative integer
-% k such that op(x).*(1-x)^k is bounded at 1-eps. The algorithm is actually
-% implemented in the function POLEORDERFINDER() below.
+% k such that op(x).*(1-x)^k is bounded at 1-eps. The core of the algorithm 
+% is implemented in the function POLEORDERFINDER() below.
 
 %%
 % distance of the sample points from the right end point, i.e. 1.
