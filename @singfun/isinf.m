@@ -7,8 +7,6 @@ function out = isinf(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Check if F has exponents
-% [TODO]: should we use the following:
-% out = without tol/eps OR
-out = any(f.exponents <= -singfun.pref.singfun.eps);
+% Check if F has exponents or the smooth part has inf.
+out = any(f.exponents <= -singfun.pref.singfun.exponentTol) || isinf(f.smoothPart);
 end
