@@ -1,9 +1,9 @@
 function f = subsasgn(f, index, val)
 %SUBSASGN   Chebfun SUBSASGN.
 % ( )
-%   F(X) = VAL assigns the values of vector VAL at locations specified in vector
-%   X in the CHEBFUN F. SIZE(X, 1) should be equal to LENGTH(VAL) and SIZE(X,
-%   2) should be the number of columns in F. SUBSASGN introduces new breakpoints
+%   F(X) = VAL assigns the values VAL at locations specified by X to the 
+%   CHEBFUN F. SIZE(X, 1) should be equal to LENGTH(VAL) and SIZE(X, 2) should 
+%   be the number of columns in F. SUBSASGN introduces new breakpoints
 %   in F at points in X that were not originally in F.DOMAIN. See DEFINEPOINT
 %   for further details.
 %
