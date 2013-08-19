@@ -139,7 +139,7 @@ function [values, giveUp] = composeResample2(op, values, pref, f, g)
 
     if ( pref.chebtech.extrapolate )
         % Avoid evaluating the endpoints:
-        valuesTemp = feval(op, v1(2:n-1,:), v2(2:n-1));
+        valuesTemp = feval(op, v1(2:n-1,:), v2(2:n-1,:));
         nans = NaN(1, size(valuesTemp, 2));
         values = [ nans; valuesTemp; nans ];
     else

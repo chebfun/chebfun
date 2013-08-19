@@ -158,7 +158,7 @@ classdef fun % (Abstract)
         out = innerProduct(f, g)
         
         % Data for plotting a FUN
-        data = plotData(f);
+        data = plotData(f, g);
         
         % Restrict a FUN to a subinterval.
         f = restrict(f, s)

@@ -1,4 +1,4 @@
-function data = plotData(f)
+function data = plotData(f, g)
 %PLOTDATA   Useful data values for plotting a BNDFUN object.
 %   DATA = PLOTDATA(F) returns a struct containing data that can be used for
 %   plotting F. In particular, DATA.xLine and DATA.fLine are for plotting smooth
@@ -9,7 +9,11 @@ function data = plotData(f)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Get the data from the ONEFUN:
-data = plotData(f.onefun);
+if ( nargin == 1 || isempty(g))
+    data = plotData(f.onefun);
+else
+    data = plotData(f.onefun, g.onefun);
+end
 
 % Map the 'x' data using f.mapping.for:
 data.xLine = f.mapping.for(data.xLine);
