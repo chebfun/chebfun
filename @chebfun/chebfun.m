@@ -27,9 +27,10 @@ classdef chebfun
 % CHEBFUN object which interpolates the data in A on an N-point Chebyshev grid
 % of the second kind (see >> help chebpts). CHEBFUN(A, 'chebpts1') and
 % CHEBFUN(A, 'equi') are similar, but here the data is assumed to come from a
-% 1st-kind Chebyshev or equispaced grid linspace(-1, 1, N), respectively.
-% CHEBFUN(F, N) or CHEBFUN(F, N, 'chebpts2') is equivalent to CHEBFUN(feval(F,
-% chebpts(N)).
+% 1st-kind Chebyshev or equispaced grid linspace(-1, 1, N), respectively. (In
+% the latter case, a smooth interpolant is constructed using an adaptive
+% Floater-Hormann scheme [Numer. Math. 107, 315-331 (2007)].). CHEBFUN(F, N) or
+% CHEBFUN(F, N, 'chebpts2') is equivalent to CHEBFUN(feval(F, chebpts(N)).
 %
 % CHEBFUN({F1,...,Fk}, ENDS) constructs a piecewise smooth CHEBFUN which
 % represents Fj on the interval [ENDS(j), END(j+1)]. Each entry Fj may be a
