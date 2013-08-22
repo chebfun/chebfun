@@ -5,7 +5,12 @@ function varargout = subsref(f, index)
 %   falls on a breakpoint of F, the corresponding value from F.IMPULSES is
 %   returned. F(X, 'left') or F(X, 'right') will evaluate F at breakpoints
 %   using left- or right-hand limits, respectively. See CHEBFUN/FEVAL for
-%   further details.
+%   further details. F(:) returns F.
+%
+%   If F is an array-valued CHEBFUN then F(X, COL) returns the values of the
+%   columns specified by the vector COL at the points X. Similarly, F(:, COL)
+%   returns a new array-vlaued CHEBFUN containing only the columns specified in
+%   COL. In both cases, COL should be a row vector.
 %
 %   F(G), where G is also a CHEBFUN, computes the composition of F and G. See
 %   CHEBFUN/COMPOSE for further details.
@@ -22,9 +27,6 @@ function varargout = subsref(f, index)
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
-
-% [TODO]: Should we allow specific access to columns in array-valued CHEBFUN
-% objects? For example, F(0, 2) to evaluate the 2nd columns at x = 0?
 
 idx = index(1).subs;
 switch index(1).type
@@ -58,7 +60,7 @@ switch index(1).type
             columnIndex = idx{2};         
             
         elseif ( length(idx) > 1 )
-            error('CHEBFUN:subsref:dimensions',...
+            error('CHEBFUN:subsref:dimensions', ...
                 'Index exceeds chebfun dimensions.')
             
         end
@@ -67,7 +69,7 @@ switch index(1).type
         if ( isnumeric(x) )
             % Call FEVAL():
             out = feval(f, x, varin{:});
-            out = out(:,columnIndex);
+            out = out(:, columnIndex);
             
         elseif ( isa(x, 'chebfun') )
             % Call COMPOSE():
@@ -75,7 +77,14 @@ switch index(1).type
             
         elseif ( isequal(x, ':') )
             % Return f:
-            out = f;
+            if ( numel(columnIndex) == size(f, 2) && ...
+                    all(columnIndex == 1:size(f, 2)) )
+                out = f;
+            else
+                % [TODO]: This requires CELL2MAT() and MAT2CELL().
+                out = cell2mat(mat2cell(f, columnIndex));
+            end
+            
             
         else
             error('CHEBFUN:subsref:nonnumeric',...
