@@ -70,6 +70,14 @@ else
 end
 pref.chebfun.maxSamples = maxn;
 
+% Splitting forces extrapolate:
+if ( pref.chebfun.splitting )
+    pref.chebfun.extrapolate = true;
+end
+
+% Merge preferences for FUN constructor call:
+pref = fun.pref(pref, pref.chebfun);
+
 % Obtain scales of the CHEBFUN:
 vs = vscale(f);
 hs = hscale(f);
@@ -83,9 +91,6 @@ oldFuns = f.funs;
 newImps = oldImps;
 newDom = oldDom;
 newFuns = oldFuns;
-
-% Merge preferences for FUN constructor call:
-pref = fun.pref(pref, pref.chebfun);
 
 % Loop through the index:
 for k = index
