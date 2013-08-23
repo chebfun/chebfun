@@ -65,7 +65,7 @@ for j = 1:numFuns
         % Grab values at endpoints:
         endvals = [get(f.funs{j}, 'lval'), get(f.funs{j}, 'rval')];
 
-        % Tweak the endpoint values some: (This prevents -0 and +0)
+        % Tweak the endpoint values: (This prevents -0 and +0)
         if ( ~any(isnan(endvals)) )
             endvals(~logical(abs(endvals))) = 0;
         end
