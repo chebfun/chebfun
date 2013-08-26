@@ -134,7 +134,7 @@ classdef chebfun
                 
                 if ( nargin > 1 )
                     error('CHEBFUN:chebfun:nargin', ...
-                        'Only one input when passing an array of funs.')
+                        'Only one input is allowed when passing an array of funs.')
                 end
                 
                 % Assign the cell to the .FUNS property:
@@ -182,7 +182,7 @@ classdef chebfun
         
     end
     
-    % Static methods implemented by CHEBFUN class.
+    % Static private methods implemented by CHEBFUN class.
     methods (Static = true, Access = private)
         
         % Parse the inputs to the CHEBFUN constructor.

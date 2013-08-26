@@ -23,7 +23,7 @@ if ( fIsEmpty && gIsEmpty )        % f, g both empty.
 elseif ( xor(fIsEmpty, gIsEmpty) ) % Exactly one of f, g is empty.
     pass = false;
 else                               % f, g both not empty.
-    hs = max(hscale(f), hscale(g));
+    hs = max(hscale(f), hscale(g));    
     pass = norm(f.domain([1, end]) - g.domain([1, end]), inf) < 1e-15*hs;
 end
 
