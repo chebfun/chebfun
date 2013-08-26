@@ -92,20 +92,20 @@ classdef chebfun
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     properties (Access = public)
-
-        % DOMAIN of definition of a CHEBFUN object. If K>1 then the CHEBFUN is
-        % referred to as a "piecewise" CHEBFUN. The first and last values of
-        % this vector define the left and right endpoints of the domain,
-        % respectively. The other values give the locations of the breakpoints
-        % that define the domains of the individual FUN objects comprising the
-        % CHEBFUN. The entries in this vector should be strictly increasing.
+        % DOMAIN of definition of a CHEBFUN object. If K = length(F.DOMAIN) is
+        % greater than 1 then the CHEBFUN is referred to as a "piecewise".
+        % CHEBFUN. The first and last values of this vector define the left and
+        % right endpoints of the domain, respectively. The other values give the
+        % locations of the interior breakpoints that define the domains of the
+        % individual FUN objects comprising the CHEBFUN. The entries in this
+        % vector should be strictly increasing.
         domain              % (1x(K+1) double)
 
         % FUNS is a cell array containing the FUN objects that comprise a
-        % piecewise CHEBFUN. The the Kth entry in this cell is the FUN
-        % defining the representation used by the CHEBFUN object on the
-        % interval (domain(K), domain(K+1)). If M = size(f.funs, 2) is greater
-        % than 1, then the CHEBFUN object is referred to as "array valued".
+        % piecewise CHEBFUN. The the kth entry in this cell is the FUN defining
+        % the representation used by the CHEBFUN object on the open interval
+        % (F.DOMAIN(k), F.DOMAIN(k+1)). If M = size(f.funs, 2) is greater than
+        % 1, then the CHEBFUN object is referred to as "array valued".
         funs                % (Kx1 cell array of FUN objects)
 
         % IMPULSES is a three-dimensional array storing information about the
@@ -115,9 +115,7 @@ classdef chebfun
         % Thus, F.IMPULSES(:, :, 1) is a matrix consisting of the values of
         % each column of F at each breakpoint. The third dimension is used for
         % storing information about higher-order delta functions that may be
-        % present at breakpoints.
-        %
-        % [TODO]:  Document how higher-order impulses are handled.
+        % present at breakpoints. (See "help dirac" for more details.)
         impulses = [];      % ((K+1) x M x (D+1) double)
 
         % ISTRANSPOSED determines whether a (possibly array-valued) CHEBFUN F
@@ -144,14 +142,14 @@ classdef chebfun
             [op, dom, pref] = parseInputs(varargin{:});
             
             if ( iscell(op) && all(cellfun(@(x) isa(x, 'fun'), op)) )
-                % Construct a CHEBFUN from an array of FUN objects:
+                % Construct a CHEBFUN from a cell array of FUN objects:
                 
                 if ( nargin > 1 )
                     error('CHEBFUN:chebfun:nargin', ...
-                        ['Too many input arguments. ', ...
-                         '(First argument is a cell array of FUN objects.)']);
+                        'Only one input is allowed when passing an array of FUNs.')
                 end
                 
+                % Assign the cell to the .FUNS property:
                 f.funs = op;
                 % Collect the domains together:
                 dom = cellfun(@(fun) get(fun, 'domain'), f.funs, ...
@@ -196,7 +194,7 @@ classdef chebfun
         
     end
     
-    % Static methods implemented by CHEBFUN class.
+    % Static private methods implemented by CHEBFUN class.
     methods (Static = true, Access = private)
         
         % Parse the inputs to the CHEBFUN constructor.
@@ -205,6 +203,9 @@ classdef chebfun
         % Convert a string input to a function_handle.
         op = str2op(op);
         
+        % Vectorise a function handle input.
+        op = vec(op);
+        
     end
     
     % Methods implemented by CHEBFUN class.
@@ -212,9 +213,18 @@ classdef chebfun
         
         % Plot information regarding the representation of a CHEBFUN object:
         h = chebpolyplot(f, varargin);
+
+        % Compose CHEBFUN objects with another function.
+        h = compose(f, op, g, pref)
+
+        % Compose two CHEBFUN objects (i.e., f(g)).
+        h = composeChebfuns(f, g, pref)
         
         % Display a CHEBFUN object.
         display(f);
+        
+        % Compare domains of two CHEBFUN objects.
+        pass = domainCheck(f, g);
         
         % Accuracy estimate of a CHEBFUN object.
         out = epslevel(f);
@@ -224,7 +234,7 @@ classdef chebfun
         
         % Horizontal scale of a CHEBFUN object.
         out = hscale(f);
-        
+
         % Plot a CHEBFUN object on a loglog scale:
         h = loglog(f, varargin);
         
@@ -239,13 +249,30 @@ classdef chebfun
         
         % Plot a CHEBFUN object on a linear-log scale:
         h = semilogy(f, varargin);
-        
+
+        % True for real CHEBFUN.
+        out = isreal(f);
+
+        % Length of a CHEBFUN.
+        out = length(f);
+
+        % Overlap the domain of two CHEBFUN objects.
+        [f, g] = overlap(f, g);
+
+        % Restrict s CHEBFUN object to a subdomain.
+        f = restrict(f, newDomain);
+
+        % The roots of the CHEBFUN F.
+        r = roots(f, varargin);
+
+        % Simplify the representation of a CHEBFUN obect.
+        f = simplify(f, tol);
+
         % Size of a CHEBFUN object.
         [s1, s2] = size(f, dim);
         
         % Vertical scale of a CHEBFUN object.
         out = vscale(f);
-        
     end
     
 end
