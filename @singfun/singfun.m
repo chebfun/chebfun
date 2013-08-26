@@ -132,7 +132,7 @@ classdef singfun
             
             % Construct the smooth part of the SINGFUN object.
             % [TODO]: This will be replaced by the SMOOTHFUN constructor
-            smoothPrefs = chebtech.pref('tech', 'cheb1', 'extrapolate', false);
+            smoothPrefs = chebtech.pref('tech', 'chebtech2', 'extrapolate', false);
             vscale = [];
             hscale = [];
             obj.smoothPart = chebtech.constructor(smoothOp, vscale, hscale, smoothPrefs);
