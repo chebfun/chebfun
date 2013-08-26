@@ -29,8 +29,7 @@ end
 oldDomain = f.domain;
 
 % Trivial case:
-%[TODO]: Do we need a tolerance here in isequal?
-if ( (numel(newDomain) == 2) && isequal(newDomain, oldDomain([1 end])) )    
+if ( (numel(newDomain) == 2) && domainCheck(f, newDomain([1, end])) )    
     % The domains are the same!
     return
 end

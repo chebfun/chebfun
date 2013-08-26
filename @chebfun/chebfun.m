@@ -134,7 +134,7 @@ classdef chebfun
                 
                 if ( nargin > 1 )
                     error('CHEBFUN:chebfun:nargin', ...
-                        'Only one input is allowed when passing an array of funs.')
+                        'Only one input is allowed when passing an array of FUNs.')
                 end
                 
                 % Assign the cell to the .FUNS property:

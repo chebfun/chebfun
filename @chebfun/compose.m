@@ -109,8 +109,6 @@ pref = fun.pref(pref, pref.chebfun);
 
 % Suppress growing vector Mlint warnings (which are inevitable here):
 %#ok<*AGROW>
-%[TODO]: I don't know much about Mlint, but what I gather is that Matlab
-%now suggests using CODECHECK, will that change our #ok thing?
 
 %% Loop through each interval:
 for k = 1:numInts

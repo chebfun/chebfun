@@ -2,7 +2,11 @@ function pass = domainCheck(f, g)
 %DOMAINCHECK   True if the domains of two CHEBFUN objects are the same.
 %   DOMAINCHECK(F, G) returns TRUE if the endpoints of the domains of the two
 %   CHEBFUNs F and G coincide up to a tolerance depending on their horizontal
-%   scales or if both F and G are empty CHEBFUN objects.  
+%   scales or if both F and G are empty CHEBFUN objects.
+%
+%   Alternatively, one of F or G may be a two-vector, in which case its values
+%   are treated as if they were F.domain([1, end]) or G.domain([1, end]),
+%   respectively.
 %
 % See also HSCALE.
 
@@ -20,11 +24,22 @@ gIsEmpty = isempty(g);
 
 if ( fIsEmpty && gIsEmpty )        % f, g both empty.
     pass = true;
+    
 elseif ( xor(fIsEmpty, gIsEmpty) ) % Exactly one of f, g is empty.
     pass = false;
-else                               % f, g both not empty.
+    
+elseif ( ~isa(g, 'chebfun') )      % f, g both not empty. f is a CHEBFUN.
+    hs = hscale(f);
+    pass = norm(f.domain([1, end]) - g([1, end]), inf) < 1e-15*hs;
+    
+elseif ( ~isa(f, 'chebfun') )      % f, g both not empty. g is a CHEBFUN.
+    hs = hscale(g);
+    pass = norm(f([1, end]) - g.domain([1, end]), inf) < 1e-15*hs;
+    
+else                               % f, g both not empty CHEBFUN objects.
     hs = max(hscale(f), hscale(g));    
     pass = norm(f.domain([1, end]) - g.domain([1, end]), inf) < 1e-15*hs;
+    
 end
 
 end
