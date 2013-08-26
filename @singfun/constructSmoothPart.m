@@ -2,7 +2,13 @@ function s = constructSmoothPart(op, pref)
 % Construct the smooth part of the SINGFUN object.
 % [TODO]: This will be replaced by a call to the SMOOTHFUN constructor
 
-pref = pref.chebtech;
+% get CHEBTECH perferences if provided
+if (isfield( pref, 'chebtech') )
+    pref = pref.chebtech;
+else
+    % get preferences from the CHEBTECH class
+    pref = chebtech.pref;
+end
 %smoothPrefs = chebtech.pref('extrapolate', false);
 vscale = [];
 hscale = [];
