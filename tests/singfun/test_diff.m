@@ -106,27 +106,4 @@ vals_exact = feval(df2_exact, x);
 err = vals_df2 - vals_exact;
 pass(7) = (norm(err, inf) < tol*norm(vals_exact, inf));
 
-%%
-% % Check operation for array-valued chebtech objects.
-% 
-% f = singfun(@(x) [sin(x) x.^2 exp(1i*x)], [], [], pref);
-% df_exact = @(x) [cos(x) 2*x 1i*exp(1i*x)];
-% err = feval(diff(f), x) - df_exact(x);
-% pass(12) = (norm(err(:), inf) < tol);
-% 
-% % DIM option.
-% dim2df = diff(f, 1, 2);
-% g = @(x) [(x.^2 - sin(x)) (exp(1i*x) - x.^2)];
-% err = feval(dim2df, x) - g(x);
-% pass(13) = (norm(err(:), inf) < tol);
-% 
-% dim2df2 = diff(f, 2, 2);
-% g = @(x) exp(1i*x) - 2*x.^2 + sin(x);
-% err = feval(dim2df2, x) - g(x);
-% pass(14) = (norm(err(:), inf) < tol);
-% 
-% % DIM option should return an empty chebtech for non-array-valued input.
-% f = singfun(@(x) x.^3);
-% dim2df = diff(f, 1, 2);
-% pass(15) = (isempty(dim2df.values) && isempty(dim2df.coeffs));
 end
