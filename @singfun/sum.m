@@ -41,11 +41,11 @@ end
 %%
 % The non-trivial case:
 
-% Grab the number of points for the smooth part of f:
-n = length(f);
-
 if ( isa(f.smoothPart, 'chebtech') )
     
+    % Grab the number of points for the smooth part of f:
+    n = length(f);
+
     % grep the exponents:
     a = f.exponents(1);
     
@@ -53,7 +53,7 @@ if ( isa(f.smoothPart, 'chebtech') )
     % If the exponents at the endpoints are same, then compute the appropriate
     % modified moments for Gegenbauer weights.
     
-    if ( diff(f.exponents) == 0 && 0 )
+    if ( diff(f.exponents) == 0 )
         
         % Clenshaw-Curtis-Jacobi points and quadrature weights:
         r = a + .5;
@@ -107,6 +107,10 @@ if ( isa(f.smoothPart, 'chebtech') )
 else
     % If f.smoothPart is not a CHEBTECH, we evaluate the integral by using
     % Gauss-Jacobi points and weights.
+    
+    % Give a sufficiently large number: 
+    % [TODO]: This number needs to be determined in future when other 'tech' join. 
+    n = 1000;
     
     [x, w] = jacpts(ceil(n/2)+1, f.exponents(2), f.exponents(1));
     out = w*f.smoothPart.feval(x);
