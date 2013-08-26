@@ -128,14 +128,8 @@ classdef singfun
             end
                
             % update the operator based on the values in exponents.
-            smoothOp = singfun.singOp2SmoothOp(op, obj.exponents);
-            
-            % Construct the smooth part of the SINGFUN object.
-            % [TODO]: This will be replaced by the SMOOTHFUN constructor
-            smoothPrefs = chebtech.pref('tech', 'chebtech2', 'extrapolate', false);
-            vscale = [];
-            hscale = [];
-            obj.smoothPart = chebtech.constructor(smoothOp, vscale, hscale, smoothPrefs);
+            smoothOp = singfun.singOp2SmoothOp(op, obj.exponents);                        
+            obj.smoothPart = singfun.constructSmoothPart(smoothOp, pref);
         end
     end
     
@@ -269,6 +263,8 @@ classdef singfun
 
     %% STATIC METHODS IMPLEMENTED BY THIS CLASS.
     methods ( Static = true )                                
+        % smooth fun constructor
+        s = constructSmoothPart( op, pref)
         
         % method for finding the order of singularities
         exponents = findSingExponents( op, singType )
