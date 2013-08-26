@@ -87,7 +87,7 @@ if ( isfield(prefs, classname) )  % It does, so either:
 else                              % No chebfun prefs found, so make some:
     %p.blowup      = false;
     p.eps         = 2^-52;
-    p.extrapolate = true;
+    p.extrapolate = false;
     p.domain      = [-1, 1];
     p.splitting   = false;
     % TODO: Chebfun should not know about 'degree'.
