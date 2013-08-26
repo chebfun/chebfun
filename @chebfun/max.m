@@ -1,5 +1,5 @@
 function [y, x] = max(f, flag)
-%MAX    Maximum value of a CHEBFUN.
+%MAX   Maximum value of a CHEBFUN.
 %   MAX(F) returns the maximum value of the CHEBFUN F.
 %
 %   [Y, X] = MAX(F) returns also point X such that F(X) = Y.
@@ -87,15 +87,15 @@ function h = maxOfTwoChebfuns(f, g)
 
 % If one is complex, use abs(f) and abs(g) to determine which function values to
 % keep. (experimental feature)
-if ( isreal(f) && isreal(g) && nargin < 3 )
+if ( isreal(f) && isreal(g) && (nargin < 3) )
 	S = sign(f - g);
 else
 	S = sign(abs(f) - abs(g));
 end
 
 % Heaviside function (0 where f > g, 1 where f < g);
-H = ((S+1)/2);
-notH = ((1-S)/2); % ~H.
+H = ((S + 1)/2);
+notH = ((1 - S)/2); % ~H.
 
 % Combine for output:
 h = H.*f + notH.*g;

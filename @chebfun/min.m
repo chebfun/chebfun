@@ -1,5 +1,5 @@
 function [y, x] = min(f, flag)
-%MIN    Minimum values of a CHEBFUN.
+%MIN   Minimum values of a CHEBFUN.
 %   MIN(F) returns the minimum value of the chebfun F.
 %
 %   [Y, X] = MIN(F) returns also point X such that F(X) = Y.
@@ -13,6 +13,8 @@ function [y, x] = min(f, flag)
 %   If F is array-valued, then the columns of X and Y correspond to the columns
 %   of F. NaNs are used to pad Y and X when the 'local' flag is used and the
 %   columns are not of the same length
+%
+%   [TODO]:  Document MIN(F, G) syntax.
 %
 % See also MAX, MINANDMAX, ROOTS.
 %
@@ -85,15 +87,15 @@ function h = minOfTwoChebfuns(f, g)
 
 % If one is complex, use abs(f) and abs(g) to determine which function values to
 % keep. (experimental feature)
-if ( isreal(f) && isreal(g) && nargin < 3 )
+if ( isreal(f) && isreal(g) && (nargin < 3) )
 	S = sign(f - g);
 else
 	S = sign(abs(f) - abs(g));
 end
 
 % Heaviside function (0 where f > g, 1 where f < g);
-H = ((S+1)/2);
-notH = ((1-S)/2); % ~H.
+H = ((S + 1)/2);
+notH = ((1 - S)/2); % ~H.
 
 % Combine for output:
 h = notH.*f + H.*g;

@@ -73,7 +73,7 @@ for j = 1:n
     for k = 1:numFuns-1
         jmp = get(funs{k+1}, 'lval') - get(funs{k}, 'rval');
         scl = 0.5*(vs(k) + vs(k+1,:));
-        if ( any( abs(jmp) > tol*scl ) )
+        if ( any(abs(jmp) > tol*scl) )
            newDeltas(k+1,:,:) = jmp;
         end
     end

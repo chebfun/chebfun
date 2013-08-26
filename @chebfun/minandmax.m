@@ -1,5 +1,5 @@
 function [y, x] = minandmax(f, flag)
-%MINANDMAX Minimum and maximum values of a CHEBFUN.
+%MINANDMAX   Minimum and maximum values of a CHEBFUN.
 %   Y = MINANDMAX(F) returns the range of the CHEBFUN F such that Y(1,1) =
 %   min(F) and Y(2,1) = max(F).
 %
@@ -32,7 +32,7 @@ end
 % Number of columns of an array-valued CHEBFUN:
 numCols = size(f.funs{1}, 2);
 
-if ( nargin > 1 && strcmpi(flag, 'local') )
+if ( (nargin > 1) && strcmpi(flag, 'local') )
     % Deal with local case:
     [y, x] = localMinAndMax(f);
     return
@@ -100,8 +100,8 @@ end
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% SMOOTH PART %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 dom = f.domain;
 nfuns = numel(f.funs);
-yy = [zeros(nfuns,2) ; y];
-xx = [zeros(nfuns,2) ; x];
+yy = [zeros(nfuns, 2) ; y];
+xx = [zeros(nfuns, 2) ; x];
 for k = 1:nfuns
     [yy(k,:), xx(k,:)] = minandmax(f.funs{k});
 end
