@@ -99,7 +99,7 @@ classdef smoothfun < onefun % (Abstract)
 end
 
 function f = funqui(vals)
-%FUNQUI    Rational interpolant of equispaced data.
+%FUNQUI   Rational interpolant of equispaced data.
 %   F = FUNQUI(VALS) constructs a function handle F to a rational interpolant of
 %   equispaced data in VALS in the interval [-1, 1]. It uses Floater-Hormann
 %   interpolation [Numer. Math. 107, 315-331 (2007)] with an adaptive choice 
@@ -139,17 +139,17 @@ if ( norm(fvals(rmIndex), inf) < 2*eps*norm(fvals, inf) )
     dOpt = 4;
 else
     % Find a near optimal d:
-    for d = 0:min(n-2, maxd) 
-        if ( d <= (n-5)/2 )
-            wl = abs( fhBaryWts(xrm, d, d+2) );
-            wr = flipud( abs( fhBaryWts(flipud(xrm), d, d+2) ) );
-            w = [wl; wl(end)*ones(n-5-2*d, 1); wr];
+    for d = 0:min(n - 2, maxd) 
+        if ( d <= (n - 5)/2 )
+            wl = abs(fhBaryWts(xrm, d, d + 2));
+            wr = flipud(abs(fhBaryWts(flipud(xrm), d, d + 2)));
+            w = [wl; wl(end)*ones(n - 5 - 2*d, 1); wr];
             w(1:2:end) = -w(1:2:end);
         else
             w = fhBaryWts(xrm, d);
         end
         yyrm = chebtech.bary(x(rmIndex), fvalsrm, xrm, w);
-        errs(d+1) = max( abs( yyrm - fvals(rmIndex) ) );
+        errs(d+1) = max(abs(yyrm - fvals(rmIndex)));
         if ( errs(d+1) > 1000*min(errs(1:d+1)) )
             errs(d+2:end) = [];
             break
@@ -161,9 +161,9 @@ else
 end
 
 % Compute FH weights:
-if ( dOpt <= (n+1)/2 ) 
-    wl = abs( fhBaryWts(x, dOpt, dOpt+1) );
-    w = [wl; wl(end)*ones(n-1-2*dOpt, 1); flipud(wl)];
+if ( dOpt <= (n + 1)/2 ) 
+    wl = abs(fhBaryWts(x, dOpt, dOpt + 1));
+    w = [wl; wl(end)*ones(n - 1 - 2*dOpt, 1); flipud(wl)];
     w(1:2:end) = -w(1:2:end);
 else
     w = fhBaryWts(x, dOpt);
@@ -181,20 +181,21 @@ if ( nargin < 3 )
     maxind = n + 1;
 end
 
-w = zeros(min(n+1, maxind), 1);
+w = zeros(min(n + 1, maxind), 1);
 
-for k = 1:min(n+1, maxind)
+for k = 1:min(n + 1, maxind)
    for m = k-d:k
-      if ( m < 1 || m > n + 1 - d )
+      if ( (m < 1) || (m > n + 1 - d) )
          continue
       end
       prod = 1;
       for j = m:m+d
          if ( j ~= k )
-            prod = prod/( x(k) - x(j) );
+            prod = prod/(x(k) - x(j));
          end
       end
       w(k) = w(k) + (-1)^m*prod;
    end
 end
+
 end
