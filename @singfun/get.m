@@ -13,6 +13,9 @@ switch prop
     case fieldnames(f)
         % Allow access to any of the properties of F via GET:
         out = f.(prop);
+    case fieldnames(f.smoothPart)
+        % Access to any of the properties of the smooth part of F:
+        out = f.smoothPart.(prop);
     otherwise
         error('CHEBFUN:SINGFUN:GET:propname', ...
             'Unknown property name ''%s'' for object of type SINGFUN.', prop);
