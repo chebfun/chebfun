@@ -1,12 +1,14 @@
 function g = besselj(nu, f, scale)
-%BESSELJ    Bessel function of first kind of a chebfun.
+%BESSELJ    Bessel function of first kind of a CHEBFUN.
 %   J = BESSELJ(NU, F) returns J_nu(F), i.e., is the Bessel function of the
 %   first kind, J_nu(Z) composed with the chebfun object F. The order NU need
-%   not be an integer, but must be a real scalar. The chebfun F can be complex
+%   not be an integer, but must be a real scalar. The CHEBFUN F can be complex.
 %
 %   J = BESSELJ(NU, F, SCALE) returns a scaled J_nu(F) specified by SCALE:
 %         0 - (default) is the same as besselj(NU, F)
 %         1 -  scales J_nu(F) by exp(-abs(imag(F)))
+%
+% See also AIRY, BESSELH, BESSLI, BESSELK, BESSELY.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
@@ -26,7 +28,7 @@ g = compose(f, @(x) h(nu, x));
 g = fnu.*g;
 
 % Scale (as described in help documentation):
-if ( nargin > 2 && scale == 1 )
+if ( nargin == 3 && scale == 1 )
     scl = exp(-abs(imag(f)));
     g = scl.*g;
 end
