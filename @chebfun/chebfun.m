@@ -210,7 +210,10 @@ classdef chebfun
         
         % Compare domains of two CHEBFUN objects.
         pass = domainCheck(f, g);
-        
+
+        % Retrieve and modify preferences for this class.
+        varargout = subsref(f, index);
+
         % Retrieve and modify preferences for this class.
         varargout = subsasgn(f, varargin);
 
