@@ -20,14 +20,9 @@ if ( ~isa(f, 'singfun') || ~isa(g, 'singfun') )
 end
 
 f.exponents = f.exponents + g.exponents;
-f.smoothPart = f.smoothPart*g.smoothPart;
+f.smoothPart = f.smoothPart.*g.smoothPart;
 
 % Call sum in singfun:
 out = sum(f);
-
-% Force real output if the inputs are equal:
-if ( isequal(f, g) )
-    out = real(out);
-end
 
 end
