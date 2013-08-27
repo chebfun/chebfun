@@ -11,10 +11,15 @@ function varargout = size(f, dim)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Number of funs:
+% Number of FUNs:
 numFuns = numel(f.funs);
+
 % Number of columns:
-numCols = size(f.funs{1}, 2);
+if ( numFuns ~= 0 )
+    numCols = size(f.funs{1}, 2);
+else
+    numCols = 0;
+end
 
 % Switch if F is transposed:
 if ( f.isTransposed )
@@ -23,7 +28,7 @@ if ( f.isTransposed )
     numCols = tmp;
 end
 
-% Parse the output for consistency with MATLAB
+% Parse the output for consistency with MATLAB:
 if ( nargout < 2 )
     if ( nargin == 1 )
         % Output a vector:

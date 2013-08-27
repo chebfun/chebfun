@@ -5,6 +5,10 @@ function out = length(f)
 %
 % See also CHEBFUN/SIZE.
 
-out = sum(cellfun(@length, f.funs));
+if ( numel(f.funs) == 0 )
+    out = 0;
+else
+    out = sum(cellfun(@length, f.funs));
+end
 
 end
