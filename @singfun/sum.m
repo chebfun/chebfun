@@ -83,12 +83,15 @@ if ( isa(f.smoothPart, 'chebtech') )
         
         % Compute the hypergeometric function related to the modified moments:
         M = zeros(1,n);
-        
-        % Sister Celine's three-term recurrence:
         M(1) = 1;
-        M(2) = c5/c4;
-        for j = 3:n
-            M(j) = (2*c5*M(j-1)+(j-2-c4)*M(j-2))/(c3+j-1);
+        
+        if ( n > 1 )
+            M(2) = c5/c4;
+            
+            % Sister Celine's three-term recurrence:
+            for j = 3:n
+                M(j) = (2*c5*M(j-1)+(j-2-c4)*M(j-2))/(c3+j-1);
+            end
         end
         
         % Compute the modified moments:
