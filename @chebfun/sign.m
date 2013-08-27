@@ -5,6 +5,8 @@ function f = sign(f, varargin)
 %   0 in the interval where F(x) = 0. Breakpoints in G are introduced at zeros
 %   of F.
 %
+%   For the nonzero elements of complex F, sign(F) = F.
+%
 % See also ABS, HEAVISIDE, ROOTS.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
