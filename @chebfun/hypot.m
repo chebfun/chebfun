@@ -1,15 +1,14 @@
 function H = hypot(f, g, pref)
-%HYPOT  Robust computation of the square root of the sum of squares.
-%   H = HYPOT(F, G) returns SQRT(ABS(F).^2 + ABS(G).^2) for two chebfun objects
-%   F and G (or a chebfun and a double) carefully computed to avoid underflow
+%HYPOT   Robust computation of the square root of the sum of squares.
+%   H = HYPOT(F, G) returns SQRT(ABS(F).^2 + ABS(G).^2) for two CHEBFUN objects
+%   F and G (or a CHEBFUN and a double) carefully computed to avoid underflow
 %   and overflow.
 %
 % Example:
-%        x = chebfun('x', [-1, 1]);
-%        f = 3*[1e300*x 1e-300*x];
-%        g = 4*[1e300*x 1e-300*x];
-%        % h1 = sqrt(f.^2 + g.^2) % This will fail because of overflow
-%        h2 = hypot(f, g)
+%       f = chebfun(@(x) 3*[1e300*x 1e-300*x]);
+%       g = chebfun(@(x) 4*[1e300*x 1e-300*x]);
+%       % h1 = sqrt(f.^2 + g.^2) % This will fail because of overflow
+%       h2 = hypot(f, g)
 %
 % See also ABS, NORM, SQRT.
 
@@ -23,10 +22,10 @@ end
 
 % Insert breaks at the roots:
 if ( isa(f, 'chebfun') )
-    f = rootsAtBreaks(f, pref);
+    f = breaksAtRoots(f);
 end
 if ( isa(g, 'chebfun') )
-    g = rootsAtBreaks(g, pref);
+    g = breaksAtRoots(g);
 end
 
 % Call compose:
@@ -34,27 +33,34 @@ H = compose(f, @hypot, g, pref);
 
 end
 
-function f = rootsAtBreaks(f, pref)
+function f = breaksAtRoots(f)
 % Insert breaks whre the function f is zero (with some tolerance).
 
-% Abs is singular at roots, so locate these:
+% [TODO]: This is used in other places (such as ABS) and need de-duplicating.
+
+% Locate roots:
 r = roots(f, 'nozerofun');
-% Avoid adding new breaks where not needed:
-if ( ~isempty(r) )
 
-    % Choose a tolerance:
-    rtol = 100*pref.chebfun.eps.*max(min(diff(f.domain)), 1);
+% Since each column of an array-valued CHEBFUN must have the same breakpoints,
+% we simply take unique(r(:)) and remove any remaining NaNs.
+r = unique(r(:));
+r(isnan(r)) = [];
 
-    % Remove if sufficiently close to an existing break points:
-    [rem, ignored] = find(abs(bsxfun(@minus, r , f.domain)) < rtol); %#ok<NASGU>
-    r(rem) = [];
+% Discard any roots which are closer than the accuracy of the CHEBFUN:
+el = epslevel(f);
+vs = min(vscale(f),1);
+hs = hscale(f);
+rtol1 = el*hs*vs;
+r([false ; diff(r) < rtol1]) = [];
 
-end
+% Avoid introducing new breakpoints close to an existing ones:
+rtol2 = el*vs*max(min(diff(f.domain)), 1);
+r(any(abs(bsxfun(@minus, r, f.domain)) < rtol2, 2)) = [];
 
 % Add new breaks if required:
 if ( ~isempty(r) )
     % Get the domain with the new breakpoints: (union is not required, by above)
-    dom = sort([f.domain, r']);
+    dom = unique([f.domain, r.']);
 
     % Introduce these breakpoints to f:
     f = restrict(f, dom);
