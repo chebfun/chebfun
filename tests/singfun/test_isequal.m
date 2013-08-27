@@ -1,4 +1,4 @@
-% Test file for singfun/isempty.m
+% Test file for singfun/isequal.m
 
 function pass = test_isequal(pref)
 
@@ -34,7 +34,7 @@ pass(3) = isequal(f,g);
 %%
 % create two different non-zero SINGFUN
 f = singfun(@(x) 1./(1+x), [-1, 0], {'pole', 'none'} );
-g = singfun(@(x) 1./(1+x), [-1.0001, 0], {'sing', 'none'} );
+g = singfun(@(x) 1./(1+x), [-1.8, 0], {'sing', 'none'} );
 
 % Test
 pass(4) = ~isequal(f,g);

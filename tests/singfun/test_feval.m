@@ -12,7 +12,7 @@ seedRNG(786);
 x = -1 + 2*rand(100, 1);
 
 pass = zeros(1, 4); % Pre-allocate pass vector
-tol = 100*pref.eps;
+tol = 500*pref.eps;
 
 %% 
 % Check feval on empty set of points

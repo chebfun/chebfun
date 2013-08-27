@@ -111,7 +111,7 @@ for j = 1: NumInts
     absy(absy < 1) = 1;
     
     % check the error
-    result(j) = all( abs(y_exact - y_approx) < 1000*absy*tol );
+    result(j) = all( abs(y_exact - y_approx) < 1e4*absy*tol );
 end
 
 result = all(result);

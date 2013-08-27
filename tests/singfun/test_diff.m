@@ -1,7 +1,4 @@
 % Test file for singfun/diff.m
-% NOTE: This test is slow due to Test 5, since there plus@singfun consumes most
-% of the computing time. The singfun plus call feval@singfun and therefore
-% bary@chebtech frequently which is a naive O(N^2) implementation.   
 
 function pass = test_diff(pref)
 

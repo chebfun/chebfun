@@ -52,7 +52,7 @@ pass(4) = (norm(err, inf) < tol*normest(f));
 % a combination of fractional pole and fractional root.
 f = singfun(@(x) (1+x).^b.*sin(x).*(1-x).^c, [b c], {'sing', 'sing'}, pref);
 r = roots(f);
-r_exact = [0 1];
+r_exact = [0; 1];
 err = r - r_exact;
 pass(5) = (norm(err, inf) < tol*normest(f));
 
