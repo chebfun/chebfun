@@ -13,6 +13,8 @@ function fx = feval(f, x, varargin)
 %   using left-hand limits to evaluate F at any breakpoints. FEVAL(F, X,
 %   'right') and FEVAL(F, X, '+') do the same but using right-hand limits.
 %
+%   F(X), F('left'), F(X, 'left'), etc, are equivalent syntaxes. 
+%
 %   Example:
 %     f = chebfun(@(x) 1./(1 + 25*x.^2));
 %     y = feval(f, linspace(-1, 1, 100).');
