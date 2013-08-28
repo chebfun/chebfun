@@ -37,7 +37,7 @@ pass(3) = norm(feval(f,x) - feval(fh,x), inf) < tol;
 a = rand();
 b = rand();
 fh = @(x) sin(cos(10*x.^2)).*(1+x).^a.*(1-x).^b;
-f = singfun(fh, [a, b], {'branch', 'branch'});
+f = singfun(fh, [a, b], {'root', 'root'});
 pass(4) = norm(feval(f,x) - feval(fh,x), inf) < tol;
 
 end
