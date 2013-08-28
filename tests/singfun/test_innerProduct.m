@@ -21,7 +21,7 @@ q = -0.3;
 % Pre-allocate pass matrix
 pass = zeros(1, 7);
 
-% fractional root at the left endpoint
+% fractional pole at the left endpoint
 f = singfun(@(x) (1+x).^p, [p 0], {'sing', 'none'}, pref);
 g = singfun(@(x) (1+x).^q, [q 0], {'sing', 'none'}, pref);
 I = innerProduct(f,g);
