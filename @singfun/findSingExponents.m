@@ -17,7 +17,7 @@ singEnd = {'left', 'right'};
 for k = 1:2
     if ( strcmpi( singType{k}, 'pole') )
         exponents(k) = singfun.findPoleOrder(op, singEnd{k});
-    elseif ( any(strcmpi(singType{k}, {'sing', 'branch'})) )
+    elseif ( any(strcmpi(singType{k}, {'sing', 'root'})) )
         exponents(k) = singfun.findSingOrder(op, singEnd{k});
     elseif ( strcmpi( singType{k}, 'none' ) )
         exponents(k) = 0;

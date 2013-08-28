@@ -3,7 +3,7 @@ function f = classifyExponents(f)
 %
 %   Based on the values in F.EXPONENTS, this functions decides the type that 
 %   should be assigned to F.SINGTYPE. The valid types can be 'sing', 'pole', 
-%   'branch' or 'none'.
+%   'root' or 'none'.
 %
 % See also SINGFUN/CHECKSINGTYPES
 
@@ -23,8 +23,8 @@ for k = 1:2
             % positive integer exponent, i.e. no singularity
             f.singType{k} = 'none';
         else
-            % the function is bounded but there is a branch cut singularity
-            f.singType{k} = 'branch';
+            % the function is bounded but there is a root of fractional order.
+            f.singType{k} = 'root';
         end
     else
         % the exponents are negative
