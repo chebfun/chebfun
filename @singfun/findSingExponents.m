@@ -12,6 +12,7 @@ function exponents = findSingExponents(op, singType)
 
 %%
 exponents = zeros(1,2);
+
 % loop through each end
 singEnd = {'left', 'right'};
 for k = 1:2
