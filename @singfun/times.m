@@ -46,20 +46,18 @@ s.exponents = f.exponents + g.exponents;
 %%
 % Check if after multiplication the type of singularity has changed or if 
 % it can be removed.
-% [TODO]: Since exponents are negative, it's impossible to remove a 
+% [TODO]: Since exponents are negative, it's impossible to remove a
 % singularity after mutiplying two SINGFUNS?
 tol = singfun.pref.singfun.eps;
 % loop through each end
 for k = 1:2
     if ( s.exponents(k) < -100*tol )
-        s.isSingEnd(k) = 1;
         if ( abs(s.exponents(k) - round(s.exponents(k))) < 100*tol )
             s.singType{k} = 'pole';
         else
             s.singType{k} = 'sing';
         end
     else
-        s.isSingEnd(k) = 0;
         s.singType{k} = 'none';
     end
 end
