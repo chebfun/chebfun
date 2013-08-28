@@ -56,11 +56,15 @@ if ( dim == 2 )
     % Differentiate coefficients across dim:
     f.coeffs = diff(f.coeffs, k, dim);
     
-    % Tidy up an empty result:
     if ( isempty(f.values) )
+        % Tidy up an empty result:
         f = f.make(); % Make an empty CHEBTECH.
+    else
+        % Otherwise, update vscale and epslevel.
+        % [TODO]:  epslevel stays the same?
+        f.vscale = max(abs(f.values), [], 1);
     end
-    
+
     return    
 end
 
