@@ -177,8 +177,17 @@ classdef chebfun
         % Edge detector.
         [edge, vscale] = detectEdge(op, domain, hscale, vscale, derHandle);
         
+        % Interpolate data:
+        f = interp1(x, y, method);
+        
         % Determine values of chebfun at breakpoints.
         vals = jumpVals(funs, ends, op);
+        
+        % Cubic Hermite interpolation:
+        f = pchip(x, y, method);
+        
+        % Cubic spline interpolant:
+        f = spline(x, y, d);
         
     end
     
