@@ -66,23 +66,24 @@ end
 y = [inf, -inf];
 x = [inf, inf];
 
-% Only lowest-order nontrivial impulses are relevant:
-for k = 1:numel(f.funs)
-    % Locate lowest-order nontrivial impulse:
-    indx = find(f.impulses(k,1,2:end), 1);
-    % Throw away higher-order impulses:
-    f.impulses(k,1,indx+2:end) = 0;
+% Determine the strength of the first nontrivial impulse at each breakpoint:
+impulseStrengths = zeros(numel(f.funs) + 1, 1);
+for k = 1:(numel(f.funs) + 1)
+    indx = find(f.impulses(k,1,2:end), 1, 'first');
+    if ( ~isempty(indx) )
+    	impulseStrengths(k) = f.impulses(k,1,indx+1);
+    end
 end
 
-% Negative impulse, return y(1) = -inf
-ind = find(min(f.impulses(:,1,2:end), [], 1) < 0 , 1, 'first');
+% If we have a negative nontrivial impulse, return y(1) = -inf:
+ind = find(impulseStrengths < 0, 1, 'first');
 if ( ~isempty(ind) )
     y(1) = -inf;
     x(1) = f.domain(ind);
 end
 
-% Positive impulse, return y(2) = inf
-ind = find(max(f.impulses(:,1,2:end), [], 1) > 0, 1, 'first');
+% If we have a positive nontrivial impulse, return y(2) = inf:
+ind = find(impulseStrengths > 0, 1, 'first');
 if ( ~isempty(ind) )
     y(2) = inf;
     x(2) = f.domain(ind);
