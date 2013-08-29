@@ -15,6 +15,8 @@ function g = mat2cell(f, M, N)
 % Example:
 %   f = chebfun(@(x) [sin(x), cos(x), exp(x), x], [0, pi])
 %   g = mat2cell(f, 1, [1, 2, 1])
+%
+% See also NUM2CELL.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -72,6 +74,11 @@ for k = 1:numel(N)
         if ( all(all(g{k}.impulses(:,:,n) == 0)) )
             g{k}.impulses(:,:,n) = [];
         end
+    end
+    
+    % Deal with row CHEBFUN objects:
+    if ( f.isTransposed )
+        g{k} = g{k}.';
     end
 end
 
