@@ -18,7 +18,7 @@ function g = besselh(nu, k, f, scale)
 %         besselh(nu,1,z) = besselj(nu,z) + i*bessely(nu,z)
 %         besselh(nu,2,z) = besselj(nu,z) - i*bessely(nu,z)
 %
-% See also AIRY, BESSLI, BESSELJ, BESSELK, BESSELY.
+% See also AIRY, BESSELI, BESSELJ, BESSELK, BESSELY.
 %
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.

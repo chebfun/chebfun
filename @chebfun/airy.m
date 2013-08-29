@@ -7,10 +7,11 @@ function g = airy(K, f, scale)
 %     1 - returns the derivative, Ai'(Z)
 %     2 - returns the Airy function of the second kind, Bi(Z)
 %     3 - returns the derivative, Bi'(Z)
+%
 %   AIRY(K, F, SCALE) returns a scaled airy(K, F) specified by SCALE:
 %     0 - (default) is that same as airy(K, Z)
-%     1 - returns airy(K,Z) scaled by EXP(2/3*F.^(3/2)) for K = 0,1,
-%         and scaled by EXP(-ABS(2/3.*REAL(F.^(3/2)))) for K = 2,3.
+%     1 - returns airy(K, F) scaled by EXP(2/3*F.^(3/2)) for K = 0, 1,
+%         and scaled by EXP(-ABS(2/3.*REAL(F.^(3/2)))) for K = 2, 3.
 %
 % See also BESSELJ.
 
@@ -27,9 +28,7 @@ if ( nargin < 3 )
 end
 
 % The standard Airy function:
-% A = @(x) real(airy(K, x));
-A = @(x) airy(K, x);
-g = compose(f, @(x) A(x));
+g = compose(f, @(x) airy(K, x));
 
 if ( scale == 0 )
     % Standard case (no scaling).

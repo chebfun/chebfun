@@ -36,7 +36,7 @@ end
 function f = breaksAtRoots(f)
 % Insert breaks whre the function f is zero (with some tolerance).
 
-% [TODO]: This is used in other places (such as ABS) and need de-duplicating.
+% [TODO]: This is used in other places (such as ABS) and needs de-duplicating.
 
 % Locate roots:
 r = roots(f, 'nozerofun');

@@ -1,12 +1,13 @@
 function p = angle(f)
 %ANGLE  Chebfun phase angle.
-%   ANGLE(H) returns the phase angles, in radians, of a complex-valued chebfun.
+%   ANGLE(H) returns the phase angles, in radians, of a complex-valued CHEBFUN.
 %
-% See also ANGLE, CHEBFUN/ABS, CHEBFUN/UNWRAP.
+% See also ABS, UNWRAP, ATAN2.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
+% [TODO]: This requires ATAN2()!
 p = atan2(imag(f), real(f));
 
 end

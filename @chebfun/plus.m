@@ -19,13 +19,15 @@ elseif ( isempty(g) )       % chebfun + []
 
 elseif ( isnumeric(g) )     % chebfun + double
 
-    % Add g to the impulses:
-    f.impulses = f.impulses + g;
-
     % Add g to the funs:
     for k = 1:numel(f.funs)
         f.funs{k} = f.funs{k} + g;
     end
+    
+    % Add g to the impulses:
+    g = repmat(g, size(f.impulses, 1), size(f.impulses, 2)./length(g));
+    f.impulses = f.impulses + g;
+    
     return
 
 elseif ( ~isa(g, 'chebfun') ) % chebfun * ???

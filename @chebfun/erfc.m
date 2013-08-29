@@ -3,7 +3,7 @@ function g = erfc(f, pref)
 %   Y = ERFC(X) is the complementary error function for the chebfun X. X must be
 %   real. The complementary error function is defined as:
 %       ERFC(X)(s) = 2/sqrt(pi) * integral from X(s) to inf of exp(-t^2) dt.
-%               = 1 - ERF(X)(s).
+%                  = 1 - ERF(X)(s).
 %
 % See also ERF, ERFCX, ERFINV, ERFCINV.
 

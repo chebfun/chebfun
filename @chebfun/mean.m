@@ -1,7 +1,7 @@
 function h = mean(f, g)
-%MEAN    Average or mean value of chebfun.
-%   MEAN(F) is the mean value of the chebfun F.
-%   MEAN(F, G) is the average chebfun between chebfuns F and G.
+%MEAN    Average or mean value of a CHEBFUN.
+%   MEAN(F) is the mean value of the CHEBFUN F.
+%   MEAN(F, G) is the average chebfun between CHEBFUN objectys F and G.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
@@ -11,14 +11,14 @@ if ( nargin == 1 )
     if ( ~f.isTransposed )
 
         % Check to see if the domain is unbounded:
-        infEnds = isinf(f.domain([1 end]));
+        infEnds = isinf(f.domain([1, end]));
 
         if ( ~any(infEnds) )
             % On a bounded domain, things are easy:
-            h = sum(f)/diff(f.domain([1 end]));
+            h = sum(f)/diff(f.domain([1, end]));
 
         elseif ( all(infEnds == [1, 0]) )
-            % If unbounded to the left, take he left impulse as the mean:
+            % If unbounded to the left, take the left impulse as the mean:
             h = f.impulses(1);
 
         elseif ( all(infEnds == [0, 1]) )
