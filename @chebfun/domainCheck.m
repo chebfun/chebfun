@@ -1,8 +1,8 @@
 function pass = domainCheck(f, g)
 %DOMAINCHECK   True if the domains of two CHEBFUN objects are the same.
 %   DOMAINCHECK(F, G) returns TRUE if the endpoints of the domains of the two
-%   CHEBFUN objects F and G coincide up to a tolerance depending on their horizontal
-%   scales or if both F and G are empty CHEBFUN objects.
+%   CHEBFUN objects F and G coincide up to a tolerance depending on their
+%   horizontal scales or if both F and G are empty CHEBFUN objects.
 %
 %   Alternatively, one of F or G may be a two-vector, in which case its values
 %   are treated as if they were F.domain([1, end]) or G.domain([1, end]),
@@ -16,7 +16,7 @@ function pass = domainCheck(f, g)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % The CHEBFUN class uses this function internally to compare the domains of
 % CHEBFUN objects before attempting to perform operations on multiple CHEBFUN
-% objects that require the CHEBFUNs object to reside on the same interval.
+% objects that require the CHEBFUN objects to reside on the same interval.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 fIsEmpty = isempty(f);
