@@ -42,7 +42,7 @@ end
 end
 
 function y = mysinc(x, varargin)
-% Matlab's sinc exists on ly in a toolbox. Use it if it's there.
+% MATLAB's sinc() exists only in a toolbox. Use it if it's there.
     try
         y = sinc(x, varargin{:});
     catch
