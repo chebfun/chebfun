@@ -5,7 +5,7 @@ function g = coth(f, pref)
 %   COTH(F, PREF) does the same but uses the preference structure PREF when
 %   computing the composition.
 %
-% See also COT.
+% See also ACOTH.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.

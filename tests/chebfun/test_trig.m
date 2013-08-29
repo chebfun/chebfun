@@ -17,7 +17,9 @@ xr = 2 * rand(1000, 1) - 1;
 trigFunctions = {@acos, @acosd, @acosh, @acot, @acotd, @acoth, @acsc, ...
     @acscd, @acsch, @asec, @asecd, @asech, @asin, @asind, @asinh, @atan, ...
     @atand, @atanh, @cos, @cosd, @cosh, @cot, @cotd, @coth, @csc, @cscd, ...
-    @csch, @sec, @secd, @sech, @sin, @sind, @sinh, @tan, @tand, @tanh, @sinc};
+    @csch, @sec, @secd, @sech, @sin, @sind, @sinh, @tan, @tand, @tanh, @mysinc};
+
+% [TODO]: Add tests for ATAN2() and ATAN2D().
 
 % Preallocate pass matrix.
 pass = zeros(1, numel(trigFunctions));
@@ -29,7 +31,7 @@ base_op = @(x) sign(x - 0.1).*abs(x + 0.2).*sin(3*x)*(pi/16) + pi/8;
 f = chebfun(base_op, [-1 -0.2 0.1 1], pref);
 
 % Do the tests.
-for (k = 1:1:numel(trigFunctions))
+for k = 1:1:numel(trigFunctions)
     trig_op = trigFunctions{k};
     g_exact = @(x) trig_op(base_op(x));
     g = trig_op(f, pref);
@@ -38,3 +40,13 @@ for (k = 1:1:numel(trigFunctions))
 end
 
 end
+
+function y = mysinc(x, varargin)
+% Matlab's sinc exists on ly in a toolbox. Use it if it's there.
+    try
+        y = sinc(x, varargin{:});
+    catch
+        y = sin(pi*x)./(pi*x);
+    end
+end
+

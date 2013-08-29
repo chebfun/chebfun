@@ -5,7 +5,7 @@ function g = atand(f, pref)
 %   ATAN(F, PREF) does the same but uses the preference structure PREF when
 %   computing the composition.
 %
-% See also TAND, ATAN2D, ATAN..
+% See also TAND, ATAN2D, ATAN.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org for Chebfun information.
