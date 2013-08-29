@@ -11,7 +11,7 @@ end
 f = chebfun();
 g = chebfun();
 [f2, g2] = overlap(f, g);
-pass(1) = isempty(f) && isempty(g);
+pass(1) = isempty(f2) && isempty(g2);
 
 % Check behavior for input chebfuns with differing domains.
 f = chebfun(@sin, [-1 -.5 0 1], pref);
