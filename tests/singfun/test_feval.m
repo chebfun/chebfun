@@ -1,4 +1,4 @@
-% Test file for singfun/plus.m
+% Test file for singfun/feval.m
 
 function pass = test_feval(pref)
 

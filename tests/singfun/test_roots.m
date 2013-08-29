@@ -21,14 +21,14 @@ pass = zeros(1, 6);
 
 % fractional root at the left endpoint and the smooth part has no roots in 
 % [-1 1].
-f = singfun(@(x) (1+x).^a.*exp(x), [a 0], {'sing', 'none'}, pref);
+f = singfun(@(x) (1+x).^a.*exp(x), [a 0], {'root', 'none'}, pref);
 r = roots(f);
 r_exact = -1;
 err = r - r_exact;
 pass(1) = (norm(err, inf) < tol*normest(f));
 
-% fractional pole at the left endpoint and where the left endpoint is not a
-% root, even though the smooth part has a root there.
+% fractional pole at the left endpoint and note that the left endpoint is 
+% not a root, even though the smooth part has a root there.
 f = singfun(@(x) (1+x).^d.*sin(50*pi*x), [d+1 0], {'sing', 'none'}, pref);
 r = roots(f);
 r_exact = (-1+1/50:(1/50):1).';
@@ -42,15 +42,15 @@ r_exact = 1;
 err = r - r_exact;
 pass(3) = (norm(err, inf) < tol*normest(f));
 
-% no fractional pole but a root at the left endpoint.
-f = singfun(@(x) (1-x).^b.*(exp(x)-exp(1)), [0 1+b], {'none', 'sing'}, pref);
+% no fractional pole but a root at the right endpoint.
+f = singfun(@(x) (1-x).^b.*(exp(x)-exp(1)), [0 1+b], {'none', 'root'}, pref);
 r = roots(f);
 r_exact = 1;
 err = r - r_exact;
 pass(4) = (norm(err, inf) < tol*normest(f));
 
 % a combination of fractional pole and fractional root.
-f = singfun(@(x) (1+x).^b.*sin(x).*(1-x).^c, [b c], {'sing', 'sing'}, pref);
+f = singfun(@(x) (1+x).^b.*sin(x).*(1-x).^c, [b c], {'sing', 'root'}, pref);
 r = roots(f);
 r_exact = [0; 1];
 err = r - r_exact;

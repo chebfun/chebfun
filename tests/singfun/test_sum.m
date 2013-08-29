@@ -20,7 +20,7 @@ d = -1.28;
 pass = zeros(1, 7);
 
 % fractional root at the left endpoint
-f = singfun(@(x) (1+x).^a.*exp(x), [a 0], {'sing', 'none'}, pref);
+f = singfun(@(x) (1+x).^a.*exp(x), [a 0], {'root', 'none'}, pref);
 I = sum(f);
 I_exact = 2.7263886326217359442;
 
@@ -32,7 +32,7 @@ I = sum(f);
 pass(2) = ( isinf(I) && sign(I) == sign(sin(-1)) );
 
 % fractional root at the right endpoint
-f = singfun(@(x) (1-x).^c.*cos(x), [0 c], {'none', 'sing'}, pref);
+f = singfun(@(x) (1-x).^c.*cos(x), [0 c], {'none', 'root'}, pref);
 I = sum(f);
 I_exact = 1.7756234306626192717;
 pass(3) = ( abs(I-I_exact) < tol*abs(I_exact) );
@@ -44,7 +44,7 @@ I_exact = 1.2101935306745953520;
 pass(4) = ( abs(I-I_exact) < tol*abs(I_exact) );
 
 % a combination of fractional pole and fractional root
-f = singfun(@(x) (1+x).^b.*sin(x).*(1-x).^c, [b c], {'sing', 'sing'}, pref);
+f = singfun(@(x) (1+x).^b.*sin(x).*(1-x).^c, [b c], {'sing', 'root'}, pref);
 I = sum(f);
 I_exact = -3.8210796477539148513;
 pass(5) = ( abs(I-I_exact) < tol*abs(I_exact) );

@@ -37,8 +37,8 @@ err = vals_h - vals_exact;
 pass(1) = all( abs(err) < tol*abs(vals_exact) );
 
 % root at the left endpoint
-f = singfun(@(x) (1+x).^c.*sin(x), [c 0], {'sing', 'none'}, pref);
-g = singfun(@(x) (1+x).^(2*c), [2*c 0], {'sing', 'none'}, pref);
+f = singfun(@(x) (1+x).^c.*sin(x), [c 0], {'root', 'none'}, pref);
+g = singfun(@(x) (1+x).^(2*c), [2*c 0], {'root', 'none'}, pref);
 h = f.*g;
 vals_h = feval(h, x);
 h_exact = @(x) (1+x).^(3*c).*sin(x);
@@ -47,8 +47,8 @@ err = vals_h - vals_exact;
 pass(2) = all( abs(err) < tol*abs(vals_exact) );
 
 % fractional root at the right endpoint
-f = singfun(@(x) (1-x).^c.*cos(x), [0 c], {'none', 'sing'}, pref);
-g = singfun(@(x) (1-x).^a.*cos(x), [0 a], {'none', 'sing'}, pref);
+f = singfun(@(x) (1-x).^c.*cos(x), [0 c], {'none', 'root'}, pref);
+g = singfun(@(x) (1-x).^a.*cos(x), [0 a], {'none', 'root'}, pref);
 h = f.*g;
 vals_h = feval(h, x);
 h_exact = @(x) (1-x).^(a+c).*(cos(x).^2);
@@ -56,7 +56,7 @@ vals_exact = feval(h_exact, x);
 err = vals_h - vals_exact;
 pass(3) = all( abs(err) < tol*abs(vals_exact) );
 
-% fractional pole at the left endpoint
+% fractional pole at the right endpoint
 f = singfun(@(x) (1-x).^b.*(x.^5), [0 b], {'none', 'sing'}, pref);
 g = singfun(@(x) exp(x).*sin(5*x), [0 0], {'none', 'none'}, pref);
 h = f.*g;
@@ -68,7 +68,7 @@ pass(4) = all( abs(err) < tol );
 
 % a combination of fractional pole and fractional root
 f = singfun(@(x) (1+x).^b.*sin(x), [b 0], {'sing', 'none'}, pref);
-g = singfun(@(x) sin(2*x).*(1-x).^c, [0 c], {'none', 'sing'}, pref);
+g = singfun(@(x) sin(2*x).*(1-x).^c, [0 c], {'none', 'root'}, pref);
 h = f.*g;
 vals_h = feval(h, x);
 h_exact = @(x) (1+x).^b.*sin(x).*sin(2*x).*(1-x).^c;
@@ -87,7 +87,6 @@ err = vals_h - vals_exact;
 pass(6) = all( abs(err) < tol*abs(vals_exact) );
 
 % Check the trivial case with both vanishing alpha and beta.
-
 f = singfun(@(x) exp(x).*x.^3.*sin(2*x), [0 0], {'none', 'none'}, pref);
 g = singfun(@(x) exp(1-x).^(3/2), [0 0], {'none', 'none'}, pref);
 h = f.*g;

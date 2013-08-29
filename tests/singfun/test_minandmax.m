@@ -20,7 +20,7 @@ d = -1.28;
 pass = zeros(1, 5);
 
 % fractional root at the left endpoint and the function value is bounded.
-f = singfun(@(x) (1+x).^a.*exp(x), [a 0], {'sing', 'none'}, pref);
+f = singfun(@(x) (1+x).^a.*exp(x), [a 0], {'root', 'none'}, pref);
 [y, x] = minandmax(f);
 y_exact = [0; 2^a*exp(1)];
 x_exact = [-1; 1];
@@ -39,7 +39,7 @@ err_x = x - x_exact;
 pass(2) = (norm(err_x, inf) < tol*normest(f) && abs(err_y) < tol*normest(f)) && (y(2) == Inf);
 
 % fractional root at the right endpoint and the smooth part has no roots in [-1 1].
-f = singfun(@(x) (1-x).^c.*cos(x), [0 c], {'none', 'sing'}, pref);
+f = singfun(@(x) (1-x).^c.*cos(x), [0 c], {'none', 'root'}, pref);
 [y, x] = minandmax(f);
 % The exact maximum value and its location is found using Mathematica.
 y_exact = [0; 1.511345730595468];
@@ -49,7 +49,7 @@ x_err = x - x_exact;
 pass(3) = (norm(y_err, inf) < tol*normest(f) && norm(x_err, inf) < tol*normest(f));
 
 % no fractional pole but a root at the left endpoint.
-f = singfun(@(x) (1-x).^b.*(exp(x)-exp(1)), [0 1+b], {'none', 'sing'}, pref);
+f = singfun(@(x) (1-x).^b.*(exp(x)-exp(1)), [0 1+b], {'none', 'root'}, pref);
 [y, x] = minandmax(f);
 % The following exact answers are obtained using Mathematica.
 y_exact = [-1.727141310139675; 0];
@@ -59,7 +59,7 @@ x_err = x - x_exact;
 pass(4) = (norm(y_err, inf) < tol*normest(f) && norm(x_err, inf) < 5*tol*normest(f));
 
 % a combination of fractional pole and fractional root.
-f = singfun(@(x) (1+x).^b.*sin(x).*(1-x).^c, [b c], {'sing', 'sing'}, pref);
+f = singfun(@(x) (1+x).^b.*sin(x).*(1-x).^c, [b c], {'sing', 'root'}, pref);
 [y, x] = minandmax(f);
 % The exact maximum value and its location is found using Mathematica.
 y_exact = [-Inf; 0.1636938399751735];

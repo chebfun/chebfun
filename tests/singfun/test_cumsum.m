@@ -46,7 +46,7 @@ err = vals_g - vals_exact;
 pass(2) = (norm(err, inf) < tol*norm(vals_exact, inf));
 
 % fractional root at the left endpoint
-f = singfun(@(x) (1+x).^a, [a 0], {'sing', 'none'}, pref);
+f = singfun(@(x) (1+x).^a, [a 0], {'root', 'none'}, pref);
 g = cumsum(f);
 vals_g = feval(g, x); 
 g_exact = @(x) (1+x).^(a+1)./(a+1);

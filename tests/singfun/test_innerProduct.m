@@ -36,8 +36,8 @@ I = innerProduct(f,g);
 pass(2) = ( isinf(I) && sign(I) == sign(sin(-1)) );
 
 % fractional root at the right endpoint
-f = singfun(@(x) (1-x).^c.*cos(x), [0 c], {'none', 'sing'}, pref);
-g = singfun(@(x) (1-x).^a.*cos(x), [0 a], {'none', 'sing'}, pref);
+f = singfun(@(x) (1-x).^c.*cos(x), [0 c], {'none', 'root'}, pref);
+g = singfun(@(x) (1-x).^a.*cos(x), [0 a], {'none', 'root'}, pref);
 I = innerProduct(f,g);
 I_exact = 1.76743783779682186471;
 pass(3) = ( abs(I-I_exact) < tol*abs(I_exact) );
@@ -51,7 +51,7 @@ pass(4) = ( abs(I-I_exact) < tol*abs(I_exact) );
 
 % a combination of fractional pole and fractional root
 f = singfun(@(x) (1+x).^b.*sin(x), [b 0], {'sing', 'none'}, pref);
-g = singfun(@(x) sin(2*x).*(1-x).^c, [0 c], {'none', 'sing'}, pref);
+g = singfun(@(x) sin(2*x).*(1-x).^c, [0 c], {'none', 'root'}, pref);
 I = innerProduct(f,g);
 I_exact = 3.703689983503164674;
 pass(5) = ( abs(I-I_exact) < tol*abs(I_exact) );
@@ -64,7 +64,6 @@ I_exact = -0.378959054771939734525;
 pass(6) = ( abs(I-I_exact) < tol );
 
 % Check the trivial case with both vanishing alpha and beta.
-
 f = singfun(@(x) exp(x).*x.^3.*sin(2*x), [0 0], {'none', 'none'}, pref);
 g = singfun(@(x) exp(1-x).^(3/2), [0 0], {'none', 'none'}, pref);
 I = innerProduct(f,g);

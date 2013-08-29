@@ -36,7 +36,7 @@ pass(2) = test_spotcheck_restrict(f, op, [-1 0.3], [1, 0], pref);
 % We restrict f to multiple subintervals.
 
 op  =@(x) (1-x).^c.*cos(x);
-f = singfun(op, [0 c], {'none', 'sing'}, pref);
+f = singfun(op, [0 c], {'none', 'root'}, pref);
 pass(3) = test_spotcheck_restrict(f, op, [-1 -0.7 1], [0, 0], pref);
 
 % fractional pole at the right endpoint. We restrict f to multiple
@@ -55,7 +55,7 @@ pass(5) = test_spotcheck_restrict(f, op, [-1 -0.9 0.5 0.7 1], [1, 1], pref);
 % Check the case with roots close to endpoints.
 p = 1e-4;
 op = @(x) (1+x).^b.*sin(x).*(1-x).^(3*c);
-f = singfun(op, [b b], {'sing', 'sing'}, pref);
+f = singfun(op, [b b], {'sing', 'root'}, pref);
 pass(6) = test_spotcheck_restrict(f, op, [-1+p 1-p], [0, 0], pref);
 
 end
