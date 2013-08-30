@@ -186,8 +186,17 @@ classdef chebfun
         % Edge detector.
         [edge, vscale] = detectEdge(op, domain, hscale, vscale, derHandle);
         
-        % Determine values of chebfun at breakpoints.
+        % Determine values of CHEBFUN at breakpoints.
         vals = getValuesAtBreakpoints(funs, ends, op);
+        
+        % ODE113 with CHEBFUN output.
+        [t, y] = ode113(varargin);
+        
+        % ODE15S with CHEBFUN output.
+        [t, y] = ode15s(varargin);
+        
+        % ODE45 with CHEBFUN output.
+        [t, y] = ode45(varargin);
         
         % Retrieve and modify preferences for this class.
         prefs = pref(varargin);
@@ -196,6 +205,9 @@ classdef chebfun
     
     % Static private methods implemented by CHEBFUN class.
     methods (Static = true, Access = private)
+        
+        % Convert ODE solutions into CHEBFUN objects:
+        [y, t] = odesol(sol, opt);
         
         % Parse the inputs to the CHEBFUN constructor.
         [op, domain, pref] = parseInputs(op, domain, varargin);

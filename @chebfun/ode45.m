@@ -1,0 +1,33 @@
+function [t, y] = ode45(varargin)
+%ODE45   Solve stiff differential equations and DAEs. Output a CHEBFUN.
+%   Y = CHEBFUN.ODE45(ODEFUN, D, ...) applies the standard ODE45 method to
+%   solve an initial-value problem on the domain D. The result is then converted
+%   to a piecewise-defined CHEBFUN with one column per solution component.
+%
+%   CHEBFUN.ODE45 has the same calling sequence as Matlab's standard ODE45. 
+%
+%   One can also write [T, Y] = ODE45(...), in which case T is a linear CHEBFUN
+%   on the domain D.
+%
+% Example:
+%   y = ode45(@vdp1, [0, 20], [2 ; 0]); % Solve Van der Pol problem
+%   roots( y(:, 1) - 1 );               % Find when y = 1
+%
+% See also ODESET, ODE113, ODE15S,
+
+% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
+
+% Call the built in ODE45():
+sol = ode45(varargin{:});
+
+% Convert solution to a CHEBFUN:
+[y, t] = chebfun.odesol( sol ); 
+
+% Output in a consistent way with the built in routine:
+if ( nargout == 1 )
+    % Only t will be returned in this case.
+    t = y;
+end
+
+end
