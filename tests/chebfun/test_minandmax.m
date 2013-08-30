@@ -81,12 +81,14 @@ fx = [fx(1:2, 1) fx(3:4, 2) fx(5:6, 3)];
 pass(10) = all(abs(y(:) - y_exact(:)) <= 10*vscale(f)*epslevel(f)) && ...
     all(abs(fx(:) - y_exact(:)) <= 10*vscale(f)*epslevel(f));
 
-f = chebfun({@(x) exp((1 + 1i)*x), @(x) sec(1i*(x - 0.5))}, [-1 0 1], ...
+f = chebfun(@(x) [exp((1 + 1i)*x) sec(1i*(x - 0.5))], [-1 0 1], ...
     pref);
 [y, x] = minandmax(f);
-y_exact = [exp(-1 - 1i) ; 1];
-pass(11) = all(abs(y - y_exact) <= 10*vscale(f)*epslevel(f)) && ...
-    all(abs(feval(f, x) - y_exact) <= 10*vscale(f)*epslevel(f));
+y_exact = [exp(-1 - 1i) sec(-1.5i) ; exp(1 + 1i) 1];
+fx = feval(f, x(:));
+fx = [fx(1:2, 1) fx(3:4, 2)];
+pass(11) = all(abs(y(:) - y_exact(:)) <= 10*vscale(f)*epslevel(f)) && ...
+    all(abs(fx(:) - y_exact(:)) <= 10*vscale(f)*epslevel(f));
 
 f = chebfun({[-1 1 2], [1 -1 3]}, [-1 0 1]);
 f.impulses(3, 1, 2) = 1;
