@@ -22,8 +22,10 @@ c3 = chebtech2.alias(c0, 3);
 pass(3) = norm([12 25 18]' - c3, inf) == 0;
 
 % Compare against result of evaluating on a smaller grid:
-pass(4) = norm(chebtech2.vals2coeffs(chebtech.clenshaw(chebtech2.chebpts(9), c0)) - c2, inf) < tol;
-pass(5) = norm(chebtech2.vals2coeffs(chebtech.clenshaw(chebtech2.chebpts(3), c0)) - c3, inf) < tol;
+pass(4) = norm(chebtech2.vals2coeffs( ...
+    chebtech.clenshaw(chebtech2.chebpts(9), c0)) - c2, inf) < tol;
+pass(5) = norm(chebtech2.vals2coeffs( ...
+    chebtech.clenshaw(chebtech2.chebpts(3), c0)) - c3, inf) < tol;
 
 
 %%
@@ -41,8 +43,10 @@ c3 = chebtech2.alias(cc, 3);
 pass(8) = norm([12 25 18 ; 10 30 15]'  - c3, inf) == 0;
 
 % Compare against result of evaluating on a smaller grid:
-pass(9) = norm(chebtech2.vals2coeffs(chebtech.clenshaw(chebtech2.chebpts(9), cc)) - c2, inf) < tol;
-pass(10) = norm(chebtech2.vals2coeffs(chebtech.clenshaw(chebtech2.chebpts(3), cc)) - c3, inf) < tol;
+pass(9) = norm(chebtech2.vals2coeffs( ...
+    chebtech.clenshaw(chebtech2.chebpts(9), cc)) - c2, inf) < tol;
+pass(10) = norm(chebtech2.vals2coeffs( ...
+    chebtech.clenshaw(chebtech2.chebpts(3), cc)) - c3, inf) < tol;
 
 %%
 % Test aliasing a large tail.
