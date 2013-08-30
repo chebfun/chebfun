@@ -7,8 +7,6 @@ function g = restrict(f, s)
 %   If length(S) > 2, i.e., S = [S1, S2, S3, ...], then RESCTRICT(F, S) returns
 %   an array of SINGFUN objects, where the entries hold F restricted to each of
 %   the subintervals defined by S.
-%
-%   Note that restrict does not 'simplify' its output.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

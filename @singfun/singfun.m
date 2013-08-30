@@ -1,52 +1,57 @@
 classdef singfun    
 %SINGFUN   Class for functions with singular endpoint behavior.
 %
-%   Class for approximating singular functions on the interval [-1,1] using
-%   a smooth part with no singularities and two singular factors (1+x).^a
-%   and (1-x).^b, where a and b are negative real number or positive fractions. 
+%   Class for approximating singular functions on the interval [-1,1] using a
+%   smooth part with no singularities and two singular factors (1+x).^a and
+%   (1-x).^b, where a and b are real numbers.
 %
 %   SINGFUN class description
 %
-%   The singfun class represents a function of the form 
+%   The SINGFUN class represents a function of the form 
 %
 %          f(x) = s(x) (1+x)^a (1-x)^b 
 %
-%   on the interval [-1,1]. The exponents a and b are assumed
-%   to be real. The constructor is supplied with a handle that evaluates the 
-%   function f at any given points within the interval [-1, 1]. The endpoint 
-%   values are likely to return Inf or NaN results.
+%   on the interval [-1,1]. The exponents a and b are assumed to be real. The
+%   constructor is supplied with a handle that evaluates the function f at any
+%   given points within the interval [-1,1]. The endpoint values are likely to
+%   return Inf or NaN results.
 %
 %   Ideally, the "smooth" function s is analytic, or at least much more
 %   compactly represented than f is. The resulting object can be used to
-%   evaluate and operate on the function f. If a and b are unknown at the 
-%   time of construction, the constructor will try to determine appropriate 
-%   values automatically by sampling the function handle. Note, however, that 
-%   this process is not completely robust, and the singularity terms in 
-%   general do not perfectly factor out singular behavior. The constructor 
-%   can be forced to consider only integer exponents.
+%   evaluate and operate on the function f. If a and b are unknown at the time
+%   of construction, the constructor will try to determine appropriate values
+%   automatically by sampling the function handle. Note, however, that this
+%   process is not completely robust, and the singular terms in general do not
+%   perfectly factor out singular behavior. The constructor can be forced to
+%   consider only integer exponents.
 %
-%   Multiplication and division are as good as the corresponding operations
-%   on the smooth part. Addition and subtraction are much less reliable, as
-%   the sum of two singfuns with different exponents is not necessarily a
-%   singfun, nor a smooth function. If all but integer exponents can be
-%   factored out of the summands, the process is fine, but in other
-%   circumstances the process may throw an error.
+%   [TODO]: Describe calling sequence.
+%
+%   Multiplication and division are as good as the corresponding operations on
+%   the smooth part. Addition and subtraction are much less reliable, as the sum
+%   of two SINGFUN objects with different exponents is not necessarily a
+%   SINGFUN, nor a smooth function. If all but integer exponents can be factored
+%   out of the summands, the process is fine, but in other circumstances the
+%   process may throw an error.
 %
 % See also SINGFUN.PREF
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-    %% Properties of SINFGUN objects
+    %% Properties of SINGFUN objects
     properties ( Access = public )
         % Smooth part of the representation.
-        smoothPart  % (smoothfun)
+        smoothPart      % (smoothfun)
         
         % Exponents of the singularities at the two endpoints.
-        exponents   % (1x2 double)
+        exponents       % (1x2 double)
         
         % A cell array containing the types of singularities at the endpoints.
-        singType = {};   % (1x2 cell)        
+        singType = {};  % (1x2 cell)        
+        % [TODO]: What values may this take? What do they mean? Why is it needed?
+        
+        % [TODO]: Shold exponentTol be a property?
      end
     
     %% CLASS CONSTRUCTOR:
