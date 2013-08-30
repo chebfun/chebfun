@@ -16,18 +16,14 @@ function out = roots(f, varargin)
 %   PRUNE:
 %       [0]
 %        1  - Prune 'spurious' complex roots if ALL == 1 and RECURSE == 0.
-%
-%   If F is a array-valued CHEBTECH then there is no reason to expect each
-%   column to have the same number of roots. In order to return a useful output,
-%   the roots of each column are computed and then padded with NaNs so that a
-%   matrix may be returned. The columns of R = ROOTS(F) correspond to the
-%   columns of F.
+
+% [TODO]: Deduplicate code by pointing to CHEBFUN/ROOTS().
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Set up a tolerance:
-tol = get(f.smoothPart, 'epslevel')*get(f.smoothPart, 'vscale');
+tol = singfun.pref.singfun.eps;
 
 % Deal with empty case:
 if ( isempty(f) )
@@ -38,13 +34,10 @@ end
 out = roots(f.smoothPart, varargin{:} );
 anyRoots = ~isempty(out);
 
-% Grap the exponents:
-exps = f.exponents;
-
 % Determine if the endpoints are roots:
-if ( exps(1) > 0 )
+if ( f.exponents(1) > 0 )
     if ( anyRoots )
-        if ( abs(1+out(1)) < tol )
+        if ( abs(1 + out(1)) < tol )
             out(1) = -1;
         else
             out = [-1; out];
@@ -54,9 +47,9 @@ if ( exps(1) > 0 )
     end
 end
 
-if ( exps(2) > 0 )
+if ( f.exponents(2) > 0 )
     if ( anyRoots )
-        if ( abs(1-out(end)) < tol )
+        if ( abs(1 - out(end)) < tol )
             out(end) = 1;
         else
             out = [out; 1];

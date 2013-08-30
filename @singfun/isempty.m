@@ -8,12 +8,15 @@ function out = isempty(f)
 if ( numel(f) > 1 )
     % An array cannot be empty.
     out = false;
+    
 elseif ( numel(f) == 1 )
     % Check if the smooth part is empty:
     out = isempty(f.smoothPart);
+    
 else 
     % numel(f) == 0, so f must be empty.
     out = true;
+    
 end
 
 end

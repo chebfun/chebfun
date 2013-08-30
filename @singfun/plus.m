@@ -1,25 +1,23 @@
-function s = plus(f,g)
-%PLUS Add SINGFUNS F and G.
+function s = plus(f, g)
+%+   Addition of two SINGFUN objects.
+%   F + G adds F and G, where F and G may be SINGFUN objects or scalars.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-
-%%
-% if one of the arguments is empty
+% If one of the arguments is empty:
 if ( isempty(f) || isempty(g) )
-    % create an empty singfun and return
+    % Create an empty singfun and return:
     s = singfun;
     return;
 end
 
-%%
-% if one of the arguments is a double
-if ( isa(f,'double') )
+% If one of the arguments is a double:
+if ( isa(f, 'double') )
     aDouble = f;
     f = singfun.zeroSingFun();
     f.smoothPart = chebtech.constructor(aDouble, [], [], []);
-elseif isa(g,'double')
+elseif ( isa(g, 'double') )
     aDouble = g;
     g = singfun.zeroSingFun();
     g.smoothPart = chebtech.constructor(aDouble, [], [], []);
@@ -37,9 +35,10 @@ if ( all(abs(fExps-gExps) < tol ) )
     if ( iszero(s.smoothPart) )
        s = singfun.zeroSingFun();     
     end
+    
 elseif ( all(abs(round(fExps-gExps) - (fExps-gExps) ) < tol) )
-    % Case 2: Both exponents differ by integers. Factor out the common
-    % singular parts to leave the sum of smooth quotients.
+    % Case 2: Both exponents differ by integers. Factor out the common singular
+    % parts to leave the sum of smooth quotients.
     
     % At each endpoint, the smaller exponent will be factored out
     % of both summands.
@@ -50,7 +49,7 @@ elseif ( all(abs(round(fExps-gExps) - (fExps-gExps) ) < tol) )
     newExps = zeros(1, 2);    
     for side = 1:2
         % The smaller of the two exponents is the exponent of the sum.
-        [e,k] = sort([ fExps(side),gExps(side)] );
+        [e, k] = sort([fExps(side), gExps(side)]);
         newExps(side) = e(1);
         
         % The quotient factor is the difference in the exponents.
@@ -68,42 +67,42 @@ elseif ( all(abs(round(fExps-gExps) - (fExps-gExps) ) < tol) )
         end
     end
     
-    % Construct the function handle for the new smooth fun
+    % Construct the function handle for the new smooth fun:
     sF = f.smoothPart;
     sG = g.smoothPart;
     smoothOp = @(x) feval(sF, x).*factorF(x) + feval(sG, x).*factorG(x);
     
-    % Construct the new smooth fun
+    % Construct the new smooth fun:
     s = singfun.zeroSingFun();
     smoothPrefs = chebtech.pref('tech', 'cheb1', 'extrapolate', false);
     vscale = [];
     hscale = [];
     s.smoothPart = chebtech.constructor(smoothOp, vscale, hscale, smoothPrefs);
     
-    % Assing new exponents
+    % Assign new exponents:
     s.exponents = newExps;
     
 else
-    % Case 3: Nontrivial difference in the exponents of F and G.
-    % Form a new function handle for the sum from F and G.    
+    % Case 3: Nontrivial difference in the exponents of F and G. Form a new
+    % function handle for the sum from F and G.
     
-    % Retrieve function handle of F
+    % Retrieve function handle of F:
     s1 = f.smoothPart;
     a1 = f.exponents(1);
     b1 = f.exponents(2);    
     op1 = @(x) feval(s1, x).*(1+x).^a1.*(1-x).^b1;
     
-    % Retrieve function handle of G
+    % Retrieve function handle of G:
     s2 = g.smoothPart;
     a2 = g.exponents(1);
     b2 = g.exponents(2);    
     op2 = @(x) feval(s2, x).*(1+x).^a2.*(1-x).^b2;
     
-    % Define a function handle for the sum
+    % Define a function handle for the sum:
     op = @(x) op1(x) + op2(x);
     
-    % construct a new SINGFUN for sum
-    s = singfun( op, [], {'sing', 'sing'}, singfun.pref );
+    % Construct a new SINGFUN for sum:
+    s = singfun(op, [], {'sing', 'sing'}, singfun.pref);
 end
 
 end

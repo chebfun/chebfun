@@ -7,19 +7,17 @@ function s = zeroSingFun()
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-%%
-% create an empty SINGFUN object.
+% Create an empty SINGFUN object:
 s = singfun;
 
-%%
-% creat a zero smooth part
-prefs = chebtech.pref('tech', 'cheb1', 'extrapolate', false);
+% Create a zero smooth part:
+pref = chebtech.pref('tech', 'cheb1', 'extrapolate', false);
 vscale = [];
 hscale = [];
-s.smoothPart = chebtech.constructor(0, vscale, hscale, prefs);
+pref = smoothfun.pref;
+s.smoothPart = smoothfun.constructor(@(x) 0*x, vscale, hscale, pref);
 
-%%
-% No singularities at any end points.
+% No singularities at any end points:
 s.exponents = [0, 0];
 s.singType = {'none', 'none'};
 

@@ -1,16 +1,12 @@
 function g = restrict(f, s)
 %RESTRICT   Restrict a SINGFUN to a subinterval.
 %   RESCTRICT(F, S) returns a SINGFUN that is restricted to the subinterval
-%   [S(1), S(2)] of [-1, 1]. Note that since SINGFUN objects only live on
-%   [-1, 1], a linear change of variables is implicitly applied.
+%   [S(1), S(2)] of [-1,1]. Note that since SINGFUN objects only live on
+%   [-1,1], a linear change of variables is implicitly applied.
 %
 %   If length(S) > 2, i.e., S = [S1, S2, S3, ...], then RESCTRICT(F, S) returns
-%   an array of CHEBTECH objects, where the entries hold F restricted to each of
+%   an array of SINGFUN objects, where the entries hold F restricted to each of
 %   the subintervals defined by S.
-%
-%   If F is an array-valued function, say [F1, F2], then the restrict(F, S =
-%   [S1, S2, S3]) returns the array-valued CHEBTECH {restrict(F1,S).
-%   restrict(F2, S)}.
 %
 %   Note that restrict does not 'simplify' its output.
 
@@ -36,10 +32,10 @@ numInts = numel(s) - 1;
 % Preallocate a cell
 g = cell(1, numInts);
 
-% Set the bound which is deemed 'finite'
+% Set the bound which is deemed 'finite':
 fntbnd = realmax;
 
-% absolute values at the endpoints of the subintervals:
+% Absolute values at the endpoints of the subintervals:
 endVal = zeros(1, numInts+1);
 for j = 1:numInts+1
     endVal(j) = abs(feval(f, s(j)));

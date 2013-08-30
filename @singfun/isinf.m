@@ -7,6 +7,7 @@ function out = isinf(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Check if F has exponents or the smooth part has inf.
-out = any(f.exponents <= -singfun.pref.singfun.exponentTol) || isinf(f.smoothPart);
+% Simply call isinf
+out = ~isfinite(f);
+
 end

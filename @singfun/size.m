@@ -1,8 +1,6 @@
 function [size1, size2] = size(f, varargin)
 %SIZE   Size of a SINGFUN.
-%   [S1, S2] = SIZE(F) returns S1, the number of values at Chebyshev points used
-%   to define the smooth part of F, i.e. F.smoothPart, and S2, the number of 
-%   columns in F.
+%   [S1, S2] = SIZE(F) returns the size of the smoothPart of F.
 %
 %   S = SIZE(F) returns the same as above in a 1x2 vector, S = [S1, S2].
 %

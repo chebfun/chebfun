@@ -9,7 +9,8 @@ function out = isequal(f, g)
 % See http://www.chebfun.org/ for Chebfun information.
 
 tol = singfun.pref.singfun.exponentTol;
+
 out = all(abs(f.exponents - g.exponents) < tol) ...
-    && isequal( f.smoothPart, g.smoothPart);
+    && isequal(f.smoothPart, g.smoothPart);
 
 end

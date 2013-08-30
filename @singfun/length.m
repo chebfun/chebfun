@@ -2,7 +2,7 @@ function len = length(f)
 %LENGTH   Length of a SINGFUN.
 %   LENGTH(F) is the length of the smooth part contained in F.
 %
-%   See also SIZE.
+% See also SIZE.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.

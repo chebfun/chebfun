@@ -1,7 +1,6 @@
 function out = isreal(f)
 %ISREAL   True for real SINGFUN.
-%   ISREAL(F) returns TRUE if the smooth part of F is real and FALSE 
-%   otherwise.
+%   ISREAL(F) returns TRUE if the smooth part of F is real and FALSE otherwise.
 %
 %   See also REAL, IMAG.
 

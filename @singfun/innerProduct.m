@@ -1,5 +1,5 @@
 function out = innerProduct(f, g)
-%INNERPRODUCT   Compute the inner product of two SINGFUN objects.
+%INNERPRODUCT   Inner product of two SINGFUN objects.
 %   INNERPRODUCT(F, G) returns the L2 inner product (on [-1,1]) of the two
 %   SINGFUN objects F and G (conjugate linear in F).
 %
@@ -19,10 +19,12 @@ if ( ~isa(f, 'singfun') || ~isa(g, 'singfun') )
         'innerProduct() only operates on two SINGFUN objects.');
 end
 
+% Add the exponents:
 f.exponents = f.exponents + g.exponents;
+% Multiply the smoothparts:
 f.smoothPart = f.smoothPart.*g.smoothPart;
 
-% Call sum in singfun:
+% Call SUM in SINGFUN:
 out = sum(f);
 
 end
