@@ -1,10 +1,10 @@
 function [y, x] = min(f, flag)
 %MIN   Minimum values of a CHEBFUN.
-%   MIN(F) returns the minimum value of the chebfun F.
+%   MIN(F) returns the minimum value of the CHEBFUN F.
 %
-%   [Y, X] = MIN(F) returns also point X such that F(X) = Y.
+%   [Y, X] = MIN(F) returns also points X such that F(X) = Y.
 %
-%   [Y, X] = MIN(F, 'local') returns not just the global minimum value, but all
+%   [Y, X] = MIN(F, 'local') returns not just the global minimum value but all
 %   of the local minima.
 %
 %   If F is complex-valued, absolute values are taken to determine the minima,
@@ -12,26 +12,33 @@ function [y, x] = min(f, flag)
 %
 %   If F is array-valued, then the columns of X and Y correspond to the columns
 %   of F. NaNs are used to pad Y and X when the 'local' flag is used and the
-%   columns are not of the same length
+%   columns are not of the same length.
 %
-%   [TODO]:  Document MIN(F, G) syntax.
+%   H = MIN(F, G), where F and G are CHEBFUNs defined on the same domain,
+%   returns a CHEBFUN H such that H(x) = min(F(x), G(x)) for all x in the
+%   domain of F and G. Alternatively, either F or G may be a scalar.
 %
 % See also MAX, MINANDMAX, ROOTS.
-%
+
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Trivial empty case.
+if ( isempty(f) )
+    x = [];
+    y = [];
+    return
+end
 
 if ( nargin == 1 )
     [y, x] = globalMin(f);
-
 elseif ( isa(flag, 'chebfun') )
     % [TODO]: Implement this. (Requires SIGN())
+    error('CHEBFUN:min:notImplemented', ...
+          'Taking the minimum of two chebfuns is not yet implemented.');
     y = minOfTwoChebfuns(f, flag);
- 
 else
-    [y, x] = localMin(f);
-
+    [y, x] = localMin(f, flag);
 end
 
 end
@@ -49,7 +56,7 @@ x = x(1,:);
 end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%% LOCAL MINIMA %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [y, x] = localMin(f)    
+function [y, x] = localMin(f, flag)
 
 % Call MINANDMAX():
 [y, x] = minandmax(f, flag);
@@ -61,18 +68,35 @@ f = mat2cell(f); % Convert f into a cell of scalar-valued CHEBFUNs.
 
 % Loop over the FUNs:
 for k = 1:numel(f)
+    % Compute 1st and 2nd derivatives.
+    dfk = diff(f{k});
+    dfk2 = diff(dfk);
+
     % For interior extrema, look at 2nd derivative:
-    idx = feval(diff(f{k}, 2), x(:,k)) > 0;
+    minimaLoc = feval(diff(f{k}, 2), x(:,k)) > 0;
+
     % For end-points, look at 1st derivative:
-    idx2 = feval(diff(f{k}), ends).*[1, -1]' > 0;
-    idx(1) = idx2(1);
-    idx(x(:,k) == ends(2)) = idx2(2);
+    dfk_ends = feval(dfk, ends);
+    endptMinLoc = dfk_ends.*[1, -1]' > 0;
+
+    % If 1st derivative is small at an endpoint, assume it's zero and try to
+    % use 2nd derivative to determine if it's a minimum.
+    %
+    % [TODO]:  What if the 2nd derivative is zero, so that rounding error
+    % precludes us from accurately determining the sign?
+    smallEndDer = abs(dfk_ends) < 10*vscale(dfk)*epslevel(dfk);
+    endptMinLoc(smallEndDer) = feval(dfk2, ends(smallEndDer)) > 0;
+
+    minimaLoc(1) = endptMinLoc(1);
+    minimaLoc(x(:,k) == ends(2)) = endptMinLoc(2);
+
     % Set points corresponding to local maxima to NaN:
-    y(~idx,k) = NaN;
-    x(~idx,k) = NaN;
+    y(~minimaLoc,k) = NaN;
+    x(~minimaLoc,k) = NaN;
+
     % Sort the result
-    [x(:,k), idx] = sort(x(:,k));
-    y(:,k) = y(idx,k);
+    [x(:,k), minimaLoc] = sort(x(:,k));
+    y(:,k) = y(minimaLoc,k);
 end
 
 % Remove any rows which contain only NaNs.
