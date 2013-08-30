@@ -77,7 +77,7 @@ f = chebfun(@(x) [sin(10*x) cos(10*x) exp(x)], [-1 -0.5 0.5 1]);
 [y, x] = minandmax(f);
 y_exact = [-1 -1 exp(-1) ; 1 1 exp(1)];
 fx = feval(f, x(:));
-fx = [fx(1:2, 1) fx(3:4, 2) fx(5:6, 3)];
+fx = [fx(1:2,1) fx(3:4,2) fx(5:6,3)];
 pass(10) = all(abs(y(:) - y_exact(:)) <= 10*vscale(f)*epslevel(f)) && ...
     all(abs(fx(:) - y_exact(:)) <= 10*vscale(f)*epslevel(f));
 
@@ -86,7 +86,7 @@ f = chebfun(@(x) [exp((1 + 1i)*x) sec(1i*(x - 0.5))], [-1 0 1], ...
 [y, x] = minandmax(f);
 y_exact = [exp(-1 - 1i) sec(-1.5i) ; exp(1 + 1i) 1];
 fx = feval(f, x(:));
-fx = [fx(1:2, 1) fx(3:4, 2)];
+fx = [fx(1:2,1) fx(3:4,2)];
 pass(11) = all(abs(y(:) - y_exact(:)) <= 10*vscale(f)*epslevel(f)) && ...
     all(abs(fx(:) - y_exact(:)) <= 10*vscale(f)*epslevel(f));
 
@@ -113,13 +113,13 @@ x_exact = [        0                  0
    3.308480466603983  NaN
    3.776766383330969  NaN
    4.000000000000000  NaN];
-fx1 = feval(f, x_exact(:, 1));
-fx2 = feval(f, x_exact(1:3, 2));
+fx1 = feval(f, x_exact(:,1));
+fx2 = feval(f, x_exact(1:3,2));
 pass(13) = isequal(size(y), [7 2]) && ...
-    all(isnan(y(4:end, 2))) && all(isnan(x(4:end, 2)));
-pass(14) = norm(y(:, 1) - y_exact(:, 1), inf) < 10*vscale(f)*epslevel(f) && ...
-    norm(y(1:3, 2) - y_exact(1:3, 2), inf) < 10*vscale(f)*epslevel(f) && ...
-    norm(fx1(:, 1) - y_exact(:, 1), inf) < 10*vscale(f)*epslevel(f) && ...
-    norm(fx2(:, 2) - y_exact(1:3, 2), inf) < 10*vscale(f)*epslevel(f);
+    all(isnan(y(4:end,2))) && all(isnan(x(4:end,2)));
+pass(14) = norm(y(:,1) - y_exact(:,1), inf) < 10*vscale(f)*epslevel(f) && ...
+    norm(y(1:3,2) - y_exact(1:3,2), inf) < 10*vscale(f)*epslevel(f) && ...
+    norm(fx1(:,1) - y_exact(:,1), inf) < 10*vscale(f)*epslevel(f) && ...
+    norm(fx2(:,2) - y_exact(1:3,2), inf) < 10*vscale(f)*epslevel(f);
 
 end
