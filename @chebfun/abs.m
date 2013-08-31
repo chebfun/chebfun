@@ -26,8 +26,8 @@ if ( isreal(f) )
     % Abs is singular at roots, so locate these:
     r = roots(f, 'nozerofun', 'nojump', 'noimps');
     
-    % Since each column of an array-valued CHEBFUN must have the same breakpoints,
-    % we simply take unique(r(:)) and remove any remaining NaNs.
+    % Since each column of an array-valued CHEBFUN must have the same
+    % breakpoints, we simply take unique(r(:)) and remove any remaining NaNs.
     r = unique(r(:));
     r(isnan(r)) = [];
     
@@ -35,11 +35,11 @@ if ( isreal(f) )
     el = epslevel(f);
     vs = vscale(f);
     hs = hscale(f);
-    rtol1 = el*hs*vs;
+    rtol1 = el*hs;
     r([false ; diff(r) < rtol1]) = [];
     
     % Avoid introducing new breakpoints close to an existing ones:
-    rtol2 = el*vs*max(min(diff(f.domain)), 1);
+    rtol2 = el*max(min(diff(f.domain)), 1);
     r(any(abs(bsxfun(@minus, r, f.domain)) < rtol2, 2)) = [];
 
     %% %%%%%%%%%% CREATE NEW FUNS %%%%%%%%%%
@@ -59,9 +59,6 @@ if ( isreal(f) )
     
     % Take the absolute value of the impulses in the first row:
     f.impulses(:,:,1) = abs(f.impulses(:,:,1));
-    
-    % Simplify the output:
-    f = simplify(f);
     
     % [TODO]: Do we want to do this?
     [ignored, idx] = setdiff(newDom, oldDom);
