@@ -22,7 +22,7 @@ elseif ( isa(g, 'double') ) % CHEBTECH + double
     % Update coeffs:
     f.coeffs(end,:) = f.coeffs(end,:) + g;
     % Update scale:
-    vscale = max(f.vscale, max(abs(f.values), [], 1));
+    vscale = max(abs(f.values), [], 1);
     % See CHEBTECH CLASSDEF file for documentation on this:
     f.epslevel = (f.epslevel*f.vscale + abs(g)*eps)./vscale;
     f.epslevel = max(f.epslevel); % [TODO]: Vector epslevel;
