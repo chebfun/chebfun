@@ -22,7 +22,7 @@ for n = 1:4
         end
     end
 
-    tol = 10*pref.chebtech.eps;
+    tol = 50*pref.chebtech.eps;
 
     % Compose a scalar-valued CHEBTECH object with sin(x):
     f = testclass.make(@(x) x);

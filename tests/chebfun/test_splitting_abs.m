@@ -19,7 +19,8 @@ for j = 1:numel(FF);
     % Test on [-1 1]:
     f = chebfun(F, [-1, 1], pref);
     xx = linspace(-1, 1);
-    err = norm(f(xx) - F(xx), inf);
+    
+    err = norm(feval(f, xx) - feval(F, xx), inf);
     pass(j, k+1) = err < 50*max(f.epslevel);
     pass(j, k+2) = err < 1000*pref.chebfun.eps;
     k = k + 2;
