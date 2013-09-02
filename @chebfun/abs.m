@@ -41,6 +41,7 @@ if ( isreal(f) )
     % Avoid introducing new breakpoints close to an existing ones:
     rtol2 = el*max(min(diff(f.domain)), 1);
     r(any(abs(bsxfun(@minus, r, f.domain)) < rtol2, 2)) = [];
+    % [TODO]: Perhaps we should evaluate at these points and see which is smaller?
 
     %% %%%%%%%%%% CREATE NEW FUNS %%%%%%%%%%
     % Get the domain with the new breakpoints: (union is not required, by above)
