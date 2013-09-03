@@ -9,7 +9,7 @@ function s = constructSmoothPart(op, pref)
 
 % [TODO]: This will be replaced by a call to the SMOOTHFUN constructor
 
-if (isfield( pref, 'chebtech') )
+if ( isfield( pref, 'chebtech') )
     % Get CHEBTECH preferences if provided:
     pref = pref.chebtech;
 else

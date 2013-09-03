@@ -146,13 +146,7 @@ classdef singfun
         
         % Complex conjugate of a SINGFUN.
         f = conj(f)                
-        
-        % Classify epxonents of a SINGFUN
-        f = calssifyExponents(f)
-        
-        % Check the strings classifying singTypes
-        out = checkSingTypes(f)
-        
+               
         % SINGFUN obects are not transposable.
         f = ctranspose(f)
 
@@ -291,3 +285,86 @@ classdef singfun
     end
     
 end    
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Functions implemented in this file
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function f = classifyExponents(f)
+%CLASSIFYEXPONENTS   Function to assign types of exponents in a SINGFUN object.
+%   Based on the values in F.EXPONENTS, this functions decides the type that 
+%   should be assigned to F.SINGTYPE. The valid types can be 'sing', 'pole', 
+%   'root' or 'none'. F.SINGTYPE is a 1X2 cell array and the pair of string
+%   contained in this field describes the types of singularities at each end,
+%   -1 or 1 of the SINGFUN F. These types have the following meaning:
+%    
+%      'pole' - A pole, i.e. a negative integer exponent at the 
+%               corresponding end.
+%      'sing' - A negative real exponent at the corresponding end. 
+%               Can be an integer as well.
+%      'root' - A root of fractional order at the corresponding end point.
+%      'none' - No singularity at the end point.
+
+%%
+% Get the SINGFUN tolerance
+% [TODO]: This should depend on scales, but what are the scales?
+%         This TODO will be setteled once scales are finalised.
+tol = singfun.pref.singfun.eps;
+
+%%
+% Store the exponents in exps (for brevity):
+exps = f.exponents;
+% Loop on the left and right end point of the domain
+for k = 1:2
+    % If positive exponent
+    if ( exps(k) >= 0 )
+        if ( abs(exps(k) - round(exps(k))) < 100*tol )
+            % Positive integer exponent, i.e. no singularity
+            f.singType{k} = 'none';
+        else
+            % The function is bounded but there is a root of fractional order.
+            f.singType{k} = 'root';
+        end
+    else        
+        % Negative exponents        
+        if ( exps(k) > -100*tol )
+            % The exponent is negative but almost zero,
+            % remove the singularity
+            f.singType{k} = 'none';
+        else
+            % Non-trivial negative exponent
+            if ( abs(exps(k) - round(exps(k))) < 100*tol )
+                % Pole if integer valued exponent
+                f.singType{k} = 'pole';
+            else
+                % A fractional pole, which we call 'sing'
+                f.singType{k} = 'sing';
+            end
+        end
+    end
+end
+
+end
+
+function out = checkSingTypes(f)
+%CHECKSINGTYPES   Function to check types of exponents in a SINGFUN object.
+%   The valid types can be 'sing', 'pole', 'root' or 'none'. If the type is
+%   different than these four strings (ignoring case), an error message is
+%   thrown.
+%
+
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+%%
+out(1) = any(strcmpi(f.singType{1}, {'pole', 'sing', 'root', 'none'}));
+out(2) = any(strcmpi(f.singType{2}, {'pole', 'sing', 'root', 'none'}));
+
+if ( ~all(out) )
+    error('CHEBFUN:SINGFUN:checkSingTypes', 'Unknown singularity type');
+end
+
+end
+
+

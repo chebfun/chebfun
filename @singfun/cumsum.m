@@ -41,7 +41,7 @@ end
 
 function g = singIntegral(f)
 
-if ( ~isa(f.smoothfun, 'chebtech') )
+if ( ~isa(f.smoothPart, 'chebtech') )
     error('SINGFUN:cumsum:nosupport', ...
           ['CUMSUM() does not support a singfun with the current type of ' ...
            'smoothPart.'])
