@@ -10,8 +10,8 @@ function s = times(f,g)
 %% Trivial cases:
 
 % Check if inputs are other than SINGFUNS or doubles:
-if ( ~isa(f, 'singfun') && ~isa(f, 'double') ) || ...
-        ( ~isa(g, 'singfun') && ~isa(g, 'double') )
+if ( (~isa(f, 'singfun') && ~isa(f, 'double')) || ...
+     (~isa(g, 'singfun') && ~isa(g, 'double')) )
     error( 'SINGFUN:times:Input can only be a singfun or a double' )
 end
 

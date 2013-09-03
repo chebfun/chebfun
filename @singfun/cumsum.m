@@ -1,5 +1,5 @@
 function g = cumsum(f)
-%CUMSUM  	Indefinite integral of a SINGFUN.
+%CUMSUM   Indefinite integral of a SINGFUN.
 %   CUMSUM(F) is the indefinite integral of the SINGFUN F.
 %
 %   WARNING: The current version of @singfun/cumsum can cover limited cases. The
@@ -25,8 +25,8 @@ if ( ~any(f.exponents) )     % No exponents. Integrate the smooth part:
 elseif ( ~all(f.exponents) ) % One singularity or one pole, or one root:
     g = singIntegral(f);
 else % Error message thrown for other cases:
-    error('SINGFUN:cumsum:nosupport', ['CUMSUM() does not support the case ', ...
-        'with the current exponents.'])
+    error('SINGFUN:cumsum:nosupport', ...
+          'CUMSUM() does not support the case with the current exponents.')
 end
 
 end
@@ -42,8 +42,9 @@ end
 function g = singIntegral(f)
 
 if ( ~isa(f.smoothfun, 'chebtech') )
-    error('SINGFUN:cumsum:nosupport', ['CUMSUM() does not support a singfun', ...
-        ' with the current type of smoothPart.'])
+    error('SINGFUN:cumsum:nosupport', ...
+          ['CUMSUM() does not support a singfun with the current type of ' ...
+           'smoothPart.'])
 end
 
 % When the singularity is at the right end, we flip f so that the singularity is
@@ -68,7 +69,7 @@ a = -exps(1);
 ra = max(round(a), 1);
 
 % Compute (x+1)*s.
-xs = f.smoothPart.make(@(x) x+1).*s;
+xs = f.smoothPart.make(@(x) x + 1).*s;
 
 % If the length of xs is less than ra+2, we pad the length of xs by prolonging
 % it. This will save us from branch out for different cases when computing the
@@ -79,7 +80,7 @@ N = length(xs) - 1;
 oldN = N;
 if ( N < ra + 2 )
     N = ra + 2;
-    xs = prolong(xs, N+1);
+    xs = prolong(xs, N + 1);
 end
 
 % We flip up and down to have the coefficients of xs ordered with ascending
@@ -87,18 +88,18 @@ end
 aa = flipud(xs.coeffs);
 
 % The recurrence to solve for the coefficients for u', i.e. c_k. (*)
-c = zeros(N,1);
-c(N) = 2*aa(N+1)./(1-a./N);
-c(N-1) = 2*(aa(N)-c(N))./(1-a./(N-1));
+c = zeros(N, 1);
+c(N) = 2*aa(N+1)./(1 - a./N);
+c(N-1) = 2*(aa(N) - c(N))./(1 - a./(N - 1));
 for k = N-2:-1:ra+1
-    c(k) = 2*(aa(k+1)-c(k+1)-c(k+2)*.5*(1+a./k))./(1-a./k);
+    c(k) = 2*(aa(k+1) - c(k+1) - c(k+2)*.5*(1 + a./k))./(1 - a./k);
 end
 
 % Compute Cm
-Cm = (2^(ra-1))*(aa(ra+1)-c(ra+1)-c(ra+2)*(1+a./ra));
+Cm = (2^(ra - 1))*(aa(ra+1) - c(ra+1) - c(ra+2)*(1 + a./ra));
 
 % Compute the smoothfun representation for (x+1)^[a]
-xa = f.smoothPart.make(@(x) (x+1).^ra);
+xa = f.smoothPart.make(@(x) (x + 1).^ra);
 
 % Intermediate results for temporary use.
 aa(1:ra+1) = aa(1:ra+1) - Cm*flipud(xa.coeffs);
@@ -114,7 +115,7 @@ aa(1:ra+1) = aa(1:ra+1) - Cm*flipud(xa.coeffs);
 
 % Compute the rest of the coefficients c_k.
 for k = ra-1:-1:1
-    c(k) = 2*(aa(k+1)-c(k+1)-c(k+2)*.5*(1+a./k))./(1-a./k);
+    c(k) = 2*(aa(k+1) - c(k+1) - c(k+2)*.5*(1 + a./k))./(1 - a./k);
 end
 
 % Compute the Chebyshev coefficients of u from those of u':
@@ -142,8 +143,8 @@ u = f.smoothPart.make({[], cc});
 % Construct the singfun object of the solution:
 g = singfun;
 tol = singfun.pref.singfun.eps;
-if ( abs(ra-a) > tol*f.smoothPart.vscale )    % No log term
-    CM = Cm/(ra-a);
+if ( abs(ra - a) > tol*f.smoothPart.vscale )    % No log term
+    CM = Cm/(ra - a);
     if ( iszero(u) && abs(CM) > tol*f.smoothPart.vscale )
         g.smoothPart = f.smoothPart.make(@(x) CM + 0*x);
         g.exponents = [ra - a 0];

@@ -1,6 +1,7 @@
 function out = isinf(f)
 %ISINF   Test if a SINGFUN is unbounded.
-%   ISINF(F) returns TRUE if F has any negative EXPONENT values and FALSE otherwise.
+%   ISINF(F) returns TRUE if F has any negative EXPONENT values and FALSE
+%   otherwise.
 %
 % See also ISFINITE, ISNAN.
 

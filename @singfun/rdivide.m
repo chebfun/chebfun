@@ -48,7 +48,7 @@ end
 %% SINGFUN./SINGFUN
 % Division of two SINGFUNS
 exponents = f.exponents - g.exponents;
-if ( all(exponents > 0 ) ) 
+if ( all(exponents > 0) ) 
     % division results in a smooth function with no singularities.
     s = singfun.zeroSingFun();
     smoothOp = @(x) feval(f, x)./feval(g, x);

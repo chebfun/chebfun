@@ -15,15 +15,15 @@ function op = singOp2SmoothOp(op, exponents)
 
 if ( all(exponents) )
     % Both exponents are non trivial:
-    op = @(x) op(x)./((1+x).^(exponents(1)).*(1-x).^(exponents(2)));
+    op = @(x) op(x)./((1 + x).^(exponents(1)).*(1 - x).^(exponents(2)));
     
 elseif ( exponents(1) )
     % (1+x) factor at the left end point:
-    op = @(x) op(x)./(1+x).^(exponents(1));
+    op = @(x) op(x)./(1 + x).^(exponents(1));
     
 elseif ( exponents(2) )
     % (1-x) factor at the right end point:
-    op = @(x) op(x)./(1-x).^(exponents(2));
+    op = @(x) op(x)./(1 - x).^(exponents(2));
     
 end
 

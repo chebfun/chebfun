@@ -15,7 +15,7 @@ if ( isempty(f) )
     return
 end
 
-if ( nargin < 2 || isempty(k) )
+if ( (nargin < 2) || isempty(k) )
     % Order of derivative not passed in. Assume 1st derivative by default:
     k = 1;
 elseif ( k == 0 )

@@ -19,7 +19,7 @@ elseif ( ~isa(f, 'singfun') )       % First input is not a SINGFUN
     % DOUBLE*SINGFUN requires that the double is scalar.
     if ( numel(f) > 1 )
         error('SINGFUN:SINGFUN:mtimes:size', ...
-            'Inner matrix dimensions must agree.');
+              'Inner matrix dimensions must agree.');
     end
     
     % C must be a SINGFUN and F a scalar double. Call MTIMES again.
@@ -32,11 +32,11 @@ elseif ( isa(c, 'double') )         % SINGFUN * double
     
 elseif ( isa(c, 'singfun') )        % SINGFUN * SINGFUN  
     error('CHEBFUN:SINGFUN:mtimes:singfunMtimesSingfun', ...
-        'Use .* to multiply SINGFUN objects.');
+          'Use .* to multiply SINGFUN objects.');
     
 else                                % SINGFUN * ???
-    error('CHEBFUN:SINGFUN:mtimes:singfunMtimesUnknown',...
-        'mtimes does not know how to multiply a SINGFUN and a %s.', class(c));
+    error('CHEBFUN:SINGFUN:mtimes:singfunMtimesUnknown', ...
+          'mtimes does not know how to multiply a SINGFUN and a %s.', class(c));
 end
 
 end

@@ -4,7 +4,7 @@ function out = checkSingTypes(f)
 %   different than these four strings (ignoring case), an error message is
 %   thrown.
 %
-% See also SINGFUN/CLASSIFYEXPONENTS
+% See also CLASSIFYEXPONENTS
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -14,7 +14,7 @@ out(1) = any(strcmpi(f.singType{1}, {'pole', 'sing', 'root', 'none'}));
 out(2) = any(strcmpi(f.singType{2}, {'pole', 'sing', 'root', 'none'}));
 
 if ( ~all(out) )
-    error( 'CHEBFUN:SINGFUN:checkSingTypes', 'Unknown singularity type' );
+    error('CHEBFUN:SINGFUN:checkSingTypes', 'Unknown singularity type');
 end
 
 end

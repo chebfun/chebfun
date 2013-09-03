@@ -7,6 +7,6 @@ function f = fliplr(f)
 % See http://www.chebfun.org for Chebfun information.
 
 error('CHEBFUN:SINGFUN:fliplr:notpossible', ...
-    'SINGFUN objects are not array-valued.')
+      'SINGFUN objects are not array-valued.')
 
 end

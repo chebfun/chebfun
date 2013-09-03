@@ -1,11 +1,10 @@
 function f = classifyExponents(f)
 %CLASSIFYEXPONENTS   Function to assign types of exponents in a SINGFUN object.
-%
 %   Based on the values in F.EXPONENTS, this functions decides the type that 
 %   should be assigned to F.SINGTYPE. The valid types can be 'sing', 'pole', 
 %   'root' or 'none'.
 %
-% See also SINGFUN/CHECKSINGTYPES
+% See also CHECKSINGTYPES
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -44,4 +43,5 @@ for k = 1:2
         end
     end
 end
+
 end

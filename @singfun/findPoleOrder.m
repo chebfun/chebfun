@@ -4,10 +4,10 @@ function poleOrder = findPoleOrder(op, singEnd)
 %   SINGEND.
 %   
 % Example:
-%   p = singfun.findPoleOrder(@(x) 1./(1-x), 'right' )
-%   p = singfun.findPoleOrder(@(x) 1./(1+x).^2, 'left' )
+%   p = singfun.findPoleOrder(@(x) 1./(1 - x), 'right')
+%   p = singfun.findPoleOrder(@(x) 1./(1 + x).^2, 'left')
 %
-% See also SINGFUN.FINDSINGORDER and SINGFUN.FINDSINGEXPONENTS.
+% See also FINDSINGORDER and FINDSINGEXPONENTS.
 %
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -23,21 +23,23 @@ x = 10.^(-1:-1:-15)';
 
 if ( strcmpi(singEnd, 'right') )
     % if a pole is expected at x = 1
-    fvalsRight = op(1-x);
+    fvalsRight = op(1 - x);
     poleOrder = poleOrderFinder( fvalsRight, x);
 else if ( strcmpi(singEnd, 'left') )
         % if a pole is expected at x = -1
-        fvalsLeft = op(-1+x);
+        fvalsLeft = op(-1 + x);
         poleOrder = poleOrderFinder( fvalsLeft, x);
     else
-        error('CHEBFUN:SINGFUN:findPoleOrder:unknownPref',...
-                    'Blowup preference "%s" unknown', singEnd )
+        error('CHEBFUN:SINGFUN:findPoleOrder:unknownPref', ...
+              'Blowup preference "%s" unknown', singEnd )
     end
 end
 
 % return negative numbers as exponents
 poleOrder = -poleOrder;
+
 end
+
 %%
 function poleOrder = poleOrderFinder( fvals, x )
 %POLEORDERFINDER   Finds the order of the pole based on function values
@@ -48,11 +50,11 @@ function poleOrder = poleOrderFinder( fvals, x )
 % function values are scaled by powers of (1-x).
 smoothVals = abs(fvals);
 if ( any(isinf(smoothVals)) )
-    error( 'CHEBFUN:SINGFUN:findPoleOrder', 'function returned inf while evaluation')
+    error('CHEBFUN:SINGFUN:findPoleOrder', 'Function returned inf value.')
 end
 
 if ( any(isnan(smoothVals)) )
-    error( 'CHEBFUN:SINGFUN:findPoleOrder', 'function returned NaN while evaluation')
+    error('CHEBFUN:SINGFUN:findPoleOrder', 'Function returned NaN value.')
 end
 
 % Test parameters
@@ -61,17 +63,20 @@ maxPoleOrder = singfun.pref.singfun.maxPoleOrder;
 
 poleOrder = 0;
 %smoothVals = smoothVals.*x;
+
 % Loop to see for which power of x the function values become non-divergent
 % i.e. when the ratio of function values becomes less then the testRatio.
-while( all(smoothVals(2:end)./smoothVals(1:end-1) > testRatio) && ( poleOrder <= maxPoleOrder ) )
+while ( all(smoothVals(2:end)./smoothVals(1:end-1) > testRatio) && ...
+        (poleOrder <= maxPoleOrder) )
     poleOrder = poleOrder + 1;
     smoothVals = smoothVals.*x;
 end
+
 if ( poleOrder > maxPoleOrder )
     % Method failed.
     % [TODO]: Error may be?
-    warning('CHEBFUN:SINGFUN:fail',...
-        'Pole order excedes limit for maximum pole order.');
+    warning('CHEBFUN:SINGFUN:fail', ...
+            'Pole order excedes limit for maximum pole order.');
     poleOrder = 0;
 end
 

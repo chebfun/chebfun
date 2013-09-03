@@ -18,7 +18,7 @@ switch prop
         out = f.smoothPart.(prop);
     otherwise
         error('CHEBFUN:SINGFUN:GET:propname', ...
-            'Unknown property name ''%s'' for object of type SINGFUN.', prop);
+              'Unknown property name "%s" for object of type SINGFUN.', prop);
 end
 
 end
