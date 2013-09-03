@@ -10,7 +10,7 @@ function out = isequal(f, g)
 
 tol = singfun.pref.singfun.exponentTol;
 
-out = all(abs(f.exponents - g.exponents) < tol) ...
-    && isequal(f.smoothPart, g.smoothPart);
+out = all(abs(f.exponents - g.exponents) < tol) && ...
+    isequal(f.smoothPart, g.smoothPart);
 
 end

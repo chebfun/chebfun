@@ -1,10 +1,10 @@
 function ctranspose(f) %#ok<*INUSD>
-%CTRANSPOSE  SINGFUN objects are not transposable.
+%CTRANSPOSE   SINGFUN objects are not transposable.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 error('CHEBFUN:SINGFUN:ctranspose:notpossible', ...
-    'SINGFUN objects are not transposable.')
+      'SINGFUN objects are not transposable.')
     
 end

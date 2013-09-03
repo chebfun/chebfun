@@ -5,6 +5,6 @@ function transpose(f) %#ok<*INUSD>
 % See http://www.chebfun.org/ for Chebfun information.
 
 error('CHEBFUN:SINGFUN:transpose:notpossible', ...
-    'SINGFUN objects are not transposable.')
+      'SINGFUN objects are not transposable.')
 
 end

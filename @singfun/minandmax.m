@@ -20,7 +20,7 @@ function [vals, pos] = minandmax(f)
 
 tol = singfun.pref.singfun.eps;
 
-if ( ~any(f.exponents) || all( abs(f.exponents) < tol ) ) %[TODO]: choose a better tol 
+if ( ~any(f.exponents) || all(abs(f.exponents) < tol) ) %[TODO]: choose a better tol
     
     % The function is actually smooth!
     [vals, pos] = minandmax(f.smoothPart);
@@ -70,12 +70,12 @@ else
         r = unique([-1 ; r ; 1]);
         if ( isempty(maxF) )
             % Take the maximum of the local maxima:
-            [maxF, maxIndex] = max(feval(f,r));            
+            [maxF, maxIndex] = max(feval(f, r));
             maxLoc = r(maxIndex);
         end
         if ( isempty(minF) )
             % Take the minimum of the local minima:
-            [minF, minIndex] = min(feval(f,r));          
+            [minF, minIndex] = min(feval(f, r));
             minLoc = r(minIndex);
         end             
     end    
@@ -85,5 +85,3 @@ else
 end
   
 end
-
-

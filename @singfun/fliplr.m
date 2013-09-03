@@ -4,9 +4,9 @@ function f = fliplr(f)
 %   direction. If F has only one column, then this function has no effect.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 error('CHEBFUN:SINGFUN:fliplr:notpossible', ...
-    'SINGFUN objects are not array-valued.')
+      'SINGFUN objects are not array-valued.')
 
 end

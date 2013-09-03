@@ -28,7 +28,7 @@ gExps = g.exponents;
 tol = singfun.pref.singfun.eps;
 
 %%
-if ( all(abs(fExps-gExps) < tol ) )
+if ( all(abs(fExps - gExps) < tol) )
     % Case 1: Exponents exactly alike. Just add the smooth parts.
     s = f;
     s.smoothPart = f.smoothPart + g.smoothPart;
@@ -36,7 +36,7 @@ if ( all(abs(fExps-gExps) < tol ) )
        s = singfun.zeroSingFun();     
     end
     
-elseif ( all(abs(round(fExps-gExps) - (fExps-gExps) ) < tol) )
+elseif ( all(abs(round(fExps - gExps) - (fExps-gExps)) < tol) )
     % Case 2: Both exponents differ by integers. Factor out the common singular
     % parts to leave the sum of smooth quotients.
     
@@ -54,9 +54,9 @@ elseif ( all(abs(round(fExps-gExps) - (fExps-gExps) ) < tol) )
         
         % The quotient factor is the difference in the exponents.
         if ( side == 1 )
-            newFactor = @(x) (1+x).^diff(e);
+            newFactor = @(x) (1 + x).^diff(e);
         else
-            newFactor = @(x) (1-x).^diff(e);
+            newFactor = @(x) (1 - x).^diff(e);
         end
         
         % Who had the smaller exponent? The other one gets the factor.
@@ -90,13 +90,13 @@ else
     s1 = f.smoothPart;
     a1 = f.exponents(1);
     b1 = f.exponents(2);    
-    op1 = @(x) feval(s1, x).*(1+x).^a1.*(1-x).^b1;
+    op1 = @(x) feval(s1, x).*(1 + x).^a1.*(1 - x).^b1;
     
     % Retrieve function handle of G:
     s2 = g.smoothPart;
     a2 = g.exponents(1);
     b2 = g.exponents(2);    
-    op2 = @(x) feval(s2, x).*(1+x).^a2.*(1-x).^b2;
+    op2 = @(x) feval(s2, x).*(1 + x).^a2.*(1 - x).^b2;
     
     % Define a function handle for the sum:
     op = @(x) op1(x) + op2(x);
@@ -189,6 +189,3 @@ end
 % end
 % 
 % end
-
-
-

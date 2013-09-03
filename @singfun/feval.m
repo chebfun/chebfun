@@ -14,12 +14,12 @@ val = feval(f.smoothPart, x);
 % Multiply now with the singular factors. 
 if ( f.exponents(1) )
     % If there is a non-trivial left singular factor:
-    val = val.*(1+x).^(f.exponents(1));
+    val = val.*(1 + x).^(f.exponents(1));
 end
 
 if ( f.exponents(2) )
     % If there is a non-trivial right singular factor:
-    val = val.*(1-x).^(f.exponents(2));
+    val = val.*(1 - x).^(f.exponents(2));
 end
 
 end

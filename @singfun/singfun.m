@@ -34,7 +34,7 @@ classdef singfun
 %   out of the summands, the process is fine, but in other circumstances the
 %   process may throw an error.
 %
-% See also SINGFUN.PREF
+% See also PREF
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -60,7 +60,7 @@ classdef singfun
             %%
             % Check for preferences in the very beginning.
             % Determine preferences if not given, merge if some are given:
-            if ( nargin < 4 || isempty(pref) )
+            if ( (nargin < 4) || isempty(pref) )
                 pref = singfun.pref;
             else        
                 pref = singfun.pref(pref);
@@ -85,12 +85,12 @@ classdef singfun
                 obj.singType = {'sing', 'sing'};                
             end
             %%
-            if ( nargin == 2 || ~isempty(exponents) )
+            if ( (nargin == 2) || ~isempty(exponents) )
                 % exponents passed, discard the values
                 % given in singType and use the
                 % information given in exponents.
                 obj.exponents = exponents;
-                if ( nargin == 2 || isempty(singType) )
+                if ( (nargin == 2) || isempty(singType) )
                     % if the user has not provided the type of
                     % singularity, figure it out
                     obj = classifyExponents(obj);
@@ -133,7 +133,7 @@ classdef singfun
             end
                
             % update the operator based on the values in exponents.
-            smoothOp = singfun.singOp2SmoothOp(op, obj.exponents);                        
+            smoothOp = singfun.singOp2SmoothOp(op, obj.exponents);
             obj.smoothPart = singfun.constructSmoothPart(smoothOp, pref);
         end
     end

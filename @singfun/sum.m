@@ -5,7 +5,7 @@ function out = sum(f)
 % See also CUMSUM, DIFF.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 %%
 % Trivial cases:
@@ -30,8 +30,8 @@ elseif ( any(f.exponents <= -1) )
             out = NaN;
         end
         
-    elseif ( (f.exponents(1) <= -1 && sl == -1) ||  ...
-             (f.exponents(2) <= -1 && sr == -1) )
+    elseif ( ((f.exponents(1) <= -1) && (sl == -1)) ||  ...
+             ((f.exponents(2) <= -1) && (sr == -1)) )
         out = -inf;
         
     else
@@ -55,15 +55,15 @@ if ( isa(f.smoothPart, 'chebtech') )
     a = f.exponents(1);
     
     if ( diff(f.exponents) == 0 )
-       % If the exponents at the endpoints are same, then compute the appropriate
-        % modified moments for Gegenbauer weights.
+       % If the exponents at the endpoints are same, then compute the
+       % appropriate modified moments for Gegenbauer weights.
     
         r = a + .5;
-        m0 = gamma(r+.5)*sqrt(pi)/gamma(r+1);
+        m0 = gamma(r + .5)*sqrt(pi)/gamma(r + 1);
         k = 1:floor((n-1)/2);
         % Even modified moments for M_2k = \int_{-1}^1 (1-x)^a(1+x)^a T_2k(x) dx
         % and notice that the odd moments vanish due to parity.
-        m = m0*[1, cumprod((k-r-1)./(k+r))];
+        m = m0*[1, cumprod((k - r - 1)./(k + r))];
         % Form the modified moments vector:
         M(1:2:n) = m;
         M(2:2:n) = 0;
@@ -74,11 +74,11 @@ if ( isa(f.smoothPart, 'chebtech') )
         b = f.exponents(2);
         
         % Common coefficient for the modified moments:
-        c1 = a+1;
-        c2 = b+1;
-        c3 = a+b+1;
-        c4 = c1+c2;
-        c5 = a-b;
+        c1 = a + 1;
+        c2 = b + 1;
+        c3 = a + b + 1;
+        c4 = c1 + c2;
+        c5 = a - b;
         c0 = (2^c3)*gamma(c1)*gamma(c2)/gamma(c4);
         
         % Compute the hypergeometric function related to the modified moments:
@@ -88,7 +88,7 @@ if ( isa(f.smoothPart, 'chebtech') )
             M(2) = c5/c4;           
             % Sister Celine's three-term recurrence:
             for j = 3:n
-                M(j) = (2*c5*M(j-1) + (j-2-c4)*M(j-2)) / (c3+j-1);
+                M(j) = (2*c5*M(j-1) + (j - 2 - c4)*M(j-2)) / (c3 + j - 1);
             end
         end
         % Compute the modified moments:
@@ -115,7 +115,7 @@ else
     % [TODO]: Or perhaps compute iteratively until result doens't change?
     n = 1000;
     
-    [x, w] = jacpts(ceil(n/2)+1, f.exponents(2), f.exponents(1));
+    [x, w] = jacpts(ceil(n/2) + 1, f.exponents(2), f.exponents(1));
     out = w*f.smoothPart.feval(x);
     
 end
