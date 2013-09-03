@@ -11,11 +11,7 @@ function s = zeroSingFun()
 s = singfun;
 
 % Create a zero smooth part:
-pref = chebtech.pref('tech', 'cheb1', 'extrapolate', false);
-vscale = [];
-hscale = [];
-pref = smoothfun.pref;
-s.smoothPart = smoothfun.constructor(@(x) 0*x, vscale, hscale, pref);
+s.smoothPart = constructSmoothPart(0*x);
 
 % No singularities at any end points:
 s.exponents = [0, 0];

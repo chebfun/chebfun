@@ -31,11 +31,11 @@ while ( k > 0 )
     % Apply the product rule to the SINGFUN F: f = g(x) .* (1+x).^a .* (1-x).^b
    
     % Three terms of the derivative:
-    %  First term: g'(x) .* (1+x).^a .* (1-x).^b
+    % First term: g'(x) .* (1+x).^a .* (1-x).^b
     s = f;
     s.smoothPart = diff(s.smoothPart);
     
-    %  Second term: a * g(x) .* (1+x).^(a-1) .* (1-x).^b    
+    % Second term: a * g(x) .* (1+x).^(a-1) .* (1-x).^b    
     if ( f.exponents(1) )
         % If the exponent at the left end point is non-zero.
         t = f;    
@@ -44,7 +44,7 @@ while ( k > 0 )
         s = s + t;
     end
     
-    %  Third term: -b * g(x) .* (1+x).^a .* (1-x).^(b-1)
+    % Third term: -b * g(x) .* (1+x).^a .* (1-x).^(b-1)
     if ( f.exponents(2) )
         % If the exponent at the right end point is non-zero.
         u = f;
