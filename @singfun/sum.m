@@ -5,7 +5,7 @@ function out = sum(f)
 % See also CUMSUM, DIFF.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 %%
 % Trivial cases:

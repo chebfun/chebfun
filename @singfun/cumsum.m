@@ -14,7 +14,7 @@ function g = cumsum(f)
 % a singfun object.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 % If f has no singularity at any endpoint, then just integrate its smooth part
 % and return.
