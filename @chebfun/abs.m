@@ -21,10 +21,13 @@ for k = 1:numel(g.funs)
 end
 
 % Take the absolute value of the impulses in the first row:
-g.impulses(:,:,1) = abs(g.impulses(:,:,1));
+g.impulses = abs(g.impulses(:,:,1));
 
 % [TODO]: Do we want to do this?
 [ignored, idx] = setdiff(f.domain, g.domain);
 g = merge(g, idx.'); 
+
+% [TODO]: Do we want to do this?
+g = simplify(g);
 
 end

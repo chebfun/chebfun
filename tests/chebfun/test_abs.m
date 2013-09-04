@@ -111,7 +111,6 @@ pass(5,6) = all(all(feval(h4, x3) >= 0));
 f = chebfun(@(x) sin(1i*x).*(1i*x+exp(5i*x)));
 g = chebfun(@(x) abs(sin(1i*x).*(1i*x+exp(5i*x))),[-1 0 1]);
 h = abs(f);
-pass(6,:) = normest(g - h) < tol
-
+pass(6,:) = normest(g - h) < 100*get(h, 'epslevel');
 
 end

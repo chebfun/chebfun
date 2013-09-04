@@ -13,10 +13,10 @@ x = 2 * rand(100, 1) - 1;
 
 %% Simple tests
 pref.chebfun.splitting = 0;
-f = chebfun('x.^2', pref)      
+f = chebfun('x.^2', pref);   
 tol = get(f, 'epslevel')*get(f, 'hscale');
-f1 = sign(f)
-pass(1,1) = length(f1.funs) == 3;
+f1 = sign(f);
+pass(1,1) = all(feval(f1, x) == 1);
 
 % Test if impulses are dealt with correctly: 
 f = chebfun(@(x) cos(pi*x) + 2, sort(x)', pref);
