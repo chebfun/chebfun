@@ -54,7 +54,7 @@ for k = 1:2
             s.singType{k} = 'sing';
         end
     else
-        if ( s.exponents(k) < 10*tol )
+        if ( s.exponents(k) < tol )
             s.singType{k} = 'none';
             s.exponents(k) = 0;
         else

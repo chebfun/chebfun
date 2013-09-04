@@ -10,28 +10,25 @@ function s = rdivide(f, g)
 %%
 % Check if inputs are other than SINGFUNS or doubles
 if ( ~isa(f, 'singfun') && ~isa(f, 'double') )
-    error( 'SINGFUN:rdivide:Input can only be a singfun or a double' )
+    error('SINGFUN:rdivide:Input can only be a singfun or a double')
 end
 
 if ( ~isa(g, 'singfun') && ~isa(g, 'double') )
-    error( 'SINGFUN:rdivide:Input can only be singfun or a double' )
+    error('SINGFUN:rdivide:Input can only be singfun or a double')
 end
 
 %%
 % Reciprocal of a SINGFUN scaled by the double F.
 if ( isa(f,'double') )    
-    % convert f to a SINGFUN and call rdivide again.
+    % Convert f to a SINGFUN and call rdivide again.
     
     % Make a zero SINGFUN
     temp = singfun.zeroSingFun();        
-    % Assign f to it's smooth part
-    hscale = [];
-    vscale  = [];
-    smoothPrefs = chebtech.pref('tech', 'cheb1', 'extrapolate', false);
-    temp.smoothPart = chebtech.constructor(f, vscale, hscale, smoothPrefs);
-    % change f to a SINGFUN
+    % Assign f as it's smooth part
+    temp.smoothPart = singfun.constructSmoothPart(f, []);
+    % Change f to a SINGFUN
     f = temp;
-    % call SINGFUN.RDIVIDE again
+    % Call SINGFUN.RDIVIDE again
     s = f./g;
     return
 end
@@ -47,24 +44,25 @@ end
 
 %% SINGFUN./SINGFUN
 % Division of two SINGFUNS
-exponents = f.exponents - g.exponents;
-if ( all(exponents > 0) ) 
-    % division results in a smooth function with no singularities.
-    s = singfun.zeroSingFun();
-    smoothOp = @(x) feval(f, x)./feval(g, x);
-    hscale = [];
-    vscale  = [];
-    smoothPrefs = chebtech.pref('tech', 'cheb1', 'extrapolate', false);
-    s.smoothPart = chebtech.constructor(smoothOp, vscale, hscale, smoothPrefs);
-else
-    % Note: Exponents can be zero to generate a singular function. 
-    % Example: f = 1; g = cos(pi/2*x) with trivial exponents. Then
-    % s = f./g is singular with non trivial exponents. So the result of 
-    % f./g in general is a generic SINGFUN with possibly non-trivial 
-    % exponents    
-    
-    % construct the singfun
-    s = singfun(@(x) feval(f, x)./feval(g, x));
+
+%%
+% Check if g has any roots in the open interval (-1, 1)
+r = roots( g.smoothPart );
+% remove roots at the end points.
+r = setdiff(r, [-1,1]);
+if ( ~isempty(r) )
+    error('SINGFUN:rdivide:Divide by zero error')
 end
+
+%%
+
+% Note: Exponents of f and g can all be zero to generate a singular function.
+% Example: f = 1; g = cos(pi/2*x) with trivial exponents. Then
+% s = f./g is singular with non trivial exponents. So the result of
+% f./g in general is a generic SINGFUN with possibly non-trivial
+% exponents
+
+% construct the singfun
+s = singfun(@(x) feval(f, x)./feval(g, x));
 
 end
