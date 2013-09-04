@@ -16,6 +16,14 @@ function g = cumsum(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Useful References:
+%
+% Hale, N., and Olver, S., Numerical Computation of Indefinite Integrals for 
+% Functions with Poles or Algebraic Singularities, Unpublished Note.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 % If f has no singularity at any endpoint, then just integrate its smooth part
 % and return.
 
@@ -104,15 +112,6 @@ xa = f.smoothPart.make(@(x) (x + 1).^ra);
 % Intermediate results for temporary use.
 aa(1:ra+1) = aa(1:ra+1) - Cm*flipud(xa.coeffs);
 
-% % Some testing:
-% df0 = feval(diff(f, ra - 1), -1);% f^([a]-1)(-1). This is just for testing.
-% % f = f - Cm*fun(@(x) (x + 1).^(ra - 1), ends);
-% % xf = (x+1).*f;
-% test1 = aa(ra + 1) - dd(ra + 1) - .5*dd(ra +2)*(1 + a./ra);
-% test2 = abs(df0-Cm);
-% fprintf(' This should be zero:              \t %12.12g \n',test1)
-% fprintf(' This should go to zero as a-->[a]:\t %12.12g \n',test2)
-
 % Compute the rest of the coefficients c_k.
 for k = ra-1:-1:1
     c(k) = 2*(aa(k+1) - c(k+1) - c(k+2)*.5*(1 + a./k))./(1 - a./k);
@@ -136,10 +135,6 @@ end
 % Construct u as a smoothfun object:
 u = f.smoothPart.make({[], cc});
 
-% % Plot for testing
-% plot(xf - Cm*M1,'-b'); hold on
-% plot((x+1).*diff(u)-a*u,'--r'); hold off
-
 % Construct the singfun object of the solution:
 g = singfun;
 tol = singfun.pref.singfun.eps;
@@ -151,7 +146,7 @@ if ( abs(ra - a) > tol*f.smoothPart.vscale )    % No log term
         g.singType = {'sing', 'none'};
     elseif ( ~iszero(u) && abs(CM) < tol*f.smoothPart.vscale )
         g.smoothPart = u;
-        g.exponents = [exp(1) 0]; % [TODO]: exp doesn't exist.
+        g.exponents = [exps(1) 0];
         g.singType = {'sing', 'none'};
     elseif ( iszero(u) && abs(CM) < tol*f.smoothPart.vscale )
         % Both terms are small, so ignore them
@@ -160,13 +155,12 @@ if ( abs(ra - a) > tol*f.smoothPart.vscale )    % No log term
         g.singType = {'none', 'none'};
     else % The general case that both terms are non-trivial
         g.smoothPart = u + CM*xa;
-        g.exponents = [exp(1) 0]; % [TODO]: exp doesn't exist.
+        g.exponents = [exps(1) 0];
         g.singType = {'sing', 'none'};
     end
     
 elseif abs(Cm) < tol*f.smoothPart.vscale   % No log term
     % [TODO]: handle integer poles.
-    % [TODO]: This TODO.
     
 else  % Log term
     % [TODO]: Construct a representation of log.
