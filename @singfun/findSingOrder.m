@@ -18,14 +18,14 @@ function singOrder = findSingOrder(op, singEnd)
 % will be passed on as upperbound for the singularity order.
 poleBound = -singfun.findPoleOrder(op, singEnd );
 
-% distance of sample points from the end points
+% Distance of sample points from the end points
 x = eps*(11:-1:2)';
-% if a pole is expected at x = 1
+% If a pole is expected at x = 1
 if ( strcmpi(singEnd, 'right') )
     fvalsRight = op(1 - x);
     singOrder = singOrderFinder( fvalsRight, x, poleBound);
 else if ( strcmpi(singEnd, 'left') )
-        % if a pole is expected at x = -1
+        % If a pole is expected at x = -1
         fvalsLeft = op(-1 + x);
         singOrder = singOrderFinder( fvalsLeft, x, poleBound);
     else
@@ -38,7 +38,7 @@ singOrder = -singOrder;
 
 % The algorithm does not support positive exponents >= 1. Such results are 
 % garbage, so discard them. This is consistent with Chebfun V4. From a
-% practial point of view, this is not a problem since a Chebfun with a
+% practial point of view, this is not a problem since a chebfun with a
 % barnch singularity of order > 1 converges. For such functions, the 
 % cheb-coefficient decay is algebraic but strong enough to give us a reliable 
 % representation.
@@ -68,7 +68,7 @@ nIter = 0;
 % Tolerance for exponents
 tol = singfun.pref.singfun.exponentTol;
 
-% maximum number of iterations allowed
+% Maximum number of iterations allowed
 maxIter = 100; 
 % A factor by 10 refinement algorithm for zooming in on the required
 % fractional singularity order.
@@ -87,17 +87,17 @@ while( (abs(exponentGrid(end) - exponentGrid(1)) > tol) && (nIter <= maxIter) )
     end
     
     if( (k == n) && all(diff(diff(smoothVals)) > 0) )
-        % tried all exponents but failed
+        % Tried all exponents but failed
         singOrder = exponentGrid(n);
         return;
     else
-        % update the estimate for exponent
+        % Update the estimate for exponent
         singOrder = exponentGrid(k);        
         if( k == 1 )
-            % no further refinement possible.            
+            % No further refinement possible.            
             return;
         else           
-            % refine the grid                        
+            % Refine the grid                        
             exponentGrid = linspace(exponentGrid(k - 1), exponentGrid(k), n);
             nIter = nIter + 1;
         end

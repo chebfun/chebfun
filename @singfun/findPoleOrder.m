@@ -18,15 +18,15 @@ function poleOrder = findPoleOrder(op, singEnd)
 % is implemented in the function POLEORDERFINDER() below.
 
 %%
-% distance of the sample points from the right end point, i.e. 1.
+% Distance of the sample points from the right end point, i.e. 1.
 x = 10.^(-1:-1:-15)';
 
 if ( strcmpi(singEnd, 'right') )
-    % if a pole is expected at x = 1
+    % If a pole is expected at x = 1
     fvalsRight = op(1 - x);
     poleOrder = poleOrderFinder( fvalsRight, x);
 else if ( strcmpi(singEnd, 'left') )
-        % if a pole is expected at x = -1
+        % If a pole is expected at x = -1
         fvalsLeft = op(-1 + x);
         poleOrder = poleOrderFinder( fvalsLeft, x);
     else
@@ -35,7 +35,7 @@ else if ( strcmpi(singEnd, 'left') )
     end
 end
 
-% return negative numbers as exponents
+% Return negative numbers as exponents
 poleOrder = -poleOrder;
 
 end
@@ -74,8 +74,7 @@ end
 
 if ( poleOrder > maxPoleOrder )
     % Method failed.
-    % [TODO]: Error may be?
-    warning('CHEBFUN:SINGFUN:fail', ...
+    error('CHEBFUN:SINGFUN:fail', ...
             'Pole order excedes limit for maximum pole order.');
     poleOrder = 0;
 end

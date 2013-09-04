@@ -69,7 +69,7 @@ classdef singfun
             % Check for cases based on the number of arguments            
             
             %%
-            % no input arguments: return an empty object               
+            % No input arguments: return an empty object               
             if ( nargin == 0 )   
                 obj.smoothPart = [];
                 obj.exponents = [];
@@ -79,7 +79,7 @@ classdef singfun
             
             %%
             if ( nargin == 1 )
-                % only operator passed, assume a fractional pole at each 
+                % Only operator passed, assume a fractional pole at each 
                 % end point               
                 exponents = [];
                 obj.singType = {'sing', 'sing'};                
@@ -121,7 +121,13 @@ classdef singfun
                     obj.singType = singType;
                     checkSingTypes(obj);
                 end
-            end                        
+            end    
+            
+            %%
+            % Make sure that op is a funciton handle
+            if ( ~isa(op, 'function_handle') )
+                error( 'CHEBFUN:SINGFUN:constructor', 'First argument must be a function handle.');
+            end
             
             %%
             % Determine and factor out singular terms if exponents 

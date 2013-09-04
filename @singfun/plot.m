@@ -52,6 +52,7 @@ end
 % [TODO]: This cell may be deleted. Added here for convenience.
 % Since a SINGFUN usually blows up, set the y-axis limits to [-10,10]?
 ylim( [-10, 10] )
+
 %%
 % Return hold state to what it was before:
 if ( ~holdState )
