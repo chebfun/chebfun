@@ -118,7 +118,7 @@ function out = sumSubDom(f, a, b)
         % Compute the indefinite integral:
         out = cumsum(f);
         % Compose with the CHEBFUNs defining the limits:
-        out = compose(out, b) - compose(out, a);
+        out = compose(b, out) - compose(a, out);
 
     elseif ( isa(b, 'chebfun') )
 
@@ -130,7 +130,7 @@ function out = sumSubDom(f, a, b)
         % Compute the indefinite integral:
         out = cumsum(f);
         % Compose with the CHEBFUNs defining the limits:
-        out = compose(out, b) - feval(out, a);
+        out = compose(b, out) - feval(out, a);
 
     elseif ( isa(a, 'chebfun') )
 
@@ -142,7 +142,7 @@ function out = sumSubDom(f, a, b)
         % Compute the indefinite integral:
         out = cumsum(f);
         % Compose with the CHEBFUNs defining the limits:
-        out = feval(out, b) - compose(out, a);
+        out = feval(out, b) - compose(a, out);
     end
 
 end
