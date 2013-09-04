@@ -39,6 +39,8 @@ f.isTransposed = false;
 
 %% %%%%%%%%%%%%%%%%%%%%%%% DETERMINE BREAKPOINTS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% [TODO]: Use addBreaksAtRoots() ?
+
 % Compute the roots of the CHEBFUN:
 r = roots(f, 'nozerofun', 'noimps');
 

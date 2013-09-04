@@ -55,7 +55,7 @@ pass(1,6) = 1;
 % Real, imaginary and complex CHEBFUN objects:
 fHandle = {@(x) sin(pi*x), @(x) -sin(pi*x), @(x) sin(pi*x), @(x) -sin(pi*x)};
 f = chebfun(fHandle, -2:2, pref);
-tol = 10*get(f, 'epslevel')*get(f, 'hscale');
+tol = 20*get(f, 'epslevel')*get(f, 'hscale');
 
 %% Real CHEBFUN
 gHandle1 = @(x) sin(pi*x);
@@ -106,5 +106,12 @@ h4 = chebfun(@(x) abs( [gHandle1(x), gHandle2(x)] ), -2:2, pref);
 pass(5,4) = length(h4.funs) == 4;
 pass(5,5) = normest(f1 - h4) < tol;
 pass(5,6) = all(all(feval(h4, x3) >= 0));
+
+%%
+f = chebfun(@(x) sin(1i*x).*(1i*x+exp(5i*x)));
+g = chebfun(@(x) abs(sin(1i*x).*(1i*x+exp(5i*x))),[-1 0 1]);
+h = abs(f);
+pass(6,:) = normest(g - h) < tol
+
 
 end
