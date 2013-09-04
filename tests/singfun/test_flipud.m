@@ -1,4 +1,4 @@
-% Test file for chebtech/flipud.m
+% Test file for singfun/flipud.m
 
 function pass = test_flipud(pref)
 
