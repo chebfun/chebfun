@@ -1,0 +1,86 @@
+% Test file for @chebfun/plus.m.
+
+function pass = test_plus(pref)
+
+% Get preferences.
+if ( nargin < 1 )
+    pref = chebfun.pref();
+end
+
+% Generate a few random points to use as test values.
+seedRNG(6178);
+x = 2 * rand(100, 1) - 1;
+
+% A random number to use as an arbitrary additive constant.
+alpha = -0.194758928283640 + 0.075474485412665i;
+
+% Check behavior for empty arguments.
+f = chebfun(@(x) sin(x), pref);
+g = chebfun();
+pass(1) = isempty(f + []);
+pass(2) = isempty(f + g);
+
+% Turn on splitting, since we'll need it for the rest of the tests.
+pref.chebfun.splitting = 1;
+
+%% Test addition with scalars.
+f1_op = @(x) sin(x).*abs(x - 0.1);
+f1 = chebfun(f1_op, pref);
+pass(3:4) = test_add_function_to_scalar(f1, f1_op, alpha, x);
+
+%% Test addition of two chebfun objects.
+g1_op = @(x) cos(x).*sign(x + 0.2);
+g1 = chebfun(g1_op, pref);
+pass(5:6) = test_add_function_to_function(f1, f1_op, g1, g1_op, x);
+
+% Test operation for array-valued chebfuns.
+f2_op = @(x) [sin(x).*abs(x - 0.1)  exp(x)];
+f2 = chebfun(f2_op, pref);
+pass(7:8) = test_add_function_to_scalar(f2, f2_op, alpha, x);
+
+g2_op = @(x) [cos(x).*sign(x + 0.2) tan(x)];
+g2 = chebfun(g2_op, pref);
+pass(9:10) = test_add_function_to_function(f2, f2_op, g2, g2_op, x);
+
+% Test operation for transposed chebfuns.
+pass(11:12) = test_add_function_to_scalar(f1.', @(x) f1_op(x).', alpha, x);
+pass(13:14) = test_add_function_to_function(f1.', @(x) f1_op(x).', ...
+    g1.', @(x) g1_op(x).', x);
+
+% Check error conditions.
+try
+    h = f1 + uint8(128);
+    pass(15) = strcmp(ME.identifier, 'CHEBFUN:plus:unknown')
+catch ME
+    pass(15) = true;
+end
+
+try
+    h = f1 + g1.'
+    pass(16) = strcmp(ME.identifier, 'CHEBFUN:plus:matdim')
+catch ME
+    pass(16) = true;
+end
+
+end
+
+% Test the addition of a chebfun F, specified by F_OP, to a scalar ALPHA using
+% a grid of points X in the domain of F for testing samples.
+function result = test_add_function_to_scalar(f, f_op, alpha, x)
+    g1 = f + alpha;
+    g2 = alpha + f;
+    result(1) = isequal(g1, g2);
+    g_exact = @(x) f_op(x) + alpha;
+    result(2) = norm(feval(g1, x) - g_exact(x), inf) < 10*g1.vscale*g1.epslevel;
+end
+
+% Test the addition of two chebfun objects F and G, specified by F_OP and
+% G_OP, using a grid of points X in the domain of F and G for testing samples.
+function result = test_add_function_to_function(f, f_op, g, g_op, x)
+    h1 = f + g;
+    h2 = g + f;
+    result(1) = isequal(h1, h2);
+    h_exact = @(x) f_op(x) + g_op(x);
+    norm(feval(h1, x) - h_exact(x), inf);
+    result(2) = norm(feval(h1, x) - h_exact(x), inf) < 10*h1.vscale*h1.epslevel;
+end
