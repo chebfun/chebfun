@@ -28,18 +28,19 @@ end
 
 fExps = f.exponents;
 gExps = g.exponents;
-tol = singfun.pref.singfun.exponentTol;
+tolExps = singfun.pref.singfun.exponentTol;
+tolSmth = 1e2*singfun.pref.singfun.eps;
 
 %%
-if ( all(abs(fExps - gExps) < tol) )
+if ( all(abs(fExps - gExps) < tolExps) )
     % Case 1: Exponents exactly alike. Just add the smooth parts.
     s = f;
     s.smoothPart = f.smoothPart + g.smoothPart;
-    if ( iszero(s.smoothPart) )
+    if ( normest(s.smoothPart) < tolSmth )
        s = singfun.zeroSingFun();     
     end
     
-elseif ( all(abs(round(fExps - gExps) - (fExps-gExps)) < tol) )
+elseif ( all(abs(round(fExps - gExps) - (fExps-gExps)) < tolExps) )
     % Case 2: Both exponents differ by integers. Factor out the more singular
     % exponent to leave the sum of smooth quotients.
     
