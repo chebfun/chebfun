@@ -12,20 +12,23 @@ if ( isempty(f) || isempty(g) )
     return;
 end
 
+% One of the arguments i.e. f or g is necessarily a SINGFUN object. Otherwise, 
+% this overloaded plus would not have been called.
+
 % If one of the arguments is a double:
 if ( isa(f, 'double') )
     aDouble = f;
     f = singfun.zeroSingFun();
-    f.smoothPart = chebtech.constructor(aDouble, [], [], []);
+    f.smoothPart = singfun.constructSmoothPart(aDouble, []);
 elseif ( isa(g, 'double') )
     aDouble = g;
     g = singfun.zeroSingFun();
-    g.smoothPart = chebtech.constructor(aDouble, [], [], []);
+    g.smoothPart = singfun.constructSmoothPart(aDouble, []);
 end
 
 fExps = f.exponents;
 gExps = g.exponents;
-tol = singfun.pref.singfun.eps;
+tol = singfun.pref.singfun.exponentTol;
 
 %%
 if ( all(abs(fExps - gExps) < tol) )
@@ -37,18 +40,21 @@ if ( all(abs(fExps - gExps) < tol) )
     end
     
 elseif ( all(abs(round(fExps - gExps) - (fExps-gExps)) < tol) )
-    % Case 2: Both exponents differ by integers. Factor out the common singular
-    % parts to leave the sum of smooth quotients.
+    % Case 2: Both exponents differ by integers. Factor out the more singular
+    % exponent to leave the sum of smooth quotients.
     
-    % At each endpoint, the smaller exponent will be factored out
-    % of both summands.
+    % At each endpoint, the smaller exponent will be factored out of both 
+    % summands. For example, if we are adding (1+x).^-4 and (1+x).^-1,
+    % we first factor out (1+x).^-4:
+    %   (1+x).^-4 + (1+x).^-1 = (1+x).^-4 .* [ 1 + (1+x).^3 ]
     
     % Start off each compensating quotient as 1.
     factorF = @(x) 1;
     factorG = @(x) 1;
     newExps = zeros(1, 2);    
     for side = 1:2
-        % The smaller of the two exponents is the exponent of the sum.
+        % The algebraically smaller of the two exponents is the exponent of 
+        % the sum.
         [e, k] = sort([fExps(side), gExps(side)]);
         newExps(side) = e(1);
         
@@ -59,7 +65,8 @@ elseif ( all(abs(round(fExps - gExps) - (fExps-gExps)) < tol) )
             newFactor = @(x) (1 - x).^diff(e);
         end
         
-        % Who had the smaller exponent? The other one gets the factor.
+        % Who had the algebraically smaller exponent? The other one gets the 
+        % factor.
         if ( k(1) == 1 )
             factorG = @(x) factorG(x).*newFactor(x);
         else
@@ -85,21 +92,9 @@ elseif ( all(abs(round(fExps - gExps) - (fExps-gExps)) < tol) )
 else
     % Case 3: Nontrivial difference in the exponents of F and G. Form a new
     % function handle for the sum from F and G.
-    
-    % Retrieve function handle of F:
-    s1 = f.smoothPart;
-    a1 = f.exponents(1);
-    b1 = f.exponents(2);    
-    op1 = @(x) feval(s1, x).*(1 + x).^a1.*(1 - x).^b1;
-    
-    % Retrieve function handle of G:
-    s2 = g.smoothPart;
-    a2 = g.exponents(1);
-    b2 = g.exponents(2);    
-    op2 = @(x) feval(s2, x).*(1 + x).^a2.*(1 - x).^b2;
-    
+        
     % Define a function handle for the sum:
-    op = @(x) op1(x) + op2(x);
+    op = @(x) feval(f, x) + feval(g, x);
     
     % Construct a new SINGFUN for sum:
     s = singfun(op, [], {'sing', 'sing'}, singfun.pref);

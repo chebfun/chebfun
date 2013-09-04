@@ -313,7 +313,7 @@ function f = classifyExponents(f)
 tol = singfun.pref.singfun.eps;
 
 %%
-% Store the exponents in exps (for brevity):
+% Store the exponents in the variable exps (for brevity):
 exps = f.exponents;
 % Loop on the left and right end point of the domain
 for k = 1:2
@@ -353,9 +353,6 @@ function out = checkSingTypes(f)
 %   different than these four strings (ignoring case), an error message is
 %   thrown.
 %
-
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org/ for Chebfun information.
 
 %%
 out(1) = any(strcmpi(f.singType{1}, {'pole', 'sing', 'root', 'none'}));

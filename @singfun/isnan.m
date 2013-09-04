@@ -8,6 +8,6 @@ function out = isnan(f)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Check if any values are NaN:
-out = isnan(f.smoothPart) || isnan(feval(f, [-1 ; 1]));
+out = isnan(f.smoothPart) || any(isnan(feval(f, [-1 ; 1])));
 
 end

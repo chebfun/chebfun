@@ -18,9 +18,9 @@ function [vals, pos] = minandmax(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-tol = singfun.pref.singfun.eps;
+tol = singfun.pref.singfun.exponentTol;
 
-if ( ~any(f.exponents) || all(abs(f.exponents) < tol) ) %[TODO]: choose a better tol
+if ( ~any(f.exponents) || all(abs(f.exponents) < tol) )
     
     % The function is actually smooth!
     [vals, pos] = minandmax(f.smoothPart);
