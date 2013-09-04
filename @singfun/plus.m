@@ -82,10 +82,7 @@ elseif ( all(abs(round(fExps - gExps) - (fExps-gExps)) < tolExps) )
     
     % Construct the new smooth fun:
     s = singfun.zeroSingFun();
-    smoothPrefs = chebtech.pref('tech', 'cheb1', 'extrapolate', false);
-    vscale = [];
-    hscale = [];
-    s.smoothPart = chebtech.constructor(smoothOp, vscale, hscale, smoothPrefs);
+    s.smoothPart = singfun.constructSmoothPart(smoothOp, []);
     
     % Assign new exponents:
     s.exponents = newExps;
