@@ -28,13 +28,21 @@ if ( isempty(f) )
 end
 
 % Integrate in the continuous dimension by default.
-dim = f.isTransposed + 1;
+if ( f.isTransposed )
+    dim = 2;
+else
+    dim = 1;
+end
 
 % Parse inputs:
-if ( nargin == 2 && numel(a) == 2)
+doSubDomain = 0;
+if ( nargin == 3 )
+    doSubDomain = 1;
+elseif ( nargin == 2 && numel(a) == 2)
     % Support for sum(f, [a, b]):
     b = a(2);
-    a = b(1);
+    a = a(1);
+    doSubDomain = 1;
 elseif ( nargin == 2 && numel(a) == 1 )
     % Support for sum(f, dim):
     dim = a;
@@ -43,7 +51,7 @@ end
 if ( xor(f.isTransposed, dim == 2) ) % Sum over the columns:
     % Call SUMCOLUMNS():
     out = sumColumns(f);
-elseif ( nargin == 3 )               % Integrate over a subdomain:
+elseif ( doSubDomain )               % Integrate over a subdomain:
     % Call SUMSUBDOMAIN():
     out = sumSubDom(f, a, b);
 else                                 % Integrate over the whole domain:
