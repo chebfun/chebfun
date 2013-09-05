@@ -107,7 +107,7 @@ pass(5,4) = length(h4.funs) == 4;
 pass(5,5) = normest(f1 - h4) < tol;
 pass(5,6) = all(all(feval(h4, x3) >= 0));
 
-%%
+%% A more complicated function:
 f = chebfun(@(x) sin(1i*x).*(1i*x+exp(5i*x)));
 g = chebfun(@(x) abs(sin(1i*x).*(1i*x+exp(5i*x))),[-1 0 1]);
 h = abs(f);

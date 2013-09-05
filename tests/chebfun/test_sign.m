@@ -63,4 +63,10 @@ h4 = chebfun(@(x) sign( [gHandle1(x), gHandle2(x)] ), -3:3, pref);
 pass(3,3) = length(h4.funs) == 6;
 pass(3,4) = normest(f1 - h4) < tol;
 
+%% A more complicated function:
+f = chebfun(@(x) sin(1i*x).*(1i*x+exp(5i*x)));
+g = chebfun(@(x) sign(sin(1i*x).*(1i*x+exp(5i*x))),[-1 0 1]);
+h = sign(f);
+pass(4,:) = normest(g - h) < 100*get(h, 'epslevel')*length(h);
+
 end

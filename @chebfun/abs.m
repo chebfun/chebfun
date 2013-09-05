@@ -24,8 +24,8 @@ end
 g.impulses = abs(g.impulses(:,:,1));
 
 % [TODO]: Do we want to do this?
-[ignored, idx] = setdiff(f.domain, g.domain);
-g = merge(g, idx.'); 
+% [ignored, idx] = setdiff(f.domain, g.domain);
+% g = merge(g, idx.'); 
 
 % [TODO]: Do we want to do this?
 g = simplify(g);
