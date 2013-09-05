@@ -86,7 +86,7 @@ classdef singfun
             end
             %%
             if ( (nargin == 2) || ~isempty(exponents) )
-                % exponents passed, discard the values
+                % Exponents passed, discard the values
                 % given in singType and use the
                 % information given in exponents.
                 obj.exponents = exponents;

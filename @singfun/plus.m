@@ -44,10 +44,10 @@ elseif ( all(abs(round(fExps - gExps) - (fExps-gExps)) < tolExps) )
     % Case 2: Both exponents differ by integers. Factor out the more singular
     % exponent to leave the sum of smooth quotients.
     
-    % At each endpoint, the smaller exponent will be factored out of both 
-    % summands. For example, if we are adding (1+x).^-4 and (1+x).^-1,
+    % At each endpoint, the algebraically smaller exponent will be factored out
+    % of both summands. For example, if we are adding (1+x).^-4 and (1+x).^-1,
     % we first factor out (1+x).^-4:
-    %   (1+x).^-4 + (1+x).^-1 = (1+x).^-4 .* [ 1 + (1+x).^3 ]
+    %   (1+x).^-4 + (1+x).^-1 = (1+x).^-4 .* ( 1 + (1+x).^3 )
     
     % Start off each compensating quotient as 1.
     factorF = @(x) 1;
