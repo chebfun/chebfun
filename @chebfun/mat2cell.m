@@ -22,6 +22,7 @@ function g = mat2cell(f, M, N)
 
 % Return an empty result for empty inputs:
 if ( isempty(f) )
+    g = [];
     return
 end
 
