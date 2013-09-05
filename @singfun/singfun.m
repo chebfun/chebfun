@@ -85,7 +85,12 @@ classdef singfun
             end
                 
             %%
-            if ( nargin >= 3 && isempty(exponents) )                
+            % The user can choose a singularity detection algorithm by passing
+            % appropriate strings in the argument "singType". If, however, the
+            % user doesn't provide any prefereces regarding the algorithm, the
+            % most generic algorithm, which tries to find fractional order
+            % singularities is used.
+            if ( nargin >= 3 && isempty(exponents) )
                 if ( isempty(singType) )
                     % Singulrity types and exponents not given. Assume
                     % fractional poles or generic singularities if not given
@@ -98,6 +103,10 @@ classdef singfun
                     end                   
                     checkSingTypes(singType);
                 end
+            else
+                if ( isempty(exponents) )
+                    singType = {'sing', 'sing'};
+                end
             end    
             
             %%
@@ -107,12 +116,17 @@ classdef singfun
             end
             
             %%
-            % Determine and factor out singular terms if exponents 
-            % are not given
-            if ( isempty(obj.exponents) )
-                obj.exponents = singfun.findSingExponents(op, singType);                
+            % If exponents were passed, make sure they are in correct shape.
+            if ( ~isempty(exponents) )
+                if ( any(size(exponents) ~= [1 2]) || ~isa(exponents, 'double') )
+                    error( 'CHEBFUN:SINGFUN:constructor', 'Exponents must be a 1X2 vector of doubles.' );
+                end
+            else                
+                % Exponents not given, determine them. 
+                obj.exponents = singfun.findSingExponents(op, singType);                            
             end
-               
+            
+            %%   
             % Factor out singular terms from the operator based on the values
             % in exponents.
             smoothOp = singOp2SmoothOp(op, obj.exponents);

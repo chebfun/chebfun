@@ -23,7 +23,7 @@ for k = 1:2
         exponents(k) = 0;
     else
         error('CHEBFUN:SINGFUN:findSingExponents:unknownPref', ...
-              'singType "%s" unknown', singType{k})
+              'singType "%s" unknown.', singType{k})
     end    
 end
 
