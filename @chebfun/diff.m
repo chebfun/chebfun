@@ -1,14 +1,21 @@
 function f = diff(f, n, dim)
 %DIFF   Differentiation of a CHEBFUN.
-%   DIFF(F) is the derivative of the columnn chebfun F. At discontinuities, DIFF
-%   creates a Dirac delta with coefficient equal to the size of the jump. Dirac
-%   deltas already existing in F will increase their degree. 
+%   DIFF(F), when F is a column CHEBFUN, computes a column CHEBFUN whose
+%   columns are the derivatives of the corresponding columns in F.  At
+%   discontinuities, DIFF creates a Dirac delta with coefficient equal to the
+%   size of the jump.  Dirac deltas already existing in F will increase their
+%   degree.
 %
-%   DIFF(F, N) is the Nth derivative of F.
+%   DIFF(F), when F is an array-valued row CHEBFUN, computes the first-order
+%   finite difference of F along its rows.  The resulting row CHEBFUN will have
+%   one row fewer than the number of rows in F.
 %
-%   DIFF(F, N, 2) of an array-valued row CHEBFUN (or DIFF(F, N, 1) of a
-%   array-valued column CHEBFUN) computes the Nth difference accross the columns
-%   (or rows) of F.
+%   DIFF(F, N) or DIFF(F, N , 1) computes the Nth derivative of F if F is a
+%   column CHEBFUN and the Nth-order finite difference of F along its rows if F
+%   is a row CHEBFUN.
+%
+%   DIFF(F, N, 2) is the Nth-order finite difference of F along its columns if
+%   F is a column CHEBFUN and the Nth derivative of F if F is a row CHEBFUN.
 %
 % See also SUM, CUMSUM.
 
@@ -34,15 +41,15 @@ if ( nargin < 3 )
     dim = 1;
 end
 
-if ( ~any(dim == [1, 2]))
-    error('CHEBFUN:cumsum:dim', 'Index exceeds matrix dimensions.');
-elseif ( round(dim) ~= dim )
-    error('CHEBFUN:cumsum:dim', 'Dimension must either be 1 or 2.');
+if ( ~any(dim == [1, 2]) )
+    error('CHEBFUN:diff:dim', 'Dimension must either be 1 or 2.');
 end
     
 if ( round(n) ~= n )
     % Fractional integral:
     % [TODO]: Implement this!
+    error('CHEBFUN:diff:notImplemented', ...
+        'Fractional derivatives not yet implemented.');
     f = fracCalc(f, n);
     return
 end
@@ -73,7 +80,7 @@ for j = 1:n
     for k = 1:numFuns-1
         jmp = get(funs{k+1}, 'lval') - get(funs{k}, 'rval');
         scl = 0.5*(vs(k) + vs(k+1,:));
-        if ( any( abs(jmp) > tol*scl ) )
+        if ( any(abs(jmp) > tol*scl) )
            newDeltas(k+1,:,:) = jmp;
         end
     end

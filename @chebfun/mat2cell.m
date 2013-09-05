@@ -1,4 +1,4 @@
-function f = mat2cell(f, M, N)
+function g = mat2cell(f, M, N)
 %MAT2CELL   Convert an array-valued CHEBFUN to a cell array of CHEBFUN objects.
 %   G = MAT2CELL(F, C) breaks up the array-valued CHEBFUN F into a single row
 %   cell array G of CHEBFUN objects. C is the vector of column sizes and must
@@ -19,7 +19,7 @@ function f = mat2cell(f, M, N)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Return an empty result:
+% Return an empty result for empty inputs:
 if ( isempty(f) )
     return
 end
@@ -51,9 +51,28 @@ for k = 1:numFuns
 end
 
 % Create a new CHEBFUN from each column of FUNs;
-f = cell(1, numel(N));
+g = cell(1, numel(N));
 for k = 1:numel(N)
-    f{k} = chebfun(cellFuns(:,k));
+    % Make the CHEBFUN.
+    g{k} = chebfun(cellFuns(:,k));
+
+    % Copy over higher-order impulses.
+    g{k}.impulses = cat(3, g{k}.impulses, ...
+        zeros(numFuns + 1, N(k), size(f.impulses, 3) - 1));
+
+    startCol = sum(N(1:(k-1))) + 1; % Columns of f that correspond to the
+    endCol = startCol + N(k) - 1;   % current CHEBFUN being made.
+
+    for n = 1:(numFuns + 1)
+        g{k}.impulses(n,1:N(k),2:end) = f.impulses(n,startCol:endCol,2:end);
+    end
+
+    % Remove all-zero layers of higher-order impulses.
+    for n = size(g{k}.impulses, 3):-1:1
+        if ( all(all(g{k}.impulses(:,:,n) == 0)) )
+            g{k}.impulses(:,:,n) = [];
+        end
+    end
 end
 
 end

@@ -56,11 +56,15 @@ if ( dim == 2 )
     % Differentiate coefficients across dim:
     f.coeffs = diff(f.coeffs, k, dim);
     
-    % Tidy up an empty result:
     if ( isempty(f.values) )
+        % Tidy up an empty result:
         f = f.make(); % Make an empty CHEBTECH.
+    else
+        % Otherwise, update vscale and epslevel.
+        % [TODO]:  epslevel stays the same?
+        f.vscale = max(abs(f.values), [], 1);
     end
-    
+
     return    
 end
 
@@ -97,7 +101,7 @@ while ( k > 0 ) % Note that n > k.
     
     % Update epslevel and the vertical scale: (See CHEBTECH CLASSDEF file for
     % documentation)
-    f.epslevel = n*log(n)*f.epslevel*f.vscale;
+    f.epslevel = n*log(n)*f.epslevel*max(f.vscale); % [TODO]: Vector epslevel?
     f.vscale = max(abs(v), [], 1);
 end
 

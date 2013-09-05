@@ -1,5 +1,5 @@
 function out = sum(f, a, b)
-%SUM    Definite integral of a CHEBFUN.
+%SUM   Definite integral of a CHEBFUN.
 %   SUM(F) is the integral of a column CHEBFUN F over its domain of definition.
 %
 %   SUM(F, A, B) integrates a column CHEBFUN F over [A, B], which must be a
@@ -28,14 +28,22 @@ if ( isempty(f) )
 end
 
 % Integrate in the continuous dimension by default.
-dim = f.isTransposed + 1;
+if ( f.isTransposed )
+    dim = 2;
+else
+    dim = 1;
+end
 
 % Parse inputs:
-if ( nargin == 2 && numel(a) == 2)
+doSubDomain = 0;
+if ( nargin == 3 )
+    doSubDomain = 1;
+elseif ( (nargin == 2) && (numel(a) == 2) )
     % Support for sum(f, [a, b]):
     b = a(2);
-    a = b(1);
-elseif ( nargin == 2 && numel(a) == 1 )
+    a = a(1);
+    doSubDomain = 1;
+elseif ( (nargin == 2) && (numel(a) == 1) )
     % Support for sum(f, dim):
     dim = a;
 end
@@ -43,7 +51,7 @@ end
 if ( xor(f.isTransposed, dim == 2) ) % Sum over the columns:
     % Call SUMCOLUMNS():
     out = sumColumns(f);
-elseif ( nargin == 3 )               % Integrate over a subdomain:
+elseif ( doSubDomain )               % Integrate over a subdomain:
     % Call SUMSUBDOMAIN():
     out = sumSubDom(f, a, b);
 else                                 % Integrate over the whole domain:
@@ -90,10 +98,10 @@ function out = sumSubDom(f, a, b)
     if ( isnumeric(a) && isnumeric(b) )
 
         % Validate the subdomain:
-        if ( a < d1 || b > d2 )
+        if ( (a < d1) || (b > d2) )
             error('CHEBFUN:sum:ab', 'Not a valid subdomain.');
             
-        elseif ( a == d1 && b == d2 )
+        elseif ( (a == d1) && (b == d2) )
             % Subdomain == original domain.
             out = sum(f);
             return
@@ -110,7 +118,7 @@ function out = sumSubDom(f, a, b)
         % Compute the indefinite integral:
         out = cumsum(f);
         % Compose with the CHEBFUNs defining the limits:
-        out = compose(out, b) - compose(out, a);
+        out = compose(b, out) - compose(a, out);
 
     elseif ( isa(b, 'chebfun') )
 
@@ -121,8 +129,14 @@ function out = sumSubDom(f, a, b)
 
         % Compute the indefinite integral:
         out = cumsum(f);
+
+        % Create CHEBFUN with value at lower limit:  (This is necessary for
+        % things to work with array-valued inputs.)
+        aVal = feval(out, a);
+        aVal = chebfun(@(x) repmat(aVal, length(x), 1) , out.domain);
+
         % Compose with the CHEBFUNs defining the limits:
-        out = compose(out, b) - feval(out, a);
+        out = compose(b, out) - aVal;
 
     elseif ( isa(a, 'chebfun') )
 
@@ -133,8 +147,14 @@ function out = sumSubDom(f, a, b)
 
         % Compute the indefinite integral:
         out = cumsum(f);
+
+        % Create CHEBFUN with value at upper limit:  (This is necessary for
+        % things to work with array-valued inputs.)
+        bVal = feval(out, b);
+        bVal = chebfun(@(x) repmat(bVal, length(x), 1) , out.domain);
+
         % Compose with the CHEBFUNs defining the limits:
-        out = feval(out, b) - compose(out, a);
+        out = bVal - compose(a, out);
     end
 
 end

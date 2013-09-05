@@ -8,8 +8,8 @@ function f = plus(f, g)
 
 if ( ~isa(f, 'chebfun') )   % ??? * chebfun
 
-    % Ensure chebfun is the first input:
-    f = times(g, f);
+    % Ensure CHEBFUN is the first input:
+    f = plus(g, f);
     return
 
 elseif ( isempty(g) )       % chebfun + []

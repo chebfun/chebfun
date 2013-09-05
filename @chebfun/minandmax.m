@@ -1,5 +1,5 @@
 function [y, x] = minandmax(f, flag)
-%MINANDMAX Minimum and maximum values of a CHEBFUN.
+%MINANDMAX   Minimum and maximum values of a CHEBFUN.
 %   Y = MINANDMAX(F) returns the range of the CHEBFUN F such that Y(1,1) =
 %   min(F) and Y(2,1) = max(F).
 %
@@ -32,7 +32,7 @@ end
 % Number of columns of an array-valued CHEBFUN:
 numCols = size(f.funs{1}, 2);
 
-if ( nargin > 1 && strcmpi(flag, 'local') )
+if ( (nargin > 1) && strcmpi(flag, 'local') )
     % Deal with local case:
     [y, x] = localMinAndMax(f);
     return
@@ -66,23 +66,24 @@ end
 y = [inf, -inf];
 x = [inf, inf];
 
-% Only lowest-order nontrivial impulses are relevant:
-for k = 1:numel(f.funs)
-    % Locate lowest-order nontrivial impulse:
-    indx = find(f.impulses(k,1,2:end), 1);
-    % Throw away higher-order impulses:
-    f.impulses(k,1,indx+2:end) = 0;
+% Determine the strength of the first nontrivial impulse at each breakpoint:
+impulseStrengths = zeros(numel(f.funs) + 1, 1);
+for k = 1:(numel(f.funs) + 1)
+    indx = find(f.impulses(k,1,2:end), 1, 'first');
+    if ( ~isempty(indx) )
+    	impulseStrengths(k) = f.impulses(k,1,indx+1);
+    end
 end
 
-% Negative impulse, return y(1) = -inf
-ind = find(min(f.impulses(:,1,2:end), [], 1) < 0 , 1, 'first');
+% If we have a negative nontrivial impulse, return y(1) = -inf:
+ind = find(impulseStrengths < 0, 1, 'first');
 if ( ~isempty(ind) )
     y(1) = -inf;
     x(1) = f.domain(ind);
 end
 
-% Positive impulse, return y(2) = inf
-ind = find(max(f.impulses(:,1,2:end), [], 1) > 0, 1, 'first');
+% If we have a positive nontrivial impulse, return y(2) = inf:
+ind = find(impulseStrengths > 0, 1, 'first');
 if ( ~isempty(ind) )
     y(2) = inf;
     x(2) = f.domain(ind);
@@ -100,8 +101,8 @@ end
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% SMOOTH PART %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 dom = f.domain;
 nfuns = numel(f.funs);
-yy = [zeros(nfuns,2) ; y];
-xx = [zeros(nfuns,2) ; x];
+yy = [zeros(nfuns, 2) ; y];
+xx = [zeros(nfuns, 2) ; x];
 for k = 1:nfuns
     [yy(k,:), xx(k,:)] = minandmax(f.funs{k});
 end
