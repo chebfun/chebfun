@@ -60,7 +60,7 @@ if ( numCols == 1 )
         case {inf, 'inf'}
             if ( isreal(f) )
                 [normF, normLoc] = minandmax(f);
-                [normF, idx] = max([-normF(1), normF(2)]);
+                [normF, idx] = max(abs(normF));
                 normLoc = normLoc(idx);
             else
                 [normF, normLoc] = max(conj(f).*f);
@@ -68,7 +68,8 @@ if ( numCols == 1 )
             end
             
         case {-inf, '-inf'}
-            [normF, normLoc] = min(abs(f));
+            [normF, normLoc] = min(conj(f).*f);
+            normF = sqrt(normF);
             
         otherwise
             if ( isnumeric(n) && isreal(n) )
