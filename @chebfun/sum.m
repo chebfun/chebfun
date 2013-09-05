@@ -11,10 +11,11 @@ function out = sum(f, a, b)
 %                       /
 %                     A(s)
 %
-%   SUM(F, DIM), where DIM is on of 1, 2, sums F over the dimension DIM. If F is
-%   a column CHEBFUN and DIM = 1 or if F is a row CHEBFUN and DIM =2 then this
-%   integrates in the continuous dimnesion of F, as described above. Otherwise,
-%   SUM(F, DIM) sums across the columns (rows) of the column (row) CHEBFUN F.
+%   SUM(F, DIM), where DIM is one of 1, 2, sums F over the dimension DIM. If F
+%   is a column CHEBFUN and DIM = 1 or if F is a row CHEBFUN and DIM = 2 then
+%   this integrates in the continuous dimension of F, as described above.
+%   Otherwise, SUM(F, DIM) sums across the columns (rows) of the column (row)
+%   CHEBFUN F.
 %
 % See also CUMSUM, DIFF.
 

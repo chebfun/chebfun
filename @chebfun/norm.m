@@ -17,7 +17,7 @@ function [normF, normLoc] = norm(f, n)
 %       NORM(f) = sqrt(integral of abs(f)^2).
 %       NORM(F, inf) is the maximum of the 1-norms of the rows of F.
 %
-% Furthermore, the +\-inf norms for scalar-vaued chebfun objects may also
+% Furthermore, the +\-inf norms for scalar-valued CHEBFUN objects may also
 % return a second output, giving the position where the max/min occurs. For
 % array-valued CHEBFUN objects, the 1, inf, and p-norms can return as their 2nd
 % output the index of the column with the largest norm.
