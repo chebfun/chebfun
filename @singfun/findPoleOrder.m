@@ -21,21 +21,20 @@ function poleOrder = findPoleOrder(op, singEnd)
 % Distance of the sample points from the right end point, i.e. 1.
 x = 10.^(-1:-1:-15)';
 
-if ( strcmpi(singEnd, 'right') )
-    % If a pole is expected at x = 1
+if ( strcmpi(singEnd, 'right') )       % A pole is expected at x = 1   
     fvalsRight = op(1 - x);
     poleOrder = poleOrderFinder( fvalsRight, x);
-else if ( strcmpi(singEnd, 'left') )
-        % If a pole is expected at x = -1
+else if ( strcmpi(singEnd, 'left') )   % A pole is expected at x = -1
         fvalsLeft = op(-1 + x);
         poleOrder = poleOrderFinder( fvalsLeft, x);
     else
         error('CHEBFUN:SINGFUN:findPoleOrder:unknownPref', ...
-              'Blowup preference "%s" unknown', singEnd )
+              'Blowup preference "%s" unknown.', singEnd )
     end
 end
 
-% Return negative numbers as exponents
+% The algorithm returns a positive number for blow up type singularities. 
+% Correct exponents are obtained by negation.
 poleOrder = -poleOrder;
 
 end
@@ -45,9 +44,9 @@ function poleOrder = poleOrderFinder( fvals, x )
 %POLEORDERFINDER   Finds the order of the pole based on function values
 %   FVALS given at (1-X).
 
-% we take the absolute value of the function vlaues now and since the 
-% factor (1-x) is assumed positive, we dont' need ABS() afterwards when 
-% function values are scaled by powers of (1-x).
+% We take the absolute value of the function vlaues now and don't call ABS()
+% later. This works because scaling with powers of the positive factor (1-x)
+% don't change the sign of function values. 
 smoothVals = abs(fvals);
 if ( any(isinf(smoothVals)) )
     error('CHEBFUN:SINGFUN:findPoleOrder', 'Function returned inf value.')
@@ -58,7 +57,8 @@ if ( any(isnan(smoothVals)) )
 end
 
 % Test parameters
-testRatio = 1.01;
+% [TODO]: Should there be a field for this test?
+testRatio = 1.01; 
 maxPoleOrder = singfun.pref.singfun.maxPoleOrder;
 
 poleOrder = 0;
@@ -76,7 +76,6 @@ if ( poleOrder > maxPoleOrder )
     % Method failed.
     error('CHEBFUN:SINGFUN:fail', ...
             'Pole order excedes limit for maximum pole order.');
-    poleOrder = 0;
 end
 
 end

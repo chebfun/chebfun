@@ -79,28 +79,26 @@ classdef singfun
                 exponents = [];                
             end
             %%
+            % Case 2: Two input arguments.
             if ( (nargin == 2) || ~isempty(exponents) )
                 % Exponents passed, store them.
                 obj.exponents = exponents;                                           
             end
                 
             %%
+            % Case 3: Three or more input arguments.
             % The user can choose a singularity detection algorithm by passing
-            % appropriate strings in the argument "singType". If, however, the
-            % user doesn't provide any prefereces regarding the algorithm, the
-            % most generic algorithm, which tries to find fractional order
-            % singularities is used.
+            % appropriate strings in the argument "singType", which is a cell
+            % array. If, however, the user doesn't provide any prefereces 
+            % regarding the algorithm, the most generic algorithm, which tries
+            % to find fractional order singularities is used.
             if ( nargin >= 3 && isempty(exponents) )
                 if ( isempty(singType) )
                     % Singulrity types and exponents not given. Assume
                     % fractional poles or generic singularities if not given
                     singType = {'sing', 'sing'};
                 else
-                    % Singularity types given, make sure the strings are OK.
-                    if ( ~isa(singType, 'cell') )
-                        error( 'CHEBFUN:SINGFUN:constructor', ...
-                               'singType must be a 1x2 cell with two strings');
-                    end                   
+                    % Singularity types given, make sure the strings are OK.                                
                     checkSingTypes(singType);
                 end
             else
@@ -292,6 +290,10 @@ function out = checkSingTypes(singType)
 %   thrown.
 %
 
+if ( ~isa(singType, 'cell') )
+    error( 'CHEBFUN:SINGFUN:constructor', ...
+        'singType must be a 1x2 cell with two strings');
+end
 %%
 out(1) = any(strcmpi(singType{1}, {'pole', 'sing', 'root', 'none'}));
 out(2) = any(strcmpi(singType{2}, {'pole', 'sing', 'root', 'none'}));

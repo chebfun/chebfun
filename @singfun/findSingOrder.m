@@ -1,12 +1,13 @@
 function singOrder = findSingOrder(op, singEnd)
-%FINDSINGORDER   Finds the order of the algebraic singularity (a fractional
-%   pole) in the function handle OP at x = 1 or -1 depending upon the string
-%   'left' or 'right' passed in SINGEND. The method also works for poles, 
-%   i.e. if the order of the singularity is an integer.
-%    Example:
-%   p = singfun.findSingOrder(@(x) 1./(1-x).^1.5, 'right' )
-%   p = singfun.findSingOrder(@(x) 1./(1+x).^2.5, 'left' )
-%   p = singfun.findSingOrder(@(x) 1./(1+x).^5, 'left' )
+%FINDSINGORDER   Finds the order of the algebraic singularity in the function
+%   handle OP at x = 1 or -1 depending upon the string 'left' or 'right' 
+%   passed in SINGEND. The singularity may be a pole, a fractional pole or a 
+%   fractional zero of order less than one.
+%   
+%   Example:
+%      p = singfun.findSingOrder(@(x) 1./(1-x).^1.5, 'right' )
+%      p = singfun.findSingOrder(@(x) 1./(1+x).^2.5, 'left' )
+%      p = singfun.findSingOrder(@(x) 1./(1+x).^5, 'left' )
 %
 % See also FINDPOLEORDER and FINDSINGEXPONENTS
 
@@ -18,30 +19,32 @@ function singOrder = findSingOrder(op, singEnd)
 % will be passed on as upperbound for the singularity order.
 poleBound = -singfun.findPoleOrder(op, singEnd );
 
-% Distance of sample points from the end points
+% Distance of sample points from the end points:
 x = eps*(11:-1:2)';
-% If a pole is expected at x = 1
-if ( strcmpi(singEnd, 'right') )
+
+if ( strcmpi(singEnd, 'right') )       % A pole is expected at x = 1.
     fvalsRight = op(1 - x);
-    singOrder = singOrderFinder( fvalsRight, x, poleBound);
-else if ( strcmpi(singEnd, 'left') )
-        % If a pole is expected at x = -1
+    singOrder = singOrderFinder(fvalsRight, x, poleBound);
+else if ( strcmpi(singEnd, 'left') )   % A pole is expected at x = -1.       
         fvalsLeft = op(-1 + x);
-        singOrder = singOrderFinder( fvalsLeft, x, poleBound);
+        singOrder = singOrderFinder(fvalsLeft, x, poleBound);
     else
         error('CHEBFUN:SINGFUN:findSingOrder:unknownPref', ...
-              'Blowup preference "%s" unknown', singEnd )
+              'Blowup preference "%s" unknown.', singEnd )
     end
 end
-% singOrder is a negative number.
+
+% The algorithm returns a positive number for blow up type singularities. 
+% Correct exponents are obtained by negation.
 singOrder = -singOrder;
 
+%%
 % The algorithm does not support positive exponents >= 1. Such results are 
 % garbage, so discard them. This is consistent with Chebfun V4. From a
 % practial point of view, this is not a problem since a chebfun with a
 % barnch singularity of order > 1 converges. For such functions, the 
-% cheb-coefficient decay is algebraic but strong enough to give us a reliable 
-% representation.
+% cheb-coefficient decay is algebraic but strong enough to give us a 
+% reliable representation.
 if ( singOrder >= 1 )
     singOrder = 0;
 end
