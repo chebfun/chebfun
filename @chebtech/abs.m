@@ -6,7 +6,7 @@ function f = abs(f, varargin)
 
 if ( isreal(f) || isreal(1i*f) )    
     f.values = abs(f.values);
-    f.coeffs = f.chebpoly(f.values);
+    f.coeffs = f.vals2coeffs(f.values);
 else
     f = compose(f, @abs, [], varargin{:});
 end

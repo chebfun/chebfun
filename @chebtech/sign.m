@@ -12,7 +12,8 @@ function f = sign(f, pref)
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 if ( isreal(f) )
-    f.values = sign(feval(f, 0.1));
+    arbitraryPoint = 0.1273881594;
+    f.values = sign(feval(f, arbitraryPoint));
     f.coeffs = f.values;
 else
     if ( nargin == 1 )
