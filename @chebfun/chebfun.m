@@ -181,6 +181,11 @@ classdef chebfun
         vals = jumpVals(funs, ends, op);
         
     end
+
+    methods (Access = private)
+        % Remove zero layers from impulses array.
+        f = tidyImpulses(f);
+    end
     
     % Static methods implemented by CHEBFUN class.
     methods (Static = true, Access = private)

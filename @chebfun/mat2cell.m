@@ -51,6 +51,9 @@ for k = 1:numFuns
     cellFuns(k,:) = mat2cell(f.funs{k}, M, N);
 end
 
+% Create a cell which tells us which columns are grouped together:
+index = mat2cell(1:size(f.funs{1}, 2), M, N);
+
 % Create a new CHEBFUN from each column of FUNs;
 g = cell(1, numel(N));
 for k = 1:numel(N)
@@ -58,22 +61,8 @@ for k = 1:numel(N)
     g{k} = chebfun(cellFuns(:,k));
 
     % Copy over higher-order impulses.
-    g{k}.impulses = cat(3, g{k}.impulses, ...
-        zeros(numFuns + 1, N(k), size(f.impulses, 3) - 1));
-
-    startCol = sum(N(1:(k-1))) + 1; % Columns of f that correspond to the
-    endCol = startCol + N(k) - 1;   % current CHEBFUN being made.
-
-    for n = 1:(numFuns + 1)
-        g{k}.impulses(n,1:N(k),2:end) = f.impulses(n,startCol:endCol,2:end);
-    end
-
-    % Remove all-zero layers of higher-order impulses.
-    for n = size(g{k}.impulses, 3):-1:1
-        if ( all(all(g{k}.impulses(:,:,n) == 0)) )
-            g{k}.impulses(:,:,n) = [];
-        end
-    end
+    g{k}.impulses = f.impulses(:,index{k},:);
+    g{k} = tidyImpulses(g{k});
 end
 
 end
