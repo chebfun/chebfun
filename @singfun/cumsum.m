@@ -143,20 +143,16 @@ if ( abs(ra - a) > tol*f.smoothPart.vscale )    % No log term
     if ( iszero(u) && abs(CM) > tol*f.smoothPart.vscale )
         g.smoothPart = f.smoothPart.make(@(x) CM + 0*x);
         g.exponents = [ra - a 0];
-        g.singType = {'sing', 'none'};
     elseif ( ~iszero(u) && abs(CM) < tol*f.smoothPart.vscale )
         g.smoothPart = u;
         g.exponents = [exps(1) 0];
-        g.singType = {'sing', 'none'};
     elseif ( iszero(u) && abs(CM) < tol*f.smoothPart.vscale )
         % Both terms are small, so ignore them
         g.smoothPart = f.smoothPart.make(@(x) 0*x);
         g.exponents = zeros(1,2);
-        g.singType = {'none', 'none'};
     else % The general case that both terms are non-trivial
         g.smoothPart = u + CM*xa;
         g.exponents = [exps(1) 0];
-        g.singType = {'sing', 'none'};
     end
     
 elseif abs(Cm) < tol*f.smoothPart.vscale   % No log term

@@ -15,6 +15,5 @@ s.smoothPart = singfun.constructSmoothPart(@(x) 0*x, []);
 
 % No singularities at any end points:
 s.exponents = [0, 0];
-s.singType = {'none', 'none'};
 
 end

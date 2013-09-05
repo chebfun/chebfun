@@ -39,28 +39,9 @@ s.smoothPart = (f.smoothPart).*(g.smoothPart);
 % Add the exponents:
 s.exponents = f.exponents + g.exponents;
 
-% Check if after multiplication the type of singularity has changed or if it can
-% be removed.
-
+%%
+% Check if after multiplication the singularity can be removed.
 tol = singfun.pref.singfun.exponentTol;
-
-% Loop through each end:
-for k = 1:2
-    if ( s.exponents(k) < tol )
-        if ( abs(s.exponents(k) - round(s.exponents(k))) < tol )
-            s.singType{k} = 'pole';
-            s.exponents(k) = round(s.exponents(k));
-        else
-            s.singType{k} = 'sing';
-        end
-    else
-        if ( s.exponents(k) < tol )
-            s.singType{k} = 'none';
-            s.exponents(k) = 0;
-        else
-            s.singType{k} = 'root';
-        end
-    end
-end
+s.exponents( abs(s.exponents) < tol ) = 0;
 
 end

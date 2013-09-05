@@ -8,9 +8,7 @@ function f = flipud(f)
 % Flip the smooth part:
 f.smoothPart = flipud(f.smoothPart);
 
-% Since the following fields of a SINGFUN are 1x2 row vectors, FLIPUD is 
+% Since exponents of a SINGFUN are contained in a 1x2 row vector, FLIPUD is 
 % translated into a FLIPLR:
 f.exponents = fliplr(f.exponents);
-f.singType = fliplr(f.singType);
-
 end

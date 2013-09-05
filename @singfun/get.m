@@ -3,7 +3,6 @@ function out = get(f, prop)
 %   P = GET(F, PROP) returns the property P specified in the string PROP from
 %   the SINGFUN object F. Valid entries for the string PROP are:
 %       'EXPONENTS'  - The exponents of F at the end points -1 and 1.
-%       'SINGTYPE'   - The type of singularity of F at the end points -1 and 1.
 %       'SMOOTHPART' - The smooth part of F on [-1, 1], which is a CHEBTECH.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 

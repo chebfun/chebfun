@@ -14,7 +14,6 @@ f.smoothPart = real(f.smoothPart);
 if ( iszero(f.smoothPart) )
     f.exponents = [0, 0];
     f.isSingEnd = [0, 0];
-    f.singType = {'none', 'none'};
 end
 
 end

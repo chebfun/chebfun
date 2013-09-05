@@ -46,11 +46,7 @@ classdef singfun
         
         % Exponents of the singularities at the two endpoints.
         exponents       % (1x2 double)
-        
-        % A cell array containing the types of singularities at the endpoints.
-        singType = {};  % (1x2 cell)        
-        % [TODO]: What values may this take? What do they mean? Why is it needed?
-        
+                
         % [TODO]: Shold exponentTol be a property?
      end
     
@@ -58,52 +54,34 @@ classdef singfun
     methods ( Static = true )
         function obj = singfun(op, exponents, singType, pref) 
             %%
-            % Check for preferences in the very beginning.
-            % Determine preferences if not given, merge if some are given:
+            % Check for preferences in the very beginning.            
             if ( (nargin < 4) || isempty(pref) )
+                % Determine preferences if not given.
                 pref = singfun.pref;
-            else        
+            else
+                % Merge if some preferences are given.
                 pref = singfun.pref(pref);
             end
-            %%
-            % Check for cases based on the number of arguments            
             
-            %%
-            % No input arguments: return an empty object               
+            
+            %% Cases based on the number of arguments                        
+            % Case 0: No input arguments, return an empty object.
             if ( nargin == 0 )   
                 obj.smoothPart = [];
                 obj.exponents = [];
-                obj.singType = {};
                 return
             end
             
             %%
+            % Case 1: One input argument.
             if ( nargin == 1 )
-                % Only operator passed, assume a fractional pole at each 
-                % end point               
-                exponents = [];
-                obj.singType = {'sing', 'sing'};                
+                % Make sure the exponents are empty.
+                exponents = [];                
             end
             %%
             if ( (nargin == 2) || ~isempty(exponents) )
-                % Exponents passed, discard the values
-                % given in singType and use the
-                % information given in exponents.
-                obj.exponents = exponents;
-                if ( (nargin == 2) || isempty(singType) )
-                    % if the user has not provided the type of
-                    % singularity, figure it out
-                    obj = classifyExponents(obj);
-                else
-                    % Singularity types given, make sure the strings are OK.
-                    if ( ~isa(singType, 'cell') )
-                        error( 'CHEBFUN:SINGFUN:constructor', ...
-                               'singType must be a 1x2 cell with two strings');
-                    end
-                    obj.singType = singType;
-                    checkSingTypes(obj);                    
-                end
-                              
+                % Exponents passed, store them.
+                obj.exponents = exponents;                                           
             end
                 
             %%
@@ -111,15 +89,14 @@ classdef singfun
                 if ( isempty(singType) )
                     % Singulrity types and exponents not given. Assume
                     % fractional poles or generic singularities if not given
-                    obj.singType = {'sing', 'sing'};
+                    singType = {'sing', 'sing'};
                 else
                     % Singularity types given, make sure the strings are OK.
                     if ( ~isa(singType, 'cell') )
                         error( 'CHEBFUN:SINGFUN:constructor', ...
                                'singType must be a 1x2 cell with two strings');
-                    end
-                    obj.singType = singType;
-                    checkSingTypes(obj);
+                    end                   
+                    checkSingTypes(singType);
                 end
             end    
             
@@ -133,13 +110,13 @@ classdef singfun
             % Determine and factor out singular terms if exponents 
             % are not given
             if ( isempty(obj.exponents) )
-                obj.exponents = singfun.findSingExponents(op, obj.singType);
-                % update SINGTYPE based on EXPONENTS
-                obj = classifyExponents(obj);               
+                obj.exponents = singfun.findSingExponents(op, singType);                
             end
                
-            % update the operator based on the values in exponents.
+            % Factor out singular terms from the operator based on the values
+            % in exponents.
             smoothOp = singOp2SmoothOp(op, obj.exponents);
+            % Construct the smooth part.
             obj.smoothPart = singfun.constructSmoothPart(smoothOp, pref);
         end
     end
@@ -294,62 +271,6 @@ end
 % Functions implemented in this file
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function f = classifyExponents(f)
-%CLASSIFYEXPONENTS   Function to assign types of exponents in a SINGFUN object.
-%   Based on the values in F.EXPONENTS, this functions decides the type that 
-%   should be assigned to F.SINGTYPE. The valid types can be 'sing', 'pole', 
-%   'root' or 'none'. F.SINGTYPE is a 1X2 cell array and the pair of string
-%   contained in this field describes the types of singularities at each end,
-%   -1 or 1 of the SINGFUN F. These types have the following meaning:
-%    
-%      'pole' - A pole, i.e. a negative integer exponent at the 
-%               corresponding end.
-%      'sing' - A negative real exponent at the corresponding end. 
-%               Can be an integer as well.
-%      'root' - A root of fractional order at the corresponding end point.
-%      'none' - No singularity at the end point.
-
-%%
-% Get the SINGFUN tolerance
-% [TODO]: This should depend on scales, but what are the scales?
-%         This TODO will be setteled once scales are finalised.
-tol = singfun.pref.singfun.eps;
-
-%%
-% Store the exponents in the variable exps (for brevity):
-exps = f.exponents;
-% Loop on the left and right end point of the domain
-for k = 1:2
-    % If positive exponent
-    if ( exps(k) >= 0 )
-        if ( abs(exps(k) - round(exps(k))) < 100*tol )
-            % Positive integer exponent, i.e. no singularity
-            f.singType{k} = 'none';
-        else
-            % The function is bounded but there is a root of fractional order.
-            f.singType{k} = 'root';
-        end
-    else        
-        % Negative exponents        
-        if ( exps(k) > -100*tol )
-            % The exponent is negative but almost zero,
-            % remove the singularity
-            f.singType{k} = 'none';
-        else
-            % Non-trivial negative exponent
-            if ( abs(exps(k) - round(exps(k))) < 100*tol )
-                % Pole if integer valued exponent
-                f.singType{k} = 'pole';
-            else
-                % A fractional pole, which we call 'sing'
-                f.singType{k} = 'sing';
-            end
-        end
-    end
-end
-
-end
-
 function out = checkSingTypes(f)
 %CHECKSINGTYPES   Function to check types of exponents in a SINGFUN object.
 %   The valid types can be 'sing', 'pole', 'root' or 'none'. If the type is
@@ -362,7 +283,7 @@ out(1) = any(strcmpi(f.singType{1}, {'pole', 'sing', 'root', 'none'}));
 out(2) = any(strcmpi(f.singType{2}, {'pole', 'sing', 'root', 'none'}));
 
 if ( ~all(out) )
-    error('CHEBFUN:SINGFUN:checkSingTypes', 'Unknown singularity type');
+    error('CHEBFUN:SINGFUN:checkSingTypes', 'Unknown singularity type.');
 end
 
 end
