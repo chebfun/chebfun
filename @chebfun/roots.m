@@ -58,7 +58,7 @@ rootsPref = parseInputs(f, varargin{:});
 el = epslevel(f);
 hs = hscale(f);
 vs = vscale(f);
-htol = el*hs;
+htol = 10*el*hs;
 vtol = el*vs;
 dom = f.domain;
 

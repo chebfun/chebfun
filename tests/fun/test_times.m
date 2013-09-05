@@ -93,7 +93,7 @@ g = bndfun(@(x) [sinh(x) cosh(x) tanh(x)], dom, [], [], pref);
 h = f .* g;
 h_exact = @(x) [sinh(x).*sin(x) cosh(x).*cos(x) tanh(x).*exp(x)];
 err = feval(h, x) - h_exact(x);
-pass(14) = max(abs(err(:))) < max(get(h, 'vscale'))*get(h, 'epslevel');
+pass(14) = max(abs(err(:))) < 10*max(get(h, 'vscale'))*get(h, 'epslevel');
 
 % This should fail with a dimension mismatch error.
 try
@@ -123,7 +123,7 @@ pass(19:20) = test_mult_function_by_function(f, f_op, f, f_op, x, false);
 %%
 % Check that multiplication and direct construction give similar results.
 
-tol = 10*eps;
+tol = 100*eps;
 g_op = @(x) 1./(1 + x.^2);
 g = bndfun(g_op, dom, [], [], pref);
 h1 = f .* g;
@@ -161,7 +161,7 @@ end
 function result = test_mult_function_by_function(f, f_op, g, g_op, x, checkpos)
 h = f .* g;
 h_exact = @(x) f_op(x) .* g_op(x);
-tol = 10*get(h, 'epslevel')*max(get(f, 'vscale'))*max(get(g, 'vscale'));
+tol = 10*max(get(h, 'vscale').*get(h, 'epslevel'));
 result(1) = all(max(abs(feval(h, x) - h_exact(x))) < 5*tol);
 if ( checkpos )
     result(2) = all(feval(h, x) >= 0);

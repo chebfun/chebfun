@@ -1,9 +1,9 @@
-function [edge, vscale] = detectEdge(op, domain, vscale, hscale, derHandle)
+function edge = detectEdge(op, domain, vscale, hscale, derHandle)
 %DETECTEDGE   Edge detection.
-%   EDGE = DETECTEDGE(F, DOMAIN, HSCALE, VSCALE) detects a blowup in first,
+%   EDGE = DETECTEDGE(F, DOMAIN, HSCALE, VSCALE) detects a blowup in the first,
 %   second, third, or fourth derivatives of F in [A,B]. HSCALE is the horizontal
-%   scale and VSCALE is the vertical scale. If no edge is detected, EDGE = 0 is
-%   returned.
+%   scale and VSCALE is the vertical scale (note that both are required). If no
+%   edge is detected, EDGE is set to the midpoint of DOMAIN.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
@@ -16,7 +16,7 @@ function [edge, vscale] = detectEdge(op, domain, vscale, hscale, derHandle)
 %   map is assumed.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% PSEUDOCODE. Take from Pachón, Platte and Trefethen, "Piecewise smooth
+% PSEUDOCODE. Taken from Pachon, Platte and Trefethen, "Piecewise smooth
 % chebfuns" (IMA J. Numer. Anal., 2010)
 
 %  function edge = detectedge(f,a,c) % Find singularity of f in [a; c]
@@ -41,25 +41,17 @@ function [edge, vscale] = detectEdge(op, domain, vscale, hscale, derHandle)
 %  edge = b
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Parse the inputs:
-if ( nargin < 3 )
-    hscale = norm(domain, inf);
-    if ( isinf(hscale) )
-        hscale = 1;
-    end
-end
-if ( nargin < 4 )
-    vscale = 0;
-else
-    vscale = max(vscale);
-end
+
 % [TODO]: This may be required when we have unbounded maps again.
 if ( nargin < 5 )
     derHandle = @(x) 0*x + 1;
 end
 
+% Take the maximum of the vscales if a vector is given:
+vscale = max(vscale); % [TODO]: Is this right?
+
 % Call the main routine:
-[edge, vscale] = detectedgeMain(op, domain, hscale, vscale, derHandle);
+edge = detectedgeMain(op, domain, vscale, hscale, derHandle);
 
 % Tidy the results:
 % If we didn't detect an edge, then bisect:
@@ -67,7 +59,7 @@ if ( isempty(edge) )
     edge = mean(domain);
 end
 htol = 1e-14*hscale;
-% If the edge as at the end of the domain, move it in by 1%:
+% If the edge is at the end of the domain, move it in by 1%:
 if ( abs(domain(1) - edge) <= htol )
     edge = domain(1) + diff(domain)/100;
 elseif ( abs(domain(2) - edge) <= htol )
@@ -76,14 +68,14 @@ end
 
 end
 
-function [edge, vscale] = detectedgeMain(op, domain, hscale, vscale, derHandle)
+function edge = detectedgeMain(op, domain, vscale, hscale, derHandle)
 
 % checkblowup = false;
 
 a = domain(1);
 b = domain(2);
 
-% Assume no edge is found
+% Assume no edge is found:
 edge = [];
 
 numTestDers = 4;  % Maximum number of derivatives to be tested.
@@ -107,7 +99,6 @@ while ( (maxDer(numTestDers) ~= inf) && ~isnan(maxDer(numTestDers)) ...
     % Compute maximum derivatives on interval:
     [new_a, new_b, maxDer] = ...
         findMaxDer(op, ends(1), ends(2), numTestDers, gridSize234, derHandle);
-
     % Choose how many derivatives to test in this iteration:
     numTestDers = find((maxDer > (5.5 - (1:numTestDers)').*maxDerPrev ) & ...
         (maxDer > 10*vscale./hscale.^(1:numTestDers)'), 1, 'first');
@@ -117,7 +108,7 @@ while ( (maxDer(numTestDers) ~= inf) && ~isnan(maxDer(numTestDers)) ...
         return
     elseif ( (numTestDers == 1) && (diff(ends) < 1e-3*hscale) )
         % Blow up in first derivative; use findjump().
-        edge = findJump(op, ends(1) ,ends(2), hscale, vscale, derHandle);
+        edge = findJump(op, ends(1) ,ends(2), vscale, hscale, derHandle);
         return
     end
 
@@ -143,7 +134,7 @@ edge = mean(ends);
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function edge = findJump(op, a, b, hscale, vscale, derHandle)
+function edge = findJump(op, a, b, vscale, hscale, derHandle)
 % Detect blowup in first the derivative and use bisection to locate the edge.
 
 % Assume no edge has been found:
@@ -178,8 +169,8 @@ while ( ((cont < 2) || any(maxDer == inf)) && (e0 ~= e1) )
     yc = op(c);
 
     % Find the undivided difference on each side of interval
-    dyl = abs(yc - ya) / derHandle((a + c)/2);
-    dyr = abs(yb - yc) / derHandle((b + c)/2);
+    dyl = max(abs(yc - ya) / derHandle((a + c)/2));
+    dyr = max(abs(yb - yc) / derHandle((b + c)/2));
 
     % Keep track of maximum value:
     maxd1 = maxDer;
@@ -236,9 +227,10 @@ nb = b*ones(numTestDers, 1);
 % Generate FD grid points and values
 dx = (b - a)/(gridSize - 1);
 x = [a + (0:gridSize-2)*dx, b].';
-dy = op(x);
+y = op(x);
 
 % Main loop (through derivatives), undivided differences:
+dy = y;
 for j = 1:numTestDers
     dy = diff(dy);
     x = (x(1:end-1) + x(2:end))/2;
@@ -322,3 +314,4 @@ end
 % end
 %
 % end
+

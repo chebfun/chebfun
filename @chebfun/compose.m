@@ -13,7 +13,7 @@ function f = compose(f, op, g, pref)
 %   COMPOSE(F, OP, PREF), COMPOSE(F, OP, G, PREF), and COMPOSE(F, G, PREF) use
 %   the options passed by the preference structure PREF.
 %
-%   Note 1: If the location of required breakpoints in the output are known in
+%   Note 1: If the locations of required breakpoints in the output are known in
 %   advance, they should be applied to F and/or G using RESTRICT() before the
 %   call to COMPOSE().
 %
@@ -38,7 +38,7 @@ function f = compose(f, op, g, pref)
 %
 % It is not expected that the user calls COMPOSE() directly. It is usually
 % accessed via other @CHEBFUN methods which use it for their implementation
-% (such a SIN()).
+% (such as SIN(), for example).
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -75,7 +75,7 @@ if ( isempty(f) )
     return
 end
 
-% Call the COMPOSECHEBFUNS method if OP is a CHEBFUN object:
+% Call the COMPOSETWOCHEBFUNS method if OP is a CHEBFUN object:
 if ( isa(op, 'chebfun') )
     f = composeTwoChebfuns(f, op, pref);
     return
@@ -110,7 +110,7 @@ pref = fun.pref(pref, pref.chebfun);
 % Suppress growing vector Mlint warnings (which are inevitable here):
 %#ok<*AGROW>
 
-%% Loop through the each interval:
+%% Loop through each interval:
 for k = 1:numInts
 
     % Attempt to generate FUN objects using FUN/COMPOSE().
@@ -191,7 +191,7 @@ f.impulses = newImps;
 end
 
 function h = composeTwoChebfuns(f, g, pref)
-%COMPOSETWOCHEBFUNS   Composition of two CHEBFUNs.
+%COMPOSETWOCHEBFUNS   Composition of two CHEBFUN objects.
 %   COMPOSETWOCHEBFUNS(F, G, PREF) returns the composition of the CHEBFUN
 %   objects F and G, G(F) using the CHEBFUN preferences contained in the
 %   preference structure PREF.  The range of F must be in the domain of G or

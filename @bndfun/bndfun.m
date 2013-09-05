@@ -160,7 +160,7 @@ classdef bndfun < fun
         out = normest(f);
         
         % Data for plotting a BNDFUN
-        data = plotData(f, g);
+        data = plotData(f, g, h);
                 
         % Polynomial coefficients of a BNDFUN.
         out = poly(f)

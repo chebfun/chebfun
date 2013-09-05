@@ -48,7 +48,7 @@ if ( m > 1 )
 end
 
 % Update coeffs and vscale:
-coeffs = f.chebpoly(values);
+coeffs = f.vals2coeffs(values);
 vscale = max(abs(values), [], 1);
 
 % Append data to CHEBTECH:

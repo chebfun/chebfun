@@ -93,11 +93,11 @@ while ( k > 0 ) % Note that n > k.
     n = n - 1;
     
     % Update:
-    v = f.chebpolyval(c);
+    v = f.coeffs2vals(c);
     
     % Update epslevel and the vertical scale: (See CHEBTECH CLASSDEF file for
     % documentation)
-    f.epslevel = n*log(n)*f.epslevel*f.vscale;
+    f.epslevel = n*log(n)*f.epslevel*max(f.vscale); % [TODO]: Vector epslevel?
     f.vscale = max(abs(v), [], 1);
 end
 
