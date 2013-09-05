@@ -253,6 +253,9 @@ classdef chebtech < smoothfun % (Abstract)
 
     %% METHODS IMPLEMENTED BY THIS CLASS.
     methods
+        
+        % Absolute value of a CHEBTECH. (f should have no zeros in its domain)
+        f = abs(f, pref)
 
         % Convert an array of CHEBTECH objects into a array-valued CHEBTECH.
         f = cell2mat(f)
@@ -391,6 +394,9 @@ classdef chebtech < smoothfun % (Abstract)
 
         % Test an evaluation of the input OP against a CHEBTECH approx.
         pass = sampleTest(op, f)
+        
+        % Signum of a CHEBTECH. (f should have no zeros in its domain)
+        f = sign(f, pref)
 
         % Trim trailing Chebyshev coefficients of a CHEBTECH object.
         f = simplify(f, pref, force)
