@@ -44,14 +44,14 @@ if ( numCols == 1 )
     switch n
         case 1
             if ( nargout == 2 )
-                error('CHEBFUN:norm:argout',...
+                error('CHEBFUN:norm:argout', ...
                         'Cannot return two outputs for 1-norms');
             end
             normF = sum(abs(f));
             
         case {2, 'fro'}
             if ( nargout == 2 )
-                error('CHEBFUN:norm:argout',...
+                error('CHEBFUN:norm:argout', ...
                         'Cannot return two outputs for ''fro''-norms');
             end
             f.isTransposed = 0;
@@ -73,7 +73,7 @@ if ( numCols == 1 )
         otherwise
             if ( isnumeric(n) && isreal(n) )
                 if ( nargout == 2 )
-                    error('CHEBFUN:norm:argout',...
+                    error('CHEBFUN:norm:argout', ...
                             'Cannot return two outputs for p-norms.');
                 end
                 if ( mod(n, 2) )
@@ -101,7 +101,7 @@ else
             
         case 2
             if (nargout == 2 )
-                error('CHEBFUN:norm:argout',...
+                error('CHEBFUN:norm:argout', ...
                     'Cannot return two outputs for quasimatrix 2-norms.');
             end
             s = svd(f, 0);

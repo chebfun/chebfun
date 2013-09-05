@@ -1,5 +1,5 @@
 function out = sum(f, a, b)
-%SUM    Definite integral of a CHEBFUN.
+%SUM   Definite integral of a CHEBFUN.
 %   SUM(F) is the integral of a column CHEBFUN F over its domain of definition.
 %
 %   SUM(F, A, B) integrates a column CHEBFUN F over [A, B], which must be a
@@ -38,12 +38,12 @@ end
 doSubDomain = 0;
 if ( nargin == 3 )
     doSubDomain = 1;
-elseif ( nargin == 2 && numel(a) == 2)
+elseif ( (nargin == 2) && (numel(a) == 2) )
     % Support for sum(f, [a, b]):
     b = a(2);
     a = a(1);
     doSubDomain = 1;
-elseif ( nargin == 2 && numel(a) == 1 )
+elseif ( (nargin == 2) && (numel(a) == 1) )
     % Support for sum(f, dim):
     dim = a;
 end
@@ -98,10 +98,10 @@ function out = sumSubDom(f, a, b)
     if ( isnumeric(a) && isnumeric(b) )
 
         % Validate the subdomain:
-        if ( a < d1 || b > d2 )
+        if ( (a < d1) || (b > d2) )
             error('CHEBFUN:sum:ab', 'Not a valid subdomain.');
             
-        elseif ( a == d1 && b == d2 )
+        elseif ( (a == d1) && (b == d2) )
             % Subdomain == original domain.
             out = sum(f);
             return

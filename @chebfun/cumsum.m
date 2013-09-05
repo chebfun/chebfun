@@ -13,7 +13,7 @@ function f = cumsum(f, m)
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % [TODO]: Replace this:
-%   G will typically be normalised so that G(F.domain(1)) = 0The exception to
+%   G will typically be normalised so that G(F.domain(1)) = 0.  The exception to
 %   this is when computing indefinite integrals of functions which are not
 %   integrable at the left boundary. In this case, the arbitrary constant in the
 %   indefinite integral is chosen to make the representation of G as simple as
