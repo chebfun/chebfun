@@ -12,7 +12,7 @@ function f = cumsum(f, m)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-% [TODO]: Replace this:
+% [TODO]: Update the above help text once we have singfun.
 %   G will typically be normalised so that G(F.domain(1)) = 0.  The exception to
 %   this is when computing indefinite integrals of functions which are not
 %   integrable at the left boundary. In this case, the arbitrary constant in the

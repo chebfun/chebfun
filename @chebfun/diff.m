@@ -10,7 +10,7 @@ function f = diff(f, n, dim)
 %   finite difference of F along its rows.  The resulting row CHEBFUN will have
 %   one row fewer than the number of rows in F.
 %
-%   DIFF(F, N) or DIFF(F, N , 1) computes the Nth derivative of F if F is a
+%   DIFF(F, N) or DIFF(F, N, 1) computes the Nth derivative of F if F is a
 %   column CHEBFUN and the Nth-order finite difference of F along its rows if F
 %   is a row CHEBFUN.
 %
