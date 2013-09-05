@@ -19,14 +19,22 @@ elseif ( isempty(g) )       % CHEBFUN + []
     f = [];
 
 elseif ( isnumeric(g) )     % CHEBFUN + double
-
-    % Add g to the impulses:
-    f.impulses = f.impulses + g;
+    
+    % Transpose g if f is transposed:
+    if ( f.isTransposed )
+        g = g.';
+    end
 
     % Add g to the FUNs:
     for k = 1:numel(f.funs)
         f.funs{k} = f.funs{k} + g;
     end
+    
+    % Add g to the impulses:
+    if ( size(g, 2) > 1 )
+        g = repmat(g, length(f.domain), 1);
+    end
+    f.impulses(:,:,1) = f.impulses(:,:,1) + g;
 
 elseif ( ~isa(g, 'chebfun') ) % CHEBFUN * ???
 
