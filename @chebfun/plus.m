@@ -31,8 +31,11 @@ elseif ( isnumeric(g) )     % CHEBFUN + double
     end
     
     % Add g to the impulses:
+    if ( size(f.impulses, 2) == 1 && size(f.funs{1}, 2) > 1 )
+        f.impulses = repmat(f.impulses, 1, size(g, 2)); % Allow expansion in f.
+    end
     if ( size(g, 2) > 1 )
-        g = repmat(g, length(f.domain), 1);
+        g = repmat(g, length(f.domain), 1);             % Allow expansion in g.
     end
     f.impulses(:,:,1) = f.impulses(:,:,1) + g;
 
