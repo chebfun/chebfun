@@ -124,11 +124,12 @@ end
 higherImpulses = f.impulses(:,:,2:end);
 % Only one row:
 if ( ~any(higherImpulses(:)) )
-    % Loop over the funs:
+    % Loop over the FUNs:
     for k = 1:numFuns + 1
-        idx = x == dom(k);
-        if ( any(idx) )
-            fx((x == dom(k)),:) = repmat(f.impulses(k,:,1), sum(idx), 1);
+        index = x == dom(k);
+        if ( any(index) )
+            imps = repmat(f.impulses(k,:,1), sum(index), 1);
+            fx(index,:) = imps;
         end
     end
     
