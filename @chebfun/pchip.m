@@ -1,5 +1,5 @@
 function f = pchip(x, y, d)
-%PCHIP   Chebfun Cubic Hermite interpolating polynomial.
+%PCHIP   CHEBFUN Cubic Hermite interpolating polynomial.
 %   F = CHEBFUN.PCHIP(X, Y) returns a CHEBFUN F representing a certain
 %   shape-preserving piecewise cubic Hermite interpolant to the values Y at the
 %   sites X. X must be a vector. If Y is a vector, then Y(j) is taken as the

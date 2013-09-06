@@ -4,7 +4,9 @@ function h = mean(f, g)
 %   MEAN(F, G) is the average chebfun between CHEBFUN objectys F and G.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
+
+% [TODO]: This needs to be reworked once we allow unbounded domains.
 
 if ( nargin == 1 )
 

@@ -5,6 +5,10 @@ if ( nargin == 0 )
     pref = chebfun.pref();
 end
 
+% [TODO]: Reinstate this test
+pass = false;
+return
+
 tol = 1000*pref.chebfun.eps;
 
 % Choose a domain:

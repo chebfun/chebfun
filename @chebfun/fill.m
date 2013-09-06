@@ -18,6 +18,8 @@ function varargout = fill(varargin)
 %   H = FILL(...) returns a column vector of handles to PATCH objects, one
 %   handle per patch. The F, G, C triples can be followed by parameter/value
 %   pairs to specify additional properties of the patches.
+%
+% See also AREA, PLOT.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.

@@ -1,6 +1,6 @@
 function out = var(f)
-%VAR   Variance of a chebfun.
-%   VAR(F) is the variance of the chebfun F.
+%VAR   Variance of a CHEBFUN.
+%   VAR(F) is the variance of the CHEBFUN F.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.

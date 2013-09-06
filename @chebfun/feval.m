@@ -31,6 +31,11 @@ if ( isempty(f) || isempty(x) )
     return
 end
 
+if ( isa(f, 'function_handle') )
+    fx = f(x, varargin{:});
+    return
+end
+
 %% LEFT / RIGHT VALUES:
 % Support for feval(f, 'left') and feval(f, 'end'), etc.
 if ( ischar(x) )
