@@ -17,9 +17,7 @@ end
 
 % Choose a tolerance:
 if ( nargin < 2 )
-    vs = vscale(f);
-    el = epslevel(f);
-    tol = el*vs;
+    tol = vscale(f)*epslevel(f);
     % TODO: Remove this once epslevels of zero CHEBFUNs have been improved.
     if ( isnan(tol) )
         tol = chebfun.pref('eps');
