@@ -213,11 +213,8 @@ end
 isTransposed = f.isTransposed;
 if ( isTransposed )
     % Make everything a column CHEBFUN for now:
-    f.isTransposed = 0;
-    g.isTransposed = 0;
-    % [TODO]: Add this once TRANSPOSE() is implemented.
-    % f = f.';
-    % g = g.';
+    f = transpose(f);
+    g = transpose(g);
 end
 
 if ( (size(f, 2) > 1) && (size(g, 2) > 1) )
@@ -278,9 +275,7 @@ h = compose(f, @(f) feval(g, f), pref);
 h.impulses(:,:,1) = feval(g, feval(f, h.domain.'));
 
 if ( isTransposed )
-    h.isTransposed = 1;
-    % [TODO]: Add this once TRANSPOSE() is implemented.
-    % h = h.';
+    h = transpose(h);
 end
 
 end
