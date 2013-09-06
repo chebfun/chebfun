@@ -27,7 +27,7 @@ elseif ( isa(f, 'chebfun') )                     % CHEBFUN .^ constant
     
     if ( b == 0 )                       % Trivial case
         % Constant CHEBFUN:
-        vals = ones(1, min(size(f)))
+        vals = ones(1, min(size(f)));
         g = chebfun(vals, f.domain([1,end]));
         
     elseif ( b == 1 )                   % Identity
@@ -43,7 +43,7 @@ elseif ( isa(f, 'chebfun') )                     % CHEBFUN .^ constant
         % Call TIMES():
         g = f.*f;
         
-    elseif ( b > 0 && round(b) == b )   % Positive integer
+    elseif ( (b > 0) && (round(b) == b) )   % Positive integer
         % Result will be smooth. Call COMPOSE():
         g = compose(f, @(x) power(x, b));
         
@@ -57,6 +57,6 @@ elseif ( isa(f, 'chebfun') )                     % CHEBFUN .^ constant
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% constant .^ CHEBFUN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 else
     % Call COMPOSE():
-    fout = compose(b, @(x) power(f, x));
+    g = compose(b, @(x) power(f, x));
 
 end
