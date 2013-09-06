@@ -31,7 +31,7 @@ elseif ( isnumeric(g) )     % CHEBFUN + double
     end
     
     % Add g to the impulses:
-    if ( (size(f.impulses, 2) == 1) && (size(f.funs{1}, 2) > 1) )
+    if ( (size(f.impulses, 2) == 1) &&  (min(size(f)) > 1) )
         f.impulses = repmat(f.impulses, 1, size(g, 2)); % Allow expansion in f.
     end
     if ( size(g, 2) > 1 )
@@ -45,7 +45,7 @@ elseif ( ~isa(g, 'chebfun') ) % CHEBFUN + ???
           ['Undefined function ''plus'' for input arguments of type %s ' ...
            'and %s.'], class(f), class(g));
 
-elseif ( isempty(f) )       % empty CHEBFUN + CHEBFUN
+elseif ( isempty(f) )         % empty CHEBFUN + CHEBFUN
 
     % Nothing to do. (Return empty CHEBFUN as output).
 
