@@ -37,7 +37,7 @@ elseif ( isa(f, 'chebfun') )                     % CHEBFUN .^ constant
         % Call TIMES():
         g = f.*f;
         
-    elseif ( b > 0 && round(b) == b )   % Positive integer
+    elseif ( (b > 0) && (round(b) == b) )   % Positive integer
         % Result will be smooth. Call COMPOSE():
         g = compose(f, @(x) power(x, b));
         
