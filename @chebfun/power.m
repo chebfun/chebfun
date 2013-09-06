@@ -27,8 +27,8 @@ elseif ( isa(f, 'chebfun') )                     % CHEBFUN .^ constant
     
     if ( b == 0 )                       % Trivial case
         % Constant CHEBFUN:
-        vals = ones(1, size(f.funs, 1));
-        g = chebfun(vals, f.domain(1,end));
+        vals = ones(1, min(size(f)))
+        g = chebfun(vals, f.domain([1,end]));
         
     elseif ( b == 1 )                   % Identity
         g = f;
