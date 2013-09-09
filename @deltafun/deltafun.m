@@ -46,10 +46,10 @@ classdef deltafun
     
     %% CLASS CONSTRUCTOR:
     methods ( Static = true )
-        function obj = deltafun(magnitude, location, domain, pref) 
+        function obj = deltafun(magnitude, location, funPart, pref) 
             %%
             % Check for preferences in the very beginning.            
-            if ( (nargin < 4) || isempty(pref) )
+            if ( (nargin < 5) || isempty(pref) )
                 % Determine preferences if not given.
                 pref = deltafun.pref;
             else
@@ -75,32 +75,49 @@ classdef deltafun
             %%
             % Case 1: One input argument.
             if ( nargin == 1 )
-                % Make sure the exponents are empty.
-                exponents = [];                
+                error('ahhh, one argument for deltafun, what?');                
             end
             %%
             % Case 2: Two input arguments.
             if ( nargin == 2 )
-                if ( size(magnitude) ~= size(location) )
-                    error('CHEBFUN:DELTAFUN:dim', 'magnitude and location should be vectors of same size.');
-                end
-                if ( min(size(magnitude)) > 1 || min(size(location)) > 1 )
-                    error('CHEBFUN:DELTAFUN:dim', 'magnitude and location should each be a vector');
-                end
-                obj.deltaMag = magnitude;
-                obj.deltaLoc = location;
-                obj.domain   = [-1, 1];
-                obj.diffOrder = 0*magnitude;
-                obj.isImag = false;
-                obj.isReal = false;
-                obj.isConj = false;                
+                
             end
                 
             %%
             % Case 3: Three or more input arguments.
+            if ( nargin == 3 )
+                % Domain not given, use the default domain.
+                domain = [-1, 1];
+            end
+            
+            if ( length(magnitude) ~= length(location) )
+                error('CHEBFUN:DELTAFUN:dim', 'Magnitude and location should be vectors of the same size.');
+            end
                 
+            if ( min(size(magnitude)) > 1 || min(size(location)) > 1 )
+                error('CHEBFUN:DELTAFUN:dim', 'Magnitude and location should each be a vector');
+            end
             
+            % There should be no duplicates.
+            if ( numel(location) ~= numel(unique(location)) )
+                error('CHEBFUN:DELTAFUN:duplication', 'No duplicates are allowed in location.');
+            end
             
+            % Make sure magnitude and location are row vectors.
+            magnitude = magnitude(:).';
+            location = location(:).';
+            
+            obj.deltaMag = magnitude;
+            obj.deltaLoc = location;
+            if( max(abs(location)) > 1 )
+                error('CHEBFUN:DELTAFUN:domain', 'Domain not provided.');
+            else
+                obj.domain   = [-1, 1];
+            end
+            obj.diffOrder = 0*magnitude;
+            obj.isImag = false * location;
+            obj.isReal = false * location;
+            obj.isConj = false * location;                        
         end
     end
     
@@ -110,31 +127,31 @@ classdef deltafun
     %% METHODS IMPLEMENTED BY THIS CLASS.
     methods
         
-        % Complex conjugate of a SINGFUN.
+        % Complex conjugate of a DELTAFUN.
         f = conj(f)                
                
-        % SINGFUN obects are not transposable.
+        % DELTAFUN obects are not transposable.
         f = ctranspose(f)
 
-        % Indefinite integral of a SINGFUN.
+        % Indefinite integral of a DELTAFUN.
         f = cumsum(f, m, pref)
 
-        % Derivative of a SINGFUN.
+        % Derivative of a DELTAFUN.
         f = diff(f, k)
         
-        % Evaluate a SINGFUN.
+        % Evaluate a DELTAFUN.
         y = feval(f, x)
 
-        % Flip columns of an array-valued SINGFUN object.
+        % Flip columns of an array-valued DELTAFUN object.
         f = fliplr(f)
         
-        % Flip/reverse a SINGFUN object.
+        % Flip/reverse a DELTAFUN object.
         f = flipud(f)
         
-        % Imaginary part of a SINGFUN.
+        % Imaginary part of a DELTAFUN.
         f = imag(f)
      
-        % True for an empty SINGFUN.
+        % True for an empty DELTAFUN.
         out = isempty(f)
 
         % Test if SINGFUN objects are equal.
@@ -229,22 +246,13 @@ classdef deltafun
     %% STATIC METHODS IMPLEMENTED BY THIS CLASS.
     methods ( Static = true )                                
         % smooth fun constructor
-        s = constructSmoothPart( op, pref)
-        
-        % method for finding the order of singularities
-        exponents = findSingExponents( op, singType )
-        
-        % method for finding integer order singularities, i.e. poles
-        poleOrder = findPoleOrder( op, SingEnd)
-        
-        % method for finding fractional order singularities (+ve or -ve).
-        barnchOrder = findSingOrder( op, SingEnd)
-        
+        s = constructFunPart( op, pref)
+                
         % Retrieve and modify preferences for this class.
         prefs = pref(varargin)
         
         % Costruct a zero SINGFUN
-        s = zeroSingFun()        
+        s = zeroDeltaFun()        
     end
     
 end    
@@ -253,58 +261,3 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Functions implemented in this file
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function out = checkSingTypes(singType)
-%CHECKSINGTYPES   Function to check types of exponents in a SINGFUN object.
-%   The valid types can be 'sing', 'pole', 'root' or 'none'. If the type is
-%   different than these four strings (ignoring case), an error message is
-%   thrown.
-%
-
-if ( ~isa(singType, 'cell') )
-    error( 'CHEBFUN:SINGFUN:constructor', ...
-        'singType must be a 1x2 cell with two strings');
-end
-%%
-out(1) = any(strcmpi(singType{1}, {'pole', 'sing', 'root', 'none'}));
-out(2) = any(strcmpi(singType{2}, {'pole', 'sing', 'root', 'none'}));
-
-if ( ~all(out) )
-    error('CHEBFUN:SINGFUN:checkSingTypes', 'Unknown singularity type.');
-end
-
-end
-
-function op = singOp2SmoothOp(op, exponents)
-%SINGOP2SMOOTHOP   Converts a singular operator to a smooth one by removing the 
-%   singularity(ies). 
-%   SINGOP2SMOOTHOP(OP, EXPONENTS) returns a smooth operator OP by removing the
-%   singularity(ies) at the endpoints -1 and 1. EXPONENTS are the order of the
-%   singularities. 
-%
-%   For examples, opNew = singOp2SmoothOp(opOld, [-a -b]) means 
-%   opNew = opOld.*(1+x).^a.*(1-x).^b
-%
-% See also SINGFUN.
-
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org/ for Chebfun information.
-
-if ( all(exponents) )
-    % Both exponents are non trivial:
-    op = @(x) op(x)./((1 + x).^(exponents(1)).*(1 - x).^(exponents(2)));
-    
-elseif ( exponents(1) )
-    % (1+x) factor at the left end point:
-    op = @(x) op(x)./(1 + x).^(exponents(1));
-    
-elseif ( exponents(2) )
-    % (1-x) factor at the right end point:
-    op = @(x) op(x)./(1 - x).^(exponents(2));
-    
-end
-
-end
-
-
-
