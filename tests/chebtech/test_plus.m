@@ -103,6 +103,25 @@ for n = 1:2
     pass(n, 20) = (~g.ishappy) && (~h.ishappy);
     h = g + f;  % Add happy to unhappy.
     pass(n, 21) = (~g.ishappy) && (~h.ishappy);
+
+    %%
+    % Test addition of array-valued scalar to array-valued chebtech.
+
+    f = testclass.make(@(x) [sin(x) cos(x) exp(x)]);
+    g = f + [1 2 3];
+    g_exact = @(x) [(1 + sin(x)) (2 + cos(x)) (3 + exp(x))];
+    err = feval(g, x) - g_exact(x);
+    pass(n, 22) = norm(err(:), inf) < 10*max(g.vscale*g.epslevel);
+
+    %%
+    % Test scalar expansion in CHEBTECH argument.
+
+    f = testclass.make(@(x) sin(x));
+    g = f + [1 2 3];
+    g_exact = @(x) [(1 + sin(x)) (2 + sin(x)) (3 + sin(x))];
+    err = feval(g, x) - g_exact(x);
+    pass(n, 23) = isequal(size(g.values, 2), 3) && norm(err(:), inf) < ...
+        10*max(g.vscale*g.epslevel);
 end
 
 end

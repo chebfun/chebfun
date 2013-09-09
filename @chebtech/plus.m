@@ -20,7 +20,10 @@ elseif ( isa(g, 'double') ) % CHEBTECH + double
     % and f is a array-valued CHEBTECH):
     f.values = bsxfun(@plus, f.values, g);
     % Update coeffs:
-    f.coeffs = repmat(f.coeffs, 1, size(g, 2));
+    if ( (size(g, 2) > 1) && (size(f.coeffs, 2) == 1) )
+        % Perform singleton expansion of f:
+        f.coeffs = repmat(f.coeffs, 1, size(g, 2));
+    end
     f.coeffs(end,:) = f.coeffs(end,:) + g;
     % Update scale:
     vscale = max(abs(f.values), [], 1);
