@@ -1,5 +1,5 @@
 function f = conj(f)
-%CONJ   Complex conjugate of a SINGFUN.
+%CONJ   Complex conjugate of a DELTAFUN.
 %   CONJ(F) is the complex conjugate of F. For a complex F,
 %   CONJ(F) = REAL(F) - 1i*IMAG(F).
 %
@@ -8,7 +8,7 @@ function f = conj(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org for Chebfun information.
 
-% Conjugate the smooth part of F:
-f.smoothPart = conj(f.smoothPart);
+% Invert the isConj flag:
+f.isConj = ~f.isConj;
 
 end

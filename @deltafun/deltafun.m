@@ -1,38 +1,14 @@
 classdef deltafun    
 %DELTAFUN   Class for distributions based on Dirac-delta functions.
 %
-%   Class for approximating singular functions on the interval [-1,1] using a
-%   smooth part with no singularities and two singular factors (1+x).^a and
-%   (1-x).^b, where a and b are real numbers.
+%   Class for approximating generalized functions on the interval [a, b] 
+%   using a chebfun part with no distributions and a singular part containing
+%   delta functions.
 %
-%   SINGFUN class description
-%
-%   The SINGFUN class represents a function of the form 
-%
-%          f(x) = s(x) (1+x)^a (1-x)^b 
-%
-%   on the interval [-1,1]. The exponents a and b are assumed to be real. The
-%   constructor is supplied with a handle that evaluates the function f at any
-%   given points within the interval [-1,1]. The endpoint values are likely to
-%   return Inf or NaN results.
-%
-%   Ideally, the "smooth" function s is analytic, or at least much more
-%   compactly represented than f is. The resulting object can be used to
-%   evaluate and operate on the function f. If a and b are unknown at the time
-%   of construction, the constructor will try to determine appropriate values
-%   automatically by sampling the function handle. Note, however, that this
-%   process is not completely robust, and the singular terms in general do not
-%   perfectly factor out singular behavior. The constructor can be forced to
-%   consider only integer exponents.
-%
-%   [TODO]: Describe calling sequence.
-%
-%   Multiplication and division are as good as the corresponding operations on
-%   the smooth part. Addition and subtraction are much less reliable, as the sum
-%   of two SINGFUN objects with different exponents is not necessarily a
-%   SINGFUN, nor a smooth function. If all but integer exponents can be factored
-%   out of the summands, the process is fine, but in other circumstances the
-%   process may throw an error.
+%   DELTAFUN class description
+%   [TODO]: 
+%   
+%   [TODO]: Calling Sequence
 %
 % See also PREF
 
@@ -42,33 +18,45 @@ classdef deltafun
     %% Properties of SINGFUN objects
     properties ( Access = public )
         % Smooth part of the representation.
-        smoothPart      % (smoothfun)
+        funPart     % (smoothfun)
         
-        % Exponents of the singularities at the two endpoints.
-        exponents       % (1x2 double)
-                
-        % [TODO]: Shold exponentTol be a property?
+        % Delta functions.
+        deltas       % (1x2 double)
+        
+        % Order of the derivative
+        diffOrder    % (1x1 double)
+        
+        % If the imaginary part only is needed 
+        isImag       % (1x1 logical)
+        
+        % If the imaginary part only is needed
+        isReal       % (1x1 logical)
+        
+        % If the conjugate is needed
+        isConj       % (1x1 logical)
+        
+        
      end
     
     %% CLASS CONSTRUCTOR:
     methods ( Static = true )
-        function obj = singfun(op, exponents, singType, pref) 
+        function obj = deltafun(op, magnitude, location) 
             %%
             % Check for preferences in the very beginning.            
             if ( (nargin < 4) || isempty(pref) )
                 % Determine preferences if not given.
-                pref = singfun.pref;
+                pref = deltafun.pref;
             else
                 % Merge if some preferences are given.
-                pref = singfun.pref(pref);
+                pref = deltafun.pref(pref);
             end
             
             
             %% Cases based on the number of arguments                        
             % Case 0: No input arguments, return an empty object.
             if ( nargin == 0 )   
-                obj.smoothPart = [];
-                obj.exponents = [];
+                obj.funPart = [];
+                obj.deltas = [];
                 return
             end
             

@@ -28,34 +28,18 @@ function prefs = pref(varargin)
 %   [TODO] Copied from CHEBTECH, not done yet. Some of these might make sense
 %   for SINGFUNs:
 %
-%     tech         -  Select the type of Chebyshev grid on which the function
-%                     is sampled.
-%
-%     eps          -  Relative tolerance used in construction and subsequent
-%      [2^-52]        operations. See CHEBTECH.HAPPINESSCHECK for more details.
-%
-%     extrapolate
-%        true      -  Function values at endpoints may be extrapolated from
-%                     interior values rather than sampled.
-%       [false]    -  Do not extrapolate values at endpoints.
-%
-%     hscale       -  Horizontal scale. This preference can be used to ensure
-%        [1]          horizontal scale invariance when using the CHEBTECH
-%                     constructor to implicitly represent functions defined on
-%                     domains other than [-1, 1].
-%
-%     exponentTol  -  Tolerance for exponents. This is the refinement upto
-%    [1.1*1e-11]      which the singularity detector will try to resolve
-%                     the exponent.
-%
-%     maxPoleOrder -  Order of the maximum pole that the singularity
-%       [20]          detector can find.
+%     vsclae       -  What would they mean for a delta? 
+%     hscale       -  //ditto//
+%     deltaTol     -  Tolerance for delta functio magnitude.
+%     [1e-12]      
+%     maxDiffOrder -  Maximum Order of the derivative allowed for a deltafun
+%       [20]
 %                  
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org for Chebfun information.
 
-classname = 'singfun';
+classname = 'deltafun';
 
 % Has a preference structure been passed?
 if ( numel(varargin) > 0 && isstruct(varargin{1}) ) % Yes
@@ -65,7 +49,7 @@ else                                                % No
     prefs = struct();
 end
 
-% If it was, did it have a SINGFUN field?
+% If it was, did it have a DELTAFUN field?
 if ( isfield(prefs, classname) )  % It does, so either:
     if ( numel(varargin) == 0 )
         return                    % a) No props to change, return
@@ -74,9 +58,8 @@ if ( isfield(prefs, classname) )  % It does, so either:
     end
 else
     % No SINGFUN prefs found, so make some:
-    p.eps           = 2^-52;
-    p.exponentTol   = 1.1*1e-11; % taken from Chebfun V4
-    p.maxPoleOrder  = 20;    
+    p.deltaTol      = 1*1e-12;
+    p.maxDiffOrder  = 20;    
 end
 % p is now the preference substructure relating to the FUN class.
 
@@ -113,7 +96,7 @@ if ( numel(varargin) == 1 )
     return
 end
 
-% Property names have been passed, so alter/add SINGFUN/MISC properties.
+% Property names have been passed, so alter/add DELTAFUN/MISC properties.
 for k = 1:2:numel(varargin)
     if ( isfield(p, varargin{k}) )
         p.(varargin{k}) = varargin{k+1};
@@ -122,7 +105,7 @@ for k = 1:2:numel(varargin)
     end
 end
 
-% Append SINGFUN preferences to the preference structure prefs for output.
+% Append DELTAFUN preferences to the preference structure prefs for output.
 prefs.(classname) = p;
 
 % Append MISC preferences to the preference structure prefs for output.

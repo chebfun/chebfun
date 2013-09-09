@@ -1,6 +1,6 @@
 function f = diff(f, k)
-%DIFF   Derivative of a SINGFUN.
-%   DIFF(F) is the derivative of the SINGFUN F, while DIFF(F, K) is its Kth
+%DIFF   Derivative of a DELTAFUN.
+%   DIFF(F) is the derivative of the DELTAFUN F, while DIFF(F, K) is its Kth
 %   derivative.
 %
 % See also SUM, CUMSUM.
@@ -23,38 +23,10 @@ elseif ( k == 0 )
     return
 end
 
-%% Differentiate the SINGFUN F, k times 
-while ( k > 0 )
-    % Decrease k:
-    k = k - 1;
-        
-    % Apply the product rule to the SINGFUN F: f = g(x) .* (1+x).^a .* (1-x).^b
-   
-    % Three terms of the derivative:
-    % First term: g'(x) .* (1+x).^a .* (1-x).^b
-    s = f;
-    s.smoothPart = diff(s.smoothPart);
-    
-    % Second term: a * g(x) .* (1+x).^(a-1) .* (1-x).^b    
-    if ( f.exponents(1) )
-        % If the exponent at the left end point is non-zero.
-        t = f;    
-        t.smoothPart = t.smoothPart * t.exponents(1);
-        t.exponents(1) = t.exponents(1) - 1;
-        s = s + t;
-    end
-    
-    % Third term: -b * g(x) .* (1+x).^a .* (1-x).^(b-1)
-    if ( f.exponents(2) )
-        % If the exponent at the right end point is non-zero.
-        u = f;
-        u.smoothPart = u.smoothPart * (-u.exponents(2));
-        u.exponents(2) = u.exponents(2) - 1;
-        s = s + u;
-    end 
-    
-    % s is the computed derivative. Copy it in f:
-    f = s;
-end
+%% Differentiate the DELTAFUN F, k times 
+f.diffOrder = f.diffOrder + k;
+
+if ( any(f.diffOrder > deltafun.pref.deltafun.maxDiffOrder) )
+    error( '
 
 end
