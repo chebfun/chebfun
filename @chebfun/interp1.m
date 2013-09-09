@@ -32,8 +32,6 @@ function p = interp1(x, y, method, dom)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www..chebfun.org/ for Chebfun information.
 
-% [TODO]: Allow DOM as an input (as with PCHIP() and SPLINE()).
-
 % Parse inputs:
 if ( nargin == 2 )
     method = 'poly';
@@ -127,6 +125,8 @@ function w = baryWeights(x)
 %BARYWEIGHTS   Barycentric weights
 %   W = BARYWEIGHTS(X) returns scaled barycentric weights for the points X. The
 %   weights are scaled such that norm(W, inf) == 1.
+
+% [TODO]: Should this live in the trunk?
 
 n = length(x);
 if ( isreal(x) )
