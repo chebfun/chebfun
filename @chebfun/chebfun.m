@@ -214,12 +214,21 @@ classdef chebfun
         % Plot information regarding the representation of a CHEBFUN object:
         h = chebpolyplot(f, varargin);
 
+        % Construct complex CHEBFUN from real and imaginary parts.
+        C = complex(A, B)
+
         % Compose CHEBFUN objects with another function.
         h = compose(f, op, g, pref)
 
         % Compose two CHEBFUN objects (i.e., f(g)).
         h = composeChebfuns(f, g, pref)
         
+        % Complex conjugate of a CHEBFUN.
+        f = conj(f)
+        
+        % Complex transpose of a CHEBFUN.
+        f = ctranspose(f)
+
         % Display a CHEBFUN object.
         display(f);
         
@@ -235,12 +244,42 @@ classdef chebfun
         % Accuracy estimate of a CHEBFUN object.
         out = epslevel(f);
         
+        % Evaluate a CHEBFUN.
+        y = feval(f, x, varargin)
+
         % Get properties of a CHEBFUN object.
         out = get(f, prop);
         
         % Horizontal scale of a CHEBFUN object.
         out = hscale(f);
 
+        % Imaginary part of a CHEBFUN.
+        f = imag(f)
+        
+        % True for an empty CHEBFUN.
+        out = isempty(f)
+
+        % Test if CHEBFUN objects are equal.
+        out = isequal(f, g)
+
+        % Test if a CHEBFUN is bounded.
+        out = isfinite(f)
+        
+        % Test if a CHEBFUN is unbounded.
+        out = isinf(f)
+
+        % Test if a CHEBFUN has any NaN values.
+        out = isnan(f)
+        
+        % True for real CHEBFUN.
+        out = isreal(f);
+        
+        % True for zero CHEBFUN objects
+        out = iszero(f)
+        
+        % Length of a CHEBFUN.
+        out = length(f);
+        
         % Plot a CHEBFUN object on a loglog scale:
         h = loglog(f, varargin);
         
@@ -250,32 +289,59 @@ classdef chebfun
         % 3-D plot for CHEBFUN objects.
         varargout = plot3(f, g, h, varargin)
         
-        % Plot a CHEBFUN object on a log-linear scale:
-        h = semilogx(f, varargin);
+        % Subtraction of two CHEBFUN objects.
+        f = minus(f, g)
         
-        % Plot a CHEBFUN object on a linear-log scale:
-        h = semilogy(f, varargin);
+        % Multiplication of CHEBFUN objects.
+        f = mtimes(f, c)
 
-        % True for real CHEBFUN.
-        out = isreal(f);
-
-        % Length of a CHEBFUN.
-        out = length(f);
-
+        % Remove unnecessary breakpoints in from a CHEBFUN.
+        [f, mergedPts] = merge(f, index, pref)
+        
         % Overlap the domain of two CHEBFUN objects.
-        [f, g] = overlap(f, g);
+        [f, g] = overlap(f, g)
 
-        % Restrict s CHEBFUN object to a subdomain.
+        % Obtain data used for plotting a CHEBFUN object:
+        data = plotData(f, g)
+        
+        % Power of a CHEBFUN
+        f = power(f, b);
+        
+        % Real part of a CHEBFUN.
+        f = real(f)
+        
+        % Restrict a CHEBFUN object to a subdomain.
         f = restrict(f, newDomain);
 
         % The roots of the CHEBFUN F.
         r = roots(f, varargin);
+
+        % Plot a CHEBFUN object on a log-linear scale:
+        h = semilogx(f, varargin);
+
+        % Plot a CHEBFUN object on a linear-log scale:
+        h = semilogy(f, varargin);
 
         % Simplify the representation of a CHEBFUN obect.
         f = simplify(f, tol);
 
         % Size of a CHEBFUN object.
         [s1, s2] = size(f, dim);
+        
+        % CHEBFUN multiplication.
+        f = times(f, g, varargin)
+        
+        % Transpose a CHEBFUN.
+        f = transpose(f)
+        
+        % Adjust nearby common break points in domains of CHEBFUN objects.
+        [f, g, newBreaksLocF, newBreaksLocG] = tweakDomain(f, g, tol)
+
+        % Unary minus of a CHEBFUN.
+        f = uminus(f)
+
+        % Unary plus of a CHEBFUN.
+        f = uplus(f)
         
         % Vertical scale of a CHEBFUN object.
         out = vscale(f);
