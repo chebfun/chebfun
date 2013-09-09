@@ -34,11 +34,11 @@ pass(6) = min(size(g)) == 3 && normest(g - f) < epslevel(f);
 
 g = f.^2;
 h = chebfun(@(x) [sin(x).^2, cos(x).^2, -exp(2*x)]);
-pass(7) = min(size(g)) == 3 && normest(g - h) < 10*epslevel(h);
+pass(7) = min(size(g)) == 3 && normest(g - h) < 10*vscale(h)*epslevel(h);
 
 g = f.^3;
 h = chebfun(@(x) [sin(x).^3, cos(x).^3, -1i*exp(3*x)]);
-pass(8) = min(size(g)) == 3 && normest(g - h) < 10*epslevel(h);
+pass(8) = min(size(g)) == 3 && normest(g - h) < 10*vscale(h)*epslevel(h);
 
 %% constant .^ CHEBFUN
 f = chebfun(@(x) sin(x));
