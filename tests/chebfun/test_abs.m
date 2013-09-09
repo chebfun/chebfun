@@ -47,10 +47,9 @@ tol = 10*get(f, 'epslevel')*get(f, 'hscale');
 pass(1,5) = normest(f - f1) < tol;
 
 % The absolute value of all points on the unit circle should be 1:
-% f = chebfun(@(x) exp(1i*x), pref);
-% g = abs(f);
-% pass(1,6) = normest(g-1) == 0;
-pass(1,6) = 1;
+f = chebfun(@(x) exp(1i*x), pref);
+g = abs(f);
+pass(1,6) = normest(g-1) == 0;
 
 % Real, imaginary and complex CHEBFUN objects:
 fHandle = {@(x) sin(pi*x), @(x) -sin(pi*x), @(x) sin(pi*x), @(x) -sin(pi*x)};
@@ -82,17 +81,16 @@ pass(3,5) = normest(f - h2) < tol;
 pass(3,6) = isreal(h2);
 
 %% Complex CHEBFUN
-% f1 = sqrt(2)*f;
-% g = chebfun(@(x) gHandle1(x) + gHandle2(x), -2:2, pref);
-% g3 = abs(g);
-% pass(4,1) = length(g3.funs) == 4;
-% pass(4,2) = normest(f1 - g3) < tol;
-% pass(4,3) = isreal(g3);
-% h3 = chebfun(@(x) abs( gHandle1(x) + gHandle2(x) ), -2:2, pref);
-% pass(4,4) = length(h3.funs) == 4;
-% pass(4,5) = normest(f1 - h3) < tol;
-% pass(4,6) = isreal(h3);
-pass(4,:) = 1;
+f1 = sqrt(2)*f;
+g = chebfun(@(x) gHandle1(x) + gHandle2(x), -2:2, pref);
+g3 = abs(g);
+pass(4,1) = length(g3.funs) == 4;
+pass(4,2) = normest(f1 - g3) < tol;
+pass(4,3) = isreal(g3);
+h3 = chebfun(@(x) abs(gHandle1(x) + gHandle2(x)), -2:2, pref);
+pass(4,4) = length(h3.funs) == 4;
+pass(4,5) = normest(f1 - h3) < tol;
+pass(4,6) = isreal(h3);
 
 %% Array-valued CHEBFUN
 f1 = chebfun(@(x) feval(f, [x, x]) , -2:2, pref);
