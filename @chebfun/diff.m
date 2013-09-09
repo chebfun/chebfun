@@ -91,7 +91,7 @@ for j = 1:n
     end
 
     % Compute new function values at breaks using JUMPVALS():
-    imps(:,:,1) = chebfun.jumpVals(funs);
+    imps(:,:,1) = chebfun.getValuesAtBreakpoints(funs);
     % Update impulses:
     if ( size(imps, 3) > 1 )
        imps = cat(3, imps(:,:,1), newDeltas, imps(:,:,2:end));

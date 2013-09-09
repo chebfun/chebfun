@@ -67,9 +67,9 @@ end
 %%
 % Plot the curve:
 if ( isreal(f) )
-    h1 = plot(data.xLine, data.fLine, varargin{:}); 
+    h1 = plot(data.xLine, data.yLine, varargin{:}); 
 else
-    h1 = plot(data.fLine, varargin{:}); 
+    h1 = plot(data.yLine, varargin{:}); 
 end
 
 % No points on the line plot:
@@ -81,9 +81,9 @@ hold on
 %%
 % Plot the points:
 if ( isreal(f) )
-    h2 = plot(data.xPoints, data.fPoints, varargin{:});
+    h2 = plot(data.xPoints, data.yPoints, varargin{:});
 else
-    h2 = plot(data.fPoints, varargin{:});
+    h2 = plot(data.yPoints, varargin{:});
 end
 
 % Change the style accordingly:

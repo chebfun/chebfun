@@ -1,16 +1,23 @@
 function f = uminus(f)
-%-    Unary minus.
-%   -F negates the chebfun F.
+%-   CHEBFUN unary minus.
+%   -F negates the CHEBFUN F.
+%
+%   G = UMINUS(A) is called for the syntax '-A'.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
-% Negate the impuleses:
-f.impulses(1,:) = -f.impulses(1,:);
+% Handle the empty case.
+if ( isempty(f) )
+    return
+end
 
-% Negate each of the funs:
+% Negate the impulses:
+f.impulses = -f.impulses;
+
+% Negate each of the FUNs:
 for k = 1:numel(f.funs)
-    f.funs{k} = -f.funs{k};
+    f.funs{k} = uminus(f.funs{k});
 end
 
 end

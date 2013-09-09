@@ -20,9 +20,9 @@ function varargout = plot(f,varargin)
 %                                p     pentagram
 %                                h     hexagram
 %
-%   The entries from the centre columns are plotted at the Chebyshev grid being
-%   used to represent F. If no options from this column are chosen, 'o' is
-%   chosen by default if length(F)<256;
+%   The entries from the centre columns are plotted at the grid being used to
+%   represent F (typically Chebyshev). If no options from this column are
+%   chosen, 'o' is chosen by default if length(F) < 256.
 %
 %   The X,Y pairs, or X,Y,S triples, can be followed by parameter/value pairs to
 %   specify additional properties of the lines. For example,
@@ -68,7 +68,6 @@ if ( nargin > 1 && isa(varargin{1}, 'chebfun') )
     % Call PLOTDATA():
     data = plotData(f, g);
 else
-    g = [];
     data = plotData(f);
 end
 
@@ -76,9 +75,9 @@ end
 % Plot the curve
 
 if ( isreal(f) )
-    h1 = plot(data.xLine, data.fLine, varargin{:});
+    h1 = plot(data.xLine, data.yLine, varargin{:});
 else
-    h1 = plot(data.fLine, varargin{:});
+    h1 = plot(data.yLine, varargin{:});
 end
 set(h1, 'Marker', 'none')
 hold on
@@ -87,24 +86,21 @@ hold on
 
 % Plot the points:
 if ( isreal(f) )
-    h2 = plot(data.xPoints, data.fPoints, varargin{:});
+    h2 = plot(data.xPoints, data.yPoints, varargin{:});
 else
-    h2 = plot(data.fPoints, varargin{:});
+    h2 = plot(data.yPoints, varargin{:});
 end
 
 % Change the style accordingly:
-set(h2,'LineStyle', 'none')
-if ( all(strcmp(get(h2, 'Marker'),'none')) ) && length(f) < 257
-    set(h2,'Marker', 'none')
-end
+set(h2, 'LineStyle', 'none')
 
 %%
 
 % Plot the jumps:;
 if ( isreal(f) )
-    h3 = plot(data.xJumps, data.fJumps, varargin{:});
+    h3 = plot(data.xJumps, data.yJumps, varargin{:});
 else
-    h3 = plot(data.fJumps.', varargin{:});
+    h3 = plot(data.yJumps, varargin{:});
 end
 
 % Change the style accordingly:

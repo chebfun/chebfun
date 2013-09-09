@@ -1,16 +1,20 @@
 function f = flipud(f)
-%FLIPUD  Flip/reverse a chebfun.
-%   G = FLIPUD(F), where F is a column CHEBFUN, returns a chebfun G with the
+%FLIPUD   Flip/reverse a CHEBFUN.
+%   G = FLIPUD(F), where F is a column CHEBFUN, returns a CHEBFUN G with the
 %   same domain as F but reversed; that is, G(x) = F(a+b-x), where the domain is
 %   [a,b].
 %
-%   FLIPUD(F), where F is an array-valued row chebfun, exchanges the order of
+%   FLIPUD(F), where F is an array-valued row CHEBFUN, reverses the order of
 %   the rows of F.
 %
-% See also chebfun/fliplr.
+% See also FLIPLR.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. See
-% http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org for Chebfun information.
+
+if ( isempty(f) )
+    return
+end
 
 if ( ~f.isTransposed )
 
@@ -19,12 +23,12 @@ if ( ~f.isTransposed )
     % Reverse the order of the corresponding impulses:
     f.impulses = fliplr(f.impulses);
 
-    % Reverse the order of funs:
+    % Reverse the order of FUNs:
     f.funs = f.funs(end:-1:1);
-    % and the funs themselves.
+    % and the FUNs themselves.
     for k = 1:numel(f.funs)
         f.funs{k} = flipud(f.funs{k});
-        f.funs{k} = map(f.funs{k}, newDomain(k:k+1));
+        f.funs{k} = changeMap(f.funs{k}, newDomain(k:k+1));
     end
 
     % Apply the new domain to the chebfun:
@@ -32,6 +36,7 @@ if ( ~f.isTransposed )
 
 else
 
-    f = transpose(flipud(transpose(f)));
+    % Transpose f and call FLIPLR():
+    f = fliplr(f.').';
 
 end

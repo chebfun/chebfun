@@ -33,6 +33,11 @@ holdState = ishold;
 numfuns = numel(f.funs);
 n = cell(numfuns, 1);
 c = get(f, 'coeffs');
+% [TODO]: GET('coeffs') should not be used. We proably need chebpolyplotData()
+% methods, similar to those used by the PLOT() funtion.
+if ( ~iscell(c) )
+    c = {c};
+end
 c = cellfun(@abs, c, 'UniformOutput', false);
 for k = 1:numfuns
     n{k} = (size(c{k}, 1)-1:-1:0).';

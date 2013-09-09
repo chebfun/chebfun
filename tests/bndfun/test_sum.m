@@ -50,18 +50,26 @@ fg = f.*g;
 gdf = g.*df;
 fdg = f.*dg;
 
+tol_f = 10*max(get(f, 'vscale').*get(f, 'epslevel'));
+tol_g = 10*max(get(g, 'vscale').*get(g, 'epslevel'));
+tol_fg = 10*max(get(fg, 'vscale').*get(fg, 'epslevel'));
+tol_df = 10*max(get(df, 'vscale').*get(df, 'epslevel'));
+tol_dg = 10*max(get(dg, 'vscale').*get(dg, 'epslevel'));
+tol_gdf = 10*max(get(gdf, 'vscale').*get(gdf, 'epslevel'));
+tol_fdg = 10*max(get(fdg, 'vscale').*get(fdg, 'epslevel'));
+
 % Linearity.
-pass(5) = (abs(sum(a*f + b*g) - (a*sum(f) + b*sum(g))) < tol);
+pass(5) = (abs(sum(a*f + b*g) - (a*sum(f) + b*sum(g))) < max(tol_f, tol_g));
 
 % Integration-by-parts.
 pass(6) = (abs(sum(fdg) - (feval(fg, dom(2)) - ...
-    feval(fg, dom(1)) - sum(gdf))) < 9*get(f, 'vscale')*tol);
+    feval(fg, dom(1)) - sum(gdf))) < max([tol_fdg ; tol_fg ; tol_gdf]));
 
 % Fundamental Theorem of Calculus.
 pass(7) = (abs(sum(df) - (feval(f, dom(2)) - feval(f, dom(1)))) < ...
-    3*get(f, 'vscale')*tol);
+    max(tol_df, tol_f));
 pass(8) = (abs(sum(dg) - (feval(g, dom(2)) - feval(g, dom(1)))) < ...
-    get(g, 'vscale')*tol);
+    max(tol_dg, tol_g));
 
 %%
 % Check operation for array-valued bndfun objects.

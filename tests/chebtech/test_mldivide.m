@@ -7,9 +7,6 @@ if (nargin < 1)
     pref = chebtech.pref;
 end
 
-% Set a tolerance.  (pref.eps does not matter here.)
-tol = 10*eps;
-
 pass = zeros(2, 6); % Pre-allocate pass matrix
 for n = 1:2
     if ( n == 1 )
@@ -25,22 +22,26 @@ for n = 1:2
     f = testclass.make(@(x) sin(x), [], [], pref);
     x = f \ f;
     err = f - x*f;
-    pass(n, 1) = abs(x - 1) < tol;
-    pass(n, 2) = max(abs(err.values(:))) < tol;
+    pass(n, 1) = abs(x - 1) < 10*f.vscale.*f.epslevel;
+    pass(n, 2) = max(abs(err.values(:))) < 10*f.vscale.*f.epslevel;
 
     % Same here.
     f = testclass.make(@(x) [sin(x) cos(x)], [], [], pref);
     g = testclass.make(@(x) sin(x + pi/4), [], [], pref);
+    tol_f = 10*max(f.vscale.*f.epslevel);
+    tol_g = 10*max(f.vscale.*f.epslevel);
     x = f \ g;
     err = g - f*x;
-    pass(n, 3) = max(abs(x - [1/sqrt(2) ; 1/sqrt(2)])) < tol;
-    pass(n, 4) = max(abs(err.values(:))) < tol;
+    pass(n, 3) = max(abs(x - [1/sqrt(2) ; 1/sqrt(2)])) < max(tol_f, tol_g);
+    pass(n, 4) = max(abs(err.values(:))) < max(tol_f, tol_g);
 
     % A known least-squares solution.
     f = testclass.make(@(x) [ones(size(x)) x x.^2 x.^3], [], [], pref);
     g = testclass.make(@(x) x.^4 + x.^3 + x + 1, [], [], pref);
+    tol_f = 10*max(f.vscale.*f.epslevel);
+    tol_g = 10*max(f.vscale.*f.epslevel);
     x = f \ g;
-    pass(n, 5) = max(abs(x - [32/35 ; 1 ; 6/7 ; 1])) < 10*tol;
+    pass(n, 5) = max(abs(x - [32/35 ; 1 ; 6/7 ; 1])) < max(tol_f, tol_g);
 
     %%
     % Check error conditions.

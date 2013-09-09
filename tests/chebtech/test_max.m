@@ -48,8 +48,9 @@ for n = 1:2
     [y, x] = max(f);
     exact_max = [-10.017874927409903i 3.626860407847019];
     fx = [sin(z(x(1))) sinh(z(x(2)))];
-    pass(n, 8) = (all(abs(y - exact_max) < 100*f.epslevel) && ...
-                  all(abs(fx - exact_max) < 100*f.epslevel));
+    tol = 10*max(f.vscale, f.epslevel);
+    pass(n, 8) = (all(abs(y - exact_max) < tol) && ...
+                  all(abs(fx - exact_max) < tol));
 end
 
 end
@@ -60,7 +61,7 @@ function result = test_spotcheck_max(testclass, fun_op, exact_max, pref)
 f = testclass.make(fun_op,[], [], pref);
 [y, x] = max(f);
 fx = fun_op(x);
-result = (all(abs(y - exact_max) < 10*f.epslevel) && ...
-          all(abs(fx - exact_max) < 10*f.epslevel));
+result = (all(abs(y - exact_max) < 10*f.vscale.*f.epslevel) && ...
+          all(abs(fx - exact_max) < 10*f.vscale.*f.epslevel));
 
 end

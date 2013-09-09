@@ -185,7 +185,7 @@ classdef fun % (Abstract)
         f = fliplr(f)
         
         % Get properties of a FUN.
-        f = get(prop, val);
+        out = get(f, prop);
         
         % Imaginary part of a FUN.
         f = imag(f)
@@ -234,6 +234,9 @@ classdef fun % (Abstract)
 
         % Basic linear plot for FUN objects.
         varargout = plot(f, varargin)
+        
+        % 3-D plot for FUN objects.
+        varargout = plot3(f, g, h, varargin)
 
         % Addition of two FUN objects.
         f = plus(f, g)

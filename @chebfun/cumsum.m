@@ -73,7 +73,7 @@ for l = 1:m
     end
     
     % Get the new impulse data:
-    newImps = chebfun.jumpVals(funs, dom);
+    newImps = chebfun.getValuesAtBreakpoints(funs, dom);
     f.impulses = cat(3, newImps, f.impulses(:,:,3:end));
     
 end

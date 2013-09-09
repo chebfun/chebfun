@@ -1,16 +1,16 @@
-function values = chebpolyval(coeffs)
-%CHEBPOLYVAL   Convert Chebyshev coefficients to values at Chebyshev points
+function values = coeffs2vals(coeffs)
+%COEFFS2VALS   Convert Chebyshev coefficients to values at Chebyshev points
 %of the 2nd kind.
 %
-%   V = CHEBPOLYVAL(C) returns the values of the polynomial V(i,1) = P(x_i) =
+%   V = COEFFS2VALS(C) returns the values of the polynomial V(i,1) = P(x_i) =
 %   C(1,1)*T_{N-1}(x_i) + C(2,1)*T_{N-2}(x_i) + ... + C(N,1), where the x_i are
 %   2nd-kind Chebyshev nodes.
 %
-%   If the input C is an (N+1)xM matrix then V = CHEBPOLYVAL(C) returns the
+%   If the input C is an (N+1)xM matrix then V = COEFFS2VALS(C) returns the
 %   (N+1)xM matrix of values V such that V(i,j) = P_j(x_i) = C(1,j)*T_{N-1}(x_i)
 %   + C(2,j)*T_{N-2}(x_i) + ... + C(N,j)
 %
-%   See also CHEBPOLY, CHEBPTS.
+%   See also VALS2COEFFS, CHEBPTS.
 
 %   Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 %   See http://www.chebfun.org for Chebfun information.
