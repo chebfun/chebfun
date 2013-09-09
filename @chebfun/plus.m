@@ -19,22 +19,33 @@ elseif ( isempty(g) )       % CHEBFUN + []
     f = [];
 
 elseif ( isnumeric(g) )     % CHEBFUN + double
-
-    % Add g to the impulses:
-    f.impulses = f.impulses + g;
+    
+    % Transpose g if f is transposed:
+    if ( f.isTransposed )
+        g = g.';
+    end
 
     % Add g to the FUNs:
     for k = 1:numel(f.funs)
         f.funs{k} = f.funs{k} + g;
     end
+    
+    % Add g to the impulses:
+    if ( (size(f.impulses, 2) == 1) &&  (min(size(f)) > 1) )
+        f.impulses = repmat(f.impulses, 1, size(g, 2)); % Allow expansion in f.
+    end
+    if ( size(g, 2) > 1 )
+        g = repmat(g, length(f.domain), 1);             % Allow expansion in g.
+    end
+    f.impulses(:,:,1) = f.impulses(:,:,1) + g;
 
-elseif ( ~isa(g, 'chebfun') ) % CHEBFUN * ???
+elseif ( ~isa(g, 'chebfun') ) % CHEBFUN + ???
 
     error('CHEBFUN:plus:unknown', ...
           ['Undefined function ''plus'' for input arguments of type %s ' ...
            'and %s.'], class(f), class(g));
 
-elseif ( isempty(f) )       % empty CHEBFUN + CHEBFUN
+elseif ( isempty(f) )         % empty CHEBFUN + CHEBFUN
 
     % Nothing to do. (Return empty CHEBFUN as output).
 

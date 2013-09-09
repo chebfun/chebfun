@@ -46,7 +46,7 @@ len = zeros(numFuns,1);
 for j = 1:numFuns
     len(j) = length(f.funs{j});
 
-    if ( size(f.funs{j}, 2) > 1 )
+    if ( min(size(f)) > 1 )
         % For array-valued funs, we don't display the values.
 
         % Print information to screen:

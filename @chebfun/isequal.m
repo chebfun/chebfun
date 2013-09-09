@@ -18,14 +18,14 @@ end
 out = false;
 
 % Check the domains, sizes, and transpose states match:
-if ( ~domainCheck(f, g) || ~isequal(size(f), size(g)) || ...
-     ~isequal(f.isTransposed, g.isTransposed) )
+if ( ~domainCheck(f, g) || f.isTransposed ~= g.isTransposed || ...
+        numel(f.funs) ~= numel(g.funs) || min(size(f)) ~= min(size(g)) )
     return
 end
 
 % Check the impulses:
 tol = max(epslevel(f), epslevel(g));
-if ( norm(f.impulses - g.impulses, inf) > tol )
+if ( norm(f.impulses(:) - g.impulses(:), inf) > tol )
     return
 end
 

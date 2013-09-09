@@ -55,6 +55,8 @@ else                           % CHEBFUN .* CHEBFUN
     end
 
     % Multiply the impulses:
+    % [TODO]:  This doesn't make sense for higher-order impulses:  you can't
+    % multiply two Dirac deltas!  What to do?
     f.impulses = f.impulses .* g.impulses;
 
 end

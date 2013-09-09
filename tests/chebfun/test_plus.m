@@ -62,6 +62,21 @@ catch ME
     pass(16) = true;
 end
 
+% Test addition of array-valued scalar to array-valued chebfun.
+f = chebfun(@(x) [sin(x) cos(x) exp(x)], pref);
+g = f + [1 2 3];
+g_exact = @(x) [(1 + sin(x)) (2 + cos(x)) (3 + exp(x))];
+err = feval(g, x) - g_exact(x);
+pass(17) = norm(err(:), inf) < 10*max(g.vscale*g.epslevel);
+
+% Test scalar expansion in chebfun argument.
+f = chebfun(@(x) sin(x), pref);
+g = f + [1 2 3];
+g_exact = @(x) [(1 + sin(x)) (2 + sin(x)) (3 + sin(x))];
+err = feval(g, x) - g_exact(x);
+pass(18) = isequal(size(g, 2), 3) && norm(err(:), inf) < ...
+    10*max(g.vscale*g.epslevel);
+
 end
 
 % Test the addition of a chebfun F, specified by F_OP, to a scalar ALPHA using

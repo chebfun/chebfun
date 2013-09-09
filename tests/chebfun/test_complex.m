@@ -17,7 +17,7 @@ xr = 2 * rand(1000, 1) - 1;
 f = chebfun(@sin, [-1 1], pref);
 pass(1) = isempty(complex(chebfun(), chebfun()));
 pass(2) = isempty(complex(f, chebfun()));
-pass(3) = isempty(complex(chebfun(), f()));
+pass(3) = isempty(complex(chebfun(), f));
 
 % Check a known result.
 ref = chebfun(@cos, [-1 0 1], pref);
