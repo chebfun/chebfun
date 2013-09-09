@@ -1,4 +1,4 @@
-function horzcat(varargin)
+function out = horzcat(varargin)
 %HORZCAT   Horizontal concatenation of CHEBFUN objects.
 %   HORZCAT of a CHEBFUN is not yet supported.
 
