@@ -19,7 +19,7 @@ x3 = 4 * rand(100, 1) - 2;
 % This should not introduce a break at zero:
 f = chebfun('x.^2', pref);
 f1 = abs(f);
-pass(1,1) = numel(f1.funs) == 1 || numel(f1.funs) == 2; % Either is OK..
+pass(1,1) = (numel(f1.funs) == 1) || (numel(f1.funs) == 2); % Either is OK.
 
 % Test positivity:
 f = chebfun(@(x) cos(3*x), pref);
@@ -27,7 +27,7 @@ f1 = abs(f);
 pass(1,2) = all(feval(f1, x) >= 0);
 
 % Test if impulses are dealt with correctly: 
-f = restrict(f+2, sort(x)');
+f = restrict(f + 2, sort(x)');
 %f = chebfun(@(x) sin(x) + 2, sort(x)', pref);
 f.impulses(:,:,1) = x;
 f1 = abs(f);
@@ -100,14 +100,14 @@ g4 = abs(g);
 pass(5,1) = length(g4.funs) == 4;
 pass(5,2) = normest(f1 - g4) < tol;
 pass(5,3) = all(all(feval(g4, x3) >= 0));
-h4 = chebfun(@(x) abs( [gHandle1(x), gHandle2(x)] ), -2:2, pref);
+h4 = chebfun(@(x) abs([gHandle1(x), gHandle2(x)]), -2:2, pref);
 pass(5,4) = length(h4.funs) == 4;
 pass(5,5) = normest(f1 - h4) < tol;
 pass(5,6) = all(all(feval(h4, x3) >= 0));
 
 %% A more complicated function:
-f = chebfun(@(x) sin(1i*x).*(1i*x+exp(5i*x)));
-g = chebfun(@(x) abs(sin(1i*x).*(1i*x+exp(5i*x))),[-1 0 1]);
+f = chebfun(@(x) sin(1i*x).*(1i*x + exp(5i*x)));
+g = chebfun(@(x) abs(sin(1i*x).*(1i*x + exp(5i*x))),[-1 0 1]);
 h = abs(f);
 pass(6,:) = normest(g - h) < 100*get(h, 'epslevel');
 

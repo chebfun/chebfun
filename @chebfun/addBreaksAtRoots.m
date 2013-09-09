@@ -1,9 +1,10 @@
 function f = addBreaksAtRoots(f, tol)
-%ADDBREAKATROOTS   Add breaks at appropriate roots of a CHEBFUN
+%ADDBREAKSATROOTS   Add breaks at appropriate roots of a CHEBFUN
 %   ADDBREAKSATROOTS(F) introduces breakpoints at certain roots in the interior
 %   of the domain of a CHEBFUN F. In particular, breaks are introduced at each
 %   of the roots returned by ROOTS(F, 'nozerofun', 'nojump', 'noimps'), except
-%   those which are deemed too close together or too existing roots.
+%   those which are deemed too close together or too close to existing
+%   breakpoints.
 %
 %   ADDBREAKSATROOTS(F, TOL) provides a lower bound for the tolerance used in
 %   the above exceptions.
@@ -44,9 +45,8 @@ if ( ~isempty(r) )
     % Get the domain with the new breakpoints: (union is not required, by above)
     dom = unique([f.domain, r.']);
 
-    % Introduce these breakpoints to f:
+    % Introduce these breakpoints into f:
     f = restrict(f, dom);
 end
 
 end
-

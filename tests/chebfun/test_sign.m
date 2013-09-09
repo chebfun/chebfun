@@ -46,7 +46,7 @@ g1 = sign(g);
 pass(2,1) = length(g1.funs) == 6;
 pass(2,2) = normest(f - g1) < tol;
 pref.chebfun.splitting = 1;
-h1 = chebfun(@(x) sign( gHandle1(x) ), -3:3, pref);
+h1 = chebfun(@(x) sign(gHandle1(x)), -3:3, pref);
 pass(2,3) = length(h1.funs) == 6;
 pass(2,4) = normest(f - h1) < tol;
 
@@ -59,13 +59,14 @@ g = chebfun(@(x) [gHandle1(x), gHandle2(x)] , -3:3, pref);
 g4 = sign(g);
 pass(3,1) = length(g4.funs) == 6;
 pass(3,2) = normest(f1 - g4) < tol;
-h4 = chebfun(@(x) sign( [gHandle1(x), gHandle2(x)] ), -3:3, pref);
+h4 = chebfun(@(x) sign([gHandle1(x), gHandle2(x)]), -3:3, pref);
 pass(3,3) = length(h4.funs) == 6;
 pass(3,4) = normest(f1 - h4) < tol;
 
 %% A more complicated function:
-f = chebfun(@(x) sin(1i*x).*(1i*x+exp(5i*x)));
-g = chebfun(@(x) sign(sin(1i*x).*(1i*x+exp(5i*x))),[-1 0 1], 'extrapolate', 'on');
+f = chebfun(@(x) sin(1i*x).*(1i*x + exp(5i*x)));
+g = chebfun(@(x) sign(sin(1i*x).*(1i*x + exp(5i*x))),[-1 0 1], ...
+    'extrapolate', 'on');
 h = sign(f);
 pass(4,:) = normest(g - h) < 100*get(h, 'epslevel')*length(h);
 

@@ -1,6 +1,6 @@
 function g = abs(f)
-%ABS    Absolute value of a chebfun.
-%   ABS(F) is the absolute value of the chebfun F.
+%ABS   Absolute value of a CHEBFUN.
+%   ABS(F) is the absolute value of the CHEBFUN F.
 %
 % See also SIGN, ANGLE, UNWRAP, HYPOT.
 
