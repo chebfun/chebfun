@@ -31,13 +31,13 @@ if ( size(x, 1) == 1 )
 end
 
 % Include breaks defined in the domain
-breaks = unique([d, x(:).']);
+breaks = unique([d(:) ; x(:)].');
 
 % Number of intervals:
 numInts = numel(breaks) - 1;
 
 % Piecewise Chebyshev grid:
-xx = chebpts(repmat(4, numInts, 1), x);
+xx = chebpts(repmat(4, numInts, 1), breaks);
 
 % Forgive some transpose issues:
 if ( ~any(size(y) == size(x))  )

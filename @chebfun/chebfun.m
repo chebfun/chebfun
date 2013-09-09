@@ -178,7 +178,7 @@ classdef chebfun
         [edge, vscale] = detectEdge(op, domain, hscale, vscale, derHandle);
         
         % Interpolate data:
-        f = interp1(x, y, method);
+        f = interp1(x, y, method, dom);
         
         % Determine values of chebfun at breakpoints.
         vals = jumpVals(funs, ends, op);

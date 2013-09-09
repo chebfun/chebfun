@@ -1,4 +1,4 @@
-function p = interp1(x, y, method)
+function p = interp1(x, y, method, dom)
 %INTERP1    CHEBFUN polynomial interpolant at any distribution of points.
 %   P = INTERP1(X, Y), where X and Y are vectors, returns the CHEBFUN P defined
 %   on the domain [X(1), X(end)] corresponding to the polynomial interpolant
@@ -23,56 +23,86 @@ function p = interp1(x, y, method)
 %       'spline'   - piecewise cubic spline interpolation (SPLINE)
 %       'pchip'    - shape-preserving piecewise cubic interpolation
 %       'cubic'    - same as 'pchip'
+%       'poly'     - polynomial interpolation, as described above
+%
+%   P = interp1(X, Y, METHOD, DOM) restricts the result P to the domain DOM.
 %
 % See also INTERP1, SPLINE, PCHIP.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www..chebfun.org/ for Chebfun information.
 
-if ( nargin < 3 )
-    method = [];
+% [TODO]: Allow DOM as an input (as with PCHIP() and SPLINE()).
+
+% Parse inputs:
+if ( nargin == 2 )
+    method = 'poly';
+    dom = {};
+end
+if ( nargin == 3 )
+    if ( ischar(method) )
+        dom = {};
+    else
+        dom = method;
+        method = 'poly';
+    end
+end
+
+if ( ~isempty(dom) )
+    dom = {dom};
 end
 
 switch method
-    case {[], 'poly'}
-        p = interp1Poly(x, y);
+    case 'poly'
+        p = interp1Poly(x, y, dom{:});
     case 'spline'
-        p = chebfun.spline(x, y);
+        p = chebfun.spline(x, y, dom{:});
     case {'pchip', 'cubic'}
-        p = chebfun.pchip(x, y);
+        p = chebfun.pchip(x, y, dom{:});
     case 'linear'
-        p = interp1Linear(x, y);
+        p = interp1Linear(x, y, dom{:});
     otherwise
         error('CHEBFUN:interp1:method', 'Unknown method ''%s''', method);
 end
 
 end
 
-function p = interp1Poly(x, y)
+function p = interp1Poly(x, y, breaks)
 % Polynomial interpolation
+
+if ( nargin == 2 || isempty(breaks) )
+    breaks = x([1, end]).';
+end
 
 % Compute barycentric weights for these points:
 w = baryWeights(x);
 % Define the interpolant using CHEBTECH.BARY():
 f = @(z) chebtech.bary(z, y, x, w);
 % Construct a CHEBFUN:
-p = chebfun(f, [x(1), x(end)], length(x));
+p = chebfun(f, breaks, length(x));
 
 end
 
-function p = interp1Linear(x, y)
+function p = interp1Linear(x, y, d)
 % Linear interpolation
+
+if ( nargin < 3 )
+    d = x([1, end]);
+end
 
 % Ensure x is a column vector:
 if ( size(x, 1) == 1 )
     x = x.';
 end
 
+% Include breaks defined in the domain
+breaks = unique([d(:) ; x(:)].');
+
 % Number of intervals:
-numInts = numel(x) - 1;
+numInts = numel(breaks) - 1;
 
 % Piecewise Chebyshev grid:
-xx = chebpts(repmat(2, numInts, 1), x);
+xx = chebpts(repmat(2, numInts, 1), breaks).';
 
 % Forgive some transpose issues:
 if ( ~any(size(y) == size(x))  )
@@ -80,11 +110,16 @@ if ( ~any(size(y) == size(x))  )
 end
 
 % Evaluate on the Chebyshev grid using built-in spline:
-yy = interp1(x, y, xx, 'linear');
+yy = interp1(x, y, xx.', 'linear');
 
 % Construct the CHEBFUN:
 data = mat2cell(yy, repmat(2, numInts, 1), size(yy, 2));
-p = chebfun(data, x.');
+p = chebfun(data, breaks);
+
+% Restrict if needed:
+if ( d(1) > x(1) || d(end) < x(end) )
+    p = restrict(p, d);
+end
 
 end
 

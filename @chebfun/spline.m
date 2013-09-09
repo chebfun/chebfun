@@ -24,12 +24,14 @@ function f = spline(x, y, d)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
+% TODO: Perhaps we shouldn't include the finals breaks in Not-A-Knot conditions?
+
 if ( nargin < 3 )
     d = x([1, end]);
 end
 
 % Include breaks defined in the domain
-breaks = unique([d, x(:).']);
+breaks = unique([d(:) ; x(:)].');
 
 % Number of intervals:
 numInts = numel(breaks) - 1;
