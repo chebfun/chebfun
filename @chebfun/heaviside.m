@@ -6,7 +6,7 @@ function h = heaviside(f)
 % See also DIRAC, SIGN.
 
 % Copyright 2011 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 % HEAVISIDE() is basically a wrapper for SIGN().
 h = .5*(sign(f) + 1);
