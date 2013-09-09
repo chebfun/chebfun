@@ -50,8 +50,6 @@ h1 = chebfun(@(x) sign(gHandle1(x)), -3:3, pref);
 pass(2,3) = length(h1.funs) == 6;
 pass(2,4) = normest(f - h1) < tol;
 
-%% Test complex CHEBFUN once that is supported?
-
 %% Array-valued CHEBFUN
 f1 = chebfun(@(x) feval(f, [x, x]) , -3:3, pref);
 gHandle2 = @(x) cos(pi*(x-.5));
@@ -69,5 +67,11 @@ g = chebfun(@(x) sign(sin(1i*x).*(1i*x + exp(5i*x))),[-1 0 1], ...
     'extrapolate', 'on');
 h = sign(f);
 pass(4,:) = normest(g - h) < 100*get(h, 'epslevel')*length(h);
+
+%% Test sign() for a complex-valued CHEBFUN.
+f = chebfun(@(x) exp(2*pi*1i*x)./(1 + (x - 0.1).^2), [-1 1]);
+h = sign(f);
+h_exact = @(x) exp(2*pi*1i*x);
+pass(5,:) = norm(feval(h, x) - h_exact(x), inf) < 10*vscale(h)*epslevel(h);
 
 end
