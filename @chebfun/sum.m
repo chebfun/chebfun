@@ -130,14 +130,8 @@ function out = sumSubDom(f, a, b)
 
         % Compute the indefinite integral:
         out = cumsum(f);
-
-        % Create CHEBFUN with value at lower limit:  (This is necessary for
-        % things to work with array-valued inputs.)
-        aVal = feval(out, a);
-        aVal = chebfun(@(x) repmat(aVal, length(x), 1) , out.domain);
-
         % Compose with the CHEBFUNs defining the limits:
-        out = compose(b, out) - aVal;
+        out = compose(b, out) - feval(out, a);
 
     elseif ( isa(a, 'chebfun') )
 
@@ -148,14 +142,8 @@ function out = sumSubDom(f, a, b)
 
         % Compute the indefinite integral:
         out = cumsum(f);
-
-        % Create CHEBFUN with value at upper limit:  (This is necessary for
-        % things to work with array-valued inputs.)
-        bVal = feval(out, b);
-        bVal = chebfun(@(x) repmat(bVal, length(x), 1) , out.domain);
-
         % Compose with the CHEBFUNs defining the limits:
-        out = bVal - compose(a, out);
+        out = feval(out, b) - compose(a, out);
     end
 
 end
