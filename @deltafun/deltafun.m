@@ -21,7 +21,13 @@ classdef deltafun
         funPart     % (smoothfun)
         
         % Delta functions.
-        deltas       % (1x2 double)
+        deltaMag       % (vector of magnitudes)
+        
+        % Delta Locaions.
+        deltaLoc
+        
+        % Domain
+        domain
         
         % Order of the derivative
         diffOrder    % (1x1 double)
@@ -40,7 +46,7 @@ classdef deltafun
     
     %% CLASS CONSTRUCTOR:
     methods ( Static = true )
-        function obj = deltafun(op, magnitude, location) 
+        function obj = deltafun(magnitude, location, domain, pref) 
             %%
             % Check for preferences in the very beginning.            
             if ( (nargin < 4) || isempty(pref) )
@@ -56,7 +62,13 @@ classdef deltafun
             % Case 0: No input arguments, return an empty object.
             if ( nargin == 0 )   
                 obj.funPart = [];
-                obj.deltas = [];
+                obj.deltaMag = [];
+                obj.deltaLoc = [];
+                obj.domain = [];
+                obj.diffOrder = [];
+                obj.isImag = [];
+                obj.isReal = [];
+                obj.isConj = [];
                 return
             end
             
@@ -68,56 +80,27 @@ classdef deltafun
             end
             %%
             % Case 2: Two input arguments.
-            if ( (nargin == 2) || ~isempty(exponents) )
-                % Exponents passed, store them.
-                obj.exponents = exponents;                                           
+            if ( nargin == 2 )
+                if ( size(magnitude) ~= size(location) )
+                    error('CHEBFUN:DELTAFUN:dim', 'magnitude and location should be vectors of same size.');
+                end
+                if ( min(size(magnitude)) > 1 || min(size(location)) > 1 )
+                    error('CHEBFUN:DELTAFUN:dim', 'magnitude and location should each be a vector');
+                end
+                obj.deltaMag = magnitude;
+                obj.deltaLoc = location;
+                obj.domain   = [-1, 1];
+                obj.diffOrder = 0*magnitude;
+                obj.isImag = false;
+                obj.isReal = false;
+                obj.isConj = false;                
             end
                 
             %%
             % Case 3: Three or more input arguments.
-            % The user can choose a singularity detection algorithm by passing
-            % appropriate strings in the argument "singType", which is a cell
-            % array. If, however, the user doesn't provide any prefereces 
-            % regarding the algorithm, the most generic algorithm, which tries
-            % to find fractional order singularities is used.
-            if ( nargin >= 3 && isempty(exponents) )
-                if ( isempty(singType) )
-                    % Singulrity types and exponents not given. Assume
-                    % fractional poles or generic singularities if not given
-                    singType = {'sing', 'sing'};
-                else
-                    % Singularity types given, make sure the strings are OK.                                
-                    checkSingTypes(singType);
-                end
-            else
-                if ( isempty(exponents) )
-                    singType = {'sing', 'sing'};
-                end
-            end    
+                
             
-            %%
-            % Make sure that op is a funciton handle
-            if ( ~isa(op, 'function_handle') )
-                error( 'CHEBFUN:SINGFUN:constructor', 'First argument must be a function handle.');
-            end
             
-            %%
-            % If exponents were passed, make sure they are in correct shape.
-            if ( ~isempty(exponents) )
-                if ( any(size(exponents) ~= [1 2]) || ~isa(exponents, 'double') )
-                    error( 'CHEBFUN:SINGFUN:constructor', 'Exponents must be a 1X2 vector of doubles.' );
-                end
-            else                
-                % Exponents not given, determine them. 
-                obj.exponents = singfun.findSingExponents(op, singType);                            
-            end
-            
-            %%   
-            % Factor out singular terms from the operator based on the values
-            % in exponents.
-            smoothOp = singOp2SmoothOp(op, obj.exponents);
-            % Construct the smooth part.
-            obj.smoothPart = singfun.constructSmoothPart(smoothOp, pref);
         end
     end
     

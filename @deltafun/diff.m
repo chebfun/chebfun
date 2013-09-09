@@ -24,9 +24,12 @@ elseif ( k == 0 )
 end
 
 %% Differentiate the DELTAFUN F, k times 
-f.diffOrder = f.diffOrder + k;
+f.funPart = diff(f.funPart, k);    % Differentiate the classical function.
+f.diffOrder = f.diffOrder + k;     % Differentitat the distributional part.
 
+% Make sure the maximum order of the derivative is within limits.
 if ( any(f.diffOrder > deltafun.pref.deltafun.maxDiffOrder) )
-    error( '
+    error('CHEBFUN:DELTAFUN:DIFF', 'order of highest derivative too high. You can change this through DELTAFUN prefernces.');
+end
 
 end

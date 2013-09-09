@@ -54,7 +54,7 @@ if ( isfield(prefs, classname) )  % It does, so either:
     if ( numel(varargin) == 0 )
         return                    % a) No props to change, return
     else
-        p = prefs.(classname);    % b) Grab SINGFUN prefs
+        p = prefs.(classname);    % b) Grab DELTAFUN prefs
     end
 else
     % No SINGFUN prefs found, so make some:
