@@ -1,13 +1,14 @@
 function [sn, cn, dn] = ellipj(u, m, pref)
 %ELLIPJ Jacobi elliptic functions.
-%   [SN, CN, DN] = ELLIPJ(U, M) returns the chebfuns of the Jacobi elliptic
-%   functions Sn, Cn, and Dn with parameter M composed with the CHEBFUN U. M
-%   must be a scalar in the range 0 <= M <= 1.
+%   [SN, CN, DN] = ELLIPJ(U, M) returns the CHEBFUN representations of the
+%   Jacobi elliptic functions Sn, Cn, and Dn with parameter M composed with the
+%   U. U may be a scalar or a CHEBFUN and M must be a CHEBFUN or scalar in the
+%   range 0 <= M <= 1.
 %
-%   [SN, CN, DN] = ELLIPJ(U, M, TOL) composeutes the elliptic functions to the
+%   [SN, CN, DN] = ELLIPJ(U, M, TOL) composes the elliptic functions to the
 %   accuracy TOL instead of the default TOL = CHEBFUN.PREF('EPS').
 %
-%   Complex values of U are accepted, but the resulting composeutation may be
+%   Complex values of U are accepted, but the resulting computation may be
 %   inaccurate. Use ELLIPJC from Driscoll's SC toolbox instead.
 %
 %   Note: Some definitions of the Jacobi elliptic functions use the modulus k
@@ -15,8 +16,8 @@ function [sn, cn, dn] = ellipj(u, m, pref)
 %
 % See also ELLIPKE.
 
-% Copyright 2011 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Note. It isn't possible to call MATLAB's built in cn and/or dn in isolation.
@@ -36,37 +37,59 @@ end
 if ( isreal(u) )
     % Real case: Call ELLIPJ().
 
-    % SN
-    sn = compose(u, @(x) ellipj(x, m, tol), pref);
-
-    % CN
-    if ( nargout >= 2 )
-        cn = compose(u, @(x) cnFun(x, m, tol), pref);
+    if ( isnumeric(m) )     % U = CHEBFUN, M = double
+        % SN
+        sn = compose(u, @(u) ellipj(u, m, tol), pref);
+        % CN
+        if ( nargout >= 2 )
+            cn = compose(u, @(u) cnFun(u, m, tol), pref);
+        end
+        % DN
+        if ( nargout == 3 )
+            dn = compose(u, @(u) dnFun(u, m, tol), pref);
+        end
+    elseif ( isnumeric(u) )  % U = double, M = CHEBFUN
+        % SN
+        sn = compose(m, @(m) ellipj(u, m, tol), pref);
+        % CN
+        if ( nargout >= 2 )
+            cn = compose(m, @(m) cnFun(u, m, tol), pref);
+        end
+        % DN
+        if ( nargout == 3 )
+            dn = compose(m, @(m) dnFun(u, m, tol), pref);
+        end
+    else                     % U = CHEBFUN, M = CHEBFUN
+        % SN
+        sn = compose(u, @(u, m) ellipj(u, m, tol), m, pref);
+        % CN
+        if ( nargout >= 2 )
+            cn = compose(u, @(u, m) cnFun(u, m, tol), m, pref);
+        end
+        % DN
+        if ( nargout == 3 )
+            dn = compose(u, @(u, m) dnFun(u, m, tol), m, pref);
+        end
     end
-
-    % DN
-    if ( nargout == 3 )
-        dn = compose(u, @(x) dnFun(x, m, tol), pref);
-    end
-
+    
 else
     % Use imaginary transformations (see http://dlmf.nist.gov/22.8):
 
     [s, c, d] = ellipj(real(u), m, tol);      % real values
     [s1, c1, d1] = ellipj(imag(u), 1-m, tol); % imaginary values
-    denom = c1.^2 + m*(s.*s1).^2;
+    denom = 1./(c1.^2 + m.*(s.*s1).^2);
 
     % SN ( see NIST 22.8.1)
-    sn = (s.*d1 + 1i*c.*d.*s1.*c1)./denom;
+    sn = (s.*d1 + 1i*c.*d.*s1.*c1).*denom;
 
     % CN ( see NIST 22.8.2)
     if ( nargout >= 2 )
-        cn = (c.*c1 - 1i*s.*d.*s1.*d1)./denom;
+        cn = (c.*c1 - 1i*s.*d.*s1.*d1).*denom;
     end
 
     % DN ( see NIST 22.8.3)
     if ( nargout == 3 )
-        dn = (d.*c1.*d1 - 1i*m*s.*c.*s1)./denom;
+        dn = (d.*c1.*d1 - 1i*m.*s.*c.*s1).*denom;
     end
 
 end
