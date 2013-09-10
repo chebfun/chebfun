@@ -4,9 +4,10 @@ function g = mat2cell(f, M, N)
 %   cell array G of CHEBFUN objects. C is the vector of column sizes and must
 %   sum to M, the number of columns of F. The elements of C determine the size
 %   of each cell in G so that
-%               SIZE(C{I},2) == C(I), for I = 1:LENGTH(C)
+%               SIZE(C{I}, 2) == C(I), for I = 1:LENGTH(C)
 %
-%   G = MAT2CELL(F) assumes C = ones(1, COL).
+%   G = MAT2CELL(F) assumes is a row vector with all entries equal to 1 whose
+%   length is equal to the number of columns of F.
 %
 %   G = MAT2CELL(F, M, N) is similar to above, but allows three input arguments
 %   so as to be consistent with the built in MAT2CELL function. Here N takes the
@@ -23,6 +24,7 @@ function g = mat2cell(f, M, N)
 
 % Return an empty result for empty inputs:
 if ( isempty(f) )
+    g = [];
     return
 end
 
@@ -40,7 +42,7 @@ elseif ( nargin == 2 )
 end
 
 % Check dimensions:
-if ( ~isscalar(M) || M ~= 1 || sum(N) ~= numCols )
+if ( ~isscalar(M) || (M ~= 1) || (sum(N) ~= numCols) )
     error('CHEBFUN:CHEBFUN:mat2cell:size', ...
         ['Input arguments, M and N, must sum to each dimension of the', ...
         ' input size, [1,%d].'], numCols);
@@ -52,6 +54,9 @@ for k = 1:numFuns
     cellFuns(k,:) = mat2cell(f.funs{k}, M, N);
 end
 
+% Create a cell which tells us which columns are grouped together:
+index = mat2cell(1:size(f.funs{1}, 2), M, N);
+
 % Create a new CHEBFUN from each column of FUNs;
 g = cell(1, numel(N));
 for k = 1:numel(N)
@@ -59,27 +64,8 @@ for k = 1:numel(N)
     g{k} = chebfun(cellFuns(:,k));
 
     % Copy over higher-order impulses.
-    g{k}.impulses = cat(3, g{k}.impulses, ...
-        zeros(numFuns + 1, N(k), size(f.impulses, 3) - 1));
-
-    startCol = sum(N(1:(k-1))) + 1; % Columns of f that correspond to the
-    endCol = startCol + N(k) - 1;   % current CHEBFUN being made.
-
-    for n = 1:(numFuns + 1)
-        g{k}.impulses(n,1:N(k),2:end) = f.impulses(n,startCol:endCol,2:end);
-    end
-
-    % Remove all-zero layers of higher-order impulses.
-    for n = size(g{k}.impulses, 3):-1:1
-        if ( all(all(g{k}.impulses(:,:,n) == 0)) )
-            g{k}.impulses(:,:,n) = [];
-        end
-    end
-    
-    % Deal with row CHEBFUN objects:
-    if ( f.isTransposed )
-        g{k} = g{k}.';
-    end
+    g{k}.impulses = f.impulses(:,index{k},:);
+    g{k} = tidyImpulses(g{k});
 end
 
 end

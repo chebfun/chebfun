@@ -1,7 +1,7 @@
 function fx = feval(f, x, varargin)
 %FEVAL   Evaluate a CHEBFUN.
 %   FX = FEVAL(F, X) evaluates a CHEBFUN F at the points in X.  If F is
-%   array-valued with columns F1, ..., FN, then FX will be [F1(X) ... FN(X)],
+%   array-valued with columns F1, ..., FN, then FX will be [F1(X), ..., FN(X)],
 %   the horizontal concatenation of the results of evaluating each column at the
 %   points in X.
 %
@@ -10,14 +10,16 @@ function fx = feval(f, x, varargin)
 %   FEVAL(F, '+') do the same for the right endpoint.
 %
 %   FEVAL(F, X, 'left') and FEVAL(F, X, '-') evaluate F at the points in X,
-%   using left-hand limits to evaluate F at any breakpoints.  FEVAL(F, X,
+%   using left-hand limits to evaluate F at any breakpoints. FEVAL(F, X,
 %   'right') and FEVAL(F, X, '+') do the same but using right-hand limits.
+%
+%   F(X), F('left'), F(X, 'left'), etc, are equivalent syntaxes. 
 %
 %   Example:
 %     f = chebfun(@(x) 1./(1 + 25*x.^2));
-%     y = feval(f, linspace(-1, 1, 100));
+%     y = feval(f, linspace(-1, 1, 100).');
 %
-% See also @CHEBFUN/SUBSREF.
+% See also SUBSREF.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
@@ -54,7 +56,7 @@ end
 % right thing.  (We'll compensate for this further down.)
 wasTransposed = f.isTransposed;
 if ( f.isTransposed )
-    f.isTransposed = 0; % [TODO]:  Replace with a call to transpose().
+    f = transpose(f);
 end
 
 % Reshape x to be a column vector.
@@ -63,7 +65,8 @@ ndimsx = ndims(x);
 x = x(:);
 
 % Initialise output:
-[numFuns, numCols] = size(f);
+numCols = size(f, 2);
+numFuns = numel(f.funs);
 fx = zeros(size(x, 1), numCols);
 funs = f.funs;
 dom = f.domain;
@@ -129,16 +132,17 @@ end
 higherImpulses = f.impulses(:,:,2:end);
 % Only one row:
 if ( ~any(higherImpulses(:)) )
-    % Loop over the funs:
+    % Loop over the FUNs:
     for k = 1:numFuns + 1
-        idx = x == dom(k);
-        if ( any(idx) )
-            fx((x == dom(k)),:) = f.impulses(k,:,1);
+        index = x == dom(k);
+        if ( any(index) )
+            imps = repmat(f.impulses(k,:,1), sum(index), 1);
+            fx(index,:) = imps;
         end
     end
     
 else
-    % [TODO]: Multiple imps rows:    
+    % [TODO]: Higher-order impulses.
 end
 
 %% RESHAPE FOR OUTPUT:

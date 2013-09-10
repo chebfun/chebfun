@@ -55,7 +55,8 @@ for n = 1:2
     [Q, R] = qr(f);
     pass(n, 18) = all(size(Q) == 3) && all(size(R) == 3);
     I = eye(3);
-    pass(n, 19) = norm(innerProduct(Q, Q) - I, inf) < 10*f.epslevel;
+    pass(n, 19) = norm(innerProduct(Q, Q) - I, inf) < ...
+        10*max(f.vscale.*f.epslevel);
 end
 
 end
@@ -68,11 +69,11 @@ function result = test_one_qr(f, x)
 
     % Check orthogonality.
     ip = innerProduct(Q, Q);
-    result(1) = max(max(abs(ip - eye(N)))) < 10*f.epslevel;
+    result(1) = max(max(abs(ip - eye(N)))) < 10*max(f.vscale.*f.epslevel);
 
     % Check that the factorization is accurate.
     err = Q*R - f;
-    result(2) = norm(feval(err, x), inf) < 100*f.epslevel;
+    result(2) = norm(feval(err, x), inf) < 100*max(f.vscale.*f.epslevel);
 end
 
 % Same as the previous function but this time uses the QR factorization with
@@ -83,9 +84,9 @@ function result = test_one_qr_with_perm(f, x)
 
     % Check orthogonality.
     ip = innerProduct(Q, Q);
-    result(1) = max(max(abs(ip - eye(N)))) < 10*f.epslevel;
+    result(1) = max(max(abs(ip - eye(N)))) < 10*max(f.vscale.*f.epslevel);
 
     % Check that the factorization is accurate.
     err = Q*R - f*E;
-    result(2) = norm(feval(err, x), inf) < 100*f.epslevel;
+    result(2) = norm(feval(err, x), inf) < 100*max(f.vscale.*f.epslevel);
 end

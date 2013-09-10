@@ -5,7 +5,7 @@ function out = vscale(f)
 %   scales of each of the piecewise components and columns of F are given by
 %   get(F, 'vscale-local');
 %
-% See also MAX.
+% See also MAX, MINANADMAX.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

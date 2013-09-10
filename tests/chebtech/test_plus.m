@@ -103,6 +103,25 @@ for n = 1:2
     pass(n, 20) = (~g.ishappy) && (~h.ishappy);
     h = g + f;  % Add happy to unhappy.
     pass(n, 21) = (~g.ishappy) && (~h.ishappy);
+
+    %%
+    % Test addition of array-valued scalar to array-valued chebtech.
+
+    f = testclass.make(@(x) [sin(x) cos(x) exp(x)]);
+    g = f + [1 2 3];
+    g_exact = @(x) [(1 + sin(x)) (2 + cos(x)) (3 + exp(x))];
+    err = feval(g, x) - g_exact(x);
+    pass(n, 22) = norm(err(:), inf) < 10*max(g.vscale*g.epslevel);
+
+    %%
+    % Test scalar expansion in CHEBTECH argument.
+
+    f = testclass.make(@(x) sin(x));
+    g = f + [1 2 3];
+    g_exact = @(x) [(1 + sin(x)) (2 + sin(x)) (3 + sin(x))];
+    err = feval(g, x) - g_exact(x);
+    pass(n, 23) = isequal(size(g.values, 2), 3) && norm(err(:), inf) < ...
+        10*max(g.vscale*g.epslevel);
 end
 
 end
@@ -114,7 +133,8 @@ function result = test_add_function_to_scalar(f, f_op, alpha, x)
     g2 = alpha + f;
     result(1) = isequal(g1, g2);
     g_exact = @(x) f_op(x) + alpha;
-    result(2) = norm(feval(g1, x) - g_exact(x), inf) < 10*g1.epslevel;
+    result(2) = norm(feval(g1, x) - g_exact(x), inf) <= ...
+        10*max(g1.vscale.*g1.epslevel);
 end
 
 % Test the addition of two CHEBTECH objects F and G, specified by F_OP and
@@ -125,5 +145,6 @@ function result = test_add_function_to_function(f, f_op, g, g_op, x)
     result(1) = isequal(h1, h2);
     h_exact = @(x) f_op(x) + g_op(x);
     norm(feval(h1, x) - h_exact(x), inf);
-    result(2) = norm(feval(h1, x) - h_exact(x), inf) < 10*h1.epslevel;
+    result(2) = norm(feval(h1, x) - h_exact(x), inf) <= ...
+        10*max(h1.vscale.*h1.epslevel);
 end

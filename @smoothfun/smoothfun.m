@@ -98,12 +98,12 @@ classdef smoothfun < onefun % (Abstract)
     
 end
 
-
 function f = funqui(vals)
-%FUNQUI    Rational interpolant of equispaced data.
+%FUNQUI   Rational interpolant of equispaced data.
 %   F = FUNQUI(VALS) constructs a function handle F to a rational interpolant of
 %   equispaced data in VALS in the interval [-1, 1]. It uses Floater-Hormann
-%   interpolation with an adaptive choice of their blending degree d.
+%   interpolation [Numer. Math. 107, 315-331 (2007)] with an adaptive choice 
+%   of their blending degree d.
 
 n = length(vals) - 1;
 
@@ -126,19 +126,30 @@ x = linspace(-1, 1, n+1)';
 xrm = x;
 rmIndex = [2, n-1];
 xrm(rmIndex) = [];
-fvalsrm = vals;
+
+% Take arbitary linear combination of the columns for array-valued construction:
+linComb = sin((1:size(vals, 2)).');
+fvals = vals*linComb;
+fvalsrm = fvals;
 fvalsrm(rmIndex) = [];
 
 % Select a d:
-if ( vals(rmIndex) < 2*eps*norm(vals, inf) ) 
+if ( norm(fvals(rmIndex), inf) < 2*eps*norm(fvals, inf) ) 
     % This case fools funqui, so take a small d:
     dOpt = 4;
 else
     % Find a near optimal d:
-    for d = 0:min(n-2, maxd) 
-        w = fhBaryWts(xrm, d);
+    for d = 0:min(n - 2, maxd) 
+        if ( d <= (n - 5)/2 )
+            wl = abs(fhBaryWts(xrm, d, d + 2));
+            wr = flipud(abs(fhBaryWts(flipud(xrm), d, d + 2)));
+            w = [wl; wl(end)*ones(n - 5 - 2*d, 1); wr];
+            w(1:2:end) = -w(1:2:end);
+        else
+            w = fhBaryWts(xrm, d);
+        end
         yyrm = chebtech.bary(x(rmIndex), fvalsrm, xrm, w);
-        errs(d+1) = max( abs( yyrm - vals(rmIndex) ) );
+        errs(d+1) = max(abs(yyrm - fvals(rmIndex)));
         if ( errs(d+1) > 1000*min(errs(1:d+1)) )
             errs(d+2:end) = [];
             break
@@ -150,28 +161,41 @@ else
 end
 
 % Compute FH weights:
-w = fhBaryWts(x, dOpt);
+if ( dOpt <= (n + 1)/2 ) 
+    wl = abs(fhBaryWts(x, dOpt, dOpt + 1));
+    w = [wl; wl(end)*ones(n - 1 - 2*dOpt, 1); flipud(wl)];
+    w(1:2:end) = -w(1:2:end);
+else
+    w = fhBaryWts(x, dOpt);
+end
 % Create a function handle for the computed rational interpolant to the data:
 f = @(zz) chebtech.bary(zz, vals, x, w);
 end
 
-function w = fhBaryWts(x, d) 
+function w = fhBaryWts(x, d, maxind) 
 % Function for the computation of the FH weights.
 
 n = length(x) - 1;
-w = zeros(size(x));
-for k = 1:n+1
+
+if ( nargin < 3 )
+    maxind = n + 1;
+end
+
+w = zeros(min(n + 1, maxind), 1);
+
+for k = 1:min(n + 1, maxind)
    for m = k-d:k
-      if ( m < 1 || m > n + 1 - d )
+      if ( (m < 1) || (m > n + 1 - d) )
          continue
       end
       prod = 1;
       for j = m:m+d
          if ( j ~= k )
-            prod = prod/( x(k) - x(j) );
+            prod = prod/(x(k) - x(j));
          end
       end
       w(k) = w(k) + (-1)^m*prod;
    end
 end
+
 end

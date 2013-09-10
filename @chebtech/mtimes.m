@@ -45,8 +45,8 @@ elseif ( isa(c, 'double') )         % CHEBTECH * double
     
     % If the vertical scale is zero, set the CHEBTECH to zero:
     if ( all(f.vscale == 0) )
-        f.values = zeros(size(f.values, 1), 1);
-        f.coeffs = zeros(size(f.values, 1), 1);
+        f.values = zeros(1, size(f.values, 2));
+        f.coeffs = zeros(1, size(f.values, 2));
     end
     
 elseif ( isa(c, 'chebtech') )       % CHEBTECH * CHEBTECH  

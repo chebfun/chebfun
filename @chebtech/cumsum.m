@@ -71,7 +71,7 @@ for k = 1:m
 end
 
 % Recover values and attach to output:
-f.values = f.chebpolyval(c);
+f.values = f.coeffs2vals(c);
 f.coeffs = c;
 
 % Update vscale:

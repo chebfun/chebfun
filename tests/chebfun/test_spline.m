@@ -38,7 +38,7 @@ pass(10) = 1;
 dom = [.01, 10.01];
 x = (0:10)';  
 y = [sin(x), cos(x)];
-f = chebfun.spline(x, y, dom)
+f = chebfun.spline(x, y, dom);
 tol = epslevel(f);
 pass(11) = all(f.domain == [dom(1), 1:10, dom(2)]);
 pass(12) = norm(feval(f, x(2:end)) - y(2:end,:)) < tol;
