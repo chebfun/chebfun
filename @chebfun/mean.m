@@ -1,6 +1,6 @@
 function h = mean(f, g)
 %MEAN    Average or mean value of a CHEBFUN.
-%   MEAN(F) is the mean value of the CHEBFUN F.
+%   MEAN(F) is the mean value of the CHEBFUN Fin its continuous dimension.
 %   MEAN(F, G) is the average chebfun between CHEBFUN objectys F and G.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.

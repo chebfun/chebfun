@@ -225,6 +225,9 @@ classdef chebfun
     % Methods implemented by CHEBFUN class.
     methods
         
+        % Absolute value of a CHEBFUN.
+        f = abs(f, pref)
+        
         % Plot information regarding the representation of a CHEBFUN object:
         h = chebpolyplot(f, varargin);
 
@@ -303,6 +306,9 @@ classdef chebfun
         % Subtraction of two CHEBFUN objects.
         f = minus(f, g)
         
+        % Signmum of a CHEBFUN.
+        f = sign(f, pref)
+
         % Multiplication of CHEBFUN objects.
         f = mtimes(f, c)
 

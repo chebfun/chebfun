@@ -11,10 +11,10 @@ files = {'test_airy' % DONE
 'test_besselk'
 'test_bessely'
 'test_cov' % Requires MEAN() which requires SUM
-'test_cumprod' % Not required?
+% 'test_cumprod' % Not required?
 'test_ellipj'
 'test_ellipke'
-'test_end' % Requires SUBSREF()
+'test_end' % DONE.
 % 'test_erfcinv' % DONE test_erfX
 % 'test_erfc' % DONE test_erfX
 % 'test_erfcx' % DONE test_erfX
@@ -24,10 +24,10 @@ files = {'test_airy' % DONE
 'test_hypot' % Requires addBreaksAtRoots()
 'test_interp1' % DONE.
 % 'test_legpoly' % Not required
-'test_mean' % requires SUM()
+'test_mean' % DONE.
 'test_pchip' % DONE.
 % 'test_poly' % Not required
-'test_prod' % Not required?
+% 'test_prod' % Not required?
 'test_residue'
 'test_spline' % DONE
 'test_std' % Requires VAR()

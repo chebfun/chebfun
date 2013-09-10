@@ -44,6 +44,7 @@ out = f(:, end);
 x = chebfun(@(x) x);
 pass(8) = normest(out - x);
 
+% Transpose:
 g = f.';
 out = g(end, :);
 pass(9) = normest(out - x.');

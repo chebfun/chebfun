@@ -4,6 +4,7 @@ if ( nargin == 0 )
     pref = chebfun.pref();
 end
 
+%% Two arguments:
 f = chebfun(@sin, pref);
 g = chebfun(@cos, pref);
 h = chebfun(@(x) .5*(sin(x) + cos(x)), pref);
@@ -14,13 +15,20 @@ g = chebfun(@(x) [cos(x), 1i*exp(x)], pref);
 h = .5*(f+g);
 pass(2) = normest(mean(f, g) - h) < 10*epslevel(h);
 
-% [TODO]: This requires SUM() before tests can be written
-% f = chebfun(@sin, pref);
-% pass(3) = abs(mean(f)) < epslevel(f);
-pass(3) = false;
+%% One argument:
+f = chebfun(@sin, pref);
+pass(3) = abs(mean(f)) < epslevel(f);
+pass(4) = abs(mean(f.')) < epslevel(f);
 
-% [TODO]: More tests of this type.
+f = chebfun(@(x) [sin(x), x], pref);
+pass(5) = norm(mean(f), inf) < epslevel(f);
+pass(6) = norm(mean(f.'), inf) < epslevel(f);
 
+f = chebfun(@(x) [sin(x), x], [0, 6], pref);
+pass(7) = norm(mean(f) - sum(f)/6, inf) < vscale(f)*epslevel(f);
+pass(8) = norm(mean(f.') - sum(f).'/6, inf) < vscale(f)*epslevel(f);
+
+%% Unbounded domains:
 % [TODO]: Test unbounded domains.
 
 end
