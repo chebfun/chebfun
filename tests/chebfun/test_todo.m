@@ -21,7 +21,7 @@ files = {'test_airy' % DONE
 % 'test_erfinv' % DONE test_erfX
 % 'test_erf' % DONE test_erfX
 % 'test_fill' % Not rquired
-'test_hypot' % Requires addBreaksAtRoots()
+'test_hypot' % DONE.
 'test_interp1' % DONE.
 % 'test_legpoly' % Not required
 'test_mean' % DONE.
