@@ -17,6 +17,8 @@ function out = get(f, prop)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% [TODO]: Include a get(f, 'numCols') ( = size(f.funs{1}, 2) if f is not empty).
+
 switch prop
     case fieldnames(f)
         % Allow access to any of F's properties via GET.
@@ -31,6 +33,21 @@ switch prop
         if ( f.isTransposed )
             out = out.';
         end
+    case {'lval-local', 'rval-local'}
+        if ( iszero(f) )
+            out = [];
+            return
+        end
+        lrval = prop(1:4);
+        numFuns = numel(f.funs);
+        numCols = size(f.funs{1}, 2);
+        out = zeros(numFuns, numCols);
+        for k = 1:numFuns
+            out(k,:) = get(f.funs{k}, lrval);
+        end
+        if ( f.isTransposed )
+            out = out.';
+        end        
     case 'ishappy'
         n = numel(f.funs);
         out(n,1) = 0;

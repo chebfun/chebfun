@@ -171,6 +171,9 @@ classdef fun % (Abstract)
     %% METHODS IMPLEMENTED BY THIS CLASS.
     methods
         
+        % Absolute value of a FUN. (f should have no zeros in its domain)
+        f = abs(f, pref)
+        
         % Plot (semilogy) the Chebyshev coefficients of a FUN object, if it is
         % based on Chebyshev technology.
         h = chebpolyplot(f, varargin)
@@ -249,6 +252,9 @@ classdef fun % (Abstract)
 
         % Roots of a FUN in the interval [a,b].
         out = roots(f, varargin)
+        
+        % Signum of a FUN. (f should have no zeros in its domain)
+        f = sign(f, pref)
 
         % Simplify the ONEFUN of a FUN object.
         f = simplify(f, tol)
