@@ -42,7 +42,7 @@ classdef chebtech < smoothfun % (Abstract)
 %   f = chebtech.constructor(@(x) sin(x))
 %
 %   % Construction with preferences:
-%   p = chebtech.pref('tech', 'cheb2'); % See HELP('chebtech.pref') for details.
+%   p = chebtech.pref('tech', 'chebtech2'); % (See HELP('chebtech.pref')).
 %   f = chebtech.constructor(@(x) cos(x), [], [], p)
 %
 %   % Array-valued construction:
@@ -67,7 +67,7 @@ classdef chebtech < smoothfun % (Abstract)
 % Chebyshev polynomials (i.e., those usually denoted by $T_k(x)$).
 %
 % The decision to use CHEBTECH1 or CHEBTECH2 is decided by the CHEBTECH.PREF.TECH
-% property, which should be either of the strings 'cheb1' or 'cheb2'.
+% property, which should be either of the strings 'chebtech1' or 'chebtech2'.
 %
 % The vertical scale VSCALE is used to enforce scale invariance in CHEBTECH
 % construction and subsequent operations. For example, that
