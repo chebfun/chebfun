@@ -66,7 +66,7 @@ f = chebfun(@(x) sin(1i*x).*(1i*x + exp(5i*x)));
 g = chebfun(@(x) sign(sin(1i*x).*(1i*x + exp(5i*x))),[-1 0 1], ...
     'extrapolate', 'on');
 h = sign(f);
-pass(4,:) = normest(g - h) < 100*get(h, 'epslevel')*length(h);
+pass(4,:) = normest(g - h) < 200*get(h, 'epslevel')*length(h);
 
 %% Test sign() for a complex-valued CHEBFUN.
 f = chebfun(@(x) exp(2*pi*1i*x)./(1 + (x - 0.1).^2), [-1 1]);
