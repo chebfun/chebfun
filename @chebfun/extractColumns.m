@@ -19,7 +19,7 @@ numCols = min(size(f));
 % Trivial cases:
 if ( isempty(f) )
     return
-elseif ( ~isnumeric(colIdx) && strcmp(colIdx, ':')
+elseif ( ~isnumeric(colIdx) && strcmp(colIdx, ':') )
     return
 elseif ( numel(colIdx) == numel(numCols) && all(colIdx == 1:numCols) )
     return

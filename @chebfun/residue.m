@@ -36,12 +36,12 @@ if ( nargin == 2 )
     
     if ( (numel(u.funs) > 1) || (numel(v.funs) > 1) )
         error('CHEBFUN:residue:multiple_funs', ...
-              'Residue does not support chebfuns consisting of multiple FUNs.');
+              'Residue does not support CHEBFUNs consisting of multiple FUNs.');
     end
-%     if ( any(get(u, 'exps')) || any(get(v, 'exps')) )
-%         error('CHEBFUN:residue:inf', ...
-%               'Residue does not support functions with nonzero exponents.');
-%     end
+    if ( ~isfinite(u) || ~isfinite(v) )
+        error('CHEBFUN:residue:inf', ...
+              'Residue does not support functions with nonzero exponents.');
+    end
     
     b = poly(u);
     a = poly(v);
@@ -52,12 +52,12 @@ elseif ( nargin == 3 )
     
     if ( numel(k.funs) > 1 )
         error('CHEBFUN:residue:multiple_funs', ...
-            'Residue does not support chebfuns consisting of multiple FUNS.');
+            'Residue does not support CHEBFUNs consisting of multiple FUNS.');
     end
-%     if ( any(get(k, 'exps')) )
-%         error('CHEBFUN:residue:inf', ...
-%               'Residue does not support functions with nonzero exponents.');
-%     end
+    if ( ~isfinite(k) )
+        error('CHEBFUN:residue:inf', ...
+              'Residue does not support functions with nonzero exponents.');
+    end
     
     k = poly(k);
     [b, a] = residue(u, v, k);
