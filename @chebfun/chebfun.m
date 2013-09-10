@@ -249,14 +249,11 @@ classdef chebfun
         % Compare domains of two CHEBFUN objects.
         pass = domainCheck(f, g);
 
-        % Retrieve and modify preferences for this class.
-        varargout = subsref(f, index);
-
-        % Retrieve and modify preferences for this class.
-        varargout = subsasgn(f, varargin);
-
         % Accuracy estimate of a CHEBFUN object.
         out = epslevel(f);
+        
+        % Extract columns of an array-valued CHEBFUN object.
+        f = extractColumns(f, columnIndex);
         
         % Evaluate a CHEBFUN.
         y = feval(f, x, varargin)
@@ -341,6 +338,12 @@ classdef chebfun
 
         % Size of a CHEBFUN object.
         [s1, s2] = size(f, dim);
+        
+        % Retrieve and modify preferences for this class.
+        varargout = subsref(f, index);
+
+        % Retrieve and modify preferences for this class.
+        varargout = subsasgn(f, varargin);
         
         % CHEBFUN multiplication.
         f = times(f, g, varargin)

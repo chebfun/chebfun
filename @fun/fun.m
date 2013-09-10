@@ -180,6 +180,9 @@ classdef fun % (Abstract)
         
         % FUN objects are not transposable.
         f = ctranspose(f)
+        
+        % Extract columns of an array-valued FUN object.
+        f = extractColumns(f, columnIndex);
 
         % Flip columns of an array-valued FUN object.
         f = fliplr(f)
