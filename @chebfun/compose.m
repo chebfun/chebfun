@@ -104,14 +104,6 @@ newFuns = {};
 % Initialise new domain vector:
 newDom = f.domain(1);
 
-% Set SPLITTING ON preferences:
-if ( pref.chebfun.splitting )
-    % Set the maximum degree:
-    pref.chebfun.maxSamples = pref.chebfun.splitdegree + 1;
-    % We extrapolate when splitting so that we can construct functions like
-    % chebfun(@sign,[-1 1]), which otherwise would not be happy at x = 0.
-    pref.chebfun.extrapolate = true;
-end
 % Merge preferences with FUN.PREF();
 pref = fun.pref(pref, pref.chebfun);
 
