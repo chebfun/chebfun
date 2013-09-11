@@ -8,6 +8,10 @@ function out = length(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-out = sum(cellfun(@length, f.funs));
+if ( numel(f.funs) == 0 )
+    out = 0;
+else
+    out = sum(cellfun(@length, f.funs));
+end
 
 end

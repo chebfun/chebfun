@@ -35,11 +35,12 @@ if ( nargin == 1 )
     pref = chebfun.pref();
 elseif ( nargin == 2 )
     if ( isstruct(index) ) % MERGE(F, PREF)
+        % index actually is a struct of perefernces
         pref = index;
         % Choose all indices by default:
         index = 2:numel(f.funs);
     else                   % MERGE(F, INDEX)
-        % Obtain preferences:
+        % indices passed, obtain preferences:
         pref = chebfun.pref();
     end
 end
@@ -56,7 +57,7 @@ elseif ( ischar(index) )
 else
     % Index of endpoints was provided:
     index = unique(index);
-    % Break points must be in in range 2:numel(f.funs)
+    % Break points must be in range 2:numel(f.funs)
     index((index <= 1) | (index > numel(f.funs))) = [];
 
 end
@@ -68,6 +69,14 @@ else
     maxn = pref.chebfun.splitdegree + 1;
 end
 pref.chebfun.maxSamples = maxn;
+
+% Splitting forces extrapolate:
+if ( pref.chebfun.splitting )
+    pref.chebfun.extrapolate = true;
+end
+
+% Merge preferences for FUN constructor call:
+pref = fun.pref(pref, pref.chebfun);
 
 % Obtain scales of the CHEBFUN:
 vs = vscale(f);
@@ -83,33 +92,32 @@ newImps = oldImps;
 newDom = oldDom;
 newFuns = oldFuns;
 
-% Merge preferences for FUN constructor call:
-pref = fun.pref(pref, pref.chebfun);
-
 % Loop through the index:
 for k = index
 
     % Find corresponding break:
     j = find(oldDom(k) == newDom, 1, 'first');
     % And lengths of funs on either side:
-    ljm1 = length(newFuns{j-1});
-    lj1 = length(newFuns{j});
+    lenghtPrevFun = length(newFuns{j-1});
+    lengthThisFun = length(newFuns{j});
 
     % Prevent merge if existing FUN lengths add to more than 1.2*maxn:
-    if ( ljm1 + lj1 >= 1.2*maxn )
+    if ( lenghtPrevFun + lengthThisFun >= 1.2*maxn )
         % Skip to next breakpoint:
         continue
     end
 
     % Prevent merge if nontrivial impulses:
+    % [TODO:] Should there be a tolerance enforced 
+    % on impulse magnitudes e.g. 100*tol etc.?
     if ( any(any(oldImps(k, :, 2:end))) )
         % Skip to next breakpoint:
         continue
     end
 
     % Prevent merging if there are jumps:
-    v = [ oldImps(k,:,1), get(oldFuns{k-1}, 'rval'), get(oldFuns{k}, 'lval') ];
-    if ( norm(v(1) - v(2:3), inf) >= 1e3*tol )
+    v = [ oldImps(k,:,1) ; get(oldFuns{k-1}, 'rval') ; get(oldFuns{k}, 'lval') ];
+    if ( norm(v([1,1],:) - v(2:3,:), inf) >= 1e3*tol )
         % Skip to next breakpoint:
         continue
     end

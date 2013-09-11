@@ -37,11 +37,11 @@ end
 if ( (nDiff < 0) && (nOut < 33) && (nIn < 1000) ) % <- Determined experimentally
     % Use BARY to compress:
     f.values = f.bary(f.chebpts(nOut), f.values);
-    f.coeffs = f.chebpoly(f.values);
+    f.coeffs = f.vals2coeffs(f.values);
 else
     % Use FFTs:
     f.coeffs = f.alias(f.coeffs, nOut);
-    f.values = f.chebpolyval(f.coeffs); 
+    f.values = f.coeffs2vals(f.coeffs); 
 end
 
 end

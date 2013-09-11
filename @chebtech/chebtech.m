@@ -230,15 +230,12 @@ classdef chebtech < smoothfun % (Abstract)
         % Compute Chebyshev barycentric weights.
         w = barywts(n)
 
-        % Convert values to coefficients.
-        coeffs = chebpoly(values)
-
-        % Convert coefficients to values.
-        values = chebpolyval(coeffs)
-
         % Compute Chebyshev points (x) and optionally quadrature (w) and
         % barycentric (v) weights.
         [x, w, v] = chebpts(n)
+        
+        % Convert coefficients to values.
+        values = coeffs2vals(coeffs)
 
         % Make a CHEBTECH. (Constructor shortcut)
         f = make(varargin);
@@ -248,6 +245,9 @@ classdef chebtech < smoothfun % (Abstract)
 
         % Compute Chebyshev quadrature weights.
         w = quadwts(n)
+        
+        % Convert values to coefficients.
+        coeffs = vals2coeffs(values)
 
     end
 
@@ -353,8 +353,11 @@ classdef chebtech < smoothfun % (Abstract)
         % Basic linear plot for CHEBTECH objects.
         varargout = plot(f, varargin)
         
+        % 3-D plot for CHEBTECH objects.
+        varargout = plot3(f, g, h, varargin)
+        
         % Obtain data used for plotting a CHEBTECH object:
-        data = plotData(f, g)
+        data = plotData(f, g, h)
 
         % Addition of two CHEBTECH objects.
         f = plus(f, g)

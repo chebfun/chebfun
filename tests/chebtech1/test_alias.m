@@ -22,8 +22,10 @@ c3 = chebtech1.alias(c0, 3);
 pass(3) = norm([0 1 6]' - c3, inf) == 0;
 
 % Compare against result of evaluating on a smaller grid:
-pass(4) = norm(chebtech1.chebpoly(chebtech.clenshaw(chebtech1.chebpts(9), c0)) - c2, inf) < tol;
-pass(5) = norm(chebtech1.chebpoly(chebtech.clenshaw(chebtech1.chebpts(3), c0)) - c3, inf) < tol;
+pass(4) = norm(chebtech1.vals2coeffs( ...
+    chebtech.clenshaw(chebtech1.chebpts(9), c0)) - c2, inf) < tol;
+pass(5) = norm(chebtech1.vals2coeffs( ...
+    chebtech.clenshaw(chebtech1.chebpts(3), c0)) - c3, inf) < tol;
 
 
 %%
@@ -41,8 +43,10 @@ c3 = chebtech1.alias(cc, 3);
 pass(8) = norm([0 1 6 ; -11 -12 -6]'  - c3, inf) == 0;
 
 % Compare against result of evaluating on a smaller grid:
-pass(9) = norm(chebtech1.chebpoly(chebtech.clenshaw(chebtech1.chebpts(9), cc)) - c2, inf) < tol;
-pass(10) = norm(chebtech1.chebpoly(chebtech.clenshaw(chebtech1.chebpts(3), cc)) - c3, inf) < tol;
+pass(9) = norm(chebtech1.vals2coeffs( ...
+    chebtech.clenshaw(chebtech1.chebpts(9), cc)) - c2, inf) < tol;
+pass(10) = norm(chebtech1.vals2coeffs( ...
+    chebtech.clenshaw(chebtech1.chebpts(3), cc)) - c3, inf) < tol;
 
 %%
 % Test aliasing a large tail.
@@ -50,9 +54,9 @@ c0 = 1./(1:1000).^5.';
 n = 17;
 c1 = chebtech1.alias(c0, n);
 % This should give the same result as evaluating via bary.
-v0 = chebtech1.chebpolyval(c0);
+v0 = chebtech1.coeffs2vals(c0);
 v2 = chebtech1.bary(chebtech1.chebpts(n), v0);
-c2 = chebtech1.chebpoly(v2);
+c2 = chebtech1.vals2coeffs(v2);
 % Check in the infinity norm:
 pass(11) = norm(c1 - c2, inf) < n*tol;
 

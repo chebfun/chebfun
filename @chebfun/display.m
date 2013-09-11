@@ -46,7 +46,7 @@ len = zeros(numFuns,1);
 for j = 1:numFuns
     len(j) = length(f.funs{j});
 
-    if ( size(f.funs{j}, 2) > 1 )
+    if ( min(size(f)) > 1 )
         % For array-valued funs, we don't display the values.
 
         % Print information to screen:
@@ -65,7 +65,7 @@ for j = 1:numFuns
         % Grab values at endpoints:
         endvals = [get(f.funs{j}, 'lval'), get(f.funs{j}, 'rval')];
 
-        % Tweak the endpoint values some: (This prevents -0 and +0)
+        % Tweak the endpoint values: (This prevents -0 and +0)
         if ( ~any(isnan(endvals)) )
             endvals(~logical(abs(endvals))) = 0;
         end

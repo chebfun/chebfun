@@ -297,11 +297,11 @@ end
                 chebptsAB(n, [ splitPoint, 1 ]) ], c(end:-1:1));
 
             % Get the coefficients on the left:
-            cleft = chebtech2.chebpoly(v(1:n));
+            cleft = chebtech2.vals2coeffs(v(1:n));
             cleft = cleft(end:-1:1);
 
             % Get the coefficients on the right:
-            cright = chebtech2.chebpoly(v(n+1:end));
+            cright = chebtech2.vals2coeffs(v(n+1:end));
             cright = cright(end:-1:1);
 
             % Recurse:
