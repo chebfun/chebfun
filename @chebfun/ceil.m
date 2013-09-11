@@ -1,12 +1,12 @@
 function g = ceil(f)
-%CEIL   Pointwise ceiling of a chebfun.
-%   G = CEIL(F) returns the chebfun G such that G(x) = CEIL(F(x)) for each x in
-%   the domain of F.
+%CEIL   Pointwise ceiling of a CHEBFUN.
+%   G = CEIL(F) returns the CHEBFUN G such that G(x) = CEIL(F(x)) for each x in
+%   F.domain.
 %
-% See also CHEBFUN/FLOOR, CHEBFUN/ROUND, CHEBFUN/FIX, CEIL.
+% See also FLOOR, ROUND, FIX.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with unbounded functions:
 if ( ~isfinite(f) )

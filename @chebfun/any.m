@@ -1,7 +1,6 @@
 function a = any(f, dim)
 %ANY    True if any element of a chebfun is a nonzero number. ANY ignores
-%entries that are NaN (Not a Number).
-%
+%       entries that are NaN (Not a Number).
 %   ANY(X, DIM), where X is a quasimatrix, works down the dimension DIM. If DIM
 %   is the chebfun (continuous) dimension, then ANY returns a logical column
 %   vector (or row) in which the Jth element is TRUE if any element of the Jth
@@ -9,10 +8,12 @@ function a = any(f, dim)
 %   value 1 wherever any of the columns (or rows) of X are nonzero, and zero
 %   everywhere else.
 %
-% See also CHEBFUN/ALL.
+% See also ALL.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information
+
+% TODO: Implement this.
 
 % ANY along the continuous dimension:
 if ( isempty(f) )

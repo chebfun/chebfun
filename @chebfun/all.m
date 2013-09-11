@@ -1,22 +1,15 @@
-function a = all(f, pref)
-%ALL    True if all elements of a chebfun are a nonzero number
+function a = all(f)
+%ALL   True if all elements of a CHEBFUN are a nonzero number.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
-
-if ( nargin < 2 )
-    pref = chebfun.pref();
-end
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Check the impulses first (as this is trivial):
-vs = get(f, 'vscale');
-vs = max([vs{:}]);
-el = get(f, 'epslevel');
-tol = max(100*el*vs*pref.chebfun.eps/eps, eps);
-a = all( f.impulses(1,:) > tol );
+tol = vscale(f)*epslevel(f);
+a = all( f.impulses(:,:,1) > tol );
 
 % Check to see if there are any roots:
-if ( a == true )
+if ( all(a == true) )
     a = ~any(roots(f, 'nojump'));
 end
 

@@ -1,8 +1,8 @@
 function h = and(f, g)
-%&   Chebfun Logical AND
-%   F & G performs a logical AND of two chebfun objects F and G and returns a
-%   chebfun containing elements set to either logical 1 (TRUE) or logical 0
-%   (FALSE). An element of the output chebfun is set to 0 if both input chebfun
+%&   CHEBFUN Logical AND
+%   F & G performs a logical AND of two CHEBFUN objects F and G and returns a
+%   CHEBFUN containing elements set to either logical 1 (TRUE) or logical 0
+%   (FALSE). An element of the output CHEBFUN is set to 0 if both input CHEBFUN
 %   objects contains a non-zero element at that point, otherwise it is set to 0.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
@@ -18,28 +18,26 @@ elseif ( isempty(g) )
 end
 
 % Check the orientation:
-tF = f.isTransposed;
-tG = g.isTransposed;
-if ( tF ~= tG )
+isTransposedF = f.isTransposed;
+isTransposedG = g.isTransposed;
+if ( isTransposedF ~= isTransposedG )
     error('CHEBFUN:or:trans', 'Matrix dimensions must agree.');
-elseif ( tF )
-    f = transpose(f);
-    g = transpose(g);
+elseif ( isTransposedF )
+    f = f.';
+    g = g.';
 end
 
 % Check the domains:
-dF = f.domain([1, end]);
-dG = g.domain([1, end]);
-if ( any( dF ~= dG ) )
+if ( checkDomain )
     error('CHEBFUN:and:doms', 'Inconsistent domains.');
 end
 
-% Form AND() using FLOOR():
+% Compute AND() using FLOOR() and ANY():
 h = floor(.5*(any(f) + any(g)));
 
-% Transpose result back to row chebfun if required:
-if ( tF )
-    h = transpose(h);
+% Transpose result back to row CHEBFUN if required:
+if ( isTransposedF )
+    h = h.';
 end
 
 end

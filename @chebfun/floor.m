@@ -1,12 +1,14 @@
 function f = floor(f)
-%FLOOR   Pointwise floor function of a chebfun.
-% G = FLOOR(F) returns the chebfun G such that G(X) = FLOOR(F(x)) for each x in
-% the domain of F.
+%FLOOR   Pointwise floor function of a CHEBFUN.
+%   G = FLOOR(F) returns the CHEBFUN G such that G(X) = FLOOR(F(x)) for each x
+%   in F.domain. If F is complex, then the G = FLOOR(REAL(F))+1i*FLOOR(IMAG(F)).
 %
-% See also CHEBFUN/CEIL, CHEBFUN/ROUND, CHEBFUN/FIX, FLOOR.
+% See also CEIL, ROUND, FIX.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
+
+% TODO: Implement this.
 
 % Deal with the trivial empty case:
 if ( isempty(f) )
@@ -30,15 +32,14 @@ if ( ~isreal(f) )
 end
 
 % Set scales and tolerances:
-hs = get(f, 'hscale'); hs = max([hs{:}]); % [TODO]
-vs = get(f, 'vscale'); vs = max([vs{:}]); % [TODO]
-pref = chebfun.pref();
-tol = 100*pref.chebfun.eps*vs;
+hs = hscale(f);
+vs = vscale(f);
+tol = vs*epslevel(f);
 dom = f.domain;
 
 % Find all the integer crossings for f:
-[minf, maxf] = minandmax(f);
-range = floor([ minf, maxf ]);
+[minf, maxf] = minandmax(f); % [TODO]: Only need a good bound?
+range = floor([minf, maxf]);
 r = [];
 for k = (range(1)+1):range(2)
     r = [ r ; roots(f - k, 'nozerofun') ];
