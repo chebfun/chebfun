@@ -59,6 +59,11 @@ else
     index = unique(index);
     % Break points must be in range 2:numel(f.funs)
     index((index <= 1) | (index > numel(f.funs))) = [];
+    
+    if ( isempty(index) )
+        % All the requested indices were trivial:
+        return
+    end
 
 end
 
@@ -94,7 +99,6 @@ newFuns = oldFuns;
 
 % Loop through the index:
 for k = index
-
     % Find corresponding break:
     j = find(oldDom(k) == newDom, 1, 'first');
     % And lengths of funs on either side:

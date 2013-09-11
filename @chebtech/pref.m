@@ -90,7 +90,7 @@ if ( isfield(prefs, classname) )  % It does, so either:
         p = prefs.(classname);    % b) Grab prefs for this class.
     end
 else                              % No prefs found for this class, so make some:
-    p.tech        = 'cheb2';
+    p.tech        = 'chebtech2';
     p.eps         = 2^-52;
     p.extrapolate = false;
     p.hscale      = 1;

@@ -63,7 +63,8 @@ vtol = el*vs;
 dom = f.domain;
 
 % Initialise vector to store roots:
-NaNRow = NaN(1, size(f, 2));
+numCols = size(f.funs{1}, 2);
+NaNRow = NaN(1, numCols);
 r = NaNRow;
 
 % Zero impulses are roots.
@@ -74,8 +75,8 @@ if ( any(index) )
 end
 
 funs = f.funs;
-nFuns = numel(funs);
-for k = 1:nFuns
+numFuns = numel(funs);
+for k = 1:numFuns
 
     %% Roots within the subdomains:
     % Get the roots of the current fun:
@@ -89,12 +90,14 @@ for k = 1:nFuns
     r = [ r ; rk ]; %#ok<AGROW>
         
     %% Look for roots at next breakpoint:
-    index = abs(f.impulses(k+1,:,1)) < vtol;     % Include if zero impulses
-    if ( rootsPref.jumpRoot && k < nFuns )       % Or a change in sign in a jump
+    index = false(1, numCols);
+    if ( rootsPref.impRoot )    
+        index = abs(f.impulses(k+1,:,1)) < vtol; % Include if zero impulses
+    end
+    if ( rootsPref.jumpRoot && k < numFuns )     % Or a change in sign in a jump
         index = index | ( get(funs{k}, 'rval').*get(funs{k+1}, 'lval') <= 0 );
     end
-    if ( ~isempty(r) )
-                                                 % But not if already a root!
+    if ( ~isempty(r) )                           % But not if already a root!
         index = index & ~(abs(max(r, [], 1) - dom(k+1)) < htol);
     end
     rk = NaNRow;
@@ -103,6 +106,9 @@ for k = 1:nFuns
     r = [ r ; rk ]; %#ok<AGROW>    
 
 end
+
+% Set any ridiculously small roots to zero:
+r(abs(r) < el*vs*hs/10) = 0;
 
 % Remove unnecessary NaNs:
 r = sort(r, 1);             % Sort will place NaNs in the final rows.
@@ -115,7 +121,7 @@ function rootsPref = parseInputs(f, varargin)
 
 % Defaults:
 rootsPref = struct('all', 0, 'recurse', 1, 'prune', 0,  'zeroFun', 1, ...
-    'jumpRoot', 1);
+    'jumpRoot', 1, 'impRoot', 1);
 
 if ( ~isreal(f) )
     % 'jumpRoots' only makes sense for real-valued functions, so disable it:
@@ -144,6 +150,10 @@ for k = 1:numel(varargin)
             rootsPref.jumpRoot = 1;
         case 'nojump'
             rootsPref.jumpRoot = 0;
+        case 'imps'
+            rootsPref.jumpRoot = 1;
+        case 'noimps'
+            rootsPref.jumpRoot = 0;            
         case 'recursion'
             rootsPref.recurse = 1;
             recurseHasBeenSet = 1;

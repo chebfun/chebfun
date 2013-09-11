@@ -38,28 +38,30 @@ pref.chebtech.sampletest = false;
 if ( nfuns == 2 )
     if ( size(f, 2) ~= size(g, 2) )
         error('CHEBFUN:CHEBTECH:compose:dim', ...
-            'Matrix dimensions must agree.')
+              'Matrix dimensions must agree.')
     end
 
     % Grab some data from G2:
     vscale = max(vscale, g.vscale);
     pref.chebtech.minSamples = max(pref.chebtech.minSamples, length(g));
     pref.chebtech.eps = max(pref.chebtech.eps, g.epslevel);
+    
 elseif ( isa(op, 'chebtech') )
     % If OP is a CHEBTECH, we grab some of its data:
     if ( (size(op, 2) > 1) && (size(f, 2) > 1) )
         error('CHEBFUN:CHEBTECH:compose:arrval', ...
-            'Cannot compose two array-valued CHEBTECH objects.')
+              'Cannot compose two array-valued CHEBTECH objects.')
     end
 
     if ( norm(f.values(:), inf) > 1 )
         error('CHEBFUN:CHEBTECH:compose:range', ...
-            'The range of f is not contained in the domain of g.')
+              'The range of f is not contained in the domain of g.')
     end
 
     vscale = max(vscale, op.vscale);
     pref.chebtech.minSamples = max(pref.chebtech.minSamples, length(op));
     pref.chebtech.eps = max(pref.chebtech.eps, op.epslevel);
+    
 end
 
 % Use a naive evaluation procedure if a custom refinement has not been passed.
@@ -78,7 +80,7 @@ f = f.make(op, vscale, f.hscale, pref);
 if ( ~f.epslevel )
     warning('CHEBFUN:CHEBTECH:compose:convfail', ...
         [ 'Composition with ', func2str(op), ...
-        ' failed to converge with ', int2str(length(f)), ' points.' ]);
+          ' failed to converge with ', int2str(length(f)), ' points.' ]);
 end
 
 end
