@@ -184,6 +184,12 @@ classdef fun % (Abstract)
         % FUN objects are not transposable.
         f = ctranspose(f)
 
+        % Round a FUN towards zero.
+        g = fix(f);
+        
+        % Round a FUN towards minus infinity.
+        g = floor(f);
+
         % Flip columns of an array-valued FUN object.
         f = fliplr(f)
         
@@ -252,6 +258,9 @@ classdef fun % (Abstract)
 
         % Roots of a FUN in the interval [a,b].
         out = roots(f, varargin)
+        
+        % Round a FUN towards nearest integer.
+        g = round(f)
         
         % Signum of a FUN. (f should have no zeros in its domain)
         f = sign(f, pref)

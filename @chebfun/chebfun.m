@@ -219,8 +219,11 @@ classdef chebfun
         % Absolute value of a CHEBFUN.
         f = abs(f, pref)
         
+        % Round a CHEBFUN towards plus infinity.
+        g = ceil(f)
+        
         % Plot information regarding the representation of a CHEBFUN object:
-        h = chebpolyplot(f, varargin);
+        h = chebpolyplot(f, varargin)
 
         % Construct complex CHEBFUN from real and imaginary parts.
         C = complex(A, B)
@@ -254,6 +257,12 @@ classdef chebfun
         
         % Evaluate a CHEBFUN.
         y = feval(f, x, varargin)
+        
+        % Round a CHEBFUN towards zero.
+        g = fix(f);
+        
+        % Round a CHEBFUN towards minus infinity.
+        g = floor(f);
 
         % Get properties of a CHEBFUN object.
         out = get(f, prop);
@@ -326,6 +335,9 @@ classdef chebfun
 
         % The roots of the CHEBFUN F.
         r = roots(f, varargin);
+        
+        % Round a CHEBFUN towards nearest integer.
+        g = round(f)
 
         % Plot a CHEBFUN object on a log-linear scale:
         h = semilogx(f, varargin);

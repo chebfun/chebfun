@@ -283,6 +283,12 @@ classdef chebtech < smoothfun % (Abstract)
 
         % Evaluate a CHEBTECH.
         y = feval(f, x)
+        
+        % Round a CHEBTECH towards zero.
+        g = fix(f);
+        
+        % Round a CHEBTECH towards minus infinity.
+        g = floor(f);
 
         % Flip columns of an array-valued CHEBTECH object.
         f = fliplr(f)
@@ -391,6 +397,9 @@ classdef chebtech < smoothfun % (Abstract)
 
         % Roots of a CHEBTECH in the interval [-1,1].
         out = roots(f, varargin)
+        
+        % Round a CHEBTECH towards nearest integer.
+        g = round(f)
 
         % Test an evaluation of the input OP against a CHEBTECH approx.
         pass = sampleTest(op, f)

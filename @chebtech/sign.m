@@ -15,6 +15,7 @@ if ( isreal(f) )
     arbitraryPoint = 0.1273881594;
     f.values = sign(feval(f, arbitraryPoint));
     f.coeffs = f.values;
+    f.vscale = abs(f.values);
 else
     if ( nargin == 1 )
         pref = chebtech.pref;
