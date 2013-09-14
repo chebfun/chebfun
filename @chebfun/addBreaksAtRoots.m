@@ -23,11 +23,11 @@ if ( nargin == 1 )
 end
 
 % Locate roots:
-r = roots(f, 'nozerofun', 'nojump', 'noimps');
+rAll = roots(f, 'nozerofun', 'nojump', 'noimps');
 
 % Since each column of an array-valued CHEBFUN must have the same breakpoints,
 % we simply take unique(r(:)) and remove any remaining NaNs.
-r = unique(r(:));
+r = unique(rAll(:));
 r(isnan(r)) = [];
 
 % Discard any roots which are closer than the accuracy of the CHEBFUN:
@@ -44,9 +44,16 @@ r(any(abs(bsxfun(@minus, r, f.domain)) < rtol2, 2)) = [];
 if ( ~isempty(r) )
     % Get the domain with the new breakpoints: (union is not required, by above)
     dom = unique([f.domain, r.']);
-
+    
     % Introduce these breakpoints into f:
     f = restrict(f, dom);
+
+    % Enforce zero impulses at roots:
+    for k = 1:min(size(f))
+        % TODO: Allow a tolerance?
+        f.impulses(ismember(dom, rAll(:,k)), k, :) = 0;
+    end
+    
 end
 
 end
