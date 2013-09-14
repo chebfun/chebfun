@@ -102,11 +102,11 @@ for k = index
     % Find corresponding break:
     j = find(oldDom(k) == newDom, 1, 'first');
     % And lengths of funs on either side:
-    lenghtPrevFun = length(newFuns{j-1});
+    lengthPrevFun = length(newFuns{j-1});
     lengthThisFun = length(newFuns{j});
 
     % Prevent merge if existing FUN lengths add to more than 1.2*maxn:
-    if ( lenghtPrevFun + lengthThisFun >= 1.2*maxn )
+    if ( lengthPrevFun + lengthThisFun >= 1.2*maxn )
         % Skip to next breakpoint:
         continue
     end

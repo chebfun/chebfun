@@ -18,4 +18,9 @@ out = max(ve(:));
 % Make it a _relative_ error estimate:
 out = out / vscale(f);
 
+% [TODO]: Remove this hack!
+if ( isnan(out) || ~logical(out) )
+    out = chebfun.pref('eps');
+end
+
 end
