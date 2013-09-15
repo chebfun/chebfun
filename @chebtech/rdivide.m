@@ -9,6 +9,8 @@ function f = rdivide(f, c, pref)
 %
 % See also MRDIVIDE, TIMES.
 
+% TODO: We should simply assume that there are no roots in the domain.
+
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
@@ -49,11 +51,11 @@ else
         pref = chebtech.pref; % c is a CHEBTECH.
     end
     
-    % Check if c (the denominator) has any roots.
-    if ( ~isempty(roots(c)) )
-        error('CHEBFUN:CHEBTECH:rdivide:DivideByZeros', ...
-        'Cannot divide by a CHEBTECH with roots in its domain.');
-    end
+%     % Check if c (the denominator) has any roots.
+%     if ( ~isempty(roots(c)) )
+%         error('CHEBFUN:CHEBTECH:rdivide:DivideByZeros', ...
+%         'Cannot divide by a CHEBTECH with roots in its domain.');
+%     end
     
     % Call COMPOSE.
     if ( isa(f, 'chebtech') )   % CHEBTECH / CHEBTECH
