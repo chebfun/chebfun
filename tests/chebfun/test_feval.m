@@ -179,4 +179,12 @@ f = chebfun({@(x) [x, 2*x], @(x) [3*x, 4*x]}, [0 1 2]);
 pass(28) = norm(feval(f, 1, 'left') - [1, 2], inf) < 10*f.epslevel*f.vscale;
 pass(29) = norm(feval(f, 1, 'right') - [3, 4], inf) < 10*f.epslevel*f.vscale;
 
+% Check for dimension mismatch bug when evaluating an array-valued chebfun on a
+% vector which contains breakpoint values, repeated several times.
+f_exact = @(x) [sin(x) cos(x)];
+f = chebfun(f_exact, [-1 1]);
+x = [-1 ; 0.5 ; 1];
+err = feval(f, x) - f_exact(x);
+pass(30) = all(max(abs(err)) < 10*f.epslevel*f.vscale);
+
 end
