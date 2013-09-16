@@ -33,9 +33,6 @@ end
 if ( nargin == 1 || strcmp(flag, 'global') ) 
     [y, x] = globalMax(f);    
 elseif ( isa(flag, 'chebfun') )
-    % [TODO]: Implement this. (Requires SIGN())
-    error('CHEBFUN:max:notImplemented', ...
-          'Taking the maximum of two chebfuns is not yet implemented.');
     y = maxOfTwoChebfuns(f, flag);
 else
     [y, x] = localMax(f);
@@ -125,5 +122,8 @@ notH = 0.5*(1 - S); % ~H.
 h = H.*f + notH.*g;
 
 % [TODO]: Enforce continuity?
+
+% Simplify:
+h = simplify(h);
 
 end

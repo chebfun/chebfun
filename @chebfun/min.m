@@ -33,9 +33,6 @@ end
 if ( nargin == 1 )
     [y, x] = globalMin(f);
 elseif ( isa(flag, 'chebfun') )
-    % [TODO]: Implement this. (Requires SIGN())
-%     error('CHEBFUN:min:notImplemented', ...
-%           'Taking the minimum of two chebfuns is not yet implemented.');
     y = minOfTwoChebfuns(f, flag);
 else
     [y, x] = localMin(f, flag);
@@ -125,5 +122,8 @@ notH = 0.5*(1 - S); % ~H.
 h = notH.*f + H.*g;
 
 % [TODO]: Enforce continuity?
+
+% Simplify:
+h = simplify(h);
 
 end
