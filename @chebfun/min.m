@@ -34,8 +34,8 @@ if ( nargin == 1 )
     [y, x] = globalMin(f);
 elseif ( isa(flag, 'chebfun') )
     % [TODO]: Implement this. (Requires SIGN())
-    error('CHEBFUN:min:notImplemented', ...
-          'Taking the minimum of two chebfuns is not yet implemented.');
+%     error('CHEBFUN:min:notImplemented', ...
+%           'Taking the minimum of two chebfuns is not yet implemented.');
     y = minOfTwoChebfuns(f, flag);
 else
     [y, x] = localMin(f, flag);
@@ -66,7 +66,7 @@ function [y, x] = localMin(f, flag)
 ends = f.domain([1, end]).'; % Endpoints of the domain are special.
 f = mat2cell(f); % Convert f into a cell of scalar-valued CHEBFUNs.
 
-% Loop over the FUNs:
+% Loop over the columns:
 for k = 1:numel(f)
     % Compute 1st and 2nd derivatives.
     dfk = diff(f{k});
@@ -118,8 +118,8 @@ else
 end
 
 % Heaviside function (0 where f > g, 1 where f < g);
-H = ((S + 1)/2);
-notH = ((1 - S)/2); % ~H.
+H = 0.5*(S + 1);
+notH = 0.5*(1 - S); % ~H.
 
 % Combine for output:
 h = notH.*f + H.*g;

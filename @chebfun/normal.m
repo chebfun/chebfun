@@ -1,21 +1,17 @@
-function n = normal(c,unit)
+function n = normal(c, unit)
 %NORMAL   Normal to a complex-valued CHEBFUN.
-%   N = NORMAL(C) returns the normal vector to the curve C as a quasi-matrix
-%   with two columns. The vector has the same magntiude as the curve's tangent
-%   vector.
+%   N = NORMAL(C) returns the normal vector to the curve C as a CHEBFUN with two
+%   columns. The vector has the same magntiude as the curve's tangent vector.
 %
 %   N = NORMAL(C, 'unit') returns the unit normal vector to the curve C. N is a
-%   quasi-matrix with two columns.
-% 
-% See also CHEBFUN2V/NORMAL.
+%   CHEBFUN with two columns.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % [TOD0]: This method requires HORZCAT() and quasimatrices.
 
-dc = diff(c);
-n = -1i*dc; 
+n = -1i * diff(c); 
 
 if ( nargin > 1 ) 
     if ( strcmpi(unit, 'unit') )

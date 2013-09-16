@@ -30,7 +30,7 @@ if ( isempty(f) )
     return
 end
 
-if ( nargin == 1 ) 
+if ( nargin == 1 || strcmp(flag, 'global') ) 
     [y, x] = globalMax(f);    
 elseif ( isa(flag, 'chebfun') )
     % [TODO]: Implement this. (Requires SIGN())
@@ -38,7 +38,7 @@ elseif ( isa(flag, 'chebfun') )
           'Taking the maximum of two chebfuns is not yet implemented.');
     y = maxOfTwoChebfuns(f, flag);
 else
-    [y, x] = localMax(f, flag);
+    [y, x] = localMax(f);
 end
 
 end
@@ -56,10 +56,10 @@ x = x(2,:);
 end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%% LOCAL MAXIMA %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [y, x] = localMax(f, flag)
+function [y, x] = localMax(f)
 
 % Call MINANDMAX():
-[y, x] = minandmax(f, flag);
+[y, x] = minandmax(f, 'local');
 
 % Determine which are maxima.
 
@@ -118,8 +118,8 @@ else
 end
 
 % Heaviside function (0 where f > g, 1 where f < g);
-H = ((S + 1)/2);
-notH = ((1 - S)/2); % ~H.
+H = 0.5*(S + 1);
+notH = 0.5*(1 - S); % ~H.
 
 % Combine for output:
 h = H.*f + notH.*g;

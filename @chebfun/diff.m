@@ -1,10 +1,9 @@
 function f = diff(f, n, dim)
 %DIFF   Differentiation of a CHEBFUN.
-%   DIFF(F), when F is a column CHEBFUN, computes a column CHEBFUN whose
-%   columns are the derivatives of the corresponding columns in F.  At
-%   discontinuities, DIFF creates a Dirac delta with coefficient equal to the
-%   size of the jump.  Dirac deltas already existing in F will increase their
-%   degree.
+%   DIFF(F), when F is a column CHEBFUN, computes a column CHEBFUN whose columns
+%   are the derivatives of the corresponding columns in F.  At discontinuities,
+%   DIFF creates a Dirac delta with coefficient equal to the size of the jump.
+%   Dirac deltas already existing in F will increase their degree.
 %
 %   DIFF(F), when F is an array-valued row CHEBFUN, computes the first-order
 %   finite difference of F along its rows.  The resulting row CHEBFUN will have
@@ -54,13 +53,28 @@ if ( round(n) ~= n )
     return
 end
 
-% Diff across columns (or rows for a transposed) array-valued chebfun:
 if ( xor(f.isTransposed, dim == 2) )
-    for k = 1:numel(f.funs)
-        f.funs{k} = diff(f.funs{k}, n, 2);
-    end
-    return
+    % Diff across columns (or rows for a transposed) array-valued CHEBFUN:
+    f = diffFiniteDim(f, n);
+else
+    % Diff along continuous dimension (i.e., df/dx):
+    f = diffContinuousDim(f, n);
 end
+
+
+end
+
+function f = diffFiniteDim(f, n)
+
+% Differentiate across the finite dimension (i.e., across columns).
+for k = 1:numel(f.funs)
+    f.funs{k} = diff(f.funs{k}, n, 2);
+end
+
+end
+
+function f = diffContinuousDim(f, n)
+% Differentiate along continous dimension (i.e., df/dx).
 
 % Grab some fields from f:
 funs = f.funs;

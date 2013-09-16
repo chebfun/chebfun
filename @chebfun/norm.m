@@ -25,14 +25,14 @@ function [normF, normLoc] = norm(f, n)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Empty chebfun has norm 0:
+% Empty CHEBFUN has norm 0:
 if ( isempty(f) )           
     normF = 0;
     return
 end
 
 if ( nargin == 1 )
-    n = 'fro'; 	% Frobenius norm is the default (2 norm would be much slower)/
+    n = 'fro'; 	% Frobenius norm is the default (2 norm would be much slower).
 end
 
 % Initialise:
@@ -55,7 +55,7 @@ if ( numCols == 1 )
                         'Cannot return two outputs for ''fro''-norms');
             end
             f.isTransposed = 0;
-            normF = sqrt(abs(sum(conj(f).*f)));
+            normF = sqrt(abs(innerProduct(f, f)));
             
         case {inf, 'inf'}
             if ( isreal(f) )
