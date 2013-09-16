@@ -194,6 +194,10 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
                 type = linop.defaultDiscretization;
             end
             
+            if isa(f,'chebfun')
+                f = chebmatrix({f});
+            end
+            
             Ablocks = matrixBlocks(L,dim,type);
             bblocks = matrixBlocks(f,dim,type);
             
@@ -201,10 +205,10 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
             [m,n] = size(L);
             rows = cell(m+numbc(L),1);
             
-            % Resize the rows according to differential order.
+            % Resize the operator rows according to differential order.
             dummy = type([]);
-            d = getRowDiffOrders(L);
-            for i = 1:m
+            d = getDownsampling(L);
+            for i = find( ~isnan(d) )
                 M = cat(2,Ablocks{i,:},bblocks{i});
                 rows{i} = dummy.resize( M, dim-d(i), dim );
             end
@@ -324,6 +328,7 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
     end
     
     methods (Access=private)
+        
         function C = scalartimes(A,z)
             [m,n] = size(A);
             C = cell(m,n);
@@ -337,16 +342,63 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
         
         function d = getRowDiffOrders(L)
             [m,n] = size(L);
+            d = zeros(1,m);
             for i = 1:m
-                d(i) = 0;
                 for j = 1:n
                     block = L.blocks{i,j};
-                    if isa(block,'linop')
+                    if isa(block,'linopOperator')
                         d(i) = max(d(i),block.diffOrder);
+                    elseif isa(block,'linopFunctional') || isnumeric(block)
+                        d(i) = NaN;
                     end
                 end
             end
             
+        end
+        
+        function d = getVarDiffOrders(L)
+            [m,n] = size(L);
+            d = zeros(1,n);
+            for j = 1:n
+                for i = 1:m
+                    block = L.blocks{i,j};
+                    if isa(block,'linopOperator')
+                        d(j) = max(d(j),block.diffOrder);
+                    elseif isa(block,'linopFunctional') || isnumeric(block)
+                        d(i) = NaN;
+                    end
+                end
+            end
+
+        end
+        
+        function d = getDownsampling(L)
+            [m,n] = size(L);
+            dRow = getRowDiffOrders(L);
+            dVar = getVarDiffOrders(L);
+            % Each variable requires a downsampling contribution equal to its
+            % differential order. The total diff. orders of the variables might
+            % not equal the total of the rows. 
+            totalRow = sum( dRow(~isnan(dRow)) );
+            totalVar = sum( dVar(~isnan(dVar)) );
+            if (totalRow == totalVar)
+                d = dRow;
+            else
+                % The only reasonable thing is to spread out the D.O. reductions
+                % as evenly as possible among the rows.
+                d = NaN(1,m);
+                isOp = ~isnan(dRow);
+                numOp = sum(isOp);
+                k = floor( totalVar / numOp );
+                d(isOp) = k;  % even distribution of order
+                i = rem(totalVar,numOp);  % leftover to be made up
+                if i > 0
+                    % Increment the first i rows
+                    incr = find(isOp,i);
+                    d(incr) = d(incr) + 1;
+                end
+            end
+ 
         end
 
     end
@@ -401,4 +453,5 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
             
         end
     end
+    
 end
