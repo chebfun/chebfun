@@ -129,4 +129,18 @@ h_exact = @(x) [min(sin(2*pi*x), exp(2*pi*1i*x)) ...
 err = feval(h, xr) - h_exact(xr);
 pass(16) = norm(err(:), inf) < 10*vscale(h)*epslevel(h);
 
+% Check 'global' syntax.
+f = chebfun(@(x) (x - 0.1).^2 - 1, [-1 -0.5 0 0.5 1], pref);
+[y, x] = min(f, 'global');
+pass(17) = (abs(y + 1) < 10*epslevel(f)*vscale(f)) && ...
+    (abs(feval(f, x) + 1) < 10*epslevel(f)*vscale(f));
+
+% Check error condition.
+try
+    y = max(f, 'bad');
+    pass(18) = false;
+catch ME
+    pass(18) = strcmp(ME.identifier, 'CHEBFUN:max:flag');
+end
+
 end
