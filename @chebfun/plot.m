@@ -33,9 +33,10 @@ function varargout = plot(varargin)
 %   combines the plots defined by the (F,G,S) triples or (F,S) doubles, where
 %   the F's and G's are CHEBFUN object and the S's are strings.
 %
-%   H1 = PLOT(F) returns a column vector of handles to lineseries objects, three
-%   handle per plotted line (in the case of vector-valued CHEBFUN objects),
-%   corresponding to the line, point, and jump plots, respectively.
+%   [HLINE, HPOINT, HJUMP] = PLOT(F) returns column vectors of handles to
+%   lineseries objects, three handles per plotted line (in the case of
+%   array-valued CHEBFUN objects), corresponding to the line, point, and jump
+%   plots, respectively.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
@@ -148,7 +149,7 @@ end
 
 % Give an output to the plot handles if requested:
 if ( nargout > 0 )
-    varargout = [h1 ; h2 ; h3];
+    varargout = {h1 ; h2 ; h3};
 end
 
 end
