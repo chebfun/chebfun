@@ -1,5 +1,5 @@
 function a = any(f, dim)
-%ANY    True if any element of a chebfun is a nonzero number. ANY ignores
+%ANY    True if any element of a CHEBFUN is a nonzero number. ANY ignores
 %       entries that are NaN (Not a Number).
 %   ANY(X, DIM), where X is a quasimatrix, works down the dimension DIM. If DIM
 %   is the chebfun (continuous) dimension, then ANY returns a logical column
@@ -13,7 +13,7 @@ function a = any(f, dim)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information
 
-% TODO: Implement this.
+% TODO: What is the difference between this and @CHEBFUN/ISZERO()?
 
 % ANY along the continuous dimension:
 if ( isempty(f) )
@@ -26,7 +26,7 @@ if ( nargin == 2 && f.isTransposed )
     dim = mod(dim, 2) + 1; % Maps 1 to 2 and 2 to 1.
 end
 
-% [TODO]: Implement ANY() across rows of array-valued Chebfuns.
+% [TODO]: Implement ANY() across rows of array-valued CHEBFUN.
 if ( nargin == 2 && dim ~= 1 )
     error('CHEBFUN:any:nargin', ...
         'ANY() along discrete direction not yet implemented.');
@@ -41,7 +41,7 @@ end
 % Query each of the funs:
 for k = 1:numel(f.funs)
     if ( any(f.funs{k}) )
-        % If we find a non-empty fun, the chebfun is nonempty.
+        % If we find a non-empty fun, the CHEBFUN is nonempty.
         a = true;
         return
     end

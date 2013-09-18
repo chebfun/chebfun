@@ -1,5 +1,7 @@
 function a = all(f)
 %ALL   True if all elements of a CHEBFUN are a nonzero number.
+%
+% See also ANY, ISZERO.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
