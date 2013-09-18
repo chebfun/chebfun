@@ -287,7 +287,7 @@ classdef chebfun
         h = loglog(f, varargin);
         
         % Plot a CHEBFUN object:
-        h = plot(f, varargin);
+        varargout = plot(f, varargin);
         
         % 3-D plot for CHEBFUN objects.
         varargout = plot3(f, g, h, varargin)

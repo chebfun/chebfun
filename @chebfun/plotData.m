@@ -40,6 +40,9 @@ if ( nargin == 1 || isempty(g) )
         data.yPoints = [data.yPoints ; myNaN ; dataNew.yPoints];
     end
 
+    % Return NaNs if there are no jumps:
+    data.xJumps = NaN;
+    data.yJumps = myNaN;
     % Loop over each FUN for Jumps data:
     for k = 1:(numel(f.funs) - 1)
         data.xJumps = [data.xJumps ; NaN ; f.funs{k}.domain(2) ; ...
