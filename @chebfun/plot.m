@@ -67,7 +67,7 @@ jumpData = {};
 while ( ~isempty(varargin) ) 
 
     % Acquire plotting data for each CHEBFUN / pair of CHEBFUNs:
-    if ( numel(varargin) > 1 && isa(varargin{2}, 'chebfun') ) % PLOT(f, g).
+    if ( (numel(varargin) > 1) && isa(varargin{2}, 'chebfun') ) % PLOT(f, g).
         f = varargin{1};
         g = varargin{2};
         varargin(1) = [];
@@ -85,7 +85,7 @@ while ( ~isempty(varargin) )
         % Remove CHEBFUN objects from array input:
         varargin(1:2) = [];
         
-    else                                                     % PLOT(f).
+    else                                                       % PLOT(f).
         % Call PLOTDATA():
         newData = plotData(varargin{1});
         % Remove CHEBFUN from array input:
@@ -96,7 +96,7 @@ while ( ~isempty(varargin) )
     % Style data.
     pos = 0; styleData = [];
     % Find the location of the next CHEBFUN in the input array:
-    while ( pos < length(varargin) && ~isa(varargin{pos + 1}, 'chebfun') )
+    while ( (pos < length(varargin)) && ~isa(varargin{pos + 1}, 'chebfun') )
         pos = pos + 1;
     end
     if ( pos > 0 )
