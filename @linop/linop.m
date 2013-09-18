@@ -91,20 +91,51 @@ classdef linop
     end
         
     methods (Static)
-        function D = diff(domain)
-            % D = DIFF(DOMAIN)   differentiation operator on the domain
-            if nargin==0, domain = [-1 1]; end
+        function D = diff(varargin)
+            % LINOP.DIFF  Differentiation operator.
+            %
+            % LINOP.DIFF returns the first-order differentation operator for
+            % functions defined on [-1,1].
+            %
+            % LINOP.DIFF(DOMAIN) applies to functions defined on DOMAIN, which
+            % may include breakpoints.
+            %
+            % LINOP.DIFF(DOMAIN,M) is the mth order derivative.
+            p = inputParser;
+            addOptional(p,'domain',[-1 1],@isnumeric);
+            mcheck = @(m) validateattributes(m,{'numeric'},{'scalar','nonnegative','integer'});
+            addOptional(p,'m',1,mcheck);
+            parse(p,varargin{:});
+            domain = p.Results.domain;
+            m = p.Results.m;
+            
             D = linopOperator(domain);
-            D.delayFun = @(z) diff(z,domain);
-            D.diffOrder = 1;
+            D.delayFun = @(z) diff(z,domain,m);
+            D.diffOrder = m;
         end
         
-        function C = cumsum(domain)
-            % C = CUMSUM(DOMAIN)   indefinite integration operator
-            if nargin==0, domain = [-1 1]; end
+        function C = cumsum(varargin)
+            % LINOP.CUMSUM  Antiderivative operator.
+            %
+            % LINOP.CUMSUM returns the first-order antiderivative operator for
+            % functions defined on [-1,1]. The result of applying the operator
+            % is defined uniquely by having value zero at the left endpoint.
+            %
+            % LINOP.CUMSUM(DOMAIN) applies to functions defined on DOMAIN, which
+            % may include breakpoints.
+            %
+            % LINOP.CUMSUM(DOMAIN,M) is the mth-repeated antiderivative.
+            p = inputParser;
+            addOptional(p,'domain',[-1 1],@isnumeric);
+            mcheck = @(m) validateattributes(m,{'numeric'},{'scalar','nonnegative','integer'});
+            addOptional(p,'m',1,mcheck);
+            parse(p,varargin{:});
+            domain = p.Results.domain;
+            m = p.Results.m;
+            
             C = linopOperator(domain);
-            C.delayFun = @(z) cumsum(z,domain);
-            C.diffOrder = -1;
+            C.delayFun = @(z) cumsum(z,domain,m);
+            C.diffOrder = -m;
         end
         
         function I = eye(domain)

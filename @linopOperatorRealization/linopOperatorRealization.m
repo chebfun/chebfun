@@ -9,8 +9,8 @@ classdef (Abstract) linopOperatorRealization
 
         % Given an (empty) instance of the realization object as the first argument,
         % the function should return the appropriate instantiation.
-        D = diff(A,domain)      % differentiation
-        C = cumsum(A,domain)    % indefinite integration
+        D = diff(A,domain,m)      % differentiation
+        C = cumsum(A,domain,m)    % indefinite integration
         I = eye(A,domain)       % identity
         Z = zeros(A,domain)     % zero
         F = diag(A,f)           % function multiplication
