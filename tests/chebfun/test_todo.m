@@ -12,7 +12,7 @@ files = {
 'test_besselk'
 'test_bessely'
 % 'test_cumprod' % Not required?
-'test_ellipj'
+% 'test_ellipj'
 % 'test_ellipke'
 % 'test_end' % DONE.
 % 'test_erfcinv' % DONE test_erfX
@@ -30,9 +30,10 @@ files = {
 % 'test_prod' % Not required?
 % 'test_residue' % DONE
 % 'test_spline' % DONE
-'test_cov' % 
-'test_std' % Requires VAR()
-'test_var'}; % Requires MEAN() which requires SUM()
+% 'test_cov'
+% 'test_std' % Requires VAR()
+% 'test_var' % Requires MEAN() which requires SUM()
+};
 
 for k = 1:numel(files)
     pass = exist(files{k}, 'file');
