@@ -29,8 +29,9 @@ function varargout = plot(varargin)
 %            plot(f, 'LineWidth', 2, 'Color', [.6 0 0])
 %   will create a plot with a dark red line width of 2 points.
 %
-%   PLOT(F, S1, G, S2) allows multiple CHEBFUN objects to be displayed o the
-%   same axes.
+%   PLOT(F1, S1, F2, S2, F3, S3, ...) or PLOT(F1, G1, S1, F2, G2, S2, ...)
+%   combines the plots defined by the (F,G,S) triples or (F,S) doubles, where
+%   the F's and G's are CHEBFUN object and the S's are strings.
 %
 %   H1 = PLOT(F) returns a column vector of handles to lineseries objects, three
 %   handle per plotted line (in the case of vector-valued CHEBFUN objects),
