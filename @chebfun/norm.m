@@ -17,10 +17,10 @@ function [normF, normLoc] = norm(f, n)
 %       NORM(f) = sqrt(integral of abs(f)^2).
 %       NORM(F, inf) is the maximum of the 1-norms of the rows of F.
 %
-% Furthermore, the +\-inf norms for scalar-vaued chebfun objects may also return
-% a second input, giving the position where the max/min occurs. For array-valued
-% chebfun objects, the 1, inf, and p-norms can return as their 2nd output the
-% index of the column with the largest norm.
+% Furthermore, the +\-inf norms for scalar-valued CHEBFUN objects may also
+% return a second output, giving the position where the max/min occurs. For
+% array-valued CHEBFUN objects, the 1, inf, and p-norms can return as their 2nd
+% output the index of the column with the largest norm.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -44,23 +44,23 @@ if ( numCols == 1 )
     switch n
         case 1
             if ( nargout == 2 )
-                error('CHEBFUN:norm:argout',...
+                error('CHEBFUN:norm:argout', ...
                         'Cannot return two outputs for 1-norms');
             end
-            normF = sum( abs(f) );
+            normF = sum(abs(f));
             
         case {2, 'fro'}
             if ( nargout == 2 )
-                error('CHEBFUN:norm:argout',...
+                error('CHEBFUN:norm:argout', ...
                         'Cannot return two outputs for ''fro''-norms');
             end
             f.isTransposed = 0;
-            normF = sqrt( abs( sum( conj(f).*f ) ) );
+            normF = sqrt(abs(sum(conj(f).*f)));
             
         case {inf, 'inf'}
             if ( isreal(f) )
                 [normF, normLoc] = minandmax(f);
-                [normF, idx] = max([-normF(1), normF(2)]);
+                [normF, idx] = max(abs(normF));
                 normLoc = normLoc(idx);
             else
                 [normF, normLoc] = max(conj(f).*f);
@@ -68,18 +68,19 @@ if ( numCols == 1 )
             end
             
         case {-inf, '-inf'}
-            [normF, normLoc] = min(abs(f));
+            [normF, normLoc] = min(conj(f).*f);
+            normF = sqrt(normF);
             
         otherwise
             if ( isnumeric(n) && isreal(n) )
                 if ( nargout == 2 )
-                    error('CHEBFUN:norm:argout',...
+                    error('CHEBFUN:norm:argout', ...
                             'Cannot return two outputs for p-norms.');
                 end
                 if ( mod(n, 2) )
-                    normF = sum( (conj(f).*f).^(n/2) )^(1/n);
+                    normF = sum((conj(f).*f).^(n/2))^(1/n);
                 else
-                    normF = sum( abs(f).^n )^(1/n);
+                    normF = sum(abs(f).^n)^(1/n);
                 end
             else
                 error('CHEBFUN:norm:unknownNorm', ...
@@ -101,7 +102,7 @@ else
             
         case 2
             if (nargout == 2 )
-                error('CHEBFUN:norm:argout',...
+                error('CHEBFUN:norm:argout', ...
                     'Cannot return two outputs for quasimatrix 2-norms.');
             end
             s = svd(f, 0);
@@ -114,20 +115,20 @@ else
             end
             % Find integration dimension: 1 if column, 2 if row:
             f.isTransposed = 0;
-            normF = sqrt( sum( sum(f.*conj(f)) ) );
+            normF = sqrt(sum(sum(f.*conj(f))));
             
         case {'inf', inf}
             f.isTransposed = 0;
-            [normF, normLoc] = max( sum(abs(f), 2) );
+            [normF, normLoc] = max(sum(abs(f), 2));
             
         case {'-inf', -inf}
             f.isTransposed = 0;
-            [normF, normLoc] = min( sum(abs(f), 2) );
+            [normF, normLoc] = min(sum(abs(f), 2));
             
         otherwise
             if ( isnumeric(n) && isreal(n) )
                 f.isTransposed = 0;
-                [normF, normLoc] = max( sum( abs(f).^n, 2 ) );
+                [normF, normLoc] = max(sum(abs(f).^n, 2));
                 normF = normF^(1/n);
             else
                 error('CHEBFUN:norm:unknownNorm', ...

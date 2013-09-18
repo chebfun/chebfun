@@ -30,6 +30,7 @@ w = f.quadwts(n);
 out = bsxfun(@times, w.', f.values)' * g.values;
 
 % Force real output if the inputs are equal:
+% TODO: Also ABS()?
 if ( isequal(f, g) )
     out = real(out);
 end

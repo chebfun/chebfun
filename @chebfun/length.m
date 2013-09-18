@@ -3,7 +3,7 @@ function out = length(f)
 %   LENGTH(F) returns the length of a CHEBFUN object F, which is defined as the
 %   sum of the length of f.funs.
 %
-% See also CHEBFUN/SIZE.
+% See also SIZE.
 
 if ( numel(f.funs) == 0 )
     out = 0;

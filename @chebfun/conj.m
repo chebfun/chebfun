@@ -8,6 +8,7 @@ function f = conj(f)
 % See http://www.chebfun.org for Chebfun information.
 
 % Conjugate the impulses:
+% [TODO]:  Is this the right thing to do for higher-order impulses?
 f.impulses = conj(f.impulses);
 
 % Conjugate the FUNs:

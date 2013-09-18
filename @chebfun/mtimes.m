@@ -39,8 +39,7 @@ else                        % CHEBFUN' * CHEBFUN
 
     % We can't do MTIMES() on two CHEBFUNs that have the same transpose state.
     if ( f.isTransposed == g.isTransposed )
-        if ( (~f.isTransposed && (size(f, 2) == size(g, 2))) || ...
-              (f.isTransposed && (size(f, 1) == size(g, 1))) )
+        if ( ~all(size(f) == size(g)) )
             error('CHEBFUN:mtimes:dims', ...
                 ['Matrix dimensions must agree. Use f.*g to multiply ' ...
                  'two chebfun objects.']);

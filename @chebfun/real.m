@@ -13,6 +13,7 @@ if ( isempty(f) )
 end
 
 % Take real part of the impulses:
+% [TODO]:  Is this the right thing to do for higher-order impulses?
 f.impulses = real(f.impulses);
 
 % Take real part of the FUNs:

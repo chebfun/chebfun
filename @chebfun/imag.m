@@ -13,6 +13,7 @@ if ( isempty(f) )
 end
 
 % Take imaginary part of the impulses:
+% [TODO]:  Is this the right thing to do for higher-order impulses?
 f.impulses = imag(f.impulses);
 
 % Take imaginary part of the FUNs:
