@@ -1,6 +1,6 @@
 function [y, x] = min(f, flag)
 %MIN   Minimum values of a CHEBFUN.
-%   MIN(F) returns the minimum value of the CHEBFUN F.
+%   MIN(F) and MIN(F, 'global') return the minimum value of the CHEBFUN F.
 %
 %   [Y, X] = MIN(F) returns also points X such that F(X) = Y.
 %
@@ -30,12 +30,14 @@ if ( isempty(f) )
     return
 end
 
-if ( nargin == 1 )
+if ( (nargin == 1) || strcmp(flag, 'global') )
     [y, x] = globalMin(f);
 elseif ( isa(flag, 'chebfun') )
     y = minOfTwoChebfuns(f, flag);
+elseif ( strcmp(flag, 'local') )
+    [y, x] = localMin(f);
 else
-    [y, x] = localMin(f, flag);
+    error('CHEBFUN:min:flag', 'Unrecognized flag.');
 end
 
 end
@@ -53,10 +55,10 @@ x = x(1,:);
 end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%% LOCAL MINIMA %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [y, x] = localMin(f, flag)
+function [y, x] = localMin(f)
 
 % Call MINANDMAX():
-[y, x] = minandmax(f, flag);
+[y, x] = minandmax(f, 'local');
 
 % Determine which are minima.
 

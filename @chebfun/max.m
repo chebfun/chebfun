@@ -1,6 +1,6 @@
 function [y, x] = max(f, flag)
 %MAX   Maximum value of a CHEBFUN.
-%   MAX(F) returns the maximum value of the CHEBFUN F.
+%   MAX(F) and MAX(F, 'global') return the maximum value of the CHEBFUN F.
 %
 %   [Y, X] = MAX(F) returns also points X such that F(X) = Y.
 %
@@ -30,12 +30,14 @@ if ( isempty(f) )
     return
 end
 
-if ( nargin == 1 || strcmp(flag, 'global') ) 
+if ( (nargin == 1) || strcmp(flag, 'global') ) 
     [y, x] = globalMax(f);    
 elseif ( isa(flag, 'chebfun') )
     y = maxOfTwoChebfuns(f, flag);
-else
+elseif ( strcmp(flag, 'local') )
     [y, x] = localMax(f);
+else
+    error('CHEBFUN:max:flag', 'Unrecognized flag.');
 end
 
 end
