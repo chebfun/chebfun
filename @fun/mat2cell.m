@@ -1,5 +1,5 @@
 function g = mat2cell(f, M, N)
-%MAT2CELL   Convert an array-valued FUN into an cell array of FUN objects.
+%MAT2CELL   Convert an array-valued FUN into a cell array of FUN objects.
 %   G = MAT2CELL(F, C) breaks up the array-valued FUN F into a single row cell
 %   array G of FUN objects. C is the vector of column sizes and must sum to M,
 %   the number of columns of F. The elements of C determine the size of each
