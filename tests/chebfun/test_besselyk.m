@@ -42,7 +42,7 @@ for (n = 1:2)
 
     h = testfn(nu, f);
     err = feval(h, xr) - testfn(nu, f_op(xr));
-    pass(n, 4) = norm(err(:), inf) < 10*epslevel(h)*vscale(h);
+    pass(n, 4) = norm(err(:), inf) < 50*epslevel(h)*vscale(h);
 
     h2 = testfn(nu, f, 0);
     pass(n, 5) = normest(h - h2) < ...
