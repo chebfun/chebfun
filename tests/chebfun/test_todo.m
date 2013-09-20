@@ -4,13 +4,13 @@ function pass = test_todo(pref)
 
 files = {
 %     'test_airy' % DONE
-'test_angle' % Requires ATAN2()
+% 'test_angle' % Not required.
 % 'test_area' % Not rquired
 % 'test_besselh'
-'test_besseli'
+% 'test_besseli' % Not required.
 'test_besselj' % Requires POWER()
-'test_besselk'
-'test_bessely'
+% 'test_besselk'
+% 'test_bessely'
 % 'test_cumprod' % Not required?
 % 'test_ellipj'
 % 'test_ellipke'
