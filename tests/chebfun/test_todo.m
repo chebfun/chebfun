@@ -6,7 +6,7 @@ files = {
 %     'test_airy' % DONE
 'test_angle' % Requires ATAN2()
 % 'test_area' % Not rquired
-'test_besselh'
+% 'test_besselh'
 'test_besseli'
 'test_besselj' % Requires POWER()
 'test_besselk'

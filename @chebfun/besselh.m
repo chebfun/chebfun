@@ -1,4 +1,4 @@
-function g = besselh(nu, k, f, scale)
+function g = besselh(nu, k, f, scale, pref)
 %BESSELH    Bessel function of third kind (Hankel function) of a CHEBFUN.
 %   H = BESSELH(NU, K, F), for K = 1 or 2, computes the Hankel function H1_nu(F)
 %   or H2_nu(F) of the nonzero CHEBFUN F. If F passes through the origin in its
@@ -13,6 +13,9 @@ function g = besselh(nu, k, f, scale)
 %     H = BESSELH(NU, 1, F, 1) scales H1_nu(F) by exp(-i*F))).
 %     H = BESSELH(NU, 2, F, 1) scales H2_nu(F) by exp(+i*F))).
 %
+%   H = BESSELH(NU, K, F, SCALE, PREF) uses the preference structure PREF when
+%   building the CHEBFUN H.
+%
 %  The relationship between the Hankel and Bessel functions is:
 %  
 %         besselh(nu,1,z) = besselj(nu,z) + i*bessely(nu,z)
@@ -24,25 +27,30 @@ function g = besselh(nu, k, f, scale)
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % Parse inputs:
-if ( nargin < 4 )
-    scale = 1;
+if ( nargin < 5 )
+    pref = chebfun.pref();
 end
+
+if ( nargin < 4 )
+    scale = 0;
+end
+
 if ( isa(k, 'chebfun') )
     if ( nargin == 3 )
         scale = f;
     end
     f = k;
-    k = 0;
+    k = 1;
 end
 
 % Check for roots:
-r = roots(f, 'nojumps', 'nozerofun');
+r = roots(f, 'nojump', 'nozerofun');
 if ( numel(r) > 0 )
     error('CHEBFUN:besselh:zero', 'F has roots in its domain.');
 end
 
 % Compose:
-g = compose(f, @(x) besselh(nu, k, x));
+g = compose(f, @(x) besselh(nu, k, x), pref);
 
 % Scale (as described in help documentation):
 if ( scale == 1 )
