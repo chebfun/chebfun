@@ -1,4 +1,4 @@
-function g = besselj(nu, f, scale)
+function g = besselj(nu, f, scale, pref)
 %BESSELJ    Bessel function of first kind of a CHEBFUN.
 %   J = BESSELJ(NU, F) returns J_nu(F), i.e., is the Bessel function of the
 %   first kind, J_nu(Z) composed with the chebfun object F. The order NU need
@@ -13,6 +13,10 @@ function g = besselj(nu, f, scale)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
+if ( nargin < 4 )
+    pref = chebfun.pref();
+end
+
 if ( any(size(nu) > 1) || ~isreal(nu) )
     error('CHEBFUN:besselj:nu', ...
         'The first argument of besselj must be a real-valued scalar.');
@@ -22,7 +26,7 @@ end
 fnu = f.^nu;
 
 % Smooth part (see below):
-g = compose(f, @(x) h(nu, x));
+g = compose(f, @(x) h(nu, x), pref);
 
 % Combine:
 g = fnu.*g;
