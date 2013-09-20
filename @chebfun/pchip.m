@@ -56,7 +56,7 @@ data = mat2cell(yy, repmat(4, numInts, 1), size(yy, 2));
 f = chebfun(data, breaks);
 
 % Restrict if needed:
-if ( d(1) > x(1) || d(end) < x(end) )
+if ( (d(1) > x(1)) || (d(end) < x(end)) )
     f = restrict(f, d);
 end
 

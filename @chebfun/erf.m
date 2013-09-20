@@ -1,6 +1,6 @@
 function g = erf(f, pref)
-%ERF   Error function of a chebfun.
-%   Y = ERF(X) is the error function for each element of X. X must be real.
+%ERF   Error function of a CHEBFUN.
+%   Y = ERF(X) is the error function of the CHEBFUN X. X must be real.
 %
 %   The error function is defined as:
 %       erf(X)(s) = 2/sqrt(pi) * integral from 0 to X(s) of exp(-t^2) dt.

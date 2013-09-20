@@ -8,7 +8,7 @@ function out = chebpoly(f, varargin)
 %
 %   A = CHEBPOLY(F, I, N) truncates or pads the vector A so that N coefficients
 %   of the fun F_I are returned. However, if I is 0 then the global coefficients
-%   of the *CHEBFUN* F are returned (by computing relevent inner products with
+%   of the *CHEBFUN* F are returned (by computing relevant inner products with
 %   Chebyshev polynomials).
 %
 %   If F is array-valued with M columns, then A is an MxN matrix.
@@ -59,7 +59,7 @@ end
 if ( isempty(ii) )
     if ( numFuns > 1 )
         warning('CHEBFUN:chebpoly:nfuns1',['Chebfun has more than one fun. ' ...
-                'Only the Chebyshev coefficients of the first are returned. ' ...
+                'Returning Chebyshev coefficients for the first fun only. ' ...
                 'Use CHEBPOLY(F,1) to suppress this warning.']);
     end
     ii = 1; 
@@ -69,17 +69,17 @@ if ( ii > numFuns )
     error('CHEBFUN:chebpoly:nfuns2', 'Chebfun only %s has FUNSs.', ...
         num2str(numFuns));
 end
-if ( numel(ii) > 1 || numel(N) > 1 )
+if ( (numel(ii) > 1) || (numel(N) > 1) )
     error('CHEBFUN:chebpoly:scalar', 'Inputs I and N must be scalars.');
 end
-if ( ii == 0 && isempty(N) )
+if ( (ii == 0 && isempty(N)) )
     error('CHEBFUN:chebpoly:inputs', 'Input N must not be empty if I is zero.');
 end
 if ( ~isempty(N) && ~isnumeric(N) )
     error('CHEBFUN:chebpoly:inputN', 'Input N must be a scalar.');
 end
 if ( any(isinf(f.domain)) )
-% Chebyshev coefficients are no defined on an unbounded domain.    
+% Chebyshev coefficients are not defined on an unbounded domain.
     error('CHEBFUN:chebpoly:infint', ...
         'Infinite intervals are not supported here.');
 end
@@ -89,7 +89,7 @@ if ( ii > 0 )
     % CHEBPOLY() of a smooth piece:
     out = chebpoly(f.funs{ii}, N).';
     
-elseif ( ii == 0 && numFuns == 1)
+elseif ( (ii == 0) && (numFuns == 1))
     
     % CHEBPOLY() of a smooth piece:
     out = chebpoly(f.funs{1}, N).';    
@@ -126,7 +126,7 @@ else
 end
 
 % Return 2nd-kind coefficients:
-if ( kind == 2 && numel(out) > 1 )
+if ( (kind == 2) && (numel(out) > 1) )
     out(:,end) = 2*out(:,end);
     % Recurrence relation / conversion matrix:
     out = .5*[out(:,1:2), out(:,3:end) - out(:,1:end-2)];

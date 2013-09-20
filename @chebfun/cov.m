@@ -16,7 +16,7 @@ if ( isempty(f) )
 end
 
 % Error checking:
-if ( nargin == 2 && ~all(size(f) == size(g)) )
+if ( (nargin == 2) && ~all(size(f) == size(g)) )
     error('CHEBFUN:cov:size',' Quasimatrix dimensions do not agree.');
 end
 if ( nargin == 3 )

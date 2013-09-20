@@ -1,17 +1,17 @@
 function g = besselh(nu, k, f, scale, pref)
-%BESSELH    Bessel function of third kind (Hankel function) of a CHEBFUN.
-%   H = BESSELH(NU, K, F), for K = 1 or 2, computes the Hankel function H1_nu(F)
-%   or H2_nu(F) of the nonzero CHEBFUN F. If F passes through the origin in its
+%BESSELH   Bessel function of third kind (Hankel function) of a CHEBFUN.
+%   H = BESSELH(NU, K, F), for K = 1 or 2, computes the Hankel function H1_NU(F)
+%   or H2_NU(F) of the nonzero CHEBFUN F. If F passes through the origin in its
 %   domain, then an error is returned.
 %
 %   H = BESSELH(NU, F) uses K = 1.
 %
-%   H = BESSELH(NU, K, F, SCALE) returns a scaled Hankel function specfied by
+%   H = BESSELH(NU, K, F, SCALE) returns a scaled Hankel function specified by
 %   SCALE:
 %         0 - (default) is the same as BESSELH(NU, K, F)
 %         1 - returns the following depending on K
-%     H = BESSELH(NU, 1, F, 1) scales H1_nu(F) by exp(-i*F))).
-%     H = BESSELH(NU, 2, F, 1) scales H2_nu(F) by exp(+i*F))).
+%     H = BESSELH(NU, 1, F, 1) scales H1_NU(F) by exp(-i*F))).
+%     H = BESSELH(NU, 2, F, 1) scales H2_NU(F) by exp(+i*F))).
 %
 %   H = BESSELH(NU, K, F, SCALE, PREF) uses the preference structure PREF when
 %   building the CHEBFUN H.

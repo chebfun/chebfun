@@ -26,7 +26,7 @@ function varargout = fill(varargin)
 
 k = 1;
 % Get discrete data from PLOTDATA():
-while ( k < length(varargin) - 1 )
+while ( k < (length(varargin) - 1) )
     if ( isa(varargin{k}, 'chebfun') )
         data = plotData(varargin{k}, varargin{k+1});
         varargin{k} = data.xLine(2:end,:);

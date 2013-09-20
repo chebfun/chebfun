@@ -1,5 +1,5 @@
 function [coeffs, poles, k] = residue(u, v, k)
-%RESIDUE    Partial-fraction expansion (residues).
+%RESIDUE   Partial-fraction expansion (residues).
 %   [R, P, K] = RESIDUE(B, A) finds the residues, poles and direct term of a
 %   partial fraction expansion of the ratio of two CHEBFUN objects B(s)/A(s).
 %   If there are no multiple roots,
@@ -8,11 +8,11 @@ function [coeffs, poles, k] = residue(u, v, k)
 %        A(s)     s - P(1)   s - P(2)         s - P(n)
 %   B and A are CHEBFUN objects consisting of a single fun. The residues are
 %   returned in the column vector R, the pole locations in column vector P, and
-%   the direct terms in chebfun K. The number of poles is n = length(A) - 1 =
-%   length(R) = length(P). The direct term CHEBFUN is zero if length(B) <
+%   the direct terms in the CHEBFUN K. The number of poles is n = length(A) - 1
+%   = length(R) = length(P). The direct term CHEBFUN is zero if length(B) <
 %   length(A), otherwise length(K) = length(B) - length(A) + 1.
 %
-%   If P(j) = ... = P(j+m-1) is a pole of multplicity m, then the expansion
+%   If P(j) = ... = P(j+m-1) is a pole of multiplicity m, then the expansion
 %   includes terms of the form
 %                  R(j)        R(j+1)                R(j+m-1)
 %                -------- + ------------   + ... + ------------

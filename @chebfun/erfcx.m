@@ -1,6 +1,6 @@
 function g = erfcx(f, pref)
-%ERFCX   Scaled complementary error function of a chebfun%
-%   Y = ERFCX(X) is the scaled complementary error function of the chebfun X.
+%ERFCX   Scaled complementary error function of a CHEBFUN.
+%   Y = ERFCX(X) is the scaled complementary error function of the CHEBFUN X.
 %   X must be real.  The scaled complementary error function is defined as:
 %       ERFCX(X) = EXP(X.^2) * ERFC(X)
 %   which is approximately (1/sqrt(pi)) * 1./X for large X.

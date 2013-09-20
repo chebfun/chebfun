@@ -27,7 +27,7 @@ if ( isempty(f) )
 end
 
 % Get the (x, y) data from PLOTDATA():
-if ( nargin > 1 && isa(varargin{1}, 'chebfun') )
+if ( (nargin > 1) && isa(varargin{1}, 'chebfun') )
     g = varargin{1};
     varargin(1) = [];
     data = plotData(f, g);

@@ -5,7 +5,7 @@ function g = besselk(nu, f, scale, pref)
 %   domain, then an error is returned. The order NU need not be an integer but
 %   must be real. The argument F can be complex
 %
-%   K = BESSELK(NU, F, SCALE) returns a scaled K_NU(F) specfied by SCALE:
+%   K = BESSELK(NU, F, SCALE) returns a scaled K_NU(F) specified by SCALE:
 %         0 - (default) is the same as BESSELK(NU, F),
 %         1 - scales K_NU(F) by exp(F)).
 %

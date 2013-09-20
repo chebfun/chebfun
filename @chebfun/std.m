@@ -1,5 +1,5 @@
 function out = std(f)
-%STD    Standard deviation of a chebfun.
+%STD   Standard deviation of a CHEBFUN.
 %   STD(F) is the standard deviation of the CHEBFUN F.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.

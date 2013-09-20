@@ -1,8 +1,7 @@
 function g = erfcinv(f, pref)
-%ERFCINV   Inverse complementary error function of a chebfun.
-%   X = erfcinv(Y) is the inverse of the complementary error function for each
-%   element of Y. It satisfies Y = ERFC(X) for 2 >= Y >= 0 and -Inf <= X <=
-%   Inf.
+%ERFCINV   Inverse complementary error function of a CHEBFUN.
+%   X = ERFCINV(Y) is the inverse of the complementary error function for the
+%   CHEBFUN Y. It satisfies Y = ERFC(X) for 2 >= Y >= 0 and -Inf <= X <= Inf.
 %
 % See also ERF, ERFC, ERFCX, ERFINV.
 
