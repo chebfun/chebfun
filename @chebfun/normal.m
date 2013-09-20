@@ -8,6 +8,9 @@ function n = normal(c, unit)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% [TODO]:  Reconsider how this function should behave in the presence of cusps
+% once we have singfun in place.
+
 n = -1i * diff(c); 
 
 if ( nargin > 1 ) 
