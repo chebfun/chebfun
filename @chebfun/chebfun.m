@@ -193,6 +193,11 @@ classdef chebfun
         prefs = pref(varargin);
         
     end
+
+    methods (Access = private)
+        % Remove zero layers from impulses array.
+        f = tidyImpulses(f);
+    end
     
     % Static private methods implemented by CHEBFUN class.
     methods (Static = true, Access = private)
