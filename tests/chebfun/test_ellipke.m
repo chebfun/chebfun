@@ -9,7 +9,7 @@ end
 m = chebfun('m', [0 .99], pref);
 K1 = ellipke(m);
 K2 = chebfun(@(m) ellipke(m), [0 .99], pref);
-pass(1) = normest(K1 - K2) < epslevel(K1)*vscale(K1);
+pass(1) = normest(K1 - K2) < 10*epslevel(K1)*vscale(K1);
 
 % Array-valued composition:
 f = chebfun(@(x) .05+abs(.9*[sin(pi*x), cos(pi*x)]), -1:.5:1);
