@@ -16,7 +16,7 @@ function g = airy(K, f, scale)
 % See also BESSELJ.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 % Parse the inputs as described in help text:
 if ( nargin == 1 )

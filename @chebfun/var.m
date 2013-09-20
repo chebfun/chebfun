@@ -3,7 +3,7 @@ function out = var(f)
 %   VAR(F) is the variance of the CHEBFUN F.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 if  ( ~f.isTransposed )
     Y = f - mean(f);

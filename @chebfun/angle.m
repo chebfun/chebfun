@@ -5,7 +5,7 @@ function p = angle(f)
 % See also ABS, UNWRAP, ATAN2.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 % [TODO]: This requires ATAN2()!
 p = atan2(imag(f), real(f));

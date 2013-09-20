@@ -8,7 +8,7 @@ function g = erfc(f, pref)
 % See also ERF, ERFCX, ERFINV, ERFCINV.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 % Input must be real:
 if ( ~isreal(f) )

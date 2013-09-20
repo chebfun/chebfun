@@ -10,7 +10,7 @@ function n = normal(c,unit)
 % See also CHEBFUN2V/NORMAL.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 % [TOD0]: This method requires HORZCAT() and quasimatrices.
 

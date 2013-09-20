@@ -10,7 +10,7 @@ function p = unwrap(p, jumptol)
 %   See also ABS, ANGLE.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 % Trivial case
 if ( isempty(p) || numel(p.funs) == 1 )
