@@ -10,7 +10,7 @@ function f = cumsum(f, m)
 % See also SUM, INTEGRAL.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 % [TODO]: Update the above help text once we have singfun.
 %   G will typically be normalised so that G(F.domain(1)) = 0.  The exception to

@@ -1,5 +1,5 @@
 function [sn, cn, dn] = ellipj(u, m, pref)
-%ELLIPJ Jacobi elliptic functions.
+%ELLIPJ   Jacobi elliptic functions.
 %   [SN, CN, DN] = ELLIPJ(U, M) returns the CHEBFUN representations of the
 %   Jacobi elliptic functions Sn, Cn, and Dn with parameter M composed with the
 %   U. U may be a scalar or a CHEBFUN and M must be a CHEBFUN or scalar in the

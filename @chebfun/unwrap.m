@@ -1,5 +1,5 @@
 function p = unwrap(p, jumptol)
-%UNWRAP Unwrap CHEBFUN phase angle.
+%UNWRAP   Unwrap CHEBFUN phase angle.
 %   UNWRAP(P) unwraps radian phases P by changing absolute jumps greater than or
 %   equal to pi to their 2*pi complement. It unwraps along the continuous
 %   dimension of P and leaves the first FUN along this dimension unchanged.
@@ -10,10 +10,10 @@ function p = unwrap(p, jumptol)
 %   See also ABS, ANGLE.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 % Trivial case
-if ( isempty(p) || numel(p.funs) == 1 )
+if ( isempty(p) || (numel(p.funs) == 1) )
     return
 end
 
@@ -58,7 +58,10 @@ p.impulses(1,idxr) = feval(p, p.domain(idxr), 'right');
 p = merge(p, find(idx));
 
 function m = mymod(f, g)
-    m = min([abs(mod(f,g)) ; abs(mod(f,-g)) ; abs(mod(-f,g)) ; abs(mod(-f,-g))]);
+    m = min([abs(mod(f, g))
+             abs(mod(f, -g))
+             abs(mod(-f, g))
+             abs(mod(-f, -g))]);
 end
 
 end

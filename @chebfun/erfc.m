@@ -1,6 +1,6 @@
 function g = erfc(f, pref)
-%ERFC   Complementary error function of a chebfun.
-%   Y = ERFC(X) is the complementary error function for the chebfun X. X must be
+%ERFC   Complementary error function of a CHEBFUN.
+%   Y = ERFC(X) is the complementary error function for the CHEBFUN X. X must be
 %   real. The complementary error function is defined as:
 %       ERFC(X)(s) = 2/sqrt(pi) * integral from X(s) to inf of exp(-t^2) dt.
 %                  = 1 - ERF(X)(s).
@@ -8,7 +8,7 @@ function g = erfc(f, pref)
 % See also ERF, ERFCX, ERFINV, ERFCINV.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 % Input must be real:
 if ( ~isreal(f) )

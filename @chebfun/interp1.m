@@ -1,5 +1,5 @@
 function p = interp1(x, y, method, dom)
-%INTERP1    CHEBFUN polynomial interpolant at any distribution of points.
+%INTERP1   CHEBFUN polynomial interpolant at any distribution of points.
 %   P = INTERP1(X, Y), where X and Y are vectors, returns the CHEBFUN P defined
 %   on the domain [X(1), X(end)] corresponding to the polynomial interpolant
 %   through the data Y(j) at points X(j).
@@ -68,7 +68,7 @@ end
 function p = interp1Poly(x, y, breaks)
 % Polynomial interpolation
 
-if ( nargin == 2 || isempty(breaks) )
+if ( (nargin == 2) || isempty(breaks) )
     breaks = x([1, end]).';
 end
 
@@ -115,7 +115,7 @@ data = mat2cell(yy, repmat(2, numInts, 1), size(yy, 2));
 p = chebfun(data, breaks);
 
 % Restrict if needed:
-if ( d(1) > x(1) || d(end) < x(end) )
+if ( (d(1) > x(1)) || (d(end) < x(end)) )
     p = restrict(p, d);
 end
 
@@ -136,7 +136,7 @@ else
 end
 
 % [TODO]: Why is the top loop not used? (IF 0)
-if ( n < 2001 && 0 )         % For small n using matrices is faster.
+if ( (n < 2001) && 0 )         % For small n using matrices is faster.
    V = C*bsxfun(@minus, x, x.');
    V(logical(eye(n))) = 1;
    VV = exp(sum(log(abs(V))));
@@ -145,7 +145,7 @@ if ( n < 2001 && 0 )         % For small n using matrices is faster.
 else                         % For large n use a loop
    w = ones(n,1);
    for j = 1:n
-       v = C*(x(j)-x); v(j) = 1;
+       v = C*(x(j) - x); v(j) = 1;
        vv = exp(sum(log(abs(v))));
        w(j) = 1./(prod(sign(v))*vv);
    end

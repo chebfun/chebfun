@@ -1,8 +1,8 @@
 function f = extractColumns(f, colIdx)
-%EXTRACTCOLUMNS   Extact columns (or rows) of an array-valued CHEBFUN.
+%EXTRACTCOLUMNS   Extract columns (or rows) of an array-valued CHEBTECH.
 %   G = EXTRACTCOLUMNS(F, COLIDX) extracts the columns specified by the row
 %   vector COLIDX from the FUN F so that G = F(:, COLIDX). COLIDX need not be
-%   incresing in order or unique, but must contain only integers in the range
+%   increasing in order or unique, but must contain only integers in the range
 %   [1, M], where F has M columns.
 %
 % See also MAT2CELL.

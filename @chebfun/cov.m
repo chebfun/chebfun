@@ -7,7 +7,7 @@ function out = cov(f, g, varargin)
 % See also VAR, MEAN.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 % Empty case:
 if ( isempty(f) )
@@ -16,7 +16,7 @@ if ( isempty(f) )
 end
 
 % Error checking:
-if ( nargin == 2 && ~all(size(f) == size(g)) )
+if ( (nargin == 2) && ~all(size(f) == size(g)) )
     error('CHEBFUN:cov:size',' Quasimatrix dimensions do not agree.');
 end
 if ( nargin == 3 )

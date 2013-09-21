@@ -13,7 +13,7 @@ function H = hypot(f, g, pref)
 % See also ABS, NORM, SQRT.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 % Grab some preferences:
 if ( nargin < 3 )

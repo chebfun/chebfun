@@ -11,7 +11,7 @@ function f = spline(x, y, d)
 %
 %   Ordinarily, the not-a-knot end conditions are used. However, if Y contains
 %   two more values than X has entries, then the first and last value in Y are
-%   used as the endslopes for the cubic spline.
+%   used as the end slopes for the cubic spline.
 %
 %   Example:
 %   This generates a sine-like spline curve and samples it over a finer mesh:
@@ -27,7 +27,7 @@ function f = spline(x, y, d)
 % TODO: Perhaps we shouldn't include the finals breaks in Not-A-Knot conditions?
 
 if ( nargin < 3 )
-    d = x([1, end]);
+    d = x([1,end]);
 end
 
 % Include breaks defined in the domain
@@ -57,7 +57,7 @@ data = mat2cell(yy, repmat(4, numInts, 1), size(yy, 2));
 f = chebfun(data, breaks);
 
 % Restrict if needed:
-if ( d(1) > x(1) || d(end) < x(end) )
+if ( (d(1) > x(1)) || (d(end) < x(end)) )
     f = restrict(f, d);
 end
 

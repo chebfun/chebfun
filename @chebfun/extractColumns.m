@@ -1,8 +1,8 @@
 function f = extractColumns(f, colIdx)
-%EXTRACTCOLUMNS   Extact columns (or rows) of an array-valued CHEBFUN.
+%EXTRACTCOLUMNS   Extract columns (or rows) of an array-valued CHEBFUN.
 %   G = EXTRACTCOLUMNS(F, COLIDX) extracts the columns specified by the row
 %   vector COLIDX from the CHEBFUN F so that G = F(:, COLIDX). COLIDX need not
-%   be incresing in order or unique, but must contain only integers in the
+%   be increasing in order or unique, but it must contain only integers in the
 %   range [1, M] where F has M columns.
 %
 %   If F is a row CHEBFUN, then EXTRACTCOLUMNS(F, ROWIDX) behaves as described
@@ -21,7 +21,7 @@ if ( isempty(f) )
     return
 elseif ( ~isnumeric(colIdx) && strcmp(colIdx, ':') )
     return
-elseif ( numel(colIdx) == numel(numCols) && all(colIdx == 1:numCols) )
+elseif ( (numel(colIdx) == numel(numCols)) && all(colIdx == 1:numCols) )
     return
 elseif ( max(colIdx) > numCols )
     error('CHEBFUN:subsref:dimensions','indeex exceeds CHEBFUN dimensions.')    
