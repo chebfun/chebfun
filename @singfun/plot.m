@@ -2,7 +2,7 @@ function varargout = plot(f, varargin)
 %PLOT   Basic linear plot for SINGFUN objects. 
 %   PLOT(F) plots the SINGFUN object F.
 %
-% See SMOOTHFUN/PLOT for details
+% See SMOOTHFUN/PLOT for details.
 %
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

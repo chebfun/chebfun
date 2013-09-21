@@ -8,6 +8,9 @@ function [vals, pos] = minandmax(f)
 %
 % See also MIN, MAX.
 
+% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org for Chebfun information.
+
 %   [TODO]: Does this make sense for a SINGFUN:
 %    If F is complex-valued the absolute values are taken to determine extrema
 %   but the resulting values correspond to those of the original function. That

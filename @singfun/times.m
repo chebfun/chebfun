@@ -1,5 +1,7 @@
 function s = times(f,g)
 %.*   Multiply SINGFUNS with SINGFUNS
+%
+% See also LDIVIDE, RDIVIDE.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

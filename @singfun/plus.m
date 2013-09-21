@@ -1,6 +1,8 @@
 function s = plus(f, g)
 %+   Addition of two SINGFUN objects.
 %   F + G adds F and G, where F and G may be SINGFUN objects or scalars.
+%
+% See also MINUS.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.

@@ -34,7 +34,7 @@ classdef singfun
 %   out of the summands, the process is fine, but in other circumstances the
 %   process may throw an error.
 %
-% See also PREF
+% See also PREF.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

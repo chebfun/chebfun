@@ -9,7 +9,7 @@ function singOrder = findSingOrder(op, singEnd)
 %      p = singfun.findSingOrder(@(x) 1./(1+x).^2.5, 'left' )
 %      p = singfun.findSingOrder(@(x) 1./(1+x).^5, 'left' )
 %
-% See also FINDPOLEORDER and FINDSINGEXPONENTS
+% See also FINDPOLEORDER, FINDSINGEXPONENTS.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

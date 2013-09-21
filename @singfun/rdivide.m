@@ -3,6 +3,8 @@ function s = rdivide(f, g)
 %
 %   This method will be called only if both F and G are SINGFUNS or at the 
 %   most one of F and G is a scalar double.
+%
+% See also LDIVIDE, TIMES.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.

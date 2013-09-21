@@ -5,6 +5,11 @@ function g = cumsum(f)
 %   WARNING: The current version of @singfun/cumsum can cover limited cases. The
 %   case that the antiderivative has logarithm (including atanh) and the case
 %   that the integrand has singularities at both ends are not supported.
+%
+% See also SUM. 
+
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org for Chebfun information.
 
 % [TODO]: Improvement on the algorithm to handle the case with singularities at
 % both the end points. Improvement on the whole singfun class to handle
@@ -12,9 +17,6 @@ function g = cumsum(f)
 % 'closed' we mean that the result of an operator on an arbitrary singfun (unary
 % operator) or any two arbitrary singfuns (binary operator) is representable by
 % a singfun object.
-
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Useful References:

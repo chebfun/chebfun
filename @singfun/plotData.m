@@ -3,7 +3,7 @@ function data = plotData(f)
 %   DATA = PLOTDATA(F) extracts PLOTDATA of the smooth part of F
 %   and then scales it by the singular factors given in the EXPONENTS of F
 %
-% See also SMOOTHFUN/PLOTDATA.
+% See also PLOT.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
