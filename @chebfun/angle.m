@@ -7,7 +7,7 @@ function p = angle(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-% [TODO]: This requires ATAN2()!
+% Call ATAN2():
 p = atan2(imag(f), real(f));
 
 end
