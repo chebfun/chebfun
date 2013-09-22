@@ -82,6 +82,12 @@ classdef singfun
     methods
         function obj = singfun(op, exponents, singType, pref)
 
+            % Make sure that op is a funciton handle
+            if ( ~isa(op, 'function_handle') )
+                error( 'CHEBFUN:SINGFUN:constructor', ...
+                    'First argument must be a function handle.');
+            end
+            
             % Check to avoid vectorized operators: 
             if ( size(feval(op, 0), 2) > 1 )
                 error( 'CHEBFUN:SINGFUN:constructor', ...
@@ -143,13 +149,6 @@ classdef singfun
             end
             
             %%
-            % Make sure that op is a funciton handle
-            if ( ~isa(op, 'function_handle') )
-                error( 'CHEBFUN:SINGFUN:constructor', ...
-                    'First argument must be a function handle.');
-            end
-            
-            %%
             % If exponents were passed, make sure they are in correct shape.
             if ( ~isempty(exponents) )
                 if ( any(size(exponents) ~= [1 2]) || ~isa(exponents, 'double') )
@@ -165,14 +164,11 @@ classdef singfun
             % Factor out singular terms from the operator based on the values
             % in exponents.
             smoothOp = singOp2SmoothOp(op, obj.exponents);
+            
             % Construct the smooth part.
             obj.smoothPart = singfun.constructSmoothPart(smoothOp, pref);
         end
     end
-    
-    
-    %%
-    
     
     %% METHODS IMPLEMENTED BY THIS CLASS.
     methods
@@ -198,8 +194,14 @@ classdef singfun
         % Flip/reverse a SINGFUN object.
         f = flipud(f)
         
+        % Get method:
+        val = get(f, prop);
+        
         % Imaginary part of a SINGFUN.
         f = imag(f)
+        
+        % Compute the inner product of two SINGFUN objects.
+        out = innerProduct(f, g)
         
         % True for an empty SINGFUN.
         out = isempty(f)
@@ -240,12 +242,6 @@ classdef singfun
         % Subtraction of two SINGFUN objects.
         f = minus(f, g)
         
-        % Left matrix divide for SINGFUN objects.
-        X = mldivide(A, B)
-        
-        % Right matrix divide for a SINGFUN.
-        X = mrdivide(B, A)
-        
         % Multiplication of SINGFUN objects.
         f = mtimes(f, c)
         
@@ -257,9 +253,6 @@ classdef singfun
         
         % Addition of two SINGFUN objects.
         f = plus(f, g)
-        
-        % Return the points used by the smooth part of a SINGFUN.
-        out = points(f)
         
         % Dividing two SINGFUNs
         f = rdivide(f, g)
@@ -296,16 +289,16 @@ classdef singfun
     %% STATIC METHODS IMPLEMENTED BY THIS CLASS.
     methods ( Static = true )
         % smooth fun constructor
-        s = constructSmoothPart( op, pref)
+        s = constructSmoothPart( op, pref )
         
         % method for finding the order of singularities
         exponents = findSingExponents( op, singType )
         
         % method for finding integer order singularities, i.e. poles
-        poleOrder = findPoleOrder( op, SingEnd)
+        poleOrder = findPoleOrder( op, SingEnd )
         
         % method for finding fractional order singularities (+ve or -ve).
-        barnchOrder = findSingOrder( op, SingEnd)
+        barnchOrder = findSingOrder( op, SingEnd )
         
         % Make a SINGFUN (constructor shortcut):
         f = make(varargin);
@@ -319,7 +312,6 @@ classdef singfun
     
 end
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Functions implemented in this file
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -329,7 +321,6 @@ function out = checkSingTypes(singType)
 %   The valid types can be 'sing', 'pole', 'root' or 'none'. If the type is
 %   different than these four strings (ignoring case), an error message is
 %   thrown.
-%
 
 if ( ~isa(singType, 'cell') )
     error( 'CHEBFUN:SINGFUN:constructor', ...
