@@ -81,14 +81,14 @@ classdef singfun
     %% CLASS CONSTRUCTOR:
     methods
         function obj = singfun(op, exponents, singType, pref)
-
+            
             % Make sure that op is a funciton handle
             if ( ~isa(op, 'function_handle') )
                 error( 'CHEBFUN:SINGFUN:constructor', ...
                     'First argument must be a function handle.');
             end
             
-            % Check to avoid vectorized operators: 
+            % Check to avoid vectorized operators:
             if ( size(feval(op, 0), 2) > 1 )
                 error( 'CHEBFUN:SINGFUN:constructor', ...
                     'SINGFUN class does not support array-valued objects.' );
@@ -312,9 +312,7 @@ classdef singfun
     
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Functions implemented in this file
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Functions implemented in this file
 
 function out = checkSingTypes(singType)
 %CHECKSINGTYPES   Function to check types of exponents in a SINGFUN object.
@@ -326,7 +324,7 @@ if ( ~isa(singType, 'cell') )
     error( 'CHEBFUN:SINGFUN:constructor', ...
         'singType must be a 1x2 cell with two strings');
 end
-%%
+
 out(1) = any(strcmpi(singType{1}, {'pole', 'sing', 'root', 'none'}));
 out(2) = any(strcmpi(singType{2}, {'pole', 'sing', 'root', 'none'}));
 
