@@ -1,5 +1,5 @@
 function f = ldivide(f, g)
-%.\   Left array divide for a SINGFUN.
+%.\   Left divide for a SINGFUN.
 %   F .\ G is equivalent to G ./ F.
 %
 % See also RDIVIDE, TIMES.

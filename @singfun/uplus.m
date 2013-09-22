@@ -1,5 +1,5 @@
 function f = uplus(f)
-%UPLUS   Unary plus of a HYPERFUN.
+%UPLUS   Unary plus of a SINGFUN.
 %   UPLUS(F) = F.
 %
 % See also UMINUS, PLUS.

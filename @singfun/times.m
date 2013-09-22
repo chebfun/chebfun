@@ -1,6 +1,8 @@
 function s = times(f,g)
 %.*   Multiply SINGFUNS with SINGFUNS
-%
+%   F.*G multiplies SINGFUN objects F and G or a SINGFUN by a scalar if either
+%   F or G is a scalar.
+
 % See also LDIVIDE, RDIVIDE.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.

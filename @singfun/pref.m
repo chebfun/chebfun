@@ -32,7 +32,7 @@ function prefs = pref(varargin)
 %                     is sampled.
 %
 %     eps          -  Relative tolerance used in construction and subsequent
-%      [2^-52]        operations. See CHEBTECH.HAPPINESSCHECK for more details.
+%      [2^-52]        operations.
 %
 %     extrapolate
 %        true      -  Function values at endpoints may be extrapolated from

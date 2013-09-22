@@ -17,8 +17,6 @@ function out = roots(f, varargin)
 %       [0]
 %        1  - Prune 'spurious' complex roots if ALL == 1 and RECURSE == 0.
 
-% [TODO]: Deduplicate code by pointing to CHEBFUN/ROOTS().
-
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 

@@ -32,7 +32,7 @@ function g = cumsum(f)
 if ( ~any(f.exponents) )     % No exponents. Integrate the smooth part:
     g = cumsum(f.smoothPart);
     return
-elseif ( ~all(f.exponents) ) % One singularity or one pole, or one root:
+elseif ( ~all(f.exponents) ) % One fractional pole or one pole, or one root:
     g = singIntegral(f);
 else % Error message thrown for other cases:
     error('SINGFUN:cumsum:nosupport', ...

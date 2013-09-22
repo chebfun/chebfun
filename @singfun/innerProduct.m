@@ -22,7 +22,7 @@ end
 % Add the exponents:
 f.exponents = f.exponents + g.exponents;
 % Multiply the smoothparts:
-f.smoothPart = f.smoothPart.*g.smoothPart;
+f.smoothPart = f.smoothPart.*conj(g.smoothPart);
 
 % Call SUM in SINGFUN:
 out = sum(f);
