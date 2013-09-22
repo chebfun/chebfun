@@ -169,14 +169,34 @@ classdef linop
             S.diffOrder = -1;
         end
         
-        function E = evalAt(domain,loc)
-            if nargin==1
-                loc = domain;
-                domain = [-1 1]; 
+        function E = evalAt(location,varargin)
+            p = inputParser;
+            addRequired(p,'location');
+            addOptional(p,'domain',[-1 1]);
+            valid = @(x) ischar(x) || isnumeric(x);
+            addOptional(p,'direction',0,valid);
+            parse(p,location,varargin{:});
+            location = p.Results.location;
+            domain = p.Results.domain;
+            direction = p.Results.direction;
+            
+            if (location < domain(1)) || (location > domain(end))
+                error('Evaluation location is not in the domain.')
             end
+            
+            % Convert direction argument into a number.
+            if ischar(direction)
+                if any( strncmpi(direction,{'left','-'},1) )
+                    direction = -1;
+                elseif any( strncmpi(direction,{'right','+'},1) )
+                    direction = +1;
+                else
+                    error('Direction must be ''left'', ''right'', ''+'', or ''-''.')
+                end
+            end
+
             E = linopFunctional(domain);
-            E.delayFun = @(z) evalAt(z,domain,loc);
-            E.diffOrder = 0;
+            E.delayFun = @(z) evalAt(z,location,domain,direction);
         end
         
         function E = eval(domain)
@@ -197,6 +217,7 @@ classdef linop
         end
 
     end
+    
 
     
 end

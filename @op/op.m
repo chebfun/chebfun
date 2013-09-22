@@ -42,13 +42,13 @@ classdef op
             S = op( @(z) sum(z) );
         end
         
-        function E = evalAt(A,domain,loc)
-            if strcmp(loc,'left')
-                E = op( @(u) feval(u,domain(1)) );
-            elseif strcmp(loc,'right')
-                E = op( @(u) feval(u,domain(2)) );
-            elseif isnumneric(loc)
-                E = op( @(u) feval(u,loc) );
+        function E = evalAt(A,location,domain,direction)
+            if (direction < 0)
+                E = op( @(u) feval(u,location,'left') );
+            elseif (direction > 0)
+                E = op( @(u) feval(u,location,'right') );
+            else
+                E = op( @(u) feval(u,location) );
             end
         end
         

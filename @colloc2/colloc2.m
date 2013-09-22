@@ -132,16 +132,23 @@ classdef colloc2 < linopDiscretization
             S = C(end,:)*diff(domain)/2;
         end
         
-        function E = evalAt(A,domain,loc)
-            x = chebpts(A.size,domain,2);
-            if strcmp(loc,'left')
-                loc = domain(1);
-                %E = [1 zeros(1,A.size-1)];
-            elseif strcmp(loc,'right')
-                loc = domain(2);
-                %E = [zeros(1,A.size-1) 1];
+        function E = evalAt(A,location,domain,direction)
+            n = A.size;
+            if (length(n)==1)
+                n = repmat(n,1,length(domain)-1);
             end
-            E = barymat(loc,x);
+            
+            % Find the collocation points and create an empty functional. 
+            x = chebpts(n,domain,2);
+            offset = cumsum([0;n(:)]);
+            N = offset(end);
+            E = zeros(1,N);
+           
+            % Only one subinterval creates nonzero entries in E.
+            intnum = linopDiscretization.whichInterval(location,domain,direction);
+            active = offset(intnum) + (1:n(intnum));
+            E(1,active) = barymat(location,x(active));
+ 
         end
         
         function F = inner(A,f)
