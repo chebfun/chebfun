@@ -25,14 +25,42 @@ classdef singfun
 %   perfectly factor out singular behavior. The constructor can be forced to
 %   consider only integer exponents.
 %
-%   [TODO]: Describe calling sequence.
-%
 %   Multiplication and division are as good as the corresponding operations on
 %   the smooth part. Addition and subtraction are much less reliable, as the sum
 %   of two SINGFUN objects with different exponents is not necessarily a
 %   SINGFUN, nor a smooth function. If all but integer exponents can be factored
 %   out of the summands, the process is fine, but in other circumstances the
 %   process may throw an error.
+%
+%   SINGFUN(OP) constructs a SINGFUN object from the function handle OP. It
+%   first try to determine the type and the order of the singularities or the
+%   roots at the endpoints by sampling near -1 and 1 and then forms a new
+%   operator which governs the smooth part of OP by peeling off the end point
+%   singularities. Finally it constructs an approximation of the smooth part by
+%   calling the SMOOTHFUN constructor. The type and the order of the
+%   singularities along with the smoothfun representation of the smooth part are
+%   stored in corresponding member fields of the instantiation.
+%
+%   SINGFUN(OP, [], SINGTYPE) constructs a SINGFUN object as above. However, the
+%   type of the singularities specified by the 1x2 cell SINGTYPE may help the
+%   singularity detector to determine the order of the singularities more
+%   efficiently and save some computing time. Note that a place holder must be
+%   given next to OP for the constructor to work properly.
+%
+%   SINGFUN(OP, EXPONENTS) constructs a SINGFUN object. Instead of determining
+%   the singularity types and orders by sampling the function values at -1 and
+%   1, the constructor takes the values saved in the 1x2 vector EXPONENTS as the
+%   orders of the singularities.
+%
+%   SINGFUN(OP, EXPONENTS, SINGTYPE) constructs a SINGFUN object exactly same as
+%   the last syntax.
+%
+%   SINGFUN(OP, EXPONENTS, {}) constructs a SINGFUN object exactly same as the
+%   last two syntax.
+%
+%   SINGFUN(OP, EXPONENTS, SINGTYPE, pref) constructs a SINGFUN by following the
+%   preferences given by PREF. Note that any of or both of EXPONENTS and
+%   SINGTYPE can be empty.
 %
 % See also PREF.
 
@@ -51,7 +79,7 @@ classdef singfun
      end
     
     %% CLASS CONSTRUCTOR:
-    methods ( Static = true )
+    methods
         function obj = singfun(op, exponents, singType, pref) 
             %%
             % Check for preferences in the very beginning.            
@@ -268,6 +296,9 @@ classdef singfun
         
         % method for finding fractional order singularities (+ve or -ve).
         barnchOrder = findSingOrder( op, SingEnd)
+        
+        % Make a SINGFUN (constructor shortcut):
+        f = make(varargin);
         
         % Retrieve and modify preferences for this class.
         prefs = pref(varargin)
