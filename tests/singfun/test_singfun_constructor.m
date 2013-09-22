@@ -1,4 +1,4 @@
-% Test file for SINGFUN constructor.
+% Test file for singfun constructor.
 
 function pass = test_singfun_constructor(pref)
 
