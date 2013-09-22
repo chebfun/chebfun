@@ -78,22 +78,9 @@ classdef singfun
         % [TODO]: Shold exponentTol be a property?
     end
     
-    %% CLASS CONSTRUCTOR:
+    %% CLASS CONSTRUCTOR (IMPLEMENTED BY THIS M-FILE):
     methods
-        function obj = singfun(op, exponents, singType, pref)
-            
-            % Make sure that op is a funciton handle
-            if ( ~isa(op, 'function_handle') )
-                error( 'CHEBFUN:SINGFUN:constructor', ...
-                    'First argument must be a function handle.');
-            end
-            
-            % Check to avoid vectorized operators:
-            if ( size(feval(op, 0), 2) > 1 )
-                error( 'CHEBFUN:SINGFUN:constructor', ...
-                    'SINGFUN class does not support array-valued objects.' );
-            end
-            
+        function obj = singfun(op, exponents, singType, pref)            
             %%
             % Check for preferences in the very beginning.
             if ( (nargin < 4) || isempty(pref) )
@@ -149,6 +136,19 @@ classdef singfun
             end
             
             %%
+            % Various checks.
+            % Make sure that op is a funciton handle
+            if ( ~isa(op, 'function_handle') )
+                error( 'CHEBFUN:SINGFUN:constructor', ...
+                    'First argument must be a function handle.');
+            end
+            
+            % Check to avoid vectorized operators:
+            if ( size(feval(op, 0), 2) > 1 )
+                error( 'CHEBFUN:SINGFUN:constructor', ...
+                    'SINGFUN class does not support array-valued objects.' );
+            end
+            
             % If exponents were passed, make sure they are in correct shape.
             if ( ~isempty(exponents) )
                 if ( any(size(exponents) ~= [1 2]) || ~isa(exponents, 'double') )
@@ -312,7 +312,7 @@ classdef singfun
     
 end
 
-%% Functions implemented in this file
+%% OTHER FUNCTIONS IMPLEMENTED IN THIS M-FILE:
 
 function out = checkSingTypes(singType)
 %CHECKSINGTYPES   Function to check types of exponents in a SINGFUN object.
