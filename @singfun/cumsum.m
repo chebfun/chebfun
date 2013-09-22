@@ -1,6 +1,10 @@
-function g = cumsum(f)
+function g = cumsum(f, m)
 %CUMSUM   Indefinite integral of a SINGFUN.
-%   CUMSUM(F) is the indefinite integral of the SINGFUN F.
+%   CUMSUM(F) is the indefinite integral of the SINGFUN F with the constant of
+%   integration chosen zero. 
+%
+%   CUMSUM(F, M) will compute the Mth definite integral with vanishing constant.
+%   Currently, M can only be 1.
 %
 %   WARNING: The current version of @singfun/cumsum can cover limited cases. The
 %   case that the antiderivative has logarithm (including atanh) and the case
@@ -25,6 +29,12 @@ function g = cumsum(f)
 % Functions with Poles or Algebraic Singularities, Unpublished Note.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Check the value of M:
+if ( m ~= 1 )
+    error('SINGFUN:cumsum:nosupport', ...
+          'CUMSUM() does not support when m has other values than 1.')
+end
 
 % If f has no singularity at any endpoint, then just integrate its smooth part
 % and return.
