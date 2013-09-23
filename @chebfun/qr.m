@@ -97,8 +97,8 @@ for k = n:-1:1
     v = V{k};
     J = k:n;
     Qj = extractColumns(Q, J);
-    w = v'*Qj;
-    Qj = Qj - 2*v*w;
+    c = 2*(v'*Qj);
+    Qj = Qj - v*c;
     Q = assignColumns(Q, J, Qj);
 end
 
