@@ -1,38 +1,44 @@
 function [normF, normLoc] = norm(f, n)
 %NORM   Norm of a CHEBFUN object.
-%   For scalar-valued CHEBFUN objects:
-%       NORM(f) = sqrt(integral of abs(f)^2).
-%       NORM(f, 2) is the same as NORM(f).
-%       NORM(f, 'fro') is also the same as NORM(f).
-%       NORM(f, 1) = integral of abs(f).
-%       NORM(f, p) = (integral of abs(f)^p)^(1/p).
-%       NORM(f, inf) = max(abs(f)).
-%       NORM(f, -inf) = min(abs(f)).
+%   For scalar-valued column CHEBFUN objects:
+%       NORM(F) = sqrt(integral of abs(F)^2).
+%       NORM(F, 2) is the same as NORM(F).
+%       NORM(F, 'fro') is also the same as NORM(F).
+%       NORM(F, 1) = integral of abs(F).
+%       NORM(F, P) = (integral of abs(F)^P)^(1/P).
+%       NORM(F, inf) = max(abs(F)).
+%       NORM(F, -inf) = min(abs(F)).
 %
-%   For array-valued CHEBFUN objects:
+%   For array-valued column CHEBFUN objects:
 %       NORM(F) is the Frobenius norm, sqrt(sum(svd(F).^2)).
 %       NORM(F, 'fro') is the same as NORM(F).
 %       NORM(F, 1) is the maximum of the 1-norms of the columns of F.
 %       NORM(F, 2) is the largest singular value of F.
-%       NORM(f) = sqrt(integral of abs(f)^2).
 %       NORM(F, inf) is the maximum of the 1-norms of the rows of F.
+%       NORM(F, -inf) is the minimum of the 1-norms of the rows of F.
+%       NORM(F, P) is the P-th root of the maximum of the sum of the P-th
+%                  powers of the magnitudes of the columns of F.
 %
 % Furthermore, the +\-inf norms for scalar-valued CHEBFUN objects may also
 % return a second output, giving the position where the max/min occurs. For
-% array-valued CHEBFUN objects, the 1, inf, and p-norms can return as their 2nd
-% output the index of the column with the largest norm.
+% array-valued CHEBFUN objects, the 1 norm can return as its 2nd output the
+% index of the column with the largest norm, while the inf, -inf, and p-norms
+% can return as their 2nd output the point in the domain of the CHEBFUN at
+% which the norm is attained.
+%
+% If F is a row CHEBFUN, NORM(F, TYPE) is equal to NORM(F.', TYPE).
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Empty chebfun has norm 0:
+% Empty CHEBFUN has norm 0:
 if ( isempty(f) )           
     normF = 0;
     return
 end
 
 if ( nargin == 1 )
-    n = 'fro'; 	% Frobenius norm is the default (2 norm would be much slower)/
+    n = 'fro'; 	% Frobenius norm is the default (2 norm would be much slower).
 end
 
 % Initialise:
@@ -55,7 +61,7 @@ if ( numCols == 1 )
                         'Cannot return two outputs for ''fro''-norms');
             end
             f.isTransposed = 0;
-            normF = sqrt(abs(sum(conj(f).*f)));
+            normF = sqrt(abs(innerProduct(f, f)));
             
         case {inf, 'inf'}
             if ( isreal(f) )

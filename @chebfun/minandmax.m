@@ -64,7 +64,7 @@ end
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% IMPULSES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 y = [inf, -inf];
-x = [inf, inf];
+x = [NaN, NaN];
 
 % Determine the strength of the first nontrivial impulse at each breakpoint:
 impulseStrengths = zeros(numel(f.funs) + 1, 1);
@@ -89,7 +89,7 @@ if ( ~isempty(ind) )
     x(2) = f.domain(ind);
 end
 
-if ( all(isfinite(x)) )
+if ( ~any(isnan(x)) )
     % We're done.
     
     % Output column vector:
@@ -149,7 +149,7 @@ for k = 1:size(x, 2)
     % Extract the kth column in the output:
     y(:,k) = tmp(:,k);
 end
-% Ensure f(NaN) = NaN;
-y(isnan(x)) = NaN; % [TODO]: Why is this needed?
+% Ensure f(NaN) = NaN for array-valued CHEBFUN objects:
+y(isnan(x)) = NaN;
 
 end

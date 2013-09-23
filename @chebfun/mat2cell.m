@@ -16,6 +16,8 @@ function g = mat2cell(f, M, N)
 % Example:
 %   f = chebfun(@(x) [sin(x), cos(x), exp(x), x], [0, pi])
 %   g = mat2cell(f, 1, [1, 2, 1])
+%
+% See also NUM2CELL.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
