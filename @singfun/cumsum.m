@@ -31,7 +31,7 @@ function g = cumsum(f, m)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Check the value of M:
-if ( m ~= 1 )
+if ( ( nargin > 1 ) && ( m ~= 1 ) )
     error('SINGFUN:cumsum:nosupport', ...
           'CUMSUM() does not support when m has other values than 1.')
 end
