@@ -1,6 +1,6 @@
-% Test file for singfun/real.m
+% Test file for singfun/conj.m
 
-function pass = test_real(pref)
+function pass = test_conj(pref)
 
 % Get preferences.
 if ( nargin < 1 )
@@ -11,25 +11,22 @@ end
 pass = zeros(1, 4);
 
 %%
-% Check a few cases.
-
-
 % Real smooth.
 f = singfun(@(x) exp(x) );
-pass(1) = isequal(real(f), f);
+pass(1) = isequal(conj(f), f);
 
 % Real with exponents.
 f = singfun( @(x) 1./((1+x).*(1-x)));
-pass(2) = isequal(real(f), f);
+pass(2) = isequal(conj(f), f);
 
 % Purely imaginary.
 f = 1i*f;
-pass(3) = isequal(real(f), singfun.zeroSingFun());
+pass(3) = isequal(conj(f), -f);
 
 
 % Complex smooth part.
 f = singfun(@(x) (sin(x)+1i*cos(x))./((1+x).*(1-x)));
-g = singfun(@(x) sin(x)./((1+x).*(1-x)));
-h = real(f)-g;
+g = singfun(@(x) (sin(x)-1i*cos(x))./((1+x).*(1-x)));
+h = conj(f)-g;
 pass(4) = iszero(h.smoothPart);
 end
