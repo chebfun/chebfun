@@ -2,6 +2,25 @@ classdef (Abstract) linopDiscretization < linopOperatorRealization & linopFuncti
   
     properties (Abstract)
         size
+        domain
+    end
+    
+    methods
+        function n = dim(A)
+            % This method converts a scalar size into a vector with one entry
+            % per subinterval of the domain. For now, we repeat the value of n,
+            % but another choice is to equidistribute it.
+            %
+            % This method should be the only way used to access A.size, in order
+            % to enforce consistent behavoir.
+            n = A.size;
+            numint = length(A.domain)-1;
+            if (length(n)==1)
+                n = repmat(n,1,numint);
+            elseif ( length(n) ~= numint )
+                error('Mismatch between provided discretization sizes and the number of subintervals.')
+            end
+        end
     end
     
     methods (Abstract,Static)

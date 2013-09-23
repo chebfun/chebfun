@@ -42,8 +42,8 @@ classdef linopOperator < linop
             % No error checking here.
             % Which case?
             if isa(B,'chebfun')
-                C = op(A)
-                C = C(B)
+                C = op(A);
+                C = C(B);
             elseif isnumeric(B)
                 N = size(B,1);    % discretization size
                 L = matrix(A,N);

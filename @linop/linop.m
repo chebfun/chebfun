@@ -76,7 +76,7 @@ classdef linop
                 matrixType = linop.defaultDiscretization;  
             end
             
-            L = A.delayFun( matrixType(dim) );
+            L = A.delayFun( matrixType(dim,domain(A)) );
         end
         
         function L = coeff(A)
@@ -110,7 +110,7 @@ classdef linop
             m = p.Results.m;
             
             D = linopOperator(domain);
-            D.delayFun = @(z) diff(z,domain,m);
+            D.delayFun = @(z) diff(z,m);
             D.diffOrder = m;
         end
         
@@ -134,7 +134,7 @@ classdef linop
             m = p.Results.m;
             
             C = linopOperator(domain);
-            C.delayFun = @(z) cumsum(z,domain,m);
+            C.delayFun = @(z) cumsum(z,m);
             C.diffOrder = -m;
         end
         
@@ -142,7 +142,7 @@ classdef linop
             % I = EYE(DOMAIN)   identity operator on the same domain
             if nargin==0, domain = [-1 1]; end
             I = linopOperator(domain);
-            I.delayFun = @(z) eye(z,domain);
+            I.delayFun = @(z) eye(z);
             I.diffOrder = 0;
         end
         
@@ -150,7 +150,7 @@ classdef linop
             % Z = ZEROS(DOMAIN)   zero operator on the same domain
             if nargin==0, domain = [-1 1]; end
             Z = linopOperator(domain);
-            Z.delayFun = @(z) zeros(z,domain);
+            Z.delayFun = @(z) zeros(z);
             Z.diffOrder = 0;
         end
         
@@ -165,7 +165,7 @@ classdef linop
             % SUM(DOMAIN)  integration functional on the domain
             if nargin==0, domain = [-1 1]; end                        
             S = linopFunctional(domain);
-            S.delayFun = @(z) sum(z,domain);
+            S.delayFun = @(z) sum(z);
             S.diffOrder = -1;
         end
         
@@ -196,7 +196,7 @@ classdef linop
             end
 
             E = linopFunctional(domain);
-            E.delayFun = @(z) evalAt(z,location,domain,direction);
+            E.delayFun = @(z) evalAt(z,location,direction);
         end
         
         function E = eval(domain)

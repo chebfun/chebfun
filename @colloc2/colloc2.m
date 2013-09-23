@@ -1,49 +1,51 @@
 classdef colloc2 < linopDiscretization
-    properties
+    properties 
         size = [];  % arbitrary, but fixed in any one instance
+        domain = [-1 1];
     end
     
     methods
         function A = colloc2(varargin)
             % Collocation matrix on 2nd kind points.
             
-            % COLLOC2(DIM) returns a dummy object that will propagate the
-            % dimension size DIM throughout the delayed evaluation stack.
+            % COLLOC2(DIM,DOMAIN) returns a dummy object that will propagate the
+            % dimension size DIM and function domain DOM throughout the delayed
+            % evaluation stack.
+            %
+            % COLLOC2(A,DIM) realizes the linop A (which knows its domain) at
+            % dimension DIM.
+            % 
+            % COLLOC2([]) returns a dummy object that gives access to static
+            % methods. 
             
-            % COLLOC2(A,DIM) realizes the linop A at dimension DIM.
-            
-            if nargin==1
-                A.size = varargin{1};
-                
-            elseif nargin==2 && isa(varargin{1},'linop')
-                L = varargin{1};
-                A.size = varargin{2};
-                A = L.delayFun( A );
-                
+            if ( nargin > 1 )
+                if isa(varargin{1},'linop')
+                    L = varargin{1};
+                    A.size = varargin{2};
+                    A.domain = domain(L);
+                    A = L.delayFun( A );
+                else
+                    A.size = varargin{1};
+                    validateattributes(varargin{2},{'numeric'},{'increasing','finite'});
+                    A.domain = varargin{2};
+                end
             end
         end
         
         % Building blocks.
         
-        function D = diff(A,domain,m)            
-            validateattributes(domain,{'numeric'},{'increasing','finite'});
+        function D = diff(A,m) 
+            d = A.domain;
             if m == 0
-                D = linop.eye(domain);
+                D = linop.eye(d);
             else
-                numIntervals = length(domain)-1;
-                
-                n = A.size;
-                % If a scalar size is given, it applies to all subintervals.
-                if length(n)==1
-                    n = repmat(n,[1 numIntervals]);
-                elseif length(n)~=numIntervals
-                    error('Mismatch between provided discretization sizes and the number of subintervals.')
-                end
+                numIntervals = length(d)-1;                
+                n = dim(A);
                 
                 % Find the diagonal blocks.
                 blocks = cell(numIntervals);
                 for k = 1:numIntervals
-                    len = domain(k+1) - domain(k);
+                    len = d(k+1) - d(k);
                     blocks{k} = diffmat(n(k),m) * (2/len)^m;
                 end
                 
@@ -52,25 +54,18 @@ classdef colloc2 < linopDiscretization
             end
         end
         
-        function C = cumsum(A,domain,m)
-            validateattributes(domain,{'numeric'},{'increasing','finite'});
+        function C = cumsum(A,m)
+            d = A.domain;
             if m == 0
-                C = linop.eye(domain);
+                C = linop.eye(d);
             else
-                numIntervals = length(domain)-1;
-                
-                n = A.size;
-                % If a scalar size is given, it applies to all subintervals.
-                if length(n)==1
-                    n = repmat(n,[1 numIntervals]);
-                elseif length(n)~=numIntervals
-                    error('Mismatch between provided discretization sizes and the number of subintervals.')
-                end
-                
+                numIntervals = length(d)-1;
+                n = dim(A);
+
                 % Find the diagonal blocks.
                 blocks = cell(numIntervals);
                 for k = 1:numIntervals
-                    len = domain(k+1) - domain(k);
+                    len = d(k+1) - d(k);
                     blocks{k} = cumsummat(n(k)) * (len/2);
                 end
                 
@@ -94,16 +89,18 @@ classdef colloc2 < linopDiscretization
             end
         end
         
-        function I = eye(A,domain)
-            I = eye(A.size);
+        function I = eye(A)
+            n = dim(A);
+            I = eye(sum(n));
         end
         
-        function Z = zeros(A,domain)
-            Z = zeros(A.size);
+        function Z = zeros(A)
+            n = dim(A);
+           Z = zeros(sum(n));
         end
         
         function F = diag(A,f)
-            x = chebpts(A.size,f.domain,2);
+            x = chebpts(dim(A),f.domain,2);
             F = diag( f(x) );
         end
         
@@ -127,32 +124,29 @@ classdef colloc2 < linopDiscretization
         
         % Required functionals.
         
-        function S = sum(A,domain)
-            C = cumsummat(A.size);
-            S = C(end,:)*diff(domain)/2;
+        function S = sum(A)
+            C = cumsummat(dim(A));
+            d = A.domain;
+            S = C(end,:) * (d(end)-d(1))/2;
         end
         
-        function E = evalAt(A,location,domain,direction)
-            n = A.size;
-            if (length(n)==1)
-                n = repmat(n,1,length(domain)-1);
-            end
-            
+        function E = evalAt(A,location,direction)
+            n = dim(A);
             % Find the collocation points and create an empty functional. 
-            x = chebpts(n,domain,2);
+            x = chebpts(n,A.domain,2);
             offset = cumsum([0;n(:)]);
             N = offset(end);
             E = zeros(1,N);
            
             % Only one subinterval creates nonzero entries in E.
-            intnum = linopDiscretization.whichInterval(location,domain,direction);
+            intnum = linopDiscretization.whichInterval(location,A.domain,direction);
             active = offset(intnum) + (1:n(intnum));
             E(1,active) = barymat(location,x(active));
  
         end
         
         function F = inner(A,f)
-            [x,w] = chebpts(A.size,domain(f),2);
+            [x,w] = chebpts(dim(A),domain(f),2);
             F = w.*f(x);
         end
         
@@ -161,8 +155,15 @@ classdef colloc2 < linopDiscretization
     methods (Static)
         % Additional methods
         
-        function B = resize(A,m,n)
-            B = barymat(m,n)*A;
+        function B = resize(A,m,n,domain)
+            numint = length(m);
+            P = cell(1,numint);
+            for k = 1:numint               
+                xOut = chebpts(m(k),domain(k:k+1),2);
+                xIn = chebpts(n(k),domain(k:k+1),2);
+                P{k} = barymat(xOut,xIn);
+            end
+            B = blkdiag(P{:})*A;
         end
         
         function [isDone,epsLevel] = convergeTest(v)
@@ -188,7 +189,7 @@ classdef colloc2 < linopDiscretization
             % Convert to Chebyshev coefficients.
             c = chebtech2.vals2coeffs(v);
             %             c = chebpoly( chebfun(v) );
-            %             c = c(end:-1:1);
+            c = c(end:-1:1);
             
             % Magnitude and rescale.
             ac = abs(c)/min(max(abs(v)),1);
@@ -224,7 +225,7 @@ classdef colloc2 < linopDiscretization
             % Are we satisfied?
             if cut < length(v)
                 isDone = true;
-                epsLevel = max( abs(c(cut+1:end)) );
+                epsLevel = max( abs(c(cut+1)) );
             end
             
         end

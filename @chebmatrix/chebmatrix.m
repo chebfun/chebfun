@@ -49,7 +49,17 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
         end
         
         function C = horzcat(A,B)
-            C = chebmatrix( horzcat(A.blocks,B.blocks) );
+            if isa(A,'chebmatrix')
+                b1 = A.blocks;
+            else
+                b1 = {A};
+            end
+            if isa(B,'chebmatrix')
+                b2 = B.blocks;
+            else
+                b2 = {B};
+            end
+            C = chebmatrix( horzcat(b1,b2) );
         end
         
         function C = vertcat(A,B)
@@ -198,6 +208,13 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
                 f = chebmatrix({f});
             end
             
+            L = appendContinuity(L);
+            
+            dom = domain(L);
+            if (length(dim)==1) 
+                dim = repmat(dim,1,length(dom)-1);
+            end          
+            
             Ablocks = matrixBlocks(L,dim,type);
             bblocks = matrixBlocks(f,dim,type);
             
@@ -210,9 +227,9 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
             d = getDownsampling(L);
             for i = find( ~isnan(d) )
                 M = cat(2,Ablocks{i,:},bblocks{i});
-                rows{i} = dummy.resize( M, dim-d(i), dim );
+                rows{i} = dummy.resize( M, dim-d(i), dim, domain(L) );
             end
-            
+                        
             % Append the discrete constraints.
             bc = L.constraints;
             for i = 1:length(bc)
@@ -239,14 +256,19 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
             [rowSize,colSize] = blocksizes(L);
             isFunVariable = isinf(colSize);
             
+            dom = domain(L);
+            numint = length(dom)-1;
+            
             for k = 1:length(dimVals)
                 dim = dimVals(k);
 
                 [A,b] = linSystem(L,f,dim,type);
                 uDiscrete = A\b;
                 
+                % Break the discrete solution into chunks representing
+                % functions and scalars. 
                 m = colSize;
-                m(isFunVariable) = dim;
+                m(isFunVariable) = dim*numint; % replace Inf with discrete size
                 u = mat2cell(uDiscrete,m,1);
 
                 uFun = u(isFunVariable);
@@ -257,8 +279,14 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
                 v = uVals*s(:);
                 
                 obj = type([]);  % to get a static method
-                [isDone,epsLevel] = obj.convergeTest(v);
-                
+                isDone = true;
+                epsLevel = 0;
+                for i = 1:numint
+                    vint = v( (i-1)*dim + (1:dim) );
+                    [t1,t2] = obj.convergeTest(vint);
+                    isDone = isDone && t1;
+                    epsLevel = max(epsLevel,t2);
+                end
                 if isDone
                     break
                 end
@@ -268,13 +296,15 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
                 warning('Linear system solution may not have converged.')
             end
             
-            f = chebfun(uVals,domain(L));
-            f = mat2cell(f, 1, ones(1,size(f, 2))); % TODO: replace with NUM2CELL()
-            index = find(isFunVariable);
-            for k = 1:numel(f)
-                u{index(k)} = simplify( f{k}, epsLevel );
+            % The variable u is a cell array with the different components of
+            % the solution. Because each function component may be piecewise
+            % defined, we will loop through one by one. 
+            for k = find( isFunVariable )
+                funvals = reshape( u{k}, dim, numint );
+                f = chebfun( num2cell(funvals,1), dom );  % piecewise defined
+                u{k} = simplify(f, epsLevel );
             end
-            
+             
             u = chebmatrix(u);
             
         end
@@ -304,8 +334,9 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
         end
         
         function L = lbc(L,f,value)
-            E = linop.evalAt(domain(L),'left');
-            if nargin == 1
+            d = domain(L);
+            E = linop.evalAt(d(1),d);
+            if nargin < 3
                 value = f;
                 f = E;
             else
@@ -315,8 +346,9 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
         end
         
         function L = rbc(L,f,value)
-            E = linop.evalAt(domain(L),'right');
-            if nargin == 1
+            d = domain(L);
+            E = linop.evalAt(d(end),d);
+            if nargin < 3
                 value = f;
                 f = E;
             else
@@ -400,6 +432,48 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
             end
  
         end
+        
+        function C = continuity(L,maxorder)
+            % Returns expressions of continuity conditions at
+            % the breakpoints of the domain of L. 
+            %   C{m,k} has the (m-1)th-order derivative at breakpoint k
+            
+            d = domain(L);
+            A = linop.eye(d);
+            D = linop.diff(d,1);
+            for m = 0:maxorder
+                for k = 2:length(d)-1
+                    El = linop.evalAt(d(k),d,'-');
+                    Er = linop.evalAt(d(k),d,'+');
+                    C{m+1,k} = (El-Er)*A;
+                end
+                A = D*A;
+            end
+        end
+
+        function L = appendContinuity(L)
+            % Append smoothness constraints at domain breakpoints.
+            d = getVarDiffOrders(L);
+            dom = domain(L);
+            if ( max(d) > 0 ) && ( length(dom) > 2 )
+                C = continuity(L,max(d)-1);
+                Z = linop.evalAt(dom(1),dom)*(linop.zeros(dom));
+                zero = chebmatrix({Z});
+                for var = 2:length(d)
+                    zero = [zero,Z];
+                end
+                for var = 1:length(d)
+                    B = zero;
+                    for m = 0:d(var)-1
+                        for k = 2:length(dom)-1
+                            B.blocks{var} = C{m+1,k};
+                            L = L.bc(B,0);
+                        end
+                    end
+                end
+            end
+        end
+            
 
     end
     

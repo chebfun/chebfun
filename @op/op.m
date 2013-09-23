@@ -16,19 +16,19 @@ classdef op
         
         % Required operators.
         
-        function D = diff(A,domain)
-            D = op( @(z) diff(z) );
+        function D = diff(A,m)
+            D = op( @(z) diff(z,m) );
         end
         
-        function C = cumsum(A,domain)
-            C = op( @(u) cumsum(u) );
+        function C = cumsum(A,m)
+            C = op( @(u) cumsum(u,m) );
         end
         
-        function I = eye(A,domain)
+        function I = eye(A)
             I = op( @(z) z );
         end
         
-        function Z = zeros(A,domain)
+        function Z = zeros(A)
             Z = op( @(z) chebfun(0,domain) );
         end
         
@@ -38,11 +38,11 @@ classdef op
         
         % Required functionals.
         
-        function S = sum(A,domain)
+        function S = sum(A)
             S = op( @(z) sum(z) );
         end
         
-        function E = evalAt(A,location,domain,direction)
+        function E = evalAt(A,location,direction)
             if (direction < 0)
                 E = op( @(u) feval(u,location,'left') );
             elseif (direction > 0)
