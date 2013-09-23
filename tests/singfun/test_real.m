@@ -10,10 +10,6 @@ end
 % Pre-allocate pass matrix
 pass = zeros(1, 4);
 
-%%
-% Check a few cases.
-
-
 % Real smooth.
 f = singfun(@(x) exp(x) );
 pass(1) = isequal(real(f), f);
