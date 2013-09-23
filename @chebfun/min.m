@@ -1,6 +1,6 @@
 function [y, x] = min(f, flag)
 %MIN   Minimum values of a CHEBFUN.
-%   MIN(F) returns the minimum value of the CHEBFUN F.
+%   MIN(F) and MIN(F, 'global') return the minimum value of the CHEBFUN F.
 %
 %   [Y, X] = MIN(F) returns also points X such that F(X) = Y.
 %
@@ -30,15 +30,14 @@ if ( isempty(f) )
     return
 end
 
-if ( nargin == 1 )
+if ( (nargin == 1) || strcmp(flag, 'global') )
     [y, x] = globalMin(f);
 elseif ( isa(flag, 'chebfun') )
-    % [TODO]: Implement this. (Requires SIGN())
-    error('CHEBFUN:min:notImplemented', ...
-          'Taking the minimum of two chebfuns is not yet implemented.');
     y = minOfTwoChebfuns(f, flag);
+elseif ( strcmp(flag, 'local') )
+    [y, x] = localMin(f);
 else
-    [y, x] = localMin(f, flag);
+    error('CHEBFUN:min:flag', 'Unrecognized flag.');
 end
 
 end
@@ -56,17 +55,17 @@ x = x(1,:);
 end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%% LOCAL MINIMA %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [y, x] = localMin(f, flag)
+function [y, x] = localMin(f)
 
 % Call MINANDMAX():
-[y, x] = minandmax(f, flag);
+[y, x] = minandmax(f, 'local');
 
 % Determine which are minima.
 
 ends = f.domain([1, end]).'; % Endpoints of the domain are special.
 f = mat2cell(f); % Convert f into a cell of scalar-valued CHEBFUNs.
 
-% Loop over the FUNs:
+% Loop over the columns:
 for k = 1:numel(f)
     % Compute 1st and 2nd derivatives.
     dfk = diff(f{k});
@@ -118,12 +117,15 @@ else
 end
 
 % Heaviside function (0 where f > g, 1 where f < g);
-H = ((S + 1)/2);
-notH = ((1 - S)/2); % ~H.
+H = 0.5*(S + 1);
+notH = 0.5*(1 - S); % ~H.
 
 % Combine for output:
 h = notH.*f + H.*g;
 
 % [TODO]: Enforce continuity?
+
+% Simplify:
+h = simplify(h);
 
 end
