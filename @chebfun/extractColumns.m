@@ -24,7 +24,7 @@ elseif ( ~isnumeric(colIdx) && strcmp(colIdx, ':') )
 elseif ( (numel(colIdx) == numel(numCols)) && all(colIdx == 1:numCols) )
     return
 elseif ( max(colIdx) > numCols )
-    error('CHEBFUN:subsref:dimensions','indeex exceeds CHEBFUN dimensions.')    
+    error('CHEBFUN:subsref:dimensions', 'Index exceeds CHEBFUN dimensions.')    
 end
 
 % Extract the columns of the FUNs:

@@ -13,6 +13,8 @@ function [Q, R] = qr(A,econ)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% [TODO]: This implementation is REALLY slow. Must improve somehow.
+
 % Check inputs
 if ( ( nargin > 2 ) || ( nargin == 2 && econ ~= 0 ) )
     error('CHEBFUN:qr:twoargs',...
@@ -34,10 +36,6 @@ if ( numel(A.funs) == 1 )
     return
 end
 
-error
-% TODO: The type of indexing used below does not work for array-valued CHEBFUNs.
-% TODO: Imple,ent more efficiently.
-
 % Get some useful values
 n = size(A, 2);
 R = zeros(n);
@@ -47,24 +45,31 @@ b = A.domain(end);
 
 % Set up target quasimatrix E with orthonormal columns:
 E = legpoly(0:n-1, [a, b], 'norm');
+[A, E] = overlap(A, E);
 
 % Householder triangularization:
-V = chebfun();                        % cols of V will store Househ. vectors
+V = cell(1, n);                       % cols of V will store Househ. vectors
 for k = 1:n
     I = 1:k-1; J = k+1:n;             % convenient abbreviations
-    e = E(k);                         % target for this reflection
-    x = A(k);                         % vector to be mapped to s*r*e
-    ex = e'*x; aex = abs(ex);
+    e = extractColumns(E, k);         % target for this reflection
+    x = extractColumns(A, k);         % vector to be mapped to s*r*e
+    
+    ex = innerProduct(e, x);
+    aex = abs(ex);
     if ( aex == 0 )
         s = 1; 
     else
         s = -ex/aex; 
     end
-    e = s*e; E(k) = e;                % adjust e by sign factor
+    e = s*e;                          % adjust e by sign factor
+    E = assignColumns(E, k, e);
+    
     r = norm(x); R(k,k) = r;          % diagonal entry r_kk
     v = r*e - x;                      % vector defining reflection
     if ( k > 1 )
-        v = v - E(I)*(E(I)'*v);       % improve orthogonality
+        Ei = extractColumns(E, I);
+        c = innerProduct(Ei, v);
+        v = v - Ei*c;                 % improve orthogonality
     end
     nv = norm(v);
     if ( nv < tol*max(vscale(x), vscale(e)) )
@@ -72,21 +77,29 @@ for k = 1:n
     else
         v = v/nv;
     end
-    V(k) = v;                         % store this Householder vector
+    
     if ( k < n )
-        A(J) = A(J)-2*v*(v'*A(J));    % apply the reflection to A
-        rr = e'*A(J); R(k,J) = rr;    % kth row of R
-        A(J) = A(J) - e*rr;           % subtract components in direction e
+        Aj = extractColumns(A, J);
+        c = 2*innerProduct(v, Aj);
+        Aj = Aj - v*c;                % apply the reflection to A
+        rr = innerProduct(e, Aj); 
+        R(k,J) = rr;                  % kth row of R
+        Aj = Aj - e*rr;               % subtract components in direction e
+        A = assignColumns(A, J, Aj);  % assign back to A
     end
+    
+    V{k} = v;                         % store this Householder vector
 end
 
 % Form the quasimatrix Q from the Householder vectors:
 Q = E;
 for k = n:-1:1
-    v = V(k);
+    v = V{k};
     J = k:n;
-    w = v'*Q(J);
-    Q(J) = Q(J) - 2*v*w;
+    Qj = extractColumns(Q, J);
+    w = v'*Qj;
+    Qj = Qj - 2*v*w;
+    Q = assignColumns(Q, J, Qj);
 end
 
 end

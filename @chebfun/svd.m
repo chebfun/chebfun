@@ -23,7 +23,7 @@ if ( ( nargin > 2) || ( nargin == 2 && econ~=0 ) )
           'Use svd(A) or svd(A,0) for QR decomposition of quasimatrix.');
 end
 
-if ( A.isTranpsosed)     % A is a row quasimatrix
+if ( A.isTransposed)     % A is a row quasimatrix
     % Call CHEBFUN/QR():
     [Q, R] = qr(A');
     % Call discrete SVD():

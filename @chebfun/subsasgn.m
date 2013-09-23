@@ -29,8 +29,9 @@ switch index(1).type
 
     case '()'
 
+        % [TODO]: Check inputs more carefully.
         % Define a point value:
-        f = definePoint(f, idx{:}, val);
+        f = definePoint(f, idx{1}, val);
 
     case '{}'
         

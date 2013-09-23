@@ -15,10 +15,10 @@ function [f, R, E] = qr(f, outputFlag, methodFlag)
 %   is the default behavior.
 %
 %   QR(F, 'vector', METHOD) or QR(F, 'vector', METHOD) specifies which method
-%   to use in computing the QR factorisation. METHOD = 'builtin' will for a
+%   to use in computing the QR factorisation. METHOD = 'built-in' will for a
 %   weighted Legendre-Vandermonde matrix and orthogonalise this with the
 %   standard Matlab QR algorithm. METHOD = 'householder' uses the technique
-%   described in [1].
+%   described in [1]. METHOD = 'householder' is the default option.
 %
 %   [1] L.N. Trefethen, "Householder triangularization of a quasimatrix", IMA J
 %   Numer Anal (2010) 30 (4): 887-897.
@@ -28,10 +28,10 @@ function [f, R, E] = qr(f, outputFlag, methodFlag)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% Developer note: Typically 'householder' will be slower than 'builtin', but
+% Developer note: Typically 'householder' will be slower than 'built-in', but
 % should be more stable.
 %
-% Developer note: In the builtin approach, one could use a Chebyshev grid of
+% Developer note: In the built-in approach, one could use a Chebyshev grid of
 % double the size (rather than the Legendre grid), but given the complexity
 % costs of QR vs. the cost of the transformation, it seems Legendre is
 % preferable.
@@ -45,11 +45,20 @@ if ( isempty(f) )
     return
 end
 
-% Grab the size of f:
-m = size(f, 2);
+% Default options:
+% defaultMethod = 'built-in';
+defaultMethod = 'householder';
+defaultOutput = 'matrix';
+
+if ( nargin < 3 || isempty(methodFlag) )
+    methodFlag = defaultMethod;
+end
+if ( nargin < 2 || isempty(outputFlag) )
+    outputFlag = defaultOutput;
+end
 
 % If f has only one column we simply scale it.
-if ( m == 1 )
+if ( size(f, 2) == 1 )
     R = sqrt(innerProduct(f, f));
     f = f./R;
     E = 1;
@@ -66,15 +75,29 @@ if ( n < m )
     n = m;
 end
 
-% Call Trefethen's Householder implementation:
-if ( nargin == 3 && strcmpi(methodFlag, 'householder') )
-    if ( isempty(outputFlag) ), outputFlag = 'matrix'; end
+% Decide which algorithm to use:
+if ( strcmpi(methodFlag, 'householder') )
+    % Call Trefethen's Householder implementation:
     [f, R, E] = qr_householder(f, outputFlag);
     return
+else
+    % The 'built-in' algorithm. I.e., qeighted discrete QR():
+    if ( nargout == 3 )
+        [f, R, E] = qr_builtin(f, outputFlag);
+    else
+        [f, R] = qr_builtin(f, outputFlag);
+    end
 end
+
+end
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function [f, R, E] = qr_builtin(f, outputFlag)
 
 % Project the values onto a Legendre grid: (where integrals of polynomials
 % p_n*q_n will be computed exactly and on an n-point grid)
+[n, m] = size(f);
 xc = f.chebpts(n);
 vc = f.barywts(n);
 [xl, wl, vl] = legpts(n);
@@ -114,12 +137,13 @@ f.vscale = max(abs(Q), [], 1);
 
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [f, R, E] = qr_householder(f, flag)
+% See L.N. Trefethen, "Householder triangularization of a quasimatrix", IMA J
+% Numer Anal (2010) 30 (4): 887-897. Specify a tolerance:
 
-% Specify a tolerance:
-pref = chebtech.pref;
+pref = chebtech.pref();
 tol = pref.chebtech.eps;
 
 % Grab the size:
@@ -131,7 +155,7 @@ x = f.chebpts(2*n);
 w = f.quadwts(2*n);
 
     % Define the inner product as a nested function:
-    function res = innerprod(a, b)
+    function res = innerProd(a, b)
         res = w*(conj(a).*b);
     end
 
@@ -161,7 +185,7 @@ for k = 1:m
     scl = max(max(abs(E(:,k))), max(abs(A(:,k))));
     
     % Multiply the kth column of A with the basis in E:
-    ex = innerprod(E(:,k), A(:,k));
+    ex = innerProd(E(:,k), A(:,k));
     aex = abs(ex);
     
     % Adjust the sign of the kth column in E:
@@ -173,19 +197,19 @@ for k = 1:m
     E(:,k) = E(:,k) * s;
     
     % Compute the norm of the kth column of A:
-    r = sqrt(innerprod(A(:,k), A(:,k)));
+    r = sqrt(innerProd(A(:,k), A(:,k)));
     R(k,k) = r;
     
     % Compute the reflection v:
     v = r*E(:,k) - A(:,k);
     % Make it more orthogonal:
     for j = I
-        ev = innerprod(E(:,j), v);
+        ev = innerProd(E(:,j), v);
         v = v - E(:,j)*ev;
     end
     
     % Normalize and store v:
-    nv = sqrt(innerprod(v, v));
+    nv = sqrt(innerProd(v, v));
     if ( nv < tol*scl )
         v = E(:,k);
     else
@@ -195,9 +219,9 @@ for k = 1:m
     
     % Subtract v from the remaining columns of A:
     for j = J
-        av = innerprod(v, A(:,j));
+        av = innerProd(v, A(:,j));
         A(:,j) = A(:,j) - 2*v*av;
-        rr = innerprod(E(:,k), A(:,j));
+        rr = innerProd(E(:,k), A(:,j));
         A(:,j) = A(:,j) - E(:,k)*rr;
         R(k,j) = rr;
     end
@@ -208,7 +232,7 @@ end
 Q = E;
 for k = m:-1:1
     for j = k:m
-        vq = innerprod(V(:,k), Q(:,j));
+        vq = innerProd(V(:,k), Q(:,j));
         Q(:,j) = Q(:,j) - 2*V(:,k)*vq;
     end
 end
