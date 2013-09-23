@@ -16,7 +16,7 @@ function f = pchip(x, y, d)
 %    plot(x, y, 'or'), hold off
 %    legend('pchip', 'spline')
 %
-%   See also SPLINE, INTERP1.
+% See also SPLINE, INTERP1.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.

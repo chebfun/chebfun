@@ -20,11 +20,12 @@ function [x, w, v] = chebpts(n, dom, type)
 %   and weights of the 1st-kind if KIND = 1 and 2nd-kind if KIND = 2 (default).
 %
 %   [1] Jarg Waldvogel, "Fast construction of the Fejer and Clenshaw-Curtis
-%   quadrature rules", BIT Numerical Mathematics, 46, (2006), pp 195-202. See
-%   also LEGPTS, JACPTS, LAGPTS, and HERMPTS.
+%   quadrature rules", BIT Numerical Mathematics, 46, (2006), pp 195-202. 
 
-%   Copyright 2013 by The University of Oxford and The Chebfun Developers. 
-%   See http://www.chebfun.org/ for Chebfun information.
+% See also LEGPTS, JACPTS, LAGPTS, and HERMPTS.
+
+% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Parse inputs:
 if ( nargin == 2 )
@@ -42,10 +43,10 @@ if ( nargin == 1 )
     type = str2double(type(end));
 end
 
-% Support singleton expansion for piecewise domains:
+% Verify that the number of points requested and the domains match:
 if ( length(n) == 1 && length(dom) > 1 )
-%     n = repmat(n, 1, length(dom) - 1);
-    dom = dom([1, end]);
+    % Ignore interior breaks in this instance.
+    dom = dom([1,end]); 
 elseif ( length(n) ~= length(dom) - 1 )
     error('CHEBFUN:chebpts:NDmismatch', 'Vector N does not match domain D.'); 
 end

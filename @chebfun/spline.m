@@ -19,7 +19,7 @@ function f = spline(x, y, d)
 %       f = chebfun.spline(x, y);
 %       plot(x, y, 'o', f)
 %
-%   See also INTERP1, PCHIP.
+% See also INTERP1, PCHIP.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.

@@ -4,7 +4,7 @@ function j = jump(f, x, c)
 %   If only two inputs are given, C is assumed to be zero.
 %
 % Example:
-%   x = chebfun('x');
+%   x = chebfun(@(x) x);
 %   j = jump(sign(x), 0) % returns j = 2
 % 
 % See also FEVAL.
@@ -16,6 +16,7 @@ if ( nargin < 3 )
     c = 0; 
 end
 
+% JUMP() is just a wrapper for FEVAL() and MINUS():
 j = feval(f, x, 'right') - feval(f, x, 'left') - c;
 
 end

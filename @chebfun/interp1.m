@@ -130,7 +130,7 @@ function w = baryWeights(x)
 
 n = length(x);
 if ( isreal(x) )
-    C = 4/(max(x) - min(x)); % Capacity of interval.
+    C = 4/(max(x) - min(x));   % Capacity of interval.
 else
     C = 1; % Scaling by capacity doesn't apply for complex nodes.
 end
@@ -142,7 +142,7 @@ if ( (n < 2001) && 0 )         % For small n using matrices is faster.
    VV = exp(sum(log(abs(V))));
    w = 1./(prod(sign(V)).*VV).';
    
-else                         % For large n use a loop
+else                           % For large n use a loop
    w = ones(n,1);
    for j = 1:n
        v = C*(x(j) - x); v(j) = 1;

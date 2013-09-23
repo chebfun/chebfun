@@ -69,3 +69,5 @@ else
     error('CHEBFUN:residue:args', 'Residue requires either 2 or 3 arguments.');
     
 end
+
+end
