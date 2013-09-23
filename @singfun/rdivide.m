@@ -10,7 +10,14 @@ function s = rdivide(f, g)
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%
-% Check if inputs are other than SINGFUNS or doubles
+% Case of empty arguments.
+if ( isempty(f) || isempty(g) )
+    % Return an empty SINGFUN:
+    s = singfun;
+    return;
+end
+
+% Check if inputs are other than SINGFUNS or doubles.
 if ( (~isa(f, 'singfun') && ~isa(f, 'double')) || ...
      (~isa(g, 'singfun') && ~isa(g, 'double')) )   
     error('SINGFUN:rdivide:Input can only be a singfun or a double')
