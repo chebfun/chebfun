@@ -8,11 +8,12 @@ function a = all(f)
 
 % Check the impulses first (as this is trivial):
 tol = vscale(f)*epslevel(f);
-a = all( f.impulses(:,:,1) > tol );
+a = all(abs(f.impulses(:,:,1)) > tol, 1);
 
 % Check to see if there are any roots:
-if ( all(a == true) )
-    a = ~any(roots(f, 'nojump'));
+if ( any(a == true) )
+    r = roots(f, 'nojump');
+    a = a & ~any(r, 1);
 end
 
 end
