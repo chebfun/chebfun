@@ -34,9 +34,10 @@ function varargout = plot(varargin)
 %   the F's and G's are CHEBFUN object and the S's are strings.
 %
 %   [HLINE, HPOINT, HJUMP] = PLOT(F) returns column vectors of handles to
-%   lineseries objects, three handles per plotted line (in the case of
-%   array-valued CHEBFUN objects), corresponding to the line, point, and jump
-%   plots, respectively.
+%   lineseries objects (one for each column in the case of array-valued CHEBFUN
+%   objects), corresponding to the line, point, and jump plots, respectively.
+%
+% See also PLOTDATA, PLOT3.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
