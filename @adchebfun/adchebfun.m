@@ -1,4 +1,4 @@
-classdef adchebfun
+classdef (InferiorClasses = {?chebfun}) adchebfun 
 %ADCHEBFUN   
 %
 % See also 
@@ -46,8 +46,18 @@ classdef adchebfun
         end
         
         function f = times(f, g)
-            f.jacobian = linop.diag(f.func)*g.jacobian + linop.diag(g.func)*f.jacobian;
-            f.func = times(f.func, g.func);
+            % TODO: This assumes both are adchebfuns
+            if ( ~isa(f, 'adchebfun') )
+                g.jacobian = linop.diag(f)*g.jacobian;
+                g.func = f.*g.func;
+                f = g;
+            elseif  ( ~isa(g, 'adchebfun') )
+                f.jacobian = linop.diag(g)*f.jacobian;
+                f.func = f.func.*g;
+            else
+                f.jacobian = linop.diag(f.func)*g.jacobian + linop.diag(g.func)*f.jacobian;
+                f.func = times(f.func, g.func);
+            end
         end
         
         function f = mtimes(f, g)
