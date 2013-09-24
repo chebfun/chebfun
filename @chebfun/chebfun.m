@@ -313,7 +313,7 @@ classdef chebfun
         [f, g] = overlap(f, g)
 
         % Obtain data used for plotting a CHEBFUN object:
-        data = plotData(f, g)
+        data = plotData(f, g, h)
         
         % Power of a CHEBFUN
         f = power(f, b);
