@@ -107,7 +107,7 @@ R = S*R;                    % Fix R.
 
 % Apply data to chebtech:
 f.values = Q;                           % Adjust values of f.
-f.coeffs = f.chebpoly(Q);               % Compute new coefficients.
+f.coeffs = f.vals2coeffs(Q);            % Compute new coefficients.
 f.vscale = max(abs(Q), [], 1);
 
 % [TODO]: Update epslevel?
@@ -214,11 +214,11 @@ for k = m:-1:1
 end
 
 % Compute the corresponding Chebysehv coefficients:
-f.coeffs = f.chebpoly(Q);
+f.coeffs = f.vals2coeffs(Q);
 % Trim the unneeded ones:
 f.coeffs(1:n,:) = [];
 % Comute new values:
-f.values = f.chebpolyval(f.coeffs);
+f.values = f.coeffs2vals(f.coeffs);
 
 % Update the vscale:
 f.vscale = max(abs(Q), [], 1);

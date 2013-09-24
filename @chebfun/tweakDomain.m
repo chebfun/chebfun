@@ -4,7 +4,7 @@ function [f, g, newBreaksLocF, newBreaksLocG] = tweakDomain(f, g, tol)
 %   objects F and G if one or more of the entries in F.DOMAIN and G.DOMAIN are
 %   sufficiently close. In particular, if 
 %     abs(F.DOMAIN(j)-G.DOMAIN(k)) < 1e-15*max(HSCALE(F),HSCALE(G)) = TOL,
-%   then F.DOMAIN(j) and G.DOMAIN(k) are set to (F.DOMAIN(j)-G.DOMAIN(k))/2 (or
+%   then F.DOMAIN(j) and G.DOMAIN(k) are set to (F.DOMAIN(j)+G.DOMAIN(k))/2 (or
 %   the nearest integer value if this is less than TOL away). However, if either
 %   F or G has two breakpoints which are very close, for example, F.DOMAIN(k+1)
 %   - F.DOMAIN(k) < 2*TOL, then these will not be adjusted.

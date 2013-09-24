@@ -101,7 +101,7 @@ end
 
 % Assign values and coefficients back to f:
 f.values = values;
-f.coeffs = f.chebpoly(values);
+f.coeffs = f.vals2coeffs(values);
 
 % Update vscale, epslevel, and ishappy:
 vscale = max(abs(f.values), [], 1);
@@ -118,7 +118,7 @@ if ( pos )
     % Here we know that the product of F and G should be positive. However,
     % SIMPLIFY may have destroyed this property, so we enforce it.
     f.values = abs(f.values); 
-    f.coeffs = f.chebpoly(f.values);
+    f.coeffs = f.vals2coeffs(f.values);
 end
 
 end

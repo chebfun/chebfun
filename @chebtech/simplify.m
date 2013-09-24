@@ -34,7 +34,7 @@ end
 % Use the default tolerance if none was supplied:
 if ( nargin < 2 )
     pref = chebtech.pref();
-    tol = pref.chebtech.eps;
+    tol = f.epslevel;
 end
 
 % Zero all coefficients smaller than the tolerance relative to F.VSCALE:
@@ -54,7 +54,7 @@ if ( firstNonZeroRow > 0 )
 end
 
 % Update values and epslevel:
-f.values = f.chebpolyval(f.coeffs);
+f.values = f.coeffs2vals(f.coeffs);
 f.vscale = max(abs(f.values));
 f.epslevel = max(f.epslevel, tol);
 

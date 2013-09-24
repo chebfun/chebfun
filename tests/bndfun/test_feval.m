@@ -73,6 +73,7 @@ x2 = [-1 0 5 ; -1.75 .5 4.75];
 fx = feval(f, x2);
 f_exact = [0 0 0 -1 1 -1
     [1 sqrt(2) 1 1 0 -1]/sqrt(2)];
-pass(9) = all(all(abs(fx - f_exact) < max(get(f, 'vscale'))*get(f, 'epslevel')));
+pass(9) = all(all(abs(fx - f_exact) < ...
+    10*max(get(f, 'vscale'))*get(f, 'epslevel')));
 
 end
