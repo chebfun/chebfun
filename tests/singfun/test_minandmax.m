@@ -36,7 +36,7 @@ y_exact = [-92.48807414703726; Inf];
 x_exact = [-0.9717902218389038; -1];
 err_y = y(1) - y_exact(1);
 err_x = x - x_exact; 
-pass(2) = (norm(err_x, inf) < tol*f.smoothPart.vscale && abs(err_y) < tol*f.smoothPart.vscale) && (y(2) == Inf);
+pass(2) = (norm(err_x, inf) < tol*f.smoothPart.vscale && abs(err_y) < 2*tol*f.smoothPart.vscale) && (y(2) == Inf);
 
 % fractional root at the right endpoint and the smooth part has no roots in [-1 1].
 f = singfun(@(x) (1-x).^c.*cos(x), [0 c], {'none', 'root'}, pref);

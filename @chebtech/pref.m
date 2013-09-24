@@ -24,8 +24,8 @@ function prefs = pref(varargin)
 %
 %     tech         -  Select the type of Chebyshev grid on which the function
 %                     is sampled.
-%      ['cheb2']   -  Use a grid of second-kind Chebyshev points.
-%       'cheb1'    -  Use a grid of first-kind Chebyshev points.
+%   ['chebtech2']  -  Use a grid of second-kind Chebyshev points.
+%    'chebtech1'   -  Use a grid of first-kind Chebyshev points.
 %
 %     eps          -  Relative tolerance used in construction and subsequent
 %      [2^-52]        operations. See CHEBTECH.HAPPINESSCHECK for more details.
