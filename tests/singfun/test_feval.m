@@ -12,7 +12,6 @@ seedRNG(786);
 x = -1 + 2*rand(100, 1);
 
 pass = zeros(1, 4); % Pre-allocate pass vector
-tol = 500*pref.eps;
 
 %% 
 % Check feval on empty set of points
@@ -22,7 +21,7 @@ pass(1) = isempty(feval(f, []));
 % Check feval on a SINGFUN without exponents
 fh = @(x) sin(cos(10*x.^2));
 f = singfun(fh, [0, 0], {'none', 'none'});
-pass(2) = norm(feval(f,x) - feval(fh,x), inf) < tol;
+pass(2) = norm(feval(f,x) - feval(fh,x), inf) < get(f, 'epslevel');
 
 %%
 % Check feval on a SINGFUN with negative exponents
@@ -30,7 +29,7 @@ a = 1 + rand();
 b = 1 + rand();
 fh = @(x) sin(cos(10*x.^2))./((1+x).^a.*(1-x).^b);
 f = singfun(fh, [-a, -b], {'sing', 'sing'});
-pass(3) = norm(feval(f,x) - feval(fh,x), inf) < tol;
+pass(3) = norm(feval(f,x) - feval(fh,x), inf) < 1e1*get(f, 'epslevel');
 
 %%
 % Check feval on a SINGFUN with positive exponents
@@ -38,6 +37,6 @@ a = rand();
 b = rand();
 fh = @(x) sin(cos(10*x.^2)).*(1+x).^a.*(1-x).^b;
 f = singfun(fh, [a, b], {'root', 'root'});
-pass(4) = norm(feval(f,x) - feval(fh,x), inf) < tol;
+pass(4) = norm(feval(f,x) - feval(fh,x), inf) < get(f, 'epslevel');
 
 end

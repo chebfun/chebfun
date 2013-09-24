@@ -23,7 +23,6 @@ pass(2) = isequal(conj(f), f);
 f = 1i*f;
 pass(3) = isequal(conj(f), -f);
 
-
 % Complex smooth part.
 f = singfun(@(x) (sin(x)+1i*cos(x))./((1+x).*(1-x)));
 g = singfun(@(x) (sin(x)-1i*cos(x))./((1+x).*(1-x)));

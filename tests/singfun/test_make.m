@@ -1,4 +1,4 @@
-% Test file for singfun/make.
+% Test file for singfun/make.m
 
 function pass = test_make(pref)
 

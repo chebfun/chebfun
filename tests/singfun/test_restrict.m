@@ -32,8 +32,8 @@ op = @(x) (1+x).^d.*sin(50*pi*x);
 f = singfun(op, [d+1 0], {'sing', 'none'}, pref);
 pass(2) = test_spotcheck_restrict(f, op, [-1 0.3], [1, 0], pref);
 
-% fractional root at the right endpoint and the smooth part has no roots in [-1 1].
-% We restrict f to multiple subintervals.
+% fractional root at the right endpoint and the smooth part has no roots in 
+% [-1 1]. We restrict f to multiple subintervals.
 
 op  =@(x) (1-x).^c.*cos(x);
 f = singfun(op, [0 c], {'none', 'root'}, pref);
@@ -63,9 +63,6 @@ end
 % Spot-check restriction of a given function to a given subinterval.
 function result = test_spotcheck_restrict(f, fun_op, subint, shunlr, pref)
 
-% Set a tolerance.
-tol = 10*pref.singfun.eps;
-
 % Perform restriction:
 g = restrict(f, subint);
 
@@ -92,8 +89,8 @@ for j = 1: NumInts
     map = @(t) (2/(b - a))*(t - a) - 1;
     
     % Sample on a grid of 100 points and check for accuracy:
-    % Note that 'shunlr' tells us if we should step away from the endpoints of the
-    % original domain due to infinite values.
+    % Note that 'shunlr' tells us if we should step away from the endpoints of 
+    % the original domain due to infinite values.
     if ( j == 1 && shunlr(1) == 1 )
         x = linspace(a + step, b, 100).';
     elseif ( j == NumInts && shunlr(2) == 1 )
@@ -111,7 +108,7 @@ for j = 1: NumInts
     absy(absy < 1) = 1;
     
     % check the error
-    result(j) = all( abs(y_exact - y_approx) < 1e4*absy*tol );
+    result(j) = all( abs(y_exact - y_approx) < 5e4*absy*get(f, 'epslevel') );
 end
 
 result = all(result);

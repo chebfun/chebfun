@@ -28,29 +28,29 @@ pass(1) = (isempty(f + f) && isempty(f + g) && isempty(g + f));
 
 fh = @(x) 1./((1+x).*(1-x));
 f = singfun(fh, [-1, -1]);
-pass(2:3) = test_add_function_to_scalar(f, fh, alpha, x, tol);
+pass(2:3) = test_add_function_to_scalar(f, fh, alpha, x);
 
 %%
 % Check addition of two singfun objects.
 
 fh = @(x) zeros(size(x));
 f = singfun(fh, [], {'none', 'none'}, pref);
-pass(4:5) = test_add_function_to_function(f, fh, f, fh, x, tol);
+pass(4:5) = test_add_function_to_function(f, fh, f, fh, x);
 
 fh = @(x) sin(pi*x)./(1-x);
 f = singfun(fh, [], [], pref);
 
 gh = @(x) cos(pi*x)./(1-x);
 g = singfun(gh, [], [], pref);
-pass(6:7) = test_add_function_to_function(f, fh, g, gh, x, tol);
+pass(6:7) = test_add_function_to_function(f, fh, g, gh, x);
 
 gh = @(x) cos(1e2*x);
 g = singfun(gh, [], [], pref);
-pass(8:9) = test_add_function_to_function(f, fh, g, gh, x, tol);
+pass(8:9) = test_add_function_to_function(f, fh, g, gh, x);
 
 gh = @(t) sinh(t*exp(2*pi*1i/6));
 g = singfun(gh, [], [], pref);
-pass(10:11) = test_add_function_to_function(f, fh, g, gh, x, tol);
+pass(10:11) = test_add_function_to_function(f, fh, g, gh, x);
 
 %%
 % Check that direct construction and PLUS give comparable results.
@@ -66,20 +66,20 @@ end
 
 % Test the addition of a SINGFUN F, specified by Fh, to a scalar C using
 % a grid of points X in [a  b] for testing samples.
-function result = test_add_function_to_scalar(f, fh, c, x, tol)
+function result = test_add_function_to_scalar(f, fh, c, x)
     g1 = f + c;
     g2 = c + f;
     result(1) = isequal(g1, g2);
     g_exact = @(x) fh(x) + c;
-    result(2) = norm(feval(g1, x) - g_exact(x), inf) < tol;
+    result(2) = norm(feval(g1, x) - g_exact(x), inf) < 1e2*get(f, 'epslevel');
 end
 
 % Test the addition of two SINGFUN objects F and G, specified by FH and
 % GH, using a grid of points X in [-1  1] for testing samples.
-function result = test_add_function_to_function(f, fh, g, gh, x, tol)
+function result = test_add_function_to_function(f, fh, g, gh, x)
     h1 = f + g;
     h2 = g + f;
     result(1) = isequal(h1, h2);
     h_exact = @(x) fh(x) + gh(x);
-    result(2) = norm(feval(h1, x) - h_exact(x), inf) <= tol;
+    result(2) = norm(feval(h1, x) - h_exact(x), inf) <= 1e3*get(f, 'epslevel');
 end
