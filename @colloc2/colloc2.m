@@ -127,7 +127,7 @@ classdef colloc2 < linopDiscretization
         % Required functionals.
         
         function S = sum(A)
-            C = cumsummat(dim(A));
+            C = cumsum(A,1);
             d = A.domain;
             S = C(end,:) * (d(end)-d(1))/2;
         end
