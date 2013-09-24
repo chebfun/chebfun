@@ -75,18 +75,18 @@ else                  % Piecewise grid.
     
     % Initialise cell arrays for temporary storage:
     x = cell(length(n), 1);
-    w = cell(length(n), 1);
+    w = cell(1, length(n));
     v = cell(length(n), 1);
     % Loop over the number of subintervals: (as above)
     for k = 1:numel(n)
         x{k} = f.chebpts(n(k));
         x{k} = scaleNodes(x{k}, dom(k:k+1));
         if ( nargout > 1 )
-            w{k} = f.quadpts(n(k));
+            w{k} = f.quadwts(n(k));
             w{k} = scaleWeights(w{k}, dom(k:k+1));
         end
         if ( nargout > 2 )
-            v{k} = f.barypts(n(k));
+            v{k} = f.barywts(n(k));
         end
     end
     % Convert the cell to an array for output:
