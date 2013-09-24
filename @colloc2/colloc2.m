@@ -36,11 +36,12 @@ classdef colloc2 < linopDiscretization
         
         function D = diff(A,m) 
             d = A.domain;
+            n = dim(A);
+                
             if m == 0
-                D = linop.eye(d);
+                D = eye(sum(n));
             else
                 numIntervals = length(d)-1;                
-                n = dim(A);
                 
                 % Find the diagonal blocks.
                 blocks = cell(numIntervals);
@@ -56,11 +57,12 @@ classdef colloc2 < linopDiscretization
         
         function C = cumsum(A,m)
             d = A.domain;
+            n = dim(A);
+
             if m == 0
-                C = linop.eye(d);
+                C = eye(sum(n));
             else
                 numIntervals = length(d)-1;
-                n = dim(A);
 
                 % Find the diagonal blocks.
                 blocks = cell(numIntervals);
