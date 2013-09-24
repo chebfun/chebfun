@@ -26,7 +26,7 @@ classdef colloc2 < linopDiscretization
                     A = L.delayFun( A );
                 else
                     A.size = varargin{1};
-                    validateattributes(varargin{2},{'numeric'},{'increasing','finite'});
+%                     validateattributes(varargin{2},{'numeric'},{'increasing','finite'});
                     A.domain = varargin{2};
                 end
             end

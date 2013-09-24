@@ -169,7 +169,7 @@ classdef linop
             S.diffOrder = -1;
         end
         
-        function E = evalAt(location,varargin)
+        function E = evalAt(domain, location, varargin)
             p = inputParser;
             addRequired(p,'location');
             addOptional(p,'domain',[-1 1]);
@@ -179,7 +179,6 @@ classdef linop
             location = p.Results.location;
             domain = p.Results.domain;
             direction = p.Results.direction;
-            
             if (location < domain(1)) || (location > domain(end))
                 error('Evaluation location is not in the domain.')
             end
