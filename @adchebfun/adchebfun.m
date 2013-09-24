@@ -79,10 +79,11 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 return
             end
             if ( ~isa(g, 'adchebfun') )
-                g = adchebfun(g);
-            end          
-            f.func = f.func + g.func;
-            f.jacobian = f.jacobian + g.jacobian;
+                f.func = f.func + g;
+            else        
+                f.func = f.func + g.func;
+                f.jacobian = f.jacobian + g.jacobian;
+            end
         end
         
         function f = minus(f, g)
