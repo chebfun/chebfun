@@ -70,7 +70,6 @@ while ( ~isempty(varargin) )
     if ( (numel(varargin) > 1) && isa(varargin{2}, 'chebfun') ) % PLOT(f, g).
         f = varargin{1};
         g = varargin{2};
-        varargin(1) = [];
         
         % We can only plot real against real:
         if ( ~isreal(f) || ~isreal(g) )

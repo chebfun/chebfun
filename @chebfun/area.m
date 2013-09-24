@@ -1,7 +1,7 @@
 function varargout = area(f, varargin)
 %AREA   Filled CHEBFUN area plot.
 %   AREA(X, F) or AREA(F) is the same as PLOT(X, F) or PLOT(F) except that the
-%   area between 0 and F is filled. When F is a array-valued, AREA(F) plots the
+%   area between 0 and F is filled. When F is array-valued, AREA(F) plots the
 %   columns of Y as filled areas.
 %
 %   AREA(F, LEVEL) specifies the base level for the area plot to be at the value
@@ -35,7 +35,7 @@ else
     data = plotData(f);
 end
 x = data.xLine; 
-y = data.fLine;
+y = data.yLine;
 
 % Remove NaNs from jumps:
 if ( isnan(x(1)) )

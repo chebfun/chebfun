@@ -17,7 +17,7 @@ if ( isempty(p) || (numel(p.funs) == 1) )
     return
 end
 
-if ( size(f.funs{1}, 2) > 1 )
+if ( size(p.funs{1}, 2) > 1 )
     error('CHEBFUN:unwrap:array', ...
         'UNWRAP() does not support array-valued CHEBFUN objects.');
 end
@@ -39,7 +39,7 @@ idxl = abs(p.impulses(:,:,1) - lvals) < 100*tol;
 idxr = abs(p.impulses(:,:,1) - rvals) < 100*tol;
 
 % Find the jumps:
-idx1 = mymod(abs(lvals - rvals), 2*jumptol) <  tol;
+idx1 = mymod(abs(lvals - rvals), 2*jumptol) < tol;
 idx2 = abs(lvals - rvals) > tol;
 idx = idx1 & idx2;
 % Scale and shift:

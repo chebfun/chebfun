@@ -26,7 +26,7 @@ if ( ~isreal(y) || ~isreal(x) )
     error('CHEBFUN:atan2:real', 'Inputs ust be real.');
 end
 
-if ( min(size(y)) > 1 || min(size(x)) > 1 )
+if ( (min(size(y)) > 1) || (min(size(x)) > 1) )
     error('CHEBFUN:atan2:array', ... % TODO: Add support for this.
         'ATAN2 does not supprt array-valued CHEBFUN objects..');
 end
@@ -71,7 +71,7 @@ p = compose(x, @(x, y) atan2(y, x), y, pref);
 % Sort out the new impulses:
 if ( ~isempty(r) )
     % Set impulses to zero if x(r) = y(r) = 0:
-    idx = (abs(x.impulses(:,:,1)) < tol & abs(y.impulses(:,:,1)) < tol);
+    idx = ((abs(x.impulses(:,:,1)) < tol) & (abs(y.impulses(:,:,1)) < tol));
     p.impulses(idx,1,1) = 0;  
 end
 
