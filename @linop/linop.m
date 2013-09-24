@@ -169,7 +169,7 @@ classdef linop
             S.diffOrder = -1;
         end
         
-        function E = evalAt(domain, location, varargin)
+        function E = evalAt(location, varargin)
             p = inputParser;
             addRequired(p,'location');
             addOptional(p,'domain',[-1 1]);

@@ -121,8 +121,8 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
         
         function f = feval(f, x)
-            E = linop.eval(f.domain);
-            f.jacobian = E(x)*f.jacobian;
+            E = linop.evalAt(x, f.domain);
+            f.jacobian = E*f.jacobian;
             f.func = feval(f.func, x);
         end
         
