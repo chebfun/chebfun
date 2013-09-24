@@ -47,7 +47,7 @@ xx = linspace(-.99, .99, 100);
 ff = feval(f, xx);
 gg = feval(g, xx);
 hh = atan2(ff, gg);
-pass(5) = norm(feval(h, xx) - hh, inf);
+pass(5) = norm(feval(h, xx) - hh, inf) <= 10*vscale(h)*epslevel(h);
 ends = h.domain;
 fi = feval(f, ends);
 fi(abs(fi) < tol) = 0;
@@ -61,7 +61,7 @@ h = atan2(g, f);
 tol = 10*epslevel(h);
 
 hh = atan2(gg, ff);
-pass(7) = norm(feval(h, xx) - hh, inf);
+pass(7) = norm(feval(h, xx) - hh, inf) <= 10*vscale(h)*epslevel(h);
 
 ends = h.domain;
 fi = feval(f, ends);
