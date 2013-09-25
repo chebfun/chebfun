@@ -13,16 +13,16 @@ function data = plotData(f)
 data = plotData( f.smoothPart );
 % Update extrapolated y-data 
 x = data.xLine;
-y = data.fLine;
+y = data.yLine;
 y = y.*(x + 1).^f.exponents(1);
 y = y.*(1 - x).^f.exponents(2);
-data.fLine = y;
+data.yLine = y;
 
 % Update sample point y-data
-y = data.fPoints;
+y = data.yPoints;
 x = data.xPoints;
 y = y.*(x + 1).^f.exponents(1);
 y = y.*(1 - x).^f.exponents(2);
-data.fPoints = y;
+data.yPoints = y;
 
 end

@@ -25,20 +25,20 @@ data = plotData(f);
 
 %%
 % Plot the curve:
-if ( isreal(data.fLine) )
-    h1 = plot(data.xLine, data.fLine, varargin{:}); 
+if ( isreal(data.yLine) )
+    h1 = plot(data.xLine, data.yLine, varargin{:}); 
 else
-    h1 = plot(data.fLine, varargin{:}); 
+    h1 = plot(data.yLine, varargin{:}); 
 end
 set(h1, 'Marker', 'none') 
 hold on
 
 %%
 % Plot the points:
-if ( isreal(data.fLine) )
-    h2 = plot(data.xPoints, data.fPoints, varargin{:});
+if ( isreal(data.yLine) )
+    h2 = plot(data.xPoints, data.yPoints, varargin{:});
 else
-    h2 = plot(data.fPoints, varargin{:});
+    h2 = plot(data.yPoints, varargin{:});
 end
 
 %%
