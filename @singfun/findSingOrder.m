@@ -16,7 +16,7 @@ function singOrder = findSingOrder(op, singEnd)
 
 %%
 % First get an estimate of the exponent by the pole order finder. This 
-% will be passed on as upperbound for the singularity order.
+% will be passed on as upper bound for the singularity order.
 poleBound = -singfun.findPoleOrder(op, singEnd );
 
 % Distance of sample points from the end points:
@@ -41,8 +41,8 @@ singOrder = -singOrder;
 %%
 % The algorithm does not support positive exponents >= 1. Such results are 
 % garbage, so discard them. This is consistent with Chebfun V4. From a
-% practial point of view, this is not a problem since a chebfun with a
-% barnch singularity of order > 1 converges. For such functions, the 
+% practical point of view, this is not a problem since a chebfun with a
+% branch singularity of order > 1 converges. For such functions, the 
 % cheb-coefficient decay is algebraic but strong enough to give us a 
 % reliable representation.
 if ( singOrder >= 1 )
@@ -53,7 +53,7 @@ end
 
 function singOrder = singOrderFinder( fvals, x, poleBound )
 %SINGORDERFINDER   Finds the order of the singularity based on function 
-%   values FVALS given at (1-X). POLEBOUND is an integer upperbound 
+%   values FVALS given at (1-X). POLEBOUND is an integer upper bound 
 %   of the singularity order.
 
 singOrder = poleBound - 1;

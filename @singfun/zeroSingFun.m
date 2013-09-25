@@ -1,5 +1,5 @@
 function s = zeroSingFun()
-%ZEROSUNGFUN   Constructs the zero SINGFUN. The output SINGFUN object has a
+%ZEROSINGFUN   Constructs the zero SINGFUN. The output SINGFUN object has a
 %   zero smooth part with no singularities at any end points.
 %
 % See also SINGFUN.

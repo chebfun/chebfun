@@ -125,7 +125,7 @@ else
     
     % Give a sufficiently large number: 
     % [TODO]: This number needs to be determined in future when other 'tech's join. 
-    % [TODO]: Or perhaps compute iteratively until result doens't change?
+    % [TODO]: Or perhaps compute iteratively until result doesn't change?
     n = 1000;
     
     [x, w] = jacpts(ceil(n/2) + 1, f.exponents(2), f.exponents(1));

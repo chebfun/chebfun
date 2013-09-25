@@ -1,10 +1,10 @@
 function g = restrict(f, s)
 %RESTRICT   Restrict a SINGFUN to a subinterval.
-%   RESCTRICT(F, S) returns a SINGFUN that is restricted to the subinterval
+%   RESTRICT(F, S) returns a SINGFUN that is restricted to the subinterval
 %   [S(1), S(2)] of [-1,1]. Note that since SINGFUN objects only live on
 %   [-1,1], a linear change of variables is implicitly applied.
 %
-%   If length(S) > 2, i.e., S = [S1, S2, S3, ...], then RESCTRICT(F, S) returns
+%   If length(S) > 2, i.e., S = [S1, S2, S3, ...], then RESTRICT(F, S) returns
 %   an array of SINGFUN objects, where the entries hold F restricted to each of
 %   the subintervals defined by S.
 

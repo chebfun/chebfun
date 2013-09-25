@@ -52,11 +52,11 @@ end
 end
 
 %%
-% singintegral was originally named unbdnd in Chebfun v4. It tryies to find a
+% singIntegral was originally named unbdnd in Chebfun v4. It tries to find a
 % singfun representation for the indefinite integral of a singfun. It now can
 % only handle integrand with singularity at one end of the domain, but not at
 % both. The algorithm was due to Nick Hale and Sheehan Olver. Some minor
-% modification are made during Chebfun v5 refactorization. See the workig note
+% modification are made during Chebfun v5 refactorization. See the working note
 % by Nick Hale and Sheehan Olver for the detail about the algorithm.
 
 function g = singIntegral(f)

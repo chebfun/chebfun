@@ -44,7 +44,7 @@ function poleOrder = poleOrderFinder( fvals, x )
 %POLEORDERFINDER   Finds the order of the pole based on function values
 %   FVALS given at (1-X).
 
-% We take the absolute value of the function vlaues now and don't call ABS()
+% We take the absolute value of the function values now and don't call ABS()
 % later. This works because scaling with powers of the positive factor (1-x)
 % don't change the sign of function values. 
 smoothVals = abs(fvals);
@@ -75,7 +75,7 @@ end
 if ( poleOrder > maxPoleOrder )
     % Method failed.
     error('CHEBFUN:SINGFUN:fail', ...
-            'Pole order excedes limit for maximum pole order.');
+            'Pole order exceeds limit for maximum pole order.');
 end
 
 end

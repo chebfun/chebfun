@@ -16,7 +16,7 @@ function [vals, pos] = minandmax(f)
 %   but the resulting values correspond to those of the original function. That
 %   is, VALS = FEVAL(F, POS) where [~, POS] = MINANDMAX(ABS(F)). (In fact,
 %   MINANDMAX actually computes [~, POS] = MINANDMAX(ABS(F).^2), to avoid
-%   introducing singularlities to the function).
+%   introducing singularities to the function).
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

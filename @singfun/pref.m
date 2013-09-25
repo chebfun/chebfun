@@ -1,6 +1,6 @@
 function prefs = pref(varargin)
 %PREF   Preference settings for SINGFUN. [TODO:] SINGFUN will have no 
-%   perefernces, instead the abstract superior class ONEFUN will have all the
+%   preferences, instead the abstract superior class ONEFUN will have all the
 %   preferences in future.
 % 
 %   SINGFUN.PREF(PREFNAME) returns the value corresponding to the preference

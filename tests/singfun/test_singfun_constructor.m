@@ -16,7 +16,7 @@ seedRNG(7890)
 x = -1 + 2*rand(1, 100);
 x = sort(x);
 
-%% Test calling syntax when the user porvides exponents
+%% Test calling syntax when the user provides exponents
 
 % Negative fractional exponents
 a = rand();

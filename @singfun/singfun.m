@@ -75,7 +75,7 @@ classdef singfun
         % Exponents of the singularities at the two endpoints.
         exponents       % (1x2 double)
         
-        % [TODO]: Shold exponentTol be a property?
+        % [TODO]: Should exponentTol be a property?
     end
     
     %% CLASS CONSTRUCTOR (IMPLEMENTED BY THIS M-FILE):
@@ -117,12 +117,12 @@ classdef singfun
             % Case 3: Three or more input arguments.
             % The user can choose a singularity detection algorithm by passing
             % appropriate strings in the argument "singType", which is a cell
-            % array. If, however, the user doesn't provide any prefereces
+            % array. If, however, the user doesn't provide any preferences
             % regarding the algorithm, the most generic algorithm, which tries
             % to find fractional order singularities is used.
             if ( nargin >= 3 && isempty(exponents) )
                 if ( isempty(singType) )
-                    % Singulrity types and exponents not given. Assume
+                    % Singularity types and exponents not given. Assume
                     % fractional poles or generic singularities if not given
                     singType = {'sing', 'sing'};
                 else
@@ -137,7 +137,7 @@ classdef singfun
             
             %%
             % Various checks.
-            % Make sure that op is a funciton handle
+            % Make sure that op is a function handle
             if ( ~isa(op, 'function_handle') )
                 error( 'CHEBFUN:SINGFUN:constructor', ...
                     'First argument must be a function handle.');
@@ -176,7 +176,7 @@ classdef singfun
         % Complex conjugate of a SINGFUN.
         f = conj(f)
         
-        % SINGFUN obects are not transposable.
+        % SINGFUN objects are not transposable.
         f = ctranspose(f)
         
         % Indefinite integral of a SINGFUN.
@@ -298,7 +298,7 @@ classdef singfun
         poleOrder = findPoleOrder( op, SingEnd )
         
         % method for finding fractional order singularities (+ve or -ve).
-        barnchOrder = findSingOrder( op, SingEnd )
+        branchOrder = findSingOrder( op, SingEnd )
         
         % Make a SINGFUN (constructor shortcut):
         f = make(varargin);
@@ -306,7 +306,7 @@ classdef singfun
         % Retrieve and modify preferences for this class.
         prefs = pref(varargin)
         
-        % Costruct a zero SINGFUN
+        % Construct a zero SINGFUN
         s = zeroSingFun()
     end
     

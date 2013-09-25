@@ -9,7 +9,7 @@ function data = plotData(f)
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%
-% Get plot data from the smooth parth
+% Get plot data from the smooth part
 data = plotData( f.smoothPart );
 % Update extrapolated y-data 
 x = data.xLine;

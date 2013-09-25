@@ -34,7 +34,7 @@ elseif ( isa(g, 'double') )
     return
 end
 
-%% Mutliplication of two SINGFUNS:
+%% Multiplication of two SINGFUNS:
 
 % Initialise the output SINGFUN:
 s = singfun;
