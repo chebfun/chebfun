@@ -361,6 +361,12 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
             L = L.bc(f,value);
         end
         
+                
+        function out = iszero(f)
+            % TODO: Implement this properly (for linearity detection)
+            out = false;
+        end
+        
     end
     
     methods (Access=private)
@@ -477,6 +483,7 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
                 end
             end
         end
+
             
 
     end

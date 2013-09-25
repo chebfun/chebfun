@@ -1,8 +1,8 @@
 % A simple example BVP.
-ccc
+clc, clear all, clear classes
 
 % The 'CHEBOP':
-N.op = @(x, u, v) [diff(u, 1) + v ; diff(v, 1) - u];
+N.op = @(x, u, v) [diff(u, 1) + v ; diff(v, 1) - sin(x).*u];
 N.lbc = @(u, v) u - 1;
 % N.bc = @(x, u, v) feval(v, .5);
 N.bc = @(x, u, v) sum(v);
@@ -10,11 +10,10 @@ N.bc = @(x, u, v) sum(v);
 %%
 % Initialise an ADCHEBFUN:
 dom = [-1 0 1];
-x = chebfun('x', dom);
+x = chebfun(@(x) x, dom);
 u = adchebfun(@(u) 0*u, dom);
 v = adchebfun(@(v) 0*v, dom);
 
-numVars = 2;
 u = seed(u, 1, 2);
 v = seed(v, 2, 2);
 
@@ -34,12 +33,8 @@ B2res = w.func;
 
 %%
 % Add BCs
-% A = bc(A, B1, -B1res);
-% A = bc(A, B2, -B2res);
-A.constraints(1).op = B1;
-A.constraints(1).value = -B1res;
-A.constraints(2).op = B2;
-A.constraints(2).value = -B2res;
+A = bc(A, B1, -B1res);
+A = bc(A, B2, -B2res);
 
 % Make a CHEBMATRIX RHS:
 rhs = [x ; x] - Ares;
