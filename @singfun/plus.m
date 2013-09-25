@@ -97,7 +97,7 @@ else
     op = @(x) feval(f, x) + feval(g, x);
     
     % Construct a new SINGFUN for sum:
-    s = singfun(op, [], {'sing', 'sing'}, singfun.pref);
+    s = singfun(op, [], [], [], [], singfun.pref);
 end
 
 end

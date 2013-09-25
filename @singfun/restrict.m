@@ -53,7 +53,7 @@ for j = 1:numInts
         op = @(x) feval(f, ((1 - x)*s(1) + (1 + x)*s(2))/2);
 
         % call the singfun constructor
-        gtmp = singfun( op, [f.exponents(1) 0], {'sing', 'none'}, [] );
+        gtmp = singfun(op, [f.exponents(1) 0], {'sing', 'none'});
         g{1} = gtmp;
 
         continue
@@ -69,7 +69,7 @@ for j = 1:numInts
         op = @(x) feval(f, ((1 - x)*s(end-1) + (1 + x)*s(end))/2);
 
         % call the singfun constructor
-        gtmp = singfun( op, [0 f.exponents(2)], {'none', 'sing'}, [] );
+        gtmp = singfun(op, [0 f.exponents(2)], {'none', 'sing'});
 
         % put in cell
         g{end} = gtmp;
@@ -84,7 +84,7 @@ for j = 1:numInts
         op = @(x) feval(f, ((1 - x)*s(j) + (1 + x)*s(j+1))/2);
 
         % call the singfun constructor
-        gtmp = singfun( op, zeros(1, 2), {'none', 'none'}, [] );
+        gtmp = singfun(op, zeros(1, 2), {'none', 'none'});
 
         % put in cell
         g{j} = gtmp;
@@ -100,7 +100,7 @@ for j = 1:numInts
     op = @(x) feval(f, ((1 - x)*s(j) + (1 + x)*s(j+1))/2);
 
     % call the singfun constructor
-    gtmp = singfun( op, [], {'sing', 'sing'}, [] );
+    gtmp = singfun(op, [], {'sing', 'sing'});
 
     % put in cell
     g{j} = gtmp;
