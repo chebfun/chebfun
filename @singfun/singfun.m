@@ -74,16 +74,14 @@ classdef singfun
         
         % Exponents of the singularities at the two endpoints.
         exponents       % (1x2 double)
-        
-        % [TODO]: Should exponentTol be a property?
     end
     
     %% CLASS CONSTRUCTOR (IMPLEMENTED BY THIS M-FILE):
     methods
-        function obj = singfun(op, exponents, singType, pref)            
+        function obj = singfun(op, exponents, singType, vscale, hscale, pref)            
             %%
             % Check for preferences in the very beginning.
-            if ( (nargin < 4) || isempty(pref) )
+            if ( (nargin < 6) || isempty(pref) )
                 % Determine preferences if not given.
                 pref = singfun.pref;
             else
@@ -123,7 +121,8 @@ classdef singfun
             if ( nargin >= 3 && isempty(exponents) )
                 if ( isempty(singType) )
                     % Singularity types and exponents not given. Assume
-                    % fractional poles or generic singularities if not given
+                    % fractional poles or generic singularities at each
+                    % end.
                     singType = {'sing', 'sing'};
                 else
                     % Singularity types given, make sure the strings are OK.
@@ -160,13 +159,26 @@ classdef singfun
                 obj.exponents = singfun.findSingExponents(op, singType);
             end
             
+            %% 
+            % Handle cases for vscale and hscale.
+            if ( nargin <= 3 )
+                % If both are not passed as argument, set them to empty.
+                vscale = [];
+                hscale = [];
+            end
+            
+            if ( nargin == 4 )
+                % vscale passed, but hscale missing, set it to empty:
+                hscale = [];
+            end                   
+            
             %%
             % Factor out singular terms from the operator based on the values
             % in exponents.
             smoothOp = singOp2SmoothOp(op, obj.exponents);
             
             % Construct the smooth part.
-            obj.smoothPart = singfun.constructSmoothPart(smoothOp, pref);
+            obj.smoothPart = singfun.constructSmoothPart(smoothOp, vscale, hscale, pref);
         end
     end
     
