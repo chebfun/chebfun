@@ -2,7 +2,7 @@
 clc, clear all, clear classes
 
 % The 'CHEBOP':
-N.op = @(x, u, v) [diff(u, 1) + v ; diff(v, 1) - sin(x).*u];
+N.op = @(x, u, v) [diff(u, 1) + v ; diff(v, 1) + sign(x).*u];
 N.lbc = @(u, v) u - 1;
 % N.bc = @(x, u, v) feval(v, .5);
 N.bc = @(x, u, v) sum(v);
@@ -49,9 +49,14 @@ u = uv.blocks{1};
 v = uv.blocks{2};
 plot(u, 'b'); hold on
 plot(v, 'r'), shg, hold off
+title('solutions')
 
 u(-1) - 1
 % v(0.5)
 sum(v)
 
+figure
+plot(diff(u, 2), 'b'); hold on
+plot(diff(v), 'r'), shg, hold off
+title('derivatives of solutions')
 
