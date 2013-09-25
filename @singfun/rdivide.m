@@ -40,7 +40,7 @@ if ( isa(f,'double') )
     % Make a zero SINGFUN:
     temp = singfun.zeroSingFun();        
     % Assign f as it's smooth part
-    temp.smoothPart = singfun.constructSmoothPart(f, []);
+    temp.smoothPart = singfun.constructSmoothPart(f, f, 1, []);
     % Change f to a SINGFUN:
     f = temp;
     % Call SINGFUN.RDIVIDE again

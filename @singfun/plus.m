@@ -21,11 +21,11 @@ end
 if ( isa(f, 'double') )
     aDouble = f;
     f = singfun.zeroSingFun();
-    f.smoothPart = singfun.constructSmoothPart(aDouble, []);
+    f.smoothPart = singfun.constructSmoothPart(aDouble, aDouble, 1, []);
 elseif ( isa(g, 'double') )
     aDouble = g;
     g = singfun.zeroSingFun();
-    g.smoothPart = singfun.constructSmoothPart(aDouble, []);
+    g.smoothPart = singfun.constructSmoothPart(aDouble, aDouble, 1, []);
 end
 
 fExps = f.exponents;
@@ -84,7 +84,7 @@ elseif ( all(abs(round(fExps - gExps) - (fExps-gExps)) < tolExps) )
     
     % Construct the new smooth fun:
     s = singfun.zeroSingFun();
-    s.smoothPart = singfun.constructSmoothPart(smoothOp, []);
+    s.smoothPart = singfun.constructSmoothPart(smoothOp, [], [], []);
     
     % Assign new exponents:
     s.exponents = newExps;
