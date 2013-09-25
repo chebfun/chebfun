@@ -102,8 +102,17 @@ classdef colloc2 < linopDiscretization
         end
         
         function F = diag(A,f)
-            x = chebpts(dim(A),f.domain,2);
-            F = diag( f(x) );
+            n = dim(A);
+            x = chebpts(n, f.domain, 2);
+            fx = f(x);
+              
+            % Evaluate left- and right-sided limits at breaks:
+            csn = [0, cumsum(n)];
+            dxloc = csn(2:end-1);
+            fx(dxloc) = feval(f, x(dxloc), 'left');
+            fx(dxloc+1) = feval(f, x(dxloc), 'right');
+            
+            F = diag( fx );
         end
         
         % Required operators.
