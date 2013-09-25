@@ -131,6 +131,18 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % Allow access to any of F's properties via GET.
             out = f.(prop);
         end
+        
+        function u = seed(u, k, m)
+            dom = u.domain;
+            I = linop.eye(dom);
+            Z = linop.zeros(dom);
+            blocks = cell(1, m);
+            for j = 1:m
+                blocks{1,j} = Z;
+            end
+            blocks{1,k} = I;
+            u.jacobian = chebmatrix(blocks);
+        end
             
         
     end

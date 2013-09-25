@@ -180,7 +180,7 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
         end
         
         
-        function A = matrix(L,dim,type)
+        function A = matrix(L,dim,dom,type)
             % MATRIX(A,DIM) returns a discretization of the chebmatrix A based on dimension DIM.
             %
             % MATRIX(A,DIM,TYPE) uses the discretization type TYPE.
