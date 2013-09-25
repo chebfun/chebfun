@@ -79,7 +79,7 @@ classdef singfun
     %% CLASS CONSTRUCTOR (IMPLEMENTED BY THIS M-FILE):
     methods
         function obj = singfun(op, exponents, singType, vscale, hscale, pref)            
-            %%
+            %% Get Preferences
             % Check for preferences in the very beginning.
             if ( (nargin < 6) || isempty(pref) )
                 % Determine preferences if not given.
@@ -87,8 +87,7 @@ classdef singfun
             else
                 % Merge if some preferences are given.
                 pref = singfun.pref(pref);
-            end
-            
+            end           
             
             %% Cases based on the number of arguments
             % Case 0: No input arguments, return an empty object.
@@ -98,20 +97,18 @@ classdef singfun
                 return
             end
             
-            %%
             % Case 1: One input argument.
             if ( nargin == 1 )
                 % Make sure the exponents are empty.
                 exponents = [];
             end
-            %%
+            
             % Case 2: Two input arguments.
             if ( (nargin == 2) || ~isempty(exponents) )
                 % Exponents passed, store them.
                 obj.exponents = exponents;
             end
-            
-            %%
+                        
             % Case 3: Three or more input arguments.
             % The user can choose a singularity detection algorithm by passing
             % appropriate strings in the argument "singType", which is a cell
@@ -134,8 +131,8 @@ classdef singfun
                 end
             end
             
-            %%
-            % Various checks.
+            %% Misc Checks on the Inputs
+            
             % Make sure that op is a function handle
             if ( ~isa(op, 'function_handle') )
                 error( 'CHEBFUN:SINGFUN:constructor', ...
@@ -148,18 +145,6 @@ classdef singfun
                     'SINGFUN class does not support array-valued objects.' );
             end
             
-            % If exponents were passed, make sure they are in correct shape.
-            if ( ~isempty(exponents) )
-                if ( any(size(exponents) ~= [1 2]) || ~isa(exponents, 'double') )
-                    error( 'CHEBFUN:SINGFUN:constructor', ...
-                        'Exponents must be a 1X2 vector of doubles.' );
-                end
-            else
-                % Exponents not given, determine them.
-                obj.exponents = singfun.findSingExponents(op, singType);
-            end
-            
-            %% 
             % Handle cases for vscale and hscale.
             if ( nargin <= 3 )
                 % If both are not passed as argument, set them to empty.
@@ -172,7 +157,19 @@ classdef singfun
                 hscale = [];
             end                   
             
-            %%
+            %% Find Exponents
+            % If exponents were passed, make sure they are in correct shape.
+            if ( ~isempty(exponents) )
+                if ( any(size(exponents) ~= [1 2]) || ~isa(exponents, 'double') )
+                    error( 'CHEBFUN:SINGFUN:constructor', ...
+                        'Exponents must be a 1X2 vector of doubles.' );
+                end
+            else
+                % Exponents not given, determine them.
+                obj.exponents = singfun.findSingExponents(op, singType);
+            end
+            
+            %% Construct New Function Handle
             % Factor out singular terms from the operator based on the values
             % in exponents.
             smoothOp = singOp2SmoothOp(op, obj.exponents);

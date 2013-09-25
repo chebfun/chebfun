@@ -1,14 +1,16 @@
 function s = constructSmoothPart(op, vscale, hscale, pref)
 %CONSTRUCTSMOOTHPART   Construct the smooth part of a SINGFUN.
-%   S = CONSTRUCTSMOOTHPART(OP, PREF) creates the SMOOTHFUN object S using the
-%   function handle OP, which is assumed globally smooth. Preferences of the
-%   SMOOTHFUN class and underlying CHEBTECH preferences are passed through PREF.
+%   S = CONSTRUCTSMOOTHPART(OP, VSCALE, HSCALE, PREF) creates the SMOOTHFUN 
+%   object S using the function handle OP, which is assumed globally smooth. 
+%   VSCALE, HSCALE and preferences to the SMOOTHFUN class are passed through
+%   the corresponding arguments.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
 % If none of SMOOTHFUN and CHEBTECH pref is supplied:
-if ( ( nargin < 4 ) || (~isfield(pref, 'smoothfun') && ~isfield(pref, 'chebtech')) )
+if ( ( nargin < 4 ) || (~isfield(pref, 'smoothfun') ...
+      && ~isfield(pref, 'chebtech')) )
     pref = smoothfun.pref;
     pref = chebtech.pref(pref);
 end
@@ -25,7 +27,7 @@ if ( isfield(pref, 'chebtech') && ~isfield(pref, 'smoothfun') )
     pref = smoothfun.pref(pref);
 end 
 
-% For time-being, SAMPLETEST is turned off:
+% For the time-being, SAMPLETEST is turned off:
 pref = chebtech.pref(pref, 'sampletest', 0);
 
 % Though both 'CHEBTECH1' and 'CHEBTECH2' work well for singfun, in long term we

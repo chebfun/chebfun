@@ -22,7 +22,6 @@ function out = sum(f)
 
 %%
 % Trivial cases:
-
 if ( all(f.exponents == 0) )
     % If both the exponents are trivial, then compute the integral by calling
     % the sum in smoothfun.

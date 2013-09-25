@@ -62,7 +62,7 @@ testRatio = 1.01;
 maxPoleOrder = singfun.pref.singfun.maxPoleOrder;
 
 poleOrder = 0;
-%smoothVals = smoothVals.*x;
+% [TODO]: smoothVals = smoothVals.*x;
 
 % Loop to see for which power of x the function values become non-divergent
 % i.e. when the ratio of function values becomes less then the testRatio.

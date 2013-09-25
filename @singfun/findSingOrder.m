@@ -63,15 +63,15 @@ singOrder = poleBound - 1;
 n = 11;
 exponentGrid = linspace(poleBound - 1, poleBound, n);
 
-% some initialisations which will be used later
+% Some initialisations which will be used later:
 absFvals = abs(fvals);
 nIter = 0;
 
 %%
-% Tolerance for exponents
+% Tolerance for exponents:
 tol = singfun.pref.singfun.exponentTol;
 
-% Maximum number of iterations allowed
+% Maximum number of iterations allowed:
 maxIter = 100; 
 % A factor by 10 refinement algorithm for zooming in on the required
 % fractional singularity order.
@@ -85,22 +85,22 @@ while( (abs(exponentGrid(end) - exponentGrid(1)) > tol) && (nIter <= maxIter) )
     % differences.
     while( all(diff(diff(smoothVals)) > 0) && (k < n) )
         k = k + 1;
-        % Try the next fractional exponent
+        % Try the next fractional exponent.
         smoothVals = absFvals.*x.^exponentGrid(k);
     end
     
     if( (k == n) && all(diff(diff(smoothVals)) > 0) )
-        % Tried all exponents but failed
+        % Tried all exponents but failed.
         singOrder = exponentGrid(n);
         return;
     else
-        % Update the estimate for exponent
+        % Update the estimate for exponent:
         singOrder = exponentGrid(k);        
         if( k == 1 )
             % No further refinement possible.            
             return;
         else           
-            % Refine the grid                        
+            % Refine the grid:                       
             exponentGrid = linspace(exponentGrid(k - 1), exponentGrid(k), n);
             nIter = nIter + 1;
         end

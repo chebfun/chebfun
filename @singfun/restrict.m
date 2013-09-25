@@ -49,10 +49,10 @@ for j = 1:numInts
     % endpoint of the last subinterval is too close to 1, when a pole is
     % present at 1.
     if ( (s(j) == -1) && (endVal(j + 1) < fntbnd) )
-        % define the new operator
+        % Define the new operator:
         op = @(x) feval(f, ((1 - x)*s(1) + (1 + x)*s(2))/2);
 
-        % call the singfun constructor
+        % Call the singfun constructor:
         gtmp = singfun(op, [f.exponents(1) 0], {'sing', 'none'});
         g{1} = gtmp;
 
@@ -65,13 +65,13 @@ for j = 1:numInts
     % endpoint of the first subinterval is too close to -1, when a pole is
     % present at -1.
     if ( (endVal(j) < fntbnd) && (s(j+1) == 1) )
-        % define the new operator
+        % Define the new operator:
         op = @(x) feval(f, ((1 - x)*s(end-1) + (1 + x)*s(end))/2);
 
-        % call the singfun constructor
+        % Call the singfun constructor:
         gtmp = singfun(op, [0 f.exponents(2)], {'none', 'sing'});
 
-        % put in cell
+        % Put in cell:
         g{end} = gtmp;
 
         continue
@@ -79,14 +79,14 @@ for j = 1:numInts
 
     % Check if any of s(1) and s(end) is far from a singularity at -1 or 1.
     if ( max(endVal(j:j+1)) < fntbnd )
-        % define the new operator which will be evaluated in the subinterval by
-        % the singfun ctor.
+        % Define the new operator which will be evaluated in the subinterval by
+        % the singfun ctor:
         op = @(x) feval(f, ((1 - x)*s(j) + (1 + x)*s(j+1))/2);
 
-        % call the singfun constructor
+        % Call the singfun constructor:
         gtmp = singfun(op, zeros(1, 2), {'none', 'none'});
 
-        % put in cell
+        % Put in cell:
         g{j} = gtmp;
 
         continue
@@ -96,17 +96,17 @@ for j = 1:numInts
     % handling subintervals with one of the endpoints too close to a
     % singularity.
 
-    % define the new operator
+    % Define the new operator:
     op = @(x) feval(f, ((1 - x)*s(j) + (1 + x)*s(j+1))/2);
 
-    % call the singfun constructor
+    % Call the singfun constructor
     gtmp = singfun(op, [], {'sing', 'sing'});
 
-    % put in cell
+    % Put in cell:
     g{j} = gtmp;
 end
 
-% If there is only one subinterval, return the singfun, instead of a cell.
+% If there is only one subinterval, return the singfun, instead of a cell:
 if ( numInts == 1 )
     g = g{:};
 end

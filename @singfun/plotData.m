@@ -9,16 +9,16 @@ function data = plotData(f)
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%
-% Get plot data from the smooth part
+% Get plot data from the smooth part:
 data = plotData( f.smoothPart );
-% Update extrapolated y-data 
+% Update extrapolated y-data:
 x = data.xLine;
 y = data.yLine;
 y = y.*(x + 1).^f.exponents(1);
 y = y.*(1 - x).^f.exponents(2);
 data.yLine = y;
 
-% Update sample point y-data
+% Update sample point y-data:
 y = data.yPoints;
 x = data.xPoints;
 y = y.*(x + 1).^f.exponents(1);

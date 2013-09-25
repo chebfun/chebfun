@@ -75,7 +75,7 @@ if ( isfield(prefs, classname) )  % It does, so either:
 else
     % No SINGFUN prefs found, so make some:
     p.eps           = 2^-52;
-    p.exponentTol   = 1.1*1e-11; % taken from Chebfun V4
+    p.exponentTol   = 1.1*1e-11;  % taken from Chebfun V4
     p.maxPoleOrder  = 20;    
 end
 % p is now the preference substructure relating to the FUN class.

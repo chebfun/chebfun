@@ -12,7 +12,7 @@ function [vals, pos] = minandmax(f)
 % See http://www.chebfun.org for Chebfun information.
 
 %   [TODO]: Does this make sense for a SINGFUN:
-%    If F is complex-valued the absolute values are taken to determine extrema
+%   If F is complex-valued the absolute values are taken to determine extrema
 %   but the resulting values correspond to those of the original function. That
 %   is, VALS = FEVAL(F, POS) where [~, POS] = MINANDMAX(ABS(F)). (In fact,
 %   MINANDMAX actually computes [~, POS] = MINANDMAX(ABS(F).^2), to avoid
@@ -24,7 +24,7 @@ function [vals, pos] = minandmax(f)
 tol = singfun.pref.singfun.exponentTol;
 
 if ( ~any(f.exponents) || all(abs(f.exponents) < tol) )
-    
+  
     % The function is actually smooth!
     [vals, pos] = minandmax(f.smoothPart);
     

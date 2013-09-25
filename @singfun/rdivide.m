@@ -53,7 +53,7 @@ end
 %% SINGFUN./SINGFUN
 % Check if g has any roots in the open interval (-1, 1)
 r = roots( g.smoothPart );
-% remove roots at the end points.
+% Remove roots at the end points.
 r = setdiff(r, [-1,1]);
 if ( ~isempty(r) )
     error('SINGFUN:rdivide:Divide by zero error')
@@ -64,7 +64,7 @@ end
 % singular with non trivial exponents. So the result of f./g in general is a
 % generic SINGFUN with possibly non-trivial exponents.
 
-% construct the SINGFUN by a direct call to the constructor:
+% Construct the SINGFUN by a direct call to the constructor:
 s = singfun(@(x) feval(f, x)./feval(g, x));
 
 end

@@ -8,7 +8,7 @@ function out = isfinite(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Check if F has exponents and the smooth part is finite.
+% Check if F has exponents and the smooth part is finite:
 out = all(f.exponents > -singfun.pref.singfun.exponentTol) && ...
     isfinite(f.smoothPart);
 
