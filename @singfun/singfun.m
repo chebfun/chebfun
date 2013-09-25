@@ -301,7 +301,7 @@ classdef singfun
     %% STATIC METHODS IMPLEMENTED BY THIS CLASS.
     methods ( Static = true )
         % smooth fun constructor
-        s = constructSmoothPart( op, pref )
+        s = constructSmoothPart( op, vscale, hscale, pref )
         
         % method for finding the order of singularities
         exponents = findSingExponents( op, singType )
