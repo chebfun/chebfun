@@ -168,7 +168,7 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
                 for j = 1:n
                     item = data{i,j};
                     if isa(item,'linop')
-                        L{i,j} = matrix(item,dim,matrixType);
+                        L{i,j} = matrix(item,dim,domain(A),matrixType);
                     elseif isa(item,'chebfun')
                         x = chebpts(dim, item.domain);
                         L{i,j} = item(x);
@@ -199,7 +199,7 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
             
         end
         
-        function [A,b] = linSystem(L,f,dim,type)
+        function [A,b,dom] = linSystem(L,f,dim,type)
             if nargin < 4
                 type = linop.defaultDiscretization;
             end
@@ -209,8 +209,13 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
             end
             
             L = appendContinuity(L);
+
+            % Domain needs to have the union of all breakpoints.
+            dom = chebmatrix.mergeDomains( {L.blocks{:}, f.blocks{:}} );
+            L.fundomain = dom;
+            f.fundomain = dom;
             
-            dom = domain(L);
+            % This is needed when generating chebpts for discretization of a chebfun.
             if (length(dim)==1) 
                 dim = repmat(dim,1,length(dom)-1);
             end          
@@ -227,13 +232,13 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
             d = getDownsampling(L);
             for i = find( ~isnan(d) )
                 M = cat(2,Ablocks{i,:},bblocks{i});
-                rows{i} = dummy.resize( M, dim-d(i), dim, domain(L) );
+                rows{i} = dummy.resize( M, dim-d(i), dim, dom );
             end
                         
             % Append the discrete constraints.
             bc = L.constraints;
             for i = 1:length(bc)
-                M = [ matrix(bc(i).op,dim,type), bc(i).value ];
+                M = [ matrix(bc(i).op,dim,dom,type), bc(i).value ];
                 rows{m+i} = M;
             end
             
@@ -255,14 +260,13 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
             dimVals = [32 64 128 256 360 512 720 1024];
             [rowSize,colSize] = blocksizes(L);
             isFunVariable = isinf(colSize);
-            
-            dom = domain(L);
-            numint = length(dom)-1;
-            
+                        
             for k = 1:length(dimVals)
                 dim = dimVals(k);
 
-                [A,b] = linSystem(L,f,dim,type);
+                [A,b,dom] = linSystem(L,f,dim,type);
+                numint = length(dom)-1;
+ 
                 uDiscrete = A\b;
                 
                 % Break the discrete solution into chunks representing

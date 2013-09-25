@@ -28,3 +28,16 @@ clf
 plot(u{1}), hold on, plot(u{2},'k')
 r = L*u - f;
 norm(r{1})
+
+%%
+% Test automatic inclusion of breakpoints from RHS data.
+d = [-1 1];
+I = linop.eye(d);
+D = linop.diff(d);
+Z = linop.zeros(d);
+x = chebfun('x',d);
+f = chebmatrix({abs(x)});
+L = chebmatrix({D^2-I});
+L = lbc(L,0);
+L = rbc(L,D,1);
+u = L\f

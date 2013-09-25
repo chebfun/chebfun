@@ -68,15 +68,20 @@ classdef linop
             L = L.func;
         end
         
-        function L = matrix(A,dim,matrixType)
+        function L = matrix(A,dim,varargin)
             % MATRIX(A,DIM) returns a collocation matrix using A's matrixType property.
-            % MATRIX(A,DIM,DISCRETECLASS) uses the given constructor.            
-
-            if nargin < 3
-                matrixType = linop.defaultDiscretization;  
-            end
+            % MATRIX(A,DIM,DOMAIN) overrides the domain stored in A.             
+            % MATRIX(A,DIM,DOMAIN,CONSTRUCTOR) overrides the matrixType constructor.            
             
-            L = A.delayFun( matrixType(dim,domain(A)) );
+            p = inputParser;
+            addOptional(p,'domain',domain(A),@isnumeric);
+            addOptional(p,'matrixType',linop.defaultDiscretization,@(x) isa(x,'function_handle'))
+            parse(p,varargin{:})
+            
+            dom = p.Results.domain;
+            matrixType = p.Results.matrixType;
+            
+            L = A.delayFun( matrixType(dim,dom) );
         end
         
         function L = coeff(A)
