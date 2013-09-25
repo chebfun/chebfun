@@ -1,9 +1,6 @@
-% A simple example BVP.
+% Test linearity detection
+
 clc, clear all, clear classes
-
-% The 'CHEBOP':
-N.op = @(x, u, v) [diff(u, 1) + v.^2 ; diff(v, 1) - u];
-
 
 %%
 % Initialise an ADCHEBFUN:

@@ -161,6 +161,7 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
                 matrixType = linop.defaultDiscretization;
             end
             [m,n] = size(A);
+            dom = domain(A);
             
             % Discretize each block in place.
             L = cell(m,n);
@@ -168,9 +169,9 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
                 for j = 1:n
                     item = data{i,j};
                     if isa(item,'linop')
-                        L{i,j} = matrix(item,dim,domain(A),matrixType);
+                        L{i,j} = matrix(item,dim,dom,matrixType);
                     elseif isa(item,'chebfun')
-                        x = chebpts(dim, item.domain);
+                        x = chebpts(dim, dom);
                         L{i,j} = item(x);
                     else   % scalar
                         L{i,j} = item;
@@ -208,12 +209,17 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
                 f = chebmatrix({f});
             end
             
-            L = appendContinuity(L);
-
             % Domain needs to have the union of all breakpoints.
             dom = chebmatrix.mergeDomains( {L.blocks{:}, f.blocks{:}} );
             L.fundomain = dom;
             f.fundomain = dom;
+            
+            % Update domains of constraints:
+            for k = 1:numel(L.constraints)
+                L.constraints(k).op.fundomain = dom;
+            end
+            
+            L = appendContinuity(L);
             
             % This is needed when generating chebpts for discretization of a chebfun.
             if (length(dim)==1) 
