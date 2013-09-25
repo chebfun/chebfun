@@ -17,8 +17,8 @@ end
 
 % Deal with unbounded functions:
 if ( ~isfinite(f) )
-    error('CHEBFUN:floor:inf', ...
-        'Floor is not defined for functions which diverge to infinity.');
+    error('CHEBFUN:fix:inf', ...
+        'fix() is not defined for functions which diverge to infinity.');
 end
 
 % Deal with complex-valued functions:
@@ -32,7 +32,9 @@ if ( ~isreal(f) )
 end
 
 % Find all the integer crossings for f:
-[minf, maxf] = minandmax(f); % [TODO]: Only need a good bound?
+mmvals = minandmax(f); % [TODO]: Only need a good bound?
+minf = min(mmvals(1, :));
+maxf = max(mmvals(2, :));
 range = floor([minf, maxf]);
 for k = (range(1)+1):range(2)
     f = addBreaksAtRoots(f - k) + k;
@@ -43,7 +45,7 @@ for k = 1:numel(f.funs)
     f.funs{k} = fix(f.funs{k});
 end
 
-% Floor the impulses:
+% Fix the impulses:
 f.impulses = fix(f.impulses(:,:,1));
 
 % SImplify the result:
