@@ -5,7 +5,7 @@ function f = floor(f)
 %
 %   If F is complex, then the G = FLOOR(REAL(F)) + 1i*FLOOR(IMAG(F)).
 %
-%   Note that FIX() assumes the output G(X) is a constant. If it is not, then
+%   Note that FLOOR() assumes the output G(X) is a constant. If it is not, then
 %   garbage is returned with no warning.
 %
 % See also CEIL, ROUND, FIX.

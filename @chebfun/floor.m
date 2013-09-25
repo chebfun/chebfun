@@ -32,7 +32,9 @@ if ( ~isreal(f) )
 end
 
 % Find all the integer crossings for f:
-[minf, maxf] = minandmax(f); % [TODO]: Only need a good bound?
+mmvals = minandmax(f); % [TODO]: Only need a good bound?
+minf = min(mmvals(1, :));
+maxf = max(mmvals(2, :));
 range = floor([minf, maxf]);
 for k = (range(1)+1):range(2)
     f = addBreaksAtRoots(f - k) + k;
