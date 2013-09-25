@@ -91,7 +91,7 @@ if ( isa(f.smoothPart, 'chebtech') )
         c3 = a + b + 1;
         c4 = c1 + c2;
         c5 = a - b;
-        c0 = (2^c3)*gamma(c1)*gamma(c2)/gamma(c4);
+        c0 = (2^c3)*beta(c1, c2);
         
         % Compute the hypergeometric function related to the modified moments:
         M = zeros(1,n);
