@@ -10,6 +10,7 @@ end
 % Generate a few random points to use as test values.
 seedRNG(666);
 x = 2 * rand(100, 1) - 1;
+x = sort(x);
 
 pass = zeros(1, 7);   % Pre-allocate pass vector
 tol = 1e3*pref.eps;   % loose tolerance for rdivide
@@ -48,19 +49,22 @@ f = singfun(fh, [], [], pref);
 
 gh = @(x) (1+x).*(1-x);  %
 g = singfun(gh, [], [], pref);
-pass(5) = test_divide_function_by_function(f, fh, g, gh, x, tol);
+% Remove points really close to the end points.
+pass(5) = test_divide_function_by_function(f, fh, g, gh, x(5:end-4), tol);
 
 fh = @(x) sin(1e2*x);
 f = singfun(fh, [], [], pref);
-pass(6) = test_divide_function_by_function(f, fh, g, gh, x, tol);
+% Remove points really close to the end points.
+pass(6) = test_divide_function_by_function(f, fh, g, gh, x(5:end-4), tol);
 
 %%
 % Check that direct construction and RDIVIDE give comparable results.
 
-f = singfun(@(x) sin(pi/2*x), [], [], pref);
-g = singfun(@(x) cos(pi/2*x) - 1, [], [], pref);
+f = singfun(@(x) sin(x), [], [], pref);
+g = singfun(@(x) (1+x).*(1-x), [], [], pref);
 h1 = f./g;
-h2 = singfun(@(x) sin(pi/2*x)./cos(pi/2*x), [], [], pref);
+h2 = singfun(@(x) sin(x)./((1+x).*(1-x)), [], [], pref);
+x = x(5:end-4); % Remove some points close to the end points.
 pass(7) = norm(feval(h1, x) - feval(h2, x), inf) < tol;
 
 
