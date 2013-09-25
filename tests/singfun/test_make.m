@@ -43,8 +43,8 @@ pass(3) = isequal(f,g);
 a = rand();
 b = rand();
 fh = @(x) exp(sin(x))./((1+x).^a.*(1-x).^b);
-f = singfun(fh, [-a -b], [], pref);
-g = f.make(fh, [-a -b], [], pref);
+f = singfun(fh, [-a -b], [], [], [], pref);
+g = f.make(fh, [-a -b], [], [], [], pref);
 pass(4) = isequal(f,g);
 
 %%
@@ -52,8 +52,8 @@ pass(4) = isequal(f,g);
 a = rand();
 b = rand();
 fh = @(x) sin(exp(cos(x))).*(1+x).^a.*(1-x).^b;
-f = singfun(fh, [], {'root', 'root'}, pref);
-g = f.make(fh, [], {'root', 'root'}, pref);
+f = singfun(fh, [], {'root', 'root'}, [], [], pref);
+g = f.make(fh, [], {'root', 'root'}, [], [], pref);
 pass(5) = isequal(f,g);
 
 %%
@@ -61,6 +61,6 @@ pass(5) = isequal(f,g);
 a = ceil(5*rand);
 b = ceil(5*rand);
 fh = @(x) exp(sin(x.^2))./((1+x).^a.*(1-x).^b);
-f = singfun(fh, [-a -b], {'pole', 'pole'}, pref);
-g = f.make(fh, [-a -b], {'pole', 'pole'}, pref);
+f = singfun(fh, [-a -b], {'pole', 'pole'}, [], [], pref);
+g = f.make(fh, [-a -b], {'pole', 'pole'}, [], [], pref);
 pass(6) = isequal(f,g);

@@ -25,7 +25,7 @@ pass = zeros(1, 3);
 % Spot-check derivatives for a couple of functions.
 
 % fractional pole with order > -1 at the left endpoint
-f = singfun(@(x) (1+x).^b, [b 0], {'sing', 'none'}, pref);
+f = singfun(@(x) (1+x).^b, [b 0], {'sing', 'none'}, [], [], pref);
 g = cumsum(f);
 vals_g = feval(g, x); 
 g_exact = @(x) (1+x).^(b+1)./(b+1);
@@ -34,7 +34,7 @@ err = vals_g - vals_exact;
 pass(1) = (norm(err, inf) < get(f,'epslevel')*norm(vals_exact, inf));
 
 % fractional pole with order < -1 at the right endpoint
-f = singfun(@(x) (1-x).^d, [0 d], {'none', 'sing'}, pref);
+f = singfun(@(x) (1-x).^d, [0 d], {'none', 'sing'}, [], [], pref);
 g = cumsum(f);
 vals_g = feval(g, x);
 g_exact = @(x)-(1-x).^(d+1)./(d+1);
@@ -43,7 +43,7 @@ err = vals_g - vals_exact;
 pass(2) = (norm(err, inf) < get(f,'epslevel')*norm(vals_exact, inf));
 
 % fractional root at the left endpoint
-f = singfun(@(x) (1+x).^a, [a 0], {'root', 'none'}, pref);
+f = singfun(@(x) (1+x).^a, [a 0], {'root', 'none'}, [], [], pref);
 g = cumsum(f);
 vals_g = feval(g, x); 
 g_exact = @(x) (1+x).^(a+1)./(a+1);

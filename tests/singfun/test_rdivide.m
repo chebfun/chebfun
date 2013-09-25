@@ -33,37 +33,37 @@ pass(2) = test_division_by_scalar(f, fh, g, x, tol);
 %%
 % Check reciprocal of a singfun.
 fh = @(x) 0*x + 1;
-f = singfun(fh, [], {'none', 'none'}, pref);
+f = singfun(fh, [], {'none', 'none'}, [], [], pref);
 gh = @(x) cos(x);
-g = singfun(gh, [], {'none', 'none'}, pref);
+g = singfun(gh, [], {'none', 'none'}, [], [], pref);
 pass(3) = test_divide_function_by_function(f, fh, g, gh, x, tol);
 
 %% 
 % Check division of two singfun objects.
 fh = @(x) cos(x);
-f = singfun(fh, [], {'none', 'none'}, pref);
+f = singfun(fh, [], {'none', 'none'}, [], [], pref);
 pass(4) = test_divide_function_by_function(f, fh, f, fh, x, tol);
 
 fh = @(x) sin(x);
-f = singfun(fh, [], [], pref);
+f = singfun(fh, [], [], [], [], pref);
 
 gh = @(x) (1+x).*(1-x);  %
-g = singfun(gh, [], [], pref);
+g = singfun(gh, [], [], [], [], pref);
 % Remove points really close to the end points.
 pass(5) = test_divide_function_by_function(f, fh, g, gh, x(5:end-4), tol);
 
 fh = @(x) sin(1e2*x);
-f = singfun(fh, [], [], pref);
+f = singfun(fh, [], [], [], [], pref);
 % Remove points really close to the end points.
 pass(6) = test_divide_function_by_function(f, fh, g, gh, x(5:end-4), tol);
 
 %%
 % Check that direct construction and RDIVIDE give comparable results.
 
-f = singfun(@(x) sin(x), [], [], pref);
-g = singfun(@(x) (1+x).*(1-x), [], [], pref);
+f = singfun(@(x) sin(x), [], [], [], [], pref);
+g = singfun(@(x) (1+x).*(1-x), [], [], [], [], pref);
 h1 = f./g;
-h2 = singfun(@(x) sin(x)./((1+x).*(1-x)), [], [], pref);
+h2 = singfun(@(x) sin(x)./((1+x).*(1-x)), [], [], [], [], pref);
 x = x(5:end-4); % Remove some points close to the end points.
 pass(7) = norm(feval(h1, x) - feval(h2, x), inf) < tol;
 

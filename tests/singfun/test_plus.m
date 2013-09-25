@@ -34,31 +34,31 @@ pass(2:3) = test_add_function_to_scalar(f, fh, alpha, x);
 % Check addition of two singfun objects.
 
 fh = @(x) zeros(size(x));
-f = singfun(fh, [], {'none', 'none'}, pref);
+f = singfun(fh, [], {'none', 'none'}, [], [], pref);
 pass(4:5) = test_add_function_to_function(f, fh, f, fh, x);
 
 fh = @(x) sin(pi*x)./(1-x);
-f = singfun(fh, [], [], pref);
+f = singfun(fh, [], [], [], [], pref);
 
 gh = @(x) cos(pi*x)./(1-x);
-g = singfun(gh, [], [], pref);
+g = singfun(gh, [], [], [], [], pref);
 pass(6:7) = test_add_function_to_function(f, fh, g, gh, x);
 
 gh = @(x) cos(1e2*x);
-g = singfun(gh, [], [], pref);
+g = singfun(gh, [], [], [], [], pref);
 pass(8:9) = test_add_function_to_function(f, fh, g, gh, x);
 
 gh = @(t) sinh(t*exp(2*pi*1i/6));
-g = singfun(gh, [], [], pref);
+g = singfun(gh, [], [], [], [], pref);
 pass(10:11) = test_add_function_to_function(f, fh, g, gh, x);
 
 %%
 % Check that direct construction and PLUS give comparable results.
 
-f = singfun(@(x) x, [], [], pref);
-g = singfun(@(x) cos(x) - 1, [], [], pref);
+f = singfun(@(x) x, [], [], [], [], pref);
+g = singfun(@(x) cos(x) - 1, [], [], [], [], pref);
 h1 = f + g;
-h2 = singfun(@(x) x + cos(x) - 1, [], [], pref);
+h2 = singfun(@(x) x + cos(x) - 1, [], [], [], [], pref);
 pass(12) = norm(feval(h1, x) - feval(h2, x), inf) < tol;
 
 
