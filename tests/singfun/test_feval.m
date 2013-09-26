@@ -29,7 +29,7 @@ a = 1 + rand();
 b = 1 + rand();
 fh = @(x) sin(cos(10*x.^2))./((1+x).^a.*(1-x).^b);
 f = singfun(fh, [-a, -b], {'sing', 'sing'});
-pass(3) = norm(feval(f,x) - feval(fh,x), inf) < 1e1*get(f, 'epslevel');
+pass(3) = norm(feval(f,x) - feval(fh,x), inf) < 20*get(f, 'epslevel');
 
 %%
 % Check feval on a SINGFUN with positive exponents
