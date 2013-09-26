@@ -6,9 +6,10 @@ function g = cumsum(f, m)
 %   CUMSUM(F, M) will compute the Mth definite integral with vanishing constant.
 %   Currently, M can only be 1.
 %
-%   WARNING: The current version of @singfun/cumsum can cover limited cases. The
-%   case that the antiderivative has logarithm (including atanh) and the case
-%   that the integrand has singularities at both ends are not supported.
+%   WARNING: The current version of CUMSUM is limited.  In particular,
+%   CUMSUM does not support functions whose antiderivatives have logarithmic
+%   singularities (including atanh) or functions which have singularities at
+%   both endpoints of their domains.
 %
 % See also SUM. 
 
