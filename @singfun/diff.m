@@ -24,7 +24,6 @@ elseif ( k == 0 )
 end
 
 %% Differentiate the SINGFUN F, k times 
-%NH: Is it not possible to do this witout the loop and call diff(f.smoothPart,k)?
 while ( k > 0 )
     % Decrease k:
     k = k - 1;

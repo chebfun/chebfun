@@ -1,18 +1,17 @@
 function poleOrder = findPoleOrder(op, singEnd)
-%FINDPOLEORDER   Find the order of the pole in the function handle OP at
-%   x = 1 or -1 depending upon the string 'left' or 'right' passed in 
-%   SINGEND.
+%FINDPOLEORDER   Find the order of the pole in a function handle at 1 or -1. 
+%   FINDPOLEORDER(OP, SINGEND) finds the order of the pole in the function 
+%   handle OP at the point x = 1 or x = -1 depending upon the string 'right' 
+%   or 'left' passed in SINGEND.
 %   
-% Example:
-%   p = singfun.findPoleOrder(@(x) 1./(1 - x), 'right')
-%   p = singfun.findPoleOrder(@(x) 1./(1 + x).^2, 'left')
+%   Example:
+%     p = singfun.findPoleOrder(@(x) 1./(1 - x), 'right')
+%     p = singfun.findPoleOrder(@(x) 1./(1 + x).^2, 'left')
 %
 % See also FINDSINGORDER, FINDSINGEXPONENTS.
 %
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
-
-%NH: Documentation is not in correct format.
 
 %%
 % The algorithm tries to find the smallest non-negative integer k such that
@@ -62,8 +61,6 @@ testRatio = 1.01;
 maxPoleOrder = singfun.pref.singfun.maxPoleOrder;
 
 poleOrder = 0;
-%NH: ??
-% [TODO]: smoothVals = smoothVals.*x;
 
 % Loop to see for which power of x the function values become non-divergent
 % i.e. when the ratio of function values becomes less then the testRatio.

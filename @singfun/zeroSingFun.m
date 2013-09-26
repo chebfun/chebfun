@@ -11,8 +11,7 @@ function s = zeroSingFun()
 s = singfun();
 
 % Create a zero smooth part:
-s.smoothPart = singfun.constructSmoothPart(@(x) 0*x, 0, 0, []);
-% NH: Why is this an adaptive construction?
+s.smoothPart = singfun.constructSmoothPart(0, [], [], []);
 
 % No singularities at any end points:
 s.exponents = [0, 0];

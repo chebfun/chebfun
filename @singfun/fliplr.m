@@ -7,8 +7,5 @@ function f = fliplr(f) %#ok<INUSD>
 % See http://www.chebfun.org for Chebfun information.
 
 error('CHEBFUN:SINGFUN:fliplr:notpossible', ...
-      'SINGFUN objects are not array-valued.')
-  
-  % NH: Error does not match documentation.
-
+      'SINGFUN objects can not be flipped from left to right.')
 end

@@ -1,8 +1,9 @@
 function singOrder = findSingOrder(op, singEnd)
-%FINDSINGORDER   Finds the order of the algebraic singularity in the function
-%   handle OP at x = 1 or -1 depending upon the string 'left' or 'right' 
-%   passed in SINGEND. The singularity may be a pole, a fractional pole or a 
-%   fractional zero of order less than one.
+%FINDSINGORDER   Finds the order of the singularity in a function handle.
+%   FINDSINGORDER(OP, SINGEND) finds the order of the algebraic singularity
+%   in the function handle OP at x = -1 or x = 1 depending upon the string 
+%   'left' or 'right' passed in SINGEND. The singularity may be a pole, a 
+%   fractional pole or a fractional zero of order less than one.
 %   
 %   Example:
 %      p = singfun.findSingOrder(@(x) 1./(1-x).^1.5, 'right' )
@@ -10,8 +11,6 @@ function singOrder = findSingOrder(op, singEnd)
 %      p = singfun.findSingOrder(@(x) 1./(1+x).^5, 'left' )
 %
 % See also FINDPOLEORDER, FINDSINGEXPONENTS.
-
-%NH: Documentation is not in correct format.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
