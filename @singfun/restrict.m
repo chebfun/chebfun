@@ -1,11 +1,11 @@
 function g = restrict(f, s)
-%RESTRICT   Restrict a SINGFUN to a subinterval.
-%   RESTRICT(F, S) returns a SINGFUN that is restricted to the subinterval
+%RESTRICT   Restrict a SINGFUN to subinterval(s).
+%   RESTRICT(F, S) returns a ONEFUN that is restricted to the subinterval
 %   [S(1),S(2)] of [-1,1]. Note that since SINGFUN objects only live on
 %   [-1,1], a linear change of variables is implicitly applied.
 %
 %   If length(S) > 2, i.e., S = [S1, S2, S3, ...], then RESTRICT(F, S) returns
-%   an array of SINGFUN objects, where the entries hold F restricted to each of
+%   an cell of ONEFUN objects, where the entries hold F restricted to each of
 %   the subintervals defined by S.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
@@ -30,9 +30,6 @@ numInts = numel(s) - 1;
 % Preallocate a cell:
 g = cell(1, numInts);
 
-% Set the bound which is deemed 'finite':
-fntbnd = realmax;
-
 % Absolute values at the endpoints of the subintervals:
 endVal = zeros(1, numInts+1);
 for j = 1:numInts+1
@@ -44,11 +41,9 @@ end
 
 for j = 1:numInts
     % Check if the first subinterval includes the left endpoint of the original
-    % domain (i.e., -1) and if the function value at the right endpoint of the
-    % last subinterval is finite. This rules out the possibility that the right
-    % endpoint of the last subinterval is too close to 1, when a pole is present
-    % at 1.
-    if ( (s(j) == -1) && (endVal(j + 1) < fntbnd) )
+    % domain (i.e., -1).
+    
+    if ( s(j) == -1 )
         % Define the new operator:
         op = @(x) feval(f, ((1 - x)*s(1) + (1 + x)*s(2))/2);
 
@@ -60,11 +55,9 @@ for j = 1:numInts
     end
 
     % Check if the last subinterval includes the right endpoint of the original
-    % domain (i.e., 1) and if the function value at the left endpoint of the
-    % first subinterval is finite. This rules out the possibility that the left
-    % endpoint of the first subinterval is too close to -1, when a pole is
-    % present at -1.
-    if ( (endVal(j) < fntbnd) && (s(j+1) == 1) )
+    % domain (i.e., 1).
+    
+    if ( s(j+1) == 1 )
         % Define the new operator:
         op = @(x) feval(f, ((1 - x)*s(end-1) + (1 + x)*s(end))/2);
 
@@ -77,33 +70,13 @@ for j = 1:numInts
         continue
     end
 
-    % Check if any of s(1) and s(end) is far from a singularity at -1 or 1.
-    if ( max(endVal(j:j+1)) < fntbnd )
-        % Define the new operator which will be evaluated in the subinterval by
-        % the singfun ctor:
-        op = @(x) feval(f, ((1 - x)*s(j) + (1 + x)*s(j+1)) / 2);
-
-        % Call the singfun constructor:
-        gtmp = singfun(op, zeros(1, 2), {'none', 'none'});
-
-        % Put in cell:
-        g{j} = gtmp;
-
-        continue
-    end
-
-    % For all remaining cases, call the constructor. This is mainly used for
-    % handling subintervals with one of the endpoints too close to a
-    % singularity.
-    
-    % NH: I'm confused by this method. Surely the interior subdomains will have
-    % zero exponents?
+    % In other subintervals, we only consider smoothfuns. 
 
     % Define the new operator:
     op = @(x) feval(f, ((1 - x)*s(j) + (1 + x)*s(j+1))/2);
 
-    % Call the singfun constructor
-    gtmp = singfun(op, [], {'sing', 'sing'});
+    % Call the smoothfun constructor
+    gtmp = smoothfun(op, [], 1);
 
     % Put in cell:
     g{j} = gtmp;
