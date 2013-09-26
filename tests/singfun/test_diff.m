@@ -58,7 +58,7 @@ vals_df = feval(df, x);
 df_exact = @(x) (1-x).^(b-1).*(5-5*x-b*x).*(x.^4);
 vals_exact = feval(df_exact, x);
 err = vals_df - vals_exact;
-pass(4) = (norm(err, inf) < get(f,'epslevel')*norm(vals_exact, inf));
+pass(4) = (norm(err, inf) < 1e2*get(f,'epslevel')*norm(vals_exact, inf));
 
 % a combination of fractional pole and fractional root
 f = singfun(@(x) (1+x).^b.*sin(x).*(1-x).^c, [b c], {'sing', 'root'}, [], [], pref);

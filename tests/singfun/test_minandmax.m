@@ -45,8 +45,8 @@ y_exact = [0; 1.511345730595468];
 x_exact = [1; -0.6575681557708653];
 y_err = y - y_exact;
 x_err = x - x_exact;
-pass(3) = (norm(y_err, inf) < get(f, 'epslevel')*f.smoothPart.vscale &&...
-    norm(x_err, inf) < get(f, 'epslevel')*f.smoothPart.vscale);
+pass(3) = (norm(y_err, inf) < 1e2*get(f, 'epslevel')*f.smoothPart.vscale &&...
+    norm(x_err, inf) < 1e2*get(f, 'epslevel')*f.smoothPart.vscale);
 
 % no fractional pole but a root at the left endpoint.
 f = singfun(@(x) (1-x).^b.*(exp(x)-exp(1)), [0 1+b], {'none', 'root'}, [], [], pref);
@@ -56,8 +56,8 @@ y_exact = [-1.727141310139675; 0];
 x_exact = [0.1651705232378299; 1];
 y_err = y - y_exact;
 x_err = x - x_exact;
-pass(4) = (norm(y_err, inf) < 10*get(f, 'epslevel')*f.smoothPart.vscale &&...
-    norm(x_err, inf) < 10*get(f, 'epslevel')*f.smoothPart.vscale);
+pass(4) = (norm(y_err, inf) < 1e2*get(f, 'epslevel')*f.smoothPart.vscale &&...
+    norm(x_err, inf) < 1e2*get(f, 'epslevel')*f.smoothPart.vscale);
 
 % a combination of fractional pole and fractional root.
 f = singfun(@(x) (1+x).^b.*sin(x).*(1-x).^c, [b c], {'sing', 'root'}, [], [], pref);
