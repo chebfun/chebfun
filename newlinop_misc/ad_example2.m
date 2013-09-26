@@ -1,9 +1,9 @@
 % A simple example BVP.
 
-clc, clear all, clear classes
+close all, clc, clear all, clear classes
 
 % The CHEBOP:
-N = chebop(@(x, u, v) [diff(u, 1) + v ; diff(v, 1) + sign(x).*u], [-1, 1]);
+N = chebop(@(x, u, v) [diff(u, 1) + v.^2 ; diff(v, 1) + sign(x).*u], [-1, 0, 1]);
 N.lbc = @(u, v) u - 1;
 N.bc = @(x, u, v) sum(v);
 x = chebfun('x');
