@@ -62,8 +62,11 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
             C = chebmatrix( horzcat(b1,b2) );
         end
         
-        function C = vertcat(A,B)
-            C = chebmatrix( vertcat(A.blocks,B.blocks) );
+        function C = vertcat(varargin)
+            for k = 1:numel(varargin)
+                varargin{k} = varargin{k}.blocks;
+            end
+            C = chebmatrix( vertcat(varargin{:}) );
         end
         
         function display(A)

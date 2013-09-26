@@ -88,6 +88,11 @@ classdef linopOperator < linop
             end
         end
         
+        function out = iszero(A)
+            % TODO: Implement this.
+            out = false;
+        end
+        
 
 
     end
