@@ -41,11 +41,13 @@ classdef singfun < onefun
 %   singularities along with the smoothfun representation of the smooth part are
 %   stored in corresponding member fields of the instantiation.
 %
-%   SINGFUN(OP, [], SINGTYPE) constructs a SINGFUN object as above. However, the
-%   type of the singularities specified by the 1x2 cell SINGTYPE may help the
-%   singularity detector to determine the order of the singularities more
-%   efficiently and save some computing time. Note that a place holder must be
-%   given next to OP for the constructor to work properly.
+%   SINGFUN(OP, [], SINGTYPE) constructs a SINGFUN object as above. SINGTYPE 
+%   is 1x2 cell array of strings and type of the singularities specified by 
+%   these strings may help the singularity detector to determine the order 
+%   of the singularities more efficiently and save some computing time. Valid
+%   strings for SINGTYPE are 'none', 'pole', 'sing' or 'root'. Note that a 
+%   place holder must be given next to OP for the constructor to work 
+%   properly.
 %
 %   SINGFUN(OP, EXPONENTS) constructs a SINGFUN object. Instead of determining
 %   the singularity types and orders by sampling the function values at -1 and
@@ -230,6 +232,9 @@ classdef singfun < onefun
         % True for real SINGFUN.
         out = isreal(f)
         
+        % True for smooth SINGFUN.
+        out = issmooth(f)
+        
         % True for zero SINGFUN objects
         out = iszero(f)
         
@@ -262,6 +267,9 @@ classdef singfun < onefun
         
         % Compute a Legendre series expansion of a ONEFUN object:
         c = legpoly(f)
+
+        % Estimate of the norm of a SINGFUN object.
+        out = normest(f)
         
         % Basic linear plot for SINGFUN objects.
         varargout = plot(f, varargin)
