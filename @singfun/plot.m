@@ -50,9 +50,9 @@ end
 
 %% 
 % [TODO]: This cell may be deleted. Added here for convenience.
-% Since a SINGFUN usually blows up, set the y-axis limits to [-10,10]?
+% Since a SINGFUN usually blows up, set the y-axis limits to [-10,10].
+% We do need to do smething cleverer than this.. (also at CHEBFUN level).
 ylim( [-10, 10] )
-% NH: Need to do smething cleverer than this.. (also at CHEBFUN level).
 
 %%
 % Return hold state to what it was before:

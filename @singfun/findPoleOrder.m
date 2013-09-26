@@ -9,7 +9,7 @@ function poleOrder = findPoleOrder(op, singEnd)
 %     p = singfun.findPoleOrder(@(x) 1./(1 + x).^2, 'left')
 %
 % See also FINDSINGORDER, FINDSINGEXPONENTS.
-%
+
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
