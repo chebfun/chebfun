@@ -7,14 +7,12 @@ function f = imag(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org for Chebfun information.
 
-% Compute the imaginary part of the values:
+% Compute the imaginary part of the smooth part:
 f.smoothPart = imag(f.smoothPart);
 
-% If F is real and its smooth part is zero, then remove singularities from
-% the imaginary part.
-if ( iszero(f.smoothPart) )
-    f.exponents = [0, 0];
-    % NH: just return the smoothPart? f = f.smoothPart.
+% Return a SMOOTHFUN object if F is smooth
+if ( issmooth(f) )
+    f = f.smoothPart;
 end
-
+    
 end

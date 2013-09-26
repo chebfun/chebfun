@@ -12,7 +12,7 @@ pass = zeros(1, 4);
 
 % Imaginary smooth.
 f = singfun(@(x) 1i*exp(x) );
-pass(1) = isequal(1i*imag(f), f);
+pass(1) = isequal(1i*imag(f), f.smoothPart);
 
 % Imaginary with exponents.
 f = singfun( @(x) 1i./((1+x).*(1-x)));

@@ -229,6 +229,9 @@ classdef singfun
         % True for real SINGFUN.
         out = isreal(f)
         
+        % True for smooth SINGFUN.
+        out = issmooth(f)
+        
         % True for zero SINGFUN objects
         out = iszero(f)
         
