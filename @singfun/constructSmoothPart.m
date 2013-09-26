@@ -8,6 +8,10 @@ function s = constructSmoothPart(op, vscale, hscale, pref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
+if ( isempty(pref) )
+    pref = chebtech.pref;
+end
+
 pref = chebtech.pref(pref, 'sampletest', 0);
 
 % Call the CHEBTECH constructor:

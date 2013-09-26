@@ -76,7 +76,7 @@ for j = 1:numInts
     op = @(x) feval(f, ((1 - x)*s(j) + (1 + x)*s(j+1))/2);
 
     % Call the smoothfun constructor
-    gtmp = smoothfun(op, [], 1);
+    gtmp = smoothfun.constructor(op, [], 1);
 
     % Put in cell:
     g{j} = gtmp;
