@@ -16,7 +16,7 @@ classdef singfun < onefun
 %   given points within the interval [-1,1]. The endpoint values are likely to
 %   return Inf or NaN results.
 %
-%   Ideally, the "smooth" function s is analytic, or at least much more
+%   Ideally, the "smooth" function s(x) is analytic, or at least much more
 %   compactly represented than f is. The resulting object can be used to
 %   evaluate and operate on the function f. If a and b are unknown at the time
 %   of construction, the constructor will try to determine appropriate values
@@ -38,7 +38,7 @@ classdef singfun < onefun
 %   operator which governs the smooth part of OP by factoring out the end point
 %   singularities. Finally it constructs an approximation of the smooth part by
 %   calling the SMOOTHFUN constructor. The type and the order of the
-%   singularities along with the smoothfun representation of the smooth part are
+%   singularities along with the SMOOTHFUN representation of the smooth part are
 %   stored in corresponding member fields of the instantiation.
 %
 %   SINGFUN(OP, [], SINGTYPE) constructs a SINGFUN object as above. SINGTYPE 
@@ -57,9 +57,16 @@ classdef singfun < onefun
 %   SINGFUN(OP, EXPONENTS, SINGTYPE) and SINGFUN(OP, EXPONENTS, {}) are
 %   equivalent to SINFGUN(OP, EXPONENTS).
 %
-%   SINGFUN(OP, EXPONENTS, SINGTYPE, PREF) constructs a SINGFUN using the
-%   preferences given by PREF. Note that any of or both of EXPONENTS and
-%   SINGTYPE can be empty.
+%   SINGFUN(OP, EXPONENTS, SINGTYPE, VSCALE, HSCALE) constructs a SINGFUN 
+%   object. When the smooth part s(x) is approximated, the vertical scale VSCALE
+%   and the horizontal scale HSCALE are passed to the SMOOTHFUN constructor to
+%   facilitate the construction. Note that any of or both of VSCALE and HSCALE 
+%   can be omitted or empty.
+%
+%   SINGFUN(OP, EXPONENTS, SINGTYPE, VSCALE, HSCALE, PREF) constructs a SINGFUN 
+%   using the preferences given by PREF. Note that any of or all of EXPONENTS, 
+%   SINGTYPE, VSCALE, and HSCALE can be omitted or empty in this calling
+%   sequence in the presence of PREF.
 %
 % See also PREF.
 
