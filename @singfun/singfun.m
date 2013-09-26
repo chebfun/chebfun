@@ -41,11 +41,13 @@ classdef singfun
 %   singularities along with the smoothfun representation of the smooth part are
 %   stored in corresponding member fields of the instantiation.
 %
-%   SINGFUN(OP, [], SINGTYPE) constructs a SINGFUN object as above. However, the
-%   type of the singularities specified by the 1x2 cell SINGTYPE may help the
-%   singularity detector to determine the order of the singularities more
-%   efficiently and save some computing time. Note that a place holder must be
-%   given next to OP for the constructor to work properly.
+%   SINGFUN(OP, [], SINGTYPE) constructs a SINGFUN object as above. SINGTYPE 
+%   is 1x2 cell array of strings and type of the singularities specified by 
+%   these strings may help the singularity detector to determine the order 
+%   of the singularities more efficiently and save some computing time. Valid
+%   strings for SINGTYPE are 'none', 'pole', 'sing' or 'root'. Note that a 
+%   place holder must be given next to OP for the constructor to work 
+%   properly.
 %
 %   SINGFUN(OP, EXPONENTS) constructs a SINGFUN object. Instead of determining
 %   the singularity types and orders by sampling the function values at -1 and
@@ -236,9 +238,6 @@ classdef singfun
         % Length of a SINGFUN.
         len = length(f)
         
-        % Convert a array-valued SINGFUN into an ARRAY of SINGFUN objects.
-        g = mat2cell(f, M, N)
-        
         % Global maximum of a SINGFUN on [-1,1].
         [maxVal, maxPos] = max(f)
         
@@ -253,6 +252,9 @@ classdef singfun
         
         % Multiplication of SINGFUN objects.
         f = mtimes(f, c)
+        
+        % Estimate of the norm of a SINGFUN object.
+        out = normest(f)
         
         % Basic linear plot for SINGFUN objects.
         varargout = plot(f, varargin)

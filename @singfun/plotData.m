@@ -12,7 +12,7 @@ function data = plotData(f)
 % Get plot data from the smooth part:
 data = plotData( f.smoothPart );
 
-% Update extrapolated y-data:
+% Update the y-data:
 x = data.xLine;
 y = data.yLine;
 y = y.*(x + 1).^f.exponents(1);
