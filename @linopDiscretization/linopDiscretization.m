@@ -2,7 +2,7 @@ classdef (Abstract) linopDiscretization < linopOperatorRealization & linopFuncti
   
     properties (Abstract)
         size
-        domain
+        fundomain
     end
     
     methods
@@ -24,8 +24,9 @@ classdef (Abstract) linopDiscretization < linopOperatorRealization & linopFuncti
     end
     
     methods (Abstract,Static)
-        B = resize(A,m)
-        isDone = convergeTest(v)
+        B = resize(A,m,n,dom)
+        [isDone,epsLevel] = convergeTest(v)
+        fx = feval(f,dim,dom)
     end
     
     methods (Static,Access=protected)

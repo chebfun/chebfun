@@ -155,7 +155,7 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
 
     end
     
-    methods (Static,Access=private)
+    methods (Static)
         
         % Union of all breakpoints, with "fuzzy" equality. 
         function d = mergeDomains(blocks)
