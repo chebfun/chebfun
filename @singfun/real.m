@@ -14,6 +14,7 @@ f.smoothPart = real(f.smoothPart);
 % In this case remove redundant singularities from what is being returned.
 if ( iszero(f.smoothPart) )
     f.exponents = [0, 0];    
+    % NH: f = f.smoothPart;
 end
 
 end

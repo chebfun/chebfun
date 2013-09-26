@@ -11,4 +11,5 @@ f.smoothPart = flipud(f.smoothPart);
 % Since exponents of a SINGFUN are contained in a 1x2 row vector, FLIPUD is 
 % translated into a FLIPLR:
 f.exponents = fliplr(f.exponents);
+
 end

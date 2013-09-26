@@ -7,11 +7,13 @@ function s = plus(f, g)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
+% NH: It seems SINGFUN + SMOOTHFUN is not supported?
+
 % If one of the arguments is empty:
 if ( isempty(f) || isempty(g) )
     % Create an empty singfun and return:
     s = singfun;
-    return;
+    return
 end
 
 % One of the arguments i.e. f or g is necessarily a SINGFUN object. Otherwise, 
@@ -22,10 +24,12 @@ if ( isa(f, 'double') )
     aDouble = f;
     f = singfun.zeroSingFun();
     f.smoothPart = singfun.constructSmoothPart(aDouble, aDouble, 1, []);
+    
 elseif ( isa(g, 'double') )
     aDouble = g;
     g = singfun.zeroSingFun();
     g.smoothPart = singfun.constructSmoothPart(aDouble, aDouble, 1, []);
+    
 end
 
 fExps = f.exponents;
@@ -42,7 +46,7 @@ if ( all(abs(fExps - gExps) < tolExps) )
        s = singfun.zeroSingFun();     
     end
     
-elseif ( all(abs(round(fExps - gExps) - (fExps-gExps)) < tolExps) )
+elseif ( all(abs(round(fExps - gExps) - (fExps - gExps)) < tolExps) )
     % Case 2: Both exponents differ by integers. Factor out the more singular
     % exponent to leave the sum of smooth quotients.
     
@@ -98,6 +102,7 @@ else
     
     % Construct a new SINGFUN for sum:
     s = singfun(op, [], [], [], [], singfun.pref);
+    % NH: Pass the existing scales from the smoothParts?
 end
 
 end

@@ -1,5 +1,5 @@
 function poleOrder = findPoleOrder(op, singEnd)
-%FINDPOLEORDER   Finds the order of the pole in the function handle OP at
+%FINDPOLEORDER   Find the order of the pole in the function handle OP at
 %   x = 1 or -1 depending upon the string 'left' or 'right' passed in 
 %   SINGEND.
 %   
@@ -12,28 +12,29 @@ function poleOrder = findPoleOrder(op, singEnd)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-%%
-% The algorithm tries to find the smallest non-negative integer
-% k such that op(x).*(1-x)^k is bounded at 1-eps. The core of the algorithm 
-% is implemented in the function POLEORDERFINDER() below.
+%NH: Documentation is not in correct format.
 
 %%
-% Distance of the sample points from the right end point, i.e. 1.
+% The algorithm tries to find the smallest non-negative integer k such that
+% op(x).*(1-x)^k is bounded at 1-eps. The core of the algorithm is implemented
+% in the function POLEORDERFINDER() below.
+
+%%
+% Distance of the sample points from the right end point (i.e., 1):
 x = 10.^(-1:-1:-15)';
 
 if ( strcmpi(singEnd, 'right') )       % A pole is expected at x = 1   
     fvalsRight = op(1 - x);
     poleOrder = poleOrderFinder( fvalsRight, x);
-else if ( strcmpi(singEnd, 'left') )   % A pole is expected at x = -1
-        fvalsLeft = op(-1 + x);
-        poleOrder = poleOrderFinder( fvalsLeft, x);
-    else
-        error('CHEBFUN:SINGFUN:findPoleOrder:unknownPref', ...
-              'Blowup preference "%s" unknown.', singEnd )
-    end
+elseif ( strcmpi(singEnd, 'left') )   % A pole is expected at x = -1
+    fvalsLeft = op(-1 + x);
+    poleOrder = poleOrderFinder( fvalsLeft, x);
+else
+    error('CHEBFUN:SINGFUN:findPoleOrder:unknownPref', ...
+          'Blowup preference "%s" unknown.', singEnd )
 end
 
-% The algorithm returns a positive number for blow up type singularities. 
+% The algorithm returns a positive number for blow-up type singularities. 
 % Correct exponents are obtained by negation.
 poleOrder = -poleOrder;
 
@@ -51,7 +52,6 @@ smoothVals = abs(fvals);
 if ( any(isinf(smoothVals)) )
     error('CHEBFUN:SINGFUN:findPoleOrder', 'Function returned inf value.')
 end
-
 if ( any(isnan(smoothVals)) )
     error('CHEBFUN:SINGFUN:findPoleOrder', 'Function returned NaN value.')
 end
@@ -62,6 +62,7 @@ testRatio = 1.01;
 maxPoleOrder = singfun.pref.singfun.maxPoleOrder;
 
 poleOrder = 0;
+%NH: ??
 % [TODO]: smoothVals = smoothVals.*x;
 
 % Loop to see for which power of x the function values become non-divergent

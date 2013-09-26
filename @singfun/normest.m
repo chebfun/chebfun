@@ -7,6 +7,7 @@ function out = normest(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Call NORMEST() of the smooth part:
 out = normest(f.smoothPart);
             
 end

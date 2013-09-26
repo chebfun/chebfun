@@ -7,6 +7,7 @@ function s = minus(f,g)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Call PLUS():
 s = plus(f, -g);
 
 end

@@ -6,6 +6,10 @@ function s = rdivide(f, g)
 %
 % See also LDIVIDE, TIMES.
 
+% NH: Missing proper documentation.
+% NH: F or G could be a SMOOTHFUN.
+% NH: Document that it is assumed that g has no roots in [-1, 1].
+
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
@@ -32,6 +36,7 @@ if ( isa(g,'double') )
     s.smoothPart = (1/g) * f.smoothPart;
     return
 end
+
 %% Reciprocal:
 % Reciprocal of a SINGFUN scaled by the double F.
 if ( isa(f,'double') )    
@@ -48,16 +53,16 @@ if ( isa(f,'double') )
     return
 end
 
-
-
 %% SINGFUN./SINGFUN
-% Check if g has any roots in the open interval (-1, 1)
-r = roots( g.smoothPart );
-% Remove roots at the end points.
-r = setdiff(r, [-1,1]);
-if ( ~isempty(r) )
-    error('SINGFUN:rdivide:Divide by zero error')
-end
+% % Check if g has any roots in the open interval (-1, 1)
+% r = roots( g.smoothPart );
+% % Remove roots at the end points.
+% r = setdiff(r, [-1,1]);
+% if ( ~isempty(r) )
+%     error('SINGFUN:rdivide:Divide by zero error')
+% end
+% NH: It should be ASSUMED that there are no roots. (And stated in
+% documentation)
 
 % Note: Exponents of f and g can all be zero to generate a singular function.
 % Example: f = 1; g = cos(pi/2*x) with trivial exponents. Then s = f./g is 

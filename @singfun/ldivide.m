@@ -7,6 +7,7 @@ function f = ldivide(f, g)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Call RDIVIDE():
 f = rdivide(g, f);
 
 end

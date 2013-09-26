@@ -18,6 +18,7 @@ if ( ~isa(f, 'singfun') || ~isa(g, 'singfun') )
     error('CHEBFUN:SINGFUN:innerProduct:input', ...
         'innerProduct() only operates on two SINGFUN objects.');
 end
+% NH: Why? We should expect to be able to do innerProduct(x, sqrt(x)), no?
 
 % Add the exponents:
 f.exponents = f.exponents + g.exponents;

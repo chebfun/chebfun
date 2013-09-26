@@ -1,8 +1,10 @@
 function prefs = pref(varargin)
-%PREF   Preference settings for SINGFUN. [TODO:] SINGFUN will have no 
-%   preferences, instead the abstract superior class ONEFUN will have all the
-%   preferences in future.
-% 
+%PREF   Preference settings for SINGFUN. 
+%
+%   [TODO:] SINGFUN will have no preferences, instead the abstract superior
+%   class ONEFUN will have all the preferences in future.
+%   NH: Really?!
+%
 %   SINGFUN.PREF(PREFNAME) returns the value corresponding to the preference
 %   named in the string PREFNAME.
 %
@@ -27,6 +29,7 @@ function prefs = pref(varargin)
 %
 %   [TODO] Copied from CHEBTECH, not done yet. Some of these might make sense
 %   for SINGFUNs:
+%   NH: This needs to be done.
 %
 %     tech         -  Select the type of Chebyshev grid on which the function
 %                     is sampled.

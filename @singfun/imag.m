@@ -14,6 +14,7 @@ f.smoothPart = imag(f.smoothPart);
 % the imaginary part.
 if ( iszero(f.smoothPart) )
     f.exponents = [0, 0];
+    % NH: just return the smoothPart? f = f.smoothPart.
 end
 
 end

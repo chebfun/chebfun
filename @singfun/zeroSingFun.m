@@ -8,10 +8,11 @@ function s = zeroSingFun()
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Create an empty SINGFUN object:
-s = singfun;
+s = singfun();
 
 % Create a zero smooth part:
 s.smoothPart = singfun.constructSmoothPart(@(x) 0*x, 0, 0, []);
+% NH: Why is this an adaptive construction?
 
 % No singularities at any end points:
 s.exponents = [0, 0];

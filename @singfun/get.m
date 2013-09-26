@@ -5,6 +5,8 @@ function out = get(f, prop)
 %       'EXPONENTS'  - The exponents of F at the end points -1 and 1.
 %       'SMOOTHPART' - The smooth part of F on [-1, 1], which is a CHEBTECH.
 
+% NH: Also allows access to smoothPart properties. Document this?
+
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
@@ -12,12 +14,15 @@ switch prop
     case fieldnames(f)
         % Allow access to any of the properties of F via GET:
         out = f.(prop);
+        
     case fieldnames(f.smoothPart)
         % Access to any of the properties of the smooth part of F:
         out = f.smoothPart.(prop);
+        
     otherwise
         error('CHEBFUN:SINGFUN:GET:propname', ...
               'Unknown property name "%s" for object of type SINGFUN.', prop);
+          
 end
 
 end

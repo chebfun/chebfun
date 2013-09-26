@@ -17,6 +17,8 @@ function out = roots(f, varargin)
 %       [0]
 %        1  - Prune 'spurious' complex roots if ALL == 1 and RECURSE == 0.
 
+% NH: Point to the ROOTS() method of the smoothPart for documentation?
+
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
@@ -29,6 +31,7 @@ if ( isempty(f) )
     return
 end
 
+% Compute roots of the smooth part:
 out = roots(f.smoothPart, varargin{:} );
 anyRoots = ~isempty(out);
 

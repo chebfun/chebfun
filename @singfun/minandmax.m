@@ -17,6 +17,7 @@ function [vals, pos] = minandmax(f)
 %   is, VALS = FEVAL(F, POS) where [~, POS] = MINANDMAX(ABS(F)). (In fact,
 %   MINANDMAX actually computes [~, POS] = MINANDMAX(ABS(F).^2), to avoid
 %   introducing singularities to the function).
+% NH: Huh?
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -36,6 +37,7 @@ else
     minLoc = [];
     maxLoc = [];   
     
+    % Look for blow up at the left:
     if ( f.exponents(1) < -tol ) % Singularity at the left end.
         fVal = feval(f, -1);
         if ( fVal == inf )
@@ -47,9 +49,11 @@ else
         else
             error('CHEBFUN:SINGFUN:minandmax:boundedness', ...
             'function has a singularity but bounded at the left end point');
+            % NH: When would this happen?   
         end
     end
     
+    % Look for blow up at the right:
     if ( f.exponents(2) < -tol ) % Singularity at the right end.
         fVal = feval(f, 1);
         if ( fVal == inf )

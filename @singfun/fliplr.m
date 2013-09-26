@@ -1,4 +1,4 @@
-function f = fliplr(f)
+function f = fliplr(f) %#ok<INUSD>
 %FLIPLR   Flip columns of an array-valued SINGFUN object.
 %   FLIPLR(F) flips the columns of an array-valued SINGFUN in the left/right
 %   direction. If F has only one column, then this function has no effect.
@@ -8,5 +8,7 @@ function f = fliplr(f)
 
 error('CHEBFUN:SINGFUN:fliplr:notpossible', ...
       'SINGFUN objects are not array-valued.')
+  
+  % NH: Error does not match documentation.
 
 end

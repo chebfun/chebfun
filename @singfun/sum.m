@@ -15,8 +15,8 @@ function out = sum(f)
 % Hunter, D., and Nikolov, G., Gaussian Quadrature of Chebyshev Polynomials, 
 % J. Comput. Appl. Math. 94 (1998), 123-131.
 %
-% Piessens, R., and Branders, M., The Evaluation and Application of Some Modified
-% Moments, BIT 13 (1973), 443-450.
+% Piessens, R., and Branders, M., The Evaluation and Application of Some
+% Modified Moments, BIT 13 (1973), 443-450.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -58,7 +58,12 @@ end
 %%
 % The non-trivial case:
 
+% NH: Document what is going on here in a developer note above.
+
 if ( isa(f.smoothPart, 'chebtech') )
+    
+    % If the smooth part of F is a CHEBTECH, then evaluate the integral by using
+    % Clenshaw-Curtis-Jacobi moments and the Chebyshev coefficients:
     
     % Grab the number of points for the smooth part of f:
     n = length(f);
@@ -67,8 +72,8 @@ if ( isa(f.smoothPart, 'chebtech') )
     a = f.exponents(1);
     
     if ( diff(f.exponents) == 0 )
-       % If the exponents at the endpoints are same, then compute the
-       % appropriate modified moments for Gegenbauer weights.
+        % If the exponents at the endpoints are same, then compute the
+        % appropriate modified moments for Gegenbauer weights.
     
         r = a + .5;
         m0 = gamma(r + .5)*sqrt(pi)/gamma(r + 1);
@@ -105,11 +110,9 @@ if ( isa(f.smoothPart, 'chebtech') )
         end
         % Compute the modified moments:
         M = c0*M;
+        
     end
-    
-    % If the smooth part of F is a CHEBTECH, then evaluate the integral by using
-    % the Clenshaw-Curtis-Jacobi moments and the Chebyshev coefficients:
-    
+        
     % Chebyshev coefficients of the smooth part of F:
     coeffs = get(f, 'coeffs');
     

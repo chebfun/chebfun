@@ -11,13 +11,15 @@ function singOrder = findSingOrder(op, singEnd)
 %
 % See also FINDPOLEORDER, FINDSINGEXPONENTS.
 
+%NH: Documentation is not in correct format.
+
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%
-% First get an estimate of the exponent by the pole order finder. This 
-% will be passed on as upper bound for the singularity order.
-poleBound = -singfun.findPoleOrder(op, singEnd );
+% First get an estimate of the exponent by the pole order finder. This will be
+% passed on as upper bound for the singularity order.
+poleBound = -singfun.findPoleOrder(op, singEnd);
 
 % Distance of sample points from the end points:
 x = eps*(11:-1:2)';
@@ -25,13 +27,12 @@ x = eps*(11:-1:2)';
 if ( strcmpi(singEnd, 'right') )       % A pole is expected at x = 1.
     fvalsRight = op(1 - x);
     singOrder = singOrderFinder(fvalsRight, x, poleBound);
-else if ( strcmpi(singEnd, 'left') )   % A pole is expected at x = -1.       
-        fvalsLeft = op(-1 + x);
-        singOrder = singOrderFinder(fvalsLeft, x, poleBound);
-    else
-        error('CHEBFUN:SINGFUN:findSingOrder:unknownPref', ...
-              'Blowup preference "%s" unknown.', singEnd )
-    end
+elseif ( strcmpi(singEnd, 'left') )   % A pole is expected at x = -1.       
+    fvalsLeft = op(-1 + x);
+    singOrder = singOrderFinder(fvalsLeft, x, poleBound);
+else
+    error('CHEBFUN:SINGFUN:findSingOrder:unknownPref', ...
+          'Blowup preference "%s" unknown.', singEnd )
 end
 
 % The algorithm returns a positive number for blow up type singularities. 
@@ -85,7 +86,7 @@ while( (abs(exponentGrid(end) - exponentGrid(1)) > tol) && (nIter <= maxIter) )
     % differences.
     while( all(diff(diff(smoothVals)) > 0) && (k < n) )
         k = k + 1;
-        % Try the next fractional exponent.
+        % Try the next fractional exponent:
         smoothVals = absFvals.*x.^exponentGrid(k);
     end
     

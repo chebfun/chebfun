@@ -1,6 +1,6 @@
 function f = mtimes(f, c)
 %*   Multiplication of SINGFUN objects.
-%   F*C or C*F multiplies a SINGFUN F by a scalar or matrix C.
+%   F*C or C*F multiplies a SINGFUN F by a scalar C.
 %
 % See also TIMES.
 
@@ -9,20 +9,20 @@ function f = mtimes(f, c)
 
 if ( isempty(f) || isempty(c) )     % SINGFUN * [] = []
     f = []; 
-    return
     
 elseif ( ~isa(f, 'singfun') )       % First input is not a SINGFUN
-    % DOUBLE*SINGFUN requires that the double is scalar.
-    if ( numel(f) > 1 )
+   
+    % C must be a SINGFUN and F a scalar double. Call MTIMES again.
+    f = mtimes(c, f);
+    
+elseif ( isa(c, 'double') )         % SINGFUN * double  
+
+    % SINGFUN*DOUBLE requires that the double is scalar.
+    if ( numel(c) > 1 )
         error('SINGFUN:SINGFUN:mtimes:size', ...
               'Inner matrix dimensions must agree.');
     end
     
-    % C must be a SINGFUN and F a scalar double. Call MTIMES again.
-    f = mtimes(c, f);
-    return
-    
-elseif ( isa(c, 'double') )         % SINGFUN * double  
     % Multiply c with the smooth part:
     f.smoothPart = f.smoothPart * c;    
     

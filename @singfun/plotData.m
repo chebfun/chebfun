@@ -1,7 +1,7 @@
 function data = plotData(f)
 %PLOTDATA   Useful data values for plotting a SINGFUN object.
-%   DATA = PLOTDATA(F) extracts PLOTDATA of the smooth part of F
-%   and then scales it by the singular factors given in the EXPONENTS of F
+%   DATA = PLOTDATA(F) extracts PLOTDATA of the smooth part of F and then scales
+%   it by the singular factors given in the EXPONENTS of F
 %
 % See also PLOT.
 
@@ -11,6 +11,7 @@ function data = plotData(f)
 %%
 % Get plot data from the smooth part:
 data = plotData( f.smoothPart );
+
 % Update extrapolated y-data:
 x = data.xLine;
 y = data.yLine;
@@ -26,3 +27,5 @@ y = y.*(1 - x).^f.exponents(2);
 data.yPoints = y;
 
 end
+
+% NH: Need to also support PLOT(F, G, H).

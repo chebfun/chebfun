@@ -16,7 +16,7 @@ function g = cumsum(f, m)
 % See http://www.chebfun.org for Chebfun information.
 
 % [TODO]: Improvement on the algorithm to handle the case with singularities at
-% both the end points. Improvement on the whole singfun class to handle
+% both the end points. Improvement on the whole SINGFUN class to handle
 % logarithmic singularity, otherwise the singfun class is not closed. Here, by
 % 'closed' we mean that the result of an operator on an arbitrary singfun (unary
 % operator) or any two arbitrary singfuns (binary operator) is representable by
@@ -53,7 +53,7 @@ end
 
 %%
 % singIntegral was originally named unbdnd in Chebfun v4. It tries to find a
-% singfun representation for the indefinite integral of a singfun. It now can
+% SINGFUN representation for the indefinite integral of a SINGFUN. It now can
 % only handle integrand with singularity at one end of the domain, but not at
 % both. The algorithm was due to Nick Hale and Sheehan Olver. Some minor
 % modification are made during Chebfun v5 refactorization. See the working note
@@ -76,19 +76,19 @@ if ( f.exponents(2) ~= 0 )
     flip = true;
 end
 
-% Get the exponents.
+% Get the exponents:
 exps = f.exponents;
 
-% Get the smooth part of f
+% Get the smooth part of f:
 s = f.smoothPart;
 
-% Get the order of the singularity and negate it.
+% Get the order of the singularity and negate it:
 a = -exps(1);
 
-% Compute the rounded integer of a, that is ra = [a].
+% Compute the rounded integer of a: ( that is ra = [a])
 ra = max(round(a), 1);
 
-% Compute (x+1)*s.
+% Compute (x+1)*s:
 xs = f.smoothPart.make(@(x) x + 1).*s;
 
 % If the length of xs is less than ra+2, we pad the length of xs by prolonging
@@ -107,7 +107,7 @@ end
 % indices.
 aa = flipud(xs.coeffs);
 
-% The recurrence to solve for the coefficients for u', i.e. c_k. (*)
+% The recurrence to solve for the coefficients for u', i.e., c_k. (*)
 c = zeros(N, 1);
 c(N) = 2*aa(N+1)./(1 - a./N);
 c(N-1) = 2*(aa(N) - c(N))./(1 - a./(N - 1));
@@ -115,16 +115,16 @@ for k = N-2:-1:ra+1
     c(k) = 2*(aa(k+1) - c(k+1) - c(k+2)*.5*(1 + a./k))./(1 - a./k);
 end
 
-% Compute Cm
+% Compute Cm:
 Cm = (2^(ra - 1))*(aa(ra+1) - c(ra+1) - c(ra+2)*(1 + a./ra));
 
-% Compute the smoothfun representation for (x+1)^[a]
+% Compute the smoothfun representation for (x+1)^[a]:
 xa = f.smoothPart.make(@(x) (x + 1).^ra);
 
 % Intermediate results for temporary use.
 aa(1:ra+1) = aa(1:ra+1) - Cm*flipud(xa.coeffs);
 
-% Compute the rest of the coefficients c_k.
+% Compute the rest of the coefficients c_k:
 for k = ra-1:-1:1
     c(k) = 2*(aa(k+1) - c(k+1) - c(k+2)*.5*(1 + a./k))./(1 - a./k);
 end
@@ -147,7 +147,7 @@ end
 % Construct u as a smoothfun object:
 u = f.smoothPart.make({[], cc});
 
-% Construct the singfun object of the solution:
+% Construct the SINGFUN object of the solution:
 g = singfun;
 tol = singfun.pref.singfun.eps;
 if ( abs(ra - a) > tol*f.smoothPart.vscale )    % No log term
@@ -167,13 +167,13 @@ if ( abs(ra - a) > tol*f.smoothPart.vscale )    % No log term
         g.exponents = [exps(1) 0];
     end
     
-elseif abs(Cm) < tol*f.smoothPart.vscale   % No log term
+elseif abs(Cm) < tol*f.smoothPart.vscale        % No log term
     % [TODO]: handle integer poles.
     
-else  % Log term
+else                                            % Log term
     % [TODO]: Construct a representation of log.
     error('SINGFUN:cumsum:nolog',['cumsum does not support the case ', ...
-        'in which the indefinite integral has a logarithm term.'])
+        'in which the indefinite integral has a logarithmic term.'])
     
 end
 

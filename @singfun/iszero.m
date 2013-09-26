@@ -6,6 +6,7 @@ function out = iszero(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org for Chebfun information.
 
+% Check if the smooth part is zero:
 out = iszero(f.smoothPart);
 
 end

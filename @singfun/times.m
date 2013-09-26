@@ -1,4 +1,4 @@
-function s = times(f,g)
+function h = times(f, g)
 %.*   Multiply SINGFUNS with SINGFUNS
 %   F.*G multiplies SINGFUN objects F and G or a SINGFUN by a scalar if either
 %   F or G is a scalar.
@@ -11,41 +11,44 @@ function s = times(f,g)
 % Note: This method will be called only if both F and G are SINGFUNS or at the
 % most one of F and G is a scalar double.
 
+% NH: Should also support SINGFUN.*SMOOTHFUN.
+
 %% Trivial cases:
 
 % Check if inputs are other than SINGFUNS or doubles:
 if ( (~isa(f, 'singfun') && ~isa(f, 'double')) || ...
-     (~isa(g, 'singfun') && ~isa(g, 'double')) )
+        (~isa(g, 'singfun') && ~isa(g, 'double')) )
     error( 'SINGFUN:times:Input can only be a singfun or a double' )
 end
 
 % Scalar multiplication cases
 if ( isa(f, 'double') )
     % Copy the other input (a SINGUN) in the output:
-    s = g;
+    h = g;
     % Multiply the smooth part with the double and return:
-    s.smoothPart = f * g.smoothPart;
+    h.smoothPart = f * g.smoothPart;
     return
 elseif ( isa(g, 'double') )
     % Copy the other input (a SINGUN) in the output:
-    s = f;
+    h = f;
     % Multiply the smooth part with the double and return
-    s.smoothPart = g * f.smoothPart;
+    h.smoothPart = g * f.smoothPart;
     return
 end
 
 %% Multiplication of two SINGFUNS:
 
 % Initialise the output SINGFUN:
-s = singfun;
+h = singfun();
 % Multiply the smooth parts:
-s.smoothPart = (f.smoothPart).*(g.smoothPart);
+h.smoothPart = (f.smoothPart) .* (g.smoothPart);
 % Add the exponents:
-s.exponents = f.exponents + g.exponents;
+h.exponents = f.exponents + g.exponents;
 
 %%
 % Check if after multiplication the singularity can be removed.
 tol = singfun.pref.singfun.exponentTol;
-s.exponents( abs(s.exponents) < tol ) = 0;
+h.exponents( abs(h.exponents) < tol ) = 0;
+% NH: h = h.smoothPart; ?
 
 end
