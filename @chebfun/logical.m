@@ -16,6 +16,6 @@ end
 
 % Impulses:
 tol = vscale(f)*epslevel(f);
-f.impulses = f.impulses(:,:,1) < tol;
+f.impulses = abs(f.impulses(:,:,1)) > tol;
 
 end

@@ -223,6 +223,9 @@ classdef fun % (Abstract)
         % Length of a FUN.
         len = length(f)
 
+        % FUN logical.
+        f = logical(f)
+
         % Convert a array-valued FUN into a cell array of FUN objects.
         g = mat2cell(f, M, N)
 

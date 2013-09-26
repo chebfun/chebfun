@@ -329,6 +329,9 @@ classdef chebtech < smoothfun % (Abstract)
         % Length of a CHEBTECH.
         len = length(f)
 
+        % CHEBTECH logical.
+        f = logical(f)
+
         % A 'loose' (i.e., not too strict) check for happiness.
         [ishappy, epslevel, cutoff] = looseCheck(f, pref)
 
