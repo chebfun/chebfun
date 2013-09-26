@@ -23,13 +23,13 @@ end
 
 % Scalar multiplication cases
 if ( isa(f, 'double') )
-    % Copy the other input (a SINGUN) in the output:
+    % Copy the other input (a SINGFUN) in the output:
     h = g;
     % Multiply the smooth part with the double and return:
     h.smoothPart = f * g.smoothPart;
     return
 elseif ( isa(g, 'double') )
-    % Copy the other input (a SINGUN) in the output:
+    % Copy the other input (a SINGFUN) in the output:
     h = f;
     % Multiply the smooth part with the double and return
     h.smoothPart = g * f.smoothPart;
@@ -48,7 +48,7 @@ h.exponents = f.exponents + g.exponents;
 %%
 % Check if after multiplication the singularity can be removed.
 tol = singfun.pref.singfun.exponentTol;
-h.exponents( abs(h.exponents) < tol ) = 0;
+h.exponents(abs(h.exponents) < tol) = 0;
 % NH: h = h.smoothPart; ?
 
 end

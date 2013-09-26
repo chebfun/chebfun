@@ -1,7 +1,7 @@
 function out = innerProduct(f, g)
-%INNERPRODUCT   Inner product of two SINGFUN objects.
+%INNERPRODUCT   Inner product of two ONEFUN objects.
 %   INNERPRODUCT(F, G) returns the L2 inner product (on [-1,1]) of the two
-%   SINGFUN objects F and G (conjugate linear in F).
+%   ONEFUN objects F and G (conjugate linear in F).
 %
 % See also SUM.
 
@@ -14,18 +14,12 @@ if ( isempty(f) || isempty(g) )
     return
 end
 
-if ( ~isa(f, 'singfun') || ~isa(g, 'singfun') )
+if ( ~isa(f, 'onefun') || ~isa(g, 'onefun') )
     error('CHEBFUN:SINGFUN:innerProduct:input', ...
-        'innerProduct() only operates on two SINGFUN objects.');
+        'innerProduct() only operates on two ONEFUN objects.');
 end
-% NH: Why? We should expect to be able to do innerProduct(x, sqrt(x)), no?
 
-% Add the exponents:
-f.exponents = f.exponents + g.exponents;
-% Multiply the smooth parts:
-f.smoothPart = f.smoothPart.*conj(g.smoothPart);
-
-% Call SUM in SINGFUN:
-out = sum(f);
+% Call SUM:
+out = sum(f.*g);
 
 end
