@@ -358,6 +358,9 @@ classdef chebtech < smoothfun % (Abstract)
 
         % Multiplication of CHEBTECH objects.
         f = mtimes(f, c)
+
+        % CHEBTECH logical NOT.
+        f = not(f)
         
         % Compute a Legendre series expansion of a CHEBTECH object:
         c = legpoly(f)

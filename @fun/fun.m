@@ -244,6 +244,9 @@ classdef fun % (Abstract)
         % Multiplication of FUN objects.
         f = mtimes(f, c)
 
+        % FUN logical NOT.
+        f = not(f)
+
         % Basic linear plot for FUN objects.
         varargout = plot(f, varargin)
         
