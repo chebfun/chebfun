@@ -1,4 +1,4 @@
-classdef singfun
+classdef singfun < onefun
 %SINGFUN   Class for functions with singular endpoint behavior.
 %
 %   Class for approximating singular functions on the interval [-1,1] using a
@@ -176,8 +176,11 @@ classdef singfun
         end
     end
     
-    %% METHODS IMPLEMENTED BY THIS CLASS.
+    %% METHODS (NON-STATIC) IMPLEMENTED BY THIS CLASS.
     methods
+        
+        % Convert an array of ONEFUN objects into an array-valued ONEFUN.
+        f = cell2mat(f)
         
         % Complex conjugate of a SINGFUN.
         f = conj(f)
@@ -233,7 +236,7 @@ classdef singfun
         % Length of a SINGFUN.
         len = length(f)
         
-        % Convert a array-valued SINGFUN into an ARRAY of SINGFUN objects.
+        % Convert an array-valued SINGFUN into an ARRAY of SINGFUN objects.
         g = mat2cell(f, M, N)
         
         % Global maximum of a SINGFUN on [-1,1].
@@ -248,8 +251,17 @@ classdef singfun
         % Subtraction of two SINGFUN objects.
         f = minus(f, g)
         
+        % Left matrix divide for ONEFUN objects.
+        X = mldivide(A, B)
+
+        % Right matrix divide for a ONEFUN.
+        X = mrdivide(B, A)
+        
         % Multiplication of SINGFUN objects.
         f = mtimes(f, c)
+        
+        % Compute a Legendre series expansion of a ONEFUN object:
+        c = legpoly(f)
         
         % Basic linear plot for SINGFUN objects.
         varargout = plot(f, varargin)
@@ -259,6 +271,12 @@ classdef singfun
         
         % Addition of two SINGFUN objects.
         f = plus(f, g)
+        
+        % Polynomial coefficients of a ONEFUN.
+        out = poly(f)
+        
+        % QR factorisation of an array-valued ONEFUN.
+        [f, R, E] = qr(f, flag, methodFlag)
         
         % Dividing two SINGFUNs
         f = rdivide(f, g)
