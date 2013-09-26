@@ -33,9 +33,9 @@ classdef singfun
 %   process may throw an error.
 %
 %   SINGFUN(OP) constructs a SINGFUN object from the function handle OP. It
-%   first try to determine the type and the order of the singularities or the
+%   first tries to determine the type and the order of the singularities or the
 %   roots at the endpoints by sampling near -1 and 1 and then forms a new
-%   operator which governs the smooth part of OP by peeling off the end point
+%   operator which governs the smooth part of OP by factoring out the end point
 %   singularities. Finally it constructs an approximation of the smooth part by
 %   calling the SMOOTHFUN constructor. The type and the order of the
 %   singularities along with the smoothfun representation of the smooth part are
@@ -52,13 +52,10 @@ classdef singfun
 %   1, the constructor takes the values saved in the 1x2 vector EXPONENTS as the
 %   orders of the singularities.
 %
-%   SINGFUN(OP, EXPONENTS, SINGTYPE) constructs a SINGFUN object exactly same as
-%   the last syntax.
+%   SINGFUN(OP, EXPONENTS, SINGTYPE) and SINGFUN(OP, EXPONENTS, {}) are
+%   equivalent to SINFGUN(OP, EXPONENTS).
 %
-%   SINGFUN(OP, EXPONENTS, {}) constructs a SINGFUN object exactly same as the
-%   last two syntax.
-%
-%   SINGFUN(OP, EXPONENTS, SINGTYPE, pref) constructs a SINGFUN by following the
+%   SINGFUN(OP, EXPONENTS, SINGTYPE, PREF) constructs a SINGFUN using the
 %   preferences given by PREF. Note that any of or both of EXPONENTS and
 %   SINGTYPE can be empty.
 %
@@ -139,7 +136,7 @@ classdef singfun
                     'First argument must be a function handle.');
             end
             
-            % Check to avoid vectorized operators:
+            % Check to avoid array-valued operators:
             if ( size(feval(op, 0), 2) > 1 )
                 error( 'CHEBFUN:SINGFUN:constructor', ...
                     'SINGFUN class does not support array-valued objects.' );
@@ -350,7 +347,7 @@ function op = singOp2SmoothOp(op, exponents)
 %   singularity(ies) at the endpoints -1 and 1. EXPONENTS are the order of the
 %   singularities.
 %
-%   For examples, opNew = singOp2SmoothOp(opOld, [-a -b]) means
+%   For example, opNew = singOp2SmoothOp(opOld, [-a -b]) means
 %   opNew = opOld.*(1+x).^a.*(1-x).^b
 %
 % See also SINGFUN.

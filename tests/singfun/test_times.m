@@ -71,7 +71,7 @@ vals_h = feval(h, x);
 h_exact = @(x) (1+x).^b.*sin(x).*sin(2*x).*(1-x).^c;
 vals_exact = feval(h_exact, x);
 err = vals_h - vals_exact;
-pass(5) = all( abs(err) < 2e2*max(get(f, 'epslevel'), get(g, 'epslevel')) );
+pass(5) = all( abs(err) < 1e3*max(get(f, 'epslevel'), get(g, 'epslevel')) );
 
 % poles at different endpoints
 f = singfun(@(x) sin(x).*(1-x.^2).^b, [b b], {'sing', 'sing'}, [], [], pref);

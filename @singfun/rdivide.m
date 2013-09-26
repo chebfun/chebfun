@@ -1,14 +1,12 @@
 function s = rdivide(f, g)
 %./   Divide SINGFUNS with SINGFUNS
-%
+%   RDIVIDE(F, G) computes the pointwise division F./G. 
 %   This method will be called only if both F and G are SINGFUNS or at the 
-%   most one of F and G is a scalar double.
+%   most one of F and G is a scalar double. It is also assumed that G has no
+%   roots in the open interval (-1, 1). 
+%   NH: F or G could be a SMOOTHFUN.
 %
 % See also LDIVIDE, TIMES.
-
-% NH: Missing proper documentation.
-% NH: F or G could be a SMOOTHFUN.
-% NH: Document that it is assumed that g has no roots in [-1, 1].
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -54,16 +52,6 @@ if ( isa(f,'double') )
 end
 
 %% SINGFUN./SINGFUN
-% % Check if g has any roots in the open interval (-1, 1)
-% r = roots( g.smoothPart );
-% % Remove roots at the end points.
-% r = setdiff(r, [-1,1]);
-% if ( ~isempty(r) )
-%     error('SINGFUN:rdivide:Divide by zero error')
-% end
-% NH: It should be ASSUMED that there are no roots. (And stated in
-% documentation)
-
 % Note: Exponents of f and g can all be zero to generate a singular function.
 % Example: f = 1; g = cos(pi/2*x) with trivial exponents. Then s = f./g is 
 % singular with non trivial exponents. So the result of f./g in general is a

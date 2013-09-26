@@ -9,7 +9,7 @@ function poleOrder = findPoleOrder(op, singEnd)
 %     p = singfun.findPoleOrder(@(x) 1./(1 + x).^2, 'left')
 %
 % See also FINDSINGORDER, FINDSINGEXPONENTS.
-%
+
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
@@ -24,10 +24,10 @@ x = 10.^(-1:-1:-15)';
 
 if ( strcmpi(singEnd, 'right') )       % A pole is expected at x = 1   
     fvalsRight = op(1 - x);
-    poleOrder = poleOrderFinder( fvalsRight, x);
+    poleOrder = poleOrderFinder(fvalsRight, x);
 elseif ( strcmpi(singEnd, 'left') )   % A pole is expected at x = -1
     fvalsLeft = op(-1 + x);
-    poleOrder = poleOrderFinder( fvalsLeft, x);
+    poleOrder = poleOrderFinder(fvalsLeft, x);
 else
     error('CHEBFUN:SINGFUN:findPoleOrder:unknownPref', ...
           'Blowup preference "%s" unknown.', singEnd )
@@ -40,7 +40,7 @@ poleOrder = -poleOrder;
 end
 
 %%
-function poleOrder = poleOrderFinder( fvals, x )
+function poleOrder = poleOrderFinder(fvals, x)
 %POLEORDERFINDER   Finds the order of the pole based on function values
 %   FVALS given at (1-X).
 
