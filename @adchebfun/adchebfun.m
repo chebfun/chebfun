@@ -226,6 +226,14 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
 %             f.isConstant = f.isConstant;            
         end
         
+%         function f = vertcat(varargin)
+%             if ( nargin > 1 )
+%                 f = chebmatrix(varargin.');
+%             else
+%                 f = varargin{1};
+%             end
+%         end
+        
         function f = updateDomain(f)
             if ( isa(f.func, 'chebfun') )
                 f.domain = union(f.domain, f.func.domain);

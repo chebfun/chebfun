@@ -2,14 +2,18 @@
 
 close all, clc, clear all, clear classes
 
-% The CHEBOP:
-N = chebop(@(x, u) diff(u, 2) - (u.^2), [-1, 1]);
-N.lbc = @(u, v) u - 1;
-% N.bc = @(x, u) sum(u);
-N.bc = @(x, u) feval(u, 1) - 1;
-x = chebfun('x');
+dom = [0 1];
 
-rhs = x.^2;
+% The CHEBOP:
+N = chebop(@(x, u) diff(u, 2) + sin(u), dom);
+N.lbc = @(u, v) u - 2;
+% N.bc = @(x, u) sum(u);
+N.bc = @(x, u) feval(u, dom(2)) - 2;
+x = chebfun('x', dom);
+% N.init = 2+0*x;
+N.init = 2*cos(2*pi*x/10);
+
+rhs = 0*x;
 u = N\rhs;
 
 u = u{1}
@@ -23,8 +27,15 @@ title('solutions')
 %%
 disp('norm of residuals:')
 res = N.op(x, u) - rhs;
-norm(res, 2)
+norm(res, inf)
 
 disp('bc residuals:')
-feval(N.lbc(u), -1)
-N.bc(x, u)
+if ( ~isempty(N.lbc) )
+    feval(N.lbc(u), N.domain(1))
+end
+if ( ~isempty(N.rbc) )
+    feval(N.rbc(u), N.domain(end))
+end
+if ( ~isempty(N.bc) )
+    N.bc(x, u)
+end
