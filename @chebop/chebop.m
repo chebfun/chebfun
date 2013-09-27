@@ -28,31 +28,45 @@ classdef (InferiorClasses = {?double}) chebop
         
         function u = mldivide(N, rhs)
             
-            %%
-            % Initialise an ADCHEBFUN:
             numVars = nargin(N.op) - 1;
-            zeroFun = chebfun(0, N.domain);
-            u0 = cell(numVars, 1);
-            for k = 1:numVars
-                u0{k} = zeroFun;
+            
+            if ( nargin < 2 )
+                x = chebfun(@(x) x, N.domain);
             end
-
-            %%
+            if ( nargin < 3 )
+                % Initialise a zero ADCHEBFUN:
+                zeroFun = chebfun(0, N.domain);
+                u = cell(numVars, 1);
+                for k = 1:numVars
+                    u{k} = zeroFun;
+                end
+                u = chebmatrix(u);
+            end
+            
             % Initialise the dependent variable:
             x = chebfun(@(x) x, N.domain);
 
-            [L, res, isLinear] = linearise(N, u0, x);
+            % Linearise
+            [L, affine, isLinear] = linearise(N, x);
             
             %%
             % Solve:
-            u = L\(rhs-res);
-            
-            if ( ~isLinear )
+            if ( isLinear )
+                u = L\(rhs - affine);
+            else
+                if ( ~isempty(N.init) )
+                    u = N.init;
+                    [L, res] = linearise(N, x, u);
+                    du = L\(rhs-res);
+                else
+                    du = L\rhs;
+                end
+                u = u - du;
                 ub = u.blocks;
                 res = N.op(x, ub{:}) - rhs;
                 for newt = 1:10
                     % Linearise around current solution:
-                    L = linearise(N, ub, x);
+                    L = linearise(N, x, ub, flag);
                     % Solve the linearised system:
                     du = L\res;
                     % Append the Newton step:
@@ -63,11 +77,17 @@ classdef (InferiorClasses = {?double}) chebop
                                         
                     % Stop if well converged, or stagnated:
                     normStep(newt) = sum(cellfun(@norm, du.blocks));
-                    normRes(newt) = sum(cellfun(@norm, res.blocks));
+                    if ( isa(res, 'chebmatrix') )
+                        normRes(newt) = sum(cellfun(@norm, res.blocks));
+                    else
+                        normRes(newt) = norm(res);
+                    end
                     if ( normStep(newt) < 1e-12 )
                         break
                     elseif (newt > 3 && normStep(newt) > 0.1*normStep(newt-3))
                         warning('CHEBFUN:bvpsc','Newton iteration stagnated.')
+                        normStep.'
+                        normRes.'
                         break
                     end
                     
@@ -76,13 +96,29 @@ classdef (InferiorClasses = {?double}) chebop
             
         end
         
-        function [L, res, isLinear] = linearise(N, u, x)
+        function [L, res, isLinear] = linearise(N, x, u, flag)
             isLinear = true;
             numVars = nargin(N.op) - 1;
             
+            if ( nargin < 2 )
+                x = chebfun(@(x) x, N.domain);
+            end
+            if ( nargin < 3 )
+                % Initialise a zero ADCHEBFUN:
+                zeroFun = chebfun(0, N.domain);
+                u = cell(numVars, 1);
+                for k = 1:numVars
+                    u{k} = zeroFun;
+                end
+%                 u0 = chebmatrix(u0);
+            end
+
             if ( isa(u, 'chebmatrix') )
                 u = u.blocks;
             end
+            if ( isa(u, 'chebfun') )
+                u = {u};
+            end            
             
             for k = 1:numVars
                 u{k} = seed(adchebfun(u{k}), k, numVars);
@@ -100,18 +136,27 @@ classdef (InferiorClasses = {?double}) chebop
             % Add BCs
             if ( ~isempty(N.lbc) )
                 lbcU = feval(N.lbc(u{:}), N.domain(1));
+                if ( nargin == 4 )
+                    lbcU.func = -lbcU.func;
+                end
                 L = bc(L, lbcU.jacobian, -lbcU.func); %#ok<CPROP>
                 isLinear = isLinear & all(lbcU.isConstant);
             end
 
             if ( ~isempty(N.rbc) )
                 rbcU = feval(N.rbc(u{:}), N.domain(end));
+                if ( nargin == 4 )
+                    rbcU.func = -rbcU.func;
+                end
                 L = bc(L, rbcU.jacobian, -rbcU.func); %#ok<CPROP>
                 isLinear = isLinear & all(rbcU.isConstant);
             end
 
             if ( ~isempty(N.bc) )
                 bcU = N.bc(x, u{:});
+                if ( nargin == 4 )
+                    bcU.func = -bcU.func;
+                end
                 L = bc(L, bcU.jacobian, -bcU.func); %#ok<CPROP>
                 isLinear = isLinear & all(bcU.isConstant);
             end

@@ -10,6 +10,7 @@ x = chebfun('x');
 
 uv = N\[x ; x];
 
+
 %%
 % Display:
 u = uv{1};
