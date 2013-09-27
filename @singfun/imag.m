@@ -10,7 +10,7 @@ function f = imag(f)
 % Compute the imaginary part of the smooth part:
 f.smoothPart = imag(f.smoothPart);
 
-% Return a SMOOTHFUN object if F is smooth
+% Return a SMOOTHFUN object if F is smooth:
 if ( issmooth(f) )
     f = f.smoothPart;
 end

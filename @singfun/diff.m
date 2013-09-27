@@ -60,7 +60,7 @@ end
 %% 
 % If f has negligible exponents, return the SMOOTHPART object instead of a
 % SINGFUN:
-if ( all(abs(f.exponents) < singfun.pref.singfun.exponentTol) )
+if ( issmooth(f) )
     f = f.smoothPart;
 end
 

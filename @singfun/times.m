@@ -1,5 +1,5 @@
 function h = times(f, g)
-%.*   Multiply SINGFUNS with SINGFUNS
+%.*   Multiply SINGFUNS with SINGFUNS and SMOOTHFUNS
 %   F.*G multiplies SINGFUN objects F and G or a SINGFUN by a scalar if either
 %   F or G is a scalar.
 
@@ -15,24 +15,30 @@ function h = times(f, g)
 
 %% Trivial cases:
 
-% Check if inputs are other than SINGFUNS or doubles:
-if ( (~isa(f, 'singfun') && ~isa(f, 'double')) || ...
-        (~isa(g, 'singfun') && ~isa(g, 'double')) )
-    error( 'SINGFUN:times:Input can only be a singfun or a double' )
+% Empty arguments:
+if ( isempty(f) || isempty(g) )
+    h = singfun();
+    return;
+end
+
+% Check if inputs are other than SINGFUNS, SMOOTHFUNS or doubles:
+if ( (~isa(f, 'singfun') && ~isa(f, 'smoothfun') && ~isa(f, 'double')) || ...
+     (~isa(g, 'singfun') && ~isa(f, 'smoothfun') && ~isa(g, 'double')) )
+    error( 'SINGFUN:times:Input can only be a singfun, a smoothfun or a double' )
 end
 
 % Scalar multiplication cases
-if ( isa(f, 'double') )
+if ( isa(f, 'double') || isa(f, 'smoothfun') )
     % Copy the other input (a SINGFUN) in the output:
     h = g;
-    % Multiply the smooth part with the double and return:
-    h.smoothPart = f * g.smoothPart;
+    % Multiply the smooth parts and return:
+    h.smoothPart = f .* g.smoothPart;
     return
-elseif ( isa(g, 'double') )
+elseif ( isa(g, 'double') || isa(g, 'smoothfun') )
     % Copy the other input (a SINGFUN) in the output:
     h = f;
-    % Multiply the smooth part with the double and return
-    h.smoothPart = g * f.smoothPart;
+    % Multiply the smooth parts and return:
+    h.smoothPart = g .* f.smoothPart;
     return
 end
 
@@ -46,9 +52,9 @@ h.smoothPart = (f.smoothPart) .* (g.smoothPart);
 h.exponents = f.exponents + g.exponents;
 
 %%
-% Check if after multiplication the singularity can be removed.
-tol = singfun.pref.singfun.exponentTol;
-h.exponents(abs(h.exponents) < tol) = 0;
-% NH: h = h.smoothPart; ?
+% Check if after multiplication h has become smooth:
+if ( issmooth(h) )
+    h = h.smoothPart;
+end
 
 end

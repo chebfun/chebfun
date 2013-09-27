@@ -1,5 +1,5 @@
 function s = plus(f, g)
-%+   Addition of two SINGFUN objects.
+%+   Addition of SINGFUN objects with SINGFUNs and SMOOTHFUNs.
 %   F + G adds F and G, where F and G may be SINGFUN objects or scalars.
 %
 % See also MINUS.
@@ -12,14 +12,19 @@ function s = plus(f, g)
 % If one of the arguments is empty:
 if ( isempty(f) || isempty(g) )
     % Create an empty singfun and return:
-    s = singfun;
+    s = singfun();
     return
 end
 
+% Check if inputs are other than SINGFUNS, SMOOTHFUNS or doubles:
+if ( (~isa(f, 'singfun') && ~isa(f, 'smoothfun') && ~isa(f, 'double')) || ...
+     (~isa(g, 'singfun') && ~isa(f, 'smoothfun') && ~isa(g, 'double')) )
+    error( 'SINGFUN:times:Input can only be a singfun, a smoothfun or a double' )
+end
 % One of the arguments i.e. f or g is necessarily a SINGFUN object. Otherwise, 
 % this overloaded plus would not have been called.
 
-% If one of the arguments is a double:
+% If one of the arguments is a double, upgrade it to a SINGFUN:
 if ( isa(f, 'double') )
     aDouble = f;
     f = singfun.zeroSingFun();
@@ -30,6 +35,17 @@ elseif ( isa(g, 'double') )
     g = singfun.zeroSingFun();
     g.smoothPart = singfun.constructSmoothPart(aDouble, aDouble, 1, []);
     
+end
+
+% If one of the arguments is a SMOOTHFUN, upgrade it to a SINGFUN:
+if ( isa(f, 'smoothfun') )
+    temp = singfun.zeroSingFun();
+    temp.smoothPart = f;
+    f = temp;    
+elseif ( isa(g, 'smoothfun') )
+    temp = singfun.zeroSingFun();
+    temp.smoothPart = g;
+    g = temp;    
 end
 
 fExps = f.exponents;
@@ -103,6 +119,12 @@ else
     % Construct a new SINGFUN for sum:
     s = singfun(op, [], [], [], [], singfun.pref);
     % NH: Pass the existing scales from the smoothParts?
+end
+
+%%
+% Check if after addition s has become smooth:
+if ( issmooth(s) )
+    s = s.smoothPart;
 end
 
 end

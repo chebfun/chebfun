@@ -10,11 +10,9 @@ function f = real(f)
 % Compute the real part of the smooth part of F.
 f.smoothPart = real(f.smoothPart);
 
-% If F is imaginary, then the smooth part will be zero due to the line above.
-% In this case remove redundant singularities from what is being returned.
-if ( iszero(f.smoothPart) )
-    f.exponents = [0, 0];    
-    % NH: f = f.smoothPart;
+% Return a SMOOTHFUN object if F is smooth:
+if ( issmooth(f) )
+    f = f.smoothPart;
 end
 
 end
