@@ -16,7 +16,7 @@ p = -0.2;
 q = -0.3;
 
 % Pre-allocate pass matrix
-pass = zeros(1, 7);
+pass = zeros(1, 8);
 
 % fractional pole at the left endpoint
 f = singfun(@(x) (1+x).^p, [p 0], {'sing', 'none'}, [], [], pref);
@@ -70,6 +70,14 @@ g = singfun(@(x) exp(1-x).^(3/2), [0 0], {'none', 'none'}, [], [], pref);
 I = innerProduct(f,g);
 I_exact = 2.30589565644897950113;
 pass(7) = ( abs(I-I_exact) < 1e1*max(get(f, 'epslevel'), get(g, 'epslevel'))*...
+    abs(I_exact) );
+
+% Check the complex-valued case:
+f = singfun(@(x) (sin(x)+1i*cos(x))./((1+x).^0.4.*(1-x).^0.3), [-0.4 -0.3], {'sing', 'sing'}, [], [], pref);
+g = singfun(@(x) (sin(x)-1i*cos(x))./((1+x).^0.2), [-0.2 0], {'sing', 'none'}, [], [], pref);
+I = innerProduct(f,g);
+I_exact = -0.66255618280005499086+0.95157967059305931745i;
+pass(8) = ( abs(I-I_exact) < max(get(f, 'epslevel'), get(g, 'epslevel'))*...
     abs(I_exact) );
 
 end
