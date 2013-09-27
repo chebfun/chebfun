@@ -20,6 +20,6 @@ if ( ~isa(f, 'onefun') || ~isa(g, 'onefun') )
 end
 
 % Call SUM:
-out = sum(f.*g);
+out = sum(conj(f).*g);
 
 end
