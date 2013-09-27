@@ -73,7 +73,8 @@ classdef linopOperator < linop
             elseif isnumeric(B)
                 B = B*linop.eye(A.fundomain);
             end
-            C = linopOperator(A.fundomain);
+            dom = union(A.fundomain, B.fundomain);
+            C = linopOperator(dom);
             C.delayFun = @(z) A.delayFun(z) + B.delayFun(z);
             C.diffOrder = max(A.diffOrder,B.diffOrder);
         end

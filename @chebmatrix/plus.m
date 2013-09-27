@@ -1,5 +1,12 @@
 function C = plus(A,B)
 
+if ( ~isa(A, 'chebmatrix') )
+    A = chebmatrix({A});
+end
+if ( ~isa(B, 'chebmatrix') )
+    B = chebmatrix({B});
+end
+
 [m,n] = size(A);
 C = cell(m,n);
 
