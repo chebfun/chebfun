@@ -12,7 +12,7 @@ seedRNG(666);
 x = 2 * rand(100, 1) - 1;
 x = sort(x);
 
-pass = zeros(1, 7);   % Pre-allocate pass vector
+pass = zeros(1, 9);   % Pre-allocate pass vector
 tol = 1e3*pref.eps;   % loose tolerance for rdivide
 
 %%
@@ -22,13 +22,22 @@ g = singfun(@(x) 1./(1+x), [-1, 0]);
 pass(1) = (isempty(f./g) && isempty(g./f) && isempty(f./f));
 
 %%
+% SMOOTHFUN ./ SINGFUN
+f = smoothfun.constructor(@(x) 2 + sin(x));
+g = singfun(@(x) cos(x));
+pass(2) = isa(f./g, 'smoothfun') && isa(g./f, 'smoothfun');
+%%
+% Division of smooth SINGFUNs should not return a SINGFUN
+f = singfun(@(x) sin(x));
+g = singfun(@(x) cos(x));
+pass(3) = ~isa(f+g, 'singfun');
+%%
 % Check division with a double.
-
 fh = @(x) 1./((1+x).*(1-x));
 f = singfun(fh, [-1, -1]);
 % A random double:
 g = rand();
-pass(2) = test_division_by_scalar(f, fh, g, x, tol);
+pass(4) = test_division_by_scalar(f, fh, g, x, tol);
 
 %%
 % Check reciprocal of a singfun.
@@ -36,13 +45,13 @@ fh = @(x) 0*x + 1;
 f = singfun(fh, [], {'none', 'none'}, [], [], pref);
 gh = @(x) cos(x);
 g = singfun(gh, [], {'none', 'none'}, [], [], pref);
-pass(3) = test_divide_function_by_function(f, fh, g, gh, x, tol);
+pass(5) = test_divide_function_by_function(f, fh, g, gh, x, tol);
 
 %% 
 % Check division of two singfun objects.
 fh = @(x) cos(x);
 f = singfun(fh, [], {'none', 'none'}, [], [], pref);
-pass(4) = test_divide_function_by_function(f, fh, f, fh, x, tol);
+pass(6) = test_divide_function_by_function(f, fh, f, fh, x, tol);
 
 fh = @(x) sin(x);
 f = singfun(fh, [], [], [], [], pref);
@@ -50,12 +59,12 @@ f = singfun(fh, [], [], [], [], pref);
 gh = @(x) (1+x).*(1-x);  %
 g = singfun(gh, [], [], [], [], pref);
 % Remove points really close to the end points.
-pass(5) = test_divide_function_by_function(f, fh, g, gh, x(5:end-4), tol);
+pass(7) = test_divide_function_by_function(f, fh, g, gh, x(5:end-4), tol);
 
 fh = @(x) sin(1e2*x);
 f = singfun(fh, [], [], [], [], pref);
 % Remove points really close to the end points.
-pass(6) = test_divide_function_by_function(f, fh, g, gh, x(5:end-4), tol);
+pass(8) = test_divide_function_by_function(f, fh, g, gh, x(5:end-4), tol);
 
 %%
 % Check that direct construction and RDIVIDE give comparable results.
@@ -65,7 +74,7 @@ g = singfun(@(x) (1+x).*(1-x), [], [], [], [], pref);
 h1 = f./g;
 h2 = singfun(@(x) sin(x)./((1+x).*(1-x)), [], [], [], [], pref);
 x = x(5:end-4); % Remove some points close to the end points.
-pass(7) = norm(feval(h1, x) - feval(h2, x), inf) < tol;
+pass(9) = norm(feval(h1, x) - feval(h2, x), inf) < tol;
 
 
 end

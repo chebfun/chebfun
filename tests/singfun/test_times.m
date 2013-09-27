@@ -21,7 +21,22 @@ p = -0.2;
 q = -0.3;
 
 % Pre-allocate pass matrix
-pass = zeros(1, 7);
+pass = zeros(1, 10);
+
+% Check operation in the case of empty arguments.
+f = singfun();
+g = singfun(@(x) 1./(1+x), [-1, 0]);
+pass(1) = (isempty(f.*f) && isempty(f.*g) && isempty(g.*f));
+
+% Multiplication of smooth SINGFUNs should not return a SINGFUN
+f = singfun(@(x) sin(x));
+g = singfun(@(x) cos(x));
+pass(2) = ~isa(f.*g, 'singfun');
+
+% SMOOTHFUN .* SINGFUN
+f = smoothfun.constructor(@(x) sin(x));
+g = singfun(@(x) cos(x));
+pass(3) = isa(f.*g, 'smoothfun') && isa(g.*f, 'smoothfun');
 
 % fractional pole at the right endpoint
 f = singfun(@(x) (1+x).^p, [p 0], {'sing', 'none'}, [], [], pref);
@@ -31,7 +46,7 @@ vals_h = feval(h, x);
 h_exact = @(x) 1./sqrt(1+x);
 vals_exact = feval(h_exact, x);
 err = vals_h - vals_exact;
-pass(1) = all( abs(err) < max(get(f, 'epslevel'), get(g, 'epslevel'))*abs(vals_exact) );
+pass(4) = all( abs(err) < max(get(f, 'epslevel'), get(g, 'epslevel'))*abs(vals_exact) );
 
 % root at the left endpoint
 f = singfun(@(x) (1+x).^c.*sin(x), [c 0], {'root', 'none'}, [], [], pref);
@@ -41,7 +56,7 @@ vals_h = feval(h, x);
 h_exact = @(x) (1+x).^(3*c).*sin(x);
 vals_exact = feval(h_exact, x);
 err = vals_h - vals_exact;
-pass(2) = all( abs(err) < 1e1*max(get(f, 'epslevel'), get(g, 'epslevel'))*abs(vals_exact) );
+pass(5) = all( abs(err) < 1e1*max(get(f, 'epslevel'), get(g, 'epslevel'))*abs(vals_exact) );
 
 % fractional root at the right endpoint
 f = singfun(@(x) (1-x).^c.*cos(x), [0 c], {'none', 'root'}, [], [], pref);
@@ -51,7 +66,7 @@ vals_h = feval(h, x);
 h_exact = @(x) (1-x).^(a+c).*(cos(x).^2);
 vals_exact = feval(h_exact, x);
 err = vals_h - vals_exact;
-pass(3) = all( abs(err) < 1e1*max(get(f, 'epslevel'), get(g, 'epslevel'))*abs(vals_exact) );
+pass(6) = all( abs(err) < 1e1*max(get(f, 'epslevel'), get(g, 'epslevel'))*abs(vals_exact) );
 
 % fractional pole at the right endpoint
 f = singfun(@(x) (1-x).^b.*(x.^5), [0 b], {'none', 'sing'}, [], [], pref);
@@ -61,7 +76,7 @@ vals_h = feval(h, x);
 h_exact = @(x) (1-x).^b.*(x.^5).*exp(x).*sin(5*x);
 vals_exact = feval(h_exact, x);
 err = vals_h - vals_exact;
-pass(4) = all( abs(err) < 1e2*max(get(f, 'epslevel'), get(g, 'epslevel')) );
+pass(7) = all( abs(err) < 1e2*max(get(f, 'epslevel'), get(g, 'epslevel')) );
 
 % a combination of fractional pole and fractional root
 f = singfun(@(x) (1+x).^b.*sin(x), [b 0], {'sing', 'none'}, [], [], pref);
@@ -71,7 +86,7 @@ vals_h = feval(h, x);
 h_exact = @(x) (1+x).^b.*sin(x).*sin(2*x).*(1-x).^c;
 vals_exact = feval(h_exact, x);
 err = vals_h - vals_exact;
-pass(5) = all( abs(err) < 1e3*max(get(f, 'epslevel'), get(g, 'epslevel')) );
+pass(8) = all( abs(err) < 1e3*max(get(f, 'epslevel'), get(g, 'epslevel')) );
 
 % poles at different endpoints
 f = singfun(@(x) sin(x).*(1-x.^2).^b, [b b], {'sing', 'sing'}, [], [], pref);
@@ -81,7 +96,7 @@ vals_h = feval(h, x);
 h_exact = @(x) sin(x).*(1-x).^b.*cos(x).^3.*(1+x).^(b+p);
 vals_exact = feval(h_exact, x);
 err = vals_h - vals_exact;
-pass(6) = all( abs(err) < 1e1*max(get(f, 'epslevel'), get(g, 'epslevel'))*abs(vals_exact) );
+pass(9) = all( abs(err) < 1e1*max(get(f, 'epslevel'), get(g, 'epslevel'))*abs(vals_exact) );
 
 % Check the trivial case with both vanishing alpha and beta.
 f = singfun(@(x) exp(x).*x.^3.*sin(2*x), [0 0], {'none', 'none'}, [], [], pref);
@@ -91,6 +106,6 @@ vals_h = feval(h, x);
 h_exact = @(x) exp(x).*x.^3.*sin(2*x).*exp(1-x).^(3/2);
 vals_exact = feval(h_exact, x);
 err = vals_h - vals_exact;
-pass(7) = all( abs(err) < 1e2*max(get(f, 'epslevel'), get(g, 'epslevel')) );
+pass(10) = all( abs(err) < 1e2*max(get(f, 'epslevel'), get(g, 'epslevel')) );
 
 end

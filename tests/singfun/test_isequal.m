@@ -12,8 +12,8 @@ end
 pass = zeros(1,5);
 %%
 % create an empty SINGFUN
-f = singfun;
-g = singfun;
+f = singfun();
+g = singfun();
 % following Matlab conventions, two empty objects are equal
 pass(1) = isequal(f,g);
 

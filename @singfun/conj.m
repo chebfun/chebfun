@@ -8,7 +8,17 @@ function f = conj(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org for Chebfun information.
 
+% Check for empty arguments:
+if ( isempty(f) )
+    return;
+end
+
 % Conjugate the smooth part of F:
 f.smoothPart = conj(f.smoothPart);
+
+% Return a SMOOTHFUN object if F is smooth:
+if ( issmooth(f) )
+    f = f.smoothPart;
+end
 
 end

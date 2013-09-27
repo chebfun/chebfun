@@ -14,7 +14,7 @@ x = 2 * rand(100, 1) - 1;
 % A random number to use as an arbitrary additive constant.
 alpha = -0.194758928283640 + 0.075474485412665i;
 
-pass = zeros(1, 12); % Pre-allocate pass vector
+pass = zeros(1, 14); % Pre-allocate pass vector
 tol = 1e4*pref.eps;  % loose tolerance for plus
 
 %%
@@ -23,34 +23,44 @@ f = singfun();
 g = singfun(@(x) 1./(1+x), [-1, 0]);
 pass(1) = (isempty(f + f) && isempty(f + g) && isempty(g + f));
 
+% Addition of smooth SINGFUNs should not return a SINGFUN
+f = singfun(@(x) sin(x));
+g = singfun(@(x) cos(x));
+pass(2) = ~isa(f+g, 'singfun');
+
+
+% SMOOTHFUN + SINGFUN
+f = smoothfun.constructor(@(x) sin(x));
+g = singfun(@(x) cos(x));
+pass(3) = isa(f + g, 'smoothfun') && isa(g + f, 'smoothfun');
 %%
 % Check addition with scalars.
 
 fh = @(x) 1./((1+x).*(1-x));
 f = singfun(fh, [-1, -1]);
-pass(2:3) = test_add_function_to_scalar(f, fh, alpha, x);
+pass(4:5) = test_add_function_to_scalar(f, fh, alpha, x);
 
 %%
 % Check addition of two singfun objects.
 
 fh = @(x) zeros(size(x));
 f = singfun(fh, [], {'none', 'none'}, [], [], pref);
-pass(4:5) = test_add_function_to_function(f, fh, f, fh, x);
+pass(6:7) = test_add_function_to_function(f, fh, f, fh, x);
 
 fh = @(x) sin(pi*x)./(1-x);
 f = singfun(fh, [], [], [], [], pref);
 
 gh = @(x) cos(pi*x)./(1-x);
 g = singfun(gh, [], [], [], [], pref);
-pass(6:7) = test_add_function_to_function(f, fh, g, gh, x);
+pass(8:9) = test_add_function_to_function(f, fh, g, gh, x);
 
 gh = @(x) cos(1e2*x);
 g = singfun(gh, [], [], [], [], pref);
-pass(8:9) = test_add_function_to_function(f, fh, g, gh, x);
+pass(10:11) = test_add_function_to_function(f, fh, g, gh, x);
 
 gh = @(t) sinh(t*exp(2*pi*1i/6));
 g = singfun(gh, [], [], [], [], pref);
-pass(10:11) = test_add_function_to_function(f, fh, g, gh, x);
+pass(12:13) = test_add_function_to_function(f, fh, g, gh, x);
 
 %%
 % Check that direct construction and PLUS give comparable results.
@@ -59,8 +69,7 @@ f = singfun(@(x) x, [], [], [], [], pref);
 g = singfun(@(x) cos(x) - 1, [], [], [], [], pref);
 h1 = f + g;
 h2 = singfun(@(x) x + cos(x) - 1, [], [], [], [], pref);
-pass(12) = norm(feval(h1, x) - feval(h2, x), inf) < tol;
-
+pass(14) = norm(feval(h1, x) - feval(h2, x), inf) < tol;
 
 end
 

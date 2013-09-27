@@ -1,4 +1,4 @@
-classdef singfun < onefun
+classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Notes)
 %SINGFUN   Class for functions with singular endpoint behavior.
 %
 %   Class for approximating singular functions on the interval [-1,1] using a
@@ -72,7 +72,14 @@ classdef singfun < onefun
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
-    
+
+%% NOTES:
+%   It is a Matlab requirement to specify exactly which classes are inferior to
+%   a given class. One might think that writing "InferiorClasses = {?smoothfun}"
+%   should be OK but it turns out that subclasses do not inherit the attribute
+%   of being inferior and all inferior clases/subclasses should be mentioned 
+%   explicitly.
+
     %% Properties of SINGFUN objects
     properties ( Access = public )
         % Smooth part of the representation.

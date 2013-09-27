@@ -7,6 +7,11 @@ function f = imag(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org for Chebfun information.
 
+% Check for empty arguments:
+if ( isempty(f) )
+    return;
+end
+
 % Compute the imaginary part of the smooth part:
 f.smoothPart = imag(f.smoothPart);
 
