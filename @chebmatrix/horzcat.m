@@ -1,13 +1,11 @@
-function C = horzcat(A,B)
-if isa(A,'chebmatrix')
-    b1 = A.blocks;
-else
-    b1 = {A};
+function C = horzcat(varargin)
+
+for k = 1:numel(varargin)
+    if ( isa(varargin{k}, 'chebmatrix') )
+        varargin{k} = varargin{k}.blocks;
+    end
 end
-if isa(B,'chebmatrix')
-    b2 = B.blocks;
-else
-    b2 = {B};
-end
-C = chebmatrix( horzcat(b1,b2) );
+
+C = chebmatrix( horzcat(varargin{:}) );
+
 end

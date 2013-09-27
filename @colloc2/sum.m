@@ -7,7 +7,8 @@ S = cell(1,numint);
 for k = 1:numint
     S{k} = chebtech2.quadwts(n(k));
 end
-S = cell2num(S);
+S = [S{:}];
+% S = cell2num(S);
 S = S * (d(end)-d(1))/2;
 
 end

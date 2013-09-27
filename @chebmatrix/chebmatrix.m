@@ -39,8 +39,8 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
         L = rbc(L,f,value)
         
         % Concatenation
-        C = horzcat(A,B)
-        C = vertcat(A,B)
+        C = horzcat(varargin)
+        C = vertcat(varargin)
         %TODO: CAT()
         
         B = subsref(A,sr)
@@ -87,27 +87,6 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
                 varargout{1} = cellfun(@(x)size(x,1),B(:,1));
                 varargout{2} = cellfun(@(x)size(x,2),B(1,:));
             end
-        end
-
-        function C = horzcat(A,B)
-            if isa(A,'chebmatrix')
-                b1 = A.blocks;
-            else
-                b1 = {A};
-            end
-            if isa(B,'chebmatrix')
-                b2 = B.blocks;
-            else
-                b2 = {B};
-            end
-            C = chebmatrix( horzcat(b1,b2) );
-        end
-        
-        function C = vertcat(varargin)
-            for k = 1:numel(varargin)
-                varargin{k} = varargin{k}.blocks;
-            end
-            C = chebmatrix( vertcat(varargin{:}) );
         end
 
         function display(A)
@@ -186,7 +165,7 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
             function out = getDomain(A)
                 if ( isnumeric(A) )
                     out = [NaN NaN];
-                elseif ( isa(A, 'linop') )
+                elseif ( isa(A, 'linop') || isa(A, 'colloc2') )
                     out = A.fundomain;
                 else
                     out = get(A, 'domain');

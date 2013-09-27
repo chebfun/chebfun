@@ -1,3 +1,12 @@
-function C = vertcat(A,B)
-C = chebmatrix( vertcat(A.blocks,B.blocks) );
+function C = vertcat(varargin)
+
+
+for k = 1:numel(varargin)
+    if ( isa(varargin{k}, 'chebmatrix') )
+        varargin{k} = varargin{k}.blocks;
+    end
+end
+
+C = chebmatrix( vertcat(varargin{:}) );
+
 end
