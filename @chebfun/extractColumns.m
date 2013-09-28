@@ -6,7 +6,7 @@ function f = extractColumns(f, colIdx)
 %   range [1, M] where F has M columns.
 %
 %   If F is a row CHEBFUN, then EXTRACTCOLUMNS(F, ROWIDX) behaves as described
-%   above, except that extracts the rows of F so G = F(ROWIDX,: ).
+%   above, except that extracts the rows of F so G = F(ROWIDX,:).
 %
 % See also MAT2CELL.
 

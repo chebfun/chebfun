@@ -22,7 +22,7 @@ function f = pchip(x, y, d)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin < 3 )
-    d = x([1, end]);
+    d = x([1,end]);
 end
 
 % Ensure x is a column vector:
@@ -44,7 +44,7 @@ if ( ~any(size(y) == size(x))  )
     y = y.';
 end
 
-% Evaluate on the Chebyshev grid using built-in spline:
+% Evaluate on the Chebyshev grid using built-in PCHIP:
 if ( size(y, 2) == 1 ) % Note, PCHIP does weird things with orientation!
     yy = pchip(x, y, xx); 
 else

@@ -1,9 +1,5 @@
 function pass = test_interp1(pref)
 
-if ( nargin == 0 )
-    pref = chebfun.pref();
-end
-
 %% Linear interpolation:
 % Test a scalar function:
 x = (0:10).';  

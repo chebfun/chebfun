@@ -25,7 +25,7 @@ if ( nargin == 1 )
     n = 1;
 end
 
-% Call FUN/LEGOPLY():
+% Call FUN/LEGPOLY():
 out = legpoly(f.funs{n});
 
 end

@@ -6,11 +6,11 @@ function g = mat2cell(f, M, N)
 %   of each cell in G so that
 %               SIZE(C{I}, 2) == C(I), for I = 1:LENGTH(C)
 %
-%   G = MAT2CELL(F) assumes is a row vector with all entries equal to 1 whose
+%   G = MAT2CELL(F) assumes is C a row vector with all entries equal to 1 whose
 %   length is equal to the number of columns of F.
 %
 %   G = MAT2CELL(F, M, N) is similar to above, but allows three input arguments
-%   so as to be consistent with the built in MAT2CELL function. Here N takes the
+%   so as to be consistent with the built-in MAT2CELL function. Here N takes the
 %   role of C above, and M should be the scalar value 1.
 %
 % Example:

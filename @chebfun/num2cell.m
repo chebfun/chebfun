@@ -1,8 +1,8 @@
 function C = num2cell(A)
 %NUM2CELL   Convert an array-valued CHEBFUN into cell array.
-%   C = num2cell(A) converts an INFxM array-valued CHEBFUN A into a 1xM cell
+%   C = NUM2CELL(A) converts an INFxM array-valued CHEBFUN A into a 1xM cell
 %   array C by placing each column of A into a separate cell in C. If A is an
-%   MxINF rown CHEBFUN, then C is Mx1.
+%   MxINF row CHEBFUN, then C is Mx1.
 %
 % See also MAT2CELL.
 
