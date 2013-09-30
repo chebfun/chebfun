@@ -8,7 +8,7 @@ end
 seedRNG(6178);
 x = 2 * rand(100, 1) - 1;
 
-pass = zeros(2, 6); % Pre-allocate pass matrix
+pass = zeros(2, 7); % Pre-allocate pass matrix
 for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();
@@ -39,7 +39,7 @@ for n = 1:2
     [g, l, r] = extractBoundaryRoots(f);
     gexact = testclass.make(@(x) exp(x), [], [], pref);
     err = feval(g, x) - feval(gexact, x);
-    pass(n, 3) = ( ( norm(err, Inf) < (1e2^(ml+mr))*f.epslevel ) && ( l == ml ) && ( r == mr ) );
+    pass(n, 3) = ( ( norm(err, Inf) < (1e1^(ml+mr))*f.epslevel ) && ( l == ml ) && ( r == mr ) );
     
     %% Test complex case:
     ml = 1;
@@ -48,7 +48,7 @@ for n = 1:2
     [g, l, r] = extractBoundaryRoots(f);
     gexact = testclass.make(@(x) x.^2+exp(x)+1i*cos(2*x), [], [], pref);
     err = feval(g, x) - feval(gexact, x);
-    pass(n, 4) = ( ( norm(err, Inf) < (1e2^(ml+mr))*f.epslevel ) && ( l == ml ) && ( r == mr ) );
+    pass(n, 4) = ( ( norm(err, Inf) < (1e1^(ml+mr))*f.epslevel ) && ( l == ml ) && ( r == mr ) );
     
     %% Test when no roots:
     f = testclass.make(@(x) sin(1-x)./(1-x), [], [], pref);
@@ -64,11 +64,11 @@ for n = 1:2
     pass(n, 6) = ( ( norm(err, Inf) < 1e2*f.epslevel ) && ( r == 1 ) );
     
     %% Test array-valued case:
-%     f = testclass.make(@(x) [sin(x).*((1-x).^2) cos(x.^2).*(1+x).*(1-x)], [], [], pref);
-%     [g, l, r] = extractBoundaryRoots(f);
-%     gexact = testclass.make(@(x) [sin(x) cos(x.^2)], [], [], pref);
-%     err = feval(g, x) - feval(gexact, x);
-%     pass(n, 7) = ( ( norm(err, Inf) < (1e2^2)*f.epslevel ) && ( all(l == [0 1]) ) && ( all(r == [2 1]) ) );
+    f = testclass.make(@(x) [sin(x).*((1-x).^2) cos(x.^2).*(1+x).*(1-x)], [], [], pref);
+    [g, l, r] = extractBoundaryRoots(f);
+    gexact = testclass.make(@(x) [sin(x) cos(x.^2)], [], [], pref);
+    err = feval(g, x) - feval(gexact, x);
+    pass(n, 7) = ( ( norm(err, Inf) < (1e2^2)*f.epslevel ) && ( all(l == [0 1]) ) && ( all(r == [2 1]) ) );
     
 end
 

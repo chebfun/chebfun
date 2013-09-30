@@ -10,34 +10,39 @@ function [f, rootsLeft, rootsRight] = extractBoundaryRoots(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Grab the size of F:
+m = size(f, 2);
+
 % Tolerance for a root:
 tol = 1e4*eps*get(f, 'vscale');
 
 % Values at ends:
-endValues = abs([get(f, 'lval'), get(f, 'rval')]);
+endValues = abs([feval(f, -1); feval(f, 1)]);
 
 % Initialise the multiplicity of the roots:
-rootsLeft = 0;
-rootsRight = 0;
+rootsLeft = zeros(1, m);
+rootsRight = zeros(1, m);
 
 % If there are no roots, there is nothing to do!
-if ( all(endValues > tol) )
+if ( all( min(endValues, [], 1) > tol ) )
     return
 end
 
 % Grab the coefficients of F:
 c = f.coeffs;
 
-while ( any(endValues <= tol) )
+while ( any( min(endValues, [], 1) <= tol ) )
     
-    if ( endValues(1) <= tol )
+    if ( any( endValues(1, :) <= tol ) )
         % Root at the left.
         sgn = 1;
-        rootsLeft = rootsLeft + 1;
+        ind = find(endValues(1, :) <= tol);
+        rootsLeft(ind) = rootsLeft(ind) + 1;
     else
         % Root at the right.
         sgn = -1;
-        rootsRight = rootsRight + 1;
+        ind = find(endValues(2, :) <= tol);
+        rootsRight(ind) = rootsRight(ind) + 1;
     end
     
     % Construct the matrix for the recurrence:
@@ -47,18 +52,18 @@ while ( any(endValues <= tol) )
     D(1) = 1; %#ok<SPRIX>
     
     % Compute the new coefficients:
-    c = sgn*flipud(D\c(end-1:-1:1,:));
+    c(2:end,ind) = sgn*flipud(D\c(end-1:-1:1,ind));
+    
+    % Pad zero at the highest coefficients:
+    c(1,ind) = 0; 
     
     % Construct new f:
-    f.values = f.coeffs2vals(c);
     f.coeffs = c;
     
     % Update endValues:
-    endValues = abs([get(f, 'lval'), get(f, 'rval')]);
+    endValues = abs([feval(f, -1); feval(f, 1)]);
     
 end
 
 % Call simplify to simplify and update the vscale:
 f = simplify(f);
-
-end
