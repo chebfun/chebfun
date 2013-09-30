@@ -42,7 +42,7 @@ while ( any(endValues < tol) )
     c = sgn*flipud(D\c(end-1:-1:1,:));
    
     % Construct new f
-    f.values = f.chebpolyval(c);
+    f.values = f.coeffs2vals(c);
     f.coeffs = c;
     
     % Update endValues:
