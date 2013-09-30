@@ -14,7 +14,8 @@ function p = interp1(x, y, method, dom)
 %       ff = @(x) 1./(1+25*x.^2);
 %       x = linspace(d(1), d(2), 11);
 %       p = chebfun.interp1(x, ff(x))
-%       plot(chebfun(ff, d), 'k', p, 'r', x, ff(x), '.r'), grid on
+%       f = chebfun(ff, d);
+%       plot(f, 'k', p, 'r-'), hold on, plot(x, ff(x), 'r.'), grid on
 %
 %   P = INTERP1(X, Y, METHOD) specifies alternate interpolation methods. The
 %   default is as described above. (Use an empty matrix [] to specify the
