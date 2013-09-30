@@ -50,16 +50,23 @@ if ( nargin == 2 )
     
 elseif ( nargin == 3 )
     
-    if ( numel(k.funs) > 1 )
-        error('CHEBFUN:residue:multiple_funs', ...
-            'Residue does not support CHEBFUNs consisting of multiple FUNS.');
+    % Interpret an empty CHEBFUN as a zero CHEBFUN for the user's convenience.
+    if ( isempty(k) )
+        k = 0;
+    else
+        if ( numel(k.funs) > 1 )
+            error('CHEBFUN:residue:multiple_funs', ...
+                  'RESIDUE does not support CHEBFUNs with multiple FUNS.');
+        end
+
+        if ( ~isfinite(k) )
+            error('CHEBFUN:residue:inf', ...
+                  'RESIDUE does not support functions which are unbounded.');
+        end
+
+        k = poly(k);
     end
-    if ( ~isfinite(k) )
-        error('CHEBFUN:residue:inf', ...
-              'Residue does not support functions with nonzero exponents.');
-    end
-    
-    k = poly(k);
+
     [b, a] = residue(u, v, k);
     coeffs = chebfun(@(x) polyval(b, x), max(length(b), 1), 'vectorize');
     poles = chebfun(@(x) polyval(a, x), max(length(a), 1), 'vectorize');
