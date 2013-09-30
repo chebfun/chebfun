@@ -25,7 +25,7 @@ classdef chebtech < smoothfun % (Abstract)
 %   details. The CHEBTECH class supports construction via interpolation at first-
 %   and second-kind Chebyshev points with the classes CHEBTECH1 and CHEBTECH2
 %   respectively. The default procedure is to use 2nd-kind points, but this can
-%   be overwritten with the preferences PREF = CHEBTECH('tech', 'cheb1').
+%   be overwritten with the preferences PREF = CHEBTECH('tech', 'chebtech1').
 %
 %   CHEBTECH.CONSTRUCTOR(VALUES, VSCALE, HSCALE, PREF) returns a CHEBTECH object
 %   which interpolates the data in the columns of VALUES on a Chebyshev grid.
