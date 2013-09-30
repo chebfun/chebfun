@@ -35,11 +35,12 @@ function p = interp1(x, y, method, dom)
 % Parse inputs:
 if ( nargin == 2 )
     method = 'poly';
-    dom = {};
+    dom = [];
 end
+
 if ( nargin == 3 )
     if ( ischar(method) )
-        dom = {};
+        dom = [];
     else
         dom = method;
         method = 'poly';
@@ -55,19 +56,20 @@ if ( size(y, 1) == 1 )
     y = y.';
 end
 
-if ( ~isempty(dom) )
-    dom = {dom};
+% Set default domain if none was supplied.
+if ( isempty(dom) )
+    dom = [x(1) x(end)];
 end
 
 switch method
     case 'poly'
-        p = interp1Poly(x, y, dom{:});
+        p = interp1Poly(x, y, dom);
     case 'spline'
-        p = chebfun.spline(x, y, dom{:});
+        p = chebfun.spline(x, y, dom);
     case {'pchip', 'cubic'}
-        p = chebfun.pchip(x, y, dom{:});
+        p = chebfun.pchip(x, y, dom);
     case 'linear'
-        p = interp1Linear(x, y, dom{:});
+        p = interp1Linear(x, y, dom);
     otherwise
         error('CHEBFUN:interp1:method', 'Unknown method ''%s''', method);
 end
@@ -76,10 +78,6 @@ end
 
 function p = interp1Poly(x, y, breaks)
 % Polynomial interpolation
-
-if ( (nargin == 2) || isempty(breaks) )
-    breaks = x([1, end]).';
-end
 
 % Compute barycentric weights for these points:
 w = baryWeights(x);
@@ -92,10 +90,6 @@ end
 
 function p = interp1Linear(x, y, d)
 % Linear interpolation
-
-if ( nargin < 3 )
-    d = x([1, end]);
-end
 
 % Include breaks defined in the domain
 breaks = unique([d(:) ; x(:)].');
