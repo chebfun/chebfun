@@ -278,6 +278,9 @@ classdef chebtech < smoothfun % (Abstract)
         % Derivative of a CHEBTECH.
         f = diff(f, k, dim)
         
+        % Extract roots at the boundary points -1 and 1.
+        [f, rootsLeft, rootsRight] = extractBoundaryRoots(f) 
+        
         % Extrapolate (for NaNs / Infs).
         [values, maskNaN, maskInf] = extrapolate(f)
 
