@@ -125,7 +125,6 @@ err = vals_g - vals_exact;
 pass(8) = (norm(err, inf) < 1e7*get(f,'epslevel')*norm(vals_exact, inf));
 
 %%
-
 % fractional root at the left endpoint:
 dom = [-1+10^(-D) 1];
 scl = (dom(2)-dom(1))/2;
