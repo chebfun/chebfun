@@ -30,12 +30,6 @@ numInts = numel(s) - 1;
 % Preallocate a cell:
 g = cell(1, numInts);
 
-% Absolute values at the endpoints of the subintervals:
-endVal = zeros(1, numInts+1);
-for j = 1:numInts+1
-    endVal(j) = abs(feval(f, s(j)));
-end
-
 % In the following construction process, we try to make the best of the
 % information stored in the original SINGFUN f.
 
@@ -46,38 +40,49 @@ for j = 1:numInts
     if ( s(j) == -1 )
         % Define the new operator:
         op = @(x) feval(f, ((1 - x)*s(1) + (1 + x)*s(2))/2);
-
-        % Call the singfun constructor:
-        gtmp = singfun(op, [f.exponents(1), 0], {'sing', 'none'});
+        
+        if ( f.exponents(1) ~= 0 )
+            % Call the singfun constructor:
+            gtmp = singfun(op, [f.exponents(1), 0], {'sing', 'none'});
+        else
+            % Call the smoothfun constructor:
+            gtmp = smoothfun.constructor(op, [], [], []);
+        end
+        % Put in cell:
         g{1} = gtmp;
-
+        
         continue
     end
-
+    
     % Check if the last subinterval includes the right endpoint of the original
     % domain (i.e., 1).
     
     if ( s(j+1) == 1 )
         % Define the new operator:
         op = @(x) feval(f, ((1 - x)*s(end-1) + (1 + x)*s(end))/2);
-
-        % Call the singfun constructor:
-        gtmp = singfun(op, [0, f.exponents(2)], {'none', 'sing'});
-
+        
+        if ( f.exponents(2) ~= 0 )
+            % Call the singfun constructor:
+            gtmp = singfun(op, [0, f.exponents(2)], {'none', 'sing'});
+            
+        else
+            % Call the smoothfun constructor:
+            gtmp = smoothfun.constructor(op, [], [], []);
+        end
         % Put in cell:
         g{end} = gtmp;
-
+        
         continue
     end
-
-    % In other subintervals, we only consider smoothfuns. 
-
+    
+    % In other subintervals, we only consider smoothfuns.
+    
     % Define the new operator:
     op = @(x) feval(f, ((1 - x)*s(j) + (1 + x)*s(j+1))/2);
-
+    
     % Call the smoothfun constructor
     gtmp = smoothfun.constructor(op, [], 1);
-
+    
     % Put in cell:
     g{j} = gtmp;
 end
