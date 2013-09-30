@@ -58,4 +58,13 @@ pass(18) = numel(f.funs) == 1;
 pass(19) = length(f) == length(x);
 pass(20) = all(f.domain == dom);
 
+%% Check that things work for row vector input.
+x = (0:10).';
+y = sin(x);
+f1 = chebfun.interp1(x.', y, 'linear');
+f2 = chebfun.interp1(x, y.', 'linear');
+f3 = chebfun.interp1(x.', y.', 'linear');
+pass(21) = (norm(feval(f1, x) - y) < 10*vscale(f1)*epslevel(f1)) && ...
+           (norm(feval(f2, x) - y) < 10*vscale(f2)*epslevel(f2)) && ...
+           (norm(feval(f3, x) - y) < 10*vscale(f3)*epslevel(f3));
 end

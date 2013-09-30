@@ -46,6 +46,15 @@ if ( nargin == 3 )
     end
 end
 
+% Ensure x and y are both column vectors:
+if ( size(x, 1) == 1 )
+    x = x.';
+end
+
+if ( size(y, 1) == 1 )
+    y = y.';
+end
+
 if ( ~isempty(dom) )
     dom = {dom};
 end
@@ -88,11 +97,6 @@ if ( nargin < 3 )
     d = x([1, end]);
 end
 
-% Ensure x is a column vector:
-if ( size(x, 1) == 1 )
-    x = x.';
-end
-
 % Include breaks defined in the domain
 breaks = unique([d(:) ; x(:)].');
 
@@ -101,11 +105,6 @@ numInts = numel(breaks) - 1;
 
 % Piecewise Chebyshev grid:
 xx = chebpts(repmat(2, numInts, 1), breaks).';
-
-% Forgive some transpose issues:
-if ( ~any(size(y) == size(x))  )
-    y = y.';
-end
 
 % Evaluate on the Chebyshev grid using built-in INTERP1:
 yy = interp1(x, y, xx.', 'linear');
