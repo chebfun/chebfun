@@ -186,11 +186,20 @@ classdef chebfun
         % Edge detector.
         [edge, vscale] = detectEdge(op, domain, hscale, vscale, derHandle);
         
+        % Interpolate data:
+        f = interp1(x, y, method, dom);
+        
         % Determine values of chebfun at breakpoints.
         vals = getValuesAtBreakpoints(funs, ends, op);
         
         % Retrieve and modify preferences for this class.
         prefs = pref(varargin);
+        
+        % Cubic Hermite interpolation:
+        f = pchip(x, y, method);
+        
+        % Cubic spline interpolant:
+        f = spline(x, y, d);
         
     end
 
@@ -243,14 +252,11 @@ classdef chebfun
         % Compare domains of two CHEBFUN objects.
         pass = domainCheck(f, g);
 
-        % Retrieve and modify preferences for this class.
-        varargout = subsref(f, index);
-
-        % Retrieve and modify preferences for this class.
-        varargout = subsasgn(f, varargin);
-
         % Accuracy estimate of a CHEBFUN object.
         out = epslevel(f);
+        
+        % Extract columns of an array-valued CHEBFUN object.
+        f = extractColumns(f, columnIndex);
         
         % Evaluate a CHEBFUN.
         y = feval(f, x, varargin)
@@ -338,6 +344,12 @@ classdef chebfun
 
         % Size of a CHEBFUN object.
         [s1, s2] = size(f, dim);
+        
+        % Retrieve and modify preferences for this class.
+        varargout = subsref(f, index);
+
+        % Retrieve and modify preferences for this class.
+        varargout = subsasgn(f, varargin);
         
         % CHEBFUN multiplication.
         f = times(f, g, varargin)
