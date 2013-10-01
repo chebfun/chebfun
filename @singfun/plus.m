@@ -7,8 +7,6 @@ function s = plus(f, g)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% NH: It seems SINGFUN + SMOOTHFUN is not supported?
-
 % If one of the arguments is empty:
 if ( isempty(f) || isempty(g) )
     % Create an empty singfun and return:
