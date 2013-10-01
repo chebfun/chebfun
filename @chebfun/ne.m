@@ -20,7 +20,7 @@ end
 
 % Array-valued?
 if ( min(size(f)) > 1 || min(size(g)) > 1 )
-	error('CHEBFUN:lt:array', ...
+	error('CHEBFUN:ne:array', ...
         '<= does not suport array-valued CHEBFUN objects.');
 end
 
