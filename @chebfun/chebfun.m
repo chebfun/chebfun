@@ -197,6 +197,9 @@ classdef chebfun
     methods (Access = private)
         % Remove zero layers from impulses array.
         f = tidyImpulses(f);
+
+        % Set small breakpoint values to zero.
+        f = thresholdBreakpointValues(f);
     end
     
     % Static private methods implemented by CHEBFUN class.

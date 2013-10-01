@@ -17,6 +17,7 @@ if ( ~isa(f, 'chebfun') )   % ??? + CHEBFUN
 elseif ( isempty(g) )       % CHEBFUN + []
 
     f = [];
+    return
 
 elseif ( isnumeric(g) )     % CHEBFUN + double
     
@@ -48,6 +49,7 @@ elseif ( ~isa(g, 'chebfun') ) % CHEBFUN + ???
 elseif ( isempty(f) )         % empty CHEBFUN + CHEBFUN
 
     % Nothing to do. (Return empty CHEBFUN as output).
+    return
 
 else                          % CHEBFUN + CHEBFUN
 
@@ -69,5 +71,8 @@ else                          % CHEBFUN + CHEBFUN
     end
 
 end
+
+% Set small breakpoint values to zero:
+f = thresholdBreakpointValues(f);
 
 end
