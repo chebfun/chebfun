@@ -34,7 +34,7 @@ switch prop
             out = out.';
         end
     case {'lval-local', 'rval-local'}
-        if ( iszero(f) )
+        if ( isempty(f) )
             out = [];
             return
         end
