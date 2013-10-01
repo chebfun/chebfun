@@ -13,8 +13,9 @@ function [f, rootsLeft, rootsRight] = extractBoundaryRoots(f)
 % Grab the size of F:
 m = size(f, 2);
 
-% Tolerance for a root:
-tol = 1e4*eps*get(f, 'vscale');
+% Tolerance for a root (we will loosen this with each run of the loop below if
+% there are multiple roots):
+tol = 10*f.vscale*f.epslevel;
 
 % Values at ends:
 endValues = abs([feval(f, -1); feval(f, 1)]);
@@ -57,11 +58,17 @@ while ( any( min(endValues, [], 1) <= tol ) )
     % Pad zero at the highest coefficients:
     c(1,ind) = 0; 
     
-    % Construct new f:
+    % Update the coefficients.  Note that we don't need to update the values 
+    % here, since only coefficients are used in this while loop.  (feval(), 
+    % below, calls CLENSHAW, which only uses coefficients.)
+    
     f.coeffs = c;
     
     % Update endValues:
     endValues = abs([feval(f, -1); feval(f, 1)]);
+    
+    % Loosen the tolerance for checking multiple roots:
+    tol = 1e2*tol;
     
 end
 
