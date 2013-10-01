@@ -35,8 +35,8 @@ end
 % Prolong the points; 
 % Barycentric formula when n is small or when compressing, FFT when large.
 if ( (nDiff < 0) && (nOut < 33) && (nIn < 1000) ) % <- Determined experimentally
-    % Use BARY to compress:
-    f.values = f.bary(f.chebpts(nOut), f.values);
+    % Use CLENSHAW to compress:
+    f.values = f.clenshaw(f.chebpts(nOut), f.coeffs);
     f.coeffs = f.vals2coeffs(f.values);
 else
     % Use FFTs:
