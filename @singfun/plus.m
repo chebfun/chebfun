@@ -114,9 +114,12 @@ else
     % Define a function handle for the sum:
     op = @(x) feval(f, x) + feval(g, x);
     
-    % Construct a new SINGFUN for sum:
-    s = singfun(op, [], [], [], [], singfun.pref);
-    % NH: Pass the existing scales from the smoothParts?
+    % The new scales for the sum:
+    vScale = get(f, 'vscale') + get(g, 'vscale');
+    hScale = get(f, 'hscale');
+    
+    % Construct a new SINGFUN for the sum:
+    s = singfun(op, [], [], vScale, hScale, singfun.pref);
 end
 
 %%
