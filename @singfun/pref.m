@@ -23,33 +23,17 @@ function prefs = pref(varargin)
 %
 %   SINGFUN PREFERENCES (case sensitive)
 %
-%   [TODO] Copied from CHEBTECH, not done yet. Some of these might make sense
-%   for SINGFUNs:
-%   NH: This needs to be done.
-%
-%     tech         -  Select the type of Chebyshev grid on which the function
-%                     is sampled.
-%
-%     eps          -  Relative tolerance used in construction and subsequent
+%        eps       -  Relative tolerance used in construction and subsequent
 %      [2^-52]        operations.
 %
-%     extrapolate
-%        true      -  Function values at endpoints may be extrapolated from
-%                     interior values rather than sampled.
-%       [false]    -  Do not extrapolate values at endpoints.
-%
-%     hscale       -  Horizontal scale. This preference can be used to ensure
-%        [1]          horizontal scale invariance when using the CHEBTECH
-%                     constructor to implicitly represent functions defined on
-%                     domains other than [-1, 1].
-%
 %     exponentTol  -  Tolerance for exponents. This is the refinement upto
-%    [1.1*1e-11]      which the singularity detector will try to resolve
-%                     the exponent.
+%     [1.1*1e-11]     which the singularity detector will try to resolve the 
+%                     exponent.
 %
-%     maxPoleOrder -  Order of the maximum pole that the singularity
-%       [20]          detector can find.
+%     maxPoleOrder -  Order of the maximum pole that the singularity detector
+%        [20]         can find.
 %                  
+% See also SINGFUN.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org for Chebfun information.
