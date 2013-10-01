@@ -25,7 +25,7 @@ function f = diff(f, n, dim)
 %   'Caputo'). [Requires SINGFUN].
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 % Trivial case:
 if ( isempty(f) )
