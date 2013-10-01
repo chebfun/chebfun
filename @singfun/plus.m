@@ -7,8 +7,6 @@ function s = plus(f, g)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% NH: It seems SINGFUN + SMOOTHFUN is not supported?
-
 % If one of the arguments is empty:
 if ( isempty(f) || isempty(g) )
     % Create an empty singfun and return:
@@ -116,9 +114,12 @@ else
     % Define a function handle for the sum:
     op = @(x) feval(f, x) + feval(g, x);
     
-    % Construct a new SINGFUN for sum:
-    s = singfun(op, [], [], [], [], singfun.pref);
-    % NH: Pass the existing scales from the smoothParts?
+    % The new scales for the sum:
+    vScale = get(f, 'vscale') + get(g, 'vscale');
+    hScale = get(f, 'hscale');
+    
+    % Construct a new SINGFUN for the sum:
+    s = singfun(op, [], [], vScale, hScale, singfun.pref);
 end
 
 %%
