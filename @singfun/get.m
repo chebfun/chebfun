@@ -11,13 +11,13 @@ function out = get(f, prop)
 
 switch prop
     
-    case fieldnames(f.smoothPart)
-        % Access to any of the properties of the smooth part of F:
-        out = f.smoothPart.(prop);
-        
     case fieldnames(f)
         % Allow access to any of the properties of F via GET:
         out = f.(prop);
+        
+    case fieldnames(f.smoothPart)
+        % Access to any of the properties of the smooth part of F:
+        out = f.smoothPart.(prop);
         
     otherwise
         error('CHEBFUN:SINGFUN:GET:propname', ...

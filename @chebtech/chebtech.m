@@ -152,7 +152,7 @@ classdef chebtech < smoothfun % (Abstract)
         % Vertical scale of the CHEBTECH. This is a row vector storing the
         % magnitude of the largest entry in each column of VALUES. It is
         % convenient to store this as a property.
-%         vscale = 0 % (1xm double >= 0)
+        vscale = 0 % (1xm double >= 0)
 
         % Horizontal scale of the CHEBTECH. Although CHEBTECH objects have in
         % principle no notion of horizontal scale invariance (since they always
@@ -160,16 +160,16 @@ classdef chebtech < smoothfun % (Abstract)
         % HSCALE is then used to enforce horizontal scale invariance in
         % construction and other subsequent operations that require it. It
         % defaults to 1 and is never updated.
-%         hscale = 1 % (scalar > 0)
+        hscale = 1 % (scalar > 0)
 
         % Boolean value designating whether the CHEBTECH is 'happy' or not. See
         % HAPPINESSCHECK.m for full documentation.
-%         ishappy % (logical)
+        ishappy % (logical)
 
         % Happiness level to which the CHEBTECH was constructed (See
         % HAPPINESSCHECK.m for full documentation) or a rough accuracy estimate
         % of subsequent operations (See CHEBTECH class documentation for details).
-%         epslevel % (double >= 0)
+        epslevel % (double >= 0)
     end
 
     %% CLASS CONSTRUCTOR:
