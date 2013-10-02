@@ -284,6 +284,9 @@ classdef chebtech < smoothfun % (Abstract)
         % Derivative of a CHEBTECH.
         f = diff(f, k, dim)
         
+        % Extract columns of an array-valued CHEBTECH object.
+        f = extractColumns(f, columnIndex);
+        
         % Extrapolate (for NaNs / Infs).
         [values, maskNaN, maskInf] = extrapolate(f)
 

@@ -41,7 +41,9 @@ if ( any(isnan(fvals)) )
 end
 
 % The main loop:
-if ( numel(x) < length(xk) )  % Loop over evaluation points
+if ( numel(x) < 4*length(xk) )  % Loop over evaluation points
+    % Note: The value "4" here was detemined experimentally.
+    
     % Initialise return value:
     fx = zeros(size(x, 1), m);
 
@@ -50,7 +52,7 @@ if ( numel(x) < length(xk) )  % Loop over evaluation points
         xx = vk ./ (x(j) - xk);
         fx(j,:) = (xx.'*fvals) / sum(xx);
     end
-else                         % Loop over barycentric nodes
+else                            % Loop over barycentric nodes
     % Initialise:
     num = zeros(size(x, 1), m);
     denom = num;

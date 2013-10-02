@@ -1,4 +1,4 @@
-function varargout = plot(f,varargin)
+function varargout = plot(varargin)
 %PLOT   Basic linear plot for CHEBFUN objects.
 %   PLOT(F) plots the CHEBFUN object F.
 %
@@ -21,8 +21,7 @@ function varargout = plot(f,varargin)
 %                                h     hexagram
 %
 %   The entries from the centre columns are plotted at the grid being used to
-%   represent F (typically Chebyshev). If no options from this column are
-%   chosen, 'o' is chosen by default if length(F) < 256.
+%   represent F (typically Chebyshev).
 %
 %   The X,Y pairs, or X,Y,S triples, can be followed by parameter/value pairs to
 %   specify additional properties of the lines. For example,
@@ -30,10 +29,15 @@ function varargout = plot(f,varargin)
 %            plot(f, 'LineWidth', 2, 'Color', [.6 0 0])
 %   will create a plot with a dark red line width of 2 points.
 %
-%   H1 = PLOT(F) returns a column vector of handles to lineseries objects, one
-%   handle per plotted line (in the case of vector-valued CHEBFUN objects).
-%   [H1, H2] returns a second vector of column handles, this time for each of
-%   the marker plots.
+%   PLOT(F1, S1, F2, S2, F3, S3, ...) or PLOT(F1, G1, S1, F2, G2, S2, ...)
+%   combines the plots defined by the (F,G,S) triples or (F,S) doubles, where
+%   the F's and G's are CHEBFUN object and the S's are strings.
+%
+%   [HLINE, HPOINT, HJUMP] = PLOT(F) returns column vectors of handles to
+%   lineseries objects (one for each column in the case of array-valued CHEBFUN
+%   objects), corresponding to the line, point, and jump plots, respectively.
+%
+% See also PLOTDATA, PLOT3.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
@@ -41,7 +45,7 @@ function varargout = plot(f,varargin)
 % [TODO]: Implement plotting of delta functions.
 
 % Deal with an empty input:
-if ( isempty(f) )
+if ( isempty(varargin{1}) )
     if ( nargout == 1 )
         varargout{1} = plot([]);
     end
@@ -51,72 +55,101 @@ end
 % Store the hold state of the current axis:
 holdState = ishold;
 
+% Initialise storage:
+lineData = {};
+pointData = {};
+jumpData = {};
+
+% Suppress inevitable warning for growing these arrays:
+%#ok<*AGROW>
+
 %%
 % Get the data for plotting from PLOTDATA():
-if ( nargin > 1 && isa(varargin{1}, 'chebfun') )
-    % Deal with plot(f, g);
-    g = varargin{1};
-    varargin(1) = [];
-    % We can only plot real against real:
-    % [TODO]: Replace this once we have CHEBFUN/REAL() and CHEBFUN/IMAG().
-%     if ( ~isreal(f) || ~isreal(g) )
-%         warning('CHEBFUN:plot:complex', ...
-%            'Warning: Imaginary parts of complex X and/or Y arguments ignored.');
-%     end
-%     f = real(f);
-%     g = real(g);
-    % Call PLOTDATA():
-    data = plotData(f, g);
-else
-    data = plotData(f);
+while ( ~isempty(varargin) ) 
+
+    % Acquire plotting data for each CHEBFUN / pair of CHEBFUNs:
+    if ( (numel(varargin) > 1) && isa(varargin{2}, 'chebfun') ) % PLOT(f, g).
+        f = varargin{1};
+        g = varargin{2};
+        
+        % We can only plot real against real:
+        if ( ~isreal(f) || ~isreal(g) )
+            warning('CHEBFUN:plot:complex', ...
+                'Imaginary parts of complex X and/or Y arguments ignored.');
+            f = real(f);
+            g = real(g);
+        end
+        
+        % Call PLOTDATA():
+        newData = plotData(f, g);
+        % Remove CHEBFUN objects from array input:
+        varargin(1:2) = [];
+        
+    else                                                       % PLOT(f).
+        % Call PLOTDATA():
+        newData = plotData(varargin{1});
+        % Remove CHEBFUN from array input:
+        varargin(1) = [];
+        
+    end
+    
+    % Style data.
+    pos = 0; styleData = [];
+    % Find the location of the next CHEBFUN in the input array:
+    while ( (pos < length(varargin)) && ~isa(varargin{pos + 1}, 'chebfun') )
+        pos = pos + 1;
+    end
+    if ( pos > 0 )
+        styleData = varargin(1:pos);
+        varargin(1:pos) = [];
+    end
+
+    % Deal with complex-valued functions:
+    if ( ~isreal( newData.yLine ) )
+        % Assign x to be the real part, and y to be the imagiary part:
+        newData.xline = real(newData.yLine);
+        newData.yline = imag(newData.yLine);
+        newData.xPoints = real(newData.yPoints);
+        newData.yPoints = imag(newData.yPoints);
+        newData.xJumps = real(newData.yJumps);
+        newData.yJumps = imag(newData.yJumps);
+    end
+    
+    % Append new data to the arrays which will be passed to built in PLOT():
+    lineData = [lineData, newData.xLine, newData.yLine, styleData]; 
+    pointData = [pointData, newData.xPoints, newData.yPoints, styleData];
+    jumpData = [jumpData, newData.xJumps, newData.yJumps, styleData];
+     
 end
 
-%%
-% Plot the curve
-
-if ( isreal(f) )
-    h1 = plot(data.xLine, data.yLine, varargin{:});
-else
-    h1 = plot(data.yLine, varargin{:});
-end
+% Plot the lines:
+h1 = plot(lineData{:});
 set(h1, 'Marker', 'none')
+
+% Ensure the plot is held:
 hold on
 
-%%
-
 % Plot the points:
-if ( isreal(f) )
-    h2 = plot(data.xPoints, data.yPoints, varargin{:});
-else
-    h2 = plot(data.yPoints, varargin{:});
-end
-
+h2 = plot(pointData{:});
 % Change the style accordingly:
 set(h2, 'LineStyle', 'none')
 
-%%
-
-% Plot the jumps:;
-if ( isreal(f) )
-    h3 = plot(data.xJumps, data.yJumps, varargin{:});
-else
-    h3 = plot(data.yJumps, varargin{:});
+% Plot the jumps:
+if ( isempty(jumpData) )
+    jumpData = {[]};
 end
-
+h3 = plot(jumpData{:});
 % Change the style accordingly:
-set(h3,'LineStyle', ':', 'Marker', 'none')
+set(h3, 'LineStyle', ':', 'Marker', 'none')
 
-%%
 % Return hold state to what it was before:
 if ( ~holdState )
     hold off
 end
 
-% Give an output if one was requested:
+% Give an output to the plot handles if requested:
 if ( nargout > 0 )
-    varargout{1} = h1;
-    varargout{2} = h2;
+    varargout = {h1 ; h2 ; h3};
 end
 
 end
-

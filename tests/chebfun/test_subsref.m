@@ -2,6 +2,8 @@
 
 function pass = test_feval(pref)
 
+% [TODO]: test calls of the form f(:,1) and f(1,:), etc.
+
 % Get preferences.
 if ( nargin < 1 )
     pref = chebfun.pref;
