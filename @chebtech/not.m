@@ -9,7 +9,7 @@ function f = not(f)
 % See http://www.chebfun.org for Chebfun information.
 
 % TODO:  Should we use a tolerance here instead of any()?
-f.values = ~any(f.values);
+f.values = ~any(f.values, 1);
 f.coeffs = f.values;
 f.vscale = abs(f.values);
 
