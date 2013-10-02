@@ -253,6 +253,9 @@ classdef fun % (Abstract)
         % FUN logical NOT.
         f = not(f)
 
+        % FUN logical OR.
+        h = or(f, g)
+
         % Basic linear plot for FUN objects.
         varargout = plot(f, varargin)
         

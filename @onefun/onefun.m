@@ -210,6 +210,9 @@ classdef onefun % (Abstract)
         % Compute a Legendre series expansion of a ONEFUN object:
         c = legpoly(f)
 
+        % ONEFUN logical OR.
+        h = or(f, g)
+
         % Basic linear plot for ONEFUN objects.
         varargout = plot(f, varargin)
         

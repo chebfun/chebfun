@@ -371,6 +371,9 @@ classdef chebtech < smoothfun % (Abstract)
         % Compute a Legendre series expansion of a CHEBTECH object:
         c = legpoly(f)
 
+        % CHEBTECH logical OR.
+        h = or(f, g)
+
         % Basic linear plot for CHEBTECH objects.
         varargout = plot(f, varargin)
         

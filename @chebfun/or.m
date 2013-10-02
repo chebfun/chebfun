@@ -8,35 +8,35 @@ function h = or(f, g)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Check for emptiness:
-if ( isempty(f) )
-    h = f;
-    return
-elseif ( isempty(g) )
-    h = g;
+% Deal with the empty case:
+if ( isempty(f) || isempty(g) )
+    h = chebfun();
     return
 end
 
-% Check the domains:
-if ( checkDomain(f, g) )
-    error('CHEBFUN:and:doms', 'Inconsistent domains.');
+% Make sure dimensions and domains are the same:
+if ( ~isequal(size(f), size(g)) )
+    error('CHEBFUN:or:dims', 'Dimensions of f and g must agree.');
+elseif ( ~domainCheck(f, g) )
+    error('CHEBFUN:or:doms', 'Domains of f and g must agree.');
 end
 
-% Check the orientation
-isTransposedF = f.isTransposed;
-isTransposedG = g.isTransposed;
-if ( isTransposedF ~= isTransposedG )
-    error('CHEBFUN:or:trans', 'Matrix dimensions must agree.');
-elseif ( isTransposedF )
-    f = f.';
-    g = g.';
+% Split up f and g at their roots, and ensure breakpoints are the same:
+f = addBreaksAtRoots(f);
+g = addBreaksAtRoots(g);
+[f, g] = overlap(f, g);
+
+% Call AND() on the FUNs:
+h = f;
+for (k = 1:1:numel(h.funs))
+    h.funs{k} = f.funs{k} | g.funs{k};
 end
 
-h = logical(logical(f) + logical(g));
+% Deal with the impulses (call ANY() to ensure higher-order impulses are
+% treated as nonzero):
+h.impulses = any(f.impulses, 3) | any(g.impulses, 3);
 
-% Transpose back to row CHEBFUN:
-if ( isTransposedF )
-    h = transpose(h);
-end
+% Get rid of unnecessary breakpoints:
+h = merge(h);
 
 end
