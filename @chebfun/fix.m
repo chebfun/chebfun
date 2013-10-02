@@ -1,5 +1,5 @@
 function f = fix(f)
-%FIX    Round a CHEBFUN pointwise toward zero.
+%FIX   Round a CHEBFUN pointwise toward zero.
 %   G = FIX(F) returns the CHEBFUN G such that G(x) = FIX(F(x)) for each x in
 %   F.domain.
 %
@@ -48,7 +48,7 @@ end
 % Fix the impulses:
 f.impulses = fix(f.impulses(:,:,1));
 
-% SImplify the result:
+% Simplify the result:
 f = merge(f);
 
 end

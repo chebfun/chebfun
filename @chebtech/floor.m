@@ -1,7 +1,7 @@
 function f = floor(f)
 %FLOOR   Pointwise floor function of a CHEBTECH.
 %   G = FLOOR(F) returns the CHEBTECH G such that G(X) = FLOOR(F(x)) for each x
-%   in F.domain. 
+%   in [-1, 1].
 %
 %   If F is complex, then the G = FLOOR(REAL(F)) + 1i*FLOOR(IMAG(F)).
 %

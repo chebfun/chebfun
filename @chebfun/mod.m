@@ -1,5 +1,5 @@
 function h = mod(x, y)
-%MOD   Modulus after division of two chebfun objects.
+%MOD   Modulus after division of two CHEBFUN objects.
 %   MOD(X, Y) is X - n.*Y where n = floor(X./Y).
 %
 % See also FLOOR.

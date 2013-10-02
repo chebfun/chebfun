@@ -1,5 +1,5 @@
 function f = round(f)
-%ROUND    Round a CHEBFUN pointwise to nearest integer.
+%ROUND   Round a CHEBFUN pointwise to nearest integer.
 %   G = ROUND(F) returns the CHEBFUN G such that G(x) = ROUND(F(x)) for each x
 %   in F.domain.
 %
@@ -48,7 +48,7 @@ end
 % Round the impulses:
 f.impulses = round(f.impulses(:,:,1));
 
-% SImplify the result:
+% Simplify the result:
 f = merge(f);
 
 end

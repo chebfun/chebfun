@@ -1,5 +1,5 @@
 function varargout = find(f)
-%FIND  Find locations of nonzeros in a CHEBFUN.
+%FIND   Find locations of nonzeros in a CHEBFUN.
 %   FIND(F) returns a vector of all values at which the CHEBFUN F is nonzero.
 %
 %   [R, C] = FIND(F) returns two column vectors of the same length such that

@@ -1,6 +1,6 @@
 function a = any(f, dim)
-%ANY    True if any element of a CHEBTECH is a nonzero number. ANY ignores
-%       entries that are NaN (Not a Number).
+%ANY   True if any element of a CHEBTECH is a nonzero number. ANY ignores
+%      entries that are NaN (Not a Number).
 %   ANY(F, DIM), where F is an array-valued CHEBTECH, works down the dimension
 %   DIM.  If DIM is 1, then ANY returns a logical row vector in which the Jth
 %   element is TRUE if any element of the Jth column is nonzero.  If DIM is 2,
@@ -12,7 +12,7 @@ function a = any(f, dim)
 %   ANY(F) is shorthand for ANY(F, 1).
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information
+% See http://www.chebfun.org for Chebfun information
 
 % Parse inputs:
 if ( nargin < 2 )

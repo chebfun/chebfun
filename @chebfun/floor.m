@@ -48,7 +48,7 @@ end
 % Floor the impulses:
 f.impulses = floor(f.impulses(:,:,1));
 
-% SImplify the result:
+% Simplify the result:
 f = merge(f);
 
 end

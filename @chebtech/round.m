@@ -1,7 +1,7 @@
 function f = round(f)
 %ROUND   Pointwise round function of a CHEBTECH.
 %   G = FLOOR(F) returns the CHEBTECH G such that G(X) = FLOOR(F(x)) for each x
-%   in F.domain.
+%   in [-1, 1].
 %
 %   If F is complex, then the G = ROUND(REAL(F)) + 1i*ROUND(IMAG(F)).
 %
@@ -11,7 +11,7 @@ function f = round(f)
 % See also CEIL, FLOOR, FIX.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 arbitraryPoint = 0.1273881594;
 f.values = round(feval(f, arbitraryPoint));

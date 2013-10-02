@@ -1,5 +1,5 @@
 function f = round(f)
-%ROUND    Round a FUN pointwise to nearest integer.
+%ROUND   Round a FUN pointwise to nearest integer.
 %   G = ROUND(F) returns the FUN G such that G(x) = ROUND(F(x)) for each x
 %   in F.domain.
 %
@@ -11,7 +11,7 @@ function f = round(f)
 % See also CEIL, FLOOR, FIX.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 % ROUND() the ONEFUN:
 f.onefun = round(f.onefun);

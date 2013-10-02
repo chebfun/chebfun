@@ -9,7 +9,7 @@ function f = sign(f, pref)
 % See also ABS.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 if ( isreal(f) )
     arbitraryPoint = 0.1273881594;

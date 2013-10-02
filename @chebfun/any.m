@@ -1,8 +1,8 @@
 function a = any(f, dim)
-%ANY    True if any element of a CHEBFUN is a nonzero number. ANY ignores
-%       entries that are NaN (Not a Number).
+%ANY   True if any element of a CHEBFUN is a nonzero number. ANY ignores
+%      entries that are NaN (Not a Number).
 %   ANY(X, DIM), where X is an array-valued CHEBFUN, works down the dimension
-%   DIM. If DIM is the chebfun (continuous) dimension, then ANY returns a
+%   DIM. If DIM is the CHEBFUN (continuous) dimension, then ANY returns a
 %   logical column vector (or row) in which the Jth element is TRUE if any
 %   element of the Jth column (or row) is nonzero. Otherwise, ANY returns a
 %   CHEBFUN which takes the value 1 wherever any of the columns (or rows) of X
@@ -13,7 +13,7 @@ function a = any(f, dim)
 % See also ALL.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information
+% See http://www.chebfun.org for Chebfun information
 
 % Parse inputs:
 if ( nargin < 2 )

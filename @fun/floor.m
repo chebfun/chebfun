@@ -11,7 +11,7 @@ function f = floor(f)
 % See also CEIL, ROUND, FIX.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 % FLOOR() the ONEFUN:
 f.onefun = floor(f.onefun);

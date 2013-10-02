@@ -1,7 +1,7 @@
 function f = fix(f)
-%FIX    Round a CHEBTECH pointwise toward zero.
+%FIX   Round a CHEBTECH pointwise toward zero.
 %   G = FIX(F) returns the CHEBTECH G such that G(x) = FIX(F(x)) for each x in
-%   F.domain.
+%   [-1, 1].
 %
 %   If F is complex, then the G = FIX(REAL(F)) + 1i*FIX(IMAG(F)).
 %
@@ -11,7 +11,7 @@ function f = fix(f)
 % See also ROUND, CEIL, FLOOR.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 arbitraryPoint = 0.1273881594;
 f.values = fix(feval(f, arbitraryPoint));
