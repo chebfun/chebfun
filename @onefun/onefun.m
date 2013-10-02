@@ -122,7 +122,10 @@ classdef onefun % (Abstract)
     
     %% ABSTRACT (NON-STATIC) METHODS REQUIRED BY ONEFUN CLASS.
     methods ( Abstract = true )
-        
+
+        % True if any element of a FUN is a nonzero number, ignoring NaN.
+        a = any(f, dim)
+
         % Convert an array of ONEFUN objects into a array-valued ONEFUN.
         f = cell2mat(f)
 

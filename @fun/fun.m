@@ -173,7 +173,10 @@ classdef fun % (Abstract)
         
         % Absolute value of a FUN. (f should have no zeros in its domain)
         f = abs(f, pref)
-        
+
+        % True if any element of a FUN is a nonzero number, ignoring NaN.
+        a = any(f, dim)
+
         % Plot (semilogy) the Chebyshev coefficients of a FUN object, if it is
         % based on Chebyshev technology.
         h = chebpolyplot(f, varargin)

@@ -257,6 +257,9 @@ classdef chebtech < smoothfun % (Abstract)
         % Absolute value of a CHEBTECH. (f should have no zeros in its domain)
         f = abs(f, pref)
 
+        % True if any element of a CHEBTECH is a nonzero number, ignoring NaN.
+        a = any(f, dim)
+
         % Convert an array of CHEBTECH objects into a array-valued CHEBTECH.
         f = cell2mat(f)
 

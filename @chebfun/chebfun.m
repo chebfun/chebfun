@@ -218,7 +218,9 @@ classdef chebfun
     
     % Methods implemented by CHEBFUN class.
     methods
-        
+        % True if any element of a CHEBFUN is a nonzero number, ignoring NaN.
+        a = any(f, dim)
+
         % Absolute value of a CHEBFUN.
         f = abs(f, pref)
         

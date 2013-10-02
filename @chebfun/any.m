@@ -1,53 +1,91 @@
 function a = any(f, dim)
 %ANY    True if any element of a CHEBFUN is a nonzero number. ANY ignores
 %       entries that are NaN (Not a Number).
-%   ANY(X, DIM), where X is a quasimatrix, works down the dimension DIM. If DIM
-%   is the chebfun (continuous) dimension, then ANY returns a logical column
-%   vector (or row) in which the Jth element is TRUE if any element of the Jth
-%   column (or row) is nonzero. Otherwise, ANY returns a chebfun which takes the
-%   value 1 wherever any of the columns (or rows) of X are nonzero, and zero
-%   everywhere else.
+%   ANY(X, DIM), where X is an array-valued CHEBFUN, works down the dimension
+%   DIM. If DIM is the chebfun (continuous) dimension, then ANY returns a
+%   logical column vector (or row) in which the Jth element is TRUE if any
+%   element of the Jth column (or row) is nonzero. Otherwise, ANY returns a
+%   CHEBFUN which takes the value 1 wherever any of the columns (or rows) of X
+%   are nonzero, and zero everywhere else.
+%
+%   ANY(X) is shorthand for ANY(X, 1).
 %
 % See also ALL.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information
 
-% TODO: What is the difference between this and @CHEBFUN/ISZERO()?
-
-% ANY along the continuous dimension:
-if ( isempty(f) )
-    a = false;    % Empty ==> any == false.
-    return
+% Parse inputs:
+if ( nargin < 2 )
+    dim = 1;
 end
 
-% Rotate dim if f is transposed:
-if ( nargin == 2 && f.isTransposed )
+if ( (dim ~= 1) && (dim ~= 2) )
+    error('CHEBFUN:any:dim', 'DIM input must be 1 or 2.');
+end
+
+% Deal with row CHEBFUNs by transposing first:
+isTransposed = f.isTransposed;
+if ( isTransposed )
+    f = f.';
     dim = mod(dim, 2) + 1; % Maps 1 to 2 and 2 to 1.
 end
 
-% [TODO]: Implement ANY() across rows of array-valued CHEBFUN.
-if ( nargin == 2 && dim ~= 1 )
-    error('CHEBFUN:any:nargin', ...
-        'ANY() along discrete direction not yet implemented.');
+if ( dim == 1 )
+    a = anyDim1(f);     % ANY() down the columns (continuous dimension).
+else
+    a = anyDim2(f);     % ANY() across the rows (discrete dimension).
 end
 
+% Transpose output, if necessary:
+if ( isTransposed )
+    a = a .';
+end
+
+end
+
+function a = anyDim1(f)
+%ANYDIM1   Column-wise ANY() for a column CHEBFUN.
+
+% NB:  This code handles empty f without an extra check, since in this case,
+% f.impulses is empty and numel(f.funs) = 0, so the loop will never execute.
+
 % Check the impulses:
-if ( any(f.impulses(1,:)) )
-    a = true;     % Non-trivial impulses ==> any == true.
+a = any(f.impulses(:,:,1));
+
+% If necessary, check all of the FUNs:
+k = 1;
+while ( ~all(a) && (k <= numel(f.funs)) )
+    a = a | any(f.funs{k});
+    k = k + 1;
+end
+
+end
+
+function a = anyDim2(f)
+%ANYDIM2   Row-wise ANY() for a column CHEBFUN.
+
+% Deal with the empty case:
+if ( isempty(f) )
+    a = f;
     return
 end
 
-% Query each of the funs:
-for k = 1:numel(f.funs)
-    if ( any(f.funs{k}) )
-        % If we find a non-empty fun, the CHEBFUN is nonempty.
-        a = true;
-        return
-    end
+% Zero small breakpoint values so they will be seen as zero by ANY():
+f = thresholdBreakpointValues(f);
+
+% Split up f at its roots and call ANY() for the individual FUNs:
+a = addBreaksAtRoots(f);
+for (k = 1:1:numel(a.funs))
+    a.funs{k} = any(a.funs{k}, 2);
 end
 
-% If we've got to here, there are no non-trivial values:
-a = false;
+% Deal with the impulses:
+%   1.  Call ANY() along the third dimension to pick up higher-order impulses.
+%   2.  Call ANY() along the second dimension to collapse to a single column.
+a.impulses = any(any(a.impulses, 3), 2);
+
+% Get rid of unnecessary breakpoints:
+a = merge(a);
 
 end
