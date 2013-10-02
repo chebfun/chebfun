@@ -9,10 +9,9 @@ function varargout = plot3(f, g, h, varargin)
 %   Y, Z, S) where s is a 1, 2 or 3 character string made from the characters
 %   listed under the PLOT command.
 %
-%   H1 = PLOT3(X, Y, Z) returns a column vector of handles to lineseries
-%   objects, one handle per plotted line (in the case of vector-valued CHEBTECH
-%   objects). [H1, H2] returns a second vector of column handles, this time for
-%   each of the marker plots.
+%   H1 = PLOT3(X, Y, Z) returns a handle to lineseries objects.
+%   [H1, H2] = PLOT3(X, Y, Z) returns a second handles, this time for marker 
+%   plots as well.
 %
 % See also PLOT, PLOTDATA.
 
