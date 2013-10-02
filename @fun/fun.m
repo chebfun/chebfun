@@ -174,6 +174,9 @@ classdef fun % (Abstract)
         % Absolute value of a FUN. (f should have no zeros in its domain)
         f = abs(f, pref)
 
+        % FUN logical AND.
+        h = and(f, g)
+
         % True if any element of a FUN is a nonzero number, ignoring NaN.
         a = any(f, dim)
 
