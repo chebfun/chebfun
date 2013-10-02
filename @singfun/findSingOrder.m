@@ -26,7 +26,7 @@ x = eps*(11:-1:2)';
 if ( strcmpi(singEnd, 'right') )       % A pole is expected at x = 1.
     fvalsRight = op(1 - x);
     singOrder = singOrderFinder(fvalsRight, x, poleBound);
-elseif ( strcmpi(singEnd, 'left') )   % A pole is expected at x = -1.       
+elseif ( strcmpi(singEnd, 'left') )    % A pole is expected at x = -1.
     fvalsLeft = op(-1 + x);
     singOrder = singOrderFinder(fvalsLeft, x, poleBound);
 else
@@ -51,7 +51,7 @@ end
 
 end
 
-function singOrder = singOrderFinder( fvals, x, poleBound )
+function singOrder = singOrderFinder(fvals, x, poleBound)
 %SINGORDERFINDER   Finds the order of the singularity based on function 
 %   values FVALS given at (1-X). POLEBOUND is an integer upper bound 
 %   of the singularity order.
@@ -75,7 +75,7 @@ tol = singfun.pref.singfun.exponentTol;
 maxIter = 100; 
 % A factor by 10 refinement algorithm for zooming in on the required
 % fractional singularity order.
-while( (abs(exponentGrid(end) - exponentGrid(1)) > tol) && (nIter <= maxIter) )
+while ( (abs(exponentGrid(end) - exponentGrid(1)) > tol) && (nIter <= maxIter) )
     k = 1;
     smoothVals = absFvals.*x.^exponentGrid(k);
 
@@ -83,7 +83,7 @@ while( (abs(exponentGrid(end) - exponentGrid(1)) > tol) && (nIter <= maxIter) )
     % SINGFUN.FINDPOLEORDER() but more accurate when it works. This is based 
     % on determining the convexity of the function via second order
     % differences.
-    while( all(diff(diff(smoothVals)) > 0) && (k < n) )
+    while ( all(diff(diff(smoothVals)) > 0) && (k < n) )
         k = k + 1;
         % Try the next fractional exponent:
         smoothVals = absFvals.*x.^exponentGrid(k);

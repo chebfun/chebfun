@@ -88,7 +88,8 @@ scl = (dom(2)-dom(1))/2;
 
 % Fractional pole at the left endpoint:
 % Integrate first, then restrict:
-f = singfun(@(x) cos(x.^2+3).*((1+x).^b), [b 0], {'sing', 'none'}, [], [], pref);
+f = singfun(@(x) cos(x.^2+3).*((1+x).^b), [b 0], {'sing', 'none'}, [], [], ...
+    pref);
 u = cumsum(f);
 g = restrict(u, dom);
 

@@ -18,57 +18,62 @@ for n = 1:2
     
     %% Test roots at left endpoint:
     ml = 3;
-    f = testclass.make(@(x) sin(2*x).*((1+x).^ml), [], [], pref);
+    f = testclass.make(@(x) sin(2*x).*((1 + x).^ml), [], [], pref);
     [g, l, r] = extractBoundaryRoots(f);
     gexact = testclass.make(@(x) sin(2*x), [], [], pref);
     err = feval(g, x) - feval(gexact, x);
-    pass(n, 1) = ( ( norm(err, Inf) < (1e2^ml)*f.epslevel ) && ( l == ml ) );
+    pass(n, 1) = (norm(err, Inf) < (1e2^ml)*f.epslevel) && (l == ml);
     
     %% Test roots at right endpoint:
     mr = 2;
-    f = testclass.make(@(x) sin(cos(3*x)).*((1-x).^mr), [], [], pref);
+    f = testclass.make(@(x) sin(cos(3*x)).*((1 - x).^mr), [], [], pref);
     [g, l, r] = extractBoundaryRoots(f);
     gexact = testclass.make(@(x) sin(cos(3*x)), [], [], pref);
     err = feval(g, x) - feval(gexact, x);
-    pass(n, 2) = ( ( norm(err, Inf) < (5e2^mr)*f.epslevel ) && ( r == mr ) );
+    pass(n, 2) = (norm(err, Inf) < (5e2^mr)*f.epslevel) && (r == mr);
     
     %% Test roots at both endpoints:
     ml = 1;
     mr = 2;
-    f = testclass.make(@(x) exp(x).*((1+x).^ml).*((1-x).^mr), [], [], pref);
+    f = testclass.make(@(x) exp(x).*((1 + x).^ml).*((1 - x).^mr), [], [], pref);
     [g, l, r] = extractBoundaryRoots(f);
     gexact = testclass.make(@(x) exp(x), [], [], pref);
     err = feval(g, x) - feval(gexact, x);
-    pass(n, 3) = ( ( norm(err, Inf) < (1e1^(ml+mr))*f.epslevel ) && ( l == ml ) && ( r == mr ) );
+    pass(n, 3) = (norm(err, Inf) < (1e1^(ml + mr))*f.epslevel) && ...
+        (l == ml) && (r == mr);
     
     %% Test complex case:
     ml = 1;
     mr = 2;
-    f = testclass.make(@(x) (x.^2+exp(x)+1i*cos(2*x)).*((1+x).^ml).*((1-x).^mr), [], [], pref);
+    f_op = @(x) (x.^2 + exp(x) + 1i*cos(2*x)).*((1 + x).^ml).*((1 - x).^mr);
+    f = testclass.make(f_op, [], [], pref);
     [g, l, r] = extractBoundaryRoots(f);
-    gexact = testclass.make(@(x) x.^2+exp(x)+1i*cos(2*x), [], [], pref);
+    gexact = testclass.make(@(x) x.^2 + exp(x) + 1i*cos(2*x), [], [], pref);
     err = feval(g, x) - feval(gexact, x);
-    pass(n, 4) = ( ( norm(err, Inf) < (1e1^(ml+mr))*f.epslevel ) && ( l == ml ) && ( r == mr ) );
+    pass(n, 4) = (norm(err, Inf) < (1e1^(ml + mr))*f.epslevel) && ...
+        (l == ml) && (r == mr);
     
     %% Test when no roots:
-    f = testclass.make(@(x) sin(1-x)./(1-x), [], [], pref);
+    f = testclass.make(@(x) sin(1 - x)./(1 - x), [], [], pref);
     [g, l, r] = extractBoundaryRoots(f);
     err = feval(g, x) - feval(f, x);
-    pass(n, 5) = ( ( norm(err, Inf) == 0 ) && ( l == 0 ) && ( r == 0 ) );
+    pass(n, 5) = (norm(err, Inf) == 0) && (l == 0) && (r == 0);
     
     %% Test when roots are not explicit:
-    f = testclass.make(@(x) sin(1-x), [], [], pref);
+    f = testclass.make(@(x) sin(1 - x), [], [], pref);
     [g, l, r] = extractBoundaryRoots(f);
-    gexact = testclass.make(@(x) sin(1-x)./(1-x), [], [], pref);
+    gexact = testclass.make(@(x) sin(1 - x)./(1 - x), [], [], pref);
     err = feval(g, x) - feval(gexact, x);
-    pass(n, 6) = ( ( norm(err, Inf) < 1e2*f.epslevel ) && ( r == 1 ) );
+    pass(n, 6) = (norm(err, Inf) < 1e2*f.epslevel) && (r == 1);
     
     %% Test array-valued case:
-    f = testclass.make(@(x) [sin(x).*((1-x).^2) cos(x.^2).*(1+x).*(1-x)], [], [], pref);
+    f_op = @(x) [sin(x).*((1-x).^2) cos(x.^2).*(1+x).*(1-x)];
+    f = testclass.make(f_op, [], [], pref);
     [g, l, r] = extractBoundaryRoots(f);
     gexact = testclass.make(@(x) [sin(x) cos(x.^2)], [], [], pref);
     err = feval(g, x) - feval(gexact, x);
-    pass(n, 7) = ( ( norm(err, Inf) < (1e2^2)*f.epslevel ) && ( all(l == [0 1]) ) && ( all(r == [2 1]) ) );
+    pass(n, 7) = (norm(err, Inf) < (1e2^2)*f.epslevel) && all(l == [0 1]) && ...
+        all(r == [2 1]);
     
 end
 

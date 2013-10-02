@@ -26,7 +26,8 @@ err_y = norm(y-y_exact, inf);
 pass(1) = (max([err_x err_y]) < get(f, 'epslevel')*f.smoothPart.vscale);
 
 % fractional pole at the left endpoint and the function value is unbounded.
-f = singfun(@(x) (1+x).^d.*sin(50*pi*x), [d+1 0], {'sing', 'none'}, [], [], pref);
+f = singfun(@(x) (1+x).^d.*sin(50*pi*x), [d+1 0], {'sing', 'none'}, [], ...
+    [], pref);
 [y, x] = minandmax(f);
 % The following exact answers are obtained using Mathematica.
 y_exact = [-92.48807414703726; Inf];
@@ -49,7 +50,8 @@ pass(3) = (norm(y_err, inf) < 1e2*get(f, 'epslevel')*f.smoothPart.vscale &&...
     norm(x_err, inf) < 1e2*get(f, 'epslevel')*f.smoothPart.vscale);
 
 % no fractional pole but a root at the left endpoint.
-f = singfun(@(x) (1-x).^b.*(exp(x)-exp(1)), [0 1+b], {'none', 'root'}, [], [], pref);
+f = singfun(@(x) (1-x).^b.*(exp(x)-exp(1)), [0 1+b], {'none', 'root'}, [], ...
+    [], pref);
 [y, x] = minandmax(f);
 % The following exact answers are obtained using Mathematica.
 y_exact = [-1.727141310139675; 0];
@@ -60,7 +62,8 @@ pass(4) = (norm(y_err, inf) < 1e2*get(f, 'epslevel')*f.smoothPart.vscale &&...
     norm(x_err, inf) < 1e2*get(f, 'epslevel')*f.smoothPart.vscale);
 
 % a combination of fractional pole and fractional root.
-f = singfun(@(x) (1+x).^b.*sin(x).*(1-x).^c, [b c], {'sing', 'root'}, [], [], pref);
+f = singfun(@(x) (1+x).^b.*sin(x).*(1-x).^c, [b c], {'sing', 'root'}, [], ...
+    [], pref);
 [y, x] = minandmax(f);
 % The exact maximum value and its location is found using Mathematica.
 y_exact = [-Inf; 0.1636938399751735];

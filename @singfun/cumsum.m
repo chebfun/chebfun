@@ -31,7 +31,7 @@ function g = cumsum(f, m)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Check the value of M:
-if ( ( nargin < 2 ) )
+if ( nargin < 2 )
     m = 1;
 end
 
@@ -67,10 +67,9 @@ if ( ~isa(f.smoothPart, 'chebtech') )
 end
 
 for k = 1:m
-    
-    % When the singularity is at the right end, we flip f so that the singularity is
-    % at the left end of the domain.
-    
+
+    % When the singularity is at the right end, we flip f so that the
+    % singularity is at the left end of the domain.
     flip = false;
     if ( f.exponents(2) ~= 0 )
         f = flipud(f);
@@ -91,12 +90,12 @@ for k = 1:m
     
     % Compute (x+1)*s:
     xs = f.smoothPart.make(@(x) x + 1).*s;
-    
-    % If the length of xs is less than ra+2, we pad the length of xs by prolonging
-    % it. This will save us from branch out for different cases when computing the
-    % coefficients c_k of the smooth part of the u. The system for c_k is indicated
-    % by (*) below and c_k is solve by recursive substitution.
-    
+
+    % If the length of xs is less than ra+2, we pad the length of xs by
+    % prolonging it. This will save us from branch out for different cases when
+    % computing the coefficients c_k of the smooth part of the u. The system
+    % for c_k is indicated by (*) below and c_k is solve by recursive
+    % substitution.
     N = length(xs) - 1;
     oldN = N;
     if ( N < ra + 2 )
@@ -189,8 +188,8 @@ for k = 1:m
         
     end
     
-    % Flip back so singularity is on the right for the case with singularity at the
-    % right end of the domain.
+    % Flip back so singularity is on the right for the case with singularity at
+    % the right end of the domain.
     if ( flip )
         g = -flipud(g);
     end

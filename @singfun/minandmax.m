@@ -38,7 +38,8 @@ else
         else
             % NaNs may occur and then we can not conclude anything.
             error('CHEBFUN:SINGFUN:minandmax:boundedness', ...
-            'function has a singularity but not ifinite at the left end point');
+            ['Function has a singularity but isn''t infinite at the left ' ...
+             'endpoint']);
         end
     end
     
@@ -54,7 +55,8 @@ else
         else
             % NaNs may occur and then we can not conclude anything.
             error('CHEBFUN:SINGFUN:minandmax:boundedness', ...
-            'function has a singularity but not infinite at the right end point');
+            ['Function has a singularity but isn''t infinite at the right ' ...
+             'endpoint']);
         end
     end
     

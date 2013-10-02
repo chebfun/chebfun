@@ -1,6 +1,5 @@
 function [f, rootsLeft, rootsRight] = extractBoundaryRoots(f)
 %EXTRACTBOUNDARYROOTS   Extract roots at the boundary points -1 and 1.
-%
 %   [F, ROOTSLEFT, ROOTSRIGHT] = EXTRACTBOUNDARYROOTS(F) returns a CHEBTECH G
 %   which is free of roots at the boundary points -1 and 1. The multiplicity of
 %   the boundary roots at -1 and 1 are ROOTSLEFT and ROOTRIGHT respectively.
@@ -25,16 +24,16 @@ rootsLeft = zeros(1, m);
 rootsRight = zeros(1, m);
 
 % If there are no roots, there is nothing to do!
-if ( all( min(endValues, [], 1) > tol ) )
+if ( all(min(endValues, [], 1) > tol) )
     return
 end
 
 % Grab the coefficients of F:
 c = f.coeffs;
 
-while ( any( min(endValues, [], 1) <= tol ) )
+while ( any(min(endValues, [], 1) <= tol) )
     
-    if ( any( endValues(1, :) <= tol ) )
+    if ( any(endValues(1, :) <= tol) )
         % Root at the left.
         sgn = 1;
         ind = find(endValues(1, :) <= tol);
@@ -61,7 +60,6 @@ while ( any( min(endValues, [], 1) <= tol ) )
     % Update the coefficients.  Note that we don't need to update the values 
     % here, since only coefficients are used in this while loop.  (feval(), 
     % below, calls CLENSHAW, which only uses coefficients.)
-    
     f.coeffs = c;
     
     % Update endValues:
@@ -74,3 +72,5 @@ end
 
 % Call simplify to simplify and update the vscale:
 f = simplify(f);
+
+end
