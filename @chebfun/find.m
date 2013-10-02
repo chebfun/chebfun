@@ -20,16 +20,15 @@ function varargout = find(f)
 
 % TODO: Is this method really required?
 
-if ( numel(f) > 1 && nargout < 2 )
-    error('CHEBFUN:find:quasiout', ...
-        'Use two output arguments for array-valued CHEBFUN objects.');
-end
-
 % Empty case:
 if ( isempty(f) )
-    varagout{1} = [];
-    varagout{2} = [];
+    varargout = {[], []};
     return
+end
+
+if ( (size(f.funs{1}, 2) > 1) && (nargout < 2) )
+    error('CHEBFUN:find:arrout', ...
+        'Use two output arguments for array-valued CHEBFUN objects.');
 end
 
 % Initialise:
@@ -37,17 +36,19 @@ x = [];
 idx = [];
 
 % Loop over columns:
-for j = 1:min(size(f))
+for j = 1:size(f.funs{1}, 2)
     fj = extractColumns(f, j);
+
     % Loop over FUNs:
     for k = 1:numel(fj.funs)
-        if ( ~isempty(fj.funs{k}) )
+        if ( ~iszero(fj.funs{k}) )
             % Continuous part is not identically zero!
-            error('CHEBFUN:find:infset', 'Nonzero locations are not a finite set.')
+            error('CHEBFUN:find:infset', ...
+                'Nonzero locations are not a finite set.')
         end
     end
     
-    xnew = fj.domain( fj.impulses(:,1,1) ~= 0 ); % Does all the real work.
+    xnew = fj.domain(fj.impulses(:,1,1) ~= 0);   % Does all the real work.
     x = [x, xnew];                               %#ok<AGROW>
     idx = [idx, repmat(j, size(xnew))];          %#ok<AGROW>
 end
