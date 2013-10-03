@@ -1,4 +1,4 @@
-function f = smooth2SingFun(f)
+function f = smoothFun2SingFun(f)
 %SMOOTH2SINGFUN   Convert a SMOOTHFUN to a SINGFUN.
 %   SMOOTH2SINGFUN(F) Converts the SMOOTHFUN object F to a SINGFUN F.
 %
@@ -6,8 +6,6 @@ function f = smooth2SingFun(f)
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
-
-% [TODO]: I thikn smoothfun2singfun() sounds a better name.
 
 % Take no action if f is already a SINGFUN:
 if ( isa(f, 'singfun') )
@@ -20,7 +18,7 @@ if ( isa(f, 'smoothfun') )
     f = singfun.zeroSingFun();
     f.smoothPart = g; 
 else
-    error('CHEBFUN:SINGFUN:CONVERT2SINGFUN', 'Unknown type of function passed.');
+    error('CHEBFUN:SINGFUN:SMOOTHFUN2SINGFUN', 'Unknown type of function passed.');
 end
 
 end

@@ -358,7 +358,7 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         prefs = pref(varargin)
         
         % Convert SMOOTHFUN objects to SINGFUN objects:
-        f = smooth2SingFun(f);
+        f = smoothFun2SingFun(f);
       
         % Construct a zero SINGFUN
         s = zeroSingFun()

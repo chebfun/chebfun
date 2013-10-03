@@ -27,19 +27,19 @@ if ( isa(f, 'double') )
     % Make a SMOOTHFUN of the double f:
     f = g.smoothPart.make(f);
     % Convert f to a SINGFUN:
-    f = singfun.smooth2SingFun(f);
+    f = singfun.smoothFun2SingFun(f);
 elseif ( isa(g, 'double') )
     % Make a SMOOTHFUN of the double g:
     g = f.smoothPart.make(g);
     % Convert g to a SINGFUN:
-    g = singfun.smooth2SingFun(g);    
+    g = singfun.smoothFun2SingFun(g);    
 end
 
 % If one of the arguments is a SMOOTHFUN, upgrade it to a SINGFUN:
 if ( isa(f, 'smoothfun') )
-    f = singfun.smooth2SingFun(f);    
+    f = singfun.smoothFun2SingFun(f);    
 elseif ( isa(g, 'smoothfun') )
-    g = singfun.smooth2SingFun(g);    
+    g = singfun.smoothFun2SingFun(g);    
 end
 
 fExps = f.exponents;

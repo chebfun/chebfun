@@ -38,7 +38,7 @@ if ( isa(f, 'double') )
     % Make a SMOOTHFUN of the double f:
     f = g.smoothPart.make(f);
     % Convert f to a SINGFUN:
-    f = singfun.smooth2SingFun(f);
+    f = singfun.smoothFun2SingFun(f);
     % Call SINGFUN.RDIVIDE() again:
     s = f./g;
 end
@@ -46,7 +46,7 @@ end
 %% SMOOTHFUN./SINGFUN
 if ( isa(f, 'smoothfun') )    
     % Convert f to a SINGFUN and call rdivide again.
-    f = singfun.smooth2SingFun(f);
+    f = singfun.smoothFun2SingFun(f);
     % Call SINGFUN.RDIVIDE() again:
     s = f./g;
 end
