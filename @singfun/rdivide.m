@@ -34,7 +34,7 @@ if ( isa(g,'double') || isa(g, 'smoothfun') )
 end
 
 %% Reciprocal: DOUBLE./SINGFUN
-if ( isa(f,'double') )    
+if ( isa(f, 'double') )    
     % Make a SMOOTHFUN of the double f:
     f = g.smoothPart.make(f);
     % Convert f to a SINGFUN:
@@ -44,12 +44,13 @@ if ( isa(f,'double') )
 end
 
 %% SMOOTHFUN./SINGFUN
-if ( isa(f,'smoothfun') )    
+if ( isa(f, 'smoothfun') )    
     % Convert f to a SINGFUN and call rdivide again.
     f = singfun.smooth2SingFun(f);
     % Call SINGFUN.RDIVIDE() again:
     s = f./g;
 end
+
 %% SINGFUN./SINGFUN
 % Note: Exponents of f and g can all be zero to generate a singular function.
 % Example: f = 1; g = cos(pi/2*x) with trivial exponents. Then s = f./g is 

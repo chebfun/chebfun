@@ -1,4 +1,4 @@
-function out = poly(f)
+function varargout = poly(varargin) %#ok<STOUT>
 %POLY   POLY does not support SINGFUN objects.
 %
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.

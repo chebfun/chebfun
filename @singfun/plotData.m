@@ -37,6 +37,7 @@ if ( isempty(g) )
     % Scale the sample point y-data:
     data.yPoints = data.yPoints.*(1 + data.xPoints).^f.exponents(1) ...
         .*(1 - data.xPoints).^f.exponents(2);
+    
 elseif ( isa(g, 'singfun') )   
     % PLOT(F, G)
     
@@ -67,6 +68,7 @@ elseif ( isa(g, 'singfun') )
         data.zPoints = data.zPoints.*(1 + xPoints).^g.exponents(1) ...
             .*(1 - xPoints).^g.exponents(2);
     end
+    
 end
 
 end

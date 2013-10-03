@@ -1,4 +1,4 @@
-function b = legpoly(f)
+function varargout = legpoly(varargin) %#ok<STOUT>
 %LEGPOLY   LEGPOLY does not support SINGFUN objects.
 %
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.

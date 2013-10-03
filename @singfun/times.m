@@ -1,7 +1,7 @@
 function h = times(f, g)
 %.*   Multiply SINGFUNS with SINGFUNS and SMOOTHFUNS
-%   F.*G multiplies SINGFUN objects F and G or a SINGFUN by a scalar if either
-%   F or G is a scalar.
+%   F.*G multiplies SINGFUN objects F and G or a SINGFUN by a scalar/SMOOTHFUN
+%   if either F or G is a scalar/SMOOTHFUN.
 %
 % See also LDIVIDE, RDIVIDE.
 
@@ -12,7 +12,7 @@ function h = times(f, g)
 % Empty arguments:
 if ( isempty(f) || isempty(g) )
     h = singfun();
-    return;
+    return
 end
 
 %%
@@ -22,7 +22,6 @@ if ( (~isa(f, 'singfun') && ~isa(f, 'smoothfun') && ~isa(f, 'double')) || ...
     error('SINGFUN:times:Input can only be a singfun, a smoothfun or a double')
 end
 
-%%
 % Multiplication by a scalar or a SMOOTHFUN:
 if ( isa(f, 'double') || isa(f, 'smoothfun') )
     % Copy the other input (a SINGFUN) in the output:
@@ -45,6 +44,7 @@ if ( isa(f, 'singfun') && isa(g, 'singfun') )
     % Add the exponents:
     h.exponents = f.exponents + g.exponents;
 end
+
 %%
 % Check if after multiplication h has become smooth:
 if ( issmooth(h) )
