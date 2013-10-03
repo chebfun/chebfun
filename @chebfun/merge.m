@@ -102,11 +102,11 @@ for k = index
     % Find corresponding break:
     j = find(oldDom(k) == newDom, 1, 'first');
     % And lengths of funs on either side:
-    lenghtPrevFun = length(newFuns{j-1});
+    lengthPrevFun = length(newFuns{j-1});
     lengthThisFun = length(newFuns{j});
 
     % Prevent merge if existing FUN lengths add to more than 1.2*maxn:
-    if ( lenghtPrevFun + lengthThisFun >= 1.2*maxn )
+    if ( lengthPrevFun + lengthThisFun >= 1.2*maxn )
         % Skip to next breakpoint:
         continue
     end
@@ -126,8 +126,16 @@ for k = index
         continue
     end
 
+    % Create copy of f with values at endpoints of interval on which we are
+    % trying to create a merged fun replaced by left- and right-hand limits.
+    % If the underlying tech samples right at the endpoints, this prevents
+    % discontinuities that occur there from messing things up.
+    g = f;
+    g.impulses(k-1,:,1) = get(oldFuns{k-1}, 'lval');
+    g.impulses(k+1,:,1) = get(oldFuns{k}, 'rval');
+
     % Attempt to form a merged FUN:
-    mergedFun = fun.constructor(@(x) feval(f, x),  ...
+    mergedFun = fun.constructor(@(x) feval(g, x),  ...
         [newDom(j-1), newDom(j+1)], vs, hs, pref);
 
     % Prevent merge if the result is not happy:
