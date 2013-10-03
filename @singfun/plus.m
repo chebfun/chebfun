@@ -17,7 +17,7 @@ end
 % Check if inputs are other than SINGFUNS, SMOOTHFUNS or doubles:
 if ( (~isa(f, 'singfun') && ~isa(f, 'smoothfun') && ~isa(f, 'double')) || ...
      (~isa(g, 'singfun') && ~isa(g, 'smoothfun') && ~isa(g, 'double')) )
-    error('SINGFUN:times:Input can only be a SINGFUN, a SNOOTHFUN or a double')
+    error('SINGFUN:times:Input can only be a SINGFUN, a SMOOTHFUN or a double')
 end
 % One of the arguments i.e. f or g is necessarily a SINGFUN object. Otherwise, 
 % this overloaded plus would not have been called.
@@ -49,7 +49,7 @@ tolSmth = 1e2*singfun.pref.singfun.eps;
 
 %%
 if ( all(abs(fExps - gExps) < tolExps) )
-    % Case 1: Exponents exactly alike. Just add the smooth parts.
+    % Case 1: Exponents exactly same. Just add the smooth parts.
     s = f;
     s.smoothPart = f.smoothPart + g.smoothPart;
     if ( normest(s.smoothPart) < tolSmth )
@@ -106,7 +106,11 @@ elseif ( all(abs(round(fExps - gExps) - (fExps - gExps)) < tolExps) )
 else
     % Case 3: Nontrivial difference in the exponents of F and G. Form a new
     % function handle for the sum from F and G.
-        
+    
+    warning('CHEBFUN:SINGFUN:plus', ...
+        ['Non-trivial difference in the exponents of the two SINGFUN' ...
+        'objects: The result may not be accurate.']);
+    
     % Define a function handle for the sum:
     op = @(x) feval(f, x) + feval(g, x);
     
