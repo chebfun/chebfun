@@ -28,30 +28,30 @@ f = bndfun(@(x) exp(x/10) - 1, dom, [], [], pref);
 F = cumsum(f);
 F_ex = @(x) 10*exp(x/10) - x;
 err = feval(F, x) - F_ex(x);
-pass(1) = (norm(diff(err), inf) < 25*get(f, 'vscale')*tol) && ...
-    (abs(feval(F, a)) < get(f, 'vscale')*tol);
+pass(1) = (norm(diff(err), inf) < 100*get(f, 'vscale')*get(f, 'epslevel')) ...
+    && (abs(feval(F, a)) <= get(f, 'vscale')*get(f, 'epslevel'));
 
 f = bndfun(@(x) 1./(1 + x.^2), dom, [], [], pref);
 F = cumsum(f);
 F_ex = @(x) atan(x);
 err = feval(F, x) - F_ex(x);
-pass(2) = (norm(diff(err), inf) < 30*get(f, 'vscale')*tol) && ...
-    (abs(feval(F, a)) < get(f, 'vscale')*tol);
+pass(2) = (norm(diff(err), inf) < 100*get(f, 'vscale')*get(f, 'epslevel')) ...
+    && (abs(feval(F, a)) <= get(f, 'vscale')*get(f, 'epslevel'));
 
 f = bndfun(@(x) cos(1e4*x), dom, [], [], pref);
 F = cumsum(f);
 F_ex = @(x) sin(1e4*x)/1e4;
 err = feval(F, x) - F_ex(x);
-pass(3) = (norm(diff(err), inf) < 1e4*get(f, 'vscale')*tol) && ...
-    (abs(feval(F, a)) < get(f, 'vscale')*tol);
+pass(3) = (norm(diff(err), inf) < 100*get(f, 'vscale')*get(f, 'epslevel')) ...
+    && (abs(feval(F, a)) <= get(f, 'vscale')*get(f, 'epslevel'));
 
 z = exp(2*pi*1i/6);
 f = bndfun(@(t) sinh(t*z), dom, [], [], pref);
 F = cumsum(f);
 F_ex = @(t) cosh(t*z)/z;
 err = feval(F, x) - F_ex(x);
-pass(4) = (norm(diff(err), inf) < 20*get(f, 'vscale')*tol) && ...
-    (abs(feval(F, a)) < get(f, 'vscale')*tol);
+pass(4) = (norm(diff(err), inf) < 100*get(f, 'vscale')*get(f, 'epslevel')) ...
+    && (abs(feval(F, a)) <= get(f, 'vscale')*get(f, 'epslevel'));
 
 %%
 % Check that applying cumsum() and direct construction of the antiderivative
@@ -61,8 +61,8 @@ f = bndfun(@(x) sin(4*x).^2, dom, [], [], pref);
 F = bndfun(@(x) 0.5*x - 0.0625*sin(8*x), dom, [], [], pref);
 G = cumsum(f);
 err = feval(G - F, x);
-pass(5) = (norm(diff(err), inf) < 30*get(f, 'vscale')*tol) && ...
-    (abs(feval(G, a)) < get(f, 'vscale')*tol);
+pass(5) = (norm(diff(err), inf) < 10*get(f, 'vscale')*get(f, 'epslevel')) && ...
+    (abs(feval(G, a)) < 10*get(f, 'vscale')*get(f, 'epslevel'));
 
 %%
 % Check that diff(cumsum(f)) == f and that cumsum(diff(f)) == f up to a
@@ -70,12 +70,15 @@ pass(5) = (norm(diff(err), inf) < 30*get(f, 'vscale')*tol) && ...
 
 f = bndfun(@(x) x.*(x - 1).*sin(x), dom, [], [], pref);
 g = diff(cumsum(f));
+tol_f = 10*get(f, 'vscale')*get(f, 'epslevel');
+tol_g = 10*get(g, 'vscale')*get(g, 'epslevel');
+
 err = feval(f, x) - feval(g, x);
-pass(6) = (norm(diff(err), inf) < 20*get(g, 'vscale')*get(f, 'vscale')*tol);
+pass(6) = (norm(diff(err), inf) < 10*max(tol_f, tol_g));
 h = cumsum(diff(f));
 err = feval(f, x) - feval(h, x);
-pass(7) = (norm(diff(err), inf) < 30*get(g, 'vscale')*get(f, 'vscale')*tol) && ...
-    (abs(feval(h, a)) < get(g, 'vscale')*get(f, 'vscale')*tol);
+pass(7) = (norm(diff(err), inf) < 10*max(tol_f, tol_g) && ...
+    (abs(feval(h, a)) < 10*max(tol_f, tol_g)));
 
 %%
 % Check operation for array-valued bndfun objects.
@@ -84,7 +87,8 @@ f = bndfun(@(x) [sin(x) x.^2 exp(1i*x)], dom, [], [], pref);
 F_exact = bndfun(@(x) [-cos(x) x.^3/3 exp(1i*x)/1i], dom, [], [], pref);
 F = cumsum(f);
 err = feval(F, x) - feval(F_exact, x);
-pass(8) = (norm(diff(err), inf) < max(get(f, 'vscale'))*get(f, 'epslevel')) && ...
+pass(8) = (norm(diff(err), inf) < ...
+    10*max(get(f, 'vscale'))*get(f, 'epslevel')) && ...
     all(abs(feval(F, a)) < max(get(f, 'vscale'))*get(f, 'epslevel'));
 
 %%

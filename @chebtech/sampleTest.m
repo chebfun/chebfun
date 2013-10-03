@@ -9,6 +9,11 @@ function pass = sampleTest(op, f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% [TODO]: Describe where we evaluate? (Approx to largest derivative and at
+% -1+1e-12, 1-1e-12?)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 % Get the interpolation points:
 n = length(f);
 x = f.chebpts(n);
@@ -24,6 +29,7 @@ else
     [ignored, index] = max(bsxfun(@rdivide, abs(diff(f.values)), diff(x)));
     xeval = ( x(index + 1) + 1.41*x(index) ) / 2.41;
 end
+xeval = [-1+1e-12 ; xeval ; 1-1e-12];
 
 % Evaluate the CHEBTECH:
 vFun = feval(f, xeval);

@@ -7,8 +7,10 @@ function fx = bary(x, fvals, xk, vk)
 %
 % See also CHEBTECH.CHEBPTS, CHEBTECH.BARYWTS, CHEBTECH.FEVAL, CHEBTECH.CLENSHAW.
 
+% [TODO]: Move this to either the trunk/ folder or an @utils class.
+
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
-%  See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+%  See http://www.chebfun.org for Chebfun information.
 
 % Parse inputs
 [n, m] = size(fvals);
@@ -39,7 +41,9 @@ if ( any(isnan(fvals)) )
 end
 
 % The main loop:
-if ( numel(x) < length(xk) )  % Loop over evaluation points
+if ( numel(x) < 4*length(xk) )  % Loop over evaluation points
+    % Note: The value "4" here was detemined experimentally.
+    
     % Initialise return value:
     fx = zeros(size(x, 1), m);
 
@@ -48,7 +52,7 @@ if ( numel(x) < length(xk) )  % Loop over evaluation points
         xx = vk ./ (x(j) - xk);
         fx(j,:) = (xx.'*fvals) / sum(xx);
     end
-else                         % Loop over barycentric nodes
+else                            % Loop over barycentric nodes
     % Initialise:
     num = zeros(size(x, 1), m);
     denom = num;

@@ -42,7 +42,7 @@ classdef chebtech < smoothfun % (Abstract)
 %   f = chebtech.constructor(@(x) sin(x))
 %
 %   % Construction with preferences:
-%   p = chebtech.pref('tech', 'cheb2'); % See HELP('chebtech.pref') for details.
+%   p = chebtech.pref('tech', 'chebtech2'); % (See HELP('chebtech.pref')).
 %   f = chebtech.constructor(@(x) cos(x), [], [], p)
 %
 %   % Array-valued construction:
@@ -67,7 +67,7 @@ classdef chebtech < smoothfun % (Abstract)
 % Chebyshev polynomials (i.e., those usually denoted by $T_k(x)$).
 %
 % The decision to use CHEBTECH1 or CHEBTECH2 is decided by the CHEBTECH.PREF.TECH
-% property, which should be either of the strings 'cheb1' or 'cheb2'.
+% property, which should be either of the strings 'chebtech1' or 'chebtech2'.
 %
 % The vertical scale VSCALE is used to enforce scale invariance in CHEBTECH
 % construction and subsequent operations. For example, that
@@ -198,7 +198,7 @@ classdef chebtech < smoothfun % (Abstract)
             end
 
             % Call the relevant constructor:
-            if ( strcmpi(pref.chebtech.tech, 'cheb1') )
+            if ( strcmpi(pref.chebtech.tech, 'chebtech1') )
                 % Construct:
                 obj = chebtech1(op, vscale, hscale, pref);
             else
@@ -230,15 +230,12 @@ classdef chebtech < smoothfun % (Abstract)
         % Compute Chebyshev barycentric weights.
         w = barywts(n)
 
-        % Convert values to coefficients.
-        coeffs = chebpoly(values)
-
-        % Convert coefficients to values.
-        values = chebpolyval(coeffs)
-
         % Compute Chebyshev points (x) and optionally quadrature (w) and
         % barycentric (v) weights.
         [x, w, v] = chebpts(n)
+        
+        % Convert coefficients to values.
+        values = coeffs2vals(coeffs)
 
         % Make a CHEBTECH. (Constructor shortcut)
         f = make(varargin);
@@ -248,11 +245,17 @@ classdef chebtech < smoothfun % (Abstract)
 
         % Compute Chebyshev quadrature weights.
         w = quadwts(n)
+        
+        % Convert values to coefficients.
+        coeffs = vals2coeffs(values)
 
     end
 
     %% METHODS IMPLEMENTED BY THIS CLASS.
     methods
+        
+        % Absolute value of a CHEBTECH. (f should have no zeros in its domain)
+        f = abs(f, pref)
 
         % Convert an array of CHEBTECH objects into a array-valued CHEBTECH.
         f = cell2mat(f)
@@ -274,6 +277,9 @@ classdef chebtech < smoothfun % (Abstract)
 
         % Derivative of a CHEBTECH.
         f = diff(f, k, dim)
+        
+        % Extract columns of an array-valued CHEBTECH object.
+        f = extractColumns(f, columnIndex);
         
         % Extrapolate (for NaNs / Infs).
         [values, maskNaN, maskInf] = extrapolate(f)
@@ -353,8 +359,11 @@ classdef chebtech < smoothfun % (Abstract)
         % Basic linear plot for CHEBTECH objects.
         varargout = plot(f, varargin)
         
+        % 3-D plot for CHEBTECH objects.
+        varargout = plot3(f, g, h, varargin)
+        
         % Obtain data used for plotting a CHEBTECH object:
-        data = plotData(f)
+        data = plotData(f, g, h)
 
         % Addition of two CHEBTECH objects.
         f = plus(f, g)
@@ -388,6 +397,9 @@ classdef chebtech < smoothfun % (Abstract)
 
         % Test an evaluation of the input OP against a CHEBTECH approx.
         pass = sampleTest(op, f)
+        
+        % Signum of a CHEBTECH. (f should have no zeros in its domain)
+        f = sign(f, pref)
 
         % Trim trailing Chebyshev coefficients of a CHEBTECH object.
         f = simplify(f, pref, force)

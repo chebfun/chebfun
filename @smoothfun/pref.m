@@ -28,7 +28,7 @@ function prefs = pref(varargin)
 % See also CHEBTECH, CHEBTECH1, CHEBTECH2
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 classname = 'smoothfun';
 
@@ -49,10 +49,11 @@ if ( isfield(prefs, classname) )  % It does, so either:
     end
 else                              % No prefs found for this class, so make some:
     p.eps    = 2^-52;
+    p.tech   = 'chebtech2';
 end
 % p is now the preference substructure relating to the current class.
 
-if ( isfield(prefs,'misc') ) 
+if ( isfield(prefs, 'misc') ) 
     q = prefs.misc;
 else
     q = struct();

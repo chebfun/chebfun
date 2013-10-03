@@ -1,7 +1,7 @@
 function out = isreal(f)
 %ISREAL   True for real CHEBTECH.
-%   ISREAL(F) returns TRUE if F does not have an imaginary part
-%   and FALSE otherwise.
+%   ISREAL(F) returns TRUE if F does not have an imaginary part and FALSE
+%   otherwise.
 %
 %   See also REAL, IMAG.
 

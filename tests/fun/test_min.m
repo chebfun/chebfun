@@ -19,8 +19,10 @@ for n = 1:1 %[TODO]: unbndfun
     %%
     % Spot-check the extrema for a few functions.
     pass(n, 1) = test_spotcheck_min(testclass, @(x) -sin(10*x), dom, -1, pref);
-    pass(n, 2) = test_spotcheck_min(testclass, @(x) -real(airy(x)), dom, -0.535656656015700, pref);
-    pass(n, 3) = test_spotcheck_min(testclass, @(x) 1./(1 + x.^2), dom, 0.02, pref);
+    pass(n, 2) = test_spotcheck_min(testclass, @(x) -real(airy(x)), dom, ...
+        -0.535656656015700, pref);
+    pass(n, 3) = test_spotcheck_min(testclass, @(x) 1./(1 + x.^2), dom, ...
+        0.02, pref);
     pass(n, 4) = test_spotcheck_min(testclass, @(x) -(x/10).^3.*cosh(x/10), ...
         dom, -0.7^3*cosh(0.7), pref);
     
@@ -32,7 +34,7 @@ for n = 1:1 %[TODO]: unbndfun
     [y, x] = min(f);
     exact_max = -[1 0.535656656015700 0.7^3*cosh(0.7)];
     fx = -[sin(10*x(1)) airy(x(2)) (x(3)/10).^3.*cosh(x(3)/10)];
-    tol = get(f, 'vscale')*get(f, 'epslevel');
+    tol = 10*get(f, 'vscale')*get(f, 'epslevel');
     pass(n, 5) = (all(abs(y - exact_max) < tol) && ...
                all(abs(fx - exact_max) < tol));
     
@@ -49,7 +51,7 @@ for n = 1:1 %[TODO]: unbndfun
     exact_max = [exp(1i) -exp(-1i/2)];
     fx = fun_op(x); 
     fx = fx([1 4]);
-    tol = get(f, 'vscale')*get(f, 'epslevel');
+    tol = 10*max(get(f, 'vscale')*get(f, 'epslevel'));
     pass(n, 7) = (all(abs(y - exact_max) < tol) && ...
                   all(abs(fx - exact_max) < tol));
 end
@@ -62,7 +64,7 @@ function result = test_spotcheck_min(testclass, fun_op, dom, exact_min, pref)
 f = testclass.make(fun_op, dom, [], [], pref);
 [y, x] = min(f);
 fx = fun_op(x);
-tol = 10*get(f, 'vscale')*get(f, 'epslevel');
+tol = 50*get(f, 'vscale')*get(f, 'epslevel');
 result = ((abs(y - exact_min) < tol) && ... 
           (abs(fx - exact_min) < tol));
 

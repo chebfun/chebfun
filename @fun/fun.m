@@ -157,7 +157,7 @@ classdef fun % (Abstract)
         out = innerProduct(f, g)
         
         % Data for plotting a FUN
-        data = plotData(f);
+        data = plotData(f, g);
         
         % Restrict a FUN to a subinterval.
         f = restrict(f, s)
@@ -170,6 +170,9 @@ classdef fun % (Abstract)
     %% METHODS IMPLEMENTED BY THIS CLASS.
     methods
         
+        % Absolute value of a FUN. (f should have no zeros in its domain)
+        f = abs(f, pref)
+        
         % Plot (semilogy) the Chebyshev coefficients of a FUN object, if it is
         % based on Chebyshev technology.
         h = chebpolyplot(f, varargin)
@@ -179,12 +182,15 @@ classdef fun % (Abstract)
         
         % FUN objects are not transposable.
         f = ctranspose(f)
+        
+        % Extract columns of an array-valued FUN object.
+        f = extractColumns(f, columnIndex);
 
         % Flip columns of an array-valued FUN object.
         f = fliplr(f)
         
         % Get properties of a FUN.
-        f = get(prop, val);
+        out = get(f, prop);
         
         % Imaginary part of a FUN.
         f = imag(f)
@@ -233,6 +239,9 @@ classdef fun % (Abstract)
 
         % Basic linear plot for FUN objects.
         varargout = plot(f, varargin)
+        
+        % 3-D plot for FUN objects.
+        varargout = plot3(f, g, h, varargin)
 
         % Addition of two FUN objects.
         f = plus(f, g)
@@ -245,6 +254,9 @@ classdef fun % (Abstract)
 
         % Roots of a FUN in the interval [a,b].
         out = roots(f, varargin)
+        
+        % Signum of a FUN. (f should have no zeros in its domain)
+        f = sign(f, pref)
 
         % Simplify the ONEFUN of a FUN object.
         f = simplify(f, tol)

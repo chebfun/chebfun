@@ -20,7 +20,7 @@ function fx = bary(x, fvals)
 % See also CHEBTECH.BARY, CHEBPTS, BARYWTS, FEVAL.
 
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
-%  See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+%  See http://www.chebfun.org for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %

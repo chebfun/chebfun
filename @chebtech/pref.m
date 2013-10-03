@@ -70,7 +70,7 @@ function prefs = pref(varargin)
 % See also CHEBTECH, CHEBTECH1, CHEBTECH2
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 classname = 'chebtech';
 
@@ -90,7 +90,7 @@ if ( isfield(prefs, classname) )  % It does, so either:
         p = prefs.(classname);    % b) Grab prefs for this class.
     end
 else                              % No prefs found for this class, so make some:
-    p.tech        = 'cheb2';
+    p.tech        = 'chebtech2';
     p.eps         = 2^-52;
     p.extrapolate = false;
     p.hscale      = 1;

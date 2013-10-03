@@ -49,26 +49,38 @@ end
 % Store the hold state of the current axis:
 holdState = ishold;
 
-% Get the data from PLOTDATA():
-data = plotData(f);
+%%
+% Get the data for plotting from PLOTDATA():
+if ( nargin > 1 && isa(varargin{1}, 'chebtech') )
+    % Deal with plot(f, g);
+    g = varargin{1};
+    varargin(1) = [];
+    % We can only plot real against real:
+    f = real(f); 
+    g = real(g);
+    % Call PLOTDATA():
+    data = plotData(f, g);
+else
+    g = [];
+    data = plotData(f);
+end
 
 %%
 % Plot the curve:
-if ( isreal(data.fLine) )
-    h1 = plot(data.xLine, data.fLine, varargin{:}); 
+if ( isreal(f) )
+    h1 = plot(data.xLine, data.yLine, varargin{:}); 
 else
-    h1 = plot(data.fLine, varargin{:}); 
+    h1 = plot(data.yLine, varargin{:}); 
 end
 set(h1, 'Marker', 'none') 
 hold on
 
 %%
-
 % Plot the points:
-if ( isreal(data.fLine) )
-    h2 = plot(data.xPoints, data.fPoints, varargin{:});
+if ( isreal(f) )
+    h2 = plot(data.xPoints, data.yPoints, varargin{:});
 else
-    h2 = plot(data.fPoints, varargin{:});
+    h2 = plot(data.yPoints, varargin{:});
 end
 
 % Change the style accordingly:
@@ -78,6 +90,7 @@ if ( all(strcmp(get(h2, 'Marker'), 'none')) && (length(f) < 257) )
 end
 
 %%
+
 % Return hold state to what it was before:
 if ( ~holdState )
     hold off
