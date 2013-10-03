@@ -34,15 +34,15 @@ function out = sum(f)
 %
 % [1]. K. Xu and M. Javed, Singfun Working Note, August 2013
 %
-% [2]. Hunter, D., and Nikolov, G., Gaussian Quadrature of Chebyshev Polynomials, 
-% J. Comput. Appl. Math. 94 (1998), 123-131.
+% [2]. Hunter, D., and Nikolov, G., Gaussian Quadrature of Chebyshev
+% Polynomials, J. Comput. Appl. Math. 94 (1998), 123-131.
 %
 % [3]. Piessens, R., and Branders, M., The Evaluation and Application of Some
 % Modified Moments, BIT 13 (1973), 443-450.
 %
-% [4]. Sommariva, A., Fast construction of Fejer and Clenshaw–Curtis rules for 
-% general weight functions, Computers & Mathematics with Applications 65 (2012), 
-% 682-693.
+% [4]. Sommariva, A., Fast construction of Fejer and Clenshaw–Curtis rules for
+% general weight functions, Computers & Mathematics with Applications 65
+% (2012), 682-693.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

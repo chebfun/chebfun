@@ -288,8 +288,11 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         % Basic linear plot for SINGFUN objects.
         varargout = plot(f, varargin)
         
+        % Plot3() for SINGFUN objects.
+        varargout = plot3(f, g, h)
+        
         % Obtain data used for plotting a SINGFUN object.
-        data = plotData(f)
+        data = plotData(f, g, h)
         
         % Addition of two SINGFUN objects.
         f = plus(f, g)

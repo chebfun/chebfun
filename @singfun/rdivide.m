@@ -21,7 +21,8 @@ end
 % Check if inputs are other than SINGFUNs, SMOOTHFUNs or doubles.
 if ( (~isa(f, 'singfun') && ~isa(f, 'smoothfun') && ~isa(f, 'double')) || ...
      (~isa(g, 'singfun') && ~isa(g, 'smoothfun') && ~isa(g, 'double')) )   
-    error('SINGFUN:rdivide:Input can only be a singfun, a smoothfun or a double')
+    error('SINGFUN:rdivide:', ...
+        'Input can only be a singfun, a smoothfun or a double')
 end
 
 %% SINGFUN./DOUBLE or SINGFUN./SMOOTHFUN
@@ -54,7 +55,7 @@ end
 % Example: f = 1; g = cos(pi/2*x) with trivial exponents. Then s = f./g is 
 % singular with non trivial exponents. So the result of f./g in general is a
 % generic SINGFUN with possibly non-trivial exponents.
-if( isa(f, 'singfun') && isa(g, 'singfun') )
+if ( isa(f, 'singfun') && isa(g, 'singfun') )
     % Construct the SINGFUN by a direct call to the constructor:
     s = singfun(@(x) feval(f, x)./feval(g, x));
 end

@@ -73,8 +73,10 @@ pass(7) = ( abs(I-I_exact) < 1e1*max(get(f, 'epslevel'), get(g, 'epslevel'))*...
     abs(I_exact) );
 
 % Check the complex-valued case:
-f = singfun(@(x) (sin(x)+1i*cos(x))./((1+x).^0.4.*(1-x).^0.3), [-0.4 -0.3], {'sing', 'sing'}, [], [], pref);
-g = singfun(@(x) (sin(x)-1i*cos(x))./((1+x).^0.2), [-0.2 0], {'sing', 'none'}, [], [], pref);
+f_op = @(x) (sin(x)+1i*cos(x))./((1+x).^0.4.*(1-x).^0.3);
+f = singfun(f_op, [-0.4 -0.3], {'sing', 'sing'}, [], [], pref);
+g_op = @(x) (sin(x)-1i*cos(x))./((1+x).^0.2);
+g = singfun(g_op, [-0.2 0], {'sing', 'none'}, [], [], pref);
 I = innerProduct(f,g);
 I_exact = -0.66255618280005499086+0.95157967059305931745i;
 pass(8) = ( abs(I-I_exact) < max(get(f, 'epslevel'), get(g, 'epslevel'))*...

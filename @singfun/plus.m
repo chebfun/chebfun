@@ -17,7 +17,7 @@ end
 % Check if inputs are other than SINGFUNS, SMOOTHFUNS or doubles:
 if ( (~isa(f, 'singfun') && ~isa(f, 'smoothfun') && ~isa(f, 'double')) || ...
      (~isa(g, 'singfun') && ~isa(g, 'smoothfun') && ~isa(g, 'double')) )
-    error( 'SINGFUN:times:Input can only be a singfun, a smoothfun or a double' )
+    error('SINGFUN:times:Input can only be a singfun, a smoothfun or a double')
 end
 % One of the arguments i.e. f or g is necessarily a SINGFUN object. Otherwise, 
 % this overloaded plus would not have been called.

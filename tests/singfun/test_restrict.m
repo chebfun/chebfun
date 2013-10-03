@@ -46,7 +46,8 @@ op = @(x) (1-x).^b;
 f = singfun(op, [0 b], {'none', 'sing'}, [], [], pref);
 pass(4) = test_spotcheck_restrict(f, op, [-0.9 -0.3 0.7 1], [0, 1], pref);
 
-% Two fractional poles at both endpoints. We restrict f to multiple subintervals.
+% Two fractional poles at both endpoints. We restrict f to multiple
+% subintervals.
 
 op = @(x) (1+x).^b.*sin(x).*(1-x).^d;
 f = singfun(op, [b d], {'sing', 'sing'}, [], [], pref);
