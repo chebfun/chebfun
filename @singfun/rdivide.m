@@ -34,14 +34,10 @@ end
 
 %% Reciprocal: DOUBLE./SINGFUN
 if ( isa(f,'double') )    
-    % Convert f to a SINGFUN and call rdivide again.
-    
-    % Make a zero SINGFUN:
-    temp = singfun.zeroSingFun();        
-    % Assign f as it's smooth part
-    temp.smoothPart = singfun.constructSmoothPart(f, f, 1, []);
-    % Change f to a SINGFUN:
-    f = temp;
+    % Make a SMOOTHFUN of the double f:
+    f = g.smoothPart.make(f);
+    % Convert f to a SINGFUN:
+    f = singfun.smooth2SingFun(f);
     % Call SINGFUN.RDIVIDE() again:
     s = f./g;
 end
@@ -49,13 +45,7 @@ end
 %% SMOOTHFUN./SINGFUN
 if ( isa(f,'smoothfun') )    
     % Convert f to a SINGFUN and call rdivide again.
-    
-    % Make a zero SINGFUN:
-    temp = singfun.zeroSingFun();        
-    % Assign f as it's smooth part
-    temp.smoothPart = f;
-    % Change f to a SINGFUN:
-    f = temp;
+    f = singfun.smooth2SingFun(f);
     % Call SINGFUN.RDIVIDE() again:
     s = f./g;
 end

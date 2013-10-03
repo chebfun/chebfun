@@ -24,26 +24,22 @@ end
 
 % If one of the arguments is a double, upgrade it to a SINGFUN:
 if ( isa(f, 'double') )
-    aDouble = f;
-    f = singfun.zeroSingFun();
-    f.smoothPart = singfun.constructSmoothPart(aDouble, aDouble, 1, []);
-    
+    % Make a SMOOTHFUN of the double f:
+    f = g.smoothPart.make(f);
+    % Convert f to a SINGFUN:
+    f = singfun.smooth2SingFun(f);
 elseif ( isa(g, 'double') )
-    aDouble = g;
-    g = singfun.zeroSingFun();
-    g.smoothPart = singfun.constructSmoothPart(aDouble, aDouble, 1, []);
-    
+    % Make a SMOOTHFUN of the double g:
+    g = f.smoothPart.make(g);
+    % Convert g to a SINGFUN:
+    g = singfun.smooth2SingFun(g);    
 end
 
 % If one of the arguments is a SMOOTHFUN, upgrade it to a SINGFUN:
 if ( isa(f, 'smoothfun') )
-    temp = singfun.zeroSingFun();
-    temp.smoothPart = f;
-    f = temp;    
+    f = singfun.smooth2SingFun(f);    
 elseif ( isa(g, 'smoothfun') )
-    temp = singfun.zeroSingFun();
-    temp.smoothPart = g;
-    g = temp;    
+    g = singfun.smooth2SingFun(g);    
 end
 
 fExps = f.exponents;
