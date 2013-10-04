@@ -9,7 +9,7 @@ function f = real(f)
 
 % Compute the real part of the values:
 f.values = real(f.values);
-f.vscale = max(abs(f.values));
+f.vscale = max(abs(f.values), [], 1);
 
 if ( ~any(f.values(:)) )
     % Input was imaginary, so output a zero CHEBTECH:
