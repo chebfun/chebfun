@@ -26,9 +26,9 @@ if ( nargin == 3 && dim == 2 )
 else
     % Differentiate along columns.
     
-    % Create an UNBNDFUN of the reciprocal of the derivative of the map:
-    gprcp = f; 
-    gprcp.onefun = onefun.constructor(@(x) 1./f.mapping.der(x));
+    % Construct the UNBNDFUN object for the derivative of the inverse map:
+    invDer = f; 
+    invDer.onefun = onefun.constructor(@(x) f.mapping.invder(x));
 
     % Loop for higher derivatives:
     for j = 1:k
@@ -37,7 +37,7 @@ else
         f.onefun = diff(f.onefun);
 
         % Apply the chain rule:
-        f = f.*gprcp;
+        f = f.*invDer;
 
     end
 

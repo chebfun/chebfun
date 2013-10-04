@@ -8,7 +8,7 @@ function out = feval(f,x)
 % Map the input:
 z = f.mapping.inv(x);
 
-% Make sure +inf and -inf get mapped to +1 or -1:
+% Make sure -Inf and Inf are mapped to -1 and 1 respectively:
 mask = isinf(x); 
 z(mask) = sign(x(mask));
 

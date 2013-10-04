@@ -1,6 +1,6 @@
 function g = restrict(f, s)
 %RESTRICT Restrict an UNBNDFUN to a subinterval.
-%   RESCTRICT(F, S) returns a UNBNDFUN that is restricted to the subinterval
+%   RESCTRICT(F, S) returns an FUN object that is restricted to the subinterval
 %   [S(1), S(2)] of F.domain.
 %
 %   If length(S) > 2, i.e., S = [S1, S2, S3, ...], then RESCTRICT(F, S) returns
@@ -30,11 +30,15 @@ end
 % Compute the breaks in [-1,1] space and restrict the onefun:
 t = f.mapping.inv(s);
 
-% Restrict the ONEFUN field of f.
+% Make sure -Inf and Inf are mapped to -1 and 1 respectively:
+mask = isinf(x); 
+z(mask) = sign(x(mask));
+
+% Restrict the ONEFUN of f.
 restrictedOnefuns = restrict(f.onefun, t);
 
 if ( length(s) == 2 )
-    % Only restricting to one subinterval -- return a BNDFUN or UNBNDFUN.
+    % Only restricting to one subinterval - return a BNDFUN or an UNBNDFUN.
     
     % Create an empty BNDFUN or UNBNDFUN, and assign fields directly. This is
     % faster than calling the FUN constructor.
@@ -47,13 +51,12 @@ if ( length(s) == 2 )
     g.domain = s;
     g.mapping = g.createMap(s);
 else
-    % Restricting to multiple subintervals -- return a cell-array of BNDFUN
-    % objects.
+    % Restricting to multiple subintervals - return a cell-array of FUN objects.
     
     % Create the cell to be returned.
     g = cell(1, numel(s) - 1);
     
-    % Create an empty BNDFUN:
+    % Create an empty FUN:
     emptyBndfun = bndfun();
     emptyUnbndfun = unbndfun();
     

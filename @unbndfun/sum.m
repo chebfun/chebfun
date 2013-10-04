@@ -128,11 +128,6 @@ elseif ( isa(g.onefun, 'singfun') )
         % 3. doubly-infinite domain [-inf inf] with exponents [a b] where a > 1,
         %    b > 1.
         
-        % Absorb integer power of zeros or integer order of poles/fractional
-        % poles into the smooth part of the onefun and leave the exponents of
-        % the onefun fractional.
-        gtmp = replaceRoots(g.onefun);
-        
         % Construct the onefun presentation of the derivative of the map.
         mapder = onefun.constructor(@(x) g.mapping.der(x), [], [], pref);
         
