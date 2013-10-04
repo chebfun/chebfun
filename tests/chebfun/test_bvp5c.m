@@ -28,12 +28,12 @@ lambda = 15;
 % Derivative function. q is provided by the outer function.
 mat4ode = @(x, y, lambda) [ y(2) ; -(lambda - 2*q*cos(2*x))*y(1) ];
 % Boundary conditions. lambda is a required argument.
-mat4bc = @(ya, yb,  lambda) [ ya(2) ; yb(2) ; ya(1)-1 ];
+mat4bc = @(ya, yb, lambda) [ ya(2) ; yb(2) ; ya(1)-1 ];
 % Auxiliary function -- initial guess for the solution
 mat4init = @(x) [ cos(4*x) , -4*sin(4*x) ];
 
 opts = odeset('AbsTol', 1e-5, 'RelTol', 1e-5);
-solinit = bvpinit(linspace(0,pi,10), mat4init, lambda);
+solinit = bvpinit(linspace(0, pi, 10), mat4init, lambda);
 solinit = chebfun(mat4init, [0, pi]);
 
 [sol, p] = bvp5c(mat4ode, mat4bc, solinit, lambda, opts);

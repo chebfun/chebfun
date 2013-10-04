@@ -11,7 +11,7 @@ function varargout = ode15s(varargin)
 %
 % Example:
 %   y = chebfun.ode15s(@vdp1000, [0, 3000], [2 ; 0]); % Solve Van der Pol problem
-%   roots( y(:,1) - 1 );                              % Find when y = 1
+%   roots(y(:,1) - 1);                                % Find when y = 1
 %
 % See also ODESET, ODE113, ODE45,
 

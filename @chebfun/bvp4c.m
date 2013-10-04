@@ -2,8 +2,8 @@ function varargout = bvp4c(fun1, fun2, y0, varargin)
 %BVP4C   Solve boundary value problems for ODEs by collocation with CHEBFUN.
 %   Y = BVP4C(ODEFUN, BCFUN, Y0) applies the standard BVP4C method to solve a
 %   boundary-value problem. ODEFUN and BCFUN are as in BVP4C. The Y0 argument is
-%   a chebfun that represents the initial guess to the solution Y. Its domain
-%   defines the domain of the problem, and the length of the chebfun Y0 is used
+%   a CHEBFUN that represents the initial guess to the solution Y. Its domain
+%   defines the domain of the problem, and the length of the CHEBFUN Y0 is used
 %   to set the number of points in an initial equispaced mesh. Note that it is
 %   not necessary to call BVPINIT.
 %
@@ -14,7 +14,7 @@ function varargout = bvp4c(fun1, fun2, y0, varargin)
 %   additional output is used to return the parameter values found.
 %
 %   It is possible to take a crude continuation approach by solving for a simple
-%   variation of the problem, then using the resulting chebfun as the initial
+%   variation of the problem, then using the resulting CHEBFUN as the initial
 %   guess for a more difficult version.
 %
 % Example (using built-in BVP demo functions):
@@ -41,7 +41,7 @@ end
 
 if ( ~isfinite(y0) )
     error('CHEBFUN:bvp4c:inf',...
-        'BVP4C() does not currently support functions which diverge to infinity');
+      'BVP4C() does not currently support functions which diverge to infinity');
 end
 
 % Determine the initial BVP grid from the length of the CHEBFUN:

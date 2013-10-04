@@ -26,7 +26,8 @@ numCols = size(sol.y, 1);
 if ( nargin < 2 ) 
     opt = [];
 end
-if ( isempty(opt) && isfield(sol, 'extdata') && isfield(sol.extdata, 'options') )
+if ( isempty(opt) && isfield(sol, 'extdata') && ...
+     isfield(sol.extdata, 'options') )
     % Take options from sol if none are given:
     opt = sol.extdata.options;
 end
@@ -38,11 +39,11 @@ absTol = 1e-6*ones(numCols, 1);         % Absolute
 % Update if user used different tolerances:
 if ( ~isempty(opt) )
     if ( ~isempty(opt.RelTol) )         % Relative tolerance given by user
-        relTol = opt.RelTol*ones(numCols,1);
+        relTol = opt.RelTol*ones(numCols, 1);
     end
     if ( ~isempty(opt.AbsTol) )         % Absolute tolerance given by user
         if ( length(opt.AbsTol) == 1 )  % AbsTol might be vector or scalar
-            absTol = opt.AbsTol*ones(numCols,1);
+            absTol = opt.AbsTol*ones(numCols, 1);
         else
             absTol = opt.AbsTol;
         end
