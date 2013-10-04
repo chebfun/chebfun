@@ -192,6 +192,15 @@ classdef chebfun
         % Determine values of chebfun at breakpoints.
         vals = getValuesAtBreakpoints(funs, ends, op);
         
+        % ODE113 with CHEBFUN output.
+        [t, y] = ode113(varargin);
+        
+        % ODE15S with CHEBFUN output.
+        [t, y] = ode15s(varargin);
+        
+        % ODE45 with CHEBFUN output.
+        [t, y] = ode45(varargin);
+        
         % Retrieve and modify preferences for this class.
         prefs = pref(varargin);
         
@@ -211,6 +220,9 @@ classdef chebfun
     % Static private methods implemented by CHEBFUN class.
     methods (Static = true, Access = private)
         
+        % Convert ODE solutions into CHEBFUN objects:
+        [y, t] = odesol(sol, opt);
+        
         % Parse the inputs to the CHEBFUN constructor.
         [op, domain, pref] = parseInputs(op, domain, varargin);
         
@@ -227,6 +239,12 @@ classdef chebfun
         
         % Absolute value of a CHEBFUN.
         f = abs(f, pref)
+        
+        % Solve boundary value problems for ODEs by collocation.
+        [y, t] = bvp4c(fun1, fun2, y0, varargin);
+        
+        % Solve boundary value problems for ODEs by collocation.
+        [y, t] = bvp5c(fun1, fun2, y0, varargin);
         
         % Plot information regarding the representation of a CHEBFUN object:
         h = chebpolyplot(f, varargin);
