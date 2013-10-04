@@ -26,6 +26,6 @@ end
 r = sum(s > tol);
 
 % Select these columns of U:
-Q = extractColums(U, 1:r);
+Q = extractColumns(U, 1:r);
 
 end

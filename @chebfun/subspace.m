@@ -23,11 +23,11 @@ if ( ~isa(A, 'chebfun') || ~isa(B, 'chebfun') )
     error('CHEBFUN:subspace:argin', ...
         'Both A and B must be column CHEBFUN.')
 end
-if ( domainCheck(A, B) )
+if ( ~domainCheck(A, B) )
     error('CHEBFUN:subspace:domain', ...
         'Domain mismatch.')
 end
-if ( A.isTranposed )
+if ( A.isTransposed )
     if ( ~B.istranposed )
         error('CHEBFUN:subspace:trans', 'Dimension mismatch (transpose).');
     end
