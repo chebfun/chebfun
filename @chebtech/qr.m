@@ -141,10 +141,10 @@ end
 
 function [f, R, E] = qr_householder(f, flag)
 % See L.N. Trefethen, "Householder triangularization of a quasimatrix", IMA J
-% Numer Anal (2010) 30 (4): 887-897. Specify a tolerance:
+% Numer Anal (2010) 30 (4): 887-897. 
 
-pref = chebtech.pref();
-tol = pref.chebtech.eps;
+% Specify a tolerance:
+tol = f.epslevel*max(f.vscale);
 
 % Grab the size:
 [n, m] = size(f);
@@ -237,7 +237,7 @@ for k = m:-1:1
     end
 end
 
-% Compute the corresponding Chebysehv coefficients:
+% Compute the corresponding Chebyshev coefficients:
 f.coeffs = f.vals2coeffs(Q);
 % Trim the unneeded ones:
 f.coeffs(1:n,:) = [];
