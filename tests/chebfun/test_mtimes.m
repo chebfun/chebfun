@@ -46,33 +46,44 @@ err = g.'*f - [0.5 0; 0 0.5];
 tol = 10*max(f.vscale*f.epslevel, g.vscale*g.epslevel);
 pass(8) = norm(err(:), inf) < tol;
 
+A = randn(2, 2);
+g = f2*A;
+g_exact = @(x) [sin(x).*abs(x - 0.1)  exp(x)]*A;
+err = abs(feval(g, x) - g_exact(x));
+pass(9) = max(err(:)) < 10*vscale(g)*epslevel(g);
+
+h = A*f2.'
+h_exact = @(x) A*[sin(x).*abs(x - 0.1)  exp(x)].';
+err = abs(feval(h, x) - h_exact(x));
+pass(10) = max(err(:)) < 10*vscale(h)*epslevel(h);
+
 % Test error conditions.
 try
     h = f*'X';
-    pass(9) = false;
+    pass(11) = false;
 catch ME
-    pass(9) = strcmp(ME.identifier, 'CHEBFUN:mtimes:unknown');
+    pass(11) = strcmp(ME.identifier, 'CHEBFUN:mtimes:unknown');
 end
 
 try
     h = f*f1;
-    pass(10) = false;
+    pass(12) = false;
 catch ME
-    pass(10) = strcmp(ME.identifier, 'CHEBFUN:mtimes:dims');
+    pass(12) = strcmp(ME.identifier, 'CHEBFUN:mtimes:dims');
 end
 
 try
     h = f*g;
-    pass(11) = false;
+    pass(13) = false;
 catch ME
-    pass(11) = strcmp(ME.identifier, 'CHEBFUN:mtimes:dims');
+    pass(13) = strcmp(ME.identifier, 'CHEBFUN:mtimes:dims');
 end
 
 try
     h = f*g.';
-    pass(12) = false;
+    pass(14) = false;
 catch ME
-    pass(12) = strcmp(ME.identifier, 'CHEBFUN:mtimes:colTimesRow');
+    pass(14) = strcmp(ME.identifier, 'CHEBFUN:mtimes:colTimesRow');
 end
 
 end
