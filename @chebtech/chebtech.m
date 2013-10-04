@@ -257,7 +257,7 @@ classdef chebtech < smoothfun % (Abstract)
         % Absolute value of a CHEBTECH. (f should have no zeros in its domain)
         f = abs(f, pref)
 
-        % Convert an array of CHEBTECH objects into a array-valued CHEBTECH.
+        % Convert an array of CHEBTECH objects into an array-valued CHEBTECH.
         f = cell2mat(f)
 
         % Plot (semilogy) the Chebyshev coefficients of a CHEBTECH object.
@@ -332,7 +332,7 @@ classdef chebtech < smoothfun % (Abstract)
         % A 'loose' (i.e., not too strict) check for happiness.
         [ishappy, epslevel, cutoff] = looseCheck(f, pref)
 
-        % Convert a array-valued CHEBTECH into an ARRAY of CHEBTECH objects.
+        % Convert an array-valued CHEBTECH into an ARRAY of CHEBTECH objects.
         g = mat2cell(f, M, N)
 
         % Global maximum of a CHEBTECH on [-1,1].

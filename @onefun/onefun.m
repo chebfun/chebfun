@@ -96,7 +96,7 @@ classdef onefun % (Abstract)
     %% ABSTRACT (NON-STATIC) METHODS REQUIRED BY ONEFUN CLASS.
     methods ( Abstract = true )
         
-        % Convert an array of ONEFUN objects into a array-valued ONEFUN.
+        % Convert an array of ONEFUN objects into an array-valued ONEFUN.
         f = cell2mat(f)
 
         % Complex conjugate of a ONEFUN.
@@ -150,7 +150,7 @@ classdef onefun % (Abstract)
         % Length of a ONEFUN.
         len = length(f)
 
-        % Convert a array-valued ONEFUN into an ARRAY of ONEFUN objects.
+        % Convert an array-valued ONEFUN into an ARRAY of ONEFUN objects.
         g = mat2cell(f, M, N)
 
         % Global maximum of a ONEFUN on [-1,1].
