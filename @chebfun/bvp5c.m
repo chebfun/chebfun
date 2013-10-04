@@ -18,15 +18,14 @@ function varargout = bvp5c(fun1, fun2, y0, varargin)
 %   guess for a more difficult version.
 %
 % Example (using built-in BVP demo functions):
-%   d = [0, 4];
-%   y0 = chebfun(@(x) [1+0*x, 0*x], d);
-%   y = BVP5C(@twoode, @twobc, y0);
+%   y0 = chebfun([0, 0], [0, 4]);
+%   y = bvp5c(@twoode, @twobc, y0);
 %   plot(y)
 %
 % See also BVPINIT, BVPSET, BVP4C, ODE113.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Parse the inputs.
 params = {};

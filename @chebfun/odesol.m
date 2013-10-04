@@ -1,4 +1,4 @@
-function [y, t] = odesol(sol, opt)
+function varargout = odesol(sol, opt)
 %ODESOL   Convert an ODE solution to CHEBFUN.
 %   Y = ODESOL(SOL, OPT) converts the solution of an ODE initial-value or
 %   boundary-value problem by standard MATLAB methods into a CHEBFUN
@@ -55,11 +55,12 @@ relTol = max(relTol(:), absTol(:)./vscale(:));
 p = chebfun.pref('eps', max(relTol)); % Use the same tolerance for each column..
 y = chebfun(@(x) deval(sol, x).', d, p);
 
-% Second output:
+% Parse outputs:
 if ( nargout > 1 )
     t = chebfun('t', y.domain);
-    % Note that the order of outputs is the reverse of that from calls to
-    % BVP4C(), ODE45(), etc.
+    varargout = {t, y};
+else
+    varargout = {y};
 end
 
 end

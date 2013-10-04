@@ -9,24 +9,23 @@ function varargout = bvp4c(fun1, fun2, y0, varargin)
 %
 %   [Y, P] = BVP4C(ODEFUN, BCFUN, Y0, PARAM, OPTS) allows you to specify an
 %   initial guess for any additional parameters to be found for the solution,
-%   and an options vector to guide the solution. See BVP4C and BVPSET for
-%   details. You may specify either extra argument, or both. An additional
-%   output is used to return the parameter values found.
+%   and an options vector to guide the solution. See the built in BVP4C and
+%   BVPSET for details. You may specify either extra argument, or both. An
+%   additional output is used to return the parameter values found.
 %
 %   It is possible to take a crude continuation approach by solving for a simple
 %   variation of the problem, then using the resulting chebfun as the initial
 %   guess for a more difficult version.
 %
 % Example (using built-in BVP demo functions):
-%   d = [0, 4];
-%   y0 = chebfun(@(x) [1+0*x, 0*x], d);
+%   y0 = chebfun([0, 0], [0, 4]);
 %   y = bvp4c(@twoode, @twobc, y0);
 %   plot(y)
 %
 % See also BVPINTI, BVPSET, BVP5C, ODE113.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Parse the inputs.
 params = {};

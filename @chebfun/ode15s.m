@@ -1,4 +1,4 @@
-function [t, y] = ode15s(varargin)
+function varargout = ode15s(varargin)
 %ODE15S   Solve stiff differential equations and DAEs. Output a CHEBFUN.
 %   Y = CHEBFUN.ODE15S(ODEFUN, D, ...) applies the standard ODE15S method to
 %   solve an initial-value problem on the domain D. The result is then converted
@@ -24,12 +24,14 @@ function [t, y] = ode15s(varargin)
 sol = ode15s(varargin{:});
 
 % Convert solution to a CHEBFUN:
-[y, t] = chebfun.odesol(sol); 
+[t, y] = chebfun.odesol(sol); 
 
 % Output in a consistent way with the built in routine:
 if ( nargout == 1 )
-    % Only t will be returned in this case.
-    t = y;
+    % Only y will be returned in this case.
+    varargout = {y};
+else
+    varargout = {t, y};
 end
 
 end
