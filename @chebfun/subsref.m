@@ -61,6 +61,9 @@ switch index(1).type
             % f(x, m), for array-valued CHEBFUN objects:
             columnIndex = idx{2};         
             
+        elseif ( length(idx) == 2 && strcmp(idx{2}, ':') )
+            % This is OK.
+            
         elseif ( length(idx) > 1 )
             error('CHEBFUN:subsref:dimensions', ...
                 'Index exceeds CHEBFUN dimensions.')
