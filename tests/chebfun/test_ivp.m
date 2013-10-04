@@ -5,7 +5,7 @@ function pass = test_ivp(varargin)
 
 % Rodrigo Platte Jan 2009, modified by Asgeir Birkisson, modified by Nick Hale.
 
-%% Test using Van der Pol
+%% Test using Van der Pol:
 
 % Test ode15s Using default tolerances (RelTol = 1e-3)
 [t, y] = chebfun.ode15s(@vdp1, [0, 5], [2 ; 0]); % CHEBFUN solution
@@ -20,10 +20,10 @@ pass(2) = max(max(abs(ym - feval(y, tm)))) < 1e-2;
 % Test ode113 with different tolerance (RelTol = 1e-6)
 opts = odeset('RelTol', 1e-6);
 [t, y] = chebfun.ode113(@vdp1, [0, 20], [2 ; 0], opts); % CHEBFUN solution
-[tm,ym] = ode113(@vdp1, [0, 20], [2 ; 0], opts);        % Matlab's solution
+[tm, ym] = ode113(@vdp1, [0, 20], [2 ; 0], opts);       % Matlab's solution
 pass(3) = max(max(abs(ym - feval(y,tm)))) < 1e-5;
 
-%% Test some trivial complex-valued IVPs
+%% Test some trivial complex-valued IVPs:
 
 f = @(x, u) 1i*u;
 d = [0, 1];

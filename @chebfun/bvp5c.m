@@ -39,11 +39,10 @@ for k = 1:nargin-3
     end
 end
 
-% [TODO]: Replace this one ISFINITE() is implemented.
-% if ( ~isfinite(y0) )
-%     error('CHEBFUN:BVP5C:inf',...
-%         'BVP5C() does not currently support functions which diverge to infinity');
-% end
+if ( ~isfinite(y0) )
+    error('CHEBFUN:BVP5C:inf',...
+        'BVP5C() does not currently support functions which diverge to infinity');
+end
 
 % Determine the initial BVP grid from the length of the CHEBFUN:
 n = max(9, length(y0));
