@@ -186,7 +186,10 @@ classdef chebfun
         % Edge detector.
         [edge, vscale] = detectEdge(op, domain, hscale, vscale, derHandle);
         
-        % Determine values of CHEBFUN at breakpoints.
+        % Interpolate data:
+        f = interp1(x, y, method, dom);
+        
+        % Determine values of chebfun at breakpoints.
         vals = getValuesAtBreakpoints(funs, ends, op);
         
         % ODE113 with CHEBFUN output.
@@ -201,6 +204,17 @@ classdef chebfun
         % Retrieve and modify preferences for this class.
         prefs = pref(varargin);
         
+        % Cubic Hermite interpolation:
+        f = pchip(x, y, method);
+        
+        % Cubic spline interpolant:
+        f = spline(x, y, d);
+        
+    end
+
+    methods (Access = private)
+        % Remove zero layers from impulses array.
+        f = tidyImpulses(f);
     end
     
     % Static private methods implemented by CHEBFUN class.
@@ -223,8 +237,20 @@ classdef chebfun
     % Methods implemented by CHEBFUN class.
     methods
         
+        % Absolute value of a CHEBFUN.
+        f = abs(f, pref)
+        
+        % Solve boundary value problems for ODEs by collocation.
+        [y, t] = bvp4c(fun1, fun2, y0, varargin);
+        
+        % Solve boundary value problems for ODEs by collocation.
+        [y, t] = bvp5c(fun1, fun2, y0, varargin);
+        
         % Plot information regarding the representation of a CHEBFUN object:
         h = chebpolyplot(f, varargin);
+
+        % Construct complex CHEBFUN from real and imaginary parts.
+        C = complex(A, B)
 
         % Compose CHEBFUN objects with another function.
         h = compose(f, op, g, pref)
@@ -232,62 +258,131 @@ classdef chebfun
         % Compose two CHEBFUN objects (i.e., f(g)).
         h = composeChebfuns(f, g, pref)
         
+        % Complex conjugate of a CHEBFUN.
+        f = conj(f)
+        
+        % Complex transpose of a CHEBFUN.
+        f = ctranspose(f)
+
         % Display a CHEBFUN object.
         display(f);
         
         % Compare domains of two CHEBFUN objects.
         pass = domainCheck(f, g);
 
-        % Retrieve and modify preferences for this class.
-        varargout = subsref(f, index);
-
-        % Retrieve and modify preferences for this class.
-        varargout = subsasgn(f, varargin);
-
         % Accuracy estimate of a CHEBFUN object.
         out = epslevel(f);
         
+        % Extract columns of an array-valued CHEBFUN object.
+        f = extractColumns(f, columnIndex);
+        
+        % Evaluate a CHEBFUN.
+        y = feval(f, x, varargin)
+
         % Get properties of a CHEBFUN object.
         out = get(f, prop);
         
         % Horizontal scale of a CHEBFUN object.
         out = hscale(f);
 
+        % Imaginary part of a CHEBFUN.
+        f = imag(f)
+        
+        % True for an empty CHEBFUN.
+        out = isempty(f)
+
+        % Test if CHEBFUN objects are equal.
+        out = isequal(f, g)
+
+        % Test if a CHEBFUN is bounded.
+        out = isfinite(f)
+        
+        % Test if a CHEBFUN is unbounded.
+        out = isinf(f)
+
+        % Test if a CHEBFUN has any NaN values.
+        out = isnan(f)
+        
+        % True for real CHEBFUN.
+        out = isreal(f);
+        
+        % True for zero CHEBFUN objects
+        out = iszero(f)
+        
+        % Length of a CHEBFUN.
+        out = length(f);
+        
         % Plot a CHEBFUN object on a loglog scale:
         h = loglog(f, varargin);
         
         % Plot a CHEBFUN object:
-        h = plot(f, varargin);
+        varargout = plot(f, varargin);
         
         % 3-D plot for CHEBFUN objects.
         varargout = plot3(f, g, h, varargin)
         
-        % Plot a CHEBFUN object on a log-linear scale:
-        h = semilogx(f, varargin);
+        % Subtraction of two CHEBFUN objects.
+        f = minus(f, g)
         
-        % Plot a CHEBFUN object on a linear-log scale:
-        h = semilogy(f, varargin);
+        % Signmum of a CHEBFUN.
+        f = sign(f, pref)
 
-        % True for real CHEBFUN.
-        out = isreal(f);
+        % Multiplication of CHEBFUN objects.
+        f = mtimes(f, c)
 
-        % Length of a CHEBFUN.
-        out = length(f);
-
+        % Remove unnecessary breakpoints in from a CHEBFUN.
+        [f, mergedPts] = merge(f, index, pref)
+        
         % Overlap the domain of two CHEBFUN objects.
-        [f, g] = overlap(f, g);
+        [f, g] = overlap(f, g)
 
-        % Restrict s CHEBFUN object to a subdomain.
+        % Obtain data used for plotting a CHEBFUN object:
+        data = plotData(f, g, h)
+        
+        % Power of a CHEBFUN
+        f = power(f, b);
+        
+        % Real part of a CHEBFUN.
+        f = real(f)
+        
+        % Restrict a CHEBFUN object to a subdomain.
         f = restrict(f, newDomain);
 
         % The roots of the CHEBFUN F.
         r = roots(f, varargin);
+
+        % Plot a CHEBFUN object on a log-linear scale:
+        h = semilogx(f, varargin);
+
+        % Plot a CHEBFUN object on a linear-log scale:
+        h = semilogy(f, varargin);
 
         % Simplify the representation of a CHEBFUN obect.
         f = simplify(f, tol);
 
         % Size of a CHEBFUN object.
         [s1, s2] = size(f, dim);
+        
+        % Retrieve and modify preferences for this class.
+        varargout = subsref(f, index);
+
+        % Retrieve and modify preferences for this class.
+        varargout = subsasgn(f, varargin);
+        
+        % CHEBFUN multiplication.
+        f = times(f, g, varargin)
+        
+        % Transpose a CHEBFUN.
+        f = transpose(f)
+        
+        % Adjust nearby common break points in domains of CHEBFUN objects.
+        [f, g, newBreaksLocF, newBreaksLocG] = tweakDomain(f, g, tol)
+
+        % Unary minus of a CHEBFUN.
+        f = uminus(f)
+
+        % Unary plus of a CHEBFUN.
+        f = uplus(f)
         
         % Vertical scale of a CHEBFUN object.
         out = vscale(f);

@@ -45,7 +45,7 @@ function f = populate(f, op, vscale, hscale, pref)
 %   |   [EXTRAPOLATE]  Remove NaNs/Infs and (optionally) extrapolate endpoints.
 %   |        |
 %   |        v
-%   | [compute COEFFS] COEFFS = CHEBPOLY(VALUES)
+%   | [compute COEFFS] COEFFS = VALS2COEFFS(VALUES)
 %   |        |
 %   |        v
 %    -<--[ISHAPPY?]    [ISHAPPY, EPSLEVEL, CUTOFF] = PREF.HAPPINESSCHECK(F, OP,
@@ -55,7 +55,7 @@ function f = populate(f, op, vscale, hscale, pref)
 %      [alias COEFFS]  COEFFS = ALIAS(COEFFS, CUTOFF)
 %            |
 %            v
-%     [compute VALUES] VALUES = CHEBPOLYVAL(COEFFS)
+%     [compute VALUES] VALUES = COEFFS2VALS(COEFFS)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -77,7 +77,7 @@ if ( isnumeric(op) || iscell(op) )
     if ( isnumeric(op) )
         % OP is just the values.
         f.values = op;
-        f.coeffs = f.chebpoly(op);
+        f.coeffs = f.vals2coeffs(op);
         % Update vscale:
         f.vscale = max(abs(f.values), [], 1);
         % Check for happiness: (no OP to compare against)
@@ -89,7 +89,7 @@ if ( isnumeric(op) || iscell(op) )
         f.values = op{1};
         f.coeffs = op{2};
         if ( isempty(f.values) )
-            f.values = f.chebpolyval(f.coeffs);
+            f.values = f.coeffs2vals(f.coeffs);
         end
         % Update vscale:
         f.vscale = max(abs(f.values), [], 1);
@@ -124,7 +124,7 @@ while ( 1 )
     [f.values, maskNaN, maskInf] = extrapolate(f);
 
     % Compute the Chebyshev coefficients:
-    coeffs = f.chebpoly(f.values);
+    coeffs = f.vals2coeffs(f.values);
     
     % Check for happiness:
     f.coeffs = coeffs;
@@ -134,7 +134,7 @@ while ( 1 )
     % We're happy! :)
     if ( ishappy ) 
         coeffs = f.alias(coeffs, cutoff);  % Alias the discarded coefficients.
-        f.values = f.chebpolyval(coeffs);  % Compute values on this grid.
+        f.values = f.coeffs2vals(coeffs);  % Compute values on this grid.
         break
     end
     

@@ -32,16 +32,8 @@ if ( nIn == 1 )
     return
 end
 
-% Prolong the points; 
-% Barycentric formula when n is small or when compressing, FFT when large.
-if ( (nDiff < 0) && (nOut < 33) && (nIn < 1000) ) % <- Determined experimentally
-    % Use BARY to compress:
-    f.values = f.bary(f.chebpts(nOut), f.values);
-    f.coeffs = f.chebpoly(f.values);
-else
-    % Use FFTs:
-    f.coeffs = f.alias(f.coeffs, nOut);
-    f.values = f.chebpolyval(f.coeffs); 
-end
+% Prolong the points using the FFT:
+f.coeffs = f.alias(f.coeffs, nOut);
+f.values = f.coeffs2vals(f.coeffs);
 
 end

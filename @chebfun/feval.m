@@ -33,6 +33,11 @@ if ( isempty(f) || isempty(x) )
     return
 end
 
+if ( isa(f, 'function_handle') )
+    fx = f(x, varargin{:});
+    return
+end
+
 %% LEFT / RIGHT VALUES:
 % Support for feval(f, 'left') and feval(f, 'end'), etc.
 if ( ischar(x) )
@@ -51,7 +56,7 @@ end
 % right thing.  (We'll compensate for this further down.)
 wasTransposed = f.isTransposed;
 if ( f.isTransposed )
-    f.isTransposed = 0; % [TODO]:  Replace with a call to transpose().
+    f = transpose(f);
 end
 
 % Reshape x to be a column vector.
@@ -60,7 +65,8 @@ ndimsx = ndims(x);
 x = x(:);
 
 % Initialise output:
-[numFuns, numCols] = size(f);
+numCols = size(f, 2);
+numFuns = numel(f.funs);
 fx = zeros(size(x, 1), numCols);
 funs = f.funs;
 dom = f.domain;

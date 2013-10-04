@@ -54,7 +54,7 @@ if ( firstNonZeroRow > 0 )
 end
 
 % Update values and epslevel:
-f.values = f.chebpolyval(f.coeffs);
+f.values = f.coeffs2vals(f.coeffs);
 f.vscale = max(abs(f.values));
 f.epslevel = max(f.epslevel, tol);
 

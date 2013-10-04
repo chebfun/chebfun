@@ -22,10 +22,10 @@ switch prop
         out = chebtech1.chebpts(size(f.values,1));
     case 'lval'
         % The value at -1:
-        out = f.bary(-1, f.values);
+        out = feval(f, -1);
     case 'rval'
         % The value at +1:
-        out = f.bary(1, f.values);
+        out = feval(f, 1);
     otherwise
         error('CHEBFUN:CHEBTECH1:GET:proname', ...
             'Unknown property name ''%s'' for object of type chebtech1.', prop);

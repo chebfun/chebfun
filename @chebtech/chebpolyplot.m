@@ -41,10 +41,10 @@ args = varargin;
 % Check inputs for 'loglog' or 'noepslevel'.
 j = 1;
 while ( j <= length(args) )
-    if ( strcmpi(args{j},'loglog') )
+    if ( strcmpi(args{j}, 'loglog') )
         loglogPlot = true; 
         args(j) = [];
-    elseif ( strcmpi(args{j},'noepslevel') )
+    elseif ( strcmpi(args{j}, 'noepslevel') )
         plotEpsLevel = false; 
         args(j) = [];
     else

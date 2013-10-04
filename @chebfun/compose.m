@@ -13,7 +13,7 @@ function f = compose(f, op, g, pref)
 %   COMPOSE(F, OP, PREF), COMPOSE(F, OP, G, PREF), and COMPOSE(F, G, PREF) use
 %   the options passed by the preference structure PREF.
 %
-%   Note 1: If the location of required breakpoints in the output are known in
+%   Note 1: If the locations of required breakpoints in the output are known in
 %   advance, they should be applied to F and/or G using RESTRICT() before the
 %   call to COMPOSE().
 %
@@ -75,7 +75,7 @@ if ( isempty(f) )
     return
 end
 
-% Call the COMPOSECHEBFUNS method if OP is a CHEBFUN object:
+% Call the COMPOSETWOCHEBFUNS method if OP is a CHEBFUN object:
 if ( isa(op, 'chebfun') )
     f = composeTwoChebfuns(f, op, pref);
     return
@@ -191,7 +191,7 @@ f.impulses = newImps;
 end
 
 function h = composeTwoChebfuns(f, g, pref)
-%COMPOSETWOCHEBFUNS   Composition of two CHEBFUNs.
+%COMPOSETWOCHEBFUNS   Composition of two CHEBFUN objects.
 %   COMPOSETWOCHEBFUNS(F, G, PREF) returns the composition of the CHEBFUN
 %   objects F and G, G(F) using the CHEBFUN preferences contained in the
 %   preference structure PREF.  The range of F must be in the domain of G or
@@ -213,11 +213,8 @@ end
 isTransposed = f.isTransposed;
 if ( isTransposed )
     % Make everything a column CHEBFUN for now:
-    f.isTransposed = 0;
-    g.isTransposed = 0;
-    % [TODO]: Add this once TRANSPOSE() is implemented.
-    % f = f.';
-    % g = g.';
+    f = transpose(f);
+    g = transpose(g);
 end
 
 if ( (size(f, 2) > 1) && (size(g, 2) > 1) )
@@ -278,9 +275,7 @@ h = compose(f, @(f) feval(g, f), pref);
 h.impulses(:,:,1) = feval(g, feval(f, h.domain.'));
 
 if ( isTransposed )
-    h.isTransposed = 1;
-    % [TODO]: Add this once TRANSPOSE() is implemented.
-    % h = h.';
+    h = transpose(h);
 end
 
 end
