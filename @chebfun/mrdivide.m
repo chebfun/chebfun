@@ -19,11 +19,11 @@ elseif ( isnumeric(A) )
     C = Q * (R/A);
     
 elseif ( ~A.isTransposed )
-    [Q,R] = qr(A, 0);
+    [Q, R] = qr(A, 0);
     C = (B/R) * Q';
     
 else
-    [Q,R] = qr(A', 0);
+    [Q, R] = qr(A', 0);
     C = (B*Q) / R';
     
 end

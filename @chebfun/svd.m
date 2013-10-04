@@ -18,12 +18,12 @@ function [U, S, V] = svd(A, econ)
 % The computation is carried out by orthogonalization operations following
 % Battles' 2006 thesis.
 
-if ( ( nargin > 2) || ( nargin == 2 && econ~=0 ) )
+if ( ( nargin > 2) || ( nargin == 2 && econ ~= 0 ) )
     error('CHEBFUN:svd:twoargs',...
-          'Use svd(A) or svd(A,0) for QR decomposition of quasimatrix.');
+          'Use svd(A) or svd(A, 0) for QR decomposition of quasimatrix.');
 end
 
-if ( A.isTransposed)     % A is a row quasimatrix
+if ( A.isTransposed )    % A is a row quasimatrix
     % Call CHEBFUN/QR():
     [Q, R] = qr(A');
     % Call discrete SVD():

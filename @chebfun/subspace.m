@@ -39,8 +39,8 @@ end
 A = orth(A);
 B = orth(B);
 
-% Compute the innperproduct?
-C = A'*B; % TODO: Should we have an INNERPRODUCT() method?
+% Compute the inner product:
+C = innerProduct(A, B);
 
 % Singular values of the inner product:
 S = svd(C);
