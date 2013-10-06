@@ -13,8 +13,8 @@ function data = plotData(f)
 data = plotData(f.onefun);
 
 % Map the 'x' data using f.mapping.for:
-data{1} = f.mapping.for(data{1});
-data{3} = f.mapping.for(data{3});
+data{1} = f.mapping.forder(data{1});
+data{3} = f.mapping.forder(data{3});
 
 % The plotting window is [-window, window] for doubly infinite domains, and
 % of width 2*window for singly infinite domains.

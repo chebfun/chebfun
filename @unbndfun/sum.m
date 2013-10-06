@@ -87,10 +87,10 @@ if ( isa(g.onefun, 'smoothfun') || ( isa(g.onefun, 'singfun') && (~any(g.onefun.
 % by the onefun sum.
 
 % Construct the onefun presentation of the derivative of the map.
-mapder = onefun.constructor(@(x) g.mapping.der(x), [], [], pref);
+forDer = onefun.constructor(@(x) g.mapping.forder(x), [], [], pref);
 
 % Form the new integrand.
-integrand = g.onefun*mapder;
+integrand = g.onefun*forDer;
 
 % Call the sum at onefun level.
 out = sum(integrand);
@@ -129,10 +129,10 @@ elseif ( isa(g.onefun, 'singfun') )
         %    b > 1.
         
         % Construct the onefun presentation of the derivative of the map.
-        mapder = onefun.constructor(@(x) g.mapping.der(x), [], [], pref);
+        forDer = onefun.constructor(@(x) g.mapping.forder(x), [], [], pref);
         
         % Form the new integrand.
-        integrand = gtmp.onefun*mapder;
+        integrand = gtmp.onefun*forDer;
         
         % Call the onefun sum.
         out = sum(integrand);

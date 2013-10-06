@@ -42,7 +42,7 @@ elseif ( b == inf )
     m.for = @(y) 15*s*(y + 1)./(1 - y) + a;
     m.inv = @(x) (-15*s + x - a)./(15*s + x - a);
     m.forder = @(y) 15*s*2./(y - 1).^2;
-    m.invder = @(x) ((y - 1).^2)./(15*s*2);
+    m.invder = @(x) ((x - 1).^2)./(15*s*2);
     
 else
     
