@@ -170,12 +170,8 @@ inds = [ 0 ; cumsum(sizes) ];
 % Create the chebyshev nodes and quadrature weights
 [pts, w] = chebpts( sizes , ends , kind );
 
-    % ------------------------------------
-    % Define the inner product as a nested function:
-    function res = innerProduct(f, g)
-        res = w * (conj(f) .* g);
-    end
-    % ------------------------------------
+% Define the inner product as an anonymous function:
+innerProduct = @(f, g) w * (conj(f) .* g);
 
 % Make the discrete Analog of A
 dA = get(A, 'values');
