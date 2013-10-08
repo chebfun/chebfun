@@ -32,4 +32,15 @@ pass(5) = abs(cond(Q) - 1) < 1e-13*(tol/eps);
 % Test 3 confirms that the Q and R factors have the right product.
 pass(6) = norm(A - Q*R) < 1e-13*(tol/eps);
 
+%% Test in the continuous setting:
+pass(7) = (rank(A) == 2);
+[Q, R] = qr(A, 0, 'flag');
+
+tol = epslevel(A);
+% Test 2 confirms that the columns of Q are orthonormal:
+pass(8) = abs(cond(Q) - 1) < 1e-13*(tol/eps);
+
+% Test 3 confirms that the Q and R factors have the right product.
+pass(9) = norm(A - Q*R) < 1e-13*(tol/eps);
+
 end

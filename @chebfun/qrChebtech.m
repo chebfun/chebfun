@@ -1,4 +1,4 @@
-function [Q, R] = qr2(A, econ)
+function [Q, R] = qrChebtech(A, econ)
 %QR   QR factorization of an array-valued quasimatrix.
 %   [Q, R] = QR(A) or QR(A, 0), where A is a column CHEBFUN with n columns,
 %   produces a column CHEBFUN Q with n orthonormal columns and an n x n upper

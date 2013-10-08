@@ -15,7 +15,7 @@ B = T.';
 A = (1:4).';
 x = A\B;
 x0 = feval(x, 0);
-x0_true = 1/15;
+x0_true = -1/15;
 pass(2) = abs(x0 - x0_true) < 10*epslevel(x);
 
 A = eye(4);

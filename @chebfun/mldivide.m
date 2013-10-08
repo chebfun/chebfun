@@ -1,4 +1,4 @@
-function C = mldivide(A, B)
+function X = mldivide(A, B)
 %\   Left matrix divide.
 %   A\B in general gives the least squares solution to A*X = B.
 %
@@ -7,24 +7,29 @@ function C = mldivide(A, B)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-
 if ( isscalar(A) )
-    C = (A\1) * B;
+    % Trivial case (division by a constant):
+    X = (A\1) * B;
     
 elseif ( size(A, 1) ~= size(B, 1) )
     error('CHEBFUN:mldivide:agree', 'Matrix dimensions must agree.')
     
 elseif ( isnumeric(A) )
-    % C = (A\eye(size(B,1)))*B;
-    [Q, R] = qr(B', 0);
-    C = (A\R') * Q';
+    % [M x N] * [N x INF] = [M x INF]:
+    
+    [Q, R] = qr(B', 0); % TODO: .'?
+    X = (A\R') * Q';
+    % X = (A\eye(size(B,1)))*B;
     
 elseif ( A.isTransposed )
-    [Q, R] = qr(A', 0);
-    C = Q * (R'\B);
+    % [M x INF] * [INF x N] = [M x N]:
+    
+    [Q, R] = qr(A', 0); % TODO: .'?
+    X = Q * (R'\B);
     
 else
+    % [INF x N] * [N x M] = [INF x M]:
     [Q, R] = qr(A, 0);
-    C = R \ innerProduct(Q, B);
+    X = R \ innerProduct(Q, B);
     
 end

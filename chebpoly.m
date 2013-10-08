@@ -38,7 +38,7 @@ if ( any(isinf(d)) )
 end
 
 % [TODO]: 2nd-kind polynomials:
-if ( kind == 1 )
+if ( kind == 2 )
     error('CHEBFUN:chebpoly:kind', ...
     '2nd-kind Chebyshev polynomials have no been implemented yet.');
 

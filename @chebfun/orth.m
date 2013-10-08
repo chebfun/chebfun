@@ -1,8 +1,8 @@
 function Q = orth(A)
 %ORTH   Array-valued CHEBFUN orthogonalization.
 %   Q = ORTH(A) is an orthonormal basis for the range of the column CHEBFUN A.
-%   That is, Q'*Q = I, the columns of Q span the same space as the columns 
-%   of A, and the number of columns of Q is the rank of A.
+%   That is, the columns of Q span the same space as the columns of A, Q'*Q = I,
+%   and the number of columns of Q is the rank of A.
 %
 % See also SVD, RANK, QR.
 
@@ -14,7 +14,7 @@ if ( A.isTransposed )
 end
 
 % Compute the SVD:
-[U, S, V] = svd(A,0);
+[U, S, V] = svd(A, 0);
 s = diag(S);
 
 % Choose a tolerance if none is given:
