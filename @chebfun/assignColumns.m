@@ -19,15 +19,35 @@ function f = assignColumns(f, colIdx, g)
 numColsF = min(size(f));
 numColsG = min(size(g));
 
-% Trivial cases:
-if ( numel(colIdx) ~= min(size(g)) )
-    error('CHEBFUN:ASSIGNCOLUMNS:numCols', 'Index exceeds CHEBFUN dimensions.')
-end
+% Expand ':' to 1:end:
 if ( ~isnumeric(colIdx) && strcmp(colIdx, ':') )
+    colIdx = 1:numColsF;
+end
+
+% Allow scalar expansion:
+if ( isnumeric(g) )
+    g = chebfun(g, f.domain);
+end
+
+% Check dimensions of g:
+if ( numel(colIdx) ~= min(size(g)) )
+    error('CHEBFUN:ASSIGNCOLUMNS:numCols', ...
+        'Subscripted assignment dimension mismatch.')
+end
+
+% Trivial case:
+if ( (numel(colIdx) == numel(numColsF)) && all(colIdx == 1:numColsF) )
+    % Verify domain:
+    if ( ~domainCheck(f, g) )
+        error('CHEBFUN:assignColumns:domain', ...
+            'Inconsistent domains; domain(f) ~= domain(g).');
+    end
     f = g;
-elseif ( (numel(colIdx) == numel(numColsF)) && all(colIdx == 1:numColsF) )
-    f = g;
-elseif ( max(colIdx) > numColsF )
+    return
+end
+
+% Check dimensions of f:
+if ( max(colIdx) > numColsF )
     error('CHEBFUN:subsref:dimensions', 'Index exceeds CHEBFUN dimensions.')    
 end
 
