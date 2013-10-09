@@ -39,13 +39,13 @@ if ( isnumeric(g) )
 end
 
 % Check dimensions of g:
-if ( xor(f.isTransposed, g.isTransposed) || numel(colIdx) ~= min(size(g)) )
-    error('CHEBFUN:assigncColumns:numCols', ...
+if ( xor(f.isTransposed, g.isTransposed) || (numel(colIdx) ~= min(size(g))) )
+    error('CHEBFUN:assignColumns:numCols', ...
         'Subscripted assignment dimension mismatch.')
 end
 
 % Trivial case:
-if ( (numel(colIdx) == numel(numColsF)) && all(colIdx == 1:numColsF) )
+if ( (numel(colIdx) == numColsF) && isequal(colIdx, 1:numColsF) )
     % Verify domain:
     if ( ~domainCheck(f, g) )
         error('CHEBFUN:assignColumns:domain', ...
@@ -57,7 +57,7 @@ end
 
 % Check dimensions of f:
 if ( max(colIdx) > numColsF )
-    error('CHEBFUN:subsref:dimensions', 'Index exceeds CHEBFUN dimensions.')    
+    error('CHEBFUN:assignColumns:dims', 'Index exceeds CHEBFUN dimensions.')
 end
 
 % Make sure f and g have the same breakpoints:

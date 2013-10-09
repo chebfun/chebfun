@@ -1,4 +1,4 @@
-function f = assignColumns(f, colIdx, g)
+function h = assignColumns(f, colIdx, g)
 %ASSIGNCOLUMNS   Extract columns (or rows) of an array-valued CHEBTECH.
 %   G = ASSIGNCOLUMNS(F, COLIDX, G) assigns the columns specified by the row
 %   vector COLIDX from the FUN F so that F(:, COLIDX) = G. COLIDX need not be
@@ -17,11 +17,15 @@ elseif ( length(g) > length(f) )
     f = prolong(f, length(g));
 end
 
-% Assign the columns of f.values and f.coeffs:
-f.values(:, colIdx) = g.values;
-f.coeffs(:, colIdx) = g.coeffs;
+% Assign the columns of h.values and h.coeffs:
+h = f;
+h.values(:, colIdx) = g.values;
+h.coeffs(:, colIdx) = g.coeffs;
 
-% Update f.vscale:
-f.vscale = max(abs(f.values), [], 1);
+% Update happiness, vscale, and epslevel:
+h.ishappy = f.ishappy && g.ishappy;
+h.vscale = max(abs(h.values), [], 1);
+h.epslevel = max(max(f.epslevel*f.vscale), max(g.epslevel*g.vscale)) ...
+    / max(h.vscale);
 
 end
