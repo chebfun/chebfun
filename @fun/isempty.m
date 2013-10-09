@@ -6,7 +6,6 @@ function out = isempty(f)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Check if the ONEFUN is empty:
-out = isempty(f.onefun);
-
+out = (numel(f) <= 1) && isempty(f.onefun);
 
 end

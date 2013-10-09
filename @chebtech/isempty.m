@@ -6,6 +6,6 @@ function out = isempty(f)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Check if the values are empty:
-out = isempty(f.values);
+out = (numel(f) <= 1) && isempty(f.values);
 
 end
