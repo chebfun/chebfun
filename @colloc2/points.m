@@ -5,6 +5,10 @@ if ( nargin < 2 )
 end
 
 numint = length(d)-1;
+if (numel(n) == 1)
+    n = repmat(n,1,numint);
+end
+
 x = cell(numint,1);
 w = cell(1,numint);
 for k = 1:numint

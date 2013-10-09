@@ -5,7 +5,7 @@ function A = matrixBlocks(L,dim,varargin)
 % matrixBlocks(A,DIM,TYPE) uses the discretization type TYPE.
 
 p = inputParser;
-addOptional(p,'domain',domain(L),@isnumeric);
+addOptional(p,'domain',L.domain,@isnumeric);
 addOptional(p,'matrixType',linop.defaultDiscretization,@(x) isa(x,'function_handle'));
 parse(p,varargin{:});
 

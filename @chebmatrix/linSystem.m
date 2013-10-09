@@ -10,12 +10,12 @@ end
 
 % Domain needs to have the union of all breakpoints.
 dom = chebmatrix.mergeDomains( {L.blocks{:}, f.blocks{:}} );
-L.fundomain = dom;
-f.fundomain = dom;
+L.domain = dom;
+f.domain = dom;
 
 % Update domains of constraints:
 for k = 1:numel(L.constraints)
-    L.constraints(k).op.fundomain = dom;
+    L.constraints(k).op.domain = dom;
 end
 
 L = appendContinuity(L);
