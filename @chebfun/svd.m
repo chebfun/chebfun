@@ -5,7 +5,7 @@ function [U, S, V] = svd(A, econ)
 %   elements in nonincreasing order, a column CHEBFUN U with N orthonormal
 %   columns, and an N x N unitary matrix V such that A = U*S*V'.
 %
-%   If A is a row CHEBFIN with N rows, then U is a unitary matrix and V is an
+%   If A is a row CHEBFIN with N rows, then U is a unitary matrix and V' is an
 %   array-valued row CHEBFUN.
 %
 %   S = SVD(A) returns a vector containing the singular values of A.
