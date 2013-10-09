@@ -22,7 +22,6 @@ end
 
 % Number of columns (or rows if f.isTransposed) of f:
 numColsF = min(size(f));
-numColsG = min(size(g));
 
 % Expand ':' to 1:end:
 if ( ~isnumeric(colIdx) && strcmp(colIdx, ':') )
@@ -31,11 +30,16 @@ end
 
 % Allow scalar expansion:
 if ( isnumeric(g) )
-    g = chebfun(g, f.domain);
+    if ( f.isTransposed )
+        g = g.';
+        g = chebfun(g, f.domain).';
+    else
+        g = chebfun(g, f.domain);
+    end
 end
 
 % Check dimensions of g:
-if ( numel(colIdx) ~= min(size(g)) )
+if ( xor(f.isTransposed, g.isTransposed) || numel(colIdx) ~= min(size(g)) )
     error('CHEBFUN:assigncColumns:numCols', ...
         'Subscripted assignment dimension mismatch.')
 end
