@@ -162,7 +162,7 @@ A = simplify(A);
 % will have to multiply with the columns of E and the norm of A's columns
 sizes = zeros(numFuns, 1);
 for j = 1:numFuns
-    sizes(j) = 2*max(length(A.funs(j)), numCols);
+    sizes(j) = 2*max(length(A.funs{j}), numCols);
     A.funs{j}.onefun = prolong(A.funs{j}.onefun, sizes(j));
 end
 inds = [ 0 ; cumsum(sizes) ];
