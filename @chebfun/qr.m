@@ -77,7 +77,7 @@ b = A.domain(end);
 % Simplify A:
 A = simplify(A);
 
-% Set up target quasimatrix E with orthonormal columns:
+% Set up target array-valued CHEBFUN E with orthonormal columns:
 E = legpoly(0:n-1, [a, b], 'norm');
 [A, E] = overlap(A, E);
 
@@ -125,7 +125,7 @@ for k = 1:n
     V{k} = v;                         % store this Householder vector
 end
 
-% Form the quasimatrix Q from the Householder vectors:
+% Form the array-valued CHEBFUN Q from the Householder vectors:
 Q = E;
 for k = n:-1:1
     v = V{k};

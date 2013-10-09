@@ -1,12 +1,12 @@
 function [U, S, V] = svd(A, econ)
 %SVD   Singular value decomposition of a CHEBFUN.
-%   [U, S, V] = SVD(A, 0), where A is a column quasimatrix with N columns,
-%   produces an N x N diagonal matrix S with nonnegative diagonal elements in
-%   nonincreasing order, a column CHEBFUN U with N orthonormal columns, and
-%   an N x N unitary matrix V such that A = U*S*V'.
+%   [U, S, V] = SVD(A, 0), where A is an array-valued column CHEBFUN with N
+%   columns, produces an N x N diagonal matrix S with nonnegative diagonal
+%   elements in nonincreasing order, a column CHEBFUN U with N orthonormal
+%   columns, and an N x N unitary matrix V such that A = U*S*V'.
 %
-%   If A is a row CHEBFIN with N rows, then U is a unitary matrix and V is a row
-%   quasimatrix.
+%   If A is a row CHEBFIN with N rows, then U is a unitary matrix and V is an
+%   array-valued row CHEBFUN.
 %
 %   S = SVD(A) returns a vector containing the singular values of A.
 %
@@ -20,10 +20,10 @@ function [U, S, V] = svd(A, econ)
 
 if ( (nargin > 2) || ((nargin == 2) && (econ ~= 0)) )
     error('CHEBFUN:svd:twoargs',...
-          'Use svd(A) or svd(A, 0) for SVD of quasimatrix.');
+          'Use svd(A) or svd(A, 0) for SVD of array-valued CHEBFUN.');
 end
 
-if ( A.isTransposed )    % A is a row quasimatrix
+if ( A.isTransposed )    % A is a row CHEBFUN
     % Call CHEBFUN/QR():
     [Q, R] = qr(A');
     % Call discrete SVD():
@@ -31,7 +31,7 @@ if ( A.isTransposed )    % A is a row quasimatrix
     % Make V a CHEBFUN:
     V = Q*V;
     
-else                     % A is a column quasimatrix
+else                     % A is a column CHEBFUN
     % Call CHEBFUN/QR():
     [Q, R] = qr(A);
     % Call discrete SVD():

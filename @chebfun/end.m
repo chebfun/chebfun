@@ -1,5 +1,6 @@
 function e = end(f, k, n)
-%END   Rightmost point of a CHEBFUN domain (or last row/col of quasimatrix).
+%END   Rightmost point of a CHEBFUN domain (or last row/col of array-valued
+%      CHEBFUN).
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -9,7 +10,7 @@ if ( n > 2 )
 end
 
 if ( ((k == 2) && ~f.isTransposed) || ((k == 1) && f.isTransposed && (n > 1)) )
-    % 'end' row/column of the quasimatrix.
+    % 'end' row/column of the array-valued CHEBFUN.
     if ( isempty(f) )
         e = 0;
     else
