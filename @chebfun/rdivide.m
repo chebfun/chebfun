@@ -37,9 +37,6 @@ end
 % Add breaks at the roots of g:
 g = addBreaksAtRoots(g);
 
-% Copy g to h in preperation for output:
-h = g;
-
 if ( isa(f, 'chebfun') )
     
     % Check that the domains are the same:
@@ -48,14 +45,17 @@ if ( isa(f, 'chebfun') )
     end
     
     % Check that the orientation is the same:
-    if ( xor(f.isTranposed, g.isTransposed) )
-        error('CHEBFUN:rdivide:domain', ...
+    if ( xor(f.isTransposed, g.isTransposed) )
+        error('CHEBFUN:rdivide:dim', ...
             'Matrix dimension do not agree (transposed)');
     end
     
     % Introduce matching breakpoints in f and g:
     [f, g] = overlap(f, g);
-    
+
+    % Copy g to h in preparation for output:
+    h = g;
+
     % Loop over the FUNS:
     for k = 1:numel(g.funs)
         h.funs{k} = rdivide(f.funs{k}, g.funs{k});
@@ -65,7 +65,10 @@ if ( isa(f, 'chebfun') )
     h.impulses = f.impulses(1,1,:)./g.impulses(1,1,:);
     
 else
-    
+
+    % Copy g to h in preparation for output:
+    h = g;
+
     % Loop over the FUNS:
     for k = 1:numel(g.funs)
         h.funs{k} = rdivide(f, g.funs{k});
