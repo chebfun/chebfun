@@ -11,7 +11,7 @@ if ( isempty(f) || isempty(g) )
     return
 end
 
-% Trivial zero denominator case:
+% Trivial zero numerator case:
 if ( isnumeric(f) && ~any(f) )
     h = 0*g;
     return
@@ -56,7 +56,7 @@ if ( isa(f, 'chebfun') )
     % Introduce matching breakpoints in f and g:
     [f, g] = overlap(f, g);
     
-    % Loops of the FUNS:
+    % Loop over the FUNS:
     for k = 1:numel(g.funs)
         h.funs{k} = rdivide(f.funs{k}, g.funs{k});
     end
@@ -66,7 +66,7 @@ if ( isa(f, 'chebfun') )
     
 else
     
-    % Loops of the FUNS:
+    % Loop over the FUNS:
     for k = 1:numel(g.funs)
         h.funs{k} = rdivide(f, g.funs{k});
     end
@@ -77,6 +77,3 @@ else
 end
 
 end
-
-
-

@@ -1,5 +1,5 @@
 function [Q, R] = qr(A, econ, flag)
-%QR   QR factorization of an array-valued quasimatrix.
+%QR   QR factorization of an array-valued CHEBFUN.
 %   [Q, R] = QR(A) or QR(A, 0), where A is a column CHEBFUN with n columns,
 %   produces a column CHEBFUN Q with n orthonormal columns and an n x n upper
 %   triangular matrix R such that A = Q*R.
@@ -27,7 +27,7 @@ function [Q, R] = qr(A, econ, flag)
 
 % Check inputs
 % if ( ( nargin > 2 ) || ( nargin == 2 && econ ~= 0 ) )
-if ( ( nargin == 2 && econ ~= 0 ) ) % TODO: Replace above once flag is removed.
+if ( (nargin == 2) && (econ ~= 0) ) % TODO: Replace above once flag is removed.
     error('CHEBFUN:qr:twoargs',...
       'Use qr(A) or qr(A, 0) for QR decomposition of an array-valued CHEBFUN.');
 end
@@ -52,7 +52,7 @@ end
 % use a much more efficient approach. Note, this completely violates OOP
 % principles, but the performance gain is worth it.
 isSimple = all(cellfun(@(f) isa(f.onefun, 'chebtech'), A.funs));
-if ( isSimple && nargin < 3 )
+if ( isSimple && (nargin < 3) )
     [Q, R] = qrChebtech(A, econ);
     return
 end
@@ -142,7 +142,7 @@ end
 
 function [Q, R] = qrChebtech(A, varargin)
 % This implementation is fast, but relies on the fact that everything is a
-% CHEBTECH on a bounded domainat heart.
+% CHEBTECH on a bounded domain at heart.
 
 % Get some useful values
 numCols = min(size(A));
@@ -167,8 +167,8 @@ for j = 1:numFuns
 end
 inds = [ 0 ; cumsum(sizes) ];
 
-% Create the chebyshev nodes and quadrature weights
-[pts, w] = chebpts( sizes , ends , kind );
+% Create the Chebyshev nodes and quadrature weights
+[pts, w] = chebpts(sizes, ends, kind);
 
 % Define the inner product as an anonymous function:
 innerProduct = @(f, g) w * (conj(f) .* g);
@@ -182,11 +182,11 @@ xx = 2*(pts - (a + b)/2) / (b - a); % Unscale the CHEBPTS().
 dE = ones(size(dA));
 dE(:,2) = xx;
 for k = 3:numCols % Recurrence relation:
-    dE(:,k) = ( (2*k - 3)*xx.*dE(:,k-1) - (k - 2)*dE(:,k-2) ) / (k - 1);
+    dE(:,k) = ((2*k - 3)*xx.*dE(:,k-1) - (k - 2)*dE(:,k-2)) / (k - 1);
 end
 % Scaling:
 for k = 1:numCols
-    dE(:,k) = dE(:,k) * sqrt( (2*k - 1) / (b - a) );
+    dE(:,k) = dE(:,k) * sqrt((2*k - 1) / (b - a));
 end
 
 % Pre-allocate the matrix V:
@@ -199,7 +199,7 @@ for k = 1:numCols
     I = 1:k-1; J = k+1:numCols;
     
     % Scale:
-    scl = max(norm(dE(:,k),inf), norm(dA(:,k), inf));
+    scl = max(norm(dE(:,k) ,inf), norm(dA(:,k), inf));
 
     % Multiply the kth column of A with the basis in E:
     ex = innerProduct(dE(:,k), dA(:,k));
@@ -221,11 +221,11 @@ for k = 1:numCols
     v = r*dE(:,k) - dA(:,k);
     % Make it more orthogonal:
     for i = I
-        ev = innerProduct( dE(:,i) , v );
+        ev = innerProduct(dE(:,i), v);
         v = v - dE(:,i)*ev;
     end
     % Normalize:
-    nv = sqrt( innerProduct( v , v ) );
+    nv = sqrt(innerProduct(v, v));
     if ( nv < tol*scl )
        v = dE(:,k); 
     else
@@ -238,7 +238,7 @@ for k = 1:numCols
     for j = J
         av = innerProduct(v, dA(:,j));
         dA(:,j) = dA(:,j) - 2*v*av;
-        rr = innerProduct( dE(:,k) , dA(:,j) );
+        rr = innerProduct(dE(:,k), dA(:,j));
         dA(:,j) = dA(:,j) - dE(:,k)*rr;
         R(k,j) = rr;
     end

@@ -18,9 +18,9 @@ function [U, S, V] = svd(A, econ)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( ( nargin > 2) || ( nargin == 2 && econ ~= 0 ) )
+if ( (nargin > 2) || ((nargin == 2) && (econ ~= 0)) )
     error('CHEBFUN:svd:twoargs',...
-          'Use svd(A) or svd(A, 0) for QR decomposition of quasimatrix.');
+          'Use svd(A) or svd(A, 0) for SVD of quasimatrix.');
 end
 
 if ( A.isTransposed )    % A is a row quasimatrix

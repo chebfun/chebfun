@@ -1,7 +1,7 @@
 function theta = subspace(A, B)
 %SUBSPACE   Angle between subspaces.
 %   SUBSPACE(A, B) finds the angle between two subspaces specified by the
-%   chebfun columns of the CHEBFUN objects A and B.
+%   columns of the CHEBFUN objects A and B.
 %
 %   If the angle is small, the two spaces are nearly linearly dependent.
 %
