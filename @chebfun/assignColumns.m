@@ -15,6 +15,11 @@ function f = assignColumns(f, colIdx, g)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% This shouldn't happen:
+if ( ~isa(f, 'chebfun') )
+    error('CHEBFUN:assigncColumns:notChebfun', 'First input must be a CHEBFUN.')
+end
+
 % Number of columns (or rows if f.isTransposed) of f:
 numColsF = min(size(f));
 numColsG = min(size(g));
@@ -31,7 +36,7 @@ end
 
 % Check dimensions of g:
 if ( numel(colIdx) ~= min(size(g)) )
-    error('CHEBFUN:ASSIGNCOLUMNS:numCols', ...
+    error('CHEBFUN:assigncColumns:numCols', ...
         'Subscripted assignment dimension mismatch.')
 end
 
