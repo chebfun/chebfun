@@ -32,4 +32,9 @@ pass(5) = abs(cond(Q) - 1) < 1e-13*(tol/eps);
 % Test 3 confirms that the Q and R factors have the right product.
 pass(6) = norm(A - Q*R) < 1e-13*(tol/eps);
 
+% Check for bug in piecewise QR from commit 9ba78c2a.
+f = chebfun(@(x) [sin(x) cos(x) exp(x)], [-1 0 1], pref);
+[Q, R] = qr(f);
+pass(7) = normest(f - Q*R) < 10*vscale(f)*epslevel(f);
+
 end
