@@ -17,14 +17,18 @@ elseif ( size(A, 1) ~= size(B, 1) )
 elseif ( isnumeric(A) )
     % [M x N] * [N x INF] = [M x INF]:
     
-    [Q, R] = qr(B', 0); % TODO: .'?
+    [Q, R] = qr(B', 0);
     X = (A\R') * Q';
     % X = (A\eye(size(B,1)))*B;
     
 elseif ( A.isTransposed )
     % [M x INF] * [INF x N] = [M x N]:
-    
-    [Q, R] = qr(A', 0); % TODO: .'?
+    %        AX = B
+    %   X^* A^* = B^*
+    %   X^* QR  = B^*
+    % R^* Q^* X = B
+    %         X = Q(R^{-*} B)
+    [Q, R] = qr(A', 0);
     X = Q * (R'\B);
     
 else

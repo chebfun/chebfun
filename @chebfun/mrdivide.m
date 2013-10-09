@@ -22,11 +22,16 @@ elseif ( isnumeric(A) )
 elseif ( ~A.isTransposed )
     % [M x INF] * [INF x N] = [M x N]:
     [Q, R] = qr(A, 0);
-    X = (B/R) * Q'; % TODO: .'?
+    X = (B/R) * Q';
     
 else
     % [M x N] * [N x INF] = [M x INF]:
-    [Q, R] = qr(A', 0); % TODO: .'?
+    %        XA = B
+    %   A^* X^* = B^*
+    %    QR X^* = B^*
+    % X R^* Q^* = B
+    %         X = (BQ)R^{-*}
+    [Q, R] = qr(A', 0);
     X = (B*Q) / R';
 
 end
