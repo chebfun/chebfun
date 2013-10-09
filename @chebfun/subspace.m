@@ -35,7 +35,7 @@ if ( A.isTransposed )
     B = B.';
 end
 
-% Compute orthanormal bases of A and B:
+% Compute orthonormal bases of A and B:
 A = orth(A);
 B = orth(B);
 
@@ -52,7 +52,7 @@ cosTheta = min(S);
 if ( cosTheta < 0.8 )
     theta = acos(min(1, cosTheta));    
 else 
-    % If the angle is small, recompute using Sine formulation:
+    % If the angle is small, recompute using sine formulation:
     if ( size(A, 2) < size(B, 2) )
         sinTheta = norm(A - B*C');
     else

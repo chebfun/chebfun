@@ -1,7 +1,7 @@
 function [Q, R] = abstractQR(A, E, myInnerProduct, myNorm, tol)
 %ABSTRACTQR  Abstract implementation of householder method for QR factorisation.
 %
-% A is the input 'quasimatix' (or array-valued Chebfun, or matrix of values).
+% A is the input 'quasimatix' (or array-valued CHEBFUN, or matrix of values).
 % E is a Legendre matrix with the same representation
 % myInnerProduct(u, v) returns the L2 inner product of u and v.
 % myNorm(v) returns the norm of v (or a suitable estimate).
@@ -82,4 +82,3 @@ for k = numCols:-1:1
 end
 
 end
-

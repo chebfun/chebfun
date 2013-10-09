@@ -10,7 +10,7 @@ function r = rank(A,tol)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Compute the singular vaules:
+% Compute the singular values:
 s = svd(A);
 
 % Choose a tolerance if none is given:

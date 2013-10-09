@@ -140,8 +140,7 @@ end
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [f, R, E] = qr_householder(f, flag)
-% This implementation is fast, but relies on the fact that everything is a
-% CHEBTECH on a bounded domain at heart.
+
 f = simplify(f);
     
 % Get some useful values

@@ -51,9 +51,10 @@ if ( numel(A.funs) == 1 )
     
 elseif ( all(cellfun(@(f) isa(f.onefun, 'chebtech'), A.funs)) )
     % Simple case = all FUNs are simple (i.e., use CHBETECHs).
-    %  (If all the FUN objects have .onefuns which are CHEBTECHs, we can use a much
-    %  more efficient approach. Note, this completely violates OOP principles, but
-    %  the performance gain is worth it.)
+    %   (If all the FUN objects have .onefuns which are CHEBTECHs, we can use a
+    %   much more efficient approach. Note, this completely violates OOP
+    %   principles, but the performance gain is worth it.)
+
     [Q, R] = qrSimple(A);
     
 else
@@ -135,4 +136,3 @@ Q = mat2cell(Q, sizes, numCols);
 Q = chebfun(Q, dom);
 
 end
-
