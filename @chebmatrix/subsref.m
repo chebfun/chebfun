@@ -7,11 +7,9 @@ switch(sr(1).type)
     case '{}'
         B = subsref(A.blocks,sr(1));
     otherwise
-        if strcmp(sr(1).subs,'blocks')
-            B = A.blocks;
-            if length(sr) > 1
-                B = subsref(B,sr(2));
-            end
+        B = A.(sr(1).subs);
+        if length(sr) > 1
+            B = subsref(B,sr(2));
         end
 end
 end

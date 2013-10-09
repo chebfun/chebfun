@@ -88,9 +88,6 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
             else
                 varargout{1} = cellfun( @(x)size(x,1), A.blocks);
                 varargout{2} = cellfun( @(x)size(x,2), A.blocks);
-            end
-        end
-
         function display(L)
             [m,n] = size(L);
             fprintf('\n  %ix%i block chebmatrix of types:\n\n',m,n)
