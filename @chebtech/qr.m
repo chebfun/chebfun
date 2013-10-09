@@ -140,6 +140,63 @@ end
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [f, R, E] = qr_householder(f, flag)
+% This implementation is fast, but relies on the fact that everything is a
+% CHEBTECH on a bounded domain at heart.
+f = simplify(f);
+    
+% Get some useful values
+n = size(f, 1);
+numCols = size(f, 2);
+tol = f.epslevel*f.vscale;
+kind = 2;
+
+% Make the discrete analog of f:
+newN = 2*max(n, numCols);
+A = get(prolong(f, newN), 'values');
+
+% Create the Chebyshev nodes and quadrature weights:
+x = f.chebpts(newN);
+w = f.quadwts(newN);
+
+% Define the inner product as an anonymous function:
+ip = @(f, g) w * (conj(f) .* g);
+
+% Generate a discrete E (Legendre-Chebyshev-Vandermonde matrix) directly:
+E = ones(size(A));
+E(:,2) = x;
+for k = 3:numCols % Recurrence relation:
+    E(:,k) = ((2*k - 3)*x.*E(:,k-1) - (k - 2)*E(:,k-2)) / (k - 1);
+end
+% Scaling:
+for k = 1:numCols
+    E(:,k) = E(:,k) * sqrt((2*k - 1) / 2);
+end
+
+% Call the abstract QR method:
+[Q, R] = abstractQR(A, E, ip, @(v) norm(v, inf), tol);
+
+% Compute the corresponding Chebyshev coefficients:
+f.coeffs = f.vals2coeffs(Q);
+% Trim the unneeded ones:
+f.coeffs(1:newN/2,:) = [];
+% Comute new values:
+f.values = f.coeffs2vals(f.coeffs);
+
+% Update the vscale:
+f.vscale = max(abs(f.values), [], 1);
+
+% Additional output argument:
+if ( nargout == 3 )
+    if ( nargin == 2 && strcmp(flag, 'vector') )
+        E = 1:numCols;
+    else
+        E = eye(numCols);
+    end
+end
+
+end
+
+function [f, R, E] = qr_householder_old(f, flag)
 % See L.N. Trefethen, "Householder triangularization of a quasimatrix", IMA J
 % Numer Anal (2010) 30 (4): 887-897. 
 
@@ -236,6 +293,7 @@ for k = m:-1:1
         Q(:,j) = Q(:,j) - 2*V(:,k)*vq;
     end
 end
+Q
 
 % Compute the corresponding Chebyshev coefficients:
 f.coeffs = f.vals2coeffs(Q);

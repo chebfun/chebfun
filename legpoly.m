@@ -20,6 +20,7 @@ function p = legpoly(n, dom, normalize, method)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % TODO: Look at this more carefully.
+% TODO: dom = dom([1, end]) ?
 
 % Parse input:
 if (isempty(n) )
@@ -54,6 +55,7 @@ end
 % Useful values:
 nmax = max(n);
 N = nmax + 1;
+dom = dom([1 end]); % [TODO]: Add support for breakpoints?
 
 % Determine which method
 if ( nargin == 4 )
