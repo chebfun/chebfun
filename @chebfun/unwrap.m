@@ -17,7 +17,7 @@ if ( isempty(p) || (numel(p.funs) == 1) )
     return
 end
 
-if ( size(f.funs{1}, 2) > 1 )
+if ( size(p.funs{1}, 2) > 1 )
     error('CHEBFUN:unwrap:array', ...
         'UNWRAP() does not support array-valued CHEBFUN objects.');
 end
@@ -33,13 +33,13 @@ el = get(p, 'epslevel');
 tol = 100*el*vs;
 
 % Store data about the impulses for later:
-lvals = feval(p, p.domain, 'left');
-rvals = feval(p, p.domain, 'right');
+lvals = feval(p, p.domain, 'left').';
+rvals = feval(p, p.domain, 'right').';
 idxl = abs(p.impulses(:,:,1) - lvals) < 100*tol;
 idxr = abs(p.impulses(:,:,1) - rvals) < 100*tol;
 
 % Find the jumps:
-idx1 = mymod(abs(lvals - rvals), 2*jumptol) <  tol;
+idx1 = mymod(abs(lvals - rvals), 2*jumptol) < tol;
 idx2 = abs(lvals - rvals) > tol;
 idx = idx1 & idx2;
 % Scale and shift:
@@ -51,11 +51,11 @@ for j = 2:numel(p.funs)
 end
 
 % Update the impulses:
-p.impulses(1,idxl) = feval(p, p.domain(idxl), 'left');
-p.impulses(1,idxr) = feval(p, p.domain(idxr), 'right');
+p.impulses(idxl,:,1) = feval(p, p.domain(idxl), 'left');
+p.impulses(idxr,:,1) = feval(p, p.domain(idxr), 'right');
 
 % Merge to tidy up unneeded breakpoints:
-p = merge(p, find(idx));
+p = merge(p, find(idx).');
 
 function m = mymod(f, g)
     m = min([abs(mod(f, g))

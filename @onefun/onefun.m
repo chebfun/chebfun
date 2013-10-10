@@ -36,33 +36,6 @@ classdef onefun % (Abstract)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-    %% Properties of ONEFUN objects.
-    properties ( Access = public )
-
-        % Vertical scale of the ONEFUN. This is an estimate for the magnitude of
-        % the largest entry of the ONEFUN. For an array-valued ONEFUN, VSCALE is
-        % an row vector and the kth entry corresponds to the kth column in the
-        % ONEFUN.
-        vscale = 0 % (1xm double >= 0)
-
-        % Horizontal scale of the ONEFUN. Although ONEFUN objects have in
-        % principle no notion of horizontal scale invariance (since they always
-        % live on [-1,1]), the input OP may have been implicitly mapped. HSCALE
-        % is then used to enforce horizontal scale invariance in construction
-        % and other subsequent operations that require it. It defaults to 1 and
-        % is never updated.
-        hscale = 1 % (scalar > 0)
-
-        % Boolean value designating whether the ONEFUN is a 'happy'
-        % representation or not. (See subclasses for further documentation.)
-        ishappy % (logical)
-
-        % Happiness level to which the ONEFUN was constructed, or a rough
-        % accuracy estimate of subsequent operations. (See subclasses for
-        % further documentation.)
-        epslevel % (double >= 0)
-    end
-
     methods (Static)
         function obj = constructor(op, vscale, hscale, pref)
             
@@ -123,7 +96,7 @@ classdef onefun % (Abstract)
     %% ABSTRACT (NON-STATIC) METHODS REQUIRED BY ONEFUN CLASS.
     methods ( Abstract = true )
         
-        % Convert an array of ONEFUN objects into a array-valued ONEFUN.
+        % Convert an array of ONEFUN objects into an array-valued ONEFUN.
         f = cell2mat(f)
 
         % Complex conjugate of a ONEFUN.
@@ -177,7 +150,7 @@ classdef onefun % (Abstract)
         % Length of a ONEFUN.
         len = length(f)
 
-        % Convert a array-valued ONEFUN into an ARRAY of ONEFUN objects.
+        % Convert an array-valued ONEFUN into an ARRAY of ONEFUN objects.
         g = mat2cell(f, M, N)
 
         % Global maximum of a ONEFUN on [-1,1].

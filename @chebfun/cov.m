@@ -47,7 +47,7 @@ if ( nargin == 1 ) % COV(f)
         Y = f - mean(f);
         out = diag(mean(Y.*conj(Y)));
         % Convert Y to a cell array of scalar-valued CHEBFUN objects.
-        Y = num2cell(Y);
+        Y = mat2cell(Y);
         % Loop over each of the columns:
         for j = 1:numel(Y)
             for k = j+1:numel(Y)
@@ -62,9 +62,9 @@ if ( nargin == 1 ) % COV(f)
         
 else               % COV(f, g)
     
-    % Compute a cell arrays of scalar-valued CHEBFUN objects:
-    Y = num2cell(f - mean(f));
-    Z = num2cell(g - mean(g));
+    % Compute cell arrays of scalar-valued CHEBFUN objects:
+    Y = mat2cell(f - mean(f));
+    Z = mat2cell(g - mean(g));
     % Initialise output matrix:
     out = zeros(numel(f));
     % Loop over each of the columns:

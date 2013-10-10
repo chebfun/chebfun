@@ -7,15 +7,15 @@ function out = chebpoly(f, varargin)
 %   A = CHEBPOLY(F, I) returns the coefficients for the I-th FUN.
 %
 %   A = CHEBPOLY(F, I, N) truncates or pads the vector A so that N coefficients
-%   of the fun F_I are returned. However, if I is 0 then the global coefficients
-%   of the *CHEBFUN* F are returned (by computing relevant inner products with
-%   Chebyshev polynomials).
+%   of the I-th FUN of F are returned. However, if I is 0 then the global
+%   coefficients of the whole CHEBFUN F are returned (by computing relevant
+%   inner products with Chebyshev polynomials).
 %
 %   If F is array-valued with M columns, then A is an MxN matrix.
 %
 %   C = CHEBPOLY(F, ..., 'kind', 2) returns the vector of coefficients for the
 %   Chebyshev expansion of F in 2nd-kind Chebyshev polynomials F_1 = C(1) U_M(x)
-%   + ... + C(M) U_1(x) + C(M+1) U_0(x)
+%   + ... + C(M) U_1(x) + C(M+1) U_0(x).
 %
 %   There is also a CHEBPOLY command in the Chebfun trunk directory, which
 %   computes the CHEBFUN corresponding to the Chebyshev polynomial T_n.
@@ -60,19 +60,20 @@ if ( isempty(ii) )
     if ( numFuns > 1 )
         warning('CHEBFUN:chebpoly:nfuns1',['Chebfun has more than one fun. ' ...
                 'Returning Chebyshev coefficients for the first fun only. ' ...
-                'Use CHEBPOLY(F,1) to suppress this warning.']);
+                'Use CHEBPOLY(F, 1) to suppress this warning.']);
     end
     ii = 1; 
-    % [TODO]: Perhaps ii = 0 should be the default behaviour?
+    % [TODO]: Perhaps ii = 0 should be the default behaviour?  (If we do this,
+    % we need to pick a sane value for N.)
 end
 if ( ii > numFuns )
-    error('CHEBFUN:chebpoly:nfuns2', 'Chebfun only %s has FUNSs.', ...
+    error('CHEBFUN:chebpoly:nfuns2', 'Chebfun only has %s FUNSs.', ...
         num2str(numFuns));
 end
 if ( (numel(ii) > 1) || (numel(N) > 1) )
     error('CHEBFUN:chebpoly:scalar', 'Inputs I and N must be scalars.');
 end
-if ( (ii == 0 && isempty(N)) )
+if ( (ii == 0) && isempty(N) )
     error('CHEBFUN:chebpoly:inputs', 'Input N must not be empty if I is zero.');
 end
 if ( ~isempty(N) && ~isnumeric(N) )
@@ -95,12 +96,10 @@ elseif ( (ii == 0) && (numFuns == 1))
     out = chebpoly(f.funs{1}, N).';    
     
 else
-    % CHEBPOLY() of a a piecewise smooth CHEBFUN:
+    % CHEBPOLY() of a piecewise smooth CHEBFUN:
+    % [TODO]: Add a test for this code.
     
     % [TODO]: For now, we use this approximation:
-    if ( isempty(N) )
-        N = length(f);
-    end
     x = chebpts(N, f.domain([1, end]));
     ff = feval(f, x);
     g = fun.constructor(ff, f.domain([1, end]), 'chebtech');
@@ -113,7 +112,7 @@ else
 %     w = 1./sqrt((x-d(1)).*(d(2)-x));
 %     numCols = size(f.funs, 2);
 %     out = zeros(numCols, N);
-%     f = num2cell(f);
+%     f = mat2cell(f);
 %     for j = 1:numCols
 %         for k = 1:N
 %             T = chebpoly(k-1, d);

@@ -3,7 +3,7 @@ function g = besselk(nu, f, scale, pref)
 %   K = BESSELK(NU, F) computes the modified Bessel function of second kind
 %   K_NU(F) of the nonzero CHEBFUN F. If F passes through the origin in its
 %   domain, then an error is returned. The order NU need not be an integer but
-%   must be real. The argument F can be complex
+%   must be real. The argument F can be complex.
 %
 %   K = BESSELK(NU, F, SCALE) returns a scaled K_NU(F) specified by SCALE:
 %         0 - (default) is the same as BESSELK(NU, F),

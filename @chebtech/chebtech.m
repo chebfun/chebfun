@@ -25,7 +25,7 @@ classdef chebtech < smoothfun % (Abstract)
 %   details. The CHEBTECH class supports construction via interpolation at first-
 %   and second-kind Chebyshev points with the classes CHEBTECH1 and CHEBTECH2
 %   respectively. The default procedure is to use 2nd-kind points, but this can
-%   be overwritten with the preferences PREF = CHEBTECH('tech', 'cheb1').
+%   be overwritten with the preferences PREF = CHEBTECH('tech', 'chebtech1').
 %
 %   CHEBTECH.CONSTRUCTOR(VALUES, VSCALE, HSCALE, PREF) returns a CHEBTECH object
 %   which interpolates the data in the columns of VALUES on a Chebyshev grid.
@@ -152,7 +152,7 @@ classdef chebtech < smoothfun % (Abstract)
         % Vertical scale of the CHEBTECH. This is a row vector storing the
         % magnitude of the largest entry in each column of VALUES. It is
         % convenient to store this as a property.
-%         vscale = 0 % (1xm double >= 0)
+        vscale = 0 % (1xm double >= 0)
 
         % Horizontal scale of the CHEBTECH. Although CHEBTECH objects have in
         % principle no notion of horizontal scale invariance (since they always
@@ -160,16 +160,16 @@ classdef chebtech < smoothfun % (Abstract)
         % HSCALE is then used to enforce horizontal scale invariance in
         % construction and other subsequent operations that require it. It
         % defaults to 1 and is never updated.
-%         hscale = 1 % (scalar > 0)
+        hscale = 1 % (scalar > 0)
 
         % Boolean value designating whether the CHEBTECH is 'happy' or not. See
         % HAPPINESSCHECK.m for full documentation.
-%         ishappy % (logical)
+        ishappy % (logical)
 
         % Happiness level to which the CHEBTECH was constructed (See
         % HAPPINESSCHECK.m for full documentation) or a rough accuracy estimate
         % of subsequent operations (See CHEBTECH class documentation for details).
-%         epslevel % (double >= 0)
+        epslevel % (double >= 0)
     end
 
     %% CLASS CONSTRUCTOR:
@@ -257,7 +257,7 @@ classdef chebtech < smoothfun % (Abstract)
         % Absolute value of a CHEBTECH. (f should have no zeros in its domain)
         f = abs(f, pref)
 
-        % Convert an array of CHEBTECH objects into a array-valued CHEBTECH.
+        % Convert an array of CHEBTECH objects into an array-valued CHEBTECH.
         f = cell2mat(f)
 
         % Plot (semilogy) the Chebyshev coefficients of a CHEBTECH object.
@@ -277,10 +277,13 @@ classdef chebtech < smoothfun % (Abstract)
 
         % Derivative of a CHEBTECH.
         f = diff(f, k, dim)
-        
+
         % Extract columns of an array-valued CHEBTECH object.
-        f = extractColumns(f, columnIndex);
-        
+        f = extractColumns(f, columnIndex)
+
+        % Extract roots at the boundary points -1 and 1.
+        [f, rootsLeft, rootsRight] = extractBoundaryRoots(f)
+
         % Extrapolate (for NaNs / Infs).
         [values, maskNaN, maskInf] = extrapolate(f)
 
@@ -329,7 +332,7 @@ classdef chebtech < smoothfun % (Abstract)
         % A 'loose' (i.e., not too strict) check for happiness.
         [ishappy, epslevel, cutoff] = looseCheck(f, pref)
 
-        % Convert a array-valued CHEBTECH into an ARRAY of CHEBTECH objects.
+        % Convert an array-valued CHEBTECH into an ARRAY of CHEBTECH objects.
         g = mat2cell(f, M, N)
 
         % Global maximum of a CHEBTECH on [-1,1].

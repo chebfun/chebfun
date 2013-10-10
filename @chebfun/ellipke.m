@@ -26,7 +26,7 @@ end
 
 % Call COMPOSE():
 try 
-    k = compose(m, @(m) ellipke(m, .1*tol));
+    k = compose(m, @(m) ellipke(m, .1*tol), pref);
 catch ME
    if ( strcmp(ME.identifier, 'MATLAB:ellipke:MOutOfRange') )
        error('CHEBFUN:ellipke:MOutOfRange', ...
@@ -39,15 +39,11 @@ end
 % Compute the second complete elliptic integral if required:
 if ( nargout == 2 )
     % Call COMPOSE():
-    e = compose(m, @(m) eFun(m));
+    e = compose(m, @(m) eFun(m, tol), pref);
 end
-
-    function e = eFun(m)
-        [ignored, e] = ellipke(m, tol);
-    end
 
 end
 
-
-    
-
+function e = eFun(m, tol)
+    [ignored, e] = ellipke(m, tol);
+end

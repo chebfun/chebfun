@@ -44,7 +44,7 @@ if ( ~any(length(x) + [0, 2] == size(y, 2)) )
     y = y.';
 end
 
-% Evaluate on the Chebyshev grid using built-in spline:
+% Evaluate on the Chebyshev grid using built-in SPLINE:
 yy = spline(x, y, xx);
 
 % Orientate nicely:

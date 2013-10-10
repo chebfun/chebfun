@@ -17,7 +17,7 @@ function out = legpoly(f, n)
 % Select a FUN:
 if ( nargin == 1 )
     if ( f.nfuns > 1 )
-        warning('CHEBFUN:legpoly:onefun',
+        warning('CHEBFUN:legpoly:onefun', ...
                ['CHEBFUN has more than one FUN. ', ...
                 'Returning Legendre coefficients for the first FUN only. ' ...
                 'Use LEGPOLY(F, 1) to suppress this warning.'])
@@ -25,7 +25,7 @@ if ( nargin == 1 )
     n = 1;
 end
 
-% Call FUN/LEGOPLY():
+% Call FUN/LEGPOLY():
 out = legpoly(f.funs{n});
 
 end

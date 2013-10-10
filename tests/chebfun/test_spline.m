@@ -1,9 +1,5 @@
 function pass = test_spline(pref)
 
-if ( nargin == 0 )
-    pref = chebfun.pref();
-end
-
 % Test a scalar function:
 x = 0:10;  
 y = sin(x);

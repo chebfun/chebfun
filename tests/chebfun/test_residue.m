@@ -21,4 +21,9 @@ pass(2) = normest(g.*F - G.*f)./vscale(g.*F) < 10*tol*vscale(k);
 
 pass(3) = normest(k - chebfun(@(x) x + 10i + 1.1)) < tol;
 
+% Check syntax which substitutes 0 for empty third argument.
+[B, A] = residue([1 1], [1 -1], chebfun());
+pass(4) = (normest(B - chebfun(@(x) 2*x)) < tol) && ...
+    (normest(A - chebfun(@(x) x.^2 - 1)) < tol);
+
 end
