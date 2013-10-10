@@ -59,19 +59,26 @@ catch ME
 end
 
 try
-    f./gt;
+    h = f./chebfun(@(x) 0*x);
     pass(9) = false;
 catch ME
-    pass(9) = strcmp(ME.identifier, 'CHEBFUN:rdivide:dim');
+    pass(9) = strcmp(ME.identifier, 'CHEBFUN:rdivide:DivisionByZeroChebfun');
+end
+
+try
+    f./gt;
+    pass(10) = false;
+catch ME
+    pass(10) = strcmp(ME.identifier, 'CHEBFUN:rdivide:dim');
 end
 
 try
     f = chebfun(@(x) exp(x), [-1 1]);
     g = chebfun(@(x) exp(x), [0 2]);
     h = f./g;
-    pass(10) = false;
+    pass(11) = false;
 catch ME
-    pass(10) = strcmp(ME.identifier, 'CHEBFUN:rdivide:domain');
+    pass(11) = strcmp(ME.identifier, 'CHEBFUN:rdivide:domain');
 end
 
 end

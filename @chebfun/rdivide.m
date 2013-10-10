@@ -20,6 +20,7 @@ end
 % If g is numeric then call TIMES():
 if ( isnumeric(g) )
     if ( g == 0 )
+        % TODO:  Return identically Inf/NaN CHEBFUN instead?
         error('CHEBFUN:rdivide:DivisionByZero', 'Division by zero.')
     end
     h = f.*(1./g);  
@@ -29,8 +30,9 @@ end
 % Check for zero FUNs:
 for k = 1:numel(g.funs)
     if ( iszero(g.funs{k}) )
-        warning('CHEBFUN:rdivide:DivisionByZeroChebfun', ...
-            'Division by zero CHEBFUN.');
+        % TODO:  Return CHEBFUN with identically Inf/NaN FUN instead?
+        error('CHEBFUN:rdivide:DivisionByZeroChebfun', ...
+            'Division by CHEBFUN with identically zero FUN.');
     end
 end
 
