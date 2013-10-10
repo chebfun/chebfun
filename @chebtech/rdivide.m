@@ -1,15 +1,14 @@
 function f = rdivide(f, c, pref)
 %./   Right array divide for a CHEBTECH.
-%   F ./ C divides the CHEBTECH F by an array C. If F is an array-valued
-%   CHEBTECH with M columns, then C must be either a scalar or a 1xM array. 
+%   F ./ C divides a CHEBTECH F by an array C. If F is an array-valued CHEBTECH
+%   with M columns, then C must be either a scalar or a 1xM array.
 %
-%   Alternatively if C is a CHEBTECH with the same number of columns as F, or if
-%   F is a scalar, the resulting division is returned if C is found to have no
-%   roots in [-1,1]. The division is performed column-wise.
+%   Alternatively C can be a CHEBTECH and F can either be a CHEBTECH with the
+%   same number of columns as C or a scalar.  In this case, C must have no
+%   roots in [-1, 1], or else F ./ C may return garbage with no warning.  The
+%   division is performed column-wise.
 %
 % See also MRDIVIDE, TIMES.
-
-% TODO: We should simply assume that there are no roots in the domain.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -50,13 +49,7 @@ else
     if ( nargin < 3 )
         pref = chebtech.pref; % c is a CHEBTECH.
     end
-    
-%     % Check if c (the denominator) has any roots.
-%     if ( ~isempty(roots(c)) )
-%         error('CHEBFUN:CHEBTECH:rdivide:DivideByZeros', ...
-%         'Cannot divide by a CHEBTECH with roots in its domain.');
-%     end
-    
+
     % Call COMPOSE.
     if ( isa(f, 'chebtech') )   % CHEBTECH / CHEBTECH
         f = compose(f, @rdivide, c, pref);
