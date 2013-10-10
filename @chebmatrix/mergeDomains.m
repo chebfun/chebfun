@@ -44,7 +44,7 @@ if ~isempty(breakpoints)
     breakpoints(isClose) = [];
     
     % Remove interior points too close to one another.
-    isClose =  find( diff(breakpoints < tol ) );
+    isClose =  find( diff(breakpoints) < tol  );
     breakpoints(isClose) = [];
 end
 

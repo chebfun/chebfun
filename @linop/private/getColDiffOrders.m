@@ -1,13 +1,13 @@
-function d = getRowDiffOrders(L)
+function d = getColDiffOrders(L)
 
 [m,n] = size(L);
-d = zeros(1,m);
+d = zeros(1,n);
 
-for i = 1:m
-    for j = 1:n
-        block = L.blocks{i,j};
+for j = 1:n
+    for i = 1:m
+        block = L.operator.blocks{i,j};
         if isa(block,'operatorBlock')
-            d(i) = max(d(i),block.diffOrder);
+            d(j) = max(d(j),block.diffOrder);
         elseif isa(block,'functionalBlock') || isnumeric(block)
             d(i) = NaN;
         end

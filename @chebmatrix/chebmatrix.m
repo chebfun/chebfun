@@ -8,9 +8,6 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
         % block uses, because it merges the breakpoints.
         domain
         
-        % Storage of boundary conditions or other conditions
-        constraints = struct('op',{},'value',{});  % empty array of structs
-        
     end
     
     methods
@@ -23,25 +20,12 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
         C = uminus(A)      
         
         % Replace each block by its DIM-dimensional discretization.
-        A = matrixBlocks(L,dim,dom,matrixType)
-        
-        % Construct a single matrix based on DIM-dimensional blocks. 
-        A = matrix(L,dim,dom,matrixType)
-
-        % Construct the discrete linear system at a particular dimension.
-        [A,b,dom] = linSystem(L,f,dim,matrixType)
-        
-        % Solve a linear system (including chebfun constructions).
-        u = linsolve(L,f,type)
-
-        % Assign BCs at the left/right endpoints.
-        L = lbc(L,f,value)
-        L = rbc(L,f,value)
+        A = discretizeBlocks(L,dim,dom,matrixType)
         
         % Concatenation
         C = cat(n,varargin)
         
-       
+        % TODO
         B = subsref(A,sr)
         
     end
@@ -58,6 +42,12 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
             % DOMAIN(L) returns the domain on which functions are defined for
             % the chebmatrix L.
             d = L.domain;
+        end
+        
+        % Construct a single matrix based on DIM-dimensional blocks.
+        function A = discretize(L,varargin)
+            A = discretizeBlocks(L,varargin{:});
+            A = cell2mat(A);
         end
         
         function k = numbc(L)
@@ -90,6 +80,10 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
                 varargout{2} = cellfun( @(x)size(x,2), A.blocks);
             end
             
+        end
+        
+        function t = isempty(L)
+            t = isempty(L.blocks);
         end
         
         function display(L)
@@ -131,7 +125,7 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
         end
               
         function u = mldivide(L,f)
-            u = linsolve(L,f);
+            u = linsolve(linop(L),f);
         end
                       
         function L = bc(L,f,value)
@@ -150,21 +144,6 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
         % Multiply chebmatrix by scalar.
         C = scalartimes(A,z)
      
-        % Find the differential orders of each equation (row).
-        d = getEqnDiffOrders(L)
-        
-        % Find the differential orders of each variable (column).
-        d = getVarDiffOrders(L)
-        
-        % Figure out how much to reduce dimension in each equation.
-        d = getDownsampling(L)
-        
-        % Construct operators for generic continuity at each breakpoint.
-        C = domainContinuity(L,maxorder)
- 
-        % Append proper breakpoint continuity conditions to a linear system. 
-        L = appendContinuity(L)            
-
     end
     
     methods (Static)
