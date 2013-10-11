@@ -10,6 +10,7 @@ end
 
 % Domain needs to have the union of all breakpoints.
 dom = chebmatrix.mergeDomains( {L.operator.blocks{:}, f.blocks{:}} );
+dom = union(dom, L.domain);
 L.operator.domain = dom;
 f.domain = dom;
 

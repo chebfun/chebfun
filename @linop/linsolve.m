@@ -10,10 +10,8 @@ isFunVariable = isinf(colSize(1,:));
 
 for k = 1:length(dimVals)
     dim = dimVals(k);
-    
     [A,b,dom] = linSystem(L,f,dim,type);
     numint = length(dom)-1;
-    
     uDiscrete = A\b;
     
     % Break the discrete solution into chunks representing

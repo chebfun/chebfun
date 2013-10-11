@@ -1,4 +1,4 @@
-classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatrix
+classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebmatrix
     % No size/compatability checking whatsoever!
     
     properties

@@ -10,10 +10,15 @@ classdef linop
     end
     
     methods
-        function L = linop(M)
+        function L = linop(M, C)
             % TODO: check size, inputs
             L.operator = M;
-            L.constraint = linopConstraint([]);
+            if ( nargin < 2 )
+                L.constraint = linopConstraint();
+            else
+                L.constraint = C;
+            end
+            
         end
         
         function d = get.domain(L)

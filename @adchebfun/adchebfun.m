@@ -84,7 +84,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
         
         function f = feval(f, x)
-            E = linop.evalAt(x, f.domain);
+            E = linop.feval(x, f.domain);
             f.jacobian = E*f.jacobian;
             f.func = feval(f.func, x);
 %             f.isConstant = f.isConstant;            
@@ -238,11 +238,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             if ( isa(f.func, 'chebfun') )
                 f.domain = union(f.domain, f.func.domain);
             end
-            if ( isa(f.jacobian, 'chebmatrix') )
-                f.domain = union(f.domain, domain(f.jacobian));
-            else
-                f.domain = union(f.domain, f.jacobian.domain);
-            end
+            f.domain = union(f.domain, f.jacobian.domain);
         end
         
     end

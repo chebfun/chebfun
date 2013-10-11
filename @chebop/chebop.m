@@ -166,10 +166,11 @@ classdef (InferiorClasses = {?double}) chebop
 %             end
             
             w = N.op(x, u{:});
-            L = vertcat(w.jacobian);
+            L = linop(vertcat(w.jacobian));
             res = vertcat(w.func);
             isLinear(1) = all(w.isConstant);
             
+            BC = linopConstraint();
             %%
             % Add BCs
             if ( ~isempty(N.lbc) )
@@ -177,7 +178,8 @@ classdef (InferiorClasses = {?double}) chebop
                 for k = 1:numel(lbcU)
                     lbcU(k) = feval(lbcU(k), N.domain(1));
                     if ( nargin == 4 ), lbcU(k).func = -lbcU(k).func; end
-                    L = bc(L, lbcU(k).jacobian, -lbcU(k).func); %#ok<CPROP>
+                    BC = append(BC, lbcU(k).jacobian, -lbcU(k).func);
+%                     L = bc(L, lbcU(k).jacobian, -lbcU(k).func); %#ok<CPROP>
                 end
                 isLinear(2) = all([lbcU.isConstant]);
             end
@@ -187,7 +189,8 @@ classdef (InferiorClasses = {?double}) chebop
                 for k = 1:numel(rbcU)
                     rbcU(k) = feval(rbcU(k), N.domain(end));
                     if ( nargin == 4 ), rbcU(k).func = -rbcU(k).func; end
-                    L = bc(L, rbcU(k).jacobian, -rbcU(k).func); %#ok<CPROP>
+                    BC = append(BC, rbcU(k).jacobian, -rbcU(k).func);
+%                     L = bc(L, rbcU(k).jacobian, -rbcU(k).func); %#ok<CPROP>
                 end
                 isLinear(3) = all([rbcU.isConstant]);
             end
@@ -206,10 +209,12 @@ classdef (InferiorClasses = {?double}) chebop
                 vals = cat(1, bcU.func);
                 if ( nargin == 4 ), vals = -vals; end
                 for k = 1:numel(bcU)
-                    L = bc(L, bcU(k).jacobian, -vals(k)); %#ok<CPROP>
+                    BC = append(BC, bcU(k).jacobian, -vals(k));
+%                     L = bc(L, bcU(k).jacobian, -vals(k)); %#ok<CPROP>
                 end
                 isLinear(4) = all([bcU.isConstant]);
             end
+            L.constraint = BC;
 
         end
         

@@ -1,14 +1,16 @@
 % A simple example BVP.
+ccc
 
-% The 'CHEBOP':
-N.op = @(x, u) diff(u, 2) + abs(x).*diff(u) + u;
+% The 'CHEBOP'
+N.domain = [-1, 1];
+N.op = @(x, u) diff(u, 2) + (x).*diff(u) + u;
 N.lbc = @(u) u - 1;
 N.bc = @(x, u) feval(u, 0.5);
 
 %%
 % Initialise an ADCHEBFUN:
 x = chebfun('x', [-1 1]);
-u = adchebfun(@(u) u, [-1 1]);
+u = adchebfun(@(u) 0*u, [-1 1]);
 
 %%
 % Evaluate the operators to get a linearisation:
@@ -23,12 +25,12 @@ B2 = v.jacobian;
 B2res = v.func;
 
 %%
+
 % Assemble to a CHEBMATRIX:
-L = chebmatrix( { A } );
-L.constraints(1).op = B1;
-L.constraints(1).value = -B1res;
-L.constraints(2).op = B2;
-L.constraints(2).value = -B2res;
+A = chebmatrix({A});
+C = linopConstraint(chebmatrix({B1 ; B2}), -[B1res ; B2res]);
+L = linop( A, C )
+
 
 %%
 % Make a CHEBMATRIX RHS:
@@ -37,12 +39,11 @@ rhs = chebmatrix( { x } );
 %%
 % Solve:
 u = L\rhs;
-
+u = u.blocks{1}
 %%
 % Display:
-u = u.blocks{1}
+
 plot(u), shg
-u(-1)-1
-sum(u)
-u(0)
+feval(N.lbc(u), N.domain(1))
+N.bc(x, u)
 

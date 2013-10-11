@@ -2,7 +2,7 @@
 
 close all, clc, clear all, clear classes
 
-dom = [0 1];
+dom = [0 .5 1];
 
 % The CHEBOP:
 N = chebop(@(x, u) diff(u, 2) + sin(u), dom);
