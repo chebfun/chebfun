@@ -25,14 +25,14 @@ matrix(U,5)
 %abs( U*v - matrix(U,5)*v)
 
 %% Operator instantiations
-op(I)
+blockOp(I)
 %%
-dop = op(D)
+dop = blockOp(D)
 TwoX = dop(x.*x)   % should be the chebfun 2*x
 TwoXAgain = D*(x.*x)
 ShouldBeZero = norm( 2*x - TwoX )
 %%
-uop = op(U)
+uop = blockOp(U)
 ShouldBeZero = norm( uop(x+1) - x.*x.*(x+1) )   % should be zero
 %%
 % shorthand notation, U*chebfun

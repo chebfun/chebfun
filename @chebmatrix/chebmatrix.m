@@ -6,10 +6,7 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
         
         % The chebmatrix domain may contain breakpoints that no individual
         % block uses, because it merges the breakpoints.
-        fundomain
-        
-        % Storage of boundary conditions or other conditions
-        constraints = struct('op',{},'value',{});  % empty array of structs
+        domain
         
     end
     
@@ -23,26 +20,12 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
         C = uminus(A)      
         
         % Replace each block by its DIM-dimensional discretization.
-        A = matrixBlocks(L,dim,dom,matrixType)
-        
-        % Construct a single matrix based on DIM-dimensional blocks. 
-        A = matrix(L,dim,dom,matrixType)
-
-        % Construct the discrete linear system at a particular dimension.
-        [A,b,dom] = linSystem(L,f,dim,matrixType)
-        
-        % Solve a linear system (including chebfun constructions).
-        u = linsolve(L,f,type)
-
-        % Assign BCs at the left/right endpoints.
-        L = lbc(L,f,value)
-        L = rbc(L,f,value)
+        A = discretizeBlocks(L,dim,dom,matrixType)
         
         % Concatenation
-        C = horzcat(varargin)
-        C = vertcat(varargin)
-        %TODO: CAT()
+        C = cat(n,varargin)
         
+        % TODO
         B = subsref(A,sr)
         
     end
@@ -51,14 +34,20 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
         
         % Constructor.        
         function A = chebmatrix(blocks)
-            A.fundomain = chebmatrix.mergeDomains(blocks);
+            A.domain = chebmatrix.mergeDomains(blocks);
             A.blocks = blocks;
         end
         
-        function d = domain(L)
+        function d = getDomain(L)
             % DOMAIN(L) returns the domain on which functions are defined for
             % the chebmatrix L.
-            d = L.fundomain;
+            d = L.domain;
+        end
+        
+        % Construct a single matrix based on DIM-dimensional blocks.
+        function A = discretize(L,varargin)
+            A = discretizeBlocks(L,varargin{:});
+            A = cell2mat(A);
         end
         
         function k = numbc(L)
@@ -66,6 +55,10 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
             k = length(L.constraints);
         end
         
+        function t = blockClasses(L)
+            t = cellfun(@class,L.blocks,'uniform',false);
+        end
+            
         function varargout = size(L,varargin)
             %SIZE Number of blocks within the chebmatrix.
             %
@@ -75,7 +68,7 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
            [varargout{1:nargout}] = size(L.blocks,varargin{:});
         end
         
-        function varargout = blocksizes(A)
+        function varargout = blockSizes(A)
             %BLOCKSIZES Sizes of the blocks within the chebmatrix.
             %
             % BLOCKSIZES(L) returns a cell of 1x2 size vectors.
@@ -83,16 +76,20 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
             if nargout <= 1
                 varargout = {cellfun(@size,A.blocks,'uniform',false)};
             else
-                B = A.blocks;
-                varargout{1} = cellfun(@(x)size(x,1),B(:,1));
-                varargout{2} = cellfun(@(x)size(x,2),B(1,:));
+                varargout{1} = cellfun( @(x)size(x,1), A.blocks);
+                varargout{2} = cellfun( @(x)size(x,2), A.blocks);
             end
+            
         end
-
-        function display(A)
-            [m,n] = size(A);
+        
+        function t = isempty(L)
+            t = isempty(L.blocks);
+        end
+        
+        function display(L)
+            [m,n] = size(L);
             fprintf('\n  %ix%i block chebmatrix of types:\n\n',m,n)
-            disp( cellfun(@class,A.blocks,'uniform',false) )
+            disp( blockClasses(L) )
         end
         
         function output = spy(A)
@@ -112,14 +109,23 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
             if nargout > 0
                 output = h;
             end
-        end       
+        end   
+        
+        function C = horzcat(varargin)
+            C = cat(2,varargin{:});
+        end
+        
+        function C= vertcat(varargin)
+            C = cat(1,varargin{:});
+        end
+ 
          
         function C = minus(A,B)
             C = plus(A,-B);
         end
               
         function u = mldivide(L,f)
-            u = linsolve(L,f);
+            u = linsolve(linop(L),f);
         end
                       
         function L = bc(L,f,value)
@@ -138,75 +144,13 @@ classdef (InferiorClasses = {?chebfun,?linopOperator,?linopFunctional}) chebmatr
         % Multiply chebmatrix by scalar.
         C = scalartimes(A,z)
      
-        % Find the differential orders of each equation (row).
-        d = getEqnDiffOrders(L)
-        
-        % Find the differential orders of each variable (column).
-        d = getVarDiffOrders(L)
-        
-        % Figure out how much to reduce dimension in each equation.
-        d = getDownsampling(L)
-        
-        % Construct operators for generic continuity at each breakpoint.
-        C = domainContinuity(L,maxorder)
- 
-        % Append proper breakpoint continuity conditions to a linear system. 
-        L = appendContinuity(L)            
-
     end
     
     methods (Static)
         
         % Union of all breakpoints, with "fuzzy" equality. 
-        function d = mergeDomains(blocks)
-            
-            d = cellfun(@(A) getDomain(A),blocks,'uniform',false);
-            
-            function out = getDomain(A)
-                if ( isnumeric(A) )
-                    out = [NaN NaN];
-                elseif ( isa(A, 'linop') || isa(A, 'colloc2') )
-                    out = A.fundomain;
-                else
-                    out = get(A, 'domain');
-                end
-            end
-            
-            % Collect the endpoints and take the outer hull.
-            leftEnds = cellfun(@(x) x(1),d);
-            left = min(leftEnds(:));
-            rightEnds = cellfun(@(x) x(end),d);
-            right = max(rightEnds(:));
-            
-            % We want to soften 'equality' relative to the domain length.
-            tol = 100*eps*(right-left);
-            
-            % Extract all the interior breakpoints.
-            d = cellfun(@(x) x(2:end-1),d,'uniform',false);
-            
-            % Find the unique ones (sorted).
-            breakpoints = cat(2,d{:});
-            breakpoints = unique(breakpoints);
-            
-            if ~isempty(breakpoints)
-                % Remove all too close to the left endpoint.
-                isClose = ( breakpoints - left < tol );
-                breakpoints(isClose) = [];
-                
-                % Remove all too close to the right endpoint.
-                isClose = ( right - breakpoints < tol );
-                breakpoints(isClose) = [];
-                
-                % Remove interior points too close to one another.
-                isClose =  diff(breakpoints < tol );
-                breakpoints(isClose) = [];
-            end
-            
-            % Put it all together.
-            d = [left breakpoints right];
-            
-        end
-
+        d = mergeDomains(blocks)
+ 
  
     end
     

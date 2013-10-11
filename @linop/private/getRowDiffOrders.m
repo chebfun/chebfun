@@ -5,7 +5,7 @@ d = zeros(1,m);
 
 for i = 1:m
     for j = 1:n
-        block = L.blocks{i,j};
+        block = L.operator.blocks{i,j};
         if isa(block,'operatorBlock')
             d(i) = max(d(i),block.diffOrder);
         elseif isa(block,'functionalBlock') || isnumeric(block)
