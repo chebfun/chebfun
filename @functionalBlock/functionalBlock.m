@@ -46,7 +46,7 @@ classdef functionalBlock < linBlock
                 C = functionalBlock(A.domain);
                 C.delayFun = A*B.delayFun(z);
                 C.diffOrder = B.diffOrder;
-            elseif isa(B,'linopOperator')
+            elseif isa(B,'operatorBlock')
                 C = functionalBlock(A.domain);
                 C.delayFun = @(z) A.delayFun(z) * B.delayFun(z);
                 C.diffOrder = A.diffOrder + B.diffOrder;
