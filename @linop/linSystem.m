@@ -33,9 +33,12 @@ rows = cell(m+1,1);
 % Resize the operator rows according to differential order.
 dummy = matrixType([]);
 d = getDownsampling(L);
-for i = find( ~isnan(d) )
+for i = 1:m
     M = cat(2,Ablocks{i,:},bblocks{i});
-    rows{i} = dummy.resize( M, dim-d(i), dim, dom );
+    if ( ~isnan(d(i)) ) && ( d(i) > 0 )
+        M = dummy.resize( M, dim-d(i), dim, dom );
+    end
+    rows{i} = M;
 end
 
 % Append the discrete constraints.

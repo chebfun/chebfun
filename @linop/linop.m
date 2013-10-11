@@ -80,6 +80,10 @@ classdef linop
             U = linBlock.diag(varargin{:});
         end
         
+        function Z = zero(varargin)
+            Z = linBlock.zero(varargin{:});
+        end
+        
         function S = sum(varargin)
             S = linBlock.sum(varargin{:});
         end

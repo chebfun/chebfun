@@ -47,6 +47,11 @@ classdef blockColloc2 < blockDiscretization
            Z = zeros(sum(n));
         end
         
+        function Z = zero(A)
+            n = dim(A);
+            Z = zeros(1,sum(n));
+        end
+        
         F = diag(A,f)
         
         % Required operators.

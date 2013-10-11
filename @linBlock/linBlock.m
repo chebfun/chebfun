@@ -50,11 +50,13 @@ classdef linBlock
         end
         
         function C = horzcat(varargin)
-            C = chebmatrix( varargin );
+            kill = cellfun(@isempty,varargin);            
+            C = chebmatrix( varargin(~kill) );
         end
         
         function C = vertcat(varargin)
-            C = chebmatrix( varargin' );
+            kill = cellfun(@isempty,varargin);            
+            C = chebmatrix( varargin(~kill)' );
         end
         
         
@@ -154,6 +156,15 @@ classdef linBlock
             Z.delayFun = @(z) zeros(z);
             Z.diffOrder = 0;
         end
+        
+        function Z = zero(domain)
+            % Z = ZERO(DOMAIN)   zero functional on the domain
+            if nargin==0, domain = [-1 1]; end
+            Z = functionalBlock(domain);
+            Z.delayFun = @(z) zero(z);
+            Z.diffOrder = 0;
+        end
+
         
         function U = diag(u)
             % D = DIAG(U)  diagonal operator from the chebfun U
