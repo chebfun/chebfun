@@ -42,6 +42,11 @@ if ( numel(A.funs) == 1 )
     [Q, R] = qr(A.funs{1});
     Q = chebfun({Q});
     
+elseif ( size(A, 2) == 1 )
+    % If f has only one column we simply scale it.
+    R = sqrt(innerProduct(A, A));
+    Q = A./R;
+
 elseif ( all(cellfun(@(f) isa(f.onefun, 'chebtech'), A.funs)) )
     % Simple case = all FUNs are simple (i.e., use CHBETECHs).
     %   (If all the FUN objects have .onefuns which are CHEBTECHs, we can use a

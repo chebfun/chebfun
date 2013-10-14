@@ -37,4 +37,9 @@ f = chebfun(@(x) [sin(x) cos(x) exp(x)], [-1 0 1], pref);
 [Q, R] = qr(f);
 pass(7) = normest(f - Q*R) < 10*vscale(f)*epslevel(f);
 
+% Check QR of a CHEBFUN with one column and breakpoints.
+f = chebfun(@(x) 1 + 0*x, [-1 0 1], pref);
+[Q, R] = qr(f);
+pass(8) = normest(f - Q*R) < 10*vscale(f)*epslevel(f);
+
 end
