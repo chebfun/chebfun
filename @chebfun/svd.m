@@ -11,7 +11,10 @@ function [U, S, V] = svd(A, econ)
 %   S = SVD(A) returns a vector containing the singular values of A.
 %
 %   The computation is carried out by orthogonalization operations following
-%   Battles' 2006 thesis.
+%   Battles's 2005 thesis [1].
+%
+%   [1] Z. Battles, "Numerical Linear Algebra for Continuous Functions",
+%   D. Phil. thesis, University of Oxford, 2005.
 %
 % See also QR, MRDIVIDE, RANK.
 
