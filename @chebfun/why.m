@@ -1,18 +1,18 @@
-function varargout = why(f, r)  
-%WHY   Provides a succinct answer to almost any Chebfun related question in the 
+function varargout = why(f, r)
+%WHY   Provides a succinct answer to almost any Chebfun related question in the
 %      many languages of the friends of Chebfun.
 %   WHY, by itself, provides a random answer.
 %   WHY(N) provides the N-th answer.
-%   
+%
 %   For fun, try also
 %       plot(why(chebfun)), axis equal
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-N = 11;  % Number of Chebfun languages
+n = 12;  % Number of Chebfun languages
 if ( nargin == 1 )
-    r = ceil(N*rand);
+    r = ceil(n*rand);
 end
 
 if ( verLessThan('matlab', '7.9') )
@@ -20,66 +20,93 @@ if ( verLessThan('matlab', '7.9') )
 else
     simpleText = false;
 end
-    
+
 switch r
-    case 1,         s = 'Because Nick Trefethen said so!';
+    case 1,
         % English (or American-English!):
-        % Nick Trefethen, Toby Driscoll, Nick Hale,  
+        % Nick Trefethen, Toby Driscoll, Nick Hale,
         % Sheehan Olver, Mark Richardson, Zachary Battles
         % Alex Townsend, James Lottes, Matthew Green
-        
-    case 2,         s = 'Porque Nick Trefethen lo dice!';
+
+        s = 'Because Nick Trefethen said so!';
+
+    case 2,
         % Spanish:
         % Ricardo Pachon
-        
-    case 3,         s = 'Porque o Nick Trefethen disse!';
+
+        s = 'Porque Nick Trefethen lo dice!';
+
+    case 3,
         % Portuguese:
         % Rodrigo Platte
-                
-    case 4,         
-        if ( ~simpleText )
-                    s = 'Því Nick Trefethen mælti svo!';
-        else
-                    s = 'Thvi Nick Trefethen maelti svo!';
-        end
+
+        s = 'Porque o Nick Trefethen disse!';
+
+    case 4,
         % Icelandic:
         % Asgeir Birkisson
-        
-    case 5,
+
         if ( ~simpleText )
-                    s = 'Omdat Nick Trefethen so sê!';
+            s = 'Því Nick Trefethen mælti svo!';
         else
-                    s = 'Omdat Nick Trefethen so se!';
+            s = 'Thvi Nick Trefethen maelti svo!';
         end
+
+    case 5,
         % Afrikaans:
         % Andre Weideman
-        
-    case 6,         s = 'Omdat Nick Trefethen het zegt!';
+
+        if ( ~simpleText )
+            s = 'Omdat Nick Trefethen so sê!';
+        else
+            s = 'Omdat Nick Trefethen so se!';
+        end
+
+    case 6,
         % Dutch:
         % Joris Van Deun
-        
-    case 7,         s = 'Wills dr Nick Trefethen gseit hett!';
+
+        s = 'Omdat Nick Trefethen het zegt!';
+
+    case 7,
         % Swiss German:
         % Pedro Gonnet
-    
-    case 8,         s = 'Parce que Nick Trefethen le dit!';
+
+        s = 'Wills dr Nick Trefethen gseit hett!';
+
+    case 8,
         % French:
         % Cecile Piret
-        
-    case 9,         s = 'Kiyon ke Nick Trefethen ne kaha tha!'; 
+
+        s = 'Parce que Nick Trefethen le dit!';
+
+    case 9,
         % Urdu:
         % Mohsin Javed
-        
-    case 10,        s = 'Well den Nick Trefethen et gesot huet!';
+
+        s = 'Kiyon ke Nick Trefethen ne kaha tha!';
+
+    case 10,
         % Luxembourgish:
         % Georges Klein
-        
-    case 11,        s = 'Weil es Nick Trefethen so gesagt hat!';
+
+        s = 'Well den Nick Trefethen et gesot huet!';
+
+    case 11,
         % German:
         % Stefan Guettel
 
-    otherwise,      s = 'Good question!';
-        
+        s = 'Weil es Nick Trefethen so gesagt hat!';
+
+    case 12,
+        % Chinese:
+        % Kuan Xu
+
+        s = 'Yin Wei Ni Ke Te Fen Sen Shi Zhe Me Shuo De!';
+
+    otherwise,
+        s = 'Good question!';
+
 end
 
 if ( nargout < 1 )
