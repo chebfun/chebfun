@@ -17,6 +17,17 @@ for k = 1:length(alpha)
     B = cos(alpha(k))*A(:,k) + sin(alpha(k))*f;
     angle = subspace(A, B);
     pass(k) = abs(angle - alpha(k)) < 1e3*epslevel(B);
+    angle = subspace(B, A);
+    pass(k) = pass(k) && (abs(angle - alpha(k)) < 1e3*epslevel(B));
 end
+
+% Check subspaces with multiple columns.
+pass(4) = abs(subspace(A(:,1:2), A(:,3:4)) - pi/2) < 10*vscale(A)*epslevel(A);
+pass(5) = abs(subspace(A(:,1:3), A(:,4)) - pi/2) < 10*vscale(A)*epslevel(A);
+
+% Check operation for row chebfuns.
+At = A.';
+pass(6) = abs(subspace(At(1:2,:), At(3:4,:)) - pi/2) < ...
+    10*vscale(At)*epslevel(At);
 
 end

@@ -29,7 +29,7 @@ if ( ~domainCheck(A, B) )
         'Domain mismatch.')
 end
 if ( A.isTransposed )
-    if ( ~B.istranposed )
+    if ( ~B.isTransposed )
         error('CHEBFUN:subspace:trans', 'Dimension mismatch (transpose).');
     end
     A = A.';
