@@ -1,10 +1,48 @@
 function [Q, R] = abstractQR(A, E, myInnerProduct, myNorm, tol)
-%ABSTRACTQR  Abstract implementation of Householder method for QR factorisation.
+%ABSTRACTQR   Abstract implementation of Householder QR factorisation algorithm.
+%   [Q, R] = ABSTRACTQR(A, E, MYINNERPRODUCT) computes a weighted QR
+%   factorisation of A, where A is any "matrix-like" object that admits such a
+%   decomposition, using an abstract implementation of the method in [1].  E is
+%   a "matrix-like" object of the same type as A that functions as described in
+%   [1], and MYINNERPRODUCT is a binary function which when given two "vectors"
+%   of the type used to form the columns of A as arguments returns their L2
+%   inner product.  MYINNERPRODUCT should be conjugate-linear in its first
+%   argument.
 %
-% A is the input 'quasimatrix' (or array-valued CHEBFUN, or matrix of values).
-% E is a Legendre matrix with the same representation
-% myInnerProduct(u, v) returns the L2 inner product of u and v.
-% myNorm(v) returns the norm of v (or a suitable estimate).
+%   [Q, R] = ABSTRACTQR(A, E, MYINNERPRODUCT, MYNORM) does the same but uses
+%   MYNORM instead of NORM to estimate the sizes of the "vectors" for the
+%   purposes of determining thresholds used in the algorithm.  This can save
+%   computation time if NORM is expensive to compute but MYNORM provides a
+%   cheaply computable estimate for the same result.  Note that neither NORM
+%   nor MYNORM are used in the normalization of the "columns" of Q, which is
+%   handled using the norm associated to MYINNERPRODUCT.
+%
+%   [Q, R] = ABSTRACTQR(A, E, MYINNERPRODUCT, MYNORM, TOL) does the same but
+%   uses TOL instead of the default EPS when determining thresholds used in the
+%   algorithm.
+%
+%   Example (QR of a random 3 x 3 matrix):
+%     [Q, R] = abstractQR(randn(3), eye(3), @(u, v) u'*v);
+%
+%   [1] L.N. Trefethen, "Householder triangularization of a quasimatrix", IMA J
+%   Numer Anal (2010) 30 (4): 887-897.
+
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Developer note:
+%  This function exists primarily to de-duplicate the Householder QR code,
+%  which is used as the backbone of the QR implementations at all levels of the
+%  system.  The main usage case is that A is a matrix of values on a grid used
+%  as the foundation for some function representation technology.  In this
+%  case, the matrix E will need to be a Legendre matrix for this representation
+%  (e.g., a "Legendre-Chebyshev-Vandermonde" matrix if the grid consists of
+%  Chebyshev points) so that the integrals underlying the inner product can be
+%  computed exactly.  A can also be an array-valued CHEBFUN or CHEBTECH or a
+%  quasimatrix, in which case E is typically an object of the same type whose
+%  columns are Legendre polynomials.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Pre-allocate the matrices R and V:
 numCols = size(A, 2);
