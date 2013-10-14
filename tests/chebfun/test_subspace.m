@@ -6,12 +6,11 @@ if ( nargin == 0 )
    pref = chebfun.pref(); 
 end
 
-d = [0, 2*pi];
+% Orthonormal array-valued chebfun:
+A = chebfun(@(t) [1/sqrt(2)+0*t cos(t) sin(2*t) sin(3*t)]/sqrt(pi), ...
+    [0 1 2*pi], pref);
 
-% Orthonormal quasimatrix:
-A = chebfun(@(t) [1/sqrt(2)+0*t cos(t) sin(2*t) sin(3*t)]/sqrt(pi), d, pref);
-
-f = chebfun(@(t) sin(10*t)/sqrt(pi), d, pref);
+f = chebfun(@(t) sin(10*t)/sqrt(pi), [0 2 2*pi], pref);
 alpha = [1e-10 pi/5 pi/2-1e-10];
 
 for k = 1:length(alpha)

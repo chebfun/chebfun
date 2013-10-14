@@ -4,8 +4,8 @@ if ( nargin == 0 )
     pref = chebfun.pref();
 end
 
-T = chebpoly(0:3);
-L = legpoly(0:3);
+T = restrict(chebpoly(0:3), [-1 -0.5 0 0.5 1]);
+L = restrict(legpoly(0:3), [-1 0 1]);
 
 %% Scalar A:
 pass(1) = normest(T/2 - .5*T) < 10*epslevel(T);

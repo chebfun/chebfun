@@ -7,7 +7,7 @@ if ( nargin < 1 )
 end
 
 % Check a simple example.
-f = chebfun(@(x) [sin(x) cos(x) exp(x)], [-1 1]);
+f = chebfun(@(x) [sin(x) cos(x) exp(x)], [-1 -0.5 0 0.5 1]);
 [U, S, V] = svd(f);
 g = U*S*V';
 pass(1) = ~U.isTransposed && (normest(f - g) < ...

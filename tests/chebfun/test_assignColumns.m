@@ -25,7 +25,7 @@ h_exact = @(x) [sin(x) cos(x) x];
 err = feval(h, x) - h_exact(x);
 pass(2) = norm(err(:), inf) < 10*vscale(h)*epslevel(h);
 
-g = chebfun(@(x) [x x.^2], [-1 1], pref);
+g = chebfun(@(x) [x x.^2], [-1 0 1], pref);
 
 h = assignColumns(f, [3 1], g);
 h_exact = @(x) [x.^2 cos(x) x];
@@ -37,7 +37,7 @@ h_exact = @(x) [sin(x) x.^2 exp(x)];
 err = feval(h, x) - h_exact(x);
 pass(4) = norm(err(:), inf) < 10*vscale(h)*epslevel(h);
 
-g = chebfun(@(x) [x x.^2 x.^3], [-1 1], pref);
+g = chebfun(@(x) [x x.^2 x.^3], [-1 -0.5 0.5 1], pref);
 
 h = assignColumns(f, [1 2 3], g);
 h_exact = @(x) [x x.^2 x.^3];
