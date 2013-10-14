@@ -10,17 +10,16 @@ function p = legpoly(n, dom, normalize, method)
 %   integrate(P(:,j).*P(:,k)) = delta_{j,k}.
 %
 %   For N <= 1000 LEGPOLY uses a weighted QR factorisation of a 2*(N+1) x
-%   2*(N+1) Chebyshev Vandemonde matrix. For N > 1000 it uses the standard
+%   2*(N+1) Chebyshev Vandermonde matrix. For N > 1000 it uses the standard
 %   recurrence relation. This default can be overwritten by passing a fourth
 %   input LEGPOLY(N, D, NORM, METHOD), where METHOD is 1 or 2 respectively.
 %
 % See also CHEBFUN/LEGPOLY, CHEBPOLY, and LEGPTS.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Lvelopers.
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % TODO: Look at this more carefully.
-% TODO: dom = dom([1, end]) ?
 
 % Parse input:
 if (isempty(n) )

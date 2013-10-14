@@ -15,7 +15,7 @@ function [f, R, E] = qr(f, outputFlag, methodFlag)
 %   is the default behavior.
 %
 %   QR(F, 'vector', METHOD) or QR(F, 'vector', METHOD) specifies which method
-%   to use in computing the QR factorisation. METHOD = 'built-in' will for a
+%   to use in computing the QR factorisation. METHOD = 'built-in' will form a
 %   weighted Legendre-Vandermonde matrix and orthogonalise this with the
 %   standard Matlab QR algorithm. METHOD = 'householder' uses the technique
 %   described in [1]. METHOD = 'householder' is the default option.
@@ -81,7 +81,7 @@ if ( strcmpi(methodFlag, 'householder') )
     [f, R, E] = qr_householder(f, outputFlag);
     return
 else
-    % The 'built-in' algorithm. I.e., qeighted discrete QR():
+    % The 'built-in' algorithm. i.e., qeighted discrete QR():
     if ( nargout == 3 )
         [f, R, E] = qr_builtin(f, outputFlag);
     else
@@ -119,7 +119,7 @@ end
 
 % Revert to the Chebyshev grid (and remove the weight and enforce diag(R) >= 0).
 Winv = diag(1./sqrt(wl));   % Undo the weighting used for QR.
-Pinv = barymat(xc, xl, vl); % Revert to Chebyshev grid (from Legendre).
+Pinv = barymat(xc, xl, vl); % Revert to Chebyshev grid (from Legendre grid).
 
 % Enforce diag(R) >= 0.
 s = sign(diag(R));
@@ -139,15 +139,11 @@ end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [f, R, E] = qr_householder(f, flag)
+function [f, R, Eperm] = qr_householder(f, flag)
 
-f = simplify(f);
-    
 % Get some useful values
-n = size(f, 1);
-numCols = size(f, 2);
+[n, numCols] = size(f);
 tol = f.epslevel*f.vscale;
-kind = 2;
 
 % Make the discrete analog of f:
 newN = 2*max(n, numCols);
@@ -187,13 +183,16 @@ f.vscale = max(abs(f.values), [], 1);
 % Additional output argument:
 if ( nargout == 3 )
     if ( nargin == 2 && strcmp(flag, 'vector') )
-        E = 1:numCols;
+        Eperm = 1:numCols;
     else
-        E = eye(numCols);
+        Eperm = eye(numCols);
     end
 end
 
 end
+
+% [TODO]:  We should remove qr_householder_old() once the rest of the qr()
+% stuff has settled down.
 
 function [f, R, E] = qr_householder_old(f, flag)
 % See L.N. Trefethen, "Householder triangularization of a quasimatrix", IMA J

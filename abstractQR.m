@@ -1,7 +1,7 @@
 function [Q, R] = abstractQR(A, E, myInnerProduct, myNorm, tol)
-%ABSTRACTQR  Abstract implementation of householder method for QR factorisation.
+%ABSTRACTQR  Abstract implementation of Householder method for QR factorisation.
 %
-% A is the input 'quasimatix' (or array-valued CHEBFUN, or matrix of values).
+% A is the input 'quasimatrix' (or array-valued CHEBFUN, or matrix of values).
 % E is a Legendre matrix with the same representation
 % myInnerProduct(u, v) returns the L2 inner product of u and v.
 % myNorm(v) returns the norm of v (or a suitable estimate).
@@ -46,11 +46,13 @@ for k = 1:numCols
 
     % Compute the reflection v:
     v = r*E(:,k) - A(:,k);
+
     % Make it more orthogonal:
     for i = I
         ev = myInnerProduct(E(:,i), v);
         v = v - E(:,i)*ev;
     end
+
     % Normalize:
     nv = sqrt(myInnerProduct(v, v));
     if ( nv < tol*scl )
@@ -58,16 +60,22 @@ for k = 1:numCols
     else
        v = v / nv; 
     end
+
     % Store:
     V(:,k) = v;
 
     % Subtract v from the remaining columns of A:
     for j = J
+        % Apply the Householder reflection:
         av = myInnerProduct(v, A(:,j));
         A(:,j) = A(:,j) - 2*v*av;
+
+        % Compute other nonzero entries in the current row and store them:
         rr = myInnerProduct(E(:,k), A(:,j));
-        A(:,j) = A(:,j) - E(:,k)*rr;
         R(k,j) = rr;
+
+        % Subtract off projections onto the current vector E(:,k):
+        A(:,j) = A(:,j) - E(:,k)*rr;
     end
 
 end
@@ -76,6 +84,7 @@ end
 Q = E;
 for k = numCols:-1:1
     for j = k:numCols
+        % Apply the reflection again:
         vq = myInnerProduct(V(:,k), Q(:,j));
         Q(:,j) = Q(:,j) - 2*(V(:,k)*vq);
     end

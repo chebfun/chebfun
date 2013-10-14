@@ -4,7 +4,7 @@ function [Q, R] = qr(A, econ)
 %   produces a column CHEBFUN Q with n orthonormal columns and an n x n upper
 %   triangular matrix R such that A = Q*R.
 %
-%   This algorithm used is described in L.N. Trefethen, "Householder
+%   The algorithm used is described in L.N. Trefethen, "Householder
 %   triangularization of a quasimatrix", IMA J. Numer. Anal. (30), 887-897
 %   (2010).
 %
@@ -15,19 +15,14 @@ function [Q, R] = qr(A, econ)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Developer note:
-%  If A contains only a single breakpoint, then FUN/QR is used directly. If A
-%  has multiple pieces but each of these are simple CHEBTECH objects, then
-%  QRCHEBTECH() is called. This violates OOP principles, but is _much_ more
+%  If A contains only a single FUN, then FUN/QR is used directly. If A has
+%  multiple pieces but each of these are simple CHEBTECH objects, then
+%  QRSIMPLE() is called. This violates OOP principles, but is _much_ more
 %  efficient.
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% [TODO]: The third input argument is for testing qrChebfun. It should be
-% removed and a test added which requires this code (e.g., 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Check inputs
-% if ( ( nargin > 2 ) || ( nargin == 2 && econ ~= 0 ) )
-if ( (nargin == 2) && (econ ~= 0) ) % TODO: Replace above once flag is removed.
+if ( (nargin == 2) && (econ ~= 0) )
     error('CHEBFUN:qr:twoargs',...
       'Use qr(A) or qr(A, 0) for QR decomposition of an array-valued CHEBFUN.');
 end
@@ -39,8 +34,6 @@ if ( ~all(isfinite(A.domain)) )
     error('CHEBFUN:QR:infdomain', ...
         'CHEBFUN QR does not support unbounded domains.');
 end
-econ = 0;
-
 
 if ( numel(A.funs) == 1 )
     % No breakpoints = easy case.
@@ -69,7 +62,7 @@ end
 
 function [Q, R] = qrGeneral(A)
 
-% Get some useful values
+% Get some useful values:
 numCols = min(size(A));
 tol = epslevel(A)*vscale(A);
 
@@ -98,14 +91,14 @@ b = dom(end);
 numFuns = length(dom)-1;
 
 % Get the sizes of the funs in the columns of A, keeping in mind that we
-% will have to multiply with the columns of E and the norm of A's columns
+% will have to multiply with the columns of E and the norm of A's columns.
 sizes = zeros(numFuns, 1);
 for j = 1:numFuns
     sizes(j) = 2*max(length(A.funs{j}), numCols);
     A.funs{j}.onefun = prolong(A.funs{j}.onefun, sizes(j));
 end
 
-% Create the Chebyshev nodes and quadrature weights
+% Create the Chebyshev nodes and quadrature weights:
 [pts, w] = chebpts(sizes, dom, kind);
 
 % Define the inner product as an anonymous function:

@@ -1,6 +1,10 @@
 function h = rdivide(f, g)
 %./   Pointwise CHEBFUN right divide.
 %   F./G returns a CHEBFUN that represents the function F(x)/G(x).
+%   If F and G are array-valued column (row) CHEBFUNs, they must have the same
+%   number of columns (rows).
+%
+% See also MRDIVIDE, TIMES.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.

@@ -1,6 +1,6 @@
 function f = chebpoly(n, d, kind)
 %CHEBPOLY   Chebyshev polynomial.
-%   F = CHEBPOLY(N) returns the chebfun corresponding to the Chebyshev
+%   F = CHEBPOLY(N) returns the CHEBFUN corresponding to the Chebyshev
 %   polynomials T_N(x) on [-1,1], where N may be a vector of positive integers.
 %
 %   F = CHEBPOLY(N, D), where D is an interval or a domain, gives the same
@@ -40,8 +40,7 @@ end
 % [TODO]: 2nd-kind polynomials:
 if ( kind == 2 )
     error('CHEBFUN:chebpoly:kind', ...
-    '2nd-kind Chebyshev polynomials have no been implemented yet.');
-
+    '2nd-kind Chebyshev polynomials have not been implemented yet.');
 end
 
 % Construct the Chebyshev coefficients:

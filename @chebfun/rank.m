@@ -1,4 +1,4 @@
-function r = rank(A,tol)
+function r = rank(A, tol)
 %RANK   Rank of an array-valued CHEBFUN.
 %   RANK(A) produces an estimate of the number of linearly independent columns
 %   (or rows) of A.

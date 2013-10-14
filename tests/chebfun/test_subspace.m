@@ -1,12 +1,11 @@
+% Test file for @chebfun/subspace.m.
+
 function pass = test_subspace(pref)
 
 if ( nargin == 0 )
    pref = chebfun.pref(); 
 end
 
-% Test the subspace function (angle between subspaces).
-
-pass = true;
 d = [0, 2*pi];
 
 % Orthonormal quasimatrix:
