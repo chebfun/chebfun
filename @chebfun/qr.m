@@ -121,7 +121,7 @@ if ( iscell(A) )
 end
 
 % Generate a discrete E (Legendre-Chebyshev-Vandermonde matrix) directly:
-xx = 2*(pts - (a + b)/2) / (b - a); % Unscale the CHEBPTS().
+xx = (pts - a)/(b - a) - (b - pts)/(b - a);  % Unscale the Chebyshev points.
 E = ones(size(A));
 E(:,2) = xx;
 for k = 3:numCols % Recurrence relation:
