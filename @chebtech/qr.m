@@ -108,7 +108,8 @@ W = spdiags(sqrt(wl.'), 0, n, n);
 if ( nargout == 3 )
     [Q, R, E] = qr(W * P * f.values, 0);
     % For consistency with the MATLAB QR behavior:
-    if ( (nargin == 1) || ~(strcmpi(outputFlag, 'vector') || (outputFlag == 0)) )
+    if ( (nargin == 1) || ...
+        ~(strcmpi(outputFlag, 'vector') || isequal(outputFlag, 0)) )
         % Return E in matrix form:
         I = eye(m);
         E = I(:,E);
