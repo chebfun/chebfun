@@ -51,7 +51,7 @@ cosTheta = min(S);
 
 % Is the angle large? 
 if ( cosTheta < 0.8 )
-    theta = acos(min(1, cosTheta));    
+    theta = acos(cosTheta);
 else 
     % If the angle is small, recompute using sine formulation:
     if ( size(A, 2) < size(B, 2) )
@@ -59,7 +59,7 @@ else
     else
         sinTheta = norm(B - A*C);
     end
-    theta = asin(min(1, sinTheta)); 
+    theta = asin(sinTheta);
 end
 
 end
