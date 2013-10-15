@@ -53,7 +53,13 @@ elseif ( all(cellfun(@(f) isa(f.onefun, 'chebtech'), A.funs)) )
     %   much more efficient approach. Note, this completely violates OOP
     %   principles, but the performance gain is worth it.)
 
-    [Q, R] = qrSimple(A);
+    if ( strcmp(class(A.funs{1}.onefun), 'chebtech1') )
+        chebType = 1;
+    else
+        chebType = 2;
+    end
+
+    [Q, R] = qrSimple(A, chebType);
     
 else
     % Work in the general continuous setting:
@@ -81,7 +87,7 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [Q, R] = qrSimple(A)
+function [Q, R] = qrSimple(A, chebType)
 % This implementation is fast, but relies on the fact that everything is a
 % CHEBTECH on a bounded domain at heart.
 A = simplify(A);
@@ -89,7 +95,6 @@ A = simplify(A);
 % Get some useful values
 numCols = min(size(A));
 tol = epslevel(A)*vscale(A);
-kind = 2;
 dom = A.domain;
 a = dom(1);
 b = dom(end);
@@ -104,7 +109,7 @@ for j = 1:numFuns
 end
 
 % Create the Chebyshev nodes and quadrature weights:
-[pts, w] = chebpts(sizes, dom, kind);
+[pts, w] = chebpts(sizes, dom, chebType);
 
 % Define the inner product as an anonymous function:
 ip = @(f, g) w * (conj(f) .* g);
@@ -130,7 +135,9 @@ end
 [Q, R] = abstractQR(A, E, ip, @(v) norm(v, inf), tol);
 
 % Construct a CHEBFUN from the discrete values:
+pref = chebfun.pref();
+pref.chebfun.tech = ['chebtech' num2str(chebType)];
 Q = mat2cell(Q, sizes, numCols);
-Q = chebfun(Q, dom);
+Q = chebfun(Q, dom, pref);
 
 end

@@ -35,11 +35,19 @@ pass(6) = norm(A - Q*R) < 1e-13*(tol/eps);
 % Check for bug in piecewise QR from commit 9ba78c2a.
 f = chebfun(@(x) [sin(x) cos(x) exp(x)], [-1 0 1], pref);
 [Q, R] = qr(f);
-pass(7) = normest(f - Q*R) < 10*vscale(f)*epslevel(f);
+pass(7) = norm(f - Q*R) < 10*vscale(f)*epslevel(f);
 
 % Check QR of a CHEBFUN with one column and breakpoints.
 f = chebfun(@(x) 1 + 0*x, [-1 0 1], pref);
 [Q, R] = qr(f);
-pass(8) = normest(f - Q*R) < 10*vscale(f)*epslevel(f);
+pass(8) = norm(f - Q*R) < 10*vscale(f)*epslevel(f);
+
+% Check QR of a CHEBFUN based on CHEBTECH1.
+p = pref;
+p.chebfun.tech = 'chebtech1';
+f = chebfun(@(x) [sin(x) cos(x) exp(x)], [-1 0 1], p);
+[Q, R] = qr(f);
+pass(9) = strcmp(class(f.funs{1}.onefun), 'chebtech1') && ...
+    norm(f - Q*R) < 10*vscale(f)*epslevel(f);
 
 end
