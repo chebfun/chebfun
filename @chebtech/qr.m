@@ -68,13 +68,6 @@ end
 % Simplify so that we don't do any extra work: (QR is O(m*n^2)? :/ )
 f = simplify(f);
 
-% We must enforce that f.values has at least as many rows as columns:
-[n, m] = size(f);
-if ( n < m )
-    f = prolong(f, m);
-    n = m;
-end
-
 % Decide which algorithm to use:
 if ( strcmpi(methodFlag, 'householder') )
     % Call Trefethen's Householder implementation:
@@ -94,6 +87,13 @@ end
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [f, R, E] = qr_builtin(f, outputFlag)
+
+% We must enforce that f.values has at least as many rows as columns:
+[n, m] = size(f);
+if ( n < m )
+    f = prolong(f, m);
+    n = m;
+end
 
 % Project the values onto a Legendre grid: (where integrals of polynomials
 % p_n*q_n will be computed exactly and on an n-point grid)
