@@ -4,7 +4,7 @@ function Q = orth(A)
 %   That is, the columns of Q span the same space as the columns of A, Q'*Q = I,
 %   and the number of columns of Q is the rank of A.
 %
-% See also SVD, RANK, QR.
+% See also NULL, SVD, RANK, QR.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
