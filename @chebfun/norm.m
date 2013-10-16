@@ -109,7 +109,8 @@ else
         case 2
             if (nargout == 2 )
                 error('CHEBFUN:norm:argout', ...
-                    'Cannot return two outputs for quasimatrix 2-norms.');
+                    ['Cannot return two outputs for 2-norms of ' ...
+                     'array-valued CHEBFUNs.']);
             end
             s = svd(f, 0);
             normF = s(1);
@@ -117,7 +118,8 @@ else
         case 'fro'
             if ( nargout == 2 )
                 error('CHEBFUN:norm:argout', ...
-                    'Cannot return two outputs for quasimatrix ''fro''-norms.');
+                    ['Cannot return two outputs for ''fro''-norms of ' ...
+                     'array-valued CHEBFUNs.']);
             end
             % Find integration dimension: 1 if column, 2 if row:
             f.isTransposed = 0;

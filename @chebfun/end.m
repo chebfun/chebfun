@@ -1,5 +1,6 @@
 function e = end(f, k, n)
-%END   Rightmost point of a CHEBFUN domain (or last row/col of quasimatrix).
+%END   Rightmost point of a CHEBFUN domain (or last row/col of array-valued
+%      CHEBFUN).
 %   END(F, K, N) This function is called for indexing expressions involving a
 %   CHEBFUN F when END is part of the K-th index out of N indices.
 %
@@ -17,7 +18,7 @@ if ( n > 2 )
 end
 
 if ( ((k == 2) && ~f.isTransposed) || ((k == 1) && f.isTransposed && (n > 1)) )
-    % 'end' row/column of the quasimatrix.
+    % 'end' row/column of the array-valued CHEBFUN.
     if ( isempty(f) )
         e = 0;
     else
