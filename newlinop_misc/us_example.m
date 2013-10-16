@@ -1,4 +1,4 @@
-ccc
+clc
 
 N = .001*linop.diff([-1, 1], 2) + linop.diff + linop.eye([-1, 1]); 
 B = chebmatrix({linop.feval(-1, [-1 1])});

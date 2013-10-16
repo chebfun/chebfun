@@ -30,7 +30,7 @@ classdef blockUS
                     D = spdiags(2*s*ones(n,1),1,n,n)*D;
                 end
             else
-               D = speye(n,n); 
+                D = speye(n,n);
             end
             %             if nargin == 3
             %                 dom = varargin{1};
@@ -47,39 +47,72 @@ classdef blockUS
                 S = spconvert(n,s) * S;
             end
         end
-        
-        function d = dim(A)
-            d = A.size;
-        end
-    end
-
-    methods (Static)
-        function B = resize(A, m, n, dom)
-            % chop off some rows and columns
-            B = A(1:m,:);
-        end
-        function [isDone,epsLevel] = testConvergence(v)
-            % TODO: (for breakpoints and systems)
-            v = full(v);
-            f = chebtech2({[], flipud(v)});
-            [isDone, epsLevel] = strictCheck(f);
-%             isDone = 1;
-        end
-        function f_coeffs = discretizeFunction(f,dim,dom)
-            if ( nargin < 3 )
-                dom = f.domain;
-            end
-            f_coeffs = flipud(get(f,'coeffs'));
-            % prolong/truncate. 
-            if length(f_coeffs) > dim 
-                f_coeffs = f_coeffs(1:dim); 
-            else
-                f_coeffs = [f_coeffs;zeros(dim-length(f_coeffs),1)];
+        function M = mult(A, f, lambda)
+            
+            n = sum(dim(A));
+            
+            % get Chebyshev T coefficients
+            a = flipud(get(f,'coeffs'));
+            
+            if ( numel(a) == 1 ) 
+                M = a*speye(n);
+                return;
             end
             
-            % TODO: Mapping to correct US basis. 
+            % prolong or truncate coefficients
+            if ( numel(a) < n )
+                a = [a;zeros(n - numel(a),1)];
+            else
+                a = a(1:n);  % truncate.
+            end
+            
+            if ( lambda == 0 )
+                a = a/2;  % just to make formula easier.
+                M = sptoeplitz([2*a(1);a(2:end)],[2*a(1);a(2:end)]);
+                H = sphankel(a(2:end));
+                sub1 = 2:length(a); sub2 = 1:length(a)-1;
+                M(sub1,sub2) = M(sub1,sub2)+ H;
+            elseif ( lambda == 1 )
+                M = toeplitz([2*a(1);a(2:end)],[2*a(1);a(2:end)])/2;
+                sub = 1:length(a)-2;
+                M(sub,sub) = M(sub,sub) - hankel(a(3:end)/2);
+            else
+                % TODO: Add higher-order multiplication matrices.
+                error
+            end
         end
-        
-        L = quasi2USdiffmat(L, dim)
+            function d = dim(A)
+                d = A.size;
+            end
     end
-end
+        
+        methods (Static)
+            function B = resize(A, m, n, dom)
+                % chop off some rows and columns
+                B = A(1:m,:);
+            end
+            function [isDone,epsLevel] = testConvergence(v)
+                % TODO: (for breakpoints and systems)
+                v = full(v);
+                f = chebtech2({[], flipud(v)});
+                [isDone, epsLevel] = strictCheck(f);
+                %             isDone = 1;
+            end
+            function f_coeffs = discretizeFunction(f,dim,dom)
+                if ( nargin < 3 )
+                    dom = f.domain;
+                end
+                f_coeffs = flipud(get(f,'coeffs'));
+                % prolong/truncate.
+                if length(f_coeffs) > dim
+                    f_coeffs = f_coeffs(1:dim);
+                else
+                    f_coeffs = [f_coeffs;zeros(dim-length(f_coeffs),1)];
+                end
+                
+                % TODO: Mapping to correct US basis.
+            end
+            
+            L = quasi2USdiffmat(L, dim)
+        end
+    end
