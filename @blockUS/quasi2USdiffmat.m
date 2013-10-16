@@ -1,13 +1,21 @@
 function L = quasi2USdiffmat(L, dim)
 
-A = blockUS(dim, [-1,1]);
-order = size(L,2)-1;
+A = blockUS(dim, [-1, 1]);
 
-for j = 1:size(L,2)
+
+if ( isa(L, 'blockCoeff') )
+    c = L.coeffs;
+else
+    c = L;
+end
+c = fliplr(c);
+order = numel(c) - 1;
+
+L = 0*speye(dim);
+for j = 1:size(c, 2)
     %form D^(j-1) term.
-    const = feval(L(:,j),0);   % assume constant coeff for now. 
-
-    A = A + const*convert(A,j-1,order)*diff(A, j - 1);
+    const = feval(c{j}, 0);   % assume constant coeff for now. 
+    L = L + const*convert(A, j, order)*diff(A, j - 1);
 end
 
 end

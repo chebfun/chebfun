@@ -47,12 +47,21 @@ if ~isDone
     warning('Linear system solution may not have converged.')
 end
 
+if ( isa(obj, 'blockUS') )
+    u = full(u{1});
+    f = chebtech2({[], flipud(u)});
+    f = bndfun(f, dom);
+    f = chebfun({f});
+    u = chebmatrix({f});
+    return
+end
+
 % The variable u is a cell array with the different components of
 % the solution. Because each function component may be piecewise
 % defined, we will loop through one by one.
 for k = find( isFunVariable )
     funvals = reshape( u{k}, dim, numint );
-    f = chebfun( num2cell(funvals,1), dom );  % piecewise defined
+    f = chebfun( num2cell(funvals,1)', dom );  % piecewise defined
     u{k} = simplify(f, epsLevel );
 end
 

@@ -18,7 +18,7 @@ classdef linBlock
         % It doesn't work as a set/get property, because different linops
         % within one chebmatix can't have different defaults.
 %         defaultDiscretization = @blockColloc2;
-        defaultDiscretization = @blockCoeff;
+        defaultDiscretization = @blockUS;
     end
     
     
@@ -79,18 +79,23 @@ classdef linBlock
             
             p = inputParser;
             addOptional(p,'domain',A.domain,@isnumeric);
-%             addOptional(p,'matrixType',linBlock.defaultDiscretization,@(x) isa(x,'function_handle'))
-            addOptional(p,'matrixType','blockCoeff',@(x) isa(x,'function_handle'))
+            addOptional(p,'matrixType',linBlock.defaultDiscretization,@(x) isa(x,'function_handle'))
+%             addOptional(p,'matrixType','blockCoeff',@(x) isa(x,'function_handle'))
             parse(p,varargin{:})
             
             dom = p.Results.domain;
             matrixType = p.Results.matrixType;
             
-            if ( strcmp(func2str(matrixType), 'blockCoeff') )
-                L = A.delayFun( matrixType([],dom) );
-                L = quasi2USdiffmat(L, dom);
+            if ( strcmp(char(matrixType), 'blockUS') )  
+                if ( isa(A, 'functionalBlock') )
+                    L = A.delayFun( blockColloc2(dim, dom) );
+                    L = flipud(chebtech2.coeffs2vals(L.')).';
+                else
+                    L = A.delayFun( blockCoeff([], dom) );
+                    L = blockUS.quasi2USdiffmat(L, dim);
+                end
             else
-                L = A.delayFun( matrixType(dim,dom) );
+                L = A.delayFun( matrixType(dim, dom) );
             end
         end
         
@@ -118,7 +123,6 @@ classdef linBlock
             parse(p,varargin{:});
             domain = p.Results.domain;
             m = p.Results.m;
-            
             D = operatorBlock(domain);
             D.delayFun = @(z) diff(z,m);
             D.diffOrder = m;

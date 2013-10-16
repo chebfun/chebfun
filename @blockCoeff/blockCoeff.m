@@ -32,15 +32,15 @@ classdef blockCoeff
             end
             
             % Differentiate the correct number of times.
+            c = A.coeffs;
             for d = 1:order
-                m = numel(A.coeffs);
-                c = A.coeffs([1, 1:m]);
+                m = numel(c);
+                c = c([1, 1:m]);
                 for k = 2:m
                     c{k} = diff(c{k}) + c{k+1};
                 end
                 c{m+1} = diff(c{m+1});
             end
-            
             D = blockCoeff(c, A.domain);
             
         end

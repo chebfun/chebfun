@@ -25,7 +25,6 @@ end
 
 Ablocks = discretizeBlocks(L.operator,dim,dom,matrixType);
 bblocks = discretizeBlocks(f,dim,dom,matrixType);
-
 % Resize the blocks and append the constraints.
 [m,n] = size(L);
 rows = cell(m+1,1);
@@ -45,7 +44,6 @@ end
 bcOp = L.constraint.operator;
 bcVal = L.constraint.values;
 rows{m+1} = [ discretize(bcOp,dim,dom,matrixType), bcVal ];
-
 aug = cell2mat(rows);
 A = aug(:,1:end-1);
 b = aug(:,end);

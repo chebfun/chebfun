@@ -47,17 +47,23 @@ classdef blockUS
                 S = spconvert(n,s) * S;
             end
         end
+        
+        function d = dim(A)
+            d = A.size;
+        end
     end
 
     methods (Static)
-        function B = resize(A, m, n)
+        function B = resize(A, m, n, dom)
             % chop off some rows and columns
-            B = A(1:m,1:n);
+            B = A(1:m,:);
         end
         function [isDone,epsLevel] = testConvergence(v)
-            % TODO:
-            
-            isDone = 1; epsLevel = eps; 
+            % TODO: (for breakpoints and systems)
+            v = full(v);
+            f = chebtech2({[], flipud(v)});
+            [isDone, epsLevel] = strictCheck(f);
+%             isDone = 1;
         end
         function f_coeffs = discretizeFunction(f,dim,dom)
             if ( nargin < 3 )
@@ -73,5 +79,7 @@ classdef blockUS
             
             % TODO: Mapping to correct US basis. 
         end
+        
+        L = quasi2USdiffmat(L, dim)
     end
 end
