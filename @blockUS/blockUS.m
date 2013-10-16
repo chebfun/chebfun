@@ -20,14 +20,17 @@ classdef blockUS
             end
         end
         
-        function D = diffmat( A, K)
+        function D = diff( A, K )
             %DIFFMAT(N,K,N), computes the kth order US derivative matrix
             
             n = sum(dim(A));
-            
-            D = spdiags((0:n-1)',1,n,n);
-            for s = 1:K-1
-                D = spdiags(2*s*ones(n,1),1,n,n)*D;
+            if K > 0
+                D = spdiags((0:n-1)',1,n,n);
+                for s = 1:K-1
+                    D = spdiags(2*s*ones(n,1),1,n,n)*D;
+                end
+            else
+               D = speye(n,n); 
             end
             %             if nargin == 3
             %                 dom = varargin{1};
@@ -35,7 +38,7 @@ classdef blockUS
             %             end
         end
         
-        function S = convertmat( A, K1, K2 )
+        function S = convert( A, K1, K2 )
             %CONVERTMAT(A,K1,K2), convert C^(K1) to C^(K2)
             
             n = sum(dim(A));
