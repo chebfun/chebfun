@@ -17,7 +17,8 @@ classdef linBlock
         % Used whenever a matrix is required but the type is not specified.
         % It doesn't work as a set/get property, because different linops
         % within one chebmatix can't have different defaults.
-        defaultDiscretization = @blockColloc2;
+%         defaultDiscretization = @blockColloc2;
+        defaultDiscretization = @blockCoeff;
     end
     
     
@@ -78,7 +79,8 @@ classdef linBlock
             
             p = inputParser;
             addOptional(p,'domain',A.domain,@isnumeric);
-            addOptional(p,'matrixType',linBlock.defaultDiscretization,@(x) isa(x,'function_handle'))
+%             addOptional(p,'matrixType',linBlock.defaultDiscretization,@(x) isa(x,'function_handle'))
+            addOptional(p,'matrixType','blockCoeff',@(x) isa(x,'function_handle'))
             parse(p,varargin{:})
             
             dom = p.Results.domain;
