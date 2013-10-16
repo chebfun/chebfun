@@ -84,7 +84,12 @@ classdef linBlock
             dom = p.Results.domain;
             matrixType = p.Results.matrixType;
             
-            L = A.delayFun( matrixType(dim,dom) );
+            if ( strcmp(func2str(matrixType), 'blockCoeff') )
+                L = A.delayFun( matrixType([],dom) );
+                L = quasi2USdiffmat(L, dom);
+            else
+                L = A.delayFun( matrixType(dim,dom) );
+            end
         end
         
         function L = matrix(A,varargin)
