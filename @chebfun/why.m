@@ -91,19 +91,23 @@ switch r
         % Georges Klein
 
         s = 'Well den Nick Trefethen et gesot huet!';
-
+        
     case 11,
         % German:
         % Stefan Guettel
-
+        
         s = 'Weil es Nick Trefethen so gesagt hat!';
-
+        
     case 12,
         % Chinese:
         % Kuan Xu
-
-        s = 'Yin Wei Ni Ke Te Fen Sen Shi Zhe Me Shuo De!';
-
+        
+        if ( ~simpleText )
+            s = '因为尼克.特雷弗森是这么说的！';
+        else
+            s = 'Yin Wei Ni Ke Te Fen Sen Shi Zhe Me Shuo De!';
+        end
+        
     otherwise,
         s = 'Good question!';
 
