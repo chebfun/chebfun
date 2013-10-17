@@ -73,9 +73,9 @@ classdef blockUS
                 sub1 = 2:length(a); sub2 = 1:length(a)-1;
                 M(sub1,sub2) = M(sub1,sub2)+ H;
             elseif ( lambda == 1 )
-                M = toeplitz([2*a(1);a(2:end)],[2*a(1);a(2:end)])/2;
+                M = sptoeplitz([2*a(1);a(2:end)],[2*a(1);a(2:end)])/2;
                 sub = 1:length(a)-2;
-                M(sub,sub) = M(sub,sub) - hankel(a(3:end)/2);
+                M(sub,sub) = M(sub,sub) - sphankel(a(3:end)/2);
             else
                 % TODO: Add higher-order multiplication matrices.
                 error

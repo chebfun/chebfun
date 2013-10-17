@@ -1,6 +1,6 @@
 clc
-
-N = .001*linop.diff([-1, 1], 2) + linop.diff + linop.eye([-1, 1]); 
+x = chebfun('x');
+N = .001*linop.diff([-1, 1], 2) + linop.diff + linop.diag(x)*linop.eye([-1, 1]); 
 B = chebmatrix({linop.feval(-1, [-1 1])});
 B2 = chebmatrix({linop.feval(1, [-1 1])});
 
@@ -16,6 +16,6 @@ L.constraint = bc;
 
 f = chebfun(0);
 
-u = linsolve(L,f); 
-u = u{1}
-plot(u), shg
+v = linsolve(L,f); 
+v = v{1}
+plot(v), shg
