@@ -9,7 +9,9 @@ if isa(f,'chebfun')
 end
 
 % Domain needs to have the union of all breakpoints.
-dom = chebmatrix.mergeDomains( {L.operator.blocks{:}, f.blocks{:}} );
+Lblocks = L.operator.blocks;
+fblocks = f.blocks;
+dom = chebmatrix.mergeDomains( {Lblocks{:}, fblocks{:}} );
 L.operator.domain = dom;
 f.domain = dom;
 

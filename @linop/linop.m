@@ -12,6 +12,9 @@ classdef linop
     methods
         function L = linop(M)
             % TODO: check size, inputs
+            if isa(M,'linBlock')
+                M = chebmatrix({M});
+            end
             L.operator = M;
             L.constraint = linopConstraint([]);
         end
