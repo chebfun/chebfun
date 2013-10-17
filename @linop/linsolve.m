@@ -5,7 +5,7 @@ if ( nargin < 3 )
 end
 obj = type([]);  % to get a static method
 
-dimVals = floor(2.^(5:.5:14));
+dimVals = floor(2.^(3:.5:14));
 [rowSize, colSize] = blockSizes(L.operator);
 isFunVariable = isinf(colSize(1,:));
 

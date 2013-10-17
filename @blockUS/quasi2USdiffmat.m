@@ -14,7 +14,7 @@ L = 0*speye(dim);
 for j = 1:size(c, 2)
     %form D^(j-1) term.
     %const = feval(c{j}, 0);   % assume constant coeff for now. 
-    L = L + convert(A, j, order)*mult(A, c{j}, j-1)*diff(A, j - 1);
+    L = L + convert(A, j-1, order-1)*mult(A, c{j}, j-1)*diff(A, j - 1);
 end
 
 end
