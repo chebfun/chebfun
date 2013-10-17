@@ -4,7 +4,7 @@ if ( nargin < 3 )
     type = linBlock.defaultDiscretization;
 end
 
-dimVals = [32 64 128 256 360 512 720 1024];
+dimVals = floor(2.^(5:.5:14));
 [rowSize,colSize] = blockSizes(L.operator);
 isFunVariable = isinf(colSize(1,:));
 
