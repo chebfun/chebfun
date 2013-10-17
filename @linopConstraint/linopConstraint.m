@@ -6,9 +6,12 @@ classdef linopConstraint
     end
     
     methods
-        function C = linopConstraint(varargin)
-            C.operator = [];
-            C.values = [];
+        function C = linopConstraint(op, vals)
+            if ( nargin == 0 )
+                return
+            end
+            C.operator = op;
+            C.values = vals;
         end
         
         function n = length(C)

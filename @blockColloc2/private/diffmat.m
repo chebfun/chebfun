@@ -21,20 +21,10 @@ function D = diffmat(N,k)
 %  [3] Tee, T. W., "An adaptive rational spectral method for differential
 %   equations with rapidly varying solutions", Oxford DPhil Thesis, 2006.
 
-persistent cache    % stores computed values for fast return
-if isempty(cache), cache = {}; end    % first call
-
 if nargin < 2, k = 1; end
 
 if N == 0, D = []; return, end
 if N == 1, D = 0; return, end
-
-if length(cache) >= N && length(cache{N}) >= k && ~isempty(cache{N}{k})
-    D = cache{N}{k};
-    return
-else
-    cache{N}{k} = [];
-end
 
 % construct Chebyshev grid and weights
 x = blockColloc2.points(N);
@@ -48,42 +38,20 @@ Dw = bsxfun(@rdivide,w.',w);    % pairwise divisions
 Dw(ii) = Dw(ii) - 1;            % subtract identity
 
 % k = 1
-if ~isempty(cache{N}{1})
-    D = cache{N}{1};                            % recover from cache
-else
-    D = Dw .* Dxi;
-    D(ii) = 0; D(ii) = - sum(D,2);              % negative sum trick
-    cache{N}{1} = D;                            % store in cache
-end
+D = Dw .* Dxi;
+D(ii) = 0; D(ii) = - sum(D,2);              % negative sum trick
 
 if k == 1, return, end
 
 % k = 2
-if k > 1 && ~isempty(cache{N}{2})
-    D = cache{N}{2};                            % recover from cache
-elseif k > 1
-    D = 2*D .* (repmat(D(ii),1,N) - Dxi);
-    D(ii) = 0; D(ii) = - sum(D,2);              % negative sum trick
-    cache{N}{2} = D;                            % store in cache
-end
+D = 2*D .* (repmat(D(ii),1,N) - Dxi);
+D(ii) = 0; D(ii) = - sum(D,2);              % negative sum trick
 
 % higher orders
 for n = 3:k
-    if ~isempty(cache{N}{n})
-        D = cache{N}{n};
-    else
-        D = n*Dxi .* (Dw.*repmat(D(ii),1,N) - D);
-        D(ii) = 0; D(ii) = - sum(D,2);          % negative sum trick
-        cache{N}{n} = D;                        % store in cache
-    end
+    D = n*Dxi .* (Dw.*repmat(D(ii),1,N) - D);
+    D(ii) = 0; D(ii) = - sum(D,2);          % negative sum trick
 end
 
-if N < 2^11+2
-    siz = whos('cache');
-    if siz.bytes > cheboppref('maxstorage')
-        cache = {};
-    end
-    cache{N}{k} = D;
-end
 
 end
