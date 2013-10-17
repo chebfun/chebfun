@@ -48,6 +48,6 @@ bcVal = L.constraint.values;
 rows{m+1} = [ discretize(bcOp,dim,dom,matrixType), bcVal ];
 aug = cell2mat(rows);
 A = aug(:,1:end-1);
-b = aug(:,end);
+b = full(aug(:,end));
 
 end

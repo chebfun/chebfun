@@ -72,7 +72,7 @@ classdef linBlock
             L = [L.coeffs{:}];
         end
 
-        function L = discretize(A,dim,varargin)
+        function L = discretize(A, dim, varargin)
             % MATRIX(A,DIM) returns a collocation matrix using A's matrixType property.
             % MATRIX(A,DIM,DOMAIN) overrides the domain stored in A.             
             % MATRIX(A,DIM,DOMAIN,CONSTRUCTOR) overrides the matrixType constructor.            
@@ -86,17 +86,9 @@ classdef linBlock
             dom = p.Results.domain;
             matrixType = p.Results.matrixType;
             
-            if ( strcmp(char(matrixType), 'blockUS') )  
-                if ( isa(A, 'functionalBlock') )
-                    L = A.delayFun( blockColloc2(dim, dom) );
-                    L = flipud(chebtech2.coeffs2vals(L.')).';
-                else
-                    L = A.delayFun( blockCoeff([], dom) );
-                    L = blockUS.quasi2USdiffmat(L, dim);
-                end
-            else
-                L = A.delayFun( matrixType(dim, dom) );
-            end
+            dummy = matrixType([]);
+            L = dummy.discretize(A, dim, dom);
+
         end
         
         function L = matrix(A,varargin)

@@ -80,7 +80,7 @@ end
 
 if N < 2^11+2
     siz = whos('cache');
-    if siz.bytes > cheboppref('maxstorage')
+    if siz.bytes > 50000000
         cache = {};
     end
     cache{N}{k} = D;

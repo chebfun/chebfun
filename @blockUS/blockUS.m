@@ -114,5 +114,25 @@ classdef blockUS
             end
             
             L = quasi2USdiffmat(L, dim)
+                                
+            function L = discretize(A, dim, dom, varargin)
+                if ( isa(A, 'functionalBlock') )
+                    L = A.delayFun( blockColloc2(dim, dom) );
+                    L = flipud(chebtech2.coeffs2vals(L.')).';
+                else
+                    L = A.delayFun( blockCoeff([], dom) );
+                    L = blockUS.quasi2USdiffmat(L, dim);
+                end
+            end
+            
+            function f = makeChebfun(u, dom)
+                funs = cell(numel(u),1);
+                for k = 1:numel(u)
+                    ct = chebtech2({[], flipud(u{k})});
+                    funs{k} = bndfun(ct, dom);
+                end
+                f = chebfun(funs);
+                u = chebmatrix({f});
+            end
         end
     end
