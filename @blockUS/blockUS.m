@@ -122,6 +122,8 @@ classdef blockUS
             if ( isa(A, 'functionalBlock') )
                 L = A.delayFun( blockColloc2(dim, dom) );
                 L = flipud(chebtech2.coeffs2vals(L.')).';
+            elseif ( isa(A.delayFun, 'blockCoeff') )
+                L = blockUS.quasi2USdiffmat(A.delayFun, dim);
             else
                 L = A.delayFun( blockCoeff([], dom) );
                 L = blockUS.quasi2USdiffmat(L, dim);

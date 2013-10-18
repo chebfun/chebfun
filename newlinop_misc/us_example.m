@@ -1,10 +1,7 @@
 clc
 x = chebfun('x');
-<<<<<<< Updated upstream
 N = (1+linop.diag(x))*linop.diff([-1, 1], 2) + linop.diag(sin(x))*linop.diff + linop.diag(x)*linop.eye([-1, 1]); 
-=======
-N = .00001*linop.diff([-1, 1], 2) + linop.diag(sin(x))*linop.diff + linop.diag(x)*linop.eye([-1, 1]); 
->>>>>>> Stashed changes
+% N = .0001*linop.diff([-1, 1], 2) + linop.diag(sin(x))*linop.diff + linop.diag(x)*linop.eye([-1, 1]); 
 % N = linop.diff([-1, 1], 2) + linop.eye([-1,1]); 
 B = chebmatrix({linop.feval(-1, [-1 1])});
 B2 = chebmatrix({linop.feval(1, [-1 1])});
@@ -28,9 +25,9 @@ feval(u, 0)
 plot(u), shg
 
 tic
-u = linsolve(L, f, @blockUS); 
+v = linsolve(L, f, @blockUS); 
 toc
-feval(u, 0)
+feval(v, 0)
 hold on
-plot(u,'r'), shg
+plot(v,'r'), shg
 hold off
