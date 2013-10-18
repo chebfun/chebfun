@@ -115,7 +115,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         
         function varargout = plot(L, varargin)
             
-            if ( any(cellfun(@(L) isa(L, 'linBlock'), L.blocks)) )
+            if ( any(any(cellfun(@(L) isa(L, 'linBlock'), L.blocks))) )
                 [varargout{1:nargout}] = spy(L, varargin{:});
             else
                 ish = ishold;

@@ -20,17 +20,13 @@ f = chebfun(0);
 tic
 u = linsolve(L, f, @blockColloc2); 
 toc
-u = u{1};
-u(0)
-% u(.5)
+feval(u, 0)
 plot(u), shg
 
 tic
 u = linsolve(L, f, @blockUS); 
 toc
-u = u{1};
-u(0)
-% u(.5)
+feval(u, 0)
 hold on
 plot(u,'r'), shg
 hold off
