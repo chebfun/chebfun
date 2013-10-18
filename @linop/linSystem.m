@@ -39,13 +39,18 @@ for i = 1:m
     if ( ~isnan(d(i)) ) && ( d(i) > 0 )
         M = dummy.resize( M, dim-d(i), dim, dom );
     end
-    rows{i} = M;
+    rows{i+1} = M;
 end
 
-% Append the discrete constraints.
+% Insert the discrete constraints.
 bcOp = L.constraint.operator;
 bcVal = L.constraint.values;
+<<<<<<< HEAD
 rows{m+1} = [ discretize(bcOp,dim,dom,matrixType), bcVal ];
+=======
+rows{1} = [ discretize(bcOp,dim,dom,matrixType), bcVal ];
+
+>>>>>>> feature-newlinop
 aug = cell2mat(rows);
 A = aug(:,1:end-1);
 b = full(aug(:,end));

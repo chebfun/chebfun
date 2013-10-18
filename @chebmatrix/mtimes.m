@@ -6,9 +6,9 @@ if isnumeric(A)  % suspect these aren't necessary...historical...
 elseif isnumeric(B)
     C = scalartimes(A,B);
 else
-    if isa(A,'linop')
+    if isa(A,'linBlock')
         A = chebmatrix({A});
-    elseif isa(B,'linop')
+    elseif isa(B,'linBlock')
         B = chebmatrix({B});
     end
     [m,n] = size(A);
