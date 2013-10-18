@@ -4,7 +4,7 @@ function pass = test_min(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = chebtech.pref;
+    pref = chebtech.pref();
 end
 
 pass = zeros(2, 8); % Pre-allocate pass matrix.

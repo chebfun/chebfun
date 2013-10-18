@@ -4,7 +4,7 @@ function pass = test_fliplr(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = chebtech.pref;
+    pref = chebtech.pref();
 end
 
 pass = zeros(2,  2); % Pre-allocate pass matrix

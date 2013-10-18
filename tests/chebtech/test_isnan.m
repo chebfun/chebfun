@@ -3,7 +3,7 @@
 function pass = test_isnan(pref)
 
 if ( nargin < 1 )
-    pref = chebtech.pref;
+    pref = chebtech.pref();
 end
 p = pref;
 
@@ -53,7 +53,7 @@ for n = 1:2
     end
 
     % Test a non-adaptive construction
-    p.chebtech.n = 11;
+    p.numSamples = 11;
     try
         f = testclass.make(@(x) myfun(x), [], [], p);
         pass(n, 7) = isnan(f);

@@ -53,7 +53,7 @@ end
 
 % Determine a tolerance if none is given:
 if ( nargin < 3 )
-    pref = chebtech.pref; 
+    pref = chebtech.pref();
 else
     pref = varargin{1};
 end

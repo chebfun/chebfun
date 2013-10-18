@@ -4,7 +4,7 @@ function pass = test_restrict(pref)
 
 % Get preferences.
 if (nargin < 1)
-    pref = chebtech.pref;
+    pref = chebtech.pref();
 end
 
 pass = zeros(2, 12); % Pre-allocate pass matrix
@@ -88,7 +88,7 @@ end
 end
 
 % Spot-check restriction of a given function to a given subinterval.
-function result = test_spotcheck_restrict(testclass, fun_op, subint,pref)
+function result = test_spotcheck_restrict(testclass, fun_op, subint, pref)
     % Perform restriction.
     f = testclass.make(fun_op, [], [], pref);
     g = restrict(f, subint);

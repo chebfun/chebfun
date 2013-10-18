@@ -11,22 +11,22 @@ function  [ishappy, epslevel, cutoff] = happinessCheck(f, op, pref)
 %   and CUTOFF is returned as size(f.values, 1).
 %
 %   HAPPINESSCHECK(F, OP, PREF) allows different preferences to be used; in
-%   particular PREF.CHEBTECH.EPS sets the target tolerance for happiness.
+%   particular PREF.EPS sets the target tolerance for happiness.
 %
 %   Furthermore, alternative definitions of happiness can be chosen by setting
-%   the PREF.CHEBTECH.HAPPINESSCHECK field. This field may be one of the built
-%   in checks: 'CLASSIC', 'STRICT', 'LOOSE', or a function handle pointing to a
+%   the PREF.HAPPINESSCHECK field. This field may be one of the built in
+%   checks: 'CLASSIC', 'STRICT', 'LOOSE', or a function handle pointing to a
 %   function with the template [ISHAPPY, EPSLEVEL, CUTOFF] = @(F, PREF). The
 %   built in checks are:
 %      CLASSIC: Chooses an EPSLEVEL based upon the length on the 'tail' and a
 %               finite difference gradient approximation.
-%      STRICT : The tail _must_ be below that specified by PREF.CHEBTECH.EPS.
+%      STRICT : The tail _must_ be below that specified by PREF.EPS.
 %      LOOSE  : To be specified.
 %   Further details of these happiness checks are given in their corresponding
 %   m-files.
 %
 %   Regardless of the happiness definition, HAPPINESSCHECK also performs a
-%   SAMPLETEST unless PREF.CHEBTECH.SAMPLETEST is FALSE or OP is empty.
+%   SAMPLETEST unless PREF.SAMPLETEST is FALSE or OP is empty.
 %
 % See also CLASSICCHECK, LOOSECHECK, STRICTCHECK, SAMPLETEST.
 
@@ -45,29 +45,29 @@ elseif ( nargin < 3 )
 end
 
 % What does happiness mean to you?
-if ( strcmpi(pref.chebtech.happinessCheck, 'classic') )
+if ( strcmpi(pref.happinessCheck, 'classic') )
     % Use the default happiness check procedure from Chebfun V4.
     
     % Check the coefficients are happy:
     [ishappy, epslevel, cutoff] = classicCheck(f, pref);
 
-elseif ( strcmpi(pref.chebtech.happinessCheck, 'strict') )
+elseif ( strcmpi(pref.happinessCheck, 'strict') )
     % Use the 'strict' happiness check:
     [ishappy, epslevel, cutoff] = strictCheck(f, pref);
     
-elseif ( strcmpi(pref.chebtech.happinessCheck, 'loose') )
+elseif ( strcmpi(pref.happinessCheck, 'loose') )
     % Use the 'loose' happiness check:
     [ishappy, epslevel, cutoff] = looseCheck(f, pref);
     
 else
     % Call a user-defined happiness check:
     [ishappy, epslevel, cutoff] = ...
-        pref.chebtech.happinessCheck(f, pref);
+        pref.happinessCheck(f, pref);
     
 end
 
 % Check also that sampleTest is happy:
-if ( ishappy && ~isempty(op) && ~isnumeric(op) && pref.chebtech.sampletest )
+if ( ishappy && ~isempty(op) && ~isnumeric(op) && pref.sampleTest )
     f.epslevel = epslevel;
     ishappy = sampleTest(op, f);
     if ( ~ishappy )

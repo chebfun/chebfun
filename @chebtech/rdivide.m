@@ -47,7 +47,7 @@ else
     
     % Obtain preferences:
     if ( nargin < 3 )
-        pref = chebtech.pref; % c is a CHEBTECH.
+        pref = chebtech.pref(); % c is a CHEBTECH.
     end
 
     % Call COMPOSE.

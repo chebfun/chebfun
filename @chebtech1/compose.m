@@ -12,8 +12,8 @@ function f = compose(f, op, g, pref)
 %
 %   COMPOSE(F, OP, G, PREF) or COMPOSE(F, OP, [], PREF) uses the options passed
 %   by the preferences structure PREF to build the returned CHEBTECH1.  In
-%   particular, one can set PREF.CHEBTECH.REFINMENTFUNCTION to be a function
-%   which takes advantage of F and possibly OP or G being CHEBTECH objects.
+%   particular, one can set PREF.REFINEMENTFUNCTION to be a function which takes
+%   advantage of F and possibly OP or G being CHEBTECH objects.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -39,9 +39,9 @@ else
 end
 
 % Choose a sampling strategy:
-if ( ~ischar(pref.chebtech.refinementFunction) )
+if ( ~ischar(pref.refinementFunction) )
     % A user-defined refinement has been passed.
-    refFunc = pref.chebtech.refinementFunction;
+    refFunc = pref.refinementFunction;
 else
     if ( nfuns == 1 )   % OP(G1) resampling.
         refFunc = @(op, values, pref) composeResample1(op, values, pref, f);
@@ -51,7 +51,7 @@ else
 end
 
 % Assign to preference structure:
-pref.chebtech.refinementFunction = refFunc;
+pref.refinementFunction = refFunc;
 
 % Call superclass COMPOSE:
 f = compose@chebtech(f, op, g, pref);
@@ -64,7 +64,7 @@ function [values, giveUp] = composeResample1(op, values, pref, f)
     
     if ( isempty(values) )
         % Choose initial n based upon minSamples.
-        n = 2^ceil(log2(pref.chebtech.minSamples - 1)) + 1;
+        n = 2^ceil(log2(pref.minSamples - 1)) + 1;
     else
         % (Approximately) powers of sqrt(2):
         pow = log2(size(values, 1) - 1);
@@ -77,7 +77,7 @@ function [values, giveUp] = composeResample1(op, values, pref, f)
     end
     
     % n is too large.
-    if ( n > pref.chebtech.maxSamples )
+    if ( n > pref.maxSamples )
         giveUp = true;
         return
     else
@@ -97,7 +97,7 @@ function [values, giveUp] = composeResample2(op, values, pref, f, g)
     
     if ( isempty(values) )
         % Choose initial n based upon minSamples.
-        n = 2^ceil(log2(pref.chebtech.minSamples - 1)) + 1;
+        n = 2^ceil(log2(pref.minSamples - 1)) + 1;
     else
         % (Approximately) powers of sqrt(2):
         pow = log2(size(values, 1) - 1);
@@ -110,7 +110,7 @@ function [values, giveUp] = composeResample2(op, values, pref, f, g)
     end
     
     % n is too large:
-    if ( n > pref.chebtech.maxSamples )
+    if ( n > pref.maxSamples )
         giveUp = true;
         return
     else

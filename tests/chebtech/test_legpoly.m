@@ -3,7 +3,7 @@
 function pass = test_legpoly(pref)
 
 if ( nargin < 1 )
-    pref = chebtech.pref;
+    pref = chebtech.pref();
 end
 
 tol = 10*eps;

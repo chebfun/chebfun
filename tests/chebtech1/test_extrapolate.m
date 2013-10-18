@@ -1,16 +1,14 @@
 % Test file for chebtech1/extrapolate.m
 
-function pass = test_extrapolate(varargin)
+function pass = test_extrapolate(pref)
 
 % Obtain preferences
-if ( nargin == 1 )
-    pref = varargin{1};
-else
-    pref = chebtech.pref;
+if ( nargin < 1 )
+    pref = chebtech.pref();
 end
     
 % Set a tolerance:
-tol = 100*pref.chebtech.eps;
+tol = 100*pref.eps;
 
 % Initialise:
 pass = zeros(1, 4);
