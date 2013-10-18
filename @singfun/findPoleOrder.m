@@ -58,7 +58,7 @@ end
 % Test parameters
 % [TODO]: Should there be a field for this test?
 testRatio = 1.01; 
-maxPoleOrder = singfun.pref.singfun.maxPoleOrder;
+maxPoleOrder = chebpref().singPrefs.maxPoleOrder;
 
 poleOrder = 0;
 

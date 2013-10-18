@@ -4,11 +4,12 @@ function pass = test_roots(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = singfun.pref;
+    pref = chebpref();
 end
 
 % Set a tolerance.
-tol = 10*pref.singfun.eps;
+% APA TODO:  Revisit this line once we've decided how eps should be handled.
+tol = 10*eps;
 
 % The order of the exponents:
 a = 0.56;

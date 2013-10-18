@@ -4,7 +4,7 @@ function pass = test_plus(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = singfun.pref.singfun;
+    pref = chebpref();
 end
 
 % Generate a few random points to use as test values.
@@ -15,7 +15,8 @@ x = 2 * rand(100, 1) - 1;
 alpha = -0.194758928283640 + 0.075474485412665i;
 
 pass = zeros(1, 14); % Pre-allocate pass vector
-tol = 1e4*pref.eps;  % loose tolerance for plus
+% APA TODO:  Revisit this line once we've decided how eps should be handled.
+tol = 1e4*eps;       % loose tolerance for plus
 
 %%
 % Check operation in the case of empty arguments.

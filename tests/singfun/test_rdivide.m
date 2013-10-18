@@ -4,7 +4,7 @@ function pass = test_rdivide(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = singfun.pref.singfun;
+    pref = chebpref();
 end
 
 % Generate a few random points to use as test values.
@@ -13,7 +13,8 @@ x = 2 * rand(100, 1) - 1;
 x = sort(x);
 
 pass = zeros(1, 9);   % Pre-allocate pass vector
-tol = 1e3*pref.eps;   % loose tolerance for rdivide
+% APA TODO:  Revisit this line once we've decided how eps should be handled.
+tol = 1e3*eps;        % loose tolerance for rdivide
 
 %%
 % Check operation in the case of empty arguments.
