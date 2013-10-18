@@ -1,7 +1,6 @@
-%CHEBOP  Construct an operator on chebfuns.
-
 classdef (InferiorClasses = {?double}) chebop
-    
+%CHEBOP  CHEBOP class for representing operators on functions defined on [a,b].
+   
     properties ( GetAccess = 'public', SetAccess = 'public' )
         domain = [];    % Domain of the operator
         op = [];        % The operator
