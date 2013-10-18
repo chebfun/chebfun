@@ -81,6 +81,11 @@ classdef linop
              Z = linBlock.zeros(varargin{:});
         end
         
+        function U = mult(varargin)
+            U = linBlock.diag(varargin{:});
+        end
+        
+        
         function U = diag(varargin)
             U = linBlock.diag(varargin{:});
         end

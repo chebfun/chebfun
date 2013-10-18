@@ -51,13 +51,14 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 k = 0;
             end
             f.isConstant = iszero(f.jacobian);
-            f.jacobian = linop.diag(airy(k+1, f.func))*f.jacobian;
+            f.jacobian = linop.mult(airy(k+1, f.func))*f.jacobian;
             f.func = airy(k, f.func);
         end
+                
         
         function f = cos(f)
             f.isConstant = iszero(f.jacobian);
-            f.jacobian = linop.diag(-sin(f.func))*f.jacobian;
+            f.jacobian = linop.mult(-sin(f.func))*f.jacobian;
             f.func = cos(f.func);
         end
         
@@ -79,7 +80,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         function f = exp(f)
             f.isConstant = iszero(f.jacobian);
             f.func = exp(f.func);
-            f.jacobian = linop.diag(f.func)*f.jacobian;
+            f.jacobian = linop.mult(f.func)*f.jacobian;
 %             f.domain = f.domain;            
         end
         
@@ -102,7 +103,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         
         function f = log(f)
             f.isConstant = iszero(f.jacobian);
-            f.jacobian = linop.diag(1./f.func)*f.jacobian;
+            f.jacobian = linop.mult(1./f.func)*f.jacobian;
             f.func = log(f.func);
             f = updateDomain(f);
         end
@@ -162,13 +163,13 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                     end
                 end
                 f.isConstant = iszero(f.jacobian);
-                f.jacobian = linop.diag(b*power(f.func, b-1))*f.jacobian;
+                f.jacobian = linop.mult(b*power(f.func, b-1))*f.jacobian;
                 f.func = power(f.func, b);
                 
             elseif ( isa(b, 'adchebfun') )
                 b.isConstant = iszero(b.jacobian);
                 b.func = power(f, b.func);
-                b.jacobian = linop.diag(b.func.*log(f))*b.jacobian; 
+                b.jacobian = linop.mult(b.func.*log(f))*b.jacobian; 
                 b.domain = b.func.domain;
                 f = b;
             end
@@ -189,7 +190,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
    
         function f = sin(f)
             f.isConstant = iszero(f.jacobian);
-            f.jacobian = linop.diag(cos(f.func))*f.jacobian;
+            f.jacobian = linop.mult(cos(f.func))*f.jacobian;
             f.func = sin(f.func);
         end
         
@@ -200,13 +201,13 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         
         function f = times(f, g)
             if ( ~isa(f, 'adchebfun') )
-                g.jacobian = linop.diag(f)*g.jacobian;
+                g.jacobian = linop.mult(f)*g.jacobian;
                 g.func = f.*g.func;
 %                 g.isConstant = g.isConstant;
                 g = updateDomain(g);
                 f = g;
             elseif  ( ~isa(g, 'adchebfun') )
-                f.jacobian = linop.diag(g)*f.jacobian;
+                f.jacobian = linop.mult(g)*f.jacobian;
                 f.func = f.func.*g;
 %                 f.isConstant = f.isConstant;
             else
@@ -214,7 +215,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                     ( f.isConstant & g.isConstant) & ...
                       ( ( all(iszero(f.jacobian)) || all(iszero(g.jacobian)) ) | ...
                         ( iszero(f.jacobian) & iszero(g.jacobian) ) );
-                f.jacobian = linop.diag(f.func)*g.jacobian + linop.diag(g.func)*f.jacobian;
+                f.jacobian = linop.mult(f.func)*g.jacobian + linop.mult(g.func)*f.jacobian;
                 f.func = times(f.func, g.func);
             end
             f = updateDomain(f);
