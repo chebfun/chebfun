@@ -41,16 +41,14 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         
         function varargout = size(L, varargin)
             %SIZE Number of blocks within the chebmatrix.
-            %
             % S = SIZE(L) returns both dimensions.
-            % S = SIZE(L, K) returns Kth dimension (K=1, 2).
+            % S = SIZE(L, K) returns Kth dimension (K = 1,2).
             % [M, N] = SIZE(L) returns both as scalars.
             [varargout{1:nargout}] = size(L.blocks, varargin{:});
         end
         
         function varargout = blockSizes(A)
             %BLOCKSIZES Sizes of the blocks within the chebmatrix.
-            %
             % BLOCKSIZES(L) returns a cell of 1x2 size vectors.
             % [M, N] = BLOCKSIZES(A) returns two matrices of row/column sizes.
             if ( nargout <= 1 )
@@ -73,10 +71,8 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         end
         
         function output = spy(A)
-%             data = matrixBlocks(A, 10);
             data = discretizeBlocks(A, 10);
             h = cellplot(data);
-            
             % CELLPLOT seems to cover up the text representations of double
             % values. We give a positive z-value so that they sit on top again.
             % And we hide its big ugly box.
@@ -86,7 +82,6 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
                     set(h(i-1), 'vis', 'off')
                 end
             end
-            
             if ( nargout > 0 )
                 output = h;
             end
@@ -113,32 +108,6 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             out = false;
         end
         
-        function varargout = plot(L, varargin)
-            
-            if ( any(any(cellfun(@(L) isa(L, 'linBlock'), L.blocks))) )
-                [varargout{1:nargout}] = spy(L, varargin{:});
-            else
-                ish = ishold;
-                cols = get(gcf, 'DefaultAxesColorOrder');
-                h = zeros(size(L.blocks));
-                for k = 1:numel(L.blocks)
-                    fk = L.blocks{k};
-                    if ( ~isa(fk, 'chebfun') )
-                        fk = chebfun(fk);
-                    end
-                    h(k) = plot(fk, varargin{:}); 
-                    set(h(k), 'color', cols(k,:));
-                    hold on
-                end
-                if ( ~ish )
-                    hold off
-                end
-                if ( nargout > 0 )
-                    varargout{1} = h;
-                end
-            end
-        end
-        
     end
     
     methods
@@ -149,12 +118,15 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         C = mtimes(A, B)
         C = plus(A, B)
         C = uminus(A)
+        out = feval(A, x, varargin);
         
         % Replace each block by its DIM-dimensional discretization.
         A = discretizeBlocks(L, dim, dom, matrixType)
         
         % Concatenation
         C = cat(n, varargin)
+        
+        h = plot(A, varargin);
         
         % TODO
         B = subsref(A, sr)
