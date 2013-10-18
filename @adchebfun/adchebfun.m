@@ -51,10 +51,63 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 k = 0;
             end
             f.isConstant = iszero(f.jacobian);
-            f.jacobian = linop.mult(airy(k+1, f.func))*f.jacobian;
+            f.jacobian = linop.mult(airy(k + 1, f.func))*f.jacobian;
             f.func = airy(k, f.func);
         end
+
+        function f = acos(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(-1./sqrt(1 - f.func.^2))*f.jacobian;
+            f.func = acos(f.func);
+        end
+        
+        function f = acosd(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(-(180/pi)./sqrt(1 - f.func.^2))*f.jacobian;
+            f.func = acosd(f.func);
+        end
+        
+        function f = acosh(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(1./sqrt(f.func.^2 - 1))*f.jacobian;
+            f.func = acosh(f.func);
+        end
+        
+        function f = acot(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(-1./(1 + f.func.^2))*f.jacobian;
+            f.func = acot(f.func);
+        end
+        
+        function f = acotd(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(-(180/pi)./(1 + f.func.^2))*f.jacobian;
+            f.func = acotd(f.func);
+        end
+        
+        function f = acoth(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(-1./(f.func.^2 - 1))*f.jacobian;
+            f.func = acoth(f.func);
+        end
+        
+        function f = acsc(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(-1./(abs(f.func).*sqrt(f.func.^2 - 1)))*f.jacobian;
+            f.func = acsc(f.func);
+        end
+        
+        function f = acscd(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(-(180/pi)./(abs(f.func).*sqrt(f.func.^2 - 1)))*f.jacobian;
+            f.func = acscd(f.func);
+        end
                 
+        function f = acsch(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(-1./(f.func.*sqrt(1 + f.func.^2)))*f.jacobian;
+            f.func = acsch(f.func);
+        end
         
         function f = cos(f)
             f.isConstant = iszero(f.jacobian);
