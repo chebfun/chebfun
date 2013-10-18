@@ -24,11 +24,11 @@ classdef linBlock
     
     methods
         function A = linBlock(domain)
-            % A = LINOP()        Domain defaults to [-1,1].
+            % A = LINOP()        Domain defaults to [-1, 1].
             % A = LINOP(DOMAIN)
-            if nargin==0
+            if ( nargin == 0 )
                 domain = [-1 1];
-            elseif nargin==1 && isa(domain,'linBlock')
+            elseif ( nargin == 1 && isa(domain, 'linBlock') )
                 A = domain;
                 return
             end
@@ -40,7 +40,7 @@ classdef linBlock
         end
         
         
-        function C = minus(A,B)
+        function C = minus(A, B)
             % C = A - B
             C = A + (-B);
         end
@@ -51,12 +51,12 @@ classdef linBlock
         end
         
         function C = horzcat(varargin)
-            kill = cellfun(@isempty,varargin);            
+            kill = cellfun(@isempty, varargin);            
             C = chebmatrix( varargin(~kill) );
         end
         
         function C = vertcat(varargin)
-            kill = cellfun(@isempty,varargin);            
+            kill = cellfun(@isempty, varargin);            
             C = chebmatrix( varargin(~kill)' );
         end
         
@@ -68,20 +68,20 @@ classdef linBlock
         end
         
         function L = coeff(A)
-            L = A.delayFun( blockCoeff([],A.domain) );
+            L = A.delayFun( blockCoeff([], A.domain) );
             L = [L.coeffs{:}];
         end
 
         function L = discretize(A, dim, varargin)
-            % MATRIX(A,DIM) returns a collocation matrix using A's matrixType property.
-            % MATRIX(A,DIM,DOMAIN) overrides the domain stored in A.             
-            % MATRIX(A,DIM,DOMAIN,CONSTRUCTOR) overrides the matrixType constructor.            
+            % MATRIX(A, DIM) returns a collocation matrix using A's matrixType property.
+            % MATRIX(A, DIM, DOMAIN) overrides the domain stored in A.             
+            % MATRIX(A, DIM, DOMAIN, CONSTRUCTOR) overrides the matrixType constructor.            
             
             p = inputParser;
-            addOptional(p,'domain',A.domain,@isnumeric);
-            addOptional(p,'matrixType',linBlock.defaultDiscretization,@(x) isa(x,'function_handle'))
-%             addOptional(p,'matrixType','blockCoeff',@(x) isa(x,'function_handle'))
-            parse(p,varargin{:})
+            addOptional(p, 'domain', A.domain, @isnumeric);
+            addOptional(p, 'matrixType', linBlock.defaultDiscretization, @(x) isa(x, 'function_handle'))
+%             addOptional(p, 'matrixType', 'blockCoeff', @(x) isa(x, 'function_handle'))
+            parse(p, varargin{:})
             
             dom = p.Results.domain;
             matrixType = p.Results.matrixType;
@@ -91,8 +91,8 @@ classdef linBlock
 
         end
         
-        function L = matrix(A,varargin)
-            L = discretize(A,varargin{:});
+        function L = matrix(A, varargin)
+            L = discretize(A, varargin{:});
         end
                         
     end
@@ -102,21 +102,21 @@ classdef linBlock
             % LINOP.DIFF  Differentiation operator.
             %
             % LINOP.DIFF returns the first-order differentation operator for
-            % functions defined on [-1,1].
+            % functions defined on [-1, 1].
             %
             % LINOP.DIFF(DOMAIN) applies to functions defined on DOMAIN, which
             % may include breakpoints.
             %
-            % LINOP.DIFF(DOMAIN,M) is the mth order derivative.
+            % LINOP.DIFF(DOMAIN, M) is the mth order derivative.
             p = inputParser;
-            addOptional(p,'domain',[-1 1],@isnumeric);
-            mcheck = @(m) validateattributes(m,{'numeric'},{'scalar','nonnegative','integer'});
-            addOptional(p,'m',1,mcheck);
-            parse(p,varargin{:});
-            domain = p.Results.domain;
+            addOptional(p, 'domain', [-1 1], @isnumeric);
+            mcheck = @(m) validateattributes(m, {'numeric'}, {'scalar', 'nonnegative', 'integer'});
+            addOptional(p, 'm', 1, mcheck);
+            parse(p, varargin{:});
+            dom = p.Results.domain;
             m = p.Results.m;
-            D = operatorBlock(domain);
-            D.delayFun = @(z) diff(z,m);
+            D = operatorBlock(dom);
+            D.delayFun = @(z) diff(z, m);
             D.diffOrder = m;
         end
         
@@ -124,23 +124,23 @@ classdef linBlock
             % LINOP.CUMSUM  Antiderivative operator.
             %
             % LINOP.CUMSUM returns the first-order antiderivative operator for
-            % functions defined on [-1,1]. The result of applying the operator
+            % functions defined on [-1, 1]. The result of applying the operator
             % is defined uniquely by having value zero at the left endpoint.
             %
             % LINOP.CUMSUM(DOMAIN) applies to functions defined on DOMAIN, which
             % may include breakpoints.
             %
-            % LINOP.CUMSUM(DOMAIN,M) is the mth-repeated antiderivative.
+            % LINOP.CUMSUM(DOMAIN, M) is the mth-repeated antiderivative.
             p = inputParser;
-            addOptional(p,'domain',[-1 1],@isnumeric);
-            mcheck = @(m) validateattributes(m,{'numeric'},{'scalar','nonnegative','integer'});
-            addOptional(p,'m',1,mcheck);
-            parse(p,varargin{:});
-            domain = p.Results.domain;
+            addOptional(p, 'domain', [-1 1], @isnumeric);
+            mcheck = @(m) validateattributes(m, {'numeric'}, {'scalar', 'nonnegative', 'integer'});
+            addOptional(p, 'm', 1, mcheck);
+            parse(p, varargin{:});
+            dom = p.Results.domain;
             m = p.Results.m;
             
-            C = operatorBlock(domain);
-            C.delayFun = @(z) cumsum(z,m);
+            C = operatorBlock(dom);
+            C.delayFun = @(z) cumsum(z, m);
             C.diffOrder = -m;
         end
         
@@ -172,7 +172,7 @@ classdef linBlock
         function U = diag(u)
             % D = DIAG(U)  diagonal operator from the chebfun U
             U = operatorBlock(u.domain);
-            U.delayFun = @(z) diag(z,u);
+            U.delayFun = @(z) diag(z, u);
             U.diffOrder = 0;
         end
         
@@ -186,42 +186,42 @@ classdef linBlock
         
         function E = feval(location, varargin)
             p = inputParser;
-            addRequired(p,'location');
-            addOptional(p,'domain',[-1 1]);
+            addRequired(p, 'location');
+            addOptional(p, 'domain', [-1 1]);
             valid = @(x) ischar(x) || isnumeric(x);
-            addOptional(p,'direction',0,valid);
-            parse(p,location,varargin{:});
+            addOptional(p, 'direction', 0, valid);
+            parse(p, location, varargin{:});
             location = p.Results.location;
-            domain = p.Results.domain;
+            dom = p.Results.domain;
             direction = p.Results.direction;
-            if (location < domain(1)) || (location > domain(end))
+            if (location < dom(1)) || (location > dom(end))
                 error('Evaluation location is not in the domain.')
             end
             
             % Convert direction argument into a number.
             if ischar(direction)
-                if any( strncmpi(direction,{'left','-'},1) )
+                if any( strncmpi(direction, {'left', '-'}, 1) )
                     direction = -1;
-                elseif any( strncmpi(direction,{'right','+'},1) )
+                elseif any( strncmpi(direction, {'right', '+'}, 1) )
                     direction = +1;
                 else
                     error('Direction must be ''left'', ''right'', ''+'', or ''-''.')
                 end
             end
 
-            E = functionalBlock(domain);
-            E.delayFun = @(z) feval(z,location,direction);
+            E = functionalBlock(dom);
+            E.delayFun = @(z) feval(z, location, direction);
         end
         
         function E = eval(varargin)
             % EVAL(DOMAIN) returns a function E. The output of E(X) is an
             % evaluator at X in the domain.
-            E = @(x) linop.feval(x,varargin{:});
+            E = @(x) linop.feval(x, varargin{:});
         end
         
         function F = inner(f)
             F = functionalBlock(f.domain);
-            F.delayFun = @(z) inner(z,f);
+            F.delayFun = @(z) inner(z, f);
             F.diffOrder = 0;
         end
 

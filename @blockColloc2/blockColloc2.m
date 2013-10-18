@@ -1,22 +1,22 @@
 classdef blockColloc2 < blockDiscretization
-    properties 
+    properties
         size = [];  % arbitrary, but fixed in any one instance
-        domain = [-1 1];
+        domain = [-1, 1];
     end
     
     methods
         function A = blockColloc2(varargin)
             % Collocation matrix on 2nd kind points.
             
-            % COLLOC2(DIM,DOMAIN) returns a dummy object that will propagate the
+            % COLLOC2(DIM, DOMAIN) returns a dummy object that will propagate the
             % dimension size DIM and function domain DOM throughout the delayed
             % evaluation stack.
             %
-            % COLLOC2(A,DIM) realizes the linop A (which knows its domain) at
+            % COLLOC2(A, DIM) realizes the linop A (which knows its domain) at
             % dimension DIM.
-            % 
+            %
             % COLLOC2([]) returns a dummy object that gives access to static
-            % methods. 
+            % methods.
             
             if ( nargin > 1 )
                 if isa(varargin{1}, 'linBlock')
@@ -26,16 +26,16 @@ classdef blockColloc2 < blockDiscretization
                     A = L.delayFun( A );
                 else
                     A.size = varargin{1};
-%                     validateattributes(varargin{2},{'numeric'},{'increasing','finite'});
+                    %                     validateattributes(varargin{2}, {'numeric'}, {'increasing', 'finite'});
                     A.domain = varargin{2};
                 end
             end
         end
-                
+        
         % Building blocks.
         
-        D = diff(A,m) 
-        C = cumsum(A,m)
+        D = diff(A, m)
+        C = cumsum(A, m)
         
         function I = eye(A)
             n = dim(A);
@@ -44,22 +44,22 @@ classdef blockColloc2 < blockDiscretization
         
         function Z = zeros(A)
             n = dim(A);
-           Z = zeros(sum(n));
+            Z = zeros(sum(n));
         end
         
         function Z = zero(A)
             n = dim(A);
-            Z = zeros(1,sum(n));
+            Z = zeros(1, sum(n));
         end
         
-        F = diag(A,f)
+        F = diag(A, f)
         
         % Required operators.
-        function C = mtimes(A,B)
+        function C = mtimes(A, B)
             C = A*B;
         end
         
-        function C = plus(A,B)
+        function C = plus(A, B)
             C = A+B;
         end
         
@@ -71,11 +71,11 @@ classdef blockColloc2 < blockDiscretization
         
         S = sum(A)
         
-        E = feval(A,location,direction)
+        E = feval(A, location, direction)
         
-        function F = inner(A,f)
-            d = chebmatrix.mergeDomains({A,f});
-            [x,w] = points(dim(A),d,2);
+        function F = inner(A, f)
+            d = chebmatrix.mergeDomains({A, f});
+            [x, w] = points(dim(A), d, 2);
             F = w.*f(x);
         end
         
@@ -84,21 +84,21 @@ classdef blockColloc2 < blockDiscretization
     methods (Static)
         % Additional methods
         
-        B = resize(A,m,n,domain)
+        B = resize(A, m, n, domain)
         
-        [isDone,epsLevel] = testConvergence(v)
+        [isDone, epsLevel] = testConvergence(v)
         
-        function fx = discretizeFunction(f,dim,dom)
+        function fx = discretizeFunction(f, dim, dom)
             if ( nargin < 3 )
                 dom = f.domain;
             end
-            x = blockColloc2.points(dim,dom);
+            x = blockColloc2.points(dim, dom);
             fx = f(x);
         end
         
-        [x,w] = points(n,d)
+        [x, w] = points(n, d)
         
-                
+        
         function L = discretize(A, dim, dom)
             L = A.delayFun( blockColloc2(dim, dom) );
         end
@@ -109,11 +109,11 @@ classdef blockColloc2 < blockDiscretization
         
     end
     
-    methods (Access=private)
+    methods ( Access = private )
         
-        D = diffmat(N,k)
-       
+        D = diffmat(N, k)
+        
         Q = cumsummat(N)
-                
+        
     end
 end

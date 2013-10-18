@@ -1,11 +1,11 @@
 classdef blockCoeff 
-    properties (Access=public)
+    properties ( Access = public )
         coeffs = [];
-        domain = [-1 1];
+        domain = [-1, 1];
     end
     
     methods
-        function A = blockCoeff(f,domain)
+        function A = blockCoeff(f, domain)
             if ( ~iscell(f) )
                 f = {f};
             end
@@ -15,7 +15,7 @@ classdef blockCoeff
         
         % Required operators.
         
-        function D = diff(A,order)
+        function D = diff(A, order)
             
             if ( nargin < 2 )
                 order = 1;
@@ -46,18 +46,18 @@ classdef blockCoeff
         end
         
         function I = eye(A)
-            I = blockCoeff( chebfun(1,A.domain), A.domain);
+            I = blockCoeff( chebfun(1, A.domain), A.domain);
         end
         
         function I = zeros(A)
-            I = blockCoeff( chebfun(0,A.domain), A.domain);
+            I = blockCoeff( chebfun(0, A.domain), A.domain);
         end
         
         function F = diag(A, f)
-            F = blockCoeff(f,f.domain);
+            F = blockCoeff(f, f.domain);
         end
         
-        function C = cumsum(A,m)
+        function C = cumsum(A, m)
             error('Not available in coeff form.')
         end
         
@@ -69,7 +69,7 @@ classdef blockCoeff
                 C.coeffs{k} = A.coeffs{end}.*C.coeffs{k};
             end
             % CHECK: Can the coeffs property ever be empty?
-            z = {chebfun(0,A.coeffs{1}.domain)};
+            z = {chebfun(0, A.coeffs{1}.domain)};
             for j = 1:numel(A.coeffs)-1
                 B = diff(B);
                 C.coeffs = [z, C.coeffs];
@@ -83,7 +83,7 @@ classdef blockCoeff
             sA = numel(A.coeffs);
             sB = numel(B.coeffs);
             % CHECK: Can the coeffs property ever be empty?
-            z = {chebfun(0,A.coeffs{1}.domain)};
+            z = {chebfun(0, A.coeffs{1}.domain)};
             if ( sA < sB )
                 A.coeffs = [repmat(z, 1, sB-sA), A.coeffs];
                 sA = sB;
@@ -94,7 +94,7 @@ classdef blockCoeff
             for k = 1:sA
                 c{k} = A.coeffs{k} + B.coeffs{k};
             end
-            C = blockCoeff(c,A.domain);
+            C = blockCoeff(c, A.domain);
         end
         
         function A = uminus(A)

@@ -1,4 +1,4 @@
-classdef (InferiorClasses = {?chebfun,?operatorBlock,?functionalBlock}) chebmatrix
+classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebmatrix
     % No size/compatability checking whatsoever!
     
     properties
@@ -15,18 +15,18 @@ classdef (InferiorClasses = {?chebfun,?operatorBlock,?functionalBlock}) chebmatr
         %Signatures of externally defined methods.
         
         % Fundamental algebraic operations.
-        C = mtimes(A,B)
-        C = plus(A,B)
+        C = mtimes(A, B)
+        C = plus(A, B)
         C = uminus(A)      
         
         % Replace each block by its DIM-dimensional discretization.
-        A = discretizeBlocks(L,dim,dom,matrixType)
+        A = discretizeBlocks(L, dim, dom, matrixType)
         
         % Concatenation
-        C = cat(n,varargin)
+        C = cat(n, varargin)
         
         % TODO
-        B = subsref(A,sr)
+        B = subsref(A, sr)
         
     end
     
@@ -45,8 +45,8 @@ classdef (InferiorClasses = {?chebfun,?operatorBlock,?functionalBlock}) chebmatr
         end
         
         % Construct a single matrix based on DIM-dimensional blocks.
-        function A = discretize(L,varargin)
-            A = discretizeBlocks(L,varargin{:});
+        function A = discretize(L, varargin)
+            A = discretizeBlocks(L, varargin{:});
             A = cell2mat(A);
         end
         
@@ -56,28 +56,28 @@ classdef (InferiorClasses = {?chebfun,?operatorBlock,?functionalBlock}) chebmatr
         end
         
         function t = blockClasses(L)
-            t = cellfun(@class,L.blocks,'uniform',false);
+            t = cellfun(@class, L.blocks, 'uniform', false);
         end
             
-        function varargout = size(L,varargin)
+        function varargout = size(L, varargin)
             %SIZE Number of blocks within the chebmatrix.
             %
             % S = SIZE(L) returns both dimensions.
-            % S = SIZE(L,K) returns Kth dimension (K=1,2). 
-            % [M,N] = SIZE(L) returns both as scalars. 
-           [varargout{1:nargout}] = size(L.blocks,varargin{:});
+            % S = SIZE(L, K) returns Kth dimension (K=1, 2). 
+            % [M, N] = SIZE(L) returns both as scalars. 
+           [varargout{1:nargout}] = size(L.blocks, varargin{:});
         end
         
         function varargout = blockSizes(A)
             %BLOCKSIZES Sizes of the blocks within the chebmatrix.
             %
             % BLOCKSIZES(L) returns a cell of 1x2 size vectors.
-            % [M,N] = BLOCKSIZES(A) returns two matrices of row/column sizes.
-            if nargout <= 1
-                varargout = {cellfun(@size,A.blocks,'uniform',false)};
+            % [M, N] = BLOCKSIZES(A) returns two matrices of row/column sizes.
+            if ( nargout <= 1 )
+                varargout = {cellfun(@size, A.blocks, 'uniform', false)};
             else
-                varargout{1} = cellfun( @(x)size(x,1), A.blocks);
-                varargout{2} = cellfun( @(x)size(x,2), A.blocks);
+                varargout{1} = cellfun(@(x) size(x, 1), A.blocks);
+                varargout{2} = cellfun(@(x) size(x, 2), A.blocks);
             end
             
         end
@@ -87,49 +87,49 @@ classdef (InferiorClasses = {?chebfun,?operatorBlock,?functionalBlock}) chebmatr
         end
         
         function display(L)
-            [m,n] = size(L);
-            fprintf('\n  %ix%i block chebmatrix of types:\n\n',m,n)
+            [m, n] = size(L);
+            fprintf('\n  %ix%i block chebmatrix of types:\n\n', m, n)
             disp( blockClasses(L) )
         end
         
         function output = spy(A)
-            data = matrixBlocks(A,10);
+            data = matrixBlocks(A, 10);
             h = cellplot(data);
             
             % CELLPLOT seems to cover up the text representations of double
             % values. We give a positive z-value so that they sit on top again.
             % And we hide its big ugly box.
             for i = 2:length(h)
-                if strcmp(get(h(i),'type'),'text')
-                    set(h(i),'position',[0 0 1]+get(h(i),'position'))
-                    set(h(i-1),'vis','off')
+                if strcmp(get(h(i), 'type'), 'text')
+                    set(h(i), 'position', [0 0 1]+get(h(i), 'position'))
+                    set(h(i-1), 'vis', 'off')
                 end
             end
             
-            if nargout > 0
+            if ( nargout > 0 )
                 output = h;
             end
         end   
         
         function C = horzcat(varargin)
-            C = cat(2,varargin{:});
+            C = cat(2, varargin{:});
         end
         
         function C= vertcat(varargin)
-            C = cat(1,varargin{:});
+            C = cat(1, varargin{:});
         end
  
          
-        function C = minus(A,B)
-            C = plus(A,-B);
+        function C = minus(A, B)
+            C = plus(A, -B);
         end
               
-        function u = mldivide(L,f)
-            u = linsolve(linop(L),f);
+        function u = mldivide(L, f)
+            u = linsolve(linop(L), f);
         end
                       
-        function L = bc(L,f,value)
-            L.constraints(end+1) = struct('op',f,'value',value);
+        function L = bc(L, f, value)
+            L.constraints(end+1) = struct('op', f, 'value', value);
         end
                         
         function out = iszero(f)
@@ -139,14 +139,14 @@ classdef (InferiorClasses = {?chebfun,?operatorBlock,?functionalBlock}) chebmatr
         
     end
     
-    methods (Access=private)
+    methods ( Access = private )
         
         % Multiply chebmatrix by scalar.
-        C = scalartimes(A,z)
+        C = scalartimes(A, z)
      
     end
     
-    methods (Static)
+    methods ( Static )
         
         % Union of all breakpoints, with "fuzzy" equality. 
         d = mergeDomains(blocks)
