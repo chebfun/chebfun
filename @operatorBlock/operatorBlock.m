@@ -61,7 +61,7 @@ classdef operatorBlock < linBlock
                 
                 % The instantiation class must recognize mtimes as a
                 % functional composition.
-                C.delayFun = @(z) A.delayFun(z) * B.delayFun(z);
+                C.stack = @(z) A.stack(z) * B.stack(z);
                 C.diffOrder = A.diffOrder + B.diffOrder;
             end
         end
@@ -75,7 +75,7 @@ classdef operatorBlock < linBlock
             end
             dom = union(A.domain, B.domain);
             C = operatorBlock(dom);
-            C.delayFun = @(z) A.delayFun(z) + B.delayFun(z);
+            C.stack = @(z) A.stack(z) + B.stack(z);
             C.diffOrder = max(A.diffOrder, B.diffOrder);
         end
         

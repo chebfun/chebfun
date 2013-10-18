@@ -23,7 +23,7 @@ classdef blockColloc2 < blockDiscretization
                     L = varargin{1};
                     A.size = varargin{2};
                     A.domain = L.domain;
-                    A = L.delayFun( A );
+                    A = L.stack( A );
                 else
                     A.size = varargin{1};
                     %                     validateattributes(varargin{2}, {'numeric'}, {'increasing', 'finite'});
@@ -100,7 +100,7 @@ classdef blockColloc2 < blockDiscretization
         
         
         function L = discretize(A, dim, dom)
-            L = A.delayFun( blockColloc2(dim, dom) );
+            L = A.stack( blockColloc2(dim, dom) );
         end
         
         function f = makeChebfun(u, dom)

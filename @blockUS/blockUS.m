@@ -12,7 +12,7 @@ classdef blockUS
                     L = varargin{1};
                     A.size = varargin{2};
                     A.domain = L.domain;
-                    A = L.delayFun( A );  % not sure if this is needed...
+                    A = L.stack( A );  % not sure if this is needed...
                 else
                     A.size = varargin{1};
                     A.domain = varargin{2};
@@ -89,12 +89,12 @@ classdef blockUS
         
         function L = discretize(A, dim, dom, varargin)
             if ( isa(A, 'functionalBlock') )
-                L = A.delayFun( blockColloc2(dim, dom) );
+                L = A.stack( blockColloc2(dim, dom) );
                 L = flipud(chebtech2.coeffs2vals(L.')).';
-            elseif ( isa(A.delayFun, 'blockCoeff') )
-                L = blockUS.quasi2USdiffmat(A.delayFun, dim);
+            elseif ( isa(A.stack, 'blockCoeff') )
+                L = blockUS.quasi2USdiffmat(A.stack, dim);
             else
-                L = A.delayFun( blockCoeff([], dom) );
+                L = A.stack( blockCoeff([], dom) );
                 L = blockUS.quasi2USdiffmat(L, dim);
             end
         end
