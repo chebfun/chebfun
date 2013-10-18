@@ -12,27 +12,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
     
     methods
         
-        %Signatures of externally defined methods.
-        
-        % Fundamental algebraic operations.
-        C = mtimes(A, B)
-        C = plus(A, B)
-        C = uminus(A)      
-        
-        % Replace each block by its DIM-dimensional discretization.
-        A = discretizeBlocks(L, dim, dom, matrixType)
-        
-        % Concatenation
-        C = cat(n, varargin)
-        
-        % TODO
-        B = subsref(A, sr)
-        
-    end
-    
-    methods
-        
-        % Constructor.        
+        % Constructor.
         function A = chebmatrix(blocks)
             A.domain = chebmatrix.mergeDomains(blocks);
             A.blocks = blocks;
@@ -51,21 +31,21 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         end
         
         function k = numbc(L)
-            % NUMBC(L) returns the number of constraints attached to L. 
+            % NUMBC(L) returns the number of constraints attached to L.
             k = length(L.constraints);
         end
         
         function t = blockClasses(L)
             t = cellfun(@class, L.blocks, 'uniform', false);
         end
-            
+        
         function varargout = size(L, varargin)
             %SIZE Number of blocks within the chebmatrix.
             %
             % S = SIZE(L) returns both dimensions.
-            % S = SIZE(L, K) returns Kth dimension (K=1, 2). 
-            % [M, N] = SIZE(L) returns both as scalars. 
-           [varargout{1:nargout}] = size(L.blocks, varargin{:});
+            % S = SIZE(L, K) returns Kth dimension (K=1, 2).
+            % [M, N] = SIZE(L) returns both as scalars.
+            [varargout{1:nargout}] = size(L.blocks, varargin{:});
         end
         
         function varargout = blockSizes(A)
@@ -93,7 +73,8 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         end
         
         function output = spy(A)
-            data = matrixBlocks(A, 10);
+%             data = matrixBlocks(A, 10);
+            data = discretizeBlocks(A, 10);
             h = cellplot(data);
             
             % CELLPLOT seems to cover up the text representations of double
@@ -109,33 +90,74 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             if ( nargout > 0 )
                 output = h;
             end
-        end   
+        end
         
         function C = horzcat(varargin)
             C = cat(2, varargin{:});
         end
         
-        function C= vertcat(varargin)
+        function C = vertcat(varargin)
             C = cat(1, varargin{:});
         end
- 
-         
+        
         function C = minus(A, B)
             C = plus(A, -B);
         end
-              
+        
         function u = mldivide(L, f)
             u = linsolve(linop(L), f);
         end
-                      
-        function L = bc(L, f, value)
-            L.constraints(end+1) = struct('op', f, 'value', value);
-        end
-                        
+        
         function out = iszero(f)
             % TODO: Implement this properly (for linearity detection)
             out = false;
         end
+        
+        function varargout = plot(L, varargin)
+            
+            if ( any(cellfun(@(L) isa(L, 'linBlock'), L.blocks)) )
+                [varargout{1:nargout}] = spy(L, varargin{:});
+            else
+                ish = ishold;
+                cols = get(gcf, 'DefaultAxesColorOrder');
+                h = zeros(size(L.blocks));
+                for k = 1:numel(L.blocks)
+                    fk = L.blocks{k};
+                    if ( ~isa(fk, 'chebfun') )
+                        fk = chebfun(fk);
+                    end
+                    h(k) = plot(fk, varargin{:}); 
+                    set(h(k), 'color', cols(k,:));
+                    hold on
+                end
+                if ( ~ish )
+                    hold off
+                end
+                if ( nargout > 0 )
+                    varargout{1} = h;
+                end
+            end
+        end
+        
+    end
+    
+    methods
+        
+        %Signatures of externally defined methods.
+        
+        % Fundamental algebraic operations.
+        C = mtimes(A, B)
+        C = plus(A, B)
+        C = uminus(A)
+        
+        % Replace each block by its DIM-dimensional discretization.
+        A = discretizeBlocks(L, dim, dom, matrixType)
+        
+        % Concatenation
+        C = cat(n, varargin)
+        
+        % TODO
+        B = subsref(A, sr)
         
     end
     
@@ -143,15 +165,15 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         
         % Multiply chebmatrix by scalar.
         C = scalartimes(A, z)
-     
+        
     end
     
     methods ( Static )
         
-        % Union of all breakpoints, with "fuzzy" equality. 
+        % Union of all breakpoints, with "fuzzy" equality.
         d = mergeDomains(blocks)
- 
- 
+        
+        
     end
     
 end
