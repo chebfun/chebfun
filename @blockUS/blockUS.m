@@ -73,8 +73,12 @@ classdef blockUS
                 sub = 1:length(a)-2;
                 M(sub, sub) = M(sub, sub) - sphankel(a(3:end)/2);
             else
-                % TODO: Add higher-order multiplication matrices.
-                error
+                % TODO: Add better approach.
+                M = mult(A,f,0); % ChebT mult
+                for j = 1:lambda-1
+                    S = convert(A,j-1,j); 
+                    M = S*M/S;   % map to ultraspherical. 
+                end
             end
         end
         function d = dim(A)

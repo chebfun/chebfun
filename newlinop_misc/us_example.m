@@ -1,6 +1,6 @@
 clc
 x = chebfun('x');
-N = .001*linop.diff([-1, 1], 2) + linop.diag(sin(x))*linop.diff + linop.diag(x)*linop.eye([-1, 1]); 
+N = (1+linop.diag(x))*linop.diff([-1, 1], 2) + linop.diag(sin(x))*linop.diff + linop.diag(x)*linop.eye([-1, 1]); 
 % N = linop.diff([-1, 1], 2) + linop.eye([-1,1]); 
 B = chebmatrix({linop.feval(-1, [-1 1])});
 B2 = chebmatrix({linop.feval(1, [-1 1])});
