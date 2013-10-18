@@ -1,6 +1,5 @@
 classdef smoothfun < onefun % (Abstract) 
 %SMOOTHFUN   Approximate smooth functions on [-1,1]. 
-%
 %   Abstract (interface) class for approximating smooth functions on the
 %   interval [-1,1].
 %
@@ -8,10 +7,9 @@ classdef smoothfun < onefun % (Abstract)
 %   SMOOTHFUN.CONSTRUCTOR(OP, VSCALE, HSCALE, PREF) constructs a SMOOTHFUN
 %   object on the interval [-1,1] from the function handle OP. Currently the
 %   only subclass of SMOOTHFUN is CHEBTECH, so SMOOTHFUN will call
-%   CHEBTECH.CONSTRUCTOR(OP, VSCALE, HSCALE, PREF2), where PREF2 is PREF merged
-%   with the default CHEBTECH preferences.
+%   CHEBTECH.CONSTRUCTOR(OP, VSCALE, HSCALE, PREF.TECHPREFS).
 %
-% See also SMOOTHFUN.PREF, CHEBTECH.
+% See also CHEBTECH.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -41,27 +39,26 @@ classdef smoothfun < onefun % (Abstract)
             if ( nargin < 2 || isempty(vscale) )
                 vscale = 0;
             end
+
             % Define hscale if none given:
             if ( nargin < 3 || isempty(hscale) )
                 hscale = 1;
             end
+
             % Determine preferences if not given, merge if some are given:
             if ( nargin < 4 || isempty(pref) )
-                pref = smoothfun.pref;
+                pref = chebpref();
             else
-                pref = smoothfun.pref(pref);
+                pref = chebpref(pref);
             end
             
-            if ( strcmp(pref.smoothfun.tech, 'funqui') )
+            if ( strcmp(pref.tech, 'funqui') )
                 op = funqui(op);
-                pref.smoothfun.tech = smoothfun.pref('tech');
+                pref.tech = chebpref().tech;
             end
 
-            
-            % Merge preferences:
-            pref = chebtech.pref(pref, pref.smoothfun);
             % Call the CHEBTECH constructor
-            obj = chebtech.constructor(op, vscale, hscale, pref);
+            obj = chebtech.constructor(op, vscale, hscale, pref.techPrefs);
             
         end
         
@@ -77,16 +74,13 @@ classdef smoothfun < onefun % (Abstract)
         
     end
     
-    %% Methods implimented by SMOOTHFUN class.
+    %% Methods implemented by SMOOTHFUN class.
     methods 
         
     end
     
-    %% Static methods implimented by SMOOTHFUN class.
+    %% Static methods implemented by SMOOTHFUN class.
     methods ( Static = true ) 
-        
-        % Retrieve and modify preferences for this class.
-        prefs = pref(varargin)
         
         % Construct a rational interpolant to equispaced data.
         f = funqui(vals)
