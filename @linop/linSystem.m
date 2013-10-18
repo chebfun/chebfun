@@ -41,7 +41,7 @@ d = getDownsampling(L);
 for i = 1:m
     M = cat(2, Ablocks{i, :}, bblocks{i});
     if ( ~isnan(d(i)) && d(i) > 0 )
-        M = dummy.resize( M, dim-d(i), dim, dom );
+        M = dummy.resize( M, dim-d(i), dim, dom, d(i) );
     end
     rows{i+1} = M;
 end

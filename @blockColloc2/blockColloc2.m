@@ -84,7 +84,7 @@ classdef blockColloc2 < blockDiscretization
     methods (Static)
         % Additional methods
         
-        B = resize(A, m, n, domain)
+        B = resize(A, m, n, domain, difforder)
         
         [isDone, epsLevel] = testConvergence(v)
         

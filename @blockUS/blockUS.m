@@ -34,6 +34,8 @@ classdef blockUS
             end
         end
         
+        M = mult( A, f, lambda) 
+        
         function S = convert( A, K1, K2 )
             %CONVERTMAT(A, K1, K2), convert C^(K1) to C^(K2)
             
@@ -43,44 +45,7 @@ classdef blockUS
                 S = spconvert(n, s) * S;
             end
         end
-        function M = mult(A, f, lambda)
-            
-            n = sum(dim(A));
-            
-            % get Chebyshev T coefficients
-            a = flipud(get(f, 'coeffs'));
-            
-            if ( numel(a) == 1 )
-                M = a*speye(n);
-                return
-            end
-            
-            % prolong or truncate coefficients
-            if ( numel(a) < n )
-                a = [a ; zeros(n - numel(a), 1)];
-            else
-                a = a(1:n);  % truncate.
-            end
-            
-            if ( lambda == 0 )
-                a = a/2;  % just to make formula easier.
-                M = sptoeplitz([2*a(1);a(2:end)], [2*a(1);a(2:end)]);
-                H = sphankel(a(2:end));
-                sub1 = 2:length(a); sub2 = 1:length(a)-1;
-                M(sub1, sub2) = M(sub1, sub2)+ H;
-            elseif ( lambda == 1 )
-                M = sptoeplitz([2*a(1);a(2:end)], [2*a(1);a(2:end)])/2;
-                sub = 1:length(a)-2;
-                M(sub, sub) = M(sub, sub) - sphankel(a(3:end)/2);
-            else
-                % TODO: Add better approach.
-                M = mult(A,f,0); % ChebT mult
-                for j = 1:lambda-1
-                    S = convert(A,j-1,j); 
-                    M = S*M/S;   % map to ultraspherical. 
-                end
-            end
-        end
+
         function d = dim(A)
             d = A.size;
         end
@@ -88,9 +53,13 @@ classdef blockUS
     
     methods (Static)
         
-        function B = resize(A, m, n, dom)
+        function B = resize(A, m, n, dom, difforder)
             % chop off some rows and columns
             B = A(1:m, :);
+            dummy = blockUS(m,[-1,1]);
+            for j = 1:difforder-1
+                B(:,end) = convert(dummy, j-1, j) * B(:,end);
+            end
         end
         
         function [isDone, epsLevel] = testConvergence(v)
