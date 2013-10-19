@@ -17,4 +17,9 @@ for j = 1:size(c, 2)
     L = L + convert(A, j-1, order-1)*mult(A, c{j}, j-1)*diff(A, j - 1);
 end
 
+% if ( dim < 200 ) 
+%     L = full(L); 
+% end
+
+
 end

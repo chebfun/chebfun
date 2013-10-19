@@ -33,47 +33,23 @@ else
     dummy = blockUS(n, [-1 1]);
     
     % Convert ChebT of a to ChebC^{lam}
-    a = convert(dummy, 1, lambda+1) * a;
+    a = convert(dummy, 0, lambda-1) * a;
     
-    nnza = find(abs(a)>eps); band = nnza(end);
-    M = 0*speye(n);
-    for d = 0:n-1
-        for k=max(0,d-band):min(n-1,d+band)
-            if(k<=d)
-                as=0;
-                c = ChebC(lambda,k,d-k,0);
-                for s=0:k
-                    if(2*s+d-k<n)
-                        as = as + a(2*s+d-k+1)*c;
-                        c = c*factorcheb(lambda,k,2*s+d-k,s);
-                    end
-                end
-                M(d+1,k+1) =  as;
-            elseif(k>d)
-                as=0;
-                c = ChebC(lambda,k,k-d,k-d);
-                for s=k-d:k
-                    if(2*s+d-k<n)
-                        as = as + a(2*s+d-k+1)*c;
-                        c = c*factorcheb(lambda,k,2*s+d-k,s);
-                    end
-                end
-                M(d+1,k+1) = as;
-            end
-        end
+    M0 = speye(n);
+    
+    d1 = [1 (2*lambda:2*lambda+n-2)]./[1 (2*((lambda+1):lambda+n-1))];
+    d2 = (1:n)./(2*(lambda:lambda+n-1));
+    B = [d2' zeros(n,1) d1'];
+    Mx = spdiags(B,[-1 0 1],n,n);
+    M1 = 2*lambda*Mx;
+    
+    M = a(1)*M0;
+    M = M + a(2)*M1;
+    for nn = 1:length(a)-2
+        M2 = 2*(nn+lambda)/(nn+1) * Mx * M1 - (nn+2*lambda-1)/(nn+1) * M0;
+        M = M + a(nn+2)*M2;
+        M0 = M1; M1 = M2;
+        if ( abs(a(nn+3:end)) < eps ), break, end
     end
-    M = M(:,1:n);
-end
-end
-
-function c3 = ChebC(v,m,n,s)
-%algebraic mess:
-c3 = ((m+n+v-2*s)/(m+n+v-s))*prod(((v:v+s-1)./(1:s)).*((2*v+m+n-2*s:2*v+m+n-s-1)./(v+m+n-2*s:v+m+n-s-1)));
-c3 = c3*prod(((v:v+m-s-1)./(1:m-s)).*((n-s+1:m+n-2*s)./(v+n-s:v+m+n-2*s-1)));
-end
-
-function fac = factorcheb(v,i,j,s)
-fac = ((v+s)/(s+1))*((i-s)/(v+i-s-1))*((2*v+i+j-s)/(v+i+j-s));
-fac = fac*((v+j-s)/(j-s+1))*((i+j+v-s)/(i+j+v-s+1));
-
+    
 end

@@ -1,6 +1,6 @@
 clc
 x = chebfun('x');
-N = (1+linop.diag(x))*linop.diff([-1, 1], 2) + linop.diag(sin(x))*linop.diff + linop.eye([-1, 1]); 
+N = (2+linop.diag(x.^2))*linop.diff([-1, 1], 2) + linop.diag(sin(100*x))*linop.diff + (1+linop.diag(x))*linop.eye([-1, 1]); 
 % N = .0001*linop.diff([-1, 1], 2) + linop.diag(sin(x))*linop.diff + linop.diag(x)*linop.eye([-1, 1]); 
 % N = linop.diff([-1, 1], 2) + linop.eye([-1,1]); 
 B = chebmatrix({linop.feval(-1, [-1 1])});
@@ -34,4 +34,4 @@ hold off
 
 length(u{1})
 length(v{1})
- norm(u{1} - v{1})
+norm(u{1} - v{1})
