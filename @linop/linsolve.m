@@ -15,8 +15,8 @@ if ( strcmp(char(type), 'blockUS') )
     for k = 1:numel(L.operator.blocks)
         if ( isa(L.operator.blocks{k}, 'operatorBlock') )
             blockk = L.operator.blocks{k};
-            coeffs = feval(blockk.delayFun, bc);
-            L.operator.blocks{k}.delayFun = coeffs;
+            coeffs = feval(blockk.stack, bc);
+            L.operator.blocks{k}.stack = coeffs;
         end
     end
 end

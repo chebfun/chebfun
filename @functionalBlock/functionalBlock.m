@@ -43,11 +43,11 @@ classdef functionalBlock < linBlock
                 C = C(B);
             elseif ( isnumeric(A) )
                 C = functionalBlock(A.domain);
-                C.delayFun = A*B.delayFun(z);
+                C.stack = A*B.stack(z);
                 C.diffOrder = B.diffOrder;
             elseif ( isa(B, 'operatorBlock') )
                 C = functionalBlock(A.domain);
-                C.delayFun = @(z) A.delayFun(z) * B.delayFun(z);
+                C.stack = @(z) A.stack(z) * B.stack(z);
                 C.diffOrder = A.diffOrder + B.diffOrder;
             else 
                 error('Unrecognized operand types.')
@@ -57,7 +57,7 @@ classdef functionalBlock < linBlock
         function C = plus(A, B)
             % C = A + B
             C = functionalBlock(A.domain);
-            C.delayFun = @(z) A.delayFun(z) + B.delayFun(z);
+            C.stack = @(z) A.stack(z) + B.stack(z);
             C.diffOrder = max(A.diffOrder, B.diffOrder);
         end        
         

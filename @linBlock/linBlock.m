@@ -3,10 +3,10 @@ classdef linBlock
     properties
         domain = [];
         
-        % This stores the delayed evaluation. Its argument is an empty
+        % This stores the delayed evaluation stack. Its argument is an empty
         % instance of the class that determines how the operator is
         % instantiated (collocation matrix, function handle, ...).
-        delayFun = [];
+        stack = [];
         
         % Track differential order.
         diffOrder = 0;
@@ -47,7 +47,7 @@ classdef linBlock
                
         function C = uminus(A)
             C = A;
-            C.delayFun = @(z) -A.delayFun(z);
+            C.stack = @(z) -A.stack(z);
         end
         
         function C = horzcat(varargin)
@@ -63,12 +63,12 @@ classdef linBlock
         
         function L = op(A)
             % OP(A) returns function handle for chebfuns
-            L = A.delayFun( blockOp([]) );
+            L = A.stack( blockOp([]) );
             L = L.func;
         end
         
         function L = coeff(A)
-            L = A.delayFun( blockCoeff([], A.domain) );
+            L = A.stack( blockCoeff([], A.domain) );
             L = [L.coeffs{:}];
         end
 
@@ -116,7 +116,7 @@ classdef linBlock
             dom = p.Results.domain;
             m = p.Results.m;
             D = operatorBlock(dom);
-            D.delayFun = @(z) diff(z, m);
+            D.stack = @(z) diff(z, m);
             D.diffOrder = m;
         end
         
@@ -140,7 +140,7 @@ classdef linBlock
             m = p.Results.m;
             
             C = operatorBlock(dom);
-            C.delayFun = @(z) cumsum(z, m);
+            C.stack = @(z) cumsum(z, m);
             C.diffOrder = -m;
         end
         
@@ -148,7 +148,7 @@ classdef linBlock
             % I = EYE(DOMAIN)   identity operator on the same domain
             if nargin==0, domain = [-1 1]; end
             I = operatorBlock(domain);
-            I.delayFun = @(z) eye(z);
+            I.stack = @(z) eye(z);
             I.diffOrder = 0;
         end
         
@@ -156,7 +156,7 @@ classdef linBlock
             % Z = ZEROS(DOMAIN)   zero operator on the same domain
             if nargin==0, domain = [-1 1]; end
             Z = operatorBlock(domain);
-            Z.delayFun = @(z) zeros(z);
+            Z.stack = @(z) zeros(z);
             Z.diffOrder = 0;
         end
         
@@ -164,7 +164,7 @@ classdef linBlock
             % Z = ZERO(DOMAIN)   zero functional on the domain
             if nargin==0, domain = [-1 1]; end
             Z = functionalBlock(domain);
-            Z.delayFun = @(z) zero(z);
+            Z.stack = @(z) zero(z);
             Z.diffOrder = 0;
         end
 
@@ -172,7 +172,7 @@ classdef linBlock
         function U = diag(u)
             % D = DIAG(U)  diagonal operator from the chebfun U
             U = operatorBlock(u.domain);
-            U.delayFun = @(z) diag(z, u);
+            U.stack = @(z) diag(z, u);
             U.diffOrder = 0;
         end
         
@@ -180,7 +180,7 @@ classdef linBlock
             % SUM(DOMAIN)  integration functional on the domain
             if nargin==0, domain = [-1 1]; end                        
             S = functionalBlock(domain);
-            S.delayFun = @(z) sum(z);
+            S.stack = @(z) sum(z);
             S.diffOrder = -1;
         end
         
@@ -210,7 +210,7 @@ classdef linBlock
             end
 
             E = functionalBlock(dom);
-            E.delayFun = @(z) feval(z, location, direction);
+            E.stack = @(z) feval(z, location, direction);
         end
         
         function E = eval(varargin)
@@ -221,7 +221,7 @@ classdef linBlock
         
         function F = inner(f)
             F = functionalBlock(f.domain);
-            F.delayFun = @(z) inner(z, f);
+            F.stack = @(z) inner(z, f);
             F.diffOrder = 0;
         end
 
