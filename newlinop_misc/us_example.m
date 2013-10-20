@@ -1,10 +1,11 @@
 clc
-x = chebfun('x');
-N = (2+linop.diag(x.^2))*linop.diff([-1, 1], 2) + linop.diag(sin(100*x))*linop.diff + (1+linop.diag(x))*linop.eye([-1, 1]); 
+a = -1; b = 2; 
+x = chebfun('x',[a,b]);
+N = (2+linop.diag(cos(x)))*linop.diff([a, b], 2) + linop.diag(sin(100*x))*linop.diff + (1+linop.diag(x))*linop.eye([a, b]); 
 % N = .0001*linop.diff([-1, 1], 2) + linop.diag(sin(x))*linop.diff + linop.diag(x)*linop.eye([-1, 1]); 
 % N = linop.diff([-1, 1], 2) + linop.eye([-1,1]); 
-B = chebmatrix({linop.feval(-1, [-1 1])});
-B2 = chebmatrix({linop.feval(1, [-1 1])});
+B = chebmatrix({linop.feval(-1, [a b])});
+B2 = chebmatrix({linop.feval(1, [a b])});
 
 A = chebmatrix({N});
 L = linop(A); 
@@ -16,7 +17,7 @@ L.constraint = bc;
 % discretize(L.operator, 5)
 % discretize(L.constraint.operator, 5)
 
-f = chebfun(@(x) cos(x));
+f = chebfun(@(x) cos(x),[a,b]);
 
 tic
 u = linsolve(L, f, @blockColloc2); 

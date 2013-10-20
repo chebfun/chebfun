@@ -1,6 +1,6 @@
 function L = quasi2USdiffmat(L, dim)
 
-A = blockUS(dim, [-1, 1]);
+A = blockUS(dim, L.domain);
 
 if ( isa(L, 'blockCoeff') )
     c = L.coeffs;

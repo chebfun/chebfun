@@ -32,6 +32,11 @@ classdef blockUS
             else
                 D = speye(n, n);
             end
+            
+            dom = A.domain;
+            len = diff(dom);
+            D = ((2/len)^K)*D; 
+            
         end
         
         M = mult( A, f, lambda) 
@@ -56,7 +61,7 @@ classdef blockUS
         function B = resize(A, m, n, dom, difforder)
             % chop off some rows and columns
             B = A(1:m, :);
-            dummy = blockUS(m,[-1,1]);
+            dummy = blockUS(m, dom);
             for j = 1:difforder-1
                 B(:,end) = convert(dummy, j-1, j) * B(:,end);
             end
