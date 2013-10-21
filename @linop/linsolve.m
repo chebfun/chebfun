@@ -67,7 +67,8 @@ end
 for k = find( isFunVariable )
     funvals = reshape(u{k}, dim, numint); % Piecewise defined.
     f = obj.makeChebfun(num2cell(funvals, 1)', dom); 
-    u{k} = simplify(f, epsLevel);
+%     u{k} = simplify(f, epsLevel);
+    u{k} = f;
 end
 
 u = chebmatrix(u);

@@ -17,8 +17,8 @@ classdef linBlock
         % Used whenever a matrix is required but the type is not specified.
         % It doesn't work as a set/get property, because different linops
         % within one chebmatix can't have different defaults.
-%         defaultDiscretization = @blockColloc2;
-        defaultDiscretization = @blockUS;
+        defaultDiscretization = @blockColloc2;
+%         defaultDiscretization = @blockUS;
     end
     
     
@@ -76,7 +76,6 @@ classdef linBlock
             % MATRIX(A, DIM) returns a collocation matrix using A's matrixType property.
             % MATRIX(A, DIM, DOMAIN) overrides the domain stored in A.             
             % MATRIX(A, DIM, DOMAIN, CONSTRUCTOR) overrides the matrixType constructor.            
-            
             p = inputParser;
             addOptional(p, 'domain', A.domain, @isnumeric);
             addOptional(p, 'matrixType', linBlock.defaultDiscretization, @(x) isa(x, 'function_handle'))

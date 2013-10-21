@@ -20,35 +20,44 @@ classdef blockUS
             end
         end
         
-        function D = diff( A, K )
-            %DIFFMAT(N, K, N), computes the kth order US derivative matrix
-            
-            n = sum(dim(A));
-            if ( K > 0 )
-                D = spdiags((0:n-1)', 1, n, n);
-                for s = 1:K-1
-                    D = spdiags(2*s*ones(n, 1), 1, n, n)*D;
-                end
+        function D = diff(A, m)
+            d = A.domain;
+            n = dim(A);
+
+            if ( m == 0 )
+                D = speye(sum(n));
             else
-                D = speye(n, n);
+                numIntervals = length(d)-1;
+
+                % Find the diagonal blocks.
+                blocks = cell(numIntervals);
+                for k = 1:numIntervals
+                    len = d(k+1) - d(k);
+                    blocks{k} = A.diffmat(n(k), m) * (2/len)^m;
+                end
+
+                % Assemble.
+                D = blkdiag(blocks{:});
             end
-            
-            dom = A.domain;
-            len = diff(dom);
-            D = ((2/len)^K)*D; 
-            
         end
+
         
         M = mult( A, f, lambda) 
         
         function S = convert( A, K1, K2 )
-            %CONVERTMAT(A, K1, K2), convert C^(K1) to C^(K2)
-            
-            n = sum(dim(A));
-            S = speye(n);
-            for s = K1:K2
-                S = spconvert(n, s) * S;
+            %CONVERT(A, K1, K2), convert C^(K1) to C^(K2)
+            d = A.domain;
+            n = dim(A);
+            numIntervals = length(d) - 1;
+
+            % Find the diagonal blocks.
+            blocks = cell(numIntervals);
+            for k = 1:numIntervals
+                blocks{k} = A.convertmat(n(k), K1, K2);
             end
+
+            % Assemble.
+            S = blkdiag(blocks{:});
         end
 
         function d = dim(A)
@@ -58,9 +67,38 @@ classdef blockUS
     
     methods (Static)
         
+        function S = convertmat( n, K1, K2 )
+            %CONVERTMAT(A, K1, K2), convert C^(K1) to C^(K2)
+            
+            S = speye(n);
+            for s = K1:K2
+                S = spconvert(n, s) * S;
+            end
+        end
+        
+                
+        function D = diffmat( n, m )
+            %DIFFMAT(N, K, N), computes the kth order US derivative matrix
+            if ( m > 0 )
+                D = spdiags((0:n-1)', 1, n, n);
+                for s = 1:m-1
+                    D = spdiags(2*s*ones(n, 1), 1, n, n)*D;
+                end
+            else
+                D = speye(n);
+            end
+        end
+        
         function B = resize(A, m, n, dom, difforder)
             % chop off some rows and columns
-            B = A(1:m, :);
+            v = [];
+            foo = cumsum([0 n]);
+            for k = 1:numel(dom)-1
+                v = [v m(k) + foo(k) + (1:(n(k)-m(k)))];
+            end
+            A(v.',:) = [];
+            B = A;
+%             B = A(1:m, :);
             dummy = blockUS(m, dom);
             for j = 1:difforder-1
                 B(:,end) = convert(dummy, j-1, j) * B(:,end);
@@ -78,15 +116,20 @@ classdef blockUS
             if ( nargin < 3 )
                 dom = f.domain;
             end
-            f_coeffs = flipud(get(f, 'coeffs'));
-            n = length(f_coeffs);
-            % prolong/truncate.
-            if ( n > dim )
-                f_coeffs = f_coeffs(1:dim);
-            else
-                f_coeffs = [f_coeffs ; zeros(dim - n, 1)];
+            f_coeffs = [];
+            f = restrict(f, dom);
+            for k = 1:numel(dom)-1  
+                dimk = dim(k);
+                tmp = flipud(get(f.funs{k}, 'coeffs'));
+                n = length(tmp);
+                % prolong/truncate.
+                if ( n > dimk )
+                    tmp = tmp(1:dimk);
+                else
+                    tmp = [tmp ; zeros(dimk - n, 1)];
+                end
+                f_coeffs = [f_coeffs ; tmp];
             end
-            
             % TODO: Mapping to correct US basis.
         end
         
@@ -95,7 +138,12 @@ classdef blockUS
         function L = discretize(A, dim, dom, varargin)
             if ( isa(A, 'functionalBlock') )
                 L = A.stack( blockColloc2(dim, dom) );
-                L = flipud(chebtech2.coeffs2vals(L.')).';
+                cumsumdim = [0, cumsum(dim)];
+                for k = 1:numel(dom)-1
+                    Lk = L(cumsumdim(k) + (1:dim(k)));
+                    tmp{k} = flipud(chebtech2.coeffs2vals(Lk.')).';
+                end
+                L = cell2mat(tmp);
             elseif ( isa(A.stack, 'blockCoeff') )
                 L = blockUS.quasi2USdiffmat(A.stack, dim);
             else
@@ -108,7 +156,7 @@ classdef blockUS
             funs = cell(numel(u), 1);
             for k = 1:numel(u)
                 ct = chebtech2({[], flipud(u{k})});
-                funs{k} = bndfun(ct, dom);
+                funs{k} = bndfun(ct, dom(k:k+1));
             end
             f = chebfun(funs);
             u = chebmatrix({f});

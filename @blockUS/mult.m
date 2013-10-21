@@ -1,6 +1,22 @@
 function M = mult(A, f, lambda)
 
-n = sum(dim(A));
+n = dim(A);
+d = A.domain;
+numIntervals = length(d)-1;
+
+% Find the diagonal blocks.
+blocks = cell(numIntervals);
+for k = 1:numIntervals
+    blocks{k} = multmat(n(k), f.funs{k}, lambda);
+end
+
+% Assemble.
+M = blkdiag(blocks{:});
+
+end
+
+
+function M = multmat(n, f, lambda)
 
 % get Chebyshev T coefficients
 a = flipud(get(f, 'coeffs'));
@@ -52,4 +68,6 @@ else
         if ( abs(a(nn+3:end)) < eps ), break, end
     end
     
+end
+
 end

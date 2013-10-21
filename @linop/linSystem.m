@@ -1,5 +1,4 @@
 function [A, b, dom] = linSystem(L, f, dim, matrixType)
-
 if ( nargin < 4 )
     matrixType = linBlock.defaultDiscretization;
 end

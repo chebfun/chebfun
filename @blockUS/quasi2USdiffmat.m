@@ -10,7 +10,7 @@ end
 c = fliplr(c);
 order = numel(c) - 1;
 
-L = 0*speye(dim);
+L = 0*speye(sum(dim));
 for j = 1:size(c, 2)
     %form D^(j-1) term.
     %const = feval(c{j}, 0);   % assume constant coeff for now. 
