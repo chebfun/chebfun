@@ -4,12 +4,6 @@ function f = abs(f, varargin)
 %   roots in F.domain. If ~isempty(roots(F)), then ABS(F) will return garbage
 %   with no warning. F may be complex.
 
-% Update preferences:
-if ( nargin > 1 )
-    pref = varargin{1};
-    varargin{1} = f.onefun.pref(pref, pref.fun);
-end
-
 % Take the absolute value of the ONEFUN:
 f.onefun = abs(f.onefun, varargin{:});
 
