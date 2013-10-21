@@ -127,8 +127,8 @@ classdef chebpref
         %   Q.FIELD.  If P does not have a field matching the string stored in
         %   MAP.FIELD, one will be added to P.
         %
-        %   Note that this function operates on plain MATLAB structures, not
-        %   CHEBPREF objects.
+        %   P and Q may also be CHEBPREF objects.  In this case, P and Q are
+        %   replaced by P.TECHPREFS and Q.TECHPREFS before proceeding.
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % Developer notes:
@@ -139,6 +139,14 @@ classdef chebpref
         %    preferences which may have a better name within the specific
         %    context of the tech object whose preferences are stored in P.
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+            if ( isa(p, 'chebpref') )
+                p = p.techPrefs;
+            end
+
+            if ( isa(q, 'chebpref') )
+                q = q.techPrefs;
+            end
 
             if ( nargin < 3 )
                 map = struct();

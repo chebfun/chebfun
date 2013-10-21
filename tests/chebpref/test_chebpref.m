@@ -56,4 +56,19 @@ q.testPref2q = 'test2q';
 map.testPref2q = 'testPref2';
 pass(11) = strcmp(chebpref.mergePrefs(p, q, map).testPref2, 'test2q');
 
+% Test behavior of mergePrefs() for chebpref inputs.
+p = chebpref();
+p.techPrefs.testPref = 'test';
+q = struct();
+q.testPref = 'testq';
+pass(12) = isequal(chebpref.mergePrefs(p, q), ...
+    chebpref.mergePrefs(p.techPrefs, q));
+pass(13) = isequal(chebpref.mergePrefs(q, p), ...
+    chebpref.mergePrefs(q, p.techPrefs));
+
+q = chebpref();
+q.techPrefs.testPref = 'testq';
+pass(14) = isequal(chebpref.mergePrefs(p, q), ...
+    chebpref.mergePrefs(p.techPrefs, q.techPrefs));
+
 end

@@ -29,6 +29,8 @@ function f = compose(f, op, g, pref)
 % Parse inputs:
 if ( nargin < 4 )
     pref = f.pref();
+else
+    pref = f.pref(pref);
 end
 
 if ( (nargin < 3) || isempty(g) )
