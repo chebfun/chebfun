@@ -449,7 +449,7 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
             elseif ( strcmpi(args{1}, 'chebpts2') )
                 pref.tech = 'chebtech2';
             elseif ( strcmpi(args{1}, 'equi') )
-                pref.tech = 'funqui';
+                pref.enableFunqui = true;
             end
             args(1) = [];
         elseif ( strcmpi(args{1}, 'vectorize') || ...
@@ -487,7 +487,7 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
         op = vec(op);
     end
     
-    if ( isa(op, 'function_handle') && strcmp(pref.tech, 'funqui') )
+    if ( isa(op, 'function_handle') && pref.enableFunqui )
         if ( isfield(pref.techPrefs, 'numSamples') && ...
              ~isnan(pref.techPrefs.numSamples) )
             x = linspace(domain(1), domain(end), pref.techPrefs.numSamples).';

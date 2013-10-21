@@ -11,6 +11,7 @@ classdef chebpref
         domain
         enableSingularityDetection
         singPrefs
+        enableFunqui
         tech
         techPrefs
     end
@@ -34,6 +35,7 @@ classdef chebpref
             p.enableSingularityDetection = false;
                 p.singPrefs.exponentTol = 1.1*1e-11;
                 p.singPrefs.maxPoleOrder = 20;
+            p.enableFunqui = false;
             p.tech = 'chebtech';
             p.techPrefs = struct();
 

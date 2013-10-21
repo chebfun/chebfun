@@ -52,9 +52,8 @@ classdef smoothfun < onefun % (Abstract)
                 pref = chebpref(pref);
             end
             
-            if ( strcmp(pref.tech, 'funqui') )
+            if ( pref.enableFunqui )
                 op = funqui(op);
-                pref.tech = chebpref().tech;
             end
 
             % Call the CHEBTECH constructor
