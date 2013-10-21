@@ -23,43 +23,42 @@ classdef blockUS
         function D = diff(A, m)
             d = A.domain;
             n = dim(A);
-
+            
             if ( m == 0 )
                 D = speye(sum(n));
             else
                 numIntervals = length(d)-1;
-
+                
                 % Find the diagonal blocks.
                 blocks = cell(numIntervals);
                 for k = 1:numIntervals
                     len = d(k+1) - d(k);
                     blocks{k} = A.diffmat(n(k), m) * (2/len)^m;
                 end
-
+                
                 % Assemble.
                 D = blkdiag(blocks{:});
             end
         end
-
         
-        M = mult( A, f, lambda) 
+        M = mult( A, f, lambda)
         
         function S = convert( A, K1, K2 )
             %CONVERT(A, K1, K2), convert C^(K1) to C^(K2)
             d = A.domain;
             n = dim(A);
             numIntervals = length(d) - 1;
-
+            
             % Find the diagonal blocks.
             blocks = cell(numIntervals);
             for k = 1:numIntervals
                 blocks{k} = A.convertmat(n(k), K1, K2);
             end
-
+            
             % Assemble.
             S = blkdiag(blocks{:});
         end
-
+        
         function d = dim(A)
             d = A.size;
         end
@@ -76,7 +75,7 @@ classdef blockUS
             end
         end
         
-                
+        
         function D = diffmat( n, m )
             %DIFFMAT(N, K, N), computes the kth order US derivative matrix
             if ( m > 0 )
@@ -92,16 +91,16 @@ classdef blockUS
         function B = resize(A, m, n, dom, difforder)
             % chop off some rows and columns
             v = [];
-            foo = cumsum([0 n]);
+            nn = cumsum([0 n]);
             for k = 1:numel(dom)-1
-                v = [v m(k) + foo(k) + (1:(n(k)-m(k)))];
+                v = [v m(k) + nn(k) + (1:(n(k)-m(k)))];
             end
             A(v.',:) = [];
             B = A;
-%             B = A(1:m, :);
-            dummy = blockUS(m, dom);
-            for j = 1:difforder-1
-                B(:,end) = convert(dummy, j-1, j) * B(:,end);
+            cm = cumsum([0 m]);
+            for k = 1:numel(dom)-1
+                ind = (cm(k)+1):cm(k+1);
+                B(ind,end) = blockUS.convertmat(length(ind), 0, difforder-1) * B(ind,end);
             end
         end
         
@@ -118,7 +117,7 @@ classdef blockUS
             end
             f_coeffs = [];
             f = restrict(f, dom);
-            for k = 1:numel(dom)-1  
+            for k = 1:numel(dom)-1
                 dimk = dim(k);
                 tmp = flipud(get(f.funs{k}, 'coeffs'));
                 n = length(tmp);
@@ -130,7 +129,6 @@ classdef blockUS
                 end
                 f_coeffs = [f_coeffs ; tmp];
             end
-            % TODO: Mapping to correct US basis.
         end
         
         L = quasi2USdiffmat(L, dim)

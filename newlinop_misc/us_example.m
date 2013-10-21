@@ -1,11 +1,11 @@
 clc
-a = -1; b = 2; 
+a = -2; b = 1; 
 x = chebfun('x',[a,b]);
-N = (2+linop.diag(cos(x)))*linop.diff([a, b], 2) + linop.diag(sin(100*x))*linop.diff + (1+linop.diag(x))*linop.eye([a, b]); 
+N = (2+linop.diag(cos(x)))*linop.diff([a, b], 2) + linop.diag(sin(100*x))*linop.diff([a, b], 1) + (1+linop.diag(x))*linop.eye([a, b]); 
 % N = .0001*linop.diff([-1, 1], 2) + linop.diag(sin(x))*linop.diff + linop.diag(x)*linop.eye([-1, 1]); 
 % N = linop.diff([-1, 1], 2) + linop.eye([-1,1]); 
-B = chebmatrix({linop.feval(-1, [a b])});
-B2 = chebmatrix({linop.feval(1, [a b])});
+B = chebmatrix({linop.feval(a, [a b])});
+B2 = chebmatrix({linop.feval(b, [a b])});
 
 A = chebmatrix({N});
 L = linop(A); 
