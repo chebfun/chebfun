@@ -11,17 +11,17 @@ function [funs, ends] = constructor(op, domain, pref)
 %   accepts a column vector of length N and return a matrix of size N x M. If M
 %   ~= 1, we say the resulting CHEBFUN is "array-valued".
 %
-%   CONSTRUCTOR(OP, DOMAIN, PREF), where PREF is a structure returned by 
-%   CHEBFUN.PREF(), allows alternative construction preferences to be passed to
-%   the constructor. See >> help chebfun/pref for more details on preferences.
+%   CONSTRUCTOR(OP, DOMAIN, PREF), where PREF is a CHEBPREF object, allows
+%   alternative construction preferences to be passed to the constructor. See
+%   >> help chebpref for more details on preferences.
 %
-%   In particular, if PREF.CHEBFUN.SPLITTING = TRUE and OP is a function_handle
-%   or a string, then the constructor adaptively introduces additional
-%   breakpoints into the domain so as to better represent the function. These
-%   are returned as the second output argument in [FUNS, END] = CONSTRUCTOR(OP,
-%   DOMAIN).
+%   In particular, if PREF.ENABLEBREAKPOINTDETECTION = TRUE and OP is a
+%   function_handle or a string, then the constructor adaptively introduces
+%   additional breakpoints into the domain so as to better represent the
+%   function. These are returned as the second output argument in [FUNS, END] =
+%   CONSTRUCTOR(OP, DOMAIN).
 %
-% See also CHEBFUN, CHEBFUN/PREF.
+% See also CHEBFUN, CHEBPREF.
 %
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -45,14 +45,12 @@ if ( iscell(op) && (numel(op) ~= numIntervals) )
 end    
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%  SPLITTING OFF %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% In 'OFF' mode, seek only one piece with length < maxdegree.
-if ( ~pref.chebfun.splitting )
+% In 'OFF' mode, seek only one piece with length < maxLength.
+if ( ~pref.enableBreakpointDetection )
     % Set maximum number of sample points:
-    maxn = pref.chebfun.maxdegree + 1;
+    maxn = pref.maxLength + 1;
     % Initialise the FUN array:
     funs{numIntervals} = fun.constructor();
-    % Merge with FUN preferences:
-    pref = fun.pref(pref, pref.chebfun);
     % We only want to throw this warning once:
     warningThrown = false;
     % Loop over the intervals:
@@ -81,12 +79,11 @@ end
 % In 'ON' mode, seek only many pieces with total length < maxlength.
 
 % Set the maximum degree:
-pref.chebfun.maxSamples = pref.chebfun.splitdegree + 1;
+pref.maxLength = pref.breakpointPrefs.splitMaxLength;
+pref.techPrefs.maxLength = pref.breakpointPrefs.splitLength + 1;
 % We extrapolate when splitting so that we can construct functions like
 % chebfun(@sign,[-1 1]), which otherwise would not be happy at x = 0.
-pref.chebfun.extrapolate = true;
-% Merge with FUN preferences:
-pref = fun.pref(pref, pref.chebfun);
+pref.techPrefs.extrapolate = true;
 
 % Initialise the FUN array:
 funs{numIntervals} = fun.constructor();
@@ -152,7 +149,7 @@ while ( any(sad) )
     end
 
     % Fail if too many points are required:
-    if ( sum(cellfun(@length, funs)) > pref.chebfun.maxlength )
+    if ( sum(cellfun(@length, funs)) > pref.maxLength )
         warning('Function not resolved using %d pts.', ...
             sum(cellfun(@length, funs)));
         return

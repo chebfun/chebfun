@@ -6,7 +6,7 @@ function [sn, cn, dn] = ellipj(u, m, pref)
 %   or scalar in the range 0 <= M <= 1.
 %
 %   [SN, CN, DN] = ELLIPJ(U, M, TOL) composes the elliptic functions to the
-%   accuracy TOL instead of the default TOL = CHEBFUN.PREF('EPS').
+%   accuracy TOL instead of the default TOL = EPS.
 %
 %   Complex values of U are accepted, but the resulting computation may be
 %   inaccurate. Use ELLIPJC from Driscoll's SC toolbox instead.
@@ -25,13 +25,15 @@ function [sn, cn, dn] = ellipj(u, m, pref)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if ( nargin < 3 )
-    pref = chebfun.pref();
-    tol = pref.chebfun.eps;
+    pref = chebpref();
+    % APA TODO:  eps
+    tol = eps;
 elseif ( ~isstruct(pref) )
     tol = pref;
-    pref = chebfun.pref();
+    pref = chebpref();
 else
-    tol = pref.chebfun.eps;
+    % APA TODO:  eps
+    tol = eps;
 end
 
 if ( isreal(u) )

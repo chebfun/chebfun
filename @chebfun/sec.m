@@ -2,7 +2,7 @@ function g = sec(f, pref)
 %SEC   Secant of a CHEBFUN.
 %   SEC(F) computes the secant of the CHEBFUN F.
 %
-%   SEC(F, PREF) does the same but uses the preference structure PREF when
+%   SEC(F, PREF) does the same but uses the CHEBPREF object PREF when
 %   computing the composition.
 %
 % See also ASEC, SECD.
@@ -12,7 +12,7 @@ function g = sec(f, pref)
 
 % Obtain preferences:
 if ( nargin == 1 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Call the compose method:

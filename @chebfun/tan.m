@@ -2,7 +2,7 @@ function g = tan(f, pref)
 %TAN   Tangent of a CHEBFUN.
 %   TAN(F) computes the tangent of the CHEBFUN F.
 %
-%   TAN(F, PREF) does the same but uses the preference structure PREF when
+%   TAN(F, PREF) does the same but uses the CHEBPREF object PREF when
 %   computing the composition.
 %
 % See also ATAN, TAND.
@@ -12,7 +12,7 @@ function g = tan(f, pref)
 
 % Obtain preferences:
 if ( nargin == 1 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % [TODO]:  Restore or change this once we have decided the proper behavior or

@@ -3,12 +3,12 @@
 function pass = test_merge(pref)
 
 if ( nargin == 0 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Test something easy (the example from docs):
 pref2 = pref;
-pref2.chebfun.splitting = 1;
+pref2.enableBreakpointDetection = 1;
 f = chebfun(@(x) x.^2, [-1 0 1], pref2);
 g = merge(f);
 pass(1) = all(size(g.funs) == 1);
@@ -17,7 +17,7 @@ pass(2) = norm(feval(f, xx) - feval(g, xx), 'inf') < epslevel(f);
 
 % Test selective merge on many points:
 pref2 = pref;
-pref2.chebfun.splitting = 1;
+pref2.enableBreakpointDetection = 1;
 f = chebfun(@(x) sin(10*pi*x), [-1:.5:2], pref2);
 [g, mergedPts] = merge(f, [2 4:6]);
 pass(3) = all(size(g.funs) == [1,2]);

@@ -4,12 +4,12 @@ function pass = test_compose_unary(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = chebfun.pref;
+    pref = chebpref();
 end
 
 % Create preference structure with splitting enabled.
 pref_split = pref;
-pref_split.chebfun.splitting = 1;
+pref_split.enableBreakpointDetection = 1;
 
 % Test empty input.
 f = chebfun();

@@ -3,7 +3,7 @@
 function pass = test_assignColumns(pref)
 
 if ( nargin < 1 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Generate a few random points to use as test values.

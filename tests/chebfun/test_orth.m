@@ -3,7 +3,7 @@
 function pass = test_orth(pref)
 
 if ( nargin < 1 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Check some simple examples.

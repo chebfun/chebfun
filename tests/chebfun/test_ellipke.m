@@ -1,7 +1,7 @@
 function pass = test_ellipke(pref)
 
 if ( nargin == 0 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 %% 1 output:

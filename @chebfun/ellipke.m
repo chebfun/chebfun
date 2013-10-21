@@ -15,13 +15,17 @@ function [k, e] = ellipke(m, pref)
 % Choose a tolerance:
 tol = get(m, 'epslevel');
 if ( nargin == 1 )
-    pref = chebfun.pref();
-    tol = max(pref.chebfun.eps, tol);
+    pref = chebpref();
+    % APA TODO:  eps
+    tol = max(eps, tol);
 elseif ( isnumeric(pref) )
     tol = max(pref, tol);
-    pref = chebfun.pref('eps', tol);
+    % APA TODO:  eps
+    pref = chebpref();
+    pref.techPrefs.eps = tol;
 else
-    tol = max(pref.chebfun.eps, tol);
+    % APA TODO:  eps
+    tol = max(eps, tol);
 end
 
 % Call COMPOSE():

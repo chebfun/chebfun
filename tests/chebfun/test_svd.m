@@ -3,7 +3,7 @@
 function pass = test_svd()
 
 if ( nargin < 1 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Check a simple example.

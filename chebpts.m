@@ -31,16 +31,14 @@ function [x, w, v] = chebpts(n, dom, type)
 if ( nargin == 2 )
     if ( length(dom) == 1 )
         type = dom;
-        dom = chebfun.pref('domain');
+        dom = chebpref().domain;
     else
-        type = chebtech.pref('tech');
-        type = str2double(type(end));
+        type = chebtech.pref().gridType;
     end
 end
 if ( nargin == 1 )
-    dom = chebfun.pref('domain');
-    type = chebtech.pref('tech');
-    type = str2double(type(end));
+    dom = chebpref().domain;
+    type = chebtech.pref().gridType;
 end
 
 % Verify that the number of points requested and the domains match:

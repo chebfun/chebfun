@@ -1,10 +1,10 @@
 function pass = test_splitting_abs(pref)
 
 if ( nargin == 0 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
-pref.chebfun.splitting = true;
+pref.enableBreakpointDetection = true;
 
 % Some basic test functions:
 FF = {@abs, @(x) abs(x).^5, @(x) abs(sin(10*x)), @(x) abs(sin(30*x))};
@@ -22,7 +22,8 @@ for j = 1:numel(FF);
     
     err = norm(feval(f, xx) - feval(F, xx), inf);
     pass(j, k+1) = err < 50*max(f.epslevel);
-    pass(j, k+2) = err < 1000*pref.chebfun.eps;
+    % APA TODO:  Figure out how to fix this once we know how to handle eps.
+    pass(j, k+2) = err < 1000*eps;
     k = k + 2;
 
 end

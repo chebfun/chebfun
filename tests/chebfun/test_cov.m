@@ -3,7 +3,7 @@
 function pass = test_cov(pref)
 
 if ( nargin == 0 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Check empty case.
