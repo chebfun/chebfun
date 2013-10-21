@@ -4,11 +4,12 @@ function pass = test_constructor(pref)
 
 % Get preferences:
 if ( nargin < 1 )
-    pref = fun.pref;
+    pref = chebpref();
 end
 
 % Set the tolerance:
-tol = 10*pref.fun.eps;
+% APA TODO:  Fix this once we've decided how to handle eps.
+tol = 10*eps;
 
 % Set the domain
 dom = [-2 7];
@@ -30,12 +31,8 @@ g = bndfun(f, dom, [], [], pref);
 gv = [feval(g, 0) feval(g, 3)];
 pass(2) = norm(ones(1, 2) - [gv(1) gv(4)], inf) < max(get(g, 'vscale'))*tol;
 
-
 %%
 % Some other tests:
-% Reset preferences to factory values:
-pref = bndfun.pref;
-pref = chebtech.pref(pref);
 
 % This should fail with an error:
 try
@@ -56,7 +53,7 @@ catch ME
 end
 
 % Test that the extrapolation option avoids endpoint evaluations.
-pref.chebtech.extrapolate = 1;
+pref.techPrefs.extrapolate = 1;
 try 
     bndfun(@(x) [F(x) F(x)], dom, [], [], pref);
     pass(5) = true;

@@ -14,12 +14,12 @@ function f = compose(f, op, g, pref)
 %   an error is thrown. Notice that the domain of H will be the same as the
 %   domain of F.
 %
-%   H = COMPOSE(F, OP, G, PREF) or H = COMPOSE(F, OP, [], PREF), where F (and G)
-%   are BNDFUN objects, and OP is a function handle, uses the options passed by
-%   the preferences structure PREF to build the returned BNDFUN. In particular,
-%   one can pass a PREF.(class(F.ONEFUN)).refinementFunction which takes
-%   advantage of the fact that F (and possibly OP or G) are have additional
-%   structure beyond just being objects.
+%   H = COMPOSE(F, OP, G, PREF) or H = COMPOSE(F, OP, [], PREF), where F (and
+%   G) are BNDFUN objects, and OP is a function handle, uses the options passed
+%   by the preferences structure PREF to build the returned BNDFUN. In
+%   particular, if the underlying tech class supports it, one can use PREF to
+%   alter the constructor's behavior to take advantage of the fact that F (and
+%   possibly OP or G) has additional structure beyond just being an object.
 %
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -57,8 +57,6 @@ elseif ( nargin == 3 )          % out = OP(F,G). No preferences passed.
     
 else                            % out = OP(F,G). Preferences passed.
     
-    % Merge preferences:
-    pref = f.onefun.pref(pref, pref.fun);
     % Call compose:
     if ( isempty(g) )
         f.onefun = compose(f.onefun, op, g, pref);

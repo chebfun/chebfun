@@ -3,14 +3,12 @@
 function pass = test_compose(pref)
 
 if ( nargin < 1 )
-    pref = fun.pref;
-    % [TODO]: Once preference structure has been settled, we don't want to be
-    % calling chebtech.pref here.
-    pref = chebtech.pref(pref);
+    pref = chebpref();
 end
 
 % Set the tolerance
-tol = 10*pref.fun.eps;
+% APA TODO:  Fix this once we've decided how to handle eps.
+tol = 10*eps;
 
 % Set the domain
 dom = [-2 7];

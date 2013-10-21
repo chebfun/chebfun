@@ -4,11 +4,12 @@ function pass = test_changeMap(pref)
 
 % Get preferences:
 if ( nargin < 1 )
-    pref = fun.pref;
+    pref = chebpref();
 end
 
 % Set the tolerance:
-tol = pref.fun.eps;
+% APA TODO:  Fix this once we've decided how to handle eps.
+tol = eps;
 
 pass = zeros(1, 2); % Pre-allocate pass matrix.
 

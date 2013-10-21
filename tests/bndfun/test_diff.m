@@ -4,11 +4,12 @@ function pass = test_diff(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fun.pref;
+    pref = chebpref();
 end
 
 % Set a tolerance.
-tol = 1e3*pref.fun.eps;
+% APA TODO:  Fix this once we've decided how to handle eps.
+tol = 1e3*eps;
 
 % Set the domain.
 dom = [-2 7];
