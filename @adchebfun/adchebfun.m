@@ -226,12 +226,42 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f.jacobian = linop.diff(f.domain, k)*f.jacobian;          
 %             f.isConstant = f.isConstant;
         end
-
+       
+        function f = erf(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(2*exp(-f.func.^2)/sqrt(pi))*f.jacobian;
+            f.func = erf(f.func);      
+        end
+                
+        function f = erfc(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(-2*exp(-f.func.^2)/sqrt(pi))*f.jacobian;
+            f.func = erfc(f.func);      
+        end
+        
+        function f = erfcinv(f)
+            f.isConstant = iszero(f.jacobian);
+            f.func = erfcinv(f.func);
+            f.jacobian = linop.mult(exp(f.func.^2)*sqrt(pi)/2)*f.jacobian;        
+        end
+        
+        function f = erfcx(f)
+            g = f;
+            g.isConstant = iszero(f.jacobian);
+            g.func = erfcx(f.func);
+            f.jacobian = linop.mult(-2/sqrt(pi) + 2*(f.func).*(g.func))*f.jacobian;        
+        end
+        
+        function f = erfinv(f)
+            f.isConstant = iszero(f.jacobian);
+            f.func = erfinv(f.func);
+            f.jacobian = linop.mult(exp(f.func.^2)*sqrt(pi)/2)*f.jacobian;
+        end
+        
         function f = exp(f)
             f.isConstant = iszero(f.jacobian);
             f.func = exp(f.func);
-            f.jacobian = linop.mult(f.func)*f.jacobian;
-%             f.domain = f.domain;            
+            f.jacobian = linop.mult(f.func)*f.jacobian;        
         end
         
         function f = feval(f, x)
