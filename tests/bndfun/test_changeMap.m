@@ -7,10 +7,6 @@ if ( nargin < 1 )
     pref = chebpref();
 end
 
-% Set the tolerance:
-% APA TODO:  Fix this once we've decided how to handle eps.
-tol = eps;
-
 pass = zeros(1, 2); % Pre-allocate pass matrix.
 
 % Test with two domains:
@@ -29,7 +25,7 @@ y = ((d - c)/2) * rand(100, 1) + (d + c)/2;
 gv = feval(g, y);
 x = a*(d - y)/(d - c) + b*(y - c)/(d - c);
 fv = feval(f, x);
-pass(1) = norm(gv - fv, inf) < 5*get(f, 'vscale')*tol;
+pass(1) = norm(gv - fv, inf) < 10*get(f, 'vscale')*get(f, 'epslevel');
 
 % Change from dom2 to dom1.
 f = changeMap(g, dom1);
@@ -37,6 +33,6 @@ y = ((b - a)/2) * rand(100, 1) + (b + a)/2;
 fv = feval(f, y);
 x = c*(b - y)/(b - a) + d*(y - a)/(b - a);
 gv = feval(g, x);
-pass(2) = norm(fv - gv, inf) < 5*get(f, 'vscale')*tol;
+pass(2) = norm(fv - gv, inf) < 10*get(f, 'vscale')*get(f, 'epslevel');
 
 end

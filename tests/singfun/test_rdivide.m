@@ -13,8 +13,6 @@ x = 2 * rand(100, 1) - 1;
 x = sort(x);
 
 pass = zeros(1, 9);   % Pre-allocate pass vector
-% APA TODO:  Revisit this line once we've decided how eps should be handled.
-tol = 1e3*eps;        % loose tolerance for rdivide
 
 %%
 % Check operation in the case of empty arguments.
@@ -38,7 +36,7 @@ fh = @(x) 1./((1+x).*(1-x));
 f = singfun(fh, [-1, -1]);
 % A random double:
 g = rand();
-pass(4) = test_division_by_scalar(f, fh, g, x, tol);
+pass(4) = test_division_by_scalar(f, fh, g, x);
 
 %%
 % Check reciprocal of a singfun.
@@ -46,13 +44,13 @@ fh = @(x) 0*x + 1;
 f = singfun(fh, [], {'none', 'none'}, [], [], pref);
 gh = @(x) cos(x);
 g = singfun(gh, [], {'none', 'none'}, [], [], pref);
-pass(5) = test_divide_function_by_function(f, fh, g, gh, x, tol);
+pass(5) = test_divide_function_by_function(f, fh, g, gh, x);
 
 %% 
 % Check division of two singfun objects.
 fh = @(x) cos(x);
 f = singfun(fh, [], {'none', 'none'}, [], [], pref);
-pass(6) = test_divide_function_by_function(f, fh, f, fh, x, tol);
+pass(6) = test_divide_function_by_function(f, fh, f, fh, x);
 
 fh = @(x) sin(x);
 f = singfun(fh, [], [], [], [], pref);
@@ -60,12 +58,12 @@ f = singfun(fh, [], [], [], [], pref);
 gh = @(x) (1+x).*(1-x);  %
 g = singfun(gh, [], [], [], [], pref);
 % Remove points really close to the end points.
-pass(7) = test_divide_function_by_function(f, fh, g, gh, x(5:end-4), tol);
+pass(7) = test_divide_function_by_function(f, fh, g, gh, x(5:end-4));
 
 fh = @(x) sin(1e2*x);
 f = singfun(fh, [], [], [], [], pref);
 % Remove points really close to the end points.
-pass(8) = test_divide_function_by_function(f, fh, g, gh, x(5:end-4), tol);
+pass(8) = test_divide_function_by_function(f, fh, g, gh, x(5:end-4));
 
 %%
 % Check that direct construction and RDIVIDE give comparable results.
@@ -75,6 +73,8 @@ g = singfun(@(x) (1+x).*(1-x), [], [], [], [], pref);
 h1 = f./g;
 h2 = singfun(@(x) sin(x)./((1+x).*(1-x)), [], [], [], [], pref);
 x = x(5:end-4); % Remove some points close to the end points.
+tol = 1e2*max(get(h1, 'vscale')*get(h1, 'epslevel'), ...
+    get(h2, 'vscale')*get(h2, 'epslevel'));
 pass(9) = norm(feval(h1, x) - feval(h2, x), inf) < tol;
 
 
@@ -82,16 +82,18 @@ end
 
 % Test the division of a SINGFUN F, specified by Fh, by a scalar C using
 % a grid of points X for testing samples.
-function result = test_division_by_scalar(f, fh, c, x, tol)
+function result = test_division_by_scalar(f, fh, c, x)
     g = f./c;
     g_exact = @(x) fh(x)./c;
-    result = norm(feval(g, x) - g_exact(x), inf) <= tol;
+    result = norm(feval(g, x) - g_exact(x), inf) <= ...
+        1e2*get(g, 'vscale')*get(g, 'epslevel');
 end
 
 % Test the division of two SINGFUN objects F and G, specified by FH and
 % GH, using a grid of points X for testing samples.
-function result = test_divide_function_by_function(f, fh, g, gh, x, tol)
+function result = test_divide_function_by_function(f, fh, g, gh, x)
     h = f./g;
     h_exact = @(x) fh(x)./gh(x);
-    result = norm(feval(h, x) - h_exact(x), inf) <= tol;
+    result = norm(feval(h, x) - h_exact(x), inf) <= ...
+        1e2*get(h, 'vscale')*get(h, 'epslevel');
 end

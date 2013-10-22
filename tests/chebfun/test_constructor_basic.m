@@ -23,8 +23,7 @@ for j = 1:numel(FF);
     xx = linspace(-1, 1);
     err = norm(feval(f, xx) - F(xx), inf);
     pass(j, k+1) = err < 10*epslevel(f)*vscale(f);
-    % APA TODO:  Fix this once we've figured out what to do about eps.
-    pass(j, k+2) = err < 50*eps;
+    pass(j, k+2) = err < 50*pref.eps;
     k = k + 2;
 
     % Test on [-1 1] (no domain passed):
@@ -32,8 +31,7 @@ for j = 1:numel(FF);
     xx = linspace(-1, 1);
     err = norm(feval(f, xx) - F(xx), inf);
     pass(j, k+1) = err < 10*epslevel(f)*vscale(f);
-    % APA TODO:  Fix this once we've figured out what to do about eps.
-    pass(j, k+2) = err < 500*eps;
+    pass(j, k+2) = err < 500*pref.eps;
     k = k + 2;
 
     % Test on [0 10000]:
@@ -41,8 +39,7 @@ for j = 1:numel(FF);
     xx = linspace(0, 10000);
     err = norm(feval(f, xx) - F(xx), inf);
     pass(j, k+1) = err < 100*epslevel(f)*vscale(f);
-    % APA TODO:  Fix this once we've figured out what to do about eps.
-    pass(j, k+2) = err < 100*hscale(f)*eps;
+    pass(j, k+2) = err < 100*hscale(f)*pref.eps;
     k = k + 2;
 
     % Test on piecewise domain:
@@ -50,8 +47,7 @@ for j = 1:numel(FF);
     xx = linspace(-1, 1);
     err = norm(feval(f, xx) - F(xx), inf);
     pass(j, k+1) = err < 10*epslevel(f)*vscale(f);
-    % APA TODO:  Fix this once we've figured out what to do about eps.
-    pass(j, k+2) = err < 100*eps;
+    pass(j, k+2) = err < 100*pref.eps;
     k = k + 2;
 end
 

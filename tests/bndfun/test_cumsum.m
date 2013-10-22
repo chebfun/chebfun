@@ -7,10 +7,6 @@ if ( nargin < 1 )
     pref = chebpref();
 end
 
-% Set a tolerance.
-% APA TODO:  Fix this once we've decided how to handle eps.
-tol = eps;
-
 % Set a domain
 dom = [-2 7];
 a = dom(1);

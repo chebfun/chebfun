@@ -22,8 +22,7 @@ for j = 1:numel(FF);
     
     err = norm(feval(f, xx) - feval(F, xx), inf);
     pass(j, k+1) = err < 50*max(f.epslevel);
-    % APA TODO:  Figure out how to fix this once we know how to handle eps.
-    pass(j, k+2) = err < 1000*eps;
+    pass(j, k+2) = err < 1000*pref.eps;
     k = k + 2;
 
 end
