@@ -132,10 +132,10 @@ classdef chebtech2 < chebtech
         
         % Compute Chebyshev points (x) and optionally quadrature (w)
         % and barycentric (v) weights:
-        [x, w, v] = chebpts(n)
+        [x, w, v] = chebpts(n);
         
         % Convert coefficients to values:
-        values = coeffs2vals(coeffs)
+        values = coeffs2vals(coeffs);
         
         % Make a CHEBTECH2 (constructor shortcut):
         f = make(varargin);

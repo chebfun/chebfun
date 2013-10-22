@@ -1,4 +1,4 @@
-function f = polyfit(y, n)
+function f = polyfit(f, n)
 %POLYFIT   Fit polynomial to a CHEBTECH.
 %   F = POLYFIT(Y, N) returns a CHEBTECH F corresponding to the polynomial of
 %   degree N that fits the CHEBTECH Y in the least-squares sense.
@@ -14,20 +14,21 @@ function f = polyfit(y, n)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-f = y;
+% [TODO]: 
+%   Array-valued CHEBFUN objects.
 
-if ( n <= length(y) )
+if ( n <= length(f) )
     
     % Extract Chebyshev coeficients of y:
-    c_cheb = y.coeffs;
+    c_cheb = f.coeffs;
     % Convert to Legendre coefficients:
-    c_leg = chebtech2.cheb2leg(c_cheb);
+    c_leg = chebtech.cheb2leg(c_cheb);
     % Truncate to degree N:s
     c_leg = c_leg((end-n+1):end);
     % Convert to Chebyshev coefficients:
-    c_cheb = chebtech2.leg2cheb(c_leg);
+    c_cheb = chebtech.leg2cheb(c_leg);
     % Compute corresponding values on a Chebyshev grid:
-    v_cheb = y.coeffs2vals(c_cheb);
+    v_cheb = f.coeffs2vals(c_cheb);
     % Update the values, coefficients, and vscale of the CHEBTECH:
     f.coeffs = c_cheb;
     f.values = v_cheb;
