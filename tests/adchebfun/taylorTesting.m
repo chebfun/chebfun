@@ -55,17 +55,17 @@ order2 = diff(log(nDiff2))./diff(log(fact.^-(2:hMax+1))');
 %% Plotting
 
 if ( plotting == 1 )
-% loglog(fact.^-(1:hMax),nDiff1,'-*'), hold on
-% % Expected rate of convergence
-% loglog([1 5^-20],[1 5^-20],'k--')
-% 
-% loglog(fact.^-(1:hMax),nDiff2,'r-*'), hold on
-% % Expected rate of convergence
-% loglog([1 5^-10],[1 5^-20],'k--')
-% set(gca,'XDir','reverse'), shg
-% grid on
-% shg
-% axis equal
+    loglog(fact.^-(1:hMax),nDiff1,'-*'), hold on
+    % Expected rate of convergence
+    loglog([1 5^-20],[1 5^-20],'k--')
+    
+    loglog(fact.^-(1:hMax),nDiff2,'r-*'), hold on
+    % Expected rate of convergence
+    loglog([1 5^-10],[1 5^-20],'k--')
+    set(gca,'XDir','reverse'), shg
+    grid on
+    shg
+    axis equal
 end
 
 end
