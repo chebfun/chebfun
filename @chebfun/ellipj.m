@@ -26,14 +26,12 @@ function [sn, cn, dn] = ellipj(u, m, pref)
 
 if ( nargin < 3 )
     pref = chebpref();
-    % APA TODO:  eps
-    tol = eps;
+    tol = pref.techPrefs.eps;
 elseif ( ~isstruct(pref) )
     tol = pref;
     pref = chebpref();
 else
-    % APA TODO:  eps
-    tol = eps;
+    tol = pref.techPrefs.eps;
 end
 
 if ( isreal(u) )

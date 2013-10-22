@@ -8,7 +8,7 @@ classdef chebpref
 %
 % Available Preferences:
 %
-%   maxLength                  - Maximum CHEBFUN length.
+%   maxTotalLength              - Maximum total CHEBFUN length.
 %    [65536]
 %
 %      Sets the maximum allowed "length" of the constructed CHEBFUN when
@@ -26,16 +26,16 @@ classdef chebpref
 %     introduced only at points where discontinuities are being created, e.g.,
 %     by ABS(F) at points where a CHEBFUN F passes through zero.
 %
-%   breakpointPrefs - Preferences for use with breakpoint detection mode.
+%   breakpointPrefs            - Preferences for breakpoint detection.
 %
-%      splitLength             - Maximum FUN length.
+%      splitMaxLength          - Maximum FUN length.
 %       [128]
 %
 %         This is the maximum length of a single FUN (i.e., polynomial degree
 %         for funs based on Chebyshev polynomial representations) allowed by
 %         the constructor when breakpoint detection is enabled.
 %
-%      splitMaxLength          - Maximum total CHEBFUN length.
+%      splitMaxTotalLength     - Maximum total CHEBFUN length.
 %       [6000]
 %
 %         This is the maximum total length of the CHEBFUN (i.e., the sum of the
@@ -87,7 +87,40 @@ classdef chebpref
 %
 %      This is a structure of preferences that will be passed to the constructor
 %      for the underlying representation technology.  See CHEBTECH/PREF for
-%      preferences accepted by the default CHEBTECH technology.
+%      preferences accepted by the default CHEBTECH technology.  Additionally,
+%      all techs are required to accept the following preferences:
+%
+%      eps                     - Construction tolerance.
+%       [2^(-52]
+%
+%        Specifies the relative tolerance to which the representation should be
+%        constructed.
+%
+%      maxLength               - Maximum representation length.
+%       [65537]
+%
+%        Maximum length of the underlying representation.
+%
+%      exactLength             - Exact representation length.
+%       [NaN]
+%
+%        Exact length of the underlying representation.  A NaN value indicates
+%        that any length (up to maxLength) is permissible.
+%
+%      extrapolate             - Extrapolate endpoint values.
+%        true
+%       [false]
+%
+%        If true, the tech should avoid direct evaluation of the function at
+%        the interval endpoints and "extrapolate" the values at those points if
+%        needed.
+%
+%      sampleTest              - Test accuracy at arbitrary point.
+%       [true]
+%        false
+%
+%        If true, the tech should check an arbitrary point for accuracy to
+%        ensure that behavior hasn't been missed, e.g., due to undersampling.
 %
 % Constructor inputs:
 %   P = CHEBPREF() creates a CHEBPREF object with the default values of the
@@ -147,20 +180,8 @@ classdef chebpref
 %    down into the tech layer, i.e., CHEBFUN needs to be able to set certain
 %    preferences that affect the constructors for the individual techs.
 %    Designers of techs should ensure that their classes respond to the
-%    following "abstract" preferences in an appropriate manner:
-%
-%     - maxLength:  an integer defining the maximum length of the representation
-%
-%     - extrapolate:  a boolean indicating whether or not the constructor
-%       should evaluate directly at the endpoints of [-1, 1]
-%
-%
-%     - sampleTest:  a boolean indicating whether or not the constructor should
-%       check a "random" point to make sure features haven't been missed due to
-%       undersampling
-%
-%     - numSamples:  an integer specifying the exact length of the
-%       representation to be constructed
+%    following "abstract" preferences in an appropriate manner:  eps,
+%    maxLength, exactLength, extrapolate, and sampleTest.
 %
 %  - The original idea was that the techPrefs field of the CHEBPREF would be
 %    the only thing that gets passed to the tech constructor.  This is
@@ -181,12 +202,11 @@ classdef chebpref
 % interchangeable, and one can easily write functions that accept both types of
 % arguments by calling P = CHEBPREF(P), where P is the preference input to the
 % function.
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     % See above for documentation.
     properties
-        maxLength
+        maxTotalLength
         enableBreakpointDetection
         breakpointPrefs
         domain
@@ -208,10 +228,10 @@ classdef chebpref
             end
 
             % Initialize default preference values.
-            p.maxLength = 65536;
+            p.maxTotalLength = 65536;
             p.enableBreakpointDetection = false;
-                p.breakpointPrefs.splitLength = 128;
-                p.breakpointPrefs.splitMaxLength = 6000;
+                p.breakpointPrefs.splitMaxLength = 128;
+                p.breakpointPrefs.splitMaxTotalLength = 6000;
             p.domain = [-1 1];
             p.enableSingularityDetection = false;
                 p.singPrefs.exponentTol = 1.1*1e-11;
@@ -219,6 +239,11 @@ classdef chebpref
             p.enableFunqui = false;
             p.tech = 'chebtech';
             p.techPrefs = struct();
+                p.techPrefs.eps = 2^(-52);
+                p.techPrefs.maxLength = 65537;
+                p.techPrefs.exactLength = NaN;
+                p.techPrefs.extrapolate = false;
+                p.techPrefs.sampleTest = true;
 
             % Copy fields from q, placing unknown ones in techPrefs and merging
             % incomplete substructures.

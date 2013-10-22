@@ -13,21 +13,29 @@ function p = pref(q)
 %
 %   ABSTRACT PREFERENCES REQUIRED OF ALL TECHS
 %
-%     maxLength    - This preference is mapped to maxSamples (see below).
-%
-%   CHEBTECH-SPECIFIC PREFERENCES
-%
 %     eps          - Relative tolerance used in construction and subsequent
 %      [2^-52]       operations.  See CHEBTECH.HAPPINESSCHECK for more details.
 %
-%     gridType     - Type of Chebyshev grid on which the function is sampled.
-%       1          - Use a grid of first-kind Chebyshev points.
-%      [2]         - Use a grid of second-kind Chebyshev points.
+%     maxLength    - This preference is mapped to maxSamples (see below).
+%
+%     exactLength  - This preference is mapped to numSamples (see below).
 %
 %     extrapolate
 %       true       - Function values at endpoints may be extrapolated from
 %                    interior values rather than sampled.
 %      [false]     - Do not extrapolate values at endpoints.
+%
+%     sampleTest
+%      [true]      - Tests the function at one more arbitrary point to
+%                    minimize the risk of missing signals between grid
+%                    points.
+%       false      - Do not test.
+%
+%   CHEBTECH-SPECIFIC PREFERENCES
+%
+%     gridType     - Type of Chebyshev grid on which the function is sampled.
+%       1          - Use a grid of first-kind Chebyshev points.
+%      [2]         - Use a grid of second-kind Chebyshev points.
 %
 %     minSamples   - Minimum number of points used by the constructor.  Should
 %      [9]           be of the form 2^n + 1.  If not, it is rounded as such.
@@ -37,12 +45,6 @@ function p = pref(q)
 %
 %     numSamples   - Fixed number of points used by constructor.  NaN allows
 %      [NaN]         adaptive construction.
-%
-%     sampleTest
-%      [true]      - Tests the function at one more arbitrary point to
-%                    minimize the risk of missing signals between grid
-%                    points.
-%       false      - Do not test.
 %
 %     refinementFunction - Define function for refining sample values.
 %      ['nested']        - Use the default process (nested evaluation).
@@ -73,6 +75,7 @@ p.happinessCheck     = 'classic';
 
 if ( nargin == 1 )
     map.maxLength = 'maxSamples';
+    map.exactLength = 'numSamples';
     p = chebpref.mergePrefs(p, q, map);
 end
 

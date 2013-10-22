@@ -16,16 +16,13 @@ function [k, e] = ellipke(m, pref)
 tol = get(m, 'epslevel');
 if ( nargin == 1 )
     pref = chebpref();
-    % APA TODO:  eps
-    tol = max(eps, tol);
+    tol = max(pref.techPrefs.eps, tol);
 elseif ( isnumeric(pref) )
     tol = max(pref, tol);
-    % APA TODO:  eps
     pref = chebpref();
     pref.techPrefs.eps = tol;
 else
-    % APA TODO:  eps
-    tol = max(eps, tol);
+    tol = max(pref.techPrefs.eps, tol);
 end
 
 % Call COMPOSE():

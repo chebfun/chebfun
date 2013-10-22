@@ -12,7 +12,6 @@ if ( isempty(pref) )
     pref = chebpref();
 end
 
-% APA TODO:  Is sampleTest applicable to all techs?
 pref.techPrefs.sampleTest = 0;
 
 % Call the CHEBTECH constructor:

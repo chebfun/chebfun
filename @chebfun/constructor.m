@@ -48,7 +48,7 @@ end
 % In 'OFF' mode, seek only one piece with length < maxLength.
 if ( ~pref.enableBreakpointDetection )
     % Set maximum number of sample points:
-    maxn = pref.maxLength + 1;
+    maxn = pref.maxTotalLength + 1;
     % Initialise the FUN array:
     funs{numIntervals} = fun.constructor();
     % We only want to throw this warning once:
@@ -79,8 +79,8 @@ end
 % In 'ON' mode, seek only many pieces with total length < maxlength.
 
 % Set the maximum degree:
-pref.maxLength = pref.breakpointPrefs.splitMaxLength;
-pref.techPrefs.maxLength = pref.breakpointPrefs.splitLength + 1;
+pref.maxTotalLength = pref.breakpointPrefs.splitMaxTotalLength;
+pref.techPrefs.maxLength = pref.breakpointPrefs.splitMaxLength + 1;
 % We extrapolate when splitting so that we can construct functions like
 % chebfun(@sign,[-1 1]), which otherwise would not be happy at x = 0.
 pref.techPrefs.extrapolate = true;
@@ -149,7 +149,7 @@ while ( any(sad) )
     end
 
     % Fail if too many points are required:
-    if ( sum(cellfun(@length, funs)) > pref.maxLength )
+    if ( sum(cellfun(@length, funs)) > pref.maxTotalLength )
         warning('Function not resolved using %d pts.', ...
             sum(cellfun(@length, funs)));
         return

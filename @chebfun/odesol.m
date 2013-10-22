@@ -54,7 +54,6 @@ relTol = max(relTol(:), absTol(:)./vscale(:));
 
 %% Create a CHEBFUN object.
 p = chebpref();
-% APA TODO:  eps
 p.techPrefs.eps = max(relTol); % Use the same tolerance for each column..
 y = chebfun(@(x) deval(sol, x).', d, p);
 

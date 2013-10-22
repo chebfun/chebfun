@@ -14,8 +14,7 @@ function f = simplify(f, tol)
 % See http://www.chebfun.org for Chebfun information.
 
 if ( nargin == 1 )
-    % APA TODO:  eps
-    tol = eps;
+    tol = chebpref().techPrefs.eps;
 end
 
 % Choose a tolerance:

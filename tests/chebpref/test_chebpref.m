@@ -4,7 +4,7 @@ function pass = test_chebpref()
 
 % Test construction from a chebpref.
 p = chebpref();
-pass(1) = isequal(p, chebpref(p));
+pass(1) = isequaln(p, chebpref(p));
 
 % Test construction from a struct.
 q = struct();
@@ -19,8 +19,8 @@ q = struct();
 q.testPref1 = 'test1';
 q.techPrefs.testPref2 = 'test2';
 p = chebpref(q);
-pass(3) = isequal(p.techPrefs, ...
-    struct('testPref1', 'test1', 'testPref2', 'test2'));
+pass(3) = strcmp(p.techPrefs.testPref1, 'test1') && ...
+    strcmp(p.techPrefs.testPref2, 'test2');
 
 % Test overloaded subsref.
 q = struct();
@@ -46,7 +46,7 @@ pass(8) = strcmp(p.techPrefs.testPref2, 'test2');
 p = struct();
 p.testPref = 'test';
 q = struct();
-pass(9) = isequal(chebpref.mergePrefs(p, q), p);
+pass(9) = isequaln(chebpref.mergePrefs(p, q), p);
 
 q.testPref = 'testq';
 pass(10) = strcmp(chebpref.mergePrefs(p, q).testPref, 'testq');
@@ -61,14 +61,14 @@ p = chebpref();
 p.techPrefs.testPref = 'test';
 q = struct();
 q.testPref = 'testq';
-pass(12) = isequal(chebpref.mergePrefs(p, q), ...
+pass(12) = isequaln(chebpref.mergePrefs(p, q), ...
     chebpref.mergePrefs(p.techPrefs, q));
-pass(13) = isequal(chebpref.mergePrefs(q, p), ...
+pass(13) = isequaln(chebpref.mergePrefs(q, p), ...
     chebpref.mergePrefs(q, p.techPrefs));
 
 q = chebpref();
 q.techPrefs.testPref = 'testq';
-pass(14) = isequal(chebpref.mergePrefs(p, q), ...
+pass(14) = isequaln(chebpref.mergePrefs(p, q), ...
     chebpref.mergePrefs(p.techPrefs, q.techPrefs));
 
 end
