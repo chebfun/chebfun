@@ -287,6 +287,27 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f.func = log(f.func);
             f = updateDomain(f);
         end
+                
+        function f = log1p(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(1./(f.func + 1))*f.jacobian;
+            f.func = log1p(f.func);
+            f = updateDomain(f);
+        end
+ 
+        function f = log2(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(1./(log(2)*f.func))*f.jacobian;
+            f.func = log2(f.func);
+            f = updateDomain(f);
+        end
+        
+        function f = log10(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(1./(log(10)*f.func))*f.jacobian;
+            f.func = log10(f.func);
+            f = updateDomain(f);
+        end
         
         function f = minus(f, g)
             f = plus(f, -g);
