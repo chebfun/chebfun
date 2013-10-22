@@ -397,15 +397,55 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             u.jacobian = chebmatrix(blocks);
         end        
    
+        function g = sec(f)
+            g = f;
+            g.isConstant = iszero(f.jacobian);
+            g.func = sec(f.func);
+            g.jacobian = linop.mult(tan(f.func).*g.func)*f.jacobian;
+        end
+           
+        function g = secd(f)
+            g = f;
+            g.isConstant = iszero(f.jacobian);
+            g.func = secd(f.func);
+            g.jacobian = linop.mult(pi/180*tand(f.func).*g.func)*f.jacobian;
+        end
+        
+        function g = sech(f)
+            g = f;
+            g.isConstant = iszero(f.jacobian);
+            g.func = sech(f.func);
+            g.jacobian = linop.mult(tanh(f.func).*g.func)*f.jacobian;
+        end
+        
         function f = sin(f)
             f.isConstant = iszero(f.jacobian);
             f.jacobian = linop.mult(cos(f.func))*f.jacobian;
             f.func = sin(f.func);
         end
+             
         
         function f = sum(f)
             f.func = sum(f.func);
             f.jacobian = linop.sum(f.domain)*f.jacobian;
+        end
+        
+        function f = tan(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(sec(f.func).^2)*f.jacobian;
+            f.func = tan(f.func);
+        end
+        
+        function f = tand(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult((pi/180)*secd(f.func).^2)*f.jacobian;
+            f.func = tand(f.func);
+        end
+        
+        function f = tanh(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(sech(f.func).^2)*f.jacobian;
+            f.func = tan(f.func);
         end
         
         function f = times(f, g)
