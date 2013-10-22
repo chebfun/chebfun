@@ -1,9 +1,190 @@
 classdef chebpref
-% TODO:  Add documentation for this file.
+%CHEBPREF   Class for managing Chebfun preferences
+%   CHEBPREF is a class for managing Chebfun construction-time preferences such
+%   as the construction tolerance, whether or not to perform breakpoint and
+%   singularity detection, and the various options that those features require.
+%   These objects can be supplied to the CHEBFUN constructor, which will
+%   interpret them and adjust the construction process accordingly.
+%
+% Available Preferences:
+%
+%   maxLength                  - Maximum CHEBFUN length.
+%    [65536]
+%
+%      Sets the maximum allowed "length" of the constructed CHEBFUN when
+%      breakpoint detection is disabled, where the notion of length is
+%      determined by the underlying representation technology (e.g., polynomial
+%      degree, for Chebyshev polynomial interpolation).
+%
+%   enableBreakpointDetection  - Enable/disable breakpoint detection.
+%     true
+%    [false]
+%
+%     If true, breakpoints between funs may be introduced where a discontinuity
+%     in a function or a low-order derivative is detected or if a global
+%     representation will be too long.  If false, breakpoints will be
+%     introduced only at points where discontinuities are being created, e.g.,
+%     by ABS(F) at points where a CHEBFUN F passes through zero.
+%
+%   breakpointPrefs - Preferences for use with breakpoint detection mode.
+%
+%      splitLength             - Maximum FUN length.
+%       [128]
+%
+%         This is the maximum length of a single FUN (i.e., polynomial degree
+%         for funs based on Chebyshev polynomial representations) allowed by
+%         the constructor when breakpoint detection is enabled.
+%
+%      splitMaxLength          - Maximum total CHEBFUN length.
+%       [6000]
+%
+%         This is the maximum total length of the CHEBFUN (i.e., the sum of the
+%         lengths of all the FUNs) allowed by the constructor when breakpoint
+%         detection is enabled.
+%
+%   domain                     - Construction domain.
+%    [-1, 1]
+%
+%      This sets the default domain that will be used for CHEBFUN and/or FUN
+%      construction if no domain argument is explicitly passed to the
+%      constructor.
+%
+%   enableSingularityDetection - Enable/disable singularity detection.
+%     true
+%    [false]
+%
+%      If true, the constructor will attempt to detect and factor out
+%      singularities, e.g., points where a function or its derivatives become
+%      unbounded.  See SINGFUN for more information.
+%
+%   singPrefs                  - Preferences for singularity detection.
+%
+%      exponentTol             - Tolerance for exponents.
+%       [1.1*1e-11]
+%
+%         This is the tolerance up to which the detector will try to resolve
+%         the singularity exponents.
+%
+%      maxPoleOrder            - Maximum pole order.
+%       [20]
+%
+%         Maximum order of the pole that the singularity detector can find.
+%
+%   enableFunqui               - Enable/disable FUNQUI.
+%     true
+%    [false]
+%
+%      Enables the use of the FUNQUI pre-processor for stable interpolation of
+%      data from a grid of equally-spaced points.  See documentation for the
+%      'equi' flag for CHEBFUN for more information.
+%
+%   tech                       - Representation technology.
+%    ['chebtech']
+%
+%      Sets the underlying representation technology used to construct the FUNs.
+%
+%   techPrefs                  - Preferences for the tech constructor.
+%
+%      This is a structure of preferences that will be passed to the constructor
+%      for the underlying representation technology.  See CHEBTECH/PREF for
+%      preferences accepted by the default CHEBTECH technology.
+%
+% Constructor inputs:
+%   P = CHEBPREF() creates a CHEBPREF object with the default values of the
+%   preferences.  For a list of all available preferences, see above.
+%
+%   P = CHEBPREF(Q), where Q is a MATLAB structure uses the field/value pairs
+%   in Q to set the properties of P.  If a field of Q has a name which matches
+%   a property of P, the value of that property of P is set to the value
+%   associated to that field in Q.  Any fields of Q that are not properties of
+%   P are interpreted as preferences for the constructor of the underlying
+%   representation technology and are placed in P.TECHPREFS.  The exceptions to
+%   this are the fields BREAKPOINTPREFS, SINGPREFS, and TECHPREFS.  If Q has
+%   fields with these names, they will be assumed to be MATLAB structures and
+%   will be "merged" with the structures of default preferences stored in the
+%   properties of the same names in P using CHEBPREF.MERGEPREFS().
+%
+%   P = CHEBPREF(Q), where Q is a CHEBPREF, sets P to be a copy of Q.
+%
+% Notes:
+%   When building a CHEBPREF from a structure using the second calling syntax
+%   above, one should take care to ensure that preferences for the underlying
+%   representation technology are specified once and only once; e.g., do not
+%   simultaneously set Q.MYPREF = 1 and Q.TECHPREFS.MYPREF = 2.  The value of
+%   P.TECHPREFS.MYPREF that gets set from P = CHEBPREF(Q) in this circumstance
+%   is implementation-defined.
+%
+% Examples:
+%   Create a CHEBPREF for building a CHEBFUN based on CHEBTECH (default) with
+%   breakpoint detection, a splitting degree of 256, and a custom CHEBTECH
+%   refinement function:
+%      p.enableBreakpointDetection = true;
+%      p.breakpointPrefs.splitLength = 256;
+%      p.techPrefs.refinementFunction = @custom;
+%      pref = chebpref(p);
+%
+%   Same thing with a slightly shorter syntax:
+%      p.enableBreakpointDetection = true;
+%      p.breakpointPrefs.splitLength = 256;
+%      p.refinementFunction = @custom;
+%      pref = chebpref(p);
+%
+% See also SUBSREF, SUBSASGN, MERGEPREFS
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Developer note:
+%
+% The reason this object was introduced is to allow for a simplified approach
+% to preferences in the upper layers (i.e., CHEBTECH, FUN, and SINGFUN) which
+% groups them all into the same namespace while keeping the namespace for
+% "tech" preferences separate.  This design mostly achieves this goal with the
+% following limited exceptions:
+%
+%  - Some information really does need to propagate from CHEBFUN all the way
+%    down into the tech layer, i.e., CHEBFUN needs to be able to set certain
+%    preferences that affect the constructors for the individual techs.
+%    Designers of techs should ensure that their classes respond to the
+%    following "abstract" preferences in an appropriate manner:
+%
+%     - maxLength:  an integer defining the maximum length of the representation
+%
+%     - extrapolate:  a boolean indicating whether or not the constructor
+%       should evaluate directly at the endpoints of [-1, 1]
+%
+%
+%     - sampleTest:  a boolean indicating whether or not the constructor should
+%       check a "random" point to make sure features haven't been missed due to
+%       undersampling
+%
+%     - numSamples:  an integer specifying the exact length of the
+%       representation to be constructed
+%
+%  - The original idea was that the techPrefs field of the CHEBPREF would be
+%    the only thing that gets passed to the tech constructor.  This is
+%    attainable if one is constructing a CHEBFUN by calling the constructor
+%    directly but not, e.g., if one is constructing using COMPOSE().  The
+%    reason is that when FUN calls COMPOSE(), it does not know if it is calling
+%    the tech COMPOSE() (and therefore should drop the unneeded prefs) or the
+%    SINGFUN COMPOSE() (for which it needs to keep them).  Techs can deal with
+%    this by dropping the unnecessary information themselves either by doing
+%    so directly or by calling CHEBPREF.MERGEPREFS().
+%
+%    We considered other designs that deal with this problem more gracefully
+%    but ultimately found them cumbersome compared to the present one.
+%
+% The other major design goal was to make this object behave just like a plain
+% struct but a little more "intelligently" with respect to system preferences.
+% The end result is that CHEBPREFs and ordinary structs are almost
+% interchangeable, and one can easily write functions that accept both types of
+% arguments by calling P = CHEBPREF(P), where P is the preference input to the
+% function.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+    % See above for documentation.
     properties
         maxLength
         enableBreakpointDetection
@@ -117,10 +298,10 @@ classdef chebpref
 
         function p = mergePrefs(p, q, map)
         %MERGEPREFS   Merge preference structures.
-        %   P = MERGEPREFS(P, Q) "merges" the preference structure Q into the
-        %   preference structure P by replacing the contents of fields in P
-        %   with those of identically-named fields in Q.  If Q has a field
-        %   whose name does not match any of those in P, it is added to P.
+        %   P = MERGEPREFS(P, Q), where P and Q are MATLAB structures, "merges"
+        %   Q into P by replacing the contents of fields in P with those of
+        %   identically-named fields in Q.  If Q has a field whose name does
+        %   not match any of those in P, it is added to P.
         %
         %   P = MERGEPREFS(P, Q, MAP) does the same but uses the structure MAP
         %   to "translate" the names of fields of Q into names of fields of P.
