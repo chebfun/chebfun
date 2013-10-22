@@ -165,6 +165,14 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f = plus(f, -g);
         end
                 
+        function [normF, normLoc] = norm(f, varargin)
+            if nargout == 2
+                [normF, normLoc]  = norm(f.func, varargin{:});
+            else
+                normF = norm(f.func, varargin{:});
+            end
+        end
+            
         function f = mtimes(f, g)
             if ( ~isa(g, 'adchebfun') )
                 f.func = f.func*g;
