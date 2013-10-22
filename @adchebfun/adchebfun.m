@@ -163,10 +163,53 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f.func = atanh(f.func);
         end
         
+        function g = besselj(nu, f)
+            % Initialise an empty ADCHEBFUN
+            g = adchebfun;
+            % Copy the domain information
+            g.domain = f.domain;
+            % Linearity information
+            g.isConstant = iszero(f.jacobian);
+            % Function composition
+            g.func = besselj(nu, f.func);
+            % Derivative computation
+            g.jacobian = linop.mult(-besselj(nu+1,f.func)+nu*(g.func)./f.func)*f.jacobian;
+        end
+        
         function f = cos(f)
             f.isConstant = iszero(f.jacobian);
             f.jacobian = linop.mult(-sin(f.func))*f.jacobian;
             f.func = cos(f.func);
+        end
+        
+        function f = cosd(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(-pi/180*sind(f.func))*f.jacobian;
+            f.func = cosd(f.func);
+        end
+        
+        function f = cosh(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(sinh(f.func))*f.jacobian;
+            f.func = cosh(f.func);
+        end
+                
+        function f = cot(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(-csc(f.func).^2)*f.jacobian;
+            f.func = cot(f.func);
+        end
+                
+        function f = cotd(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(-(pi/180)*cscd(f.func).^2)*f.jacobian;
+            f.func = cotd(f.func);
+        end
+        
+        function f = coth(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(-csch(f.func).^2)*f.jacobian;
+            f.func = cotd(f.func);
         end
         
         function f = cumsum(f)
