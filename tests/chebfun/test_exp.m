@@ -1,6 +1,6 @@
 % Test file for chebfun exp() and related functions.
 
-function pass = test_trig(pref)
+function pass = test_exp(pref)
 
 % Get preferences.
 if ( nargin < 1 )
