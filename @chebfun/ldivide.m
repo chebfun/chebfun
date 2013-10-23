@@ -1,5 +1,5 @@
 function h = ldivide(f,g)
-% .\Pointwise CHEBFUN left divide.
+%.\   Pointwise CHEBFUN left divide.
 %   F.\G returns a CHEBFUN that represents the function G(x)/F(x). 
 %
 % See also RDIVIDE, MLDIVIDE.

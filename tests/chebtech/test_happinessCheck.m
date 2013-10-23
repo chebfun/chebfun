@@ -28,7 +28,7 @@ for n = 1:2
     pass(n, 2) = ishappy && epslevel < tol;
     
     %%
-    % Test on a array-valued function:
+    % Test on an array-valued function:
     f = @(x) [sin(x) cos(x) exp(x)];
     g = testclass.make(f(x));
     [ishappy, epslevel, tail] = happinessCheck(g, f, pref);

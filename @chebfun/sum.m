@@ -2,9 +2,18 @@ function out = sum(f, a, b)
 %SUM   Definite integral of a CHEBFUN.
 %   SUM(F) is the integral of a column CHEBFUN F over its domain of definition.
 %
-%   SUM(F, A, B) integrates a column CHEBFUN F over [A, B], which must be a
-%   subdomain of F.domain. A and B may be scalars or CHEBFUN objects. In the
-%   later case, S = SUM(F, A, B) returns a CHEBFUN S which satisfies
+%   SUM(F, A, B), where A and B are scalars, integrates a column CHEBFUN F over
+%   [A, B], which must be a subdomain of F.domain:
+%
+%                         B
+%                         /
+%               SUM(F) =  | F(t) dt.
+%                         /
+%                        A
+%
+%   SUM(F, A, B), where A and B are CHEBFUN objects, returns a CHEBFUN S which
+%   satisfies
+%
 %                       B(s)
 %                       /
 %               S(s) =  | F(t) dt.
@@ -20,7 +29,7 @@ function out = sum(f, a, b)
 % See also CUMSUM, DIFF.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 % An empty CHEBFUN has sum 0:
 if ( isempty(f) )

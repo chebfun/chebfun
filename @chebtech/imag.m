@@ -9,7 +9,7 @@ function f = imag(f)
 
 % Compute the imaginary part of the values:
 f.values = imag(f.values);
-f.vscale = max(abs(f.values));
+f.vscale = max(abs(f.values), [], 1);
 
 if ( ~any(f.values(:)) )
     % Input was real, so output a zero CHEBTECH:

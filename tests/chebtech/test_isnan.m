@@ -19,7 +19,7 @@ for n = 1:2
     f = testclass.make(@(x) x, [], [], p);
     pass(n, 1) = ~isnan(f);
 
-    % Test a array-valued function:
+    % Test an array-valued function:
     f = testclass.make(@(x) [x, x.^2], [], [], p);
     pass(n, 2) = ~isnan(f);
 

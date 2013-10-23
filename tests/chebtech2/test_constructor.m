@@ -43,7 +43,7 @@ pass(7) = norm(f(x) - g.values, inf) < tol;
 pass(8) = norm(g.vscale - sin(1), inf) < tol && logical(g.epslevel);
 
 %%
-% Test on a array-valued function:
+% Test on an array-valued function:
 pref.chebtech.extrapolate = 0;
 pref.chebtech.refinementFunction = 'nested';
 f = @(x) [sin(x) cos(x) exp(x)];

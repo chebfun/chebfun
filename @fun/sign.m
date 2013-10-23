@@ -1,5 +1,5 @@
 function f = sign(f, varargin)
-%SIGN   Signum of a SIGN object.
+%SIGN   Signum of a FUN object.
 %   SIGN(F) returns the sign of F, where F is a FUN object with no roots in
 %   F.domain. If ~isempty(roots(F)), then SIGN(F) will return garbage with no
 %   warning.

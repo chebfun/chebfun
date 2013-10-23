@@ -183,6 +183,9 @@ classdef fun % (Abstract)
         
         % FUN objects are not transposable.
         f = ctranspose(f)
+        
+        % Extract columns of an array-valued FUN object.
+        f = extractColumns(f, columnIndex);
 
         % Flip columns of an array-valued FUN object.
         f = fliplr(f)
@@ -217,7 +220,7 @@ classdef fun % (Abstract)
         % Length of a FUN.
         len = length(f)
 
-        % Convert a array-valued FUN into a cell array of FUN objects.
+        % Convert an array-valued FUN into a cell array of FUN objects.
         g = mat2cell(f, M, N)
 
         % Global maximum of a FUN on [a,b].

@@ -33,17 +33,18 @@ switch index(1).type
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%% FEVAL / COMPOSE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     case '()'
-
-        % Where to evaluate:
-        x = idx{1}; 
         
         % Deal with row CHEBFUN objects:
         isTransposed = f.isTransposed;
         if ( isTransposed )
-            % [TODO]: Replace when CHEBFUN/TRANPOSE() is implemented.
-            f.isTransposed = false;
-%             f = f.';
+            f = f.';
+            if ( length(idx) > 1 )
+                idx(1:2) = idx([2,1]);
+            end
         end
+        
+        % Where to evaluate:
+        x = idx{1}; 
         
         % Initialise:
         columnIndex = 1:size(f, 2); % Column index for array-valued CHEBFUNs.
@@ -55,13 +56,17 @@ switch index(1).type
             % f(x, 'left') or f(x, 'right'):
             varin = {idx(2)};
             
-        elseif ( (length(idx) == 2) && (max(idx{2}) <= columnIndex(end)) )
+        elseif ( (length(idx) == 2) && ...
+                ( max(idx{2}) <= columnIndex(end) || strcmp(idx{2}, ':')) )
             % f(x, m), for array-valued CHEBFUN objects:
             columnIndex = idx{2};         
             
+        elseif ( length(idx) == 2 && strcmp(idx{2}, ':') )
+            % This is OK.
+            
         elseif ( length(idx) > 1 )
             error('CHEBFUN:subsref:dimensions', ...
-                'Index exceeds chebfun dimensions.')
+                'Index exceeds CHEBFUN dimensions.')
             
         end
 
@@ -81,10 +86,9 @@ switch index(1).type
                     all(columnIndex == 1:size(f, 2)) )
                 out = f;
             else
-                % [TODO]: This requires CELL2MAT() and MAT2CELL().
-                out = cell2mat(mat2cell(f, columnIndex));
+                % Extract the required columns:
+                out = extractColumns(f, columnIndex);
             end
-            
             
         else
             error('CHEBFUN:subsref:nonnumeric',...
@@ -94,13 +98,7 @@ switch index(1).type
         
         % Deal with row CHEBFUN objects:
         if ( isTransposed )
-            % [TODO]: Replace when CHEBFUN/TRANPOSE() is implemented.
-            if ( isa(out, 'chebfun') )
-                out.isTransposed = false;
-            else
-                out = out.';
-            end
-%             out = out.';
+            out = out.';
         end
     
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% GET %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
