@@ -18,6 +18,8 @@ function f = polyfit(y, n, varargin)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
+% TODO: Come up with a better way of accessing POLYFIT(X, Y, N, D).
+
 if ( nargout > 1 )
     error('CHEBFUN:polyfit:nargout', ...
         'Chebfun/polyfit only supports one output');
