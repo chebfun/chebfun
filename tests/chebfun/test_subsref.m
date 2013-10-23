@@ -29,52 +29,66 @@ catch ME
     pass(6) = strcmp(ME.identifier, 'CHEBFUN:subsref:nonnumeric');
 end
 
+x_mtx = reshape(xr, [100 10]);
+pass(7) = isequal(feval(f, x_mtx), f(x_mtx));
+x_3mtx = reshape(xr, [5 20 10]);
+pass(8) = isequal(feval(f, x_3mtx), f(x_3mtx));
+x_4mtx = reshape(xr, [5 4 5 10]);
+pass(9) = isequal(feval(f, x_4mtx), f(x_4mtx));
+
 f.isTransposed = 1;
-pass(7) = isequal(feval(f, xr), f(xr));
+pass(10) = isequal(feval(f, xr), f(xr)) && isequal(feval(f, x_4mtx), f(x_4mtx));
 
 % Test () syntaxes with an array-valued chebfun.
 f = chebfun(@(x) [sin(x - 0.1) cos(x - 0.2)]);
-pass(8) = isequal(feval(f, xr), f(xr));
+pass(11) = isequal(feval(f, xr), f(xr));
 y1 = feval(f, xr);
 y1 = y1(:, 2);
 y2 = f(xr, 2);
-pass(9) = isequal(y1, y2);
+pass(12) = isequal(y1, y2);
+
+x_mtx = reshape(xr, [100 10]);
+pass(13) = isequal(feval(f, x_mtx), f(x_mtx));
+x_3mtx = reshape(xr, [5 20 10]);
+pass(14) = isequal(feval(f, x_3mtx), f(x_3mtx));
+x_4mtx = reshape(xr, [5 4 5 10]);
+pass(15) = isequal(feval(f, x_4mtx), f(x_4mtx));
 
 f.isTransposed = 1;
-pass(10) = isequal(feval(f, xr), f(xr));
+pass(16) = isequal(feval(f, xr), f(xr)) && isequal(feval(f, x_4mtx), f(x_4mtx));
 
 % Test {} syntaxes.
 f = chebfun(@(x) sin(x - 0.1));
-pass(11) = isequal(f, f{:});
-pass(12) = isequal(f{-1, -0.1, 0.2, 1}, restrict(f, [-1 -0.1 0.2 1]));
+pass(17) = isequal(f, f{:});
+pass(18) = isequal(f{-1, -0.1, 0.2, 1}, restrict(f, [-1 -0.1 0.2 1]));
 
 try
     y = f{'X'};
-    pass(13) = false;
+    pass(19) = false;
 catch ME
-    pass(13) = strcmp(ME.identifier, 'CHEBFUN:subsref:baddomain');
+    pass(19) = strcmp(ME.identifier, 'CHEBFUN:subsref:baddomain');
 end
 
 try
     index.subs = {[1 2], [3 4]}.';
     index.type = '{}';
     y = subsref(f, index);
-    pass(14) = false;
+    pass(20) = false;
 catch ME
-    pass(14) = strcmp(ME.identifier, 'CHEBFUN:subsref:dimensions');
+    pass(20) = strcmp(ME.identifier, 'CHEBFUN:subsref:dimensions');
 end
 
 try
     index.subs = [];
     index.type = '[]';
     y = subsref(f, index);
-    pass(15) = false;
+    pass(21) = false;
 catch ME
-    pass(15) = strcmp(ME.identifier, 'CHEBFUN:subsref:unexpectedType');
+    pass(21) = strcmp(ME.identifier, 'CHEBFUN:subsref:unexpectedType');
 end
 
 % Test {} syntaxes with an array-valued chebfun.
 f = chebfun(@(x) [sin(x - 0.1) cos(x - 0.2)]);
-pass(16) = isequal(f{-1, -0.1, 0.2, 1}, restrict(f, [-1 -0.1 0.2 1]));
+pass(22) = isequal(f{-1, -0.1, 0.2, 1}, restrict(f, [-1 -0.1 0.2 1]));
 
 end
