@@ -47,18 +47,13 @@ numcols = size(c{1}, 2);
 % Get vscale, epslevel data:
 v = get(f, 'vscale-local');
 e = get(f, 'epslevel-local');
-ve = v.*repmat(e, 1, numcols);
+ve = bsxfun(@times, v, e);
 
 % Add a tiny amount to zeros to make plots look nicer:
+minve = min(ve, [], 1);
 for k = 1:numfuns
-    % If the minimum of (vscale)*(epslevel) is zero, use the smallest nonzero
-    % coefficient.  Otherwise, use the smaller of these two values.
-    if (min(ve(k, :)) == 0)
-        zeroLevel = min(c{k}(logical(c{k}(:))));
-    else
-        zeroLevel = min(min(ve(k, :)), min(c{k}(logical(c{k}(:)))));
-    end
-    c{k}(~c{k}) = zeroLevel;
+    % Use smaller of min. of (vscale)*(epslevel) and the smallest nonzero coeff.
+    c{k}(~c{k}) = min(minve(k), min(c{k}(logical(c{k}(:)))));
 end
 
 % Shape it:
