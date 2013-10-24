@@ -1,10 +1,11 @@
 classdef chebpref
-%CHEBPREF   Class for managing Chebfun preferences
+%CHEBPREF   Class for managing Chebfun preferences.
 %   CHEBPREF is a class for managing Chebfun construction-time preferences such
 %   as the construction tolerance, whether or not to perform breakpoint and
 %   singularity detection, and the various options that those features require.
-%   These objects can be supplied to the CHEBFUN constructor, which will
-%   interpret them and adjust the construction process accordingly.
+%   These objects can be supplied to the CHEBFUN constructor (as well as the
+%   constructors of other classes in the CHEBFUN system), which will interpret
+%   them and adjust the construction process accordingly.
 %
 % Available Preferences:
 %
@@ -20,20 +21,20 @@ classdef chebpref
 %     true
 %    [false]
 %
-%     If true, breakpoints between funs may be introduced where a discontinuity
+%     If true, breakpoints between FUNS may be introduced where a discontinuity
 %     in a function or a low-order derivative is detected or if a global
 %     representation will be too long.  If false, breakpoints will be
-%     introduced only at points where discontinuities are being created, e.g.,
-%     by ABS(F) at points where a CHEBFUN F passes through zero.
+%     introduced only at points where discontinuities are being created (e.g.,
+%     by ABS(F) at points where a CHEBFUN F passes through zero).
 %
 %   breakpointPrefs            - Preferences for breakpoint detection.
 %
 %      splitMaxLength          - Maximum FUN length.
 %       [128]
 %
-%         This is the maximum length of a single FUN (i.e., polynomial degree
-%         for funs based on Chebyshev polynomial representations) allowed by
-%         the constructor when breakpoint detection is enabled.
+%         This is the maximum length of a single FUN (e.g., the polynomial
+%         degree for FUNs based on Chebyshev polynomial representations) allowed
+%         by the constructor when breakpoint detection is enabled.
 %
 %      splitMaxTotalLength     - Maximum total CHEBFUN length.
 %       [6000]
@@ -54,8 +55,10 @@ classdef chebpref
 %    [false]
 %
 %      If true, the constructor will attempt to detect and factor out
-%      singularities, e.g., points where a function or its derivatives become
-%      unbounded.  See SINGFUN for more information.
+%      singularities, (e.g., points where a function or its derivatives become
+%      unbounded). If false, breakpoints will be introduced only at points where
+%      singularities are being created, (e.g., by SQRT(F) at points where a
+%      CHEBFUN F passes through zero). See SINGFUN for more information.
 %
 %   singPrefs                  - Preferences for singularity detection.
 %
@@ -86,9 +89,10 @@ classdef chebpref
 %   techPrefs                  - Preferences for the tech constructor.
 %
 %      This is a structure of preferences that will be passed to the constructor
-%      for the underlying representation technology.  See CHEBTECH/PREF for
-%      preferences accepted by the default CHEBTECH technology.  Additionally,
-%      all techs are required to accept the following preferences:
+%      for the underlying representation technology.  See, for example,
+%      CHEBTECH/PREF for preferences accepted by the default CHEBTECH
+%      technology.  Additionally, all techs are required to accept the following
+%      preferences:
 %
 %      eps                     - Construction tolerance.
 %       [2^(-52]
@@ -247,7 +251,7 @@ classdef chebpref
 
             % Copy fields from q, placing unknown ones in techPrefs and merging
             % incomplete substructures.
-            for (field = fieldnames(q).')
+            for field = fieldnames(q).'
                 if ( isprop(p, field{1}) )
                     if ( isstruct(p.(field{1})) )
                         p.(field{1}) = chebpref.mergePrefs(p.(field{1}), ...
@@ -347,6 +351,11 @@ classdef chebpref
         %    preferences which may have a better name within the specific
         %    context of the tech object whose preferences are stored in P.
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        
+        % [NH]: Am I correct in thinking this only merges techPrefs? Rename?
+        % [NH]: After visiting chebtech.pref, I understand this better. I think
+        % the documentation might need to be clarified, but I'm not sure how.
+        % (Perhaps make it clear that the output is a techPref-type preference).
 
             if ( isa(p, 'chebpref') )
                 p = p.techPrefs;
@@ -360,7 +369,7 @@ classdef chebpref
                 map = struct();
             end
 
-            for (field = fieldnames(q).')
+            for field = fieldnames(q).'
                 if ( isfield(map, field{1}) )
                     p.(map.(field{1})) = q.(field{1});
                 else

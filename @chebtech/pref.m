@@ -63,6 +63,20 @@ function p = pref(q)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
+% [NH]: I don't like 'samples'. If refinement is not nested, then we infact
+% sample many more times than 'maxSamples'. Since here everything is in fact a
+% polynomial, and the maps allow a local namespace, perhaps here we should use
+% the term 'degree'? (I know sampels = degree+1, which is annoying, but not
+% insurmountable.)
+
+% [NH]: Could we rename the pref() methods at tech levels to be techpref()?
+% Since the preference being passed around often has the variable name pref,
+% this avoids calls of the form >> pref = f.pref(pref). >> pref =
+% f.techpref(pref) seems a little clearer.
+
+% [NH]: Perhaps we should always strive to call preference structures pref,
+% rather than just p?
+
 p.eps                = 2^-52;
 p.gridType           = 2;
 p.minSamples         = 9;
