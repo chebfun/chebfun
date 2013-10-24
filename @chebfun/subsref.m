@@ -56,11 +56,15 @@ switch index(1).type
             % f(x, 'left') or f(x, 'right'):
             varin = {idx(2)};
             
-        elseif ( (length(idx) == 2) && ...
-                 ((max(idx{2}) <= columnIndex(end)) || strcmp(idx{2}, ':')) )
+        elseif ( length(idx) == 2 )
             % f(x, m), for array-valued CHEBFUN objects:
-            columnIndex = idx{2};         
-            
+            if ( strcmp(idx{2}, ':') )
+                % Do nothing, as this has already been done above:
+                % columnIndex = 1:size(f, 2);
+            elseif ( max(idx{2}) <= columnIndex(end) )
+                columnIndex = idx{2};
+            end
+
         elseif ( length(idx) == 2 && strcmp(idx{2}, ':') )
             % This is OK.
             
@@ -110,10 +114,15 @@ switch index(1).type
         end
         
         % Deal with row CHEBFUN objects:
-        % (NB:  We call PERMUTE instead of TRANSPOSE in case OUT is
-        % multidimensional).
         if ( isTransposed )
-            out = permute(out, [2 1 3:ndims(out)]);
+            if ( isnumeric(out) )
+                % (Call PERMUTE instead of TRANSPOSE for numeric objects in
+                % case OUT is multidimensional).
+                out = permute(out, [2 1 3:ndims(out)]);
+            else
+                % Call TRANSPOSE for everything else (e.g., CHEBFUNs):
+                out = out.';
+            end
         end
     
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% GET %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
