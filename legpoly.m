@@ -25,7 +25,6 @@ function p = legpoly(n, dom, normalize, method)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TODO: Look at this more carefully.
 % TODO: This code needs a test.
 
 % Parse input:
@@ -127,7 +126,7 @@ switch method
     case 3 % LEG2CHEB
 
         c_leg = [1 ; zeros(n, 1)];              % Legendre coefficients.
-        c_cheb = leg2cheb(c_leg);               % Chebyshev coefficients.
+        c_cheb = chebtech.leg2cheb(c_leg);      % Chebyshev coefficients.
         p_chebtech = chebtech2({[], c_cheb});   % Make a CHEBTECH.
         p_bndfun = bndfun(p_chebtech, dom);     % Make a BNDFUN.
         p = chebfun({p_bndfun});                % Make a CHEBFUN.

@@ -10,7 +10,7 @@ tol = 10*eps;
 
 for n = 1:2
     
-    if (n == 1)
+    if ( n == 1 )
         testclass = chebtech1();
     else 
         testclass = chebtech2();
