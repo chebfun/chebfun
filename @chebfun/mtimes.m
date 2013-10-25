@@ -14,14 +14,18 @@ function f = mtimes(f, g)
 if ( ~isa(f, 'chebfun') )   % ??? * CHEBFUN
 
     % Ensure CHEBFUN is the first input:
-    f = mtimes(g, f);
+    if ( ~g.isTransposed )
+        f = mtimes(g, f);
+    else
+        f = mtimes(g.', f.').';
+    end
 
 elseif ( isempty(g) )       % CHEBFUN * []
 
     f = [];
     
 elseif ( isnumeric(g) )     % CHEBFUN * double
-
+    
     % Loop over the FUNs:
     for k = 1:numel(f.funs)
         f.funs{k} = mtimes(f.funs{k}, g);
