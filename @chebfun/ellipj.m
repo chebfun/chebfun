@@ -26,7 +26,6 @@ function [sn, cn, dn] = ellipj(u, m, pref)
 
 if ( nargin < 3 )
     pref = chebpref();
-    % [NH]: pref.eps? (Many other places too. Clarity vs speed?) 
     tol = pref.techPrefs.eps;
 elseif ( ~isstruct(pref) )
     tol = pref;

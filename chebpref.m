@@ -216,48 +216,49 @@ classdef chebpref
 
     methods
 
-        function p = chebpref(q)
-            if ( (nargin == 1) && isa(q, 'chebpref') )
-                p = q;
+        function outPref = chebpref(inPref)
+            if ( (nargin == 1) && isa(inPref, 'chebpref') )
+                outPref = inPref;
                 return
             elseif ( nargin < 1 )
-                q = struct();
+                inPref = struct();
             end
 
             % Initialize default preference values.
-            p.maxTotalLength = 65536;
-            p.enableBreakpointDetection = false;
-                p.breakpointPrefs.splitMaxLength = 128;
-                p.breakpointPrefs.splitMaxTotalLength = 6000;
-            p.domain = [-1 1];
-            p.enableSingularityDetection = false;
-                p.singPrefs.exponentTol = 1.1*1e-11;
-                p.singPrefs.maxPoleOrder = 20;
-            p.tech = 'chebtech';
-            p.techPrefs = struct();
-                p.techPrefs.eps = 2^(-52);
-                p.techPrefs.maxLength = 65537;
-                p.techPrefs.exactLength = NaN;
-                p.techPrefs.extrapolate = false;
-                p.techPrefs.sampleTest = true;
+            outPref.maxTotalLength = 65536;
+            outPref.enableBreakpointDetection = false;
+                outPref.breakpointPrefs.splitMaxLength = 128;
+                outPref.breakpointPrefs.splitMaxTotalLength = 6000;
+            outPref.domain = [-1 1];
+            outPref.enableSingularityDetection = false;
+                outPref.singPrefs.exponentTol = 1.1*1e-11;
+                outPref.singPrefs.maxPoleOrder = 20;
+            outPref.tech = 'chebtech';
+            outPref.techPrefs = struct();
+                outPref.techPrefs.eps = 2^(-52);
+                outPref.techPrefs.maxLength = 65537;
+                outPref.techPrefs.exactLength = NaN;
+                outPref.techPrefs.extrapolate = false;
+                outPref.techPrefs.sampleTest = true;
 
             % Copy fields from q, placing unknown ones in techPrefs and merging
             % incomplete substructures.
-            for field = fieldnames(q).'
-                if ( isprop(p, field{1}) )
-                    if ( isstruct(p.(field{1})) )
-                        p.(field{1}) = chebpref.mergePrefs(p.(field{1}), ...
-                            q.(field{1}));
+            for field = fieldnames(inPref).'
+                if ( isprop(outPref, field{1}) )
+                    if ( isstruct(outPref.(field{1})) )
+                        outPref.(field{1}) = ...
+                            chebpref.mergePrefs(outPref.(field{1}), ...
+                            inPref.(field{1}));
                     else
-                        p.(field{1}) = q.(field{1});
+                        outPref.(field{1}) = inPref.(field{1});
                     end
                 else
-                    p.techPrefs.(field{1}) = q.(field{1});
+                    outPref.techPrefs.(field{1}) = inPref.(field{1});
                 end
             end
         end
 
-        function out = subsref(p, ind)
+        function out = subsref(pref, ind)
         %SUBSREF   Subscripted referencing for CHEBPREF.
         %   P.PROP, where P is a CHEBPREF object, returns the value of the
         %   CHEBPREF property PROP stored in P.  If PROP is not a CHEBPREF
@@ -272,10 +273,10 @@ classdef chebpref
         %   including '()' and '{}'.
             switch ( ind(1).type )
                 case '.'
-                    if ( isprop(p, ind(1).subs) )
-                        out = p.(ind(1).subs);
+                    if ( isprop(pref, ind(1).subs) )
+                        out = pref.(ind(1).subs);
                     else
-                        out = p.techPrefs.(ind(1).subs);
+                        out = pref.techPrefs.(ind(1).subs);
                     end
 
                     if ( numel(ind) > 1 )
@@ -287,7 +288,7 @@ classdef chebpref
             end
         end
 
-        function p = subsasgn(p, ind, val)
+        function pref = subsasgn(pref, ind, val)
         %SUBSASGN   Subscripted assignment for CHEBPREF.
         %   P.PROP = VAL, where P is a CHEBPREF object, assigns the value VAL
         %   to the CHEBPREF property PROP stored in P.  If PROP is not a
@@ -301,11 +302,11 @@ classdef chebpref
         %   including '()' and '{}'.
             switch ( ind(1).type )
                 case '.'
-                    if ( isprop(p, ind(1).subs) )
-                        p = builtin('subsasgn', p, ind, val);
+                    if ( isprop(pref, ind(1).subs) )
+                        pref = builtin('subsasgn', pref, ind, val);
                     else
-                        p.techPrefs = builtin('subsasgn', p.techPrefs, ind, ...
-                            val);
+                        pref.techPrefs = builtin('subsasgn', pref.techPrefs, ...
+                            ind, val);
                     end
                 otherwise
                     error('CHEBTECH:subsasgn:badType', ...
@@ -317,7 +318,7 @@ classdef chebpref
 
     methods ( Static = true )
 
-        function p = mergePrefs(p, q, map)
+        function pref1 = mergePrefs(pref1, pref2, map)
         %MERGEPREFS   Merge preference structures.
         %   P = MERGEPREFS(P, Q), where P and Q are MATLAB structures, "merges"
         %   Q into P by replacing the contents of fields in P with those of
@@ -349,23 +350,23 @@ classdef chebpref
         % the documentation might need to be clarified, but I'm not sure how.
         % (Perhaps make it clear that the output is a techPref-type preference).
 
-            if ( isa(p, 'chebpref') )
-                p = p.techPrefs;
+            if ( isa(pref1, 'chebpref') )
+                pref1 = pref1.techPrefs;
             end
 
-            if ( isa(q, 'chebpref') )
-                q = q.techPrefs;
+            if ( isa(pref2, 'chebpref') )
+                pref2 = pref2.techPrefs;
             end
 
             if ( nargin < 3 )
                 map = struct();
             end
 
-            for field = fieldnames(q).'
+            for field = fieldnames(pref2).'
                 if ( isfield(map, field{1}) )
-                    p.(map.(field{1})) = q.(field{1});
+                    pref1.(map.(field{1})) = pref2.(field{1});
                 else
-                    p.(field{1}) = q.(field{1});
+                    pref1.(field{1}) = pref2.(field{1});
                 end
             end
         end

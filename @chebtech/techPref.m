@@ -1,4 +1,4 @@
-function p = techPref(q)
+function outPref = techPref(inPref)
 %TECHPREF   Preference settings for CHEBTECH.
 %   P = CHEBTECH.TECHPREF() returns a structure P with fields which contain the
 %   default CHEBTECH preferences as field/value pairs.  This structure may be
@@ -69,23 +69,20 @@ function p = techPref(q)
 % the term 'degree'? (I know sampels = degree+1, which is annoying, but not
 % insurmountable.)
 
-% [NH]: Perhaps we should always strive to call preference structures pref,
-% rather than just p?
-
-p.eps                = 2^-52;
-p.gridType           = 2;
-p.minSamples         = 9;
-p.maxSamples         = 2^16 + 1;
-p.numSamples         = NaN;
-p.extrapolate        = false;
-p.sampleTest         = true;
-p.refinementFunction = 'nested';
-p.happinessCheck     = 'classic';
+outPref.eps                = 2^-52;
+outPref.gridType           = 2;
+outPref.minSamples         = 9;
+outPref.maxSamples         = 2^16 + 1;
+outPref.numSamples         = NaN;
+outPref.extrapolate        = false;
+outPref.sampleTest         = true;
+outPref.refinementFunction = 'nested';
+outPref.happinessCheck     = 'classic';
 
 if ( nargin == 1 )
     map.maxLength = 'maxSamples';
     map.exactLength = 'numSamples';
-    p = chebpref.mergePrefs(p, q, map);
+    outPref = chebpref.mergePrefs(outPref, inPref, map);
 end
 
 end
