@@ -1,10 +1,12 @@
-function out = legpoly(f, n)
+function out = legpoly(f, varargin)
 %LEGPOLY    Legendre polynomial coefficients of a CHEBFUN.
-%   A = LEGPOLY(F) returns the coefficients such that F_1 = A(1) P_N(x) + ... +
-%   A(N) P_1(x) + A(N+1) P_0(x) where P_N(x) denotes the N-th Legendre
-%   polynomial and F_1 denotes the first FUN of CHEBFUN F.
+%   A = LEGPOLY(F, N) returns the first N+1 coefficients in the Legendre series
+%   expansion of the CHEBFUN F, so that such that F approximately equals A(1)
+%   P_N(x) + ... + A(N) P_1(x) + A(N+1) P_0(x) where P_N(x) denotes the N-th
+%   Legendre polynomial.
 %
-%   A = LEGPOLY(F, I) returns the coefficients for the I-th FUN.
+%   If F is smooth (i.e., numel(f.funs) == 1), then A = LEGPOLY(F) will assume
+%   that N = length(F) - 1;
 %
 %   There is also a LEGPOLY command in the Chebfun trunk directory, which
 %   computes the CHEBFUN corresponding to the Legendre polynomial P_n(x).
@@ -14,24 +16,79 @@ function out = legpoly(f, n)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% [TODO]: Compute Legendre coefficients of a piecewise CHEBFUN by computing the
-% required inner products.
-
-% [TODO]: Make the second input be the number of returned coefficients, rather
-% than the FUN of interest.
-
-% Select a FUN:
-if ( nargin == 1 )
-    if ( numel(f.funs) > 1 )
-        warning('CHEBFUN:legpoly:onefun', ...
-               ['CHEBFUN has more than one FUN. ', ...
-                'Returning Legendre coefficients for the first FUN only. ' ...
-                'Use LEGPOLY(F, 1) to suppress this warning.'])
+% Call FUN/LEGPOLY():
+if ( numel( f.funs ) == 1 )
+    out = legpoly(f.funs{1}, varargin{:});
+else
+    if ( nargin < 2 )
+        error('CHEBFUN:legpoly:n', ...
+            'Input is piecewise, so LEGPOLY() expects a second input argument.')
     end
-    n = 1;
+    out = legpolyPiecewise(f, varargin{:});
 end
 
-% Call FUN/LEGPOLY():
-out = legpoly(f.funs{n});
+end
 
+function out = legpolyPiecewise(f, n)
+%LEGPOLYPIECEWISE
+% [TODO]: Document.
+
+% Domain:
+a = f.domain(1);
+b = f.domain(end);
+
+% Orthonormal scaling:
+scl = 2./(2*(0:n)'+1);               
+
+isSimple = all(cellfun(@(f) isa(f.onefun, 'chebtech'), f.funs));
+
+if ( isSimple )
+    % Compute inner-products manually:
+    
+    out = zeros(n+1, size(f, 2)); % Initialise storage.
+    
+    % For each subinterval calculate int P_k f(x)dx and add them up:
+    for j = 1:numel(f.funs)
+        
+        yfun = f.funs{j};   % jth fun.
+        xdom = yfun.domain; % Subinterval j:
+        % We must map LEGPTS() from [-1, 1] to [a, b] to [xdom].
+        zdom = 2*(xdom - a)/(b - a) - 1;
+        % Gauss-Legendre nodes and weights on scaled subinterval (zdom):
+        [z, w] = legpts(max(length(yfun), n+1), zdom);
+        % Mapping from zdom to xdom:
+        x = (z+1)*(b-a)/2 + a;
+        % Evaluate on y on xdom:
+        vals = feval(yfun, x);
+        
+        % Compute the first two inner-products by hand:
+%         out(1,:) = out(1,:) + w*vals;
+        out(1,:) = out(1,:) + sum(diag(w)*vals);
+%         out(2,:) = out(2,:) + w*(z.*vals);        
+        out(2,:) = out(2,:) + sum(diag(w.*z.')*vals);
+        % Evaluate Legendre-Vandermonde matrix by recureence relation:
+        Pm2 = 1; Pm1 = z;
+        for kk = 1:n-1
+            P = (2-1/(kk+1))*Pm1.*z - (1-1/(kk+1))*Pm2;
+            Pm2 = Pm1; Pm1 = P;
+            % Add contribution from subinterval to (k+1)st coefficient:
+%             out(kk+2,:) = out(kk+2) + w.'*(P.*vals);
+            out(kk+2,:) = out(kk+2,:) + sum(diag(w.*P.')*(vals));
+        end
+        
+    end
+    
+else
+    % Compute using LEGPOLY(): (This will be much slower!)
+    
+    % Legendre-Vandermonde matrix:
+    Enorm = legpoly(0:n, [a, b]);
+    % Compute the projection (with correct scaling):
+    out = (Enorm'*f);
+    
+end
+
+% out = flipud(out ./ scl).';                    % Scale appropriately.
+out = flipud(bsxfun(@rdivide, out, scl)).';    % Scale appropriately.
+    
 end

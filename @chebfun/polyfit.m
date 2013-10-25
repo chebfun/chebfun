@@ -20,9 +20,11 @@ function f = polyfit(y, n, varargin)
 
 % TODO: Come up with a better way of accessing POLYFIT(X, Y, N, D).
 
+% TODO: This requires testing.
+
 if ( nargout > 1 )
     error('CHEBFUN:polyfit:nargout', ...
-        'Chebfun/polyfit only supports one output');
+        'Chebfun/polyfit only supports one output argument.');
 end
 
 if ( nargin > 2 )
@@ -57,92 +59,45 @@ w = baryWeights(x);                    % Barycentric weights for x.
 xCheb = chebpts(n);                    % Chebyshev grid.
 yCheb = chebtech.bary(xCheb, y, x, w); % Evaluate interpolant at xCheb.
 f = chebfun(yCheb, dom);               % Create a CHEBFUN of the result.
+
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function f = continuousPolyfit(y, n)
+function p = continuousPolyfit(f, n)
 %CONTINUOUSPOLYFIT
 % [TODO]: Document.
 
-% The code below is a fast version of the code:
-% Enorm = legpoly(0:n,[a,b],'norm');  % Legendre-Vandermonde matrix
-% f = Enorm*(Enorm'*y);               % least squares chebfun
-
-if ( any(isinf(y.domain)) )
+if ( any(isinf(f.domain)) )
     error('CHEBFUN:polyfit:unbounded', 'Unbounded domains are not supported.');
 end
 
-% Copy y to f:
-f = y;
-
-if ( n > length(y) && numel(y.funs) == 1 )
+if ( n > length(f) && numel(f.funs) == 1 )
     % Nothing to do here!
+    p = f;
     return
 end
 
-if ( min(size(y)) > 1 )
-    error('CHEBFUN:polyfit:arrayvalues', ...
-        'Array-valued CHEBFUN objects are not supported by POLYFIT().');
+% Compute first n Legendre coeffs:
+cleg = legpoly(f, n).';                      
+
+% Convert to Chebyshev coeffs:
+c = zeros(size(cleg));
+for k = 1:size(c, 2)
+    c(:,k) = chebtech.leg2cheb(cleg(:,k));   
 end
 
-if ( numel(y.funs) == 1 )
-    f.funs{1} = polyfit(y.funs{1}, n);
-    return
-end
-
-a = y.domain(1);
-b = y.domain(end);
-
-isSimple = all(cellfun(@(f) isa(f.onefun, 'chebtech'), y.funs));
-if ( isSimple )
-    
-    scl = 2./(2*(0:n)'+1);  % Orthonormal scaling.
-    cleg = zeros(n+1, 1);   % Initialise storage.
-    
-    % For each subinterval calculate int P_k f(x)dx and add them up:
-    for j = 1:numel(y.funs)
-        
-        yfun = y.funs{j};   % jth fun.
-        xdom = yfun.domain; % Subinterval j:
-        % We must map LEGPTS() from [-1, 1] to [a, b] to [xdom].
-        zdom = 2*(xdom - a)/(b - a) - 1;
-        % Gauss-Legendre nodes and weights on scaled subinterval (zdom):
-        [z, w] = legpts(max(length(yfun), n+1), zdom);
-        % Mapping from zdom to xdom:
-        x = (z+1)*(b-a)/2 + a;
-        % Evaluate on y on xdom:
-        vals = feval(yfun, x);
-        
-        % Compute the first two innerproducts by hand:
-        cleg(1,:) = cleg(1,:) + w*vals;
-        cleg(2,:) = cleg(2,:) + w*(z.*vals);
-        % Evaluate Legendre-Vandermonde matrix by recureence relation:
-        Pm2 = 1; Pm1 = z;
-        for kk = 1:n-1
-            P = (2-1/(kk+1))*Pm1.*z - (1-1/(kk+1))*Pm2;
-            Pm2 = Pm1; Pm1 = P;
-            % Add contribution from subinterval to (k+1)st coefficient:
-            cleg(kk+2) = cleg(kk+2) + w*(P.*vals);
-        end
-        
-    end
-    
-    % Convert the computed Legendre expansion to a Chebysev series:
-    cleg = flipud(cleg ./ scl);                  % Scale appropriately.
-    c = chebtech.leg2cheb(cleg);                 % Compute Chebyshev coeffs.
-    f_chebtech = y.funs{1}.onefun.make({[], c}); % Make a CHEBTECH.
-    f_fun = fun.constructor(f_chebtech, [a, b]); % Make a BNDFUN.
-    f = chebfun({f_fun});                        % Make a CHEBFUN.
-%     f = chebfun(c, 'coeffs', [a, b]);            % Make a CHEBFUN.
-    
+% Make a CHEBTECH:
+if ( isa(f.funs{1}.onefun, 'chebtech') )
+    p_chebtech = f.funs{1}.onefun.make({[], c}); 
 else
-    
-    % Legendre-Vandermonde matrix:
-    Enorm = legpoly(0:n, [a, b], 'norm');
-    % Take project and expand in the Legendre basis:
-    f = Enorm*(Enorm'*y);
-    
+    p_chebtech = chebtech.constructor({[], c});
 end
+
+% Make a BNDFUN:
+p_fun = fun.constructor(p_chebtech, f.domain([1, end]));    
+
+% Make a CHEBFUN:
+p = chebfun({p_fun});                        
 
 end

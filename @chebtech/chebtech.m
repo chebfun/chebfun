@@ -327,7 +327,7 @@ classdef chebtech < smoothfun % (Abstract)
         out = iszero(f)
         
         % Return Legendre coefficients of a CHEBTECH.
-        c_leg = legpoly(f)
+        c_leg = legpoly(f, n)
         
         % Length of a CHEBTECH.
         len = length(f)

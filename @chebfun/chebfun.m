@@ -313,7 +313,7 @@ classdef chebfun
         out = length(f);
         
         % Return Legendre coefficients of a CHEBFUN.
-        c_leg = legpoly(f)
+        c_leg = legpoly(f, n)
         
         % Plot a CHEBFUN object on a loglog scale:
         h = loglog(f, varargin);
