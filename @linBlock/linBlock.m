@@ -1,16 +1,30 @@
 classdef linBlock
     
     properties
+        % The domain of functions that are operated upon.
         domain = [];
         
-        % This stores the delayed evaluation stack. Its argument is an empty
+        % The delayed evaluation stack. Its argument is an empty
         % instance of the class that determines how the operator is
-        % instantiated (collocation matrix, function handle, ...).
+        % discretized.
         stack = [];
+        
+        % The function representation of the operator. It's a callable function
+        % that can be applied to a chebfun.
+        func = [];
+        
+        % The coefficient representation of the operator. It's a quasimatrix of
+        % coefficient functions for different orders of the derivative.
+        coeff = [];
         
         % Track differential order.
         diffOrder = 0;
         
+    end
+    
+    properties (Dependent)
+        functionForm
+        coeffForm        
     end
     
     properties (Constant)
@@ -23,33 +37,38 @@ classdef linBlock
     
     
     methods
-        function A = linBlock(domain)
-            % A = LINOP()        Domain defaults to [-1, 1].
-            % A = LINOP(DOMAIN)
+        function A = linBlock(varargin)
+            % A = LINBLOCK()        Domain defaults to [-1, 1].  (TODO: Why?)
+            % A = LINBLOCK(B)       Self-return for the same type.
+            % A = LINBLOCK(DOMAIN)  Null object on the domain.
+            % A = LINBLOCK(DOMAIN,STACK,FUNCTIONFORM,COEFFFORM,DIFFORDER)
+            
             if ( nargin == 0 )
-                domain = [-1 1];
-            elseif ( nargin == 1 && isa(domain, 'linBlock') )
-                A = domain;
+                A.domain = [-1 1];
+            elseif ( nargin == 1 && isa(varargin{1}, 'linBlock') )
+                A = varargin{1};
                 return
+            else
+                A.domain = varargin{1};
             end
-            A.domain = domain;
         end
         
         function d = get.diffOrder(A)
             d = A.diffOrder;
         end
         
+        function f = get.functionForm(A)
+            f = A.func.func;
+        end
+        
+        function c = get.coeffForm(A)
+            c = A.coeff.coeffs;
+        end
         
         function C = minus(A, B)
-            % C = A - B
             C = A + (-B);
         end
                
-        function C = uminus(A)
-            C = A;
-            C.stack = @(z) -A.stack(z);
-        end
-        
         function C = horzcat(varargin)
             kill = cellfun(@isempty, varargin);            
             C = chebmatrix( varargin(~kill) );
@@ -59,19 +78,7 @@ classdef linBlock
             kill = cellfun(@isempty, varargin);            
             C = chebmatrix( varargin(~kill)' );
         end
-        
-        
-        function L = op(A)
-            % OP(A) returns function handle for chebfuns
-            L = A.stack( blockOp([]) );
-            L = L.func;
-        end
-        
-        function L = coeff(A)
-            L = A.stack( blockCoeff([], A.domain) );
-            L = [L.coeffs{:}];
-        end
-
+                
         function L = discretize(A, dim, varargin)
             % MATRIX(A, DIM) returns a collocation matrix using A's matrixType property.
             % MATRIX(A, DIM, DOMAIN) overrides the domain stored in A.             
@@ -88,10 +95,6 @@ classdef linBlock
             dummy = matrixType([]);
             L = dummy.discretize(A, dim, dom);
 
-        end
-        
-        function L = matrix(A, varargin)
-            L = discretize(A, varargin{:});
         end
                         
     end
@@ -114,8 +117,11 @@ classdef linBlock
             parse(p, varargin{:});
             dom = p.Results.domain;
             m = p.Results.m;
+            
             D = operatorBlock(dom);
             D.stack = @(z) diff(z, m);
+            D.func = blockFunction.diff(dom,m);
+            D.coeff = blockCoeff.diff(dom,m);
             D.diffOrder = m;
         end
         
@@ -140,6 +146,8 @@ classdef linBlock
             
             C = operatorBlock(dom);
             C.stack = @(z) cumsum(z, m);
+            C.func = blockFunction.cumsum(dom,m);
+            C.coeff = blockCoeff.cumsum(dom,m);
             C.diffOrder = -m;
         end
         
@@ -148,6 +156,8 @@ classdef linBlock
             if nargin==0, domain = [-1 1]; end
             I = operatorBlock(domain);
             I.stack = @(z) eye(z);
+            I.func = blockFunction.eye(domain);
+            I.coeff = blockCoeff.eye(domain);
             I.diffOrder = 0;
         end
         
@@ -156,6 +166,8 @@ classdef linBlock
             if nargin==0, domain = [-1 1]; end
             Z = operatorBlock(domain);
             Z.stack = @(z) zeros(z);
+            Z.func = blockFunction.zeros(domain);
+            Z.coeff = blockCoeff.zeros(domain);            
             Z.diffOrder = 0;
         end
         
@@ -164,14 +176,17 @@ classdef linBlock
             if nargin==0, domain = [-1 1]; end
             Z = functionalBlock(domain);
             Z.stack = @(z) zero(z);
+            Z.func = blockFunction.zero(domain);
+            Z.coeff = blockCoeff.zero(domain);            
             Z.diffOrder = 0;
         end
-
         
-        function U = diag(u)
+        function U = mult(u)
             % D = DIAG(U)  diagonal operator from the chebfun U
             U = operatorBlock(u.domain);
-            U.stack = @(z) diag(z, u);
+            U.stack = @(z) mult(z, u);
+            U.func = blockFunction.mult(u);
+            U.coeff = blockCoeff.mult(u);            
             U.diffOrder = 0;
         end
         
@@ -180,6 +195,8 @@ classdef linBlock
             if nargin==0, domain = [-1 1]; end                        
             S = functionalBlock(domain);
             S.stack = @(z) sum(z);
+            S.func = blockFunction.sum(domain);
+            S.coeff = blockCoeff.sum(domain);            
             S.diffOrder = -1;
         end
         
@@ -191,9 +208,9 @@ classdef linBlock
             addOptional(p, 'direction', 0, valid);
             parse(p, location, varargin{:});
             location = p.Results.location;
-            dom = p.Results.domain;
+            domain = p.Results.domain;
             direction = p.Results.direction;
-            if (location < dom(1)) || (location > dom(end))
+            if (location < domain(1)) || (location > domain(end))
                 error('Evaluation location is not in the domain.')
             end
             
@@ -208,8 +225,10 @@ classdef linBlock
                 end
             end
 
-            E = functionalBlock(dom);
+            E = functionalBlock(domain);
             E.stack = @(z) feval(z, location, direction);
+            E.func = blockFunction.feval(domain,location,direction);
+            E.coeff = blockCoeff.feval(domain,location,direction);            
         end
         
         function E = eval(varargin)
@@ -221,6 +240,8 @@ classdef linBlock
         function F = inner(f)
             F = functionalBlock(f.domain);
             F.stack = @(z) inner(z, f);
+            F.func = blockFunction.inner(f);
+            F.coeff = blockCoeff.inner(f);                        
             F.diffOrder = 0;
         end
 

@@ -3,6 +3,7 @@ classdef linop
     properties
         operator  % chebmatrix
         constraint 
+        discretizationType = linBlock.defaultDiscretization;
     end
     
     properties (Dependent)
@@ -79,8 +80,8 @@ classdef linop
              Z = linBlock.zeros(varargin{:});
         end
         
-        function U = diag(varargin)
-            U = linBlock.diag(varargin{:});
+        function U = mult(varargin)
+            U = linBlock.mult(varargin{:});
         end
         
         function Z = zero(varargin)

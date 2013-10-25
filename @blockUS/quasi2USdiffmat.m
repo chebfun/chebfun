@@ -3,9 +3,10 @@ function L = quasi2USdiffmat(L, dim)
 A = blockUS(dim, L.domain);
 
 if ( isa(L, 'blockCoeff') )
+    % TODO: Still possible?
     c = L.coeffs;
 else
-    c = L;
+    c = L.coeffForm;
 end
 c = fliplr(c);
 order = numel(c) - 1;

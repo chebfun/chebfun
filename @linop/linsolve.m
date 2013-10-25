@@ -1,7 +1,7 @@
 function u = linsolve(L, f, type)
 
 if ( nargin < 3 )
-    type = linBlock.defaultDiscretization;
+    type = L.discretizationType;
 end
 obj = type([]);  % to get a static method
 
@@ -9,17 +9,17 @@ dimVals = floor(2.^(3:14));
 [rowSize, colSize] = blockSizes(L.operator);
 isFunVariable = isinf(colSize(1,:));
 
-if ( strcmp(char(type), 'blockUS') )
-    % TODO: This is temporary.
-    bc = blockCoeff([], L.domain);
-    for k = 1:numel(L.operator.blocks)
-        if ( isa(L.operator.blocks{k}, 'operatorBlock') )
-            blockk = L.operator.blocks{k};
-            coeffs = feval(blockk.stack, bc);
-            L.operator.blocks{k}.stack = coeffs;
-        end
-    end
-end
+% if ( strcmp(char(type), 'blockUS') )
+%     % TODO: This is temporary.
+%     bc = blockCoeff([], L.domain);
+%     for k = 1:numel(L.operator.blocks)
+%         if ( isa(L.operator.blocks{k}, 'operatorBlock') )
+%             blockk = L.operator.blocks{k};
+%             coeffs = feval(blockk.stack, bc);
+%             L.operator.blocks{k}.stack = coeffs;
+%         end
+%     end
+% end
 
 for dim = dimVals
     

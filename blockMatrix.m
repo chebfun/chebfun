@@ -1,35 +1,40 @@
-classdef blockOp 
+classdef blockMatrix ( Abstract ) < operatorBlockRealization & functionalBlockRealization
     
     properties (Access=public)
         % This property is assigned the callable function that does the
         % correct operation when called on chebfuns.
-        func = [];
+        matfunc = [];
+    end
+    
+    properties (Dependent)
+        result
     end
     
     methods
 
-        function A = blockOp(f)
-            A.func = f;  
+        function A = blockMatrix(f)
+            A.matfunc = f;  
+        end
+       
+        function f = get.result(A)
+            f = A.matfunc;
         end
         
-        % ** Implementation of abstract methods **
-        
-        % Required operators.
-        
+       
         function D = diff(A,m)
-            D = blockOp( @(z) diff(z,m) );
+            D = blockMatrix( @(n) diff(n,m) );
         end
         
         function C = cumsum(A,m)
-            C = blockOp( @(u) cumsum(u,m) );
+            C = blockMatrix( @(n) cumsum(n,m) );
         end
         
         function I = eye(A)
-            I = blockOp( @(z) z );
+            I = blockMatrix( @(n) eye(n) );
         end
         
         function Z = zeros(A)
-            Z = blockOp( @(z) chebfun(0,domain) );
+            Z = blockMatrix( @(z) chebfun(0,domain) );
         end
         
         function F = diag(A,f)
@@ -59,18 +64,19 @@ classdef blockOp
         
         % ** Additional operations **
         
-        function C = mtimes(A,B)
-            C = blockOp( @(z) A.func(B.func(z)) );
+        function C = mtimes(A, B)
+            C = blockMatrix( @(n) A.matfunc(n) * B.matfunc(n) );
         end
         
-        function C = plus(A,B)
-            C = blockOp( @(z) A.func(z) + B.func(z) );
+        function C = plus(A, B)
+            C = blockMatrix( @(n) A.matfunc(n) + B.matfunc(n) );
         end
         
-        function C = uminus(A)
-            C = blockOp( @(z) -A.func(z) );
+        function B = uminus(A)
+            B = blockMatrix( @(n) -A.matfunc(n) );
         end
-        
+
+         
     end
     
 end

@@ -6,7 +6,7 @@ function A = discretizeBlocks(L,dim,varargin)
 
 p = inputParser;
 addOptional(p,'domain',L.domain,@isnumeric);
-addOptional(p,'matrixType',linBlock.defaultDiscretization,@(x) isa(x,'function_handle'));
+addOptional(p,'matrixType',L.discretizationType,@(x) isa(x,'function_handle'));
 parse(p,varargin{:});
 
 data = L.blocks;

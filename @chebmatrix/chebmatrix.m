@@ -8,6 +8,8 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         % block uses, because it merges the breakpoints.
         domain
         
+        discretizationType = linBlock.defaultDiscretization;
+        
     end
     
     methods

@@ -135,6 +135,7 @@ classdef blockUS
         
         function L = discretize(A, dim, dom, varargin)
             if ( isa(A, 'functionalBlock') )
+                % TODO: Just call discretize method?
                 L = A.stack( blockColloc2(dim, dom) );
                 cumsumdim = [0, cumsum(dim)];
                 for k = 1:numel(dom)-1
@@ -142,11 +143,10 @@ classdef blockUS
                     tmp{k} = flipud(chebtech2.coeffs2vals(Lk.')).';
                 end
                 L = cell2mat(tmp);
-            elseif ( isa(A.stack, 'blockCoeff') )
-                L = blockUS.quasi2USdiffmat(A.stack, dim);
+            elseif ( isa(A, 'operatorBlock') )
+                L = blockUS.quasi2USdiffmat(A, dim);
             else
-                L = A.stack( blockCoeff([], dom) );
-                L = blockUS.quasi2USdiffmat(L, dim);
+                % TODO: Anything here?
             end
         end
         

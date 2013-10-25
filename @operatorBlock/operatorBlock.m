@@ -24,7 +24,14 @@ classdef operatorBlock < linBlock
             end
         end
 
+        function C = uminus(A)
+            C = operatorBlock(A.domain);
+            C.stack = @(z) -A.stack(z);
+            C.func = -A.func;
+            C.coeff = -A.coeff;
+        end
         
+
         function C = mtimes(A, B)
             % A*B
             % If A, B both linops, or one is linop and one scalar, the
@@ -42,7 +49,7 @@ classdef operatorBlock < linBlock
             % No error checking here.
             % Which case?
             if ( isa(B, 'chebfun') )
-                C = op(A);
+                C = A.functionForm;
                 C = C(B);
             elseif ( isnumeric(B) )
                 N = size(B, 1);    % discretization size
@@ -52,9 +59,9 @@ classdef operatorBlock < linBlock
                 % A scalar is converted into a constant chebfun, which is then
                 % diagnified. 
                 if ( isnumeric(A) )
-                    A = linBlock.diag( chebfun(A, B.domain) );
+                    A = linBlock.mult( chebfun(A, B.domain) );
                 elseif ( isnumeric(B) )
-                    B = linBlock.diag( chebfun(B, A.domain) );
+                    B = linBlock.mult( chebfun(B, A.domain) );
                 end
                 
                 C = operatorBlock(A.domain);
@@ -62,6 +69,9 @@ classdef operatorBlock < linBlock
                 % The instantiation class must recognize mtimes as a
                 % functional composition.
                 C.stack = @(z) A.stack(z) * B.stack(z);
+                C.func = A.func * B.func;
+                C.coeff = A.coeff * B.coeff;
+
                 C.diffOrder = A.diffOrder + B.diffOrder;
             end
         end
@@ -69,13 +79,15 @@ classdef operatorBlock < linBlock
         function C = plus(A, B)
             % C = A + B
             if ( isnumeric(A) )
-                A = A*linop.eye(B.domain);
+                A = A*linBlock.eye(B.domain);
             elseif ( isnumeric(B) )
-                B = B*linop.eye(A.domain);
+                B = B*linBlock.eye(A.domain);
             end
             dom = union(A.domain, B.domain);
             C = operatorBlock(dom);
             C.stack = @(z) A.stack(z) + B.stack(z);
+            C.func = A.func + B.func;
+            C.coeff = A.coeff + B.coeff;
             C.diffOrder = max(A.diffOrder, B.diffOrder);
         end
         
@@ -83,7 +95,7 @@ classdef operatorBlock < linBlock
             if ( pow ~= round(pow) || pow < 0 )
                 error('Power must be a positive integer.')
             end
-            B = linop.eye(A.domain);
+            B = linBlock.eye(A.domain);
             for i = 1:pow
                 B = B*A;
             end
