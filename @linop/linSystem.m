@@ -26,7 +26,7 @@ if ( length(dim) == 1 )
     dim = repmat(dim, 1, length(dom)-1);
 end
 
-% Descretize the operator and the RHS:
+% Discretize the operator and the RHS:
 Ablocks = discretizeBlocks(L.operator, dim, dom, matrixType);
 bblocks = discretizeBlocks(f, dim, dom, matrixType);
 
@@ -36,7 +36,7 @@ rows = cell(m+1, 1);
 
 % Resize the operator rows according to differential order.
 dummy = matrixType([]);
-d = getDownsampling(L);
+[d,dRow,dCol] = getDownsampling(L);
 for i = 1:m
     M = cat(2, Ablocks{i, :}, bblocks{i});
     if ( ~isnan(d(i)) && d(i) > 0 )

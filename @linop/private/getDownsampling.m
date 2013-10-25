@@ -1,4 +1,4 @@
-function d = getDownsampling(L)
+function [d,dRow,dVar] = getDownsampling(L)
 
 [m,n] = size(L);
 dRow = getRowDiffOrders(L);
