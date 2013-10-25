@@ -4,7 +4,7 @@ function pass = test_extrapolate(pref)
 
 % Obtain preferences
 if ( nargin < 1 )
-    pref = chebtech.pref();
+    pref = chebtech.techPref();
 end
     
 % Set a tolerance:

@@ -36,12 +36,12 @@ function  [ishappy, epslevel, cutoff] = happinessCheck(f, op, pref)
 % Grab preferences:
 if ( nargin == 1 )
     op = [];
-    pref = f.pref();
+    pref = f.techPref();
 elseif ( (nargin == 2) && isstruct(op) )
     pref = op;
     op = [];
 elseif ( nargin < 3 )
-    pref = f.pref();
+    pref = f.techPref();
 end
 
 % What does happiness mean to you?

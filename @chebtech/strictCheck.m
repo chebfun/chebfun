@@ -37,7 +37,7 @@ ishappy = false;
 
 % Grab some preferences:
 if ( nargin == 1 )
-    pref = f.pref();
+    pref = f.techPref();
     epslevel = pref.eps;
 elseif ( isnumeric(pref) )
     epslevel = pref;

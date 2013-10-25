@@ -69,7 +69,7 @@ else
     f.hscale = hscale;
 end
 if ( nargin < 5 )
-    pref = chebtech.pref();
+    pref = chebtech.techPref();
 end
 
 % Non-adaptive construction. Values (and possibly coefficients) have been given.

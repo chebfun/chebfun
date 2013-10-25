@@ -3,7 +3,7 @@
 function pass = test_scaleInvariance(pref)
 
 if ( nargin == 0 )
-    pref = chebtech.pref();
+    pref = chebtech.techPref();
 end
 
 % Initialise pass matrix:

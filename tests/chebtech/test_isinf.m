@@ -3,7 +3,7 @@
 function pass = test_isinf(pref)
 
 if ( nargin < 1 )
-    pref = chebtech.pref();
+    pref = chebtech.techPref();
 end
 p = pref;
 

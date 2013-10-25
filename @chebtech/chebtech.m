@@ -199,9 +199,9 @@ classdef chebtech < smoothfun % (Abstract)
 
             % Determine preferences if not given, merge if some are given:
             if ( nargin < 4 || isempty(pref) )
-                pref = chebtech.pref();
+                pref = chebtech.techPref();
             else
-                pref = chebtech.pref(pref);
+                pref = chebtech.techPref(pref);
             end
 
             % Call the relevant constructor:
@@ -447,7 +447,7 @@ classdef chebtech < smoothfun % (Abstract)
         out = clenshaw(x, coeffs)
 
         % Retrieve and modify preferences for this class.
-        p = pref(q)
+        p = techPref(q)
 
     end
 

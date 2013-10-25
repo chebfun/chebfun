@@ -27,7 +27,7 @@ function [values, giveUp] = refine(op, values, pref)
 
 % Obtain some preferences:
 if ( nargin < 3 )
-    pref = chebtech.pref();
+    pref = chebtech.techPref();
 end
 
 % No values were given:

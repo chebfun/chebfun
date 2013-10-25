@@ -33,12 +33,12 @@ if ( nargin == 2 )
         type = dom;
         dom = chebpref().domain;
     else
-        type = chebtech.pref().gridType;
+        type = chebtech.techPref().gridType;
     end
 end
 if ( nargin == 1 )
     dom = chebpref().domain;
-    type = chebtech.pref().gridType;
+    type = chebtech.techPref().gridType;
 end
 
 % Verify that the number of points requested and the domains match:

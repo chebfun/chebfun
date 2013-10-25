@@ -17,7 +17,7 @@ if ( isreal(f) )
     f.coeffs = f.values;
 else
     if ( nargin == 1 )
-        pref = chebtech.pref();
+        pref = chebtech.techPref();
     end
     pref.extrapolate = 1;
     f = compose(f, @(x) x./abs(x), [], pref);

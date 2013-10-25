@@ -4,7 +4,7 @@ function pass = test_constructor(pref)
 
 % Get preferences:
 if ( nargin < 1 )
-    pref = chebtech.pref();
+    pref = chebtech.techPref();
 end
 
 pass = zeros(1, 4); % Pre-allocate pass matrix

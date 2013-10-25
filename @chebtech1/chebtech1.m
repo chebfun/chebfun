@@ -84,9 +84,9 @@ classdef chebtech1 < chebtech
 
             % Determine preferences if not given, merge if some are given:
             if ( (nargin < 4) || isempty(pref) )
-                pref = chebtech.pref();
+                pref = chebtech.techPref();
             else
-                pref = chebtech.pref(pref);
+                pref = chebtech.techPref(pref);
             end
 
             % Force nonadaptive construction if PREF.NUMSAMPLES is numeric:

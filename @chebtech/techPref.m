@@ -1,10 +1,10 @@
-function p = pref(q)
-%PREF   Preference settings for CHEBTECH.
-%   P = CHEBTECH.PREF() returns a structure P with fields which contain the
+function p = techPref(q)
+%TECHPREF   Preference settings for CHEBTECH.
+%   P = CHEBTECH.TECHPREF() returns a structure P with fields which contain the
 %   default CHEBTECH preferences as field/value pairs.  This structure may be
 %   passed to the CHEBTECH constructor.
 %
-%   P = CHEBTECH.PREF(Q) does the same but replaces the default CHEBTECH
+%   P = CHEBTECH.TECHPREF(Q) does the same but replaces the default CHEBTECH
 %   preferences with the values specified by the field/value pairs in the input
 %   structure Q.
 %
@@ -68,11 +68,6 @@ function p = pref(q)
 % polynomial, and the maps allow a local namespace, perhaps here we should use
 % the term 'degree'? (I know sampels = degree+1, which is annoying, but not
 % insurmountable.)
-
-% [NH]: Could we rename the pref() methods at tech levels to be techpref()?
-% Since the preference being passed around often has the variable name pref,
-% this avoids calls of the form >> pref = f.pref(pref). >> pref =
-% f.techpref(pref) seems a little clearer.
 
 % [NH]: Perhaps we should always strive to call preference structures pref,
 % rather than just p?

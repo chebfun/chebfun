@@ -1,7 +1,7 @@
 function pass = test_extractBoundaryRoots(pref)
 
 if ( nargin < 1 )
-    pref = chebtech.pref();
+    pref = chebtech.techPref();
 end
 
 % Generate random points to use as test values.
