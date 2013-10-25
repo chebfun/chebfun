@@ -87,7 +87,7 @@ classdef chebpref
 %      preferences:
 %
 %      eps                     - Construction tolerance.
-%       [2^(-52]
+%       [2^(-52)]
 %
 %        Specifies the relative tolerance to which the representation should be
 %        constructed.
@@ -100,8 +100,9 @@ classdef chebpref
 %      exactLength             - Exact representation length.
 %       [NaN]
 %
-%        Exact length of the underlying representation.  A NaN value indicates
-%        that any length (up to maxLength) is permissible.
+%        Exact length of the underlying representation to be used.  A NaN value
+%        indicates that the tech is free to choose the length (up to maxLength),
+%        e.g., as the basis of an adaptive construction procedure.
 %
 %      extrapolate             - Extrapolate endpoint values.
 %        true
@@ -109,7 +110,8 @@ classdef chebpref
 %
 %        If true, the tech should avoid direct evaluation of the function at
 %        the interval endpoints and "extrapolate" the values at those points if
-%        needed.
+%        needed.  It should also extrapolate the values of any points for which
+%        the function being sampled returns NaN.
 %
 %      sampleTest              - Test accuracy at arbitrary point.
 %       [true]
@@ -167,7 +169,7 @@ classdef chebpref
 % Developer note:
 %
 % The reason this object was introduced is to allow for a simplified approach
-% to preferences in the upper layers (i.e., CHEBTECH, FUN, and SINGFUN) which
+% to preferences in the upper layers (i.e., CHEBFUN, FUN, and SINGFUN) which
 % groups them all into the same namespace while keeping the namespace for
 % "tech" preferences separate.  This design mostly achieves this goal with the
 % following limited exceptions:
