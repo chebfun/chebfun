@@ -333,7 +333,9 @@ classdef chebpref
         %   MAP.FIELD, one will be added to P.
         %
         %   P and Q may also be CHEBPREF objects.  In this case, P and Q are
-        %   replaced by P.TECHPREFS and Q.TECHPREFS before proceeding.
+        %   replaced by P.TECHPREFS and Q.TECHPREFS before proceeding, and the
+        %   output is a MATLAB structure suitable for passing as a preference
+        %   argument to a "tech" constructor.
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % Developer notes:
@@ -344,11 +346,6 @@ classdef chebpref
         %    preferences which may have a better name within the specific
         %    context of the tech object whose preferences are stored in P.
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        
-        % [NH]: Am I correct in thinking this only merges techPrefs? Rename?
-        % [NH]: After visiting chebtech.pref, I understand this better. I think
-        % the documentation might need to be clarified, but I'm not sure how.
-        % (Perhaps make it clear that the output is a techPref-type preference).
 
             if ( isa(pref1, 'chebpref') )
                 pref1 = pref1.techPrefs;
