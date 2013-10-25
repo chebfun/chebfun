@@ -326,6 +326,9 @@ classdef chebtech < smoothfun % (Abstract)
         % True for zero CHEBTECH objects
         out = iszero(f)
         
+        % Return Legendre coefficients of a CHEBTECH.
+        c_leg = legpoly(f)
+        
         % Length of a CHEBTECH.
         len = length(f)
 
@@ -355,9 +358,6 @@ classdef chebtech < smoothfun % (Abstract)
 
         % Multiplication of CHEBTECH objects.
         f = mtimes(f, c)
-        
-        % Compute a Legendre series expansion of a CHEBTECH object:
-        c = legpoly(f)
 
         % Basic linear plot for CHEBTECH objects.
         varargout = plot(f, varargin)

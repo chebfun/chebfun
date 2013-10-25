@@ -10,9 +10,15 @@ function c_leg = cheb2leg(c_cheb, M)
 % rewritting an asymptotic formula for Legendre polynomials in a way that can be
 % evaluated using discrete cosine transforms. For more details see:
 %   N. Hale and A. Townsend, A fast, simple, and stable Chebyshev-Legendre
+<<<<<<< HEAD
 %   transform using an asymptotic formula, SISC (submitted) 2013.
 
 % [TODO]: This should be move to @chebtech?
+=======
+%   transform using an asymptotic formula, SISC (accepted) 2013.
+
+% [TODO]: This needs a test.
+>>>>>>> fix-legpoly
 
 c_cheb = c_cheb(:);                           % Make column vector.
 c_cheb = flipud(c_cheb);                      % Lowest order coeffs first.
@@ -50,7 +56,11 @@ for k = 1:K % Loop over the block partitions:
     tmp(1:2) = [sum(wf_bdy) ; x_bdy'*wf_bdy];          % First two terms.
     Pm2 = 1; Pm1 = x_bdy;                              % Initialise recurrence.
     for n = 1:min(nM(k)-3, N-1) % Recurrence:
+<<<<<<< HEAD
         P = (2-1/(n+1))*Pm1.*x_bdy - n/(n+1)*Pm2; 
+=======
+        P = (2-1/(n+1))*Pm1.*x_bdy - (1-1/(n+1))*Pm2; 
+>>>>>>> fix-legpoly
         Pm2 = Pm1; Pm1 = P;
         tmp(n+2) = P'*wf_bdy;                          % Update local LHS.
     end
