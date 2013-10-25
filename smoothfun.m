@@ -52,8 +52,14 @@ classdef smoothfun < onefun % (Abstract)
                 pref = chebpref(pref);
             end
             
-            if ( pref.enableFunqui )
+            if ( strcmp(pref.tech, 'funqui') )
                 op = funqui(op);
+                if ( isfield(pref.techPrefs, 'funquiTech') )
+                    pref.tech = pref.techPrefs.funquiTech;
+                    pref.techPrefs = rmfield(pref.techPrefs, 'funquiTech');
+                else
+                    pref.tech = 'chebtech';
+                end
             end
 
             % Call the CHEBTECH constructor

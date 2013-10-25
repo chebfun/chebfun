@@ -73,14 +73,6 @@ classdef chebpref
 %
 %         Maximum order of the pole that the singularity detector can find.
 %
-%   enableFunqui               - Enable/disable FUNQUI.
-%     true
-%    [false]
-%
-%      Enables the use of the FUNQUI pre-processor for stable interpolation of
-%      data from a grid of equally-spaced points.  See documentation for the
-%      'equi' flag for CHEBFUN for more information.
-%
 %   tech                       - Representation technology.
 %    ['chebtech']
 %
@@ -216,7 +208,6 @@ classdef chebpref
         domain
         enableSingularityDetection
         singPrefs
-        enableFunqui
         tech
         techPrefs
     end
@@ -240,7 +231,6 @@ classdef chebpref
             p.enableSingularityDetection = false;
                 p.singPrefs.exponentTol = 1.1*1e-11;
                 p.singPrefs.maxPoleOrder = 20;
-            p.enableFunqui = false;
             p.tech = 'chebtech';
             p.techPrefs = struct();
                 p.techPrefs.eps = 2^(-52);
