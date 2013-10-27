@@ -96,12 +96,20 @@ classdef blockUS
                 v = [v m(k) + nn(k) + (1:(n(k)-m(k)))];
             end
             A(v.',:) = [];
+            
+            % Ensure each block is mapped to the max(difforder) ultra space
             B = A;
-            cm = cumsum([0 m]);
-            for k = 1:numel(dom)-1
-                ind = (cm(k)+1):cm(k+1);
-                B(ind,end) = blockUS.convertmat(length(ind), 0, difforder-1) * B(ind,end);
+            difforder = [difforder 0];
+            cm = cumsum([0 m]); j = 1;
+            for ii = 1 : n : size(A,2)
+                block = ii:min(ii+n-1,size(A,2));
+                for k = 1:numel(dom)-1
+                    ind = (cm(k)+1):cm(k+1);
+                    B(ind,block) = blockUS.convertmat(length(ind), difforder(j), max(difforder)-1) * B(ind,block);
+                end
+                j = j+1; 
             end
+            
         end
         
         function [isDone, epsLevel] = testConvergence(v)

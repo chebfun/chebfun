@@ -29,6 +29,7 @@ classdef operatorBlock < linBlock
             C.stack = @(z) -A.stack(z);
             C.func = -A.func;
             C.coeff = -A.coeff;
+            C.diffOrder = A.diffOrder; 
         end
         
 
