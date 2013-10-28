@@ -51,13 +51,6 @@ elseif ( size(g.values, 1) == 1)
     return
 end
 
-% Determine a tolerance if none is given:
-if ( nargin < 3 )
-    pref = chebtech.techPref();
-else
-    pref = varargin{1};
-end
-
 % Get the size of each CHEBTECH:
 [fn, fm] = size(f.values);
 [gn, gm] = size(g.values);
