@@ -65,7 +65,9 @@ classdef onefun % (Abstract)
                 
             elseif ( pref.enableSingularityDetection )
                 % BLOWUP mode; call SINGFUN constructor:
-                obj = singfun(op, [], [], vscale, hscale, pref);
+                singType = pref.singPrefs.singType;
+                exponents = pref.singPrefs.exponents;
+                obj = singfun(op, exponents, singType, vscale, hscale, pref);
 
                 % Return just a SMOOTHFUN if no singularities found:
                 if ( issmooth(obj) )

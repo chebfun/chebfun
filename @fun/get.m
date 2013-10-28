@@ -17,11 +17,15 @@ switch prop
     case fieldnames(f)
         % Allow access to any of the properties of F via GET:
         out = f.(prop);
-    
+        
     case fieldnames(f.onefun)
         % Allow access to any of the properties of F.onefun via GET:
         out = get(f.onefun, prop);
-
+        
+    case fieldnames(f.onefun.smoothPart)
+        % Allow access to any of the properties of F.onefun via GET:
+        out = get(f.onefun, prop);
+        
     case {'lval', 'rval'}
         % Get the values at a or b (where f.domain = [a, b]):
         out = get(f.onefun, prop);

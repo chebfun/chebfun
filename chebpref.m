@@ -74,6 +74,30 @@ classdef chebpref
 %
 %         Maximum order of the pole that the singularity detector can find.
 %
+%      exponents               - Exponents at the end points.
+%       [[ ]]
+%
+%         If exponents are supplied by the user from CHEBFUN or FUN levels, the
+%         default value (empty) is replaced and passed to singfun constructor. 
+%         If no information about the singularity is specified by the user, then
+%         the singularity detection is triggered to find the exact pole order 
+%         (which is integer) or singularity order (which is fractional). When
+%         exponents are given by the user, there is no need to specify the
+%         'singType' field, as any information in singType will be ignored by
+%         the SINGFUN constructor.
+%
+%      singType                - Type of singularities.
+%       [{ }]
+%
+%         The information provided in singType helps the singularity detector to
+%         determine the order of the singularities more efficiently and save 
+%         some construction time. If the default, i.e. an empty cell, is 
+%         replaced by a user-supplied 1x2 cell with entries being any of 'none',   
+%         'pole', 'sing', and 'root', then this cell is passed to the SINGFUN
+%         constructor to speed up the singularity detection. With the default
+%         empty cell, the SINGFUN constructor will assume fractional
+%         singularities.
+%
 %   tech                       - Representation technology.
 %    ['chebtech']
 %
@@ -234,6 +258,8 @@ classdef chebpref
             outPref.enableSingularityDetection = false;
                 outPref.singPrefs.exponentTol = 1.1*1e-11;
                 outPref.singPrefs.maxPoleOrder = 20;
+                outPref.singPrefs.exponents = [];
+                outPref.singPrefs.singType = {};
             outPref.tech = 'chebtech';
             outPref.techPrefs = struct();
                 outPref.techPrefs.eps = 2^(-52);
