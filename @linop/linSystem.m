@@ -34,24 +34,24 @@ bblocks = discretizeBlocks(f, dim, dom, matrixType);
 [m, n] = size(L);
 rows = cell(m+1, 1);
 
-% Find the matrix of differential orders.
-blockDifforders = zeros(m,n);
-for ii = 1:m
-    for jj = 1:n
-        chebmat = L.operator{ii,jj}; 
-        blockDifforders(ii,jj) = chebmat.diffOrder;
-    end
-end
-% TODO: Replace with a call to get(L.operator, 'diffOrder');
+% % Find the matrix of differential orders.
+% blockDifforders = zeros(m,n);
+% for ii = 1:m
+%     for jj = 1:n
+%         chebmat = L.operator{ii,jj}; 
+%         blockDifforders(ii,jj) = chebmat.diffOrder;
+%     end
+% end
+% % TODO: Replace with a call to get(L.operator, 'diffOrder');
 
 % Resize the operator rows according to differential order.
 dummy = matrixType([]);
-[d,dRow,dCol] = getDownsampling(L);
+[reduce,difford,dRow,dCol] = getDownsampling(L);
 for i = 1:m
     M = cat(2, Ablocks{i, :}, bblocks{i});
-    if ( ~isnan(d(i)) && d(i) > 0 )
+    if ( ~isnan(reduce(i)) && reduce(i) > 0 )
 %         M = dummy.resize( M, dim-d(i), dim, dom, d(i) );
-         M = dummy.resize( M, dim-d(i), dim, dom, blockDifforders(i,:) );
+         M = dummy.resize( M, dim-reduce(i), dim, dom, difford(i,:) );
     end
     rows{i+1} = M;
 end

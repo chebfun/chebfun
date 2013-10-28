@@ -8,6 +8,7 @@ classdef linop
     
     properties (Dependent)
         domain
+        blockDiffOrders
     end
     
     methods
@@ -23,7 +24,21 @@ classdef linop
         function d = get.domain(L)
             d = L.operator.domain;
         end
+        
+        function d = get.blockDiffOrders(L)
+            [m,n] = size(L);
+            d = zeros(m,n);
 
+            for i = 1:m
+                for j = 1:n
+                    block = L.operator.blocks{i,j};
+                    if isa(block,'linBlock')
+                        d(i,j) = block.diffOrder;
+                    end
+                end
+            end
+        end
+        
         function varargout = size(L)
             [varargout{1:nargout}] = size(L.operator);
         end
