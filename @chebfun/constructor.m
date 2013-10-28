@@ -47,8 +47,8 @@ end
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%  SPLITTING OFF %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % In 'OFF' mode, seek only one piece with length < maxLength.
 if ( ~pref.enableBreakpointDetection )
-    % Set maximum number of sample points:
-    maxn = pref.maxTotalLength + 1;
+    % Set maximum length (i.e., number of sample points for CHEBTECH):
+    maxn = pref.maxTotalLength;
     % Initialise the FUN array:
     funs{numIntervals} = fun.constructor();
     % We only want to throw this warning once:
@@ -78,9 +78,9 @@ end
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%  SPLITTING ON %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % In 'ON' mode, seek only many pieces with total length < maxlength.
 
-% Set the maximum degree:
+% Set the maximum length (i.e., number of sample points for CHEBTECH):
 pref.maxTotalLength = pref.breakpointPrefs.splitMaxTotalLength;
-pref.techPrefs.maxLength = pref.breakpointPrefs.splitMaxLength + 1;
+pref.techPrefs.maxLength = pref.breakpointPrefs.splitMaxLength;
 % We extrapolate when splitting so that we can construct functions like
 % chebfun(@sign,[-1 1]), which otherwise would not be happy at x = 0.
 pref.techPrefs.extrapolate = true;

@@ -70,9 +70,9 @@ end
 
 % Determine the maximum length of the merged pieces:
 if ( ~pref.enableBreakpointDetection )
-    maxn = pref.maxTotalLength + 1;
+    maxn = pref.maxTotalLength;
 else
-    maxn = pref.breakpointPrefs.splitMaxLength + 1;
+    maxn = pref.breakpointPrefs.splitMaxLength;
 end
 pref.techPrefs.maxLength = maxn;
 

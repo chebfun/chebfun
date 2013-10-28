@@ -9,13 +9,13 @@ classdef chebpref
 %
 % Available Preferences:
 %
-%   maxTotalLength              - Maximum total CHEBFUN length.
-%    [65536]
+%   maxTotalLength             - Maximum total CHEBFUN length.
+%    [65537]
 %
 %      Sets the maximum allowed "length" of the constructed CHEBFUN when
 %      breakpoint detection is disabled, where the notion of length is
-%      determined by the underlying representation technology (e.g., polynomial
-%      degree, for Chebyshev polynomial interpolation).
+%      determined by the underlying representation technology (e.g., the number
+%      of Chebyshev points used for Chebyshev polynomial interpolation).
 %
 %   enableBreakpointDetection  - Enable/disable breakpoint detection.
 %     true
@@ -30,11 +30,12 @@ classdef chebpref
 %   breakpointPrefs            - Preferences for breakpoint detection.
 %
 %      splitMaxLength          - Maximum FUN length.
-%       [128]
+%       [129]
 %
-%         This is the maximum length of a single FUN (e.g., the polynomial
-%         degree for FUNs based on Chebyshev polynomial representations) allowed
-%         by the constructor when breakpoint detection is enabled.
+%         This is the maximum length of a single FUN (e.g., the number of
+%         Chebyshev points used for FUNs based on Chebyshev polynomial
+%         interpolation) allowed by the constructor when breakpoint detection
+%         is enabled.
 %
 %      splitMaxTotalLength     - Maximum total CHEBFUN length.
 %       [6000]
@@ -147,16 +148,16 @@ classdef chebpref
 %
 % Examples:
 %   Create a CHEBPREF for building a CHEBFUN based on CHEBTECH (default) with
-%   breakpoint detection, a splitting degree of 256, and a custom CHEBTECH
-%   refinement function:
+%   breakpoint detection, a splitting length of 257 (pieces of polynomial degree
+%   256, and a custom CHEBTECH refinement function:
 %      p.enableBreakpointDetection = true;
-%      p.breakpointPrefs.splitLength = 256;
+%      p.breakpointPrefs.splitLength = 257;
 %      p.techPrefs.refinementFunction = @custom;
 %      pref = chebpref(p);
 %
 %   Same thing with a slightly shorter syntax:
 %      p.enableBreakpointDetection = true;
-%      p.breakpointPrefs.splitLength = 256;
+%      p.breakpointPrefs.splitLength = 257;
 %      p.refinementFunction = @custom;
 %      pref = chebpref(p);
 %
@@ -225,9 +226,9 @@ classdef chebpref
             end
 
             % Initialize default preference values.
-            outPref.maxTotalLength = 65536;
+            outPref.maxTotalLength = 65537;
             outPref.enableBreakpointDetection = false;
-                outPref.breakpointPrefs.splitMaxLength = 128;
+                outPref.breakpointPrefs.splitMaxLength = 129;
                 outPref.breakpointPrefs.splitMaxTotalLength = 6000;
             outPref.domain = [-1 1];
             outPref.enableSingularityDetection = false;
