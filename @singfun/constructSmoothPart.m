@@ -9,10 +9,10 @@ function s = constructSmoothPart(op, vscale, hscale, pref)
 % See http://www.chebfun.org for Chebfun information.
 
 if ( isempty(pref) )
-    pref = chebtech.pref;
+    pref = chebpref();
 end
 
-pref = chebtech.pref(pref, 'sampletest', 0);
+pref.techPrefs.sampleTest = 0;
 
 % Call the CHEBTECH constructor:
 s = smoothfun.constructor(op, vscale, hscale, pref);

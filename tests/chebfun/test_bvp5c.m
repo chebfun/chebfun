@@ -1,7 +1,7 @@
 function pass = test_bvp5c(pref)
 
 if ( nargin == 0 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 %% Test using TWOODE():

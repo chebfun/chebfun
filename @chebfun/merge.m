@@ -3,9 +3,10 @@ function [f, mergedPts] = merge(f, index, pref)
 %   F = MERGE(F, PREF) removes unnecessary breakpoints from a CHEBFUN F. In
 %   particular the kth breakpoint is removed if the resulting FUN on the
 %   interval [x_{k-1}, x_{k+1}] can be represented with a fewer than
-%   PREF.CHEBFUN.MAXDEGREE points when PREF.CHEBFUN.SPLITTING = 0 and
-%   PREF.CHEBFUN.SPLITDEGREE points when PREF.CHEBFUN.SPLITTING = 1. If a PREF
-%   is not passed, then the default CHEBFUN.PREF() is used.
+%   PREF.MAXLENGTH points when PREF.ENABLEBREAKPOINTDETECTION = 0 and
+%   PREF.BREAKPOINTPREFS.SPLITMAXLENGTH points when
+%   PREF.ENABLEBREAKPOINTDETECTION = 1. If a PREF is not passed, then the
+%   default CHEBFUN.PREF() is used.
 %
 %   [F, MERGEDPTS] = MERGE(F) returns the index of the merged endpoints in the
 %   vector MERGEDPTS.
@@ -22,7 +23,7 @@ function [f, mergedPts] = merge(f, index, pref)
 %       f = chebfun(@(x) abs(x), 'splitting','on');
 %       [g, mergedPts] = merge(f.^2);
 %
-% See also SPLITTING, PREF.
+% See also CHEBPREF.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
@@ -32,16 +33,16 @@ if ( nargin == 1 )
     % Choose all indices by default:
     index = 2:numel(f.funs);
     % Obtain preferences:
-    pref = chebfun.pref();
+    pref = chebpref();
 elseif ( nargin == 2 )
-    if ( isstruct(index) ) % MERGE(F, PREF)
-        % index actually is a struct of perefernces
-        pref = index;
+    if ( isstruct(index) || isa(index, 'chebpref') ) % MERGE(F, PREF)
+        % index actually is a struct of perefernces or a CHEBPREF
+        pref = chebpref(index);
         % Choose all indices by default:
         index = 2:numel(f.funs);
     else                   % MERGE(F, INDEX)
         % indices passed, obtain preferences:
-        pref = chebfun.pref();
+        pref = chebpref();
     end
 end
 
@@ -68,20 +69,17 @@ else
 end
 
 % Determine the maximum length of the merged pieces:
-if ( ~pref.chebfun.splitting )
-    maxn = pref.chebfun.maxdegree + 1;
+if ( ~pref.enableBreakpointDetection )
+    maxn = pref.maxTotalLength;
 else
-    maxn = pref.chebfun.splitdegree + 1;
+    maxn = pref.breakpointPrefs.splitMaxLength;
 end
-pref.chebfun.maxSamples = maxn;
+pref.techPrefs.maxLength = maxn;
 
 % Splitting forces extrapolate:
-if ( pref.chebfun.splitting )
-    pref.chebfun.extrapolate = true;
+if ( pref.enableBreakpointDetection )
+    pref.techPrefs.extrapolate = true;
 end
-
-% Merge preferences for FUN constructor call:
-pref = fun.pref(pref, pref.chebfun);
 
 % Obtain scales of the CHEBFUN:
 vs = vscale(f);

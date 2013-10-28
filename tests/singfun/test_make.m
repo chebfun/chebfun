@@ -4,7 +4,7 @@ function pass = test_make(pref)
 
 % Get preferences:
 if ( nargin < 1 )
-    pref = singfun.pref;
+    pref = chebpref();
 end
 
 pass = zeros(1, 6); % Pre-allocate pass matrix

@@ -4,7 +4,7 @@ function pass = test_innerProduct(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = chebtech.pref;
+    pref = chebtech.techPref();
 end
 
 % Fixed arbitrary numbers to use as multiplicative constants.

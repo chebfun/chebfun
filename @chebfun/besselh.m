@@ -13,7 +13,7 @@ function g = besselh(nu, k, f, scale, pref)
 %     H = BESSELH(NU, 1, F, 1) scales H1_NU(F) by exp(-i*F))).
 %     H = BESSELH(NU, 2, F, 1) scales H2_NU(F) by exp(+i*F))).
 %
-%   H = BESSELH(NU, K, F, SCALE, PREF) uses the preference structure PREF when
+%   H = BESSELH(NU, K, F, SCALE, PREF) uses the CHEBPREF object PREF when
 %   building the CHEBFUN H.
 %
 %  The relationship between the Hankel and Bessel functions is:
@@ -28,7 +28,7 @@ function g = besselh(nu, k, f, scale, pref)
 
 % Parse inputs:
 if ( nargin < 5 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 if ( nargin < 4 )

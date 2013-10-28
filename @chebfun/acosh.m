@@ -2,7 +2,7 @@ function g = acosh(f, pref)
 %ACOSH   Inverse hyperbolic cosine of a CHEBFUN.
 %   ACOSH(F) computes the inverse hypoerbolic cosine of the CHEBFUN F.
 %
-%   ACOSH(F, PREF) does the same but uses the preference structure PREF when
+%   ACOSH(F, PREF) does the same but uses the CHEBPREF object PREF when
 %   computing the composition.
 %
 % See also COSH.
@@ -12,7 +12,7 @@ function g = acosh(f, pref)
 
 % Obtain preferences:
 if ( nargin == 1 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Call the compose method:

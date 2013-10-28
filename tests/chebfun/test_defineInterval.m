@@ -1,7 +1,7 @@
 function pass = test_defineInterval(pref)
 
 if ( nargin == 0 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Test a scalar-valued CHEBFUN object:

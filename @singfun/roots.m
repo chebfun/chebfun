@@ -24,7 +24,7 @@ function out = roots(f, varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Set up a tolerance:
-tol = singfun.pref.singfun.eps;
+tol = eps;
 
 % Deal with empty case:
 if ( isempty(f) )

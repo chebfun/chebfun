@@ -3,7 +3,7 @@
 function pass = test_isinf(pref)
 
 if ( nargin < 1 )
-    pref = chebtech.pref;
+    pref = chebtech.techPref();
 end
 p = pref;
 
@@ -16,14 +16,14 @@ for n = 1:2
     end
 
     % Test a scalar-valued function:
-    p.chebtech.n = 11;
-    y = testclass.chebpts(p.chebtech.n); % Force singularity to fall on grid.
+    p.numPoints = 11;
+    y = testclass.chebpts(p.numPoints); % Force singularity to fall on grid.
     f = testclass.make(@(x) 1./(x - y(4)), [], [], p);
     pass(n, 1) = isinf(f);
     
     % Test an array-valued function:
-    p.chebtech.n = 11;
-    y = testclass.chebpts(p.chebtech.n); % Force singularity to fall on grid.
+    p.numPoints = 11;
+    y = testclass.chebpts(p.numPoints); % Force singularity to fall on grid.
     f = testclass.make(@(x) [1./(x - y(4)), x], [], [], p);
     pass(n, 2) = isinf(f);
     

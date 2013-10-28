@@ -19,7 +19,7 @@ function p = atan2(y, x, pref)
 %% Set up:
 % Grab some preferences:
 if ( nargin < 3)
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 if ( ~isreal(y) || ~isreal(x) )
@@ -32,7 +32,7 @@ if ( (min(size(y)) > 1) || (min(size(x)) > 1) )
 end
 
 % We'll need to extrapolate here:
-pref.chebfun.extrapolate = true;
+pref.techPrefs.extrapolate = true;
 tol = max(epslevel(y)*vscale(y), epslevel(x)*vscale(x));
 
 % There's no reason why we shouldn't keep breaks in both x and y:
