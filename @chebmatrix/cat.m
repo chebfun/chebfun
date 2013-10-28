@@ -6,6 +6,8 @@ blocks = cell(1, nargin-1);
 for n = 1:nargin-1
     if ( isa(varargin{n}, 'chebmatrix') )
         blocks{n} = varargin{n}.blocks;
+    elseif ( isa(varargin{n}, 'linBlock') )
+        blocks{n} = varargin(n);
     elseif ( ~isempty(varargin{n}) )
         blocks{n} = num2cell(varargin{n});
     end

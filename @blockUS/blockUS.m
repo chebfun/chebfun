@@ -88,7 +88,7 @@ classdef blockUS
             end
         end
         
-        function B = resize(A, m, n, dom, difforder)
+        function B = resize(A, m, n, dom, diffOrder)
             % chop off some rows and columns
             v = [];
             nn = cumsum([0 n]);
@@ -99,17 +99,19 @@ classdef blockUS
             
             % Ensure each block is mapped to the max(difforder) ultra space
             B = A;
-            difforder = [difforder 0];
-            cm = cumsum([0 m]); j = 1;
-            for ii = 1 : n : size(A,2)
-                block = ii:min(ii+n-1,size(A,2));
-                for k = 1:numel(dom)-1
-                    ind = (cm(k)+1):cm(k+1);
-                    B(ind,block) = blockUS.convertmat(length(ind), difforder(j), max(difforder)-1) * B(ind,block);
+            numInts = numel(dom) - 1;
+            numBlocks = (size(A, 2) - 1)/sum(n);
+            ntmp = [0 n];
+            mtmp = [0 m];
+            for ii = 1:numBlocks
+                doii = diffOrder(ii);
+                for jj = 1:numInts
+                    indn = (ii-1)*sum(n) + (((jj-1)*ntmp(jj)+1):(jj*n(jj)));
+                    indm = ((jj-1)*mtmp(jj)+1):(jj*m(jj));
+                    B(indm,indn) = blockUS.convertmat(length(indm), diffOrder(jj), max(diffOrder)-1) * B(indm,indn);
                 end
-                j = j+1; 
             end
-            
+
         end
         
         function [isDone, epsLevel] = testConvergence(v)

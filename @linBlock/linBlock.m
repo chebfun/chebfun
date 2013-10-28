@@ -176,8 +176,8 @@ classdef linBlock
             if nargin==0, domain = [-1 1]; end
             Z = functionalBlock(domain);
             Z.stack = @(z) zero(z);
-            Z.func = blockFunction.zero(domain);
-            Z.coeff = blockCoeff.zero(domain);            
+            Z.func = blockFunction.zeros(domain);
+            Z.coeff = blockCoeff.zeros(domain);            
             Z.diffOrder = 0;
         end
         

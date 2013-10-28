@@ -27,7 +27,7 @@ classdef functionalBlock < linBlock
             C = functionalBlock(A.domain);
             C.stack = @(z) -A.stack(z);
             C.func = -A.func;
-            C.coeff = [];
+            C.coeff = -A.coeff;
         end
         
         function C = mtimes(A, B)

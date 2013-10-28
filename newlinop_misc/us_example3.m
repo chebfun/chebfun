@@ -1,6 +1,6 @@
 clc
 
-dom = [-1, 1];
+dom = [-1, 0, 1];
 x = chebfun('x', dom);
 N = linop.diff(dom, 1) + linop.eye;
 M = linop.diff(dom, 1) - linop.eye;
