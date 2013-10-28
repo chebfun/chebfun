@@ -53,7 +53,7 @@ for n = 1:2
     end
 
     % Test a non-adaptive construction
-    p.numSamples = 11;
+    p.numPoints = 11;
     try
         f = testclass.make(@(x) myfun(x), [], [], p);
         pass(n, 7) = isnan(f);

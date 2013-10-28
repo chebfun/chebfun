@@ -86,10 +86,10 @@ classdef chebtech2 < chebtech
                 pref = chebtech.techPref(pref);
             end
 
-            % Force nonadaptive construction if PREF.NUMSAMPLES is numeric:
-            if ( ~isempty(pref.numSamples) && ~isnan(pref.numSamples) )
+            % Force nonadaptive construction if PREF.NUMPOINTS is numeric:
+            if ( ~isempty(pref.numPoints) && ~isnan(pref.numPoints) )
                 % Evaluate op on the Chebyshev grid of given size:
-                op = feval(op, chebtech2.chebpts(pref.numSamples));
+                op = feval(op, chebtech2.chebpts(pref.numPoints));
             end
             
             % Actual construction takes place here:

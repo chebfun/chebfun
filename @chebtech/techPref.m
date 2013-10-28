@@ -16,9 +16,9 @@ function outPref = techPref(inPref)
 %     eps          - Relative tolerance used in construction and subsequent
 %      [2^-52]       operations.  See CHEBTECH.HAPPINESSCHECK for more details.
 %
-%     maxLength    - This preference is mapped to maxSamples (see below).
+%     maxLength    - This preference is mapped to maxPoints (see below).
 %
-%     exactLength  - This preference is mapped to numSamples (see below).
+%     exactLength  - This preference is mapped to numPoints (see below).
 %
 %     extrapolate
 %       true       - Function values at endpoints may be extrapolated from
@@ -37,13 +37,13 @@ function outPref = techPref(inPref)
 %       1          - Use a grid of first-kind Chebyshev points.
 %      [2]         - Use a grid of second-kind Chebyshev points.
 %
-%     minSamples   - Minimum number of points used by the constructor.  Should
+%     minPoints    - Minimum number of points used by the constructor.  Should
 %      [9]           be of the form 2^n + 1.  If not, it is rounded as such.
 %
-%     maxSamples   - Maximum number of points used by the constructor.
+%     maxPoints    - Maximum number of points used by the constructor.
 %      [2^16+1]
 %
-%     numSamples   - Fixed number of points used by constructor.  NaN allows
+%     numPoints    - Fixed number of points used by constructor.  NaN allows
 %      [NaN]         adaptive construction.
 %
 %     refinementFunction - Define function for refining sample values.
@@ -63,25 +63,19 @@ function outPref = techPref(inPref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-% [NH]: I don't like 'samples'. If refinement is not nested, then we infact
-% sample many more times than 'maxSamples'. Since here everything is in fact a
-% polynomial, and the maps allow a local namespace, perhaps here we should use
-% the term 'degree'? (I know sampels = degree+1, which is annoying, but not
-% insurmountable.)
-
 outPref.eps                = 2^-52;
 outPref.gridType           = 2;
-outPref.minSamples         = 9;
-outPref.maxSamples         = 2^16 + 1;
-outPref.numSamples         = NaN;
+outPref.minPoints          = 9;
+outPref.maxPoints          = 2^16 + 1;
+outPref.numPoints          = NaN;
 outPref.extrapolate        = false;
 outPref.sampleTest         = true;
 outPref.refinementFunction = 'nested';
 outPref.happinessCheck     = 'classic';
 
 if ( nargin == 1 )
-    map.maxLength = 'maxSamples';
-    map.exactLength = 'numSamples';
+    map.maxLength = 'maxPoints';
+    map.exactLength = 'numPoints';
     outPref = chebpref.mergePrefs(outPref, inPref, map);
 end
 

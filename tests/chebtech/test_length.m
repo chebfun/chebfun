@@ -21,7 +21,7 @@ for n = 1:2
     pass(n, 2) = length(f) == size(f.values, 1);
     
     p = pref;
-    p.numSamples = 101;
+    p.numPoints = 101;
     f = testclass.make(@(x) [sin(x), cos(x), 1i*exp(x)], [], [], p);
     pass(n, 3) = length(f) == 101;
 end

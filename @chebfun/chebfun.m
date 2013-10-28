@@ -459,8 +459,7 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
             args(1) = [];
         elseif ( isnumeric(args{1}) )
             % g = chebfun(@(x) f(x), N)
-            % [TODO]: Convert this to "abstract" preference for all techs?
-            pref.techPrefs.numSamples = args{1};
+            pref.techPrefs.exactLength = args{1};
             args(1) = [];
         elseif ( strcmpi(args{1}, 'splitting') )
             % Translate "splitting" --> "enableBreakpointDetection".
@@ -488,11 +487,11 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
     end
     
     if ( isa(op, 'function_handle') && strcmp(pref.tech, 'funqui') )
-        if ( isfield(pref.techPrefs, 'numSamples') && ...
-             ~isnan(pref.techPrefs.numSamples) )
-            x = linspace(domain(1), domain(end), pref.techPrefs.numSamples).';
+        if ( isfield(pref.techPrefs, 'exactLength') && ...
+             ~isnan(pref.techPrefs.exactLength) )
+            x = linspace(domain(1), domain(end), pref.techPrefs.exactLength).';
             op = feval(op, x);
-            pref.techPrefs.numSamples = NaN;
+            pref.techPrefs.exactLength = NaN;
         end
     end
 
