@@ -44,8 +44,8 @@ end
 
 fExps = f.exponents;
 gExps = g.exponents;
-tolExps = singfun.pref.singfun.exponentTol;
-tolSmth = 1e2*singfun.pref.singfun.eps;
+tolExps = chebpref().singPrefs.exponentTol;
+tolSmth = 1e2*eps;
 
 %%
 if ( all(abs(fExps - gExps) < tolExps) )
@@ -119,7 +119,7 @@ else
     hScale = get(f, 'hscale');
     
     % Construct a new SINGFUN for the sum:
-    s = singfun(op, [], [], vScale, hScale, singfun.pref);
+    s = singfun(op, [], [], vScale, hScale, chebpref());
 end
 
 %%

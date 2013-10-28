@@ -11,9 +11,9 @@ function f = compose(f, op, g, pref)
 %   thrown.
 %
 %   COMPOSE(F, OP, G, PREF) or COMPOSE(F, OP, [], PREF) uses the options passed
-%   by the preferences structure PREF to build the returned CHEBTECH2. In
-%   particular, one can set PREF.CHEBTECH.REFINMENTFUNCTION to be a function
-%   which takes advantage of F and possibly OP or G being CHEBTECH objects.
+%   by the preferences structure PREF to build the returned CHEBTECH2.  In
+%   particular, one can set PREF.REFINEMENTFUNCTION to be a function which takes
+%   advantage of F and possibly OP or G being CHEBTECH objects.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -28,7 +28,9 @@ function f = compose(f, op, g, pref)
 
 % Parse inputs:
 if ( nargin < 4 )
-    pref = f.pref();
+    pref = f.techPref();
+else
+    pref = f.techPref(pref);
 end
 
 if ( (nargin < 3) || isempty(g) )
@@ -39,10 +41,10 @@ else
 end
 
 % Choose a sampling strategy:
-if ( ~ischar(pref.chebtech.refinementFunction) )
+if ( ~ischar(pref.refinementFunction) )
     % A user-defined refinement has been passed.
-    refFunc = pref.chebtech.refinementFunction;
-elseif ( strcmp(pref.chebtech.refinementFunction, 'resampling') )
+    refFunc = pref.refinementFunction;
+elseif ( strcmp(pref.refinementFunction, 'resampling') )
     if ( nfuns == 1 )   % OP(G1) resampling.
         refFunc = @(op, values, pref) composeResample1(op, values, pref, f);
     else                % OP(G1, G2) resampling.
@@ -57,7 +59,7 @@ else
 end
 
 % Assign to preference structure:
-pref.chebtech.refinementFunction = refFunc;
+pref.refinementFunction = refFunc;
 
 % Call parent COMPOSE:
 f = compose@chebtech(f, op, g, pref);
@@ -69,8 +71,8 @@ function [values, giveUp] = composeResample1(op, values, pref, f)
 %resampling.
     
     if ( isempty(values) )
-        % Choose initial n based upon minSamples.
-        n = 2^ceil(log2(pref.chebtech.minSamples - 1)) + 1;
+        % Choose initial n based upon minPoints.
+        n = 2^ceil(log2(pref.minPoints - 1)) + 1;
     else
         % (Approximately) powers of sqrt(2):
         pow = log2(size(values, 1) - 1);
@@ -83,7 +85,7 @@ function [values, giveUp] = composeResample1(op, values, pref, f)
     end
     
     % n is too large.
-    if ( n > pref.chebtech.maxSamples )
+    if ( n > pref.maxPoints )
         giveUp = true;
         return
     else
@@ -95,7 +97,7 @@ function [values, giveUp] = composeResample1(op, values, pref, f)
     v1 = f.values;
 
     % Evaluate the operator
-    if ( pref.chebtech.extrapolate )
+    if ( pref.extrapolate )
         % Avoid evaluating the endpoints:
         valuesTemp = feval(op, v1(2:n-1,:));
         nans = NaN(1, size(valuesTemp, 2));
@@ -110,8 +112,8 @@ function [values, giveUp] = composeResample2(op, values, pref, f, g)
 %resampling.
     
     if ( isempty(values) )
-        % Choose initial n based upon minSamples.
-        n = 2^ceil(log2(pref.chebtech.minSamples - 1)) + 1;
+        % Choose initial n based upon minPoints.
+        n = 2^ceil(log2(pref.minPoints - 1)) + 1;
     else
         % (Approximately) powers of sqrt(2):
         pow = log2(size(values, 1) - 1);
@@ -124,7 +126,7 @@ function [values, giveUp] = composeResample2(op, values, pref, f, g)
     end
     
     % n is too large:
-    if ( n > pref.chebtech.maxSamples )
+    if ( n > pref.maxPoints )
         giveUp = true;
         return
     else
@@ -137,7 +139,7 @@ function [values, giveUp] = composeResample2(op, values, pref, f, g)
     g = prolong(g, n);
     v2 = g.values;
 
-    if ( pref.chebtech.extrapolate )
+    if ( pref.extrapolate )
         % Avoid evaluating the endpoints:
         valuesTemp = feval(op, v1(2:n-1,:), v2(2:n-1,:));
         nans = NaN(1, size(valuesTemp, 2));
@@ -160,7 +162,7 @@ function [values, giveUp] = composeNested1(op, values, pref, f)
         n = 2*size(values, 1) - 1;
         
         % n is too large:
-        if ( n > pref.chebtech.maxSamples )
+        if ( n > pref.maxPoints )
             giveUp = true;
             return
         else
@@ -193,7 +195,7 @@ function [values, giveUp] = composeNested2(op, values, pref, f, g)
         n = 2*size(values, 1) - 1;
         
         % n is too large.
-        if ( n > pref.chebtech.maxSamples )
+        if ( n > pref.maxPoints )
             giveUp = true;
             return
         else

@@ -2,7 +2,7 @@ function g = atand(f, pref)
 %ATAN   Inverse tangent of a CHEBFUN, result in degrees.
 %   ATAN(F) computes the inverse tangent (in degrees) of the CHEBFUN F.
 %
-%   ATAN(F, PREF) does the same but uses the preference structure PREF when
+%   ATAN(F, PREF) does the same but uses the CHEBPREF object PREF when
 %   computing the composition.
 %
 % See also TAND, ATAN2D, ATAN.
@@ -12,7 +12,7 @@ function g = atand(f, pref)
 
 % Obtain preferences:
 if ( nargin == 1 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Call the compose method:

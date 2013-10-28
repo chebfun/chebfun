@@ -4,7 +4,7 @@ function pass = test_sum(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = chebtech.pref();
+    pref = chebtech.techPref();
 end
 
 pass = zeros(2, 11); % Pre-allocate pass matrix

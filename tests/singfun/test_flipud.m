@@ -4,7 +4,7 @@ function pass = test_flipud(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = singfun.pref;
+    pref = chebpref();
 end
 
 % Generate a few random points to use as test values.

@@ -2,7 +2,7 @@ function g = asind(f, pref)
 %ASIND   Inverse sine of a CHEBFUN, result in degrees.
 %   ASIND(F) computes the inverse sine (in degrees) of the CHEBFUN F.
 %
-%   ASIND(F, PREF) does the same but uses the preference structure PREF when
+%   ASIND(F, PREF) does the same but uses the CHEBPREF object PREF when
 %   computing the composition.
 %
 % See also SIND, ASIN.
@@ -12,7 +12,7 @@ function g = asind(f, pref)
 
 % Obtain preferences:
 if ( nargin == 1 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Call the compose method:

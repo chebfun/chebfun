@@ -4,7 +4,7 @@ function pass = test_overlap(pref)
 
 % Grab some preferences:
 if ( nargin == 0 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Test empty input.

@@ -3,7 +3,7 @@
 function pass = test_conj(pref)
 
 if ( nargin < 1 )
-    pref = chebtech.pref;
+    pref = chebtech.techPref();
 end
 
 pass = zeros(2, 2); % Pre-allocate pass matrix

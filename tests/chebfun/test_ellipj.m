@@ -3,7 +3,7 @@
 function pass = test_ellipj(pref)
 
 if ( nargin == 0 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Generate a few random points to use as test values.

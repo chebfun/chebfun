@@ -3,7 +3,7 @@
 function pass = test_unwrap(pref)
 
 if (nargin < 1)
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Generate a few random points to use as test values.
@@ -17,7 +17,7 @@ pass(1) = isempty(unwrap(chebfun()));
 f = chebfun(@(x) exp(x), [-1 1], pref);
 pass(2) = isequal(f, unwrap(f));
 
-pref.chebfun.extrapolate = 1;
+pref.techPrefs.extrapolate = 1;
 f = chebfun(@mysawtooth, [0 2*pi 4*pi 6*pi 8*pi], pref);
 uf = unwrap(f);
 pass(3) = norm(feval(uf, x) - (x - pi), inf) < 10*vscale(uf)*epslevel(uf);

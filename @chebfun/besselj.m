@@ -14,7 +14,7 @@ function g = besselj(nu, f, scale, pref)
 % See http://www.chebfun.org for Chebfun information.
 
 if ( nargin < 4 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 if ( any(size(nu) > 1) || ~isreal(nu) )

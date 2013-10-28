@@ -3,7 +3,7 @@
 function pass = test_besselyk(pref)
 
 if ( nargin == 0 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Generate a few random points to use as test values.
@@ -53,7 +53,7 @@ for (n = 1:2)
     pass(n, 6) = norm(err(:), inf) < 10*epslevel(h)*vscale(h);
 
     % Test for complex values.
-    pref.chebfun.splitting = 1;
+    pref.enableBreakpointDetection = 1;
     f_op = @complex_test_fn;
     f = chebfun(f_op, [-1 0 0.5 1], pref);
 

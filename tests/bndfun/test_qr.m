@@ -4,7 +4,7 @@ function pass = test_qr(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fun.pref;
+    pref = chebpref();
 end
 
 % Set the domain

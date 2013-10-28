@@ -19,7 +19,7 @@ classdef bndfun < fun
 %   defaults to 1.
 %
 %   BNDFUN(OP, DOMAIN, VSCALE, HSCALE, PREF) overrides the default behavior with
-%   that given by the preference structure PREF. See FUN.pref for details.
+%   that given by the preference structure PREF. See CHEBPREF for details.
 %
 %   BNDFUN(VALUES, DOMAIN, VSCALE, HSCALE, PREF) returns a BNDFUN object with a
 %   ONEFUN constructed by the data in the columns of VALUES (if supported by
@@ -27,7 +27,7 @@ classdef bndfun < fun
 %
 % See ONEFUN for further documentation of the ONEFUN class.
 %
-% See also FUN, FUN.pref, ONEFUN.
+% See also FUN, CHEBPREF, ONEFUN.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % BNDFUN Class Description:
@@ -59,15 +59,15 @@ classdef bndfun < fun
             
             % Obtain preferences if none given:
             if ( (nargin < 5) || isempty(pref))
-                pref = bndfun.pref;
+                pref = chebpref();
             else
-                pref = bndfun.pref(pref);
+                pref = chebpref(pref);
             end
             
             % Use default domain if none given. Otherwise, check whether the
             % domain input has correct dimensions
             if ( (nargin < 2) || isempty(domain) )
-                domain = pref.bndfun.domain;
+                domain = pref.domain;
             elseif ( ~all(size(domain) == [1, 2]) ) || diff(domain) <= 0
                 error('CHEBFUN:BNDFUN:domain',...
                     ['Domain argument should be a row vector with two ', ...
@@ -87,6 +87,7 @@ classdef bndfun < fun
             if ( (nargin < 3) || isempty(vscale) )
                 vscale = 0;
             end
+
             if ( (nargin < 4) || isempty(hscale) )
                 % [TODO]: Or should this be 1? What does the chebfun level pass
                 % down?
@@ -101,7 +102,6 @@ classdef bndfun < fun
             end
             
             % Call the ONEFUN constructor:
-            pref = onefun.pref(pref, pref.bndfun);
             obj.onefun = onefun.constructor(op, vscale, hscale/diff(domain), pref);
             
             % Add the domain and mapping:
@@ -114,10 +114,7 @@ classdef bndfun < fun
     
     %% STATIC METHODS IMPLEMENTED BY BNDFUN CLASS.
     methods ( Static = true ) 
-        
-        % Retrieve and modify preferences for this class.
-        prefs = pref(varargin);
-        
+
         % Linear map from [-1, 1] to the domain of the BNDFUN.
         m = createMap(domain);
         

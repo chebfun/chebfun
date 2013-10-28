@@ -3,7 +3,7 @@
 function pass = test_roots(pref)
 
 if ( nargin < 1 )
-    pref = fun.pref;
+    pref = chebpref();
 end
 
 pass = zeros(1, 9); % Pre-allocate pass matrix
