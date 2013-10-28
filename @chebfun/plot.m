@@ -37,6 +37,12 @@ function varargout = plot(varargin)
 %   lineseries objects (one for each column in the case of array-valued CHEBFUN
 %   objects), corresponding to the line, point, and jump plots, respectively.
 %
+%   PLOT(F, 'interval', [A, B]) restricts the plot to the interval [A, B], which
+%   can be useful when the domain of F is infinite, or for 'zooming in' on, say,
+%   oscillatory CHEBFUN objects. If plotting an array-valued CHEBFUN or more
+%   than one CHEBFUN in a call like PLOT(F, 'b', G, '--r', 'interval', [A, B])
+%   this property is applied globally.
+%
 % See also PLOTDATA, PLOT3.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
@@ -63,6 +69,25 @@ jumpData = {};
 % Suppress inevitable warning for growing these arrays:
 %#ok<*AGROW>
 
+% Check to see if the 'interval' flag has been set:
+intervalIsSet = 0;
+loc = find(strcmpi(varargin, 'interval'));
+if ( any(loc) )
+    intervalIsSet = 1;
+    interval = varargin{loc+1};
+    varargin(loc:loc+1) = [];
+else
+    loc = find(cellfun(@(f) isa(f, 'chebfun'), varargin));
+    for k = 1:numel(loc)
+        if ( loc(k) < nargin && isnumeric(varargin{loc(k)+1}) )
+            interval = varargin{loc(k)+1};
+            varargin(loc(k)+1) = [];
+            intervalIsSet = true;
+            break
+        end
+    end
+end
+    
 %%
 % Get the data for plotting from PLOTDATA():
 while ( ~isempty(varargin) ) 
@@ -103,16 +128,25 @@ while ( ~isempty(varargin) )
         styleData = varargin(1:pos);
         varargin(1:pos) = [];
     end
-
-    % Deal with complex-valued functions:
-    if ( ~isreal( newData.yLine ) )
+    
+    if ( ~isreal( newData.yLine ) ) % Deal with complex-valued functions.
         % Assign x to be the real part, and y to be the imagiary part:
-        newData.xline = real(newData.yLine);
-        newData.yline = imag(newData.yLine);
+        newData.xLine = real(newData.yLine);
+        newData.yLine = imag(newData.yLine);
         newData.xPoints = real(newData.yPoints);
         newData.yPoints = imag(newData.yPoints);
         newData.xJumps = real(newData.yJumps);
         newData.yJumps = imag(newData.yJumps);
+    elseif ( intervalIsSet && size(newData.xLine, 2) == 1 ) % Deal with 'interval' flag.
+        idx = newData.xLine < interval(1) | newData.xLine > interval(end);
+        newData.xLine(idx) = [];
+        newData.yLine(idx,:) = [];
+        idx = newData.xPoints < interval(1) | newData.xPoints > interval(end);
+        newData.xPoints(idx) = [];
+        newData.yPoints(idx,:) = [];
+        idx = newData.xJumps < interval(1) | newData.xJumps > interval(end);
+        newData.xJumps(idx) = [];
+        newData.yJumps(idx,:) = [];
     end
     
     % Append new data to the arrays which will be passed to built in PLOT():
