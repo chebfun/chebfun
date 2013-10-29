@@ -22,8 +22,8 @@ switch prop
         % Allow access to any of the properties of F.onefun via GET:
         out = get(f.onefun, prop);
         
-    case fieldnames(f.onefun.smoothPart)
-        % Allow access to any of the properties of F.onefun via GET:
+    case {'vscale'}
+        % Access the vscale of F.onefun when F.onefun is a singfun:
         out = get(f.onefun, prop);
         
     case {'lval', 'rval'}

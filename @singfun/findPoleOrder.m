@@ -63,7 +63,7 @@ maxPoleOrder = chebpref().singPrefs.maxPoleOrder;
 poleOrder = 0;
 
 % Loop to see for which power of x the function values become non-divergent
-% i.e. when the ratio of function values becomes less then the testRatio.
+% i.e. when the ratio of function values becomes less than the testRatio.
 while ( all(smoothVals(2:end)./smoothVals(1:end-1) > testRatio) && ...
         (poleOrder <= maxPoleOrder) )
     poleOrder = poleOrder + 1;
