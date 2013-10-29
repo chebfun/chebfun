@@ -108,10 +108,10 @@ classdef blockUS
                 for jj = 1:numInts
                     indn = (ii-1)*sum(n) + (((jj-1)*ntmp(jj)+1):(jj*n(jj)));
                     indm = ((jj-1)*mtmp(jj)+1):(jj*m(jj));
-                    B(indm,indn) = blockUS.convertmat(length(indm), diffOrder(jj), max(diffOrder)-1) * B(indm,indn);
+                    B(indm,indn) = blockUS.convertmat(length(indm), diffOrder(ii), max(diffOrder)-1) * B(indm,indn);
+                    B(indm,end) = blockUS.convertmat(length(indm), 0, max(diffOrder)-1) * B(indm,end);
                 end
             end
-
         end
         
         function [isDone, epsLevel] = testConvergence(v)
