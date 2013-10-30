@@ -13,7 +13,6 @@ seedRNG(6178);
 % A random number to use as an arbitrary scalar multiplier.
 alpha = randn() + 1i*randn();
 
-pass = zeros(1, 12); % Pre-allocate pass matrix
 for n = 1:1 %[TODO]: unbndfun
     if ( n == 1 )
         testclass = bndfun();

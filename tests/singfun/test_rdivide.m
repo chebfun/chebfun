@@ -12,8 +12,6 @@ seedRNG(666);
 x = 2 * rand(100, 1) - 1;
 x = sort(x);
 
-pass = zeros(1, 9);   % Pre-allocate pass vector
-
 %%
 % Check operation in the case of empty arguments.
 f = singfun();

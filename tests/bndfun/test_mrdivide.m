@@ -17,8 +17,6 @@ x = diff(dom) * rand(100, 1) + dom(1);
 % Random number to use as a scalar constant.
 alpha = -0.194758928283640 + 0.075474485412665i;
 
-pass = zeros(1, 9); % Pre-allocate pass matrix
-
 %%
 % Check division of a BNDFUN object by a numeric array.
 

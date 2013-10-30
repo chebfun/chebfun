@@ -2,7 +2,6 @@
 
 function pass = test_isempty(varargin)
 
-pass = zeros(2, 4); % Pre-allocate pass matrix
 for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();

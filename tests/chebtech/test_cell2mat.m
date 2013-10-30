@@ -6,8 +6,6 @@ if ( nargin < 2 )
     pref = chebtech.techPref();
 end
 
-pass = zeros(2, 1); % Pre-allocate pass matrix.
-
 for n = 1:2
     
     if (n == 1);

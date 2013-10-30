@@ -7,8 +7,6 @@ if ( nargin < 1 )
     pref = chebpref();
 end
 
-pass = zeros(1, 6); % Pre-allocate pass matrix
-
 % tests on different calling sequences:
 
 %%

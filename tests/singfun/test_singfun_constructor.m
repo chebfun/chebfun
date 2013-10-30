@@ -7,8 +7,6 @@ if ( nargin < 1 )
     pref = chebpref();
 end
 
-pass = zeros(1, 18); % Pre-allocate pass matrix
-
 %%
 % Select some random points as sample points
 % These random points are in [-1, 1]

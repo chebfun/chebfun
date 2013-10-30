@@ -4,8 +4,6 @@ if ( nargin == 1 )
     pref = chebtech.techPref();
 end
 
-pass = zeros(2, 9);
-
 for m = 1:2
     if ( m == 1 )
         testTech = chebtech1();
