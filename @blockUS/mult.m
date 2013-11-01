@@ -2,6 +2,7 @@ function M = mult(A, f, lambda)
 
 n = dim(A);
 d = A.domain;
+f = restrict(f, d);
 numIntervals = length(d)-1;
 
 % Find the diagonal blocks.
