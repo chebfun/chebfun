@@ -4,7 +4,7 @@
 function pass = test_compose(pref)
 
 if ( nargin < 1 )
-    pref = chebtech.pref;
+    pref = chebtech.techPref();
 end
 
 pass = zeros(2, 12); % Pre-allocate pass matrix.
@@ -15,11 +15,11 @@ for n = 1:4
         testclass = chebtech2();
 
         if ( n == 3 )
-            pref.chebtech.refinementFunction = 'resampling';
+            pref.refinementFunction = 'resampling';
         end
 
         if ( n == 4 )
-            pref.chebtech.extrapolate = true;
+            pref.extrapolate = true;
         end
     end
 

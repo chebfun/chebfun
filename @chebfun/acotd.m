@@ -2,7 +2,7 @@ function g = acotd(f, pref)
 %ACOTD   Inverse cotangent of a CHEBFUN, result in degrees.
 %   ACOTD(F) computes the inverse cotangent (in degrees) of the CHEBFUN F.
 %
-%   ACOTD(F, PREF) does the same but uses the preference structure PREF when
+%   ACOTD(F, PREF) does the same but uses the CHEBPREF object PREF when
 %   computing the composition.
 %
 % See also COTD, ACOT.
@@ -12,7 +12,7 @@ function g = acotd(f, pref)
 
 % Obtain preferences:
 if ( nargin == 1 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Call the compose method:

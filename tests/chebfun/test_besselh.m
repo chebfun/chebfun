@@ -3,7 +3,7 @@
 function pass = test_besselh(pref)
 
 if ( nargin == 0 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Generate a few random points to use as test values.
@@ -62,7 +62,7 @@ err = feval(h, xr) - besselh(nu, 1, f_op(xr), 1);
 pass(10) = norm(err(:), inf) < 10*epslevel(h)*vscale(h);
 
 % Test for complex values.
-pref.chebfun.splitting = 1;
+pref.enableBreakpointDetection = 1;
 f_op = @scalar_test_fn;
 f = chebfun(f_op, [-1 0 0.5 1], pref);
 

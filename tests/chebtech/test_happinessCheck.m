@@ -4,7 +4,7 @@ function pass = test_happinessCheck(pref)
 
 % Get preferences:
 if ( nargin < 1 )
-    pref = chebtech.pref;
+    pref = chebtech.techPref();
 end
 
 pass = zeros(2, 6); % Pre-allocate pass matrix.
@@ -16,7 +16,7 @@ for n = 1:2
     end
 
     % Set the tolerance:
-    tol = 10*pref.chebtech.eps;
+    tol = 10*pref.eps;
     
     %%
     % Test on a scalar-valued function:
@@ -42,7 +42,7 @@ for n = 1:2
     f = @(x) cos((2*k+m)*acos(x));
     
     % This should be happy, as aliasing fools the happiness test:
-    pref.chebtech.sampletest = 0;
+    pref.sampleTest = 0;
     g = testclass.make(f(x));
     [ishappy, epslevel, tail] = happinessCheck(g, f, pref);
     if (n == 1)
@@ -52,7 +52,7 @@ for n = 1:2
     end
     
     % This should be unhappy, as sampletest fixes things:
-    pref.chebtech.sampletest = 1;
+    pref.sampleTest = 1;
     g = testclass.make(f(x));
     [ishappy, epslevel, tail] = happinessCheck(g, f, pref);
     pass(n, 6) = ~ishappy && tail == 33;

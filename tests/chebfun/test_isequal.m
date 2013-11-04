@@ -4,10 +4,10 @@ function pass = test_isequal(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = chebfun.pref;
+    pref = chebpref();
 end
 
-pref.chebfun.splitting = 1;
+pref.enableBreakpointDetection = 1;
 
 % Check empty case.
 f = chebfun();

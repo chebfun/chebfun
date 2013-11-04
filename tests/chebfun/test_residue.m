@@ -1,7 +1,7 @@
 function pass = test_residue(pref)
 
 if ( nargin == 0 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 f = chebfun(@(x) (x-1.1).*(x.^2+1).*(x-10i), pref);

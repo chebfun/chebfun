@@ -20,7 +20,7 @@ if ( nargin < 2 )
     tol = vscale(f)*epslevel(f);
     % TODO: Remove this once epslevels of zero CHEBFUNs have been improved.
     if ( isnan(tol) )
-        tol = chebfun.pref('eps');
+        tol = eps;
     end
 end
 

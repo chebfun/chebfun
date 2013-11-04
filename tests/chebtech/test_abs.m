@@ -1,7 +1,7 @@
 function pass = test_abs(pref)
 
 if ( nargin == 0 ) 
-    pref = chebtech.pref();
+    pref = chebtech.techPref();
 end
 
 pass = zeros(2, 4);

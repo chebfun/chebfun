@@ -1,20 +1,19 @@
 classdef onefun % (Abstract) 
-%ONEFUN     Approximate smooth functions on [-1,1]. 
+%ONEFUN   Approximate smooth functions on [-1,1].
 %   Abstract (interface) class for approximating functions on the interval
 %   [-1,1].
 %
 % Constructor inputs:
-%   ONEFUN.CONSTRUCTOR(OP, VSCALE, HSCALE, PREF) creates a representation of the
-%   operator OP defined on the interval [-1,1]. If PREF.ONEFUN.BLOWUP = 1 (which
-%   is the default) then the ONEFUN constructor calls
-%    SINGFUN.CONSTRUCTOR(OP, VSCALE, HSCALE, PREF2), else it calls
-%    SMOOTHFUN.CONSTRUCTOR(OP, VSCALE, HSCALE, PREF2) if PREF.ONEFUN.BLOWUP = 0, 
-%   where in both cases PREF2 is a merge of PREF with the default SINGFUN and
-%   ONEFUN preferences, respectively.
+%   ONEFUN.CONSTRUCTOR(OP, VSCALE, HSCALE, PREF) creates a representation of
+%   the operator OP defined on the interval [-1,1]. If
+%   PREF.ENABLESINGULARITYDETECTION = 0 (which is the default) then the ONEFUN
+%   constructor calls SMOOTHFUN.CONSTRUCTOR(OP, VSCALE, HSCALE, PREF), else it
+%   calls SINGFUN.CONSTRUCTOR(OP, VSCALE, HSCALE, PREF) if
+%   PREF.ENABLESINGULARITYDETECTION = 1.
 %
 %   See SMOOTHFUN and SINGFUN for further documentation.
 %
-% See also ONEFUN.pref, SINGFUN, SMOOTHFUN.
+% See also SINGFUN, SMOOTHFUN.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -54,9 +53,9 @@ classdef onefun % (Abstract)
             end
             % Determine preferences if not given, merge if some are given:
             if ( nargin < 4 || isempty(pref) )
-                pref = onefun.pref;
+                pref = chebpref();
             else
-                pref = onefun.pref(pref);
+                pref = chebpref(pref);
             end
 
             % Call the relevent constructor:
@@ -64,29 +63,19 @@ classdef onefun % (Abstract)
                 % OP is already a ONEFUN!
                 obj = op;
                 
-            elseif ( pref.onefun.blowup )
-                % BLOWUP mode; Call SINGFUN.
-                
-                % Merge preferences:
-                pref = singfun.pref(pref, pref.onefun);
-                
-                % Call singfun constructor:
-                obj = singfun(op, vscale, hscale, pref);
-                
-                % Return just a FUN if no singularities found:
-                if ( ~any(obj.exps) )
-                    obj = obj.smoothfun; 
+            elseif ( pref.enableSingularityDetection )
+                % BLOWUP mode; call SINGFUN constructor:
+                obj = singfun(op, [], [], vscale, hscale, pref);
+
+                % Return just a SMOOTHFUN if no singularities found:
+                if ( issmooth(obj) )
+                    obj = obj.smoothPart; 
                 end 
                 
             else
-                % STANDARD mode; Call SMOOTHFUN.
-                
-                % Merge preferences:
-                pref = smoothfun.pref(pref, pref.onefun);
-                
-                % Call SMOOTHFUN constructor:
+                % STANDARD mode; call SMOOTHFUN constructor:
                 obj = smoothfun.constructor(op, vscale, hscale, pref);
-                
+
             end
         
         end
@@ -229,18 +218,15 @@ classdef onefun % (Abstract)
 
     %% ABSTRACT STATIC METHODS REQUIRED BY ONEFUN CLASS.
     methods ( Abstract = true, Static = true )
-        
-        % Retrieve and modify preferences for this class.
-        prefs = pref(varargin)
-        
+
     end
     
-    %% Methods implimented by ONEFUN class.
+    %% Methods implemented by ONEFUN class.
     methods 
         
     end
     
-    %% Static methods implimented by ONEFUN class.
+    %% Static methods implemented by ONEFUN class.
     methods ( Static = true ) 
         
     end

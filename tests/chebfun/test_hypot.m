@@ -1,7 +1,7 @@
 function pass = test_hypot(pref)
 
 if ( nargin == 0 ) 
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Test the exmaple given in the file.
@@ -18,7 +18,7 @@ hh = hypot(ff, gg);
 pass(1) = norm(feval(h, xx) - hh, inf)/vscale(h) < epslevel(h);
 
 % Test a function with breakpoints.
-pref.chebfun.splitting = 1;
+pref.enableBreakpointDetection = 1;
 base_op = @(x) sign(x - 0.1).*abs(x + 0.2).*sin(3*x)*(pi/16) + pi/8;
 f = chebfun(base_op, [-1 -0.2 0.1 1], pref);
 g = hypot(f, f);
