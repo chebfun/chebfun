@@ -1,7 +1,8 @@
 function L = appendContinuity(L)
 
 % Append smoothness constraints at domain breakpoints.
-d = getColDiffOrders(L);
+d = L.blockDiffOrders;
+d = max(d,[],1);
 dom = L.domain;
 
 if ( max(d) > 0 ) && ( length(dom) > 2 )
