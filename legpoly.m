@@ -97,7 +97,9 @@ switch method
                 end
                 ind = ind + 1;
             end
-            [L0, L1] = deal(L1, (2-1/k)*x.*L1 - (1-1/k)*L0);
+            tmp = L1;
+            L1 = (2-1/k)*x.*L1 - (1-1/k)*L0;
+            L0 = tmp;
         end
         % Convert the discrete values to a CHEBFUN.
         p = chebfun(P(:,cc), dom); 
@@ -127,6 +129,9 @@ switch method
 
         c_leg = [1 ; zeros(n, 1)];              % Legendre coefficients.
         c_cheb = chebtech.leg2cheb(c_leg);      % Chebyshev coefficients.
+        if ( normalize )
+            c_cheb = c_cheb*sqrt((n+.5));
+        end
         p_chebtech = chebtech2({[], c_cheb});   % Make a CHEBTECH.
         p_bndfun = bndfun(p_chebtech, dom);     % Make a BNDFUN.
         p = chebfun({p_bndfun});                % Make a CHEBFUN.

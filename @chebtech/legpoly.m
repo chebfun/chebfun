@@ -30,7 +30,7 @@ if ( nargin > 1 )
     end
 end
 
-b = b.';
+% b = b.';
 
 end
 

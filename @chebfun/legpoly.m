@@ -18,7 +18,7 @@ function out = legpoly(f, varargin)
 
 % Call FUN/LEGPOLY():
 if ( numel( f.funs ) == 1 )
-    out = legpoly(f.funs{1}, varargin{:});
+    out = legpoly(f.funs{1}, varargin{:}).';
 else
     if ( nargin < 2 )
         error('CHEBFUN:legpoly:n', ...
