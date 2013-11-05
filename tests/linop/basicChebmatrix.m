@@ -8,7 +8,7 @@ D = linop.diff(dom);
 Z = linop.zeros(dom);
 x = chebfun('x', dom);
 u = sin(x.^2);
-U = linop.diag(u);   
+U = linop.mult(u);   
 
 D5 = [ 
   -5.499999999999999   6.828427124746189  -2.000000000000000   1.171572875253810  -0.500000000000000

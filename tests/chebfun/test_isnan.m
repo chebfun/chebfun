@@ -4,7 +4,7 @@ function pass = test_isnan(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = chebfun.pref;
+    pref = chebpref();
 end
 
 % Check empty case.

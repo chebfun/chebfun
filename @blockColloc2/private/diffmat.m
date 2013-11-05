@@ -53,5 +53,4 @@ for n = 3:k
     D(ii) = 0; D(ii) = - sum(D,2);          % negative sum trick
 end
 
-
 end

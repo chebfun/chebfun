@@ -2,7 +2,7 @@ function g = sech(f, pref)
 %SECH   Hyperbolic secant of a CHEBFUN.
 %   SECH(F) computes the hyperbolic secant of the CHEBFUN F.
 %
-%   SECH(F, PREF) does the same but uses the preference structure PREF when
+%   SECH(F, PREF) does the same but uses the CHEBPREF object PREF when
 %   computing the composition.
 %
 % See also ASECH.
@@ -12,7 +12,7 @@ function g = sech(f, pref)
 
 % Obtain preferences:
 if ( nargin == 1 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Call the compose method:

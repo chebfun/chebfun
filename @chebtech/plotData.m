@@ -1,5 +1,5 @@
 function data = plotData(f, g, h)
-%PLOTDATA    Useful data values for plotting a CHEBTECH object.
+%PLOTDATA   Useful data values for plotting a CHEBTECH object.
 %   DATA = PLOTDATA(F) returns a struct containing data that can be used for
 %   plotting F. The struct DATA contains the following fields:
 %
@@ -36,7 +36,7 @@ end
 
 % Get the number of points: (Oversample the wavelength)
 len = max([length(f), length(g), length(h)]);
-npts = min(max(501, round(4*pi*len)), chebtech.pref('maxSamples'));
+npts = min(max(501, round(4*pi*len)), chebtech.techPref().maxPoints);
 
 % Initialise the output structure:
 data = struct('xLine', [], 'yLine', [], 'xPoints', [], 'yPoints', []);

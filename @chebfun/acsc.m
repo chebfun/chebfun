@@ -2,7 +2,7 @@ function g = acsc(f, pref)
 %ACSC   Inverse cosecant of a CHEBFUN.
 %   ACSC(F) computes the inverse cosecant of the CHEBFUN F.
 %
-%   ACSC(F, PREF) does the same but uses the preference structure PREF when
+%   ACSC(F, PREF) does the same but uses the CHEBPREF object PREF when
 %   computing the composition.
 %
 % See also CSC, ACSCD.
@@ -12,7 +12,7 @@ function g = acsc(f, pref)
 
 % Obtain preferences:
 if ( nargin == 1 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Call the compose method:

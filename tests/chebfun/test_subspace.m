@@ -3,7 +3,7 @@
 function pass = test_subspace(pref)
 
 if ( nargin == 0 )
-   pref = chebfun.pref(); 
+   pref = chebpref();
 end
 
 % Orthonormal array-valued chebfun:

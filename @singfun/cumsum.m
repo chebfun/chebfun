@@ -158,7 +158,7 @@ for k = 1:m
     
     % Construct the SINGFUN object of the solution:
     g = singfun;
-    tol = singfun.pref.singfun.eps;
+    tol = f.smoothPart.epslevel;
     if ( abs(ra - a) > tol*f.smoothPart.vscale ) 
         % No log term: fractional poles, fractional roots, or integer roots:
         CM = Cm/(ra - a);

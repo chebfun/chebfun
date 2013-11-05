@@ -1,4 +1,4 @@
-function B = resize(A,m,n,domain)
+function B = resize(A,m,n,domain, difforder)
 
 numint = length(m);
 P = cell(1,numint);

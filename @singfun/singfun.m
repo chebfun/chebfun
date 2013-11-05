@@ -67,8 +67,6 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
 %   using the preferences given by PREF. Note that any of or all of EXPONENTS, 
 %   SINGTYPE, VSCALE, and HSCALE can be omitted or empty in this calling
 %   sequence in the presence of PREF.
-%
-% See also PREF.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -97,10 +95,10 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
             % Check for preferences in the very beginning.
             if ( (nargin < 6) || isempty(pref) )
                 % Determine preferences if not given.
-                pref = singfun.pref;
+                pref = chebpref();
             else
                 % Merge if some preferences are given.
-                pref = singfun.pref(pref);
+                pref = chebpref(pref);
             end           
             
             %% Cases based on the number of arguments

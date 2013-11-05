@@ -3,7 +3,7 @@
 function pass = test_constructor_basic(pref)
 
 if ( nargin == 0 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Some basic test functions:
@@ -23,7 +23,7 @@ for j = 1:numel(FF);
     xx = linspace(-1, 1);
     err = norm(feval(f, xx) - F(xx), inf);
     pass(j, k+1) = err < 10*epslevel(f)*vscale(f);
-    pass(j, k+2) = err < 50*pref.chebfun.eps;
+    pass(j, k+2) = err < 50*pref.eps;
     k = k + 2;
 
     % Test on [-1 1] (no domain passed):
@@ -31,7 +31,7 @@ for j = 1:numel(FF);
     xx = linspace(-1, 1);
     err = norm(feval(f, xx) - F(xx), inf);
     pass(j, k+1) = err < 10*epslevel(f)*vscale(f);
-    pass(j, k+2) = err < 500*pref.chebfun.eps;
+    pass(j, k+2) = err < 500*pref.eps;
     k = k + 2;
 
     % Test on [0 10000]:
@@ -39,7 +39,7 @@ for j = 1:numel(FF);
     xx = linspace(0, 10000);
     err = norm(feval(f, xx) - F(xx), inf);
     pass(j, k+1) = err < 100*epslevel(f)*vscale(f);
-    pass(j, k+2) = err < 100*hscale(f)*pref.chebfun.eps;
+    pass(j, k+2) = err < 100*hscale(f)*pref.eps;
     k = k + 2;
 
     % Test on piecewise domain:
@@ -47,7 +47,7 @@ for j = 1:numel(FF);
     xx = linspace(-1, 1);
     err = norm(feval(f, xx) - F(xx), inf);
     pass(j, k+1) = err < 10*epslevel(f)*vscale(f);
-    pass(j, k+2) = err < 100*pref.chebfun.eps;
+    pass(j, k+2) = err < 100*pref.eps;
     k = k + 2;
 end
 

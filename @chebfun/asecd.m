@@ -2,7 +2,7 @@ function g = asecd(f, pref)
 %ASECD   Inverse secant of a CHEBFUN, result in degrees.
 %   ASECD(F) computes the inverse secant (in degrees) of the CHEBFUN F.
 %
-%   ASECD(F, PREF) does the same but uses the preference structure PREF when
+%   ASECD(F, PREF) does the same but uses the CHEBPREF object PREF when
 %   computing the composition.
 %
 % See also SECD, ASEC.
@@ -12,7 +12,7 @@ function g = asecd(f, pref)
 
 % Obtain preferences:
 if ( nargin == 1 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Call the compose method:

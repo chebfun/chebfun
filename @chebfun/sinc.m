@@ -2,7 +2,7 @@ function g = sinc(f, pref)
 %SINC   Sinc function of a CHEBFUN.
 %   SINC(F) computes the sinc function of the CHEBFUN F.
 %
-%   SINC(F, PREF) does the same but uses the preference structure PREF when
+%   SINC(F, PREF) does the same but uses the CHEBPREF object PREF when
 %   computing the composition.
 %
 % See also SIN.
@@ -12,7 +12,7 @@ function g = sinc(f, pref)
 
 % Obtain preferences:
 if ( nargin == 1 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Call the compose method:

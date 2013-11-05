@@ -33,7 +33,7 @@ end
 
 % Use the default tolerance if none was supplied:
 if ( nargin < 2 )
-    pref = chebtech.pref();
+    pref = chebtech.techPref();
     tol = f.epslevel;
 end
 

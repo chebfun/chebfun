@@ -8,12 +8,12 @@ classdef functionalBlock < linBlock
             A = A@linBlock(domain);
         end
         
-        function varargout = size(A,dim)
+        function varargout = size(A, dim)
             % S = SIZE(A)
-            % [M,N] = SIZE(A)
-            % P = SIZE(A,K)
-            %
-            m = [1 Inf];
+            % [M, N] = SIZE(A)
+            % P = SIZE(A, K)
+
+            m = [1, Inf];
             if nargin > 1
                 varargout = {m(dim)};
             elseif nargout <= 1
@@ -23,10 +23,16 @@ classdef functionalBlock < linBlock
             end
         end
 
+        function C = uminus(A)
+            C = functionalBlock(A.domain);
+            C.stack = @(z) -A.stack(z);
+            C.func = -A.func;
+            C.coeff = -A.coeff;
+        end
         
-        function C = mtimes(A,B)
+        function C = mtimes(A, B)
             % A*B
-            % If A,B both linops, or one is linop and one scalar, the
+            % If A, B both linops, or one is linop and one scalar, the
             % result is the composed linop.
             %
             % A*f
@@ -34,34 +40,37 @@ classdef functionalBlock < linBlock
             % resulting from application of A to f.
             %
             
-            if isnumeric(B) && length(B)==1
-                C = mtimes(B,A);
+            if ( isnumeric(B) && length(B) == 1 )
+                C = mtimes(B, A);
             end
-            
-            
-            if isa(B,'chebfun')
-                C = op(A);
+            % TODO: Un-torture this logic.
+            if ( isa(B, 'chebfun') )
+                C = A.functionForm;
                 C = C(B);
-            elseif isnumeric(A)
+            elseif ( isnumeric(A) )
                 C = functionalBlock(A.domain);
-                C.delayFun = A*B.delayFun(z);
+                C.stack = A*B.stack(z);
+                C.func = A*B.func;
+                C.coeff = A*B.coeff;
                 C.diffOrder = B.diffOrder;
-            elseif isa(B,'operatorBlock')
+            elseif ( isa(B, 'operatorBlock') )
                 C = functionalBlock(A.domain);
-                C.delayFun = @(z) A.delayFun(z) * B.delayFun(z);
+                C.stack = @(z) A.stack(z) * B.stack(z);
+                C.func = A.func * B.func;
+                C.coeff = A.coeff * B.coeff;
                 C.diffOrder = A.diffOrder + B.diffOrder;
             else 
-                A
-                B
                 error('Unrecognized operand types.')
             end
         end
         
-        function C = plus(A,B)
+        function C = plus(A, B)
             % C = A + B
             C = functionalBlock(A.domain);
-            C.delayFun = @(z) A.delayFun(z) + B.delayFun(z);
-            C.diffOrder = max(A.diffOrder,B.diffOrder);
+            C.stack = @(z) A.stack(z) + B.stack(z);
+            C.func = A.func + B.func;
+            C.coeff = A.coeff + B.coeff;
+            C.diffOrder = max(A.diffOrder, B.diffOrder);
         end        
         
 

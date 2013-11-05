@@ -51,16 +51,20 @@ switch index(1).type
         varin = {};                 % Additional arguments.
         
         % Deal with additional arguments:
-        if ( length(idx) == 2 ) && ...
-                ( any(strcmpi(idx{2}, {'left', 'right', '-', '+'})) )
+        if ( (length(idx) == 2) && ...
+             any(strcmpi(idx{2}, {'left', 'right', '-', '+'})) )
             % f(x, 'left') or f(x, 'right'):
             varin = {idx(2)};
             
-        elseif ( (length(idx) == 2) && ...
-                ( max(idx{2}) <= columnIndex(end) || strcmp(idx{2}, ':')) )
+        elseif ( length(idx) == 2 )
             % f(x, m), for array-valued CHEBFUN objects:
-            columnIndex = idx{2};         
-            
+            if ( strcmp(idx{2}, ':') )
+                % Do nothing, as this has already been done above:
+                % columnIndex = 1:size(f, 2);
+            elseif ( max(idx{2}) <= columnIndex(end) )
+                columnIndex = idx{2};
+            end
+
         elseif ( length(idx) == 2 && strcmp(idx{2}, ':') )
             % This is OK.
             
@@ -74,16 +78,29 @@ switch index(1).type
         if ( isnumeric(x) )
             % Call FEVAL():
             out = feval(f, x, varin{:});
-            out = out(:, columnIndex);
-            
+
+            % Figure out which columns of the output we need to select:
+            % (NB:  This code uses the assumption that columnIndex is a row.)
+            evalPointCols = size(x, 2);
+            outCols = bsxfun(@plus, (columnIndex - 1)*evalPointCols + 1, ...
+                (0:1:(evalPointCols - 1)).');
+
+            % Select only the required columns of the output:
+            % (NB:  The cell array of colons is a hack to deal with the fact
+            % that x can have any number of dimensions.)
+            extraDims = ndims(x) - 2;
+            extraColons = repmat(':', 1, extraDims);
+            extraColons = mat2cell(extraColons, 1, ones(1, extraDims));
+            out = out(:, outCols(:), extraColons{:});
+
         elseif ( isa(x, 'chebfun') )
             % Call COMPOSE():
             out = compose(x, f);
             
         elseif ( isequal(x, ':') )
             % Return f:
-            if ( numel(columnIndex) == size(f, 2) && ...
-                    all(columnIndex == 1:size(f, 2)) )
+            if ( (numel(columnIndex) == size(f, 2)) && ...
+                 all(columnIndex == 1:size(f, 2)) )
                 out = f;
             else
                 % Extract the required columns:
@@ -98,7 +115,14 @@ switch index(1).type
         
         % Deal with row CHEBFUN objects:
         if ( isTransposed )
-            out = out.';
+            if ( isnumeric(out) )
+                % (Call PERMUTE instead of TRANSPOSE for numeric objects in
+                % case OUT is multidimensional).
+                out = permute(out, [2 1 3:ndims(out)]);
+            else
+                % Call TRANSPOSE for everything else (e.g., CHEBFUNs):
+                out = out.';
+            end
         end
     
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% GET %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

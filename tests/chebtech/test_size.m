@@ -3,7 +3,7 @@
 function pass = test_size(pref)
 
 if ( nargin < 1 )
-    pref = chebtech.pref;
+    pref = chebtech.techPref();
 end
 
 pass = zeros(2, 3); % Pre-allocate pass matrix
@@ -21,7 +21,7 @@ for n = 1:2
     pass(n, 2) = all(size(f) == size(f.values));
     
     p = pref;
-    p.chebtech.n = 101;
+    p.numPoints = 101;
     f = testclass.make(@(x) [sin(x), cos(x), 1i*exp(x)], [], [], p);
     pass(n, 3) = all(size(f) == [101, 3]);
 end

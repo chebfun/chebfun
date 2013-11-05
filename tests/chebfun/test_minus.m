@@ -4,7 +4,7 @@ function pass = test_plus(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Generate a few random points to use as test values.
@@ -21,7 +21,7 @@ pass(1) = isempty(f - []);
 pass(2) = isempty(f - g);
 
 % Turn on splitting, since we'll need it for the rest of the tests.
-pref.chebfun.splitting = 1;
+pref.enableBreakpointDetection = 1;
 
 % Test addition with scalars.
 f1_op = @(x) sin(x).*abs(x - 0.1);

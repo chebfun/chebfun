@@ -4,7 +4,7 @@ function pass = test_isequal(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fun.pref;
+    pref = chebpref();
 end
 
 pass = zeros(1, 5); % Pre-allocate pass matrix

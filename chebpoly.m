@@ -20,14 +20,14 @@ defaultKind = 1;
 
 % Parse input
 if ( nargin == 1 )
-    d = chebfun.pref('domain');
+    d = chebpref().domain;
     kind = defaultKind;
 elseif ( nargin == 2 )
     if ( numel(d) > 1 )
         kind = defaultKind;
     else
         kind = d;
-        d = chebfun.pref('domain');
+        d = chebpref().domain;
     end
 end    
 

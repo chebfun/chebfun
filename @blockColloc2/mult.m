@@ -1,4 +1,4 @@
-function F = diag(A,f)
+function F = mult(A,f)
 
 n = dim(A);
 d = chebmatrix.mergeDomains({A,f});

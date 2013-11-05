@@ -135,8 +135,8 @@ end
 [Q, R] = abstractQR(A, E, ip, @(v) norm(v, inf), tol);
 
 % Construct a CHEBFUN from the discrete values:
-pref = chebfun.pref();
-pref.chebfun.tech = ['chebtech' num2str(chebType)];
+pref = chebpref();
+pref.gridType = chebType;
 Q = mat2cell(Q, sizes, numCols);
 Q = chebfun(Q, dom, pref);
 

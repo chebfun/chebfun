@@ -4,7 +4,7 @@ function pass = test_innerProduct(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = singfun.pref;
+    pref = chebpref();
 end
 
 % The order of the exponents:

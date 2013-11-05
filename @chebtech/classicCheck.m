@@ -8,7 +8,7 @@ function [ishappy, epslevel, cutoff] = classicCheck(f, pref)
 %
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F, PREF) allows additional
 %   preferences to be passed. In particular, one can adjust the target accuracy
-%   with PREF.CHEBTECH.EPS.
+%   with PREF.EPS.
 %
 %   CLASSICCHECK first queries HAPPINESSREQUIREMENTS to obtain TESTLENGTH and
 %   EPSLEVEL (see documentation below). If |F.COEFFS(1:TESTLENGTH)|/VSCALE <
@@ -28,7 +28,7 @@ function [ishappy, epslevel, cutoff] = classicCheck(f, pref)
 %       TESTLENGTH = round((n-1)/8) for n > 44
 %
 %   EPSLEVEL is essentially the maximum of:
-%       * pref.chebtech.eps
+%       * pref.eps
 %       * eps*TESTLENGTH^(2/3)
 %       * eps*condEst (where condEst is an estimate of the condition number
 %                      based upon a finite difference approximation to the
@@ -54,12 +54,12 @@ ishappy = false;
 
 % Grab some preferences:
 if ( nargin == 1 )
-    pref = f.pref();
-    epslevel = pref.chebtech.eps;
+    pref = f.techPref();
+    epslevel = pref.eps;
 elseif ( isnumeric(f) )
     epslevel = pref;
 else
-    epslevel = pref.chebtech.eps;
+    epslevel = pref.eps;
 end
 
 % Deal with the trivial case:

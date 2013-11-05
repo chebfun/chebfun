@@ -1,7 +1,7 @@
 function pass = test_mrdivide(pref)
 
 if ( nargin == 0 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 T = restrict(chebpoly(0:3), [-1 -0.5 0 0.5 1]);
