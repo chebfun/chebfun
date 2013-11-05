@@ -1,16 +1,17 @@
 function theta = subspace(A, B)
 %SUBSPACE   Angle between subspaces.
 %   SUBSPACE(A, B) finds the angle between two subspaces specified by the
-%   chebfun columns of the CHEBFUN objects A and B.
+%   columns (or rows, if A and B are transposed) of the CHEBFUN objects A and
+%   B.
 %
 %   If the angle is small, the two spaces are nearly linearly dependent.
 %
 %   References:
-%   [1] A. Bjorck & G. Golub, Numerical methods for computing
-%       angles between linear subspaces, Math. Comp. 27 (1973), pp. 579-594.
-%   [2] P.-A. Wedin, On angles between subspaces of a finite
-%       dimensional inner product space, in B. Kagstrom & A. Ruhe (Eds.), Matrix
-%       Pencils, Lecture Notes in Mathematics 973, Springer, 1983, pp. 263-285.
+%   [1] A. Bjorck & G. Golub, Numerical methods for computing angles between 
+%       linear subspaces, Math. Comp. 27 (1973), pp. 579-594.
+%   [2] P.-A. Wedin, On angles between subspaces of a finite dimensional inner 
+%       product space, in B. Kagstrom & A. Ruhe (Eds.), Matrix Pencils, Lecture 
+%       Notes in Mathematics 973, Springer, 1983, pp. 263-285.
 %   [3] A. V. Knyazev and M. E. Argentati, Principal Angles between Subspaces
 %       in an A-Based Scalar Product: Algorithms and Perturbation Estimates.
 %       SIAM Journal on Scientific Computing, 23 (2002), no. 6, 2009-2041.
@@ -23,24 +24,24 @@ if ( ~isa(A, 'chebfun') || ~isa(B, 'chebfun') )
     error('CHEBFUN:subspace:argin', ...
         'Both A and B must be column CHEBFUN.')
 end
-if ( domainCheck(A, B) )
+if ( ~domainCheck(A, B) )
     error('CHEBFUN:subspace:domain', ...
         'Domain mismatch.')
 end
-if ( A.isTranposed )
-    if ( ~B.istranposed )
+if ( A.isTransposed )
+    if ( ~B.isTransposed )
         error('CHEBFUN:subspace:trans', 'Dimension mismatch (transpose).');
     end
     A = A.';
     B = B.';
 end
 
-% Compute orthanormal bases of A and B:
+% Compute orthonormal bases of A and B:
 A = orth(A);
 B = orth(B);
 
-% Compute the innperproduct?
-C = A'*B; % TODO: Should we have an INNERPRODUCT() method?
+% Compute the inner product:
+C = innerProduct(A, B);
 
 % Singular values of the inner product:
 S = svd(C);
@@ -50,15 +51,15 @@ cosTheta = min(S);
 
 % Is the angle large? 
 if ( cosTheta < 0.8 )
-    theta = acos(min(1, cosTheta));    
+    theta = acos(cosTheta);
 else 
-    % If the angle is small, recompute using Sine formulation:
+    % If the angle is small, recompute using sine formulation:
     if ( size(A, 2) < size(B, 2) )
         sinTheta = norm(A - B*C');
     else
         sinTheta = norm(B - A*C);
     end
-    theta = asin(min(1, sinTheta)); 
+    theta = asin(sinTheta);
 end
 
 end

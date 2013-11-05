@@ -7,6 +7,9 @@ function out = innerProduct(f, g)
 %   whose i,j entry is the inner product of the ith column of F with the jth
 %   column of G.
 
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Deal with empty case:
 if ( isempty(f) || isempty(g) )
     out = [];

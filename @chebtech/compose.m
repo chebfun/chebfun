@@ -12,15 +12,17 @@ function f = compose(f, op, g, pref)
 %
 %   COMPOSE(F, OP, G, PREF) or COMPOSE(F, OP, [], PREF) uses the options passed
 %   by the preferences structure PREF to build the returned CHEBTECH.  In
-%   particular, one can set PREF.CHEBTECH.REFINMENTFUNCTION to be a function
-%   which takes advantage of F and possibly OP or G being CHEBTECH objects.
+%   particular, one can set PREF.REFINEMENTFUNCTION to be a function which takes
+%   advantage of F and possibly OP or G being CHEBTECH objects.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Parse inputs:
 if ( nargin < 4 )
-    pref = f.pref();
+    pref = f.techPref();
+else
+    pref = f.techPref(pref);
 end
 
 if ( (nargin < 3) || isempty(g) )
@@ -31,9 +33,9 @@ end
 
 % Set some preferences:
 vscale = f.vscale;
-pref.chebtech.minSamples = max(pref.chebtech.minSamples, length(f));
-pref.chebtech.eps = max(pref.chebtech.eps, f.epslevel);
-pref.chebtech.sampletest = false;
+pref.minPoints = max(pref.minPoints, length(f));
+pref.eps = max(pref.eps, f.epslevel);
+pref.sampleTest = false;
 
 if ( nfuns == 2 )
     if ( size(f, 2) ~= size(g, 2) )
@@ -43,8 +45,8 @@ if ( nfuns == 2 )
 
     % Grab some data from G2:
     vscale = max(vscale, g.vscale);
-    pref.chebtech.minSamples = max(pref.chebtech.minSamples, length(g));
-    pref.chebtech.eps = max(pref.chebtech.eps, g.epslevel);
+    pref.minPoints = max(pref.minPoints, length(g));
+    pref.eps = max(pref.eps, g.epslevel);
     
 elseif ( isa(op, 'chebtech') )
     % If OP is a CHEBTECH, we grab some of its data:
@@ -59,13 +61,13 @@ elseif ( isa(op, 'chebtech') )
     end
 
     vscale = max(vscale, op.vscale);
-    pref.chebtech.minSamples = max(pref.chebtech.minSamples, length(op));
-    pref.chebtech.eps = max(pref.chebtech.eps, op.epslevel);
+    pref.minPoints = max(pref.minPoints, length(op));
+    pref.eps = max(pref.eps, op.epslevel);
     
 end
 
 % Use a naive evaluation procedure if a custom refinement has not been passed.
-if ( ischar(pref.chebtech.refinementFunction) )
+if ( ischar(pref.refinementFunction) )
     if ( nfuns == 1 )
         op = @(x) feval(op, feval(f, x));
     else

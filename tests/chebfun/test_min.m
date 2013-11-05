@@ -3,8 +3,12 @@
 function pass = test_min(pref)
 
 if ( nargin == 0 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
+
+% Generate a few random points to use as test values.
+seedRNG(6178);
+xr = 2 * rand(100, 1) - 1;
 
 % Check empty case.
 [y, x] = min(chebfun());
@@ -64,7 +68,7 @@ x_exact = [        0
    2.220599667639221
    3.308480466603983
    4.000000000000000];
-pass(9) = numel(y == 4) && norm(y - y_exact, inf) < 10*vscale(f)*epslevel(f);
+pass(9) = numel(y == 4) && (norm(y - y_exact, inf) < 10*vscale(f)*epslevel(f));
 
 % Check operation for array-valued chebfuns.
 f = chebfun(@(x) [sin(10*x) cos(10*x) exp(x)], [-1 -0.5 0.5 1]);
@@ -101,6 +105,42 @@ pass(13) = norm(y(:,1) - y_exact(:,1), inf) < 10*vscale(f)*epslevel(f) && ...
     norm(fx1(:,1) - y_exact(:,1), inf) < 10*vscale(f)*epslevel(f) && ...
     norm(fx2(:,2) - y_exact(1:2,2), inf) < 10*vscale(f)*epslevel(f);
 
-% [TODO]:  Test the min(f, g) syntax, once it is implemented.
+% Test min(f, g), where f and g are chebfuns.
+f = chebfun(@(x) sin(2*pi*x), [-1 -0.5 0 0.5 1], pref);
+g = chebfun(@(x) cos(2*pi*x), [-1 -0.5 0 0.5 1], pref);
+h = min(f, g);
+h_exact = @(x) min(sin(2*pi*x), cos(2*pi*x));
+pass(14) = norm(feval(h, xr) - h_exact(xr), inf) < 10*vscale(h)*epslevel(h);
+
+g = chebfun(@(x) exp(2*pi*1i*x), [-1 -0.5 0 0.5 1], pref);
+h = min(f, g);
+h_exact = @(x) min(sin(2*pi*x), exp(2*pi*1i*x));
+pass(15) = norm(feval(h, xr) - h_exact(xr), inf) < 10*vscale(h)*epslevel(h);
+
+% NB:  The call to complex() in this next test is to force MATLAB to do
+% complex-valued comparison where it wants to do real-valued.  This is
+% necessary because g is a complex chebfun, even though one of its columns is
+% real.
+f = chebfun(@(x) [sin(2*pi*x) cos(2*pi*x)], [-1 -0.5 0 0.5 1], pref);
+g = chebfun(@(x) [exp(2*pi*1i*x) sin(2*pi*x)], [-1 -0.5 0 0.5 1], pref);
+h = min(f, g);
+h_exact = @(x) [min(sin(2*pi*x), exp(2*pi*1i*x)) ...
+    min(cos(2*pi*x), complex(sin(2*pi*x)))];
+err = feval(h, xr) - h_exact(xr);
+pass(16) = norm(err(:), inf) < 10*vscale(h)*epslevel(h);
+
+% Check 'global' syntax.
+f = chebfun(@(x) (x - 0.1).^2 - 1, [-1 -0.5 0 0.5 1], pref);
+[y, x] = min(f, 'global');
+pass(17) = (abs(y + 1) < 10*epslevel(f)*vscale(f)) && ...
+    (abs(feval(f, x) + 1) < 10*epslevel(f)*vscale(f));
+
+% Check error condition.
+try
+    y = max(f, 'bad');
+    pass(18) = false;
+catch ME
+    pass(18) = strcmp(ME.identifier, 'CHEBFUN:max:flag');
+end
 
 end

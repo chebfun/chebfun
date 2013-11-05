@@ -5,10 +5,10 @@ function pass = test_bary(pref)
 % Note. Bary is tested fairly extensively by TEST_FEVAL().
 
 if ( nargin < 1 )
-    pref = chebtech.pref;
+    pref = chebtech.techPref();
 end
 
-tol = 20*pref.chebtech.eps;
+tol = 20*pref.eps;
 
 pass = zeros(2, 2); % Pre-allocate pass matrix.
 for n = 1:2

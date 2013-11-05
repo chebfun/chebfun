@@ -1,29 +1,32 @@
 function [U, S, V] = svd(A, econ)
 %SVD   Singular value decomposition of a CHEBFUN.
-%   [U, S, V] = SVD(A, 0), where A is a column quasimatrix with n columns,
-%   produces an n x n diagonal matrix S with nonnegative diagonal elements in
-%   nonincreasing order, a column CHEBFUN U with n orthonormal columns, and
-%   an n x n unitary matrix V such that A = U*S*V'.
+%   [U, S, V] = SVD(A) or SVD(A, 0), where A is an array-valued column CHEBFUN
+%   with N columns, produces an N x N diagonal matrix S with nonnegative
+%   diagonal elements in nonincreasing order, a column CHEBFUN U with N
+%   orthonormal columns, and an N x N unitary matrix V such that A = U*S*V'.
 %
-%   If A is a row CHEBFIN with n rows, then U is a unitary matrix and V is a row
-%   quasimatrix.
+%   If A is a row CHEBFUN with N rows, then U is a unitary matrix and V' is an
+%   array-valued row CHEBFUN.
 %
 %   S = SVD(A) returns a vector containing the singular values of A.
 %
-% See also QR, MRDIVIDE.
+%   The computation is carried out by orthogonalization operations following
+%   Battles's 2005 thesis [1].
+%
+%   [1] Z. Battles, "Numerical Linear Algebra for Continuous Functions",
+%   D. Phil. thesis, University of Oxford, 2005.
+%
+% See also QR, MRDIVIDE, RANK.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% The computation is carried out by orthogonalization operations following
-% Battles' 2006 thesis.
-
-if ( ( nargin > 2) || ( nargin == 2 && econ~=0 ) )
+if ( (nargin > 2) || ((nargin == 2) && (econ ~= 0)) )
     error('CHEBFUN:svd:twoargs',...
-          'Use svd(A) or svd(A,0) for QR decomposition of quasimatrix.');
+          'Use svd(A) or svd(A, 0) for SVD of array-valued CHEBFUN.');
 end
 
-if ( A.isTranpsosed)     % A is a row quasimatrix
+if ( A.isTransposed )    % A is a row CHEBFUN
     % Call CHEBFUN/QR():
     [Q, R] = qr(A');
     % Call discrete SVD():
@@ -31,7 +34,7 @@ if ( A.isTranpsosed)     % A is a row quasimatrix
     % Make V a CHEBFUN:
     V = Q*V;
     
-else                     % A is a column quasimatrix
+else                     % A is a column CHEBFUN
     % Call CHEBFUN/QR():
     [Q, R] = qr(A);
     % Call discrete SVD():

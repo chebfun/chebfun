@@ -1,6 +1,6 @@
 function varargout = plot3(f, g, h, varargin)
 %PLOT3   Plot for FUN objects in 3-D space. 
-%   PLOT() is a three-dimensional analogue of PLOT().
+%   PLOT3() is a three-dimensional analogue of PLOT().
 %   
 %   PLOT3(X, Y, Z), where Z, Y, and Z are three CHEBTECH objects, plots a line
 %   in 3-space. X, Y, and Z may be array-valued, but must have the same number
@@ -32,7 +32,7 @@ end
 holdState = ishold;
 
 %%
-% We can only pl0t real data in this way:
+% We can only plot real data in this way:
 f = real(f);
 g = real(g);
 h = real(h);

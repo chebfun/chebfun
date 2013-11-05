@@ -5,7 +5,7 @@ function f = tidyImpulses(f)
 %   stripped away.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 for n = size(f.impulses, 3):-1:1
     if ( all(~any(f.impulses(:, :, n))) )

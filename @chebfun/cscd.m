@@ -2,7 +2,7 @@ function g = cscd(f, pref)
 %CSCD   Cosecant of a CHEBFUN, result in degrees.
 %   CSCD(F) computes the cosecant (in degrees) of the CHEBFUN F.
 %
-%   CSCD(F, PREF) does the same but uses the preference structure PREF when
+%   CSCD(F, PREF) does the same but uses the CHEBPREF object PREF when
 %   computing the composition.
 %
 % See also ACSCD, CSC.
@@ -12,7 +12,7 @@ function g = cscd(f, pref)
 
 % Obtain preferences:
 if ( nargin == 1 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Call the compose method:
