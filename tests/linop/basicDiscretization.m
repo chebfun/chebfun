@@ -8,7 +8,7 @@ D = linop.diff(dom);
 Z = linop.zeros(dom);
 x = chebfun('x', dom);
 u = chebfun('x.^2', dom);
-U = linop.diag(u);   
+U = linop.mult(u);   
 
 %%
 Dexact = [ 
@@ -20,10 +20,10 @@ Dexact = [
 ];
 
 %% Collocation discretizations
-zero1 = norm( matrix(I,5) - eye(5) )
-zero2 = norm( matrix(D,5) - Dexact );
+zero1 = norm( discretize(I,5) - eye(5) )
+zero2 = norm( discretize(D,5) - Dexact );
 xx = blockColloc2.points(5,dom);
-zero3 = norm( matrix(U,5) - diag(u(xx)) )
+zero3 = norm( discretize(U,5) - diag(u(xx)) )
 
 %% Building blocks
 dom = [-2 1 1.5 2];
@@ -32,9 +32,9 @@ D = linop.diff(dom);
 Z = linop.zeros(dom);
 x = chebfun('x', dom);
 u = chebfun('x.^2', dom);
-U = linop.diag(u);   
+U = linop.mult(u);   
 
 %% Collocation discretizations
-zero4 = norm( matrix(I,5) - eye(15) )
+zero4 = norm( discretize(I,5) - eye(15) )
 xx = blockColloc2.points([5 5 5],dom);
-zero5 = norm( matrix(U,5) - diag(u(xx)) )
+zero5 = norm( discretize(U,5) - diag(u(xx)) )
