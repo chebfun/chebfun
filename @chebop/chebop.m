@@ -17,7 +17,10 @@ classdef (InferiorClasses = {?double}) chebop
                 return
             end
             if ( nargin < 2 )
-                dom = chebfun.pref('domain');
+                % Need to access chebfunpref to create an operator on the
+                % default domain if none is passed.
+                p = chebpref();
+                dom = p.domain;
             end
             
             N.op = op;
