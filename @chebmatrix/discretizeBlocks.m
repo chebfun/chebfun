@@ -1,4 +1,4 @@
-function A = matrixBlocks(L,dim,varargin)
+function A = discretizeBlocks(L,dim,varargin)
 % matrixBlocks(A,DIM) returns a cell array in which each block is represented by its
 % DIM-dimensional discretization.
 %
@@ -6,7 +6,7 @@ function A = matrixBlocks(L,dim,varargin)
 
 p = inputParser;
 addOptional(p,'domain',L.domain,@isnumeric);
-addOptional(p,'matrixType',linBlock.defaultDiscretization,@(x) isa(x,'function_handle'));
+addOptional(p,'matrixType',L.discretizationType,@(x) isa(x,'function_handle'));
 parse(p,varargin{:});
 
 data = L.blocks;
@@ -19,10 +19,14 @@ dummy = p.Results.matrixType([]);
 for i = 1:m
     for j = 1:n
         item = data{i,j};
-        if isa(item,'linBlock')
+        if ( isa(item, 'linBlock') )
             A{i,j} = discretize(item,dim,dom,p.Results.matrixType);
-        elseif isa(item,'chebfun')
-            A{i,j} = dummy.discretizeFunction(item,dim,dom);
+        elseif ( isa(item, 'chebfun') )
+            itemData = dummy.discretizeFunction(item, dim, dom);
+            if ( item.isTransposed )
+                itemData = itemData.';
+            end
+            A{i,j} = itemData;
         else   % scalar
             A{i,j} = item;
         end

@@ -51,14 +51,165 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 k = 0;
             end
             f.isConstant = iszero(f.jacobian);
-            f.jacobian = linop.diag(airy(k+1, f.func))*f.jacobian;
+            f.jacobian = linop.mult(airy(k + 1, f.func))*f.jacobian;
             f.func = airy(k, f.func);
+        end
+
+        function f = acos(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(-1./sqrt(1 - f.func.^2))*f.jacobian;
+            f.func = acos(f.func);
+        end
+        
+        function f = acosd(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(-(180/pi)./sqrt(1 - f.func.^2))*f.jacobian;
+            f.func = acosd(f.func);
+        end
+        
+        function f = acosh(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(1./sqrt(f.func.^2 - 1))*f.jacobian;
+            f.func = acosh(f.func);
+        end
+        
+        function f = acot(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(-1./(1 + f.func.^2))*f.jacobian;
+            f.func = acot(f.func);
+        end
+        
+        function f = acotd(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(-(180/pi)./(1 + f.func.^2))*f.jacobian;
+            f.func = acotd(f.func);
+        end
+        
+        function f = acoth(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(-1./(f.func.^2 - 1))*f.jacobian;
+            f.func = acoth(f.func);
+        end
+        
+        function f = acsc(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(-1./(abs(f.func).*sqrt(f.func.^2 - 1)))*f.jacobian;
+            f.func = acsc(f.func);
+        end
+        
+        function f = acscd(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(-(180/pi)./(abs(f.func).*sqrt(f.func.^2 - 1)))*f.jacobian;
+            f.func = acscd(f.func);
+        end
+                
+        function f = acsch(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(-1./(f.func.*sqrt(1 + f.func.^2)))*f.jacobian;
+            f.func = acsch(f.func);
+        end
+        
+        function f = asec(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(1./(abs(f.func).*sqrt(f.func.^2-1)))*f.jacobian;
+            f.func = asec(f.func);
+        end
+                        
+        function f = asecd(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult((180/pi)./(abs(f.func).*sqrt(f.func.^2-1)))*f.jacobian;
+            f.func = asecd(f.func);
+        end
+                        
+        function f = asech(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(-1./(f.func.*sqrt(1-f.func.^2)))*f.jacobian;
+            f.func = asech(f.func);
+        end
+                        
+        function f = asin(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(1./sqrt(1-f.func.^2))*f.jacobian;
+            f.func = asin(f.func);
+        end
+                        
+        function f = asind(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult((180/pi)./sqrt(1-f.func.^2))*f.jacobian;
+            f.func = asind(f.func);
+        end
+                        
+        function f = asinh(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(1./sqrt(f.func.^2+1))*f.jacobian;
+            f.func = asinh(f.func);
+        end
+                                
+        function f = atan(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(1./(1+f.func.^2))*f.jacobian;
+            f.func = atan(f.func);
+        end
+                                
+        function f = atand(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult((180/pi)./(1+f.func.^2))*f.jacobian;
+            f.func = atand(f.func);
+        end
+                                
+        function f = atanh(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(1./(1-f.func.^2))*f.jacobian;
+            f.func = atanh(f.func);
+        end
+        
+        function g = besselj(nu, f)
+            % Initialise an empty ADCHEBFUN
+            g = adchebfun;
+            % Copy the domain information
+            g.domain = f.domain;
+            % Linearity information
+            g.isConstant = iszero(f.jacobian);
+            % Function composition
+            g.func = besselj(nu, f.func);
+            % Derivative computation
+            g.jacobian = linop.mult(-besselj(nu+1,f.func)+nu*(g.func)./f.func)*f.jacobian;
         end
         
         function f = cos(f)
             f.isConstant = iszero(f.jacobian);
-            f.jacobian = linop.diag(-sin(f.func))*f.jacobian;
+            f.jacobian = linop.mult(-sin(f.func))*f.jacobian;
             f.func = cos(f.func);
+        end
+        
+        function f = cosd(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(-pi/180*sind(f.func))*f.jacobian;
+            f.func = cosd(f.func);
+        end
+        
+        function f = cosh(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(sinh(f.func))*f.jacobian;
+            f.func = cosh(f.func);
+        end
+                
+        function f = cot(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(-csc(f.func).^2)*f.jacobian;
+            f.func = cot(f.func);
+        end
+                
+        function f = cotd(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(-(pi/180)*cscd(f.func).^2)*f.jacobian;
+            f.func = cotd(f.func);
+        end
+        
+        function f = coth(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(-csch(f.func).^2)*f.jacobian;
+            f.func = cotd(f.func);
         end
         
         function f = cumsum(f)
@@ -75,12 +226,42 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f.jacobian = linop.diff(f.domain, k)*f.jacobian;          
 %             f.isConstant = f.isConstant;
         end
-
+       
+        function f = erf(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(2*exp(-f.func.^2)/sqrt(pi))*f.jacobian;
+            f.func = erf(f.func);      
+        end
+                
+        function f = erfc(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(-2*exp(-f.func.^2)/sqrt(pi))*f.jacobian;
+            f.func = erfc(f.func);      
+        end
+        
+        function f = erfcinv(f)
+            f.isConstant = iszero(f.jacobian);
+            f.func = erfcinv(f.func);
+            f.jacobian = linop.mult(exp(f.func.^2)*sqrt(pi)/2)*f.jacobian;        
+        end
+        
+        function f = erfcx(f)
+            g = f;
+            g.isConstant = iszero(f.jacobian);
+            g.func = erfcx(f.func);
+            f.jacobian = linop.mult(-2/sqrt(pi) + 2*(f.func).*(g.func))*f.jacobian;        
+        end
+        
+        function f = erfinv(f)
+            f.isConstant = iszero(f.jacobian);
+            f.func = erfinv(f.func);
+            f.jacobian = linop.mult(exp(f.func.^2)*sqrt(pi)/2)*f.jacobian;
+        end
+        
         function f = exp(f)
             f.isConstant = iszero(f.jacobian);
             f.func = exp(f.func);
-            f.jacobian = linop.diag(f.func)*f.jacobian;
-%             f.domain = f.domain;            
+            f.jacobian = linop.mult(f.func)*f.jacobian;        
         end
         
         function f = feval(f, x)
@@ -102,8 +283,29 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         
         function f = log(f)
             f.isConstant = iszero(f.jacobian);
-            f.jacobian = linop.diag(1./f.func)*f.jacobian;
+            f.jacobian = linop.mult(1./f.func)*f.jacobian;
             f.func = log(f.func);
+            f = updateDomain(f);
+        end
+                
+        function f = log1p(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(1./(f.func + 1))*f.jacobian;
+            f.func = log1p(f.func);
+            f = updateDomain(f);
+        end
+ 
+        function f = log2(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(1./(log(2)*f.func))*f.jacobian;
+            f.func = log2(f.func);
+            f = updateDomain(f);
+        end
+        
+        function f = log10(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(1./(log(10)*f.func))*f.jacobian;
+            f.func = log10(f.func);
             f = updateDomain(f);
         end
         
@@ -111,6 +313,14 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f = plus(f, -g);
         end
                 
+        function [normF, normLoc] = norm(f, varargin)
+            if nargout == 2
+                [normF, normLoc]  = norm(f.func, varargin{:});
+            else
+                normF = norm(f.func, varargin{:});
+            end
+        end
+            
         function f = mtimes(f, g)
             if ( ~isa(g, 'adchebfun') )
                 f.func = f.func*g;
@@ -162,13 +372,13 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                     end
                 end
                 f.isConstant = iszero(f.jacobian);
-                f.jacobian = linop.diag(b*power(f.func, b-1))*f.jacobian;
+                f.jacobian = linop.mult(b*power(f.func, b-1))*f.jacobian;
                 f.func = power(f.func, b);
                 
             elseif ( isa(b, 'adchebfun') )
                 b.isConstant = iszero(b.jacobian);
                 b.func = power(f, b.func);
-                b.jacobian = linop.diag(b.func.*log(f))*b.jacobian; 
+                b.jacobian = linop.mult(b.func.*log(f))*b.jacobian; 
                 b.domain = b.func.domain;
                 f = b;
             end
@@ -187,26 +397,66 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             u.jacobian = chebmatrix(blocks);
         end        
    
+        function g = sec(f)
+            g = f;
+            g.isConstant = iszero(f.jacobian);
+            g.func = sec(f.func);
+            g.jacobian = linop.mult(tan(f.func).*g.func)*f.jacobian;
+        end
+           
+        function g = secd(f)
+            g = f;
+            g.isConstant = iszero(f.jacobian);
+            g.func = secd(f.func);
+            g.jacobian = linop.mult(pi/180*tand(f.func).*g.func)*f.jacobian;
+        end
+        
+        function g = sech(f)
+            g = f;
+            g.isConstant = iszero(f.jacobian);
+            g.func = sech(f.func);
+            g.jacobian = linop.mult(tanh(f.func).*g.func)*f.jacobian;
+        end
+        
         function f = sin(f)
             f.isConstant = iszero(f.jacobian);
-            f.jacobian = linop.diag(cos(f.func))*f.jacobian;
+            f.jacobian = linop.mult(cos(f.func))*f.jacobian;
             f.func = sin(f.func);
         end
+             
         
         function f = sum(f)
             f.func = sum(f.func);
             f.jacobian = linop.sum(f.domain)*f.jacobian;
         end
         
+        function f = tan(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(sec(f.func).^2)*f.jacobian;
+            f.func = tan(f.func);
+        end
+        
+        function f = tand(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult((pi/180)*secd(f.func).^2)*f.jacobian;
+            f.func = tand(f.func);
+        end
+        
+        function f = tanh(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(sech(f.func).^2)*f.jacobian;
+            f.func = tan(f.func);
+        end
+        
         function f = times(f, g)
             if ( ~isa(f, 'adchebfun') )
-                g.jacobian = linop.diag(f)*g.jacobian;
+                g.jacobian = linop.mult(f)*g.jacobian;
                 g.func = f.*g.func;
 %                 g.isConstant = g.isConstant;
                 g = updateDomain(g);
                 f = g;
             elseif  ( ~isa(g, 'adchebfun') )
-                f.jacobian = linop.diag(g)*f.jacobian;
+                f.jacobian = linop.mult(g)*f.jacobian;
                 f.func = f.func.*g;
 %                 f.isConstant = f.isConstant;
             else
@@ -214,7 +464,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                     ( f.isConstant & g.isConstant) & ...
                       ( ( all(iszero(f.jacobian)) || all(iszero(g.jacobian)) ) | ...
                         ( iszero(f.jacobian) & iszero(g.jacobian) ) );
-                f.jacobian = linop.diag(f.func)*g.jacobian + linop.diag(g.func)*f.jacobian;
+                f.jacobian = linop.mult(f.func)*g.jacobian + linop.mult(g.func)*f.jacobian;
                 f.func = times(f.func, g.func);
             end
             f = updateDomain(f);

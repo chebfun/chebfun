@@ -4,7 +4,7 @@ function pass = test_mldivide(pref)
 
 % Get preferences.
 if (nargin < 1)
-    pref = fun.pref;
+    pref = chebpref();
 end
 
 % Set a tolerance.  (pref.eps does not matter here.)

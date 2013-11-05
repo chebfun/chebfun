@@ -8,7 +8,7 @@ D = linop.diff(dom);
 Z = linop.zeros(dom);
 x = chebfun('x', dom);
 u = sin(x.^2);
-U = linop.diag(u);   
+U = linop.mult(u);   
 
 %% Solve a linear system 
 L = linop([ D, -I; I, D ]);

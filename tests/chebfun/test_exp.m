@@ -1,13 +1,13 @@
 % Test file for chebfun exp() and related functions.
 
-function pass = test_trig(pref)
+function pass = test_exp(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = chebfun.pref;
+    pref = chebpref();
 end
 
-pref.chebfun.splitting = 1;
+pref.enableBreakpointDetection = 1;
 
 % Generate a few random points in [-1 1] to use as test values.
 seedRNG(7681);

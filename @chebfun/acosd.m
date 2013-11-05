@@ -2,7 +2,7 @@ function g = acosd(f, pref)
 %ACOSD   Cosine of a CHEBFUN, result in degrees.
 %   ACOSD(F) computes the cosine (in degrees) of the CHEBFUN F.
 %
-%   ACOSD(F, PREF) does the same but uses the preference structure PREF when
+%   ACOSD(F, PREF) does the same but uses the CHEBPREF object PREF when
 %   computing the composition.
 %
 % See also ACOS, COS.
@@ -12,7 +12,7 @@ function g = acosd(f, pref)
 
 % Obtain preferences:
 if ( nargin == 1 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Call the compose method:

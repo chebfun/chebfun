@@ -2,7 +2,7 @@ function pass = test_abs(pref)
 
 % Get preferences:
 if ( nargin < 1 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Pre-allocate pass matrix:

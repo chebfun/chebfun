@@ -3,15 +3,20 @@ classdef linop
     properties
         operator  % chebmatrix
         constraint 
+        discretizationType = linBlock.defaultDiscretization;
     end
     
     properties (Dependent)
         domain
+        blockDiffOrders
     end
     
     methods
         function L = linop(M, C)
             % TODO: check size, inputs
+            if ( isa(M, 'linBlock') )
+                M = chebmatrix({M});
+            end
             L.operator = M;
             if ( nargin < 2 )
                 L.constraint = linopConstraint();
@@ -24,41 +29,55 @@ classdef linop
         function d = get.domain(L)
             d = L.operator.domain;
         end
+        
+        function d = get.blockDiffOrders(L)
+            [m,n] = size(L);
+            d = zeros(m,n);
 
+            for i = 1:m
+                for j = 1:n
+                    block = L.operator.blocks{i,j};
+                    if isa(block,'linBlock')
+                        d(i,j) = block.diffOrder;
+                    end
+                end
+            end
+        end
+        
         function varargout = size(L)
             [varargout{1:nargout}] = size(L.operator);
         end
 
         
-        function L = addbc(L,varargin)
-            L.constraint = append(L.constraint,varargin{:});
+        function L = addbc(L, varargin)
+            L.constraint = append(L.constraint, varargin{:});
         end
         
-        function L = bc(L,c)
-            validateattributes(c,{'linopConstraint'})
+        function L = bc(L, c)
+            validateattributes(c, {'linopConstraint'})
             L.constraint = c;
         end
         
-        function L = addlbc(L,op,value)      
-            if  (nargin < 3 )
+        function L = addlbc(L, op, value)      
+            if ( nargin < 3 )
                 value = 0;
             end
             d = L.operator.domain;
-            E = linop.feval(d(1),d);
-            L = addbc(L,E*op,value);
+            E = linop.feval(d(1), d);
+            L = addbc(L, E*op, value);
         end
         
-        function L = addrbc(L,op,value)
-            if  (nargin < 3 )
+        function L = addrbc(L, op, value)
+            if ( nargin < 3 )
                 value = 0;
             end
             d = L.operator.domain;
-            E = linop.feval(d(end),d);
-            L = addbc(L,E*op,value);          
+            E = linop.feval(d(end), d);
+            L = addbc(L, E*op, value);          
         end
         
-        function u = mldivide(L,f)
-            u = linsolve(L,f);
+        function u = mldivide(L, f)
+            u = linsolve(L, f);
         end
  
     end
@@ -81,8 +100,21 @@ classdef linop
              Z = linBlock.zeros(varargin{:});
         end
         
+        function U = mult(varargin)
+<<<<<<< HEAD
+            U = linBlock.diag(varargin{:});
+        end
+        
+        
         function U = diag(varargin)
             U = linBlock.diag(varargin{:});
+=======
+            U = linBlock.mult(varargin{:});
+        end
+        
+        function Z = zero(varargin)
+            Z = linBlock.zero(varargin{:});
+>>>>>>> feature-newlinop
         end
         
         function S = sum(varargin)
@@ -108,8 +140,8 @@ classdef linop
     end
     
     methods
-        [A,b,dom] = linSystem(L,f,dim,matrixType)
-        u = linsolve(L,f,type)
+        [A, b, dom] = linSystem(L, f, dim, matrixType)
+        u = linsolve(L, f, type)
     end
     
     methods (Access = private)
@@ -123,7 +155,7 @@ classdef linop
         d = getDownsampling(L)
         
         % Construct operators for generic continuity at each breakpoint.
-        C = domainContinuity(L,maxorder)
+        C = domainContinuity(L, maxorder)
  
         % Append proper breakpoint continuity conditions to a linear system. 
         L = appendContinuity(L)            

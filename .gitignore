@@ -2,3 +2,6 @@
 *.swp
 *~
 *.asv
+
+TODO.txt
+*.m.orig

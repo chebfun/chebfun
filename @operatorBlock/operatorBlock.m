@@ -8,26 +8,34 @@ classdef operatorBlock < linBlock
             A = A@linBlock(domain);
         end
         
-        function varargout = size(A,dim)
+        function varargout = size(A, dim)
             % S = SIZE(A)
-            % [M,N] = SIZE(A)
-            % P = SIZE(A,K)
+            % [M, N] = SIZE(A)
+            % P = SIZE(A, K)
             %
             m = [Inf Inf];
 
-            if nargin > 1
+            if ( nargin > 1 )
                 varargout = {m(dim)};
-            elseif nargout <= 1
+            elseif ( nargout <= 1 )
                 varargout = {m};
             else
                 varargout = {m(1) m(2)};
             end
         end
 
+        function C = uminus(A)
+            C = operatorBlock(A.domain);
+            C.stack = @(z) -A.stack(z);
+            C.func = -A.func;
+            C.coeff = -A.coeff;
+            C.diffOrder = A.diffOrder; 
+        end
         
-        function C = mtimes(A,B)
+
+        function C = mtimes(A, B)
             % A*B
-            % If A,B both linops, or one is linop and one scalar, the
+            % If A, B both linops, or one is linop and one scalar, the
             % result is the composed linop.
             %
             % A*f
@@ -41,49 +49,54 @@ classdef operatorBlock < linBlock
             
             % No error checking here.
             % Which case?
-            if isa(B,'chebfun')
-                C = op(A);
+            if ( isa(B, 'chebfun') )
+                C = A.functionForm;
                 C = C(B);
-            elseif isnumeric(B)
-                N = size(B,1);    % discretization size
-                L = matrix(A,N);
+            elseif ( isnumeric(B) )
+                N = size(B, 1);    % discretization size
+                L = matrix(A, N);
                 C = L*B;
             else
                 % A scalar is converted into a constant chebfun, which is then
                 % diagnified. 
-                if isnumeric(A)
-                    A = linBlock.diag( chebfun(A,B.domain) );
-                elseif isnumeric(B)
-                    B = linBlock.diag( chebfun(B,A.domain) );
+                if ( isnumeric(A) )
+                    A = linBlock.mult( chebfun(A, B.domain) );
+                elseif ( isnumeric(B) )
+                    B = linBlock.mult( chebfun(B, A.domain) );
                 end
                 
                 C = operatorBlock(A.domain);
                 
                 % The instantiation class must recognize mtimes as a
                 % functional composition.
-                C.delayFun = @(z) A.delayFun(z) * B.delayFun(z);
+                C.stack = @(z) A.stack(z) * B.stack(z);
+                C.func = A.func * B.func;
+                C.coeff = A.coeff * B.coeff;
+
                 C.diffOrder = A.diffOrder + B.diffOrder;
             end
         end
         
-        function C = plus(A,B)
+        function C = plus(A, B)
             % C = A + B
-            if isnumeric(A)
-                A = A*linop.eye(B.domain);
-            elseif isnumeric(B)
-                B = B*linop.eye(A.domain);
+            if ( isnumeric(A) )
+                A = A*linBlock.eye(B.domain);
+            elseif ( isnumeric(B) )
+                B = B*linBlock.eye(A.domain);
             end
             dom = union(A.domain, B.domain);
             C = operatorBlock(dom);
-            C.delayFun = @(z) A.delayFun(z) + B.delayFun(z);
-            C.diffOrder = max(A.diffOrder,B.diffOrder);
+            C.stack = @(z) A.stack(z) + B.stack(z);
+            C.func = A.func + B.func;
+            C.coeff = A.coeff + B.coeff;
+            C.diffOrder = max(A.diffOrder, B.diffOrder);
         end
         
-        function B = mpower(A,pow)
-            if (pow~=round(pow)) || (pow < 0)
-                error('Power must be an integer.')
+        function B = mpower(A, pow)
+            if ( pow ~= round(pow) || pow < 0 )
+                error('Power must be a positive integer.')
             end
-            B = linop.eye(A.domain);
+            B = linBlock.eye(A.domain);
             for i = 1:pow
                 B = B*A;
             end

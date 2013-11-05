@@ -4,7 +4,7 @@ function pass = test_mtimes(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fun.pref;
+    pref = chebpref();
 end
 
 % Create seed for random number generator

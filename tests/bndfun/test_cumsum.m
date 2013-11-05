@@ -4,11 +4,8 @@ function pass = test_cumsum(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fun.pref;
+    pref = chebpref();
 end
-
-% Set a tolerance.
-tol = pref.fun.eps;
 
 % Set a domain
 dom = [-2 7];

@@ -1,6 +1,6 @@
 function X = pinv(A, tol)
 %PINV   Pseudoinverse of a column CHEBFUN.
-%   X = PINV(A) produces a row quasimatrix X so that A*X*A = A and X*A*X = X.
+%   X = PINV(A) produces a row CHEBFUN X so that A*X*A = A and X*A*X = X.
 %
 %   X = PINV(A, TOL) uses the tolerance TOL. The computation uses SVD(A) and any
 %   singular value less than the tolerance TOL is treated as zero.
@@ -20,7 +20,7 @@ s = diag(S);
 
 % Choose a tolerance if none is given:
 if ( nargin == 1 )
-	tol = length(A)*eps(max(s));
+	tol = max(length(A)*eps(max(s)), vscale(A)*epslevel(A));
 end
 
 % Compute the rank:

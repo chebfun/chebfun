@@ -2,7 +2,7 @@ function g = acscd(f, pref)
 %ACSCD   Inverse cosecant of a CHEBFUN, result in degrees.
 %   ACSCD(F) computes the inverse cosecant (in degrees) of the CHEBFUN F.
 %
-%   ACSCD(F, PREF) does the same but uses the preference structure PREF when
+%   ACSCD(F, PREF) does the same but uses the CHEBPREF object PREF when
 %   computing the composition.
 %
 % See also CSCD, ACSC.
@@ -12,7 +12,7 @@ function g = acscd(f, pref)
 
 % Obtain preferences:
 if ( nargin == 1 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Call the compose method:

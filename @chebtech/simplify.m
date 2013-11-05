@@ -33,7 +33,7 @@ end
 
 % Use the default tolerance if none was supplied:
 if ( nargin < 2 )
-    pref = chebtech.pref();
+    pref = chebtech.techPref();
     tol = f.epslevel;
 end
 
@@ -55,7 +55,7 @@ end
 
 % Update values and epslevel:
 f.values = f.coeffs2vals(f.coeffs);
-f.vscale = max(abs(f.values));
+f.vscale = max(abs(f.values), [], 1);
 f.epslevel = max(f.epslevel, tol);
 
 end

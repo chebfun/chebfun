@@ -11,7 +11,7 @@ function f = compose(f, op, g, pref)
 %   G, then an error is thrown.
 %
 %   COMPOSE(F, OP, PREF), COMPOSE(F, OP, G, PREF), and COMPOSE(F, G, PREF) use
-%   the options passed by the preference structure PREF.
+%   the options passed by the CHEBPREF object PREF.
 %
 %   Note 1: If the locations of required breakpoints in the output are known in
 %   advance, they should be applied to F and/or G using RESTRICT() before the
@@ -47,24 +47,24 @@ function f = compose(f, op, g, pref)
 % Parse inputs:
 opIsBinary = false;
 
-if ( (nargin == 4) && ~isempty(g) ) % compose(f, op, g, pref)
+if ( (nargin == 4) && ~isempty(g) )           % compose(f, op, g, pref)
     opIsBinary = true;
 end
 
 if ( (nargin < 4) || ((nargin == 4) && isempty(pref)) )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 if ( nargin == 3 )
-    if ( isstruct(g) )              % compose(f, op, pref)
-        pref = chebfun.pref(g);
+    if ( isstruct(g) || isa(g, 'chebpref') )  % compose(f, op, pref)
+        pref = chebpref(g);
         g = [];
-    else                            % compose(f, op, g)
+    else                                      % compose(f, op, g)
         opIsBinary = true;
     end
 end
 
-if ( nargin < 3 )                   % compose(f, op) or compose(f, g)
+if ( nargin < 3 )                             % compose(f, op) or compose(f, g)
     g = [];
 end
 
@@ -104,9 +104,6 @@ newFuns = {};
 % Initialise new domain vector:
 newDom = f.domain(1);
 
-% Merge preferences with FUN.PREF();
-pref = fun.pref(pref, pref.chebfun);
-
 % Suppress growing vector Mlint warnings (which are inevitable here):
 %#ok<*AGROW>
 
@@ -121,7 +118,7 @@ for k = 1:numInts
     end
     isHappy = get(newFun, 'ishappy');
 
-    if ( isHappy || ~pref.chebfun.splitting )
+    if ( isHappy || ~pref.enableBreakpointDetection )
         % If we're happy or not allowed to split, this will do.
 
         if ( ~isHappy )
@@ -147,7 +144,7 @@ for k = 1:numInts
             newImps = [newImps ; fevalImps(k+1,:)];
         end
 
-    elseif ( pref.chebfun.splitting )
+    elseif ( pref.enableBreakpointDetection )
 
         % If not happy and splitting is on, get a CHEBFUN for that subinterval:
         domk = f.domain(k:k+1);
