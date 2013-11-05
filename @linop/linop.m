@@ -101,20 +101,11 @@ classdef linop
         end
         
         function U = mult(varargin)
-<<<<<<< HEAD
-            U = linBlock.diag(varargin{:});
-        end
-        
-        
-        function U = diag(varargin)
-            U = linBlock.diag(varargin{:});
-=======
             U = linBlock.mult(varargin{:});
         end
         
         function Z = zero(varargin)
             Z = linBlock.zero(varargin{:});
->>>>>>> feature-newlinop
         end
         
         function S = sum(varargin)
