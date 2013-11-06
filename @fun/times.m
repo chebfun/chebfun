@@ -3,7 +3,7 @@ function f = times(f, g, varargin)
 %   F.*G multiplies FUN objects F and G or a FUN by a scalar if either F or G is
 %   a scalar.
 %
-%   If F is a array-valued FUN, then F.*C is supported if C is a row vector of
+%   If F is an array-valued FUN, then F.*C is supported if C is a row vector of
 %   doubles with the same number of columns as F. Similarly if F if a row
 %   vector of doubles and C is an array-valued FUN
 %

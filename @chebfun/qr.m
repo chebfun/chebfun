@@ -1,10 +1,10 @@
-function [Q, R] = qr(A,econ)
-%QR   QR factorization of an array-valued quasimatrix.
-%   [Q,R] = QR(A) or QR(A, 0), where A is a column CHEBFUN with n columns,
+function [Q, R] = qr(A, econ)
+%QR   QR factorization of an array-valued CHEBFUN.
+%   [Q, R] = QR(A) or QR(A, 0), where A is a column CHEBFUN with n columns,
 %   produces a column CHEBFUN Q with n orthonormal columns and an n x n upper
 %   triangular matrix R such that A = Q*R.
 %
-%   This algorithm used is described in L.N. Trefethen, "Householder
+%   The algorithm used is described in L.N. Trefethen, "Householder
 %   triangularization of a quasimatrix", IMA J. Numer. Anal. (30), 887-897
 %   (2010).
 %
@@ -13,10 +13,18 @@ function [Q, R] = qr(A,econ)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Developer note:
+%  If A contains only a single FUN, then FUN/QR is used directly. If A has
+%  multiple pieces but each of these are simple CHEBTECH objects, then
+%  QRSIMPLE() is called. This violates OOP principles, but is _much_ more
+%  efficient.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 % Check inputs
-if ( ( nargin > 2 ) || ( nargin == 2 && econ ~= 0 ) )
+if ( (nargin == 2) && (econ ~= 0) )
     error('CHEBFUN:qr:twoargs',...
-        'Use qr(A) or qr(A,0) for QR decomposition of an array-valued CHEBFUN.');
+      'Use qr(A) or qr(A, 0) for QR decomposition of an array-valued CHEBFUN.');
 end
 if ( A.isTransposed )
     error('CHEBFUN:qr:transpose',...
@@ -27,66 +35,109 @@ if ( ~all(isfinite(A.domain)) )
         'CHEBFUN QR does not support unbounded domains.');
 end
 
-% No breakpoints = easy case:
 if ( numel(A.funs) == 1 )
+    % No breakpoints = easy case.
+    
+    % Call QR at the FUN level:
     [Q, R] = qr(A.funs{1});
     Q = chebfun({Q});
-    return
+    
+elseif ( size(A, 2) == 1 )
+    % If f has only one column we simply scale it.
+    R = sqrt(innerProduct(A, A));
+    Q = A./R;
+
+elseif ( all(cellfun(@(f) isa(f.onefun, 'chebtech'), A.funs)) )
+    % Simple case = all FUNs are simple (i.e., use CHBETECHs).
+    %   (If all the FUN objects have .onefuns which are CHEBTECHs, we can use a
+    %   much more efficient approach. Note, this completely violates OOP
+    %   principles, but the performance gain is worth it.)
+
+    if ( strcmp(class(A.funs{1}.onefun), 'chebtech1') )
+        chebType = 1;
+    else
+        chebType = 2;
+    end
+
+    [Q, R] = qrSimple(A, chebType);
+    
+else
+    % Work in the general continuous setting:
+    [Q, R] = qrGeneral(A);
+    
 end
 
-error
-% TODO: The type of indexing used below does not work for array-valued CHEBFUNs.
-% TODO: Imple,ent more efficiently.
+end
 
-% Get some useful values
-n = size(A, 2);
-R = zeros(n);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function [Q, R] = qrGeneral(A)
+
+% Get some useful values:
+numCols = min(size(A));
 tol = epslevel(A)*vscale(A);
-a = A.domain(1);
-b = A.domain(end);
 
-% Set up target quasimatrix E with orthonormal columns:
-E = legpoly(0:n-1, [a, b], 'norm');
+% Legendre matrix:
+E = legpoly(0:numCols-1, A.domain, 'norm', 1);
+[A, E] = overlap(A, E);
 
-% Householder triangularization:
-V = chebfun();                        % cols of V will store Househ. vectors
-for k = 1:n
-    I = 1:k-1; J = k+1:n;             % convenient abbreviations
-    e = E(k);                         % target for this reflection
-    x = A(k);                         % vector to be mapped to s*r*e
-    ex = e'*x; aex = abs(ex);
-    if ( aex == 0 )
-        s = 1; 
-    else
-        s = -ex/aex; 
-    end
-    e = s*e; E(k) = e;                % adjust e by sign factor
-    r = norm(x); R(k,k) = r;          % diagonal entry r_kk
-    v = r*e - x;                      % vector defining reflection
-    if ( k > 1 )
-        v = v - E(I)*(E(I)'*v);       % improve orthogonality
-    end
-    nv = norm(v);
-    if ( nv < tol*max(vscale(x), vscale(e)) )
-        v = e;
-    else
-        v = v/nv;
-    end
-    V(k) = v;                         % store this Householder vector
-    if ( k < n )
-        A(J) = A(J)-2*v*(v'*A(J));    % apply the reflection to A
-        rr = e'*A(J); R(k,J) = rr;    % kth row of R
-        A(J) = A(J) - e*rr;           % subtract components in direction e
-    end
+[Q, R] = abstractQR(A, E, @innerProduct, @normest, tol);
+
 end
 
-% Form the quasimatrix Q from the Householder vectors:
-Q = E;
-for k = n:-1:1
-    v = V(k);
-    J = k:n;
-    w = v'*Q(J);
-    Q(J) = Q(J) - 2*v*w;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function [Q, R] = qrSimple(A, chebType)
+% This implementation is fast, but relies on the fact that everything is a
+% CHEBTECH on a bounded domain at heart.
+A = simplify(A);
+    
+% Get some useful values
+numCols = min(size(A));
+tol = epslevel(A)*vscale(A);
+dom = A.domain;
+a = dom(1);
+b = dom(end);
+numFuns = length(dom)-1;
+
+% Get the sizes of the funs in the columns of A, keeping in mind that we
+% will have to multiply with the columns of E and the norm of A's columns.
+sizes = zeros(numFuns, 1);
+for j = 1:numFuns
+    sizes(j) = 2*max(length(A.funs{j}), numCols);
+    A.funs{j}.onefun = prolong(A.funs{j}.onefun, sizes(j));
 end
+
+% Create the Chebyshev nodes and quadrature weights:
+[pts, w] = chebpts(sizes, dom, chebType);
+
+% Define the inner product as an anonymous function:
+ip = @(f, g) w * (conj(f) .* g);
+
+% Make the discrete analog of A:
+A = get(A, 'values');
+if ( iscell(A) )
+    A = cat(1, A{:});
+end
+
+% Generate a discrete E (Legendre-Chebyshev-Vandermonde matrix) directly:
+xx = (pts - a)/(b - a) - (b - pts)/(b - a);  % Unscale the Chebyshev points.
+E = ones(size(A));
+E(:,2) = xx;
+for k = 3:numCols % Recurrence relation:
+    E(:,k) = ((2*k - 3)*xx.*E(:,k-1) - (k - 2)*E(:,k-2)) / (k - 1);
+end
+% Scaling:
+for k = 1:numCols
+    E(:,k) = E(:,k) * sqrt((2*k - 1) / (b - a));
+end
+
+[Q, R] = abstractQR(A, E, ip, @(v) norm(v, inf), tol);
+
+% Construct a CHEBFUN from the discrete values:
+pref = chebpref();
+pref.gridType = chebType;
+Q = mat2cell(Q, sizes, numCols);
+Q = chebfun(Q, dom, pref);
 
 end

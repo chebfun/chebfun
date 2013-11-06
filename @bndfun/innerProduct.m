@@ -25,8 +25,7 @@ end
 % Rescaling factor, (b - a)/2:
 rescaleFactor = 0.5*diff(f.domain);
 
-% Assign the output to be the inner product of the onefuns of the input,
-% rescaled:
+% Compute the inner product of the ONEFUNs and scale accordingly:
 out = innerProduct(f.onefun, g.onefun)*rescaleFactor;
 
 end

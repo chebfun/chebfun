@@ -7,7 +7,7 @@ function pass = test_cumsum(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = chebtech.pref;
+    pref = chebtech.techPref();
 end
 
 % Generate a few random points to use as test values.

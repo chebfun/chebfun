@@ -4,12 +4,12 @@ function pass = test_compose(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = chebfun.pref;
+    pref = chebpref();
 end
 
 % Create preference structure with splitting enabled.
 pref_split = pref;
-pref_split.chebfun.splitting = 1;
+pref_split.enableBreakpointDetection = 1;
 
 % Smooth operator with smooth functions.
 pass(1) = test_one_compose_binary(@(x) cos(2*(x + 0.2)), [-1, 1], ...

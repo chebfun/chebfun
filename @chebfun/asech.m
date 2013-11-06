@@ -2,7 +2,7 @@ function g = asech(f, pref)
 %ASECH   Inverse hyperbolic secant of a CHEBFUN.
 %   ASECH(F) computes the inverse hyperbolic secant of the CHEBFUN F.
 %
-%   ASECH(F, PREF) does the same but uses the preference structure PREF when
+%   ASECH(F, PREF) does the same but uses the CHEBPREF object PREF when
 %   computing the composition.
 %
 % See also SECH.
@@ -12,7 +12,7 @@ function g = asech(f, pref)
 
 % Obtain preferences:
 if ( nargin == 1 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Call the compose method:

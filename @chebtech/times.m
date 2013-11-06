@@ -3,7 +3,7 @@ function f = times(f, g, varargin)
 %   F.*G multiplies CHEBTECH objects F and G or a CHEBTECH by a scalar if either
 %   F or G is a scalar.
 %
-%   If F is a array-valued CHEBTECH, then F.*C is supported if C is a row
+%   If F is an array-valued CHEBTECH, then F.*C is supported if C is a row
 %   vector of doubles with the same number of columns as F.
 %
 % See also MTIMES, RDIVIDE.
@@ -49,13 +49,6 @@ elseif ( size(g.values, 1) == 1)
     f = times(f, g.values); 
     f.epslevel = max(f.epslevel, g.epslevel);
     return
-end
-
-% Determine a tolerance if none is given:
-if ( nargin < 3 )
-    pref = chebtech.pref; 
-else
-    pref = varargin{1};
 end
 
 % Get the size of each CHEBTECH:

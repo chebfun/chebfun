@@ -2,7 +2,7 @@ function g = sind(f, pref)
 %SIND   Sine of a CHEBFUN, result in degrees.
 %   SIND(F) computes the sine (in degrees) of the CHEBFUN F.
 %
-%   SIND(F, PREF) does the same but uses the preference structure PREF when
+%   SIND(F, PREF) does the same but uses the CHEBPREF object PREF when
 %   computing the composition.
 %
 % See also ASIND, SIN.
@@ -12,7 +12,7 @@ function g = sind(f, pref)
 
 % Obtain preferences:
 if ( nargin == 1 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % [TODO]:  Restore or change this once we have decided the proper behavior or

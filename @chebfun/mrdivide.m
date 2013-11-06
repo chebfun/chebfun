@@ -1,4 +1,4 @@
-function C = mrdivide(B, A)
+function X = mrdivide(B, A)
 %/   Right matrix divide for CHEBFUN objects.
 %   B/A in general gives the least squares solution to X*A = B.
 %
@@ -8,22 +8,30 @@ function C = mrdivide(B, A)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isscalar(A) )
-    C = B*(1/A);
+    X = B*(1/A);
     
 elseif ( size(A, 2) ~= size(B, 2) )
     error('CHEBFUN:mldivide:dimensions', 'Matrix dimensions must agree.')
     
 elseif ( isnumeric(A) )
-    % C = B*(eye(size(B,2))/A);
+    % [INF x M] * [M x N] = [INF x N]:
     [Q, R] = qr(B, 0);
-    C = Q * (R/A);
+    X = Q * (R/A);
+    % X = B*(eye(size(B,2))/A);
     
 elseif ( ~A.isTransposed )
-    [Q,R] = qr(A, 0);
-    C = (B/R) * Q';
+    % [M x INF] * [INF x N] = [M x N]:
+    [Q, R] = qr(A, 0);
+    X = (B/R) * Q';
     
 else
-    [Q,R] = qr(A', 0);
-    C = (B*Q) / R';
-    
+    % [M x N] * [N x INF] = [M x INF]:
+    %        XA = B
+    %   A^* X^* = B^*
+    %    QR X^* = B^*
+    % X R^* Q^* = B
+    %         X = (BQ)R^{-*}
+    [Q, R] = qr(A', 0);
+    X = (B*Q) / R';
+
 end

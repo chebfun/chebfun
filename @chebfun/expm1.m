@@ -3,7 +3,7 @@ function g = expm1(f, pref)
 %   EXPM1(F) computes EXP(F)-1 accurately in the case where the CHEBFUN F is
 %   small on its domain. Complex F is accepted.
 %
-%   EXPM1(F, PREF) does the same but uses the preference structure PREF when
+%   EXPM1(F, PREF) does the same but uses the CHEBPREF object PREF when
 %   computing the composition.
 %
 % See also EXP, LOG1P.
@@ -13,7 +13,7 @@ function g = expm1(f, pref)
 
 % Obtain preferences:
 if ( nargin == 1 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Call the compose method:

@@ -154,6 +154,7 @@ classdef blockUS
                 end
                 L = cell2mat(tmp);
             elseif ( isa(A, 'operatorBlock') )
+                A.domain = dom;
                 L = blockUS.quasi2USdiffmat(A, dim);
             else
                 % TODO: Anything here?

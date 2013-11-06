@@ -22,9 +22,9 @@ elseif ( isa(g, 'double') ) % FUN + double
     % match (that is, their number of columns):
     f.onefun = f.onefun + g; 
     
-elseif ( isa(f,'double') ) % double + FUN
+elseif ( isa(f, 'double') ) % double + FUN
     
-    % Call the ONEFUN/plus method for g.onefun:
+    % Call the ONEFUN/PLUS() method for g.onefun:
     g.onefun = g.onefun + f;
     
     % Return g, by assigning it to f:
@@ -32,8 +32,8 @@ elseif ( isa(f,'double') ) % double + FUN
     
 else % FUN + FUN
     
-    % Domains and mappings are assumed to match,  Hence, we just need to add the
-    % onefuns:
+    % Domains and mappings are assumed to match. Hence, we just need to add the
+    % ONEFUNs:
     f.onefun = f.onefun + g.onefun;
       
 end

@@ -3,7 +3,7 @@
 function pass = test_mat2cell(pref)
 
 if ( nargin < 2 )
-    pref = fun.pref;
+    pref = chebpref();
 end
 
 pass = zeros(1, 2); % Pre-allocate pass matrix.

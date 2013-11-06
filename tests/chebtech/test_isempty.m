@@ -21,6 +21,9 @@ for n = 1:2
     
     f = [ testclass.make(@sin), testclass.make(@sin) ];
     pass(n, 4) = ~isempty(f);
+
+    f = [ testclass.make() testclass.make() ];
+    pass(n, 5) = ~isempty(f);
 end
 
 end

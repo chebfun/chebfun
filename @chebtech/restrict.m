@@ -8,7 +8,7 @@ function f = restrict(f, s)
 %   a cell-array of CHEBTECH objects, where the entries hold F restricted to
 %   each of the subintervals defined by S.
 %
-%   If F is a array-valued function, say [F1, F2], then the restrict(F, S =
+%   If F is an array-valued function, say [F1, F2], then the restrict(F, S =
 %   [S1, S2, S3]) returns the array-valued CHEBTECH {restrict(F1,S).
 %   restrict(F2, S)}.
 %

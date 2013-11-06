@@ -3,7 +3,7 @@
 function pass = test_real(pref)
 
 if ( nargin < 1 )
-    pref = chebtech.pref;
+    pref = chebtech.techPref();
 end
 
 pass = zeros(2, 4); % Pre-allocate pass matrix
