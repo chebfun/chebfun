@@ -28,6 +28,7 @@ x = chebfun(@(x) x, N.domain);
 % Solve:
 if ( all(isLinear) )
     % Linear solve:
+    L.discretizationType = N.discretizationType;
     u = L\(rhs - affine);
     
 else
@@ -38,6 +39,7 @@ else
         u = N.init;
         L = linearise(N, x, u);
         res = N.op(x, u{:}) - rhs;
+        L.discretizationType = N.discretizationType
         du = L\res;
         %                 else
         %                     u = makeGuess(L, x);
@@ -46,6 +48,7 @@ else
         %                     du = L\res;
     else
         u = u0;
+        L.discretizationType = N.discretizationType;
         du = L\(rhs - affine);
     end
     
@@ -64,6 +67,7 @@ else
         % Linearise around current solution:
         L = linearise(N, x, ub, []); % flag to negate contraint RHSs.
         % Solve the linearised system:
+        L.discretizationType = N.discretizationType;
         du = L\res;
         % Append the Newton step:
         u = u - du;
