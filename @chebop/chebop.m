@@ -30,8 +30,11 @@ classdef (InferiorClasses = {?double}) chebop
             
         end
         
-        u = mldivide(N, rhs);
-        
+        function u = mldivide(N, rhs)
+            pref = cheboppref;
+            u = solvebvp(N, rhs, pref);
+        end
+            
         [L, res, isLinear] = linearise(N, x, u, flag);
         
         
