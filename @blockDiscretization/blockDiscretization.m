@@ -106,7 +106,7 @@ classdef (Abstract) blockDiscretization < operatorBlockRealization & functionalB
     end
     
     methods (Abstract)
-        [x,w] = points(disc)   % appropriate?
+        %[x,w] = points(disc)   % appropriate?
         values = toValues(disc,f)
         f = toFunction(disc,values)
         A = discretize(disc)
