@@ -9,7 +9,7 @@ N = offset(end);
 E = zeros(1,N);
 
 % Only one subinterval creates nonzero entries in E.
-intnum = whichInterval(disc,location,direction);
+intnum = disc.whichInterval(location,direction);
 active = offset(intnum) + (1:n(intnum));
 E(1,active) = barymat(location,x(active));
 

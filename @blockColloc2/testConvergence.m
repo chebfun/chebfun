@@ -1,4 +1,4 @@
-function [isDone,epsLevel] = convergeTest(v)
+function [isDone,epsLevel] = testConvergence(v)
 
 % The chebfun constructor is happy only when coefficient sizes drop below a
 % level that is tied to machine precision. For solutions of BVPs, this is
@@ -20,7 +20,7 @@ if n < 17, return, end
 
 % Convert to Chebyshev coefficients.
 c = chebtech2.vals2coeffs(v);
-%             c = chebpoly( chebfun(v) );
+c = chebpoly( chebfun(v) );
 c = c(end:-1:1);
 
 % Magnitude and rescale.

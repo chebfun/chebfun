@@ -4,11 +4,18 @@ function [reduce,d,dRow,dVar] = getDownsampling(L)
 d = L.blockDiffOrders;
 dRow = max(d,[],2);
 dVar = max(d,[],1);
+
+% This will determine how much is downsampled. 
+numBC = length(L.constraint);
+
 % Each variable requires a downsampling contribution equal to its
 % differential order. The total diff. orders of the variables might
 % not equal the total of the rows.
 totalRow = sum( dRow(~isnan(dRow)) );
 totalVar = sum( dVar(~isnan(dVar)) );
+
+totalVar = numBC;  % Alex's choice
+
 if (totalRow == totalVar)
     reduce = dRow;
 else

@@ -1,8 +1,12 @@
 function [x,w] = points(disc)
 
-n = disc.dimension;
 d = disc.domain;
 numint = disc.numIntervals;
+n = disc.dimension;
+
+if (numel(n) == 1)
+    n = repmat(n,1,numint);
+end
 
 x = cell(numint,1);
 w = cell(1,numint);

@@ -13,7 +13,7 @@ classdef (Abstract) operatorBlockRealization
         C = cumsum(A, domain, m)    % indefinite integration
         I = eye(A, domain)          % identity
         Z = zeros(A, domain)        % zero
-        F = diag(A, f)              % function multiplication
+        F = mult(A, f)              % function multiplication
         % X = outer(A, f, g)
         
     end

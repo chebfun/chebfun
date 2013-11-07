@@ -1,8 +1,4 @@
 classdef blockColloc2 < blockDiscretization
-    properties
-        size = [];  % arbitrary, but fixed in any one instance
-        domain = [-1, 1];
-    end
     
     methods
         function A = blockColloc2(varargin)
@@ -19,16 +15,15 @@ classdef blockColloc2 < blockDiscretization
             % methods.
             
             if ( nargin > 1 )
-                if isa(varargin{1}, 'linBlock')
-                    L = varargin{1};
-                    A.size = varargin{2};
-                    A.domain = L.domain;
-                    A = L.stack( A );
-                else
-                    A.size = varargin{1};
-                    %                     validateattributes(varargin{2}, {'numeric'}, {'increasing', 'finite'});
+%                if isa(varargin{1}, 'linBlock')
+%                     L = varargin{1};
+%                     A.size = varargin{2};
+%                     A.domain = L.domain;
+%                     A = L.stack( A );
+%                 else
                     A.domain = varargin{2};
-                end
+                    A.dimension = varargin{1};
+%                end
             end
         end
         
@@ -38,21 +33,21 @@ classdef blockColloc2 < blockDiscretization
         C = cumsum(A, m)
         
         function I = eye(A)
-            n = dim(A);
+            n = A.dimension;
             I = eye(sum(n));
         end
         
         function Z = zeros(A)
-            n = dim(A);
+            n = A.dimension;
             Z = zeros(sum(n));
         end
         
         function Z = zero(A)
-            n = dim(A);
+            n = A.dimension;
             Z = zeros(1, sum(n));
         end
         
-        F = diag(A, f)
+        F = mult(A, f)
         
         % Required operators.
         function C = mtimes(A, B)
@@ -75,45 +70,52 @@ classdef blockColloc2 < blockDiscretization
         
         function F = inner(A, f)
             d = chebmatrix.mergeDomains({A, f});
-            [x, w] = points(dim(A), d, 2);
+            [x, w] = points(A);
             F = w.*f(x);
         end
         
     end
     
-    methods (Static)
+    methods
         % Additional methods
         
-        B = resize(A, m, n, domain, difforder)
+        %B = resize(A, m, n, domain, difforder)
         
-        [isDone, epsLevel] = testConvergence(v)
+        %[isDone, epsLevel] = testConvergence(v)
         
-        function fx = discretizeFunction(f, dim, dom)
-            if ( nargin < 3 )
-                dom = f.domain;
-            end
-            x = blockColloc2.points(dim, dom);
+        function fx = toValues(disc,f)
+            n = disc.dimension;
+
+            x = points(disc);
             fx = f(x);
+
+            % Evaluate left- and right-sided limits at breaks:
+            csn = [0, cumsum(n)];
+            dxloc = csn(2:end-1);
+            fx(dxloc) = feval(f, x(dxloc), 'left');
+            fx(dxloc+1) = feval(f, x(dxloc), 'right');
+        end
+               
+        function L = matrix(disc,A)
+            validateParameters(disc);
+            if isa(A,'linBlock')
+                L = A.stack( disc );
+            elseif isa(A,'chebfun')
+                L = disc.toValues(A);
+                if ( A.isTransposed )
+                    L = L.';
+                end
+            elseif isnumeric(A)
+                L = A;
+            else
+                error('Unrecognized block type.')
+            end
         end
         
-        [x, w] = points(n, d)
-        
-        
-        function L = discretize(A, dim, dom)
-            L = A.stack( blockColloc2(dim, dom) );
-        end
-        
-        function f = makeChebfun(u, dom)
-            f = chebfun(u, dom);
+        function f = toFunction(disc,values)
+            f = chebfun(values, disc.domain);
         end
         
     end
     
-    methods ( Access = private )
-        
-        D = diffmat(N, k)
-        
-        Q = cumsummat(N)
-        
-    end
 end

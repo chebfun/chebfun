@@ -18,6 +18,10 @@ classdef linopConstraint
             n = size(C.operator, 1);
         end
         
+        function e = isempty(C)
+            e = isempty(C.operator);
+        end
+        
         function C = append(C, op, value)
             n = length(C);
             validateattributes(op, {'linBlock', 'chebmatrix'}, {})

@@ -6,7 +6,7 @@ n = disc.dimension;
 if m == 0
     D = eye(sum(n));
 else
-    numIntervals = length(d)-1;
+    numIntervals = disc.numIntervals;
     
     % Find the diagonal blocks.
     blocks = cell(numIntervals);

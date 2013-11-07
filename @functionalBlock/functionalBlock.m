@@ -26,8 +26,6 @@ classdef functionalBlock < linBlock
         function C = uminus(A)
             C = functionalBlock(A.domain);
             C.stack = @(z) -A.stack(z);
-            C.func = -A.func;
-            C.coeff = -A.coeff;
         end
         
         function C = mtimes(A, B)
@@ -50,14 +48,10 @@ classdef functionalBlock < linBlock
             elseif ( isnumeric(A) )
                 C = functionalBlock(A.domain);
                 C.stack = A*B.stack(z);
-                C.func = A*B.func;
-                C.coeff = A*B.coeff;
                 C.diffOrder = B.diffOrder;
             elseif ( isa(B, 'operatorBlock') )
                 C = functionalBlock(A.domain);
                 C.stack = @(z) A.stack(z) * B.stack(z);
-                C.func = A.func * B.func;
-                C.coeff = A.coeff * B.coeff;
                 C.diffOrder = A.diffOrder + B.diffOrder;
             else 
                 error('Unrecognized operand types.')
@@ -68,8 +62,6 @@ classdef functionalBlock < linBlock
             % C = A + B
             C = functionalBlock(A.domain);
             C.stack = @(z) A.stack(z) + B.stack(z);
-            C.func = A.func + B.func;
-            C.coeff = A.coeff + B.coeff;
             C.diffOrder = max(A.diffOrder, B.diffOrder);
         end        
         

@@ -2,13 +2,15 @@ classdef linop
     
     properties
         operator  % chebmatrix
-        constraint 
-        discretizationType = linBlock.defaultDiscretization;
+        constraint = linopConstraint()
+        continuity = linopConstraint()
+        discretization = @colloc2;
     end
     
     properties (Dependent)
         domain
         blockDiffOrders
+        sizeReduction
     end
     
     methods
@@ -18,7 +20,10 @@ classdef linop
                 M = chebmatrix({M});
             end
             L.operator = M;
-            L.constraint = linopConstraint();
+        end
+        
+        function s = get.sizeReduction(L)
+            s = getDownsampling(L);
         end
         
         function d = get.domain(L)
@@ -74,7 +79,7 @@ classdef linop
         function u = mldivide(L, f)
             u = linsolve(L, f);
         end
- 
+         
     end
 
     % These are provided as more convenient names than the linBlock equivalents.
@@ -124,27 +129,5 @@ classdef linop
         end
 
     end
-    
-    methods
-        [A, b, dom] = linSystem(L, f, dim, matrixType)
-        u = linsolve(L, f, type)
-    end
-    
-    methods (Access = private)
-        % Find the differential orders of each equation (row).
-        d = getRowDiffOrders(L)
-        
-        % Find the differential orders of each variable (column).
-        d = getColDiffOrders(L)
-        
-        % Figure out how much to reduce dimension in each equation.
-        d = getDownsampling(L)
-        
-        % Construct operators for generic continuity at each breakpoint.
-        C = domainContinuity(L, maxorder)
- 
-        % Append proper breakpoint continuity conditions to a linear system. 
-        L = appendContinuity(L)            
-    end
-    
+           
 end
