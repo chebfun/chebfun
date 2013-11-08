@@ -1,11 +1,11 @@
-function [u,disc] = linsolve(L,f,discType)
+function [u, disc] = linsolve(L, f, discType)
 
 [rowSize, colSize] = blockSizes(L.operator);
-isFunVariable = isinf(colSize(1,:));
+isFunVariable = isinf(colSize(1, :));
 
-if isa(discType,'function_handle')
+if ( isa(discType, 'function_handle') )
     disc = discType(L);  % create a discretization object
-    disc = mergeDomains(disc,L,f);
+    disc = mergeDomains(disc, L, f);
     dimVals = floor(2.^(3:14)); 
 else
     disc = discType;
@@ -13,7 +13,7 @@ else
 end
 
 L.constraint.operator.domain = disc.domain;
-if isempty(L.continuity)
+if ( isempty(L.continuity) )
      % Apply continuity conditions:
      disc = deriveContinuity(disc);
 end
@@ -23,15 +23,15 @@ numint = disc.numIntervals;
 for dim = dimVals
     
     % TODO: Allow different numbers of points in different subdomains
-    disc.dimension = repmat(dim,[1 numint]);
+    disc.dimension = repmat(dim, [1 numint]);
 
     b = disc.rhs(f);
 
     % Factor the matrix
     if ( isempty(disc.LUFactors) ) || ( length(disc.LUFactors{1}) ~= length(b) )
         A = disc.matrix();
-        [P,Q] = lu(A);
-        disc.LUFactors = {P,Q};
+        [P, Q] = lu(A);
+        disc.LUFactors = {P, Q};
     else
         P = disc.LUFactors{1};
         Q = disc.LUFactors{2};
@@ -41,7 +41,7 @@ for dim = dimVals
     DiscreteSol = Q \ (P\b);
     
     % Break discrete solution into chunks representing functions and scalars:
-    m = colSize(1,:);
+    m = colSize(1, :);
     m(isFunVariable) = sum(disc.dimension); % replace Inf with discrete size
     u = mat2cell(DiscreteSol, m, 1);
     
@@ -51,7 +51,7 @@ for dim = dimVals
     % Take an arbitrary linear combination:
     s = 1 ./ (3*(1:size(uVals, 2)));
     vVals = uVals*s(:);
-    v = mat2cell(vVals,disc.dimension,1);
+    v = mat2cell(vVals, disc.dimension, 1);
     
     % Test happiness:
     isDone = true;

@@ -118,7 +118,7 @@ classdef colloc2 < linopDiscretization
             end
             disc.source = f;
             row = discretize(disc);
-            row = disc.reproject(row);
+            row = disc.(row);
             b = cell2mat(row);
             L = disc.linop;
             if ~isempty(L.constraint)

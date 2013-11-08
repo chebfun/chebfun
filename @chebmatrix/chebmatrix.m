@@ -113,6 +113,15 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             out = false;
         end
         
+        function d = getDiffOrder(A)
+            d = zeros(size(A));
+            for j = 1:numel(A.blocks);
+                if ( isa(A.blocks{j}, 'operatorBlock') )
+                    d(j) = A.blocks{j}.diffOrder;
+                end
+            end
+        end
+        
     end
     
     methods
