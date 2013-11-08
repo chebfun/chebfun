@@ -6,7 +6,7 @@ isFunVariable = isinf(colSize(1, :));
 if ( isa(discType, 'function_handle') )
     disc = discType(L);  % create a discretization object
     disc = mergeDomains(disc, L, f);
-    dimVals = floor(2.^(3:14)); 
+    dimVals = floor(2.^[3 4 5 6 7 8 8.5 9 9.5 10 10.5 11]); 
 else
     disc = discType;
     dimVals = disc.dimension(1);   % TODO: highly suspect!
@@ -30,6 +30,11 @@ for dim = dimVals
     % Factor the matrix
     if ( isempty(disc.LUFactors) ) || ( length(disc.LUFactors{1}) ~= length(b) )
         A = disc.matrix();
+        % Row scaling:
+%         rowmax = max(abs(A),[],2);
+%         rowmax = max(rowmax,1);
+%         A = diag(1./rowmax)*A;
+%         b = diag(1./rowmax)*b;
         [P, Q] = lu(A);
         disc.LUFactors = {P, Q};
     else

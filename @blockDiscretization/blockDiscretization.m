@@ -1,4 +1,4 @@
-classdef (Abstract) blockDiscretization < operatorBlockRealization & functionalBlockRealization
+classdef (Abstract) blockDiscretization 
     
     properties
         domain = [-1 1]
