@@ -39,5 +39,11 @@ classdef (InferiorClasses = {?double}) chebop
         
         
     end
+    
+    methods (Access = private)
+        % Prints information to the command window about the convergence of
+        % the Newton iteration
+        f = printInfo(f);
+    end
 end
 

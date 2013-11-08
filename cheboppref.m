@@ -96,6 +96,12 @@ else                % Set value
                 else
                     prefs.plotting = newVal;
                 end
+            case {'damped','damping'}
+                if strcmp(newVal,'on')
+                    prefs.damped = 1;
+                else
+                    prefs.damped = 0;
+                end                
             otherwise
                 if ~isfield(prefs,prop)
                     error('CHEBFUN:cheboppref:unknown','Unknown property %s', prop);
@@ -114,7 +120,7 @@ prefs.display = 'none';
 prefs.plotting = 'off';
 prefs.restol= 1e-10;
 prefs.deltol = 1e-10;
-prefs.damped = 'on';
+prefs.damped = 1;
 prefs.maxIter = 25;
 prefs.maxstagnation = 5;
 prefs.discretizationType = @blockColloc2;
