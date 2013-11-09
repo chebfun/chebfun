@@ -27,7 +27,7 @@ if N == 0, D = []; return, end
 if N == 1, D = 0; return, end
 
 % construct Chebyshev grid and weights
-x = blockColloc2.points(N);
+x = chebtech2.chebpts(N);
 w = [.5 ; ones(N-1,1)]; w(2:2:end) = -1; w(N) = .5*w(N);
 
 ii = (1:N+1:N^2)';              % indices of diagonal

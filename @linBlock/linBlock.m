@@ -8,15 +8,7 @@ classdef linBlock
         % instance of the class that determines how the operator is
         % discretized.
         stack = [];
-        
-        % The function representation of the operator. It's a callable function
-        % that can be applied to a chebfun.
-        func = [];
-        
-        % The coefficient representation of the operator. It's a quasimatrix of
-        % coefficient functions for different orders of the derivative.
-        coeff = [];
-        
+                
         % Track differential order.
         diffOrder = 0;
         
@@ -58,11 +50,13 @@ classdef linBlock
         end
         
         function f = get.functionForm(A)
-            f = A.func.func;
+            B = blockFunction(A);
+            f = B.func;
         end
         
         function c = get.coeffForm(A)
-            c = A.coeff.coeffs;
+            B = blockCoeff(A);
+            c = B.coeffs;
         end
         
         function C = minus(A, B)
@@ -120,8 +114,6 @@ classdef linBlock
             
             D = operatorBlock(dom);
             D.stack = @(z) diff(z, m);
-            D.func = blockFunction.diff(dom,m);
-            D.coeff = blockCoeff.diff(dom,m);
             D.diffOrder = m;
         end
         
@@ -146,8 +138,6 @@ classdef linBlock
             
             C = operatorBlock(dom);
             C.stack = @(z) cumsum(z, m);
-            C.func = blockFunction.cumsum(dom,m);
-            C.coeff = blockCoeff.cumsum(dom,m);
             C.diffOrder = -m;
         end
         
@@ -156,8 +146,6 @@ classdef linBlock
             if nargin==0, domain = [-1 1]; end
             I = operatorBlock(domain);
             I.stack = @(z) eye(z);
-            I.func = blockFunction.eye(domain);
-            I.coeff = blockCoeff.eye(domain);
             I.diffOrder = 0;
         end
         
@@ -166,8 +154,6 @@ classdef linBlock
             if nargin==0, domain = [-1 1]; end
             Z = operatorBlock(domain);
             Z.stack = @(z) zeros(z);
-            Z.func = blockFunction.zeros(domain);
-            Z.coeff = blockCoeff.zeros(domain);            
             Z.diffOrder = 0;
         end
         
@@ -176,8 +162,6 @@ classdef linBlock
             if nargin==0, domain = [-1 1]; end
             Z = functionalBlock(domain);
             Z.stack = @(z) zero(z);
-            Z.func = blockFunction.zeros(domain);
-            Z.coeff = blockCoeff.zeros(domain);            
             Z.diffOrder = 0;
         end
         
@@ -185,8 +169,6 @@ classdef linBlock
             % D = DIAG(U)  diagonal operator from the chebfun U
             U = operatorBlock(u.domain);
             U.stack = @(z) mult(z, u);
-            U.func = blockFunction.mult(u);
-            U.coeff = blockCoeff.mult(u);            
             U.diffOrder = 0;
         end
         
@@ -195,8 +177,6 @@ classdef linBlock
             if nargin==0, domain = [-1 1]; end                        
             S = functionalBlock(domain);
             S.stack = @(z) sum(z);
-            S.func = blockFunction.sum(domain);
-            S.coeff = blockCoeff.sum(domain);            
             S.diffOrder = -1;
         end
         
@@ -227,8 +207,6 @@ classdef linBlock
 
             E = functionalBlock(domain);
             E.stack = @(z) feval(z, location, direction);
-            E.func = blockFunction.feval(domain,location,direction);
-            E.coeff = blockCoeff.feval(domain,location,direction);            
         end
         
         function E = eval(varargin)
@@ -240,8 +218,6 @@ classdef linBlock
         function F = inner(f)
             F = functionalBlock(f.domain);
             F.stack = @(z) inner(z, f);
-            F.func = blockFunction.inner(f);
-            F.coeff = blockCoeff.inner(f);                        
             F.diffOrder = 0;
         end
 

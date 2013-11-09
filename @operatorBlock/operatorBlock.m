@@ -27,8 +27,6 @@ classdef operatorBlock < linBlock
         function C = uminus(A)
             C = operatorBlock(A.domain);
             C.stack = @(z) -A.stack(z);
-            C.func = -A.func;
-            C.coeff = -A.coeff;
             C.diffOrder = A.diffOrder; 
         end
         
@@ -70,8 +68,6 @@ classdef operatorBlock < linBlock
                 % The instantiation class must recognize mtimes as a
                 % functional composition.
                 C.stack = @(z) A.stack(z) * B.stack(z);
-                C.func = A.func * B.func;
-                C.coeff = A.coeff * B.coeff;
 
                 C.diffOrder = A.diffOrder + B.diffOrder;
             end
@@ -87,8 +83,6 @@ classdef operatorBlock < linBlock
             dom = union(A.domain, B.domain);
             C = operatorBlock(dom);
             C.stack = @(z) A.stack(z) + B.stack(z);
-            C.func = A.func + B.func;
-            C.coeff = A.coeff + B.coeff;
             C.diffOrder = max(A.diffOrder, B.diffOrder);
         end
         

@@ -1,10 +1,9 @@
-function [x,w] = points(n,d)
+function [x,w] = points(disc)
 
-if ( nargin < 2 )
-    d = [-1 1];
-end
+d = disc.domain;
+numint = disc.numIntervals;
+n = disc.dimension;
 
-numint = length(d)-1;
 if (numel(n) == 1)
     n = repmat(n,1,numint);
 end
