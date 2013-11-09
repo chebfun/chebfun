@@ -2,28 +2,28 @@ classdef linop
     
     properties
         operator  % chebmatrix
-        constraint 
-        discretizationType = linBlock.defaultDiscretization;
+        constraint = linopConstraint()
+        continuity = linopConstraint()
+        discretization = @colloc2;
     end
     
     properties (Dependent)
         domain
         blockDiffOrders
+        sizeReduction
     end
     
     methods
-        function L = linop(M, C)
+        function L = linop(M)
             % TODO: check size, inputs
             if ( isa(M, 'linBlock') )
                 M = chebmatrix({M});
             end
             L.operator = M;
-            if ( nargin < 2 )
-                L.constraint = linopConstraint();
-            else
-                L.constraint = C;
-            end
-            
+        end
+        
+        function s = get.sizeReduction(L)
+            s = getDownsampling(L);
         end
         
         function d = get.domain(L)
@@ -77,9 +77,9 @@ classdef linop
         end
         
         function u = mldivide(L, f)
-            u = linsolve(L, f);
+            u = linsolve(L, f, @colloc2);
         end
- 
+         
     end
 
     % These are provided as more convenient names than the linBlock equivalents.
@@ -129,27 +129,5 @@ classdef linop
         end
 
     end
-    
-    methods
-        [A, b, dom] = linSystem(L, f, dim, matrixType)
-        u = linsolve(L, f, type)
-    end
-    
-    methods (Access = private)
-        % Find the differential orders of each equation (row).
-        d = getRowDiffOrders(L)
-        
-        % Find the differential orders of each variable (column).
-        d = getColDiffOrders(L)
-        
-        % Figure out how much to reduce dimension in each equation.
-        d = getDownsampling(L)
-        
-        % Construct operators for generic continuity at each breakpoint.
-        C = domainContinuity(L, maxorder)
- 
-        % Append proper breakpoint continuity conditions to a linear system. 
-        L = appendContinuity(L)            
-    end
-    
+           
 end

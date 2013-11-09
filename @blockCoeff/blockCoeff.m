@@ -5,16 +5,28 @@ classdef blockCoeff
     end
     
     methods
-        function A = blockCoeff(f, domain)
-            if ( isempty(f) )
+        function A = blockCoeff(varargin)
+            if isempty(varargin{1})
+                % This call is used to create an empty object of the class,
+                % so that its methods will be used to process the stack.
                 return
-            elseif ( ~iscell(f) )
-                f = {f};
+            elseif isa(varargin{1},'linBlock')
+                % Convert the given linBlock to its function form by
+                % evaluating its stack.
+                L = varargin{1};
+                A = L.stack( blockCoeff([]) );
+            else
+                f = varargin{1};
+                if ( ~iscell(f) )
+                    f = {f};
+                end
+                % Called with data. Create a regular object. 
+                A.coeffs = f;
+                A.domain = varargin{2};
             end
-            A.coeffs = f;
-            A.domain = domain;
         end
 
+ 
         % TODO: Domains need to be merged, or read off from the coeffs.
         % TODO: Use quasimatrix or chebmatrix
         
@@ -31,7 +43,7 @@ classdef blockCoeff
             % CHECK: Can the coeffs property ever be empty?
             z = { chebfun(0, A.coeffs{1}.domain) };
             for j = 1:numel(A.coeffs)-1
-                B = blockCoeff.diff(B);
+                B = diff(B);
                 c = [z, c];
                 for k = 1:numel(B.coeffs)
                     c{k} = c{k} + A.coeffs{end-j}.*B.coeffs{k};
@@ -72,39 +84,40 @@ classdef blockCoeff
 
     end
     
-    methods (Static)
+    methods
         
         % These are the basic constructors. 
         
-        function I = eye(domain)
-            I = blockCoeff( chebfun(1, domain), domain );
+        function I = eye(A)
+            I = blockCoeff( chebfun(1, A.domain), A.domain );
         end
         
-        function I = zeros(domain)
-            I = blockCoeff( chebfun(0, domain), domain );
+        function I = zeros(A)
+            I = blockCoeff( chebfun(0, A.domain), A.domain );
         end
         
-        function F = mult(f)
-            F = blockCoeff( f, f.domain );
+        function F = mult(A,f)
+            F = blockCoeff( f, A.domain );
         end
         
-        function C = cumsum(domain,m)
+        function C = cumsum(A,m)
             % Not supported. 
-            C = blockCoeff([]);
+            % TODO
+            error('Not supported')
         end
         
-        function D = diff(domain,order)
+        function D = diff(A,order)
             
             if ( nargin < 2 )
                 order = 1;
             end
             
-            if isa(domain,'blockCoeff')
+            if ( ~isempty(A.coeffs) )
                 % This syntax is used by the mtimes method to apply
                 % differentiation to an existing operator.
-                D = domain;
+                D = A;
             else
-                D = blockCoeff.eye(domain);
+                D = eye(A);
             end
                         
             % Differentiate the correct number of times.
@@ -117,23 +130,23 @@ classdef blockCoeff
                 end
                 c{m+1} = diff(c{m+1});
             end
-            D = blockCoeff(c, domain);
+            D = blockCoeff(c, A.domain);
             
         end
         
-        function S = sum(domain)
+        function S = sum(A)
             % Not supported. 
-            S = blockCoeff([]);
+            error('Not supported')
         end
         
-        function E = feval(domain,location,direction)
+        function E = feval(A,location,direction)
             % Not supported. 
-            E = blockCoeff([]);
+            error('Not supported')
         end
         
         function F = inner(f)
             % Not supported. 
-            F = blockCoeff([]); 
+            error('Not supported') 
         end
 
 

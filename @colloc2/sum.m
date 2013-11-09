@@ -1,9 +1,10 @@
-function S = sum(A)
+function S = sum(disc)
 
-n = dim(A);
-d = A.domain;
+n = disc.dimension;
+d = disc.domain;
 
-numint = length(d)-1;
+numint = disc.numIntervals;
+
 S = cell(1,numint);
 for k = 1:numint
     S{k} = chebtech2.quadwts(n(k)) * (d(k+1)-d(k))/2;

@@ -1,12 +1,12 @@
-function D = diff(A,m)
+function D = diff(disc,m)
 
-d = A.domain;
-n = dim(A);
+d = disc.domain;
+n = disc.dimension;
 
 if m == 0
     D = eye(sum(n));
 else
-    numIntervals = length(d)-1;
+    numIntervals = disc.numIntervals;
     
     % Find the diagonal blocks.
     blocks = cell(numIntervals);

@@ -27,9 +27,12 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         end
         
         % Construct a single matrix based on DIM-dimensional blocks.
-        function A = discretize(L, varargin)
-            A = discretizeBlocks(L, varargin{:});
-            A = cell2mat(A);
+        function A = discretize(L,disc)
+            disc.domain = L.domain;
+            A = cell(size(L));
+            for i = 1:numel(A)
+                A{i} = matrix(disc,L.blocks{i});
+            end
         end
         
         function k = numbc(L)
@@ -108,6 +111,15 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         function out = iszero(f)
             % TODO: Implement this properly (for linearity detection)
             out = false;
+        end
+        
+        function d = getDiffOrder(A)
+            d = zeros(size(A));
+            for j = 1:numel(A.blocks);
+                if ( isa(A.blocks{j}, 'operatorBlock') )
+                    d(j) = A.blocks{j}.diffOrder;
+                end
+            end
         end
         
     end

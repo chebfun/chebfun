@@ -8,8 +8,20 @@ classdef blockFunction
     
     methods
 
-        function A = blockFunction(f)
-            A.func = f;  
+        function A = blockFunction(varargin)
+            if isempty(varargin{1})
+                % This call is used to create an empty object of the class,
+                % so that its methods will be used to process the stack.
+                return
+            elseif isa(varargin{1},'linBlock')
+                % Convert the given linBlock to its function form by
+                % evaluating its stack.
+                L = varargin{1};
+                A = L.stack( blockFunction([]) );
+            else
+                % Called with data. Create a regular object. 
+                A.func = varargin{1};
+            end
         end
         
         % ** Implementation of abstract methods **
@@ -33,32 +45,32 @@ classdef blockFunction
         
     end
     
-    methods (Static)
-        function D = diff(domain,m)
+    methods
+        function D = diff(A,m)
             D = blockFunction( @(z) diff(z,m) );
         end
         
-        function C = cumsum(domain,m)
+        function C = cumsum(A,m)
             C = blockFunction( @(u) cumsum(u,m) );
         end
         
-        function I = eye(domain)
+        function I = eye(A)
             I = blockFunction( @(z) z );
         end
         
-        function Z = zeros(domain)
+        function Z = zeros(A)
             Z = blockFunction( @(z) chebfun(0,domain) );
         end
         
-        function F = mult(f)
+        function F = mult(A,f)
             F = blockFunction( @(z) times(f,z) );
         end    
                 
-        function S = sum(domain)
+        function S = sum(A)
             S = blockFunction( @(z) sum(z) );
         end
         
-        function E = feval(domain,location,direction)
+        function E = feval(A,location,direction)
             if (direction < 0)
                 E = blockFunction( @(u) feval(u,location,'left') );
             elseif (direction > 0)
@@ -68,7 +80,7 @@ classdef blockFunction
             end
         end
         
-        function F = inner(f)
+        function F = inner(A,f)
             F = blockFunction( @(z) mtimes(f',z) );
         end
 

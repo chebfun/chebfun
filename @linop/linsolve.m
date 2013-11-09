@@ -1,41 +1,68 @@
-function u = linsolve(L, f, type)
+function [u, disc] = linsolve(L, f, discType)
 
-if ( nargin < 3 )
-    type = L.discretizationType;
-end
-obj = type([]);  % to get a static method
-
-dimVals = floor(2.^(3:14)); 
 [rowSize, colSize] = blockSizes(L.operator);
-isFunVariable = isinf(colSize(1,:));
+isFunVariable = isinf(colSize(1, :));
+
+if ( isa(discType, 'function_handle') )
+    disc = discType(L);  % create a discretization object
+    disc = mergeDomains(disc, L, f);
+    dimVals = floor(2.^[3 4 5 6 7 8 8.5 9 9.5 10 10.5 11]); 
+else
+    disc = discType;
+    dimVals = disc.dimension(1);   % TODO: highly suspect!
+end
+
+L.constraint.operator.domain = disc.domain;
+if ( isempty(L.continuity) )
+     % Apply continuity conditions:
+     disc = deriveContinuity(disc);
+end
+
+numint = disc.numIntervals;
 
 for dim = dimVals
     
-    % Set up the linear system:
-    [A, b, dom] = linSystem(L, f, dim, type);
-    
+    % TODO: Allow different numbers of points in different subdomains
+    disc.dimension = repmat(dim, [1 numint]);
+
+    b = disc.rhs(f);
+
+    % Factor the matrix
+    if ( isempty(disc.LUFactors) ) || ( length(disc.LUFactors{1}) ~= length(b) )
+        A = disc.matrix();
+        % Row scaling:
+%         rowmax = max(abs(A),[],2);
+%         rowmax = max(rowmax,1);
+%         A = diag(1./rowmax)*A;
+%         b = diag(1./rowmax)*b;
+        [P, Q] = lu(A);
+        disc.LUFactors = {P, Q};
+    else
+        P = disc.LUFactors{1};
+        Q = disc.LUFactors{2};
+    end
+       
     % Solve:
-    uDiscrete = A\b;
+    DiscreteSol = Q \ (P\b);
     
     % Break discrete solution into chunks representing functions and scalars:
-    m = colSize(1,:);
-    numint = length(dom) - 1;
-    m(isFunVariable) = dim*numint; % replace Inf with discrete size
-    u = mat2cell(uDiscrete, m, 1);
+    m = colSize(1, :);
+    m(isFunVariable) = sum(disc.dimension); % replace Inf with discrete size
+    u = mat2cell(DiscreteSol, m, 1);
     
     uFun = u(isFunVariable);
     uVals = cell2mat(uFun.');
     
     % Take an arbitrary linear combination:
     s = 1 ./ (3*(1:size(uVals, 2)));
-    v = uVals*s(:);
+    vVals = uVals*s(:);
+    v = mat2cell(vVals, disc.dimension, 1);
     
     % Test happiness:
     isDone = true;
     epsLevel = 0;
     for i = 1:numint
-        vint = v( (i-1)*dim + (1:dim) );
-        [t1, t2] = obj.testConvergence(vint);
+        [t1, t2] = disc.testConvergence(v{i});
         isDone = isDone && t1;
         epsLevel = max(epsLevel, t2);
     end
@@ -53,10 +80,10 @@ end
 % Because each function component may be piecewise defined, we will loop through
 % one by one.
 for k = find( isFunVariable )
-    funvals = reshape(u{k}, dim, numint); % Piecewise defined.
-    f = obj.makeChebfun(num2cell(funvals, 1)', dom); 
+%    funvals = reshape(u{k}, dim, numint); % Piecewise defined.
+    u{k} = disc.toFunction(u{k}); 
 %     u{k} = simplify(f, epsLevel);
-    u{k} = f;
+%    u{k} = f;
 end
 
 u = chebmatrix(u);
