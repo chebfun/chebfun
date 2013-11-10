@@ -10,7 +10,7 @@ classdef colloc2 < linopDiscretization
             if isa(source,'linop')
                 disc.linop = source;
             else
-                disc.source = source;
+                disc.source = source;  % block
             end
         end
          
@@ -70,8 +70,11 @@ classdef colloc2 < linopDiscretization
             fx(dxloc+1) = feval(f, x(dxloc), 'right');
         end
                
-        function L = discretize(disc)
+        function L = discretize(disc,dimension)
             A = disc.source;
+            if ( nargin > 1 )
+                disc.dimension = dimension;
+            end
             validateParameters(disc);
             
             if isa(A,'chebmatrix')
@@ -90,7 +93,7 @@ classdef colloc2 < linopDiscretization
         end
                
         % Specific to linopDiscretization        
-        function A = matrix(disc)
+        function [A,P,B] = matrix(disc)
             if isempty(disc.linop)
                 A = discretize(disc);
                 return
@@ -98,18 +101,23 @@ classdef colloc2 < linopDiscretization
             L = disc.linop;
             disc.source = L.operator;
             blocks = discretize(disc);
-            rows = disc.reproject(blocks);
-            A = cell2mat(rows);
+            [rows,P] = disc.reproject(blocks);
+            P = blkdiag(P{:});
+
+            B = [];
             if ~isempty(L.constraint)
                 disc.source = L.constraint.operator;
                 constr = discretize(disc);
-                A = [ cell2mat(constr); A ];
+                B = [ cell2mat(constr); B ];
             end
             if ~isempty(L.continuity)
                 disc.source = L.continuity.operator;
                 constr = discretize(disc);
-                A = [ cell2mat(constr); A ];
+                B = [ cell2mat(constr); B ];
             end
+            A = cell2mat(rows);
+            A = [ B; A ];
+
         end
         
         function b = rhs(disc,f)
@@ -118,7 +126,6 @@ classdef colloc2 < linopDiscretization
             end
             disc.source = f;
             row = discretize(disc);
-            row = disc.(row);
             b = cell2mat(row);
             L = disc.linop;
             if ~isempty(L.constraint)
@@ -131,14 +138,15 @@ classdef colloc2 < linopDiscretization
         
     end
     
-    methods (Access=private)
-        function B = reproject(disc,blocks)
+    methods ( Access = private )
+        function [B,P] = reproject(disc,blocks)
             reduce = disc.linop.sizeReduction;
             dim = disc.dimension;
             B = cell(size(blocks,1),1);
+            P = cell(size(blocks,1),1);
             for i = 1:size(blocks,1)
                 M = cat(2,blocks{i,:});
-                B{i} = resize(disc,M,dim-reduce(i),dim);
+                [B{i},P{i}] = resize(disc,M,dim-reduce(i),dim);
             end
         end
         

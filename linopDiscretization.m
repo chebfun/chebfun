@@ -10,29 +10,8 @@ classdef (Abstract) linopDiscretization < blockDiscretization
         b = rhs(disc,f)
     end
     
-    %     properties (Dependent)
-    %         domain
-    %         dimension
-    %     end
-    
     methods
         
-        %         function d = get.domain(disc)
-        %             d = disc.blockDisc.domain;
-        %         end
-        %
-        %         function disc = set.domain(disc,domain)
-        %             disc.blockDisc.domain = domain;
-        %         end
-        %
-        %         function d = get.dimension(disc)
-        %             d = disc.blockDisc.dimension;
-        %         end
-        %
-        %         function disc = set.dimension(disc,dimension)
-        %             disc.blockDisc.dimension = dimension;
-        %         end
-        %
         function [isDone,epsLevel] = testConvergence(disc,values)
             
             isDone = false;
@@ -89,7 +68,7 @@ classdef (Abstract) linopDiscretization < blockDiscretization
         function disc = deriveContinuity(disc)
             % Find automatic smoothness constraints at domain breakpoints.
             L = disc.linop;
-            d = L.blockDiffOrders
+            d = L.blockDiffOrders;
             d = max(d,[],1);
             dom = disc.domain;
             
@@ -129,8 +108,11 @@ classdef (Abstract) linopDiscretization < blockDiscretization
             
             disc.linop.continuity = cont;
             
-        end
+        end        
         
+    end
+    
+    methods ( Access=protected )
         function C = domainContinuity(disc,maxorder)
             % Returns expressions of continuity conditions at
             % the breakpoints of the domain of L.
@@ -148,8 +130,7 @@ classdef (Abstract) linopDiscretization < blockDiscretization
                 A = D*A;
             end
         end
-        
-        
+
     end
     
 end
