@@ -63,13 +63,11 @@ classdef ultraS < linopDiscretization
             d = A.domain;
             n = A.dimension;
             numIntervals = length(d) - 1;
-            
             % Find the diagonal blocks.
             blocks = cell(numIntervals);
             for k = 1:numIntervals
                 blocks{k} = A.convertmat(n(k), K1, K2);
             end
-            
             % Assemble.
             S = blkdiag(blocks{:});
         end
@@ -77,19 +75,16 @@ classdef ultraS < linopDiscretization
         function D = diff(A, m)
             d = A.domain;
             n = dim(A);
-            
             if ( m == 0 )
                 D = speye(sum(n));
             else
-                numIntervals = length(d)-1;
-                
+                numIntervals = length(d) - 1;
                 % Find the diagonal blocks.
                 blocks = cell(numIntervals);
                 for k = 1:numIntervals
                     len = d(k+1) - d(k);
                     blocks{k} = A.diffmat(n(k), m) * (2/len)^m;
                 end
-                
                 % Assemble.
                 D = blkdiag(blocks{:});
             end
@@ -140,7 +135,6 @@ classdef ultraS < linopDiscretization
                 disc2.domain = disc.domain;
                 disc2.dimension = disc.dimension;
                 constr = discretize(disc2);
-                
                 A = [ cell2mat(constr); A ];
             end
         end
@@ -158,7 +152,6 @@ classdef ultraS < linopDiscretization
         function A = resize(disc, A, m)
             dom = disc.domain;
             n = disc.dimension;
-            
             % chop off some rows and columns
             v = [];
             nn = cumsum([0 n]);
@@ -200,18 +193,15 @@ classdef ultraS < linopDiscretization
         end
         
         function fx = toValues(disc, f)
-            
             dom = disc.domain;
             numInts = numel(dom) - 1;
             dim = disc.dimension;
             f = restrict(f, dom);
-            
             c = cell(numInts, 1);
             for k = 1:numInts
                 c{k} = flipud(chebpoly(f, k, dim(k)).');
             end
             c = cell2mat(c);
-            
             S = convert(disc, 0, disc.outputSpace);
             fx = S*c;
             
@@ -223,7 +213,6 @@ classdef ultraS < linopDiscretization
         
         function S = convertmat( n, K1, K2 )
             %CONVERTMAT(A, K1, K2), convert C^(K1) to C^(K2)
-            
             S = speye(n);
             for s = K1:K2
                 S = spconvert(n, s) * S;
@@ -295,8 +284,6 @@ classdef ultraS < linopDiscretization
             end
             outputSpace = max(max(diffOrders, [], 2) - 1, -1);
         end
-        
-        
         
         function f = makeChebfun(u, dom)
             funs = cell(numel(u), 1);

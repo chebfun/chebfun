@@ -20,7 +20,7 @@ B1 = [El, -Er];
 B2 = [linop.sum(dom), El];
 L = addbc(L,B1,0);
 L = addbc(L,B2,1);
-u = L\f;
+u = mldivide(L, f, @ultraS);
 
 %%
 plot(u{1},'b'); hold on
