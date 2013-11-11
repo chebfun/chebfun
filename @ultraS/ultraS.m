@@ -22,69 +22,6 @@ classdef ultraS < linopDiscretization
             disc.outputSpace = disc.getOutputSpace(source);
             
         end
-       
-        
-        function D = diff(A, m)
-            d = A.domain;
-            n = dim(A);
-            
-            if ( m == 0 )
-                D = speye(sum(n));
-            else
-                numIntervals = length(d)-1;
-                
-                % Find the diagonal blocks.
-                blocks = cell(numIntervals);
-                for k = 1:numIntervals
-                    len = d(k+1) - d(k);
-                    blocks{k} = A.diffmat(n(k), m) * (2/len)^m;
-                end
-                
-                % Assemble.
-                D = blkdiag(blocks{:});
-            end
-        end
-        
-        M = mult( A, f, lambda)
-        
-        function S = convert( A, K1, K2 )
-            %CONVERT(A, K1, K2), convert C^(K1) to C^(K2)
-            d = A.domain;
-            n = A.dimension;
-            numIntervals = length(d) - 1;
-            
-            % Find the diagonal blocks.
-            blocks = cell(numIntervals);
-            for k = 1:numIntervals
-                blocks{k} = A.convertmat(n(k), K1, K2);
-            end
-            
-            % Assemble.
-            S = blkdiag(blocks{:});
-        end
-        
-        function L = discretize(disc)
-            A = disc.source;
-            validateParameters(disc);
-            
-            if ( isa(A, 'chebmatrix') )
-                diffOrder = getDiffOrder(A);
-                c = disc.coeffs;
-                outputSpaces = disc.outputSpace;
-                L = cell(size(A));
-                for j = 1:size(A, 1)
-                    disc.outputSpace = outputSpaces(j);
-                    for k = 1:size(A, 2)
-                        disc.coeffs = c{j,k};
-                        L{j,k} = blockDiscretize(disc, A.blocks{j,k});
-                    end
-                end
-%                 L = cell2mat(L);
-            else
-                disc.coeffs = disc.coeffs{1};
-                L = blockDiscretize(disc, A);
-            end
-        end
         
         function L = blockDiscretize(disc, block)
             if isa(block, 'operatorBlock')
@@ -121,24 +58,65 @@ classdef ultraS < linopDiscretization
             end
         end
         
-        function b = rhs(disc, f)
-            if isempty(disc.dimension)
-                error('Discretization dimension not given.')
+        function S = convert( A, K1, K2 )
+            %CONVERT(A, K1, K2), convert C^(K1) to C^(K2)
+            d = A.domain;
+            n = A.dimension;
+            numIntervals = length(d) - 1;
+            
+            % Find the diagonal blocks.
+            blocks = cell(numIntervals);
+            for k = 1:numIntervals
+                blocks{k} = A.convertmat(n(k), K1, K2);
             end
-            disc.source = f;
-            row = discretize(disc);
-            row = disc.reproject(row);
-            b = cell2mat(row);
-            L = disc.linop;
-            if ~isempty(L.constraint)
-                b = [ L.constraint.values; b ];
-            end
-            if ~isempty(L.continuity)
-                b = [ L.continuity.values; b ];
+            
+            % Assemble.
+            S = blkdiag(blocks{:});
+        end
+        
+        function D = diff(A, m)
+            d = A.domain;
+            n = dim(A);
+            
+            if ( m == 0 )
+                D = speye(sum(n));
+            else
+                numIntervals = length(d)-1;
+                
+                % Find the diagonal blocks.
+                blocks = cell(numIntervals);
+                for k = 1:numIntervals
+                    len = d(k+1) - d(k);
+                    blocks{k} = A.diffmat(n(k), m) * (2/len)^m;
+                end
+                
+                % Assemble.
+                D = blkdiag(blocks{:});
             end
         end
         
-        
+        function L = discretize(disc)
+            A = disc.source;
+            validateParameters(disc);
+            if ( isa(A, 'chebmatrix') )
+                diffOrder = getDiffOrder(A);
+                c = disc.coeffs;
+                outputSpaces = disc.outputSpace;
+                L = cell(size(A));
+                for j = 1:size(A, 1)
+                    disc.outputSpace = outputSpaces(j);
+                    for k = 1:size(A, 2)
+                        disc.coeffs = c{j,k};
+                        L{j,k} = blockDiscretize(disc, A.blocks{j,k});
+                    end
+                end
+                %                 L = cell2mat(L);
+            else
+                disc.coeffs = disc.coeffs{1};
+                L = blockDiscretize(disc, A);
+            end
+        end
+
         % Specific to linopDiscretization
         function A = matrix(disc)
             if ( isempty(disc.linop) )
@@ -162,11 +140,12 @@ classdef ultraS < linopDiscretization
                 disc2.domain = disc.domain;
                 disc2.dimension = disc.dimension;
                 constr = discretize(disc2);
+                
                 A = [ cell2mat(constr); A ];
             end
         end
         
-        function B = reproject(disc,blocks)
+        function B = reproject(disc, blocks)
             reduce = disc.linop.sizeReduction;
             dim = disc.dimension;
             B = cell(size(blocks,1),1);
@@ -176,6 +155,49 @@ classdef ultraS < linopDiscretization
             end
         end
         
+        function A = resize(disc, A, m)
+            dom = disc.domain;
+            n = disc.dimension;
+            
+            % chop off some rows and columns
+            v = [];
+            nn = cumsum([0 n]);
+            for k = 1:numel(dom)-1
+                v = [v m(k) + nn(k) + (1:(n(k)-m(k)))];
+            end
+            A(v.', :) = [];
+        end
+        
+        function b = rhs(disc, f)
+            if isempty(disc.dimension)
+                error('Discretization dimension not given.')
+            end
+            disc.source = f;
+            row = discretize(disc);
+            if ~iscell(row)
+                row = {row};
+            end
+            row = disc.reproject(row);
+            b = cell2mat(row);
+            L = disc.linop;
+            if ~isempty(L.constraint)
+                b = [ L.constraint.values; b ];
+            end
+            if ~isempty(L.continuity)
+                b = [ L.continuity.values; b ];
+            end
+        end        
+        
+        function f = toFunction(disc, values)
+            dom = disc.domain;
+            v = mat2cell(full(values), disc.dimension, 1);
+            funs = cell(numel(v),1);
+            for k = 1:numel(v)
+                ct = chebtech2({[], flipud(v{k})});
+                funs{k} = bndfun(ct, dom(k:k+1));
+            end
+            f = chebfun(funs);
+        end
         
         function fx = toValues(disc, f)
             
@@ -195,27 +217,6 @@ classdef ultraS < linopDiscretization
             
         end
         
-        function f = toFunction(disc, values)
-            if ( disc.numIntervals > 1 )
-                values = mat2cell(values, disc.dimension);
-            end
-            f = chebfun(values, disc.domain);
-        end
-
-        function A = resize(disc, A, m)
-            dom = disc.domain;
-            n = disc.dimension;
-            
-            % chop off some rows and columns
-            v = [];
-            nn = cumsum([0 n]);
-            for k = 1:numel(dom)-1
-                v = [v m(k) + nn(k) + (1:(n(k)-m(k)))];
-            end
-            A(v.', :) = [];
-
-        end
-        
     end
     
     methods (Static)
@@ -228,6 +229,39 @@ classdef ultraS < linopDiscretization
                 S = spconvert(n, s) * S;
             end
         end
+        
+        function D = diffmat( n, m )
+            %DIFFMAT(N, K, N), computes the kth order US derivative matrix
+            if ( m > 0 )
+                D = spdiags((0:n-1)', 1, n, n);
+                for s = 1:m-1
+                    D = spdiags(2*s*ones(n, 1), 1, n, n)*D;
+                end
+            else
+                D = speye(n);
+            end
+        end
+        
+        function f_coeffs = discretizeFunction(f, dim, dom)
+            if ( nargin < 3 )
+                dom = f.domain;
+            end
+            f_coeffs = [];
+            f = restrict(f, dom);
+            for k = 1:numel(dom)-1
+                dimk = dim(k);
+                tmp = flipud(get(f.funs{k}, 'coeffs'));
+                n = length(tmp);
+                % prolong/truncate.
+                if ( n > dimk )
+                    tmp = tmp(1:dimk);
+                else
+                    tmp = [tmp ; zeros(dimk - n, 1)];
+                end
+                f_coeffs = [f_coeffs ; tmp];
+            end
+        end
+        
         
         function c = getCoeffs(source)
             if ( isa(source, 'linop') )
@@ -260,48 +294,9 @@ classdef ultraS < linopDiscretization
                 diffOrders = source.diffOrder;
             end
             outputSpace = max(max(diffOrders, [], 2) - 1, -1);
-        end            
-        
-        function D = diffmat( n, m )
-            %DIFFMAT(N, K, N), computes the kth order US derivative matrix
-            if ( m > 0 )
-                D = spdiags((0:n-1)', 1, n, n);
-                for s = 1:m-1
-                    D = spdiags(2*s*ones(n, 1), 1, n, n)*D;
-                end
-            else
-                D = speye(n);
-            end
         end
         
-        function [isDone, epsLevel] = testConvergence(v)
-            % TODO: (for breakpoints and systems)
-            v = full(v);
-            f = chebtech2({[], flipud(v)});
-            [isDone, epsLevel] = strictCheck(f);
-        end
         
-        function f_coeffs = discretizeFunction(f, dim, dom)
-            if ( nargin < 3 )
-                dom = f.domain;
-            end
-            f_coeffs = [];
-            f = restrict(f, dom);
-            for k = 1:numel(dom)-1
-                dimk = dim(k);
-                tmp = flipud(get(f.funs{k}, 'coeffs'));
-                n = length(tmp);
-                % prolong/truncate.
-                if ( n > dimk )
-                    tmp = tmp(1:dimk);
-                else
-                    tmp = [tmp ; zeros(dimk - n, 1)];
-                end
-                f_coeffs = [f_coeffs ; tmp];
-            end
-        end
-        
-        L = quasi2USdiffmat(L, dom, dim, outputSpace)
         
         function f = makeChebfun(u, dom)
             funs = cell(numel(u), 1);
@@ -311,6 +306,15 @@ classdef ultraS < linopDiscretization
             end
             f = chebfun(funs);
             u = chebmatrix({f});
+        end
+        
+        L = quasi2USdiffmat(L, dom, dim, outputSpace)
+        
+        function [isDone, epsLevel] = testConvergence(v)
+            % TODO: (for breakpoints and systems)
+            v = full(v);
+            f = chebtech2({[], flipud(v)});
+            [isDone, epsLevel] = strictCheck(f);
         end
     end
 end

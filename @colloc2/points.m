@@ -1,8 +1,11 @@
-function [x,w] = points(disc)
+function [x,w] = points(disc,kind)
 
 d = disc.domain;
 numint = disc.numIntervals;
 n = disc.dimension;
+if ( nargin < 2 )
+    kind = 2;
+end
 
 if (numel(n) == 1)
     n = repmat(n,1,numint);
@@ -13,7 +16,11 @@ w = cell(1,numint);
 for k = 1:numint
     % Don't call again unless the dimension has changed.
     if ( k==1 ) || ( n(k) ~= n(k-1) )
-        [x0,w0] = chebtech2.chebpts(n(k));
+        if ( kind == 2 )
+            [x0,w0] = chebtech2.chebpts(n(k));
+        else
+            [x0,w0] = chebtech1.chebpts(n(k));
+        end
     end
     dif = (d(k+1)-d(k))/2;
     x{k} = x0*dif + (d(k+1)+d(k))/2;

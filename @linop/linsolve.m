@@ -16,34 +16,38 @@ L.constraint.operator.domain = disc.domain;
 if ( isempty(L.continuity) )
      % Apply continuity conditions:
      disc = deriveContinuity(disc);
+     
 end
 
-numint = disc.numIntervals;
+numInt = disc.numIntervals;
+isDone = false(1, numInt);
 
 for dim = dimVals
     
     % TODO: Allow different numbers of points in different subdomains
-    disc.dimension = repmat(dim, [1 numint]);
+    disc.dimension(~isDone) = dim;
+    disc.dimension
 
     b = disc.rhs(f);
 
     % Factor the matrix
-    if ( isempty(disc.LUFactors) ) || ( length(disc.LUFactors{1}) ~= length(b) )
+%     if ( isempty(disc.LUFactors) ) || ( length(disc.LUFactors{1}) ~= length(b) )
         A = disc.matrix();
         % Row scaling:
 %         rowmax = max(abs(A),[],2);
 %         rowmax = max(rowmax,1);
 %         A = diag(1./rowmax)*A;
 %         b = diag(1./rowmax)*b;
-        [P, Q] = lu(A);
-        disc.LUFactors = {P, Q};
-    else
-        P = disc.LUFactors{1};
-        Q = disc.LUFactors{2};
-    end
-       
+%         [P, Q] = lu(A);
+%         disc.LUFactors = {P, Q};
+%     else
+%         P = disc.LUFactors{1};
+%         Q = disc.LUFactors{2};
+%     end
+
     % Solve:
-    DiscreteSol = Q \ (P\b);
+%     DiscreteSol = Q \ (P\b);
+    DiscreteSol = A\b;
     
     % Break discrete solution into chunks representing functions and scalars:
     m = colSize(1, :);
@@ -59,15 +63,14 @@ for dim = dimVals
     v = mat2cell(vVals, disc.dimension, 1);
     
     % Test happiness:
-    isDone = true;
+    isDone = true(1, numInt);
     epsLevel = 0;
-    for i = 1:numint
-        [t1, t2] = disc.testConvergence(v{i});
-        isDone = isDone && t1;
+    for i = 1:numInt
+        [isDone(i), t2] = disc.testConvergence(v{i});
         epsLevel = max(epsLevel, t2);
     end
     
-    if ( isDone )
+    if ( all(isDone) )
         break
     end
 end
@@ -83,7 +86,6 @@ for k = find( isFunVariable )
 %    funvals = reshape(u{k}, dim, numint); % Piecewise defined.
     u{k} = disc.toFunction(u{k}); 
 %     u{k} = simplify(f, epsLevel);
-%    u{k} = f;
 end
 
 u = chebmatrix(u);

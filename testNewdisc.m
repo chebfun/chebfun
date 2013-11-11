@@ -1,4 +1,5 @@
 clear classes
+clc
 
 %%
 I = linop.eye();
@@ -89,7 +90,41 @@ L = addbc(L, [Er z], 0);
 % L = addbc(L, [El z], 0);
 L = addbc(L, [z El], 0);
 L = addbc(L, [z S], 0);
+L.discretization = @ultraS;
 disc = ultraS(L);
+% disc.dimension = [15 27];
+% disc.domain = [-1 0 1];
+% disc = deriveContinuity(disc);
+% M = matrix(disc);
+% spy(M), shg
+% size(M)
+
+f = chebfun(@sin);
+u = L\[f ; f]
+
+
+%%
+ccc
+x = chebfun('x');
+I = linop.eye();
+D = linop.diff;
+El = linop.feval(-1, [-1 1]);
+Er = linop.feval(1, [-1 1]);
+z = linop.zero;
+Z = linop.zeros;
+S = linop.sum([-1,1]);
+
+A = [ I D^2 exp(x); -D D^2+I x];
+L = linop(A);
+
+L = addbc(L, [Er z 0], 0);
+% L = addbc(L, [El z], 0);
+L = addbc(L, [z El 0], 0);
+L = addbc(L, [z S 0], 0);
+L.discretization = @ultraS;
+disc = ultraS(L);
+disc.dimension = [9];
+% disc.domain = [-1 1];
 disc.dimension = [15 27];
 disc.domain = [-1 0 1];
 disc = deriveContinuity(disc);
@@ -97,6 +132,29 @@ M = matrix(disc);
 spy(M), shg
 size(M)
 
+%%
 
+x = chebfun('x');
+I = linop.eye();
+D = linop.diff;
+El = linop.feval(-1, [-1 1]);
+Er = linop.feval(1, [-1 1]);
+z = linop.zero;
+Z = linop.zeros;
+S = linop.sum([-1,1]);
 
+A = [ I D^2 exp(x); -D D^2+I x ; S S 7];
+L = linop(A);
 
+L = addbc(L, [Er z 0], 0);
+% L = addbc(L, [El z 1], 0);
+L = addbc(L, [z El 0], 0);
+L = addbc(L, [z S 0], 0);
+L.discretization = @ultraS;
+disc = ultraS(L);
+disc.dimension = [100 100];
+disc.domain = [-1 0 1];
+disc = deriveContinuity(disc);
+M = matrix(disc);
+spy(M), shg
+size(M)
