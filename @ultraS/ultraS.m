@@ -189,10 +189,6 @@ classdef ultraS < linopDiscretization
         end        
         
         function f = toFunction(disc, values)
-%             values = full(values);
-%             f_chebtech = chebtech2({[], flipud(values)});
-%             f_fun = bndfun(f_chebtech, domain);
-%             f = chebfun({f_fun});
             dom = disc.domain;
             v = mat2cell(full(values), disc.dimension, 1);
             funs = cell(numel(v),1);

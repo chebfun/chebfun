@@ -19,12 +19,14 @@ if ( isempty(L.continuity) )
      
 end
 
-numint = disc.numIntervals;
+numInt = disc.numIntervals;
+isDone = false(1, numInt);
 
 for dim = dimVals
     
     % TODO: Allow different numbers of points in different subdomains
-    disc.dimension = repmat(dim, [1 numint]);
+    disc.dimension(~isDone) = dim;
+    disc.dimension
 
     b = disc.rhs(f);
 
@@ -42,10 +44,7 @@ for dim = dimVals
 %         P = disc.LUFactors{1};
 %         Q = disc.LUFactors{2};
 %     end
-    size(A)
-    size(b)
-   
-       
+
     % Solve:
 %     DiscreteSol = Q \ (P\b);
     DiscreteSol = A\b;
@@ -64,15 +63,14 @@ for dim = dimVals
     v = mat2cell(vVals, disc.dimension, 1);
     
     % Test happiness:
-    isDone = true;
+    isDone = true(1, numInt);
     epsLevel = 0;
-    for i = 1:numint
-        [t1, t2] = disc.testConvergence(v{i});
-        isDone = isDone && t1;
+    for i = 1:numInt
+        [isDone(i), t2] = disc.testConvergence(v{i});
         epsLevel = max(epsLevel, t2);
     end
     
-    if ( isDone )
+    if ( all(isDone) )
         break
     end
 end
