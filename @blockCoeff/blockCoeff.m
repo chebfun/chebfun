@@ -14,7 +14,9 @@ classdef blockCoeff
                 % Convert the given linBlock to its function form by
                 % evaluating its stack.
                 L = varargin{1};
-                A = L.stack( blockCoeff([]) );
+                dummy = blockCoeff([]);
+                dummy.domain = L.domain;
+                A = L.stack( dummy );
             else
                 f = varargin{1};
                 if ( ~iscell(f) )

@@ -22,7 +22,7 @@ Dexact = [
 %% Collocation discretizations
 zero1 = norm( discretize(I,5) - eye(5) )
 zero2 = norm( discretize(D,5) - Dexact );
-xx = blockColloc2.points(5,dom);
+xx = colloc2.points(5,dom);
 zero3 = norm( discretize(U,5) - diag(u(xx)) )
 
 %% Building blocks

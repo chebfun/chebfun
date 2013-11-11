@@ -23,8 +23,7 @@ numInt = disc.numIntervals;
 isDone = false(1, numInt);
 
 for dim = dimVals
-    
-    % TODO: Allow different numbers of points in different subdomains
+
     disc.dimension(~isDone) = dim;
     disc.dimension
 
@@ -46,13 +45,13 @@ for dim = dimVals
 %     end
 
     % Solve:
-%     DiscreteSol = Q \ (P\b);
-    DiscreteSol = A\b;
-    
+%     discreteSol = Q \ (P\b);
+
+    [discreteSol, disc] = disc.mldivide(A, b);
     % Break discrete solution into chunks representing functions and scalars:
     m = colSize(1, :);
     m(isFunVariable) = sum(disc.dimension); % replace Inf with discrete size
-    u = mat2cell(DiscreteSol, m, 1);
+    u = mat2cell(discreteSol, m, 1);
     
     uFun = u(isFunVariable);
     uVals = cell2mat(uFun.');
@@ -70,6 +69,8 @@ for dim = dimVals
         epsLevel = max(epsLevel, t2);
     end
     
+    
+    
     if ( all(isDone) )
         break
     end
@@ -85,7 +86,7 @@ end
 for k = find( isFunVariable )
 %    funvals = reshape(u{k}, dim, numint); % Piecewise defined.
     u{k} = disc.toFunction(u{k}); 
-%     u{k} = simplify(f, epsLevel);
+%     u{k} = simplify(u{k}, epsLevel);
 end
 
 u = chebmatrix(u);
