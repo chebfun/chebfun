@@ -9,7 +9,7 @@ classdef (InferiorClasses = {?double}) chebop
         bc = [];        % Other/internal/mixed boundary conditions
         init = [];      % Initial guess of a solution
         % Default discretization for linear problems
-        discretizationType = @blockColloc2; 
+        discretizationType = @colloc2; 
     end
     
     methods
@@ -39,11 +39,12 @@ classdef (InferiorClasses = {?double}) chebop
         
         
     end
-    
-    methods (Access = private)
-        % Prints information to the command window about the convergence of
-        % the Newton iteration
-        f = printInfo(f);
+        
+    methods (Static = true) % These should be private methods as well
+        
+        fig = displayInfoInit(u,pref);
+        
     end
+    
 end
 

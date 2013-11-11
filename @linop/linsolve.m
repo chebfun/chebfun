@@ -25,7 +25,6 @@ isDone = false(1, numInt);
 for dim = dimVals
 
     disc.dimension(~isDone) = dim;
-    disc.dimension
 
     b = disc.rhs(f);
 

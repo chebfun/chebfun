@@ -30,7 +30,7 @@ L = addbc(L,B3,0);
 
 %%
 
-type = {@blockColloc2, @blockUS};
+type = {@colloc2, @ultraS};
 w = [];
 for k = 1:2
     figure

@@ -1,9 +1,9 @@
 function u = solvebvpNonlinear(N, rhs, pref)
 
 % Store preferences used in the Newton iteration in separate variables
-maxIter = pref.maxIter;
-discType = pref.discretizationType;
-delTol = pref.deltol;
+maxIter  = pref.maxIter;
+discType = pref.discretization;
+delTol   = pref.deltol;
 % plotMode determines whether we want to stop between plotting iterations
 plotMode = lower(pref.plotting);
 % Did the user request damped or undamped Newton iteration?
@@ -26,6 +26,8 @@ u0 = chebmatrix(u0);
 % Initialise the dependent variable:
 x = chebfun(@(x) x, dom);
 
+displayFigure = N.displayInfoInit(u0, pref);
+
 % Linearise
 [L, affine, isLinear] = linearise(N, x, u0);
 
@@ -41,7 +43,7 @@ if ( ~isempty(N.init) )
     u = N.init;
     L = linearise(N, x, u);
     res = N.op(x, u{:}) - rhs;
-    L.discretizationType = discType;
+    L.discretization = discType;
     du = L\res;
     %                 else
     %                     u = makeGuess(L, x);
@@ -50,7 +52,7 @@ if ( ~isempty(N.init) )
     %                     du = L\res;
 else
     u = u0;
-    L.discretizationType = discType;
+    L.discretization = discType;
     du = L\(rhs - affine);
 end
 
@@ -74,7 +76,7 @@ while ( ~terminate ) && ( normRes(end) > 1e-12)
     % Linearise around current solution:
     L = linearise(N, x, ub, []); % flag to negate contraint RHSs.
     % Solve the linearised system:
-    L.discretizationType = discType;
+    L.discretization = discType;
     du = L\res;
     % Append the Newton step:
     u = u - du;
@@ -91,7 +93,7 @@ while ( ~terminate ) && ( normRes(end) > 1e-12)
     fprintf(' %2.2d\t%16.16f\t %16.16f\n', newtonCounter, ...
         normUpdate(newtonCounter,1), normRes(newtonCounter,1))
     if ( normUpdate(newtonCounter,1) < 1e-12 )
-        break
+        terminate = 1;
         %                     elseif (newt > 3 && normUpdate(newt) > 0.1*normUpdate(newt-3))
         %                         warning('CHEBFUN:bvpsc','Newton iteration stagnated.')
         %                         break
