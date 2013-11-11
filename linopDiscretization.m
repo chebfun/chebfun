@@ -2,7 +2,6 @@ classdef (Abstract) linopDiscretization < blockDiscretization
     
     properties
         linop
-        LUFactors = {}
     end
     
     methods (Abstract)

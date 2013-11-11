@@ -6,27 +6,31 @@ classdef ultraS < linopDiscretization
     
     methods
         function disc = ultraS(source)
+            %ULTRAS constructor.
             
-            if ( isempty(source) )
+            if ( nargin == 0 || isempty(source) )
+                % Construct an empty ULTRAS.
                 return
             end
             
             % Decide which kind of object we're discretizing:
-            if isa(source, 'linop')
+            if ( isa(source, 'linop') )
                 disc.linop = source;
             else
                 disc.source = source;
             end
             
+            % Obtain the coeffs and output psace required for this source:
             disc.coeffs = disc.getCoeffs(source);
             disc.outputSpace = disc.getOutputSpace(source);
             
         end
         
         function L = blockDiscretize(disc, block)
-            if isa(block, 'operatorBlock')
+            if (isa(block, 'operatorBlock') )
                 if ( ~isempty(disc.coeffs) )
-                    L = ultraS.quasi2USdiffmat(disc.coeffs, disc.domain, disc.dimension, disc.outputSpace);
+                    L = ultraS.quasi2USdiffmat(disc.coeffs, disc.domain, ...
+                        disc.dimension, disc.outputSpace);
                 else
                     error
                 end
@@ -38,7 +42,7 @@ classdef ultraS < linopDiscretization
                 collocDisc.domain = dom;
                 L = discretize(collocDisc);
                 cumsumDim = [0, cumsum(dim)];
-                numInts = numel(dom)-1;
+                numInts = numel(dom) - 1;
                 tmp = cell(1, numInts);
                 for k = 1:numInts
                     Lk = L(cumsumDim(k) + (1:dim(k)));
@@ -48,7 +52,7 @@ classdef ultraS < linopDiscretization
             elseif ( isa(block, 'chebfun') )
                 L = toValues(disc, block);
                 if ( block.isTransposed )
-                    error % ?
+                    error % TODO: ?
                     L = L.';
                 end
             elseif ( isnumeric(block) )
@@ -74,7 +78,7 @@ classdef ultraS < linopDiscretization
         
         function D = diff(A, m)
             d = A.domain;
-            n = dim(A);
+            n = A.dimension;
             if ( m == 0 )
                 D = speye(sum(n));
             else
@@ -105,13 +109,12 @@ classdef ultraS < linopDiscretization
                         L{j,k} = blockDiscretize(disc, A.blocks{j,k});
                     end
                 end
-                %                 L = cell2mat(L);
             else
                 disc.coeffs = disc.coeffs{1};
                 L = blockDiscretize(disc, A);
             end
         end
-
+        
         % Specific to linopDiscretization
         function A = matrix(disc)
             if ( isempty(disc.linop) )
@@ -179,7 +182,7 @@ classdef ultraS < linopDiscretization
             if ~isempty(L.continuity)
                 b = [ L.continuity.values; b ];
             end
-        end        
+        end
         
         function f = toFunction(disc, values)
             dom = disc.domain;
@@ -298,7 +301,7 @@ classdef ultraS < linopDiscretization
         L = quasi2USdiffmat(L, dom, dim, outputSpace)
         
         function [isDone, epsLevel] = testConvergence(v)
-            % TODO: (for breakpoints and systems)
+            % Test convergence on a single interval:
             v = full(v);
             f = chebtech2({[], flipud(v)});
             [isDone, epsLevel] = strictCheck(f);

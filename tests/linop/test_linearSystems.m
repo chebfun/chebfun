@@ -28,12 +28,10 @@ L = addbc(L,B3,0);
 
 %%
 
-type = {@colloc2, @ultraS};
+type = {@colloc2, @ultraS, @colloc2, @ultraS};
 w = [];
-for k = 1:2
-
+for k = 1:4
     wold = w;
-    % w = L\f;
     w = mldivide(L, f, type{k});
 
     %%
@@ -54,6 +52,11 @@ for k = 1:2
     err(k,4) = abs( u(-2)-v(2) );
     err(k,5) = abs( sum(u)+v(-2) - 1);
     err(k,6) = abs( feval(diff(u),dom(end)) );
+    
+    if ( k == 2 )
+        f = [abs(x-1); 0*x; 1 ];
+    end
 end
 
+err;
 pass = err < tol;
