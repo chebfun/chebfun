@@ -77,7 +77,7 @@ classdef linop
         end
         
         function u = mldivide(L, f)
-            u = linsolve(L, f, @colloc2);
+            u = linsolve(L, f, L.discretization);
         end
          
     end

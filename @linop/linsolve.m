@@ -16,6 +16,7 @@ L.constraint.operator.domain = disc.domain;
 if ( isempty(L.continuity) )
      % Apply continuity conditions:
      disc = deriveContinuity(disc);
+     
 end
 
 numint = disc.numIntervals;
@@ -28,22 +29,26 @@ for dim = dimVals
     b = disc.rhs(f);
 
     % Factor the matrix
-    if ( isempty(disc.LUFactors) ) || ( length(disc.LUFactors{1}) ~= length(b) )
+%     if ( isempty(disc.LUFactors) ) || ( length(disc.LUFactors{1}) ~= length(b) )
         A = disc.matrix();
         % Row scaling:
 %         rowmax = max(abs(A),[],2);
 %         rowmax = max(rowmax,1);
 %         A = diag(1./rowmax)*A;
 %         b = diag(1./rowmax)*b;
-        [P, Q] = lu(A);
-        disc.LUFactors = {P, Q};
-    else
-        P = disc.LUFactors{1};
-        Q = disc.LUFactors{2};
-    end
+%         [P, Q] = lu(A);
+%         disc.LUFactors = {P, Q};
+%     else
+%         P = disc.LUFactors{1};
+%         Q = disc.LUFactors{2};
+%     end
+    size(A)
+    size(b)
+   
        
     % Solve:
-    DiscreteSol = Q \ (P\b);
+%     DiscreteSol = Q \ (P\b);
+    DiscreteSol = A\b;
     
     % Break discrete solution into chunks representing functions and scalars:
     m = colSize(1, :);
@@ -83,7 +88,6 @@ for k = find( isFunVariable )
 %    funvals = reshape(u{k}, dim, numint); % Piecewise defined.
     u{k} = disc.toFunction(u{k}); 
 %     u{k} = simplify(f, epsLevel);
-%    u{k} = f;
 end
 
 u = chebmatrix(u);

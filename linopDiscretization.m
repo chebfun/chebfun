@@ -83,7 +83,7 @@ classdef (Abstract) linopDiscretization < blockDiscretization
                 z = linBlock.zero(dom);
                 Z = {};
                 for var = 1:length(d)
-                    if isnan(d(var))  % scalar
+                    if isnan(d(var)) || d(var) == 0 % scalar
                         Z = [Z,0];
                     else
                         Z = [Z,z];
@@ -93,7 +93,7 @@ classdef (Abstract) linopDiscretization < blockDiscretization
                 
                 for var = 1:length(d)
                     % Skip if this is a scalar variable; it plays no role in continuity.
-                    if isnan(d(var))
+                    if isnan(d(var)) || d(var) == 0
                         continue
                     end
                     B = Z;
