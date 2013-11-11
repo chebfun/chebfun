@@ -65,6 +65,10 @@ classdef (Abstract) linopDiscretization < blockDiscretization
             
         end
         
+        function [x, disc] = mldivide(disc, A, b)
+        	x = A\b;
+        end
+        
         function disc = deriveContinuity(disc)
             % Find automatic smoothness constraints at domain breakpoints.
             L = disc.linop;

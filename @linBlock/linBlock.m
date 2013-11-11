@@ -23,8 +23,8 @@ classdef linBlock
         % Used whenever a matrix is required but the type is not specified.
         % It doesn't work as a set/get property, because different linops
         % within one chebmatix can't have different defaults.
-        defaultDiscretization = @blockColloc2;
-%         defaultDiscretization = @blockUS;
+        defaultDiscretization = @colloc2;
+%         defaultDiscretization = @ultraS;
     end
     
     

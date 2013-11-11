@@ -76,8 +76,11 @@ classdef linop
             L = addbc(L, E*op, value);          
         end
         
-        function u = mldivide(L, f)
-            u = linsolve(L, f, L.discretization);
+        function u = mldivide(L, f, disc)
+            if ( nargin < 3 )
+                disc = L.discretization;
+            end
+            u = linsolve(L, f, disc);
         end
          
     end
