@@ -12,6 +12,7 @@ classdef colloc2 < linopDiscretization
             else
                 disc.source = source;  % block
             end
+            disc.domain = source.domain;
         end
          
         % Specific to blockDiscretization
@@ -130,6 +131,7 @@ classdef colloc2 < linopDiscretization
                 row = {row};
             end
             row = disc.reproject(row);
+            
             b = cell2mat(row);
             L = disc.linop;
             if ~isempty(L.constraint)

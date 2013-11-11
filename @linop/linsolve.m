@@ -25,7 +25,6 @@ isDone = false(1, numInt);
 for dim = dimVals
 
     disc.dimension(~isDone) = dim;
-    disc.dimension
 
     b = disc.rhs(f);
 
@@ -68,8 +67,6 @@ for dim = dimVals
         [isDone(i), t2] = disc.testConvergence(v{i});
         epsLevel = max(epsLevel, t2);
     end
-    
-    
     
     if ( all(isDone) )
         break

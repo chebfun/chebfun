@@ -146,7 +146,7 @@ classdef blockUS
         function L = discretize(A, dim, dom, varargin)
             if ( isa(A, 'functionalBlock') )
                 % TODO: Just call discretize method?
-                L = A.stack( blockColloc2(dim, dom) );
+                L = A.stack( colloc2(dim, dom) );
                 cumsumdim = [0, cumsum(dim)];
                 for k = 1:numel(dom)-1
                     Lk = L(cumsumdim(k) + (1:dim(k)));

@@ -86,8 +86,12 @@ classdef linBlock
             dom = p.Results.domain;
             matrixType = p.Results.matrixType;
             
-            dummy = matrixType([]);
-            L = dummy.discretize(A, dim, dom);
+            dummy = matrixType(A);
+            dummy.dimension = dim;
+            if ( numel(dim) == 1 )
+                dummy.dimension = repmat(dim, 1, numel(dummy.domain)-1);
+            end
+            L = discretize(dummy);
 
         end
                         
