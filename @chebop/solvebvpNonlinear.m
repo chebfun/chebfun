@@ -26,7 +26,8 @@ u0 = chebmatrix(u0);
 % Initialise the dependent variable:
 x = chebfun(@(x) x, dom);
 
-displayFigure = N.displayInfoInit(u0, pref);
+% Print info to command window, and/or show plot of progress
+[displayFig, displayTimer] = N.displayInfoInit(u0, pref);
 
 % Linearise
 [L, affine, isLinear] = linearise(N, x, u0);
@@ -60,11 +61,10 @@ u = u - du;
 ub = u.blocks;
 res = N.op(x, ub{:}) - rhs;
 
-fprintf('Nonlinear equation. using Newton''s method:\n')
-fprintf('step\t normUpdate\t\t  normRes\n')
+% fprintf('step\t normUpdate\t\t  normRes\n')
 normUpdate(1,1) = mynorm(du);
 normRes(1,1) = mynorm(res);
-fprintf(' %2.2d\t%16.16f\t %16.16f\n', 1, normUpdate(1,1), normRes(1,1))
+% fprintf(' %2.2d\t%16.16f\t %16.16f\n', 1, normUpdate(1,1), normRes(1,1))
 
 % Counter for number of Newton steps taken.
 newtonCounter = 0;
@@ -88,10 +88,14 @@ while ( ~terminate ) && ( normRes(end) > 1e-12)
     newtonCounter = newtonCounter +1;
     
     % Stop if well converged, or stagnated:
-    normUpdate(newtonCounter,1) = mynorm(du);
+    normDelta = mynorm(du);
+    normUpdate(newtonCounter,1) = normDelta;
     normRes(newtonCounter,1) = mynorm(res);
-    fprintf(' %2.2d\t%16.16f\t %16.16f\n', newtonCounter, ...
-        normUpdate(newtonCounter,1), normRes(newtonCounter,1))
+    
+    % Print info to command window, and/or show plot of progress
+    N.displayInfoIter(u, newtonCounter, normDelta, length(du{1}), ...
+        displayFig, displayTimer, pref)
+
     if ( normUpdate(newtonCounter,1) < 1e-12 )
         terminate = 1;
         %                     elseif (newt > 3 && normUpdate(newt) > 0.1*normUpdate(newt-3))
