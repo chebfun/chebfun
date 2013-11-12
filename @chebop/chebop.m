@@ -44,7 +44,7 @@ classdef (InferiorClasses = {?double}) chebop
         
         [displayFig, displayTimer] = displayInfoInit(u,pref);
         
-        displayInfoIter(u, iterNo, normdu, lendu, displayFig, ...
+        displayInfoIter(u, delta, iterNo, normdu, cFactor, lambda, lendu, displayFig, ...
             displayTimer, pref);
         
     end

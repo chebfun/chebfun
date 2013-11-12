@@ -1,4 +1,4 @@
-function u = solvebvp(N, rhs, pref)
+function [u, info] = solvebvp(N, rhs, pref)
 
 % No preferences passed, use the current chebopprefs
 if nargin < 3
@@ -11,19 +11,28 @@ numVars = nargin(N.op) - 1;
 % Store the domain we're working with.
 dom = N.domain;
 
-% Initialise a zero ADCHEBFUN:
-zeroFun = chebfun(0, dom);
-u0 = cell(numVars, 1);
-for k = 1:numVars
-    u0{k} = zeroFun;
+% Create an initial guess if none is passed
+if ( isempty(N.init) )
+    % Initialise a zero CHEBFUN:
+    zeroFun = chebfun(0, dom);
+    % Convert to a chebmatrix of correct dimensions
+    u0 = cell(numVars, 1);
+    for k = 1:numVars
+        u0{k} = zeroFun;
+    end
+    u0 = chebmatrix(u0);
+else
+    u0 = N.init;
+    % TODO: This should be done automatically when N.init is assigned
+    if ( isa(u0, 'chebfun') )
+        u0 = chebmatrix({u0});
+    end
 end
-u0 = chebmatrix(u0);
-
 % Initialise the dependent variable:
 x = chebfun(@(x) x, dom);
 
 % Linearise
-[L, affine, isLinear] = linearise(N, x, u0);
+[L, residual, isLinear] = linearise(N, x, u0);
 
 % Solve:
 if ( all(isLinear) )
@@ -34,13 +43,13 @@ if ( all(isLinear) )
     L.discretizationType = pref.discretizationType;
     
     % Solve the linear problem
-    u = L\(rhs - affine);
+    u = L\(rhs - residual);
     
     % TODO: Return residual as well?
 else
     % Call solver method for nonlinear problems.
     % TODO: Swith between residual and error oriented Newton methods
-    u = solvebvpNonlinear(N, rhs, pref);
+    [u, info] = solvebvpNonlinear(N, rhs, L, u0, residual, pref);
 end
 
 % If we were solving a scalar problem, return a chebfun rather than a

@@ -14,11 +14,11 @@ if ( strcmpi(display, 'iter') )
     
     % Show info depending on whether we are running in damped mode or not
     if ( damped )
-        initString = ['Iter.    || du ||    Contra.fact.      ', ...
-            'length(du)     stepsize    length(u)'];
+        initString = ['Iter.    || du ||    Contra.fact.    ', ...
+            'len(du)     stepsize    length(u)'];
     else
-        initString = ['Iter.   || du ||      Contra.fact.      ', ...
-            'length(du)    length(u)'];
+        initString = ['Iter.   || du ||     Contra.fact.    ', ...
+            'len(du)    length(u)'];
         
     end
     
@@ -31,7 +31,8 @@ end
 % Do we want to show a plot of the initial guess?
 if ~( strcmpi(plotMode, 'off') )
     displayFig = figure('name','BVP solver convergence');
-    plot(u,'.-'), title('Initial guess of solution')
+    plot(u,'.-'), 
+    title('Initial guess of solution', 'Fontsize', 12)
 else
     % If we did not want to plot, we return an empty output instead of a
     % graphics handle.
