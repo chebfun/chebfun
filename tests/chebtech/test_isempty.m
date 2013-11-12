@@ -23,7 +23,7 @@ for n = 1:2
     pass(n, 4) = ~isempty(f);
 
     f = [ testclass.make() testclass.make() ];
-    pass(n, 5) = ~isempty(f);
+    pass(n, 5) = isempty(f);
 end
 
 end

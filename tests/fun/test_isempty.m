@@ -30,7 +30,7 @@ for n = 1:1 %[TODO]: unbndfun
 
     % Test an array of empty FUN objects:
     f = [ testclass.make(), testclass.make() ];
-    pass(n, 5) = ~isempty(f);
+    pass(n, 5) = isempty(f);
 end
 
 end
