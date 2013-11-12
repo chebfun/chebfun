@@ -14,10 +14,20 @@ F = cellfun(@(f) prolong(f, n), varargin, 'UniformOutput', false);
 
 % Extract the data and collate the an array-valued CHEBTECH:
 out = varargin{1};
+
+% Coeffs and Values:
 out.coeffs = cell2mat(cellfun(@(f) f.coeffs, F, 'UniformOutput', false));
 out.values = cell2mat(cellfun(@(f) f.values, F, 'UniformOutput', false));
-out.vscale = cellfun(@(f) f.vscale, F);
+
+% Vscales:
+vscales = cellfun(@(f) f.vscale, F, 'UniformOutput', false);
+out.vscale = cell2mat(vscales);
+vscales = cellfun(@max, vscales);
+
+% Epslevel:
+out.epslevel = max(cellfun(@(f) f.epslevel, F).*vscales)./max(vscales);
+
+% Hscale:
 out.hscale = max(cellfun(@(f) f.hscale, F));
-out.epslevel = max(cellfun(@(f) f.epslevel, F).*out.vscale)./max(out.vscale);
 
 end
