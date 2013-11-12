@@ -7,6 +7,15 @@ function out = horzcat(varargin)
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
+
+% Remove empties:
+empties = cellfun(@isempty, varargin);
+if ( all(empties) )
+    out = varargin{1};
+    return
+else
+    varargin(empties) = [];
+end
   
 % Prolong each Chebtech to the same length:
 n = max(cellfun(@length, varargin));

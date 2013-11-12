@@ -16,6 +16,15 @@ function out = horzcat(varargin)
 % should instead return a quasimatrix, and the documentation above should be
 % updated to reflect this.
 
+% Remove empties:
+empties = cellfun(@isempty, varargin);
+if ( all(empties) )
+    out = varargin{1};
+    return
+else
+    varargin(empties) = [];
+end
+
 % Promote doubles to CHEBFUN objects:
 chebfunLocs = cellfun('isclass', varargin, 'chebfun');
 domain1 = varargin{find(chebfunLocs, 1, 'first')}.domain;
