@@ -1,8 +1,9 @@
 function out = horzcat(varargin)
 %HORZCAT   Horizontal concatenation of CHEBFUN objects.
-%   [A B] is the horizontal concatenation of CHEBFUN objects A and B. [A,B] is
-%   the same thing. Any number of CHEBFUN objects can be concatenated within
-%   one pair of brackets. Vertical concatenation is not supported.
+%   [A B] horizontally concatenates the CHEBFUN objects A and B to form an
+%   array-valued CHEBFUN. [A,B] does the same. Any number of CHEBFUN objects
+%   can be concatenated within one pair of brackets. Vertical concatenation is
+%   not supported.
 %
 % See also VERTCAT, CAT.
 
@@ -12,7 +13,8 @@ function out = horzcat(varargin)
 % [TODO]: Vertical concatenation. (Chebmatrix / quasimatrix).
 
 % [TODO]: Currently if breakpoints don't match then we restrict. In future this
-% should instead return a quasimatrix.
+% should instead return a quasimatrix, and the documentation above should be
+% updated to reflect this.
 
 % Promote doubles to CHEBFUN objects:
 chebfunLocs = cellfun('isclass', varargin, 'chebfun');
@@ -27,7 +29,7 @@ allDomainsCell = cellfun(@(f) f.domain, varargin, 'UniformOutput', false);
 
 % Ensure that the domains match:
 domainEnds = allDomainsCell{1}([1 end]);
-if ( any( cellfun(@(d) any(d([1 end]) ~= domainEnds), allDomainsCell) ))
+if ( any(cellfun(@(d) any(d([1 end]) ~= domainEnds), allDomainsCell)) )
     error('CHEBFUN:horzcat:domains', 'Inconsistent domains.');
 end
 

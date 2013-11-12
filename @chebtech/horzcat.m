@@ -1,9 +1,10 @@
 function out = horzcat(varargin)
 %HORZCAT   Horizontal concatenation.
-%   [A B] is the horizontal concatenation of CHEBTECH objects A and B. [A,B] is
-%   the same thing. Any number of CHEBTECH objects can be concatenated within
-%   one pair of brackets. Vertical concatenation is not supported.
-%
+%   [A B] horizontally concatenates the CHEBTECH objects A and B to form an
+%   array-valued CHEBTECH. [A,B] does the same. Any number of CHEBTECH objects
+%   can be concatenated within one pair of brackets. Vertical concatenation is
+%   not supported.
+
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
   

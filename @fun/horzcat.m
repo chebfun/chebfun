@@ -1,7 +1,7 @@
 function out = horzcat(varargin)
 %HORZCAT   Horizontal concatenation.
-%   [A B] is the horizontal concatenation of FUN objects A and B on the same
-%   domain. [A,B] is the same thing. Any number of FUN objects can be
+%   [A B] horizontally concatenates the FUN objects A and B to form an
+%   array-valued FUN. [A,B] does the same. Any number of FUN objects can be
 %   concatenated within one pair of brackets. Vertical concatenation is not
 %   supported.
 
@@ -13,7 +13,7 @@ out = varargin{1};
 
 tol = get(out, 'hscale')*get(out, 'epslevel');
 if ( any( cellfun(@(f) any(f.domain - out.domain) > tol, varargin)) )
-    error('FUN:horzcat:noSupport', 'Domain mismatch.');
+    error('FUN:horzcat:domains', 'Domain mismatch.');
 end
 
 % Extract the ONEFUNs:
