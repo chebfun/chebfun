@@ -9,8 +9,6 @@ end
 % Set the tolerance:
 tol = 100*pref.eps;
 
-pass = zeros(1, 19); % Pre-allocate pass matrix.
-
 %%
 % Test on a scalar-valued function:
 pref.extrapolate = 0;

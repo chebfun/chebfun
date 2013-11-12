@@ -18,9 +18,6 @@ b = -0.56;
 c = 1.28;
 d = -1.28;
 
-% Pre-allocate pass matrix
-pass = zeros(1, 9);
-
 % Check for empty cases
 f = singfun();
 pass(1) = isempty(diff(f));

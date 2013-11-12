@@ -10,8 +10,6 @@ end
 % Set the domain
 dom = [-2 7];
 
-pass = zeros(1, 5); % Pre-allocate pass matrix.
-
 %%
 
 % Test on a scalar-valued function for interpolation:

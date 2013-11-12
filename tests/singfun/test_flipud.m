@@ -18,9 +18,6 @@ b = -0.64;
 c = 1.28;
 d = -1.28;
 
-% Pre-allocate pass matrix
-pass = zeros(1, 7);
-
 %%
 % Spot-check derivatives for a couple of functions.
 
