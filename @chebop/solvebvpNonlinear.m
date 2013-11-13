@@ -11,7 +11,10 @@ function [u, info] = solvebvpNonlinear(N, rhs, L, u0, res, pref)
 % References: TODO: Fill out info for Deuflhard, DPhil thesis, and other
 % references as appropriate
 
-
+% TODO: Replace with real values further down in code (temp values to test
+% display methods)
+errEstDE = .1234;
+errEstBC = .5678;
 % Store preferences used in the Newton iteration in separate variables
 maxIter  = pref.maxIter;
 discType = pref.discretization;
@@ -146,7 +149,7 @@ while ( ~terminate )
     normDeltaOld = normDelta;
     % Print info to command window, and/or show plot of progress
     N.displayInfoIter(u, delta, newtonCounter, normDelta, cFactor, ...
-        length(delta{1}), lambda, displayFig, displayTimer, pref)
+        length(delta{1}), lambda, length(ub{1}), displayFig, displayTimer, pref)
     
     % TODO: Replace with error estimate -- introduce errorTol in cheboppref
     if ( normDelta < delTol )
@@ -165,6 +168,10 @@ while ( ~terminate )
         L.discretization = discType;
     end
 end
+
+% Show final information
+N.displayInfoFinal(u, delta, newtonCounter, errEstDE, errEstBC, displayFig, ...
+    displayTimer, pref)
 
 % Return useful information in the INFO structure
 info.normDelta = normDeltaVec(1:newtonCounter);

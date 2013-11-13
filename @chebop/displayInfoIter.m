@@ -1,4 +1,4 @@
-function displayInfoIter(u, delta, iterNo, normDelta, cFactor, lenDelta, lambda, displayFig, displayTimer, pref)
+function displayInfoIter(u, delta, iterNo, normDelta, cFactor, lenDelta, lambda, lenu, displayFig, displayTimer, pref)
 % Utility routine for displaying iteration progress in the solve functions.
 
 % Copyright 2011 by The University of Oxford and The Chebfun Developers.
@@ -14,8 +14,8 @@ if ( strcmpi(display,'iter') )
     
     % Show info depending on whether we are running in damped mode or not
     if ( damped )
-        iterString = sprintf(' %2.2d %13.2e %13.2e    %6i %15.2e ',iterNo, normDelta, ...
-            cFactor, lenDelta, lambda);
+        iterString = sprintf(' %2.2d %12.2e %12.2e    %6i %15.2e %7i ',iterNo, normDelta, ...
+            cFactor, lenDelta, lambda,lenu);
     else
         iterString = sprintf(' %2.2d %13.2e %13.2e    %6i',iterNo, normDelta, ...
             cFactor, lenDelta);
