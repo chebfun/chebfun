@@ -13,8 +13,8 @@ plotMode = pref.plotting;
 if ( strcmpi(display, 'iter') )
     
     % Show info depending on whether we are running in damped mode or not
-    initString = ['Iter.   || du ||   Contra.fact.    ', ...
-            'len(du)     stepsize    len(u)'];
+    initString = ['Iter.   || du ||   Contra.fact.   ||u-u*||   ', ...
+            'stepsize   len(du)   len(u)'];
 
     % Print to the command window
     fprintf(initString);

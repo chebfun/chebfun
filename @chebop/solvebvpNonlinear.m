@@ -38,10 +38,6 @@ x = chebfun(@(x) x, dom);
 % Print info to command window, and/or show plot of progress
 [displayFig, displayTimer] = N.displayInfoInit(u0, pref);
 
-% u = u + delta;
-% ub = u.blocks;
-% res = N.op(x, ub{:}) - rhs;
-
 % Counter for number of Newton steps taken.
 newtonCounter = 0;
 
@@ -54,27 +50,39 @@ normDeltaVec = zeros(maxIter,1);
 
 % Initial damping parameter
 lambda = 1;
+
+% Need to subtract the rhs from the residual passed in
+res = res - rhs;
 while ( ~terminate )
     % Compute a Newton update
     delta = -(L\res);
     
     % Store the norm of the update
     normDelta = mynorm(delta);
-    % TODO: Old variable name, to be removed
-    nrmDelta = normDelta;
     
     % Are we in damped mode?
     if ( damped )
         % Find a step-length lambda using an affine covariant algorithm due to
         % Deuflhard [!!!reference], also described in [!!!thesis]
         
+        % Monitors whether we want to accept the current steplength
         accept = 0;
+        
+        % Indicates whether we are in prediction or correction mode (i. e.
+        % whether we are finding the first value of lambda at a given Newton
+        % step, or whether we are correcting the value initially predicted for
+        % that step).
         initPrediction = 1;
-        while ~accept
-            
+        while ( ~accept )       % Iterate until lambda is accepted
+            % Check whether we want to predict a value for lambda. Can only do
+            % so once we have taken one Newton step, as it is based on
+            % information obtained from the previous step
             if newtonCounter > 0 && initPrediction
-                mu = (nrmDeltaOld*nrmDeltaBar)/(mynorm(deltaBar-delta,'fro')*nrmDelta)*lambda;
+                % Compute a prediction value
+                mu = (normDeltaOld*nrmDeltaBar)/(mynorm(deltaBar-delta,'fro')*normDelta)*lambda;
                 lambda = min(1,mu);
+                % Indicate that we will now be in correction mode until next
+                % Newton step.
                 initPrediction = 0;
             end
             
@@ -83,24 +91,32 @@ while ( ~terminate )
                 % Take full Newton step
                 u = u + delta;
                 accept = 1;
-                nrmDeltaOld = nrmDelta;
+                normDeltaOld = nrmDelta;
                 initPrediction = 1;
                 lambda = 1;
                 continue
             end
             
+            % Take a trial step
             uTrial = u + lambda*delta;
             
             uTrialb = uTrial.blocks;
             
             deResFunTrial = N.op(x, uTrialb{:}) - rhs;
+            
+            % Compute a simplified Newton step, using the current derivative of
+            % the operator, but with a new right-hand side.
             deltaBar = -(L\deResFunTrial);
             
+            % The norm of the simplified Newton step is used to compute a
+            % contraction factor
             nrmDeltaBar = mynorm(deltaBar);
             
-            cFactor = nrmDeltaBar/nrmDelta;
+            % Contraction factor
+            cFactor = nrmDeltaBar/normDelta;
             
-            muPrime = (.5*nrmDelta*lambda^2)/(mynorm(deltaBar-(1-lambda)*delta,'fro'));
+            muPrime = (.5*normDelta*lambda^2)/...
+                (mynorm(deltaBar-(1-lambda)*delta,'fro'));
             
             if cFactor >=1
                 lambda = min(muPrime,.5*lambda);
@@ -133,36 +149,45 @@ while ( ~terminate )
         u = uTrial;
     else    % We are in undamped phase
         u = u + delta;
-        cFactor = normDelta/normDeltaOld;
+        
+        % Compute a contraction factor and an error estimate. Can only do so
+        % once we have taken one step.
+        if ( newtonCounter == 0 )
+            cFactor = NaN;
+        else
+            cFactor = normDelta/normDeltaOld;
+            
+            % TODO: Error estimate
+        end
     end
     
     % Evaluate the residual
     ub = u.blocks;
-    res = N.op(x, ub{:}) - rhs;
-    
     % Update counter of Newton steps taken
     newtonCounter = newtonCounter +1;
         
     % Store information about the norm of the updates
     normDeltaVec(newtonCounter) = normDelta;
-    nrmDeltaOld = nrmDelta; % Useful for damping strategy
+    % Need to store the norm of the current update to use in damping strategy
     normDeltaOld = normDelta;
+    
     % Print info to command window, and/or show plot of progress
-    N.displayInfoIter(u, delta, newtonCounter, normDelta, cFactor, ...
+    N.displayInfoIter(u, delta, newtonCounter, normDelta, cFactor, errEstDE, ...
         length(delta{1}), lambda, length(ub{1}), displayFig, displayTimer, pref)
     
     % TODO: Replace with error estimate -- introduce errorTol in cheboppref
-    if ( normDelta < delTol )
+    errEst = normDelta; % .5*(errEstDE + errEstBC)
+    if ( errEst < delTol )
         terminate = 1;
-        %                     elseif (newt > 3 && normUpdate(newt) > 0.1*normUpdate(newt-3))
-        %                         warning('CHEBFUN:bvpsc','Newton iteration stagnated.')
-        %                         break
     elseif (newtonCounter > maxIter)
         warning('CHEBOP:solvebvpNonlinear','Newton iteration failed.')
         break
     else
         % Linearise around current solution:
-        L = linearise(N, x, ub, []); % flag to negate contraint RHSs.
+        [L, res] = linearise(N, x, ub, []); % flag to negate contraint RHSs.
+        
+        % Need to subtract RHS from the residual
+        res = res - rhs;
         
         % Assign the preferred discretisation method to the linop.
         L.discretization = discType;

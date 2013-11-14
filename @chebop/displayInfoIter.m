@@ -1,24 +1,24 @@
-function displayInfoIter(u, delta, iterNo, normDelta, cFactor, lenDelta, lambda, lenu, displayFig, displayTimer, pref)
+function displayInfoIter(u, delta, iterNo, normDelta, cFactor, errEst, lenDelta, lambda, lenu, displayFig, displayTimer, pref)
 % Utility routine for displaying iteration progress in the solve functions.
 
 % Copyright 2011 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % Obtain preferences for what we want to show
-damped   = pref.damped;
 display  = pref.display;
 plotMode = pref.plotting;
 
 % Do we want to print to the command window?
 if ( strcmpi(display,'iter') )
     
-    % Show info depending on whether we are running in damped mode or not
-    if ( damped )
-        iterString = sprintf(' %2.2d %12.2e %12.2e    %6i %15.2e %7i ',iterNo, normDelta, ...
-            cFactor, lenDelta, lambda,lenu);
+    % Create a string with information about the convergence. Want a slightly
+    % neater output if we are taking a full step.
+    if ( lambda == 1 )
+        iterString = sprintf(' %2.2d %12.2e %12.2e %12.2e %9.4f %7i %9i ', ...
+            iterNo, normDelta, cFactor, errEst, lambda, lenDelta, lenu);        
     else
-        iterString = sprintf(' %2.2d %13.2e %13.2e    %6i',iterNo, normDelta, ...
-            cFactor, lenDelta);
+        iterString = sprintf(' %2.2d %12.2e %12.2e %12.2e %10.2e %6i %9i ', ...
+            iterNo, normDelta, cFactor, errEst, lambda, lenDelta, lenu);
     end
     
     % Print to the command window
