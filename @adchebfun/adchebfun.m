@@ -449,7 +449,9 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
         
         function f = times(f, g)
-            if ( ~isa(f, 'adchebfun') )
+            if ( isnumeric(f) ) || ( isnumeric(g) )
+                f = mtimes(f, g);
+            elseif ( ~isa(f, 'adchebfun') )
                 g.jacobian = linop.mult(f)*g.jacobian;
                 g.func = f.*g.func;
 %                 g.isConstant = g.isConstant;
@@ -458,6 +460,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             elseif  ( ~isa(g, 'adchebfun') )
                 f.jacobian = linop.mult(g)*f.jacobian;
                 f.func = f.func.*g;
+                f = updateDomain(f);
 %                 f.isConstant = f.isConstant;
             else
                 f.isConstant = ...
@@ -466,8 +469,9 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                         ( iszero(f.jacobian) & iszero(g.jacobian) ) );
                 f.jacobian = linop.mult(f.func)*g.jacobian + linop.mult(g.func)*f.jacobian;
                 f.func = times(f.func, g.func);
+                f = updateDomain(f);
             end
-            f = updateDomain(f);
+
         end
 
         function f = uminus(f)
