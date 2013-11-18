@@ -34,7 +34,72 @@ classdef (InferiorClasses = {?double}) chebop
             pref = cheboppref;
             u = solvebvp(N, rhs, pref);
         end
-            
+        
+        function nin = nargin(N)
+            nin = nargin(N.op);
+        end
+        
+        function N = set.lbc(N, val)
+            nin = nargin(N);
+            if isnumeric(val)
+                if nin <= 2
+                    N.lbc = @(u) u - val;
+                else
+                    error('CHEBFUN:CHEBOP:SETLBC', ...
+                    'Can only assign scalar BCs to scalar problems');
+                end
+            elseif isa(val,'function_handle')
+                if ( ( nin == 1 && nargin(val) == 1) || ( nin == nargin(val) + 1) )
+                    N.lbc = val;
+                else
+                    error('CHEBFUN:CHEBOP:SETLBC', ...
+                    'Number of inputs to BCs do not match operator.');
+                end
+            else
+                error('CHEBFUN:CHEBOP:SETLBC', ...
+                    'Unsupported format of BCs')
+            end
+        end
+        
+        function N = set.rbc(N, val)
+            nin = nargin(N);
+            if isnumeric(val)
+                if nin <= 2
+                    N.rbc = @(u) u - val;
+                else
+                    error('CHEBFUN:CHEBOP:SETRBC', ...
+                    'Can only assign scalar BCs to scalar problems');
+                end
+            elseif isa(val,'function_handle')
+                if ( ( nin == 1 && nargin(val) == 1) || ( nin == nargin(val) + 1) )
+                    N.rbc = val;
+                else
+                    error('CHEBFUN:CHEBOP:SETRBC', ...
+                    'Number of inputs to BCs do not match operator.');
+                end
+            else
+                error('CHEBFUN:CHEBOP:SETRBC', ...
+                    'Unsupported format of BCs')
+            end
+        end
+        
+        function N = set.bc(N, val)
+            if isnumeric(val)
+                error('CHEBFUN:CHEBOP:SETBC', ...
+                    'Can not assign numerical BCs to .bc field.');
+            elseif isa(val,'function_handle')
+                if ( nargin(N) == nargin(val) )
+                    N.bc = val;
+                else
+                    error('CHEBFUN:CHEBOP:SETBC', ...
+                    'Number of inputs to BCs must match operator.');
+                end
+            else
+                error('CHEBFUN:CHEBOP:SETRBC', ...
+                    'Unsupported format of BCs')
+            end
+        end
+        
         [L, res, isLinear] = linearise(N, x, u, flag);
         
         

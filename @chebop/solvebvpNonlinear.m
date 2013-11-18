@@ -24,8 +24,6 @@ delTol   = pref.deltol;
 damped = pref.damped;
 % Minimum allowed steplength
 lambdaMin = pref.lambdaMin;
-% NUMVARS indicate how many unknown function we seek.
-numVars = nargin(N.op) - 1;
 
 % Assign initial guess to u
 u = u0;

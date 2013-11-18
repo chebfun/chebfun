@@ -6,7 +6,7 @@ if nargin < 3
 end
 
 % NUMVARS indicate how many unknown function we seek.
-numVars = nargin(N.op) - 1;
+numVars = nargin(N) - 1;
 
 % Store the domain we're working with.
 dom = N.domain;
