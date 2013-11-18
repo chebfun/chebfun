@@ -13,7 +13,8 @@ function [u, info] = solvebvpNonlinear(N, rhs, L, u0, res, pref)
 
 % TODO: Replace with real values further down in code (temp values to test
 % display methods)
-errEstDE = .1234;
+errEst = NaN;
+errEstDE = NaN;
 errEstBC = .5678;
 % Store preferences used in the Newton iteration in separate variables
 maxIter  = pref.maxIter;
@@ -147,6 +148,8 @@ while ( ~terminate )
             accept = 1;
         end
         u = uTrial;
+        
+        errEst = NaN;
     else    % We are in undamped phase
         u = u + delta;
         
@@ -157,6 +160,16 @@ while ( ~terminate )
         else
             cFactor = normDelta/normDeltaOld;
             
+            if cFactor >= 1
+                damped = 1; % Have to resort back to damped
+                continue
+            end
+%             contraFactor(newtonCounter-1) = 2*cFactor;
+            errEst =  normDelta/(1-cFactor^2);
+            errEstDE = errEst;
+            errEstVec(newtonCounter) =  errEst;
+%             terminate = eEstSob < deltol;
+%             omega = 2*nrmDelta/nrmDeltaVec(newtonCounter)^2;
             % TODO: Error estimate
         end
     end
@@ -176,7 +189,7 @@ while ( ~terminate )
         length(delta{1}), lambda, length(ub{1}), displayFig, displayTimer, pref)
     
     % TODO: Replace with error estimate -- introduce errorTol in cheboppref
-    errEst = normDelta; % .5*(errEstDE + errEstBC)
+%     errEst = normDelta; % .5*(errEstDE + errEstBC)
     if ( errEst < delTol )
         terminate = 1;
     elseif (newtonCounter > maxIter)
