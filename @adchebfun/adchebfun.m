@@ -423,8 +423,13 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f.jacobian = linop.mult(cos(f.func))*f.jacobian;
             f.func = sin(f.func);
         end
-             
         
+        function f = sinh(f)
+            f.isConstant = iszero(f.jacobian);
+            f.jacobian = linop.mult(cosh(f.func))*f.jacobian;
+            f.func = sin(f.func);
+        end
+
         function f = sum(f)
             f.func = sum(f.func);
             f.jacobian = linop.sum(f.domain)*f.jacobian;
