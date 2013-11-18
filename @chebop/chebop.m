@@ -115,6 +115,38 @@ classdef (InferiorClasses = {?double}) chebop
         displayInfoFinal(u, delta, iterNo, errEstDE, errEstBC, displayFig, ...
             displayTimer, pref)
         
+        function newRHS = convertToRHS(rhs, residual)
+            [numRow, numCol] = size(residual);
+            
+            
+            if ( length(rhs) == 1 )
+                % Allow a scalar RHS to be converted to a RHS of correct
+                % dimensions
+                rhs = repmat(rhs, numRow, numCol);
+            elseif ~( all(size(rhs) == [numRow, numCol]) )
+                error('CHEBFUN:CHEBOP:CONVERTTORHS', ...
+                    'RHS does not match output dimensions of operator.');
+            end
+            
+            rhsBlocks = cell(numRow, numCol);
+            resBlocks = residual.blocks;
+            
+            dom = getDomain(residual);
+            
+            % Convert numerical values in RHS vector into chebmatrix
+            for rhsCounter = 1:numRow
+                if isa(resBlocks{rhsCounter}, 'chebfun')
+                    % If corresponding block in the residual is a chebfun, the
+                    % rhs must also be made to be a chebfun
+                    rhsBlocks{rhsCounter} = chebfun(rhs(rhsCounter),dom);
+                else
+                    % Otherwise, the entry in the chebmatrix will be a scalar
+                    rhsBlocks{rhsCounter} = rhs(rhsCounter);
+                end
+            end
+            % Convert the cell-array to a chebmatrix
+            newRHS = chebmatrix(rhsBlocks);
+        end
     end
     
 end

@@ -34,6 +34,12 @@ x = chebfun(@(x) x, dom);
 % Linearise
 [L, residual, isLinear] = linearise(N, x, u0);
 
+% If the RHS passed is numerical, cast it to a chebmatrix of appropriate size
+% before continuing
+if ( isnumeric(rhs) )
+    rhs = N.convertToRHS(rhs, residual);
+end
+
 % Solve:
 if ( all(isLinear) )
     % TODO: Should this be calling the linop solve method directly (rather than

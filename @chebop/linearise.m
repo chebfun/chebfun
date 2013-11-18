@@ -47,7 +47,7 @@ end
 w = N.op(x, u{:});
 L = linop(vertcat(w.jacobian));
 res = vertcat(w.func);
-isLinear(1) = all(w.isConstant);
+isLinear(1) = all(vertcat(w.isConstant));
 
 BC = linopConstraint();
 %%
