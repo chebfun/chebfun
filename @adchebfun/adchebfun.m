@@ -430,6 +430,10 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f.func = sin(f.func);
         end
 
+        function varargout = subsref(f, index)
+            [varargout{1:nargout}] = subsref(f.func, index);
+        end
+        
         function f = sum(f)
             f.func = sum(f.func);
             f.jacobian = linop.sum(f.domain)*f.jacobian;
