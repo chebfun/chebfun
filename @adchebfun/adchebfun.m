@@ -444,7 +444,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 case '()'
                     out = feval(f, index.subs{1});
                 case '.'
-                    out = vertcat(f.(prop));
+                    out = vertcat(f.(index(1).subs));
             end
         end
         
