@@ -271,10 +271,19 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
 %             f.isConstant = f.isConstant;            
         end 
         
-        function out = get(f, prop)
+        function out = get(f, prop, pos)
             % Allow access to any of F's properties via GET.
-            out = f.(prop);
-        end  
+            if nargin == 2
+                out = vertcat(f.(prop));
+            else
+                out = f(pos).(prop);
+            end
+        end
+        
+        function out = getElement(f, pos)
+            % Return the pos-th element
+            out = f(pos);
+        end
         
         function u = jacreset(u)
             u.jacobian = linop.eye(u.domain);
@@ -427,15 +436,15 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         function f = sinh(f)
             f.isConstant = iszero(f.jacobian);
             f.jacobian = linop.mult(cosh(f.func))*f.jacobian;
-            f.func = sin(f.func);
+            f.func = sinh(f.func);
         end
 
-        function varargout = subsref(f, index)
+        function out = subsref(f, index)
             switch index(1).type
                 case '()'
-                    [varargout{1:nargout}] = subsref(f.func, index);
+                    out = feval(f, index.subs{1});
                 case '.'
-                    [varargout{1:nargout}] = get(f, index(1).subs);
+                    out = vertcat(f.(prop));
             end
         end
         
