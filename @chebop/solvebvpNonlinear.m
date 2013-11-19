@@ -90,7 +90,7 @@ while ( ~terminate )
                 % Take full Newton step
                 u = u + delta;
                 accept = 1;
-                normDeltaOld = nrmDelta;
+                normDeltaOld = normDelta;
                 initPrediction = 1;
                 lambda = 1;
                 continue
@@ -149,6 +149,10 @@ while ( ~terminate )
         
         errEst = NaN;
     else    % We are in undamped phase
+        % Update lambda so that we will print correct information
+        lambda = 1;
+        
+        % Take a full Newton step
         u = u + delta;
         
         % Compute a contraction factor and an error estimate. Can only do so

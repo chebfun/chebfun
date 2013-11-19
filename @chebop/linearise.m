@@ -45,9 +45,9 @@ end
 %             end
 
 w = N.op(x, u{:});
-L = linop(vertcat(w.jacobian));
-res = vertcat(w.func);
-isLinear(1) = all(vertcat(w.isConstant));
+L = linop(vertcat(get(w, 'jacobian')));
+res = vertcat(get(w, 'func'));
+isLinear(1) = all(vertcat(get(w, 'isConstant')));
 
 BC = linopConstraint();
 %%
@@ -55,23 +55,25 @@ BC = linopConstraint();
 if ( ~isempty(N.lbc) )
     lbcU = N.lbc(u{:});
     for k = 1:numel(lbcU)
-        lbcU(k) = feval(lbcU(k), N.domain(1));
-        if ( nargin == 4 ), lbcU(k).func = -lbcU(k).func; end
-        BC = append(BC, lbcU(k).jacobian, -lbcU(k).func);
+        lbcUk = getElement(lbcU, k);
+        lbcUk = feval(lbcUk, N.domain(1));
+        if ( nargin == 4 ), lbcUk.func = -lbcUk.func; end
+        BC = append(BC, lbcUk.jacobian, -lbcUk.func);
         %                     L = bc(L, lbcU(k).jacobian, -lbcU(k).func); %#ok<CPROP>
     end
-    isLinear(2) = all([lbcU.isConstant]);
+    isLinear(2) = all(get(lbcU, 'isConstant'));
 end
 
 if ( ~isempty(N.rbc) )
     rbcU = N.rbc(u{:});
     for k = 1:numel(rbcU)
-        rbcU(k) = feval(rbcU(k), N.domain(end));
-        if ( nargin == 4 ), rbcU(k).func = -rbcU(k).func; end
-        BC = append(BC, rbcU(k).jacobian, -rbcU(k).func);
+        rbcUk = getElement(rbcU, k);
+        rbcUk = feval(rbcUk, N.domain(end));
+        if ( nargin == 4 ), rbcUk.func = -rbcUk.func; end
+        BC = append(BC, rbcUk.jacobian, -rbcUk.func);
         %                     L = bc(L, rbcU(k).jacobian, -rbcU(k).func); %#ok<CPROP>
     end
-    isLinear(3) = all([rbcU.isConstant]);
+    isLinear(3) = all(get(rbcU, 'isConstant'));
 end
 
 if ( ~isempty(N.bc) )
@@ -85,13 +87,13 @@ if ( ~isempty(N.bc) )
     %                 L = bc(L, con, -val); %#ok<CPROP>
     
     bcU = N.bc(x, u{:});
-    vals = cat(1, bcU.func);
+    vals = cat(1, get(bcU, 'func'));
     if ( nargin == 4 ), vals = -vals; end
     for k = 1:numel(bcU)
-        BC = append(BC, bcU(k).jacobian, -vals(k));
+        BC = append(BC, get(bcU, 'jacobian', k), -vals(k));
         %                     L = bc(L, bcU(k).jacobian, -vals(k)); %#ok<CPROP>
     end
-    isLinear(4) = all([bcU.isConstant]);
+    isLinear(4) = all(get(bcU, 'isConstant'));
 end
 L.constraint = BC;
 
