@@ -431,7 +431,12 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
 
         function varargout = subsref(f, index)
-            [varargout{1:nargout}] = subsref(f.func, index);
+            switch index(1).type
+                case '()'
+                    [varargout{1:nargout}] = subsref(f.func, index);
+                case '.'
+                    [varargout{1:nargout}] = get(f, index(1).subs);
+            end
         end
         
         function f = sum(f)
