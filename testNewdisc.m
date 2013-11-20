@@ -52,7 +52,7 @@ size(M)
 
 %%
 
-ccc
+clear classes
 
 %%
 I = linop.eye();
@@ -133,6 +133,72 @@ spy(M), shg
 size(M)
 
 %%
+
+%%
+% expm
+d = [-1 1];
+D = linop.diff(d);
+L = linop( D^2 );
+L = addbc(L,linop.feval(-1,d),0);
+L = addbc(L,linop.feval(1,d),0);
+
+disc = colloc2(L);
+
+n = 50;
+disc.dimension = [n];
+disc.domain = d;
+
+
+[Anot,P,B] = disc.matrix();
+Q = inv([B;P]);
+Q = Q(:,3:n);
+
+
+D = linop.diff(d);
+L = linop( D^2 );
+disc = colloc2(L);
+disc.dimension = [n];
+disc.domain = d;
+A = disc.matrix();
+
+t = 0.05;
+E = expm(t*P*A*Q);
+x = points(disc);
+u0 = min(1+x,1-x);
+u = Q*E*P*u0;
+
+%%
+% piecewise expm?
+d = [-1 0 1];
+D = linop.diff(d);
+L = linop( D^2 );
+L = addbc(L,linop.feval(-1,d),0);
+L = addbc(L,linop.feval(1,d),0);
+
+disc = colloc2(L);
+
+n = 50;
+disc.dimension = [n/2 n/2];
+disc.domain = d;
+disc = deriveContinuity(disc);
+
+[Anot,P,B] = disc.matrix();
+Q = inv([B;P]);
+Q = Q(:,5:n);
+
+
+D = linop.diff(d);
+L = linop( D^2 );
+disc = colloc2(L);
+disc.dimension = [n/2 n/2];
+disc.domain = d;
+A = disc.matrix();
+
+t = 0.0001;
+E = expm(t*P*A*Q);
+x = points(disc);
+u0 = min(1+x,1-x);
+u = Q*E*P*u0;
 
 x = chebfun('x');
 I = linop.eye();
