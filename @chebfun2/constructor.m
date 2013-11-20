@@ -18,7 +18,8 @@ end
 tol = eps;
 maxRank = 500;
 maxDegree = 2^16;
-approxRank = 9;
+r = 9;
+isHappy = 0;
 
 % Initialise:
 vectorize = 0;
@@ -26,8 +27,8 @@ vscale = 1;
 hscale = 1;
 
 notHappy = 1;  % If unhappy, selected pivots were not good enough.
-while ( notHappy )
-    [xx, yy] = chebpts2(approxRank, approxRank, domain);
+while ( ~isHappy )
+    [xx, yy] = chebpts2(r, r, domain);
     vals = evaluate(op, xx, yy, vectorize);             % Matrix of values at cheb2 pts.
     
     vscale = max(abs(vals(:)));
@@ -43,42 +44,46 @@ while ( notHappy )
     end
     
     %% FIND NUMERICAL RANK:
-    [PivotValue, PivotPos, rowValues, colValues, ifail] = CompleteACA(vals, tol);
+    [pivotValue, pivotPosition, rowValues, colValues, iFail] = CompleteACA(vals, tol);
     strike = 1;
-    while ( ifail && approxRank <= maxRank && strike < 3 )
-        [xx, yy] = chebpts2(approxRank, approxRank, domain);
+    while ( iFail && r <= maxRank && strike < 3 )
+        [xx, yy] = chebpts2(r, r, domain);
         vals = evaluate(op, xx, yy, vectorize);                        % Resample on denser grid.
-        [PivotValue, PivotPos, rowValues, colValues, ifail] = CompleteACA(vals, tol);
-        if ( abs(PivotValue(1))<1e4*vscale*tol )
+        [pivotValue, pivotPosition, rowValues, colValues, iFail] = CompleteACA(vals, tol);
+        if ( abs(pivotValue(1))<1e4*vscale*tol )
             % If the function is 0+noise then stop after three strikes.
             strike = strike + 1;
         end
-        approxRank = 2^(floor(log2(approxRank)) + 1) + 1;                % Double the sampling
+        r = 2^(floor(log2(r)) + 1) + 1;                % Double the sampling
     end
     
-    if ( approxRank >= maxRank )
+    if ( r >= maxRank )
         error('FUN2:CTOR', 'Not a low-rank function.');
     end
     
     %% See if the slices are resolved:
     colChebtech = chebtech2(colValues);
+    colChebtech.vscale = repmat(max(colChebtech.vscale), 1, size(colValues,2));
     ResolvedCols = happinessCheck(colChebtech);
     rowChebtech = chebtech2(rowValues.');
+    rowChebtech.vscale = repmat(max(rowChebtech.vscale), 1, size(rowValues,1));
     ResolvedRows = happinessCheck(rowChebtech);   
     
-    ResolvedSlices = ResolvedRows & ResolvedCols;
-    if ( length(PivotValue) == 1 && PivotValue == 0 )
+    isHappy = ResolvedRows & ResolvedCols;
+    
+    if ( length(pivotValue) == 1 && pivotValue == 0 )
         PivPos = [0, 0]; 
-        ResolvedSlices = 1;
+        isHappy = 1;
     else
-        PivPos = [xx(1, PivotPos(:, 2)); yy(PivotPos(:, 1), 1).'].'; 
-        PP = PivotPos;
+        PivPos = [xx(1, pivotPosition(:, 2)); yy(pivotPosition(:, 1), 1).'].'; 
+        PP = pivotPosition;
     end
     
-    n = approxRank; 
-    m = approxRank;
+    n = r; 
+    m = r;
     % If unresolved then perform ACA on selected slices.
-    while ( ~ResolvedSlices )
+    while ( ~isHappy )
+        
         if ( ~ResolvedCols )
             n = 2^(floor(log2(n))+1) + 1;
             [xx, yy] = meshgrid(PivPos(:, 1), chebpts(n, domain(3:4)));
@@ -100,54 +105,35 @@ while ( notHappy )
             rowValues = evaluate(op, xx, yy, vectorize);
         end
         
-        nn = numel(PivotValue);
+        nn = numel(pivotValue);
         
-%         % ACA on selected Pivots.
-%         for kk = 1:nn-1
-%             colValues(:, kk+1:end) = colValues(:, kk+1:end) - colValues(:, kk)*(rowValues(kk, PP(kk+1:nn, 2))./PivotValue(kk));
-%             rowValues(kk+1:end, :) = rowValues(kk+1:end, :) - colValues(PP(kk+1:nn, 1), kk)*(rowValues(kk, :)./PivotValue(kk));
-%         end
-        
-        for kk=1:nn-1
-            selx = PP(kk+1:nn,1); sely = PP(kk+1:nn,2);
-            colValues(:,kk+1:end) = colValues(:,kk+1:end) - colValues(:,kk)*(rowValues(kk,sely)./PivotValue(kk));
-            rowValues(kk+1:end,:) = rowValues(kk+1:end,:) - colValues(selx,kk)*(rowValues(kk,:)./PivotValue(kk));
+        % ACA on selected Pivots.
+        for kk = 1:nn-1
+            colValues(:, kk+1:end) = colValues(:, kk+1:end) - colValues(:, kk)*(rowValues(kk, PP(kk+1:nn, 2))./pivotValue(kk));
+            rowValues(kk+1:end, :) = rowValues(kk+1:end, :) - colValues(PP(kk+1:nn, 1), kk)*(rowValues(kk, :)./pivotValue(kk));
         end
-
+        
         % Are the columns and rows resolved now?
         if ( ~ResolvedCols )
             colChebtech = chebtech2(colValues);
+            colChebtech.vscale = repmat(max(colChebtech.vscale), 1, size(colValues,2));
             ResolvedCols = happinessCheck(colChebtech);    
-            ResolvedCols = true;
         end
         if ( ~ResolvedRows )
             rowChebtech = chebtech2(rowValues.');
+            rowChebtech.vscale = repmat(max(rowChebtech.vscale), 1, size(rowValues,1));
             ResolvedRows = happinessCheck(rowChebtech);    
-            ResolvedRows = true;
         end
-        ResolvedSlices = ResolvedRows & ResolvedCols;
+        
+        keyboard
+        
+        isHappy = ResolvedRows & ResolvedCols;
         if ( max(m, n) >= maxDegree )  % max number of degrees allows.
             error('FUN2:CTOR', 'Unresolved with maximum Chebfun length: %u.', maxDegree);
         end
         
     end
-    
-    % Pivots locations are probably ok..
-    if ( ResolvedSlices )
-        notHappy = 0; 
-    end 
-    
-    % check the first three pivots are at least okay. Though a rank
-    % 1 function doesn't need this check (almost any nonzero pivot location
-    % will do).
-    if ( length( PivotValue ) > 1 )
-        for jj = 1:min(3, length(PivotValue))
-            if max(max(abs(colValues(:, jj))), max(abs(rowValues(jj, :)))) - abs(PivotValue(jj)) > hscale*vscale*1e-2;
-                notHappy = 1; break
-            end
-        end
-    end
-    
+
 end
 
 % For some reason, on some computers simplify is giving back a
@@ -156,14 +142,16 @@ end
 if ( norm(colValues) == 0 || norm(rowValues) == 0)
     colValues = 0; 
     rowValues = 0; 
-    PivotValue = 0;
+    pivotValue = 0;
     PivPos = [0, 0]; 
-    ResolvedSlices = 1;
+    isHappy = 1;
 end
 
 % Construct a CHEBFUN2:
-g.pivotValues = PivotValue;
+g.pivotValues = pivotValue;
+colChebtech.vscale = max(abs(colChebtech.values), [], 1);
 g.cols = colChebtech;
+rowChebtech.vscale = max(abs(rowChebtech.values), [], 1);
 g.rows = rowChebtech;
 
 end
