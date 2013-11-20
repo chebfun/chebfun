@@ -5,8 +5,6 @@ function pass = test_clenshaw(varargin)
 % Set a tolerance (pref.eps doesn't matter)
 tol = 10*eps;
 
-pass = zeros(1, 5); % Pre-allocate pass matrix.
-
 %%
 % Test that a single coefficient is evaluated correctly:
 % For a scalar evaluation:
