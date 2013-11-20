@@ -76,7 +76,7 @@ classdef colloc2 < linopDiscretization
             if ( nargin > 1 )
                 disc.dimension = dimension;
             end
-            validateParameters(disc);
+            validate(disc);
             
             if isa(A,'chebmatrix')
                 % Evaluate recursively, block by block:

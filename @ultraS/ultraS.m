@@ -96,9 +96,9 @@ classdef ultraS < linopDiscretization
         
         function L = discretize(disc)
             A = disc.source;
-            validateParameters(disc);
+            validate(disc);
             if ( isa(A, 'chebmatrix') )
-                diffOrder = getDiffOrder(A);
+                %diffOrder = getDiffOrder(A);  % TODO: not used?
                 c = disc.coeffs;
                 outputSpaces = disc.outputSpace;
                 L = cell(size(A));

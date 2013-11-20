@@ -24,26 +24,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             % DOMAIN(L) returns the domain on which functions are defined for
             % the chebmatrix L.
             d = L.domain;
-        end
-        
-        % Construct a single matrix based on DIM-dimensional blocks.
-        function A = discretize(L, disc)
-            if ( isnumeric(disc) )
-                dim = disc;
-                % TODO: Choose a proper default disc.
-                disc = colloc2(L);
-                disc.dimension = dim;
-            end
-            disc.domain = L.domain;
-            if ( numel(disc.dimension) == 1 )
-                disc.dimension = repmat(disc.dimension, 1, numel(disc.domain)-1);
-            end
-%             A = cell(size(L));
-%             for i = 1:numel(A)
-%                 A{i} = matrix(disc,L.blocks{i});
-%             end
-            A = matrix(disc);
-        end
+        end       
         
         function k = numbc(L)
             % NUMBC(L) returns the number of constraints attached to L.
@@ -61,20 +42,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             % [M, N] = SIZE(L) returns both as scalars.
             [varargout{1:nargout}] = size(L.blocks, varargin{:});
         end
-        
-        function varargout = blockSizes(A)
-            %BLOCKSIZES Sizes of the blocks within the chebmatrix.
-            % BLOCKSIZES(L) returns a cell of 1x2 size vectors.
-            % [M, N] = BLOCKSIZES(A) returns two matrices of row/column sizes.
-            if ( nargout <= 1 )
-                varargout = {cellfun(@size, A.blocks, 'uniform', false)};
-            else
-                varargout{1} = cellfun(@(x) size(x, 1), A.blocks);
-                varargout{2} = cellfun(@(x) size(x, 2), A.blocks);
-            end
-            
-        end
-        
+                
         function t = isempty(L)
             t = isempty(L.blocks);
         end
@@ -84,24 +52,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             fprintf('\n  %ix%i block chebmatrix of types:\n\n', m, n)
             disp( blockClasses(L) )
         end
-        
-        function output = spy(A)
-            data = discretizeBlocks(A, 10);
-            h = cellplot(data);
-            % CELLPLOT seems to cover up the text representations of double
-            % values. We give a positive z-value so that they sit on top again.
-            % And we hide its big ugly box.
-            for i = 2:length(h)
-                if strcmp(get(h(i), 'type'), 'text')
-                    set(h(i), 'position', [0 0 1]+get(h(i), 'position'))
-                    set(h(i-1), 'vis', 'off')
-                end
-            end
-            if ( nargout > 0 )
-                output = h;
-            end
-        end
-        
+                
         function C = horzcat(varargin)
             C = cat(2, varargin{:});
         end
@@ -133,30 +84,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         end
         
     end
-    
-    methods
-        
-        %Signatures of externally defined methods.
-        
-        % Fundamental algebraic operations.
-        C = mtimes(A, B)
-        C = plus(A, B)
-        C = uminus(A)
-        out = feval(A, x, varargin);
-        
-        % Replace each block by its DIM-dimensional discretization.
-        A = discretizeBlocks(L, dim, dom, matrixType)
-        
-        % Concatenation
-        C = cat(n, varargin)
-        
-        h = plot(A, varargin);
-        
-        % TODO
-        B = subsref(A, sr)
-        
-    end
-    
+      
     methods ( Access = private )
         
         % Multiply chebmatrix by scalar.
@@ -167,8 +95,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
     methods ( Static )
         
         % Union of all breakpoints, with "fuzzy" equality.
-        d = mergeDomains(blocks)
-        
+        d = mergeDomains(blocks)       
         
     end
     
