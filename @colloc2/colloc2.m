@@ -124,6 +124,8 @@ classdef colloc2 < linopDiscretization
             if isempty(disc.dimension)
                 error('Discretization dimension not given.')
             end
+            % NONONO
+            if isa(f,'chebfun'), f = chebmatrix({f}); end
             disc.source = f;
             row = discretize(disc);
             b = cell2mat(row);
