@@ -1,10 +1,10 @@
 classdef linop
     
     properties
-        operator  % chebmatrix
+        operator                        % chebmatrix
         constraint = linopConstraint()
         continuity = linopConstraint()
-        discretization = @colloc2;
+        discretization = @colloc2;      % Obtain default from (global?) pref?
     end
     
     properties (Dependent)
@@ -15,8 +15,16 @@ classdef linop
     
     methods
         function L = linop(M)
-            % TODO: check size, inputs
-            if ( isa(M, 'linBlock') )
+            %LINOP   Linop constructor.
+            %   Linops are typically onstructed from a LINBLOCK or a CHEBMATRIX.
+            
+            if ( isa(M, 'linop') )
+                L = M;
+                return
+            end
+            
+            if ( ~isa(M, 'chebmatrix') )
+                % TODO: check size, inputs (at chebmatrix level);
                 M = chebmatrix({M});
             end
             L.operator = M;
@@ -31,9 +39,8 @@ classdef linop
         end
         
         function d = get.blockDiffOrders(L)
-            [m,n] = size(L);
+            [m, n] = size(L);
             d = zeros(m,n);
-
             for i = 1:m
                 for j = 1:n
                     block = L.operator.blocks{i,j};
@@ -47,41 +54,38 @@ classdef linop
         function varargout = size(L)
             [varargout{1:nargout}] = size(L.operator);
         end
-
-        
-        function L = addbc(L, varargin)
-            L.constraint = append(L.constraint, varargin{:});
-        end
         
         function L = bc(L, c)
+            %BC  Set linop constraints (overwrite existing).
             validateattributes(c, {'linopConstraint'})
             L.constraint = c;
         end
         
-        function L = addlbc(L, op, value)      
-            if ( nargin < 3 )
-                value = 0;
-            end
-            d = L.operator.domain;
+        function L = addbc(L, varargin)
+            %ADDBC  Append to linop constraints (keep existing).
+            L.constraint = append(L.constraint, varargin{:});
+        end
+        
+        function L = addlbc(L, op, varargin)
+            %ADDLBC  Append to linop constraints (left BC)
+            d = L.domain;
             E = linop.feval(d(1), d);
-            L = addbc(L, E*op, value);
+            L = addbc(L, E*op, varargin{:});
         end
         
-        function L = addrbc(L, op, value)
-            if ( nargin < 3 )
-                value = 0;
-            end
-            d = L.operator.domain;
+        function L = addrbc(L, op, varargin)
+            %ADDRBC  Append to linop constraints (right BC)
+            d = L.domain;
             E = linop.feval(d(end), d);
-            L = addbc(L, E*op, value);          
+            L = addbc(L, E*op, varargin{:});
         end
         
-        function u = mldivide(L, f)
-            u = linsolve(L, f, @colloc2);
+        function u = mldivide(L, f, varargin)
+            u = linsolve(L, f, varargin{:});
         end
-         
+        
     end
-
+    
     % These are provided as more convenient names than the linBlock equivalents.
     methods (Static)
         function D = diff(varargin)
@@ -97,7 +101,7 @@ classdef linop
         end
         
         function Z = zeros(varargin)
-             Z = linBlock.zeros(varargin{:});
+            Z = linBlock.zeros(varargin{:});
         end
         
         function U = mult(varargin)
@@ -123,11 +127,11 @@ classdef linop
         function F = inner(varargin)
             F = linBlock.inner(varargin{:});
         end
-
+        
         function F = dot(varargin)   % synonym for inner()
             F = linBlock.dot(varargin{:});
         end
-
+        
     end
-           
+    
 end

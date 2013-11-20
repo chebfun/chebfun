@@ -27,12 +27,22 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         end
         
         % Construct a single matrix based on DIM-dimensional blocks.
-        function A = discretize(L,disc)
-            disc.domain = L.domain;
-            A = cell(size(L));
-            for i = 1:numel(A)
-                A{i} = matrix(disc,L.blocks{i});
+        function A = discretize(L, disc)
+            if ( isnumeric(disc) )
+                dim = disc;
+                % TODO: Choose a proper default disc.
+                disc = colloc2(L);
+                disc.dimension = dim;
             end
+            disc.domain = L.domain;
+            if ( numel(disc.dimension) == 1 )
+                disc.dimension = repmat(disc.dimension, 1, numel(disc.domain)-1);
+            end
+%             A = cell(size(L));
+%             for i = 1:numel(A)
+%                 A{i} = matrix(disc,L.blocks{i});
+%             end
+            A = matrix(disc);
         end
         
         function k = numbc(L)

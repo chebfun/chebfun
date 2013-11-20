@@ -5,7 +5,9 @@ if ( nargin < 4 )
     outputSpace = diffOrder;
 end
 
-dummy = blockUS(dim, dom);
+dummy = ultraS([]);
+dummy.domain = dom;
+dummy.dimension = dim;
 c = fliplr(c);
 
 L = 0*speye(sum(dim));

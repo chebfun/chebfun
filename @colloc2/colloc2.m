@@ -12,6 +12,7 @@ classdef colloc2 < linopDiscretization
             else
                 disc.source = source;  % block
             end
+            disc.domain = source.domain;
         end
          
         % Specific to blockDiscretization
@@ -128,6 +129,11 @@ classdef colloc2 < linopDiscretization
             if isa(f,'chebfun'), f = chebmatrix({f}); end
             disc.source = f;
             row = discretize(disc);
+            if ( ~iscell(row) )
+                row = {row};
+            end
+            row = disc.reproject(row);
+            
             b = cell2mat(row);
             L = disc.linop;
             if ~isempty(L.constraint)
@@ -136,6 +142,16 @@ classdef colloc2 < linopDiscretization
             if ~isempty(L.continuity)
                 b = [ L.continuity.values; b ];
             end
+        end
+        
+    end
+    
+    methods ( Static )
+            
+        function [isDone, epsLevel] = testConvergence(v)
+            % TODO: (for breakpoints and systems)
+            f = chebtech2(v);
+            [isDone, epsLevel] = strictCheck(f, 1e-10);
         end
         
     end
