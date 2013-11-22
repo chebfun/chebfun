@@ -6,7 +6,7 @@ if nargin < 3
 end
 
 % NUMVARS indicate how many unknown function we seek.
-numVars = nargin(N) - 1;
+numVars = max(nargin(N) - 1, 1);
 
 % Store the domain we're working with.
 dom = N.domain;
@@ -52,6 +52,8 @@ if ( all(isLinear) )
     u = L\(rhs - residual);
     
     % TODO: Return residual as well?
+    uBlocks = u.blocks;
+    info.error = norm(feval(N.op, x , uBlocks{:}) - rhs);
 else
     % Call solver method for nonlinear problems.
     % TODO: Swith between residual and error oriented Newton methods
@@ -63,5 +65,8 @@ end
 if ( all(size(u) == [1 1]) )
     u = u{1};
 end
+
+% Return the linearity information as well
+info.isLinear = isLinear;
 
 end

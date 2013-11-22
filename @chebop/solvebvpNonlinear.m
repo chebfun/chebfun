@@ -215,7 +215,7 @@ N.displayInfoFinal(u, delta, newtonCounter, errEstDE, errEstBC, displayFig, ...
 
 % Return useful information in the INFO structure
 info.normDelta = normDeltaVec(1:newtonCounter);
-
+info.error = errEst;
 end
 
 function out = mynorm(f,type)

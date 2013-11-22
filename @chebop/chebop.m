@@ -28,6 +28,11 @@ classdef (InferiorClasses = {?double}) chebop
             N.op = op;
             N.domain = dom;
             
+            % Assign BCs if they were passed
+            if ( nargin >= 3 )
+                N.bc = bcIn;
+            end
+            
         end
         
         function u = mldivide(N, rhs)
