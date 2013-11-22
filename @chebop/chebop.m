@@ -14,7 +14,7 @@ classdef (InferiorClasses = {?double}) chebop
     
     methods
         
-        function N = chebop(op, dom)
+        function N = chebop(op, dom, bcIn)
             if ( nargin == 0 )
                 return
             end
