@@ -26,6 +26,10 @@ switch prop
         % Access the vscale of F.onefun when F.onefun is a singfun:
         out = get(f.onefun, prop);
         
+    case {'epslevel'}
+        % Access the epslevel of F.onefun when F.onefun is a singfun:
+        out = get(f.onefun, prop);
+        
     case {'lval', 'rval'}
         % Get the values at a or b (where f.domain = [a, b]):
         out = get(f.onefun, prop);
