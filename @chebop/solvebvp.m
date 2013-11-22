@@ -1,4 +1,4 @@
-function [u, info] = solvebvp(N, rhs, pref)
+function [u, info] = solvebvp(N, rhs, pref, displayFunction)
 
 % No preferences passed, use the current chebopprefs
 if nargin < 3
