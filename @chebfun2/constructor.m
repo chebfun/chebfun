@@ -104,9 +104,6 @@ while ( ~isHappy )
             rowValues = evaluate(op, xx, yy, vectorize);
         end
         
-        norm(rowValues)
-        norm(colValues)
-        
         nn = numel(pivotValue);
 
         % ACA on selected Pivots.
@@ -115,13 +112,6 @@ while ( ~isHappy )
             rowValues(kk+1:end, :) = rowValues(kk+1:end, :) - colValues(PP(kk+1:nn, 1), kk)*(rowValues(kk, :)./pivotValue(kk));           
         end
 
-%         for kk=1:nn-1
-%             selx = PP(kk+1:nn,1);
-%             sely = PP(kk+1:nn,2);
-%             colValues(:,kk+1:end) = colValues(:,kk+1:end) - colValues(:,kk)*(rowValues(kk,sely)./pivotValue(kk));
-%             rowValues(kk+1:end,:) = rowValues(kk+1:end,:) - colValues(selx,kk)*(rowValues(kk,:)./pivotValue(kk));
-%         end
-        
         % Are the columns and rows resolved now?
         if ( ~resolvedCols )
             colChebtech = chebtech2(sum(colValues,2));
@@ -154,8 +144,8 @@ end
 
 % Construct a CHEBFUN2:
 g.pivotValues = pivotValue;
-g.cols = chebtech2(colValues);
-g.rows = chebtech2(rowValues.');
+g.cols = simplify(chebtech2(colValues));
+g.rows = simplify(chebtech2(rowValues.'));
 
 end
 
