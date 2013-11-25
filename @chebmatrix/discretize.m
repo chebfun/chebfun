@@ -1,19 +1,17 @@
-function A = discretize(L, disc)
+function A = discretize(L, varargin)
 
 % Construct a single matrix based on DIM-dimensional blocks.
 
-if ( isnumeric(disc) )
-    dim = disc;
-    % TODO: Choose a proper default disc.
-    disc = colloc2(L);
-    disc.dimension = dim;
+if isa(varargin{1},'blockDiscretization')
+    dsc = varargin{1};
+else
+    dsc = L.discretizationType( varargin{:} );
 end
 
-disc.domain = L.domain;
-if ( numel(disc.dimension) == 1 )
-    disc.dimension = repmat(disc.dimension, 1, numel(disc.domain)-1);
-end
+% The chebmatrix domain overrides that in the given discretization object, if
+% any.
+dsc.domain = L.domain;
 
-A = discretize(disc);
+A = cellfun(@(x) matrix(dsc,x),A.blocks,'uniform',false);
 
 end

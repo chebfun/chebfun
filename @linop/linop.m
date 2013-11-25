@@ -70,6 +70,11 @@ classdef linop < chebmatrix
             u = linsolve(L, f, varargin{:});
         end
         
+        function A = matrix(L,varargin)
+            dsc = L.discretizationType(L,varargin{:});
+            A = matrix(dsc);
+        end
+        
     end
     
     % These are provided as more convenient names than the linBlock equivalents.

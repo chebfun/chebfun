@@ -1,11 +1,20 @@
-classdef (Abstract) blockDiscretization 
+classdef (Abstract) chebDiscretization 
     
     properties
+        domain = []
         dimension = []
         source = []
     end
         
+    properties (Dependent)
+        numIntervals
+    end
+
     methods
+        function n = get.numIntervals(disc)
+            n = length(disc.domain) - 1;
+        end        
+
         function t = isempty(disc)
             t = isempty(disc.source);
         end
@@ -13,10 +22,10 @@ classdef (Abstract) blockDiscretization
     end
         
     methods (Abstract)
-        %[x,w] = points(disc)   % appropriate?
         values = toValues(disc,f)
         f = toFunction(disc,values)
-        A = discretize(disc,dimension)
+        A = matrix(disc,varargin)
+        b = rhs(disc,f,varargin)
     end
     
 end
