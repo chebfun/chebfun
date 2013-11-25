@@ -20,6 +20,9 @@ B2 = [linop.sum(dom), El];
 L = addbc(L,B1,0);
 L = addbc(L,B2,1);
 
+
+%%
+
 types = {@colloc2,  @ultraS};
 
 for k = 1:2

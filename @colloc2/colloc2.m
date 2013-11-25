@@ -1,20 +1,20 @@
-classdef colloc2 < linopDiscretization
+classdef colloc2 < linopDiscretization & blockDiscretization
      
     methods
         function disc = colloc2(source)
             if isempty(source)
                 return
             end
-
-            % Decide which kind of object we're discretizing:
+            disc.source = source; 
+            disc.domain = source.domain;
             if isa(source,'linop')
                 disc.linop = source;
-            else
-                disc.source = source;  % block
             end
-            disc.domain = source.domain;
         end
          
+    end
+    
+    methods
         % Specific to blockDiscretization
         D = diff(A, m)
         C = cumsum(A, m)
@@ -79,7 +79,7 @@ classdef colloc2 < linopDiscretization
             validate(disc);
             
             if isa(A,'chebmatrix')
-                % Evaluate recursively, block by block:
+                % Evaluate block by block:
                 L = cellfun(@(x) blockDiscretize(disc,x),A.blocks,'uniform',false);
             else
                 L = blockDiscretize(disc,A);
@@ -92,7 +92,10 @@ classdef colloc2 < linopDiscretization
             end
             f = chebfun(values, disc.domain);
         end
-               
+        
+    end
+    
+    methods               
         % Specific to linopDiscretization        
         function [A,P,B] = matrix(disc)
             if isempty(disc.linop)
@@ -100,7 +103,7 @@ classdef colloc2 < linopDiscretization
                 return
             end
             L = disc.linop;
-            disc.source = L.operator;
+            disc.source = L;
             blocks = discretize(disc);
             [rows,P] = disc.reproject(blocks);
             P = blkdiag(P{:});
@@ -148,11 +151,11 @@ classdef colloc2 < linopDiscretization
     
     methods ( Static )
             
-        function [isDone, epsLevel] = testConvergence(v)
-            % TODO: (for breakpoints and systems)
-            f = chebtech2(v);
-            [isDone, epsLevel] = strictCheck(f, 1e-10);
-        end
+%        function [isDone, epsLevel] = testConvergence(v)
+%           % TODO: (for breakpoints and systems)
+%           f = chebtech2(v);
+%           [isDone, epsLevel] = strictCheck(f, 1e-10);  % won't work (conditioning)
+%        end
         
     end
     

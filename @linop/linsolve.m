@@ -2,10 +2,10 @@ function [u, disc] = linsolve(L, f, discType)
 
 if ( nargin < 3 )
     % TODO: Get from a (global?) preference?
-    discType = L.discretization;
+    discType = L.discretizer;
 end
 
-[rowSize, colSize] = blockSizes(L.operator);
+[rowSize, colSize] = blockSizes(L);
 isFunVariable = isinf(colSize(1, :));
 
 %% Set up the discretisation:

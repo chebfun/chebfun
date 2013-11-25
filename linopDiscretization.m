@@ -1,7 +1,12 @@
-classdef (Abstract) linopDiscretization < blockDiscretization
+classdef (Abstract) linopDiscretization 
     
     properties
+        domain
         linop
+    end
+    
+    properties (Dependent)
+        numIntervals
     end
     
     methods (Abstract)
@@ -10,6 +15,11 @@ classdef (Abstract) linopDiscretization < blockDiscretization
     end
     
     methods
+
+        function n = get.numIntervals(disc)
+            n = length(disc.domain) - 1;
+        end        
+
         
         function [isDone,epsLevel] = testConvergence(disc,values)
             
@@ -71,7 +81,7 @@ classdef (Abstract) linopDiscretization < blockDiscretization
         function disc = deriveContinuity(disc)
             % Find automatic smoothness constraints at domain breakpoints.
             L = disc.linop;
-            d = L.blockDiffOrders;
+            d = L.diffOrder;
             d = max(d,[],1);
             dom = disc.domain;
             

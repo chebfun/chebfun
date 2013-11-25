@@ -1,15 +1,12 @@
-classdef linop
+classdef linop < chebmatrix
     
     properties
-        operator                        % chebmatrix
         constraint = linopConstraint()
         continuity = linopConstraint()
-        discretization = @colloc2;      % Obtain default from (global?) pref?
+        discretizer = @colloc2;      % Obtain default from (global?) pref?
     end
     
     properties (Dependent)
-        domain
-        blockDiffOrders
         sizeReduction
     end
     
@@ -17,44 +14,33 @@ classdef linop
         function L = linop(M)
             %LINOP   Linop constructor.
             %   Linops are typically onstructed from a LINBLOCK or a CHEBMATRIX.
+                
+            % TODO: Better argument checking
+            L = L@chebmatrix(M);
             
-            if ( isa(M, 'linop') )
-                L = M;
-                return
-            end
-            
-            if ( ~isa(M, 'chebmatrix') )
-                % TODO: check size, inputs (at chebmatrix level);
-                M = chebmatrix({M});
-            end
-            L.operator = M;
-        end
+         end
         
         function s = get.sizeReduction(L)
             s = getDownsampling(L);
         end
         
-        function d = get.domain(L)
-            d = L.operator.domain;
-        end
-        
-        function d = get.blockDiffOrders(L)
-            [m, n] = size(L);
-            d = zeros(m,n);
-            for i = 1:m
-                for j = 1:n
-                    block = L.operator.blocks{i,j};
-                    if isa(block,'linBlock')
-                        d(i,j) = block.diffOrder;
-                    end
-                end
-            end
-        end
-        
-        function varargout = size(L)
-            [varargout{1:nargout}] = size(L.operator);
-        end
-        
+%         function d = get.blockDiffOrders(L)
+%             [m, n] = size(L);
+%             d = zeros(m,n);
+%             for i = 1:m
+%                 for j = 1:n
+%                     block = L.operator.blocks{i,j};
+%                     if isa(block,'linBlock')
+%                         d(i,j) = block.diffOrder;
+%                     end
+%                 end
+%             end
+%         end
+%         
+%         function varargout = size(L)
+%             [varargout{1:nargout}] = size(L.operator);
+%         end
+%         
         function L = bc(L, c)
             %BC  Set linop constraints (overwrite existing).
             validateattributes(c, {'linopConstraint'})

@@ -4,20 +4,29 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
     properties
         blocks = {};
         
-        % The chebmatrix domain may contain breakpoints that no individual
-        % block uses, because it merges the breakpoints.
+        discretizationType = linBlock.defaultDiscretization;        
+    end
+    
+    properties (Dependent)
         domain
-        
-        discretizationType = linBlock.defaultDiscretization;
-        
+        diffOrder
     end
     
     methods
         
         % Constructor.
-        function A = chebmatrix(blocks)
-            A.domain = chebmatrix.mergeDomains(blocks);
-            A.blocks = blocks;
+        function A = chebmatrix(data)
+            if isa(data,'chebmatrix')
+                A.blocks = data.blocks;
+            elseif isa(data,'chebfun') || isa(data,'linBlock')
+                A.blocks = {data};
+            elseif iscell(data)
+                A.blocks = data;
+            end
+        end
+        
+        function d = get.domain(L)
+            d = chebmatrix.mergeDomains(L.blocks); 
         end
         
         function d = getDomain(L)
@@ -25,6 +34,10 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             % the chebmatrix L.
             d = L.domain;
         end       
+        
+        function d = get.diffOrder(L)
+            d = getDiffOrder(L);
+        end
         
         function k = numbc(L)
             % NUMBC(L) returns the number of constraints attached to L.
