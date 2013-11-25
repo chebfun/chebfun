@@ -1,5 +1,10 @@
 classdef (Abstract) chebDiscretization 
     
+    % Objects of this class store a source (either a linBlock or a linop),
+    % domain, and discretization dimension. Calling the matrix() method causes
+    % the source to be discretized at the relevant parameters. In the linop
+    % case, this includes the imposition of any side and continuity conditions. 
+    
     properties
         domain = []
         dimension = []

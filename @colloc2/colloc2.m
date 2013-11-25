@@ -93,33 +93,35 @@ classdef colloc2 < chebDiscretization
                     dsc.domain = domain;
                 end
             end
-            if isa(dsc.source,'linop')
-                [varargout{1:nargout}] = linopMatrix(dsc);
-            elseif isa(dsc.source,'linBlock')
-                [varargout{1:nargout}] = blockMatrix(dsc);
+            L = dsc.source;
+            if isa(L,'chebmatrix')
+                A = cellfun(@(x) blockMatrix(dsc,x),L.blocks,'uniform',false);
+                out{1} = A;
+                if isa(L,'linop')
+                    [out{1:3}] = toLinop(dsc,A);
+                end
+                m = max(1,nargout);
+                varargout(1:m) = out(1:m);
             else
-                error('')
+                [varargout{1:nargout}] = blockMatrix(dsc);
             end
         end
             
-        function [A,P,B] = linopMatrix(disc)
+        function [A,P,B] = toLinop(disc,blocks)
             L = disc.source;
-            % Make sure we dispatch the chebmatrix/matrix method.
-            C = chebmatrix(L.blocks);
-            blocks = matrix(C,disc.dimension,disc.domain);
             
             [rows,P] = disc.reproject(blocks);
             P = blkdiag(P{:});
 
             B = [];
             if ~isempty(L.constraint)
-                C = L.constraint.operator;
-                constr = matrix(C,disc.dimension,disc.domain);
+                disc.source = L.constraint.operator;
+                constr = matrix(disc);
                 B = [ cell2mat(constr); B ];
             end
             if ~isempty(L.continuity)
-                C = L.continuity.operator;
-                constr = matrix(C,disc.dimension,disc.domain);
+                disc.source = L.continuity.operator;
+                constr = matrix(disc);
                 B = [ cell2mat(constr); B ];
             end
             A = cell2mat(rows);
@@ -127,9 +129,22 @@ classdef colloc2 < chebDiscretization
 
         end
         
-        function A = blockMatrix(dsc)
-            A = dsc.source.stack( dsc );
+        function A = blockMatrix(disc,item)
+            if isa(item,'linBlock')
+                disc.source = item;
+                A = disc.source.stack( disc );
+            elseif isa(item,'chebfun')
+                A = disc.toValues(item);
+                if ( item.isTransposed )
+                    A = A.';
+                end
+            elseif isnumeric(item)
+                A = item;
+            else
+                error('Unrecognized block type.')
+            end
         end
+        
         
         function [v,disc] = mldivide(disc,A,b)
             v = A\b;
@@ -141,10 +156,10 @@ classdef colloc2 < chebDiscretization
             end
             % NONONO
             if isa(f,'chebfun'), f = chebmatrix({f}); end
-            row = matrix(f,disc.dimension,disc.domain);
-            if ( ~iscell(row) )
-                row = {row};
-            end
+            row = cellfun(@(x) blockMatrix(disc,x),f.blocks,'uniform',false);
+%             if ( ~iscell(row) )
+%                 row = {row};
+%             end
             row = disc.reproject(row);
             
             b = cell2mat(row);
