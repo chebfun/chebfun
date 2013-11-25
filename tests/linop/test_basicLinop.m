@@ -29,16 +29,16 @@ for k = 1:2
     
     u = mldivide(L, f, types{k});
     
-    %%
+    %
 %     plot(u{1},'b'); hold on
 %     plot(u{2},'r'); hold off, shg
     
-    %%
+    %
     % check the ODEs
     err(k, 1) = norm( diff(u{1})-u{2} - f{1} );
     err(k, 2) = norm( u{1} + diff(u{2}) );
     
-    %%
+    %
     % check the BCs
     v = u{2};  u = u{1};
     err(k,3) = abs( u(-2)-v(2) );

@@ -130,6 +130,9 @@ classdef colloc2 < chebDiscretization
         end
         
         function A = blockMatrix(disc,item)
+            if ( nargin < 2 )
+                item = disc.source;
+            end
             if isa(item,'linBlock')
                 disc.source = item;
                 A = disc.source.stack( disc );
@@ -147,7 +150,9 @@ classdef colloc2 < chebDiscretization
         
         
         function [v,disc] = mldivide(disc,A,b)
-            v = A\b;
+            s = 1./ max(1, max(abs(A),[],2) );
+            A = bsxfun(@times,s,A);
+            v = A \ (s.*b);
         end
         
         function b = rhs(disc,f)

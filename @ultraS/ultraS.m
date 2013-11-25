@@ -1,11 +1,11 @@
-classdef ultraS < linopDiscretization
+classdef ultraS < chebDiscretization
     properties
         coeffs
         outputSpace
     end
     
     methods
-        function disc = ultraS(source)
+        function disc = ultraS(source,dimension,domain)
             %ULTRAS constructor.
             
             if ( nargin == 0 || isempty(source) )
@@ -13,12 +13,19 @@ classdef ultraS < linopDiscretization
                 return
             end
             
-            % Decide which kind of object we're discretizing:
-            if ( isa(source, 'linop') )
-                disc.linop = source;
-            else
-                disc.source = source;
+            if ( nargin > 1 )
+                disc.dimension = dimension;
+                if ( nargin > 2 )
+                    disc.domain = domain;
+                end
             end
+            
+%             % Decide which kind of object we're discretizing:
+%             if ( isa(source, 'linop') )
+%                 disc.linop = source;
+%             else
+                disc.source = source;
+%            end
             
             % Obtain the coeffs and output psace required for this source:
             disc.coeffs = disc.getCoeffs(source);
@@ -37,10 +44,8 @@ classdef ultraS < linopDiscretization
             elseif ( isa(block, 'functionalBlock') )
                 dim = disc.dimension;
                 dom = disc.domain;
-                collocDisc = colloc2(block);
-                collocDisc.dimension = dim;
-                collocDisc.domain = dom;
-                L = discretize(collocDisc);
+                collocDisc = colloc2(block,dim,dom);
+                L = matrix(collocDisc);
                 cumsumDim = [0, cumsum(dim)];
                 numInts = numel(dom) - 1;
                 tmp = cell(1, numInts);
@@ -94,9 +99,17 @@ classdef ultraS < linopDiscretization
             end
         end
         
-        function L = discretize(disc)
+        function L = matrix(disc,dimension,domain)
+            % TODO: error checking on inputs
+            if ( nargin > 1 )
+                disc.dimension = dimension;
+                if ( nargin > 2 )
+                    disc.domain = domain;
+                end
+            end
+            
             A = disc.source;
-            validate(disc);
+%            validate(disc);
             if ( isa(A, 'chebmatrix') )
                 %diffOrder = getDiffOrder(A);  % TODO: not used?
                 c = disc.coeffs;
@@ -109,41 +122,35 @@ classdef ultraS < linopDiscretization
                         L{j,k} = blockDiscretize(disc, A.blocks{j,k});
                     end
                 end
+                if ( isa(A,'linop') )
+                    L = toLinop(disc,L);
+                end
             else
                 disc.coeffs = disc.coeffs{1};
                 L = blockDiscretize(disc, A);
             end
         end
         
-        % Specific to linopDiscretization
-        function A = matrix(disc)
-            if ( isempty(disc.linop) )
-                A = discretize(disc);
-                return
-            end
-            L = disc.linop;
-            disc.source = L.operator;
-            blocks = discretize(disc);
+        function A = toLinop(disc,blocks)
+            L = disc.source;
             rows = disc.reproject(blocks);
             A = cell2mat(rows);
+            dim = disc.dimension;
+            dom = disc.domain;
             if ~isempty(L.constraint)
-                disc2 = ultraS(L.constraint.operator);
-                disc2.domain = disc.domain;
-                disc2.dimension = disc.dimension;
-                constr = discretize(disc2);
+                disc2 = ultraS(L.constraint.operator,dim,dom);
+                constr = matrix(disc2);
                 A = [ cell2mat(constr); A ];
             end
             if ~isempty(L.continuity)
-                disc2 = ultraS(L.continuity.operator);
-                disc2.domain = disc.domain;
-                disc2.dimension = disc.dimension;
-                constr = discretize(disc2);
+                disc2 = ultraS(L.continuity.operator,dim,dom);
+                constr = matrix(disc2);
                 A = [ cell2mat(constr); A ];
             end
         end
         
         function B = reproject(disc, blocks)
-            reduce = disc.linop.sizeReduction;
+            reduce = disc.source.sizeReduction;
             dim = disc.dimension;
             B = cell(size(blocks,1),1);
             for i = 1:size(blocks,1)
@@ -152,6 +159,10 @@ classdef ultraS < linopDiscretization
             end
         end
         
+        function [v,disc] = mldivide(disc,A,b)
+            v = A\b;
+        end
+ 
         function A = resize(disc, A, m)
             dom = disc.domain;
             n = disc.dimension;
@@ -168,14 +179,14 @@ classdef ultraS < linopDiscretization
             if isempty(disc.dimension)
                 error('Discretization dimension not given.')
             end
-            disc.source = f;
-            row = discretize(disc);
+            fdisc = ultraS(f,disc.dimension,disc.domain);
+            row = matrix(fdisc);
             if ~iscell(row)
                 row = {row};
             end
             row = disc.reproject(row);
             b = cell2mat(row);
-            L = disc.linop;
+            L = disc.source;
             if ~isempty(L.constraint)
                 b = [ L.constraint.values; b ];
             end
@@ -256,9 +267,6 @@ classdef ultraS < linopDiscretization
         
         
         function c = getCoeffs(source)
-            if ( isa(source, 'linop') )
-                source = source.operator;
-            end
             if ( isa(source, 'chebmatrix') )
                 c = cell(size(source));
                 for k = 1:numel(c)
@@ -278,9 +286,7 @@ classdef ultraS < linopDiscretization
         end
         
         function outputSpace = getOutputSpace(source)
-            if ( isa(source, 'linop') )
-                diffOrders = getDiffOrder(source.operator);
-            elseif ( isa(source, 'chebmatrix') )
+            if ( isa(source, 'chebmatrix') )
                 diffOrders = getDiffOrder(source);
             else
                 diffOrders = source.diffOrder;
