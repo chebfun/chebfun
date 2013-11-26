@@ -1,6 +1,6 @@
 function M = mult(A, f, lambda)
 
-n = dim(A);
+n = A.dimension;
 d = A.domain;
 f = restrict(f, d);
 numIntervals = length(d)-1;

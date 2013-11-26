@@ -1,5 +1,4 @@
-clc
-clear classes
+function pass = test_basicDiscretization
 
 %% Building blocks
 dom = [-2 2];
@@ -20,10 +19,10 @@ Dexact = [
 ];
 
 %% Collocation discretizations
-zero1 = norm( discretize(I,5) - eye(5) )
-zero2 = norm( discretize(D,5) - Dexact );
-xx = colloc2.points(5,dom);
-zero3 = norm( discretize(U,5) - diag(u(xx)) )
+err(1) = norm( discretize(I,5) - eye(5) );
+err(2) = norm( discretize(D,5) - Dexact );
+xx = chebpts(5, dom);
+err(3) = norm( discretize(U,5) - diag(u(xx)) );
 
 %% Building blocks
 dom = [-2 1 1.5 2];
@@ -35,6 +34,11 @@ u = chebfun('x.^2', dom);
 U = linop.mult(u);   
 
 %% Collocation discretizations
-zero4 = norm( discretize(I,5) - eye(15) )
-xx = blockColloc2.points([5 5 5],dom);
-zero5 = norm( discretize(U,5) - diag(u(xx)) )
+err(4) = norm( discretize(I,5) - eye(15) );
+xx = chebpts([5 5 5],dom);
+err(5) = norm( discretize(U,5) - diag(u(xx)) );
+
+err;
+pass = err < 1e-9;
+
+end

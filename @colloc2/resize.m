@@ -1,5 +1,12 @@
 function [B,P] = resize(disc,A,m,n)
 
+if ( m == n )
+    B = A;
+    P = eye(size(A));
+    return
+end
+        
+
 domain = disc.domain;
 numint = disc.numIntervals;
 P = cell(1,numint);

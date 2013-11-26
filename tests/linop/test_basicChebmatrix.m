@@ -1,6 +1,4 @@
-
-clc
-clear classes
+function pass = test_basicChebmatrix
 
 %% Building blocks
 dom = [-2 -0.5 1 2];
@@ -21,26 +19,33 @@ D5 = [
 
 %%
 A = chebmatrix( {I,Z;D,U} );
-M = discretize(A,5);
+M = matrix(A,[5 5 5]);
+M = cell2mat(M);
 DD = blkdiag(2/1.5*D5,2/1.5*D5,2/1*D5);
-[xx,ww] = blockColloc2.points(5,dom);
+[xx, ww] = chebpts([5 5 5], dom);
 UU = diag(u(xx));
-zero1 = norm( M - [ eye(15), zeros(15); DD, UU ])
+err(1) = norm( M - [ eye(15), zeros(15); DD, UU ]);
 
 %% more complicated chebmatrix
 A = [ I, x, -3*I; 
     linop.sum(dom), 5, linop.feval(dom(end),dom);
     D, chebfun(1,dom), U ];
-M = discretize(A,5);
+M = matrix(A,[5 5 5]);
+M = cell2mat(M);
 MM = [ eye(15), xx, -3*eye(15);  
     ww, 5, [zeros(1,14) 1];
     DD, ones(15,1), UU ];
-zero2 = norm( M - MM )
+
+err(2) = norm( M - MM );
 
 %%
 % application to an appropriate chebmatrix
 v = [ exp(x); pi; cos(x) ];
 Av = A*v;
-zero3 = norm( (v{1} + pi*x -3*v{3}) - Av{1} )
-zero4 = norm( sum(v{1})+5*v{2}+feval(v{3},dom(end)) - Av{2} )
-zero5 = norm( diff(v{1})+pi+(u).*v{3} - Av{3} )
+err(3) = norm( (v{1} + pi*x -3*v{3}) - Av{1} );
+err(4) = norm( sum(v{1})+5*v{2}+feval(v{3},dom(end)) - Av{2} );
+err(5) = norm( diff(v{1})+pi+(u).*v{3} - Av{3} );
+
+pass = err < 1e-14;
+
+end

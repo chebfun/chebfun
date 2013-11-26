@@ -17,7 +17,6 @@ f = chebfun(0, [-1 -.5 1]);
 u = L\f;
 
 
-u = u{1}
 plot(u)
 figure
 chebpolyplot(u);
