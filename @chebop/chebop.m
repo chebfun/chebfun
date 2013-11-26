@@ -112,6 +112,8 @@ classdef (InferiorClasses = {?double}) chebop
         
     methods (Static = true) % These should be private methods as well
         
+        [displayFig, displayTimer] = displayInfo(mode, varargin);
+        
         [displayFig, displayTimer] = displayInfoInit(u,pref);
         
         displayInfoIter(u, delta, iterNo, normdu, cFactor, errEst, lendu, ...

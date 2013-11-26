@@ -35,7 +35,7 @@ dom = N.domain;
 x = chebfun(@(x) x, dom);
 
 % Print info to command window, and/or show plot of progress
-[displayFig, displayTimer] = N.displayInfoInit(u0, pref);
+[displayFig, displayTimer] = N.displayInfo('init', u0, pref);
 
 % Counter for number of Newton steps taken.
 newtonCounter = 0;
@@ -187,7 +187,7 @@ while ( ~terminate )
     normDeltaOld = normDelta;
     
     % Print info to command window, and/or show plot of progress
-    N.displayInfoIter(u, delta, newtonCounter, normDelta, cFactor, ...
+    N.displayInfo('iter', u, delta, newtonCounter, normDelta, cFactor, ...
         length(delta), lambda, length(ub{1}), displayFig, displayTimer, pref)
     
     % TODO: Replace with error estimate -- introduce errorTol in cheboppref
@@ -210,7 +210,7 @@ while ( ~terminate )
 end
 
 % Show final information
-N.displayInfoFinal(u, delta, newtonCounter, errEstDE, errEstBC, displayFig, ...
+N.displayInfo('final', u, delta, newtonCounter, errEstDE, errEstBC, displayFig, ...
     displayTimer, pref)
 
 % Return useful information in the INFO structure
