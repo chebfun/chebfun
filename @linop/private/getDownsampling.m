@@ -1,9 +1,12 @@
 function [reduce,d,dRow,dVar] = getDownsampling(L)
 
 [m,n] = size(L);
-d = L.blockDiffOrders;
+d = L.diffOrder;
 dRow = max(d,[],2);
 dVar = max(d,[],1);
+
+dRow(~dRow) = NaN;
+dVar(~dVar) = NaN;
 
 % This will determine how much is downsampled. 
 numBC = length(L.constraint);
@@ -33,5 +36,7 @@ else
         reduce(incr) = reduce(incr) + 1;
     end
 end
+
+reduce(isnan(reduce)) = 0;
 
 end

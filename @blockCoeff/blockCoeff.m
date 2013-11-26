@@ -14,7 +14,9 @@ classdef blockCoeff
                 % Convert the given linBlock to its function form by
                 % evaluating its stack.
                 L = varargin{1};
-                A = L.stack( blockCoeff([]) );
+                dummy = blockCoeff([]);
+                dummy.domain = L.domain;
+                A = L.stack( dummy );
             else
                 f = varargin{1};
                 if ( ~iscell(f) )
@@ -41,7 +43,10 @@ classdef blockCoeff
                 c{k} = A.coeffs{end}.*c{k};
             end
             % CHECK: Can the coeffs property ever be empty?
-            z = { chebfun(0, A.coeffs{1}.domain) };
+%             z = { chebfun(0, A.coeffs{1}.domain) };
+            if ( numel(A.coeffs) > 1 )
+                z = {0*c{1}};
+            end
             for j = 1:numel(A.coeffs)-1
                 B = diff(B);
                 c = [z, c];
@@ -62,11 +67,13 @@ classdef blockCoeff
                 return
             end
             
-            z = { chebfun(0, A.coeffs{1}.domain) };
+%             z = { chebfun(0, A.coeffs{1}.domain) };
             if ( sA < sB )
+                z = {0*A.coeffs{1}};
                 A.coeffs = [repmat(z, 1, sB-sA), A.coeffs];
                 sA = sB;
             elseif ( sB < sA )
+                z = {0*B.coeffs{1}};
                 B.coeffs = [repmat(z, 1, sA-sB), B.coeffs];
             end
             c = cell(1, sA);

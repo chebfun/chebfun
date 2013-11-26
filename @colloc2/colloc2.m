@@ -1,19 +1,24 @@
-classdef colloc2 < linopDiscretization
+classdef colloc2 < chebDiscretization
      
     methods
-        function disc = colloc2(source)
+        function disc = colloc2(source,dimension,domain)
             if isempty(source)
                 return
             end
+            disc.source = source; 
+            disc.domain = source.domain;
 
-            % Decide which kind of object we're discretizing:
-            if isa(source,'linop')
-                disc.linop = source;
-            else
-                disc.source = source;
+            if nargin > 1
+                disc.dimension = dimension;
+                if nargin > 2
+                    disc.domain = domain;
+                end
             end
         end
          
+    end
+    
+    methods
         % Specific to blockDiscretization
         D = diff(A, m)
         C = cumsum(A, m)
@@ -69,58 +74,101 @@ classdef colloc2 < linopDiscretization
             fx(dxloc) = feval(f, x(dxloc), 'left');
             fx(dxloc+1) = feval(f, x(dxloc), 'right');
         end
-               
-        function L = discretize(disc)
-            A = disc.source;
-            validateParameters(disc);
-            
-            if isa(A,'chebmatrix')
-                % Evaluate recursively, block by block:
-                L = cellfun(@(x) blockDiscretize(disc,x),A.blocks,'uniform',false);
-            else
-                L = blockDiscretize(disc,A);
-            end
-        end
-                        
+                                       
         function f = toFunction(disc,values)
             if ( disc.numIntervals > 1 )
                 values = mat2cell(values,disc.dimension);
             end
             f = chebfun(values, disc.domain);
         end
-               
-        % Specific to linopDiscretization        
-        function A = matrix(disc)
-            if isempty(disc.linop)
-                A = discretize(disc);
-                return
+        
+    end
+    
+    methods
+        
+        function varargout = matrix(dsc,dimension,domain)
+            if nargin > 1
+                dsc.dimension = dimension;
+                if nargin > 2
+                    dsc.domain = domain;
+                end
             end
-            L = disc.linop;
-            disc.source = L.operator;
-            blocks = discretize(disc);
-            rows = disc.reproject(blocks);
-            A = cell2mat(rows);
+            L = dsc.source;
+            if isa(L,'chebmatrix')
+                A = cellfun(@(x) blockMatrix(dsc,x),L.blocks,'uniform',false);
+                out{1} = A;
+                if isa(L,'linop')
+                    [out{1:3}] = toLinop(dsc,A);
+                end
+                m = max(1,nargout);
+                varargout(1:m) = out(1:m);
+            else
+                [varargout{1:nargout}] = blockMatrix(dsc);
+            end
+        end
+            
+        function [A,P,B] = toLinop(disc,blocks)
+            L = disc.source;
+            
+            [rows,P] = disc.reproject(blocks);
+            P = blkdiag(P{:});
+
+            B = [];
             if ~isempty(L.constraint)
                 disc.source = L.constraint.operator;
-                constr = discretize(disc);
-                A = [ cell2mat(constr); A ];
+                constr = matrix(disc);
+                B = [ cell2mat(constr); B ];
             end
             if ~isempty(L.continuity)
                 disc.source = L.continuity.operator;
-                constr = discretize(disc);
-                A = [ cell2mat(constr); A ];
+                constr = matrix(disc);
+                B = [ cell2mat(constr); B ];
             end
+            A = cell2mat(rows);
+            A = [ B; A ];
+
+        end
+        
+        function A = blockMatrix(disc,item)
+            if ( nargin < 2 )
+                item = disc.source;
+            end
+            if isa(item,'linBlock')
+                disc.source = item;
+                A = disc.source.stack( disc );
+            elseif isa(item,'chebfun')
+                A = disc.toValues(item);
+                if ( item.isTransposed )
+                    A = A.';
+                end
+            elseif isnumeric(item)
+                A = item;
+            else
+                error('Unrecognized block type.')
+            end
+        end
+        
+        
+        function [v,disc] = mldivide(disc,A,b)
+            s = 1./ max(1, max(abs(A),[],2) );
+            A = bsxfun(@times,s,A);
+            v = A \ (s.*b);
         end
         
         function b = rhs(disc,f)
             if isempty(disc.dimension)
                 error('Discretization dimension not given.')
             end
-            disc.source = f;
-            row = discretize(disc);
-            row = disc.(row);
+            % NONONO
+            if isa(f,'chebfun'), f = chebmatrix({f}); end
+            row = cellfun(@(x) blockMatrix(disc,x),f.blocks,'uniform',false);
+%             if ( ~iscell(row) )
+%                 row = {row};
+%             end
+            row = disc.reproject(row);
+            
             b = cell2mat(row);
-            L = disc.linop;
+            L = disc.source;
             if ~isempty(L.constraint)
                 b = [ L.constraint.values; b ];
             end
@@ -131,31 +179,32 @@ classdef colloc2 < linopDiscretization
         
     end
     
-    methods (Access=private)
-        function B = reproject(disc,blocks)
-            reduce = disc.linop.sizeReduction;
+    methods ( Access = private )
+        function [B,P] = reproject(disc,blocks)
+            reduce = disc.source.sizeReduction;
             dim = disc.dimension;
             B = cell(size(blocks,1),1);
+            P = cell(size(blocks,1),1);
             for i = 1:size(blocks,1)
                 M = cat(2,blocks{i,:});
-                B{i} = resize(disc,M,dim-reduce(i),dim);
+                [B{i},P{i}] = resize(disc,M,dim-reduce(i),dim);
             end
         end
         
-        function L = blockDiscretize(disc,block)
-            if isa(block,'linBlock')
-                L = block.stack( disc );
-            elseif isa(block,'chebfun')
-                L = disc.toValues(block);
-                if ( block.isTransposed )
-                    L = L.';
-                end
-            elseif isnumeric(block)
-                L = block;
-            else
-                error('Unrecognized block type.')
-            end
-        end
+%         function L = blockDiscretize(disc,block)
+%             if isa(block,'linBlock')
+%                 L = block.stack( disc );
+%             elseif isa(block,'chebfun')
+%                 L = disc.toValues(block);
+%                 if ( block.isTransposed )
+%                     L = L.';
+%                 end
+%             elseif isnumeric(block)
+%                 L = block;
+%             else
+%                 error('Unrecognized block type.')
+%             end
+%         end
        
     end
     

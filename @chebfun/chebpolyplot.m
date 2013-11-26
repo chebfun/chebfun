@@ -50,7 +50,8 @@ e = get(f, 'epslevel-local');
 ve = bsxfun(@times, v, e);
 
 % Add a tiny amount to zeros to make plots look nicer:
-minve = min(ve, [], 1);
+% minve = min(ve, [], 1);
+minve = min(ve, [], 2);
 for k = 1:numfuns
     % Use smaller of min. of (vscale)*(epslevel) and the smallest nonzero coeff.
     c{k}(~c{k}) = min(minve(k), min(c{k}(logical(c{k}(:)))));
