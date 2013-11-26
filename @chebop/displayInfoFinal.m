@@ -10,7 +10,11 @@ plotMode = pref.plotting;
 
 % Do we want to print to the command window?
 if strcmp(display,'iter') || strcmp(display,'final')
-    fprintf('-------------------------------------------------------------------------------\n');
+    % Create a long string of dashes...
+    dashString = repmat('-',1,62);
+    % ... and print to the command window
+    fprintf('%s\n', dashString);
+    
     if iterNo == 1
         fprintf('Newton''s method converged in 1 iteration\n');
     else

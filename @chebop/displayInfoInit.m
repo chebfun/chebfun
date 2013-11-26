@@ -5,7 +5,6 @@ function [displayFig, displayTimer] = displayInfoInit(u, pref)
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % Obtain preferences for what we want to show
-damped   = pref.damped;
 display  = pref.display;
 plotMode = pref.plotting;
 
@@ -13,12 +12,16 @@ plotMode = pref.plotting;
 if ( strcmpi(display, 'iter') )
     
     % Show info depending on whether we are running in damped mode or not
-    initString = ['Iter.   || du ||   Contra.fact.   ||u-u*||   ', ...
+    initString = ['Iter.   || du ||   Contra.fact.   ', ...
             'stepsize   len(du)   len(u)'];
 
     % Print to the command window
     fprintf(initString);
-    fprintf('\n-------------------------------------------------------------------------------\n');
+
+    % Create a long string of dashes...
+    dashString = repmat('-',1,62);
+    % ... and print to the command window
+    fprintf('\n%s\n', dashString);
     
 end
 
