@@ -1,8 +1,12 @@
-function [u, info] = solvebvp(N, rhs, pref, displayFunction)
+function [u, info] = solvebvp(N, rhs, pref, displayInfo)
 
 % No preferences passed, use the current chebopprefs
 if nargin < 3
     pref = cheboppref;
+end
+
+if nargin < 4
+    displayInfo = @N.displayInfo;
 end
 
 % NUMVARS indicate how many unknown function we seek.
@@ -57,7 +61,7 @@ if ( all(isLinear) )
 else
     % Call solver method for nonlinear problems.
     % TODO: Swith between residual and error oriented Newton methods
-    [u, info] = solvebvpNonlinear(N, rhs, L, u0, residual, pref);
+    [u, info] = solvebvpNonlinear(N, rhs, L, u0, residual, pref, displayInfo);
 end
 
 % If we were solving a scalar problem, return a chebfun rather than a

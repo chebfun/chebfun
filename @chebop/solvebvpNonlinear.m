@@ -1,4 +1,4 @@
-function [u, info] = solvebvpNonlinear(N, rhs, L, u0, res, pref)
+function [u, info] = solvebvpNonlinear(N, rhs, L, u0, res, pref, displayInfo)
 % Solve a nonlinear BVP, using damped Newton iteration in function space.
 % Here
 %   N:      Nonlinear chebop
@@ -35,7 +35,7 @@ dom = N.domain;
 x = chebfun(@(x) x, dom);
 
 % Print info to command window, and/or show plot of progress
-[displayFig, displayTimer] = N.displayInfo('init', u0, pref);
+[displayFig, displayTimer] = displayInfo('init', u0, pref);
 
 % Counter for number of Newton steps taken.
 newtonCounter = 0;
@@ -187,7 +187,7 @@ while ( ~terminate )
     normDeltaOld = normDelta;
     
     % Print info to command window, and/or show plot of progress
-    N.displayInfo('iter', u, delta, newtonCounter, normDelta, cFactor, ...
+    displayInfo('iter', u, delta, newtonCounter, normDelta, cFactor, ...
         length(delta), lambda, length(ub{1}), displayFig, displayTimer, pref)
     
     % TODO: Replace with error estimate -- introduce errorTol in cheboppref
@@ -210,7 +210,7 @@ while ( ~terminate )
 end
 
 % Show final information
-N.displayInfo('final', u, delta, newtonCounter, errEstDE, errEstBC, displayFig, ...
+displayInfo('final', u, delta, newtonCounter, errEstDE, errEstBC, displayFig, ...
     displayTimer, pref)
 
 % Return useful information in the INFO structure
