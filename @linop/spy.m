@@ -1,6 +1,6 @@
 function spy(L, dim, dom, varargin)
 
-disc = L.discretization(L);
+disc = L.discretizer(L);
 if ( nargin < 3 )
     dom = L.domain;
 end

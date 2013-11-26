@@ -111,7 +111,6 @@ classdef ultraS < chebDiscretization
             A = disc.source;
 %            validate(disc);
             if ( isa(A, 'chebmatrix') )
-                %diffOrder = getDiffOrder(A);  % TODO: not used?
                 c = disc.coeffs;
                 outputSpaces = disc.outputSpace;
                 L = cell(size(A));
@@ -180,6 +179,7 @@ classdef ultraS < chebDiscretization
                 error('Discretization dimension not given.')
             end
             fdisc = ultraS(f,disc.dimension,disc.domain);
+            fdisc.outputSpace = disc.outputSpace;
             row = matrix(fdisc);
             if ~iscell(row)
                 row = {row};
