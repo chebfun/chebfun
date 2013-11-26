@@ -1,0 +1,36 @@
+classdef (Abstract) chebDiscretization 
+    
+    % Objects of this class store a source (either a linBlock or a linop),
+    % domain, and discretization dimension. Calling the matrix() method causes
+    % the source to be discretized at the relevant parameters. In the linop
+    % case, this includes the imposition of any side and continuity conditions. 
+    
+    properties
+        domain = []
+        dimension = []
+        source = []
+    end
+        
+    properties (Dependent)
+        numIntervals
+    end
+
+    methods
+        function n = get.numIntervals(disc)
+            n = length(disc.domain) - 1;
+        end        
+
+        function t = isempty(disc)
+            t = isempty(disc.source);
+        end
+        
+    end
+        
+    methods (Abstract)
+        values = toValues(disc,f)
+        f = toFunction(disc,values)
+        A = matrix(disc,varargin)
+        b = rhs(disc,f,varargin)
+    end
+    
+end

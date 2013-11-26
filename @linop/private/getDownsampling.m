@@ -1,7 +1,7 @@
 function [reduce,d,dRow,dVar] = getDownsampling(L)
 
 [m,n] = size(L);
-d = L.blockDiffOrders;
+d = L.diffOrder;
 dRow = max(d,[],2);
 dVar = max(d,[],1);
 
