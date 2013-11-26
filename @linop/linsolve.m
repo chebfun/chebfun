@@ -85,13 +85,8 @@ for k = find( isFunVariable )
 %     u{k} = simplify(u{k}, epsLevel);
 end
 
-if ( numel(u) > 1)
-    % Conver the cell array to a CHEBMATRIX:
-    u = chebmatrix(u);
-else
-    % Output a CHEBFUN for scalar equations:
-    u = u{1};
-end
+% Convert to chebmatrix
+u = chebmatrix(u);
 
 end
 
