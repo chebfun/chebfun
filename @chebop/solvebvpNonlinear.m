@@ -188,7 +188,7 @@ while ( ~terminate )
     
     % Print info to command window, and/or show plot of progress
     displayInfo('iter', u, delta, newtonCounter, normDelta, cFactor, ...
-        length(delta), lambda, length(ub{1}), displayFig, displayTimer, pref)
+        length(delta{1}), lambda, length(ub{1}), displayFig, displayTimer, pref)
     
     % TODO: Replace with error estimate -- introduce errorTol in cheboppref
 %     errEst = normDelta; % .5*(errEstDE + errEstBC)
