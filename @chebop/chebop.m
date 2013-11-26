@@ -14,7 +14,7 @@ classdef (InferiorClasses = {?double}) chebop
     
     methods
         
-        function N = chebop(op, dom, bcIn)
+        function N = chebop(op, dom, bcIn, init)
             if ( nargin == 0 )
                 return
             end
@@ -31,6 +31,10 @@ classdef (InferiorClasses = {?double}) chebop
             % Assign BCs if they were passed
             if ( nargin >= 3 )
                 N.bc = bcIn;
+            end
+            
+            if ( nargin >= 4 )
+                N.init = init;
             end
             
         end

@@ -57,7 +57,15 @@ if ( all(isLinear) )
     
     % TODO: Return residual as well?
     uBlocks = u.blocks;
-    info.error = norm(feval(N.op, x , uBlocks{:}) - rhs);
+    % TODO: Probably want a norm method for chebmatrices. THIS WILL BREAK IN
+    % CASE OF SYSTEMS.
+    err = feval(N.op, x , uBlocks{:}) - rhs;
+    if isa(err, 'chebmatrix')
+        err = err.blocks;
+        info.error = norm(norm(err{:}));
+    else
+        info.error = norm(err);
+    end
 else
     % Call solver method for nonlinear problems.
     % TODO: Swith between residual and error oriented Newton methods
