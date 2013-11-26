@@ -18,7 +18,7 @@ errEstDE = NaN;
 errEstBC = .5678;
 % Store preferences used in the Newton iteration in separate variables
 maxIter  = pref.maxIter;
-discType = pref.discretization;
+discType = pref.discretizationType;
 delTol   = pref.deltol;
 % Did the user request damped or undamped Newton iteration?
 damped = pref.damped;
@@ -187,8 +187,8 @@ while ( ~terminate )
     normDeltaOld = normDelta;
     
     % Print info to command window, and/or show plot of progress
-    N.displayInfoIter(u, delta, newtonCounter, normDelta, cFactor, errEstDE, ...
-        length(delta{1}), lambda, length(ub{1}), displayFig, displayTimer, pref)
+    N.displayInfoIter(u, delta, newtonCounter, normDelta, cFactor, ...
+        length(delta), lambda, length(ub{1}), displayFig, displayTimer, pref)
     
     % TODO: Replace with error estimate -- introduce errorTol in cheboppref
 %     errEst = normDelta; % .5*(errEstDE + errEstBC)
@@ -205,7 +205,7 @@ while ( ~terminate )
         res = res - rhs;
         
         % Assign the preferred discretisation method to the linop.
-        L.discretization = discType;
+        L.discretizationType = discType;
     end
 end
 

@@ -123,5 +123,5 @@ prefs.deltol = 1e-9;
 prefs.damped = 1;
 prefs.maxIter = 25;
 prefs.maxstagnation = 5;
-prefs.discretization = @colloc2;
+prefs.discretizationType = @colloc2;
 prefs.lambdaMin = 1e-8;

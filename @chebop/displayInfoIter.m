@@ -1,4 +1,4 @@
-function displayInfoIter(u, delta, iterNo, normDelta, cFactor, errEst, lenDelta, lambda, lenu, displayFig, displayTimer, pref)
+function displayInfoIter(u, delta, iterNo, normDelta, cFactor, lenDelta, lambda, lenu, displayFig, displayTimer, pref)
 % Utility routine for displaying iteration progress in the solve functions.
 
 % Copyright 2011 by The University of Oxford and The Chebfun Developers.
@@ -14,11 +14,11 @@ if ( strcmpi(display,'iter') )
     % Create a string with information about the convergence. Want a slightly
     % neater output if we are taking a full step.
     if ( lambda == 1 )
-        iterString = sprintf(' %2.2d %12.2e %12.2e %12.2e %9.4f %7i %9i ', ...
-            iterNo, normDelta, cFactor, errEst, lambda, lenDelta, lenu);        
+        iterString = sprintf(' %2.2d %12.2e %12.2e %11.4f %7i %9i ', ...
+            iterNo, normDelta, cFactor, lambda, lenDelta, lenu);        
     else
-        iterString = sprintf(' %2.2d %12.2e %12.2e %12.2e %10.2e %6i %9i ', ...
-            iterNo, normDelta, cFactor, errEst, lambda, lenDelta, lenu);
+        iterString = sprintf(' %2.2d %12.2e %12.2e %12.2e %6i %9i ', ...
+            iterNo, normDelta, cFactor, lambda, lenDelta, lenu);
     end
     
     % Print to the command window
