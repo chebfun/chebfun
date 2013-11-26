@@ -221,6 +221,13 @@ classdef ultraS < chebDiscretization
             
         end
         
+%         function [isDone, epsLevel] = testConvergence(disc,v)
+%             % Test convergence on a single interval:
+%             v = full(v);
+%             f = chebtech2({[], flipud(v)});
+%             [isDone, epsLevel] = strictCheck(f);
+%         end
+
     end
     
     methods (Static)
@@ -306,11 +313,5 @@ classdef ultraS < chebDiscretization
         
         L = quasi2USdiffmat(L, dom, dim, outputSpace)
         
-        function [isDone, epsLevel] = testConvergence(v)
-            % Test convergence on a single interval:
-            v = full(v);
-            f = chebtech2({[], flipud(v)});
-            [isDone, epsLevel] = strictCheck(f);
-        end
     end
 end

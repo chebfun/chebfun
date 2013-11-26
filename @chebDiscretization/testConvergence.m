@@ -1,19 +1,43 @@
 function [isDone,epsLevel] = testConvergence(disc,values)
 
+% Given a disretization, and a cell array of discretized functions, check the
+% equivalent Chebyshev polynomial representation for sufficient convergence. 
+
+% We will test on an arbitrary linear combination of the individual functions. 
+s = 1 ./ (3*(1:numel(values))).';
+newvalues = cell2mat(values.')*s;
+
+% Convert to a piecewise chebfun.
+u = toFunction(disc,newvalues);
+
+% Test convergence on each piece.
+numInt = numel(disc.domain)-1;
+isDone = true(1, numInt);
+epsLevel = 0;
+for i = 1:numInt
+    [isDone(i), t2] = testPiece(u,i);
+    epsLevel = max(epsLevel, t2);
+end
+   
+end
+
+
+function [isDone, epsLevel] = testPiece(u,interval)
+
 isDone = false;
 epsLevel = eps;
 thresh = 1e-6;  % demand at least this much accuracy
 
-n = length(values);
-if n < 17, return, end
-
-% Convert to Chebyshev coefficients.
-f = toFunction(disc,values);
-c = chebpoly(f);
+% Convert to Chebyshev coefficients, zero degree first.
+c = chebpoly(u,interval);
 c = c(end:-1:1);
 
+n = length(c);
+if n < 17, return, end
+
 % Magnitude and rescale.
-ac = abs(c)/min(max(abs(values)),1);
+ac = abs(c);
+ac = ac/min(max(ac),1);
 
 % Smooth using a windowed max to dampen symmetry oscillations.
 maxac = ac;
@@ -44,7 +68,7 @@ else
 end
 
 % Are we satisfied?
-if cut < length(values)
+if cut < n
     isDone = true;
     epsLevel = max( abs(c(cut+1)) );
 end
