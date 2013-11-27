@@ -90,6 +90,14 @@ err1 = feval(g{1} - h1, x);
 err2 = feval(g{2} - h2, x);
 pass(14) = all(err1(:) == 0) && all(err2(:) == 0);
 
+%% Integration with singfun
+
+pow = -0.5;
+op = @(x) (x - dom(1)).^pow.*sin(x);
+pref.singPrefs.exponents = [pow 0];
+pass(15) = test_spotcheck_restrict(op, dom, ...
+    [-1 -0.7], pref);
+
 end
 
 % Spot-check restriction of a given function to a given subinterval.

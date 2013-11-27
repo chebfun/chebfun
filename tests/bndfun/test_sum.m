@@ -89,4 +89,13 @@ h = bndfun(@(x) cos(x), dom);
 sumh2 = sum(h, 2);
 pass(11) = all((feval(h, x) == feval(sumh2, x)));
 
+%% Integration with singfun
+
+pow = -0.5;
+op = @(x) (x - dom(1)).^pow.*sin(x);
+pref.singPrefs.exponents = [pow 0];
+f = bndfun(op, dom, [], [], pref);
+I = sum(f);
+I_exact = -1.92205524578386613;
+pass(12) = ( abs(I-I_exact) < 2*get(f, 'epslevel')*abs(I_exact) );
 end

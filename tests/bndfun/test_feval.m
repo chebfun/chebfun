@@ -76,4 +76,16 @@ f_exact = [0 0 0 -1 1 -1
 pass(9) = all(all(abs(fx - f_exact) < ...
     10*max(get(f, 'vscale'))*get(f, 'epslevel')));
 
+%%
+% Integration with singfun
+
+pow = -0.5;
+op = @(x) (x - dom(1)).^pow.*sin(x);
+pref.singPrefs.exponents = [pow 0];
+f = bndfun(op, dom, [], [], pref);
+fval = feval(f, x);
+vals_exact = feval(op, x);
+err = fval - vals_exact;
+pass(10) = ( norm(err, inf) < 1e1*get(f,'epslevel')*norm(vals_exact, inf) );
+
 end
