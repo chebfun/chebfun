@@ -5,7 +5,7 @@ if ( nargin < 3 )
     dom = L.domain;
 end
 if ( nargin < 2 )
-    dim = 100;
+    dim = 16;
 end
 
 numInts = length(dom) - 1;

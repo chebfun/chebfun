@@ -1,6 +1,14 @@
 function output = spy(A)
 
-data = discretizeBlocks(A, 10);
+dom = A.domain;
+if length(dom)==2
+    dim = 12;
+else
+    dim = repmat(8,[1 length(dom)-1]);
+end
+d = A.discretizer(A,dim,dom);
+data = matrix(d);
+%data = discretizeBlocks(A, 10);
 h = cellplot(data);
 % CELLPLOT seems to cover up the text representations of double
 % values. We give a positive z-value so that they sit on top again.

@@ -3,7 +3,6 @@ classdef linop < chebmatrix
     properties
         constraint = linopConstraint()
         continuity = linopConstraint()
-        discretizer = @colloc2;      % Obtain default from (global?) pref?
     end
     
     properties (Dependent)

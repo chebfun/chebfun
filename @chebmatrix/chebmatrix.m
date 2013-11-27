@@ -4,7 +4,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
     properties
         blocks = {};
         
-        discretizationType = linBlock.defaultDiscretization;        
+        discretizer = @colloc2;        
     end
     
     properties (Dependent)
