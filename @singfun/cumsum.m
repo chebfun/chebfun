@@ -5,6 +5,9 @@ function g = cumsum(f, m, dim)
 %
 %   CUMSUM(F, M) will compute the Mth definite integral with vanishing constant.
 %
+%   Note that the third argument must be 1, indicating that no support for
+%   array-valued F.
+%
 %   WARNING: The current version of CUMSUM is limited.  In particular,
 %   CUMSUM does not support functions whose antiderivatives have logarithmic
 %   singularities (including atanh) or functions which have singularities at
@@ -30,12 +33,13 @@ function g = cumsum(f, m, dim)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Check the value of M:
+% Check the dimension, i.e. the third argument:
 if ( nargin == 3 ) && ( dim ~= 1 )
     warning('SINGFUN:cumsum:nosupport', ...
         'SINGFUN does not support array-valued objects.')
 end
 
+% Check the value of M:
 if ( nargin < 2 )
     m = 1;
 end

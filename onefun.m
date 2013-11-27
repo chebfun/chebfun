@@ -63,7 +63,7 @@ classdef onefun % (Abstract)
                 % OP is already a ONEFUN!
                 obj = op;
                 
-            elseif ( pref.enableSingularityDetection )
+            elseif ( pref.enableSingularityDetection || ~isempty(pref.singPrefs.exponents) )
                 % BLOWUP mode; call SINGFUN constructor:
                 singType = pref.singPrefs.singType;
                 exponents = pref.singPrefs.exponents;
