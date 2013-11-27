@@ -25,6 +25,11 @@ else
     varargin(empties) = [];
 end
 
+if ( numel(varargin) == 1 )
+    out = varargin{1};
+    return
+end
+
 % Promote doubles to CHEBFUN objects:
 chebfunLocs = cellfun('isclass', varargin, 'chebfun');
 domain1 = varargin{find(chebfunLocs, 1, 'first')}.domain;
