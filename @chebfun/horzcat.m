@@ -67,4 +67,8 @@ for k = 1:numInts
    out.funs{k} = horzcat(funs{:});
 end
 
+% Concatenate impulses:
+imps = cellfun(@(f) f.impulses, varargin, 'UniformOutput', false);
+out.impulses = cell2mat(imps);
+
 end
