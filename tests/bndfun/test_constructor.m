@@ -10,6 +10,10 @@ end
 % Set the domain
 dom = [-2 7];
 
+% Generate a few random points to use as test values.
+seedRNG(6178);
+x = diff(dom) * rand(100, 1) + dom(1);
+
 pass = zeros(1, 5); % Pre-allocate pass matrix.
 
 %%
@@ -64,5 +68,17 @@ end
         end
         y = sin(x);
     end
+
+%% Integration with singfun
+
+powl = -0.5;
+powr = -1.6;
+op = @(x) (x - dom(1)).^powl.*(x - dom(2)).^powr.*sin(x);
+pref.singPrefs.exponents = [powl powr];
+f = bndfun(op, dom, [], [], pref);
+vals_f = feval(f, x);
+vals_exact = feval(op, x);
+err = vals_f-vals_exact;
+pass(6) = ( norm(err, inf) < 1e2*get(f,'epslevel')*norm(vals_exact, inf) );
 
 end
