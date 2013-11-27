@@ -60,6 +60,7 @@ end
 
 % Store the hold state of the current axis:
 holdState = ishold;
+isComplex = false;
 
 % Initialise storage:
 lineData = {};
@@ -137,6 +138,7 @@ while ( ~isempty(varargin) )
         newData.yPoints = imag(newData.yPoints);
         newData.xJumps = real(newData.yJumps);
         newData.yJumps = imag(newData.yJumps);
+        isComplex = true;
     elseif ( intervalIsSet && size(newData.xLine, 2) == 1 ) % Deal with 'interval' flag.
         idx = newData.xLine < interval(1) | newData.xLine > interval(end);
         newData.xLine(idx) = [];
@@ -174,7 +176,11 @@ if ( isempty(jumpData) )
 end
 h3 = plot(jumpData{:});
 % Change the style accordingly:
-set(h3, 'LineStyle', ':', 'Marker', 'none')
+if ( isComplex )
+    set(h3, 'LineStyle', 'none', 'Marker', 'none')
+else
+    set(h3, 'LineStyle', ':', 'Marker', 'none')
+end
 
 % Return hold state to what it was before:
 if ( ~holdState )
