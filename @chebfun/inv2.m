@@ -25,10 +25,12 @@ function g = inv2(f,varargin)
 % Note, this function is experimental and slow! INV may be the better choice for
 % piecewise functions, where as INV2 is good for smooth functions.
 %
-%  See also INV.
+% See also INV.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
+
+% [TODO]: This method requires a test.
 
 % No quasimatrix support!
 if ( min(size(f)) > 1)

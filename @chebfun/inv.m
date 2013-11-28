@@ -31,6 +31,8 @@ function g = inv(f, varargin)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
+% [TODO]: This method requires a test.
+
 % No quasimatrix support:
 if ( min(size(f)) > 1 )
     error('CHEBFUN:inv:noquasi', 'No support for array0valued CHEBFUN objects.');
