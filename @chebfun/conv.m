@@ -30,10 +30,16 @@ if ( xor(f.isTransposed, g.isTransposed) )
     error('CHEBFUN:conv:transposed', 'CHEBFUN dimensions do not agree.');
 end
 
+if ( min(size(f)) > 1 || min(size(g)) > 1 ) % TODO
+    error('CHEBFUN:conv:quasi', 'No support for array-valued CHEBFUN objects.');
+end
+
 % Remove deltas from f:
+fImps = f.impulses(:,:,2:end);
 if ( size(f.impulses, 3) > 1 )
     f.impulses = f.impulses(:,:,1); 
 end
+gImps = g.impulses(:,:,2:end);
 % Remove deltas from g:
 if ( size(g.impulses, 3) > 1 )
     g.impulses = g.impulses(:,:,1); 
@@ -82,6 +88,8 @@ end
 h = chebfun(funs);
 h = simplify(h);
 h.isTransposed = f.isTransposed;
+
+% TODO: Delta functions.
 
 end
 

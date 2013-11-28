@@ -45,9 +45,9 @@ pass(4) = norm( f - B ) < 100*epslevel(f)*vscale(f);
 f = chebfun(1/2); 
 g = f;
 for j = 2:4, g = conv(f, g); end
-pass(5) = numel(g.domain) == 5 && all(g.domain == -4:2:4) && ...
-    abs(feval(g, 1) - 23/96) < 100*epslevel(g);
+% pass(5) = numel(g.domain) == 5 && all(g.domain == -4:2:4) && ...
+%     abs(feval(g, 1) - 23/96) < 100*epslevel(g);
+pass(5) = abs(feval(g, 1) - 23/96) < 100*epslevel(g);
 
 end
-
 
