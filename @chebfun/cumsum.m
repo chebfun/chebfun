@@ -77,18 +77,17 @@ for l = 1:m
     fa = deltas(1,:);
     for j = 1:numFuns
         
-%         % [TODO]: Replace this when SINGFUN is added.
-%         cumsumFunJ = cumsum(funs{j});
-%         if ( nFuns > 1 )
-%         % This is because unbounded functions may not be zero at left.
-%             lval = get(cumsumFunJ, 'lval');
-%             if ( ~isinf(lval) && ~isnan(lval) )
-%                 cumsumFunJ = cumsumFunJ - lval;
-%             end
-%         end
-%         funs{j} = cumsumFunJ + fa;
+        cumsumFunJ = cumsum(funs{j});
         
-        funs{j} = cumsum(funs{j}) + fa;
+        if ( numFuns > 1 )
+            % This is because unbounded functions may not be zero at left.
+            lval = get(cumsumFunJ, 'lval');
+            if ( all(isfinite(lval)) )
+                cumsumFunJ = cumsumFunJ - lval;
+            end
+        end
+        
+        funs{j} = cumsumFunJ + fa;
         fa = get(funs{j}, 'rval') + deltas(j+1,:);
     end
     
@@ -102,7 +101,6 @@ end
 f.funs = funs;
 
 end
-
 
 function f = cumsumFiniteDim(f, m)
 % CUMSUM over finite dimension.
