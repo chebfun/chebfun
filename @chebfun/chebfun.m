@@ -466,8 +466,24 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
             pref.enableBreakpointDetection = strcmpi(args{2}, 'on');
             args(1:2) = [];
         elseif ( strcmpi(args{1}, 'blowup') )
-            % Translate "blowup" --> "enableSingularityDetection".
-            pref.enableSingularityDetection = strcmpi(args{2}, 'on');
+            pref.enableSingularityDetection = 1;
+            if ( args{2} == 1 )                
+                % Translate "blowup" and flag "1" --> 
+                % "enableSingularityDetection" and "poles only".
+                pref.singPrefs.singType = {'pole', 'pole'};
+            elseif ( args{2} == 2 )
+                % Translate "blowup" and flag "2" --> 
+                % "enableSingularityDetection" and "fractional singularity".
+                pref.singPrefs.singType = {'sing', 'sing'};
+            else
+                error('CHEBFUN:constructor:parseInputs', ...
+                    ['Unrecognizable flag value for ''blowup''. The valid values ', ...
+                    'are 1 for poles only and 2 for fractional singularities.'])
+            end
+            args(1:2) = [];
+        elseif ( strcmpi(args{1}, 'exps') )
+            % Translate "exps" --> "singPrefs.exponents".
+            pref.singPrefs.exponents = args{2};
             args(1:2) = [];
         else
             % Update these preferences:
