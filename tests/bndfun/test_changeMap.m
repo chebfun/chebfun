@@ -7,8 +7,6 @@ if ( nargin < 1 )
     pref = chebpref();
 end
 
-pass = zeros(1, 4); % Pre-allocate pass matrix.
-
 % Test with two domains:
 dom1 = [-3 1];
 dom2 = [-2 7];

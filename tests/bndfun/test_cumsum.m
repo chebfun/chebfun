@@ -15,8 +15,6 @@ a = dom(1);
 seedRNG(6178);
 x = diff(dom) * rand(100, 1) + dom(1);
 
-pass = zeros(1, 10); % Pre-allocate pass matrix
-
 %%
 % Spot-check antiderivatives for a couple of functions. We also check that 
 % feval(cumsum(f), a) == 0 each time.

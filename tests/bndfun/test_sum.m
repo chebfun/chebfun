@@ -16,8 +16,6 @@ seedRNG(6178);
 % Generate a few random points to use as test values.
 x = diff(dom) * rand(1000, 1) + dom(1);
 
-pass = zeros(1, 11); % Pre-allocate pass matrix
-
 %%
 % Spot-check integrals for a couple of functions.
 f = bndfun(@(x) exp(x) - 1, dom, [], [], pref);

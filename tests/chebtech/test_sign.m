@@ -4,8 +4,6 @@ if ( nargin == 0 )
     pref = chebtech.techPref();
 end
 
-pass = zeros(2, 4);
-
 for type = 1:2
     
     if ( type == 1 )

@@ -10,8 +10,6 @@ end
 dom = [-2 7];
 x = linspace(dom(1), dom(2), 1000);
 
-pass = zeros(1, 9); % Pre-allocate pass matrix.
-
 % Compose a scalar-valued BNDFUN object with sin(x):
 f = bndfun(@(x) x, dom);
 g = compose(f, @sin, [], pref);

@@ -5,8 +5,6 @@ function pass = test_coeffs2vals(varargin)
 % Set a tolerance (pref.eps doesn't matter)
 tol = 100*eps;
 
-pass = zeros(1, 7); % Pre-allocate pass matrix
-
 %%
 % Test that a single coefficient is converted correctly
 c = sqrt(2);

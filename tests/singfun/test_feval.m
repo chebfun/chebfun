@@ -11,8 +11,6 @@ end
 seedRNG(786);
 x = -1 + 2*rand(100, 1);
 
-pass = zeros(1, 4); % Pre-allocate pass vector
-
 %% 
 % Check feval on empty set of points
 f = singfun(@(x) x, [0, 0], {'none', 'none'});

@@ -17,8 +17,6 @@ dom = [-2 7];
 seedRNG(6178);
 x = diff(dom) * rand(100, 1) + dom(1);
 
-pass = zeros(1, 6); % Pre-allocate pass matrix
-
 %%
 % Basic correctness checks.
 

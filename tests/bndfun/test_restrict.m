@@ -10,8 +10,6 @@ end
 % Set the domain
 dom = [-2 7];
 
-pass = zeros(1, 14); % Pre-allocate pass matrix
-
 %%
 % Check behavior for empty inputs.
 f = bndfun();

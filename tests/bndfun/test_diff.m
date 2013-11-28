@@ -14,8 +14,6 @@ dom = [-2 7];
 seedRNG(6178);
 x = diff(dom) * rand(100, 1) + dom(1);
 
-pass = zeros(1, 15); % Pre-allocate pass matrix
-
 %%
 % Spot-check derivatives for a couple of functions.
 
