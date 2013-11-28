@@ -60,6 +60,7 @@ end
 
 % Store the hold state of the current axis:
 holdState = ishold;
+isComplex = false;
 
 % Initialise storage:
 lineData = {};
