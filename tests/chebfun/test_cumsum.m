@@ -76,6 +76,25 @@ I2f3_exact = @(x) [-cos(x) sin(x) exp(x)] - ...
 pass(9) = max(max(abs(feval(I2f3, xr) - I2f3_exact(xr)))) < ...
     10*vscale(I2f3)*epslevel(I2f3);
 
+%% Integration with singfun: 
+
+dom = [-2 7];
+
+% Generate a few random points to use as test values.
+seedRNG(6178);
+x = diff(dom) * rand(100, 1) + dom(1);
+
+pow = -0.64;
+op = @(x) (x-dom(1)).^pow;
+pref.singPrefs.exponents = [pow 0];
+f = chebfun(op, dom, pref);
+g = cumsum(f);
+vals_g = feval(g, x); 
+g_exact = @(x) (x-dom(1)).^(pow+1)./(pow+1);
+vals_exact = feval(g_exact, x);
+err = vals_g - vals_exact;
+pass(10) = ( norm(err, inf) < 10*get(f,'epslevel')*norm(vals_exact, inf) );
+
 % [TODO]:  Check fractional antiderivatives once implemented.
 
 end
