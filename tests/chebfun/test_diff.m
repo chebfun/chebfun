@@ -95,6 +95,25 @@ catch ME
     pass(16) = strcmp(ME.identifier, 'CHEBFUN:diff:dim');
 end
 
+%% Integration with singfun
+
+dom = [-2 7];
+
+% Generate a few random points to use as test values.
+seedRNG(6178);
+x = diff(dom) * rand(100, 1) + dom(1);
+
+pow = -0.5;
+op = @(x) (x - dom(1)).^pow.*sin(x);
+pref.singPrefs.exponents = [pow 0];
+f = chebfun(op, dom, pref);
+df = diff(f);
+vals_df = feval(df, x);
+df_exact = @(x) (x - dom(1)).^(pow-1).*(pow*sin(x)+(x - dom(1)).*cos(x));
+vals_exact = feval(df_exact, x);
+err = vals_df - vals_exact;
+pass(17) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
+
 % [TODO]:  Check fractional derivatives once implemented.
 
 end

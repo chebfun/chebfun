@@ -123,4 +123,17 @@ catch ME
     pass(23) = strcmp(ME.identifier, 'CHEBFUN:sum:b');
 end
 
+%% Integration with singfun
+
+% Set a domain
+dom = [-2 7];
+
+pow = -0.5;
+op = @(x) (x - dom(1)).^pow.*sin(x);
+pref.singPrefs.exponents = [pow 0];
+f = chebfun(op, dom, pref);
+I = sum(f);
+I_exact = -1.92205524578386613;
+pass(24) = ( abs(I-I_exact) < 2*get(f, 'epslevel')*abs(I_exact) );
+
 end

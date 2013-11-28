@@ -92,6 +92,17 @@ pass(20) = test_restrict_one_function(f, f_exact, [-0.2 1], map, xr);
 pass(21) = test_restrict_one_function(f, f_exact, [-0.2 0.5], map, xr);
 pass(22) = test_restrict_one_function(f, f_exact, [-0.35 0.1 0.2 0.5], map, xr);
 
+%% Integration with singfun:
+
+% Set the domain
+dom = [-2 7];
+
+pow = -0.5;
+op = @(x) (x - dom(1)).^pow.*sin(x);
+pref.singPrefs.exponents = [pow 0];
+f = chebfun(op, dom, pref);
+pass(23) = test_restrict_one_function(f, op, dom, map, xr);
+
 end
 
 % Check restriction of a single function.
@@ -101,5 +112,5 @@ function pass = test_restrict_one_function(f, f_exact, dom, map, xr)
     err = norm(feval(fr, x) - f_exact(x), inf);
     tol = 10*fr.vscale*fr.epslevel;
     pass = all(ismember(dom, fr.domain)) && ...
-        all(err(:) < 10*fr.vscale*fr.epslevel);
+        all(err(:) < 2e2*fr.vscale*fr.epslevel);
 end

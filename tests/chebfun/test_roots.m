@@ -64,6 +64,20 @@ exact = [[0,0;NaN(4,2)], linspace(-1,1,5).'];
 r = roots(f);
 pass(7) = all(size(exact) == [5,3]) && max(abs(exact(:) - r(:))) < 10*epslevel(f);
 
+%% Integration with singfun
+
+% Set the domain
+dom = [-2 7];
+
+pow = -0.5;
+op = @(x) (x-dom(1)).^pow.*cos(x);
+pref.singPrefs.exponents = [pow 0];
+f = chebfun(op, dom, pref);
+r = roots(f);
+r_exact = [-1/2; 1/2; 3/2]*pi;
+err = r - r_exact;
+pass(8) = (norm(err, inf) < 5*get(f, 'vscale')*get(f, 'epslevel'));
+    
 end
 
 
