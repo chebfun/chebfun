@@ -1,47 +1,54 @@
-function song = sing(str,bpm)
-% SING - A basic keyboard for MATLAB using chebfuns
+function song = sing(str, bpm)
+%SING   A basic keyboard for MATLAB using CHEBFUNs.
 %
-% S = SING('STR1 STR2 STR3 ...') creates a chebfun F corresponding to the
-% musical notes in each of the STR which vaguely correspond to Helmholtz pitch
-% notation (http://en.wikipedia.org/wiki/Helmholtz_pitch_notation).
+%   S = SING('STR1 STR2 STR3 ...') creates a CHEBFUN F corresponding to the
+%   musical notes in each of the STR which vaguely correspond to Helmholtz pitch
+%   notation (http://en.wikipedia.org/wiki/Helmholtz_pitch_notation).
 %
-% S = SING('STR1 ...', BPM) alters the temp of the tune (in beats per minute).
-% The default value is 60bpm.
+%   S = SING('STR1 ...', BPM) alters the temp of the tune (in beats per minute).
+%   The default value is 60bpm.
 %
-% For example, S = SING('A'), produces a function corresponding to the note A, S
-% = SING('B') produces a B, and so on.
+%   For example, S = SING('A'), produces a function corresponding to the note
+%   A, S = SING('B') produces a B, and so on.
 %
-% Basic chords are provided, for example S = SING('CEG') will produce a major
-% triad (http://en.wikipedia.org/wiki/Major_chord). The convention is for the
-% kth note to have 1/k times the amplitude of the first.
+%   Basic chords are provided, for example S = SING('CEG') will produce a major
+%   triad (http://en.wikipedia.org/wiki/Major_chord). The convention is for the
+%   kth note to have 1/k times the amplitude of the first.
 %
-% Empty spaces correspond to pause of a sixteenth note (semiquaver), and commas
-% seperate notes without a pause.
+%   Empty spaces correspond to pause of a sixteenth note (semiquaver), and
+%   commas seperate notes without a pause.
 %
-% If STR is in uppercase, it will last for a quarter note (crotchet), and lower
-% case notes for a sixteenth note (semiquaver).
+%   If STR is in uppercase, it will last for a quarter note (crotchet), and
+%   lower case notes for a sixteenth note (semiquaver).
 %
-% The SING keyboard has three octaves (in A to G). S = SING('C-') produces a low
-% C, S = SING('C') produces a middle C, and S = SING('C+') produces a high C.
+%   The SING keyboard has three octaves (in A to G). S = SING('C-') produces a
+%   low C, S = SING('C') produces a middle C, and S = SING('C+') produces a
+%   high C.
 %
-% Sharps are supported by using '#', but there is currently no notation for
-% flats.
+%   Sharps are supported by using '#', but there is currently no notation for
+%   flats.
 %
-% Examples:
-%  1. Ode to Joy:
-%     S = SING('BG- BG- CA DB DB CA BG- AD- G-B G-B AD- BG- BG- AD- AD-');
-%  2. God Save The Queen
-%     S = SING('CG CG DG BG CG DG EC EC FC EC DG CG DG CG BG CG',30);
+%   Examples:
+%    1. Ode to Joy:
+%       S = SING('BG- BG- CA DB DB CA BG- AD- G-B G-B AD- BG- BG- AD- AD-');
+%    2. God Save The Queen
+%       S = SING('CG CG DG BG CG DG EC EC FC EC DG CG DG CG BG CG',30);
 %
-%  See also SOUND, CHEBTUNE.
+%   CHEBFUNs for these examples may be generated with SING(1) and SING(2),
+%   respectively.
+%
+% See also SOUND, CHEBTUNE.
 
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org/ for Chebfun information.
 
+% Set up basic frequencies.
 s0 = 2^(1/12);
 f0 = 440*pi;
 fp1 = 2*f0;
 fm1 = .5*f0;
+
+% Set tempo.
 if ( nargin < 2 )
     bpm = 60;
     t0 = 1/4;
@@ -49,10 +56,11 @@ else
     t0 = 60/bpm/4;
 end
 
-q = chebfun('x', [0 t0]);   % quarter note
-s = chebfun('x', [0 t0/4]); % sixteenth note
+q = chebfun('x', [0 t0]);   % Quarter note.
+s = chebfun('x', [0 t0/4]); % Sixteenth note.
 
-%% middle
+%% Middle
+
 % Quarter notes
 A = sin(f0*q);
 As = sin(f0*s0*q);
@@ -143,10 +151,12 @@ gps = sin(fp1*s0^11*s);
 
 %%
 
-if ( nargin == 0 || isnumeric(str) )
+% Easy access to example tunes.
+if ( (nargin == 0) || isnumeric(str) )
     if ( nargin == 0 )
         str = 1;
     end
+
     switch str
         case 1 % Ode to Joy
             str = 'BG- BG- CA DB DB CA BG- AD- G-B G-B AD- BG- BG- AD- AD-';
@@ -155,22 +165,26 @@ if ( nargin == 0 || isnumeric(str) )
     end
 end
 
+% Build the CHEBFUN from the string of notes for the tune.
 n = length(str);
 song = chebfun;
 l = 0;
 while ( ~isempty(str) )
-    l = l+1;
+    l = l + 1;
     k = 0;
+
+    % Get the string for the next chord.
     for j = 1:numel(str)
-        k = k+1;
+        k = k + 1;
         if ( strcmp(str(k), ' ') || strcmp(str(k), ',') )
             break
         end
     end
-    
+
     strk = str(1:k);
     str(1:k) = [];
-    
+
+    % Quarter note or sixteenth note?
     if ( isstrprop(strk(1), 'upper') )
         strk = upper(strk);
         songtmp = 0*A;
@@ -178,11 +192,13 @@ while ( ~isempty(str) )
         strk = lower(strk);
         songtmp = 0*a;
     end
-    
+
+    % Assemble the chord from its constituent notes.
     j = 0;
     while ( ~isempty(strk) )
-        if ( length(strk) > 1 && any(strcmpi(strk(2), {'+' '-' '#' '*'})) )
-            if ( length(strk) > 2 && any(strcmpi(strk(3), {'#' '*'})) )
+        % Parse out one note from the chord.
+        if ( (length(strk) > 1) && any(strcmpi(strk(2), {'+' '-' '#' '*'})) )
+            if ( (length(strk) > 2) && any(strcmpi(strk(3), {'#' '*'})) )
                 strjk = strk(1:3);
                 strk(1:3) = [];
             else
@@ -193,102 +209,114 @@ while ( ~isempty(str) )
             strjk = strk(1);
             strk(1) = [];
         end
-        j = j+1;
+
+        % Set the amplitude of this note in the chord.
+        j = j + 1;
         amp = .4/j;
-        
-        if ( strcmp(strjk, 'r') || strcmp(strjk, ' ') )
+
+        % Decode and add in the note.
+        if ( strcmp(strjk, 'r') || strcmp(strjk, ' ') )  % Sixteenth rest.
             songtmp = join(songtmp, 0*s);
             break
+        elseif ( strcmp(strjk, 'R') )                    % Quarter rest.
+            songtmp = join(songtmp, 0*q);
+            break
+        else                                             % Actual note.
+            songtmp = songtmp + amp*getNote(strjk);
         end
-        
-        if strcmp(strjk,'R'), songtmp = join(songtmp, 0*q); break, end
-        
-        if strcmp(strjk,'A'), songtmp = songtmp + amp*A; end
-        if strcmp(strjk,'B'), songtmp = songtmp + amp*B; end
-        if strcmp(strjk,'C'), songtmp = songtmp + amp*C; end
-        if strcmp(strjk,'D'), songtmp = songtmp + amp*D; end
-        if strcmp(strjk,'E'), songtmp = songtmp + amp*E; end
-        if strcmp(strjk,'F'), songtmp = songtmp + amp*F; end
-        if strcmp(strjk,'G'), songtmp = songtmp + amp*G; end
-        
-        if strcmp(strjk,'a'), songtmp = songtmp + amp*a; end
-        if strcmp(strjk,'b'), songtmp = songtmp + amp*b; end
-        if strcmp(strjk,'c'), songtmp = songtmp + amp*c; end
-        if strcmp(strjk,'d'), songtmp = songtmp + amp*d; end
-        if strcmp(strjk,'e'), songtmp = songtmp + amp*e; end
-        if strcmp(strjk,'f'), songtmp = songtmp + amp*f; end
-        if strcmp(strjk,'g'), songtmp = songtmp + amp*g; end
-        
-        if strcmp(strjk,'A-'), songtmp = songtmp + amp*Am; end
-        if strcmp(strjk,'B-'), songtmp = songtmp + amp*Bm; end
-        if strcmp(strjk,'C-'), songtmp = songtmp + amp*Cm; end
-        if strcmp(strjk,'D-'), songtmp = songtmp + amp*Dm; end
-        if strcmp(strjk,'E-'), songtmp = songtmp + amp*Em; end
-        if strcmp(strjk,'F-'), songtmp = songtmp + amp*Fm; end
-        if strcmp(strjk,'G-'), songtmp = songtmp + amp*Gm; end
-        
-        if strcmp(strjk,'a-'), songtmp = songtmp + amp*am; end
-        if strcmp(strjk,'b-'), songtmp = songtmp + amp*bm; end
-        if strcmp(strjk,'c-'), songtmp = songtmp + amp*cm; end
-        if strcmp(strjk,'d-'), songtmp = songtmp + amp*dm; end
-        if strcmp(strjk,'e-'), songtmp = songtmp + amp*em; end
-        if strcmp(strjk,'f-'), songtmp = songtmp + amp*fm; end
-        if strcmp(strjk,'g-'), songtmp = songtmp + amp*gm; end
-        
-        if strcmp(strjk,'A+'), songtmp = songtmp + amp*Ap; end
-        if strcmp(strjk,'B+'), songtmp = songtmp + amp*Bp; end
-        if strcmp(strjk,'C+'), songtmp = songtmp + amp*Cp; end
-        if strcmp(strjk,'D+'), songtmp = songtmp + amp*Dp; end
-        if strcmp(strjk,'E+'), songtmp = songtmp + amp*Ep; end
-        if strcmp(strjk,'F+'), songtmp = songtmp + amp*Fp; end
-        if strcmp(strjk,'G+'), songtmp = songtmp + amp*Gp; end
-        
-        if strcmp(strjk,'a+'), songtmp = songtmp + amp*ap; end
-        if strcmp(strjk,'b+'), songtmp = songtmp + amp*bp; end
-        if strcmp(strjk,'c+'), songtmp = songtmp + amp*cp; end
-        if strcmp(strjk,'d+'), songtmp = songtmp + amp*dp; end
-        if strcmp(strjk,'e+'), songtmp = songtmp + amp*ep; end
-        if strcmp(strjk,'f+'), songtmp = songtmp + amp*fp; end
-        if strcmp(strjk,'g+'), songtmp = songtmp + amp*gp; end
-        
-        if strcmp(strjk,'a#'), songtmp = songtmp + amp*as; end
-        if strcmp(strjk,'c#'), songtmp = songtmp + amp*cs; end
-        if strcmp(strjk,'d#'), songtmp = songtmp + amp*ds; end
-        if strcmp(strjk,'f#'), songtmp = songtmp + amp*fs; end
-        if strcmp(strjk,'g#'), songtmp = songtmp + amp*gs; end
-        
-        if strcmp(strjk,'A#'), songtmp = songtmp + amp*As; end
-        if strcmp(strjk,'C#'), songtmp = songtmp + amp*Cs; end
-        if strcmp(strjk,'D#'), songtmp = songtmp + amp*Ds; end
-        if strcmp(strjk,'F#'), songtmp = songtmp + amp*Fs; end
-        if strcmp(strjk,'G#'), songtmp = songtmp + amp*Gs; end
-        
-        if strcmp(strjk,'a+#'), songtmp = songtmp + amp*aps; end
-        if strcmp(strjk,'c+#'), songtmp = songtmp + amp*cps; end
-        if strcmp(strjk,'d+#'), songtmp = songtmp + amp*dps; end
-        if strcmp(strjk,'f+#'), songtmp = songtmp + amp*fps; end
-        if strcmp(strjk,'g+#'), songtmp = songtmp + amp*gps; end
-        
-        if strcmp(strjk,'A+#'), songtmp = songtmp + amp*Aps; end
-        if strcmp(strjk,'C+#'), songtmp = songtmp + amp*Cps; end
-        if strcmp(strjk,'D+#'), songtmp = songtmp + amp*Dps; end
-        if strcmp(strjk,'F+#'), songtmp = songtmp + amp*Fps; end
-        if strcmp(strjk,'G+#'), songtmp = songtmp + amp*Gps; end
-        
-        if strcmp(strjk,'a-#'), songtmp = songtmp + amp*ams; end
-        if strcmp(strjk,'c-#'), songtmp = songtmp + amp*cms; end
-        if strcmp(strjk,'d-#'), songtmp = songtmp + amp*dms; end
-        if strcmp(strjk,'f-#'), songtmp = songtmp + amp*fms; end
-        if strcmp(strjk,'g-#'), songtmp = songtmp + amp*gms; end
-        
-        if strcmp(strjk,'A-#'), songtmp = songtmp + amp*Ams; end
-        if strcmp(strjk,'C-#'), songtmp = songtmp + amp*Cms; end
-        if strcmp(strjk,'D-#'), songtmp = songtmp + amp*Dms; end
-        if strcmp(strjk,'F-#'), songtmp = songtmp + amp*Fms; end
-        if strcmp(strjk,'G-#'), songtmp = songtmp + amp*Gms; end
-        
     end
+
+    % Tack the chord onto the end of the song.
     song = join(song, songtmp);
 end
+
+    % Nested function for mapping note strings to note CHEBFUNs defined above.
+    function note = getNote(s)
+        switch (s)
+            case {'A'}, note = A;
+            case {'B'}, note = B;
+            case {'C'}, note = C;
+            case {'D'}, note = D;
+            case {'E'}, note = E;
+            case {'F'}, note = F;
+            case {'G'}, note = G;
+
+            case {'a'}, note = a;
+            case {'b'}, note = b;
+            case {'c'}, note = c;
+            case {'d'}, note = d;
+            case {'e'}, note = e;
+            case {'f'}, note = f;
+            case {'g'}, note = g;
+
+            case {'A-'}, note = Am;
+            case {'B-'}, note = Bm;
+            case {'C-'}, note = Cm;
+            case {'D-'}, note = Dm;
+            case {'E-'}, note = Em;
+            case {'F-'}, note = Fm;
+            case {'G-'}, note = Gm;
+
+            case {'a-'}, note = am;
+            case {'b-'}, note = bm;
+            case {'c-'}, note = cm;
+            case {'d-'}, note = dm;
+            case {'e-'}, note = em;
+            case {'f-'}, note = fm;
+            case {'g-'}, note = gm;
+
+            case {'A+'}, note = Ap;
+            case {'B+'}, note = Bp;
+            case {'C+'}, note = Cp;
+            case {'D+'}, note = Dp;
+            case {'E+'}, note = Ep;
+            case {'F+'}, note = Fp;
+            case {'G+'}, note = Gp;
+
+            case {'a+'}, note = ap;
+            case {'b+'}, note = bp;
+            case {'c+'}, note = cp;
+            case {'d+'}, note = dp;
+            case {'e+'}, note = ep;
+            case {'f+'}, note = fp;
+            case {'g+'}, note = gp;
+
+            case {'a#'}, note = as;
+            case {'c#'}, note = cs;
+            case {'d#'}, note = ds;
+            case {'f#'}, note = fs;
+            case {'g#'}, note = gs;
+
+            case {'A#'}, note = As;
+            case {'C#'}, note = Cs;
+            case {'D#'}, note = Ds;
+            case {'F#'}, note = Fs;
+            case {'G#'}, note = Gs;
+
+            case {'a+#'}, note = aps;
+            case {'c+#'}, note = cps;
+            case {'d+#'}, note = dps;
+            case {'f+#'}, note = fps;
+            case {'g+#'}, note = gps;
+
+            case {'A+#'}, note = Aps;
+            case {'C+#'}, note = Cps;
+            case {'D+#'}, note = Dps;
+            case {'F+#'}, note = Fps;
+            case {'G+#'}, note = Gps;
+
+            case {'a-#'}, note = ams;
+            case {'c-#'}, note = cms;
+            case {'d-#'}, note = dms;
+            case {'f-#'}, note = fms;
+            case {'g-#'}, note = gms;
+
+            case {'A-#'}, note = Ams;
+            case {'C-#'}, note = Cms;
+            case {'D-#'}, note = Dms;
+            case {'F-#'}, note = Fms;
+            case {'G-#'}, note = Gms;
+        end
+    end
 
 end
