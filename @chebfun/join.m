@@ -1,9 +1,15 @@
 function f = join(varargin)
-%JOIN   Join together two CHEBFUN objects.
+%JOIN   Join together two or more CHEBFUN objects.
 %   F = JOIN(F1, F2, ...) joins together the CHEBFUN objects F1, F2, ..., to
-%   create a piecewise CHEBFUN F on a larger domain. F.domain(1) = F1.domain(1),
-%   F.domain(2) = F.domain(1) + length(F1), F.domain(2) = F.domain(1) +
-%   length(F1) + length(F2), and so on.
+%   create a piecewise CHEBFUN F on a larger domain.  F1, F2, ... must all have
+%   the same transposition state; the output F will have the same transposition
+%   state as the inputs.  The left endpoint of the domain of F is F1.domain(1),
+%   and the remaining points in the domain are determined by the adding on the
+%   lengths of the successive subintervals forming the domains of F1, F2, etc.
+%   For example, if F1 has domain [-1 -0.5 0] and F2 has domain [1 1.25 2],
+%   then the domain of F will be [-1 -0.5 0 0.25 1].
+%
+% See also HORZCAT, VERTCAT.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
