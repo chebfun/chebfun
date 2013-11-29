@@ -16,6 +16,16 @@ function [x, w, v] = radaupts(n, varargin)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Developer note:
+%   The approach used here is to observe that the Gauss-Radau points are
+%   precisely the roots of (1+x)P^(0,1)_{n-2}(x), which can be obtained from
+%   JACPTS. A similar identity is used for the computation of the quadrature
+%   weights from those of JACPTS, and the missing barycentric weights are
+%   determined by enforcing the interpolation of x at x = 0.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 %% Trivial cases:
 if ( n == 1 )
     x = -1;

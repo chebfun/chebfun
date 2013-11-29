@@ -16,6 +16,18 @@ function [x, w, v] = lobpts(n, varargin)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Developer note:
+%   The approach used here is to observe that the Gauss-Lobatto points are
+%   precisely the roots of (1-x^2)P'_{n-1}(x), and that the roots of P'_{n-1}(x)
+%   are the same as the roots of P^(1,1)_{n-2}(x), which can be obtained for
+%   JACPTS. A similar identity is used for the computation of the quadrature
+%   weights from those of JACPTS, and the missing barycentric weights are
+%   determined by enforcing the interpolation of x or x^2 at x = 0 in the even
+%   or odd case respectively.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 %% Trivial cases:
 if ( n == 1 )
     error('CHEBFUN:lobpts', 'N = 1 is not supported.');
