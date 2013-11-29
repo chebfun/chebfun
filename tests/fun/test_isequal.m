@@ -33,6 +33,19 @@ for n = 1:1 %[TODO]: unbndfun
     
     g = testclass.make(@(x) [sin(x), exp(x)], dom, [], [], pref);
     pass(n, 5) = ~isequal(f, g);
+    
+    %% Integration with singfun:
+    
+    pow1 = -0.5;
+    pow2 = -0.6;
+    op1 = @(x) (x - dom(2)).^pow1.*sin(x);
+    op2 = @(x) (x - dom(2)).^pow2.*(cos(x).^2+1);
+    pref.singPrefs.exponents = [0 pow1];
+    f = bndfun(op1, dom, [], [], pref);
+    pref.singPrefs.exponents = [0 pow2];
+    g = bndfun(op2, dom, [], [], pref);
+    pass(n, 6) = ~isequal(f, g);
+    
 end
 
 end

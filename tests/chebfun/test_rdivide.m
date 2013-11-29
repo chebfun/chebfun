@@ -81,4 +81,27 @@ catch ME
     pass(11) = strcmp(ME.identifier, 'CHEBFUN:rdivide:domain');
 end
 
+%% Integration with singfun:
+dom = [-2 7];
+
+% Generate a few random points to use as test values.
+seedRNG(6178);
+x = diff(dom) * rand(100, 1) + dom(1);
+
+pow1 = -0.5;
+pow2 = -0.3;
+op1 = @(x) (x - dom(2)).^pow1.*sin(x);
+op2 = @(x) (x - dom(2)).^pow2.*(cos(x).^2+1);
+pref.singPrefs.exponents = [0 pow1];
+f = chebfun(op1, dom, pref);
+pref.singPrefs.exponents = [0 pow2];
+g = chebfun(op2, dom, pref);
+h = f./g;
+vals_h = feval(h, x);
+pow = pow1-pow2;
+op = @(x)  (x - dom(2)).^pow.*(sin(x)./(cos(x).^2+1));
+h_exact = op(x);
+pass(12) = ( norm(vals_h-h_exact, inf) < 1e1*max(get(f, 'epslevel'), get(g, 'epslevel'))*...
+    norm(h_exact, inf) );
+
 end

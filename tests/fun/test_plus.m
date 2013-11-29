@@ -99,6 +99,21 @@ pass(20) = (~get(g, 'ishappy')) && (~get(h, 'ishappy'));
 h = g + f;  % Add happy to unhappy.
 pass(21) = (~get(g, 'ishappy')) && (~get(h, 'ishappy'));
 
+%% Integration of singfun:
+
+pow = -1;
+op1 = @(x) (x - dom(2)).^pow.*sin(x);
+op2 = @(x) (x - dom(2)).^pow.*cos(3*x);
+pref.singPrefs.exponents = [0 pow];
+f = bndfun(op1, dom, [], [], pref);
+g = bndfun(op2, dom, [], [], pref);
+h = f + g;
+vals_h = feval(h, x);
+op = @(x)  (x - dom(2)).^pow.*(sin(x)+cos(3*x));
+h_exact = op(x);
+pass(22) = ( norm(vals_h-h_exact, inf) < 1e1*max(get(f, 'epslevel'), get(g, 'epslevel'))*...
+    norm(h_exact, inf) );
+
 end
 
 % Test the addition of a BNDFUN F, specified by F_OP, to a scalar ALPHA using

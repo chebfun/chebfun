@@ -77,6 +77,27 @@ err = feval(g, x) - g_exact(x);
 pass(18) = isequal(size(g, 2), 3) && norm(err(:), inf) < ...
     10*max(g.vscale*g.epslevel);
 
+%% Integration of singfun:
+
+dom = [-2 7];
+
+% Generate a few random points to use as test values.
+seedRNG(6178);
+x = diff(dom) * rand(100, 1) + dom(1);
+
+pow = -1;
+op1 = @(x) (x - dom(2)).^pow.*sin(x);
+op2 = @(x) (x - dom(2)).^pow.*cos(3*x);
+pref.singPrefs.exponents = [0 pow];
+f = chebfun(op1, dom, pref);
+g = chebfun(op2, dom, pref);
+h = f + g;
+vals_h = feval(h, x);
+op = @(x)  (x - dom(2)).^pow.*(sin(x)+cos(3*x));
+h_exact = op(x);
+pass(19) = ( norm(vals_h-h_exact, inf) < 1e1*max(get(f, 'epslevel'), get(g, 'epslevel'))*...
+    norm(h_exact, inf) );
+
 end
 
 % Test the addition of a chebfun F, specified by F_OP, to a scalar ALPHA using
