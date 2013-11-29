@@ -44,7 +44,7 @@ elseif ( n == 3 )
 end
 
 %% Call JACPTS():
-[x, w, v] = jacpts(n-2, 1, 1, varargin{:});
+[x, w, v] = jacpts(n - 2, 1, 1, varargin{:});
 
 %% Nodes:
 x = [-1 ; x ; 1];
@@ -52,10 +52,10 @@ x = [-1 ; x ; 1];
 %% Quadrature weights:
 w = [-1, w,  1];
 w = w./(1-x.^2).';
-w([1 end]) = 2/(n*(n-1));
+w([1 end]) = 2/(n*(n - 1));
 
 %% Barycentric weights:
-v = v./(1-x(2:n-1).^2);
+v = v./(1 - x(2:n-1).^2);
 v = v/max(abs(v));
 if ( mod(n, 2) )
     v1 = -abs(sum(v.*x(2:end-1).^2)/2);
