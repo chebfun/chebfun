@@ -10,6 +10,17 @@ function f = join(varargin)
 
 % [TODO]: This method needs a test.
 
+% Check that all inputs have the same transposition state.
+transStates = cell2mat(cellfun(@(f) logical(f.isTransposed), varargin, ...
+    'UniformOutput', false).');
+if ( ~(all(transStates) || all(~transStates)) )
+    error('CHEBFUN:join:trans', ...
+        'All inputs to JOIN must have the same transposition state.');
+end
+
+% Remember the transposition state.
+transState = transStates(1);
+
 % Extract each of the FUNs:
 funs = cellfun(@(f) f.funs, varargin, 'UniformOutput', false);
 funs = [funs{:}];
@@ -27,5 +38,6 @@ end
 
 % Combine in a CHEBFUN:
 f = chebfun(funs);
+f.isTransposed = transState;
 
 end
