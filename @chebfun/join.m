@@ -8,7 +8,7 @@ function f = join(varargin)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% [TODO]: This method needs a test.
+% [TODO]:  Deal with functions on unbounded intervals.  (Requires UNBNDFUN.)
 
 % Check that all inputs have the same transposition state.
 transStates = cell2mat(cellfun(@(f) logical(f.isTransposed), varargin, ...
