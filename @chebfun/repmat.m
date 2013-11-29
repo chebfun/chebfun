@@ -1,10 +1,10 @@
 function G = repmat(f, M, N)
 %REPMAT   Replicate and tile a CHEBFUN.
-%   REPMAT(F, M, N) or REPMAT(F, [M, N]) creates a CHEBFUN quasimatrix by tiling
-%   copies of F. If F is a column quasimatrix, then REPMAT(F, 1, N) returns a
-%   quasimatrix with N*size(F, 2) chebfun columns. If F is a row quasimatrix,
-%   REPMAT(F, M, 1) returns a quasimatrix with M*size(F, 1).
-
+%   REPMAT(F, M, N) or REPMAT(F, [M, N]) creates an array-valued CHEBFUN by
+%   tiling copies of F. If F is a column CHEBFUN, then REPMAT(F, 1, N) returns
+%   an array-valued CHEBFUN with N*SIZE(F, 2) CHEBFUN columns. If F is a row
+%   CHEBFUN, REPMAT(F, M, 1) returns an array-valued CHEBFUN with M*size(F, 1).
+%
 % See also HORZCAT, VERTCAT, CAT.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
