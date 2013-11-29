@@ -20,8 +20,6 @@ function h = conv(f, g)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% [TODO]: This code requires a test.
-
 % Note: f and g may be defined on different domains!
 h = chebfun();
 if ( isempty(f) || isempty(g) )
