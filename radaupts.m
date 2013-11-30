@@ -20,9 +20,17 @@ function [x, w, v] = radaupts(n, varargin)
 % Developer note:
 %   The approach used here is to observe that the Gauss-Radau points are
 %   precisely the roots of (1+x)P^(0,1)_{n-2}(x), which can be obtained from
-%   JACPTS. A similar identity is used for the computation of the quadrature
-%   weights from those of JACPTS, and the missing barycentric weights are
-%   determined by enforcing the interpolation of x at x = 0.
+%   JACPTS. A similar identity [NIST, (18.9.5) and (18.9.17)] is used for the
+%   computation of the quadrature weights from those of JACPTS, and the missing
+%   barycentric weights are determined by enforcing the interpolation of f(x) =
+%   x at x = 0.
+%
+%    x_j = roots of (1+x)P^(0,1)_{n-2}(x)
+%    w_j = { 2/n^2                                 : x_j = -1
+%          { 1/(1-x_j) * 1/[d/dx P_{n-1}(x_j)]^2   : otherwise
+%
+%   (Note that the weights for n-1 point Gauss-Jacobi with a = 0, b = 1 satisfy 
+%    u_j = C/(1-x_j^2)/[d/dx P^(0,1)_{n-1}(x_j)]^2)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

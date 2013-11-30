@@ -20,11 +20,18 @@ function [x, w, v] = lobpts(n, varargin)
 % Developer note:
 %   The approach used here is to observe that the Gauss-Lobatto points are
 %   precisely the roots of (1-x^2)P'_{n-1}(x), and that the roots of P'_{n-1}(x)
-%   are the same as the roots of P^(1,1)_{n-2}(x), which can be obtained for
-%   JACPTS. A similar identity is used for the computation of the quadrature
-%   weights from those of JACPTS, and the missing barycentric weights are
-%   determined by enforcing the interpolation of x or x^2 at x = 0 in the even
-%   or odd case respectively.
+%   are the same as the roots of P^(1,1)_{n-2}(x) [NIST, (18.9.15)], which can
+%   be obtained for JACPTS. A similar identity [NIST, (18.9.16)] is used for the
+%   computation of the quadrature weights from those of JACPTS, and the missing
+%   barycentric weights are determined by enforcing the interpolation of f(x) =
+%   x or x^2 at x = 0 in the even or odd case respectively.
+%
+%    x_j = roots of (1-x^2)P'_{n-1}(x)
+%    w_j = { 2/(n*(n-1))                        : x_j = -1, 1
+%          { 2/(n*(n-1)) * 1/[P_{n-1}(x_j)]^2   : otherwise
+%
+%   (Note that the weights for n-2 point Gauss-Jacobi with a = b = 1 satisfy 
+%    u_j = C/(1-x_j^2)/[d/dx P^(1,1)_{n-2}(x_j)]^2)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
