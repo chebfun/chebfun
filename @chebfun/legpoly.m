@@ -30,8 +30,15 @@ end
 end
 
 function out = legpolyPiecewise(f, n)
-%LEGPOLYPIECEWISE
-% [TODO]: Document.
+%LEGPOLYPIECEWISE    Compute Legendre coefficients of a piecewise smooth CHEBFUN
+%
+% If F is 'simple' (i.e., is a piecewise smooth Chebyshev representation), then
+% each of the required inner-products are computed so that c_k = int P_k f(x)dx.
+%
+% If F is non-trivial (e.g., contains exponents or a non-linear map), then the
+% coefficients are computed by creating a LEGPOLY quasimatrix and computing the
+% inner-products using CHEBFUN/MTIMES(). This can be significatnly slower than
+% the above.
 
 % Domain:
 a = f.domain(1);
@@ -62,9 +69,7 @@ if ( isSimple )
         vals = feval(yfun, x);
         
         % Compute the first two inner-products by hand:
-%         out(1,:) = out(1,:) + w*vals;
         out(1,:) = out(1,:) + sum(diag(w)*vals);
-%         out(2,:) = out(2,:) + w*(z.*vals);        
         out(2,:) = out(2,:) + sum(diag(w.*z.')*vals);
         % Evaluate Legendre-Vandermonde matrix by recureence relation:
         Pm2 = 1; Pm1 = z;
@@ -72,7 +77,6 @@ if ( isSimple )
             P = (2-1/(kk+1))*Pm1.*z - (1-1/(kk+1))*Pm2;
             Pm2 = Pm1; Pm1 = P;
             % Add contribution from subinterval to (k+1)st coefficient:
-%             out(kk+2,:) = out(kk+2) + w.'*(P.*vals);
             out(kk+2,:) = out(kk+2,:) + sum(diag(w.*P.')*(vals));
         end
         
@@ -84,11 +88,11 @@ else
     % Legendre-Vandermonde matrix:
     Enorm = legpoly(0:n, [a, b]);
     % Compute the projection (with correct scaling):
-    out = (Enorm'*f);
+    out = (Enorm.'*f);
     
 end
 
-% out = flipud(out ./ scl).';                    % Scale appropriately.
-out = flipud(bsxfun(@rdivide, out, scl)).';    % Scale appropriately.
+% Scale appropriately:
+out = flipud(bsxfun(@rdivide, out, scl)).';    
     
 end
