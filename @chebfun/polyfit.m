@@ -19,7 +19,6 @@ function f = polyfit(y, n, varargin)
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % TODO: Come up with a better way of accessing POLYFIT(X, Y, N, D).
-
 % TODO: This requires testing.
 
 if ( nargout > 1 )
@@ -43,7 +42,8 @@ end
 
 function f = discretePolyfit(x, y, n, dom)
 %DISCRETEPOLYFIT
-% [TODO]: Document.
+% Fit discrete data {X, Y} using a degree N polynomial on the domain DOM.
+
 if ( nargin < 4 )
     % Use x data to determine domain:
     dom = [x(1), x(end)];
@@ -56,7 +56,7 @@ end
 
 % Use BARY():
 w = baryWeights(x);                    % Barycentric weights for x.
-xCheb = chebpts(n);                    % Chebyshev grid.
+xCheb = chebpts(n, dom);               % Chebyshev grid.
 yCheb = chebtech.bary(xCheb, y, x, w); % Evaluate interpolant at xCheb.
 f = chebfun(yCheb, dom);               % Create a CHEBFUN of the result.
 
@@ -66,13 +66,13 @@ end
 
 function p = continuousPolyfit(f, n)
 %CONTINUOUSPOLYFIT
-% [TODO]: Document.
+% Compute best L2 polynomial approximation to a given CHEBFUN F.
 
 if ( any(isinf(f.domain)) )
     error('CHEBFUN:polyfit:unbounded', 'Unbounded domains are not supported.');
 end
 
-if ( n > length(f) && numel(f.funs) == 1 )
+if ( n > length(f) && numel(f.funs) == 1 && isa(f.funs.onefun, 'chebtech') )
     % Nothing to do here!
     p = f;
     return
@@ -89,6 +89,7 @@ end
 
 % Make a CHEBTECH:
 if ( isa(f.funs{1}.onefun, 'chebtech') )
+    % Make the CHEBTECH be of the same type as that in F:
     p_chebtech = f.funs{1}.onefun.make({[], c}); 
 else
     p_chebtech = chebtech.constructor({[], c});
