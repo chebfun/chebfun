@@ -3,7 +3,6 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
     
     properties
         blocks = {};
-        
         discretizer = @colloc2;        
     end
     
