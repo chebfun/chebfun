@@ -1,4 +1,6 @@
 function L = quasi2USdiffmat(c, dom, dim, outputSpace)
+%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  See http://www.chebfun.org for Chebfun information.
 
 diffOrder = size(c, 2) - 1;
 if ( nargin < 4 )

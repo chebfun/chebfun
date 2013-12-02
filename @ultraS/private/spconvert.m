@@ -1,4 +1,6 @@
 function T = spconvert(n,lam)
+%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  See http://www.chebfun.org for Chebfun information.
 % CONVERMAT(N,LAM) This computes the truncation of the operator that
 % transforms C^{lam} (Ultraspherical polynomials) to C^{lam+1}.  The
 % truncation gives back a matrix of size n x n.
