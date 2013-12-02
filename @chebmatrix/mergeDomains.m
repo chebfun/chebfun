@@ -1,5 +1,7 @@
 function d = mergeDomains(blocks)
 
+%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  See http://www.chebfun.org for Chebfun information.
 % Find the domains of each block (output is cell). 
 d = cellfun(@(A) getDomain(A),blocks,'uniform',false);
 

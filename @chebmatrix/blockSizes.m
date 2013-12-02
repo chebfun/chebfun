@@ -1,5 +1,7 @@
 function varargout = blockSizes(A)
 %BLOCKSIZES Sizes of the blocks within the chebmatrix.
+%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  See http://www.chebfun.org for Chebfun information.
 % BLOCKSIZES(L) returns a cell of 1x2 size vectors.
 % [M, N] = BLOCKSIZES(A) returns two matrices of row/column sizes.
 
