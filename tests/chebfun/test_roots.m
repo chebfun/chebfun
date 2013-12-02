@@ -64,17 +64,18 @@ exact = [[0,0;NaN(4,2)], linspace(-1,1,5).'];
 r = roots(f);
 pass(7) = all(size(exact) == [5,3]) && max(abs(exact(:) - r(:))) < 10*epslevel(f);
 
-%% Integration with singfun
+%% Integration with singfun: piecewise smooth chebfun - splitting on.
 
 % Set the domain
 dom = [-2 7];
 
 pow = -0.5;
-op = @(x) (x-dom(1)).^pow.*cos(x);
+op = @(x) (x-dom(1)).^pow.*cos(300*x);
 pref.singPrefs.exponents = [pow 0];
+pref.enableBreakpointDetection = 1;
 f = chebfun(op, dom, pref);
 r = roots(f);
-r_exact = [-1/2; 1/2; 3/2]*pi;
+r_exact = (((-191:667)+1/2)*pi/300).';
 err = r - r_exact;
 pass(8) = (norm(err, inf) < 5*get(f, 'vscale')*get(f, 'epslevel'));
     

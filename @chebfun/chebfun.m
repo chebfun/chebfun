@@ -466,19 +466,26 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
             pref.enableBreakpointDetection = strcmpi(args{2}, 'on');
             args(1:2) = [];
         elseif ( strcmpi(args{1}, 'blowup') )
-            pref.enableSingularityDetection = 1;
-            if ( args{2} == 1 )                
-                % Translate "blowup" and flag "1" --> 
-                % "enableSingularityDetection" and "poles only".
-                pref.singPrefs.singType = {'pole', 'pole'};
-            elseif ( args{2} == 2 )
-                % Translate "blowup" and flag "2" --> 
-                % "enableSingularityDetection" and "fractional singularity".
-                pref.singPrefs.singType = {'sing', 'sing'};
+            if ( strcmpi(args{2}, 'off') )
+                % If 'blowup' is 'off'.
+                pref.enableSingularityDetection = 0;
             else
-                error('CHEBFUN:constructor:parseInputs', ...
-                    ['Unrecognizable flag value for ''blowup''. The valid values ', ...
-                    'are 1 for poles only and 2 for fractional singularities.'])
+                % If 'blowup' is not 'off'.
+                if ( args{2} == 1 )
+                    % Translate "blowup" and flag "1" -->
+                    % "enableSingularityDetection" and "poles only".
+                    pref.enableSingularityDetection = 1;
+                    pref.singPrefs.singType = {'pole', 'pole'};
+                elseif ( args{2} == 2 || strcmpi(args{2}, 'on') )
+                    % Translate "blowup" and flag "2" -->
+                    % "enableSingularityDetection" and "fractional singularity".
+                    pref.enableSingularityDetection = 1;
+                    pref.singPrefs.singType = {'sing', 'sing'};
+                else
+                    error('CHEBFUN:constructor:parseInputs', ...
+                        ['Unrecognizable flag value for ''blowup''. The valid values ', ...
+                        'are 1 for poles only and 2 for fractional singularities.'])
+                end
             end
             args(1:2) = [];
         elseif ( strcmpi(args{1}, 'exps') )

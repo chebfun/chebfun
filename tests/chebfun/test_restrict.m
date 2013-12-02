@@ -92,14 +92,15 @@ pass(20) = test_restrict_one_function(f, f_exact, [-0.2 1], map, xr);
 pass(21) = test_restrict_one_function(f, f_exact, [-0.2 0.5], map, xr);
 pass(22) = test_restrict_one_function(f, f_exact, [-0.35 0.1 0.2 0.5], map, xr);
 
-%% Integration with singfun:
+%% Integration with singfun: piecewise smooth chebfun - splitting on.
 
-% Set the domain
+% Set the domain:
 dom = [-2 7];
 
 pow = -0.5;
-op = @(x) (x - dom(1)).^pow.*sin(x);
+op = @(x) (x - dom(1)).^pow.*sin(100*x);
 pref.singPrefs.exponents = [pow 0];
+pref.enableBreakpointDetection = 1;
 f = chebfun(op, dom, pref);
 pass(23) = test_restrict_one_function(f, op, dom, map, xr);
 

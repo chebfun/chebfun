@@ -78,17 +78,34 @@ for l = 1:m
     for j = 1:numFuns
         
         cumsumFunJ = cumsum(funs{j});
-        
+
         if ( numFuns > 1 )
-            % This is because unbounded functions may not be zero at left.
+            % We evaluate cumsumFunJ at both endpoints to see if the function
+            % value is finite. Infinite function value at the endpoints means
+            % cumsumFunJ is a singfun. If the function is infinite at the left
+            % end, then it doesn't make sense to shift the function up or down 
+            % to make its value zero at the left endpoint. If the function is 
+            % infinite at the right end, then shifting function up or down means
+            % we are computing SINGFUN + constant, which, in general, is not 
+            % accurate running out of the points which are allowed. Such a 
+            % difficulty may be mitigated when SING MAP is re-adopted. Also note
+            % that we can't prevent the case where a constant is added to a
+            % SINGFUN with positive exponent, e.g. x.^(0.5) + 1, since in this
+            % level we don't know the type of the ONEFUN of each FUN.
+            
             lval = get(cumsumFunJ, 'lval');
-            if ( all(isfinite(lval)) )
+            rval = get(cumsumFunJ, 'rval');
+            if ( all(isfinite(lval)) && all(isfinite(rval)) )
                 cumsumFunJ = cumsumFunJ - lval;
+                if ( all(fa ~= 0) && all(isfinite(fa)) )
+                    cumsumFunJ = cumsumFunJ + fa;
+                end
+                fa = get(cumsumFunJ, 'rval') + deltas(j+1,:); 
             end
         end
         
-        funs{j} = cumsumFunJ + fa;
-        fa = get(funs{j}, 'rval') + deltas(j+1,:);
+        funs{j} = cumsumFunJ;
+        
     end
     
     % Get the new impulse data:

@@ -197,12 +197,13 @@ seedRNG(6178);
 x = diff(dom) * rand(100, 1) + dom(1);
 
 pow = -0.5;
-op = @(x) (x - dom(1)).^pow.*sin(x);
+op = @(x) (x - dom(1)).^pow.*sin(200*x);
 pref.singPrefs.exponents = [pow 0];
+pref.enableBreakpointDetection = 1;
 f = chebfun(op, dom, pref);
 fval = feval(f, x);
 vals_exact = feval(op, x);
 err = fval - vals_exact;
-pass(31) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(31) = ( norm(err, inf) < get(f,'epslevel')*norm(vals_exact, inf) );
 
 end

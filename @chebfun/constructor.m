@@ -44,6 +44,37 @@ if ( iscell(op) && (numel(op) ~= numIntervals) )
          'intervals in DOMAIN.'])
 end    
 
+% Sort out the exponents:
+if ( ~isempty(pref.singPrefs.exponents) )
+    exps = pref.singPrefs.exponents;
+    nExps = numel(pref.singPrefs.exponents);
+    
+    if ( nExps == 1 )
+        
+        % If only one exponent is supplied, assume the exponent at other
+        % breakpoints are exactly same.
+        exps = exps*ones(1,2*numIntervals);
+        
+    elseif ( nExps == 2 )
+        
+        % If the exponents are only supplied at endpoints of the entire
+        % domain, the fill at the interior breakpoints with zeros.
+        exps = [exps(1) zeros(1, 2*(numIntervals-1)) exps(2)];
+        
+    elseif ( nExps == numIntervals + 1 )
+        
+        % If only one exponent is supplied for each interior breakpoint,
+        % then we assume that the singularity take the same order on each
+        % side.
+        exps = exps(ceil(1:0.5:nExps - 0.5));
+        
+    elseif ( nExps ~= 2*numIntervals )
+        % The number of exponents supplied by user makes no sense.
+        error('CHEBFUN:constructor', ['the number of the exponents is ' ...
+            'inappropriate.']);
+    end
+end
+
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%  SPLITTING OFF %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % In 'OFF' mode, seek only one piece with length < maxLength.
 if ( ~pref.enableBreakpointDetection )
@@ -53,6 +84,7 @@ if ( ~pref.enableBreakpointDetection )
     funs{numIntervals} = fun.constructor();
     % We only want to throw this warning once:
     warningThrown = false;
+
     % Loop over the intervals:
     for k = 1:numIntervals
         endsk = ends(k:k+1);
@@ -62,6 +94,12 @@ if ( ~pref.enableBreakpointDetection )
         else
             opk = op;
         end
+        
+        % Replace the exponent information in the preference:
+        if ( ~isempty(pref.singPrefs.exponents) )
+            pref.singPrefs.exponents = exps(2*k-1:2*k);
+        end
+        
         % Call GETFUN() (which calls FUN.CONSTRUCTOR()):
         [funs{k}, ishappy, vscale] = getFun(opk, endsk, vscale, hscale, pref);
         % Warn if unhappy (as we're unable to split the domain to improve):
@@ -98,19 +136,27 @@ for k = 1:numIntervals
     else
         opk = op;
     end
+    
+    % Replace the exponent information in the preference:
+    if ( ~isempty(pref.singPrefs.exponents) )
+        pref.singPrefs.exponents = exps(2*k-1:2*k);
+    end
+
     [funs{k}, ishappy(k), vscale] = ...
         getFun(opk, ends(k:k+1), vscale, hscale, pref);
 end
 sad = ~ishappy;
-
+        
 % MAIN LOOP. If the above didn't work, enter main loop and start splitting.
 % (Note that at least one new breakpoint will be introduced).
 while ( any(sad) )
     % If a FUN is sad in a subinterval, split this subinterval.
 
     % Choose a subinterval to improve:
+    
 %     % Old choice = the first sad interval:
 %     k = find(sad, 1, 'first');
+
     % New choice = the largest sad interval:
     diffEnds = diff(ends);
     diffEnds(~sad) = 0;
@@ -130,9 +176,20 @@ while ( any(sad) )
     % Locate an edge/split location:
     edge = chebfun.detectEdge(opk, [a, b], vscale, hscale);
 
+    if ( ~isempty(pref.singPrefs.exponents) )
+        % Before constructing the left FUN, sort out the exponents:
+        pref.singPrefs.exponents = [exps(2*k-1) 0];
+    end
+    
     % Try to obtain happy child FUN objects on each new subinterval:
     [childLeft, happyLeft, vscale] = ...
         getFun(opk, [a, edge], vscale, hscale, pref);
+    
+    if ( ~isempty(pref.singPrefs.exponents) )
+        % Before constructing the right FUN, sort out the exponents:
+        pref.singPrefs.exponents = [0 exps(2*k)];
+    end
+    
     [childRight, happyRight, vscale] = ...
         getFun(opk, [edge, b], vscale, hscale, pref);
 
@@ -142,7 +199,11 @@ while ( any(sad) )
     % Insert new pieces in to existing funs:
     funs = [funs(1:k-1), {childLeft, childRight}, funs(k+1:end)];
     ends = [ends(1:k), edge, ends(k+1:end)];
-
+    
+    if ( ~isempty(pref.singPrefs.exponents) )
+        exps = [exps(1:2*k-1), zeros(1,2), exps(2*k:end)];
+    end
+    
     % If a cell was given, we must store pieces on new intervals:
     if ( iscell(op) )
         op = [op(1:k), {opk}, op(k+1:end)];
