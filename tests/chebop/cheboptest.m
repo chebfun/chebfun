@@ -4,6 +4,7 @@ p.plotting = 'on';
 p.damped = 1;
 switch problemno
     case 1
+%         p.discretization = @ultraS;
         N = chebop(@(x,u) diff(u,2) + sin(u));
         N.lbc = @(u) u-2; N.rbc = @(u) u -2;
         N.init = chebfun(@(x) 0*x+2);
