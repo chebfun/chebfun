@@ -18,8 +18,8 @@ errEstDE = NaN;
 errEstBC = .5678;
 % Store preferences used in the Newton iteration in separate variables
 maxIter  = pref.maxIter;
-discType = pref.discretizationType;
-delTol   = pref.deltol;
+discType = pref.discretization;
+errTol   = pref.errTol;
 % Did the user request damped or undamped Newton iteration?
 damped = pref.damped;
 % Minimum allowed steplength
@@ -124,7 +124,7 @@ while ( ~terminate )
             
             lambdaPrime = min(1,muPrime);
             
-            if lambdaPrime == 1 && nrmDeltaBar < delTol
+            if lambdaPrime == 1 && nrmDeltaBar < errTol
                 u = uTrial + deltaBar;
                 newtonCounter
                 terminate = 1;
@@ -192,7 +192,7 @@ while ( ~terminate )
     
     % TODO: Replace with error estimate -- introduce errorTol in cheboppref
 %     errEst = normDelta; % .5*(errEstDE + errEstBC)
-    if ( errEst < delTol )
+    if ( errEst < errTol )
         terminate = 1;
     elseif (newtonCounter > maxIter)
         warning('CHEBOP:solvebvpNonlinear','Newton iteration failed.')
@@ -205,7 +205,7 @@ while ( ~terminate )
         res = res - rhs;
         
         % Assign the preferred discretisation method to the linop.
-        L.discretizationType = discType;
+        L.discretizer = discType;
     end
 end
 

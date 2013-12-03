@@ -3,12 +3,18 @@ classdef cheboppref
     % See above for documentation.
     properties
         domain
-        discretisation
+        discretization
         discPrefs
         enableBreakpointDetection
         breakpointPrefs
         maxTotalLength
         scale
+        damped
+        display
+        errTol
+        lambdaMin
+        maxIter
+        plotting
     end
 
     methods
@@ -27,12 +33,18 @@ classdef cheboppref
                 outPref.breakpointPrefs.splitMaxLength = 129;
                 outPref.breakpointPrefs.splitMaxTotalLength = 2048;
             outPref.domain = [-1 1];
-            outPref.discretisation = @colloc2;
+            outPref.discretization = @colloc2;
             outPref.discPrefs = struct();
                 outPref.discPrefs.eps = 2^(-52);
                 outPref.discPrefs.exactLength = NaN;
-            outPrefs.scale = NaN;    
-
+            outPref.scale = NaN;    
+            outPref.damped = 1;
+            outPref.display = 'iter';
+            outPref.errTol = 1e-10;
+            outPref.lambdaMin = 1e-8;
+            outPref.maxIter = 25;
+            outPref.plotting = 'off';
+            
             % Copy fields from q, placing unknown ones in discPrefs and merging
             % incomplete substructures.
             for field = fieldnames(inPref).'

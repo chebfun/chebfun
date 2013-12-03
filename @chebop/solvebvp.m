@@ -50,7 +50,7 @@ if ( all(isLinear) )
     % use backslash)?
     
     % Set the preferred discretization for the linop
-    L.discretizationType = pref.discretizationType;
+    L.discretizer = pref.discretization;
     
     % Solve the linear problem
     u = L\(rhs - residual);

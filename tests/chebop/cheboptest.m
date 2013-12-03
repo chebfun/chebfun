@@ -1,7 +1,7 @@
 function [u, info] = cheboptest(problemno)
-cheboppref('display','iter')
-cheboppref('plotting','on')
-cheboppref('damped','on')
+p = cheboppref;
+p.plotting = 'on';
+p.damped = 1;
 switch problemno
     case 1
         N = chebop(@(x,u) diff(u,2) + sin(u));
@@ -9,7 +9,6 @@ switch problemno
         N.init = chebfun(@(x) 0*x+2);
         rhs = 0;
     case 2
-        cheboppref('damped','on')
         N = chebop(@(x,u) 0.05*diff(u,2) + u.^2 - 1);
         N.lbc = @(u) u; N.rbc = @(u) u - 1;
         N.init = chebfun(@(x) .5*(x+1));
