@@ -24,6 +24,13 @@ classdef (Abstract) chebDiscretization
             t = isempty(disc.source);
         end
         
+        % Each discretization is free to replace standard backslash with
+        % whatever it likes for the discrete linear system solution. This is the
+        % default case. 
+        function [x,disc] = mldivide(disc,A,b)
+            x = A\b;
+        end           
+        
     end
         
     methods (Abstract)
