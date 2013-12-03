@@ -112,7 +112,8 @@ while ( ~isempty(varargin) )
         
     else                                                       % PLOT(f).
         % Call PLOTDATA():
-        newData = plotData(varargin{1});
+        f = varargin{1};
+        newData = plotData(f);
         % Remove CHEBFUN from array input:
         varargin(1) = [];
         
@@ -150,15 +151,78 @@ while ( ~isempty(varargin) )
     end
     
     % Append new data to the arrays which will be passed to built in PLOT():
-    lineData = [lineData, newData.xLine, newData.yLine, styleData]; 
+    lineData = [lineData, newData.xLine, newData.yLine, styleData];
     pointData = [pointData, newData.xPoints, newData.yPoints, styleData];
     jumpData = [jumpData, newData.xJumps, newData.yJumps, styleData];
-     
+    
 end
+
+% Figure out the ylim:
+tempData = lineData{2};
+
+if ( isinf(f) )
+    
+    % In case of SINGFUN with infinite boundary value(s):
+    nFuns = numel(f.funs);
+    ymax = zeros(1,nFuns);
+    ymin = zeros(1,nFuns);
+    
+    % Loop over each piece:
+    for j = 1:nFuns
+        if ( isfinite(f.funs{j}) )
+            
+            % For those finite pieces, get the maximum and minimum function
+            % values of each piece:
+            ymax(j) = max(tempData(502*(j-1)+1:502*j));
+            ymin(j) = min(tempData(502*(j-1)+1:502*j));
+            
+        else
+            
+            % For those infinite pieces, get the boundary values:
+            lval = get(f.funs{j}, 'lval');
+            rval = get(f.funs{j}, 'rval');
+            
+            % If any of the boundary values is positively infinite, then set the 
+            % ylim for this piece to be 10:
+            if ( max([lval rval]) == Inf )
+                ymax(j) = 10;
+            end
+            
+            % If any of the boundary values is negatively infinite, then set the 
+            % ylim for this piece to be 10:
+            if ( min([lval rval]) == -Inf )
+                ymin(j) = -10;
+            end
+            
+            % Replace the infinite jumpData{2} by the function value of the most
+            % adjacent LineData{2} to plot the dashed jump line:
+            if ( isinf(lval) && (j ~= 1) )
+                jumpData{2}(3*(j-1)+1) = tempData(502*(j-1)+3);
+            end
+            
+            if ( isinf(rval) && (j ~= nFuns) )
+                jumpData{2}(3*(j-1)+3) = tempData(502*j-1);
+            end
+            
+        end
+    end
+    
+    % Take the maximum and minimum of all pieces:
+    ylimit = [min(ymin) max(ymax)];
+    
+else
+    % SMOOTHFUN or finite SINGFUN:
+    ylimit = [min(tempData) max(tempData)];
+end
+
+% Pad some space at the top and bottom of the figure:
+ylimit = [ylimit(1) - 0.1*abs(diff(ylimit)) ...
+    ylimit(2) + 0.1*abs(diff(ylimit))];
 
 % Plot the lines:
 h1 = plot(lineData{:});
 set(h1, 'Marker', 'none')
+set(gca, 'ylim', ylimit)
 
 % Ensure the plot is held:
 hold on
