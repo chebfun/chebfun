@@ -1,5 +1,7 @@
 function C = cat(dim, varargin)
 
+%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  See http://www.chebfun.org for Chebfun information.
 % Any singleton operator blocks must encased in cells to match up with
 % chebmatrix blocks.
 blocks = cell(1, nargin-1);

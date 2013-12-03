@@ -1,5 +1,7 @@
 function Q = cumsummat(N)
 
+%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  See http://www.chebfun.org for Chebfun information.
 % CUMSUMMAT  Chebyshev integration matrix.
 % Q = CUMSUMMAT(N) is the matrix that maps function values at N Chebyshev
 % points to values of the integral of the interpolating polynomial at

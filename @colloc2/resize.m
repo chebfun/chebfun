@@ -1,5 +1,7 @@
 function [B,P] = resize(disc,A,m,n)
 
+%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  See http://www.chebfun.org for Chebfun information.
 if ( m == n )
     B = A;
     P = eye(size(A));

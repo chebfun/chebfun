@@ -1,4 +1,6 @@
 function [u, disc] = linsolve(L, f, discType)
+%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  See http://www.chebfun.org for Chebfun information.
 
 if ( nargin < 3 )
     % TODO: Get from a (global?) preference?
@@ -50,17 +52,14 @@ for dim = dimVals
     % Discretize the rhs (incl. constraints/continuity):
     b = disc.rhs(f);
 
-    % Solve the liner system:
+    % Solve the linear system:
     [v, disc] = disc.mldivide(A, b);
     
     % Convert the array of data to a cell
     u = myNum2Cell(v, disc.dimension, isFunVariable);
     
-    % Take a inear combination of the function variables:
-    uLin = linearCombination(u(isFunVariable), disc.dimension);
-   
-    % Test the happieness of the function pieces:
-    [isDone, epsLevel] = myTestConvergence(disc, uLin);
+     % Test the happieness of the function pieces:
+     [isDone, epsLevel] = testConvergence(disc, u(isFunVariable));
     
     if ( all(isDone) )
         break
@@ -71,7 +70,7 @@ for dim = dimVals
     
 end
 
-if ( ~isDone )
+if ( ~all(isDone) )
     warning('LINOP:linsolve:NoConverge', ...
         'Linear system solution may not have converged.')
 end
@@ -102,28 +101,3 @@ function u = myNum2Cell(data, dim, isFunVariable)
    
 end
 
-function uLin = linearCombination(uFun, dim)
-% ULIN returns a cell containing an arbitrary linear combination of the function
-% variables, which each entry coresponding to different intervals.
-    if ( nargin < 2 )
-        dim = length(uFun{1});
-    end
-    % Take an arbitrary linear combination:
-    s = 1 ./ (3*(1:numel(uFun))).';
-    linVals = cell2mat(uFun.')*s;
-    uLin = mat2cell(linVals, dim, 1);    
-end
-
-function [isDone, epsLevel] = myTestConvergence(disc, v)
-% Test convergence of the solution between each of the breakpoints.:
-
-% Test happiness:
-numInt = numel(disc.domain)-1;
-isDone = true(1, numInt);
-epsLevel = 0;
-for i = 1:numInt
-    [isDone(i), t2] = disc.testConvergence(v{i});
-    epsLevel = max(epsLevel, t2);
-end
-    
-end

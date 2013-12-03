@@ -1,5 +1,7 @@
 function D = diff(disc,m)
 
+%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  See http://www.chebfun.org for Chebfun information.
 d = disc.domain;
 n = disc.dimension;
 

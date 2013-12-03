@@ -1,4 +1,6 @@
 function M = mult(A, f, lambda)
+%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  See http://www.chebfun.org for Chebfun information.
 
 n = A.dimension;
 d = A.domain;
