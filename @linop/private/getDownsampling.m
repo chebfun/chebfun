@@ -1,4 +1,6 @@
 function [reduce,d,dRow,dVar] = getDownsampling(L)
+%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  See http://www.chebfun.org for Chebfun information.
 
 [m,n] = size(L);
 d = L.diffOrder;

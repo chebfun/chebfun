@@ -1,4 +1,6 @@
 function [u, disc] = linsolve(L, f, discType)
+%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  See http://www.chebfun.org for Chebfun information.
 
 if ( nargin < 3 )
     % TODO: Get from a (global?) preference?
