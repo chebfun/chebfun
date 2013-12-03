@@ -1,5 +1,7 @@
 function varargout = plot(A, varargin)
 %PLOT   A basic implementation of PLOT for CHEBMATRIX objects.
+%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  See http://www.chebfun.org for Chebfun information.
 
 if ( any(any(cellfun(@(L) isa(L, 'linBlock'), A.blocks))) )
     % Use SPY() if there are any LINBLOCK objects.
