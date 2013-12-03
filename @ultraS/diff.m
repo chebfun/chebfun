@@ -11,7 +11,7 @@ else
     blocks = cell(numIntervals);
     for k = 1:numIntervals
         len = d(k+1) - d(k);
-        blocks{k} = A.diffmat(n(k), m) * (2/len)^m;
+        blocks{k} = diffmat(n(k), m) * (2/len)^m;
     end
     % Assemble.
     D = blkdiag(blocks{:});

@@ -8,7 +8,7 @@ numIntervals = length(d) - 1;
 % Find the diagonal blocks.
 blocks = cell(numIntervals);
 for k = 1:numIntervals
-    blocks{k} = A.convertmat(n(k), K1, K2);
+    blocks{k} = convertmat(n(k), K1, K2);
 end
 % Assemble.
 S = blkdiag(blocks{:});

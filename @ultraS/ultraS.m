@@ -3,7 +3,7 @@ classdef ultraS < chebDiscretization
 %  See http://www.chebfun.org for Chebfun information.
     properties
         coeffs
-        outputSpace
+        outputSpace = [];
     end
     
     methods
@@ -25,8 +25,8 @@ classdef ultraS < chebDiscretization
             disc.source = source;
             
             % Obtain the coeffs and output psace required for this source:
-            disc.coeffs = disc.getCoeffs(source);
-            disc.outputSpace = disc.getOutputSpace(source);
+            disc.coeffs = getCoeffs(source);
+            disc.outputSpace = getOutputSpace(source);
             
         end
         
@@ -40,21 +40,4 @@ classdef ultraS < chebDiscretization
 
     end
     
-    methods (Static)
-        
-        S = convertmat( n, K1, K2 )
-        
-        D = diffmat( n, m )
-        
-        f_coeffs = discretizeFunction(f, dim, dom)        
-        
-        c = getCoeffs(source)
-        
-        outputSpace = getOutputSpace(source)
-
-        f = makeChebfun(u, dom)
-       
-        L = quasi2USdiffmat(L, dom, dim, outputSpace)
-        
-    end
 end

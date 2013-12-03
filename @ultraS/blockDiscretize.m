@@ -3,8 +3,7 @@ function L = blockDiscretize(disc, block)
 %  See http://www.chebfun.org for Chebfun information.
 if (isa(block, 'operatorBlock') )
     if ( ~isempty(disc.coeffs) )
-        L = ultraS.quasi2USdiffmat(disc.coeffs, disc.domain, ...
-            disc.dimension, disc.outputSpace);
+        L = quasi2USdiffmat(disc);
     else
         error
     end
