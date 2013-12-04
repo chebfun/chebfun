@@ -50,6 +50,14 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             end
         end
         
+        function out = isFunVariable(A,k)
+            [rowSize, colSize] = blockSizes(A);
+            out = isinf(colSize(1, :));
+            if ( nargin > 1 )
+                out = out(k);
+            end
+        end
+        
     end
           
     methods ( Static )
