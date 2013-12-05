@@ -88,14 +88,3 @@ u = chebmatrix(u);
 
 end
 
-%% Auxillary functions:
-
-function u = myNum2Cell(data, dim, isFunVariable)
-% Break discrete solution into chunks representing functions and scalars:
-
-    m = ones(size(isFunVariable));
-    m(isFunVariable) = sum(dim);
-    u = mat2cell(data, m, 1);
-   
-end
-
