@@ -219,26 +219,19 @@ end
 
 if nargout < 2  % Return the eigenvalues only
     varargout = { diag(D) };
-else            % Unwrap the eigenvectors for output
+else            % Unwrap the eigenvectors for output  
     
-    U = partition(disc,V);
-    nvar = length(U);
-    u = cell(nvar,1);
-    u(~isFun) = U(~isFun);
-    for j = find( isFun )
-        u{j} = disc.toFunction(U{j});
-        %     u{k} = simplify(u{k}, epsLevel);
-    end
-    
+    u = mat2fun(disc,V);
+        
     % Find the norm in each eigenfunction (aggregated over variables).
     nrmsq = zeros(1,k);
-    for j = 1:nvar
+    for j = 1:length(u)
         nrmsq = nrmsq + sum( u{j}.*conj(u{j}), 1 );
     end
     
     % Normalize each eigenfunction.
     scale = diag( 1./sqrt(nrmsq') );
-    for j = 1:nvar
+    for j = 1:length(u)
         u{j} = u{j}*scale;
     end
     
@@ -269,7 +262,7 @@ function [V,D] = getEigenvalues(disc,discM,k,sigma)
         [V,D] = eig(full(A),full(B));
         % Find the ones we're looking for.
         N = disc.dimension;
-        idx = nearest(diag(D),V,sigma,min(k,N),N);
+        idx = nearest(diag(D),V,sigma,min(k,N),N,disc);
         V = V(:,idx);
         D = D(idx,idx);
     else
@@ -282,7 +275,7 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Returns index vector that sorts eigenvalues by the given criterion.
-function idx = nearest(lam,V,sigma,k,N)
+function idx = nearest(lam,V,sigma,k,N,disc)
 
 if isnumeric(sigma)
     if isinf(sigma)
@@ -328,65 +321,22 @@ iif10 = 1:tenPercent;    % Indices of first 10%
 ii90 = tenPercent:N;     % Indices of last 90%
 ii10 = (N-tenPercent):N; % Indices of last 10%
 
-% % First an arbitrary linear combination of the allowed vectors
-% VV = V(:,idx)*[1 ; 2 + sin(1:size(idx,2)-1).']; % Form linear combination
-% if numel(N) == 1
-%     vc = cd2cp(VV);
-% else
-%     vc = zeros(max(N),1);
-%     csN = cumsum([0 N]);
-%     for jj = 1:numel(N)
-%         % We can save time (and FFTs) by combining intervals which
-%         % have the same discretisation length (say, N(i) = N(j)). TODO.
-%         ii = csN(jj) + (1:N(jj)).';
-%         tmp = cd2cp(V(ii));
-%         vc(1:N(jj)) = vc(1:N(jj))+tmp(end:-1:1);
-%     end
-%     vc = vc(end:-1:1);
-% end
-% norm90 = norm(vc(ii90)); % Norm of last 90%
-% norm10 = norm(vc(ii10)); % Norm of last 10%
-% if norm10 <= 0.5*norm90    
-%     % We don't need to bother checking each of the vectors for high energy
-%     % as their sum passes OK!
-%     idx = idx( keeper ); % Return the keepers.
-% end
-
-lenV = size(V);
-sumN = sum(N);
-if ( lenV > sumN )
-    numVars = lenV/sumN;
-    if ( round(numVars) ~= numVars )
-        error('Oops.');
-    end
-    VNew = V(1:sumN, :);
-    for j = 1:numVars-1
-        VNew = VNew + V(j*sumN + (1:sumN), :);
-    end
-    V = VNew;
-end
-
 % Check for high frequency energy (indicative of spurious eigenvalues) in
 % each of the remaining valid eigenfunctions.
+isFun = disc.source.isFunVariable;
 while ~isempty(queue)
     j = queue(1);
     
-    if numel(N) == 1
-        vc = cd2cp(V(:,idx(j)));
-    else
-        vc = zeros(max(N),1);
-        csN = cumsum([0 N]);
-        for jj = 1:numel(N)
-            % We can save time (and FFTs) by combining intervals which
-            % have the same discretisation length (say, N(i) = N(j)). TODO.
-            ii = csN(jj) + (1:N(jj)).';
-            tmp = cd2cp(V(ii,idx(j)));
-            vc(1:N(jj)) = vc(1:N(jj))+tmp(end:-1:1);
+    vc = mat2poly(disc,V(:,idx(j)));
+    vc = vc(isFun);
+    vcsq = 0;
+    for i = 1:numel(vc)
+        for q = 1:numel(vc{i})
+            vcsq = vcsq + (vc{i}{q}.*conj(vc{i}{q}));
         end
-        vc = vc(end:-1:1);
     end
-    vc = abs(vc);
-    
+    vc = sqrt( flipud( sum(vcsq,2) ) ); 
+      
     % Recipe: More than half of the energy in the last 90% of the Chebyshev
     % modes is in the highest 10% modes, and the energy of the last 90% is
     % not really small (1e-8) compared to the first 10% (i.e. is not noise).
@@ -409,26 +359,5 @@ end
 
 % Return the keepers.
 idx = idx( keeper );
-
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function p = cd2cp(y)
-%CD2CP  Chebyshev discretization to Chebyshev polynomials (by FFT).
-%   P = CD2CP(Y) converts a vector of values at the Chebyshev extreme
-%   points to the coefficients (ascending order) of the interpolating
-%   Chebyshev expansion.  If Y is a matrix, the conversion is done
-%   columnwise.
-
-p = zeros(size(y));
-if any(size(y)==1), y = y(:); end
-N = size(y,1)-1;
-
-yhat = fft([y(N+1:-1:1,:);y(2:N,:)])/(2*N);
-
-p(2:N,:) = 2*yhat(2:N,:);
-p([1,N+1],:) = yhat([1,N+1],:);
-
-if isreal(y),  p = real(p);  end
 
 end
