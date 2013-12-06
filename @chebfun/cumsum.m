@@ -64,6 +64,33 @@ funs = f.funs;
 numFuns = numel(funs);
 numCols = size(f.funs{1}, 2);
 
+% Preprocess for SINGFUN. If a FUN has nontrivial exponents at both
+% endpoints, then a break point is introduced to accommodate the disability
+% of @SINGFUN/CUMSUM for handling functions with non-zero exponent at both
+% ends.
+domOld = f.domain;
+brkPts = [];
+toBreak = 0;
+
+% Is there any SINGFUN involved has non-zero exponent at both ends? If so,
+% set the flag for introducing new break points true and then take the
+% mid-point of these domains as the new break points.
+for j = 1:numFuns
+    if ( isa(f.funs{j}.onefun, 'singfun') && all( f.funs{j}.onefun.exponents ) )
+        toBreak = 1;
+        brkPts = [brkPts mean(f.domain(j:j+1))];
+    end
+end
+
+% Introduce new break points using RESTRICT.
+if ( toBreak )
+    domNew = sort([domOld, brkPts]);
+    f = restrict(f, domNew);
+    dom = f.domain;
+    funs = f.funs;
+    numFuns = numel(funs);
+end
+    
 % Loop m times:
 for l = 1:m
     
@@ -75,35 +102,40 @@ for l = 1:m
     end
     
     fa = deltas(1,:);
+    
+    % Main loop for looping over each piece and do the integration:    
     for j = 1:numFuns
         
         cumsumFunJ = cumsum(funs{j});
 
         if ( numFuns > 1 )
-            % We evaluate cumsumFunJ at both endpoints to see if the function
-            % value is finite. Infinite function value at the endpoints means
-            % cumsumFunJ is a singfun. If the function is infinite at the left
-            % end, then it doesn't make sense to shift the function up or down 
-            % to make its value zero at the left endpoint. If the function is 
-            % infinite at the right end, then shifting function up or down means
-            % we are computing SINGFUN + constant, which, in general, is not 
-            % accurate running out of the points which are allowed. Such a 
-            % difficulty may be mitigated when SING MAP is re-adopted. Also note
-            % that we can't prevent the case where a constant is added to a
-            % SINGFUN with positive exponent, e.g. x.^(0.5) + 1, since in this
-            % level we don't know the type of the ONEFUN of each FUN.
+            % We check if the current piece, i.e. cumsumFunJ is a SINGFUN. If
+            % so, then we are loath to shift the current piece up or down to 
+            % stick the left end of the current piece to the right end of the 
+            % last one, since SINGFUN + CONSTANT won't be accurate and may 
+            % trigger annoying SINGFUN warning messages. Such a difficulty may 
+            % be mitigated when SING MAP is re-adopted. Also if the last piece
+            % is infinite at the right end, then shifting the current piece to
+            % concatenate doesn't make any sense.
             
-            lval = get(cumsumFunJ, 'lval');
-            rval = get(cumsumFunJ, 'rval');
-            if ( all(isfinite(lval)) && all(isfinite(rval)) )
+            if ( ~isa(cumsumFunJ.onefun, 'singfun') )
+                % If the current piece is not a SINGFUN, then we first normalize 
+                % the current piece to force a zero left boundary value.
                 cumsumFunJ = cumsumFunJ - lval;
-                if ( all(fa ~= 0) && all(isfinite(fa)) )
+                
+                % If the last piece has finite right boundary value, then
+                % normalize the current piece once more to stick the left end of
+                % the current piece to the right end of the last one.
+                if ( all(isfinite(fa)) )
                     cumsumFunJ = cumsumFunJ + fa;
                 end
-                fa = get(cumsumFunJ, 'rval') + deltas(j+1,:); 
             end
+            
+            % Update the right boundary value of the last piece.
+            fa = get(cumsumFunJ, 'rval') + deltas(j+1,:);
         end
         
+        % Store the current piece:
         funs{j} = cumsumFunJ;
         
     end
@@ -127,4 +159,3 @@ for k = 1:numel(f.funs)
 end
 
 end
-
