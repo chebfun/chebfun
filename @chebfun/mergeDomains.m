@@ -27,12 +27,6 @@ end
 % Sort each of the domains:
 % doms = cellfun(@sort, doms, 'UniformOutput', false);
 
-% Check to see if the domains are compatible:
-ends = cellfun(@(dom) dom([1 end]), doms, 'UniformOutput', false);
-diffEnds = cell2mat(ends.') - repmat(ends{1}, numel(doms), 1);
-if ( any(diffEnds(:) > tol) )
-    error('CHEBFUN:mergeDomains:incompat', 'Incompatible domains.');
-end
 
 % Choose a tolerance:
 if ( isscalar(varargin{end}) )
@@ -42,6 +36,13 @@ if ( isscalar(varargin{end}) )
 else
     % 10*eps*hscale:
     tol = 10*eps*max(cellfun(@max, doms));
+end
+
+% Check to see if the domains are compatible:
+ends = cellfun(@(dom) dom([1 end]), doms, 'UniformOutput', false);
+diffEnds = cell2mat(ends.') - repmat(ends{1}, numel(doms), 1);
+if ( any(diffEnds(:) > tol) )
+    error('CHEBFUN:mergeDomains:incompat', 'Incompatible domains.');
 end
 
 j = 1;
