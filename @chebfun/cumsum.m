@@ -121,6 +121,7 @@ for l = 1:m
             if ( ~isa(cumsumFunJ.onefun, 'singfun') )
                 % If the current piece is not a SINGFUN, then we first normalize 
                 % the current piece to force a zero left boundary value.
+                lval = get(cumsumFunJ, 'lval');
                 cumsumFunJ = cumsumFunJ - lval;
                 
                 % If the last piece has finite right boundary value, then
@@ -132,6 +133,7 @@ for l = 1:m
             end
             
             % Update the right boundary value of the last piece.
+            rval = get(cumsumFunJ, 'rval');
             fa = get(cumsumFunJ, 'rval') + deltas(j+1,:);
         end
         
