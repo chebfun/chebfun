@@ -14,8 +14,8 @@ if ( isa(discType, 'function_handle') )
     % Create a discretization object
     disc = discType(L);  
     
-    % MErge domains of the operator and the rhs:
-    disc = mergeDomains(disc, L, f); % TODO: Why does this involve disc?
+    % Merge domains of the operator and the rhs:
+    disc = mergeDomains(disc,f); 
     
     % Set the allowed discretisation lengths: (TODO: A preference?)
     dimVals = floor(2.^[3 4 5 6 7 8 8.5 9 9.5 10 10.5 11]);

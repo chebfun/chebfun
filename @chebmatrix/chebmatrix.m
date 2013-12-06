@@ -27,7 +27,10 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         end
         
         function d = get.domain(L)
-            d = chebmatrix.mergeDomains(L.blocks); 
+            isnum = cellfun(@isnumeric,L.blocks);
+            blocks = L.blocks(~isnum);
+            d = cellfun(@(x) x.domain,blocks,'uniform',false);
+            d = chebfun.mergeDomains(d{:}); 
         end
         
         function d = getDomain(L)
@@ -58,12 +61,5 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         end
         
     end
-          
-    methods ( Static )
-        
-        % Union of all breakpoints, with "fuzzy" equality.
-        d = mergeDomains(blocks)       
-        
-    end
-    
+              
 end
