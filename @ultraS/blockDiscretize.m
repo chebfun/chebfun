@@ -1,9 +1,10 @@
-function L = blockDiscretize(disc, block)
+function [L, S] = blockDiscretize(disc, block)
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
+S = [];
 if (isa(block, 'operatorBlock') )
     if ( ~isempty(disc.coeffs) )
-        L = quasi2USdiffmat(disc);
+        [L, S] = quasi2USdiffmat(disc);
     else
         error
     end
