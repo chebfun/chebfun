@@ -23,7 +23,7 @@ classdef ultraS < chebDiscretization
             end
             
             disc.source = source; 
-            disc.domain = source.domain;
+            disc.domain = union(source.domain, disc.domain); %TODO: mergeDomains
             
             % Obtain the coeffs and output psace required for this source:
             disc.coeffs = getCoeffs(source);
