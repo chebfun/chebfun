@@ -149,12 +149,12 @@ g = cumsum(f);
 x = diff(domCheck) * rand(100, 1) + domCheck(1);
 
 g = restrict(g, domCheck);
-fval = feval(g, x);
+gval = feval(g, x);
 f_check = chebfun(op, domCheck, 'splitting', 'on');
 g_check = cumsum(f_check);
 
 vals_check = feval(g_check, x);
-err = fval - vals_check;
+err = gval - vals_check;
 pass(12) = all( norm(err-mean(err), inf) < 1e3*get(f,'epslevel')*norm(vals_check, inf) );
 
 % [TODO]:  Check fractional antiderivatives once implemented.
