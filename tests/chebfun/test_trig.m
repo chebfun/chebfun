@@ -21,9 +21,6 @@ trigFunctions = {@acos, @acosd, @acosh, @acot, @acotd, @acoth, @acsc, ...
 
 % [TODO]: Add tests for ATAN2() and ATAN2D().
 
-% Preallocate pass matrix.
-pass = zeros(1, numel(trigFunctions));
-
 % Function with which we will be composing.  (The reason for the shift and
 % scaling, etc. is to prevent any problems with the functions under test from
 % evaluating to Inf.)

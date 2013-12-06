@@ -13,9 +13,6 @@ b = -0.64;
 c = 1.28;
 d = -1.28;
 
-% Pre-allocate pass matrix
-pass = zeros(1, 5);
-
 % fractional root at the left endpoint and the function value is bounded.
 f = singfun(@(x) (1+x).^a.*exp(x), [a 0], {'root', 'none'}, [], [], pref);
 [y, x] = minandmax(f);

@@ -11,7 +11,6 @@ end
 seedRNG(6178);
 x = 2 * rand(100, 1) - 1;
 
-pass = zeros(2, 17); % Pre-allocate pass matrix
 for n = 1:4
     switch ( n )
         case 1

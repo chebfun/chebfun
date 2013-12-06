@@ -4,8 +4,6 @@ if ( nargin == 0 )
     pref = chebpref();
 end
 
-pass = zeros(1, 3);
-
 f = chebfun(@(x) [sin(x), cos(x), exp(x)], pref);
 g = chebfun(@(x) [sin(x), cos(x)], pref);
 h = extractColumns(f, 1:2);
