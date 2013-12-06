@@ -6,7 +6,7 @@ n = disc.dimension;
 % chop off some rows and columns
 v = [];
 nn = cumsum([0 n]);
-P = eye(size(A));
+P = eye(size(A,1));
 for k = 1:numel(dom)-1
     v = [v m(k) + nn(k) + (1:(n(k)-m(k)))];
 end
