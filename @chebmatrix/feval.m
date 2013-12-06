@@ -1,5 +1,7 @@
 function out = feval(f, x, varargin)
 %FEVAL   Evaluate a CHEBMATRIX of CHEBFUN objects and doubles.
+%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  See http://www.chebfun.org for Chebfun information.
 %   FEVAL(F, x) evaluates the CHEBMATRIX F at the entries of the matrix X. Since
 %   it doesn't make sense to evaluate an operator at a point, an error if thrown
 %   if F contains a LINBLOCK object.

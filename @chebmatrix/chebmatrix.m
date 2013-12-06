@@ -1,5 +1,7 @@
 classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebmatrix
     % No size/compatability checking whatsoever!
+%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  See http://www.chebfun.org for Chebfun information.
     
     properties
         blocks = {};
@@ -37,55 +39,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         function d = get.diffOrder(L)
             d = getDiffOrder(L);
         end
-        
-        function k = numbc(L)
-            % NUMBC(L) returns the number of constraints attached to L.
-            k = length(L.constraints);
-        end
-        
-        function t = blockClasses(L)
-            t = cellfun(@class, L.blocks, 'uniform', false);
-        end
-        
-        function varargout = size(L, varargin)
-            %SIZE Number of blocks within the chebmatrix.
-            % S = SIZE(L) returns both dimensions.
-            % S = SIZE(L, K) returns Kth dimension (K = 1,2).
-            % [M, N] = SIZE(L) returns both as scalars.
-            [varargout{1:nargout}] = size(L.blocks, varargin{:});
-        end
-                
-        function t = isempty(L)
-            t = isempty(L.blocks);
-        end
-        
-        function display(L)
-            [m, n] = size(L);
-            fprintf('\n  %ix%i block chebmatrix of types:\n\n', m, n)
-            disp( blockClasses(L) )
-        end
-                
-        function C = horzcat(varargin)
-            C = cat(2, varargin{:});
-        end
-        
-        function C = vertcat(varargin)
-            C = cat(1, varargin{:});
-        end
-        
-        function C = minus(A, B)
-            C = plus(A, -B);
-        end
-        
-        function u = mldivide(L, f)
-            u = linsolve(linop(L), f);
-        end
-        
-        function out = iszero(f)
-            % TODO: Implement this properly (for linearity detection)
-            out = false;
-        end
-        
+               
         function d = getDiffOrder(A)
             d = zeros(size(A));
             for j = 1:numel(A.blocks);
@@ -95,15 +49,16 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             end
         end
         
-    end
-      
-    methods ( Access = private )
+        function out = isFunVariable(A,k)
+            [rowSize, colSize] = blockSizes(A);
+            out = isinf(colSize(1, :));
+            if ( nargin > 1 )
+                out = out(k);
+            end
+        end
         
-        % Multiply chebmatrix by scalar.
-        C = scalartimes(A, z)
-        
     end
-    
+          
     methods ( Static )
         
         % Union of all breakpoints, with "fuzzy" equality.

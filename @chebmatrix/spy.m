@@ -1,14 +1,15 @@
 function output = spy(A)
 
+%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  See http://www.chebfun.org for Chebfun information.
 dom = A.domain;
 if length(dom)==2
     dim = 12;
 else
     dim = repmat(8,[1 length(dom)-1]);
 end
-d = A.discretizer(A,dim,dom);
-data = matrix(d);
-%data = discretizeBlocks(A, 10);
+data = matrix(A,dim,dom);
+
 h = cellplot(data);
 % CELLPLOT seems to cover up the text representations of double
 % values. We give a positive z-value so that they sit on top again.
