@@ -8,6 +8,10 @@ function disc = mergeDomains(disc,varargin)
 % NEWDSC = MERGEDOMAINS(DSC,A1,A2,...) does the same using the domains of the
 % chebmatrices A1,A2,....
 
+if ( nargin == 1 )
+    return
+end
+
 if isnumeric(varargin{1})
      d = varargin;
 else
