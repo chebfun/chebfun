@@ -37,17 +37,30 @@ for j = 1:numInts
     % Check if the first subinterval includes the left endpoint of the original
     % domain (i.e., -1).
     
-    if ( s(j) == -1 )
-        % Define the new operator:
-        op = @(x) feval(f, ((1 - x)*s(1) + (1 + x)*s(2))/2);
+    if ( ( s(j) == -1 ) && ( f.exponents(1) ) )
         
-        if ( f.exponents(1) ~= 0 )
-            % Call the singfun constructor:
-            gtmp = singfun(op, [f.exponents(1), 0], {'sing', 'none'});
+        % Create an empty SINGFUN:
+        gtmp = singfun();
+        
+        % Inherit the exponents:
+        gtmp.exponents = [f.exponents(1), 0];
+        
+        % Construct the smoothPart of the restricted SINGFUN:
+        if ( ~f.exponents(2) )
+            
+            % If the exponent of the right end is zero, it's an easy task:
+            gtmp.smoothPart = ((1+s(2))/2)^f.exponents(1)*...
+                restrict(f.smoothPart, s(1:2));
+            
         else
-            % Call the smoothfun constructor:
-            gtmp = smoothfun.constructor(op, [], [], []);
+            
+            % Otherwise:
+            gtmp.smoothPart = ((1+s(2))/2)^f.exponents(1)*...
+                restrict(f.smoothPart, s(1:2)).*...
+                smoothfun.constructor(@(x)(1-s(2)*(x+1)/2-(x-1)/2).^f.exponents(2));
+            
         end
+        
         % Put in cell:
         g{1} = gtmp;
         
@@ -57,25 +70,37 @@ for j = 1:numInts
     % Check if the last subinterval includes the right endpoint of the original
     % domain (i.e., 1).
     
-    if ( s(j+1) == 1 )
-        % Define the new operator:
-        op = @(x) feval(f, ((1 - x)*s(end-1) + (1 + x)*s(end))/2);
+    if ( ( s(j+1) == 1 ) && ( f.exponents(2) ) )
         
-        if ( f.exponents(2) ~= 0 )
-            % Call the singfun constructor:
-            gtmp = singfun(op, [0, f.exponents(2)], {'none', 'sing'});
+        % Create an empty SINGFUN:
+        gtmp = singfun();
+        
+        % Inherit the exponents:
+        gtmp.exponents = [0, f.exponents(2)];
+        
+        % Construct the smoothPart of the restricted SINGFUN:
+        if ( ~f.exponents(1) )
+
+            % If the exponent of the left end is zero, it's an easy task:
+            gtmp.smoothPart = ((1-s(end-1))/2)^f.exponents(2)*...
+                restrict(f.smoothPart, s(end-1:end));
             
         else
-            % Call the smoothfun constructor:
-            gtmp = smoothfun.constructor(op, [], [], []);
+            
+            % Otherwise:
+            gtmp.smoothPart = ((1-s(end-1))/2)^f.exponents(2)*...
+                restrict(f.smoothPart, s(end-1:end)).*...
+                smoothfun.constructor(@(x)(s(end-1)*(1-x)/2+(x+1)/2+1).^f.exponents(1));
+
         end
+        
         % Put in cell:
         g{end} = gtmp;
         
         continue
     end
     
-    % In other subintervals, we only consider smoothfuns.
+    % For the subintervals where the piece is just a smoothfun:
     
     % Define the new operator:
     op = @(x) feval(f, ((1 - x)*s(j) + (1 + x)*s(j+1))/2);
@@ -85,6 +110,7 @@ for j = 1:numInts
     
     % Put in cell:
     g{j} = gtmp;
+    
 end
 
 % If there is only one subinterval, return the singfun, instead of a cell:
