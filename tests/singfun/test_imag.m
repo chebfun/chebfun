@@ -7,9 +7,6 @@ if ( nargin < 1 )
     pref = chebpref();
 end
 
-% Pre-allocate pass matrix
-pass = zeros(1, 6);
-
 % Check for empty cases:
 f = singfun();
 pass(1) = isempty(imag(f));

@@ -14,8 +14,6 @@ dom = [-2 7];
 seedRNG(7681);
 x = diff(dom) * rand(1000, 1) + dom(1);
 
-pass = zeros(1, 9); % Pre-allocate pass matrix.
-
 %%
 % Spot-check values for a couple of functions.  We can only expect
 % accuracy on the order of the truncation level, so we use this as our

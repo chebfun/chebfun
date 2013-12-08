@@ -4,7 +4,7 @@ function [B,P] = resize(disc,A,m,n)
 %  See http://www.chebfun.org for Chebfun information.
 if ( m == n )
     B = A;
-    P = eye(size(A));
+    P = eye(size(A,1));
     return
 end
         

@@ -5,9 +5,6 @@ if ( nargin < 1 )
     pref = chebpref();
 end
 
-% Pre-allocate pass matrix:
-pass = zeros(4, 6); 
-
 % Initialise random vectors:
 seedRNG(6178);
 x = 2 * rand(100, 1) - 1;

@@ -1,8 +1,9 @@
 function [A,P,B] = useConstraints(disc,blocks)
-L = disc.source;
+
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
+L = disc.source;
 [rows,P] = disc.reproject(blocks);
 P = blkdiag(P{:});
 

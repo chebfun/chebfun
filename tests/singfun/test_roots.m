@@ -13,9 +13,6 @@ b = -0.56;
 c = 1.28;
 d = -1.28;
 
-% Pre-allocate pass matrix
-pass = zeros(1, 6);
-
 % fractional root at the left endpoint and the smooth part has no roots in 
 % [-1 1].
 f = singfun(@(x) (1+x).^a.*exp(x), [a 0], {'root', 'none'}, [], [], pref);

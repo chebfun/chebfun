@@ -19,9 +19,6 @@ c = 1.28;
 d = -1.28;
 e = -2.56;
 
-% Pre-allocate pass matrix
-pass = zeros(1, 9);
-
 %%
 % Tests with exact solution:
 

@@ -16,9 +16,6 @@ xr = 2 * rand(1000, 1) - 1;
 % List of functions to test.
 expFunctions = {@exp, @expm1};
 
-% Preallocate pass matrix.
-pass = zeros(1, numel(expFunctions));
-
 % Function with which we will be composing.
 base_op = @(x) sign(x - 0.1).*abs(x + 0.2).*sin(3*x);
 f = chebfun(base_op, [-1 -0.2 0.1 1], pref);

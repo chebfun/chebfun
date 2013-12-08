@@ -20,9 +20,6 @@ d = -1.28;
 p = -0.2;
 q = -0.3;
 
-% Pre-allocate pass matrix
-pass = zeros(1, 10);
-
 % Check operation in the case of empty arguments.
 f = singfun();
 g = singfun(@(x) 1./(1+x), [-1, 0]);

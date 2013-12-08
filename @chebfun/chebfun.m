@@ -192,6 +192,9 @@ classdef chebfun
         % Determine values of chebfun at breakpoints.
         vals = getValuesAtBreakpoints(funs, ends, op);
         
+        % Merge domains.
+        newDom = mergeDomains(varargin)
+        
         % ODE113 with CHEBFUN output.
         [t, y] = ode113(varargin);
         
@@ -209,6 +212,9 @@ classdef chebfun
         
         % Cubic spline interpolant:
         f = spline(x, y, d);
+        
+        % Which interval is a point in?
+        out = whichInterval(dom, x);
         
     end
 

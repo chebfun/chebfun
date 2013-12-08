@@ -62,6 +62,10 @@ classdef blockFunction
             Z = blockFunction( @(z) chebfun(0,domain) );
         end
         
+        function z = zero(A)
+            z = blockFunction( @(u) 0 );
+        end
+
         function F = mult(A,f)
             F = blockFunction( @(z) times(f,z) );
         end    

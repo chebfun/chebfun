@@ -1,7 +1,9 @@
 function A = blockMatrix(disc,item)
-if ( nargin < 2 )
+
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
+
+if ( nargin < 2 )
     item = disc.source;
 end
 if isa(item,'linBlock')

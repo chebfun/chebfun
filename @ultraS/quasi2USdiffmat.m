@@ -1,4 +1,4 @@
-function L = quasi2USdiffmat(disc)
+function [L, S] = quasi2USdiffmat(disc)
 
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
@@ -24,6 +24,8 @@ for j = 1:size(c, 2)
     %form D^(j-1) term.
     L = L + convert(dummy, j-1, outputSpace)*mult(dummy, c{j}, j-1)*diff(dummy, j - 1);
 end
+
+S = convert(dummy, 0, outputSpace);
 
 
 end
