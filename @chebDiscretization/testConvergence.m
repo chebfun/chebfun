@@ -5,7 +5,7 @@ function [isDone,epsLevel] = testConvergence(disc,values)
 
 % We will test on an arbitrary linear combination of the individual functions. 
 s = 1 ./ (3*(1:numel(values))).';
-newvalues = cell2mat(values.')*s;
+newvalues = cell2mat(values(:).')*s;
 
 % Convert to a piecewise chebfun.
 u = toFunction(disc,newvalues);

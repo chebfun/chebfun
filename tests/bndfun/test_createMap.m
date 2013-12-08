@@ -2,8 +2,6 @@
 
 function pass = test_createMap(pref)
 
-pass = zeros(1, 2); % Pre-allocate pass matrix.
-
 dom = [-2 7];
 map = bndfun.createMap(dom);
 

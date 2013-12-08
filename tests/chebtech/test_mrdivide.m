@@ -14,7 +14,6 @@ x = 2 * rand(100, 1) - 1;
 % Random number to use as a scalar constant.
 alpha = -0.194758928283640 + 0.075474485412665i;
 
-pass = zeros(2, 9); % Pre-allocate pass matrix
 for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();

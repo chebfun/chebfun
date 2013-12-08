@@ -14,7 +14,6 @@ end
 seedRNG(6178);
 x = 2 * rand(100, 1) - 1;
 
-pass = zeros(2, 10); % Pre-allocate pass matrix
 for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();

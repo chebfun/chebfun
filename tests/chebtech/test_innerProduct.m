@@ -11,7 +11,6 @@ end
 alpha = -0.194758928283640 + 0.075474485412665i;
 beta = -0.526634844879922 - 0.685484380523668i;
 
-pass = zeros(2, 11); % Pre-allocate pass matrix
 for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();

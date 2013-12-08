@@ -7,16 +7,15 @@ if ( nargin < 3 )
     discType = L.discretizer;
 end
 
-[rowSize, colSize] = blockSizes(L);
-isFunVariable = isinf(colSize(1, :));
+isFun = isFunVariable(L); 
 
 %% Set up the discretisation:
 if ( isa(discType, 'function_handle') )
     % Create a discretization object
     disc = discType(L);  
     
-    % MErge domains of the operator and the rhs:
-    disc = mergeDomains(disc, L, f); % TODO: Why does this involve disc?
+    % Merge domains of the operator and the rhs:
+    disc = mergeDomains(disc,f); 
     
     % Set the allowed discretisation lengths: (TODO: A preference?)
     dimVals = floor(2.^[3 4 5 6 7 8 8.5 9 9.5 10 10.5 11]);
@@ -55,11 +54,11 @@ for dim = dimVals
     % Solve the linear system:
     [v, disc] = disc.mldivide(A, b);
     
-    % Convert the array of data to a cell
-    u = myNum2Cell(v, disc.dimension, isFunVariable);
-    
-     % Test the happieness of the function pieces:
-     [isDone, epsLevel] = testConvergence(disc, u(isFunVariable));
+    % Convert the different components into cells
+    u = partition(disc,v);
+   
+    % Test the happieness of the function pieces:
+    [isDone, epsLevel] = testConvergence(disc, u(isFun));
     
     if ( all(isDone) )
         break
@@ -79,7 +78,7 @@ end
 % The variable u is a cell array with the different components of the solution.
 % Because each function component may be piecewise defined, we will loop through
 % one by one.
-for k = find( isFunVariable )
+for k = find( isFun )
     u{k} = disc.toFunction(u{k}); 
 %     u{k} = simplify(u{k}, epsLevel);
 end

@@ -7,8 +7,6 @@ if ( nargin == 0 )
 end
 
 % Initialise pass matrix:
-pass = zeros(2, 2);
-
 for n = 1:2
     
     % Test for both chebtech1 and chetech2

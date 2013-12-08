@@ -10,7 +10,6 @@ end
 
 tol = 20*pref.eps;
 
-pass = zeros(2, 2); % Pre-allocate pass matrix.
 for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();
