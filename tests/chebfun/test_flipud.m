@@ -45,4 +45,44 @@ err = feval(gg, xr) - gg_exact(xr);
 pass(8) = norm(err(:), inf) < 10*gg.vscale.*gg.epslevel;
 pass(9) = isequal(flipud(gg), g.');
 
+%% Test on integration of SINGFUN - A column CHEBFUN:
+
+% Set the domain:
+dom = [-2 7];
+
+% Generate a few random points to use as test values.
+seedRNG(6178);
+x = diff(dom) * rand(100, 1) + dom(1);
+
+pow = -0.5;
+op = @(x) (x - dom(1)).^pow.*sin(100*x).*(x - dom(2)).^pow;
+f = chebfun(op, dom, 'exps', [pow pow], 'splitting', 'on');
+f = f.';
+g = flipud(f);
+vals_f = feval(f,x);
+vals_g = feval(g,x);
+err = vals_f - vals_g;
+pass(10) = ( norm(err, inf) < get(f,'epslevel')*norm(vals_f, inf) );
+
+%% Test on integration of SINGFUN - a row CHEBFUN:
+
+% Set the domain:
+dom = [-2 7];
+
+% Generate a few random points to use as test values.
+seedRNG(6178);
+x = diff(dom) * rand(100, 1) + dom(1);
+
+pow1 = -0.5;
+pow2 = -0.5;
+op = @(x) (x - dom(1)).^pow1.*sin(100*x).*(x - dom(2)).^pow2;
+opflip = @(x) (dom(1)-x).^pow1.*sin(100*(sum(dom)-x)).*(dom(2)-x).^pow2;
+
+f = chebfun(op, dom, 'exps', [pow1 pow2], 'splitting', 'off');
+g = flipud(f);
+vals_g = feval(g,x);
+vals_exact = feval(opflip,x);
+err = vals_g - vals_exact;
+pass(11) = ( norm(err, inf) < 1e2*get(f,'epslevel')*norm(vals_exact, inf) );
+
 end

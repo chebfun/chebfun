@@ -99,9 +99,7 @@ dom = [-2 7];
 domNew = [-2 1 3.5 6.5 7];
 pow = -0.5;
 op = @(x) (x - dom(1)).^pow.*sin(100*x).*(x - dom(2)).^pow;
-pref.singPrefs.exponents = [pow 0];
-pref.enableBreakpointDetection = 1;
-f = chebfun(op, dom, pref);
+f = chebfun(op, dom, 'exps', [pow pow], 'splitting', 'on');
 pass(23) = test_restrict_one_function(f, op, domNew, map, xr);
 
 end
