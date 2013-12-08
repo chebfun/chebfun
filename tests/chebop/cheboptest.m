@@ -4,8 +4,8 @@ p.plotting = 'on';
 p.damped = 1;
 switch problemno
     case 1
-%         p.discretization = @ultraS;
-        N = chebop(@(x,u) diff(u,2) + sin(u));
+        p.discretization = @ultraS;
+        N = chebop(@(x,u) diff(u,2) + sin(u),[-1 0 1]);
         N.lbc = @(u) u-2; N.rbc = @(u) u -2;
         N.init = chebfun(@(x) 0*x+2);
         rhs = 0;
@@ -29,10 +29,10 @@ switch problemno
         rhs = 0;
     case 5
         % Problem with a breakpoint
-        N = chebop(@(x,u) diff(u,2) + sign(x).*sin(u));
+        N = chebop(@(x,u) diff(u,2) + sign(x).*sin(u),[-1 .5 1]);
         N.lbc = @(u) u-2; N.rbc = @(u) u -2;
         N.init = chebfun(@(x) 0*x+2);
         rhs = 0;
         
 end
-[u, info] = solvebvp(N, rhs);
+[u, info] = solvebvp(N, rhs, p);
