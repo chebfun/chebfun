@@ -95,6 +95,15 @@ newImps = oldImps;
 newDom = oldDom;
 newFuns = oldFuns;
 
+% Any SINGFUN involved?
+isSing = 0;
+for k = 1:numel(f.funs)
+    if isa(f.funs{k}.onefun, 'singfun')
+        isSing = 1;
+        break
+    end
+end
+
 % Loop through the index:
 for k = index
     % Find corresponding break:
@@ -132,6 +141,23 @@ for k = index
     g.impulses(k-1,:,1) = get(oldFuns{k-1}, 'lval');
     g.impulses(k+1,:,1) = get(oldFuns{k}, 'rval');
 
+    % Grab the correct exponents:
+    if ( isSing )
+        if ( ~isa(newFuns{j-1}.onefun, 'singfun') && ...
+                ~isa(newFuns{j}.onefun, 'singfun') )
+            pref.singPrefs.exponents = [];
+        elseif ( isa(newFuns{j-1}.onefun, 'singfun') && ...
+                ~isa(newFuns{j}.onefun, 'singfun') )
+            pref.singPrefs.exponents = [newFuns{j-1}.onefun.exponents(1) 0];
+        elseif ( ~isa(newFuns{j-1}.onefun, 'singfun') && ...
+                isa(newFuns{j}.onefun, 'singfun') )
+            pref.singPrefs.exponents = [0 newFuns{j}.onefun.exponents(2)];
+        else
+            pref.singPrefs.exponents = [newFuns{j-1}.onefun.exponents(1) ...
+                newFuns{j}.onefun.exponents(2)];
+        end
+    end
+    
     % Attempt to form a merged FUN:
     mergedFun = fun.constructor(@(x) feval(g, x),  ...
         [newDom(j-1), newDom(j+1)], vs, hs, pref);
