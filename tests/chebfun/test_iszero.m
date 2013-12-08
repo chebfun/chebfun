@@ -37,7 +37,8 @@ pass(9) = all(iszero(f) == [1 0]);
 % Integration of SINGFUN:
 dom = [-2 7];
 pow = -1.64;
-f = chebfun(@(x) sin(100*x).*(x-dom(1)).^pow, dom, 'exps', [pow 0], 'splitting', 'on');
+f = chebfun(@(x) sin(100*x).*(x-dom(1)).^pow, dom, 'exps', [pow 0], ...
+    'splitting', 'on');
 pass(10) = ~iszero(f);
 
 % [TODO]: Add these once SUBSREF is implemented.

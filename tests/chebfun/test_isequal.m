@@ -38,8 +38,10 @@ pass(7) = ~isequal(f, g);
 % Integration of SINGFUN:
 dom = [-2 7];
 pow = -1.64;
-f = chebfun(@(x) sin(100*x).*(x-dom(1)).^pow, dom, 'exps', [pow 0], 'splitting', 'on');
-g = chebfun(@(x) sin(100*x).*(x-dom(1)).^pow, dom, 'exps', [pow 0], 'splitting', 'off');
+f = chebfun(@(x) sin(100*x).*(x-dom(1)).^pow, dom, 'exps', [pow 0], ...
+    'splitting', 'on');
+g = chebfun(@(x) sin(100*x).*(x-dom(1)).^pow, dom, 'exps', [pow 0], ...
+    'splitting', 'off');
 pass(8) = ~isequal(f, g);
 
 end

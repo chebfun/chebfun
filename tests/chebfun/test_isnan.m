@@ -31,7 +31,8 @@ pass(6) = isnan(f);
 % Integration of SINGFUN:
 dom = [-2 7];
 pow = -1.64;
-f = chebfun(@(x) sin(100*x).*(x-dom(1)).^pow, dom, 'exps', [pow 0], 'splitting', 'on');
+f = chebfun(@(x) sin(100*x).*(x-dom(1)).^pow, dom, 'exps', [pow 0], ...
+    'splitting', 'on');
 pass(7) = ~isnan(f);
 
 end
