@@ -8,7 +8,8 @@ g = chebfun2(@(x,y) cos(10*x.*y), [-2 2 -2 2]);
 %% Basic operations 
 
 h = f + g; 
-h = f*g; 
+h = f*g;
+h = f.*f
 h = -f; 
 2*h;
 

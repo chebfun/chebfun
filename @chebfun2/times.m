@@ -8,7 +8,7 @@ if ( isa(f, 'chebfun2') )    % CHEBFUN2 .* ???
     elseif ( isa( g, 'chebfun2') )
         %domain = domain_check(f, g);
         domain = [-1 1 -1 1];
-        h = chebfun2(@(x, y) fevalm(f, x, y).*fevalm(g, x, y), domain);
+        h = chebfun2(@(x, y) feval(f, x, y).*feval(g, x, y), domain);
     else
        error('CHEBFUN:MTIMES:unknown', ...
           ['Undefined function ''mtimes'' for input arguments of type %s ' ...
