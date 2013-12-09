@@ -3,6 +3,11 @@ function g = constructor(g, op, domain, varargin)
 if ( nargin < 3 || isempty(domain) )
     domain = [-1 1 -1 1];
 end
+
+if ( isa(op, 'double') )
+   g = constructor(g, @(x,y) op + 0*x, domain, varargin); 
+   return
+end
     
 % Check that the operator then make it complex.
 if ( nargin(op) == 1 )
