@@ -53,6 +53,18 @@ out = g(:, end);
 pass(10) = isnumeric(out) && all(size(out) == [3, 1]) && ... 
     norm(out - [0 -1 1].', inf) < epslevel(f);
 
+%% Integration of SINGFUN:
+
+% Set a domain
+dom = [-2 7];
+
+pow = -0.5;
+op = @(x) (x - dom(2)).^pow.*sin(100*x);
+pref.singPrefs.exponents = [0 pow];
+pref.enableBreakpointDetection = 1;
+f = chebfun(op, dom, pref);
+out = f(end);
+pass(11) = ( isnumeric(out) ) && all( size(out) == ones(1,2) );
 
 end
 
