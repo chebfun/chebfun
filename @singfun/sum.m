@@ -49,36 +49,19 @@ function out = sum(f)
 %%
 % Trivial cases:
 if ( all(f.exponents == 0) )
-    % If both the exponents are trivial, then compute the integral by calling
-    % the sum in smoothfun.
+    % If both the exponents are trivial, then compute the integral by 
+    % calling the sum in smoothfun.
     out = sum(f.smoothPart);
     return
     
 elseif ( any(f.exponents <= -1) )
-    % The integral is divergent when at least one of f.exponents is smaller than
-    % or equal to -1.
+    % The integral is divergent when at least one of f.exponents is smaller
+    % than or equal to -1.
     
-    sl = sign(get(f.smoothPart, 'lval'));
-    sr = sign(get(f.smoothPart, 'rval'));
-     
-    if ( all(f.exponents <= -1) )
-        if  ( sl == sr )
-            out = sl.*inf;
-        else
-            out = NaN;
-        end
-        
-    elseif ( ((f.exponents(1) <= -1) && (sl == -1)) ||  ...
-             ((f.exponents(2) <= -1) && (sr == -1)) )
-        out = -inf;
-        
-    else
-        out = inf;
-        
-    end
+    out = inf;
     
     return
-
+    
 end
 
 %%

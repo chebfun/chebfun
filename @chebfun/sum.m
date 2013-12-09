@@ -97,6 +97,11 @@ function out = sumFullDom(f)
         % functions is always zero).
         out = out + sum(f.impulses(:,:,2));
     end
+    
+    % To avoid nonsense like Inf + 1i:
+    if ( isinf(out) )
+        out = inf;
+    end
 
 end
 
