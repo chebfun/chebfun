@@ -1,4 +1,4 @@
-function g = cscd(f, pref)
+function F = cscd(F, pref)
 %CSCD   Cosecant of a CHEBFUN, result in degrees.
 %   CSCD(F) computes the cosecant (in degrees) of the CHEBFUN F.
 %
@@ -15,7 +15,10 @@ if ( nargin == 1 )
     pref = chebpref();
 end
 
-% Call the compose method:
-g = compose(f, @cscd, pref);
+% Loop over the columns of F:
+for k = 1:numel(F)
+    % Call the compose method:
+    F(k) = compose(F(k), @cscd, pref);
+end
 
 end

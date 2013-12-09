@@ -1,4 +1,4 @@
-function g = atanh(f, pref)
+function F = atanh(F, pref)
 %ATANH   Inverse hyperbolic tangent of a CHEBFUN.
 %   ATANH(F) computes the inverse hyperbolic tangent of the CHEBFUN F.
 %
@@ -15,7 +15,10 @@ if ( nargin == 1 )
     pref = chebpref();
 end
 
-% Call the compose method:
-g = compose(f, @atanh, pref);
+% Loop over the columns of F:
+for k = 1:numel(F)
+    % Call the compose method:
+    F(k) = compose(F(k), @atanh, pref);
+end
 
 end

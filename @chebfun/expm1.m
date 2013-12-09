@@ -1,4 +1,4 @@
-function g = expm1(f, pref)
+function F = expm1(F, pref)
 %EXPM1   Compute EXP(F)-1 of a CHEBFUN accurately.
 %   EXPM1(F) computes EXP(F)-1 accurately in the case where the CHEBFUN F is
 %   small on its domain. Complex F is accepted.
@@ -16,7 +16,10 @@ if ( nargin == 1 )
     pref = chebpref();
 end
 
-% Call the compose method:
-g = compose(f, @expm1, pref);
+% Loop over the columns of F:
+for k = 1:numel(F)
+    % Call the compose method:
+    F(k) = compose(F(k), @expm1, pref);
+end
 
 end

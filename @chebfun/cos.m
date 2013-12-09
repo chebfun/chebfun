@@ -1,4 +1,4 @@
-function g = cos(f, pref)
+function F = cos(F, pref)
 %COS   Cosine of a CHEBFUN.
 %   COS(F) computes the cosine of the CHEBFUN F.
 %
@@ -22,7 +22,10 @@ end
 %        'COS is not defined for functions which diverge to infinity');
 %end
 
-% Call the compose method:
-g = compose(f, @cos, pref);
+% Loop over the columns of F:
+for k = 1:numel(F)
+    % Call the compose method:
+    F(k) = compose(F(k), @cos, pref);
+end
 
 end

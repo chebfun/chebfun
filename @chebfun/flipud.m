@@ -1,4 +1,4 @@
-function f = flipud(f)
+function F = flipud(F)
 %FLIPUD   Flip/reverse a CHEBFUN.
 %   G = FLIPUD(F), where F is a column CHEBFUN, returns a CHEBFUN G with the
 %   same domain as F but reversed; that is, G(x) = F(a+b-x), where the domain is
@@ -12,9 +12,17 @@ function f = flipud(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-if ( isempty(f) )
+if ( isempty(F) )
     return
 end
+
+for k = 1:numel(F)
+    F(k) = columnFlipud(F(k));
+end
+
+end
+   
+function f = columnFlipud(f)
 
 if ( ~f.isTransposed )
 
@@ -38,5 +46,7 @@ else
 
     % Transpose f and call FLIPLR():
     f = fliplr(f.').';
+
+end
 
 end

@@ -1,9 +1,9 @@
-function g = sind(f, pref)
+function F = sind(F, pref)
 %SIND   Sine of a CHEBFUN, result in degrees.
 %   SIND(F) computes the sine (in degrees) of the CHEBFUN F.
 %
-%   SIND(F, PREF) does the same but uses the CHEBPREF object PREF when
-%   computing the composition.
+%   SIND(F, PREF) does the same but uses the CHEBPREF object PREF when computing
+%   the composition.
 %
 % See also ASIND, SIN.
 
@@ -22,7 +22,10 @@ end
 %         'SIN is not defined for functions which diverge to infinity');
 % end
 
-% Call the compose method:
-g = compose(f, @sind, pref);
+% Loop over the columns of F:
+for k = 1:numel(F)
+    % Call the compose method:
+    F(k) = compose(F(k), @sind, pref);
+end
 
 end

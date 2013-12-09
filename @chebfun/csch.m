@@ -1,4 +1,4 @@
-function g = csch(f, pref)
+function F = csch(F, pref)
 %CSCH   Hyperbolic cosecant of a CHEBFUN.
 %   CSCH(F) computes the hyperbolic cosecant of the CHEBFUN F.
 %
@@ -15,7 +15,10 @@ if ( nargin == 1 )
     pref = chebpref();
 end
 
-% Call the compose method:
-g = compose(f, @csch, pref);
+% Loop over the columns of F:
+for k = 1:numel(F)
+    % Call the compose method:
+    F(k) = compose(F(k), @csch, pref);
+end
 
 end

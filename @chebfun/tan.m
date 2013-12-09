@@ -1,4 +1,4 @@
-function g = tan(f, pref)
+function F = tan(F, pref)
 %TAN   Tangent of a CHEBFUN.
 %   TAN(F) computes the tangent of the CHEBFUN F.
 %
@@ -22,7 +22,10 @@ end
 %         'SIN is not defined for functions which diverge to infinity');
 % end
 
-% Call the compose method:
-g = compose(f, @tan, pref);
+% Loop over the columns of F:
+for k = 1:numel(F)
+    % Call the compose method:
+    F(k) = compose(F(k), @tan, pref);
+end
 
 end

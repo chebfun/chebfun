@@ -1,4 +1,4 @@
-function g = tanh(f, pref)
+function F = tanh(F, pref)
 %TANH   Hyperbolic tangent of a CHEBFUN.
 %   TANH(F) computes the hyperbolic tangent of the CHEBFUN F.
 %
@@ -15,7 +15,10 @@ if ( nargin == 1 )
     pref = chebpref();
 end
 
-% Call the compose method:
-g = compose(f, @tanh, pref);
+% Loop over the columns of F:
+for k = 1:numel(F)
+    % Call the compose method:
+    F(k) = compose(F(k), @tanh, pref);
+end
 
 end

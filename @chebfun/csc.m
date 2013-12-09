@@ -1,4 +1,4 @@
-function g = csc(f, pref)
+function F = csc(F, pref)
 %CSC   Cosecant of a CHEBFUN.
 %   CSC(F) computes the cosecant of the CHEBFUN F.
 %
@@ -15,7 +15,10 @@ if ( nargin == 1 )
     pref = chebpref();
 end
 
-% Call the compose method:
-g = compose(f, @csc, pref);
+% Loop over the columns of F:
+for k = 1:numel(F)
+    % Call the compose method:
+    F(k) = compose(F(k), @cos, pref);
+end
 
 end

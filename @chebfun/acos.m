@@ -1,4 +1,4 @@
-function g = acos(f, pref)
+function F = acos(F, pref)
 %ACOS   Inverse cosine of a CHEBFUN.
 %   ACOS(F) computes the inverse cosine of the CHEBFUN F.
 %
@@ -15,7 +15,10 @@ if ( nargin == 1 )
     pref = chebpref();
 end
 
-% Call the compose method:
-g = compose(f, @acos, pref);
+% Loop over the columns of F:
+for k = 1:numel(F)
+    % Call the compose method:
+    F(k) = compose(F(k), @acos, pref);
+end
 
 end

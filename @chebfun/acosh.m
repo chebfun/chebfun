@@ -1,4 +1,4 @@
-function g = acosh(f, pref)
+function F = acosh(F, pref)
 %ACOSH   Inverse hyperbolic cosine of a CHEBFUN.
 %   ACOSH(F) computes the inverse hypoerbolic cosine of the CHEBFUN F.
 %
@@ -15,7 +15,10 @@ if ( nargin == 1 )
     pref = chebpref();
 end
 
-% Call the compose method:
-g = compose(f, @acosh, pref);
+% Loop over the columns of F:
+for k = 1:numel(F)
+    % Call the compose method:
+    F(k) = compose(F(k), @acosh, pref);
+end
 
 end

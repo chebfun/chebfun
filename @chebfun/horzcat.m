@@ -1,9 +1,9 @@
 function out = horzcat(varargin)
 %HORZCAT   Horizontal concatenation of CHEBFUN objects.
 %   [A B] horizontally concatenates the CHEBFUN objects A and B to form an
-%   array-valued CHEBFUN. [A,B] does the same. Any number of CHEBFUN objects
-%   can be concatenated within one pair of brackets. Vertical concatenation is
-%   not supported.
+%   array-valued CHEBFUN or an array of CHEBFUN objects (depending on whether
+%   the interior breakpoints of A and B match or not). [A,B] does the same. Any
+%   number of CHEBFUN objects can be concatenated within one pair of brackets.
 %
 % See also VERTCAT, CAT.
 
@@ -11,10 +11,6 @@ function out = horzcat(varargin)
 % See http://www.chebfun.org for Chebfun information.
 
 % [TODO]: Vertical concatenation. (Chebmatrix / quasimatrix).
-
-% [TODO]: Currently if breakpoints don't match then we restrict. In future this
-% should instead return a quasimatrix, and the documentation above should be
-% updated to reflect this.
 
 % Remove empties:
 empties = cellfun(@isempty, varargin);
@@ -25,14 +21,24 @@ else
     varargin(empties) = [];
 end
 
+% Find the locations of the CHEBFUN objects in the inputs:
+chebfunLocs = cellfun('isclass', varargin, 'chebfun')
+chebfun1 = varargin{find(chebfunLocs, 1, 'first')}
+
+% Horizontal concatenation of ow CHEBFUN objects produces a CHEBMATRIX:
+if ( chebfun1(1).isTransposed )
+    out = chebmatrix(varargin);
+    return
+end
+
 % Promote doubles to CHEBFUN objects:
-chebfunLocs = cellfun('isclass', varargin, 'chebfun');
-domain1 = varargin{find(chebfunLocs, 1, 'first')}.domain;
+domain1 = chebfun1.domain;
 doubleLocs = find(~chebfunLocs);
 for k = doubleLocs
     varargin{k} = chebfun(varargin{k}, domain1);
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%% Deal with domains %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Grab the domains of each of the inputs:
 allDomainsCell = cellfun(@(f) f.domain, varargin, 'UniformOutput', false);
 
@@ -41,6 +47,7 @@ domainEnds = allDomainsCell{1}([1 end]);
 if ( any(cellfun(@(d) any(d([1 end]) ~= domainEnds), allDomainsCell)) )
     error('CHEBFUN:horzcat:domains', 'Inconsistent domains.');
 end
+% [TODO]: checkDomains?
 
 % Check to see if interior breakpoints differ:
 differentBreakpoints = false;
@@ -52,23 +59,46 @@ else
         differentBreakpoints = true;
     end
 end
-% Restrict / overlap if they do:
-if ( differentBreakpoints )
-    unionOfDomains = unique([allDomainsCell{:}]);
-    varargin = cellfun(@(f) restrict(f, unionOfDomains), varargin, ...
-        'UniformOutput', false);
-end
 
-% Concatenate the FUNs:
-out = varargin{1};
-numInts = numel(out.domain) - 1;
-for k = 1:numInts
-   funs = cellfun(@(f) f.funs{k}, varargin, 'UniformOutput', false);
-   out.funs{k} = horzcat(funs{:});
-end
+% TODO: Also check to see if an input is a SINGFUN.
 
-% Concatenate impulses:
-imps = cellfun(@(f) f.impulses, varargin, 'UniformOutput', false);
-out.impulses = cell2mat(imps);
+%%%%%%%%%%%%%%%%%%%%%%%%%%% FORM A CHEBFUN ARRAY %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+if ( differentBreakpoints )  % (form a CHEBFUN array)
+    isArrayCheb = cellfun(@(f) isa(f, 'chebfun') && size(f, 2) > 1, varargin);
+    if ( any(isArrayCheb) )
+        % Break up array-valued CHEBFUNs into single columns:
+        args = {};
+        for k = 1:numel(varargin)
+            args = [args, num2cell(varargin{k})]; %#ok<AGROW>
+        end
+    else
+        args = varargin;
+    end
+    numCols = numel(args);
+    % Initialise CHEBFUN array:
+    clear out
+    out(1, numCols) = chebfun();
+    % Assign columns/rows:
+    for k = 1:numCols
+        out(k) = args{k};
+    end
+    
+%%%%%%%%%%%%%%%%%%%%%%% FORM AN ARRAY-VALUED CHEBFUN %%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+else % (form an array-valued CHEBFUN) 
+    
+    % Concatenate the FUNs:
+    out = varargin{1};
+    numInts = numel(out.domain) - 1;
+    for k = 1:numInts
+        funs = cellfun(@(f) f.funs{k}, varargin, 'UniformOutput', false);
+        out.funs{k} = horzcat(funs{:});
+    end
+    % Concatenate impulses:
+    imps = cellfun(@(f) f.impulses, varargin, 'UniformOutput', false);
+    out.impulses = cell2mat(imps);
+
+end
 
 end

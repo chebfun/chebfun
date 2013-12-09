@@ -1,4 +1,4 @@
-function g = cosd(f, pref)
+function F = cosd(F, pref)
 %COSD   Cosine of a CHEBFUN, result in degrees.
 %   COSD(F) computes the cosine (in degrees) of the CHEBFUN F.
 %
@@ -22,7 +22,10 @@ end
 %         'COSD is not defined for functions which diverge to infinity');
 % end
 
-% Call the compose method:
-g = compose(f, @cosd, pref);
+% Loop over the columns of F:
+for k = 1:numel(F)
+    % Call the compose method:
+    F(k) = compose(F(k), @cosd, pref);
+end
 
 end

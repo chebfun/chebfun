@@ -1,9 +1,9 @@
-function g = sech(f, pref)
+function F = sech(F, pref)
 %SECH   Hyperbolic secant of a CHEBFUN.
 %   SECH(F) computes the hyperbolic secant of the CHEBFUN F.
 %
-%   SECH(F, PREF) does the same but uses the CHEBPREF object PREF when
-%   computing the composition.
+%   SECH(F, PREF) does the same but uses the CHEBPREF object PREF when computing
+%   the composition.
 %
 % See also ASECH.
 
@@ -15,7 +15,10 @@ if ( nargin == 1 )
     pref = chebpref();
 end
 
-% Call the compose method:
-g = compose(f, @sech, pref);
+% Loop over the columns of F:
+for k = 1:numel(F)
+    % Call the compose method:
+    F(k) = compose(F(k), @sech, pref);
+end
 
 end

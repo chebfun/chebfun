@@ -15,7 +15,7 @@ if ( isempty(f) )
 end
 
 numComponents = size(f.funs{1}, 2);
-if ( f.isTransposed )
+if ( f(1).isTransposed )
     g = mat2cell(f, ones(1, numComponents), 1);
 else
     g = mat2cell(f, 1, ones(1, numComponents));

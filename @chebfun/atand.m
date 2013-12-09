@@ -1,4 +1,4 @@
-function g = atand(f, pref)
+function F = atand(F, pref)
 %ATAN   Inverse tangent of a CHEBFUN, result in degrees.
 %   ATAN(F) computes the inverse tangent (in degrees) of the CHEBFUN F.
 %
@@ -15,7 +15,10 @@ if ( nargin == 1 )
     pref = chebpref();
 end
 
-% Call the compose method:
-g = compose(f, @atand, pref);
+% Loop over the columns of F:
+for k = 1:numel(F)
+    % Call the compose method:
+    F(k) = compose(F(k), @atand, pref);
+end
 
 end

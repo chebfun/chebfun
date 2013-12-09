@@ -1,4 +1,4 @@
-function g = coth(f, pref)
+function F = coth(F, pref)
 %COTH   Hyperbolic cotangent of a CHEBFUN.
 %   COTH(F) computes the hyperbolic cotangent of the CHEBFUN F.
 %
@@ -15,7 +15,10 @@ if ( nargin == 1 )
     pref = chebpref();
 end
 
-% Call the compose method:
-g = compose(f, @coth, pref);
+% Loop over the columns of F:
+for k = 1:numel(F)
+    % Call the compose method:
+    F(k) = compose(F(k), @coth, pref);
+end
 
 end

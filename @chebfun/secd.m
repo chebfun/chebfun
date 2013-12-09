@@ -1,9 +1,9 @@
-function g = secd(f, pref)
+function F = secd(F, pref)
 %SECD   Secant of a CHEBFUN, result in degrees.
 %   SECD(F) computes the secant (in degrees) of the CHEBFUN F.
 %
-%   SECD(F, PREF) does the same but uses the CHEBPREF object PREF when
-%   computing the composition.
+%   SECD(F, PREF) does the same but uses the CHEBPREF object PREF when computing
+%   the composition.
 %
 % See also ASECD, SEC.
 
@@ -15,7 +15,10 @@ if ( nargin == 1 )
     pref = chebpref();
 end
 
-% Call the compose method:
-g = compose(f, @secd, pref);
+% Loop over the columns of F:
+for k = 1:numel(F)
+    % Call the compose method:
+    F(k) = compose(F(k), @secd, pref);
+end
 
 end

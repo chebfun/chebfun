@@ -1,4 +1,4 @@
-function g = asech(f, pref)
+function F = asech(F, pref)
 %ASECH   Inverse hyperbolic secant of a CHEBFUN.
 %   ASECH(F) computes the inverse hyperbolic secant of the CHEBFUN F.
 %
@@ -15,7 +15,10 @@ if ( nargin == 1 )
     pref = chebpref();
 end
 
-% Call the compose method:
-g = compose(f, @asech, pref);
+% Loop over the columns of F:
+for k = 1:numel(F)
+    % Call the compose method:
+    F(k) = compose(F(k), @asech, pref);
+end
 
 end

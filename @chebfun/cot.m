@@ -1,4 +1,4 @@
-function g = cot(f, pref)
+function F = cot(F, pref)
 %COT   Cotangent of a CHEBFUN.
 %   COT(F) computes the cotangent of the CHEBFUN F.
 %
@@ -22,7 +22,10 @@ end
 %         'COT is not defined for functions which diverge to infinity');
 % end
 
-% Call the compose method:
-g = compose(f, @cot, pref);
+% Loop over the columns of F:
+for k = 1:numel(F)
+    % Call the compose method:
+    F(k) = compose(F(k), @cot, pref);
+end
 
 end

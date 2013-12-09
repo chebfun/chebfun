@@ -1,9 +1,9 @@
-function g = sin(f, pref)
+function F = sin(F, pref)
 %SIN   Sine of a CHEBFUN.
 %   SIN(F) computes the sine of the CHEBFUN F.
 %
-%   SIN(F, PREF) does the same but uses the CHEBPREF object PREF when
-%   computing the composition.
+%   SIN(F, PREF) does the same but uses the CHEBPREF object PREF when computing
+%   the composition.
 %
 % See also ASIN, SIND.
 
@@ -22,7 +22,10 @@ end
 %         'SIN is not defined for functions which diverge to infinity');
 % end
 
-% Call the compose method:
-g = compose(f, @sin, pref);
+% Loop over the columns of F:
+for k = 1:numel(F)
+    % Call the compose method:
+    F(k) = compose(F(k), @sin, pref);
+end
 
 end

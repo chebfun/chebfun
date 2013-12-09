@@ -1,4 +1,4 @@
-function g = acotd(f, pref)
+function F = acotd(F, pref)
 %ACOTD   Inverse cotangent of a CHEBFUN, result in degrees.
 %   ACOTD(F) computes the inverse cotangent (in degrees) of the CHEBFUN F.
 %
@@ -15,7 +15,10 @@ if ( nargin == 1 )
     pref = chebpref();
 end
 
-% Call the compose method:
-g = compose(f, @acotd, pref);
+% Loop over the columns of F:
+for k = 1:numel(F)
+    % Call the compose method:
+    F(k) = compose(F(k), @acotd, pref);
+end
 
 end

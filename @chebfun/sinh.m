@@ -1,9 +1,9 @@
-function g = sinh(f, pref)
+function F = sinh(F, pref)
 %SINH   Hyperbolic sine of a CHEBFUN.
 %   SINH(F) computes the hyperbolic sine of the CHEBFUN F.
 %
-%   SINH(F, PREF) does the same but uses the CHEBPREF object PREF when
-%   computing the composition.
+%   SINH(F, PREF) does the same but uses the CHEBPREF object PREF when computing
+%   the composition.
 %
 % See also ASINH.
 
@@ -15,7 +15,10 @@ if ( nargin == 1 )
     pref = chebpref();
 end
 
-% Call the compose method:
-g = compose(f, @sinh, pref);
+% Loop over the columns of F:
+for k = 1:numel(F)
+    % Call the compose method:
+    F(k) = compose(F(k), @sinh, pref);
+end
 
 end

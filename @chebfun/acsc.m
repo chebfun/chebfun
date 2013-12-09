@@ -1,4 +1,4 @@
-function g = acsc(f, pref)
+function F = acsc(F, pref)
 %ACSC   Inverse cosecant of a CHEBFUN.
 %   ACSC(F) computes the inverse cosecant of the CHEBFUN F.
 %
@@ -15,7 +15,10 @@ if ( nargin == 1 )
     pref = chebpref();
 end
 
-% Call the compose method:
-g = compose(f, @acsc, pref);
+% Loop over the columns of F:
+for k = 1:numel(F)
+    % Call the compose method:
+    F(k) = compose(F(k), @acsc, pref);
+end
 
 end

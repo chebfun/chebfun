@@ -1,4 +1,4 @@
-function g = asin(f, pref)
+function F = asin(F, pref)
 %ASIN   Inverse sine of a CHEBFUN.
 %   ASIN(F) computes the inverse sine of the CHEBFUN F.
 %
@@ -15,7 +15,10 @@ if ( nargin == 1 )
     pref = chebpref();
 end
 
-% Call the compose method:
-g = compose(f, @asin, pref);
+% Loop over the columns of F:
+for k = 1:numel(F)
+    % Call the compose method:
+    F(k) = compose(F(k), @asin, pref);
+end
 
 end

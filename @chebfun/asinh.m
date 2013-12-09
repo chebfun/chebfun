@@ -1,4 +1,4 @@
-function g = asinh(f, pref)
+function F = asinh(F, pref)
 %ASINH   Inverse hyperbolic sine of a CHEBFUN.
 %   ASINH(F) computes the inverse hyperbolic sine of the CHEBFUN F.
 %
@@ -15,7 +15,10 @@ if ( nargin == 1 )
     pref = chebpref();
 end
 
-% Call the compose method:
-g = compose(f, @asinh, pref);
+% Loop over the columns of F:
+for k = 1:numel(F)
+    % Call the compose method:
+    F(k) = compose(F(k), @asinh, pref);
+end
 
 end

@@ -1,6 +1,6 @@
-function g = erf(f, pref)
+function F = erf(F, pref)
 %ERF   Error function of a CHEBFUN.
-%   Y = ERF(X) is the error function of the CHEBFUN X. X must be real.
+%   ERF(X) is the error function of the CHEBFUN X. X must be real.
 %
 %   The error function is defined as:
 %       erf(X)(s) = 2/sqrt(pi) * integral from 0 to X(s) of exp(-t^2) dt.
@@ -11,7 +11,7 @@ function g = erf(f, pref)
 % See http://www.chebfun.org for Chebfun information.
 
 % Input must be real:
-if ( ~isreal(f) )
+if ( ~isreal(F) )
     error('CHEBFUN:erf:notreal', 'Input must be real.');
 end
 
@@ -20,7 +20,10 @@ if ( nargin == 1 )
     pref = chebpref();
 end
 
-% Call the compose method:
-g = compose(f, @erf, pref);
+% Loop over the columns of F:
+for k = 1:numel(F)
+    % Call the compose method:
+    F(k) = compose(F(k), @erf, pref);
+end
 
 end

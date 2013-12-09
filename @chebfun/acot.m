@@ -1,4 +1,4 @@
-function g = acot(f, pref)
+function F = acot(F, pref)
 %ACOT   Inverse cotangent of a CHEBFUN.
 %   ACOT(F) computes the inverse cotangent of the CHEBFUN F.
 %
@@ -15,7 +15,10 @@ if ( nargin == 1 )
     pref = chebpref();
 end
 
-% Call the compose method:
-g = compose(f, @acot, pref);
+% Loop over the columns of F:
+for k = 1:numel(F)
+    % Call the compose method:
+    F(k) = compose(F(k), @acot, pref);
+end
 
 end

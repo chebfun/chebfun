@@ -1,4 +1,4 @@
-function g = tand(f, pref)
+function F = tand(F, pref)
 %TAND   Tangent of a CHEBFUN, result in degrees.
 %   TAND(F) computes the tangent (in degrees) of the CHEBFUN F.
 %
@@ -15,7 +15,10 @@ if ( nargin == 1 )
     pref = chebpref();
 end
 
-% Call the compose method:
-g = compose(f, @tand, pref);
+% Loop over the columns of F:
+for k = 1:numel(F)
+    % Call the compose method:
+    F(k) = compose(F(k), @tand, pref);
+end
 
 end

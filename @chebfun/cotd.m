@@ -1,4 +1,4 @@
-function g = cotd(f, pref)
+function F = cotd(F, pref)
 %COSD   Cotangent of a CHEBFUN, result in degrees.
 %   COSD(F) computes the cotangent (in degrees) of the CHEBFUN F.
 %
@@ -22,7 +22,10 @@ end
 %         'COTD is not defined for functions which diverge to infinity');
 % end
 
-% Call the compose method:
-g = compose(f, @cotd, pref);
+% Loop over the columns of F:
+for k = 1:numel(F)
+    % Call the compose method:
+    F(k) = compose(F(k), @cotd, pref);
+end
 
 end

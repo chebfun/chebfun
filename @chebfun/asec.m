@@ -1,4 +1,4 @@
-function g = asec(f, pref)
+function F = asec(F, pref)
 %ASEC   Inverse secant of a CHEBFUN.
 %   ASEC(F) computes the inverse secant of the CHEBFUN F.
 %
@@ -15,7 +15,10 @@ if ( nargin == 1 )
     pref = chebpref();
 end
 
-% Call the compose method:
-g = compose(f, @asec, pref);
+% Loop over the columns of F:
+for k = 1:numel(F)
+    % Call the compose method:
+    F(k) = compose(F(k), @asec, pref);
+end
 
 end

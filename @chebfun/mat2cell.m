@@ -1,4 +1,4 @@
-function g = mat2cell(f, M, N)
+function G = mat2cell(F, M, N)
 %MAT2CELL   Convert an array-valued CHEBFUN to a cell array of CHEBFUN objects.
 %   G = MAT2CELL(F, C) breaks up the array-valued CHEBFUN F into a cell array G
 %   of CHEBFUN objects. C is a vector of sizes and must sum to the number of
@@ -29,18 +29,17 @@ function g = mat2cell(f, M, N)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Return an empty result for empty inputs:
-if ( isempty(f) )
-    g = {f};
+if ( isempty(F) )
+    G = {F};
     return
 end
 
 % Get the size of the CHEBFUN array:
-numFuns = numel(f.funs);
-numComponents = size(f.funs{1}, 2);
+numComponents = min(size(F));
 
 % Parse the inputs:
 if ( nargin == 1 )
-    if ( f.isTransposed )
+    if ( F(1).isTransposed )
         M = ones(1, numComponents);
         N = 1;
     else
@@ -48,7 +47,7 @@ if ( nargin == 1 )
         N = ones(1, numComponents);
     end
 elseif ( nargin == 2 )
-    if ( f.isTransposed )
+    if ( F.isTransposed )
         N = 1;
     else
         N = M;
@@ -57,11 +56,11 @@ elseif ( nargin == 2 )
 end
 
 % Handle row CHEBFUNs by transposing first.
-if ( f.isTransposed )
-    g = mat2cell(f.', N, M).'; % Note that M and N inputs get reversed.
+if ( F(1).isTransposed )
+    G = mat2cell(F.', N, M).'; % Note that M and N inputs get reversed.
 
-    for k = 1:numel(g)
-        g{k} = g{k}.';
+    for k = 1:numel(G)
+        G{k} = G{k}.';
     end
 
     return
@@ -76,7 +75,19 @@ if ( ~isscalar(M) || (M ~= 1) || (sum(N) ~= numComponents) )
         ' input size, [1,%d].'], numComponents);
 end
 
+if ( numel(F) > 1 )
+    G = quasiMat2cell(F, M, N);
+else
+    G = columnMat2cell(F, M, N);
+end
+    
+end
+
+function g = columnMat2cell(f, M, N)
+% MAT2CELL for an array-valued CHEBFUN.
+
 % Call MAT2CELL of the FUNs:
+numFuns = numel(f.funs);
 cellFuns = cell(numFuns, numel(N));
 for k = 1:numFuns
     cellFuns(k,:) = mat2cell(f.funs{k}, M, N);
@@ -85,7 +96,7 @@ end
 % Create a cell which tells us which components are grouped together:
 index = mat2cell(1:size(f.funs{1}, 2), M, N);
 
-% Create a new CHEBFUN from each column (or row) of FUNs;
+% Create a new CHEBFUN from each column (or row) of FUNs and store it in a CELL;
 g = cell(1, numel(N));
 for k = 1:numel(N)
     % Make the CHEBFUN.
@@ -94,6 +105,18 @@ for k = 1:numel(N)
     % Copy over higher-order impulses.
     g{k}.impulses = f.impulses(:,index{k},:);
     g{k} = tidyImpulses(g{k});
+end
+
+end
+
+function g = quasiMat2cell(f, M, N)
+% MAT2CELL for a CHEBFUN array.
+
+% Get the correct indices fron the built-in MAT2CELL():
+idx = mat2cell(1:numel(f), M, N);
+% Store these coluns in a CELL array:
+for k = 1:numel(idx)
+    g{k} = f(idx{k});
 end
 
 end

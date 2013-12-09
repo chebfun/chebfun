@@ -1,4 +1,4 @@
-function g = acscd(f, pref)
+function F = acscd(F, pref)
 %ACSCD   Inverse cosecant of a CHEBFUN, result in degrees.
 %   ACSCD(F) computes the inverse cosecant (in degrees) of the CHEBFUN F.
 %
@@ -15,7 +15,10 @@ if ( nargin == 1 )
     pref = chebpref();
 end
 
-% Call the compose method:
-g = compose(f, @acscd, pref);
+% Loop over the columns of F:
+for k = 1:numel(F)
+    % Call the compose method:
+    F(k) = compose(F(k), @acscd, pref);
+end
 
 end

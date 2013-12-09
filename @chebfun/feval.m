@@ -1,8 +1,8 @@
-function fx = feval(f, x, varargin)
+function out = feval(F, x, varargin)
 %FEVAL   Evaluate a CHEBFUN.
-%   FX = FEVAL(F, X) evaluates a CHEBFUN F at the points in X.  If F is
-%   array-valued with columns F1, ..., FN, then FX will be [F1(X), ..., FN(X)],
-%   the horizontal concatenation of the results of evaluating each column at the
+%   FEVAL(F, X) evaluates a CHEBFUN F at the points in X.  If F is a quasimatrix
+%   with columns F1, ..., FN, then the result will be [F1(X), ..., FN(X)], the
+%   horizontal concatenation of the results of evaluating each column at the
 %   points in X.
 %
 %   FEVAL(F, 'left'), FEVAL(F, 'start'), and FEVAL(F, '-') return the value of F
@@ -28,13 +28,13 @@ function fx = feval(f, x, varargin)
 % preceding text accordingly.
 
 % If F or x are empty, there's nothing to do.
-if ( isempty(f) || isempty(x) )
-    fx = [];
+if ( isempty(F) || isempty(x) )
+    out = [];
     return
 end
 
-if ( isa(f, 'function_handle') )
-    fx = f(x, varargin{:});
+if ( isa(F, 'function_handle') )
+    out = F(x, varargin{:});
     return
 end
 
@@ -42,14 +42,28 @@ end
 % Support for feval(f, 'left') and feval(f, 'end'), etc.
 if ( ischar(x) )
     if ( any(strcmpi(x, {'left', 'start' ,'-'})) )
-        fx = get(f, 'lval');
+        out = get(F, 'lval');
     elseif ( any(strcmpi(x, {'right', 'end', '+'})) )
-        fx = get(f, 'rval');
+        out = get(F, 'rval');
     else
         error('CHEBFUN:feval:strInput', 'Unknown input argument "%s".', x);
     end
     return
 end
+
+%% DEAL QITH QUASIMATRICES:
+out = cell(1, numel(F));
+if ( F(1).isTransposed )
+    out = out.';
+end
+for k = 1:numel(F)
+    out{k} = columnFeval(F(k), x, varargin{:});
+end
+out = cell2mat(out);
+        
+end
+
+function out = columnFeval(f, x, varargin)
 
 %% INITIALISE:
 % Un-transpose f if necessary so that the call to size() below returns the
@@ -67,7 +81,7 @@ x = x(:);
 % Initialise output:
 numCols = size(f, 2);
 numFuns = numel(f.funs);
-fx = zeros(size(x, 1), numCols);
+out = zeros(size(x, 1), numCols);
 funs = f.funs;
 dom = f.domain;
 
@@ -104,7 +118,7 @@ end
 xReal = real(x);
 I = xReal < dom(1);
 if ( any(I(:)) )
-    fx(I,:) = feval(funs{1}, x(I));
+    out(I,:) = feval(funs{1}, x(I));
 end
 
 % Points within the domain:
@@ -112,14 +126,14 @@ for k = 1:numFuns
     I = ( xReal >= dom(k) ) & ( xReal < dom(k+1) );
     if ( any(I(:)) )
         % Evaluate the appropriate fun:
-        fx(I,:) = feval(funs{k}, x(I));
+        out(I,:) = feval(funs{k}, x(I));
     end
 end
 
 % Points to the right of the domain:
 I = ( xReal >= dom(end) );
 if ( any(I(:)) )
-    fx(I,:) =  feval(funs{end}, x(I));
+    out(I,:) =  feval(funs{end}, x(I));
 end
 
 %% IMPULSES:
@@ -137,7 +151,7 @@ if ( ~any(higherImpulses(:)) )
         index = x == dom(k);
         if ( any(index) )
             imps = repmat(f.impulses(k,:,1), sum(index), 1);
-            fx(index,:) = imps;
+            out(index,:) = imps;
         end
     end
     
@@ -152,10 +166,10 @@ sizefx = sizex;
 sizefx(2) = numCols*sizex(2);
 if ( ndimsx == 2 )
     % If x was just a matrix or vector, the reshape is straightforward.
-    fx = reshape(fx, sizefx);
+    out = reshape(out, sizefx);
 
     if ( wasTransposed )
-        fx = fx.';
+        out = out.';
     end
 else
     % If x had more than two dimensions, we have to be more careful.  The
@@ -164,13 +178,13 @@ else
     % correct order for reshape().
     blockLength = sizex(1)*sizex(2);
     blocksPerCol = prod(sizex(3:end));
-    fx = reshape(cell2mat(mat2cell(fx, blockLength*ones(1, blocksPerCol), ...
+    out = reshape(cell2mat(mat2cell(out, blockLength*ones(1, blocksPerCol), ...
         ones(1, numCols)).'), sizefx);
 
     % We define "transposition" in this case to mean the switching of the first
     % two dimensions.  [TODO]:  Is this the right thing to do?
     if ( wasTransposed )
-        fx = permute(fx, [2 1 3:ndimsx]);
+        out = permute(out, [2 1 3:ndimsx]);
     end
 end
 
