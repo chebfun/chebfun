@@ -132,7 +132,8 @@ R = S*R;                    % Fix R.
 % Apply data to chebtech:
 f.values = Q;                           % Adjust values of f.
 f.coeffs = f.vals2coeffs(Q);            % Compute new coefficients.
-f.vscale = max(abs(Q), [], 1);
+%f.vscale = max(abs(Q), [], 1);
+f.vscale = max(max(abs(Q))); 
 
 % [TODO]: Update epslevel?
 
@@ -167,7 +168,6 @@ end
 for k = 1:numCols
     E(:,k) = E(:,k) * sqrt((2*k - 1) / 2);
 end
-
 % Call the abstract QR method:
 [Q, R] = abstractQR(A, E, ip, @(v) norm(v, inf), tol);
 
@@ -179,7 +179,8 @@ f.coeffs(1:newN/2,:) = [];
 f.values = f.coeffs2vals(f.coeffs);
 
 % Update the vscale:
-f.vscale = max(abs(f.values), [], 1);
+%f.vscale = max(abs(f.values), [], 1);
+f.vscale = max(max(abs(f.values))); 
 
 % Additional output argument:
 if ( nargout == 3 )
@@ -302,7 +303,8 @@ f.coeffs(1:n,:) = [];
 f.values = f.coeffs2vals(f.coeffs);
 
 % Update the vscale:
-f.vscale = max(abs(Q), [], 1);
+%f.vscale = max(abs(Q), [], 1);
+f.vscale = max(max(abs(Q))); 
 
 % Additional output argument:
 if ( nargout == 3 )

@@ -152,8 +152,10 @@ end
 
 % Construct a CHEBFUN2:
 g.pivotValues = pivotValue;
-g.cols = simplify(chebfun(colValues, domain(3:4) ));
-g.rows = simplify(chebfun(rowValues.', domain(1:2) ));
+% g.cols = simplify(chebfun(colValues, domain(3:4) ));
+% g.rows = simplify(chebfun(rowValues.', domain(1:2) ));
+g.cols = chebfun(colValues, domain(3:4) );
+g.rows = chebfun(rowValues.', domain(1:2) );
 g.domain = domain;
 
 end
