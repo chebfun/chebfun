@@ -30,8 +30,9 @@ out.values = cell2mat(cellfun(@(f) f.values, F, 'UniformOutput', false));
 
 % Vscales:
 vscales = cellfun(@(f) f.vscale, F, 'UniformOutput', false);
-out.vscale = cell2mat(vscales);
+out.vscale = max(cell2mat(vscales));
 vscales = cellfun(@max, vscales);
+%vscales = max(max(vscales)); 
 
 % Epslevel:
 out.epslevel = max(cellfun(@(f) f.epslevel, F).*vscales)./max(vscales);

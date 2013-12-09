@@ -26,7 +26,8 @@ elseif ( isa(g, 'double') ) % CHEBTECH + double
     end
     f.coeffs(end,:) = f.coeffs(end,:) + g;
     % Update scale:
-    vscale = max(abs(f.values), [], 1);
+    %vscale = max(abs(f.values), [], 1);
+    vscale = max( max( abs(f.values) ) ); 
     % See CHEBTECH CLASSDEF file for documentation on this:
     f.epslevel = (f.epslevel*f.vscale + abs(g)*eps)./vscale;
     f.epslevel = max(f.epslevel); % [TODO]: Vector epslevel;
@@ -65,7 +66,8 @@ else % CHEBTECH + CHEBTECH
         f.ishappy = ishappy;
     else
         % Update vscale, epslevel, and ishappy:
-        vscale = max(abs(f.values), [], 1);
+        % vscale = max(abs(f.values), [], 1);
+        vscale = max(max(abs(f.values))); 
         % See CHEBTECH CLASSDEF file for documentation on this:
         f.epslevel = (f.epslevel*f.vscale + g.epslevel*g.vscale)./vscale;
         f.epslevel = max(f.epslevel);  % [TODO]: Vector epslevel;
