@@ -24,3 +24,12 @@ diff(diff(f, 1, 1), 1, 2) - diff(diff(f, 1, 2),1, 1)
 f = chebfun(@(x) sin(x)); 
 g = chebfun(@(x) cos(x), [-2 2]); 
 h = f * g'; 
+
+%% Vector-calculus
+
+F = gradient( f )
+f = divergence( F )
+f = curl( F ) 
+f = cross( F, -F ) 
+
+

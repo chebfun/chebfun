@@ -9,6 +9,10 @@ if ( isa(op, 'double') )
    g = constructor(g, @(x,y) op + 0*x, domain, varargin); 
    return
 end
+if ( isa(op, 'chebfun2') )
+    g = op; 
+    return; 
+end
     
 % Check that the operator then make it complex.
 if ( nargin(op) == 1 )
