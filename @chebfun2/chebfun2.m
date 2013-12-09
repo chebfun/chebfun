@@ -30,6 +30,7 @@ classdef chebfun2
         
         X = vals2coeffs( U ); 
         
+        [xx, yy] = chebpts2(nx, ny);
     end
 
     % Private methods implemented by CHEBFUN2 class.
