@@ -72,7 +72,7 @@ if ( any(isinf(f.domain)) )
     error('CHEBFUN:polyfit:unbounded', 'Unbounded domains are not supported.');
 end
 
-if ( n > length(f) && numel(f.funs) == 1 && isa(f.funs.onefun, 'chebtech') )
+if ( n > length(f) && numel(f.funs) == 1 && isa(f.funs{1}.onefun, 'chebtech') )
     % Nothing to do here!
     p = f;
     return
