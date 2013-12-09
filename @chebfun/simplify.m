@@ -21,7 +21,7 @@ end
 
 % Loop pver the columns:
 for k = 1:numel(F)
-    F(k) = columnSimplify(F, tol);
+    F(k) = columnSimplify(F(k), tol);
 end
 
 end

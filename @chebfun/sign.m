@@ -22,7 +22,7 @@ if ( nargin < 2 )
 end
 
 for k = 1:numel(F)
-    F(k) = signColumn(F, pref);
+    F(k) = signColumn(F(k), pref);
 end
 
 end

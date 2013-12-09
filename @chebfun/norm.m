@@ -43,7 +43,11 @@ end
 
 % Initialise:
 normLoc = [];
-numCols = size(f.funs{1}, 2);
+if ( numel(f) > 1 )
+    numCols = numel(f);
+else
+    numCols = size(f.funs{1}, 2);
+end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%% SCALAR-VALUED CHEBFUNS %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if ( numCols == 1 )
@@ -122,20 +126,20 @@ else
                      'array-valued CHEBFUNs.']);
             end
             % Find integration dimension: 1 if column, 2 if row:
-            f.isTransposed = 0;
+            f(1).isTransposed = 0;
             normF = sqrt(sum(sum(f.*conj(f))));
             
         case {'inf', inf}
-            f.isTransposed = 0;
+            f(1).isTransposed = 0;
             [normF, normLoc] = max(sum(abs(f), 2));
             
         case {'-inf', -inf}
-            f.isTransposed = 0;
+            f(1).isTransposed = 0;
             [normF, normLoc] = min(sum(abs(f), 2));
             
         otherwise
             if ( isnumeric(n) && isreal(n) )
-                f.isTransposed = 0;
+                f(1).isTransposed = 0;
                 [normF, normLoc] = max(sum(abs(f).^n, 2));
                 normF = normF^(1/n);
             else

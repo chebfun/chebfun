@@ -30,7 +30,7 @@ if ( isempty(f) )
 end
 
 % Number of columns of an array-valued CHEBFUN:
-numCols = size(f.funs{1}, 2);
+numCols = min(size(f));
 
 if ( (nargin > 1) && strcmpi(flag, 'local') )
     % Deal with local case:
@@ -137,7 +137,9 @@ function [y, x] = localMinAndMax(f)
 % Compute the turning points:
 df = diff(f);
 % Ensure endpoints are included:
-df.impulses([1,end],:,1) = 0;
+for k = 1:numel(df)
+    df(k).impulses([1,end],:,1) = 0;
+end
 % Call ROOTS():
 x = roots(df);
 

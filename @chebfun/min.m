@@ -62,7 +62,7 @@ function [y, x] = localMin(f)
 
 % Determine which are minima.
 
-ends = f.domain([1, end]).'; % Endpoints of the domain are special.
+ends = f(1).domain([1, end]).'; % Endpoints of the domain are special.
 f = mat2cell(f); % Convert f into a cell of scalar-valued CHEBFUNs.
 
 % Loop over the columns:
