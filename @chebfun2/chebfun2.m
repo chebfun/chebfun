@@ -31,6 +31,8 @@ classdef chebfun2
         X = vals2coeffs( U ); 
         
         [xx, yy] = chebpts2(nx, ny);
+        
+        F = outerProduct(f, g);   % outer-product of two chebfuns.
     end
 
     % Private methods implemented by CHEBFUN2 class.

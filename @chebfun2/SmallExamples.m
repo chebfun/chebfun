@@ -18,3 +18,9 @@ diff(f, 1, 2);
 diff(f, 2, 1); 
 diff(diff(f, 1, 1), 1, 2) - diff(diff(f, 1, 2),1, 1)
 
+
+%% Outer-product 
+
+f = chebfun(@(x) sin(x)); 
+g = chebfun(@(x) cos(x), [-2 2]); 
+h = f * g'; 
