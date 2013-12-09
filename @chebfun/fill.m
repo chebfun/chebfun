@@ -30,10 +30,14 @@ while ( k < (length(varargin) - 1) )
     if ( isa(varargin{k}, 'chebfun') )
         data = plotData(varargin{k}, varargin{k+1});
         varargin{k} = data.xLine(2:end,:);
-        varargin{k+1} = data.fLine(2:end,:);
+        varargin{k+1} = data.yLine(2:end,:);
         k = k + 1;
     end
     k = k + 1;
+end
+
+if ( any(cellfun(@(f) isa(f, 'chebfun'), varargin)) )
+    error('CHEBFUN:fil:oops', 'Unrecognised input sequence.');
 end
 
 % Call the built in FILL():
