@@ -31,6 +31,10 @@ if ( isempty(f) )
     return
 end
 
+if ( numel(f) > 1 )
+    error('CHEBFUN:chebpoly:quasia', 'CHEBPOLY does not support quasimatrices.');
+end
+
 %% Initialise:
 argin = {}; 
 ii = []; 

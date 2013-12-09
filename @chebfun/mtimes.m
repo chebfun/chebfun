@@ -3,7 +3,7 @@ function f = mtimes(f, g)
 %   A*F and F*A multiplies the CHEBFUN F by the scalar A.
 %
 %   If F is an m-by-Inf row CHEBFUN and G is an Inf-by-n column CHEBFUN, F*G
-%   returns the m-by-n matrix of pairwise inner products.  F and G must have
+%   returns the m-by-n matrix of pairwise inner products. F and G must have
 %   the same domain.
 %
 %   See also TIMES.
@@ -14,7 +14,7 @@ function f = mtimes(f, g)
 if ( ~isa(f, 'chebfun') )   % ??? * CHEBFUN
 
     % Ensure CHEBFUN is the first input:
-    if ( ~g.isTransposed )
+    if ( ~g(1).isTransposed )
         f = mtimes(g, f);
     else
         f = mtimes(g.', f.').';
@@ -25,14 +25,40 @@ elseif ( isempty(g) )       % CHEBFUN * []
     f = [];
     
 elseif ( isnumeric(g) )     % CHEBFUN * double
-    
-    % Loop over the FUNs:
-    for k = 1:numel(f.funs)
-        f.funs{k} = mtimes(f.funs{k}, g);
+
+    if ( isscalar(g) )
+        f = times(f, g);
+        return
     end
 
-    % Multiply the impulses:
-    f.impulses = f.impulses * g;
+    if ( numel(f) == 1 )
+        % Array-valued CHEBFUN case:
+    
+        % Loop over the FUNs:
+        for k = 1:numel(f.funs)
+            f.funs{k} = mtimes(f.funs{k}, g);
+        end
+
+        % Multiply the impulses:
+        f.impulses = f.impulses * g;
+
+    else
+        % QUASIMATRIX case:
+
+        numCols = numel(f);
+        if ( length(g) ~= numCols || min(size(g)) ~= 1 )
+            error('CHEBFUN:plus:dims', 'Matrix dimensions must agree.');
+        end
+        % Transpose g if f is a row CHEBFUN:
+        if ( f(1).isTransposed )
+            g = g.';
+        end
+        s = f(1)*g(1);
+        % Loop over the columns:
+        for k = 2:numCols
+            s = s + f(k).*g(k);
+        end
+    end
 
 elseif ( ~isa(g, 'chebfun') )
 

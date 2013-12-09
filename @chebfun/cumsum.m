@@ -22,6 +22,9 @@ function f = cumsum(f, m, dim)
 %   indefinite integral is chosen to make the representation of G as simple as
 %   possible. Dirac deltas already existing in F will decrease their degree.
 
+% TODO: The input sequence is not the same as MATLAB. In particular, MATLAB only
+% supports m = 1.
+
 % Trivial case:
 if ( isempty(f) )
     return
@@ -33,7 +36,7 @@ if ( nargin == 1 )
 end
 if ( nargin < 3 )
     % Continuous dimension by default:
-    dim = 1 + f.isTransposed;
+    dim = 1 + f(1).isTransposed;
 end
     
 if ( round(m) ~= m )
@@ -45,9 +48,11 @@ if ( round(m) ~= m )
     return
 end
 
-if ( ( dim == 1 && ~f.isTransposed ) || ( dim == 2 && f.isTransposed ) )
+if ( ( dim == 1 && ~f(1).isTransposed ) || ( dim == 2 && f(1).isTransposed ) )
     % Continuous dimension:
-    f = cumsumContinousDim(f, m);
+    for k = 1:numel(f)
+        f(k) = cumsumContinousDim(f(k), m);
+    end
 else
     % Finite dimension:
     f = cumsumFiniteDim(f, m);
@@ -107,8 +112,17 @@ end
 function f = cumsumFiniteDim(f, m)
 % CUMSUM over finite dimension.
 
-for k = 1:numel(f.funs)
-    f.funs{k} = cumsum(f.funs{k}, m, 2);
+if ( numel(f) == 1 )
+    for k = 1:numel(f.funs)
+        f.funs{k} = cumsum(f.funs{k}, m, 2);
+    end
+else
+    numCols = numel(f);
+    for j = 1:m
+        for k = 2:numCols-j
+            f(k) = f(k) + f(k-1);
+        end
+    end
 end
 
 end

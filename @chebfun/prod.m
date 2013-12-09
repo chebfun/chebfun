@@ -1,4 +1,4 @@
-function f = prod(f)
+function F = prod(F)
 %PROD   Product integral.
 %   PROD(F) is the definite product integral of the CHEBFUN F, which is defined
 %   as exp(sum(log(F))).
@@ -6,7 +6,10 @@ function f = prod(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-f = exp(sum(log(f)));
-%[TODO]: Is this right? What about row CHEBFUNS?
+% Loop over the columns:
+for k = 1:numel(F)
+    %[TODO]: Is this right? What about row CHEBFUNS?
+    F(k) = exp(sum(log(F(k))));
+end
 
 end

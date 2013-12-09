@@ -43,6 +43,8 @@ function f = compose(f, op, g, pref)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % [TODO]: vscale and tolerance?
+% TODO: Quasimatrix support.
+% TODO: Move the loops used by quasimatrices to inside this method.
 
 % Parse inputs:
 opIsBinary = false;

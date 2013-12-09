@@ -12,10 +12,10 @@ function f = times(f, g)
 if ( ~isa(f, 'chebfun') )      % ??? * CHEBFUN
 
     % Ensure CHEBFUN is the first input:
-    if ( ~g.isTransposed )
+    if ( ~g(1).isTransposed )
         f = times(g, f);
     else
-        f = times(g.', f).';
+        f = times(g.', f.').';
     end
 
 elseif ( isempty(g) )          % CHEBFUN * []
@@ -24,13 +24,32 @@ elseif ( isempty(g) )          % CHEBFUN * []
 
 elseif ( isnumeric(g) )        % CHEBFUN * double
 
-    % Loop over the funs:
-    for k = 1:numel(f.funs)
-        f.funs{k} = times(f.funs{k}, g);
+    if ( numel(f) == 1 )
+        % Array-valued case:
+
+        % Loop over the funs:
+        for k = 1:numel(f.funs)
+            f.funs{k} = times(f.funs{k}, g);
+        end
+
+        % Multiply the impulses:
+        f.impulses = f.impulses .* g;
+    
+    else
+        % Quasimatrix case:
+
+        numCols = numel(f);
+        % Promote g if required:
+        if ( ~isscalar(g) )
+            error('CHEBFUN:times:dim', 'Matrix dimensions must agree.');
+        end
+        % Loop over the columns:
+        for k = 1:numCols
+            f(k) = f(k).*g;
+        end
+
     end
 
-    % Multiply the impulses:
-    f.impulses = f.impulses .* g;
 
 elseif ( ~isa(g, 'chebfun') )  % CHEBFUN * ???
 
@@ -45,23 +64,41 @@ elseif ( isempty(f) )          % empty CHEBFUN * CHEBFUN
 else                           % CHEBFUN .* CHEBFUN 
 
     % Check to see if one of the CHEBFUNs is transposed:
-    if ( xor(f.isTransposed, g.isTransposed) )
+    if ( xor(f(1).isTransposed, g(1).isTransposed) )
         error('CHEBFUN:times:matdim', ...
             'Matrix dimensions must agree. (One input is transposed).');
     end
 
-    % Overlap:
-    [f, g] = overlap(f, g);
+    if ( numel(f) == 1 && numel(g) == 1 )
+        % Array-valued CHEBFUN case:
 
-    % Loop over the FUNs:
-    for k = 1:numel(f.funs)
-        f.funs{k} = times(f.funs{k}, g.funs{k});
+        % Overlap:
+        [f, g] = overlap(f, g);
+
+        % Loop over the FUNs:
+        for k = 1:numel(f.funs)
+            f.funs{k} = times(f.funs{k}, g.funs{k});
+        end
+
+        % Multiply the impulses:
+        % [TODO]:  This doesn't make sense for higher-order impulses:  you can't
+        % multiply two Dirac deltas!  What to do?
+        f.impulses = f.impulses .* g.impulses;
+
+    else
+        % QUASIMATRIX case:
+
+        if ( numel(f) ~= numel(g) )
+            error('CHEBFUN:plus:dims', 'Matrix dimensions must agree.');
+        else
+            % Loop over the columns:
+            for k = 1:numel(f)
+                f(k) = f(k).*g(k);
+            end
+        end
+
     end
 
-    % Multiply the impulses:
-    % [TODO]:  This doesn't make sense for higher-order impulses:  you can't
-    % multiply two Dirac deltas!  What to do?
-    f.impulses = f.impulses .* g.impulses;
 
 end
 
