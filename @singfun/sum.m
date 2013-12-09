@@ -26,8 +26,8 @@ function out = sum(f)
 % (II) when a ~= b, M_r are the general Jacobi moments, which can be obtained
 % using a three-term recursive relation discussed in [3].
 %
-% This way, all quadratures in SINGFUN, along with those in CHEBTECH are now 
-% entirely of Clenshaw-Curtis style. 
+% This way, all quadratures in SINGFUN, along with those in CHEBTECH are now
+% entirely of Clenshaw-Curtis style.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Useful References:
@@ -49,21 +49,82 @@ function out = sum(f)
 %%
 % Trivial cases:
 if ( all(f.exponents == 0) )
-    % If both the exponents are trivial, then compute the integral by 
-    % calling the sum in smoothfun.
+    % If both the exponents are trivial, then compute the integral by calling
+    % the sum in smoothfun.
     out = sum(f.smoothPart);
     return
     
-elseif ( any(f.exponents <= -1) )
-    % The integral is divergent when at least one of f.exponents is smaller
-    % than or equal to -1.
+elseif ( all(f.exponents <= -1) )
+    % The integral is divergent or not a number when both the exponents are
+    % non-zero.
     
-    out = inf;
+    if ( isreal(f) )
+        
+        % The sign of the smoothPart of F at the end points:
+        sl = sign(get(f.smoothPart, 'lval'));
+        sr = sign(get(f.smoothPart, 'rval'));
+        
+        if  ( sl == sr )
+            out = sl.*inf;
+        else
+            out = NaN;
+        end
+        
+    else
+        % The sign of the real part of the smoothPart of F at the end
+        % points:
+        rsl = sign(real(get(f.smoothPart, 'lval')));
+        rsr = sign(real(get(f.smoothPart, 'rval')));
+        
+        % The sign of the real part of the smoothPart of F at the end
+        % points:
+        isl = sign(imag(get(f.smoothPart, 'lval')));
+        isr = sign(imag(get(f.smoothPart, 'rval')));
+        
+        if ( ( rsl == rsr ) && ( isl == isr ) )
+            out = Inf + 1i*Inf;
+        else
+            out = NaN;
+        end
+    end
     
     return
     
+elseif ( any(f.exponents <= -1) )
+    
+    % The integral is divergent or not a number when one of the exponents 
+    % are non-zero.
+    
+    if ( isreal(f) )
+        
+        % The sign of the smoothPart of F at the end points:
+        sl = sign(get(f.smoothPart, 'lval'));
+        sr = sign(get(f.smoothPart, 'rval'));
+        
+        s = [sl sr];
+        ind = ( f.exponents <= -1 );
+        out = Inf*s(ind);
+        
+    else
+        % The sign of the real part of the smoothPart of F at the end
+        % points:
+        rsl = sign(real(get(f.smoothPart, 'lval')));
+        rsr = sign(real(get(f.smoothPart, 'rval')));
+        
+        % The sign of the real part of the smoothPart of F at the end
+        % points:
+        isl = sign(imag(get(f.smoothPart, 'lval')));
+        isr = sign(imag(get(f.smoothPart, 'rval')));
+        
+        rs = [rsl rsr];
+        is = [isl isr];
+        ind = ( f.exponents <= -1 );
+        out = Inf*rs(ind)+1i*Inf*is(ind);
+    end
+    
+    return
 end
-
+           
 %%
 % The non-trivial case:
 

@@ -98,9 +98,9 @@ function out = sumFullDom(f)
         out = out + sum(f.impulses(:,:,2));
     end
     
-    % To avoid nonsense like Inf + 1i:
-    if ( isinf(out) )
-        out = inf;
+    % To avoid things like NaN + 1i*NaN:
+    if ( isnan(out) )
+        out = nan;
     end
 
 end
