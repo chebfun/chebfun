@@ -21,30 +21,11 @@ classdef deltafun
         % Smooth part of the representation.
         funPart     % (smoothfun)
         
-        % Delta functions.
-        deltaMag       % (vector of magnitudes)
-        
-        % Delta Locaions.
-        deltaLoc
-        
+        % Delta functions structre
+        delta = struct( 'magnitude', [], 'location', [], 'diffOrder', [], ...
+                        'isReal', [], 'isImag', [], 'isConj', [] );
         % Domain
-        domain
-        
-        % Order of the derivative
-        diffOrder    % (1x1 double)
-        
-        % The following operations are intuitive but hard to find in any text
-        % book. If F is a distribution
-        
-        % If the distribution has been declared imaginary.
-        isImag       % (logical array, same size as deltaMag or deltaLoc)
-        
-        % If the distribution has been declared real.
-        isReal       % (logical array, same size as deltaMag or deltaLoc)
-        
-        % If the distribution is conjugated.
-        isConj       % (logical array, same size as deltaMag or deltaLoc)
-        
+        domain                
     end
     
     %% CLASS CONSTRUCTOR:
@@ -65,13 +46,13 @@ classdef deltafun
             % Case 0: No input arguments, return an empty object.
             if ( nargin == 0 )
                 obj.funPart = [];
-                obj.deltaMag = [];
-                obj.deltaLoc = [];
+                obj.delta.magnitude = [];
+                obj.delta.location = [];
                 obj.domain = [];
-                obj.diffOrder = [];
-                obj.isImag = [];
-                obj.isReal = [];
-                obj.isConj = [];
+                obj.delta.diffOrder = [];
+                obj.delta.isImag = [];
+                obj.delta.isReal = [];
+                obj.delta.isConj = [];
                 return
             end
             
@@ -131,6 +112,10 @@ classdef deltafun
             % Locations of delta functions should be within the domain:
             % NOTE: In fact they should be strictly in the interior of the
             % domain to make sense.
+            if( any(size(domain) ~= [1 2]) )
+                error('CHEBFUN:DELTAFUN:domain', 'domain must be a 1 x 2 row vector.' );
+            end
+            
             if( max(location) > domain(2) || min(location) < domain(1)  )
                 error('CHEBFUN:DELTAFUN:domain', 'Location of a delta fun is outside the domain');
             end
@@ -140,18 +125,17 @@ classdef deltafun
                 error('CHEBFUN:DELTAFUN:domain', 'Domain of deltaFun should be the same as its funPart.');                
             end
                 
-            % Now that we have checked all the arguments, copy them in th
+            % Now that we have checked all the arguments, copy them in the
             % current object:
-            obj.deltaMag = magnitude;
-            obj.deltaLoc = location;
+            obj.delta.magnitude = magnitude;
+            obj.delta.location  = location;
+            obj.delta.diffOrder = 0*magnitude;
+            obj.delta.isImag = false * location;
+            obj.delta.isReal = false * location;
+            obj.delta.isConj = false * location;
+            
             obj.domain   = domain;
-            obj.funPart  = funPart;
-            
-            
-            obj.diffOrder = 0*magnitude;
-            obj.isImag = false * location;
-            obj.isReal = false * location;
-            obj.isConj = false * location;
+            obj.funPart  = funPart;                                   
         end
     end
     
@@ -185,6 +169,10 @@ classdef deltafun
         % Imaginary part of a DELTAFUN.
         f = imag(f)
         
+        % Innerproduct, equivalent to action of a distribution 
+        % on a chebfun
+        out = ip(f,g)
+        
         % True for an empty DELTAFUN.
         out = isempty(f)
         
@@ -203,7 +191,10 @@ classdef deltafun
         % True for real SINGFUN.
         out = isreal(f)
         
-        % True for zero SINGFUN objects
+        % True if the DELTAFUN object has no delta functions       
+        out = issmooth(f)
+        
+        % Ture if the DELTAFUN object is zero
         out = iszero(f)
         
         % Length of a SINGFUN.
