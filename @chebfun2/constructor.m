@@ -116,7 +116,7 @@ while ( ~isHappy )
             colValues(:, kk+1:end) = colValues(:, kk+1:end) - colValues(:, kk)*(rowValues(kk, PP(kk+1:nn, 2))./pivotValue(kk));
             rowValues(kk+1:end, :) = rowValues(kk+1:end, :) - colValues(PP(kk+1:nn, 1), kk)*(rowValues(kk, :)./pivotValue(kk));           
         end
-
+        
         % Are the columns and rows resolved now?
         if ( ~resolvedCols )
             colChebtech = chebtech2(sum(colValues,2));
@@ -149,8 +149,8 @@ end
 
 % Construct a CHEBFUN2:
 g.pivotValues = pivotValue;
-g.cols = simplify(chebtech2(colValues));
-g.rows = simplify(chebtech2(rowValues.'));
+g.cols = simplify(chebfun(colValues));
+g.rows = simplify(chebfun(rowValues.'));
 
 end
 
