@@ -155,7 +155,8 @@ g_check = cumsum(f_check);
 
 vals_check = feval(g_check, x);
 err = gval - vals_check;
-pass(12) = all( norm(err-mean(err), inf) < 1e3*get(f,'epslevel')*norm(vals_check, inf) );
+pass(12) = norm(err-mean(err), inf) < 5e4*get(f,'epslevel')*...
+    norm(vals_check, inf);
 
 % [TODO]:  Check fractional antiderivatives once implemented.
 
