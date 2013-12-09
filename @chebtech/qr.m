@@ -168,7 +168,6 @@ end
 for k = 1:numCols
     E(:,k) = E(:,k) * sqrt((2*k - 1) / 2);
 end
-
 % Call the abstract QR method:
 [Q, R] = abstractQR(A, E, ip, @(v) norm(v, inf), tol);
 

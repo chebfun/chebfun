@@ -38,12 +38,7 @@ if ( nargin < 2 )
 end
 
 % Zero all coefficients smaller than the tolerance relative to F.VSCALE:
-if ( numel(f.vscale) == 1 )
-    tol_vector = f.vscale * tol * ones(1, size(f,1)); 
-else
-    tol_vector = f.vscale; 
-end
-f.coeffs(bsxfun(@minus, abs(f.coeffs), tol_vector) < 0) = 0;
+f.coeffs(abs(f.coeffs) < tol) = 0;
 
 % Check for trailing zero coefficients:
 [ignored, firstNonZeroRow] = find(f.coeffs.' ~= 0, 1);
@@ -60,7 +55,7 @@ end
 
 % Update values and epslevel:
 f.values = f.coeffs2vals(f.coeffs);
-f.vscale = max(abs(f.values), [], 1);
+f.vscale = max(abs(f.values(:)));
 f.epslevel = max(f.epslevel, tol);
 
 end

@@ -62,8 +62,7 @@ for n = 1:2
 
     f = testclass.make(@(x) [sin(100*(x + 0.1)) cos(100*(x + 0.1)) exp(x)]);
     g = simplify(f, 1e-6);
-    pass(n, 11) = all(all((abs(g.coeffs) > ...
-        repmat(simptol*g.vscale, length(g), 1)) | (g.coeffs == 0)));
+    pass(n, 11) = all(abs(g.coeffs(:)) > simptol*g.vscale | (g.coeffs(:) == 0));
     pass(n, 12) = any(abs(g.coeffs(1, :)) ~= 0);
     pass(n, 13) = length(g) < length(f);
     pass(n, 14) = all(norm(feval(f, x) - feval(g, x), inf) < ...

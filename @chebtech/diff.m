@@ -73,7 +73,7 @@ function f = diffFiniteDim(f, k)
         % Otherwise, update vscale and epslevel.
         % [TODO]:  epslevel stays the same?
         %f.vscale = max(abs(f.values), [], 1);
-        f.vscale = max(max(abs(f.values))); 
+        f.vscale = max(abs(f.values(:))); 
     end
 end
 

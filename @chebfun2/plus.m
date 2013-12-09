@@ -55,7 +55,7 @@ function h = compression_plus(f, g)
     [Qleft, Rleft] = qr( cols ); 
     
     [Qright, Rright] = qr( rows );
-    
+
     Z = zeros(length(fScl),length(gScl));  
     [U, S, V] = svd( Rleft * [fScl Z; Z' gScl] * Rright.' ); 
     

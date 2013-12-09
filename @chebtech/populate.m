@@ -79,7 +79,7 @@ if ( isnumeric(op) || iscell(op) )
         f.values = op;
         f.coeffs = f.vals2coeffs(op);
         % Update vscale:
-        f.vscale = max(abs(f.values), [], 1);
+        f.vscale = max(abs(f.values(:)));
         % Check for happiness: (no OP to compare against)
         f.ishappy = true;
         f.epslevel = pref.eps;
@@ -92,7 +92,7 @@ if ( isnumeric(op) || iscell(op) )
             f.values = f.coeffs2vals(f.coeffs);
         end
         % Update vscale:
-        f.vscale = max(abs(f.values), [], 1);
+        f.vscale = max(abs(f.values(:)));
         % We're always happy if given coefficients:
         f.ishappy = true;
         f.epslevel = pref.eps;
@@ -118,7 +118,7 @@ while ( 1 )
     % Update vertical scale: (Only include sampled finite values)
     valuesTemp = f.values;
     valuesTemp(~isfinite(f.values)) = 0;
-    vscale = max(vscale, max(abs(valuesTemp), [], 1));
+    vscale = max(vscale, max(abs(valuesTemp(:))));
     
     % Extrapolate out NaNs:
     [f.values, maskNaN, maskInf] = extrapolate(f);
@@ -145,7 +145,7 @@ while ( 1 )
 end
 
 % Update vertical scale one last time:
-vscale = max(vscale, max(abs(f.values), [], 1));
+vscale = max(vscale, max(abs(f.values(:))));
 
 % Assign to CHEBTECH object:
 f.coeffs = coeffs;
