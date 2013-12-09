@@ -1,6 +1,6 @@
 function h = times(f, g)
 % .*   CHEBFUN2 times. 
-% 
+%  
 
 if ( isa(f, 'chebfun2') )    % CHEBFUN2 .* ??? 
     if ( isa(g, 'double') )  % CHEBFUN2 .* DOUBLE

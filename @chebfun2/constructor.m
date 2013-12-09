@@ -119,11 +119,11 @@ while ( ~isHappy )
         
         % Are the columns and rows resolved now?
         if ( ~resolvedCols )
-            colChebtech = chebtech2(sum(colValues,2));
+            colChebtech = chebtech2(sum(colValues,2), domain(3:4) );
             resolvedCols = happinessCheck(colChebtech);    
         end
         if ( ~resolvedRows )
-            rowChebtech = chebtech2(sum(rowValues.',2));
+            rowChebtech = chebtech2(sum(rowValues.',2), domain(1:2) );
             resolvedRows = happinessCheck(rowChebtech);    
         end
         
@@ -149,8 +149,9 @@ end
 
 % Construct a CHEBFUN2:
 g.pivotValues = pivotValue;
-g.cols = simplify(chebfun(colValues));
-g.rows = simplify(chebfun(rowValues.'));
+g.cols = simplify(chebfun(colValues, domain(3:4) ));
+g.rows = simplify(chebfun(rowValues.', domain(1:2) ));
+g.domain = domain;
 
 end
 
