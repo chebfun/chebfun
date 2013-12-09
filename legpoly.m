@@ -28,11 +28,11 @@ function p = legpoly(n, dom, normalize, method)
 % TODO: This code needs a test.
 
 % Parse input:
-if (isempty(n) )
+if ( isempty(n) )
     p = chebfun; 
     return
 end
-if (nargin < 2 || isempty(dom) )
+if ( nargin < 2 || isempty(dom) )
     dom = [-1, 1];
 end
 if ( nargin < 3 || isempty(normalize) )

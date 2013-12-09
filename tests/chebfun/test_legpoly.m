@@ -147,4 +147,8 @@ p = legpoly([1;2;3;4;5;6;7;8;9;10], [-1 1], 'normalize');
 err = norm(p*p' - eye(10));
 pass(22) = err < 10*epslevel(p)*vscale(p);
 
+% Test 23 checks empty case:
+p = legpoly([], [-1 1], 'normalize');
+pass(23) = isempty(p);
+
 end
