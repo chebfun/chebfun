@@ -14,7 +14,7 @@ function [normF, normloc] = norm( f, p )
 % output, giving a position where the max occurs.
 
 if ( nargin == 1 ) % default to 2-norm.
-    n = 2; 
+    p = 2; 
 end 
 
 if ( isempty( f ) )  % Empty chebfun has norm 0                        

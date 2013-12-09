@@ -13,6 +13,9 @@ if ( isa(op, 'chebfun2') )
     g = op; 
     return; 
 end
+if ( isa(op, 'char') )
+    op = str2op( op );
+end
     
 % Check that the operator then make it complex.
 if ( nargin(op) == 1 )
@@ -234,4 +237,23 @@ if flag
 else
     vals = op(xx,yy);              % Matrix of values at cheb2 pts.
 end
+end
+
+
+function op = str2op(op)
+% OP = STR2OP(OP), finds the dependent variables in a string and returns
+% an op handle than can be evaluated.
+depvar = symvar(op);
+if numel(depvar) > 2,
+    error('FUN2:fun2:depvars',...
+        'Too many dependent variables in string input.');
+end
+if numel(depvar) == 1,
+    warning('FUN2:fun2:depvars',...
+        'Not a bivariate function handle.');  % exclude the case @(x) for now..
+    
+    % Not sure if this should be a warning or not.
+    
+end
+op = eval(['@(' depvar{1} ',' depvar{2} ')' op]);
 end

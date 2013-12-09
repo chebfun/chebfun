@@ -17,7 +17,7 @@ function varargout = svd( f )
 % RANK(F) <= LENGTH(F) should always hold. 
 
 
-if isempty(F) % check for empty chebfun2. 
+if ( isempty( f ) ) % check for empty chebfun2. 
     varargout = {chebfun,[],chebfun};
     return
 end
@@ -49,7 +49,7 @@ V = Qright * V;
 if ( nargout > 1 )
     varargout = { U, S, V};
 else
-    varargout = { S };
+    varargout = { diag( S ) };
 end
 
 end

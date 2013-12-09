@@ -1,12 +1,13 @@
 function f = plus( f , g ) 
-% + PLUS of two chebfun2vs. 
-% 
-% F + G is the sum of two chebfun2vs componentwise. 
-% plus(F,G) is called for the syntax F + G. 
+% + PLUS of two chebfun2v objects.
 
-% Copyright 2012 by The University of Oxford and The Chebfun2 Developers. 
+if ( isa(f, 'chebfun2v') )     % CHEBFUN2V + ??? 
+    
+    if ( isa(g, 'double') )    % CHEBFUN2V + DOUBLE 
+    
 
-if ( isa(f,'double') ) % double + chebfun2v
+
+if ( isa(f,'double') )         % double +
     if(numel(f) == 1) 
         % Assume g + [f f].';
         const = f; f= g; 
