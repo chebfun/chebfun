@@ -25,7 +25,7 @@ domCheck = [dom(1)+0.1 dom(2)-0.1];
 
 pow1 = -0.5;
 pow2 = -1.2;
-op = @(x) cos(300*x).*((x-dom(1)).^pow1).*((x-dom(2)).^pow2);
+op = @(x) cos(30*x).*((x-dom(1)).^pow1).*((x-dom(2)).^pow2);
 f = chebfun(op, dom, 'exps', [pow1 pow2], 'splitting', 'off');
 g = addBreaksAtRoots(f);
 
@@ -38,7 +38,7 @@ vals_g = feval(g, x);
 vals_check = feval(op, x);
 err = vals_g - vals_check;
 
-r_exact = (((-191:667)+1/2)*pi/300).';
+r_exact = (((-19:66)+1/2)*pi/30).';
 
 pass(3) = ( norm(err-mean(err), inf) < ...
     1e2*get(f,'epslevel')*norm(vals_check, inf) ) && ...

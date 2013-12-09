@@ -70,18 +70,13 @@ pass(7) = all(size(exact) == [5,3]) && max(abs(exact(:) - r(:))) < 10*epslevel(f
 dom = [-2 7];
 
 pow = -0.5;
-op = @(x) (x-dom(1)).^pow.*cos(300*x);
+op = @(x) (x-dom(1)).^pow.*cos(30*x);
 pref.singPrefs.exponents = [pow 0];
 pref.enableBreakpointDetection = 1;
 f = chebfun(op, dom, pref);
 r = roots(f);
-r_exact = (((-191:667)+1/2)*pi/300).';
+r_exact = (((-19:66)+1/2)*pi/30).';
 err = r - r_exact;
 pass(8) = (norm(err, inf) < 5*get(f, 'vscale')*get(f, 'epslevel'));
     
 end
-
-
-
-
-
