@@ -1,0 +1,19 @@
+%% Testing script 
+
+%% Basic constructor 
+
+f = chebfun2(@(x,y) cos(10*x.*y), [-2 2 -2 2]); 
+g = chebfun2(@(x,y) cos(10*x.*y), [-2 2 -2 2]); 
+
+%% Basic operations 
+
+h = f + g; 
+h = f*g; 
+h = -f; 
+2*h;
+
+%% Vector-calculus operations 
+ 
+diff(f, 1, 2);
+diff(f, 2, 1); 
+diff(diff(f, 1, 1), 1, 2) - diff(diff(f, 1, 2),1, 1)
