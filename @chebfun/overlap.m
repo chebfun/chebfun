@@ -15,6 +15,45 @@ if ( ~domainCheck(f, g) )
         'Inconsistent domains; domain(f) ~= domain(g).')
 end
 
+if ( numel(f) == 1 && numel(g) == 1)
+    % CHEBFUN - CHEBFUN
+    [f, g] = columnOverlap(f, g);
+    
+elseif ( numel(f) > 1 && numel(g) > 1)
+    % QUASIMATRIX - QUASIMATRIX
+    for k = 1:numel(f)
+        [f(k), g(k)] = columnOverlap(f(k), g(k));
+    end
+    
+elseif ( numel(f) > 1 )
+    % QUASIMATRIX - CHEBFUN
+    if ( min(size(g)) ~= numel(f) )
+        error('CHEBFUN:overlap:dim', 'Matrix dimensions must agree.')
+    else
+        gCell = mat2cell(g);
+        g = 0*f;
+        for k = 1:numel(f)
+            [f(k), g(k)] = columnOverlap(f(k), gCell{k});
+        end
+    end
+       
+else % if ( numel(g) > 1 )    
+    % CHEBFUN - QUASIMATRIX
+    if ( min(size(f)) ~= numel(g) )
+        error('CHEBFUN:overlap:dim', 'Matrix dimensions must agree.')
+    else
+        fCell = mat2cell(f);
+        f = 0*g;
+        for k = 1:numel(g)
+            [f(k), g(k)] = columnOverlap(fCell{k}, g(k));
+        end
+    end
+end    
+
+end
+
+function [f, g] = columnOverlap(f, g)
+
 % If f and g are both empty, there is nothing to do:
 if ( isempty(f) && isempty(g) )
     return

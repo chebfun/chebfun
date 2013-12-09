@@ -29,7 +29,7 @@ k = 1;
 while ( k < (length(varargin) - 1) )
     if ( isa(varargin{k}, 'chebfun') )
         if ( numel(varargin{k}) > 1 || numel(varargin{k+1}) > 1 )
-            error('CHEBFUN:fill:quasi', 'FILL does not support quasimatrices');
+            error('CHEBFUN:fill:quasi', 'FILL does not support quasimatrices.');
         end
         data = plotData(varargin{k}, varargin{k+1});
         varargin{k} = data.xLine(2:end,:);

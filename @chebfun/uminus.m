@@ -15,7 +15,7 @@ end
 % Loop over the columns:
 for j = 1:numel(F) 
     % Negate the impulses:
-    F(j).impulses = -F.impulses;
+    F(j).impulses = -F(j).impulses;
 
     % Negate each of the FUNs:
     for k = 1:numel(F(j).funs)

@@ -17,17 +17,18 @@ if ( n > 2 )
     error('CHEBFUN:end:ngt2', 'Index exceeds CHEBFUN dimensions.');
 end
 
-if ( ((k == 2) && ~f.isTransposed) || ((k == 1) && f.isTransposed && (n > 1)) )
+if ( ((k == 2) && ~f(1).isTransposed) || ...
+     ((k == 1) && f(1).isTransposed && (n > 1)) )
     % 'end' row/column of the array-valued CHEBFUN.
     if ( isempty(f) )
         e = 0;
     else
-        e = size(f.funs{1}, 2);
+        e = min(size(f));
     end
     
 else
     % 'end' of the domain.
-    e = f.domain(end);
+    e = f(1).domain(end);
     
 end
 

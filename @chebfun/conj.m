@@ -15,7 +15,7 @@ for j = 1:numel(F)
     F(j).impulses = conj(F(j).impulses);
     
     % Conjugate the FUNs:
-    for k = 1:numel(F.funs)
+    for k = 1:numel(F(j).funs)
         F(j).funs{k} = conj(F(j).funs{k});
     end
     

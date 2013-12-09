@@ -20,7 +20,7 @@ if ( nargin == 2 )
     M = M(1);
 end
 
-if ( f.isTransposed )
+if ( f(1).isTransposed )
     % REPMAT a row CHEBFUN:
     if ( N ~= 1 )
         error('CHEBFUN:repmat:row',...
