@@ -13,7 +13,7 @@ function out = vscale(F)
 out = 0;
 for k = 1:numel(F)
     % Get the local vscales:
-    v = get(F, 'vscale-local');
+    v = get(F(k), 'vscale-local');
 
     % Compute the maximum:
     out = max(out, max(v(:)));

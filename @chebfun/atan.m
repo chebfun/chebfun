@@ -1,4 +1,4 @@
-function G = atan(F, pref)
+function F = atan(F, pref)
 %ATAN   Inverse tangent of a CHEBFUN.
 %   ATAN(F) computes the inverse tangent of the CHEBFUN F.
 %

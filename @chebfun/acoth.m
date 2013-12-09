@@ -1,4 +1,4 @@
-function F = acoth(G, pref)
+function F = acoth(F, pref)
 %ACOTH   Inverse hyperbolic cotangent of a CHEBFUN.
 %   ACOTH(F) computes the inverse hyperbolic cotangent of the CHEBFUN F.
 %

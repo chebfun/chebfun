@@ -22,8 +22,8 @@ else
 end
 
 % Find the locations of the CHEBFUN objects in the inputs:
-chebfunLocs = cellfun('isclass', varargin, 'chebfun')
-chebfun1 = varargin{find(chebfunLocs, 1, 'first')}
+chebfunLocs = cellfun('isclass', varargin, 'chebfun');
+chebfun1 = varargin{find(chebfunLocs, 1, 'first')};
 
 % Horizontal concatenation of ow CHEBFUN objects produces a CHEBMATRIX:
 if ( chebfun1(1).isTransposed )

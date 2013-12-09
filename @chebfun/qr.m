@@ -26,16 +26,42 @@ if ( (nargin == 2) && (econ ~= 0) )
     error('CHEBFUN:qr:twoargs',...
       'Use qr(A) or qr(A, 0) for QR decomposition of an array-valued CHEBFUN.');
 end
-if ( A.isTransposed )
+if ( A(1).isTransposed )
     error('CHEBFUN:qr:transpose',...
         'CHEBFUN QR works only for column CHEBFUN objects.')
 end
-if ( ~all(isfinite(A.domain)) )
+if ( ~all(isfinite(A(1).domain)) )
     error('CHEBFUN:QR:infdomain', ...
         'CHEBFUN QR does not support unbounded domains.');
 end
 
-if ( numel(A.funs) == 1 )
+numCols = size(A,2);
+
+if ( numel(A) > 1 )
+    % Quasimatrix case:
+
+    isSimple = true;
+    for k = 1:numel(A)
+        isSimple = isSimple && all(cellfun(@(f) isa(f.onefun, 'chebtech'), A(k).funs));
+    end
+
+    if ( isSimple )
+        % Simple case = all FUNs are simple (i.e., use CHEBTECHs).
+        % Convert to an array-valued CHEBFUN:
+        A = quasi2cheb(A);
+        [Q, R] = qr(A, 0);
+        
+    else
+        % Legendre matrix:
+        E = legpoly(0:numCols-1, A.domain, 'norm', 1);
+        E = restrict(E, get(A, 'domain'));
+        % Convert the Legendre-Vandermonde matrix to a quasimatrix:
+        E = cheb2quasi(E);
+        % Call abstract QR:
+        [Q, R] = abstractQR(A, E, @innerProduct, @normest);
+    end
+
+elseif ( numel(A.funs) == 1 )
     % No breakpoints = easy case.
     
     % Call QR at the FUN level:
@@ -48,40 +74,29 @@ elseif ( size(A, 2) == 1 )
     Q = A./R;
 
 elseif ( all(cellfun(@(f) isa(f.onefun, 'chebtech'), A.funs)) )
-    % Simple case = all FUNs are simple (i.e., use CHBETECHs).
+    % Simple case = all FUNs are simple (i.e., use CHEBTECHs).
     %   (If all the FUN objects have .onefuns which are CHEBTECHs, we can use a
     %   much more efficient approach. Note, this completely violates OOP
     %   principles, but the performance gain is worth it.)
 
-    if ( strcmp(class(A.funs{1}.onefun), 'chebtech1') )
+    % NOTE: We must use STRCMP here to get the expected behaviour.
+    if ( strcmp(class(A.funs{1}.onefun), 'chebtech1') )  %#ok<STISA>
         chebType = 1;
     else
         chebType = 2;
     end
-
     [Q, R] = qrSimple(A, chebType);
     
 else
     % Work in the general continuous setting:
-    [Q, R] = qrGeneral(A);
+    
+    % Legendre-Vandermonde matrix:
+    E = legpoly(0:numCols-1, A.domain, 'norm', 1);
+    [A, E] = overlap(A, E);
+    % Call abstract QR:
+    [Q, R] = abstractQR(A, E, @innerProduct, @normest);
     
 end
-
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function [Q, R] = qrGeneral(A)
-
-% Get some useful values:
-numCols = min(size(A));
-tol = epslevel(A)*vscale(A);
-
-% Legendre matrix:
-E = legpoly(0:numCols-1, A.domain, 'norm', 1);
-[A, E] = overlap(A, E);
-
-[Q, R] = abstractQR(A, E, @innerProduct, @normest, tol);
 
 end
 

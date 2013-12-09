@@ -1,4 +1,4 @@
-function f = simplify(f, tol)
+function F = simplify(F, tol)
 %SIMPLIFY  Simplify a CHEBFUN.
 %  G = SIMPLIFY(F) attempts to compute a CHEBFUN G which is a 'simplified'
 %  version of F in that length(G) <= length(F), but ||G - F|| is small in a
@@ -15,7 +15,18 @@ function f = simplify(f, tol)
 
 if ( nargin == 1 )
     tol = chebpref().techPrefs.eps;
+elseif ( isa(tol, 'chebpref') )
+    tol = tol.techPrefs.eps;
 end
+
+% Loop pver the columns:
+for k = 1:numel(F)
+    F(k) = columnSimplify(F, tol);
+end
+
+end
+
+function f = columnSimplify(f, tol)
 
 % Choose a tolerance:
 % [TODO]: This seems to be the best we can do without vector epslevels?

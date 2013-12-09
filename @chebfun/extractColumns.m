@@ -1,4 +1,4 @@
-function f = extractColumns(f, colIdx)
+function F = extractColumns(F, colIdx)
 %EXTRACTCOLUMNS   Extract columns (or rows) of an array-valued CHEBFUN.
 %   G = EXTRACTCOLUMNS(F, COLIDX) extracts the columns specified by the row
 %   vector COLIDX from the CHEBFUN F so that G = F(:,COLIDX). COLIDX need not be
@@ -14,10 +14,10 @@ function f = extractColumns(f, colIdx)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Number of columns (or rows if f.isTransposed) of f:
-numCols = min(size(f));
+numCols = min(size(F));
 
 % Trivial cases:
-if ( isempty(f) )
+if ( isempty(F) )
     return
 elseif ( ~isnumeric(colIdx) && strcmp(colIdx, ':') )
     return
@@ -27,12 +27,21 @@ elseif ( max(colIdx) > numCols )
     error('CHEBFUN:subsref:dimensions', 'Index exceeds CHEBFUN dimensions.')    
 end
 
-% Extract the columns of the FUNs:
-for k = 1:numel(f.funs)
-    f.funs{k} = extractColumns(f.funs{k}, colIdx);
-end
+if ( numel(F) > 1 )
+    % Quasimatrix case:
+    F = F(colIdx);
+    
+else
+    % Array-valued CHEBFUN case:
+    
+    % Extract the columns of the FUNs:
+    for k = 1:numel(F.funs)
+        F.funs{k} = extractColumns(F.funs{k}, colIdx);
+    end
 
-% Extract the columns from the impulses:
-f.impulses = f.impulses(:,colIdx,:);
+    % Extract the columns from the impulses:
+    F.impulses = F.impulses(:,colIdx,:);
+
+end
 
 end

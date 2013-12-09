@@ -1,4 +1,4 @@
-function f = diff(f, n, dim)
+function F = diff(F, n, dim)
 %DIFF   Differentiation of a CHEBFUN.
 %   DIFF(F), when F is a column CHEBFUN, computes a column CHEBFUN whose columns
 %   are the derivatives of the corresponding columns in F.  At discontinuities,
@@ -28,7 +28,7 @@ function f = diff(f, n, dim)
 % See http://www.chebfun.org for Chebfun information.
 
 % Trivial case:
-if ( isempty(f) )
+if ( isempty(F) )
     return
 end
 
@@ -49,26 +49,43 @@ if ( round(n) ~= n )
     % [TODO]: Implement this!
     error('CHEBFUN:diff:notImplemented', ...
         'Fractional derivatives not yet implemented.');
-    f = fracCalc(f, n);
+    F = fracCalc(F, n);
     return
 end
 
-if ( xor(f.isTransposed, dim == 2) )
+if ( xor(F(1).isTransposed, dim == 2) )
     % Diff across columns (or rows for a transposed) array-valued CHEBFUN:
-    f = diffFiniteDim(f, n);
+    F = diffFiniteDim(F, n);
 else
-    % Diff along continuous dimension (i.e., df/dx):
-    f = diffContinuousDim(f, n);
+    % Diff along continuous dimension (i.e., dF/dx):
+    for k = 1:numel(F)
+        F(k) = diffContinuousDim(F(k), n);
+    end
 end
 
 
 end
 
 function f = diffFiniteDim(f, n)
-
 % Differentiate across the finite dimension (i.e., across columns).
-for k = 1:numel(f.funs)
-    f.funs{k} = diff(f.funs{k}, n, 2);
+if ( numel(f) == 1 )
+    % Array-valued CHEBFUN case:
+    for k = 1:numel(f.funs)
+        f.funs{k} = diff(f.funs{k}, n, 2);
+    end
+else
+    % Quasimatrix case:
+    numCols = numel(f);
+    if ( numCols <= n )
+        f = chebfun();
+    else
+        for j = 1:n
+            for k = 1:numCols-j
+                f(k) = f(k+1) - f(k);
+            end
+        end
+    end
+    f = f(1:numCols-n);
 end
 
 end

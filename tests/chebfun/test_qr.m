@@ -45,7 +45,7 @@ pass(8) = norm(f - Q*R) < 10*vscale(f)*epslevel(f) && ...
 
 % Check QR of a CHEBFUN based on CHEBTECH1.
 p = pref;
-p.tech = 'chebtech';
+p.tech = 'chebtech1';
 p.techPrefs.gridType = 1;
 f = chebfun(@(x) [sin(x) cos(x) exp(x)], [-1 0 1], p);
 [Q, R] = qr(f);

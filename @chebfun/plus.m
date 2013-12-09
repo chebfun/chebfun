@@ -21,7 +21,7 @@ elseif ( isempty(g) )       % CHEBFUN + []
 elseif ( isnumeric(g) )     % CHEBFUN + double
     
     % Transpose g if f is transposed:
-    if ( f.isTransposed )
+    if ( f(1).isTransposed )
         g = g.';
     end
 
@@ -52,7 +52,7 @@ elseif ( isempty(f) )         % empty CHEBFUN + CHEBFUN
 else                          % CHEBFUN + CHEBFUN
 
     % Check to see if one CHEBFUN is transposed:
-    if ( xor(f.isTransposed, g.isTransposed) )
+    if ( xor(f(1).isTransposed, g(1).isTransposed) )
         error('CHEBFUN:plus:matdim', ...
             'Matrix dimensions must agree. (One input is transposed).');
     end

@@ -18,7 +18,7 @@ end
 % Loop over the columns of F:
 for k = 1:numel(F)
     % Call the compose method:
-    F(k) = compose(F(k), @cos, pref);
+    F(k) = compose(F(k), @csc, pref);
 end
 
 end

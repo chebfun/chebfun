@@ -45,7 +45,7 @@ if ( isnumeric(g) )
 end
 
 % Check dimensions of g:
-if ( xor(f.isTransposed, g.isTransposed) || (numel(colIdx) ~= min(size(g))) )
+if ( xor(f(1).isTransposed, g(1).isTransposed) || (numel(colIdx) ~= min(size(g))) )
     error('CHEBFUN:assignColumns:numCols', ...
         'Subscripted assignment dimension mismatch.')
 end
@@ -66,15 +66,25 @@ if ( max(colIdx) > numColsF )
     error('CHEBFUN:assignColumns:dims', 'Index exceeds CHEBFUN dimensions.')
 end
 
-% Make sure f and g have the same breakpoints:
-[f, g] = overlap(f, g);
-
-% Assign the columns of the FUNs:
-for k = 1:numel(f.funs)
-    f.funs{k} = assignColumns(f.funs{k}, colIdx, g.funs{k});
-end
-
-% Assign the columns to the impulses:
-f.impulses(:,colIdx,:) = g.impulses;
+if ( numel(f) == 1 && numel(g) == 1)
+    % Array-valued CHEBFUN case:
+    
+    % Make sure f and g have the same breakpoints:
+    [f, g] = overlap(f, g);
+    % Assign the columns of the FUNs:
+    for k = 1:numel(f.funs)
+        f.funs{k} = assignColumns(f.funs{k}, colIdx, g.funs{k});
+    end
+    % Assign the columns to the impulses:
+    f.impulses(:,colIdx,:) = g.impulses;
+else
+    % Quasimatrix case:
+    
+    % Ensure f is a quasimatrix:
+    f = cheb2quasi(f);
+    g = num2cell(g);
+    for k = 1:numel(colIdx)
+        f(colIdx(k)) = g{k};
+    end
 
 end

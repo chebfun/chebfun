@@ -1,4 +1,4 @@
-function f = addBreaksAtRoots(f, tol)
+function F = addBreaksAtRoots(F, tol)
 %ADDBREAKSATROOTS   Add breaks at appropriate roots of a CHEBFUN
 %   ADDBREAKSATROOTS(F) introduces breakpoints at certain roots in the interior
 %   of the domain of a CHEBFUN F. In particular, breaks are introduced at each
@@ -20,7 +20,17 @@ function f = addBreaksAtRoots(f, tol)
 % Lower bound for tolerance:
 if ( nargin == 1 )
     tol = 0;
+elseif ( isa(tol, 'chebpref') )
+    tol = tol.techPrefs.eps;
 end
+
+for k = 1:numel(F)
+    F(k) = columnAddBreaksAtRoots(F(k), tol);
+end
+
+end
+
+function f = columnAddBreaksAtRoots(f, tol)
 
 % Locate roots:
 rAll = roots(f, 'nozerofun', 'nojump', 'noimps');

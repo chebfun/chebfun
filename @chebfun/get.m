@@ -20,6 +20,8 @@ function out = get(f, prop)
 % [TODO]: Include a get(f, 'numCols') ( = size(f.funs{1}, 2) if f is not empty).
 
 switch prop
+    case 'domain'
+        out = domain(f);
     case fieldnames(f)
         % Allow access to any of F's properties via GET.
         out = f.(prop);

@@ -1,4 +1,4 @@
-function g = besselj(nu, f, scale, pref)
+function F = besselj(nu, F, scale, pref)
 %BESSELJ   Bessel function of first kind of a CHEBFUN.
 %   J = BESSELJ(NU, F) returns J_nu(F), i.e., is the Bessel function of the
 %   first kind, J_NU(Z) composed with the CHEBFUN object F. The order NU need
@@ -16,11 +16,23 @@ function g = besselj(nu, f, scale, pref)
 if ( nargin < 4 )
     pref = chebpref();
 end
+if ( nargin < 3 ) 
+    scale = 0;
+end
 
 if ( any(size(nu) > 1) || ~isreal(nu) )
     error('CHEBFUN:besselj:nu', ...
         'The first argument of besselj must be a real-valued scalar.');
 end
+
+% Loop over the columns:
+for k = 1:numel(F)
+    F(k) = columnBesselj(nu, F(k), scale, pref);
+end
+
+end
+
+function g = columnBesselj(nu, f, scale, pref)
 
 % Singular part:
 fnu = f.^nu;
@@ -32,7 +44,7 @@ g = compose(f, @(x) h(nu, x), pref);
 g = fnu.*g;
 
 % Scale (as described in help documentation):
-if ( nargin == 3 && scale == 1 )
+if ( scale == 1 )
     scl = exp(-abs(imag(f)));
     g = scl.*g;
 end

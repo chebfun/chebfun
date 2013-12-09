@@ -14,6 +14,10 @@ function out = legpoly(f, n)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+if ( numel(f) > 1 )
+    error('CHEBFUN:legpoly:quasia', 'LEGPOLY does not support quasimatrices.');
+end
+
 % Select a FUN:
 if ( nargin == 1 )
     if ( f.nfuns > 1 )

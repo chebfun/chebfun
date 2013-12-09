@@ -8,11 +8,20 @@ function [A, B] = domain(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( nargout <= 1)     % One output.
-    A = f.domain;
-elseif ( nargout == 2 ) % Two outputs.
-    A = f.domain(1);
-    B = f.domain(end);
+% Merge the domains of columns in a quasimatrix:
+dom = cell(1, numel(f));
+for k = 1:numel(f)
+    dom{k} = f(k).domain;
 end
+dom = chebfun.mergeDomains(dom{:});
+
+% Format the output:
+if ( nargout <= 1)      % One output.
+    A = dom;
+elseif ( nargout == 2 ) % Two outputs.
+    A = dom(1);
+    B = dom(end);
+end
+
 
 end

@@ -1,8 +1,8 @@
 function g = num2cell(f)
 %NUM2CELL   Convert an array-valued CHEBFUN into cell array.
-%   G = NUM2CELL(F) converts an INFxM array-valued CHEBFUN F into a 1xM cell
-%   array C by placing each column of F into a separate cell in C. If F is an
-%   MxINF row CHEBFUN, then C is Mx1.
+%   G = NUM2CELL(F) converts an INFxM array-valued CHEBFUN or quasimatrix F into
+%   a 1xM cell array C by placing each column of F into a separate cell in C. If
+%   F is an MxINF row CHEBFUN, then C is Mx1.
 %
 % See also MAT2CELL.
 
@@ -14,11 +14,11 @@ if ( isempty(f) )
     return
 end
 
-numComponents = size(f.funs{1}, 2);
+numCols = min(size(f));
 if ( f(1).isTransposed )
-    g = mat2cell(f, ones(1, numComponents), 1);
+    g = mat2cell(f, ones(1, numCols), 1); %#ok<MMTC>
 else
-    g = mat2cell(f, 1, ones(1, numComponents));
+    g = mat2cell(f, 1, ones(1, numCols)); %#ok<MMTC>
 end
 
 end

@@ -55,8 +55,15 @@ for k = 1:numel(y.funs);
 end
 
 % Collect all the roots together:
-r = [ ry ; rx ];
+r = unique([ ry ; rx ]);
 
+% Remove near-by roots:
+nr = numel(r) + 1;
+while ( nr ~= numel(r) )
+    nr = numel(r);
+    r([diff(r) < tol ; false]) = [];
+end
+   
 % Introduce new breaks at the computed roots if required:
 if ( ~isempty(r) )
     newDom = union(x.domain, r.');

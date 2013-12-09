@@ -17,6 +17,15 @@ if ( isempty(s) )
     return
 end
 
+% Loop over the columns:
+for k = 1:numel(f)
+    f(k) = columnDefinePoint(f(k), s, v);
+end
+
+end
+
+function f = columnDefinePoint(f, s, v)
+
 % Some error checking:
 if ( isempty(v) )
     error('CHEBFUN:definePoint:conversion',...

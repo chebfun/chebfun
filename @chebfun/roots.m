@@ -1,4 +1,4 @@
-function r = roots(f, varargin)
+function r = roots(F, varargin)
 %ROOTS   Roots of a CHEBFUN.
 %   ROOTS(F) returns the roots of F in its domain of definition. By default,
 %   roots are returned at jumps in F which pass through zero, and if F is
@@ -48,11 +48,32 @@ function r = roots(f, varargin)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Deal with the trivial empty case:
-if ( isempty(f) )
+if ( isempty(F) )
     return
 end
 
-rootsPref = parseInputs(f, varargin{:});
+rootsPref = parseInputs(F, varargin{:});
+
+% Loops over the columns:
+r = cell(1, numel(F));
+for k = 1:numel(F)
+    r{k} = columnRoots(F(k), rootsPref); 
+end
+
+% Padd with NaNs for quasimatrices:
+if ( numel(F) > 1 )
+    l = cellfun(@length, r);
+    ml = max(l);
+    for k = 1:numel(F)
+        r{k} = [r{k} ; NaN(ml-l(k), 1)];
+    end
+end
+
+r = cell2mat(r);
+
+end
+
+function r = columnRoots(f, rootsPref)
 
 % Set horizontal and vertical scales:
 el = epslevel(f);

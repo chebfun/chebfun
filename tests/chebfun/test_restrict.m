@@ -85,7 +85,7 @@ pass(18) = test_restrict_one_function(f, f_exact, [-0.35 0.1 0.2 0.5], map, xr);
 
 % Check an array-valued function with breakpoints.
 f_exact = @(x) [sin(x - 0.1) cos(x + 0.2) exp(x)];
-f = chebfun(f_exact, [-1:0.1:1], pref);
+f = chebfun(f_exact, -1:0.1:1, pref);
 
 pass(19) = test_restrict_one_function(f, f_exact, [-1 0.5], map, xr);
 pass(20) = test_restrict_one_function(f, f_exact, [-0.2 1], map, xr);
@@ -100,6 +100,6 @@ function pass = test_restrict_one_function(f, f_exact, dom, map, xr)
     x = map(xr, dom(1), dom(end));
     err = norm(feval(fr, x) - f_exact(x), inf);
     tol = 10*fr.vscale*fr.epslevel;
-    pass = all(ismember(dom, fr.domain)) && ...
-        all(err(:) < 10*fr.vscale*fr.epslevel);
+    err2 = max(cellfun(@(d) min(abs(d-fr.domain)), num2cell(dom)));
+    pass = err2 < tol && all(err(:) < 10*fr.vscale*fr.epslevel);
 end

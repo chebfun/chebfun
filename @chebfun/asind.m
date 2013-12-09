@@ -1,4 +1,4 @@
-function G = asind(F, pref)
+function F = asind(F, pref)
 %ASIND   Inverse sine of a CHEBFUN, result in degrees.
 %   ASIND(F) computes the inverse sine (in degrees) of the CHEBFUN F.
 %

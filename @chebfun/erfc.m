@@ -23,7 +23,7 @@ end
 % Loop over the columns of F:
 for k = 1:numel(F)
     % Call the compose method:
-    F(k) = compose(F(k), @erc, pref);
+    F(k) = compose(F(k), @erfc, pref);
 end
 
 end

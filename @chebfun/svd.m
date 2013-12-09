@@ -26,7 +26,7 @@ if ( (nargin > 2) || ((nargin == 2) && (econ ~= 0)) )
           'Use svd(A) or svd(A, 0) for SVD of array-valued CHEBFUN.');
 end
 
-if ( A.isTransposed )    % A is a row CHEBFUN
+if ( A(1).isTransposed )    % A is a row CHEBFUN
     % Call CHEBFUN/QR():
     [Q, R] = qr(A');
     % Call discrete SVD():
