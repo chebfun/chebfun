@@ -154,10 +154,10 @@ for k = 1:numel(varargin)
             rootsPref.jumpRoot = 1;
         case 'noimps'
             rootsPref.jumpRoot = 0;            
-        case 'recursion'
+        case {'recursion', 'recurse'}
             rootsPref.recurse = 1;
             recurseHasBeenSet = 1;
-        case 'norecursion'            
+        case {'norecursion', 'norecurse'}
             rootsPref.recurse = 0;
         otherwise
             error('CHEBFUN:roots:UnknownOption', 'Unknown option in ROOTS.')

@@ -9,7 +9,6 @@ end
 
 %%
 % declare pass vector
-pass = zeros(1,5);
 %%
 % create an empty SINGFUN
 f = singfun();

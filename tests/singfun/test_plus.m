@@ -14,8 +14,6 @@ x = 2 * rand(100, 1) - 1;
 % A random number to use as an arbitrary additive constant.
 alpha = -0.194758928283640 + 0.075474485412665i;
 
-pass = zeros(1, 14); % Pre-allocate pass vector
-
 %%
 % Check operation in the case of empty arguments.
 f = singfun();

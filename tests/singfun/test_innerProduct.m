@@ -15,9 +15,6 @@ d = -1.28;
 p = -0.2;
 q = -0.3;
 
-% Pre-allocate pass matrix
-pass = zeros(1, 8);
-
 % fractional pole at the left endpoint
 f = singfun(@(x) (1+x).^p, [p 0], {'sing', 'none'}, [], [], pref);
 g = singfun(@(x) (1+x).^q, [q 0], {'sing', 'none'}, [], [], pref);

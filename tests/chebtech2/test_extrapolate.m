@@ -11,7 +11,6 @@ end
 tol = 100*pref.eps;
 
 % Initialise:
-pass = zeros(1, 12);
 s = 0;
 
 n = 17;

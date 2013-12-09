@@ -7,7 +7,6 @@ if ( nargin < 1 )
     pref = chebpref();
 end
 
-pass = zeros(1, 7); % Pre-allocate pass matrix.
 for n = 1:1 %[TODO]: unbndfun
     if ( n == 1 )
         testclass = bndfun();

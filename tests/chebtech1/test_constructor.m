@@ -7,8 +7,6 @@ if ( nargin < 1 )
     pref = chebtech.techPref();
 end
 
-pass = zeros(1, 4); % Pre-allocate pass matrix
-
 %%
 % Test on a scalar-valued function:
 pref.refinementFunction = 'default';
