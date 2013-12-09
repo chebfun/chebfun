@@ -37,7 +37,7 @@ while ( k < (length(varargin) - 1) )
 end
 
 if ( any(cellfun(@(f) isa(f, 'chebfun'), varargin)) )
-    error('CHEBFUN:fil:oops', 'Unrecognised input sequence.');
+    error('CHEBFUN:fill:oops', 'Unrecognised input sequence.');
 end
 
 % Call the built in FILL():
