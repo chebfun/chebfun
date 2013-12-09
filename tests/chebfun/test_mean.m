@@ -36,8 +36,8 @@ dom = [-2 7];
 op = @(x) sin(100*x)./((x-dom(1)).^0.5.*(x-dom(2)).^0.5);
 f = chebfun(op, dom, 'exps', [-0.5 -0.5], 'splitting', 'on');
 m = mean(f);
-m_exact = 1;
-pass(9) = abs(m - m_exact) < get(f,'epslevel')*m_exact;
+m_exact = -0.01273522016443600i;
+pass(9) = abs(m - m_exact) < 1e1*get(f,'epslevel')*abs(m_exact);
 
 %% SINGFUNS: an infinite case
 
@@ -48,7 +48,6 @@ op = @(x) sin(100*x)./((x-dom(1)).^1.5.*(x-dom(2)).^0.5);
 f = chebfun(op, dom, 'exps', [-1.5 -0.5], 'splitting', 'on');
 m = mean(f);
 pass(10) = ( isinf(m) );
-
 
 %% Unbounded domains:
 % [TODO]: Test unbounded domains.
