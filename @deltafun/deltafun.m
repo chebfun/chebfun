@@ -22,7 +22,7 @@ classdef deltafun
         funPart     % (smoothfun)
         
         % Delta functions' structre
-        delta = struct( 'magnitude', [], 'location', [], 'diffOrder', [], ...
+        delta = struct( 'magnitude', [], 'location', [], ...
                         'isReal', [], 'isImag', [], 'isConj', [] );
         % Domain
         domain
@@ -91,11 +91,11 @@ classdef deltafun
             %%
             % Various checks on argument compatibilities
             
-            if ( length(magnitude) ~= length(location) )
-                error('CHEBFUN:DELTAFUN:dim', 'Magnitude and location should be vectors of the same size.');
+            if ( size(magnitude, 2) ~= length(location) )
+                error('CHEBFUN:DELTAFUN:dim', 'Magnitude has same number of columns as locations' );
             end
             
-            if ( min(size(magnitude)) > 1 || min(size(location)) > 1 )
+            if ( min(size(location)) > 1 )
                 error('CHEBFUN:DELTAFUN:dim', 'Magnitude and location should each be a vector');
             end
             
@@ -104,8 +104,7 @@ classdef deltafun
                 error('CHEBFUN:DELTAFUN:duplication', 'No duplicates are allowed in location.');
             end
             
-            % Make sure magnitude and location are row vectors.
-            magnitude = magnitude(:).';
+            % Make sure location is a row vector:
             location = location(:).';
             
             % Locations of delta functions should be within the domain:
@@ -128,7 +127,6 @@ classdef deltafun
             % current object:
             obj.delta.magnitude = magnitude;
             obj.delta.location  = location;
-            obj.delta.diffOrder = 0*magnitude;
             obj.delta.isImag    = false * location;
             obj.delta.isReal    = false * location;
             obj.delta.isConj    = false * location;

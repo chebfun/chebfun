@@ -10,5 +10,5 @@ function out = issmooth(f)
 tol = deltafun.pref.deltafun.deltaTol;
 
 % A function is smooth if it has no or below tolerance delta functions.
-out = all(abs(f.delta.magnitude) < tol);
+out = all(abs(f.delta.magnitude(:)) < tol);
 end
