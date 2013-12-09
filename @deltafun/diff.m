@@ -10,7 +10,7 @@ function f = diff(f, k)
 
 %% Check the inputs:
 
-% Trivial case of an empty SINGFUN:
+% Trivial case of an empty DELTAFUN:
 if ( isempty(f) )
     return
 end
@@ -24,12 +24,23 @@ elseif ( k == 0 )
 end
 
 %% Differentiate the DELTAFUN F, k times 
-f.funPart = diff(f.funPart, k);    % Differentiate the classical function.
-f.diffOrder = f.diffOrder + k;     % Differentitat the distributional part.
+% Differentiate the classical smooth part
+g = diff(f.funPart, k);
+% Notice that g may have morphed into deltafun 
+% by now so we, need to be careful.
 
 % Make sure the maximum order of the derivative is within limits.
-if ( any(f.diffOrder > deltafun.pref.deltafun.maxDiffOrder) )
+if ( any(f.delta.diffOrder > deltafun.pref.deltafun.maxDiffOrder) )
     error('CHEBFUN:DELTAFUN:DIFF', 'order of highest derivative too high. You can change this through DELTAFUN prefernces.');
 end
+
+
+% Differentiate the distributional part.
+f.delta.diffOrder = f.delta.diffOrder + k;
+
+% Annihilate the existing smooth part and add g to the deltafun:
+f.funPart = 0*f.funPart;
+f = f + g;
+
 
 end

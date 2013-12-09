@@ -9,7 +9,6 @@ function f = conj(f)
 
 % Conjugate the classical part:
 f.funPart = conj(f.funPart);
-% Invert the isConj flag:
-f.isConj = ~f.isConj;
-
+% Invert the isConj field in delta functions:
+f.delta.isConj = ~f.delta.isConj;
 end

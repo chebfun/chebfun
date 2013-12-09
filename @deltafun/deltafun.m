@@ -21,11 +21,14 @@ classdef deltafun
         % Smooth part of the representation.
         funPart     % (smoothfun)
         
-        % Delta functions structre
+        % Delta functions' structre
         delta = struct( 'magnitude', [], 'location', [], 'diffOrder', [], ...
                         'isReal', [], 'isImag', [], 'isConj', [] );
         % Domain
-        domain                
+        domain
+        
+        % isTransposed flag
+        isTransposed
     end
     
     %% CLASS CONSTRUCTOR:
@@ -46,13 +49,9 @@ classdef deltafun
             % Case 0: No input arguments, return an empty object.
             if ( nargin == 0 )
                 obj.funPart = [];
-                obj.delta.magnitude = [];
-                obj.delta.location = [];
+                obj.delta = [];
                 obj.domain = [];
-                obj.delta.diffOrder = [];
-                obj.delta.isImag = [];
-                obj.delta.isReal = [];
-                obj.delta.isConj = [];
+                obj.isTransposed = [];
                 return
             end
             
@@ -130,12 +129,13 @@ classdef deltafun
             obj.delta.magnitude = magnitude;
             obj.delta.location  = location;
             obj.delta.diffOrder = 0*magnitude;
-            obj.delta.isImag = false * location;
-            obj.delta.isReal = false * location;
-            obj.delta.isConj = false * location;
+            obj.delta.isImag    = false * location;
+            obj.delta.isReal    = false * location;
+            obj.delta.isConj    = false * location;
             
-            obj.domain   = domain;
-            obj.funPart  = funPart;                                   
+            obj.domain       = domain;
+            obj.funPart      = funPart;
+            obj.isTransposed = 0;
         end
     end
     
@@ -264,8 +264,7 @@ classdef deltafun
         f = uminus(f)
         
         % Unary plus of a SINGFUN.
-        f = uplus(f)
-        
+        f = uplus(f)                
     end
     
     %% STATIC METHODS IMPLEMENTED BY THIS CLASS.
@@ -276,8 +275,8 @@ classdef deltafun
         % Retrieve and modify preferences for this class.
         prefs = pref(varargin)
         
-        % Costruct a zero SINGFUN
-        s = zeroDeltaFun()
+        % Costruct a zero DELTAFUN
+        s = zeroDeltaFun(domain)
     end
     
 end
