@@ -1,4 +1,5 @@
 function g = constructor(g, op, domain, varargin)
+% The main Chebfun2 constructor. 
 
 if ( nargin < 3 || isempty(domain) )
     domain = [-1 1 -1 1];
@@ -48,9 +49,9 @@ while ( ~isHappy )
         error('FUN2:CTOR', 'Function returned NaN when evaluated');
     end
     
-    
     %% FIND NUMERICAL RANK:
     [pivotValue, pivotPosition, rowValues, colValues, iFail] = CompleteACA(vals, tol);
+    % Use chebtech's happiness check
     strike = 1;
     while ( iFail && r <= maxRank && strike < 3 && r < 65)
         r = 2^(floor(log2(r)) + 1) + 1;                % Double the sampling
@@ -61,16 +62,15 @@ while ( ~isHappy )
             % If the function is 0+noise then stop after three strikes.
             strike = strike + 1;
         end
-        
     end
     
     if ( r >= maxRank )
         error('FUN2:CTOR', 'Not a low-rank function.');
     end
     
-    colChebtech = chebtech2(sum(colValues,2));
+    colChebtech = chebtech2(sum(colValues,2), domain(3:4) );
     resolvedCols = happinessCheck(colChebtech);
-    rowChebtech = chebtech2(sum(rowValues.',2));
+    rowChebtech = chebtech2(sum(rowValues.',2), domain(1:2) );
     resolvedRows = happinessCheck(rowChebtech);   
     
     isHappy = resolvedRows & resolvedCols;
@@ -83,8 +83,7 @@ while ( ~isHappy )
         PP = pivotPosition;
     end
 
-    n = r; 
-    m = r;
+    n = r;  m = r;
     
     % If unresolved then perform ACA on selected slices.
     while ( ~isHappy )
@@ -157,11 +156,8 @@ end
 
 function [PivotValue, PivotElement, Rows, Cols, ifail] = CompleteACA(A, tol)
 % Adaptive Cross Approximation with complete pivoting. This command is
-% completely analogous to Gaussian elimination with complete pivoting. We
-% adaptively find the rank of the approximant in this command.
-
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% the continuous analogue of Gaussian elimination with complete pivoting. 
+% Here, we attempt to adaptively find the numerical rank of the function.
 
 % Set up output variables.
 [nx,ny]=size(A);
@@ -190,7 +186,7 @@ while ( ( infnorm > 10*tol*scl ) && ( zrows < width / factor) )
     Rows(zrows+1,:) = A( row , : ) ;
     Cols(:,zrows+1) = A( : , col ) ;    % Extract the columns out
     PivVal = A(row,col);
-    A = A - Cols(:,zrows+1)*(Rows(zrows+1,:)./PivVal);    % Rank one update.
+    A = A - Cols(:,zrows+1)*(Rows(zrows+1,:)./PivVal); % One step of GE.
     
     % Keep track of progress.
     zrows = zrows + 1;                  % One more row is zero.
@@ -198,8 +194,6 @@ while ( ( infnorm > 10*tol*scl ) && ( zrows < width / factor) )
     PivotElement(zrows,:)=[row col];    % Store pivot location.
     
     %Next pivot.
-    %     [row,col,infnorm]=rook_pivot(A);
-    %     [ infnorm , ind ]=max( abs ( reshape(A,numel(A),1) ) );
     [ infnorm , ind ]=max( abs ( A(:) ) );  % slightly faster.
     [ row , col ] = myind2sub( size(A) , ind );
 end
@@ -207,20 +201,6 @@ end
 if infnorm <= 10*tol*scl, ifail = 0; end  % We didn't fail.
 if (zrows >= width / factor), ifail = 1; end  % We did fail.
 
-
-
-if ifail == 0, return; end
-
-% Toy Plateau detection.
-if length(PivotValue )  > 1
-    if all(abs(PivotValue(end-2:end))<100*tol*scl)
-        % perhaps we did plateau, but there was a bit of noise.
-        if all(diff(abs(PivotValue(end-2:end)))<10*tol*scl)
-            % If we think we plateau, we probably didn't fail.
-            ifail = 0;
-        end
-    end
-end
 end
 
 

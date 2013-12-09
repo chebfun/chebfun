@@ -26,6 +26,10 @@ classdef chebfun2
     % Static methods implemented by CHEBFUN class.
     methods ( Static = true )
         
+        X = coeffs2vals( U ); 
+        
+        X = vals2coeffs( U ); 
+        
     end
 
     % Private methods implemented by CHEBFUN2 class.
