@@ -15,12 +15,14 @@ function H = cross( F, G )
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information. 
 
 
+Fcomp = F.components; 
+Gcomp = G.components; 
 if ( F.nComponents == 2 && G.nComponents == 2 )  % no third component then return the 2D curl. 
-    H = F(1) .* G(2) - F(2) .* G(1); % chebfun2 object. 
+    H = Fcomp(1) .* Gcomp(2) - Fcomp(2) .* Gcomp(1); % chebfun2 object. 
 elseif ( F.nComponents == 3 && G.nComponents == 3 ) 
-    H = [ F(2).* G(3) - F(3) .* G(2);...
-      F(3) .* G(1) - F(1) .* G(3);...
-      F(1) .* G(2) - F(2) .* G(1) ];
+    H = [ Fcomp(2).* Gcomp(3) - Fcomp(3) .* Gcomp(2);...
+      Fcomp(3) .* Gcomp(1) - Fcomp(1) .* Gcomp(3);...
+      Fcomp(1) .* Gcomp(2) - Fcomp(2) .* Gcomp(1) ];
 else
     error('CHEBFUN2V:CROSS','Chebfun2v objects must be both 2- or 3-vectors.');
 end

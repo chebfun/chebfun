@@ -26,7 +26,7 @@ g = chebfun(@(x) cos(x), [-2 2]);
 h = f * g'; 
 
 %% Vector-calculus
-
+f = chebfun2(@(x,y) cos(10*x.*y), [-2 2 -2 2]); 
 F = gradient( f )
 f = divergence( F )
 f = curl( F ) 
