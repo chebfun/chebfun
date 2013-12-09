@@ -29,8 +29,12 @@ k = 1;
 while ( k < (length(varargin) - 1) )
     if ( isa(varargin{k}, 'chebfun') )
         data = plotData(varargin{k}, varargin{k+1});
-        varargin{k} = data.xLine(2:end,:);
-        varargin{k+1} = data.yLine(2:end,:);
+        % Remove NaNs:
+        data.xLine(isnan(data.xLine)) = [];
+        data.yLine(isnan(data.yLine)) = [];
+        % Store:
+        varargin{k} = data.xLine;
+        varargin{k+1} = data.yLine;
         k = k + 1;
     end
     k = k + 1;
@@ -45,7 +49,7 @@ h = fill(varargin{:});
 
 % Output handle:
 if ( nargout == 1 )
-  varargout{1} = h;
+    varargout{1} = h;
 end
 
 end
