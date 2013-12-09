@@ -20,9 +20,13 @@ elseif ( isa(g, 'double') ) % CHEBTECH + double
     % and f is a array-valued CHEBTECH):
     f.values = bsxfun(@plus, f.values, g);
     % Update coeffs:
+    if ( (size(g, 2) > 1) && (size(f.coeffs, 2) == 1) )
+        % Perform singleton expansion of f:
+        f.coeffs = repmat(f.coeffs, 1, size(g, 2));
+    end
     f.coeffs(end,:) = f.coeffs(end,:) + g;
     % Update scale:
-    vscale = max(f.vscale, max(abs(f.values), [], 1));
+    vscale = max(abs(f.values), [], 1);
     % See CHEBTECH CLASSDEF file for documentation on this:
     f.epslevel = (f.epslevel*f.vscale + abs(g)*eps)./vscale;
     f.epslevel = max(f.epslevel); % [TODO]: Vector epslevel;

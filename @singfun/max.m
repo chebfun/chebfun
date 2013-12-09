@@ -4,10 +4,6 @@ function [maxVal, maxPos] = max(f)
 %
 %   [MAXVAL, MAXPOS] = MAX(F) returns also a value such that MAXVAL = F(MAXPOS).
 %
-%   [TODO]: If F is complex-valued then absolute values are taken to determine
-%   maxima but the resulting value corresponds to that of the original function.
-%   That is, MAXVAL = feval(F, MAXPOS) where [~, MAXPOS] = MAX(abs(F));
-%
 % See also MIN, MINANDMAX.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.

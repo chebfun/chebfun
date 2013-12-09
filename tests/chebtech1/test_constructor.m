@@ -6,8 +6,6 @@ function pass = test_constructor(pref)
 if ( nargin < 1 )
     pref = chebtech.pref;
 end
-% Set the tolerance:
-tol = 100*pref.chebtech.eps;
 
 pass = zeros(1, 4); % Pre-allocate pass matrix
 
@@ -17,7 +15,7 @@ pref.chebtech.refinementFunction = 'default';
 f = @(x) sin(x);
 g = populate(chebtech1, f, [], [], pref);
 x = chebtech1.chebpts(length(g.values));
-pass(1) = norm(f(x) - g.values, inf) < tol;
+pass(1) = norm(f(x) - g.values, inf) < 10*g.vscale.*g.epslevel;
 
 %%
 % Test on a array-valued function:
@@ -25,7 +23,7 @@ pref.chebtech.refinementFunction = 'default';
 f = @(x) [sin(x) cos(x) exp(x)];
 g = populate(chebtech1, f, [], [], pref);
 x = chebtech1.chebpts(length(g.values));
-pass(2) = norm(f(x) - g.values, inf) < tol;
+pass(2) = norm(f(x) - g.values, inf) < 10*max(g.vscale.*g.epslevel);
 
 %%
 % Some other tests:

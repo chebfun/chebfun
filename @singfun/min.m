@@ -4,10 +4,6 @@ function [minVal, minPos] = min(f)
 %
 %   [MINVAL, MINPOS] = MIN(F) returns also a value such that MINVAL = F(MINPOS).
 %
-%   [TODO]: If F is complex-valued then absolute values are taken to determine
-%   maxima but the resulting value corresponds to that of the original function.
-%   That is, MINVAL = FEVAL(F, MINPOS) where [~, MINPOS] = MIN(ABS(F)).
-%
 % See also MAX, MINANDMAX.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.

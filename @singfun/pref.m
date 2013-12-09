@@ -1,8 +1,6 @@
 function prefs = pref(varargin)
-%PREF   Preference settings for SINGFUN. [TODO:] SINGFUN will have no 
-%   perefernces, instead the abstract superior class ONEFUN will have all the
-%   preferences in future.
-% 
+%PREF   Preference settings for SINGFUN. 
+%
 %   SINGFUN.PREF(PREFNAME) returns the value corresponding to the preference
 %   named in the string PREFNAME.
 %
@@ -25,32 +23,17 @@ function prefs = pref(varargin)
 %
 %   SINGFUN PREFERENCES (case sensitive)
 %
-%   [TODO] Copied from CHEBTECH, not done yet. Some of these might make sense
-%   for SINGFUNs:
-%
-%     tech         -  Select the type of Chebyshev grid on which the function
-%                     is sampled.
-%
-%     eps          -  Relative tolerance used in construction and subsequent
-%      [2^-52]        operations. See CHEBTECH.HAPPINESSCHECK for more details.
-%
-%     extrapolate
-%        true      -  Function values at endpoints may be extrapolated from
-%                     interior values rather than sampled.
-%       [false]    -  Do not extrapolate values at endpoints.
-%
-%     hscale       -  Horizontal scale. This preference can be used to ensure
-%        [1]          horizontal scale invariance when using the CHEBTECH
-%                     constructor to implicitly represent functions defined on
-%                     domains other than [-1, 1].
+%        eps       -  Relative tolerance used in construction and subsequent
+%      [2^-52]        operations.
 %
 %     exponentTol  -  Tolerance for exponents. This is the refinement upto
-%    [1.1*1e-11]      which the singularity detector will try to resolve
-%                     the exponent.
+%     [1.1*1e-11]     which the singularity detector will try to resolve the 
+%                     exponent.
 %
-%     maxPoleOrder -  Order of the maximum pole that the singularity
-%       [20]          detector can find.
+%     maxPoleOrder -  Order of the maximum pole that the singularity detector
+%        [20]         can find.
 %                  
+% See also SINGFUN.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org for Chebfun information.
@@ -75,7 +58,7 @@ if ( isfield(prefs, classname) )  % It does, so either:
 else
     % No SINGFUN prefs found, so make some:
     p.eps           = 2^-52;
-    p.exponentTol   = 1.1*1e-11; % taken from Chebfun V4
+    p.exponentTol   = 1.1*1e-11;  % taken from Chebfun V4
     p.maxPoleOrder  = 20;    
 end
 % p is now the preference substructure relating to the FUN class.

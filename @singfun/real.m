@@ -7,13 +7,17 @@ function f = real(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org for Chebfun information.
 
+% Check for empty arguments:
+if ( isempty(f) )
+    return;
+end
+
 % Compute the real part of the smooth part of F.
 f.smoothPart = real(f.smoothPart);
 
-% If F is imaginary, then remove singularities from the real part:
-if ( iszero(f.smoothPart) )
-    f.exponents = [0, 0];
-    f.isSingEnd = [0, 0];
+% Return a SMOOTHFUN object if F is smooth:
+if ( issmooth(f) )
+    f = f.smoothPart;
 end
 
 end

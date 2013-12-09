@@ -1,5 +1,5 @@
 function s = zeroSingFun()
-%ZEROSUNGFUN   Constructs the zero SINGFUN. The output SINGFUN object has a
+%ZEROSINGFUN   Constructs the zero SINGFUN. The output SINGFUN object has a
 %   zero smooth part with no singularities at any end points.
 %
 % See also SINGFUN.
@@ -8,10 +8,10 @@ function s = zeroSingFun()
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Create an empty SINGFUN object:
-s = singfun;
+s = singfun();
 
 % Create a zero smooth part:
-s.smoothPart = singfun.constructSmoothPart(@(x) 0*x, []);
+s.smoothPart = singfun.constructSmoothPart(0, [], [], []);
 
 % No singularities at any end points:
 s.exponents = [0, 0];

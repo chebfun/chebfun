@@ -1,4 +1,4 @@
-function ctranspose(f) %#ok<*INUSD>
+function f = ctranspose(f) %#ok<*INUSD>
 %CTRANSPOSE   SINGFUN objects are not transposable.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.

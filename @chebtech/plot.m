@@ -34,6 +34,8 @@ function varargout = plot(f, varargin)
 %   handle per plotted line (in the case of array-valued CHEBTECH objects).
 %   [H1, H2] returns a second vector of column handles, this time for each of
 %   the marker plots.
+%
+% See also PLOT3, PLOTDATA.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -68,9 +70,9 @@ end
 %%
 % Plot the curve:
 if ( isreal(f) )
-    h1 = plot(data.xLine, data.fLine, varargin{:}); 
+    h1 = plot(data.xLine, data.yLine, varargin{:}); 
 else
-    h1 = plot(data.fLine, varargin{:}); 
+    h1 = plot(data.yLine, varargin{:}); 
 end
 set(h1, 'Marker', 'none') 
 hold on
@@ -78,9 +80,9 @@ hold on
 %%
 % Plot the points:
 if ( isreal(f) )
-    h2 = plot(data.xPoints, data.fPoints, varargin{:});
+    h2 = plot(data.xPoints, data.yPoints, varargin{:});
 else
-    h2 = plot(data.fPoints, varargin{:});
+    h2 = plot(data.yPoints, varargin{:});
 end
 
 % Change the style accordingly:

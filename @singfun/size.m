@@ -9,7 +9,7 @@ function [size1, size2] = size(f, varargin)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% The size of a SINGFUN is the size of its smooth part.
+% The size of a SINGFUN is the size of its smooth part:
 size1 = size(f.smoothPart, varargin{:});
 
 % Return two outputs:

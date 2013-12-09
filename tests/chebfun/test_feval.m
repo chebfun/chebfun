@@ -103,33 +103,33 @@ f = chebfun(f_exact, [-1 1], pref);
 
 x = xr;
 err = feval(f, x.') - f_exact(x.');
-pass(14) = (all(size(err) == [1 1000])) && (norm(err(:), inf) < ...
+pass(14) = isequal(size(err), [1 1000]) && (norm(err(:), inf) < ...
     10*f.epslevel*f.vscale);
 
 x_mtx = reshape(x, [100 10]);
 err = feval(f, x_mtx) - f_exact(x_mtx);
-pass(15) = (all(size(err) == [100 10])) && (norm(err(:), inf) < ...
+pass(15) = isequal(size(err), [100 10]) && (norm(err(:), inf) < ...
     10*f.epslevel*f.vscale);
 
 x_3mtx = reshape(x, [5 20 10]);
 err = feval(f, x_3mtx) - f_exact(x_3mtx);
-pass(16) = (all(size(err) == [5 20 10])) && (norm(err(:), inf) < ...
+pass(16) = isequal(size(err), [5 20 10]) && (norm(err(:), inf) < ...
     10*f.epslevel*f.vscale);
 
 x_4mtx = reshape(x, [5 4 5 10]);
 err = feval(f, x_4mtx) - f_exact(x_4mtx);
-pass(17) = (all(size(err) == [5 4 5 10])) && (norm(err(:), inf) < ...
+pass(17) = isequal(size(err), [5 4 5 10]) && (norm(err(:), inf) < ...
     10*f.epslevel*f.vscale);
 
 % Check behavior for transposed chebfuns.
 f.isTransposed = 1; % [TODO]:  Replace with call to transpose().
 
 err = feval(f, x_mtx) - f_exact(x_mtx).';
-pass(18) = (all(size(err) == [10 100])) && (norm(err(:), inf) < ...
+pass(18) = isequal(size(err), [10 100]) && (norm(err(:), inf) < ...
     10*f.epslevel*f.vscale);
 
 err = feval(f, x_3mtx) - permute(f_exact(x_3mtx), [2 1 3]);
-pass(19) = (all(size(err) == [20 5 10])) && (norm(err(:), inf) < ...
+pass(19) = isequal(size(err), [20 5 10]) && (norm(err(:), inf) < ...
     10*f.epslevel*f.vscale);
 
 f.isTransposed = 0; % [TODO]:  Replace with call to transpose().
@@ -149,22 +149,23 @@ err = feval(f, x) - f_exact(x);
 pass(21) = all(max(abs(err)) < 10*f.epslevel*f.vscale);
 
 x_mtx = reshape(x, [100 10]);
-pass(22) = all(all(abs(feval(f, x_mtx) - f_exact(x_mtx)) ...
-    < 10*f.epslevel*f.vscale));
+err = feval(f, x_mtx) - f_exact(x_mtx);
+pass(22) = isequal(size(err), [100 30]) && (norm(err(:), inf) < ...
+    10*f.epslevel*f.vscale);
 
 x_3mtx = reshape(x, [5 20 10]);
 err = feval(f, x_3mtx) - f_exact(x_3mtx);
-pass(23) = (all(size(err) == [5 60 10])) && (norm(err(:), inf) < ...
+pass(23) = isequal(size(err), [5 60 10]) && (norm(err(:), inf) < ...
     10*f.epslevel*f.vscale);
 
 x_4mtx = reshape(x, [5 4 5 10]);
 err = feval(f, x_4mtx) - f_exact(x_4mtx);
-pass(24) = (all(size(err) == [5 12 5 10])) && (norm(err(:), inf) < ...
+pass(24) = isequal(size(err), [5 12 5 10]) && (norm(err(:), inf) < ...
     10*f.epslevel*f.vscale);
 
 f.isTransposed = 1;
 err = feval(f, x_4mtx) - permute(f_exact(x_4mtx), [2 1 3 4]);
-pass(25) = (all(size(err) == [12 5 5 10])) && (norm(err(:), inf) < ...
+pass(25) = isequal(size(err), [12 5 5 10]) && (norm(err(:), inf) < ...
     10*f.epslevel*f.vscale);
 
 err = feval(f, 'left') - [sin(-1) 1 exp(-1i)].';
@@ -177,5 +178,13 @@ pass(27) = norm(err(:), inf) < 10*f.epslevel*f.vscale;
 f = chebfun({@(x) [x, 2*x], @(x) [3*x, 4*x]}, [0 1 2]);
 pass(28) = norm(feval(f, 1, 'left') - [1, 2], inf) < 10*f.epslevel*f.vscale;
 pass(29) = norm(feval(f, 1, 'right') - [3, 4], inf) < 10*f.epslevel*f.vscale;
+
+% Check for dimension mismatch bug when evaluating an array-valued chebfun on a
+% vector which contains breakpoint values, repeated several times.
+f_exact = @(x) [sin(x) cos(x)];
+f = chebfun(f_exact, [-1 1]);
+x = [-1 ; 0.5 ; 1];
+err = feval(f, x) - f_exact(x);
+pass(30) = all(max(abs(err)) < 10*f.epslevel*f.vscale);
 
 end

@@ -4,7 +4,7 @@ function pass = test_isempty(pref)
 
 % No preferences used.
 
-% creat an empty SINGFUN
+% create an empty SINGFUN
 f = singfun;
 
 % create a zero SINGFUN

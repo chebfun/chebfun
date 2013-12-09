@@ -1,29 +1,45 @@
 function s = plus(f, g)
-%+   Addition of two SINGFUN objects.
+%+   Addition of SINGFUN objects with SINGFUNs and SMOOTHFUNs.
 %   F + G adds F and G, where F and G may be SINGFUN objects or scalars.
+%
+% See also MINUS.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % If one of the arguments is empty:
 if ( isempty(f) || isempty(g) )
-    % Create an empty singfun and return:
-    s = singfun;
-    return;
+    % Create an empty SINGFUN and return:
+    s = singfun();
+    return
 end
 
+% Check if inputs are other than SINGFUNS, SMOOTHFUNS or doubles:
+if ( (~isa(f, 'singfun') && ~isa(f, 'smoothfun') && ~isa(f, 'double')) || ...
+     (~isa(g, 'singfun') && ~isa(g, 'smoothfun') && ~isa(g, 'double')) )
+    error('SINGFUN:times:Input can only be a SINGFUN, a SMOOTHFUN or a double')
+end
 % One of the arguments i.e. f or g is necessarily a SINGFUN object. Otherwise, 
 % this overloaded plus would not have been called.
 
-% If one of the arguments is a double:
+% If one of the arguments is a double, upgrade it to a SINGFUN:
 if ( isa(f, 'double') )
-    aDouble = f;
-    f = singfun.zeroSingFun();
-    f.smoothPart = singfun.constructSmoothPart(aDouble, []);
+    % Make a SMOOTHFUN of the double f:
+    f = g.smoothPart.make(f);
+    % Convert f to a SINGFUN:
+    f = singfun.smoothFun2SingFun(f);
 elseif ( isa(g, 'double') )
-    aDouble = g;
-    g = singfun.zeroSingFun();
-    g.smoothPart = singfun.constructSmoothPart(aDouble, []);
+    % Make a SMOOTHFUN of the double g:
+    g = f.smoothPart.make(g);
+    % Convert g to a SINGFUN:
+    g = singfun.smoothFun2SingFun(g);    
+end
+
+% If one of the arguments is a SMOOTHFUN, upgrade it to a SINGFUN:
+if ( isa(f, 'smoothfun') )
+    f = singfun.smoothFun2SingFun(f);    
+elseif ( isa(g, 'smoothfun') )
+    g = singfun.smoothFun2SingFun(g);    
 end
 
 fExps = f.exponents;
@@ -33,14 +49,14 @@ tolSmth = 1e2*singfun.pref.singfun.eps;
 
 %%
 if ( all(abs(fExps - gExps) < tolExps) )
-    % Case 1: Exponents exactly alike. Just add the smooth parts.
+    % Case 1: Exponents exactly same. Just add the smooth parts.
     s = f;
     s.smoothPart = f.smoothPart + g.smoothPart;
     if ( normest(s.smoothPart) < tolSmth )
        s = singfun.zeroSingFun();     
     end
     
-elseif ( all(abs(round(fExps - gExps) - (fExps-gExps)) < tolExps) )
+elseif ( all(abs(round(fExps - gExps) - (fExps - gExps)) < tolExps) )
     % Case 2: Both exponents differ by integers. Factor out the more singular
     % exponent to leave the sum of smooth quotients.
     
@@ -82,7 +98,7 @@ elseif ( all(abs(round(fExps - gExps) - (fExps-gExps)) < tolExps) )
     
     % Construct the new smooth fun:
     s = singfun.zeroSingFun();
-    s.smoothPart = singfun.constructSmoothPart(smoothOp, []);
+    s.smoothPart = singfun.constructSmoothPart(smoothOp, [], [], []);
     
     % Assign new exponents:
     s.exponents = newExps;
@@ -90,12 +106,26 @@ elseif ( all(abs(round(fExps - gExps) - (fExps-gExps)) < tolExps) )
 else
     % Case 3: Nontrivial difference in the exponents of F and G. Form a new
     % function handle for the sum from F and G.
-        
+    
+    warning('CHEBFUN:SINGFUN:plus', ...
+        ['Non-integer difference in the exponents of the two SINGFUN ' ...
+        'objects: The result may not be accurate.']);
+    
     % Define a function handle for the sum:
     op = @(x) feval(f, x) + feval(g, x);
     
-    % Construct a new SINGFUN for sum:
-    s = singfun(op, [], {'sing', 'sing'}, singfun.pref);
+    % The new scales for the sum:
+    vScale = get(f, 'vscale') + get(g, 'vscale');
+    hScale = get(f, 'hscale');
+    
+    % Construct a new SINGFUN for the sum:
+    s = singfun(op, [], [], vScale, hScale, singfun.pref);
+end
+
+%%
+% Check if after addition s has become smooth:
+if ( issmooth(s) )
+    s = s.smoothPart;
 end
 
 end

@@ -46,7 +46,7 @@ end
 % If it was, did it have a field for this class?
 if ( isfield(prefs, classname) )  % It does, so either:
     if ( numel(varargin) == 0 )
-        return                    % a) No props to change, return
+        return                    % a) No prefs to change, return.
     else
         p = prefs.(classname);    % b) Grab prefs for this class.
     end

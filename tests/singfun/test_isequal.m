@@ -11,9 +11,9 @@ end
 % declare pass vector
 pass = zeros(1,5);
 %%
-% creat an empty SINGFUN
-f = singfun;
-g = singfun;
+% create an empty SINGFUN
+f = singfun();
+g = singfun();
 % following Matlab conventions, two empty objects are equal
 pass(1) = isequal(f,g);
 

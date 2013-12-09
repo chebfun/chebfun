@@ -7,22 +7,47 @@ function out = sum(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
+% Note for developers:
+%
+% The main algorithm:
+%
+% When the smoothPart of F is a CHEBTECH, that is, it can be written as
+% Chebyshev sum, the integral
+%
+% I = \int_{-1}^{1} F dx = \sum_{0}^{n-1} c_r M_r,
+%
+% where M_r = \int_{-1}^{1} (1+x)^a(1-x)^b T_r(x) dx is the rth Jacobi moment.
+%
+% The computation of M_r is treated differently for different a and b:
+%
+% (I) when a == b, M_r are the Gegenbauer moments, which bear a closed-form
+% solution as indicated in [2] and [4].
+%
+% (II) when a ~= b, M_r are the general Jacobi moments, which can be obtained
+% using a three-term recursive relation discussed in [3].
+%
+% This way, all quadratures in SINGFUN, along with those in CHEBTECH are now 
+% entirely of Clenshaw-Curtis style. 
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Useful References:
 %
-% K. Xu and M. Javed, Singfun Working Note, August 2013
+% [1]. K. Xu and M. Javed, Singfun Working Note, August 2013
 %
-% Hunter, D., and Nikolov, G., Gaussian Quadrature of Chebyshev Polynomials, 
-% J. Comput. Appl. Math. 94 (1998), 123-131.
+% [2]. Hunter, D., and Nikolov, G., Gaussian Quadrature of Chebyshev
+% Polynomials, J. Comput. Appl. Math. 94 (1998), 123-131.
 %
-% Piessens, R., and Branders, M., The Evaluation and Application of Some Modified
-% Moments, BIT 13 (1973), 443-450.
+% [3]. Piessens, R., and Branders, M., The Evaluation and Application of Some
+% Modified Moments, BIT 13 (1973), 443-450.
+%
+% [4]. Sommariva, A., Fast construction of Fejer and Clenshaw–Curtis rules for
+% general weight functions, Computers & Mathematics with Applications 65
+% (2012), 682-693.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%
 % Trivial cases:
-
 if ( all(f.exponents == 0) )
     % If both the exponents are trivial, then compute the integral by calling
     % the sum in smoothfun.
@@ -61,6 +86,9 @@ end
 
 if ( isa(f.smoothPart, 'chebtech') )
     
+    % If the smooth part of F is a CHEBTECH, then evaluate the integral by using
+    % Clenshaw-Curtis-Jacobi moments and the Chebyshev coefficients:
+    
     % Grab the number of points for the smooth part of f:
     n = length(f);
 
@@ -68,8 +96,8 @@ if ( isa(f.smoothPart, 'chebtech') )
     a = f.exponents(1);
     
     if ( diff(f.exponents) == 0 )
-       % If the exponents at the endpoints are same, then compute the
-       % appropriate modified moments for Gegenbauer weights.
+        % If the exponents at the endpoints are same, then compute the
+        % appropriate modified moments for Gegenbauer weights.
     
         r = a + .5;
         m0 = gamma(r + .5)*sqrt(pi)/gamma(r + 1);
@@ -92,7 +120,7 @@ if ( isa(f.smoothPart, 'chebtech') )
         c3 = a + b + 1;
         c4 = c1 + c2;
         c5 = a - b;
-        c0 = (2^c3)*gamma(c1)*gamma(c2)/gamma(c4);
+        c0 = (2^c3)*beta(c1, c2);
         
         % Compute the hypergeometric function related to the modified moments:
         M = zeros(1,n);
@@ -106,11 +134,9 @@ if ( isa(f.smoothPart, 'chebtech') )
         end
         % Compute the modified moments:
         M = c0*M;
+        
     end
-    
-    % If the smooth part of F is a CHEBTECH, then evaluate the integral by using
-    % the Clenshaw-Curtis-Jacobi moments and the Chebyshev coefficients:
-    
+        
     % Chebyshev coefficients of the smooth part of F:
     coeffs = get(f, 'coeffs');
     
@@ -125,7 +151,7 @@ else
     
     % Give a sufficiently large number: 
     % [TODO]: This number needs to be determined in future when other 'tech's join. 
-    % [TODO]: Or perhaps compute iteratively until result doens't change?
+    % [TODO]: Or perhaps compute iteratively until result doesn't change?
     n = 1000;
     
     [x, w] = jacpts(ceil(n/2) + 1, f.exponents(2), f.exponents(1));

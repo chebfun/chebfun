@@ -25,7 +25,7 @@ classdef chebtech < smoothfun % (Abstract)
 %   details. The CHEBTECH class supports construction via interpolation at first-
 %   and second-kind Chebyshev points with the classes CHEBTECH1 and CHEBTECH2
 %   respectively. The default procedure is to use 2nd-kind points, but this can
-%   be overwritten with the preferences PREF = CHEBTECH('tech', 'cheb1').
+%   be overwritten with the preferences PREF = CHEBTECH('tech', 'chebtech1').
 %
 %   CHEBTECH.CONSTRUCTOR(VALUES, VSCALE, HSCALE, PREF) returns a CHEBTECH object
 %   which interpolates the data in the columns of VALUES on a Chebyshev grid.
@@ -42,7 +42,7 @@ classdef chebtech < smoothfun % (Abstract)
 %   f = chebtech.constructor(@(x) sin(x))
 %
 %   % Construction with preferences:
-%   p = chebtech.pref('tech', 'cheb2'); % See HELP('chebtech.pref') for details.
+%   p = chebtech.pref('tech', 'chebtech2'); % (See HELP('chebtech.pref')).
 %   f = chebtech.constructor(@(x) cos(x), [], [], p)
 %
 %   % Array-valued construction:
@@ -67,7 +67,7 @@ classdef chebtech < smoothfun % (Abstract)
 % Chebyshev polynomials (i.e., those usually denoted by $T_k(x)$).
 %
 % The decision to use CHEBTECH1 or CHEBTECH2 is decided by the CHEBTECH.PREF.TECH
-% property, which should be either of the strings 'cheb1' or 'cheb2'.
+% property, which should be either of the strings 'chebtech1' or 'chebtech2'.
 %
 % The vertical scale VSCALE is used to enforce scale invariance in CHEBTECH
 % construction and subsequent operations. For example, that
@@ -152,7 +152,7 @@ classdef chebtech < smoothfun % (Abstract)
         % Vertical scale of the CHEBTECH. This is a row vector storing the
         % magnitude of the largest entry in each column of VALUES. It is
         % convenient to store this as a property.
-%         vscale = 0 % (1xm double >= 0)
+        vscale = 0 % (1xm double >= 0)
 
         % Horizontal scale of the CHEBTECH. Although CHEBTECH objects have in
         % principle no notion of horizontal scale invariance (since they always
@@ -160,16 +160,16 @@ classdef chebtech < smoothfun % (Abstract)
         % HSCALE is then used to enforce horizontal scale invariance in
         % construction and other subsequent operations that require it. It
         % defaults to 1 and is never updated.
-%         hscale = 1 % (scalar > 0)
+        hscale = 1 % (scalar > 0)
 
         % Boolean value designating whether the CHEBTECH is 'happy' or not. See
         % HAPPINESSCHECK.m for full documentation.
-%         ishappy % (logical)
+        ishappy % (logical)
 
         % Happiness level to which the CHEBTECH was constructed (See
         % HAPPINESSCHECK.m for full documentation) or a rough accuracy estimate
         % of subsequent operations (See CHEBTECH class documentation for details).
-%         epslevel % (double >= 0)
+        epslevel % (double >= 0)
     end
 
     %% CLASS CONSTRUCTOR:
@@ -230,15 +230,12 @@ classdef chebtech < smoothfun % (Abstract)
         % Compute Chebyshev barycentric weights.
         w = barywts(n)
 
-        % Convert values to coefficients.
-        coeffs = chebpoly(values)
-
-        % Convert coefficients to values.
-        values = chebpolyval(coeffs)
-
         % Compute Chebyshev points (x) and optionally quadrature (w) and
         % barycentric (v) weights.
         [x, w, v] = chebpts(n)
+        
+        % Convert coefficients to values.
+        values = coeffs2vals(coeffs)
 
         % Make a CHEBTECH. (Constructor shortcut)
         f = make(varargin);
@@ -248,11 +245,17 @@ classdef chebtech < smoothfun % (Abstract)
 
         % Compute Chebyshev quadrature weights.
         w = quadwts(n)
+        
+        % Convert values to coefficients.
+        coeffs = vals2coeffs(values)
 
     end
 
     %% METHODS IMPLEMENTED BY THIS CLASS.
     methods
+        
+        % Absolute value of a CHEBTECH. (f should have no zeros in its domain)
+        f = abs(f, pref)
 
         % Convert an array of CHEBTECH objects into a array-valued CHEBTECH.
         f = cell2mat(f)
@@ -274,6 +277,9 @@ classdef chebtech < smoothfun % (Abstract)
 
         % Derivative of a CHEBTECH.
         f = diff(f, k, dim)
+        
+        % Extract roots at the boundary points -1 and 1.
+        [f, rootsLeft, rootsRight] = extractBoundaryRoots(f) 
         
         % Extrapolate (for NaNs / Infs).
         [values, maskNaN, maskInf] = extrapolate(f)
@@ -353,8 +359,11 @@ classdef chebtech < smoothfun % (Abstract)
         % Basic linear plot for CHEBTECH objects.
         varargout = plot(f, varargin)
         
+        % 3-D plot for CHEBTECH objects.
+        varargout = plot3(f, g, h, varargin)
+        
         % Obtain data used for plotting a CHEBTECH object:
-        data = plotData(f, g)
+        data = plotData(f, g, h)
 
         % Addition of two CHEBTECH objects.
         f = plus(f, g)
@@ -388,6 +397,9 @@ classdef chebtech < smoothfun % (Abstract)
 
         % Test an evaluation of the input OP against a CHEBTECH approx.
         pass = sampleTest(op, f)
+        
+        % Signum of a CHEBTECH. (f should have no zeros in its domain)
+        f = sign(f, pref)
 
         % Trim trailing Chebyshev coefficients of a CHEBTECH object.
         f = simplify(f, pref, force)

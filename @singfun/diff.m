@@ -57,4 +57,11 @@ while ( k > 0 )
     f = s;
 end
 
+%% 
+% If f has negligible exponents, return the SMOOTHPART object instead of a
+% SINGFUN:
+if ( issmooth(f) )
+    f = f.smoothPart;
+end
+
 end

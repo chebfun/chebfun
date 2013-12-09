@@ -63,13 +63,18 @@ df = diff(f);
 g = bndfun(@(x) exp(-x.^2), dom, [], [], pref);
 dg = diff(g);
 
+tol_f= 10*get(f, 'vscale')*get(f, 'epslevel');
+tol_df = 10*get(df, 'vscale')*get(df, 'epslevel');
+tol_g= 10*get(g, 'vscale')*get(g, 'epslevel');
+tol_dg = 10*get(dg, 'vscale')*get(dg, 'epslevel');
+
 errfn = diff(f + g) - (df + dg);
 err = feval(errfn, x);
-pass(6) = (norm(err, inf) < (get(f, 'vscale')+get(g, 'vscale'))*tol);
+pass(6) = (norm(err, inf) < max([tol_f ; tol_g ; tol_df ; tol_dg]));
 
 errfn = diff(f.*g) - (f.*dg + g.*df);
 err = feval(errfn, x);
-pass(7) = (norm(err, inf) < get(f, 'vscale')*get(g, 'vscale')*tol);
+pass(7) = (norm(err, inf) < max([tol_f ; tol_g ; tol_df ; tol_dg]));
 
 const = bndfun(@(x) ones(size(x)), dom, [], [], pref);
 dconst = diff(const);

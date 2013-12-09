@@ -1,9 +1,8 @@
 function out = isequal(f, g)
 %ISEQUAL   Test if SINGFUN objects F and G are equal.
 %   ISEQUAL(F, G) returns TRUE if the SINGFUN objects F and G have the same
-%   underlyig SMOOTHPART and the same EXPONENTS. The type of singularity
-%   at the ends may be differnet but as long as the EXPONENTS agree within
-%   SINGFUN tolerance, they are considered equal.
+%   underlying SMOOTHPART and the same EXPONENTS. By same EXPONENTS we mean
+%   that they agree upto SINGFUN tolerance.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.

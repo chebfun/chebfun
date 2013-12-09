@@ -7,9 +7,6 @@ if ( nargin < 1 )
     pref = chebtech.pref();
 end
 
-% Set a tolerance.
-tol = 10*pref.chebtech.eps;
-
 pass = zeros(2, 11); % Pre-allocate pass matrix
 for n = 1:2
     if ( n == 1 )
@@ -21,18 +18,18 @@ for n = 1:2
     %%
     % Spot-check integrals for a couple of functions.
     f = testclass.make(@(x) exp(x) - 1, [], [], pref);
-    pass(n, 1) = (abs(sum(f) - 0.350402387287603) < tol);
+    pass(n, 1) = (abs(sum(f) - 0.350402387287603) < 10*f.vscale.*f.epslevel);
 
     f = testclass.make(@(x) 1./(1 + x.^2), [], [], pref);
-    pass(n, 2) = (abs(sum(f) - pi/2) < tol);
+    pass(n, 2) = (abs(sum(f) - pi/2) < 10*f.vscale.*f.epslevel);
 
     f = testclass.make(@(x) cos(1e4*x), [], [], pref);
     exact = -6.112287777765043e-05;
-    pass(n, 3) = (abs(sum(f) - exact)/abs(exact) < 2e5*tol);
+    pass(n, 3) = (abs(sum(f) - exact)/abs(exact) < 100*f.vscale.*f.epslevel);
 
     z = exp(2*pi*1i/6);
     f = testclass.make(@(t) sinh(t*z), [], [], pref);
-    pass(n, 4) = (abs(sum(f)) < tol);
+    pass(n, 4) = (abs(sum(f)) < 10*f.vscale.*f.epslevel);
 
     %%
     % Check a few basic properties.
@@ -46,23 +43,34 @@ for n = 1:2
     gdf = g.*df;
     fdg = f.*dg;
 
+    tol_f = 10*f.vscale.*f.epslevel;
+    tol_g = 10*f.vscale.*f.epslevel;
+    tol_df = 10*df.vscale.*df.epslevel;
+    tol_dg = 10*dg.vscale.*dg.epslevel;
+    tol_fg = 10*fg.vscale.*fg.epslevel;
+    tol_fdg = 10*fdg.vscale.*fdg.epslevel;
+    tol_gdf = 10*gdf.vscale.*gdf.epslevel;
+
     % Linearity.
-    pass(n, 5) = (abs(sum(a*f + b*g) - (a*sum(f) + b*sum(g))) < tol);
+    pass(n, 5) = (abs(sum(a*f + b*g) - (a*sum(f) + b*sum(g))) < ...
+        max(tol_f, tol_g));
 
     % Integration-by-parts.
     pass(n, 6) = (abs(sum(fdg) - (feval(fg, 1) - feval(fg, -1) - sum(gdf))) ...
-        < tol);
+        < max([tol_fdg ; tol_gdf ; tol_fg]));
 
     % Fundamental Theorem of Calculus.
-    pass(n, 7) = (abs(sum(df) - (feval(f, 1) - feval(f, -1))) < tol);
-    pass(n, 8) = (abs(sum(dg) - (feval(g, 1) - feval(g, -1))) < tol);
+    pass(n, 7) = (abs(sum(df) - (feval(f, 1) - feval(f, -1))) < ...
+        max(tol_df, tol_f));
+    pass(n, 8) = (abs(sum(dg) - (feval(g, 1) - feval(g, -1))) < ...
+        max(tol_dg, tol_g));
 
     %%
     % Check operation for array-valued chebtech objects.
     f = testclass.make(@(x) [sin(x) x.^2 exp(1i*x)], [], [], pref);
     I = sum(f);
     I_exact = [0 2/3 2*sin(1)];
-    pass(n, 9) = (max(abs(I - I_exact)) < tol);
+    pass(n, 9) = (max(abs(I - I_exact)) < 10*max(f.vscale.*f.epslevel));
 
     % Generate a few random points to use as test values.
     seedRNG(6178);
@@ -71,7 +79,8 @@ for n = 1:2
     % DIM option with array-valued input.
     g = sum(f, 2);
     h = @(x) sin(x) + x.^2 + exp(1i*x);
-    pass(n, 10) = (norm(feval(g, x) - h(x), inf) < tol);
+    pass(n, 10) = (norm(feval(g, x) - h(x), inf) < ...
+        10*max(g.vscale.*g.epslevel));
 
     % DIM option with non-array-valued input should leave everything alone.
     h = testclass.make(@(x) cos(x));

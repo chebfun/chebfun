@@ -11,7 +11,7 @@ end
 f = chebfun();
 g = chebfun();
 [f2, g2] = overlap(f, g);
-pass(1) = isempty(f) && isempty(g);
+pass(1) = isempty(f2) && isempty(g2);
 
 % Check behavior for input chebfuns with differing domains.
 f = chebfun(@sin, [-1 -.5 0 1], pref);
@@ -25,7 +25,7 @@ catch ME
 end
 
 % Check behavior in the basic case.
-f = chebfun(@sin, [-1 -.5 0 1], pref);
+f = chebfun(@sin, [-1 -.5 0 0.5 1], pref);
 g = chebfun(@sin, [-1 0 0.5 1], pref);
 
 [f2, g2] = overlap(f, g);
@@ -37,7 +37,7 @@ pass(3) = isequal(f2.domain, g2.domain) && ...
 
 % Check correct behavior for higher-order impulses.  [TODO]:  Use a function
 % with real higher-order impulses instead of just faking them like this.
-f.impulses = cat(3, f.impulses, zeros(4, 1, 1));
+f.impulses = cat(3, f.impulses, zeros(5, 1, 1));
 [f2, g2] = overlap(f, g);
 xx = linspace(-1, 1);
 pass(4) = isequal(f2.domain, g2.domain) && ...
