@@ -72,13 +72,13 @@ pass(7) = err < 5e1*epslevel(f)*vscale(f);
 F = chebfun(@(x) x.^2 + 3*x.^4, [-1 -0.5 0 0.5 1]);
 p = polyfit(F, 6);
 err = norm(p-F);
-pass(8) = err < epslevel(p)*vscale(p);
+pass(8) = err < 10*epslevel(p)*vscale(p);
 
 % Test 9 fits a quartic chebfun:
 F = chebfun(@(x) x.^2 + 3*x.^4, [-1 1]);
 p = polyfit(F, 5);
 err = norm(p-F);
-pass(9) = err < epslevel(p)*vscale(p);
+pass(9) = err < 10*epslevel(p)*vscale(p);
 
 % Test 10 fits a quartic chebfun with breakpoints:
 F = chebfun(@(x) x.^2 + 3*x.^4, [-1 -0.5 0 0.5 1]);
@@ -87,17 +87,23 @@ err = norm(p-F);
 pass(10) = err < 10*epslevel(p)*vscale(p);
 
 % Test 11 fits a row quartic chebfun:
-F = chebfun(@(x) x.^2 + 3*x.^4, [-1 1]);
-p = polyfit(F.', 5);
+F = chebfun(@(x) x.^2 + 3*x.^4, [-1 1]).';
+p = polyfit(F, 5);
 err = norm(p-F);
-pass(11) = err < epslevel(p)*vscale(p);
+pass(11) = err < 10*epslevel(p)*vscale(p);
+
+% Test 12 fits a row quartic chebfun with breakpoints:
+F = chebfun(@(x) x.^2 + 3*x.^4, [-1 -0.5 0 0.5 1]).';
+p = polyfit(F, 5);
+err = norm(p-F);
+pass(12) = err < 10*epslevel(p)*vscale(p);
 
 %% Test CONTINUOUSPOLYFIT on [0 500]:
 
-% Test 12 fits a quartic chebfun with breakpoint:
+% Test 13 fits a quartic chebfun with breakpoint:
 F = chebfun(@(x) 3*x.^2, [0 100 500]);
 p = polyfit(F, 3);
 err = norm(p-F);
-pass(12) = err < 1e2*epslevel(p)*vscale(p);
+pass(13) = err < 1e2*epslevel(p)*vscale(p);
 
 end
