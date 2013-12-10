@@ -261,13 +261,13 @@ classdef deltafun
         % SINGFUN multiplication.
         f = times(f, g)
         
-        % SINGFUN objects are not transposable.
+        % DELTAFUN objects are not transposable.
         f = transpose(f)
         
-        % Unary minus of a SINGFUN.
+        % Unary minus of a DELTAFUN.
         f = uminus(f)
         
-        % Unary plus of a SINGFUN.
+        % Unary plus of a DELTAFUN.
         f = uplus(f)                
     end
     
@@ -276,6 +276,14 @@ classdef deltafun
         % smooth fun constructor
         s = constructFunPart( op, pref)
         
+        % remove zero columns
+        [A, v] = cleanColumns(A, v);
+        
+        % remove zero trailing rows
+        A = cleanRows(A);
+        
+        % Merge columns of a matrix based on duplicate values in v.
+        [A, v] = mergeColumns(A, v)
         % Retrieve and modify preferences for this class.
         prefs = pref(varargin)
         

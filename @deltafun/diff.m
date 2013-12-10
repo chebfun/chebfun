@@ -31,18 +31,17 @@ g = diff(f.funPart, k);
 
 
 % Differentiate the distributional part. This just amounts to shifting
-% the magnitude matrix down by k rows by adding k zero rows. 
+% the magnitude matrix down by k rows by adding k zero rows at the top. 
 deltaMag = f.delta.magnitude;
 m = size(deltaMag, 2);
 f.delta.magnitude  = [ zeros(k, m); deltaMag;];
 
 %%
-% Chop-off rows wcich are below tolerance
+% Simplify, just in case.
 f = simplify(f);                 
 %%
 % Annihilate the existing smooth part and add g to the deltafun:
 f.funPart = 0*f.funPart;
 f = f + g;
-
 
 end
