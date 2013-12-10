@@ -24,6 +24,9 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             elseif iscell(data)
                 A.blocks = data;
             end
+            
+            % Run this to check domain compatability
+            A.domain;
         end
         
         function d = get.domain(L)
