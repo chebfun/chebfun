@@ -333,6 +333,9 @@ classdef chebtech < smoothfun % (Abstract)
         % True for zero CHEBTECH objects
         out = iszero(f)
         
+        % Return Legendre coefficients of a CHEBTECH.
+        c_leg = legpoly(f, n)
+        
         % Length of a CHEBTECH.
         len = length(f)
 
@@ -362,9 +365,6 @@ classdef chebtech < smoothfun % (Abstract)
 
         % Multiplication of CHEBTECH objects.
         f = mtimes(f, c)
-        
-        % Compute a Legendre series expansion of a CHEBTECH object:
-        c = legpoly(f)
 
         % Basic linear plot for CHEBTECH objects.
         varargout = plot(f, varargin)
@@ -442,9 +442,15 @@ classdef chebtech < smoothfun % (Abstract)
 
         % Evaluation using the barycentric interpolation formula.
         fx = bary(x, gvals, xk, vk)
+        
+        % Convert Chebshev coefficients to Legendre coefficients.
+        c_leg = cheb2leg(c_cheb, M);
 
         % Clenshaw's algorithm for evaluating a Chebyshev polynomial.
         out = clenshaw(x, coeffs)
+        
+        % Convert Legendre coefficients to Chebshev coefficients.
+        c_cheb = leg2cheb(c_leg, M);
 
         % Retrieve and modify preferences for this class.
         p = techPref(q)
