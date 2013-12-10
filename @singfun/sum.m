@@ -119,7 +119,21 @@ elseif ( any(f.exponents <= -1) )
         rs = [rsl rsr];
         is = [isl isr];
         ind = ( f.exponents <= -1 );
-        out = Inf*rs(ind)+1i*Inf*is(ind);
+        
+        % The real part:
+        realPart = 0;
+        if ( any(rs) )
+            realPart = Inf*rs(ind);
+        end
+        
+        % The imaginary part:
+        imagPart = 0;
+        if ( any(is) )
+            imagPart = Inf*is(ind);
+        end
+        
+        % The sum:
+        out = realPart + imagPart;
     end
     
     return
