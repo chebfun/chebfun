@@ -13,7 +13,7 @@ end
 
 if( isa(f, 'deltafun') && isa(g, 'deltafun') )
     % If f and g are both smooth, delegate to
-    % innerproduct of the function part.
+    % the innerproduct of the function part.
     if( issmooth(f) && issmooth(g) )
         out = f.funPart' * g.funPart;
         return
@@ -60,39 +60,30 @@ smoothIP = F.funPart'*g;
 
 % Computing the inner product
 
+% Get location and magnitudes of delta functions:
+f = simplify(f);
+deltaLoc = f.delta.location;
+nDeltas = length(deltaLoc);
+deltaMag = f.delta.magnitude;
+m = size(deltaMag, 1);
+
 % Compute the derivatives needed:
-diffOrder = F.delta.diffOrder;
-maxDiffOrder = max(diffOrder);
-G = cell(maxDiffOrder, 1);
-G{1} = g;
+maxDiffOrder = m-1;
+
+G = zeros(m, nDeltas);
+G(1,:) = g(deltaLoc);
 for k = 1:maxDiffOrder
     g = diff(g);
-    G{k+1} = g;
+    G(k+1, :) = g(deltaLoc);
 end
 
 % The output is always a scalar double
 deltaIP = 0;
-
-% Get location and magnitudes of delta functions:
-deltaLoc = f.delta.location;
-deltaMag = f.delta.magnitude;
-
-for k = 1:length(deltaLoc)    
-    gk = (-1)^diffOrder(k) * G{diffOrder(k)+1};
-    gkVal = deltaMag(k) * gk(deltaLoc(k));
-    
-    if( f.delta.isReal(k) )
-        gkVal = real(gkVal);
-    end
-    
-    if( f.delta.isImag(k) )
-        gkVal = imag(gkVal);
-    end
-    
-    if( f.delta.isConj(k) )
-        gkVal = conj(gkVal);
-    end
-    deltaIP = deltaIP + gkVal;
+v = (-1).^(0:maxDiffOrder).';
+for k = 1:length(deltaLoc)
+    %[TODO]: Please explains this voodoo
+    ipk = (v.*deltaMag(:, k)).' * G(:, k) ;
+    deltaIP = deltaIP + ipk;
 end
 
 out = deltaIP + smoothIP;

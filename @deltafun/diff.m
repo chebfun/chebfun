@@ -26,18 +26,20 @@ end
 %% Differentiate the DELTAFUN F, k times 
 % Differentiate the classical smooth part
 g = diff(f.funPart, k);
-% Notice that g may have morphed into deltafun 
+% [TODO]: Notice that g may have morphed into deltafun 
 % by now so we, need to be careful.
 
-% Make sure the maximum order of the derivative is within limits.
-if ( any(f.delta.diffOrder > deltafun.pref.deltafun.maxDiffOrder) )
-    error('CHEBFUN:DELTAFUN:DIFF', 'order of highest derivative too high. You can change this through DELTAFUN prefernces.');
-end
 
+% Differentiate the distributional part. This just amounts to shifting
+% the magnitude matrix down by k rows by adding k zero rows. 
+deltaMag = f.delta.magnitude;
+m = size(deltaMag, 2);
+f.delta.magnitude  = [ zeros(k, m); deltaMag;];
 
-% Differentiate the distributional part.
-f.delta.diffOrder = f.delta.diffOrder + k;
-
+%%
+% Chop-off rows wcich are below tolerance
+f = simplify(f);                 
+%%
 % Annihilate the existing smooth part and add g to the deltafun:
 f.funPart = 0*f.funPart;
 f = f + g;

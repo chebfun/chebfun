@@ -92,7 +92,7 @@ classdef deltafun
             % Various checks on argument compatibilities
             
             if ( size(magnitude, 2) ~= length(location) )
-                error('CHEBFUN:DELTAFUN:dim', 'Magnitude has same number of columns as locations' );
+                error('CHEBFUN:DELTAFUN:dim', 'Magnitude should have the same number of columns as locations' );
             end
             
             if ( min(size(location)) > 1 )
@@ -154,6 +154,9 @@ classdef deltafun
         
         % Derivative of a DELTAFUN.
         f = diff(f, k)
+        
+        % Dirac delta function. 
+        d = dirac(f, k)
         
         % Evaluate a DELTAFUN.
         y = feval(f, x)
@@ -248,6 +251,9 @@ classdef deltafun
         
         % Size of a SINGFUN.
         [siz1, siz2] = size(f, varargin)
+        
+        % Simplify a DELTAFUN
+        f = simplify(f)
         
         % Definite integral of a SINGFUN on the interval [-1,1].
         out = sum(f, dim)

@@ -60,7 +60,6 @@ else
     % No DELTAFUN prefs found, so make some:
     p.deltaTol      = 1*1e-12;
     p.proximityTol  = 1*1e-12;
-    p.maxDiffOrder  = 20; 
 end
 % p is now the preference substructure relating to the FUN class.
 
