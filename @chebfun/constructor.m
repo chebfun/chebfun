@@ -44,6 +44,7 @@ if ( iscell(op) && (numel(op) ~= numIntervals) )
          'intervals in DOMAIN.'])
 end    
 
+exps = [];
 % Sort out the exponents:
 if ( ~isempty(pref.singPrefs.exponents) )
     exps = pref.singPrefs.exponents;
@@ -96,7 +97,7 @@ if ( ~pref.enableBreakpointDetection )
         end
         
         % Replace the exponent information in the preference:
-        if ( ~isempty(pref.singPrefs.exponents) )
+        if ( ~isempty(exps) )
             pref.singPrefs.exponents = exps(2*k-1:2*k);
         end
         
@@ -138,7 +139,7 @@ for k = 1:numIntervals
     end
     
     % Replace the exponent information in the preference:
-    if ( ~isempty(pref.singPrefs.exponents) )
+    if ( ~isempty(exps) )
         pref.singPrefs.exponents = exps(2*k-1:2*k);
     end
 
@@ -151,12 +152,12 @@ sad = ~ishappy;
 % (Note that at least one new breakpoint will be introduced).
 while ( any(sad) )
     % If a FUN is sad in a subinterval, split this subinterval.
-
+    
     % Choose a subinterval to improve:
     
-%     % Old choice = the first sad interval:
-%     k = find(sad, 1, 'first');
-
+    %     % Old choice = the first sad interval:
+    %     k = find(sad, 1, 'first');
+    
     % New choice = the largest sad interval:
     diffEnds = diff(ends);
     diffEnds(~sad) = 0;
@@ -172,11 +173,19 @@ while ( any(sad) )
     else
         opk = op;
     end
-
+    
+    % In case of SINGFUN, we need to compensate the exponents before doing the
+    % edge detection.
+    if ( ~isempty(exps) && any( exps(2*k-1:2*k) ) )
+        opkDetectEdge = @(x) opk(x)./((x-a).^exps(2*k-1).*(b-x).^exps(2*k));
+    
     % Locate an edge/split location:
-    edge = chebfun.detectEdge(opk, [a, b], vscale, hscale);
+    edge = chebfun.detectEdge(opkDetectEdge, [a, b], vscale, hscale);
+    else
+        edge = chebfun.detectEdge(opk, [a, b], vscale, hscale);
+    end
 
-    if ( ~isempty(pref.singPrefs.exponents) )
+    if ( ~isempty(exps) )
         % Before constructing the left FUN, sort out the exponents:
         pref.singPrefs.exponents = [exps(2*k-1) 0];
     end
@@ -185,7 +194,7 @@ while ( any(sad) )
     [childLeft, happyLeft, vscale] = ...
         getFun(opk, [a, edge], vscale, hscale, pref);
     
-    if ( ~isempty(pref.singPrefs.exponents) )
+    if ( ~isempty(exps) )
         % Before constructing the right FUN, sort out the exponents:
         pref.singPrefs.exponents = [0 exps(2*k)];
     end
@@ -200,7 +209,7 @@ while ( any(sad) )
     funs = [funs(1:k-1), {childLeft, childRight}, funs(k+1:end)];
     ends = [ends(1:k), edge, ends(k+1:end)];
     
-    if ( ~isempty(pref.singPrefs.exponents) )
+    if ( ~isempty(exps) )
         exps = [exps(1:2*k-1), zeros(1,2), exps(2*k:end)];
     end
     
