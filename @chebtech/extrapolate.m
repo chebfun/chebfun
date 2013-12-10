@@ -8,7 +8,7 @@ function [values, maskNaN, maskInf] = extrapolate(f)
 %   [VALUES, MASKNAN, MASKINF] = EXTRAPOLATE(F) returns logical
 %   vectors indicating when a NaN or Inf was encountered in rows of F.VALUES.
 %
-%   Note that if any column of a array-valued function returns NaN or Inf,
+%   Note that if any column of an array-valued function returns NaN or Inf,
 %   then _all_ columns are extrapolated at the point. Thus MASKNAN and MASKINF
 %   are always column vectors, even if F.VALUES is a matrix.
 %

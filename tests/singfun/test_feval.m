@@ -4,14 +4,12 @@ function pass = test_feval(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = singfun.pref.singfun;
+    pref = chebpref();
 end
 
 % Generate a few random points to use as test values.
 seedRNG(786);
 x = -1 + 2*rand(100, 1);
-
-pass = zeros(1, 4); % Pre-allocate pass vector
 
 %% 
 % Check feval on empty set of points

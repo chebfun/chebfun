@@ -4,7 +4,7 @@ function pass = test_times(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = singfun.pref;
+    pref = chebpref();
 end
 
 % Generate a few random points to use as test values.
@@ -19,9 +19,6 @@ c = 1.28;
 d = -1.28;
 p = -0.2;
 q = -0.3;
-
-% Pre-allocate pass matrix
-pass = zeros(1, 10);
 
 % Check operation in the case of empty arguments.
 f = singfun();

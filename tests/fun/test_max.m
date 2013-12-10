@@ -4,10 +4,9 @@ function pass = test_max(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fun.pref;
+    pref = chebpref();
 end
 
-pass = zeros(1, 7); % Pre-allocate pass matrix.
 for n = 1:1 %[TODO]: unbndfun
     if ( n == 1 )
         testclass = bndfun();

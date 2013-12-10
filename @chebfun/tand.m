@@ -2,7 +2,7 @@ function g = tand(f, pref)
 %TAND   Tangent of a CHEBFUN, result in degrees.
 %   TAND(F) computes the tangent (in degrees) of the CHEBFUN F.
 %
-%   TAND(F, PREF) does the same but uses the preference structure PREF when
+%   TAND(F, PREF) does the same but uses the CHEBPREF object PREF when
 %   computing the composition.
 %
 % See also ATAND, TAN.
@@ -12,7 +12,7 @@ function g = tand(f, pref)
 
 % Obtain preferences:
 if ( nargin == 1 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Call the compose method:

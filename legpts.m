@@ -1,12 +1,12 @@
 function [x, w, v, t] = legpts(n, int, meth)
-%LEGPTS  Legendre points and Gauss-Legendre Quadrature Weights.
+%LEGPTS    Legendre points and Gauss-Legendre Quadrature Weights.
 %   LEGPTS(N) returns N Legendre points X in (-1,1).
 %
 %   [X, W] = LEGPTS(N) returns also a row vector W of weights for Gauss-Legendre
 %   quadrature.
 %
-%   LEGPTS(N, INTERVAL) scales the nodes and weights for the finite interval
-%   INTERVAL.
+%   [X, W] = LEGPTS(N, INTERVAL) scales the nodes and weights for the finite
+%   interval INTERVAL.
 %
 %   [X, W, V] = LEGPTS(N) or [X, W, V] = LEGPTS(N, D) returns additionally a
 %   column vector V of weights in the barycentric formula corresponding to the
@@ -31,20 +31,17 @@ function [x, w, v, t] = legpts(n, int, meth)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  'GW' by Nick Trefethen, March 2009 - algorithm adapted from [1].
 %  'REC' by Nick Hale, July 2011
-%  'ASY' by Nick Hale & Alex Townsend, May 2012 - see [3].
+%  'ASY' by Nick Hale & Alex Townsend, May 2012 - see [2].
 %
 %  References:
-%   [1] G. H. Golub and J. A. Welsch, "Calculation of Gauss quadrature
-%       rules", Math. Comp. 23:221-230, 1969,
-%   [2] A. Glaser, X. Liu and V. Rokhlin, "A fast algorithm for the
-%       calculation of the roots of special functions", SIAM Journal
-%       on Scientific Computing", 29(4):1420-1438:, 2007.
-%   [3] N. Hale and A. Townsend, "Fast computation of Gauss-Jacobi
-%       quadrature nodes and weights",In preparation, 2012.
-
-% [TODO]: This code needs major clean up.
+%   [1] G. H. Golub and J. A. Welsch, "Calculation of Gauss quadrature rules",
+%       Math. Comp. 23:221-230, 1969,
+%   [2] N. Hale and A. Townsend, "Fast computation of Gauss-Jacobi quadrature
+%       nodes and weights",In preparation, 2012.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Defaults
 interval = [-1, 1];
@@ -55,7 +52,7 @@ method_set = nargin == 3;
 if ( n < 0 )
     error('CHEBFUN:legpts:n_negative', ...
         'First input should be a positive number.');
-elseif ( n == 0 )   % Return empty vector if n == 0
+elseif ( n == 0 )   % Return empty vectors if n == 0:
     x = [];
     w = [];
     v = [];
@@ -93,7 +90,11 @@ if ( nargin > 1 )
     end
     validStrings = {'default', 'GW', 'ASY', 'REC'};
     if ( ~any(strcmpi(method, validStrings)) )
-        error('CHEBFUN:legpts:inputs', ['Unrecognised input string.', method]);
+        if ( strcmpi(method, 'GLR') )
+            error('CHEBFUN:legpts:glr', ...
+                'The GLR algorithm is no longer supported.');
+        end
+        error('CHEBFUN:legpts:inputs', ['Unrecognised input string: ', method]);
     end
     if ( numel(interval) > 2 )
         warning('CHEBFUN:legpts:domain',...
@@ -102,17 +103,23 @@ if ( nargin > 1 )
     end
 end
 if ( any(isinf(interval)) )
-    error('CHEBFUN:legpts:interval', 'Unbounded intervals not supported.');
+    error('CHEBFUN:legpts:interval', 'Unbounded intervals are not supported.');
+end
+
+if ( n <= 20 )
+    % Force REC for n <= 20:
+    method = 'rec'; % 
+    method_set = 1; 
 end
 
 % Choose the method:
 t = [];
-if ( (n < 100 && ~method_set) || any(strcmpi(method, {'rec'})) )
+if ( (n < 100 && ~method_set) || strcmpi(method, 'rec') )
     [x, w, v] = rec(n);        % REC (Standard recurrence relation)
-elseif strcmpi(method, 'GW')
+elseif ( strcmpi(method, 'GW') )
     [x, w, v] = gw(n);         % GW see [1]
 else
-    [x, w, v, t] = asy(n);     % HT see [3]
+    [x, w, v, t] = asy(n);     % HT see [2]
 end
 
 % Normalise the barycentric weights:
@@ -170,7 +177,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% ----------------------- Routines for REC algorithm ---------------------%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [x, w, v, ders] = rec(n)
+function [x, w, v] = rec(n)
 
 % Asymptotic formula (Tricomi) - only for positive x.
 if ( mod(n,2) )
@@ -241,16 +248,16 @@ end
 %% -------------------- Routines for ASY algorithm ------------------------%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [x, w, v, t, ders] = asy(n)
+function [x, w, v, t] = asy(n)
 
 % Determine switch between interior and boundary regions:
 nbdy = min(10, floor(n/2)); % Typically, the 10 nodes nearest the boundary.
 
 % Interior algorithm:
-[x, w, v, t, ders] = asy1(n,nbdy);
+[x, w, v, t] = asy1(n, nbdy);
 
 % Boundary algorithm:
-[xbdy, wbdy, vbdy, tbdy, dersbdy] = asy2(n,nbdy);
+[xbdy, wbdy, vbdy, tbdy] = asy2(n, nbdy);
 
 % Combine:
 bdyidx1 = n-(nbdy-1):n;
@@ -259,14 +266,12 @@ x(bdyidx1) = xbdy;
 w(bdyidx1) = wbdy;
 v(bdyidx1) = vbdy;
 t(bdyidx1) = tbdy;
-ders(bdyidx1) = dersbdy;
 
 % Reflect using symmetry:
 x(bdyidx2) = -xbdy;
 w(bdyidx2) = wbdy;
 v(bdyidx2) = vbdy;
 t(bdyidx2) = -tbdy;
-ders(bdyidx2) = -dersbdy;
 
 end
 
@@ -274,7 +279,7 @@ end
 %                             ASY1 (Interior)                                 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [x, w, v, t, ders] = asy1(n, nbdy)
+function [x, w, v, t] = asy1(n, nbdy)
 %ASY1 Interior asymptotics method.
 
 %%%%%%%%%%%%%% Approximate roots via asymptotic formula. %%%%%%%%%%
@@ -288,7 +293,7 @@ if ( n < 666 ) % <-- Determined experimentally.
     % If n is small, use Olver's (1974) apprioximation in the interior.
     idx = (x > .5);
     npts = sum(idx);
-    % Roots of the Bessel function J_0 (Precomputed in Mathematica!)
+    % Roots of the Bessel function J_0 (Precomputed in Mathematica)
     jk = [2.404825557695773     5.520078110286310    8.653727912911012 ...
         11.791534439014281    14.930917708487785   18.071063967910922 ...
         21.211636629879258    24.352471530749302   27.493479132040254 ...
@@ -336,13 +341,11 @@ if ( modn2 )
     w = [w(end:-1:2), w];
     v = -[v(end:-1:2), v].';
     t = [-t(end:-1:2), t].';
-    ders = [-ders(end:-1:2), ders].';
 else
     x = [-x(end:-1:1), x].';
     w = [w(end:-1:1), w];
     v = [-v(end:-1:1), v].';
     t = [-t(end:-1:1), t].';
-    ders = [-ders(end:-1:1), ders].';
 end
 
 end
@@ -511,7 +514,7 @@ v = sin(t)./ders;
             Jab = besselj(0,rho2*t,0);
         else
             % In the final step, perform accurate evaluation:
-            Jab = besseltaylor(-t, rho*t);
+            Jab = besselTaylor(-t, rho*t);
         end
         
         % Evaluate functions for recurrsive definition of coefficients:
@@ -547,16 +550,23 @@ v = sin(t)./ders;
 
 end
 
-function Ja = besseltaylor(t, z)
-%BESSELTAYLOR    Accurate evaluation of Bessel function J0 for asy2. (See [3].)
-% BESSELTAYLOR(T,Z) evaluates J0(Z+T) by a Taylor series expansion about Z. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% [TODO]: The following are duplicated in LEGPTS() and JACPTS().
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+function Ja = besselTaylor(t, z, a)
+%BESSELTAYLOR    Accurate evaluation of Bessel function J0 for asy2. (See [2].)
+% BESSELTAYLOR(T, Z) evaluates J0(Z+T) by a Taylor series expansion about Z. 
 
 npts = numel(t);
+if ( nargin < 3 ), a = 0; end
 kmax = min(ceil(abs(log(eps)/log(norm(t, inf)))), 30);
 H = bsxfun(@power, t, 0:kmax).';
 % Compute coeffs in Taylor expansions about z: (See NIST 10.6.7)
 [nu, JK] = meshgrid(-kmax:kmax, z);
-Bjk = besselj(nu, JK, 0);
+Bjk = besselj(a + nu, JK, 0);
 nck = abs(pascal(floor(1.25*kmax), 1)); nck(1,:) = []; % nchoosek
 AA = [Bjk(:,kmax+1),  zeros(npts,kmax)];
 kFactorial = 1;
@@ -574,11 +584,12 @@ Ja = zeros(npts,1);
 for k = 1:npts
     Ja(k,1) = AA(k,:)*H(:,k);
 end
+
 end
 
 function [tB1, A2, tB2, A3, tB3, A4] = asy2_higherterms(alph, bet, theta, n)
 %ASY2_HIGHERTERMS   Higher-order terms for boundary asymptotic series.
-% Compute the higher order terms in asy2 boundary formula. See [3]. 
+% Compute the higher order terms in asy2 boundary formula. See [2]. 
 
 % These constants are more useful than alph and bet:
 A = (0.25 - alph^2);
@@ -586,8 +597,8 @@ B = (0.25 - bet^2);
 
 % For now, just work on half of the domain:
 c = max(max(theta), .5);
-if (n < 30)
-    N = ceil(40-n);
+if ( n < 30 )
+    N = ceil(40 - n);
 elseif ( n >= 30 && c > pi/2-.5)
     N = 15;
 else
@@ -715,7 +726,10 @@ A4 = @(theta) chebtech.bary(theta, A4, t, v);
 
 end
 
-% [TODO]: Tidy CUMSUM mat (which is here temporarily).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% [TODO]: The codes below are only here temporarily.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function Q = cumsummat(N)
 %CUMSUMMAT   Chebyshev integration matrix.
@@ -726,13 +740,13 @@ function Q = cumsummat(N)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Nm1 = N - 1.
+% Nm1 = N - 1:
 Nm1 = N - 1;
 
-% Matrix mapping coeffs -> values.
+% Matrix mapping coeffs -> values:
 T = chebCoeffs2Vals(Nm1);
 
-% Matrix mapping values -> coeffs.
+% Matrix mapping values -> coeffs:
 Tinv = chebVals2Coeffs(Nm1);
 
 % Matrix mapping coeffs -> integral coeffs. Note that the highest order term is
@@ -753,14 +767,12 @@ end
 
 function T = chebCoeffs2Vals(N)
 %CHEBCOEFFS2VALS   Chebyshev-Vandermonde matrix,  mapping coeffs -> values
-
 theta = pi*(N:-1:0)'/N;
 T = cos( theta*(0:N) );
 end
 
 function C = chebVals2Coeffs(N)
 %CHEBVALS2COEFFS    Matrix mapping values -> coeffs.
-
 % Three steps: Double the data around the circle, apply the DFT matrix, and then
 % take half the result with 0.5 factor at the ends.
 theta = (pi/N)*(0:2*N-1)';       % Doubled grid in theta space
@@ -778,15 +790,15 @@ function D = diffmat(N)
 % those points. 
 %
 % The matrices are computed using the 'hybrid' formula of Schneider & 
-% Werner [1] and Welfert [2] proposed by Tee [3].
+% Werner [1] and Welfert [2] proposed by Tee [2].
 
 % References:
 %  [1] Schneider, C. and Werner, W., "Some new aspects of rational 
-%   interpolation", Math. Comp. (47) 285--299, 1986.
-%  [2] Welfert, B. D., "Generation of pseudospectral matrices I", SINUM,
-%   (34) 1640--1657.
-%  [3] Tee, T. W., "An adaptive rational spectral method for differential
-%   equations with rapidly varying solutions", Oxford DPhil Thesis, 2006.
+%      interpolation", Math. Comp. (47) 285--299, 1986.
+%  [2] Welfert, B. D., "Generation of pseudospectral matrices I", SINUM, (34) 
+%      1640--1657.
+%  [2] Tee, T. W., "An adaptive rational spectral method for differential
+%      equations with rapidly varying solutions", Oxford DPhil Thesis, 2006.
 
 % Trivial cases:
 if ( N == 0 )

@@ -4,11 +4,8 @@ function pass = test_imag(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = singfun.pref;
+    pref = chebpref();
 end
-
-% Pre-allocate pass matrix
-pass = zeros(1, 6);
 
 % Check for empty cases:
 f = singfun();

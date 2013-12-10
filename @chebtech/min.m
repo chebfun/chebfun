@@ -1,7 +1,7 @@
 function [minVal, minPos] = min(f)
 %MIN   Global minimum of a CHEBTECH on [-1,1].
 %   MINVAL = MIN(F) returns the global minimum of the CHEBTECH F on [-1,1].  If
-%   F is a array-valued CHEBTECH, MINVAL is a row vector whose Kth entry is the
+%   F is an array-valued CHEBTECH, MINVAL is a row vector whose Kth entry is the
 %   global minimum of the Kth column of F.
 %
 %   [MINVAL, MINPOS] = MIN(F) returns also a value such that MINVAL = F(MINPOS).

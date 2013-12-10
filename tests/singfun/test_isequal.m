@@ -4,12 +4,11 @@ function pass = test_isequal(pref)
 
 % Get preferences if not given
 if ( nargin < 1 )
-    pref = singfun.pref;
+    pref = chebpref();
 end
 
 %%
 % declare pass vector
-pass = zeros(1,5);
 %%
 % create an empty SINGFUN
 f = singfun();

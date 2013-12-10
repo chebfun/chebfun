@@ -47,6 +47,8 @@ holdState = ishold;
 if ( nargin == 1 || ~isa(varargin{2}, 'chebfun') )
     % PLOT(F): (Plot an array-valued CHEBFUN in 3D.)
     
+    % TODO: This should be moved to WATERFALL().
+    
     % Get the data from PLOTDATA():
     data = plotData(f);
     numCols = min(size(f));

@@ -4,7 +4,7 @@ function pass = test_flipud(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = singfun.pref;
+    pref = chebpref();
 end
 
 % Generate a few random points to use as test values.
@@ -17,9 +17,6 @@ a = 0.64;
 b = -0.64;
 c = 1.28;
 d = -1.28;
-
-% Pre-allocate pass matrix
-pass = zeros(1, 7);
 
 %%
 % Spot-check derivatives for a couple of functions.

@@ -4,10 +4,8 @@ function pass = test_singfun_constructor(pref)
 
 % Get preferences:
 if ( nargin < 1 )
-    pref = singfun.pref;
+    pref = chebpref();
 end
-
-pass = zeros(1, 18); % Pre-allocate pass matrix
 
 %%
 % Select some random points as sample points
@@ -62,7 +60,7 @@ a = rand();
 b = rand();
 fh = @(x) exp(sin(x))./((1+x).^a.*(1-x).^b);
 f = singfun(fh);
-pass(13) = norm(f.exponents + [a,b], inf) < pref.singfun.exponentTol;
+pass(13) = norm(f.exponents + [a,b], inf) < pref.singPrefs.exponentTol;
 pass(14) = norm(feval(fh,x) - feval(f,x), inf) < 1e2*get(f, 'epslevel');
 
 %%
@@ -71,7 +69,7 @@ a = rand();
 b = rand();
 fh = @(x) sin(exp(cos(x))).*(1+x).^a.*(1-x).^b;
 f = singfun(fh);
-pass(15) = norm(f.exponents - [a,b], inf) < pref.singfun.exponentTol;
+pass(15) = norm(f.exponents - [a,b], inf) < pref.singPrefs.exponentTol;
 pass(16) = norm(feval(fh,x) - feval(f,x), inf) < 1e1*get(f, 'epslevel');
 
 %%
@@ -80,6 +78,6 @@ a = ceil(5*rand);
 b = ceil(5*rand);
 fh = @(x) exp(sin(x.^2))./((1+x).^a.*(1-x).^b);
 f = singfun(fh);
-pass(17) = norm(f.exponents + [a,b], inf) < pref.singfun.exponentTol;
+pass(17) = norm(f.exponents + [a,b], inf) < pref.singPrefs.exponentTol;
 xx = x(20:80);
 pass(18) = norm(feval(fh,xx) - feval(f,xx), inf) < 1e1*get(f, 'epslevel');

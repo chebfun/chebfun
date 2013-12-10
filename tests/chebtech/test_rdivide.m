@@ -4,7 +4,7 @@ function pass = test_rdivide(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = chebtech.pref;
+    pref = chebtech.techPref();
 end
 
 % Generate a few random points to use as test values.
@@ -15,7 +15,6 @@ x = 2 * rand(100, 1) - 1;
 alpha = -0.194758928283640 + 0.075474485412665i;
 beta = -0.526634844879922 - 0.685484380523668i;
 
-pass = zeros(2, 16); % Pre-allocate pass matrix
 for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();
@@ -102,17 +101,6 @@ for n = 1:2
         pass(n, 13) = strcmp(ME.identifier, 'CHEBFUN:CHEBTECH:rdivide:size');
     end
     
-    % Can't divide by a function which has roots inside [-1, 1].
-    try
-        f = testclass.make(@(x) exp(x));
-        g = testclass.make(@(x) sin(x));
-        disp(f ./ g);
-        pass(n, 14) = false;
-    catch ME
-        pass(n, 14) = strcmp(ME.identifier, ...
-            'CHEBFUN:CHEBTECH:rdivide:DivideByZeros');
-    end
-    
     %%
     % Check that direct construction and RDIVIDE give comparable results.
     
@@ -121,12 +109,12 @@ for n = 1:2
     f = testclass.make(@(x) sin(x), [], [], pref);
     h1 = f ./ alpha;
     h2 = testclass.make(@(x) sin(x) ./ alpha, [], [], pref);
-    pass(n, 15) = norm(h1.values - h2.values, inf) < tol;
+    pass(n, 14) = norm(h1.values - h2.values, inf) < tol;
     
     g = testclass.make(@(x) exp(x), [], [], pref);
     h1 = f ./ g;
     h2 = testclass.make(@(x) sin(x) ./ exp(x), [], [], pref);
-    pass(n, 16) = norm(h1.values - h2.values, inf) < tol;
+    pass(n, 15) = norm(h1.values - h2.values, inf) < tol;
 end
 
 end

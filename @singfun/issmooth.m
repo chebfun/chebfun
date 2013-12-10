@@ -7,7 +7,7 @@ function out = issmooth(f)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Get tolerance for exponents:
-tol = singfun.pref.singfun.exponentTol;
+tol = chebpref().singPrefs.exponentTol;
 
 % A function is smooth if it has negligible exponents or if the SMOOTHPART
 % is zero:

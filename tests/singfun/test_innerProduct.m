@@ -4,7 +4,7 @@ function pass = test_innerProduct(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = singfun.pref;
+    pref = chebpref();
 end
 
 % The order of the exponents:
@@ -14,9 +14,6 @@ c = 1.28;
 d = -1.28;
 p = -0.2;
 q = -0.3;
-
-% Pre-allocate pass matrix
-pass = zeros(1, 8);
 
 % fractional pole at the left endpoint
 f = singfun(@(x) (1+x).^p, [p 0], {'sing', 'none'}, [], [], pref);

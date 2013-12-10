@@ -4,7 +4,7 @@ function pass = test_plus(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = singfun.pref.singfun;
+    pref = chebpref();
 end
 
 % Generate a few random points to use as test values.
@@ -13,9 +13,6 @@ x = 2 * rand(100, 1) - 1;
 
 % A random number to use as an arbitrary additive constant.
 alpha = -0.194758928283640 + 0.075474485412665i;
-
-pass = zeros(1, 14); % Pre-allocate pass vector
-tol = 1e4*pref.eps;  % loose tolerance for plus
 
 %%
 % Check operation in the case of empty arguments.
@@ -69,6 +66,8 @@ f = singfun(@(x) x, [], [], [], [], pref);
 g = singfun(@(x) cos(x) - 1, [], [], [], [], pref);
 h1 = f + g;
 h2 = singfun(@(x) x + cos(x) - 1, [], [], [], [], pref);
+tol = 10*max(get(h1, 'vscale')*get(h1, 'epslevel'), ...
+    get(h2, 'vscale')*get(h2, 'epslevel'));
 pass(14) = norm(feval(h1, x) - feval(h2, x), inf) < tol;
 
 end

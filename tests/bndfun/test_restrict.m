@@ -4,13 +4,11 @@ function pass = test_restrict(pref)
 
 % Get preferences.
 if (nargin < 1)
-    pref = fun.pref;
+    pref = chebpref();
 end
 
 % Set the domain
 dom = [-2 7];
-
-pass = zeros(1, 14); % Pre-allocate pass matrix
 
 %%
 % Check behavior for empty inputs.

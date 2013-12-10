@@ -38,10 +38,10 @@ classdef chebfun
 %   CHEBFUN({@(x) sin(x), @(x) cos(x)}, [-1, 0, 1])
 %
 % CHEBFUN(F, PREF) or CHEBFUN(F, [A, B], PREF) constructs a CHEBFUN object from
-% F with the options determined by the CHEBFUN preference structure PREF.
+% F with the options determined by the CHEBPREF object PREF.
 % Construction time options may also be passed directly to the constructor in
 % the form CHEBFUN(F, [A, B], PROP1, VAL1, PROP2, VAL2, ...). (See
-% CHEBFUN/PREF.m for details of the various preference options.). In particular,
+% CHEBPREF for details of the various preference options.). In particular,
 % CHEBFUN(F, 'splitting', 'on') allows the constructor to adaptively determine
 % breakpoints to better represent piecewise smooth functions F. For example,
 %   CHEBFUN(@(x) sign(x - .3), [-1, 1], 'splitting', 'on')
@@ -63,7 +63,7 @@ classdef chebfun
 % domain [-1, 0, 1]. The latter defines a single column CHEBFUN which represents
 % sin(x) in the interval [-1, 0) and cos(x) on the interval (0, 1].
 %
-% See also CHEBFUN/PREF, CHEBPTS.
+% See also CHEBPREF, CHEBPTS.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
@@ -186,11 +186,29 @@ classdef chebfun
         % Edge detector.
         [edge, vscale] = detectEdge(op, domain, hscale, vscale, derHandle);
         
+        % Interpolate data:
+        f = interp1(x, y, method, dom);
+        
         % Determine values of chebfun at breakpoints.
         vals = getValuesAtBreakpoints(funs, ends, op);
         
+        % ODE113 with CHEBFUN output.
+        [t, y] = ode113(varargin);
+        
+        % ODE15S with CHEBFUN output.
+        [t, y] = ode15s(varargin);
+        
+        % ODE45 with CHEBFUN output.
+        [t, y] = ode45(varargin);
+        
         % Retrieve and modify preferences for this class.
         prefs = pref(varargin);
+        
+        % Cubic Hermite interpolation:
+        f = pchip(x, y, method);
+        
+        % Cubic spline interpolant:
+        f = spline(x, y, d);
         
     end
 
@@ -201,6 +219,9 @@ classdef chebfun
     
     % Static private methods implemented by CHEBFUN class.
     methods (Static = true, Access = private)
+        
+        % Convert ODE solutions into CHEBFUN objects:
+        [y, t] = odesol(sol, opt);
         
         % Parse the inputs to the CHEBFUN constructor.
         [op, domain, pref] = parseInputs(op, domain, varargin);
@@ -219,9 +240,15 @@ classdef chebfun
         % Absolute value of a CHEBFUN.
         f = abs(f, pref)
         
+        % Solve boundary value problems for ODEs by collocation.
+        [y, t] = bvp4c(fun1, fun2, y0, varargin);
+        
+        % Solve boundary value problems for ODEs by collocation.
+        [y, t] = bvp5c(fun1, fun2, y0, varargin);
+        
         % Plot information regarding the representation of a CHEBFUN object:
         h = chebpolyplot(f, varargin);
-
+        
         % Construct complex CHEBFUN from real and imaginary parts.
         C = complex(A, B)
 
@@ -243,14 +270,11 @@ classdef chebfun
         % Compare domains of two CHEBFUN objects.
         pass = domainCheck(f, g);
 
-        % Retrieve and modify preferences for this class.
-        varargout = subsref(f, index);
-
-        % Retrieve and modify preferences for this class.
-        varargout = subsasgn(f, varargin);
-
         % Accuracy estimate of a CHEBFUN object.
         out = epslevel(f);
+        
+        % Extract columns of an array-valued CHEBFUN object.
+        f = extractColumns(f, columnIndex);
         
         % Evaluate a CHEBFUN.
         y = feval(f, x, varargin)
@@ -339,6 +363,12 @@ classdef chebfun
         % Size of a CHEBFUN object.
         [s1, s2] = size(f, dim);
         
+        % Retrieve and modify preferences for this class.
+        varargout = subsref(f, index);
+
+        % Retrieve and modify preferences for this class.
+        varargout = subsasgn(f, varargin);
+        
         % CHEBFUN multiplication.
         f = times(f, g, varargin)
         
@@ -381,32 +411,32 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
     args = varargin;
     if ( nargin == 1 )
         % chebfun(op)
-        pref = chebfun.pref();
-        domain = pref.chebfun.domain;
-    elseif ( isstruct(domain) )
+        pref = chebpref();
+        domain = pref.domain;
+    elseif ( isstruct(domain) || isa(domain, 'chebpref') )
         % chebfun(op, pref)
-        pref = domain;
-        domain = pref.chebfun.domain;
+        pref = chebpref(domain);
+        domain = pref.domain;
     elseif ( ~isnumeric(domain) || (length(domain) == 1) )
         % chebfun(op, prop1, val1, ...)
-        pref = chebfun.pref();
+        pref = chebpref();
         args = [domain, args];
-        domain = pref.chebfun.domain;
+        domain = pref.domain;
     elseif ( nargin < 3 )
         % chebfun(op, domain)
-        pref = chebfun.pref();
-    elseif ( isstruct(varargin{1}) )
+        pref = chebpref();
+    elseif ( isstruct(varargin{1}) || isa(varargin{1}, 'chebpref') )
         % chebfun(op, domain, pref)
-        pref = chebfun.pref(args{1});
+        pref = chebpref(args{1});
         args(1) = [];
     else
         % chebfun(op, domain, prop1, val1, ...)
-        pref = chebfun.pref();
+        pref = chebpref();
     end
 
     % Take the default domain if an empty one was given:
     if ( isempty(domain) )
-        domain = pref.chebfun.domain;
+        domain = pref.domain;
     end
 
     vectorize = false;
@@ -415,11 +445,11 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
         if ( any(strcmpi(args{1}, {'chebpts1', 'chebpts2', 'equi'})) )
             % Determine tech for sampled values:
             if ( strcmpi(args{1}, 'chebpts1') )
-                pref = chebfun.pref(pref, 'tech', 'chebtech1');
+                pref.tech = 'chebtech1';
             elseif ( strcmpi(args{1}, 'chebpts2') )
-                pref = chebfun.pref(pref, 'tech', 'chebtech2');
+                pref.tech = 'chebtech2';
             elseif ( strcmpi(args{1}, 'equi') )
-                pref = chebfun.pref(pref, 'tech', 'funqui');
+                pref.tech = 'funqui';
             end
             args(1) = [];
         elseif ( strcmpi(args{1}, 'vectorize') || ...
@@ -429,12 +459,19 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
             args(1) = [];
         elseif ( isnumeric(args{1}) )
             % g = chebfun(@(x) f(x), N)
-            % [TODO]: This is abusing PREF a little..
-            pref.chebfun.n = args{1};
+            pref.techPrefs.exactLength = args{1};
             args(1) = [];
+        elseif ( strcmpi(args{1}, 'splitting') )
+            % Translate "splitting" --> "enableBreakpointDetection".
+            pref.enableBreakpointDetection = strcmpi(args{2}, 'on');
+            args(1:2) = [];
+        elseif ( strcmpi(args{1}, 'blowup') )
+            % Translate "blowup" --> "enableSingularityDetection".
+            pref.enableSingularityDetection = strcmpi(args{2}, 'on');
+            args(1:2) = [];
         else
             % Update these preferences:
-            pref = chebfun.pref(pref, args{1}, args{2});
+            pref.(args{1}) = args{2};
             args(1:2) = [];
         end
     end
@@ -449,11 +486,12 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
         op = vec(op);
     end
     
-    if ( isa(op, 'function_handle') && strcmp(pref.chebfun.tech, 'funqui') )
-        if ( isfield(pref.chebfun, 'n') && ~isnan(pref.chebfun.n) )
-            x = linspace(domain(1), domain(end), pref.chebfun.n).';
+    if ( isa(op, 'function_handle') && strcmp(pref.tech, 'funqui') )
+        if ( isfield(pref.techPrefs, 'exactLength') && ...
+             ~isnan(pref.techPrefs.exactLength) )
+            x = linspace(domain(1), domain(end), pref.techPrefs.exactLength).';
             op = feval(op, x);
-            pref.chebfun.n = NaN;
+            pref.techPrefs.exactLength = NaN;
         end
     end
 

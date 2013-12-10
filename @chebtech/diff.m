@@ -99,7 +99,9 @@ function f = diffContinuousDim(f, k)
 
         % Compute new coefficients using recurrence:
         c = computeDerCoeffs(c);
-        c(abs(c) < f.epslevel) = 0;
+        
+         % [TODO]: This can ruin diff(chebtech2(@exp), 10), so was removed.
+%         c(abs(c) < f.epslevel) = 0;
 
         % Length of polynomial has decreased by 1:
         n = n - 1;

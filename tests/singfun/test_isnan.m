@@ -4,7 +4,7 @@ function pass = test_isnan(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = singfun.pref;
+    pref = chebpref();
 end
 
 % The order of the exponents:
@@ -12,9 +12,6 @@ a = 0.64;
 b = -0.64;
 c = 1.28;
 d = -1.28;
-
-% Pre-allocate pass matrix
-pass = zeros(1, 2);
 
 %%
 % Check a few cases.

@@ -4,10 +4,9 @@ function pass = test_max(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = chebtech.pref;
+    pref = chebtech.techPref();
 end
 
-pass = zeros(2, 8); % Pre-allocate pass matrix.
 for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();

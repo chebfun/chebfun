@@ -4,7 +4,7 @@ function pass = test_cumsum(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = singfun.pref;
+    pref = chebpref();
 end
 
 % Generate a few random points to use as test values.
@@ -18,9 +18,6 @@ b = -0.64;
 c = 1.28;
 d = -1.28;
 e = -2.56;
-
-% Pre-allocate pass matrix
-pass = zeros(1, 9);
 
 %%
 % Tests with exact solution:
