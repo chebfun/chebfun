@@ -9,7 +9,7 @@ n = 42;
 pass(1) = all(size(x) == [n, 1]);
 [x, w, v] = legpts(n);
 pass(2) = all(size(x) == [n, 1]) && all(size(w) == [1, n]) && all(size(v) == [n, 1]);
-pass(4) = abs(w*x) < tol && abs(w*x.^2 - 2/3) < tol;
+pass(3) = abs(w*x) < tol && abs(w*x.^2 - 2/3) < tol;
 pass(4) = abs(x(37) - 0.910959724904127) < tol;
 pass(5) = abs(w(37) - 0.030479240699603) < tol;
 pass(6) = abs(v(37) - 0.265155501739424) < tol;
