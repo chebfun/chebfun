@@ -26,14 +26,30 @@ if ( isempty(f) )
     return
 end
 
+if ( numel(f) > 1 )
+    try
+        f = quasi2cheb(f);
+    catch ME
+        error('CHEBFUN:area:quasi', 'AREA() does not support quasimatrices.');
+    end
+end
+
 % Get the (x, y) data from PLOTDATA():
 if ( (nargin > 1) && isa(varargin{1}, 'chebfun') )
     g = varargin{1};
+    if ( numel(g) > 1 )
+        try
+            g = quasi2cheb(g);
+        catch ME
+            error('CHEBFUN:area:quasi', 'AREA() does not support quasimatrices.');
+        end
+    end
     varargin(1) = [];
     data = plotData(f, g);
 else
     data = plotData(f);
 end
+
 x = data.xLine; 
 y = data.yLine;
 
@@ -53,7 +69,7 @@ y(mask,:) = (y(mask+1,:) + y(mask-1,:))/2;
 x(mask) = x(mask+1);
 
 % Call built-in AREA():
-h = area(x, y, varargin{:});
+h = area(x, y, 'LineStyle', 'None', varargin{:});
 
 % Output handle to plot window:
 if ( nargout == 1 )

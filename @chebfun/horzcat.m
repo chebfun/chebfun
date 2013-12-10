@@ -25,7 +25,7 @@ end
 chebfunLocs = cellfun('isclass', varargin, 'chebfun');
 chebfun1 = varargin{find(chebfunLocs, 1, 'first')};
 
-% Horizontal concatenation of ow CHEBFUN objects produces a CHEBMATRIX:
+% Horizontal concatenation of row CHEBFUN objects produces a CHEBMATRIX:
 if ( chebfun1(1).isTransposed )
     out = chebmatrix(varargin);
     return
@@ -36,6 +36,17 @@ domain1 = chebfun1.domain;
 doubleLocs = find(~chebfunLocs);
 for k = doubleLocs
     varargin{k} = chebfun(varargin{k}, domain1);
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%% Deal with qausimatrices %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+numElements = cellfun(@numel, varargin);
+if ( any(numElements > 1) )
+    args = {};
+    for k = 1:numel(varargin)
+        args = [args, num2cell(varargin{k})]; %#ok<AGROW>
+    end
+    out = horzcat(args{:});
+    return
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%% Deal with domains %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

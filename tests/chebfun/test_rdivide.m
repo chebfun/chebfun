@@ -59,7 +59,8 @@ catch ME
 end
 
 try
-    h = f./chebfun(@(x) 0*x);
+    h = chebfun(@(x) 1+0*x)./chebfun(@(x) 0*x);
+    error
     pass(9) = false;
 catch ME
     pass(9) = strcmp(ME.identifier, 'CHEBFUN:rdivide:DivisionByZeroChebfun');

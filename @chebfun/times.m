@@ -33,7 +33,11 @@ elseif ( isnumeric(g) )        % CHEBFUN * double
         end
 
         % Multiply the impulses:
-        f.impulses = f.impulses .* g;
+        if ( numel(g) > 1 )
+            f.impulses = bsxfun(@times, f.impulses, g);
+        else
+            f.impulses = f.impulses .* g;
+        end
     
     else
         % Quasimatrix case:

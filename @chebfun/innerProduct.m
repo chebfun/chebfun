@@ -15,12 +15,31 @@ function out = innerProduct(f, g)
 % Overlap the CHEBFUN objects:
 [f, g] = overlap(f, g);
 
-% Initialise the output:
-out = zeros(min(size(f)), min(size(g)));
+numColsF = min(size(f));
+numColsG = min(size(g));
 
-% Loop over the FUNs:
-for k = 1:numel(f.funs)
-    out = out + innerProduct(f.funs{k}, g.funs{k});
-end 
+% Initialise the output:
+out = zeros(numColsF, numColsG);
+
+if ( numel(f) == 1 && numel(g) == 1 )
+    % Array-valued CHEBFUN case:
+    
+    % Loop over the FUNs:
+    for k = 1:numel(f.funs)
+        out = out + innerProduct(f.funs{k}, g.funs{k});
+    end 
+    
+else
+    % QUASIMATRIX case:
+    
+    % Convert to a cell array:
+    f = mat2cell(f);
+    g = mat2cell(g);
+    % Loop over the columns:
+    for j = 1:numColsF
+        for k = 1:numColsG
+            out(j, k) = innerProduct(f{j}, g{k});
+        end
+    end 
 
 end

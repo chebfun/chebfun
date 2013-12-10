@@ -104,7 +104,7 @@ tol = epslevel(f)*hscale(f);
 
 % Loop n times for nth derivative:
 for j = 1:n
-    vs = get(f, 'vscale-local');
+    vs = get(f, 'vscale-local'); vs = vs(:);
 
     % Detect jumps in the original function and create new deltas.
     newDeltas = zeros(numFuns + 1, numCols, 1);

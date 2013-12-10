@@ -105,6 +105,7 @@ for k = 1:numel(N)
     % Copy over higher-order impulses.
     g{k}.impulses = f.impulses(:,index{k},:);
     g{k} = tidyImpulses(g{k});
+
 end
 
 end

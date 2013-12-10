@@ -34,7 +34,7 @@ if ( A(1).isTransposed )    % A is a row CHEBFUN
     % Make V a CHEBFUN:
     V = Q*V;
     
-else                     % A is a column CHEBFUN
+else                        % A is a column CHEBFUN
     % Call CHEBFUN/QR():
     [Q, R] = qr(A);
     % Call discrete SVD():

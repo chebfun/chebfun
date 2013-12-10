@@ -27,10 +27,10 @@ elseif ( numel(f) > 1 && numel(g) > 1)
     
 elseif ( numel(f) > 1 )
     % QUASIMATRIX - CHEBFUN
-    if ( min(size(g)) ~= numel(f) )
+    gCell = mat2cell(g);
+    if ( numel(gCell) ~= numel(f) )
         error('CHEBFUN:overlap:dim', 'Matrix dimensions must agree.')
     else
-        gCell = mat2cell(g);
         g = 0*f;
         for k = 1:numel(f)
             [f(k), g(k)] = columnOverlap(f(k), gCell{k});
@@ -39,10 +39,10 @@ elseif ( numel(f) > 1 )
        
 else % if ( numel(g) > 1 )    
     % CHEBFUN - QUASIMATRIX
-    if ( min(size(f)) ~= numel(g) )
+    fCell = mat2cell(f);
+    if ( numel(fCell) ~= numel(g) )
         error('CHEBFUN:overlap:dim', 'Matrix dimensions must agree.')
     else
-        fCell = mat2cell(f);
         f = 0*g;
         for k = 1:numel(g)
             [f(k), g(k)] = columnOverlap(fCell{k}, g(k));

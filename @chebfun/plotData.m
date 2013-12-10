@@ -86,14 +86,10 @@ else
     data.zPoints = [];
     data.zJumps = [];
 
-    % [TODO]: Fix this once OVERLAP() is implemented.
-    if ( any( f.domain ~= g.domain ) )
-        [f, g] = overlap(f, g);
-    end
-    if ( any( g.domain ~= h.domain ) )
-        [g, h] = overlap(g, h);
-        [h, f] = overlap(h, f);
-    end
+    % Overlapt the CHEBFUN objects:
+    [f, g] = overlap(f, g);
+    [g, h] = overlap(g, h);
+    [h, f] = overlap(h, f);
     
     % Loop over each FUN for Line and Points data:
     for k = 1:numel(f.funs)
@@ -109,7 +105,6 @@ else
         data.zPoints = [data.zPoints ; myNaN ; dataNew.zPoints];        
     end
 
-    
     % Loop over each FUN for Jumps data:
     for k = 1:(numel(f.funs) - 1)
         % Append [oldData, NaN, rval_k, lval_{k+1}]:

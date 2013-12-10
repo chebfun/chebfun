@@ -28,8 +28,8 @@ if ( ~domainCheck(A, B) )
     error('CHEBFUN:subspace:domain', ...
         'Domain mismatch.')
 end
-if ( A.isTransposed )
-    if ( ~B.isTransposed )
+if ( A(1).isTransposed )
+    if ( ~B(1).isTransposed )
         error('CHEBFUN:subspace:trans', 'Dimension mismatch (transpose).');
     end
     A = A.';

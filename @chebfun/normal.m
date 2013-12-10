@@ -11,7 +11,7 @@ function n = normal(c, unit)
 % [TODO]:  Reconsider how this function should behave in the presence of cusps
 % once we have singfun in place.
 
-n = -1i * diff(c); 
+n = -1i*diff(c); 
 
 if ( nargin > 1 ) 
     if ( strcmpi(unit, 'unit') )
@@ -26,8 +26,9 @@ if ( nargin > 1 )
     end
 end
 
-% Return a quasi-matrix. 
-% [TOD0]: This method requires HORZCAT() and quasimatrices.
-% n = [real(n), imag(n)];  
+% Return a quasimatrix:
+real(n)
+imag(n)
+n = [real(n), imag(n)];  
  
 end

@@ -29,53 +29,42 @@ end
 % Store the hold state of the current axis:
 holdState = ishold;
 
-% Get the coeff data:
-numfuns = numel(f.funs);
-n = cell(numfuns, 1);
-c = get(f, 'coeffs');
-% [TODO]: GET('coeffs') should not be used. We proably need chebpolyplotData()
-% methods, similar to those used by the PLOT() funtion.
-if ( ~iscell(c) )
-    c = {c};
+% Grab some colours:
+col = [];
+if ( nargin > 1 && ischar(varargin{1}) && numel(varargin{1}) < 4 )
+    str = varargin{1};
+    col = regexp(varargin{1}, '[bgrcmykw]', 'match');
+    col = col{:};
+    varargin(1) = [];
 end
-c = cellfun(@abs, c, 'UniformOutput', false);
-for k = 1:numfuns
-    n{k} = (size(c{k}, 1)-1:-1:0).';
-end
-numcols = size(c{1}, 2);
-
-% Get vscale, epslevel data:
-v = get(f, 'vscale-local');
-e = get(f, 'epslevel-local');
-ve = bsxfun(@times, v, e);
-
-% Add a tiny amount to zeros to make plots look nicer:
-minve = min(ve, [], 1);
-for k = 1:numfuns
-    % Use smaller of min. of (vscale)*(epslevel) and the smallest nonzero coeff.
-    c{k}(~c{k}) = min(minve(k), min(c{k}(logical(c{k}(:)))));
+if ( isempty(col) )
+    colIdx = find(cellfun(@(arg) all(ischar(arg)) && any(strfind(arg, 'color')), varargin));
+    if ( colIdx )
+        col = varargin{colIdx+1};
+        varargin(colIdx+(0:1)) = [];
+    else
+        col = get(0, 'DefaultAxesColorOrder');
+    end
 end
 
-% Shape it:
-data = reshape([n c]', 1, 2*numfuns);
+% Initialise the output:
+h1 = cell(numel(f), 1);
+h2 = cell(numel(f), 1);
 
-% Plot the coeffs:
-h1 = semilogy(data{:}, varargin{:});
-hold on
+% Loop over the columns:
+for k = 1:numel(f)
+    % Colours for this column:
+    if ( ischar(col) )
+        colk = col;
+    else
+        numColsFk = min(size(f(k)));
+        colk = col(1:numColsFk, :);
+        col(1:numColsFk, :) = [];
+    end
 
-% Reshape data for epslevel plot:
-n = cellfun(@(x) x([end ; 1]), n, 'UniformOutput', false);
-n = reshape(repmat(n', numcols, 1), numcols*numel(n), 1);
-ve = reshape(ve, numfuns*numcols, 1);
-ve = mat2cell(repmat(ve, 1, 2), ones(numfuns*numcols, 1), 2);
-data = reshape([n ve]', 1, 2*numfuns*numcols);
-
-% Plot the epslevels:
-h2 = semilogy(data{:}, varargin{:});
-hold off
-for k = 1:numel(h2)
-    c = get(h1(k), 'color');
-    set(h2(k), 'linestyle', ':', 'linewidth', 1, 'marker', 'none', 'color', c);
+    % Call the column version:
+    [h1{k}, h2{k}] = columnChebpolyplot(f(k), colk, varargin{:});
+    
 end
 
 % Return hold state to what it was before:
@@ -85,5 +74,61 @@ end
 
 % Give an output if one was requested:
 if ( nargout > 0 )
-    varargout = {h1, h2};
+    varargout = {cell2mat(h1), cell2mat(h2)};
 end
+
+end
+
+function [h1, h2] = columnChebpolyplot(f, col, varargin)
+
+% Get the coeff data:
+numFuns = numel(f.funs);
+n = cell(numFuns, 1);
+c = get(f, 'coeffs');
+% [TODO]: GET('coeffs') should not be used. We proably need chebpolyplotData()
+% methods, similar to those used by the PLOT() funtion.
+if ( ~iscell(c) )
+    c = {c};
+end
+c = cellfun(@abs, c, 'UniformOutput', false);
+for k = 1:numFuns
+    n{k} = (size(c{k}, 1)-1:-1:0).';
+end
+numCols = size(c{1}, 2);
+
+% Get vscale, epslevel data:
+v = get(f, 'vscale-local');
+e = get(f, 'epslevel-local');
+ve = bsxfun(@times, v, e);
+
+% TODO: fix this!
+% % Add a tiny amount to zeros to make plots look nicer:
+% minve = min(ve, [], 1)
+% for k = 1:numfuns
+%     % Use smaller of min. of (vscale)*(epslevel) and the smallest nonzero coeff.
+%     c{k}(~c{k}) = min(minve(k), min(c{k}(logical(c{k}(:)))));
+% end
+
+% Shape it:
+data = reshape([n c]', 1, 2*numFuns);
+
+% Plot the coeffs:
+h1 = semilogy(data{:}, varargin{:}, 'color', col);
+hold on
+
+% Reshape data for epslevel plot:
+n = cellfun(@(x) x([end ; 1]), n, 'UniformOutput', false);
+n = reshape(repmat(n', numCols, 1), numCols*numel(n), 1);
+ve = reshape(ve, numFuns*numCols, 1);
+ve = mat2cell(repmat(ve, 1, 2), ones(numFuns*numCols, 1), 2);
+data = reshape([n ve]', 1, 2*numFuns*numCols);
+
+% Plot the epslevels:
+h2 = semilogy(data{:}, varargin{:}, 'color', col);
+for k = 1:numel(h2)
+    c = get(h1(k), 'color');
+    set(h2(k), 'linestyle', ':', 'linewidth', 1, 'marker', 'none', 'color', c);
+end
+
+end
+

@@ -8,8 +8,7 @@ end
 F = num2cell(F);
 
 numCols = numel(F);
-G(numCols) = chebfun();
-for k = 1:numCols
+for k = numCols:-1:1
     G(k) = F{k};
 end
 

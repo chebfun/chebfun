@@ -109,24 +109,30 @@ while ( ~isempty(varargin) )
         end
         
         % Call PLOTDATA():
-        f = num2cell(f);
-        g = num2cell(g);
-        if ( numel(f) > 1 && numel(g) > 1 )
-            if ( numel(f) ~= numel(g) )
-                error('CHEBFUN:plot:dim', ...
-                'CHEBFUN objects must have the same number of columns.');
+        if ( numel(f) == 1 && numel(g) == 1 )
+            % Array-valued CHEBFUN case:
+            newData = plotData(f, g);
+        else
+            % QUASIMATRIX case:
+            f = num2cell(f);
+            g = num2cell(g);
+            if ( numel(f) > 1 && numel(g) > 1 )
+                if ( numel(f) ~= numel(g) )
+                    error('CHEBFUN:plot:dim', ...
+                    'CHEBFUN objects must have the same number of columns.');
+                end
+                for k = 1:numel(f)
+                    newData(k) = plotData(f{k}, g{k});
+                end
+            elseif ( numel(f) > 1 && numel(g) == 1 )
+                for k = 1:numel(f)
+                    newData(k) = plotData(f{k}, g{1});
+                end
+            elseif ( numel(f) == 1 && numel(g) > 1 )
+                for k = 1:numel(f)
+                    newData(k) = plotData(f{1}, g{k});
+                end            
             end
-            for k = 1:numel(f)
-                newData(k) = plotData(f{k}, g{k});
-            end
-        elseif ( numel(f) > 1 && numel(g) == 1 )
-            for k = 1:numel(f)
-                newData(k) = plotData(f{k}, g{1});
-            end
-        elseif ( numel(f) == 1 && numel(g) > 1 )
-            for k = 1:numel(f)
-                newData(k) = plotData(f{1}, g{k});
-            end            
         end
         
     else                                                       % PLOT(f).
@@ -211,7 +217,7 @@ h2 = plot(pointData{:});
 set(h2, 'LineStyle', 'none')
 
 % Plot the jumps:
-if ( isempty(jumpData) )
+if ( isempty(jumpData) || ischar(jumpData{1}) )
     jumpData = {[]};
 end
 h3 = plot(jumpData{:});
