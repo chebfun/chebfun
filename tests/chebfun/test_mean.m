@@ -44,10 +44,20 @@ pass(9) = abs(m - m_exact) < 1e1*get(f,'epslevel')*abs(m_exact);
 % define the domain:
 dom = [-2 7];
 
-op = @(x) sin(100*x)./((x-dom(1)).^1.5.*(x-dom(2)).^0.5);
+op = @(x) sin(100*x)./((x-dom(1)).^1.5.*(dom(2)-x).^0.5);
 f = chebfun(op, dom, 'exps', [-1.5 -0.5], 'splitting', 'on');
 m = mean(f);
 pass(10) = ( isinf(m) );
+
+%% SINGFUNS: a NaN case
+
+% define the domain:
+dom = [-2 7];
+
+op = @(x) sin(98*x)./((x-dom(1)).^1.5.*(dom(2)-x).^1.5);
+f = chebfun(op, dom, 'exps', [-1.5 -1.5], 'splitting', 'on');
+m = mean(f);
+pass(11) = ( isnan(m) );
 
 %% Unbounded domains:
 % [TODO]: Test unbounded domains.

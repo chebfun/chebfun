@@ -204,6 +204,6 @@ f = chebfun(op, dom, pref);
 fval = feval(f, x);
 vals_exact = feval(op, x);
 err = fval - vals_exact;
-pass(31) = ( norm(err, inf) < get(f,'epslevel')*norm(vals_exact, inf) );
+pass(31) = ( norm(err, inf) < 1e1*get(f,'epslevel')*norm(vals_exact, inf) );
 
 end

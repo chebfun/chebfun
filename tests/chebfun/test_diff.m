@@ -98,10 +98,11 @@ end
 %% Integration with singfun: splitting on.
 
 dom = [-2 7];
+domCheck = [dom(1)+0.1 dom(2)-0.1];
 
 % Generate a few random points to use as test values.
 seedRNG(6178);
-x = diff(dom) * rand(100, 1) + dom(1);
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
 
 pow = -0.5;
 op = @(x) (x - dom(1)).^pow.*sin(200*x);
