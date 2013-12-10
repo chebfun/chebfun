@@ -15,7 +15,7 @@ out = zeros(1, numel(F));
 for k = 1:numel(F)
     out(k) = columnIsreal(F(k));
 end
-out = any(out);
+out = all(out);
 
 end
 
