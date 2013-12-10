@@ -43,10 +43,10 @@ if ( isa(f, 'deltafun') && isa(g, 'deltafun') )
     s.funPart = f.funPart + g.funPart;
     
     % Add the delta functions:    
-    va = f.delta.location;
-    vb = g.delta.location;
-    A = f.delta.magnitude;
-    B = g.delta.magnitude;
+    va = f.location;
+    vb = g.location;
+    A = f.impulses;
+    B = g.impulses;
     % Make the number of rows in A and B same by appending zero rows.
     ra = size(A, 1);
     rb = size(B, 1);
@@ -56,8 +56,8 @@ if ( isa(f, 'deltafun') && isa(g, 'deltafun') )
         A = [ A; zeros(rb-ra, size(A, 2)) ];
     end      
 
-    s.delta.location = [va, vb];
-    s.delta.magnitude = [A, B];
+    s.location = [va, vb];
+    s.impulses = [A, B];
     s = simplify(s);       
 end
 

@@ -32,9 +32,9 @@ g = diff(f.funPart, k);
 
 % Differentiate the distributional part. This just amounts to shifting
 % the magnitude matrix down by k rows by adding k zero rows at the top. 
-deltaMag = f.delta.magnitude;
+deltaMag = f.impulses;
 m = size(deltaMag, 2);
-f.delta.magnitude  = [ zeros(k, m); deltaMag;];
+f.impulses = [ zeros(k, m); deltaMag;];
 
 %%
 % Simplify, just in case.

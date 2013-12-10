@@ -9,8 +9,9 @@ if ( numel(f) > 1 )
     % An array cannot be empty.
     out = false;    
 elseif ( numel(f) == 1 )
-    % Check if the delta part is empty:
-    out = isempty(f.delta) && isempty(f.funPart);
+    % Check if the delta part and the Chebfun is empty:
+    out = isempty(f.location) & isempty(f.impulses);
+    out = out & isempty(f.domain) & isempty(f.funPart);
 else 
     % numel(f) == 0, so f must be empty.
     out = true;    

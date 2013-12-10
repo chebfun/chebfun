@@ -41,7 +41,7 @@ switch index(1).type
         if ( isnumeric(x) )
             y = x(:);
             % Make sure we don't evaluate at a delta function locations:
-            deltaLoc = f.delta.location;
+            deltaLoc = f.location;
             for i = 1:length(deltaLoc)
                 relDist = abs(y - deltaLoc(i))./abs(y);
                 if( any( relDist < deltafun.pref.deltafun.proximityTol ) )
@@ -65,9 +65,7 @@ switch index(1).type
         else
             error('CHEBFUN:DELTAFUN:subsref:nonnumeric', ...
               'Cannot evaluate chebfun for non-numeric type.')          
-        end
-        
-    
+        end            
        
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% GET %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     case '.'

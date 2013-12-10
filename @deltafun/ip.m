@@ -62,9 +62,9 @@ smoothIP = F.funPart'*g;
 
 % Get location and magnitudes of delta functions:
 f = simplify(f);
-deltaLoc = f.delta.location;
+deltaLoc = f.location;
 nDeltas = length(deltaLoc);
-deltaMag = f.delta.magnitude;
+deltaMag = f.impulses;
 m = size(deltaMag, 1);
 
 % Compute the derivatives needed:

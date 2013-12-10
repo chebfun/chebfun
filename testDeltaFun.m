@@ -26,21 +26,21 @@ deltafun( rand(1,3), rand(3,1) )
 % Test simplify
 mag = [rand(3,3); zeros(3,3)]; loc = rand(1,3);
 %mag(end,end) = 1e-12;
-d = deltafun(mag, loc, chebfun(0)); d.delta.magnitude
-d = simplify(d); d.delta.magnitude
+% constructor simplifies
+d = deltafun(mag, loc, chebfun(0)); d.impulses
 
 %%
 mag = [rand(3,3); zeros(3,3)]; loc = [-1 -1+4*eps -1+8*eps ]; 
 mag(end,end) = 1e-12;
-d = deltafun(mag, loc, chebfun(0)); d.delta.magnitude
-d = simplify(d); d.delta.magnitude - sum(mag,2)
+d = deltafun(mag, loc, chebfun(0)); d.impulses, d.location
+d = simplify(d); d.impulses - sum(mag,2)
 
 
 %%
 % Dirac delta and derivatives
 d = dirac(deltafun);
 d = diff(d,5);
-d.delta.magnitude
+d.impulses
 %%
 % The dirac delta function and inner products
 loc = 0;

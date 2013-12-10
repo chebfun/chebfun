@@ -8,8 +8,8 @@ function f = simplify(f)
 % See also SUM, CUMSUM.
 
 
-deltaLoc = f.delta.location;
-deltaMag = f.delta.magnitude;
+deltaLoc = f.location;
+deltaMag = f.impulses;
 % Merge columns if location of deltafunction are almost equal:
 [deltaMag, deltaLoc] = deltafun.mergeColumns(deltaMag, deltaLoc);
 
@@ -28,7 +28,7 @@ if ( isempty(deltaLoc) || isempty(deltaMag) )
 end
 
 % Assign back:
-f.delta.location = deltaLoc;
-f.delta.magnitude = deltaMag;
+f.location = deltaLoc;
+f.impulses = deltaMag;
 
 end

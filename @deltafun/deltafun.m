@@ -21,9 +21,12 @@ classdef deltafun
         % Smooth part of the representation.
         funPart     % (smoothfun)
         
-        % Delta functions' structure
-        delta = struct( 'magnitude', [], 'location', [], ...
-                        'isReal', [], 'isImag', [], 'isConj', [] );
+        % Deltafunctions
+        impulses
+        
+        % location
+        location
+        
         % Domain
         domain
         
@@ -49,7 +52,8 @@ classdef deltafun
             % Case 0: No input arguments, return an empty object.
             if ( nargin == 0 )
                 obj.funPart = [];
-                obj.delta = [];
+                obj.impulses = [];
+                obj.location = [];
                 obj.domain = [];
                 obj.isTransposed = [];
                 return
@@ -97,12 +101,7 @@ classdef deltafun
             
             if ( min(size(location)) > 1 )
                 error('CHEBFUN:DELTAFUN:dim', 'Magnitude and location should each be a vector');
-            end
-            
-            % There should be no duplicates in location:
-            if ( numel(location) ~= numel(unique(location)) )
-                error('CHEBFUN:DELTAFUN:duplication', 'No duplicates are allowed in location.');
-            end
+            end            
             
             % Make sure location is a row vector:
             location = location(:).';
@@ -125,15 +124,14 @@ classdef deltafun
                 
             % Now that we have checked all the arguments, copy them in the
             % current object:
-            obj.delta.magnitude = magnitude;
-            obj.delta.location  = location;
-            obj.delta.isImag    = false * location;
-            obj.delta.isReal    = false * location;
-            obj.delta.isConj    = false * location;
-            
+            obj.impulses     = magnitude;
+            obj.location     = location;            
             obj.domain       = domain;
             obj.funPart      = funPart;
             obj.isTransposed = 0;
+            
+            % Simplify to sort everything:
+            obj = simplify(obj);
         end
     end
     
