@@ -6,6 +6,6 @@ function f = uminus(f)
 % See http://www.chebfun.org/ for Chebfun information.
 
 f.funPart = -f.funPart;
-f.delta.magnitude = -f.delta.magnitude;
+f.impulses = -f.impulses;
 
 end

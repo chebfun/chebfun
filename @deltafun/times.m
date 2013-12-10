@@ -1,47 +1,52 @@
 function s = times(f,g)
-%.*   Multiply SINGFUNS with SINGFUNS
+%.*   Multiply DELTAFUNS with DELTAFUNS
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Note: This method will be called only if both F and G are SINGFUNS or at the
+% Note: This method will be called only if both F and G are DELTAFUNS or at the
 % most one of F and G is a scalar double.
 
-%% Trivial cases:
-
-% Check if inputs are other than SINGFUNS or doubles:
-if ( (~isa(f, 'singfun') && ~isa(f, 'double')) || ...
-     (~isa(g, 'singfun') && ~isa(g, 'double')) )
-    error( 'SINGFUN:times:Input can only be a singfun or a double' )
-end
-
-% Scalar multiplication cases
-if ( isa(f, 'double') )
-    % Copy the other input (a SINGUN) in the output:
-    s = g;
-    % Multiply the smooth part with the double and return:
-    s.smoothPart = f * g.smoothPart;
-    return
-elseif ( isa(g, 'double') )
-    % Copy the other input (a SINGUN) in the output:
-    s = f;
-    % Multiply the smooth part with the double and return
-    s.smoothPart = g * f.smoothPart;
+%% Empty case:
+s = deltafun;
+if ( isempty(f) || isempty(g) )
     return
 end
 
-%% Mutliplication of two SINGFUNS:
+% Trivial cases:
+% Check if inputs are other than DELTAFUNS or doubles:
+if ( (~isa(f, 'deltafun') && ~isa(f, 'double')) || ...
+     (~isa(g, 'deltafun') && ~isa(g, 'double')) )
+    error( 'DELTAFUN:times', 'Input can only be a DELTAFUN or a double' )
+end
 
-% Initialise the output SINGFUN:
-s = singfun;
-% Multiply the smooth parts:
-s.smoothPart = (f.smoothPart).*(g.smoothPart);
-% Add the exponents:
-s.exponents = f.exponents + g.exponents;
+%% Multiplication by a scalar or a function:
+if ( isa(f, 'double') || isa(f, 'smoothfun') )
+    % Copy the other input (a SINGFUN) in the output:
+    h = g;
+    % Multiply the smooth parts and return:
+    h.smoothPart = f .* g.smoothPart;
+elseif ( isa(g, 'double') || isa(g, 'smoothfun') )
+    % Copy the other input (a SINGFUN) in the output:
+    h = f;
+    % Multiply the smooth parts and return:
+    h.smoothPart = g .* f.smoothPart;
+end
+
+%% Multiplication of two SINGFUNS:
+if ( isa(f, 'singfun') && isa(g, 'singfun') )
+    % Initialise the output SINGFUN:
+    h = singfun();
+    % Multiply the smooth parts:
+    h.smoothPart = (f.smoothPart) .* (g.smoothPart);
+    % Add the exponents:
+    h.exponents = f.exponents + g.exponents;
+end
 
 %%
-% Check if after multiplication the singularity can be removed.
-tol = singfun.pref.singfun.exponentTol;
-s.exponents( abs(s.exponents) < tol ) = 0;
+% Check if after multiplication h has become smooth:
+if ( issmooth(h) )
+    h = h.smoothPart;
+end
 
 end

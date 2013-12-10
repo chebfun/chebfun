@@ -1,7 +1,7 @@
 function out = isinf(f)
-%ISINF   Test if a SINGFUN is unbounded.
-%   ISINF(F) returns TRUE if F has any negative EXPONENT values and FALSE
-%   otherwise.
+%ISINF   Test if a DELTAFUN is infinite.
+%   ISINF(F) returns TRUE if F has any delta function or if the smooth part
+%   is infinite. It is FALSE otherwise.
 %
 % See also ISFINITE, ISNAN.
 
