@@ -24,10 +24,18 @@ deltafun( rand(3,1), rand(1,3) )
 deltafun( rand(1,3), rand(3,1) )
 %%
 % Test simplify
-mag = [rand(3,3); zeros(3,3)]; loc = rand(3,1); 
-%%mag(end,end) = 1e-12;
+mag = [rand(3,3); zeros(3,3)]; loc = rand(1,3);
+%mag(end,end) = 1e-12;
 d = deltafun(mag, loc, chebfun(0)); d.delta.magnitude
 d = simplify(d); d.delta.magnitude
+
+%%
+mag = [rand(3,3); zeros(3,3)]; loc = [-1 -1+4*eps -1+8*eps ]; 
+mag(end,end) = 1e-12;
+d = deltafun(mag, loc, chebfun(0)); d.delta.magnitude
+d = simplify(d); d.delta.magnitude - sum(mag,2)
+
+
 %%
 % Dirac delta and derivatives
 d = dirac(deltafun);

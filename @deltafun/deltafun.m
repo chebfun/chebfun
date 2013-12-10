@@ -21,7 +21,7 @@ classdef deltafun
         % Smooth part of the representation.
         funPart     % (smoothfun)
         
-        % Delta functions' structre
+        % Delta functions' structure
         delta = struct( 'magnitude', [], 'location', [], ...
                         'isReal', [], 'isImag', [], 'isConj', [] );
         % Domain
@@ -177,7 +177,7 @@ classdef deltafun
         % True for an empty DELTAFUN.
         out = isempty(f)
         
-        % Test if SINGFUN objects are equal.
+        % Test if DELTAFUN objects are equal.
         out = isequal(f, g)
         
         % Test if a SINGFUN is bounded.
