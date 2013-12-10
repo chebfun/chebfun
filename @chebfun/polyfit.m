@@ -20,7 +20,6 @@ function f = polyfit(y, n, varargin)
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % TODO: Come up with a better way of accessing POLYFIT(X, Y, N, D).
-% TODO: This requires testing.
 
 if ( nargout > 1 )
     error('CHEBFUN:polyfit:nargout', ...
@@ -37,6 +36,7 @@ else
         error('CHEBFUN:polyfit:input2', 'N must be scalar integer.')
     end
     f = continuousPolyfit(y, n);
+    f.isTransposed = y.isTransposed;  % Deal with row CHEBFUNs.
     return
 end
 
