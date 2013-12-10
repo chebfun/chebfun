@@ -55,4 +55,30 @@ f([-.25, .5]) = 1;
 pass(10) = all(size(f.impulses) == [5, 2]) && ...
     all(all(f.impulses == [-1 -1 ; 1 1 ; 0 0 ; 1 1 ; 1 1]));
 
+%% Integration of SINGFUN: piecewise smooth chebfun
+
+% define the domain:
+dom = [-2 -1 0 1];
+
+op1 = @(x) sin(x);
+op2 = @(x) 1./((1+x).^0.5);
+op3 = @(x) x+1;
+op = {op1, op2, op3};
+
+f = chebfun(op, dom, 'exps', [0 0 -0.5 0 0 0]);
+brkpts = zeros(1,2);
+brkpts(1) = -0.7;
+brkpts(2) = -0.5;
+g = definePoint(f, brkpts(1), 1);
+g(brkpts(2)) = 2;
+
+% check values:
+check = zeros(1,4);
+check(1) = all(g.domain == unique([dom, brkpts]));
+check(2) = feval(g, brkpts(1)) == 1;
+check(3) = feval(g, brkpts(2)) == 2;
+check(4) = all(g.impulses == [f.impulses(1:2); 1; 2; f.impulses(3:4)]);
+
+pass(11) = all( check );
+
 end
