@@ -17,9 +17,26 @@ if ( isempty(s) )
     return
 end
 
-% Loop over the columns:
-for k = 1:numel(f)
-    f(k) = columnDefinePoint(f(k), s, v);
+
+if ( numel(f) == 1 )
+    % Array-valued CHEBFUN case:
+    
+    f = columnDefinePoint(f, s, v);
+    
+else
+    % Quasimatrix case:
+    
+    % Expand v if required:
+    if ( size(v, 2 - f(1).isTransposed) == 1 )
+        v = repmat(v, 1, numColumns(f));
+    end
+    if ( f(1).isTransposed )
+        v = v.';
+    end
+    % Loop over the columns:
+    for k = numel(f)
+        f(k) = columnDefinePoint(f(k), s, v(:,k));
+    end
 end
 
 end

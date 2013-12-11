@@ -27,7 +27,7 @@ if ( any(diff(subInt) <= 0) )
 end
 
 % Number of columns of F.
-numColsF = size(f, 2 - f.isTransposed);
+numColsF = numColumns(f);
 
 % Convert a scalar or empty input to a chebfun.
 if ( isnumeric(g) )
@@ -54,15 +54,31 @@ if ( isempty(f) )
 end
 
 % Make sure dimensions add up:
-if ( ~isempty(g) && (size(g, 2) ~= numColsF) )
+numColsG = numColumns(g);
+if ( ~isempty(g) && (numColsG ~= numColsF) )
     error('CHEBFUN:defineInterval:numCols', ...
         'Dimensions of matrices being concatenated are not consistent.');
 end
 
+if ( numel(f) == 1 && numel(g) == 1)
+    f = columnsDefineInterval(f, subInt, g);
+else
+    f = num2cell(f);
+    g = num2cell(g);
+    for k = numel(f):-1:1
+        h(k) = columnsDefineInterval(f{k}, subInt, g{k});
+    end
+    f = h;
+end
+
+end
+
+function f = columnsDefineInterval(f, subInt, g)
+
 %% %%%%%%%%%%%%%%%%%%%%%%%%%% INSERTION/OVERWRITING %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if ( ~isempty(g) )                               
     
-    if ( subInt(end) < f.domain(1) )             % Extension to the left
+    if ( subInt(end) < f(1).domain(1) )             % Extension to the left
         % Append FUNs, domain, and impulses:
         padding = chebfun(0, [g.domain(end), f.domain(1)]);
         f.domain = [g.domain, f.domain];

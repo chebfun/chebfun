@@ -16,10 +16,7 @@ if ( nargin == 1 )
     pref = chebpref();
 end
 
-% Loop over the columns of F:
-for k = 1:numel(F)
-    % Call the compose method:
-    F(k) = compose(F(k), @expm1, pref);
-end
+% Call the compose method:
+F = compose(F, @expm1, pref);
 
 end

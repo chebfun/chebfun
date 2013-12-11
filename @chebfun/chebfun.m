@@ -260,9 +260,6 @@ classdef chebfun
 
         % Compose CHEBFUN objects with another function.
         h = compose(f, op, g, pref)
-
-        % Compose two CHEBFUN objects (i.e., f(g)).
-        h = composeChebfuns(f, g, pref)
         
         % Complex conjugate of a CHEBFUN.
         f = conj(f)

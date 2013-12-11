@@ -35,7 +35,7 @@ switch index(1).type
     case '()'
         
         % Deal with row CHEBFUN objects:
-        isTransposed = f.isTransposed;
+        isTransposed = f(1).isTransposed;
         if ( isTransposed )
             f = f.';
             if ( length(idx) > 1 )
@@ -47,14 +47,15 @@ switch index(1).type
         x = idx{1}; 
         
         % Initialise:
-        columnIndex = 1:size(f, 2); % Column index for array-valued CHEBFUNs.
-        varin = {};                 % Additional arguments.
+        numCols = numColumns(f);
+        columnIndex = 1:numCols; % Column index for array-valued CHEBFUNs.
+        varIn = {};              % Additional arguments.
         
         % Deal with additional arguments:
         if ( (length(idx) == 2) && ...
              any(strcmpi(idx{2}, {'left', 'right', '-', '+'})) )
             % f(x, 'left') or f(x, 'right'):
-            varin = {idx(2)};
+            varIn = {idx(2)};
             
         elseif ( length(idx) == 2 )
             % f(x, m), for array-valued CHEBFUN objects:
@@ -77,7 +78,7 @@ switch index(1).type
         % Compute the output:
         if ( isnumeric(x) )
             % Call FEVAL():
-            out = feval(f, x, varin{:});
+            out = feval(f, x, varIn{:});
 
             % Figure out which columns of the output we need to select:
             % (NB:  This code uses the assumption that columnIndex is a row.)

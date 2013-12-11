@@ -36,7 +36,7 @@ end
 
 % Allow scalar expansion:
 if ( isnumeric(g) )
-    if ( f.isTransposed )
+    if ( f(1).isTransposed )
         g = g.';
         g = chebfun(g, f.domain).';
     else

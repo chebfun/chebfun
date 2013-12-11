@@ -43,20 +43,15 @@ function f = compose(f, op, g, pref)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % [TODO]: vscale and tolerance?
-% TODO: Quasimatrix support.
-% TODO: Move the loops used by quasimatrices to inside this method.
 
 % Parse inputs:
 opIsBinary = false;
-
 if ( (nargin == 4) && ~isempty(g) )           % compose(f, op, g, pref)
     opIsBinary = true;
 end
-
 if ( (nargin < 4) || ((nargin == 4) && isempty(pref)) )
     pref = chebpref();
 end
-
 if ( nargin == 3 )
     if ( isstruct(g) || isa(g, 'chebpref') )  % compose(f, op, pref)
         pref = chebpref(g);
@@ -65,7 +60,6 @@ if ( nargin == 3 )
         opIsBinary = true;
     end
 end
-
 if ( nargin < 3 )                             % compose(f, op) or compose(f, g)
     g = [];
 end
@@ -77,11 +71,63 @@ if ( isempty(f) )
     return
 end
 
-% Call the COMPOSETWOCHEBFUNS method if OP is a CHEBFUN object:
 if ( isa(op, 'chebfun') )
-    f = composeTwoChebfuns(f, op, pref);
-    return
+    % Call the COMPOSETWOCHEBFUNS method if OP is a CHEBFUN object:
+    
+    g = op;
+    if ( numel(f) == 1 && numel(op) == 1 )
+        % Array-valued CHEBFUN case:
+        f = composeTwoChebfuns(f, op, pref);
+    else
+        % QUASIMATRIX case:
+        f = mat2cell(f);
+        g = mat2cell(g);
+        for k = numel(f):-1:1
+            h(k) = composeTwoChebfuns(f{k}, g{k}, pref);
+        end
+        f = h;
+    end
+        
+elseif ( opIsBinary )
+    % Binary composition:
+    
+    if ( numel(f) == 1 && numel(g) == 1 )
+        % Array-valued CHEBFUN case:
+        f = columnCompose(f, op, g, pref, opIsBinary);
+    else
+        % QUASIMATRIX case:
+        f = mat2cell(f);
+        g = mat2cell(g);
+        for k = numel(f):-1:1
+            h(k) = columnCompose(f{k}, op, g{k}, pref, opIsBinary);
+        end
+        f = h;
+    end
+    
+else
+    % Unary composition:
+    
+    if ( numel(f) == 1 )
+        % Array-valued CHEBFUN case:
+        f = columnCompose(f, op, g, pref, opIsBinary);
+    else
+        % QUASIMATRIX case:
+        f = mat2cell(f);
+        for k = numel(f):-1:1
+            h(k) = columnCompose(f{k}, op, g, pref, opIsBinary);
+        end
+        f = h;
+    end
+    
 end
+
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function f = columnCompose(f, op, g, pref, opIsBinary)
 
 %% Initialise:
 
@@ -188,6 +234,10 @@ f.domain = newDom;
 f.impulses = newImps;
 
 end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function h = composeTwoChebfuns(f, g, pref)
 %COMPOSETWOCHEBFUNS   Composition of two CHEBFUN objects.

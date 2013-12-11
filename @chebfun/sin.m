@@ -22,10 +22,7 @@ end
 %         'SIN is not defined for functions which diverge to infinity');
 % end
 
-% Loop over the columns of F:
-for k = 1:numel(F)
-    % Call the compose method:
-    F(k) = compose(F(k), @sin, pref);
-end
+% Call the compose method:
+F = compose(F, @sin, pref);
 
 end

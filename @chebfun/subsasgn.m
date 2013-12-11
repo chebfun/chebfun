@@ -19,6 +19,8 @@ function f = subsasgn(f, index, val)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
+% TODO: Error checking. Particularly integer indicies and a quasimatrix indexing
+
 idx = index(1).subs;
 
 switch index(1).type
@@ -29,7 +31,9 @@ switch index(1).type
 
     case '()'
 
-        % [TODO]: Check inputs more carefully. (In particular for ROW chebfuns)
+        if ( f(1).isTransposed && numel(idx) >= 2 )
+            idx(1:2) = idx([2 1]);
+        end
         if ( ischar(idx{1}) && strcmp(idx{1}, ':') )
             % Assign a column:
             f = assignColumns(f, idx{2}, val);

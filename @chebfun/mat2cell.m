@@ -100,7 +100,7 @@ index = mat2cell(1:size(f.funs{1}, 2), M, N);
 g = cell(1, numel(N));
 for k = 1:numel(N)
     % Make the CHEBFUN.
-    g{k} = chebfun(cellFuns(:,k));
+    g{k} = chebfun(cellFuns(:,k).');
 
     % Copy over higher-order impulses.
     g{k}.impulses = f.impulses(:,index{k},:);

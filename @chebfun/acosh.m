@@ -16,9 +16,7 @@ if ( nargin == 1 )
 end
 
 % Loop over the columns of F:
-for k = 1:numel(F)
-    % Call the compose method:
-    F(k) = compose(F(k), @acosh, pref);
-end
+% Call the compose method:
+F = compose(F, @acosh, pref);
 
 end
