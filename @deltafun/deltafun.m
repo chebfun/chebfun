@@ -223,17 +223,11 @@ classdef deltafun
         % Multiplication of SINGFUN objects.
         f = mtimes(f, c)
         
-        % Basic linear plot for SINGFUN objects.
+        % Basic linear plot for DELTAFUN objects.
         varargout = plot(f, varargin)
-        
-        % Obtain data used for plotting a SINGFUN object.
-        data = plotData(f)
-        
-        % Addition of two SINGFUN objects.
-        f = plus(f, g)
-        
-        % Return the points used by the smooth part of a SINGFUN.
-        out = points(f)
+               
+        % Addition of two DELTAFUN objects.
+        f = plus(f, g)       
         
         % Dividing two SINGFUNs
         f = rdivide(f, g)

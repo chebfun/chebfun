@@ -2,23 +2,23 @@ deltafun
 
 %%
 % shouldn't work
-deltafun(1)
+%deltafun(1)
 
 %%
 deltafun(1,2)
 %%
 % shouldn't work
-deltafun( rand(3,1), rand(1,4) )
+%deltafun( rand(3,1), rand(1,4) )
 %%
 % shouldn't work
-deltafun( rand(3,1), rand(3,1) )
+%deltafun( rand(3,1), rand(3,1) )
 %%
 % should work
 deltafun( rand(3,3), rand(3,1) )
 deltafun( rand(3,3), rand(1,3) )
 %%
 % shouldn't work
-deltafun( rand(3,1), rand(1,3) )
+%deltafun( rand(3,1), rand(1,3) )
 %%
 % should work
 deltafun( rand(1,3), rand(3,1) )
@@ -73,3 +73,13 @@ ip(d, x) - sum(mag.*loc)
 %%
 n = 4
 ip( diff(dirac(deltafun),n), x.^n ) - (-1)^n * factorial(n)
+
+%%
+x = chebfun('x');
+n = 5;
+mag = 5*rand(1,n);
+loc = linspace(-1,1, n + 2);
+loc = loc(2:end-1);
+d = deltafun(mag, loc, chebfun(0));
+
+plot(d)
