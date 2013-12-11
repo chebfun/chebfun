@@ -21,10 +21,11 @@ if ( ~isa(f, 'chebfun') )      % ??? * CHEBFUN
 elseif ( isempty(g) )          % CHEBFUN * []
 
     f = [];
+    return
 
 elseif ( isnumeric(g) )        % CHEBFUN * double
 
-    % Loop over the funs:
+    % Loop over the FUNS:
     for k = 1:numel(f.funs)
         f.funs{k} = times(f.funs{k}, g);
     end
@@ -41,7 +42,8 @@ elseif ( ~isa(g, 'chebfun') )  % CHEBFUN * ???
 elseif ( isempty(f) )          % empty CHEBFUN * CHEBFUN
 
     % Nothing to do here. (Return an empty CHEBFUN as output.)
-    
+    return
+
 else                           % CHEBFUN .* CHEBFUN 
 
     % Check to see if one of the CHEBFUNs is transposed:
@@ -64,5 +66,8 @@ else                           % CHEBFUN .* CHEBFUN
     f.impulses = f.impulses .* g.impulses;
 
 end
+
+% Set small breakpoint values to zero:
+f = thresholdBreakpointValues(f);
 
 end

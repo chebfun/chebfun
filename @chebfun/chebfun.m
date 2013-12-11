@@ -215,6 +215,9 @@ classdef chebfun
     methods (Access = private)
         % Remove zero layers from impulses array.
         f = tidyImpulses(f);
+
+        % Set small breakpoint values to zero.
+        f = thresholdBreakpointValues(f);
     end
     
     % Static private methods implemented by CHEBFUN class.
@@ -236,19 +239,24 @@ classdef chebfun
     
     % Methods implemented by CHEBFUN class.
     methods
-        
+        % True if any element of a CHEBFUN is a nonzero number, ignoring NaN.
+        a = any(f, dim)
+
         % Absolute value of a CHEBFUN.
         f = abs(f, pref)
-        
+
+        % Round a CHEBFUN towards plus infinity.
+        g = ceil(f)
+
         % Solve boundary value problems for ODEs by collocation.
         [y, t] = bvp4c(fun1, fun2, y0, varargin);
-        
+
         % Solve boundary value problems for ODEs by collocation.
         [y, t] = bvp5c(fun1, fun2, y0, varargin);
-        
+
         % Plot information regarding the representation of a CHEBFUN object:
         h = chebpolyplot(f, varargin);
-        
+
         % Construct complex CHEBFUN from real and imaginary parts.
         C = complex(A, B)
 
@@ -278,6 +286,12 @@ classdef chebfun
         
         % Evaluate a CHEBFUN.
         y = feval(f, x, varargin)
+        
+        % Round a CHEBFUN towards zero.
+        g = fix(f);
+        
+        % Round a CHEBFUN towards minus infinity.
+        g = floor(f);
 
         % Get properties of a CHEBFUN object.
         out = get(f, prop);
@@ -350,6 +364,9 @@ classdef chebfun
 
         % The roots of the CHEBFUN F.
         r = roots(f, varargin);
+        
+        % Round a CHEBFUN towards nearest integer.
+        g = round(f)
 
         % Plot a CHEBFUN object on a log-linear scale:
         h = semilogx(f, varargin);
