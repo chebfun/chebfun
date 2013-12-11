@@ -17,7 +17,9 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         
         % Constructor.
         function A = chebmatrix(data)
-            if isa(data,'chebmatrix')
+            if isempty(data)
+                return
+            elseif isa(data,'chebmatrix')
                 A.blocks = data.blocks;
             elseif isa(data,'chebfun') || isa(data,'linBlock')
                 A.blocks = {data};
