@@ -3,7 +3,7 @@
 function pass = test_all(pref)
 
 if (nargin < 1)
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Test scalar valued chebfuns.

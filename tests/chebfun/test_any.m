@@ -3,11 +3,11 @@
 function pass = test_any(pref)
 
 if ( nargin <  1 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
-% Enable splitting.
-pref.chebfun.splitting = 1;
+% Enable breakpoint detection.
+pref.enableBreakpointDetection = 1;
 
 % Generate a few random points to use as test values.
 seedRNG(6178);

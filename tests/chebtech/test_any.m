@@ -3,7 +3,7 @@
 function pass = test_any(pref)
 
 if ( nargin < 1 )
-    pref = chebtech.pref();
+    pref = chebtech.techPref();
 end
 
 for n = 1:2

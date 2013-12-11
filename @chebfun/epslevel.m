@@ -20,7 +20,7 @@ out = out / vscale(f);
 
 % [TODO]: Remove this hack!
 if ( isnan(out) || ~logical(out) )
-    out = chebfun.pref('eps');
+    out = chebpref().eps;
 end
 
 end
