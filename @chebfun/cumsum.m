@@ -1,7 +1,10 @@
 function f = cumsum(f, m, dim)
 %CUMSUM   Indefinite integral of a CHEBFUN.
 %   G = CUMSUM(F) is the indefinite integral of the column CHEBFUN F. G will
-%   typically be normalised so that G(F.domain(1)) = 0.
+%   typically be normalised so that G(F.domain(1)) = 0. The exception to this is 
+%   when computing indefinite integrals of functions with exponents less than
+%   minus 1. In this case, the arbitrary constant in the indefinite integral
+%   is chosen to make the representation of G as simple as possible.
 %
 %   CUMSUM(F, N) returns the Nth integral of F. If N is not an integer then
 %   CUMSUM(F, N) returns the fractional integral of order N as defined by the
@@ -15,12 +18,8 @@ function f = cumsum(f, m, dim)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-% [TODO]: Update the above help text once we have singfun.
-%   G will typically be normalised so that G(F.domain(1)) = 0.  The exception to
-%   this is when computing indefinite integrals of functions which are not
-%   integrable at the left boundary. In this case, the arbitrary constant in the
-%   indefinite integral is chosen to make the representation of G as simple as
-%   possible. Dirac deltas already existing in F will decrease their degree.
+% [TODO]: Update the above help text once we have deltafun. Dirac deltas already 
+% existing in F will decrease their degree.
 
 % Trivial case:
 if ( isempty(f) )

@@ -174,8 +174,8 @@ while ( any(sad) )
         opk = op;
     end
     
-    % In case of SINGFUN, we need to compensate the exponents before doing the
-    % edge detection.
+    % In case of SINGFUN, we need to compensate the singularities before
+    % carrying out the edge detection.
     if ( ~isempty(exps) && any( exps(2*k-1:2*k) ) )
         opkDetectEdge = @(x) opk(x)./((x-a).^exps(2*k-1).*(b-x).^exps(2*k));
     
