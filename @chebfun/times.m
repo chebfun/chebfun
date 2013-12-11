@@ -12,7 +12,11 @@ function f = times(f, g)
 if ( ~isa(f, 'chebfun') )      % ??? * CHEBFUN
 
     % Ensure CHEBFUN is the first input:
-    f = times(g, f);
+    if ( ~g.isTransposed )
+        f = times(g, f);
+    else
+        f = times(g.', f).';
+    end
 
 elseif ( isempty(g) )          % CHEBFUN * []
 

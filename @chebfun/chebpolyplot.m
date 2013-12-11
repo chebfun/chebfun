@@ -44,17 +44,24 @@ for k = 1:numfuns
 end
 numcols = size(c{1}, 2);
 
+% Get vscale, epslevel data:
+v = get(f, 'vscale-local');
+e = get(f, 'epslevel-local');
+ve = bsxfun(@times, v, e);
+
+% Add a tiny amount to zeros to make plots look nicer:
+minve = min(ve, [], 1);
+for k = 1:numfuns
+    % Use smaller of min. of (vscale)*(epslevel) and the smallest nonzero coeff.
+    c{k}(~c{k}) = min(minve(k), min(c{k}(logical(c{k}(:)))));
+end
+
 % Shape it:
 data = reshape([n c]', 1, 2*numfuns);
 
 % Plot the coeffs:
 h1 = semilogy(data{:}, varargin{:});
 hold on
-
-% Get data for epslevel plot:
-v = get(f, 'vscale-local');
-e = get(f, 'epslevel-local');
-ve = v.*repmat(e, 1, numcols);
 
 % Reshape data for epslevel plot:
 n = cellfun(@(x) x([end ; 1]), n, 'UniformOutput', false);

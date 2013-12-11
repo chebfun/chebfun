@@ -4,11 +4,8 @@ function pass = test_sum(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fun.pref();
+    pref = chebpref();
 end
-
-% Set a tolerance.
-tol = 10*pref.fun.eps;
 
 % Set a domain
 dom = [-2 7];
@@ -19,24 +16,24 @@ seedRNG(6178);
 % Generate a few random points to use as test values.
 x = diff(dom) * rand(1000, 1) + dom(1);
 
-pass = zeros(1, 11); % Pre-allocate pass matrix
-
 %%
 % Spot-check integrals for a couple of functions.
 f = bndfun(@(x) exp(x) - 1, dom, [], [], pref);
-pass(1) = (abs(sum(f) -  1.087497823145222e3) < get(f, 'vscale')*tol);
+pass(1) = (abs(sum(f) -  1.087497823145222e3) < ...
+    10*get(f, 'vscale')*get(f, 'epslevel'));
 
 f = bndfun(@(x) 1./(1 + x.^2), dom, [], [], pref);
-pass(2) = (abs(sum(f) - (atan(-dom(1))+atan(dom(2)))) < get(f, 'vscale')*tol);
+pass(2) = (abs(sum(f) - (atan(-dom(1))+atan(dom(2)))) < ...
+    10*get(f, 'vscale')*get(f, 'epslevel'));
 
 f = bndfun(@(x) cos(1e4*x), dom, [], [], pref);
 exact = (sin(1e4*dom(2))-sin(1e4*dom(1)))/1e4;
-pass(3) = (abs(sum(f) - exact) < 1e4*tol);
+pass(3) = (abs(sum(f) - exact) < 10*get(f, 'vscale')*get(f, 'epslevel'));
 
 z = exp(2*pi*1i/6);
 f = bndfun(@(t) sinh(t*z), dom, [], [], pref);
 exact = ((cos(sqrt(3) - 1i) - cos((7*sqrt(3))/2 - 7i/2))*(sqrt(3) + 1i)*1i)/2;
-pass(4) = (abs(sum(f)-exact) < 4*get(f, 'vscale')*tol);
+pass(4) = (abs(sum(f)-exact) < 10*get(f, 'vscale')*get(f, 'epslevel'));
 
 %%
 % Check a few basic properties.
@@ -77,12 +74,13 @@ f = bndfun(@(x) [sin(x) x.^2 exp(1i*x)], dom, [], [], pref);
 I = sum(f);
 I_exact = [(cos(dom(1)) - cos(dom(2))) (dom(2)^3 - dom(1)^3)/3 ...
     1i*(exp(1i*dom(1)) - exp(1i*dom(2)))];
-pass(9) = (max(abs(I - I_exact)) < max(get(f, 'vscale'))*tol);
+pass(9) = (max(abs(I - I_exact)) < 10*max(get(f, 'vscale'))*get(f, 'epslevel'));
 
 % DIM option with array-valued input.
 g = sum(f, 2);
 h = @(x) sin(x) + x.^2 + exp(1i*x);
-pass(10) = (norm(feval(g, x) - h(x), inf) < max(get(g, 'vscale'))*tol);
+pass(10) = (norm(feval(g, x) - h(x), inf) < ...
+    10*max(get(g, 'vscale'))*get(f, 'epslevel'));
 
 % DIM option with non-array-valued input should leave everything as it was.
 h = bndfun(@(x) cos(x), dom);

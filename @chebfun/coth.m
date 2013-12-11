@@ -2,7 +2,7 @@ function g = coth(f, pref)
 %COTH   Hyperbolic cotangent of a CHEBFUN.
 %   COTH(F) computes the hyperbolic cotangent of the CHEBFUN F.
 %
-%   COTH(F, PREF) does the same but uses the preference structure PREF when
+%   COTH(F, PREF) does the same but uses the CHEBPREF object PREF when
 %   computing the composition.
 %
 % See also ACOTH.
@@ -12,7 +12,7 @@ function g = coth(f, pref)
 
 % Obtain preferences:
 if ( nargin == 1 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Call the compose method:

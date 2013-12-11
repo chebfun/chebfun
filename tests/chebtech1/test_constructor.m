@@ -4,22 +4,20 @@ function pass = test_constructor(pref)
 
 % Get preferences:
 if ( nargin < 1 )
-    pref = chebtech.pref;
+    pref = chebtech.techPref();
 end
-
-pass = zeros(1, 4); % Pre-allocate pass matrix
 
 %%
 % Test on a scalar-valued function:
-pref.chebtech.refinementFunction = 'default';
+pref.refinementFunction = 'default';
 f = @(x) sin(x);
 g = populate(chebtech1, f, [], [], pref);
 x = chebtech1.chebpts(length(g.values));
 pass(1) = norm(f(x) - g.values, inf) < 10*g.vscale.*g.epslevel;
 
 %%
-% Test on a array-valued function:
-pref.chebtech.refinementFunction = 'default';
+% Test on an array-valued function:
+pref.refinementFunction = 'default';
 f = @(x) [sin(x) cos(x) exp(x)];
 g = populate(chebtech1, f, [], [], pref);
 x = chebtech1.chebpts(length(g.values));

@@ -2,7 +2,7 @@ function g = csch(f, pref)
 %CSCH   Hyperbolic cosecant of a CHEBFUN.
 %   CSCH(F) computes the hyperbolic cosecant of the CHEBFUN F.
 %
-%   CSCH(F, PREF) does the same but uses the preference structure PREF when
+%   CSCH(F, PREF) does the same but uses the CHEBPREF object PREF when
 %   computing the composition.
 %
 % See also ACSCH.
@@ -12,7 +12,7 @@ function g = csch(f, pref)
 
 % Obtain preferences:
 if ( nargin == 1 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Call the compose method:

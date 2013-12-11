@@ -20,6 +20,9 @@ if ( isempty(f) || isempty(g) )
     return
 end
 
+% TODO: FUN/RDIVIDE() should check for roots at the ends of the domain. If any
+% are found, then it must convert the .ONEFUN to a SINGFUN.
+
 % Look at different cases:
 
 if ( isa(g, 'double') )         % FUN ./ DOUBLE
@@ -27,7 +30,7 @@ if ( isa(g, 'double') )         % FUN ./ DOUBLE
     % Divide the ONEFUN:
     f.onefun = rdivide(f.onefun, g, varargin{:});
     
-elseif isa(f, 'double')         % DOUBLE ./ FUN
+elseif ( isa(f, 'double')  )    % DOUBLE ./ FUN
     
     % If g has roots in [a, b], we're going to get an error. However, don't
     % worry about catching errors here; rather, just allow the error generated

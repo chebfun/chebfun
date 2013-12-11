@@ -29,8 +29,14 @@ switch index(1).type
 
     case '()'
 
-        % Define a point value:
-        f = definePoint(f, idx{:}, val);
+        % [TODO]: Check inputs more carefully. (In particular for ROW chebfuns)
+        if ( ischar(idx{1}) && strcmp(idx{1}, ':') )
+            % Assign a column:
+            f = assignColumns(f, idx{2}, val);
+        else 
+            % Define a point value:
+            f = definePoint(f, idx{1}, val);
+        end
 
     case '{}'
         

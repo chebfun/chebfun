@@ -4,7 +4,7 @@ function pass = test_qr(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fun.pref;
+    pref = chebpref();
 end
 
 % Set the domain
@@ -15,8 +15,6 @@ seedRNG(6178);
 
 % Generate a few random points to use as test values.
 x = diff(dom) * rand(100, 1) + dom(1);
-
-pass = zeros(1, 17); % Pre-allocate pass matrix
 
 %%
 % Do a few spot-checks.

@@ -4,7 +4,7 @@ function pass = test_rdivide(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fun.pref;
+    pref = chebpref();
 end
 
 % Generate a few random points to use as test values.
@@ -14,7 +14,6 @@ seedRNG(6178);
 alpha = -0.194758928283640 + 0.075474485412665i;
 beta = -0.526634844879922 - 0.685484380523668i;
 
-pass = zeros(1, 13); % Pre-allocate pass matrix
 for n = 1:1 %[TODO]: unbndfun
     if ( n == 1 )
         testclass = bndfun();

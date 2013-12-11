@@ -2,11 +2,8 @@ function pass = test_abs(pref)
 
 % Get preferences:
 if ( nargin < 1 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
-
-% Pre-allocate pass matrix:
-pass = zeros(4, 6); 
 
 % Initialise random vectors:
 seedRNG(6178);

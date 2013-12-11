@@ -3,7 +3,7 @@ function pass = test_erfX(pref)
 % Test all the functions related to the error function ERF().
 
 if ( nargin == 0 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 F = {@erf, @erfinv, @erfc,  @erfcx, @(x) erfcinv(x+1)};

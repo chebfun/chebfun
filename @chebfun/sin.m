@@ -2,7 +2,7 @@ function g = sin(f, pref)
 %SIN   Sine of a CHEBFUN.
 %   SIN(F) computes the sine of the CHEBFUN F.
 %
-%   SIN(F, PREF) does the same but uses the preference structure PREF when
+%   SIN(F, PREF) does the same but uses the CHEBPREF object PREF when
 %   computing the composition.
 %
 % See also ASIN, SIND.
@@ -12,7 +12,7 @@ function g = sin(f, pref)
 
 % Obtain preferences:
 if ( nargin == 1 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % [TODO]:  Restore or change this once we have decided the proper behavior or
