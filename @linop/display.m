@@ -5,7 +5,7 @@ function display(L)
 [m, n] = size(L);
 fprintf('\n  %ix%i linear operator\n', m,n)
 
-nc = size(L.constraint,1);
+nc = size(L.constraint.operator,1);
 if ( nc == 1 )
     fprintf('\n    with 1 constraint/boundary condition\n')
 elseif ( nc > 0 )
