@@ -1,4 +1,4 @@
-function F = expm1(F, pref)
+function F = expm1(F, varargin)
 %EXPM1   Compute EXP(F)-1 of a CHEBFUN accurately.
 %   EXPM1(F) computes EXP(F)-1 accurately in the case where the CHEBFUN F is
 %   small on its domain. Complex F is accepted.
@@ -11,12 +11,7 @@ function F = expm1(F, pref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-% Obtain preferences:
-if ( nargin == 1 )
-    pref = chebpref();
-end
-
 % Call the compose method:
-F = compose(F, @expm1, pref);
+F = compose(F, @expm1, varargin{:});
 
 end

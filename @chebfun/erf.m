@@ -1,4 +1,4 @@
-function F = erf(F, pref)
+function F = erf(F, varargin)
 %ERF   Error function of a CHEBFUN.
 %   ERF(X) is the error function of the CHEBFUN X. X must be real.
 %
@@ -15,12 +15,7 @@ if ( ~isreal(F) )
     error('CHEBFUN:erf:notreal', 'Input must be real.');
 end
 
-% Obtain preferences:
-if ( nargin == 1 )
-    pref = chebpref();
-end
-
 % Call the compose method:
-F = compose(F, @erf, pref);
+F = compose(F, @erf, varargin{:});
 
 end

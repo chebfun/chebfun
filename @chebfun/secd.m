@@ -1,4 +1,4 @@
-function F = secd(F, pref)
+function F = secd(F, varargin)
 %SECD   Secant of a CHEBFUN, result in degrees.
 %   SECD(F) computes the secant (in degrees) of the CHEBFUN F.
 %
@@ -10,12 +10,7 @@ function F = secd(F, pref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-% Obtain preferences:
-if ( nargin == 1 )
-    pref = chebpref();
-end
-
 % Call the compose method:
-F = compose(F, @secd, pref);
+F = compose(F, @secd, varargin{:});
 
 end

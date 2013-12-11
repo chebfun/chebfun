@@ -1,4 +1,4 @@
-function F = erfinv(F, pref)
+function F = erfinv(F, varargin)
 %ERFINV   Inverse error function of a CHEBFUN.
 %   X = ERFINV(Y) is the inverse error function of the CHEBFUN Y. The inverse
 %   error function satisfies Y = ERF(x), for -1 <= Y <= 1 and -Inf <= X <= Inf.
@@ -13,12 +13,7 @@ if ( ~isreal(F) )
     error('CHEBFUN:erfcinv:notreal', 'Input must be real.');
 end
 
-% Obtain preferences:
-if ( nargin == 1 )
-    pref = chebpref();
-end
-
 % Call the compose method:
-F = compose(F, @erfinv, pref);
+F = compose(F, @erfinv, varargin{:});
 
 end

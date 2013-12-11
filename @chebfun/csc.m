@@ -1,4 +1,4 @@
-function F = csc(F, pref)
+function F = csc(F, varargin)
 %CSC   Cosecant of a CHEBFUN.
 %   CSC(F) computes the cosecant of the CHEBFUN F.
 %
@@ -10,12 +10,7 @@ function F = csc(F, pref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-% Obtain preferences:
-if ( nargin == 1 )
-    pref = chebpref();
-end
-
 % Call the compose method:
-F = compose(F, @csc, pref);
+F = compose(F, @csc, varargin{:});
 
 end

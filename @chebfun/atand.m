@@ -1,4 +1,4 @@
-function F = atand(F, pref)
+function F = atand(F, varargin)
 %ATAN   Inverse tangent of a CHEBFUN, result in degrees.
 %   ATAN(F) computes the inverse tangent (in degrees) of the CHEBFUN F.
 %
@@ -10,12 +10,7 @@ function F = atand(F, pref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org for Chebfun information.
 
-% Obtain preferences:
-if ( nargin == 1 )
-    pref = chebpref();
-end
-
 % Call the compose method:
-F = compose(F, @atand, pref);
+F = compose(F, @atand, varargin{:});
 
 end

@@ -1,4 +1,4 @@
-function F = acot(F, pref)
+function F = acot(F, varargin)
 %ACOT   Inverse cotangent of a CHEBFUN.
 %   ACOT(F) computes the inverse cotangent of the CHEBFUN F.
 %
@@ -10,12 +10,7 @@ function F = acot(F, pref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org for Chebfun information.
 
-% Obtain preferences:
-if ( nargin == 1 )
-    pref = chebpref();
-end
-
 % Call the compose method:
-F = compose(F, @acot, pref);
+F = compose(F, @acot, varargin{:});
 
 end

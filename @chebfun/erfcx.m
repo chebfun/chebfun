@@ -1,4 +1,4 @@
-function F = erfcx(F, pref)
+function F = erfcx(F, varargin)
 %ERFCX   Scaled complementary error function of a CHEBFUN.
 %   ERFCX(X) is the scaled complementary error function of the CHEBFUN X.
 %   X must be real.  The scaled complementary error function is defined as:
@@ -10,17 +10,7 @@ function F = erfcx(F, pref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-% Input must be real:
-if ( ~isreal(F) )
-    error('CHEBFUN:erfcx:notreal', 'Input must be real.');
-end
-
-% Obtain preferences:
-if ( nargin == 1 )
-    pref = chebpref();
-end
-
 % Call the compose method:
-F = compose(F, @erfx, pref);
+F = compose(F, @erfcx, varargin{:});
 
 end

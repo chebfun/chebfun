@@ -1,4 +1,4 @@
-function F = acotd(F, pref)
+function F = acotd(F, varargin)
 %ACOTD   Inverse cotangent of a CHEBFUN, result in degrees.
 %   ACOTD(F) computes the inverse cotangent (in degrees) of the CHEBFUN F.
 %
@@ -10,12 +10,7 @@ function F = acotd(F, pref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org for Chebfun information.
 
-% Obtain preferences:
-if ( nargin == 1 )
-    pref = chebpref();
-end
-
 % Call the compose method:
-F = compose(F, @acotd, pref);
+F = compose(F, @acotd, varargin{:});
 
 end

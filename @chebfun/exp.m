@@ -1,4 +1,4 @@
-function F = exp(F, pref)
+function F = exp(F, varargin)
 %EXP   Exponential of a CHEBFUN.
 %   EXP(F) computes the exponential of the CHEBFUN F.
 %
@@ -10,12 +10,7 @@ function F = exp(F, pref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-% Obtain preferences:
-if ( nargin == 1 )
-    pref = chebpref();
-end
-
 % Call the compose method:
-F = compose(F, @exp, pref);
+F = compose(F, @exp, varargin{:});
 
 end

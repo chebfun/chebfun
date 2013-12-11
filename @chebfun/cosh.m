@@ -1,4 +1,4 @@
-function F = cosh(F, pref)
+function F = cosh(F, varargin)
 %COSH   Hyperbolic cosine of a CHEBFUN.
 %   COSH(F) computes the hyperbolic cosine of the CHEBFUN F.
 %
@@ -10,15 +10,7 @@ function F = cosh(F, pref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-% Obtain preferences:
-if ( nargin == 1 )
-    pref = chebpref();
-end
-
-% Loop over the columns of F:
-for k = 1:numel(F)
-    % Call the compose method:
-    F(k) = compose(F(k), @cosh, pref);
-end
+% Call the compose method:
+F = compose(F, @cosh, varargin{:});
 
 end

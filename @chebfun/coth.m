@@ -1,4 +1,4 @@
-function F = coth(F, pref)
+function F = coth(F, varargin)
 %COTH   Hyperbolic cotangent of a CHEBFUN.
 %   COTH(F) computes the hyperbolic cotangent of the CHEBFUN F.
 %
@@ -10,12 +10,7 @@ function F = coth(F, pref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-% Obtain preferences:
-if ( nargin == 1 )
-    pref = chebpref();
-end
-
 % Call the compose method:
-F = compose(F, @coth, pref);
+F = compose(F, @coth, varargin{:});
 
 end

@@ -1,4 +1,4 @@
-function F = asinh(F, pref)
+function F = asinh(F, varargin)
 %ASINH   Inverse hyperbolic sine of a CHEBFUN.
 %   ASINH(F) computes the inverse hyperbolic sine of the CHEBFUN F.
 %
@@ -10,12 +10,7 @@ function F = asinh(F, pref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org for Chebfun information.
 
-% Obtain preferences:
-if ( nargin == 1 )
-    pref = chebpref();
-end
-
 % Call the compose method:
-F = compose(F, @asinh, pref);
+F = compose(F, @asinh, varargin{:});
 
 end

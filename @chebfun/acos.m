@@ -1,4 +1,4 @@
-function F = acos(F, pref)
+function F = acos(F, varargin)
 %ACOS   Inverse cosine of a CHEBFUN.
 %   ACOS(F) computes the inverse cosine of the CHEBFUN F.
 %
@@ -10,12 +10,7 @@ function F = acos(F, pref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-% Obtain preferences:
-if ( nargin == 1 )
-    pref = chebpref();
-end
-
 % Call the compose method:
-F = compose(F, @acos, pref);
+F = compose(F, @acos, varargin{:});
 
 end

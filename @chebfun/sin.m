@@ -1,4 +1,4 @@
-function F = sin(F, pref)
+function F = sin(F, varargin)
 %SIN   Sine of a CHEBFUN.
 %   SIN(F) computes the sine of the CHEBFUN F.
 %
@@ -10,11 +10,6 @@ function F = sin(F, pref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-% Obtain preferences:
-if ( nargin == 1 )
-    pref = chebpref();
-end
-
 % [TODO]:  Restore or change this once we have decided the proper behavior or
 % isfinite() and defined that function.
 % if ( ~isfinite(f) )
@@ -23,6 +18,6 @@ end
 % end
 
 % Call the compose method:
-F = compose(F, @sin, pref);
+F = compose(F, @sin, varargin{:});
 
 end

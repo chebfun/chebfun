@@ -1,4 +1,4 @@
-function F = atan(F, pref)
+function F = atan(F, varargin)
 %ATAN   Inverse tangent of a CHEBFUN.
 %   ATAN(F) computes the inverse tangent of the CHEBFUN F.
 %
@@ -10,14 +10,7 @@ function F = atan(F, pref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org for Chebfun information.
 
-% [TODO]: atan2.m, atan2d.m
-
-% Obtain preferences:
-if ( nargin == 1 )
-    pref = chebpref();
-end
-
 % Call the compose method:
-F = compose(F, @atan, pref);
+F = compose(F, @atan, varargin{:});
 
 end

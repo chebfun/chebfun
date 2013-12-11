@@ -1,4 +1,4 @@
-function F = acsch(F, pref)
+function F = acsch(F, varargin)
 %ACSCH   Inverse hyperbolic cosecant of a CHEBFUN.
 %   ACSCH(F) computes the inverse hyperbolic cosecant of the CHEBFUN F.
 %
@@ -10,12 +10,7 @@ function F = acsch(F, pref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org for Chebfun information.
 
-% Obtain preferences:
-if ( nargin == 1 )
-    pref = chebpref();
-end
-
 % Call the compose method:
-F = compose(F, @acsch, pref);
+F = compose(F, @acsch, varargin{:});
 
 end

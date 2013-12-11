@@ -1,4 +1,4 @@
-function F = sec(F, pref)
+function F = sec(F, varargin)
 %SEC   Secant of a CHEBFUN.
 %   SEC(F) computes the secant of the CHEBFUN F.
 %
@@ -10,12 +10,7 @@ function F = sec(F, pref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-% Obtain preferences:
-if ( nargin == 1 )
-    pref = chebpref();
-end
-
 % Call the compose method:
-F = compose(F, @sec, pref);
+F = compose(F, @sec, varargin{:});
 
 end

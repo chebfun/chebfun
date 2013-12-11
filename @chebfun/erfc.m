@@ -1,4 +1,4 @@
-function F = erfc(F, pref)
+function F = erfc(F, varargin)
 %ERFC   Complementary error function of a CHEBFUN.
 %   ERFC(X) is the complementary error function for the CHEBFUN X. X must be
 %   real. The complementary error function is defined as:
@@ -15,12 +15,7 @@ if ( ~isreal(F) )
     error('CHEBFUN:erfc:notreal', 'Input must be real.');
 end
 
-% Obtain preferences:
-if ( nargin == 1 )
-    pref = chebpref();
-end
-
 % Call the compose method:
-F = compose(F, @erfc, pref);
+F = compose(F, @erfc, varargin{:});
 
 end
