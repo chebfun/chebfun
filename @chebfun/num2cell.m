@@ -14,7 +14,7 @@ if ( isempty(f) )
     return
 end
 
-numCols = min(size(f));
+numCols = numColumns(f);
 if ( f(1).isTransposed )
     g = mat2cell(f, ones(1, numCols), 1); %#ok<MMTC>
 else

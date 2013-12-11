@@ -26,8 +26,8 @@ if ( ~isreal(y) || ~isreal(x) )
     error('CHEBFUN:atan2:real', 'Inputs ust be real.');
 end
 
-numColsY = min(size(y));
-numColsX = min(size(x));
+numColsY = numColumns(y);
+numColsX = numColumns(x);
 if ( numColsY ~= numColsX )
     error('CHEBFUN:atan2:dim', 'Chebfun quasimatrix dimensions must agree.');
 end

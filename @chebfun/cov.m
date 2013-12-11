@@ -36,7 +36,7 @@ end
 % Conditional on COV(f) and COV(f, g).
 if ( nargin == 1 ) % COV(f)
     
-    if ( min(size(f)) == 1 )
+    if ( numColumns(f) == 1 )
         % The covariance of a scalar-valued CHEBFUN is the same as the variance:
         out = var(f);
         return

@@ -51,7 +51,7 @@ if ( numel(f) == 1 && numel(g) == 1 && numel(h) == 1)
     newData = plotData(f, g, h);
 else
     % QUASIMATRIX case:
-    numCols = max([min(size(f)), min(size(g)), min(size(h))]);
+    numCols = max([numColumns(f), numColumns(g), numColumns(h)]);
     f = expand(num2cell(f), numCols);
     g = expand(num2cell(g), numCols);
     h = expand(num2cell(h), numCols);

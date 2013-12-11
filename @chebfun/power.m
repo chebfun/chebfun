@@ -22,7 +22,7 @@ end
 if ( isa(f, 'chebfun') && isa(b, 'chebfun') )
     
     % Check the number of columns match:
-    if ( min(size(f)) ~= min(size(b)) )
+    if ( numColumns(f) ~= numColumns(b) )
         error('CHEBFUN:power:quasi', ...
             'Chebfun quasimatrix dimensions must agree.')
     end
@@ -45,7 +45,7 @@ if ( isa(f, 'chebfun') && isa(b, 'chebfun') )
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% CHEBFUN .^ constant %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
 elseif ( isa(f, 'chebfun') )
     
-    numColsF = min(size(f));
+    numColsF = numColumns(f);
     numelF = numel(f);
     numelB = numel(b);
     
@@ -77,7 +77,7 @@ elseif ( isa(f, 'chebfun') )
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% constant .^ CHEBFUN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
 else
     
-    numColsB = min(size(b));
+    numColsB = numColumns(b);
     numelF = numel(f);
     numelB = numel(b);
     
@@ -135,7 +135,7 @@ elseif ( isa(f, 'chebfun') )
     
     if ( b == 0 )                       % Trivial case
         % Constant CHEBFUN:
-        vals = ones(1, min(size(f)));
+        vals = ones(1, numColumns(f));
         g = chebfun(vals, f.domain([1,end]));
         
     elseif ( b == 1 )                   % Identity

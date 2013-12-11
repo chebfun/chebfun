@@ -16,7 +16,7 @@ end
 
 % Check the domains, transpose states, and the number of columns match:
 if ( ~domainCheck(f, g) || f(1).isTransposed ~= g(1).isTransposed || ...
-     min(size(f)) ~= min(size(g)) )
+    numColumns(f) ~= numColumns(g) )
     out = false;
     return
 end

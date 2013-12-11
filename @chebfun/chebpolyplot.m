@@ -53,17 +53,20 @@ h2 = cell(numel(f), 1);
 
 % Loop over the columns:
 for k = 1:numel(f)
+    % Extract the kth column:
+    fk = f(k);
+    
     % Colours for this column:
     if ( ischar(col) )
         colk = col;
     else
-        numColsFk = min(size(f(k)));
+        numColsFk = numColumns(fk);
         colk = col(1:numColsFk, :);
         col(1:numColsFk, :) = [];
     end
 
     % Call the column version:
-    [h1{k}, h2{k}] = columnChebpolyplot(f(k), colk, varargin{:});
+    [h1{k}, h2{k}] = columnChebpolyplot(fk, colk, varargin{:});
     
 end
 

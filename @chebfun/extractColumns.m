@@ -14,7 +14,7 @@ function F = extractColumns(F, colIdx)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Number of columns (or rows if f.isTransposed) of f:
-numCols = min(size(F));
+numCols = numColumns(F);
 
 % Trivial cases:
 if ( isempty(F) )

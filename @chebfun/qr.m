@@ -108,7 +108,7 @@ function [Q, R] = qrSimple(A, chebType)
 A = simplify(A);
     
 % Get some useful values
-numCols = min(size(A));
+numCols = numColumns(A);
 tol = epslevel(A)*vscale(A);
 dom = A.domain;
 a = dom(1);

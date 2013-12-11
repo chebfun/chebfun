@@ -30,7 +30,7 @@ if ( isempty(f) )
 end
 
 % Number of columns of an array-valued CHEBFUN:
-numCols = min(size(f));
+numCols = numColumns(f);
 
 if ( (nargin > 1) && strcmpi(flag, 'local') )
     % Deal with local case:

@@ -29,7 +29,7 @@ end
 if ( isa(f,'chebfun') && isa(g, 'chebfun') )
 
     % Check the number of columns match:
-    if ( min(size(f)) ~= min(size(g)) )
+    if ( numColumns(f) ~= numColumns(g) )
         error('CHEBFUN:rdivide:quasi', ...
             'Chebfun quasimatrix dimensions must agree.')
     end
@@ -52,7 +52,7 @@ if ( isa(f,'chebfun') && isa(g, 'chebfun') )
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% CHEBFUN ./ constant %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
 elseif ( isa(f, 'chebfun') )
 
-    numColsF = min(size(f));
+    numColsF = numColumns(f);
     numelF = numel(f);
     numelG = numel(g);
     
@@ -84,7 +84,7 @@ elseif ( isa(f, 'chebfun') )
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% constant ./ CHEBFUN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
 else
    
-    numColsG = min(size(g));
+    numColsG = numColumns(g);
     numelF = numel(f);
     numelG = numel(g);
     

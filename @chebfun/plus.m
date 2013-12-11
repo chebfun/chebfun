@@ -34,7 +34,7 @@ elseif ( isnumeric(g) )     % CHEBFUN + double
         end
 
         % Add g to the impulses:
-        if ( (size(f.impulses, 2) == 1) &&  (min(size(f)) > 1) )
+        if ( (size(f.impulses, 2) == 1) && (numColumns(f) > 1) )
             f.impulses = repmat(f.impulses, 1, size(g, 2)); % Allow expansion in f.
         end
         if ( size(g, 2) > 1 )

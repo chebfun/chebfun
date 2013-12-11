@@ -35,16 +35,16 @@ if ( isempty(F) )
 end
 
 % Get the size of the CHEBFUN array:
-numComponents = min(size(F));
+numCols = numColumns(F);
 
 % Parse the inputs:
 if ( nargin == 1 )
     if ( F(1).isTransposed )
-        M = ones(1, numComponents);
+        M = ones(1, numCols);
         N = 1;
     else
         M = 1;
-        N = ones(1, numComponents);
+        N = ones(1, numCols);
     end
 elseif ( nargin == 2 )
     if ( F.isTransposed )
@@ -69,10 +69,10 @@ end
 % From this point on, f will be a column CHEBFUN.
 
 % Check dimensions:
-if ( ~isscalar(M) || (M ~= 1) || (sum(N) ~= numComponents) )
+if ( ~isscalar(M) || (M ~= 1) || (sum(N) ~= numCols) )
     error('CHEBFUN:CHEBFUN:mat2cell:size', ...
         ['Input arguments, M and N, must sum to each dimension of the', ...
-        ' input size, [1,%d].'], numComponents);
+        ' input size, [1,%d].'], numCols);
 end
 
 if ( numel(F) > 1 )

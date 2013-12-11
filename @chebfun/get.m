@@ -33,7 +33,7 @@ switch prop
         out = f(1).(prop);
         
     case 'lval'
-        out = cell(1, min(size(f)));
+        out = cell(1, numColumns(f));
         for k = 1:numel(f)
             out{k} = get(f(k).funs{1}, 'lval');
         end
@@ -43,7 +43,7 @@ switch prop
         end
             
     case 'rval'
-        out = cell(1, min(size(f)));
+        out = cell(1, numColumns(f));
         for k = 1:numel(f)
             out{k} = get(f(k).funs{end}, 'rval');
         end

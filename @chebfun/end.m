@@ -23,7 +23,7 @@ if ( ((k == 2) && ~f(1).isTransposed) || ...
     if ( isempty(f) )
         e = 0;
     else
-        e = min(size(f));
+        e = numColumns(f);
     end
     
 else

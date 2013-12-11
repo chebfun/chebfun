@@ -27,7 +27,7 @@ if ( ~isa(f, 'chebfun') )
 end
 
 % Number of columns (or rows if f.isTransposed) of f:
-numColsF = min(size(f));
+numColsF = numColumns(f);
 
 % Expand ':' to 1:end:
 if ( ~isnumeric(colIdx) && strcmp(colIdx, ':') )
@@ -45,7 +45,7 @@ if ( isnumeric(g) )
 end
 
 % Check dimensions of g:
-if ( xor(f(1).isTransposed, g(1).isTransposed) || (numel(colIdx) ~= min(size(g))) )
+if ( xor(f(1).isTransposed, g(1).isTransposed) || (numel(colIdx) ~= numColumns(g)) )
     error('CHEBFUN:assignColumns:numCols', ...
         'Subscripted assignment dimension mismatch.')
 end

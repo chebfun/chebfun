@@ -12,11 +12,8 @@ function out = innerProduct(f, g)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Overlap the CHEBFUN objects:
-[f, g] = overlap(f, g);
-
-numColsF = min(size(f));
-numColsG = min(size(g));
+numColsF = numColumns(f);
+numColsG = numColumns(g);
 
 % Initialise the output:
 out = zeros(numColsF, numColsG);
@@ -24,6 +21,9 @@ out = zeros(numColsF, numColsG);
 if ( numel(f) == 1 && numel(g) == 1 )
     % Array-valued CHEBFUN case:
     
+    % Overlap the CHEBFUN objects:
+    [f, g] = overlap(f, g);
+
     % Loop over the FUNs:
     for k = 1:numel(f.funs)
         out = out + innerProduct(f.funs{k}, g.funs{k});
