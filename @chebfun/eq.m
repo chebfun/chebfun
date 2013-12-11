@@ -27,11 +27,7 @@ end
 % Call SIGN() to do the work:
 h = sign(f - g);
 
-% Get a value in the interior of each FUN:
-% % Evaluate at middle of domain:
-% x = (h.domain(1:end-1) + h.domain(2:end)).'/2;
-% vals = feval(h, x);
-% Take the left-sided limit at the breaks:
+% Get value in interior of each FUN by taking left-sided limit at the breaks:
 vals = get(h, 'rval-local');
 
 % Set FUNs that are 0 to 1:

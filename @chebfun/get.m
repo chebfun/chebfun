@@ -13,6 +13,8 @@ function out = get(f, prop)
 %       'EPSLEVEL-LOCAL' - Approximate accuracy estimate of F's components.
 %       'LVAL'           - Value(s) of F at lefthand side of domain.
 %       'RVAL'           - Value(s) of F at righthand side of domain.
+%       'LVAL-LOCAL      - Value(s) of F's FUNs at left sides of their domains.
+%       'RVAL-LOCAL'     - Value(s) of F's FUNs at right sides of their domains.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

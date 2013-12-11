@@ -1,5 +1,5 @@
 function a = all(f)
-%ALL   True if all elements of a CHEBFUN are a nonzero number.
+%ALL   True if all values of a CHEBFUN are nonzero.
 %
 % See also ANY, ISZERO.
 
