@@ -77,6 +77,9 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) linop 
             F = linop( linBlock.fred(varargin{:}) );
         end
 
+        function V = volt(varargin)   % synonym for inner()
+            V = linop( linBlock.volt(varargin{:}) );
+        end
         
     end
     

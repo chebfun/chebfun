@@ -34,16 +34,16 @@ else
     k = kernel;
 end
 
-f = blockFunction(@(z) applyfred(z,A.domain,k,onevar));
+f = blockFunction(@(z) applyfred(z,A.domain,k));
 end
 
-function Fu = applyfred(u,d,kernel,onevar)
+function Fu = applyfred(u,d,kernel)
 % At each x, do an adaptive quadrature.
 % Result can be resolved relative to norm(u). (For instance, if the
 % kernel is nearly zero by cancellation on the interval, don't try to
 % resolve it relative to its own scale.)
 nrmu = norm(u);
-%    opt = {'resampling',false,'splitting',true,'exps',[0 0],'scale',nrmf};
-int = @(x) sum( chebfun(@(y) feval(u,y).*kernel(x,y),d) );
+opt = {'resampling',false,'splitting',true,'scale',nrmu};
+int = @(x) sum( chebfun(@(y) feval(u,y).*kernel(x,y),d)); %, opt{:} );
 Fu = chebfun( int, d,'sampletest',false,'resampling',false,'vectorize','scale',nrmu);
 end

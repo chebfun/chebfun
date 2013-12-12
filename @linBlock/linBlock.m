@@ -235,6 +235,13 @@ classdef linBlock
             F.diffOrder = 0;
         end
 
+        function V = volt(domain,kernel,varargin)
+            V = operatorBlock(domain);
+            V.stack = @(z) volt(z,kernel,varargin{:});
+            V.diffOrder = 0;
+        end
+
+        
     end
     
 
