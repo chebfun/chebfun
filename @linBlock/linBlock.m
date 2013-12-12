@@ -228,6 +228,12 @@ classdef linBlock
         function F = dot(f)   % synonym for inner()
             F = inner(f);
         end
+        
+        function F = fred(domain,kernel,varargin)
+            F = operatorBlock(domain);
+            F.stack = @(z) fred(z,kernel,varargin{:});
+            F.diffOrder = 0;
+        end
 
     end
     

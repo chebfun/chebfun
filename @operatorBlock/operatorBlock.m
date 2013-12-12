@@ -80,7 +80,7 @@ classdef operatorBlock < linBlock
             elseif ( isnumeric(B) )
                 B = B*linBlock.eye(A.domain);
             end
-            dom = union(A.domain, B.domain);
+            dom = chebfun.mergeDomains(A.domain, B.domain);
             C = operatorBlock(dom);
             C.stack = @(z) A.stack(z) + B.stack(z);
             C.diffOrder = max(A.diffOrder, B.diffOrder);

@@ -15,7 +15,7 @@ end
 if isnumeric(varargin{1})
      d = varargin;
 else
-    d = { mergeDomains(varargin{:}) };
+    d = { chebfun.mergeDomains(varargin{:}) };
 end
 
 disc.domain = chebfun.mergeDomains(disc.domain,d{:});

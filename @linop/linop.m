@@ -73,6 +73,11 @@ classdef linop < chebmatrix
             F = linBlock.dot(varargin{:});
         end
         
+        function F = fred(varargin)   % synonym for inner()
+            F = linBlock.fred(varargin{:});
+        end
+
+        
     end
     
 end
