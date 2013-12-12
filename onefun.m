@@ -28,7 +28,7 @@ classdef onefun % (Abstract)
 % used to represenet smooth functions on [-1,1}, whereas the latter are able to
 % represent some forms of endpoint singularites. 
 %
-% Class diagram: [<<fun>>] <>-- [<<ONEFUN>>] <-- [<<smoothfun>>]
+% Class diagram: [<<classicfun>>] <>-- [<<ONEFUN>>] <-- [<<smoothfun>>]
 %                                            <-- [singfun]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

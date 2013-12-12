@@ -1,4 +1,4 @@
-classdef deltafun
+classdef deltafun 
     %DELTAFUN   Class for distributions based on Dirac-delta functions on arbitrary
     %intervals.
     %
@@ -19,17 +19,14 @@ classdef deltafun
     %% Properties of SINGFUN objects
     properties ( Access = public )
         % Smooth part of the representation.
-        funPart     % (smoothfun)
+        funPart     % (classic fun)
         
         % Deltafunctions
         impulses
         
         % location
         location
-        
-        % Domain
-        domain
-        
+                
         % isTransposed flag
         isTransposed
     end

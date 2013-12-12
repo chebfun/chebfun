@@ -74,7 +74,7 @@ for n = 1:1 %[TODO]: unbndfun
         f = testclass.make(@(x) exp(x), dom);
         disp([1 2 3]*f)
     catch ME
-        pass(n, 9) = strcmp(ME.identifier, 'CHEBFUN:FUN:mtimes:size') ...
+        pass(n, 9) = strcmp(ME.identifier, 'CHEBFUN:CLASSICFUN:mtimes:size') ...
             && strcmp(ME.message, 'Inner matrix dimensions must agree.');
     end
     
@@ -94,7 +94,7 @@ for n = 1:1 %[TODO]: unbndfun
         disp(f*g);
         pass(n, 11) = false;
     catch ME
-        pass(n, 11) = strcmp(ME.message, 'Use .* to multiply FUN objects.');
+        pass(n, 11) = strcmp(ME.message, 'Use .* to multiply CLASSICFUN objects.');
     end
     
     % Using * to multiply a fun and something else.
@@ -103,7 +103,7 @@ for n = 1:1 %[TODO]: unbndfun
         pass(n, 12) = false;
     catch ME
         pass(n, 12) = strcmp(ME.message, ...
-            'mtimes does not know how to multiply a FUN and a uint8.');
+            'mtimes does not know how to multiply a CLASSICFUN and a uint8.');
     end
 end
 
