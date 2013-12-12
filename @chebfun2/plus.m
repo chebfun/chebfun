@@ -29,7 +29,16 @@ elseif ( isempty(f) )         % empty CHEBFUN2 + CHEBFUN2
     % Nothing to do. (Return empty CHEBFUN2 as output).
 
 else                          % CHEBFUN2 + CHEBFUN2
-    h = compression_plus(f, g); 
+    
+    % Check zero chebfun2 objects
+    if ( iszero( f ) )
+        h = g; 
+    elseif ( iszero( g ) )
+        h = f; 
+    else
+        % Add together two nonzero chebfun2 objects
+        h = compression_plus(f, g); 
+    end
 end
 
 end

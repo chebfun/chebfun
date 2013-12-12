@@ -3,6 +3,7 @@ function F = diff(F, k, dim)
 if ( nargin < 2 )
     k = 1;
 end
+
 if ( nargin < 3 )
     dim = 1;
 end

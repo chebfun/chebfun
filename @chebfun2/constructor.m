@@ -9,17 +9,19 @@ if ( isa(op, 'double') )
    g = constructor(g, @(x,y) op + 0*x, domain, varargin); 
    return
 end
+
 if ( isa(op, 'chebfun2') )
     g = op; 
-    return; 
+    return 
 end
+
 if ( isa(op, 'char') )
     op = str2op( op );
 end
     
-% Check that the operator then make it complex.
+% Check the operator has one argument, then make it complex.
 if ( nargin(op) == 1 )
-    op = @(x, y) op(x+1i*y);
+    op = @(x, y) op( x + 1i*y );
 end
 
 % [TODO]: Get preferences:
@@ -155,8 +157,6 @@ end
 
 % Construct a CHEBFUN2:
 g.pivotValues = pivotValue;
-% g.cols = simplify(chebfun(colValues, domain(3:4) ));
-% g.rows = simplify(chebfun(rowValues.', domain(1:2) ));
 g.cols = chebfun(colValues, domain(3:4) );
 g.rows = chebfun(rowValues.', domain(1:2) );
 g.domain = domain;
@@ -225,6 +225,7 @@ col = (ndx - vi)/siz(1) + 1;
 row = (vi-1) + 1;
 
 end
+
 
 function vals = evaluate(op,xx,yy,flag)
 if flag

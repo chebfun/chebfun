@@ -32,22 +32,4 @@ pass(j) = ( abs( feval(f, .1, pi/6) - feval(g, .1, pi/6) ) < tol ); j = j+1;
 % f = chebfun2( A ); 
 % pass(j) = 
 
-
-
-try 
-% % Adaptive calls % % 
-f = @(x,y) cos( x ); 
-f = chebfun2( f );
-
-g = @(x,y) sin( y ); 
-g = chebfun2( g ); 
-% exact answers. 
-plus_exact = @(x,y) cos(x) + sin(y); chebfun2(plus_exact); 
-minus_exact = @(x,y) cos(x) - sin(y); chebfun2(minus_exact); 
-mult_exact = @(x,y) cos(x).*sin(y); chebfun2(mult_exact); 
-pow_exact = @(x,y) cos(x).^sin(y); chebfun2(pow_exact); 
-
-catch
-    pass = 0 ; 
-end
 end
