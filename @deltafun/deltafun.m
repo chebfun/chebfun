@@ -57,58 +57,66 @@ classdef deltafun
             %%
             % Case 1: One input argument.
             if ( nargin == 1 )
-                impulses = [];
-                location = [];                            
+                obj.funPart = [];
+                obj.impulses = [];
+                obj.location = [];
+                if ( ~isempty( funPart ) )
+                    if ( ~isa( funPart, 'fun') )
+                        error( 'DELTAFUN:ctor', 'funPart must be a fun' );
+                    else
+                        obj.funPart = funPart;
+                    end
+                end                
+                return
             end
             %%
             % Case 2: Two input arguments.
-            % Construct deltafun with zero chebfun in it:
+            % Not allowed:
             if ( nargin == 2 )
-                funPart = chebfun(0, [-1, 1] );
+                error( 'DELTAFUN:ctor', 'only two arguments passed' );
             end
-        
-            
             
             %%
-            if ( nargin >= 4 )
-                % Do nothing here, all checks on arguments are done below.
-            end
-            %%
-            % Various checks on argument compatibilities
-            
-            if ( size(impulse, 2) ~= length(location) )
-                error('CHEBFUN:DELTAFUN:dim', 'Magnitude should have the same number of columns as locations' );
-            end
-            
-            if ( min(size(location)) > 1 )
-                error('CHEBFUN:DELTAFUN:dim', 'location should be a vector');
-            end            
-            
-            % Make sure location is a row vector:
-            location = location(:).';
-            
-            % Locations of delta functions should be within the domain:
-            % NOTE: In fact they should be strictly in the interior of the
-            % domain to make sense.
-            if( any(size(domain) ~= [1 2]) )
-                error('CHEBFUN:DELTAFUN:domain', 'domain must be a 1 x 2 row vector.' );
-            end
-            
-            if( max(location) > domain(2) || min(location) < domain(1)  )
-                error('CHEBFUN:DELTAFUN:domain', 'Location of a delta fun is outside the domain');
-            end
-            
-            % Domains of deltaFun and the chebfun part should overlap:
-            if( domain ~= funPart.domain )                
-                error('CHEBFUN:DELTAFUN:domain', 'Domain of deltaFun should be the same as its funPart.');                
+            if ( nargin >= 3)                            
+                if ( isemtpy(funPart) )
+                    % [TODO]: is this right?
+                    obj.funPart = fun.constructor(0);
+                elseif ( ~isa(funPart, 'fun') )
+                    error( 'DELTAFUN:ctor', 'funPart must be a fun' );
+                else
+                    obj.funPart = funPart;
+                end
+                                
+                if ( isempty(impulses) || isempty(location) )
+                    % Return a fun object in this case:
+                    obj = funPart;
+                    return                
+                end
+                
+                if ( xor(isempty(impulses), isempty(location)) )
+                    error( 'DELTAFUN:cotr', 'impulses, location, one empty one not empty' )
+                end
+                
+                if ( size(impulse, 2) ~= length(location) )
+                    error('DELTAFUN:dim', 'Impulse matrix should have the same number of columns as locations' );
+                end
+                
+                if ( min(size(location)) > 1 )
+                    error('DELTAFUN:dim', 'location should be a vector');
+                end
+                
+                % Make sure location is a row vector:
+                location = location(:).';
+                
+                % Locations of delta functions should be within the domain:
+                % NOTE: In fact they should be strictly in the interior of the
+                % domain to make sense.
+                dom = obj.funPart.domain;               
+                if( max(location) > dom(2) || min(location) < dom(1)  )
+                    error('DELTAFUN:domain', 'Location of a delta fun is outside the domain');
+                end                                                                           
             end
                 
-            % Now that we have checked all the arguments, copy them in the
-            % current object:
-            obj.impulses     = impulses;
-            obj.location     = location;                      
-            obj.funPart      = funPart;            
-            
             % Simplify to sort everything:
             obj = simplify(obj);
         end

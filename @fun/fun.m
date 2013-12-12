@@ -171,7 +171,13 @@ classdef fun % (Abstract)
         
         % Absolute value of a FUN. (f should have no zeros in its domain)
         f = abs(f, pref)
-        
+
+        % FUN logical AND.
+        h = and(f, g)
+
+        % True if any element of a FUN is a nonzero number, ignoring NaN.
+        a = any(f, dim)
+
         % Plot (semilogy) the Chebyshev coefficients of a FUN object, if it is
         % based on Chebyshev technology.
         h = chebpolyplot(f, varargin)
@@ -184,6 +190,12 @@ classdef fun % (Abstract)
         
         % Extract columns of an array-valued FUN object.
         f = extractColumns(f, columnIndex);
+
+        % Round a FUN towards zero.
+        g = fix(f);
+        
+        % Round a FUN towards minus infinity.
+        g = floor(f);
 
         % Flip columns of an array-valued FUN object.
         f = fliplr(f)
@@ -218,6 +230,9 @@ classdef fun % (Abstract)
         % Length of a FUN.
         len = length(f)
 
+        % FUN logical.
+        f = logical(f)
+
         % Convert an array-valued FUN into a cell array of FUN objects.
         g = mat2cell(f, M, N)
 
@@ -236,6 +251,12 @@ classdef fun % (Abstract)
         % Multiplication of FUN objects.
         f = mtimes(f, c)
 
+        % FUN logical NOT.
+        f = not(f)
+
+        % FUN logical OR.
+        h = or(f, g)
+
         % Basic linear plot for FUN objects.
         varargout = plot(f, varargin)
         
@@ -253,6 +274,9 @@ classdef fun % (Abstract)
 
         % Roots of a FUN in the interval [a,b].
         out = roots(f, varargin)
+        
+        % Round a FUN towards nearest integer.
+        g = round(f)
         
         % Signum of a FUN. (f should have no zeros in its domain)
         f = sign(f, pref)
