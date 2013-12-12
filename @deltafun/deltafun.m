@@ -274,6 +274,9 @@ classdef deltafun
         % remove zero trailing rows
         A = cleanRows(A);
         
+        % Find intersection based on some tolerance
+        [x, idxV, idxW] = numIntersect( V, W, tol)
+        
         % Merge columns of a matrix based on duplicate values in v.
         [A, v] = mergeColumns(A, v)
         % Retrieve and modify preferences for this class.
