@@ -1,4 +1,4 @@
-classdef deltafun
+classdef deltafun < abstractfun
     %DELTAFUN   Class for distributions based on Dirac-delta functions on arbitrary
     %intervals.
     %
@@ -26,9 +26,6 @@ classdef deltafun
         
         % location
         location
-        
-        % Domain
-        domain
         
         % isTransposed flag
         isTransposed
