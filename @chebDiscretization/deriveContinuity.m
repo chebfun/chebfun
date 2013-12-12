@@ -33,7 +33,7 @@ if ( max(d) > 0 ) && ( length(dom) > 2 )
         B = Z;
         for m = 0:d(var)-1
             for k = 2:length(dom)-1
-                B.blocks{var} = C{m+1,k};
+                B(var) = C{m+1,k};
                 cont = cont.append(B,0);
             end
         end

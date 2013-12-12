@@ -23,12 +23,12 @@ if ( isa(A, 'chebmatrix') )
             [L{j,k}, S{j,k}] = blockDiscretize(disc, A.blocks{j,k});
         end
     end
-    out{1} = L;
     if ( isa(A,'linop') )
         [out{1:3}] = useConstraints(disc,L);
         out{2} = out{2}*cell2mat(S);
+    else
+        out{1} = cell2mat(L);
     end
-    varargout{1} = L;
     m = max(1,nargout);
     varargout(1:m) = out(1:m);    
 else

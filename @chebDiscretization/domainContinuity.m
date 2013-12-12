@@ -4,12 +4,12 @@ function C = domainContinuity(disc,maxorder)
 %   C{m,k} has the (m-1)th-order derivative at breakpoint k
 
 d = disc.domain;
-A = linop.eye(d);
-D = linop.diff(d,1);
+A = linBlock.eye(d);
+D = linBlock.diff(d,1);
 for m = 0:maxorder
     for k = 2:length(d)-1
-        El = linop.feval(d(k),d,'-');
-        Er = linop.feval(d(k),d,'+');
+        El = linBlock.feval(d(k),d,'-');
+        Er = linBlock.feval(d(k),d,'+');
         C{m+1,k} = (El-Er)*A;
     end
     A = D*A;

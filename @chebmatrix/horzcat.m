@@ -13,7 +13,7 @@ for n = 1:nargin
     item = varargin{n};
     if ( isa(item, 'chebmatrix') )
         blocks{n} = item.blocks;
-    elseif ( isa(item, 'linBlock') )
+    elseif ( isa(item, 'linBlock') || isa(item,'chebfun') )
         blocks{n} = { item };
     elseif ( ~isempty(item) )
         blocks{n} = num2cell(item);

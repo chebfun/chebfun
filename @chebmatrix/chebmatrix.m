@@ -32,10 +32,14 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         end
         
         function d = get.domain(L)
-            isnum = cellfun(@isnumeric,L.blocks);
-            blocks = L.blocks(~isnum);
-            d = cellfun(@(x) x.domain,blocks,'uniform',false);
-            d = chebfun.mergeDomains(d{:}); 
+            if ( isempty(L) )
+                d = [];
+            else
+                isnum = cellfun(@isnumeric,L.blocks);
+                blocks = L.blocks(~isnum);
+                d = cellfun(@(x) x.domain,blocks,'uniform',false);
+                d = chebfun.mergeDomains(d{:});
+            end
         end
         
         function d = getDomain(L)

@@ -216,7 +216,7 @@ classdef linBlock
         function E = eval(varargin)
             % EVAL(DOMAIN) returns a function E. The output of E(X) is an
             % evaluator at X in the domain.
-            E = @(x) linop.feval(x, varargin{:});
+            E = @(x) linBlock.feval(x, varargin{:});
         end
         
         function F = inner(f)
