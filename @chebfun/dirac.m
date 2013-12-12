@@ -1,4 +1,4 @@
-function d = dirac(f,varargin)
+function d = dirac(f, varargin)
 % DIRAC delta function
 %
 % D = DIRAC(F) returns a chebfun D which is zero on the domain of the
@@ -20,7 +20,7 @@ function d = dirac(f,varargin)
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % Empty argument:
-if ( isemtpy(f) )
+if ( isempty(f) )
     d = chebfun;
     return
 end
@@ -32,7 +32,7 @@ if( nargin > 1 )
     end
     % Order of the derivative of dirac delta function
     n = varargin{1};
-    if(~isa(n, 'double') || round(n)~=n || n < 0)
+    if ( ~isa(n, 'double') || n < 0 || round(n) ~= n )
         error('CHEBFUN:dirac', 'order of the derivative must be be a non-negative integer');
     end
     
@@ -40,94 +40,69 @@ if( nargin > 1 )
         d = dirac(f);
         return
     else
-        % We can also say d = diff(dirac(f),n); return but
-        % the following does not call diff, hence slightly faster.
-        
-        % make a recursive call with a single argument
-        d = dirac(f);
-        % copy the impulses in (n+2)th row to represent the
-        % the nth derivative of dirac-delta functions.
-        d.imps(n+2,:) = d.imps(2,:);
-        % clean the 2nd row
-        d.imps(2,:) = 0*d.imps(2,:);
-        return;
+        d = diff(dirac(f), n); 
+        return
     end
 end
     
-tol = chebfunpref('eps');
+tol = chebfunpref.eps;
 
-[a b] = domain(f);
+dom = f.domain;
+a = dom(1);
+b = dom(2);
 
-% extract the 'normal' roots of f
+% Extract the 'normal' roots of f:
 r = roots(f,'nojump','nozerofun');
+r = sort(r(:));
 
-% assume no roots at end points
-rootA = 0;
-rootB = 0;
+% Check roots at the end points of f:
+if ( r(1) > a )
+    rootA = 0;
+elseif ( abs(feval(f, a, 'right')) < 100 * tol* f.vscale )
+    rootA = 1;
+    r = [a; r];
+end
 
-% check for roots at the end points manually
-if abs(feval(f,a)) < 100*tol*f.scl, rootA = 1; end
-if abs(feval(f,b)) < 100*tol*f.scl, rootB = 1; end
+if ( r(end) < b )
+    rootB = 0;
+elseif ( abs(feval(f, b, 'left')) < 100 * tol* f.vscale )
+    rootB = 1;
+    r = [r; b];
+end
 
+% initialize a zero chebfun
+g = chebfun(0, [a, b]);
 
-% if there is no root of F within the domain or at the
-% end points, return the zero chebfun
-if isempty( r ) && ~rootA && ~rootB
-    d = chebfun(0,f.ends);
-    d.imps(2,:) = zeros(1,length(f.ends));
+% If there is no root of F within the domain or at the
+% end points, return with a zero chebfun:
+if isempty( r )
     return
 end
 
-% check if a root coincides with an interior break-point.
-[rr ee] = meshgrid( f.ends(2:end-1), r );
-if( any(abs(rr-ee) < 100*tol*f.scl) )
-%      error('CHEBFUN:dirac', 'Function has a root at a break-point');
-end
-
-ends = union(r,[a b]);
-% if there is a root close to any of the end points, merge it
-% with the respective end point.
-if abs(ends(2)-ends(1)) < 100*tol*f.scl, ends(2) = []; end
-if abs(ends(end)-ends(end-1)) < 100*tol*f.scl, ends(end-1) = []; end
-
-% initialize a zero chebfun
-d = chebfun(0,ends);
-
 % check if any of the roots is not simple by
 % looking at the derivative of F
-df = diff(f);
-dfends = feval(df,ends);
+fp = diff(f);
+fpVals = feval(fp, r);
  
 % check root order for interior break-points
-if any(abs(dfends(2:end-1)) < 100*tol*df.scl)
+if ( any(abs(fpVals < 100 * tol * fp.vscale)) )
     error('CHEBFUN:dirac', 'Function has a root which is not simple');
 else
     % place delta functions with appropriate scaling at interior roots.
-    d.imps(2,2:end-1) = 1./abs(dfends(2:end-1));
+    deltaMag = 1./abs(fpVals);
 end
 
-% check root order at the end points
-if rootA
-    % if root is not simple
-    if abs(dfends(1)) < 100*tol*df.scl
-        error('CHEBFUN:dirac', ...
-        'Function has a root which is not simple at the left-end point');
-    else
-        % if root is simple, place a scaled delta-function
-        % at the left-end point
-        d.imps(2,1) = 1./abs(dfends(1));    
-    end
+% Use half of the strength if there is a root at the extremal end points of
+% the input chebfun:
+if ( rootA )
+    deltaMag(1) = deltaMag(1)/2;
 end
 
-if rootB
-    % if root is not simple
-    if abs(dfends(end)) < 100*tol*df.scl
-    error('CHEBFUN:dirac', ...
-    'Function has a root which is not simple at the right-end point');
-    else
-        % if root is simple, place a scaled delta-function
-        % at the right-end point
-        d.imps(2,end) = 1./abs(dfends(end));
-    end
+if ( rootB )
+    deltaMag(end) = deltaMag(end)/2;
+end
+
+% Call the deltafun constructor directly:
+d = deltafun(g, deltaMag, r);
         
 end

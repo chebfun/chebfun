@@ -1,4 +1,4 @@
-classdef deltafun < abstractfun
+classdef deltafun
     %DELTAFUN   Class for distributions based on Dirac-delta functions on arbitrary
     %intervals.
     %
@@ -33,10 +33,10 @@ classdef deltafun < abstractfun
     
     %% CLASS CONSTRUCTOR:
     methods ( Static = true )
-        function obj = deltafun(magnitude, location, funPart, domain, pref)
+        function obj = deltafun(funPart, impulses, location, pref)
             %%
             % Check for preferences in the very beginning.
-            if ( (nargin < 5) || isempty(pref) )
+            if ( (nargin < 4) || isempty(pref) )
                 % Determine preferences if not given.
                 pref = deltafun.pref;
             else
@@ -50,40 +50,24 @@ classdef deltafun < abstractfun
             if ( nargin == 0 )
                 obj.funPart = [];
                 obj.impulses = [];
-                obj.location = [];
-                obj.domain = [];
-                obj.isTransposed = [];
+                obj.location = [];                               
                 return
             end
             
             %%
             % Case 1: One input argument.
             if ( nargin == 1 )
-                error('CHEBFUN:DELTAFUN:nargin', 'At least two arguments should be given.');
+                impulses = [];
+                location = [];                            
             end
             %%
             % Case 2: Two input arguments.
+            % Construct deltafun with zero chebfun in it:
             if ( nargin == 2 )
-                % Decide domain:
-                % [TODO]: At the moment we just define the domain as
-                a = min(location);
-                b = max(location);
-                if( a == b ) % we should do something better here.
-                    a = a - 1;
-                    b = b + 1;
-                end
-                domain = [a - (b-a)/2, b + (b-a)/2];
-                % Function part is zero:
-                funPart = chebfun(0, domain);
-                
+                funPart = chebfun(0, [-1, 1] );
             end
+        
             
-            %%
-            % Case 3: Three or more input arguments.
-            if ( nargin == 3 )
-                % Domain not given, use the default domain used by the funPart:
-                domain = funPart.domain;
-            end
             
             %%
             if ( nargin >= 4 )
@@ -92,12 +76,12 @@ classdef deltafun < abstractfun
             %%
             % Various checks on argument compatibilities
             
-            if ( size(magnitude, 2) ~= length(location) )
+            if ( size(impulse, 2) ~= length(location) )
                 error('CHEBFUN:DELTAFUN:dim', 'Magnitude should have the same number of columns as locations' );
             end
             
             if ( min(size(location)) > 1 )
-                error('CHEBFUN:DELTAFUN:dim', 'Magnitude and location should each be a vector');
+                error('CHEBFUN:DELTAFUN:dim', 'location should be a vector');
             end            
             
             % Make sure location is a row vector:
@@ -121,11 +105,9 @@ classdef deltafun < abstractfun
                 
             % Now that we have checked all the arguments, copy them in the
             % current object:
-            obj.impulses     = magnitude;
-            obj.location     = location;            
-            obj.domain       = domain;
-            obj.funPart      = funPart;
-            obj.isTransposed = 0;
+            obj.impulses     = impulses;
+            obj.location     = location;                      
+            obj.funPart      = funPart;            
             
             % Simplify to sort everything:
             obj = simplify(obj);
