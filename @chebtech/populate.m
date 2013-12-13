@@ -93,7 +93,7 @@ if ( isnumeric(op) || iscell(op) )
     
     % We're always happy if given discrete data:
     f.ishappy = true;
-    f.epslevel = pref.eps*max(f.vscale);
+    f.epslevel = pref.eps*f.vscale;
 
     return
 end

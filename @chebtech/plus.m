@@ -29,7 +29,6 @@ elseif ( isa(g, 'double') ) % CHEBTECH + double
     vscale = max(abs(f.values), [], 1);
     % See CHEBTECH CLASSDEF file for documentation on this:
     f.epslevel = (f.epslevel.*f.vscale + abs(g)*eps)./vscale;
-    f.epslevel = max(f.epslevel); % [TODO]: Vector epslevel;
     f.vscale = vscale;
     
 elseif ( isa(f, 'double') ) % double + CHEBTECH

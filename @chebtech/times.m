@@ -32,6 +32,7 @@ elseif ( isa(g, 'double') )     % CHEBTECH * double
         f.coeffs = f.coeffs*g;
         f.vscale = f.vscale*abs(g);
     end
+    % TODO: Fix this!
     f.epslevel = f.epslevel + eps;
     
     return
