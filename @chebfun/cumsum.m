@@ -66,7 +66,9 @@ numCols = size(f.funs{1}, 2);
 
 % Loop m times:
 for l = 1:m
-        
+    
+    % Constant of integration:
+    fa = zeros(1, numCols);
     for j = 1:numFuns
         
 %         % [TODO]: Replace this when SINGFUN is added.
@@ -80,11 +82,13 @@ for l = 1:m
 %         end
 %         funs{j} = cumsumFunJ + fa;
         
-        funs{j} = cumsum(funs{j});        
+        funs{j} = cumsum(funs{j}) + fa;
+        fa = get(funs{j}, 'rval');
     end
     
-    % Get the new impulse data:
-    f.pointValues = chebfun.getValuesAtBreakpoints(funs, dom);        
+    % Get the new pointValues:
+    f.pointValues = chebfun.getValuesAtBreakpoints(funs, dom);
+    
 end
 
 % Append the updated FUNs:
