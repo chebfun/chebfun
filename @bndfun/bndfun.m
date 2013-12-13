@@ -1,4 +1,4 @@
-classdef bndfun < classicfun
+classdef bndfun < fun
 %BNDFUN   Represent global functions on a bounded interval [a, b].
 %
 %   Class for representing global functions on a bounded interval [a, b].
@@ -41,10 +41,10 @@ classdef bndfun < classicfun
 % will not issue warnings if this condition is violated, but the results will
 % not be meaningful.
 %
-% Class diagram: [<<CLASSICFUN>>] <>-- [<<onefun>>]
-%                       ^
-%                       |  
-%                    [bndfun]
+% Class diagram: [<<FUN>>] <>-- [<<onefun>>]
+%                   ^
+%                   |  
+%                [bndfun]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     %% CLASS CONSTRUCTOR:
