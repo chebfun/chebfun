@@ -150,11 +150,10 @@ vscaleOut = max(abs(f.values), [], 1);
 vscaleGlobal = max(vscale, vscaleOut);
 % Adjust the epslevel appropriately:
 if ( any(vscaleOut > 0) )
-    epslevel = max(epslevel*vscaleGlobal./vscaleOut);
+    epslevel = epslevel*vscaleGlobal./vscaleOut;
 end
 % Output the 'true' vscale (i.e., the max of the stored values):
 vscale = vscaleOut;
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% Assign to CHEBTECH object. %%%%%%%%%%%%%%%%%%%%%%%%%%
 f.coeffs = coeffs;

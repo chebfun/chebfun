@@ -60,19 +60,26 @@ end
 function f = diffFiniteDim(f, k)
 % Take difference across 2nd dimension.
 
-    % Differentiate values across dim:
-    f.values = diff(f.values, k, 2);
-    
-    % Differentiate coefficients across dim:
-    f.coeffs = diff(f.coeffs, k, 2);
-    
-    if ( isempty(f.values) )
-        % Tidy up an empty result:
-        f = f.make(); % Make an empty CHEBTECH.
-    else
-        % Otherwise, update vscale and epslevel.
-        % [TODO]:  epslevel stays the same?
-        f.vscale = max(abs(f.values), [], 1);
+    % TODO: Tidy and document this.
+    if ( k >= size(f, 2) )
+        f = f.make();
+        return
+    else 
+        for j = 1:k
+            % Differentiate values across dim:
+            f.values = diff(f.values, 1, 2);
+            % Differentiate coefficients across dim:
+            f.coeffs = diff(f.coeffs, 1, 2);
+            % Update vscale and epslevel.
+            vscale = max(abs(f.values), [], 1);
+            ev = f.epslevel.*f.vscale;
+            for l = 1:size(f,2)-1
+                f.epslevel(l) = ev(l)+ev(l+1);
+            end
+            f.epslevel(end) = [];
+            f.epslevel = f.epslevel./vscale;
+            f.vscale = vscale;
+        end
     end
 end
 
