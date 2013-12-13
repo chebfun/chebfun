@@ -62,15 +62,11 @@ end
 
 % NOTE: From here onwards, f will only be a scalar-valued CHEBFUN.
 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% IMPULSES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-y = [inf, -inf];
-x = [NaN, NaN];
-
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% SMOOTH PART %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 dom = f.domain;
 nfuns = numel(f.funs);
-yy = [zeros(nfuns, 2) ; y];
-xx = [zeros(nfuns, 2) ; x];
+yy = zeros(nfuns, 2);
+xx = zeros(nfuns, 2);
 for k = 1:nfuns
     [yy(k,:), xx(k,:)] = minandmax(f.funs{k});
 end
@@ -81,7 +77,7 @@ x(1) = xx(I1,1);
 x(2) = xx(I2,2);
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%% BREAKPOINT VALUES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-ind = find(f.pointValues < y(1));
+ind = find(f.pointValues(:,1) < y(1));
 if ( ~isempty(ind) )
     [y(1), k] = min(f.pointValues(ind,1));
     x(1) = dom(ind(k));
