@@ -18,6 +18,8 @@ function F = airy(K, F, scale)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
+% TODO: Preference input.
+
 % Parse the inputs as described in help text:
 if ( nargin == 1 )
     F = K;
