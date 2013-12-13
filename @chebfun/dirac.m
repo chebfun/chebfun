@@ -45,7 +45,8 @@ if( nargin > 1 )
     end
 end
     
-tol = chebfunpref.eps;
+pref = chebpref;
+tol = pref.eps;
 
 dom = f.domain;
 a = dom(1);
@@ -60,14 +61,18 @@ if ( r(1) > a )
     rootA = 0;
 elseif ( abs(feval(f, a, 'right')) < 100 * tol* f.vscale )
     rootA = 1;
-    r = [a; r];
+    if ( r(1) ~= a )
+        r = [a; r];
+    end
 end
 
 if ( r(end) < b )
     rootB = 0;
 elseif ( abs(feval(f, b, 'left')) < 100 * tol* f.vscale )
     rootB = 1;
-    r = [r; b];
+    if( r(end) ~= b )
+        r = [r; b];
+    end
 end
 
 % initialize a zero chebfun
@@ -85,7 +90,7 @@ fp = diff(f);
 fpVals = feval(fp, r);
  
 % check root order for interior break-points
-if ( any(abs(fpVals < 100 * tol * fp.vscale)) )
+if ( any(abs(fpVals) < 100 * tol * fp.vscale) )
     error('CHEBFUN:dirac', 'Function has a root which is not simple');
 else
     % place delta functions with appropriate scaling at interior roots.
@@ -103,6 +108,6 @@ if ( rootB )
 end
 
 % Call the deltafun constructor directly:
-d = deltafun(g, deltaMag, r);
+d = deltafun(g.funs{1}, deltaMag.', r.');
         
 end

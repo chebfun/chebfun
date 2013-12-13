@@ -3,6 +3,10 @@ function A = cleanRows(A)
 
 tol = deltafun.pref.deltafun.deltaTol;
 
+if ( isempty(A) )
+    return
+end
+
 while( max(abs(A(end, :))) < tol )
     A(end, :) = [];
 end

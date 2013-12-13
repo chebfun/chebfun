@@ -122,28 +122,19 @@ if ( any(I(:)) )
     fx(I,:) =  feval(funs{end}, x(I));
 end
 
-%% IMPULSES:
+%% POINTVALUES:
 % If the evaluation point corresponds to a breakpoint, we get the value from
-% imps. If there is only one row, the value is given by the corresponding entry
-% in that row. If the second row is nonzero the value is -inf or inf
-% corresponding to the sign of the entry in the 2nd row. If the entry in the
-% corresponding 3rd or higher rows is nonzero, we return NaN.
+% pointValues. 
 
-higherImpulses = f.impulses(:,:,2:end);
-% Only one row:
-if ( ~any(higherImpulses(:)) )
-    % Loop over the FUNs:
-    for k = 1:numFuns + 1
-        index = x == dom(k);
-        if ( any(index) )
-            imps = repmat(f.impulses(k,:,1), sum(index), 1);
-            fx(index,:) = imps;
-        end
+% Loop over the FUNs:
+for k = 1:numFuns + 1
+    index = x == dom(k);
+    if ( any(index) )
+        pointValues = repmat(f.pointValues(k,:), sum(index), 1);
+        fx(index,:) = pointValues;
     end
-    
-else
-    % [TODO]: Higher-order impulses.
 end
+    
 
 %% RESHAPE FOR OUTPUT:
 % Reshape fx, which is a column vector or horizontal concatenation of column

@@ -7,7 +7,7 @@ function [A, v] = mergeColumns(A, v)
 tol = deltafun.pref.deltafun.proximityTol;
 
 m = size(A, 2);
-if ( length(v) ~= m || size(v, 1) ~= 1 )
+if ( length(v) ~= m || size(v, 1) > 1 )
     error( 'CHEBFUN:DELTAFUN:mergeColumns', 'No. of columns of A should be equal to the length of the vector va' );
 end
 

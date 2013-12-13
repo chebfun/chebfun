@@ -12,7 +12,7 @@ function out = isreal(f)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Check to see is the impulses are real:
-out = isreal(f.impulses);
+out = isreal(f.pointValues);
 if ( ~out )
     % Complex number found. Break:
     return

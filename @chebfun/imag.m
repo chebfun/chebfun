@@ -12,9 +12,8 @@ if ( isempty(f) )
     return
 end
 
-% Take imaginary part of the impulses:
-% [TODO]:  Is this the right thing to do for higher-order impulses?
-f.impulses = imag(f.impulses);
+% Take imaginary part of the pointValues:
+f.pointValues = imag(f.pointValues);
 
 % Take imaginary part of the FUNs:
 for k = 1:numel(f.funs)

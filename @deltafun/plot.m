@@ -25,7 +25,7 @@ holdState = ishold;
 % Plot the CHEBFUN:
 f = varargin{1};
 varargin(1) = [];
-[h1, h2, h3] = plot( f.funPart, varargin{:} );
+[h1, h2] = plot( f.funPart, varargin{:} );
 
 if ( ~isempty(f.location) && ~isempty(f.impulses) )
     deltaLoc = f.location;
@@ -49,7 +49,7 @@ else
 end
 
 if ( nargout > 0 )
-    varargout = {h1; h2; h3};
+    varargout = {h1; h2};
 end
 
 end

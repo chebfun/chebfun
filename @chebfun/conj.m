@@ -7,9 +7,8 @@ function f = conj(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-% Conjugate the impulses:
-% [TODO]:  Is this the right thing to do for higher-order impulses?
-f.impulses = conj(f.impulses);
+% Conjugate the pointValues:
+f.pointValues = conj(f.pointValues);
 
 % Conjugate the FUNs:
 for k = 1:numel(f.funs)

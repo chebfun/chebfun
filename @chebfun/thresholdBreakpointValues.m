@@ -7,8 +7,8 @@ function f = thresholdBreakpointValues(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-breakVals = f.impulses(:,:,1);
+breakVals = f.pointValues;
 breakVals(abs(breakVals) < vscale(f)*epslevel(f)) = 0;
-f.impulses(:,:,1) = breakVals;
+f.pointValues = breakVals;
 
 end

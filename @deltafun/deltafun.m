@@ -21,7 +21,15 @@ classdef deltafun
         % Smooth part of the representation.
         funPart     % (smoothfun)
         
-        % Deltafunctions
+        % [TODO]: Change this documentation:
+        % IMPULSES is a three-dimensional array storing information about the
+        % values of the CHEBFUN object at the points in DOMAIN. The rows
+        % correspond to the breakpoints in the DOMAIN vector, and if M > 1 then
+        % the columns correspond to the columns in an array-valued CHEBFUN.
+        % Thus, F.IMPULSES(:, :, 1) is a matrix consisting of the values of
+        % each column of F at each breakpoint. The third dimension is used for
+        % storing information about higher-order delta functions that may be
+        % present at breakpoints. (See "help dirac" for more details.)
         impulses
         
         % location
@@ -75,7 +83,7 @@ classdef deltafun
             
             %%
             if ( nargin >= 3)                            
-                if ( isemtpy(funPart) )
+                if ( isempty(funPart) )
                     % [TODO]: is this right?
                     obj.funPart = fun.constructor(0);
                 elseif ( ~isa(funPart, 'fun') )
@@ -96,7 +104,7 @@ classdef deltafun
                     error( 'DELTAFUN:cotr', 'impulses, location, one empty one not empty' )
                 end
                 
-                if ( size(impulse, 2) ~= length(location) )
+                if ( size(impulses, 2) ~= length(location) )
                     error('DELTAFUN:dim', 'Impulse matrix should have the same number of columns as locations' );
                 end
                 
@@ -113,7 +121,12 @@ classdef deltafun
                 dom = obj.funPart.domain;               
                 if( max(location) > dom(2) || min(location) < dom(1)  )
                     error('DELTAFUN:domain', 'Location of a delta fun is outside the domain');
-                end                                                                           
+                end
+                
+                % All checks done, assign inputs to object:
+                obj.impulses = impulses;
+                obj.location = location;
+                
             end
                 
             % Simplify to sort everything:

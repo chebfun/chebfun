@@ -48,10 +48,10 @@ if ( ~isempty(r) )
     % Introduce these breakpoints into f:
     f = restrict(f, dom);
 
-    % Enforce zero impulses at roots:
+    % Enforce zero piont values at roots:
     for k = 1:min(size(f))
         % TODO: Allow a tolerance?
-        f.impulses(ismember(dom, rAll(:,k)), k, :) = 0;
+        f.pointValues(ismember(dom, rAll(:,k)), k, :) = 0;
     end
     
 end

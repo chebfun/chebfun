@@ -31,8 +31,8 @@ elseif ( isnumeric(g) )     % CHEBFUN * double
         f.funs{k} = mtimes(f.funs{k}, g);
     end
 
-    % Multiply the impulses:
-    f.impulses = f.impulses * g;
+    % Multiply the pointValues:
+    f.pointValues = f.pointValues * g;
 
 elseif ( ~isa(g, 'chebfun') )
 

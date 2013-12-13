@@ -25,7 +25,7 @@ end
 
 % Check the impulses:
 tol = max(epslevel(f), epslevel(g));
-if ( norm(f.impulses(:) - g.impulses(:), inf) > tol )
+if ( norm(f.pointValues(:) - g.pointValues(:), inf) > tol )
     return
 end
 

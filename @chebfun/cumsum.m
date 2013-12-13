@@ -66,15 +66,7 @@ numCols = size(f.funs{1}, 2);
 
 % Loop m times:
 for l = 1:m
-    
-    % Get the level 2 (delta function) impulse data:
-    if ( size(f.impulses, 3) > 1 )
-        deltas = f.impulses(:,:,2);
-    else
-        deltas = zeros(length(dom), numCols);
-    end
-    
-    fa = deltas(1,:);
+        
     for j = 1:numFuns
         
 %         % [TODO]: Replace this when SINGFUN is added.
@@ -88,14 +80,11 @@ for l = 1:m
 %         end
 %         funs{j} = cumsumFunJ + fa;
         
-        funs{j} = cumsum(funs{j}) + fa;
-        fa = get(funs{j}, 'rval') + deltas(j+1,:);
+        funs{j} = cumsum(funs{j});        
     end
     
     % Get the new impulse data:
-    newImps = chebfun.getValuesAtBreakpoints(funs, dom);
-    f.impulses = cat(3, newImps, f.impulses(:,:,3:end));
-    
+    f.pointValues = chebfun.getValuesAtBreakpoints(funs, dom);        
 end
 
 % Append the updated FUNs:

@@ -5,10 +5,8 @@ function isf = isfinite(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Check for infinite breakpoint values or higher-order impulses.
-tol = epslevel(f);
-if ( any(any(~isfinite(f.impulses(:,:,1)))) || ...
-        any(any(any(f.impulses(:,:,2:end) > tol))) )
+% Check for infinite breakpoint values:
+if ( any(any(~isfinite(f.pointValues))) )
     isf = false;
     return
 end

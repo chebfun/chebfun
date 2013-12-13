@@ -75,6 +75,8 @@ for k = 1:numel(f.funs)
 end
 
 % Assign the columns to the impulses:
-f.impulses(:,colIdx,:) = g.impulses;
+%f.impulses(:,colIdx,:) = g.impulses;
+% [TODO]:?
+f.pointValues(:, colIdx, :) = g.pointValues;
 
 end

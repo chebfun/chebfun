@@ -22,7 +22,7 @@ f = chebfun(@(x) [sin(x) 0*x exp(x)], [-1 -0.5 0 0.5 1], pref);
 pass(2) = isequal(any(f), [1 0 1]);
 pass(3) = isequal(any(f.', 2), [1 0 1].');
 
-f.impulses(3,2,1) = NaN;
+f.pointValues(3,2) = NaN;
 pass(4) = isequal(any(f, 1), [1 0 1]);
 
 f = chebfun(@(x) [0*x heaviside(x) exp(2*pi*1i*x)], [-1 0 1], pref);
@@ -38,18 +38,18 @@ pass(8) = g.isTransposed && (numel(g.funs) == 1) && all(feval(g, x) == 1);
 
 f = chebfun(@(x) [sin(x) 0*x], pref);
 g = any(f, 2);
-ind = find(g.impulses == 0);
+ind = find(g.pointValues == 0);
 pass(9) = ~g.isTransposed && (abs(g.domain(ind)) < 10*vscale(g)*epslevel(g)) ...
-    && isequal(g.impulses, [1 0 1].') && all(feval(g, x) == 1);
+    && isequal(g.pointValues, [1 0 1].') && all(feval(g, x) == 1);
 g = any(f.', 1);
-ind = find(g.impulses == 0);
+ind = find(g.pointValues == 0);
 pass(10) = g.isTransposed && (abs(g.domain(ind)) < 10*vscale(g)*epslevel(g)) ...
-    && isequal(g.impulses, [1 0 1].') && all(feval(g, x) == 1);
+    && isequal(g.pointValues, [1 0 1].') && all(feval(g, x) == 1);
 
 f = chebfun(@(x) [heaviside(x) sin(x).*heaviside(x)], [-1 0 1], pref);
 g = any(f, 2);
 g_exact = @(x) any([heaviside(x) sin(x).*heaviside(x)], 2);
-pass(11) = ~g.isTransposed && isequal(g.impulses, [0 1 1].') && ...
+pass(11) = ~g.isTransposed && isequal(g.pointValues, [0 1 1].') && ...
     all(feval(g, x) == g_exact(x));
 
 % Check error conditions.

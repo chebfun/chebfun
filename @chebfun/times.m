@@ -30,8 +30,8 @@ elseif ( isnumeric(g) )        % CHEBFUN * double
         f.funs{k} = times(f.funs{k}, g);
     end
 
-    % Multiply the impulses:
-    f.impulses = f.impulses .* g;
+    % Multiply the pointValues:
+    f.pointValues = f.pointValues .* g;
 
 elseif ( ~isa(g, 'chebfun') )  % CHEBFUN * ???
 
@@ -60,10 +60,8 @@ else                           % CHEBFUN .* CHEBFUN
         f.funs{k} = times(f.funs{k}, g.funs{k});
     end
 
-    % Multiply the impulses:
-    % [TODO]:  This doesn't make sense for higher-order impulses:  you can't
-    % multiply two Dirac deltas!  What to do?
-    f.impulses = f.impulses .* g.impulses;
+    % Multiply the pointValues:
+    f.pointValues = f.pointValues .* g.pointValues;
 
 end
 

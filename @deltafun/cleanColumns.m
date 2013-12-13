@@ -4,7 +4,7 @@ function [A, v] = cleanColumns(A, v)
 tol = deltafun.pref.deltafun.deltaTol;
 
 m = size(A, 2);
-if ( length(v) ~= m || size(v, 1) ~= 1 )
+if ( length(v) ~= m || size(v, 1) > 1 )
     error( 'CHEBFUN:DELTAFUN:cleanColumns', 'No. of columns of A should equal the length of the vector va' );
 end
 

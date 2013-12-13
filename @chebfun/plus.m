@@ -31,14 +31,14 @@ elseif ( isnumeric(g) )     % CHEBFUN + double
         f.funs{k} = f.funs{k} + g;
     end
     
-    % Add g to the impulses:
-    if ( (size(f.impulses, 2) == 1) &&  (min(size(f)) > 1) )
-        f.impulses = repmat(f.impulses, 1, size(g, 2)); % Allow expansion in f.
+    % Add g to the pointValues:
+    if ( (size(f.pointValues, 2) == 1) &&  (min(size(f)) > 1) )
+        f.pointValues = repmat(f.pointValues, 1, size(g, 2)); % Allow expansion in f.
     end
     if ( size(g, 2) > 1 )
         g = repmat(g, length(f.domain), 1);             % Allow expansion in g.
     end
-    f.impulses(:,:,1) = f.impulses(:,:,1) + g;
+    f.pointValues = f.pointValues + g;
 
 elseif ( ~isa(g, 'chebfun') ) % CHEBFUN + ???
 
@@ -62,8 +62,8 @@ else                          % CHEBFUN + CHEBFUN
     % Overlap the CHEBFUN objects:
     [f, g] = overlap(f, g);
 
-    % Add the impulses:
-    f.impulses = f.impulses + g.impulses;
+    % Add the pointValues:
+    f.pointValues = f.pointValues + g.pointValues;
 
     % Add the FUNs:
     for k = 1:numel(f.funs)

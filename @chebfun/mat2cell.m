@@ -91,9 +91,8 @@ for k = 1:numel(N)
     % Make the CHEBFUN.
     g{k} = chebfun(cellFuns(:,k));
 
-    % Copy over higher-order impulses.
-    g{k}.impulses = f.impulses(:,index{k},:);
-    g{k} = tidyImpulses(g{k});
+    % Copy over pointValues.
+    g{k}.pointValues = f.pointValues(:,index{k});
 end
 
 end

@@ -89,15 +89,7 @@ function out = sumFullDom(f)
     % Sum on each FUNs:
     for k = 1:numel(f.funs)
         out = out + sum(f.funs{k});
-    end
-
-    % Deal with impulses:
-    if ( size(f.impulses, 3) > 1 )
-        % Only add the delta functions (the integral of derivatives of delta
-        % functions is always zero).
-        out = out + sum(f.impulses(:,:,2));
-    end
-
+    end   
 end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%% SUM on a subdomain %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

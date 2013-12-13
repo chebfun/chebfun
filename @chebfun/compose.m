@@ -13,12 +13,9 @@ function f = compose(f, op, g, pref)
 %   COMPOSE(F, OP, PREF), COMPOSE(F, OP, G, PREF), and COMPOSE(F, G, PREF) use
 %   the options passed by the CHEBPREF object PREF.
 %
-%   Note 1: If the locations of required breakpoints in the output are known in
+%   Note: If the locations of required breakpoints in the output are known in
 %   advance, they should be applied to F and/or G using RESTRICT() before the
 %   call to COMPOSE().
-%
-%   Note 2: Any higher-order impulse/delta function data in F and/or G is
-%   ignored by COMPOSE().
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
@@ -83,16 +80,16 @@ end
 
 %% Initialise:
 
-% Initialise impulses. Note that higher-order impulse data is destroyed by
-% compose, so we only require the first impulse 'sheet' (i.e., impulses(:,:,1)):
+% Initialise pointValues.
+
 if ( opIsBinary )
     % Call OVERLAP() if we are composing two CHEBFUN inputs with a binary op:
     [f, g] = overlap(f, g);
-    fevalImps = feval(op, f.impulses(:,:,1), g.impulses(:,:,1));
-    newImps = fevalImps(1,:);
+    pointValues = feval(op, f.pointValues, g.pointValues);
+    newPointValues = pointValues(1,:);
 else
-    fevalImps = feval(op, f.impulses(:,:,1));
-    newImps = fevalImps(1,:);
+    pointValues = feval(op, f.pointValues);
+    newPointValues = pointValues(1,:);
 end
 
 % Number of piecewise intervals in f:
@@ -137,11 +134,11 @@ for k = 1:numInts
         newFuns = [newFuns, {newFun}];                   
         % Store new ends:
         newDom = [newDom, f.domain(k+1)];
-        % Store new impulses: (Note, will only be a matrix - not a tensor)
+        % Store new pointValues: (Note, will only be a matrix - not a tensor)
         if ( isempty(g) )
-            newImps = [newImps ; fevalImps(k+1,:)];
+            newPointValues = [newPointValues ; pointValues(k+1,:)];
         else
-            newImps = [newImps ; fevalImps(k+1,:)];
+            newPointValues = [newPointValues ; pointValues(k+1,:)];
         end
 
     elseif ( pref.enableBreakpointDetection )
@@ -170,9 +167,9 @@ for k = 1:numInts
         newFuns = [newFuns, newChebfun.funs];
         % Store new ends:
         newDom = [newDom, newChebfun.domain(2:end)];
-        % Store new impulses; (Note, will only be a matrix - not a tensor)
-        newImps = [newImps ; newChebfun.impulses(2:end-1,:) ; ...
-            fevalImps(k+1,:) ];
+        % Store new pointValues; (Note, will only be a matrix - not a tensor)
+        newPointValues = [newPointValues ; newChebfun.pointValues(2:end-1,:) ; ...
+            pointValues(k+1,:) ];
 
     end
 
@@ -180,10 +177,10 @@ end
 
 %% Prepare output:
 
-% Put the FUN cell, domain, and impulses back into a CHEBFUN:
+% Put the FUN cell, domain, and pointValues back into a CHEBFUN:
 f.funs = newFuns;
 f.domain = newDom;
-f.impulses = newImps;
+f.pointValues = newPointValues;
 
 end
 
@@ -240,11 +237,6 @@ end
 %         minF, maxF, g.domain(1), g.domain(end))
 % end
 
-% Delta functions:
-if ( (size(f.impulses, 3) > 1) || (size(g.impulses, 3) > 1) )
-    warning('CHEBFUN:compose:imps',  ...
-        'Composition does not handle impulses / delta functions.')
-end
 
 %% Locate breakpoints in G:
 
@@ -269,7 +261,7 @@ f = restrict(f, newDom);
 h = compose(f, @(f) feval(g, f), pref);
 
 % Fix impulse values:
-h.impulses(:,:,1) = feval(g, feval(f, h.domain.'));
+h.pointValues = feval(g, feval(f, h.domain.'));
 
 if ( isTransposed )
     h = transpose(h);

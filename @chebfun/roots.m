@@ -67,10 +67,10 @@ numCols = size(f.funs{1}, 2);
 NaNRow = NaN(1, numCols);
 r = NaNRow;
 
-% Zero impulses are roots.
-index = abs(f.impulses(1,:,1)) < vs*htol;
+% Zero pointValues are roots.
+index = abs(f.pointValues(1,:)) < vs*htol;
 if ( any(index) )
-    % Left impulses is zero: (or sufficiently close)
+    % Left pointValues is zero: (or sufficiently close)
     r(index) = dom(1);
 end
 
@@ -92,7 +92,7 @@ for k = 1:numFuns
     %% Look for roots at next breakpoint:
     index = false(1, numCols);
     if ( rootsPref.impRoot )    
-        index = abs(f.impulses(k+1,:,1)) < vtol; % Include if zero impulses
+        index = abs(f.pointValues(k+1,:)) < vtol; % Include if zero pointValues
     end
     if ( rootsPref.jumpRoot && k < numFuns )     % Or a change in sign in a jump
         index = index | ( get(funs{k}, 'rval').*get(funs{k+1}, 'lval') <= 0 );

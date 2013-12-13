@@ -28,16 +28,6 @@ If1t_exact = @(x) (sin(x) - sin(-1)).';
 pass(3) = norm(feval(If1t, xr) - If1t_exact(xr), inf) < ...
     10*vscale(If1t)*epslevel(If1t);
 
-% Check behavior with impulses.
-f2 = f1;
-f2.impulses(2, 1, 2) = 1;
-f2.impulses(2, 1, 3) = 2;
-If2 = cumsum(f2);
-If2_exact = @test_If2;
-pass(4) = norm(feval(If2, xr) - If2_exact(xr), inf) < ...
-    10*vscale(If2)*epslevel(If2) && ...
-    isequal(If2.impulses(:,:,2:end), [0 ; 2 ; 0 ; 0]);
-
 % Check behavior for array-valued chebfuns.
 f3 = chebfun(@(x) [cos(x) -sin(x) exp(x)], [-1 -0.5 0.5 1], pref);
 If3 = cumsum(f3);
@@ -54,13 +44,10 @@ pass(6) = max(max(abs(feval(If3t, xr) - If3t_exact(xr)))) < ...
     10*vscale(If3t)*epslevel(If3t);
 
 f4 = chebfun(@(x) [cos(x) -sin(x)], [-1 -0.5 0.5 1], pref);
-f4.impulses(2, 2, 2) = 1;
-f4.impulses(1, 1, 3) = 2;
 If4 = cumsum(f4);
 If4_exact = @test_If4;
 pass(7) = max(max(abs(feval(If4, xr) - If4_exact(xr)))) < ...
-    10*vscale(If4)*epslevel(If4) && ...
-    isequal(If4.impulses(:,:,2:end), [2 0 ; 0 0 ; 0 0 ; 0 0]);
+    10*vscale(If4)*epslevel(If4);
 
 % Check second argument.
 I2f1 = cumsum(f1, 2);
