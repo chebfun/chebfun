@@ -14,9 +14,9 @@ else
     disc.source.constraint = [];
     A = matrix(disc);
     
-    % Now impose continuity and side conditions.
+    % Now impose them.
     disc.source = L;
-    [~,P,B] = matrix( deriveContinuity(disc) );
+    [~,P,B] = matrix( disc );
     
     % Assemble the "prolongation" operator.
     [mRed,mOrig] = size(P);

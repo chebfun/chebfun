@@ -21,6 +21,8 @@ end
     
 disc.dimension = dim;
 disc.domain = dom;
-disc = deriveContinuity(disc);
+if isempty(L.continuity)
+    disc.source = deriveContinuity(L);
+end
 M = matrix(disc);
 spy(M, varargin{:});

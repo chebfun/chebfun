@@ -6,24 +6,29 @@ function pass = intops
 
 tol = chebfunpref('eps');
 
+%%
 % Fredholm
 d = [0 1]; 
 x = chebfun(@(x) x, d);
 F = linop.fred(d,@(x,y) sin(2*pi*(x-y)));
-A = linop( linop.eye(d)+F );
+A = linop( linop.eye(d) + F );
 u = chebmatrix( x.*exp(x) );
 f = A*u;
-pass(1) = norm(u-A\f) < 1e6*tol;
+v = A\f;
+pass(1) = norm(u{1}-v{1}) < 1e6*tol;
 
-% % Volterra
-% d = domain(0,pi);
-% x = chebfun(@(x) x, d);
-% V = volt( @(x,y) x.*y, d );
-% f = x.^2.*cos(x) + (1-x).*sin(x);
-% u = (1-V)\f;
-% pass(2) = norm( u - sin(x) ) < 1e6*tol;
-% pass(3) = norm( (1-V)*u - f ) < 1e4*tol;
-% 
+%%
+% Volterra
+d = [0,pi];
+x = chebfun(@(x) x, d);
+V = linop.volt( d, @(x,y) x.*y );
+f = chebmatrix( x.^2.*cos(x) + (1-x).*sin(x) );
+A = linop( linop.eye(d) - V );
+u = A\f;
+Au = A*u;
+pass(2) = norm( u{1} - sin(x) ) < 1e6*tol;
+pass(3) = norm( Au{1} - f{1} ) < 1e4*tol;
+
 % 
 % %% Now available as chebops!
 % 
