@@ -48,6 +48,14 @@ if ( numel(f) > 1 )
         end
     end
     
+elseif ( numColumns(f) > 1 )
+    % Convert to a quasimatrx for unified output.
+    f = cheb2quasi(f);
+    s = disp(f, name);
+    % TODO: Remove this!
+    s = [s, sprintf('\n(P.S. I am an array-valued CHEBFUN!)')];
+    return
+    
 else
     % Transpose information:
     if ( f.isTransposed )
