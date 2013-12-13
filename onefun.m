@@ -25,11 +25,11 @@ classdef onefun % (Abstract)
 % interval [-1,1].
 %
 % The current instances of ONEFUNs are SMOOTHFUNs and SINGFUNs. The former are
-% used to represenet smooth functions on [-1,1}, whereas the latter are able to
+% used to represenet smooth functions on [-1,1], whereas the latter are able to
 % represent some forms of endpoint singularites. 
 %
-% Class diagram: [<<fun>>] <>-- [<<ONEFUN>>] <-- [<<smoothfun>>]
-%                                            <-- [singfun]
+% Class diagram: [<<classicfun>>] <>-- [<<ONEFUN>>] <-- [<<smoothfun>>]
+%                                                   <-- [singfun]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
