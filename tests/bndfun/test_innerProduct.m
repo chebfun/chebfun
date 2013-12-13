@@ -78,8 +78,8 @@ g = bndfun(@(x) [exp(x) 1./(1 + x.^2) airy(x)], dom);
 ip = innerProduct(f, g);
 exact = [-53.1070904269318222 0.0025548835039100  -0.4683303433821355;
          773.70343924989359096771 1.3148120368924471 0.6450791915572742];
-pass(10) = norm(ip(:) - exact(:), inf) < 10*max(get(f, 'epslevel'), ...
-    get(g, 'epslevel'))*max([get(f, 'vscale') get(g, 'vscale')]);
+pass(10) = norm(ip(:) - exact(:), inf) < 10*max([get(f, 'epslevel'), ...
+    get(g, 'epslevel')])*max([get(f, 'vscale') get(g, 'vscale')]);
 
 %%
 % Check error conditition

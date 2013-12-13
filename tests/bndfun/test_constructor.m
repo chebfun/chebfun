@@ -15,7 +15,7 @@ dom = [-2 7];
 % Test on a scalar-valued function for interpolation:
 f = @(x) sin(x)./x;
 g = bndfun(f, dom, [], [], pref);
-pass(1) = abs(1 - feval(g, 0)) < 10*max(get(g, 'vscale'))*get(g, 'epslevel');
+pass(1) = abs(1 - feval(g, 0)) < 10*max(get(g, 'vscale').*get(g, 'epslevel'));
 
 %%
 
@@ -24,7 +24,7 @@ f = @(x) [sin(x)./x sin(x - 3)./(x - 3)];
 g = bndfun(f, dom, [], [], pref);
 gv = [feval(g, 0) feval(g, 3)];
 pass(2) = norm(ones(1, 2) - [gv(1) gv(4)], inf) < ...
-    10*max(get(g, 'vscale'))*get(g, 'epslevel');
+    10*max(get(g, 'vscale').*get(g, 'epslevel'));
 
 %%
 % Some other tests:

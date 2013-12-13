@@ -85,13 +85,13 @@ h2 = g .* f;
 pass(12) = isequal(h1, h2);
 h_exact = @(x) [tanh(x).*sin(x) tanh(x).*cos(x) tanh(x).*exp(x)];
 err = feval(h1, x) - h_exact(x);
-pass(13) = max(abs(err(:))) < 10*max(get(h1, 'vscale'))*get(h1, 'epslevel');
+pass(13) = max(abs(err(:))) < 10*max(get(h1, 'vscale').*get(h1, 'epslevel'));
 
 g = bndfun(@(x) [sinh(x) cosh(x) tanh(x)], dom, [], [], pref);
 h = f .* g;
 h_exact = @(x) [sinh(x).*sin(x) cosh(x).*cos(x) tanh(x).*exp(x)];
 err = feval(h, x) - h_exact(x);
-pass(14) = max(abs(err(:))) < 10*max(get(h, 'vscale'))*get(h, 'epslevel');
+pass(14) = max(abs(err(:))) < 10*max(get(h, 'vscale').*get(h, 'epslevel'));
 
 % This should fail with a dimension mismatch error.
 try
@@ -148,7 +148,7 @@ g1 = f .* alpha;
 g2 = alpha .* f;
 result(1) = isequal(g1, g2);
 g_exact = @(x) f_op(x) .* alpha;
-tol = 10*max(get(g1, 'vscale'))*get(g1, 'epslevel');
+tol = 10*max(get(g1, 'vscale').*get(g1, 'epslevel'));
 result(2) = norm(feval(g1, x) - g_exact(x), inf) < tol;
 end
 

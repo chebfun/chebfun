@@ -120,5 +120,5 @@ function result = test_add_function_to_function(f, f_op, g, g_op, x)
     result(1) = isequal(h1, h2);
     h_exact = @(x) f_op(x) + g_op(x);
     result(2) = norm(feval(h1, x) - h_exact(x), inf) <= ...
-        10*max(get(h1, 'vscale'))*get(h1, 'epslevel');
+        10*max(get(h1, 'vscale').*get(h1, 'epslevel'));
 end
