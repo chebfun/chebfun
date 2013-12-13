@@ -144,8 +144,20 @@ while ( 1 )
 
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TODO: Which of these is correct?
+
 % Update vertical scale one last time:
 vscale = max(vscale, max(abs(f.values), [], 1));
+
+% % Update vertical scale one last time:
+% vscaleOut = max(abs(f.values), [], 1);
+% % Adjust the epslevel appropriately:
+% epslevel = epslevel*vscale/vscaleOut;
+% % Output the 'true' vscale (i.e., the max of the stored values):
+% vscale = vscaleOut;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Assign to CHEBTECH object:
 f.coeffs = coeffs;
