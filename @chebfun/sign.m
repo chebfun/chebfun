@@ -26,8 +26,8 @@ for k = 1:numel(g.funs)
     g.funs{k} = sign(g.funs{k});
 end
 
-% Take the sign of the impulses in the first row:
-g.impulses = sign(g.impulses(:,:,1));
+% Take the sign of the pointValues in the first row:
+g.pointValues = sign(g.pointValues);
 
 % Remove unnecessary breakpoints:
 g = merge(g); 

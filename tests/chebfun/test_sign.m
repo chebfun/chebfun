@@ -15,11 +15,11 @@ tol = get(f, 'epslevel')*get(f, 'hscale');
 f1 = sign(f);
 pass(1,1) = all(feval(f1, x) == 1);
 
-% Test if impulses are dealt with correctly: 
+% Test if pointValues are dealt with correctly: 
 f = chebfun(@(x) cos(pi*x) + 2, sort(x)', pref);
-f.impulses(:,:,1) = -pi;
+f.pointValues = -pi*ones(length(f.ends), 1);
 f1 = sign(f);
-pass(1,2) = all(f1.impulses(:,:,1) == -1);
+pass(1,2) = all(f1.pointValues == -1);
 
 % Test also on longer intervals:
 f = chebfun(@(x) x, [-1, 100], pref);

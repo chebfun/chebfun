@@ -8,7 +8,7 @@ function [y, x] = minandmax(f, flag)
 %
 %   [Y, X] = MINANDMAX(F, 'local') returns not just the global minimum and
 %   maximum values, but all of the local extrema (i.e., local min and max).
-%   Note that point values (i.e., impulses) are not regarded as local extrema.
+%   Note that point values are not regarded as local extrema.
 %
 %   If F is complex-valued, absolute values are taken to determine extrema, but
 %   the resulting values correspond to those of the original function.
@@ -66,38 +66,6 @@ end
 y = [inf, -inf];
 x = [NaN, NaN];
 
-% Determine the strength of the first nontrivial impulse at each breakpoint:
-impulseStrengths = zeros(numel(f.funs) + 1, 1);
-for k = 1:(numel(f.funs) + 1)
-    indx = find(f.impulses(k,1,2:end), 1, 'first');
-    if ( ~isempty(indx) )
-    	impulseStrengths(k) = f.impulses(k,1,indx+1);
-    end
-end
-
-% If we have a negative nontrivial impulse, return y(1) = -inf:
-ind = find(impulseStrengths < 0, 1, 'first');
-if ( ~isempty(ind) )
-    y(1) = -inf;
-    x(1) = f.domain(ind);
-end
-
-% If we have a positive nontrivial impulse, return y(2) = inf:
-ind = find(impulseStrengths > 0, 1, 'first');
-if ( ~isempty(ind) )
-    y(2) = inf;
-    x(2) = f.domain(ind);
-end
-
-if ( ~any(isnan(x)) )
-    % We're done.
-    
-    % Output column vector:
-    y = y.';
-    x = x.';
-    return
-end
-
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% SMOOTH PART %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 dom = f.domain;
 nfuns = numel(f.funs);
@@ -113,14 +81,14 @@ x(1) = xx(I1,1);
 x(2) = xx(I2,2);
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%% BREAKPOINT VALUES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-ind = find(f.impulses(:,1,1) < y(1));
+ind = find(f.pointValues < y(1));
 if ( ~isempty(ind) )
-    [y(1), k] = min(f.impulses(ind,1,1));
+    [y(1), k] = min(f.pointValues(ind,1));
     x(1) = dom(ind(k));
 end
-ind = find(f.impulses(:,1,1) > y(2));
+ind = find(f.pointValues(:,1) > y(2));
 if ~isempty(ind)
-    [y(2), k] = max(f.impulses(ind,1,1));
+    [y(2), k] = max(f.pointValues(ind,1));
     x(2) = dom(ind(k));
 end
 
@@ -137,7 +105,7 @@ function [y, x] = localMinAndMax(f)
 % Compute the turning points:
 df = diff(f);
 % Ensure endpoints are included:
-df.impulses([1,end],:,1) = 0;
+df.pointValues([1,end],:) = 0;
 % Call ROOTS():
 x = roots(df);
 

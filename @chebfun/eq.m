@@ -39,8 +39,8 @@ for k = 1:numel(h.funs)
     end
 end
 
-% Impulses:
-h.impulses = ~h.impulses;
+% pointValues:
+h.pointValues = ~h.pointValues;
 
 % Tidy the result:
 h = merge(h);

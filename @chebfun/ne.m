@@ -37,8 +37,8 @@ for k = 1:numel(h.funs)
     end
 end
 
-% Impulses:
-h.impulses = double(logical(h.impulses));
+% pointValues:
+h.pointValues = double(logical(h.pointValues));
 
 % Tidy the result:
 h = merge(h);

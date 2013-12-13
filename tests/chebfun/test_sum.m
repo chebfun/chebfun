@@ -22,14 +22,10 @@ pass(2) = abs(sum(f) - (exp(1) - 1)) < 10*vscale(f)*epslevel(f);
 ft = f.';
 pass(3) = abs(sum(ft) - (exp(1) - 1)) < 10*vscale(ft)*epslevel(ft);
 
-% Check operation with impulses.
-f.impulses(3,1,2) = 2;
-pass(4) = abs(sum(f) - (exp(1) + 1)) < 10*vscale(f)*epslevel(f);
-
 % Check sum over a subdomain.
-pass(5) = abs(sum(f, [-1 1]) - (exp(1) + 1)) < 10*vscale(f)*epslevel(f);
-pass(6) = abs(sum(f, [-1 0])) < 10*vscale(f)*epslevel(f);
-pass(7) = abs(sum(f, [0 1]) - (exp(1) + 1)) < 10*vscale(f)*epslevel(f);
+pass(4) = abs(sum(f, [-1 1]) - (exp(1) - 1)) < 10*vscale(f)*epslevel(f);
+pass(5) = abs(sum(f, [-1 0])) < 10*vscale(f)*epslevel(f);
+pass(6) = abs(sum(f, [0 1]) - (exp(1) + 1)) < 10*vscale(f)*epslevel(f);
 
 % Check sum between chebfun limits.
 f = chebfun(@exp, [-1 -0.5 0 0.5 1], pref);
@@ -58,8 +54,7 @@ pass(12) = norm(sum(ft) - [0 2*sin(1) (exp(1) - exp(-1))], inf) < ...
     10*vscale(ft)*epslevel(ft);
 
 g = f;
-g.impulses(2,2,2) = 1;
-pass(13) = norm(sum(g) - [0 (2*sin(1) + 1) (exp(1) - exp(-1))], inf) < ...
+pass(13) = norm(sum(g) - [0 2*sin(1) (exp(1) - exp(-1))], inf) < ...
     10*vscale(g)*epslevel(g);
 
 pass(14) = norm(sum(f, [-1 1]) - [0 2*sin(1) (exp(1) - exp(-1))], inf) < ...

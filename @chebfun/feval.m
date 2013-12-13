@@ -24,9 +24,6 @@ function fx = feval(f, x, varargin)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-% [TODO]: Add support for multi-rowed impulses and deltas and update the
-% preceding text accordingly.
-
 % If F or x are empty, there's nothing to do.
 if ( isempty(f) || isempty(x) )
     fx = [];
@@ -86,14 +83,12 @@ if ( nargin > 2 )
     end
     % We deal with this by reassigning imps to be left/right values.
     if ( lrFlag(1) || lrFlag(3) ) % left
-        f.impulses(:,:,2:end) = []; % Level 2 imps are not needed here
         for j = 1:numFuns
-            f.impulses(j+1,:,1) = get(funs{j}, 'rval');
+            f.pointValues(j+1,:) = get(funs{j}, 'rval');
         end
     elseif ( lrFlag(2) || lrFlag(4) ) % right
-        f.impulses(:,:,2:end) = []; % Level 2 imps are not needed here
         for j = 1:numFuns
-            f.impulses(j,:,1) = get(funs{j}, 'lval');
+            f.pointValues(j,:) = get(funs{j}, 'lval');
         end
     end
 end

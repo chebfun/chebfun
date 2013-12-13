@@ -12,8 +12,8 @@ if ( isempty(f) )
     return;
 end
 
-% Check for NaN impulse values.
-if ( any(isnan(f.impulses(:))) )
+% Check for NaN pointValues:
+if ( any(isnan(f.pointValues(:))) )
     out = true;
     return;
 end

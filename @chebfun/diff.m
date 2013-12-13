@@ -80,7 +80,7 @@ function f = diffContinuousDim(f, n)
 funs = f.funs;
 numFuns = numel(funs);
 numCols = size(f.funs{1}, 2);
-imps = f.impulses;
+pointValues = f.pointValues;
 
 % Set a tolerance: (used for introducing Dirac deltas at jumps)
 tol = epslevel(f)*hscale(f);
@@ -105,17 +105,17 @@ for j = 1:n
     end
 
     % Compute new function values at breaks using JUMPVALS():
-    imps(:,:,1) = chebfun.getValuesAtBreakpoints(funs);
+    pointValues = chebfun.getValuesAtBreakpoints(funs);
     % Update impulses:
-    if ( size(imps, 3) > 1 )
-       imps = cat(3, imps(:,:,1), newDeltas, imps(:,:,2:end));
-    elseif ( any(newDeltas) )
-       imps(:,:,2) = newDeltas;
-    end
+%     if ( size(pointValues, 3) > 1 )
+%        pointValues = cat(3, pointValues(:,:,1), newDeltas, pointValues(:,:,2:end));
+%     elseif ( any(newDeltas) )
+%        pointValues(:,:,2) = newDeltas;
+%     end
 
     % Reassign data to f:
     f.funs = funs;
-    f.impulses = imps;
+    f.pointValues = pointValues;
 
 end
 

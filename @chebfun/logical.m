@@ -14,8 +14,8 @@ for k = 1:numel(f.funs)
     f.funs{k} = logical(f.funs{k});
 end
 
-% Impulses:
+% pointValues:
 tol = vscale(f)*epslevel(f);
-f.impulses = abs(f.impulses(:,:,1)) > tol;
+f.pointValues = abs(f.pointValues) > tol;
 
 end

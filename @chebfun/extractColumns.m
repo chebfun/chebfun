@@ -32,7 +32,7 @@ for k = 1:numel(f.funs)
     f.funs{k} = extractColumns(f.funs{k}, colIdx);
 end
 
-% Extract the columns from the impulses:
-f.impulses = f.impulses(:,colIdx,:);
+% Extract the columns from the pointValues:
+f.pointValues = f.pointValues(:,colIdx);
 
 end

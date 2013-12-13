@@ -12,9 +12,8 @@ if ( isempty(f) )
     return
 end
 
-% Take real part of the impulses:
-% [TODO]:  Is this the right thing to do for higher-order impulses?
-f.impulses = real(f.impulses);
+% Take real part of the pointValues:
+f.pointValues = real(f.pointValues);
 
 % Take real part of the FUNs:
 for k = 1:numel(f.funs)

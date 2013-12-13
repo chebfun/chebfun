@@ -67,8 +67,8 @@ if ( isa(f, 'chebfun') )
         h.funs{k} = rdivide(f.funs{k}, g.funs{k});
     end
     
-    % Divide the impulses:
-    h.impulses = f.impulses(:,:,1)./g.impulses(:,:,1);
+    % Divide the pointValues:
+    h.pointValues = f.pointValues./g.pointValues;
     
 else
 
@@ -80,8 +80,8 @@ else
         h.funs{k} = rdivide(f, g.funs{k});
     end
     
-    % Divide the impulses:
-    h.impulses = f./g.impulses(:,:,1);
+    % Divide the pointValues:
+    h.pointValues = f./g.pointValues;
     
 end
 

@@ -77,8 +77,6 @@ function f = sumColumns(f)
     for k = 1:numel(f.funs)
         f.funs{k} = sum(f.funs{k}, 2);
     end
-    % Sum the impulses across the columns:
-    f.impulses = sum(f.impulses, 2);
 end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%% SUM the whole domain %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

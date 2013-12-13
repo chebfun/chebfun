@@ -30,7 +30,7 @@ pass(4) = rs == 0 && numel(rh) == 2 && rh(1) == -1 && rh(2) == 0;
 
 % Test an array-valued function:
 f = chebfun(@(x) [sin(2*pi*x), sign(x), x.^2-.5, 1+0*x], [-1, 0, 1], 'extrapolate', 'on');
-f.impulses(3,4) = 0;
+f.pointValues(3,4) = 0;
 exact = NaN(5,4);
 exact(:,1) = linspace(-1,1,5); exact(1,[2,4]) = [0,1]; exact([1,2],3) = [-1,1]./sqrt(2);
 r = roots(f);
