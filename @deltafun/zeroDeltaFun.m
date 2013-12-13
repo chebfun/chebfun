@@ -15,6 +15,4 @@ s = deltafun();
 s.funPart = f;
 s.impulses = [];
 s.location = [];
-s.domain = domain;
-s.isTransposed = 0;
 end

@@ -10,8 +10,8 @@ if ( numel(f) > 1 )
     out = false;    
 elseif ( numel(f) == 1 )
     % Check if the delta part and the Chebfun is empty:
-    out = isempty(f.location) & isempty(f.impulses);
-    out = out & isempty(f.domain) & isempty(f.funPart);
+    out = isempty(f.location) | isempty(f.impulses);
+    out = out & isempty(f.funPart);
 else 
     % numel(f) == 0, so f must be empty.
     out = true;    

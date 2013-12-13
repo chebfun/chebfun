@@ -2,10 +2,6 @@ function f = mtimes(f, c)
 %*   Multiplication of DELTAFUN objects.
 %   F*C or C*F multiplies a DELTAFUN F by a scalar or matrix C.
 % 
-%   [TODO]: Does the following make senes:
-%   If F is an array-valued SINGFUN and C is a matrix of appropriate dimension,
-%   then the natural matrix multiplication is performed.
-%
 % See also TIMES.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
@@ -15,8 +11,8 @@ if ( isempty(f) || isempty(c) )     % DELTAFUN * [] = []
     f = []; 
     return
     
-elseif ( ~isa(f, 'DELTAFUN') )       % First input is not a DELTAFUN
-    % DOUBLE*SINGFUN requires that the double is scalar.
+elseif ( ~isa(f, 'deltafun') )       % First input is not a DELTAFUN
+    % DOUBLE*DELTAFUN requires that the double to be scalar.
     if ( numel(f) > 1 )
         error('CHEBFUN:DELTAFUN:mtimes:size', ...
               'Inner matrix dimensions must agree.');
@@ -28,11 +24,12 @@ elseif ( ~isa(f, 'DELTAFUN') )       % First input is not a DELTAFUN
     
 elseif ( isa(c, 'double') )         % DELTAFUN * double  
     % Multiply c with the smooth part:
-    f.smoothPart = f.smoothPart * c;    
+    f.funPart = f.funPart * c;    
+    f.impulses = f.impulses * c;
     
-elseif ( isa(c, 'singfun') )        % DELTAFUN * DELTAFUN  
-    error('CHEBFUN:SINGFUN:mtimes:singfunMtimesSingfun', ...
-          'Use .* to multiply SINGFUN objects.');
+elseif ( isa(c, 'deltafun') )        % DELTAFUN * DELTAFUN  
+    error('CHEBFUN:DELTAFUN:mtimes:deltafunMtimesdeltafun', ...
+          'Use .* to multiply DELTAFUN objects.');
     
 else                                % DELTAFUN * ???
     error('CHEBFUN:SINGFUN:mtimes:singfunMtimesUnknown', ...

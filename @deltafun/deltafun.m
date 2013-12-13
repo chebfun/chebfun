@@ -25,10 +25,7 @@ classdef deltafun
         impulses
         
         % location
-        location
-        
-        % isTransposed flag
-        isTransposed
+        location       
     end
     
     %% CLASS CONSTRUCTOR:
@@ -86,7 +83,9 @@ classdef deltafun
                 else
                     obj.funPart = funPart;
                 end
-                                
+                              
+                %% Return a FUN object if impulses or location are empty.
+                % This is important:
                 if ( isempty(impulses) || isempty(location) )
                     % Return a fun object in this case:
                     obj = funPart;

@@ -31,14 +31,11 @@ end
 %% DELTAFUN + DELTAFUN
 if ( isa(f, 'deltafun') && isa(g, 'deltafun') )
     %[TODO]: This should be based on tolerances?
-    if ( f.domain ~= g.domain ) 
+    domF = f.funPart.domain;
+    domG = g.funPart.domain;
+    if ( any( [domF(1) domF(end)] ~= [domG(1) domG(end)] ) ) 
         error( 'CHEBFUN:DELTAFUN:plus', 'f and g must have the same domain' );
-    else
-        s.domain = f.domain;
     end
-    
-    %[TODO]: what should we do here?
-    s.isTransposed = 0;
     
     s.funPart = f.funPart + g.funPart;
     
@@ -61,17 +58,10 @@ if ( isa(f, 'deltafun') && isa(g, 'deltafun') )
     s = simplify(s);       
 end
 
-%% %%%%%%%%%%%%% DELTAFUN + CHEBFUN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% This should be removed, since CHEBFUNs should be casted to DELTAFUNs first and
-% then added
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% %%%%%%%%%%%%% DELTAFUN + FUN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Recursive call: If g is a chebfun, upgrade it to a deltafun and call plus
 % again.
-if ( isa(f, 'deltafun') && isa(g, 'chebfun') )
-    %[TODO]: This should be based on tolerances?
-    if ( f.domain ~= g.domain ) 
-        error( 'CHEBFUN:DELTAFUN:plus', 'f and g must have the same domain' );
-    end
+if ( isa(f, 'deltafun') && isa(g, 'fun') )
     t = deltafun.zeroDeltaFun(g.domain);
     t.funPart = g;
     s = f + t;

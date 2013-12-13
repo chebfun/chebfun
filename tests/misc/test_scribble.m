@@ -12,7 +12,7 @@ end
 lastwarn('');
 
 % To pass, this call to scribble() must not crash or generate any warnings.
-c = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,;:?!''"`_ )([]{}-+*/^=<>\|¬%#~@$£&';
+c = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,;:?!''"`_ )([]{}-+*/^=<>\|%#~@$&';
 s = scribble(c);
 
 [wmsg, wid] = lastwarn();

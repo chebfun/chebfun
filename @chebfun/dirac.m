@@ -49,7 +49,7 @@ tol = chebfunpref.eps;
 
 dom = f.domain;
 a = dom(1);
-b = dom(2);
+b = dom(end);
 
 % Extract the 'normal' roots of f:
 r = roots(f,'nojump','nozerofun');
