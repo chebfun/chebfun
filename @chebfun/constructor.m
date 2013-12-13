@@ -36,9 +36,6 @@ if ( isinf(hscale) )
     hscale = 1;
 end
 vscale = pref.scale;
-if ( isnan(vscale) )
-    vscale = 0;
-end
 
 % Sanity check:
 if ( iscell(op) && (numel(op) ~= numIntervals) )
