@@ -1,4 +1,4 @@
-classdef deltafun < fun
+classdef deltafun
     %DELTAFUN   Class for distributions based on Dirac-delta functions on arbitrary
     %intervals.
     %
@@ -16,10 +16,10 @@ classdef deltafun < fun
     % Copyright 2013 by The University of Oxford and The Chebfun Developers.
     % See http://www.chebfun.org/ for Chebfun information.
     
-    %% Properties of SINGFUN objects
+    %% Properties of DELTAFUN objects
     properties ( Access = public )
         % Smooth part of the representation.
-        funPart     % (smoothfun)
+        funPart     % (classical function)
         
         % [TODO]: Change this documentation:
         % IMPULSES is a three-dimensional array storing information about the
@@ -34,6 +34,8 @@ classdef deltafun < fun
         
         % location
         location       
+        
+        % Added here to make sure deltafuns respect fun's requirements.       
     end
     
     %% CLASS CONSTRUCTOR:
@@ -279,6 +281,9 @@ classdef deltafun < fun
         
         % remove zero columns
         [A, v] = cleanColumns(A, v);
+        
+        % Create map
+        map = createMap(ends)
         
         % remove zero trailing rows
         A = cleanRows(A);
