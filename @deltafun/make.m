@@ -16,6 +16,6 @@ function f = make(varargin)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-f = singfun(varargin{:}); 
+f = deltafun(varargin{:}); 
 
 end

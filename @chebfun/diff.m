@@ -90,19 +90,26 @@ for j = 1:n
     vs = get(f, 'vscale-local');
 
     % Detect jumps in the original function and create new deltas.
-    newDeltas = zeros(numFuns + 1, numCols, 1);
+    deltaMag = zeros(numFuns + 1, numCols);
     for k = 1:numFuns-1
         jmp = get(funs{k+1}, 'lval') - get(funs{k}, 'rval');
         scl = 0.5*(vs(k) + vs(k+1,:));
         if ( any(abs(jmp) > tol*scl) )
-           newDeltas(k+1,:,:) = jmp;
+           deltaMag(k+1, :) = jmp;
         end
     end
 
     % Differentiate each FUN in turn:
     for k = 1:numFuns
         funs{k} = diff(funs{k});
+        % If there is a delta function at the join, recreate the fun using the
+        % deltafun constructor:
+        % [TODO]: This does not handle array valuedness, think more.
+        if ( deltaMag(k, 1) || deltaMag(k+1, 1) )
+            funs{k} = deltafun(funs{k}, [deltaMag(k)/2, deltaMag(k+1)/2], funs{k}.domain );
+        end
     end
+    
 
     % Compute new function values at breaks using JUMPVALS():
     pointValues = chebfun.getValuesAtBreakpoints(funs);

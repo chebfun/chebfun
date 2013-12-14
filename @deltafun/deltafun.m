@@ -1,4 +1,4 @@
-classdef deltafun
+classdef deltafun < fun
     %DELTAFUN   Class for distributions based on Dirac-delta functions on arbitrary
     %intervals.
     %
@@ -140,6 +140,9 @@ classdef deltafun
     %% METHODS IMPLEMENTED BY THIS CLASS.
     methods
         
+        % Compose a FUN with an operator or another FUN
+        f = compose(f, op, g, pref)
+        
         % Complex conjugate of a DELTAFUN.
         f = conj(f)
         
@@ -166,6 +169,9 @@ classdef deltafun
         
         % Imaginary part of a DELTAFUN.
         f = imag(f)
+        
+        % Compute the inner product of two FUN objects.
+        out = innerProduct(f, g)
         
         % Innerproduct, equivalent to action of a distribution 
         % on a chebfun
@@ -224,6 +230,10 @@ classdef deltafun
         
         % Basic linear plot for DELTAFUN objects.
         varargout = plot(f, varargin)
+        
+        % Data for plotting a FUN
+        data = plotData(f, g);
+
                
         % Addition of two DELTAFUN objects.
         f = plus(f, g)       
@@ -276,6 +286,9 @@ classdef deltafun
         % Find intersection based on some tolerance
         [x, idxV, idxW] = numIntersect( V, W, tol)
         
+        % Constructor shortcut
+        %[TODO]: revisit this
+        f = make(varargin)
         % Merge columns of a matrix based on duplicate values in v.
         [A, v] = mergeColumns(A, v)
         % Retrieve and modify preferences for this class.
@@ -283,6 +296,7 @@ classdef deltafun
         
         % Costruct a zero DELTAFUN
         s = zeroDeltaFun(domain)
+        
     end
     
 end

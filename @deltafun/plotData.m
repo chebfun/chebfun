@@ -1,4 +1,4 @@
-function data = plotData(f)
+function data = plotData(f, g)
 %PLOTDATA   Useful data values for plotting a SINGFUN object.
 %   DATA = PLOTDATA(F) extracts PLOTDATA of the smooth part of F
 %   and then scales it by the singular factors given in the EXPONENTS of F

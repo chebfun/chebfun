@@ -76,7 +76,7 @@ elseif ( abs(feval(f, b, 'left')) < 100 * tol* f.vscale )
 end
 
 % initialize a zero chebfun
-g = chebfun(0, [a, b]);
+d = chebfun(0, [a, b]);
 
 % If there is no root of F within the domain or at the
 % end points, return with a zero chebfun:
@@ -108,6 +108,6 @@ if ( rootB )
 end
 
 % Call the deltafun constructor directly:
-d = deltafun(g.funs{1}, deltaMag.', r.');
+d.funs{1} = deltafun(d.funs{1}, deltaMag.', r.');
         
 end
