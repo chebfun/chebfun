@@ -9,6 +9,10 @@ end
 
 isFun = isFunVariable(L); 
 
+if isa( f, 'chebfun' )
+    f = chebmatrix(f);
+end
+
 %% Set up the discretisation:
 if ( isa(discType, 'function_handle') )
     % Create a discretization object

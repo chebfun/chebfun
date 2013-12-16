@@ -8,17 +8,19 @@ dom = L.domain;
 cont = L.continuity;
 
 if ( ( nargin < 2 ) || ~makePeriodic )
-    left = dom(2:end);
+    % Use the interior breakpoints.
+    left = dom(2:end-1);
     right = left;
 else
+    % Create periodic conditions.
     left = dom(end);
     right = dom(1);
 end
     
 
-if ( max(d) > 0 ) && ( length(dom) > 2 )
+if ( max(d) > 0 ) && ( ~isempty(left) )
     
-    C = domainContinuity(L,max(d)-1,left,right);
+    C = domainContinuity(dom,max(d)-1,left,right);
     
     % Each function variable gets a zero functional block; each scalar variable
     % gets a scalar zero.
@@ -62,8 +64,8 @@ A = linBlock.eye(dom);
 D = linBlock.diff(dom,1);
 for m = 0:maxorder
     for k = 1:length(left)
-        El = linBlock.feval(left(k),dom,'-');
-        Er = linBlock.feval(right(k),dom,'+');
+        El = linBlock.feval(left(k),dom,-1);
+        Er = linBlock.feval(right(k),dom,+1);
         C{m+1,k} = (El-Er)*A;
     end
     A = D*A;
