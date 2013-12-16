@@ -358,7 +358,7 @@ classdef chebpref
                 pref.singPrefs.maxPoleOrder');
             fprintf([padString('    tech:') '''%s''\n'], ...
                 pref.tech)
-            fprintf('    techPrefs:\n');
+            fprintf('    techPrefs\n');
 
             % Format and print values of tech preferences.
             for field = fieldnames(pref.techPrefs).'
@@ -367,6 +367,9 @@ classdef chebpref
 
                 if ( isempty(pref.techPrefs.(field)) )
                    fprintf([printStr 'empty\n']);
+                elseif ( ischar(pref.techPrefs.(field)) && ...
+                         isrow(pref.techPrefs.(field)) )
+                   fprintf([printStr '''%s''\n'], pref.techPrefs.(field))
                 elseif ( numel(pref.techPrefs.(field)) > 1 )
                    fprintf([printStr class(pref.techPrefs.(field)) ' array\n']);
                 elseif ( isfloat(pref.techPrefs.(field)) )
