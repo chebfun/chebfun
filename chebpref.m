@@ -320,38 +320,63 @@ classdef chebpref
         %   DISPLAY(PREF) prints out a list of the preferences stored in the
         %   CHEBPREF object PREF.
 
+            % Compute the screen column in which pref values start.
+            valueCol = 33; % length('    enableSingularityDetection   ');
+            for field = fieldnames(pref.techPrefs).'
+                field = field{1};
+                col = length(['        ' field '  ']);
+                if ( col > valueCol )
+                    valueCol = col;
+                end
+            end
+
+            % A subfunction to pad strings for formatting.
+            function s = padString(s)
+            %PADSTRING   Add whitespace to string for formatting.
+                s = [s repmat(' ', 1, valueCol - length(s))];
+            end
+
+            % Print values of "known" preferences.
             fprintf('chebpref object with the following preferences:\n');
-            fprintf('    maxTotalLength               %d\n', ...
+            fprintf([padString('    maxTotalLength') '%d\n'], ...
                 pref.maxTotalLength);
-            fprintf('    domain                       [%g, %g]\n', ...
+            fprintf([padString('    domain') '[%g, %g]\n'], ...
                 pref.domain(1), pref.domain(end));
-            fprintf('    enableBreakpointDetection    %d\n', ...
+            fprintf([padString('    enableBreakpointDetection') '%d\n'], ...
                 pref.enableBreakpointDetection);
             fprintf('    breakpointPrefs\n');
-            fprintf('        splitMaxLength           %d\n', ...
+            fprintf([padString('        splitMaxLength') '%d\n'], ...
                 pref.breakpointPrefs.splitMaxLength');
-            fprintf('        splitMaxTotalLength      %d\n', ...
+            fprintf([padString('        splitMaxTotalLength') '%d\n'], ...
                 pref.breakpointPrefs.splitMaxTotalLength');
-            fprintf('    enableSingularityDetection   %d\n', ...
+            fprintf([padString('    enableSingularityDetection') '%d\n'], ...
                 pref.enableSingularityDetection);
             fprintf('    singPrefs\n');
-            fprintf('        exponentTol              %d\n', ...
+            fprintf([padString('        exponentTol') '%d\n'], ...
                 pref.singPrefs.exponentTol');
-            fprintf('        maxPoleOrder             %d\n', ...
+            fprintf([padString('        maxPoleOrder') '%d\n'], ...
                 pref.singPrefs.maxPoleOrder');
-            fprintf('    tech                         %s\n', ...
+            fprintf([padString('    tech') '''%s''\n'], ...
                 pref.tech)
             fprintf('    techPrefs\n');
-            fprintf('        eps                      %0.16g\n', ...
-                pref.techPrefs.eps)
-            fprintf('        maxLength                %d\n', ...
-                pref.techPrefs.maxLength)
-            fprintf('        exactLength              %d\n', ...
-                pref.techPrefs.exactLength)
-            fprintf('        extrapolate              %d\n', ...
-                pref.techPrefs.extrapolate)
-            fprintf('        sampleTest               %d\n', ...
-                pref.techPrefs.sampleTest)
+
+            % Format and print values of tech preferences.
+            for field = fieldnames(pref.techPrefs).'
+                field = field{1};
+                printStr = padString(['        ' field]);
+
+                if ( isempty(pref.techPrefs.(field)) )
+                   fprintf([printStr 'empty\n']);
+                elseif ( numel(pref.techPrefs.(field)) > 1 )
+                   fprintf([printStr class(pref.techPrefs.(field)) ' array\n']);
+                elseif ( isfloat(pref.techPrefs.(field)) )
+                   fprintf([printStr '%0.16g\n'], pref.techPrefs.(field))
+                elseif ( islogical(pref.techPrefs.(field)) )
+                   fprintf([printStr '%d\n'], pref.techPrefs.(field))
+                else
+                   fprintf([printStr class(pref.techPrefs.(field)) '\n']);
+                end
+            end
         end
 
     end
