@@ -398,12 +398,23 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             dom = u.domain;
             I = linop.eye(dom);
             Z = linop.zeros(dom);
-            blocks = cell(1, m);
-            for j = 1:m
-                blocks{1,j} = Z;
+%             blocks = cell(1, m);
+%             for j = 1:m
+%                 blocks{1,j} = Z;
+%             end
+%             blocks{1,k} = I;
+%             u.jacobian = chebmatrix(blocks); % Does work with chebmatrix(blocks{:})
+            % TODO: This should be using repmat and a one-liner constructer with
+            % a horzcat of elements
+            deriv = [];
+            for j = 1:k-1   % Blocks on the left of I
+                deriv = [deriv, Z];
             end
-            blocks{1,k} = I;
-            u.jacobian = chebmatrix(blocks);
+            deriv = [deriv, I]; % Identity block
+            for j = k+1:m   % Blocks on the right of I
+                deriv = [deriv, Z];
+            end
+            u.jacobian = deriv;
         end        
    
         function g = sec(f)

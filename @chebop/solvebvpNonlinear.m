@@ -54,8 +54,10 @@ lambda = 1;
 res = res - rhs;
 while ( ~terminate )
     % Compute a Newton update
-    delta = -(L\res);
-    
+    [delta, disc] = linsolve(L, res, discType);
+    % We had two output arguments above, need to negate delta
+    delta = -delta;
+    %     delta = -(L\res);     % Old fashioned
     % Store the norm of the update
     normDelta = mynorm(delta);
     
@@ -105,7 +107,15 @@ while ( ~terminate )
             
             % Compute a simplified Newton step, using the current derivative of
             % the operator, but with a new right-hand side.
-            deltaBar = -(L\deResFunTrial);
+            [deltaBar, disc] = linsolve(L, deResFunTrial, disc);
+            
+            % We had two output arguments above, need to negate deltaBar
+%             deltaBar = -deltaBar;
+            deltaBar = -(L\deResFunTrial);    % Old fashion, to be removed
+            % TODO: We also need to update the values of the RHS for the BCs
+            % here!
+            
+
             
             % The norm of the simplified Newton step is used to compute a
             % contraction factor
@@ -205,7 +215,7 @@ while ( ~terminate )
         res = res - rhs;
         
         % Assign the preferred discretisation method to the linop.
-        L.discretizer = discType;
+%         L.discretizer = discType;
     end
 end
 
