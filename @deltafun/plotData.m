@@ -20,28 +20,31 @@ else
     data = plotData(f.funPart, g.funPart);
 end
 
-% Append vertical lines for deltafunctions
-if ( ~isempty(f.impulses) )
-    % We can only plot the delta functions, not their derivatives:
-    deltaMag = f.impulses(1, :).';
-    deltaLoc = f.location.';
-    
-    % Make vertical line data:
-    deltaY = zeros(2*length(deltaMag), 1);
-    deltaY(1:2:end) = zeros(length(deltaMag), 1);
-    deltaY(2:2:end) = deltaMag;
-    deltaX = zeros(2*length(deltaMag), 1);
-    deltaX(1:2:end) = deltaLoc;
-    deltaX(2:2:end) = deltaLoc;
-    
-    % Append it to existing line data:
-    data.xLine = [data.xLine; deltaX];
-    data.yLine = [data.yLine; deltaY];
-    
-    % Sort the data
-    [data.xLine, index] = sort(data.xLine); 
-    data.yLine = data.yLine(index);
-    
-end
+% [TODO]: This is commented out since chebfun plot will figure out about
+% deltafunctions
+%
+% % Append vertical lines for deltafunctions
+% if ( ~isempty(f.impulses) )
+%     % We can only plot the delta functions, not their derivatives:
+%     deltaMag = f.impulses(1, :).';
+%     deltaLoc = f.location.';
+%     
+%     % Make vertical line data:
+%     deltaY = zeros(2*length(deltaMag), 1);
+%     deltaY(1:2:end) = zeros(length(deltaMag), 1);
+%     deltaY(2:2:end) = deltaMag;
+%     deltaX = zeros(2*length(deltaMag), 1);
+%     deltaX(1:2:end) = deltaLoc;
+%     deltaX(2:2:end) = deltaLoc;
+%     
+%     % Append it to existing line data:
+%     data.xLine = [data.xLine; deltaX];
+%     data.yLine = [data.yLine; deltaY];
+%     
+%     % Sort the data
+%     [data.xLine, index] = sort(data.xLine); 
+%     data.yLine = data.yLine(index);
+%     
+% end
     
 end

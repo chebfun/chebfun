@@ -86,43 +86,10 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Dispaly for delta functions:
-% This is UGLY at the moment.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-maxRows = 0;
-numCols = 0;
-for j = 1:numFuns
-    if ( isa(f.funs{j}, 'deltafun') )
-        d = f.funs{j};
-        if ( ~isempty(d.impulses) )
-            m = size(d.impulses, 1);
-            numCols = numCols + size(d.impulses, 2);
-            if ( m > maxRows )
-                maxRows = m;
-            end                        
-        end        
-    end
-end
-if ( maxRows > 0 )
-    deltaMag = zeros(maxRows, numCols);
-    deltaLoc = zeros(1, numCols);
-
-    k = 1;
-    for j = 1:numFuns
-        if ( isa(f.funs{j}, 'deltafun') )
-            d = f.funs{j};
-            if ( ~isempty(d.impulses) )
-                sz = size(d.impulses);
-                deltaMag(1:sz(1), k:k+sz(2)-1) = d.impulses;
-                deltaLoc(1, k:k+sz(2)-1) = d.location;
-                k = k + sz(2);
-            end
-        end
-    end
-    [deltaMag, deltaLoc] = deltafun.mergeColumns(deltaMag, deltaLoc);
-    [deltaMag, deltaLoc] = deltafun.cleanColumns(deltaMag, deltaLoc);
-    deltaMag = deltafun.cleanRows(deltaMag);
-    fprintf('Delta functions:\n')
-    
+[deltaMag, deltaLoc] = getDeltaFunctions(f);
+if ( ~isempty(deltaMag) )    
+    fprintf('Delta functions:\n')    
     m = size(deltaMag, 1);
     n = size(deltaMag, 2);
     for i = 1: m

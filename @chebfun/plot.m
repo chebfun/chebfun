@@ -149,7 +149,7 @@ while ( ~isempty(varargin) )
         newData.yPoints(idx,:) = [];
         idx = newData.xJumps < interval(1) | newData.xJumps > interval(end);
         newData.xJumps(idx) = [];
-        newData.yJumps(idx,:) = [];
+        newData.yJumps(idx,:) = [];        
     end
     
     % Append new data to the arrays which will be passed to built in PLOT():

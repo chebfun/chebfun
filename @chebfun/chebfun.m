@@ -286,6 +286,9 @@ classdef chebfun
         % Get properties of a CHEBFUN object.
         out = get(f, prop);
         
+        % Get Delta functions withing a chebfun
+        [deltaMag, deltLoc] = getDeltaFunctions(f);
+        
         % Horizontal scale of a CHEBFUN object.
         out = hscale(f);
 
