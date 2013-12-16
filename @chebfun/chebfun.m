@@ -214,7 +214,7 @@ classdef chebfun
         f = spline(x, y, d);
         
         % Which interval is a point in?
-        out = whichInterval(dom, x);
+        out = whichInterval(dom, x, direction);
         
     end
 

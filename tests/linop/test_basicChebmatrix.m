@@ -2,12 +2,12 @@ function pass = test_basicChebmatrix
 
 %% Building blocks
 dom = [-2 -0.5 1 2];
-I = linop.eye(dom);
-D = linop.diff(dom);
-Z = linop.zeros(dom);
+I = linBlock.eye(dom);
+D = linBlock.diff(dom);
+Z = linBlock.zeros(dom);
 x = chebfun('x', dom);
 u = sin(x.^2);
-U = linop.mult(u);   
+U = linBlock.mult(u);   
 
 D5 = [ 
   -5.499999999999999   6.828427124746189  -2.000000000000000   1.171572875253810  -0.500000000000000
@@ -18,9 +18,8 @@ D5 = [
 ];
 
 %%
-A = chebmatrix( {I,Z;D,U} );
+A = [ I,Z; D,U ];
 M = matrix(A,[5 5 5]);
-M = cell2mat(M);
 DD = blkdiag(2/1.5*D5,2/1.5*D5,2/1*D5);
 [xx, ww] = chebpts([5 5 5], dom);
 UU = diag(u(xx));
@@ -28,10 +27,9 @@ err(1) = norm( M - [ eye(15), zeros(15); DD, UU ]);
 
 %% more complicated chebmatrix
 A = [ I, x, -3*I; 
-    linop.sum(dom), 5, linop.feval(dom(end),dom);
+    linBlock.sum(dom), 5, linBlock.feval(dom(end),dom);
     D, chebfun(1,dom), U ];
 M = matrix(A,[5 5 5]);
-M = cell2mat(M);
 MM = [ eye(15), xx, -3*eye(15);  
     ww, 5, [zeros(1,14) 1];
     DD, ones(15,1), UU ];

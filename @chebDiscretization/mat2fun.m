@@ -43,25 +43,3 @@ for j = 1:numvar
 end
 
 end
-
-% % One by one, convert the eigenvectors to functions and check their cheb
-% % expansion coefficients.
-% U = partition(disc,V2);  % each cell is array valued, for one variable
-%         
-%         % Combine the different variable components into a single variable for
-%         % coefficient conversion.
-%         Z = 0;
-%         for j = ( find(isFun) )
-%             Z = Z + U{j};
-%         end
-%         
-%         z = toFunction(disc,Z);
-%         
-%         % Compute the 1-norm of the polynomial expansions, summing over smooth
-%         % pieces, for all columns.
-%         onenorm = 0;
-%         for j = 1:disc.numIntervals
-%             onenorm = onenorm + sum( abs( chebpoly(z,j) ), 2 );
-%         end
-%    
-% end

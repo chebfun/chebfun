@@ -17,20 +17,29 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         
         % Constructor.
         function A = chebmatrix(data)
-            if isa(data,'chebmatrix')
+            if isempty(data)
+                return
+            elseif isa(data,'chebmatrix')
                 A.blocks = data.blocks;
             elseif isa(data,'chebfun') || isa(data,'linBlock')
                 A.blocks = {data};
             elseif iscell(data)
                 A.blocks = data;
             end
+            
+            % Run this to check domain compatability
+            A.domain;
         end
         
         function d = get.domain(L)
-            isnum = cellfun(@isnumeric,L.blocks);
-            blocks = L.blocks(~isnum);
-            d = cellfun(@(x) x.domain,blocks,'uniform',false);
-            d = chebfun.mergeDomains(d{:}); 
+            if ( isempty(L) )
+                d = [];
+            else
+                isnum = cellfun(@isnumeric,L.blocks);
+                blocks = L.blocks(~isnum);
+                d = cellfun(@(x) x.domain,blocks,'uniform',false);
+                d = chebfun.mergeDomains(d{:});
+            end
         end
         
         function d = getDomain(L)

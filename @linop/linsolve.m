@@ -9,33 +9,37 @@ end
 
 isFun = isFunVariable(L); 
 
+if isa( f, 'chebfun' )
+    f = chebmatrix(f);
+end
+
 %% Set up the discretisation:
+% Set the allowed discretisation lengths: (TODO: A preference?)
+dimVals = floor(2.^[5 6 7 8 8.5 9 9.5 10 10.5 11]);
+
 if ( isa(discType, 'function_handle') )
     % Create a discretization object
     disc = discType(L);  
     
     % Merge domains of the operator and the rhs:
-    disc = mergeDomains(disc,f); 
-    
-    % Set the allowed discretisation lengths: (TODO: A preference?)
-    dimVals = floor(2.^[3 4 5 6 7 8 8.5 9 9.5 10 10.5 11]);
-    
-    % Update the discretistion dimension on unhappy pieces:
+    disc = mergeDomains(disc,f.domain); 
+        
+    % Update the discretization dimension on unhappy pieces:
     disc.dimension = repmat(dimVals(1), 1, numel(disc.domain)-1);
     dimVals(1) = [];
 else
-    % A discretisation is given:
+    % A discretisation is given. The idea is that it probably has an LU
+    % factorization already attached, so try to use it first. Caller beware!
     disc = discType;
-    
-    % TODO: Check discretisation is valid for the given L and f!
-    
-    % Initialise dimVals;
-    dimVals = max(disc.dimension);
+        
+    % Initialise dimVals. Try the given size first, then iterate on the rest. 
+    dim1 = max(disc.dimension);
+    dimVals = [ dim1, dimVals(dimVals > dim1) ];
 end
 
+% Derive automatic continuity conditions if none were given.
 if ( isempty(L.continuity) )
-     % Apply continuity conditions:
-     disc = deriveContinuity(disc);
+     disc.source = deriveContinuity(L);
 end
 
 % Initialise happiness:
@@ -45,14 +49,19 @@ isDone = false(1, numInt);
 %% Loop over a finer and finer grid until happy:
 for dim = dimVals
 
-    % Discretize the operator (incl. constraints/continuity):
-    A = disc.matrix();
+    % Discretize the operator (incl. constraints/continuity), unless there is a
+    % currently valid factorization at hand. 
+    if ( ~isFactored(disc) )
+        A = matrix(disc);
+    else
+        A = [];
+    end
     
     % Discretize the rhs (incl. constraints/continuity):
-    b = disc.rhs(f);
-
+    b = rhs(disc,f);
+ 
     % Solve the linear system:
-    [v, disc] = disc.mldivide(A, b);
+    [v, disc] = mldivide(disc,A, b);
     
     % Convert the different components into cells
     u = partition(disc,v);
@@ -80,7 +89,7 @@ end
 % one by one.
 for k = find( isFun )
     u{k} = disc.toFunction(u{k}); 
-%     u{k} = simplify(u{k}, epsLevel);
+    u{k} = simplify(u{k}, epsLevel);
 end
 
 % Convert to chebmatrix
