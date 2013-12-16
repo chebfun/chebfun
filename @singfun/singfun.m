@@ -111,8 +111,16 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
             
             % Case 1: One input argument.
             if ( nargin == 1 )
-                % Make sure the exponents are empty.
-                exponents = [];
+                if ( isa(op, 'smoothfun') )
+                    % if OP is a SMOOTHFUN, cast it to a SINGFUN:
+                    obj.smoothPart = op;
+                    obj.exponents = [0, 0];
+                    
+                    return
+                else
+                    % Make sure the exponents are empty.
+                    exponents = [];
+                end
             end
             
             % Case 2: Two input arguments.
@@ -300,6 +308,9 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         % Polynomial coefficients of a ONEFUN.
         out = poly(f)
         
+        % SINGFUN power function.
+        f = power(f, b)
+
         % QR factorisation of an array-valued ONEFUN.
         [f, R, E] = qr(f, flag, methodFlag)
         
