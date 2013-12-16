@@ -4,6 +4,8 @@ function g = power(f, b)
 %   power G, or a CHEBFUN F to the CHEBFUN power G. F and or G may be complex.
 %
 %   H = POWER(F, G) is called for the syntax 'F .^ G'.
+%
+% See also SQRT, COMPOSE.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -15,7 +17,17 @@ if ( isempty(f) || isempty(b) )
 end
 
 % [TODO]: This might need to be changed to include SINGFUN features.
-    
+
+% Grab some information for the case where SINGFUN is involved:
+if isa(f, 'chebfun')
+    numFuns = numel(f.funs);
+    singInd = zeros(numFuns, 1);
+    for k = 1:numFuns
+        singInd(k) = isa(f.funs{k}.onefun, 'singfun');
+    end
+    isSing = any( singInd );
+end
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% CHEBFUN .^ CHEBFUN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
 if ( isa(f, 'chebfun') && isa(b, 'chebfun') ) 
     
@@ -38,12 +50,22 @@ elseif ( isa(f, 'chebfun') )                     % CHEBFUN .^ constant
         g = f.*f;
         
     elseif ( (b > 0) && (round(b) == b) )   % Positive integer
-        % Result will be smooth. Call COMPOSE():
-        g = compose(f, @(x) power(x, b));
+        
+        if ( isSing )
+            % If singfun is involved, treat each piece individually:
+            g = f;
+            for k = 1:numFuns
+                g.funs{k} = power(f.funs{k}, b);
+            end
+            g.impulses = g.impulses.^b;
+        else
+            % Result will be smooth. Call COMPOSE():
+            g = compose(f, @(x) power(x, b));
+        end
         
     elseif ( b == .5 )                  % Sqrt
         % Call SQRT():
-        g = sqrt(f);        
+        g = sqrt(f);
         
     else                                % General case
         % [TODO]: implement this properly (i.e., using SINGFUN).

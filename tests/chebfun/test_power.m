@@ -70,6 +70,62 @@ g = x.^x;
 h = chebfun(@(x) [x.^x, exp(1i*x).^exp(1i*x)], [.1, 2]);
 pass(14) = normest(g - h, [.1, 2]) < 10*epslevel(h)*vscale(h);
 
+%% Integration of SINGFUN:
+dom = [-2 7];
+
+% Generate a few random points to use as test values:
+seedRNG(6178);
+domCheck = [dom(1)+0.1 dom(2)-0.1];
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+%% SINGFUN .^ 2:
+pow = -1.5;
+b = 2;
+op = @(x) (x-dom(1)).^pow;
+opExact = @(x) (x-dom(1)).^(b*pow);
+
+pref.singPrefs.exponents = [pow 0];
+f = chebfun(op, dom, pref);
+g = f.^b;
+vals_g = feval(g, x); 
+
+vals_exact = feval(opExact, x);
+err = vals_g - vals_exact;
+pass(15) = ( norm(err, inf) < 1e1*get(f,'epslevel')*norm(vals_exact, inf) );
+
+%% SINGFUN .^ constant integer:
+
+pow = -0.5;
+b = 3;
+op = @(x) sin(100*x).*(x-dom(1)).^pow;
+opExact = @(x) sin(100*x).^b.*(x-dom(1)).^(b*pow);
+
+pref.singPrefs.exponents = [pow 0];
+pref.enableBreakpointDetection = 1;
+f = chebfun(op, dom, pref);
+g = f.^b;
+vals_g = feval(g, x); 
+
+vals_exact = feval(opExact, x);
+err = vals_g - vals_exact;
+pass(16) = ( norm(err, inf) < get(f,'epslevel')*norm(vals_exact, inf) );
+
+%% Square root via POWER - A positive piece-wise example with singularities:
+
+pow = -1.5;
+op = @(x) (sin(100*x).^2+1).*(x-dom(1)).^pow;
+opExact = @(x) sqrt(sin(100*x).^2+1).*(x-dom(1)).^(pow/2);
+
+pref.singPrefs.exponents = [pow 0];
+pref.enableBreakpointDetection = 1;
+f = chebfun(op, dom, pref);
+g = f.^(1/2);
+vals_g = feval(g, x); 
+
+vals_exact = feval(opExact, x);
+err = vals_g - vals_exact;
+pass(17) = ( norm(err, inf) < 1e2*get(f,'epslevel')*norm(vals_exact, inf) );
+
 end
 
 function out = normest(f, dom)

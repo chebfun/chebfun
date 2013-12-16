@@ -162,6 +162,9 @@ classdef bndfun < fun
         % Polynomial coefficients of a BNDFUN.
         out = poly(f)
         
+        % BNDFUN power function.
+        f = power(f, b)
+        
         % QR factorisation of an array-valued BNDFUN.
         [f, R, E] = qr(f, flag)
         

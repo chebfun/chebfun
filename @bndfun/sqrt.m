@@ -10,11 +10,40 @@ function f = sqrt(f)
 lval = get(f, 'lval');                         % Value at left of domain.
 rval = get(f, 'rval');                         % Value at right of domain.
 tol = 100*get(f, 'epslevel')*get(f, 'vscale'); % Tolerance for a root.
-if ( any(abs(lval) < tol) || any(abs(rval) < tol) )
-    f.onefun = singfun(f.onefun);              % Cast f.onefun to a SINGFUN.
-end
 
-% Call SQRT() of the ONEFUN:
-f.onefun = sqrt(f.onefun);
+% Whether F has a vanishing value at any end point determines which SQRT() we'll
+% call, the SMOOTHFUN one or the SINGFUN one.
+
+if ( any(abs(lval) < tol) || any(abs(rval) < tol) )
+    f.onefun = singfun(f.onefun);
+    f.onefun = sqrt(f.onefun);
+    
+    % [TODO]: Revive the loop below for array-valued chebfun.
+    %     
+    %     numFuns = size(f, 2);
+    %
+    %     % Loop over each column:
+    %     for k = 1:numFuns
+    %
+    %         % Extract each column and store them in cells:
+    %         g = extractColumns(f, k);
+    %
+    %         % Cast f.onefun to a SINGFUN:
+    %         g.onefun = singfun(g.onefun);
+    %
+    %         % Call SQRT()@SINGFUN:
+    %         h = sqrt(g.onefun);
+    %
+    %         % Put it back to the corresponding column:
+    %         f = assignColumns(f, k, h);
+    %     end
+    
+else
+    
+    % If there's no vanishing boundary value, then SINGFUN is involved. So call
+    % SMOOTHFUN/SQRT() in a batch:
+    f.onefun = sqrt(f.onefun);
+    
+end
 
 end

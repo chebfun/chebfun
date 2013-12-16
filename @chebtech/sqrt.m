@@ -1,10 +1,23 @@
 function g = sqrt(f)
 %SQRT   Square root of a CHEBTECH.
-%   SQRT(F) returns the square root of a SINGFUN F. Note, it is assumed that F
+%   SQRT(F) returns the square root of a CHEBTECH F. Note, it is assumed that F
 %   is non-zero on its domain.
 
+% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
+
+pref = f.techPref();
+
+% If F is complex, we need to do extrapolation at the end points in order to
+% avoid the wrong sign due to the rounding errors, as F is supposed to have
+% vanishing values at the end points.
+
+if ( ~isreal(f) )
+    pref.extrapolate = 1;
+end
+
 % Simply call the compose function:
-g = compose(f, @sqrt);
+g = compose(f, @sqrt, [], pref);
 
 % Throw a warning if the result is not happy and we find roots in the domain:
 if ( f.ishappy && ~g.ishappy )
