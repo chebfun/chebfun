@@ -10,7 +10,7 @@ u = sin(x.^2);
 U = linop.mult(u);
 
 %% Solve a linear system
-L = linop([ D, -I; I, D ]);
+L = [ D, -I; I, D ];
 f = [x; 0*x ];
 E = linop.eval(dom);
 El = E(dom(1));

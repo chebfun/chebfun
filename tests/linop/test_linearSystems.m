@@ -15,8 +15,8 @@ El = E(dom(1));
 Er = E(dom(end));
 
 %% Solve a linear system 
-L = linop([ D^2, -I, sin(x); C, D, 0*x; linop.zero(dom), El, 4 ]);
-f = [(x-1); 0*x; 1 ];
+L = [ D^2, -I, sin(x); C, D, chebfun(0,dom); linop.zero(dom), El, 4 ] ;
+f = [(x-1); chebfun(0,dom); 1 ];
 B1 = [El, -Er, 0];
 B2 = [linop.sum(dom), El, 0];
 B3 = [Er*D, linop.zero(dom), 0];

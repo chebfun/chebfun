@@ -24,6 +24,13 @@ classdef (Abstract) chebDiscretization
             t = isempty(disc.source);
         end
         
+        function t = isFactored(disc)
+            % This method gives a discretization a chance to store matrix
+            % factors for the purpose of short-circuiting the linsolve process.
+            % By default it never happens. 
+            t = false;
+        end
+        
         % Each discretization is free to replace standard backslash with
         % whatever it likes for the discrete linear system solution. This is the
         % default case. 

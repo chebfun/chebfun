@@ -39,15 +39,17 @@ classdef functionalBlock < linBlock
             %
             
             if ( isnumeric(B) && length(B) == 1 )
-                C = mtimes(B, A);
+                temp = A;
+                A = B;
+                B = temp;
             end
             % TODO: Un-torture this logic.
             if ( isa(B, 'chebfun') )
                 C = A.functionForm;
                 C = C(B);
             elseif ( isnumeric(A) )
-                C = functionalBlock(A.domain);
-                C.stack = A*B.stack(z);
+                C = functionalBlock(B.domain);
+                C.stack = @(z) A*B.stack(z);
                 C.diffOrder = B.diffOrder;
             elseif ( isa(B, 'operatorBlock') )
                 C = functionalBlock(A.domain);

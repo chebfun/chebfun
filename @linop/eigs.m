@@ -108,7 +108,7 @@ disc.domain = dom;
 
 if ( isempty(L.continuity) )
      % Apply continuity conditions:
-     disc = deriveContinuity(disc);
+     disc.source = deriveContinuity(L);
 end
 
 discM = [];
@@ -235,7 +235,7 @@ else            % Unwrap the eigenvectors for output
         u{j} = u{j}*scale;
     end
     
-     varargout = { u, D };
+     varargout = { chebmatrix(u), D };
 end
 
 end

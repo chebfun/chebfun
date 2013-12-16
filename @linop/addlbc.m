@@ -1,8 +1,21 @@
 function L = addlbc(L, op, varargin)
+%ADDLBC  Append to linop constraints (left BC)
+
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
-%ADDLBC  Append to linop constraints (left BC)
+
+if ( size(L,1) > 1 )
+    error('ADDLBC syntax only applies to single-variable operators.')
+end
+
 d = L.domain;
 E = linop.feval(d(1), d);
-L = addbc(L, E*op, varargin{:});
+if isnumeric(op)
+    % It's really just a boundary value.
+    L = addbc(L, E, op);
+else
+    % Compose with the given operator.
+    L = addbc(L, E*op, varargin{:});
+end
+
 end

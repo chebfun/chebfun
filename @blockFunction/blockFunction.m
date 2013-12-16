@@ -4,6 +4,7 @@ classdef blockFunction
         % This property is assigned the callable function that does the
         % correct operation when called on chebfuns.
         func = [];
+        domain
     end
     
     methods
@@ -17,7 +18,9 @@ classdef blockFunction
                 % Convert the given linBlock to its function form by
                 % evaluating its stack.
                 L = varargin{1};
-                A = L.stack( blockFunction([]) );
+                dummy = blockFunction([]);
+                dummy.domain = L.domain;
+                A = L.stack( dummy );
             else
                 % Called with data. Create a regular object. 
                 A.func = varargin{1};
@@ -59,7 +62,7 @@ classdef blockFunction
         end
         
         function Z = zeros(A)
-            Z = blockFunction( @(z) chebfun(0,domain) );
+            Z = blockFunction( @(z) chebfun(0,A.domain) );
         end
         
         function z = zero(A)
