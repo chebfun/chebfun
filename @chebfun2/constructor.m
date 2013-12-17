@@ -140,7 +140,7 @@ while ( ~isHappy )
         
         isHappy = resolvedRows & resolvedCols;
         if ( max(m, n) >= maxLength )  % max number of degrees allows.
-            error('FUN2:CTOR', 'Unresolved with maximum Chebfun length: %u.', maxDegree);
+            error('FUN2:CTOR', 'Unresolved with maximum Chebfun length: %u.', maxLength);
         end
         
     end
