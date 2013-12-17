@@ -114,38 +114,3 @@ if ( (d(1) > x(1)) || (d(end) < x(end)) )
 end
 
 end
-
-function w = baryWeights(x)
-%BARYWEIGHTS   Barycentric weights
-%   W = BARYWEIGHTS(X) returns scaled barycentric weights for the points X. The
-%   weights are scaled such that norm(W, inf) == 1.
-
-% [TODO]: Should this live in the trunk?
-
-n = length(x);
-if ( isreal(x) )
-    C = 4/(max(x) - min(x));   % Capacity of interval.
-else
-    C = 1; % Scaling by capacity doesn't apply for complex nodes.
-end
-
-% [TODO]: Why is the top block not used? (IF 0)
-if ( (n < 2001) && 0 )         % For small n using matrices is faster.
-   V = C*bsxfun(@minus, x, x.');
-   V(logical(eye(n))) = 1;
-   VV = exp(sum(log(abs(V))));
-   w = 1./(prod(sign(V)).*VV).';
-   
-else                           % For large n use a loop
-   w = ones(n,1);
-   for j = 1:n
-       v = C*(x(j) - x); v(j) = 1;
-       vv = exp(sum(log(abs(v))));
-       w(j) = 1./(prod(sign(v))*vv);
-   end
-end
-
-% Scaling:
-w = w./max(abs(w));
-
-end

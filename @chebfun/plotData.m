@@ -53,12 +53,9 @@ if ( nargin == 1 || isempty(g) )
     end
     
 elseif ( nargin == 2 )
-    % PLOT(F, G)
     
-    % [TODO]: Fix this once OVERLAP() is implemented.
-    if ( all( f.domain ~= g.domain ) )
-        [f, g] = overlap(f, g);
-    end
+    % PLOT(F, G)
+    [f, g] = overlap(f, g);
     
     % Loop over each FUN for Line and Points data:
     for k = 1:numel(f.funs)
