@@ -16,7 +16,7 @@ end
 % Unify the breakpoints:
 F = restrict(F, get(F, 'domain'));
 % Collect each column in a cell:
-F = num2cell(F);
+F = cheb2cell(F);
 % Call HORZCAT to collate the columns:
 F = [F{:}];
 

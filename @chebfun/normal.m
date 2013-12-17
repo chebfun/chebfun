@@ -26,9 +26,7 @@ if ( nargin > 1 )
     end
 end
 
-% Return a quasimatrix:
-real(n)
-imag(n)
+% Return an array-valued CHEBFUN:
 n = [real(n), imag(n)];  
  
 end

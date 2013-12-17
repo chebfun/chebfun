@@ -18,13 +18,7 @@ function varargout = size(f, dim)
 infDim = inf;
 
 % Number of columns:
-if ( isempty(f) )
-    numCols = 0;
-elseif ( numel(f) > 1 )
-    numCols = numel(f);
-else
-    numCols = size(f.funs{1}, 2);
-end
+numCols = numColumns(f);
 
 % Switch if F is transposed:
 if ( f(1).isTransposed )

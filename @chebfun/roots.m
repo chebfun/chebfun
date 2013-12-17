@@ -36,6 +36,8 @@ function r = roots(F, varargin)
 
 % [TODO]: Scales and tolerances are quite arbitrary here..
 
+% TODO: Document array-valued and quasimatrix cases.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Developer note: 
 %  Here we get around the fact that FUN/ROOTS will return NaN values for

@@ -26,22 +26,16 @@ if ( f(1).isTransposed )
         error('CHEBFUN:repmat:row',...
             'Use REPMAT(F, M, 1) to replicate and tile row CHEBFUN objects.')
     else
-        G = cell(1,M);
-        for j = 1:M, 
-            G{j} = f;
-        end
+        G = repmat({f}, M, 1);
         G = vertcat(G{:});
     end
 else
     % REPMAT a column CHEBFUN:
     if ( M ~= 1 )
-        error('CHEBFUNchebfun:repmat:col',...
+        error('CHEBFUN:repmat:col',...
             'Use REPMAT(F, 1, N) to replicate and tile column CHEBFUN objects.')
     else
-        G = cell(1,N);
-        for j = 1:N
-            G{j} = f;
-        end
+        G = repmat({f}, 1, N);
         G = horzcat(G{:});
     end
 end

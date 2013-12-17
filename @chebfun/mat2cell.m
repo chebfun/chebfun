@@ -97,8 +97,7 @@ end
 index = mat2cell(1:size(f.funs{1}, 2), M, N);
 
 % Create a new CHEBFUN from each column (or row) of FUNs and store it in a CELL;
-g = cell(1, numel(N));
-for k = 1:numel(N)
+for k = numel(N):-1:1
     % Make the CHEBFUN.
     g{k} = chebfun(cellFuns(:,k).');
 
@@ -116,7 +115,7 @@ function g = quasiMat2cell(f, M, N)
 % Get the correct indices fron the built-in MAT2CELL():
 idx = mat2cell(1:numel(f), M, N);
 % Store these coluns in a CELL array:
-for k = 1:numel(idx)
+for k = numel(idx):-1:1
     g{k} = f(idx{k});
 end
 

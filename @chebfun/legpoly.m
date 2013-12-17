@@ -9,13 +9,15 @@ function out = legpoly(f, n)
 %   There is also a LEGPOLY command in the Chebfun trunk directory, which
 %   computes the CHEBFUN corresponding to the Legendre polynomial P_n(x).
 %
+%   LEGPOLY does not support quasimatrices.
+%
 % See also CHEBPOLY.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( numel(f) > 1 )
-    error('CHEBFUN:legpoly:quasia', 'LEGPOLY does not support quasimatrices.');
+    error('CHEBFUN:legpoly:quasi', 'LEGPOLY does not support quasimatrices.');
 end
 
 % Select a FUN:
