@@ -7,13 +7,17 @@ elseif ( strcmpi(x, ':') && isnumeric( y ) )
     Cols = f.cols;
     Rows = f.rows;
     pivotValues = f.pivotValues;
-    out = feval( Cols, y ) * diag( 1./pivotValues ) * Rows;
+    y = y(:);
+    
+    out = feval( Cols, y ) * diag( 1./pivotValues ) * Rows';
     out = simplify( out ); 
 elseif ( isnumeric( x ) && strcmpi(y, ':') )
     Cols = f.cols;
     Rows = f.rows;
     pivotValues = f.pivotValues;
-    out = feval( Cols, y ) * diag( 1./pivotValues ) * Rows;
+    x = x( : ); 
+    
+    out = Cols * diag( 1./pivotValues ) * feval( Rows, x )';
     out = simplify( out ); 
 elseif ( isnumeric( x ) && isnumeric( y ) )
 

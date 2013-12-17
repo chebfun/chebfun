@@ -66,19 +66,8 @@ switch index(1).type
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% RESTRICT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     case '{}'
 
-        if ( length(idx) == 1 )
-            if ( isequal(idx{1}, ':') )
-                % F{:} returns F:
-                out = f;
-            else
-                error('CHEBFUN:subsref:baddomain', 'Invalid domain syntax.')
-            end
-            
-        elseif ( size(idx, 1) == 1 )
-            % F{s1,s2,...,sk} returns RESTRICT(F, [s1,s2,...,sk]):
-            x = cat(2, idx{:});
-            out = restrict(f, idx{1});
-            
+        if ( length(idx) == 4 ) 
+            out = restrict( f, [ idx{ : } ] );
         else
             error('CHEBFUN:subsref:dimensions', ...
                 'Index exceeds chebfun dimensions.')          

@@ -29,6 +29,8 @@ switch ( propName )
         val = f.cols;
     case 'rows'
         val = f.rows;
+    case 'pivotValues'
+        val = f.pivotValues;
     otherwise
         error('CHEBFUN2:get:propnam',[propName,' is not a valid chebfun2 property.'])
 end
