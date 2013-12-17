@@ -6,7 +6,7 @@ if ( isa(f, 'chebfun2') )     % CHEBFUN2 * ???
     if ( isa(g, 'double') )   % CHEBFUN2 * DOUBLE
         if ( numel(g) == 1 )
             h = f; 
-            h.pivotValues = g * h.pivotValues; 
+            h.pivotValues = h.pivotValues ./ g; 
         else
            error('CHEBFUN2:MTIMES','Sizes are inconsistent.'); 
         end

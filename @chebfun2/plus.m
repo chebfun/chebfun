@@ -12,7 +12,7 @@ elseif ( isempty(g) )       % CHEBFUN2 + []
     f = [];
     
 elseif ( isnumeric( g ) )   % CHEBFUN2 + DOUBLE
-      g = chebfun2( g ); 
+      g = chebfun2( g, f.domain ); 
       
       h = plus( f, g ); 
       

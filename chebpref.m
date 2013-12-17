@@ -213,6 +213,7 @@ classdef chebpref
         singPrefs
         tech
         techPrefs
+        cheb2Prefs
     end
 
     methods
@@ -241,6 +242,12 @@ classdef chebpref
                 outPref.techPrefs.exactLength = NaN;
                 outPref.techPrefs.extrapolate = false;
                 outPref.techPrefs.sampleTest = true;
+            outPref.cheb2Prefs = struct(); 
+                outPref.cheb2Prefs.maxRank = 1000; 
+                outPref.cheb2Prefs.maxLength = 65537; 
+                outPref.cheb2Prefs.eps = 2^(-52); 
+                outPref.cheb2Prefs.exactLength = false;
+                outPref.cheb2Prefs.sampleTest = true; 
 
             % Copy fields from q, placing unknown ones in techPrefs and merging
             % incomplete substructures.

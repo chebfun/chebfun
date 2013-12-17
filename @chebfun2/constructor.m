@@ -5,8 +5,17 @@ if ( nargin < 3 || isempty(domain) )
     domain = [-1 1 -1 1];
 end
 
+if ( nargin > 3) 
+    if ( isa(varargin{1}, 'chebpref') )
+        defaults = chebpref;
+        pref = mergePrefs(defaults, varargin{1});
+    end
+else
+   pref = chebpref;
+end
+
 if ( isa(op, 'double') )
-   g = constructor(g, @(x,y) op + 0*x, domain, varargin); 
+   g = constructor(g, @(x,y) op + 0*x, domain); 
    return
 end
 
@@ -24,16 +33,10 @@ if ( nargin(op) == 1 )
     op = @(x, y) op( x + 1i*y );
 end
 
-% [TODO]: Get preferences:
-% if ( nargin > 4 )
-%     pref = chebfun2.pref(varargin{:});
-% else
-%     pref = chebfun2.pref;
-% end
-tol = eps;
-maxRank = 500;
-maxDegree = 2^16;
-r = 9;
+tol = pref.cheb2Prefs.eps;
+maxLength = pref.cheb2Prefs.maxLength;
+maxRank = pref.cheb2Prefs.maxRank; 
+grid = 9;
 isHappy = 0;
 
 % Initialise:
@@ -43,7 +46,7 @@ hscale = 1;
 
 notHappy = 1;  % If unhappy, selected pivots were not good enough.
 while ( ~isHappy )
-    [xx, yy] = chebpts2(r, r, domain);
+    [xx, yy] = chebpts2(grid, grid, domain);
     vals = evaluate(op, xx, yy, vectorize);             % Matrix of values at cheb2 pts.
     
     vscale = max(abs(vals(:)));
@@ -62,9 +65,9 @@ while ( ~isHappy )
     [pivotValue, pivotPosition, rowValues, colValues, iFail] = CompleteACA(vals, tol);
     % Use chebtech's happiness check
     strike = 1;
-    while ( iFail && r <= maxRank && strike < 3 && r < 65)
-        r = 2^(floor(log2(r)) + 1) + 1;                % Double the sampling
-        [xx, yy] = chebpts2(r, r, domain);
+    while ( iFail && grid <= maxRank && strike < 3 && grid < 65)
+        grid = 2^(floor(log2(grid)) + 1) + 1;                % Double the sampling
+        [xx, yy] = chebpts2(grid, grid, domain);
         vals = evaluate(op, xx, yy, vectorize);                        % Resample on denser grid.
         [pivotValue, pivotPosition, rowValues, colValues, iFail] = CompleteACA(vals, tol);
         if ( abs(pivotValue(1))<1e4*vscale*tol )
@@ -73,7 +76,7 @@ while ( ~isHappy )
         end
     end
     
-    if ( r >= maxRank )
+    if ( grid >= maxRank )
         error('FUN2:CTOR', 'Not a low-rank function.');
     end
     
@@ -92,7 +95,7 @@ while ( ~isHappy )
         PP = pivotPosition;
     end
 
-    n = r;  m = r;
+    n = grid;  m = grid;
     
     % If unresolved then perform ACA on selected slices.
     while ( ~isHappy )
@@ -136,7 +139,7 @@ while ( ~isHappy )
         end
         
         isHappy = resolvedRows & resolvedCols;
-        if ( max(m, n) >= maxDegree )  % max number of degrees allows.
+        if ( max(m, n) >= maxLength )  % max number of degrees allows.
             error('FUN2:CTOR', 'Unresolved with maximum Chebfun length: %u.', maxDegree);
         end
         

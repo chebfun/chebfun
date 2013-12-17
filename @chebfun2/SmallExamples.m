@@ -31,6 +31,9 @@ f = chebfun2(@(x,y) cos(10*x.*y), [-2 2 -2 2]);
 F = gradient( f )
 f = divergence( F )
 f = curl( F ) 
-f = cross( F, -F ) 
+f = cross( F, -F )
 
+%% 
+size(f)
+length(f)
 
