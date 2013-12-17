@@ -1,0 +1,53 @@
+function [deltaMag, deltaLoc] = getDeltaFunctions(f)
+%GETDELTAFUNCTIONS   Get the delt functions in a chebfun F.
+%   [DELTAMAG, DELTALOC] = GETDELTAFUNCTIONS(F) returns the returns the delta
+%   functions within a chebfun F. DELTAMAG is a matrix containing the (signed)
+%   magnitude of the delta functions and their higher derivatives, while
+%   DELTALOC is a an array containing the location of delta functions.
+
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org for Chebfun information.
+
+% Initialize variables:
+deltaMag = [];
+deltaLoc = [];
+maxRows = 0;
+numCols = 0;
+numFuns = numel(f.funs);
+
+% Loop through the FUNs of F:
+for j = 1:numFuns
+    if ( isa(f.funs{j}, 'deltafun') )
+        d = f.funs{j};
+        if ( ~isempty(d.impulses) )
+            m = size(d.impulses, 1);
+            numCols = numCols + size(d.impulses, 2);
+            if ( m > maxRows )
+                maxRows = m;
+            end                        
+        end        
+    end
+end
+
+if ( maxRows > 0 )
+    deltaMag = zeros(maxRows, numCols);
+    deltaLoc = zeros(1, numCols);
+
+    k = 1;
+    for j = 1:numFuns
+        if ( isa(f.funs{j}, 'deltafun') )
+            d = f.funs{j};
+            if ( ~isempty(d.impulses) )
+                sz = size(d.impulses);
+                deltaMag(1:sz(1), k:k+sz(2)-1) = d.impulses;
+                deltaLoc(1, k:k+sz(2)-1) = d.location;
+                k = k + sz(2);
+            end
+        end
+    end
+    [deltaMag, deltaLoc] = deltafun.mergeColumns(deltaMag, deltaLoc);
+    [deltaMag, deltaLoc] = deltafun.cleanColumns(deltaMag, deltaLoc);
+    deltaMag = deltafun.cleanRows(deltaMag);
+end
+
+end
