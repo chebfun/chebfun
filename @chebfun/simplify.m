@@ -13,6 +13,8 @@ function f = simplify(f, tol)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
+% TODO: Deal with zero chebfuns having a zero vscale more carefully.
+
 if ( nargin == 1 )
     tol = chebpref().techPrefs.eps;
 end
@@ -21,7 +23,9 @@ end
 % [TODO]: This seems to be the best we can do without vector epslevels?
 glob_acc = epslevel(f).*vscale(f); % Global error estimate of the CHEBFUN.
 loc_vscl = get(f, 'vscale-local'); % Local vscale of the FUN objects.
-tol = max(max(tol, glob_acc) ./ loc_vscl, [], 2); % Simplification tolerances.
+ratio = max(tol, glob_acc) ./ loc_vscl;
+ratio(loc_vscl < tol) = 0;
+tol = max(ratio, [], 2); % Simplification tolerances.
 
 % Simplfy each of the FUN objects:
 for k = 1:numel(f.funs)
