@@ -7,7 +7,6 @@ end
 tol = 1000*pref.cheb2Prefs.eps; 
 j = 1; 
 
-
 % Evaluation 
 f = chebfun2(@(x,y) sin(x.*(y-.1)), [-2 2 -3 4]);
 
