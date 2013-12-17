@@ -46,7 +46,7 @@ hscale = 1;
 
 notHappy = 1;  % If unhappy, selected pivots were not good enough.
 while ( ~isHappy )
-    [xx, yy] = chebpts2(grid, grid, domain);
+    [xx, yy] = chebfun2.chebpts2(grid, grid, domain);
     vals = evaluate(op, xx, yy, vectorize);             % Matrix of values at cheb2 pts.
     
     vscale = max(abs(vals(:)));
@@ -67,7 +67,7 @@ while ( ~isHappy )
     strike = 1;
     while ( iFail && grid <= maxRank && strike < 3 && grid < 65)
         grid = 2^(floor(log2(grid)) + 1) + 1;                % Double the sampling
-        [xx, yy] = chebpts2(grid, grid, domain);
+        [xx, yy] = chebfun2.chebpts2(grid, grid, domain);
         vals = evaluate(op, xx, yy, vectorize);                        % Resample on denser grid.
         [pivotValue, pivotPosition, rowValues, colValues, iFail] = CompleteACA(vals, tol);
         if ( abs(pivotValue(1))<1e4*vscale*tol )

@@ -1,4 +1,4 @@
-function [xx,yy] = chebpts2(nx,ny,varargin)
+function [xx, yy] = chebpts2(nx, ny, varargin)
 %CHEBPTS2 Chebyshev tensor points
 %
 % [XX YY] = CHEBPTS2(N) constructs an N by N grid of Chebyshev 
@@ -19,18 +19,15 @@ if ( nargin > 2 )  % third argument should be a domain.
    if ( ~all( size( D ) == [1 4] ) )
         error('CHEBFUN2:CHEBPTS2:DOMAIN','Unrecognised domain');
    end
-else  % default to the domain in preferences. 
-    %xdom = chebfun2pref('xdom');
-    %ydom = chebfun2pref('ydom');
-    %D = [xdom ydom]; 
-    D = [-1 1 -1 1];
+else  % default to the canoncial domain.  
+    D = [-1, 1, -1, 1];
 end
 
-if nargin == 1 % make it a square chebyshev grid. 
+if ( nargin == 1 ) % make it a square chebyshev grid. 
     ny = nx; 
 end
 
-x = chebpts( nx, D(1:2) ); y = chebpts( ny, D(3:4)); 
-[xx yy] = meshgrid(x,y);   % tensor product. 
+x = chebpts( nx, D(1:2) ); y = chebpts( ny, D(3:4) ); 
+[xx, yy] = meshgrid(x, y);   % tensor product. 
 
 end 

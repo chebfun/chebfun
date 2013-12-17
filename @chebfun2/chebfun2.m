@@ -30,7 +30,7 @@ classdef chebfun2
         
         X = vals2coeffs( U ); 
         
-        [xx, yy] = chebpts2(nx, ny);
+        [xx, yy] = chebpts2(nx, ny, domain);
         
         F = outerProduct(f, g);   % outer-product of two chebfuns.
     end
