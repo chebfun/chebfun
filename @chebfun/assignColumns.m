@@ -82,7 +82,7 @@ else
     
     % Ensure f is a quasimatrix:
     f = cheb2quasi(f);
-    g = num2cell(g);
+    g = cheb2cell(g);
     for k = 1:numel(colIdx)
         f(colIdx(k)) = g{k};
     end

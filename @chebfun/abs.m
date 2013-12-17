@@ -43,4 +43,6 @@ g.impulses = abs(g.impulses(:,:,1));
 % [TODO]: Do we want to do this?
 g = simplify(g, pref);
 
+% TODO: Should we always return a quasimatrix rather than overlap the roots?
+
 end

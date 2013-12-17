@@ -1,7 +1,7 @@
 function out = isequal(f, g)
 %ISEQUAL   Equality test for two CHEBFUNs.
 %   ISEQUAL(F, G) returns logical 1 (TRUE) if the CHEBFUN objects F and G
-%   contain identical breakpoints and funs, and logical 0 (FALSE) otherwise.
+%   contain identical breakpoints and FUNS, and logical 0 (FALSE) otherwise.
 %
 % See also EQ.
 
@@ -30,7 +30,7 @@ else
     g = mat2cell(g);
     % Loop over the columns:
     for k = 1:numel(f)
-        out = isequal(f{k}, g{k});
+        out = columnIsequal(f{k}, g{k});
         if ( ~out ), break, end
     end
 end

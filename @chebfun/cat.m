@@ -4,12 +4,18 @@ function out = cat(varargin)
 
 % [TODO]: Implement this.
 
-if ( dim == 1 )
+if ( isa(dim, 'chebfun') )
+    error('CHEBFUN:cat:dim',['First input to  CHEBFUN/CAT must be 1 or 2.\n',...
+    '\n',...
+    ' )\\_/(    ChebMeow\n',...
+    ' (o.o)\n',...
+    ' (_|_)_/']);
+elseif ( dim == 1 )
     out = vertcat(varargin);
 elseif ( dim == 2 )
     out = horzcat(varargin);
 else
-    error('CHEBFUN:cat:moo', 'Derp?');
+    error('CHEBFUN:cat:invalidDim', 'CHEBFUN dimension must be 1 or 2.');
 end
 
 end

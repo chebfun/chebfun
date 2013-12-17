@@ -19,12 +19,16 @@ numCols = numColumns(F);
 % Trivial cases:
 if ( isempty(F) )
     return
+    
 elseif ( ~isnumeric(colIdx) && strcmp(colIdx, ':') )
     return
+    
 elseif ( (numel(colIdx) == numel(numCols)) && all(colIdx == 1:numCols) )
     return
+    
 elseif ( max(colIdx) > numCols )
     error('CHEBFUN:subsref:dimensions', 'Index exceeds CHEBFUN dimensions.')    
+    
 end
 
 if ( numel(F) > 1 )

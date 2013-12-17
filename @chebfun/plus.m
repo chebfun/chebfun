@@ -79,6 +79,8 @@ else                          % CHEBFUN + CHEBFUN
     if ( xor(f(1).isTransposed, g(1).isTransposed) )
         error('CHEBFUN:plus:matdim', ...
             'Matrix dimensions must agree. (One input is transposed).');
+    elseif ( numColumns(f) ~= numColumns(g) )
+            error('CHEBFUN:plus:dims', 'Matrix dimensions must agree.')
     end
 
     if ( numel(f) == 1 && numel(g) == 1 )
@@ -98,14 +100,13 @@ else                          % CHEBFUN + CHEBFUN
     else
         % QUASIMATRIX case:
         
-        if ( numel(f) ~= numel(g) )
-            error('CHEBFUN:plus:dims', 'Matrix dimensions must agree.');
-        else
-            % Loop over the columns:
-            for k = 1:numel(f)
-                f(k) = f(k) + g(k);
-            end
+        % Loop over the columns:
+        f = cheb2cell(f);
+        g = cheb2cell(g);
+        for k = numel(f):-1:1
+            h(k) = f{k} + g{k};
         end
+        f = h;
 
     end
 

@@ -63,8 +63,8 @@ end
 if ( numel(f) == 1 && numel(g) == 1)
     f = columnsDefineInterval(f, subInt, g);
 else
-    f = num2cell(f);
-    g = num2cell(g);
+    f = cheb2cell(f);
+    g = cheb2cell(g);
     for k = numel(f):-1:1
         h(k) = columnsDefineInterval(f{k}, subInt, g{k});
     end

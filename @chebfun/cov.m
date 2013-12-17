@@ -63,8 +63,8 @@ if ( nargin == 1 ) % COV(f)
 else               % COV(f, g)
     
     % Compute cell arrays of scalar-valued CHEBFUN objects:
-    Y = mat2cell(f - mean(f));
-    Z = mat2cell(g - mean(g));
+    Y = cheb2cell(f - mean(f));
+    Z = cheb2cell(g - mean(g));
     % Initialise output matrix:
     out = zeros(numel(f));
     % Loop over each of the columns:

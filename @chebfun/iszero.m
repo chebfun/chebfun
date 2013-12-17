@@ -19,11 +19,10 @@ out = cell(1, numel(F));
 for k = 1:numel(F)
     out{k} = columnIszero(F(k), varargin{:});
 end
-out = [out{:}];
+out = cell2mat(out);
 if ( F(1).isTransposed )
     out = out.';
 end
-
 
 end
 

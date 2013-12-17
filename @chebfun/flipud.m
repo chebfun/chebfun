@@ -4,8 +4,8 @@ function F = flipud(F)
 %   same domain as F but reversed; that is, G(x) = F(a+b-x), where the domain is
 %   [a,b].
 %
-%   FLIPUD(F), where F is an array-valued row CHEBFUN, reverses the order of
-%   the rows of F.
+%   FLIPUD(F), where F is an array-valued row CHEBFUN or a quasimatrix, %
+%   reverses the order of the rows of F.
 %
 % See also FLIPLR.
 
@@ -16,8 +16,14 @@ if ( isempty(F) )
     return
 end
 
-for k = 1:numel(F)
-    F(k) = columnFlipud(F(k));
+
+if ( numel(F) > 1 && F(1).isTransposed )
+    idx = fliplr(1:numColumns(F));
+    F = F(idx);
+else
+    for k = 1:numel(F)
+        F(k) = columnFlipud(F(k));
+    end
 end
 
 end

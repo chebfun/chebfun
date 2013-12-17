@@ -4,11 +4,12 @@ function f = compose(f, op, g, pref)
 %   CHEBFUN object and OP is a function handle.
 %
 %   COMPOSE(F, OP, G) returns OP(F, G), where F and G are CHEBFUN objects and OP
-%   is a function handle. The domains of F and G should be compatible.
+%   is a function handle. The domains and imensions of F and G should be
+%   compatible.
 %
 %   COMPOSE(F, G) returns a CHEBFUN representing G(F), where both F and G are
-%   also CHEBFUN objects. If the range of F is not contained in the domain of
-%   G, then an error is thrown.
+%   also CHEBFUN objects. If the range of F is not contained in the domain of G,
+%   or if F and G do not have the same dimensions, then an error is thrown.
 %
 %   COMPOSE(F, OP, PREF), COMPOSE(F, OP, G, PREF), and COMPOSE(F, G, PREF) use
 %   the options passed by the CHEBPREF object PREF.
@@ -73,15 +74,19 @@ end
 
 if ( isa(op, 'chebfun') )
     % Call the COMPOSETWOCHEBFUNS method if OP is a CHEBFUN object:
-    
     g = op;
+    
+    if ( numColumns(f) ~= numColumns(g) )
+            error('CHEBFUN:compose:dims', 'Matrix dimensions must agree.')
+    end
+    
     if ( numel(f) == 1 && numel(op) == 1 )
         % Array-valued CHEBFUN case:
         f = composeTwoChebfuns(f, op, pref);
     else
         % QUASIMATRIX case:
-        f = mat2cell(f);
-        g = mat2cell(g);
+        f = cheb2cell(f);
+        g = cheb2cell(g);
         for k = numel(f):-1:1
             h(k) = composeTwoChebfuns(f{k}, g{k}, pref);
         end
@@ -91,13 +96,17 @@ if ( isa(op, 'chebfun') )
 elseif ( opIsBinary )
     % Binary composition:
     
+    if ( numColumns(f) ~= numColumns(g) )
+            error('CHEBFUN:compose:dims', 'Matrix dimensions must agree.')
+    end
+    
     if ( numel(f) == 1 && numel(g) == 1 )
         % Array-valued CHEBFUN case:
         f = columnCompose(f, op, g, pref, opIsBinary);
     else
         % QUASIMATRIX case:
-        f = mat2cell(f);
-        g = mat2cell(g);
+        f = cheb2cell(f);
+        g = cheb2cell(g);
         for k = numel(f):-1:1
             h(k) = columnCompose(f{k}, op, g{k}, pref, opIsBinary);
         end
@@ -112,7 +121,7 @@ else
         f = columnCompose(f, op, g, pref, opIsBinary);
     else
         % QUASIMATRIX case:
-        f = mat2cell(f);
+        f = cheb2cell(f);
         for k = numel(f):-1:1
             h(k) = columnCompose(f{k}, op, g, pref, opIsBinary);
         end

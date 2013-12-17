@@ -8,7 +8,7 @@ function f = cumsum(f, m, dim)
 %   Riemann-Liouville integral.
 %
 %   CUMSUM(F, N, 2) will take the Mth cumulative sum over the columns F an
-%   array-valued BNDFUN.
+%   array-valued CHEBFUN or quasimatrix.
 %
 % See also SUM, INTEGRAL.
 

@@ -12,6 +12,9 @@ function [k, e] = ellipke(m, pref)
 %
 %   See also ELLIPJ.
 
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Choose a tolerance:
 tol = get(m, 'epslevel');
 if ( nargin == 1 )
@@ -25,10 +28,8 @@ else
     tol = max(pref.techPrefs.eps, tol);
 end
 
-% Allocate the outout:
-k(1,numel(m)) = chebfun();
 % Loop over the columns:
-for j = 1:numel(m)
+for j = numel(m):-1:1
     try
         % Call COMPOSE():
         k(j) = compose(m(j), @(m) ellipke(m, .1*tol), pref);
@@ -45,7 +46,7 @@ end
 % Compute the second complete elliptic integral if required:
 if ( nargout == 2 )
     e(numel(m)) = chebfun();
-    for j = 1:numel(m)% Call COMPOSE():
+    for j = numel(m):-1:1% Call COMPOSE():
         e(j) = compose(m(j), @(m) eFun(m, tol), pref);
     end
 end
@@ -53,5 +54,5 @@ end
 end
 
 function e = eFun(m, tol)
-[ignored, e] = ellipke(m, tol);
+    [ignored, e] = ellipke(m, tol);
 end
