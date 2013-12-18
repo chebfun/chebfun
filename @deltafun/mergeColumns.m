@@ -8,7 +8,7 @@ tol = deltafun.pref.deltafun.proximityTol;
 
 m = size(A, 2);
 if ( length(v) ~= m || size(v, 1) > 1 )
-    error( 'CHEBFUN:DELTAFUN:mergeColumns', 'No. of columns of A should be equal to the length of the vector va' );
+    error( 'CHEBFUN:DELTAFUN:mergeColumns', 'No. of columns of A should be equal to the length of the vector v.' );
 end
 
 % Make sure the input is sorted:
@@ -17,15 +17,19 @@ A = A(:, idx);
 
 j = 2;
 for k = 2:m
-    % Duplication scenarios
+    % Duplication scenarios.
+    
+    % If two entries are equal to zero:
     p = ( v(j) == 0 && v(j-1) == 0 );
+    % Or if they are very close:
     vcMax = max(abs([v(j), v(j-1)]));
     p = p | ( abs((v(j)-v(j-1)))/vcMax < tol );
+    
     % If there is a duplicate
     if ( p )
         % Merge the two columns
         A(:, j-1) = A(:, j-1) + A(:, j);
-        % Remove the copied column of A and the location in va
+        % Remove the copied column of A and the corresponding location in v:
         A(:, j) = [];
         v(j) = [];
     else

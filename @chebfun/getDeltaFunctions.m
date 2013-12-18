@@ -17,10 +17,13 @@ numFuns = numel(f.funs);
 
 % Loop through the FUNs of F:
 for j = 1:numFuns
+    % If the current FUN is a deltafun:
     if ( isa(f.funs{j}, 'deltafun') )
         d = f.funs{j};
+        % If there are deltafunctions in it:
         if ( ~isempty(d.impulses) )
             m = size(d.impulses, 1);
+            % Get the number of columns and rows:
             numCols = numCols + size(d.impulses, 2);
             if ( m > maxRows )
                 maxRows = m;
@@ -32,12 +35,13 @@ end
 if ( maxRows > 0 )
     deltaMag = zeros(maxRows, numCols);
     deltaLoc = zeros(1, numCols);
-
     k = 1;
     for j = 1:numFuns
+        % If the current FUN is a deltafun:
         if ( isa(f.funs{j}, 'deltafun') )
             d = f.funs{j};
             if ( ~isempty(d.impulses) )
+                % Get the delta functions:
                 sz = size(d.impulses);
                 deltaMag(1:sz(1), k:k+sz(2)-1) = d.impulses;
                 deltaLoc(1, k:k+sz(2)-1) = d.location;
@@ -45,6 +49,9 @@ if ( maxRows > 0 )
             end
         end
     end
+    
+    % Merge delta functions if they are at the same location and delete trivial
+    % columns and rows:
     [deltaMag, deltaLoc] = deltafun.mergeColumns(deltaMag, deltaLoc);
     [deltaMag, deltaLoc] = deltafun.cleanColumns(deltaMag, deltaLoc);
     deltaMag = deltafun.cleanRows(deltaMag);

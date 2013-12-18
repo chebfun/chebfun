@@ -122,7 +122,7 @@ else
     
     % Get data for delta functions:
     [deltaMag, deltaLoc] = getDeltaFunctions(f);
-    % Only delta functions can be plotted:
+    % Only delta functions can be plotted, ignore higher order delta functions:
     deltaMag = deltaMag(1, :);
     
     data.xDeltas = deltaMag;

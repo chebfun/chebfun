@@ -169,6 +169,9 @@ classdef deltafun
         % Flip/reverse a DELTAFUN object.
         f = flipud(f)
         
+        % True if the DELTAFUN object has no delta functions       
+        out = hasdelta(f)
+
         % Imaginary part of a DELTAFUN.
         f = imag(f)
         
@@ -196,10 +199,7 @@ classdef deltafun
         
         % True for real SINGFUN.
         out = isreal(f)
-        
-        % True if the DELTAFUN object has no delta functions       
-        out = issmooth(f)
-        
+                
         % Ture if the DELTAFUN object is zero
         out = iszero(f)
         
@@ -296,6 +296,9 @@ classdef deltafun
         f = make(varargin)
         % Merge columns of a matrix based on duplicate values in v.
         [A, v] = mergeColumns(A, v)
+        
+        % Merge impulse matrix
+        [D, w] = mergeImpulses(A, v, B, u);
         % Retrieve and modify preferences for this class.
         prefs = pref(varargin)
         

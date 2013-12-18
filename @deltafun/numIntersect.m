@@ -1,6 +1,10 @@
 function [x, idxV, idxW] = numIntersect( V, W, tol)
 %NUMINTERSECT   Find the intersection of V and W with a relative tolerance.
 
+if( nargin < 3 || isempty(tol) )
+    tol = deltafun.pref.deltafun.proximityTol;
+end
+    
 % Make sure V and W are vectors
 V = V(:);
 W = W(:);

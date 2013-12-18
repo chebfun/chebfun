@@ -1,6 +1,6 @@
-function out = issmooth(f)
-%ISEQUAL   True if a DELTAFUN object F has no delta functions.
-%   ISSMOOTH(F) returns TRUE if the DELTAFUN object F has "negligible" delta
+function out = anyDelta(f)
+%ANYDELTA   True if a DELTAFUN object F has atleast one delta function.
+%   ANYDELTA(F) returns TRUE if the DELTAFUN object F has non-trivial delta
 %   functions. The test is FALSE otherwise.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
@@ -10,5 +10,5 @@ function out = issmooth(f)
 tol = deltafun.pref.deltafun.deltaTol;
 
 % A function is smooth if it has no or below tolerance delta functions.
-out = all(abs(f.impulses(:)) < tol);
+out = any(abs(f.impulses(:)) > tol);
 end
