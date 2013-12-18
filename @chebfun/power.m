@@ -16,10 +16,13 @@ if ( isempty(f) || isempty(b) )
     return
 end
 
-% [TODO]: This might need to be changed to include SINGFUN features.
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% CHEBFUN .^ CHEBFUN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
 if ( isa(f, 'chebfun') && isa(b, 'chebfun') ) 
+    
+    if ( ~domainCheck(f,g) )
+        error('CHEBFUN:power:domain', ...
+            'F and G must be defined in the same domain')
+    end
     
     % Call COMPOSE(): (Note, COMPOSE() checks that the domains match)
     g = compose(f, @power, b);
