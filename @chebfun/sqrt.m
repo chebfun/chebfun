@@ -12,8 +12,8 @@ if ( isempty(f) )
     return
 end
 
+% Add breaks at the appropriate roots of f:
 if ( isreal(f) )
-    % Add breaks at the appropriate roots of f:
     f = addBreaksAtRoots(f);
 else
     f = addBreaksAtRoots(f, 'imag');

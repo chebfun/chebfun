@@ -2,6 +2,8 @@ function f = sqrt(f)
 %SQRT   Square root of a SINGFUN.
 %   SQRT(F) returns the square root of a SINGFUN F. Note, it is assumed that the
 %   only roots of F are located at the endpoints of F.domain.
+%
+% See also POWER.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.

@@ -70,7 +70,11 @@ elseif ( isa(f, 'chebfun') )                     % CHEBFUN .^ constant
     else                                % General case
         
         % Add breaks at the appropriate roots of f:
-        f = addBreaksAtRoots(f);
+        if ( isreal(f) )
+            f = addBreaksAtRoots(f);
+        else
+            f = addBreaksAtRoots(f, 'imag');
+        end
         
         % Grab some information for the case where SINGFUN is involved:
         if isa(f, 'chebfun')
