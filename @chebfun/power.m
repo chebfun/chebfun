@@ -76,17 +76,10 @@ elseif ( isa(f, 'chebfun') )                     % CHEBFUN .^ constant
             f = addBreaksAtRoots(f, 'imag');
         end
         
-        % Grab some information for the case where SINGFUN is involved:
-        if isa(f, 'chebfun')
-            numFuns = numel(f.funs);
-            singInd = zeros(numFuns, 1);
-            for k = 1:numFuns
-                singInd(k) = isa(f.funs{k}.onefun, 'singfun');
-            end
-            isSing = any( singInd );
-        end
-
+        % Some overhead:
+        numFuns = numel(f.funs);
         g = f;
+        
         % Loop over each piece individually:
         for k = 1:numFuns
             g.funs{k} = power(f.funs{k}, b);
