@@ -126,6 +126,68 @@ vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
 pass(17) = ( norm(err, inf) < 1e2*get(f,'epslevel')*norm(vals_exact, inf) );
 
+%% General power - the Runge function and positive power:
+% Define a domain:
+dom = [-2 7];
+
+% Generate a few random points to use as test values:
+seedRNG(6178);
+x = diff(dom) * rand(100, 1) + dom(1);
+
+op = @(x) 1./(1+25*x.^2);
+b = 0.6;
+opExact = @(x) 1./((1+25*x.^2).^b);
+
+f = chebfun(op, dom, 'splitting', 'on');
+g = f.^b;
+vals_g = feval(g, x); 
+
+vals_exact = feval(opExact, x);
+err = vals_g - vals_exact;
+pass(18) = ( norm(err, inf) < get(f,'epslevel')*norm(vals_exact, inf) );
+
+%% General power - the Runge function and positive power:
+
+op = @(x) 1./(1+25*x.^2);
+b = -1.6;
+opExact = @(x) 1./((1+25*x.^2).^b);
+
+f = chebfun(op, dom, 'splitting', 'on');
+g = f.^b;
+vals_g = feval(g, x); 
+
+vals_exact = feval(opExact, x);
+err = vals_g - vals_exact;
+pass(19) = ( norm(err, inf) < 1e2*get(f,'epslevel')*norm(vals_exact, inf) );
+
+%% General power - a real function with varying signs and positive power:
+
+op = @(x) sin(100*x);
+b = 0.8;
+opExact = @(x) sin(100*x).^b;
+
+f = chebfun(op, dom, 'splitting', 'on');
+g = f.^b;
+vals_g = feval(g, x); 
+
+vals_exact = feval(opExact, x);
+err = vals_g - vals_exact;
+pass(20) = ( norm(err, inf) < 1e1*get(f,'epslevel')*norm(vals_exact, inf) );
+
+%% General power - a complex function and positive power:
+
+op = @(x) sin(3*x) + 1i*cos(2*x);
+b = 1.7;
+opExact = @(x) (sin(3*x) + 1i*cos(2*x)).^b;
+
+f = chebfun(op, dom, 'splitting', 'on');
+g = f.^b;
+vals_g = feval(g, x); 
+
+vals_exact = feval(opExact, x);
+err = vals_g - vals_exact;
+pass(21) = ( norm(err, inf) < 1e1*get(f,'epslevel')*norm(vals_exact, inf) );
+
 end
 
 function out = normest(f, dom)

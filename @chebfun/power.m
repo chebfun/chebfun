@@ -18,16 +18,6 @@ end
 
 % [TODO]: This might need to be changed to include SINGFUN features.
 
-% Grab some information for the case where SINGFUN is involved:
-if isa(f, 'chebfun')
-    numFuns = numel(f.funs);
-    singInd = zeros(numFuns, 1);
-    for k = 1:numFuns
-        singInd(k) = isa(f.funs{k}.onefun, 'singfun');
-    end
-    isSing = any( singInd );
-end
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% CHEBFUN .^ CHEBFUN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
 if ( isa(f, 'chebfun') && isa(b, 'chebfun') ) 
     
@@ -51,6 +41,16 @@ elseif ( isa(f, 'chebfun') )                     % CHEBFUN .^ constant
         
     elseif ( (b > 0) && (round(b) == b) )   % Positive integer
         
+        % Grab some information for the case where SINGFUN is involved:
+        if isa(f, 'chebfun')
+            numFuns = numel(f.funs);
+            singInd = zeros(numFuns, 1);
+            for k = 1:numFuns
+                singInd(k) = isa(f.funs{k}.onefun, 'singfun');
+            end
+            isSing = any( singInd );
+        end
+
         if ( isSing )
             % If singfun is involved, treat each piece individually:
             g = f;
@@ -68,9 +68,28 @@ elseif ( isa(f, 'chebfun') )                     % CHEBFUN .^ constant
         g = sqrt(f);
         
     else                                % General case
-        % [TODO]: implement this properly (i.e., using SINGFUN).
-        warning('Not yet implemented.')
-        g = compose(f, @(x) power(x, b));
+        
+        % Add breaks at the appropriate roots of f:
+        f = addBreaksAtRoots(f);
+        
+        % Grab some information for the case where SINGFUN is involved:
+        if isa(f, 'chebfun')
+            numFuns = numel(f.funs);
+            singInd = zeros(numFuns, 1);
+            for k = 1:numFuns
+                singInd(k) = isa(f.funs{k}.onefun, 'singfun');
+            end
+            isSing = any( singInd );
+        end
+
+        g = f;
+        % Loop over each piece individually:
+        for k = 1:numFuns
+            g.funs{k} = power(f.funs{k}, b);
+        end
+        
+        % Update the impulses:
+        g.impulses = g.impulses.^b;
         
     end
     
