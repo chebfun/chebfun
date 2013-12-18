@@ -144,7 +144,7 @@ for k = index
     % Grab the correct exponents:
     if ( isSing )
         if ( ~isa(newFuns{j-1}.onefun, 'singfun') && ...
-                ~isa(newFuns{j}.onefun, 'singfun') )
+             ~isa(newFuns{j}.onefun, 'singfun') )
             pref.singPrefs.exponents = [];
         elseif ( isa(newFuns{j-1}.onefun, 'singfun') && ...
                 ~isa(newFuns{j}.onefun, 'singfun') )

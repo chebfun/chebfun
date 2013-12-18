@@ -75,7 +75,7 @@ toBreak = 0;
 % set the flag for introducing new break points true and then take the
 % mid-point of these domains as the new break points.
 for j = 1:numFuns
-    if ( isa(f.funs{j}.onefun, 'singfun') && all( f.funs{j}.onefun.exponents ) )
+    if ( isa(f.funs{j}.onefun, 'singfun') && all(f.funs{j}.onefun.exponents) )
         toBreak = 1;
         brkPts = [brkPts mean(f.domain(j:j+1))];
     end

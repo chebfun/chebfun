@@ -50,7 +50,7 @@ for j = 1:numFuns
 end
 
 % Extra information about exponents:
-if any( exps(:) )
+if ( any(exps(:)) )
     extra = '  exponents';
 else
     extra = ' ';
