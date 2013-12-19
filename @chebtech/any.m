@@ -27,6 +27,7 @@ elseif ( dim == 2 )     % ANY down the rows.
     a.values = any(feval(a, arbitraryPoint));
     a.coeffs = a.values;
     a.vscale = abs(a.values);
+    a.epslevel = eps;
 else
     error('CHEBFUN:CHEBTECH:any:dim', 'DIM input must be 1 or 2.');
 end
