@@ -110,7 +110,7 @@ for n = 1:2
     g = f + [1 2 3];
     g_exact = @(x) [(1 + sin(x)) (2 + cos(x)) (3 + exp(x))];
     err = feval(g, x) - g_exact(x);
-    pass(n, 22) = norm(err(:), inf) < 10*max(g.vscale*g.epslevel);
+    pass(n, 22) = norm(err(:), inf) < 10*max(g.vscale.*g.epslevel);
 
     %%
     % Test scalar expansion in CHEBTECH argument.
@@ -120,7 +120,7 @@ for n = 1:2
     g_exact = @(x) [(1 + sin(x)) (2 + sin(x)) (3 + sin(x))];
     err = feval(g, x) - g_exact(x);
     pass(n, 23) = isequal(size(g.values, 2), 3) && norm(err(:), inf) < ...
-        10*max(g.vscale*g.epslevel);
+        10*max(g.vscale.*g.epslevel);
 end
 
 end

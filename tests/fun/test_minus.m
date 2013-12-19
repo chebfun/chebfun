@@ -115,7 +115,7 @@ function result = test_sub_function_and_scalar(f, f_op, alpha, x)
     result(1) = isequal(g1, -g2);
     g_exact = @(x) f_op(x) - alpha;
     result(2) = norm(feval(g1, x) - g_exact(x), inf) < ...
-        10*max(get(f,'vscale'))*get(g1, 'epslevel');
+        10*max(get(f,'vscale').*get(g1, 'epslevel'));
 end
 
 % Test the subraction of two BNDFUN objects F and G, specified by F_OP and
