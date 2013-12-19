@@ -20,26 +20,22 @@ end
 f = simplify(f);
 g = simplify(g);
 
-if ( any( size(f.delta.location) ~= size(g.delta.location) ) )
+if ( any( size(f.location) ~= size(g.location) ) )
     out = 0;
     return
 end
 
-if ( any(abs((f.delta.location - g.delta.location)) > pTol) )
+if ( any(abs((f.location - g.location)) > pTol) )
     out = 0;
     return
 end
 
-if ( any( size(f.delta.magnitude) ~= size(g.delta.magnitude) ) )
+if ( any( size(f.magnitude) ~= size(g.magnitude) ) )
     out = 0;
     return;
 end
 
-
-fdeltaMag = f.delta.magnitude;
-gdeltaMag = g.delta.magnitude;
-
-if ( any( size(fdeltaMag) ~= size(gdeltaMag) ) )
+if ( any( size(f.magnitude) ~= size(g.magnitude) ) )
     out = 0;
     return
 end

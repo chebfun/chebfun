@@ -9,6 +9,6 @@ function out = anyDelta(f)
 % Get tolerance for exponents:
 tol = deltafun.pref.deltafun.deltaTol;
 
-% A function is smooth if it has no or below tolerance delta functions.
+% Check if f has no or only below tolerance delta functions.
 out = any(abs(f.impulses(:)) > tol);
 end

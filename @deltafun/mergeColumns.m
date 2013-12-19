@@ -1,7 +1,10 @@
 function [A, v] = mergeColumns(A, v)
-%MERGECOLUMNS Merge columns of A if two locations given in V are almost equal.
+%MERGECOLUMNS Merges columns of A if two locations given in V are almost equal.
+%   [A v] = MERGECOLUMNS(A, V) merges two columns if the corresponding
+%   entries in V are equal or close to each other more than a certain
+%   tolerance.
 %
-%
+% See also CLEANCOLUMNS, MERGEIMPULSES, CLEANROWS.
 
 % Get the tolerance:
 tol = deltafun.pref.deltafun.proximityTol;
