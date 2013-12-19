@@ -6,8 +6,8 @@ end
 
 % TODO: Test dimension?
 
-% Chhose a tolerance:
-tol = 1e-13;
+% Choose a tolerance:
+tol = 5e-12;
 
 %% Small N:
 
