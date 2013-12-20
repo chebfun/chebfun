@@ -1,4 +1,4 @@
-classdef deltafun
+classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
     %DELTAFUN   Class for distributions based on Dirac-delta functions on arbitrary
     %intervals.
     %

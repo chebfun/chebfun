@@ -13,7 +13,7 @@ classdef fun % (Abstract)
 %  [TODO]
 %
 % Class diagram: [<<CHEBFUN>>] <>-- [<<FUN>>] <----[<<classicfun>>]
-%                                             <--[deltafun]
+%                                             <----[    deltafun  ]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 

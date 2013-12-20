@@ -40,7 +40,7 @@ if ( isa(g, 'double') )
 end
 
 %% Multiplication by a FUN:
-if ( isa(g, 'fun') )
+if ( isa(g, 'classicfun') )
     % Upgrade to a deltafun and recurse:
     s = deltafun.zeroDeltaFun(g.domain);
     s.funPart = g;

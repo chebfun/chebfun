@@ -108,8 +108,9 @@ for j = 1:n
         p.enableDeltaFunctions = true;
         pref = chebpref(p);
         if ( deltaMag(k, 1) || deltaMag(k+1, 1) )
+            % Delta functions are only possibly at the ends of each domain:
             deltaLoc = funs{k}.domain;
-            funs{k} = fun.constructor(funs{k}, [deltaMag(k)/2, deltaMag(k+1)/2], deltaLoc, pref );
+            funs{k} = fun.constructor(funs{k}, funs{k}.domain, [deltaMag(k)/2, deltaMag(k+1)/2], deltaLoc, pref );
         end
     end
     

@@ -40,28 +40,15 @@ if ( isa(f, 'deltafun') && isa(g, 'deltafun') )
     s.funPart = f.funPart + g.funPart;
     
     % Add the delta functions:    
-    va = f.location;
-    vb = g.location;
-    A = f.impulses;
-    B = g.impulses;
-    % Make the number of rows in A and B same by appending zero rows.
-    ra = size(A, 1);
-    rb = size(B, 1);
-    if( ra >= rb )
-        B = [ B; zeros(ra-rb, size(B, 2)) ];
-    else
-        A = [ A; zeros(rb-ra, size(A, 2)) ];
-    end      
-
-    s.location = [va, vb];
-    s.impulses = [A, B];
-    s = simplify(s);       
+    [deltaMag, deltaLoc] = deltafun.mergeImpulses(f.impulses, f.location, g.impulses, g.location);    
+    s.location = deltaLoc;
+    s.impulses = deltaMag;
 end
 
 %% %%%%%%%%%%%%% DELTAFUN + FUN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Recursive call: If g is a chebfun, upgrade it to a deltafun and call plus
 % again.
-if ( isa(f, 'deltafun') && isa(g, 'fun') )
+if ( isa(f, 'deltafun') && isa(g, 'classicfun') )
     t = deltafun.zeroDeltaFun(g.domain);
     t.funPart = g;
     s = f + t;
@@ -71,7 +58,7 @@ end
 %% Check for smoothness
 % If the result is a smooth object, return a smooth object.
 if ( ~anyDelta(s) )
-    % return a smooth object if the operation has removed all 
+    % Return a smooth object if the operation has removed all 
     % delta functions.
     s = s.funPart;
 end
