@@ -486,8 +486,7 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
                     pref.singPrefs.singType = {'sing', 'sing'};
                 else
                     error('CHEBFUN:constructor:parseInputs', ...
-                        ['Unrecognizable flag value for ''blowup''. The valid values ', ...
-                        'are 1 for poles only and 2 for fractional singularities.'])
+                        'Invalid value for ''blowup'' option.');
                 end
             end
             args(1:2) = [];

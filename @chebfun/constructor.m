@@ -63,11 +63,10 @@ if ( ~isempty(pref.singPrefs.exponents) )
         % side.
         exps = exps(ceil(1:0.5:nExps - 0.5));
         
-    else
+    elseif( nExps ~= 2*numIntervals )
         
         % The number of exponents supplied by user makes no sense.
-        error('CHEBFUN:constructor', ['the number of the exponents is ' ...
-            'inappropriate.']);
+        error('CHEBFUN:constructor', 'Invalid length for vector of exponents.');
     end
 end
 
@@ -106,7 +105,7 @@ if ( ~pref.enableBreakpointDetection )
             opk = op;
         end
         
-        % Replace the exponent information in the preference:
+        % Extract the exponents for this interval:
         if ( ~isempty(exps) )
             pref.singPrefs.exponents = exps(2*k-1:2*k);
         end
@@ -153,7 +152,7 @@ for k = 1:numIntervals
         opk = op;
     end
     
-    % Replace the exponent information in the preference:
+    % Extract the exponents for this interval:
     if ( ~isempty(exps) )
         pref.singPrefs.exponents = exps(2*k-1:2*k);
     end
@@ -194,13 +193,11 @@ while ( any(sad) )
         opk = op;
     end
     
-    % In case of SINGFUN, we need to compensate the singularities before
-    % carrying out the edge detection.
+    % Locate an edge/split location, compensating for exponents if necessary:
     if ( ~isempty(exps) && any( exps(2*k-1:2*k) ) )
-        opkDetectEdge = @(x) opk(x)./((x-a).^exps(2*k-1).*(b-x).^exps(2*k));
-    
-    % Locate an edge/split location:
-    edge = chebfun.detectEdge(opkDetectEdge, [a, b], vscale, hscale);
+        opkDetectEdge = @(x) opk(x)./((x - a).^exps(2*k - 1) .* ...
+            (b - x).^exps(2*k));
+        edge = chebfun.detectEdge(opkDetectEdge, [a, b], vscale, hscale);
     else
         edge = chebfun.detectEdge(opk, [a, b], vscale, hscale);
     end

@@ -17,10 +17,16 @@ g = f.smoothPart;
 if ( isreal(f) )
     % Pick a random point:
     arbitraryPoint = 0.1273881594;
-
+    
     g.values = sign(feval(g, arbitraryPoint));
     g.coeffs = g.values;
 else
+    
+    % If no preference is passed, the grab the default one:
+    if ( nargin == 1 )
+        pref = chebtech.techPref();
+    end
+    
     % Call the SIGN function of the SMOOTHFUN:
     g = sign(g, pref);
 end

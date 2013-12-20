@@ -49,7 +49,7 @@ for j = 1:numInts
         if ( ~f.exponents(2) )
             
             % If the exponent of the right end is zero, it's an easy task:
-            gtmp.smoothPart = ((1+s(2))/2)^f.exponents(1)*...
+            gtmp.smoothPart = ((1 + s(2))/2)^f.exponents(1)*...
                 restrict(f.smoothPart, s(1:2));
             
         else
@@ -57,7 +57,8 @@ for j = 1:numInts
             % Otherwise:
             gtmp.smoothPart = ((1+s(2))/2)^f.exponents(1)*...
                 restrict(f.smoothPart, s(1:2)).*...
-                smoothfun.constructor(@(x)(1-s(2)*(x+1)/2-(x-1)/2).^f.exponents(2));
+                smoothfun.constructor(@(x) (1 - s(2)*(x + 1)/2 - ...
+                    (x - 1)/2).^f.exponents(2));
             
         end
         
@@ -82,15 +83,16 @@ for j = 1:numInts
         if ( ~f.exponents(1) )
 
             % If the exponent of the left end is zero, it's an easy task:
-            gtmp.smoothPart = ((1-s(end-1))/2)^f.exponents(2)*...
+            gtmp.smoothPart = ((1 - s(end-1))/2)^f.exponents(2)*...
                 restrict(f.smoothPart, s(end-1:end));
             
         else
             
             % Otherwise:
-            gtmp.smoothPart = ((1-s(end-1))/2)^f.exponents(2)*...
+            gtmp.smoothPart = ((1 - s(end-1))/2)^f.exponents(2)*...
                 restrict(f.smoothPart, s(end-1:end)).*...
-                smoothfun.constructor(@(x)(s(end-1)*(1-x)/2+(x+1)/2+1).^f.exponents(1));
+                smoothfun.constructor(@(x) (s(end-1)*(1 - x)/2 + ...
+                    (x + 1)/2 + 1).^f.exponents(1));
 
         end
         

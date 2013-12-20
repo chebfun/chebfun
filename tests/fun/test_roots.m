@@ -89,7 +89,7 @@ for n = 1:1  %[TODO]: unbndfun
     r = roots(f);
     r_exact = [-1/2; 1/2; 3/2]*pi;
     err = r - r_exact;
-    pass(n, 10) = (norm(err, inf) < 5*get(f, 'vscale')*get(f, 'epslevel'));
+    pass(n, 10) = (norm(err, inf) < 1e2*get(f, 'vscale')*get(f, 'epslevel'));
 
 end
 
