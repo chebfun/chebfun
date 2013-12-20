@@ -70,7 +70,7 @@ end
 
 %% Check for smoothness
 % If the result is a smooth object, return a smooth object.
-if ( issmooth(s) )
+if ( ~anyDelta(s) )
     % return a smooth object if the operation has removed all 
     % delta functions.
     s = s.funPart;
