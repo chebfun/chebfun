@@ -107,7 +107,9 @@ if ( rootB )
     deltaMag(end) = deltaMag(end)/2;
 end
 
+p.enableDeltaFunctions = true;
+pref = chebpref(p);
 % Call the deltafun constructor directly:
-d.funs{1} = deltafun(d.funs{1}, deltaMag.', r.');
+d.funs{1} = fun.constructor(d.funs{1}, f.domain, deltaMag.', r.', pref);
         
 end

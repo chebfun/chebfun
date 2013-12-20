@@ -61,7 +61,7 @@ classdef chebpref
 %      singularities are being created, (e.g., by SQRT(F) at points where a
 %      CHEBFUN F passes through zero). See SINGFUN for more information.
 %
-%   enableDeltaFunctions - Enable delta function creation.
+%   enableDeltaFunctions - Enable delta functions.
 %
 %   scale                      - The vertical scale constructor should use.
 %    [0]
@@ -219,9 +219,10 @@ classdef chebpref
         enableBreakpointDetection
         breakpointPrefs
         domain
-        enableSingularityDetection
+        enableSingularityDetection        
+        singPrefs        
         enableDeltaFunctions
-        singPrefs
+        deltaPrefs
         scale
         tech
         techPrefs

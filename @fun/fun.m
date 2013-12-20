@@ -62,7 +62,7 @@ classdef fun % (Abstract)
                 % Generalized function mode; call DELTAFUN constructor:
                 deltaMag = vscale;
                 deltaLoc = hscale;
-                obj = deltafun(op, [], [], deltaMag, deltaLoc, pref);
+                obj = deltafun(op, deltaMag, deltaLoc);
                 % Return just a CLASSICFUN if no singularities found:
                 %[TODO]: Do we need something like this?
 %                 if ( issmooth(obj) )

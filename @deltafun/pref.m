@@ -30,10 +30,8 @@ function prefs = pref(varargin)
 %
 %     vsclae       -  What would they mean for a delta? 
 %     hscale       -  //ditto//
-%     deltaTol     -  Tolerance for delta functio magnitude.
+%     deltaTol     -  Tolerance for delta function magnitude.
 %     [1e-12]      
-%     maxDiffOrder -  Maximum Order of the derivative allowed for a deltafun
-%       [20]
 %                  
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 

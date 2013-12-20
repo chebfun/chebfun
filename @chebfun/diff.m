@@ -105,8 +105,11 @@ for j = 1:n
         % If there is a delta function at the join, recreate the fun using the
         % deltafun constructor:
         % [TODO]: This does not handle array valuedness, think more.
+        p.enableDeltaFunctions = true;
+        pref = chebpref(p);
         if ( deltaMag(k, 1) || deltaMag(k+1, 1) )
-            funs{k} = deltafun(funs{k}, [deltaMag(k)/2, deltaMag(k+1)/2], funs{k}.domain );
+            deltaLoc = funs{k}.domain;
+            funs{k} = fun.constructor(funs{k}, [deltaMag(k)/2, deltaMag(k+1)/2], deltaLoc, pref );
         end
     end
     
