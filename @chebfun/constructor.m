@@ -42,7 +42,7 @@ if ( iscell(op) && (numel(op) ~= numIntervals) )
     error('CHEBFUN:constructor:cellInput', ...
         ['Number of cell elements in OP must match the number of ', ...
          'intervals in DOMAIN.'])
-end    
+end
 
 % Sort out the exponents:
 exps = [];
@@ -50,7 +50,13 @@ if ( ~isempty(pref.singPrefs.exponents) )
     exps = pref.singPrefs.exponents;
     nExps = numel(pref.singPrefs.exponents);
     
-    if ( nExps == 2 )
+    if ( nExps == 1 )
+        
+        % If only one exponent is supplied, assume the exponent at other
+        % breakpoints are exactly same.
+        exps = exps*ones(1,2*numIntervals);
+        
+    elseif ( nExps == 2 )
         
         % If the exponents are only supplied at endpoints of the entire
         % domain, then pad zeros at the interior breakpoints.
