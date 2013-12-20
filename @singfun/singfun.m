@@ -210,6 +210,9 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         % Derivative of a SINGFUN.
         f = diff(f, k, dim)
         
+        % Extract information for DISPLAY.
+        info = dispInfo(f)
+        
         % Evaluate a SINGFUN.
         y = feval(f, x)
         

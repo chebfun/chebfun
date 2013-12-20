@@ -40,33 +40,15 @@ else
     disp([columnString, ' (1 smooth piece)'])
 end
 
-% In case of SINGFUN, information about the exponents needs to be displayed:
-exps = zeros(numFuns, 2);
-
-for j = 1:numFuns
-    if ( isa(f.funs{j}.onefun, 'singfun') && any(f.funs{j}.onefun.exponents) )
-        exps(j,:) = f.funs{j}.onefun.exponents;
-    end
-end
-
-% Extra information about exponents:
-if any( exps(:) )
-    extra = '  exponents';
-else
-    extra = ' ';
-end    
+% Extra information:
+[extraItem, extraData] = dispInfo(f);
 
 % Loop through each of the funs to display the following information:
-fprintf('       interval       length   endpoint values %s \n', extra)
+fprintf('       interval       length   endpoint values %s \n', extraItem)
 len = zeros(numFuns,1);
-exponents = ' ';
+
 for j = 1:numFuns
     len(j) = length(f.funs{j});
-    
-    % Grab the information about the exponents:
-    if strcmpi(extra, '  exponents')
-        exponents = ['  ' num2str(exps(j,:), '%5.2g') '  '];
-    end
 
     if ( min(size(f)) > 1 )
         % For array-valued funs, we don't display the values.
@@ -80,7 +62,7 @@ for j = 1:numFuns
 
         % Print information to screen:
         fprintf('[%8.2g,%8.2g]   %6i    complex values %s \n', ...
-            f.domain(j), f.domain(j+1), len(j), exponents);
+            f.domain(j), f.domain(j+1), len(j), extraData{j});
 
     else
 
@@ -101,7 +83,7 @@ for j = 1:numFuns
 
         % Print information to screen:
         fprintf('[%8.2g,%8.2g]   %6i  %8.2g %8.2g %s \n', ...
-            f.domain(j), f.domain(j+1), len(j), endvals, exponents);
+            f.domain(j), f.domain(j+1), len(j), endvals, extraData{j});
 
     end
 end

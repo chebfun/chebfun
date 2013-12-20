@@ -35,7 +35,7 @@ function g = cumsum(f, m, dim)
 
 % Check the dimension, i.e. the third argument:
 if ( nargin == 3 ) && ( dim ~= 1 )
-    warning('SINGFUN:cumsum:nosupport', ...
+    error('SINGFUN:cumsum:nosupport', ...
         'SINGFUN does not support array-valued objects.')
 end
 

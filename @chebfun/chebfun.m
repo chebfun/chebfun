@@ -264,6 +264,9 @@ classdef chebfun
         % Complex transpose of a CHEBFUN.
         f = ctranspose(f)
 
+        % Useful information for DISPLAY.
+        [name, data] = dispInfo(f)
+        
         % Display a CHEBFUN object.
         display(f);
         

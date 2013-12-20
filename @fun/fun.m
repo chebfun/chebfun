@@ -182,6 +182,9 @@ classdef fun % (Abstract)
         % FUN objects are not transposable.
         f = ctranspose(f)
         
+        % Extract information for DISPLAY.
+        info = dispInfo(f)
+        
         % Extract columns of an array-valued FUN object.
         f = extractColumns(f, columnIndex);
 
