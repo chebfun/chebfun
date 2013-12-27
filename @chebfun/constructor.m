@@ -123,6 +123,7 @@ if ( ~pref.enableBreakpointDetection )
         
         % Call GETFUN() (which calls FUN.CONSTRUCTOR()):
         [funs{k}, ishappy, vscale] = getFun(opk, endsk, vscale, hscale, pref);
+        
         % Warn if unhappy (as we're unable to split the domain to improve):
         if ( ~ishappy && ~warningThrown)
             warning('CHEBFUN:constructor', ...
@@ -170,6 +171,15 @@ for k = 1:numIntervals
 
     [funs{k}, ishappy(k), vscale] = ...
         getFun(opk, ends(k:k+1), vscale, hscale, pref);
+    
+    % For the case where vscale is Inf due to blowup in the interior of the
+    % domain:
+    if ( isinf(vscale) )
+        % An infinite vscale doesn't help us at all, but ruin the consequential
+        % constructions at the lower levels:
+        vscale = 0; 
+    end
+    
 end
 sad = ~ishappy;
         
@@ -215,12 +225,20 @@ while ( any(sad) )
     
     if ( ~isempty(type) )
         % Before constructing the left FUN, sort out the singType:
-        pref.singPrefs.singType = [type(2*k-1) 'none'];
+        pref.singPrefs.singType = [type(2*k-1) type(2*k-1)];
     end
     
     % Try to obtain happy child FUN objects on each new subinterval:
     [childLeft, happyLeft, vscale] = ...
         getFun(opk, [a, edge], vscale, hscale, pref);
+    
+    % For the case where vscale is Inf due to blowup in the interior of the
+    % domain:
+    if ( isinf(vscale) )
+        % An infinite vscale doesn't help us at all, but ruin the consequential
+        % constructions at the lower levels:
+        vscale = 0;
+    end
     
     if ( ~isempty(exps) )
         % Before constructing the right FUN, sort out the exponents:
@@ -229,12 +247,20 @@ while ( any(sad) )
     
     if ( ~isempty(type) )
         % Before constructing the right FUN, sort out the singType:
-        pref.singPrefs.singType = ['none' type(2*k)];
+        pref.singPrefs.singType = [type(2*k) type(2*k)];
     end
     
     [childRight, happyRight, vscale] = ...
         getFun(opk, [edge, b], vscale, hscale, pref);
-
+    
+    % For the case where vscale is Inf due to blowup in the interior of the
+    % domain:
+    if ( isinf(vscale) )
+        % An infinite vscale doesn't help us at all, but ruin the consequential
+        % constructions at the lower levels:
+        vscale = 0;
+    end
+    
     % Check for happiness/sadness:
     sad = [sad(1:k-1), ~happyLeft, ~happyRight, sad(k+1:end)];
 
@@ -247,7 +273,7 @@ while ( any(sad) )
     end
     
     if ( ~isempty(type) )
-        type = [type(1:2*k-1), 'none', 'none' type(2*k:end)];
+        type = [type(1:2*k-1), type(2*k-1), type(2*k) type(2*k:end)];
     end
     
     % If a cell was given, we must store pieces on new intervals:

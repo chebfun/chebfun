@@ -48,6 +48,10 @@ function poleOrder = poleOrderFinder(fvals, x)
 % later. This works because scaling with powers of the positive factor (1-x)
 % don't change the sign of function values. 
 smoothVals = abs(fvals);
+ind = isinf(smoothVals);
+smoothVals(ind) = [];
+x(ind) = [];
+
 if ( any(isinf(smoothVals)) )
     error('CHEBFUN:SINGFUN:findPoleOrder', 'Function returned inf value.')
 end
