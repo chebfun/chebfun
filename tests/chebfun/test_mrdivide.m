@@ -36,8 +36,6 @@ X = T.'/L.';
 C = diag([1 1 4/3 8/5]); 
 C(3, 1) = -1/3;
 C(4,2) = -3/5;
-pass(5) = norm(X - C, inf) < 10*epslevel(L);
+pass(5) = norm(X - C, inf) < 1e2*epslevel(L);
 
 end
- 
-

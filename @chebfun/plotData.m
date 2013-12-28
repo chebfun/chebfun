@@ -124,11 +124,8 @@ elseif ( nargin == 2 || ( ( nargin == 3 ) && ( isnumeric(h) ) ) )
         interval = h;
     end
     
-    % [TODO]: Fix this once OVERLAP() is implemented.
-    if ( all( f.domain ~= g.domain ) )
-        [f, g] = overlap(f, g);
-    end
-    
+    [f, g] = overlap(f, g);
+
     % Overhead:
     nFuns = numel(f.funs);
     ymax = zeros(1,nFuns);

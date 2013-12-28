@@ -264,6 +264,12 @@ classdef chebtech < smoothfun % (Abstract)
         % Absolute value of a CHEBTECH. (f should have no zeros in its domain)
         f = abs(f, pref)
 
+        % CHEBTECH logical AND.
+        h = and(f, g)
+
+        % True if any element of a CHEBTECH is a nonzero number, ignoring NaN.
+        a = any(f, dim)
+
         % Convert an array of CHEBTECH objects into an array-valued CHEBTECH.
         f = cell2mat(f)
 
@@ -299,6 +305,12 @@ classdef chebtech < smoothfun % (Abstract)
 
         % Evaluate a CHEBTECH.
         y = feval(f, x)
+        
+        % Round a CHEBTECH towards zero.
+        g = fix(f);
+        
+        % Round a CHEBTECH towards minus infinity.
+        g = floor(f);
 
         % Flip columns of an array-valued CHEBTECH object.
         f = fliplr(f)
@@ -336,8 +348,14 @@ classdef chebtech < smoothfun % (Abstract)
         % True for zero CHEBTECH objects
         out = iszero(f)
         
+        % Return Legendre coefficients of a CHEBTECH.
+        c_leg = legpoly(f, n)
+        
         % Length of a CHEBTECH.
         len = length(f)
+
+        % CHEBTECH logical.
+        f = logical(f)
 
         % A 'loose' (i.e., not too strict) check for happiness.
         [ishappy, epslevel, cutoff] = looseCheck(f, pref)
@@ -365,9 +383,12 @@ classdef chebtech < smoothfun % (Abstract)
 
         % Multiplication of CHEBTECH objects.
         f = mtimes(f, c)
-        
-        % Compute a Legendre series expansion of a CHEBTECH object:
-        c = legpoly(f)
+
+        % CHEBTECH logical NOT.
+        f = not(f)
+
+        % CHEBTECH logical OR.
+        h = or(f, g)
 
         % Basic linear plot for CHEBTECH objects.
         varargout = plot(f, varargin)
@@ -407,6 +428,9 @@ classdef chebtech < smoothfun % (Abstract)
 
         % Roots of a CHEBTECH in the interval [-1,1].
         out = roots(f, varargin)
+        
+        % Round a CHEBTECH towards nearest integer.
+        g = round(f)
 
         % Test an evaluation of the input OP against a CHEBTECH approx.
         pass = sampleTest(op, f)
@@ -445,9 +469,15 @@ classdef chebtech < smoothfun % (Abstract)
 
         % Evaluation using the barycentric interpolation formula.
         fx = bary(x, gvals, xk, vk)
+        
+        % Convert Chebshev coefficients to Legendre coefficients.
+        c_leg = cheb2leg(c_cheb, M);
 
         % Clenshaw's algorithm for evaluating a Chebyshev polynomial.
         out = clenshaw(x, coeffs)
+        
+        % Convert Legendre coefficients to Chebshev coefficients.
+        c_cheb = leg2cheb(c_leg, M);
 
         % Retrieve and modify preferences for this class.
         p = techPref(q)

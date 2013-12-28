@@ -60,6 +60,7 @@ end
 
 % Store the hold state of the current axis:
 holdState = ishold;
+isComplex = false;
 
 % Initialise storage:
 lineData = {};
@@ -164,7 +165,12 @@ if ( isempty(jumpData) )
 end
 h3 = plot(jumpData{:});
 % Change the style accordingly:
-set(h3, 'LineStyle', ':', 'Marker', 'none')
+if ( isComplex )
+    %[TODO]: The following statement can not be reached:
+    set(h3, 'LineStyle', 'none', 'Marker', 'none')
+else
+    set(h3, 'LineStyle', ':', 'Marker', 'none')
+end
 
 % Return hold state to what it was before:
 if ( ~holdState )
