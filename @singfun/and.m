@@ -1,10 +1,25 @@
-function f = and(f, g)
-%&   SINGFUN logical AND is not supported.
+function h = and(f, g)
+%&   SINGFUN logical AND.
+%   F & G performs a logical AND of two SINGFUN objects F and G and returns a
+%   SINGFUN containing elements set to either logical 1 (TRUE) or logical 0
+%   (FALSE). An element of the output SINGFUN is set to 1 if both input
+%   SINGFUN objects have a non-zero element at that point, otherwise it is set
+%   to 0.  F and G must either be identically zero or have roots in their
+%   domains.  If this is not the case, garbage is returned with no warning.
+%   Note that no matter what singularities F and G have, the returned
+%   object H is a SMOOTHFUN without any singularity.   
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-error('CHEBFUN:SINGFUN:and:notSupported',
-    'Logical AND of two SINGFUNs is not supported.');
+if ( isa(f, 'singfun') )
+    f = f.smoothPart;
+end
+
+if ( isa(g, 'singfun') )
+    g = g.smoothPart;
+end
+    
+h = f & g;
 
 end
