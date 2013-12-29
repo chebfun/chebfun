@@ -341,6 +341,73 @@ classdef chebpref
             end
         end
 
+        function display(pref)
+        %DISPLAY   Display a CHEBPREF object.
+        %   DISPLAY(PREF) prints out a list of the preferences stored in the
+        %   CHEBPREF object PREF.
+
+            % Compute the screen column in which pref values start.
+            valueCol = 34; % length('    enableSingularityDetection:   ');
+            for field = fieldnames(pref.techPrefs).'
+                field = field{1};
+                col = length(['        ' field '  ']);
+                if ( col > valueCol )
+                    valueCol = col;
+                end
+            end
+
+            % A subfunction to pad strings for formatting.
+            function s = padString(s)
+            %PADSTRING   Add whitespace to string for formatting.
+                s = [s repmat(' ', 1, valueCol - length(s))];
+            end
+
+            % Print values of "known" preferences.
+            fprintf('chebpref object with the following preferences:\n');
+            fprintf([padString('    maxTotalLength:') '%d\n'], ...
+                pref.maxTotalLength);
+            fprintf([padString('    domain:') '[%g, %g]\n'], ...
+                pref.domain(1), pref.domain(end));
+            fprintf([padString('    enableBreakpointDetection:') '%d\n'], ...
+                pref.enableBreakpointDetection);
+            fprintf('    breakpointPrefs\n');
+            fprintf([padString('        splitMaxLength:') '%d\n'], ...
+                pref.breakpointPrefs.splitMaxLength');
+            fprintf([padString('        splitMaxTotalLength:') '%d\n'], ...
+                pref.breakpointPrefs.splitMaxTotalLength');
+            fprintf([padString('    enableSingularityDetection:') '%d\n'], ...
+                pref.enableSingularityDetection);
+            fprintf('    singPrefs\n');
+            fprintf([padString('        exponentTol:') '%d\n'], ...
+                pref.singPrefs.exponentTol');
+            fprintf([padString('        maxPoleOrder:') '%d\n'], ...
+                pref.singPrefs.maxPoleOrder');
+            fprintf([padString('    tech:') '''%s''\n'], ...
+                pref.tech)
+            fprintf('    techPrefs\n');
+
+            % Format and print values of tech preferences.
+            for field = fieldnames(pref.techPrefs).'
+                field = field{1};
+                printStr = padString(['        ' field ':']);
+
+                if ( isempty(pref.techPrefs.(field)) )
+                   fprintf([printStr 'empty\n']);
+                elseif ( ischar(pref.techPrefs.(field)) && ...
+                         isrow(pref.techPrefs.(field)) )
+                   fprintf([printStr '''%s''\n'], pref.techPrefs.(field))
+                elseif ( numel(pref.techPrefs.(field)) > 1 )
+                   fprintf([printStr class(pref.techPrefs.(field)) ' array\n']);
+                elseif ( isfloat(pref.techPrefs.(field)) )
+                   fprintf([printStr '%0.16g\n'], pref.techPrefs.(field))
+                elseif ( islogical(pref.techPrefs.(field)) )
+                   fprintf([printStr '%d\n'], pref.techPrefs.(field))
+                else
+                   fprintf([printStr class(pref.techPrefs.(field)) '\n']);
+                end
+            end
+        end
+
     end
 
     methods ( Static = true )
