@@ -225,6 +225,9 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         % Flip/reverse a SINGFUN object.
         f = flipud(f)
         
+        % Round a SINGFUN towards minus infinity.
+        g = floor(f);
+        
         % Get method:
         val = get(f, prop);
         
