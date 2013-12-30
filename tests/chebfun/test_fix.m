@@ -52,4 +52,18 @@ catch ME
     pass(7) = strcmp(ME.identifier, 'CHEBFUN:fix:inf');
 end
 
+% Test on SINGFUN:
+op = @(x)sin(x).*(x+1).^0.5;
+f = chebfun(op, 'exps', [0.5 0]);
+
+% We temporarily disable this warning: 
+warning('off', 'CHEBFUN:SINGFUN:plus');
+g = fix(f);
+warning('on', 'CHEBFUN:SINGFUN:plus');
+
+g_vals = feval(g, x);
+g_exact = fix(op(x));
+err = g_vals - g_exact;
+pass(8) = (norm(err(:), inf) <= 10*vscale(g)*epslevel(g));
+
 end
