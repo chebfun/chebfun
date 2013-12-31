@@ -45,6 +45,23 @@ catch ME
     pass(5) = strcmp(ME.identifier, 'CHEBFUN:join:trans');
 end
 
+% Test on SINGFUN:
+op1 = @(x) sin(x)./(x+1);
+op2 = @(x) sin(x);
+f = chebfun(op1, [-1 -0.5 0], 'exps', [-1 0 0]);
+g = chebfun(op2, [1 2]);
+h = join(f, g);
+x = sort(xr);
+h_vals = feval(h, x);
+ind = ( x < 0 );
+indComp = ~ind;
+h_exact1 = feval(op1, x(ind));
+h_exact2 = feval(op2, x(indComp)+1);
+h_exact = [h_exact1; h_exact2];
+err = h_exact - h_vals;
+pass(6) = isequal(h.domain, [-1 -0.5 0 1]) && ...
+    norm(err, inf) < 5e3*vscale(h)*epslevel(h);
+
 end
 
 function y = h_exact(x)
