@@ -50,8 +50,10 @@ function [p, q, r, mu, nu, poles, residues] = ratinterp(varargin)
 %
 %   See also CHEBFUN/INTERP1.
 
-%   Copyright 2013 by The University of Oxford and The Chebfun Developers.
-%   See http://www.chebfun.org/ for Chebfun information.
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+% TODO:  Add examples to documentation.
 
 % Parse the inputs.
 [dom, f, m, n, NN, xi, xi_type, tol] = parseInputs(varargin{:});
@@ -68,7 +70,7 @@ ts = tol*norm(f, inf);
 [Z, R] = assembleMatrices(f, n, xi, xi_type, N1);
 
 % Compute coefficients of the numerator and denominator.
-b = computeDenominatorCoeffs(Z, m, n, fEven, fOdd, N1, ts);
+[b, n] = computeDenominatorCoeffs(Z, m, n, fEven, fOdd, N1, ts);
 a = computeNumeratorCoeffs(f, m, n, xi_type, Z, b, fEven, fOdd, N, N1);
 [a, b] = trimCoeffs(a, b, tol, ts);
 
@@ -84,18 +86,18 @@ nu = length(b) - 1;
 if ( nargout > 5 )
     if ( nargout > 6 ) % Compute residues.
         % Compute partial fraction expansion of r.
-        [residues, poles] = residue(p,q);
-        [poles,ind] = sort(poles);
+        [residues, poles] = residue(p, q);
+        [poles, ind] = sort(poles);
         residues = residues(ind);
 
         % Residues are the coefficients of 1/(x - poles(j))
         for j = 1:(length(poles) - 1)
-            if ( poles(j+1) == poles(j) )
+            if (poles(j+1) == poles(j))
                 residues(j+1) = residues(j);
             end
         end
     else               % Just compute the poles.
-          poles = roots( q , 'all' );
+          poles = roots(q, 'all');
     end
 end
 
@@ -104,7 +106,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Input parsing.
 
-function [dom, f, m, n, NN, xi, xi_type tol] = parseInputs(varargin)
+function [dom, f, m, n, NN, xi, xi_type, tol] = parseInputs(varargin)
 
 % Make sure we have the correct number of arguments.
 if ( nargin < 3 )
@@ -183,7 +185,7 @@ elseif ( isfloat(xi) )                                      % Arbitrary nodes.
     end
     xi = 2.0 * ( xi - 0.5*sum(dom) ) / diff(dom);  % Scale nodes to [-1 1].
     xi_type = 'ARBITRARY';
-elseif ( isstr(xi) )
+elseif ( ischar(xi) )
     xi_type = xi;
     if ( strcmpi(xi, 'TYPE0') || strcmpi(xi, 'UNITROOTS') ) % Roots of unity.
         xi_type = 'TYPE0';
@@ -222,6 +224,7 @@ end
 % Functions for computing the numerator and denominator coefficients.
 
 function [fEven, fOdd] = checkSymmetries(f, xi, xi_type, N, N1, ts)
+
 fEven = false;
 fOdd = false;
 
@@ -294,7 +297,7 @@ end
 
 end
 
-function b = computeDenominatorCoeffs(Z, m, n, fEven, fOdd, N1, ts)
+function [b, n] = computeDenominatorCoeffs(Z, m, n, fEven, fOdd, N1, ts)
 
 shift = xor(fEven, mod(m, 2) == 1);
 
@@ -361,7 +364,7 @@ if ( strncmpi(xi_type, 'type', 4) )
         a = fft(ifft(b, N1) .* f);
         a = a(1:(m+1));
     elseif ( xi_type(5) == '1' )  % 1st-kind Chebyshev points.
-        a = dct1(idct1([b ; zeros(N - n, 1)]) .* f );
+        a = dct1(idct1([b ; zeros(N - n, 1)]) .* f);
         a = a(1:(m+1));
     elseif ( xi_type(5) == '2' )  % 2nd-kind Chebyshev points.
         a = dct2(idct2([b ; zeros(N - n, 1)]) .* f);
@@ -380,45 +383,49 @@ end
 end
 
 function [at, bt] = trimCoeffs(a, b, tol, ts)
-    if ( tol > 0 )
-        % Nonnegligible coefficients.
-        nna = abs(a) > ts;
-        nnb = abs(b) > tol;
 
-        % Discard trailing zeros.
-        at = a(1:find(nna, 1, 'last'));
-        bt = b(1:find(nnb, 1, 'last'));
+if ( tol > 0 )
+    % Nonnegligible coefficients.
+    nna = abs(a) > ts;
+    nnb = abs(b) > tol;
 
-        % Remove small leading coefficients.
-        while ( (length(at) > 0)  && (length(bt) > 0) && ...
-                (abs(at(1)) < ts) && (abs(bt(1)) < ts) )
-            at = at(2:end);
-            bt = bt(2:end);
-        end
+    % Discard trailing zeros.
+    at = a(1:find(nna, 1, 'last'));
+    bt = b(1:find(nnb, 1, 'last'));
+
+    % Remove small leading coefficients.
+    while ( (length(at) > 0)  && (length(bt) > 0) && ...
+            (abs(at(1)) < ts) && (abs(bt(1)) < ts) )
+        at = at(2:end);
+        bt = bt(2:end);
     end
+end
 
-    % Zero function special case.
-    if ( length(at) == 0 )
-        at = 0;
-        bt = 1;
-    end
+% Zero function special case.
+if ( length(at) == 0 )
+    at = 0;
+    bt = 1;
+end
+
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Functions for assembling the rational interpolant.
 
 function [p, q, r] = constructRatApprox(xi_type, R, a, b, mu, nu, dom)
-    if ( strncmpi(xi_type, 'type', 4) )
-        if ( xi_type(5) == '0' )      % Roots of unity.
-            [p, q, r] = constructRatApproxROU(a, b, mu, nu, dom);
-        elseif ( xi_type(5) == '1' )  % 1st-kind Chebyshev points.
-            [p, q, r] = constructRatApproxCheb1(a, b, mu, nu, dom);
-        else                          % 2nd-kind Chebyshev points.
-            [p, q, r] = constructRatApproxCheb2(a, b, mu, nu, dom);
-        end
-    else                              % Arbitrary points.
-            [p, q, r] = constructRatApproxArb(R, a, b, mu, nu, dom);
+
+if ( strncmpi(xi_type, 'type', 4) )
+    if ( xi_type(5) == '0' )      % Roots of unity.
+        [p, q, r] = constructRatApproxROU(a, b, mu, nu, dom);
+    elseif ( xi_type(5) == '1' )  % 1st-kind Chebyshev points.
+        [p, q, r] = constructRatApproxCheb1(a, b, mu, nu, dom);
+    else                          % 2nd-kind Chebyshev points.
+        [p, q, r] = constructRatApproxCheb2(a, b, mu, nu, dom);
     end
+else                              % Arbitrary points.
+        [p, q, r] = constructRatApproxArb(R, a, b, mu, nu, dom);
+end
+
 end
 
 function [p, q, r] = constructRatApproxROU(a, b, mu, nu, dom)
@@ -456,9 +463,12 @@ end
 
 function [p, q, r] = constructRatApproxCheb1(a, b, mu, nu, dom)
 
+md = 0.5 * sum(dom);
+ihd = 2.0 / diff(dom);
+
 % Build the numerator polynomial.
 px = idct1(a);
-p = chebfun(px, dom, 'chebkind', 1);
+p = chebfun(px, dom, 'gridType', 1);
 
 % Build the denominator polynomial and form the function handle.
 if ( nu > 0 )
@@ -471,12 +481,12 @@ if ( nu > 0 )
     wq = sin((2*(0:nu) + 1)*pi/(2*(nu + 1)));
     wq(2:2:end) = -wq(2:2:end);
 
-    q = chebfun(qx, dom, 'chebkind', 1);
+    q = chebfun(qx, dom, 'gridType', 1);
 
     r = @(x) ratbary2(ihd*(x - md), px, qx, ...
         chebpts(mu + 1, 1), chebpts(nu + 1, 1), wp, wq);
 else
-    q = chebfun(b, dom, 'chebkind', 1);
+    q = chebfun(b, dom, 'gridType', 1);
     r = @(x) p(x)/b;
 end
 
@@ -488,11 +498,11 @@ md = 0.5 * sum(dom);
 ihd = 2.0 / diff(dom);
 
 % Build the numerator polynomial.
-p = chebfun( a(end:-1:1) , 'coeffs' , dom);
+p = chebfun(a(end:-1:1), dom, 'coeffs');
 
 % Build the denominator polynomial and form the function handle.
 if ( nu > 0 )
-    q = chebfun(b(end:-1:1), 'coeffs', dom);
+    q = chebfun(b(end:-1:1), dom, 'coeffs');
 
     px = idct2(a);
     qx = idct2(b);
