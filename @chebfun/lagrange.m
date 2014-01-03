@@ -1,0 +1,34 @@
+function f = lagrange(x, varargin)
+%LAGRANGE   Compute Lagrange basis functions.
+%   F = CHEBFUN.LAGRANGE(X) returns a CHEBFUN object F representing the Lagrange
+%   polynomials for the points X(0), ..., X(N). That is, each column of F is a
+%   a polynomial of degree N which satisfies F(X,:) = eye(length(X)).
+%
+%   F = CHEBFUN.LAGRANGE(X, DOM) restricts the result F to the domain DOM. DOM
+%   _must_ be passed if X is a scalar.
+%
+% See also INTERP1, VANDER.
+
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+n = length(x);
+if ( n == 0 )
+    f = chebfun();
+    return
+elseif ( n == 1 && nargin < 2 )
+    error('CHEBFUN:LAGRANGE:nodomain', ...
+        'Domain must be specfied when X is a scalar.')
+end
+
+% Check for uniqueness:
+if ( length(unique(x)) ~= n )
+    error('CHEBFUN:LAGRANGE:nonunique', 'Interpolation points must be unique.')
+end
+    
+% Make interpolation data (identity matrix):
+y = eye(n);
+% Call INTERP1():
+f = chebfun.interp1(x, y, 'poly', varargin);
+
+end
