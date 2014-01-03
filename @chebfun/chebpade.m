@@ -112,9 +112,9 @@ end
 c(1) = 2*c(1);
 
 % Set up and solve Hankel system for denominator Laurent-Pade coefficients.
-top = c(abs([m-n+1:m]) + 1); % Top row of Hankel system.
-bot = c([m:m+n-1] + 1);      % Bottom row of Hankel system.
-rhs = c([m+1:m+n] + 1);      % RHS of Hankel system.
+top = c(abs((m-n+1:m)) + 1); % Top row of Hankel system.
+bot = c((m:m+n-1) + 1);      % Bottom row of Hankel system.
+rhs = c((m+1:m+n) + 1);      % RHS of Hankel system.
 
 beta = 1;
 if ( n > 0 )
@@ -128,14 +128,17 @@ alpha = alpha(1:l+1);
 beta = beta.';
 
 % Compute numerator Chebyshev-Pade coefficients.
+pk = zeros(m + 1, 1);
 D = zeros(l + 1, l + 1);
 D(1:l+1,1:n+1) = alpha(:,ones(n + 1, 1)).*beta(ones(l + 1, 1),:);
+
 pk(1) = sum(diag(D));
 for k = 1:m
     pk(k+1) = sum([diag(D, k) ; diag(D, -k)]);
 end
 
 % Compute denominator Chebyshev-Pade coefficients.
+qk = zeros(n + 1, 1);
 for k = 1:n+1
     u = beta(1:n+2-k);
     v = beta(k:end);
@@ -148,8 +151,8 @@ qk = 2*qk/qk(1);
 qk(1) = 1;
 
 % Form the outputs.
-p = chebfun(fliplr(pk), F.domain([1 end]), 'coeffs');
-q = chebfun(fliplr(qk), F.domain([1 end]), 'coeffs');
+p = chebfun(flipud(pk), F.domain([1 end]), 'coeffs');
+q = chebfun(flipud(qk), F.domain([1 end]), 'coeffs');
 r_handle = @(x) feval(p, x)./feval(q, x);
 
 end
