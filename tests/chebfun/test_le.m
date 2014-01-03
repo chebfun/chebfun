@@ -68,11 +68,11 @@ end
 
 %% Test on SINGFUN:
 
-f = chebfun(@(x) sin(x)./(x+1), 'exps', [-1 0]);
+f = chebfun(@(x) -sin(x)./(x+1), 'exps', [-1 0]);
 g = chebfun(@(x) x*0);
 h = ( f <= g );
 h_vals = feval(h, x);
-h_exact = (feval(f, x) <= feval(g, x) );
-pass(9) = ~any( h_vals - h_exact );
+h_exact = hvsde(x);
+pass(9) = ( h.impulses(2) == 1 ) && all( abs( h_vals - h_exact ) == 0 );
 
 end
