@@ -60,4 +60,8 @@ pass(10) = (mu == 4) && (nu == 2) && ...
 pass(11) = (mu == 4) && (nu == 2) && ...
     (max(abs(sort(roots(q, 'all')) - [-0.2 ; 2.2])) < 1e-10);
 
+% Make sure that the example from the documentation works.
+[p, q, r, mu, nu] = ratinterp([-1 1], @(x) 1./(x - 0.2), 10, 10, [], 'type2');
+pass(12) = (mu == 0) && (nu == 1) && (abs(roots(q) - 0.2) < 1e-10);
+
 end

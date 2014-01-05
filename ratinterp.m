@@ -21,11 +21,11 @@ function [p, q, r, mu, nu, poles, residues] = ratinterp(varargin)
 %   robustified (M, N) rational interpolant or approximant of F over the NN + 1
 %   nodes XI, in which components contributing less than the relative tolerance
 %   TOL to the solution are discarded. If no value of TOL is specified, a
-%   tolerance of 1e-14 is assumed. MU and NU are the resulting numerator and
-%   denominator degrees. Note that if the degree is decreased, a rational
-%   least-squares approximation is computed over the NN points. The
-%   coefficients are computed relative to the orthogonal basis derived from the
-%   nodes XI.
+%   tolerance of 1e-14 is assumed; set TOL to zero to disable robustness. MU
+%   and NU are the resulting numerator and denominator degrees. Note that if
+%   the degree is decreased, a rational least-squares approximation is computed
+%   over the NN points. The coefficients are computed relative to the
+%   orthogonal basis derived from the nodes XI.
 %
 %   [P, Q, R_HANDLE, MU, NU, POLES, RES] = RATINTERP(F, M, N, NN, XI, TOL)
 %   returns the poles POLES of the rational interpolant on the real axis as
@@ -37,6 +37,15 @@ function [p, q, r, mu, nu, poles, residues] = ratinterp(varargin)
 %   the domain D, given as a two-element row vector.
 %
 %   Examples:
+%
+%   Compute a type-(10, 10) robustified rational interpolant to 1/(x -
+%   0.2) on [-1, 1] in second-kind Chebyshev nodes:
+%
+%     [p, q, r] = ratinterp([-1 1], @(x) 1./(x - 0.2), 10, 10, [], 'type2');
+%
+%   Same thing but with robustness disabled:
+%
+%     [p, q, r] = ratinterp([-1 1], @(x) 1./(x - 0.2), 10, 10, [], 'type2', 0);
 %
 %   References:
 %
@@ -53,7 +62,7 @@ function [p, q, r, mu, nu, poles, residues] = ratinterp(varargin)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TODO:  Add examples to documentation.
+% TODO:  Deal with array-valued CHEBFUNs / quasimatrices.
 
 % Parse the inputs.
 [dom, f, m, n, NN, xi, xi_type, tol] = parseInputs(varargin{:});
@@ -71,6 +80,7 @@ ts = tol*norm(f, inf);
 
 % Compute coefficients of the numerator and denominator.
 [b, n] = computeDenominatorCoeffs(Z, m, n, fEven, fOdd, N1, ts);
+
 a = computeNumeratorCoeffs(f, m, n, xi_type, Z, b, fEven, fOdd, N, N1);
 [a, b] = trimCoeffs(a, b, tol, ts);
 
@@ -337,11 +347,11 @@ if ( (n > 0) && (~(fOdd || fEven) || (n > 1)) )
             elseif ( n == 1 )
                 if ( fEven )
                     b = [1 ; 0];
+                    break;
                 elseif ( fOdd )
                     b = [0 ; 1];
+                    break;
                 end
-
-                break;
             end
         end
     end
