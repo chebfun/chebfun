@@ -30,6 +30,14 @@ function [p, q, r, s] = cf(f, m, n, M)
 %
 %   Examples:
 %
+%   Compute a quadratic polynomial CF approximant to exp(x) on [-1, 1]:
+%
+%     [p, q, r] = cf(chebfun(@exp), 2);
+%
+%   Compute a type-(4, 4) rational CF approximant to the same function:
+%
+%     [p, q, r] = cf(chebfun(@exp), 4, 4);
+%
 %   References:
 %
 %   [1] M. H. Gutknecht and L. N. Trefethen, "Real polynomial
@@ -44,8 +52,6 @@ function [p, q, r, s] = cf(f, m, n, M)
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
-
-% TODO:  Add examples to documentation.
 
 % TODO:  Handle quasimatrices/array-valued CHEBFUNs.
 
