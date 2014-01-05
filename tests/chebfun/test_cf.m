@@ -1,7 +1,11 @@
 % Test function for @chebfun/cf.m.
 % Based on the Chebfun v4 test written by LNT & Joris Van Deun, Dec. 4, 2009.
 
-function pass = cftest(pref)
+function pass = test_cf(pref)
+
+if ( nargin == 0 )
+    pref = chebpref();
+end
 
 f = chebfun(@exp);
 [p, q, r, lam] = cf(f, 2);

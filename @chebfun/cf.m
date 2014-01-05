@@ -2,12 +2,11 @@ function [p, q, r, s] = cf(f, m, n, M)
 %CF   Caratheodory-Fejer approximation
 %   [P, Q, R_HANDLE] = CF(F, M, N) computes a type (M, N) rational CF
 %   approximant to CHEBFUN F defined on [a, b], which must consist of just a
-%   single FUN.  P and Q are CHEBFUNs representing the numerator and
-%   denominator polynomials.  R_HANDLE is an anonymous function that evaluates
-%   P/Q.
+%   single FUN. P and Q are CHEBFUNs representing the numerator and denominator
+%   polynomials. R_HANDLE is an anonymous function that evaluates P/Q.
 %
-%   [P, Q, R_HANDLE, S] = CF(F, M, N) also returns S, the associated CF
-%   singular value, an approximation to the minimax error.
+%   [P, Q, R_HANDLE, S] = CF(F, M, N) also returns S, the associated CF singular
+%   value, an approximation to the minimax error.
 %
 %   [P, Q, R_HANDLE, S] = CF(F, M, N, K) does the same but uses only the K-th
 %   partial sum in Chebyshev expansion of F.
@@ -40,15 +39,14 @@ function [p, q, r, s] = cf(f, m, n, M)
 %
 %   References:
 %
-%   [1] M. H. Gutknecht and L. N. Trefethen, "Real polynomial
-%       Chebyshev approximation by the Caratheodory-Fejer method", SIAM J.
-%       Numer. Anal. 19 (1982), 358-371.
+%   [1] M. H. Gutknecht and L. N. Trefethen, "Real polynomial Chebyshev
+%       approximation by the Caratheodory-Fejer method", SIAM J. Numer. Anal. 19 
+%       (1982), 358-371.
 %
-%   [2] L. N. Trefethen and M. H. Gutknecht, "The Caratheodory-Fejer method
-%       for real rational approximation", SIAM J. Numer. Anal. 20 (1983),
-%       420-436.
+%   [2] L. N. Trefethen and M. H. Gutknecht, "The Caratheodory-Fejer method fpr
+%       real rational approximation", SIAM J. Numer. Anal. 20 (1983), 420-436.
 %
-%   See also REMEZ.
+% See also REMEZ.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -75,7 +73,7 @@ end
 
 % Form global polynomial approximation if f is only piecewise smooth.
 if ( numel(f.funs) > 1 )
-    f = chebfun(@(x) feval(f, x), f.domain([1 end]), M + 1);
+    f = chebfun(@(x) feval(f, x), f.domain([1, end]), M + 1);
 end
 
 % Use full series expansion of F by default.
@@ -83,7 +81,7 @@ if ( nargin < 4 )
     M = length(f) - 1;
 end
 
-% Trivial case:  approximation length exceeds that of the expansion length.
+% Trivial case: approximation length exceeds that of the expansion length.
 if ( m >= M )
     p = f;
     q = chebfun(1, dom);
@@ -147,7 +145,7 @@ uu = u(2:(M-m));
 
 b = c;
 for k = m:-1:-m
-    b = [-(b(1:(M-m-1))*uu)/u1 b];
+    b = [-(b(1:(M-m-1))*uu)/u1, b]; %#ok<AGROW>
 end
 
 pk = a((M-m+1):(M+1)) - [b(1:m) 0] - b((2*m+1):-1:(m+1));
@@ -168,9 +166,10 @@ tolfft = 1e-14;   % Relative tolerance.
 maxnfft = 2^17;   % Maximum FFT length.
 
 % Tolerances for detecting ill-conditioning.
-tolcond = 1e13;
-tolcondG = 1e3;
+tolCond = 1e13;
+tolCondG = 1e3;
 
+% Scaling of T_0 coefficient.
 a(end) = 2*a(end);
 
 % Check even / odd symmetries.
@@ -197,7 +196,7 @@ elseif ( max(abs(a(end:-2:1)))/vscale(f) < eps )  % f is odd.
 end
 
 % Obtain eigenvalues and block structure.
-[s, u, k, l, rflag] = getblock(a, m, n, M);
+[s, u, k, l, rflag] = getBlock(a, m, n, M);
 if ( (k > 0) || (l > 0) )
     % f is rational (at least up to machine precision).
     if ( rflag )
@@ -209,10 +208,10 @@ if ( (k > 0) || (l > 0) )
     end
 
     nnew = n - k;
-    [s, u, knew, lnew] = getblock(a, m + l, nnew, M);
+    [s, u, knew, lnew] = getBlock(a, m + l, nnew, M);
     if ( (knew > 0) || (lnew > 0) )
         n = n + l;
-        [s, u, k, l] = getblock(a, m - k, n, M);
+        [s, u, k, l] = getBlock(a, m - k, n, M);
     else
         n = nnew;
     end
@@ -287,22 +286,22 @@ gam = toeplitz(gam);
 A = gam(1:m,1:m);
 B = gam(1:m,m+1);
 C = gam(1:m,end:-1:m+2);
-G = A + C - 2*B*B'/gam(1,1);
+G = A + C - 2*(B*B')/gam(1,1);
 
-if ( (cond(G)/s > tolcond) && (cond(G) > tolcondG) )
+if ( (cond(G)/s > tolCond) && (cond(G) > tolCondG) )
   warning('CHEBFUN:cf:illConditioned', ...
     'Ill-conditioning detected. Results may be inaccurate.');
 end
 
 bc = G\(-2*(B*ct(1)/gam(1,1) -ct(m+1:-1:2)'));
 bc0 = (ct(1) - B'*bc)/gam(1,1);
-bc = [bc0  bc(end:-1:1)'];
+bc = [bc0, bc(end:-1:1)'];
 p = chebfun(bc(end:-1:1).', dom, 'coeffs');
 r = @(x) feval(p, x)./feval(q, x);
 
 end
 
-function [s, u, k, l, rflag] = getblock(a, m, n, M)
+function [s, u, k, l, rFlag] = getBlock(a, m, n, M)
 % Each Hankel matrix corresponds to one diagonal m - n = const in the CF-table;
 % when a diagonal intersects a square block, the eigenvalues on the
 % intersection are all equal.  k and l tell you how many entries on the
@@ -348,6 +347,6 @@ while ( ((n + l + 2) < length(tmp)) && tmp(n + l + 2) )
 end
 
 % Flag indicating if the function is actually rational.
-rflag = (n + l + 2) == length(tmp);
+rFlag = (n + l + 2) == length(tmp);
 
 end

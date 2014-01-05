@@ -1,11 +1,11 @@
 function [p, q, r, mu, nu, poles, residues] = ratinterp(varargin)
 %RATINTERP  Robust rational interpolation or least-squares approximation.
 %   [P, Q, R_HANDLE] = RATINTERP(F, M, N) computes the (M, N) rational
-%   interpolant of F on the M + N + 1 Chebyshev points of the second kind.  F
+%   interpolant of F on the M + N + 1 Chebyshev points of the second kind. F
 %   can be a CHEBFUN, a function handle or a column vector of M + N + 1 data
 %   points.  If F is a CHEBFUN, the rational interpolant is constructed on the
-%   domain of F.  Otherwise, the domain [-1, 1] is used. P and Q are CHEBFUNs
-%   such that P(x)./Q(x) = F(x).  R_HANDLE is an anonymous function evaluating
+%   domain of F. Otherwise, the domain [-1, 1] is used. P and Q are CHEBFUNs
+%   such that P(x)./Q(x) = F(x). R_HANDLE is an anonymous function evaluating
 %   the rational interpolant directly.
 %
 %   [P, Q, R_HANDLE] = RATINTERP(F, M, N, NN) computes a (M, N) rational linear
@@ -57,7 +57,7 @@ function [p, q, r, mu, nu, poles, residues] = ratinterp(varargin)
 %       INTERPOLATION IN ROOTS OF UNITY AND CHEBYSHEV POINTS", Submitted to
 %       SIAM Journal on Numerical Analysis, 2011.
 %
-%   See also CHEBFUN/INTERP1.
+% See also INTERP1, CHEBPADE.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -147,7 +147,7 @@ else
     dom = [];
 end
 
-% Extract the rest of the input arguments.  After this, all arguments will
+% Extract the rest of the input arguments. After this, all arguments will
 % either be empty or have their user-supplied values.
 varargin = [varargin repmat({[]}, [1 (6 - length(varargin))])];
 [f, m, n, NN, xi, tol] = deal(varargin{:});
@@ -404,15 +404,15 @@ if ( tol > 0 )
     bt = b(1:find(nnb, 1, 'last'));
 
     % Remove small leading coefficients.
-    while ( (length(at) > 0)  && (length(bt) > 0) && ...
-            (abs(at(1)) < ts) && (abs(bt(1)) < ts) )
+    while ( ~isempty(at) && ~isempty(bt) && (abs(at(1)) < ts) && ...
+            (abs(bt(1)) < ts) )
         at = at(2:end);
         bt = bt(2:end);
     end
 end
 
 % Zero function special case.
-if ( length(at) == 0 )
+if ( isempty(at) )
     at = 0;
     bt = 1;
 end
@@ -569,40 +569,22 @@ end
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Barycentric formulae.
+% Rational barycentric formula.
 
 % TODO:  Can we replace these with BARY() or similar?
+% NH: I don't think so, unless we generalise BARY().
 
-% First-kind barycentric formula.
-function y = ratbary1(x, fp, fq, xi)
-
-n = length(fp);
-
-w = ones(n,1);
-w(2:2:end) = -1;
-w(1) = 0.5;
-w(end) = 0.5*w(end);
+% Second-kind rational barycentric formula.
+function y = ratbary2(x, px, qx, xp, xq, wp, wq)
+% TODO: Document this.
 
 y = zeros(size(x));
-for k = 1:numel(y)
-    v = (w ./ (xi - x(k)))';
-    y(k) = (v*fp) / (v*fq);
-    if ( ~isfinite(y(k)) )
-        ind = find(xi == x(k));
-        y(k) = fp(ind) / fq(ind);
-    end
-end
-
-end
-
-% Second-kind barycentric formula.
-function y = ratbary2(x, px, qx, xp, xq, wp, wq)
 
 if ( (size(x,1) > 1) && (size(x,2) > 1) )
     for k = 1:size(x, 2)
         y(:,k) = ratbary2(x(:,k), px, qx, xp, xq, wp, wq);
     end
-    return;
+    return
 end
 
 np = length(px);
@@ -611,12 +593,11 @@ nq = length(qx);
 pxw = px.' .* wp;
 qxw = qx.' .* wq;
 
-y = zeros(size(x));
 for i = 1:length(x)
+    
     dxpinv = 1.0 ./ (x(i) - xp(:));
     ind = find(~isfinite(dxpinv));
-
-    if ( length(ind) > 0 )
+    if ( ~isempty(ind) )
         y(i) = px(ind);
     else
         y(i) = (pxw * dxpinv);
@@ -624,12 +605,12 @@ for i = 1:length(x)
 
     dxqinv = 1.0 ./ (x(i) - xq(:));
     ind = find(~isfinite(dxqinv));
-
-    if ( length(ind) > 0 )
+    if ( ~isempty(ind) )
         y(i) = y(i)/qx(ind);
     else
         y(i) = y(i) / (qxw * dxqinv);
     end
+    
 end
 
 llp = repmat(x(:), 1, np) - repmat(xp', length(x), 1);
@@ -642,7 +623,7 @@ lp(lp == 0) = 1;
 llq = repmat(x(:), 1, nq) - repmat(xq', length(x), 1);
 lq = prod(llq, 2 );
 if ( ~isfinite(lq) )
-    lq = exp(sum(log(llq), 2))
+    lq = exp(sum(log(llq), 2));
 end
 lq(lq == 0) = 1;
 
@@ -654,6 +635,7 @@ end
 % Discrete cosine transforms.
 
 % TODO:  Can we replace these with VALS2COEFFS() and COEFFS2VALS()?
+% NH: I don't know how to do this for the 1st-kind points..
 
 % DCT for Chebyshev points of the first kind.
 function y = dct1(x)
@@ -673,6 +655,7 @@ end
 if ( isreal(x) )
     y = real(y);
 end
+
 
 end
 
@@ -702,45 +685,13 @@ end
 % DCT for Chebyshev points of the second kind.
 function c = dct2(v)
 
-n = size(v, 1);
-c = [v(end:-1:2,:) ; v(1:end-1,:)];
-
-if ( isreal(v) )
-    c = fft(c)/(2*n - 2);
-    c = real(c);
-elseif ( isreal(1i*v) )
-    c = fft(imag(c))/(2*n - 2);
-    c = 1i*real(c);
-else
-    c = fft(c)/(2*n - 2);
-end
-
-c = c(n:-1:1,:);
-if ( n > 2 )
-    c(2:end-1,:) = 2*c(2:end-1,:);
-end
-c = c(end:-1:1,:);
+c = flipud(chebtech2.vals2coeffs(v));
 
 end
 
 % iDCT for Chebyshev points of the second kind.
 function v = idct2(c)
 
-n = size(c, 1);
-ii = 2:(n - 1);
-c = c(end:-1:1,:);
-c(ii,:) = c(ii,:)/2;
-v = [c(end:-1:1,:) ; c(ii,:)];
-
-if ( isreal(c) )
-    v = real(ifft(v));
-elseif ( isreal(1i*c) )
-    v = 1i*real(ifft(imag(v)));
-else
-    v = ifft(v);
-end
-
-v = (n - 1)*[2*v(1,:) ; (v(ii,:) + v(2*n-ii,:)) ; 2*v(n,:)];
-v = v(end:-1:1,:);
+v = chebtech2.coeffs2vals(flipud(c));
 
 end

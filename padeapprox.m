@@ -1,30 +1,30 @@
 function [r, a, b, mu, nu, poles, residues] = padeapprox(f, m, n, tol)
-%PADEAPPROX   Pade approximation to a function or Taylor series
+%PADEAPPROX   Pade approximation to a function or Taylor series.
 %   [R, A, B, MU, NU, POLES, RESIDUES] = PADEAPPROX(F, M, N, TOL) constructs a
 %   Pade approximant to F using the robust algorithm from [1] based on the SVD.
-%   F must be a function handle or a vector of coefficients f_0, ..., f_{m +
-%   n}, and if F is a function handle, the function must be analytic in a
+%   F must be a function handle or a vector of coefficients f_0, ..., f_{m + n},
+%   and if F is a function handle, the function must be analytic in a
 %   neighborhood of the unit disc, since the coefficients are computed via FFT.
-%   M and N are the desired numerator and denominator degrees, respectively,
-%   and must be nonnegative.  The optional TOL argument specifies the relative
-%   tolerance; if omitted, it defaults to 1e-14.  Set TOL to 0 to turn off
-%   robustness.  The output is a function handle R of for an exact type (MU,
-%   NU) Pade approximant to F with coefficient vectors A and B and, optionally,
-%   the POLES and RESIDUES.
+%   M and N are the desired numerator and denominator degrees, respectively, and
+%   must be nonnegative. The optional TOL argument specifies the relative
+%   tolerance; if omitted, it defaults to 1e-14. Set TOL to 0 to turn off
+%   robustness. The output is a function handle R of for an exact type (MU, NU)
+%   Pade approximant to F with coefficient vectors A and B and, optionally, the
+%   POLES and RESIDUES.
 %
-%   This code is included in the Chebfun distribution for the convenience
-%   of readers of _Approximation Theory and Approximation Practice_, but
-%   it is not actually a Chebfun code.  A Chebfun analogue is CHEBPADE.
+%   This code is included in the Chebfun distribution for the convenience of
+%   readers of _Approximation Theory and Approximation Practice_, but it is not
+%   actually a Chebfun code. A Chebfun analogue is CHEBPADE.
 %
 %   References:
 %
-%   [1] P. Gonnet, S. Guettel, and L. N. Trefethen, "ROBUST PADE
-%       APPROXIMATION VIA SVD", SIAM Rev., 55:101-117, 2013.
+%   [1] P. Gonnet, S. Guettel, and L. N. Trefethen, "ROBUST PADE APPROXIMATION 
+%       VIA SVD", SIAM Rev., 55:101-117, 2013.
 %
-%   See also CHEBPADE.
+% See also CHEBPADE.
 
-%   Copyright 2013 by The University of Oxford and The Chebfun Developers.
-%   See http://www.chebfun.org/ for Chebfun information.
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Default to relative tolerance of 1e-14.
 if ( nargin < 4 )
@@ -32,7 +32,7 @@ if ( nargin < 4 )
 end
 
 % Compute coefficients if necessary.
-if ( ~isfloat(f) )
+if ( ~isnumeric(f) )
     % Sample at many roots of unity and use FFT to get coeffs.
     N = 2048;
     z = exp(2i*pi*(0:N-1)'/N);
@@ -91,7 +91,7 @@ else                                           % General case.
         n = rho;
     end
 
-    % Hopping finished.  Now compute b and a.
+    % Hopping finished. Now compute b and a.
     if ( n > 0 )
         [U, S, V] = svd(C,0);
 
