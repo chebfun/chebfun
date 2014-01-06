@@ -15,13 +15,13 @@ function s = rdivide(f, g)
 if ( isempty(f) || isempty(g) )
     % Return an empty SINGFUN:
     s = singfun();
-    return;
+    return
 end
 
 % Check if inputs are other than SINGFUNs, SMOOTHFUNs or doubles.
 if ( (~isa(f, 'singfun') && ~isa(f, 'smoothfun') && ~isa(f, 'double')) || ...
      (~isa(g, 'singfun') && ~isa(g, 'smoothfun') && ~isa(g, 'double')) )   
-    error('SINGFUN:rdivide:', ...
+    error('SINGFUN:rdivide', ...
         'Input can only be a singfun, a smoothfun or a double')
 end
 
@@ -31,6 +31,7 @@ if ( isa(g,'double') || isa(g, 'smoothfun') )
     s = f;
     % Divide the smooth part with the double g and return:
     s.smoothPart = (1./g) .* f.smoothPart;
+    return
 end
 
 %% Reciprocal: DOUBLE./SINGFUN
@@ -39,16 +40,12 @@ if ( isa(f, 'double') )
     f = g.smoothPart.make(f);
     % Convert f to a SINGFUN:
     f = singfun.smoothFun2SingFun(f);
-    % Call SINGFUN.RDIVIDE() again:
-    s = f./g;
 end
 
 %% SMOOTHFUN./SINGFUN
 if ( isa(f, 'smoothfun') )    
     % Convert f to a SINGFUN and call rdivide again.
     f = singfun.smoothFun2SingFun(f);
-    % Call SINGFUN.RDIVIDE() again:
-    s = f./g;
 end
 
 %% SINGFUN./SINGFUN
@@ -56,9 +53,32 @@ end
 % Example: f = 1; g = cos(pi/2*x) with trivial exponents. Then s = f./g is 
 % singular with non trivial exponents. So the result of f./g in general is a
 % generic SINGFUN with possibly non-trivial exponents.
+
 if ( isa(f, 'singfun') && isa(g, 'singfun') )
-    % Construct the SINGFUN by a direct call to the constructor:
-    s = singfun(@(x) feval(f, x)./feval(g, x));
+    
+    % Extract boundary roots:
+    g = extractBoundaryRoots(g);
+    
+    % Grab the boundary values of the smooth part of G:
+    boundaryValues = [get(g.smoothPart, 'lval') get(g.smoothPart, 'rval')];
+    
+    % Set a tolerance:
+    tol = 1e2*get(g, 'vscale')*eps;
+    
+    if ( all( boundaryValues > tol ) )
+        % No vanishing boundary values, then take advantage of the information
+        % we know about the exponents:
+        
+        s = singfun();
+        pref = chebtech.techPref;
+        pref.extrapolate = 1;
+        s.smoothPart = f.constructSmoothPart(@(x) feval(f.smoothPart, x)./ ...
+            feval(g.smoothPart, x), [], [], pref);
+        s.exponents = f.exponents - g.exponents;
+    else
+        % Construct the SINGFUN by a direct call to the constructor:
+        s = singfun(@(x) feval(f, x)./feval(g, x));
+    end
 end
 
 %% 

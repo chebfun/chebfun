@@ -14,6 +14,13 @@ if ( isscalar(A) )
 elseif ( size(A, 1) ~= size(B, 1) )
     error('CHEBFUN:mldivide:agree', 'Matrix dimensions must agree.')
     
+elseif ( isa(A, 'chebfun') && any(cellfun(@(f) isa(f.onefun, 'singfun'), A.funs)) )
+    
+    % If SINGFUN is involved, call rdivide as A and B mustn't be of
+    % array-valued:
+    X = rdivide(B, A);
+    return
+        
 elseif ( isnumeric(A) )
     % [M x N] * [N x INF] = [M x INF]:
     
@@ -28,11 +35,13 @@ elseif ( A.isTransposed )
     %   X^* QR  = B^*
     % R^* Q^* X = B
     %         X = Q(R^{-*} B)
+    
     [Q, R] = qr(A', 0);
     X = Q * (R'\B);
     
 else
     % [INF x N] * [N x M] = [INF x M]:
+    
     [Q, R] = qr(A, 0);
     X = R \ innerProduct(Q, B);
     
