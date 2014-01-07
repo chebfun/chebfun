@@ -64,4 +64,18 @@ pass(11) = (mu == 4) && (nu == 2) && ...
 [p, q, r, mu, nu] = ratinterp([-1 1], @(x) 1./(x - 0.2), 10, 10, [], 'type2');
 pass(12) = (mu == 0) && (nu == 1) && (abs(roots(q) - 0.2) < 1e-10);
 
+% Some further tests:
+x = chebfun(@(x) x, [1, 3]);
+f = abs(exp(x) - 5);
+
+[p, q, r] = ratinterp(f, 2, 3, [], chebpts(6, [1, 3], 2));
+pass(13) = (length(p) == 3) && (length(q) == 4);
+pass(14) = norm(f - p./q,inf) < 0.6;
+xx = linspace(1, 3, 300);
+pass(15) = max(abs((f(xx) - r(xx)))) < 0.6;
+
+[p, q, r] = ratinterp(f, 2, 3, [], 'type2');
+pass(16) = norm(f - p./q,inf) < 0.6;
+pass(17) = max(abs((f(xx) - r(xx)))) < 0.6;
+
 end

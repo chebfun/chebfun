@@ -493,7 +493,7 @@ if ( nu > 0 )
 
     q = chebfun(qx, dom, 'gridType', 1);
 
-    r = @(x) ratbary2(ihd*(x - md), px, qx, ...
+    r = @(x) ratbary(ihd*(x - md), px, qx, ...
         chebpts(mu + 1, 1), chebpts(nu + 1, 1), wp, wq);
 else
     q = chebfun(b, dom, 'gridType', 1);
@@ -528,7 +528,7 @@ if ( nu > 0 )
     wq(1) = 0.5;
     wq(end) = 0.5*wq(end);
 
-    r = @(x) ratbary2(ihd*(x - md), px, qx, ...
+    r = @(x) ratbary(ihd*(x - md), px, qx, ...
         chebpts(mu + 1, 2), chebpts(nu + 1, 2), wp, wq);
 else
     q = chebfun(b, dom);
@@ -571,30 +571,37 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Rational barycentric formula.
 
-% TODO:  Can we replace these with BARY() or similar?
-% NH: I don't think so, unless we generalise BARY().
-
-% Second-kind rational barycentric formula.
-function y = ratbary2(x, px, qx, xp, xq, wp, wq)
-% TODO: Document this.
+function y = ratbary(x, px, qx, xp, xq, wp, wq)
+%RATBARY   Evaluate rational function using first-kind barycentric formula.
+%   Y = RATBARY(X, PX, QX, XP, XQ, WP, WQ) evaluates the rational function P/Q
+%   at the points in the array X, where P and Q are polynomials.  P and Q are
+%   specified in Lagrange form by their values PX and QX at the nodes XP and
+%   XQ, respectively.  WP and WQ are the barycentric weights for the nodes XP
+%   and XQ, respectively.
+%
+%   The function works by using the first-kind barycentric formula to evaluate
+%   P and Q individually and then takes the quotient.
 
 y = zeros(size(x));
 
-if ( (size(x,1) > 1) && (size(x,2) > 1) )
+% Handle matrices of evaluation points one column at a time.
+if ( (size(x, 1) > 1) && (size(x, 2) > 1) )
     for k = 1:size(x, 2)
         y(:,k) = ratbary2(x(:,k), px, qx, xp, xq, wp, wq);
     end
     return
 end
 
+% Degrees of the polynomials involved (plus 1).
 np = length(px);
 nq = length(qx);
 
+% Multiply by the barycentric weights.
 pxw = px.' .* wp;
 qxw = qx.' .* wq;
 
 for i = 1:length(x)
-    
+    % Compute the sum in the first-kind barycentric formula for p.
     dxpinv = 1.0 ./ (x(i) - xp(:));
     ind = find(~isfinite(dxpinv));
     if ( ~isempty(ind) )
@@ -603,6 +610,7 @@ for i = 1:length(x)
         y(i) = (pxw * dxpinv);
     end
 
+    % Compute the sum in the first-kind barycentric formula for q.
     dxqinv = 1.0 ./ (x(i) - xq(:));
     ind = find(~isfinite(dxqinv));
     if ( ~isempty(ind) )
@@ -610,9 +618,9 @@ for i = 1:length(x)
     else
         y(i) = y(i) / (qxw * dxqinv);
     end
-    
 end
 
+% Evaluate node polynomial for p.
 llp = repmat(x(:), 1, np) - repmat(xp', length(x), 1);
 lp = prod(llp, 2);
 if ( ~isfinite(lp) )
@@ -620,6 +628,7 @@ if ( ~isfinite(lp) )
 end
 lp(lp == 0) = 1;
 
+% Evaluate node polynomial for q.
 llq = repmat(x(:), 1, nq) - repmat(xq', length(x), 1);
 lq = prod(llq, 2 );
 if ( ~isfinite(lq) )
@@ -627,15 +636,13 @@ if ( ~isfinite(lq) )
 end
 lq(lq == 0) = 1;
 
+% Multiply by ratio of node polynomials and reshape if needed.
 y = reshape(y(:) .* lp ./ lq , size(x));
 
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Discrete cosine transforms.
-
-% TODO:  Can we replace these with VALS2COEFFS() and COEFFS2VALS()?
-% NH: I don't know how to do this for the 1st-kind points..
 
 % DCT for Chebyshev points of the first kind.
 function y = dct1(x)
@@ -655,7 +662,6 @@ end
 if ( isreal(x) )
     y = real(y);
 end
-
 
 end
 
@@ -685,13 +691,45 @@ end
 % DCT for Chebyshev points of the second kind.
 function c = dct2(v)
 
-c = flipud(chebtech2.vals2coeffs(v));
+n = size(v, 1);
+c = [v(end:-1:2,:) ; v(1:end-1,:)];
+
+if ( isreal(v) )
+    c = fft(c)/(2*n - 2);
+    c = real(c);
+elseif ( isreal(1i*v) )
+    c = fft(imag(c))/(2*n - 2);
+    c = 1i*real(c);
+else
+    c = fft(c)/(2*n - 2);
+end
+
+c = c(n:-1:1,:);
+if ( n > 2 )
+    c(2:end-1,:) = 2*c(2:end-1,:);
+end
+c = c(end:-1:1,:);
 
 end
 
 % iDCT for Chebyshev points of the second kind.
 function v = idct2(c)
 
-v = chebtech2.coeffs2vals(flipud(c));
+n = size(c, 1);
+ii = 2:(n - 1);
+c = c(end:-1:1,:);
+c(ii,:) = c(ii,:)/2;
+v = [c(end:-1:1,:) ; c(ii,:)];
+
+if ( isreal(c) )
+    v = real(ifft(v));
+elseif ( isreal(1i*c) )
+    v = 1i*real(ifft(imag(v)));
+else
+    v = ifft(v);
+end
+
+v = (n - 1)*[2*v(1,:) ; (v(ii,:) + v(2*n-ii,:)) ; 2*v(n,:)];
+v = v(end:-1:1,:);
 
 end
