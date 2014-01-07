@@ -35,6 +35,8 @@ function [x, w, v] = lobpts(n, varargin)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% TODO: Scaled domains?
+
 %% Trivial cases:
 if ( n == 1 )
     error('CHEBFUN:lobpts', 'N = 1 is not supported.');

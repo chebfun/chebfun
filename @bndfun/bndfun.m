@@ -153,6 +153,9 @@ classdef bndfun < fun
         % Right matrix divide for a BNDFUN.
         X = mrdivide(B, A)
         
+        % Return Legendre coefficients of a BNDFUN.
+        c_leg = legpoly(f, n)
+        
         % Estimate the Inf-norm of a BNDFUN
         out = normest(f);
         
