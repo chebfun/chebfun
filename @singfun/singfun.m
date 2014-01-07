@@ -219,11 +219,17 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         % Evaluate a SINGFUN.
         y = feval(f, x)
         
+        % Round a finite SINGFUN towards zero.
+        g = fix(f);
+        
         % Flip columns of an array-valued SINGFUN object.
         f = fliplr(f)
         
         % Flip/reverse a SINGFUN object.
         f = flipud(f)
+        
+        % Round a SINGFUN towards minus infinity.
+        g = floor(f);
         
         % Get method:
         val = get(f, prop);
