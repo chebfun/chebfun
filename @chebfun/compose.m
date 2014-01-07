@@ -76,8 +76,12 @@ if ( isa(op, 'chebfun') )
     % Call the COMPOSETWOCHEBFUNS method if OP is a CHEBFUN object:
     g = op;
     
-    if ( numColumns(f) ~= numColumns(g) )
-            error('CHEBFUN:compose:dims', 'Matrix dimensions must agree.')
+%     if ( numColumns(f) ~= numColumns(g) )
+%             error('CHEBFUN:compose:dims', 'Matrix dimensions must agree.')
+%     end
+    if ( numColumns(f) > 1 && numColumns(g) > 1 )
+        error('CHEBFUN:composeChebfuns:trans', ...
+            'Cannot compose two array-valued CHEBFUN objects.');
     end
     
     if ( numel(f) == 1 && numel(op) == 1 )
@@ -87,8 +91,14 @@ if ( isa(op, 'chebfun') )
         % QUASIMATRIX case:
         f = cheb2cell(f);
         g = cheb2cell(g);
-        for k = numel(f):-1:1
-            h(k) = composeTwoChebfuns(f{k}, g{k}, pref);
+        if ( numel(f) > 1 )
+            for k = numel(f):-1:1
+                h(k) = composeTwoChebfuns(f{k}, g{1}, pref);
+            end
+        else
+            for k = numel(g):-1:1
+                h(k) = composeTwoChebfuns(f{1}, g{k}, pref);
+            end
         end
         f = h;
     end
@@ -107,9 +117,7 @@ elseif ( opIsBinary )
         % QUASIMATRIX case:
         f = cheb2cell(f);
         g = cheb2cell(g);
-        for k = numel(f):-1:1
-            h(k) = columnCompose(f{k}, op, g{k}, pref, opIsBinary);
-        end
+
         f = h;
     end
     
@@ -273,11 +281,6 @@ if ( isTransposed )
     % Make everything a column CHEBFUN for now:
     f = transpose(f);
     g = transpose(g);
-end
-
-if ( (size(f, 2) > 1) && (size(g, 2) > 1) )
-     error('CHEBFUN:composeChebfuns:trans', ...
-        'Cannot compose two array-valued CHEBFUN objects.');
 end
 
 % f must be a real-valued function:

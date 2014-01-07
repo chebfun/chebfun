@@ -91,11 +91,12 @@ else                           % CHEBFUN .* CHEBFUN
 
     else
         % QUASIMATRIX case:
-
-        if ( numel(f) ~= numel(g) )
-            error('CHEBFUN:plus:dims', 'Matrix dimensions must agree.');
+        if ( numColumns(f) ~= numColumns(g) )
+            error('CHEBFUN:times:matdim', 'Matrix dimensions must agree.');
         else
             % Loop over the columns:
+            f = cheb2quasi(f);
+            g = cheb2quasi(g);
             for k = 1:numel(f)
                 f(k) = f(k).*g(k);
             end

@@ -41,13 +41,27 @@ pass(6) = test_one_compose_chebfuns(@(x) [sin(x - 0.1) cos(x - 0.2)], ...
 pass(7) = test_one_compose_chebfuns(@(x) exp(x)/exp(1), ...
     @(x) [sin(x - 0.1) cos(x - 0.2)], [-1 1], pref);
 
+% Single-column chebfun of an array-valued chebfun.
+f_exact = @(x) [sin(x - 0.1) cos(x - 0.2)];
+g_exact = @(x) exp(x);
+fq = quasimatrix(f_exact, [-1 1], pref);
+g = chebfun(g_exact, [-1 1], pref);
+pass(8) = test_one_compose_chebfuns_quasi(f_exact, g_exact, [-1 1], pref, fq, g);
+
+% % Array-valued chebfun of a single-column chebfun.
+f_exact = @(x) exp(x)/exp(1);
+g_exact = @(x) [sin(x - 0.1), cos(x - 0.2)];
+f = chebfun(f_exact, [-1 1], pref);
+gq = quasimatrix(g_exact, [-1 1], pref);
+pass(9) = test_one_compose_chebfuns_quasi(f_exact, g_exact, [-1 1], pref, f, gq);
+
 % Can't compose two array-valued chebfuns.
 try
     test_one_compose_chebfuns(@(x) [sin(x) cos(x)], @(x) [exp(x) -sin(x)], ...
         [-1 1], pref);
-    pass(8) = false;
+    pass(10) = false;
 catch ME
-    pass(8) = true;
+    pass(10) = true;
 end
 
 end
@@ -64,7 +78,24 @@ function pass = test_one_compose_chebfuns(f_exact, g_exact, dom, pref)
     h_exact = @(x) g_exact(f_exact(x));
     x = ((dom(end) - dom(1))/2)*xr + dom(1) + (dom(end) - dom(1))/2;
     err = norm(feval(h, x) - h_exact(x), inf);
-    pass = (err < 20*h.vscale*h.epslevel) && ...
-        isequal(feval(g, feval(f, (dom))), feval(h, dom));
+    pass = (err < 20*vscale(h)*epslevel(h)) && ...
+        isequal(feval(g, feval(f, dom)), feval(h, dom));
 end
+
+% Test composition of two chebfuns or qusimatrices.
+function pass = test_one_compose_chebfuns_quasi(f_exact, g_exact, dom, pref, f, g)
+    % Random points to use as test values.
+    seedRNG(7681);
+    xr = 2 * rand(100, 1) - 1;
+    h = compose(f, g, [], pref);
+    h_exact = @(x) g_exact(f_exact(x));
+    x = ((dom(end) - dom(1))/2)*xr + dom(1) + (dom(end) - dom(1))/2;
+    err = norm(feval(h, x) - h_exact(x), inf);
+    pass = (err < 20*vscale(h)*epslevel(h)) && ...
+        isequal(feval(g, feval(f, dom)), feval(h, dom));
+end
+
+
+
+
 

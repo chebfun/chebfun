@@ -146,8 +146,21 @@ function out = sumSubDom(f, a, b)
         out = cumsum(f);
         % Compute the area in between:
         out = feval(out, b) - feval(out, a);
+        return
+    end
+    
+    % ComposeChebfuns doesn't allow scalar expansion, so we must loop over cols.
+    numCols = numColumns(f);
+    if ( numCols > 1 )
+        out = chebfun();
+        for k = numCols:-1:1
+            fk = extractColumns(f,k);
+            out(k) = sumSubDom(fk, a, b);
+        end
+        return
+    end
 
-    elseif ( isa(a, 'chebfun') && isa(b, 'chebfun') )
+    if ( isa(a, 'chebfun') && isa(b, 'chebfun') )
 
         % Compute the indefinite integral:
         out = cumsum(f);
