@@ -44,8 +44,7 @@ function varargout = pde15s(pdeFun, tt, u0, bc, varargin)
 %      uu = pde15s(f, 0:.1:3, u, 'neumann', opts);
 %      mesh(uu{3})
 %
-% See chebfun/examples/pde15s_demos.m and chebfun/examples/pde_systems.m for
-% more examples.
+% See chebfun/test/test_pde15s.m for more examples.
 %
 %   UU = PDE15s(PDEFUN, TT, U0, BC, OPTS) will use nondefault options as defined
 %   by the structure returned from OPTS = PDESET.
@@ -83,7 +82,7 @@ SYSSIZE = 0;
 tol = 1e-6;             % 'eps' in chebfun terminology
 doPlot = 1;             % plot after every time chunk?
 doHold = 0;             % hold plot?
-plotOpts = '-';         % Plot Style
+plotOpts = {'-'};         % Plot Style
 
 % Parse the variable inputs:
 if ( numel(varargin) == 2 )
@@ -241,14 +240,22 @@ else
     elseif ( isfield(bc, 'right') && ~isfield(bc, 'left') )
         bc.left = [];
     end
+    
+    bc.left = dealWithStructInput(bc.left);
+    bc.right = dealWithStructInput(bc.right);
+    
 
     %% %%%%%%%%%%%%%%%%%%%%% DIRICHLET AND NEUMANN BCS  %%%%%%%%%%%%%%%%%%%%%%%%
+    
     if ( ischar(bc.left) || (iscell(bc.left) && ischar(bc.left{1})) )
         if ( iscell(bc.left) )
             v = bc.left{2};
             bc.left = bc.left{1};
         else
             v = 0;
+        end
+        if ( ~isnumeric(v) )
+            error('For BCs of the form {char, val} val must be numeric.')
         end
         if ( strcmpi(bc.left, 'dirichlet') )
             A = Eleft;
@@ -268,6 +275,9 @@ else
             bc.right = bc.right{1};
         else
             v = 0;
+        end
+        if ( ~isnumeric(v) )
+            error('For BCs of the form {char, val} val must be numeric.')
         end
         if ( strcmpi(bc.right, 'dirichlet') )
             A = Eright;
@@ -465,6 +475,7 @@ for nt = 1:length(tt)-1
         chebfun( @(x) vscl + oneStep(x), DOMAIN, pref);
     else
         % Non-adaptive in space:
+        currentLength = optN;
         oneStep(chebpts(optN, DOMAIN));
     end
     
@@ -861,12 +872,20 @@ tmp = NaN(1, SYSSIZE);
 k = 1; Nops = [];
 opsList = {@Diff, @Sum, @Cumsum};
 while ( k < 4 && isempty(Nops) )
-    tmp2 = repmat({tmp}, 1, nargin(inFun)-(k+1));
+    tmp2 = repmat({tmp}, 1, nargin(inFun)-k);
     ops = opsList(1:k);
     try
-        inFun(tmp, tmp2{:}, ops{:});
+        inFun(tmp2{:}, ops{:});
         Nops = k;
     catch ME
+        try 
+            % Try setting t to a scalar.
+            tmp2{SYSSIZE+1} = NaN;
+            inFun(tmp2{:}, ops{:});
+            Nops = k;
+        catch ME2
+            %
+        end
         % 
     end
     k = k+1;
@@ -920,5 +939,22 @@ for k = 1:SYSSIZE
     tmp(k,k) = NaN;
     pdeFun(tmp, 0, 0);
     tmp(k,k) = 0;
+end
+end
+
+function out = dealWithStructInput(in)
+if ( isstruct(in) )
+    if ( numel(in) == 1)
+        warning('PDE15S no longer supports struct inputs for bc.left and bc.right.')
+        if ( isfield(in, 'val') )
+            out = {in.op, in.val};
+        else
+            out = in.op;
+        end
+    else
+        error('PDE15S no longer supports struct inputs for bc.left and bc.right.')
+    end
+else
+    out = in;
 end
 end
