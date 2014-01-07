@@ -39,7 +39,12 @@ if ( min(size(f)) > 1 )
 end
 
 % Default options:
-p = chebpref;
+if ( nargin > 1 && isa(varargin{1}, 'chebpref') )
+    p = varargin{1};
+    varargin{1} = [];
+else
+    p = chebpref;
+end
 splitYesNo = p.enableSingularityDetection;
 tol = epslevel(f);
 monoCheck = false;

@@ -1,4 +1,4 @@
-function g = inv2(f,varargin)
+function g = inv2(f, varargin)
 %INV2  Invert a CHEBFUN.
 %   INV2(F) will attempt to invert the monotonic chebfun F. If F has zero
 %   derivatives at its endpoints, then it is advisable to turn Splitting ON.
@@ -38,8 +38,14 @@ if ( min(size(f)) > 1)
 end
 
 % Default options:
-splitYesNo = chebfunpref('splitting');
-tol = 100*chebfunpref('eps');
+if ( nargin > 1 && isa(varargin{1}, 'chebpref') )
+    p = varargin{1};
+    varargin{1} = [];
+else
+    p = chebpref;
+end
+splitYesNo = p.enableSingularityDetection;
+tol = epslevel(f);
 monoCheck = false;
 rangeCheck = false;
 
@@ -59,7 +65,7 @@ while ( numel(varargin) > 1 )
     elseif ( strcmpi(varargin{1}, 'rangecheck') )
         rangeCheck = checkOnOff(varargin{2});
     else
-        error('CHEBFUN:inv2:inputs', ...
+        error('CHEBFUN:inv:inputs', ...
             [varargin{1}, 'is an unrecognised input to INV().']);
     end
     varargin(1:2) = [];
@@ -86,7 +92,7 @@ if ( monoCheck )
 end
 
 % Assign preferences:
-p.techPrefs.resampling = 0;
+p.techPrefs.resampling = 1;
 p.enableBreakpointDetection = splitYesNo;
 p.techPrefs.eps = tol;
 p.techPrefs.minsamples = length(f);
@@ -113,10 +119,15 @@ function y = fInverse(f, fp, x, tol)
     t = f.domain(1);
     for j = 1:length(x);
         ft = feval(f, t) - x(j);
+        counter = 0;
         while ( abs(ft) > tol ) % Newton step
             fpt = feval(fp, t);
             t = t - ft./fpt;
             ft = feval(f, t) - x(j);
+            counter = counter + 1;
+            if ( counter > 100 )
+                error('No convergence')
+            end
         end
         y(j,1) = t;
     end
