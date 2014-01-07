@@ -31,8 +31,6 @@ g = chebfun(@(x) 1./(1 + (x - 0.1).^2), [-1 -0.5 0 0.5 1]);
 pass(8) = abs(maxVal - 1) < 10*vscale(g)*epslevel(g) && ...
     abs(feval(g, maxLoc) - 1) < 10*vscale(g)*epslevel(g);
 
-% [TODO]:  Test p-norm.  (Needs power().)
-
 % Check norms for array-valued chebfuns.
 f = chebfun(@(x) [sin(x) cos(x) exp(x)], [-1 -0.5 0 0.5 1], pref);
 
@@ -57,8 +55,6 @@ pass(13) = (loc == 1) && abs(normVal - (exp(1) + sin(1) + cos(1))) ...
 [normVal, loc] = norm(f, -inf);
 pass(14) = (loc == -1) && abs(normVal - (exp(-1) + sin(1) + cos(1))) ...
     < 10*vscale(f)*epslevel(f);
-
-% [TODO]:  Test p-norm.  (Needs power().)
 
 % Check error conditions.
 try
@@ -109,5 +105,43 @@ try
 catch ME
     pass(21) = strcmp(ME.identifier, 'CHEBFUN:norm:unknownNorm');
 end
+
+%% Tests on SINGFUN-related stuff:
+
+% p-norm (p = 3) - Tests on power:
+f = chebfun(@(x) sin(100*x), 'splitting', 'on');
+p = norm(f, 3);
+p_exact = 0.9483708405353886; % This is obtained using Mathematica.
+err = p-p_exact;
+pass(22) = norm(err, inf) < 5e4*vscale(f)*epslevel(f);
+
+% Test on finite SINGFUN:
+
+% 2-norm:
+f = chebfun(@(x) sin(100*x).*((x+1).^0.6), 'exps', [0.6 0], 'splitting', 'on');
+p2 = norm(f, 2);
+p2_exact = 1.02434346249849423; % This is obtained using Mathematica.
+err = p2-p2_exact;
+pass(23) = norm(err, inf) < vscale(f)*epslevel(f);
+
+% 1-norm:
+p1 = norm(f, 1);
+p1_exact = 1.20927413792339491; % This is obtained using Mathematica.
+err = p1-p1_exact;
+pass(24) = norm(err, inf) < 1e5*vscale(f)*epslevel(f);
+
+% Inf-norm:
+f = chebfun(@(x) sin(x).*((1-x).^0.6), 'exps', [0 0.6], 'splitting', 'on');
+[normF, normLoc] = norm(f, Inf);
+p_exact = [1.275431511911148 -1];
+err = [normF, normLoc] - p_exact;
+pass(25) = norm(err, inf) < vscale(f)*epslevel(f);
+
+% -Inf-norm:
+f = chebfun(@(x) (sin(x)-0.4).*((x+1).^0.8), 'exps', [0.8 0], 'splitting', 'on');
+[normF, normLoc] = norm(f, -Inf);
+p_exact = [0 -1];
+err = [normF, normLoc] - p_exact;
+pass(26) = norm(err, inf) < vscale(f)*epslevel(f);
 
 end
