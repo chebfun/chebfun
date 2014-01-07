@@ -477,6 +477,10 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
             % Vectorize flag for function_handles.
             vectorize = true;
             args(1) = [];
+        elseif ( strcmpi(args{1}, 'coeffs') && isnumeric(op) )
+            % Hack to support construction from coefficients.
+            op = {{[], op}};
+            args(1) = [];
         elseif ( isnumeric(args{1}) )
             % g = chebfun(@(x) f(x), N)
             pref.techPrefs.exactLength = args{1};
