@@ -25,7 +25,7 @@ end
 % If one of the arguments is a double, upgrade it to a SINGFUN:
 if ( isa(f, 'double') )
     
-    if ( f )
+    if ( f == 0 )
         % If F is zero, return G.
         s = g;
         return
@@ -37,8 +37,8 @@ if ( isa(f, 'double') )
     f = singfun.smoothFun2SingFun(f);
 elseif ( isa(g, 'double') )
     
-    if ( g )
-        % If F is zero, return G.
+    if ( g == 0 )
+        % If G is zero, return F.
         s = f;
         return
     end
