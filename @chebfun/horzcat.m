@@ -10,6 +10,8 @@ function out = horzcat(varargin)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
+% TODO: Document quasimatrix vs array-valued CHEBFUN
+
 % [TODO]: Vertical concatenation. (Chebmatrix / quasimatrix).
 
 % Remove empties:
@@ -73,9 +75,9 @@ end
 
 % TODO: Also check to see if an input is a SINGFUN.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%% FORM A CHEBFUN ARRAY %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%% FORM A QUASIMATRIX %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-if ( differentBreakpoints )  % (form a CHEBFUN array)
+if ( differentBreakpoints )  % (form a quasimatrix)
     isArrayCheb = cellfun(@(f) isa(f, 'chebfun') && size(f, 2) > 1, varargin);
     if ( any(isArrayCheb) )
         % Break up array-valued CHEBFUNs into single columns:

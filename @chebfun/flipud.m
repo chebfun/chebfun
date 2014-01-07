@@ -16,7 +16,6 @@ if ( isempty(F) )
     return
 end
 
-
 if ( numel(F) > 1 && F(1).isTransposed )
     idx = fliplr(1:numColumns(F));
     F = F(idx);

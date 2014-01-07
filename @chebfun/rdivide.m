@@ -101,14 +101,14 @@ else
         for k = numColsG:-1:1
             h(k) = columnRdivide(f, g{k}, pref);
         end
-        try h = quasi2cheb(h); catch end
+        try h = quasi2cheb(h); catch, end
     elseif ( numelF == numColsG )
         % e.g., [1 2]./(2+[x sin(x)])
         g = mat2cell(g);
         for k = numColsG:-1:1
             h(k) = columnRdivide(f(k), g{k}, pref);
         end
-        try h = quasi2cheb(h); catch end
+        try h = quasi2cheb(h); catch, end
     else
         error('CHEBFUN:power:dim', ...
             'Chebfun quasimatrix dimensions must agree.');

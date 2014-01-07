@@ -28,6 +28,8 @@ function varargout = subsref(f, index)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
+% TODO: Document for array-valued CHEBFUN objects and quasimatrices.
+
 idx = index(1).subs;
 switch index(1).type
 

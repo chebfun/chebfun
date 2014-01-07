@@ -5,9 +5,14 @@ function [f, g] = overlap(f, g)
 %   F. The third dimension of the IMPULSES fields of F and G will be padded with
 %   zeros if necessary so that FOUT.IMPULSES and GOUT.IMPULSES store impulse
 %   data to the same order.
+%
+%   If F and G are array-valued, they must have the same numer of columns/rows,
+%   else an error is thrown.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
+
+% TODO: Should we allow scalar expansion?
 
 % Check that the domains are valid:
 if ( ~domainCheck(f, g) )

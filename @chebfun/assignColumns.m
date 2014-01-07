@@ -5,12 +5,11 @@ function f = assignColumns(f, colIdx, g)
 %   specified by the vector COLIDX so that F(:,COLIDX) = G. COLIDX need not be
 %   increasing in order or unique but must contain only integers in the range
 %   [1, M] (where F has M columns) and have a length equal to the number of
-%   columns (or rows) of G.  Setting COLIDX to ':' has the same effect as
-%   setting it to 1:SIZE(F, 2).
+%   columns (or rows) of G. Setting COLIDX to ':' has the same effect as setting
+%   it to 1:SIZE(F, 2).
 %
-%   If F is a row CHEBFUN, then ASSIGNCOLUMNS(F, ROWIDX, G) behaves as
-%   described above, except that it assigns the rows of F so that F(ROWIDX,:) =
-%   G.
+%   If F is a row CHEBFUN, then ASSIGNCOLUMNS(F, ROWIDX, G) behaves as described
+%   above, except that it assigns the rows of F so that F(ROWIDX,:) = G.
 %
 %   In both cases, G may also be a numerical vector of the appropriate
 %   orientation (column or row).  In this case, G is treated as an array-valued

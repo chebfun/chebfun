@@ -4,7 +4,7 @@ function f = compose(f, op, g, pref)
 %   CHEBFUN object and OP is a function handle.
 %
 %   COMPOSE(F, OP, G) returns OP(F, G), where F and G are CHEBFUN objects and OP
-%   is a function handle. The domains and imensions of F and G should be
+%   is a function handle. The domains and dimensions of F and G should be
 %   compatible.
 %
 %   COMPOSE(F, G) returns a CHEBFUN representing G(F), where both F and G are

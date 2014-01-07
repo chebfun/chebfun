@@ -51,7 +51,7 @@ if ( ischar(x) )
     return
 end
 
-%% DEAL QITH QUASIMATRICES:
+%% DEAL WITH QUASIMATRICES:
 out = cell(1, numel(F));
 if ( F(1).isTransposed )
     out = out.';

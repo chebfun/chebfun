@@ -28,5 +28,9 @@ pass(7) = ~isempty(f);
 f = chebfun(@sin, [-2 2], 1);
 pass(8) = ~isempty(f);
 
+x = chebfun('x');
+f = [x abs(x)];
+pass(9) = ~isempty(f);
+
 end
 

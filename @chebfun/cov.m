@@ -42,7 +42,7 @@ if ( nargin == 1 ) % COV(f)
         return
         
     else
-        % Array-valued CHEBFUN.
+        % Array-valued CHEBFUN or quasimatrix.
         
         Y = f - mean(f);
         out = diag(mean(Y.*conj(Y)));
@@ -62,7 +62,7 @@ if ( nargin == 1 ) % COV(f)
         
 else               % COV(f, g)
     
-    % Compute cell arrays of scalar-valued CHEBFUN objects:
+    % Convert to cell arrays of scalar-valued CHEBFUN objects:
     Y = cheb2cell(f - mean(f));
     Z = cheb2cell(g - mean(g));
     % Initialise output matrix:

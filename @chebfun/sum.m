@@ -101,6 +101,7 @@ function f = sumColumns(f)
         for k = 2:numel(f)
             s = s + f(k);
         end
+        f = s;
     end
 end
 

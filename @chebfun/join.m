@@ -38,7 +38,7 @@ if ( any(numEl > 1) )
         error('CHEBFUN:join:dim', 'Matrix dimensions must agree.');
     end
     for k = numEl(1):-1:1
-        f(k) = columnJoin(args{k,:});
+        f(k) = columnJoin(args{:,k});
     end
     return
 else

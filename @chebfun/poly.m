@@ -14,6 +14,7 @@ function out = poly(f, n)
 
 % TODO: Should this attempt to return Taylor coefficients of the global Chebfun
 % if f is not smooth? (i.e., in the same way as LEGPOLY does).
+% TODO: Or perhaps throw an error if there are multiple funs?
 
 % Deal qith quasimatrices:
 if ( numel(f) > 1 )

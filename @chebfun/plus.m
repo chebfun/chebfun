@@ -4,6 +4,9 @@ function f = plus(f, g)
 %   scalar.
 %
 %   H = PLUS(F, G) is called for the syntax 'F + G'.
+%
+%   The dimensions of F and G must be compatible. Note that scalar expansion is
+%   _not_ supported if both F and G are CHEBFUN objects.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
