@@ -65,7 +65,7 @@ g_exact = op(xr).';
 err = g_vals - g_exact;
 pass(7) = norm(err, inf) < vscale(g)*epslevel(g);
 
-% [INF x 1] * scalar = [INF x 1] => column SINGFUN\column SINGFUN:
+% [INF x 1] * CHEBFUN = [INF x 1] => column SINGFUN\column SINGFUN:
 
 f = chebfun(@(x)(sin(100*x).^2+1)./(x+1), 'exps', [-1 0], 'splitting', 'on');
 g = chebfun(@(x)(x.^2+3)./(x+1).^0.5, 'exps', [-0.5 0], 'splitting', 'on');
