@@ -15,6 +15,8 @@ function f = chebpoly(n, d, kind)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information. 
 
+% TODO: This method requires a test.
+
 % Defaults:
 defaultKind = 1;
 
@@ -44,10 +46,10 @@ if ( kind == 2 )
 end
 
 % Construct the Chebyshev coefficients:
-N = max(n);
+N = max(n)+1;
 c = zeros(N, numel(n));
 for k = 1:numel(n)
-    c(N-n(k)+1, k) = 1;
+    c(N-n(k), k) = 1;
 end
 
 % [TODO]: This is cheating!
