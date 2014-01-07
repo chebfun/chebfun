@@ -17,14 +17,62 @@ function data = plotData(f, g, h)
 % Get the data from the ONEFUN:
 if ( nargin == 1 || isempty(g) )
     % PLOT(F):
+    
     data = plotData(f.onefun);
     % Map the 'x' data using f.mapping.for:
     data.xLine = f.mapping.for(data.xLine);
     data.xPoints = f.mapping.for(data.xPoints);
+   
+    lval = get(f, 'lval');
+    rval = get(f, 'rval');
+    
+    % Consider the ylim:
+    data.yLim = [min(min([data.yLine; lval; rval])) ...
+        max(max([data.yLine; lval; rval]))]; 
+    
+    % Consider the jump values for an infinite FUN:
+    data.xJumps = f.domain;
+    
+    ind = isinf(lval);
+    if ( any( ind ) )
+        lval(ind) = data.yLine(1, ind);
+    end
+    
+    ind = isinf(rval);
+    if ( ind )
+        rval = data.yLine(end, ind);
+    end
+    
+    data.yJumps = [lval; rval];
     
 elseif ( nargin == 2 )
     % PLOT(F, G):
+    
     data = plotData(f.onefun, g.onefun);
+    
+    lvalG = get(f, 'lval');
+    rvalG = get(f, 'rval');
+    
+    % Consider the ylim:
+    data.yLim = [min(min([data.yLine; lvalG; rvalG])) ...
+        max(max([data.yLine; lvalG; rvalG]))];
+    
+    % Consider the jump values for an infinite FUN:
+    lvalF = get(f, 'lval');
+    rvalF = get(f, 'rval');
+    data.xJumps = [lvalF; rvalF];
+    
+    ind = isinf(lvalG);
+    if ( ind )
+        lvalG(ind) = data.yLine(1, ind);
+    end
+    
+    ind = isinf(rvalG);
+    if ( ind )
+        rvalG(ind) = data.yLine(end, ind);
+    end
+    
+    data.yJumps = [lvalG; rvalG];
     
 else
     % PLOT(F, G, H):

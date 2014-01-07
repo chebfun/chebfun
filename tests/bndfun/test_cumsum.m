@@ -103,4 +103,18 @@ err = feval(F3, x) - feval(F3_exact, x);
 pass(10) = (norm(diff(err), inf) < get(F3, 'vscale')^3*get(f, 'epslevel')) && ...
     abs(feval(F3, a)) < get(F3, 'vscale')^3*get(f, 'epslevel');
 
+%%
+% Check the integration of singfun.
+dom = [-2 7];
+pow = -0.64;
+op = @(x) (x-dom(1)).^pow;
+pref.singPrefs.exponents = [pow 0];
+f = bndfun(op, dom, [], [], pref);
+g = cumsum(f);
+vals_g = feval(g, x); 
+g_exact = @(x) (x-a).^(pow+1)./(pow+1);
+vals_exact = feval(g_exact, x);
+err = vals_g - vals_exact;
+pass(11) = ( norm(err, inf) < 10*get(f,'epslevel')*norm(vals_exact, inf) );
+
 end

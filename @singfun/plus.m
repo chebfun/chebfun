@@ -24,11 +24,25 @@ end
 
 % If one of the arguments is a double, upgrade it to a SINGFUN:
 if ( isa(f, 'double') )
+    
+    if ( f )
+        % If F is zero, return G.
+        s = g;
+        return
+    end
+    
     % Make a SMOOTHFUN of the double f:
     f = g.smoothPart.make(f);
     % Convert f to a SINGFUN:
     f = singfun.smoothFun2SingFun(f);
 elseif ( isa(g, 'double') )
+    
+    if ( g )
+        % If F is zero, return G.
+        s = f;
+        return
+    end
+    
     % Make a SMOOTHFUN of the double g:
     g = f.smoothPart.make(g);
     % Convert g to a SINGFUN:

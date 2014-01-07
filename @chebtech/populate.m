@@ -158,10 +158,13 @@ if ( ishappy )
     return
 end
 
+% [TODO]: Further decision needs to be made for whether the following lines
+% should be deleted permanently. Currently they are commented out by KX.
+
 % Check for Infs: (if not happy)
-if ( any(isinf(vscale)) )                       
-    error('CHEBFUN:CHEBTECH:constructor:inf_blowup', ...
-     'Function returned Inf when evaluated.')
-end
+% if ( any(isinf(vscale)) )                       
+%     error('CHEBFUN:CHEBTECH:constructor:inf_blowup', ...
+%      'Function returned Inf when evaluated.')
+% end
 
 end

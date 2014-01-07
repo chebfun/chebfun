@@ -28,6 +28,37 @@ f = chebfun(@(x) [sin(x), x], [0, 6], pref);
 pass(7) = norm(mean(f) - sum(f)/6, inf) < vscale(f)*epslevel(f);
 pass(8) = norm(mean(f.') - sum(f).'/6, inf) < vscale(f)*epslevel(f);
 
+%% SINGFUNS: a finite case
+
+% define the domain:
+dom = [-2 7];
+
+op = @(x) sin(100*x)./((x-dom(1)).^0.5.*(x-dom(2)).^0.5);
+f = chebfun(op, dom, 'exps', [-0.5 -0.5], 'splitting', 'on');
+m = mean(f);
+m_exact = -0.01273522016443600i;
+pass(9) = abs(m - m_exact) < 1e1*get(f,'epslevel')*abs(m_exact);
+
+%% SINGFUNS: an infinite case
+
+% define the domain:
+dom = [-2 7];
+
+op = @(x) sin(100*x)./((x-dom(1)).^1.5.*(dom(2)-x).^0.5);
+f = chebfun(op, dom, 'exps', [-1.5 -0.5], 'splitting', 'on');
+m = mean(f);
+pass(10) = ( isinf(m) );
+
+%% SINGFUNS: a NaN case
+
+% define the domain:
+dom = [-2 7];
+
+op = @(x) sin(98*x)./((x-dom(1)).^1.5.*(dom(2)-x).^1.5);
+f = chebfun(op, dom, 'exps', [-1.5 -1.5], 'splitting', 'on');
+m = mean(f);
+pass(11) = ( isnan(m) );
+
 %% Unbounded domains:
 % [TODO]: Test unbounded domains.
 

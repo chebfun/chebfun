@@ -76,4 +76,27 @@ f = chebfun(@(x) x, pref);
 f = defineInterval(f, [-1, .25], []);
 pass(15) = all(f.domain == [.25, 1]);
 
+%% Integration of SINGFUN: piecewise smooth chebfun
+
+% define the domain:
+dom = [-2 -1 0 1];
+
+op1 = @(x) sin(x);
+op2 = @(x) 1./((1+x).^0.5);
+op3 = @(x) x+1;
+op4 = @(x) sin(20*x)./((-0.5-x).^1.5);
+op = {op1, op2, op3};
+
+f = chebfun(op, dom, 'exps', [0 0 -0.5 0 0 0]);
+g = chebfun(op4, [-0.8, -0.5], 'exps', [0 -1.5]);
+h = defineInterval(f, [-.3 -.1], 1);
+h{-0.8, -0.5} = g;
+
+% check values:
+check = zeros(1,3);
+check(1) = all(h.domain == [-2 -1 -0.8 -0.5 -0.3 -0.1 0 1]);
+check(2) = ( norm(feval(h, -0.6) - op4(-0.6)) < 1e1*epslevel(g)*get(g, 'vscale') );
+check(3) = ( norm(feval(h, -0.25) - 1) < 10*epslevel(f) );
+
+pass(16) = all( check );
 end

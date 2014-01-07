@@ -108,4 +108,44 @@ g = chebfun(@(x) abs(sin(1i*x).*(1i*x + exp(5i*x))),[-1 0 1]);
 h = abs(f);
 pass(6,:) = normest(g - h) < 100*get(h, 'epslevel');
 
+%% Integration of SINGFUN:
+dom = [-2 7];
+
+% Generate a few random points to use as test values.
+seedRNG(6178);
+x = diff(dom) * rand(100, 1) + dom(1);
+
+pow = -1.64;
+op = @(x) (x-dom(1)).^pow;
+pref.singPrefs.exponents = [pow 0];
+f = chebfun(op, dom, pref);
+g = abs(f);
+vals_g = feval(g, x); 
+vals_exact = abs(feval(op, x));
+err = vals_g - vals_exact;
+pass(7,:) = ( norm(err, inf) < 1e4*get(f,'epslevel')*norm(vals_exact, inf) );
+
+%% piecewise smooth chebfun: smoothfun + singfun & splitting on.
+
+% define the domain:
+dom = [-1 1];
+domCheck = [dom(1)+0.1 dom(2)-0.1];
+
+pow1 = -0.5;
+pow2 = -1.2;
+op = @(x) sin(10*x).*((x-dom(1)).^pow1).*((x-dom(2)).^pow2);
+f = chebfun(op, dom, 'exps', [pow1 pow2], 'splitting', 'on');
+g = abs(f);
+
+% check values:
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+vals_g = feval(g, x);
+vals_check = feval(op, x);
+err = vals_g - abs(vals_check);
+pass(8,:) = ( norm(err-mean(err), inf) < ...
+    1e1*get(f,'epslevel')*norm(vals_check, inf) );
+
 end

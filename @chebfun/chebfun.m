@@ -272,6 +272,9 @@ classdef chebfun
         % Complex transpose of a CHEBFUN.
         f = ctranspose(f)
 
+        % Useful information for DISPLAY.
+        [name, data] = dispInfo(f)
+        
         % Display a CHEBFUN object.
         display(f);
         
@@ -490,8 +493,30 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
             pref.enableBreakpointDetection = strcmpi(args{2}, 'on');
             args(1:2) = [];
         elseif ( strcmpi(args{1}, 'blowup') )
-            % Translate "blowup" --> "enableSingularityDetection".
-            pref.enableSingularityDetection = strcmpi(args{2}, 'on');
+            if ( strcmpi(args{2}, 'off') )
+                % If 'blowup' is 'off'.
+                pref.enableSingularityDetection = 0;
+            else
+                % If 'blowup' is not 'off'.
+                if ( args{2} == 1 )
+                    % Translate "blowup" and flag "1" -->
+                    % "enableSingularityDetection" and "poles only".
+                    pref.enableSingularityDetection = 1;
+                    pref.singPrefs.singType = {'pole', 'pole'};
+                elseif ( args{2} == 2 || strcmpi(args{2}, 'on') )
+                    % Translate "blowup" and flag "2" -->
+                    % "enableSingularityDetection" and "fractional singularity".
+                    pref.enableSingularityDetection = 1;
+                    pref.singPrefs.singType = {'sing', 'sing'};
+                else
+                    error('CHEBFUN:constructor:parseInputs', ...
+                        'Invalid value for ''blowup'' option.');
+                end
+            end
+            args(1:2) = [];
+        elseif ( strcmpi(args{1}, 'exps') )
+            % Translate "exps" --> "singPrefs.exponents".
+            pref.singPrefs.exponents = args{2};
             args(1:2) = [];
         else
             % Update these preferences:

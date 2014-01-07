@@ -123,4 +123,18 @@ catch ME
     pass(23) = strcmp(ME.identifier, 'CHEBFUN:sum:b');
 end
 
+%% Integration with singfun: piecewise smooth chebfun - splitting on.
+
+% Set a domain
+dom = [-2 7];
+
+pow = -0.5;
+op = @(x) (x - dom(1)).^pow.*sin(100*x);
+pref.singPrefs.exponents = [pow 0];
+pref.enableBreakpointDetection = 1;
+f = chebfun(op, dom, pref);
+I = sum(f);
+I_exact = 0.17330750941063138;
+pass(24) = ( abs(I-I_exact) < 2*get(f, 'epslevel')*abs(I_exact) );
+
 end

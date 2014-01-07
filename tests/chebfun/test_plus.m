@@ -77,6 +77,28 @@ err = feval(g, x) - g_exact(x);
 pass(18) = isequal(size(g, 2), 3) && norm(err(:), inf) < ...
     10*max(g.vscale*g.epslevel);
 
+%% Integration of singfun: piecewise smooth chebfun - splitting on.
+
+dom = [-2 7];
+
+% Generate a few random points to use as test values.
+seedRNG(6178);
+x = diff(dom) * rand(100, 1) + dom(1);
+
+pow = -1;
+op1 = @(x) (x - dom(2)).^pow.*sin(100*x);
+op2 = @(x) (x - dom(2)).^pow.*cos(300*x);
+pref.singPrefs.exponents = [0 pow];
+pref.enableBreakpointDetection = 1;
+f = chebfun(op1, dom, pref);
+g = chebfun(op2, dom, pref);
+h = f + g;
+vals_h = feval(h, x);
+op = @(x)  (x - dom(2)).^pow.*(sin(100*x)+cos(300*x));
+h_exact = op(x);
+pass(19) = ( norm(vals_h-h_exact, inf) < max(get(f, 'epslevel'), get(g, 'epslevel'))*...
+    norm(h_exact, inf) );
+
 end
 
 % Test the addition of a chebfun F, specified by F_OP, to a scalar ALPHA using

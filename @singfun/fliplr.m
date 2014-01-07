@@ -1,9 +1,8 @@
 function f = fliplr(f) %#ok<INUSD>
-%FLIPLR   FLIPLR is not supported for SINGFUN objects.
+%FLIPLR   Flip columns of an array-valued SINGFUN object.
+%   Since SINGFUN objects cannot be array-valued FLIPLR(F) returns F.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-error('CHEBFUN:SINGFUN:fliplr:notpossible', ...
-      'SINGFUN objects can not be flipped from left to right.')
 end
