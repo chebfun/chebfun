@@ -15,6 +15,8 @@ function f = chebpoly(n, d, kind)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information. 
 
+% TODO: This method requires a test.
+
 % Defaults:
 defaultKind = 1;
 
