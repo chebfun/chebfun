@@ -2,3 +2,7 @@
 *.swp
 *~
 *.asv
+
+TODO.txt
+*.m.orig
+new linops class diagram.pdf

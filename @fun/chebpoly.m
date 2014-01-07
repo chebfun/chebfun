@@ -21,7 +21,7 @@ if ( isa(f.onefun, 'chebtech') )
     out = get(f.onefun, 'coeffs');
     if ( (nargin > 1) && ~isempty(N) )
         % Pad / truncate:
-        out = [zeros(1, N - length(out)) out];
+        out = [zeros(N - length(out),1) ; out];
         out = out(end-(N-1):end);
     end
     return
