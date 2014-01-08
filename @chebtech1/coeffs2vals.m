@@ -1,7 +1,6 @@
 function values = coeffs2vals(coeffs)
 %COEFFS2VALS   Convert Chebyshev coefficients to values at Chebyshev points
 %of the 1st kind.
-%
 %   V = COEFFS2VALS(C) returns the values of the polynomial V(i,1) = P(x_i) =
 %   C(1,1)*T_{N-1}(x_i) + C(2,1)*T_{N-2}(x_i) + ... + C(N,1), where the x_i are
 %   1st-kind Chebyshev nodes.
@@ -10,12 +9,13 @@ function values = coeffs2vals(coeffs)
 %   (N+1)xM matrix of values V such that V(i,j) = P_j(x_i) = C(1,j)*T_{N-1}(x_i)
 %   + C(2,j)*T_{N-2}(x_i) + ... + C(N,j)
 %
-%   See also VALS2COEFFS, CHEBPTS.
+% See also VALS2COEFFS, CHEBPTS.
 
-%   Copyright 2013 by The University of Oxford and The Chebfun Developers. 
-%   See http://www.chebfun.org for Chebfun information.
+% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org for Chebfun information.
 
-%   [Mathematical reference]
+% [Mathematical reference]
+% TODO: note this is euqivalent to a ??-kind DCT.
 
 % Get the length of the input
 n = size(coeffs, 1);

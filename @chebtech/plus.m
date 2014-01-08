@@ -2,7 +2,7 @@ function f = plus(f, g)
 %+   Addition of two CHEBTECH objects.
 %   F + G adds F and G, where F and G may be CHEBTECH objects or scalars.
 %
-%   If F is a array-valued CHEBTECH, then F + C is supported if C is a row
+%   If F is an array-valued CHEBTECH, then F + C is supported if C is a row
 %   vector of doubles with the same number of columns as F.
 %
 % See also MINUS, UPLUS.
@@ -17,7 +17,7 @@ if ( isempty(f) || isempty(g) ) % CHEBTECH + [] = []
 elseif ( isa(g, 'double') ) % CHEBTECH + double
     
     % Update values (use bsxfun() to handle the case in which g is a vector
-    % and f is a array-valued CHEBTECH):
+    % and f is an array-valued CHEBTECH):
     f.values = bsxfun(@plus, f.values, g);
     % Update coeffs:
     if ( (size(g, 2) > 1) && (size(f.coeffs, 2) == 1) )

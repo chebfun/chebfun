@@ -3,11 +3,10 @@
 function pass = test_isnan(pref)
 
 if ( nargin < 1 )
-    pref = chebtech.pref;
+    pref = chebtech.techPref();
 end
 p = pref;
 
-pass = zeros(2, 6); % Pre-allocate pass matrix
 for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();
@@ -19,7 +18,7 @@ for n = 1:2
     f = testclass.make(@(x) x, [], [], p);
     pass(n, 1) = ~isnan(f);
 
-    % Test a array-valued function:
+    % Test an array-valued function:
     f = testclass.make(@(x) [x, x.^2], [], [], p);
     pass(n, 2) = ~isnan(f);
 
@@ -53,7 +52,7 @@ for n = 1:2
     end
 
     % Test a non-adaptive construction
-    p.chebtech.n = 11;
+    p.numPoints = 11;
     try
         f = testclass.make(@(x) myfun(x), [], [], p);
         pass(n, 7) = isnan(f);

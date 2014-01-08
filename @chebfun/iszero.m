@@ -7,7 +7,7 @@ function out = iszero(f, tol)
 % TODO:  Document the TOL input.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun for Chebfun information.
+% See http://www.chebfun.org for Chebfun information.
 
 % An empty CHEBFUN is zero:
 if ( isempty(f) )
@@ -20,7 +20,7 @@ if ( nargin < 2 )
     tol = vscale(f)*epslevel(f);
     % TODO: Remove this once epslevels of zero CHEBFUNs have been improved.
     if ( isnan(tol) )
-        tol = chebfun.pref('eps');
+        tol = eps;
     end
 end
 

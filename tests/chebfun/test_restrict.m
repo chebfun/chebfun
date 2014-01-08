@@ -7,7 +7,7 @@ function pass = test_restrict(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = chebfun.pref;
+    pref = chebpref();
 end
 
 % Generate a few random points in [-1 1] to use as test values.

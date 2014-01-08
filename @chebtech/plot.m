@@ -34,6 +34,8 @@ function varargout = plot(f, varargin)
 %   handle per plotted line (in the case of array-valued CHEBTECH objects).
 %   [H1, H2] returns a second vector of column handles, this time for each of
 %   the marker plots.
+%
+% See also PLOT3, PLOTDATA.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

@@ -1,7 +1,7 @@
 function pass = test_constructor_inputs(pref)
 
 if ( nargin == 0 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % [TODO]: This test needs to be updated to include more exotic input options.
@@ -44,5 +44,9 @@ pass(7) = numel(f.funs) == 1 && size(f.funs{1},1) == 10;
 % Test equispaced construction:
 f = chebfun(rand(10,3), 'equi');
 pass(8) = numel(f.funs) == 1 && size(f.funs{1}, 1) > 10;
+
+% Test construction from coefficients.
+f = chebfun([1 ; 2 ; 3], 'coeffs');
+pass(9) = isequal(f.funs{1}.onefun.coeffs, [1 ; 2 ; 3]);
 
 end

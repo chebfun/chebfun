@@ -2,7 +2,7 @@ function g = acsch(f, pref)
 %ACSCH   Inverse hyperbolic cosecant of a CHEBFUN.
 %   ACSCH(F) computes the inverse hyperbolic cosecant of the CHEBFUN F.
 %
-%   ACSCH(F, PREF) does the same but uses the preference structure PREF when
+%   ACSCH(F, PREF) does the same but uses the CHEBPREF object PREF when
 %   computing the composition.
 %
 % See also CSCH.
@@ -12,7 +12,7 @@ function g = acsch(f, pref)
 
 % Obtain preferences:
 if ( nargin == 1 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Call the compose method:

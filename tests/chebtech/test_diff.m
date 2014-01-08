@@ -4,14 +4,13 @@ function pass = test_diff(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = chebtech.pref;
+    pref = chebtech.techPref();
 end
 
 % Generate a few random points to use as test values.
 seedRNG(6178);
 x = 2 * rand(100, 1) - 1;
 
-pass = zeros(2, 15); % Pre-allocate pass matrix
 for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();
@@ -113,14 +112,15 @@ for n = 1:2
     dim2df = diff(f, 1, 2);
     g = @(x) [(x.^2 - sin(x)) (exp(1i*x) - x.^2)];
     err = feval(dim2df, x) - g(x);
-    pass(n, 13) = (norm(err(:), inf) < 10*max(dim2df.vscale.*dim2df.epslevel));
-    
+    pass(n, 13) = isequal(size(dim2df.vscale), [1 2]) && ...
+        (norm(err(:), inf) < 10*max(dim2df.vscale.*dim2df.epslevel));
+
     dim2df2 = diff(f, 2, 2);
     g = @(x) exp(1i*x) - 2*x.^2 + sin(x);
     err = feval(dim2df2, x) - g(x);
-    pass(n, 14) = (norm(err(:), inf) < ...
-        10*max(dim2df2.vscale.*dim2df2.epslevel));
-    
+    pass(n, 14) = isequal(size(dim2df2.vscale), [1 1]) && ...
+        (norm(err(:), inf) < 10*max(dim2df2.vscale.*dim2df2.epslevel));
+
     % DIM option should return an empty chebtech for non-array-valued input.
     f = testclass.make(@(x) x.^3);
     dim2df = diff(f, 1, 2);

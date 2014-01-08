@@ -2,7 +2,7 @@ function g = asin(f, pref)
 %ASIN   Inverse sine of a CHEBFUN.
 %   ASIN(F) computes the inverse sine of the CHEBFUN F.
 %
-%   ASIN(F, PREF) does the same but uses the preference structure PREF when
+%   ASIN(F, PREF) does the same but uses the CHEBPREF object PREF when
 %   computing the composition.
 %
 % See also SIN, ASIND.
@@ -12,7 +12,7 @@ function g = asin(f, pref)
 
 % Obtain preferences:
 if ( nargin == 1 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Call the compose method:

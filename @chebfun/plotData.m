@@ -40,6 +40,9 @@ if ( nargin == 1 || isempty(g) )
         data.yPoints = [data.yPoints ; myNaN ; dataNew.yPoints];
     end
 
+    % Return NaNs if there are no jumps:
+    data.xJumps = NaN;
+    data.yJumps = myNaN;
     % Loop over each FUN for Jumps data:
     for k = 1:(numel(f.funs) - 1)
         data.xJumps = [data.xJumps ; NaN ; f.funs{k}.domain(2) ; ...
@@ -51,10 +54,7 @@ if ( nargin == 1 || isempty(g) )
 elseif ( nargin == 2 )
     % PLOT(F, G)
 
-    % [TODO]: Fix this once OVERLAP() is implemented.
-    if ( all( f.domain ~= g.domain ) )
-        [f, g] = overlap(f, g);
-    end
+    [f, g] = overlap(f, g);
     
     % Loop over each FUN for Line and Points data:
     for k = 1:numel(f.funs)

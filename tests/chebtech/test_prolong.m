@@ -3,10 +3,9 @@
 function pass = test_prolong(pref)
 
 if ( nargin < 1 )
-    pref = chebtech.pref;
+    pref = chebtech.techPref();
 end
 
-pass = zeros(2, 16); % Pre-allocate pass matrix
 for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();

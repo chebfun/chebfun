@@ -4,7 +4,7 @@ function pass = test_innerProduct(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fun.pref;
+    pref = chebpref();
 end
 
 % Set a tolerance.  (pref.eps doesn't matter here.)
@@ -16,8 +16,6 @@ dom = [-2 7];
 % Fixed arbitrary numbers to use as multiplicative constants.
 alpha = -0.194758928283640 + 0.075474485412665i;
 beta = -0.526634844879922 - 0.685484380523668i;
-
-pass = zeros(1, 11); % Pre-allocate pass matrix
 
 %%
 % Spot-check a few known results.

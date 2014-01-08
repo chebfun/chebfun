@@ -2,7 +2,7 @@ function g = tanh(f, pref)
 %TANH   Hyperbolic tangent of a CHEBFUN.
 %   TANH(F) computes the hyperbolic tangent of the CHEBFUN F.
 %
-%   TANH(F, PREF) does the same but uses the preference structure PREF when
+%   TANH(F, PREF) does the same but uses the CHEBPREF object PREF when
 %   computing the composition.
 %
 % See also ATANH.
@@ -12,7 +12,7 @@ function g = tanh(f, pref)
 
 % Obtain preferences:
 if ( nargin == 1 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Call the compose method:

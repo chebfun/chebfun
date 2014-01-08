@@ -4,7 +4,7 @@ function pass = test_feval(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fun.pref;
+    pref = chebpref();
 end
 
 % Set the domain
@@ -13,8 +13,6 @@ dom = [-2 7];
 % Generate a few random points to use as test values.
 seedRNG(7681);
 x = diff(dom) * rand(1000, 1) + dom(1);
-
-pass = zeros(1, 9); % Pre-allocate pass matrix.
 
 %%
 % Spot-check values for a couple of functions.  We can only expect

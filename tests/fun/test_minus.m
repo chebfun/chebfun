@@ -4,7 +4,7 @@ function pass = test_minus(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fun.pref;
+    pref = chebpref();
 end
 
 % Generate a few random points to use as test values.
@@ -13,7 +13,6 @@ seedRNG(6178);
 % A random number to use as an arbitrary additive constant.
 alpha = randn() + 1i*randn();
 
-pass = zeros(1, 21); % Pre-allocate pass matrix
 for n = 1:1 %[TODO]: unbndfun
     if ( n == 1 )
         testclass = bndfun();

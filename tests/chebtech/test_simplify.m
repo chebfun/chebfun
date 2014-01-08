@@ -4,14 +4,13 @@ function pass = test_simplify(pref)
 
 % Get preferences:
 if ( nargin < 1 )
-    pref = chebtech.pref;
+    pref = chebtech.techPref();
 end
 
 % Generate a few random points to use as test values.
 seedRNG(6178);
 x = 2 * rand(100, 1) - 1;
 
-pass = zeros(2, 19); % Pre-allocate pass matrix
 for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();

@@ -4,7 +4,7 @@ function pass = test_times(pref)
 
 % Get preferences.
 if (nargin < 1)
-    pref = fun.pref;
+    pref = chebpref();
 end
 
 % Set a domain
@@ -17,8 +17,6 @@ x = diff(dom) * rand(1000, 1) + dom(1);
 % Random numbers to use as arbitrary multiplicative constants.
 alpha = -0.194758928283640 + 0.075474485412665i;
 beta = -0.526634844879922 - 0.685484380523668i;
-
-pass = zeros(1, 23); % Pre-allocate pass matrix
 
 %%
 % Check operation in the face of empty arguments.

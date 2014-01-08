@@ -1,7 +1,7 @@
 function pass = test_power(pref)
 
 if ( nargin == 0 ) 
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % [TODO]: So far, POWER only supports easy cases (i.e., positive integers).
