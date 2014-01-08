@@ -49,6 +49,7 @@ pass(5) = ( norm(err, inf) < 1e3*max(lExact*vscale(f)*epslevel(f)) );
 % Test on finite SINGFUN:
 f = chebfun(@(x) sin(2*x).*((x+1).^0.5), 'exps', [0.5 0], 'splitting', 'on');
 l = arcLength(f);
+% The exact result is obtained using method 'integral' of Matlab:
 lExact = 3.452674964506957;
 err = abs(l - lExact);
 pass(6) = ( err < 1e2*lExact*vscale(f)*epslevel(f) );
