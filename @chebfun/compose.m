@@ -117,7 +117,9 @@ elseif ( opIsBinary )
         % QUASIMATRIX case:
         f = cheb2cell(f);
         g = cheb2cell(g);
-
+        for k = numel(f):-1:1
+            h(k) = columnCompose(f{k}, op, g{k}, pref, opIsBinary);
+        end
         f = h;
     end
     
