@@ -25,6 +25,11 @@ else
     varargin(empties) = [];
 end
 
+if ( numel(varargin) == 1 )
+    out = varargin{1};
+    return
+end
+
 % Promote doubles to CHEBFUN objects:
 chebfunLocs = cellfun('isclass', varargin, 'chebfun');
 domain1 = varargin{find(chebfunLocs, 1, 'first')}.domain;
@@ -48,7 +53,7 @@ if ( any(diff(cellfun(@(d) length(d), allDomainsCell))) )
     differentBreakpoints = true;
 else
     tol = max(cellfun(@(f) hscale(f).*epslevel(f), varargin));
-    if ( any(cellfun(@(d) any(d - domainEnds) > tol, allDomainsCell)) )
+    if ( any(cellfun(@(d) any(d - allDomainsCell{1}) > tol, allDomainsCell)) )
         differentBreakpoints = true;
     end
 end

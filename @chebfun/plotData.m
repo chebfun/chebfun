@@ -89,8 +89,8 @@ if ( nargin == 1 || ( ( nargin == 2 ) && ( isnumeric(g) ) ) )
         data.yLine = [data.yLine ; myNaN ; dataNew.yLine];
         data.xPoints = [data.xPoints ; NaN ; dataNew.xPoints];
         data.yPoints = [data.yPoints ; myNaN ; dataNew.yPoints];
-        data.xJumps = [data.xJumps ; NaN ; dataNew.xJumps];
-        data.yJumps = [data.yJumps ; myNaN ; dataNew.yJumps];
+        data.xJumps = [data.xJumps ; dataNew.xJumps];
+        data.yJumps = [data.yJumps ; dataNew.yJumps];
         
         % If any of the boundary values is positively infinite, then set the
         % ylim for this piece to be the minimum of 10 and the largest yLine 
@@ -124,11 +124,8 @@ elseif ( nargin == 2 || ( ( nargin == 3 ) && ( isnumeric(h) ) ) )
         interval = h;
     end
     
-    % [TODO]: Fix this once OVERLAP() is implemented.
-    if ( all( f.domain ~= g.domain ) )
-        [f, g] = overlap(f, g);
-    end
-    
+    [f, g] = overlap(f, g);
+
     % Overhead:
     nFuns = numel(f.funs);
     ymax = zeros(1,nFuns);
@@ -173,8 +170,8 @@ elseif ( nargin == 2 || ( ( nargin == 3 ) && ( isnumeric(h) ) ) )
         data.yLine = [data.yLine ; myNaN ; dataNew.yLine];
         data.xPoints = [data.xPoints ; myNaN ; dataNew.xPoints];
         data.yPoints = [data.yPoints ; myNaN ; dataNew.yPoints];
-        data.xJumps = [data.xJumps ; NaN ; dataNew.xJumps];
-        data.yJumps = [data.yJumps ; myNaN ; dataNew.yJumps];
+        data.xJumps = [data.xJumps ; dataNew.xJumps];
+        data.yJumps = [data.yJumps ; dataNew.yJumps];
     end
     
     % If any of the boundary values is positively infinite, then set the
