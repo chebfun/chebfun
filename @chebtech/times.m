@@ -32,6 +32,7 @@ elseif ( isa(g, 'double') )     % CHEBTECH * double
         f.coeffs = f.coeffs*g;
         f.vscale = f.vscale*abs(g);
     end
+    % TODO: Fix this!
     f.epslevel = f.epslevel + eps;
     
     return
@@ -99,8 +100,7 @@ f.coeffs = f.vals2coeffs(values);
 % Update vscale, epslevel, and ishappy:
 vscale = max(abs(f.values), [], 1);
 % See CHEBTECH CLASSDEF file for documentation on this:
-f.epslevel = (f.epslevel + g.epslevel) * (f.vscale.*g.vscale./vscale);
-f.epslevel = max(f.epslevel); % [TODO]: Vector epslevel;
+f.epslevel = (f.epslevel + g.epslevel) .* (f.vscale.*g.vscale./vscale);
 f.vscale  = vscale;
 f.ishappy = f.ishappy && g.ishappy;
 

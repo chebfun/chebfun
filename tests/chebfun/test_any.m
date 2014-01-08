@@ -12,6 +12,7 @@ pref.enableBreakpointDetection = 1;
 % Generate a few random points to use as test values.
 seedRNG(6178);
 x = 2 * rand(100, 1) - 1;
+hvsde = @(x) .5*(sign(x) + 1);
 
 % Check empty case.
 pass(1) = ~any(chebfun());
@@ -25,7 +26,6 @@ pass(3) = isequal(any(f.', 2), [1 0 1].');
 f.impulses(3,2,1) = NaN;
 pass(4) = isequal(any(f, 1), [1 0 1]);
 
-hvsde = @(x) .5*(sign(x) + 1);
 f = chebfun(@(x) [0*x hvsde(x) exp(2*pi*1i*x)], [-1 0 1], pref);
 pass(5) = isequal(any(f), [0 1 1]);
 pass(6) = isequal(any(f.', 2), [0 1 1].');
@@ -39,11 +39,11 @@ pass(8) = g.isTransposed && (numel(g.funs) == 1) && all(feval(g, x) == 1);
 
 f = chebfun(@(x) [sin(x) 0*x], pref);
 g = any(f, 2);
-ind = find(g.impulses == 0);
+ind = g.impulses == 0;
 pass(9) = ~g.isTransposed && (abs(g.domain(ind)) < 10*vscale(g)*epslevel(g)) ...
     && isequal(g.impulses, [1 0 1].') && all(feval(g, x) == 1);
 g = any(f.', 1);
-ind = find(g.impulses == 0);
+ind = g.impulses == 0;
 pass(10) = g.isTransposed && (abs(g.domain(ind)) < 10*vscale(g)*epslevel(g)) ...
     && isequal(g.impulses, [1 0 1].') && all(feval(g, x) == 1);
 

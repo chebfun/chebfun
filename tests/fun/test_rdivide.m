@@ -49,7 +49,7 @@ for n = 1:1 %[TODO]: unbndfun
     g = f ./ [alpha beta];
     g_exact = @(x) [sin(x)./alpha cos(x)./beta];
     pass(n, 5) = norm(feval(g, x) - g_exact(x), inf) < ...
-        10*max(get(g, 'vscale'))*get(g, 'epslevel');
+        10*max(get(g, 'vscale').*get(g, 'epslevel'));
     
     g = f ./ [alpha 0];
     isn = isnan(feval(g, x));
@@ -109,7 +109,7 @@ function result = test_div_function_by_scalar(f, f_op, alpha, x)
     g = f ./ alpha;
     g_exact = @(x) f_op(x) ./ alpha;
     result = norm(feval(g, x) - g_exact(x), inf) < ...
-        10*max(get(g, 'vscale'))*get(g, 'epslevel');
+        10*max(get(g, 'vscale').*get(g, 'epslevel'));
 end
 
 % Test the division of a scalar ALPHA by a FUN, specified by F_OP, using
@@ -118,7 +118,7 @@ function result = test_div_scalar_by_function(alpha, f, f_op, x)
     g = alpha ./ f;
     g_exact = @(x) alpha ./ f_op(x);
     result = norm(feval(g, x) - g_exact(x), inf) < ...
-        10*max(get(g, 'vscale'))*get(g, 'epslevel');
+        10*max(get(g, 'vscale').*get(g, 'epslevel'));
 end
 
 % Test the division of two FUN objects F and G, specified by F_OP and
@@ -128,5 +128,5 @@ function result = test_div_function_by_function(f, f_op, g, g_op, x)
     h_exact = @(x) f_op(x) ./ g_op(x);
     norm(feval(h, x) - h_exact(x), inf);
     result = norm(feval(h, x) - h_exact(x), inf) < ...
-        50*max(get(h, 'vscale'))*get(h, 'epslevel');
+        50*max(get(h, 'vscale').*get(h, 'epslevel'));
 end

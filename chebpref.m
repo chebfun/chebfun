@@ -61,6 +61,14 @@ classdef chebpref
 %      singularities are being created, (e.g., by SQRT(F) at points where a
 %      CHEBFUN F passes through zero). See SINGFUN for more information.
 %
+%   scale                      - The vertical scale constructor should use.
+%    [0]
+%
+%      Typically the CHEBFUN constructor will resolve relative to a vertical
+%      scale determined by it's own function evaluations. However, in some
+%      situations one would like to the resolve relative to a fixed vertical
+%      scale. This can be set using this preference.
+%
 %   singPrefs                  - Preferences for singularity detection.
 %
 %      exponentTol             - Tolerance for exponents.
@@ -211,6 +219,7 @@ classdef chebpref
         domain
         enableSingularityDetection
         singPrefs
+        scale
         tech
         techPrefs
     end
