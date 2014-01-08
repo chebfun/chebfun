@@ -28,8 +28,12 @@ function fx = feval(f, x, varargin)
 % preceding text accordingly.
 
 % If F or x are empty, there's nothing to do.
-if ( isempty(f) || isempty(x) )
-    fx = [];
+if ( isempty(f) )
+    fx = []
+    return
+elseif ( isempty(x) )
+    % Return empty matrix with dimensions of the appropriate size.
+    fx = zeros(size(x));
     return
 end
 
