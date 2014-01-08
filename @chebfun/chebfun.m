@@ -239,11 +239,15 @@ classdef chebfun
     
     % Methods implemented by CHEBFUN class.
     methods
-        % True if any element of a CHEBFUN is a nonzero number, ignoring NaN.
-        a = any(f, dim)
-
+        
         % Absolute value of a CHEBFUN.
         f = abs(f, pref)
+        
+        % True if any element of a CHEBFUN is a nonzero number, ignoring NaN.
+        a = any(f, dim)
+        
+        % Compute the length of the arc defined by a CHEBFUN.
+        out = arcLength(f, a, b)
 
         % Round a CHEBFUN towards plus infinity.
         g = ceil(f)
