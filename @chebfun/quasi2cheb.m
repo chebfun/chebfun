@@ -15,9 +15,17 @@ end
 
 % Unify the breakpoints:
 F = restrict(F, get(F, 'domain'));
+
 % Collect each column in a cell:
 F = cheb2cell(F);
+
 % Call HORZCAT to collate the columns:
-F = [F{:}];
+% F = [F{:}];
+% F = cat(1 + F{1}.isTransposed, F[:});
+if ( ~F{1}.isTransposed )
+    F = horzcat(F{:});
+else
+    F = vertcat(F{:});
+end
 
 end

@@ -127,6 +127,10 @@ switch index(1).type
                 out = out.';
             end
         end
+        
+        if ( numel(index) > 1 )
+            out = subsref(out, index(2:end));
+        end
     
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% GET %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     case '.'

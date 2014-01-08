@@ -29,18 +29,21 @@ elseif ( nargin == 1 )
 end
 
 % Deal with quasimatrices:
-numEl = cellfun(@numColumns, varargin);
-if ( any(numEl > 1) )
+numCols = cellfun(@numColumns, varargin);
+numEls = cellfun(@numel, varargin);
+if ( any(numCols > 1) )
     args = cellfun(@cheb2cell, varargin, 'UniformOut', false);
     try
         args = reshape([args{:}], nargin, max(size(args{1})));
     catch
         error('CHEBFUN:join:dim', 'Matrix dimensions must agree.');
     end
-    for k = numEl(1):-1:1
-        f(k) = columnJoin(args{:,k});
+    for k = numCols(1):-1:1
+        f(k) = columnJoin(args{k,:});
     end
-    return
+    if ( all(numEls == 1) )
+        f = quasi2cheb(f);
+    end
 else
     f = columnJoin(varargin{:});
 end
