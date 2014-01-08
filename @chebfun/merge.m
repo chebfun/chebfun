@@ -140,21 +140,25 @@ for k = index
     g = f;
     g.impulses(k-1,:,1) = get(oldFuns{k-1}, 'lval');
     g.impulses(k+1,:,1) = get(oldFuns{k}, 'rval');
-
+    
     % Grab the correct exponents:
+    
     if ( isSing )
         if ( ~isa(newFuns{j-1}.onefun, 'singfun') && ...
-             ~isa(newFuns{j}.onefun, 'singfun') )
+                ~isa(newFuns{j}.onefun, 'singfun') )
             pref.singPrefs.exponents = [];
         elseif ( isa(newFuns{j-1}.onefun, 'singfun') && ...
                 ~isa(newFuns{j}.onefun, 'singfun') )
-            pref.singPrefs.exponents = [newFuns{j-1}.onefun.exponents(1) 0];
+            exps = get(newFuns{j-1}, 'exponents');
+            pref.singPrefs.exponents = [exps(1) 0];
         elseif ( ~isa(newFuns{j-1}.onefun, 'singfun') && ...
                 isa(newFuns{j}.onefun, 'singfun') )
-            pref.singPrefs.exponents = [0 newFuns{j}.onefun.exponents(2)];
+            exps = get(newFuns{j}, 'exponents');
+            pref.singPrefs.exponents = [0 exps(2)];
         else
-            pref.singPrefs.exponents = [newFuns{j-1}.onefun.exponents(1) ...
-                newFuns{j}.onefun.exponents(2)];
+            expsLeft = get(newFuns{j-1}, 'exponents');
+            expsRight = get(newFuns{j}, 'exponents');
+            pref.singPrefs.exponents = [expsLeft(1) expsRight(2)];
         end
     end
     
