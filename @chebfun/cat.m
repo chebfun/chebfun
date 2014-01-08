@@ -1,4 +1,4 @@
-function out = cat(varargin)
+function out = cat(dim, varargin)
 %CAT   Concatenation of CHEBFUN objects.
 %   CAT of a CHEBFUN is not yet supported.
 

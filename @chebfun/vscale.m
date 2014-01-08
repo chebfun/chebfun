@@ -10,6 +10,11 @@ function out = vscale(F)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+if ( isempty(F) )
+    out = [];
+    return
+end
+
 out = 0;
 for k = 1:numel(F)
     % Get the local vscales:
@@ -17,6 +22,11 @@ for k = 1:numel(F)
 
     % Compute the maximum:
     out = max(out, max(v(:)));
+end
+
+% [TODO]: Remove this hack.
+if ( ~all(out) )
+    out(~out) = 1;
 end
 
 end

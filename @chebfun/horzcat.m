@@ -24,6 +24,12 @@ else
 end
 
 % Find the locations of the CHEBFUN objects in the inputs:
+if ( numel(varargin) == 1 )
+    out = varargin{1};
+    return
+end
+
+% Promote doubles to CHEBFUN objects:
 chebfunLocs = cellfun('isclass', varargin, 'chebfun');
 chebfun1 = varargin{find(chebfunLocs, 1, 'first')};
 

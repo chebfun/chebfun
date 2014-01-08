@@ -15,6 +15,8 @@ function f = chebpoly(n, d, kind)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information. 
 
+% TODO: This method requires a test.
+
 % Defaults:
 defaultKind = 1;
 
@@ -44,20 +46,14 @@ if ( kind == 2 )
 end
 
 % Construct the Chebyshev coefficients:
-N = max(n);
+N = max(n)+1;
 c = zeros(N, numel(n));
 for k = 1:numel(n)
-    c(N-n(k)+1, k) = 1;
+    c(N-n(k), k) = 1;
 end
 
-% [TODO]: This is cheating!
-
-% Construct a CHEBTECH:
-f_chebtech = chebtech2({[], c});
-% Construct a FUN:
-f_fun = bndfun(f_chebtech, d([1, end]));
-% Construct a CHEBFUN:
-f = chebfun({f_fun});
+% Construct a CHEBFUN from the coefficients:
+f = chebfun(c, d([1, end]), 'coeffs');
 
 % Introudce interior breakpoints:
 if ( numel(d) > 2 )

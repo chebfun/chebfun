@@ -42,12 +42,16 @@ while ( k < (length(varargin) - 1) )
     k = k + 1;
 end
 
+if ( any(cellfun(@(f) isa(f, 'chebfun'), varargin)) )
+    error('CHEBFUN:fill:oops', 'Unrecognised input sequence.');
+end
+
 % Call the built in FILL():
 h = fill(varargin{:});
 
 % Output handle:
 if ( nargout == 1 )
-  varargout{1} = h;
+    varargout{1} = h;
 end
 
 end

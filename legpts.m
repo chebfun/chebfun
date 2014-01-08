@@ -22,7 +22,7 @@ function [x, w, v, t] = legpts(n, int, meth)
 %    METHOD = 'GW' will use the traditional Golub-Welsch eigenvalue method,
 %       which is maintained mostly for historical reasons.
 %
-%   [X, W, V, T] = LEGPTS(N) returns also the cosine of the nodes, T = cos(X).
+%   [X, W, V, T] = LEGPTS(N) returns also the arccos of the nodes, T = acos(X).
 %   In some situations (in particular with 'ASY') these can be computed to a
 %   much better relative precision than X.
 %

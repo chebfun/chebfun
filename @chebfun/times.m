@@ -21,6 +21,12 @@ if ( ~isa(f, 'chebfun') )      % ??? * CHEBFUN
 elseif ( isempty(g) )          % CHEBFUN * []
 
     f = [];
+    return
+
+elseif ( isempty(f) )          % empty CHEBFUN * CHEBFUN
+
+    % Nothing to do here. (Return an empty CHEBFUN as output.)
+    return    
 
 elseif ( isnumeric(g) )        % CHEBFUN * double
 
@@ -51,7 +57,7 @@ elseif ( isnumeric(g) )        % CHEBFUN * double
         for k = 1:numCols
             f(k) = f(k).*g;
         end
-
+        
     end
 
 
@@ -61,10 +67,6 @@ elseif ( ~isa(g, 'chebfun') )  % CHEBFUN * ???
           ['Undefined function ''times'' for input arguments of type ' ...
            '%s and %s.'], class(f), class(g));
 
-elseif ( isempty(f) )          % empty CHEBFUN * CHEBFUN
-
-    % Nothing to do here. (Return an empty CHEBFUN as output.)
-    
 else                           % CHEBFUN .* CHEBFUN 
 
     % Check to see if one of the CHEBFUNs is transposed:
@@ -106,5 +108,8 @@ else                           % CHEBFUN .* CHEBFUN
 
 
 end
+
+% Set small breakpoint values to zero:
+f = thresholdBreakpointValues(f);
 
 end

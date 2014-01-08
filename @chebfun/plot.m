@@ -37,6 +37,12 @@ function varargout = plot(varargin)
 %   lineseries objects (one for each column in the case of array-valued CHEBFUN
 %   objects), corresponding to the line, point, and jump plots, respectively.
 %
+%   PLOT(F, 'interval', [A, B]) restricts the plot to the interval [A, B], which
+%   can be useful when the domain of F is infinite, or for 'zooming in' on, say,
+%   oscillatory CHEBFUN objects. If plotting an array-valued CHEBFUN or more
+%   than one CHEBFUN in a call like PLOT(F, 'b', G, '--r', 'interval', [A, B])
+%   this property is applied globally.
+%
 % See also PLOTDATA, PLOT3.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
@@ -173,33 +179,25 @@ while ( ~isempty(varargin) )
     % Loop over the columns:
     for k = 1:numel(newData)
         
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-% TODO: Remove this?
-%
-%         % 'INTERVAL' stuff:
-%         if ( ~isComplex && intervalIsSet && size(newData(k).xLine, 2) == 1 ) % Deal with 'interval' flag.
-%             idx = newData(k).xLine < interval(1) | newData(k).xLine > interval(end);
-%             newData(k).xLine(idx) = [];
-%             newData(k).yLine(idx,:) = [];
-%             idx = newData.xPoints < interval(1) | newData(k).xPoints > interval(end);
-%             newData(k).xPoints(idx) = [];
-%             newData(k).yPoints(idx,:) = [];
-%             idx = newData(k).xJumps < interval(1) | newData(k).xJumps > interval(end);
-%             newData(k).xJumps(idx) = [];
-%             newData(k).yJumps(idx,:) = [];
-%         end
-%
-%   PLOT(F, 'interval', [A, B]) restricts the plot to the interval [A, B], which
-%   can be useful when the domain of F is infinite, or for 'zooming in' on, say,
-%   oscillatory CHEBFUN objects. If plotting an array-valued CHEBFUN or more
-%   than one CHEBFUN in a call like PLOT(F, 'b', G, '--r', 'interval', [A, B])
-%   this property is applied globally.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % TODO: Remove this?
+        % 'INTERVAL' stuff:
+        if ( ~isComplex && intervalIsSet && size(newData(k).xLine, 2) == 1 )
+            idx = newData(k).xLine < interval(1) | newData(k).xLine > interval(end);
+            newData(k).xLine(idx) = [];
+            newData(k).yLine(idx,:) = [];
+            idx = newData(k).xPoints < interval(1) | newData(k).xPoints > interval(end);
+            newData(k).xPoints(idx) = [];
+            newData(k).yPoints(idx,:) = [];
+            idx = newData(k).xJumps < interval(1) | newData(k).xJumps > interval(end);
+            newData(k).xJumps(idx) = [];
+            newData(k).yJumps(idx,:) = [];
+        end
 
         % Append new data:
         lineData = [lineData, newData(k).xLine, newData(k).yLine, styleData]; 
         pointData = [pointData, newData(k).xPoints, newData(k).yPoints, styleData];
         jumpData = [jumpData, newData(k).xJumps, newData(k).yJumps, styleData];
+
     end
      
 end

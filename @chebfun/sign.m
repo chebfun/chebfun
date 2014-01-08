@@ -5,7 +5,7 @@ function F = sign(F, pref)
 %   0 in the interval where F(x) = 0. Breakpoints in G are introduced at zeros
 %   of F.
 %
-%   For the nonzero elements of complex F, SIGN(F) = F./ABS(F)
+%   For the nonzero values of complex F, SIGN(F) = F./ABS(F)
 %
 % See also ABS, HEAVISIDE, ROOTS.
 

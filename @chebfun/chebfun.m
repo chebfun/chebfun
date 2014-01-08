@@ -221,6 +221,9 @@ classdef chebfun
     methods (Access = private)
         % Remove zero layers from impulses array.
         f = tidyImpulses(f);
+
+        % Set small breakpoint values to zero.
+        f = thresholdBreakpointValues(f);
     end
     
     % Static private methods implemented by CHEBFUN class.
@@ -242,19 +245,24 @@ classdef chebfun
     
     % Methods implemented by CHEBFUN class.
     methods
-        
+        % True if any element of a CHEBFUN is a nonzero number, ignoring NaN.
+        a = any(f, dim)
+
         % Absolute value of a CHEBFUN.
         f = abs(f, pref)
-        
+
+        % Round a CHEBFUN towards plus infinity.
+        g = ceil(f)
+
         % Solve boundary value problems for ODEs by collocation.
         [y, t] = bvp4c(fun1, fun2, y0, varargin);
-        
+
         % Solve boundary value problems for ODEs by collocation.
         [y, t] = bvp5c(fun1, fun2, y0, varargin);
-        
+
         % Plot information regarding the representation of a CHEBFUN object:
         h = chebpolyplot(f, varargin);
-        
+
         % Construct complex CHEBFUN from real and imaginary parts.
         C = complex(A, B)
 
@@ -281,6 +289,12 @@ classdef chebfun
         
         % Evaluate a CHEBFUN.
         y = feval(f, x, varargin)
+        
+        % Round a CHEBFUN towards zero.
+        g = fix(f);
+        
+        % Round a CHEBFUN towards minus infinity.
+        g = floor(f);
 
         % Get properties of a CHEBFUN object.
         out = get(f, prop);
@@ -314,6 +328,9 @@ classdef chebfun
         
         % Length of a CHEBFUN.
         out = length(f);
+        
+        % Return Legendre coefficients of a CHEBFUN.
+        c_leg = legpoly(f, n)
         
         % Plot a CHEBFUN object on a loglog scale:
         h = loglog(f, varargin);
@@ -353,6 +370,9 @@ classdef chebfun
 
         % The roots of the CHEBFUN F.
         r = roots(f, varargin);
+        
+        % Round a CHEBFUN towards nearest integer.
+        g = round(f)
 
         % Plot a CHEBFUN object on a log-linear scale:
         h = semilogx(f, varargin);
@@ -459,6 +479,10 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
                  strcmpi(args{1}, 'vectorise') )
             % Vectorize flag for function_handles.
             vectorize = true;
+            args(1) = [];
+        elseif ( strcmpi(args{1}, 'coeffs') && isnumeric(op) )
+            % Hack to support construction from coefficients.
+            op = {{[], op}};
             args(1) = [];
         elseif ( isnumeric(args{1}) )
             % g = chebfun(@(x) f(x), N)

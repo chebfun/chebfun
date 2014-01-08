@@ -29,4 +29,9 @@ ve = bsxfun(@times, v, e);
 % Compute the maximum of their product:
 out = max(ve(:));
 
+% [TODO]: Remove this hack!
+if ( isnan(out) || ~logical(out) )
+    out = chebpref().eps;
+end
+
 end
