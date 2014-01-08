@@ -20,5 +20,7 @@ for j = 1:n-1
 end
 % Concatenate the columns to create an array-valued CHEBFUN:
 A = horzcat(A{:});
+% Reverse the columns to be consistent with MATLAB's built-in vander():
+A = fliplr(A);
 
 end
