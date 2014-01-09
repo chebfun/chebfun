@@ -10,7 +10,6 @@ if ( nargin > 1 )
 end
 
 A = disc.source;
-%            validate(disc);
 if ( isa(A, 'chebmatrix') )
     c = disc.coeffs;
     outputSpaces = disc.outputSpace;

@@ -9,14 +9,16 @@ P = blkdiag(P{:});
 
 dim = disc.dimension;
 dom = disc.domain;
+discType = str2func( class(disc) );
+
 B = [];
 if ~isempty(L.constraint)
-    disc2 = ultraS(L.constraint.operator,dim,dom);
+    disc2 = discType(L.constraint.operator,dim,dom);
     constr = matrix(disc2);
     B = [ constr; B ];
 end
 if ~isempty(L.continuity)
-    disc2 = ultraS(L.continuity.operator,dim,dom);
+    disc2 = discType(L.continuity.operator,dim,dom);
     constr = matrix(disc2);
     B = [ constr; B ];
 end

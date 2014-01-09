@@ -27,7 +27,9 @@ types = {@colloc2,  @ultraS};
 
 for k = 1:2
     
-    u = mldivide(L, f, types{k});
+    L.prefs.discretization = types{k};
+    
+    u = L\f;
     
     %
 %     plot(u{1},'b'); hold on

@@ -1,4 +1,4 @@
-function pass = test_eigs(pref)
+function pass = eigs(pref)
 
 if ( nargin == 0 )
     pref = chebpref();
@@ -13,12 +13,12 @@ L = linop(D2);
 L = addbc(L, El, 0);
 L = addbc(L, Er, 0);
 
-L.discretizer = @colloc2;
+L.prefs.discretization = @colloc2;
 e = eigs(L, 6);
 tol = 1e-10;
 pass(1) = norm(e + (1:6)'.^2, inf) < tol;
 
-L.discretizer = @ultraS;
+L.prefs.discretization = @ultraS;
 e = eigs(L, 6, 0);
 tol = 1e-10;
 pass(2) = norm(e + (1:6)'.^2, inf) < tol;

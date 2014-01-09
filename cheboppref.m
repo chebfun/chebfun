@@ -13,14 +13,9 @@ classdef cheboppref < chebpref
 
     methods
 
-        function outPref = cheboppref(inPref)
+        function outPref = cheboppref()           
             
-            % Initialize the chebpref part.
-            chebpart = chebpref;
-            if ( (nargin==1) && isa(inPref,'chebpref') )
-                chebpart = inPref;
-            end
-            outPref = outPref@chebpref( struct(chebpart) );
+            outPref = outPref@chebpref;
             
             outPref.maxTotalLength = 2500;
             outPref.enableSingularityDetection = false;  % not supported
