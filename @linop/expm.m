@@ -50,9 +50,7 @@ if ( isa(discType, 'function_handle') )
 else
     % A discretisation is given:
     disc = discType;
-    
-    % TODO: Check discretisation is valid for the given L and u0!
-    
+        
     % Initialise dimVals;
     dimVals = max(disc.dimension);
 end

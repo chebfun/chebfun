@@ -1,7 +1,7 @@
 function varargout = matrix(disc,dimension,domain)
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
-% TODO: error checking on inputs
+
 if ( nargin > 1 )
     disc.dimension = dimension;
     if ( nargin > 2 )
@@ -23,7 +23,7 @@ if ( isa(A, 'chebmatrix') )
         end
     end
     if ( isa(A,'linop') )
-        [out{1:3}] = useConstraints(disc,L);
+        [out{1:4}] = useConstraints(disc,L);
         out{2} = out{2}*cell2mat(S);
     else
         out{1} = cell2mat(L);

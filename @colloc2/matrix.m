@@ -14,7 +14,7 @@ L = dsc.source;
 if isa(L,'chebmatrix')
     A = cellfun(@(x) blockMatrix(dsc,x),L.blocks,'uniform',false);
     if isa(L,'linop')
-        [out{1:3}] = useConstraints(dsc,A);
+        [out{1:4}] = useConstraints(dsc,A);
     else
         out{1} = cell2mat(A);
     end

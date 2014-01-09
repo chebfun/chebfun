@@ -1,15 +1,20 @@
-function [A, P, B] = useConstraints(disc,blocks)
+function [M, P, B, A] = useConstraints(disc,blocks)
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
-L = disc.source;
-[rows, P] = disc.reproject(blocks);
-A = cell2mat(rows);
 
+% Convert the blocks to the original, unconstrained matrix.
+A = cell2mat(blocks);
+
+% Project rows down, and record the projection matrix as well.
+[rows, P] = disc.reproject(blocks);
+M = cell2mat(rows);
 P = blkdiag(P{:});
 
+% Now apply the constraints and continuity conditions and collect as rows of B.
 dim = disc.dimension;
 dom = disc.domain;
 discType = str2func( class(disc) );
+L = disc.source;
 
 B = [];
 if ~isempty(L.constraint)
@@ -23,6 +28,7 @@ if ~isempty(L.continuity)
     B = [ constr; B ];
 end
 
-A = [ B; A ];
+% This should restore squareness to the final matrix.
+M = [ B; M ];
 
 end
