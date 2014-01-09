@@ -37,9 +37,9 @@ end
 if ( isnumeric(g) )
     if ( f(1).isTransposed )
         g = g.';
-        g = chebfun(g, f.domain).';
+        g = chebfun(g, domain(f, 'ends')).';
     else
-        g = chebfun(g, f.domain);
+        g = chebfun(g, domain(f, 'ends'));
     end
 end
 

@@ -19,7 +19,7 @@ function out = get(f, prop)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% [TODO]: Include a get(f, 'numCols') ( = size(f.funs{1}, 2) if f is not empty).
+% TODO: Figure out what to do for quasimatrices.
 
 switch prop
     case {'domain', 'ends'}
@@ -66,7 +66,7 @@ switch prop
         for k = 1:numFuns
             out(k,:) = get(f.funs{k}, lrval);
         end
-        if ( f.isTransposed )
+        if ( f(1).isTransposed )
             out = out.';
         end 
         

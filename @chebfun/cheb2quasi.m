@@ -17,9 +17,7 @@ end
 
 % Collect each column in a cell:
 F = num2cell(F);
-% Loops over the columns:
-numCols = numel(F);
-for k = numCols:-1:1
+for k = numel(F):-1:1
     % Assign each column to an element of G:
     G(k) = F{k};
 end

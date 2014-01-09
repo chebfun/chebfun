@@ -47,7 +47,7 @@ if ( nargin == 1 )
         N = ones(1, numCols);
     end
 elseif ( nargin == 2 )
-    if ( F.isTransposed )
+    if ( F(1).isTransposed )
         N = 1;
     else
         N = M;
