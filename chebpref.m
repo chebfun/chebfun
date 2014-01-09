@@ -83,7 +83,7 @@ classdef chebpref
 %
 %      This is a structure of preferences that will be passed to the constructor
 %      for the underlying representation technology.  See, for example,
-%      CHEBTECH/PREF for preferences accepted by the default CHEBTECH
+%      CHEBTECH.TECHPREF for preferences accepted by the default CHEBTECH
 %      technology.  Additionally, all techs are required to accept the following
 %      preferences:
 %
@@ -409,7 +409,7 @@ classdef chebpref
         % Developer notes:
         %  - This function is a helper function intended for use by "technology"
         %    objects (usually subclasses of SMOOTHFUN) for managing their
-        %    preferences.  See CHEBTECH.PREF for an illustration.
+        %    preferences.  See CHEBTECH.TECHPREF for an illustration.
         %  - The second syntax is useful, e.g., if Q contains abstractly-named
         %    preferences which may have a better name within the specific
         %    context of the tech object whose preferences are stored in P.
