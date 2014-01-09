@@ -227,6 +227,9 @@ classdef fun % (Abstract)
         % True for real FUN.
         out = isreal(f)
         
+        % Test if a FUN object is built upon SINGFUN.
+        out = issing(f)
+        
         % True for zero FUN objects
         out = iszero(f)
         

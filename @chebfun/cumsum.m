@@ -57,38 +57,17 @@ end
 function f = cumsumContinousDim(f, m)
 % CUMSUM over continuous dimension.
 
+% Preprocess for singular cases. If a FUN has nontrivial exponents at both
+% endpoints, then a break point is introduced to circumvent the disability
+% of @SINGFUN/CUMSUM for handling functions with non-zero exponent at both
+% ends.
+f = addBreaksForCumSum(f);
+
 % Get some basic information from f:
+numCols = size(f.funs{1}, 2);
 dom = f.domain;
 funs = f.funs;
 numFuns = numel(funs);
-numCols = size(f.funs{1}, 2);
-
-% Preprocess for singular cases. If a FUN has nontrivial exponents at both
-% endpoints, then a break point is introduced to accommodate the disability
-% of @SINGFUN/CUMSUM for handling functions with non-zero exponent at both
-% ends.
-domOld = f.domain;
-breakPoints = [];
-toBreak = 0;
-
-% Is there any SINGFUN involved has non-zero exponent at both ends? If so,
-% set the flag for introducing new break points true and then take the
-% mid-point of these domains as the new break points.
-for j = 1:numFuns
-    if ( isa(f.funs{j}.onefun, 'singfun') && all( get(f.funs{j}, 'exponents') ) )
-        toBreak = 1;
-        breakPoints = [breakPoints mean(f.domain(j:j+1))];
-    end
-end
-
-% Introduce new break points using RESTRICT.
-if ( toBreak )
-    domNew = sort([domOld, breakPoints]);
-    f = restrict(f, domNew);
-    dom = f.domain;
-    funs = f.funs;
-    numFuns = numel(funs);
-end
 
 % Loop m times:
 for l = 1:m

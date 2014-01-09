@@ -56,7 +56,7 @@ end
 
 % Shift F up or down. This is useful at the chebfun level to concatenate the
 % piece making the entire function as continuous as possible.
-if ( ~any( isa(f.onefun, 'singfun') ) )
+if ( ~any( issing(f) ) )
     
     % Grab the indice correspond to infinite shift:
     ind = isinf(shift);
