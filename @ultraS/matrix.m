@@ -9,6 +9,11 @@ if ( nargin > 1 )
     end
 end
 
+% Check subinterval compatibility of domain and dimension.
+if ( (length(disc.domain)-1) ~= length(disc.dimension) )
+    error('Must specify one dimension value for each subinterval.')
+end
+
 A = disc.source;
 if ( isa(A, 'chebmatrix') )
     c = disc.coeffs;

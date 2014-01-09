@@ -2,12 +2,12 @@ function pass = test_operatorForm
 
 %% Building blocks
 dom = [-2 2];
-I = linop.eye(dom);
-D = linop.diff(dom);
-Z = linop.zeros(dom);
+I = linBlock.eye(dom);
+D = linBlock.diff(dom);
+Z = linBlock.zeros(dom);
 x = chebfun('x', dom);
 u = sin(x.^2);
-U = linop.mult(u);   
+U = linBlock.mult(u);   
 
 %% Operator instantiations
 eyeop = I.functionForm;
