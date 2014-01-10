@@ -30,9 +30,86 @@ function varargout = chebellipseplot(u, varargin)
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 %%
+
+if ( min(size(u)) > 1 )
+    % TODO: Replace with "NUMCOLS(U) > 1" from downstream in feature-quasimatrix.
+    error('CHEBFUN:chebellipseplot:quasi', ['CHEBELLPISEPLOT does not ', ... 
+        'support array-valued CHEBFUN objects or  quasimatries.']);
+end
+
+if ( isempty(u) )
+    h = plot([]);
+    return
+end
+
+% Parse the inputs.
+[k, ee, numpts, legends] = parseInputs(varargin{:});
+if ( isnan(ee) )
+    ee = epslevel(u);
+end
+
+% If k==0 (as by default), we will plot all funs.
+if ( k == 0 )
+    k = 1:length(u.funs);
+end
+
+% Transpose U properly.
+if ( u.isTransposed )
+    u = u';
+end
+
+% Error if index exceeds dimensions.
+if ( any(k > length(u.funs)) )
+    error( 'CHEBFUN:chebellipseplot:outOfBounds', ...
+        'Input chebfun has only %d pieces', length(u.funs) );
+end
+
+% The unit circle.
+c = exp(2*pi*1i*linspace(0, 1, numpts));
+
+% A cell array of ellipse coordinates to be plotted.
+UK = {};
+for j = k
+    uk = u.funs{j};
+    endsk = uk.domain;
+    rhok = exp(abs(log(ee)) / length(uk));
+    ek = .5*sum(endsk) + .25*diff(endsk)*(rhok*c + 1./(rhok*c));
+    UK = [UK, {real(ek), imag(ek)}, varargin{:}]; % Add the variable args.
+end
+
+holdState = ishold();
+hold on
+
+% Plot the ellipses.
+h = plot(UK{:});
+
+% Add the legend.
+if ( legends ) && ( j > 1 )
+    legend(int2str(k.'))
+end
+
+% Plot the interval (with ticks).
+dom = u.domain;
+h2 = plot(dom, 0*dom, varargin{:});
+set(h2, 'color', [0 0 0], 'marker', '+');
+h = [h ; h2];
+
+if ( ~holdState )
+    hold off
+end
+
+% Output the axis handle.
+if ( nargout ~= 0 )
+    varargout = {h};
+end
+
+end
+
+function [k, ee, numpts, legends] = parseInputs(varargin)
+
 % Default options
 k = 0;                  % plot all funs by default
-ee = epslevel(u);       % Default EPS
+ee = NaN;               % Default EPS
 numpts = 101;           % Number of points in plots
 legends = 1;            % Display legends?
 
@@ -67,44 +144,4 @@ if ( nargin > 1 )
     end
 end
 
-% If k==0 (as by default), we will plot all funs.
-if ( k == 0 )
-    k = 1:length(u.funs);
-end
-
-% Transpose U properly.
-if ( u.isTransposed )
-    u = u';
-end
-
-% Error if index exceeds dimensions.
-if ( any(k > length(u.funs)) )
-    error( 'CHEBFUN:chebellipseplot:outOfBounds', ...
-        'Input chebfun has only %d pieces', length(u.funs) );
-end
-
-% The unit circle.
-c = exp(2*pi*1i*linspace(0, 1, numpts));
-
-% A cell array of ellipse coordinates to be plotted.
-UK = {};
-for j = k
-    uk = u.funs{j};
-    endsk = uk.domain;
-    rhok = exp(abs(log(ee)) / length(uk));
-    ek = .5*sum(endsk) + .25*diff(endsk)*(rhok*c + 1./(rhok*c));
-    UK = [UK, {real(ek), imag(ek)}, varargin]; % Add the variable args.
-end
-
-% Plot the ellipses.
-h = plot(UK{:});
-
-% Add the legend.
-if ( legends ) && ( j > 1 )
-    legend(int2str(k.'))
-end
-
-% Output the axis handle.
-if ( nargout ~= 0 )
-    varargout = {h};
 end
