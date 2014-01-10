@@ -1,5 +1,19 @@
 classdef operatorBlock < linBlock
-    
+%OPERATORBLOCK  Linear map of function to function.
+%   This class is not intended to be called directly by the end user.
+%
+%   See also LINOP, CHEBOP, CHEBOPPREF.
+
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Developer notes
+%
+% One of the two types of linBlock. Operators can be composed using *, added,
+% exponentiated, and applied to chebfuns.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
     properties
     end
     
@@ -9,10 +23,8 @@ classdef operatorBlock < linBlock
         end
         
         function varargout = size(A, dim)
-            % S = SIZE(A)
-            % [M, N] = SIZE(A)
-            % P = SIZE(A, K)
-            %
+            % The dimenions of an operatorBlock are Inf-by-Inf. The syntax for
+            % SIZE is the same as for a matrix. 
             m = [Inf Inf];
 
             if ( nargin > 1 )
@@ -40,20 +52,11 @@ classdef operatorBlock < linBlock
             % If A is a linop and f is a chebfun, return the chebfun
             % resulting from application of A to f.
             %
-            % A*u
-            % If A is a linop and u is a matrix, return the matrix
-            % resulting from application of the discretization of A to u.
-            %
-            
-            % No error checking here.
+ 
             % Which case?
             if ( isa(B, 'chebfun') )
-                C = A.functionForm;
+                C = toFunction(A);
                 C = C(B);
-            elseif ( isnumeric(B) )
-                N = size(B, 1);    % discretization size
-                L = matrix(A, N);
-                C = L*B;
             else
                 % A scalar is converted into a constant chebfun, which is then
                 % diagnified. 

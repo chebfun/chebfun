@@ -1,4 +1,5 @@
-function pass = eigs(pref)
+function pass = simple_eigs(pref)
+% TAD, 10 Jan 2014
 
 if ( nargin == 0 )
     pref = chebpref();
