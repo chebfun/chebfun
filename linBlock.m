@@ -69,7 +69,7 @@ classdef linBlock
             % Convert the block to a chebfun of coefficients multiplying the
             % powers of the derivative. 
             B = blockCoeff(A);
-            c = B.coeffs;
+            c = chebmatrix( B.coeffs );
         end
         
         function C = minus(A, B)
