@@ -184,15 +184,8 @@ end
 
 % Get the domain and the independent variable 'x':
 DOMAIN = domain(u0);
+DOMAIN = DOMAIN([1 end]);
 xd = chebfun(@(x) x, DOMAIN);
-
-% These are used often:
-Z = linop.zeros(DOMAIN);
-z = linop.zero(DOMAIN);
-I = linop.eye(DOMAIN);
-D = linop.diff(DOMAIN);
-Eleft = linop.feval(DOMAIN(1), DOMAIN);
-Eright = linop.feval(DOMAIN(end), DOMAIN);
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%  PARSE INPUTS TO PDEFUN  %%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -212,26 +205,27 @@ elseif ( iscell(bc) && numel(bc) == 2 )
 end
 
 % Initialise some rubbish:
-nllbc = []; nlbcs = {}; GLOBX = 1; funFlagL = false; rhs = {};
-nlrbc = []; numlbc = 0; funFlagR = false;
+GLOBX = 1;
+leftNonlinBCLocs = []; 
+rightNonlinBCLocs = [];    
+BCRHS = {};
 
 if ( ischar(bc) && strcmpi(bc, 'periodic') )
     %% %%%%%%%%%%%%%%%%%%%%%%%%%%% PERIODIC BCS  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    r = {};
+    r = cell(sum(DIFFORDER),1);
     count = 1;
     for j = 1:SYSSIZE
         for k = 1:DIFFORDER(j)
-            Dk = linop.diff(DOMAIN, k);
-            A = Eleft*Dk - Eright*Dk;
-            r{count} = [repmat(z, 1, j-1) A repmat(z, 1, SYSSIZE-j)];
+            c = (diff(DOMAIN)/2)^k;
+            A = @(n) [1 zeros(1, n-2) -1]*diffmat(n, k)*c;
+            r{count} = @(n) [zeros(1, (j-1)*n) A(n) zeros(1,(SYSSIZE-j)*n)];
             count = count + 1;
         end
     end
     bc = struct( 'left', [], 'right', []);
-    bc.left.op = vertcat(r{1:2:end});
-    bc.right.op = vertcat(r{2:2:end});
-    rhs = num2cell(zeros(1, numel(r)));
-    
+    bc.left.op = r(1:2:end);
+    bc.right.op = r(2:2:end);
+    BCRHS = num2cell(zeros(1, numel(r)));
     
 else
 
@@ -239,15 +233,17 @@ else
         bc.right = [];
     elseif ( isfield(bc, 'right') && ~isfield(bc, 'left') )
         bc.left = [];
+    elseif ( ~isfield(bc, 'left') && ~isfield(bc, 'right') )
+        bc.left = bc;
+        bc.right = bc.left;
     end
     
+    % Deal with struct and numeric input:
     bc.left = dealWithStructInput(bc.left);
     bc.right = dealWithStructInput(bc.right);
-    
-
-    %% %%%%%%%%%%%%%%%%%%%%% DIRICHLET AND NEUMANN BCS  %%%%%%%%%%%%%%%%%%%%%%%%
-    
+   
     if ( ischar(bc.left) || (iscell(bc.left) && ischar(bc.left{1})) )
+    %% %%%%%%%%%%%%%%%%%%%%% DIRICHLET AND NEUMANN BCS (LEFT) %%%%%%%%%%%%%%%%%%        
         if ( iscell(bc.left) )
             v = bc.left{2};
             bc.left = bc.left{1};
@@ -258,18 +254,32 @@ else
             error('For BCs of the form {char, val} val must be numeric.')
         end
         if ( strcmpi(bc.left, 'dirichlet') )
-            A = Eleft;
+            A = @(n) [1 zeros(1, n-1)];
         elseif ( strcmpi(bc.left, 'neumann') )
-            A = Eleft*D;
+            % TODO: Make right diff operator explicitly.
+            A = @(n) [1 zeros(1, n-1)]*diffmat(n)*diff(DOMAIN)/2;
+        else
+            error('Unknown BC syntax');
         end
-        op = cell(SYSSIZE, 1);
+        bc.left.op = cell(SYSSIZE, 1);
         for k = 1:SYSSIZE
-            op{k} = [repmat(z, 1, k-1) A repmat(z, 1, SYSSIZE-k)];
+            bc.left.op{k} = @(n) [zeros(1,(k-1)*n) A(n) zeros(1,(SYSSIZE-k)*n)];
         end
-        bc.left.op = vertcat(op{:});
-        rhs = num2cell(repmat(v, SYSSIZE, 1));
+        BCRHS = num2cell(repmat(v, SYSSIZE, 1));
+    elseif ( numel(bc.left) == 1 && isa(bc.left, 'function_handle') )
+    %% %%%%%%%%%%%%%%%%%%%%%%%%%  GENERAL BCS (LEFT)  %%%%%%%%%%%%%%%%%%%%%%%%%%
+        op = parseFun(bc.left);
+        sizeOp = size(op(ones(1, SYSSIZE), 0, mean(DOMAIN)));
+        leftNonlinBCLocs = 1:max(sizeOp);
+        bc.left.op = {@(n) zeros(max(sizeOp), SYSSIZE*n)}; % Dummy entries.
+        BCRHS = num2cell(zeros(1, max(sizeOp)));
+        leftNonlinBCFuns = op;
+    else
+        error('Unknown BC syntax');
     end
+
     if ( ischar(bc.right) || (iscell(bc.right) && ischar(bc.right{1})) )
+    %% %%%%%%%%%%%%%%%%%%%%% DIRICHLET AND NEUMANN BCS (RIGHT) %%%%%%%%%%%%%%%%%
         if ( iscell(bc.right) )
             v = bc.right{2};
             bc.right = bc.right{1};
@@ -280,114 +290,48 @@ else
             error('For BCs of the form {char, val} val must be numeric.')
         end
         if ( strcmpi(bc.right, 'dirichlet') )
-            A = Eright;
+            A = @(n) [zeros(1, n-1), 1];
         elseif ( strcmpi(bc.right, 'neumann') )
-            A = Eright*D;
-        end
-        op = cell(SYSSIZE, 1);
-        for k = 1:SYSSIZE
-            op{k} = [repmat(z, 1, k-1) A repmat(z, 1, SYSSIZE-k)];
-        end
-        bc.right.op = vertcat(op{:});
-        rhsTmp = num2cell(repmat(v, SYSSIZE, 1)); % Used in case 0 of gen bs(r).
-    end
-
-    %% %%%%%%%%%%%%%%%%%%%%%%%%  GENERAL BCS (LEFT)  %%%%%%%%%%%%%%%%%%%%%%%%%%%
-    if ( isfield(bc.left, 'op') && isa(bc.left.op, 'chebmatrix') )
-        % 0) Do nothing.
-    elseif ( numel(bc.left) == 1 && isa(bc.left, 'function_handle') )
-        % 1) Deal with the case where bc is a function_handle vector:
-
-        op = parseFun(bc.left, 'flag');
-        sizeOp = size(op(ones(1, SYSSIZE), 0, mean(DOMAIN)));
-        nllbc = 1:max(sizeOp);
-        bc.left = struct( 'op', []);
-
-        % Dummy entries:
-        rowsl = cell(max(sizeOp), 1);
-        for k = nllbc
-            if ( SYSSIZE == 1 )
-                rowsl{k} = Eleft;
-            else
-                rowsl{k} = [repmat(z, 1, k-1) Eleft repmat(z, 1, SYSSIZE-k)];
-            end
-        end
-        bc.left.op = vertcat(rowsl{:});
-
-        rhs = num2cell(zeros(1, max(sizeOp)));
-        nlbcsl = op;
-        funFlagL = true;
-
-    elseif ( numel(bc.left) > 0 )
-        % 2) Deal with other forms of input
-
-        if ( isa(bc.left, 'linop') )
-            rhs = num2cell(zeros(1, size(bc.left,1)));
-            bc.left = struct( 'op', bc.left);
-        elseif ( isnumeric(bc.left) )
-            rhs = num2cell(bc.left);
-            bc.left = struct( 'op', Eleft);
-            
+            % TODO: Make right diff operator explicitly.
+            A = @(n) [zeros(1, n-1) 1]*diffmat(n)*diff(DOMAIN)/2;
         else
-            error('Unkown BC type');
+            error('Unknown BC syntax');
         end
+        bc.right.op = cell(SYSSIZE, 1);
+        for k = 1:SYSSIZE
+            bc.right.op{k} = @(n) [zeros(1,(k-1)*n) A(n) zeros(1,(SYSSIZE-k)*n)];
+        end
+        BCRHS = [BCRHS num2cell(repmat(v, SYSSIZE, 1))];
         
-    end
-
-    %% %%%%%%%%%%%%%%%%%%%%%%%%  GENERAL BCS (RIGHT)  %%%%%%%%%%%%%%%%%%%%%%%%%%
-    numlbc = numel(rhs);
-    if ( isfield(bc.right, 'op') && isa(bc.right.op, 'chebmatrix') )
-        % 0) Do nothing
-        rhs = [rhs rhsTmp];
     elseif ( numel(bc.right) == 1 && isa(bc.right, 'function_handle') )
-        % 1) Deal with the case where bc is a function handle vector
-        op = parseFun(bc.right, 'flag');
+    %% %%%%%%%%%%%%%%%%%%%%%%%%  GENERAL BCS (RIGHT)  %%%%%%%%%%%%%%%%%%%%%%%%%%
+        op = parseFun(bc.right);
         sizeOp = size(op(ones(1, SYSSIZE), 0, mean(DOMAIN)));
-        nlrbc = 1:max(sizeOp);
-        bc.right = struct( 'op', []);
-
-        % Dummy entries:
-        E = linop.feval(DOMAIN(end), DOMAIN);
-        rowsr = cell(max(sizeOp), 1);
-        for k = nlrbc
-            if ( SYSSIZE == 1 )
-                rowsr{k} = E;
-            else
-                rowsr{k} = [repmat(z, 1, k-1) E repmat(z, 1, SYSSIZE-k)];
-            end
-        end
-        bc.right.op = vertcat(rowsr{:});
+        rightNonlinBCLocs = 1:max(sizeOp);
+        bc.right.op = {@(n) zeros(max(sizeOp), SYSSIZE*n)};  % Dummy entries.
         bc.right.val = zeros(max(sizeOp),1);
-
-        rhs = [rhs num2cell(zeros(1, max(sizeOp)))];
-        nlbcsr = op;
-        funFlagR = true;
-
-    elseif ( numel(bc.right) > 0 )
-        % 2) Deal with other forms of input
-
-        if ( isa(bc.right, 'linop') )
-            rhs = num2cell(zeros(1, size(bc.right,1)));
-            bc.right = struct( 'op', bc.right);
-        elseif ( isnumeric(bc.right) )
-            rhs = num2cell(bc.right);
-            bc.right = struct( 'op', Eright);
-        end
-
+        BCRHS = [BCRHS num2cell(zeros(1, max(sizeOp)))];
+        rightNonlinBCFuns = op;
+    else
+        error('Unknown BC syntax');
     end
+    
 end
 
+
 %% %%%%%%%%%%%%%%%%%%%%%%%% Support for coupled BVP-PDEs! %%%%%%%%%%%%%%%%%%%%%%
+% TODO: Test this!
 if ( ~all(pdeFlag) )
     userMassSet = true;
-    userMass = [];
+    userMass = @(n) [];
     for k = 1:numel(pdeFlag)
         if ( pdeFlag(k) )
-            A = I;
+            A = @(n) eye(n);
         else
-            A = Z;
+            A = @(n) zeros(n);
         end
-        userMass = [userMass ; repmat(Z, 1, k-1) A repmat(Z, 1, SYSSIZE-k)];
+        userMass = @(n) [userMass(n) ; ...
+            zeros(n,(k-1)*n), A(n), zeros(n,(SYSSIZE-k)*n)];
     end
 else
     userMassSet = false;
@@ -431,11 +375,7 @@ if ( doPlot )
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% MISC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% This is needed inside the nested function onestep()
-diffOp = repmat(Z, SYSSIZE, SYSSIZE);
-for k = 1:SYSSIZE
-    diffOp(k,k) = linop.diff(DOMAIN, DIFFORDER(k));
-end
+
 t0 = tt(1);
 
 % The vertical scale of the intial condition:
@@ -607,7 +547,8 @@ clear global SYSSIZE
             makeDMAT(n);
 
             % Linear constraints:
-            B = matrix([bc.left.op ; bc.right.op], n);
+            bcop = [bc.left.op ; bc.right.op];
+            B = cell2mat(cellfun(@(f) feval(f, n), bcop, 'UniformOutput', false));
             
             % Project / mass matrix.
             M = {};
@@ -655,11 +596,11 @@ clear global SYSSIZE
             F = M*F(:);
             
             % Get the algebraic right-hand sides: (may be time-dependent)
-            for l = 1:numel(rhs)
-                if ( isa(rhs{l}, 'function_handle') )
-                    q(l, 1) = feval(rhs{l}, t);
+            for l = 1:numel(BCRHS)
+                if ( isa(BCRHS{l}, 'function_handle') )
+                    q(l, 1) = feval(BCRHS{l}, t);
                 else
-                    q(l, 1) = rhs{l};
+                    q(l, 1) = BCRHS{l};
                 end
             end
             
@@ -667,34 +608,21 @@ clear global SYSSIZE
             F(rows) = B*U(:) - q;
             
             % Replacements for the nonlinear BC conditions:
-            indx = 1:length(nllbc);
-            if ( funFlagL )
-                tmp = feval(nlbcsl, U, t, x);
+            if ( ~isempty(leftNonlinBCLocs) )
+                indx = 1:length(leftNonlinBCLocs);
+                tmp = feval(leftNonlinBCFuns, U, t, x);
                 if ( size(tmp, 1) ~= n )
                     tmp = reshape(tmp, n, numel(tmp)/n);
                 end
                 F(rows(indx)) = tmp(1, :);
-            else
-                counter = 0;
-                for l = 1:length(nllbc)
-                    counter = counter + 1;
-                    tmp = feval(nlbcs{counter}, U, t, x);
-                    F(rows(l)) = tmp(1)-q(l);
-                end
             end
-            indx = numel(rhs) + 1 - nlrbc;
-            if ( funFlagR )
-                tmp = feval(nlbcsr, U, t, x);
+            if ( ~isempty(rightNonlinBCLocs) )
+                indx = numel(BCRHS) + 1 - rightNonlinBCLocs;
+                tmp = feval(rightNonlinBCFuns, U, t, x);
                 if ( size(tmp, 1) ~= n )
                     tmp = reshape(tmp, n, numel(tmp)/n);
                 end
                 F(rows(indx)) = fliplr(tmp(end, :));
-            else
-                for l = numel(rhs) + 1 - nlrbc
-                    counter = counter + 1;
-                    tmp = feval(nlbcs{counter}, U, t, x);
-                    F(rows(l)) = tmp(end)-q(l);
-                end
             end
             
             % Reshape to back to a single column:
@@ -860,7 +788,7 @@ end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%  MISC  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function outfun = parseFun(inFun, flag)
+function outfun = parseFun(inFun)
 % Rewrites the input function handle to call the right DIFF, SUM, methods, etc,
 % and convert the input @(u, v, w, x, t) to @(U, x, t).
 
@@ -954,6 +882,8 @@ if ( isstruct(in) )
     else
         error('PDE15S no longer supports struct inputs for bc.left and bc.right.')
     end
+elseif ( isnumeric(in) )
+    out = {'dirichlet', in};
 else
     out = in;
 end
