@@ -45,7 +45,7 @@ err = feval(gg, xr) - gg_exact(xr);
 pass(8) = norm(err(:), inf) < 10*gg.vscale.*gg.epslevel;
 pass(9) = isequal(fliplr(gg), g);
 
-%% Test on integration of SINGFUN - A column CHEBFUN:
+%% Test on singular function - A column CHEBFUN:
 
 % Set the domain:
 dom = [-2 7];
@@ -63,7 +63,7 @@ vals_g = feval(g,x);
 err = vals_f - vals_g;
 pass(10) = ( norm(err, inf) < get(f,'epslevel')*norm(vals_f, inf) );
 
-%% Test on integration of SINGFUN - a row CHEBFUN:
+%% Test on singular function - a row CHEBFUN:
 
 % Set the domain:
 dom = [-2 7];

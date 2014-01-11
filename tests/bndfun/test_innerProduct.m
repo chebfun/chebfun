@@ -92,8 +92,7 @@ catch ME
         'CHEBFUN:BNDFUN:innerProduct:input');
 end
 
-%%
-% Integration with singfun
+%% Test on singular function:
 
 pow1 = -0.3;
 pow2 = -0.5;

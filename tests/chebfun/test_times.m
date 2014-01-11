@@ -61,7 +61,7 @@ catch ME
     pass(16) = strcmp(ME.identifier, 'CHEBFUN:times:matdim');
 end
 
-%% Integration of singfun:
+%% Test on singular function:
 
 dom = [-2 7];
 

@@ -121,7 +121,7 @@ f = bndfun(@(x) x.^3, dom);
 dim2df = diff(f, 1, 2);
 pass(15) = (isempty(dim2df));
 
-%% Integration with singfun
+%% Test on singular function:
 
 pow = -0.5;
 op = @(x) (x - dom(1)).^pow.*sin(x);

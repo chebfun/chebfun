@@ -64,7 +64,7 @@ exact = [[0,0;NaN(4,2)], linspace(-1,1,5).'];
 r = roots(f);
 pass(7) = all(size(exact) == [5,3]) && max(abs(exact(:) - r(:))) < 10*epslevel(f);
 
-%% Integration with singfun: piecewise smooth chebfun - splitting on.
+%% Test on singular function: piecewise smooth chebfun - splitting on.
 
 % Set the domain
 dom = [-2 7];

@@ -88,7 +88,7 @@ err1 = feval(g{1} - h1, x);
 err2 = feval(g{2} - h2, x);
 pass(14) = all(err1(:) == 0) && all(err2(:) == 0);
 
-%% Integration with singfun
+%% Test on singular function:
 
 pow = -0.5;
 op = @(x) (x - dom(1)).^pow.*sin(x);

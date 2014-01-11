@@ -76,7 +76,7 @@ f = chebfun(@(x) x, pref);
 f = defineInterval(f, [-1, .25], []);
 pass(15) = all(f.domain == [.25, 1]);
 
-%% Integration of SINGFUN: piecewise smooth chebfun
+%% Test on singular function: piecewise smooth chebfun
 
 % define the domain:
 dom = [-2 -1 0 1];

@@ -123,7 +123,7 @@ catch ME
     pass(23) = strcmp(ME.identifier, 'CHEBFUN:sum:b');
 end
 
-%% Integration with singfun: piecewise smooth chebfun - splitting on.
+%% Test on singular function: piecewise smooth chebfun - splitting on.
 
 % Set a domain
 dom = [-2 7];

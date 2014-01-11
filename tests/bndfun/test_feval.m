@@ -74,8 +74,7 @@ f_exact = [0 0 0 -1 1 -1
 pass(9) = all(all(abs(fx - f_exact) < ...
     10*max(get(f, 'vscale'))*get(f, 'epslevel')));
 
-%%
-% Integration with singfun
+%% Test on singular function:
 
 pow = -0.5;
 op = @(x) (x - dom(1)).^pow.*sin(x);

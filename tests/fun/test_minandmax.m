@@ -58,7 +58,7 @@ for n = 1:1 %[TODO]: unbndfun
     pass(n, 7) = norm(abs(vals) - abs([vals1 vals2]), inf) < ...
         10*max(get(f, 'vscale')*get(f, 'epslevel'));
     
-    %% Test the integration with singfun:
+    %% Test on singular function:
     
     pow = -0.5;
     op = @(x) (x - dom(1)).^pow.*(sin(x).^2);

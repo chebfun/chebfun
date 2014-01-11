@@ -34,7 +34,7 @@ for n = 1:1 %[TODO]: unbndfun
     g = testclass.make(@(x) [sin(x), exp(x)], dom, [], [], pref);
     pass(n, 5) = ~isequal(f, g);
     
-    %% Integration with singfun:
+    %% Test on singular function:
     
     pow1 = -0.5;
     pow2 = -0.6;

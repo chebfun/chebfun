@@ -1,4 +1,4 @@
-% Test file for chebfun constructor for integration with singfun.
+% Test file for chebfun constructor for singular function:.
 
 function pass = test_constructor_singfun(pref)
 

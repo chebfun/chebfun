@@ -35,7 +35,7 @@ pass(6) = ~isequal(f, g);
 g = chebfun(@(x) sin(x).*abs(x - 0.1) + eps, [-1 1], pref);
 pass(7) = ~isequal(f, g);
 
-% Integration of SINGFUN:
+%% Test on singular function:
 dom = [-2 7];
 pow = -1.64;
 f = chebfun(@(x) sin(100*x).*(x-dom(1)).^pow, dom, 'exps', [pow 0], ...
