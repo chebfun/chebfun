@@ -1,5 +1,5 @@
 function f = imag(f)
-%IMAG	 Imaginary part of a FUN.
+%IMAG   Imaginary part of a FUN.
 %   IMAG(F) is the imaginary part of F.
 %
 %   See also REAL, ISREAL, CONJ.

@@ -34,13 +34,13 @@ classdef chebtech1 < chebtech
 % Examples: % Basic construction: f = chebtech1(@(x) sin(x))
 %
 %   % Construction with preferences:
-%   p = chebtech.pref('sampletest', 0); % See help('chebtech.pref') for details
+%   p.sampleTest = 0; % See CHEBTECH.TECHPREF for details
 %   f = chebtech1(@(x) sin(x), [], [], p)
 %
 %   % Array-valued construction:
 %   f = chebtech1(@(x) [sin(x), cos(x), exp(x)])
 %
-% See also CHEBTECH, CHEBTECH.PREF, CHEBPTS, HAPPINESSCHECK, REFINE.
+% See also CHEBTECH, CHEBTECH.TECHPREF, CHEBPTS, HAPPINESSCHECK, REFINE.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -76,21 +76,23 @@ classdef chebtech1 < chebtech
             if ( (nargin < 2) || isempty(vscale) )
                 vscale = 0;
             end
+
             % Define hscale if none given:
             if ( (nargin < 3) || isempty(hscale) )
                 hscale = 1;
             end
+
             % Determine preferences if not given, merge if some are given:
             if ( (nargin < 4) || isempty(pref) )
-                pref = chebtech.pref;
+                pref = chebtech.techPref();
             else
-                pref = chebtech.pref(pref);
+                pref = chebtech.techPref(pref);
             end
 
-            % Force nonadaptive construction if PREF.CHEBTECH.N is numeric:
-            if ( ~isempty(pref.chebtech.n) && ~isnan(pref.chebtech.n) )
+            % Force nonadaptive construction if PREF.NUMPOINTS is numeric:
+            if ( ~isempty(pref.numPoints) && ~isnan(pref.numPoints) )
                 % Evaluate op on the Chebyshev grid of given size:
-                op = feval(op, chebtech1.chebpts(pref.chebtech.n));
+                op = feval(op, chebtech1.chebpts(pref.numPoints));
             end
             
             % Actual construction takes place here:

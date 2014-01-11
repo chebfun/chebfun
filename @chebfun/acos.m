@@ -2,7 +2,7 @@ function g = acos(f, pref)
 %ACOS   Inverse cosine of a CHEBFUN.
 %   ACOS(F) computes the inverse cosine of the CHEBFUN F.
 %
-%   ACOS(F, PREF) does the same but uses the preference structure PREF when
+%   ACOS(F, PREF) does the same but uses the CHEBPREF object PREF when
 %   computing the composition.
 %
 % See also COS, ACOSD.
@@ -12,7 +12,7 @@ function g = acos(f, pref)
 
 % Obtain preferences:
 if ( nargin == 1 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Call the compose method:

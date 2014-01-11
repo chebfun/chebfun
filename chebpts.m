@@ -31,16 +31,14 @@ function [x, w, v] = chebpts(n, dom, type)
 if ( nargin == 2 )
     if ( length(dom) == 1 )
         type = dom;
-        dom = chebfun.pref('domain');
+        dom = chebpref().domain;
     else
-        type = chebtech.pref('tech');
-        type = str2double(type(end));
+        type = chebtech.techPref().gridType;
     end
 end
 if ( nargin == 1 )
-    dom = chebfun.pref('domain');
-    type = chebtech.pref('tech');
-    type = str2double(type(end));
+    dom = chebpref().domain;
+    type = chebtech.techPref().gridType;
 end
 
 % Verify that the number of points requested and the domains match:
@@ -75,18 +73,18 @@ else                  % Piecewise grid.
     
     % Initialise cell arrays for temporary storage:
     x = cell(length(n), 1);
-    w = cell(length(n), 1);
+    w = cell(1, length(n));
     v = cell(length(n), 1);
     % Loop over the number of subintervals: (as above)
     for k = 1:numel(n)
         x{k} = f.chebpts(n(k));
         x{k} = scaleNodes(x{k}, dom(k:k+1));
         if ( nargout > 1 )
-            w{k} = f.quadpts(n(k));
+            w{k} = f.quadwts(n(k));
             w{k} = scaleWeights(w{k}, dom(k:k+1));
         end
         if ( nargout > 2 )
-            v{k} = f.barypts(n(k));
+            v{k} = f.barywts(n(k));
         end
     end
     % Convert the cell to an array for output:

@@ -17,7 +17,7 @@ end
 
 % Error checking:
 if ( (nargin == 2) && ~all(size(f) == size(g)) )
-    error('CHEBFUN:cov:size',' Quasimatrix dimensions do not agree.');
+    error('CHEBFUN:cov:size',' CHEBFUN dimensions do not agree.');
 end
 if ( nargin == 3 )
     error('CHEBFUN:cov:nargin', 'CHEBFUN/COV does not support normalization.');

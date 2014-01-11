@@ -4,11 +4,8 @@ function pass = test_cumsum(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fun.pref;
+    pref = chebpref();
 end
-
-% Set a tolerance.
-tol = pref.fun.eps;
 
 % Set a domain
 dom = [-2 7];
@@ -17,8 +14,6 @@ a = dom(1);
 % Generate a few random points to use as test values.
 seedRNG(6178);
 x = diff(dom) * rand(100, 1) + dom(1);
-
-pass = zeros(1, 10); % Pre-allocate pass matrix
 
 %%
 % Spot-check antiderivatives for a couple of functions. We also check that 

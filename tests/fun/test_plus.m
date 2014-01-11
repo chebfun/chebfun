@@ -4,7 +4,7 @@ function pass = test_plus(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fun.pref;
+    pref = chebpref();
 end
 
 % Set a domain
@@ -16,8 +16,6 @@ x = diff(dom) * rand(100, 1) + dom(1);
 
 % A random number to use as an arbitrary additive constant.
 alpha = -0.194758928283640 + 0.075474485412665i;
-
-pass = zeros(1, 21); % Pre-allocate pass matrix
 
 %%
 % Check operation in the face of empty arguments.

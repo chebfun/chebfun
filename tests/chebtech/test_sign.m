@@ -1,10 +1,8 @@
 function pass = test_sign(pref)
 
 if ( nargin == 0 ) 
-    pref = chebtech.pref();
+    pref = chebtech.techPref();
 end
-
-pass = zeros(2, 4);
 
 for type = 1:2
     

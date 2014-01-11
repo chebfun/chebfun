@@ -2,7 +2,7 @@ function g = csc(f, pref)
 %CSC   Cosecant of a CHEBFUN.
 %   CSC(F) computes the cosecant of the CHEBFUN F.
 %
-%   CSC(F, PREF) does the same but uses the preference structure PREF when
+%   CSC(F, PREF) does the same but uses the CHEBPREF object PREF when
 %   computing the composition.
 %
 % See also ACSC, CSCD.
@@ -12,7 +12,7 @@ function g = csc(f, pref)
 
 % Obtain preferences:
 if ( nargin == 1 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Call the compose method:

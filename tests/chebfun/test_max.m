@@ -3,7 +3,7 @@
 function pass = test_max(pref)
 
 if ( nargin == 0 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Generate a few random points to use as test values.
@@ -147,5 +147,11 @@ try
 catch ME
     pass(19) = strcmp(ME.identifier, 'CHEBFUN:max:flag');
 end
+
+%% Check max of a CHEBFUN and a scalar:
+f = chebfun(@(x) [sin(x) cos(x)]);
+h = max(f, .75);
+pass(20) = norm(h([-.9 0 .8 .9].') - ...
+    [.75 .75 ;.75 1 ; .75 .75 ; sin(.9) .75]) < epslevel(h)*vscale(h);
 
 end

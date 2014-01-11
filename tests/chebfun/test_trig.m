@@ -4,10 +4,10 @@ function pass = test_trig(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = chebfun.pref;
+    pref = chebpref();
 end
 
-pref.chebfun.splitting = 1;
+pref.enableBreakpointDetection = 1;
 
 % Generate a few random points in [-1 1] to use as test values.
 seedRNG(7681);
@@ -20,9 +20,6 @@ trigFunctions = {@acos, @acosd, @acosh, @acot, @acotd, @acoth, @acsc, ...
     @csch, @sec, @secd, @sech, @sin, @sind, @sinh, @tan, @tand, @tanh, @mysinc};
 
 % [TODO]: Add tests for ATAN2() and ATAN2D().
-
-% Preallocate pass matrix.
-pass = zeros(1, numel(trigFunctions));
 
 % Function with which we will be composing.  (The reason for the shift and
 % scaling, etc. is to prevent any problems with the functions under test from

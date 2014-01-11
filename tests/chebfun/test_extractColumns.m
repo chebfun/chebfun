@@ -1,10 +1,8 @@
 function pass = test_extractColumns(pref)
 
 if ( nargin == 0 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
-
-pass = zeros(1, 3);
 
 f = chebfun(@(x) [sin(x), cos(x), exp(x)], pref);
 g = chebfun(@(x) [sin(x), cos(x)], pref);

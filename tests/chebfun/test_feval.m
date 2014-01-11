@@ -4,7 +4,7 @@ function pass = test_feval(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = chebfun.pref;
+    pref = chebpref();
 end
 
 % Generate a few random points in [-1 1] to use as test values.
@@ -13,11 +13,11 @@ xr = 2 * rand(1000, 1) - 1;
 
 % Test empty input.
 f = chebfun(@(x) x, pref);
-fx = feval(f, []);
-pass(1) = isempty(fx);
+fx = feval(f, zeros(0, 4));
+pass(1) = isequal(size(fx), [0 4]);
 
 % Test endpoint evaluation.
-pref.chebfun.splitting = 0;
+pref.enableBreakpointDetection = 0;
 f = chebfun(@(x) erf(x), [-1 1], pref);
 
 lval1 = feval(f, 'left');
@@ -41,7 +41,7 @@ catch ME
 end
 
 % Test evaluation with and without left/right limit values.
-pref.chebfun.splitting = 1;
+pref.enableBreakpointDetection = 1;
 f = chebfun(@(x) sign(x), [-1 1], pref);
 
 x = [-0.5 ; 0 ; 0.5];
@@ -71,25 +71,25 @@ catch ME
 end
 
 % Spot-check a few functions.
-pref.chebfun.splitting = 0;
+pref.enableBreakpointDetection = 0;
 f_exact = @(x) exp(x) - 1;
 f = chebfun(f_exact, [-1 1], pref);
 x = xr;
 pass(10) = (norm(feval(f, x) - f_exact(x), inf) < 10*f.epslevel*f.vscale);
 
-pref.chebfun.splitting = 1;
+pref.enableBreakpointDetection = 1;
 f_exact = @(x) abs(x)./(1 + x.^2);
 f = chebfun(f_exact, [-2 7], pref);
 x = 4.5*xr + 2.5;
 pass(11) = (norm(feval(f, x) - f_exact(x), inf) < 10*f.epslevel*f.vscale);
 
-pref.chebfun.splitting = 0;
+pref.enableBreakpointDetection = 0;
 f_exact = @(x) cos(1e4*x);
 f = chebfun(f_exact, [1 5], pref);
 x = 2*xr + 3;
 pass(12) = (norm(feval(f, x) - f_exact(x), inf) < 10*f.epslevel*f.vscale);
 
-pref.chebfun.splitting = 0;
+pref.enableBreakpointDetection = 0;
 z = exp(2*pi*1i/6);
 f_exact = @(t) sinh(t*z);
 f = chebfun(f_exact, [-1 1], pref);
@@ -97,7 +97,7 @@ x = xr;
 pass(13) = (norm(feval(f, x) - f_exact(x), inf) < 10*f.epslevel*f.vscale);
 
 % Check row vector and matrix input.
-pref.chebfun.splitting = 0;
+pref.enableBreakpointDetection = 0;
 f_exact = @(x) cos(x - 0.2);
 f = chebfun(f_exact, [-1 1], pref);
 
@@ -140,7 +140,7 @@ err = feval(f, x.') - f_exact(x.');
 pass(20) = norm(err(:), inf) < 10*f.epslevel*f.vscale;
 
 % Check operation for array-valued chebfuns.
-pref.chebfun.splitting = 1;
+pref.enableBreakpointDetection = 1;
 f_exact = @(x) [sin(x) abs(x) exp(1i*x)];
 f = chebfun(f_exact, [], pref);
 

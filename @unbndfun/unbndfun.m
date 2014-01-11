@@ -99,7 +99,6 @@ classdef unbndfun < fun
             end
             
             % Call the ONEFUN constructor:
-            pref = onefun.pref(pref, pref.unbndfun);
             obj.onefun = onefun.constructor(op, vscale, hscale, pref);
             
             % Add the domain and mapping:

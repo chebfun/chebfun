@@ -2,7 +2,7 @@ function g = sinh(f, pref)
 %SINH   Hyperbolic sine of a CHEBFUN.
 %   SINH(F) computes the hyperbolic sine of the CHEBFUN F.
 %
-%   SINH(F, PREF) does the same but uses the preference structure PREF when
+%   SINH(F, PREF) does the same but uses the CHEBPREF object PREF when
 %   computing the composition.
 %
 % See also ASINH.
@@ -12,7 +12,7 @@ function g = sinh(f, pref)
 
 % Obtain preferences:
 if ( nargin == 1 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Call the compose method:

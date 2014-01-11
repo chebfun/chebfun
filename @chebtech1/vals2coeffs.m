@@ -10,12 +10,13 @@ function coeffs = vals2coeffs(values)
 %   + C(N,j)*T_1(x) + C(N+1)*T_0(x) interpolates [V(1,j) ; ... ; V(N+1,j)]
 %   for j = 1:M.
 %
-%   See also COEFFS2VALS, CHEBPTS.
+% See also COEFFS2VALS, CHEBPTS.
 
-%   [Mathematical reference] [TODO!]
+% [Mathematical reference] [TODO!]
+% TODO: note this is euqivalent to a ??-kind DCT.
 
-%   Copyright 2013 by The University of Oxford and The Chebfun Developers. 
-%   See http://www.chebfun.org for Chebfun information.
+% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org for Chebfun information.
 
 % Get the length of the input:
 n = size(values, 1);

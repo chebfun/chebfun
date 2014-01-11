@@ -20,14 +20,14 @@ function f = populate(f, op, vscale, hscale, pref)
 %   OP evaluated to.
 %
 %   F.POPULATE(OP, VSCALE, HSCALE, PREF) enforces any additional preferences
-%   specified in the preference structure PREF (see chebtech.PREF).
+%   specified in the preference structure PREF (see CHEBTECH.TECHPREF).
 %
 %   F.POPULATE(VALUES, ...) (or F.POPULATE({VALUES, COEFFS}, ...)) populates F
 %   non-adaptively with the VALUES (and COEFFS) passed. These values are still
 %   tested for happiness in the same way as described above, but the length of
 %   the representation is not altered.
 %
-% See also CHEBTECH, PREF, HAPPINESSCHECK.
+% See also CHEBTECH, TECHPREF, HAPPINESSCHECK.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -69,7 +69,7 @@ else
     f.hscale = hscale;
 end
 if ( nargin < 5 )
-    pref = chebtech.pref();
+    pref = chebtech.techPref();
 end
 
 % Non-adaptive construction. Values (and possibly coefficients) have been given.
@@ -82,7 +82,7 @@ if ( isnumeric(op) || iscell(op) )
         f.vscale = max(abs(f.values), [], 1);
         % Check for happiness: (no OP to compare against)
         f.ishappy = true;
-        f.epslevel = pref.chebtech.eps;
+        f.epslevel = pref.eps;
 %         [f.ishappy, f.epslevel] = happinessCheck(f, [], pref);
     else                 
         % OP is a cell {values, coeffs}
@@ -95,7 +95,7 @@ if ( isnumeric(op) || iscell(op) )
         f.vscale = max(abs(f.values), [], 1);
         % We're always happy if given coefficients:
         f.ishappy = true;
-        f.epslevel = pref.chebtech.eps;
+        f.epslevel = pref.eps;
     end
 
     return
@@ -107,7 +107,7 @@ f.values = [];
 % Loop until ISHAPPY or GIVEUP:
 while ( 1 )
 
-    % Call the appropriate refinement routine: (in PREF.REFINEMENTSTRATEGY)
+    % Call the appropriate refinement routine: (in PREF.REFINEMENTFUNCTION)
     [f.values, giveUp] = f.refine(op, f.values, pref);
 
     % We're giving up! :(

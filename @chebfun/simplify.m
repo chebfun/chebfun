@@ -14,15 +14,16 @@ function f = simplify(f, tol)
 % See http://www.chebfun.org for Chebfun information.
 
 if ( nargin == 1 )
-    tol = chebfun.pref('eps');
+    tol = chebpref().techPrefs.eps;
 end
 
 % Choose a tolerance:
 % [TODO]: This seems to be the best we can do without vector epslevels?
 glob_acc = epslevel(f).*vscale(f); % Global error estimate of the CHEBFUN.
 loc_vscl = get(f, 'vscale-local'); % Local vscale of the FUN objects.
+loc_vscl(loc_vscl == 0) = 1;       % Zero vscale will give inf tol, so remove.
+glob_acc(glob_acc == inf) = 0;     % TODO: Stop this returning inf!
 tol = max(max(tol, glob_acc) ./ loc_vscl, [], 2); % Simplification tolerances.
-
 % Simplfy each of the FUN objects:
 for k = 1:numel(f.funs)
     f.funs{k} = simplify(f.funs{k}, tol(k,:));

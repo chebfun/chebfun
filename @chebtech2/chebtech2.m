@@ -1,5 +1,5 @@
 classdef chebtech2 < chebtech
-%CHEBTECH2   Approximate smooth functions on [-1,1] with Chebyshev interpolants. 
+%CHEBTECH2   Approximate smooth functions on [-1,1] with Chebyshev interpolants.
 %
 %   Class for approximating smooth functions on the interval [-1,1] using
 %   function values at 2nd-kind Chebyshev points and coefficients of the
@@ -9,7 +9,7 @@ classdef chebtech2 < chebtech
 %   CHEBTECH2(OP) constructs a CHEBTECH2 object from the function handle OP. OP
 %   should be vectorised (i.e., accept a vector input) and ouput a vector of
 %   the same length. CHEBTECH2 objects allow for array-valued construction
-%   (i.e., of a array-valued function), in which case OP should accept a column
+%   (i.e., of an array-valued function), in which case OP should accept a column
 %   vector of length N and return a matrix of size NxM.
 %
 %   CHEBTECH2(OP, VSCALE) constructs a CHEBTECH2 with 'happiness' (see
@@ -19,7 +19,8 @@ classdef chebtech2 < chebtech
 %   empty), the VSCALE defaults to 0 initially, and HSCALE defaults to 1.
 %
 %   CHEBTECH2(OP, VSCALE, HSCALE, PREF) overrides the default behavior with
-%   that given by the preference structure PREF. See CHEBTECH.PREF for details.
+%   that given by the preference structure PREF. See CHEBTECH.TECHPREF for
+%   details.
 %
 %   CHEBTECH2(VALUES, ...) returns a CHEBTECH2 object which interpolates the
 %   values in the columns of VALUES at 2nd-kind Chebyshev points and
@@ -31,13 +32,13 @@ classdef chebtech2 < chebtech
 % Examples: % Basic construction: f = chebtech2(@(x) sin(x))
 %
 %   % Construction with preferences:
-%   p = chebtech.pref('sampletest', 0); % See help('chebtech.pref') for details
+%   p.sampleTest = 0; % See CHEBTECH.TECHPREF for details
 %   f = chebtech2(@(x) sin(x), [], [], p)
 %
 %   % Array-valued construction:
 %   f = chebtech2(@(x) [sin(x), cos(x), exp(x)])
 %
-% See also CHEBTECH, CHEBTECH.PREF, CHEBPTS, HAPPINESSCHECK, REFINE.
+% See also CHEBTECH, CHEBTECH.TECHPREF, CHEBPTS, HAPPINESSCHECK, REFINE.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -73,21 +74,23 @@ classdef chebtech2 < chebtech
             if ( (nargin < 2) || isempty(vscale) )
                 vscale = 0;
             end
+
             % Define hscale if none given:
             if ( (nargin < 3) || isempty(hscale) )
                 hscale = 1;
             end
+
             % Determine preferences if not given, merge if some are given:
             if ( (nargin < 4) || isempty(pref) )
-                pref = chebtech.pref;
+                pref = chebtech.techPref();
             else
-                pref = chebtech.pref(pref);
+                pref = chebtech.techPref(pref);
             end
 
-            % Force nonadaptive construction if PREF.CHEBTECH.N is numeric:
-            if ( ~isempty(pref.chebtech.n) && ~isnan(pref.chebtech.n) )
+            % Force nonadaptive construction if PREF.NUMPOINTS is numeric:
+            if ( ~isempty(pref.numPoints) && ~isnan(pref.numPoints) )
                 % Evaluate op on the Chebyshev grid of given size:
-                op = feval(op, chebtech2.chebpts(pref.chebtech.n));
+                op = feval(op, chebtech2.chebpts(pref.numPoints));
             end
             
             % Actual construction takes place here:
@@ -99,7 +102,7 @@ classdef chebtech2 < chebtech
             end
             
             % Check for NaNs (if not happy):
-            if ( pref.chebtech.extrapolate )
+            if ( pref.extrapolate )
                 % Check for NaNs in interior only (because extrapolate was on):
                 if ( any(any(isnan(obj.values(2:end-1,:)))) )
                     error('CHEBFUN:CHEBTECH2:constructor:naneval', ...
@@ -132,10 +135,10 @@ classdef chebtech2 < chebtech
         
         % Compute Chebyshev points (x) and optionally quadrature (w)
         % and barycentric (v) weights:
-        [x, w, v] = chebpts(n)
+        [x, w, v] = chebpts(n);
         
         % Convert coefficients to values:
-        values = coeffs2vals(coeffs)
+        values = coeffs2vals(coeffs);
         
         % Make a CHEBTECH2 (constructor shortcut):
         f = make(varargin);

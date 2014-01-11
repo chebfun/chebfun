@@ -4,7 +4,7 @@ function pass = test_mtimes(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = chebtech.pref;
+    pref = chebtech.techPref();
 end
 
 % Generate a few random points to use as test values.
@@ -14,7 +14,6 @@ x = 2 * rand(100, 1) - 1;
 % A random number to use as an arbitrary scalar multiplier.
 alpha = randn() + 1i*randn();
 
-pass = zeros(2, 12); % Pre-allocate pass matrix
 for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();

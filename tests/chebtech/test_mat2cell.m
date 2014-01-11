@@ -3,10 +3,9 @@
 function pass = test_mat2cell(pref)
 
 if ( nargin < 2 )
-    pref = chebtech.pref;
+    pref = chebtech.techPref();
 end
 
-pass = zeros(2, 2); % Pre-allocate pass matrix.
 for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();

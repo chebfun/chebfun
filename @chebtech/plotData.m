@@ -1,5 +1,5 @@
 function data = plotData(f, g, h)
-%PLOTDATA    Useful data values for plotting a CHEBTECH object.
+%PLOTDATA   Useful data values for plotting a CHEBTECH object.
 %   DATA = PLOTDATA(F) returns a struct containing data that can be used for
 %   plotting F. The struct DATA contains the following fields:
 %
@@ -36,7 +36,7 @@ end
 
 % Get the number of points: (Oversample the wavelength)
 len = max([length(f), length(g), length(h)]);
-npts = min(max(501, round(4*pi*len)), chebtech.pref('maxSamples'));
+npts = min(max(501, round(4*pi*len)), chebtech.techPref().maxPoints);
 
 % Initialise the output structure:
 data = struct('xLine', [], 'yLine', [], 'xPoints', [], 'yPoints', []);
@@ -54,6 +54,19 @@ if ( isempty(g) )
 elseif ( isa(g, 'chebtech') )   
     % PLOT(F, G)
     
+    % Also return the grid points used.
+    % Grid data for f:
+    data.fGrid.xLine = f.chebpts(npts);
+    % Use the maximum of the lenghts of f, g and h to match the number of
+    % values returned:
+    data.fGrid.xPoints = f.chebpts(len);
+    
+    % Grid data for g:
+    data.gGrid.xLine = g.chebpts(npts);
+    % Use the maximum of the lenghts of f, g and h to match the number of
+    % values returned:    
+    data.gGrid.xPoints = g.chebpts(len);
+    
     % Values on oversampled Chebyshev grid (faster than evaluating a uniform grid!).
     data.xLine = get(prolong(f, npts), 'values');
     data.yLine = get(prolong(g, npts), 'values');
@@ -64,6 +77,14 @@ elseif ( isa(g, 'chebtech') )
     
     if ( isa(h, 'chebtech') )
         % PLOT3(F, G, H)
+        
+        % Grid data for h:
+        data.hGrid.xLine = h.chebpts(npts);
+        % Use the maximum of the lenghts of f, g and h to match the number of
+        % values returned:    
+        data.hGrid.xPoints = h.chebpts(len);
+        
+         % Values on oversampled Chebyshev grid:
         data.zLine = get(prolong(h, npts), 'values');
         data.zPoints = get(prolong(h, len), 'values');  
     end

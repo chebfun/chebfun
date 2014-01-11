@@ -20,8 +20,8 @@ classdef fun % (Abstract)
 %   HSCALE defaults to 1.
 %
 %   FUN.CONSTRUCTOR(OP, DOMAIN, VSCALE, HSCALE, PREF) overrides the default
-%   behavior with that given by the preference structure PREF. See FUN.pref
-%   for details.
+%   behavior with that given by the CHEBPREF object PREF. See CHEBPREF for
+%   details.
 %
 %   FUN.CONSTRUCTOR(VALUES, DOMAIN, VSCALE, HSCALE, PREF) returns a FUN object
 %   with a ONEFUN constructed by the data in the columns of VALUES (if supported
@@ -29,7 +29,7 @@ classdef fun % (Abstract)
 %
 % See ONEFUN for further documentation of the ONEFUN class.
 %
-% See also FUN.pref, ONEFUN, BNDFUN, UNBNDFUN.
+% See also CHEBPREF, ONEFUN, BNDFUN, UNBNDFUN.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -58,8 +58,10 @@ classdef fun % (Abstract)
     properties (Access = public)
         % The domain of the FUN object, [a, b].
         domain
+
         % The mapping which maps [-1, 1] to [a, b], and vice versa.
         mapping
+
         % The ONEFUN of the FUN object, which does the actual approximation of
         % the function the FUN object represents. The ONEFUN object lives on the
         % interval [-1, 1], the mapping of the FUN object takes care of mapping
@@ -78,14 +80,14 @@ classdef fun % (Abstract)
             
             % Obtain preferences if none given:
             if ( nargin < 5 )
-                pref = fun.pref;
+                pref = chebpref();
             else
-                pref = fun.pref(pref);
+                pref = chebpref(pref);
             end
             
             % Get domain if none given:
             if ( nargin < 2 || isempty(domain) )
-                domain = pref.fun.domain;
+                domain = pref.domain;
             end
             
             % Get vscale if none given:
@@ -97,6 +99,7 @@ classdef fun % (Abstract)
             if ( nargin < 4 || isempty(vscale) )
                 hscale = norm(domain, inf);
             end
+
             % [TODO]: Explain this. Only becomes relevant with UNBNDFUN
             if ( isinf(hscale) )
                 hscale = 1;
@@ -105,12 +108,10 @@ classdef fun % (Abstract)
             % Call constructor depending on domain:
             if ( ~any(isinf(domain)) )
                 % Construct a BNDFUN object:
-                pref = bndfun.pref(pref, pref.fun);
                 obj = bndfun(op, domain, vscale, hscale, pref);
                 
             else
                 % Construct an UNBNDFUN object:
-                pref = unbndfun.pref(pref, pref.fun);
                 obj = unbndfun(op, domain, vscale, hscale, pref);
             end
             
@@ -120,9 +121,6 @@ classdef fun % (Abstract)
     
     %% STATIC METHODS IMPLEMENTED BY THIS CLASS.
     methods (Static = true)
-        
-        % Retrieve and modify preferences for this class.
-        prefs = pref(varargin);
 
     end
     
@@ -138,7 +136,7 @@ classdef fun % (Abstract)
     
     %% ABSTRACT METHODS REQUIRED BY THIS CLASS.
     methods(Abstract = true)
-        % [TODO]: Once UNBNDFUN and CHEBFUN advances, we should revisit this
+        % [TODO]: Once UNBNDFUN and CHEBFUN advance, we should revisit this
         % list, and add/throw away abstract methods as appropriate.
         
         % Compose a FUN with an operator or another FUN
@@ -172,7 +170,13 @@ classdef fun % (Abstract)
         
         % Absolute value of a FUN. (f should have no zeros in its domain)
         f = abs(f, pref)
-        
+
+        % FUN logical AND.
+        h = and(f, g)
+
+        % True if any element of a FUN is a nonzero number, ignoring NaN.
+        a = any(f, dim)
+
         % Plot (semilogy) the Chebyshev coefficients of a FUN object, if it is
         % based on Chebyshev technology.
         h = chebpolyplot(f, varargin)
@@ -185,6 +189,12 @@ classdef fun % (Abstract)
         
         % Extract columns of an array-valued FUN object.
         f = extractColumns(f, columnIndex);
+
+        % Round a FUN towards zero.
+        g = fix(f);
+        
+        % Round a FUN towards minus infinity.
+        g = floor(f);
 
         % Flip columns of an array-valued FUN object.
         f = fliplr(f)
@@ -219,7 +229,10 @@ classdef fun % (Abstract)
         % Length of a FUN.
         len = length(f)
 
-        % Convert a array-valued FUN into a cell array of FUN objects.
+        % FUN logical.
+        f = logical(f)
+
+        % Convert an array-valued FUN into a cell array of FUN objects.
         g = mat2cell(f, M, N)
 
         % Global maximum of a FUN on [a,b].
@@ -236,6 +249,12 @@ classdef fun % (Abstract)
 
         % Multiplication of FUN objects.
         f = mtimes(f, c)
+
+        % FUN logical NOT.
+        f = not(f)
+
+        % FUN logical OR.
+        h = or(f, g)
 
         % Basic linear plot for FUN objects.
         varargout = plot(f, varargin)
@@ -254,6 +273,9 @@ classdef fun % (Abstract)
 
         % Roots of a FUN in the interval [a,b].
         out = roots(f, varargin)
+        
+        % Round a FUN towards nearest integer.
+        g = round(f)
         
         % Signum of a FUN. (f should have no zeros in its domain)
         f = sign(f, pref)

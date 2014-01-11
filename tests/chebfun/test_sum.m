@@ -4,7 +4,7 @@ function pass = test_sum(pref)
 
 % Obtain preferences.
 if ( nargin == 0 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Generate a few random points in [-1 1] to use as test values.

@@ -4,7 +4,7 @@ function pass = test_mtimes(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fun.pref;
+    pref = chebpref();
 end
 
 % Create seed for random number generator
@@ -13,7 +13,6 @@ seedRNG(6178);
 % A random number to use as an arbitrary scalar multiplier.
 alpha = randn() + 1i*randn();
 
-pass = zeros(1, 12); % Pre-allocate pass matrix
 for n = 1:1 %[TODO]: unbndfun
     if ( n == 1 )
         testclass = bndfun();

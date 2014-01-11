@@ -4,7 +4,7 @@ function pass = test_mldivide(pref)
 
 % Get preferences.
 if (nargin < 1)
-    pref = fun.pref;
+    pref = chebpref();
 end
 
 % Set a tolerance.  (pref.eps does not matter here.)
@@ -16,8 +16,6 @@ dom = [-2 7];
 % Generate a few random points to use as test values.
 seedRNG(6178);
 x = diff(dom) * rand(100, 1) + dom(1);
-
-pass = zeros(1, 6); % Pre-allocate pass matrix
 
 %%
 % Basic correctness checks.
