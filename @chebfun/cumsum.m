@@ -57,17 +57,10 @@ end
 function f = cumsumContinousDim(f, m)
 % CUMSUM over continuous dimension.
 
-% Preprocess for singular cases. If a FUN has nontrivial exponents at both
-% endpoints, then a break point is introduced to circumvent the disability
-% of @SINGFUN/CUMSUM for handling functions with non-zero exponent at both
-% ends.
-f = addBreaksForCumSum(f);
-
 % Get some basic information from f:
 numCols = size(f.funs{1}, 2);
 dom = f.domain;
-funs = f.funs;
-numFuns = numel(funs);
+numFuns = numel(f.funs);
 
 % Loop m times:
 for l = 1:m
@@ -80,27 +73,33 @@ for l = 1:m
     end
     
     rval = deltas(1,:);
+    funs = [];
     
     % Main loop for looping over each piece and do the integration:
     for j = 1:numFuns
         
-        % In fact, CUMSUM@BNDFUN will check if the current piece, i.e.
-        % cumsumFunJ.onefun is a SINGFUN. If so, then we don't want to shift the
-        % current piece up or down to stick the left end of the current piece to the
-        % right end of the last one, since SINGFUN + CONSTANT won't be accurate and
-        % may trigger annoying SINGFUN warning messages. Such a difficulty may
-        % be mitigated when SING MAP is re-adopted. Also if the last piece is
-        % infinite at the right end, then shifting the current piece to concatenate
-        % doesn't make any sense.
+        % CUMSUM@BNDFUN will check if the current piece, i.e. cumsumFunJ.onefun 
+        % is a SINGFUN. If so, then we don't want to shift the current piece up 
+        % or down to stick the left end of the current piece to the right end of
+        % the last one, since SINGFUN + CONSTANT won't be accurate and may 
+        % trigger annoying SINGFUN warning messages. Such a difficulty may be 
+        % mitigated when SING MAP is re-adopted. Also if the last piece is
+        % infinite at the right end, then shifting the current piece to 
+        % concatenate doesn't make any sense.
         
         % Call CUMSUM@BNDFUN:
-        cumsumFunJ = cumsum(funs{j}, 1, 1, rval);
+        cumsumFunJ = cumsum(f.funs{j}, 1, 1, rval);
         
-        % Update the value of the right end:
-        rval = get(cumsumFunJ, 'rval') + deltas(j+1,:);
+        if ( iscell( cumsumFunJ ) )
+            % Update the value of the right end:
+            rval = get(cumsumFunJ{2}, 'rval') + deltas(j+1,:);
+        else
+            % Update the value of the right end:
+            rval = get(cumsumFunJ, 'rval') + deltas(j+1,:);
+        end
         
-        % Store the current piece:
-        funs{j} = cumsumFunJ;
+        % Store FUNs:
+        funs = [funs, {cumsumFunJ}];
         
     end
     
@@ -108,10 +107,10 @@ for l = 1:m
     newImps = chebfun.getValuesAtBreakpoints(funs, dom);
     f.impulses = cat(3, newImps, f.impulses(:,:,3:end));
     
+    % Append the updated FUNs:
+    f.funs = funs;
+    
 end
-
-% Append the updated FUNs:
-f.funs = funs;
 
 end
 

@@ -245,10 +245,6 @@ classdef chebfun
         % Add breaks at appropriate roots of a CHEBFUN
         f = addBreaksAtRoots(f, tol)
         
-        % Introduce new breakpoints to facilitate the computation of the
-        % indefinite integral of a CHEBFUN.
-        f = addBreaksForCumSum(f)
-        
         % True if any element of a CHEBFUN is a nonzero number, ignoring NaN.
         a = any(f, dim)
         

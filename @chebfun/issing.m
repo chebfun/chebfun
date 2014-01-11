@@ -6,6 +6,6 @@ function out = issing(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-out = any(cellfun(@(f) isa(f.onefun, 'singfun'), f.funs));
+out = any(cellfun(@(f) issing(f), f.funs));
 
 end
