@@ -18,7 +18,7 @@ for k = 1:2
     g = chebfun(@(x) asin(x), [sin(-1), sin(1)]);
     f_inv = myinv(f, pref);
     tol = 100*epslevel(f_inv).*vscale(f_inv);
-    pass(k,1) = norm(g - f_inv,inf) < tol;
+    pass(k,1) = norm(g - f_inv, inf) < tol;
 
     pass(k,2) = norm(f - myinv(f_inv), inf) < tol;
 
@@ -27,8 +27,29 @@ for k = 1:2
     f_inv = myinv(f, pref);
     tol = 100*epslevel(f_inv).*vscale(f_inv);
     pass(k,3) = norm(f(f_inv) - x, inf) + norm(f_inv(f) - x, inf) < tol;
+
+    % Check the 'monocheck' and 'rangecheck' options.
+    f = chebfun(@exp);
+    f_inv = myinv(f, pref, 'monocheck', 'on', 'rangecheck', 'on');
+    tol = 100*epslevel(f_inv).*vscale(f_inv);
+    xx = linspace(f_inv.domain(1), f_inv.domain(end), 20);
+    pass(k,4) = norm(f(f_inv(xx)) - xx, inf) < tol;
+    pass(k,5) = all(abs(f_inv.domain([1, end]) - exp([-1 1])) < 10*eps);
 end
     
+
+% Check that 'monocheck' fails for a non-monotonic function.
+try
+    f = chebfun(@(x) x.^2);
+    f_inv = inv(f, pref, 'splitting', 'on', 'monocheck', 'on');
+    pass(:,6) = false;
+catch ME
+    if ( strcmpi(ME.identifier, 'CHEBFUN:inv:notMonotonic') )
+        pass(:,6) = true;
+    else
+        pass(:,6) = false;
+    end
+end
 
 end
 
