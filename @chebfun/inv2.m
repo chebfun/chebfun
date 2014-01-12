@@ -115,24 +115,50 @@ end
 function y = fInverse(f, fp, x, tol)
     tol = tol/5;
     y = zeros(length(x), 1);
-    % Newton iteration:
-    t = f.domain(1);
-    for j = 1:length(x);
-        ft = feval(f, t) - x(j);
-        counter = 0;
-        while ( abs(ft) > tol ) % Newton step
-            fpt = feval(fp, t);
-            t = t - ft./fpt;
+
+    if ( length(x) >= length(f) )
+        % Newton iteration:
+        t = f.domain(1);
+        for j = 1:length(x);
             ft = feval(f, t) - x(j);
-            counter = counter + 1;
-            if ( counter > 100 )
-                error('No convergence')
+            counter = 0;
+            while ( abs(ft) > tol ) % Newton step
+                fpt = feval(fp, t);
+                t = t - ft./fpt;
+                ft = feval(f, t) - x(j);
+                counter = counter + 1;
+                if ( counter > 10 )
+                    %error('No convergence')
+                    break;
+                end
             end
+            y(j,1) = t;
         end
-        y(j,1) = t;
+    else
+        y = fInverseRoots(f, x);
     end
 end    
     
+
+function y = fInverseRoots(f, x)
+    % FINVERSE(F, X) attemptes to return the values of F^{-1}(X) using
+    % CHEBFUN/ROOTS().
+    y = zeros(length(x), 1);
+    % Vectorise:
+    for j = 1:length(x)
+        temp = roots(f - x(j));
+        if ( length(temp) ~= 1 )
+            fvals = feval(f, f.domain);
+            err = abs(fvals - x(j));
+            [temp, k] = min(err);
+            if ( err(k) > 100*tol*abs(fvals(k)))
+                error('CHEBFUN:inv:notmonotonic2', 'Chebfun must be monotonic.');
+            end
+        end
+        y(j, 1) = temp;
+    end
+end
+
 function value = checkOnOff(value)
     if ( ischar(value) )
         % If ON or OFF used -> change to true or false.

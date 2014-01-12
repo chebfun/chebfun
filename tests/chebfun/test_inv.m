@@ -10,7 +10,7 @@ end
 
 funcList = {@inv, @inv2};
 
-for k = 1 %:2 inv2 isn't working..
+for k = 1:2
     myinv = funcList{k};
     
     x = chebfun('x');
