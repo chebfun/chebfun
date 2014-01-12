@@ -67,7 +67,7 @@ end
         y = sin(x);
     end
 
-%% Integration with singfun
+%% Test on singular function:
 
 powl = -0.5;
 powr = -1.6;

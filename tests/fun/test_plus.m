@@ -99,7 +99,7 @@ pass(20) = (~get(g, 'ishappy')) && (~get(h, 'ishappy'));
 h = g + f;  % Add happy to unhappy.
 pass(21) = (~get(g, 'ishappy')) && (~get(h, 'ishappy'));
 
-%% Integration of singfun:
+%% Test on singular function:
 
 pow = -1;
 op1 = @(x) (x - dom(2)).^pow.*sin(x);

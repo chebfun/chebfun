@@ -81,7 +81,7 @@ elseif ( all(f.exponents <= -1) )
         isl = sign(imag(get(f.smoothPart, 'lval')));
         isr = sign(imag(get(f.smoothPart, 'rval')));
         
-        if ( ( rsl == rsr ) && ( isl == isr ) )
+        if ( (rsl == rsr) && (isl == isr) )
             out = Inf + 1i*Inf;
         else
             out = NaN;

@@ -42,10 +42,10 @@ if ( iscell(op) && (numel(op) ~= numIntervals) )
     error('CHEBFUN:constructor:cellInput', ...
         ['Number of cell elements in OP must match the number of ', ...
          'intervals in DOMAIN.'])
-end    
+end
 
-exps = [];
 % Sort out the exponents:
+exps = [];
 if ( ~isempty(pref.singPrefs.exponents) )
     exps = pref.singPrefs.exponents;
     nExps = numel(pref.singPrefs.exponents);
@@ -59,7 +59,7 @@ if ( ~isempty(pref.singPrefs.exponents) )
     elseif ( nExps == 2 )
         
         % If the exponents are only supplied at endpoints of the entire
-        % domain, the fill at the interior breakpoints with zeros.
+        % domain, then pad zeros at the interior breakpoints.
         exps = [exps(1) zeros(1, 2*(numIntervals-1)) exps(2)];
         
     elseif ( nExps == numIntervals + 1 )
@@ -69,8 +69,23 @@ if ( ~isempty(pref.singPrefs.exponents) )
         % side.
         exps = exps(ceil(1:0.5:nExps - 0.5));
         
-    elseif ( nExps ~= 2*numIntervals )
+    elseif( nExps ~= 2*numIntervals )
+        
         % The number of exponents supplied by user makes no sense.
+        error('CHEBFUN:constructor', 'Invalid length for vector of exponents.');
+    end
+end
+
+% Sort out the singularity types:
+type = [];
+if ( ~isempty(pref.singPrefs.singType) )
+    type = pref.singPrefs.singType;
+    nType = numel(pref.singPrefs.singType);
+    
+    if ( nType ~= 2*numIntervals )
+        
+        % If the number of exponents supplied by user isn't equal to twice the
+        % the number of the FUNs, throw an error message:
         error('CHEBFUN:constructor', ['the number of the exponents is ' ...
             'inappropriate.']);
     end
@@ -96,13 +111,19 @@ if ( ~pref.enableBreakpointDetection )
             opk = op;
         end
         
-        % Replace the exponent information in the preference:
+        % Extract the exponents for this interval:
         if ( ~isempty(exps) )
             pref.singPrefs.exponents = exps(2*k-1:2*k);
         end
         
+        % Replace the information for the singularity type in the preference:
+        if ( ~isempty(type) )
+            pref.singPrefs.singType = type(2*k-1:2*k);
+        end
+        
         % Call GETFUN() (which calls FUN.CONSTRUCTOR()):
         [funs{k}, ishappy, vscale] = getFun(opk, endsk, vscale, hscale, pref);
+        
         % Warn if unhappy (as we're unable to split the domain to improve):
         if ( ~ishappy && ~warningThrown)
             warning('CHEBFUN:constructor', ...
@@ -138,13 +159,27 @@ for k = 1:numIntervals
         opk = op;
     end
     
-    % Replace the exponent information in the preference:
+    % Extract the exponents for this interval:
     if ( ~isempty(exps) )
         pref.singPrefs.exponents = exps(2*k-1:2*k);
+    end
+    
+    % Replace the information for the singularity type in the preference:
+    if ( ~isempty(type) )
+        pref.singPrefs.singType = type(2*k-1:2*k);
     end
 
     [funs{k}, ishappy(k), vscale] = ...
         getFun(opk, ends(k:k+1), vscale, hscale, pref);
+    
+    % For the case where vscale is Inf due to blowup in the interior of the
+    % domain:
+    if ( isinf(vscale) )
+        % An infinite vscale doesn't help us at all, but ruin the consequential
+        % constructions at the lower levels:
+        vscale = 0; 
+    end
+    
 end
 sad = ~ishappy;
         
@@ -174,13 +209,11 @@ while ( any(sad) )
         opk = op;
     end
     
-    % In case of SINGFUN, we need to compensate the singularities before
-    % carrying out the edge detection.
+    % Locate an edge/split location, compensating for exponents if necessary:
     if ( ~isempty(exps) && any( exps(2*k-1:2*k) ) )
-        opkDetectEdge = @(x) opk(x)./((x-a).^exps(2*k-1).*(b-x).^exps(2*k));
-    
-    % Locate an edge/split location:
-    edge = chebfun.detectEdge(opkDetectEdge, [a, b], vscale, hscale);
+        opkDetectEdge = @(x) opk(x)./((x - a).^exps(2*k - 1) .* ...
+            (b - x).^exps(2*k));
+        edge = chebfun.detectEdge(opkDetectEdge, [a, b], vscale, hscale);
     else
         edge = chebfun.detectEdge(opk, [a, b], vscale, hscale);
     end
@@ -190,18 +223,44 @@ while ( any(sad) )
         pref.singPrefs.exponents = [exps(2*k-1) 0];
     end
     
+    if ( ~isempty(type) )
+        % Before constructing the left FUN, sort out the singType:
+        pref.singPrefs.singType = [type(2*k-1) type(2*k-1)];
+    end
+    
     % Try to obtain happy child FUN objects on each new subinterval:
     [childLeft, happyLeft, vscale] = ...
         getFun(opk, [a, edge], vscale, hscale, pref);
+    
+    % For the case where vscale is Inf due to blowup in the interior of the
+    % domain:
+    if ( isinf(vscale) )
+        % An infinite vscale doesn't help us at all, but ruin the consequential
+        % constructions at the lower levels:
+        vscale = 0;
+    end
     
     if ( ~isempty(exps) )
         % Before constructing the right FUN, sort out the exponents:
         pref.singPrefs.exponents = [0 exps(2*k)];
     end
     
+    if ( ~isempty(type) )
+        % Before constructing the right FUN, sort out the singType:
+        pref.singPrefs.singType = [type(2*k) type(2*k)];
+    end
+    
     [childRight, happyRight, vscale] = ...
         getFun(opk, [edge, b], vscale, hscale, pref);
-
+    
+    % For the case where vscale is Inf due to blowup in the interior of the
+    % domain:
+    if ( isinf(vscale) )
+        % An infinite vscale doesn't help us at all, but ruin the consequential
+        % constructions at the lower levels:
+        vscale = 0;
+    end
+    
     % Check for happiness/sadness:
     sad = [sad(1:k-1), ~happyLeft, ~happyRight, sad(k+1:end)];
 
@@ -211,6 +270,10 @@ while ( any(sad) )
     
     if ( ~isempty(exps) )
         exps = [exps(1:2*k-1), zeros(1,2), exps(2*k:end)];
+    end
+    
+    if ( ~isempty(type) )
+        type = [type(1:2*k-1), type(2*k-1), type(2*k) type(2*k:end)];
     end
     
     % If a cell was given, we must store pieces on new intervals:

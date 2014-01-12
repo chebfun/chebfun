@@ -55,7 +55,7 @@ f([-.25, .5]) = 1;
 pass(10) = all(size(f.impulses) == [5, 2]) && ...
     all(all(f.impulses == [-1 -1 ; 1 1 ; 0 0 ; 1 1 ; 1 1]));
 
-%% Integration of SINGFUN: piecewise smooth chebfun
+%% Test on singular function: piecewise smooth chebfun
 
 % define the domain:
 dom = [-2 -1 0 1];

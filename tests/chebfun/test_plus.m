@@ -77,7 +77,7 @@ err = feval(g, x) - g_exact(x);
 pass(18) = isequal(size(g, 2), 3) && norm(err(:), inf) < ...
     10*max(g.vscale*g.epslevel);
 
-%% Integration of singfun: piecewise smooth chebfun - splitting on.
+%% Test on singular function: piecewise smooth chebfun - splitting on.
 
 dom = [-2 7];
 

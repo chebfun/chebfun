@@ -31,7 +31,7 @@ for n = 1:1 %[TODO]: unbndfun
     f = [ testclass.make(), testclass.make() ];
     pass(n, 5) = isempty(f);
     
-    %% Integration of singfun:
+    %% Test on singular function:
     
     pow = -0.5;
     op = @(x) (x - dom(2)).^pow.*sin(x);

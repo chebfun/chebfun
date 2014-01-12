@@ -1,4 +1,4 @@
-% Test file for chebfun constructor for integration with singfun.
+% Test file for chebfun constructor for singular function:.
 
 function pass = test_constructor_singfun(pref)
 
@@ -6,7 +6,7 @@ if ( nargin == 0 )
     pref = chebpref();
 end
 
-%% specify the singularity by passing the exact exponents to preferences:
+%% Specify the singularity by passing the exact exponents to preferences:
 % No singularity detection involved: 
 
 % define the domain:
@@ -32,7 +32,7 @@ vals_exact = feval(op, x);
 err = fval - vals_exact;
 pass(1) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
 
-%% specify the singularity using Chebfun v4 syntax:
+%% Specify the singularity using Chebfun v4 syntax:
 % No singularity detection involved: 
 
 % define the domain:
@@ -55,7 +55,7 @@ vals_exact = feval(op, x);
 err = fval - vals_exact;
 pass(2) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
 
-%% specify the singularity by specifying the type of singularities to preferences:
+%% Specify the singularity by specifying the type of singularities to preferences:
 % Singularity detection is involved: 
 
 % define the domain:
@@ -82,7 +82,7 @@ vals_exact = feval(op, x);
 err = fval - vals_exact;
 pass(3) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
 
-%% specify the singularity types using Chebfun v4 syntax:
+%% Specify the singularity types using Chebfun v4 syntax:
 % Singularity detection is involved: 
 
 % define the domain:
@@ -105,7 +105,7 @@ vals_exact = feval(op, x);
 err = fval - vals_exact;
 pass(4) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
 
-%% specify the singularity by specifying the type of singularities to preferences:
+%% Specify the singularity by naming the type of singularities to preferences:
 % Singularity detection is involved: 
 
 % define the domain:
@@ -132,7 +132,7 @@ vals_exact = feval(op, x);
 err = fval - vals_exact;
 pass(5) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
 
-%% specify the singularity types using Chebfun v4 syntax:
+%% Specify the singularity types using Chebfun v4 syntax:
 % Singularity detection is involved: 
 
 % define the domain:
@@ -188,7 +188,7 @@ vals_exact = feval(op, x);
 err = fval - vals_exact;
 pass(7) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
 
-%% specify the singularity types using Chebfun v4 syntax:
+%% Specify the singularity types using Chebfun v4 syntax:
 % Singularity detection is involved: 
 
 % define the domain:
@@ -211,7 +211,7 @@ vals_exact = feval(op, x);
 err = fval - vals_exact;
 pass(8) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
 
-%% specify the singularity by specifying the type of singularities to preferences:
+%% Specify the singularity by specifying the type of singularities to preferences:
 % Singularity detection is involved: 
 
 % define the domain:
@@ -238,7 +238,7 @@ vals_exact = feval(op, x);
 err = fval - vals_exact;
 pass(9) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
 
-%% specify the singularity types using Chebfun v4 syntax:
+%% Specify the singularity types using Chebfun v4 syntax:
 % Singularity detection is involved: 
 
 % define the domain:
@@ -261,7 +261,7 @@ vals_exact = feval(op, x);
 err = fval - vals_exact;
 pass(10) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
 
-%% piecewise smooth chebfun: a mix of functions with finite and infinite values.
+%% Piecewise smooth chebfun: a mix of functions with finite and infinite values.
 % define the domain:
 dom = [-2 -1 0 1];
 
@@ -288,7 +288,7 @@ end
 
 pass(11) = all( result );
 
-%% piecewise smooth chebfun: splitting on.
+%% Piecewise smooth chebfun: splitting on.
 
 % define the domain:
 dom = [-2 3];

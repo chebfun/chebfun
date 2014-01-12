@@ -87,7 +87,7 @@ h = bndfun(@(x) cos(x), dom);
 sumh2 = sum(h, 2);
 pass(11) = all((feval(h, x) == feval(sumh2, x)));
 
-%% Integration with singfun
+%% Test on singular function:
 
 pow = -0.5;
 op = @(x) (x - dom(1)).^pow.*sin(x);

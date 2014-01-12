@@ -139,7 +139,7 @@ pass(22) = (~get(g, 'ishappy')) && (~get(h, 'ishappy')); %#ok<*BDSCI,*BDLGI>
 h = g.*f;  % Multiply happy by unhappy.
 pass(23) = (~get(g, 'ishappy')) && (~get(h, 'ishappy'));
 
-%% Integration of singfun:
+%% Test on singular function:
 
 dom = [-2 7];
 
@@ -148,6 +148,7 @@ seedRNG(6178);
 x = diff(dom) * rand(100, 1) + dom(1);
 
 %% Case of a scalar and a function:
+
 c = 3;
 pow = -0.5;
 op = @(x) (x - dom(2)).^pow.*sin(x);
@@ -161,6 +162,7 @@ err = norm(feval(g, x) - feval(g_exact, x), inf);
 pass(24) = ( err < 5*get(f, 'epslevel')*norm(feval(g_exact, x), inf) );
 
 %% Case of two functions:
+
 pow1 = -0.3;
 pow2 = -0.5;
 op1 = @(x) (x - dom(2)).^pow1.*sin(x);

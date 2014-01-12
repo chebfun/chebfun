@@ -28,7 +28,7 @@ nanfun = chebtech2(NaN);
 f.funs{2}.onefun = nanfun;
 pass(6) = isnan(f);
 
-% Integration of SINGFUN:
+%% Test on singular function:
 dom = [-2 7];
 pow = -1.64;
 f = chebfun(@(x) sin(100*x).*(x-dom(1)).^pow, dom, 'exps', [pow 0], ...

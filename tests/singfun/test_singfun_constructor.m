@@ -37,7 +37,7 @@ g = singfun(fh, [a, b], {'root', 'root'}, [], [], pref);
 pass(5) = isequal(f,g);
 pass(6) = ~any(f.exponents - [a,b]);
 pass(7) = ~any(g.exponents - [a,b]);
-pass(8) = norm(feval(fh,x) - feval(f,x), inf) < get(f, 'epslevel');
+pass(8) = norm(feval(fh,x) - feval(f,x), inf) < 1e1*get(f, 'epslevel');
 
 %%
 % Negative integer exponents

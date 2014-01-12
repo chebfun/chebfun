@@ -81,7 +81,7 @@ catch ME
     pass(11) = strcmp(ME.identifier, 'CHEBFUN:rdivide:domain');
 end
 
-%% Integration with singfun: piecewise smooth chebfun - splitting on.
+%% Test on singular function: piecewise smooth chebfun - splitting on.
 dom = [-2 7];
 
 % Generate a few random points to use as test values.

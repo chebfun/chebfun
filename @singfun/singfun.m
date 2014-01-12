@@ -203,6 +203,12 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
     %% METHODS (NON-STATIC) IMPLEMENTED BY THIS CLASS.
     methods
         
+        % SINGFUN logical AND.
+        h = and(f, g)
+
+        % True if any element of a SINGFUN is a nonzero number, ignoring NaN.
+        a = any(f, dim)
+        
         % Convert an array of ONEFUN objects into an array-valued ONEFUN.
         f = cell2mat(f)
         
@@ -217,6 +223,9 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         
         % Derivative of a SINGFUN.
         f = diff(f, k, dim)
+        
+        % Extract information for DISPLAY.
+        info = dispInfo(f)
         
         % Evaluate a SINGFUN.
         y = feval(f, x)
@@ -263,6 +272,9 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         % Length of a SINGFUN.
         len = length(f)
         
+        % SINGFUN logical.
+        f = logical(f)
+        
         % Convert an array-valued SINGFUN into an ARRAY of SINGFUN objects.
         g = mat2cell(f, M, N)
         
@@ -292,6 +304,12 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
 
         % Estimate of the norm of a SINGFUN object.
         out = normest(f)
+        
+        % SINGFUN logical NOT.
+        f = not(f)
+
+        % SINGFUN logical OR.
+        h = or(f, g)
         
         % Basic linear plot for SINGFUN objects.
         varargout = plot(f, varargin)

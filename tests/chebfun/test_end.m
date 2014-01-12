@@ -53,7 +53,7 @@ out = g(:, end);
 pass(10) = isnumeric(out) && all(size(out) == [3, 1]) && ... 
     norm(out - [0 -1 1].', inf) < epslevel(f);
 
-%% Integration of SINGFUN:
+%% Test on singular function:
 
 % Set a domain
 dom = [-2 7];

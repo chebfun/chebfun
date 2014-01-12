@@ -108,7 +108,7 @@ g = chebfun(@(x) abs(sin(1i*x).*(1i*x + exp(5i*x))),[-1 0 1]);
 h = abs(f);
 pass(6,:) = normest(g - h) < 100*get(h, 'epslevel');
 
-%% Integration of SINGFUN:
+%% Test on singular function:
 dom = [-2 7];
 
 % Generate a few random points to use as test values.

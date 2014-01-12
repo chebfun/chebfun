@@ -187,8 +187,7 @@ x = [-1 ; 0.5 ; 1];
 err = feval(f, x) - f_exact(x);
 pass(30) = all(max(abs(err)) < 10*f.epslevel*f.vscale);
 
-%%
-% Integration with singfun
+%% Test on singular function:
 
 dom = [-2 7];
 

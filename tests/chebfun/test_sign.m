@@ -71,7 +71,7 @@ h = sign(f);
 h_exact = @(x) exp(2*pi*1i*x);
 pass(5,:) = norm(feval(h, x) - h_exact(x), inf) < 10*vscale(h)*epslevel(h);
 
-%% Integration of SINGFUN: a real case
+%% Test on singular function: a real case
 
 % Set a domain:
 dom = [-2 7];
@@ -87,7 +87,7 @@ f = chebfun(op, dom, pref);
 s = sign(f);
 pass(6,:) = ( norm(feval(s-1, x), inf) < eps );
 
-%% Integration of SINGFUN: a complex case
+%% Test on singular function: a complex case
 
 % Set a domain:
 dom = [-1 1];

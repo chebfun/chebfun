@@ -100,7 +100,7 @@ for n = 1:1 %[TODO]: unbndfun
     pass(n, 13) = norm(feval(h1, x) - feval(h2, x), inf) < ...
         5e3*get(h2, 'vscale')*get(h2, 'epslevel');
     
-    %% Integration with singfun:
+    %% Test on singular function:
     dom = [-2 7];
     
     % Generate a few random points to use as test values.

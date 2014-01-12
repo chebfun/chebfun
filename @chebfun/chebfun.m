@@ -239,25 +239,28 @@ classdef chebfun
     
     % Methods implemented by CHEBFUN class.
     methods
-        
+
         % Absolute value of a CHEBFUN.
         f = abs(f, pref)
+        
+        % Add breaks at appropriate roots of a CHEBFUN
+        f = addBreaksAtRoots(f, tol)
         
         % True if any element of a CHEBFUN is a nonzero number, ignoring NaN.
         a = any(f, dim)
         
         % Compute the length of the arc defined by a CHEBFUN.
         out = arcLength(f, a, b)
-
-        % Round a CHEBFUN towards plus infinity.
-        g = ceil(f)
-
+        
         % Solve boundary value problems for ODEs by collocation.
         [y, t] = bvp4c(fun1, fun2, y0, varargin);
-
+        
         % Solve boundary value problems for ODEs by collocation.
         [y, t] = bvp5c(fun1, fun2, y0, varargin);
-
+        
+        % Round a CHEBFUN towards plus infinity.
+        g = ceil(f)
+        
         % Plot information regarding the representation of a CHEBFUN object:
         h = chebpolyplot(f, varargin);
 
@@ -276,6 +279,9 @@ classdef chebfun
         % Complex transpose of a CHEBFUN.
         f = ctranspose(f)
 
+        % Useful information for DISPLAY.
+        [name, data] = dispInfo(f)
+        
         % Display a CHEBFUN object.
         display(f);
         
@@ -324,6 +330,9 @@ classdef chebfun
         % True for real CHEBFUN.
         out = isreal(f);
         
+        % Test if a CHEBFUN object is built upon SINGFUN.
+        out = issing(f)
+        
         % True for zero CHEBFUN objects
         out = iszero(f)
         
@@ -336,29 +345,26 @@ classdef chebfun
         % Plot a CHEBFUN object on a loglog scale:
         h = loglog(f, varargin);
         
-        % Plot a CHEBFUN object:
-        varargout = plot(f, varargin);
-        
-        % 3-D plot for CHEBFUN objects.
-        varargout = plot3(f, g, h, varargin)
-        
         % Subtraction of two CHEBFUN objects.
         f = minus(f, g)
         
-        % Signmum of a CHEBFUN.
-        f = sign(f, pref)
-
         % Multiplication of CHEBFUN objects.
         f = mtimes(f, c)
-
+        
         % Remove unnecessary breakpoints in from a CHEBFUN.
         [f, mergedPts] = merge(f, index, pref)
         
         % Overlap the domain of two CHEBFUN objects.
         [f, g] = overlap(f, g)
-
+        
+        % Plot a CHEBFUN object:
+        varargout = plot(f, varargin);
+        
         % Obtain data used for plotting a CHEBFUN object:
         data = plotData(f, g, h)
+        
+        % 3-D plot for CHEBFUN objects.
+        varargout = plot3(f, g, h, varargin)
         
         % Power of a CHEBFUN
         f = power(f, b);
@@ -380,7 +386,10 @@ classdef chebfun
 
         % Plot a CHEBFUN object on a linear-log scale:
         h = semilogy(f, varargin);
-
+        
+        % Signmum of a CHEBFUN.
+        f = sign(f, pref)
+        
         % Simplify the representation of a CHEBFUN obect.
         f = simplify(f, tol);
 
@@ -507,8 +516,7 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
                     pref.singPrefs.singType = {'sing', 'sing'};
                 else
                     error('CHEBFUN:constructor:parseInputs', ...
-                        ['Unrecognizable flag value for ''blowup''. The valid values ', ...
-                        'are 1 for poles only and 2 for fractional singularities.'])
+                        'Invalid value for ''blowup'' option.');
                 end
             end
             args(1:2) = [];

@@ -103,8 +103,8 @@ err = feval(F3, x) - feval(F3_exact, x);
 pass(10) = (norm(diff(err), inf) < get(F3, 'vscale')^3*get(f, 'epslevel')) && ...
     abs(feval(F3, a)) < get(F3, 'vscale')^3*get(f, 'epslevel');
 
-%%
-% Check the integration of singfun.
+%% Test on singular function:
+
 dom = [-2 7];
 pow = -0.64;
 op = @(x) (x-dom(1)).^pow;
