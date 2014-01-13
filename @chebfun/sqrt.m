@@ -16,6 +16,9 @@ end
 if ( isreal(f) )
     f = addBreaksAtRoots(f);
 else
+    % Add breaks at the roots of the imaginary part of F to account for
+    % the discontinuity in POWER along the negative real semi-axis due
+    % to the branch cut.
     f = addBreaksAtRoots(f, 'imag');
 end
 

@@ -1,5 +1,5 @@
 function g = power(f, b)
-% .^   Chebfun power.
+%.^   CHEBFUN power.
 %   F.^G returns a CHEBFUN F to the scalar power G, a scalar F to the CHEBFUN
 %   power G, or a CHEBFUN F to the CHEBFUN power G. F and or G may be complex.
 %
@@ -63,6 +63,9 @@ elseif ( isa(f, 'chebfun') )                     % CHEBFUN .^ constant
         if ( isreal(f) )
             f = addBreaksAtRoots(f);
         else
+            % Add breaks at the roots of the imaginary part of F to account for
+            % the discontinuity in POWER along the negative real semi-axis due 
+            % to the branch cut.
             f = addBreaksAtRoots(f, 'imag');
         end
         

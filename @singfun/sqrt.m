@@ -1,7 +1,14 @@
 function f = sqrt(f)
 %SQRT   Square root of a SINGFUN.
-%   SQRT(F) returns the square root of a SINGFUN F. Note, it is assumed that the
-%   only roots of F are located at the endpoints of F.domain.
+%   SQRT(F) returns the square root of a SINGFUN F.
+%
+%   This function assumes that the curve traced out by F in the complex plane
+%   both (1) does not come too close to zero except at the domain boundaries 
+%   +/- 1 and (2) does not cross over the branch cut in SQRT along the negative
+%   real axis.  That is, F should not vanish at any point of (-1, 1), and the
+%   imaginary part of F should not vanish at any point of (-1, 1) where the real
+%   part of F is negative.  If any of these assumptions are violated, garbage
+%   may be returned with no warning.
 %
 % See also POWER.
 

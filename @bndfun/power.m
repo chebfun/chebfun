@@ -1,9 +1,15 @@
 function f = power(f, b)
-% .^   BNDFUN power.
+%.^   BNDFUN power.
 %   F.^G returns a BNDFUN F to the scalar power G, a scalar F to the BNDFUN
 %   power G, or a BNDFUN F to the BNDFUN power G. F and or G may be complex. 
-%   Note, it is assumed that F is non-zero on its domain. If F has zeros, then
-%   the output is garbage without throwing a warning.
+%
+%   This function assumes that the curve traced out by F in the complex plane
+%   both (1) does not come too close to zero except at the domain boundaries 
+%   +/- 1 and (2) does not cross over the branch cut in POWER along the negative
+%   real axis.  That is, F should not vanish at any point of the interior of its
+%   domain, and the imaginary part of F should not vanish at any point of the
+%   interior of its domain where the real part of F is negative.  If any of
+%   these assumptions are violated, garbage may be returned with no warning.
 %
 %   H = POWER(F, G) is called for the syntax 'F .^ G'.
 %
@@ -19,7 +25,6 @@ tol = 1e2*get(f, 'epslevel')*get(f, 'vscale'); % Tolerance for a root.
 if ( any(abs(lval) < tol) || any(abs(rval) < tol) ) && ...
         ( ~isa(f.onefun, 'singfun') )
     f.onefun = singfun(f.onefun);              % Cast f.onefun to a SINGFUN.
-    f.onefun = extractBoundaryRoots(f.onefun);
 end
 
 % Call POWER() of the ONEFUN:

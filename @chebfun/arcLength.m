@@ -44,7 +44,7 @@ elseif ( nargin == 2 )
     
     % Two arguments: the second argument is a vector:
     if ( max( size(a) ) ~= 2 )
-        error('chebfun:arclength:Input', ...
+        error('CHEBFUN:arclength:Input', ...
             'The second argument must be a 1x2 vector.')
     end
     dom = a;

@@ -1,9 +1,15 @@
 function f = power(f, b)
-% .^   SINGFUN power.
+%.^   SINGFUN power.
 %   F.^G returns a SINGFUN F to the scalar power G, a scalar F to the SINGFUN
 %   power G, or a SINGFUN F to the SINGFUN power G. F and or G may be complex. 
-%   Note that it is assumed that F is non-zero on its domain. If F has zeros, 
-%   then the output is garbage without throwing a warning.
+%
+%   This function assumes that the curve traced out by F in the complex plane
+%   both (1) does not come too close to zero except at the domain boundaries 
+%   +/- 1 and (2) does not cross over the branch cut in POWER along the negative
+%   real axis.  That is, F should not vanish at any point of (-1, 1), and the
+%   imaginary part of F should not vanish at any point of (-1, 1) where the real
+%   part of F is negative.  If any of these assumptions are violated, garbage
+%   may be returned with no warning.
 %
 %   H = POWER(F, G) is called for the syntax 'F .^ G'.
 %
