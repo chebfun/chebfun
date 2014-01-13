@@ -10,9 +10,9 @@ function f = addBreaksAtRoots(f, tol, opt)
 %   ADDBREAKSATROOTS(F, TOL) provides a lower bound for the tolerance used in
 %   the above exceptions.
 %
-%   ADDBREAKSATROOTS(F, TOL, OPT) add breaks at roots of the real part of F when
-%   the third argument OPT is string 'real', while roots of the imaginary part 
-%   are added, if OPT is 'imag'. If OPT is ''
+%   ADDBREAKSATROOTS(F, TOL, 'real') and ADDBREAKSATROOTS(F, TOL, 'imag')
+%   add breaks at the roots of the real and imaginary parts of F, respectively. 
+%   If OPT is empty or not supplied, then breaks are added at the roots of F.
 %
 %   If F is array-valued, breaks will be introduced in each of the columns at
 %   unique(ROOTS(F)).

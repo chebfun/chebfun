@@ -14,6 +14,6 @@ c = g.funs{1}.onefun.coeffs;
 cc = c(end-n+1:end);
 
 err = cc-p;
-pass(1) = norm(err, inf) < vscale(f)*epslevel(f);
+pass(1) = norm(err, inf) < vscale(f).*epslevel(f);
 
 end

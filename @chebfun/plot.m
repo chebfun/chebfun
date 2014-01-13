@@ -143,8 +143,13 @@ end
 ylimit = [min(yLimData{:}) max(yLimData{:})];
 
 % Pad some space at the top and bottom of the figure:
-ylimit = [ylimit(1) - 0.1*abs(diff(ylimit)) ...
-    ylimit(2) + 0.1*abs(diff(ylimit))];
+if ( diff( ylimit ) )
+    ylimit = [ylimit(1) - 0.1*abs(diff(ylimit)) ...
+        ylimit(2) + 0.1*abs(diff(ylimit))];
+else
+    ylimit = [ylimit(1) - 0.1*abs(ylimit(1)) ...
+        ylimit(2) + 0.1*abs(ylimit(1))];
+end
 
 % Plot the lines:
 h1 = plot(lineData{:});

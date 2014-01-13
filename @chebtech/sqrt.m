@@ -20,13 +20,4 @@ end
 % Simply call the compose function:
 g = compose(f, @sqrt, [], pref);
 
-% Throw a warning if the result is not happy and we find roots in the domain:
-if ( f.ishappy && ~g.ishappy )
-    r = roots(f);
-    if ( ~isempty(r) )
-        warning(['Attempting to SQRT a CHEBTECH with one or more roots. ', ...
-            'Result may be inaccurate.']);
-    end
-end
-
 end

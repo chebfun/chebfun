@@ -34,11 +34,11 @@ pass(6) = min(size(g)) == 3 && normest(g - f) < epslevel(f);
 
 g = f.^2;
 h = chebfun(@(x) [sin(x).^2, cos(x).^2, -exp(2*x)]);
-pass(7) = min(size(g)) == 3 && normest(g - h) < 10*vscale(h)*epslevel(h);
+pass(7) = min(size(g)) == 3 && normest(g - h) < 10*vscale(h).*epslevel(h);
 
 g = f.^3;
 h = chebfun(@(x) [sin(x).^3, cos(x).^3, -1i*exp(3*x)]);
-pass(8) = min(size(g)) == 3 && normest(g - h) < 10*vscale(h)*epslevel(h);
+pass(8) = min(size(g)) == 3 && normest(g - h) < 10*vscale(h).*epslevel(h);
 
 %% constant .^ CHEBFUN
 f = chebfun(@(x) sin(x));
@@ -63,12 +63,12 @@ pass(12) = min(size(g)) == 3 && normest(g - h) < 100*epslevel(h);
 x = chebfun(@(x) x, [.1, 2]);
 g = x.^x;
 h = chebfun(@(x) x.^x, [.1, 2]);
-pass(13) = normest(g - h, [.1, 2]) < 10*epslevel(h)*vscale(h);
+pass(13) = normest(g - h, [.1, 2]) < 10*epslevel(h).*vscale(h);
 
 x = chebfun(@(x) [x, exp(1i*x)], [.1, 2]);
 g = x.^x;
 h = chebfun(@(x) [x.^x, exp(1i*x).^exp(1i*x)], [.1, 2]);
-pass(14) = normest(g - h, [.1, 2]) < 10*epslevel(h)*vscale(h);
+pass(14) = normest(g - h, [.1, 2]) < 10*epslevel(h).*vscale(h);
 
 %%%%%%%%%%%%%%%%%%%%%%%%% Integration of SINGFUN: %%%%%%%%%%%%%%%%%%%%%%%%%%
 dom = [-2 7];
@@ -91,7 +91,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
-pass(15) = ( norm(err, inf) < 1e1*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(15) = ( norm(err, inf) < 1e1*epslevel(f).*norm(vals_exact, inf) );
 
 %% SINGFUN .^ constant integer:
 
@@ -108,7 +108,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
-pass(16) = ( norm(err, inf) < get(f,'epslevel')*norm(vals_exact, inf) );
+pass(16) = ( norm(err, inf) < epslevel(f).*norm(vals_exact, inf) );
 
 %% Square root via POWER - A positive piece-wise example with singularities:
 
@@ -124,7 +124,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
-pass(17) = ( norm(err, inf) < 1e2*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(17) = ( norm(err, inf) < 1e2*epslevel(f).*norm(vals_exact, inf) );
 
 %% General power - A smooth function - the Runge function and positive power:
 % Define a domain:
@@ -144,7 +144,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
-pass(18) = ( norm(err, inf) < get(f,'epslevel')*norm(vals_exact, inf) );
+pass(18) = ( norm(err, inf) < epslevel(f).*norm(vals_exact, inf) );
 
 %% General power - A smooth function - the Runge function and negative power:
 
@@ -158,7 +158,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
-pass(19) = ( norm(err, inf) < 1e2*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(19) = ( norm(err, inf) < 1e2*epslevel(f).*norm(vals_exact, inf) );
 
 %% General power - A smooth function - a real function with varying sign and 
 % positive power:
@@ -173,7 +173,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
-pass(20) = ( norm(err, inf) < 1e1*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(20) = ( norm(err, inf) < 1e1*epslevel(f).*norm(vals_exact, inf) );
 
 %% General power - A smooth function - a real function with varying sign and 
 % negative power:
@@ -188,7 +188,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
-pass(21) = ( norm(err, inf) < 1e2*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(21) = ( norm(err, inf) < 1e2*epslevel(f).*norm(vals_exact, inf) );
 
 %% General power - A smooth function - a complex function and positive power:
 
@@ -202,7 +202,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
-pass(22) = ( norm(err, inf) < 1e1*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(22) = ( norm(err, inf) < 1e1*epslevel(f).*norm(vals_exact, inf) );
 
 %% General power - A smooth function - a complex function and negative power:
 
@@ -216,7 +216,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
-pass(23) = ( norm(err, inf) < 1e1*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(23) = ( norm(err, inf) < 1e1*epslevel(f).*norm(vals_exact, inf) );
 
 %% General power - A singular function - a positive function and positive power:
 dom = [-2 7];
@@ -236,7 +236,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
-pass(24) = ( norm(err, inf) < 1e1*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(24) = ( norm(err, inf) < 1e1*epslevel(f).*norm(vals_exact, inf) );
 
 %% General power - A smooth function with varying sign and positive power:
 
@@ -250,7 +250,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
-pass(25) = ( norm(err, inf) < 1e1*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(25) = ( norm(err, inf) < 1e1*epslevel(f).*norm(vals_exact, inf) );
 
 %% General power - A smooth function with varying sign and positive power:
 
@@ -265,7 +265,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
-pass(26) = ( norm(err, inf) < 1e1*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(26) = ( norm(err, inf) < 1e1*epslevel(f).*norm(vals_exact, inf) );
 
 end
 
@@ -282,4 +282,3 @@ end
 out = norm(feval(f, x), inf);
 
 end
-

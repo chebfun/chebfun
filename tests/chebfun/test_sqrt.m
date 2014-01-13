@@ -21,11 +21,11 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
-pass(1) = ( norm(err, inf) < 1e2*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(1) = ( norm(err, inf) < 1e2*epslevel(f).*norm(vals_exact, inf) );
 
 %% A piece-wise smooth case:
-op = @(x) sin(100*x).^2+1;
-opExact = @(x) sqrt(sin(100*x).^2+1);
+op = @(x) sin(50*x).^2+1;
+opExact = @(x) sqrt(sin(50*x).^2+1);
 
 f = chebfun(op, dom, 'splitting', 'on');
 g = sqrt(f);
@@ -33,12 +33,12 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
-pass(2) = ( norm(err, inf) < 1e2*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(2) = ( norm(err, inf) < 1e2*epslevel(f).*norm(vals_exact, inf) );
 
 %% A complex piece-wise case:
 
-op = @(x) sin(100*x);
-opExact = @(x) sqrt(sin(100*x));
+op = @(x) sin(50*x);
+opExact = @(x) sqrt(sin(50*x));
 
 pref.enableBreakpointDetection = 1;
 f = chebfun(op, dom, pref);
@@ -47,12 +47,12 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
-pass(3) = ( norm(err, inf) < 1e1*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(3) = ( norm(err, inf) < 1e1*epslevel(f).*norm(vals_exact, inf) );
 
 %% Another complex piece-wise case:
 
-op = @(x) sin(100*x)+1i*cos(30*x);
-opExact = @(x) sqrt(sin(100*x)+1i*cos(30*x));
+op = @(x) sin(50*x)+1i*cos(30*x);
+opExact = @(x) sqrt(sin(50*x)+1i*cos(30*x));
 
 pref.enableBreakpointDetection = 1;
 f = chebfun(op, dom, pref);
@@ -61,7 +61,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
-pass(4) = ( norm(err, inf) < 1e2*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(4) = ( norm(err, inf) < 1e2*epslevel(f).*norm(vals_exact, inf) );
 
 %% An array-valued CHEBFUN: 
 
@@ -83,8 +83,8 @@ domCheck = [dom(1)+0.1 dom(2)-0.1];
 x = diff(domCheck) * rand(100, 1) + domCheck(1);
 
 pow = -1.5;
-op = @(x) (sin(100*x).^2+1).*(x-dom(1)).^pow;
-opExact = @(x) sqrt(sin(100*x).^2+1).*(x-dom(1)).^(pow/2);
+op = @(x) (sin(50*x).^2+1).*(x-dom(1)).^pow;
+opExact = @(x) sqrt(sin(50*x).^2+1).*(x-dom(1)).^(pow/2);
 
 pref.singPrefs.exponents = [pow 0];
 pref.enableBreakpointDetection = 1;
@@ -94,8 +94,6 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
-pass(6) = ( norm(err, inf) < 1e2*get(f,'epslevel')*norm(vals_exact, inf) );
-
-%%
+pass(6) = ( norm(err, inf) < 1e2*epslevel(f).*norm(vals_exact, inf) );
 
 end

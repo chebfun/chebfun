@@ -1,7 +1,9 @@
 function f = power(f, b)
 % .^   SINGFUN power.
 %   F.^G returns a SINGFUN F to the scalar power G, a scalar F to the SINGFUN
-%   power G, or a SINGFUN F to the SINGFUN power G. F and or G may be complex.
+%   power G, or a SINGFUN F to the SINGFUN power G. F and or G may be complex. 
+%   Note that it is assumed that F is non-zero on its domain. If F has zeros, 
+%   then the output is garbage without throwing a warning.
 %
 %   H = POWER(F, G) is called for the syntax 'F .^ G'.
 %

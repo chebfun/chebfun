@@ -16,7 +16,8 @@ end
 if ( isreal(f) )
     f = addBreaksAtRoots(f);
 else
-    f = addBreaksAtRoots(f, 'imag');
+%     f = addBreaksAtRoots(f, 'imag');
+    f = addBreaksAtRoots(f);
 end
 
 % Loop over each FUN and call SQRT@BNDFUN on each of the FUNs:
@@ -27,8 +28,5 @@ end
 
 % Take the absolute value of the impulses in the first row:
 f.impulses = abs(f.impulses(:,:,1));
-
-% [TODO]: Is simplify needed?
-f = simplify(f);
 
 end

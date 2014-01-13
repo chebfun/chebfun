@@ -2,6 +2,8 @@ function g = power(f, b)
 % .^   CHEBTECH power.
 %   F.^G returns a CHEBTECH F to the scalar power G, a scalar F to the CHEBTECH
 %   power G, or a CHEBTECH F to the CHEBTECH power G. F and or G may be complex.
+%   Note that it is assumed that F is non-zero on its domain. If F has zeros, 
+%   then the output is garbage without throwing a warning.
 %
 %   H = POWER(F, G) is called for the syntax 'F .^ G'.
 %
@@ -26,14 +28,5 @@ end
 
 % Simply call the compose function:
 g = compose(f, @power, b, pref);
-
-% Throw a warning if the result is not happy and we find roots in the domain:
-if ( f.ishappy && ~g.ishappy )
-    r = roots(f);
-    if ( ~isempty(r) )
-        warning(['Attempting to compute the POWER of a CHEBTECH with one ', ...
-            'or more roots. Result may be inaccurate.']);
-    end
-end
 
 end

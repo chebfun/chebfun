@@ -19,11 +19,6 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% CHEBFUN .^ CHEBFUN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
 if ( isa(f, 'chebfun') && isa(b, 'chebfun') ) 
     
-    if ( ~domainCheck(f,g) )
-        error('CHEBFUN:power:domain', ...
-            'F and G must be defined in the same domain')
-    end
-    
     % Call COMPOSE(): (Note, COMPOSE() checks that the domains match)
     g = compose(f, @power, b);
     
@@ -42,21 +37,13 @@ elseif ( isa(f, 'chebfun') )                     % CHEBFUN .^ constant
         % Call TIMES():
         g = f.*f;
         
-    elseif ( (b > 0) && (round(b) == b) )   % Positive integer
+    elseif ( ( b > 0 ) && ( round(b) == b ) )   % Positive integer
         
-        % Grab some information for the case where SINGFUN is involved:
-        if isa(f, 'chebfun')
-            numFuns = numel(f.funs);
-            singInd = zeros(numFuns, 1);
-            for k = 1:numFuns
-                singInd(k) = isa(f.funs{k}.onefun, 'singfun');
-            end
-            isSing = any( singInd );
-        end
-
-        if ( isSing )
+        % If SINGFUN is involved:
+        if ( issing(f) )
             % If singfun is involved, treat each piece individually:
             g = f;
+            numFuns = numel(f.funs);
             for k = 1:numFuns
                 g.funs{k} = power(f.funs{k}, b);
             end
@@ -79,11 +66,9 @@ elseif ( isa(f, 'chebfun') )                     % CHEBFUN .^ constant
             f = addBreaksAtRoots(f, 'imag');
         end
         
-        % Some overhead:
+        % Loop over each piece individually:
         numFuns = numel(f.funs);
         g = f;
-        
-        % Loop over each piece individually:
         for k = 1:numFuns
             g.funs{k} = power(f.funs{k}, b);
         end
