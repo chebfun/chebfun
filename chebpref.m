@@ -203,16 +203,13 @@ classdef chebpref
 % function.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    % See above for documentation.
     properties
-        maxTotalLength
-        enableBreakpointDetection
-        breakpointPrefs
-        domain
-        enableSingularityDetection
-        singPrefs
-        tech
-        techPrefs
+        % This is a MATLAB structure which stores the system preferences.  As a
+        % class invariant, this structure is guaranteed to contain fields for
+        % each of the preferences of the upper layers listed above.  It is also
+        % guaranteed to contain a techPrefs field, but no guarantees are made
+        % about its contents.
+        prefList
     end
 
     methods
@@ -226,35 +223,35 @@ classdef chebpref
             end
 
             % Initialize default preference values.
-            outPref.maxTotalLength = 65537;
-            outPref.enableBreakpointDetection = false;
-                outPref.breakpointPrefs.splitMaxLength = 129;
-                outPref.breakpointPrefs.splitMaxTotalLength = 6000;
-            outPref.domain = [-1 1];
-            outPref.enableSingularityDetection = false;
-                outPref.singPrefs.exponentTol = 1.1*1e-11;
-                outPref.singPrefs.maxPoleOrder = 20;
-            outPref.tech = 'chebtech';
-            outPref.techPrefs = struct();
-                outPref.techPrefs.eps = 2^(-52);
-                outPref.techPrefs.maxLength = 65537;
-                outPref.techPrefs.exactLength = NaN;
-                outPref.techPrefs.extrapolate = false;
-                outPref.techPrefs.sampleTest = true;
+            outPref.prefList.maxTotalLength = 65537;
+            outPref.prefList.enableBreakpointDetection = false;
+                outPref.prefList.breakpointPrefs.splitMaxLength = 129;
+                outPref.prefList.breakpointPrefs.splitMaxTotalLength = 6000;
+            outPref.prefList.domain = [-1 1];
+            outPref.prefList.enableSingularityDetection = false;
+                outPref.prefList.singPrefs.exponentTol = 1.1*1e-11;
+                outPref.prefList.singPrefs.maxPoleOrder = 20;
+            outPref.prefList.tech = 'chebtech';
+            outPref.prefList.techPrefs = struct();
+                outPref.prefList.techPrefs.eps = 2^(-52);
+                outPref.prefList.techPrefs.maxLength = 65537;
+                outPref.prefList.techPrefs.exactLength = NaN;
+                outPref.prefList.techPrefs.extrapolate = false;
+                outPref.prefList.techPrefs.sampleTest = true;
 
             % Copy fields from q, placing unknown ones in techPrefs and merging
             % incomplete substructures.
             for field = fieldnames(inPref).'
-                if ( isprop(outPref, field{1}) )
-                    if ( isstruct(outPref.(field{1})) )
-                        outPref.(field{1}) = ...
-                            chebpref.mergePrefs(outPref.(field{1}), ...
+                if ( isfield(outPref.prefList, field{1}) )
+                    if ( isstruct(outPref.prefList.(field{1})) )
+                        outPref.prefList.(field{1}) = ...
+                            chebpref.mergePrefs(outPref.prefList.(field{1}), ...
                             inPref.(field{1}));
                     else
-                        outPref.(field{1}) = inPref.(field{1});
+                        outPref.prefList.(field{1}) = inPref.(field{1});
                     end
                 else
-                    outPref.techPrefs.(field{1}) = inPref.(field{1});
+                    outPref.prefList.techPrefs.(field{1}) = inPref.(field{1});
                 end
             end
         end
@@ -274,10 +271,10 @@ classdef chebpref
         %   including '()' and '{}'.
             switch ( ind(1).type )
                 case '.'
-                    if ( isprop(pref, ind(1).subs) )
-                        out = pref.(ind(1).subs);
+                    if ( isfield(pref.prefList, ind(1).subs) )
+                        out = pref.prefList.(ind(1).subs);
                     else
-                        out = pref.techPrefs.(ind(1).subs);
+                        out = pref.prefList.techPrefs.(ind(1).subs);
                     end
 
                     if ( numel(ind) > 1 )
@@ -303,11 +300,12 @@ classdef chebpref
         %   including '()' and '{}'.
             switch ( ind(1).type )
                 case '.'
-                    if ( isprop(pref, ind(1).subs) )
-                        pref = builtin('subsasgn', pref, ind, val);
-                    else
-                        pref.techPrefs = builtin('subsasgn', pref.techPrefs, ...
+                    if ( isfield(pref.prefList, ind(1).subs) )
+                        pref.prefList = builtin('subsasgn', pref.prefList, ...
                             ind, val);
+                    else
+                        pref.prefList.techPrefs = builtin('subsasgn', ...
+                            pref.prefList.techPrefs, ind, val);
                     end
                 otherwise
                     error('CHEBTECH:subsasgn:badType', ...
@@ -322,7 +320,7 @@ classdef chebpref
 
             % Compute the screen column in which pref values start.
             valueCol = 34; % length('    enableSingularityDetection:   ');
-            for field = fieldnames(pref.techPrefs).'
+            for field = fieldnames(pref.prefList.techPrefs).'
                 field = field{1};
                 col = length(['        ' field '  ']);
                 if ( col > valueCol )
@@ -337,47 +335,50 @@ classdef chebpref
             end
 
             % Print values of "known" preferences.
+            prefList = pref.prefList;
+
             fprintf('chebpref object with the following preferences:\n');
             fprintf([padString('    maxTotalLength:') '%d\n'], ...
-                pref.maxTotalLength);
+                prefList.maxTotalLength);
             fprintf([padString('    domain:') '[%g, %g]\n'], ...
-                pref.domain(1), pref.domain(end));
+                prefList.domain(1), prefList.domain(end));
             fprintf([padString('    enableBreakpointDetection:') '%d\n'], ...
-                pref.enableBreakpointDetection);
+                prefList.enableBreakpointDetection);
             fprintf('    breakpointPrefs\n');
             fprintf([padString('        splitMaxLength:') '%d\n'], ...
-                pref.breakpointPrefs.splitMaxLength');
+                prefList.breakpointPrefs.splitMaxLength');
             fprintf([padString('        splitMaxTotalLength:') '%d\n'], ...
-                pref.breakpointPrefs.splitMaxTotalLength');
+                prefList.breakpointPrefs.splitMaxTotalLength');
             fprintf([padString('    enableSingularityDetection:') '%d\n'], ...
-                pref.enableSingularityDetection);
+                prefList.enableSingularityDetection);
             fprintf('    singPrefs\n');
             fprintf([padString('        exponentTol:') '%d\n'], ...
-                pref.singPrefs.exponentTol');
+                prefList.singPrefs.exponentTol');
             fprintf([padString('        maxPoleOrder:') '%d\n'], ...
-                pref.singPrefs.maxPoleOrder');
+                prefList.singPrefs.maxPoleOrder');
             fprintf([padString('    tech:') '''%s''\n'], ...
-                pref.tech)
+                prefList.tech)
             fprintf('    techPrefs\n');
 
             % Format and print values of tech preferences.
-            for field = fieldnames(pref.techPrefs).'
+            for field = fieldnames(prefList.techPrefs).'
                 field = field{1};
                 printStr = padString(['        ' field ':']);
 
-                if ( isempty(pref.techPrefs.(field)) )
-                   fprintf([printStr 'empty\n']);
-                elseif ( ischar(pref.techPrefs.(field)) && ...
-                         isrow(pref.techPrefs.(field)) )
-                   fprintf([printStr '''%s''\n'], pref.techPrefs.(field))
-                elseif ( numel(pref.techPrefs.(field)) > 1 )
-                   fprintf([printStr class(pref.techPrefs.(field)) ' array\n']);
-                elseif ( isfloat(pref.techPrefs.(field)) )
-                   fprintf([printStr '%0.16g\n'], pref.techPrefs.(field))
-                elseif ( islogical(pref.techPrefs.(field)) )
-                   fprintf([printStr '%d\n'], pref.techPrefs.(field))
+                if ( isempty(prefList.techPrefs.(field)) )
+                    fprintf([printStr 'empty\n']);
+                elseif ( ischar(prefList.techPrefs.(field)) && ...
+                         isrow(prefList.techPrefs.(field)) )
+                    fprintf([printStr '''%s''\n'], prefList.techPrefs.(field))
+                elseif ( numel(prefList.techPrefs.(field)) > 1 )
+                    fprintf([printStr class(prefList.techPrefs.(field)) ...
+                        ' array\n']);
+                elseif ( isfloat(prefList.techPrefs.(field)) )
+                    fprintf([printStr '%0.16g\n'], prefList.techPrefs.(field))
+                elseif ( islogical(prefList.techPrefs.(field)) )
+                    fprintf([printStr '%d\n'], prefList.techPrefs.(field))
                 else
-                   fprintf([printStr class(pref.techPrefs.(field)) '\n']);
+                    fprintf([printStr class(prefList.techPrefs.(field)) '\n']);
                 end
             end
         end
@@ -416,11 +417,11 @@ classdef chebpref
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
             if ( isa(pref1, 'chebpref') )
-                pref1 = pref1.techPrefs;
+                pref1 = pref1.prefList.techPrefs;
             end
 
             if ( isa(pref2, 'chebpref') )
-                pref2 = pref2.techPrefs;
+                pref2 = pref2.prefList.techPrefs;
             end
 
             if ( nargin < 3 )
