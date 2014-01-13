@@ -1,6 +1,6 @@
-function pass = test_erfX(pref)
+% Test file for all the functions related to the error function ERF().
 
-% Test all the functions related to the error function ERF().
+function pass = test_erfX(pref)
 
 if ( nargin == 0 )
     pref = chebpref();
