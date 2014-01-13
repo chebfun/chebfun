@@ -66,16 +66,15 @@ isComplex = false;
 lineData = {};
 pointData = {};
 jumpData = {};
-isComplex = false;
+yLimData = {};
 
 % Suppress inevitable warning for growing these arrays:
 %#ok<*AGROW>
 
 % Check to see if the 'interval' flag has been set:
-intervalIsSet = 0;
+interval = [];
 loc = find(strcmpi(varargin, 'interval'));
 if ( any(loc) )
-    intervalIsSet = 1;
     interval = varargin{loc+1};
     varargin(loc:loc+1) = [];
 else
@@ -84,7 +83,6 @@ else
         if ( loc(k) < nargin && isnumeric(varargin{loc(k)+1}) )
             interval = varargin{loc(k)+1};
             varargin(loc(k)+1) = [];
-            intervalIsSet = true;
             break
         end
     end
@@ -92,7 +90,7 @@ end
     
 %%
 % Get the data for plotting from PLOTDATA():
-while ( ~isempty(varargin) ) 
+while ( ~isempty(varargin) )
 
     % Acquire plotting data for each CHEBFUN / pair of CHEBFUNs:
     if ( (numel(varargin) > 1) && isa(varargin{2}, 'chebfun') ) % PLOT(f, g).
@@ -108,13 +106,14 @@ while ( ~isempty(varargin) )
         end
         
         % Call PLOTDATA():
-        newData = plotData(f, g);
+        newData = plotData(f, g, interval);
         % Remove CHEBFUN objects from array input:
         varargin(1:2) = [];
         
     else                                                       % PLOT(f).
         % Call PLOTDATA():
-        newData = plotData(varargin{1});
+        f = varargin{1};
+        newData = plotData(f, interval);
         % Remove CHEBFUN from array input:
         varargin(1) = [];
         
@@ -131,37 +130,26 @@ while ( ~isempty(varargin) )
         varargin(1:pos) = [];
     end
     
-    if ( ~isreal( newData.yLine ) ) % Deal with complex-valued functions.
-        % Assign x to be the real part, and y to be the imagiary part:
-        newData.xLine = real(newData.yLine);
-        newData.yLine = imag(newData.yLine);
-        newData.xPoints = real(newData.yPoints);
-        newData.yPoints = imag(newData.yPoints);
-        newData.xJumps = real(newData.yJumps);
-        newData.yJumps = imag(newData.yJumps);
-        isComplex = true;
-    elseif ( intervalIsSet && size(newData.xLine, 2) == 1 ) % Deal with 'interval' flag.
-        idx = newData.xLine < interval(1) | newData.xLine > interval(end);
-        newData.xLine(idx) = [];
-        newData.yLine(idx,:) = [];
-        idx = newData.xPoints < interval(1) | newData.xPoints > interval(end);
-        newData.xPoints(idx) = [];
-        newData.yPoints(idx,:) = [];
-        idx = newData.xJumps < interval(1) | newData.xJumps > interval(end);
-        newData.xJumps(idx) = [];
-        newData.yJumps(idx,:) = [];
-    end
-    
     % Append new data to the arrays which will be passed to built in PLOT():
-    lineData = [lineData, newData.xLine, newData.yLine, styleData]; 
+    lineData = [lineData, newData.xLine, newData.yLine, styleData];
     pointData = [pointData, newData.xPoints, newData.yPoints, styleData];
     jumpData = [jumpData, newData.xJumps, newData.yJumps, styleData];
-     
+    yLimData = [yLimData, newData.yLim];
 end
+
+%% Figure out yLim:
+
+% Take the maximum and the mininum:
+ylimit = [min(yLimData{:}) max(yLimData{:})];
+
+% Pad some space at the top and bottom of the figure:
+ylimit = [ylimit(1) - 0.1*abs(diff(ylimit)) ...
+    ylimit(2) + 0.1*abs(diff(ylimit))];
 
 % Plot the lines:
 h1 = plot(lineData{:});
 set(h1, 'Marker', 'none')
+set(gca, 'ylim', ylimit)
 
 % Ensure the plot is held:
 hold on
@@ -178,6 +166,7 @@ end
 h3 = plot(jumpData{:});
 % Change the style accordingly:
 if ( isComplex )
+    %[TODO]: The following statement can not be reached:
     set(h3, 'LineStyle', 'none', 'Marker', 'none')
 else
     set(h3, 'LineStyle', ':', 'Marker', 'none')
