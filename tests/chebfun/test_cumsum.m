@@ -111,11 +111,7 @@ opi3 = @(x) x.^2/2 + x + opi2(0);
 op = {op1, op2, op3};
 opi = {opi1, opi2, opi3};
 f = chebfun(op, dom, 'exps', [0 0 -0.5 0 0 0]);
-
-% We temporarily disable this warning: 
-warning('off', 'CHEBFUN:SINGFUN:plus');
 g = cumsum(f);
-warning('on', 'CHEBFUN:SINGFUN:plus');
 
 % check values:
 result = zeros(1,3);

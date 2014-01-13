@@ -3,6 +3,9 @@ function out = issing(f)
 %   out = ISSING(F) returns logical true if F has at least one FUN which is 
 %   made of SINGFUN and false otherwise.
 
+% [TODO]: Should the name of this function go camel case? So far, all is*
+% function are named without camel case.
+
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
