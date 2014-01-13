@@ -71,4 +71,35 @@ q.techPrefs.testPref = 'testq';
 pass(14) = isequaln(chebpref.mergePrefs(p, q), ...
     chebpref.mergePrefs(p.techPrefs, q.techPrefs));
 
+% Test functions for managing default preferences.
+savedPrefs = chebpref();
+
+chebpref.setDefaults('factory');
+factoryPrefs = chebpref.getFactoryDefaults();
+p = chebpref();
+pass(15) = isequaln(p, factoryPrefs);
+
+chebpref.setDefaults('factory');
+p = chebpref();
+p.domain = [-2 7];
+p.testPref = 'testq';
+chebpref.setDefaults(p);
+pass(16) = strcmp(chebpref().testPref, 'testq') && ...
+    isequal(chebpref().domain, [-2 7]);
+
+chebpref.setDefaults('factory');
+p = struct();
+p.domain = [-2 7];
+p.testPref = 'testq';
+chebpref.setDefaults(p);
+pass(17) = strcmp(chebpref().testPref, 'testq') && ...
+    isequal(chebpref().domain, [-2 7]);
+
+chebpref.setDefaults('factory');
+chebpref.setDefaults('domain', [-2 7], 'testPref', 'testq');
+pass(18) = strcmp(chebpref().testPref, 'testq') && ...
+    isequal(chebpref().domain, [-2 7]);
+
+chebpref.setDefaults(savedPrefs);
+
 end
