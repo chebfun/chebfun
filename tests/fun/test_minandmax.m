@@ -57,6 +57,13 @@ for n = 1:1 %[TODO]: unbndfun
     [vals2, pos2] = minandmax(f2);
     pass(n, 7) = norm(abs(vals) - abs([vals1 vals2]), inf) < ...
         10*max(get(f, 'vscale')*get(f, 'epslevel'));
+    
+    %% Test on singular function:
+    
+    pow = -0.5;
+    op = @(x) (x - dom(1)).^pow.*(sin(x).^2);
+    pref.singPrefs.exponents = [pow 0];
+    pass(n, 8) = test_spotcheck_minmax(testclass, op, dom, 0, Inf, pref);
 end
 
 end

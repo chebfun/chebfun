@@ -27,6 +27,11 @@ f.impulses(1, 1) = val;
 f.impulses(:,:,2) = ones(size(f.impulses, 1), size(f.impulses, 2));
 pass(4) = ~isfinite(f);
 
-% [TODO]:  Add a test with a singular function once we have singfun.
+%% Test on singular function:
+dom = [-2 7];
+pow = -1.64;
+f = chebfun(@(x) sin(100*x).*(x-dom(1)).^pow, dom, 'exps', [pow 0], ...
+    'splitting', 'on');
+pass(5) = ~isfinite(f);
 
 end
