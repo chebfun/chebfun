@@ -61,4 +61,28 @@ catch ME
     pass(12) = strcmp(ME.identifier, 'CHEBFUN:any:dim');
 end
 
+%% Test on SINGFUN:
+
+% define the domain:
+dom = [-2 7];
+
+op = @(x) sin(30*x)./((x-dom(1)).*(x-dom(2)));
+f = chebfun(op, dom, 'exps', [-1 -1], 'splitting', 'on');
+h1 = any(f, 1);
+h2 = any(f, 2);
+
+% check values:
+
+% Generate a few random points to use as test values:
+x = diff(dom) * rand(100, 1) + dom(1);
+
+pass(13) = ~( h1 - 1 );
+
+fval = feval(h2, x);
+err = fval - 1;
+pass(14) = ~any( err );
+
+r = roots(f);
+pass(15) = ~any( h2(r) );
+
 end

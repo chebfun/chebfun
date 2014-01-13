@@ -48,6 +48,10 @@ function poleOrder = poleOrderFinder(fvals, x)
 % later. This works because scaling with powers of the positive factor (1-x)
 % don't change the sign of function values. 
 smoothVals = abs(fvals);
+ind = isinf(smoothVals);
+smoothVals(ind) = [];
+x(ind) = [];
+
 if ( any(isinf(smoothVals)) )
     error('CHEBFUN:SINGFUN:findPoleOrder', 'Function returned inf value.')
 end
@@ -63,7 +67,7 @@ maxPoleOrder = chebpref().singPrefs.maxPoleOrder;
 poleOrder = 0;
 
 % Loop to see for which power of x the function values become non-divergent
-% i.e. when the ratio of function values becomes less then the testRatio.
+% i.e. when the ratio of function values becomes less than the testRatio.
 while ( all(smoothVals(2:end)./smoothVals(1:end-1) > testRatio) && ...
         (poleOrder <= maxPoleOrder) )
     poleOrder = poleOrder + 1;

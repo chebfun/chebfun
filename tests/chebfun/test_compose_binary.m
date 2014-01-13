@@ -1,6 +1,6 @@
 % Test file for @chebfun/compose.m (binary operators).
 
-function pass = test_compose(pref)
+function pass = test_compose_binary(pref)
 
 % Get preferences.
 if ( nargin < 1 )

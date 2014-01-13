@@ -18,4 +18,19 @@ pass(3) = all(chebfun.getValuesAtBreakpoints(f.funs, f.domain, ...
 pass(4) = all(chebfun.getValuesAtBreakpoints(f.funs, f.domain, @sign) == ...
     [-1 0 1 1].');
 
+%% piecewise smooth chebfun: smoothfun + singfun & splitting off:
+
+% define the domain:
+dom = [-2 -1 0 1];
+
+op1 = @(x) sin(x);
+op2 = @(x) 1./((1+x).^0.5);
+op3 = @(x) x+1;
+op = {op1, op2, op3};
+f = chebfun(op, dom, 'exps', [0 0 -0.5 0 0 0]);
+vals = chebfun.getValuesAtBreakpoints(f.funs);
+vals_exact = [op1(dom(1)) Inf mean([op2(dom(3)) op3(dom(3))]) op3(dom(end))];
+pass(5) = ( norm(vals([1, 3:4]) - vals_exact([1, 3:4]).', inf) ...
+    < epslevel(f)*norm(vals_exact([1, 3:4]), inf) ) && ( vals(2) == Inf );
+
 end
