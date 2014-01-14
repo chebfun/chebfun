@@ -475,9 +475,11 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
         if ( any(strcmpi(args{1}, {'chebpts1', 'chebpts2', 'equi'})) )
             % Determine tech for sampled values:
             if ( strcmpi(args{1}, 'chebpts1') )
-                pref.tech = 'chebtech1';
+                pref.tech = 'chebtech';
+                pref.techPrefs.gridType = 1;
             elseif ( strcmpi(args{1}, 'chebpts2') )
-                pref.tech = 'chebtech2';
+                pref.tech = 'chebtech';
+                pref.techPrefs.gridType = 2;
             elseif ( strcmpi(args{1}, 'equi') )
                 pref.tech = 'funqui';
             end
