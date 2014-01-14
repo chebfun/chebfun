@@ -524,6 +524,19 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
             % Translate "exps" --> "singPrefs.exponents".
             pref.singPrefs.exponents = args{2};
             args(1:2) = [];
+        elseif ( any(strcmpi(args{1}, {'chebkind', 'kind'})) )
+            % Translate "chebkind" and "kind" --> "techPrefs.gridType".
+            if ( isnumeric(args{2}) && ((args{2} == 1) || (args{2} == 2)) )
+                pref.techPrefs.gridType = args{2};
+            elseif ( strncmpi(args{2}, '1st', 1) )
+                pref.techPrefs.gridType = 1;
+            elseif ( strncmpi(args{2}, '2nd', 1) )
+                pref.techPrefs.gridType = 2;
+            else
+                error('CHEBFUN:constructor:parseInputs', ...
+                    'Invalid value for ''chebkind''/''kind'' option.');
+            end
+            args(1:2) = [];
         else
             % Update these preferences:
             pref.(args{1}) = args{2};
