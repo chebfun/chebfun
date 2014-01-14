@@ -19,7 +19,8 @@ classdef chebtech2 < chebtech
 %   empty), the VSCALE defaults to 0 initially, and HSCALE defaults to 1.
 %
 %   CHEBTECH2(OP, VSCALE, HSCALE, PREF) overrides the default behavior with
-%   that given by the preference structure PREF. See CHEBTECH.PREF for details.
+%   that given by the preference structure PREF. See CHEBTECH.TECHPREF for
+%   details.
 %
 %   CHEBTECH2(VALUES, ...) returns a CHEBTECH2 object which interpolates the
 %   values in the columns of VALUES at 2nd-kind Chebyshev points and
@@ -31,13 +32,13 @@ classdef chebtech2 < chebtech
 % Examples: % Basic construction: f = chebtech2(@(x) sin(x))
 %
 %   % Construction with preferences:
-%   p.sampleTest = 0; % See CHEBTECH.PREF for details
+%   p.sampleTest = 0; % See CHEBTECH.TECHPREF for details
 %   f = chebtech2(@(x) sin(x), [], [], p)
 %
 %   % Array-valued construction:
 %   f = chebtech2(@(x) [sin(x), cos(x), exp(x)])
 %
-% See also CHEBTECH, CHEBTECH.PREF, CHEBPTS, HAPPINESSCHECK, REFINE.
+% See also CHEBTECH, CHEBTECH.TECHPREF, CHEBPTS, HAPPINESSCHECK, REFINE.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

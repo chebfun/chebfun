@@ -15,7 +15,7 @@ if ( ~issing(f) )
 end
 
 % Non-trivial exponents at both endpoints?
-if ( any(~f.onefun.exponents) )
+if ( any(~get(f, 'exponents') ) )
     return
 end
 

@@ -20,14 +20,14 @@ function f = populate(f, op, vscale, hscale, pref)
 %   OP evaluated to.
 %
 %   F.POPULATE(OP, VSCALE, HSCALE, PREF) enforces any additional preferences
-%   specified in the preference structure PREF (see CHEBTECH.PREF).
+%   specified in the preference structure PREF (see CHEBTECH.TECHPREF).
 %
 %   F.POPULATE(VALUES, ...) (or F.POPULATE({VALUES, COEFFS}, ...)) populates F
 %   non-adaptively with the VALUES (and COEFFS) passed. These values are still
 %   tested for happiness in the same way as described above, but the length of
 %   the representation is not altered.
 %
-% See also CHEBTECH, PREF, HAPPINESSCHECK.
+% See also CHEBTECH, TECHPREF, HAPPINESSCHECK.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.

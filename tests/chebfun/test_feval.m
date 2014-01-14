@@ -13,8 +13,8 @@ xr = 2 * rand(1000, 1) - 1;
 
 % Test empty input.
 f = chebfun(@(x) x, pref);
-fx = feval(f, []);
-pass(1) = isempty(fx);
+fx = feval(f, zeros(0, 4));
+pass(1) = isequal(size(fx), [0 4]);
 
 % Test endpoint evaluation.
 pref.enableBreakpointDetection = 0;
