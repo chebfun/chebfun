@@ -36,7 +36,7 @@ function h = conv(f, g)
 % use the bilinearity of convolution and convolve each each the FUNs
 % individually.
 %
-% The genaral convolution domain (for smooth functions) is as follows:
+% The general convolution domain (for smooth functions) is as follows:
 %           .___________________________
 %          /|                  |      /
 %        /  |                  |    /
@@ -123,7 +123,7 @@ else
     f = f.funs{1};
     g = g.funs{1};
 end
-% Note, for simplicty we work with the FUNs, rather than the CHEBFUNs.
+% Note, for simplicity we work with the FUNs, rather than the CHEBFUNs.
 
 % TODO: Replace this with a call to CONV_OLD()?
 if ( ~isa(f.onefun, 'chebtech') || ~isa(g.onefun, 'chebtech') )
@@ -132,12 +132,12 @@ if ( ~isa(f.onefun, 'chebtech') || ~isa(g.onefun, 'chebtech') )
 end
 
 % Useful things..
-m = length(f); n = length(g);               % Lengths of f anf g
-numPatches = floor((d - c) / (b - a));      % Number of patches required
-x = chebpts(n, [b + c, a + d], 1);          % Chebyshev grid for interior piece
-y = 0*x;                                    % Initialise values in interior
-map = @(x, a, b) (x-a)/(b-a) - (b-x)/(b-a); % Map from [a, b] --> [-1, 1]
-f_leg = cheb2leg(get(f, 'coeffs'));         % Legendre coefficients of f
+m = length(f); n = length(g);                % Lengths of f anf g
+numPatches = floor((d - c) / (b - a));       % Number of patches required
+x = chebpts(n, [b + c, a + d], 1);           % Chebyshev grid for interior piece
+y = 0*x;                                     % Initialise values in interior
+map = @(x, a, b) (x-a)/(b-a) - (b-x)/(b-a);  % Map from [a, b] --> [-1, 1]
+f_leg = chebtech.cheb2leg(get(f, 'coeffs'));  % Legendre coefficients of f
 
 
 % Restrict g:
@@ -154,19 +154,19 @@ for k = 1:numPatches
     dk_left  = a + dk(1); %     /  |  /
     dk_mid   = a + dk(2); %   /____|/
     dk_right = b + dk(2); %  dkl  dkm   dkr
-    gk = g_restricted{k};                     % g on this subdomain
-    gk_leg = cheb2leg(get(gk, 'coeffs'));     % Its Legendre coefficients
-    [hLegL, hLegR] = easyConv(f_leg, gk_leg); % Convolution on this domain
+    gk = g_restricted{k};                          % g on this subdomain
+    gk_leg = chebtech.cheb2leg(get(gk, 'coeffs')); % Its Legendre coefficients
+    [hLegL, hLegR] = easyConv(f_leg, gk_leg);      % Convolution on this domain
     
     % The left triangle for the kth patch:
     idx = dk_left <= x & x < dk_mid; % Locate the grid values in [dkl, dkr]:
     if ( k == 1 ) % First piece:
-        hLegL = leg2cheb(flipud(hLegL));      % Chebyshev coeffs of left tri.
+        hLegL = chebtech.leg2cheb(flipud(hLegL));  % Chebyshev coeffs of left tri.
         h_left = chebfun(hLegL, [dk_left, dk_mid], 'coeffs'); % Make CHEBFUN
     else          % Subsequent left pieces
-        z = map(x(idx), dk_left, dk_mid);     % Map grid points to [-1, 1]
-        tmp = clenshawLegendre(z, hLegL);     % Evaluate via recurrence
-        y(idx) = y(idx) + tmp;                % Append
+        z = map(x(idx), dk_left, dk_mid);          % Map grid points to [-1, 1]
+        tmp = clenshawLegendre(z, hLegL);          % Evaluate via recurrence
+        y(idx) = y(idx) + tmp;                     % Append
     end
     
     % The right triangle for the kth patch:
@@ -181,7 +181,7 @@ end
 
 if ( numPatches == 1 )
     % If there's only one patch, then we already have all the information reqd.
-    hLegR = leg2cheb(flipud(hLegR));                % Cheb coeffs of right tri.
+    hLegR = chebtech.leg2cheb(flipud(hLegR));       % Cheb coeffs of right tri.
     h_right = chebfun(hLegR, d + [a, b], 'coeffs'); % Make CHEBFUN
     h_mid = chebfun();
     
@@ -194,11 +194,11 @@ else
     %  /___|__:/
     %     fl a+d     b+d
 
-    finishLocation = a + c + numPatches*(b - a); % Where patches got up to. (fl) 
-    gk = restrict(g, d-[(b-a) 0]);               % g on appropriate domain        
-    gk_leg = cheb2leg(get(gk, 'coeffs'));        % Legendre coeffs
-    [hLegL, hLegR] = easyConv(f_leg, gk_leg);    % Conv on A and B
-    hLegR = leg2cheb(flipud(hLegR));             % Cheb coeffs on A
+    finishLocation = a + c + numPatches*(b - a);   % Where patches got to. (fl) 
+    gk = restrict(g, d-[(b-a) 0]);                 % g on appropriate domain        
+    gk_leg = chebtech.cheb2leg(get(gk, 'coeffs')); % Legendre coeffs
+    [hLegL, hLegR] = easyConv(f_leg, gk_leg);      % Conv on A and B
+    hLegR = chebtech.leg2cheb(flipud(hLegR));      % Cheb coeffs on A
     h_right = chebfun(hLegR, [d + a, d + b], 'coeffs'); % Make CHEBFUN
     
     % Remainder piece: (between fl and a+d)
@@ -213,7 +213,7 @@ else
         
         % C: 
         fk = restrict(f, b + [-remainderWidth, 0]);     % Restrict f
-        fk_leg = cheb2leg(get(fk, 'coeffs'));           % Legendre coeffs
+        fk_leg = chebtech.cheb2leg(get(fk, 'coeffs'));  % Legendre coeffs
         gk = restrict(g, [finishLocation, d + a] - b);  % Restrict g
         gk_leg = cheb2leg(get(gk, 'coeffs'));           % Legendre coeffs
         [ignored, hLegR] = easyConv(fk_leg, gk_leg);    % Conv 
