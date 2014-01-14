@@ -394,14 +394,17 @@ end
 
 function [at, bt] = trimCoeffs(a, b, tol, ts)
 
+at = a;
+bt = b;
+
 if ( tol > 0 )
     % Nonnegligible coefficients.
-    nna = abs(a) > ts;
-    nnb = abs(b) > tol;
+    nna = abs(at) > ts;
+    nnb = abs(bt) > tol;
 
     % Discard trailing zeros.
-    at = a(1:find(nna, 1, 'last'));
-    bt = b(1:find(nnb, 1, 'last'));
+    at = at(1:find(nna, 1, 'last'));
+    bt = bt(1:find(nnb, 1, 'last'));
 
     % Remove small leading coefficients.
     while ( ~isempty(at) && ~isempty(bt) && (abs(at(1)) < ts) && ...
