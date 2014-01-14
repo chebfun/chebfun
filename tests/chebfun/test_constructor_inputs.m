@@ -56,10 +56,4 @@ f3 = chebfun(@(x) x, 'chebkind', 1);
 pass(10) = isa(f1.funs{1}.onefun, 'chebtech1') && ...
     isa(f2.funs{1}.onefun, 'chebtech2') && isa(f3.funs{1}.onefun, 'chebtech1');
 
-% Test 'chebpts1' and 'chebpts2' flags.
-f1 = chebfun(@(x) x, 'chebpts1');
-f2 = chebfun(@(x) x, 'chebpts2');
-pass(11) = isa(f1.funs{1}.onefun, 'chebtech1') && ...
-    isa(f2.funs{1}.onefun, 'chebtech2');
-
 end
