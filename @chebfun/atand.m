@@ -1,8 +1,8 @@
 function F = atand(F, varargin)
-%ATAN   Inverse tangent of a CHEBFUN, result in degrees.
-%   ATAN(F) computes the inverse tangent (in degrees) of the CHEBFUN F.
+%ATAND   Inverse tangent of a CHEBFUN, result in degrees.
+%   ATAND(F) computes the inverse tangent (in degrees) of the CHEBFUN F.
 %
-%   ATAN(F, PREF) does the same but uses the CHEBPREF object PREF when
+%   ATAND(F, PREF) does the same but uses the CHEBPREF object PREF when
 %   computing the composition.
 %
 % See also TAND, ATAN2D, ATAN.
