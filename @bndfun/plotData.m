@@ -14,11 +14,12 @@ function data = plotData(f, g, h)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Get the data from the ONEFUN:
 if ( nargin == 1 || isempty(g) )
     % PLOT(F):
     
+    % Get the data from the ONEFUN:
     data = plotData(f.onefun);
+    
     % Map the 'x' data using f.mapping.for:
     data.xLine = f.mapping.for(data.xLine);
     data.xPoints = f.mapping.for(data.xPoints);
