@@ -17,7 +17,7 @@ function g = power(f, b)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% If G is a constant, cast it to a CHEBTECH:
+% If B is a constant, cast it to a CHEBTECH:
 if ( isnumeric(b) )
     b = f.make(@(x) 0*x+b, b, 1);
 end
