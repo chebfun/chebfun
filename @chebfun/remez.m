@@ -20,11 +20,11 @@ function varargout = remez(f, varargin)
 %   [...] = REMEZ(..., 'plotfcns', 'error') plots the error after each iteration
 %   while the algorithm executes.
 %
-%   [P, ERR] = REMEZ(...) and [P, Q, R_HANDLE, ERR] = REMEZ(...) also return
+%   [P, ERR] = REMEZ(...) and [P, Q, R_HANDLE, ERR] = REMEZ(...) also returns
 %   the maximum error ERR.
 %
-%   [P, ERR, STATUS] = REMEZ(...) and [P, Q, R_HANDLE, ERR, STATUS] =
-%   REMEZ(...) also return a structure array STATUS with the following fields:
+%   [P, ERR, STATUS] = REMEZ(...) and [P, Q, R_HANDLE, ERR, STATUS] = REMEZ(...)
+%   also return a structure array STATUS with the following fields:
 %      STATUS.DELTA  - Obtained tolerance.
 %      STATUS.ITER   - Number of iterations performed.
 %      STATUS.DIFFX  - Maximum correction in last trial reference.
@@ -32,9 +32,9 @@ function varargout = remez(f, varargin)
 %
 %   This code is quite reliable for polynomial approximations but rather
 %   fragile for rational approximations.  Better results can often be obtained
-%   with CF, especially if f is smooth.
+%   with CF(), especially if f is smooth.
 %
-%   References:
+% References:
 %
 %   [1] Pachon, R. and Trefethen, L. N.  "Barycentric-Remez algorithms for best
 %   polynomial approximation in the chebfun system", BIT Numerical Mathematics,
@@ -80,7 +80,7 @@ xo = xk;
 
 % Print header for text output display if requested.
 if ( opts.displayIter )
-    disp(['It.     Max(|Error|)       |ErrorRef|      Delta ErrorRef      Delta Ref'])
+    disp('It.     Max(|Error|)       |ErrorRef|      Delta ErrorRef      Delta Ref')
 end
 
 % Run the main algorithm.
@@ -122,7 +122,6 @@ while ( (delta/normf > opts.tol) && (iter < opts.maxIter) && (diffx > 0) )
         errmin = err;
         xkmin = xk;
         deltamin = delta;
-        itermin = iter;
     end
 
     % Display diagnostic information as requested.
@@ -139,7 +138,6 @@ while ( (delta/normf > opts.tol) && (iter < opts.maxIter) && (diffx > 0) )
 end
 
 % Take best results of all the iterations we ran.
-itermin;
 p = pmin;
 err = errmin;
 xk = xkmin;
@@ -148,8 +146,8 @@ delta = deltamin;
 % Warn the user if we failed to converge.
 if ( delta/normf > opts.tol )
     warning('CHEBFUN:remez:convergence', ...
-        ['Remez algorithm did not converge after ' num2str(iter) ...
-         ' iterations to the tolerance ' num2str(tol) '.']);
+        ['Remez algorithm did not converge after ', num2str(iter), ...
+         ' iterations to the tolerance ', num2str(tol), '.']);
 end
 
 % Form the outputs.
@@ -242,7 +240,6 @@ if ( max(abs(c(end-1:-2:1)))/vscale(f) < eps )   % f is even.
     if ( mod(m, 2) == 1 )
         m = m - 1;
     end
-
     if ( mod(n, 2) == 1 )
         n = n - 1;
     end
@@ -250,7 +247,6 @@ elseif ( max(abs(c(end:-2:1)))/vscale(f) < eps ) % f is odd.
     if ( mod(m, 2) == 0 )
         m = m - 1;
     end
-
     if ( mod(n, 2) == 1 )
         n = n - 1;
     end
@@ -274,12 +270,11 @@ if ( n > 0 )
         %[p, q] = chebpade(f, m, n, 5*N);
         [p, q] = cf(f, m, n, 5*N);
     end
-
     [xk, err, e, flag] = exchange([], 0, 2, f, p, q, N + 2);
 end
 
-% In the polynomial case or if the above procedure failed to produce a
-% reference with enough equioscillation points, just use the Chebyshev points.
+% In the polynomial case or if the above procedure failed to produce a reference
+% with enough equioscillation points, just use the Chebyshev points.
 if ( flag == 0 )
     xk = chebpts(N + 2, f.domain([1, end]));
 end
@@ -294,7 +289,7 @@ function [p, h] = computeTrialFunctionPolynomial(fk, xk, w, m, N, dom)
 sigma = ones(N + 2, 1);
 sigma(2:2:end) = -1;
 
-h = (w'*fk)/(w'*sigma);                            % Levelled reference error.
+h = (w'*fk) / (w'*sigma);                          % Levelled reference error.
 pk = (fk - h*sigma);                               % Vals. of r*q in reference.
 
 % Trial polynomial.
@@ -323,8 +318,7 @@ qk_all = C(:,1:n+1)*v;
 pos =  find(abs(sum(sign(qk_all))) == N + 2);  % Sign changes of each qk.
 
 if ( isempty(pos) || (length(pos) > 1) )
-    error('CHEBFUN:remez:badGuess', ...
-        'Trial interpolant too far from optimal');
+    error('CHEBFUN:remez:badGuess', 'Trial interpolant too far from optimal');
 end
 
 qk = qk_all(:,pos);       % Keep qk with unchanged sign.
@@ -396,8 +390,8 @@ for i = 2:length(r)
         es(end) = er(i);
     elseif ( sign(er(i)) ~= sign(es(end)) )
         % Keep points which alternate in sign.
-        s = [s ; r(i)];
-        es = [es ; er(i)];
+        s = [s ; r(i)];    %#ok<AGROW>
+        es = [es ; er(i)]; %#ok<AGROW>
     end
 end
 
@@ -422,11 +416,14 @@ end
 function doPlotIter(xo, xk, err_handle, dom)
 
 xxk = linspace(dom(1), dom(end), 300);
-plot(xo, 0*xo, 'or', 'markersize', 12)   % Old reference.
+plot(xo, 0*xo, 'or', 'MarkerSize', 12)   % Old reference.
+holdState = ishold;
 hold on
-plot(xk, 0*xk, '*k', 'markersize', 12)   % New reference.
+plot(xk, 0*xk, '*k', 'MarkerSize', 12)   % New reference.
 plot(xxk, err_handle(xxk))               % Error function.
-hold off
+if ( ~holdState )                        % Return to previous hold state.
+    hold off
+end
 xlim(dom)
 legend('Current Ref.', 'Next Ref.', 'Error')
 drawnow
