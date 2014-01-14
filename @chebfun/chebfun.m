@@ -38,15 +38,16 @@ classdef chebfun
 %   CHEBFUN({@(x) sin(x), @(x) cos(x)}, [-1, 0, 1])
 %
 % CHEBFUN(F, PREF) or CHEBFUN(F, [A, B], PREF) constructs a CHEBFUN object from
-% F with the options determined by the CHEBPREF object PREF.
-% Construction time options may also be passed directly to the constructor in
-% the form CHEBFUN(F, [A, B], PROP1, VAL1, PROP2, VAL2, ...). (See
-% CHEBPREF for details of the various preference options.). In particular,
-% CHEBFUN(F, 'splitting', 'on') allows the constructor to adaptively determine
-% breakpoints to better represent piecewise smooth functions F. For example,
+% F with the options determined by the CHEBPREF object PREF. Construction time
+% options may also be passed directly to the constructor in the form CHEBFUN(F,
+% [A, B], PROP1, VAL1, PROP2, VAL2, ...). (See CHEBPREF for details of the
+% various preference options and their defaults.). In particular, CHEBFUN(F,
+% 'splitting', 'on') allows the constructor to adaptively determine breakpoints
+% to better represent piecewise smooth functions F. For example,
 %   CHEBFUN(@(x) sign(x - .3), [-1, 1], 'splitting', 'on')
-% It is not possible to mix PROP/VAL and PREF inputs in a single constructor
-% call.
+% CHEBFUN(F,'extrapolate','on') prevents the constructor from evaluating the
+% function F at the endpoints of the domain. Note that it is not possible to mix
+% PROP/VAL and PREF inputs in a single constructor call.
 %
 % CHEBFUN(F, ...), where F is an NxM matrix or an array-valued function handle,
 % returns an "array-valued" CHEBFUN. For example,
@@ -578,25 +579,4 @@ g = @loopwrapper;
         end
     end
 end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% JUNK
-% [TODO]: Reinstate or delete this.
-%
-% CHEBFUN(F,'extrapolate','on') prevents the constructor from evaluating
-% the function F at the endpoints of the domain. This may also be achieved
-% with CHEBFUN(F,'chebkind','1st','resampling','on') (which uses Chebyshev
-% points of the 1st kind during the construction process), although this
-% functionality is still experimental.
-%
-% CHEBFUN(F,...,'map',{MAPNAME,MAPPARS}) allows the use of mapped Chebyshev
-% expansions. See help chebfun/maps for more information.
-%
-% CHEBFUN(CHEBS,ENDS,NP) specifies the number NP(i) of
-% Chebyshev points for the construction of the function in CHEBS{i}.
-%
-% G = CHEBFUN(...) returns an object G of type chebfun.  A chebfun consists of a
-% vector of 'funs', a vector 'domain' of length k+1 defining the intervals where
-% the funs apply, and a matrix 'impulses' containing information about possible
-% delta functions at the breakpoints between funs.
 
