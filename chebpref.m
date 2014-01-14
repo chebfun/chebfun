@@ -523,7 +523,7 @@ classdef chebpref
         %   factory defaults when other user-set defaults are currently in
         %   force.
         %
-        % See also SETDEFAULTS.
+        % See also GETDEFAULTS, SETDEFAULTS.
 
             fd = chebpref.factoryDefaultPrefs();
             pref = chebpref(fd);
@@ -533,6 +533,17 @@ classdef chebpref
             % the current defaults have techPrefs stored that are not among the
             % factory defaults.
             pref.prefList.techPrefs = fd.techPrefs;
+        end
+
+        function pref = getDefaults()
+        %GETDEFAULTS   Get default preferences.
+        %   PREF = CHEBPREF.GETDEFAULTS() returns a CHEBPREF object with the
+        %   preferences set to the currently stored default values.  It is
+        %   equivalent to PREF = CHEBPREF().
+        %
+        % See also GETFACTORYDEFAULTS, SETDEFAULTS.
+
+            pref = chebpref();
         end
 
         function setDefaults(varargin)
@@ -551,7 +562,7 @@ classdef chebpref
         %   CHEBPREF.SETDEFAULTS('factory') resets the default preferences to
         %   their factory values.
         %
-        % See also GETFACTORYDEFAULTS.
+        % See also GETDEFAULTS, GETFACTORYDEFAULTS.
 
             if ( nargin < 1)
                 error('CHEBPREF:setDefaults:notEnoughArguments', ...
