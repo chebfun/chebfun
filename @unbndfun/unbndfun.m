@@ -57,9 +57,9 @@ classdef unbndfun < fun
             
             % Obtain preferences if none given:
             if ( (nargin < 5) || isempty(pref))
-                pref = unbndfun.pref;
+                pref = chebpref();
             else
-                pref = unbndfun.pref(pref);
+                pref = chebpref(pref);
             end
             
             % Use default domain if none given:
@@ -89,13 +89,23 @@ classdef unbndfun < fun
                 hscale = 2;
             end
 
-            nonlinmap = unbndfun.createMap(domain);
+            unbndmap = unbndfun.createMap(domain);
             % Include nonlinear mapping from [-1,1] to [a,b] in the op:
             if ( isa(op, 'function_handle') && ~all(domain == [-1 1]) ...
                                             && ~isnumeric(op) )
-                op = @(x) op(nonlinmap.for(x));
+                op = @(x) op(unbndmap.for(x));
             elseif ( isnumeric(op) )
                 % [TODO]: Does this make sense for an UNBNDFUN?
+            end
+            
+            % Preprocess the exponents supplied by the user:
+            if ( ~isempty(pref.singPrefs.exponents) )
+                % Since the exponents provided by the user are in the sense of
+                % unbounded domain, we need to negate them when the domain of 
+                % the original operator/function handle is mapped to [-1 1]
+                % using the forward map, i.e. UNBNDMAP.FOR().
+                ind = isinf(domain);
+                pref.singPrefs.exponents(ind) = -pref.singPrefs.exponents(ind);
             end
             
             % Call the ONEFUN constructor:
@@ -103,7 +113,7 @@ classdef unbndfun < fun
             
             % Add the domain and mapping:
             obj.domain = domain;
-            obj.mapping = nonlinmap;
+            obj.mapping = unbndmap;
             
         end
 
@@ -158,7 +168,7 @@ classdef unbndfun < fun
         out = normest(f);
         
         % Data for plotting a UNBNDFUN
-        data = plotData(f);
+        data = plotData(f, g);
                 
         % Polynomial coefficients of a UNBNDFUN.
         out = poly(f)
