@@ -74,6 +74,93 @@ classdef chebpref
 %
 %         Maximum order of the pole that the singularity detector can find.
 %
+%      exponents               - Exponents at the end points.
+%       [[ ]]
+%
+%         If exponents are supplied by the user from CHEBFUN or FUN levels, the
+%         default value (empty) is replaced and passed to singfun constructor. 
+%         If no information about the singularity is specified by the user, then
+%         the singularity detection is triggered to find the exact pole order 
+%         (which is integer) or singularity order (which is fractional) when 
+%         enableSingularityDetection is set TRUE. When exponents are given by 
+%         the user, there is no need to specify the 'singType' field, as any 
+%         information in singType will be ignored by the SINGFUN constructor.
+%         For a piecewise smooth CHEBFUN, the number of exponents should be
+%         given in pair with each pair corresponds to the ends of a piece. For
+%         example,
+%         
+%         dom = [-2 -1 0 1];
+%         op1 = @(x) sin(x);
+%         op2 = @(x) 1./(1+x);
+%         op3 = @(x) x+1;
+%         op = {op1, op2, op3};
+%         pref = chebpref();
+%         pref.singPrefs.exponents = [0 0 -1 0 0 0];
+%         f = chebfun(op, dom, pref);
+%
+%         Note that syntax in Chebfun v4 is still supported. So the example
+%         above can be exercised as below:
+%
+%         dom = [-2 -1 0 1];
+%         op1 = @(x) sin(x);
+%         op2 = @(x) 1./(1+x);
+%         op3 = @(x) x+1;
+%         op = {op1, op2, op3};
+%         f = chebfun(op, dom, 'exps', [0 0 -1 0 0 0]);
+%         
+%         For the cases where the CHEBFUN has more than one piece, if the size
+%         of the given exponents is 1x2, then the CHEBFUN constructor will take
+%         them as the exponent for the left endpoint of the first piece and the
+%         and that for the right endpoint of the last piece. The exponents for
+%         all other interior endpoints are simply assumed zeros. For example,
+%         
+%         pref = chebpref();
+%         pref.singPrefs.exponents = [-1 0];
+%         pref.enableBreakpointDetection = 1;
+%         f = chebfun(@(x) sin(100*x)./(x+2), [-2 7], pref)
+%
+%         The equivalent syntax in Chebfun v4 fashion is still valid:
+%
+%         f = chebfun(@(x) sin(100*x)./(x+2), [-2 7], 'splitting', 'on', ...
+%             'exps', [-1 0])
+%
+%      singType                - Type of singularities.
+%       [{ }]
+%
+%         The information provided in singType helps the singularity detector to
+%         determine the order of the singularities more efficiently and save 
+%         some construction time. If the default, i.e. an empty cell, is 
+%         replaced by a user-supplied 2*N cell with entries being any of 'none',   
+%         'pole', 'sing', and 'root' where N is the number of smooth pieces,
+%         i.e. FUNS, then this cell is passed to the SINGFUN constructor to 
+%         speed up the singularity detection. Here, 'none', 'pole', 'sing', and 
+%         'root' correspond to free of any kind of singularities, integer pole, 
+%         fractional singularity, and root at the end point with order less than
+%         1, respectively. With the default empty cell, the SINGFUN constructor 
+%         will assume fractional singularities. For instance, setting singType 
+%         to {'pole', 'sing'} tells the singularity detector to search for poles
+%         at the left endpoint of an interval and arbitrary singularities at the 
+%         right endpoint. For example,
+%
+%         dom = [-1 1];
+%         op = @(x) (x - dom(1)).^-0.5.*sin(x);
+%         pref = chebpref();
+%         pref.singPrefs.singType = {'sing', 'none'};
+%         f = chebfun(op, dom, pref);
+%
+%         Syntactically, chebfun constructor supports automatic singularity 
+%         detection for piecewise smooth CHEBFUN. That is, the users can specify
+%         a series of the strings described above in pairs with each pair
+%         corresponds to the endpoints of a subinterval. For example, if one
+%         want to construct a CHEBFUN definied in [-1 0 1] with poles at -1 and
+%         1 and fractional singularity on each side of 0, then the series of
+%         string passed to the CHEBFUN constructor should be {'pole', 'sing', 
+%         'sing', 'pole'}. With these information, the CHEBFUN constructor and 
+%         consequently the SINGFUN will try to find the exact order of the 
+%         singularities. However, the SINGFUN constructor may not succeed for 
+%         most of the cases due to the unsatisfactory performance of the 
+%         current singularity detector.
+%
 %   tech                       - Representation technology.
 %    ['chebtech']
 %
@@ -234,6 +321,8 @@ classdef chebpref
             outPref.enableSingularityDetection = false;
                 outPref.singPrefs.exponentTol = 1.1*1e-11;
                 outPref.singPrefs.maxPoleOrder = 20;
+                outPref.singPrefs.exponents = [];
+                outPref.singPrefs.singType = {};
             outPref.tech = 'chebtech';
             outPref.techPrefs = struct();
                 outPref.techPrefs.eps = 2^(-52);

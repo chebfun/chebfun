@@ -1,7 +1,12 @@
-function f = diff(f, k)
+function f = diff(f, k, dim)
 %DIFF   Derivative of a SINGFUN.
 %   DIFF(F) is the derivative of the SINGFUN F, while DIFF(F, K) is its Kth
 %   derivative.
+%
+%   DIFF(F, K) takes the Kth derivative of F.
+%
+%   Note that the third argument must be 1, indicating that no support for
+%   array-valued F.
 %
 % See also SUM, CUMSUM.
 
@@ -10,9 +15,10 @@ function f = diff(f, k)
 
 %% Check the inputs:
 
-% Trivial case of an empty SINGFUN:
-if ( isempty(f) )
-    return
+% Check the dimension, i.e. the third argument:
+if ( (nargin == 3) && (dim ~= 1) )
+    warning('SINGFUN:cumsum:nosupport', ...
+        'SINGFUN does not support array-valued objects.')
 end
 
 if ( (nargin < 2) || isempty(k) )
@@ -20,6 +26,11 @@ if ( (nargin < 2) || isempty(k) )
     k = 1;
 elseif ( k == 0 )
     % Nothing to do here!
+    return
+end
+
+% Trivial case of an empty SINGFUN:
+if ( isempty(f) )
     return
 end
 

@@ -38,4 +38,24 @@ g = not(f);
 pass(6) = isequal(g.impulses, [0 0 1 0 0 ; 0 0 0 0 0].') && ...
     all(all(feval(g, x) == 0));
 
+%% Test on SINGFUN:
+
+% define the domain:
+dom = [-2 7];
+
+op = @(x) sin(30*x)./((x-dom(1)).*(x-dom(2)));
+f = chebfun(op, dom, 'exps', [-1 -1], 'splitting', 'on');
+h = ~f;
+
+% check values:
+
+% Generate a few random points to use as test values:
+x = diff(dom) * rand(100, 1) + dom(1);
+
+fval = feval(h, x);
+pass(7) = ~any( fval );
+
+r = roots(f);
+pass(8) = ~any( h(r) - 1 );
+
 end
