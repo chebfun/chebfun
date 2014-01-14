@@ -1,10 +1,11 @@
 function out = sum(g, pref)
+% SUM	Definite integral of a UNBNDFUN on singly- or doubly-infinite domain.
+%    SUM(G) is the definite integral of G, whose domain can be either singly-
+%    infinite or doubly-infinite.
+%
+% See also CUMSUM, DIFF.
 
-% SUM	Definite integral in semi-infinite or doubly-infinite domain.
-% SUM(G) is the definite integral of G, whose domain can be either semi-infinite
-% or doubly-infinite.
-
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Get the domain.
@@ -12,7 +13,7 @@ dom = g.domain;
 
 % Get the fun class preference if no preference is passed.
 if ( nargin < 2 )
-    pref = fun.pref();
+    pref = chebpref();
 end
 
 % Get the function values at the end of the domain. Note that the end point of
@@ -20,12 +21,12 @@ end
 vends = [get(g, 'lval'), get(g, 'rval')];
 
 % Get the epslevel and vscale of the function g.
-tol = 10*get(g, 'epslevel')*get(g, 'vscale');
+tol = 1e1*get(g, 'epslevel')*get(g, 'vscale');
 
 %%
 % Cases for onefun has no singularities.
 
-if ( isa(g.onefun, 'smoothfun') || ( isa(g.onefun, 'singfun') && (~any(g.onefun.exponents)) ) )
+if ( ~issing(g) || ( issing(g) && ( ~any( get(g, 'exponents') ) ) ) )
     
     % A dirty checklist to see if the integrand is integrable or not. This 
     % checklist may potentially be removed, since the singfun is supposed to be 
@@ -90,7 +91,7 @@ if ( isa(g.onefun, 'smoothfun') || ( isa(g.onefun, 'singfun') && (~any(g.onefun.
 forDer = onefun.constructor(@(x) g.mapping.forder(x), [], [], pref);
 
 % Form the new integrand.
-integrand = g.onefun*forDer;
+integrand = g.onefun.*forDer;
 
 % Call the sum at onefun level.
 out = sum(integrand);
@@ -99,7 +100,7 @@ return
 
 %%
 % Cases for onefun has singularities at the end points.
-elseif ( isa(g.onefun, 'singfun') )
+elseif ( issing(g) )
     
     % Now assume that g.onefun is a singfun: g.onefun = (1+x)^a*(1-x)^b*s(x),
     % where s(x) is the smooth part and a and b are the powers of the zeros or
