@@ -159,15 +159,9 @@ status.xk = xk;
 p = simplify(p);
 if ( rationalMode )
     q = simplify(qmin);
-    varargout(1) = {p};
-    varargout(2) = {q};
-    varargout(3) = {@(x) feval(p, x)./feval(q, x)};
-    varargout(4) = {err};
-    varargout(5) = {status};
+    varargout = {p, q, @(x) feval(p, x)./feval(q, x), err, status};
 else
-    varargout(1) = {p};
-    varargout(2) = {err};
-    varargout(3) = {status};
+    varargout = {p, err, status};
 end
 
 end
