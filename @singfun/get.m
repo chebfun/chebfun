@@ -19,6 +19,14 @@ switch prop
         % Access to any of the properties of the smooth part of F:
         out = f.smoothPart.(prop);
         
+    case {'lval'}
+        % Get the function value at -1:
+        out = feval(f, -1);
+        
+    case {'rval'}
+        % Get the function value at 1:
+        out = feval(f, 1);
+        
     otherwise
         error('CHEBFUN:SINGFUN:GET:propname', ...
             'Unknown property name "%s" for object of type SINGFUN.', prop);
