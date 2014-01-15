@@ -131,7 +131,25 @@ for k = index
     g = f;
     g.impulses(k-1,:,1) = get(oldFuns{k-1}, 'lval');
     g.impulses(k+1,:,1) = get(oldFuns{k}, 'rval');
-
+    
+    % Grab the correct exponents:
+    
+    if ( issing(f) )
+        if ( ~issing(newFuns{j-1}) && ~issing(newFuns{j}) )
+            pref.singPrefs.exponents = [];
+        elseif ( issing(newFuns{j-1}) && ~issing(newFuns{j}) )
+            exps = get(newFuns{j-1}, 'exponents');
+            pref.singPrefs.exponents = [exps(1) 0];
+        elseif ( ~issing(newFuns{j-1}) && issing(newFuns{j}) )
+            exps = get(newFuns{j}, 'exponents');
+            pref.singPrefs.exponents = [0 exps(2)];
+        else
+            expsLeft = get(newFuns{j-1}, 'exponents');
+            expsRight = get(newFuns{j}, 'exponents');
+            pref.singPrefs.exponents = [expsLeft(1) expsRight(2)];
+        end
+    end
+    
     % Attempt to form a merged FUN:
     mergedFun = fun.constructor(@(x) feval(g, x),  ...
         [newDom(j-1), newDom(j+1)], vs, hs, pref);

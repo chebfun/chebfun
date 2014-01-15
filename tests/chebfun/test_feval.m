@@ -13,8 +13,8 @@ xr = 2 * rand(1000, 1) - 1;
 
 % Test empty input.
 f = chebfun(@(x) x, pref);
-fx = feval(f, []);
-pass(1) = isempty(fx);
+fx = feval(f, zeros(0, 4));
+pass(1) = isequal(size(fx), [0 4]);
 
 % Test endpoint evaluation.
 pref.enableBreakpointDetection = 0;
@@ -186,5 +186,23 @@ f = chebfun(f_exact, [-1 1]);
 x = [-1 ; 0.5 ; 1];
 err = feval(f, x) - f_exact(x);
 pass(30) = all(max(abs(err)) < 10*f.epslevel*f.vscale);
+
+%% Test on singular function:
+
+dom = [-2 7];
+
+% Generate a few random points to use as test values.
+seedRNG(6178);
+x = diff(dom) * rand(100, 1) + dom(1);
+
+pow = -0.5;
+op = @(x) (x - dom(1)).^pow.*sin(200*x);
+pref.singPrefs.exponents = [pow 0];
+pref.enableBreakpointDetection = 1;
+f = chebfun(op, dom, pref);
+fval = feval(f, x);
+vals_exact = feval(op, x);
+err = fval - vals_exact;
+pass(31) = ( norm(err, inf) < 1e1*get(f,'epslevel')*norm(vals_exact, inf) );
 
 end

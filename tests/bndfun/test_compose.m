@@ -74,4 +74,3 @@ pass(9) = norm(feval(h, x) - [sin(x) sin(x.^2)], inf) < ...
     10*max(get(h,'vscale').*get(h, 'epslevel'));
 
 end
-

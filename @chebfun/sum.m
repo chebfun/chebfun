@@ -97,6 +97,11 @@ function out = sumFullDom(f)
         % functions is always zero).
         out = out + sum(f.impulses(:,:,2));
     end
+    
+    % To avoid things like NaN + 1i*NaN:
+    if ( isnan(out) )
+        out = nan;
+    end
 
 end
 

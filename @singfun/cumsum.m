@@ -1,9 +1,12 @@
-function g = cumsum(f, m)
+function g = cumsum(f, m, dim)
 %CUMSUM   Indefinite integral of a SINGFUN.
 %   CUMSUM(F) is the indefinite integral of the SINGFUN F with the constant of
 %   integration chosen zero.
 %
 %   CUMSUM(F, M) will compute the Mth definite integral with vanishing constant.
+%
+%   Note that the third argument must be 1, indicating that no support for
+%   array-valued F.
 %
 %   WARNING: The current version of CUMSUM is limited.  In particular,
 %   CUMSUM does not support functions whose antiderivatives have logarithmic
@@ -29,6 +32,12 @@ function g = cumsum(f, m)
 % Functions with Poles or Algebraic Singularities, Unpublished Note.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Check the dimension, i.e. the third argument:
+if ( nargin == 3 ) && ( dim ~= 1 )
+    error('SINGFUN:cumsum:nosupport', ...
+        'SINGFUN does not support array-valued objects.')
+end
 
 % Check the value of M:
 if ( nargin < 2 )

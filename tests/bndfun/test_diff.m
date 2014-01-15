@@ -121,4 +121,17 @@ f = bndfun(@(x) x.^3, dom);
 dim2df = diff(f, 1, 2);
 pass(15) = (isempty(dim2df));
 
+%% Test on singular function:
+
+pow = -0.5;
+op = @(x) (x - dom(1)).^pow.*sin(x);
+pref.singPrefs.exponents = [pow 0];
+f = bndfun(op, dom, [], [], pref);
+df = diff(f);
+vals_df = feval(df, x);
+df_exact = @(x) (x - dom(1)).^(pow-1).*(pow*sin(x)+(x - dom(1)).*cos(x));
+vals_exact = feval(df_exact, x);
+err = vals_df - vals_exact;
+pass(16) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
+
 end

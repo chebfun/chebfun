@@ -40,9 +40,13 @@ else
     disp([columnString, ' (1 smooth piece)'])
 end
 
+% Extra information:
+[extraItem, extraData] = dispInfo(f);
+
 % Loop through each of the funs to display the following information:
-fprintf('       interval       length   endpoint values\n')
+fprintf('       interval       length   endpoint values %s \n', extraItem)
 len = zeros(numFuns,1);
+
 for j = 1:numFuns
     len(j) = length(f.funs{j});
 
@@ -57,8 +61,8 @@ for j = 1:numFuns
         % For complex-valued funs, we don't display the values.
 
         % Print information to screen:
-        fprintf('[%8.2g,%8.2g]   %6i    complex values\n', ...
-            f.domain(j), f.domain(j+1), len(j));
+        fprintf('[%8.2g,%8.2g]   %6i    complex values %s \n', ...
+            f.domain(j), f.domain(j+1), len(j), extraData{j});
 
     else
 
@@ -78,8 +82,8 @@ for j = 1:numFuns
         endvals(abs(endvals) < zeroTol) = 0;
 
         % Print information to screen:
-        fprintf('[%8.2g,%8.2g]   %6i  %8.2g %8.2g\n', ...
-            f.domain(j), f.domain(j+1), len(j), endvals);
+        fprintf('[%8.2g,%8.2g]   %6i  %8.2g %8.2g %s \n', ...
+            f.domain(j), f.domain(j+1), len(j), endvals, extraData{j});
 
     end
 end

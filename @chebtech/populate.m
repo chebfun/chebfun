@@ -20,14 +20,14 @@ function f = populate(f, op, vscale, hscale, pref)
 %   OP evaluated to.
 %
 %   F.POPULATE(OP, VSCALE, HSCALE, PREF) enforces any additional preferences
-%   specified in the preference structure PREF (see CHEBTECH.PREF).
+%   specified in the preference structure PREF (see CHEBTECH.TECHPREF).
 %
 %   F.POPULATE(VALUES, ...) (or F.POPULATE({VALUES, COEFFS}, ...)) populates F
 %   non-adaptively with the VALUES (and COEFFS) passed. These values are still
 %   tested for happiness in the same way as described above, but the length of
 %   the representation is not altered.
 %
-% See also CHEBTECH, PREF, HAPPINESSCHECK.
+% See also CHEBTECH, TECHPREF, HAPPINESSCHECK.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -171,10 +171,13 @@ if ( ishappy )
     return
 end
 
+% [TODO]: Further decision needs to be made for whether the following lines
+% should be deleted permanently. Currently they are commented out by KX.
+
 % Check for Infs: (if not happy)
-if ( any(isinf(vscale)) )                       
-    error('CHEBFUN:CHEBTECH:constructor:inf_blowup', ...
-     'Function returned Inf when evaluated.')
-end
+% if ( any(isinf(vscale)) )                       
+%     error('CHEBFUN:CHEBTECH:constructor:inf_blowup', ...
+%      'Function returned Inf when evaluated.')
+% end
 
 end
