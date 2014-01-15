@@ -12,7 +12,9 @@ classdef chebfun
 % vector of points x(:) in [-1,1] and return an output of size NxM where N =
 % length(x(:)). If this is not possible then the flag CHEBFUN(F, 'vectorize')
 % should be passed. CHEBFUN(F, 'vectorcheck', 'off') disables the automatic
-% checking for vector input. CHEBFUN() returns an empty CHEBFUN object.
+% checking for vector input. Additionally, F may be a CHEBFUN, in which case
+% CHEBFUN(F) is equivalent to CHEBFUN(@(X) FEVAL(F, X)). CHEBFUN() returns an
+% empty CHEBFUN object.
 %
 % CHEBFUN(F, [A, B]) specifies an interval [A,B] on which the CHEBFUN is
 % defined, where A and/or B may be infinite. CHEBFUN(F, ENDS), where ENDS is a
