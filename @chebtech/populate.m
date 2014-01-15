@@ -152,6 +152,7 @@ vscaleGlobal = max(vscale, vscaleOut);
 if ( any(vscaleOut > 0) )
     epslevel = epslevel*vscaleGlobal./vscaleOut;
 else 
+    % Deal with zero vscale:
     epslevel = epslevel./(1+vscaleOut);
 end
 % Output the 'true' vscale (i.e., the max of the stored values):

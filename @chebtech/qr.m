@@ -200,7 +200,7 @@ function [f, R, E] = qr_householder_old(f, flag)
 % Numer Anal (2010) 30 (4): 887-897. 
 
 % Specify a tolerance:
-tol = f.epslevel*max(f.vscale);
+tol = max(f.epslevel.*f.vscale);
 
 % Grab the size:
 [n, m] = size(f);

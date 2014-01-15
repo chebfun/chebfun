@@ -26,10 +26,10 @@ elseif ( isa(g, 'double') ) % CHEBTECH + double
     end
     f.coeffs(end,:) = f.coeffs(end,:) + g;
     % Update scale:
-    vscale = max(abs(f.values), [], 1);
+    vscaleNew = max(abs(f.values), [], 1);
     % See CHEBTECH CLASSDEF file for documentation on this:
-    f.epslevel = (f.epslevel.*f.vscale + abs(g)*eps)./vscale;
-    f.vscale = vscale;
+    f.epslevel = (f.epslevel.*f.vscale + abs(g)*eps)./vscaleNew;
+    f.vscale = vscaleNew;
     
 elseif ( isa(f, 'double') ) % double + CHEBTECH
     
@@ -64,10 +64,10 @@ else % CHEBTECH + CHEBTECH
         f.ishappy = ishappy;
     else
         % Update vscale, epslevel, and ishappy:
-        vscale = max(abs(f.values), [], 1);
+        vscaleNew = max(abs(f.values), [], 1);
         % See CHEBTECH CLASSDEF file for documentation on this:
-        f.epslevel = (f.epslevel.*f.vscale + g.epslevel.*g.vscale)./vscale;
-        f.vscale = vscale;
+        f.epslevel = (f.epslevel.*f.vscale + g.epslevel.*g.vscale)./vscaleNew;
+        f.vscale = vscaleNew;
         f.ishappy = f.ishappy && g.ishappy;
     end
     
