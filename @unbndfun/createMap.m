@@ -16,7 +16,8 @@ function m = createMap(ends)
 a = ends(1); b = ends(2);
 
 % initialise the map structure:
-m = struct('for', [], 'inv', [], 'forder', [], 'invder', [],'name', 'unbounded', 'par', [a b]);
+m = struct('for', [], 'inv', [], 'forder', [], 'invder', [], ...
+    'forderExps', [], 'name', 'unbounded', 'par', [a b]);
 
 % Fixed map parameters:
 s = 1;
@@ -29,6 +30,7 @@ if ( a == -inf && b == inf )
     m.inv = @(x) 2*x./(5*s + sqrt(25*s^2 + 4*x.^2));
     m.forder = @(y) 5*s*(1 + y.^2)./(1 - y.^2).^2;
     m.invder = @(x) ((1 - x.^2).^2)./(5*s*(1 + x.^2));
+    m.forderExps = [-2 -2];
     
 elseif ( a == -inf )
     
@@ -36,6 +38,7 @@ elseif ( a == -inf )
     m.inv = @(x) (15*s + x - b)./(15*s - x + b);
     m.forder = @(y) 15*s*2./(y + 1).^2;
     m.invder = @(x) ((x + 1).^2)./(15*s*2);
+    m.forderExps = [-2 0];
     
 elseif ( b == inf )
     
@@ -43,6 +46,7 @@ elseif ( b == inf )
     m.inv = @(x) (-15*s + x - a)./(15*s + x - a);
     m.forder = @(y) 15*s*2./(y - 1).^2;
     m.invder = @(x) ((x - 1).^2)./(15*s*2);
+    m.forderExps = [0 -2];
     
 else
     

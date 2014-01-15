@@ -88,6 +88,7 @@ if ( ~issing(g) || ( issing(g) && ( ~any( get(g, 'exponents') ) ) ) )
 % by the onefun sum.
 
 % Construct the onefun presentation of the derivative of the map.
+% pref.singPrefs.exponents = g.mapping.forderExps;
 forDer = onefun.constructor(@(x) g.mapping.forder(x), [], [], pref);
 
 % Form the new integrand.
@@ -122,14 +123,15 @@ elseif ( issing(g) )
             ( ~isempty(fntMask) && exps(fntMask) > -1 && exps(infMask) > 1 ) )
         
         % This if branch covers the following cases, in which g is integrable:
-        % 1. semi-infinite domain [d inf] with exponents [a b] where a > -1, 
+        % 1. singly-infinite domain [d inf] with exponents [a b] where a > -1, 
         %    b > 1.
-        % 2. semi-infinite domain [inf d] with exponents [a b] where a > 1, 
+        % 2. singly-infinite domain [inf d] with exponents [a b] where a > 1, 
         %    b > -1.
         % 3. doubly-infinite domain [-inf inf] with exponents [a b] where a > 1,
         %    b > 1.
         
         % Construct the onefun presentation of the derivative of the map.
+%         pref.singPrefs.exponents = g.mapping.forderExps;
         forDer = onefun.constructor(@(x) g.mapping.forder(x), [], [], pref);
         
         % Form the new integrand.
@@ -157,9 +159,9 @@ elseif ( issing(g) )
             
         % This elseif condition covers the following cases for which the 
         % integral is infinite due to non-integrability at the finite boundary:
-        % 1. semi-infinite domain [d inf] with exponents [a b] where a <= -1, 
+        % 1. singly-infinite domain [d inf] with exponents [a b] where a <= -1, 
         %    b > 1.
-        % 2. semi-infinite domain [inf d] with exponents [a b] where a > 1, 
+        % 2. singly-infinite domain [inf d] with exponents [a b] where a > 1, 
         %    b <= -1.
         
         % Set the infinite the correct sign.
@@ -169,9 +171,9 @@ elseif ( issing(g) )
                 
         % This elseif condition covers the following cases for which the 
         % integral is infinite due to non-integrability at the infinite boundary:
-        % 1. semi-infinite domain [d inf] with exponents [a b] where a > -1, 
+        % 1. singly-infinite domain [d inf] with exponents [a b] where a > -1, 
         %    b <= 1.
-        % 2. semi-infinite domain [inf d] with exponents [a b] where a <= 1, 
+        % 2. singly-infinite domain [inf d] with exponents [a b] where a <= 1, 
         %    b > -1.
         
         % Set the infinite the correct sign.
@@ -180,9 +182,9 @@ elseif ( issing(g) )
     elseif ( sign(vends(1)) == sign(vends(2)) )
         % This elseif condition covers the following cases for which the
         % integral is infinite:
-        % 1. semi-infinite domain [d inf] with exponents [a b] where a <= -1, 
+        % 1. singly-infinite domain [d inf] with exponents [a b] where a <= -1, 
         %    b <= 1 and sign(s(-1)) = sign(s(1)).
-        % 2. semi-infinite domain [inf d] with exponents [a b] where a <= 1, 
+        % 2. singly-infinite domain [inf d] with exponents [a b] where a <= 1, 
         %    b <= -1 and sign(s(-1)) = sign(s(1)).
         % 3. doubly-infinite domain [-inf inf] with exponents [a b] where a <= 1,
         %    b <= 1 and sign(s(-1)) = sign(s(1)).
@@ -193,9 +195,9 @@ elseif ( issing(g) )
         % This else condition covers the following cases for which the
         % integral doesn't exist due to the opposite signs of the function values
         % at the boundaries where the integrand is not integrable:
-        % 1. semi-infinite domain [d inf] with exponents [a b] where a <= -1, 
+        % 1. singly-infinite domain [d inf] with exponents [a b] where a <= -1, 
         %    b <= 1 and sign(s(-1)) ~= sign(s(1)).
-        % 2. semi-infinite domain [inf d] with exponents [a b] where a <= 1, 
+        % 2. singly-infinite domain [inf d] with exponents [a b] where a <= 1, 
         %    b <= -1 and sign(s(-1)) ~= sign(s(1)).
         % 3. doubly-infinite domain [-inf inf] with exponents [a b] where a <= 1,
         %    b <= 1 and sign(s(-1)) ~= sign(s(1)).
