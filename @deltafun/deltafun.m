@@ -1,10 +1,8 @@
 classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
     %DELTAFUN   Class for distributions based on Dirac-delta functions on arbitrary
-    %intervals.
+    %   intervals.
     %
-    %   Class for approximating generalized functions on the interval [a, b]
-    %   using a chebfun part with no distributions and a singular part containing
-    %   delta functions.
+    %   Class for approximating generalized functions on the interval [a, b].
     %
     %   DELTAFUN class description
     %   [TODO]:
@@ -19,7 +17,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
     %% Properties of DELTAFUN objects
     properties ( Access = public )
         % Smooth part of the representation.
-        funPart     % (classical function)
+        funPart     % (classical function which is a CLASSICFUN object)
         
         % [TODO]: Change this documentation:
         % IMPULSES is a three-dimensional array storing information about the
@@ -33,9 +31,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         impulses
         
         % location
-        location       
-        
-        % Added here to make sure deltafuns respect fun's requirements.       
+        location               
     end
     
     %% CLASS CONSTRUCTOR:
@@ -64,74 +60,72 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
             %%
             % Case 1: One input argument.
             if ( nargin == 1 )
-                obj.funPart = [];
-                obj.impulses = [];
-                obj.location = [];
-                if ( ~isempty( funPart ) )
-                    if ( ~isa( funPart, 'fun') )
-                        error( 'DELTAFUN:ctor', 'funPart must be a fun' );
-                    else
-                        obj.funPart = funPart;
-                    end
-                end                
-                return
-            end
-            %%
-            % Case 2: Two input arguments.
-            % Not allowed:
-            if ( nargin == 2 )
-                error( 'DELTAFUN:ctor', 'only two arguments passed' );
-            end
-            
-            %%
-            if ( nargin >= 3)                            
                 if ( isempty(funPart) )
-                    % [TODO]: is this right?
                     obj.funPart = fun.constructor(0);
                 elseif ( ~isa(funPart, 'fun') )
                     error( 'DELTAFUN:ctor', 'funPart must be a fun' );
                 else
                     obj.funPart = funPart;
                 end
-                              
-                %% Return a FUN object if impulses or location are empty.
-                % This is important:
-                if ( isempty(impulses) || isempty(location) )
-                    % Return a fun object in this case:
-                    obj = funPart;
-                    return                
+            end
+            %%
+            % Case 2: Two input arguments.
+            % Assume the argumenst passed are impulses and their locations. 
+            if ( nargin == 2 )
+                % Assign zero fun:
+                obj.funPart = fun.constructor(0);
+                location = impulses;
+                impulses = funPart;
+                % Do no checks here, they are all done below.
+            end
+            
+            %%
+            % Case 3: Three input arguments.
+            if ( nargin >= 3)                            
+                if ( isempty(funPart) )
+                    obj.funPart = fun.constructor(0);
+                elseif ( ~isa(funPart, 'fun') )
+                    error( 'DELTAFUN:ctor', 'funPart must be a fun' );
+                else
+                    obj.funPart = funPart;
                 end
-                
-                if ( xor(isempty(impulses), isempty(location)) )
-                    error( 'DELTAFUN:cotr', 'impulses, location, one empty one not empty' )
-                end
-                
-                if ( size(impulses, 2) ~= length(location) )
-                    error('DELTAFUN:dim', 'Impulse matrix should have the same number of columns as locations' );
-                end
-                
+                % Do no checks here, they are all done below.
+            end
+               
+            %% Check all the arguments:            
+            
+            % If one of impulses or location is empty, make both empty:
+            if ( isempty(impulses) || isempty(location) )
+                impulses = [];
+                location = [];    
+            end            
+            
+            % Make sure location is a row vector:
+            if ( ~isempty(location) )
                 if ( min(size(location)) > 1 )
                     error('DELTAFUN:dim', 'location should be a vector');
                 end
-                
-                % Make sure location is a row vector:
                 location = location(:).';
-                
-                % Locations of delta functions should be within the domain:
-                % NOTE: In fact they should be strictly in the interior of the
-                % domain to make sense.
-                dom = obj.funPart.domain;               
-                if( max(location) > dom(2) || min(location) < dom(1)  )
-                    error('DELTAFUN:domain', 'Location of a delta fun is outside the domain');
-                end
-                
-                % All checks done, assign inputs to object:
-                obj.impulses = impulses;
-                obj.location = location;
-                
             end
-                
-            % Simplify to sort everything:
+            
+            % Check sizes:
+            if ( ~isempty(impulses) )
+                if ( size(impulses, 2) ~= length(location) )
+                    error('DELTAFUN:dim', 'Impulse matrix should have the same number of columns as locations' );
+                end
+            end                         
+      
+            % Locations of delta functions should be within the domain:
+            dom = obj.funPart.domain;
+            if( max(location) > dom(2) || min(location) < dom(1)  )
+                error('DELTAFUN:domain', 'Location of a delta fun is outside the domain');
+            end
+            
+            % All checks done, assign inputs to object:
+            obj.impulses = impulses;
+            obj.location = location;
+                                
+            % Simplify to merge redundant impulses:
             obj = simplify(obj);
         end
     end
@@ -142,6 +136,9 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
     %% METHODS IMPLEMENTED BY THIS CLASS.
     methods
         
+        % True if the DELTAFUN object has no delta functions       
+        out = anyDelta(f)
+
         % Compose a FUN with an operator or another FUN
         f = compose(f, op, g, pref)
         
@@ -169,9 +166,6 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         % Flip/reverse a DELTAFUN object.
         f = flipud(f)
         
-        % True if the DELTAFUN object has no delta functions       
-        out = hasdelta(f)
-
         % Imaginary part of a DELTAFUN.
         f = imag(f)
         

@@ -1,5 +1,6 @@
 function [x, idxV, idxW] = numIntersect( V, W, tol)
 %NUMINTERSECT   Find the intersection of V and W with a relative tolerance.
+%   The code does not always return unique elements.
 
 if( nargin < 3 || isempty(tol) )
     tol = deltafun.pref.deltafun.proximityTol;

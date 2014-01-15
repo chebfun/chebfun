@@ -7,4 +7,4 @@ function d = dirac(f)
 % See http://www.chebfun.org for Chebfun information.
 
 f = 0*f;
-d = deltafun( 1, 0, chebfun(0) );
+d = deltafun( [], 1, 0 );

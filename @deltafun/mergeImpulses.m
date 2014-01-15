@@ -1,6 +1,6 @@
 function [D, w] = mergeImpulses( A, u, B, v)
-%MERGEIMPULSES   merges impulses matrices and their locations.
-%   A and B are matrices. u
+%MERGEIMPULSES   merges impulse matrices and their locations.
+%   A and B are matrices.
 
 % Get the sizes of both matrices:
 szA = size(A);

@@ -14,14 +14,14 @@ end
 if( isa(f, 'deltafun') && isa(g, 'deltafun') )
     % If f and g are both smooth, delegate to
     % the innerproduct of the function part.
-    if( issmooth(f) && issmooth(g) )
+    if( ~anyDelta(f) && ~anyDelta(g) )
         out = f.funPart' * g.funPart;
         return
     end
     % If both f and g are non-trivial distributions, then the inner product is
     % not defined.
     % [TODO]: We can try something in this case as well.
-    if ( ~issmooth(f) && ~issmooth(g) )
+    if ( anyDelta(f) && anyDelta(g) )
         error('CHEBFUN:DELTAFUN:ip', 'At least one distribution should be smooth' );
     end    
 end
@@ -37,7 +37,7 @@ else
 end
 
 % If F is smooth, then since g is also smooth, this is the nomral innerproduct.
-if ( issmooth(F) )
+if ( ~anyDelta(F) )
     out = F.funPart' * g;
     return;
 end
@@ -56,8 +56,9 @@ end
 
 
 % Compute the smooth part of the inner product.
-smoothIP = F.funPart'*g;
-
+%[TODO]: ctranspose is not possible, what to do?
+%smoothIP = F.funPart'*g;
+smoothIP = 0;
 % Computing the inner product
 
 % Get location and magnitudes of delta functions:
