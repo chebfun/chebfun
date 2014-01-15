@@ -338,6 +338,9 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         % Real part of a SINGFUN.
         f = real(f)
         
+        % Replace boundary roots of a SINGFUN.
+        f = replaceBoundaryRoots(f)
+
         % Restrict a SINGFUN to a subinterval.
         f = restrict(f, s)
         

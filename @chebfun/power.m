@@ -53,11 +53,7 @@ elseif ( isa(f, 'chebfun') )                     % CHEBFUN .^ constant
             g = compose(f, @(x) power(x, b));
         end
         
-    elseif ( b == .5 )                  % Sqrt
-        % Call SQRT():
-        g = sqrt(f);
-        
-    else                                % General case
+    else                                % General case (SQRT is included)
         
         % Add breaks at the appropriate roots of f:
         if ( isreal(f) )

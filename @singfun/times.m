@@ -45,6 +45,9 @@ if ( isa(f, 'singfun') && isa(g, 'singfun') )
     h.exponents = f.exponents + g.exponents;
 end
 
+%% Simplify and replace the boundary roots:
+h = simplify(h);
+
 %%
 % Check if after multiplication h has become smooth:
 if ( issmooth(h) )

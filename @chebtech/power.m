@@ -17,11 +17,6 @@ function g = power(f, b)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% If B is a constant, cast it to a CHEBTECH:
-if ( isnumeric(b) )
-    b = f.make(@(x) 0*x+b, b, 1);
-end
-
 % If F is complex and the imaginary part of F vanishes exactly at the domain 
 % boundary, tiny rounding errors in evaluating the imaginary part at the
 % boundary points can cause it to appear to change sign there.  If this happens,
@@ -29,12 +24,22 @@ end
 % cross over the branch cut in POWER, creating a jump discontinuity that should 
 % not be there.  Enabling extrapolation resolves this issue by avoiding these 
 % function evaluations:
+
 pref = f.techPref();
 if ( ~isreal(f) )
     pref.extrapolate = 1;
 end
 
 % Simply call the compose function:
-g = compose(f, @power, b, pref);
+if ( isa(f, 'chebtech') && isa(b, 'chebtech') )
+    % Both F and G are CHEBTECHs:
+	g = compose(f, @power, b, pref);
+elseif ( isa(f, 'chebtech') )
+    % F is CHEBTECH and G is constant: 
+	g = compose(f, @(f) power(f, b), [], pref);
+else
+    % F is constant and G is CHEBTECH: 
+	g = compose(b, @(b) power(f, b), [], pref);
+end
 
 end
