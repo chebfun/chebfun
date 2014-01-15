@@ -564,6 +564,12 @@ classdef chebpref
         %
         % See also GETDEFAULTS, GETFACTORYDEFAULTS.
 
+        % TODO:  What to do about preferences stored in substructures, like
+        % singfun.exponentTol?  Aside from preferences in techPrefs whose names
+        % don't collide with other "top-level" preferences, these can't be set
+        % using the first syntax listed above (though they still can be set
+        % with the second).
+
             if ( nargin < 1)
                 error('CHEBPREF:setDefaults:notEnoughArguments', ...
                     'Not enough arguments.');
