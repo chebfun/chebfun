@@ -239,6 +239,7 @@ classdef chebfun
     
     % Methods implemented by CHEBFUN class.
     methods
+
         % Absolute value of a CHEBFUN.
         f = abs(f, pref)
         
@@ -248,15 +249,18 @@ classdef chebfun
         % True if any element of a CHEBFUN is a nonzero number, ignoring NaN.
         a = any(f, dim)
         
-        % Round a CHEBFUN towards plus infinity.
-        g = ceil(f)
-
+        % Compute the length of the arc defined by a CHEBFUN.
+        out = arcLength(f, a, b)
+        
         % Solve boundary value problems for ODEs by collocation.
         [y, t] = bvp4c(fun1, fun2, y0, varargin);
-
+        
         % Solve boundary value problems for ODEs by collocation.
         [y, t] = bvp5c(fun1, fun2, y0, varargin);
-
+        
+        % Round a CHEBFUN towards plus infinity.
+        g = ceil(f)
+        
         % Plot information regarding the representation of a CHEBFUN object:
         h = chebpolyplot(f, varargin);
 
@@ -418,7 +422,6 @@ classdef chebfun
     end
     
 end
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                (Private) Methods implemented in this m-file.
