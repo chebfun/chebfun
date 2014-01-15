@@ -161,6 +161,14 @@ classdef chebpref
 %         most of the cases due to the unsatisfactory performance of the
 %         current singularity detector.
 %
+%   scale                      - The vertical scale the constructor should use.
+%    [0]
+%
+%      Typically the CHEBFUN constructor will resolve relative to a vertical
+%      scale determined by it's own function evaluations. However, in some
+%      situations one would like to the resolve relative to a fixed vertical
+%      scale. This can be set using this preference.
+%
 %   tech                       - Representation technology.
 %    ['chebtech']
 %
@@ -433,6 +441,8 @@ classdef chebpref
                 prefList.singPrefs.exponentTol');
             fprintf([padString('        maxPoleOrder:') '%d\n'], ...
                 prefList.singPrefs.maxPoleOrder');
+            fprintf([padString('    scale:') '%d\n'], ...
+                prefList.scale);
             fprintf([padString('    tech:') '''%s''\n'], ...
                 prefList.tech)
             fprintf('    techPrefs\n');
@@ -679,6 +689,7 @@ classdef chebpref
                 factoryPrefs.singPrefs.maxPoleOrder = 20;
                 factoryPrefs.singPrefs.exponents = [];
                 factoryPrefs.singPrefs.singType = {};
+            factoryPrefs.scale = 0;
             factoryPrefs.tech = 'chebtech';
             factoryPrefs.techPrefs = struct();
                 factoryPrefs.techPrefs.eps = 2^(-52);

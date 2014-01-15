@@ -14,5 +14,6 @@ function f = extractColumns(f, colIdx)
 f.values = f.values(:, colIdx);
 f.coeffs = f.coeffs(:, colIdx);
 f.vscale = f.vscale(colIdx);
+f.epslevel = f.epslevel(colIdx);
 
 end

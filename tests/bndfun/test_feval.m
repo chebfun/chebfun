@@ -60,7 +60,7 @@ pass(7) = (all(size(err) == [10 10 10])) && (norm(err(:), inf) < ...
 f = bndfun(@(x) [sin(x) x.^2 exp(1i*x)], dom, [], [], pref);
 f_exact = @(x) [sin(x) x.^2 exp(1i*x)];
 err = feval(f, x) - f_exact(x);
-pass(8) = all(max(abs(err)) < 10*get(f, 'vscale')*get(f, 'epslevel'));
+pass(8) = all(max(abs(err)) < 10*get(f, 'vscale').*get(f, 'epslevel'));
 
 %%
 % Test for evaluating array-valued bndfun objects at matrix arguments if
@@ -72,7 +72,7 @@ fx = feval(f, x2);
 f_exact = [0 0 0 -1 1 -1
     [1 sqrt(2) 1 1 0 -1]/sqrt(2)];
 pass(9) = all(all(abs(fx - f_exact) < ...
-    10*max(get(f, 'vscale'))*get(f, 'epslevel')));
+    10*max(get(f, 'vscale').*get(f, 'epslevel'))));
 
 %% Test on singular function:
 

@@ -34,6 +34,6 @@ for type = 1:2
     f = testclass.make(@(x) F(x), [], [], pref);
     g = testclass.make(@(x) [2+sin(x), 2+sin(x), 2+sin(x)]);
     h = abs(f);
-    pass(type, 4) = normest(h - g) < 10*f.epslevel;
+    pass(type, 4) = normest(h - g) < 10*max(f.epslevel);
     
 end

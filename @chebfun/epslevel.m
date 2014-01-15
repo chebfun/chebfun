@@ -7,6 +7,8 @@ function out = epslevel(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% TODO: Is this the right measure?
+
 % Get the local vscales:
 v = get(f, 'vscale-local');
 % Get the local epslevels:

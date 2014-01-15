@@ -78,9 +78,12 @@ switch prop
         out = epslevel(f);
     case 'epslevel-local'
         n = numel(f.funs);
-        out(n,1) = 0;
+        numCols = min(size(f));
+        % TODO:
+%         numCols = numColumns(f);
+        out(n,numCols) = 0;
         for k = 1:n
-            out(k) = get(f.funs{k}, 'epslevel');
+            out(k,:) = get(f.funs{k}, 'epslevel');
         end            
     case {'values', 'coeffs', 'points'}
         n = numel(f.funs);
