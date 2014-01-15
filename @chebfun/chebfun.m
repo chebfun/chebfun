@@ -172,9 +172,8 @@ classdef chebfun
                 f = merge(f, index(:).', pref);
                 
             end
-            
+
         end
-        
     end
     
     % Static methods implemented by CHEBFUN class.
