@@ -20,7 +20,7 @@ end
 if ( ~isa(f, 'chebtech') )      % Ensure F is a CHEBTECH
     f = times(g, f, varargin{:});
     return
-elseif ( isa(g, 'double') )     % CHEBTECH * double
+elseif ( isa(g, 'double') )     % CHEBTECH .* double
     
     % Do the multiplication:
     if ( size(g, 2) > 1 )
@@ -32,20 +32,18 @@ elseif ( isa(g, 'double') )     % CHEBTECH * double
         f.coeffs = f.coeffs*g;
         f.vscale = f.vscale*abs(g);
     end
-    % TODO: Fix this!
-    f.epslevel = f.epslevel + eps;
-    
+    f.epslevel = f.epslevel + eps(g);
     return
     
 elseif ( size(f.values, 1) == 1 )
-    % If we have (constant CHEBTECH)*CHEBTECH, reverse the order and call TIMES
+    % If we have (constant CHEBTECH).*CHEBTECH, reverse the order and call TIMES
     % again:
     f = times(g, f.values);
     f.epslevel = max(f.epslevel, g.epslevel);
     return
     
 elseif ( size(g.values, 1) == 1)
-    % If we have CHEBTECH*(constant CHEBTECH), convert the (constant CHEBTECH)
+    % If we have CHEBTECH.*(constant CHEBTECH), convert the (constant CHEBTECH)
     % to a scalar and call TIMES again:
     f = times(f, g.values); 
     f.epslevel = max(f.epslevel, g.epslevel);

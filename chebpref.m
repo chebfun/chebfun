@@ -332,6 +332,7 @@ classdef chebpref
                 outPref.singPrefs.maxPoleOrder = 20;
                 outPref.singPrefs.exponents = [];
                 outPref.singPrefs.singType = {};
+            outPref.scale = 0;
             outPref.tech = 'chebtech';
             outPref.techPrefs = struct();
                 outPref.techPrefs.eps = 2^(-52);
@@ -454,6 +455,8 @@ classdef chebpref
                 pref.singPrefs.exponentTol');
             fprintf([padString('        maxPoleOrder:') '%d\n'], ...
                 pref.singPrefs.maxPoleOrder');
+            fprintf([padString('    scale:') '%d\n'], ...
+                pref.scale);
             fprintf([padString('    tech:') '''%s''\n'], ...
                 pref.tech)
             fprintf('    techPrefs\n');
