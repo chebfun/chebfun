@@ -146,6 +146,6 @@ vals_g = feval(g, x);
 vals_check = feval(op, x);
 err = vals_g - abs(vals_check);
 pass(8,:) = ( norm(err-mean(err), inf) < ...
-    1e1*get(f,'epslevel')*norm(vals_check, inf) );
+    100*get(f,'epslevel')*norm(vals_check, inf) );
 
 end

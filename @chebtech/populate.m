@@ -95,7 +95,7 @@ if ( isnumeric(op) || iscell(op) )
     f.ishappy = true;
     
     % TODO: Is this the correct vscale?
-    f.epslevel = pref.eps(max(f.vscale)) + 0*f.vscale;
+    f.epslevel = max(eps(max(f.vscale)) + 0*f.vscale, eps);
 
     return
 end
