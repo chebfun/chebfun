@@ -22,8 +22,7 @@ function g = inv(f, varargin)
 %   the values of the inverse of F.  Possible values for ALGSTR are:
 %      'ROOTS'  - Compute the inverse using ROOTS().
 %      'NEWTON' - Compute the inverse using a Newton iteration.
-%   The default algorithm is 'ROOTS'.  For a more concise syntax for accessing
-%   the 'NEWTON' algorithm, see INV2.
+%   The default algorithm is 'ROOTS'.
 %
 %   Any of the name-value option pairs listed above can be used in tandem.
 %
@@ -36,7 +35,7 @@ function g = inv(f, varargin)
 %   (default) may be the better choice for piecewise functions, whereas the
 %   'NEWTON' algorithm is good for smooth functions.
 %
-% See also INV2.
+% See also ROOTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

@@ -8,29 +8,28 @@ if ( nargin == 0 )
     pref = chebpref();
 end
 
-funcList = {@inv, @inv2};
+algoList = {'roots', 'newton'};
 
 for k = 1:2
-    myinv = funcList{k};
-    
     x = chebfun('x');
     f = sin(x);
     g = chebfun(@(x) asin(x), [sin(-1), sin(1)]);
-    f_inv = myinv(f, pref);
+    f_inv = inv(f, pref, 'algorithm', algoList{k});
     tol = 100*epslevel(f_inv).*vscale(f_inv);
     pass(k,1) = norm(g - f_inv, inf) < tol;
 
-    pass(k,2) = norm(f - myinv(f_inv), inf) < tol;
+    pass(k,2) = norm(f - inv(f_inv, 'algorithm', algoList{k}), inf) < tol;
 
     x = chebfun('x');
     f = chebfun(@(x) sausagemap(x));
-    f_inv = myinv(f, pref);
+    f_inv = inv(f, pref, 'algorithm', algoList{k});
     tol = 100*epslevel(f_inv).*vscale(f_inv);
     pass(k,3) = norm(f(f_inv) - x, inf) + norm(f_inv(f) - x, inf) < tol;
 
     % Check the 'monocheck' and 'rangecheck' options.
     f = chebfun(@exp);
-    f_inv = myinv(f, pref, 'monocheck', 'on', 'rangecheck', 'on');
+    f_inv = inv(f, pref, 'algorithm', algoList{k}, 'monocheck', 'on', ...
+        'rangecheck', 'on');
     tol = 100*epslevel(f_inv).*vscale(f_inv);
     xx = linspace(f_inv.domain(1), f_inv.domain(end), 20);
     pass(k,4) = norm(f(f_inv(xx)) - xx, inf) < tol;
