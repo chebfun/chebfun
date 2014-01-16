@@ -1,7 +1,7 @@
 function pass = test_basic_arithmetic
 % This tests the basic arithmetic operations on chebfun2 objects.
 
-tol = 1000 * eps; j = 1;
+tol = 10000 * eps; j = 1;
 
 D = [-1 1 -1 1; -2 2 -2 2; -1 pi 0 2*pi];
 

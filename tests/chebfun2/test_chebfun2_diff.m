@@ -25,7 +25,7 @@ for jj = 1 : length( f )
 
         dx = diff(g, 1, 2); 
         dy = diff(g, 1, 1);
-        
+
         pass(j) = ( norm( dx - gx ) < tol); j=j+1;
         pass(j) = ( norm( dy - gy ) < tol); j=j+1;
         

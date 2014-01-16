@@ -72,7 +72,6 @@ f = simplify(f);
 if ( strcmpi(methodFlag, 'householder') )
     % Call Trefethen's Householder implementation:
     [f, R, E] = qr_householder(f, outputFlag);
-    return
 else
     % The 'built-in' algorithm. i.e., qeighted discrete QR():
     if ( nargout == 3 )
@@ -81,6 +80,8 @@ else
         [f, R] = qr_builtin(f, outputFlag);
     end
 end
+
+% R
 
 end
 
@@ -145,7 +146,7 @@ function [f, R, Eperm] = qr_householder(f, flag)
 
 % Get some useful values
 [n, numCols] = size(f);
-tol = f.epslevel.*f.vscale;
+tol = max(f.epslevel.*f.vscale);
 
 % Make the discrete analog of f:
 newN = 2*max(n, numCols);
@@ -293,7 +294,6 @@ for k = m:-1:1
         Q(:,j) = Q(:,j) - 2*V(:,k)*vq;
     end
 end
-Q
 
 % Compute the corresponding Chebyshev coefficients:
 f.coeffs = f.vals2coeffs(Q);
