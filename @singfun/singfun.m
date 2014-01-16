@@ -332,14 +332,14 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         % QR factorisation of an array-valued ONEFUN.
         [f, R, E] = qr(f, flag, methodFlag)
         
-        % Dividing two SINGFUNs
+        % Dividing two SINGFUNs.
         f = rdivide(f, g)
         
         % Real part of a SINGFUN.
         f = real(f)
         
-        % Replace boundary roots of a SINGFUN.
-        f = replaceBoundaryRoots(f)
+        % Simplify the exponents of a SINGFUN.
+        f = SimplifyExponents(f)
 
         % Restrict a SINGFUN to a subinterval.
         f = restrict(f, s)
