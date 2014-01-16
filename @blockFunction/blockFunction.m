@@ -10,14 +10,15 @@ classdef blockFunction
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Developer notes
 %
-% This class converts a linBlock object into a callable function suitable
-% for application to a chebfun.
+% This class converts a LINBLOCK object into a callable function suitable
+% for application to a CHEBFUN.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     properties ( Access=public )
         % This property is assigned the callable function that does the
         % correct operation when called on CHEBFUN objects.
         func = [];
+        % The domain of functions that are operated upon.
         domain;
     end
     
@@ -29,7 +30,7 @@ classdef blockFunction
             % coefficients.
             if ( isempty(varargin{1}) )
                 pref = cheboppref;
-                A.domain = pref.domain;  % not clear this is ever used...
+                A.domain = pref.domain;  % TODO: not clear this is ever used...
                 return
                 
                 
