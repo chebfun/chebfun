@@ -4,15 +4,15 @@ classdef blockFunction
 %
 %   See also LINOP, CHEBOP, CHEBOPPREF.
     
-    % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-    % See http://www.chebfun.org/ for Chebfun information.
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
     
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % Developer notes
-    %
-    % This class converts a linBlock object into a callable function suitable
-    % for application to a chebfun.
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Developer notes
+%
+% This class converts a linBlock object into a callable function suitable
+% for application to a chebfun.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     properties (Access=public)
         % This property is assigned the callable function that does the
