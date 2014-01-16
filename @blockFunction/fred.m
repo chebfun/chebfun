@@ -34,10 +34,10 @@ else
     k = kernel;
 end
 
-f = blockFunction(@(z) applyfred(z, A.domain, k));
+f = blockFunction(@(z) applyFred(z, A.domain, k));
 end
 
-function Fu = applyfred(u, d, kernel)
+function Fu = applyFred(u, d, kernel)
 % At each x, do an adaptive quadrature.
 % Result can be resolved relative to norm(u). (For instance, if the
 % kernel is nearly zero by cancellation on the interval, don't try to
