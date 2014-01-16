@@ -298,7 +298,7 @@ classdef chebtech < smoothfun % (Abstract)
         f = extractColumns(f, columnIndex)
 
         % Extract roots at the boundary points -1 and 1.
-        [f, rootsLeft, rootsRight] = extractBoundaryRoots(f)
+        [f, rootsLeft, rootsRight] = extractBoundaryRoots(f, numRoots)
 
         % Extrapolate (for NaNs / Infs).
         [values, maskNaN, maskInf] = extrapolate(f)

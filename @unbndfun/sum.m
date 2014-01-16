@@ -91,8 +91,11 @@ if ( ~issing(g) || ( issing(g) && ( ~any( get(g, 'exponents') ) ) ) )
 pref.singPrefs.exponents = g.mapping.forderExps;
 forDer = onefun.constructor(@(x) g.mapping.forder(x), [], [], pref);
 
-% Form the new integrand.
-integrand = g.onefun.*forDer;
+% Peel off the boundary roots to cancel off the negative exponents of forDer:
+h = extractBoundaryRoots(g.onefun, -g.mapping.forderExps.');
+
+% Form the new integrand:
+integrand = h.*forDer.smoothPart;
 
 % Call the sum at onefun level.
 out = sum(integrand);
@@ -134,8 +137,11 @@ elseif ( issing(g) )
         pref.singPrefs.exponents = g.mapping.forderExps;
         forDer = onefun.constructor(@(x) g.mapping.forder(x), [], [], pref);
         
-        % Form the new integrand.
-        integrand = gtmp.onefun*forDer;
+        % Peel off the boundary roots to cancel off the negative exponents of forDer:
+        h = extractBoundaryRoots(g.onefun, -g.mapping.forderExps.');
+        
+        % Form the new integrand:
+        integrand = h.*forDer.smoothPart;
         
         % Call the onefun sum.
         out = sum(integrand);
