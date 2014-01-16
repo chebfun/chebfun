@@ -18,7 +18,7 @@ function f = fred(A,kernel,onevar)
 % separable or sparse representation for increased efficiency in
 % some cases.
 %
-% See also domain/fred, chebfun/volt, chebop.
+% See also blockFunction/volt, linop/fred, chebop/fred.
 
 % Copyright 2011 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
