@@ -79,15 +79,6 @@ if ( isnumeric(op) || iscell(op) )
         % OP is just the values.
         f.values = op;
         f.coeffs = f.vals2coeffs(op);
-<<<<<<< HEAD
-        % Update vscale:
-        f.vscale = max(abs(f.values(:)));
-        % Check for happiness: (no OP to compare against)
-        f.ishappy = true;
-        f.epslevel = pref.eps;
-%         [f.ishappy, f.epslevel] = happinessCheck(f, [], pref);
-=======
->>>>>>> development
     else                 
         % OP is a cell {values, coeffs}
         f.values = op{1};
@@ -95,14 +86,6 @@ if ( isnumeric(op) || iscell(op) )
         if ( isempty(f.values) )
             f.values = f.coeffs2vals(f.coeffs);
         end
-<<<<<<< HEAD
-        % Update vscale:
-        f.vscale = max(abs(f.values(:)));
-        % We're always happy if given coefficients:
-        f.ishappy = true;
-        f.epslevel = pref.eps;
-=======
->>>>>>> development
     end
     
     % Update vscale:
@@ -118,7 +101,6 @@ if ( isnumeric(op) || iscell(op) )
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% Adaptive construction. %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 % Initialise empty values to pass to refine:
 f.values = [];
 
@@ -176,7 +158,6 @@ else
 end
 % Output the 'true' vscale (i.e., the max of the stored values):
 vscale = vscaleOut;
->>>>>>> development
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% Assign to CHEBTECH object. %%%%%%%%%%%%%%%%%%%%%%%%%%
 f.coeffs = coeffs;

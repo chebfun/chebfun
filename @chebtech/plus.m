@@ -64,12 +64,7 @@ else % CHEBTECH + CHEBTECH
         f.ishappy = ishappy;
     else
         % Update vscale, epslevel, and ishappy:
-<<<<<<< HEAD
-        % vscale = max(abs(f.values), [], 1);
-        vscale = max(max(abs(f.values))); 
-=======
         vscaleNew = max(abs(f.values), [], 1);
->>>>>>> development
         % See CHEBTECH CLASSDEF file for documentation on this:
         f.epslevel = (f.epslevel.*f.vscale + g.epslevel.*g.vscale)./vscaleNew;
         f.vscale = vscaleNew;

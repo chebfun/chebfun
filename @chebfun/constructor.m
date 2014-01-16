@@ -42,9 +42,6 @@ if ( iscell(op) && (numel(op) ~= numIntervals) )
     error('CHEBFUN:constructor:cellInput', ...
         ['Number of cell elements in OP must match the number of ', ...
          'intervals in DOMAIN.'])
-<<<<<<< HEAD
-end   
-=======
 end
 
 % Sort out the exponents:
@@ -93,7 +90,6 @@ if ( ~isempty(pref.singPrefs.singType) )
             'inappropriate.']);
     end
 end
->>>>>>> development
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%  SPLITTING OFF %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % In 'OFF' mode, seek only one piece with length < maxLength.

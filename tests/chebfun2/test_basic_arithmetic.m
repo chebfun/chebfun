@@ -15,11 +15,13 @@ for r = 1 : size(D,1)
     FminusG = chebfun2(@(x,y) cos(x.*y) - (x + y + x.*y), D(r,:) );
     FtimesG = chebfun2(@(x,y) cos(x.*y).*(x + y + x.*y), D(r,:) );
     
-    pass(j) = ( norm( f - uplusF ) < tol ); j = j + 1;
-    pass(j) = ( norm( (-f) - uminusF ) < tol ); j = j + 1;
-    pass(j) = ( norm( f+g - FplusG ) < tol ); j = j + 1;
-    pass(j) = ( norm( (f-g) - FminusG ) < 10*tol ); j = j + 1;
-    pass(j) = ( norm( f.*g - FtimesG ) < 10*tol ); j = j + 1;
+    tolr = norm(D(r,:),inf)*tol;
+    
+    pass(j) = ( norm( f - uplusF ) < tolr ); j = j + 1;
+    pass(j) = ( norm( (-f) - uminusF ) < tolr ); j = j + 1;
+    pass(j) = ( norm( f+g - FplusG ) < tolr ); j = j + 1;
+    pass(j) = ( norm( (f-g) - FminusG ) < 10*tolr ); j = j + 1;
+    pass(j) = ( norm( f.*g - FtimesG ) < 10*tolr ); j = j + 1;
 end
 
 

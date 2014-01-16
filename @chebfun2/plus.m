@@ -62,7 +62,6 @@ function h = compression_plus(f, g)
     rows = [f.rows g.rows];
     
     [Qleft, Rleft] = qr( cols ); 
-    
     [Qright, Rright] = qr( rows );
 
     Z = zeros(length(fScl),length(gScl));  

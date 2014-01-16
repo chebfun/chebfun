@@ -303,7 +303,6 @@ classdef chebpref
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     properties
-<<<<<<< HEAD
         maxTotalLength
         enableBreakpointDetection
         breakpointPrefs
@@ -313,14 +312,12 @@ classdef chebpref
         tech
         techPrefs
         cheb2Prefs
-=======
         % This is a MATLAB structure which stores the system preferences.  As a
         % class invariant, this structure is guaranteed to contain fields for
         % each of the preferences of the upper layers listed above.  It is also
         % guaranteed to contain a techPrefs field, but no guarantees are made
         % about its contents.
         prefList
->>>>>>> development
     end
 
     methods
@@ -334,7 +331,6 @@ classdef chebpref
             end
 
             % Initialize default preference values.
-<<<<<<< HEAD
             outPref.maxTotalLength = 65537;
             outPref.enableBreakpointDetection = false;
                 outPref.breakpointPrefs.splitMaxLength = 129;
@@ -356,9 +352,7 @@ classdef chebpref
                 outPref.cheb2Prefs.eps = 2^(-52); 
                 outPref.cheb2Prefs.exactLength = false;
                 outPref.cheb2Prefs.sampleTest = true; 
-=======
             outPref.prefList = chebpref.manageDefaultPrefs('get');
->>>>>>> development
 
             % Copy fields from q, placing unknown ones in techPrefs and merging
             % incomplete substructures.
@@ -477,6 +471,17 @@ classdef chebpref
                 prefList.singPrefs.exponentTol');
             fprintf([padString('        maxPoleOrder:') '%d\n'], ...
                 prefList.singPrefs.maxPoleOrder');
+            fprintf('    cheb2Prefs\n');
+            fprintf([padString('        maxRank:') '%d\n'], ...
+                prefList.cheb2Prefs.maxRank');
+            fprintf([padString('        maxLength:') '%d\n'], ...
+                prefList.cheb2Prefs.maxLength');            
+            fprintf([padString('        eps:') '%d\n'], ...
+                prefList.cheb2Prefs.eps');            
+            fprintf([padString('        exactLength:') '%d\n'], ...
+                prefList.cheb2Prefs.exactLength');            
+            fprintf([padString('        sampleTest:') '%d\n'], ...
+                prefList.cheb2Prefs.sampleTest');            
             fprintf([padString('    scale:') '%d\n'], ...
                 prefList.scale);
             fprintf([padString('    tech:') '''%s''\n'], ...
@@ -733,6 +738,12 @@ classdef chebpref
                 factoryPrefs.techPrefs.exactLength = NaN;
                 factoryPrefs.techPrefs.extrapolate = false;
                 factoryPrefs.techPrefs.sampleTest = true;
+            factoryPrefs.cheb2Prefs = struct(); 
+                factoryPrefs.cheb2Prefs.maxRank = 1000;   
+                factoryPrefs.cheb2Prefs.maxLength = 65537;   
+                factoryPrefs.cheb2Prefs.eps = 2^(-52);   
+                factoryPrefs.cheb2Prefs.exactLength = 0; 
+                factoryPrefs.cheb2Prefs.sampleTest = 1;
         end
 
     end
