@@ -215,7 +215,7 @@ else
         fk = restrict(f, b + [-remainderWidth, 0]);     % Restrict f
         fk_leg = chebtech.cheb2leg(get(fk, 'coeffs'));  % Legendre coeffs
         gk = restrict(g, [finishLocation, d + a] - b);  % Restrict g
-        gk_leg = cheb2leg(get(gk, 'coeffs'));           % Legendre coeffs
+        gk_leg = chebtech.cheb2leg(get(gk, 'coeffs'));   % Legendre coeffs
         [ignored, hLegR] = easyConv(fk_leg, gk_leg);    % Conv 
         z = map(x(idx), finishLocation, d + a);         % Map to [-1, 1]
         tmp = clenshawLegendre(z, hLegR);               % Eval via recurrence
