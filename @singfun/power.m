@@ -28,7 +28,7 @@ f.exponents = b*f.exponents;
 % to be smooth):
 f.smoothPart = power(f.smoothPart, b);
 
-% Simplify the exponents and the exponents:
-f = simplify(f);
+% Simplify the exponents:
+f = replaceBoundaryRoots(f);
 
 end
