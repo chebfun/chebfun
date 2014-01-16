@@ -88,7 +88,7 @@ if ( ~issing(g) || ( issing(g) && ( ~any( get(g, 'exponents') ) ) ) )
 % by the onefun sum.
 
 % Construct the onefun presentation of the derivative of the map.
-% pref.singPrefs.exponents = g.mapping.forderExps;
+pref.singPrefs.exponents = g.mapping.forderExps;
 forDer = onefun.constructor(@(x) g.mapping.forder(x), [], [], pref);
 
 % Form the new integrand.
@@ -131,7 +131,7 @@ elseif ( issing(g) )
         %    b > 1.
         
         % Construct the onefun presentation of the derivative of the map.
-%         pref.singPrefs.exponents = g.mapping.forderExps;
+        pref.singPrefs.exponents = g.mapping.forderExps;
         forDer = onefun.constructor(@(x) g.mapping.forder(x), [], [], pref);
         
         % Form the new integrand.
