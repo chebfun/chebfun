@@ -12,6 +12,7 @@ if ( isempty(f) )
     return
 end
 
-f = f.^0.5;
+% Simply call POWER()
+f = power(f, 0.5);
 
 end
