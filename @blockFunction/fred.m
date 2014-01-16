@@ -1,4 +1,4 @@
-function f = fred(A,kernel,onevar)
+function f = fred(A, kernel, onevar)
 % FRED  Fredholm integral operator.
 %
 % F = FRED(K,V) computes the Fredholm integral with kernel K:
@@ -24,20 +24,20 @@ function f = fred(A,kernel,onevar)
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % Default onevar to false
-if ( nargin==2 )
+if ( nargin == 2 )
     onevar = false;
 end
 
 if ( onevar )
-    k = @(x,y) kernel(x);
+    k = @(x, y) kernel(x);
 else
     k = kernel;
 end
 
-f = blockFunction(@(z) applyfred(z,A.domain,k));
+f = blockFunction(@(z) applyfred(z, A.domain, k));
 end
 
-function Fu = applyfred(u,d,kernel)
+function Fu = applyfred(u, d, kernel)
 % At each x, do an adaptive quadrature.
 % Result can be resolved relative to norm(u). (For instance, if the
 % kernel is nearly zero by cancellation on the interval, don't try to
@@ -45,5 +45,6 @@ function Fu = applyfred(u,d,kernel)
 nrmu = norm(u);
 opt = {'resampling',false,'splitting',true,'scale',nrmu};
 int = @(x) sum( chebfun(@(y) feval(u,y).*kernel(x,y),d)); %, opt{:} );
-Fu = chebfun( int, d,'sampletest',false,'resampling',false,'vectorize','scale',nrmu);
+Fu = chebfun( int, d, 'sampletest', false, 'resampling', false, ...
+    'vectorize', 'scale', nrmu);
 end
