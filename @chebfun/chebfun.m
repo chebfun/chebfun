@@ -280,7 +280,7 @@ classdef chebfun
         f = ctranspose(f)
 
         % Useful information for DISPLAY.
-        [name, data] = dispInfo(f)
+        [name, data] = dispData(f)
         
         % Display a CHEBFUN object.
         display(f);

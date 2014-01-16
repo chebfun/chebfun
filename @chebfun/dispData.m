@@ -1,7 +1,7 @@
 function [name, data] = dispData(f)
 %DISPDATA   Useful information for DISPLAY.
-%   INFO = DISPDATA(F) collects extra information from the given CHEBFUN F and
-%   the output will be used by DISPLAY. 
+%   [NAME, DATA] = DISPDATA(F) collects extra information from the given CHEBFUN
+%   F and the output will be used by DISPLAY. 
 %
 % See also DISPLAY.
 
@@ -38,7 +38,7 @@ data = cell(j,1);
     
 % So far, the only extra information is exponents:
 if any( exps(:) )
-    name = '     exponents at the endpoints';
+    name = '    exponents at the endpoints';
     for j = 1:numFuns
         data{j} = ['     ' '[' num2str(exps(j,1), '%i') '              ' ...
             num2str(exps(j,2), '%i') ']' '  '];

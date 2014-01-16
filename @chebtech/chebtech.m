@@ -292,7 +292,7 @@ classdef chebtech < smoothfun % (Abstract)
         f = diff(f, k, dim)
 
         % Extract information for DISPLAY.
-        info = dispInfo(f)
+        info = dispData(f)
         
         % Extract columns of an array-valued CHEBTECH object.
         f = extractColumns(f, columnIndex)

@@ -225,7 +225,7 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         f = diff(f, k, dim)
         
         % Extract information for DISPLAY.
-        info = dispInfo(f)
+        info = dispData(f)
         
         % Evaluate a SINGFUN.
         y = feval(f, x)
