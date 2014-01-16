@@ -64,14 +64,12 @@ elseif ( isa(f, 'chebfun') )                     % CHEBFUN .^ constant
             % to the branch cut.
             f = addBreaksAtRoots(f, 'imag');
         end
-        
         % Loop over each piece individually:
         numFuns = numel(f.funs);
         g = f;
         for k = 1:numFuns
             g.funs{k} = power(f.funs{k}, b);
         end
-        
         % Update the impulses:
         g.impulses = g.impulses.^b;
         
