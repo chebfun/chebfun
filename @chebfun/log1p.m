@@ -9,7 +9,7 @@ function g = log1p(f, pref)
 % See http://www.chebfun.org/ for Chebfun information. 
 
 if ( nargin < 2 )
-    pref = chebfun.pref();
+    pref = chebpref();
 end
 
 % Add breaks at the roots of f + 1:
