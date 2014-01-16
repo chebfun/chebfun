@@ -125,12 +125,15 @@ classdef bndfun < fun
     
     %% METHODS IMPLEMENTED BY THIS CLASS.
     methods
-        
+        % Introduce new breakpoint to facilitate the computation of the 
+        % indefinite integral of a BNDFUN.
+        f = addBreaksForCumSum(f)
+
         % Compose a BNDFUN with an operator or another BNDFUN
         f = compose(f, op, g, pref)
         
         % Indefinite integral of a BNDFUN.
-        f = cumsum(f, m, pref)
+        f = cumsum(f, m, dim, shift)
         
         % Derivative of a BNDFUN.
         f = diff(f, k, dim)
@@ -152,6 +155,9 @@ classdef bndfun < fun
 
         % Right matrix divide for a BNDFUN.
         X = mrdivide(B, A)
+        
+        % Return Legendre coefficients of a BNDFUN.
+        c_leg = legpoly(f, n)
         
         % Estimate the Inf-norm of a BNDFUN
         out = normest(f);

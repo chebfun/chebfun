@@ -34,6 +34,8 @@ function [x, w, v] = radaupts(n, varargin)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% TODO: Scaled domains?
+
 %% Trivial cases:
 if ( n == 1 )
     x = -1;

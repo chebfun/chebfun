@@ -145,7 +145,7 @@ function [f, R, Eperm] = qr_householder(f, flag)
 
 % Get some useful values
 [n, numCols] = size(f);
-tol = f.epslevel*f.vscale;
+tol = f.epslevel.*f.vscale;
 
 % Make the discrete analog of f:
 newN = 2*max(n, numCols);
@@ -201,7 +201,7 @@ function [f, R, E] = qr_householder_old(f, flag)
 % Numer Anal (2010) 30 (4): 887-897. 
 
 % Specify a tolerance:
-tol = f.epslevel*max(f.vscale);
+tol = max(f.epslevel.*f.vscale);
 
 % Grab the size:
 [n, m] = size(f);

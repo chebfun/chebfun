@@ -45,17 +45,24 @@ if ( m > 1 )
     numCols = m*numInts;
     index = reshape(reshape(1:numCols, numInts, m)', 1, numCols);
     values = values(:, index);
+else
+    numCols = numInts;
 end
 
 % Update coeffs and vscale:
 coeffs = f.vals2coeffs(values);
 vscale = max(abs(values), [], 1);
 
+% Update epslevel:
+epslevel = repmat(f.epslevel.*f.vscale, 1, numInts)./vscale;
+% (The product of the epslevels and vscales of the 'child' pieces should be the
+% same as the product of the epslevel and vscale of their 'parent'.)
+
 % Append data to CHEBTECH:
 f.values = values;
 f.coeffs = coeffs;
 f.vscale = vscale;
-% f.epslevel = f.epslevel; % epslevel does not change (or become a vector yet).
+f.epslevel = epslevel;
 
 if ( numInts > 1 )
     % Convert to a cell-array:

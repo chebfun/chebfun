@@ -21,9 +21,8 @@ n = size(f.values, 1);
 if ( nargin > 1 && dim == 2 )
     f.values = sum(f.values, dim);
     f.coeffs = sum(f.coeffs, dim);
-    % vscale = max(abs(f.values), [], 1);
-    vscale = max(max(abs(f.values))); 
-    f.epslevel = f.epslevel*sum(f.vscale, 2)/vscale;
+    vscale = max(abs(f.values), [], 1);
+    f.epslevel = sum(f.epslevel.*f.vscale, 2)./vscale;
     f.vscale = vscale;
     out = f;
     return

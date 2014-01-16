@@ -61,6 +61,47 @@ catch ME
     pass(16) = strcmp(ME.identifier, 'CHEBFUN:times:matdim');
 end
 
+%% Test on singular function:
+
+dom = [-2 7];
+
+% Generate a few random points to use as test values.
+seedRNG(6178);
+x = diff(dom) * rand(100, 1) + dom(1);
+
+%% Case of a scalar and a function:
+c = 3;
+pow = -0.5;
+op = @(x) (x - dom(2)).^pow.*sin(x);
+op_exact = @(x) c*(x - dom(2)).^pow.*sin(x);
+pref.singPrefs.exponents = [0 pow];
+f = chebfun(op, dom, pref);
+g = c.*f;
+g_exact = chebfun(op_exact, dom, pref);
+
+err = norm(feval(g, x) - feval(g_exact, x), inf);
+pass(17) = ( err < 5*get(f, 'epslevel')*norm(feval(g_exact, x), inf) );
+
+%% Case of two functions: piecewise smooth chebfun - splitting on.
+pow1 = -0.3;
+pow2 = -0.5;
+op1 = @(x) (x - dom(2)).^pow1.*sin(100*x);
+op2 = @(x) (x - dom(2)).^pow2.*cos(300*x);
+op_exact = @(x) (x - dom(2)).^(pow1+pow2).*sin(100*x).*cos(300*x);
+pref.singPrefs.exponents = [0 pow1];
+pref.enableBreakpointDetection = 1;
+f = chebfun(op1, dom, pref);
+pref.singPrefs.exponents = [0 pow2];
+pref.enableBreakpointDetection = 1;
+g = chebfun(op2, dom, pref);
+h = f.*g;
+pref.singPrefs.exponents = [0 pow1+pow2];
+h_exact = chebfun(op_exact, dom, pref);
+
+err = norm(feval(h, x) - feval(h_exact, x), inf);
+pass(18) = ( err < 1e1*max(get(f, 'epslevel'), get(g, 'epslevel'))*...
+    norm(feval(h_exact, x), inf) );
+
 end
 
 % Test the multiplication of a chebfun F, specified by F_OP, by a scalar ALPHA

@@ -7,6 +7,8 @@ function out = epslevel(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% TODO: Is this the right measure?
+
 % Get the local vscales:
 v = get(f, 'vscale-local');
 % Get the local epslevels:
@@ -17,5 +19,10 @@ ve = bsxfun(@times, v, e);
 out = max(ve(:));
 % Make it a _relative_ error estimate:
 out = out / vscale(f);
+
+% [TODO]: Remove this hack!
+if ( isnan(out) || ~logical(out) )
+    out = chebpref().eps;
+end
 
 end

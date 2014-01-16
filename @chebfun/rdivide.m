@@ -68,7 +68,7 @@ if ( isa(f, 'chebfun') )
     end
     
     % Divide the impulses:
-    h.impulses = f.impulses(1,1,:)./g.impulses(1,1,:);
+    h.impulses = f.impulses(:,:,1)./g.impulses(:,:,1);
     
 else
 
@@ -81,7 +81,7 @@ else
     end
     
     % Divide the impulses:
-    h.impulses = f./g.impulses(1,1,:);
+    h.impulses = f./g.impulses(:,:,1);
     
 end
 

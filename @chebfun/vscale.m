@@ -16,4 +16,9 @@ v = get(f, 'vscale-local');
 % Compute the maximum:
 out = max(v(:));
 
+% [TODO]: Remove this hack.
+if ( ~all(out) )
+    out(~out) = 1;
+end
+
 end

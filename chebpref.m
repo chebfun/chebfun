@@ -74,6 +74,101 @@ classdef chebpref
 %
 %         Maximum order of the pole that the singularity detector can find.
 %
+%      exponents               - Exponents at the end points.
+%       [[ ]]
+%
+%         If exponents are supplied by the user from CHEBFUN or FUN levels, the
+%         default value (empty) is replaced and passed to singfun constructor.
+%         If no information about the singularity is specified by the user, then
+%         the singularity detection is triggered to find the exact pole order
+%         (which is integer) or singularity order (which is fractional) when
+%         enableSingularityDetection is set TRUE. When exponents are given by
+%         the user, there is no need to specify the 'singType' field, as any
+%         information in singType will be ignored by the SINGFUN constructor.
+%         For a piecewise smooth CHEBFUN, the number of exponents should be
+%         given in pair with each pair corresponds to the ends of a piece. For
+%         example,
+%
+%         dom = [-2 -1 0 1];
+%         op1 = @(x) sin(x);
+%         op2 = @(x) 1./(1+x);
+%         op3 = @(x) x+1;
+%         op = {op1, op2, op3};
+%         pref = chebpref();
+%         pref.singPrefs.exponents = [0 0 -1 0 0 0];
+%         f = chebfun(op, dom, pref);
+%
+%         Note that syntax in Chebfun v4 is still supported. So the example
+%         above can be exercised as below:
+%
+%         dom = [-2 -1 0 1];
+%         op1 = @(x) sin(x);
+%         op2 = @(x) 1./(1+x);
+%         op3 = @(x) x+1;
+%         op = {op1, op2, op3};
+%         f = chebfun(op, dom, 'exps', [0 0 -1 0 0 0]);
+%
+%         For the cases where the CHEBFUN has more than one piece, if the size
+%         of the given exponents is 1x2, then the CHEBFUN constructor will take
+%         them as the exponent for the left endpoint of the first piece and the
+%         and that for the right endpoint of the last piece. The exponents for
+%         all other interior endpoints are simply assumed zeros. For example,
+%
+%         pref = chebpref();
+%         pref.singPrefs.exponents = [-1 0];
+%         pref.enableBreakpointDetection = 1;
+%         f = chebfun(@(x) sin(100*x)./(x+2), [-2 7], pref)
+%
+%         The equivalent syntax in Chebfun v4 fashion is still valid:
+%
+%         f = chebfun(@(x) sin(100*x)./(x+2), [-2 7], 'splitting', 'on', ...
+%             'exps', [-1 0])
+%
+%      singType                - Type of singularities.
+%       [{ }]
+%
+%         The information provided in singType helps the singularity detector to
+%         determine the order of the singularities more efficiently and save
+%         some construction time. If the default, i.e. an empty cell, is
+%         replaced by a user-supplied 2*N cell with entries being any of 'none',
+%         'pole', 'sing', and 'root' where N is the number of smooth pieces,
+%         i.e. FUNS, then this cell is passed to the SINGFUN constructor to
+%         speed up the singularity detection. Here, 'none', 'pole', 'sing', and
+%         'root' correspond to free of any kind of singularities, integer pole,
+%         fractional singularity, and root at the end point with order less than
+%         1, respectively. With the default empty cell, the SINGFUN constructor
+%         will assume fractional singularities. For instance, setting singType
+%         to {'pole', 'sing'} tells the singularity detector to search for poles
+%         at the left endpoint of an interval and arbitrary singularities at the
+%         right endpoint. For example,
+%
+%         dom = [-1 1];
+%         op = @(x) (x - dom(1)).^-0.5.*sin(x);
+%         pref = chebpref();
+%         pref.singPrefs.singType = {'sing', 'none'};
+%         f = chebfun(op, dom, pref);
+%
+%         Syntactically, chebfun constructor supports automatic singularity
+%         detection for piecewise smooth CHEBFUN. That is, the users can specify
+%         a series of the strings described above in pairs with each pair
+%         corresponds to the endpoints of a subinterval. For example, if one
+%         want to construct a CHEBFUN definied in [-1 0 1] with poles at -1 and
+%         1 and fractional singularity on each side of 0, then the series of
+%         string passed to the CHEBFUN constructor should be {'pole', 'sing',
+%         'sing', 'pole'}. With these information, the CHEBFUN constructor and
+%         consequently the SINGFUN will try to find the exact order of the
+%         singularities. However, the SINGFUN constructor may not succeed for
+%         most of the cases due to the unsatisfactory performance of the
+%         current singularity detector.
+%
+%   scale                      - The vertical scale the constructor should use.
+%    [0]
+%
+%      Typically the CHEBFUN constructor will resolve relative to a vertical
+%      scale determined by it's own function evaluations. However, in some
+%      situations one would like to the resolve relative to a fixed vertical
+%      scale. This can be set using this preference.
+%
 %   tech                       - Representation technology.
 %    ['chebtech']
 %
@@ -83,7 +178,7 @@ classdef chebpref
 %
 %      This is a structure of preferences that will be passed to the constructor
 %      for the underlying representation technology.  See, for example,
-%      CHEBTECH/PREF for preferences accepted by the default CHEBTECH
+%      CHEBTECH.TECHPREF for preferences accepted by the default CHEBTECH
 %      technology.  Additionally, all techs are required to accept the following
 %      preferences:
 %
@@ -120,6 +215,10 @@ classdef chebpref
 %
 %        If true, the tech should check an arbitrary point for accuracy to
 %        ensure that behavior hasn't been missed, e.g., due to undersampling.
+%
+% The default values for any of these preferences may be globally overridden
+% using CHEBPREF.SETDEFAULTS(); see the documentation for that function for
+% further details.
 %
 % Constructor inputs:
 %   P = CHEBPREF() creates a CHEBPREF object with the default values of the
@@ -203,8 +302,8 @@ classdef chebpref
 % function.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    % See above for documentation.
     properties
+<<<<<<< HEAD
         maxTotalLength
         enableBreakpointDetection
         breakpointPrefs
@@ -214,6 +313,14 @@ classdef chebpref
         tech
         techPrefs
         cheb2Prefs
+=======
+        % This is a MATLAB structure which stores the system preferences.  As a
+        % class invariant, this structure is guaranteed to contain fields for
+        % each of the preferences of the upper layers listed above.  It is also
+        % guaranteed to contain a techPrefs field, but no guarantees are made
+        % about its contents.
+        prefList
+>>>>>>> development
     end
 
     methods
@@ -227,6 +334,7 @@ classdef chebpref
             end
 
             % Initialize default preference values.
+<<<<<<< HEAD
             outPref.maxTotalLength = 65537;
             outPref.enableBreakpointDetection = false;
                 outPref.breakpointPrefs.splitMaxLength = 129;
@@ -248,20 +356,23 @@ classdef chebpref
                 outPref.cheb2Prefs.eps = 2^(-52); 
                 outPref.cheb2Prefs.exactLength = false;
                 outPref.cheb2Prefs.sampleTest = true; 
+=======
+            outPref.prefList = chebpref.manageDefaultPrefs('get');
+>>>>>>> development
 
             % Copy fields from q, placing unknown ones in techPrefs and merging
             % incomplete substructures.
             for field = fieldnames(inPref).'
-                if ( isprop(outPref, field{1}) )
-                    if ( isstruct(outPref.(field{1})) )
-                        outPref.(field{1}) = ...
-                            chebpref.mergePrefs(outPref.(field{1}), ...
+                if ( isfield(outPref.prefList, field{1}) )
+                    if ( isstruct(outPref.prefList.(field{1})) )
+                        outPref.prefList.(field{1}) = ...
+                            chebpref.mergePrefs(outPref.prefList.(field{1}), ...
                             inPref.(field{1}));
                     else
-                        outPref.(field{1}) = inPref.(field{1});
+                        outPref.prefList.(field{1}) = inPref.(field{1});
                     end
                 else
-                    outPref.techPrefs.(field{1}) = inPref.(field{1});
+                    outPref.prefList.techPrefs.(field{1}) = inPref.(field{1});
                 end
             end
         end
@@ -281,10 +392,10 @@ classdef chebpref
         %   including '()' and '{}'.
             switch ( ind(1).type )
                 case '.'
-                    if ( isprop(pref, ind(1).subs) )
-                        out = pref.(ind(1).subs);
+                    if ( isfield(pref.prefList, ind(1).subs) )
+                        out = pref.prefList.(ind(1).subs);
                     else
-                        out = pref.techPrefs.(ind(1).subs);
+                        out = pref.prefList.techPrefs.(ind(1).subs);
                     end
 
                     if ( numel(ind) > 1 )
@@ -310,15 +421,88 @@ classdef chebpref
         %   including '()' and '{}'.
             switch ( ind(1).type )
                 case '.'
-                    if ( isprop(pref, ind(1).subs) )
-                        pref = builtin('subsasgn', pref, ind, val);
-                    else
-                        pref.techPrefs = builtin('subsasgn', pref.techPrefs, ...
+                    if ( isfield(pref.prefList, ind(1).subs) )
+                        pref.prefList = builtin('subsasgn', pref.prefList, ...
                             ind, val);
+                    else
+                        pref.prefList.techPrefs = builtin('subsasgn', ...
+                            pref.prefList.techPrefs, ind, val);
                     end
                 otherwise
                     error('CHEBTECH:subsasgn:badType', ...
                         'Invalid subscripted assignment type.')
+            end
+        end
+
+        function display(pref)
+        %DISPLAY   Display a CHEBPREF object.
+        %   DISPLAY(PREF) prints out a list of the preferences stored in the
+        %   CHEBPREF object PREF.
+
+            % Compute the screen column in which pref values start.
+            valueCol = 34; % length('    enableSingularityDetection:   ');
+            for field = fieldnames(pref.prefList.techPrefs).'
+                field = field{1};
+                col = length(['        ' field '  ']);
+                if ( col > valueCol )
+                    valueCol = col;
+                end
+            end
+
+            % A subfunction to pad strings for formatting.
+            function s = padString(s)
+            %PADSTRING   Add whitespace to string for formatting.
+                s = [s repmat(' ', 1, valueCol - length(s))];
+            end
+
+            % Print values of "known" preferences.
+            prefList = pref.prefList;
+
+            fprintf('chebpref object with the following preferences:\n');
+            fprintf([padString('    maxTotalLength:') '%d\n'], ...
+                prefList.maxTotalLength);
+            fprintf([padString('    domain:') '[%g, %g]\n'], ...
+                prefList.domain(1), prefList.domain(end));
+            fprintf([padString('    enableBreakpointDetection:') '%d\n'], ...
+                prefList.enableBreakpointDetection);
+            fprintf('    breakpointPrefs\n');
+            fprintf([padString('        splitMaxLength:') '%d\n'], ...
+                prefList.breakpointPrefs.splitMaxLength');
+            fprintf([padString('        splitMaxTotalLength:') '%d\n'], ...
+                prefList.breakpointPrefs.splitMaxTotalLength');
+            fprintf([padString('    enableSingularityDetection:') '%d\n'], ...
+                prefList.enableSingularityDetection);
+            fprintf('    singPrefs\n');
+            fprintf([padString('        exponentTol:') '%d\n'], ...
+                prefList.singPrefs.exponentTol');
+            fprintf([padString('        maxPoleOrder:') '%d\n'], ...
+                prefList.singPrefs.maxPoleOrder');
+            fprintf([padString('    scale:') '%d\n'], ...
+                prefList.scale);
+            fprintf([padString('    tech:') '''%s''\n'], ...
+                prefList.tech)
+            fprintf('    techPrefs\n');
+
+            % Format and print values of tech preferences.
+            for field = fieldnames(prefList.techPrefs).'
+                field = field{1};
+                printStr = padString(['        ' field ':']);
+
+                if ( isempty(prefList.techPrefs.(field)) )
+                    fprintf([printStr 'empty\n']);
+                elseif ( ischar(prefList.techPrefs.(field)) && ...
+                         isrow(prefList.techPrefs.(field)) )
+                    fprintf([printStr '''%s''\n'], prefList.techPrefs.(field))
+                elseif ( numel(prefList.techPrefs.(field)) > 1 )
+                    fprintf([printStr class(prefList.techPrefs.(field)) ...
+                        ' array\n']);
+                elseif ( isfloat(prefList.techPrefs.(field)) )
+                    fprintf([printStr '%0.16g\n'], prefList.techPrefs.(field))
+                elseif ( islogical(prefList.techPrefs.(field)) )
+                    fprintf([printStr '%d\n'], prefList.techPrefs.(field))
+                else
+                    fprintf([printStr class(prefList.techPrefs.(field)) '\n']);
+                end
             end
         end
 
@@ -328,17 +512,17 @@ classdef chebpref
 
         function pref1 = mergePrefs(pref1, pref2, map)
         %MERGEPREFS   Merge preference structures.
-        %   P = MERGEPREFS(P, Q), where P and Q are MATLAB structures, "merges"
-        %   Q into P by replacing the contents of fields in P with those of
-        %   identically-named fields in Q.  If Q has a field whose name does
-        %   not match any of those in P, it is added to P.
+        %   P = CHEBPREF.MERGEPREFS(P, Q), where P and Q are MATLAB structures,
+        %   "merges" Q into P by replacing the contents of fields in P with
+        %   those of identically-named fields in Q.  If Q has a field whose
+        %   name does not match any of those in P, it is added to P.
         %
-        %   P = MERGEPREFS(P, Q, MAP) does the same but uses the structure MAP
-        %   to "translate" the names of fields of Q into names of fields of P.
-        %   If Q has a field FIELD and MAP has a field of the same name, then
-        %   the value of P.(MAP.FIELD) will be replaced by the contents of
-        %   Q.FIELD.  If P does not have a field matching the string stored in
-        %   MAP.FIELD, one will be added to P.
+        %   P = CHEBPREF.MERGEPREFS(P, Q, MAP) does the same but uses the
+        %   structure MAP to "translate" the names of fields of Q into names of
+        %   fields of P.  If Q has a field FIELD and MAP has a field of the
+        %   same name, then the value of P.(MAP.FIELD) will be replaced by the
+        %   contents of Q.FIELD.  If P does not have a field matching the
+        %   string stored in MAP.FIELD, one will be added to P.
         %
         %   P and Q may also be CHEBPREF objects.  In this case, P and Q are
         %   replaced by P.TECHPREFS and Q.TECHPREFS before proceeding, and the
@@ -349,18 +533,18 @@ classdef chebpref
         % Developer notes:
         %  - This function is a helper function intended for use by "technology"
         %    objects (usually subclasses of SMOOTHFUN) for managing their
-        %    preferences.  See CHEBTECH.PREF for an illustration.
+        %    preferences.  See CHEBTECH.TECHPREF for an illustration.
         %  - The second syntax is useful, e.g., if Q contains abstractly-named
         %    preferences which may have a better name within the specific
         %    context of the tech object whose preferences are stored in P.
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
             if ( isa(pref1, 'chebpref') )
-                pref1 = pref1.techPrefs;
+                pref1 = pref1.prefList.techPrefs;
             end
 
             if ( isa(pref2, 'chebpref') )
-                pref2 = pref2.techPrefs;
+                pref2 = pref2.prefList.techPrefs;
             end
 
             if ( nargin < 3 )
@@ -374,6 +558,181 @@ classdef chebpref
                     pref1.(field{1}) = pref2.(field{1});
                 end
             end
+        end
+
+        function pref = getFactoryDefaults(getFactory)
+        %GETFACTORYDEFAULTS   Get factory default preferences.
+        %   PREF = CHEBPREF.GETFACTORYDEFAULTS() returns a CHEBPREF object with
+        %   the preferences set to their factory defaults, irrespective of the
+        %   currently defined values of the default preferences.  This function
+        %   is useful if the user wishes to construct a CHEBFUN using the
+        %   factory defaults when other user-set defaults are currently in
+        %   force.
+        %
+        % See also GETDEFAULTS, SETDEFAULTS.
+
+            fd = chebpref.factoryDefaultPrefs();
+            pref = chebpref(fd);
+
+            % Undo any merging of the factory default techPrefs with the
+            % currently defined default techPrefs.  This is necessary, e.g., if
+            % the current defaults have techPrefs stored that are not among the
+            % factory defaults.
+            pref.prefList.techPrefs = fd.techPrefs;
+        end
+
+        function pref = getDefaults()
+        %GETDEFAULTS   Get default preferences.
+        %   PREF = CHEBPREF.GETDEFAULTS() returns a CHEBPREF object with the
+        %   preferences set to the currently stored default values.  It is
+        %   equivalent to PREF = CHEBPREF().
+        %
+        % See also GETFACTORYDEFAULTS, SETDEFAULTS.
+
+            pref = chebpref();
+        end
+
+        function setDefaults(varargin)
+        %SETDEFAULTS   Set default preferences.
+        %   CHEBPREF.SETDEFAULTS(PREF1, VAL1, PREF2, VAL2, ...) sets the
+        %   default values for the preferences whose names are stored in the
+        %   strings PREF1, PREF2, ..., etc. to VAL1, VAL2, ..., etc.  All
+        %   subsequently constructed CHEBPREF objects will use these values as
+        %   the defaults.
+        %
+        %   CHEBPREF.SETDEFAULTS(PREF) sets the default values to the
+        %   preferences stored in the CHEBPREF object PREF.  PREF can also be a
+        %   MATLAB structure, in which case it is converted to a CHEBPREF as
+        %   described in the documentation for the CHEBPREF constructor first.
+        %
+        %   CHEBPREF.SETDEFAULTS('factory') resets the default preferences to
+        %   their factory values.
+        %
+        % See also GETDEFAULTS, GETFACTORYDEFAULTS.
+
+        % TODO:  What to do about preferences stored in substructures, like
+        % singfun.exponentTol?  Aside from preferences in techPrefs whose names
+        % don't collide with other "top-level" preferences, these can't be set
+        % using the first syntax listed above (though they still can be set
+        % with the second).
+
+            if ( nargin < 1)
+                error('CHEBPREF:setDefaults:notEnoughArguments', ...
+                    'Not enough arguments.');
+            end
+
+            if ( nargin == 1 )
+                if ( isstruct(varargin{1}) )
+                    varargin{1} = chebpref(varargin{1});
+                end
+
+                if ( ischar(varargin{1}) && strcmp(varargin{1}, 'factory') )
+                    chebpref.manageDefaultPrefs('set-factory');
+                elseif ( isa(varargin{1}, 'chebpref') )
+                    chebpref.manageDefaultPrefs('set', varargin{1}.prefList);
+                else
+                    error('CHEBPREF:setDefaults:badArg', ...
+                        ['When calling chebpref.setDefaults() with just ' ...
+                         'one argument, that argument must be ''factory'', ' ...
+                         'a CHEBPREF object, or a MATLAB structure.']);
+                end
+            elseif ( mod(nargin, 2) == 0 )
+                chebpref.manageDefaultPrefs('set', varargin{:});
+            else
+                error('CHEBPREF:setDefaults:unpairedArg', ...
+                    'Unpaired argument in name-value pair list.');
+            end
+        end
+    end
+
+    methods ( Static = true, Access = private)
+
+        function varargout = manageDefaultPrefs(varargin)
+        %MANAGEDEFAULTPREFS   Private method for handling default preferences.
+        %   CHEBPREF.MANAGEDEFAULTPREFS('get') returns a structure suitable for
+        %   storing in the prefList property of a CHEBPREF with all of the
+        %   currently stored default preferences suitable for initializing a
+        %   CHEBPREF object.
+        %
+        %   CHEBPREF.MANAGEDEFAULTPREFS('set-factory') restores the default
+        %   preferences to their "factory" values.
+        %
+        %   CHEBPREF.MANAGEDEFAULTPREFS('set', PREFLIST) sets the default
+        %   values to those stored in the structure PREFLIST.  PREFLIST should
+        %   be a structure suitable for use as a CHEBPREF prefList.
+        %
+        %   CHEBPREF.MANAGEDEFAULTPREFS('set', PREF1, VAL1, PREF2, VAL2, ...)
+        %   sets the default values for PREF1, PREF2, ..., etc. to VAL1, VAL2,
+        %   ..., etc.
+
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % Developer notes:
+        %  - MATLAB has no equivalent to what might be called a "static" class
+        %    variable in other languages, so a persistent variable is the best
+        %    we can do for providing this feature.  Persistent variables are
+        %    local to a specific function, so we can have only a single
+        %    function for managing it.  As a result, this function has a mildly
+        %    awkward syntax and so is not user-facing.
+        %  - More importantly, this function is also not user-facing because
+        %    its inputs and outputs depend on the internal representation of a
+        %    CHEBPREF as a MATLAB structure, and that's not something with which
+        %    anyone outside of CHEBPREF should be concerned.
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+            persistent defaultPrefs;
+
+            if ( isempty(defaultPrefs) )
+                defaultPrefs = chebpref.factoryDefaultPrefs();
+            end
+
+            if ( strcmp(varargin{1}, 'get') )
+                varargout{1} = defaultPrefs;
+            elseif ( strcmp(varargin{1}, 'set-factory') )
+                defaultPrefs = chebpref.factoryDefaultPrefs();
+            elseif ( strcmp(varargin{1}, 'set') )
+                    varargin(1) = [];
+                if ( isstruct(varargin{1}) )
+                    defaultPrefs = varargin{1};
+                else
+                    while ( ~isempty(varargin) )
+                        prefName = varargin{1};
+                        prefValue = varargin{2};
+                        if ( isfield(defaultPrefs, prefName) )
+                            defaultPrefs.(prefName) = prefValue;
+                        else
+                            defaultPrefs.techPrefs.(prefName) = prefValue;
+                        end
+                        varargin(1:2) = [];
+                    end
+                end
+            end
+        end
+
+        function factoryPrefs = factoryDefaultPrefs()
+        %FACTORYDEFAULTPREFS   Get structure of factory default preferences.
+        %   S = CHEBPREF.FACTORYDEFAULTREFS() returns a structure suitable for
+        %   storing in the prefList property of a CHEBPREF object that contains
+        %   all of the "factory default" values of the CHEBFUN
+        %   construction-time preferences.
+
+            factoryPrefs.maxTotalLength = 65537;
+            factoryPrefs.enableBreakpointDetection = false;
+                factoryPrefs.breakpointPrefs.splitMaxLength = 129;
+                factoryPrefs.breakpointPrefs.splitMaxTotalLength = 6000;
+            factoryPrefs.domain = [-1 1];
+            factoryPrefs.enableSingularityDetection = false;
+                factoryPrefs.singPrefs.exponentTol = 1.1*1e-11;
+                factoryPrefs.singPrefs.maxPoleOrder = 20;
+                factoryPrefs.singPrefs.exponents = [];
+                factoryPrefs.singPrefs.singType = {};
+            factoryPrefs.scale = 0;
+            factoryPrefs.tech = 'chebtech';
+            factoryPrefs.techPrefs = struct();
+                factoryPrefs.techPrefs.eps = 2^(-52);
+                factoryPrefs.techPrefs.maxLength = 65537;
+                factoryPrefs.techPrefs.exactLength = NaN;
+                factoryPrefs.techPrefs.extrapolate = false;
+                factoryPrefs.techPrefs.sampleTest = true;
         end
 
     end
