@@ -1,4 +1,4 @@
-function f = volt(A, kernel, onevar)
+function f = volt(A, kernel, oneVar)
 % VOLT  Volterra integral operator.
 % V = VOLT(K,D) constructs a chebop representing the Volterra integral
 % operator with kernel K for functions in domain D=[a,b]:
@@ -31,10 +31,10 @@ function f = volt(A, kernel, onevar)
 
 % Default onevar to false
 if ( nargin == 2 )
-    onevar = false;
+    oneVar = false;
 end
 
-if ( onevar )
+if ( oneVar )
     k = @(x, y) kernel(x);
 else
     k = kernel;
