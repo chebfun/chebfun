@@ -1,5 +1,5 @@
 function f = simplify(f)
-%SIMPLIFY   Removes duplicates, trivial rows and columns of impluses.
+%SIMPLIFY  Simplifis a DELTAFUN object F.
 %
 %   SIMPLIFY(F) removes trivial rows and columns from the magnitude matrix of the 
 %   DELTAFUN F based on the tolerance and merges columns in the impulse matrix if

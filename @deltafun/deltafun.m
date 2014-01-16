@@ -34,7 +34,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         location               
     end
     
-    %% CLASS CONSTRUCTOR:
+    %% DELTAFUN CLASS CONSTRUCTOR:
     methods ( Static = true )
         function obj = deltafun(funPart, impulses, location, pref)
             %%
@@ -59,6 +59,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
             
             %%
             % Case 1: One input argument.
+            % This input should be a fun.
             if ( nargin == 1 )
                 if ( isempty(funPart) )
                     obj.funPart = fun.constructor(0);
@@ -67,6 +68,8 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
                 else
                     obj.funPart = funPart;
                 end
+                impulses = [];
+                location = [];
             end
             %%
             % Case 2: Two input arguments.
@@ -116,9 +119,11 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
             end                         
       
             % Locations of delta functions should be within the domain:
-            dom = obj.funPart.domain;
-            if( max(location) > dom(2) || min(location) < dom(1)  )
-                error('DELTAFUN:domain', 'Location of a delta fun is outside the domain');
+            if ( ~isempty(location) )
+                dom = obj.funPart.domain;
+                if( max(location) > dom(2) || min(location) < dom(1)  )
+                    error('DELTAFUN:domain', 'Location of a delta fun is outside the domain');
+                end
             end
             
             % All checks done, assign inputs to object:
@@ -130,8 +135,6 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         end
     end
     
-    %%
-    
     
     %% METHODS IMPLEMENTED BY THIS CLASS.
     methods
@@ -139,7 +142,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         % True if the DELTAFUN object has no delta functions       
         out = anyDelta(f)
 
-        % Compose a FUN with an operator or another FUN
+        % Compose a DELTAFUN with an operator or another DELTAFUN
         f = compose(f, op, g, pref)
         
         % Complex conjugate of a DELTAFUN.
@@ -169,11 +172,11 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         % Imaginary part of a DELTAFUN.
         f = imag(f)
         
-        % Compute the inner product of two FUN objects.
+        % Compute the inner product of two DELTAFUN objects.
         out = innerProduct(f, g)
         
         % Innerproduct, equivalent to action of a distribution 
-        % on a chebfun
+        % on a FUN
         out = ip(f,g)
         
         % True for an empty DELTAFUN.
@@ -182,46 +185,43 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         % Test if DELTAFUN objects are equal.
         out = isequal(f, g)
         
-        % Test if a SINGFUN is bounded.
+        % Test if a DELTAFUN is bounded.
         out = isfinite(f)
         
-        % Test if a SINGFUN is unbounded.
+        % Test if a DELTAFUN is unbounded.
         out = isinf(f)
         
-        % Test if a SINGFUN has any NaN values.
+        % Test if a DELTAFUN has any NaN values.
         out = isnan(f)
         
-        % True for real SINGFUN.
+        % True for real DELTAFUN.
         out = isreal(f)
                 
         % Ture if the DELTAFUN object is zero
         out = iszero(f)
         
-        % Length of a SINGFUN.
+        % Length of a DELTAFUN.
         len = length(f)
         
-        % Convert a array-valued SINGFUN into an ARRAY of SINGFUN objects.
-        g = mat2cell(f, M, N)
-        
-        % Global maximum of a SINGFUN on [-1,1].
+        % Global maximum of a DELTAFUN on [-1,1].
         [maxVal, maxPos] = max(f)
         
-        % Global minimum of a SINGFUN on [-1,1].
+        % Global minimum of a DELTAFUN on [-1,1].
         [minVal, minPos] = min(f)
         
-        % Global minimum and maximum of a SINGFUN on [-1,1].
+        % Global minimum and maximum of a DELTAFUN on [-1,1].
         [vals, pos] = minandmax(f)
         
-        % Subtraction of two SINGFUN objects.
+        % Subtraction of two DELTAFUN objects.
         f = minus(f, g)
         
-        % Left matrix divide for SINGFUN objects.
+        % Left matrix divide for DELTAFUN objects.
         X = mldivide(A, B)
         
-        % Right matrix divide for a SINGFUN.
+        % Right matrix divide for a DELTAFUN.
         X = mrdivide(B, A)
         
-        % Multiplication of SINGFUN objects.
+        % Multiplication of DELTAFUN objects.
         f = mtimes(f, c)
         
         % Basic linear plot for DELTAFUN objects.
@@ -252,7 +252,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         % Simplify a DELTAFUN
         f = simplify(f)
         
-        % Definite integral of a SINGFUN on the interval [-1,1].
+        % Definite integral of a DELTAFUN.
         out = sum(f, dim)
         
         % SINGFUN multiplication.
