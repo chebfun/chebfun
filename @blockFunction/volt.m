@@ -24,7 +24,7 @@ function f = volt(A,kernel,onevar)
 % V = volt(@(x,y) exp(x-y),d);  
 % u = (1+diag(x)*V) \ sin(exp(3*x)); 
 %
-% See also fred, chebop.
+% See also blockFunction/fred, linop/volt, chebop/volt.
 
 % Copyright 2011 by The University of Oxford and The Chebfun Developers. 
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
