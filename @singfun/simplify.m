@@ -17,6 +17,6 @@ elseif ( nargin == 1 )
 end
 
 % Replace the roots:
-f = SimplifyExponents(f);
+f = simplifyExponents(f);
 
 end

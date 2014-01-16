@@ -339,7 +339,7 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         f = real(f)
         
         % Simplify the exponents of a SINGFUN.
-        f = SimplifyExponents(f)
+        f = simplifyExponents(f)
 
         % Restrict a SINGFUN to a subinterval.
         f = restrict(f, s)

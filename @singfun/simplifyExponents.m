@@ -1,8 +1,8 @@
-function f = SimplifyExponents(f)
+function f = simplifyExponents(f)
 %SIMPLIFYEXPONENTS  Simplify the exponents of a SINGFUN.
-%   F = SIMPLIFYEXPONENTS(F) returns a SINGFUN which has both exponents less 
-%   than 1 by absorbing the integer part of any boundary exponents larger than 1 
-%   into its smoothPart.
+%   F = SIMPLIFYEXPONENTS(F) returns a SINGFUN which has both exponents less
+%   than 1 by absorbing the integer part of any boundary exponents larger than
+%   1 into its smoothPart.
 %
 %  See also EXTRACTBOUNDARYROOTS.
 
