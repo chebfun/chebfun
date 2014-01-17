@@ -50,6 +50,10 @@ classdef chebfun
 % It is not possible to mix PROP/VAL and PREF inputs in a single constructor
 % call.
 %
+% CHEBFUN(F, 'trunc', N) returns an N-point CHEBFUN constructed by computing the
+% first N Chebyshev coefficients from their integral form, rather than by
+% interpolation at Chebyshev points.
+%
 % CHEBFUN(F, ...), where F is an NxM matrix or an array-valued function handle,
 % returns an "array-valued" CHEBFUN. For example,
 %   CHEBFUN(rand(14, 2))
@@ -57,13 +61,14 @@ classdef chebfun
 %   CHEBFUN(@(x) [sin(x), cos(x)])
 % Note that each column in an array-valued CHEBFUN object is discretized in the
 % same way (i.e., the same breakpoint locations and the same underlying
-% representation). Note the difference between 
+% representation). For more details see ">> help quasimatrix". Note the
+% difference between
 %   CHEBFUN(@(x) [sin(x), cos(x)], [-1, 0, 1])
 % and
 %   CHEBFUN({@(x) sin(x), @(x) cos(x)}, [-1, 0, 1]).
 % The former constructs an array-valued CHEBFUN with both columns defined on the
 % domain [-1, 0, 1]. The latter defines a single column CHEBFUN which represents
-% sin(x) in the interval [-1, 0) and cos(x) on the interval (0, 1].
+% sin(x) in the interval [-1, 0) and cos(x) on the interval (0, 1]. 
 %
 % See also CHEBPREF, CHEBPTS.
 
@@ -173,6 +178,13 @@ classdef chebfun
                 [ignored, index] = setdiff(f.domain, dom);
                 f = merge(f, index(:).', pref);
                 
+            end
+            
+            % Deal with 'trunc' option:
+            if ( isfield(pref.techPrefs, 'trunc') )
+                % TODO: Is there a more efficient way of doing this?
+                c = chebpoly(f, 0, pref.techPrefs.trunc);
+                f = chebfun(c.', f.domain([1, end]), 'coeffs');
             end
             
         end

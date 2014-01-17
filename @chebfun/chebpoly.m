@@ -97,6 +97,7 @@ elseif ( (ii == 0) && (numFuns == 1))
     
 else
     % CHEBPOLY() of a piecewise smooth CHEBFUN:
+    % [TODO]: Add a test for this code.
 
     % Compute coefficients via inner products.
     d = f.domain([1, end]);
