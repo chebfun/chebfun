@@ -67,28 +67,28 @@ f = unbndfun(op, dom);
 gVals = feval(f, x);
 gExact = op(x);
 err = gVals - gExact;
-pass(5) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
+pass(5) = norm(err, inf) < get(f,'epslevel')*get(f,'vscale');
 
 op = @(x) x.*exp(-x);
 f = unbndfun(op, dom);
 gVals = feval(f, x);
 gExact = op(x);
 err = gVals - gExact;
-pass(6) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
+pass(6) = norm(err, inf) < get(f,'epslevel')*get(f,'vscale');
 
 op = @(x) (1-exp(-x))./x;
 f = unbndfun(op, dom);
 gVals = feval(f, x);
 gExact = op(x);
 err = gVals - gExact;
-pass(7) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
+pass(7) = norm(err, inf) < get(f,'epslevel')*get(f,'vscale');
 
 op = @(x) 1./x;
 f = unbndfun(op, dom);
 gVals = feval(f, x);
 gExact = op(x);
 err = gVals - gExact;
-pass(8) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
+pass(8) = norm(err, inf) < get(f,'epslevel')*get(f,'vscale');
 
 op = @(x) x.*(5+exp(-x.^3));
 pref.singPrefs.exponents = [0 1];
@@ -96,7 +96,7 @@ f = unbndfun(op, dom, [], [], pref);
 gVals = feval(f, x);
 gExact = op(x);
 err = gVals - gExact;
-pass(9) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
+pass(9) = norm(err, inf) < get(f,'epslevel')*get(f,'vscale');
 
 %% Functions on [-inf b]:
 
@@ -112,28 +112,28 @@ f = unbndfun(op, dom);
 gVals = feval(f, x);
 gExact = op(x);
 err = gVals - gExact;
-pass(10) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
+pass(10) = norm(err, inf) < get(f,'epslevel')*get(f,'vscale');
 
 op = @(x) x.*exp(x);
 f = unbndfun(op, dom);
 gVals = feval(f, x);
 gExact = op(x);
 err = gVals - gExact;
-pass(11) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
+pass(11) = norm(err, inf) < get(f,'epslevel')*get(f,'vscale');
 
 op = @(x) (1-exp(x))./x;
 f = unbndfun(op, dom);
 gVals = feval(f, x);
 gExact = op(x);
 err = gVals - gExact;
-pass(12) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
+pass(12) = norm(err, inf) < get(f,'epslevel')*get(f,'vscale');
 
 op = @(x) 1./x;
 f = unbndfun(op, dom);
 gVals = feval(f, x);
 gExact = op(x);
 err = gVals - gExact;
-pass(13) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
+pass(13) = norm(err, inf) < get(f,'epslevel')*get(f,'vscale');
 
 op = @(x) x.*(5+exp(x.^3))./(dom(2)-x);
 pref.singPrefs.exponents = [0 -1];
@@ -142,14 +142,5 @@ gVals = feval(f, x);
 gExact = op(x);
 err = gVals - gExact;
 pass(14) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
-
-%% MISC:
-
-try
-    f = unbndfun(@(x) exp(-x.^2), [0 1]);
-    pass(12) = fail;
-catch ME
-    pass(12) = strcmp(ME.identifier, 'CHEBFUN:UNBNDFUN:BoundedDomain');
-end
     
 end
