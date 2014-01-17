@@ -1,4 +1,4 @@
-function f = volt(A,kernel,onevar)
+function f = volt(A, kernel, oneVar)
 % VOLT  Volterra integral operator.
 % V = VOLT(K,D) constructs a chebop representing the Volterra integral
 % operator with kernel K for functions in domain D=[a,b]:
@@ -24,33 +24,33 @@ function f = volt(A,kernel,onevar)
 % V = volt(@(x,y) exp(x-y),d);  
 % u = (1+diag(x)*V) \ sin(exp(3*x)); 
 %
-% See also fred, chebop.
+% See also blockFunction/fred, linop/volt, chebop/volt.
 
 % Copyright 2011 by The University of Oxford and The Chebfun Developers. 
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % Default onevar to false
-if ( nargin==2 )
-    onevar = false;
+if ( nargin == 2 )
+    oneVar = false;
 end
 
-if ( onevar )
-    k = @(x,y) kernel(x);
+if ( oneVar )
+    k = @(x, y) kernel(x);
 else
     k = kernel;
 end
 
-f = blockFunction( @(z) applyvolt(z,A.domain,k) );
+f = blockFunction( @(z) applyVolt(z, A.domain, k) );
 
 end
 
-function v = applyvolt(u,d,kernel)
+function v = applyVolt(u, d, kernel)
     % At each x, do an adaptive quadrature.
     % Result can be resolved relative to norm(u). (For instance, if the
     % kernel is nearly zero by cancellation on the interval, don't try to
     % resolve it relative to its own scale.) 
     
-    nrmu = max(1,norm(u));
+    nrmu = max(1, norm(u));
     p.techPrefs.sampleTest = false;
 %    p.techPrefs.eps = nrmu*eps;
 %    p.enableBreakpointDetection = true;
@@ -65,7 +65,8 @@ function v = applyvolt(u,d,kernel)
         if ( abs(x-d(1)) < eps )
             h = 0;
         else
-            h = sum( chebfun(@(y) feval(u,y).*kernel(x,y),[d(1) brk(brk<x) x],p) );
+            h = sum( chebfun(@(y) feval(u,y).*kernel(x,y), ...
+                [d(1) brk(brk<x) x], p) );
         end
     end
 
