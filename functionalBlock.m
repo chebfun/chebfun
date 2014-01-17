@@ -2,7 +2,7 @@ classdef functionalBlock < linBlock
 %FUNCTIONALBLOCK  Linear map of function to scalar.
 %   This class is not intended to be called directly by the end user.
 %
-%   See also LINOP, CHEBOP, CHEBOPPREF.
+%   See also LINBLOCK, LINOP, CHEBOP, CHEBOPPREF.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -10,23 +10,27 @@ classdef functionalBlock < linBlock
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Developer notes
 %
-% One of the two types of linBlock. Functionals can be composed with operators,
-% added, and applied to chebfuns. 
+% One of the two concrete implementations of the abstract type LINBLOCK.
+% Functionals can be composed with operators, added, and applied to CHEBFUN
+% objects.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-    properties
-    end
-    
+       
     methods
         function A = functionalBlock(domain)
+            % FUNCTIONALBLOCK constructor, simply calls the LINBLOCK
+            % constructor.
             A = A@linBlock(domain);
         end
         
         function varargout = size(A, dim)
-            % S = SIZE(A)
-            % [M, N] = SIZE(A)
-            % P = SIZE(A, K)
-
+            % SIZE  Size of a FUNCTIONALBLOCK.
+            % The commands
+            %   S = SIZE(A)
+            %   [M, N] = SIZE(A)
+            %   P = SIZE(A, K)
+            % return the expected results.
+            
+            % A FUNCTIONALBLOCK is always of dimensions 1xInf
             m = [1, Inf];
             if nargin > 1
                 varargout = {m(dim)};
@@ -38,18 +42,25 @@ classdef functionalBlock < linBlock
         end
 
         function C = uminus(A)
+            % Unary minus of a FUNCTIONALBLOCK
             C = functionalBlock(A.domain);
             C.stack = @(z) -A.stack(z);
         end
         
         function C = mtimes(A, B)
-            % A*B 
-            % If B is an operator block, the result is the composition.
+            % * Functional composition, application, or multiplication.
             %
-            % A*f 
-            % If f is a chebfun, return the chebfun resulting from
-            % application of A to f.
+            % C = A*B, where A is a FUNCTIONALBLOCK and B is an OPERATORBLOCK,
+            % returns the FUNCTIONALBLOCK C which is the the result of composing
+            % the operators A and B.
             %
+            % C = A*B, or C = B*A,  where A is a FUNCTIONALBLOCK and B is a
+            % scalar, returns the FUNCTIONALBLOCK C which is the the result of
+            % multiplying A with B.
+            %
+            % C = A*F, where A is a FUNCTIONALBLOCK and F is a CHEBFUN, returns
+            % the CHEBFUN C which is the the result of applying A to F.
+
             
             % Allow functional * scalar, but put the scalar first. 
             if ( isnumeric(B) && (length(B) == 1) )
@@ -78,7 +89,7 @@ classdef functionalBlock < linBlock
         end
         
         function C = plus(A, B)
-            % C = A + B
+            % C = A + B     Addition of two FUNCTIONALBLOCK objects A and B.
             C = functionalBlock(A.domain);
             C.stack = @(z) A.stack(z) + B.stack(z);
             C.diffOrder = max(A.diffOrder, B.diffOrder);
