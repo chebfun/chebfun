@@ -21,11 +21,13 @@ x = diff(dom) * rand(1000, 1) + dom(1);
 
 f = bndfun(@(x) exp(x) - 1, dom, [], [], pref);
 f_exact = @(x) exp(x) - 1;
-pass(1) = (norm(feval(f, x) - f_exact(x), inf) < 2*get(f, 'vscale')*get(f, 'epslevel'));
+pass(1) = (norm(feval(f, x) - f_exact(x), inf) < ...
+    2*get(f, 'vscale')*get(f, 'epslevel'));
 
 f = bndfun(@(x) 1./(1 + x.^2), dom, [], [], pref);
 f_exact = @(x) 1./(1 + x.^2);
-pass(2) = (norm(feval(f, x) - f_exact(x), inf) < get(f, 'vscale')*get(f, 'epslevel'));
+pass(2) = (norm(feval(f, x) - f_exact(x), inf) < ...
+    get(f, 'vscale')*get(f, 'epslevel'));
 
 f = bndfun(@(x) cos(1e4*x), dom, [], [], pref);
 f_exact = @(x) cos(1e4*x);

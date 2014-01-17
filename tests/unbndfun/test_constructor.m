@@ -1,3 +1,5 @@
+% Test file for unbndfun constructor and unbndfun/feval.m.
+
 function pass = test_constructor(pref)
 
 if ( nargin == 1 )
@@ -37,6 +39,7 @@ fExact = op(x);
 err = fVals - fExact;
 pass(3) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
 
+% Blow-up function:
 op = @(x) x.^2.*(1-exp(-x.^2));
 pref.singPrefs.exponents = [2 2];
 f = unbndfun(op, dom, [], [], pref); 
@@ -82,6 +85,7 @@ fExact = op(x);
 err = fVals - fExact;
 pass(8) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
 
+% Blow-up function:
 op = @(x) x.*(5+exp(-x.^3));
 pref.singPrefs.exponents = [0 1];
 f = unbndfun(op, dom, [], [], pref); 
@@ -127,6 +131,7 @@ fExact = op(x);
 err = fVals - fExact;
 pass(13) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
 
+% Blow-up function:
 op = @(x) x.*(5+exp(x.^3))./(dom(2)-x);
 pref.singPrefs.exponents = [0 -1];
 f = unbndfun(op, dom, [], [], pref); 
@@ -135,13 +140,21 @@ fExact = op(x);
 err = fVals - fExact;
 pass(14) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
 
+% Array-valued function:
+op = @(x) [exp(x) x.*exp(x) (1-exp(x))./x];
+f = unbndfun(op, dom);
+fVals = feval(f, x);
+fExact = op(x);
+err = fVals - fExact;
+pass(15) = norm(err, inf) < 1e1*max(get(f,'epslevel').*get(f,'vscale'));
+
 %% MISC:
 
 try
     f = unbndfun(@(x) exp(-x.^2), [0 1]);
-    pass(12) = fail;
+    pass(16) = fail;
 catch ME
-    pass(12) = strcmp(ME.identifier, 'CHEBFUN:UNBNDFUN:BoundedDomain');
+    pass(16) = strcmp(ME.identifier, 'CHEBFUN:UNBNDFUN:BoundedDomain');
 end
     
 end
