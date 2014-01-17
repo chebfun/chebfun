@@ -41,10 +41,10 @@ else
 end
 
 % Extra information:
-[extraItem, extraData] = dispInfo(f);
+[extraItem, extraData] = dispData(f);
 
 % Loop through each of the funs to display the following information:
-fprintf('       interval       length   endpoint values %s \n', extraItem)
+fprintf('       interval       length       endpoint values %s \n', extraItem)
 len = zeros(numFuns,1);
 
 for j = 1:numFuns
