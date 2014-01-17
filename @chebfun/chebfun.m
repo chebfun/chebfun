@@ -511,7 +511,8 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
                     % "enableSingularityDetection" and "poles only".
                     pref.enableSingularityDetection = 1;
                     pref.singPrefs.singType = {'pole', 'pole'};
-                elseif ( args{2} == 2 || strcmpi(args{2}, 'on') )
+                elseif ( (isnumeric(args{2}) && args{2} == 2 ) || ...
+                    strcmpi(args{2}, 'on') )
                     % Translate "blowup" and flag "2" -->
                     % "enableSingularityDetection" and "fractional singularity".
                     pref.enableSingularityDetection = 1;
