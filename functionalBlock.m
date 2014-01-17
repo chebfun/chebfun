@@ -22,15 +22,15 @@ classdef functionalBlock < linBlock
             A = A@linBlock(domain);
         end
         
-        function varargout = size(A, dim)
+        function varargout = size(A, dim) %#ok<INUSL>
             % SIZE  Size of a FUNCTIONALBLOCK.
             % The commands
             %   S = SIZE(A)
             %   [M, N] = SIZE(A)
             %   P = SIZE(A, K)
-            % return the expected results.
+            % return the results expected from standard MATLAB syntax.
             
-            % A FUNCTIONALBLOCK is always of dimensions 1xInf
+            % A FUNCTIONALBLOCK is always of dimensions 1 x Inf.
             m = [1, Inf];
             if nargin > 1
                 varargout = {m(dim)};
@@ -48,7 +48,7 @@ classdef functionalBlock < linBlock
         end
         
         function C = mtimes(A, B)
-            % * Functional composition, application, or multiplication.
+            % *    Functional composition, multiplication or application.
             %
             % C = A*B, where A is a FUNCTIONALBLOCK and B is an OPERATORBLOCK,
             % returns the FUNCTIONALBLOCK C which is the the result of composing
