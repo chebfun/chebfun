@@ -1,3 +1,5 @@
+% Test file for unbndfun/diff.
+
 function pass = test_diff(pref)
 
 if ( nargin == 1 )

@@ -31,8 +31,8 @@ end
 t = f.mapping.inv(s);
 
 % Make sure -Inf and Inf are mapped to -1 and 1 respectively:
-mask = isinf(x); 
-z(mask) = sign(x(mask));
+mask = isinf(s); 
+t(mask) = sign(s(mask));
 
 % Restrict the ONEFUN of f.
 restrictedOnefuns = restrict(f.onefun, t);

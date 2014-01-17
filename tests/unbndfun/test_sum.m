@@ -1,3 +1,5 @@
+% Test file for unbndfun/sum.
+
 function pass = test_sum(pref)
 
 if ( nargin == 1 )
