@@ -52,8 +52,10 @@ function v = applyVolt(u, d, kernel)
     
     nrmu = max(1, norm(u));
     p.techPrefs.sampleTest = false;
-%    p.techPrefs.eps = nrmu*eps;
-%    p.enableBreakpointDetection = true;
+    
+    % TODO: Explore the correct preferences for best behavior.
+    %    p.techPrefs.eps = nrmu*eps;
+    %    p.enableBreakpointDetection = true;
     p = chebpref(p);
     
     brk = d(2:end-1); 

@@ -1,18 +1,18 @@
 classdef blockFunction
-%BLOCKFUNCTION   Convert linear operator to callable function.
-%   This class is not intended to be called directly by the end user.
-%
-%   See also LINOP, CHEBOP, CHEBOPPREF.
+    %BLOCKFUNCTION   Convert linear operator to callable function.
+    %   This class is not intended to be called directly by the end user.
+    %
+    %   See also LINOP, CHEBOP, CHEBOPPREF.
     
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org/ for Chebfun information.
+    % Copyright 2013 by The University of Oxford and The Chebfun Developers.
+    % See http://www.chebfun.org/ for Chebfun information.
     
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Developer notes
-%
-% This class converts a LINBLOCK object into a callable function suitable
-% for application to a CHEBFUN.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Developer notes
+    %
+    % This class converts a LINBLOCK object into a callable function suitable
+    % for application to a CHEBFUN.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     properties ( Access=public )
         % This property is assigned the callable function that does the
@@ -34,9 +34,9 @@ classdef blockFunction
                 return
                 
                 
-           % Calling the constructor with a linBlock argument initiates the
-           % process of evaluating the stack with a dummy object of this class.
-           elseif ( isa(varargin{1}, 'linBlock') )
+                % Calling the constructor with a linBlock argument initiates the
+                % process of evaluating the stack with a dummy object of this class.
+            elseif ( isa(varargin{1}, 'linBlock') )
                 % Convert the given linBlock to its function form by
                 % evaluating its stack.
                 L = varargin{1};
@@ -45,10 +45,10 @@ classdef blockFunction
                 A = L.stack( dummy );
                 
                 
-            % If the constructor is called with data, just make a regular object
-            % out of it. 
+                % If the constructor is called with data, just make a regular object
+                % out of it.
             else
-                 A.func = varargin{1};
+                A.func = varargin{1};
             end
         end
         
@@ -69,9 +69,6 @@ classdef blockFunction
         function A = uplus(A)
         end
         
-    end
-    
-    methods
         function D = diff(A, m)
             D = blockFunction( @(z) diff(z,m) );
         end

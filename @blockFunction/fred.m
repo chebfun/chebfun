@@ -43,7 +43,8 @@ function Fu = applyFred(u, d, kernel)
 % kernel is nearly zero by cancellation on the interval, don't try to
 % resolve it relative to its own scale.)
 nrmu = norm(u);
-opt = {'resampling',false,'splitting',true,'scale',nrmu};
+% TODO: Determine best options for robust behavior.
+% opt = {'resampling',false,'splitting',true,'scale',nrmu};
 int = @(x) sum( chebfun(@(y) feval(u,y).*kernel(x,y),d)); %, opt{:} );
 Fu = chebfun( int, d, 'sampletest', false, 'resampling', false, ...
     'vectorize', 'scale', nrmu);
