@@ -77,12 +77,14 @@ end
     
 %% 
 % Check that direct construction and MINUS give comparable results.
-tol = 10*eps;
 f = bndfun(@(x) x, dom, [], [], pref);
 g = bndfun(@(x) cos(x) - 1, dom, [], [], pref);
 h1 = f - g;
+h1_vals = feval(h1, x);
 h2 = bndfun(@(x) x - (cos(x) - 1), dom, [], [], pref);
-pass(19) = normest(h1-h2) < tol;
+h2_vals = feval(h2, x);
+pass(19) = ( norm(h1_vals - h2_vals, inf) < ...
+    1e1*get(h1, 'epslevel').*get(h1, 'vscale') );
 
 %% 
 % Check that subtracting a BNDFUN and an unhappy BNDFUN gives an

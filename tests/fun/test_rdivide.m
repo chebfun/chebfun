@@ -103,8 +103,8 @@ vals_h = feval(h, x);
 pow = pow1-pow2;
 op = @(x)  (x - dom(2)).^pow.*(sin(x)./(cos(x).^2+1));
 h_exact = op(x);
-pass(14) = ( norm(vals_h-h_exact, inf) < 1e1*max(get(f, 'epslevel'), get(g, 'epslevel'))*...
-    norm(h_exact, inf) );
+pass(14) = ( norm(vals_h-h_exact, inf) < 1e2* ...
+    max(get(f, 'epslevel'), get(g, 'epslevel'))*norm(h_exact, inf) );
 
 %% 
 % [TODO]: Run a few tests for UNBNDFUN.

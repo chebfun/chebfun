@@ -116,12 +116,14 @@ pass(19:20) = test_mult_function_by_function(f, f_op, f, f_op, x, false);
 
 %%
 % Check that multiplication and direct construction give similar results.
-tol = 100*eps;
 g_op = @(x) 1./(1 + x.^2);
 g = bndfun(g_op, dom, [], [], pref);
 h1 = f .* g;
+h1_vals = feval(h1, x);
 h2 = bndfun(@(x) f_op(x) .* g_op(x), dom, [], [], pref);
-pass(21) = normest(h1 - h2) < tol;
+h2_vals = feval(h2, x);
+pass(21) = ( norm(h1_vals - h2_vals, inf) < ...
+    1e1*get(h1, 'epslevel').*get(h1, 'vscale') );
 
 %%
 % Check that multiplying a BNDFUN by an unhappy BNDFUN gives an unhappy
