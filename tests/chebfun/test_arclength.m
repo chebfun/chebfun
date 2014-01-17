@@ -21,7 +21,7 @@ lPart = arcLength(f, dom);
 % The exact result is obtained using method 'integral' of Matlab:
 lPartExact = 38.339961332457015; 
 err = abs(lPart - lPartExact);
-pass(2) = ( err < 5e5*lPartExact*vscale(f).*epslevel(f) );
+pass(2) = ( err < 1e6*lPartExact*vscale(f).*epslevel(f) );
 
 % A piecewise smooth CHEBFUN:
 f = chebfun({@(x)sin(x) @(x)cos(2*x)}, [-1 1 2]);
