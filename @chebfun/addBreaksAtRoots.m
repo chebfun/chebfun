@@ -12,7 +12,7 @@ function f = addBreaksAtRoots(f, tol)
 %   If F is array-valued, breaks will be introduced in each of the columns at
 %   unique(ROOTS(F)).
 %
-% See also ROOTS.
+% See also ADDBREAKS, ROOTS.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
@@ -25,35 +25,23 @@ end
 % Locate roots:
 rAll = roots(f, 'nozerofun', 'nojump', 'noimps');
 
-% Since each column of an array-valued CHEBFUN must have the same breakpoints,
-% we simply take unique(r(:)) and remove any remaining NaNs.
-r = unique(rAll(:));
+% Reshape to a column vector and remove NaNs:
+r = rAll(:);
 r(isnan(r)) = [];
 
 % Discard any roots which are closer than the accuracy of the CHEBFUN:
-el = epslevel(f);
-hs = hscale(f);
-rtol1 = max(el*hs, tol);
-r([false ; diff(r) < rtol1]) = [];
-
-% Avoid introducing new breakpoints close to an existing ones:
-rtol2 = max(100*el*max(min(diff(f.domain)), 1), tol);
-r(any(abs(bsxfun(@minus, r, f.domain)) < rtol2, 2)) = [];
+rootTol = max(epslevel(f)*hscale(f), tol);
+r([false ; diff(r) < rootTol]) = [];
 
 % Add new breaks if required:
 if ( ~isempty(r) )
-    % Get the domain with the new breakpoints: (union is not required, by above)
-    dom = unique([f.domain, r.']);
-    
-    % Introduce these breakpoints into f:
-    f = restrict(f, dom);
+    f = addBreaks(f, r, tol);
 
     % Enforce zero impulses at roots:
     for k = 1:min(size(f))
         % TODO: Allow a tolerance?
-        f.impulses(ismember(dom, rAll(:,k)), k, :) = 0;
+        f.impulses(ismember(f.domain, rAll(:,k)), k, :) = 0;
     end
-    
 end
 
 end
