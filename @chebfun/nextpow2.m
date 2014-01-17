@@ -26,12 +26,11 @@ end
 absf = abs(f);
 
 % Result will have breaks where |f| is a power of 2.
-mm = minandmax(f);
-% TODO: This isn't right for array-valued CHEBFUN objects:
-pows = 2.^(nextpow2(mm(1)):nextpow2(mm(2)));
+mm = minandmax(absf);
+pows = 2.^(nextpow2(mm(1,:)):nextpow2(mm(2,:)));
 r = f.domain.';
 for k = 1:numel(pows)
-    rk = roots(f - pows(k));
+    rk = roots(absf - pows(k));
     r = [r ; rk(:)];
 end
 r = unique(r);
@@ -41,7 +40,7 @@ r(isnan(r)) = [];
 f = restrict(f, r.');
 
 % We need to extrapolate:
-pref.chebfun.extrapolate = true;
+pref.extrapolate = true;
 
 % Call COMPOSE():
 g = compose(f, @(n) nextpow2(n), [], pref);
