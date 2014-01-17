@@ -13,7 +13,7 @@ if ( nargin < 2 )
 end
 
 % Add breaks at the roots of f + 1:
-f = addBreaksAtRoots(f + 1);
+f = addBreaks(f, getRootsForBreaks(f + 1));
 
 % Call COMPOSE():
 g = compose(f, @(x) log1p(x), [], pref);
