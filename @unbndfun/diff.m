@@ -1,5 +1,5 @@
 function f = diff(f, k, dim)
-%DIFF	Derivative of a BNDFUN.
+%DIFF	Derivative of a UNBNDFUN.
 %   DIFF(F) is the derivative of F and DIFF(F, K) is the K-th derivative.
 %
 %   DIFF(F, K, DIM), where DIM is one of 1 or 2, takes the Kth difference along
