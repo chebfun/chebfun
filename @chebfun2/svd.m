@@ -16,19 +16,29 @@ function varargout = svd( f )
 % RANK(F) is the number of significant singular values of F. The relation 
 % RANK(F) <= LENGTH(F) should always hold. 
 
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-if ( isempty( f ) ) % check for empty chebfun2. 
-    varargout = {chebfun,[],chebfun};
+% Empty check: 
+if ( isempty( f ) ) 
+    varargout = { chebfun, [], chebfun };
     return
 end
 
+% Get the low rank representation for f. 
+cols = f.cols; 
+rows = f.rows; 
+piv = f.pivotValues; 
+d = 1./piv; 
+d(d == inf) = 0;  % set infinite values to zero. 
+
+% Extract information: 
 dom = f.domain; 
 width = diff( dom( 1:2 ) ); 
 height = diff( dom( 3:4 ) ); 
-pivots = f.pivotValues;
 
 % If the function is the zero function then special care is required. 
-if ( norm( pivots ) == 0 )
+if ( norm( d ) == 0 )
     if ( nargout > 1 ) 
         U = chebfun2( 1./sqrt( width ), dom(1:2) ); 
         V = chebfun2( 1./sqrt( height ), dom(3:4) );
@@ -39,15 +49,15 @@ if ( norm( pivots ) == 0 )
 else
 
 % If the function is non-zero then do the standard stuff. 
-[Qleft, Rleft] = qr( f.cols ); 
-[Qright, Rright] = qr( f.rows );
-[U, S, V] = svd( Rleft * diag( 1./f.pivotValues ) * Rright.' );
+[Qleft, Rleft] = qr( cols ); 
+[Qright, Rright] = qr( rows );
+[U, S, V] = svd( Rleft * diag( d ) * Rright.' );
 U = Qleft * U; 
 V = Qright * V; 
 
 % Output just like the svd of a matrix. 
 if ( nargout > 1 )
-    varargout = { U, S, V};
+    varargout = { U, S, V };
 else
     varargout = { diag( S ) };
 end

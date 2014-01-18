@@ -1,7 +1,11 @@
-function f = tand(f)
+function f = tand( f )
 % TAND   Tangent of a chebfun2 (in degrees)
 
-if ( isempty(f) )    % check for empty chebfun2.
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+
+% Empty check: 
+if ( isempty(f) )    
     return
 end
 

@@ -1,4 +1,4 @@
-function v = prod(f,varargin)
+function v = prod(f, varargin)
 %PROD  Product integral of a chebfun2. 
 % 
 %   prod(F) returns the chebfun exp(  sum(log(F)) )
@@ -7,20 +7,15 @@ function v = prod(f,varargin)
 % 
 % See also CUMPROD.
 
-% Just use the definition.
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 if ( nargin == 1 ) 
-    dim == 1; 
+    dim = 1; 
 else
-    dim = varargout{1}; 
+    dim = varargin{1}; 
 end
 
-if ( dim == 1 )  % default to y direction. 
-    v = exp( sum( log( f ) ) ); 
-elseif ( dim == 2 ) 
-    v = exp( sum( log(f), dim ) );
-else
-    error('CHEBFUN2:PROD:DIM','Unrecognized dimension.');
-end
+v = exp( sum( log(f), dim ) );
 
 end

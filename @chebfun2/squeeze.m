@@ -5,23 +5,36 @@ function g = squeeze(f)
 % only on the x-variable a row chebfun is returned and if it depends on
 % just the y-variable a column chebfun is returned. 
 
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+
 if ( isempty( f ) )  % check for an empty chebfun2.
    g = chebfun2;  
    return
 end
 
+% Get the low rank representation for f. 
+cols = f.cols; 
+rows = f.rows; 
+piv = f.pivotValues; 
+d = 1./piv; 
+d(d==inf) = 0;  % set infinite values to zero.
+dom = f.domain; 
+
 if ( rank( f ) == 1 )   % must be of rank 1. 
-    if ( norm( f.cols - mean(f.cols)) < 10*eps )
-        g = mean(f.cols) * diag(1./f,pivotValues) * f.rows; 
-        id = 1; 
-    elseif ( norm( f.rows - mean(f.rows)) < 10*eps )
-        g = f.cols * diag(1./f.pivotValues) * mean(f.rows);
-        id = 3;
+    cols = simplify( cols ); 
+    rows = simplify( rows ); 
+    if ( length( cols ) == 1 ) 
+        g = mean( cols ) * diag( d ) * rows; 
+        newdomain = dom(1:2); 
+    elseif ( length( rows ) == 1 )
+        g = cols * diag( d ) * mean(rows);
+        newdomain = dom(3:4); 
     else
         g = f; 
     end
     if ( isa(g,'double') )
-        g = chebfun( g, [ rect(id), rect(id+1) ] );
+        g = chebfun( g, newdomain );
     end
 else
     g = f; 

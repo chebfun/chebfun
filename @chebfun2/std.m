@@ -16,7 +16,11 @@ function g = std(f,varargin)
 %
 % See also CHEBFUN/STD, CHEBFUN2/MEAN.
 
-if ( isempty( f ) )   % return an empty chebfun object. 
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+
+% Empty check: 
+if ( isempty( f ) ) 
     g = chebfun;
     return
 end

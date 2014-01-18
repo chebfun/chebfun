@@ -1,6 +1,11 @@
 function h = plus(f, g) 
+%+	  Plus.
+%
+% F + G adds chebfun2s F and G, or a scalar to a chebfun2 if either F or G
+% is a scalar.
 
-% Chebfun2 plus using compression. 
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 if ( ~isa(f, 'chebfun2') )  % ??? + CHEBFUN2
     
@@ -70,4 +75,5 @@ function h = compression_plus(f, g)
     h.cols = Qleft  * U; 
     h.rows = Qright * V;
     h.pivotValues = 1./diag( S ); 
+    
 end

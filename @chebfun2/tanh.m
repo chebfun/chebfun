@@ -3,8 +3,12 @@ function f = tanh(f)
 %
 % TANH(F) returns the hyperbolic tangent of a chebfun2.
 
-if ( isempty( f ) )  % check for empty chebfun2.
-    return;
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+
+% Empty check: 
+if ( isempty( f ) ) 
+    return
 end
 
 op = @(x,y) tanh( feval( f, x, y ) );  % Resample.    

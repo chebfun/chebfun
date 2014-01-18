@@ -7,6 +7,9 @@ function p = pivots(f,varargin)
 % PIVOTS(F,'normalize'), returns the normalised pivot values.  These
 % numbers are scaled so that the columns and rows have unit 2-norm.
 
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+
 if ( nargin < 2 )
     
     p = f.pivotValues;  % Return the pivot values. 

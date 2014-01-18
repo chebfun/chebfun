@@ -9,21 +9,25 @@ function r = rank(f, tol)
 %
 % See also LENGTH.
 
-if ( isempty( f ) )    % check for an empty chebfun2
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+
+% Empty check: 
+if ( isempty( f ) )
     r = [];
-    return;
+    return
 end
 
+% HARD tolerance. 
 if ( nargin == 1 )
     tol = 0;
-else
-    tol = varargin{1}; 
 end
 
-% compute singular values of f. 
+% Compute singular values of f. 
 s = svd( f ); 
 
-if ( max( s ) == 0  ) %check for zero function. 
+% Check for zero function.
+if ( max( s ) == 0  )  
     r = 0; 
     return
 end
