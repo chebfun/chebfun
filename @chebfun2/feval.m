@@ -1,25 +1,51 @@
 function out = feval(f, x, y)
-% FEVAL  evaluation of a chebfun2 at a point. 
+%FEVAL  evaluate a chebfun2 at one or more points.
+%
+%  FEVAL(F,X,Y) evaluates the chebfun2 F and the point(s) in (X,Y), where
+%    X and Y are doubles.
+% 
+%  FEVAL(F,X) evaluates the chebfun2 F along the complex valued chebfun X 
+%    and returns  g(t) = F(real(X(t)),imag(X(t)))
+% 
+%  FEVAL(F,X,Y) returns g(t) = F(X(t),Y(t)), where X and Y are real valued
+%  chebfuns with the same domain. 
+%
+% See also SUBSREF.
 
-if ( strcmpi(x, ':') && strcmpi(y, ':') )
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+
+% Empty check: 
+if ( isempty(f) )
+    varargout = {[]}; 
+    return
+end
+
+% Get the low rank representation for f. 
+cols = f.cols; 
+rows = f.rows; 
+piv = f.pivotValues; 
+d = 1./piv; 
+d(d==inf) = 0;  % set infinite values to zero. 
+
+
+if ( strcmpi(x, ':') && strcmpi(y, ':') )    % f(:, :)
     out = f;
-elseif ( strcmpi(x, ':') && isnumeric( y ) )
-    Cols = f.cols;
-    Rows = f.rows;
-    pivotValues = f.pivotValues;
+elseif ( strcmpi(x, ':') && isnumeric( y ) ) % f(:, y)
+    % Make evaluation points a vector. 
     y = y(:);
-    
-    out = feval( Cols, y ) * diag( 1./pivotValues ) * Rows';
+    % Evaluate (returns a column chebfun):
+    out = feval( cols, y ) * diag( d ) * rows';
+    % Simplify: 
     out = simplify( out ); 
-elseif ( isnumeric( x ) && strcmpi(y, ':') )
-    Cols = f.cols;
-    Rows = f.rows;
-    pivotValues = f.pivotValues;
+elseif ( isnumeric( x ) && strcmpi(y, ':') ) % f(x, :)
+    % Make evaluation points a vector. 
     x = x( : ); 
-    
+    % Evaluate (returns a row chebfun):
     out = Cols * diag( 1./pivotValues ) * feval( Rows, x )';
+    % Simplify:
     out = simplify( out ); 
-elseif ( isnumeric( x ) && isnumeric( y ) )
+elseif ( isnumeric( x ) && isnumeric( y ) )    % f(x, y)
 
     sx = size(x);
     sy = size(y);
@@ -31,10 +57,8 @@ elseif ( isnumeric( x ) && isnumeric( y ) )
         end
     end
     
-    zCol = feval(f.cols, y(:));
-    zRow = feval(f.rows, x(:));
-    
-    out = zCol*diag(1./f.pivotValues)*zRow.';
+    % Evaluate: 
+    out = feval( cols, y(:) ) * diag( d ) * feval( rows, x(:)) .';
 else
     error('CHEBFUN2:FEVAL:INPUTS','Unrecognized arguments for evaluation');
 end

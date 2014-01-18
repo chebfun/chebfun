@@ -1,4 +1,4 @@
-function f = cumsum2(f)
+function f = cumsum2( f )
 %CUMSUM2 Double indefinite integral of a chebfun2.
 %
 % F = CUMSUM2(F) returns the double indefinite integral of a chebfun2. That
@@ -12,6 +12,9 @@ function f = cumsum2(f)
 %  where [a,b]x[c,d] is the domain of f. 
 % 
 % See also CUMSUM, SUM, SUM2.
+
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 if ( isempty( f ) ) % check for empty chebfun2.
     f = [];

@@ -6,10 +6,12 @@ function f = flipud( f )
 %
 % See also FLIPLR, FLIPDIM. 
 
-if ( isempty( f ) )   % check for empty chebfun2
+% Empty check:
+if ( isempty( f ) )  
     return
 end
 
-f.cols = flipud( f.cols );  % flip the column slices.
+% Flip the column slices: 
+f.cols = flipud( f.cols ); 
 
 end

@@ -7,7 +7,9 @@ function g = cumprod( f, varargin )
 %
 % See also CUMSUM, SUM, PROD.
 
-%% 
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+
 % Just compute directly from the definition. 
 if ( isempty(varargin) )
     g = exp( cumsum( log( f ) ) ); 

@@ -8,7 +8,6 @@ function f = flipdim( f, dim )
 % 
 % See also FLIPLR, FLIPUD.
 
-%%
 % Use the code in flipud and fliplr. 
 if ( dim == 1 )
     f = flipud( f ); 

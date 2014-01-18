@@ -1,4 +1,4 @@
-function f = fliplr(f)
+function f = fliplr( f )
 %FLIPLR  Flip/reverse a chebfun2 in the x-direction.
 %
 % G = FLIPLR(F) returns a chebfun2 G with the same domain as F but
@@ -6,10 +6,12 @@ function f = fliplr(f)
 %
 % See also FLIPUD.
 
-if ( isempty( f ) ) % check for empty chebfun2.
+% Empty check: 
+if ( isempty( f ) ) 
     return
 end
 
-f.rows = flipud( f.rows );       % Flip the row slices.
+% Flip the row slices: 
+f.rows = flipud( f.rows );
 
 end
