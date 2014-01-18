@@ -58,7 +58,7 @@ isSimple = all(cellfun(@(f) isa(f.onefun, 'chebtech'), f.funs));
 if ( isSimple )
     % Compute inner-products manually:
     
-    out = zeros(n+1, min(size(f))); % Initialise storage.
+    out = zeros(n+1, numColumns(f)); % Initialise storage.
     
     % For each subinterval calculate int P_k f(x)dx and add them up:
     for j = 1:numel(f.funs)

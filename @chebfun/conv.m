@@ -31,7 +31,7 @@ if ( xor(f.isTransposed, g.isTransposed) )
 end
 
 % TODO:  Support for array-valued CHEBFUNs / quasimatrices.
-if ( min(size(f)) > 1 || min(size(g)) > 1 )
+if ( numColumns(f) || numColumns(g) )
     error('CHEBFUN:conv:quasi', 'No support for array-valued CHEBFUN objects.');
 end
 

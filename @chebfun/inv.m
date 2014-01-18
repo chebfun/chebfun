@@ -41,7 +41,7 @@ function g = inv(f, varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % No quasimatrix support:
-if ( min(size(f)) > 1 )
+if ( numColumns(f) > 1 )
     error('CHEBFUN:inv:noquasi', ...
         'INV does not support array-valued CHEBFUN objects or quasimatrices.');
 end
