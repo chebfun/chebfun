@@ -11,6 +11,6 @@ if ( isempty( f ) )  % check for empty chebfun2.
 end
 
 op = @(x,y) conj( feval(f, x, y) );  % Resample. 
-f = chebfun2( op, f.domain );               % Call constructor. 
+f = chebfun2( op, f.domain );        % Call constructor. 
 
 end
