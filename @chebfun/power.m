@@ -1,9 +1,11 @@
 function g = power(f, b)
-% .^   Chebfun power.
+%.^   CHEBFUN power.
 %   F.^G returns a CHEBFUN F to the scalar power G, a scalar F to the CHEBFUN
 %   power G, or a CHEBFUN F to the CHEBFUN power G. F and or G may be complex.
 %
 %   H = POWER(F, G) is called for the syntax 'F .^ G'.
+%
+% See also SQRT, COMPOSE.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -14,8 +16,6 @@ if ( isempty(f) || isempty(b) )
     return
 end
 
-% [TODO]: This might need to be changed to include SINGFUN features.
-    
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% CHEBFUN .^ CHEBFUN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
 if ( isa(f, 'chebfun') && isa(b, 'chebfun') ) 
     
@@ -37,18 +37,43 @@ elseif ( isa(f, 'chebfun') )                     % CHEBFUN .^ constant
         % Call TIMES():
         g = f.*f;
         
-    elseif ( (b > 0) && (round(b) == b) )   % Positive integer
-        % Result will be smooth. Call COMPOSE():
-        g = compose(f, @(x) power(x, b));
+    elseif ( ( b > 0 ) && ( round(b) == b ) )   % Positive integer
         
-    elseif ( b == .5 )                  % Sqrt
-        % Call SQRT():
-        g = sqrt(f);        
+        % If SINGFUN is involved:
+        if ( issing(f) )
+            % If singfun is involved, treat each piece individually:
+            g = f;
+            numFuns = numel(f.funs);
+            for k = 1:numFuns
+                g.funs{k} = power(f.funs{k}, b);
+            end
+            g.impulses = g.impulses.^b;
+        else
+            % Result will be smooth. Call COMPOSE():
+            g = compose(f, @(x) power(x, b));
+        end
         
-    else                                % General case
-        % [TODO]: implement this properly (i.e., using SINGFUN).
-        warning('Not yet implemented.')
-        g = compose(f, @(x) power(x, b));
+    else                                % General case (SQRT is included)
+        
+        % Add breaks at the appropriate roots of f:
+        if ( isreal(f) )
+            f = addBreaksAtRoots(f);
+        else
+            % Add breaks at the roots of the imaginary part of F to account for
+            % the discontinuity in POWER along the negative real semi-axis due 
+            % to the branch cut.
+            r = getRootsForBreaks(imag(f));
+            f = addBreaks(f, r);
+            
+        end
+        % Loop over each piece individually:
+        numFuns = numel(f.funs);
+        g = f;
+        for k = 1:numFuns
+            g.funs{k} = power(f.funs{k}, b);
+        end
+        % Update the impulses:
+        g.impulses = g.impulses.^b;
         
     end
     

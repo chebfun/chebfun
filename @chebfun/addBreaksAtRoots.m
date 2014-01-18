@@ -1,5 +1,6 @@
 function f = addBreaksAtRoots(f, tol)
 %ADDBREAKSATROOTS   Add breaks at appropriate roots of a CHEBFUN
+%
 %   ADDBREAKSATROOTS(F) introduces breakpoints at certain roots in the interior
 %   of the domain of a CHEBFUN F. In particular, breaks are introduced at each
 %   of the roots returned by ROOTS(F, 'nozerofun', 'nojump', 'noimps'), except
@@ -12,7 +13,7 @@ function f = addBreaksAtRoots(f, tol)
 %   If F is array-valued, breaks will be introduced in each of the columns at
 %   unique(ROOTS(F)).
 %
-% See also ADDBREAKS, ROOTS, GETROOTSFORBREAKS.
+% See also ADDBREAKS, ROOTS, GETROOTSFORBREAKS, DEFINEPOINT
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.

@@ -85,13 +85,13 @@ h2 = g .* f;
 pass(12) = isequal(h1, h2);
 h_exact = @(x) [tanh(x).*sin(x) tanh(x).*cos(x) tanh(x).*exp(x)];
 err = feval(h1, x) - h_exact(x);
-pass(13) = max(abs(err(:))) < 10*max(get(h1, 'vscale'))*get(h1, 'epslevel');
+pass(13) = max(abs(err(:))) < 10*max(get(h1, 'vscale').*get(h1, 'epslevel'));
 
 g = bndfun(@(x) [sinh(x) cosh(x) tanh(x)], dom, [], [], pref);
 h = f .* g;
 h_exact = @(x) [sinh(x).*sin(x) cosh(x).*cos(x) tanh(x).*exp(x)];
 err = feval(h, x) - h_exact(x);
-pass(14) = max(abs(err(:))) < 10*max(get(h, 'vscale'))*get(h, 'epslevel');
+pass(14) = max(abs(err(:))) < 10*max(get(h, 'vscale').*get(h, 'epslevel'));
 
 % This should fail with a dimension mismatch error.
 try
@@ -139,6 +139,47 @@ pass(22) = (~get(g, 'ishappy')) && (~get(h, 'ishappy')); %#ok<*BDSCI,*BDLGI>
 h = g.*f;  % Multiply happy by unhappy.
 pass(23) = (~get(g, 'ishappy')) && (~get(h, 'ishappy'));
 
+%% Test on singular function:
+
+dom = [-2 7];
+
+% Generate a few random points to use as test values.
+seedRNG(6178);
+x = diff(dom) * rand(100, 1) + dom(1);
+
+%% Case of a scalar and a function:
+
+c = 3;
+pow = -0.5;
+op = @(x) (x - dom(2)).^pow.*sin(x);
+op_exact = @(x) c*(x - dom(2)).^pow.*sin(x);
+pref.singPrefs.exponents = [0 pow];
+f = bndfun(op, dom, [], [], pref);
+g = c.*f;
+g_exact = bndfun(op_exact, dom, [], [], pref);
+
+err = norm(feval(g, x) - feval(g_exact, x), inf);
+pass(24) = ( err < 5*get(f, 'epslevel')*norm(feval(g_exact, x), inf) );
+
+%% Case of two functions:
+
+pow1 = -0.3;
+pow2 = -0.5;
+op1 = @(x) (x - dom(2)).^pow1.*sin(x);
+op2 = @(x) (x - dom(2)).^pow2.*cos(3*x);
+op_exact = @(x) (x - dom(2)).^(pow1+pow2).*sin(x).*cos(3*x);
+pref.singPrefs.exponents = [0 pow1];
+f = bndfun(op1, dom, [], [], pref);
+pref.singPrefs.exponents = [0 pow2];
+g = bndfun(op2, dom, [], [], pref);
+h = f.*g;
+pref.singPrefs.exponents = [0 pow1+pow2];
+h_exact = bndfun(op_exact, dom, [], [], pref);
+
+err = norm(feval(h, x) - feval(h_exact, x), inf);
+pass(25) = ( err < 1e1*max(get(f, 'epslevel'), get(g, 'epslevel'))*...
+    norm(feval(h_exact, x), inf) );
+
 end
 
 % Test the multiplication of a BNDFUN F, specified by F_OP, by a scalar ALPHA
@@ -148,7 +189,7 @@ g1 = f .* alpha;
 g2 = alpha .* f;
 result(1) = isequal(g1, g2);
 g_exact = @(x) f_op(x) .* alpha;
-tol = 10*max(get(g1, 'vscale'))*get(g1, 'epslevel');
+tol = 10*max(get(g1, 'vscale').*get(g1, 'epslevel'));
 result(2) = norm(feval(g1, x) - g_exact(x), inf) < tol;
 end
 

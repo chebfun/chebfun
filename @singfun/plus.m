@@ -24,11 +24,25 @@ end
 
 % If one of the arguments is a double, upgrade it to a SINGFUN:
 if ( isa(f, 'double') )
+    
+    if ( f == 0 )
+        % If F is zero, return G.
+        s = g;
+        return
+    end
+    
     % Make a SMOOTHFUN of the double f:
     f = g.smoothPart.make(f);
     % Convert f to a SINGFUN:
     f = singfun.smoothFun2SingFun(f);
 elseif ( isa(g, 'double') )
+    
+    if ( g == 0 )
+        % If G is zero, return F.
+        s = f;
+        return
+    end
+    
     % Make a SMOOTHFUN of the double g:
     g = f.smoothPart.make(g);
     % Convert g to a SINGFUN:
@@ -118,8 +132,12 @@ else
     vScale = get(f, 'vscale') + get(g, 'vscale');
     hScale = get(f, 'hscale');
     
+    % Take the smallest exponents to be those for the summation:
+    exps = [get(f, 'exponents'); get(g, 'exponents')];
+    exps = min(exps);
+    
     % Construct a new SINGFUN for the sum:
-    s = singfun(op, [], [], vScale, hScale, chebpref());
+    s = singfun(op, exps, [], vScale, hScale);
 end
 
 %%
