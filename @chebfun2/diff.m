@@ -19,7 +19,7 @@ function F = diff(F, k, dim)
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % Empty check:
-if ( isempty(f) ) 
+if ( isempty( F ) )
     return
 end
 
