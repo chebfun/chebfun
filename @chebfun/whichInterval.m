@@ -23,6 +23,6 @@ end
 indx(xReal == dom(end)) = numInts;
 
 % Points to the right of the domain:
-indx(xReal > dom(end)) = -inf;
+indx(xReal > dom(end)) = inf;
 
 end

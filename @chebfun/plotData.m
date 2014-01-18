@@ -86,7 +86,7 @@ else
     data.zPoints = [];
     data.zJumps = [];
 
-    % Overlapt the CHEBFUN objects:
+    % Overlap the CHEBFUN objects:
     [f, g] = overlap(f, g);
     [g, h] = overlap(g, h);
     [h, f] = overlap(h, f);

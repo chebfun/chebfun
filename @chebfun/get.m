@@ -15,11 +15,20 @@ function out = get(f, prop)
 %       'RVAL'           - Value(s) of F at righthand side of domain.
 %       'LVAL-LOCAL      - Value(s) of F's FUNs at left sides of their domains.
 %       'RVAL-LOCAL'     - Value(s) of F's FUNs at right sides of their domains.
+%
+%   The following are also supported for backward compatabiilty, and really only
+%   make sense when the CHEBFUN is represented by a CHEBTECH-type object. Note
+%   that in these cases a cell is always returned, even if the Chebfun has only
+%   a sngle FUN.
+%       'POINTS'         - The Chebyshev grid used to represent F.
+%       'VALUES'         - The values of the CHEBFUN on the grid above.
+%       'COEFFS'         - The corresponding Chebyshev coefficients.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % TODO: Figure out what to do for quasimatrices.
+% TODO: Convert help text to lower case.
 
 switch prop
     case {'domain', 'ends'}

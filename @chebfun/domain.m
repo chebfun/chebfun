@@ -9,15 +9,19 @@ function [A, B] = domain(f, flag)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( nargin == 2 )
-    % Return the end points as a vector
-    A = f(1).domain([1 end]);
-    
-elseif ( nargout == 2 )
+if ( nargout == 2 )
     % Return the end points as two scalars:
     dom = f(1).domain([1 end]);
     A = dom(1);
     B = dom(2);
+
+elseif ( nargin == 2 )
+    % Return the end points as a vector
+    if ( strcmpi(flag, 'ends') )
+        A = f(1).domain([1 end]);
+    else
+        error('CHEBFUN:domain:unknown', 'Unexpected input.');
+    end
     
 elseif ( numel(f) == 1 )
     % CHEBFUN case:

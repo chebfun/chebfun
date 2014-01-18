@@ -19,7 +19,7 @@ elseif ( isa(tol, 'chebpref') )
     tol = tol.techPrefs.eps;
 end
 
-% Loop pver the columns:
+% Loop over the columns:
 for k = 1:numel(F)
     F(k) = columnSimplify(F(k), tol);
 end

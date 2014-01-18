@@ -62,7 +62,7 @@ for k = 1:numel(F)
     r{k} = columnRoots(F(k), rootsPref); 
 end
 
-% Padd with NaNs for quasimatrices:
+% Pad with NaNs for quasimatrices:
 if ( numel(F) > 1 )
     l = cellfun(@length, r);
     ml = max(l);

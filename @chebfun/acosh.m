@@ -10,7 +10,6 @@ function F = acosh(F, varargin)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org for Chebfun information.
 
-% Loop over the columns of F:
 % Call the compose method:
 F = compose(F, @acosh, varargin{:});
 

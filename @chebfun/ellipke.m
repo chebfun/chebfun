@@ -46,7 +46,8 @@ end
 % Compute the second complete elliptic integral if required:
 if ( nargout == 2 )
     e(numel(m)) = chebfun();
-    for j = numel(m):-1:1% Call COMPOSE():
+    for j = numel(m):-1:1   
+        % Call COMPOSE():
         e(j) = compose(m(j), @(m) eFun(m, tol), pref);
     end
 end

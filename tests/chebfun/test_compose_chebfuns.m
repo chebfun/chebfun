@@ -82,7 +82,7 @@ function pass = test_one_compose_chebfuns(f_exact, g_exact, dom, pref)
         isequal(feval(g, feval(f, dom)), feval(h, dom));
 end
 
-% Test composition of two chebfuns or qusimatrices.
+% Test composition of two chebfuns or quasimatrices.
 function pass = test_one_compose_chebfuns_quasi(f_exact, g_exact, dom, pref, f, g)
     % Random points to use as test values.
     seedRNG(7681);

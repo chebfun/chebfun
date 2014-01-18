@@ -16,10 +16,10 @@ function out = poly(f, n)
 % if f is not smooth? (i.e., in the same way as LEGPOLY does).
 % TODO: Or perhaps throw an error if there are multiple funs?
 
-% Deal qith quasimatrices:
+% Deal with quasimatrices:
 if ( numel(f) > 1 )
     try 
-        % Attempt to convert to an array-valed CHEBFUN:
+        % Attempt to convert to an array-valued CHEBFUN:
         f = quasi2cheb(f);
     catch ME
         error('CHEBFUN:poly:quasi', ...
