@@ -27,12 +27,16 @@ end
 
 % Add new breaks if required:
 if ( ~isempty(rBreaks) )
+    oldDomain = f.domain;
     f = addBreaks(f, rBreaks, tol);
 
-    % Enforce zero impulses at roots:
-    for k = 1:min(size(f))
-        % TODO: Allow a tolerance?
-        f.impulses(ismember(f.domain, rAll(:,k)), k, :) = 0;
+    % Enforce zero impulses at roots only if new breakpoints were added (i.e.,
+    % the roots were not too close to existing breakpoints):
+    if ( ~isequal(f.domain, oldDomain) )
+        for k = 1:min(size(f))
+            % TODO: Allow a tolerance?
+            f.impulses(ismember(f.domain, rAll(:,k)), k, :) = 0;
+        end
     end
 end
 

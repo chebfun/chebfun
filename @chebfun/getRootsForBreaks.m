@@ -26,11 +26,12 @@ end
 % Locate roots:
 rAll = roots(f, 'nozerofun', 'nojump', 'noimps');
 
-% Reshape to a column vector and remove NaNs:
-rBreaks = rAll(:);
+% Reshape to a column vector, sort, and remove NaNs:
+rBreaks = sort(rAll(:));
 rBreaks(isnan(rBreaks)) = [];
 
-% Discard any roots which are closer than the accuracy of the CHEBFUN:
+% Discard any roots which are closer than the accuracy of the CHEBFUN (NB:
+% This requires the roots to be sorted first.):
 rootTol = max(epslevel(f)*hscale(f), tol);
 rBreaks([false ; diff(rBreaks) < rootTol]) = [];
 
