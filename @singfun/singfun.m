@@ -111,8 +111,16 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
             
             % Case 1: One input argument.
             if ( nargin == 1 )
-                % Make sure the exponents are empty.
-                exponents = [];
+                if ( isa(op, 'smoothfun') )
+                    % if OP is a SMOOTHFUN, cast it to a SINGFUN:
+                    obj.smoothPart = op;
+                    obj.exponents = [0, 0];
+                    
+                    return
+                else
+                    % Make sure the exponents are empty.
+                    exponents = [];
+                end
             end
             
             % Case 2: Two input arguments.
@@ -195,6 +203,12 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
     %% METHODS (NON-STATIC) IMPLEMENTED BY THIS CLASS.
     methods
         
+        % SINGFUN logical AND.
+        h = and(f, g)
+
+        % True if any element of a SINGFUN is a nonzero number, ignoring NaN.
+        a = any(f, dim)
+        
         % Convert an array of ONEFUN objects into an array-valued ONEFUN.
         f = cell2mat(f)
         
@@ -205,10 +219,13 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         f = ctranspose(f)
         
         % Indefinite integral of a SINGFUN.
-        f = cumsum(f, m, pref)
+        f = cumsum(f, m, dim)
         
         % Derivative of a SINGFUN.
-        f = diff(f, k)
+        f = diff(f, k, dim)
+        
+        % Extract information for DISPLAY.
+        info = dispData(f)
         
         % Evaluate a SINGFUN.
         y = feval(f, x)
@@ -255,6 +272,9 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         % Length of a SINGFUN.
         len = length(f)
         
+        % SINGFUN logical.
+        f = logical(f)
+        
         % Convert an array-valued SINGFUN into an ARRAY of SINGFUN objects.
         g = mat2cell(f, M, N)
         
@@ -285,6 +305,12 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         % Estimate of the norm of a SINGFUN object.
         out = normest(f)
         
+        % SINGFUN logical NOT.
+        f = not(f)
+
+        % SINGFUN logical OR.
+        h = or(f, g)
+        
         % Basic linear plot for SINGFUN objects.
         varargout = plot(f, varargin)
         
@@ -300,15 +326,21 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         % Polynomial coefficients of a ONEFUN.
         out = poly(f)
         
+        % SINGFUN power function.
+        f = power(f, b)
+
         % QR factorisation of an array-valued ONEFUN.
         [f, R, E] = qr(f, flag, methodFlag)
         
-        % Dividing two SINGFUNs
+        % Dividing two SINGFUNs.
         f = rdivide(f, g)
         
         % Real part of a SINGFUN.
         f = real(f)
         
+        % Simplify the exponents of a SINGFUN.
+        f = simplifyExponents(f)
+
         % Restrict a SINGFUN to a subinterval.
         f = restrict(f, s)
         

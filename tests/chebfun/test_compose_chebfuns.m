@@ -1,6 +1,6 @@
 % Test file for @chebfun/compose.m (composition of chebfuns).
 
-function pass = test_compose(pref)
+function pass = test_compose_chebfuns(pref)
 
 % Get preferences.
 if ( nargin < 1 )

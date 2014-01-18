@@ -30,4 +30,10 @@ f = exp(exp(x));
 xx = linspace(-1, 1, 17);
 pass(5) = norm(f(xx) - r(xx)) < 1e-4;
 
+% Test an example that is not based on the domain [-1, 1].
+f = chebfun(@exp, [2 6]);
+[p, q, r] = cf(f, 5, 5);
+xx = linspace(2, 6, 100);
+pass(6) = norm(feval(f, xx) - r(xx), inf) < 1e-6;
+
 end

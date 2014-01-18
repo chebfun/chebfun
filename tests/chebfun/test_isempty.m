@@ -32,5 +32,9 @@ x = chebfun('x');
 f = [x abs(x)];
 pass(9) = ~isempty(f);
 
-end
+dom = [-2 7];
+pow = -1.64;
+f = chebfun(@(x) (x-dom(1)).^pow, dom, 'exps', [pow 0], 'splitting', 'on');
+pass(10) = ~isempty(f);
 
+end

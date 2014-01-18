@@ -49,7 +49,7 @@ for n = 1:1 %[TODO]: unbndfun
     g = f ./ [alpha beta];
     g_exact = @(x) [sin(x)./alpha cos(x)./beta];
     pass(n, 5) = norm(feval(g, x) - g_exact(x), inf) < ...
-        10*max(get(g, 'vscale'))*get(g, 'epslevel');
+        10*max(get(g, 'vscale').*get(g, 'epslevel'));
     
     g = f ./ [alpha 0];
     isn = isnan(feval(g, x));
@@ -99,6 +99,30 @@ for n = 1:1 %[TODO]: unbndfun
     h2 = testclass.make(@(x) sin(x) ./ exp(x), dom, [], [], pref);
     pass(n, 13) = norm(feval(h1, x) - feval(h2, x), inf) < ...
         5e3*get(h2, 'vscale')*get(h2, 'epslevel');
+    
+    %% Test on singular function:
+    dom = [-2 7];
+    
+    % Generate a few random points to use as test values.
+    seedRNG(6178);
+    x = diff(dom) * rand(100, 1) + dom(1);
+    
+    pow1 = -0.5;
+    pow2 = -0.3;
+    op1 = @(x) (x - dom(2)).^pow1.*sin(x);
+    op2 = @(x) (x - dom(2)).^pow2.*(cos(x).^2+1);
+    pref.singPrefs.exponents = [0 pow1];
+    f = bndfun(op1, dom, [], [], pref);
+    pref.singPrefs.exponents = [0 pow2];
+    g = bndfun(op2, dom, [], [], pref);
+    h = f./g;
+    vals_h = feval(h, x);
+    pow = pow1-pow2;
+    op = @(x)  (x - dom(2)).^pow.*(sin(x)./(cos(x).^2+1));
+    h_exact = op(x);
+    pass(n, 14) = ( norm(vals_h-h_exact, inf) < 1e1*max(get(f, 'epslevel'), get(g, 'epslevel'))*...
+        norm(h_exact, inf) );
+    
 end
 
 end
@@ -109,7 +133,7 @@ function result = test_div_function_by_scalar(f, f_op, alpha, x)
     g = f ./ alpha;
     g_exact = @(x) f_op(x) ./ alpha;
     result = norm(feval(g, x) - g_exact(x), inf) < ...
-        10*max(get(g, 'vscale'))*get(g, 'epslevel');
+        10*max(get(g, 'vscale').*get(g, 'epslevel'));
 end
 
 % Test the division of a scalar ALPHA by a FUN, specified by F_OP, using
@@ -118,7 +142,7 @@ function result = test_div_scalar_by_function(alpha, f, f_op, x)
     g = alpha ./ f;
     g_exact = @(x) alpha ./ f_op(x);
     result = norm(feval(g, x) - g_exact(x), inf) < ...
-        10*max(get(g, 'vscale'))*get(g, 'epslevel');
+        10*max(get(g, 'vscale').*get(g, 'epslevel'));
 end
 
 % Test the division of two FUN objects F and G, specified by F_OP and
@@ -128,5 +152,5 @@ function result = test_div_function_by_function(f, f_op, g, g_op, x)
     h_exact = @(x) f_op(x) ./ g_op(x);
     norm(feval(h, x) - h_exact(x), inf);
     result = norm(feval(h, x) - h_exact(x), inf) < ...
-        50*max(get(h, 'vscale'))*get(h, 'epslevel');
+        50*max(get(h, 'vscale').*get(h, 'epslevel'));
 end

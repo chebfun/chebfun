@@ -32,7 +32,7 @@ end
 
 if ( (nargin == 1) || strcmp(flag, 'global') ) 
     [y, x] = globalMax(f);    
-elseif ( isa(flag, 'chebfun') )
+elseif ( isa(flag, 'chebfun') || isnumeric(flag) )
     y = maxOfTwoChebfuns(f, flag);
 elseif ( strcmp(flag, 'local') )
     [y, x] = localMax(f);
@@ -125,6 +125,7 @@ h = H.*f + notH.*g;
 
 % [TODO]: Enforce continuity?
 
+% TODO: Why simplify?
 % Simplify:
 h = simplify(h);
 

@@ -141,4 +141,18 @@ pass(26) = norm(sum(f, [-1 1]) - [0 2*sin(1) (exp(1) - exp(-1))], inf) < ...
 pass(27) = norm(sum(f, [-1 0]) - [(cos(-1) - 1) sin(1) (1 - exp(-1))], inf) ...
     < 10*vscale(f)*epslevel(f);
 
+%% Test on singular function: piecewise smooth chebfun - splitting on.
+
+% Set a domain
+dom = [-2 7];
+
+pow = -0.5;
+op = @(x) (x - dom(1)).^pow.*sin(100*x);
+pref.singPrefs.exponents = [pow 0];
+pref.enableBreakpointDetection = 1;
+f = chebfun(op, dom, pref);
+I = sum(f);
+I_exact = 0.17330750941063138;
+pass(28) = ( abs(I-I_exact) < 2*get(f, 'epslevel')*abs(I_exact) );
+
 end

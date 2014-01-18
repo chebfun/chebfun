@@ -95,7 +95,7 @@ switch prop
 
     case 'epslevel'
         out = epslevel(f);
-
+% <<<<<<< HEAD
     case {'values', 'coeffs', 'points', 'epslevel-local', 'vscale-local', 'hscale-local'}
         % Adjust the PROP variable in the case of -local:
         idx = strfind(prop, '-');
@@ -116,6 +116,22 @@ switch prop
             for j = 1:numel(f(k).funs)
                 out{j,k} = get(f(k).funs{j}, prop);
             end
+% =======
+%     case 'epslevel-local'
+%         n = numel(f.funs);
+%         numCols = min(size(f));
+%         % TODO:
+% %         numCols = numColumns(f);
+%         out(n,numCols) = 0;
+%         for k = 1:n
+%             out(k,:) = get(f.funs{k}, 'epslevel');
+%         end            
+%     case {'values', 'coeffs', 'points'}
+%         n = numel(f.funs);
+%         out = cell(n, 1);
+%         for k = 1:n
+%             out{k} = get(f.funs{k}, prop);
+% >>>>>>> development
         end
         if ( ~isempty(idx) && min(m, n) == 1 )
             out = cell2mat(out);

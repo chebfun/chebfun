@@ -12,6 +12,7 @@ pref.enableBreakpointDetection = 1;
 % Generate a few random points to use as test values.
 seedRNG(6178);
 x = 2 * rand(100, 1) - 1;
+hvsde = @(x) .5*(sign(x) + 1);
 
 % Check empty case.
 pass(1) = ~any(chebfun());
@@ -25,7 +26,6 @@ pass(3) = isequal(any(f.', 2), [1 0 1].');
 f.impulses(3,2,1) = NaN;
 pass(4) = isequal(any(f, 1), [1 0 1]);
 
-hvsde = @(x) .5*(sign(x) + 1);
 f = chebfun(@(x) [0*x hvsde(x) exp(2*pi*1i*x)], [-1 0 1], pref);
 pass(5) = isequal(any(f), [0 1 1]);
 pass(6) = isequal(any(f.', 2), [0 1 1].');
@@ -39,11 +39,11 @@ pass(8) = g.isTransposed && (numel(g.funs) == 1) && all(feval(g, x) == 1);
 
 f = chebfun(@(x) [sin(x) 0*x], pref);
 g = any(f, 2);
-ind = find(g.impulses == 0);
+ind = g.impulses == 0;
 pass(9) = ~g.isTransposed && (abs(g.domain(ind)) < 10*vscale(g)*epslevel(g)) ...
     && isequal(g.impulses, [1 0 1].') && all(feval(g, x) == 1);
 g = any(f.', 1);
-ind = find(g.impulses == 0);
+ind = g.impulses == 0;
 pass(10) = g.isTransposed && (abs(g.domain(ind)) < 10*vscale(g)*epslevel(g)) ...
     && isequal(g.impulses, [1 0 1].') && all(feval(g, x) == 1);
 
@@ -60,5 +60,29 @@ try
 catch ME
     pass(12) = strcmp(ME.identifier, 'CHEBFUN:any:dim');
 end
+
+%% Test on SINGFUN:
+
+% define the domain:
+dom = [-2 7];
+
+op = @(x) sin(30*x)./((x-dom(1)).*(x-dom(2)));
+f = chebfun(op, dom, 'exps', [-1 -1], 'splitting', 'on');
+h1 = any(f, 1);
+h2 = any(f, 2);
+
+% check values:
+
+% Generate a few random points to use as test values:
+x = diff(dom) * rand(100, 1) + dom(1);
+
+pass(13) = ~( h1 - 1 );
+
+fval = feval(h2, x);
+err = fval - 1;
+pass(14) = ~any( err );
+
+r = roots(f);
+pass(15) = ~any( h2(r) );
 
 end

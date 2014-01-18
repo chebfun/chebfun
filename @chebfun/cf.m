@@ -247,7 +247,7 @@ rho = 1/max(abs(z));
 z = .5*(z + 1./z);
 
 % Compute q from the roots for stability reasons.
-qt = chebfun(@(x) real(prod(x - z)/prod(-z)), 'vectorize');
+qt = newDomain(chebfun(@(x) real(prod(x - z)/prod(-z)), 'vectorize'), dom);
 q = chebfun;
 q = defineInterval(q, dom, qt);
 

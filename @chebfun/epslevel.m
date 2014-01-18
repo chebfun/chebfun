@@ -7,7 +7,7 @@ function out = epslevel(F)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TODO: This needs updating for vector epslevels.
+% TODO: Is this the right measure?
 
 out = 0;
 for k = 1:numel(F)

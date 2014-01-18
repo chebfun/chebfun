@@ -101,30 +101,22 @@ elseif ( (ii == 0) && (numFuns == 1))
     
 else
     % CHEBPOLY() of a piecewise smooth CHEBFUN:
-    % [TODO]: Add a test for this code.
-    
-    % [TODO]: For now, we use this approximation:
-    x = chebpts(N, f.domain([1, end]));
-    ff = feval(f, x);
-    g = fun.constructor(ff, f.domain([1, end]), 'chebtech');
-    out = chebpoly(g).';
-    
-    % [TODO]: this requires @SINGFUN:
-%     % Compute coefficients via inner products.
-%     d = f.domain([1, end]);
-%     x = chebfun('x', d);
-%     w = 1./sqrt((x-d(1)).*(d(2)-x));
-%     numCols = size(f.funs, 2);
-%     out = zeros(numCols, N);
-%     f = mat2cell(f);
-%     for j = 1:numCols
-%         for k = 1:N
-%             T = chebpoly(k-1, d);
-%             I = (f.*T).*w;
-%             out(j, N-k+1) = 2*sum(I)/pi;
-%         end
-%     end
-%     out(:,N) = out(:,N)/2;
+
+    % Compute coefficients via inner products.
+    d = f.domain([1, end]);
+    x = chebfun('x', d);
+    w = 1./sqrt((x-d(1)).*(d(2)-x));
+    numCols = min(size(f));
+    out = zeros(numCols, N);
+    f = mat2cell(f);
+    for j = 1:numCols
+        for k = 1:N
+            T = chebpoly(k-1, d);
+            I = (f{j}.*T).*w;
+            out(j, N-k+1) = 2*sum(I)/pi;
+        end
+    end
+    out(:,N) = out(:,N)/2;
     
 end
 
@@ -134,6 +126,5 @@ if ( (kind == 2) && (numel(out) > 1) )
     % Recurrence relation / conversion matrix:
     out = .5*[out(:,1:2), out(:,3:end) - out(:,1:end-2)];
 end
-
 
 end

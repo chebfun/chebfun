@@ -67,7 +67,7 @@ for n = 1:2
     pass(n, 12) = any(abs(g.coeffs(1, :)) ~= 0);
     pass(n, 13) = length(g) < length(f);
     pass(n, 14) = all(norm(feval(f, x) - feval(g, x), inf) < ...
-        10*g.epslevel*g.vscale);
+        10*max(g.epslevel.*g.vscale));
 
     %%
     % Try a contrived example which will leave a zero CHEBTECH:

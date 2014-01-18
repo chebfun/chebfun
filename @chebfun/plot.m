@@ -61,30 +61,30 @@ end
 % Store the hold state of the current axis:
 holdState = ishold;
 isComplex = false;
+intervalIsSet = false;
 
 % Initialise storage:
 lineData = {};
 pointData = {};
 jumpData = {};
-isComplex = false;
+yLimData = {};
 
 % Suppress inevitable warning for growing these arrays:
 %#ok<*AGROW>
 
 % Check to see if the 'interval' flag has been set:
-intervalIsSet = 0;
+interval = [];
 loc = find(strcmpi(varargin, 'interval'));
 if ( any(loc) )
-    intervalIsSet = 1;
     interval = varargin{loc+1};
     varargin(loc:loc+1) = [];
+    intervalIsSet = true;
 else
     loc = find(cellfun(@(f) isa(f, 'chebfun'), varargin));
     for k = 1:numel(loc)
         if ( loc(k) < nargin && isnumeric(varargin{loc(k)+1}) )
             interval = varargin{loc(k)+1};
             varargin(loc(k)+1) = [];
-            intervalIsSet = true;
             break
         end
     end
@@ -96,7 +96,7 @@ jumpData = {};
     
 %%
 % Get the data for plotting from PLOTDATA():
-while ( ~isempty(varargin) ) 
+while ( ~isempty(varargin) )
 
     % Acquire plotting data for each CHEBFUN / pair of CHEBFUNs:
     if ( (numel(varargin) > 1) && isa(varargin{2}, 'chebfun') ) % PLOT(f, g).
@@ -142,8 +142,6 @@ while ( ~isempty(varargin) )
         end
         
     else                                                       % PLOT(f).
-        % Call PLOTDATA():
-        
         % Remove CHEBFUN from array input:
         f = varargin{1};
         varargin(1) = [];
@@ -199,12 +197,28 @@ while ( ~isempty(varargin) )
         jumpData = [jumpData, newData(k).xJumps, newData(k).yJumps, styleData];
 
     end
-     
+
 end
+
+%% Figure out yLim:
+
+% TODO: Reinstate this.
+% % Take the maximum and the mininum:
+% ylimit = [min(yLimData{:}) max(yLimData{:})];
+% 
+% % Pad some space at the top and bottom of the figure:
+% if ( diff( ylimit ) )
+%     ylimit = [ylimit(1) - 0.1*abs(diff(ylimit)) ...
+%         ylimit(2) + 0.1*abs(diff(ylimit))];
+% else
+%     ylimit = [ylimit(1) - 0.1*abs(ylimit(1)) ...
+%         ylimit(2) + 0.1*abs(ylimit(1))];
+% end
 
 % Plot the lines:
 h1 = plot(lineData{:});
 set(h1, 'Marker', 'none')
+% set(gca, 'ylim', ylimit)
 
 % Ensure the plot is held:
 hold on
@@ -221,6 +235,7 @@ end
 h3 = plot(jumpData{:});
 % Change the style accordingly:
 if ( isComplex )
+    %[TODO]: The following statement can not be reached:
     set(h3, 'LineStyle', 'none', 'Marker', 'none')
 else
     set(h3, 'LineStyle', ':', 'Marker', 'none')

@@ -87,7 +87,7 @@ if ( numCols == 1 )
                     error('CHEBFUN:norm:argout', ...
                             'Cannot return two outputs for p-norms.');
                 end
-                if ( mod(n, 2) )
+                if ( mod(n, 2) == 0 )
                     normF = sum((conj(f).*f).^(n/2))^(1/n);
                 else
                     normF = sum(abs(f).^n)^(1/n);

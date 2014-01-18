@@ -47,7 +47,7 @@ function p = columnAtan(y, x, pref)
 
 % We'll need to extrapolate here:
 pref.techPrefs.extrapolate = true;
-tol = max(epslevel(y)*vscale(y), epslevel(x)*vscale(x));
+tol = 2*max(epslevel(y)*vscale(y), epslevel(x)*vscale(x));
 
 % There's no reason why we shouldn't keep breaks in both x and y:
 [x, y] = overlap(x, y);
@@ -88,7 +88,6 @@ end
 %% Compose:
 % Do the composition:
 p = compose(x, @(x, y) atan2(y, x), y, pref);
-
 % Sort out the new impulses:
 if ( ~isempty(r) )
     % Set impulses to zero if x(r) = y(r) = 0:
