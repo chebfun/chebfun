@@ -10,15 +10,16 @@ function s = mean(f,varargin)
 %
 % See also MEAN2, STD2.
 
+if ( isempty( f ) ) % check for empty chebfun2.
+    s = chebfun;
+    return
+end 
+
 if ( nargin == 1) 
     dim = 1;    % default to the y-direction
 else
     dim = varargin{ 1 };  
 end
-
-if ( isempty( f ) ) % check for empty chebfun2.
-    return
-end 
 
 dom = f.domain;
 

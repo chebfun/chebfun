@@ -18,6 +18,6 @@ function F = gradient( f )
 fx = diff(f, 1, 2);   % diff in x-variable
 fy = diff(f, 1, 1);   % diff in y-variable 
 
-F = chebfun2v( {fx, fy} );
+F = chebfun2v( fx, fy );
 
 end 

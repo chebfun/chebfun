@@ -13,10 +13,16 @@ function v = mean2(f)
 %
 % See also MEAN, STD2.
 
+% Empty check:
+if ( isempty( f ) ) 
+    return
+end 
+
+% Apply the formula: 
 dom = f.domain; 
 width = diff( dom(1:2) ); 
-height = diff( dom(3:4) ); 
+height = diff( dom(3:4) );   
 area = width * height; 
-v = sum2( f ) / area; 
+v = sum2( f ) / area;  
 
 end

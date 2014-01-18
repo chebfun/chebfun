@@ -1,4 +1,4 @@
-function F = mrdivide(f,g)
+function f = mrdivide( f, g )
 % /   Right scalar divide
 % 
 % F/C divides the chebfun2 F by a scalar C.
@@ -6,12 +6,10 @@ function F = mrdivide(f,g)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-F = f;
-if (isa(g,'double'))
-    F.fun2 = F.fun2/g;
-    F.scl = F.scl/g;
+if ( isa(g, 'double') )
+    f.pivotValues = f.pivotValues * g;
 else
-    error('CHEBFUN2:mrdivide:chebfun2chebfun2','Did you mean ./ ?');
+    error('CHEBFUN2:mrdivide','Not supported. Did you mean ./ ?');
 end
 
 end

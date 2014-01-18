@@ -1,4 +1,4 @@
-function [bol, wzero] = singleSignTest(F)
+function [bol, wzero] = singleSignTest( F )
 %SINGLESIGNTEST(F) heuristic check to see if F changes sign.
 % 
 % SINGLESIGNTEST(F) returns 1 if the values of F on a tensor grid are of the
@@ -11,7 +11,7 @@ function [bol, wzero] = singleSignTest(F)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-bol = 0 ;   % assume false. 
+bol = 0;   % assume false. 
 wzero = 0;   % assume no zeros.
 
 X = chebpolyval2(F);  % evaluate on a grid use FFTs. 

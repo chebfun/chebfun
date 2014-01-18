@@ -5,6 +5,6 @@ function f = minus(f, g)
 % See also PLUS, UMINUS.
 
 % f - g = f + (-g)
-f = plus(f, uminus(g)); 
+f = plus( f, uminus(g) ); 
 
 end
