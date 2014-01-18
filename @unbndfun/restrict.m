@@ -27,53 +27,36 @@ elseif ( numel(s) == 2 && all(s == f.domain) )
     return
 end
 
-% Compute the breaks in [-1,1] space and restrict the onefun:
-t = f.mapping.inv(s);
+% Number of subdomains:
+numSubDom = numel(s) - 1;
 
-% Make sure -Inf and Inf are mapped to -1 and 1 respectively:
-mask = isinf(s); 
-t(mask) = sign(s(mask));
+% Preallocate the output cell:
+g = cell(1, numSubDom);
 
-% Restrict the ONEFUN of f.
-restrictedOnefuns = restrict(f.onefun, t);
-
-if ( length(s) == 2 )
-    % Only restricting to one subinterval - return a BNDFUN or an UNBNDFUN.
-    
-    % Create an empty BNDFUN or UNBNDFUN, and assign fields directly. This is
-    % faster than calling the FUN constructor.
-    if any( isinf(s) )
-        g = unbndfun();
-    else
-        g = bndfun();
-    end
-    g.onefun = restrictedOnefuns;
-    g.domain = s;
-    g.mapping = g.createMap(s);
-else
-    % Restricting to multiple subintervals - return a cell-array of FUN objects.
-    
-    % Create the cell to be returned.
-    g = cell(1, numel(s) - 1);
-    
-    % Create an empty FUN:
-    emptyBndfun = bndfun();
-    emptyUnbndfun = unbndfun();
-    
-    % Loop over each of the new subintervals, make a fun with new mapping,
-    % and store in the cell returned:
-    for k = 1:(numel(s) - 1)
-        % Assign fields directly to an empty temporary BNDFUN or UNBNDFUN. This
-        % is faster than calling the FUN constructor.
-        if any( isinf(s(k:k+1)) )
-            gTemp = emptyUnbndfun;
-        else
-            gTemp = emptyBndfun;
+% Loop over each subdomain:
+for k = 1:numSubDom
+    pref = chebpref();
+    if ( issing(f) )
+        ind = isinf(s(k:k+1));
+        exps = get(f, 'exponents');
+        
+        % Negate the exponents for infinite endpoint, since the exponents stored
+        % in SINGFUN are the negated value of those supplied to the BNDFUN 
+        % constructor:
+        exps(ind) = -exps(ind);
+        
+        if ( k == 1 ) && ( logical(exps(1)) )
+            pref.singPrefs.exponents = [exps(1) 0];
+            pref.techPrefs.extrapolate = 1;
         end
-        gTemp.onefun = restrictedOnefuns{k};
-        gTemp.domain = s(k:k+1);
-        gTemp.mapping = gTemp.createMap(s(k:k+1));
-        g{k} = gTemp;
+        
+        if ( k == numSubDom ) && ( logical(exps(2)) )
+            pref.singPrefs.exponents = [0 exps(2)];
+            pref.techPrefs.extrapolate = 1;
+        end
     end
+    
+    g{k} = fun.constructor(@(x) feval(f, x), s(k:k+1), [], [], pref);
+end
 
 end
