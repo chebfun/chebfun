@@ -67,6 +67,7 @@ lineData = {};
 pointData = {};
 jumpData = {};
 yLimData = {};
+intervalIsSet = false;
 
 % Suppress inevitable warning for growing these arrays:
 %#ok<*AGROW>
@@ -77,12 +78,16 @@ loc = find(strcmpi(varargin, 'interval'));
 if ( any(loc) )
     interval = varargin{loc+1};
     varargin(loc:loc+1) = [];
+    intervalIsSet = true;
 else
+    % TODO: Do we want to support this?
+    % Allow plot(f, [a, b]) as shorthand for plot(f, 'interval', [a, b]):
     loc = find(cellfun(@(f) isa(f, 'chebfun'), varargin));
     for k = 1:numel(loc)
         if ( loc(k) < nargin && isnumeric(varargin{loc(k)+1}) )
             interval = varargin{loc(k)+1};
             varargin(loc(k)+1) = [];
+            intervalIsSet = true;
             break
         end
     end
@@ -106,14 +111,17 @@ while ( ~isempty(varargin) )
         end
         
         % Call PLOTDATA():
-        newData = plotData(f, g, interval);
+        newData = plotData(f, g);
         % Remove CHEBFUN objects from array input:
         varargin(1:2) = [];
         
     else                                                       % PLOT(f).
         % Call PLOTDATA():
         f = varargin{1};
-        newData = plotData(f, interval);
+        if ( intervalIsSet )
+            f = restrict(f, interval([1,end]));
+        end
+        newData = plotData(f);
         % Remove CHEBFUN from array input:
         varargin(1) = [];
         
