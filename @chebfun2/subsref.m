@@ -32,6 +32,10 @@ switch index(1).type
         x = idx{1}; 
         if ( length(idx) == 2) 
             y = idx{2};
+        elseif ( ( length(idx) == 1 ) && ( ~isreal(x) ) )
+            x = real( idx{1} );
+            y = imag( idx{1} ); 
+            out = feval(f, x, y); 
         elseif ( isa(x, 'chebfun2v') )
             % TODO
         else

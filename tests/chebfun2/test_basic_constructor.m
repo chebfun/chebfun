@@ -1,8 +1,10 @@
-function pass = test_basic_constructor
+function pass = test_basic_constructor( pref) 
 % This tests the chebfun2 constructor.  
 
-%%
-tol = 100 * eps;
+if ( nargin < 1 ) 
+    pref = chebpref; 
+end 
+tol = 1e2 * pref.cheb2Prefs.eps; 
 j = 1; 
 
 % Can we make a chebfun2: 

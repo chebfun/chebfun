@@ -8,10 +8,10 @@ rows = f.rows;
 % Check pivot values
 bol = ( norm( pivots, inf ) == 0 );
 
-rk = length( f );
+rk = length( pivots );
 if ( bol ) 
-    bolcols = zeros( length( f ), 1 );
-    bolrows = zeros( length( f ), 1 );
+    bolcols = zeros( length( pivots ), 1 );
+    bolrows = zeros( length( pivots ), 1 );
     for j = 1 : rk
         bolcols( j ) = iszero( cols(:, j) ); 
         bolrows( j ) = iszero( rows(:, j) ); 

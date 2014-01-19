@@ -37,4 +37,9 @@ exact = @(x,y) sinh( cos(x.*y) + sin(x.*y) + y -.1);
 g = chebfun2(@(x,y) exact(x,y)); 
 pass(j) = ( norm( g - sinh(f) ) < tol ); j = j + 1;
 
+% Multiple operations: 
+f = chebfun2(@(x,y) sin(10*x.*y),[-1 2 -1 1]);
+pass(j) = (norm(f+f+f-3*f) < 100*tol); j=j+1; 
+pass(j) = (norm(f.*f-f.^2) < tol); j=j+1; 
+
 end

@@ -1,8 +1,20 @@
-function z = fevalm(F, x, y)
+function z = fevalm(f, x, y)
+% FEVALM   Evaluate a chebfun2
 
-zCol = feval(F.cols, y(:));
-zRow = feval(F.rows, x(:));
+if ( isempty(f) )
+    varargout = {[]}; 
+    return
+end
 
-z = zCol*diag(1./F.pivotValues)*zRow.';
+% Get the low rank representation for f. 
+cols = f.cols; 
+rows = f.rows; 
+piv = f.pivotValues; 
+d = 1./piv; 
+d(d==inf) = 0;  % set infinite values to zero. 
+zCol = feval(f.cols, y(:));
+zRow = feval(f.rows, x(:));
+
+z = zCol*diag( d )*zRow.';
 
 end

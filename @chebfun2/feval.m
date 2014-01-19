@@ -28,7 +28,6 @@ piv = f.pivotValues;
 d = 1./piv;
 d(d==inf) = 0;  % set infinite values to zero.
 
-
 if ( strcmpi(x, ':') && strcmpi(y, ':') )    % f(:, :)
     out = f;
 elseif ( strcmpi(x, ':') && isnumeric( y ) ) % f(:, y)
@@ -42,23 +41,30 @@ elseif ( isnumeric( x ) && strcmpi(y, ':') ) % f(x, :)
     % Make evaluation points a vector.
     x = x( : );
     % Evaluate (returns a row chebfun):
-    out = Cols * diag( 1./pivotValues ) * feval( Rows, x )';
+    out = cols * diag( d ) * feval( rows, x )';
     % Simplify:
     out = simplify( out );
 elseif ( isnumeric( x ) && isnumeric( y ) )    % f(x, y)
     
     sx = size(x);
     sy = size(y);
+    takeDiag = 0; 
     
     if ( min(sx) > 1 && all(sx == sy) )
         if ( rank(x) == 1 && rank(y) == 1 )
             x = x(1,:);
             y = y(:,1);
         end
+    else 
+        takeDiag = 1; 
     end
     
     % Evaluate:
     out = feval( cols, y(:) ) * diag( d ) * feval( rows, x(:)) .';
+    
+    if ( takeDiag ) 
+        out = diag(out); 
+    end 
 elseif ( isa(x,'chebfun') )
     if ( ~isreal(x) ) % complex valued chebfun.
         % Extract chebfun along the path

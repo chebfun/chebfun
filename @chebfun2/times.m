@@ -11,7 +11,7 @@ if ( isa(f, 'chebfun2') )    % CHEBFUN2 .* ???
     if ( isa(g, 'double') )  % CHEBFUN2 .* DOUBLE
         h = mtimes(f, g);
     elseif ( isa( g, 'chebfun2') )
-        bol = domainCheck(f, g);
+        bol = chebfun2.domainCheck(f, g);
         if ( bol )
             h = chebfun2(@(x, y) feval(f, x, y).*feval(g, x, y), f.domain);
         else
