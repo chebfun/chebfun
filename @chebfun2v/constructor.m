@@ -26,7 +26,10 @@ if ( nargin >= 3 )
         end
         op = {op, varargin{1:j}};  
         if (j < len)
-            varargin = varargin{j+1:len}; 
+            domain = varargin{j+1}; 
+        end
+        if ( j + 1 < len )
+            varargin = varargin{j+2:len}; 
         else
             varargin = []; 
         end
@@ -46,7 +49,7 @@ if ( nargin >= 3 )
             varargin = varargin{j+1:len}; 
         else
             varargin = []; 
-        end  
+        end 
     else
         error('CHEBFUN2V:CONSTRUCTOR','Unrecognised syntax.');
     end

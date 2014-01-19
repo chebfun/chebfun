@@ -10,6 +10,12 @@ function f = times( f , g )
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
+% Empty check: 
+if ( isempty( f ) || isempty( g ) )
+    f = chebfun2v;
+    return
+end
+
 if ( isa(f,'double') ) 
 %% double.*chebfun2v
     if ( numel(f) == 1 ) 

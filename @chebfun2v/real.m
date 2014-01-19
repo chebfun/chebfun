@@ -7,7 +7,7 @@ function F = real(F)
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % Empty check: 
-if ( isempty(F.xcheb) || isempty(F.ycheb) )
+if ( isempty(F) )
     return
 end
 

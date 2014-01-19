@@ -292,6 +292,8 @@ if scl == 0
     ifail = 0;
 end
 
+Rows(1, : ) = zeros(1, size(A, 2));
+Cols(:, 1) = zeros(size(A, 1), 1);
 while ( ( infnorm > tol ) && ( zrows < width / factor) )
     Rows(zrows+1,:) = A( row , : ) ;
     Cols(:,zrows+1) = A( : , col ) ;    % Extract the columns out

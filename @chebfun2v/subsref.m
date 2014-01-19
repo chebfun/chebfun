@@ -16,7 +16,7 @@ function varargout = subsref(f,ref)
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % check for empty chebfun2v object. 
-if isempty(f)
+if ( isempty(f) )
    varargout = {[]};
    return;
 end

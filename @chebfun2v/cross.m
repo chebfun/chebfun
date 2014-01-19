@@ -14,6 +14,11 @@ function H = cross( F, G )
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information. 
 
+% Empty check: 
+if ( isempty( F ) || isempty( G ) )
+    H = chebfun2v;
+    return
+end
 
 Fc = F.components; 
 Gc = G.components; 

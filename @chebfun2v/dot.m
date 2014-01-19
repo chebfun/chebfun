@@ -11,6 +11,7 @@ function f = dot( F, G )
 
 if ( isempty( F ) || isempty( G ) ) 
     f = chebfun2;
+    return
 end
 
 nF = F.nComponents; 
