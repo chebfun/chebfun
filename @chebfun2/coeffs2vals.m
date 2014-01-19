@@ -1,4 +1,10 @@
 function varargout = coeffs2vals( U, varargin )
+% VAL2COEFFS   Convert matrix of Chebyshev coefficients to values. 
+% 
+% See also vals2coeffs
+
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 if ( nargin == 1 )
     U = chebtech2.coeffs2vals( U ); 
