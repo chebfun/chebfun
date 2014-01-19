@@ -247,6 +247,7 @@ while ( ~isHappy )
     g.pivotValues = pivotValue;
     g.cols = chebfun(colValues, domain(3:4) );
     g.rows = chebfun(rowValues.', domain(1:2) );
+    g.pivotLocations = PivPos 
     g.domain = domain;
     
     % Sample Test:

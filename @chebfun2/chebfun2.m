@@ -32,6 +32,8 @@ classdef chebfun2
         rows
         % PIVOTVALUES: pivot values used in low rank representation
         pivotValues
+        % PIVOTLOCATIONS: pivot locations used in GE
+        pivotLocations
         % DOMAIN: rectangle of chebfun2, default is [-1,1]x[-1,1]
         domain = [-1 1 -1 1];
     end

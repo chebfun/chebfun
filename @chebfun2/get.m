@@ -31,6 +31,8 @@ switch ( propName )
         val = f.rows;
     case 'pivotValues'
         val = f.pivotValues;
+    case 'pivotLocations'
+        val = f.pivotLocations;
     otherwise
         error('CHEBFUN2:get:propnam',[propName,' is not a valid chebfun2 property.'])
 end
