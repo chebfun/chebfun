@@ -83,7 +83,7 @@ classdef chebfun2
     
     % Methods implemented by CHEBFUN2 class.
     methods
-        
+         f = conj(f);
     end
     
 end

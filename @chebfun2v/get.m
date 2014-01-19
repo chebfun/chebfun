@@ -22,6 +22,8 @@ end
 switch propName
     case 'components'
         val = f.components;
+    case 'nComponents'
+        val = f.nComponents; 
     case 'isTransposed'
         val = f.isTransposed;
     otherwise

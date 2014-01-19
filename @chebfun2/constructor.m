@@ -7,7 +7,7 @@ if ( nargin == 0 )   % chebfun2();
     return
 end
 
-if ( ( nargin == 1 ) && isa(op, 'chebfun2') )  % chebfun2(f), f = chebfun2
+if ( isa(op, 'chebfun2') )  % chebfun2(f), f = chebfun2
     g = op;
     return
 end

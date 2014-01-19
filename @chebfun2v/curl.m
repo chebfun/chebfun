@@ -12,15 +12,20 @@ function f = curl(F)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.  
 
-components = F.components; 
-if ( F.nComponents == 2 ) % do the curl of a 2-vector. 
-    f = diff(components(2),1,2) - diff(components(1),1,1);
-else   % do the curl of a 3-vector.
-    curlVector = [diff(component(3),1,1);
-        -diff(components(3),1,2);...
-        diff(components(2),1,2) - diff(components(1),1,1)];
+Fc = F.components; 
+
+if ( F.nComponents == 2 )  % 2D curl 
     
-    f.components = curlVector;  
+    f = diff(Fc(2), 1, 2) - diff(Fc(1), 1, 1);
+    
+else   % standard 3D curl
+    
+    curlVector = [diff(Fc(3),1,1);
+        -diff(Fc(3),1,2);...
+        diff(Fc(2),1,2) - diff(Fc(1),1,1)];
+    
+    f.components = curlVector; 
+    
 end
 
 end

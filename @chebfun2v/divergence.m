@@ -11,7 +11,7 @@ function f = divergence( F )
 % Note that divergence of a 3-vector is the same, because the functions are
 % of two variables.
 
-components = F.components; 
-f = diff(components(1),1,2) + diff(components(2),1,1);  % divergence.
+Fc = F.components; 
+f = diff(Fc(1), 1, 2) + diff( Fc(2), 1, 1 );  % divergence = f_x + f_y
 
 end
