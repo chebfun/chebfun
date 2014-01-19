@@ -186,8 +186,9 @@ else
     end
     
     % Return NaNs if there are no jumps:
-    data.xJumps = NaN;
+    data.xJumps = myNaN;
     data.yJumps = myNaN;
+    data.zJumps = myNaN;
     
     % Loop over each FUN for Jumps data:
     for k = 1:(nFuns - 1)
