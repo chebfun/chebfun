@@ -66,7 +66,23 @@ end
 if (( nargin > 3 ) && ( any(strcmpi(varargin{1},'coeffs')) || any(strcmpi(varargin{1},'coeffs'))))
     op = coeffs2vals( op );
     g = chebfun2( op, domain ); 
-    return;
+    return
+end
+
+% If the domain isn't of length 4, search for the other 2 endpoints: 
+if ( numel(domain) == 2 ) 
+    if ( ( nargin > 3) && isa(varargin{1}, 'double') ) 
+        ends = varargin{1}; 
+        if ( numel( ends ) == 2 )
+            domain = [domain(:);ends(:)]';
+        else
+            error('CHEBFUN2:CONSTRUCTOR:DOMAIN','Domain not fully determined.');
+        end
+    else
+        error('CHEBFUN2:CONSTRUCTOR:DOMAIN','Domain not fully determined.');
+    end
+elseif ( numel(domain) ~= 4 ) 
+    error('CHEBFUN2:CONSTRUCTOR:DOMAIN','Domain not fully determined.');
 end
 
 % Get default preferences from chebPref:

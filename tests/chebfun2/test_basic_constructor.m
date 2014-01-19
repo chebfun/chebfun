@@ -1,4 +1,4 @@
-function pass = test_basic_constructor( pref) 
+function pass = test_basic_constructor( pref ) 
 % This tests the chebfun2 constructor.  
 
 if ( nargin < 1 ) 
