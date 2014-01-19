@@ -140,7 +140,7 @@ while ( ~isHappy )
     if ( any(isnan(vals(:)) ) )
         error('FUN2:CTOR', 'Function returned NaN when evaluated');
     end
-    tol = log(grid).^2 * max( abs(domain(:)) ) * vscale * pseudoLevel;
+    tol = log(grid).^2 * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
     
     %% FIND NUMERICAL RANK:
     [pivotValue, pivotPosition, rowValues, colValues, iFail] = CompleteACA(vals, tol);
@@ -151,7 +151,7 @@ while ( ~isHappy )
         [xx, yy] = chebfun2.chebpts2(grid, grid, domain);
         vals = evaluate(op, xx, yy, vectorize);                        % Resample on denser grid.
         vscale = max(abs(vals(:)));
-        tol = grid.^(2/3) * max( abs(domain(:)) ) * vscale * pseudoLevel;
+        tol = log(grid).^2 * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
         [pivotValue, pivotPosition, rowValues, colValues, iFail] = CompleteACA(vals, tol);
         if ( abs(pivotValue(1))<1e4*vscale*tol )
             % If the function is 0+noise then stop after three strikes.
@@ -217,11 +217,11 @@ while ( ~isHappy )
         
         % Are the columns and rows resolved now?
         if ( ~resolvedCols )
-            colChebtech = chebtech2(sum(colValues,2), domain(3:4) );
+            colChebtech = chebtech2(sum(colValues,2));
             resolvedCols = happinessCheck(colChebtech);
         end
         if ( ~resolvedRows )
-            rowChebtech = chebtech2(sum(rowValues.',2), domain(1:2) );
+            rowChebtech = chebtech2(sum(rowValues.',2));
             resolvedRows = happinessCheck(rowChebtech);
         end
         
@@ -232,37 +232,35 @@ while ( ~isHappy )
         
     end
     
+    % For some reason, on some computers simplify is giving back a
+    % scalar zero.  In which case the function is numerically zero.
+    % Artifically set the columns and rows to zero.
+    if ( norm(colValues) == 0 || norm(rowValues) == 0)
+        colValues = 0;
+        rowValues = 0;
+        pivotValue = 0;
+        PivPos = [0, 0];
+        isHappy = 1;
+    end
+    
+    % Construct a CHEBFUN2:
+    g.pivotValues = pivotValue;
+    g.cols = chebfun(colValues, domain(3:4) );
+    g.rows = chebfun(rowValues.', domain(1:2) );
+    g.domain = domain;
+    
     % Sample Test:
     if ( sampleTest )
-        % Evaluate at arbitrary point in domain: 
+        % Evaluate at arbitrary point in domain:
         r = 0.029220277562146; s = 0.237283579771521;
         r = (domain(2)+domain(1))/2 + r*(domain(2)-domain(1));
         s = (domain(4)+domain(3))/2 + s*(domain(4)-domain(3));
-        colChebtech = chebtech2(colValues, domain(3:4) );
-        rowChebtech = chebtech2(rowValues.', domain(1:2) );
-        val = feval(colChebtech, s) * diag( 1./pivotValue ) * feval( rowChebtech, r).';
-        if (abs( op(r,s) - val) > 1e2 * tol)
+        if ( abs( op(r,s) - feval(g, r, s) ) > 1e5 * tol )
             isHappy = 0;
         end
     end
+    
 end
-
-% For some reason, on some computers simplify is giving back a
-% scalar zero.  In which case the function is numerically zero.
-% Artifically set the columns and rows to zero.
-if ( norm(colValues) == 0 || norm(rowValues) == 0)
-    colValues = 0;
-    rowValues = 0;
-    pivotValue = 0;
-    PivPos = [0, 0];
-    isHappy = 1;
-end
-
-% Construct a CHEBFUN2:
-g.pivotValues = pivotValue;
-g.cols = chebfun(colValues, domain(3:4) );
-g.rows = chebfun(rowValues.', domain(1:2) );
-g.domain = domain;
 
 end
 

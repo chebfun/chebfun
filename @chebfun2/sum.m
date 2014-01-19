@@ -12,6 +12,12 @@ function f = sum( f, dim )
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
+% Empty check: 
+if ( isempty( f ) ) 
+    f = []; 
+    return; 
+end
+
 % Default to y direction: 
 if ( nargin == 1 )
     dim = 1;
@@ -23,15 +29,26 @@ rows = f.rows;
 piv = f.pivotValues; 
 d = 1./piv; 
 d(d==inf) = 0;  % set infinite values to zero. 
+dom = f.domain; 
 
 if ( dim == 1 )
     % Integrate over y: 
     f = rows * ( sum(cols) * diag( d ) ).';
-    f = f'; 
-    f = simplify(f); 
+    if ( isa(f, 'chebfun') ) 
+        f = f.'; 
+        f = simplify(f); 
+    else
+        % f = double 
+        f = chebfun(f, dom(1:2)).'; 
+    end
 elseif ( dim == 2 )
     f = cols * ( diag( d ) * sum( rows ).' );
-    f = simplify(f); 
+    if  ( isa(f, 'chebfun') ) 
+        f = simplify(f);
+    else
+        % f = double 
+        f = chebfun(f, dom(3:4)); 
+    end
 else 
     error('CHEBFUN2:SUM:unknown', ...
           'Undefined function ''sum'' for that dimension');

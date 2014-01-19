@@ -10,6 +10,6 @@ f.cols = restrict(f.cols, dom(3:4));
 f.rows = restrict(f.rows, dom(1:2));
 f.domain = dom;
 
-f = simplify( f ); 
+%f = simplify( f ); 
 
 end
