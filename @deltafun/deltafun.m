@@ -154,7 +154,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         f = ctranspose(f)
         
         % Indefinite integral of a DELTAFUN.
-        f = cumsum(f, m, pref)
+        [F, jumpVals, locations] = cumsum(f)
         
         % Derivative of a DELTAFUN.
         f = diff(f, k)
