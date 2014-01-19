@@ -46,14 +46,15 @@ end
 
 % Compute the derivative of the map. Here we assume that the domains and
 % therefore the maps of f and g are identical.
-forDer = onefun(f.mapping.forder, f.domain);
+pref = chebpref();
+pref.singPrefs.exponents = f.mapping.forderExps;
+forDer = onefun.constructor(f.mapping.forder, [], [], pref);
 
 % Assign the output to be the inner product of the onefuns of the input,
 % but multiplied by the derivative of the map.
 out = innerProduct(f.onefun, g.onefun*forDer);
 
 %[TODO]: Compare with SUM:
-
-%out = sum(conj(f).*g.*mapder);
+%out = sum(conj(f).*g.*f.mapping.forder);
 
 end

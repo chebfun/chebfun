@@ -20,7 +20,7 @@ if ( any(~get(f, 'exponents') ) )
 end
 
 % Breakpoints are the mid-point of each domain which needs to be broken:
-breakPoint = mean(f.domain);
+breakPoint = f.mapping.for(0);
 
 % Introduce new break points using RESTRICT.
 f = restrict(f, [f.domain(1) breakPoint f.domain(2)]);
