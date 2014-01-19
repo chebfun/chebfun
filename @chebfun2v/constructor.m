@@ -24,9 +24,7 @@ if ( nargin >= 3 )
         while ( ( j < len) && isa( varargin{j+1}, 'function_handle' ) )
              j = j + 1;
         end
-        if ( j > 1 ) 
-            op = {op, varargin{1:j}};
-        end   
+        op = {op, varargin{1:j}};  
         if (j < len)
             varargin = varargin{j+1:len}; 
         else
@@ -42,10 +40,8 @@ if ( nargin >= 3 )
                 error('CHEBFUN2V:CONSTRUCTOR','Domain not the same.');
             end
             j = j + 1;
-        end
-        if ( j > 1 ) 
-            op = {op, varargin{1:j}};
-        end   
+        end 
+        op = {op, varargin{1:j}};  
         if (j < len)
             varargin = varargin{j+1:len}; 
         else

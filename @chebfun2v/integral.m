@@ -1,13 +1,12 @@
 function v = integral( F, c )
 %INTEGRAL line integration of a chebfun2v
 %
-% INTEGRAL(F,C) computes the line integral of F along the curve C, that is
-%
-%                   
+% INTEGRAL(F, C) computes the line integral of F along the curve C, i.e.,
+%                  
+%                   /
+% INTEGRAL(F, C) =  |  < F(r), dr > 
 %                  /
-% INTEGRAL(F,C) =  |  < F(r), dr > 
-%                 /
-%                 C 
+%                  C 
 %
 % where the curve C is parameterised by the complex curve r(t).  
 
