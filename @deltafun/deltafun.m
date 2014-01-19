@@ -62,7 +62,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
             % This input should be a fun.
             if ( nargin == 1 )
                 if ( isempty(funPart) )
-                    obj.funPart = fun.constructor(0);
+                    obj.funPart = [];
                 elseif ( ~isa(funPart, 'fun') )
                     error( 'DELTAFUN:ctor', 'funPart must be a fun' );
                 else
@@ -75,8 +75,8 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
             % Case 2: Two input arguments.
             % Assume the argumenst passed are impulses and their locations. 
             if ( nargin == 2 )
-                % Assign zero fun:
-                obj.funPart = fun.constructor(0);
+                % Assign empty fun:
+                obj.funPart = [];
                 location = impulses;
                 impulses = funPart;
                 % Do no checks here, they are all done below.
@@ -86,7 +86,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
             % Case 3: Three input arguments.
             if ( nargin >= 3)                            
                 if ( isempty(funPart) )
-                    obj.funPart = fun.constructor(0);
+                    obj.funPart = [];
                 elseif ( ~isa(funPart, 'fun') )
                     error( 'DELTAFUN:ctor', 'funPart must be a fun' );
                 else
@@ -120,9 +120,11 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
       
             % Locations of delta functions should be within the domain:
             if ( ~isempty(location) )
-                dom = obj.funPart.domain;
-                if( max(location) > dom(2) || min(location) < dom(1)  )
-                    error('DELTAFUN:domain', 'Location of a delta fun is outside the domain');
+                if ( ~isempty(obj.funPart) )
+                    dom = obj.funPart.domain;
+                    if( max(location) > dom(2) || min(location) < dom(1)  )
+                        error('DELTAFUN:domain', 'Location of a delta fun is outside the domain');
+                    end
                 end
             end
             

@@ -10,8 +10,22 @@ function out = isequal(f, g)
 pTol = deltafun.pref.deltafun.proximityTol;
 dTol = deltafun.pref.deltafun.deltaTol;
 
+% Assume ture be default:
+out = 1;
 
-if ( f.funPart ~= g.funPart )
+% Trivial cases:
+if ( isempty(f) && isempty(g) )
+    out = 1;
+    return
+end
+
+if ( xor(isempty(f), isempty(g)) )
+    out = 0;
+    return
+end
+
+% Non-trivial cases
+if ( ~iszero(f.funPart - g.funPart) )
     out = 0;
     return
 end
@@ -30,12 +44,12 @@ if ( any(abs((f.location - g.location)) > pTol) )
     return
 end
 
-if ( any( size(f.magnitude) ~= size(g.magnitude) ) )
+if ( any(size(f.impulses) ~= size(g.impulses)) )
     out = 0;
     return;
 end
 
-if ( any( size(f.magnitude) ~= size(g.magnitude) ) )
+if ( any(abs(f.impulses - g.impulses) > dTol) )
     out = 0;
     return
 end

@@ -11,7 +11,8 @@ function out = sum(f)
 %%
 % Trivial case:
 if ( isempty(f) )
-    out = [];
+    % Following Matlab:
+    out = 0;
     return
 end
 
@@ -21,7 +22,8 @@ out = sum(f.funPart);
 if ( ~isempty(f.impulses) )
     % What happens for the higher order, need derivatives etc?
     % Answer: Neglect higher order deltas, since the integral of any derivative
-    % of a delta function can be considered as it's action on the function 1.
+    % of a delta function can be considered as it's action on the function 1 and
+    % hence it's integral is zero.
     deltaMag = f.impulses;
     out = out + sum(deltaMag(1, :));
 end    
