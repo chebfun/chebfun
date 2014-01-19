@@ -5,6 +5,9 @@ function t = trace( f )
 % 
 % See also DIAG.
 
+% Copyright 2013 by The University of Oxford and The Chebfun2 Developers. 
+% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun2 information. 
+
 t = sum( diag( f ) ); 
 
 end

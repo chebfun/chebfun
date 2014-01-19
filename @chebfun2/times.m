@@ -1,14 +1,19 @@
 function h = times(f, g)
-% .*   CHEBFUN2 times.
-%
+% .*   Chebfun2 multiplication.
+% 
+% F.*G multiplies chebfun2 objects F and G.  Alternatively F or G could be
+% a double.
+
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 if ( isa(f, 'chebfun2') )    % CHEBFUN2 .* ???
     if ( isa(g, 'double') )  % CHEBFUN2 .* DOUBLE
         h = mtimes(f, g);
     elseif ( isa( g, 'chebfun2') )
-        [bol, dom] = domain_check(f, g);
+        bol = domainCheck(f, g);
         if ( bol )
-            h = chebfun2(@(x, y) feval(f, x, y).*feval(g, x, y), dom);
+            h = chebfun2(@(x, y) feval(f, x, y).*feval(g, x, y), f.domain);
         else
             error('CHEBFUN2:TIMES:DOMAIN', 'Inconsistent domains');
         end
@@ -20,18 +25,5 @@ if ( isa(f, 'chebfun2') )    % CHEBFUN2 .* ???
 else
     h = times(g, f);
 end
-
-end
-
-function [bol, domain] = domain_check(f, g)
-% Check that the domains of f and g are the same.
-
-Fdom = f.domain;
-Gdom = g.domain;
-Fscl = max(abs(Fdom));
-Gscl = max(abs(Gdom));
-
-bol = ( norm(Fdom - Gdom) < eps * max(Fscl, Gscl) );
-domain = (Fdom + Gdom)/2;
 
 end

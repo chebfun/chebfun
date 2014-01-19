@@ -4,6 +4,9 @@ function f = transpose( f )
 % 
 % See also CTRANSPOSE. 
 
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+
 % Swap columns and rows. 
 temp = f.cols; 
 f.cols = f.rows; 

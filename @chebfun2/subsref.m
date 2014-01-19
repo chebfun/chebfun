@@ -33,7 +33,7 @@ switch index(1).type
         if ( length(idx) == 2) 
             y = idx{2};
         elseif ( isa(x, 'chebfun2v') )
-            % TODO: 
+            % TODO
         else
             error('CHEBFUN2:SUBSREF:INPUTS','Can only evaluate at functions (X,Y)')
         end
