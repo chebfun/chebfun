@@ -69,6 +69,7 @@ for k = 1:numel(f)
 
     % Call the column version:
     [h1{k}, h2{k}] = columnChebpolyplot(fk, colk, varargin{:});
+    hold on
     
 end
 
@@ -117,22 +118,48 @@ ve = bsxfun(@times, v, e);
 % Shape it:
 data = reshape([n c]', 1, 2*numFuns);
 
+% Deal with 'LogLog' and 'noEpsLevel' input:
+doLoglog = cellfun(@(s) strcmpi(s, 'loglog'), varargin);
+varargin(doLoglog) = [];
+doLoglog = any(doLoglog);
+noEpsLevel = cellfun(@(s) strcmpi(s, 'noEpsLevel'), varargin);
+varargin(noEpsLevel) = [];
+doEpsLevel = ~any(noEpsLevel);
+
 % Plot the coeffs:
-h1 = semilogy(data{:}, varargin{:}, 'color', col);
+% h1 = semilogy(data{:}, varargin{:}, 'color', col);
+h1 = semilogy(data{:}, varargin{:});
+for k = 1:numel(h1)
+    if ( size(col, 1) == numel(h1) )
+        c = col(k,:);   
+    else
+        c = col;
+    end
+    set(h1(k), 'color', c);
+end
 hold on
 
-% Reshape data for epslevel plot:
-n = cellfun(@(x) x([end ; 1]), n, 'UniformOutput', false);
-n = reshape(repmat(n', numCols, 1), numCols*numel(n), 1);
-ve = reshape(ve, numFuns*numCols, 1);
-ve = mat2cell(repmat(ve, 1, 2), ones(numFuns*numCols, 1), 2);
-data = reshape([n ve]', 1, 2*numFuns*numCols);
+if ( doEpsLevel )
+    % Reshape data for epslevel plot:
+    n = cellfun(@(x) x([end ; 1]), n, 'UniformOutput', false);
+    n = reshape(repmat(n.', numCols, 1), numCols*numel(n), 1);
+    ve = reshape(ve, numFuns*numCols, 1);
+    ve = mat2cell(repmat(ve, 1, 2), ones(numFuns*numCols, 1), 2);
+    data = reshape([n ve].', 1, 2*numFuns*numCols);
 
-% Plot the epslevels:
-h2 = semilogy(data{:}, varargin{:}, 'color', col);
-for k = 1:numel(h2)
-    c = get(h1(k), 'color');
-    set(h2(k), 'linestyle', ':', 'linewidth', 1, 'marker', 'none', 'color', c);
+    % Plot the epslevels:
+    h2 = semilogy(data{:}, varargin{:});
+    hold off
+    for k = 1:numel(h2)
+        c = get(h1(k), 'color');
+        set(h2(k), 'linestyle', ':', 'linewidth', 1, 'marker', 'none', 'color', c);
+    end
+else
+    h2 = plot([]);
+end
+
+if ( doLoglog )
+    set(gca, 'xScale', 'Log');
 end
 
 end
