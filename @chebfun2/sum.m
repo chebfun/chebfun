@@ -27,8 +27,11 @@ d(d==inf) = 0;  % set infinite values to zero.
 if ( dim == 1 )
     % Integrate over y: 
     f = rows * ( sum(cols) * diag( d ) ).';
+    f = f'; 
+    f = simplify(f); 
 elseif ( dim == 2 )
     f = cols * ( diag( d ) * sum( rows ).' );
+    f = simplify(f); 
 else 
     error('CHEBFUN2:SUM:unknown', ...
           'Undefined function ''sum'' for that dimension');

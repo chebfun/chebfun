@@ -11,7 +11,7 @@ if ( isempty( f ) )
     return 
 end 
 
-op = @(x,y) exp( feval(f, x, y) ); % resample.
+op = @(x,y) exp( feval(f, x, y ) ); % resample.
 f = chebfun2( op, f.domain );      % Call constructor.
 
 end

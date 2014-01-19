@@ -29,7 +29,7 @@ if ( isa(op, 'double') )                        % chebfun2( double )
     if ( numel( op ) == 1 )
         g = constructor(g, @(x,y) op + 0*x, domain);
     else
-        op = flipud( op ); 
+        op = flipud( op );
         [pivotValue, ignored, rowValues, colValues] = CompleteACA(op, 0);
         g.pivotValues = pivotValue;
         g.cols = chebfun(colValues, domain(3:4) );
@@ -48,31 +48,31 @@ if ( nargin(op) == 1 )
     op = @(x, y) op( x + 1i*y );
 end
 
-% Look for vectorize and coeffs flag: 
-vectorize = 0; 
+% Look for vectorize and coeffs flag:
+vectorize = 0;
 if (any(strcmpi(domain,'vectorize')) || any(strcmpi(domain,'vectorise')))
-    vectorize = 1; 
-    domain = [-1 1 -1 1]; 
+    vectorize = 1;
+    domain = [-1 1 -1 1];
 end
 if ( (nargin > 3) && (any(strcmpi(varargin{1},'vectorize')) || any(strcmpi(varargin{1},'vectorise'))))
-    vectorize = 1; 
+    vectorize = 1;
 end
 
 if (any(strcmpi(domain,'coeffs')) || any(strcmpi(domain,'coeffs')) )
-    op = coeffs2vals( op ); 
-    g = chebfun2( op ); 
+    op = coeffs2vals( op );
+    g = chebfun2( op );
     return
 end
 if (( nargin > 3 ) && ( any(strcmpi(varargin{1},'coeffs')) || any(strcmpi(varargin{1},'coeffs'))))
     op = coeffs2vals( op );
-    g = chebfun2( op, domain ); 
+    g = chebfun2( op, domain );
     return
 end
 
-% If the domain isn't of length 4, search for the other 2 endpoints: 
-if ( numel(domain) == 2 ) 
-    if ( ( nargin > 3) && isa(varargin{1}, 'double') ) 
-        ends = varargin{1}; 
+% If the domain isn't of length 4, search for the other 2 endpoints:
+if ( numel(domain) == 2 )
+    if ( ( nargin > 3) && isa(varargin{1}, 'double') )
+        ends = varargin{1};
         if ( numel( ends ) == 2 )
             domain = [domain(:);ends(:)]';
         else
@@ -81,22 +81,22 @@ if ( numel(domain) == 2 )
     else
         error('CHEBFUN2:CONSTRUCTOR:DOMAIN','Domain not fully determined.');
     end
-elseif ( numel(domain) ~= 4 ) 
+elseif ( numel(domain) ~= 4 )
     error('CHEBFUN2:CONSTRUCTOR:DOMAIN','Domain not fully determined.');
 end
 
 % Get default preferences from chebPref:
 prefs = chebpref;
 prefStruct = prefs.cheb2Prefs;
-maxRank = prefStruct.maxRank; 
-maxLength = prefStruct.maxLength; 
-tol = prefStruct.eps; 
-exactLength = prefStruct.exactLength; 
+maxRank = prefStruct.maxRank;
+maxLength = prefStruct.maxLength;
+pseudoLevel = prefStruct.eps;
+exactLength = prefStruct.exactLength;
 sampleTest = prefStruct.sampleTest;
-grid = 9;   % minsample 
+grid = 9;   % minsample
 
 % Check if we need to turn on vectorize flag:
-m1 = mean( domain(1:2) ); 
+m1 = mean( domain(1:2) );
 m2 = mean( domain(3:4) );
 
 E = ones(2,2);
@@ -107,23 +107,22 @@ if ( (vectorize == 0) && all( size(op(m1*E,m2*E)) == [1 1]) )   % scalar check
         g = chebfun2( op, domain, 'vectorize' );
         return
     end
-elseif ( vectorize == 0 )                                       % another check     
+elseif ( vectorize == 0 )                                       % another check
     % check for cases: @(x,y) x*y, and @(x,y) x*y'
     [xx, yy] = meshgrid( domain(1:2), domain(3:4));
-    A = op(xx, yy); 
+    A = op(xx, yy);
     B = zeros(2);
     for j = 1:2
         for k = 1:2
             B(j,k) = op(domain(j), domain(2+k));
         end
     end
-    if ( any(any( abs(A - B.') > min( 1000*tol, 1e-4 ) ) ) )
+    if ( any(any( abs(A - B.') > min( 1000*pseudoLevel, 1e-4 ) ) ) )
         warning('CHEBFUN2:CTOR:VECTORIZE','Function did not correctly evaluate on an array. Turning on the ''vectorize'' flag. Did you intend this? Use the ''vectorize'' flag in the chebfun2 constructor call to avoid this warning message.');
         g = chebfun2(op, domain, 'vectorize');
         return
     end
 end
-
 
 isHappy = 0;  % If unhappy, selected pivots were not good enough.
 while ( ~isHappy )
@@ -141,15 +140,18 @@ while ( ~isHappy )
     if ( any(isnan(vals(:)) ) )
         error('FUN2:CTOR', 'Function returned NaN when evaluated');
     end
+    tol = log(grid).^2 * max( abs(domain(:)) ) * vscale * pseudoLevel;
     
     %% FIND NUMERICAL RANK:
     [pivotValue, pivotPosition, rowValues, colValues, iFail] = CompleteACA(vals, tol);
     % Use chebtech's happiness check
     strike = 1;
-    while ( iFail && grid <= maxRank && strike < 3 && grid < 65)
+    while ( iFail && grid <= maxRank && strike < 3)
         grid = 2^(floor(log2(grid)) + 1) + 1;                % Double the sampling
         [xx, yy] = chebfun2.chebpts2(grid, grid, domain);
         vals = evaluate(op, xx, yy, vectorize);                        % Resample on denser grid.
+        vscale = max(abs(vals(:)));
+        tol = grid.^(2/3) * max( abs(domain(:)) ) * vscale * pseudoLevel;
         [pivotValue, pivotPosition, rowValues, colValues, iFail] = CompleteACA(vals, tol);
         if ( abs(pivotValue(1))<1e4*vscale*tol )
             % If the function is 0+noise then stop after three strikes.
@@ -209,6 +211,10 @@ while ( ~isHappy )
             rowValues(kk+1:end, :) = rowValues(kk+1:end, :) - colValues(PP(kk+1:nn, 1), kk)*(rowValues(kk, :)./pivotValue(kk));
         end
         
+        if ( nn == 1 )
+            rowValues = rowValues(:).';  % make a row vector.
+        end
+        
         % Are the columns and rows resolved now?
         if ( ~resolvedCols )
             colChebtech = chebtech2(sum(colValues,2), domain(3:4) );
@@ -226,6 +232,19 @@ while ( ~isHappy )
         
     end
     
+    % Sample Test:
+    if ( sampleTest )
+        % Evaluate at arbitrary point in domain: 
+        r = 0.029220277562146; s = 0.237283579771521;
+        r = (domain(2)+domain(1))/2 + r*(domain(2)-domain(1));
+        s = (domain(4)+domain(3))/2 + s*(domain(4)-domain(3));
+        colChebtech = chebtech2(colValues, domain(3:4) );
+        rowChebtech = chebtech2(rowValues.', domain(1:2) );
+        val = feval(colChebtech, s) * diag( 1./pivotValue ) * feval( rowChebtech, r).';
+        if (abs( op(r,s) - val) > 1e2 * tol)
+            isHappy = 0;
+        end
+    end
 end
 
 % For some reason, on some computers simplify is giving back a
