@@ -25,16 +25,8 @@ function data = plotData(f, g, h)
 data = struct('xLine', [], 'yLine', [], 'xPoints', [], 'yPoints', [], ...
     'xJumps', [], 'yJumps', [], 'yLim', []);
 
-% Initialize the variable INTERVAL:
-interval = [];
-
-if ( nargin == 1 || ( ( nargin == 2 ) && ( isnumeric(g) ) ) )
+if ( nargin == 1 )
     % PLOT(F)
-    
-    % Grab the interval:
-    if ( ~isempty(g) )
-        interval = g;
-    end
     
     % Overhead:
     nFuns = numel(f.funs);
@@ -67,21 +59,7 @@ if ( nargin == 1 || ( ( nargin == 2 ) && ( isnumeric(g) ) ) )
             dataNew.yPoints = imag(dataNew.yPoints);
             dataNew.xJumps = real(dataNew.yJumps);
             dataNew.yJumps = imag(dataNew.yJumps);
-            
-        elseif ( ~isempty(interval) && size(dataNew.xLine, 2) == 1 ...
-                && ( ( f.funs{k}.domain(1) < interval(1) ) || ...
-                ( interval(2) < f.funs{k}.domain(2) ) ) )
-            
-            % Deal with 'interval' flag.
-            idx = dataNew.xLine < interval(1) | dataNew.xLine > interval(end);
-            dataNew.xLine(idx) = [];
-            dataNew.yLine(idx,:) = [];
-            idx = dataNew.xPoints < interval(1) | dataNew.xPoints > interval(end);
-            dataNew.xPoints(idx) = [];
-            dataNew.yPoints(idx,:) = [];
-            idx = dataNew.xJumps < interval(1) | dataNew.xJumps > interval(end);
-            dataNew.xJumps(idx) = [];
-            dataNew.yJumps(idx,:) = [];
+
         end
         
         % Insert a NaN (or array of NaNs) and append new data to array:
@@ -116,13 +94,8 @@ if ( nargin == 1 || ( ( nargin == 2 ) && ( isnumeric(g) ) ) )
     % take the minimum ymin to be the lower ylim. Then store yLim in data:
     data.yLim = [min(ymin) max(ymax)];
 
-elseif ( nargin == 2 || ( ( nargin == 3 ) && ( isnumeric(h) ) ) )
+elseif ( nargin == 2 )
     % PLOT(F, G)
-    
-    % Grab the interval:
-    if ( ~isempty(h) )
-        interval = h;
-    end
     
     [f, g] = overlap(f, g);
 
@@ -144,22 +117,6 @@ elseif ( nargin == 2 || ( ( nargin == 3 ) && ( isnumeric(h) ) ) )
         if ( k == nFuns )
             dataNew.xJumps(end) = [];
             dataNew.yJumps(end,:) = [];
-        end
-        
-        if ( ~isempty(interval) && size(dataNew.xLine, 2) == 1 ...
-                && ( ( f.funs{k}.domain(1) < interval(1) ) || ...
-                ( interval(2) < f.funs{k}.domain(2) ) ) )
-            
-            % Deal with 'interval' flag.
-            idx = dataNew.xLine < interval(1) | dataNew.xLine > interval(end);
-            dataNew.xLine(idx) = [];
-            dataNew.yLine(idx,:) = [];
-            idx = dataNew.xPoints < interval(1) | dataNew.xPoints > interval(end);
-            dataNew.xPoints(idx) = [];
-            dataNew.yPoints(idx,:) = [];
-            idx = dataNew.xJumps < interval(1) | dataNew.xJumps > interval(end);
-            dataNew.xJumps(idx) = [];
-            dataNew.yJumps(idx,:) = [];
         end
 
         % Array of NaNs:

@@ -117,22 +117,22 @@ end
 % Test the addition of a BNDFUN F, specified by F_OP, to a scalar ALPHA using
 % a grid of points X in [a  b] for testing samples.
 function result = test_add_function_to_scalar(f, f_op, alpha, x)
-g1 = f + alpha;
-g2 = alpha + f;
-result(1) = isequal(g1, g2);
-g_exact = @(x) f_op(x) + alpha;
-result(2) = norm(feval(g1, x) - g_exact(x), inf) < ...
-    10*max(get(g1, 'vscale'))*get(g1, 'epslevel');
+    g1 = f + alpha;
+    g2 = alpha + f;
+    result(1) = isequal(g1, g2);
+    g_exact = @(x) f_op(x) + alpha;
+    result(2) = norm(feval(g1, x) - g_exact(x), inf) < ...
+        10*max(get(g1, 'vscale').*get(g1, 'epslevel'));
 end
 
 %% 
 % Test the addition of two BNDFUN objects F and G, specified by F_OP and
 % G_OP, using a grid of points X in [-1  1] for testing samples.
 function result = test_add_function_to_function(f, f_op, g, g_op, x)
-h1 = f + g;
-h2 = g + f;
-result(1) = isequal(h1, h2);
-h_exact = @(x) f_op(x) + g_op(x);
-result(2) = norm(feval(h1, x) - h_exact(x), inf) <= ...
-    10*max(get(h1, 'vscale'))*get(h1, 'epslevel');
+    h1 = f + g;
+    h2 = g + f;
+    result(1) = isequal(h1, h2);
+    h_exact = @(x) f_op(x) + g_op(x);
+    result(2) = norm(feval(h1, x) - h_exact(x), inf) <= ...
+        10*max(get(h1, 'vscale').*get(h1, 'epslevel'));
 end

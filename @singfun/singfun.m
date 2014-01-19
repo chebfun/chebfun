@@ -225,7 +225,7 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         f = diff(f, k, dim)
         
         % Extract information for DISPLAY.
-        info = dispInfo(f)
+        info = dispData(f)
         
         % Evaluate a SINGFUN.
         y = feval(f, x)
@@ -332,12 +332,15 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         % QR factorisation of an array-valued ONEFUN.
         [f, R, E] = qr(f, flag, methodFlag)
         
-        % Dividing two SINGFUNs
+        % Dividing two SINGFUNs.
         f = rdivide(f, g)
         
         % Real part of a SINGFUN.
         f = real(f)
         
+        % Simplify the exponents of a SINGFUN.
+        f = simplifyExponents(f)
+
         % Restrict a SINGFUN to a subinterval.
         f = restrict(f, s)
         

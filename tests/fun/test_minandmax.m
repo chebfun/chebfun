@@ -19,15 +19,15 @@ pass(3) = test_spotcheck_minmax(@(x) -1./(1 + x.^2), dom, -1, ...
     -0.02, pref);
 pass(4) = test_spotcheck_minmax(@(x) (x/10).^3.*cosh(x/10), ...
     dom, (-.2)^3*cosh(-.2), 0.7^3*cosh(0.7), pref);
-    
-%% 
-% Check operation for array-valued BNDFUN inputs.
+
+%%
+% Check operation for array-valued inputs.
 fun_op = @(x) [sin(10*x) real(airy(x)) (x/10).^3.*cosh(x/10)];
 f = bndfun(fun_op, dom, [], [], pref);
 [y, x] = minandmax(f);
 y_exact = [-1 7.492128863997157e-07  (-.2)^3*cosh(-.2);
     1 0.535656656015700 0.7^3*cosh(0.7)];
-pass(5) = all(abs(y(:) - y_exact(:)) < 10*get(f, 'epslevel'));
+pass(5) = all(abs(y(:) - y_exact(:)) < 10*max(get(f, 'epslevel')));
 
 % Check that the points x are indeed extreme points of the function 
 % operator.
@@ -50,7 +50,7 @@ f1 = bndfun(@(x) exp(sin(2*x)), dom);
 f2 = bndfun(@(x) 1i*cos(20*x), dom);
 [vals2, pos2] = minandmax(f2);
 pass(7) = norm(abs(vals) - abs([vals1 vals2]), inf) < ...
-    10*max(get(f, 'vscale')*get(f, 'epslevel'));
+    10*max(get(f, 'vscale').*get(f, 'epslevel'));
     
 %% 
 % Test on singular BNDFUN.
@@ -68,7 +68,7 @@ f1 = bndfun(@(x) exp(sin(2*x)), dom);
 f2 = bndfun(@(x) 1i*cos(20*x), dom);
 [vals2, pos2] = minandmax(f2);
 pass(9) = norm(abs(vals) - abs([vals1 vals2]), inf) < ...
-    10*max(get(f, 'vscale')*get(f, 'epslevel'));
+    10*max(get(f, 'vscale').*get(f, 'epslevel'));
     
 %% 
 % [TODO]: Run a few tests for UNBNDFUN.
@@ -79,12 +79,12 @@ end
 function result = test_spotcheck_minmax(fun_op, dom, exact_min, ...
     exact_max, pref)
 
-f = bndfun(fun_op, dom, [], [], pref);
-[y, x] = minandmax(f);
-y_exact = [exact_min ; exact_max];
-fx = fun_op(x);
-result = ((max(abs(y - y_exact)) < 10*get(f, 'epslevel')) && ... 
-          (max(abs(fx - y_exact)) < 10*get(f, 'epslevel')));
+    f = bndfun(fun_op, dom, [], [], pref);
+    [y, x] = minandmax(f);
+    y_exact = [exact_min ; exact_max];
+    fx = fun_op(x);
+    result = ((max(abs(y - y_exact)) < 10*get(f, 'epslevel')) && ... 
+        (max(abs(fx - y_exact)) < 10*get(f, 'epslevel')));
 end
 
 %%

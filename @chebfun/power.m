@@ -53,11 +53,7 @@ elseif ( isa(f, 'chebfun') )                     % CHEBFUN .^ constant
             g = compose(f, @(x) power(x, b));
         end
         
-    elseif ( b == .5 )                  % Sqrt
-        % Call SQRT():
-        g = sqrt(f);
-        
-    else                                % General case
+    else                                % General case (SQRT is included)
         
         % Add breaks at the appropriate roots of f:
         if ( isreal(f) )
@@ -66,16 +62,16 @@ elseif ( isa(f, 'chebfun') )                     % CHEBFUN .^ constant
             % Add breaks at the roots of the imaginary part of F to account for
             % the discontinuity in POWER along the negative real semi-axis due 
             % to the branch cut.
-            f = addBreaksAtRoots(f, 'imag');
+            r = getRootsForBreaks(imag(f));
+            f = addBreaks(f, r);
+            
         end
-        
         % Loop over each piece individually:
         numFuns = numel(f.funs);
         g = f;
         for k = 1:numFuns
             g.funs{k} = power(f.funs{k}, b);
         end
-        
         % Update the impulses:
         g.impulses = g.impulses.^b;
         

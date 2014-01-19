@@ -74,13 +74,13 @@ f = bndfun(@(x) [sin(x) x.^2 exp(1i*x)], dom, [], [], pref);
 I = sum(f);
 I_exact = [(cos(dom(1)) - cos(dom(2))) (dom(2)^3 - dom(1)^3)/3 ...
     1i*(exp(1i*dom(1)) - exp(1i*dom(2)))];
-pass(9) = (max(abs(I - I_exact)) < 10*max(get(f, 'vscale'))*get(f, 'epslevel'));
+pass(9) = (max(abs(I - I_exact)) < 10*max(get(f, 'vscale').*get(f, 'epslevel')));
 
 % DIM option with array-valued input.
 g = sum(f, 2);
 h = @(x) sin(x) + x.^2 + exp(1i*x);
 pass(10) = (norm(feval(g, x) - h(x), inf) < ...
-    10*max(get(g, 'vscale'))*get(f, 'epslevel'));
+    10*max(get(g, 'vscale').*get(f, 'epslevel')));
 
 % DIM option with non-array-valued input should leave everything as it was.
 h = bndfun(@(x) cos(x), dom);

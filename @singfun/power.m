@@ -28,4 +28,7 @@ f.exponents = b*f.exponents;
 % to be smooth):
 f.smoothPart = power(f.smoothPart, b);
 
+% Simplify the exponents:
+f = simplifyExponents(f);
+
 end

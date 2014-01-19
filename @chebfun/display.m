@@ -41,10 +41,10 @@ else
 end
 
 % Extra information:
-[extraItem, extraData] = dispInfo(f);
+[extraItem, extraData] = dispData(f);
 
 % Loop through each of the funs to display the following information:
-fprintf('       interval       length   endpoint values %s \n', extraItem)
+fprintf('       interval       length       endpoint values %s \n', extraItem)
 len = zeros(numFuns,1);
 
 for j = 1:numFuns
@@ -89,12 +89,14 @@ for j = 1:numFuns
 end
 
 % Display epslevel:
-fprintf('Epslevel = %i.', epslevel(f))
-fprintf('  Vscale = %i.', vscale(f))
+fprintf('Epslevel = %3.3g, ', epslevel(f))
+fprintf('Vertical scale = %.3g', vscale(f))
 
 % Display total length for piecewise chebfuns:
 if ( numFuns > 1 )
-    fprintf('  Total length = %i.', sum(len))
+    fprintf(', Total length = %i.', sum(len))
+else
+    fprintf('.')
 end
 
 % Final line break:

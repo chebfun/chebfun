@@ -12,7 +12,9 @@ classdef chebfun
 % vector of points x(:) in [-1,1] and return an output of size NxM where N =
 % length(x(:)). If this is not possible then the flag CHEBFUN(F, 'vectorize')
 % should be passed. CHEBFUN(F, 'vectorcheck', 'off') disables the automatic
-% checking for vector input. CHEBFUN() returns an empty CHEBFUN object.
+% checking for vector input. Additionally, F may be a CHEBFUN, in which case
+% CHEBFUN(F) is equivalent to CHEBFUN(@(X) FEVAL(F, X)). CHEBFUN() returns an
+% empty CHEBFUN object.
 %
 % CHEBFUN(F, [A, B]) specifies an interval [A,B] on which the CHEBFUN is
 % defined, where A and/or B may be infinite. CHEBFUN(F, ENDS), where ENDS is a
@@ -280,7 +282,7 @@ classdef chebfun
         f = ctranspose(f)
 
         % Useful information for DISPLAY.
-        [name, data] = dispInfo(f)
+        [name, data] = dispData(f)
         
         % Display a CHEBFUN object.
         display(f);
@@ -427,14 +429,20 @@ end
 %                (Private) Methods implemented in this m-file.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function op = str2op(op)
-% This is here as it's a clean function with no other variables hanging
-% around in the scope.
-depVar = symvar(op);
-if ( numel(depVar) ~= 1 )
-    error('CHEBFUN:STR2OP:indepvars', ...
-        'Incorrect number of independent variables in string input.');
-end
-op = eval(['@(' depVar{:} ')', op]);
+    % Convert string inuts to either numeric format or function_handles. This is
+    % placed in a subfunction so that there no other variables hanging around in
+    % the scope.
+    sop = str2num(op); %#ok<ST2NM> % STR2DOUBLE doesn't support str2double('pi')
+    if ( ~isempty(sop) )
+        op = sop;
+    else
+        depVar = symvar(op);
+        if ( numel(depVar) ~= 1 )
+            error('CHEBFUN:STR2OP:indepvars', ...
+                'Incorrect number of independent variables in string input.');
+        end
+        op = eval(['@(' depVar{:} ')', op]);
+    end
 end
 
 function [op, domain, pref] = parseInputs(op, domain, varargin)
@@ -512,7 +520,8 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
                     % "enableSingularityDetection" and "poles only".
                     pref.enableSingularityDetection = 1;
                     pref.singPrefs.singType = {'pole', 'pole'};
-                elseif ( args{2} == 2 || strcmpi(args{2}, 'on') )
+                elseif ( (isnumeric(args{2}) && args{2} == 2 ) || ...
+                    strcmpi(args{2}, 'on') )
                     % Translate "blowup" and flag "2" -->
                     % "enableSingularityDetection" and "fractional singularity".
                     pref.enableSingularityDetection = 1;

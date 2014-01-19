@@ -12,23 +12,7 @@ if ( isempty(f) )
     return
 end
 
-% Add breaks at the appropriate roots of f:
-if ( isreal(f) )
-    f = addBreaksAtRoots(f);
-else
-    % Add breaks at the roots of the imaginary part of F to account for
-    % the discontinuity in POWER along the negative real semi-axis due
-    % to the branch cut.
-    f = addBreaksAtRoots(f, 'imag');
-end
-
-% Loop over each FUN and call SQRT@BNDFUN on each of the FUNs:
-numFuns = numel(f.funs);
-for k = 1:numFuns
-    f.funs{k} = sqrt(f.funs{k});
-end
-
-% Take the absolute value of the impulses in the first row:
-f.impulses = abs(f.impulses(:,:,1));
+% Simply call POWER()
+f = power(f, 0.5);
 
 end

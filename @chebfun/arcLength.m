@@ -48,11 +48,17 @@ else
     % Single argument:
     dom = [f(1).domain(1) f(1).domain(end)];
 end
-    
+
 % Loop over each column or row:
 fPrime = diff(f);
 if ( isreal(f) )
-    out = sum(sqrt(1 + fPrime.^2), dom(1), dom(2));
+    g = sqrt(1 + fPrime.^2);
+    out = sum(g, dom(1), dom(2));
+    
+    % Substract the sum of impulses to get rid of the account for jumps:
+    if ( size(g.impulses, 3) > 1 )
+        out = out - sum(g.impulses(:,:,2));
+    end
 else
     out = sum(abs(fPrime), dom(1), dom(2));
 end
