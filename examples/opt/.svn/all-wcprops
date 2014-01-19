@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/pub/chebfun/!svn/ver/2993/trunk/examples/opt
+END
+GlobalMinimum.m
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/pub/chebfun/!svn/ver/2825/trunk/examples/opt/GlobalMinimum.m
+END
+Needle.m
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/pub/chebfun/!svn/ver/2993/trunk/examples/opt/Needle.m
+END
+ExtremeExtrema.m
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/pub/chebfun/!svn/ver/2266/trunk/examples/opt/ExtremeExtrema.m
+END
+OptimInt.m
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/pub/chebfun/!svn/ver/2266/trunk/examples/opt/OptimInt.m
+END
+Rosenbrock.m
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/pub/chebfun/!svn/ver/2266/trunk/examples/opt/Rosenbrock.m
+END
+DixonSzego.m
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/pub/chebfun/!svn/ver/2266/trunk/examples/opt/DixonSzego.m
+END
+Rosenbrock2.m
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/pub/chebfun/!svn/ver/2825/trunk/examples/opt/Rosenbrock2.m
+END
+MercuryEarth.m
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/pub/chebfun/!svn/ver/2269/trunk/examples/opt/MercuryEarth.m
+END

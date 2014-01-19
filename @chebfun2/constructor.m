@@ -89,7 +89,7 @@ end
 prefs = chebpref;
 prefStruct = prefs.cheb2Prefs;
 % maxRank = prefStruct.maxRank;
-maxRank = 1025; 
+maxRank = 1025;
 maxLength = prefStruct.maxLength;
 pseudoLevel = prefStruct.eps;
 exactLength = prefStruct.exactLength;
@@ -248,7 +248,7 @@ while ( ~isHappy )
     g.pivotValues = pivotValue;
     g.cols = chebfun(colValues, domain(3:4) );
     g.rows = chebfun(rowValues.', domain(1:2) );
-    g.pivotLocations = PivPos; 
+    g.pivotLocations = PivPos;
     g.domain = domain;
     
     % Sample Test:
@@ -290,10 +290,10 @@ if scl == 0
     PivotValue=0;
     Rows = 0; Cols = 0;
     ifail = 0;
+else
+    Rows(1, :) = zeros(1, size(A, 2));
+    Cols(:, 1) = zeros(size(A, 1), 1);
 end
-
-Rows(1, : ) = zeros(1, size(A, 2));
-Cols(:, 1) = zeros(size(A, 1), 1);
 while ( ( infnorm > tol ) && ( zrows < width / factor) )
     Rows(zrows+1,:) = A( row , : ) ;
     Cols(:,zrows+1) = A( : , col ) ;    % Extract the columns out

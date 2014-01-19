@@ -1,0 +1,221 @@
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/pub/chebfun/!svn/ver/2995/trunk/examples/approx
+END
+RestrictedDenominatorApproximations.m
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/pub/chebfun/!svn/ver/2274/trunk/examples/approx/RestrictedDenominatorApproximations.m
+END
+BumpFunction.m
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/pub/chebfun/!svn/ver/2838/trunk/examples/approx/BumpFunction.m
+END
+ChebfunFFT.m
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/pub/chebfun/!svn/ver/2274/trunk/examples/approx/ChebfunFFT.m
+END
+CommunicationSystem.m
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/pub/chebfun/!svn/ver/2480/trunk/examples/approx/CommunicationSystem.m
+END
+ScalingAndSquaring.m
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/pub/chebfun/!svn/ver/2305/trunk/examples/approx/ScalingAndSquaring.m
+END
+Halphen.m
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/pub/chebfun/!svn/ver/2274/trunk/examples/approx/Halphen.m
+END
+PrettyFunctions.m
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/pub/chebfun/!svn/ver/2852/trunk/examples/approx/PrettyFunctions.m
+END
+WeierstrassFunction.m
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/pub/chebfun/!svn/ver/2960/trunk/examples/approx/WeierstrassFunction.m
+END
+Other2DDomains.m
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/pub/chebfun/!svn/ver/2919/trunk/examples/approx/Other2DDomains.m
+END
+BSplineConv.m
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/pub/chebfun/!svn/ver/2276/trunk/examples/approx/BSplineConv.m
+END
+ResolutionWiggly.m
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/pub/chebfun/!svn/ver/2960/trunk/examples/approx/ResolutionWiggly.m
+END
+AbsoluteValueScaled.m
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/pub/chebfun/!svn/ver/2894/trunk/examples/approx/AbsoluteValueScaled.m
+END
+BestApprox.m
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/pub/chebfun/!svn/ver/2273/trunk/examples/approx/BestApprox.m
+END
+WigglyApprox.m
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/pub/chebfun/!svn/ver/2274/trunk/examples/approx/WigglyApprox.m
+END
+OrthPolysLanczos.m
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/pub/chebfun/!svn/ver/2273/trunk/examples/approx/OrthPolysLanczos.m
+END
+Convergence.m
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/pub/chebfun/!svn/ver/2274/trunk/examples/approx/Convergence.m
+END
+InteractiveInterp.m
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/pub/chebfun/!svn/ver/2969/trunk/examples/approx/InteractiveInterp.m
+END
+FastChebyshevLegendreTransform.m
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/pub/chebfun/!svn/ver/2979/trunk/examples/approx/FastChebyshevLegendreTransform.m
+END
+GreedyInterp.m
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/pub/chebfun/!svn/ver/2273/trunk/examples/approx/GreedyInterp.m
+END
+ChebPolysHigham.m
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/pub/chebfun/!svn/ver/2273/trunk/examples/approx/ChebPolysHigham.m
+END
+BestL2Approximation.m
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/pub/chebfun/!svn/ver/2979/trunk/examples/approx/BestL2Approximation.m
+END
+InteractiveInterp_01.gif
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/pub/chebfun/!svn/ver/2896/trunk/examples/approx/InteractiveInterp_01.gif
+END
+AbsoluteValue.m
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/pub/chebfun/!svn/ver/2274/trunk/examples/approx/AbsoluteValue.m
+END
+ExactChebCoeffs.m
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/pub/chebfun/!svn/ver/2274/trunk/examples/approx/ExactChebCoeffs.m
+END
+Splines.m
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/pub/chebfun/!svn/ver/2529/trunk/examples/approx/Splines.m
+END
+HermiteBasis.m
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/pub/chebfun/!svn/ver/2273/trunk/examples/approx/HermiteBasis.m
+END
+BernsteinPolys.m
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/pub/chebfun/!svn/ver/2274/trunk/examples/approx/BernsteinPolys.m
+END
+Entire.m
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/pub/chebfun/!svn/ver/2995/trunk/examples/approx/Entire.m
+END
+ChebCoeffs.m
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/pub/chebfun/!svn/ver/2273/trunk/examples/approx/ChebCoeffs.m
+END
+Local.m
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/pub/chebfun/!svn/ver/2273/trunk/examples/approx/Local.m
+END
+RationalInterp.m
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/pub/chebfun/!svn/ver/2274/trunk/examples/approx/RationalInterp.m
+END
+GammaFun.m
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/pub/chebfun/!svn/ver/2274/trunk/examples/approx/GammaFun.m
+END
+OscError.m
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/pub/chebfun/!svn/ver/2995/trunk/examples/approx/OscError.m
+END
+LebesgueConst.m
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/pub/chebfun/!svn/ver/2982/trunk/examples/approx/LebesgueConst.m
+END
+DivergentSeries.m
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/pub/chebfun/!svn/ver/2979/trunk/examples/approx/DivergentSeries.m
+END
+OrthPolys.m
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/pub/chebfun/!svn/ver/2982/trunk/examples/approx/OrthPolys.m
+END
