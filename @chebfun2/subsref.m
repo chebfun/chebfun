@@ -36,6 +36,8 @@ switch index(1).type
             x = real( idx{1} );
             y = imag( idx{1} ); 
             out = feval(f, x, y); 
+            varargout = {out}; 
+            return
         elseif ( isa(x, 'chebfun2v') )
             % TODO
         else

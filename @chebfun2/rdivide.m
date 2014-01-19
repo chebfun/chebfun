@@ -34,7 +34,7 @@ elseif ( isa(f,'chebfun2') && isa(g,'double') )  % chebfun2 ./ double
 elseif ( isa(f,'double') && isa(g,'chebfun2') )   
        [bol, wzero] = chebfun2.singleSignTest( g );  
        if ( ( bol == 1 ) && ( wzero == 0 ) )
-           h = chebfun2( @(x,y) f ./ feval(g,x,y) , g.domain );
+           h = chebfun2( @(x,y) f ./ feval(g, x, y) , g.domain );
        else
           error('CHEBFUN2:RDIVIDE:ZERO','Attempting to invert a chebfun2 with a root.'); 
        end

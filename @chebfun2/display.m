@@ -33,7 +33,7 @@ len = length( F );                        % Numerical rank
 [xx, yy]=meshgrid(dom(1:2), dom(3:4));   
 vals = feval(F, xx, yy ).';               % Corner values
 vals = vals(:);
-vscl = max(abs(F.pivotValues));           % vertical scale (Whatever that means)
+vscl = abs(F.pivotValues(1));           % vertical scale (Whatever that means)
 
 % Display the information: 
 

@@ -88,7 +88,8 @@ end
 % Get default preferences from chebPref:
 prefs = chebpref;
 prefStruct = prefs.cheb2Prefs;
-maxRank = prefStruct.maxRank;
+% maxRank = prefStruct.maxRank;
+maxRank = 1025; 
 maxLength = prefStruct.maxLength;
 pseudoLevel = prefStruct.eps;
 exactLength = prefStruct.exactLength;
@@ -151,7 +152,7 @@ while ( ~isHappy )
         [xx, yy] = chebfun2.chebpts2(grid, grid, domain);
         vals = evaluate(op, xx, yy, vectorize);                        % Resample on denser grid.
         vscale = max(abs(vals(:)));
-        tol = log(grid).^2 * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
+        tol = grid.^(4/3) * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
         [pivotValue, pivotPosition, rowValues, colValues, iFail] = CompleteACA(vals, tol);
         if ( abs(pivotValue(1))<1e4*vscale*tol )
             % If the function is 0+noise then stop after three strikes.
@@ -159,7 +160,7 @@ while ( ~isHappy )
         end
     end
     
-    if ( grid >= maxRank )
+    if ( grid > maxRank )
         error('FUN2:CTOR', 'Not a low-rank function.');
     end
     
@@ -247,7 +248,7 @@ while ( ~isHappy )
     g.pivotValues = pivotValue;
     g.cols = chebfun(colValues, domain(3:4) );
     g.rows = chebfun(rowValues.', domain(1:2) );
-    g.pivotLocations = PivPos 
+    g.pivotLocations = PivPos; 
     g.domain = domain;
     
     % Sample Test:
@@ -291,7 +292,7 @@ if scl == 0
     ifail = 0;
 end
 
-while ( ( infnorm > 10*tol*scl ) && ( zrows < width / factor) )
+while ( ( infnorm > tol ) && ( zrows < width / factor) )
     Rows(zrows+1,:) = A( row , : ) ;
     Cols(:,zrows+1) = A( : , col ) ;    % Extract the columns out
     PivVal = A(row,col);
@@ -307,7 +308,7 @@ while ( ( infnorm > 10*tol*scl ) && ( zrows < width / factor) )
     [ row , col ] = myind2sub( size(A) , ind );
 end
 
-if infnorm <= 10*tol*scl, ifail = 0; end  % We didn't fail.
+if infnorm <= tol, ifail = 0; end  % We didn't fail.
 if (zrows >= width / factor), ifail = 1; end  % We did fail.
 
 end

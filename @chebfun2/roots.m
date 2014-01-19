@@ -33,7 +33,7 @@ if ( length( f ) == 1 )  % If the Chebfun2 is rank 1:
     r = [ry rx];
 elseif ( isreal( f ) ) 
     % Use Matlab's contourc function.
-    n = 2049; % disc size.
+    n = 500; % disc size.
     x = linspace( dom(1), dom(2), n ); 
     y = linspace( dom(3), dom(4), n );
     [xx, yy] = meshgrid( x, y ); 
@@ -45,7 +45,7 @@ elseif ( isreal( f ) )
     while ( j < length(C) )
         k = j + C(2, j);  
         D = C(:, j+1:k);
-        f = chebfun(D(1,:) +  1i*(D(2,:)+realmin));
+        f = chebfun( (D(1,:) +  1i*(D(2,:)+realmin)).' );
         f = simplify( f, accuracy );
         j = k + 1; 
         r = [ r , f ];

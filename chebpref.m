@@ -347,7 +347,7 @@ classdef chebpref
                 outPref.techPrefs.extrapolate = false;
                 outPref.techPrefs.sampleTest = true;
             outPref.cheb2Prefs = struct(); 
-                outPref.cheb2Prefs.maxRank = 1000; 
+                outPref.cheb2Prefs.maxRank = 1025; 
                 outPref.cheb2Prefs.maxLength = 65537; 
                 outPref.cheb2Prefs.eps = 2^(-52); 
                 outPref.cheb2Prefs.exactLength = false;
