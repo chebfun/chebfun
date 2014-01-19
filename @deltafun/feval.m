@@ -11,5 +11,16 @@ function val = feval(f, x)
 % Evaluate the smooth part.
 val = feval(f.funPart, x);
 
-% [TODO]: finish this:
+% Mathematically, point values of distributions do not make sense. However, we
+% try our best to match the intuition of the user:
+if ( ~isempty(f.location) )
+    proximityTol = deltafun.pref.deltafun.proximityTol;    
+    
+    % Make sure there are no trivial deltafunctions:
+    f = simplify(f);
+    loc = f.location;    
+    for i = 1:length(loc)
+        idx = abs(x-loc(i)) < proximityTol;        
+        val(idx) = NaN;                
+    end
 end

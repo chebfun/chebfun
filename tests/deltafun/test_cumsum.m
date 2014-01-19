@@ -24,10 +24,14 @@ idx = abs(mag(1, :)) > tol;
 pass(2) = max(abs(F.funPart - cumsum(f))) < tol && ...
     norm(jumpVals - mag(1, idx), inf) < tol && ...
     norm(locations - loc(idx), inf) < tol;
-%%
+
 f = fun.constructor(@(x) sin(pi*x));
 d = deltafun( f, [-1, 1], [-1, 1]);
-pass(3) = norm(sum(d)-0, inf) < tol;
+[F, jumpVals, locations] = cumsum(d);
+
+pass(3) = max(abs(F.funPart - cumsum(f))) < tol && ...
+    norm(jumpVals - [-1, 1], inf) < tol && ...
+    norm(locations - [-1, 1], inf) < tol;
 
 pass
 %end

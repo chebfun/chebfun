@@ -45,12 +45,12 @@ switch index(1).type
             for i = 1:length(deltaLoc)
                 relDist = abs(y - deltaLoc(i))./abs(y);
                 if( any( relDist < deltafun.pref.deltafun.proximityTol ) )
-                    error( 'Chebfun:DELTAFUN:subsref', 'An evaluation point is very close to a delt function' );
+                    error( 'DELTAFUN:subsref', 'An evaluation point is very close to a delta function' );
                 end
                
                 % This is especially necessary when one of the x's is zero.
                 if( any( isnan(relDist) ) )
-                    error( 'Chebfun:DELTAFUN:subsref', 'relative distance between an evaluation point and a delta function is NaN' ); 
+                    error( 'DELTAFUN:subsref', 'relative distance between an evaluation point and a delta function is NaN' ); 
                 end
                     
             end
