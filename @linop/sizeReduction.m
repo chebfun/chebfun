@@ -1,4 +1,4 @@
-function [reduce,d,dRow,dVar] = getDownsampling(L)
+function [reduce,d,dRow,dVar] = sizeReduction(L)
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 

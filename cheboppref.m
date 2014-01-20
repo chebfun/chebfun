@@ -1,65 +1,38 @@
-classdef cheboppref
+classdef cheboppref < chebpref
     
     % See above for documentation.
     properties
-        domain
-        discretization
-        discPrefs
-        enableBreakpointDetection
-        breakpointPrefs
-        maxTotalLength
-        scale
         damped
         display
         errTol
         lambdaMin
         maxIter
         plotting
+        discretisation = @colloc2
+        scale = NaN
+        dimensionValues = [32 64 128 256 512 724 1024 1448 2048]
+    end
+    
+    properties (Dependent)
+        discretization
     end
 
     methods
 
-        function outPref = cheboppref(inPref)
-            if ( (nargin == 1) && isa(inPref, 'cheboppref') )
-                outPref = inPref;
-                return
-            elseif ( nargin < 1 )
-                inPref = struct();
-            end
-
-            % Initialize default preference values.
-            outPref.maxTotalLength = 2048;
-            outPref.enableBreakpointDetection = false;
-                outPref.breakpointPrefs.splitMaxLength = 129;
-                outPref.breakpointPrefs.splitMaxTotalLength = 2048;
-            outPref.domain = [-1 1];
-            outPref.discretization = @colloc2;
-            outPref.discPrefs = struct();
-                outPref.discPrefs.eps = 2^(-52);
-                outPref.discPrefs.exactLength = NaN;
-            outPref.scale = NaN;    
-            outPref.damped = 1;
-            outPref.display = 'iter';
-            outPref.errTol = 1e-10;
-            outPref.lambdaMin = 1e-8;
-            outPref.maxIter = 25;
-            outPref.plotting = 'off';
+        function outPref = cheboppref()           
             
-            % Copy fields from q, placing unknown ones in discPrefs and merging
-            % incomplete substructures.
-            for field = fieldnames(inPref).'
-                if ( isprop(outPref, field{1}) )
-                    if ( isstruct(outPref.(field{1})) )
-                        outPref.(field{1}) = ...
-                            chebpref.mergePrefs(outPref.(field{1}), ...
-                            inPref.(field{1}));
-                    else
-                        outPref.(field{1}) = inPref.(field{1});
-                    end
-                else
-                    outPref.discPrefs.(field{1}) = inPref.(field{1});
-                end
-            end
+            outPref = outPref@chebpref;
+            
+            outPref.maxTotalLength = 2500;
+            outPref.enableSingularityDetection = false;  % not supported
+        end
+        
+        function out = get.discretization(pref)
+            out = pref.discretisation;
+        end
+
+        function pref = set.discretization(pref,disc)
+            pref.discretisation = disc;
         end
 
         function out = subsref(pref, ind)

@@ -7,14 +7,14 @@ if ( isa(source, 'chebmatrix') )
     c = cell(size(source));
     for k = 1:numel(c)
         try
-            c{k} = blockCoeff(source.blocks{k}).coeffs;
+            c{k} = toCoeff(source.blocks{k});
         catch
             c{k} = [];
         end
     end
 else
     try
-        c = {blockCoeff(source).coeffs};
+        c = {toCoeff(source)};
     catch
         c = {};
     end

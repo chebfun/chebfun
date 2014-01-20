@@ -45,8 +45,9 @@ function varargout = eigs(L,varargin)
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % Parsing inputs.
-M = [];  k = 6;  sigma = []; map = [];
-discType = L.discretizer;
+M = [];  k = 6;  sigma = []; 
+prefs = L.prefs;
+discType = prefs.discretization;
 gotk = false;
 j = 1;
 while (nargin > j)
@@ -89,7 +90,7 @@ if ( isa(discType, 'function_handle') )
     disc = discType(L);  
         
     % Set the allowed discretisation lengths: (TODO: A preference?)
-    dimVals = floor(2.^[6 7 8 8.5 9 9.5 10 10.5 11]);
+    dimVals = L.prefs.dimensionValues;
     
     % Update the discretistion dimension on unhappy pieces:
     disc.dimension = repmat(dimVals(1), 1, numel(disc.domain)-1);

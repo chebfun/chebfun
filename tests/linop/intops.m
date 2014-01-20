@@ -4,7 +4,7 @@ function pass = intops
 % Toby Driscoll 28 May 2009
 % Nick Hale 6 Jan 2012
 
-tol = chebfunpref('eps');
+tol = 1e-12;
 
 %%
 % Fredholm

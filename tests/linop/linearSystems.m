@@ -1,4 +1,5 @@
 function pass = test_linearSystems
+% TAD, 10 Jan 2014
 
 tol = 1e-9; 
 
@@ -32,7 +33,8 @@ type = {@colloc2, @ultraS, @colloc2, @ultraS};
 w = [];
 for k = 1:4
     wold = w;
-    w = mldivide(L, f, type{k});
+    L.prefs.discretization = type{k};
+    w = L\f;
 
     %%
 %     subplot(1, 2, k)
