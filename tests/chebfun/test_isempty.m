@@ -28,5 +28,9 @@ pass(7) = ~isempty(f);
 f = chebfun(@sin, [-2 2], 1);
 pass(8) = ~isempty(f);
 
-end
+dom = [-2 7];
+pow = -1.64;
+f = chebfun(@(x) (x-dom(1)).^pow, dom, 'exps', [pow 0], 'splitting', 'on');
+pass(9) = ~isempty(f);
 
+end
