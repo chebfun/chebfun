@@ -9,10 +9,10 @@ end
 seedRNG(6179);
 
 % Initial u we evaluate f at
-u = adchebfun(rand(8,1),[-1 1]);
+u = adchebfun(0.1*rand(8,1)+.5,[-1 1]);
 
 % Chebfun used to create a perturbation
-p = chebfun(rand(8,1),[-1 1]);
+p = chebfun(0.01*rand(8,1)+.05,[-1 1]);
 
 %% Taylor testing comptuations
 

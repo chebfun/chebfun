@@ -4,7 +4,7 @@ function error = valueTesting(f)
 seedRNG(6179);
 
 % Generate an arbitrary CHEBFUN to evaluate the function at
-u = chebfun(rand(15,1)) + 1;
+u = 0.1*chebfun(rand(15,1)) + .5;
 
 % Construct a corresponding ADCHEBFUN
 v = adchebfun(u);
