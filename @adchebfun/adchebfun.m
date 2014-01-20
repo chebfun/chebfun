@@ -1,7 +1,10 @@
 classdef (InferiorClasses = {?chebfun}) adchebfun 
-%ADCHEBFUN   
+%ADCHEBFUN   A class consisting of a CHEBFUN and derivative information.
 %
-% See also 
+% See also CHEBFUN, LINOP, CHEBOP.
+
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ADCHEBFUN Class Description:
@@ -15,7 +18,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         func
         % The jacobian:
         jacobian
-%         % Linearity information:
+        % Linearity information:
         isConstant = 1;        
         
     end
@@ -46,124 +49,226 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
         
         function f = airy(k, f)
+            % F = AIRY(K,F)   Airy function of an ADCHEBFUN.
+            %
+            % F = AIRY(F) where F is a CHEBFUN is the same as above, with K = 0,
+            
+            % Default value of K
             if ( nargin == 1 )
                 f = k;
                 k = 0;
             end
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
+            % Update derivative part
             f.jacobian = linop.mult(airy(k + 1, f.func))*f.jacobian;
+            % Update CHEBFUN part.
             f.func = airy(k, f.func);
         end
 
         function f = acos(f)
+            % F = ACOS(F)   ACOS of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
+            % Update derivative part
             f.jacobian = linop.mult(-1./sqrt(1 - f.func.^2))*f.jacobian;
+            % Update CHEBFUN part.
             f.func = acos(f.func);
         end
         
         function f = acosd(f)
+            % F = ACOSD(F)   ACOSD of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
+            % Update derivative part
             f.jacobian = linop.mult(-(180/pi)./sqrt(1 - f.func.^2))*f.jacobian;
+            % Update CHEBFUN part.
             f.func = acosd(f.func);
         end
         
         function f = acosh(f)
+            % F = ACOSH(F)   ACOSH of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
+            % Update derivative part
             f.jacobian = linop.mult(1./sqrt(f.func.^2 - 1))*f.jacobian;
+            % Update CHEBFUN part.
             f.func = acosh(f.func);
         end
         
         function f = acot(f)
+            % F = ACOT(F)   ACOT of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
+            % Update derivative part
             f.jacobian = linop.mult(-1./(1 + f.func.^2))*f.jacobian;
+            % Update CHEBFUN part.
             f.func = acot(f.func);
         end
         
         function f = acotd(f)
+            % F = ACOTD(F)   ACOTD of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
+            % Update derivative part
             f.jacobian = linop.mult(-(180/pi)./(1 + f.func.^2))*f.jacobian;
+            % Update CHEBFUN part.
             f.func = acotd(f.func);
         end
         
         function f = acoth(f)
+            % F = ACOTH(F)   ACOTH of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
+            % Update derivative part
             f.jacobian = linop.mult(-1./(f.func.^2 - 1))*f.jacobian;
+            % Update CHEBFUN part.
             f.func = acoth(f.func);
         end
         
         function f = acsc(f)
+            % F = ACSC(F)   ACSC of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
+            % Update derivative part
             f.jacobian = linop.mult(-1./(abs(f.func).*sqrt(f.func.^2 - 1)))*f.jacobian;
+            % Update CHEBFUN part.
             f.func = acsc(f.func);
         end
         
         function f = acscd(f)
+            % F = ACSCD(F)   ACSCD of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
+            % Update derivative part
             f.jacobian = linop.mult(-(180/pi)./(abs(f.func).*sqrt(f.func.^2 - 1)))*f.jacobian;
+            % Update CHEBFUN part.
             f.func = acscd(f.func);
         end
                 
         function f = acsch(f)
+            % F = ACSCH(F)   ACSCH of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
+            % Update derivative part
             f.jacobian = linop.mult(-1./(f.func.*sqrt(1 + f.func.^2)))*f.jacobian;
+            % Update CHEBFUN part.
             f.func = acsch(f.func);
         end
         
         function f = asec(f)
+            % F = ASEC(F)   ASEC of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
+            % Update derivative part
             f.jacobian = linop.mult(1./(abs(f.func).*sqrt(f.func.^2-1)))*f.jacobian;
+            % Update CHEBFUN part.
             f.func = asec(f.func);
         end
                         
         function f = asecd(f)
+            % F = ASECD(F)   ASECD of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
+            % Update derivative part
             f.jacobian = linop.mult((180/pi)./(abs(f.func).*sqrt(f.func.^2-1)))*f.jacobian;
+            % Update CHEBFUN part.
             f.func = asecd(f.func);
         end
                         
         function f = asech(f)
+            % F = ASECH(F)   ASECH of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
+            % Update derivative part
             f.jacobian = linop.mult(-1./(f.func.*sqrt(1-f.func.^2)))*f.jacobian;
+            % Update CHEBFUN part.
             f.func = asech(f.func);
         end
                         
         function f = asin(f)
+            % F = ASIN(F)   ASIN of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
+            % Update derivative part
             f.jacobian = linop.mult(1./sqrt(1-f.func.^2))*f.jacobian;
+            % Update CHEBFUN part.
             f.func = asin(f.func);
         end
                         
         function f = asind(f)
+            % F = ASIND(F)   ASIND of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
+            % Update derivative part
             f.jacobian = linop.mult((180/pi)./sqrt(1-f.func.^2))*f.jacobian;
+            % Update CHEBFUN part.
             f.func = asind(f.func);
         end
                         
         function f = asinh(f)
+            % F = ASINH(F)   ASINH of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
+            % Update derivative part
             f.jacobian = linop.mult(1./sqrt(f.func.^2+1))*f.jacobian;
+            % Update CHEBFUN part.
             f.func = asinh(f.func);
         end
                                 
         function f = atan(f)
+            % F = ATAN(F)   ATAN of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
+            % Update derivative part
             f.jacobian = linop.mult(1./(1+f.func.^2))*f.jacobian;
+            % Update CHEBFUN part.
             f.func = atan(f.func);
         end
                                 
         function f = atand(f)
+            % F = ATAND(F)   ATAND of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
+            % Update derivative part
             f.jacobian = linop.mult((180/pi)./(1+f.func.^2))*f.jacobian;
+            % Update CHEBFUN part.
             f.func = atand(f.func);
         end
                                 
         function f = atanh(f)
+            % F = ATANH(F)   ATANH of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
+            % Update derivative part
             f.jacobian = linop.mult(1./(1-f.func.^2))*f.jacobian;
+            % Update CHEBFUN part.
             f.func = atanh(f.func);
         end
         
         function g = besselj(nu, f)
+            % G = BESSELJ(NU, F)    Bessel-J function of an ADCHEBFUN.
+            %
+            % See also chebfun/besselj.
+            
             % Initialise an empty ADCHEBFUN
             g = adchebfun;
             % Copy the domain information
@@ -173,48 +278,80 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % Function composition
             g.func = besselj(nu, f.func);
             % Derivative computation
-            g.jacobian = linop.mult(-besselj(nu+1,f.func)+nu*(g.func)./f.func)*f.jacobian;
+            g.jacobian = linop.mult(-besselj(nu+1,f.func) + ...
+                nu*(g.func)./f.func)*f.jacobian;
         end
         
         function f = cos(f)
+            % F = COS(F)   COS of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
             f.jacobian = linop.mult(-sin(f.func))*f.jacobian;
+            % Update CHEBFUN part.
             f.func = cos(f.func);
         end
         
         function f = cosd(f)
+            % F = COSD(F)   COSD of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
+            % Update derivative part
             f.jacobian = linop.mult(-pi/180*sind(f.func))*f.jacobian;
+            % Update CHEBFUN part.
             f.func = cosd(f.func);
         end
         
         function f = cosh(f)
+            % F = COSH(F)   COSH of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
+            % Update derivative part
             f.jacobian = linop.mult(sinh(f.func))*f.jacobian;
+            % Update CHEBFUN part.
             f.func = cosh(f.func);
         end
                 
         function f = cot(f)
+            % F = COT(F)   COT of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
+            % Update derivative part
             f.jacobian = linop.mult(-csc(f.func).^2)*f.jacobian;
+            % Update CHEBFUN part.
             f.func = cot(f.func);
         end
                 
         function f = cotd(f)
+            % F = COTD(F)   COTD of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
+            % Update derivative part
             f.jacobian = linop.mult(-(pi/180)*cscd(f.func).^2)*f.jacobian;
+            % Update CHEBFUN part.
             f.func = cotd(f.func);
         end
         
         function f = coth(f)
+            % F = COTH(F)   COTH of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
+            % Update derivative part
             f.jacobian = linop.mult(-csch(f.func).^2)*f.jacobian;
+            % Update CHEBFUN part.
             f.func = cotd(f.func);
         end
         
         function f = cumsum(f)
             f.func = cumsum(f);
-            f.jacobian = linop.cumsum(f.domain)*f.jacobian; 
+            % Update derivative part
+            f.jacobian = linop.cumsum(f.domain)*f.jacobian;
+            % CUMSUM is a linear operation, so no need to update linearity info.
 %             f.isConstant = f.isConstant;
         end
         
@@ -223,7 +360,8 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 k = 1; 
             end
             f.func = diff(f.func, k);
-            f.jacobian = linop.diff(f.domain, k)*f.jacobian;          
+            f.jacobian = linop.diff(f.domain, k)*f.jacobian;
+            % DIFF is a linear operation, so no need to update linearity info.
 %             f.isConstant = f.isConstant;
         end
        
