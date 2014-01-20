@@ -2,7 +2,7 @@ function [sn, cn, dn] = ellipj(u, m, pref)
 %ELLIPJ   Jacobi elliptic functions.
 %   [SN, CN, DN] = ELLIPJ(U, M) returns CHEBFUNS for the compositions Sn(U)
 %   Cn(U), and Dn(U), where Sn, Cn, and Dn are the Jacobi elliptic functions
-%   with parameter M.  U may be a scalar or a CHEBFUN, and M must be a CHEBFUN
+%   with parameter M. U may be a scalar or a CHEBFUN, and M must be a CHEBFUN
 %   or scalar in the range 0 <= M <= 1.
 %
 %   [SN, CN, DN] = ELLIPJ(U, M, TOL) composes the elliptic functions to the

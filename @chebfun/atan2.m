@@ -26,10 +26,24 @@ if ( ~isreal(y) || ~isreal(x) )
     error('CHEBFUN:atan2:real', 'Inputs ust be real.');
 end
 
-if ( (min(size(y)) > 1) || (min(size(x)) > 1) )
-    error('CHEBFUN:atan2:array', ... % TODO: Add support for this.
-        'ATAN2 does not supprt array-valued CHEBFUN objects..');
+numColsY = numColumns(y);
+numColsX = numColumns(x);
+if ( numColsY ~= numColsX )
+    error('CHEBFUN:atan2:dim', 'Chebfun quasimatrix dimensions must agree.');
 end
+
+% Convert columns to a cell array:
+y = num2cell(y);
+x = num2cell(x);
+
+% Loop over the columns:
+for k = numel(y):-1:1
+    p(k) = columnAtan(y{k}, x{k}, pref);
+end
+
+end
+
+function p = columnAtan(y, x, pref)
 
 % We'll need to extrapolate here:
 pref.techPrefs.extrapolate = true;
@@ -55,8 +69,15 @@ for k = 1:numel(y.funs);
 end
 
 % Collect all the roots together:
-r = [ ry ; rx ];
+r = unique([ ry ; rx ]);
 
+% Remove near-by roots:
+nr = numel(r) + 1;
+while ( nr ~= numel(r) )
+    nr = numel(r);
+    r([diff(r) < tol ; false]) = [];
+end
+   
 % Introduce new breaks at the computed roots if required:
 if ( ~isempty(r) )
     newDom = union(x.domain, r.');

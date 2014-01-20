@@ -26,13 +26,12 @@ if ( isempty(f) || isempty(g) )
     return
 end
 
-if ( xor(f.isTransposed, g.isTransposed) )
-    error('CHEBFUN:conv:transposed', 'CHEBFUN dimensions do not agree.');
+if ( numColumns(f) > 1 || numColumns(g) > 1 )
+    error('CHEBFUN:conv:quasi', 'No support for array-valued CHEBFUN objects.');
 end
 
-% TODO:  Support for array-valued CHEBFUNs / quasimatrices.
-if ( min(size(f)) > 1 || min(size(g)) > 1 )
-    error('CHEBFUN:conv:quasi', 'No support for array-valued CHEBFUN objects.');
+if ( xor(f.isTransposed, g.isTransposed) )
+    error('CHEBFUN:conv:transposed', 'CHEBFUN dimensions do not agree.');
 end
 
 % Remove deltas from f:

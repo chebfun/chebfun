@@ -14,7 +14,7 @@ m = size(f, 2);
 
 % Tolerance for a root (we will loosen this with each run of the loop below if
 % there are multiple roots):
-tol = 1e2*f.vscale*f.epslevel;
+tol = 1e2*f.vscale.*f.epslevel;
 
 % Values at ends:
 endValues = abs([feval(f, -1); feval(f, 1)]);

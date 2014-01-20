@@ -1,4 +1,4 @@
-function g = asecd(f, pref)
+function F = asecd(F, varargin)
 %ASECD   Inverse secant of a CHEBFUN, result in degrees.
 %   ASECD(F) computes the inverse secant (in degrees) of the CHEBFUN F.
 %
@@ -10,12 +10,7 @@ function g = asecd(f, pref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org for Chebfun information.
 
-% Obtain preferences:
-if ( nargin == 1 )
-    pref = chebpref();
-end
-
 % Call the compose method:
-g = compose(f, @asecd, pref);
+F = compose(F, @asecd, varargin{:});
 
 end
