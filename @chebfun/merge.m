@@ -28,6 +28,10 @@ function [f, mergedPts] = merge(f, index, pref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
+if ( numel(f) > 1 )
+    error('CHEBFUN:merge:quasi', 'MERGE does not support quasimatrices.');
+end
+
 % Parse the inputs:
 if ( nargin == 1 )
     % Choose all indices by default:

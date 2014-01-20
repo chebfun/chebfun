@@ -36,6 +36,11 @@ pass(6) = test_one_compose_binary(@(x) [cos(2*(x + 0.2)) sin(2*(x - 0.1))], ...
     [-1 1], @(x) [exp(x) 1./(1 + 25*(x - 0.1).^2)], [-1 1], ...
     @(x, y) x + 2*y, pref);
 
+% Test quasimatrix.
+pass(7:9) = test_one_compose_binary_quasi(@(x) [cos(2*(x + 0.2)) sin(2*(x - 0.1))], ...
+    [-1 1], @(x) [exp(x) 1./(1 + 25*(x - 0.1).^2)], [-1 1], ...
+    @(x, y) x + 2*y, pref);
+
 end
 
 % Test composition with binary operators.
@@ -51,6 +56,37 @@ function pass = test_one_compose_binary(f_exact, fdom, g_exact, gdom, op, pref)
     dom = union(fdom, gdom);
     x = ((dom(end) - dom(1))/2)*xr + dom(1) + (dom(end) - dom(1))/2;
     err = norm(feval(h, x) - h_exact(x), inf);
-    pass = (err < 20*h.vscale*h.epslevel) && ...
+    pass = (err < 20*vscale(h)*epslevel(h)) && ...
+        isequal(h_exact(dom), feval(h, dom));
+end
+
+% Test composition with binary operators.
+function pass = test_one_compose_binary_quasi(f_exact, fdom, g_exact, gdom, op, pref)
+    % Random points to use as test values.
+    seedRNG(7681);
+    xr = 2 * rand(100, 1) - 1;
+
+    f = chebfun(f_exact, fdom, pref);
+    g = chebfun(g_exact, gdom, pref);
+    fq = quasimatrix(f_exact, fdom, pref);
+    gq = quasimatrix(g_exact, gdom, pref); 
+    
+    h_exact = @(x) op(f_exact(x), g_exact(x));
+    dom = union(fdom, gdom);
+    x = ((dom(end) - dom(1))/2)*xr + dom(1) + (dom(end) - dom(1))/2;
+    
+    h = compose(f, op, gq, pref);
+    err = norm(feval(h, x) - h_exact(x), inf);
+    pass(1) = (err < 20*vscale(h)*epslevel(h)) && ...
+        isequal(h_exact(dom), feval(h, dom));
+    
+    h = compose(fq, op, g, pref);
+    err = norm(feval(h, x) - h_exact(x), inf);
+    pass(2) = (err < 20*vscale(h)*epslevel(h)) && ...
+        isequal(h_exact(dom), feval(h, dom));
+    
+    h = compose(fq, op, gq, pref);
+    err = norm(feval(h, x) - h_exact(x), inf);
+    pass(3) = (err < 20*vscale(h)*epslevel(h)) && ...
         isequal(h_exact(dom), feval(h, dom));
 end

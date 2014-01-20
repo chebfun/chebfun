@@ -1,4 +1,4 @@
-function g = csch(f, pref)
+function F = csch(F, varargin)
 %CSCH   Hyperbolic cosecant of a CHEBFUN.
 %   CSCH(F) computes the hyperbolic cosecant of the CHEBFUN F.
 %
@@ -10,12 +10,7 @@ function g = csch(f, pref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-% Obtain preferences:
-if ( nargin == 1 )
-    pref = chebpref();
-end
-
 % Call the compose method:
-g = compose(f, @csch, pref);
+F = compose(F, @csch, varargin{:});
 
 end
