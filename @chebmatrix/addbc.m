@@ -3,8 +3,10 @@ function L = addbc(A,varargin)
 % 
 %   See also LINOP, LINOP.ADDBC.
 
-% Recast the chebmatrix as a linop, then apply the bc.
+%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  See http://www.chebfun.org for Chebfun information.
 
+% Recast the chebmatrix as a linop, then apply the bc.
 L = addbc( linop(A), varargin{:} );
 
 end
