@@ -49,6 +49,7 @@ function varargout = plot(varargin)
 % See http://www.chebfun.org for Chebfun information.
 
 % [TODO]: Implement plotting of delta functions.
+% TODO: Figure out the y axis limit for functions which blow up.
 
 % Deal with an empty input:
 if ( isempty(varargin{1}) )
@@ -145,24 +146,9 @@ while ( ~isempty(varargin) )
     yLimData = [yLimData, newData.yLim];
 end
 
-%% Figure out yLim:
-
-% Take the maximum and the mininum:
-ylimit = [min(yLimData{:}) max(yLimData{:})];
-
-% Pad some space at the top and bottom of the figure:
-if ( diff( ylimit ) )
-    ylimit = [ylimit(1) - 0.1*abs(diff(ylimit)) ...
-        ylimit(2) + 0.1*abs(diff(ylimit))];
-else
-    ylimit = [ylimit(1) - 0.1*abs(ylimit(1)) ...
-        ylimit(2) + 0.1*abs(ylimit(1))];
-end
-
 % Plot the lines:
 h1 = plot(lineData{:});
 set(h1, 'Marker', 'none')
-set(gca, 'ylim', ylimit)
 
 % Ensure the plot is held:
 hold on
