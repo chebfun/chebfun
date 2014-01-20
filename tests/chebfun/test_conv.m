@@ -55,7 +55,6 @@ pass(5) = abs(feval(g, 1) - 23/96) < 100*epslevel(g);
 
 %% 6. Test the example from the HELP text:
 f = chebfun(1/2); g = f;
-subplot(2, 2, 1), plot(f,'r')
 for j = 2:4, g = conv(f, g); end
 g1 = g(.1);
 for j = 1:4, g = diff(g); end
