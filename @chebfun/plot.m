@@ -43,6 +43,9 @@ function varargout = plot(varargin)
 %   than one CHEBFUN in a call like PLOT(F, 'b', G, '--r', 'interval', [A, B])
 %   this property is applied globally.
 %
+%   Note that the PLOT(F, 'numpts', N) option for V4 is depricated, and this
+%   call now has no effect.
+%
 % See also PLOTDATA, PLOT3.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
@@ -137,6 +140,11 @@ while ( ~isempty(varargin) )
     if ( pos > 0 )
         styleData = varargin(1:pos);
         varargin(1:pos) = [];
+        % Remove depricated 'numpts' option:
+        idx = find(strcmp(styleData, 'numpts'), 1);
+        if ( any(idx) )
+            styleData(idx:(idx+1)) = [];
+        end
     end
     
     % Append new data to the arrays which will be passed to built in PLOT():
