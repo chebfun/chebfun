@@ -43,12 +43,16 @@ function varargout = plot(varargin)
 %   than one CHEBFUN in a call like PLOT(F, 'b', G, '--r', 'interval', [A, B])
 %   this property is applied globally.
 %
+%   Note that the PLOT(F, 'numpts', N) option for V4 is depricated, and this
+%   call now has no effect.
+%
 % See also PLOTDATA, PLOT3.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
 % [TODO]: Implement plotting of delta functions.
+% TODO: Figure out the y axis limit for functions which blow up.
 
 % Deal with an empty input:
 if ( isempty(varargin{1}) )
@@ -184,30 +188,11 @@ while ( ~isempty(varargin) )
     if ( pos > 0 )
         styleData = varargin(1:pos);
         varargin(1:pos) = [];
-    end
-
-    % Loop over the columns:
-    for k = 1:numel(newData)
-        
-        % TODO: Remove this?
-        % 'INTERVAL' stuff:
-        if ( ~isComplex && intervalIsSet && size(newData(k).xLine, 2) == 1 )
-            idx = newData(k).xLine < interval(1) | newData(k).xLine > interval(end);
-            newData(k).xLine(idx) = [];
-            newData(k).yLine(idx,:) = [];
-            idx = newData(k).xPoints < interval(1) | newData(k).xPoints > interval(end);
-            newData(k).xPoints(idx) = [];
-            newData(k).yPoints(idx,:) = [];
-            idx = newData(k).xJumps < interval(1) | newData(k).xJumps > interval(end);
-            newData(k).xJumps(idx) = [];
-            newData(k).yJumps(idx,:) = [];
+        % Remove depricated 'numpts' option:
+        idx = find(strcmp(styleData, 'numpts'), 1);
+        if ( any(idx) )
+            styleData(idx:(idx+1)) = [];
         end
-
-        % Append new data:
-        lineData = [lineData, newData(k).xLine, newData(k).yLine, styleData]; 
-        pointData = [pointData, newData(k).xPoints, newData(k).yPoints, styleData];
-        jumpData = [jumpData, newData(k).xJumps, newData(k).yJumps, styleData];
-
     end
 
 end
