@@ -3,7 +3,7 @@
 function pass = test_trig1
 
 % List of trigonometric functions to test.
-trigFunctions = {@acos, @acosd, @acosh, @acot, @acotd, @acoth, @acsc};
+trigFunctions = {@acos, @acosd, @acosh, @acot, @acotd, @acoth, @acsc, @acscd};
 
 % How many iterations we want to in the Taylor testing
 numSteps = 4;

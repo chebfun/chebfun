@@ -409,7 +409,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % Update CHEBFUN part
             f.func = erfcinv(f.func);
             % Update derivative part
-            f.jacobian = operatorBlock.mult(exp(f.func.^2)*sqrt(pi)/2)*f.jacobian;        
+            f.jacobian = operatorBlock.mult(-exp(f.func.^2)*sqrt(pi)/2)*f.jacobian;        
         end
         
         function g = erfcx(f)
@@ -467,6 +467,8 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end 
         
         function out = get(f, prop, pos)
+            % TODO: Document
+            
             % Allow access to any of F's properties via GET.
             if nargin == 2
                 out = vertcat(f.(prop));
@@ -476,11 +478,15 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
         
         function out = getElement(f, pos)
+            % TODO: Document
+            
             % Return the pos-th element
             out = f(pos);
         end
         
         function u = jacreset(u)
+            % TODO: Document
+            
             u.jacobian = linop.eye(u.domain);
             u.isConstant = 1;
         end 
@@ -490,33 +496,55 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             
             % Linearity information
             f.isConstant = iszero(f.jacobian);
+            % Update derivative part
             f.jacobian = operatorBlock.mult(1./f.func)*f.jacobian;
+            % Update CHEBFUN part
             f.func = log(f.func);
+            % Need to update domain in case breakpoints were introduced
             f = updateDomain(f);
         end
                 
         function f = log1p(f)
+            % F = LOG1P(F)   LOG1P of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
+            % Update derivative part
             f.jacobian = operatorBlock.mult(1./(f.func + 1))*f.jacobian;
+            % Update CHEBFUN part
             f.func = log1p(f.func);
+            % Need to update domain in case breakpoints were introduced
             f = updateDomain(f);
         end
  
         function f = log2(f)
+            % F = LOG2(F)   LOG2 of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
+            % Update derivative part
             f.jacobian = operatorBlock.mult(1./(log(2)*f.func))*f.jacobian;
+            % Update CHEBFUN part
             f.func = log2(f.func);
+            % Need to update domain in case breakpoints were introduced
             f = updateDomain(f);
         end
         
         function f = log10(f)
+            % F = LOG10(F)   LOG10 of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
+            % Update derivative part
             f.jacobian = operatorBlock.mult(1./(log(10)*f.func))*f.jacobian;
+            % Update CHEBFUN part
             f.func = log10(f.func);
+            % Need to update domain in case breakpoints were introduced
             f = updateDomain(f);
         end
         
         function f = minus(f, g)
+            % -     Subtraction of ADCHEBFUN
             f = plus(f, -g);
         end
                 
