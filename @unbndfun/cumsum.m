@@ -27,7 +27,7 @@ end
 
 % Parse inputs:
 if ( nargin == 1 || isempty(k) )
-    % Compute first indefinite intergral by default
+    % Compute first indefinite intergral by default.
     k = 1;
 end
 
@@ -43,62 +43,110 @@ end
 
 if ( dim == 1 )
     
-    % Rescaling factor is the derivative of the forward map:
+    % Make a copy of F:
+    g = f;
+    
+    % Grab the preference:
     pref = chebpref();
-    pref.singPrefs.exponents = f.mapping.forderExps;
-    rescaleFactor = onefun.constructor(@(x) f.mapping.forder(x), ...
-        [], [], pref);
     
-    % Check if we need to add breakpoints:
-    f = addBreaksForCumSum(f);
-    
-    if ( iscell(f) )
+    % Loop K times:
+    for j = 1:k
         
-        % If f is a cell of two UNBNDFUNs which are obtained by adding a new
-        % breakpoint at the midpoint of the original domain due to non-trivial
-        % exponents at both endpoints, we integrate each UNBNDFUN individually.
-        
-        for j = 1:2
+        if ( iscell(g) )
             
-            % Loop K times for the Kth integral:
-            for l = 1:k
+            for l = 1:2
+                % Rescaling factor is the derivative of the forward map:
+                pref.singPrefs.exponents = g{l}.mapping.forderExps;
+                rescaleFactor = onefun.constructor( ...
+                    @(x) g{l}.mapping.forder(x), [], [], pref);
+                numRoots = -repmat(pref.singPrefs.exponents, 1, size(g{l}, 2));
+                
+                % Try to see if we can extract boundary roots:
+                [h, rootsLeft, rootsRight] = extractBoundaryRoots(g.onefun, ...
+                    numRoots);
+                
+                if ( all( rootsLeft == numRoots(1,:) ) && ...
+                        all( rootsRight == numRoots(2,:) ) )
+                    
+                    g{l}.onefun = h;
+                    % The ONEFUN of the integral of F should be the integral of the
+                    % ONEFUN of the F multiplied by the derivative of the forward
+                    % map. Here the singularities of the RESCALEFACTOR is cancelled off by
+                    % the boundary roots of H. Therefore, only the smoothPart of
+                    % RESCALEFACTOR is involved.
+                    g{l}.onefun = cumsum(g{l}.onefun.*rescaleFactor.smoothPart);
+                    
+                else
+                    
+                    % The ONEFUN of the integral of F should be the integral of the
+                    % ONEFUN of the F multiplied by the derivative of the forward
+                    % map.
+                    g{l}.onefun = g{l}.onefun.*rescaleFactor;
+                    g{l}.onefun = cumsum(g{l}.onefun);
+                    
+                end
+                
+            end
+            
+        else
+            
+            % Rescaling factor is the derivative of the forward map:
+            pref.singPrefs.exponents = g.mapping.forderExps;
+            rescaleFactor = onefun.constructor(@(x) g.mapping.forder(x), ...
+                [], [], pref);
+            numRoots = -repmat(pref.singPrefs.exponents.', 1, size(g, 2));
+            
+            % Try to see if we can extract boundary roots:
+            [h, rootsLeft, rootsRight] = extractBoundaryRoots(g.onefun, ...
+                numRoots);
+            
+            if ( all( rootsLeft == numRoots(1,:) ) && ...
+                    all( rootsRight == numRoots(2,:) ) )
                 
                 % The ONEFUN of the integral of F should be the integral of the
                 % ONEFUN of the F multiplied by the derivative of the forward
-                % map:
-                f{j}.onefun = f{j}.onefun.*rescaleFactor;
-                f{j}.onefun = cumsum(f{j}.onefun);
+                % map. Here the singularities of the RESCALEFACTOR is cancelled off by
+                % the boundary roots of H. Therefore, only the smoothPart of
+                % RESCALEFACTOR is involved.
+                g.onefun = h;
+                g.onefun = cumsum(g.onefun.*rescaleFactor.smoothPart);
+                
+            else
+                
+                % The ONEFUN of the integral of F should be the integral of the
+                % ONEFUN of the F multiplied by the derivative of the forward
+                % map.
+                g.onefun = g.onefun.*rescaleFactor;
+                
+                % Check if we need to add breakpoints:
+                g = addBreaksForCumSum(g);
+                
+                if ( iscell(g) )
+                    g{1}.onefun = cumsum(g{1}.onefun);
+                    g{2}.onefun = cumsum(g{2}.onefun);
+                else
+                    g.onefun = cumsum(g.onefun);
+                end
+                
             end
-            
         end
         
-    else
+    end
+    
+    f = g;
+    
+    % Shift F up or down. This is useful at the chebfun level to concatenate the
+    % piece making the entire function as continuous as possible.
+    if ( ~any( issing(f) ) && ( ~iscell(f) ) )
         
-        % Loop K times for the Kth integral:
-        for l = 1:k
-            
-            % The ONEFUN of the integral of F should be the integral of the
-            % ONEFUN of the F multiplied by the derivative of the forward
-            % map:
-            f.onefun = f.onefun.*rescaleFactor;
-            f.onefun = cumsum(f.onefun);
-        end
+        % Grab the indice correspond to infinite shift:
+        ind = isinf(shift);
         
+        % Zero the infinite shift:
+        shift( ind ) = 0;
         
-        % Shift F up or down. This is useful at the chebfun level to concatenate the
-        % piece making the entire function as continuous as possible.
-        if ( ~any( issing(f) ) )
-            
-            % Grab the indice correspond to infinite shift:
-            ind = isinf(shift);
-            
-            % Zero the infinite shift:
-            shift( ind ) = 0;
-            
-            % Shift:
-            f = f + shift - get(f, 'lval');
-        end
-        
+        % Shift:
+        f = f + shift - get(f, 'lval');
     end
     
 elseif ( dim == 2 )

@@ -83,6 +83,16 @@ for n = 1:2
     err = feval(g, x) - feval(gexact, x);
     pass(n, 8) = (norm(err, Inf) < (1e1^(ml + mr))*f.epslevel);
     
+    %% Test on wrong multiplicities supplied by users:
+    ml = 1;
+    mr = 2;
+    f = testclass.make(@(x) exp(x).*((1 + x).^ml).*((1 - x).^mr), [], [], pref);
+    [g, l, r] = extractBoundaryRoots(f, [ml+1; mr+2]);
+    gexact = testclass.make(@(x) exp(x), [], [], pref);
+    err = feval(g, x) - feval(gexact, x);
+    pass(n, 9) = ( (norm(err, Inf) < (1e1^(ml + mr))*f.epslevel) && ...
+        ( l == ml ) && ( r == mr ) );    
+    
 end
 
 end

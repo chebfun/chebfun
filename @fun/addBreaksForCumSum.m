@@ -1,8 +1,8 @@
 function f = addBreaksForCumSum(f)
 %ADDBREAKSFORCUMSUM   Introduce a new breakpoint to facilitate the computation 
-%   of the indefinite integral of a BNDFUN.
+%   of the indefinite integral of a FUN.
 %
-%   G = ADDBREAKSFORCUMSUM(F) returns a cell of two BNDFUN when F is made of 
+%   G = ADDBREAKSFORCUMSUM(F) returns a cell of two FUNs when F is made of 
 %   SINGFUN whose exponents are both non-trivial. Note that this function is 
 %   expected to be called by CUMSUM only.
 

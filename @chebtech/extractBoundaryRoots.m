@@ -4,12 +4,15 @@ function [f, rootsLeft, rootsRight] = extractBoundaryRoots(f, numRoots)
 %   which is free of roots at the boundary points -1 and 1. The multiplicity of
 %   the boundary roots at -1 and 1 are ROOTSLEFT and ROOTRIGHT respectively.
 %
-%   G = EXTRACTBOUNDARYROOTS(F, NUMROOTS) returns a CHEBTECH G which has been 
-%   peeled off specified number of roots from the boundaries. NUMROOTS is a 2xM 
-%   matrix with M being the number of the columns of the array-valued CHEBTECHs 
-%   specifying the multiplicities of the boundary roots that need to be 
-%   extracted. The first row and the second row of NUMROOTS correspond to the
-%   left and the right boundary respectively.
+%   [G, ROOTSLEFT, ROOTSRIGHT] = EXTRACTBOUNDARYROOTS(F, NUMROOTS) returns a 
+%   CHEBTECH G which has been peeled off roots from the boundaries with the
+%   multiplicities specified by ROOTSLEFT and ROOTSRIGHT for the left boundary 
+%   and the right boundary, respectively. NUMROOTS is a 2xM matrix with M being 
+%   the number of the columns of the array-valued CHEBTECHs specifying the 
+%   multiplicities of the boundary roots that EXTRACTBOUNDARYROOTS aims to 
+%   extract. The first row and the second row of NUMROOTS correspond to the left
+%   and the right boundary, respectively. Note that there is no warning thrown,
+%   when ROOTSLEFT and ROOTSRIGHT are not consistent with NUMROOTS.
 %
 % See also ROOTS.
 
@@ -23,6 +26,10 @@ end
 % Grab the size of F:
 m = size(f, 2);
 
+% Initialise the multiplicity of the roots:
+rootsLeft = zeros(1, m);
+rootsRight = zeros(1, m);
+
 % Tolerance for a root (we will loosen this with each run of the loop below if
 % there are multiple roots):
 tol = 1e2*f.vscale.*f.epslevel;
@@ -30,25 +37,16 @@ tol = 1e2*f.vscale.*f.epslevel;
 % Values at ends:
 endValues = abs([feval(f, -1); feval(f, 1)]);
 
-% Initialise the multiplicity of the roots:
-rootsLeft = zeros(1, m);
-rootsRight = zeros(1, m);
-
 % If there are no roots, there is nothing to do!
 if ( all(min(endValues, [], 1) > tol) )
-    if ( ( nargin > 1 ) && any( any(numRoots) ) )
-        warning('CHEBFUN:chebtech:extractBoundaryRoots:noRoots1', ...
-            'Boundary values are not vanishing.');
-    else
-        return
-    end
+    return
 end
 
 % Grab the coefficients of F:
 c = f.coeffs;
 
 while ( ( ( nargin == 1 ) && any( min(endValues, [], 1) <= tol ) ) ...
-        || ( ( nargin > 1 ) && ( any( numRoots > 0 ) ) ) )
+        || ( ( nargin > 1 ) && any( any( numRoots > 0 ) ) ) )
     
     if ( nargin == 1 )
         if ( any(endValues(1, :) <= tol) )
@@ -70,9 +68,9 @@ while ( ( ( nargin == 1 ) && any( min(endValues, [], 1) <= tol ) ) ...
             if ( ind == indNumRoots )
                 sgn = 1;
                 numRoots(1, ind) = numRoots(1, ind) - 1;
+                rootsLeft = rootsLeft + 1;
             else
-                warning('CHEBFUN:chebtech:extractBoundaryRoots:noRoots2', ...
-                    'Boundary values are not vanishing.');
+                numRoots(1,:) = 0;
             end
             
         elseif ( any( numRoots(2,:) ) )
@@ -82,9 +80,9 @@ while ( ( ( nargin == 1 ) && any( min(endValues, [], 1) <= tol ) ) ...
             if ( ind == indNumRoots )
                 sgn = -1;
                 numRoots(2, ind) = numRoots(2, ind) - 1;
+                rootsRight = rootsRight + 1;
             else
-                warning('CHEBFUN:chebtech:extractBoundaryRoots:noRoots3', ...
-                    'Boundary values are not vanishing.');
+                numRoots(2,:) = 0;
             end
         end
     end

@@ -33,25 +33,33 @@ numSubDom = numel(s) - 1;
 % Preallocate the output cell:
 g = cell(1, numSubDom);
 
-% Loop over each subdomain:
-for k = 1:numSubDom
-    pref = chebpref();
-    if ( issing(f) )
-        ind = isinf(s(k:k+1));
-        exps = get(f, 'exponents');
+
+% Any exponents?
+exps = [];
+if ( issing(f) )
+    exps = get(f, 'exponents');
+    
+    if ( any(exps) )
+        
+        exps = [exps(1) zeros(1, numSubDom-1) exps(2)];
+        ind = isinf(s);
         
         % Negate the exponents for infinite endpoint, since the exponents stored
-        % in SINGFUN are the negated value of those supplied to the BNDFUN 
+        % in SINGFUN are the negated value of those supplied to the UNBNDFUN
         % constructor:
         exps(ind) = -exps(ind);
         
-        if ( k == 1 ) && ( logical(exps(1)) )
-            pref.singPrefs.exponents = [exps(1) 0];
-            pref.techPrefs.extrapolate = 1;
-        end
+    end
+    
+end
+
+% Loop over each subdomain:
+for k = 1:numSubDom
+    pref = chebpref();
+    if ( ~isempty(exps) && any(exps(k:k+1)) )
+        pref.singPrefs.exponents = exps(k:k+1);
         
-        if ( k == numSubDom ) && ( logical(exps(2)) )
-            pref.singPrefs.exponents = [0 exps(2)];
+        if ( k == 1 ) || ( k == numSubDom)
             pref.techPrefs.extrapolate = 1;
         end
     end
