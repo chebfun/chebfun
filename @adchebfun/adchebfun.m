@@ -449,10 +449,21 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
         
         function f = feval(f, x)
+            % F = FEVAL(F,X)    Evaluate an ADCHEBFUN F at point X.
+            %
+            % The output will be an ADCHEBFUN with derivative representing
+            % evaluation at the point X (and the derivative of the input, as
+            % dictated by the chain rule).
+            
+            % Create an feval linear operator at the point X.
             E = linop.feval(x, f.domain);
+            % Update derivative part
             f.jacobian = E*f.jacobian;
+            % Update CHEBFUN part
             f.func = feval(f.func, x);
-%             f.isConstant = f.isConstant;            
+            % Evaluation is a linear operation, so no need to update linearity
+            % information.
+            % f.isConstant = f.isConstant;
         end 
         
         function out = get(f, prop, pos)
