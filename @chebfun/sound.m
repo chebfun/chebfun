@@ -7,7 +7,9 @@ function sound(f, varargin)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( min(size(f)) > 1 )
+% TODO: Document this?
+
+if ( numColumns(f) > 1 )
     error('CHEBFUN:sound:quasi', ...
         'CHEBFUN/SOUND() is not defined for array-valued CHEBFUN objects');
 end

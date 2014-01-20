@@ -53,7 +53,7 @@ function varargout = remez(f, varargin)
 dom = f.domain([1, end]);
 normf = norm(f);
 
-if ( min(size(f)) > 1 )
+if ( numColumns(f) > 1 )
     error ('CHEBFUN:remez:quasi', ...
         'REMEZ does not currently support quasimatrices.');
 end

@@ -111,8 +111,16 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
             
             % Case 1: One input argument.
             if ( nargin == 1 )
-                % Make sure the exponents are empty.
-                exponents = [];
+                if ( isa(op, 'smoothfun') )
+                    % if OP is a SMOOTHFUN, cast it to a SINGFUN:
+                    obj.smoothPart = op;
+                    obj.exponents = [0, 0];
+                    
+                    return
+                else
+                    % Make sure the exponents are empty.
+                    exponents = [];
+                end
             end
             
             % Case 2: Two input arguments.
@@ -217,7 +225,7 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         f = diff(f, k, dim)
         
         % Extract information for DISPLAY.
-        info = dispInfo(f)
+        info = dispData(f)
         
         % Evaluate a SINGFUN.
         y = feval(f, x)
@@ -318,15 +326,21 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         % Polynomial coefficients of a ONEFUN.
         out = poly(f)
         
+        % SINGFUN power function.
+        f = power(f, b)
+
         % QR factorisation of an array-valued ONEFUN.
         [f, R, E] = qr(f, flag, methodFlag)
         
-        % Dividing two SINGFUNs
+        % Dividing two SINGFUNs.
         f = rdivide(f, g)
         
         % Real part of a SINGFUN.
         f = real(f)
         
+        % Simplify the exponents of a SINGFUN.
+        f = simplifyExponents(f)
+
         % Restrict a SINGFUN to a subinterval.
         f = restrict(f, s)
         

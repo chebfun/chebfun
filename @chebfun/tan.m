@@ -1,4 +1,4 @@
-function g = tan(f, pref)
+function F = tan(F, varargin)
 %TAN   Tangent of a CHEBFUN.
 %   TAN(F) computes the tangent of the CHEBFUN F.
 %
@@ -10,11 +10,6 @@ function g = tan(f, pref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-% Obtain preferences:
-if ( nargin == 1 )
-    pref = chebpref();
-end
-
 % [TODO]:  Restore or change this once we have decided the proper behavior or
 % isfinite() and defined that function.
 % if ( ~isfinite(f) )
@@ -23,6 +18,6 @@ end
 % end
 
 % Call the compose method:
-g = compose(f, @tan, pref);
+F = compose(F, @tan, varargin{:});
 
 end

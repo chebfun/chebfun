@@ -13,7 +13,7 @@ T = chebpoly(20);
 A = T(xx).*T(yy);  
 
 C = zeros(100); C(end-20,end-20)=1;   
-X = chebpolyval2(C); 
+X = chebfun2.coeffs2vals(C); 
 pass(j) = ( norm(A - X) < 100*tol); j = j+1; 
 
 % check the @chebfun2/chebpolyval2 command.

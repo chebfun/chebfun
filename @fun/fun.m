@@ -189,7 +189,7 @@ classdef fun % (Abstract)
         f = ctranspose(f)
         
         % Extract information for DISPLAY.
-        info = dispInfo(f)
+        info = dispData(f)
         
         % Extract columns of an array-valued FUN object.
         f = extractColumns(f, columnIndex);

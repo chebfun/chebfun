@@ -7,6 +7,8 @@ function F = ctranspose(F)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-F = transpose(conj(F));
+for k = 1:numel(F)
+    F(k) = transpose(conj(F(k)));
+end
 
 end
