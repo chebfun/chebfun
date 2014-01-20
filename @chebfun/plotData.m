@@ -27,13 +27,9 @@ data = struct('xLine', [], 'yLine', [], 'xPoints', [], 'yPoints', [], ...
 
 if ( nargin == 1 )
     % PLOT(F)
-    
-    % Overhead:
-    nFuns = numel(f.funs);
-    ymax = zeros(1,nFuns);
-    ymin = zeros(1,nFuns);
 
     % Loop over each FUN for Line and Points data:
+    nFuns = numel(f.funs);
     for k = 1:nFuns
         % Get the data from the FUN:
         dataNew = plotData(f.funs{k});
@@ -71,41 +67,16 @@ if ( nargin == 1 )
         data.yPoints = [data.yPoints ; yNaN ; dataNew.yPoints];
         data.xJumps = [data.xJumps ; dataNew.xJumps];
         data.yJumps = [data.yJumps ; dataNew.yJumps];
-        
-        % If any of the boundary values is positively infinite, then set the
-        % ylim for this piece to be the minimum of 10 and the largest yLine 
-        % data:
-        ymax(k) = max(max(dataNew.yLine));
-        
-        if ( dataNew.yLim(2) == Inf )
-            ymax(k) = min(10, ymax(k));
-        end
-        
-        % If any of the boundary values is negatively infinite, then set the
-        % ylim for this piece to be the maximum of -10 and the smallest yLine 
-        % data:
-        ymin(k) = min(min(dataNew.yLine));
-        
-        if ( dataNew.yLim(1) == -Inf )
-            ymin(k) = max(-10, ymin(k)); 
-        end
 
     end
-    
-    % Take the maximum ymax to be the upper ylim for the entire CHEBFUN, while 
-    % take the minimum ymin to be the lower ylim. Then store yLim in data:
-    data.yLim = [min(ymin) max(ymax)];
 
 elseif ( nargin == 2 )
     % PLOT(F, G)
     
     [f, g] = overlap(f, g);
 
-    % Overhead:
+    % Loop over each FUN for Line and Points data:
     nFuns = numel(f.funs);
-    ymax = zeros(1,nFuns);
-    ymin = zeros(1,nFuns);
-    
     for k = 1:nFuns
         % Get the data from the FUN objects:
         dataNew = plotData(f.funs{k}, g.funs{k});
@@ -133,25 +104,6 @@ elseif ( nargin == 2 )
         data.yJumps = [data.yJumps ; dataNew.yJumps];
     end
     
-    % If any of the boundary values is positively infinite, then set the
-    % ylim for this piece to be 10:
-    ymax(k) = max(max(dataNew.yLine));
-    
-    if ( dataNew.yLim(2) == Inf )
-        ymax(k) = min(10, ymax(k));
-    end
-    
-    % If any of the boundary values is negatively infinite, then set the
-    % ylim for this piece to be -10:
-    ymin(k) = min(min(dataNew.yLine));
-    
-    if ( dataNew.yLim(1) == -Inf )
-        ymin(k) = max(-10, ymin(k));
-    end
-    
-    % Store ylim:
-    data.yLim = [min(ymin) max(ymax)];
-    
 else
     % PLOT(F, G, H)
     
@@ -159,16 +111,11 @@ else
     data.zLine = [];
     data.zPoints = [];
     data.zJumps = [];
-    
-    % [TODO]: Fix this once OVERLAP() is implemented.
-    if ( any( f.domain ~= g.domain ) )
-        [f, g] = overlap(f, g);
-    end
-    
-    if ( any( g.domain ~= h.domain ) )
-        [g, h] = overlap(g, h);
-        [h, f] = overlap(h, f);
-    end
+
+    % Overlap the CHEBFUN objects:
+    [f, g] = overlap(f, g);
+    [g, h] = overlap(g, h);
+    [h, f] = overlap(h, f);
     
     % Loop over each FUN for Line and Points data:
     nFuns = numel(f.funs);

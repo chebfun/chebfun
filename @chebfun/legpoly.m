@@ -11,10 +11,16 @@ function out = legpoly(f, varargin)
 %   There is also a LEGPOLY command in the Chebfun trunk directory, which
 %   computes the CHEBFUN corresponding to the Legendre polynomial P_n(x).
 %
+%   LEGPOLY does not support quasimatrices.
+%
 % See also CHEBPOLY.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
+
+if ( numel(f) > 1 )
+    error('CHEBFUN:legpoly:quasi', 'LEGPOLY does not support quasimatrices.');
+end
 
 % Call FUN/LEGPOLY():
 if ( numel( f.funs ) == 1 )
@@ -52,7 +58,7 @@ isSimple = all(cellfun(@(f) isa(f.onefun, 'chebtech'), f.funs));
 if ( isSimple )
     % Compute inner-products manually:
     
-    out = zeros(n+1, min(size(f))); % Initialise storage.
+    out = zeros(n+1, numColumns(f)); % Initialise storage.
     
     % For each subinterval calculate int P_k f(x)dx and add them up:
     for j = 1:numel(f.funs)

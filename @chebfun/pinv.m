@@ -10,7 +10,7 @@ function X = pinv(A, tol)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information. 
 
-if ( A.isTransposed ) 
+if ( A(1).isTransposed ) 
    error('CHEBFUN:pinv:row', 'PINV only defined for column CHEBFUN objects.')
 end
 

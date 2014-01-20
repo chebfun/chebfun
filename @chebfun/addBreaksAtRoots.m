@@ -17,10 +17,22 @@ function f = addBreaksAtRoots(f, tol)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-% Lower bound for tolerance:
+%TODO: return a quasimatrix from array-valued CHEBFUN input?
+
+% Parse inputs:
 if ( nargin == 1 )
     tol = 0;
+elseif ( isa(tol, 'chebpref') )
+    tol = tol.techPrefs.eps;
 end
+
+for k = 1:numel(f)
+    f(k) = columnAddBreaksAtRoots(f(k), tol);
+end
+
+end
+
+function f = columnAddBreaksAtRoots(f, tol)
 
 % Get the roots:
 [rBreaks, rAll] = getRootsForBreaks(f, tol);

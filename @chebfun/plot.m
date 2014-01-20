@@ -65,6 +65,7 @@ end
 % Store the hold state of the current axis:
 holdState = ishold;
 isComplex = false;
+intervalIsSet = false;
 
 % Initialise storage:
 lineData = {};
@@ -96,6 +97,10 @@ else
         end
     end
 end
+
+lineData = {};
+pointData = {};
+jumpData = {};
     
 %%
 % Get the data for plotting from PLOTDATA():
@@ -103,10 +108,13 @@ while ( ~isempty(varargin) )
 
     % Acquire plotting data for each CHEBFUN / pair of CHEBFUNs:
     if ( (numel(varargin) > 1) && isa(varargin{2}, 'chebfun') ) % PLOT(f, g).
+        % Remove CHEBFUN objects from array input:
         f = varargin{1};
         g = varargin{2};
+        varargin(1:2) = [];
         
         % We can only plot real against real:
+        isComplex = false;
         if ( ~isreal(f) || ~isreal(g) )
             warning('CHEBFUN:plot:complex', ...
                 'Imaginary parts of complex X and/or Y arguments ignored.');
@@ -115,19 +123,59 @@ while ( ~isempty(varargin) )
         end
         
         % Call PLOTDATA():
-        newData = plotData(f, g);
-        % Remove CHEBFUN objects from array input:
-        varargin(1:2) = [];
-        
+        if ( numel(f) == 1 && numel(g) == 1 )
+            % Array-valued CHEBFUN case:
+            newData = plotData(f, g);
+        else
+            % QUASIMATRIX case:
+            f = num2cell(f);
+            g = num2cell(g);
+            if ( numel(f) > 1 && numel(g) > 1 )
+                if ( numel(f) ~= numel(g) )
+                    error('CHEBFUN:plot:dim', ...
+                    'CHEBFUN objects must have the same number of columns.');
+                end
+                for k = 1:numel(f)
+                    newData(k) = plotData(f{k}, g{k});
+                end
+            elseif ( numel(f) > 1 && numel(g) == 1 )
+                for k = 1:numel(f)
+                    newData(k) = plotData(f{k}, g{1});
+                end
+            elseif ( numel(f) == 1 && numel(g) > 1 )
+                for k = 1:numel(f)
+                    newData(k) = plotData(f{1}, g{k});
+                end            
+            end
+        end
+
     else                                                       % PLOT(f).
+        
         % Call PLOTDATA():
         f = varargin{1};
         if ( intervalIsSet )
             f = restrict(f, interval([1,end]));
         end
         newData = plotData(f);
+
         % Remove CHEBFUN from array input:
+        f = varargin{1};
         varargin(1) = [];
+
+        isComplex = ~isreal(f);
+        % Loop over the columns:
+        for k = 1:numel(f)
+            newData(k) = plotData(f(k));
+            if ( isComplex ) % Deal with complex-valued functions.
+                % Assign x to be the real part, and y to be the imagiary part:
+                newData(k).xLine = real(newData(k).yLine);
+                newData(k).yLine = imag(newData(k).yLine);
+                newData(k).xPoints = real(newData(k).yPoints);
+                newData(k).yPoints = imag(newData(k).yPoints);
+                newData(k).xJumps = real(newData(k).yJumps);
+                newData(k).yJumps = imag(newData(k).yJumps);
+            end
+        end
         
     end
     
@@ -146,12 +194,7 @@ while ( ~isempty(varargin) )
             styleData(idx:(idx+1)) = [];
         end
     end
-    
-    % Append new data to the arrays which will be passed to built in PLOT():
-    lineData = [lineData, newData.xLine, newData.yLine, styleData];
-    pointData = [pointData, newData.xPoints, newData.yPoints, styleData];
-    jumpData = [jumpData, newData.xJumps, newData.yJumps, styleData];
-    yLimData = [yLimData, newData.yLim];
+
 end
 
 % Plot the lines:
@@ -167,7 +210,7 @@ h2 = plot(pointData{:});
 set(h2, 'LineStyle', 'none')
 
 % Plot the jumps:
-if ( isempty(jumpData) )
+if ( isempty(jumpData) || ischar(jumpData{1}) )
     jumpData = {[]};
 end
 h3 = plot(jumpData{:});
