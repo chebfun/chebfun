@@ -90,7 +90,7 @@ if ( any(isinf(f.domain)) )
 end
 
 %% Compute the coefficients:
-if ( ii > 0 || ( ii == 0 && numFuns == 1 ) )
+if ( (ii > 0) || ((ii == 0) && (numFuns == 1)) )
     
     % CHEBPOLY() of a smooth piece:
     out = chebpoly(f.funs{1}, N).';    
@@ -101,7 +101,7 @@ else
     % Compute coefficients via inner products.
     d = f.domain([1, end]);
     x = chebfun('x', d);
-    w = 1./sqrt((x-d(1)).*(d(2)-x));
+    w = 1./sqrt((x - d(1)).*(d(2) - x));
     numCols = numColumns(f);
     out = zeros(numCols, N);
     f = mat2cell(f);

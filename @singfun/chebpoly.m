@@ -10,16 +10,16 @@ function out = chebpoly(f, N)
 
 if ( any(f.exponents <= -.5 ) )
     error('CHEBFUN:singfun:chebpoly:notintegrable', ...
-        'F is does not have a well-defined Chebyshev expansion.');
+        'F does not have a well-defined Chebyshev expansion.');
 end
 
-if ( nargin == 1 || isempty(N) )
+if ( (nargin == 1) || isempty(N) )
     error('CHEBFUN:singfun:chebpoly:input', ...
         'F does not have a finite Chebyshev series. Please input N.');
 end
 
 if ( isa(f.smoothPart, 'chebtech') )
-    % Compute the reuired innerproducts in coefficient space efficiently.
+    % Compute the required inner products in coefficient space efficiently.
     
     n = length(f);
     % Compute the Chebyshev moments:
@@ -32,7 +32,7 @@ if ( isa(f.smoothPart, 'chebtech') )
     out = [out(end-N+1:end-1) ; out(end)/2].';
     
 else
-    % Compute the reuired innerproducts by calling SUM().
+    % Compute the required inner products by calling SUM().
    
     for k = N-1:-1:0
         % Make the kth Chebyshev polynomial:
@@ -78,8 +78,12 @@ else
     % The general case:
     b = exps(2);
     
-    % Common coefficient for the modified moments:
-    c1 = a + 1; c2 = b + 1; c3 = a + b + 1; c4 = c1 + c2; c5 = a - b;
+    % Common coefficients for the modified moments:
+    c1 = a + 1;
+    c2 = b + 1;
+    c3 = a + b + 1;
+    c4 = c1 + c2;
+    c5 = a - b;
     c0 = (2^c3)*beta(c1, c2);
     
     % Compute the hypergeometric function related to the modified moments:
@@ -108,7 +112,7 @@ if ( nargin == 2 )
     b = a;
 end
 n = length(a);
-p = ifft( fft([a ; 0 ; flipud(b(2:end))]) .* fft([x ; zeros(n,1)]) );
+p = ifft(fft([a ; 0 ; flipud(b(2:end))]) .* fft([x ; zeros(n,1)]));
 y = p(1:n);
 end
 
@@ -121,6 +125,6 @@ if ( nargin == 2 )
     b = [a(end) ; zeros(n-1,1)];
 end
 n = length(x);
-p = ifft( fft([b ; 0 ; (a(1:end-1))]) .* fft([x(end:-1:1) ; zeros(n, 1)]) );
+p = ifft(fft([b ; 0 ; (a(1:end-1))]) .* fft([x(end:-1:1) ; zeros(n, 1)]));
 y = p(1:n);
 end
