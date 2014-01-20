@@ -1,11 +1,11 @@
 % Test file for @deltafun/isequal.m
 
-%function pass = test_isequal(pref)
+function pass = test_isequal(pref)
 
 % if (nargin < 1)
 %     pref = chebpref();
 % end
-
+%%
 d1 = deltafun();
 d2 = deltafun();
 
@@ -29,7 +29,5 @@ d1.impulses = d1.impulses(:, 1:end-1);
 d1.location = d1.location(1:end-1);
 
 pass(5) = ~isequal(d1, d2);
-
-pass
 
 %end

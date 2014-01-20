@@ -1,25 +1,21 @@
 % Test file for @deltafun/feval.m
 
-%function pass = test_feval(pref)
+function pass = test_feval(pref)
 
 % if ( nargin < 1 )
 %     pref = ?
 % end
-d = deltafun();
-pass(1) = isempty(d);
+%%
+d = deltafun([], 1,0);
+pass(1) = isnan(feval(d, 0));
 
-x 
+f = fun.constructor(@(x) sin(x));
+d = deltafun( f, [], []);
+x = rand(1, 4);
+pass(2) = norm(feval(f, x) - feval(d, x), inf) == 0;
 
-d = deltafun([], []);
-pass(2) = isempty(d);
+x = rand(1,4);
+d = deltafun(f, rand(1,4), x);
+pass(3) = all(isnan(feval(d, x)));
 
-d = deltafun([], [], []);
-pass(3) = isempty(d);
-
-d = deltafun([], [], [], []);
-pass(4) = isempty(d);
-
-pass
-
-pass
-%end
+end

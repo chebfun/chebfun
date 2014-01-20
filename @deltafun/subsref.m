@@ -39,9 +39,8 @@ switch index(1).type
 
         % Compute the output:
         if ( isnumeric(x) )
-            y = x(:);            
             % Call FEVAL():
-            out = feval(f, y, varin{:});
+            out = feval(f, x, varin{:});
             
         elseif ( isa(x, 'chebfun') )
             % Call COMPOSE():

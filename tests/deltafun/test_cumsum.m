@@ -1,11 +1,12 @@
 % Test file for @deltafun/cumsum.m
 
-%function pass = test_cumsum(pref)
+function pass = test_cumsum(pref)
 
 % if (nargin < 1)
 %     pref = chebpref();
 % end
 
+%%
 tol = deltafun.pref.deltafun.deltaTol;
 
 d = deltafun();
@@ -33,5 +34,4 @@ pass(3) = max(abs(F.funPart - cumsum(f))) < tol && ...
     norm(jumpVals - [-1, 1], inf) < tol && ...
     norm(locations - [-1, 1], inf) < tol;
 
-pass
-%end
+end

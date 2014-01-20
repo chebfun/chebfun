@@ -1,11 +1,11 @@
 % Test file for @deltafun/plus.m.
 
-%function pass = test_plus(pref)
+function pass = test_plus(pref)
 
 % if (nargin < 1)
 %     pref = chebpref();
 % end
-
+%%
 a = -4; b = 4;
 pTol = deltafun.pref.deltafun.proximityTol;
 dTol = deltafun.pref.deltafun.deltaTol;
@@ -45,7 +45,5 @@ df1 = deltafun(f1, [1 2 3 4], [-.25 .5 -.5 -.8]);
 df2 = deltafun(f2, [1 2 3 4], [-.25 .6 -.5 -.7]); 
 s = df1 + df2;
 pass(5) = norm(s.location - [-.8 -.7 -.5 -.25 .5 .6], inf) == 0 && ...
-    norm(s.impulses - [4 4 6 2 2 2], inf) == 0
-
-
-pass
+    norm(s.impulses - [4 4 6 2 2 2], inf) == 0;
+end

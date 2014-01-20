@@ -1,11 +1,11 @@
 % Test file for @deltafun/sum.m
 
-%function pass = test_sum(pref)
+function pass = test_sum(pref)
 
 % if (nargin < 1)
 %     pref = chebpref();
 % end
-
+%%
 tol = deltafun.pref.deltafun.deltaTol;
 
 d = deltafun();
@@ -24,5 +24,5 @@ f = fun.constructor(@(x) sin(pi*x));
 d = deltafun( f, [-1, 1], [-1, 1]);
 pass(3) = norm(sum(d)-0, inf) < tol;
 
-pass
-%end
+
+end
