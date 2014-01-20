@@ -347,58 +347,104 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f.func = cotd(f.func);
         end
         
-        function f = cumsum(f)
-            f.func = cumsum(f);
+        function f = cumsum(f, k)
+            % F = CUMSUM(F, K)   CUMSUM of an ADCHEBFUN
+            
+            % By default, compute first anti-derivative
+            if ( nargin < 2 )
+                k = 1;
+            end
+            
+            % Update CHEBFUN part
+            f.func = cumsum(f, k);
             % Update derivative part
-            f.jacobian = linop.cumsum(f.domain)*f.jacobian;
+            f.jacobian = linop.cumsum(f.domain, k)*f.jacobian;
             % CUMSUM is a linear operation, so no need to update linearity info.
-%             f.isConstant = f.isConstant;
+            % f.isConstant = f.isConstant;
         end
         
         function f = diff(f, k)
+            % F = DIFF(F, K)   DIFF of an ADCHEBFUN
+            
+            % By default, compute first derivative
             if ( nargin < 2 )
                 k = 1; 
             end
+            
+            % Update CHEBFUN part
             f.func = diff(f.func, k);
+            % Update derivative part
             f.jacobian = linop.diff(f.domain, k)*f.jacobian;
             % DIFF is a linear operation, so no need to update linearity info.
-%             f.isConstant = f.isConstant;
+            % f.isConstant = f.isConstant;
         end
        
         function f = erf(f)
+            % F = ERF(F)   ERF of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
+            % Update derivative part
             f.jacobian = linop.mult(2*exp(-f.func.^2)/sqrt(pi))*f.jacobian;
+            % Update CHEBFUN part
             f.func = erf(f.func);      
         end
                 
         function f = erfc(f)
+            % F = ERFC(F)   ERFC of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
+            % Update derivative part
             f.jacobian = linop.mult(-2*exp(-f.func.^2)/sqrt(pi))*f.jacobian;
+            % Update CHEBFUN part
             f.func = erfc(f.func);      
         end
         
         function f = erfcinv(f)
+            % F = ERFCINV(F)   ERFCINV of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
+            % Update CHEBFUN part
             f.func = erfcinv(f.func);
+            % Update derivative part
             f.jacobian = linop.mult(exp(f.func.^2)*sqrt(pi)/2)*f.jacobian;        
         end
         
-        function f = erfcx(f)
+        function g = erfcx(f)
+            % F = ERFCX(F)   ERFCX of an ADCHEBFUN.
+            
+            % Need to copy F to G, as we need info about both functions to
+            % compute derivatives below.
             g = f;
+            % Linearity information
             g.isConstant = iszero(f.jacobian);
+            % Update CHEBFUN part
             g.func = erfcx(f.func);
-            f.jacobian = linop.mult(-2/sqrt(pi) + 2*(f.func).*(g.func))*f.jacobian;        
+            % Update derivative part
+            g.jacobian = linop.mult(-2/sqrt(pi) + 2*(f.func).*(g.func))*f.jacobian;        
         end
         
         function f = erfinv(f)
+            % F = ERFINV(F)   ERFINV of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
+            % Update CHEBFUN part
             f.func = erfinv(f.func);
+            % Update derivative part
             f.jacobian = linop.mult(exp(f.func.^2)*sqrt(pi)/2)*f.jacobian;
         end
         
         function f = exp(f)
+            % F = EXP(F)   EXP of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
+            % Update CHEBFUN part
             f.func = exp(f.func);
+            % Update derivative part
             f.jacobian = linop.mult(f.func)*f.jacobian;        
         end
         
