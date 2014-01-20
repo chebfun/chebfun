@@ -23,7 +23,7 @@ function h = conv(f, g)
 %
 % Nick Hale and Alex Townsend, 2014
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Devoloper note:
 %
 % For further details, see Hale and Townsend, "The convolution of compactly
@@ -77,10 +77,11 @@ function h = conv(f, g)
 % size, which turns out to be far more efficient. 
 %
 % Total complexity: O( R*(m*n + n*n) + m*m )
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % TODO: Force size(B) = [n, min(m, n)] ifor the interior convolutions?
 % TODO: Refactor so that most of this lives at the FUN and/or CHEBTECH level?
+% TODO: Support for delta functions?
 
 % Return empty for an empty input:
 if ( isempty(f) || isempty(g) )
@@ -89,7 +90,7 @@ if ( isempty(f) || isempty(g) )
 end
 
 % No support for quasimatrices:
-if ( min(size(f)) > 1 || min(size(g)) > 1 )
+if ( min(size(f)) > 1 || min(size(g)) > 1 ) % TODO: replace with numColumns
     error('CHEBFUN:conv:quasi', 'No support for array-valued CHEBFUN objects.');
 end
 
@@ -97,10 +98,22 @@ end
 if ( xor(f(1).isTransposed, g(1).isTransposed) )
     error('CHEBFUN:conv:transposed', 'CHEBFUN dimensions do not agree.');
 end
+transState = f(1).isTransposed;
 
 % Extract the domain:
 [a, b] = domain(f);
 [c, d] = domain(g);
+
+if ( any(isinf([a b c d])) )
+    error('CHEBFUN:conv:bounded', ...
+        'CONV only supports CHEBFUN objects on bounded domains.');
+end
+
+if ( issing(f) || issing(g) )
+    % Call the old (and slow) version of CONV if we are not based on CHETECHS.
+    h = oldConv(f, g);
+    return
+end
 
 % Ensure that g is the signal (i.e., on the larger domain) and f is the filter:
 if ( b-a > d-c )
@@ -124,12 +137,6 @@ else
     g = g.funs{1};
 end
 % Note, for simplicity we work with the FUNs, rather than the CHEBFUNs.
-
-% TODO: Replace this with a call to CONV_OLD()?
-if ( ~isa(f.onefun, 'chebtech') || ~isa(g.onefun, 'chebtech') )
-    error('CHEBFUN:conv:notsmooth', ...
-        'CONV() only supports smooth CHEBFUN objects on bounded domains.')
-end
 
 % Useful things..
 m = length(f); n = length(g);                % Lengths of f anf g
@@ -232,13 +239,9 @@ end
 % Join the three pieces:
 h = join(h_left, h_mid, h_right)*(b-a)/2;
 
-% % TODO: Remove this when the time comes:
-% f = chebfun({f});
-% g = chebfun({g});
-% tic
-% exact = conv(f, g);
-% toc
-% err = norm(exact - h)
+if ( transState )
+    h = h.';
+end
 
 end
 
@@ -316,46 +319,6 @@ gammaR = rec(M, -alpha, beta, 1); % Chebyshev coeffs for the right piece
         
     end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%% FORMING B %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % TODO: Delete me when we're sure I'm not needed anymore.
-    function gamma = rec2(M, alpha, beta, sgn)
-        % Initialise B and scl:
-        nb = length(beta);
-        B = zeros(numel(alpha), nb);
-        scl = 1./(2*(1:nb).'-1); scl(2:2:end) = -scl(2:2:end);
-        
-        % First 2 columns of B:
-        vNew = M*alpha; v = vNew;
-        B(:,1) = vNew;
-        idx2 = 1:nb;
-        B(1,:) = vNew(idx2).*scl(idx2);
-        
-        % The scalar case is trivial:
-        if ( length(beta) == 1 ), return, end
-        
-        vNew = M*v + sgn*v; vOld = v; v = vNew;  B(:,2) = vNew;
-        scl = -scl*(2-.5)/(2-1.5);
-        idx2 = 3:nb;
-        B(2,idx2) = vNew(idx2).*scl(idx2);
-        
-        % Loop over remaining columns using recurrence:
-        for k = 3:nb
-            vNew = (2*k-3) * ( M * v ) + vOld;
-            idx1 = (k-1):numel(alpha);
-            B(idx1, k) = vNew(idx1);
-            vNew(1:k-2) = 0;
-            % Recurrence is unstable for j < k. Correct for upper-tri part:
-            scl = -scl*(k-.5)/(k-1.5);
-            idx2 = (k+1):nb;
-            B(k,idx2) = vNew(idx2).*scl(idx2);
-            
-            vOld = v;
-            v = vNew;
-        end
-        
-        gamma = B * beta;
-    end
-
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -391,3 +354,81 @@ else
     h = defineInterval(h, [c, d], hTmp + g); % h{c, d} = h{c, d} + g;
 end
 end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function h = oldConv(f, g)
+
+% Remove deltas from f:
+fImps = f.impulses(:,:,2:end);
+if ( size(f.impulses, 3) > 1 )
+    f.impulses = f.impulses(:,:,1); 
+end
+gImps = g.impulses(:,:,2:end);
+% Remove deltas from g:
+if ( size(g.impulses, 3) > 1 )
+    g.impulses = g.impulses(:,:,1); 
+end
+
+% Find all breakpoints in the convolution:
+[A, B] = meshgrid(f.domain, g.domain);
+dom = unique(A(:) + B(:)).';
+
+% Coalesce breaks that are close due to roundoff:
+dom(diff(dom) < 10*eps*max(abs(dom([1,end])))) = [];
+dom(isnan(dom)) = [];
+
+% Combine vertical and horizontal scales:
+hs = max(hscale(f), hscale(g));
+vs = 2*max([vscale(f), vscale(g)]);
+
+% Avoid resampling for speed up:
+p = chebpref();
+p.enableBreakpointDetection = false;
+p.enableSingularityDetection = false;
+p.techPrefs.extrapolate = true;
+p.techPrefs.resampling = false;
+p.techPrefs.sampletest = false;
+
+% Construct FUNS:
+funs = cell(1, length(dom)-1);
+for k = 1:length(dom)-1  
+    newFun = bndfun(@(x) convIntegral(x, f, g), dom(k:k+1), vs, hs, p);
+    vs = max(get(newFun, 'vscale'), vs); 
+    funs{k} = newFun;
+end
+
+% Construct CHEBFUN:
+h = chebfun(funs);
+h = simplify(h);
+h.isTransposed = f.isTransposed;
+
+end
+
+function out = convIntegral(x, f, g)
+%CONVINTEGRAL   Evaluate convolution integral.
+%   Y = CONVINTEGRAL(X, F, G) evaluates the convolution of the CHEBFUNs F and G
+%   at the points X.
+
+a = f.domain(1);
+b = f.domain(end);
+c = g.domain(1);
+d = g.domain(end);
+
+out = 0*x;
+for k = 1:length(x)
+    A = max(a, x(k) - d); 
+    B = min(b, x(k) - c);
+    if ( A < B )
+        ends = union(x(k) - g.domain, f.domain);
+        dom = [A, ends((A < ends) & (ends < B)), B];
+        for j = 1:length(dom)-1
+            out(k) = out(k) + integral(@(t) feval(f, t).*feval(g, x(k) - t), ...
+                dom(j), dom(j+1), 'AbsTol', 1e-15, 'RelTol', 1e-15);
+        end
+    end
+end
+
+end
+
