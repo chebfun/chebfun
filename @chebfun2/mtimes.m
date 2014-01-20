@@ -1,47 +1,60 @@
 function h = mtimes(f, g)
-% MTIMES for Chebfun2 
+%*	Chebfun2 multiplication.
+%
+% c*F or F*c multiplies a chebfun2 F by a scalar c.
+%
+% F*G computes the integral of F(s,y)G(x,s) over s, and this is the continuous
+% analogue of matrix-matrix multiplication.
+%
+% See also TIMES.
+
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 
 if ( isa(f, 'chebfun2') )     % CHEBFUN2 * ???
     if ( isa(g, 'double') )   % CHEBFUN2 * DOUBLE
         if ( numel(g) == 1 )
-            h = f; 
-            h.pivotValues = h.pivotValues ./ g; 
+            h = f;
+            h.pivotValues = h.pivotValues ./ g;
         else
-           error('CHEBFUN2:MTIMES','Sizes are inconsistent.'); 
+            error('CHEBFUN2:MTIMES','Sizes are inconsistent.');
         end
-    elseif ( isa(g, 'chebfun') )  % CHEBFUN2 * CHEBFUN 
-        cols = f.cols; 
-        rows = f.rows; 
-        fScl = diag( 1./f.pivotValues ); 
+    elseif ( isa(g, 'chebfun') )  % CHEBFUN2 * CHEBFUN
+        cols = f.cols;
+        rows = f.rows;
+        fScl = diag( 1./f.pivotValues );
         X = innerProduct( rows, g );
         h = cols * fScl * X;
-    elseif ( isa(g, 'chebfun2') )  % CHEBFUN2 * CHEBFUN2 
-        h = f; 
+    elseif ( isa(g, 'chebfun2') )  % CHEBFUN2 * CHEBFUN2  compute
+        h = f;
         
-        fCols = f.cols; 
-        fRows = f.rows; 
-        fScl = diag( 1./f.pivotValues ); 
+        % Get the columns and rows of f
+        fCols = f.cols;
+        fRows = f.rows;
+        fScl = diag( 1./f.pivotValues );
         
-        gCols = g.cols; 
-        gRows = g.rows; 
+        % Get the columns and rows of g
+        gCols = g.cols;
+        gRows = g.rows;
         gScl = diag( 1./g.pivotValues );
         
-        X = innerProduct( fRows, gCols ); 
+        % Compute integral in s.
+        X = innerProduct( fRows, gCols );
         
+        % Construct low rank form of the result:
         [U, S, V] = svd( fScl * X * gScl );
-        
-        h.cols = f.cols * U;
-        h.rows = g.rows * V;
-        h.pivotValues = 1 ./ diag( S ); 
+        h.cols = fCols * U;
+        h.rows = gRows * V;
+        h.pivotValues = 1 ./ diag( S );
         
     else
         
-    error('CHEBFUN2:MTIMES:unknown', ...
-          ['Undefined function ''mtimes'' for input arguments of type %s ' ...
-           'and %s.'], class(f), class(g));
+        error('CHEBFUN2:MTIMES:unknown', ...
+            ['Undefined function ''mtimes'' for input arguments of type %s ' ...
+            'and %s.'], class(f), class(g));
     end
-else   
+else
     h = transpose( mtimes(transpose( g ), transpose( f ) ) );
 end
 

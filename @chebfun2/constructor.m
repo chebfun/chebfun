@@ -131,17 +131,13 @@ while ( ~isHappy )
     vals = evaluate(op, xx, yy, vectorize);             % Matrix of values at cheb2 pts.
     
     vscale = max(abs(vals(:)));
-    % scale has been overloaded.
-    if ( ~isempty(vscale) )
-        vscale = max(vscale, 1);
-    end
     if ( isinf(vscale) )
         error('FUN2:CTOR', 'Function returned INF when evaluated');
     end
     if ( any(isnan(vals(:)) ) )
         error('FUN2:CTOR', 'Function returned NaN when evaluated');
     end
-    tol = log(grid).^2 * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
+    tol = grid.^(4/3) * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
     
     %% FIND NUMERICAL RANK:
     [pivotValue, pivotPosition, rowValues, colValues, iFail] = CompleteACA(vals, tol);

@@ -14,7 +14,7 @@ if ( isempty( F.components ) )
 end
 
 % Take isempty of each component:
-bol = cellfun( @conj, F.components, 'UniformOutput', false );
-bol = all(bol);
+bol = cellfun( @isempty, F.components, 'UniformOutput', false );
+bol = all(cell2mat(bol));
 
 end
