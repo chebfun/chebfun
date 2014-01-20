@@ -24,13 +24,13 @@ Fc = F.components;
 Gc = G.components; 
 if ( F.nComponents == 2 && G.nComponents == 2 )  % 2D curl 
     
-    H = Fc(1) .* Gc(2) - Fc(2) .* Gc(1); 
+    H = Fc{1} .* Gc{2} - Fc{2} .* Gc{1}; 
     
 elseif ( F.nComponents == 3 && G.nComponents == 3 ) 
     
-    H = [ Fc(2).* Gcomp(3) - Fc(3) .* Gc(2);...
-      Fc(3) .* Gc(1) - Fc(1) .* Gc(3);...
-      Fc(1) .* Gc(2) - Fc(2) .* Gc(1) ];
+    H = [ Fc{2} .* Gc{3} - Fc{3} .* Gc{2};...
+      Fc{3} .* Gc{1} - Fc{1} .* Gc{3};...
+      Fc{1} .* Gc{2} - Fc{2} .* Gc{1} ];
   
 else
     error('CHEBFUN2V:CROSS','Chebfun2v objects must be both 2- or 3-vectors.');

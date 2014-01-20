@@ -1,4 +1,4 @@
-function varargout = subsref(f,ref)
+function varargout = subsref( F, ref )
 % SUBSREF Chebfun2v subsref.
 % 
 % ( )
@@ -16,9 +16,9 @@ function varargout = subsref(f,ref)
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % check for empty chebfun2v object. 
-if ( isempty(f) )
+if ( isempty( F ) )
    varargout = {[]};
-   return;
+   return
 end
 
 indx = ref(1).subs;
@@ -27,14 +27,14 @@ switch ( ref(1).type )
     case '.'
         if ( numel( ref ) == 1 )
             % This is a get call to get a property. 
-            varargout = { get(f, indx) };
+            varargout = { get(F, indx) };
         else
             % Probably .^ or maybe .* 
             t2 = index(2).type;
             if ( strcmp(t2,'.') )
-                out = get(f, indx, ref(2).subs{:});
+                out = get(F, indx, ref(2).subs{:});
             else
-                out = get(f, indx);
+                out = get(F, indx);
                 out = out( ref(2).subs{:} );
             end
             if ( numel(ref) > 2 )
@@ -47,14 +47,16 @@ switch ( ref(1).type )
         if ( length(indx) > 1 )
             x = indx{1}; 
             y = indx{2}; % where to evaluate
+            vals = feval(F, x, y); 
+            varargout = { vals }; 
         else
             if ( isa(indx{1},'double') )
                 if all( indx{1} == 1  )
-                    varargout = { f.components{1} };
+                    varargout = F.components(1);
                 elseif ( all( indx{1} == 2 ) )
-                    varargout = { f.components{2} };
-                elseif ( ( all(indx{1} == 3) ) && ( ~isempty(f.components(3)) ) )
-                    varargout = { f.components{3}} ;
+                    varargout = F.components(2);
+                elseif ( ( all(indx{1} == 3) ) && ( ~isempty(F.components(3)) ) )
+                    varargout = F.components(3);
                 else
                     error('CHEBFUN2v:subsref:index', 'Chebfun2v only contains two/three components');
                 end

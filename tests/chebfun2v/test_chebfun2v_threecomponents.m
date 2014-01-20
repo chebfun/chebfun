@@ -65,15 +65,14 @@ pass(j) = ( norm( H(pi/6,1) - G(pi/6,1) ) <tol ); j = j + 1;
 try 
     H = [1 2 3]'*G;  % this should fail .
 catch
-    pass(j) = 0 ; j=j+1; 
+    pass(j) = 1 ; j=j+1; 
 end
 
 % Vector calculus identities
 f = chebfun2(@(x,y) sin(x.*y)); 
 
-pass(j) = ( norm(curl( F + G ) - (curl(F) + curl(G))) < 100*tol); j=j+1; 
-pass(j) = ( norm(div( f.*G ) - (dot(G,[grad(f);0]) + f.*div(G))) <100*tol); j=j+1; 
-
+pass(j) = ( norm(curl( F1 + G ) - (curl(F1) + curl(G))) < 100*tol); j=j+1; 
+pass(j) = ( norm(div( f*G ) - (dot(G,[grad(f);0]) + f.*div(G))) <100*tol); j=j+1; 
 pass(j) = ( norm(div(curl(G))) < 10*tol); j = j + 1; 
 pass(j) = ( norm(div(grad(f)) - lap(f)) < 10*tol); j = j + 1; 
 pass(j) = ( norm(curl(curl(G)) - ([grad(div(G));0] - lap(G))) < 10*tol); j = j + 1; 
@@ -88,14 +87,15 @@ r = [x;y;z];
 n = normal(r);
 f = x;
 r1 = diff(r,1,1); r2 = diff(r,1,2);
-g = diff(f,1,1).*r1 + diff(f,1,2).*r2;
+g = diff(f,1,1)*r1 + diff(f,1,2)*r2;
 V = cross(n,g);
 
 % Test diff: 
 f1 = diff(V(2),1,2);
 f2 = diff(r,1,2);
 f = f1 * f2;
-fx = f.xcheb; 
+fc = f.components;
+fx = fc{1}; 
 
 % should be zero on the boundary. 
 pass(j) = (norm(fx(2*pi,:))<10*tol); j = j +1; 

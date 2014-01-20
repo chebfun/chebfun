@@ -52,7 +52,6 @@ values = mat2cell(f.values, n, N);
 coeffs = mat2cell(f.coeffs, n, N);
 vscale = mat2cell(f.vscale, 1, N);
 epslevel = mat2cell(f.epslevel, 1, N);
->>>>>>> development
 
 % Create a cell for storing the CHEBTECH objects
 g = cell(1, numel(N));

@@ -3,7 +3,7 @@ function F = mtimes( F, G )
 %
 %  c*F or F*c multiplies each component of a chebfun2v by a scalar.
 %
-%  A*F multiplies the vector of functions F by the matrix A assuming that
+%  A*F multiplies the vector of functions F by the matrix A assuminG that
 %  size(A,2) == size(F,1).
 %
 %  F*G calculates the inner product between F and G if size(F,3) ==
@@ -21,17 +21,17 @@ if ( ( isempty(F) ) || ( isempty(G) ) )
     return
 end
 
-% If the chebfun2v object is transposed, then compute (g.'*f.').'
+% If the chebfun2v object is transposed, then compute (G.'*f.').'
 if ( isa( F, 'chebfun2v' ) && ~isa( G,  'chebfun2v' ) )
     if ( F.isTransposed )
-        F = mtimes( g.', F.' );
+        F = mtimes( G.', F.' );
         return
     end
 end
 
 if ( isa(G, 'chebfun2v') && ~isa(F, 'chebfun2v') )
     if ( G.isTransposed )
-        F = mtimes( g.' , F.' ).' ;
+        F = mtimes( G.' , F.' ).' ;
         return
     end
 end
@@ -48,8 +48,8 @@ if ( isa( F, 'double' ) )      % doubles * chebfun2v
         nG = G.nComponents;
         if ( size(vec, 1) == 1 ) 
             F = vec(1, 1) * G.components{1};
-            for jj = 1:nG
-                F = vec(1, jj) * G.components{jj};
+            for jj = 2:nG
+                F = F + vec(1, jj) * G.components{jj};
             end
         else
             store = {}; 
@@ -69,17 +69,17 @@ elseif( isa(G, 'double') )          % chebfun2v * double
     else
         error('CHEBFUN2v:mtimes:double','Chebfun2v and double size mismatch.');
     end
-elseif (isa(F,'chebfun2v') && isa(G,'chebfun2v') ) % dot product if dimensions are right.
+elseif (isa(F,'chebfun2v') && isa(G,'chebfun2v') ) % dot product if dimensions are riGht.
     
     if ( ( F.isTransposed ) && ( ~G.isTransposed ) )
-        F = dot( F, g );
+        F = dot( F, G );
     else
         error('CHEBFUN2v:mtimes:sizes', 'Dimensions mismatch.');
     end
     
-elseif isa(F,'chebfun2v') && isa(g,'chebfun2')
+elseif isa(F,'chebfun2v') && isa(G,'chebfun2')
     
-    F = mtimes( g , F );
+    F = mtimes( G , F );
     
 else 
     error('CHEBFUN2v:mtimes:inputs','Chebfun2v can only mtimes to chebfun2v or double');

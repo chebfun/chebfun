@@ -1,4 +1,4 @@
-function F = vertcat(F,G)
+function F = vertcat( F , G )
 %VERTCAT Vertical concatenation of chebfun2v objects.
 % 
 % [F;f] where F is a chebfun2v with two components, and f is a chebfun2
@@ -12,38 +12,28 @@ function F = vertcat(F,G)
 % Copyright 2013 by The University of Oxford and The Chebfun2 Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun2 information.
 
-if isa(G,'double') && isempty(F.zcheb)
-    rect = F.xcheb.corners; 
-    F.zcheb = chebfun2(G,rect); 
-    return; 
-elseif isa(G,'chebfun2') && isempty(F.zcheb)
-    rect = F.xcheb.corners;
-    rectcheck = G.corners; 
-    if all(rect - rectcheck)
-       error('CHEBFUN2V:VERTCAT','Chebfun2 object must be on the same domain.'); 
-    end
-    F.zcheb = G;
-    return; 
-elseif isa(F,'double') && isempty(G.zcheb)
-    rect = G.xcheb.corners; 
-    firstcomponent = chebfun2(G,rect); 
-    G.zcheb = G.ycheb; 
-    G.ycheb = G.xcheb; 
-    G.xcheb = firstcomponent; 
-    F = G; return; 
-elseif isa(F,'chebfun2') && isempty(G.zcheb)
-    rect = G.xcheb.corners;
-    rectcheck = F.corners; 
-    if all(rect - rectcheck)
-       error('CHEBFUN2V:VERTCAT','Chebfun2 object must be on the same domain.'); 
-    end
-    firstcomponent = chebfun2(F,rect); 
-    G.zcheb = G.ycheb; 
-    G.ycheb = G.xcheb; 
-    G.xcheb = firstcomponent;
-    F = G; return; 
-else
-    error('CHEBFUN2V:VERTCAT','Vertical concatenation of these objects is not supported.')
+if ( isempty( F ) || isempty( G ) )
+    F = chebfun2v;
+    return
 end
+
+if ( isa(G, 'double') ) 
+    Fc = F.components;
+    G = chebfun2( G, Fc{1}.domain ); 
+elseif ( isa(F, 'double') ) 
+    Gc = G.components;
+    F = chebfun2( F, Gc{1}.domain ); 
+elseif ( isa(F, 'chebfun2') || isa(G, 'chebfun2') )
+else
+        error('CHEBFUN2V:VERTCAT','Vertical concatenation of these objects is not supported.')
+end
+
+if ( isa(F, 'chebfun2v') )
+    op = [ F.components, {G} ]; 
+else
+    op = [ {F}, G.components ]; 
+end
+
+F = chebfun2v( op ); 
 
 end

@@ -23,10 +23,12 @@ end
 Fc = F.components; 
 Gc = G.components; 
 
-F = cellfun(@mtimes, Fc, Gc, 'UniformOutput', false);
+for jj = 1:nF 
+    Fc{jj} = times(Fc{jj}, Gc{jj}); 
+end
 
 f = chebfun2(0, G.components{1}.domain);
-for j = 1 : nF
-    f = f + F{j};
+for jj = 1 : nF
+    f = f + Fc{jj};
 end
 end

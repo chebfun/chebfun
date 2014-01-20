@@ -29,7 +29,7 @@ else   % standard 3D curl
     curlVector = [diff(Fc{3},1,1); -diff(Fc{3},1,2);...
         diff(Fc{2},1,2) - diff(Fc{1},1,1)];
     
-    F.components = curlVector; 
+    F = curlVector; 
     
 end
 

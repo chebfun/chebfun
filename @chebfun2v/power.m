@@ -35,7 +35,7 @@ elseif ( isa(G, 'double') )       % chebfun2v . ^ scalar
     else
         error('CHEBFUN2v:mtimes:double','Chebfun2v and double size mismatch.');
     end
-elseif (isa(f,'chebfun2v') && isa(g,'chebfun2v') )  % chebfun2v.^chefun2v
+elseif (isa(F,'chebfun2v') && isa(G,'chebfun2v') )  % chebfun2v.^chebfun2v
     
     error('CHEBFUN2v:power:size','Chebfun2v dimension mismatch.');
     

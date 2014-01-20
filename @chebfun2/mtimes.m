@@ -47,7 +47,13 @@ if ( isa(f, 'chebfun2') )     % CHEBFUN2 * ???
         h.cols = fCols * U;
         h.rows = gRows * V;
         h.pivotValues = 1 ./ diag( S );
-        
+    elseif ( isa(g, 'chebfun2v') )        % CHEBFUN * CHEBFUN2V
+        nG = g.nComponents; 
+        h = g; 
+        gc = g.components; 
+        for jj = 1:nG 
+           h.components{jj} = times(f, gc{jj}); 
+        end
     else
         
         error('CHEBFUN2:MTIMES:unknown', ...
