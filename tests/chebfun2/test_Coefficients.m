@@ -23,7 +23,7 @@ lenc = length(f.cols);
 lenr = length(f.rows);
 [xx, yy] = meshgrid(chebpts(lenc),chebpts(lenr)); 
 vals = f(xx, yy); 
-X = chebpolyval2( chebpoly2( f ) ); 
+X = chebfun2.coeffs2vals( chebpoly2( f ) ); 
 pass(3) = ( (norm(X-vals)) < tol );
 
 end
