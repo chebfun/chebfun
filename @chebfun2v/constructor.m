@@ -55,6 +55,13 @@ if ( nargin >= 3 )
     end
 end
 
+% Pull out domain
+for j = 1:numel( op ) 
+    if ( isa( op{j}, 'chebfun2' ) )
+        domain = op{j}.domain; 
+    end
+end
+
 % Loop through the cell array of components. 
 G.components = [];
 for j = 1:numel( op )

@@ -13,9 +13,9 @@ function varargout = cylinder( r )
 %
 % See also CHEBFUN2/SURF, CYLINDER, CHEBFUN2/SPHERE.
 
-d = [r.ends 0 2*pi];   % surface of revolution domain
+d = [r.domain 0 2*pi];   % surface of revolution domain
 
-f = chebfun2( @(x,y) feval(r,x), d );  
+f = chebfun2( @(x,y) feval(r, x), d );  
 u = chebfun2( @(u,v) u, d );
 v = chebfun2( @(u,v) v, d );
 

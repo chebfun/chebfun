@@ -35,6 +35,11 @@ elseif ( isempty(f) )         % empty CHEBFUN2 + CHEBFUN2
     
 else                          % CHEBFUN2 + CHEBFUN2
     
+    % Domain Check: 
+    if ( ~chebfun2.domainCheck(f, g) ) 
+       error('CHEBFUN2:PLUS:DOMAIN', 'Inconsistent domains.'); 
+    end
+    
     % Check zero chebfun2 objects
     if ( iszero( f ) )
         h = g;
@@ -43,12 +48,14 @@ else                          % CHEBFUN2 + CHEBFUN2
     else
         % Add together two nonzero chebfun2 objects
         h = compression_plus(f, g);
+%         h = chebfun2(@(x, y) feval(f, x, y) + feval(g, x, y), f.domain); 
     end
 end
 
 end
 
-
+% In case we need it for later: 
+% 
 function h = compression_plus(f, g)
 % Add chebfun2 objects together by compression algorithm.
 
@@ -59,12 +66,6 @@ function h = compression_plus(f, g)
 % [U, S, V] = svd( Rleft * Rright' )
 % A = (Qleft * U) * S * (V' * Qright')     -> new low rank representation
 
-if ( iszero( f ) )
-    h = g;
-end
-if ( iszero( g ) )
-    h = f;
-end
 
 h = f;
 

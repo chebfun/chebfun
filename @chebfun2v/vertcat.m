@@ -19,9 +19,11 @@ end
 
 if ( isa(G, 'double') ) 
     Fc = F.components;
+    dom = Fc{1}.domain;
     G = chebfun2( G, Fc{1}.domain ); 
 elseif ( isa(F, 'double') ) 
     Gc = G.components;
+    dom = Gc{1}.domain;
     F = chebfun2( F, Gc{1}.domain ); 
 elseif ( isa(F, 'chebfun2') || isa(G, 'chebfun2') )
 else
@@ -34,6 +36,6 @@ else
     op = [ {F}, G.components ]; 
 end
 
-F = chebfun2v( op ); 
+F = chebfun2v( op, dom); 
 
 end

@@ -61,7 +61,7 @@ xlabel('x',FS,fs), ylabel('Maximum',FS,fs)
 %% Global maximum
 % We can also compute its global maximum, shown below as a black dot:
 
-[m,X]=max2(f);
+[m,X] = max2(f);
 plot(f), hold on, plot3(X(1),X(2),m,'k.','MarkerSize',30), zlim([0,5])
 title('Global maximum of f',FS,fs)
 

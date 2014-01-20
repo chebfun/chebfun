@@ -97,18 +97,19 @@ sampleTest = prefStruct.sampleTest;
 grid = 9;   % minsample
 
 % Check if we need to turn on vectorize flag:
-m1 = mean( domain(1:2) );
-m2 = mean( domain(3:4) );
-
-E = ones(2,2);
-if ( (vectorize == 0) && all( size(op(m1*E,m2*E)) == [1 1]) )   % scalar check
-    % sizes are not going to match so let's try with the vectorizeflag on.
-    if ~( numel(op(m1*E,m2*E))==1 && norm(op(m1*E,m2*E))==0 )
-        warning('CHEBFUN2:CTOR:VECTORIZE','Function did not correctly evaluate on an array. Turning on the ''vectorize'' flag. Did you intend this? Use the ''vectorize'' flag in the chebfun2 constructor call to avoid this warning message.');
-        g = chebfun2( op, domain, 'vectorize' );
-        return
-    end
-elseif ( vectorize == 0 )                                       % another check
+% m1 = mean( domain(1:2) );
+% m2 = mean( domain(3:4) );
+% 
+% E = ones(2,1);
+% if ( (vectorize == 0) && all( size(op(m1*E,m2*E)) == [1 1]) )   % scalar check
+%     % sizes are not going to match so let's try with the vectorizeflag on.
+%     if ~( numel(op(m1*E,m2*E))==1 && norm(op(m1*E,m2*E))==0 )
+%         warning('CHEBFUN2:CTOR:VECTORIZE','Function did not correctly evaluate on an array. Turning on the ''vectorize'' flag. Did you intend this? Use the ''vectorize'' flag in the chebfun2 constructor call to avoid this warning message.');
+%         g = chebfun2( op, domain, 'vectorize' );
+%         return
+%     end
+% else
+if ( vectorize == 0 )                                       % another check
     % check for cases: @(x,y) x*y, and @(x,y) x*y'
     [xx, yy] = meshgrid( domain(1:2), domain(3:4));
     A = op(xx, yy);

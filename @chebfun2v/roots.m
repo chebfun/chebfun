@@ -27,14 +27,26 @@ function varargout = roots(F,varargin)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-max_degree = 200;  % maximum degree for resultant method.
+max_degree = -1;  % maximum degree for resultant method.
 
-if isempty(F)  % empty check.
+if ( isempty(F) )  % empty check.
     varargout = {[]};
     return;
 end
 
-f = F.xcheb; g = F.ycheb;
+nF = F.nComponents; 
+nG = F.nComponents; 
+
+if ( nF ~= nG ) 
+    error('CHEBFUN2V:ROOTS','Components inconsistent.');
+end
+
+if ( nF > 2 ) 
+   error('CHEBFUN2V:ROOTS', 'Too many variables.'); 
+end
+
+f = F.components{1}; g = F.components{2};
+
 [nf,mf]=length(f);[ng,mg]=length(g);
 dd = max([mf nf mg ng]);  % maximum degree
 
@@ -71,11 +83,12 @@ end
 function [xroots,yroots] = roots_resultant(F)
 
 % extract out the two chebfun2 objects.
-f = F.xcheb; g = F.ycheb;
+f = F.components{1}; g = F.components{2};
 
 % Useful parameters
-rect = f.corners;  % rectangular domain of chebfun2.
-[nf,mf]=length(f);[ng,mg]=length(g);
+dom = f.domain;  % rectangular domain of chebfun2.
+[nf,mf]=length(f);
+[ng,mg]=length(g);
 dd = max([mf nf mg ng]); % max degree
 max_degree = min( 16 , dd ); % subdivision threshold degree
 reg_tol = 1e-15;   % Regularization (for Bezoutian)
@@ -86,25 +99,25 @@ multitol = sqrt(eps); % for multiple roots we do not go for more than sqrt(eps);
 % Consider a slightly large domain to make sure we get all the roots along
 % edges.
 % domain width (attempt to make scale invariant)
-xwid = diff(rect(1:2))/2; ywid = diff(rect(3:4))/2;
-xmax = rect(2) + xwid*domain_overlook;
-xmin = rect(1) - xwid*domain_overlook;
-ymax = rect(4) + ywid*domain_overlook;
-ymin = rect(3) - ywid*domain_overlook;
+xwid = diff(dom(1:2))/2; ywid = diff(dom(3:4))/2;
+xmax = dom(2) + xwid*domain_overlook;
+xmin = dom(1) - xwid*domain_overlook;
+ymax = dom(4) + ywid*domain_overlook;
+ymin = dom(3) - ywid*domain_overlook;
 
 subdividestop = 2*(1/2)^((log(16)-log(dd))/log(.79)); % subdivision threshold
 subdividestop = min(subdividestop,1/4);
 
 % initial scaling to O(1)
-f = f/f.scl;
-g = g/g.scl;
+f = f/abs(f.pivotValues(1));
+g = g/abs(g.pivotValues(1));
 
 [xroots,yroots] = subrootsreptwo(f,g,xmin,xmax,ymin,ymax,xwid,ywid,reg_tol,max_degree,subdividestop);
 % ballpark obtained, next do local bezoutian refinement
 
 
-[fx fy] = gradient(chebfun2(f,rect)); 
-[gx gy] = gradient(chebfun2(g,rect));
+[fx, fy] = gradient(chebfun2(f,dom)); 
+[gx, gy] = gradient(chebfun2(g,dom));
 
 %%%%% subdivision for accuracy when dynamical range is an issue %%%%%%%%
 % find region in which roots might have been missed
@@ -691,7 +704,7 @@ function [Y] = DLPforbez(AA,v)
 % DLPforbez constructs the Bezoutian. Highly specified for Chebyshev
 % biroots.
 %
-[n m] = size(AA); k=m/n-1; s=n*k;              % matrix size and degree
+[n, m] = size(AA); k=m/n-1; s=n*k;              % matrix size and degree
 S = [zeros(1,k+1);(2*v)*AA];
 R = S'-S;
 % Bartel-Stewart algorithm on M'Y+YM=R, M is upper triangular.
@@ -719,7 +732,7 @@ end
 D = A;
 for jj = 1:n  % for each column of A
     B = A(:,jj:n:n*k);
-    C = chebfft(B.').';   % convert first column of each coefficient to values.
+    C = (chebfun2.vals2coeffs(B.')).';   % convert first column of each coefficient to values.
     D(:,jj:n:n*k) = C;    % assign to output.
 end
 
@@ -846,13 +859,13 @@ if exist('n','var')==0,
 end
 
 x = chebpts(n,ends(1:2)); y = chebpts(n,ends(3:4));
-[xx yy]=meshgrid(x,y); F = f(xx,yy);
+[xx, yy]=meshgrid(x,y); F = f(xx,yy);
 
 % vertical scale for machine precision
 vscl = max(1,max(abs(F(:))));  % don't go for more than absolute accuracy.
 
 % Compute bivariate Chebyshev T coefficients.
-C = chebfft(chebfft(F).').';
+C = chebfun2.vals2coeffs(chebfun2.vals2coeffs(F).').';
 
 % Very simple truncation of the coefficients.
 %m = find(max(abs(C))>100*eps*vscl,1,'first'); n = find(max(abs(C.'))>100*eps*vscl,1,'first');
@@ -871,24 +884,19 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [xroots,yroots] = roots_marchingSquares(f)
 
-fx = f.xcheb; fy = f.ycheb;
-mode = chebfun2pref('mode'); tol = chebfun2pref('eps');
-num=0; r =zeros(1,2); rect = fy.corners;
+fx = f.components{1}; fy = f.components{2};
+prefs = chebpref; 
+tol = prefs.eps;
+num=0; r =zeros(1,2); dom = fy.domain;
 
-if ~isempty(f.zcheb)
+nf = f.nComponents; 
+if ( nf > 2)
     error('CHEBFUN2:ROOTS','Chebfun2 is unable to find zero surfaces.');
 end
 
-
 if length(fx)==1 || length(fy) == 1
     if(length(fx) == 1)
-        fun = fx.fun2;
-        if ~mode
-            rect = fx.corners;
-            fun.R = chebfun(fun.R.',rect(1:2)).';
-            fun.C = chebfun(fun.C,rect(3:4));
-        end
-        rowz = roots(fun.R); colz = roots(fun.C); % roots lie along these lines
+        rowz = roots(fx.rows); colz = roots(fy.cols); % roots lie along these lines
         for jj = 1:length(rowz)
             rr = roots(fy(rowz(jj),:));
             for kk = 1:length(rr)
@@ -903,13 +911,7 @@ if length(fx)==1 || length(fy) == 1
         end
     end
     if(length(fy) == 1)
-        fun = fy.fun2;
-        if ~mode
-            rect = fy.corners;
-            fun.R = chebfun(fun.R.',rect(1:2)).';
-            fun.C = chebfun(fun.C,rect(3:4));
-        end
-        rowz = roots(fun.R); colz = roots(fun.C); % roots lie along these lines
+        rowz = roots(fy.rows); colz = roots(fy.cols); % roots lie along these lines
         for jj = 1:length(rowz)
             ff = fx(rowz(jj),:);
             rr = roots(ff);
@@ -982,10 +984,10 @@ end
 %%
 % Remove the roots which lie outside of the domain.
 if ( ~isempty(r) )
-    r = r( (r(:,1) <= rect(2)+tol &...
-        r(:,1) >= rect(1)-tol & ...
-        r(:,2) <= rect(4)+tol & ...
-        r(:,2) >= rect(3)-tol ), :);
+    r = r( (r(:,1) <= dom(2)+tol &...
+        r(:,1) >= dom(1)-tol & ...
+        r(:,2) <= dom(4)+tol & ...
+        r(:,2) >= dom(3)-tol ), :);
 end
 
 if num==0

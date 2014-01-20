@@ -24,8 +24,8 @@ end
 F = gradient( f ); 
 r = roots( F ); 
 if ( ~isempty( r ) ) 
-    [inMax, idInMax] = max( f( r(:,1), r(:,2) ) );
-    [inMin, idInMin] = min( f( r(:,2), r(:,2) ) ); 
+    [inMax, idInMax] = max( feval(f, r(:,1), r(:,2) ) );
+    [inMin, idInMin] = min( feval(f, r(:,2), r(:,2) ) ); 
 else
     inMax = inf;   % max and min must occur on boundary. 
     inMin = inf; 
@@ -33,25 +33,25 @@ end
 
 % Search along boundary: 
 dom = f.domain;
-left = f(dom(1), :); 
-right = f(dom(2), :);
-down = f(:, dom(3)); 
-up = f(:, dom(4)); 
-[Yleft, Xleft] = minandmax2( left ); 
-[Yright, Xright] = minandmax2( right ); 
-[Yup, Xup] = minandmax2( up ); 
-[Ydown, Xdown] = minandmax2( down );
+left = feval(f, dom(1), ':'); 
+right = feval(f, dom(2), ':');
+down = feval(f, ':', dom(3)); 
+up = feval(f, ':', dom(4)); 
+[Yleft, Xleft] = minandmax( left ); 
+[Yright, Xright] = minandmax( right ); 
+[Yup, Xup] = minandmax( up ); 
+[Ydown, Xdown] = minandmax( down );
 
 % Store Min/Max location for later: 
 BcMinLocations = [ Xleft(1,:) ; Xright(1,:) ; Xup(1,:) ; Xdown(1,:) ]; 
 BcMaxLocations = [ Xleft(2,:) ; Xright(2,:) ; Xup(2,:) ; Xdown(2,:) ]; 
 
-[ BcMax, idBcMax ] = max( [ Yleft, Yright, Yup, Ydown ] );
-[ BcMin, idBcMin ] = min( [ Yleft, Yright, Yup, Ydown ] );
+[ BcMax, idBcMax ] = max( [ Yleft(2), Yright(2), Yup(2), Ydown(2) ].' );
+[ BcMin, idBcMin ] = min( [ Yleft(1), Yright(1), Yup(1), Ydown(1) ].' );
 
 % What is the global min and max?: 
-[Ymax, inOrOutMax] = max( inMax, BcMax ); 
-[Ymin, inOrOutMin] = min( inMin, BcMin );
+[Ymax, inOrOutMax] = max( [inMax, BcMax].' ); 
+[Ymin, inOrOutMin] = min( [inMin, BcMin].' );
 Y = [Ymin, Ymax]; 
 X = zeros(2);
 

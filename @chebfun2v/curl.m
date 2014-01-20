@@ -22,7 +22,7 @@ Fc = F.components;
 
 if ( F.nComponents == 2 )  % 2D curl 
     
-    F = diff(Fc(2), 1, 2) - diff(Fc(1), 1, 1);
+    F = diff(Fc{2}, 1, 2) - diff(Fc{1}, 1, 1);
     
 else   % standard 3D curl
     

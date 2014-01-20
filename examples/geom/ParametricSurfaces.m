@@ -123,7 +123,7 @@ hold off
 % We can verify that $ru$ and $rv$ are orthogonal, in this case, by
 % taking their inner-product.
 
-norm(ru'*rv,inf)
+norm(ru'*rv)
 
 %%
 % Finally, we take advantage of this orthogonality and project an arbitrary

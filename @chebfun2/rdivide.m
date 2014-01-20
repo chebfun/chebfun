@@ -22,7 +22,7 @@ if ( ( isempty( f ) ) || ( isempty( g ) ) )
 end
 
 if ( isa(f,'chebfun2') && isa(g,'chebfun2') )    % chebfun2 ./ chebfun2 
-    if ( ~domainCheck(f, g))
+    if ( ~chebfun2.domainCheck(f, g))
        error('CHEBFUN2:RDIVIDE:DOMAINS','Domains inconsistent.') 
     end
     h = chebfun2( @(x,y) feval(f,x,y)./feval(g,x,y) , f.domain ); 

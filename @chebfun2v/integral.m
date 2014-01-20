@@ -13,13 +13,13 @@ function v = integral( F, c )
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information. 
 
-if ( F.nComponent == 3 )
+if ( F.nComponents == 3 )
     warning('CHEBFUN2V:INTEGRAL','Ignoring third component of chebfun2v.')
 end
 
 % restrict to chebfun: 
-F1 = restrict(F.component{1}, c); 
-F2 = restrict(F.component{2}, c); 
+F1 = restrict(F.components{1}, c); 
+F2 = restrict(F.components{2}, c); 
  
 % Line integral: 
 dc = diff(c); 
