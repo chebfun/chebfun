@@ -49,4 +49,9 @@ pass(8) = numel(f.funs) == 1 && size(f.funs{1}, 1) > 10;
 f = chebfun([1 ; 2 ; 3], 'coeffs');
 pass(9) = isequal(f.funs{1}.onefun.coeffs, [1 ; 2 ; 3]);
 
+% Test 'trunc', flag.
+f = chebfun(@abs, 'trunc', 10, 'splitting', 'on');
+c = get(f, 'coeffs');
+pass(10) = abs(-4/63/pi - c(2)) < get(f, 'epslevel');
+
 end
