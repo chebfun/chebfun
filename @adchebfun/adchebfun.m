@@ -35,7 +35,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             end
             dom = obj.func.domain;
             obj.domain = dom;
-            obj.jacobian = linop.eye(dom);
+            obj.jacobian = linBlock.eye(dom);
         end
         
     end
@@ -287,7 +287,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             
             % Linearity information
             f.isConstant = iszero(f.jacobian);
-            f.jacobian = linop.mult(-sin(f.func))*f.jacobian;
+            f.jacobian = linBlock.mult(-sin(f.func))*f.jacobian;
             % Update CHEBFUN part.
             f.func = cos(f.func);
         end
@@ -445,7 +445,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % Update CHEBFUN part
             f.func = exp(f.func);
             % Update derivative part
-            f.jacobian = linop.mult(f.func)*f.jacobian;        
+            f.jacobian = linBlock.mult(f.func)*f.jacobian;        
         end
         
         function f = feval(f, x)
@@ -486,6 +486,9 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end 
         
         function f = log(f)
+            % F = LOG(F)   LOG of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
             f.jacobian = linop.mult(1./f.func)*f.jacobian;
             f.func = log(f.func);
@@ -624,7 +627,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         
         function f = sin(f)
             f.isConstant = iszero(f.jacobian);
-            f.jacobian = linop.mult(cos(f.func))*f.jacobian;
+            f.jacobian = linBlock.mult(cos(f.func))*f.jacobian;
             f.func = sin(f.func);
         end
         
@@ -639,7 +642,8 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 case '()'
                     out = feval(f, index.subs{1});
                 case '.'
-                    out = vertcat(f.(index(1).subs));
+%                     out = vertcat(f.(index(1).subs));
+                    out = f.(index(1).subs);
             end
         end
         
@@ -670,13 +674,13 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             if ( isnumeric(f) ) || ( isnumeric(g) )
                 f = mtimes(f, g);
             elseif ( ~isa(f, 'adchebfun') )
-                g.jacobian = linop.mult(f)*g.jacobian;
+                g.jacobian = linBlock.mult(f)*g.jacobian;
                 g.func = f.*g.func;
 %                 g.isConstant = g.isConstant;
                 g = updateDomain(g);
                 f = g;
             elseif  ( ~isa(g, 'adchebfun') )
-                f.jacobian = linop.mult(g)*f.jacobian;
+                f.jacobian = linBlock.mult(g)*f.jacobian;
                 f.func = f.func.*g;
                 f = updateDomain(f);
 %                 f.isConstant = f.isConstant;
@@ -685,7 +689,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                     ( f.isConstant & g.isConstant) & ...
                       ( ( all(iszero(f.jacobian)) || all(iszero(g.jacobian)) ) | ...
                         ( iszero(f.jacobian) & iszero(g.jacobian) ) );
-                f.jacobian = linop.mult(f.func)*g.jacobian + linop.mult(g.func)*f.jacobian;
+                f.jacobian = linBlock.mult(f.func)*g.jacobian + linBlock.mult(g.func)*f.jacobian;
                 f.func = times(f.func, g.func);
                 f = updateDomain(f);
             end
