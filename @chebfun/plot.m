@@ -68,6 +68,7 @@ lineData = {};
 pointData = {};
 jumpData = {};
 yLimData = {};
+intervalIsSet = false;
 
 % Suppress inevitable warning for growing these arrays:
 %#ok<*AGROW>
@@ -80,11 +81,14 @@ if ( any(loc) )
     varargin(loc:loc+1) = [];
     intervalIsSet = true;
 else
+    % TODO: Do we want to support this?
+    % Allow plot(f, [a, b]) as shorthand for plot(f, 'interval', [a, b]):
     loc = find(cellfun(@(f) isa(f, 'chebfun'), varargin));
     for k = 1:numel(loc)
         if ( loc(k) < nargin && isnumeric(varargin{loc(k)+1}) )
             interval = varargin{loc(k)+1};
             varargin(loc(k)+1) = [];
+            intervalIsSet = true;
             break
         end
     end
@@ -140,8 +144,16 @@ while ( ~isempty(varargin) )
                 end            
             end
         end
-        
+
     else                                                       % PLOT(f).
+        
+        % Call PLOTDATA():
+        f = varargin{1};
+        if ( intervalIsSet )
+            f = restrict(f, interval([1,end]));
+        end
+        newData = plotData(f);
+
         % Remove CHEBFUN from array input:
         f = varargin{1};
         varargin(1) = [];
@@ -200,25 +212,9 @@ while ( ~isempty(varargin) )
 
 end
 
-%% Figure out yLim:
-
-% TODO: Reinstate this.
-% % Take the maximum and the mininum:
-% ylimit = [min(yLimData{:}) max(yLimData{:})];
-% 
-% % Pad some space at the top and bottom of the figure:
-% if ( diff( ylimit ) )
-%     ylimit = [ylimit(1) - 0.1*abs(diff(ylimit)) ...
-%         ylimit(2) + 0.1*abs(diff(ylimit))];
-% else
-%     ylimit = [ylimit(1) - 0.1*abs(ylimit(1)) ...
-%         ylimit(2) + 0.1*abs(ylimit(1))];
-% end
-
 % Plot the lines:
 h1 = plot(lineData{:});
 set(h1, 'Marker', 'none')
-% set(gca, 'ylim', ylimit)
 
 % Ensure the plot is held:
 hold on

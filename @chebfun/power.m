@@ -170,7 +170,9 @@ elseif ( isa(f, 'chebfun') )
             % Add breaks at the roots of the imaginary part of F to account for
             % the discontinuity in POWER along the negative real semi-axis due 
             % to the branch cut.
-            f = addBreaksAtRoots(f, 'imag');
+            r = getRootsForBreaks(imag(f));
+            f = addBreaks(f, r);
+            
         end
         % Loop over each piece individually:
         numFuns = numel(f.funs);
