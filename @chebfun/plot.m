@@ -43,12 +43,16 @@ function varargout = plot(varargin)
 %   than one CHEBFUN in a call like PLOT(F, 'b', G, '--r', 'interval', [A, B])
 %   this property is applied globally.
 %
+%   Note that the PLOT(F, 'numpts', N) option for V4 is depricated, and this
+%   call now has no effect.
+%
 % See also PLOTDATA, PLOT3.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
 % [TODO]: Implement plotting of delta functions.
+% TODO: Figure out the y axis limit for functions which blow up.
 
 % Deal with an empty input:
 if ( isempty(varargin{1}) )
@@ -136,6 +140,11 @@ while ( ~isempty(varargin) )
     if ( pos > 0 )
         styleData = varargin(1:pos);
         varargin(1:pos) = [];
+        % Remove depricated 'numpts' option:
+        idx = find(strcmp(styleData, 'numpts'), 1);
+        if ( any(idx) )
+            styleData(idx:(idx+1)) = [];
+        end
     end
     
     % Append new data to the arrays which will be passed to built in PLOT():
@@ -145,24 +154,9 @@ while ( ~isempty(varargin) )
     yLimData = [yLimData, newData.yLim];
 end
 
-%% Figure out yLim:
-
-% Take the maximum and the mininum:
-ylimit = [min(yLimData{:}) max(yLimData{:})];
-
-% Pad some space at the top and bottom of the figure:
-if ( diff( ylimit ) )
-    ylimit = [ylimit(1) - 0.1*abs(diff(ylimit)) ...
-        ylimit(2) + 0.1*abs(diff(ylimit))];
-else
-    ylimit = [ylimit(1) - 0.1*abs(ylimit(1)) ...
-        ylimit(2) + 0.1*abs(ylimit(1))];
-end
-
 % Plot the lines:
 h1 = plot(lineData{:});
 set(h1, 'Marker', 'none')
-set(gca, 'ylim', ylimit)
 
 % Ensure the plot is held:
 hold on

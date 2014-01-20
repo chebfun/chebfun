@@ -37,7 +37,6 @@ if ( nargin == 1 )
     for k = 1:nFuns
         % Get the data from the FUN:
         dataNew = plotData(f.funs{k});
-        myNaN = NaN(1, size(dataNew.yLine, 2)); % Array of NaNs.
         
         if ( k == 1 )
             dataNew.xJumps(1) = [];
@@ -49,7 +48,7 @@ if ( nargin == 1 )
             dataNew.yJumps(end,:) = [];
         end
         
-        if ( any( ~isreal( dataNew.yLine ) ) )
+        if ( any(~isreal(dataNew.yLine)) )
             % Deal with complex-valued functions:
             
             % Assign x to be the real part, and y to be the imaginary part:
@@ -63,10 +62,13 @@ if ( nargin == 1 )
         end
         
         % Insert a NaN (or array of NaNs) and append new data to array:
-        data.xLine = [data.xLine ; NaN ; dataNew.xLine];
-        data.yLine = [data.yLine ; myNaN ; dataNew.yLine];
-        data.xPoints = [data.xPoints ; NaN ; dataNew.xPoints];
-        data.yPoints = [data.yPoints ; myNaN ; dataNew.yPoints];
+        xNaN = NaN(1, size(dataNew.xLine, 2)); % Array of NaNs.
+        yNaN = NaN(1, size(dataNew.yLine, 2)); % Array of NaNs.
+
+        data.xLine = [data.xLine ; xNaN ; dataNew.xLine];
+        data.yLine = [data.yLine ; yNaN ; dataNew.yLine];
+        data.xPoints = [data.xPoints ; xNaN ; dataNew.xPoints];
+        data.yPoints = [data.yPoints ; yNaN ; dataNew.yPoints];
         data.xJumps = [data.xJumps ; dataNew.xJumps];
         data.yJumps = [data.yJumps ; dataNew.yJumps];
         
@@ -184,8 +186,9 @@ else
     end
     
     % Return NaNs if there are no jumps:
-    data.xJumps = NaN;
+    data.xJumps = myNaN;
     data.yJumps = myNaN;
+    data.zJumps = myNaN;
     
     % Loop over each FUN for Jumps data:
     for k = 1:(nFuns - 1)
