@@ -7,6 +7,8 @@ if ( nargin == 0 )
     pref = chebpref();
 end
 
+% TODO: Test for array-valued CHEBFUNS and quasimatrices.
+
 % Test empty input.
 f = chebfun();
 g = chebfun();

@@ -90,7 +90,7 @@ if ( isempty(f) || isempty(g) )
 end
 
 % No support for quasimatrices:
-if ( min(size(f)) > 1 || min(size(g)) > 1 ) % TODO: replace with numColumns
+if ( numColumns(f) > 1 || numColumns(g) > 1 )
     error('CHEBFUN:conv:quasi', 'No support for array-valued CHEBFUN objects.');
 end
 

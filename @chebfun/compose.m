@@ -4,11 +4,12 @@ function f = compose(f, op, g, pref)
 %   CHEBFUN object and OP is a function handle.
 %
 %   COMPOSE(F, OP, G) returns OP(F, G), where F and G are CHEBFUN objects and OP
-%   is a function handle. The domains of F and G should be compatible.
+%   is a function handle. The domains and dimensions of F and G should be
+%   compatible.
 %
 %   COMPOSE(F, G) returns a CHEBFUN representing G(F), where both F and G are
-%   also CHEBFUN objects. If the range of F is not contained in the domain of
-%   G, then an error is thrown.
+%   also CHEBFUN objects. If the range of F is not contained in the domain of G,
+%   or if F and G do not have the same dimensions, then an error is thrown.
 %
 %   COMPOSE(F, OP, PREF), COMPOSE(F, OP, G, PREF), and COMPOSE(F, G, PREF) use
 %   the options passed by the CHEBPREF object PREF.
@@ -46,15 +47,12 @@ function f = compose(f, op, g, pref)
 
 % Parse inputs:
 opIsBinary = false;
-
 if ( (nargin == 4) && ~isempty(g) )           % compose(f, op, g, pref)
     opIsBinary = true;
 end
-
 if ( (nargin < 4) || ((nargin == 4) && isempty(pref)) )
     pref = chebpref();
 end
-
 if ( nargin == 3 )
     if ( isstruct(g) || isa(g, 'chebpref') )  % compose(f, op, pref)
         pref = chebpref(g);
@@ -63,7 +61,6 @@ if ( nargin == 3 )
         opIsBinary = true;
     end
 end
-
 if ( nargin < 3 )                             % compose(f, op) or compose(f, g)
     g = [];
 end
@@ -75,11 +72,81 @@ if ( isempty(f) )
     return
 end
 
-% Call the COMPOSETWOCHEBFUNS method if OP is a CHEBFUN object:
 if ( isa(op, 'chebfun') )
-    f = composeTwoChebfuns(f, op, pref);
-    return
+    % Call the COMPOSETWOCHEBFUNS method if OP is a CHEBFUN object:
+    g = op;
+    
+%     if ( numColumns(f) ~= numColumns(g) )
+%             error('CHEBFUN:compose:dims', 'Matrix dimensions must agree.')
+%     end
+    if ( numColumns(f) > 1 && numColumns(g) > 1 )
+        error('CHEBFUN:composeChebfuns:trans', ...
+            'Cannot compose two array-valued CHEBFUN objects.');
+    end
+    
+    if ( numel(f) == 1 && numel(op) == 1 )
+        % Array-valued CHEBFUN case:
+        f = composeTwoChebfuns(f, op, pref);
+    else
+        % QUASIMATRIX case:
+        f = cheb2cell(f);
+        g = cheb2cell(g);
+        if ( numel(f) > 1 )
+            for k = numel(f):-1:1
+                h(k) = composeTwoChebfuns(f{k}, g{1}, pref);
+            end
+        else
+            for k = numel(g):-1:1
+                h(k) = composeTwoChebfuns(f{1}, g{k}, pref);
+            end
+        end
+        f = h;
+    end
+        
+elseif ( opIsBinary )
+    % Binary composition:
+    
+    if ( numColumns(f) ~= numColumns(g) )
+            error('CHEBFUN:compose:dims', 'Matrix dimensions must agree.')
+    end
+    
+    if ( numel(f) == 1 && numel(g) == 1 )
+        % Array-valued CHEBFUN case:
+        f = columnCompose(f, op, g, pref, opIsBinary);
+    else
+        % QUASIMATRIX case:
+        f = cheb2cell(f);
+        g = cheb2cell(g);
+        for k = numel(f):-1:1
+            h(k) = columnCompose(f{k}, op, g{k}, pref, opIsBinary);
+        end
+        f = h;
+    end
+    
+else
+    % Unary composition:
+    
+    if ( numel(f) == 1 )
+        % Array-valued CHEBFUN case:
+        f = columnCompose(f, op, g, pref, opIsBinary);
+    else
+        % QUASIMATRIX case:
+        f = cheb2cell(f);
+        for k = numel(f):-1:1
+            h(k) = columnCompose(f{k}, op, g, pref, opIsBinary);
+        end
+        f = h;
+    end
+    
 end
+
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function f = columnCompose(f, op, g, pref, opIsBinary)
 
 %% Initialise:
 
@@ -187,6 +254,10 @@ f.impulses = newImps;
 
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 function h = composeTwoChebfuns(f, g, pref)
 %COMPOSETWOCHEBFUNS   Composition of two CHEBFUN objects.
 %   COMPOSETWOCHEBFUNS(F, G, PREF) returns the composition of the CHEBFUN
@@ -212,11 +283,6 @@ if ( isTransposed )
     % Make everything a column CHEBFUN for now:
     f = transpose(f);
     g = transpose(g);
-end
-
-if ( (size(f, 2) > 1) && (size(g, 2) > 1) )
-     error('CHEBFUN:composeChebfuns:trans', ...
-        'Cannot compose two array-valued CHEBFUN objects.');
 end
 
 % f must be a real-valued function:

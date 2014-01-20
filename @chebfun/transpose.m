@@ -1,4 +1,4 @@
-function f = transpose(f)
+function F = transpose(F)
 %.'   CHEBFUN transpose.
 %   F.' is the non-conjugate transpose of F, i.e., it converts a column CHEBFUN
 %   to a row CHEBFUN and vice versa.
@@ -8,6 +8,8 @@ function f = transpose(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-f.isTransposed = ~f.isTransposed;
+for k = 1:numel(F)
+    F(k).isTransposed = ~F(k).isTransposed;
+end
 
 end

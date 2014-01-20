@@ -31,6 +31,10 @@ if ( isempty(f) )
     return
 end
 
+if ( numel(f) > 1 )
+    error('CHEBFUN:chebpoly:quasia', 'CHEBPOLY does not support quasimatrices.');
+end
+
 %% Initialise:
 argin = {}; 
 ii = []; 
@@ -102,7 +106,7 @@ else
     d = f.domain([1, end]);
     x = chebfun('x', d);
     w = 1./sqrt((x-d(1)).*(d(2)-x));
-    numCols = min(size(f));
+    numCols = numColumns(f);
     out = zeros(numCols, N);
     f = mat2cell(f);
     for j = 1:numCols

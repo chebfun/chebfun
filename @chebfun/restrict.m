@@ -1,4 +1,4 @@
-function f = restrict(f, newDomain)
+function F = restrict(F, newDomain)
 %RESTRICT   Restrict a CHEBFUN object to a subinterval.
 %   G = RESTRICT(F, [S1, S2]) returns a CHEBFUN G defined on the interval [S1,
 %   S2] which agrees with F on that interval. Any interior breakpoints in
@@ -17,6 +17,14 @@ function f = restrict(f, newDomain)
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
+
+for k = 1:numel(F)
+    F(k) = columnRestrict(F(k), newDomain);
+end
+
+end
+
+function f = columnRestrict(f, newDomain)
 
 % Ignore duplicate entries in newDomain:
 newDomain([false, ~diff(newDomain)]) = [];

@@ -31,8 +31,7 @@ function varargout = chebellipseplot(u, varargin)
 
 %%
 
-if ( min(size(u)) > 1 )
-    % TODO: Replace with "NUMCOLS(U) > 1" from downstream in feature-quasimatrix.
+if ( numColumns(u) > 1 )
     error('CHEBFUN:chebellipseplot:quasi', ['CHEBELLPISEPLOT does not ', ... 
         'support array-valued CHEBFUN objects or  quasimatries.']);
 end

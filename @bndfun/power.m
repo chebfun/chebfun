@@ -24,7 +24,7 @@ rval = get(f, 'rval');                          % Value at right of domain.
 tol = 1e2*get(f, 'epslevel').*get(f, 'vscale'); % Tolerance for a root.
 if ( any(abs(lval) < tol) || any(abs(rval) < tol) ) && ...
         ( ~isa(f.onefun, 'singfun') )
-    f.onefun = singfun(f.onefun);              % Cast f.onefun to a SINGFUN.
+    f.onefun = singfun(f.onefun);               % Cast f.onefun to a SINGFUN.
 end
 
 % Call POWER() of the ONEFUN:
