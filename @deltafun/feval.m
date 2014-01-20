@@ -1,6 +1,7 @@
 function val = feval(f, x)
 %FEVAL   Evaluate a DELTAFUN.
-%   FEVAL(F, X) evaluates the DELTAFUN F at the given points X.
+%   FEVAL(F, X) evaluates the DELTAFUN F at the given points X. If the point of
+%   evaluation has a non-trivial delta function, NaN is returned.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org for Chebfun information.
@@ -11,8 +12,7 @@ function val = feval(f, x)
 % Evaluate the smooth part.
 val = feval(f.funPart, x);
 
-% Mathematically, point values of distributions do not make sense. However, we
-% try our best to match the intuition of the user:
+% Mathematically, point values of distributions do not make sense. A 
 if ( ~isempty(f.location) )
     proximityTol = deltafun.pref.deltafun.proximityTol;    
     
