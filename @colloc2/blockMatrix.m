@@ -11,9 +11,6 @@ if isa(item,'linBlock')
     A = disc.source.stack( disc );
 elseif isa(item,'chebfun')
     A = disc.toValues(item);
-    if ( item.isTransposed )
-        A = A.';
-    end
 elseif isnumeric(item)
     A = item;
 else
