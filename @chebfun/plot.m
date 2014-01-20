@@ -194,6 +194,12 @@ while ( ~isempty(varargin) )
             styleData(idx:(idx+1)) = [];
         end
     end
+    
+    % Append new data to the arrays which will be passed to built in PLOT():
+    lineData = [lineData, newData.xLine, newData.yLine, styleData];
+    pointData = [pointData, newData.xPoints, newData.yPoints, styleData];
+    jumpData = [jumpData, newData.xJumps, newData.yJumps, styleData];
+    yLimData = [yLimData, newData.yLim];
 
 end
 
