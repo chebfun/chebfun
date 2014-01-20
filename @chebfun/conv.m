@@ -124,7 +124,7 @@ end
 % Deal with piecewise CHEBFUN objects.
 if ( numel(f.funs) > 1 || numel(g.funs) > 1 )
     h = 0;
-    % Loopover each of the interactions:
+    % Loop over each of the interactions:
     for j = 1:numel(f.funs)
         for k = 1:numel(g.funs)
             % TODO: Tidy this!
@@ -141,16 +141,17 @@ end
 % Useful things..
 m = length(f); n = length(g);                % Lengths of f anf g
 numPatches = floor((d - c) / (b - a));       % Number of patches required
-x = chebpts(n, [b + c, a + d], 1);           % Chebyshev grid for interior piece
+x = chebpts(n, [b+c, a+d], 1);               % Chebyshev grid for interior piece
 y = 0*x;                                     % Initialise values in interior
 map = @(x, a, b) (x-a)/(b-a) - (b-x)/(b-a);  % Map from [a, b] --> [-1, 1]
-f_leg = chebtech.cheb2leg(get(f, 'coeffs'));  % Legendre coefficients of f
+f_leg = chebtech.cheb2leg(get(f, 'coeffs')); % Legendre coefficients of f
 
 
 % Restrict g:
 doms = c + (b-a)*(0:numPatches);
 g_restricted = restrict(g, doms);
 if ( ~iscell(g_restricted) )
+    % If doms happened to be domain(g), restrict would return a cell.
     g_restricted = {g_restricted};
 end
 
@@ -177,7 +178,7 @@ for k = 1:numPatches
     end
     
     % The right triangle for the kth patch:
-    if ( k < numPatches ) % Not needed for the final patch!
+    if ( k < numPatches )                         % Not needed for final patch!
         % Locate the grid values in [dkl, dkr]:
         idx = dk_mid <= x & x < dk_right;
         z = map(x(idx), dk_mid, dk_right);
@@ -201,12 +202,12 @@ else
     %  /___|__:/
     %     fl a+d     b+d
 
-    finishLocation = a + c + numPatches*(b - a);   % Where patches got to. (fl) 
-    gk = restrict(g, d-[(b-a) 0]);                 % g on appropriate domain        
-    gk_leg = chebtech.cheb2leg(get(gk, 'coeffs')); % Legendre coeffs
-    [hLegL, hLegR] = easyConv(f_leg, gk_leg);      % Conv on A and B
-    hLegR = chebtech.leg2cheb(flipud(hLegR));      % Cheb coeffs on A
-    h_right = chebfun(hLegR, [d + a, d + b], 'coeffs'); % Make CHEBFUN
+    finishLocation = a + c + numPatches*(b - a);    % Where patches got to. (fl) 
+    gk = restrict(g, d-[(b-a) 0]);                  % g on appropriate domain        
+    gk_leg = chebtech.cheb2leg(get(gk, 'coeffs'));  % Legendre coeffs
+    [hLegL, hLegR] = easyConv(f_leg, gk_leg);       % Conv on A and B
+    hLegR = chebtech.leg2cheb(flipud(hLegR));       % Cheb coeffs on A
+    h_right = chebfun(hLegR, [d+a, d+b], 'coeffs'); % Make CHEBFUN
     
     % Remainder piece: (between fl and a+d)
     remainderWidth = d + a - finishLocation; % b+d-fl-(b-a)
@@ -229,7 +230,7 @@ else
         y(idx) = y(idx) + tmp*remainderWidth/(b - a);   % Scale and append
     end
     
-    % Convert values to coeffs (we don't want to construct a chebteh1)
+    % Convert values to coeffs (we don't want to construct a chebtech1)
     y = chebtech1.vals2coeffs(y);
     % Construct CHEBFUN of the interior (rectangle).
     h_mid = chebfun(y, [b+c, a+d], 'coeffs');
@@ -282,6 +283,8 @@ gammaR = rec(M, -alpha, beta, 1); % Chebyshev coeffs for the right piece
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%% MATRIX FREE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     function gamma = rec(M, alpha, beta, sgn)
+        % Compute the Legendre coefficients of the convolution on L/R piece.
+        % TODO: Document further once paper is complete.
         
         % Initialise scl:
         nb = length(beta);
