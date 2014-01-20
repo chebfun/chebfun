@@ -1,38 +1,31 @@
-function [u, disc] = linsolve(L, f, discType)
+function [u, disc] = linsolve(L, f, varargin)
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
-if ( nargin < 3 )
-    % TODO: Get from a (global?) preference?
-    discType = L.discretizer;
+pref = L.prefs;
+disc = [];
+for j = 1:nargin-2
+    item = varargin{j};
+    if isa(item,'chebpref')
+        %pref = chebpref(pref,item);
+        error('Preferences must be set to the ''prefs'' property of the linop.')
+    elseif isa(item,'chebDiscretization')
+        disc = item;
+    end
 end
-
-isFun = isFunVariable(L); 
 
 if isa( f, 'chebfun' )
     f = chebmatrix(f);
 end
 
-%% Set up the discretisation:
-% Set the allowed discretisation lengths: (TODO: A preference?)
-dimVals = floor(2.^[5 6 7 8 8.5 9 9.5 10 10.5 11]);
-
-if ( isa(discType, 'function_handle') )
-    % Create a discretization object
-    disc = discType(L);  
-    
-    % Merge domains of the operator and the rhs:
+% Use a given discretization, or create one?
+dimVals = pref.dimensionValues;
+if isempty(disc)
+    disc = pref.discretization(L);
     disc = mergeDomains(disc,f.domain); 
-        
-    % Update the discretization dimension on unhappy pieces:
     disc.dimension = repmat(dimVals(1), 1, numel(disc.domain)-1);
     dimVals(1) = [];
 else
-    % A discretisation is given. The idea is that it probably has an LU
-    % factorization already attached, so try to use it first. Caller beware!
-    disc = discType;
-        
-    % Initialise dimVals. Try the given size first, then iterate on the rest. 
     dim1 = max(disc.dimension);
     dimVals = [ dim1, dimVals(dimVals > dim1) ];
 end
@@ -47,6 +40,7 @@ numInt = disc.numIntervals;
 isDone = false(1, numInt);
 
 %% Loop over a finer and finer grid until happy:
+isFun = isFunVariable(L); 
 for dim = dimVals
 
     % Discretize the operator (incl. constraints/continuity), unless there is a

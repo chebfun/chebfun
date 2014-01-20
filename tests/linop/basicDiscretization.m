@@ -19,10 +19,10 @@ Dexact = [
 ];
 
 %% Collocation discretizations
-err(1) = norm( discretize(I,5) - eye(5) );
-err(2) = norm( discretize(D,5) - Dexact );
+err(1) = norm( matrix(I,5) - eye(5) );
+err(2) = norm( matrix(D,5) - Dexact );
 xx = chebpts(5, dom);
-err(3) = norm( discretize(U,5) - diag(u(xx)) );
+err(3) = norm( matrix(U,5) - diag(u(xx)) );
 
 %% Building blocks
 dom = [-2 1 1.5 2];
@@ -31,14 +31,14 @@ D = linop.diff(dom);
 Z = linop.zeros(dom);
 x = chebfun('x', dom);
 u = chebfun('x.^2', dom);
-U = linop.mult(u);   
+U = linop.mult(u);  
+n = [5 5 5];
 
 %% Collocation discretizations
-err(4) = norm( discretize(I,5) - eye(15) );
-xx = chebpts([5 5 5],dom);
-err(5) = norm( discretize(U,5) - diag(u(xx)) );
+err(4) = norm( matrix(I,n) - eye(sum(n)) );
+xx = chebpts(n,dom);
+err(5) = norm( matrix(U,n) - diag(u(xx)) );
 
-err;
 pass = err < 1e-9;
 
 end

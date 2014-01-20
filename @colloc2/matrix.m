@@ -10,11 +10,16 @@ if nargin > 1
     end
 end
 
+% Check subinterval compatibility of domain and dimension.
+if ( (length(dsc.domain)-1) ~= length(dsc.dimension) )
+    error('Must specify one dimension value for each subinterval.')
+end
+
 L = dsc.source;
 if isa(L,'chebmatrix')
     A = cellfun(@(x) blockMatrix(dsc,x),L.blocks,'uniform',false);
     if isa(L,'linop')
-        [out{1:3}] = useConstraints(dsc,A);
+        [out{1:4}] = useConstraints(dsc,A);
     else
         out{1} = cell2mat(A);
     end

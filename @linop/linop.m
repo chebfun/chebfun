@@ -7,10 +7,6 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) linop 
         continuity = linopConstraint()
     end
     
-    properties (Dependent)
-        sizeReduction
-    end
-    
     methods
         function L = linop(M)
             %LINOP   Linop constructor.
@@ -20,11 +16,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) linop 
             L = L@chebmatrix(M);
             
          end
-        
-        function s = get.sizeReduction(L)
-            s = getDownsampling(L);
-        end    
-        
+                
     end
     
     % These are provided as more convenient names than the linBlock equivalents.

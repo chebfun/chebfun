@@ -2,21 +2,21 @@ function pass = test_operatorForm
 
 %% Building blocks
 dom = [-2 2];
-I = linop.eye(dom);
-D = linop.diff(dom);
-Z = linop.zeros(dom);
+I = linBlock.eye(dom);
+D = linBlock.diff(dom);
+Z = linBlock.zeros(dom);
 x = chebfun('x', dom);
 u = sin(x.^2);
-U = linop.mult(u);   
+U = linBlock.mult(u);   
 
 %% Operator instantiations
-eyeop = I.functionForm;
+eyeop = toFunction(I);
 err(1) = norm( eyeop(u) - u );
-diffop = D.functionForm;
+diffop = toFunction(D);
 TwoX = diffop(x.*x);   % should be the chebfun 2*x
 TwoXAgain = D*(x.*x);
 err(2) = norm( 2*x - TwoX );
-multop = U.functionForm;
+multop = toFunction(U);
 err(3) = norm( multop(x+1) - u.*(x+1) );   % should be zero
 % shorthand notation, U*chebfun
 err(4) = norm( multop(x+1) - U*(x+1) );

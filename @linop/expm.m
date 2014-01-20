@@ -28,7 +28,7 @@ function u = expm(L,t,u0)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-discType = L.discretizer;
+discType = L.prefs.discretization;
 isFun = isFunVariable(L); 
 
 %% Set up the discretisation:
@@ -40,7 +40,7 @@ if ( isa(discType, 'function_handle') )
     disc = mergeDomains(disc,u0.domain); 
     
     % Set the allowed discretisation lengths: (TODO: A preference?)
-    dimVals = floor(2.^[5 6 7 8 8.5 9 9.5 10 10.5 11]);
+    dimVals = L.prefs.dimensionValues;
     
     dimVals( dimVals < length(u0) ) = [];
     
@@ -50,9 +50,7 @@ if ( isa(discType, 'function_handle') )
 else
     % A discretisation is given:
     disc = discType;
-    
-    % TODO: Check discretisation is valid for the given L and u0!
-    
+        
     % Initialise dimVals;
     dimVals = max(disc.dimension);
 end

@@ -8,15 +8,8 @@ n = disc.dimension;
 if ( t == 0 )
     E = eye(sum(n));
 else
-    % We need a copy of the matrix discretized without any BCs.
-    L = disc.source;
-    disc.source.continuity = [];
-    disc.source.constraint = [];
-    A = matrix(disc);
-    
-    % Now impose them.
-    disc.source = L;
-    [~,P,B] = matrix( disc );
+    % We need a copy of the matrix discretized without any side conditions.
+    [~,P,B,A] = matrix( disc );
     
     % Assemble the "prolongation" operator.
     [mRed,mOrig] = size(P);

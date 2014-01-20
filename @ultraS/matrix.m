@@ -1,7 +1,7 @@
 function varargout = matrix(disc,dimension,domain)
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
-% TODO: error checking on inputs
+
 if ( nargin > 1 )
     disc.dimension = dimension;
     if ( nargin > 2 )
@@ -9,8 +9,12 @@ if ( nargin > 1 )
     end
 end
 
+% Check subinterval compatibility of domain and dimension.
+if ( (length(disc.domain)-1) ~= length(disc.dimension) )
+    error('Must specify one dimension value for each subinterval.')
+end
+
 A = disc.source;
-%            validate(disc);
 if ( isa(A, 'chebmatrix') )
     c = disc.coeffs;
     outputSpaces = disc.outputSpace;
@@ -24,7 +28,7 @@ if ( isa(A, 'chebmatrix') )
         end
     end
     if ( isa(A,'linop') )
-        [out{1:3}] = useConstraints(disc,L);
+        [out{1:4}] = useConstraints(disc,L);
         out{2} = out{2}*cell2mat(S);
     else
         out{1} = cell2mat(L);

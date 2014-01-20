@@ -1,4 +1,4 @@
-function f = fred(A,kernel,onevar)
+function f = fred(A, kernel, oneVar)
 % FRED  Fredholm integral operator.
 %
 % F = FRED(K,V) computes the Fredholm integral with kernel K:
@@ -18,32 +18,34 @@ function f = fred(A,kernel,onevar)
 % separable or sparse representation for increased efficiency in
 % some cases.
 %
-% See also domain/fred, chebfun/volt, chebop.
+% See also blockFunction/volt, linop/fred, chebop/fred.
 
 % Copyright 2011 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % Default onevar to false
-if ( nargin==2 )
-    onevar = false;
+if ( nargin == 2 )
+    oneVar = false;
 end
 
-if ( onevar )
-    k = @(x,y) kernel(x);
+if ( oneVar )
+    k = @(x, y) kernel(x);
 else
     k = kernel;
 end
 
-f = blockFunction(@(z) applyfred(z,A.domain,k));
+f = blockFunction(@(z) applyFred(z, A.domain, k));
 end
 
-function Fu = applyfred(u,d,kernel)
+function Fu = applyFred(u, d, kernel)
 % At each x, do an adaptive quadrature.
 % Result can be resolved relative to norm(u). (For instance, if the
 % kernel is nearly zero by cancellation on the interval, don't try to
 % resolve it relative to its own scale.)
 nrmu = norm(u);
-opt = {'resampling',false,'splitting',true,'scale',nrmu};
+% TODO: Determine best options for robust behavior.
+% opt = {'resampling',false,'splitting',true,'scale',nrmu};
 int = @(x) sum( chebfun(@(y) feval(u,y).*kernel(x,y),d)); %, opt{:} );
-Fu = chebfun( int, d,'sampletest',false,'resampling',false,'vectorize','scale',nrmu);
+Fu = chebfun( int, d, 'sampletest', false, 'resampling', false, ...
+    'vectorize', 'scale', nrmu);
 end
