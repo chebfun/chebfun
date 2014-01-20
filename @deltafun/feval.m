@@ -6,21 +6,39 @@ function val = feval(f, x)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org for Chebfun information.
 
-% For evaluation, the underlying smoothfun, i.e. the smoothPart is evaluated
-% at X first and then the values computed are scaled by the singular factors.
+% Trivial cases:
+if ( isempty(x) )
+    val = x;
+    return
+end
 
+if ( isempty(f) )
+    error( 'DELTAFUN:feval', 'can not evaluate an empty deltafun');
+end
+
+%%
 % Evaluate the smooth part.
-val = feval(f.funPart, x);
+if ( isempty(f.funPart) )
+    val = 0*x;
+else
+    val = feval(f.funPart, x);
+end
 
-% Mathematically, point values of distributions do not make sense. A 
+% Mathematically, point values of distributions do not make sense:
 if ( ~isempty(f.location) )
-    proximityTol = deltafun.pref.deltafun.proximityTol;    
-    
-    % Make sure there are no trivial deltafunctions:
+    proximityTol = deltafun.pref.deltafun.proximityTol;        
+    % Make sure there are no trivial delta functions:
     f = simplify(f);
-    loc = f.location;    
-    for i = 1:length(loc)
-        idx = abs(x-loc(i)) < proximityTol;        
-        val(idx) = NaN;                
-    end
+    deltaLoc = f.location;    
+    for i = 1:length(deltaLoc)        
+        if ( deltaLoc(i) == 0 ) 
+            % Avoid divide by zero:
+            idx = abs(x - deltaLoc(i)) < proximityTol;        
+            val(idx) = NaN;                
+        else
+            % Check the relative distance from delta function locations:
+            idx = abs(x - deltaLoc(i))./deltaLoc(i) < proximityTol;
+            val(idx) = NaN;
+        end        
+    end     
 end

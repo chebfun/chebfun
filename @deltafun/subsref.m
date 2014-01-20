@@ -39,31 +39,16 @@ switch index(1).type
 
         % Compute the output:
         if ( isnumeric(x) )
-            y = x(:);
-            % Make sure we don't evaluate at a delta function locations:
-            deltaLoc = f.location;
-            for i = 1:length(deltaLoc)
-                relDist = abs(y - deltaLoc(i))./abs(y);
-                if( any( relDist < deltafun.pref.deltafun.proximityTol ) )
-                    error( 'DELTAFUN:subsref', 'An evaluation point is very close to a delta function' );
-                end
-               
-                % This is especially necessary when one of the x's is zero.
-                if( any( isnan(relDist) ) )
-                    error( 'DELTAFUN:subsref', 'relative distance between an evaluation point and a delta function is NaN' ); 
-                end
-                    
-            end
-            
+            y = x(:);            
             % Call FEVAL():
-            out = feval(f.funPart, x, varin{:});
+            out = feval(f, y, varin{:});
             
         elseif ( isa(x, 'chebfun') )
             % Call COMPOSE():
             % TODO: write compose and check for linearity of f?
             out = compose(x, f);                                            
         else
-            error('CHEBFUN:DELTAFUN:subsref:nonnumeric', ...
+            error('DELTAFUN:subsref:nonnumeric', ...
               'Cannot evaluate chebfun for non-numeric type.')          
         end            
        
