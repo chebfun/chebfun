@@ -15,18 +15,6 @@ if ( nargin == 1 )
     N = length(f);
 end
 
-% [TODO]: Remove this. (Ths will eventually be implemented by @CHEBTECH/CHEBPOLY
-% but we need to wait until changes from upstream have been merged.)
-if ( isa(f.onefun, 'chebtech') )
-    out = get(f.onefun, 'coeffs');
-    if ( (nargin > 1) && ~isempty(N) )
-        % Pad / truncate:
-        out = [zeros(1, N - length(out)) out];
-        out = out(end-(N-1):end);
-    end
-    return
-end
-
 % Call CHEBPOLY() of the .ONEFUN:
 out = chebpoly(f.onefun, N);
 

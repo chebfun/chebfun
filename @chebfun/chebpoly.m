@@ -90,11 +90,7 @@ if ( any(isinf(f.domain)) )
 end
 
 %% Compute the coefficients:
-if ( ii > 0 )
-    % CHEBPOLY() of a smooth piece:
-    out = chebpoly(f.funs{ii}, N).';
-    
-elseif ( (ii == 0) && (numFuns == 1))
+if ( ii > 0 || ( ii == 0 && numFuns == 1 ) )
     
     % CHEBPOLY() of a smooth piece:
     out = chebpoly(f.funs{1}, N).';    
