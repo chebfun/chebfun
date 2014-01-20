@@ -61,7 +61,9 @@ elseif ( nargin == 2 )
     % Consider the jump values for an infinite FUN:
     lvalF = get(f, 'lval');
     rvalF = get(f, 'rval');
-    data.xJumps = [lvalF; NaN; rvalF];
+
+    myNaN = nan(size(lvalF));
+    data.xJumps = [lvalF; myNaN; rvalF];
     
     ind = isinf(lvalG);
     if ( ind )

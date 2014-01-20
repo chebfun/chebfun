@@ -83,12 +83,12 @@ elseif ( nargin == 2 )
         
         % Discard the unnecessary jump data:
         if ( k == 1 )
-            dataNew.xJumps(1) = [];
+            dataNew.xJumps(1,:) = [];
             dataNew.yJumps(1,:) = [];
         end
         
         if ( k == nFuns )
-            dataNew.xJumps(end) = [];
+            dataNew.xJumps(end,:) = [];
             dataNew.yJumps(end,:) = [];
         end
 
