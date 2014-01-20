@@ -2,12 +2,12 @@ classdef cheboppref < chebpref
     
     % See above for documentation.
     properties
-        damped
-        display
-        errTol
-        lambdaMin
-        maxIter
-        plotting
+        damped = 1;
+        display = 'iter';
+        errTol = 1e-10;
+        lambdaMin = 1e-6;
+        maxIter = 25;
+        plotting = 1;
         discretisation = @colloc2
         scale = NaN
         dimensionValues = [32 64 128 256 512 724 1024 1448 2048]
