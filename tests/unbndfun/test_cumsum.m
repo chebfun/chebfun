@@ -111,5 +111,14 @@ opg = @(x) [exp(x) exp(x).*(x - 1)];
 gExact = opg(x);
 err = gVals - gExact;
 pass(7) = norm(err, inf) < 1e4*max(get(g,'epslevel').*get(g,'vscale'));
-    
+
+%% Test on cumulative sum over the columns
+h = cumsum(f, 1, 2);
+hVals = feval(h, x);
+
+oph = @(x) [exp(x) exp(x).*(x+1)];
+hExact = oph(x);
+err = hVals - hExact;
+pass(8) = norm(err, inf) < max(get(h,'epslevel').*get(h,'vscale'));
+
 end
