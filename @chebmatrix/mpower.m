@@ -5,7 +5,7 @@ if ( pow ~= round(pow) || pow < 0 )
 end
 
 % Create an "identity" chebmatrix for the given variable types.
-B = blockEye(A);
+B = identity(A);
        
 for i = 1:pow
     B = B*A;
