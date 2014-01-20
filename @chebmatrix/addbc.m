@@ -1,7 +1,12 @@
 function L = addbc(A,varargin)
+%ADDBC   Add boundary/general constraint to a chebmatrix.
+% 
+%   See also LINOP, LINOP.ADDBC.
+
+%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  See http://www.chebfun.org for Chebfun information.
 
 % Recast the chebmatrix as a linop, then apply the bc.
-
 L = addbc( linop(A), varargin{:} );
 
 end

@@ -1,4 +1,4 @@
-function pass = test_Concatnation
+function pass = test_concatenation
 
 I = linop.eye([0 2]);
 D = linop.diff([0 1 2]);
