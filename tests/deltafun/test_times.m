@@ -72,9 +72,9 @@ pass(9) = norm(s.location - sort(union(l1,l2)), inf) == 0;
 c1 = [ feval(diff(f1,0), l2(1));
        0;
        0; ];
-c2 = [ feval(diff(f2,0)-diff(f2,1), l1(2));
-       feval(diff(f2,0), l1(2));
-       0;                       ];
+c2 = [ feval(diff(f1, 2)-diff(f1, 1), l2(2));
+       feval(diff(f1, 0)-2*diff(f1, 1), l2(2));
+       feval(diff(f1, 0), l2(2));  ];
        
 c3 = [feval(diff(f1,0), l2(3));
       0;

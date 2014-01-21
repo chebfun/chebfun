@@ -80,7 +80,7 @@ vals_g = feval(g, x);
 g_exact = @(x) (x-dom(1)).^(pow+1)./(pow+1);
 vals_exact = feval(g_exact, x);
 err = vals_g - vals_exact;
-pass(10) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(9) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
 
 
 %% piecewise smooth chebfun: smoothfun + singfun & splitting off:
@@ -114,7 +114,7 @@ for j = 1:3
     err = fval - vals_exact;
     result(j) = ( norm(err-mean(err), inf) < 1e7*get(f,'epslevel')*norm(vals_exact, inf) );
 end
-pass(11) = all( result );
+pass(10) = all( result );
 
 %% piecewise smooth chebfun: smoothfun + singfun & splitting on.
 
@@ -138,7 +138,7 @@ g_check = cumsum(f_check);
 
 vals_check = feval(g_check, x);
 err = gval - vals_check;
-pass(12) = norm(err-mean(err), inf) < 5e4*get(f,'epslevel')*...
+pass(11) = norm(err-mean(err), inf) < 5e4*get(f,'epslevel')*...
     norm(vals_check, inf);
 
 % [TODO]:  Check fractional antiderivatives once implemented.

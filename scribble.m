@@ -127,7 +127,7 @@ f = chebfun(fData, ends);
     end
 
 end
-=======
+
 function f = scribble(s)
 %SCRIBBLE   Write text with a complex-valued CHEBFUN.
 %  SCRIBBLE('STRING') returns a complex CHEBFUN representing the text in STRING.

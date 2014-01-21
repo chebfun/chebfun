@@ -97,7 +97,6 @@ function f = diffContinuousDim(f, n)
 funs = f.funs;
 numFuns = numel(funs);
 numCols = size(f.funs{1}, 2);
-pointValues = f.pointValues;
 
 % Set a tolerance: (used for introducing Dirac deltas at jumps)
 tol = epslevel(f)*hscale(f);
