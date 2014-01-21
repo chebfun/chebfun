@@ -20,7 +20,8 @@ function data = plotData(f, g, h)
 
 % Make the appropriate call to plotData for the SMOOTHPARTs:
 if ( nargin == 1 )
-    g = []; h = [];
+    g = [];
+    h = [];
     data = plotData(f.smoothPart);
 elseif (nargin == 2)
     h = [];
@@ -29,7 +30,6 @@ elseif (nargin == 3)
     data = plotData(f.smoothPart, g.smoothPart, h.smoothPart);
 end
 
-unbnd = false;
 scaleData = @(x, y, exps) y .* (1+x).^exps(1) .* (1-x).^exps(2);
 
 if ( isempty(g) )
@@ -39,11 +39,6 @@ if ( isempty(g) )
     data.yLine = scaleData(data.xLine, data.yLine, f.exponents);
     % Scale the sample point y-data:
     data.yPoints = scaleData(data.xPoints, data.yPoints, f.exponents);
-    
-    if ( any(f.exponents < 0 ) )
-        unbnd = true;
-    end
-    
 elseif ( isa(g, 'singfun') )
     % PLOT(F, G)
     
@@ -63,43 +58,40 @@ elseif ( isa(g, 'singfun') )
         data.zPoints = scaleData(data.hGrid.xPoints, data.zPoints, h.exponents);
         
     end
-    
-    if ( any(g.exponents < 0 ) )
-        unbnd = true;
-    end
-    
 end
 
-% if ( unbnd )
-    % Auto adjust y limits based upon standard deviation
-    
-    % TODO: This needs much more work!
-    
-    gl = data.yLine;
-    gl(~isfinite(gl)) = [];
-    exps = f.exponents;
-    l = length(gl);
-    mask = true(size(gl));
+% Set the y-limits to something sensible:
+data.yLim = getYLimits(data.yLine, f.exponents);
+
+end
+
+function yLim = getYLimits(vals, exps)
+%GETYLIMITS   Select y-limits for SINGFUN plots based upon standard deviation.
+
+vals(~isfinite(vals)) = [];
+len = length(vals);
+mask = true(size(vals));
+
+% If the function blows up on the left, ignore values on the left which are too
+% close to the singularity and which will skew the y-limits to be too large:
+if ( exps(1) < 0 )
     scl = min(-.2*exps(1), .5);
-    numChuck = max(ceil(scl*l), 5);
-    if ( exps(1) >= 0 )
-        numChuck = 0;
-    end
+    numChuck = max(ceil(scl*len), 5);
     mask(1:numChuck) = false;
+end
+
+% Same thing on the right:
+if ( exps(2) < 0 )
     scl = min(-.2*exps(2), .5);
-    numChuck = max(ceil(scl*l), 5);
-    if ( exps(2) >= 0 )
-        numChuck = -1;
-    end
+    numChuck = max(ceil(scl*len), 5);
     mask(end-numChuck:end) = false;
-    masked = gl(mask);
-    sd = std(masked);
-    bot = max(min(gl), min(masked) - sd);
-    top = min(max(gl), max(masked) + sd);
-    [bot, top]
-    data.yLim = [bot, top];
-%     data.yLine(gl > 1.1*top) = NaN;
-%     data.yLine(gl < 1.1*bot) = NaN;
-% end
+end
+
+% Adjust the y-limits:
+masked = vals(mask);
+sd = std(masked);
+bot = max(min(vals), min(masked) - sd);
+top = min(max(vals), max(masked) + sd);
+yLim = [bot, top];
 
 end
