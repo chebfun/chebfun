@@ -1,4 +1,4 @@
-function F = gradient( f ) 
+function varargout = gradient( f ) 
 %GRADIENT Numerical gradient of a chebfun2. 
 % 
 %  [FX FY]=GRADIENT(F) returns the numerical gradient of the chebfun2 F.
@@ -8,7 +8,7 @@ function F = gradient( f )
 %
 %  G = GRADIENT(F) returns a chebfun2v which represents
 % 
-%            G = (F_x ; F_y )
+%            G = ( F_x ; F_y )
 %
 % See also GRAD.
 
@@ -19,5 +19,11 @@ fx = diff(f, 1, 2);   % diff in x-variable
 fy = diff(f, 1, 1);   % diff in y-variable 
 
 F = chebfun2v( fx, fy );
+
+if ( nargout <= 1 ) 
+    varargout = { F };
+else
+    varargout = F.components; 
+end
 
 end 

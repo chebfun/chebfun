@@ -1,4 +1,4 @@
-function varargout = roots(F,varargin)
+function varargout = roots( F, varargin )
 %ROOTS Find the common zeros of a chebfun2v object.
 %
 % r = ROOTS(F) finds the common zeros of the two bivariate functions F(1)
@@ -882,21 +882,27 @@ end
 %%%%%%%%%%%%%%%%%%%%%%       Marching Squares       %%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [xroots,yroots] = roots_marchingSquares(f)
+function [xroots, yroots] = roots_marchingSquares( f )
 
-fx = f.components{1}; fy = f.components{2};
+fx = f.components{1}; 
+fy = f.components{2};
 prefs = chebpref; 
 tol = prefs.eps;
-num=0; r =zeros(1,2); dom = fy.domain;
+num = 0; 
+r = zeros(1,2); 
+dom = fy.domain;
 
 nf = f.nComponents; 
-if ( nf > 2)
+if ( nf > 2 )
     error('CHEBFUN2:ROOTS','Chebfun2 is unable to find zero surfaces.');
 end
 
-if length(fx)==1 || length(fy) == 1
-    if(length(fx) == 1)
-        rowz = roots(fx.rows); colz = roots(fy.cols); % roots lie along these lines
+if ( length(fx) == 1 || length(fy) == 1 )   % one of them is of the form u(x)v(y)
+    
+    if ( length(fx) == 1 )
+        % Find roots of fx. 
+        rowz = roots(fx.rows); 
+        colz = roots(fy.cols); 
         for jj = 1:length(rowz)
             rr = roots(fy(rowz(jj),:));
             for kk = 1:length(rr)
@@ -909,9 +915,10 @@ if length(fx)==1 || length(fy) == 1
                 r(num+1,:) = [rr(kk) colz(jj)]; num=num+1;
             end
         end
-    end
-    if(length(fy) == 1)
-        rowz = roots(fy.rows); colz = roots(fy.cols); % roots lie along these lines
+    elseif ( length(fy) == 1 )
+        % roots lie along these lines
+        rowz = roots(fy.rows); 
+        colz = roots(fy.cols); 
         for jj = 1:length(rowz)
             ff = fx(rowz(jj),:);
             rr = roots(ff);
@@ -926,27 +933,34 @@ if length(fx)==1 || length(fy) == 1
             end
         end
     end
+    
 else
     % Use contourc to get roots to 3-4 digits.
-    N = 400; NewtonFail = 0;
-    rfx = roots(fx); rfy=roots(fy);
-    x=linspace(-1,1,N);  % this is on [-1,1] because all zero contours are represented by chebfuns on the default interval.
-    r=zeros(0,2); num=0;
+    N = 400; 
+    NewtonFail = 0;
+    rfx = roots(fx); 
+    rfy = roots(fy);
+    x = linspace(-1, 1, N);  % this is on [-1,1] because all zero contours are represented by chebfuns on the default interval.
+    r = zeros(0,2); 
+    num = 0;
     
-    Rx = rfx(x,:); Ry = rfy(x,:);
-    if any(size(Rx)==[1 1]) 
-        Rx = Rx(:); 
+    Rx = rfx(x, :); 
+    Ry = rfy(x, :);
+    if ( any(size(Rx)==[1 1]) )
+        Rx = Rx( : ); 
     end
-    if any(size(Ry)==[1 1]) 
-        Ry = Ry(:); 
+    if ( any(size(Ry)==[1 1]) )
+        Ry = Ry( : ); 
     end
     
     for jj = 1:size(rfx,2)
-        rx = Rx(:,jj); rlx=real(rx); imx=imag(rx);
+        rx = Rx(:, jj); 
+        rlx = real( rx ); 
+        imx = imag( rx );
         for kk = 1:size(rfy,2)
             ry = Ry(:,kk);
-            [x0,y0]=intersections(rlx,imx,real(ry),imag(ry));
-            if ~isempty(x0)
+            [x0, y0]=intersections(rlx, imx, real(ry), imag(ry));
+            if ( ~isempty(x0) )
                 r(num+1:num+length(x0),1)=x0;
                 r(num+1:num+length(x0),2)=y0;
                 num=num+length(x0);
@@ -954,18 +968,25 @@ else
         end
     end
     % Use a few iterations of Newton to get 14-15 digits.
-    f = fx; g = fy;
-    fx = diff(f,1,2); fy=diff(f); gx = diff(g,1,2); gy=diff(g);            % derivatives.
-    J = @(x,y) [feval(fx,x,y) feval(fy,x,y);feval(gx,x,y) feval(gy,x,y)];  % Jacobian
+    f = fx; 
+    g = fy;
+    fx = diff(f,1,2); 
+    fy = diff(f); 
+    gx = diff(g,1,2); 
+    gy = diff(g);            % derivatives.
+    J = @(x,y) [feval(fx,x,y) feval(fy,x,y);...
+                                    feval(gx,x,y) feval(gy,x,y)];  % Jacobian
     
     warnstate = warning('off','CHEBFUN2:NEWTON');   % turn warnings off, and capture Newton failure instead.
     for kk = 1:size(r,1)
-        x0 = [r(kk,1),r(kk,2)].';dx=1; iter = 1;
+        x0 = [r(kk,1), r(kk,2)].';
+        dx = 1; 
+        iter = 1;
         while ( norm(dx) > 10*tol && iter < 15 )
             dx = J(x0(1),x0(2)) \ -[feval(f,x0(1),x0(2));feval(g,x0(1),x0(2))];    % update
             x0 = dx + x0; iter = iter + 1;
         end
-        if norm(dx) < 10*sqrt(tol) % we may have diverged so don't always update.
+        if ( norm(dx) < 10*sqrt(tol) ) % we may have diverged so don't always update.
             r(kk,:) = x0;
         else
             NewtonFail = 1;

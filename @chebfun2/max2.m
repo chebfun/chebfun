@@ -1,4 +1,4 @@
-function [Y, X]=max2(f)
+function [Y, X]=max2( f )
 %MAX2 Global maximum of a chebfun2
 %
 % Y = MAX2(F) returns the global maximum of F over its domain. 
@@ -16,7 +16,7 @@ function [Y, X]=max2(f)
 [Y, X] = minandmax2( f );   
 
 % Extract out maximum
-Y = Y(2); 
-X = X(2,:); 
+Y = Y( 2 ); 
+X = X( 2, : ); 
 
 end
