@@ -122,26 +122,21 @@ for j = 1:n
         funs{k} = diff(funs{k});
         % If there is a delta function at the join, recreate the fun using the
         % deltafun constructor:
-        % [TODO]: This does not handle array valuedness at the moment.
         p.enableDeltaFunctions = true;
         pref = chebpref(p);
-        if ( deltaMag(k, 1) || deltaMag(k+1, 1) )
+        tol = pref.deltaPrefs.deltaTol;
+        if ( any(abs(deltaMag(k, :) > tol)) || any(abs(deltaMag(k+1, :) > tol)) )
+            % [TODO]: This does not handle array valuedness at the moment.
             % Delta functions are only possible at the ends of each domain:
             deltaLoc = funs{k}.domain;
-            funs{k} = fun.constructor(funs{k}, funs{k}.domain, [deltaMag(k)/2, deltaMag(k+1)/2], deltaLoc, pref );
+            funs{k} = fun.constructor(funs{k}, funs{k}.domain, [deltaMag(k)/2, deltaMag(k+1)/2], deltaLoc, pref);
         end
     end
     
 
     % Compute new function values at breaks using JUMPVALS():
     pointValues = chebfun.getValuesAtBreakpoints(funs);
-    % Update impulses:
-%     if ( size(pointValues, 3) > 1 )
-%        pointValues = cat(3, pointValues(:,:,1), newDeltas, pointValues(:,:,2:end));
-%     elseif ( any(newDeltas) )
-%        pointValues(:,:,2) = newDeltas;
-%     end
-
+    
     % Reassign data to f:
     f.funs = funs;
     f.pointValues = pointValues;
