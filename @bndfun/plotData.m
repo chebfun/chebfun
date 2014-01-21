@@ -26,12 +26,8 @@ if ( nargin == 1 || isempty(g) )
     lval = get(f, 'lval');
     rval = get(f, 'rval');
     
-    % Consider the ylim:
-    data.yLim = [min(min([data.yLine; lval; rval])) ...
-        max(max([data.yLine; lval; rval]))]; 
-    
     % Consider the jump values for an infinite FUN:
-    data.xJumps = [f.domain(1); NaN; f.domain(2)];
+    data.xJumps = [f.domain(1) ; NaN ; f.domain(2)];
     
     ind = isinf(lval);
     if ( any( ind ) )
@@ -44,26 +40,22 @@ if ( nargin == 1 || isempty(g) )
     end
     
     myNaN = nan(size(lval));
-    data.yJumps = [lval; myNaN; rval];
+    data.yJumps = [lval ; myNaN ; rval];
     
 elseif ( nargin == 2 )
     % PLOT(F, G):
     
     data = plotData(f.onefun, g.onefun);
     
-    lvalG = get(f, 'lval');
-    rvalG = get(f, 'rval');
-    
-    % Consider the ylim:
-    data.yLim = [min(min([data.yLine; lvalG; rvalG])) ...
-        max(max([data.yLine; lvalG; rvalG]))];
+    lvalG = get(g, 'lval');
+    rvalG = get(g, 'rval');
     
     % Consider the jump values for an infinite FUN:
     lvalF = get(f, 'lval');
     rvalF = get(f, 'rval');
 
     myNaN = nan(size(lvalF));
-    data.xJumps = [lvalF; myNaN; rvalF];
+    data.xJumps = [lvalF ; myNaN ; rvalF];
     
     ind = isinf(lvalG);
     if ( ind )
@@ -76,7 +68,7 @@ elseif ( nargin == 2 )
     end
     
     myNaN = nan(size(lvalG));
-    data.yJumps = [lvalG; myNaN; rvalG];
+    data.yJumps = [lvalG ; myNaN ; rvalG];
     
 else
     % PLOT(F, G, H):
