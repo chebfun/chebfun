@@ -56,10 +56,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) linop 
         end
         
     end
-<<<<<<< Updated upstream
-    
-end
-=======
+
         
 end
->>>>>>> Stashed changes
+
