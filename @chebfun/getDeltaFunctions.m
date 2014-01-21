@@ -1,6 +1,6 @@
 function [deltaMag, deltaLoc] = getDeltaFunctions(f)
 %GETDELTAFUNCTIONS   Get the delt functions in a chebfun F.
-%   [DELTAMAG, DELTALOC] = GETDELTAFUNCTIONS(F) returns the returns the delta
+%   [DELTAMAG, DELTALOC] = GETDELTAFUNCTIONS(F) the returns the delta
 %   functions within a chebfun F. DELTAMAG is a matrix containing the (signed)
 %   magnitude of the delta functions and their higher derivatives, while
 %   DELTALOC is a an array containing the location of delta functions.

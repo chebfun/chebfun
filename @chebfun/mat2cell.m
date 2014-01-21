@@ -115,7 +115,6 @@ idx = mat2cell(1:numel(f), M, N);
 % Store these coluns in a CELL array:
 for k = numel(idx):-1:1
     g{k} = f(idx{k});
->>>>>>> upstream/development
 end
 
 end

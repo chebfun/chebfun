@@ -69,12 +69,7 @@ numFuns = numel(f.funs);
 
 % Loop m times:
 for l = 1:m
-        % Get the level 2 (delta function) impulse data:
-    if ( size(f.impulses, 3) > 1 )
-        deltas = f.impulses(:,:,2);
-    else
-        deltas = zeros(length(dom), numCols);
-    end
+    deltas = zeros(length(dom), numCols);
     
     rval = deltas(1,:);
     funs = [];

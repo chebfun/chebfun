@@ -17,7 +17,6 @@ pass(2) = isfinite(f);
 
 % Test on function with infinite breakpoint value.
 % [TODO]:  Test with a less artificial example.
-val = f.pointValues(1, 1);
 f.pointValues(1, 1) = Inf;
 pass(3) = ~isfinite(f);
 

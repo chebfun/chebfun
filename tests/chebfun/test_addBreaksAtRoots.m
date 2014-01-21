@@ -5,7 +5,7 @@ if ( nargin == 0 )
 end
 
 %% 
-% Test that impulses are exactly zero at the new roots.
+% Test that pointValues are exactly zero at the new roots.
 
 % Scalar:
 f = chebfun(@(x) sin(x)-.5, pref);

@@ -155,7 +155,7 @@ elseif ( isa(f, 'chebfun') )
             for k = 1:numFuns
                 g.funs{k} = power(f.funs{k}, b);
             end
-            g.impulses = g.impulses.^b;
+            g.pointValues = g.pointValues.^b;
         else
             % Result will be smooth. Call COMPOSE():
             g = compose(f, @(x) power(x, b));
@@ -180,8 +180,8 @@ elseif ( isa(f, 'chebfun') )
         for k = 1:numFuns
             g.funs{k} = power(f.funs{k}, b);
         end
-        % Update the impulses:
-        g.impulses = g.impulses.^b;
+        % Update the pointValues:
+        g.pointValues = g.pointValues.^b;
         
     end
     

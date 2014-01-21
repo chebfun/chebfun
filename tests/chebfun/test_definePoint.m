@@ -77,7 +77,7 @@ check = zeros(1,4);
 check(1) = all(g.domain == unique([dom, brkpts]));
 check(2) = feval(g, brkpts(1)) == 1;
 check(3) = feval(g, brkpts(2)) == 2;
-check(4) = all(g.impulses == [f.impulses(1:2); 1; 2; f.impulses(3:4)]);
+check(4) = all(g.pointValues == [f.pointValues(1:2); 1; 2; f.pointValues(3:4)]);
 
 pass(11) = all( check );
 
