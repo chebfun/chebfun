@@ -53,6 +53,8 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
     methods
         
         function obj = adchebfun(varargin)
+            % TODO: Document. Do we want to allow passing derivatives here for
+            % instant seeding at construction time?
             if ( nargin == 1 && isa(varargin{1}, 'chebfun') )
                 obj.func = varargin{1};
             else
@@ -607,6 +609,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
             
         function f = mtimes(f, g)
+            % TODO: Document
             if ( ~isa(g, 'adchebfun') )
                 f.func = f.func*g;
                 f.jacobian = f.jacobian*g;
@@ -687,6 +690,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
       
         function u = seed(u, k, m)
+            % TODO: Document
             dom = u.domain;
             I = operatorBlock.eye(dom);
             Z = operatorBlock.zeros(dom);
@@ -699,40 +703,72 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end        
    
         function g = sec(f)
+            % F = SEC(F)   SEC of an ADCHEBFUN.
+            
+            % Need to copy F to G, as we need info about both functions to
+            % compute derivatives below.
             g = f;
+            % Linearity information
             g.isConstant = iszero(f.jacobian);
+            % Update CHEBFUN part
             g.func = sec(f.func);
+            % Update derivative part
             g.jacobian = operatorBlock.mult(tan(f.func).*g.func)*f.jacobian;
         end
            
         function g = secd(f)
+            % F = SECD(F)   SECD of an ADCHEBFUN.
+            
+            % Need to copy F to G, as we need info about both functions to
+            % compute derivatives below.
             g = f;
+            % Linearity information
             g.isConstant = iszero(f.jacobian);
+            % Update CHEBFUN part
             g.func = secd(f.func);
+            % Update derivative part
             g.jacobian = operatorBlock.mult(pi/180*tand(f.func).*g.func)* ...
                 f.jacobian;
         end
         
         function g = sech(f)
+            % F = SECH(F)   SECH of an ADCHEBFUN.
+            
+            % Need to copy F to G, as we need info about both functions to
+            % compute derivatives below.
             g = f;
+            % Linearity information
             g.isConstant = iszero(f.jacobian);
+            % Update CHEBFUN part
             g.func = sech(f.func);
+            % Update derivative part
             g.jacobian = operatorBlock.mult(-tanh(f.func).*g.func)*f.jacobian;
         end
         
         function f = sin(f)
+            % F = SIN(F)   SIN of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
+            % Update derivative part
             f.jacobian = linBlock.mult(cos(f.func))*f.jacobian;
+            % Update CHEBFUN part
             f.func = sin(f.func);
         end
         
         function f = sinh(f)
+            % F = SINH(F)   SINH of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
+            % Update derivative part
             f.jacobian = operatorBlock.mult(cosh(f.func))*f.jacobian;
+            % Update CHEBFUN part
             f.func = sinh(f.func);
         end
 
         function out = subsref(f, index)
+            % TODO: Document
             switch index(1).type
                 case '()'
                     out = feval(f, index.subs{1});
@@ -743,30 +779,51 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
         
         function f = sum(f)
+            % F = SUM(F)   Definite integral of an ADCHEBFUN.
+            
+            % Compute the definite integral of the CHEBFUN part. This will be a
+            % scalar, but we want to return and ADCHEBFUN in order to be able to
+            % return the derivative information as well.
             f.func = sum(f.func);
+            % Update derivative information
             f.jacobian = functionalBlock.sum(f.domain)*f.jacobian;
         end
         
         function f = tan(f)
+            % F = TAN(F)   TAN of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
+            % Update derivative part
             f.jacobian = operatorBlock.mult(sec(f.func).^2)*f.jacobian;
+            % Update CHEBFUN part
             f.func = tan(f.func);
         end
         
         function f = tand(f)
+            % F = TAND(F)   TAND of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
+            % Update derivative part
             f.jacobian = operatorBlock.mult((pi/180)*secd(f.func).^2)* ...
                 f.jacobian;
+            % Update CHEBFUN part
             f.func = tand(f.func);
         end
         
         function f = tanh(f)
+            % F = TANH(F)   TANH of an ADCHEBFUN.
+            
+            % Linearity information
             f.isConstant = iszero(f.jacobian);
             f.jacobian = operatorBlock.mult(sech(f.func).^2)*f.jacobian;
+            % Update CHEBFUN part
             f.func = tanh(f.func);
         end
         
         function f = times(f, g)
+            % TODO: Document
             if ( isnumeric(f) ) || ( isnumeric(g) )
                 f = mtimes(f, g);
             elseif ( ~isa(f, 'adchebfun') )
@@ -793,11 +850,14 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
 
         function f = uminus(f)
+            % -     Unary minus of an ADCHEBFUN
+            
+            % Do the obvious things...
             f.func = -f.func;
-            f.jacobian = -f.jacobian;
-%             f.isConstant = f.isConstant;            
+            f.jacobian = -f.jacobian;         
         end
-        
+
+% TODO: Delete? Why was this here to start with?
 %         function f = vertcat(varargin)
 %             if ( nargin > 1 )
 %                 f = chebmatrix(varargin.');
@@ -807,6 +867,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
 %         end
         
         function f = updateDomain(f)
+            % TODO: Document
             if ( isa(f.func, 'chebfun') )
                 f.domain = union(f.domain, f.func.domain);
             end
