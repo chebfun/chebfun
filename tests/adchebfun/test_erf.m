@@ -1,4 +1,4 @@
-% Test file for ADCHEBFUN error and related functions, part 4/4
+% Test file for ADCHEBFUN error and related functions
 
 function pass = test_erf
 
@@ -24,14 +24,7 @@ for k = 1:numel(errFunctions)
     % We expect all elements of ORDER1 to be close to 1, and of ORDER2 to be
     % close to 2.
     pass(2, k) = ( max(abs(order1 - 1)) < tol ) & ...
-        ( max(abs(order2 - 2)) < tol );
-    
-    % Denote that an error happened when computing derivative, because the
-    % version of development we branched off in Git didn't include the required
-    % methods
-    pass(1, k) = -1;
-    pass(2, k) = -1;
-    
+        ( max(abs(order2 - 2)) < tol );    
 end
 
 end

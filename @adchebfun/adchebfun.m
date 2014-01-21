@@ -587,6 +587,15 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f = updateDomain(f);
         end
         
+        function h = loglog(f, varargin)
+            % LOGLOG    log-log plot of the CHEBFUN part of an ADCHEBFUN
+            if nargout == 1
+                h = loglog(f.func, varargin{:});
+            else
+                loglog(f.func, varargin{:});
+            end
+        end
+        
         function f = minus(f, g)
             % -     Subtraction of ADCHEBFUN objects
             f = plus(f, -g);
@@ -623,6 +632,15 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                      'two chebfun objects.']);
             end
         end        
+        
+        function h = plot(f, varargin)
+            % PLOT      Plot the CHEBFUN part of an ADCHEBFUN
+            if nargout == 1
+                h = plot(f.func, varargin{:});
+            else
+                plot(f.func, varargin{:});
+            end
+        end
         
         function f = plus(f, g)
             % +     Addition of ADCHEBFUN objects
@@ -743,6 +761,24 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             g.func = sech(f.func);
             % Update derivative part
             g.jacobian = operatorBlock.mult(-tanh(f.func).*g.func)*f.jacobian;
+        end
+        
+        function h = semilogx(f, varargin)
+            % SEMILOGX      Semilogx plot of the CHEBFUN part of an ADCHEBFUN
+            if nargout == 1
+                h = semilogx(f.func, varargin{:});
+            else
+                semilogx(f.func, varargin{:});
+            end
+        end
+        
+        function h = semilogy(f, varargin)
+            % SEMILOGY      semilogy plot of the CHEBFUN part of an ADCHEBFUN
+            if nargout == 1
+                h = semilogy(f.func, varargin{:});
+            else
+                semilogy(f.func, varargin{:});
+            end
         end
         
         function f = sin(f)
