@@ -101,6 +101,8 @@ lineData = {};
 pointData = {};
 jumpData = {};
     
+yLim = [inf, -inf];
+
 %%
 % Get the data for plotting from PLOTDATA():
 while ( ~isempty(varargin) )
@@ -183,6 +185,10 @@ while ( ~isempty(varargin) )
             styleData(idx:(idx+1)) = [];
         end
     end
+    
+    for k = 1:numel(newData)
+        yLim = [min(newData(k).yLim(1), yLim(1)), max(newData(k).yLim(2), yLim(2))];
+    end
 
     % Loop over the columns:
     for k = 1:numel(newData)
@@ -235,6 +241,10 @@ if ( isComplex )
     set(h3, 'LineStyle', 'none', 'Marker', 'none')
 else
     set(h3, 'LineStyle', ':', 'Marker', 'none')
+end
+
+if ( all( isfinite(yLim) ) )
+    set(gca, 'ylim', yLim), shg
 end
 
 % Return hold state to what it was before:

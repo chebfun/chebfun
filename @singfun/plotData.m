@@ -76,20 +76,29 @@ if ( unbnd )
     % TODO: This needs much more work!
     
     gl = data.yLine;
+    gl(~isfinite(gl)) = [];
     exps = f.exponents;
     l = length(gl);
     mask = true(size(gl));
     scl = min(-.2*exps(1), .5);
-    mask(1:ceil(scl*l)) = false;
+    numChuck = max(ceil(scl*l), 5);
+    if ( exps(1) >= 0 )
+        numChuck = 0;
+    end
+    mask(1:numChuck) = false;
     scl = min(-.2*exps(2), .5);
-    mask(end-floor(scl*l)) = false;
+    numChuck = max(ceil(scl*l), 5);
+    if ( exps(2) >= 0 )
+        numChuck = -1;
+    end
+    mask(end-numChuck:end) = false;
     masked = gl(mask);
     sd = std(masked);
     bot = max(min(gl), min(masked) - sd);
     top = min(max(gl), max(masked) + sd);
     data.yLim = [bot, top];
-    data.yLine(gl > 1.1*top) = NaN;
-    data.yLine(gl < 1.1*bot) = NaN;
+%     data.yLine(gl > 1.1*top) = NaN;
+%     data.yLine(gl < 1.1*bot) = NaN;
 end
 
 end

@@ -34,6 +34,7 @@ hfig = figure('Visible', 'off');
 
 % Plots of real scalar functions.
 pass(1) = doesNotCrash(@() plot(fsr1));
+plot(fsr1, fsr2)
 pass(2) = doesNotCrash(@() plot(fsr1, fsr2));
 pass(3) = doesNotCrash(@() plot3(fsr1, fsr2, fsr3));
 

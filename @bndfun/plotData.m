@@ -24,32 +24,39 @@ if ( nargin == 1 || isempty(g) )
     
     % Sort out the jumps:
     data.xJumps = [f.domain(1) ; NaN ; f.domain(2)];
-    data.yJumps = getJumps(f);
+    data.yJumps = getJumps(f, data.yLine);
     
 elseif ( nargin == 2 )
     % PLOT(F, G):
     data = plotData(f.onefun, g.onefun);
     
     % Sort out the jumps:
-    data.xJumps = getJumps(f);
-    data.yJumps = getJumps(g);
+    data.xJumps = getJumps(f, data.xLine);
+    data.yJumps = getJumps(g, data.yLine);
     
 else
     % PLOT(F, G, H):
     data = plotData(f.onefun, g.onefun, h.onefun);
     
     % Sort out the jumps:
-    data.xJumps = getJumps(f);
-    data.yJumps = getJumps(g);
-    data.zJumps = getJumps(h);
+    data.xJumps = getJumps(f, data.xLine);
+    data.yJumps = getJumps(g, data.yLine);
+    data.zJumps = getJumps(h, data.zLine);
     
 end
 
 end
 
-function jumps = getJumps(f)
+function jumps = getJumps(f, fLine)
     lvalF = get(f, 'lval');
     rvalF = get(f, 'rval');
+    
+    % Deal with functions which blow up:
+    idx = isinf(lvalF);
+    lvalF(idx) = fLine(2, idx);
+    idx = isinf(rvalF);
+    rvalF(idx) = fLine(end-1, idx);
+    
     myNaN = nan(size(lvalF));
     jumps = [lvalF ; myNaN ; rvalF];
 end
