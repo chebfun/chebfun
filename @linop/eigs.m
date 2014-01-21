@@ -1,48 +1,53 @@
 function varargout = eigs(L,varargin)
-% EIGS  Find selected eigenvalues and eigenfunctions of a linop.
-% D = EIGS(A) returns a vector of 6 eigenvalues of the linop A. EIGS will
-% attempt to return the eigenvalues corresponding to the least oscillatory
-% eigenfunctions. (This is unlike the built-in EIGS, which returns the
-% largest eigenvalues by default.)
+%EIGS    Eigenvalues and eigenfunctions of a linear operator.
+%   Important: While you can construct a LINOP and apply this method, the 
+%   recommended procedure is to use CHEBOP.EIGS instead. 
 %
-% [V,D] = EIGS(A) returns a diagonal 6x6 matrix D of A's least oscillatory
-% eigenvalues, and the corresponding eigenfunctions in V. If A operates on
-% a single variable, then V is a quasimatrix of size Inf-by-6. If A
-% operates on m (m>1) variables, then V is a 1-by-m cell array of
-% quasimatrices. You can also use [V1,V2,...,Vm,D] = EIGS(A) to get
-% a separate quasimatrix for each variable.
+%   D = EIGS(A) returns a vector of 6 eigenvalues of the linop A. EIGS will
+%   attempt to return the eigenvalues corresponding to the most easily
+%   resolved eigenfunctions. (This is unlike the built-in EIGS, which
+%   returns the largest eigenvalues by default.)
 %
-% EIGS(A,B) solves the generalized eigenproblem A*V = B*V*D, where B
-% is another linop.
+%   [V,D] = EIGS(A) returns a diagonal 6x6 matrix D of A's most easily
+%   resolved eigenvalues, and their corresponding eigenfunctions in the
+%   chebmatrix V, where V{i}(:,j) is the jth eigenfunction in variable i of
+%   the system.
 %
-% EIGS(A,K) and EIGS(A,B,K) find the K smoothest eigenvalues.
+%   [...] = EIGS(A,B) solves the generalized eigenproblem A*V = B*V*D,
+%   where B is another linop.
 %
-% EIGS(A,K,SIGMA) and EIGS(A,B,K,SIGMA) find K eigenvalues. If SIGMA is a
-% scalar, the eigenvalues found are the ones closest to SIGMA. Other
-% selection possibilities for SIGMA are:
-%    'LM' (or Inf) and 'SM' for largest and smallest magnitude
-%    'LR' and 'SR' for largest and smallest real part
-%    'LI' and 'SI' for largest and smallest imaginary part
-% SIGMA must be chosen appropriately for the given operator. For
-% example, 'LM' for an unbounded operator will fail to converge.
+%   EIGS(A,K) and EIGS(A,B,K) find the K most easily resolved eigenvalues.
 %
-% Despite the syntax, this version of EIGS does not use iterative methods
-% as in the built-in EIGS for sparse matrices. Instead, it uses the
-% built-in EIG on dense matrices of increasing size, stopping when the
-% targeted eigenfunctions appear to have converged, as determined by the
-% chebfun constructor.
+%   EIGS(A,K,SIGMA) and EIGS(A,B,K,SIGMA) find K eigenvalues. If SIGMA is
+%   a scalar, the eigenvalues found are the ones closest to SIGMA. Other
+%   selection possibilities for SIGMA are:
 %
-% EXAMPLE: Simple harmonic oscillator
+%      'LM' (or Inf) and 'SM' for largest and smallest magnitude
+%      'LR' and 'SR' for largest and smallest real part
+%      'LI' and 'SI' for largest and smallest imaginary part
 %
-%   d = domain(0,pi);
-%   A = diff(d,2) & 'dirichlet';
+%   SIGMA must be chosen appropriately for the given operator. For example,
+%   'LM' for an unbounded operator will fail to converge.
+%
+%   This version of EIGS does not use iterative methods as in the built-in
+%   EIGS for sparse matrices. Instead, it uses the built-in EIG on dense
+%   matrices of increasing size, stopping when the targeted eigenfunctions
+%   appear to have converged, as determined by the chebfun constructor.
+%
+%   EXAMPLE: Simple harmonic oscillator
+%
+%   d = [0 pi];
+%   A = linop( operatorBlock.diff(d,2) );
+%   E = functionalBlock.eval(d);
+%   A = addbc(A,E(0),0);
+%   A = addbc(A,E(pi),0);
 %   [V,D] = eigs(A,10);
 %   format long, sqrt(-diag(D))  % integers, to 14 digits
 %
-% See also EIGS, EIG.
+%   See also CHEBOPPREF, CHEBOP.EIGS.
 
-% Copyright 2011 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org for Chebfun information.
 
 % Parsing inputs.
 M = [];  k = 6;  sigma = []; 
@@ -55,10 +60,6 @@ while (nargin > j)
     if isa(item,'linop')
         % Generalized operator term
         M = item;
-%     elseif isstruct(varargin{j}) && isfield(varargin{j},'name')
-%         if ~strcmp(varargin{j}.name,'linear')
-%             map = varargin{j};
-%         end
     elseif isa(item,'chebDiscretization')
         discType = item;
     else
@@ -177,12 +178,6 @@ if isempty(sigma)
         sigma = lam2(index);
     end
 end
-
-
-
-% Default settings
-%settings = chebopdefaults;
-%settings.scale = L.scale;
 
 % Linear combination coefficients for convergence test.
 coeff = 1./(2*(1:k)');
