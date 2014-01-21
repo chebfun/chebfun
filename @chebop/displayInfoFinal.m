@@ -1,7 +1,10 @@
 function displayInfoFinal(u, delta, iterNo, errEstDE, errEstBC, displayFig, displayTimer, pref)
-% Utility routine for displaying iteration progress in the solve functions.
+%DISPLAYINFOFINAL
+%
+% Utility routine for displaying iteration progress in the solve functions. This
+% method prints out information after Newton iteration finishes.
 
-% Copyright 2011 by The University of Oxford and The Chebfun Developers.
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % Obtain preferences for what we want to show
@@ -20,7 +23,8 @@ if strcmp(display,'iter') || strcmp(display,'final')
     else
         fprintf('Newton''s method converged in %i iterations.\n',iterNo);
     end
-    fprintf('Final error estimate: %.2e (differential equation) \n %29.2e (boundary conditions). \n\n',errEstDE, errEstBC);
+    fprintf(['Final error estimate: %.2e (differential equation) \n' ...
+        '%29.2e (boundary conditions). \n\n'], errEstDE, errEstBC);
 end
 
 

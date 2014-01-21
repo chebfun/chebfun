@@ -1,7 +1,10 @@
 function [displayFig, displayTimer] = displayInfoInit(u, pref)
-% Utility routine for displaying iteration progress in the solve functions.
+%DISPLAYINFOITER
+%
+% Utility routine for displaying iteration progress in the solve functions. This
+% method prints out information before the Newton iteration starts.
 
-% Copyright 2011 by The University of Oxford and The Chebfun Developers.
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % Obtain preferences for what we want to show

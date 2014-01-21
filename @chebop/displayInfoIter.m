@@ -1,7 +1,10 @@
 function displayInfoIter(u, delta, iterNo, normDelta, cFactor, lenDelta, lambda, lenu, displayFig, displayTimer, pref)
-% Utility routine for displaying iteration progress in the solve functions.
+%DISPLAYINFOITER
+%
+% Utility routine for displaying iteration progress in the solve functions. This
+% method prints during the Newton iteration.
 
-% Copyright 2011 by The University of Oxford and The Chebfun Developers.
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % Obtain preferences for what we want to show
