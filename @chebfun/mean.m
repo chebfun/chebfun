@@ -10,14 +10,15 @@ function h = mean(f, g)
 
 if ( nargin == 1 )
 
-    if ( ~f.isTransposed )
+    if ( ~f(1).isTransposed )
 
         % Check to see if the domain is unbounded:
-        infEnds = isinf(f.domain([1, end]));
+        dom = domain(f);
+        infEnds = isinf(dom([1, end]));
 
         if ( ~any(infEnds) )
             % On a bounded domain, things are easy:
-            h = sum(f)/diff(f.domain([1, end]));
+            h = sum(f)/diff(dom([1, end]));
 
         elseif ( all(infEnds == [1, 0]) )
             % If unbounded to the left, take the left impulse as the mean:

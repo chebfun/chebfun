@@ -28,6 +28,10 @@ function [f, mergedPts] = merge(f, index, pref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
+if ( numel(f) > 1 )
+    error('CHEBFUN:merge:quasi', 'MERGE does not support quasimatrices.');
+end
+
 % Parse the inputs:
 if ( nargin == 1 )
     % Choose all indices by default:
@@ -124,6 +128,24 @@ for k = index
     g.pointValues(k-1,:) = get(oldFuns{k-1}, 'lval');
     g.pointValues(k+1,:) = get(oldFuns{k}, 'rval');
 
+    % Grab the correct exponents:
+    
+    if ( issing(f) )
+        if ( ~issing(newFuns{j-1}) && ~issing(newFuns{j}) )
+            pref.singPrefs.exponents = [];
+        elseif ( issing(newFuns{j-1}) && ~issing(newFuns{j}) )
+            exps = get(newFuns{j-1}, 'exponents');
+            pref.singPrefs.exponents = [exps(1) 0];
+        elseif ( ~issing(newFuns{j-1}) && issing(newFuns{j}) )
+            exps = get(newFuns{j}, 'exponents');
+            pref.singPrefs.exponents = [0 exps(2)];
+        else
+            expsLeft = get(newFuns{j-1}, 'exponents');
+            expsRight = get(newFuns{j}, 'exponents');
+            pref.singPrefs.exponents = [expsLeft(1) expsRight(2)];
+        end
+    end
+    
     % Attempt to form a merged FUN:
     mergedFun = fun.constructor(@(x) feval(g, x),  ...
         [newDom(j-1), newDom(j+1)], vs, hs, pref);

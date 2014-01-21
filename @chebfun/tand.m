@@ -1,4 +1,4 @@
-function g = tand(f, pref)
+function F = tand(F, varargin)
 %TAND   Tangent of a CHEBFUN, result in degrees.
 %   TAND(F) computes the tangent (in degrees) of the CHEBFUN F.
 %
@@ -10,12 +10,7 @@ function g = tand(f, pref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-% Obtain preferences:
-if ( nargin == 1 )
-    pref = chebpref();
-end
-
 % Call the compose method:
-g = compose(f, @tand, pref);
+F = compose(F, @tand, varargin{:});
 
 end

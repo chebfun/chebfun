@@ -1,4 +1,4 @@
-function g = asin(f, pref)
+function F = asin(F, varargin)
 %ASIN   Inverse sine of a CHEBFUN.
 %   ASIN(F) computes the inverse sine of the CHEBFUN F.
 %
@@ -10,12 +10,7 @@ function g = asin(f, pref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org for Chebfun information.
 
-% Obtain preferences:
-if ( nargin == 1 )
-    pref = chebpref();
-end
-
 % Call the compose method:
-g = compose(f, @asin, pref);
+F = compose(F, @asin, varargin{:});
 
 end

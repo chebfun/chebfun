@@ -1,4 +1,4 @@
-function f = imag(f)
+function F = imag(F)
 %IMAG   Complex imaginary part of a CHEBFUN.
 %   IMAG(F) is the imaginary part of F.
 %
@@ -8,16 +8,18 @@ function f = imag(f)
 % See http://www.chebfun.org for Chebfun information.
 
 % Handle the empty case:
-if ( isempty(f) )
+if ( isempty(F) )
     return
 end
 
-% Take imaginary part of the pointValues:
-f.pointValues = imag(f.pointValues);
+for j = 1:numel(F)
+    % Take imaginary part of the pointValues:
+    F(j).pointValues = imag(F(j).pointValues);
 
-% Take imaginary part of the FUNs:
-for k = 1:numel(f.funs)
-    f.funs{k} = imag(f.funs{k});
+    % Take imaginary part of the FUNs:
+    for k = 1:numel(F(j).funs)
+        F(j).funs{k} = imag(F(j).funs{k});
+    end
 end
 
 end

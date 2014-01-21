@@ -12,7 +12,9 @@ classdef chebfun
 % vector of points x(:) in [-1,1] and return an output of size NxM where N =
 % length(x(:)). If this is not possible then the flag CHEBFUN(F, 'vectorize')
 % should be passed. CHEBFUN(F, 'vectorcheck', 'off') disables the automatic
-% checking for vector input. CHEBFUN() returns an empty CHEBFUN object.
+% checking for vector input. Additionally, F may be a CHEBFUN, in which case
+% CHEBFUN(F) is equivalent to CHEBFUN(@(X) FEVAL(F, X)). CHEBFUN() returns an
+% empty CHEBFUN object.
 %
 % CHEBFUN(F, [A, B]) specifies an interval [A,B] on which the CHEBFUN is
 % defined, where A and/or B may be infinite. CHEBFUN(F, ENDS), where ENDS is a
@@ -165,9 +167,8 @@ classdef chebfun
                 f = merge(f, index(:).', pref);
                 
             end
-            
+
         end
-        
     end
     
     % Static methods implemented by CHEBFUN class.
@@ -184,6 +185,9 @@ classdef chebfun
         
         % Determine values of chebfun at breakpoints.
         vals = getValuesAtBreakpoints(funs, ends, op);
+        
+        % Merge domains.
+        newDom = mergeDomains(varargin)
         
         % ODE113 with CHEBFUN output.
         [t, y] = ode113(varargin);
@@ -202,6 +206,9 @@ classdef chebfun
         
         % Cubic spline interpolant:
         f = spline(x, y, d);
+        
+        % Which interval is a point in?
+        out = whichInterval(dom, x);
         
     end
 
@@ -229,21 +236,28 @@ classdef chebfun
     
     % Methods implemented by CHEBFUN class.
     methods
-        % True if any element of a CHEBFUN is a nonzero number, ignoring NaN.
-        a = any(f, dim)
 
         % Absolute value of a CHEBFUN.
         f = abs(f, pref)
-
-        % Round a CHEBFUN towards plus infinity.
-        g = ceil(f)
-
+        
+        % Add breaks at appropriate roots of a CHEBFUN
+        f = addBreaksAtRoots(f, tol)
+        
+        % True if any element of a CHEBFUN is a nonzero number, ignoring NaN.
+        a = any(f, dim)
+        
+        % Compute the length of the arc defined by a CHEBFUN.
+        out = arcLength(f, a, b)
+        
         % Solve boundary value problems for ODEs by collocation.
         [y, t] = bvp4c(fun1, fun2, y0, varargin);
-
+        
         % Solve boundary value problems for ODEs by collocation.
         [y, t] = bvp5c(fun1, fun2, y0, varargin);
-
+        
+        % Round a CHEBFUN towards plus infinity.
+        g = ceil(f)
+        
         % Plot information regarding the representation of a CHEBFUN object:
         h = chebpolyplot(f, varargin);
 
@@ -252,9 +266,6 @@ classdef chebfun
 
         % Compose CHEBFUN objects with another function.
         h = compose(f, op, g, pref)
-
-        % Compose two CHEBFUN objects (i.e., f(g)).
-        h = composeChebfuns(f, g, pref)
         
         % Complex conjugate of a CHEBFUN.
         f = conj(f)
@@ -262,6 +273,9 @@ classdef chebfun
         % Complex transpose of a CHEBFUN.
         f = ctranspose(f)
 
+        % Useful information for DISPLAY.
+        [name, data] = dispData(f)
+        
         % Display a CHEBFUN object.
         display(f);
         
@@ -313,6 +327,9 @@ classdef chebfun
         % True for real CHEBFUN.
         out = isreal(f);
         
+        % Test if a CHEBFUN object is built upon SINGFUN.
+        out = issing(f)
+        
         % True for zero CHEBFUN objects
         out = iszero(f)
         
@@ -325,29 +342,26 @@ classdef chebfun
         % Plot a CHEBFUN object on a loglog scale:
         h = loglog(f, varargin);
         
-        % Plot a CHEBFUN object:
-        varargout = plot(f, varargin);
-        
-        % 3-D plot for CHEBFUN objects.
-        varargout = plot3(f, g, h, varargin)
-        
         % Subtraction of two CHEBFUN objects.
         f = minus(f, g)
         
-        % Signmum of a CHEBFUN.
-        f = sign(f, pref)
-
         % Multiplication of CHEBFUN objects.
         f = mtimes(f, c)
-
+        
         % Remove unnecessary breakpoints in from a CHEBFUN.
         [f, mergedPts] = merge(f, index, pref)
         
         % Overlap the domain of two CHEBFUN objects.
         [f, g] = overlap(f, g)
-
+        
+        % Plot a CHEBFUN object:
+        varargout = plot(f, varargin);
+        
         % Obtain data used for plotting a CHEBFUN object:
         data = plotData(f, g, h)
+        
+        % 3-D plot for CHEBFUN objects.
+        varargout = plot3(f, g, h, varargin)
         
         % Power of a CHEBFUN
         f = power(f, b);
@@ -369,7 +383,10 @@ classdef chebfun
 
         % Plot a CHEBFUN object on a linear-log scale:
         h = semilogy(f, varargin);
-
+        
+        % Signmum of a CHEBFUN.
+        f = sign(f, pref)
+        
         % Simplify the representation of a CHEBFUN obect.
         f = simplify(f, tol);
 
@@ -403,19 +420,24 @@ classdef chebfun
     
 end
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                (Private) Methods implemented in this m-file.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function op = str2op(op)
-% This is here as it's a clean function with no other variables hanging
-% around in the scope.
-depVar = symvar(op);
-if ( numel(depVar) ~= 1 )
-    error('CHEBFUN:STR2OP:indepvars', ...
-        'Incorrect number of independent variables in string input.');
-end
-op = eval(['@(' depVar{:} ')', op]);
+    % Convert string inuts to either numeric format or function_handles. This is
+    % placed in a subfunction so that there no other variables hanging around in
+    % the scope.
+    sop = str2num(op); %#ok<ST2NM> % STR2DOUBLE doesn't support str2double('pi')
+    if ( ~isempty(sop) )
+        op = sop;
+    else
+        depVar = symvar(op);
+        if ( numel(depVar) ~= 1 )
+            error('CHEBFUN:STR2OP:indepvars', ...
+                'Incorrect number of independent variables in string input.');
+        end
+        op = eval(['@(' depVar{:} ')', op]);
+    end
 end
 
 function [op, domain, pref] = parseInputs(op, domain, varargin)
@@ -470,6 +492,10 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
             % Vectorize flag for function_handles.
             vectorize = true;
             args(1) = [];
+        elseif ( strcmpi(args{1}, 'coeffs') && isnumeric(op) )
+            % Hack to support construction from coefficients.
+            op = {{[], op}};
+            args(1) = [];
         elseif ( isnumeric(args{1}) )
             % g = chebfun(@(x) f(x), N)
             pref.techPrefs.exactLength = args{1};
@@ -479,8 +505,31 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
             pref.enableBreakpointDetection = strcmpi(args{2}, 'on');
             args(1:2) = [];
         elseif ( strcmpi(args{1}, 'blowup') )
-            % Translate "blowup" --> "enableSingularityDetection".
-            pref.enableSingularityDetection = strcmpi(args{2}, 'on');
+            if ( strcmpi(args{2}, 'off') )
+                % If 'blowup' is 'off'.
+                pref.enableSingularityDetection = 0;
+            else
+                % If 'blowup' is not 'off'.
+                if ( args{2} == 1 )
+                    % Translate "blowup" and flag "1" -->
+                    % "enableSingularityDetection" and "poles only".
+                    pref.enableSingularityDetection = 1;
+                    pref.singPrefs.singType = {'pole', 'pole'};
+                elseif ( (isnumeric(args{2}) && args{2} == 2 ) || ...
+                    strcmpi(args{2}, 'on') )
+                    % Translate "blowup" and flag "2" -->
+                    % "enableSingularityDetection" and "fractional singularity".
+                    pref.enableSingularityDetection = 1;
+                    pref.singPrefs.singType = {'sing', 'sing'};
+                else
+                    error('CHEBFUN:constructor:parseInputs', ...
+                        'Invalid value for ''blowup'' option.');
+                end
+            end
+            args(1:2) = [];
+        elseif ( strcmpi(args{1}, 'exps') )
+            % Translate "exps" --> "singPrefs.exponents".
+            pref.singPrefs.exponents = args{2};
             args(1:2) = [];
         else
             % Update these preferences:

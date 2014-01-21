@@ -1,4 +1,4 @@
-function f = conj(f)
+function F = conj(F)
 %CONJ   Complex conjugate of a CHEBFUN.
 %   CONJ(F) is the complex conjugate of F.
 %
@@ -7,12 +7,16 @@ function f = conj(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-% Conjugate the pointValues:
-f.pointValues = conj(f.pointValues);
-
-% Conjugate the FUNs:
-for k = 1:numel(f.funs)
-    f.funs{k} = conj(f.funs{k});
+% Loop over the columns of F:
+for j = 1:numel(F)
+    
+    % Conjugate the point values:
+    F(j).pointValues = conj(F(j).pointValues);
+    
+    % Conjugate the FUNs:
+    for k = 1:numel(F(j).funs)
+        F(j).funs{k} = conj(F(j).funs{k});
+    end    
 end
 
 end

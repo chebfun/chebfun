@@ -32,7 +32,7 @@ end
 
 if ( (nargin == 1) || strcmp(flag, 'global') ) 
     [y, x] = globalMax(f);    
-elseif ( isa(flag, 'chebfun') )
+elseif ( isa(flag, 'chebfun') || isnumeric(flag) )
     y = maxOfTwoChebfuns(f, flag);
 elseif ( strcmp(flag, 'local') )
     [y, x] = localMax(f);
@@ -62,7 +62,7 @@ function [y, x] = localMax(f)
 
 % Determine which are maxima.
 
-ends = f.domain([1, end]).'; % Endpoints of the domain are special.
+ends = f(1).domain([1, end]).'; % Endpoints of the domain are special.
 f = mat2cell(f); % Convert f into a cell of scalar-valued CHEBFUNs.
 
 % Loop over the FUNs:
@@ -125,6 +125,7 @@ h = H.*f + notH.*g;
 
 % [TODO]: Enforce continuity?
 
+% TODO: Why simplify?
 % Simplify:
 h = simplify(h);
 

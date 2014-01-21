@@ -27,7 +27,7 @@ pass(2) = isa(f./g, 'smoothfun') && isa(g./f, 'smoothfun');
 % Division of smooth SINGFUNs should not return a SINGFUN
 f = singfun(@(x) sin(x));
 g = singfun(@(x) cos(x));
-pass(3) = ~isa(f+g, 'singfun');
+pass(3) = ~isa(f./g, 'singfun');
 %%
 % Check division with a double.
 fh = @(x) 1./((1+x).*(1-x));

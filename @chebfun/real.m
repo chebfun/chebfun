@@ -1,4 +1,4 @@
-function f = real(f)
+function F = real(F)
 %REAL   Complex real part of a CHEBFUN.
 %   REAL(F) is the real part of F.
 %
@@ -8,16 +8,18 @@ function f = real(f)
 % See http://www.chebfun.org for Chebfun information.
 
 % Handle the empty case:
-if ( isempty(f) )
+if ( isempty(F) )
     return
 end
 
-% Take real part of the pointValues:
-f.pointValues = real(f.pointValues);
+for j = 1:numel(F)
+    % Take real part of the pointValues:
+    F(j).pointValues = real(F(j).pointValues);
 
-% Take real part of the FUNs:
-for k = 1:numel(f.funs)
-    f.funs{k} = real(f.funs{k});
+    % Take real part of the FUNs:
+    for k = 1:numel(F(j).funs)
+        F(j).funs{k} = real(F(j).funs{k});
+    end
 end
 
 end

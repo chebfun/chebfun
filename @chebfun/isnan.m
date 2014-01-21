@@ -1,4 +1,4 @@
-function out = isnan(f)
+function out = isnan(F)
 %ISNAN   Test if a CHEBFUN is NaN.
 %   ISNAN(F) returns TRUE if F has any NaN values and FALSE otherwise.
 
@@ -8,22 +8,33 @@ function out = isnan(f)
 out = false;
 
 % Empty CHEBFUNs are not NaN.
-if ( isempty(f) )
-    return;
+if ( isempty(F) )
+    return
 end
+
+out = zeros(1, numel(F));
+for k = 1:numel(F)
+    out(k) = columnIsnan(F);
+end
+out = any(out);
+
+end
+
+function out = columnIsnan(f)
+
+out = false;
 
 % Check for NaN pointValues:
 if ( any(isnan(f.pointValues(:))) )
     out = true;
-    return;
+    return
 end
 
 % Check for NaN FUNs.
-numCols = size(f.funs{1}, 2);
-for k = 1:numCols
+for k = 1:numel(f.funs)
     if ( isnan(f.funs{k}) )
         out = true;
-        return;
+        return
     end
 end
 

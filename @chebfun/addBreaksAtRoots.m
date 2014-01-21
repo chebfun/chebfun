@@ -12,48 +12,44 @@ function f = addBreaksAtRoots(f, tol)
 %   If F is array-valued, breaks will be introduced in each of the columns at
 %   unique(ROOTS(F)).
 %
-% See also ROOTS.
+% See also ADDBREAKS, ROOTS, GETROOTSFORBREAKS, DEFINEPOINT.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-% Lower bound for tolerance:
+%TODO: return a quasimatrix from array-valued CHEBFUN input?
+
+% Parse inputs:
 if ( nargin == 1 )
     tol = 0;
+elseif ( isa(tol, 'chebpref') )
+    tol = tol.techPrefs.eps;
 end
 
-% Locate roots:
-rAll = roots(f, 'nozerofun', 'nojump', 'noimps');
+for k = 1:numel(f)
+    f(k) = columnAddBreaksAtRoots(f(k), tol);
+end
 
-% Since each column of an array-valued CHEBFUN must have the same breakpoints,
-% we simply take unique(r(:)) and remove any remaining NaNs.
-r = unique(rAll(:));
-r(isnan(r)) = [];
+end
 
-% Discard any roots which are closer than the accuracy of the CHEBFUN:
-el = epslevel(f);
-hs = hscale(f);
-rtol1 = max(el*hs, tol);
-r([false ; diff(r) < rtol1]) = [];
+function f = columnAddBreaksAtRoots(f, tol)
 
-% Avoid introducing new breakpoints close to an existing ones:
-rtol2 = max(100*el*max(min(diff(f.domain)), 1), tol);
-r(any(abs(bsxfun(@minus, r, f.domain)) < rtol2, 2)) = [];
+% Get the roots:
+[rBreaks, rAll] = getRootsForBreaks(f, tol);
 
 % Add new breaks if required:
-if ( ~isempty(r) )
-    % Get the domain with the new breakpoints: (union is not required, by above)
-    dom = unique([f.domain, r.']);
-    
-    % Introduce these breakpoints into f:
-    f = restrict(f, dom);
+if ( ~isempty(rBreaks) )
+    oldDomain = f.domain;
+    f = addBreaks(f, rBreaks, tol);
 
-    % Enforce zero piont values at roots:
-    for k = 1:min(size(f))
-        % TODO: Allow a tolerance?
-        f.pointValues(ismember(dom, rAll(:,k)), k, :) = 0;
+    % Enforce zero impulses at roots only if new breakpoints were added (i.e.,
+    % the roots were not too close to existing breakpoints):
+    if ( ~isequal(f.domain, oldDomain) )
+        for k = 1:min(size(f))
+            % TODO: Allow a tolerance?
+            f.pointValues(ismember(f.domain, rAll(:,k)), k, :) = 0;
+        end
     end
-    
 end
 
 end

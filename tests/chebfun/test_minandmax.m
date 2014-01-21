@@ -106,4 +106,18 @@ pass(11) = norm(y(:,1) - y_exact(:,1), inf) < 10*vscale(f)*epslevel(f) && ...
     norm(fx1(:,1) - y_exact(:,1), inf) < 10*vscale(f)*epslevel(f) && ...
     norm(fx2(:,2) - y_exact(1:3,2), inf) < 10*vscale(f)*epslevel(f);
 
+%% Test on singular function: piecewise smooth chebfun - splitting on.
+
+dom = [-2 7];
+pow = -0.5;
+op = @(x) (x - dom(1)).^pow.*(sin(300*x).^2);
+pref.singPrefs.exponents = [pow 0];
+pref.enableBreakpointDetection = 1;
+f = chebfun(op, dom, pref);
+[y, x] = minandmax(f);
+y_exact = [0 ; Inf];
+fx = op(x);
+pass(15) = ((max(abs(y - y_exact)) < 2e1*get(f, 'epslevel')) && ... 
+          (max(abs(fx - y_exact)) < 2e1*get(f, 'epslevel')));
+
 end

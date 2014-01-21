@@ -37,4 +37,28 @@ f = chebfun(@(x) [x, x.^2], [-1 -.1 -.1+eps 0 1]);
 g = merge(f);
 pass(9) = numel(g.domain) == 2 && all(g.domain == [-1 1]);
 
+%% Integration of SINGFUN:
+% Set the domain:
+dom = [-2 7];
+
+pow1 = -1;
+pow2 = -1;
+op = @(x) (x - dom(1)).^pow1.*sin(10*x).*(x - dom(2)).^pow2;
+pref = chebpref();
+pref.singPrefs.exponents = [-1 -1];
+f = chebfun(op, dom, pref);
+g = addBreaksAtRoots(f);
+h = merge(g);
+
+% Checking domain:
+domCheck = [dom(1)+0.1 dom(2)-0.1];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+vals_h = feval(h, x);
+vals_exact = feval(op, x);
+err = vals_h - vals_exact;
+pass(11) = (norm(err, inf) < 5e1*get(h, 'vscale')*get(h, 'epslevel'));
+
 end

@@ -127,4 +127,10 @@ catch ME
     pass(15) = strcmp(ME.identifier, 'CHEBFUN:max:flag');
 end
 
+%% Check min of a CHEBFUN and a scalar:
+f = chebfun(@(x) [sin(x) cos(x)]);
+h = min(f, .75);
+pass(19) = norm(h([-.9 0 .9].') - [sin(-.9) cos(-.9) ; 0 .75 ; .75 cos(.9)]) ...
+    < epslevel(h)*vscale(h);
+
 end

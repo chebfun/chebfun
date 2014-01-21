@@ -1,4 +1,4 @@
-function g = besselh(nu, k, f, scale, pref)
+function F = besselh(nu, k, F, scale, pref)
 %BESSELH   Bessel function of third kind (Hankel function) of a CHEBFUN.
 %   H = BESSELH(NU, K, F), for K = 1 or 2, computes the Hankel function H1_NU(F)
 %   or H2_NU(F) of the nonzero CHEBFUN F. If F passes through the origin in its
@@ -30,18 +30,26 @@ function g = besselh(nu, k, f, scale, pref)
 if ( nargin < 5 )
     pref = chebpref();
 end
-
 if ( nargin < 4 )
     scale = 0;
 end
 
 if ( isa(k, 'chebfun') )
     if ( nargin == 3 )
-        scale = f;
+        scale = F;
     end
-    f = k;
+    F = k;
     k = 1;
 end
+
+% Loop over the columns:
+for j = 1:numel(F)
+    F(j) = columnBesselh(nu, k, F(j), scale, pref);
+end
+
+end
+
+function g = columnBesselh(nu, k, f, scale, pref)
 
 % Check for roots:
 r = roots(f, 'nojump', 'nozerofun');

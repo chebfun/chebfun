@@ -1,4 +1,4 @@
-function out = isreal(f)
+function out = isreal(F)
 %ISREAL   True for real-valued CHEBFUN object.
 %   ISREAL(F) returns logical true if F does not have an imaginary part and
 %   false otherwise.
@@ -10,6 +10,16 @@ function out = isreal(f)
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
+
+out = zeros(1, numel(F));
+for k = 1:numel(F)
+    out(k) = columnIsreal(F(k));
+end
+out = all(out);
+
+end
+
+function out = columnIsreal(f)
 
 % Check to see is the impulses are real:
 out = isreal(f.pointValues);

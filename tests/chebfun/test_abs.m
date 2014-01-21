@@ -102,10 +102,65 @@ pass(5,4) = length(h4.funs) == 4;
 pass(5,5) = normest(f1 - h4) < tol;
 pass(5,6) = all(all(feval(h4, x3) >= 0));
 
+%% CHEBFUN Quasimatrix
+f1 = chebfun(@(x) feval(f, [x, x]) , -2:2, pref);
+f1 = quasi2cheb(f1);
+gHandle2 = @(x) cos(pi*(x-.5));
+g = chebfun(@(x) [gHandle1(x), gHandle2(x)] , -2:2, pref);
+g = quasi2cheb(g);
+g4 = abs(g);
+pass(6,1) = length(g4.funs) == 4;
+pass(6,2) = normest(f1 - g4) < tol;
+pass(6,3) = all(all(feval(g4, x3) >= 0));
+h4 = chebfun(@(x) abs([gHandle1(x), gHandle2(x)]), -2:2, pref);
+pass(6,4) = length(h4.funs) == 4;
+pass(6,5) = normest(f1 - h4) < tol;
+pass(6,6) = all(all(feval(h4, x3) >= 0));
+
 %% A more complicated function:
 f = chebfun(@(x) sin(1i*x).*(1i*x + exp(5i*x)));
-g = chebfun(@(x) abs(sin(1i*x).*(1i*x + exp(5i*x))),[-1 0 1]);
+g = chebfun(@(x) abs(sin(1i*x).*(1i*x + exp(5i*x))), [-1 0 1]);
 h = abs(f);
-pass(6,:) = normest(g - h) < 100*get(h, 'epslevel');
+pass(7,:) = normest(g - h) < 100*get(h, 'epslevel');
+
+%% Test on singular function:
+dom = [-2 7];
+
+% Generate a few random points to use as test values.
+seedRNG(6178);
+x = diff(dom) * rand(100, 1) + dom(1);
+
+pow = -1.64;
+op = @(x) (x-dom(1)).^pow;
+pref.singPrefs.exponents = [pow 0];
+f = chebfun(op, dom, pref);
+g = abs(f);
+vals_g = feval(g, x); 
+vals_exact = abs(feval(op, x));
+err = vals_g - vals_exact;
+pass(7,:) = ( norm(err, inf) < 1e4*get(f,'epslevel')*norm(vals_exact, inf) );
+
+%% piecewise smooth chebfun: smoothfun + singfun & splitting on.
+
+% define the domain:
+dom = [-1 1];
+domCheck = [dom(1)+0.1 dom(2)-0.1];
+
+pow1 = -0.5;
+pow2 = -1.2;
+op = @(x) sin(10*x).*((x-dom(1)).^pow1).*((x-dom(2)).^pow2);
+f = chebfun(op, dom, 'exps', [pow1 pow2], 'splitting', 'on');
+g = abs(f);
+
+% check values:
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+vals_g = feval(g, x);
+vals_check = feval(op, x);
+err = vals_g - abs(vals_check);
+pass(8,:) = ( norm(err-mean(err), inf) < ...
+    100*get(f,'epslevel')*norm(vals_check, inf) );
 
 end

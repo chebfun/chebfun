@@ -45,4 +45,12 @@ pass(7) = numel(f.funs) == 1 && size(f.funs{1},1) == 10;
 f = chebfun(rand(10,3), 'equi');
 pass(8) = numel(f.funs) == 1 && size(f.funs{1}, 1) > 10;
 
+% Test construction from coefficients.
+f = chebfun([1 ; 2 ; 3], 'coeffs');
+pass(9) = isequal(f.funs{1}.onefun.coeffs, [1 ; 2 ; 3]);
+
+% Test construction from numeric string.
+f = chebfun('1');
+pass(10) = all(feval(f, linspace(-1, 1, 10)) == 1);
+
 end

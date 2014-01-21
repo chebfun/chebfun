@@ -71,4 +71,40 @@ h = sign(f);
 h_exact = @(x) exp(2*pi*1i*x);
 pass(5,:) = norm(feval(h, x) - h_exact(x), inf) < 10*vscale(h)*epslevel(h);
 
+%% Test on singular function: a real case
+
+% Set a domain:
+dom = [-2 7];
+
+% Generate a few random points to use as test values:
+x = diff(dom) * rand(100, 1) + dom(1);
+
+pow = -0.5;
+op = @(x) (dom(2)-x).^pow.*( sin(10*x).^2 );
+pref.singPrefs.exponents = [0 pow];
+pref.enableBreakpointDetection = 1;
+f = chebfun(op, dom, pref);
+s = sign(f);
+pass(6,:) = ( norm(feval(s-1, x), inf) < eps );
+
+%% Test on singular function: a complex case
+
+% Set a domain:
+dom = [-1 1];
+
+% Generate a few random points to use as test values:
+x = diff(dom) * rand(100, 1) + dom(1);
+
+pow = -0.5;
+op = @(x) (dom(2)-x).^pow.*exp(2*pi*1i*x);
+pref.singPrefs.exponents = [0 pow];
+pref.enableBreakpointDetection = 1;
+f = chebfun(op, dom, pref);
+s = sign(f);
+s_exact = @(x) exp(2*pi*1i*x);
+vals_s = feval(s, x);
+vals_exact = feval(s_exact, x);
+err = vals_s - vals_exact;
+pass(7,:) = ( norm(err, inf) < 1e1*epslevel(s).*get(s, 'vscale') );
+
 end

@@ -1,4 +1,4 @@
-function h = rdivide(f, g)
+function h = rdivide(f, g, pref)
 %./   Pointwise CHEBFUN right divide.
 %   F./G returns a CHEBFUN that represents the function F(x)/G(x).
 %   If F and G are array-valued column (row) CHEBFUNs, they must have the same
@@ -21,6 +21,105 @@ if ( isnumeric(f) && ~any(f) )
     return
 end
 
+if ( nargin < 3 )
+    pref = chebpref();
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CHEBFUN ./ CHEBFUN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+if ( isa(f,'chebfun') && isa(g, 'chebfun') )
+
+    % Check the number of columns match:
+    if ( numColumns(f) ~= numColumns(g) )
+        error('CHEBFUN:rdivide:quasi', ...
+            'Chebfun quasimatrix dimensions must agree.')
+    end
+    
+    if ( numel(f) == 1 && numel(g) == 1 )
+        % Array-valued CHEBFUN case:
+        h = columnRdivide(f, g, pref);
+    else
+        % QUASIMATRIX case:
+        
+        % Convert to a cell array:
+        f = mat2cell(f);
+        g = mat2cell(g);
+        % Loop over the columns:
+        for k = numel(f):-1:1
+            h(k) = columnRdivide(f{k}, g{k}, pref);
+        end
+    end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CHEBFUN ./ constant %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
+elseif ( isa(f, 'chebfun') )
+
+    numColsF = numColumns(f);
+    numelF = numel(f);
+    numelG = numel(g);
+    
+    % Different cases:
+    if ( numColsF == 1 )
+        % e.g., x./[1 2 3]
+        h = columnRdivide(f, g, pref);
+    elseif ( numelG == 1 )
+        % e.g., [x sin(x)]./2
+        for k = numelF:-1:1
+            h(k) = columnRdivide(f(k), g, pref);
+        end
+    elseif ( numelG == numColsF )
+        % e.g., [x sin(x) exp(x)]./[1 2 3]
+        if ( numel(f) == 1 )
+            h = columnRdivide(f, g, pref);
+        else
+            f = mat2cell(f);
+            for k = numColsF:-1:1
+                h(k) = columnRdivide(f{k}, g(k), pref);
+            end
+        end
+    else
+        error('CHEBFUN:power:dim', ...
+            'Chebfun quasimatrix dimensions must agree.');
+    end
+    
+    
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% constant ./ CHEBFUN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
+else
+   
+    numColsG = numColumns(g);
+    numelF = numel(f);
+    numelG = numel(g);
+    
+    % Different cases:
+    if ( numColsG == 1 )
+        % e.g., [1 2 3]./(2+x)
+        for k = numelF:-1:1
+            h(k) = columnRdivide(f(k), g, pref);
+        end
+        h = quasi2cheb(h);
+    elseif ( numelF == 1 )
+        % e.g., 2./(2+[x x abs(x)])
+        g = mat2cell(g);
+        for k = numColsG:-1:1
+            h(k) = columnRdivide(f, g{k}, pref);
+        end
+        try h = quasi2cheb(h); catch, end
+    elseif ( numelF == numColsG )
+        % e.g., [1 2]./(2+[x sin(x)])
+        g = mat2cell(g);
+        for k = numColsG:-1:1
+            h(k) = columnRdivide(f(k), g{k}, pref);
+        end
+        try h = quasi2cheb(h); catch, end
+    else
+        error('CHEBFUN:power:dim', ...
+            'Chebfun quasimatrix dimensions must agree.');
+    end
+
+end
+
+end
+
+function h = columnRdivide(f, g, pref)
+
 % If g is numeric then call TIMES():
 if ( isnumeric(g) )
     if ( g == 0 )
@@ -41,7 +140,7 @@ for k = 1:numel(g.funs)
 end
 
 % Add breaks at the roots of g:
-g = addBreaksAtRoots(g);
+g = addBreaksAtRoots(g, pref);
 
 if ( isa(f, 'chebfun') )
     

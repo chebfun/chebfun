@@ -38,7 +38,7 @@ if ( nargin < 2 )
 end
 
 % Zero all coefficients smaller than the tolerance relative to F.VSCALE:
-f.coeffs(bsxfun(@minus, abs(f.coeffs), tol*f.vscale) < 0) = 0;
+f.coeffs(bsxfun(@minus, abs(f.coeffs), tol.*f.vscale) < 0) = 0;
 
 % Check for trailing zero coefficients:
 [ignored, firstNonZeroRow] = find(f.coeffs.' ~= 0, 1);
