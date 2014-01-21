@@ -119,17 +119,17 @@ end
 %% QUASIMATRICES:
 
 f = quasimatrix(@(x) [sin(x) cos(x) exp(x)], [-1 -0.5 0 0.5 1]);
-pass(24) = norm(sum(f) - [0 2*sin(1) (exp(1) - exp(-1))], inf) < ...
+pass(22) = norm(sum(f) - [0 2*sin(1) (exp(1) - exp(-1))], inf) < ...
     10*vscale(f)*epslevel(f);
 
 ft = f.';
-pass(25) = norm(sum(ft) - [0 2*sin(1) (exp(1) - exp(-1))], inf) < ...
+pass(23) = norm(sum(ft) - [0 2*sin(1) (exp(1) - exp(-1))], inf) < ...
     10*vscale(ft)*epslevel(ft);
 
-pass(26) = norm(sum(f, [-1 1]) - [0 2*sin(1) (exp(1) - exp(-1))], inf) < ...
+pass(24) = norm(sum(f, [-1 1]) - [0 2*sin(1) (exp(1) - exp(-1))], inf) < ...
     10*vscale(f)*epslevel(f);
 
-pass(27) = norm(sum(f, [-1 0]) - [(cos(-1) - 1) sin(1) (1 - exp(-1))], inf) ...
+pass(25) = norm(sum(f, [-1 0]) - [(cos(-1) - 1) sin(1) (1 - exp(-1))], inf) ...
     < 10*vscale(f)*epslevel(f);
 
 %% Test on singular function: piecewise smooth chebfun - splitting on.
@@ -144,6 +144,6 @@ pref.enableBreakpointDetection = 1;
 f = chebfun(op, dom, pref);
 I = sum(f);
 I_exact = 0.17330750941063138;
-pass(28) = ( abs(I-I_exact) < 2*get(f, 'epslevel')*abs(I_exact) );
+pass(26) = ( abs(I-I_exact) < 2*get(f, 'epslevel')*abs(I_exact) );
 
 end

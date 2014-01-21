@@ -135,7 +135,7 @@ end
 %% Check max of a CHEBFUN and a scalar:
 f = chebfun(@(x) [sin(x) cos(x)]);
 h = max(f, .75);
-pass(20) = norm(h([-.9 0 .8 .9].') - ...
+pass(17) = norm(h([-.9 0 .8 .9].') - ...
     [.75 .75 ;.75 1 ; .75 .75 ; sin(.9) .75]) < epslevel(h)*vscale(h);
 
 end

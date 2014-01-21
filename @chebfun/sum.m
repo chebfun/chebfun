@@ -94,8 +94,8 @@ function f = sumColumns(f)
         for k = 1:numel(f.funs)
             f.funs{k} = sum(f.funs{k}, 2);
         end
-        % Sum the impulses across the columns:
-        f.impulses = sum(f.impulses, 2);
+        % Sum the pointValues across the columns:
+        f.pointValues = sum(f.pointValues, 2);
     else
         s = f(1);
         for k = 2:numel(f)

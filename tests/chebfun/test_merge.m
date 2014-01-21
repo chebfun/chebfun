@@ -59,6 +59,6 @@ x = diff(domCheck) * rand(100, 1) + domCheck(1);
 vals_h = feval(h, x);
 vals_exact = feval(op, x);
 err = vals_h - vals_exact;
-pass(11) = (norm(err, inf) < 5e1*get(h, 'vscale')*get(h, 'epslevel'));
+pass(10) = (norm(err, inf) < 5e1*get(h, 'vscale')*get(h, 'epslevel'));
 
 end

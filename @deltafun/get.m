@@ -2,9 +2,10 @@ function out = get(f, prop)
 %GET   GET method for the DELTAFUN class.
 %   P = GET(F, PROP) returns the property P specified in the string PROP from
 %   the DELTAFUN object F. Valid entries for the string PROP are:
-%       'LOCATION'    - ... 
-%       'MAGNITUDE'   - ...
-%       'FUNPART'     - ...
+%
+%       'LOCATION'    - Location of the delta functions 
+%       'IMPULSES'    - Magnitude of the delta functions
+%       'FUNPART'     - The smooth function contained in DELTAFUN.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -27,7 +28,7 @@ switch prop
         out = get(f.funPart, prop);
 
     otherwise
-        error('CHEBFUN:DELTAFUN:GET:propname', ...
+        error('DELTAFUN:GET:propname', ...
               'Unknown property name "%s" for object of type DELTAFUN.', prop);
 end
 

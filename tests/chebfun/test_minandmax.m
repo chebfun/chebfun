@@ -117,7 +117,7 @@ f = chebfun(op, dom, pref);
 [y, x] = minandmax(f);
 y_exact = [0 ; Inf];
 fx = op(x);
-pass(15) = ((max(abs(y - y_exact)) < 2e1*get(f, 'epslevel')) && ... 
+pass(12) = ((max(abs(y - y_exact)) < 2e1*get(f, 'epslevel')) && ... 
           (max(abs(fx - y_exact)) < 2e1*get(f, 'epslevel')));
 
 end
