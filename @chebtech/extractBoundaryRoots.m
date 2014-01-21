@@ -108,7 +108,7 @@ while ( ( ( nargin == 1 ) && any( min(endValues, [], 1) <= tol ) ) ...
     endValues = abs([feval(f, -1); feval(f, 1)]);
     
     % Loosen the tolerance for checking multiple roots:
-    tol = 1e2*tol;
+    tol = 1e3*tol;
     
 end
 

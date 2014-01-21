@@ -12,56 +12,46 @@ seedRNG(6178);
 % Set the domain:
 dom = [-Inf Inf];
 
-op = @(x) x.^2.*exp(-x.^2);
-f = unbndfun(op, dom);
-I = sum(f);
-IExact = sqrt(pi)/2;
-err = abs(I - IExact);
-pass(2) = err < 2e5*get(f,'epslevel')*get(f,'vscale');
+opf = @(x) 2-exp(-x.^2);
+opg = @(x) exp(-x.^2);
+f = unbndfun(opf, dom);
+g = unbndfun(opg, dom);
 
-op = @(x) (1-exp(-x.^2))./x.^2;
-f = unbndfun(op, dom);
-I = sum(f);
-IExact = 2*sqrt(pi);
+I = innerProduct(f, g);
+IExact = (sqrt(pi)*(4 - sqrt(2)))/2;
 err = abs(I - IExact);
-pass(3) = err < 1e3*get(f,'epslevel')*get(f,'vscale');
+pass(1) = err < 2e6*max(get(f,'epslevel')*get(f,'vscale'), ...
+    get(g,'epslevel')*get(g,'vscale'));
 
 %% Functions on [a inf]:
 
 % Set the domain:
 dom = [1 Inf];
 
-op = @(x) x.*exp(-x);
-f = unbndfun(op, dom);
-I = sum(f);
+opf = @(x) x;
+opg = @(x) exp(-x);
+pref = chebpref();
+pref.singPrefs.exponents = [0 1];
+f = unbndfun(opf, dom, [], [], pref);
+g = unbndfun(opg, dom);
+I = innerProduct(f, g);
 IExact = 2*exp(-1);
 err = abs(I - IExact);
-pass(5) = err < 1e6*get(f,'epslevel')*get(f,'vscale');
-
-op = @(x) (1-exp(-x))./x.^2;
-f = unbndfun(op, dom);
-I = sum(f);
-IExact = 1 - exp(-1) - ei(-1);
-err = abs(I - IExact);
-pass(6) = err < 1e4*get(f,'epslevel')*get(f,'vscale');
+pass(2) = err < 1e8*max(get(f,'epslevel')*get(f,'vscale'), ...
+    get(g,'epslevel')*get(g,'vscale'));
 
 %% Functions on [-inf b]:
 
 % Set the domain:
 dom = [-Inf -3*pi];
 
-op = @(x) (1-exp(x))./x.^2;
-f = unbndfun(op, dom);
-I = sum(f);
-IExact = (exp(-3*pi)*(exp(3*pi)-1))/(3*pi)-ei(-3*pi);
+opf = @(x) 1./x;
+opg = @(x) 2./x;
+f = unbndfun(opf, dom);
+g = unbndfun(opg, dom);
+I = innerProduct(f, g);
+IExact = 2/(3*pi);
 err = abs(I - IExact);
-pass(10) = err < 1e5*get(f,'epslevel')*get(f,'vscale');
-
-op = @(x) 1./x.^2;
-f = unbndfun(op, dom);
-I = sum(f);
-IExact = 1/(3*pi);
-err = abs(I - IExact);
-pass(11) = err < 1e3*get(f,'epslevel')*get(f,'vscale');
+pass(3) = err < 1e5*get(f,'epslevel')*get(f,'vscale');
 
 end
