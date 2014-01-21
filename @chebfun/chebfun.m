@@ -174,9 +174,8 @@ classdef chebfun
                 f = merge(f, index(:).', pref);
                 
             end
-            
+
         end
-        
     end
     
     % Static methods implemented by CHEBFUN class.
@@ -193,6 +192,9 @@ classdef chebfun
         
         % Determine values of chebfun at breakpoints.
         vals = getValuesAtBreakpoints(funs, ends, op);
+        
+        % Merge domains.
+        newDom = mergeDomains(varargin)
         
         % ODE113 with CHEBFUN output.
         [t, y] = ode113(varargin);
@@ -211,6 +213,9 @@ classdef chebfun
         
         % Cubic spline interpolant:
         f = spline(x, y, d);
+        
+        % Which interval is a point in?
+        out = whichInterval(dom, x);
         
     end
 
@@ -271,9 +276,6 @@ classdef chebfun
 
         % Compose CHEBFUN objects with another function.
         h = compose(f, op, g, pref)
-
-        % Compose two CHEBFUN objects (i.e., f(g)).
-        h = composeChebfuns(f, g, pref)
         
         % Complex conjugate of a CHEBFUN.
         f = conj(f)
@@ -516,16 +518,28 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
             else
                 % If 'blowup' is not 'off'.
                 if ( args{2} == 1 )
+                    
                     % Translate "blowup" and flag "1" -->
                     % "enableSingularityDetection" and "poles only".
+                    
                     pref.enableSingularityDetection = 1;
-                    pref.singPrefs.singType = {'pole', 'pole'};
+                    singTypes = cell(1, 2*(numel(domain)-1));
+                    for j = 1:2*(numel(domain)-1)
+                        singTypes{j} = 'pole';
+                    end
+                    pref.singPrefs.singType = singTypes;
                 elseif ( (isnumeric(args{2}) && args{2} == 2 ) || ...
-                    strcmpi(args{2}, 'on') )
+                        strcmpi(args{2}, 'on') )
+                    
                     % Translate "blowup" and flag "2" -->
                     % "enableSingularityDetection" and "fractional singularity".
+                    
                     pref.enableSingularityDetection = 1;
-                    pref.singPrefs.singType = {'sing', 'sing'};
+                    singTypes = cell(1, 2*(numel(domain)-1));
+                    for j = 1:2*(numel(domain)-1)
+                        singTypes{j} = 'sing';
+                    end
+                    pref.singPrefs.singType = singTypes;
                 else
                     error('CHEBFUN:constructor:parseInputs', ...
                         'Invalid value for ''blowup'' option.');

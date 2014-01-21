@@ -23,8 +23,7 @@ scl = (b-a)/100;
 ee = [-scl ; NaN ; scl];
 
 isTransposed = A(1).isTransposed;
-% TODO: % numCols = numColumns(A);
-numCols = min(size(A));
+numCols = numColumns(A);
 
 % Loop over the columns:
 for j = 1:numCols

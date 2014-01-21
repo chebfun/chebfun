@@ -1,4 +1,4 @@
-function g = tanh(f, pref)
+function F = tanh(F, varargin)
 %TANH   Hyperbolic tangent of a CHEBFUN.
 %   TANH(F) computes the hyperbolic tangent of the CHEBFUN F.
 %
@@ -10,12 +10,7 @@ function g = tanh(f, pref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-% Obtain preferences:
-if ( nargin == 1 )
-    pref = chebpref();
-end
-
 % Call the compose method:
-g = compose(f, @tanh, pref);
+F = compose(F, @tanh, varargin{:});
 
 end

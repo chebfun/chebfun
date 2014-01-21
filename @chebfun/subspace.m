@@ -1,8 +1,7 @@
 function theta = subspace(A, B)
 %SUBSPACE   Angle between subspaces.
 %   SUBSPACE(A, B) finds the angle between two subspaces specified by the
-%   columns (or rows, if A and B are transposed) of the CHEBFUN objects A and
-%   B.
+%   columns (or rows, if A and B are transposed) of the CHEBFUN objects A and B.
 %
 %   If the angle is small, the two spaces are nearly linearly dependent.
 %
@@ -28,8 +27,8 @@ if ( ~domainCheck(A, B) )
     error('CHEBFUN:subspace:domain', ...
         'Domain mismatch.')
 end
-if ( A.isTransposed )
-    if ( ~B.isTransposed )
+if ( A(1).isTransposed )
+    if ( ~B(1).isTransposed )
         error('CHEBFUN:subspace:trans', 'Dimension mismatch (transpose).');
     end
     A = A.';

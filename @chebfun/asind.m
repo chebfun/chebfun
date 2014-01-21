@@ -1,4 +1,4 @@
-function g = asind(f, pref)
+function F = asind(F, varargin)
 %ASIND   Inverse sine of a CHEBFUN, result in degrees.
 %   ASIND(F) computes the inverse sine (in degrees) of the CHEBFUN F.
 %
@@ -10,12 +10,7 @@ function g = asind(f, pref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org for Chebfun information.
 
-% Obtain preferences:
-if ( nargin == 1 )
-    pref = chebpref();
-end
-
 % Call the compose method:
-g = compose(f, @asind, pref);
+F = compose(F, @asind, varargin{:});
 
 end

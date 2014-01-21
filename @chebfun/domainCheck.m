@@ -30,15 +30,15 @@ elseif ( xor(fIsEmpty, gIsEmpty) ) % Exactly one of f, g is empty.
     
 elseif ( ~isa(g, 'chebfun') )      % f, g both not empty. f is a CHEBFUN.
     hs = hscale(f);
-    pass = norm(f.domain([1, end]) - g([1, end]), inf) < 1e-15*hs;
+    pass = norm(f(1).domain([1, end]) - g([1, end]), inf) < 1e-15*hs;
     
 elseif ( ~isa(f, 'chebfun') )      % f, g both not empty. g is a CHEBFUN.
     hs = hscale(g);
-    pass = norm(f([1, end]) - g.domain([1, end]), inf) < 1e-15*hs;
+    pass = norm(f([1, end]) - g(1).domain([1, end]), inf) < 1e-15*hs;
     
 else                               % f, g both not empty CHEBFUN objects.
     hs = max(hscale(f), hscale(g));    
-    pass = norm(f.domain([1, end]) - g.domain([1, end]), inf) < 1e-15*hs;
+    pass = norm(f(1).domain([1, end]) - g(1).domain([1, end]), inf) < 1e-15*hs;
     
 end
 

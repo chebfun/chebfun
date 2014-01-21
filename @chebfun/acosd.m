@@ -1,4 +1,4 @@
-function g = acosd(f, pref)
+function F = acosd(F, varargin)
 %ACOSD   Cosine of a CHEBFUN, result in degrees.
 %   ACOSD(F) computes the cosine (in degrees) of the CHEBFUN F.
 %
@@ -10,12 +10,7 @@ function g = acosd(f, pref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org for Chebfun information.
 
-% Obtain preferences:
-if ( nargin == 1 )
-    pref = chebpref();
-end
-
 % Call the compose method:
-g = compose(f, @acosd, pref);
+F = compose(F, @acosd, varargin{:});
 
 end

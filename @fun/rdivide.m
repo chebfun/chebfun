@@ -20,8 +20,20 @@ if ( isempty(f) || isempty(g) )
     return
 end
 
-% TODO: FUN/RDIVIDE() should check for roots at the ends of the domain. If any
-% are found, then it must convert the .ONEFUN to a SINGFUN.
+% Cast G to SINGFUN if G has vanishing values at the endpoints:
+if ( ~issing(g) )
+    % Get the boundary values:
+    endVals = [get(g, 'lval'); get(g, 'rval')];
+    tol = 1e1*get(g, 'vscale').*get(g, 'epslevel');
+    
+    if any(any( endVals < tol ))
+        [g.onefun, rootsLeft, rootsRight] = extractBoundaryRoots(g.onefun);
+    end
+    h = singfun();
+    h.smoothPart = g.onefun;
+    h.exponents = [rootsLeft rootsRight];
+    g.onefun = h;
+end
 
 % Look at different cases:
 

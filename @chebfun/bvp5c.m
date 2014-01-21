@@ -46,7 +46,8 @@ end
 
 % Determine the initial BVP grid from the length of the CHEBFUN:
 n = max(9, length(y0));
-x = linspace(y0.domain(1), y0.domain(end), n);
+dom = domain(y0);
+x = linspace(dom(1), dom(end), n);
 
 % Call BVPINT().
 f = @(x) feval(y0, x);
