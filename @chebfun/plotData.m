@@ -23,7 +23,7 @@ function data = plotData(f, g, h)
 
 % Initialise the output structure:
 data = struct('xLine', [], 'yLine', [], 'xPoints', [], 'yPoints', [], ...
-    'xJumps', [], 'yJumps', [], 'yLim', []);
+    'xJumps', [], 'yJumps', []);
 
 if ( nargin == 1 )
     % PLOT(F)

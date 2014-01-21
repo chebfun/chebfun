@@ -81,7 +81,7 @@ elseif ( isa(g, 'chebtech') )
         % Grid data for h:
         data.hGrid.xLine = h.chebpts(npts);
         % Use the maximum of the lenghts of f, g and h to match the number of
-        % values returned:    
+        % values returned:
         data.hGrid.xPoints = h.chebpts(len);
         
          % Values on oversampled Chebyshev grid:
