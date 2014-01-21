@@ -47,8 +47,24 @@ tol = 10*max(get(f, 'vscale').*get(f, 'epslevel'));
 pass(7) = (all(abs(y - exact_max) < tol) && ...
     all(abs(fx - exact_max) < tol));
 
-%% 
-% [TODO]: Run a few tests for UNBNDFUN.
+%% test on UNBNDFUN:
+
+% Functions on [-inf b]:
+
+% Set the domain:
+dom = [-Inf -3*pi];
+
+% A blow-up function:
+op = @(x) x.*(5+exp(x.^3))./(dom(2)-x);
+pref.singPrefs.exponents = [0 -1];
+f = unbndfun(op, dom, [], [], pref); 
+[y, x] = min(f);
+yExact = -Inf;
+xExact = dom(2);
+errX = x - xExact;
+pass(8) = ( norm(errX, inf) < get(f,'epslevel')*get(f,'vscale') ) && ...
+    ( yExact == -Inf );
+
 end
 
 %%
@@ -61,6 +77,3 @@ tol = 50*get(f, 'vscale').*get(f, 'epslevel');
 result = ((abs(y - exact_min) < tol) && ... 
           (abs(fx - exact_min) < tol));
 end
-
-%%
-% [TODO]: Spot-check the results for a given UNBNDFUN.

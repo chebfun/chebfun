@@ -86,8 +86,22 @@ f = bndfun(op, dom, [], [], pref);
 r = roots(f);
 r_exact = [-1/2; 1/2; 3/2]*pi;
 err = r - r_exact;
-pass(10) = (norm(err, inf) < 1e2*get(f, 'vscale')*get(f, 'epslevel'));
+pass(10) = (norm(err, inf) < 1e2*get(f, 'vscale').*get(f, 'epslevel'));
     
-%% 
-% [TODO]: Run a few tests for UNBNDFUN.
+%% Tests for UNBNDFUN:
+
+% Functions on [-inf inf]:
+
+% Set the domain:
+dom = [-Inf Inf];
+
+% Blow-up function:
+op = @(x) x.^2.*(1-exp(-x.^2))-2;
+pref.singPrefs.exponents = [2 2];
+f = unbndfun(op, dom, [], [], pref); 
+r = roots(f);
+rExact = [-1.4962104914103104707 ; 1.4962104914103104707];
+err = r - rExact;
+pass(11) = norm(err, inf) < get(f,'epslevel').*get(f,'vscale');
+
 end

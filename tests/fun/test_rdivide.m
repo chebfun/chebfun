@@ -106,8 +106,28 @@ h_exact = op(x);
 pass(14) = ( norm(vals_h-h_exact, inf) < 1e2* ...
     max(get(f, 'epslevel'), get(g, 'epslevel'))*norm(h_exact, inf) );
 
-%% 
-% [TODO]: Run a few tests for UNBNDFUN.
+%% Tests for UNBNDFUN:
+
+% Functions on [2 inf]:
+
+% Set the domain:
+dom = [2 Inf];
+domCheck = [2 1e2];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+opf = @(x) exp(-x.^2);
+opg = @(x) x.^2.*exp(-x.^2);
+oph = @(x) x.^-2;
+f = unbndfun(opf, dom);
+g = unbndfun(opg, dom);
+h = f./g;
+hVals = feval(h, x);
+hExact = oph(x);
+err = hVals - hExact;
+pass(15) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
+
 end
 
 %%

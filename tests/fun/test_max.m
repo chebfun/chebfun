@@ -45,8 +45,21 @@ tol = get(f, 'vscale').*get(f, 'epslevel');
 pass(7) = (all(abs(y - exact_max) < tol) && ...
     all(abs(fx - exact_max) < tol));
       
-%% 
-% [TODO]: Run a few tests for UNBNDFUN.
+%% UNBNDFUN:
+% Functions on [a inf]:
+
+% Set the domain:
+dom = [1 Inf];
+
+op = @(x) x.*exp(-x);
+f = unbndfun(op, dom);
+[y, x] = max(f);
+yExact = exp(-1);
+xExact = 1;
+errY = y - yExact;
+errX = x - xExact;
+pass(8) = norm([errY errX], inf) < get(f,'epslevel').*get(f,'vscale');
+
 end
 
 %%

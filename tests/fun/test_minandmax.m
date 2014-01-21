@@ -70,8 +70,24 @@ f2 = bndfun(@(x) 1i*cos(20*x), dom);
 pass(9) = norm(abs(vals) - abs([vals1 vals2]), inf) < ...
     10*max(get(f, 'vscale').*get(f, 'epslevel'));
     
-%% 
-% [TODO]: Run a few tests for UNBNDFUN.
+%% Tests on UNBNDFUN:
+
+% Doubly-infinite domain:
+
+% Set the domain:
+dom = [-Inf Inf];
+
+op = @(x) (1-exp(-x.^2))./x;
+f = unbndfun(op, dom);
+[vals, pos] = minandmax(f);
+% These exact solutions are obtained using Mathematica:
+vExact = [-0.6381726863389515 ; 0.6381726863389515];
+pExact = [-1.120906422778534 ; 1.120906422778534];
+errV = vals - vExact;
+errP = pos - pExact;
+pass(10) = ( norm(errV, inf) < get(f,'epslevel')*get(f,'vscale') ) && ...
+    ( norm(errP, inf) < get(f,'epslevel')*get(f,'vscale') );
+
 end
 
 %% 
@@ -86,6 +102,3 @@ function result = test_spotcheck_minmax(fun_op, dom, exact_min, ...
     result = ((max(abs(y - y_exact)) < 10*get(f, 'epslevel')) && ... 
         (max(abs(fx - y_exact)) < 10*get(f, 'epslevel')));
 end
-
-%%
-% [TODO]: Spot-check the results for a given UNBNDFUN.

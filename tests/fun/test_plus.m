@@ -106,11 +106,31 @@ h = f + g;
 vals_h = feval(h, x);
 op = @(x)  (x - dom(2)).^pow.*(sin(x)+cos(3*x));
 h_exact = op(x);
-pass(22) = ( norm(vals_h-h_exact, inf) < 1e1*max(get(f, 'epslevel'), get(g, 'epslevel'))*...
-    norm(h_exact, inf) );
+pass(22) = ( norm(vals_h-h_exact, inf) < 1e1*max(get(f, 'epslevel'), ...
+    get(g, 'epslevel'))*norm(h_exact, inf) );
 
-%% 
-% [TODO]: Run a few tests for UNBNDFUN.
+%% Test for UNBNDFUN:
+
+% Functions on [-inf inf]:
+
+% Set the domain:
+dom = [-Inf Inf];
+domCheck = [-1e2 1e2];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+opf = @(x) exp(-x.^2);
+opg = @(x) x.^2.*exp(-x.^2);
+oph = @(x) exp(-x.^2) + x.^2.*exp(-x.^2);
+f = unbndfun(opf, dom);
+g = unbndfun(opg, dom);
+h = f + g;
+hVals = feval(h, x);
+hExact = oph(x);
+err = hVals - hExact;
+pass(23) = norm(err, inf) < get(h,'epslevel').*get(h,'vscale');
+
 end
 
 %% 

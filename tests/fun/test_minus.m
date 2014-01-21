@@ -96,8 +96,29 @@ pass(20) = (~get(g, 'ishappy')) && (~get(h, 'ishappy'));
 h = g - f;  % Subtract happy from unhappy.
 pass(21) = (~get(g, 'ishappy')) && (~get(h, 'ishappy'));
 
-%% 
-% [TODO]: Run a few tests for UNBNDFUN.
+%% Tests for UNBNDFUN:
+
+% Functions on [-inf b]:
+
+% Set the domain:
+dom = [-Inf 3*pi];
+domCheck = [-1e6 3*pi];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+opf = @(x) x.*exp(x);
+opg = @(x) (1-exp(x))./x;
+oph = @(x) x.*exp(x) - (1-exp(x))./x;
+f = unbndfun(opf, dom);
+g = unbndfun(opg, dom);
+h = f - g;
+
+hVals = feval(h, x);
+hExact = oph(x);
+err = hVals - hExact;
+pass(22) = norm(err, inf) < max(get(h,'epslevel').*get(h,'vscale'));
+
 end
 
 %% 
