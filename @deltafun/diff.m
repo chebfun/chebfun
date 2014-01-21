@@ -16,19 +16,18 @@ if ( isempty(f) )
 end
 
 if ( (nargin < 2) || isempty(k) )
-    % Order of derivative not passed in. Assume 1st derivative by default:
+    % Order of derivative not passed. Assume 1st derivative by default:
     k = 1;
 elseif ( k == 0 )
     % Nothing to do here!
     return
 end
 
-%% Differentiate the DELTAFUN F, k times 
-% Differentiate the classical smooth part
-g = diff(f.funPart, k);
-% [TODO]: Notice that g may have morphed into deltafun 
-% by now so we, need to be careful.
-
+%% Differentiate the DELTAFUN F, k times
+% Differentiate the classical smooth part:
+if ( ~isempty(f.funPart) )
+    f.funPart = diff(f.funPart, k);
+end
 
 % Differentiate the distributional part. This just amounts to shifting
 % the magnitude matrix down by k rows by adding k zero rows at the top. 
@@ -37,11 +36,7 @@ m = size(deltaMag, 2);
 f.impulses = [ zeros(k, m); deltaMag;];
 
 %%
-% Simplify, just in case.
+% Simplify, just in case:
 f = simplify(f);                 
-%%
-% Annihilate the existing smooth part and add g to the deltafun:
-f.funPart = 0*f.funPart;
-f = f + g;
 
 end

@@ -7,8 +7,8 @@ function s = zeroDeltaFun(domain)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Create a zero smooth part:
-f = chebfun(0, domain);
+% Create a zero fun on the domain:
+f = fun.constructor(0, domain);
 
 % Create a zero DELTAFUN object:
 s = deltafun();

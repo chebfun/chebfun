@@ -25,11 +25,10 @@ if ( xor(isempty(f), isempty(g)) )
 end
 
 % Non-trivial cases
-if ( ~iszero(f.funPart - g.funPart) )
+if ( ~isequal(f.funPart, g.funPart) )
     out = 0;
     return
 end
-
 
 f = simplify(f);
 g = simplify(g);

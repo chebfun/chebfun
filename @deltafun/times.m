@@ -13,13 +13,6 @@ if ( isempty(f) || isempty(g) )
     return
 end
 
-% Trivial cases:
-% % Check if inputs are other than DELTAFUNS or doubles:
-% if ( (~isa(f, 'deltafun') && ~isa(f, 'double')) || ...
-%      (~isa(g, 'deltafun') && ~isa(g, 'double')) )
-%     error( 'DELTAFUN:times', 'Input can only be a DELTAFUN or a double' )
-% end
-
 % Make sure F is a deltafun and copy the other input in g
 if ( ~isa(f, 'deltafun') )
     % Then g must be a deltafun
@@ -36,6 +29,7 @@ if ( isa(g, 'double') )
     % Scale everything and return:
     h.funPart = g * F.funPart;
     h.impulses = g * h.impulses;
+    h = simplify(h);
     return
 end
 
@@ -72,40 +66,42 @@ if ( isa(g, 'deltafun') )
     [deltaMag, deltaLoc] = deltafun.mergeImpulses( impulses1, F.location, impulses2, g.location );
     h.impulses = deltaMag;
     h.location = deltaLoc;
-    
 else
     % Class of g unknown, throw an error:
-    error( 'CHEBFUN:DELTAFUN:times', 'unknown argument type' );
+    error( 'DELTAFUN:times', 'unknown argument type' );
 end
 %%
 % Check if after multiplication h has become smooth:
 if ( ~anyDelta(h) )
     h = h.funPart;
+else
+    h = simplify(h);
 end
 
 end
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % What is the distribution f times a  sum of derivatives of delta functions
-% all located at the point x?
-% < f*delta^(n), phi > = sum < (-1)^(n-j) f^(n-j)delta^(j), phi>
+% all located at the same point x? This is given by the formula:
+% < f*delta^(n), phi > = sum < (-1)^(n-j) (n_C_j) * f^(n-j)delta^(j), phi>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function D = funTimesDelta(f, deltaMag, deltaLoc)
+
+% Make sure there are no redundant rows:
+deltaMag = deltafun.cleanRows(deltaMag);
 
 % Highest order delta function:
 n = size(deltaMag, 1);
 m = length(deltaLoc);
 
-% Get all the derivatives needed and store them in a matrix:
+% Get all the scaled derivatives needed and store them in a matrix:
 Fd = zeros(n, m);
 fk = f;
 for k = 1:n
-    Fd(k, :) = (-1)^(k-1)*feval(fk, deltaLoc);
+    Fd(k, :) = (-1)^(k-1)* nchoosek(n-1, k-1) * feval(fk, deltaLoc);
     fk = diff(fk);
 end
-    
+
 D = zeros(n, m);
 for j = 1:m
     for i = 1:n 

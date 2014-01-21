@@ -20,7 +20,7 @@ d2 = deltafun(f, mag, loc);
 
 pass(2) = isequal(d1, d2);
 
-pass(3) = ~isequal( d1, .9234*d2 );
+pass(3) = ~isequal( d1, .992312341234*d2 );
 
 d2.impulses = d2.impulses(1:end-1, :);
 pass(4) = ~isequal( d1, d2);
@@ -30,4 +30,13 @@ d1.location = d1.location(1:end-1);
 
 pass(5) = ~isequal(d1, d2);
 
-%end
+d1 = deltafun( [], 1, 0);
+d2 = deltafun( [], [1; 0], 0 );
+pass(6) = isequal(d1, d2);
+
+d1 = deltafun(f, [], [] );
+d2 = deltafun([], [], []);
+
+pass(7) = ~isequal(d1, d2);
+
+end
