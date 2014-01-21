@@ -70,7 +70,7 @@ elseif ( isa(g, 'singfun') )
     
 end
 
-if ( unbnd )
+% if ( unbnd )
     % Auto adjust y limits based upon standard deviation
     
     % TODO: This needs much more work!
@@ -96,9 +96,10 @@ if ( unbnd )
     sd = std(masked);
     bot = max(min(gl), min(masked) - sd);
     top = min(max(gl), max(masked) + sd);
+    [bot, top]
     data.yLim = [bot, top];
 %     data.yLine(gl > 1.1*top) = NaN;
 %     data.yLine(gl < 1.1*bot) = NaN;
-end
+% end
 
 end

@@ -64,6 +64,12 @@ end
 
 % Store the hold state of the current axis:
 holdState = ishold;
+if ( holdState == true )
+    % Respect current limits:
+    yLim = get(gca, 'ylim');
+else
+    yLim = [inf, -inf];
+end
 isComplex = false;
 intervalIsSet = false;
 
@@ -100,8 +106,6 @@ end
 lineData = {};
 pointData = {};
 jumpData = {};
-    
-yLim = [inf, -inf];
 
 %%
 % Get the data for plotting from PLOTDATA():
@@ -243,6 +247,7 @@ else
     set(h3, 'LineStyle', ':', 'Marker', 'none')
 end
 
+% Set the y limits if appropriate values have been suggested:
 if ( all( isfinite(yLim) ) )
     set(gca, 'ylim', yLim), shg
 end
