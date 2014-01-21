@@ -248,8 +248,8 @@ else
 end
 
 % Set the y limits if appropriate values have been suggested:
-if ( all( isfinite(yLim) ) )
-    set(gca, 'ylim', yLim), shg
+if ( all(isfinite(yLim)) )
+    set(gca, 'ylim', yLim)
 end
 
 % Return hold state to what it was before:

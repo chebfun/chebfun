@@ -52,10 +52,10 @@ function jumps = getJumps(f, fLine)
     rvalF = get(f, 'rval');
     
     % Deal with functions which blow up:
-    idx = isinf(lvalF);
-    lvalF(idx) = fLine(2, idx);
-    idx = isinf(rvalF);
-    rvalF(idx) = fLine(end-1, idx);
+    ind = isinf(lvalF);
+    lvalF(ind) = fLine(2, ind);
+    ind = isinf(rvalF);
+    rvalF(ind) = fLine(end-1, ind);
     
     myNaN = nan(size(lvalF));
     jumps = [lvalF ; myNaN ; rvalF];
