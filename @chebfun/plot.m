@@ -153,22 +153,17 @@ while ( ~isempty(varargin) )
         % Remove CHEBFUN from array input:
         f = varargin{1};
         varargin(1) = [];
-
         isComplex = ~isreal(f);
+        
         % Loop over the columns:
         for k = 1:numel(f)
-            newData(k) = plotData(f(k));
-            if ( isComplex ) % Deal with complex-valued functions.
-                % Assign x to be the real part, and y to be the imagiary part:
-                newData(k).xLine = real(newData(k).yLine);
-                newData(k).yLine = imag(newData(k).yLine);
-                newData(k).xPoints = real(newData(k).yPoints);
-                newData(k).yPoints = imag(newData(k).yPoints);
-                newData(k).xJumps = real(newData(k).yJumps);
-                newData(k).yJumps = imag(newData(k).yJumps);
+            if ( isComplex )
+                newData(k) = plotData(real(f(k)), imag(f(k)));
+            else
+                newData(k) = plotData(f(k));
             end
         end
-        
+
     end
     
     % Style data.
