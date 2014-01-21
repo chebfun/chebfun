@@ -1,26 +1,51 @@
 classdef (InferiorClasses = {?chebfun}) adchebfun 
-%ADCHEBFUN   A class consisting of a CHEBFUN and derivative information.
+%ADCHEBFUN   A class for supporting automatic differentiation in Chebfun.
 %
-% See also CHEBFUN, LINOP, CHEBOP.
+%   The ADCHEBFUN class allows Chebfun to compute Frechet derivatives of
+%   nonlinear operators. It also supports linearity detection.
+% 
+%   This class is not intended to be called directly by the end user.
+%
+% See also CHEBFUN, LINBLOCK, LINOP, CHEBOP.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% ADCHEBFUN Class Description:
+% ADCHEBFUN class description:
+%
+% The ADCHEBFUN is used by the CHEBOP class to supply Frechet derivatives for
+% solving nonlinear boundary-value problems (BVPs) of ordinary differential
+% equations (ODEs). It also enables the system to determine whether operators
+% are linear or not, which allows a convenient for syntax for specifying linear
+% operators, and accessing methods specific to linear operators, such as eigs
+% and expm.
+%
+% An ADCHEBFUN object has four properties:
+%
+%   1) func: A CHEBFUN, which corresponds to the function the ADCHEBFUN
+%           represents.
+%   2) jacobian: The Frechet derivative of the function the ADCHEBFUN
+%           represents, with respect to a selected basis variable. The basis
+%           variable is selected at the start of computation with ADCHEBFUN
+%           objects, and has the identity operators as its Frechet derivative.
+%   3) isConstant: This is used for linearity detection. A value equal to 1
+%           indicates that the function the ADCHEBFUN represents has Frechet
+%           derivatives which has a constant value with respect to the selected
+%           basis variable.
+%   4) domain: The domain on which the function ADCHEBFUN represents lives.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     %% Properties of ADCHEBFUN objects.
     properties ( Access = public )
-        % Domain of the ADchebfun:
-        domain
         % The CHEBFUN / constant:
         func
         % The jacobian:
         jacobian
         % Linearity information:
         isConstant = 1;        
-        
+        % Domain of the ADchebfun:
+        domain
     end
     
     %% CLASS CONSTRUCTOR:
@@ -44,6 +69,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
     methods
         
         function f = abs(f) %#ok<MANU>
+            % ABS   ABS is not Frechet differentiable, so an error is thrown.
             error('CHEBFUN:AD:abs:NotDifferentiable', ...
                 'ABS() is not Frechet differentiable.');
         end
@@ -358,7 +384,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % Update CHEBFUN part
             f.func = cumsum(f, k);
             % Update derivative part
-            f.jacobian = linop.cumsum(f.domain, k)*f.jacobian;
+            f.jacobian = operatorBlock.cumsum(f.domain, k)*f.jacobian;
             % CUMSUM is a linear operation, so no need to update linearity info.
             % f.isConstant = f.isConstant;
         end
@@ -374,7 +400,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % Update CHEBFUN part
             f.func = diff(f.func, k);
             % Update derivative part
-            f.jacobian = linop.diff(f.domain, k)*f.jacobian;
+            f.jacobian = operatorBlock.diff(f.domain, k)*f.jacobian;
             % DIFF is a linear operation, so no need to update linearity info.
             % f.isConstant = f.isConstant;
         end
@@ -456,7 +482,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % dictated by the chain rule).
             
             % Create an feval linear operator at the point X.
-            E = linop.feval(x, f.domain);
+            E = functionalBlock.feval(x, f.domain);
             % Update derivative part
             f.jacobian = E*f.jacobian;
             % Update CHEBFUN part
@@ -485,9 +511,9 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
         
         function u = jacreset(u)
-            % TODO: Document
+            % U = JACRESET(U)
             
-            u.jacobian = linop.eye(u.domain);
+            u.jacobian = operatorBlock.eye(u.domain);
             u.isConstant = 1;
         end 
         
@@ -544,11 +570,19 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
         
         function f = minus(f, g)
-            % -     Subtraction of ADCHEBFUN
+            % -     Subtraction of ADCHEBFUN objects
             f = plus(f, -g);
         end
                 
         function [normF, normLoc] = norm(f, varargin)
+            % NORM(F, K)    Norm of ADCHEBFUN objects.
+            %
+            % Input argument follow the expected pattern from CHEBFUN/norm.
+            %
+            % See also CHEBFUN/norm.
+            
+            % TODO: Do we want this method to return an ADCHEBFUN? Makes sense
+            % in the 2-norm case, in particular for 2-norm squared.
             if nargout == 2
                 [normF, normLoc]  = norm(f.func, varargin{:});
             else
@@ -572,21 +606,36 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end        
         
         function f = plus(f, g)
+            % +     Addition of ADCHEBFUN objects
+            
+            % If F is not an ADCHEBFUN, we know G is, so add to the CHEBFUN part
+            % of G.
             if ( ~isa(f, 'adchebfun') )
                 g.func = f + g.func;
-                f = g;
+                f = g;      % Swap for output argument
+            
+            % If G is not an ADCHEBFUN, we know F is, so add to the CHEBFUN part
+            % of F.
             elseif ( ~isa(g, 'adchebfun') )
                 f.func = f.func + g;
-            else        
+            
+            % ADCHEBFUN + ADCHEBFUN
+            else
+                % Update linearity information
                 f.isConstant = f.isConstant & g.isConstant;
+                % Derivative part
                 f.func = f.func + g.func;
+                % Derivative part
                 f.jacobian = f.jacobian + g.jacobian;
             end
+            
+            % Need to update domain in case new breakpoints were introduced
             f = updateDomain(f);
 
         end
         
         function f = power(f, b)
+            % TODO: Document
             if ( isa(f, 'adchebfun') && isa(b, 'adchebfun') )
                 f.isConstant = iszero(f.jacobian) & iszero(g.jacobian) & ...
                     f.isConstant & b.isConstant; 
@@ -622,8 +671,8 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
       
         function u = seed(u, k, m)
             dom = u.domain;
-            I = linop.eye(dom);
-            Z = linop.zeros(dom);
+            I = operatorBlock.eye(dom);
+            Z = operatorBlock.zeros(dom);
             blocks = cell(1, m);
             for j = 1:m
                 blocks{1,j} = Z;
@@ -677,7 +726,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         
         function f = sum(f)
             f.func = sum(f.func);
-            f.jacobian = linop.sum(f.domain)*f.jacobian;
+            f.jacobian = functionalBlock.sum(f.domain)*f.jacobian;
         end
         
         function f = tan(f)
