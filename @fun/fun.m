@@ -233,6 +233,9 @@ classdef fun % (Abstract)
         % Test if a FUN object is built upon SINGFUN.
         out = issing(f)
         
+        % Test if a FUN object is built upon SMOOTHFUN.
+        out = issmooth(f)
+
         % True for zero FUN objects
         out = iszero(f)
         
