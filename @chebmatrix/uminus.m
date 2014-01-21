@@ -1,7 +1,10 @@
 function C = uminus(A)
-[m,n] = size(A);
+%UMINUS    Negate a chebmatrix.
+
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
+
+[m,n] = size(A);
 C = cell(m,n);
 for i = 1:m
     for j = 1:n
@@ -9,4 +12,5 @@ for i = 1:m
     end
 end
 C = chebmatrix(C);
+
 end

@@ -1,7 +1,9 @@
 function C = plus(A,B)
+%+         Sum of chebmatrices.
 
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
+
 if ( ~isa(A, 'chebmatrix') )
     A = chebmatrix({A});
 end

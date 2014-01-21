@@ -1,8 +1,18 @@
 function B = subsref(A, sr)
-% A(I, J) returns the slice (submatrix) of A as with ordinary
+%SUBSREF   Extract part or property of a chebmatrix.
+%   A(I,J) returns the slice (submatrix) of A as with an ordinary matrix.
+%   The result is a chebmatrix.
+%
+%   A{I,J} returns a single block as its native type (linBlock, chebfun,
+%   double).
+%
+%   A.(property) returns a property of the chebmatrix.
+%
+%   See also CHEBMATRIX.SUBSASGN.
+
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
-% matrices.
+
 switch(sr(1).type)
     case '()'
         B = chebmatrix( subsref(A.blocks, sr(1)) );
