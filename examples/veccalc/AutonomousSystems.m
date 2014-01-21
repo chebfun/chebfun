@@ -17,7 +17,7 @@
 % We start by looking at the familiar simple harmonic oscillator.
 
 phasedom = [-1 1 -3 3]; w = 2;        % phase plane domain
-F = chebfun2v(@(x,y)y,@(x,y)-w.^2.*x, phasedom);
+F = chebfun2v(@(x,y)y, @(x,y)-w.^2.*x, phasedom);
 for ic = .1:.2:1                      % initial conditions
     [t, y] = ode45(F,[0 4],[ic,0]);   % solve autonomous system
     plot(y,'r'), hold on              % plot trajectory
@@ -37,7 +37,7 @@ title('The simple harmonic oscillator','FontSize',16), hold off
 phasedom = [-4 4 -2 2];               % phase plane domain
 F = chebfun2v(@(x,y)y,@(x,y)-sin(x)/4,phasedom);
 for ic = .5:.5:3                      % initial conditions
-    [t y]=ode45(F,[0 40],[ic,0]);     % solve autonomous system
+    [t, y]=ode45(F,[0 40],[ic,0]);     % solve autonomous system
     plot(y,'r'), hold on              % plot trajectory
 end
 quiver(F,'b'), axis equal                 % vector field

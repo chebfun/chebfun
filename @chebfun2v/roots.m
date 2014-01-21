@@ -944,8 +944,8 @@ else
     r = zeros(0,2); 
     num = 0;
     
-    Rx = rfx(x, :); 
-    Ry = rfy(x, :);
+    Rx = rfx(x(:), :); 
+    Ry = rfy(x(:), :);
     if ( any(size(Rx)==[1 1]) )
         Rx = Rx( : ); 
     end
@@ -953,7 +953,7 @@ else
         Ry = Ry( : ); 
     end
     
-    for jj = 1:size(rfx,2)
+    for jj = 1:size(rfx, 2)
         rx = Rx(:, jj); 
         rlx = real( rx ); 
         imx = imag( rx );
