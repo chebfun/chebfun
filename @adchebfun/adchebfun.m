@@ -395,7 +395,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             end
             
             % Update CHEBFUN part
-            f.func = cumsum(f, k);
+            f.func = cumsum(f.func, k);
             % Update derivative part
             f.jacobian = operatorBlock.cumsum(f.domain, k)*f.jacobian;
             % CUMSUM is a linear operation, so no need to update linearity info.
