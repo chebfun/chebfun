@@ -83,23 +83,24 @@ elseif ( nargin == 2 )
         
         % Discard the unnecessary jump data:
         if ( k == 1 )
-            dataNew.xJumps(1) = [];
+            dataNew.xJumps(1,:) = [];
             dataNew.yJumps(1,:) = [];
         end
         
         if ( k == nFuns )
-            dataNew.xJumps(end) = [];
+            dataNew.xJumps(end,:) = [];
             dataNew.yJumps(end,:) = [];
         end
 
         % Array of NaNs:
-        myNaN = NaN(1, size(dataNew.yLine, 2)); 
+        xNaN = NaN(1, size(dataNew.xLine, 2)); 
+        yNaN = NaN(1, size(dataNew.yLine, 2)); 
         
         % Insert a NaN (or array of NaNs) and append new data to array:
-        data.xLine = [data.xLine ; myNaN ; dataNew.xLine];
-        data.yLine = [data.yLine ; myNaN ; dataNew.yLine];
-        data.xPoints = [data.xPoints ; myNaN ; dataNew.xPoints];
-        data.yPoints = [data.yPoints ; myNaN ; dataNew.yPoints];
+        data.xLine = [data.xLine ; xNaN ; dataNew.xLine];
+        data.yLine = [data.yLine ; yNaN ; dataNew.yLine];
+        data.xPoints = [data.xPoints ; xNaN ; dataNew.xPoints];
+        data.yPoints = [data.yPoints ; yNaN ; dataNew.yPoints];
         data.xJumps = [data.xJumps ; dataNew.xJumps];
         data.yJumps = [data.yJumps ; dataNew.yJumps];
     end
