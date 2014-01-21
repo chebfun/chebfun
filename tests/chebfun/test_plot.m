@@ -26,6 +26,9 @@ fsc = chebfun(@(x) exp(1i*x), [-1 0 1], pref);
 fac = chebfun(@(x) [exp(1i*x) 2*exp(1i*x) 3*exp(1i*x)], [-1 0.5 1], pref);
 fqc = cheb2quasi(fac);
 
+% Singular functions.
+fsing = chebfun(@(x) 1./x, [-1 0 1], 'exps', [0 -1 -1 0]);
+
 % Obviously, we can't check if the plots are correct without human
 % intervention, so all these tests are meant to do is make sure none of the
 % plotting functions crash.
@@ -70,10 +73,13 @@ pass(22) = doesNotCrash(@() plot(fsc));
 pass(23) = doesNotCrash(@() plot(fac));
 pass(24) = doesNotCrash(@() plot(fqc));
 
+% Check plot of a singular function.
+pass(25) = doesNotCrash(@() plot(fsing));
+
 % Check plot flags and other options.
-pass(25) = doesNotCrash(@() plot(fsr1, 'numpts', 100));
-pass(26) = doesNotCrash(@() plot(fsr2, 'interval', [-0.5 0.5]));
-pass(27) = doesNotCrash(@() plot(fsr2, [-0.5 0.5]));
+pass(26) = doesNotCrash(@() plot(fsr1, 'numpts', 100));
+pass(27) = doesNotCrash(@() plot(fsr2, 'interval', [-0.5 0.5]));
+pass(28) = doesNotCrash(@() plot(fsr2, [-0.5 0.5]));
 
 close(hfig);
 
