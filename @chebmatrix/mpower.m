@@ -1,4 +1,8 @@
 function B = mpower(A, pow)
+%^         Repeated composition of a chebmatrix.
+
+%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  See http://www.chebfun.org for Chebfun information.
 
 if ( pow ~= round(pow) || pow < 0 )
     error('Power must be a positive integer.')
