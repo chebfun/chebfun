@@ -32,7 +32,7 @@ G = [f;g]                                         % vertical concatenation
 % vector function:
 
 f = chebfun2(@(x,y) exp( -(x.*y).^2/20 ) ,d);
-f.*F
+f*F
 
 %%  
 % Vector addition yields another chebfun2v and satisfies the 

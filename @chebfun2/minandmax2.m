@@ -21,7 +21,6 @@ if ( isempty(f) ) % check for empty chebfun2.
 end
 
 maxsize = 4e3;   % Maximum possible sample matrix size.
-pref = chebpref;
 
 % Is the function the zero function?
 if ( norm( f.cols ) < 10*eps )

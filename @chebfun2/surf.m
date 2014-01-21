@@ -72,8 +72,8 @@ if ( isa(f,'chebfun2') )                 % surf(f,...)
         xdata = linspace(dom(1), dom(2), minplotnum);
         ydata = linspace(dom(3), dom(4), minplotnum);
         [xx, yy] = meshgrid(xdata, ydata);
-        x = feval(x, xx, yy); 
-        y = feval(y, xx, yy);
+        xv = feval(x, xx, yy); 
+        yv = feval(y, xx, yy);
         if ( isa(argin{2}, 'chebfun2') )      % surf(x,y,f,...)
             vals = feval(argin{2}, xx, yy);
             if ( nargin < 4 )  % surf(x,y,f)
@@ -96,16 +96,19 @@ if ( isa(f,'chebfun2') )                 % surf(f,...)
                 C = C(1, 1) * ones(n, m);
             end
             
-            h = surf( x, y, vals, C, defaultopts{:}, argin{3:end} );
-            xlabel('x'), ylabel('y'), xlim(dom(1:2)), ylim(dom(3:4))
+            h = surf( xv, yv, vals, C, defaultopts{:}, argin{3:end} );
+            xlabel('x'), ylabel('y')
             
-            % There is a bug in matlab surf plot when vals are very nearly a constant.
-            % Fix this manually by resetting axis scaling.
-            if ( norm( vals - vals(1,1), inf) < 1e-10 * norm(vals, inf) )...
-                     && ( ~(norm(vals - vals(1,1),inf)==0) )
-                v = vals(1,1); absv = abs(v);
-                zlim([v-.5*absv v+.5*absv])
-            end
+%             % There is a bug in matlab surf plot when vals are very nearly a constant.
+%             % Fix this manually by resetting axis scaling.
+%             if ( norm( vals - vals(1,1), inf) < 1e-10 * norm(vals, inf) )...
+%                      && ( ~(norm(vals - vals(1,1),inf)==0) )
+%                 v = vals(1,1); absv = abs(v);
+%                 zlim([v-.5*absv v+.5*absv])
+%             end
+%             xlim([min2( x ), max2( x )] )
+%             ylim([ min2( y ), max2( y )] )
+%             zlim([ min2( f ), max2( f )] )
             
         else
             error('CHEBFUN2:SURF:INPUTS','The third argument should be a chebfun2 if you want to supply chebfun2 data.')

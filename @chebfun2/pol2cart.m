@@ -15,6 +15,5 @@ function [x, y, z] = pol2cart(th, r, z)
 
 x = r .* cos( th );
 y = r .* sin( th );
-z = z;
 
 end

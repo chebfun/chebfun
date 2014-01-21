@@ -53,7 +53,7 @@ surf(F)
 
 t1 = pi/6; t2 = 7/4*pi; r1 = 1/2; r2 = 2; 
 t = chebfun('t',[t1 t2]); r = chebfun('r',[r1 r2]);
-sector = [r2*exp(1i*t);r1*exp(1i*t);r*exp(1i*t1);r*exp(1i*t2)]; 
+sector = join( r2*exp(1i*t), r1*exp(1i*t), r*exp(1i*t1), r*exp(1i*t2) ); 
 plot(sector,'k',LW,lw), axis(2*[-1 1 -1 1]), axis equal, hold on,
 title('Sector domain',FS,fs)
 

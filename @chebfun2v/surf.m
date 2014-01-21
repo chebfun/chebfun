@@ -66,24 +66,24 @@ if ( ~isempty(varargin) )
 
         if ( plotline )
             LW = 'linewidth'; lw = 2;
-            dom = f1.domain;
+            dom = F1.domain;
             
             x = chebpts( numpts, dom(1:2) );
             lft = dom(3) * ones(length(x), 1);
-            h2 = plot3(f1(x, lft), f2(x ,lft), f3(x,lft), ...
+            h2 = plot3(F1(x, lft), F2(x ,lft), F3(x,lft), ...
                    'linestyle', ll{1}, 'Color', cc{1}, LW, lw ); hold on
             
             rght = dom(4) * ones(length(x), 1);
-            h3 = plot3(f1(x, rght), f2(x, rght), f3(x, rght),...
+            h3 = plot3(F1(x, rght), F2(x, rght), F3(x, rght),...
                     'linestyle', ll{1}, 'Color', cc{1}, LW, lw );
             
             y = chebpts(numpts, dom(3:4) );
-            dwn = rect(1) * ones( length(x), 1 );
-            h4 = plot3(f1(dwn, y), f2(dwn, y), f3(dwn, y),...
+            dwn = dom(1) * ones( length(x), 1 );
+            h4 = plot3(F1(dwn, y), F2(dwn, y), F3(dwn, y),...
                    'linestyle', ll{1}, 'Color', cc{1}, LW, lw );
             
             up = dom(2) * ones(length(x), 1);
-            h5 = plot3(f1(up, y), f2(up, y), f3(up, y),...
+            h5 = plot3(F1(up, y), F2(up, y), F3(up, y),...
                    'linestyle', ll{1}, 'Color', cc{1}, LW, lw );
             
             h = [h1 h2 h3 h4 h5];
@@ -99,9 +99,9 @@ else
     h = surf(F.components{1}, F.components{2}, F.components{3}, varargin{:});
 end
 
-% xlim([min2(F.components{1}),max2(F.components{1})])
-% ylim([min2(F.ycheb),max2(F.components{1})])
-% zlim([min2(F.zcheb),max2(F.zcheb)])
+xlim([min2( F.components{1} ), max2( F.components{1} )] )
+ylim([ min2( F.components{2} ), max2( F.components{2} )] )
+zlim([ min2( F.components{3} ), max2( F.components{3} )] )
 
 if ( ~ish )
     hold off
