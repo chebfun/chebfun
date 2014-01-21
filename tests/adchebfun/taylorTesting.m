@@ -14,7 +14,7 @@ u = adchebfun(0.1*rand(8,1)+.5,[-1 1]);
 % Chebfun used to create a perturbation
 p = chebfun(0.01*rand(8,1)+.05,[-1 1]);
 
-%% Taylor testing comptuations
+%% Taylor testing computations
 
 % Vectors for storing information about convergence
 nDiff1 = zeros(hMax,1);

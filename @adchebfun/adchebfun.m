@@ -395,7 +395,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             end
             
             % Update CHEBFUN part
-            f.func = cumsum(f, k);
+            f.func = cumsum(f.func, k);
             % Update derivative part
             f.jacobian = operatorBlock.cumsum(f.domain, k)*f.jacobian;
             % CUMSUM is a linear operation, so no need to update linearity info.
@@ -893,6 +893,12 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f.jacobian = -f.jacobian;         
         end
 
+        function f = uplus(f)
+            % -     Unary plus of an ADCHEBFUN
+            
+            % This method does nothing.
+        end
+        
 % TODO: Delete? Why was this here to start with?
 %         function f = vertcat(varargin)
 %             if ( nargin > 1 )
@@ -903,9 +909,18 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
 %         end
         
         function f = updateDomain(f)
-            % TODO: Document
+            % UPDATEDOMAIN      Update the domain of an ADCHEBFUN
+            %
+            % Various ADCHEBFUN method can cause new breakpoints to be
+            % introduced in the CHEBFUN part of the ADCHEBFUN. This method
+            % updates the breakpoint information in the domain field of the
+            % ADCHEBFUN at the end of such methods to ensure they agree.
+            
+            % If the func part is a CHEBFUN
             if ( isa(f.func, 'chebfun') )
                 f.domain = union(f.domain, f.func.domain);
+                
+            % If the func part is a scalar.
             end
             f.domain = union(f.domain, f.jacobian.domain);
         end
