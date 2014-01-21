@@ -8,7 +8,7 @@ function pass = test_diff(pref)
 %%
 a = -4; b = 4;
 d = deltafun();
-pass(1) = isempty(diff(deltafun)) && isempty(diff(deltafun, 4));
+pass(1) = isempty(diff(d)) && isempty(diff(d, 4));
 d = deltafun(1, 0);
 pass(2) = isequal(d, diff(d,0));
 

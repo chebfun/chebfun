@@ -89,6 +89,7 @@ function D = funTimesDelta(f, deltaMag, deltaLoc)
 
 % Make sure there are no redundant rows:
 deltaMag = deltafun.cleanRows(deltaMag);
+deltaTol = deltafun.pref.deltafun.deltaTol;
 
 % Highest order delta function:
 n = size(deltaMag, 1);
@@ -98,14 +99,20 @@ m = length(deltaLoc);
 Fd = zeros(n, m);
 fk = f;
 for k = 1:n
-    Fd(k, :) = (-1)^(k-1)* nchoosek(n-1, k-1) * feval(fk, deltaLoc);
+    Fd(k, :) = (-1)^(k-1)* feval(fk, deltaLoc);
     fk = diff(fk);
 end
 
 D = zeros(n, m);
 for j = 1:m
-    for i = 1:n 
-        D(:, j) = D(:, j) + flipud(Fd(:, j)) * deltaMag(i, j);
+    derivativeCol = Fd(:, j);
+    for i = 1:n
+        w = zeros(i, 1);
+        for k = 1:i
+            w(k) = nchoosek(i-1, k-1);
+        end
+        D(1:i, j) = D(1:i, j) + w.*flipud(derivativeCol(1:i))*deltaMag(i, j);
     end
 end
+
 end

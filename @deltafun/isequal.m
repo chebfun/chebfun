@@ -53,5 +53,4 @@ if ( any(abs(f.impulses - g.impulses) > dTol) )
     return
 end
 
-
 end
