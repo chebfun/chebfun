@@ -29,12 +29,18 @@ if ( isa(op, 'double') )                        % chebfun2( double )
     if ( numel( op ) == 1 )
         g = constructor(g, @(x,y) op + 0*x, domain);
     else
-        op = flipud( op );
+        if ( numel(domain) == 1 )
+            fixedRank = domain;
+            domain = [-1 1 -1 1];
+        else
+            fixedRank = 0;
+        end
         [pivotValue, ignored, rowValues, colValues] = CompleteACA(op, 0);
         g.pivotValues = pivotValue;
         g.cols = chebfun(colValues, domain(3:4) );
         g.rows = chebfun(rowValues.', domain(1:2) );
         g.domain = domain;
+        g = fixTheRank(g, fixedRank);
     end
     return
 end
@@ -69,6 +75,7 @@ if (( nargin > 3 ) && ( any(strcmpi(varargin{1},'coeffs')) || any(strcmpi(vararg
     return
 end
 
+fixedRank = 0;
 % If the domain isn't of length 4, search for the other 2 endpoints:
 if ( numel(domain) == 2 )
     if ( ( nargin > 3) && isa(varargin{1}, 'double') )
@@ -81,6 +88,9 @@ if ( numel(domain) == 2 )
     else
         error('CHEBFUN2:CONSTRUCTOR:DOMAIN','Domain not fully determined.');
     end
+elseif ( numel(domain) == 1 )
+    fixedRank = domain;
+    domain = [-1 1 -1 1];
 elseif ( numel(domain) ~= 4 )
     error('CHEBFUN2:CONSTRUCTOR:DOMAIN','Domain not fully determined.');
 end
@@ -96,19 +106,6 @@ exactLength = prefStruct.exactLength;
 sampleTest = prefStruct.sampleTest;
 grid = 9;   % minsample
 
-% Check if we need to turn on vectorize flag:
-% m1 = mean( domain(1:2) );
-% m2 = mean( domain(3:4) );
-% 
-% E = ones(2,1);
-% if ( (vectorize == 0) && all( size(op(m1*E,m2*E)) == [1 1]) )   % scalar check
-%     % sizes are not going to match so let's try with the vectorizeflag on.
-%     if ~( numel(op(m1*E,m2*E))==1 && norm(op(m1*E,m2*E))==0 )
-%         warning('CHEBFUN2:CTOR:VECTORIZE','Function did not correctly evaluate on an array. Turning on the ''vectorize'' flag. Did you intend this? Use the ''vectorize'' flag in the chebfun2 constructor call to avoid this warning message.');
-%         g = chebfun2( op, domain, 'vectorize' );
-%         return
-%     end
-% else
 if ( vectorize == 0 )                                       % another check
     % check for cases: @(x,y) x*y, and @(x,y) x*y'
     [xx, yy] = meshgrid( domain(1:2), domain(3:4));
@@ -261,6 +258,9 @@ while ( ~isHappy )
     
 end
 
+% Fix the rank, if in nonadaptive mode.
+g = fixTheRank( g , fixedRank );
+
 end
 
 function [PivotValue, PivotElement, Rows, Cols, ifail] = CompleteACA(A, tol)
@@ -357,4 +357,31 @@ if ( numel(depvar) == 1 )
     
 end
 op = eval(['@(' depvar{1} ',' depvar{2} ')' op]);
+end
+
+function g = fixTheRank( g , fixedRank )
+% Fix the rank of a chebfun2:
+
+if ( fixedRank < 0 )
+    error('CHEBFUN2:CONSTRUCTOR','Nonadaptive rank should be positive.')
+end
+
+if ( fixedRank > 0 )
+    if ( length(g.pivotValues) > fixedRank )
+        % Truncate things:
+        g.cols = g.cols(:,1:fixedRank);
+        g.rows = g.rows(:,1:fixedRank);
+        g.pivotValues = g.pivotValues(1:fixedRank);
+    elseif ( length(g.pivotValues) < fixedRank )
+        % Pad things with zero columns:
+        zcols = chebfun(0, g.cols.domain);
+        zrows = chebfun(0, g.rows.domain);
+        for jj = length(g.pivotValues) : fixedRank - 1
+            g.cols = [g.cols zcols];
+            g.rows = [g.rows zrows];
+            g.pivotValues = [g.pivotValues 0];
+        end
+    end
+end
+
 end

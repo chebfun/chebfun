@@ -1,4 +1,4 @@
-function G = potential(f)
+function G = potential( f )
 %POTENTIAL  2D vector potential of a chebfun2.
 %
 % G = POTENTIAL(F) where F is a chebfun2 returns a vector-valued

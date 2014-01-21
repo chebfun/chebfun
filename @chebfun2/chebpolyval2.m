@@ -38,8 +38,8 @@ d = 1./piv;
 d(d==inf) = 0;  % set infinite values to zero. 
 
 % Evaluate the columns / rows
-C = resize( chebpoly( cols )', m );
-R = resize( chebpoly( rows )', n );
+C = resize( chebpoly( cols ).', n );
+R = resize( chebpoly( rows ).', m);
 
 % Convert these values to coefficients.
 C = chebtech2.coeffs2vals( C );
@@ -47,9 +47,9 @@ R = chebtech2.coeffs2vals( R );
 
 % Evaluate: 
 if ( nargout <= 1 )
-    varargout = {C * diag(d) * R'}; 
+    varargout = {C * diag(d) * R.'}; 
 else
-    varargout = {C, diag(d), R}; 
+    varargout = {C , diag(d), R}; 
 end
     
 

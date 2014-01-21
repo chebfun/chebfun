@@ -14,7 +14,7 @@ for j = 1 : rk
     bolrows( j ) = iszero( rows(:, j) );
 end
 
-bolslices = ( any(bolcols) || any(bolrows) );
+bolslices = ( all(bolcols) || all(bolrows) );
 
 bol = bolslices || bolpivots;
 end

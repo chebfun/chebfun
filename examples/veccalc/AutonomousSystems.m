@@ -36,9 +36,9 @@ title('The simple harmonic oscillator','FontSize',16), hold off
 
 phasedom = [-4 4 -2 2];               % phase plane domain
 F = chebfun2v(@(x,y)y,@(x,y)-sin(x)/4,phasedom);
-for ic = .5:.5:3                      % initial conditions
-    [t, y]=ode45(F,[0 40],[ic,0]);     % solve autonomous system
-    plot(y,'r'), hold on              % plot trajectory
+for ic = .5:.5:3                        % initial conditions
+    [t, y]=ode45(F, [0 40], [ic,0]);     % solve autonomous system
+    plot(y,'r'), hold on                 % plot trajectory
 end
 quiver(F,'b'), axis equal                 % vector field
 title('The eye of a nonlinear pendulum','FontSize',16), hold off

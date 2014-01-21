@@ -301,6 +301,7 @@ end
 % Padding:
 Str = [Str, zeros(size(Str, 1), 50)];
 Str = [zeros(20, size(Str, 2)); Str ; zeros(20, size(Str, 2))];
+Str = flipud(Str); 
 
 if (nargin == 2)
     f = chebfun2( flipud(Str), rk );
