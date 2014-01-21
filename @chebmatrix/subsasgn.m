@@ -1,13 +1,13 @@
 function A = subsasgn(A, sr, B)
-% Change properties in a chebmatrix.
-% A(...) = B replaces the block or submatrix referenced on the left side of
-% the equality with the blocks given on the right side.
+%SUBSASGN  Change a property of a chebmatrix.
+%   A(...) = B replaces the block or submatrix referenced on the left side
+%   of the equality with the blocks given on the right side.
 %
-% A.(...) = B changes a named property of A. To change a preference value, use a
-% double dot reference. For example,
+%   A.(...) = B changes a named property of A. To change a preference
+%   value, use a double dot reference. For example,
 %
-%  A.prefs.discretization = @ultraS;
-%  A.prefs.maxTotalLength = 2000;
+%     A.prefs.discretization = @ultraS;
+%     A.prefs.maxTotalLength = 2000;
 
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.

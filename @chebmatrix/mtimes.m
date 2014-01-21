@@ -1,8 +1,9 @@
 function C = mtimes(A, B)
+%*         Composition of chebmatrices.
 
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
-% Needs to be upgraded to understand block*chebmatrix as well.
+
 if ( isnumeric(A) )  % suspect these aren't necessary...historical...
     C = scalartimes(B, A);
 elseif ( isnumeric(B) )
@@ -32,3 +33,15 @@ else
     C = chebmatrix(C);
 end
 end
+
+function C = scalartimes(A,z)
+[m,n] = size(A);
+C = cell(m,n);
+for i = 1:m
+    for j = 1:n
+        C{i,j} = z*A.blocks{i,j};
+    end
+end
+C = chebmatrix(C);
+end
+

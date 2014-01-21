@@ -1,6 +1,9 @@
-function k = numbc(L)
-% NUMBC(L) returns the number of constraints attached to L.
+function F = flipud(F)
+%FLIPUD   Flip the rows of a chebmatrix.
+
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
-k = length(L.constraints);
+
+F.blocks = flipud(F.blocks);
+
 end
