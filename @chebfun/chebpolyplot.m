@@ -105,10 +105,10 @@ numCols = size(c{1}, 2);
 % Get vscale, epslevel data:
 v = get(f, 'vscale-local');
 e = get(f, 'epslevel-local');
-ve = bsxfun(@times, v, e);
+ve = v.*e;
 
 % Add a tiny amount to zeros to make plots look nicer:
-minve = min(ve, [], 1);
+minve = min(ve, [], 2);
 for k = 1:numFuns
     % Use smaller of min. of (vscale)*(epslevel) and the smallest nonzero coeff.
     c{k}(~c{k}) = min(minve(k), min(c{k}(logical(c{k}(:)))));
@@ -128,13 +128,17 @@ doEpsLevel = ~any(noEpsLevel);
 % Plot the coeffs:
 % h1 = semilogy(data{:}, varargin{:}, 'color', col);
 h1 = semilogy(data{:}, varargin{:});
-for k = 1:numel(h1)
-    if ( size(col, 1) == numel(h1) )
-        c = col(k,:);   
-    else
-        c = col;
+
+% Set the colors (loop over columns if we have an array-valued CHEBFUN):
+for j = 1:numCols
+    % The figure handles in the h1 vector are stored such that plots for all
+    % the first funs are listed first, ordered by column, followed by the
+    % second funs, etc.  Thus, the plot of the first fun in the first column is
+    % at index 1, the second fun in the first column is at 1 + numCols, the
+    % third fun in the first column is at 1 + 2*numCols, etc.
+    for k = j:numCols:(numFuns*numCols)
+        set(h1(k), 'color', col(j,:));
     end
-    set(h1(k), 'color', c);
 end
 hold on
 

@@ -19,7 +19,7 @@ elseif ( isempty(g) )
 end
 
 % Array-valued?
-if ( numColumns(f) > 1 || numColumns(g) > 1 )
+if ( min(size(f)) > 1 || min(size(g)) > 1 )
 	error('CHEBFUN:lt:array', ...
         '< does not support array-valued CHEBFUN objects.');
 end
