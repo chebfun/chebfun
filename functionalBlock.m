@@ -176,7 +176,7 @@ classdef functionalBlock < linBlock
             %
             % Z = FUNCTIONALBLOCK.ZERO(DOMAIN) returns the zero functional for
             % functions on the domain DOMAIN (i.e., the functional that maps all
-            % functions to 0on the same domain
+            % functions to 0 on the same domain
             pref = cheboppref;
             if ( nargin == 0 )
                 domain = pref.domain;

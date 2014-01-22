@@ -133,7 +133,7 @@ classdef blockFunction
         function z = zero(A)
         %ZERO
         %
-        % Returns a BLOCKFUNCTION corresponding to a function that returnins a
+        % Returns a BLOCKFUNCTION corresponding to a function that returns a
         % zero scalar.
             z = blockFunction( @(u) 0 );
         end

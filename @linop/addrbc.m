@@ -14,13 +14,18 @@ if ( size(L,1) > 1 )
     error('ADDRBC syntax only applies to single-variable operators.')
 end
 
-d = L.domain;
-E = functionalBlock.feval(d(end), d);
+% The domain of the LINOP.
+dom = L.domain;
+% Create an feval FUNCTIONALBLOCK which allows us to impose the condition via
+% addbc.
+E = functionalBlock.feval(dom(end), dom);
 if isnumeric(op)
     % It's really just a boundary value.
     L = addbc(L, E, op);
 else
-    % Compose with the given operator.
+    % Compose with the given operator. There is no special treatment given to
+    % left/right boundary conditions, they're stored in the same way as general
+    % boundary conditions imposed by calling addbc.
     L = addbc(L, E*op, varargin{:});
 end
 
