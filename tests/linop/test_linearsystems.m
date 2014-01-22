@@ -1,4 +1,4 @@
-function pass = test_linearSystems
+function pass = test_linearsystems
 % TAD, 10 Jan 2014
 
 tol = 1e-9; 

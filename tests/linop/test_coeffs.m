@@ -1,14 +1,14 @@
-function pass = coeffForm
+function pass = test_coeffs
 % TAD, 10 Jan 2014
 
 %% Building blocks
 dom = [ - 2  - 0.5 1 2];
-I = linBlock.eye(dom);
-D = linBlock.diff(dom);
-Z = linBlock.zeros(dom);
+I = operatorBlock.eye(dom);
+D = operatorBlock.diff(dom);
+Z = operatorBlock.zeros(dom);
 x = chebfun('x', dom);
 u = sin(x.^2);
-U = linBlock.mult(u);   
+U = operatorBlock.mult(u);   
 
 %% Coefficient realizations
 % Quasimatrix [ 1 ]

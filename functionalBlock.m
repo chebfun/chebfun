@@ -98,4 +98,95 @@ classdef functionalBlock < linBlock
 
     end
     
+    methods (Static = true)
+        
+        function F = dot(f)   % synonym for inner()
+            % FUNCTIONALBLOCK.DOT Synonym for FUNCTIONALBLOCK.INNER.
+            %
+            % See also FUNCTIONALBLOCK.INNER.
+            F = inner(f);
+        end
+        
+        function E = eval(varargin)
+            % EVAL(DOMAIN) returns a function E. The output of E(X) is an
+            % evaluator at X in the domain.
+            E = @(x) functionalBlock.feval(x, varargin{:});
+        end
+        
+        function E = feval(location, varargin)
+            % Use inputParser to parse the arguments to the method.
+            p = inputParser;
+            addRequired(p, 'location');
+            pref = cheboppref;
+            addOptional(p, 'domain', pref.domain, @isnumeric);
+            valid = @(x) ischar(x) || isnumeric(x);
+            addOptional(p, 'direction', 0, valid);
+            parse(p, location, varargin{:});
+            location = p.Results.location;
+            domain = p.Results.domain;
+            direction = p.Results.direction;
+ 
+            % Sanity check. 
+            if ( location < domain(1) ) || ( location > domain(end) )
+                error('Evaluation location is not in the domain.')
+            end
+            
+            % Convert direction argument into a number.
+            if ischar(direction)
+                if any( strncmpi(direction, {'left', '-'}, 1) )
+                    direction = -1;
+                elseif any( strncmpi(direction, {'right', '+'}, 1) )
+                    direction = +1;
+                else
+                    error(['Direction must be ''left'', ''right'', ' ...
+                        '''+'', or ''-''.'])
+                end
+            end
+            
+            % Create the FUNCTIONALBLOCK with information now available.
+            E = functionalBlock(domain);
+            E.stack = @(z) feval(z, location, direction);
+        end
+        
+        function F = inner(f)
+            F = functionalBlock(f.domain);
+            F.stack = @(z) inner(z, f);
+            F.diffOrder = 0;
+        end
+        
+        function S = sum(domain)
+            % FUNCTIONALBLOCK.SUM  Definite integration functional.
+            %
+            % S = FUNCTIONALBLOCK.SUM(DOMAIN) returns the definite integration
+            % functional on the domain DOMAIN (i.e. the functional that maps a
+            % function to its definite integral).
+            pref = cheboppref;
+            if ( nargin==0 )
+                domain = pref.domain;
+            end
+            
+            % Create the FUNCTIONALBLOCK with information now available.
+            S = functionalBlock(domain);
+            S.stack = @(z) sum(z);
+            S.diffOrder = -1;
+        end
+        
+        function Z = zero(domain)
+            % FUNCTIONALBLOCK.ZERO  Zero functional.
+            %
+            % Z = FUNCTIONALBLOCK.ZERO(DOMAIN) returns the zero functional for
+            % functions on the domain DOMAIN (i.e., the functional that maps all
+            % functions to 0on the same domain
+            pref = cheboppref;
+            if ( nargin == 0 )
+                domain = pref.domain;
+            end
+            
+            % Create the FUNCTIONALBLOCK with information now available.
+            Z = functionalBlock(domain);
+            Z.stack = @(z) zero(z);
+            Z.diffOrder = 0;
+        end
+    end
+    
 end
