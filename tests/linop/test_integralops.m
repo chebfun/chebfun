@@ -1,4 +1,4 @@
-function pass = intops
+function pass = test_integralops
 % Test integral operators
 % 
 % Toby Driscoll 28 May 2009

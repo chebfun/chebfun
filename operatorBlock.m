@@ -72,11 +72,11 @@ classdef operatorBlock < linBlock
                 C = C(B);
             else
                 % A scalar is converted into a constant CHEBFUN, which can then
-                % be used to create a multiplication LINBLOCK.
+                % be used to create a multiplication OPERATORBLOCK.
                 if ( isnumeric(A) )
-                    A = linBlock.mult( chebfun(A, B.domain) );
+                    A = operatorBlock.mult( chebfun(A, B.domain) );
                 elseif ( isnumeric(B) )
-                    B = linBlock.mult( chebfun(B, A.domain) );
+                    B = operatorBlock.mult( chebfun(B, A.domain) );
                 end
                 
                 % Create an OPERATORBLOCK to be returned.
@@ -104,9 +104,9 @@ classdef operatorBlock < linBlock
 
             % Did we get passed a scalar?
             if ( isnumeric(A) )
-                A = A*linBlock.eye(B.domain);
+                A = A*operatorBlock.eye(B.domain);
             elseif ( isnumeric(B) )
-                B = B*linBlock.eye(A.domain);
+                B = B*operatorBlock.eye(A.domain);
             end
             
             % Operator addition.
@@ -128,7 +128,7 @@ classdef operatorBlock < linBlock
             end
             
             % Construct OPERATORBLOCK for repeated application.
-            B = linBlock.eye(A.domain);
+            B = operatorBlock.eye(A.domain);
             for i = 1:pow
                 B = B*A;
             end
@@ -139,8 +139,127 @@ classdef operatorBlock < linBlock
             out = false;
         end
         
-
-
     end
     
+    methods (Static = true)
+        
+        function C = cumsum(varargin)
+            % OPERATORBLOCK.CUMSUM  Antiderivative operator.
+            %
+            % C = OPERATORBLOCK.CUMSUM returns the first-order antiderivative
+            % operator C for functions defined on [-1, 1]. The result of
+            % applying the operator is defined uniquely by having value zero at
+            % the left endpoint.
+            %
+            % C = OPERATORBLOCK.CUMSUM(DOMAIN) returns the first-order
+            % antiderivative operator C which applies to functions defined on
+            % DOMAIN, which may include breakpoints.
+            %
+            % C = OPERATORBLOCK.CUMSUM(DOMAIN, M) is the mth-repeated
+            % antiderivative.
+            
+            % Use inputParser to parse the arguments to the method.
+            p = inputParser;
+            pref = cheboppref;
+            addOptional(p, 'domain', pref.domain, @isnumeric);
+            mcheck = @(m) validateattributes(m, {'numeric'}, ...
+                {'scalar', 'nonnegative', 'integer'});
+            addOptional(p, 'm', 1, mcheck);
+            parse(p, varargin{:});
+            dom = p.Results.domain;
+            m = p.Results.m;
+            
+            % Create the OPERATORBLOCK with information now available.
+            C = operatorBlock(dom);
+            C.stack = @(z) cumsum(z, m);
+            C.diffOrder = -m;
+        end
+        
+        function D = diff(varargin)
+            % OPERATORBLOCK.DIFF  Differentiation operator.
+            %
+            % D = OPERATORBLOCK.DIFF returns the first-order differentation
+            % operator D for functions defined on [-1, 1].
+            %
+            % D = OPERATORBLOCK.DIFF(DOMAIN) returns the first-order
+            % differentation operator D which applies to functions defined on
+            % DOMAIN, which may include breakpoints.
+            %
+            % D = OPERATORBLOCK.DIFF(DOMAIN, M) is the mth order derivative.
+            
+            % Use inputParser to parse the arguments to the method.
+            p = inputParser;
+            pref = cheboppref;
+            addOptional(p, 'domain', pref.domain, @isnumeric);
+            mcheck = @(m) validateattributes(m, ...
+                {'numeric'}, {'scalar', 'nonnegative', 'integer'});
+            addOptional(p, 'm', 1, mcheck);
+            parse(p, varargin{:});
+            dom = p.Results.domain;
+            m = p.Results.m;
+            
+            % Create the OPERATORBLOCK with information now available.
+            D = operatorBlock(dom);
+            D.stack = @(z) diff(z, m);
+            D.diffOrder = m;
+        end
+        
+        function I = eye(domain)
+            % OPERATORBLOCK.EYE  Identity operator.
+            %
+            % I = OPERATORBLOCK.EYE(DOMAIN) returns the identity operator for
+            % functions on the domain DOMAIN.
+            pref = cheboppref;
+            if ( nargin == 0 )
+                domain = pref.domain; 
+            end
+            
+            % Create the OPERATORBLOCK with information now available.
+            I = operatorBlock(domain);
+            I.stack = @(z) eye(z);
+            I.diffOrder = 0;
+        end
+
+        function M = mult(u)
+            % OPERATORBLOCK.MULT  Multiplication operator.
+            %
+            % M = OPERATORBLOCK.MULT(U) returns the multiplication operator from
+            % the CHEBFUN U, i.e. the operator that maps a CHEBFUN f(x) to
+            % u(x)f(x).
+            
+            % Create the OPERATORBLOCK with information now available.
+            M = operatorBlock(u.domain);
+            M.stack = @(z) mult(z, u);
+            M.diffOrder = 0;
+        end
+        
+        function Z = zeros(domain)
+            % OPERATORBLOCK.ZEROS  Zero operator.
+            %
+            % Z = OPERATORBLOCK.ZEROS(DOMAIN) returns the zero operator for
+            % functions on the domain DOMAIN (i.e., the operator that maps all
+            % functions to the zero function on the DOMAIN).
+            pref = cheboppref;
+            if ( nargin == 0 )
+                domain = pref.domain;
+            end
+            
+            % Create the OPERATORBLOCK with information now available.
+            Z = operatorBlock(domain);
+            Z.stack = @(z) zeros(z);
+            Z.diffOrder = 0;
+        end
+        
+        function F = fred(domain, kernel, varargin)
+            F = operatorBlock(domain);
+            F.stack = @(z) fred(z, kernel, varargin{:});
+            F.diffOrder = 0;
+        end
+        
+        function V = volt(domain, kernel, varargin)
+            V = operatorBlock(domain);
+            V.stack = @(z) volt(z, kernel, varargin{:});
+            V.diffOrder = 0;
+        end
+    end
 end
