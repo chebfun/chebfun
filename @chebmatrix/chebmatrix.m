@@ -21,12 +21,12 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
 %
 %   Examples:
 %     d = [-2 2];   % function domain
-%     I = linop.eye(d);   % identity operator block
-%     D = linop.diff(d);  % differentiation operator block
+%     I = operatorBlock.eye(d);   % identity operator
+%     D = operatorBlock.diff(d);  % differentiation operator
 %     x = chebfun(@(x)x,d);   % the variable x on d
-%     M = linop.mult(x.^2);   % multiplication operator block
-%     S = linop.sum(d);   % integration functional 
-%     E = linop.eval(d);  % evaluation functional generator
+%     M = operatorBlock.mult(x.^2); % multiplication operator
+%     S = functionalBlock.sum(d);   % integration functional 
+%     E = functionalBlock.eval(d);  % evaluation functional generator
 % 
 %     u = [ exp(x); pi; sin(x) ];   %  function; scalar; function
 %     A = [ I+D, abs(x), M;

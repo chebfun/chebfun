@@ -62,7 +62,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             end
             dom = obj.func.domain;
             obj.domain = dom;
-            obj.jacobian = linBlock.eye(dom);
+            obj.jacobian = operatorBlock.eye(dom);
         end
         
     end

@@ -1,4 +1,4 @@
-function pass = test_basicDiscretization
+function pass = test_discretization
 
 %% Building blocks
 dom = [-2 2];
