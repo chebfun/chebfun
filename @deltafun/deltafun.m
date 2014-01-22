@@ -1,37 +1,47 @@
 classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
-    %DELTAFUN   Class for distributions based on Dirac-delta functions on arbitrary
-    %   intervals.
-    %
-    %   Class for approximating generalized functions on the interval [a, b].
-    %
-    %   DELTAFUN class description
-    %   [TODO]:
-    %
-    %   [TODO]: Calling Sequence
-    %
-    % See also PREF
-    
-    % Copyright 2013 by The University of Oxford and The Chebfun Developers.
-    % See http://www.chebfun.org/ for Chebfun information.
-    
+%DELTAFUN   Class for distributions based on Dirac-delta functions on arbitrary
+%   intervals.
+%
+%   Class for approximating generalized functions on the interval [a, b].
+%   The smooth or classical part of the function is approximated by a
+%   CLASSICFUN object while the Dirac delta functions are represented by a
+%   pair of properties: IMPULSES and LOCATION, which store the magnitude
+%   and the location of the delta functions respectively. IMPULSES is
+%   generally a matrix, with its first row representing the delta functions,
+%   while derivativeds of delta functions are represented by higher rows of
+%   this matrix. LOCATION is a vector, each element of which corresponds to
+%   the location of a column in the IMPULSES matrix.
+%
+% Constructor inputs:
+%   DELTAFUN(IMPULSES, LOCATION) creates a DELTAFUN object with an empty
+%   FUNPART, while the delta functions and their locations are specified by
+%   IMPULSES and LOCATION.
+% 
+%   DELTAFUN(FUNPART, IMPULSES, LOCATION) creates a DELTAFUN object with
+%   FUNPART as its smooth function, while IMPULSES and LOCATION specify the
+%   delta functions in this object.
+%
+%   DELTAFUN(FUNPART, IMPULSES, LOCATION, PREF) is the same as above but
+%   uses PREF to pass any preferences.
+%
+% See also CLASSICFUN, ONEFUN, FUN
+
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
     %% Properties of DELTAFUN objects
     properties ( Access = public )
         % Smooth part of the representation.
         funPart     % (classical function which is a CLASSICFUN object)
         
-        % [TODO]: Change this documentation:
-        % IMPULSES is a three-dimensional array storing information about the
-        % values of the CHEBFUN object at the points in DOMAIN. The rows
-        % correspond to the breakpoints in the DOMAIN vector, and if M > 1 then
-        % the columns correspond to the columns in an array-valued CHEBFUN.
-        % Thus, F.IMPULSES(:, :, 1) is a matrix consisting of the values of
-        % each column of F at each breakpoint. The third dimension is used for
-        % storing information about higher-order delta functions that may be
-        % present at breakpoints. (See "help dirac" for more details.)
-        impulses
+        % IMPULSES is a matrix storing information about the delta functions
+        % contained in a DELTAFUN object. The first row corresponds to the
+        % delta functions themselves while higher order rows represent
+        % derivatives of delta functions.
+        impulses % double matrix [M X N]
         
-        % location
-        location               
+        % Location of the delta functions.
+        location % double vector [1 X N]            
     end
     
     %% DELTAFUN CLASS CONSTRUCTOR:
@@ -46,8 +56,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
                 % Merge if some preferences are given.
                 pref = deltafun.pref(pref);
             end
-            
-            
+                        
             %% Cases based on the number of arguments
             % Case 0: No input arguments, return an empty object.
             if ( nargin == 0 )
@@ -128,7 +137,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
                 end
             end
             
-            % All checks done, assign inputs to object:
+            % All checks done, assign inputs to the current object:
             obj.impulses = impulses;
             obj.location = location;
                                 
@@ -152,6 +161,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         
         % DELTAFUN obects are not transposable.
         f = ctranspose(f)
+        
         % DELTAFUN display of useful data
         data = dispData(f)
         
@@ -160,10 +170,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         
         % Derivative of a DELTAFUN.
         f = diff(f, k)
-        
-        % Dirac delta function. 
-        d = dirac(f, k)
-        
+                
         % Evaluate a DELTAFUN.
         y = feval(f, x)
         
@@ -180,7 +187,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         out = innerProduct(f, g)
         
         % Innerproduct, equivalent to action of a distribution 
-        % on a FUN
+        % on a function.
         out = ip(f,g)
         
         % True for an empty DELTAFUN.
@@ -238,19 +245,19 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         % Addition of two DELTAFUN objects.
         f = plus(f, g)       
         
-        % Dividing two SINGFUNs
+        % Dividing two DELTAFUNs
         f = rdivide(f, g)
         
-        % Real part of a SINGFUN.
+        % Real part of a DELTAFUN.
         f = real(f)
         
         % Restrict a SINGFUN to a subinterval.
         f = restrict(f, s)
         
-        % Roots of a SINGFUN in the interval [-1,1].
+        % Roots of a DELTAFUN.
         out = roots(f, varargin)
         
-        % Size of a SINGFUN.
+        % Size of a DELTAFUN.
         [siz1, siz2] = size(f, varargin)
         
         % Simplify a DELTAFUN
@@ -259,7 +266,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         % Definite integral of a DELTAFUN.
         out = sum(f, dim)
         
-        % SINGFUN multiplication.
+        % DELTAFUN multiplication.
         f = times(f, g)
         
         % DELTAFUN objects are not transposable.

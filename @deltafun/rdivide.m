@@ -1,68 +1,72 @@
 function s = rdivide(f, g)
-%./   Divide SINGFUNS with SINGFUNS
+%./   Divide DELTAFUNS with DELTAFUNS
+%   RDIVIDE(F, G) computes the pointwise division F./G. The operation is only
+%   defined if G does not have any delta functions and G has no roots.
 %
-%   This method will be called only if both F and G are SINGFUNS or at the 
-%   most one of F and G is a scalar double.
+% See also LDIVIDE, TIMES.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%
-% Check if inputs are other than SINGFUNS or doubles
-if ( ~isa(f, 'singfun') && ~isa(f, 'double') )
-    error('SINGFUN:rdivide:Input can only be a singfun or a double')
+% Case of empty arguments.
+if ( isempty(f) || isempty(g) )
+    % Return an empty DELTAFUN:
+    s = deltafun();
+    return;
 end
 
-if ( ~isa(g, 'singfun') && ~isa(g, 'double') )
-    error('SINGFUN:rdivide:Input can only be singfun or a double')
+% Check if inputs are other than DELTAFUNs, CLASSICFUNs or doubles.
+if ( (~isa(f, 'deltafun') && ~isa(f, 'classicfun') && ~isa(f, 'double')) || ...
+     (~isa(g, 'deltafun') && ~isa(g, 'classicfun') && ~isa(g, 'double')) )   
+    error('DELTAFUN:rdivide', ...
+        'Input can only be a DELTAFUN, a CLASSICFUN or a double')
 end
 
-%%
-% Reciprocal of a SINGFUN scaled by the double F.
-if ( isa(f,'double') )    
-    % Convert f to a SINGFUN and call rdivide again.
-    
-    % Make a zero SINGFUN
-    temp = singfun.zeroSingFun();        
-    % Assign f as it's smooth part
-    temp.smoothPart = singfun.constructSmoothPart(f, []);
-    % Change f to a SINGFUN
-    f = temp;
-    % Call SINGFUN.RDIVIDE again
-    s = f./g;
+%% Reciprocal: ( CLASSICFUN or DOUBLE ). / DELTAFUN
+if ( isa(f, 'double') || isa( f, 'classicfun') && isa(g, 'deltafun') )    
+    if ( anyDelta(g) )
+        error( 'DELTAFUN:rdivide', 'division by delta functions is not defined' );
+    end
+    % A smooth function is returned in this case:
+    s = f ./ g.funPart;
     return
 end
 
-% Easy case of scalar division by a double
-if ( isa(g,'double') )
-    % copy the other input (a SINGUN) in the output
+%% DELTAFUN./DOUBLE
+if ( isa(f, 'deltafun') && isa(g,'double') )
+    % Copy the DELTAFUN in the output:
     s = f;
-    % Divide the smooth part with the double and return
-    s.smoothPart = (1/g) * f.smoothPart;
+    % Divide the funPart with the double g:
+    s.funPart = 1/g * f.funPart;
+    % Divide the impulses:
+    s.impulses = 1/g * s.impulses;
+    if ( ~anyDelta(s) )
+        s = s.funPart;
+    end
     return
 end
 
-%% SINGFUN./SINGFUN
-% Division of two SINGFUNS
-
-%%
-% Check if g has any roots in the open interval (-1, 1)
-r = roots( g.smoothPart );
-% remove roots at the end points.
-r = setdiff(r, [-1,1]);
-if ( ~isempty(r) )
-    error('SINGFUN:rdivide:Divide by zero error')
+%% DELTAFUN./CLASSICFUN
+if ( isa(f, 'deltafun') && isa(g, 'classicfun') )
+    % Take reciprocal and make a DELTAFUN:
+    g = deltafun( 1./g, [], [] );
+    % Now, multiply:
+    s = f .* g;
+    return
 end
 
-%%
 
-% Note: Exponents of f and g can all be zero to generate a singular function.
-% Example: f = 1; g = cos(pi/2*x) with trivial exponents. Then
-% s = f./g is singular with non trivial exponents. So the result of
-% f./g in general is a generic SINGFUN with possibly non-trivial
-% exponents
-
-% construct the singfun
-s = singfun(@(x) feval(f, x)./feval(g, x));
+%% DELTAFUN./DELTAFUN
+if ( isa(f, 'deltafun') && isa(g, 'deltafun') )
+    if ( anyDelta(g) )
+        error( 'DELTAFUN:rdivide', 'division by delta functions is not defined' );
+    end
+    % Take reciprocal of the funPart only and make a DELTAFUN:
+    g = deltafun( 1 ./ g.funPart, [], []);
+    % Now, multiply:
+    s = f .* g;
+    return
+end
 
 end

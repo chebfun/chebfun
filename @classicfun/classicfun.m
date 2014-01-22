@@ -48,10 +48,10 @@ classdef classicfun < fun % (Abstract)
 % warnings in case the domains don't agree, but their output will not be
 % meaningful.
 %
-% Class diagram: [chebfun] <>-- [<<FUN>>] <>-- [<<onefun>>]
-%                                 ^   ^
-%                                /     \
-%                          [bndfun]   [unbndfun]
+% Class diagram: [CHEBFUN]<>---[<<FUN>>]------[<<CLASSICFUN>>] <>-- [<<onefun>>]
+%                                  |            /   ^     ^
+%                             [DELTAFUN]<>-----/   /       \
+%                                               [bndfun]   [unbndfun]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     %% Properties of CLASSICFUN objects.
@@ -172,118 +172,118 @@ classdef classicfun < fun % (Abstract)
         % Extract information for DISPLAY.
         info = dispData(f)
         
-        % Extract columns of an array-valued FUN object.
+        % Extract columns of an array-valued CLASSICFUN object.
         f = extractColumns(f, columnIndex);
 
-        % Round a FUN towards zero.
+        % Round a CLASSICFUN towards zero.
         g = fix(f);
         
-        % Round a FUN towards minus infinity.
+        % Round a CLASSICFUN towards minus infinity.
         g = floor(f);
 
-        % Flip columns of an array-valued FUN object.
+        % Flip columns of an array-valued CLASSICFUN object.
         f = fliplr(f)
         
-        % Get properties of a FUN.
+        % Get properties of a CLASSICFUN.
         out = get(f, prop);
         
-        % Imaginary part of a FUN.
+        % Imaginary part of a CLASSICFUN.
         f = imag(f)
 
-        % True for an empty FUN.
+        % True for an empty CLASSICFUN.
         out = isempty(f)
 
-        % Test if FUN objects are equal.
+        % Test if CLASSICFUN objects are equal.
         out = isequal(f, g)
 
-        % Test if a FUN is bounded.
+        % Test if a CLASSICFUN is bounded.
         out = isfinite(f)
 
-        % Test if a FUN is unbounded.
+        % Test if a CLASSICFUN is unbounded.
         out = isinf(f)
 
-        % Test if a FUN has any NaN values.
+        % Test if a CLASSICFUN has any NaN values.
         out = isnan(f)
 
-        % True for real FUN.
+        % True for real CLASSICFUN.
         out = isreal(f)
         
-        % Test if a FUN object is built upon SINGFUN.
+        % Test if a CLASSICFUN object is built upon SINGCLASSICFUN.
         out = issing(f)
         
-        % True for zero FUN objects
+        % True for zero CLASSICFUN objects
         out = iszero(f)
         
-        % Length of a FUN.
+        % Length of a CLASSICFUN.
         len = length(f)
 
-        % FUN logical.
+        % CLASSICFUN logical.
         f = logical(f)
 
-        % Convert an array-valued FUN into a cell array of FUN objects.
+        % Convert an array-valued CLASSICFUN into a cell array of CLASSICFUN objects.
         g = mat2cell(f, M, N)
 
-        % Global maximum of a FUN on [a,b].
+        % Global maximum of a CLASSICFUN on [a,b].
         [maxVal, maxPos] = max(f)
 
-        % Global minimum of a FUN on [a,b].
+        % Global minimum of a CLASSICFUN on [a,b].
         [minVal, minPos] = min(f)
 
         % Global minimum and maximum on [a,b].
         [vals, pos] = minandmax(f)
 
-        % Subtraction of two FUN objects.
+        % Subtraction of two CLASSICFUN objects.
         f = minus(f, g)
 
-        % Multiplication of FUN objects.
+        % Multiplication of CLASSICFUN objects.
         f = mtimes(f, c)
 
-        % FUN logical NOT.
+        % CLASSICFUN logical NOT.
         f = not(f)
 
-        % FUN logical OR.
+        % CLASSICFUN logical OR.
         h = or(f, g)
 
-        % Basic linear plot for FUN objects.
+        % Basic linear plot for CLASSICFUN objects.
         varargout = plot(f, varargin)
         
-        % 3-D plot for FUN objects.
+        % 3-D plot for CLASSICFUN objects.
         varargout = plot3(f, g, h, varargin)
 
-        % Addition of two FUN objects.
+        % Addition of two CLASSICFUN objects.
         f = plus(f, g)
 
-        % Right array divide for a FUN.
+        % Right array divide for a CLASSICFUN.
         f = rdivide(f, c, pref)
 
-        % Real part of a FUN.
+        % Real part of a CLASSICFUN.
         f = real(f)
 
-        % Roots of a FUN in the interval [a,b].
+        % Roots of a CLASSICFUN in the interval [a,b].
         out = roots(f, varargin)
         
-        % Round a FUN towards nearest integer.
+        % Round a CLASSICFUN towards nearest integer.
         g = round(f)
         
-        % Signum of a FUN. (f should have no zeros in its domain)
+        % Signum of a CLASSICFUN. (f should have no zeros in its domain)
         f = sign(f, pref)
 
-        % Simplify the ONEFUN of a FUN object.
+        % Simplify the ONEFUN of a CLASSICFUN object.
         f = simplify(f, tol)
 
-        % Size of a FUN.
+        % Size of a CLASSICFUN.
         [size1, size2] = size(f, varargin)
 
-        % FUN multiplication.
+        % CLASSICFUN multiplication.
         f = times(f, g, varargin)
         
-        % FUN objects are not transposable.
+        % CLASSICFUN objects are not transposable.
         f = transpose(f)
 
-        % Unary minus of a FUN.
+        % Unary minus of a CLASSICFUN.
         f = uminus(f)
 
-        % Unary plus of a FUN.
+        % Unary plus of a CLASSICFUN.
         f = uplus(f)
 
     end
