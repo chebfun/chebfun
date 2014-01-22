@@ -11,8 +11,9 @@ function varargout = subsref(f, index)
 %   F.PROP returns the property PROP of F as defined by GET(F, 'PROP').
 %
 % {}
-%   F{g} is the action of the distribution F on the smooth function g. In other
-%   words, F{g} = <F, g> = innerProduct(f, g)
+%   F{S1, S2} restricts F to the subdomain [S1, S2]. See DELTAFUN/RESTRICT for 
+%   further details. Note that F{[S1, S2]} is not supported due to the behaviour 
+%   of the MATLAB subsref() command.
 %   
 % See also FEVAL, COMPOSE, GET.
 
@@ -69,12 +70,7 @@ switch index(1).type
                 % F{:} returns F:
                 out = f;
             else
-                g = idx{1};
-                if ( isa(g, 'deltafun') || isa(g, 'classicfun') )
-                    out = innerproduct(f, g);
-                else
-                    error('DELTAFUN:subsref:baddomain', 'Invalid domain syntax.')
-                end
+                error('DELTAFUN:subsref:baddomain', 'Invalid domain syntax.')
             end
             
         elseif ( size(idx, 1) == 1 )

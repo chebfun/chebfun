@@ -16,6 +16,7 @@ if ( isempty(f) )
 end
 
 if ( isempty(f.funPart) )
+    % If the funPart is empty, then there is no constraint on the values in s:
     a = -inf;
     b = inf;
 else
@@ -37,21 +38,22 @@ if ( ~isempty(f.funPart) )
 else
     restrictedFuns = [];
 end
+
 if ( length(s) == 2 )
-    % Only restricting to one subinterval -- return a DELTAFUN.    
+    % Only restricting to one subinterval, this will return a DELTAFUN:   
     g = deltafun();
     g.funPart = restrictedFuns;
     if ( ~isempty(f.location) )
         idx = (f.location >= s(1)) & (f.location <= s(2));
         g.location = f.location(idx);
-        g.impulses = f.impulses(:, idx);
+        g.deltaMag = f.deltaMag(:, idx);
         if ( isempty(g.location) )
             g.location = [];
-            g.impulses = [];
+            g.deltaMag = [];
         end
     end
 else
-    % Restricting to multiple subintervals -- return a cell-array of 
+    % Restricting to multiple subintervals, this returns a cell-array of 
     % DELTAFUN objects.
     
     % Create a cell to be returned.
@@ -74,12 +76,12 @@ else
         if ( ~isempty(f.location) )
             idx = (f.location >= s(k)) & (f.location <= s(k+1));
             gk.location = f.location(idx);
-            gk.impulses = f.impulses(:, idx);
+            gk.deltaMag = f.deltaMag(:, idx);
         end
         
         if ( isempty(gk.location) )
             gk.location = [];
-            gk.impulses = [];
+            gk.deltaMag = [];
         end
         g{k} = gk;
     end
