@@ -185,11 +185,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         
         % Compute the inner product of two DELTAFUN objects.
         out = innerProduct(f, g)
-        
-        % Innerproduct, equivalent to action of a distribution 
-        % on a function.
-        out = ip(f,g)
-        
+                
         % True for an empty DELTAFUN.
         out = isempty(f)
         
