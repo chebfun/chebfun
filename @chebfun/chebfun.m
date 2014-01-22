@@ -50,9 +50,9 @@ classdef chebfun
 % It is not possible to mix PROP/VAL and PREF inputs in a single constructor
 % call.
 %
-% CHEBFUN(F, 'trunc', N) returns an N-point CHEBFUN constructed by computing the
-% first N Chebyshev coefficients from their integral form, rather than by
-% interpolation at Chebyshev points.
+% CHEBFUN(F, 'trunc', N) returns a smooth N-point CHEBFUN constructed by
+% computing the first N Chebyshev coefficients from their integral form, rather
+% than by interpolation at Chebyshev points.
 %
 % CHEBFUN(F, ...), where F is an NxM matrix or an array-valued function handle,
 % returns an "array-valued" CHEBFUN. For example,
@@ -181,9 +181,9 @@ classdef chebfun
             end
             
             % Deal with 'trunc' option:
-            if ( isfield(pref.techPrefs, 'trunc') )
-                % TODO: Is there a more efficient way of doing this?
-                c = chebpoly(f, 0, pref.techPrefs.trunc);
+            idx = find(cellfun(@(v) strcmpi(v, 'trunc'), varargin), 1);
+            if ( ~isempty(idx) )
+                c = chebpoly(f, 0, varargin{idx+1});
                 f = chebfun(c.', f.domain([1, end]), 'coeffs');
             end
             
@@ -515,6 +515,9 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
             % Hack to support construction from coefficients.
             op = {{[], op}};
             args(1) = [];
+        elseif ( strcmpi(args{1}, 'trunc') )
+            % Pull out this preference, which is checked for later.
+            args(1:2) = [];            
         elseif ( isnumeric(args{1}) )
             % g = chebfun(@(x) f(x), N)
             pref.techPrefs.exactLength = args{1};
