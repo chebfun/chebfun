@@ -91,6 +91,8 @@ classdef (InferiorClasses = {?double}) chebop
 %    N.bc = 'dirichlet';
 %    plot(N\1)
 %
+% TODO: Revisit help text on parameter problems.
+%
 % There is some support for solving systems of equations containing unknown
 % parameters without the need to introduce extra equations into the system.
 % For example, y''+x.*y+p = 0, y(-1) = 1, y'(-1) = 1, y(1) = 1 can be
@@ -101,7 +103,6 @@ classdef (InferiorClasses = {?double}) chebop
 % something like @(x,y,p) diff(p*diff(y)) will require a second equation
 % explicitly enforcing that diff(p) = 0.
 %
-% TODO: Revisit help text on parameter problems.
 %
 % See also chebop/mtimes, chebop/mldivide, cheboppref.   
     properties ( GetAccess = 'public', SetAccess = 'public' )
@@ -112,15 +113,18 @@ classdef (InferiorClasses = {?double}) chebop
         bc = [];        % Other/internal/mixed boundary conditions
         init = [];      % Initial guess of a solution
         % Default discretization for linear problems
-        discretizationType = @colloc2; 
+        discretizationType = @colloc2;
     end
     
     methods
         
         function N = chebop(op, dom, bcIn, init)
+        % CHEBOP constructor
             if ( nargin == 0 )
                 return
             end
+            
+            % No domain passed.
             if ( nargin < 2 )
                 % Need to access chebfunpref to create an operator on the
                 % default domain if none is passed.
@@ -128,6 +132,7 @@ classdef (InferiorClasses = {?double}) chebop
                 dom = p.domain;
             end
             
+            % Assign operator and domain
             N.op = op;
             N.domain = dom;
             
@@ -136,6 +141,7 @@ classdef (InferiorClasses = {?double}) chebop
                 N.bc = bcIn;
             end
             
+            % Assign initial guess of solution if it was passed
             if ( nargin >= 4 )
                 N.init = init;
             end
@@ -143,25 +149,52 @@ classdef (InferiorClasses = {?double}) chebop
         end
         
         function u = mldivide(N, rhs)
+        %\      Chebop backslash.
+        %
+        % See also: chebop/solvebvp
+            
+            % Create a cheboppref...
             pref = cheboppref;
+            % ... and pass it along the inputs to solvebvp
             u = solvebvp(N, rhs, pref);
         end
         
         function nin = nargin(N)
+        % CHEBOP.nargin     The number of input arguments to a chebop
             nin = nargin(N.op);
         end
         
         function N = set.lbc(N, val)
+        % CHEBOP.SET.LBC    
+        %
+        % Offers more control of setting left boundary conditions than simply
+        % accessing the .lbc field, or using standard subsref.
+        
+            % Need to know the nargin of the CHEBOP
             nin = nargin(N);
-            if isnumeric(val)
+            
+            % Only allow scalar numerical values to be passed if we are dealing
+            % with a scalar problem.
+            if ( isnumeric(val) )
                 if nin <= 2
                     N.lbc = @(u) u - val;
                 else
                     error('CHEBFUN:CHEBOP:SETLBC', ...
                     'Can only assign scalar BCs to scalar problems');
                 end
-            elseif isa(val,'function_handle')
-                if ( ( nin == 1 && nargin(val) == 1) || ( nin == nargin(val) + 1) )
+            
+            % Otherwise the input better be a function handle.
+            elseif ( isa(val,'function_handle') )
+                % If we are dealing with a scalar problem where the independent
+                % variable is not specified in the function handle arguments,
+                % allow also passing an input function handle that takes one
+                % argument. 
+                %
+                % Otherwise, we request that the number of input to the LBC
+                % function handle is one less than the number of arguments to
+                % the OP part.
+                if ( ( nin == 1 && nargin(val) == 1) || ...
+                        ( nargin(val) == nin - 1) )
                     N.lbc = val;
                 else
                     error('CHEBFUN:CHEBOP:SETLBC', ...
@@ -174,16 +207,36 @@ classdef (InferiorClasses = {?double}) chebop
         end
         
         function N = set.rbc(N, val)
+        % CHEBOP.SET.RBC    
+        %
+        % Offers more control of setting right boundary conditions than simply
+        % accessing the .rbc field, or using standard subsref.
+        
+            % Need to know the nargin of the CHEBOP
             nin = nargin(N);
-            if isnumeric(val)
+            
+            % Only allow scalar numerical values to be passed if we are dealing
+            % with a scalar problem.
+            if ( isnumeric(val) )
                 if nin <= 2
                     N.rbc = @(u) u - val;
                 else
                     error('CHEBFUN:CHEBOP:SETRBC', ...
                     'Can only assign scalar BCs to scalar problems');
                 end
-            elseif isa(val,'function_handle')
-                if ( ( nin == 1 && nargin(val) == 1) || ( nin == nargin(val) + 1) )
+                
+            % Otherwise the input better be a function handle.
+            elseif ( isa(val,'function_handle') )
+                % If we are dealing with a scalar problem where the independent
+                % variable is not specified in the function handle arguments,
+                % allow also passing an input function handle that takes one
+                % argument. 
+                %
+                % Otherwise, we request that the number of input to the LBC
+                % function handle is one less than the number of arguments to
+                % the OP part.                
+                if ( ( nin == 1 && nargin(val) == 1) || ...
+                        ( nargin(val) == nin - 1) )
                     N.rbc = val;
                 else
                     error('CHEBFUN:CHEBOP:SETRBC', ...
@@ -196,10 +249,20 @@ classdef (InferiorClasses = {?double}) chebop
         end
         
         function N = set.bc(N, val)
-            if isnumeric(val)
+        % CHEBOP.SET.BC    
+        %
+        % Offers more control of setting other conditions than simply accessing
+        % the .bc field, or using standard subsref.
+        
+            % Don't allow passing numerical values to the .BC field.
+            if ( isnumeric(val) )
                 error('CHEBFUN:CHEBOP:SETBC', ...
                     'Can not assign numerical BCs to .bc field.');
-            elseif isa(val,'function_handle')
+            
+            % When assigning to the BC field, we request that the number of
+            % input arguments of the function handle is the same as the number
+            % of inputs to the OP field.
+            elseif ( isa(val, 'function_handle') )
                 if ( nargin(N) == nargin(val) )
                     N.bc = val;
                 else
@@ -212,6 +275,7 @@ classdef (InferiorClasses = {?double}) chebop
             end
         end
         
+        % Linearise a CHEBOP around a CHEBFUN u.
         [L, res, isLinear] = linearise(N, x, u, flag);
         
         
@@ -219,13 +283,18 @@ classdef (InferiorClasses = {?double}) chebop
         
     methods (Static = true) % These should be private methods as well
         
+        % Controls information displayed for Newton iterations
         [displayFig, displayTimer] = displayInfo(mode, varargin);
         
+        % Display at the start of Newton iteration.        
         [displayFig, displayTimer] = displayInfoInit(u,pref);
         
+        % Display during Newton iteration.        
         displayInfoIter(u, delta, iterNo, normdu, cFactor, errEst, lendu, ...
             lambda, lenu, displayFig, displayTimer, pref);
+
         
+        % Display at the finish of Newton iteration.        
         displayInfoFinal(u, delta, iterNo, errEstDE, errEstBC, displayFig, ...
             displayTimer, pref)
         
@@ -252,7 +321,7 @@ classdef (InferiorClasses = {?double}) chebop
                 if isa(resBlocks{rhsCounter}, 'chebfun')
                     % If corresponding block in the residual is a chebfun, the
                     % rhs must also be made to be a chebfun
-                    rhsBlocks{rhsCounter} = chebfun(rhs(rhsCounter),dom);
+                    rhsBlocks{rhsCounter} = chebfun(rhs(rhsCounter), dom);
                 else
                     % Otherwise, the entry in the chebmatrix will be a scalar
                     rhsBlocks{rhsCounter} = rhs(rhsCounter);
