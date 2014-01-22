@@ -12,7 +12,7 @@ function varargout = subsref(f, index)
 %
 % {}
 %   F{g} is the action of the distribution F on the smooth function g. In other
-%   words, this <F, g>.
+%   words, F{g} = <F, g> = innerProduct(f, g)
 %   
 % See also FEVAL, COMPOSE, GET.
 
@@ -33,7 +33,7 @@ switch index(1).type
         if ( length(idx) == 2 )
             varin = {idx(2)};
         elseif ( length(idx) > 2 )
-            error('CHEBFUN:DELTAFUN:subsref:dimensions', ...
+            error('DELTAFUN:subsref:dimensions', ...
                 'Index exceeds chebfun dimensions.')            
         end
 
@@ -69,23 +69,26 @@ switch index(1).type
                 % F{:} returns F:
                 out = f;
             else
-                error('DELTAFUN:subsref:baddomain', 'Invalid domain syntax.')
+                g = idx{1};
+                if ( isa(g, 'deltafun') || isa(g, 'classicfun') )
+                    out = innerproduct(f, g);
+                else
+                    error('DELTAFUN:subsref:baddomain', 'Invalid domain syntax.')
+                end
             end
             
         elseif ( size(idx, 1) == 1 )
-            %[TODO]: What is the right syntax here?
-            %f.funPart = f.funPart{???};
             % F{s1,s2,...,sk} returns RESTRICT(F, [s1,s2,...,sk]):            
-            %x = cat(2, idx{:});
-            %out = restrict(f, x);            
+            x = cat(2, idx{:});
+            out = restrict(f, x);            
         else
-            error('CHEBFUN:subsref:dimensions', ...
+            error('DELTAFUN:subsref:dimensions', ...
                 'Index exceeds chebfun dimensions.')            
         end
         
     otherwise
         
-        error('CHEBFUN:subsref:unexpectedType',...
+        error('DELTAFUN:subsref:unexpectedType',...
             ['??? Unexpected index.type of ', index(1).type]);
 end
 

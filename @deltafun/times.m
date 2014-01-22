@@ -89,7 +89,6 @@ function D = funTimesDelta(f, deltaMag, deltaLoc)
 
 % Make sure there are no redundant rows:
 deltaMag = deltafun.cleanRows(deltaMag);
-deltaTol = deltafun.pref.deltafun.deltaTol;
 
 % Highest order delta function:
 n = size(deltaMag, 1);
