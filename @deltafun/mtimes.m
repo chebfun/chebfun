@@ -25,7 +25,7 @@ elseif ( ~isa(f, 'deltafun') )       % First input is not a DELTAFUN
 elseif ( isa(c, 'double') )         % DELTAFUN * double  
     % Multiply c with the smooth part:
     f.funPart = f.funPart * c;    
-    f.impulses = f.impulses * c;
+    f.deltaMag = f.deltaMag * c;
     
 elseif ( isa(c, 'deltafun') )        % DELTAFUN * DELTAFUN  
     error('CHEBFUN:DELTAFUN:mtimes:deltafunMtimesdeltafun', ...

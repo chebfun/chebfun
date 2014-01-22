@@ -28,7 +28,7 @@ if ( isa(g, 'double') )
     h = F;
     % Scale everything and return:
     h.funPart = g * F.funPart;
-    h.impulses = g * h.impulses;
+    h.deltaMag = g * h.deltaMag;
     h = simplify(h);
     return
 end
@@ -53,18 +53,18 @@ if ( isa(g, 'deltafun') )
        end
     end
     
-    impulses1 = [];
-    impulses2 = [];
+    deltaMag1 = [];
+    deltaMag2 = [];
     if ( ~isempty(F.location) )
-        impulses1 = funTimesDelta(g.funPart, F.impulses, F.location);
+        deltaMag1 = funTimesDelta(g.funPart, F.deltaMag, F.location);
     end
     
     if ( ~isempty(g.location) )
-        impulses2 = funTimesDelta(F.funPart, g.impulses, g.location);
+        deltaMag2 = funTimesDelta(F.funPart, g.deltaMag, g.location);
     end
     
-    [deltaMag, deltaLoc] = deltafun.mergeImpulses( impulses1, F.location, impulses2, g.location );
-    h.impulses = deltaMag;
+    [deltaMag, deltaLoc] = deltafun.mergeImpulses( deltaMag1, F.location, deltaMag2, g.location );
+    h.deltaMag = deltaMag;
     h.location = deltaLoc;
 else
     % Class of g unknown, throw an error:

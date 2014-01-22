@@ -22,7 +22,7 @@ if ( isempty(f) )
     return;
 end
 
-deltaMag = f.impulses;
+deltaMag = f.deltaMag;
 deltaLoc = f.location;
 
 if ( isempty(deltaLoc) || isempty(deltaMag) )
@@ -31,7 +31,7 @@ if ( isempty(deltaLoc) || isempty(deltaMag) )
     locations = [];
 else
     if ( size(deltaMag, 1) > 1 )
-        g.impulses = deltaMag(2:end, :);
+        g.deltaMag = deltaMag(2:end, :);
         g.location = deltaLoc;
     end
     g = simplify(g);
@@ -43,6 +43,7 @@ else
         g.funPart = cumsum(f.funPart);
     end
     
+    % Get the tolerance:
     pref = chebpref();
     deltaTol = pref.deltaPrefs.deltaTol;
     

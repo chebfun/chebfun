@@ -40,9 +40,9 @@ if ( isa(f, 'deltafun') && isa(g, 'deltafun') )
     s.funPart = f.funPart + g.funPart;
     
     % Add the delta functions:    
-    [deltaMag, deltaLoc] = deltafun.mergeImpulses(f.impulses, f.location, g.impulses, g.location);    
+    [deltaMag, deltaLoc] = deltafun.mergeImpulses(f.deltaMag, f.location, g.deltaMag, g.location);    
     s.location = deltaLoc;
-    s.impulses = deltaMag;
+    s.deltaMag = deltaMag;
 end
 
 %% %%%%%%%%%%%%% DELTAFUN + FUN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

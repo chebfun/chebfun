@@ -20,7 +20,7 @@ d = deltafun(f, mag, loc);
 dp4 = diff(d,4);
 pass(3) = iszero(diff(f,4) - dp4.funPart);
 pass(4) = norm(dp4.location - loc, inf) == 0;
-A = [zeros(4,4); mag] - dp4.impulses;
+A = [zeros(4,4); mag] - dp4.deltaMag;
 pass(5) = ~any(A(:));
 
 end

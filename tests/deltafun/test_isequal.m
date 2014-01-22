@@ -22,10 +22,10 @@ pass(2) = isequal(d1, d2);
 
 pass(3) = ~isequal( d1, .992312341234*d2 );
 
-d2.impulses = d2.impulses(1:end-1, :);
+d2.deltaMag = d2.deltaMag(1:end-1, :);
 pass(4) = ~isequal( d1, d2);
 
-d1.impulses = d1.impulses(:, 1:end-1);
+d1.deltaMag = d1.deltaMag(:, 1:end-1);
 d1.location = d1.location(1:end-1);
 
 pass(5) = ~isequal(d1, d2);

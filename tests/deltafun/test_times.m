@@ -6,7 +6,7 @@ if (nargin < 1)
     pref = chebpref();
 end
 %%
-dTol = deltafun.pref.deltafun.deltaTol;
+dTol = pref.deltaPrefs.deltaTol;
 
 d = deltafun(1, 0);
 pass(1) = isempty(deltafun() .* deltafun());
@@ -16,13 +16,13 @@ f = fun.constructor(@(x) exp(-x));
 df1 = deltafun(f, [], [] );
 df2 = deltafun([0; 0; 0; 0; 1], 0 );
 s = df1.*df2;
-pass(3) = norm(s.impulses - [1, 4, 6, 4, 1].', inf) < dTol;
+pass(3) = norm(s.deltaMag - [1, 4, 6, 4, 1].', inf) < dTol;
 
 f = fun.constructor(@(x) exp(x));
 df1 = deltafun(f, [], [] );
 df2 = deltafun([0; 0; 0; 1], 0 );
 s = df1.*df2;
-pass(4) = norm(s.impulses - [-1, 3, -3, 1].', inf) < dTol;
+pass(4) = norm(s.deltaMag - [-1, 3, -3, 1].', inf) < dTol;
 
 a = -4; b = 4;
 
@@ -55,7 +55,7 @@ c3 = [feval(diff(f2,2), l1(3));
 
 deltas1 = .5*[c1, c2, c3];
 
-error = s.impulses - deltas1;
+error = s.deltaMag - deltas1;
 pass(7) = norm(error(:), inf) < dTol;
     
 
@@ -82,7 +82,7 @@ c3 = [feval(diff(f1,0), l2(3));
 
 deltas2 = .8*[c1, c2, c3];
 
-error = [deltas1, deltas2] - s.impulses;
+error = [deltas1, deltas2] - s.deltaMag;
 pass(10) = norm(error(:), inf) < dTol;
 %%
 end

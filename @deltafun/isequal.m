@@ -43,12 +43,12 @@ if ( any(abs((f.location - g.location)) > pTol) )
     return
 end
 
-if ( any(size(f.impulses) ~= size(g.impulses)) )
+if ( any(size(f.deltaMag) ~= size(g.deltaMag)) )
     out = 0;
     return;
 end
 
-if ( any(abs(f.impulses - g.impulses) > dTol) )
+if ( any(abs(f.deltaMag - g.deltaMag) > dTol) )
     out = 0;
     return
 end

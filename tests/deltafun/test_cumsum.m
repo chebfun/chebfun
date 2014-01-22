@@ -7,11 +7,11 @@ if (nargin < 1)
 end
 
 %%
-tol = deltafun.pref.deltafun.deltaTol;
+tol = pref.deltaPrefs.deltaTol;
 
 d = deltafun();
 F = cumsum(d);
-pass(1) = iszero(F.funPart) && isempty(F.impulses);
+pass(1) = iszero(F.funPart) && isempty(F.deltaMag);
 
 f = fun.constructor(@(x) exp(x));
 mag = rand(5,5);

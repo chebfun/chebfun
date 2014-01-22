@@ -3,7 +3,7 @@ function out = anyDelta(f)
 %   ANYDELTA(F) returns TRUE if the DELTAFUN object F has non-trivial delta
 %   functions. The test is FALSE otherwise.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty(f) )
@@ -16,5 +16,5 @@ pref = chebpref();
 deltaTol = pref.deltaPrefs.deltaTol;
 
 % Check if f has no or only below tolerance delta functions.
-out = any(abs(f.impulses(:)) > deltaTol);
+out = any(abs(f.deltaMag(:)) > deltaTol);
 end

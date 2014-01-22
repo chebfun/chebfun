@@ -19,12 +19,12 @@ end
 out = sum(f.funPart);
 
 % Add integral of delta functions:
-if ( ~isempty(f.impulses) )
-    % What happens for the higher order, need derivatives etc?
+if ( ~isempty(f.deltaMag) )
+    % What happens for the higher order derivatives etc?
     % Answer: Neglect higher order deltas, since the integral of any derivative
     % of a delta function can be considered as it's action on the function 1 and
     % hence it's integral is zero.
-    deltaMag = f.impulses;
+    deltaMag = f.deltaMag;
     out = out + sum(deltaMag(1, :));
 end    
 end
