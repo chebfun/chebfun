@@ -151,6 +151,14 @@ classdef (InferiorClasses = {?double}) chebop
         function u = mldivide(N, rhs)
         %\      Chebop backslash.
         %
+        % Note that CHEBOP requires the RHS of coupled systems to match the
+        % system, even for scalars right-hand sides, e.g.
+        %
+        %   N = chebop(@(x, u, v) [diff(u) + v; u + diff(v)]);
+        %   N.bc = @(x, u, v) [u(-1); v(1)];
+        %   uv = N\0;
+        %
+        % is not an accepted syntax.
         % See also: chebop/solvebvp
             
             % Create a cheboppref...
@@ -293,27 +301,48 @@ classdef (InferiorClasses = {?double}) chebop
         displayInfoIter(u, delta, iterNo, normdu, cFactor, errEst, lendu, ...
             lambda, lenu, displayFig, displayTimer, pref);
 
-        
         % Display at the finish of Newton iteration.        
         displayInfoFinal(u, delta, iterNo, errEstDE, errEstBC, displayFig, ...
             displayTimer, pref)
         
         function newRHS = convertToRHS(rhs, residual)
+        % CONVERTTORHS      Convert RHS to a useful format.
+        %
+        % CHEBOP backslash accepts a variety of syntax for specifying right-hand
+        % sides (scalars, CHEBFUNS and CHEBMATRICES). This method takes care of
+        % converting the input to a format used internally in chebop. 
+        % 
+        % This method also takes care of checking that the dimension of the RHS
+        % matches the dimensions of the operator. Note that CHEBOP requires the
+        % RHS of coupled systems to match the system, even for scalar right-hand
+        % sides, e.g.
+        %
+        %   N = chebop(@(x, u, v) [diff(u) + v; u + diff(v)]);
+        %   N.bc = @(x, u, v) [u(-1); v(1)];
+        %   uv = N\0;
+        %
+        % is not an accepted syntax.
+        
+            % Check the size of the residual (the output the dimensions of the
+            % CHEBOP).
             [numRow, numCol] = size(residual);
             
-            
-            if ( length(rhs) == 1 )
-                % Allow a scalar RHS to be converted to a RHS of correct
-                % dimensions
-                rhs = repmat(rhs, numRow, numCol);
-            elseif ~( all(size(rhs) == [numRow, numCol]) )
+            % Check whether dimensions match
+            if ~( all(size(rhs) == [numRow, numCol]) )
                 error('CHEBFUN:CHEBOP:CONVERTTORHS', ...
                     'RHS does not match output dimensions of operator.');
             end
             
+            % Prepare to convert the RHS to a CHEBMATRIX
             rhsBlocks = cell(numRow, numCol);
+            
+            % Obtain the blocks of the residual CHEBMATRIX, in order to be able
+            % to ensure all components of the RHS will be of a type that matches
+            % that of the residual.
             resBlocks = residual.blocks;
             
+            % Need the domain of the residual in order to create the RHS
+            % CHEBMATRIX.
             dom = getDomain(residual);
             
             % Convert numerical values in RHS vector into chebmatrix
