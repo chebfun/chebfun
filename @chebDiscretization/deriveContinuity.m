@@ -1,14 +1,17 @@
-function L = deriveContinuity(L, makePeriodic)
+function disc = deriveContinuity(disc, makePeriodic)
 % TODO: Documentation. What does this method do, where do we expect to call it
 % from, and why do we need it?
 
 % Find automatic smoothness constraints at domain breakpoints.
+L = disc.source;
+dom = disc.domain;
+
 diffOrd = L.diffOrder;
 diffOrd = max(diffOrd, [], 1);
-dom = L.domain;
 
 cont = L.continuity;
 
+% TODO: Reconsider how periodicity is made to happen.
 if ( ( nargin < 2 ) || ~makePeriodic )
     % Use the interior breakpoints.
     left = dom(2:end-1);
@@ -53,7 +56,7 @@ if ( max(diffOrd) > 0 ) && ( ~isempty(left) )
     end
 end
 
-L.continuity = cont;
+disc.source.continuity = cont;
 
 end
 

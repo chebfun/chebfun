@@ -59,7 +59,7 @@ end
 
 if ( isempty(L.continuity) )
      % Apply continuity conditions:
-     disc.source = deriveContinuity(L);
+     disc = deriveContinuity(disc);
 end
 
 % Initialise happiness:

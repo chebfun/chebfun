@@ -46,13 +46,15 @@ if isempty(disc)
     disc.dimension = repmat(dimVals(1), 1, numel(disc.domain)-1);
     dimVals(1) = [];
 else
+    % We have to assume that the given L matches the discretization. Caller
+    % beware!
     dim1 = max(disc.dimension);
     dimVals = [ dim1, dimVals(dimVals > dim1) ];
 end
 
 % Derive automatic continuity conditions if none were given.
 if ( isempty(L.continuity) )
-     disc.source = deriveContinuity(L);
+     disc = deriveContinuity(disc);
 end
 
 % Initialise happiness:

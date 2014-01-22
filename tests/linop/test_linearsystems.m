@@ -55,6 +55,11 @@ for k = 1:4
     err(k,5) = abs( sum(u)+v(-2) - 1);
     err(k,6) = abs( feval(diff(u),dom(end)) );
     
+    %%
+    % check continuity
+    err(k,7) = feval(u,1,'left') - feval(u,1,'right');
+    err(k,8) = feval(v,1,'left') - feval(v,1,'right');
+    
     if ( k == 2 )
         f = [abs(x-1); 0*x; 1 ];
     end
