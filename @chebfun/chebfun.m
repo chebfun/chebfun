@@ -181,12 +181,20 @@ classdef chebfun
             end
             
             % Deal with 'trunc' option:
-            idx = find(cellfun(@(v) strcmpi(v, 'trunc'), varargin), 1);
-            if ( ~isempty(idx) )
-                c = chebpoly(f, 0, varargin{idx+1});
+            doTrunc = false;
+            truncLength = NaN;
+            for k = 1:length(varargin)
+                if ( strcmpi(varargin{k}, 'trunc') )
+                    doTrunc = true;
+                    truncLength = varargin{k+1};
+                    break;
+                end
+            end
+
+            if ( doTrunc )
+                c = chebpoly(f, 0, truncLength);
                 f = chebfun(c.', f.domain([1, end]), 'coeffs');
             end
-            
         end
     end
     

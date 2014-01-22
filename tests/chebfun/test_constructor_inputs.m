@@ -56,6 +56,6 @@ pass(10) = all(feval(f, linspace(-1, 1, 10)) == 1);
 % Test 'trunc', flag.
 f = chebfun(@abs, 'trunc', 10, 'splitting', 'on');
 c = get(f, 'coeffs');
-pass(11) = abs(-4/63/pi - c(2)) < get(f, 'epslevel');
+pass(11) = abs(-4/63/pi - c{1}(2)) < get(f, 'epslevel');
 
 end
