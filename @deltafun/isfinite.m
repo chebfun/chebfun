@@ -17,12 +17,16 @@ if ( ~isempty(f.funPart) )
 end
 
 % Smooth part is finite, check the distributional part:
-if ( isempty(f.location) || isempty(f.impulses) )
+if ( isempty(f.location) || isempty(f.deltaMag) )
     out = 1;
     return
 end
 
-if ( max(abs(f.impulses)) < deltafun.pref.deltafun.deltaTol )
+% Get the tolerance:
+pref = chebpref();
+deltaTol = pref.deltaPrefs.deltaTol;
+
+if ( max(abs(f.deltaMag)) < deltaTol )
     out = 1;
 else
     out = 0;

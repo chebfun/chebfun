@@ -13,7 +13,7 @@ end
 if ( ~isempty(f.funPart) )
     f.funPart = flipud(f.funPart);
     if ( ~isempty(f.location) )
-        % Map impulses to [-1, 1]:
+        % Map deltaMag to [-1, 1]:
         inverseMap = f.funPart.mapping.inv;
         loc = inverseMap(f.location);
         % Location is a vector, so flipud translates into fliplr:
