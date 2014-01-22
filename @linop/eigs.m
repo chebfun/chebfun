@@ -146,14 +146,15 @@ if ( isempty(sigma) )
     lam2 = diag(D2);
     dif = bsxfun(@minus, lam1.', lam2);
     delta = min( abs(dif) );   % diffs from 33->65
-    bigdel = (delta > 1e-12*norm(lam1,Inf));
+    % TODO: What's the meaning behind the variable bigDel?
+    bigDel = (delta > 1e-12*norm(lam1,Inf));
     
     % Trim off things that are still changing a lot (relative to new size).
     lam1b = lam1;
-    lam1b(bigdel) = 0;
-    bigdel = logical((delta > 1e-3*norm(lam1b,Inf)) + bigdel);
+    lam1b(bigDel) = 0;
+    bigDel = logical((delta > 1e-3*norm(lam1b,Inf)) + bigDel);
     
-    if ( all(bigdel) )
+    if ( all(bigDel) )
         % All values changed somewhat-- choose the one changing the least.
         [~,idx] = min(delta);
         sigma = lam1(idx);
