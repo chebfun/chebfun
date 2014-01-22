@@ -34,7 +34,7 @@ end
 if ~( strcmpi(plotMode,'off') )
     figure(displayFig);
     subplot(2,1,1)
-    plot(u,'.-'), title('Current solution', 'Fontsize', 12)
+    plot(chebfun(u),'.-'), title('Current solution', 'Fontsize', 12)
     subplot(2,1,2)
-    plot(delta,'.-'), title('Current correction step', 'Fontsize', 12)
+    plot(chebfun(delta),'.-'), title('Current correction step', 'Fontsize', 12)
 end

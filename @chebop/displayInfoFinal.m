@@ -32,9 +32,9 @@ end
 if ~( strcmpi(plotMode,'off') )
     figure(displayFig);
     subplot(2,1,1)
-    plot(u,'.-'), title('Final solution')
+    plot(chebfun(u),'.-'), title('Final solution')
     subplot(2,1,2)
-    plot(delta,'.-'), title('Final correction step')
+    plot(chebfun(delta),'.-'), title('Final correction step')
     
 end
 
