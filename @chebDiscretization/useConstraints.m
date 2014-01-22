@@ -18,12 +18,12 @@ L = disc.source;
 
 B = [];
 if ~isempty(L.constraint)
-    disc2 = discType(L.constraint.operator,dim,dom);
+    disc2 = discType(L.constraint.functional,dim,dom);
     constr = matrix(disc2);
     B = [ constr; B ];
 end
 if ~isempty(L.continuity)
-    disc2 = discType(L.continuity.operator,dim,dom);
+    disc2 = discType(L.continuity.functional,dim,dom);
     constr = matrix(disc2);
     B = [ constr; B ];
 end

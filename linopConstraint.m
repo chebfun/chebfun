@@ -1,8 +1,10 @@
 classdef linopConstraint
+%LINOPCONSTRAINT Constraint class for linops.
+%   This class is not intended for use by the end user. 
     
     properties
-        operator
-        values
+        functional    % applied to the variable to get values
+        values        % constraint on the result of the functional
     end
     
     methods
@@ -10,16 +12,16 @@ classdef linopConstraint
             if ( nargin == 0 )
                 return
             end
-            C.operator = op;
+            C.functional = op;
             C.values = vals;
         end
         
         function n = length(C)
-            n = size(C.operator, 1);
+            n = size(C.functional, 1);
         end
         
         function e = isempty(C)
-            e = isempty(C.operator);
+            e = isempty(C.functional);
         end
         
         function C = append(C, op, value)
@@ -29,7 +31,7 @@ classdef linopConstraint
                 value = 0;
             end
             validateattributes(value, {'double'}, {'numel', 1})
-            C.operator = [ C.operator ; op ];
+            C.functional = [ C.functional ; op ];
             C.values(n+1, 1) = value; 
         end
         
@@ -45,7 +47,7 @@ classdef linopConstraint
             else
                 validateattributes(op, {'linBlock', 'chebmatrix'})
                 validateattributes(value, {'double'}, {'numel', 1})
-                C.operator{k, :} = op;
+                C.functional{k, :} = op;
                 C.values(k, 1) = value;
             end
         end
