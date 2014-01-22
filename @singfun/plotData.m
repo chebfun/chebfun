@@ -4,8 +4,8 @@ function data = plotData(f, g, h)
 %   it by the singular factors given in the EXPONENTS of F.
 %
 %   DATA = PLOTDATA(F, G) is similar but for plot calls of the form PLOT(F, G),
-%   where both F and G are SINGFUN objects. 
-% 
+%   where both F and G are SINGFUN objects.
+%
 %   DATA = PLOTDATA(F, G, H) is for plots of the form PLOT3(F, G, H). In this
 %   instance, DATA also contains fields zLine and zPoints for the data
 %   corresponding to H.
@@ -21,6 +21,7 @@ function data = plotData(f, g, h)
 % Make the appropriate call to plotData for the SMOOTHPARTs:
 if ( nargin == 1 )
     g = [];
+    h = [];
     data = plotData(f.smoothPart);
 elseif (nargin == 2)
     h = [];
@@ -29,46 +30,68 @@ elseif (nargin == 3)
     data = plotData(f.smoothPart, g.smoothPart, h.smoothPart);
 end
 
-if ( isempty(g) )       
+scaleData = @(x, y, exps) y .* (1+x).^exps(1) .* (1-x).^exps(2);
+
+if ( isempty(g) )
     % PLOT(F):
-    % Scale the y-data:
-    data.yLine = data.yLine.*(1 + data.xLine).^f.exponents(1) ...
-        .*(1 - data.xLine).^f.exponents(2);
-    % Scale the sample point y-data:
-    data.yPoints = data.yPoints.*(1 + data.xPoints).^f.exponents(1) ...
-        .*(1 - data.xPoints).^f.exponents(2);
     
-elseif ( isa(g, 'singfun') )   
+    % Scale the y-data:
+    data.yLine = scaleData(data.xLine, data.yLine, f.exponents);
+    % Scale the sample point y-data:
+    data.yPoints = scaleData(data.xPoints, data.yPoints, f.exponents);
+elseif ( isa(g, 'singfun') )
     % PLOT(F, G)
     
     % Acquire the grid data of f and scale appropriately:
-    xLine = data.fGrid.xLine;
-    xPoints = data.fGrid.xPoints;
-    data.xLine = data.xLine.*(1 + xLine).^f.exponents(1) ...
-        .*(1 - xLine).^f.exponents(2);
-    data.xPoints = data.xPoints.*(1 + xPoints).^f.exponents(1) ...
-        .*(1 - xPoints).^f.exponents(2);
-           
+    data.xLine = scaleData(data.fGrid.xLine, data.xLine, f.exponents);
+    data.xPoints = scaleData(data.fGrid.xPoints, data.xPoints, f.exponents);
+    
     % Acquire the grid data of g and scale appropriately:
-    xLine = data.gGrid.xLine;
-    xPoints = data.gGrid.xPoints;
-    data.yLine = data.yLine.*(1 + xLine).^g.exponents(1) ...
-        .*(1 - xLine).^g.exponents(2);
-    data.yPoints = data.yPoints.*(1 + xPoints).^g.exponents(1) ...
-        .*(1 - xPoints).^g.exponents(2);
+    data.yLine = scaleData(data.gGrid.xLine, data.yLine, g.exponents);
+    data.yPoints = scaleData(data.gGrid.xPoints, data.yPoints, g.exponents);
     
     if ( isa(h, 'singfun') )
         % PLOT3(F, G, H)
         
         % Acquire the grid data of h and scale appropriately:
-        xLine = data.hGrid.xLine;
-        xPoints = data.hGrid.xPoints;
-        data.zLine = data.zLine.*(1 + xLine).^g.exponents(1) ...
-            .*(1 - xLine).^g.exponents(2);
-        data.zPoints = data.zPoints.*(1 + xPoints).^g.exponents(1) ...
-            .*(1 - xPoints).^g.exponents(2);
+        data.zLine = scaleData(data.hGrid.xLine, data.zLine, h.exponents);
+        data.zPoints = scaleData(data.hGrid.xPoints, data.zPoints, h.exponents);
+        
     end
-    
 end
+
+% Set the y-limits to something sensible:
+data.yLim = getYLimits(data.yLine, f.exponents);
+
+end
+
+function yLim = getYLimits(vals, exps)
+%GETYLIMITS   Select y-limits for SINGFUN plots based upon standard deviation.
+
+vals(~isfinite(vals)) = [];
+len = length(vals);
+mask = true(size(vals));
+
+% If the function blows up on the left, ignore values on the left which are too
+% close to the singularity and which will skew the y-limits to be too large:
+if ( exps(1) < 0 )
+    scl = min(-.2*exps(1), .5);
+    numChuck = max(ceil(scl*len), 5);
+    mask(1:numChuck) = false;
+end
+
+% Same thing on the right:
+if ( exps(2) < 0 )
+    scl = min(-.2*exps(2), .5);
+    numChuck = max(ceil(scl*len), 5);
+    mask(end-numChuck:end) = false;
+end
+
+% Adjust the y-limits:
+masked = vals(mask);
+sd = std(masked);
+bot = max(min(vals), min(masked) - sd);
+top = min(max(vals), max(masked) + sd);
+yLim = [bot, top];
 
 end
