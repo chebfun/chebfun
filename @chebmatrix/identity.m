@@ -10,9 +10,6 @@ function I = identity(A)
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
-% This method is not called chebmatrix.eye because then the static method
-% linop.eye would overload the desired chebmatrix behavior. 
-
 if ( size(A,1) ~= size(A,2) )
     error('Chebmatrix must be square.')
 end
@@ -43,7 +40,7 @@ for i = 1:n
         else
             if ( isFun(j) )
                 % fun -> scalar
-                I.blocks{i,j} = functionalBlock.zeros(d);
+                I.blocks{i,j} = functionalBlock.zero(d);
             else
                 % scalar -> scalar
                 I.blocks{i,j} = 0;

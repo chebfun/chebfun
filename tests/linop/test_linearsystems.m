@@ -16,11 +16,11 @@ El = E(dom(1));
 Er = E(dom(end));
 
 %% Solve a linear system 
-L = [ D^2, -I, sin(x); C, D, chebfun(0,dom); functionalBlock.zeros(dom), El, 4 ] ;
+L = [ D^2, -I, sin(x); C, D, chebfun(0,dom); functionalBlock.zero(dom), El, 4 ] ;
 f = [(x-1); chebfun(0,dom); 1 ];
 B1 = [El, -Er, 0];
 B2 = [functionalBlock.sum(dom), El, 0];
-B3 = [Er*D, functionalBlock.zeros(dom), 0];
+B3 = [Er*D, functionalBlock.zero(dom), 0];
 B4 = [Er,-El,2];
 L = addbc(L,B1,0);
 L = addbc(L,B2,1);

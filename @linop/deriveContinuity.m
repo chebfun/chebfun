@@ -24,7 +24,7 @@ if ( max(d) > 0 ) && ( ~isempty(left) )
     
     % Each function variable gets a zero functional block; each scalar variable
     % gets a scalar zero.
-    z = linBlock.zero(dom);
+    z = functionalBlock.zero(dom);
     Z = {};
     for var = 1:length(d)
         if ( isnan(d(var)) || d(var) == 0 ) % scalar
