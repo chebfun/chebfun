@@ -325,7 +325,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             
             % Linearity information
             f.isConstant = iszero(f.jacobian);
-            f.jacobian = linBlock.mult(-sin(f.func))*f.jacobian;
+            f.jacobian = operatorBlock.mult(-sin(f.func))*f.jacobian;
             % Update CHEBFUN part.
             f.func = cos(f.func);
         end
@@ -489,7 +489,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % Update CHEBFUN part
             f.func = exp(f.func);
             % Update derivative part
-            f.jacobian = linBlock.mult(f.func)*f.jacobian;        
+            f.jacobian = operatorBlock.mult(f.func)*f.jacobian;        
         end
         
         function f = feval(f, x)
@@ -787,7 +787,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % Linearity information
             f.isConstant = iszero(f.jacobian);
             % Update derivative part
-            f.jacobian = linBlock.mult(cos(f.func))*f.jacobian;
+            f.jacobian = operatorBlock.mult(cos(f.func))*f.jacobian;
             % Update CHEBFUN part
             f.func = sin(f.func);
         end
@@ -863,13 +863,13 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             if ( isnumeric(f) ) || ( isnumeric(g) )
                 f = mtimes(f, g);
             elseif ( ~isa(f, 'adchebfun') )
-                g.jacobian = linBlock.mult(f)*g.jacobian;
+                g.jacobian = operatorBlock.mult(f)*g.jacobian;
                 g.func = f.*g.func;
 %                 g.isConstant = g.isConstant;
                 g = updateDomain(g);
                 f = g;
             elseif  ( ~isa(g, 'adchebfun') )
-                f.jacobian = linBlock.mult(g)*f.jacobian;
+                f.jacobian = operatorBlock.mult(g)*f.jacobian;
                 f.func = f.func.*g;
                 f = updateDomain(f);
 %                 f.isConstant = f.isConstant;
@@ -878,7 +878,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                     ( f.isConstant & g.isConstant) & ...
                       ( ( all(iszero(f.jacobian)) || all(iszero(g.jacobian)) ) | ...
                         ( iszero(f.jacobian) & iszero(g.jacobian) ) );
-                f.jacobian = linBlock.mult(f.func)*g.jacobian + linBlock.mult(g.func)*f.jacobian;
+                f.jacobian = operatorBlock.mult(f.func)*g.jacobian + operatorBlock.mult(g.func)*f.jacobian;
                 f.func = times(f.func, g.func);
                 f = updateDomain(f);
             end
