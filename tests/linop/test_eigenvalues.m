@@ -1,4 +1,4 @@
-function pass = simple_eigs(pref)
+function pass = test_eigenvalues(pref)
 % TAD, 10 Jan 2014
 
 if ( nargin == 0 )
