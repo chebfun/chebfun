@@ -12,6 +12,7 @@ function g = restrict(f, s)
 
 % Deal with empty case:
 if ( isempty(f) )
+    g = f;
     return
 end
 
