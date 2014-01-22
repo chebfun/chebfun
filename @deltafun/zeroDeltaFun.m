@@ -1,11 +1,17 @@
 function s = zeroDeltaFun(domain)
-%ZEROSINGFUN   Constructs the zero DELTAFUN on DOMAIN. The output DELTAFUN 
-%   object has a trivial smooth part with no delta functions.
+%ZERODELTAFUN   Constructs the zero DELTAFUN on DOMAIN. 
+%   S = ZERODELTAFUN(DOMAIN) creates a DELTAFUN with no delta funcitons but
+%   its FUNPART is the zero fun. If no DOMAIN is provided, the FUN is created
+%   on [-1, 1].
 %
 % See also DELTAFUN.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
+
+if ( nargin < 1 )
+    domain = [-1, 1];
+end
 
 % Create a zero fun on the domain:
 f = fun.constructor(0, domain);
@@ -13,6 +19,6 @@ f = fun.constructor(0, domain);
 % Create a zero DELTAFUN object:
 s = deltafun();
 s.funPart = f;
-s.impulses = [];
+s.deltaMag = [];
 s.location = [];
 end
