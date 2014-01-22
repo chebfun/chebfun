@@ -51,7 +51,7 @@ for k = [1 3 5 7 10]
     f = chebfun2(B,k);
     X = f(ss,tt);
     figure
-    contour(xx, yy, X), axis off
+    contour(xx, yy, X, .1:.1:.99), axis off
     title(sprintf('Rank %u',k),'fontsize',16)
     pause(.1)
 end
