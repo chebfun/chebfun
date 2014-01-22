@@ -20,14 +20,14 @@ function f = populate(f, op, vscale, hscale, pref)
 %   OP evaluated to.
 %
 %   F.POPULATE(OP, VSCALE, HSCALE, PREF) enforces any additional preferences
-%   specified in the preference structure PREF (see CHEBTECH.PREF).
+%   specified in the preference structure PREF (see CHEBTECH.TECHPREF).
 %
 %   F.POPULATE(VALUES, ...) (or F.POPULATE({VALUES, COEFFS}, ...)) populates F
 %   non-adaptively with the VALUES (and COEFFS) passed. These values are still
 %   tested for happiness in the same way as described above, but the length of
 %   the representation is not altered.
 %
-% See also CHEBTECH, PREF, HAPPINESSCHECK.
+% See also CHEBTECH, TECHPREF, HAPPINESSCHECK.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -72,18 +72,13 @@ if ( nargin < 5 )
     pref = chebtech.techPref();
 end
 
-% Non-adaptive construction. Values (and possibly coefficients) have been given.
+%%%%%%%%%%%%%%%%%%%%%%%%%% Non-adaptive construction. %%%%%%%%%%%%%%%%%%%%%%%%%%
+% Values (and possibly coefficients) have been given.
 if ( isnumeric(op) || iscell(op) )
     if ( isnumeric(op) )
         % OP is just the values.
         f.values = op;
         f.coeffs = f.vals2coeffs(op);
-        % Update vscale:
-        f.vscale = max(abs(f.values), [], 1);
-        % Check for happiness: (no OP to compare against)
-        f.ishappy = true;
-        f.epslevel = pref.eps;
-%         [f.ishappy, f.epslevel] = happinessCheck(f, [], pref);
     else                 
         % OP is a cell {values, coeffs}
         f.values = op{1};
@@ -91,15 +86,21 @@ if ( isnumeric(op) || iscell(op) )
         if ( isempty(f.values) )
             f.values = f.coeffs2vals(f.coeffs);
         end
-        % Update vscale:
-        f.vscale = max(abs(f.values), [], 1);
-        % We're always happy if given coefficients:
-        f.ishappy = true;
-        f.epslevel = pref.eps;
     end
+    
+    % Update vscale:
+    f.vscale = max(abs(f.values), [], 1);
+    
+    % We're always happy if given discrete data:
+    f.ishappy = true;
+    
+    % TODO: Is this the correct vscale?
+    f.epslevel = max(eps(max(f.vscale)) + 0*f.vscale, eps);
 
     return
 end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% Adaptive construction. %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Initialise empty values to pass to refine:
 f.values = [];
@@ -144,14 +145,28 @@ while ( 1 )
 
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Update the vscale. %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Compute the 'true' vscale (as defined in CHEBTECH classdef):
+vscaleOut = max(abs(f.values), [], 1);
 % Update vertical scale one last time:
-vscale = max(vscale, max(abs(f.values), [], 1));
+vscaleGlobal = max(vscale, vscaleOut);
+% Adjust the epslevel appropriately:
+if ( any(vscaleOut > 0) )
+    epslevel = epslevel*vscaleGlobal./vscaleOut;
+else 
+    % Deal with zero vscale:
+    epslevel = epslevel./(1+vscaleOut);
+end
+% Output the 'true' vscale (i.e., the max of the stored values):
+vscale = vscaleOut;
 
-% Assign to CHEBTECH object:
+%%%%%%%%%%%%%%%%%%%%%%%%%% Assign to CHEBTECH object. %%%%%%%%%%%%%%%%%%%%%%%%%%
 f.coeffs = coeffs;
 f.vscale = vscale;
 f.ishappy = ishappy;
 f.epslevel = epslevel;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Ouput. %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if ( ishappy )
     % We're done, and can return.

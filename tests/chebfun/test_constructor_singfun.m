@@ -1,4 +1,4 @@
-% Test file for chebfun constructor for integration with singfun.
+% Test file for chebfun constructor for singular function:.
 
 function pass = test_constructor_singfun(pref)
 
@@ -105,6 +105,13 @@ vals_exact = feval(op, x);
 err = fval - vals_exact;
 pass(4) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
 
+% Same thing but using 'blowup', 'on' instead:
+f = chebfun(op, dom, 'blowup', 'on');
+fval = feval(f, x);
+vals_exact = feval(op, x);
+err = fval - vals_exact;
+pass(5) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
+
 %% Specify the singularity by naming the type of singularities to preferences:
 % Singularity detection is involved: 
 
@@ -130,7 +137,7 @@ f = chebfun(op, dom, pref);
 fval = feval(f, x);
 vals_exact = feval(op, x);
 err = fval - vals_exact;
-pass(5) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(6) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
 
 %% Specify the singularity types using Chebfun v4 syntax:
 % Singularity detection is involved: 
@@ -153,7 +160,7 @@ f = chebfun(op, dom, 'blowup', 1);
 fval = feval(f, x);
 vals_exact = feval(op, x);
 err = fval - vals_exact;
-pass(6) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(7) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -186,7 +193,7 @@ f = chebfun(op, pref);
 fval = feval(f, x);
 vals_exact = feval(op, x);
 err = fval - vals_exact;
-pass(7) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(8) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
 
 %% Specify the singularity types using Chebfun v4 syntax:
 % Singularity detection is involved: 
@@ -209,7 +216,7 @@ f = chebfun(op, 'blowup', 2);
 fval = feval(f, x);
 vals_exact = feval(op, x);
 err = fval - vals_exact;
-pass(8) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(9) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
 
 %% Specify the singularity by specifying the type of singularities to preferences:
 % Singularity detection is involved: 
@@ -236,7 +243,7 @@ f = chebfun(op, pref);
 fval = feval(f, x);
 vals_exact = feval(op, x);
 err = fval - vals_exact;
-pass(9) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(10) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
 
 %% Specify the singularity types using Chebfun v4 syntax:
 % Singularity detection is involved: 
@@ -259,7 +266,7 @@ f = chebfun(op, 'blowup', 1);
 fval = feval(f, x);
 vals_exact = feval(op, x);
 err = fval - vals_exact;
-pass(10) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(11) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
 
 %% Piecewise smooth chebfun: a mix of functions with finite and infinite values.
 % define the domain:
@@ -286,7 +293,7 @@ for j = 1:3
     result(j) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
 end
 
-pass(11) = all( result );
+pass(12) = all( result );
 
 %% Piecewise smooth chebfun: splitting on.
 
@@ -304,6 +311,6 @@ x = diff(dom) * rand(100, 1) + dom(1);
 fval = feval(f, x);
 vals_exact = feval(op, x);
 err = fval - vals_exact;
-pass(12) = all( norm(err, inf) < 1e1*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(13) = all( norm(err, inf) < 1e1*get(f,'epslevel')*norm(vals_exact, inf) );
 
 end

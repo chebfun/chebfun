@@ -125,7 +125,10 @@ classdef bndfun < fun
     
     %% METHODS IMPLEMENTED BY THIS CLASS.
     methods
-        
+        % Introduce new breakpoint to facilitate the computation of the 
+        % indefinite integral of a BNDFUN.
+        f = addBreaksForCumSum(f)
+
         % Compose a BNDFUN with an operator or another BNDFUN
         f = compose(f, op, g, pref)
         
@@ -164,6 +167,9 @@ classdef bndfun < fun
                 
         % Polynomial coefficients of a BNDFUN.
         out = poly(f)
+        
+        % BNDFUN power function.
+        f = power(f, b)
         
         % QR factorisation of an array-valued BNDFUN.
         [f, R, E] = qr(f, flag)

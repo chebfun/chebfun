@@ -77,7 +77,7 @@ for n = 1:2
     f = testclass.make(@(x) [sin(pi*x), cos(pi*x)], [], [], pref);
     r = roots(f);
     r2 = [-1 0 1 -.5 .5 NaN].';
-    pass(n, 9) = all( r(:) - r2 < 10*length(f)*f.epslevel | isnan(r2) );
+    pass(n, 9) = all( r(:) - r2 < 10*length(f)*max(f.epslevel) | isnan(r2) );
 end
 
 end

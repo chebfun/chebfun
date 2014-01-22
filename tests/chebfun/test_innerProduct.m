@@ -10,7 +10,7 @@ end
 % Set a domain
 dom = [-2 7];
 
-%% Integration with singfun: piecewise smooth chebfun - splitting on.
+%% Test on singular function: piecewise smooth chebfun - splitting on.
 
 pow1 = -0.3;
 pow2 = -0.5;

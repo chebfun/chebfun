@@ -3,7 +3,7 @@
 function pass = test_times(pref)
 
 % Get preferences.
-if (nargin < 1)
+if ( nargin < 1 )
     pref = chebpref();
 end
 
@@ -13,6 +13,8 @@ x = 2 * rand(100, 1) - 1;
 
 % Random numbers to use as arbitrary multiplicative constants.
 alpha = -0.194758928283640 + 0.075474485412665i;
+
+%% SCALAR-VALUED
 
 % Check operation for empty inputs.
 f = chebfun(@sin, [-1 1], pref);
@@ -32,6 +34,8 @@ g1_op = @(x) cos(x).*sign(x + 0.2);
 g1 = chebfun(g1_op, pref);
 pass(5:6) = test_mult_function_by_function(f1, f1_op, g1, g1_op, x);
 
+%% ARRAY-VALUED
+
 % Test operation for array-valued chebfuns.
 f2_op = @(x) [sin(x).*abs(x - 0.1)  exp(x)];
 f2 = chebfun(f2_op, pref);
@@ -46,22 +50,41 @@ pass(11:12) = test_mult_function_by_scalar(f1.', @(x) f1_op(x).', alpha, x);
 pass(13:14) = test_mult_function_by_function(f1.', @(x) f1_op(x).', ...
     g1.', @(x) g1_op(x).', x);
 
-% Check error conditions.
+%% QUASIMATRICES
+f2q = quasimatrix(f2_op, pref);
+pass(15:16) = test_mult_function_by_scalar(f2q, f2_op, alpha, x);
+
+% Quasi * array-cheb
+pass(17:18) = test_mult_function_by_function(f2q, f2_op, g2, g2_op, x);
+
+% Quasi * quasi
+g2q = quasimatrix(g2_op, pref);
+pass(19:20) = test_mult_function_by_function(f2q, f2_op, g2q, g2_op, x);
+
+%% Check error conditions.
+
 try
     h = f1.*'X';
-    pass(15) = false;
+    pass(21) = false;
 catch ME
-    pass(15) = strcmp(ME.identifier, 'CHEBFUN:times:unknown');
+    pass(21) = strcmp(ME.identifier, 'CHEBFUN:times:unknown');
 end
 
 try
     h = f1.*f1.';
-    pass(16) = false;
+    pass(22) = false;
 catch ME
-    pass(16) = strcmp(ME.identifier, 'CHEBFUN:times:matdim');
+    pass(22) = strcmp(ME.identifier, 'CHEBFUN:times:matdim');
 end
 
-%% Integration of singfun:
+try
+    h = f1.*g2q.';
+    pass(23) = false;
+catch ME
+    pass(23) = strcmp(ME.identifier, 'CHEBFUN:times:matdim');
+end
+
+%% Test on singular function:
 
 dom = [-2 7];
 
@@ -80,7 +103,7 @@ g = c.*f;
 g_exact = chebfun(op_exact, dom, pref);
 
 err = norm(feval(g, x) - feval(g_exact, x), inf);
-pass(17) = ( err < 5*get(f, 'epslevel')*norm(feval(g_exact, x), inf) );
+pass(24) = ( err < 5*get(f, 'epslevel')*norm(feval(g_exact, x), inf) );
 
 %% Case of two functions: piecewise smooth chebfun - splitting on.
 pow1 = -0.3;
@@ -99,10 +122,12 @@ pref.singPrefs.exponents = [0 pow1+pow2];
 h_exact = chebfun(op_exact, dom, pref);
 
 err = norm(feval(h, x) - feval(h_exact, x), inf);
-pass(18) = ( err < 1e1*max(get(f, 'epslevel'), get(g, 'epslevel'))*...
+pass(25) = ( err < 1e1*max(get(f, 'epslevel'), get(g, 'epslevel'))*...
     norm(feval(h_exact, x), inf) );
 
 end
+
+%% The tests
 
 % Test the multiplication of a chebfun F, specified by F_OP, by a scalar ALPHA
 % using a grid of points X in [-1  1] for testing samples.
@@ -112,7 +137,7 @@ function result = test_mult_function_by_scalar(f, f_op, alpha, x)
     result(1) = isequal(g1, g2);
     g_exact = @(x) f_op(x) .* alpha;
     err = feval(g1, x) - g_exact(x);
-    result(2) = norm(err(:), inf) < 10*max(g1.vscale.*g1.epslevel);
+    result(2) = norm(err(:), inf) < 10*max(vscale(g1).*epslevel(g1));
 end
 
 % Test the multiplication of two chebfuns F and G, specified by F_OP and G_OP,
@@ -123,6 +148,6 @@ function result = test_mult_function_by_function(f, f_op, g, g_op, x)
     result(1) = isequal(h1, h2);
     h_exact = @(x) f_op(x) .* g_op(x);
     err = feval(h1, x) - h_exact(x);
-    result(2) = norm(err(:), inf) < 10*max(h1.vscale.*h1.epslevel);
+    result(2) = norm(err(:), inf) < 10*max(vscale(h1).*epslevel(h1));
 end
 

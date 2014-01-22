@@ -32,6 +32,11 @@ function [coeffs, poles, k] = residue(u, v, k)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+if ( min(size(u)) > 1 || min(size(v)) > 1 )
+    error('CHEBFUN:residue:quasi', ...
+          'Residue does not support CHEBFUN objects with multiple columns.');
+end
+
 if ( nargin == 2 )
     
     if ( (numel(u.funs) > 1) || (numel(v.funs) > 1) )

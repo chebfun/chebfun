@@ -4,6 +4,8 @@ if ( nargin == 0 )
     pref = chebpref();
 end
 
+%%
+
 % Test a Sine function:
 M = 1000;
 f = chebfun(@(x) sin(M*pi*x), [0 1], pref);
@@ -28,6 +30,8 @@ rs = roots(Fs);
 rh = roots(Fh, 'nozerofun');
 pass(4) = rs == 0 && numel(rh) == 2 && rh(1) == -1 && rh(2) == 0;
 
+%%
+
 % Test an array-valued function:
 f = chebfun(@(x) [sin(2*pi*x), sign(x), x.^2-.5, 1+0*x], [-1, 0, 1], 'extrapolate', 'on');
 f.impulses(3,4) = 0;
@@ -36,8 +40,18 @@ exact(:,1) = linspace(-1,1,5); exact(1,[2,4]) = [0,1]; exact([1,2],3) = [-1,1]./
 r = roots(f);
 pass(5) = all(size(r) == [5,4]) && max(abs(exact(:)-r(:))) < epslevel(f);
 
+% Test a quasimatrix:
+f = quasimatrix(@(x) [sin(2*pi*x), sign(x), x.^2-.5, 1+0*x], [-1, 0, 1], 'extrapolate', 'on');
+f = setImpulses(f, 3, 4, 0);
+exact = NaN(5,4);
+exact(:,1) = linspace(-1,1,5); exact(1,[2,4]) = [0,1]; exact([1,2],3) = [-1,1]./sqrt(2);
+r = roots(f);
+pass(6) = all(size(r) == [5,4]) && max(abs(exact(:)-r(:))) < epslevel(f);
+
+%%
+
 % Test roots of a Bessel function on [0, 100]:
-f = chebfun(@(x) besselj(0,x),[0 100]);
+f = chebfun(@(x) besselj(0,x), [0 100]);
 r = roots(f);
 exact = [ 2.40482555769577276862163; 5.52007811028631064959660
 8.65372791291101221695437; 11.7915344390142816137431
@@ -56,15 +70,23 @@ exact = [ 2.40482555769577276862163; 5.52007811028631064959660
 90.3221726372104800557177; 93.4637187819447741711905
 96.6052679509962687781216; 99.7468198586805964702799
 ];
-pass(6) = length(r) == 32 && norm(exact - r, inf) < hscale(f)*epslevel(f);
+pass(7) = length(r) == 32 && norm(exact - r, inf) < hscale(f)*epslevel(f);
+
+%%
 
 % Test roots of a complex array-valued CHEBFUN:
 f = chebfun(@(x) [1i*x, x, sin(2*pi*x)]);
 exact = [[0,0;NaN(4,2)], linspace(-1,1,5).'];
 r = roots(f);
-pass(7) = all(size(exact) == [5,3]) && max(abs(exact(:) - r(:))) < 10*epslevel(f);
+pass(8) = all(size(exact) == [5,3]) && max(abs(exact(:) - r(:))) < 10*epslevel(f);
 
-%% Integration with singfun: piecewise smooth chebfun - splitting on.
+% Test roots of a complex quasimatrix:
+f = quasimatrix(@(x) [1i*x, x, sin(2*pi*x)]);
+exact = [[0,0;NaN(4,2)], linspace(-1,1,5).'];
+r = roots(f);
+pass(9) = all(size(exact) == [5,3]) && max(abs(exact(:) - r(:))) < 10*epslevel(f);
+
+%% Test on singular function: piecewise smooth chebfun - splitting on.
 
 % Set the domain
 dom = [-2 7];

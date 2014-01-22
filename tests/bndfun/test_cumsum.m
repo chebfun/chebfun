@@ -83,8 +83,8 @@ F_exact = bndfun(@(x) [-cos(x) x.^3/3 exp(1i*x)/1i], dom, [], [], pref);
 F = cumsum(f);
 err = feval(F, x) - feval(F_exact, x);
 pass(8) = (norm(diff(err), inf) < ...
-    10*max(get(f, 'vscale'))*get(f, 'epslevel')) && ...
-    all(abs(feval(F, a)) < max(get(f, 'vscale'))*get(f, 'epslevel'));
+    10*max(get(f, 'vscale').*get(f, 'epslevel'))) && ...
+    all(abs(feval(F, a)) < max(get(f, 'vscale').*get(f, 'epslevel')));
 
 %%
 % Check operation for second and third order cumsums.
@@ -103,8 +103,8 @@ err = feval(F3, x) - feval(F3_exact, x);
 pass(10) = (norm(diff(err), inf) < get(F3, 'vscale')^3*get(f, 'epslevel')) && ...
     abs(feval(F3, a)) < get(F3, 'vscale')^3*get(f, 'epslevel');
 
-%%
-% Check the integration of singfun.
+%% Test on singular function:
+
 dom = [-2 7];
 pow = -0.64;
 op = @(x) (x-dom(1)).^pow;

@@ -28,7 +28,7 @@ for j = 1:numel(FF);
 
 end
 
-%% Integration of SINGFUN:
+%% Test on singular function:
 
 % define the domain:
 dom = [-1 1];

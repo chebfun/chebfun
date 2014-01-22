@@ -15,26 +15,54 @@ function out = get(f, prop)
 %       'RVAL'           - Value(s) of F at righthand side of domain.
 %       'LVAL-LOCAL      - Value(s) of F's FUNs at left sides of their domains.
 %       'RVAL-LOCAL'     - Value(s) of F's FUNs at right sides of their domains.
+%
+%   The following are also supported for backward compatabiilty, and really only
+%   make sense when the CHEBFUN is represented by a CHEBTECH-type object. Note
+%   that in these cases a cell is always returned, even if the Chebfun has only
+%   a sngle FUN.
+%       'POINTS'         - The Chebyshev grid used to represent F.
+%       'VALUES'         - The values of the CHEBFUN on the grid above.
+%       'COEFFS'         - The corresponding Chebyshev coefficients.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% [TODO]: Include a get(f, 'numCols') ( = size(f.funs{1}, 2) if f is not empty).
+% TODO: Figure out what to do for quasimatrices.
+% TODO: Convert help text to lower case.
 
 switch prop
+    case {'domain', 'ends'}
+        out = domain(f);
+        
     case fieldnames(f)
         % Allow access to any of F's properties via GET.
-        out = f.(prop);
+        if ( numel(f) > 1 )
+            % TODO: Is this the right thing to do?
+            warning('CHEBFUN:get:quasi', ...
+                'CHEBFUN/GET() returns only the property information of the first column.')
+        end
+        out = f(1).(prop);
+        
     case 'lval'
-        out = get(f.funs{1}, 'lval');
-        if ( f.isTransposed )
+        out = cell(1, numColumns(f));
+        for k = 1:numel(f)
+            out{k} = get(f(k).funs{1}, 'lval');
+        end
+        out = cell2mat(out);
+        if ( f(1).isTransposed )
             out = out.';
         end
+            
     case 'rval'
-        out = get(f.funs{end}, 'rval');
-        if ( f.isTransposed )
+        out = cell(1, numColumns(f));
+        for k = 1:numel(f)
+            out{k} = get(f(k).funs{end}, 'rval');
+        end
+        out = cell2mat(out);
+        if ( f(1).isTransposed )
             out = out.';
         end
+        
     case {'lval-local', 'rval-local'}
         if ( isempty(f) )
             out = [];
@@ -47,53 +75,57 @@ switch prop
         for k = 1:numFuns
             out(k,:) = get(f.funs{k}, lrval);
         end
-        if ( f.isTransposed )
+        if ( f(1).isTransposed )
             out = out.';
-        end        
+        end 
+        
     case 'ishappy'
-        n = numel(f.funs);
-        out(n,1) = 0;
-        for k = 1:n
-            out(k) = all(get(f.funs{k}, prop));
+        for j = 1:numel(f)
+            for k = 1:numel(f(j).funs)
+                out = all(get(f(j).funs{k}, 'ishappy'));
+                if ( ~out ), return, end
+            end
         end
-        out = all(out);
+        
     case 'hscale'
-        out = hscale(f);                
-    case 'hscale-local'
-        n = numel(f.funs);
-        out(n,1) = 0;
-        for k = 1:n
-            out(k) = get(f.funs{k}, 'hscale');
-        end   
+        out = hscale(f);   
+
     case 'vscale'
-        out = vscale(f);        
-    case 'vscale-local'
-        m = min(size(f));
-        n = numel(f.funs);
-        out = zeros(n, m);
-        for k = 1:n
-            out(k,:) = get(f.funs{k}, 'vscale');
-        end
+        out = vscale(f); 
+
     case 'epslevel'
         out = epslevel(f);
-    case 'epslevel-local'
-        n = numel(f.funs);
-        out(n,1) = 0;
-        for k = 1:n
-            out(k) = get(f.funs{k}, 'epslevel');
-        end            
-    case {'values', 'coeffs', 'points'}
-        n = numel(f.funs);
-        out = cell(n, 1);
-        for k = 1:n
-            out{k} = get(f.funs{k}, prop);
+        
+    case {'values', 'coeffs', 'points', 'epslevel-local', 'vscale-local', 'hscale-local'}
+        % Adjust the PROP variable in the case of -local:
+        idx = strfind(prop, '-');
+        if ( ~isempty(idx) )
+            prop = prop(1:idx-1);
         end
-        if (numel(out) == 1)
-            out = out{:};
+        
+        % Initialise the output:
+        m = numel(f);
+        n = 0;
+        for j = 1:m
+            n = max(n, numel(f(j).funs));
         end
-    case 'ends'
-        out = f.domain;
+        out = cell(n, m);
+        
+        % Loop over each of the columns and each of the funs:
+        for k = 1:m
+            for j = 1:numel(f(k).funs)
+                out{j,k} = get(f(k).funs{j}, prop);
+            end
+        end
+        if ( ~isempty(idx) && min(m, n) == 1 )
+            out = cell2mat(out);
+        end
+        if ( f(1).isTransposed )
+            out = out.';
+        end
+        
     otherwise
         error('CHEBFUN:CHEBFUN:GET:propname', ...
             'Unknown property name ''%s'' for object of type CHEBFUN.', prop);
+        
 end

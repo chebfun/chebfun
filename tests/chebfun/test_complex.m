@@ -69,7 +69,7 @@ catch ME
     pass(10) = strcmp(ME.identifier, 'CHEBFUN:complex:BisNotReal');
 end
 
-% Integration of SINGFUN:
+%% Test on singular function:
 dom = [-2 7];
 pow = -1.64;
 f = chebfun(@(x) cos(x).*(x-dom(1)).^pow, dom, 'exps', [pow 0], ...

@@ -35,7 +35,7 @@ hscale = norm(domain, inf);
 if ( isinf(hscale) )
     hscale = 1;
 end
-vscale = 0;
+vscale = pref.scale;
 
 % Sanity check:
 if ( iscell(op) && (numel(op) ~= numIntervals) )
@@ -307,6 +307,6 @@ g = fun.constructor(op, domain, vscale, hscale, pref);
 % See if the construction was happy:
 ishappy = get(g, 'ishappy');
 % Update the vertical scale:
-vscale = max(vscale, get(g, 'vscale'));
+vscale = max([vscale, get(g, 'vscale')]);
 
 end

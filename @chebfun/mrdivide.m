@@ -7,6 +7,9 @@ function X = mrdivide(B, A)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
+% TODO: Something is wrong with the comment lines below.
+% TODO: Give an example for each of the cases below.
+
 if ( isscalar(A) )
     X = B*(1/A);
     
@@ -26,7 +29,7 @@ elseif ( isnumeric(A) )
     X = Q * (R/A);
     % X = B*(eye(size(B,2))/A);
     
-elseif ( ~A.isTransposed )
+elseif ( ~A(1).isTransposed )
     % [M x INF] * [INF x N] = [M x N]:
     [Q, R] = qr(A, 0);
     X = (B/R) * Q';

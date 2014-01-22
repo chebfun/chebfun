@@ -1,4 +1,4 @@
-function g = abs(f)
+function F = abs(F, pref)
 %ABS   Absolute value of a CHEBFUN.
 %   ABS(F) is the absolute value of the CHEBFUN F.
 %
@@ -7,13 +7,26 @@ function g = abs(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-% Trivial case: (f is empty)
-if ( isempty(f) )
+% Trivial case: (F is empty)
+if ( isempty(F) )
     return
 end
 
+if ( nargin < 2 )
+    pref = chebpref();
+end
+
+% Loop over the columns of F:
+for k = 1:numel(F)
+    F(k) = columnAbs(F(k), pref);
+end
+
+end
+
+function g = columnAbs(f, pref)
+
 % Add breaks at the appropriate roots of f:
-g = addBreaksAtRoots(f);
+g = addBreaksAtRoots(f, pref);
 
 % Call ABS on each of the FUNs: (result will be smooth)
 for k = 1:numel(g.funs)
@@ -25,9 +38,11 @@ g.impulses = abs(g.impulses(:,:,1));
 
 % [TODO]: Do we want to do this?
 % [ignored, idx] = setdiff(f.domain, g.domain);
-% g = merge(g, idx.'); 
+% g = merge(g, idx.', pref); 
 
 % [TODO]: Do we want to do this?
-g = simplify(g);
+g = simplify(g, pref);
+
+% TODO: Should we always return a quasimatrix rather than overlap the roots?
 
 end

@@ -88,7 +88,7 @@ err1 = feval(g{1} - h1, x);
 err2 = feval(g{2} - h2, x);
 pass(14) = all(err1(:) == 0) && all(err2(:) == 0);
 
-%% Integration with singfun
+%% Test on singular function:
 
 pow = -0.5;
 op = @(x) (x - dom(1)).^pow.*sin(x);
@@ -113,5 +113,5 @@ y_exact = fun_op(x);
 y_approx = feval(g, x);
 
 result = norm(y_exact - y_approx, Inf) < ...
-    10*max(get(f, 'vscale'))*get(f, 'epslevel');
+    10*max(get(f, 'vscale').*get(f, 'epslevel'));
 end

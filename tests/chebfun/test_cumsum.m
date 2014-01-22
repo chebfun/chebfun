@@ -76,7 +76,7 @@ I2f3_exact = @(x) [-cos(x) sin(x) exp(x)] - ...
 pass(9) = max(max(abs(feval(I2f3, xr) - I2f3_exact(xr)))) < ...
     10*vscale(I2f3)*epslevel(I2f3);
 
-%% Integration with singfun: 
+%% Test on singular function:
 
 dom = [-2 7];
 
@@ -111,11 +111,7 @@ opi3 = @(x) x.^2/2 + x + opi2(0);
 op = {op1, op2, op3};
 opi = {opi1, opi2, opi3};
 f = chebfun(op, dom, 'exps', [0 0 -0.5 0 0 0]);
-
-% We temporarily disable this warning: 
-warning('off', 'CHEBFUN:SINGFUN:plus');
 g = cumsum(f);
-warning('on', 'CHEBFUN:SINGFUN:plus');
 
 % check values:
 result = zeros(1,3);

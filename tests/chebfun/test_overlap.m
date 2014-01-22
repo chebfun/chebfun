@@ -7,6 +7,8 @@ if ( nargin == 0 )
     pref = chebpref();
 end
 
+% TODO: Test for array-valued CHEBFUNS and quasimatrices.
+
 % Test empty input.
 f = chebfun();
 g = chebfun();
@@ -52,7 +54,7 @@ pass(5) = isequal(f2.domain, g2.domain) && ...
     norm(feval(g, xx) - feval(g2, xx), inf) < 10*epslevel(g)*vscale(g) && ...
     isequal(size(f2.impulses, 3), size(g2.impulses, 3));
 
-%% Integration with singfun: piecewise smooth chebfun - splitting on.
+%% Test on singular function: piecewise smooth chebfun - splitting on.
 
 % define the domain:
 dom = [-2 7];

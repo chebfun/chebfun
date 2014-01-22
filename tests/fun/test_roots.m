@@ -80,8 +80,7 @@ for n = 1:1  %[TODO]: unbndfun
     r2 = [-2:7 -1.5:6.5 NaN(1,11)].';
     pass(n, 9) = all( r(:) - r2 < max(get(f, 'epslevel').*get(f, 'vscale')) | isnan(r2) );
     
-    %%
-    % Integration with singfun
+    %% Test on singular function:
     pow = -0.5;
     op = @(x) (x-dom(1)).^pow.*cos(x);
     pref.singPrefs.exponents = [pow 0];

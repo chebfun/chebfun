@@ -33,7 +33,7 @@ for n = 1:1 %[TODO]: unbndfun
     [y, x] = minandmax(f);
     y_exact = [-1 7.492128863997157e-07  (-.2)^3*cosh(-.2);
                 1 0.535656656015700 0.7^3*cosh(0.7)];
-    pass(n, 5) = all(abs(y(:) - y_exact(:)) < 10*get(f, 'epslevel'));
+    pass(n, 5) = all(abs(y(:) - y_exact(:)) < 10*max(get(f, 'epslevel')));
 
     % Check that the points x are indeed extreme points of the function 
     % operator.
@@ -56,14 +56,15 @@ for n = 1:1 %[TODO]: unbndfun
     f2 = testclass.make(@(x) 1i*cos(20*x), dom);
     [vals2, pos2] = minandmax(f2);
     pass(n, 7) = norm(abs(vals) - abs([vals1 vals2]), inf) < ...
-        10*max(get(f, 'vscale')*get(f, 'epslevel'));
+        10*max(get(f, 'vscale').*get(f, 'epslevel'));
     
-    %% Test the integration with singfun:
+    %% Test on singular function:
     
     pow = -0.5;
     op = @(x) (x - dom(1)).^pow.*(sin(x).^2);
     pref.singPrefs.exponents = [pow 0];
     pass(n, 8) = test_spotcheck_minmax(testclass, op, dom, 0, Inf, pref);
+
 end
 
 end

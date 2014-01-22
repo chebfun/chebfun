@@ -22,10 +22,10 @@ end
 
 % Insert breaks at the roots:
 if ( isa(f, 'chebfun') )
-    f = addBreaksAtRoots(f);
+    f = addBreaksAtRoots(f, pref);
 end
 if ( isa(g, 'chebfun') )
-    g = addBreaksAtRoots(g);
+    g = addBreaksAtRoots(g, pref);
 end
 
 % Call compose:

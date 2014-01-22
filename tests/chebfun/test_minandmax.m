@@ -122,7 +122,7 @@ pass(14) = norm(y(:,1) - y_exact(:,1), inf) < 10*vscale(f)*epslevel(f) && ...
     norm(fx1(:,1) - y_exact(:,1), inf) < 10*vscale(f)*epslevel(f) && ...
     norm(fx2(:,2) - y_exact(1:3,2), inf) < 10*vscale(f)*epslevel(f);
 
-%% Integration with singfun: piecewise smooth chebfun - splitting on.
+%% Test on singular function: piecewise smooth chebfun - splitting on.
 
 dom = [-2 7];
 pow = -0.5;

@@ -64,7 +64,7 @@ vals_g = feval(g,x);
 err = vals_f - vals_g;
 pass(10) = ( norm(err, inf) < get(f,'epslevel')*norm(vals_f, inf) );
 
-%% Test on integration of SINGFUN - a row CHEBFUN:
+%% Test on singular function - a row CHEBFUN:
 
 % Set the domain:
 dom = [-2 7];

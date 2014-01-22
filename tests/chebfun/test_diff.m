@@ -95,7 +95,7 @@ catch ME
     pass(16) = strcmp(ME.identifier, 'CHEBFUN:diff:dim');
 end
 
-%% Integration with singfun: splitting on.
+%% Test on singular function: splitting on.
 
 dom = [-2 7];
 domCheck = [dom(1)+0.1 dom(2)-0.1];
