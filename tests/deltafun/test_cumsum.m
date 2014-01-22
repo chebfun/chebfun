@@ -2,9 +2,9 @@
 
 function pass = test_cumsum(pref)
 
-% if (nargin < 1)
-%     pref = chebpref();
-% end
+if (nargin < 1)
+    pref = chebpref();
+end
 
 %%
 tol = deltafun.pref.deltafun.deltaTol;

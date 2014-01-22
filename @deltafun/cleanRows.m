@@ -14,8 +14,9 @@ if ( isempty(A) )
 end
 
 % Get the tolerance:
-tol = deltafun.pref.deltafun.deltaTol;
+pref = chebpref();
+deltaTol = pref.deltaPrefs.deltaTol;
 
-while( max(abs(A(end, :))) < tol )
+while( max(abs(A(end, :))) < deltaTol )
     A(end, :) = [];
 end

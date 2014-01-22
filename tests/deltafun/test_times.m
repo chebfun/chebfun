@@ -2,9 +2,9 @@
 
 function pass = test_times(pref)
 
-% if (nargin < 1)
-%     pref = chebpref();
-% end
+if (nargin < 1)
+    pref = chebpref();
+end
 %%
 dTol = deltafun.pref.deltafun.deltaTol;
 

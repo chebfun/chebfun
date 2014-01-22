@@ -6,9 +6,15 @@ function out = anyDelta(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
+if ( isempty(f) )
+    out = 0;
+    return 
+end
+
 % Get tolerance for exponents:
-tol = deltafun.pref.deltafun.deltaTol;
+pref = chebpref();
+deltaTol = pref.deltaPrefs.deltaTol;
 
 % Check if f has no or only below tolerance delta functions.
-out = any(abs(f.impulses(:)) > tol);
+out = any(abs(f.impulses(:)) > deltaTol);
 end

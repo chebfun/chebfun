@@ -1,4 +1,4 @@
 function f = compose(f, op, g, pref)
-%[TODO]
+%[TODO]: Composing with DELTAFUNs ?
 
 return

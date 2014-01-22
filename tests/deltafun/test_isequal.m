@@ -2,9 +2,9 @@
 
 function pass = test_isequal(pref)
 
-% if (nargin < 1)
-%     pref = chebpref();
-% end
+if (nargin < 1)
+    pref = chebpref();
+end
 %%
 d1 = deltafun();
 d2 = deltafun();

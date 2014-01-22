@@ -51,10 +51,10 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
             % Check for preferences in the very beginning.
             if ( (nargin < 4) || isempty(pref) )
                 % Determine preferences if not given.
-                pref = deltafun.pref;
+                pref = chebpref();
             else
                 % Merge if some preferences are given.
-                pref = deltafun.pref(pref);
+                pref = chebpref(pref);
             end
                         
             %% Cases based on the number of arguments

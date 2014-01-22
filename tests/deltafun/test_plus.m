@@ -2,9 +2,9 @@
 
 function pass = test_plus(pref)
 
-% if (nargin < 1)
-%     pref = chebpref();
-% end
+if (nargin < 1)
+    pref = chebpref();
+end
 %%
 a = -4; b = 4;
 pTol = deltafun.pref.deltafun.proximityTol;

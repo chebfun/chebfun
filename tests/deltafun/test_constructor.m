@@ -2,9 +2,9 @@
 
 function pass = test_constructor(pref)
 
-% if ( nargin < 1 )
-     pref = []; %?
-% end
+if ( nargin < 1 )
+     pref = chebpref();
+end
 
 %%
 deltaTol = deltafun.pref.deltafun.deltaTol;

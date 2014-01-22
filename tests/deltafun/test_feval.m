@@ -2,9 +2,9 @@
 
 function pass = test_feval(pref)
 
-% if ( nargin < 1 )
-%     pref = ?
-% end
+if ( nargin < 1 )
+    pref = chebpref();
+end
 %%
 d = deltafun([], 1,0);
 pass(1) = isnan(feval(d, 0));
