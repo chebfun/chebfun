@@ -5,23 +5,23 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
 %   Class for approximating generalized functions on the interval [a, b].
 %   The smooth or classical part of the function is approximated by a
 %   CLASSICFUN object while the Dirac delta functions are represented by a
-%   pair of properties: IMPULSES and LOCATION, which store the magnitude
-%   and the location of the delta functions respectively. IMPULSES is
+%   pair of properties: DELTAMAG and LOCATION, which store the magnitude
+%   and the location of the delta functions respectively. DELTAMAG is
 %   generally a matrix, with its first row representing the delta functions,
 %   while derivativeds of delta functions are represented by higher rows of
 %   this matrix. LOCATION is a vector, each element of which corresponds to
-%   the location of a column in the IMPULSES matrix.
+%   the location of a column in the DELTAMAG matrix.
 %
 % Constructor inputs:
 %   DELTAFUN(IMPULSES, LOCATION) creates a DELTAFUN object with an empty
 %   FUNPART, while the delta functions and their locations are specified by
-%   IMPULSES and LOCATION.
+%   DELTAMAG and LOCATION.
 % 
-%   DELTAFUN(FUNPART, IMPULSES, LOCATION) creates a DELTAFUN object with
-%   FUNPART as its smooth function, while IMPULSES and LOCATION specify the
+%   DELTAFUN(FUNPART, DELTAMAG, LOCATION) creates a DELTAFUN object with
+%   FUNPART as its smooth function, while DELTAMAG and LOCATION specify the
 %   delta functions in this object.
 %
-%   DELTAFUN(FUNPART, IMPULSES, LOCATION, PREF) is the same as above but
+%   DELTAFUN(FUNPART, DELTAMAG, LOCATION, PREF) is the same as above but
 %   uses PREF to pass any preferences.
 %
 % See also CLASSICFUN, ONEFUN, FUN
@@ -34,11 +34,11 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         % Smooth part of the representation.
         funPart     % (classical function which is a CLASSICFUN object)
         
-        % IMPULSES is a matrix storing information about the delta functions
+        % DELTAMAG is a matrix storing signed magnitude of the delta functions
         % contained in a DELTAFUN object. The first row corresponds to the
         % delta functions themselves while higher order rows represent
         % derivatives of delta functions.
-        impulses % double matrix [M X N]
+        deltaMag % double matrix [M X N]
         
         % Location of the delta functions.
         location % double vector [1 X N]            
@@ -46,7 +46,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
     
     %% DELTAFUN CLASS CONSTRUCTOR:
     methods ( Static = true )
-        function obj = deltafun(funPart, impulses, location, pref)
+        function obj = deltafun(funPart, deltaMag, location, pref)
             %%
             % Check for preferences in the very beginning.
             if ( (nargin < 4) || isempty(pref) )
@@ -61,7 +61,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
             % Case 0: No input arguments, return an empty object.
             if ( nargin == 0 )
                 obj.funPart = [];
-                obj.impulses = [];
+                obj.deltaMag = [];
                 obj.location = [];                               
                 return
             end
@@ -77,7 +77,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
                 else
                     obj.funPart = funPart;
                 end
-                impulses = [];
+                deltaMag = [];
                 location = [];
             end
             %%
@@ -86,8 +86,8 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
             if ( nargin == 2 )
                 % Assign empty fun:
                 obj.funPart = [];
-                location = impulses;
-                impulses = funPart;
+                location = deltaMag;
+                deltaMag = funPart;
                 % Do no checks here, they are all done below.
             end
             
@@ -107,8 +107,8 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
             %% Check all the arguments:            
             
             % If one of impulses or location is empty, make both empty:
-            if ( isempty(impulses) || isempty(location) )
-                impulses = [];
+            if ( isempty(deltaMag) || isempty(location) )
+                deltaMag = [];
                 location = [];    
             end            
             
@@ -121,8 +121,8 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
             end
             
             % Check sizes:
-            if ( ~isempty(impulses) )
-                if ( size(impulses, 2) ~= length(location) )
+            if ( ~isempty(deltaMag) )
+                if ( size(deltaMag, 2) ~= length(location) )
                     error('DELTAFUN:dim', 'Impulse matrix should have the same number of columns as locations' );
                 end
             end                         
@@ -138,7 +138,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
             end
             
             % All checks done, assign inputs to the current object:
-            obj.impulses = impulses;
+            obj.deltaMag = deltaMag;
             obj.location = location;
                                 
             % Simplify to merge redundant impulses:

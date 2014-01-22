@@ -9,7 +9,7 @@ function f = simplify(f)
 
 
 deltaLoc = f.location;
-deltaMag = f.impulses;
+deltaMag = f.deltaMag;
 % Merge columns if location of deltafunction are almost equal:
 [deltaMag, deltaLoc] = deltafun.mergeColumns(deltaMag, deltaLoc);
 
@@ -29,6 +29,6 @@ end
 
 % Assign back:
 f.location = deltaLoc;
-f.impulses = deltaMag;
+f.deltaMag = deltaMag;
 
 end

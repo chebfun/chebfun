@@ -1,14 +1,33 @@
 function f = flipud(f)
-%FLIPUD   Flip/reverse a SINGFUN object.
+%FLIPUD   Flip/reverse a DELTAFUN object.
 %   G = FLIPUD(F) returns G such that G(x) = F(-x) for all x in [-1,1].
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org for Chebfun information.
 
-% Flip the smooth part:
-f.smoothPart = flipud(f.smoothPart);
+if ( isempty(f) )
+    return
+end
 
-% Since exponents of a SINGFUN are contained in a 1x2 row vector, FLIPUD is 
-% translated into a FLIPLR:
-f.exponents = fliplr(f.exponents);
+% Flip the funPart:
+if ( ~isempty(f.funPart) )
+    f.funPart = flipud(f.funPart);
+    if ( ~isempty(f.location) )
+        % Map impulses to [-1, 1]:
+        inverseMap = f.funPart.mapping.inv;
+        loc = inverseMap(f.location);
+        % Location is a vector, so flipud translates into fliplr:
+        loc = fliplr(-loc);
+        f.deltaMag = fliplr(f.deltaMag);
+        % Map back the locations:
+        forwardMap = f.funPart.mapping.for;
+        f.location = forwardMap(loc);
+    end
+else
+    if ( ~isempty(f.location) )
+        % No map given, reflect about the origin:
+        f.location = fliplr(-f.location);
+        f.deltaMag = fliplr(f.deltaMag);
+    end
+end       
 end

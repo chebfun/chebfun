@@ -26,7 +26,8 @@ end
 
 % Mathematically, point values of distributions do not make sense:
 if ( ~isempty(f.location) )
-    proximityTol = deltafun.pref.deltafun.proximityTol;        
+    pref = chebpref();
+    proximityTol = pref.deltaPrefs.proximityTol;        
     % Make sure there are no trivial delta functions:
     f = simplify(f);
     deltaLoc = f.location;    
