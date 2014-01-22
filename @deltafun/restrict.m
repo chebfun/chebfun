@@ -11,13 +11,18 @@ function g = restrict(f, s)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with empty case:
-if ( isempty(f) || isempty(f.funPart) )
+if ( isempty(f) )
     return
 end
 
-dom = f.funPart.domain;
-a = dom(1); 
-b = dom(2);
+if ( isempty(f.funPart) )
+    a = -inf;
+    b = inf;
+else
+    dom = f.funPart.domain;
+    a = dom(1); 
+    b = dom(2);
+end
 
 % Check if s is actually a subinterval:
 if ( (s(1) < a) || (s(end) > b) || (any(diff(s) <= 0)) )
@@ -27,7 +32,11 @@ elseif ( (numel(s) == 2) && all(s == [a, b]) )
     return
 end
 
-restrictedFuns = restrict(f.funPart, s);
+if ( ~isempty(f.funPart) )
+    restrictedFuns = restrict(f.funPart, s);
+else
+    restrictedFuns = [];
+end
 if ( length(s) == 2 )
     % Only restricting to one subinterval -- return a DELTAFUN.    
     g = deltafun();
@@ -55,12 +64,19 @@ else
     % the cell returned:
     for k = 1:(numel(s) - 1)
         gk = emptyDeltaFun;
-        gk.funPart = restrictedFuns{k};
+        
+        if ( ~isempty(restrictedFuns) )
+            gk.funPart = restrictedFuns{k};
+        else
+            gk.funPart = [];
+        end
+        
         if ( ~isempty(f.location) )
-            idx = (f.location >= s(k)) && (f.location <= s(k+1));
+            idx = (f.location >= s(k)) & (f.location <= s(k+1));
             gk.location = f.location(idx);
             gk.impulses = f.impulses(:, idx);
         end
+        
         if ( isempty(gk.location) )
             gk.location = [];
             gk.impulses = [];
