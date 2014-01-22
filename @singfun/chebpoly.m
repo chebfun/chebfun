@@ -54,7 +54,7 @@ end
 function w = computeWeights(exps, n)
 % Compute the weights for the Chebyshev-Jacobi moments.
 
-% TODO: De-duplicate this (also in SUM) by making a sattic method.
+% TODO: De-duplicate this (also in SUM) by making a static method.
 
 % Grab the exponents:
 a = exps(1);
@@ -106,6 +106,8 @@ end
 function y = fastToeplitzMult(a, b, x)
 % FASTTOEPLITZMULT(a,b,x) computes y = toeplitz(a,b)*x in O(n logn) operations.
 % FASTTOEPLITZMULT(a,x) computes y = toeplitz(a)*x in O(n logn)
+
+% TODO: Move this to @CHEBTECH?
 a(1) = 2*a(1);
 if ( nargin == 2 )
     x = b;
@@ -119,6 +121,9 @@ end
 function y = fastHankelMult(a, b, x)
 % FASTHANKELMULT(a,b,x) computes hankel(a,b) * x in O(nlogn) operations.
 % FASTHANKELMULT(a,x) computes hankel(a) * x in O(nlogn) operations.
+
+% TODO: Move this to @CHEBTECH?
+
 if ( nargin == 2 )
     n = length(b);
     x = b;
