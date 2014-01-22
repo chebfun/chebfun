@@ -50,6 +50,10 @@ classdef chebfun
 % It is not possible to mix PROP/VAL and PREF inputs in a single constructor
 % call.
 %
+% CHEBFUN(F, 'trunc', N) returns a smooth N-point CHEBFUN constructed by
+% computing the first N Chebyshev coefficients from their integral form, rather
+% than by interpolation at Chebyshev points.
+%
 % CHEBFUN(F, ...), where F is an NxM matrix or an array-valued function handle,
 % returns an "array-valued" CHEBFUN. For example,
 %   CHEBFUN(rand(14, 2))
@@ -57,13 +61,14 @@ classdef chebfun
 %   CHEBFUN(@(x) [sin(x), cos(x)])
 % Note that each column in an array-valued CHEBFUN object is discretized in the
 % same way (i.e., the same breakpoint locations and the same underlying
-% representation). Note the difference between 
+% representation). For more details see ">> help quasimatrix". Note the
+% difference between
 %   CHEBFUN(@(x) [sin(x), cos(x)], [-1, 0, 1])
 % and
 %   CHEBFUN({@(x) sin(x), @(x) cos(x)}, [-1, 0, 1]).
 % The former constructs an array-valued CHEBFUN with both columns defined on the
 % domain [-1, 0, 1]. The latter defines a single column CHEBFUN which represents
-% sin(x) in the interval [-1, 0) and cos(x) on the interval (0, 1].
+% sin(x) in the interval [-1, 0) and cos(x) on the interval (0, 1]. 
 %
 % See also CHEBPREF, CHEBPTS.
 
@@ -174,7 +179,14 @@ classdef chebfun
                 f = merge(f, index(:).', pref);
                 
             end
-
+            
+            % Deal with 'trunc' option:
+            idx = find(cellfun(@(v) strcmpi(v, 'trunc'), varargin), 1);
+            if ( ~isempty(idx) )
+                c = chebpoly(f, 0, varargin{idx+1});
+                f = chebfun(c.', f.domain([1, end]), 'coeffs');
+            end
+            
         end
     end
     
@@ -503,6 +515,9 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
             % Hack to support construction from coefficients.
             op = {{[], op}};
             args(1) = [];
+        elseif ( strcmpi(args{1}, 'trunc') )
+            % Pull out this preference, which is checked for later.
+            args(1:2) = [];            
         elseif ( isnumeric(args{1}) )
             % g = chebfun(@(x) f(x), N)
             pref.techPrefs.exactLength = args{1};

@@ -53,4 +53,9 @@ pass(9) = isequal(f.funs{1}.onefun.coeffs, [1 ; 2 ; 3]);
 f = chebfun('1');
 pass(10) = all(feval(f, linspace(-1, 1, 10)) == 1);
 
+% Test 'trunc', flag.
+f = chebfun(@abs, 'trunc', 10, 'splitting', 'on');
+c = get(f, 'coeffs');
+pass(11) = abs(-4/63/pi - c(2)) < get(f, 'epslevel');
+
 end
