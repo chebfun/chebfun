@@ -102,11 +102,26 @@ pass(5,4) = length(h4.funs) == 4;
 pass(5,5) = normest(f1 - h4) < tol;
 pass(5,6) = all(all(feval(h4, x3) >= 0));
 
+%% CHEBFUN Quasimatrix
+f1 = chebfun(@(x) feval(f, [x, x]) , -2:2, pref);
+f1 = quasi2cheb(f1);
+gHandle2 = @(x) cos(pi*(x-.5));
+g = chebfun(@(x) [gHandle1(x), gHandle2(x)] , -2:2, pref);
+g = quasi2cheb(g);
+g4 = abs(g);
+pass(6,1) = length(g4.funs) == 4;
+pass(6,2) = normest(f1 - g4) < tol;
+pass(6,3) = all(all(feval(g4, x3) >= 0));
+h4 = chebfun(@(x) abs([gHandle1(x), gHandle2(x)]), -2:2, pref);
+pass(6,4) = length(h4.funs) == 4;
+pass(6,5) = normest(f1 - h4) < tol;
+pass(6,6) = all(all(feval(h4, x3) >= 0));
+
 %% A more complicated function:
 f = chebfun(@(x) sin(1i*x).*(1i*x + exp(5i*x)));
-g = chebfun(@(x) abs(sin(1i*x).*(1i*x + exp(5i*x))),[-1 0 1]);
+g = chebfun(@(x) abs(sin(1i*x).*(1i*x + exp(5i*x))), [-1 0 1]);
 h = abs(f);
-pass(6,:) = normest(g - h) < 100*get(h, 'epslevel');
+pass(7,:) = normest(g - h) < 100*get(h, 'epslevel');
 
 %% Test on singular function:
 dom = [-2 7];
@@ -146,6 +161,6 @@ vals_g = feval(g, x);
 vals_check = feval(op, x);
 err = vals_g - abs(vals_check);
 pass(8,:) = ( norm(err-mean(err), inf) < ...
-    1e1*get(f,'epslevel')*norm(vals_check, inf) );
+    100*get(f,'epslevel')*norm(vals_check, inf) );
 
 end

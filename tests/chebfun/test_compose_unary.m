@@ -46,6 +46,10 @@ pass(7) = test_one_compose_unary(@(x) abs(sin(3*(x - 0.1))) - 0.5, ...
 pass(8) = test_one_compose_unary(@(x) [cos(2*(x + 0.2)), sin(2*(x - 0.1))], ...
     [-1 1], @exp, pref);
 
+% Test quasimatrix.
+pass(9) = test_one_compose_unary_quasi(@(x) [cos(2*(x + 0.2)), sin(2*(x - 0.1))], ...
+    [-1 1], @exp, pref);
+
 end
 
 % Test composition of a function with a unary operator.
@@ -59,6 +63,21 @@ function pass = test_one_compose_unary(f_exact, dom, op, pref)
     g_exact = @(x) op(f_exact(x));
     x = ((dom(end) - dom(1))/2)*xr + dom(1) + (dom(end) - dom(1))/2;
     err = norm(feval(g, x) - g_exact(x), inf);
-    pass = (err < 20*g.vscale*g.epslevel) && ...
-        isequal(g_exact(f.domain), feval(g, f.domain));
+    pass = (err < 20*vscale(g)*epslevel(g)) && ...
+        isequal(g_exact(domain(f)), feval(g, domain(f)));
+end
+
+% Test composition of a function with a unary operator.
+function pass = test_one_compose_unary_quasi(f_exact, dom, op, pref)
+    % Random points to use as test values.
+    seedRNG(7681);
+    xr = 2 * rand(100, 1) - 1;
+
+    f = quasimatrix(f_exact, dom, pref);
+    g = compose(f, op, [], pref);
+    g_exact = @(x) op(f_exact(x));
+    x = ((dom(end) - dom(1))/2)*xr + dom(1) + (dom(end) - dom(1))/2;
+    err = norm(feval(g, x) - g_exact(x), inf);
+    pass = (err < 20*vscale(g)*epslevel(g)) && ...
+        isequal(g_exact(domain(f)), feval(g, domain(f)));
 end

@@ -1,4 +1,4 @@
-function g = asec(f, pref)
+function F = asec(F, varargin)
 %ASEC   Inverse secant of a CHEBFUN.
 %   ASEC(F) computes the inverse secant of the CHEBFUN F.
 %
@@ -10,12 +10,7 @@ function g = asec(f, pref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org for Chebfun information.
 
-% Obtain preferences:
-if ( nargin == 1 )
-    pref = chebpref();
-end
-
 % Call the compose method:
-g = compose(f, @asec, pref);
+F = compose(F, @asec, varargin{:});
 
 end

@@ -1,4 +1,4 @@
-function g = bessely(nu, f, scale, pref)
+function F = bessely(nu, F, scale, pref)
 %BESSELY   Bessel function of second kind of a CHEBFUN.
 %   Y = BESSELY(NU, F) computes the Bessel function of the second kind Y_NU(F)
 %   of the nonzero CHEBFUN F. The order NU need not be an integer but must be
@@ -20,6 +20,18 @@ function g = bessely(nu, f, scale, pref)
 if ( nargin < 4 )
     pref = chebpref();
 end
+if ( nargin < 3 )
+    scale = 0;
+end
+
+% Loop over the columns:
+for k = 1:numel(F)
+    F(k) = columnBessely(nu, F(k), scale, pref);
+end
+
+end
+
+function g = columnBessely(nu, f, scale, pref)
 
 % Check for roots:
 r = roots(f, 'nojump', 'nozerofun');
@@ -31,7 +43,7 @@ end
 g = compose(f, @(x) bessely(nu, x), pref);
 
 % Scale (as described in help documentation):
-if ( (nargin >= 3) && (scale == 1) )
+if ( scale == 1 )
     scl = exp(-abs(imag(f)));
     g = scl.*g;
 end

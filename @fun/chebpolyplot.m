@@ -31,7 +31,6 @@ if ( isempty(f) )
     return
 end
 
-
 % Call CHEBPOLYPLOT() on the ONEFUN of F.
 h = chebpolyplot(f.onefun, varargin{:});
 
