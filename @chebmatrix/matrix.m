@@ -10,7 +10,7 @@ function M = matrix(A,varargin)
 %
 %   Example:
 %     d = [0 1];
-%     A = [ linop.eye(d), linop.diff(d) ];
+%     A = [ operatorBlock.eye(d), operatorBlock.diff(d) ];
 %     A.prefs.discretization = @colloc2;
 %     matrix(A,5)
 %     A.prefs.discretization = @ultraS;

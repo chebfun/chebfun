@@ -1,13 +1,33 @@
 function [u, disc] = linsolve(L, f, varargin)
+%LINSOLVE  Solve a linear differential/integral equation.
+%   Important: While you can construct a LINOP and apply this method, the 
+%   recommended procedure is to use CHEBOP.MLDIVIDE instead. 
+%   
+%   U = LINSOLVE(L,F), or U = L\F, solves the linear system defined by
+%   L*U=F for a linop L and chebmatrix F. The result is a chebmatrix.
+%
+%   Parameters controlling the method of solution are found and set using
+%   L.prefs. 
+%
+%   U = LINSOLVE(L,F,CDISC) uses the chebDiscretization CDIFF to solve the
+%   problem. This can be used, for example, to introduce new breakpoints
+%   that are not in the domain of either L or F. 
+%
+%   See also CHEBOPPREF, CHEBOP.MLDIVIDE.
+
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
+
+% Developer note: The second output is a discretization that contains the
+% stored LU factors that were used to find the final solution. If you pass
+% that discretization back into another call, that factorization is tried
+% first to save time. 
 
 pref = L.prefs;
 disc = [];
 for j = 1:nargin-2
     item = varargin{j};
     if isa(item,'chebpref')
-        %pref = chebpref(pref,item);
         error('Preferences must be set to the ''prefs'' property of the linop.')
     elseif isa(item,'chebDiscretization')
         disc = item;

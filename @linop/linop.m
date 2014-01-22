@@ -49,9 +49,6 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) linop 
     
     methods
         function L = linop(M)
-            if ( ~strcmp(class(M),'chebmatrix') )
-                error('Input must be a chebmatrix.')
-            end
             L = L@chebmatrix(M);
         end
         

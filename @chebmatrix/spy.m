@@ -1,7 +1,8 @@
 function spy(A)
 %SPY    Visualize a chebmatrix.
 %   If A is a chebmatrix, SPY(A) creates a picture of the nonzero pattern of the
-%   default discretization of A.
+%   default discretization of A. Block boundaries are indicated by gray
+%   lines. 
 %   
 %   SPY(A,DIM) uses the dimension vector DIM to create the picture.
 %
@@ -25,19 +26,28 @@ s =  sprintf('%i,',dim);    % list of sizes
 s = [ 'discretization = [', s(1:end-1), ']' ];
 xlabel(s)
 
-% Reverse engineer to see where the block boundaries are.
-[m,n] = blockSizes(A);
-m(isinf(m)) = sum(dim);   % use discretization sizes
-n(isinf(n)) = sum(dim);
-csrow =cumsum(m(:,1)');
-rowdiv = csrow(1:end-1) + 1/2;   % insert boundary after each block
-cscol =cumsum(n(1,:));
-coldiv = cscol(1:end-1) + 1/2; 
-
+% Override hold state.
 hs = ishold;
 hold on
-plot([rowdiv;rowdiv],[0;cscol(end)+1],'color',[.6 .6 .6])
-plot([0;csrow(end)+1],[coldiv;coldiv],'color',[.6 .6 .6])
+
+% Find all block sizes, substituting in the discretization size for Inf.
+[m,n] = blockSizes(A);
+m(isinf(m)) = sum(dim);  
+n(isinf(n)) = sum(dim);
+
+% Draw horizontal block boundaries.
+csrow = cumsum(m(:,1)');
+rowdiv = csrow(1:end-1) + 1/2;   % insert boundary after each block
+colmax = sum(n(1,:));
+plot([0;colmax+1],[rowdiv;rowdiv],'color',[.6 .6 .6])
+
+% Draw vertical block boundaries.
+cscol = cumsum(n(1,:));
+coldiv = cscol(1:end-1) + 1/2; 
+rowmax = sum(m(:,1));
+plot([coldiv;coldiv],[0;rowmax+1],'color',[.6 .6 .6])
+
+% Clean up hold state.
 if ( ~hs )
     hold off
 end

@@ -1,4 +1,4 @@
-classdef linBlock
+classdef (InferiorClasses = {?chebfun}) linBlock
 %LINBLOCK   Linear operator on a single function.
 %   This class is not intended to be called directly by the end user.
 %

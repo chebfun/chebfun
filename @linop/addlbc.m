@@ -1,5 +1,11 @@
 function L = addlbc(L, op, varargin)
-%ADDLBC  Append to linop constraints (left BC)
+%ADDLBC    Append a boundary condition at the left endpoint.
+%   L = ADDLBC(L,VAL) sets a constraint that the function at the left
+%   endpoint has value VAL.
+%
+%   L = ADDLBC(L,OP,VAL) imposes (OP*u) at the left endpoint equals VAL.
+%
+%   See also LINOP.ADDBC.
 
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
@@ -9,7 +15,7 @@ if ( size(L,1) > 1 )
 end
 
 d = L.domain;
-E = linop.feval(d(1), d);
+E = functionalBlock.feval(d(1), d);
 if isnumeric(op)
     % It's really just a boundary value.
     L = addbc(L, E, op);

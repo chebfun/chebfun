@@ -64,8 +64,8 @@ A = linBlock.eye(dom);
 D = linBlock.diff(dom,1);
 for m = 0:maxorder
     for k = 1:length(left)
-        El = linBlock.feval(left(k),dom,-1);
-        Er = linBlock.feval(right(k),dom,+1);
+        El = functionalBlock.feval(left(k),dom,-1);
+        Er = functionalBlock.feval(right(k),dom,+1);
         C{m+1,k} = (El-Er)*A;
     end
     A = D*A;
