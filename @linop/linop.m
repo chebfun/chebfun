@@ -41,7 +41,16 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) linop 
     
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
-         
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Developer notes
+%
+% The LINOP class is essentially a CHEBMATRIX with two additional properties:
+% linop.constraint and linop.continuity which allow imposing conditions on the
+% solution (e.g. boundary conditions) and continuity conditions. Both
+% linop.constraint and linop.continuity are of the type LINOPCONSTRAINT.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
     properties
         constraint = linopConstraint()
         continuity = linopConstraint()
