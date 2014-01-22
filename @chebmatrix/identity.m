@@ -25,7 +25,7 @@ for i = 1:n
     
     % Diagonal block maps variable type to itself--just two cases.
     if ( isFun(i) )
-        I.blocks{i,i} = linBlock.eye(d);
+        I.blocks{i,i} = operatorBlock.eye(d);
     else
         I.blocks{i,i} = 1;
     end
@@ -35,7 +35,7 @@ for i = 1:n
         if ( isFun(i) )
             if ( isFun(j) )
                 % fun -> fun
-                I.blocks{i,j} = linBlock.zeros(d);
+                I.blocks{i,j} = operatorBlock.zeros(d);
             else
                 % scalar -> fun
                 I.blocks{i,j} = chebfun(0,d);
@@ -43,7 +43,7 @@ for i = 1:n
         else
             if ( isFun(j) )
                 % fun -> scalar
-                I.blocks{i,j} = linBlock.zero(d);
+                I.blocks{i,j} = functionalBlock.zeros(d);
             else
                 % scalar -> scalar
                 I.blocks{i,j} = 0;

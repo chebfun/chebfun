@@ -1,9 +1,9 @@
 function pass = test_concatenation
 
-I = linop.eye([0 2]);
-D = linop.diff([0 1 2]);
+I = operatorBlock.eye([0 2]);
+D = operatorBlock.diff([0 1 2]);
 x = chebfun('x',[0 2]);
-X = linop.mult(x);
+X = operatorBlock.mult(x);
 
 %%
 A = I + 2*X;

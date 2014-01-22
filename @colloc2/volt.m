@@ -37,7 +37,7 @@ end
 
 % Make use of the cumsum operator. Note that while C(n) would be triangular
 % for low-order quadrature, for spectral methods it is not.
-C = linop.cumsum(disc.domain);
+C = chebmatrix( operatorBlock.cumsum(disc.domain) );
 
 % Matrix form. Each row of the result, when taken as an inner product with
 % function values, does the proper quadrature.

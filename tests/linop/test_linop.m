@@ -1,23 +1,20 @@
-function pass = test_basicLinop
+function pass = test_linop
 % TAD, 10 Jan 2014
 
 %% Building blocks
 dom = [-2 2];
-I = linop.eye(dom);
-D = linop.diff(dom);
-Z = linop.zeros(dom);
+I = operatorBlock.eye(dom);
+D = operatorBlock.diff(dom);
 x = chebfun('x', dom);
-u = sin(x.^2);
-U = linop.mult(u);
 
 %% Solve a linear system
 L = [ D, -I; I, D ];
 f = [x; 0*x ];
-E = linop.eval(dom);
+E = functionalBlock.eval(dom);
 El = E(dom(1));
 Er = E(dom(end));
 B1 = [El, -Er];
-B2 = [linop.sum(dom), El];
+B2 = [functionalBlock.sum(dom), El];
 L = addbc(L,B1,0);
 L = addbc(L,B2,1);
 

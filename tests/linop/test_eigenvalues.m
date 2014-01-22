@@ -6,8 +6,8 @@ if ( nargin == 0 )
 end
 
 dom = [-pi/2, pi/2];
-D2 = linop.diff(dom, 2);
-E = linop.eval(dom);
+D2 = operatorBlock.diff(dom, 2);
+E = functionalBlock.eval(dom);
 El = E(dom(1));
 Er = E(dom(end));
 L = linop(D2);

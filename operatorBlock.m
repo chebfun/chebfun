@@ -1,4 +1,4 @@
-classdef operatorBlock < linBlock
+classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
 %OPERATORBLOCK  Linear map of function to function.
 %   This class is not intended to be called directly by the end user.
 %
