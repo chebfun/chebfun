@@ -2,12 +2,10 @@ function pass = test_discretization
 
 %% Building blocks
 dom = [-2 2];
-I = linop.eye(dom);
-D = linop.diff(dom);
-Z = linop.zeros(dom);
-x = chebfun('x', dom);
+I = chebmatrix( operatorBlock.eye(dom) );
+D = chebmatrix( operatorBlock.diff(dom) );
 u = chebfun('x.^2', dom);
-U = linop.mult(u);   
+U = chebmatrix( operatorBlock.mult(u) );   
 
 %%
 Dexact = [ 
@@ -26,12 +24,9 @@ err(3) = norm( matrix(U,5) - diag(u(xx)) );
 
 %% Building blocks
 dom = [-2 1 1.5 2];
-I = linop.eye(dom);
-D = linop.diff(dom);
-Z = linop.zeros(dom);
-x = chebfun('x', dom);
+I = chebmatrix( operatorBlock.eye(dom) );
 u = chebfun('x.^2', dom);
-U = linop.mult(u);  
+U = chebmatrix( operatorBlock.mult(u) );  
 n = [5 5 5];
 
 %% Collocation discretizations

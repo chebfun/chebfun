@@ -171,10 +171,10 @@ classdef functionalBlock < linBlock
             S.diffOrder = -1;
         end
         
-        function Z = zero(domain)
-            % FUNCTIONALBLOCK.ZERO  Zero functional.
+        function Z = zeros(domain)
+            % FUNCTIONALBLOCK.ZEROS  Zero functional.
             %
-            % Z = FUNCTIONALBLOCK.ZERO(DOMAIN) returns the zero functional for
+            % Z = FUNCTIONALBLOCK.ZEROS(DOMAIN) returns the zero functional for
             % functions on the domain DOMAIN (i.e., the functional that maps all
             % functions to 0on the same domain
             pref = cheboppref;
