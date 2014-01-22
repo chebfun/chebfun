@@ -29,7 +29,7 @@ if isequal( varargin{1}, 'periodic' )
         warning('Clearing existing constraints to replace with periodicity.')
     end
     
-    L = deriveContinuity(L, true);  % modifies continuity property
+    L = deriveContinuity(L, L.domain, true);  % modifies continuity property
     
     % We're going to move the periodic continuity to the constraints, so that
     % we're not fooled into thinking that the interior breakpoints have been

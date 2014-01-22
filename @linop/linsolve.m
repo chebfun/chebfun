@@ -42,7 +42,7 @@ end
 dimVals = pref.dimensionValues;
 if isempty(disc)
     disc = pref.discretization(L);
-    disc = mergeDomains(disc,f.domain); 
+    disc.domain = chebfun.mergeDomains(disc.domain,f.domain); 
     disc.dimension = repmat(dimVals(1), 1, numel(disc.domain)-1);
     dimVals(1) = [];
 else
@@ -54,7 +54,8 @@ end
 
 % Derive automatic continuity conditions if none were given.
 if ( isempty(L.continuity) )
-     disc = deriveContinuity(disc);
+     L = deriveContinuity(L,disc.domain);
+     disc.source = L;
 end
 
 % Initialise happiness:

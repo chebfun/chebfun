@@ -1,10 +1,17 @@
-function disc = deriveContinuity(disc, makePeriodic)
+function L = deriveContinuity(L, domain, makePeriodic)
 % TODO: Documentation. What does this method do, where do we expect to call it
 % from, and why do we need it?
 
 % Find automatic smoothness constraints at domain breakpoints.
-L = disc.source;
-dom = disc.domain;
+
+if ( nargin < 3 )
+    makePeriodic = false;
+    if ( nargin < 2 )
+        domain = [];
+    end
+end
+
+dom = chebfun.mergeDomains(domain,L.domain);
 
 diffOrd = L.diffOrder;
 diffOrd = max(diffOrd, [], 1);
@@ -56,7 +63,7 @@ if ( max(diffOrd) > 0 ) && ( ~isempty(left) )
     end
 end
 
-disc.source.continuity = cont;
+L.continuity = cont;
 
 end
 

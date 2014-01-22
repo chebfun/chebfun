@@ -57,8 +57,10 @@ for k = 1:4
     
     %%
     % check continuity
+    Du = D*u;  Dv=D*v;
     err(k,7) = feval(u,1,'left') - feval(u,1,'right');
     err(k,8) = feval(v,1,'left') - feval(v,1,'right');
+    err(k,9) = feval(Du,1,'left') - feval(Du,1,'right');
     
     if ( k == 2 )
         f = [abs(x-1); 0*x; 1 ];
