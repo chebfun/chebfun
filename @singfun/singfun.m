@@ -208,7 +208,7 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
 
         % True if any element of a SINGFUN is a nonzero number, ignoring NaN.
         a = any(f, dim)
-        
+
         % Convert an array of ONEFUN objects into an array-valued ONEFUN.
         f = cell2mat(f)
         
@@ -233,7 +233,7 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         % Evaluate a SINGFUN.
         y = feval(f, x)
         
-        % Round a finite SINGFUN towards zero.
+        % SINGFUN does not support FIX.
         g = fix(f);
         
         % Flip columns of an array-valued SINGFUN object.
@@ -242,7 +242,7 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         % Flip/reverse a SINGFUN object.
         f = flipud(f)
         
-        % Round a SINGFUN towards minus infinity.
+        % SINGFUN does not support FLOOR.
         g = floor(f);
         
         % Get method:
