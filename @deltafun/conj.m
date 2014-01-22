@@ -10,5 +10,5 @@ function f = conj(f)
 
 % Conjugate the classical part:
 f.funPart = conj(f.funPart);
-f.impulses = conf(f.impulses);
+f.deltaMag = conf(f.deltaMag);
 end

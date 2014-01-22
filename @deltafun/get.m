@@ -4,7 +4,7 @@ function out = get(f, prop)
 %   the DELTAFUN object F. Valid entries for the string PROP are:
 %
 %       'LOCATION'    - Location of the delta functions 
-%       'IMPULSES'    - Magnitude of the delta functions
+%       'DELTAMAG'    - Magnitude of the delta functions
 %       'FUNPART'     - The smooth function contained in DELTAFUN.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 

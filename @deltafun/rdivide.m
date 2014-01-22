@@ -39,8 +39,8 @@ if ( isa(f, 'deltafun') && isa(g,'double') )
     s = f;
     % Divide the funPart with the double g:
     s.funPart = 1/g * f.funPart;
-    % Divide the impulses:
-    s.impulses = 1/g * s.impulses;
+    % Update the delta functions:
+    s.deltaMag = 1/g * s.deltaMag;
     if ( ~anyDelta(s) )
         s = s.funPart;
     end

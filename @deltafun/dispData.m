@@ -9,7 +9,7 @@ function data = dispData(f)
 
 if ( anyDelta(f) )    
     data{1}.name = 'deltas';
-    data{1}.data.impulses = f.impulses;
+    data{1}.data.deltaMag = f.deltaMag;
     data{1}.data.location = f.location;
 else
     data{1} = [];

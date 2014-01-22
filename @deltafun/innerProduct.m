@@ -31,7 +31,7 @@ end
 if( isa(f, 'deltafun') )
     F = f;    
 else
-    % g must be a deltafun
+    % If f is not a DELTAFUN, g must be:
     F = g;
     g = f;
 end
@@ -42,39 +42,40 @@ if ( ~anyDelta(F) )
     return;
 end
 
-% By this point, F is not smooth and g is something. If g is a chebfun, we don't
-% do anything, if g is a double, we upgrade it to a constant chebfun, if g is
-% something else, it is an error.
+% By this point, F is not a smooth DELTAFUN. If g is not a CLASSICFUN or 
+% a DELTAFUN, we upgrade it to a DELTAFUN with constant FUNPART, if g is
+% something else, it's an error.
 if( isnumeric(g) )
     if( numel(g) > 1 )
         error( 'DELTAFUN:innerProduct', 'if g is numeric, it should be a scalar' );
     end
-    g = chebfun(g, F.funPart.domain);
-elseif( ~isa(g, 'chebfun') )
+    g = fun.constructor(g, F.funPart.domain);
+elseif( ~isa(g, 'fun') )
     error( 'DELTAFUN:innerProduct', 'unknown data type' );
 end
 
 % Compute the smooth part of the inner product.
-%[TODO]: ctranspose is not possible, what to do?
-%smoothIP = F.funPart'*g;
-smoothIP = 0;
-% Computing the inner product
+if ( ~isempty(F.funPart) )
+    funIP = innerProduct(F.funPart, g);
+else
+    funIP = 0;
+end
 
 % Get location and magnitudes of delta functions:
 f = simplify(f);
 deltaLoc = f.location;
 numDeltas = length(deltaLoc);
-deltaMag = f.impulses;
+deltaMag = f.deltaMag;
 m = size(deltaMag, 1);
 
 % Compute the derivatives needed:
 maxDiffOrder = m-1;
 
 G = zeros(m, numDeltas);
-G(1,:) = g(deltaLoc);
+G(1,:) = feval(g, deltaLoc);
 for k = 1:maxDiffOrder
     g = diff(g);
-    G(k+1, :) = g(deltaLoc);
+    G(k+1, :) = feval(g, deltaLoc);
 end
 
 % The output is always a scalar double:
@@ -86,6 +87,6 @@ for k = 1:length(deltaLoc)
     deltaIP = deltaIP + ipk;
 end
 
-out = deltaIP + smoothIP;
+out = deltaIP + funIP;
 end
       

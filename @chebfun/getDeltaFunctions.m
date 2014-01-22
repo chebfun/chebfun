@@ -21,10 +21,10 @@ for j = 1:numFuns
     if ( isa(f.funs{j}, 'deltafun') )
         d = f.funs{j};
         % If there are deltafunctions in it:
-        if ( ~isempty(d.impulses) )
-            m = size(d.impulses, 1);
+        if ( ~isempty(d.deltaMag) )
+            m = size(d.deltaMag, 1);
             % Get the number of columns and rows:
-            numCols = numCols + size(d.impulses, 2);
+            numCols = numCols + size(d.deltaMag, 2);
             if ( m > maxRows )
                 maxRows = m;
             end                        
@@ -40,10 +40,10 @@ if ( maxRows > 0 )
         % If the current FUN is a deltafun:
         if ( isa(f.funs{j}, 'deltafun') )
             d = f.funs{j};
-            if ( ~isempty(d.impulses) )
+            if ( ~isempty(d.deltaMag) )
                 % Get the delta functions:
-                sz = size(d.impulses);
-                deltaMag(1:sz(1), k:k+sz(2)-1) = d.impulses;
+                sz = size(d.deltaMag);
+                deltaMag(1:sz(1), k:k+sz(2)-1) = d.deltaMag;
                 deltaLoc(1, k:k+sz(2)-1) = d.location;
                 k = k + sz(2);
             end
