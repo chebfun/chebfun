@@ -6,6 +6,7 @@ if (nargin < 1)
     pref = chebpref();
 end
 %%
+% Get the tolerance:
 dTol = pref.deltaPrefs.deltaTol;
 
 d = deltafun(1, 0);

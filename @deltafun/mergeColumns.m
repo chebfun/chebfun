@@ -7,7 +7,8 @@ function [A, v] = mergeColumns(A, v)
 % See also CLEANCOLUMNS, MERGEIMPULSES, CLEANROWS.
 
 % Get the tolerance:
-tol = deltafun.pref.deltafun.proximityTol;
+pref = chebpref();
+tol = pref.deltaPrefs.proximityTol;
 
 m = size(A, 2);
 if ( length(v) ~= m || size(v, 1) > 1 )

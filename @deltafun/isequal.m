@@ -6,9 +6,10 @@ function out = isequal(f, g)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-
-pTol = deltafun.pref.deltafun.proximityTol;
-dTol = deltafun.pref.deltafun.deltaTol;
+% Get the tolerances:
+pref = chebpref();
+proximityTol = pref.deltaPrefs.proximityTol;
+deltaTol = pref.deltaPrefs.deltaTol;
 
 % Assume ture be default:
 out = 1;
@@ -38,7 +39,7 @@ if ( any( size(f.location) ~= size(g.location) ) )
     return
 end
 
-if ( any(abs((f.location - g.location)) > pTol) )
+if ( any(abs((f.location - g.location)) > proximityTol) )
     out = 0;
     return
 end
@@ -48,7 +49,7 @@ if ( any(size(f.deltaMag) ~= size(g.deltaMag)) )
     return;
 end
 
-if ( any(abs(f.deltaMag - g.deltaMag) > dTol) )
+if ( any(abs(f.deltaMag - g.deltaMag) > deltaTol) )
     out = 0;
     return
 end

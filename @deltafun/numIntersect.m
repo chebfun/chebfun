@@ -3,7 +3,8 @@ function [x, idxV, idxW] = numIntersect( V, W, tol)
 %   The code does not always return unique elements.
 
 if( nargin < 3 || isempty(tol) )
-    tol = deltafun.pref.deltafun.proximityTol;
+    pref = chebpref();
+    tol = pref.deltaPrefs.proximityTol;
 end
     
 % Make sure V and W are vectors

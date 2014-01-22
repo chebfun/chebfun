@@ -19,5 +19,5 @@ pass(5) = iszero(d.funPart);
 pass(6) = all( d.funPart.domain == [4, 5] );
 pass(7) = isempty(d.deltaMag);
 pass(8) = isempty(d.location);
-    
+
 end

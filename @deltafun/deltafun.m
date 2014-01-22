@@ -299,8 +299,6 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         
         % Merge impulse matrix
         [D, w] = mergeImpulses(A, v, B, u);
-        % Retrieve and modify preferences for this class.
-        prefs = pref(varargin)
         
         % Costruct a zero DELTAFUN
         s = zeroDeltaFun(domain)

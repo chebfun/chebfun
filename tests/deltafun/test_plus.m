@@ -7,8 +7,9 @@ if (nargin < 1)
 end
 %%
 a = -4; b = 4;
-pTol = deltafun.pref.deltafun.proximityTol;
-dTol = deltafun.pref.deltafun.deltaTol;
+% Get the tolerances:
+proximityTol = pref.deltaPrefs.proximityTol;
+deltaTol = pref.deltaPrefs.deltaTol;
 
 f1 = fun.constructor(@(x) sin(x), [a, b]);
 d1 = .9*(a + (b-a)*rand(3,3));
