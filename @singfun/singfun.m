@@ -356,9 +356,15 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         % Roots of a SINGFUN in the interval [-1,1].
         out = roots(f, varargin)
         
+        % Convert a SINGFUN to a SMOOTHFUN.
+        f = singFun2SmoothFun(f) 
+        
         % Size of a SINGFUN.
         [siz1, siz2] = size(f, varargin)
         
+        % Convert a SMOOTHFUN to a SINGFUN.
+        f = smoothFun2SingFun(f) 
+
         % Definite integral of a SINGFUN on the interval [-1,1].
         out = sum(f, dim)
         
@@ -395,9 +401,6 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         
         % Retrieve and modify preferences for this class.
         prefs = pref(varargin)
-        
-        % Convert SMOOTHFUN objects to SINGFUN objects:
-        f = smoothFun2SingFun(f);
       
         % Construct a zero SINGFUN
         s = zeroSingFun()
