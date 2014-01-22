@@ -297,7 +297,6 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         [x, idxV, idxW] = numIntersect( V, W, tol)
         
         % Constructor shortcut
-        %[TODO]: revisit this
         f = make(varargin)
         % Merge columns of a matrix based on duplicate values in v.
         [A, v] = mergeColumns(A, v)
@@ -313,8 +312,3 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
     end
     
 end
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Functions implemented in this file
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
