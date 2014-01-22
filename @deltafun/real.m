@@ -10,7 +10,4 @@ function f = real(f)
 % Compute the real part of the classical part of F.
 f.funPart = real(f.funPart);
 
-% If F is imaginary, then remove singularities from the real part:
-f.isReal = true;
-
 end

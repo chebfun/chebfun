@@ -4,11 +4,11 @@ function s = rdivide(f, g)
 %   defined if G does not have any delta functions and G has no roots.
 %
 % See also LDIVIDE, TIMES.
-
+%
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-%%
+
 % Case of empty arguments.
 if ( isempty(f) || isempty(g) )
     % Return an empty DELTAFUN:
