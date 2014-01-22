@@ -24,7 +24,7 @@ if ( max(d) > 0 ) && ( ~isempty(left) )
     
     % Each function variable gets a zero functional block; each scalar variable
     % gets a scalar zero.
-    z = linBlock.zero(dom);
+    z = functionalBlock.zeros(dom);
     Z = {};
     for var = 1:length(d)
         if ( isnan(d(var)) || d(var) == 0 ) % scalar
@@ -60,8 +60,8 @@ function C = domainContinuity(dom,maxorder,left,right)
 % the breakpoints of the domain of L.
 %   C{m,k} has the (m-1)th-order derivative at breakpoint k
 
-A = linBlock.eye(dom);
-D = linBlock.diff(dom,1);
+A = operatorBlock.eye(dom);
+D = operatorBlock.diff(dom,1);
 for m = 0:maxorder
     for k = 1:length(left)
         El = functionalBlock.feval(left(k),dom,-1);

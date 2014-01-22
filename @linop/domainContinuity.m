@@ -13,8 +13,8 @@ else
     right = d(1);
 end
 
-A = linBlock.eye(d);
-D = linBlock.diff(d,1);
+A = operatorBlock.eye(d);
+D = operatorBlock.diff(d,1);
 for m = 0:maxorder
     for k = 1:length(left)
         El = linBlock.feval(left(k),d,'-');
