@@ -83,7 +83,7 @@ for i = 1:length(t)
         E = expm(disc, t(i));
         
         % Discretize the initial condition.
-        v0 = cellfun(@(x) blockMatrix(disc,x), u0.blocks, 'uniform', false);
+        v0 = cellfun(@(x) createBlocks(disc,x), u0.blocks, 'uniform', false);
         v0 = cell2mat(v0);
         
         % Propagate.

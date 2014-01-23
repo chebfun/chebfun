@@ -17,16 +17,16 @@ end
 
 L = dsc.source;
 if isa(L,'chebmatrix')
-    A = cellfun(@(x) blockMatrix(dsc,x),L.blocks,'uniform',false);
+    A = cellfun(@(x) createBlocks(dsc,x),L.blocks,'uniform',false);
     if isa(L,'linop')
-        [out{1:4}] = useConstraints(dsc,A);
+        [out{1:4}] = applyConstraints(dsc,A);
     else
         out{1} = cell2mat(A);
     end
     m = max(1,nargout);
     varargout(1:m) = out(1:m);
 else
-    [varargout{1:nargout}] = blockMatrix(dsc);
+    [varargout{1:nargout}] = createBlocks(dsc);
 end
 
 end

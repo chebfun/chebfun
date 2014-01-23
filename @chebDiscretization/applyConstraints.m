@@ -1,4 +1,6 @@
-function [M, P, B, A] = useConstraints(disc,blocks)
+function [M, P, B, A] = applyConstraints(disc,blocks)
+
+
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 

@@ -2,7 +2,7 @@ function b = rhs(disc,f)
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
-row = cellfun(@(x) blockMatrix(disc,x),f.blocks,'uniform',false);
+row = cellfun(@(x) createBlocks(disc,x),f.blocks,'uniform',false);
 
 row = disc.reproject(row);
 

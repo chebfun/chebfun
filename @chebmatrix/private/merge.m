@@ -4,6 +4,7 @@ function d = merge(varargin)
 %   If numeric scalar, it's ignored.
 %   If a numeric vector, it's taken as a domain.
 %   If a chebfun or linBlock, its domain is extracted.
+
 d = [];
 for i = 1:nargin
     item = varargin{i};

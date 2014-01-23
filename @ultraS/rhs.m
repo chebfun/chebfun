@@ -5,7 +5,7 @@ function b = rhs(disc, f)
 fdisc = ultraS(f,disc.dimension,disc.domain);
 fdisc.outputSpace = disc.outputSpace;
 
-row = cellfun(@(x) blockDiscretize(fdisc, x), f.blocks, 'uniform', false );
+row = cellfun(@(x) makeBlocks(fdisc, x), f.blocks, 'uniform', false );
 
 row = disc.reproject(row);
 b = cell2mat(row);
