@@ -40,7 +40,7 @@ function [p, q, r, s] = cf(f, m, n, M)
 %   References:
 %
 %   [1] M. H. Gutknecht and L. N. Trefethen, "Real polynomial Chebyshev
-%       approximation by the Caratheodory-Fejer method", SIAM J. Numer. Anal. 19 
+%       approximation by the Caratheodory-Fejer method", SIAM J. Numer. Anal. 19
 %       (1982), 358-371.
 %
 %   [2] L. N. Trefethen and M. H. Gutknecht, "The Caratheodory-Fejer method fpr
@@ -51,7 +51,48 @@ function [p, q, r, s] = cf(f, m, n, M)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TODO:  Handle quasimatrices/array-valued CHEBFUNs.
+% Do polynomial approximation if no denominator degree supplied.
+if ( nargin < 3 )
+    n = 0;
+end
+
+% Use full series expansion of F by default.
+if ( nargin < 4 )
+    M = length(f) - 1;
+end
+
+numCols = numColumns(f);
+if ( numCols > 1 )
+    if ( numel(f) == 1 )
+        % Convert array-valued CHEBFUNs to quasimatrices first.
+        f = cheb2quasi(f);
+        [p, q, r, s] = cf(f, m, n, M);
+    else
+        % Deal with quasimatrices.
+        r = cell(1, numCols);
+        s = zeros(1, numCols);
+        for k = 1:numCols
+            [pk, qk, rk, sk] = cfOneColumn(f(:, k), m, n, M);
+            p(k) = pk;
+            q(k) = qk;
+            r{k} = rk;
+            s(k) = sk;
+        end
+
+        if ( f(1).isTransposed )
+            p = p.';
+            q = q.';
+            r = r.';
+            s = s.';
+        end
+    end
+else
+    [p, q, r, s] = cfOneColumn(f, m, n, M);
+end
+
+end
+
+function [p, q, r, s] = cfOneColumn(f, m, n, M)
 
 % Check the inputs.
 if ( any(isinf(domain(f))) )
@@ -69,19 +110,9 @@ if ( (numel(f.funs) > 1) && (nargin < 4) )
         'For CHEBFUNs with multiple FUNs, CF must be called with 4 arguments.');
 end
 
-% Do polynomial approximation if no denominator degree supplied.
-if ( nargin < 3 )
-    n = 0;
-end
-
 % Form global polynomial approximation if f is only piecewise smooth.
 if ( numel(f.funs) > 1 )
     f = chebfun(@(x) feval(f, x), f.domain([1, end]), M + 1);
-end
-
-% Use full series expansion of F by default.
-if ( nargin < 4 )
-    M = length(f) - 1;
 end
 
 % Trivial case: approximation length exceeds that of the expansion length.
