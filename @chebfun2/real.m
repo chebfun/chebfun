@@ -1,4 +1,4 @@
-function f = real(f)
+function f = real( f )
 %REAL  real part of a chebfun2.
 %
 % See also IMAG.

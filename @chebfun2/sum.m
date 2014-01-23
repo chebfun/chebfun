@@ -36,7 +36,7 @@ if ( dim == 1 )
     f = rows * ( sum(cols) * diag( d ) ).';
     if ( isa(f, 'chebfun') ) 
         f = f.'; 
-        f = simplify(f); 
+        f = simplify( f ); 
     else
         % f = double 
         f = chebfun(f, dom(1:2)).'; 
@@ -44,10 +44,10 @@ if ( dim == 1 )
 elseif ( dim == 2 )
     f = cols * ( diag( d ) * sum( rows ).' );
     if  ( isa(f, 'chebfun') ) 
-        f = simplify(f);
+        f = simplify( f );
     else
         % f = double 
-        f = chebfun(f, dom(3:4)); 
+        f = chebfun( f, dom(3:4) ); 
     end
 else 
     error('CHEBFUN2:SUM:unknown', ...

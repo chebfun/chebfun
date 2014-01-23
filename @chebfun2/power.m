@@ -17,19 +17,20 @@ if ( isa (f, 'double') )                % double.^chebfun2
     op = @(x,y) f .^ ( feval( n, x, y ) );
     f = chebfun2( op, n.domain );
     
-elseif ( isa( n,'double' ) )            % chebfun2.^double
+elseif ( isa( n, 'double' ) )            % chebfun2.^double
 
-   if ( abs(round(n) - n) > eps )
+   if ( abs(round( n ) - n) > eps )
        % positive/negative test.
        [bol, wzero] = chebfun2.singleSignTest(f);
        if ( bol == 0 || wzero == 1 )
-           error('CHEBFUN2:POWER:FRACTIONAL','A change of sign/zero has been detected, unable to represent the result.');
+           error('CHEBFUN2:POWER:FRACTIONAL',...
+               'A change of sign/zero has been detected, unable to represent the result.');
        end
    end
     op = @(x,y) feval( f, x, y ) .^ n;
     f = chebfun2( op, f.domain );
 else                                  % chebfun2.^chebfun2
-    if (~all( f.domain == n.domain )) % check they're on the same domain.
+    if ( ~chebfun2.domainCheck(f, n) ) % check they're on the same domain.
         error('CHEBFUN2:power:domain','Domains must be the same');
     end
     

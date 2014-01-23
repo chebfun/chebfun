@@ -1,4 +1,4 @@
-function s = mean(f,varargin)
+function s = mean(f, varargin)
 %MEAN   Average or mean value of a chebfun2. 
 % 
 %  MEAN(F) takes the mean in the y-direction (default), i.e., 

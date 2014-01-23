@@ -14,10 +14,10 @@ end
 [bol, wzero] = chebfun2.singleSignTest( f ); 
 
 if ( bol == 0 ) || ( wzero == 1 )
-    error('CHEBFUN2:LOG','A change of sign/zero has been detected, unable to represent the result.'); 
+    error('CHEBFUN2:LOG', ...
+        'A change of sign/zero has been detected, unable to represent the result.'); 
 end
 
-% Still call the constructor in case we missed a change of sign. 
 op = @(x,y) log( feval(f, x, y) );  % Resample.
 f = chebfun2( op, f.domain );       % Call constructor. 
 

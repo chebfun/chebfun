@@ -24,7 +24,7 @@ end
 % Mixed second partial derivatives:
 fxx = diff(f, 2, 2); 
 fyy = diff(f, 2, 1); 
-fxy = diff(f,[1 1]);
+fxy = diff(f, [1 1]);
     
 
 if ( nargin == 3 )  % Standard Hessian
@@ -52,7 +52,7 @@ elseif ( nargin == 4 )  % Bordered Hessian
     gy = feval(gy, x, y);
     
     % determinant of bordered hessian.
-    H = -gx.*(gx.*fyy-gy.*fxy) + gy.*(gx.*fxy-gy.*fxx);
+    H = -gx.*(gx.*fyy - gy.*fxy) + gy.*(gx.*fxy - gy.*fxx);
 else
     error('CHEBFUN2:DISCRIMINANT','Invalid input arguments.');
 end

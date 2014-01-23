@@ -1,4 +1,4 @@
-function v = mean2(f)
+function v = mean2( f )
 %MEAN2 mean of a chebfun2
 %
 % V = MEAN2(F) returns the mean of a chebfun2: 

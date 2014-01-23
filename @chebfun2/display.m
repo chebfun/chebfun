@@ -1,5 +1,5 @@
 function display( F )
-%DISPLAY   Display a chebfun2
+%DISPLAY   Display a chebfun2 to the command line.
 % 
 % DISPLAY(F) outputs important information about the chebfun2 F to the
 % command window, including its domain of definition, length (number of 
@@ -22,7 +22,7 @@ else
 end
 
 % compact version
-if ( isempty(F) )
+if ( isempty( F ) )
     fprintf('    empty chebfun2\n\n')
     return
 end

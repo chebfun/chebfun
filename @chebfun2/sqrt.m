@@ -13,9 +13,9 @@ if ( isempty( f ) )
 end
 
 %  positive/negative test.
-[bol, wzero] = chebfun2.singleSignTest(f);
+[bol, wzero] = chebfun2.singleSignTest( f );
 
-if bol == 0 || wzero == 1
+if ( ( bol == 0 ) || ( wzero == 1 ) )
     error('CHEBFUN2:SQRT','A change of sign/zero has been detected, unable to represent the result.');
 end
 

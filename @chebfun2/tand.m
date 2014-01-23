@@ -5,7 +5,7 @@ function f = tand( f )
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % Empty check: 
-if ( isempty(f) )    
+if ( isempty( f ) )    
     return
 end
 

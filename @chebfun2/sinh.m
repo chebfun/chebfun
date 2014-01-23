@@ -1,4 +1,4 @@
-function f = sinh(f)
+function f = sinh( f )
 %SINH Hyperbolic sine of a chebfun2.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
