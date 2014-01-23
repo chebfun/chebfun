@@ -63,16 +63,16 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) linop 
     end
     
     methods ( Static )
-        function [Z,I,D,C] = primitiveOperators(domain)
-%LINOP.PRIMITIVEOPERATORS Frequently used operator blocks.
-%   [Z,I,D,C] = LINOP.PRIMITIVEOPERATORS(DOMAIN) returns a zero, identity,
-%   differentiation, and indefinite integration operator, respecitvely, on
-%   the given domain.
-%
-%   Note that the 'linop' is just a convenient name. The outputs are *not*
-%   linops.
-%
-%   See also OPERATORBLOCK.
+        function [Z, I, D, C] = primitiveOperators(domain)
+        %LINOP.PRIMITIVEOPERATORS Frequently used operator blocks.
+        %   [Z, I, D, C] = LINOP.PRIMITIVEOPERATORS(DOMAIN) returns a zero,
+        %   identity, differentiation, and indefinite integration operator,
+        %   respecitvely, on the given domain.
+        %
+        %   Note that the 'linop' is just a convenient name. The outputs are
+        %   *not* linops.
+        %
+        %   See also OPERATORBLOCK.
             
             Z = operatorBlock.zeros(domain);
             I = operatorBlock.eye(domain);
@@ -80,19 +80,19 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) linop 
             C = operatorBlock.cumsum(domain,1);
         end
 
-        function [z,E,s] = primitiveFunctionals(domain)
-%LINOP.PRIMITIVEFUNCTIONALS Frequently used functional blocks.
-%   [Z,E,S] = LINOP.PRIMITIVEFUNCTIONALS(DOMAIN) returns frequently used
-%   functional blocks on the given domain.
-%
-%   Z is the zero functional. E(X) is an evaluation functional at the point
-%   X. E(X,DIR) adds a direction (+1/-1) to the evaluation. S is a definite
-%   integration functional.
-%
-%   Note that the 'linop' is just a convenient name. The outputs are *not*
-%   linops.
-%
-%   See also OPERATORBLOCK.
+        function [z, E, s] = primitiveFunctionals(domain)
+        %LINOP.PRIMITIVEFUNCTIONALS Frequently used functional blocks.
+        %   [Z, E, S] = LINOP.PRIMITIVEFUNCTIONALS(DOMAIN) returns frequently
+        %   used functional blocks on the given domain.
+        %
+        %   Z is the zero functional. E(X) is an evaluation functional at the
+        %   point X. E(X, DIR) adds a direction (+1/-1) to the evaluation. S is
+        %   a definite integration functional.
+        %
+        %   Note that the 'linop' is just a convenient name. The outputs are
+        %   *not* linops.
+        %
+        %   See also FUNCTIONALBLOCK.
             
             z = functionalBlock.zero(domain);
             E = functionalBlock.eval(domain);

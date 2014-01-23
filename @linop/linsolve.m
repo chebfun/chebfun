@@ -32,7 +32,7 @@ disc = [];
 % Parse input
 for j = 1:nargin-2
     item = varargin{j};
-    if isa(item,'chebpref')
+    if isa(item, 'chebpref')
         error('Preferences must be set to the ''prefs'' property of the linop.')
     elseif isa(item,'chebDiscretization')
         disc = item;
@@ -63,7 +63,7 @@ end
 
 % Derive automatic continuity conditions if none were given.
 if ( isempty(L.continuity) )
-     L = deriveContinuity(L,disc.domain);
+     L = deriveContinuity(L, disc.domain);
      disc.source = L;
 end
 

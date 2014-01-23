@@ -38,19 +38,19 @@ classdef linopConstraint
         end
         
         function n = length(C)
-%LENGTH    Number of constraints in the object.            
+        %LENGTH    Number of constraints in the object.            
             n = size(C.functional, 1);
         end
         
         function e = isempty(C)
-%ISEMPTY   True if no constraints in the object.            
+        %ISEMPTY   True if no constraints in the object.            
             e = isempty(C.functional);
         end
         
         function C = append(C, func, value)
-%APPEND    Insert an additional constraint.
-%   C = APPEND(C,FUNC,VAL) appends the constraint FUNC*u=VAL to the
-%   current list. If VAL is omitted, it defaults to zero.
+        %APPEND    Insert an additional constraint.
+        %   C = APPEND(C, FUNC, VAL) appends the constraint FUNC*u=VAL to the
+        %   current list. If VAL is omitted, it defaults to zero.
             n = length(C);
             
             % Check if func is of an allowed class.
