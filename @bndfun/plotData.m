@@ -24,6 +24,7 @@ if ( nargin == 1 || isempty(g) )
     data.xLine = f.mapping.for(data.xLine);
     data.xPoints = f.mapping.for(data.xPoints);
    
+    % Grab the boundary values:
     lval = get(f, 'lval');
     rval = get(f, 'rval');
     

@@ -1,5 +1,5 @@
 function data = plotData(f, g)
-%PLOTDATA    Useful data values for plotting a UNBNDFUN object.
+%PLOTDATA    Useful data values for plotting an UNBNDFUN object.
 %   DATA = PLOTDATA(F) returns a cell array of data values that can be used for
 %   plotting F. In particular, DATA is a 4x1 cell array of the form {xLine,
 %   fLine, xPoints, fPoints}, where xLine-fLine are a data pair for plotting the
@@ -51,6 +51,30 @@ if ( nargin == 1 || isempty(g) )
         data.xPoints(data.xPoints > dom(1) + 2*window) = [];
         
     end
+    
+    % Grab the boundary values:
+    lval = get(f, 'lval');
+    rval = get(f, 'rval');
+    
+    % Consider the ylim:
+    data.yLim = [min(min([data.yLine; lval; rval])) ...
+        max(max([data.yLine; lval; rval]))];
+    
+    % Consider the jump values for an infinite FUN:
+    data.xJumps = [f.domain(1); NaN; f.domain(2)];
+    
+    ind = isinf(lval);
+    if ( any( ind ) )
+        lval(ind) = data.yLine(1, ind);
+    end
+    
+    ind = isinf(rval);
+    if ( ind )
+        rval = data.yLine(end, ind);
+    end
+    
+    myNaN = nan(size(lval));
+    data.yJumps = [lval; myNaN; rval];
     
 end
 
