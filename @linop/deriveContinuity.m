@@ -1,14 +1,24 @@
-function L = deriveContinuity(L, makePeriodic)
+function L = deriveContinuity(L, domain, makePeriodic)
 % TODO: Documentation. What does this method do, where do we expect to call it
 % from, and why do we need it?
 
 % Find automatic smoothness constraints at domain breakpoints.
+
+if ( nargin < 3 )
+    makePeriodic = false;
+    if ( nargin < 2 )
+        domain = [];
+    end
+end
+
+dom = chebfun.mergeDomains(domain,L.domain);
+
 diffOrd = L.diffOrder;
 diffOrd = max(diffOrd, [], 1);
-dom = L.domain;
 
 cont = L.continuity;
 
+% TODO: Reconsider how periodicity is made to happen.
 if ( ( nargin < 2 ) || ~makePeriodic )
     % Use the interior breakpoints.
     left = dom(2:end-1);
@@ -26,7 +36,7 @@ if ( max(diffOrd) > 0 ) && ( ~isempty(left) )
     
     % Each function variable gets a zero functional block; each scalar variable
     % gets a scalar zero.
-    z = functionalBlock.zeros(dom);
+    z = functionalBlock.zero(dom);
     % TODO: Could we preallocate Z?
     Z = {};
     for var = 1:length(diffOrd)

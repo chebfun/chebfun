@@ -1,5 +1,5 @@
 function display(L)
-%DISPLAY    Pretty-print a linop.
+%DISPLAY    Pretty-print a linop summary.
 
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
@@ -27,7 +27,7 @@ if loose
    fprintf('\n'); 
 end
 
-nc = size(L.constraint.operator,1);
+nc = size(L.constraint.functional,1);
 if ( nc == 1 )
     fprintf('\n   with 1 constraint/boundary condition\n')
 elseif ( nc > 0 )

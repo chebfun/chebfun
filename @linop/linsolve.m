@@ -50,20 +50,21 @@ dimVals = pref.dimensionValues;
 if isempty(disc)
     disc = pref.discretization(L);
     % Update the domain if new breakpoints are needed
-    disc = mergeDomains(disc,f.domain); 
+    disc.domain = chebfun.mergeDomains(disc.domain, f.domain); 
     % Update the dimensions to work with the correct number of breakpoints
-    disc.dimension = repmat(dimVals(1), 1, numel(disc.domain)-1);
+    disc.dimension = repmat(dimVals(1), 1, numel(disc.domain) - 1);
     dimVals(1) = [];
 else
-    % Only start use dimension values greater than or equal to the current
-    % maximum available in the discretisation passed in.
+    % We have to assume that the given L matches the discretization. Caller
+    % beware!
     dim1 = max(disc.dimension);
     dimVals = [ dim1, dimVals(dimVals > dim1) ];
 end
 
 % Derive automatic continuity conditions if none were given.
 if ( isempty(L.continuity) )
-     disc.source = deriveContinuity(L);
+     L = deriveContinuity(L,disc.domain);
+     disc.source = L;
 end
 
 % Initialise happiness:

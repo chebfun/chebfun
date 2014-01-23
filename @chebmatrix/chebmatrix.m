@@ -51,12 +51,12 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
 %  See http://www.chebfun.org for Chebfun information.
     
     properties
-        blocks = {};
-        prefs = cheboppref;        
+        blocks = {}
+        prefs = cheboppref 
+        domain
     end
     
     properties (Dependent)
-        domain
         diffOrder
     end
     
@@ -68,32 +68,20 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
                 return
             elseif isa(data,'chebmatrix')
                 A.blocks = data.blocks;
+                A.domain = data.domain;
             elseif isa(data,'chebfun') || isa(data,'linBlock')
                 A.blocks = {data};
+                A.domain = data.domain;
             elseif iscell(data)
                 A.blocks = data;
+                A.domain = merge(data{:});
             end
+        end
             
-            % Run this to check domain compatability
-            A.domain;
+        function A = set.domain(A,d)
+            % We don't allow removing breakpoints, or changing endpoints.
+            A.domain = merge(d,A.domain);
         end
-        
-        function d = get.domain(L)
-            if ( isempty(L) )
-                d = [];
-            else
-                isnum = cellfun(@isnumeric,L.blocks);
-                blocks = L.blocks(~isnum);
-                d = cellfun(@(x) x.domain,blocks,'uniform',false);
-                d = chebfun.mergeDomains(d{:});
-            end
-        end
-        
-        function d = getDomain(L)
-            % DOMAIN(L) returns the domain on which functions are defined for
-            % the chebmatrix L.
-            d = L.domain;
-        end       
         
         function d = get.diffOrder(L)
             d = getDiffOrder(L);
@@ -117,5 +105,5 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         end
         
     end
-              
+    
 end

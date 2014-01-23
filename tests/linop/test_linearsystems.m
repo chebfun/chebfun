@@ -16,11 +16,11 @@ El = E(dom(1));
 Er = E(dom(end));
 
 %% Solve a linear system 
-L = [ D^2, -I, sin(x); C, D, chebfun(0,dom); functionalBlock.zeros(dom), El, 4 ] ;
+L = [ D^2, -I, sin(x); C, D, chebfun(0,dom); functionalBlock.zero(dom), El, 4 ] ;
 f = [(x-1); chebfun(0,dom); 1 ];
 B1 = [El, -Er, 0];
 B2 = [functionalBlock.sum(dom), El, 0];
-B3 = [Er*D, functionalBlock.zeros(dom), 0];
+B3 = [Er*D, functionalBlock.zero(dom), 0];
 B4 = [Er,-El,2];
 L = addbc(L,B1,0);
 L = addbc(L,B2,1);
@@ -54,6 +54,13 @@ for k = 1:4
     err(k,4) = abs( u(-2)-v(2) );
     err(k,5) = abs( sum(u)+v(-2) - 1);
     err(k,6) = abs( feval(diff(u),dom(end)) );
+    
+    %%
+    % check continuity
+    Du = D*u;  Dv=D*v;
+    err(k,7) = feval(u,1,'left') - feval(u,1,'right');
+    err(k,8) = feval(v,1,'left') - feval(v,1,'right');
+    err(k,9) = feval(Du,1,'left') - feval(Du,1,'right');
     
     if ( k == 2 )
         f = [abs(x-1); 0*x; 1 ];

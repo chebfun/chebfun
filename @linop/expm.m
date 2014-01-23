@@ -39,7 +39,7 @@ if ( isa(discType, 'function_handle') )
     disc = discType(L);  
     
     % Merge domains of the operator and the initial condition.
-    disc = mergeDomains(disc, u0.domain); 
+    disc.domain = chebfun.mergeDomains(disc.domain, u0.domain); 
     
     % Set the allowed discretisation lengths: (TODO: A preference?)
     dimVals = L.prefs.dimensionValues;
@@ -59,7 +59,7 @@ end
 
 if ( isempty(L.continuity) )
      % Apply continuity conditions:
-     disc.source = deriveContinuity(L);
+     disc.source = deriveContinuity(disc.source,disc.domain);
 end
 
 % Initialise happiness:

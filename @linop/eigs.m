@@ -110,7 +110,7 @@ disc.domain = dom;
 
 if ( isempty(L.continuity) )
      % Apply continuity conditions:
-     disc.source = deriveContinuity(L);
+     disc.source = deriveContinuity(disc.source);
 end
 
 % TODO: What's going on here?
