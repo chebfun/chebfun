@@ -53,12 +53,15 @@ function [p, q, r, s] = cf(f, m, n, M)
 
 % TODO:  Handle quasimatrices/array-valued CHEBFUNs.
 
-% TODO:  Raise error on CHEBFUNs with singular FUNs.
-
 % Check the inputs.
 if ( any(isinf(domain(f))) )
     error('CHEBFUN:CHEBFUN:cf:unboundedDomain', ...
         'CF does not work for CHEBFUNs with unbounded domains.');
+end
+
+if ( issing(f) )
+    error('CHEBFUN:cf:singularFunction', ...
+        'CF does not support functions with singularities.');
 end
 
 if ( (numel(f.funs) > 1) && (nargin < 4) )
