@@ -2,9 +2,8 @@ function b = rhs(disc,f)
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
-row = cellfun(@(x) createBlocks(disc,x),f.blocks,'uniform',false);
-
-row = disc.reproject(row);
+row = instantiate(disc,f.blocks);
+row = reduce(disc,row);
 
 b = cell2mat(row);
 L = disc.source;
@@ -14,4 +13,5 @@ end
 if ~isempty(L.continuity)
     b = [ L.continuity.values; b ];
 end
+
 end

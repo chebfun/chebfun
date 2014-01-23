@@ -31,16 +31,20 @@ function F = fred(disc,kernel,onevar)
 %
 % At the prompt:
 %
-% d = domain(0,2);
-% x = chebfun('x',d);
-% F = fred(@kernel,d);  % slow way
-% tic, u = (1-diag(x)*F) \ sin(exp(3*x)); toc
-%   %(Elapsed time is 0.265166 seconds.)
-% F = fred(@kernel,d,'onevar');  % fast way
-% tic, u = (1-diag(x)*F) \ sin(exp(3*x)); toc
-%   %(Elapsed time is 0.205714 seconds.)
+%   d = [0 2];
+%   x = chebfun('x',d);
+%   X = operatorBlock.mult(x);
+%   I = operatorBlock.eye(d);
+%   F = operatorBlock.fred(d,@kernel);  % slow way
+%   A = linop( I - X*F );
+%   tic, u = A \ sin(exp(3.5*x)); toc
+%      %  (Elapsed time is 0.622 seconds.)
+%   F = operatorBlock.fred(d,@kernel,'onevar'); % fast way
+%   A = linop( I - X*F );
+%   tic, u = A \ sin(exp(3.5*x)); toc
+%      %  (Elapsed time is 0.500 seconds.)
 %
-% See also volt, chebop.
+% See also COLLOC2.VOLT.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.

@@ -30,6 +30,8 @@ function u = expm(L,t,u0)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
+% TODO: Test for expm.
+
 discType = L.prefs.discretization;
 isFun = isFunVariable(L); 
 
@@ -83,8 +85,9 @@ for i = 1:length(t)
         E = expm(disc, t(i));
         
         % Discretize the initial condition.
-        v0 = cellfun(@(x) createBlocks(disc,x), u0.blocks, 'uniform', false);
-        v0 = cell2mat(v0);
+        %v0 = instantiate(disc, u0.blocks) 
+        %v0 = cell2mat(v0);
+        v0 = toValues(disc,u0);
         
         % Propagate.
         v = E*v0;

@@ -59,6 +59,10 @@ classdef (Abstract) chebDiscretization
         % Returns a linear system RHS using the designated discretization
         % parameters.
         b = rhs(disc,f,varargin)
+        
+        % Reduces (projects) block rows to make space for the constraints.
+        [PA,P] = reduce(disc,blocks)
+        
     end
     
 end

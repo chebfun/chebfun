@@ -24,7 +24,7 @@ if ( isa(A, 'chebmatrix') )
         disc.outputSpace = outputSpaces(j);
         for k = 1:size(A, 2)
             disc.coeffs = c{j,k};
-            [L{j,k}, S{j,k}] = makeBlocks(disc, A.blocks{j,k});
+            [L{j,k}, S{j,k}] = instantiate(disc, A.blocks{j,k});
         end
     end
     if ( isa(A,'linop') )
@@ -37,6 +37,6 @@ if ( isa(A, 'chebmatrix') )
     varargout(1:m) = out(1:m);    
 else
     disc.coeffs = disc.coeffs{1};
-    [varargout{1:nargout}] = makeBlocks(disc, A);
+    [varargout{1:nargout}] = instantiate(disc, A);
 end
 end
