@@ -45,14 +45,10 @@ w = baryWeights(x);
 pref = chebpref();
 pref.techPrefs.sampleTest = false;
 if ( strcmp(pref.tech, 'chebtech') )
-    pref.techPrefs.maxPoints = length(x);
-    pref.techPrefs.minPoints = min(chebtech.techPref().minPoints, ...
-        pref.techPrefs.maxLength);
+    % In between the interpolation nodes, the Lebesgue function is guaranteed
+    % by definition to be a polynomial of degree at most length(x) - 1.
+    pref.techPrefs.exactLength = length(x);
 end
-
-% Ill-conditioned computations may prevent convergence to high accuracy, so
-% disable convergence failure warnings.
-warnState = warning('off', 'CHEBFUN:constructor');
 
 % Set breakpoints at the interpolation nodes.  (NB:  unique() returns the
 % points in sorted order.)
@@ -63,8 +59,6 @@ L = chebfun(@(t) lebesgueFun(t, x(:), w), dom, pref);
 if ( nargout == 2 )
     Lconst = norm(L, inf);
 end
-
-warning(warnState);
 
 end
 
