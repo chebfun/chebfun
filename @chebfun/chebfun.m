@@ -185,7 +185,8 @@ classdef chebfun
         [funs, ends] = constructor(op, domain, pref);
         
         % Edge detector.
-        [edge, vscale] = detectEdge(op, domain, hscale, vscale, derHandle);
+        [edge, vscale] = detectEdge(op, domain, hscale, vscale, derHandle, ...
+            forHandle);
         
         % Interpolate data:
         f = interp1(x, y, method, dom);

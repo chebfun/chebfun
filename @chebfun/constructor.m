@@ -214,8 +214,14 @@ while ( any(sad) )
         opkDetectEdge = @(x) opk(x)./((x - a).^exps(2*k - 1) .* ...
             (b - x).^exps(2*k));
         edge = chebfun.detectEdge(opkDetectEdge, [a, b], vscale, hscale);
-    else
+    elseif ( all( isfinite( ends(k:k+1) ) ) )
         edge = chebfun.detectEdge(opk, [a, b], vscale, hscale);
+    elseif ( any( isinf( ends(k:k+1) ) ) )
+        forHandle = funs{k}.mapping.for;
+        opkDetectEdge = @(x) opk(forHandle(x));
+        forDer = funs{k}.mapping.forder;
+        edge = chebfun.detectEdge(opkDetectEdge, [-1+eps, 1-eps], vscale, ...
+            hscale, forDer, forHandle);
     end
 
     if ( ~isempty(exps) )
