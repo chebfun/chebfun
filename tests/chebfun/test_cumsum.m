@@ -154,6 +154,73 @@ err = gval - vals_check;
 pass(12) = norm(err-mean(err), inf) < 5e4*get(f,'epslevel')*...
     norm(vals_check, inf);
 
+%% Tests for functions defined on unbounded domain:
+
+%% Function on [-inf inf]:
+
+% Set the domain:
+dom = [-Inf Inf];
+domCheck = [-1e2 1e2];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+op = @(x) exp(-x.^2);
+f = chebfun(op, dom);
+g = cumsum(f);
+
+gVals = feval(g, x);
+opg = @(x) sqrt(pi)*erf(x)/2 + sqrt(pi)/2;
+gExact = opg(x);
+errg = gVals - gExact;
+pass(13) = norm(errg, inf) < 5e1*get(g,'epslevel').*get(g,'vscale');
+
+%% Function on [a inf]:
+
+% Set the domain:
+dom = [1 Inf];
+domCheck = [1 1e2];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+% Blow-up function:
+op = @(x) 5*x;
+pref.singPrefs.exponents = [0 1];
+f = unbndfun(op, dom, [], [], pref);
+g = cumsum(f);
+gVals = feval(g, x);
+
+opg = @(x) 5*x.^2/2 - 5/2 + get(g, 'lval');
+gExact = opg(x);
+err = gVals - gExact;
+pass(14) = norm(err, inf) < 1e-1*get(g,'epslevel').*get(g,'vscale');
+
+%% piecewise function on [-inf b]:
+
+% Set the domain:
+dom = [-Inf -1 3*pi];
+domCheck = [-1e6 -1 3*pi];
+
+% Generate a few random points to use as test values:
+x1 = diff(domCheck(1:2)) * rand(100, 1) + domCheck(1);
+x2 = diff(domCheck(2:3)) * rand(100, 1) + domCheck(2);
+
+op1 = @(x) exp(x);
+op2 = @(x) sin(3*x);
+f = chebfun({op1 op2}, dom);
+g = cumsum(f);
+g1Vals = feval(g, x1);
+g2Vals = feval(g, x2);
+
+opg1 = @(x) exp(x);
+opg2 = @(x) -cos(3*x)/3 + cos(-3)/3 + exp(dom(2));
+g1Exact = opg1(x1);
+g2Exact = opg2(x2);
+err1 = g1Vals - g1Exact;
+err2 = g2Vals - g2Exact;
+pass(15) = norm([err1 ; err2], inf) < 5e3*get(g,'epslevel').*get(g,'vscale');
+
 % [TODO]:  Check fractional antiderivatives once implemented.
 
 end

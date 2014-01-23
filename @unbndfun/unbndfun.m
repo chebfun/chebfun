@@ -140,7 +140,7 @@ classdef unbndfun < fun
         f = compose(f, op, g, pref)
         
         % Indefinite integral of an UNBNDFUN.
-        f = cumsum(f, m, pref)
+        f = cumsum(f, m, dim, shift)
         
         % Derivative of an UNBNDFUN.
         f = diff(f, k, dim)
