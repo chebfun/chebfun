@@ -116,7 +116,7 @@ end
 % TODO: What's going on here?
 discM = [];
 if ( ~isempty(M) )
-    dom = chebfun.mergeDomains(disc.domain,dom,M.domain);
+    dom = chebfun.mergeDomains(disc.domain, dom,M.domain);
     disc.domain = dom;
     dconstructor = str2fun( class(disc) );
     discM = dconstructor(M.disc.dimension,disc.domain);
