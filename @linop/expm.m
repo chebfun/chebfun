@@ -30,8 +30,6 @@ function u = expm(L,t,u0)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-% TODO: Test for expm.
-
 discType = L.prefs.discretization;
 isFun = isFunVariable(L); 
 
@@ -50,7 +48,6 @@ if ( isa(discType, 'function_handle') )
     
     % Apply the discretistion dimension on all pieces:
     disc.dimension = repmat(dimVals(1), 1, numel(disc.domain)-1);
-    dimVals(1) = [];
 else
     % A discretisation is given:
     disc = discType;
@@ -87,7 +84,7 @@ for i = 1:length(t)
         % Discretize the initial condition.
         %v0 = instantiate(disc, u0.blocks) 
         %v0 = cell2mat(v0);
-        v0 = toValues(disc,u0);
+        v0 = matrix(u0,disc.dimension,disc.domain);
         
         % Propagate.
         v = E*v0;
@@ -120,7 +117,8 @@ for i = 1:length(t)
     %end
     % TODO: Remove the above?
     
-    allu(i) = toFunction(disc, u);
+    ucell = mat2fun(disc, u);
+    allu = [ allu, chebmatrix(ucell) ];
 end
 
 u = allu;

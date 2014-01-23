@@ -19,7 +19,7 @@ dom = L.domain;
 % Create an feval FUNCTIONALBLOCK which allows us to impose the condition via
 % addbc.
 E = functionalBlock.feval(dom(1), dom);
-if isnumeric(op)
+if ( isnumeric(op) )
     % It's really just a boundary value.
     L = addbc(L, E, op);
 else
