@@ -48,34 +48,24 @@ f = @(x) [sin(x) cos(x) exp(x)];
 g = populate(chebtech2, f, [], [], pref);
 x = chebtech2.chebpts(length(g.values));
 pass(9) = norm(f(x) - g.values, inf) < tol;
-pass(10) = true;
-% pass(10) = norm(g.vscale - [sin(1) cos(0) exp(1)], inf) < 10*g.epslevel ...
-%     && logical(g.epslevel);
 
 pref.extrapolate = 1;
 pref.refinementFunction = 'nested';
 g = populate(chebtech2, f, [], [], pref);
 x = chebtech2.chebpts(length(g.values));
-pass(11) = norm(f(x) - g.values, inf) < tol;
-pass(12) = true;
-% pass(12) = norm(g.vscale - [sin(1) cos(0) exp(1)], inf) < tol && logical(g.epslevel);
+pass(10) = norm(f(x) - g.values, inf) < tol;
 
 pref.extrapolate = 0;
 pref.refinementFunction = 'resampling';
 g = populate(chebtech2, f, [], [], pref);
 x = chebtech2.chebpts(length(g.values));
-pass(13) = norm(f(x) - g.values, inf) < tol;
-pass(14) = true;
-% pass(14) = norm(g.vscale - [sin(1) cos(0) exp(1)], inf) < 10*g.epslevel ...
-%     && logical(g.epslevel);
+pass(11) = norm(f(x) - g.values, inf) < tol;
 
 pref.extrapolate = 1;
 pref.refinementFunction = 'resampling';
 g = populate(chebtech2, f, [], [], pref);
 x = chebtech2.chebpts(length(g.values));
-pass(15) = norm(f(x) - g.values, inf) < tol;
-pass(16) = true;
-% pass(16) = norm(g.vscale - [sin(1) cos(0) exp(1)], inf) < tol && logical(g.epslevel);
+pass(12) = norm(f(x) - g.values, inf) < tol;
 
 %%
 % Some other tests:
@@ -84,28 +74,29 @@ pass(16) = true;
 try
     f = @(x) x + NaN;
     populate(chebtech2, f);
-    pass(17) = false;
+    pass(13) = false;
 catch ME
-    pass(17) = strcmp(ME.message, 'Too many NaNs/Infs to handle.');
+    pass(13) = strcmp(ME.message, 'Too many NaNs/Infs to handle.');
 end
 
 % As should this:
 try
     f = @(x) x + Inf;
     populate(chebtech2, f);
-    pass(18) = false;
+    pass(14) = false;
 catch ME
-    pass(18) = strcmp(ME.message, 'Too many NaNs/Infs to handle.');
+    pass(14) = strcmp(ME.message, 'Too many NaNs/Infs to handle.');
 end
 
 % Test that the extrapolation option avoids endpoint evaluations.
 pref.extrapolate = 1;
-try 
+try
     populate(chebtech2, @(x) [F(x) F(x)], [], [], pref);
-    pass(19) = true;
+    pass(15) = true;
 catch ME %#ok<NASGU>
-    pass(19) = false;
+    pass(15) = false;
 end
+pref.extrapolate = 0;
 
     function y = F(x)
         if ( any(abs(x) == 1) )
@@ -113,5 +104,15 @@ end
         end
         y = sin(x);
     end
+
+% Check that things don't crash if pref.minPoints and pref.maxPoints are equal.
+try
+    pref.minPoints = 8;
+    pref.maxPoints = 8;
+    populate(chebtech2, @sin, [], [], pref);
+    pass(16) = true;
+catch
+    pass(16) = false;
+end
 
 end
