@@ -73,8 +73,14 @@ function [values, giveUp] = refineResampling(op, values, pref)
     
     % n is too large:
     if ( n > pref.maxPoints )
-        giveUp = true;
-        return
+        % Don't give up if we haven't sampled at least once.
+        if ( isempty(values) )
+            n = pref.maxPoints;
+            giveUp = false;
+        else
+            giveUp = true;
+            return
+        end
     else
         giveUp = false;
     end
