@@ -9,7 +9,7 @@ function F = diff(F, k, dim)
 %     DIM = 1 (default) is the derivative in the y-direction.
 %     DIM = 2 is the derivative in the x-direction.
 %
-% DIFF(F,[NX NY]) is the partial derivative of NX of F in the first 
+% DIFF(F, [NX NY]) is the partial derivative of NX of F in the first 
 % variable, and NY of F in the second derivative. For example, DIFF(F,[1
 % 2]) is d^3F/dxd^2y.
 %
@@ -34,7 +34,10 @@ if ( nargin < 3 )
 end
 
 % Diff the individual column and row slices.:
-if ( dim == 1 )
+if ( numel( k ) == 2 )
+   F.cols =  diff( F.cols, k(2) );
+   F.rows = diff( F.rows, k(1) );
+elseif ( dim == 1 )
     F.cols = diff( F.cols, k );
 elseif ( dim == 2 )
     F.rows = diff( F.rows, k );

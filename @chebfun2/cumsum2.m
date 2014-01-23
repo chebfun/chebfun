@@ -2,14 +2,14 @@ function f = cumsum2( f )
 %CUMSUM2 Double indefinite integral of a chebfun2.
 %
 % F = CUMSUM2(F) returns the double indefinite integral of a chebfun2. That
-% is,
+% is
 %                  y  x
 %                 /  /
 %  CUMSUM2(F) =  |  |   f(x,y) dx dy   for  (x,y) in [a,b] x [c,d],
 %                /  /
 %               c  a
 %
-%  where [a,b]x[c,d] is the domain of f. 
+%  where [a,b] x [c,d] is the domain of f. 
 % 
 % See also CUMSUM, SUM, SUM2.
 

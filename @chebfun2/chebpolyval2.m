@@ -4,11 +4,11 @@ function varargout = chebpolyval2( f, varargin )
 % X = CHEBPOLYVAL2(F) returns the matrix of values of F on a Chebyshev tensor
 % grid. 
 %
-% [U D V]=CHEBPOLYVAL2(F) returns the low rank representation of the values
-% of F on a tensor Chebyshev grid. X = U*D*V'.
+% [U, D, V] = CHEBPOLYVAL2(F) returns the low rank representation of the values
+% of F on a tensor Chebyshev grid. X = U * D * V'.
 %
-% [U D V]=CHEBPOLYVAL2(F,M,N) returns the values of F on a M-by-N Chebyshev tensor
-% grid. 
+% [U, D, V] = CHEBPOLYVAL2(F,M,N) returns the values of F on a M-by-N Chebyshev 
+% tensor grid. 
 %
 % See also CHEBPOLY2, CHEBPOLYPLOT2. 
 
@@ -16,18 +16,18 @@ function varargout = chebpolyval2( f, varargin )
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % Empty check. 
-if ( isempty(f) )
-    varargout = {[]}; 
+if ( isempty( f ) )
+    varargout = { [] }; 
     return
 end
 
 if ( nargin == 1) 
-    [m, n] = length(f);  % Get degrees
-elseif ( nargin == 2) 
+    [m, n] = length( f );  % Get degrees
+elseif ( nargin == 2 ) 
     error('CHEBFUN2:CHEBPOLYVAL2:INPUTS','Dimension not specified.'); 
 else
-    m = varargin{1}; 
-    n = varargin{2}; 
+    m = varargin{ 1 }; 
+    n = varargin{ 2 }; 
 end
 
 % Get the low rank representation for f. 

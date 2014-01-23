@@ -5,7 +5,7 @@ function f = cumsum(f,dim)
 % to one variable and hence, returns a chebfun. The integration is done
 % by default in the y-direction.
 %
-% F = CUMSUM(F,DIM). If DIM = 2 integration is along the x-direction, if
+% F = CUMSUM(F, DIM). If DIM = 2 integration is along the x-direction, if
 % DIM = 1 integration is along the y-direction.
 %
 % See also CUMSUM2.

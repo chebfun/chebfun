@@ -7,7 +7,7 @@ function f = cos( f )
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % Check for empty
-if ( isempty(f) )
+if ( isempty( f ) )
     return
 end 
 

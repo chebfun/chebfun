@@ -1,4 +1,4 @@
-function L = del2(f)
+function L = del2( f )
 %DEL2 Scaled Laplacian of a chebfun2.
 % 
 % L = del2(f) when f is a chebfun2 is a numerical approximation of 

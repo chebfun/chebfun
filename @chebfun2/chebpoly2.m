@@ -2,10 +2,10 @@ function varargout = chebpoly2( f )
 %CHEBPOLY2  bivariate Chebyshev coefficients
 %
 % X = CHEBPOLY2(F) returns the matrix of bivariate coefficients such that 
-% F = sum_i ( sum_j Y(i,j) T_i(y) T_j(x) ), where Y=rot90(X,2). It is
+% F = sum_i ( sum_j Y(i,j) T_i(y) T_j(x) ), where Y = rot90(X, 2). It is
 % MATLAB convention to flip the coefficients in this silly way. 
 %
-% [A D B]=CHEBPOLY2(f) returns the same coefficients keeping them in low
+% [A, D, B] = CHEBPOLY2( f ) returns the same coefficients keeping them in low
 % rank form, i.e., X = A * D * B'. 
 %
 % See also CHEBPOLYPLOT2, CHEBPOLYPLOT.
@@ -13,8 +13,8 @@ function varargout = chebpoly2( f )
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-if ( isempty(f) )
-    varargout = {[]}; 
+if ( isempty( f ) )
+    varargout = { [ ] }; 
     return
 end
 

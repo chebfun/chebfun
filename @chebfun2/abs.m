@@ -21,6 +21,6 @@ end
 
 % Still call the constructor in case we missed a change of sign. 
 op = @(x,y) abs( f.feval(x, y) );  % Resample. 
-f = chebfun2( op, f.domain );          % Call constructor. 
+f = chebfun2( op, f.domain );      % Call constructor. 
 
 end
