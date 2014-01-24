@@ -87,4 +87,8 @@ check(4) = ( norm(vals_gout - vals_g, inf) < 5*epslevel(gout)*norm(vals_gout, in
 
 pass(6) = all( check );
 
+%% Test on function defined on unbounded domain:
+
+
+
 end
