@@ -11,14 +11,13 @@ function [g, jumpVals, locations] = cumsum(f)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Initialize output:
-
 jumpVals = [];
 locations = [];
 g = deltafun;
 
 % Trivial case:
 if ( isempty(f) )
-    g.funPart = fun.constructor(0);
+    % Return an empty deltafun in this case:
     return;
 end
 
@@ -26,15 +25,29 @@ deltaMag = f.deltaMag;
 deltaLoc = f.location;
 
 if ( isempty(deltaLoc) || isempty(deltaMag) )
-    g = cumsum(f.funPart);
-    jumpVals = [];
-    locations = [];
-else
-    if ( size(deltaMag, 1) > 1 )
-        g.deltaMag = deltaMag(2:end, :);
-        g.location = deltaLoc;
+    g = cumsum(f.funPart);    
+else    
+    g = {};
+    pref = chebpref();
+    deltaTol = pref.deltaPrefs.deltaTol;
+    idx = abs(deltaMag(1,:)) >= deltaTol;
+    newBreaks = deltaLoc(idx);
+    jumpVals = deltaMag(1, idx);
+    breakPts = union(f.funPart.domain, newBreaks);
+    funParts = restrict(f.funPart, breakPts);
+    for k = 1:numel(funParts)
+        fk = cumsum(funParts{k}) + (k-1);
+        dk = fk.domain;
+        idx = deltaLoc >= dk(1) & deltaLoc <= dk(2);
+        lk = deltaLoc(idx);
+        mk = deltaMag(2:end, idx);
+        if ( isempty(idx) || all(mk == 0) )
+            g{k} = fk;
+        else
+            g{k} = deltafun(fk, dk, lk);
+        end
+        
     end
-    g = simplify(g);
     
     % Integrate the funPart:
     if ( isempty(f.funPart) )

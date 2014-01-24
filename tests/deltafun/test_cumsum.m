@@ -11,7 +11,7 @@ tol = pref.deltaPrefs.deltaTol;
 
 d = deltafun();
 F = cumsum(d);
-pass(1) = iszero(F.funPart) && isempty(F.deltaMag);
+pass(1) = isempty(F);
 
 f = fun.constructor(@(x) exp(x));
 mag = rand(5,5);
