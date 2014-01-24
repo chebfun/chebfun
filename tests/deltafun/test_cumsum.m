@@ -34,4 +34,23 @@ pass(3) = max(abs(F.funPart - cumsum(f))) < tol && ...
     norm(jumpVals - [-1, 1], inf) < tol && ...
     norm(locations - [-1, 1], inf) < tol;
 
+%%
+f = fun.constructor(@(x) sin(x));
+d = deltafun(f, rand(13,5), rand(1,5));
+D = cumsum(d);
+
+for i = 1:length(D)
+    if ( isa( D{i}, 'deltafun') )
+        plot( D{i}.funPart );
+    else
+        plot(D{i});
+    end
+    hold on
+end
+hold off
+shg
+d.deltaMag
+d.location
+
+%%
 end

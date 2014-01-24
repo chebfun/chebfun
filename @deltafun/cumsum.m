@@ -82,14 +82,20 @@ else
     % Get a cell array of funs:
     funParts = restrict(f.funPart, breakPts);
     
+    % Initialize output:
+    nfuns = numel(funParts);
+    g = cell(1, nfuns);
     for k = 1:numel(funParts)
         % Integrate the funPart and add the appropriate jump:
         fk = cumsum(funParts{k}) + cumJump(k);
         domaink = fk.domain;
-        % Notice the strict inequalities below, since end-point delta functions
-        % have already been handled:
-        idx = (deltaLoc > domaink(1)) & (deltaLoc < domaink(2));
+        
+        % Check whether there are delta functions in between the end points of
+        % the current fun:
+        idx = (deltaLoc >= domaink(1)) & (deltaLoc <= domaink(2));
         lk = deltaLoc(idx);
+        
+        % Construct a DELTAFUN or a FUN:
         if ( isempty(idx) )
             g{k} = fk;
         else
