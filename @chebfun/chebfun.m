@@ -40,15 +40,20 @@ classdef chebfun
 %   CHEBFUN({@(x) sin(x), @(x) cos(x)}, [-1, 0, 1])
 %
 % CHEBFUN(F, PREF) or CHEBFUN(F, [A, B], PREF) constructs a CHEBFUN object from
-% F with the options determined by the CHEBPREF object PREF.
-% Construction time options may also be passed directly to the constructor in
-% the form CHEBFUN(F, [A, B], PROP1, VAL1, PROP2, VAL2, ...). (See
-% CHEBPREF for details of the various preference options.). In particular,
-% CHEBFUN(F, 'splitting', 'on') allows the constructor to adaptively determine
-% breakpoints to better represent piecewise smooth functions F. For example,
+% F with the options determined by the CHEBPREF object PREF. Construction time
+% options may also be passed directly to the constructor in the form CHEBFUN(F,
+% [A, B], PROP1, VAL1, PROP2, VAL2, ...). (See CHEBPREF for details of the
+% various preference options and their defaults.). In particular, CHEBFUN(F,
+% 'splitting', 'on') allows the constructor to adaptively determine breakpoints
+% to better represent piecewise smooth functions F. For example,
 %   CHEBFUN(@(x) sign(x - .3), [-1, 1], 'splitting', 'on')
-% It is not possible to mix PROP/VAL and PREF inputs in a single constructor
-% call.
+% CHEBFUN(F,'extrapolate','on') prevents the constructor from evaluating the
+% function F at the endpoints of the domain. Note that it is not possible to mix
+% PROP/VAL and PREF inputs in a single constructor call.
+%
+% CHEBFUN(F, 'trunc', N) returns a smooth N-point CHEBFUN constructed by
+% computing the first N Chebyshev coefficients from their integral form, rather
+% than by interpolation at Chebyshev points.
 %
 % CHEBFUN(F, ...), where F is an NxM matrix or an array-valued function handle,
 % returns an "array-valued" CHEBFUN. For example,
@@ -57,13 +62,14 @@ classdef chebfun
 %   CHEBFUN(@(x) [sin(x), cos(x)])
 % Note that each column in an array-valued CHEBFUN object is discretized in the
 % same way (i.e., the same breakpoint locations and the same underlying
-% representation). Note the difference between 
+% representation). For more details see ">> help quasimatrix". Note the
+% difference between
 %   CHEBFUN(@(x) [sin(x), cos(x)], [-1, 0, 1])
 % and
 %   CHEBFUN({@(x) sin(x), @(x) cos(x)}, [-1, 0, 1]).
 % The former constructs an array-valued CHEBFUN with both columns defined on the
 % domain [-1, 0, 1]. The latter defines a single column CHEBFUN which represents
-% sin(x) in the interval [-1, 0) and cos(x) on the interval (0, 1].
+% sin(x) in the interval [-1, 0) and cos(x) on the interval (0, 1]. 
 %
 % See also CHEBPREF, CHEBPTS.
 
@@ -174,7 +180,22 @@ classdef chebfun
                 f = merge(f, index(:).', pref);
                 
             end
+            
+            % Deal with 'trunc' option:
+            doTrunc = false;
+            truncLength = NaN;
+            for k = 1:length(varargin)
+                if ( strcmpi(varargin{k}, 'trunc') )
+                    doTrunc = true;
+                    truncLength = varargin{k+1};
+                    break;
+                end
+            end
 
+            if ( doTrunc )
+                c = chebpoly(f, 0, truncLength);
+                f = chebfun(c.', f.domain([1, end]), 'coeffs');
+            end
         end
     end
     
@@ -484,15 +505,9 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
     vectorize = false;
     % Obtain additional preferences:
     while ( ~isempty(args) )
-        if ( any(strcmpi(args{1}, {'chebpts1', 'chebpts2', 'equi'})) )
-            % Determine tech for sampled values:
-            if ( strcmpi(args{1}, 'chebpts1') )
-                pref.tech = 'chebtech1';
-            elseif ( strcmpi(args{1}, 'chebpts2') )
-                pref.tech = 'chebtech2';
-            elseif ( strcmpi(args{1}, 'equi') )
-                pref.tech = 'funqui';
-            end
+        if ( strcmpi(args{1}, 'equi') )
+            % Enable FUNQUI when dealing with equispaced data.
+            pref.tech = 'funqui';
             args(1) = [];
         elseif ( strcmpi(args{1}, 'vectorize') || ...
                  strcmpi(args{1}, 'vectorise') )
@@ -503,6 +518,9 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
             % Hack to support construction from coefficients.
             op = {{[], op}};
             args(1) = [];
+        elseif ( strcmpi(args{1}, 'trunc') )
+            % Pull out this preference, which is checked for later.
+            args(1:2) = [];            
         elseif ( isnumeric(args{1}) )
             % g = chebfun(@(x) f(x), N)
             pref.techPrefs.exactLength = args{1};
@@ -537,6 +555,19 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
         elseif ( strcmpi(args{1}, 'exps') )
             % Translate "exps" --> "singPrefs.exponents".
             pref.singPrefs.exponents = args{2};
+            args(1:2) = [];
+        elseif ( any(strcmpi(args{1}, {'chebkind', 'kind'})) )
+            % Translate "chebkind" and "kind" --> "techPrefs.gridType".
+            if ( isnumeric(args{2}) && ((args{2} == 1) || (args{2} == 2)) )
+                pref.techPrefs.gridType = args{2};
+            elseif ( strncmpi(args{2}, '1st', 1) )
+                pref.techPrefs.gridType = 1;
+            elseif ( strncmpi(args{2}, '2nd', 1) )
+                pref.techPrefs.gridType = 2;
+            else
+                error('CHEBFUN:constructor:parseInputs', ...
+                    'Invalid value for ''chebkind''/''kind'' option.');
+            end
             args(1:2) = [];
         else
             % Update these preferences:
@@ -579,25 +610,4 @@ g = @loopwrapper;
         end
     end
 end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% JUNK
-% [TODO]: Reinstate or delete this.
-%
-% CHEBFUN(F,'extrapolate','on') prevents the constructor from evaluating
-% the function F at the endpoints of the domain. This may also be achieved
-% with CHEBFUN(F,'chebkind','1st','resampling','on') (which uses Chebyshev
-% points of the 1st kind during the construction process), although this
-% functionality is still experimental.
-%
-% CHEBFUN(F,...,'map',{MAPNAME,MAPPARS}) allows the use of mapped Chebyshev
-% expansions. See help chebfun/maps for more information.
-%
-% CHEBFUN(CHEBS,ENDS,NP) specifies the number NP(i) of
-% Chebyshev points for the construction of the function in CHEBS{i}.
-%
-% G = CHEBFUN(...) returns an object G of type chebfun.  A chebfun consists of a
-% vector of 'funs', a vector 'domain' of length k+1 defining the intervals where
-% the funs apply, and a matrix 'impulses' containing information about possible
-% delta functions at the breakpoints between funs.
 

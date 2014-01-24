@@ -22,7 +22,6 @@ out = varargin{1};
 
 % TODO: Is this the correct tol?
 tol = max(get(out, 'hscale')*get(out, 'epslevel'));
-
 if ( any( cellfun(@(f) any(f.domain - out.domain) > tol, varargin)) )
     error('FUN:horzcat:domains', 'Domain mismatch.');
 end
