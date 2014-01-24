@@ -1,7 +1,7 @@
-function bol = isequal( f, g )
+function out = isequal( f, g )
 %ISEQUAL Equality test for chebfun2.  
 % 
-% BOL = ISEQUAL(F,G) returns 0 or 1. If returns 1 then F and G are the same
+% BOL = ISEQUAL(F, G) returns 0 or 1. If returns 1 then F and G are the same
 % chebfun2, up to relative machine precision. If returns 0 then F and G are
 % not the same up to relative machine precision. 
 
@@ -10,9 +10,9 @@ function bol = isequal( f, g )
 
 if ( isempty(f) )
     if ( isempty(g) )
-        bol = 1; 
+        out = true; 
     else
-        bol = 0; 
+        out = false; 
     end
     return
 end
@@ -27,7 +27,7 @@ gcols = f.cols;
 grows = f.rows; 
 gpiv = f.pivotValues;
 
-% Test: 
-bol = ( isequal(fcols, gcols) & isequal(frows, grows) & isequal(fpiv, gpiv) );
+% Test every part: 
+out = ( isequal(fcols, gcols) & isequal(frows, grows) & isequal(fpiv, gpiv) );
 
 end

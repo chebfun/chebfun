@@ -15,6 +15,7 @@ function [x, y, z] = sph2cart( th, phi, r )
 % Copyright 2013 by The University of Oxford and The Chebfun2 Developers. 
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun2 information. 
 
+% Spherical coordinates: 
 z = r .* sin( phi );
 rcos = r .* cos( phi );
 x = rcos .* cos( th );

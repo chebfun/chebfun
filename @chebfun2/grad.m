@@ -19,7 +19,7 @@ function varargout = grad( f )
 
 % Call GRADIENT: 
 if ( nargout <= 1 ) 
-  out = gradient(f); 
+  out = gradient( f ); 
   varargout = { out };
 else
   [fx, fy] = gradient( f ); 

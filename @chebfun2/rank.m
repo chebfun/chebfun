@@ -23,15 +23,15 @@ if ( nargin == 1 )
     tol = 0;
 end
 
-% Compute singular values of f. 
+% Compute the singular values of f. 
 s = svd( f ); 
 
 % Check for zero function.
 if ( max( s ) == 0  )  
     r = 0; 
     return
+else
+    r = find( s/s(1) > tol, 1, 'last');  % r = no. of s.v. about relative tol
 end
-
-r = find( s/s(1) > tol, 1, 'last'); 
 
 end

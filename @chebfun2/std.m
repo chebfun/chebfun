@@ -1,4 +1,4 @@
-function g = std(f,varargin)
+function g = std( f, varargin )
 %STD Standard deviation of a chebfun2 along one variable.
 %
 %  G = STD(F) returns the standard deviation of F in the y-variable

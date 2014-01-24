@@ -9,7 +9,7 @@ function g = squeeze(f)
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 if ( isempty( f ) )  % check for an empty chebfun2.
-   g = chebfun2;  
+   g = chebfun;      % Return an empty chebfun because we are squeezing.
    return
 end
 
@@ -21,11 +21,12 @@ d = 1./piv;
 d(d==inf) = 0;  % set infinite values to zero.
 dom = f.domain; 
 
-if ( rank( f ) == 1 )   % must be of rank 1. 
+% If f is of rank 1, then it may be a function of just one variable:
+if ( rank( f ) == 1 )                % If of rank 1.  
     cols = simplify( cols ); 
     rows = simplify( rows ); 
-    if ( length( cols ) == 1 ) 
-        g = mean( cols ) * diag( d ) * rows; 
+    if ( length( cols ) == 1 )       % If cols are constant then function of x.
+        g = mean( cols ) * diag( d ) * rows'; 
         newdomain = dom(1:2); 
     elseif ( length( rows ) == 1 )
         g = cols * diag( d ) * mean(rows);

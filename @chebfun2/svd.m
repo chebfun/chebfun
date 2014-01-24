@@ -1,5 +1,5 @@
 function varargout = svd( f )
-%SVD of a chebfun2.  
+%SVD Singular value decomposition of a chebfun2.  
 %
 % SVD(F) returns the singular values of F. The number of singular values
 % returned is equal to the rank of the chebfun2. 
@@ -7,7 +7,7 @@ function varargout = svd( f )
 % S = SVD(F) returns the singular values of F. S is a vector of singular
 % values in decreasing order. 
 % 
-% [U S V] = SVD(F) returns the SVD of F. U and V are quasi-matrices of 
+% [U, S, V] = SVD(F) returns the SVD of F. U and V are quasi-matrices of 
 % orthogonal chebfuns and S is a diagonal matrix with the singular values
 % on the diagonal.
 %
@@ -49,6 +49,14 @@ if ( norm( d ) == 0 )
 else
 
 % If the function is non-zero then do the standard stuff. 
+% 
+% Algorithm: 
+%   f = C D R'                 (cdr decomposition)
+%   C = Q_C R_C                (qr decomposition)
+%   R = Q_R R_R                (qr decomposition)
+%   f = Q_C (R_C D R_R') Q_R' 
+%   R_C D R_R' = U S V'        (svd)
+
 [Qleft, Rleft] = qr( cols ); 
 [Qright, Rright] = qr( rows );
 [U, S, V] = svd( Rleft * diag( d ) * Rright.' );

@@ -11,12 +11,13 @@ function varargout = size( f , dim)
 % Copyright 2013 by The University of Oxford and The Chebfun2 Developers. 
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun2 information. 
 
+% The size of a chebfun2 object does not depend on f:
 if ( ( nargin == 1 ) && ( nargout <= 1 ) ) 
-        varargout = {[Inf, Inf]}; 
+        varargout = { [Inf, Inf] }; 
 elseif ( ( nargout == 2 ) && ( nargout <=1 ) )
-        varargout = {Inf, Inf}; 
-elseif ( nargin == 2 ) && ( ( dim == 1 ) || ( dim == 2 ) )
-    varargout = {Inf}; 
+        varargout = { Inf, Inf }; 
+elseif ( ( nargin == 2 ) && ( ( dim == 1 ) || ( dim == 2 ) ) )
+    varargout = { Inf }; 
 else
     error('CHEBFUN2:SIZE:OUTPUTS','Too many output arguments.');
 end

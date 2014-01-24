@@ -13,6 +13,7 @@ function [x, y, z] = pol2cart(th, r, z)
 % 
 % See also SPH2CART.
 
+% Polar coordinates:
 x = r .* cos( th );
 y = r .* sin( th );
 
