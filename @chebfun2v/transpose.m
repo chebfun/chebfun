@@ -1,4 +1,4 @@
-function F = transpose(F)
+function F = transpose( F )
 % .' transpose of a chebfun2v
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.

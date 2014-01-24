@@ -18,6 +18,6 @@ if ( isempty( F ) )
 end
 
 Fc = F.components; 
-f = diff(Fc{1}, 1, 2) + diff( Fc{2}, 1, 1 );  % divergence = f_x + f_y
+f = diff( Fc{1}, 1, 2 ) + diff( Fc{2}, 1, 1 );  % divergence = f_x + f_y
 
 end

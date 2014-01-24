@@ -18,7 +18,7 @@ function varargout = size( F, dim )
 
 % Empty check: 
 if ( isempty( F ) ) 
-    varargout = {[],[]}; 
+    varargout = { [], [] }; 
     return
 end
 
@@ -43,16 +43,16 @@ end
 
 % Manually work out what should be displayed:
 if ( dim == 1 ) 
-    varargout = {K};
+    varargout = { K };
 elseif ( dim == 2 )
-    varargout = {M}; 
+    varargout = { M }; 
 elseif ( dim == 3 )
-    varargout = {N}; 
+    varargout = { N }; 
 elseif ( ( dim == 0 ) && ( nargin == 1 ) )
     if ( nargout <= 1 )
-        varargout = {[K, M, N]};
+        varargout = { [K, M, N] };
     else
-        varargout = {K, M, N}; 
+        varargout = { K, M, N }; 
     end
 else
     error('CHEBFUN2V:SIZE:DIM','Unrecognised dimension.');

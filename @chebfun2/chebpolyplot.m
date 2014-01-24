@@ -16,8 +16,8 @@ function varargout = chebpolyplot( f, varargin )
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % Empty check.
-if ( isempty(f) )
-    varargout = {[]}; 
+if ( isempty( f ) )
+    varargout = { [] }; 
     return
 end
 
@@ -34,12 +34,12 @@ h1 = chebpolyplot( cols );  % chebpolyplot of column slices.
 title('Chebpolyplot of column slices', 'FontSize', 16)
 
 figure  % second figure plots row slices.
-h2 = chebpolyplot(rows); % chebpolyplot of row slices.
+h2 = chebpolyplot( rows ); % chebpolyplot of row slices.
 title('Chebpolyplot of row slices', 'FontSize', 16)
  
 % Return plot handles when appropriate.
 if ( nargout == 1 )
-    varargout = {h1};
+    varargout = { h1 };
 elseif ( nargout == 2 )
-    varargout = {h1, h2};
+    varargout = { h1, h2 };
 end

@@ -1,7 +1,7 @@
 function varargout = surf( f, varargin )
 %SURF  Surface plot of a chebfun2.
 %
-% SURF(F,C) plots the colored parametric surface defined by F and the
+% SURF(F, C) plots the colored parametric surface defined by F and the
 % matrix C. The matrix C, defines the colouring of the surface.
 %
 % SURF(F) uses colors proportional to surface height.
@@ -51,12 +51,18 @@ end
 
 if ( isa(f,'chebfun2') )                 % surf(f,...)
     if ( ( nargin == 1 ) ||...
-            ( nargin > 1 && ~isempty(argin) && ~isa(argin{1},'chebfun2') ) ||...
-            ( nargin == 3 && isempty(argin))) 
+            ( nargin > 1 && ~isempty(argin) && ~isa(argin{1}, 'chebfun2') ) ||...
+            ( nargin == 3 && isempty( argin ))) 
         % Get domain.
         dom = f.domain;
-        x = chebfun2(@(x,y) x, dom); y = chebfun2(@(x,y) y, dom);
-        h = surf(x, y, f,defaultopts{:}, argin{:}, 'numpts', minplotnum);
+        x = chebfun2(@(x,y) x, dom); 
+        y = chebfun2(@(x,y) y, dom);
+        
+        if ( isa( argin{1}, 'double' ) )
+            h = surf(x, y, f, argin{1}, defaultopts{:}, 'numpts', minplotnum);
+        else
+            h = surf(x, y, f, defaultopts{:}, argin{:}, 'numpts', minplotnum);
+        end
         xlim( dom(1:2) ), ylim( dom(3:4) )
     elseif ( nargin > 2)             %surf(x,y,f,...), with x, y, f chebfun2 objects
         % Extract arguments: 
@@ -113,11 +119,18 @@ if ( isa(f,'chebfun2') )                 % surf(f,...)
         else
             error('CHEBFUN2:SURF:INPUTS','The third argument should be a chebfun2 if you want to supply chebfun2 data.')
         end
-    else                                            %surf(f,C)
-        dom = f.corners;
-        x = chebfun2(@(x,y) x,dom); y = chebfun2(@(x,y) y,dom);
-        h = surf(x,y,f,argin{1},defaultopts{:},argin{2:end});
-        xlim(dom(1:2)), ylim(dom(3:4))
+    else                                            %surf( f, C )
+        % Extract chebfun2 information:
+        dom = f.domain;
+        x = chebfun2(@(x,y) x, dom); 
+        y = chebfun2(@(x,y) y, dom);
+        
+        % Call surf: 
+        h = surf(x, y, f, argin{1}, defaultopts{:}, argin{2:end});
+        
+        % Set axis limits
+        xlim(dom(1:2))
+        ylim(dom(3:4))
     end
 else     % surf(X,Y,f,...)
     error('CHEBFUN2:SURF:INPUTS','Data should be given as chebfun2 objects \n For example: \n x = chebfun2(@(x,y)x); y = chebfun2(@(x,y)y);\n surf(x,y,f)');

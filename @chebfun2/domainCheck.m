@@ -9,19 +9,18 @@ function bol = domainCheck(f, g)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information. 
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% The CHEBFUN class uses this function internally to compare the domains of
-% CHEBFUN objects before attempting to perform operations on multiple CHEBFUN
-% objects that require the CHEBFUN objects to reside on the same interval.
+% The CHEBFUN2 class uses this function internally to compare the domains of
+% CHEBFUN2 objects before attempting to perform operations on multiple CHEBFUN
+% objects that require the CHEBFUN2 objects to reside on the same interval.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Empty check: 
 if ( isempty( f ) ) 
     if ( isempty( g ) ) 
-        bol = 1; 
+        bol = true; 
     else 
-        bol = 0; 
+        bol = false; 
     end
     return
 end

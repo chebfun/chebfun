@@ -1,4 +1,4 @@
-function varargout = ellipsoid(a,b,c)
+function varargout = ellipsoid( a, b, c )
 %ELLIPSOID Generate an ellipsoid-like surface. Not necessarily an
 %ellipsoid.
 %
@@ -43,9 +43,9 @@ y = b.*sin(th).*sin(phi);
 z = c.*cos(th);
 
 if ( nargout == 0 )
-    surf(x,y,z), axis equal
+    surf(x, y, z), axis equal
 elseif ( nargout == 1 )
-    varargout = { [x; y; z] };
+    varargout = { [x ; y ; z] };
 else
     varargout = { x, y, z };
 end

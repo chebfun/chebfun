@@ -1,10 +1,12 @@
 function F = vertcat( varargin )
 %VERTCAT Vertical concatenation of chebfun2 objects.
 %
-% [F;G] is the vertical concatenation of chebfun2 objects F and G, and this
-% function returns a Chebfun2v. 
+% VERTCAT(F, G) is the vertical concatenation of chebfun2 objects F and G, and this
+% function returns a chebfun2v object. 
 % 
-% [F;G] is different syntax for VERTCAT(F,G)
+% [F ; G] is different syntax for VERTCAT(F, G)
+% 
+% See also CHEBFUN2V.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.

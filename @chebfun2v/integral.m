@@ -18,11 +18,11 @@ if ( F.nComponents == 3 )
 end
 
 % restrict to chebfun: 
-F1 = restrict(F.components{1}, c); 
-F2 = restrict(F.components{2}, c); 
+F1 = restrict( F.components{1}, c ); 
+F2 = restrict( F.components{2}, c ); 
  
 % Line integral: 
 dc = diff(c); 
-v = sum(F1 .* real(dc) + F2 .* imag(dc) );  
+v = sum(F1 .* real(dc) + F2 .* imag(dc) );  % By definition.
 
 end

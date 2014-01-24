@@ -24,12 +24,10 @@ if ( F.nComponents == 2 )  % 2D curl
     
     F = diff(Fc{2}, 1, 2) - diff(Fc{1}, 1, 1);
     
-else   % standard 3D curl
+else                       % 3D curl
     
-    curlVector = [diff(Fc{3},1,1); -diff(Fc{3},1,2);...
-        diff(Fc{2},1,2) - diff(Fc{1},1,1)];
-    
-    F = curlVector; 
+    F = [ diff(Fc{3},1,1) ; -diff(Fc{3},1,2) ;...
+          diff(Fc{2},1,2) - diff(Fc{1},1,1) ];
     
 end
 

@@ -7,6 +7,6 @@ function f = minus( f, g )
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-f = plus( f, uminus(g) );
+f = plus( f, uminus( g ) );
 
 end

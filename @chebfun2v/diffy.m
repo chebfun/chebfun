@@ -1,4 +1,4 @@
-function G = diffy(F,n)
+function G = diffy( F, n )
 %DIFFY differentiate a chebfun2v with respect to its first argument
 %
 % G = DIFFY(F) returns a chebfun2v representing the derivative of F in its 
@@ -19,5 +19,5 @@ if ( nargin == 1 )
     n = 1; % default to first derivative. 
 end
 
-G = diff(F, n, 1);
+G = diff( F, n, 1 );
 end

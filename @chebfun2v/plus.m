@@ -25,23 +25,23 @@ end
 
 nF = F.nComponents;
 
-if ( isa(G, 'double') ) 
-    if ( numel(G) == 1 )
+if ( isa(G, 'double') )              % CHEBFUN2V + DOUBLE
+    if ( numel(G) == 1 )             % CHEBFUN2V + SCALAR
         for jj = 1 : nF 
             F.components{jj} = plus(F.components{jj}, G);
         end
-    elseif ( numel(G) == nF ) 
+    elseif ( numel(G) == nF )        % CHEBFUN2V + MATRIX
         for jj = 1 : nF 
              F.components{jj} = plus(F.components{jj}, G(jj));
         end          
     else
         error('CHEBFUN2V:PLUS:doubleSize', 'Dimension mismatch.')
     end
-elseif ( isa(G, 'chebfun2') ) 
+elseif ( isa(G, 'chebfun2') )         % CHEBFUN2V + CHEBFUN
     for jj = 1 : nF 
         F.components{jj} = plus(F.components{jj}, G);
     end
-elseif ( isa(G, 'chebfun2v') )
+elseif ( isa(G, 'chebfun2v') )       % CHEBFUN2V + CHEBFUN2v
     nG = G.nComponents; 
     if ( nG ~= nF ) 
         error('CHEBFUN2V:PLUS:components', 'The chebfun2v objects do not have the same components.')
@@ -49,7 +49,7 @@ elseif ( isa(G, 'chebfun2v') )
     if ( G.isTransposed ~= F.isTransposed )
         error('CHEBFUN2V:PLUS:Transposed', 'Dimension mismatch.')
     end
-    for jj = 1 : nF 
+    for jj = 1 : nF                    % Add each component together
         F.components{jj} = plus(F.components{jj}, G.components{jj});
     end
 else

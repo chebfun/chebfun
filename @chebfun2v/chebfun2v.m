@@ -37,7 +37,7 @@ classdef chebfun2v
                 return
             end
             
-            % Constructor does all the work: 
+            % constructor.m does all the work: 
             f = constructor(f, varargin{:});
             
         end

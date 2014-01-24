@@ -9,12 +9,10 @@ function F = uminus( F )
 
 % Empty check: 
 if (isempty( F ) )
-    return;
+    return
 end
 
-nF = F.nComponents; 
-for jj = 1:nF
-    F.components{jj} = uminus( F.components{jj} );
-end
+% Take uminus of each component:
+F.components = cellfun( @uminus, F.components, 'UniformOutput', false );
 
 end

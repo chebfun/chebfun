@@ -18,7 +18,7 @@ function I = integral2( f, varargin )
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % Empty check:
-if ( isempty(f) ) 
+if ( isempty( f ) ) 
     I = 0;
     return
 end
@@ -30,7 +30,7 @@ piv = f.pivotValues;
 d = 1./piv; 
 d(d==inf) = 0;  % set infinite values to zero. 
 
-if ( nargin == 1 )
+if ( nargin == 1 )                          % Double definite integral
     
     % Double definite integral:
     I = sum( cols ) * diag( d ) * sum( rows ).';
@@ -39,7 +39,7 @@ elseif ( nargin == 2 )
     % Integrate the volume enclosed by the surface of a Chebfun2 over a domain
     % with a complex-valued chebfun boundary. 
     
-    if ( isa( varargin{1}, 'chebfun' ) )
+    if ( isa( varargin{1}, 'chebfun' ) ) % Integral in area enclosed by chebfun.
         c = varargin{1};
         
         if ( ~isreal( c ) )
@@ -66,7 +66,7 @@ elseif ( nargin == 2 )
             error('CHEBFUN2:integral2:input','Integration path must be complex-valued');
         end
         
-    elseif ( isa( varargin{1}, 'double' ) )
+    elseif ( isa( varargin{1}, 'double' ) )  % Integral over restricted rectangle
         restriction = varargin{1};
         
         if ( length( restriction ) == 4 )   % calculate integral over restriction rectangle.

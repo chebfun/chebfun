@@ -22,12 +22,11 @@ end
 
 Fc = F.components; 
 Gc = G.components; 
-
 for jj = 1:nF 
     Fc{jj} = times(Fc{jj}, Gc{jj}); 
 end
 
-f = chebfun2(0, G.components{1}.domain);
+f = chebfun2( 0, G.components{1}.domain );
 for jj = 1 : nF
     f = f + Fc{jj};
 end
