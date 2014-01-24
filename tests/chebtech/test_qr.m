@@ -65,6 +65,14 @@ for n = 1:4
     I = eye(3);
     pass(n, 19) = norm(innerProduct(Q, Q) - I, inf) < ...
         10*max(f.vscale.*f.epslevel);
+
+    %%
+    % Check that the vscale and epslevel come out with the correct size for
+    % QR of an array-valued chebtech.
+    f = testclass.make(@(x) [x x.^2 x.^3], [], [], pref);
+    [Q, R] = qr(f, [], method);
+    pass(n, 20) = isequal(size(Q.vscale), [1 3]) && ...
+        isequal(size(Q.epslevel), [1 3]);
 end
 
 end
