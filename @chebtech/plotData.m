@@ -39,7 +39,7 @@ len = max([length(f), length(g), length(h)]);
 npts = min(max(501, round(4*pi*len)), chebtech.techPref().maxPoints);
 
 % Initialise the output structure:
-data = struct('xLine', [], 'yLine', [], 'xPoints', [], 'yPoints', []);
+data = struct('xLine', [], 'yLine', [], 'xPoints', [], 'yPoints', [], 'yLim', [inf -inf]);
 if ( isempty(g) )       
     % PLOT(F):
     
@@ -81,7 +81,7 @@ elseif ( isa(g, 'chebtech') )
         % Grid data for h:
         data.hGrid.xLine = h.chebpts(npts);
         % Use the maximum of the lenghts of f, g and h to match the number of
-        % values returned:    
+        % values returned:
         data.hGrid.xPoints = h.chebpts(len);
         
          % Values on oversampled Chebyshev grid:
