@@ -33,7 +33,6 @@ numSubDom = numel(s) - 1;
 % Preallocate the output cell:
 g = cell(1, numSubDom);
 
-
 % Any exponents?
 exps = [];
 if ( issing(f) )
@@ -64,7 +63,13 @@ for k = 1:numSubDom
         end
     end
     
-    g{k} = fun.constructor(@(x) feval(f, x), s(k:k+1), [], [], pref);
+    % [TODO]: Should 'vscale' be passed to the fun ctor here?
+    g{k} = fun.constructor(@(x) feval(f, x), s(k:k+1), get(f, 'vscale'), [], pref);
+end
+
+% When there is only one cell, return the UNBNDFUN instead:
+if ( numSubDom == 1 )
+    g = g{1};
 end
 
 end
