@@ -133,8 +133,7 @@ R = S*R;                    % Fix R.
 % Apply data to chebtech:
 f.values = Q;                           % Adjust values of f.
 f.coeffs = f.vals2coeffs(Q);            % Compute new coefficients.
-%f.vscale = max(abs(Q), [], 1);
-f.vscale = max(max(abs(Q))); 
+f.vscale = max(abs(Q), [], 1);
 
 % [TODO]: Update epslevel?
 
@@ -180,8 +179,7 @@ f.coeffs(1:newN/2,:) = [];
 f.values = f.coeffs2vals(f.coeffs);
 
 % Update the vscale:
-%f.vscale = max(abs(f.values), [], 1);
-f.vscale = max(max(abs(f.values))); 
+f.vscale = max(abs(f.values), [], 1);
 
 % Additional output argument:
 if ( nargout == 3 )
@@ -303,8 +301,7 @@ f.coeffs(1:n,:) = [];
 f.values = f.coeffs2vals(f.coeffs);
 
 % Update the vscale:
-%f.vscale = max(abs(Q), [], 1);
-f.vscale = max(max(abs(Q))); 
+f.vscale = max(abs(Q), [], 1);
 
 % Additional output argument:
 if ( nargout == 3 )
