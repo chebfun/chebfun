@@ -149,10 +149,10 @@ else
                 % Split end point delta functions, if exactly at the end-point
                 % and if this fun is not the last fun:
                 if ( k <= nfuns-1 && lk(end) == domk(2) )
-                    deltaMag(:, :);
+                    lastIdx = find(idx, 1, 'last');
+                    deltaMag(:, lastIdx) = deltaMag(:, lastIdx)/2;
                 end
-                mk = deltaMag(:, idx);
-                
+                mk = deltaMag(:, idx);               
                 g{k} = deltafun(fk, mk, lk);
             else
                 g{k} = fk;

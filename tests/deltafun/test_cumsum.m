@@ -18,13 +18,9 @@ mag = rand(5,5);
 loc = sort(rand(1,5));
 
 d = deltafun(f, mag, loc);
-[F, jumpVals, locations] = cumsum(d);
+[F, jumpVals] = cumsum(d);
 
-idx = abs(mag(1, :)) > tol;
-
-pass(2) = max(abs(F.funPart - cumsum(f))) < tol && ...
-    norm(jumpVals - mag(1, idx), inf) < tol && ...
-    norm(locations - loc(idx), inf) < tol;
+pass(2) = max(abs(F.funPart - cumsum(f))) < tol;
 
 f = fun.constructor(@(x) sin(pi*x));
 d = deltafun( f, [-1, 1], [-1, 1]);
@@ -54,5 +50,20 @@ shg
 d.deltaMag
 d.location
 
+%%
+f = fun.constructor(0);
+d = deltafun(f, [1 1 1 1; 1 1 1 1], [-1, -.5, .5, 1] );
+D = cumsum(d);
+for i = 1:length(D)
+    if ( isa( D{i}, 'deltafun') )
+        plot( D{i}.funPart );
+        D{i}.deltaMag
+        D{i}.location
+    else
+        plot(D{i});
+    end
+    hold on
+end
+hold off
 %%
 end

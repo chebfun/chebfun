@@ -162,12 +162,12 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         % DELTAFUN obects are not transposable.
         f = ctranspose(f)
         
+        % Indefinite integral of a DELTAFUN.
+        [F, jumpEnd] = cumsum(f, k, dim, shift)
+        
         % DELTAFUN display of useful data
         data = dispData(f)
-        
-        % Indefinite integral of a DELTAFUN.
-        [F, jumpVals, locations] = cumsum(f)
-        
+                
         % Derivative of a DELTAFUN.
         f = diff(f, k)
                 
