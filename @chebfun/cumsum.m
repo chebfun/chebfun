@@ -89,8 +89,6 @@ for l = 1:m
         % Call CUMSUM@BNDFUN:
         cumsumFunJ = cumsum(f.funs{j}, 1, 1, rval);
         
-        % [TODO]: Check why deltas appears here. 
-        
         if ( iscell( cumsumFunJ ) )
             % Update the value of the right end:
             rval = get(cumsumFunJ{2}, 'rval') + deltas(j+1,:);

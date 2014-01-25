@@ -1,4 +1,4 @@
-function A = cleanRows(A)
+function A = cleanRows(A, pref)
 %CLEANROWS   Remove trailing zero rows from a matrix.
 %   A = CLEANROWS(A) removes rows at the bottom of A which have all
 %   entries negligible. A is typically the matrix of impulses.
@@ -14,7 +14,10 @@ if ( isempty(A) )
 end
 
 % Get the tolerance:
-pref = chebpref();
+% Get the tolerance:
+if ( nargin < 3 || isempty(pref) )
+    pref = chebpref();
+end
 deltaTol = pref.deltaPrefs.deltaTol;
 
 while( max(abs(A(end, :))) < deltaTol )

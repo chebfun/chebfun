@@ -142,7 +142,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
             obj.location = location;
                                 
             % Simplify to merge redundant impulses:
-            obj = simplify(obj);
+            obj = simplify(obj, pref);
         end
     end
     
@@ -257,7 +257,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         [siz1, siz2] = size(f, varargin)
         
         % Simplify a DELTAFUN
-        f = simplify(f)
+        f = simplify(f, pref)
         
         % Definite integral of a DELTAFUN.
         out = sum(f, dim)
@@ -281,13 +281,13 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         s = constructFunPart( op, pref)
         
         % remove zero columns
-        [A, v] = cleanColumns(A, v);
+        [A, v] = cleanColumns(A, v, pref);
         
         % Create map
         map = createMap(ends)
         
         % remove zero trailing rows
-        A = cleanRows(A);
+        A = cleanRows(A, pref);
         
         % Find intersection based on some tolerance
         [x, idxV, idxW] = numIntersect( V, W, tol)
@@ -295,7 +295,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         % Constructor shortcut
         f = make(varargin)
         % Merge columns of a matrix based on duplicate values in v.
-        [A, v] = mergeColumns(A, v)
+        [A, v] = mergeColumns(A, v, pref)
         
         % Merge impulse matrix
         [D, w] = mergeImpulses(A, v, B, u);

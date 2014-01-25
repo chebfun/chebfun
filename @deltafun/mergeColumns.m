@@ -1,4 +1,4 @@
-function [A, v] = mergeColumns(A, v)
+function [A, v] = mergeColumns(A, v, pref)
 %MERGECOLUMNS Merges columns of A if two locations given in V are almost equal.
 %   [A v] = MERGECOLUMNS(A, V) merges two columns if the corresponding
 %   entries in V are equal or close to each other more than a certain
@@ -7,7 +7,9 @@ function [A, v] = mergeColumns(A, v)
 % See also CLEANCOLUMNS, MERGEIMPULSES, CLEANROWS.
 
 % Get the tolerance:
-pref = chebpref();
+if ( nargin < 3 || isempty(pref) )
+    pref = chebpref();
+end
 tol = pref.deltaPrefs.proximityTol;
 
 m = size(A, 2);

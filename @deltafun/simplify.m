@@ -1,4 +1,4 @@
-function f = simplify(f)
+function f = simplify(f, pref)
 %SIMPLIFY  Simplifis a DELTAFUN object F.
 %
 %   SIMPLIFY(F) removes trivial rows and columns from the magnitude matrix of the 
@@ -7,17 +7,20 @@ function f = simplify(f)
 %
 % See also SUM, CUMSUM.
 
+if ( nargin < 2 || isempty(pref) )
+    pref = chebpref();
+end
 
 deltaLoc = f.location;
 deltaMag = f.deltaMag;
 % Merge columns if location of deltafunction are almost equal:
-[deltaMag, deltaLoc] = deltafun.mergeColumns(deltaMag, deltaLoc);
+[deltaMag, deltaLoc] = deltafun.mergeColumns(deltaMag, deltaLoc, pref);
 
 % Remove columns which are entriely below tolerance.
-[deltaMag, deltaLoc] = deltafun.cleanColumns(deltaMag, deltaLoc);
+[deltaMag, deltaLoc] = deltafun.cleanColumns(deltaMag, deltaLoc, pref);
 
 % Remove ending rows of zeros.
-deltaMag = deltafun.cleanRows(deltaMag);
+deltaMag = deltafun.cleanRows(deltaMag, pref);
 
 
 % If any of these is empty, make everything empty explicitly. This is to avoid 

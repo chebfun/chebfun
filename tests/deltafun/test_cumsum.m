@@ -35,8 +35,10 @@ pass(3) = max(abs(F.funPart - cumsum(f))) < tol && ...
     norm(locations - [-1, 1], inf) < tol;
 
 %%
+clc
 f = fun.constructor(@(x) sin(x));
-d = deltafun(f, rand(13,5), rand(1,5));
+d = deltafun(f, rand(2,5), rand(1,5));
+d = deltafun(1,0)
 D = cumsum(d);
 
 for i = 1:length(D)

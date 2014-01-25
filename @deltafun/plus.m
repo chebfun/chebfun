@@ -30,13 +30,15 @@ end
 
 %% DELTAFUN + DELTAFUN
 if ( isa(f, 'deltafun') && isa(g, 'deltafun') )
-    %[TODO]: This should be based on tolerances?
-    domF = f.funPart.domain;
-    domG = g.funPart.domain;
-    if ( any( [domF(1) domF(end)] ~= [domG(1) domG(end)] ) ) 
-        error( 'CHEBFUN:DELTAFUN:plus', 'f and g must have the same domain' );
+    % If any of f or g have an empty funPart, the funPart of their sum would 
+    % be empty, if both are non empty, make sure they have the same domain:
+    if( ~isempty(f.funPart) && ~isempty(g.funPart) )
+        domF = f.funPart.domain;
+        domG = g.funPart.domain;
+        if ( any( [domF(1) domF(end)] ~= [domG(1) domG(end)] ) )
+            error( 'CHEBFUN:DELTAFUN:plus', 'f and g must have the same domain' );
+        end
     end
-    
     s.funPart = f.funPart + g.funPart;
     
     % Add the delta functions:    

@@ -1,4 +1,4 @@
-function [A, v] = cleanColumns(A, v)
+function [A, v] = cleanColumns(A, v, pref)
 %CLEANCOLUMNS   Remove zero columns from a matrix.
 %   [A v] = CLEANCOLUMNS(A, V) removes columns which have all entries
 %   negligible and removes the corresponding entry in the vector V. A is
@@ -9,9 +9,11 @@ function [A, v] = cleanColumns(A, v)
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
-% Remove trivial columns:
 
-pref = chebpref();
+% Get the tolerance:
+if ( nargin < 3 || isempty(pref) )
+    pref = chebpref();
+end
 deltaTol = pref.deltaPrefs.deltaTol;
 
 m = size(A, 2);
