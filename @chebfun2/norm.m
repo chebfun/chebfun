@@ -28,11 +28,11 @@ else
             error('CHEBFUN2:norm','Chebfun2 does not support L1-norm, yet');
         case {2,'fro'}
             % definite integral of f.^2
-            normF = sqrt( sum( svd(f).^2 ) );  % L^2-norm is sum of squares of sv.
+            normF = sqrt( sum( svd( f ).^2 ) );  % L^2-norm is sum of squares of sv.
         case {inf,'inf','max'}
             [Y, X] = minandmax2(f);
-            [normF, idx] = max(abs(Y));
-            normloc = X(idx,:);
+            [normF, idx] = max( abs( Y ) );
+            normloc = X( idx, : );
         case {-inf,'-inf','min'}
             error('CHEBFUN2:norm','Chebfun2 does not support this norm.');
         case {'op','operator'}
@@ -59,9 +59,12 @@ else
 end
 end
 
+%%% 
+% Below is the power_method proposed by Mario Bebendorf. This is occasionally
+% faster than the current. It is kept here because it may be useful for later.
+%%% 
 % function [normF, normloc] = power_method( f )
-%     % Maximise a chebfun2 using a fast low rank power method. See Bebendorf
-%     % paper 2011.
+%     % Maximise a chebfun2 using a fast low rank power method.
 %     [C, D, R] = cdr( f );
 %     n = max( length( C ), length( R ) );
 %     x = ones(n,1) ./ n;

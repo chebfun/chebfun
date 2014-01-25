@@ -15,13 +15,13 @@ function [Y, X] = minandmax2( f )
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-if ( isempty(f) ) % check for empty chebfun2.
-    Y = []; X = [];
+if ( isempty( f ) ) % check for empty chebfun2.
+    Y = []; 
+    X = [];
     return
 end
 
 maxsize = 4e3;   % Maximum possible sample matrix size.
-
 % Is the function the zero function?
 if ( norm( f.cols ) < 10*eps )
     dom = f.domain;
@@ -38,10 +38,10 @@ piv = f.pivotValues;
 dom = f.domain;
 
 % Share out scaling:
-sgn = sign(piv).';
-sq = 1./sqrt(abs(piv));
-frows = frows*diag(sq.'.*sgn);
-fcols = fcols*diag(sq);
+sgn = sign( piv ).';
+sq = 1 ./ sqrt( abs( piv ) );
+frows = frows * diag( sq.'.*sgn );
+fcols = fcols * diag( sq );
 
 
 if ( length(f) == 1 ) % rank-1 is easy:
@@ -49,13 +49,13 @@ if ( length(f) == 1 ) % rank-1 is easy:
     %share out the scaling.
     
     % Find minandmax of rows and columns:
-    [yr, xr] = minandmax(frows);
-    [yc, xc] = minandmax(fcols);
+    [yr, xr] = minandmax( frows );
+    [yc, xc] = minandmax( fcols );
     % All possible combinations:
     vv = [yr(1)*yc(1), yr(1)*yc(2), yr(2)*yc(1), yr(2)*yc(2)];
     
-    [Y(2), indmx] = max(vv);
-    [Y(1), indmn] = min(vv);
+    [Y(2), indmx] = max( vv );
+    [Y(1), indmn] = min( vv );
     
     % Work out the location of the maximum.
     X = zeros(2);
@@ -130,9 +130,9 @@ end
 
 end
 
-
-%
-%
+%%% 
+% Use the approach below when bivariate rootfinding is fully implemented. 
+%%%
 % % Use bivariate rootfinding to find all the local extrema:
 % F = gradient( f );
 % r = roots( F );

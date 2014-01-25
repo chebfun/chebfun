@@ -49,7 +49,11 @@ end
 N = max(n)+1;
 c = zeros(N, numel(n));
 for k = 1:numel(n)
+    try
     c(N-n(k), k) = 1;
+    catch
+        keyboard;
+    end
 end
 
 % Construct a CHEBFUN from the coefficients:

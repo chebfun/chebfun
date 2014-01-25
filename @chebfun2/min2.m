@@ -3,7 +3,7 @@ function [Y, X] = min2( f )
 %
 % Y = MIN2(F) returns the global minium of F.
 % 
-% [Y X]=MIN2(F) returns the global minimum of F and its coordinates in 
+% [Y, X]=MIN2(F) returns the global minimum of F and its coordinates in 
 %    X = (X(1), X(2)). 
 %
 % For high accuracy results this command requires the Optimization Toolbox.
@@ -16,7 +16,7 @@ function [Y, X] = min2( f )
 % Call minandmax2:
 [Y, X] = minandmax2( f );
 % Extract out minimum:
-Y = Y(1); 
-X = X(1,:);  
+Y = Y( 1 ); 
+X = X( 1, : );  
 
 end

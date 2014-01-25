@@ -1,4 +1,4 @@
-function g = median(f,varargin)
+function g = median( f, varargin )
 %MEDIAN  Median value of a chebfun2
 %
 % G = MEDIAN(F) returns a chebfun G representing the median of the
@@ -14,12 +14,12 @@ function g = median(f,varargin)
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % Empty check: 
-if ( isempty(f) ) 
-    return;
+if ( isempty( f ) ) 
+    return
 end
 
 % Default to along the y direction:
-if ( nargin== 1 ) 
+if ( nargin == 1 ) 
     dim=1;
 end
 
@@ -35,7 +35,7 @@ dom = f.domain;
 % we are just going to the do the tensor product median.
 
 vals = chebpolyval2( f, sample, sample );   % sample on tensor grid. 
-mX = median(vals, dim);   % discrete median.
+mX = median( vals, dim );   % discrete median.
 mX = mX(:);              
 
 if ( dim == 1 )
@@ -44,7 +44,7 @@ else
     interval = dom( 3:4 );
 end
 
-g = chebfun(mX, interval);  % form chebfun. 
-g = simplify(g);            % simplify
+g = chebfun(mX, interval);    % form chebfun. 
+g = simplify( g );            % simplify
 
 end

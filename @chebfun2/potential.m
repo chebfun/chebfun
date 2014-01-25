@@ -16,9 +16,9 @@ function G = potential( f )
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % Empty check: 
-if ( isempty(f) )
+if ( isempty( f ) )
     G = chebfun2v; 
-    return; 
+    return
 end
 
 dom = f.domain; 

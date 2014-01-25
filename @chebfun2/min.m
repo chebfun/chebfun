@@ -1,4 +1,4 @@
-function g = min(f,varargin)
+function g = min( f, varargin )
 %MIN  Minimum value of a chebfun2
 % 
 % MIN(F), returns a chebfun representing the minimum of the chebfun2 along
@@ -15,7 +15,7 @@ function g = min(f,varargin)
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % Empty check: 
-if ( isempty(f) ) 
+if ( isempty( f ) ) 
     error('CHEBFUN2:MIN:INPUT','Chebfun2 is empty');
 end
 
@@ -35,7 +35,7 @@ if ( nargin == 2 )  % default to maximum along the y direction.
 end
 
 if ( nargin == 3 )  % what direction do we want to max in? 
-    dim = varargin{2};
+    dim = varargin{ 2 };
 end
 
 

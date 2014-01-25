@@ -13,7 +13,7 @@ function J = jacobian( f, g )
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % Empty check: 
-if ( isempty(f) || isempty(g) )  
+if ( isempty( f ) || isempty( g ) )  
     J = []; 
     return
 end

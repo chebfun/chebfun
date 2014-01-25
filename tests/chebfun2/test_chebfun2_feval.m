@@ -1,9 +1,9 @@
 function pass = test_chebfun2_feval( pref ) 
-% Evaluation check for Chebfun2. 
+% Test feval
 
-if ( nargin < 1 ) 
+if ( nargin == 0) 
     pref = chebpref; 
-end 
+end
 
 tol = 100*pref.cheb2Prefs.eps; 
 j = 1; 
@@ -55,5 +55,17 @@ pass(j) = ( norm( f(-1-1i) - (-1-1i) )  < tol ); j = j + 1;
 pass(j) = ( norm( f(r+1i*s) - (r + 1i*s) )  < tol );j = j + 1; 
 pass(j) = (norm((feval(f,rr,ss) - (rr + 1i*ss)))<tol); j=j+1; % on arrays as well. 
 
+% Check sizes:
+n = 10; 
+f = chebfun2(@(x,y) cos(x.*y)); 
+x = ones(1,n);
+[xx, yy] = meshgrid(x); 
+
+pass(j) = ( all( size( feval(f, 1, 1) ) == [1 1] ) ); 
+pass(j) = ( all( size( feval(f, [1 1], [1 1]) ) == [2 1] ) );
+pass(j) = ( all( size( feval(f, [1;1], [1;1]) ) == [2 1] ) );
+pass(j) = ( all( size( feval(f, [1 1;1 1], [1 1; 1 1]) ) == [2 2] ) );
+pass(j) = ( all( size( feval(f, x, x) ) == [n 1] ) );
+pass(j) = ( all( size( feval(f, xx, yy)  ) == [n n] ) );
 
 end

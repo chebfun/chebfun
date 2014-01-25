@@ -1,12 +1,12 @@
-function varargout = pivotplot(f,varargin)
-%PIVOTPLOT(F) semilogy plot of the pivot values
+function varargout = pivotplot( f, varargin )
+%PIVOTPLOT( F ) semilogy plot of the pivot values
 %
-% PIVOTPLOT(F) semilogy plot of the Gaussian elimination pivots taken
+% PIVOTPLOT( F ) semilogy plot of the Gaussian elimination pivots taken
 % during the construction of the chebfun2 F.
 %
-% H = PIVOTPLOT(F) returns a handle H to the figure.
+% H = PIVOTPLOT( F ) returns a handle H to the figure.
 %
-% PIVOTPLOT(F,S) allows further plotting options, such as linestyle,
+% PIVOTPLOT( F, S ) allows further plotting options, such as linestyle,
 % linecolor, etc. If S contains a string 'LOGLOG', the psudeo sig will be
 % displayed on a log-log scale.
 
@@ -16,7 +16,7 @@ function varargout = pivotplot(f,varargin)
 scaleTypeLog = false;
 doWeHoldOn = ishold;
 
-if ( isempty(f) ) 
+if ( isempty( f ) ) 
    error('CHEBFUN2:PIVOTPLOT', 'Empty chebfun2 has no pivots to plot');
 end 
 
@@ -35,12 +35,12 @@ end
 %% 
 % Plot a semilogy or loglog 
 plotopts = varargin;
-UK = [ {1:length(pivots(f)), abs(pivots(f))}, plotopts ]; % store
+S = [ {1:length(pivots(f)), abs(pivots(f))}, plotopts ]; % store
 
 if ( ~scaleTypeLog )
-    h = semilogy( UK{:} );            % semilogy plot
+    h = semilogy( S{:} );            % semilogy plot
 else
-    h = loglog( UK{:} );              % loglog plot
+    h = loglog( S{:} );              % loglog plot
 end
 
 %%
@@ -51,7 +51,7 @@ end
 
 % output handle if appropriate
 if ( nargout ~=0 )
-    varargout = {h};
+    varargout = { h };
 end
 
 end

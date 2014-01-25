@@ -1,5 +1,5 @@
 function h = mldivide(f, g)
-%/   Chebfun2 left divide.
+%\   Chebfun2 left divide.
 %
 % Left divide for a chebfun2. Only allowed to divide by scalars.
 

@@ -41,7 +41,7 @@ end
 
 % What variable to maximise over? 
 if ( nargin == 3 )  
-    dim = varargin{2};
+    dim = varargin{ 2 };
 end
 
 

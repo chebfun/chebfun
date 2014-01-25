@@ -17,7 +17,7 @@ function out = feval(f, x, y)
 
 % Empty check:
 if ( isempty(f) )
-    varargout = {[]};
+    out = [];
     return
 end
 
@@ -63,7 +63,7 @@ elseif ( isnumeric( x ) && isnumeric( y ) )    % f(x, y)
     out = feval( cols, y(:) ) * diag( d ) * feval( rows, x(:)) .';
     
     if ( takeDiag ) 
-        out = diag(out); 
+        out = diag( out ); 
     end 
 elseif ( isa(x,'chebfun') )
     if ( ~isreal(x) ) % complex valued chebfun.

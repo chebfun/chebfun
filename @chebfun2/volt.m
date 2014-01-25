@@ -3,9 +3,11 @@ function f = volt( K, v )
 %
 % V = VOLT(K,f) returns a row chebfun resulting from the integral
 %     
-%      f(x) = (K*v)(x) = int( K(x,y) v(y), y=a..x )
-%   
-% The kernel function K(x,y) must be a smooth chebfun2.
+%      f(x) = (K*v)(x) = int( K(x,y) v(y), y=a..x ),
+%
+% where K is defined on a domain [a,b]x[a,b]. 
+% 
+% The kernel function K(x,y) must be a smooth chebfun2 defined on a square domain.
 %
 % Example:
 % 
@@ -17,7 +19,7 @@ function f = volt( K, v )
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun2 information.
 
 if ( ~isa( K, 'chebfun2' ) )
-    error('CHEBFUN2:volt:input','First argument must be a chebfun2');
+    error('CHEBFUN2:VOLT:input','First argument must be a chebfun2');
 end
 
 % Get the low rank representation for f. 
@@ -34,7 +36,7 @@ end
 
 % Domain compatibility: 
 if ( ~domainCheck(cols, v) )
-    error('CHEBFUN2:FRED:CHEBDOMAIN','Domain of chebfun and chebfun2 kernel do not match');
+    error('CHEBFUN2:VOLT:CHEBDOMAIN','Domain of chebfun and chebfun2 kernel do not match');
 end
 
 RR = diag( d ) * rows;
