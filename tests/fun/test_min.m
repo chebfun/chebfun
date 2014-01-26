@@ -63,7 +63,7 @@ yExact = -Inf;
 xExact = dom(2);
 errX = x - xExact;
 pass(8) = ( norm(errX, inf) < get(f,'epslevel')*get(f,'vscale') ) && ...
-    ( yExact == -Inf );
+    ( y == yExact );
 
 end
 

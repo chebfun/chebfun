@@ -235,6 +235,9 @@ classdef fun % (Abstract)
         
         % Test if a FUN object is built upon SMOOTHFUN.
         out = issmooth(f)
+        
+        % Test if a FUN object is defined on an unbounded domain.
+        out = isunbnd(f)
 
         % True for zero FUN objects
         out = iszero(f)
