@@ -1,75 +1,101 @@
 function g = constructor(g, op, domain, varargin)
-% The main Chebfun2 constructor.
+%CONSTRUCTOR The main Chebfun2 constructor.
+% 
+% This code is when functions of two variables are represented as chebfun2
+% objects. A chebfun2 object is a low rank representation and expresses a
+% function as a sum of rank-0 or 1 outerproduct of univariate functions. 
+%
+% The algorithm for constructing a chebfun2 comes in two phases: 
+%
+% PHASE 1: The first phase attempts to determine the numerical rank of the
+% function by performing Gaussian elimination with complete pivoting on a tensor
+% grid of sample values. GE is perform until the pivoting elements fall below
+% machine precision.  At the end of this stage we have candidate pivot locations
+% and pivot elements. 
+% 
+% PHASE 2: The second phase attempts to resolve the corresponding column and row
+% slices by sampling along the slices and performing GE on the skeleton.
+% Sampling along each slice is increased until the Chebyshev coefficients of the
+% slice fall below machine precision. 
+% 
+% The algorithm is fully described in: 
+% 
+% A. Townsend and L. N. Trefethen, An extension of Chebfun to two dimensions,
+% SISC, 35 (2013), C495-C518.
+% 
+% See also CHEBFUN2.
 
-
-% Remove two trivial cases:
-if ( nargin == 0 )   % chebfun2();
+if ( nargin == 0 )          % CHEBFUN2( )
     return
 end
 
-if ( isa(op, 'chebfun2') )  % chebfun2(f), f = chebfun2
+if ( isa(op, 'chebfun2') )  % CHEBFUN2( CHEBFUN2 )
     g = op;
     return
 end
 
+% If domain is empty take [-1 1 -1 1]:
 if ( nargin < 3 || isempty(domain) )
     domain = [-1 1 -1 1];
 end
 
-if ( nargin > 3)
-    if ( isa(varargin{1}, 'chebpref') )
-        defaults = chebpref;
-        pref = mergePrefs(defaults, varargin{1});
-    end
-else
-    pref = chebpref;
+if ( nargin > 3 && isa(varargin{1}, 'chebpref') )
+    defaults = chebpref;
+    pref = mergePrefs(defaults, varargin{1});
 end
 
-if ( isa(op, 'double') )                        % chebfun2( double )
+if ( isa(op, 'double') )                        % CHEBFUN2( DOUBLE )
     if ( numel( op ) == 1 )
+        % LNT wants this: 
         g = constructor(g, @(x,y) op + 0*x, domain);
     else
+        % If CHEBFUN2(f, rk), then nonadaptive call: 
         if ( numel(domain) == 1 )
             fixedRank = domain;
             domain = [-1 1 -1 1];
         else
+            % Otherwise its an adaptive call:
             fixedRank = 0;
         end
+        % Perform GE with complete pivoting: 
         [pivotValue, ignored, rowValues, colValues] = CompleteACA(op, 0);
+        % Construct a chebfun2: 
         g.pivotValues = pivotValue;
         g.cols = chebfun(colValues, domain(3:4) );
         g.rows = chebfun(rowValues.', domain(1:2) );
         g.domain = domain;
+        % Did we have a nonadaptive construction?:
         g = fixTheRank(g, fixedRank);
     end
     return
 end
 
-if ( isa(op, 'char') )                          % chebfun2('fh')
+if ( isa(op, 'char') )                          % CHEBFUN2( CHAR )
     op = str2op( op );
 end
 
-% Check the operator has one argument, then make it complex.
+% If the operator has one argument, then make it complex.
 if ( nargin(op) == 1 )
     op = @(x, y) op( x + 1i*y );
 end
 
-% Look for vectorize and coeffs flag:
+% Look for vectorize flag:
 vectorize = 0;
-if (any(strcmpi(domain,'vectorize')) || any(strcmpi(domain,'vectorise')))
+if (any(strcmpi(domain, 'vectorize')) || any(strcmpi(domain, 'vectorise')))
     vectorize = 1;
     domain = [-1 1 -1 1];
-end
-if ( (nargin > 3) && (any(strcmpi(varargin{1},'vectorize')) || any(strcmpi(varargin{1},'vectorise'))))
+elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, 'vectorize')) ||...
+                                     any(strcmpi(varargin{1}, 'vectorise'))))
     vectorize = 1;
 end
 
-if (any(strcmpi(domain,'coeffs')) || any(strcmpi(domain,'coeffs')) )
+% Look for coeffs flag: 
+if (any(strcmpi(domain, 'coeffs')) || any(strcmpi(domain, 'coeffs')) )
     op = coeffs2vals( op );
     g = chebfun2( op );
     return
-end
-if (( nargin > 3 ) && ( any(strcmpi(varargin{1},'coeffs')) || any(strcmpi(varargin{1},'coeffs'))))
+elseif (( nargin > 3 ) && ( any(strcmpi(varargin{1}, 'coeffs')) ||...
+                                       any(strcmpi(varargin{1}, 'coeffs'))))
     op = coeffs2vals( op );
     g = chebfun2( op, domain );
     return
@@ -77,6 +103,7 @@ end
 
 fixedRank = 0;
 % If the domain isn't of length 4, search for the other 2 endpoints:
+% For instance, allow CHEBFUN2( OP, [-1 1], [-1 1]).
 if ( numel(domain) == 2 )
     if ( ( nargin > 3) && isa(varargin{1}, 'double') )
         ends = varargin{1};
@@ -98,14 +125,13 @@ end
 % Get default preferences from chebPref:
 prefs = chebpref;
 prefStruct = prefs.cheb2Prefs;
-% maxRank = prefStruct.maxRank;
-maxRank = 1025;
+maxRank = prefStruct.maxRank;
 maxLength = prefStruct.maxLength;
 pseudoLevel = prefStruct.eps;
-exactLength = prefStruct.exactLength;
 sampleTest = prefStruct.sampleTest;
 grid = 9;   % minsample
 
+% If the vectorize flag is off, do we need to give user a warning? 
 if ( vectorize == 0 )                                       % another check
     % check for cases: @(x,y) x*y, and @(x,y) x*y'
     [xx, yy] = meshgrid( domain(1:2), domain(3:4));
@@ -117,54 +143,65 @@ if ( vectorize == 0 )                                       % another check
         end
     end
     if ( any(any( abs(A - B.') > min( 1000*pseudoLevel, 1e-4 ) ) ) )
+        % function handle probably needs vectorizing, give user a warning and
+        % then vectorize. 
         warning('CHEBFUN2:CTOR:VECTORIZE','Function did not correctly evaluate on an array. Turning on the ''vectorize'' flag. Did you intend this? Use the ''vectorize'' flag in the chebfun2 constructor call to avoid this warning message.');
         g = chebfun2(op, domain, 'vectorize');
         return
     end
 end
 
-isHappy = 0;  % If unhappy, selected pivots were not good enough.
+isHappy = 0; 
 while ( ~isHappy )
+    % Sample function on a Chebyshev tensor grid:
     [xx, yy] = chebfun2.chebpts2(grid, grid, domain);
-    vals = evaluate(op, xx, yy, vectorize);             % Matrix of values at cheb2 pts.
+    vals = evaluate(op, xx, yy, vectorize);        
     
+    % Does the function blow up or evaluate to NaN?:
     vscale = max(abs(vals(:)));
     if ( isinf(vscale) )
         error('FUN2:CTOR', 'Function returned INF when evaluated');
-    end
-    if ( any(isnan(vals(:)) ) )
+    elseif ( any(isnan(vals(:)) ) )
         error('FUN2:CTOR', 'Function returned NaN when evaluated');
     end
+    
+    % Two-dimensional version of Chebfun's tolerance:
     tol = grid.^(4/3) * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
     
-    %% FIND NUMERICAL RANK:
+    %%% PHASE 1: %%%
+    % Do GE with complete pivoting: 
     [pivotValue, pivotPosition, rowValues, colValues, iFail] = CompleteACA(vals, tol);
-    % Use chebtech's happiness check
+    
     strike = 1;
     while ( iFail && grid <= maxRank && strike < 3)
-        grid = 2^(floor(log2(grid)) + 1) + 1;                % Double the sampling
+        % Double sampling on tensor grid:
+        grid = 2^( floor( log2( grid ) ) + 1) + 1;                
         [xx, yy] = chebfun2.chebpts2(grid, grid, domain);
-        vals = evaluate(op, xx, yy, vectorize);                        % Resample on denser grid.
+        vals = evaluate(op, xx, yy, vectorize);            % resample
         vscale = max(abs(vals(:)));
+        % New tolerance: 
         tol = grid.^(4/3) * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
+        % New GE: 
         [pivotValue, pivotPosition, rowValues, colValues, iFail] = CompleteACA(vals, tol);
+        % If the function is 0+noise then stop after three strikes.
         if ( abs(pivotValue(1))<1e4*vscale*tol )
-            % If the function is 0+noise then stop after three strikes.
             strike = strike + 1;
         end
     end
     
+    % If the rank of the function is above maxRank then stop.
     if ( grid > maxRank )
         error('FUN2:CTOR', 'Not a low-rank function.');
     end
     
+    % Check if the column and row slices are resolved.
     colChebtech = chebtech2(sum(colValues,2), domain(3:4) );
     resolvedCols = happinessCheck(colChebtech);
     rowChebtech = chebtech2(sum(rowValues.',2), domain(1:2) );
     resolvedRows = happinessCheck(rowChebtech);
-    
     isHappy = resolvedRows & resolvedCols;
     
+    % If the function is zero, set midpoint of domain as pivot location. 
     if ( length(pivotValue) == 1 && pivotValue == 0 )
         PivPos = [0, 0];
         isHappy = 1;
@@ -173,15 +210,16 @@ while ( ~isHappy )
         PP = pivotPosition;
     end
     
+    %%% PHASE 2: %%% 
+    % Now resolve along the column and row slices: 
     n = grid;  m = grid;
-    
-    % If unresolved then perform ACA on selected slices.
     while ( ~isHappy )
         if ( ~resolvedCols )
-            n = 2^(floor(log2(n))+1) + 1;
+            % Double sampling along columns
+            n = 2^( floor( log2( n ) ) + 1) + 1;
             [xx, yy] = meshgrid(PivPos(:, 1), chebpts(n, domain(3:4)));
             colValues = evaluate(op, xx, yy, vectorize);
-            % Find location of pivots on new grid.
+            % Find location of pivots on new grid (using nesting property).
             oddn = 1:2:n;
             PP(:, 1) = oddn(PP(:, 1));
         else
@@ -189,25 +227,30 @@ while ( ~isHappy )
             colValues = evaluate(op, xx, yy, vectorize);
         end
         if ( ~resolvedRows )
-            m = 2^(floor(log2(m))+1) + 1;
+             % Double sampling along rows
+            m = 2^( floor( log2( m ) ) + 1 ) + 1;
             [xx, yy] = meshgrid(chebpts(m, domain(1:2)), PivPos(:, 2));
             rowValues = evaluate(op, xx, yy, vectorize);
-            oddm = 1:2:m; PP(:, 2) = oddm(PP(:, 2)); % find location of pivots on new grid.
+            % find location of pivots on new grid  (using nesting property).
+            oddm = 1:2:m; 
+            PP(:, 2) = oddm(PP(:, 2)); 
         else
             [xx, yy] = meshgrid(chebpts(m, domain(1:2)), PivPos(:, 2));
             rowValues = evaluate(op, xx, yy, vectorize);
         end
         
+        % Do GE on the skeleton to update slices: 
         nn = numel(pivotValue);
-        
-        % ACA on selected Pivots.
         for kk = 1:nn-1
-            colValues(:, kk+1:end) = colValues(:, kk+1:end) - colValues(:, kk)*(rowValues(kk, PP(kk+1:nn, 2))./pivotValue(kk));
-            rowValues(kk+1:end, :) = rowValues(kk+1:end, :) - colValues(PP(kk+1:nn, 1), kk)*(rowValues(kk, :)./pivotValue(kk));
+            colValues(:, kk+1:end) = colValues(:, kk+1:end) -...
+                colValues(:, kk)*(rowValues(kk, PP(kk+1:nn, 2))./pivotValue(kk));
+            rowValues(kk+1:end, :) = rowValues(kk+1:end, :) -...
+                colValues(PP(kk+1:nn, 1), kk)*(rowValues(kk, :)./pivotValue(kk));
         end
         
+        % If function is on rank-1 then make rowValues a row vector: 
         if ( nn == 1 )
-            rowValues = rowValues(:).';  % make a row vector.
+            rowValues = rowValues(:).'; 
         end
         
         % Are the columns and rows resolved now?
@@ -219,9 +262,10 @@ while ( ~isHappy )
             rowChebtech = chebtech2(sum(rowValues.',2));
             resolvedRows = happinessCheck(rowChebtech);
         end
-        
         isHappy = resolvedRows & resolvedCols;
-        if ( max(m, n) >= maxLength )  % max number of degrees allows.
+        
+        % STOP if degree is over maxLength:
+        if ( max(m, n) >= maxLength ) 
             error('FUN2:CTOR', 'Unresolved with maximum Chebfun length: %u.', maxLength);
         end
         
@@ -328,6 +372,9 @@ end
 
 
 function vals = evaluate( op, xx, yy, flag )
+% EVALUATE  Wrap the function handle in a FOR loop if the vectorize flag is
+% turned on. 
+
 if ( flag )
     vals = zeros( size( yy, 1), size( xx, 2) );
     for jj = 1 : size( yy, 1)
@@ -360,7 +407,7 @@ op = eval(['@(' depvar{1} ',' depvar{2} ')' op]);
 end
 
 function g = fixTheRank( g , fixedRank )
-% Fix the rank of a chebfun2:
+% Fix the rank of a chebfun2. Used for nonadaptive calls to the constructor.
 
 if ( fixedRank < 0 )
     error('CHEBFUN2:CONSTRUCTOR','Nonadaptive rank should be positive.')

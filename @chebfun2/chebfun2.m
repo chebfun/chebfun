@@ -1,5 +1,5 @@
 classdef chebfun2
-% CHEBFUN2 CHEBFUN class for constructing functions on [a,b]x[c,d].
+% CHEBFUN2 CHEBFUN2 class for constructing functions on [a,b]x[c,d].
 % 
 %   Class for approximating functions defined on finite rectangles. The 
 %   functions should be smooth.
@@ -16,8 +16,13 @@ classdef chebfun2
 % CHEBFUN2(F, [A B C D]) specifies a rectangle [A B]x[C D] where the 
 % function is defined. A, B, C, D must all be finite.
 % 
-% CHEBFUN(F,'coeffs') where F is matrix uses the matrix as coefficients in 
+% CHEBFUN2(F, 'coeffs') where F is matrix uses the matrix as coefficients in 
 % a Chebyshev tensor expansion.
+%
+% The Chebfun2 software system is based on: 
+%
+% % A. Townsend and L. N. Trefethen, An extension of Chebfun to two dimensions,
+% SISC, 35 (2013), C495-C518.
 %
 % See also CHEBFUN, CHEBFUN2V.
 
