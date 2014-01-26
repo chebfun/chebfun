@@ -89,13 +89,13 @@ for n = 1:2
     pass(n, 12) = isequal(h1, h2);
     h_exact = @(x) [tanh(x).*sin(x) tanh(x).*cos(x) tanh(x).*exp(x)];
     err = feval(h1, x) - h_exact(x);
-    pass(n, 13) = max(abs(err(:))) < 10*h1.epslevel;
+    pass(n, 13) = max(abs(err(:))) < 10*max(h1.epslevel);
     
     g = testclass.make(@(x) [sinh(x) cosh(x) tanh(x)], [], [], pref);
     h = f .* g;
     h_exact = @(x) [sinh(x).*sin(x) cosh(x).*cos(x) tanh(x).*exp(x)];
     err = feval(h, x) - h_exact(x);
-    pass(n, 14) = max(abs(err(:))) < 10*h.epslevel;
+    pass(n, 14) = max(abs(err(:))) < 10*max(h.epslevel);
     
     % This should fail with a dimension mismatch error.
     try

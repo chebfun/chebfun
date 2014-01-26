@@ -17,21 +17,21 @@ h = chebfun(@exp, [-1 -0.5 0 0.5 1]);
 Q = [1 f];
 Q_exact = @(x) [ones(size(x)) sin(x)];
 err = feval(Q, xr) - Q_exact(xr);
-pass(1) = norm(err(:), inf) < 10*vscale(Q)*epslevel(Q);
+pass(1) = numel(f) == 1 && norm(err(:), inf) < 10*vscale(Q)*epslevel(Q);
 
 Q = [f f];
 Q_exact = @(x) [sin(x) sin(x)];
 err = feval(Q, xr) - Q_exact(xr);
-pass(2) = norm(err(:), inf) < 10*vscale(Q)*epslevel(Q);
+pass(2) = numel(f) == 1 && norm(err(:), inf) < 10*vscale(Q)*epslevel(Q);
 
 Q = [f g];
 Q_exact = @(x) [sin(x) cos(x)];
 err = feval(Q, xr) - Q_exact(xr);
-pass(3) = norm(err(:), inf) < 10*vscale(Q)*epslevel(Q);
+pass(3) = numel(Q) == 2 && norm(err(:), inf) < 10*vscale(Q)*epslevel(Q);
 
 Q = [f g h];
 Q_exact = @(x) [sin(x) cos(x) exp(x)];
 err = feval(Q, xr) - Q_exact(xr);
-pass(4) = norm(err(:), inf) < 10*vscale(Q)*epslevel(Q);
+pass(4) = numel(Q) == 3 && norm(err(:), inf) < 10*vscale(Q)*epslevel(Q);
 
 end

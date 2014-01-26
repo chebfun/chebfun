@@ -22,7 +22,7 @@ classdef chebtech < smoothfun % (Abstract)
 %
 %   CHEBTECH.CONSTRUCTOR(OP, VSCALE, HSCALE, PREF) overrides the default
 %   behavior with that given by the preference structure PREF. See
-%   CHEBTECH.PREF for details. The CHEBTECH class supports construction via
+%   CHEBTECH.TECHPREF for details. The CHEBTECH class supports construction via
 %   interpolation at first- and second-kind Chebyshev points with the classes
 %   CHEBTECH1 and CHEBTECH2 respectively. The default procedure is to use
 %   2nd-kind points, but this can be overwritten with the preferences
@@ -43,13 +43,13 @@ classdef chebtech < smoothfun % (Abstract)
 %   f = chebtech.constructor(@(x) sin(x))
 %
 %   % Construction with preferences:
-%   p.gridType = 2;  % See CHEBTECH.PREF.
+%   p.gridType = 2;  % See CHEBTECH.TECHPREF.
 %   f = chebtech.constructor(@(x) cos(x), [], [], p)
 %
 %   % Array-valued construction:
 %   f = chebtech.constructor(@(x) [sin(x), cos(x), exp(x)])
 %
-% See also CHEBTECH.PREF, HAPPINESSCHECK, CHEBTECH1, CHEBTECH2.
+% See also CHEBTECH.TECHPREF, HAPPINESSCHECK, CHEBTECH1, CHEBTECH2.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -69,7 +69,7 @@ classdef chebtech < smoothfun % (Abstract)
 % Chebyshev polynomials (i.e., those usually denoted by $T_k(x)$).
 %
 % The decision to use CHEBTECH1 or CHEBTECH2 is decided by the
-% CHEBTECH.PREF().GRIDTYPE property, which should be set to either 1 or 2.
+% CHEBTECH.TECHPREF().GRIDTYPE property, which should be set to either 1 or 2.
 %
 % The vertical scale VSCALE is used to enforce scale invariance in CHEBTECH
 % construction and subsequent operations. For example, that
@@ -119,9 +119,9 @@ classdef chebtech < smoothfun % (Abstract)
 % If the input operator OP evaluates to NaN or Inf at any of the sample points
 % used by the constructor, then a suitable replacement is found by
 % extrapolating (globally) from the numeric values (see EXTRAPOLATE.M). If the
-% EXTRAPOLATE preference is set to TRUE (See CHEBTECH.PREF), then the endpoint
-% values -1 and +1 are always extrapolated (i.e., regardless of whether they
-% evaluate to NaN).
+% EXTRAPOLATE preference is set to TRUE (See CHEBTECH.TECHPREF), then the
+% endpoint values -1 and +1 are always extrapolated (i.e., regardless of
+% whether they evaluate to NaN).
 %
 % The CHEBTECH classes support the representation of array-valued functions (for
 % example, f = chebtech.constructor(@(x) [sin(x), cos(x)])). In such cases, the
@@ -264,6 +264,12 @@ classdef chebtech < smoothfun % (Abstract)
         % Absolute value of a CHEBTECH. (f should have no zeros in its domain)
         f = abs(f, pref)
 
+        % CHEBTECH logical AND.
+        h = and(f, g)
+
+        % True if any element of a CHEBTECH is a nonzero number, ignoring NaN.
+        a = any(f, dim)
+
         % Convert an array of CHEBTECH objects into an array-valued CHEBTECH.
         f = cell2mat(f)
 
@@ -285,6 +291,9 @@ classdef chebtech < smoothfun % (Abstract)
         % Derivative of a CHEBTECH.
         f = diff(f, k, dim)
 
+        % Extract information for DISPLAY.
+        info = dispData(f)
+        
         % Extract columns of an array-valued CHEBTECH object.
         f = extractColumns(f, columnIndex)
 
@@ -296,6 +305,12 @@ classdef chebtech < smoothfun % (Abstract)
 
         % Evaluate a CHEBTECH.
         y = feval(f, x)
+        
+        % Round a CHEBTECH towards zero.
+        g = fix(f);
+        
+        % Round a CHEBTECH towards minus infinity.
+        g = floor(f);
 
         % Flip columns of an array-valued CHEBTECH object.
         f = fliplr(f)
@@ -333,8 +348,14 @@ classdef chebtech < smoothfun % (Abstract)
         % True for zero CHEBTECH objects
         out = iszero(f)
         
+        % Return Legendre coefficients of a CHEBTECH.
+        c_leg = legpoly(f, n)
+        
         % Length of a CHEBTECH.
         len = length(f)
+
+        % CHEBTECH logical.
+        f = logical(f)
 
         % A 'loose' (i.e., not too strict) check for happiness.
         [ishappy, epslevel, cutoff] = looseCheck(f, pref)
@@ -362,9 +383,12 @@ classdef chebtech < smoothfun % (Abstract)
 
         % Multiplication of CHEBTECH objects.
         f = mtimes(f, c)
-        
-        % Compute a Legendre series expansion of a CHEBTECH object:
-        c = legpoly(f)
+
+        % CHEBTECH logical NOT.
+        f = not(f)
+
+        % CHEBTECH logical OR.
+        h = or(f, g)
 
         % Basic linear plot for CHEBTECH objects.
         varargout = plot(f, varargin)
@@ -387,6 +411,9 @@ classdef chebtech < smoothfun % (Abstract)
         % Populate a CHEBTECH class with values.
         f = populate(f, op, vscale, hscale, pref)
         
+        % Power function of a CHEBTECH.
+        f = power(f, b)
+
         % Adjust the number of points used in a CHEBTECH.
         f = prolong(f, n)
 
@@ -404,6 +431,9 @@ classdef chebtech < smoothfun % (Abstract)
 
         % Roots of a CHEBTECH in the interval [-1,1].
         out = roots(f, varargin)
+        
+        % Round a CHEBTECH towards nearest integer.
+        g = round(f)
 
         % Test an evaluation of the input OP against a CHEBTECH approx.
         pass = sampleTest(op, f)
@@ -442,9 +472,15 @@ classdef chebtech < smoothfun % (Abstract)
 
         % Evaluation using the barycentric interpolation formula.
         fx = bary(x, gvals, xk, vk)
+        
+        % Convert Chebshev coefficients to Legendre coefficients.
+        c_leg = cheb2leg(c_cheb, M);
 
         % Clenshaw's algorithm for evaluating a Chebyshev polynomial.
         out = clenshaw(x, coeffs)
+        
+        % Convert Legendre coefficients to Chebshev coefficients.
+        c_cheb = leg2cheb(c_leg, M);
 
         % Retrieve and modify preferences for this class.
         p = techPref(q)

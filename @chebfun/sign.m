@@ -1,11 +1,11 @@
-function g = sign(f)
+function F = sign(F, pref)
 %SIGN   Sign function of a CHEBFUN.
 %   G = SIGN(F) returns a piecewise constant CHEBFUN G such that G(x) = 1 in the
 %   interval where F(x) > 0, G(x) = -1 in the interval where F(x) < 0 and G(x) =
 %   0 in the interval where F(x) = 0. Breakpoints in G are introduced at zeros
 %   of F.
 %
-%   For the nonzero elements of complex F, SIGN(F) = F./ABS(F)
+%   For the nonzero values of complex F, SIGN(F) = F./ABS(F)
 %
 % See also ABS, HEAVISIDE, ROOTS.
 
@@ -13,23 +13,34 @@ function g = sign(f)
 % See http://www.chebfun.org for Chebfun information.
 
 % Deal with the empty case:
-if ( isempty(f) )
-    g = f;
+if ( isempty(F) )
     return
 end
 
+if ( nargin < 2 ) 
+    pref = chebpref();
+end
+
+for k = 1:numel(F)
+    F(k) = signColumn(F(k), pref);
+end
+
+end
+
+function g = signColumn(f, pref)
+
 % Add breaks at the appropriate roots of f:
-g = addBreaksAtRoots(f);
+g = addBreaksAtRoots(f, pref);
 
 % Call SIGN on each of the FUNs: (result will be smooth)
 for k = 1:numel(g.funs)
-    g.funs{k} = sign(g.funs{k});
+    g.funs{k} = sign(g.funs{k}, pref);
 end
 
 % Take the sign of the impulses in the first row:
 g.impulses = sign(g.impulses(:,:,1));
 
 % Remove unnecessary breakpoints:
-g = merge(g); 
+g = merge(g, pref); 
 
 end

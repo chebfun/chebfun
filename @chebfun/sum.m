@@ -1,4 +1,4 @@
-function out = sum(f, a, b)
+function out = sum(F, a, b)
 %SUM   Definite integral of a CHEBFUN.
 %   SUM(F) is the integral of a column CHEBFUN F over its domain of definition.
 %
@@ -31,14 +31,8 @@ function out = sum(f, a, b)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-% An empty CHEBFUN has sum 0:
-if ( isempty(f) )
-    out = 0;
-    return
-end
-
 % Integrate in the continuous dimension by default.
-if ( f.isTransposed )
+if ( F(1).isTransposed )
     dim = 2;
 else
     dim = 1;
@@ -58,27 +52,57 @@ elseif ( (nargin == 2) && (numel(a) == 1) )
     dim = a;
 end
 
-if ( xor(f.isTransposed, dim == 2) ) % Sum over the columns:
+if ( isempty(F) )
+    % Empty chebfun has sum 0. (v4 compatability).
+    if ( xor(F(1).isTransposed, dim == 2) )
+        out = F;
+    else
+        out = 0;
+    end
+    return
+end
+
+% Initialise the output:
+out = cell(1, numel(F));
+
+% Sum in the appropriate dimension:
+if ( xor(F(1).isTransposed, dim == 2) ) % Sum over the columns:
     % Call SUMCOLUMNS():
-    out = sumColumns(f);
-elseif ( doSubDomain )               % Integrate over a subdomain:
-    % Call SUMSUBDOMAIN():
-    out = sumSubDom(f, a, b);
-else                                 % Integrate over the whole domain:
-    % Call SUMFULLDOMAIN():
-    out = sumFullDom(f);
+    out = sumColumns(F);
+elseif ( doSubDomain )                  % Integrate over a subdomain:
+    % Loop over the columns:
+    for k = 1:numel(F)
+        % Call SUMSUBDOMAIN():
+        out{k} = sumSubDom(F(k), a, b);
+    end
+    out = [out{:}];
+else                                    % Integrate over the whole domain:
+    % Loop over the columns:
+    for k = 1:numel(F)
+        % Call SUMFULLDOMAIN():
+        out{k} = sumFullDom(F(k));
+    end
+    out = [out{:}];
 end
     
 end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%% SUM the columns %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function f = sumColumns(f)
-    % Sum the FUNS across the columns:
-    for k = 1:numel(f.funs)
-        f.funs{k} = sum(f.funs{k}, 2);
+    if ( numel(f) == 1 )
+        % Sum the FUNS across the columns:
+        for k = 1:numel(f.funs)
+            f.funs{k} = sum(f.funs{k}, 2);
+        end
+        % Sum the impulses across the columns:
+        f.impulses = sum(f.impulses, 2);
+    else
+        s = f(1);
+        for k = 2:numel(f)
+            s = s + f(k);
+        end
+        f = s;
     end
-    % Sum the impulses across the columns:
-    f.impulses = sum(f.impulses, 2);
 end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%% SUM the whole domain %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -96,6 +120,11 @@ function out = sumFullDom(f)
         % Only add the delta functions (the integral of derivatives of delta
         % functions is always zero).
         out = out + sum(f.impulses(:,:,2));
+    end
+    
+    % To avoid things like NaN + 1i*NaN:
+    if ( isnan(out) )
+        out = nan;
     end
 
 end
@@ -122,8 +151,21 @@ function out = sumSubDom(f, a, b)
         out = cumsum(f);
         % Compute the area in between:
         out = feval(out, b) - feval(out, a);
+        return
+    end
+    
+    % ComposeChebfuns doesn't allow scalar expansion, so we must loop over cols.
+    numCols = numColumns(f);
+    if ( numCols > 1 )
+        out = chebfun();
+        for k = numCols:-1:1
+            fk = extractColumns(f,k);
+            out(k) = sumSubDom(fk, a, b);
+        end
+        return
+    end
 
-    elseif ( isa(a, 'chebfun') && isa(b, 'chebfun') )
+    if ( isa(a, 'chebfun') && isa(b, 'chebfun') )
 
         % Compute the indefinite integral:
         out = cumsum(f);

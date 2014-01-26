@@ -19,7 +19,7 @@ for n = 1:2
     
     F = mat2cell(f, 1, [1 2]);
     pass(n, 1) = sum(F{1} - g) < 10*g.vscale.*g.epslevel;
-    pass(n, 2) = all( sum(F{2} - h) < 10*h.vscale*h.epslevel );
+    pass(n, 2) = all( sum(F{2} - h) < 10*max(h.vscale.*h.epslevel) );
 end
 
 end

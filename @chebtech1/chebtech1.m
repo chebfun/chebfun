@@ -34,13 +34,13 @@ classdef chebtech1 < chebtech
 % Examples: % Basic construction: f = chebtech1(@(x) sin(x))
 %
 %   % Construction with preferences:
-%   p.sampleTest = 0; % See CHEBTECH.PREF for details
+%   p.sampleTest = 0; % See CHEBTECH.TECHPREF for details
 %   f = chebtech1(@(x) sin(x), [], [], p)
 %
 %   % Array-valued construction:
 %   f = chebtech1(@(x) [sin(x), cos(x), exp(x)])
 %
-% See also CHEBTECH, CHEBTECH.PREF, CHEBPTS, HAPPINESSCHECK, REFINE.
+% See also CHEBTECH, CHEBTECH.TECHPREF, CHEBPTS, HAPPINESSCHECK, REFINE.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
