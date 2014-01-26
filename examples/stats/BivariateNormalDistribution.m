@@ -70,7 +70,7 @@ fprintf('Error of marginal = %1.3e\n',norm(px-exact'))
 % the domain to $[-2,2] \times [-2,2]$ to prevent a NaN error.
 
 d = 2*[-1 1 -1 1]; 
-fy = chebfun2(@(x,y) p(x,y)./px(x), d); % conditional pdf
+fy = p./chebfun2(@(x,y) px(x), d); % conditional pdf
 
 % plot and compute error
 plot(fy)

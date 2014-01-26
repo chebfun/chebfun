@@ -95,8 +95,8 @@ rt = chebfun('2*sqrt(x)',[0 1],'splitting','on');
 plot([-1 1],[0 0],LW,1.6), hold on
 plot([0 0],[-2 2],LW,1.6), 
 plot([rt -rt],'b',LW,1.6),
-labels = [s3 - .5+1i; s3 - .5-1i; s2 + .4+1.8i; s1 + .4-1.8i; ...
-    s2 + .6+.8i; s4 + .6+.6i; s1 + .6-.6i; s4 + .6-.8i];
+labels = join(s3 - .5+1i, s3 - .5-1i, s2 + .4+1.8i, s1 + .4-1.8i, ...
+    s2 + .6+.8i, s4 + .6+.6i, s1 + .6-.6i, s4 + .6-.8i);
 plot(labels,LW,1)
 title('Stability of linear dynamical systems',FS,14)
 xlabel('det(A)',FS,14), ylabel('tr(A)',FS,14), hold off

@@ -87,11 +87,11 @@ F = chebfun2v(@(h,hp)hp, @(h,hp)-1-.01*hp, @(h,hp)1+0*h,[0 30 0 2]);
 
 % Event when the ball hits the ground. 
 options = odeset('RelTol',100*eps, 'events', @p1Event1);
-h = []; v = []; x = [];   % store solution
+h = chebfun; v = []; x = chebfun;   % store solution
 while ( 1 )  
     sol = ode45(F, [t0, Tend], u0, options); 
     t0 = sol.xe;
-    h = [h; sol.y(:,1)]; x = [x; sol.y(:,3)];
+    h = join(h, sol.y(:,1)); x = join(x, sol.y(:,3));
     if max(sol.y(:,1)) < 5e-3, break, end
     u0 = (sol.ye).*([1;-.85;1]); %  reverse the velocity
 end

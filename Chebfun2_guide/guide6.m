@@ -42,7 +42,7 @@ surf(F), camlight
 
 %% 6.2 SURFACE NORMALS AND DIVERGENCE THEOREM
 % Given a chebfun2v representing a surface, the normal can be computed by 
-% the Chebfun2v NORMAL command.  Here are the unit normal vectors of a torus:
+% the Chebfun2v NORMAL command.  Here are the normal vectors of a torus:
 
 r1 = 1; r2 = 1/3;   % inner and outer radius
 d = [0 2*pi 0 2*pi];
@@ -51,7 +51,7 @@ v = chebfun2(@(u,v) v,d);
 F = [-(r1+r2*cos(v)).*sin(u); (r1+r2*cos(v)).*cos(u); r2*sin(v)];  % torus
 
 surf(F), camlight, hold on
-quiver3(F(1),F(2),F(3),normal(F,'unit'),'numpts',10)
+quiver3(F(1),F(2),F(3),normal(F, 'unit'),'numpts',10)
 axis equal, hold off
 
 %%

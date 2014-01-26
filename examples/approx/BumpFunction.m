@@ -24,6 +24,7 @@ for n = 1:100
         subplot(2,2,j), plot(f), title(sprintf('n=%u',n),FS,fs), j=j+1;
         zlim([0,5])
     end
+    n
 end
 
 %% The surprise 

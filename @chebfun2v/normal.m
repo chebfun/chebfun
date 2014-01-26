@@ -17,11 +17,18 @@ N = cross( diff( F, 1, 2 ), diff( F, 1, 1 ) );
 
 if ( nargin > 1 )
     if ( strcmpi(varargin{1}, 'unit') )
-        r = roots( N ); 
-        if ( ( ~isempty(r) ) || ( norm(N) == 0 ) )
-           error('CHEBFUN:NORMAL:ZERO','Normal vector is zero'); 
-        end
-        N = N ./ abs( N ) ;
+        if ( N.nComponents == 2 )
+            r = roots( N );
+            if ( ( ~isempty(r) ) || ( norm(N) == 0 ) )
+                error('CHEBFUN:NORMAL:ZERO','Normal vector is zero');
+            end
+            N = N ./ abs( N );
+        elseif ( norm(N) == 0 )
+            error('CHEBFUN:NORMAL:ZERO','Normal vector is zero');
+        else
+            N = N;
+        end          
+        
     else
         error('CHEBFUN:NORMAL','Second argument is not recognised.');
     end

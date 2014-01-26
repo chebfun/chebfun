@@ -55,14 +55,14 @@ plot(roots(g),'r'), hold on, plot(roots(f),'g')
 % $f(x,y) = g(x,y) = 0$. In Chebfun2 we compute the solutions to this problem by
 % first computing the zero contours of f and g by marching squares, and then
 % using their intersections as initial guesses in a Newton iteration.  The
-% solutions to $f(x,y) = g(x,y) = 0$ can be computed by the command roots(f,g)
+% solutions to $f(x,y) = g(x,y) = 0$ can be computed by the command roots(f,g,'ms')
 % in Chebfun2.
 
 %% 
 % For example we can find all the solutions to the example above with the
 % following code:
 
-r = roots(f,g); 
+r = roots(f,g, 'ms'); 
 plot(r(:,1),r(:,2),'.k','MarkerSize',20), hold off
 
 %% Trott's curve
@@ -74,7 +74,7 @@ trott = @(x,y) 144*(x.^4+y.^4)-225*(x.^2+y.^2) + 350*x.^2.*y.^2+81;
 f = chebfun2(trott); 
 g = chebfun2(@(x,y) y-x.^6); 
 plot(roots(f),'b'), hold on, plot(roots(g),'r'), axis equal
-r = roots(f,g); 
+r = roots(f,g, 'ms'); 
 plot(r(:,1),r(:,2),'k.','MarkerSize',30), hold off
 
 %% A function with several local minima
@@ -82,7 +82,7 @@ plot(r(:,1),r(:,2),'k.','MarkerSize',30), hold off
 % a function $f(x,y)$ because they satisfy $df/dx = df/dy = 0$.
 
 f = chebfun2(@(x,y) (x.^2-y.^3+1/8).*sin(10*x.*y));
-r = roots(gradient(f));                  % critical points
+r = roots(gradient(f), 'ms');            % critical points
 plot(roots(diff(f,1,2)),'b'), hold on    % plot zero contours of f_x
 plot(roots(diff(f)),'r')                 % plot zero contours of f_y
 plot(r(:,1),r(:,2),'k.','MarkerSize',30) % plot extrema

@@ -42,7 +42,7 @@ cylinder(f)
 f = chebfun(@(x) 2.8*sin(0.2*x - 0.1) + 6.3, [-5 35]);
 dom = f.domain;
 [xx, yy, zz] = cylinder(f);
-zzstr = diff(dom)*zz + ends(1);
+zzstr = diff(dom)*zz + dom(1);
 surf(zzstr,flipud(yy),xx)
 
 %%
