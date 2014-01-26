@@ -13,7 +13,7 @@ f = chebfun2(@(x,y) cos(x.*y));
 F = [f ; f]; 
 G = [f ; f ; f]; 
 H = [ F ; f];
-%K = [f ; F]; 
+K = [f ; F]; 
 Fc = F.components;
 Gc = G.components;
 pass(j) = norm( Fc{1} - f ) < tol; j = j + 1; 
@@ -22,14 +22,14 @@ pass(j) = norm( Gc{1} - f ) < tol; j = j + 1;
 pass(j) = norm( Gc{2} - f ) < tol; j = j + 1; 
 pass(j) = norm( Gc{3} - f ) < tol; j = j + 1; 
 pass(j) = norm( G - H ) < tol; j = j + 1; 
-% pass(j) = norm( G - K ) < tol; j = j + 1; 
+pass(j) = norm( G - K ) < tol; j = j + 1; 
 
 
 f = chebfun2(@(x,y) cos(x.*y), [-3 2 -1 2]); 
 F = [f ; f]; 
 G = [f ; f ; f]; 
 H = [ F ; f];
-%K = [f ; F]; 
+K = [f ; F]; 
 Fc = F.components;
 Gc = G.components;
 pass(j) = norm( Fc{1} - f ) < tol; j = j + 1; 
@@ -38,6 +38,6 @@ pass(j) = norm( Gc{1} - f ) < tol; j = j + 1;
 pass(j) = norm( Gc{2} - f ) < tol; j = j + 1; 
 pass(j) = norm( Gc{3} - f ) < tol; j = j + 1; 
 pass(j) = norm( G - H ) < tol; j = j + 1; 
-% pass(j) = norm( G - K ) < tol; j = j + 1; 
+pass(j) = norm( G - K ) < tol; j = j + 1; 
 
 end

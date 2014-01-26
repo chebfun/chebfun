@@ -1,4 +1,4 @@
-function v = norm(F)
+function v = norm( F )
 %NORM Frobenius norm of a chebfun2v
 %
 % V = NORM(F) returns the Frobenius norm of the two/three components, i.e. 

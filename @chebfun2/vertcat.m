@@ -12,8 +12,21 @@ function F = vertcat( varargin )
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 if ( nargin > 1 )
-    % call the chebfun2v constructor.
-    F = chebfun2v( varargin );
+    if ( isa( varargin{ 2 } , 'chebfun2v') )
+        f = varargin{1}; 
+        F = varargin{2}; 
+        if ( F.nComponents > 2 ) 
+            error('CHEBFUN2:VERTCAT', 'Only Chebfun2v objects with 2 or 3 components are valid.');
+        else
+            Fc = F.components; 
+            g = Fc{1};
+            h = Fc{2};
+            F = chebfun2v( {f, g, h} );
+        end
+    elseif ( isa(varargin{ 2 }, 'chebfun2' ) )
+        % call the chebfun2v constructor.
+        F = chebfun2v( varargin );
+    end
 else
     error('CHEBFUN2:VERTCAT','Cannot vertically concatenate more than three chebfun2 objects.');
 end

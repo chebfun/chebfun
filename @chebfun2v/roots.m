@@ -27,26 +27,14 @@ function varargout = roots( F, varargin )
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-max_degree = -1;  % maximum degree for resultant method.
+max_degree = 200;  % maximum degree for resultant method.
 
-if ( isempty(F) )  % empty check.
+if isempty(F)  % empty check.
     varargout = {[]};
     return;
 end
 
-nF = F.nComponents; 
-nG = F.nComponents; 
-
-if ( nF ~= nG ) 
-    error('CHEBFUN2V:ROOTS','Components inconsistent.');
-end
-
-if ( nF > 2 ) 
-   error('CHEBFUN2V:ROOTS', 'Too many variables.'); 
-end
-
 f = F.components{1}; g = F.components{2};
-
 [nf,mf]=length(f);[ng,mg]=length(g);
 dd = max([mf nf mg ng]);  % maximum degree
 
@@ -86,9 +74,8 @@ function [xroots,yroots] = roots_resultant(F)
 f = F.components{1}; g = F.components{2};
 
 % Useful parameters
-dom = f.domain;  % rectangular domain of chebfun2.
-[nf,mf]=length(f);
-[ng,mg]=length(g);
+rect = f.domain;  % rectangular domain of chebfun2.
+[nf,mf]=length(f);[ng,mg]=length(g);
 dd = max([mf nf mg ng]); % max degree
 max_degree = min( 16 , dd ); % subdivision threshold degree
 reg_tol = 1e-15;   % Regularization (for Bezoutian)
@@ -99,11 +86,11 @@ multitol = sqrt(eps); % for multiple roots we do not go for more than sqrt(eps);
 % Consider a slightly large domain to make sure we get all the roots along
 % edges.
 % domain width (attempt to make scale invariant)
-xwid = diff(dom(1:2))/2; ywid = diff(dom(3:4))/2;
-xmax = dom(2) + xwid*domain_overlook;
-xmin = dom(1) - xwid*domain_overlook;
-ymax = dom(4) + ywid*domain_overlook;
-ymin = dom(3) - ywid*domain_overlook;
+xwid = diff(rect(1:2))/2; ywid = diff(rect(3:4))/2;
+xmax = rect(2) + xwid*domain_overlook;
+xmin = rect(1) - xwid*domain_overlook;
+ymax = rect(4) + ywid*domain_overlook;
+ymin = rect(3) - ywid*domain_overlook;
 
 subdividestop = 2*(1/2)^((log(16)-log(dd))/log(.79)); % subdivision threshold
 subdividestop = min(subdividestop,1/4);
@@ -116,12 +103,12 @@ g = g/abs(g.pivotValues(1));
 % ballpark obtained, next do local bezoutian refinement
 
 
-[fx, fy] = gradient(chebfun2(f,dom)); 
-[gx, gy] = gradient(chebfun2(g,dom));
+[fx, fy] = gradient(chebfun2(f,rect)); 
+[gx, gy] = gradient(chebfun2(g,rect));
 
 %%%%% subdivision for accuracy when dynamical range is an issue %%%%%%%%
 % find region in which roots might have been missed
-F = f.coeffs;G = g.coeffs;
+F = chebpoly2(f); G = chebpoly2(g);
 
 xpts = linspace(xmin,xmax,2*max(size(F,2),size(G,2)));
 ypts = linspace(ymin,ymax,2*max(size(F,1),size(G,1)));
@@ -704,7 +691,7 @@ function [Y] = DLPforbez(AA,v)
 % DLPforbez constructs the Bezoutian. Highly specified for Chebyshev
 % biroots.
 %
-[n, m] = size(AA); k=m/n-1; s=n*k;              % matrix size and degree
+[n m] = size(AA); k=m/n-1; s=n*k;              % matrix size and degree
 S = [zeros(1,k+1);(2*v)*AA];
 R = S'-S;
 % Bartel-Stewart algorithm on M'Y+YM=R, M is upper triangular.
@@ -732,7 +719,7 @@ end
 D = A;
 for jj = 1:n  % for each column of A
     B = A(:,jj:n:n*k);
-    C = (chebfun2.vals2coeffs(B.')).';   % convert first column of each coefficient to values.
+    C = chebtech2.vals2coeffs(B.').';   % convert first column of each coefficient to values.
     D(:,jj:n:n*k) = C;    % assign to output.
 end
 
@@ -865,7 +852,7 @@ x = chebpts(n,ends(1:2)); y = chebpts(n,ends(3:4));
 vscl = max(1,max(abs(F(:))));  % don't go for more than absolute accuracy.
 
 % Compute bivariate Chebyshev T coefficients.
-C = chebfun2.vals2coeffs(chebfun2.vals2coeffs(F).').';
+C = chebfun2.vals2coeffs(F);
 
 % Very simple truncation of the coefficients.
 %m = find(max(abs(C))>100*eps*vscl,1,'first'); n = find(max(abs(C.'))>100*eps*vscl,1,'first');
@@ -874,7 +861,7 @@ C = C(n:end,m:end);
 
 % Form cheb2 object.
 g = struct('coeffs',C,'scl',vscl,'corners',ends);
-% g.coeffs = C; g.scl=vscl; g.corners = ends;
+
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -15,6 +15,6 @@ end
 
 % Take isempty of each component:
 bol = cellfun( @isempty, F.components, 'UniformOutput', false );
-bol = all(cell2mat(bol));
+bol = all (cell2mat( bol ) );
 
 end

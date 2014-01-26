@@ -23,10 +23,12 @@ if ( F.nComponents == 3 )
 end
 
 % Determinant formula: 
-Fx = diff( F, 1, 2); 
-Fy = diff( F, 1, 1); 
+Fx = diff( F, 1, 2 ); 
+Fy = diff( F, 1, 1 ); 
 
 % Jacobian: 
-J = Fx.components{1}.*Fy.components{2} - Fy.components{1}.*Fx.components{2}; 
+Fxc = Fx.components; 
+Fyc = Fy.components;
+J = Fxc{1} .* Fyc{2} - Fyc{1} .* Fxc{2}; 
 
 end

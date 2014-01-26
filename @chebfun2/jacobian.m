@@ -19,6 +19,6 @@ if ( isempty( f ) || isempty( g ) )
 end
 
 % Call chebfun2v/jacobian:
-J = jacobian( chebfun2v( {f, g} ) );
+J = jacobian( chebfun2v( { f, g } ) );
 
 end

@@ -1,4 +1,4 @@
-function val = get(f,propName)
+function val = get( f, propName )
 % GET   Get chebfun2v properties.
 %
 % P = GET(F,PROP) returns the property P specified in the string PROP from

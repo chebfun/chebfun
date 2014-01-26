@@ -1,7 +1,7 @@
 function varargout = ode45(F,tspan,init,varargin)
 % ODE45  Solve autonomous systems defined by a Chebfun2v.
 %
-%  [T,Y] = ODE45(F,TSPAN,Y0) with TSPAN = [T0 TFINAL] solves the autonomous
+%  [T, Y] = ODE45(F,TSPAN,Y0) with TSPAN = [T0 TFINAL] solves the autonomous
 %  system of ODE y = f(y,y'), y'=g(y,y'), where f and g are the first and
 %  second components of F, respectively, from time T0 to TFINAL
 %  with initial conditions Y0. F is a chebfun2v and Y is a complex valued

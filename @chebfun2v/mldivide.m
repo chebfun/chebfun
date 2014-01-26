@@ -15,13 +15,13 @@ if ( ( isempty(f) ) || ( isempty(G) ) )
     return
 end
 
-if ( ~isa(f,'double') )
+if ( ~isa(f, 'double') )
     error('CHEBFUN2:MRDIVIDE:NONSCALAR','Division must be by a scalar.');
 end
 
 % Left divide.
 H = G;
-for j = 1:G.ncomponents
+for j = 1:G.nComponents
     H.components{j} = mldivide( f, G.components{j} ); 
 end
 
