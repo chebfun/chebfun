@@ -65,7 +65,11 @@ elseif ( isnumeric( x ) && isnumeric( y ) )    % f(x, y)
     if ( takeDiag ) 
         out = diag( out ); 
     end 
-elseif ( isa(x,'chebfun') )
+elseif ( isa(x, 'chebfun') )
+    if ( min( size( x ) ) > 1 )
+        error('CHEBFUN2:FEVAL', 'Cannot evaluate a chebfun2 at an array-valued chebfun.');
+    end
+    
     if ( ~isreal(x) ) % complex valued chebfun.
         % Extract chebfun along the path
         out = chebfun(@(t) feval(f, real(x(t))', imag(x(t))'), x.domain, 'vectorize' );  % F(real(X(t)),imag(X(t)))

@@ -11,7 +11,7 @@ function r = roots( f, varargin )
 % In the special case when F is of length 1 then the zero contours are
 % found to full precision.
 %
-% R = roots(F,G) returns the isolated points of F and G.
+% R = ROOTS(F,G) returns the isolated points of F and G.
 %
 % See also CHEBFUN2V/ROOTS.
 
@@ -32,7 +32,7 @@ if ( length( f ) == 1 )  % If the Chebfun2 is rank 1:
     rx = chebfun( xrts.' );
     r = [ry rx];
 elseif ( isreal( f ) ) 
-    % Use Matlab's contourc function.
+    % Use Matlab's contourc function (Marching Squares).
     n = 500; % disc size.
     x = linspace( dom(1), dom(2), n ); 
     y = linspace( dom(3), dom(4), n );
@@ -58,7 +58,7 @@ else                         % function is complex-valued.
         r = r(:, 1) + 1i*r(:, 2);
     end
 end
-elseif ( isa(varargin{1},'chebfun2') )
+elseif ( isa(varargin{1}, 'chebfun2') )
     % Bivariate rootfinding: 
     r = roots( chebfun2v( f, varargin{1} ) );
 end

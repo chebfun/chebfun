@@ -21,7 +21,7 @@ numpts = 200;
 dom = f.domain; 
 
 % Data points: 
-[xx, yy] = cheb2pts( numpts, numpts, dom );
+[xx, yy] = chebfun2.chebpts2( numpts, numpts, dom );
 val = feval(f, xx, yy);
 
 % options: 

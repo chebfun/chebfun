@@ -112,11 +112,11 @@ if ( ~isempty(varargin) )
     else
 %% Standard surface plot 
 
-        h=surf(f, 'facecolor', 'interp', varargin{:});
+        h = surf(f, varargin{:});
     end
 else
     if ( isreal( f ) )
-        h=surf(f, 'facecolor', 'interp');
+        h = surf( f );
     else
 %% Phase Protrait plot 
         % The following is a slightly modified version of Wegert's code 

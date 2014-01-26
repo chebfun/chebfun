@@ -32,11 +32,15 @@ switch index(1).type
         x = idx{1}; 
         if ( length(idx) == 2) 
             y = idx{2};
-        elseif ( ( length(idx) == 1 ) && ( ~isreal(x) ) )
+        elseif ( ( length(idx) == 1 ) && ( ~isreal(x) ) && ~isa(x, 'chebfun'))
             x = real( idx{1} );
             y = imag( idx{1} ); 
             out = feval(f, x, y); 
             varargout = {out}; 
+            return
+        elseif ( ( length(idx) == 1 ) && isa(x, 'chebfun') )
+            out = feval( f, x );
+            varargout = { out }; 
             return
         else
             error('CHEBFUN2:SUBSREF:INPUTS','Can only evaluate at functions (X,Y)')

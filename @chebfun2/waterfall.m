@@ -1,4 +1,4 @@
-function varargout = waterfall(f,varargin)
+function varargout = waterfall( f, varargin )
 %WATERFALL   waterfall plot of a chebfun2.
 %
 % WATERFALL(F) displays the waterfall plot of F.
@@ -7,7 +7,7 @@ function varargout = waterfall(f,varargin)
 % used for its approximation.  This is a 3D version of plot(f,S), where S 
 % is a string (see PLOT).
 %
-% WATERFALL(f,S,'nslices',N) displays the first min(N,length(f)) 
+% WATERFALL(F,S,'nslices',N) displays the first min(N,length(f)) 
 % columns and rows.
 %
 % WATERFALL returns a handle to a waterfall plot object.
@@ -21,9 +21,9 @@ numpts = 200;
 
 % Empty check: 
 if ( isempty(f) ) 
-    h = plot([]);
+    h = plot( [] );
     if nargin > 0
-        varargout = {h};
+        varargout = { h };
     end
 end
 
@@ -50,7 +50,7 @@ dom = f.domain;     % get domain
 if ( mynargin == 1 )     % standard waterfall plot
     x = linspace(dom(1), dom(2), numpts);
     y = linspace(dom(3), dom(4), numpts);
-    [xx, yy]=meshgrid(x, y);
+    [xx, yy] = meshgrid(x, y);
     vals = feval( f, xx, yy );
     h = waterfall( xx, yy, vals );
     return

@@ -247,12 +247,12 @@ nine(3:5,8:9) = 1;
 nine([1 9],[1 9]) = 0;
 nine(7,1:2) = 1;
 
- % Punctuation
+% Punctuation
 exclam = space;
 exclam([1:6 8:9],4:6) = 1;
 
 % Padding:
-b = zeros(9,2);  
+b = zeros(9,2);
 Str = zeros(9,50);
 pad = [];
 
@@ -267,7 +267,7 @@ for jj = 1:length(s)
         case {'!'}
             Str = [ [Str, b], [pad ; exclam]];
         case {'0'}
-            Str = [ [Str, b], [pad ; zero]];   
+            Str = [ [Str, b], [pad ; zero]];
         case {'1'}
             Str = [ [Str, b], [pad ; one]];
         case {'2'}
@@ -275,33 +275,25 @@ for jj = 1:length(s)
         case {'3'}
             Str = [ [Str, b], [pad ; three]];
         case {'4'}
-            Str = [ [Str, b], [pad ; four]];   
+            Str = [ [Str, b], [pad ; four]];
         case {'5'}
-            Str = [ [Str, b], [pad ; five]];   
+            Str = [ [Str, b], [pad ; five]];
         case {'6'}
-            Str = [ [Str, b], [pad ; six]];   
+            Str = [ [Str, b], [pad ; six]];
         case {'7'}
-            Str = [ [Str, b], [pad ; seven]];   
+            Str = [ [Str, b], [pad ; seven]];
         case {'8'}
-            Str = [ [Str, b], [pad ; eight]];   
+            Str = [ [Str, b], [pad ; eight]];
         case {'9'}
-            Str = [ [Str, b], [pad ; nine]];   
+            Str = [ [Str, b], [pad ; nine]];
         otherwise
             Str = [ [Str, b], [pad ; eval(s(jj))]];
-    end     
-%     if ( strcmp(s(jj), ' ') )
-%         Str = [ [Str, b], [pad ; space]];
-%     elseif ( strcmp(s(jj), '!') )
-%         Str = [ [Str, b], [pad ; exclam]];
-%     else
-%         Str = [ [Str, b], [pad ; eval(s(jj))]];
-%     end
+    end
 end
 
 % Padding:
 Str = [Str, zeros(size(Str, 1), 50)];
 Str = [zeros(20, size(Str, 2)); Str ; zeros(20, size(Str, 2))];
-Str = flipud(Str); 
 
 if (nargin == 2)
     f = chebfun2( flipud(Str), rk );
@@ -310,29 +302,13 @@ else
 end
 
 if ( nargout == 0 )
-%    r = rank(f);
-%    for rk = 1:r
-%        f = chebfun2(flipud(Str), rk);
-        contour(f,.3:.1:.85,'numpts',1000), axis off
-%        set(gcf, 'color', 'w')
-        rk = length(f);
-        t = sprintf('Rank = %u',rk);
-        title(t,'fontsize',16)
-%         im = frame2im(getframe());
-%         [imind, cm] = rgb2ind(im, 16);
-%         if ( rk == 1 )
-%             imwrite(imind, cm, 'Scribble2.gif', 'gif', ...
-%                 'Loopcount', inf, 'DelayTime', 1e-5);
-%         else
-%             imwrite(imind, cm, 'Scribble2.gif', 'gif', ...
-%                 'WriteMode', 'append', 'DelayTime', 1e-5);
-%         end
-        shg
-        drawnow
-        
-%    end
+   % Plot: 
+    contour(f,.3:.1:.85,'numpts',1000), axis off
+    rk = length(f);
+    t = sprintf('Rank = %u',rk);
+    title(t,'fontsize',16)
 else
-	varargout = {f}; 
+    varargout = {f};
 end
 
 

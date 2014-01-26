@@ -15,8 +15,8 @@ pass(j) = norm( f - f.') < tol; j = j + 1;
 
 f = chebfun2(@(x,y) cos(x.*y) + x, [-3 4 -1 0]); 
 g = chebfun2(@(x,y) cos(x.*y) + y, [-1 0 -3 4]); 
-pass(j) = norm( f' - g) < tol; j = j + 1;
-pass(j) = norm( f.' - g) < tol; j = j + 1;
+pass(j) = norm( f' - g ) < tol; j = j + 1;
+pass(j) = norm( f.' - g ) < tol; j = j + 1;
 
 f = chebfun2(@(x,y) cos(x.*y) + 1i*x, [-3 4 -1 0]); 
 g1 = chebfun2(@(x,y) cos(x.*y) - 1i*y, [-1 0 -3 4]); 
