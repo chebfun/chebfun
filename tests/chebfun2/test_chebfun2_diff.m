@@ -40,9 +40,13 @@ end
 jj = 3;  
 g = chebfun2( f{jj}, D(r,:) ); 
 
-pass(j) = ( norm( diff(g) - diff(g, 1, 1) ) < tol); j=j+1;
-pass(j) = ( norm( diff(g,1) - diff(g,1,1) ) < tol); j=j+1;
-pass(j) = ( norm( diff(g,2) - diff(g,2,1) ) < 10*tol); j=j+1;
-pass(j) = ( norm( diff(g,2,2) - diff(diff(g,1,2),1,2) ) < 10*tol); j=j+1;
+err = norm( diff(g) - diff(g, 1, 1) );
+pass(j) = ( err < tol); j = j + 1;
+err = norm( diff(g,1) - diff(g,1,1) );
+pass(j) = ( err < tol); j = j + 1;
+err = norm( diff(g,2) - diff(g,2,1) );
+pass(j) = ( err < 100*tol); j = j + 1;
+err = norm( diff(g,2,2) - diff(diff(g,1,2),1,2) );
+pass(j) = ( err < 10*tol); j = j + 1;
 
 end

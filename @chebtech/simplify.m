@@ -35,6 +35,8 @@ end
 if ( nargin < 2 )
     pref = chebtech.techPref();
     tol = f.epslevel.*f.vscale;
+    % TODO: Document this.
+    tol = max(tol)./f.vscale;
 end
 
 % Zero all coefficients smaller than the tolerance relative to F.VSCALE:

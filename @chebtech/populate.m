@@ -94,8 +94,8 @@ if ( isnumeric(op) || iscell(op) )
     % We're always happy if given discrete data:
     f.ishappy = true;
     
-    % TODO: Is this the correct vscale?
-    f.epslevel = max(eps(max(f.vscale)) + 0*f.vscale, eps);
+    % Scale the epslevel relative to the largest column:
+    f.epslevel = 10*eps(max(f.vscale))./f.vscale;
 
     return
 end

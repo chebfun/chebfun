@@ -1,4 +1,4 @@
-function [f, R, E] = qr(f, outputFlag, methodFlag)
+function [Q, R, E] = qr(f, outputFlag, methodFlag)
 %QR   QR factorisation of an array-valued CHEBTECH.
 %   [Q, R] = QR(F) returns a QR factorisation of F such that F = Q*R, where the
 %   CHEBTECH Q is orthogonal (with respect to the continuous L^2 norm on [-1,1])
@@ -40,6 +40,7 @@ function [f, R, E] = qr(f, outputFlag, methodFlag)
 
 % Deal with empty case:
 if ( isempty(f) )
+    Q = f;
     R = [];
     E = [];
     return
@@ -60,7 +61,7 @@ end
 % If f has only one column we simply scale it.
 if ( size(f, 2) == 1 )
     R = sqrt(innerProduct(f, f));
-    f = f./R;
+    Q = f./R;
     E = 1;
     return
 end
@@ -71,17 +72,20 @@ f = simplify(f);
 % Decide which algorithm to use:
 if ( strcmpi(methodFlag, 'householder') )
     % Call Trefethen's Householder implementation:
-    [f, R, E] = qr_householder(f, outputFlag);
+    [Q, R, E] = qr_householder(f, outputFlag);
 else
     % The 'built-in' algorithm. i.e., qeighted discrete QR():
     if ( nargout == 3 )
-        [f, R, E] = qr_builtin(f, outputFlag);
+        [Q, R, E] = qr_builtin(f, outputFlag);
     else
-        [f, R] = qr_builtin(f, outputFlag);
+        [Q, R] = qr_builtin(f, outputFlag);
     end
 end
 
-% R
+% Update epslevel:
+col_acc = f.epslevel.*f.vscale;  % Accuracy of each column in f.
+glob_acc = max(col_acc);         % The best of these.
+Q.epslevel = glob_acc./Q.vscale; % Scale out vscale of Q.
 
 end
 
@@ -297,7 +301,7 @@ end
 f.coeffs = f.vals2coeffs(Q);
 % Trim the unneeded ones:
 f.coeffs(1:n,:) = [];
-% Comute new values:
+% Compute new values:
 f.values = f.coeffs2vals(f.coeffs);
 
 % Update the vscale:
