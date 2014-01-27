@@ -82,7 +82,11 @@ else
     end
 end
 
-% Update epslevel:
+%% Update epslevel
+% Since we don't know how to do this properly, we essentially assume that QR has
+% condition number one. Therefore we assume Q has the same global accuracy as f,
+% and simply factor out the new vscale. TODO: It may be sensible to include some
+% knowledge of R here?
 col_acc = f.epslevel.*f.vscale;  % Accuracy of each column in f.
 glob_acc = max(col_acc);         % The best of these.
 Q.epslevel = glob_acc./Q.vscale; % Scale out vscale of Q.
