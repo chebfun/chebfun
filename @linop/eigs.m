@@ -52,7 +52,7 @@ function varargout = eigs(L,varargin)
 % Parsing inputs.
 M = [];  k = 6;  sigma = []; 
 prefs = L.prefs;
-discType = prefs.discretization;
+discType = prefs.discretisation;
 gotk = false;
 j = 1;
 while (nargin > j)

@@ -21,7 +21,7 @@ if ( nargin < 2 )
     end
 end
 
-disc = L.prefs.discretization(L);
+disc = L.prefs.discretisation(L);
 disc.dimension = dim;
 
 % Check whether we need to derive continuity conditions.

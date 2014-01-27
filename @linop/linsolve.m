@@ -48,7 +48,7 @@ end
 % Use a given discretization, or create one?
 dimVals = pref.dimensionValues;
 if isempty(disc)
-    disc = pref.discretization(L);
+    disc = pref.discretisation(L);
     % Update the domain if new breakpoints are needed
     disc.domain = chebfun.mergeDomains(disc.domain, f.domain); 
     % Update the dimensions to work with the correct number of breakpoints
