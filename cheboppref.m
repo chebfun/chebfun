@@ -8,6 +8,7 @@ classdef cheboppref < chebpref
     end
     
     properties (Dependent)
+        % TODO: Check how to get this working again.
         discretization
     end
 
