@@ -25,6 +25,31 @@ pass(3) = ~isempty(f);
 f = [ bndfun(@sin, dom), bndfun(@sin, dom) ];
 pass(4) = ~isempty(f);
 
-%% 
-% [TODO]: Run a few tests for UNBNDFUN.
+%% Tests for UNBNDFUN:
+
+% Functions on [-inf inf]:
+
+% Set the domain:
+dom = [-Inf Inf];
+
+op = @(x) (1-exp(-x.^2))./x;
+f = chebfun(op, dom);
+pass(5) = ~isempty(f);
+
+% Blow-up function:
+op = @(x) x.^2.*(1-exp(-x.^2));
+pref.singPrefs.exponents = [2 2];
+f = chebfun(op, dom, pref); 
+pass(6) = ~isempty(f);
+
+%% Functions on [-inf b]:
+
+% Set the domain:
+dom = [-Inf -3*pi];
+
+% Array-valued function:
+op = @(x) [exp(x) x.*exp(x) (1-exp(x))./x];
+f = chebfun(op, dom);
+pass(7) = ~isempty(f);
+
 end

@@ -40,6 +40,31 @@ pref.singPrefs.exponents = [0 pow2];
 g = bndfun(op2, dom, [], [], pref);
 pass(6) = ~isequal(f, g);
     
-%% 
-% [TODO]: Run a few tests for UNBNDFUN.
+%% Tests for UNBNDFUN:
+
+% Functions on [-inf inf]:
+
+% Set the domain:
+dom = [-Inf Inf];
+
+op = @(x) (1-exp(-x.^2))./x;
+f = chebfun(op, dom);
+pass(7) = isequal(f, f);
+
+% Blow-up function:
+op = @(x) x.^2.*(1-exp(-x.^2));
+pref.singPrefs.exponents = [2 2];
+g = chebfun(op, dom, pref); 
+pass(8) = ~isequal(f, g);
+
+%% Functions on [-inf b]:
+
+% Set the domain:
+dom = [-Inf -3*pi];
+
+% Array-valued function:
+op = @(x) [exp(x) x.*exp(x) (1-exp(x))./x];
+f = chebfun(op, dom);
+pass(9) = isequal(f, f);
+
 end
