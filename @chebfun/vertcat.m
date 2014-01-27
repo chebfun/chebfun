@@ -2,10 +2,19 @@ function out = vertcat(varargin)
 %VERTCAT   Vertical concatenation of CHEBFUN objects.
 %   VERTCAT of a CHEBFUN is not yet supported.
 
-out = chebmatrix(varargin.');
+% TODO: Document.
+% TODO: Test.
 
-% error('CHEBFUN:vertcat:noSupport', 'VERTCAT of a CHEBFUN is not yet supported.');
+% Find the locations of the CHEBFUN objects in the inputs:
+chebfunLocs = cellfun('isclass', varargin, 'chebfun');
+chebfun1 = varargin{find(chebfunLocs, 1, 'first')};
 
-% [TODO]: Implement this.
+% Horizontal concatenation of row CHEBFUN objects produces a CHEBMATRIX:
+if ( chebfun1(1).isTransposed )
+    args = cellfun(@transpose, varargin, 'UniformOutput', false);
+    out = horzcat(args{:}).';
+else
+    out = chebmatrix(varargin.');
+end
 
 end

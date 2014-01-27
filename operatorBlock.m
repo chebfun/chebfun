@@ -144,19 +144,17 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
     methods (Static = true)
         
         function C = cumsum(varargin)
-            % OPERATORBLOCK.CUMSUM  Antiderivative operator.
-            %
-            % C = OPERATORBLOCK.CUMSUM returns the first-order antiderivative
-            % operator C for functions defined on [-1, 1]. The result of
-            % applying the operator is defined uniquely by having value zero at
-            % the left endpoint.
-            %
-            % C = OPERATORBLOCK.CUMSUM(DOMAIN) returns the first-order
-            % antiderivative operator C which applies to functions defined on
-            % DOMAIN, which may include breakpoints.
-            %
-            % C = OPERATORBLOCK.CUMSUM(DOMAIN, M) is the mth-repeated
-            % antiderivative.
+% OPERATORBLOCK.CUMSUM  Antiderivative operator.
+%
+%   C = OPERATORBLOCK.CUMSUM returns the first-order antiderivative operator C
+%   for functions defined on [-1, 1]. The result of applying the operator is
+%   defined uniquely by having value zero at the left endpoint.
+%
+%   C = OPERATORBLOCK.CUMSUM(DOMAIN) returns the first-order antiderivative
+%   operator C which applies to functions defined on DOMAIN, which may include
+%   breakpoints.
+%
+%   C = OPERATORBLOCK.CUMSUM(DOMAIN, M) is the mth-repeated antiderivative.
             
             % Use inputParser to parse the arguments to the method.
             p = inputParser;
@@ -251,12 +249,83 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
         end
         
         function F = fred(domain, kernel, varargin)
+%FRED      Fredholm integral operator.
+%   F = FRED(K,D) constructs the Fredholm integral operator with kernel K for
+%   functions in domain D=[a,b]:
+%    
+%      (F*v)(x) = int( K(x,y)*v(y), y=a..b )
+%  
+%   The kernel function K(x,y) should be smooth for best results.
+%
+%   K must be defined as a function of two inputs X and Y. These may be scalar
+%   and vector, or they may be matrices defined by NDGRID to represent a tensor
+%   product of points in DxD.
+%
+%   Example: To solve u(x) - x * int( exp(x-y)*u(y), y=0..2 ) = f(x):
+%     d = [0 2];
+%     x = chebfun('x',d);
+%     X = operatorBlock.mult(x);
+%     I = operatorBlock.eye(d);
+%     F = operatorBlock.fred(d,@(x,y) exp(x-y));  
+%     A = linop( I - X*F );
+%     tic, u = A \ sin(exp(3.5*x)); toc
+%        %  (Elapsed time is 0.622 seconds.)   
+%
+%   FRED(K,D,'onevar') will avoid calling K with tensor product matrices X 
+%   and Y. Instead, the kernel function K should interpret a call K(x) as 
+%   a vector x defining the tensor product grid. This format allows a 
+%   separable or sparse representation for increased efficiency in
+%   some cases.
+%
+%   Example: Continuing the previous example, to exploit
+%   exp(x-y)=exp(x)*exp(-y), first write:
+%
+%     function K = kernel(X,Y)
+%       if nargin==1   % tensor product call
+%         K = exp(X)*exp(-X');   % vector outer product
+%       else  % normal call
+%         K = exp(X-Y);
+%       end
+%     end
+%
+%   At the prompt:
+%     F = operatorBlock.fred(d,@kernel,'onevar'); 
+%     A = linop( I - X*F );
+%     tic, u = A \ sin(exp(3.5*x)); toc
+%        %  (Elapsed time is 0.500 seconds.)
+%
+%   See also OPERATORBLOCK.VOLT.
+
             F = operatorBlock(domain);
             F.stack = @(z) fred(z, kernel, varargin{:});
             F.diffOrder = 0;
         end
         
         function V = volt(domain, kernel, varargin)
+%VOLT      Volterra integral operator.
+%   V = VOLT(K,D) constructs the Volterra integral operator with kernel K for
+%   functions in domain D=[a,b]:
+%    
+%      (V*u)(x) = int( K(x,y)*u(y), y=a..x )
+%  
+%   The kernel function K(x,y) should be smooth for best results.
+%
+%   K must be defined as a function of two inputs X and Y. These may be scalar
+%   and vector, or they may be matrices defined by NDGRID to represent a tensor
+%   product of points in DxD.
+%
+%   Example: To solve u(x) - x * int( exp(x-y)*u(y), y=0..x ) = f(x):
+%     d = [0 2];
+%     x = chebfun('x',d);
+%     X = operatorBlock.mult(x);
+%     I = operatorBlock.eye(d);
+%     V = operatorBlock.volt(d,@(x,y) exp(x-y));  
+%     A = linop( I - X*V );
+%     u = A \ sin(exp(2*x));
+%     plot(u{1})
+%
+%   See also OPERATORBLOCK.FRED.
+
             V = operatorBlock(domain);
             V.stack = @(z) volt(z, kernel, varargin{:});
             V.diffOrder = 0;

@@ -1,3 +1,5 @@
+% Test file for 'splitting on' functionality with functions involving abs().
+
 function pass = test_splitting_abs(pref)
 
 if ( nargin == 0 )
@@ -23,8 +25,30 @@ for j = 1:numel(FF);
     err = norm(feval(f, xx) - feval(F, xx), inf);
     pass(j, k+1) = err < 50*max(f.epslevel);
     pass(j, k+2) = err < 1000*pref.eps;
-    k = k + 2;
 
 end
+
+%% Test on singular function:
+
+% define the domain:
+dom = [-1 1];
+domCheck = [dom(1)+0.1 dom(2)-0.1];
+
+pow1 = -0.5;
+pow2 = -0.2;
+op = @(x) abs(cos(25*x).*((x-dom(1)).^pow1).*((dom(2)-x).^pow2));
+f = chebfun(op, dom, 'exps', [pow1 pow2], 'splitting', 'on');
+
+% check values:
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+vals_f = feval(f, x);
+vals_check = feval(op, x);
+err = vals_f - vals_check;
+
+pass(j+1,:) = ( norm(err-mean(err), inf) < ...
+    1e1*get(f,'epslevel')*norm(vals_check, inf) );
 
 end

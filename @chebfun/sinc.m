@@ -1,9 +1,9 @@
-function g = sinc(f, pref)
+function F = sinc(F, pref)
 %SINC   Sinc function of a CHEBFUN.
-%   SINC(F) computes the sinc function of the CHEBFUN F.
+%   SINC(F) computes the sinc function of the CHEBFUN F, i.e., sin(pi*F)/(pi*F).
 %
-%   SINC(F, PREF) does the same but uses the CHEBPREF object PREF when
-%   computing the composition.
+%   SINC(F, PREF) does the same but uses the CHEBPREF object PREF when computing
+%   the composition.
 %
 % See also SIN.
 
@@ -16,6 +16,6 @@ if ( nargin == 1 )
 end
 
 % Call the compose method:
-g = compose(f, @(x) sin(pi*x)./(pi*x), pref);
+F = compose(F(k), @(x) sin(pi*x)./(pi*x), pref);
 
 end

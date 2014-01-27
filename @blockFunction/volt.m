@@ -29,7 +29,7 @@ function f = volt(A, kernel, oneVar)
 % Copyright 2011 by The University of Oxford and The Chebfun Developers. 
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-% Default onevar to false
+% Default oneVar to false
 if ( nargin == 2 )
     oneVar = false;
 end
@@ -44,7 +44,7 @@ f = blockFunction( @(z) applyVolt(z, A.domain, k) );
 
 end
 
-function v = applyVolt(u, d, kernel)
+function v = applyVolt(u, dom, kernel)
     % At each x, do an adaptive quadrature.
     % Result can be resolved relative to norm(u). (For instance, if the
     % kernel is nearly zero by cancellation on the interval, don't try to
@@ -58,17 +58,17 @@ function v = applyVolt(u, d, kernel)
     %    p.enableBreakpointDetection = true;
     p = chebpref(p);
     
-    brk = d(2:end-1); 
+    breaks = dom(2:end-1); 
      
-    v = chebfun(@integral, [d(1) brk d(end)], ...
+    v = chebfun(@integral, [dom(1) breaks dom(end)], ...
         'vectorize', 'eps', 50*nrmu*eps, 'sampletest', 0 );
     
     function h = integral(x)
-        if ( abs(x-d(1)) < eps )
+        if ( abs(x-dom(1)) < eps )
             h = 0;
         else
             h = sum( chebfun(@(y) feval(u,y).*kernel(x,y), ...
-                [d(1) brk(brk<x) x], p) );
+                [dom(1) breaks(breaks<x) x], p) );
         end
     end
 

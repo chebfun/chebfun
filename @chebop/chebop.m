@@ -343,7 +343,7 @@ classdef (InferiorClasses = {?double}) chebop
             
             % Need the domain of the residual in order to create the RHS
             % CHEBMATRIX.
-            dom = getDomain(residual);
+            dom = residual.domain;
             
             % Convert numerical values in RHS vector into chebmatrix
             for rhsCounter = 1:numRow

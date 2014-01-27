@@ -78,8 +78,8 @@ g = bndfun(@(x) [exp(x) 1./(1 + x.^2) airy(x)], dom);
 ip = innerProduct(f, g);
 exact = [-53.1070904269318222 0.0025548835039100  -0.4683303433821355;
          773.70343924989359096771 1.3148120368924471 0.6450791915572742];
-pass(10) = norm(ip(:) - exact(:), inf) < 10*max(get(f, 'epslevel'), ...
-    get(g, 'epslevel'))*max([get(f, 'vscale') get(g, 'vscale')]);
+pass(10) = norm(ip(:) - exact(:), inf) < 10*max([get(f, 'epslevel'), ...
+    get(g, 'epslevel')])*max([get(f, 'vscale') get(g, 'vscale')]);
 
 %%
 % Check error conditition
@@ -91,5 +91,20 @@ catch ME
     pass(11) = strcmp(ME.identifier, ...
         'CHEBFUN:BNDFUN:innerProduct:input');
 end
+
+%% Test on singular function:
+
+pow1 = -0.3;
+pow2 = -0.5;
+op1 = @(x) (x - dom(2)).^pow1.*sin(x);
+op2 = @(x) (x - dom(2)).^pow2.*cos(3*x);
+pref.singPrefs.exponents = [0 pow1];
+f = bndfun(op1, dom, [], [], pref);
+pref.singPrefs.exponents = [0 pow2];
+g = bndfun(op2, dom, [], [], pref);
+I = innerProduct(f,g);
+I_exact = -0.65182492763883119+0.47357853074362785i;
+pass(12) = abs(I - I_exact) < 1e2*max(get(f, 'epslevel'), ...
+    get(g, 'epslevel'))*abs(I_exact);
 
 end

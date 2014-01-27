@@ -10,7 +10,8 @@ function varargout = fill(varargin)
 %
 %   If F and G are array-valued CHEBFUN objects of the same size, one region per
 %   column is drawn. FILL(F1, G1, C1, F2, G2, C2, ...) is another way of
-%   specifying multiple filled areas.
+%   specifying multiple filled areas. Note that FILL does not support
+%   quasimatrix input.
 %
 %   FILL sets the PATCH object FaceColor property to 'flat', 'interp', or a
 %   colorspec depending upon the value of the C matrix.
@@ -24,16 +25,25 @@ function varargout = fill(varargin)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
+% TODO: Quasimatrix support?
+
 k = 1;
 % Get discrete data from PLOTDATA():
 while ( k < (length(varargin) - 1) )
     if ( isa(varargin{k}, 'chebfun') )
+        if ( numel(varargin{k}) > 1 || numel(varargin{k+1}) > 1 )
+            error('CHEBFUN:fill:quasi', 'FILL does not support quasimatrices.');
+        end
         data = plotData(varargin{k}, varargin{k+1});
         varargin{k} = data.xLine(2:end,:);
-        varargin{k+1} = data.fLine(2:end,:);
+        varargin{k+1} = data.yLine(2:end,:);
         k = k + 1;
     end
     k = k + 1;
+end
+
+if ( any(cellfun(@(f) isa(f, 'chebfun'), varargin)) )
+    error('CHEBFUN:fill:oops', 'Unrecognised input sequence.');
 end
 
 % Call the built in FILL():
@@ -41,7 +51,7 @@ h = fill(varargin{:});
 
 % Output handle:
 if ( nargout == 1 )
-  varargout{1} = h;
+    varargout{1} = h;
 end
 
 end

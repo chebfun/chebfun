@@ -1,4 +1,10 @@
 function D = diff(disc,m)
+%DIFF    Differentiation operator for COLLOC2 discretization.
+%   D = DIFF(DISC) gives the matrix such that if v=D*u, then v=u', where u is a
+%   COLLOC2 representation of a Chebyshev polynomial. \
+%
+%   DIFF(DISC,M) for positive integer M returns D^M (through a better algorithm
+%   than multiplication). 
 
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.

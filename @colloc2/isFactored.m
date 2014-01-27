@@ -1,6 +1,10 @@
 function t = isFactored(disc)
+
 % Returns true if the discretization has stored LU factors whose dimensions are
-% compatible with the current discretization sizes. 
+% compatible with the current discretization size. 
+
+%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  See http://www.chebfun.org for Chebfun information.
 
 t = false;
 if ( ~isempty(disc.mldivideData) )

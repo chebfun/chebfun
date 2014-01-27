@@ -51,6 +51,7 @@ end
 values = mat2cell(f.values, n, N);
 coeffs = mat2cell(f.coeffs, n, N);
 vscale = mat2cell(f.vscale, 1, N);
+epslevel = mat2cell(f.epslevel, 1, N);
 
 % Create a cell for storing the CHEBTECH objects
 g = cell(1, numel(N));
@@ -61,11 +62,11 @@ for k = 1:numel(N)
     gk = f.make();
     
     % Assign values to the fields of the CHEBTECH
-    gk.epslevel = f.epslevel;
     gk.ishappy = f.ishappy;
-    gk.vscale = vscale{k};
     gk.values = values{k};
     gk.coeffs = coeffs{k};
+    gk.vscale = vscale{k};
+    gk.epslevel = epslevel{k};
     
     % Store the CHEBTECH in the cell-array returned.
     g{k} = gk;

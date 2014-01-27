@@ -20,7 +20,7 @@ end
 % Make an output FUN:
 out = varargin{1};
 
-tol = get(out, 'hscale')*get(out, 'epslevel');
+tol = norm(out.domain, inf)*get(out, 'epslevel');
 if ( any( cellfun(@(f) any(f.domain - out.domain) > tol, varargin)) )
     error('FUN:horzcat:domains', 'Domain mismatch.');
 end

@@ -7,6 +7,7 @@ function u = expm(L,t,u0)
 %
 %   The output is a chebmatrix. If T is a vector, then U will have one
 %   column for each entry of T.
+%   TODO: Or is it going to be a quasimatrix?
 %
 %    L should have appropriate boundary conditions to make the problem
 %    well-posed. Those conditions have zero values; i.e. are represented by
@@ -29,7 +30,7 @@ function u = expm(L,t,u0)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-discType = L.prefs.discretization;
+discType = L.prefs.discretisation;
 isFun = isFunVariable(L); 
 
 %% Set up the discretisation:
@@ -38,7 +39,7 @@ if ( isa(discType, 'function_handle') )
     disc = discType(L);  
     
     % Merge domains of the operator and the initial condition.
-    disc = mergeDomains(disc,u0.domain); 
+    disc.domain = chebfun.mergeDomains(disc.domain, u0.domain); 
     
     % Set the allowed discretisation lengths: (TODO: A preference?)
     dimVals = L.prefs.dimensionValues;
@@ -47,7 +48,6 @@ if ( isa(discType, 'function_handle') )
     
     % Apply the discretistion dimension on all pieces:
     disc.dimension = repmat(dimVals(1), 1, numel(disc.domain)-1);
-    dimVals(1) = [];
 else
     % A discretisation is given:
     disc = discType;
@@ -58,14 +58,14 @@ end
 
 if ( isempty(L.continuity) )
      % Apply continuity conditions:
-     disc.source = deriveContinuity(L);
+     disc.source = deriveContinuity(disc.source,disc.domain);
 end
 
 % Initialise happiness:
 numInt = disc.numIntervals;
 isDone = false(1, numInt);
 
-if isa(u0,'chebfun')
+if isa(u0, 'chebfun')
     u0 = chebmatrix({u0}); 
 end
 
@@ -79,17 +79,18 @@ for i = 1:length(t)
         disc.dimension(~isDone) = dim;
 
         % Discretize the operator (incl. constraints/continuity):
-        E = expm(disc,t(i));
+        E = expm(disc, t(i));
         
         % Discretize the initial condition.
-        v0 = cellfun(@(x) blockMatrix(disc,x),u0.blocks,'uniform',false);
-        v0 = cell2mat(v0);
+        %v0 = instantiate(disc, u0.blocks) 
+        %v0 = cell2mat(v0);
+        v0 = matrix(u0,disc.dimension,disc.domain);
         
         % Propagate.
         v = E*v0;
         
         % Convert the different components into cells
-        u = partition(disc,v);
+        u = partition(disc, v);
         
         % Test the happieness of the function pieces:
         [isDone, epsLevel] = testConvergence(disc, u(isFun));
@@ -106,16 +107,18 @@ for i = 1:length(t)
     end
     
     %% Tidy the solution for output:
-    % The variable u is a cell array with the different components of the solution.
-    % Because each function component may be piecewise defined, we will loop through
-    % one by one.
+    % The variable u is a cell array with the different components of the
+    % solution. Because each function component may be piecewise defined, we
+    % will loop through one by one.
     %u = mat2fun(disc,u); 
     %for k = find( isFun )
     %    u{k} = disc.toFunction(u{k});
         %     u{k} = simplify(u{k}, epsLevel);
     %end
+    % TODO: Remove the above?
     
-    allu(i) = toFunction(disc,u);
+    ucell = mat2fun(disc, u);
+    allu = [ allu, chebmatrix(ucell) ];
 end
 
 u = allu;

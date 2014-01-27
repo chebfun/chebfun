@@ -21,7 +21,9 @@ function M = matrix(A,varargin)
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
-d = A.prefs.discretization(A,varargin{:});
+% TODO: Confirm with TAD why this was A.prefs.discretizatino, calling a
+% dependent property? AB, 27/1/14.
+d = A.prefs.discretisation(A,varargin{:});
 M = matrix(d);
 
 end

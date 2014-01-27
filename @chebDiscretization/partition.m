@@ -1,8 +1,9 @@
 function u = partition(disc,values)
 
 % Given a vector or matrix (columnwise) of values corresponding to all the
-% discretized variables and scalars, convert to a cell-valued partition of
-% individual variables. 
+% discretized variables and scalars in a system, convert to a cell-valued
+% partition of individual variables in the system. I.e., deduce the
+% variable boundaries within the discretization.
 
 % Which variables are functions (as opposed to scalars)?
 isFun = isFunVariable(disc.source);

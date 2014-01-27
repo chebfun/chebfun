@@ -1,50 +1,76 @@
-function L = deriveContinuity(L,makePeriodic)
+function L = deriveContinuity(L, domain, makePeriodic)
+%DERIVECONTINUITY Continuity conditions in a piecewise domain.
+%   L = DERIVECONTINUITY(L) examines the domain of L and the differential
+%   orders of the variables in the system, in order to deduce and encode
+%   the appropriate continuity conditions for each variable at every
+%   breakpoint. The results are stored in the 'continuity' property of L.
+%
+%   L = DERIVECONTINUITY(L,DOMAIN) uses the given domain, merged with
+%   L.domain, in order to derive continuity. In this way you can introduce
+%   new breakpoints.
+%
+%   L = DERIVECONTINUITY(L,DOMAIN,TRUE) ignores breakpoints and enforces
+%   appropriate continuity at the boundary points, in order to create a
+%   constraint of periodicity. This is called by ADDBC, which then moves
+%   the conditions to the 'constraint' property.
 
-% Find automatic smoothness constraints at domain breakpoints.
-d = L.diffOrder;
-d = max(d,[],1);
-dom = L.domain;
+%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  See http://www.chebfun.org for Chebfun information.
 
-cont = L.continuity;
+if ( nargin < 3 )
+    makePeriodic = false;
+    if ( nargin < 2 )
+        domain = [];
+    end
+end
+
+dom = chebfun.mergeDomains(domain,L.domain);
+
+diffOrd = L.diffOrder;          % order of each block
+diffOrd = max(diffOrd, [], 1);  % max order per variable
+
+cont = L.continuity;            % append, don't overwrite
 
 if ( ( nargin < 2 ) || ~makePeriodic )
-    % Use the interior breakpoints.
+    % Use the interior breakpoints for continuity.
     left = dom(2:end-1);
     right = left;
 else
-    % Create periodic conditions.
+    % Create periodic conditions, using only endpoints.
     left = dom(end);
     right = dom(1);
 end
     
 
-if ( max(d) > 0 ) && ( ~isempty(left) )
+if ( ( max(diffOrd) > 0 ) && ( ~isempty(left) ) )
     
-    C = domainContinuity(dom,max(d)-1,left,right);
+    % These give all possible continuity statements up to the maximum
+    % order.
+    C = domainContinuity(dom,max(diffOrd)-1, left, right);
     
     % Each function variable gets a zero functional block; each scalar variable
     % gets a scalar zero.
-    z = linBlock.zero(dom);
+    z = functionalBlock.zero(dom);
     Z = {};
-    for var = 1:length(d)
-        if ( isnan(d(var)) || d(var) == 0 ) % scalar
-            Z = [Z,0];
-        else
-            Z = [Z,z];
+    for var = 1:length(diffOrd)
+        if ( isnan(diffOrd(var)) || diffOrd(var) == 0 )  % scalar variable
+            Z = [Z, 0];
+        else   % function variable
+            Z = [Z, z];
         end
     end
-    %    Z = chebmatrix(Z);
     
-    for var = 1:length(d)
+    for var = 1:length(diffOrd)
         % Skip if this is a scalar variable; it plays no role in continuity.
-        if ( isnan(d(var)) || d(var) == 0 )
+        if ( isnan(diffOrd(var)) || diffOrd(var) == 0 )
             continue
         end
+        
         B = Z;
-        for m = 0:d(var)-1
-            for k = 1:length(left)
-                B(var) = C{m+1,k};
-                cont = cont.append(B,0);
+        for m = 0:diffOrd(var)-1    % up to this variable's diff. order
+            for k = 1:length(left)  % for each point
+                B(var) = C{m+1, k}; % right/left difference in mth deriv.
+                cont = cont.append(B, 0);
             end
         end
     end
@@ -55,13 +81,13 @@ L.continuity = cont;
 end
 
 
-function C = domainContinuity(dom,maxorder,left,right)
-% Returns expressions of continuity conditions at
-% the breakpoints of the domain of L.
+function C = domainContinuity(dom, maxorder,left, right)
+% Returns expressions of continuity at the breakpoints of the domain of L.
 %   C{m,k} has the (m-1)th-order derivative at breakpoint k
 
-A = linBlock.eye(dom);
-D = linBlock.diff(dom,1);
+A = operatorBlock.eye(dom);
+D = operatorBlock.diff(dom,1);
+C = cell(maxorder+1,length(left));
 for m = 0:maxorder
     for k = 1:length(left)
         El = functionalBlock.feval(left(k),dom,-1);

@@ -30,6 +30,15 @@ for n = 1:1 %[TODO]: unbndfun
     % Test an array of empty FUN objects:
     f = [ testclass.make(), testclass.make() ];
     pass(n, 5) = isempty(f);
+    
+    %% Test on singular function:
+    
+    pow = -0.5;
+    op = @(x) (x - dom(2)).^pow.*sin(x);
+    pref.singPrefs.exponents = [0 pow];
+    f = testclass.make(op, dom, [], [], pref);
+    pass(n, 6) = ~isempty(f);
+    
 end
 
 end

@@ -103,22 +103,35 @@ pass(11) = (norm(err, inf) <= get(df6, 'vscale')^6*get(df6, 'epslevel'));
 f = bndfun(@(x) [sin(x) x.^2 exp(1i*x)], dom, [], [], pref);
 df_exact = @(x) [cos(x) 2*x 1i*exp(1i*x)];
 err = feval(diff(f), x) - df_exact(x);
-pass(12) = (norm(err(:), inf) < 10*max(get(f, 'vscale'))*get(f, 'epslevel'));
+pass(12) = (norm(err(:), inf) < 10*max(get(f, 'vscale').*get(f, 'epslevel')));
 
 % DIM option.
 dim2df = diff(f, 1, 2);
 g = @(x) [(x.^2 - sin(x)) (exp(1i*x) - x.^2)];
 err = feval(dim2df, x) - g(x);
-pass(13) = (norm(err(:), inf) < 10*max(get(f, 'vscale'))*get(f, 'epslevel'));
+pass(13) = (norm(err(:), inf) < 10*max(get(f, 'vscale').*get(f, 'epslevel')));
 
 dim2df2 = diff(f, 2, 2);
 g = @(x) exp(1i*x) - 2*x.^2 + sin(x);
 err = feval(dim2df2, x) - g(x);
-pass(14) = (norm(err(:), inf) < 10*max(get(f, 'vscale'))*get(f, 'epslevel'));
+pass(14) = (norm(err(:), inf) < 10*max(get(f, 'vscale').*get(f, 'epslevel')));
 
 % DIM option should return an empty bndfun for non-array-valued input.
 f = bndfun(@(x) x.^3, dom);
 dim2df = diff(f, 1, 2);
 pass(15) = (isempty(dim2df));
+
+%% Test on singular function:
+
+pow = -0.5;
+op = @(x) (x - dom(1)).^pow.*sin(x);
+pref.singPrefs.exponents = [pow 0];
+f = bndfun(op, dom, [], [], pref);
+df = diff(f);
+vals_df = feval(df, x);
+df_exact = @(x) (x - dom(1)).^(pow-1).*(pow*sin(x)+(x - dom(1)).*cos(x));
+vals_exact = feval(df_exact, x);
+err = vals_df - vals_exact;
+pass(16) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
 
 end
