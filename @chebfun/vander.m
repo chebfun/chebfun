@@ -6,8 +6,8 @@ function A = vander(f, n)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( f.isTransposed || (min(size(f)) > 1) )
-    error('CHEBFUN:vander:row', 'Input must be a scalar-valued column CHEBFUN')
+if ( f(1).isTransposed || numColumns(f) > 1 )
+    error('CHEBFUN:vander:row', 'Input must be a scalar-valued column CHEBFUN.')
 end
 
 % Initialise a cell for storage:
@@ -20,5 +20,7 @@ for j = 1:n-1
 end
 % Concatenate the columns to create an array-valued CHEBFUN:
 A = horzcat(A{:});
+% Reverse the columns to be consistent with MATLAB's built-in vander():
+A = fliplr(A);
 
 end

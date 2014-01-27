@@ -63,9 +63,15 @@ classdef onefun % (Abstract)
                 % OP is already a ONEFUN!
                 obj = op;
                 
-            elseif ( pref.enableSingularityDetection )
+            elseif ( pref.enableSingularityDetection || ...
+                    ( ~isempty(pref.singPrefs.exponents) && ...
+                    any( pref.singPrefs.exponents ~= 0 ) ) || ...
+                    ~isempty(pref.singPrefs.singType) )
+                
                 % BLOWUP mode; call SINGFUN constructor:
-                obj = singfun(op, [], [], vscale, hscale, pref);
+                singType = pref.singPrefs.singType;
+                exponents = pref.singPrefs.exponents;
+                obj = singfun(op, exponents, singType, vscale, hscale, pref);
 
                 % Return just a SMOOTHFUN if no singularities found:
                 if ( issmooth(obj) )
@@ -84,7 +90,12 @@ classdef onefun % (Abstract)
     
     %% ABSTRACT (NON-STATIC) METHODS REQUIRED BY ONEFUN CLASS.
     methods ( Abstract = true )
-        
+        % ONEFUN logical AND.
+        h = and(f, g)
+
+        % True if any element of a FUN is a nonzero number, ignoring NaN.
+        a = any(f, dim)
+
         % Convert an array of ONEFUN objects into an array-valued ONEFUN.
         f = cell2mat(f)
 
@@ -165,6 +176,9 @@ classdef onefun % (Abstract)
         
         % Compute a Legendre series expansion of a ONEFUN object:
         c = legpoly(f)
+
+        % ONEFUN logical OR.
+        h = or(f, g)
 
         % Basic linear plot for ONEFUN objects.
         varargout = plot(f, varargin)

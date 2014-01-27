@@ -24,11 +24,11 @@ if ( isa(A, 'chebmatrix') )
         disc.outputSpace = outputSpaces(j);
         for k = 1:size(A, 2)
             disc.coeffs = c{j,k};
-            [L{j,k}, S{j,k}] = blockDiscretize(disc, A.blocks{j,k});
+            [L{j,k}, S{j,k}] = instantiate(disc, A.blocks{j,k});
         end
     end
     if ( isa(A,'linop') )
-        [out{1:4}] = useConstraints(disc,L);
+        [out{1:4}] = applyConstraints(disc,L);
         out{2} = out{2}*cell2mat(S);
     else
         out{1} = cell2mat(L);
@@ -37,6 +37,6 @@ if ( isa(A, 'chebmatrix') )
     varargout(1:m) = out(1:m);    
 else
     disc.coeffs = disc.coeffs{1};
-    [varargout{1:nargout}] = blockDiscretize(disc, A);
+    [varargout{1:nargout}] = instantiate(disc, A);
 end
 end

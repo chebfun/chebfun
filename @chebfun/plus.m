@@ -4,6 +4,9 @@ function f = plus(f, g)
 %   scalar.
 %
 %   H = PLUS(F, G) is called for the syntax 'F + G'.
+%
+%   The dimensions of F and G must be compatible. Note that scalar expansion is
+%   _not_ supported if both F and G are CHEBFUN objects.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
@@ -17,27 +20,52 @@ if ( ~isa(f, 'chebfun') )   % ??? + CHEBFUN
 elseif ( isempty(g) )       % CHEBFUN + []
 
     f = [];
+    return
 
 elseif ( isnumeric(g) )     % CHEBFUN + double
-    
-    % Transpose g if f is transposed:
-    if ( f.isTransposed )
-        g = g.';
+
+    if ( numel(f) == 1 )
+        % Array-valued case:
+
+        % Transpose g if f is transposed:
+        if ( f(1).isTransposed )
+            g = g.';
+        end
+
+        % Add g to the FUNs:
+        for k = 1:numel(f.funs)
+            f.funs{k} = f.funs{k} + g;
+        end
+
+        % Add g to the impulses:
+        if ( (size(f.impulses, 2) == 1) && (numColumns(f) > 1) )
+            f.impulses = repmat(f.impulses, 1, size(g, 2)); % Allow expansion in f.
+        end
+        if ( size(g, 2) > 1 )
+            g = repmat(g, length(f.domain), 1);             % Allow expansion in g.
+        end
+        f.impulses(:,:,1) = f.impulses(:,:,1) + g;
+    else
+        % Quasimatrix case:
+
+        numCols = numel(f);
+        % Promote g if required:
+        if ( isscalar(g) )
+            g = repmat(g, 1, numCols);
+        elseif ( length(g) ~= numCols || min(size(g)) ~= 1 )
+            error('CHEBFUN:plus:dims', 'Matrix dimensions must agree.');
+        end
+        % Transpose g if f is a row CHEBFUN:
+        if ( f(1).isTransposed )
+            g = g.';
+        end
+        % Loop over the columns:
+        for k = 1:numCols
+            f(k) = f(k) + g(k);
+        end
+
     end
 
-    % Add g to the FUNs:
-    for k = 1:numel(f.funs)
-        f.funs{k} = f.funs{k} + g;
-    end
-    
-    % Add g to the impulses:
-    if ( (size(f.impulses, 2) == 1) &&  (min(size(f)) > 1) )
-        f.impulses = repmat(f.impulses, 1, size(g, 2)); % Allow expansion in f.
-    end
-    if ( size(g, 2) > 1 )
-        g = repmat(g, length(f.domain), 1);             % Allow expansion in g.
-    end
-    f.impulses(:,:,1) = f.impulses(:,:,1) + g;
 
 elseif ( ~isa(g, 'chebfun') ) % CHEBFUN + ???
 
@@ -48,26 +76,48 @@ elseif ( ~isa(g, 'chebfun') ) % CHEBFUN + ???
 elseif ( isempty(f) )         % empty CHEBFUN + CHEBFUN
 
     % Nothing to do. (Return empty CHEBFUN as output).
+    return
 
 else                          % CHEBFUN + CHEBFUN
 
     % Check to see if one CHEBFUN is transposed:
-    if ( xor(f.isTransposed, g.isTransposed) )
+    if ( xor(f(1).isTransposed, g(1).isTransposed) )
         error('CHEBFUN:plus:matdim', ...
             'Matrix dimensions must agree. (One input is transposed).');
+    elseif ( numColumns(f) ~= numColumns(g) )
+            error('CHEBFUN:plus:dims', 'Matrix dimensions must agree.')
     end
 
-    % Overlap the CHEBFUN objects:
-    [f, g] = overlap(f, g);
+    if ( numel(f) == 1 && numel(g) == 1 )
+        % CHEBFUN case:
+        
+        % Overlap the CHEBFUN objects:
+        [f, g] = overlap(f, g);
 
-    % Add the impulses:
-    f.impulses = f.impulses + g.impulses;
+        % Add the impulses:
+        f.impulses = f.impulses + g.impulses;
 
-    % Add the FUNs:
-    for k = 1:numel(f.funs)
-        f.funs{k} = f.funs{k} + g.funs{k};
+        % Add the FUNs:
+        for k = 1:numel(f.funs)
+            f.funs{k} = f.funs{k} + g.funs{k};
+        end
+
+    else
+        % QUASIMATRIX case:
+        
+        % Loop over the columns:
+        f = cheb2cell(f);
+        g = cheb2cell(g);
+        for k = numel(f):-1:1
+            h(k) = f{k} + g{k};
+        end
+        f = h;
+
     end
 
 end
+
+% Set small breakpoint values to zero:
+f = thresholdBreakpointValues(f);
 
 end

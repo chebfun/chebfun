@@ -99,6 +99,21 @@ pass(20) = (~get(g, 'ishappy')) && (~get(h, 'ishappy'));
 h = g + f;  % Add happy to unhappy.
 pass(21) = (~get(g, 'ishappy')) && (~get(h, 'ishappy'));
 
+%% Test on singular function:
+
+pow = -1;
+op1 = @(x) (x - dom(2)).^pow.*sin(x);
+op2 = @(x) (x - dom(2)).^pow.*cos(3*x);
+pref.singPrefs.exponents = [0 pow];
+f = bndfun(op1, dom, [], [], pref);
+g = bndfun(op2, dom, [], [], pref);
+h = f + g;
+vals_h = feval(h, x);
+op = @(x)  (x - dom(2)).^pow.*(sin(x)+cos(3*x));
+h_exact = op(x);
+pass(22) = ( norm(vals_h-h_exact, inf) < 1e1*max(get(f, 'epslevel'), get(g, 'epslevel'))*...
+    norm(h_exact, inf) );
+
 end
 
 % Test the addition of a BNDFUN F, specified by F_OP, to a scalar ALPHA using
@@ -109,7 +124,7 @@ function result = test_add_function_to_scalar(f, f_op, alpha, x)
     result(1) = isequal(g1, g2);
     g_exact = @(x) f_op(x) + alpha;
     result(2) = norm(feval(g1, x) - g_exact(x), inf) < ...
-        10*max(get(g1, 'vscale'))*get(g1, 'epslevel');
+        10*max(get(g1, 'vscale').*get(g1, 'epslevel'));
 end
 
 % Test the addition of two BNDFUN objects F and G, specified by F_OP and
@@ -120,5 +135,5 @@ function result = test_add_function_to_function(f, f_op, g, g_op, x)
     result(1) = isequal(h1, h2);
     h_exact = @(x) f_op(x) + g_op(x);
     result(2) = norm(feval(h1, x) - h_exact(x), inf) <= ...
-        10*max(get(h1, 'vscale'))*get(h1, 'epslevel');
+        10*max(get(h1, 'vscale').*get(h1, 'epslevel'));
 end

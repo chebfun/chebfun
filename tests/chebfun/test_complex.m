@@ -69,4 +69,26 @@ catch ME
     pass(10) = strcmp(ME.identifier, 'CHEBFUN:complex:BisNotReal');
 end
 
+%% Test on singular function:
+dom = [-2 7];
+pow = -1.64;
+f = chebfun(@(x) cos(x).*(x-dom(1)).^pow, dom, 'exps', [pow 0], ...
+    'splitting', 'on');
+g = chebfun(@(x) sin(x).*(x-dom(1)).^pow, dom, 'exps', [pow 0], ...
+    'splitting', 'on');
+h = complex(f, g);
+op = @(x) exp(1i*x).*(x-dom(1)).^pow;
+
+% define the checking domain:
+domCheck = [dom(1)+0.1 dom(2)-0.1];
+
+% check values:
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+vals_h = feval(h, x);
+vals_exact = feval(op, x);
+err = vals_h - vals_exact;
+pass(11) = ( norm(err, inf) < 1e1*epslevel(h)*norm(vals_exact, inf) );
+
 end

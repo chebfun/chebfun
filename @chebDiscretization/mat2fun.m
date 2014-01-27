@@ -11,7 +11,8 @@ function f = mat2fun(disc,values)
 %     [      ...                     ...  
 %     [   varN,pieceM,col1       varN,pieceM,col2      ...  ]
 %
-% The variables may be scalar valued.
+% The variables may be scalar valued. The input may be a cell, in which case it
+% will first be converted to the matrix form.
 %
 % Output data layout is a cell vector. Each element is an array-valued piecewise
 % chebfun, or a numeric row vector:
@@ -28,6 +29,10 @@ function f = mat2fun(disc,values)
 n = disc.dimension;
 isFun = disc.source.isFunVariable; 
 numvar = length(isFun);
+
+if ( iscell(values) )
+    values = cell2mat(values);
+end
 
 m = ones(1,numvar);
 m(isFun) = sum(n);

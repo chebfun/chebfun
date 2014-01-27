@@ -27,6 +27,11 @@ if ( isempty(f) || isempty(g) )
     return
 end
 
+if ( numel(f) > 1 || numel(g) > 1 )
+    error('CHEBFUN:tweakDomain:quasi', ...
+        'tweakDomain does not support quasimatrices.');
+end
+
 if ( nargin < 3 )
     % Set a tolerance relative to the horizontal scale:
     hs = max(hscale(f), hscale(g));

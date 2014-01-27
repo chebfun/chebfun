@@ -3,7 +3,7 @@ function indx = whichInterval(dom, x, direction)
 %   INDX = WHICHINTERVAL(DOM, X) returns a matrix of size(X) whos j,k entry is a
 %   positive integer denoting which subinterval of the domain DOM (which should
 %   be a sorted real-valued vector) the real part of the point X(j,k) is
-%   positioned. INDX(j,k) = +/-INF if X(j,k) < DOM(1) or X(j,k) > DOM(end),
+%   positioned. INDX(j,k) = -/+INF if X(j,k) < DOM(1) or X(j,k) > DOM(end),
 %   respectively.
 %   
 %   WHICHINTERVAL(DOM, X, DIRECTION) determines which interval those points in X
@@ -37,6 +37,6 @@ end
 indx(xReal == dom(end)) = numInts;
 
 % Points to the right of the domain:
-indx(xReal > dom(end)) = -inf;
+indx(xReal > dom(end)) = inf;
 
 end

@@ -5,9 +5,9 @@ function b = rhs(disc, f)
 fdisc = ultraS(f,disc.dimension,disc.domain);
 fdisc.outputSpace = disc.outputSpace;
 
-row = cellfun(@(x) blockDiscretize(fdisc, x), f.blocks, 'uniform', false );
+row = instantiate(fdisc,f.blocks);
+row = reduce(disc,row);
 
-row = disc.reproject(row);
 b = cell2mat(row);
 L = disc.source;
 if ~isempty(L.constraint)
@@ -16,4 +16,5 @@ end
 if ~isempty(L.continuity)
     b = [ L.continuity.values; b ];
 end
+
 end

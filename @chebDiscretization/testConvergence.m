@@ -1,9 +1,11 @@
 function [isDone,epsLevel] = testConvergence(disc,values)
+%TESTCONVERGENCE Happiness check.
+%   Given a discretization, and a cell array of discretized functions,
+%   check the equivalent Chebyshev polynomial representation for sufficient
+%   convergence.
 
-% Given a disretization, and a cell array of discretized functions, check the
-% equivalent Chebyshev polynomial representation for sufficient convergence. 
-
-% We will test on an arbitrary linear combination of the individual functions. 
+% We will test on an arbitrary linear combination of the individual
+% functions.
 s = 1 ./ (3*(1:numel(values))).';
 newvalues = cell2mat(values(:).')*s;
 
@@ -23,6 +25,8 @@ end
 
 
 function [isDone, epsLevel] = testPiece(u,interval)
+
+% Test convergence on a single subinterval.
 
 isDone = false;
 epsLevel = eps;

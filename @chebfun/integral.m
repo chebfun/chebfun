@@ -9,7 +9,7 @@ function I = integral(f, a, b, varargin)
 %   in an anonymous function:
 %       integral(@(x) f(x), a, b);
 %
-%   See also SUM.
+% See also SUM.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -24,4 +24,6 @@ if ( nargin == 1 )
     I = sum(f);
 else
     I = sum(f, a, b);
+end
+
 end
