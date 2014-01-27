@@ -81,4 +81,29 @@ check(4) = all(g.impulses == [f.impulses(1:2); 1; 2; f.impulses(3:4)]);
 
 pass(11) = all( check );
 
+%% Test for function defined on unbounded domain:
+
+% Functions on [-inf inf]:
+
+% Set the domain:
+dom = [-Inf Inf];
+
+% Blow-up function:
+op = @(x) x.^2.*(1-exp(-x.^2));
+f = chebfun(op, dom, 'exps', [2 2]); 
+brkpts = zeros(1,2);
+brkpts(1) = -7;
+brkpts(2) = 2;
+g = definePoint(f, brkpts(1), 3);
+g(brkpts(2)) = 4;
+
+% check values:
+check = zeros(1,4);
+check(1) = all(g.domain == unique([dom, brkpts]));
+check(2) = feval(g, brkpts(1)) == 3;
+check(3) = feval(g, brkpts(2)) == 4;
+check(4) = all(g.impulses == [f.impulses(1); 3; 4; f.impulses(end)]);
+
+pass(12) = all( check );
+
 end

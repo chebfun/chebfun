@@ -39,7 +39,26 @@ else
 
     % Evaluate the function handle at the breaks:
     vals(1:numFuns+1,:) = feval(op, ends.');
-
+    
+    % Replace all NaNs by the appropriate function values obtained using FUNs:
+    mask = isnan(vals(1:numFuns+1,:));
+    if any( mask(1,:) )
+        lvals = get(funs{1}, 'lval');
+        vals(1, mask(1,:)) = lvals(mask(1,:));
+    end
+    
+    for k = 2:numFuns
+        if any( mask(k,:) )
+            lrvals = (get(funs{k-1}, 'rval') + get(funs{k}, 'lval'))/2;
+            vals(k, mask(k,:)) = lrvals(mask(k,:));
+        end
+    end
+    
+    if any( mask(numFuns+1,:) )
+        rvals = get(funs{numFuns}, 'rval');
+        vals(numFuns+1, mask(numFuns+1,:)) = rvals(mask(numFuns+1,:));
+    end
+    
 end
 
 end
