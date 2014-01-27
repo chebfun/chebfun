@@ -33,13 +33,13 @@ pass(4) = ~isempty(f);
 dom = [-Inf Inf];
 
 op = @(x) (1-exp(-x.^2))./x;
-f = chebfun(op, dom);
+f = unbndfun(op, dom);
 pass(5) = ~isempty(f);
 
 % Blow-up function:
 op = @(x) x.^2.*(1-exp(-x.^2));
 pref.singPrefs.exponents = [2 2];
-f = chebfun(op, dom, pref); 
+f = unbndfun(op, dom, [], [], pref); 
 pass(6) = ~isempty(f);
 
 %% Functions on [-inf b]:
@@ -49,7 +49,7 @@ dom = [-Inf -3*pi];
 
 % Array-valued function:
 op = @(x) [exp(x) x.*exp(x) (1-exp(x))./x];
-f = chebfun(op, dom);
+f = unbndfun(op, dom);
 pass(7) = ~isempty(f);
 
 end
