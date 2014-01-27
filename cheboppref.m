@@ -2,9 +2,9 @@ classdef cheboppref < chebpref
     
     % See above for documentation.
     properties
-        discretisation = @colloc2
-        scale = NaN
-        dimensionValues = [32 64 128 256 512 724 1024 1448 2048]
+%         discretisation = @colloc2
+%         scale = NaN
+%         dimensionValues = [32 64 128 256 512 724 1024 1448 2048]
     end
     
     properties (Dependent)
@@ -17,8 +17,16 @@ classdef cheboppref < chebpref
             
             outPref = outPref@chebpref;
             
-            outPref.maxTotalLength = 2500;
-            outPref.enableSingularityDetection = false;  % not supported
+            % TODO: Check with AA about preferences
+            outPref.prefList.maxTotalLength = 2500;
+            outPref.prefList.enableSingularityDetection = false;  % not supported
+            
+            % Default new properties.
+            outPref.prefList.discretisation = @colloc2;
+            outPref.prefList.scale = NaN;
+            outPref.prefList.dimensionValues =[32 64 128 256 512 724 1024 1448 2048];
+            
+            
         end
         
         function out = get.discretization(pref)
@@ -30,24 +38,24 @@ classdef cheboppref < chebpref
         end
 
         function out = subsref(pref, ind)
-        %SUBSREF   Subscripted referencing for CHEBPREF.
-        %   P.PROP, where P is a CHEBPREF object, returns the value of the
-        %   CHEBPREF property PROP stored in P.  If PROP is not a CHEBPREF
-        %   property, P.DISCPREFS.PROP will be returned instead.  If PROP is
-        %   neither a CHEBPREF property nor a field in P.DISCPREFS, an error
+        %SUBSREF   Subscripted referencing for CHEBOPPREF.
+        %   P.PROP, where P is a CHEBOPPREF object, returns the value of the
+        %   CHEBOPPREF property PROP stored in P.  If PROP is not a CHEBOPPREF
+        %   property, P.TECHPREFS.PROP will be returned instead.  If PROP is
+        %   neither a CHEBOPPREF property nor a field in P.TECHPREFS, an error
         %   will be thrown.
         %
-        %   For access to fields PROP of DISCPREFS that have the same name as a
-        %   CHEBPREF property, use the syntax P.DISCPREFS.PROP.
+        %   For access to fields PROP of TECHPREFS that have the same name as a
+        %   CHEBOPPREF property, use the syntax P.TECHPREFS.PROP.
         %
-        %   CHEBPREF does not support any other subscripted referencing types,
+        %   CHEBOPPREF does not support any other subscripted referencing types,
         %   including '()' and '{}'.
             switch ( ind(1).type )
                 case '.'
-                    if ( isprop(pref, ind(1).subs) )
-                        out = pref.(ind(1).subs);
+                    if ( isfield(pref.prefList, ind(1).subs) )
+                        out = pref.prefList.(ind(1).subs);
                     else
-                        out = pref.discPrefs.(ind(1).subs);
+                        out = pref.prefList.techPrefs.(ind(1).subs);
                     end
 
                     if ( numel(ind) > 1 )
@@ -60,24 +68,25 @@ classdef cheboppref < chebpref
         end
 
         function pref = subsasgn(pref, ind, val)
-        %SUBSASGN   Subscripted assignment for CHEBPREF.
-        %   P.PROP = VAL, where P is a CHEBPREF object, assigns the value VAL
-        %   to the CHEBPREF property PROP stored in P.  If PROP is not a
-        %   CHEBPREF property, the assignment will be made to P.DISCPREFS.PROP
+        %SUBSASGN   Subscripted assignment for CHEBOPPREF.
+        %   P.PROP = VAL, where P is a CHEBOPPREF object, assigns the value VAL
+        %   to the CHEBOPPREF property PROP stored in P.  If PROP is not a
+        %   CHEBOPPREF property, the assignment will be made to P.TECHPREFS.PROP
         %   instead.
         %
-        %   To assign to fields PROP of DISCPREFS that have the same name as a
-        %   CHEBPREF property, use the syntax P.DISCPREFS.PROP = VAL.
+        %   To assign to fields PROP of TECHPREFS that have the same name as a
+        %   CHEBOPPREF property, use the syntax P.TECHPREFS.PROP = VAL.
         %
-        %   CHEBPREF does not support any other subscripted assignment types,
+        %   CHEBOPPREF does not support any other subscripted assignment types,
         %   including '()' and '{}'.
             switch ( ind(1).type )
                 case '.'
-                    if ( isprop(pref, ind(1).subs) )
-                        pref = builtin('subsasgn', pref, ind, val);
-                    else
-                        pref.discPrefs = builtin('subsasgn', pref.discPrefs, ...
+                    if ( isfield(pref.prefList, ind(1).subs) )
+                        pref.prefList = builtin('subsasgn', pref.prefList, ...
                             ind, val);
+                    else
+                        pref.prefList.techPrefs = builtin('subsasgn', ...
+                            pref.prefList.techPrefs, ind, val);
                     end
                 otherwise
                     error('CHEBTECH:subsasgn:badType', ...
