@@ -41,6 +41,40 @@ f = chebfun(@(x) sin(100*x).*(x-dom(1)).^pow, dom, 'exps', [pow 0], ...
     'splitting', 'on');
 pass(10) = ~iszero(f);
 
+%% Test for functions defined on unbounded domain:
+
+% Set the domain:
+dom = [-Inf Inf];
+
+% Blow-up function:
+op = @(x) x.^2.*(1-exp(-x.^2));
+pref.singPrefs.exponents = [2 2];
+f = chebfun(op, dom, pref); 
+pass(11) = ~iszero(f);
+
+% Function defined on [0 Inf]:
+
+% Specify the domain:
+dom = [0 Inf];
+
+op = @(x) 0.75+sin(10*x)./exp(x);
+f = chebfun(op, dom, 'splitting', 'on');
+pass(12) = ~iszero(f);
+
+% Function defined on [0 Inf]:
+
+% Set the domain:
+dom = [-Inf -3*pi];
+
+% Blow-up function:
+op = @(x) x.*(5+exp(x.^3))./(dom(2)-x);
+f = chebfun(op, dom, 'exps', [0 -1]); 
+pass(13) = ~iszero(f);
+
+% Zero function:
+f = chebfun(0, dom); 
+pass(14) = iszero(f);
+
 % [TODO]: Add these once SUBSREF is implemented.
 % f = chebfun(0, pref);
 % f(0) = 1;

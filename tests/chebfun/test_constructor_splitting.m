@@ -48,6 +48,9 @@ pass(5) = (norm(f5.domain - [-1 -0.2 0.1 1], inf) < 10*eps) && ...
 
 %% Test for function defined on unbounded domain:
 
+% Function defined on [0 Inf]:
+
+% Specify the domain: 
 dom = [0 Inf];
 domCheck = [0 100];
 

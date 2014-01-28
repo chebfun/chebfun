@@ -35,4 +35,25 @@ f = chebfun(@(x) sin(100*x).*(x-dom(1)).^pow, dom, 'exps', [pow 0], ...
     'splitting', 'on');
 pass(7) = ~isnan(f);
 
+%% Test for function defined on unbounded domain:
+
+% Function defined on [0 Inf]:
+
+% Specify the domain:
+dom = [0 Inf];
+
+op = @(x) 0.75+sin(10*x)./exp(x);
+f = chebfun(op, dom, 'splitting', 'on');
+pass(8) = ~isnan(f);
+
+% Function defined on [0 Inf]:
+
+% Set the domain:
+dom = [-Inf -3*pi];
+
+% Blow-up function:
+op = @(x) x.*(5+exp(x.^3))./(dom(2)-x);
+f = chebfun(op, dom, 'exps', [0 -1]); 
+pass(9) = ~isnan(f);
+
 end
