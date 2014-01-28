@@ -26,7 +26,7 @@ if ( ~isnumeric(g) && issmooth(g) )
     endVals = [get(g, 'lval'); get(g, 'rval')];
     tol = 1e1*get(g, 'vscale').*get(g, 'epslevel');
     
-    if any(any( endVals < tol ))
+    if any( any( endVals < repmat(tol, 2, 1) ) )
         
         [g.onefun, rootsLeft, rootsRight] = extractBoundaryRoots(g.onefun);
         h = singfun();

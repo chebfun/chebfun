@@ -118,8 +118,8 @@ domCheck = [2 1e2];
 x = diff(domCheck) * rand(100, 1) + domCheck(1);
 
 opf = @(x) exp(-x.^2);
-opg = @(x) x.^2.*exp(-x.^2);
-oph = @(x) x.^-2;
+opg = @(x) x.^2;
+oph = @(x) exp(-x.^2).*x.^-2;
 f = unbndfun(opf, dom);
 g = unbndfun(opg, dom);
 h = f./g;
