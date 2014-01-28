@@ -37,14 +37,15 @@ elseif ( ~isa(f, 'chebfun') )      % f, g both not empty. g is a CHEBFUN.
     pass = norm(f([1, end]) - g(1).domain([1, end]), inf) < 1e-15*hs;
     
 else                               % f, g both not empty CHEBFUN objects.
-    
-    % bounded domain:
+    % Grab the hscale:
     hs = max(hscale(f), hscale(g));
-    if ~any( [domain(f) domain(g)] )
+    if all( isfinite([domain(f) domain(g)]) )
         
+        % bounded domain:
         pass = norm(f(1).domain([1, end]) - g(1).domain([1, end]), inf) ...
             < 1e-15*hs;
     else
+        
         % unbounded domain:
         maskF = isinf(f(1).domain([1, end]));
         maskG = isinf(g(1).domain([1, end]));

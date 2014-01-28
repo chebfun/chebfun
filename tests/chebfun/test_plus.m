@@ -121,6 +121,28 @@ h_exact = op(x);
 pass(28) = ( norm(vals_h-h_exact, inf) < max(get(f, 'epslevel'), get(g, 'epslevel'))*...
     norm(h_exact, inf) );
 
+%% Test for function defined on unbounded domain:
+
+% Functions on [-inf inf]:
+
+% Set the domain:
+dom = [-Inf Inf];
+domCheck = [-1e2 1e2];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+opf = @(x) exp(-x.^2);
+opg = @(x) x.^2.*exp(-x.^2);
+oph = @(x) exp(-x.^2) + x.^2.*exp(-x.^2);
+f = chebfun(opf, dom);
+g = chebfun(opg, dom);
+h = f + g;
+hVals = feval(h, x);
+hExact = oph(x);
+err = hVals - hExact;
+pass(29) = norm(err, inf) < get(h,'epslevel').*get(h,'vscale');
+
 end
 
 % Test the addition of a chebfun F, specified by F_OP, to a scalar ALPHA using

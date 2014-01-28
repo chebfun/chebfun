@@ -59,8 +59,28 @@ f = chebfun(op, dom, 'exps', [-1.5 -1.5], 'splitting', 'on');
 m = mean(f);
 pass(11) = ( isnan(m) );
 
-%% Unbounded domains:
-% [TODO]: Test unbounded domains.
+%% Test for functions defined on unbounded domain:
+
+% Functions on [-inf inf]:
+
+% Set the domain:
+dom = [-Inf 2 Inf];
+
+op1 = @(x) x.^2.*exp(-x.^2);
+op2 = @(x) (1-exp(-x.^2))./x.^2 + 2;
+f = chebfun({op1 op2}, dom);
+M = mean(f);
+pass(12) = isnan(M);
+
+% Function defined on [0 Inf]:
+
+% Specify the domain: 
+dom = [0 Inf];
+
+op = @(x) 0.75+sin(10*x)./exp(x);
+f = chebfun(op, dom, 'splitting', 'on');
+M = mean(f);
+pass(13) = ( abs(M - 0.75) < 2*epslevel(f).*vscale(f) );
 
 end
 

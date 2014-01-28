@@ -156,7 +156,7 @@ I_exact = 0.17330750941063138;
 pass(28) = ( abs(I-I_exact) < 2*get(f, 'epslevel')*abs(I_exact) );
 
 
-%% Test on functions defined on unbounded domain:
+%% Test for functions defined on unbounded domain:
 
 % Functions on [-inf inf]:
 

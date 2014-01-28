@@ -2,11 +2,11 @@ function h = mean(f, g)
 %MEAN    Average or mean value of a CHEBFUN.
 %   MEAN(F) is the mean value of the CHEBFUN F in its continuous dimension.
 %   MEAN(F, G) is the average CHEBFUN between CHEBFUN objects F and G.
+%
+% See also SUM.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
-
-% [TODO]: This needs to be reworked once we allow unbounded domains.
 
 if ( nargin == 1 )
 
@@ -30,7 +30,8 @@ if ( nargin == 1 )
 
         elseif ( all(infEnds == [1, 1]) )
             % If doubly unbounded...
-            if ( abs(f.impulses(1) - f.impulses(end)) < get(f, 'vscale' ) )
+            if ( abs(f.impulses(1) - f.impulses(end)) < ...
+                    max(vscale(f).*epslevel(f)) )
                 % Return the impulse at left/right if they are the same.
                 h = f.impulses(1);
             else

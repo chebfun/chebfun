@@ -117,7 +117,7 @@ h = f - g;
 hVals = feval(h, x);
 hExact = oph(x);
 err = hVals - hExact;
-pass(22) = norm(err, inf) < max(get(h,'epslevel').*get(h,'vscale'));
+pass(22) = norm(err, inf) < get(h,'epslevel').*get(h,'vscale');
 
 end
 
