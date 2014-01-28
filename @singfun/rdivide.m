@@ -31,6 +31,9 @@ if ( isa(g,'double') || isa(g, 'smoothfun') )
     s = f;
     % Divide the smooth part with the double g and return:
     s.smoothPart = (1./g) .* f.smoothPart;
+    if ( issmooth(s) )
+        s = s.smoothPart;
+    end
     return
 end
 

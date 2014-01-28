@@ -153,10 +153,10 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
             
             %% Misc Checks on the Inputs
             
-            % Make sure that op is a function handle
-            if ( ~isa(op, 'function_handle') )
+            % Make sure that op is a function handle or a smoothfun:
+            if ( ~isa(op, 'function_handle') && ~isa(op, 'smoothfun') )
                 error( 'CHEBFUN:SINGFUN:constructor', ...
-                    'First argument must be a function handle.');
+                    'First argument must be a function handle or a smoothfun.');
             end
             
             % Check to avoid array-valued operators:
@@ -189,14 +189,19 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
                 obj.exponents = singfun.findSingExponents(op, singType);
             end
             
-            %% Construct New Function Handle
-            % Factor out singular terms from the operator based on the values
-            % in exponents.
-            smoothOp = singOp2SmoothOp(op, obj.exponents);
-            
-            % Construct the smooth part.
-            obj.smoothPart = singfun.constructSmoothPart(smoothOp, vscale, ...
-                hscale, pref);
+            % If a smoothfun has been passed as the op, store it directly:
+            if ( isa(op, 'smoothfun') )
+                obj.smoothPart = op;
+            else
+                %% Construct New Function Handle
+                % Factor out singular terms from the operator based on the values
+                % in exponents.
+                smoothOp = singOp2SmoothOp(op, obj.exponents);
+                
+                % Construct the smooth part.
+                obj.smoothPart = singfun.constructSmoothPart(smoothOp, vscale, ...
+                    hscale, pref);
+            end
         end
     end
     
