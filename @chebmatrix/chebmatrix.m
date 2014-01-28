@@ -21,9 +21,9 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
 %
 %   Examples:
 %     d = [-2 2];   % function domain
-%     I = operatorBlock.eye(d);   % identity operator
-%     D = operatorBlock.diff(d);  % differentiation operator
-%     x = chebfun(@(x)x,d);   % the variable x on d
+%     I = operatorBlock.eye(d);     % identity operator
+%     D = operatorBlock.diff(d);    % differentiation operator
+%     x = chebfun(@(x)x, d);        % the variable x on d
 %     M = operatorBlock.mult(x.^2); % multiplication operator
 %     S = functionalBlock.sum(d);   % integration functional 
 %     E = functionalBlock.eval(d);  % evaluation functional generator
@@ -33,30 +33,47 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
 %           S, 0, E(2);  
 %           D, x.^2, I ];
 %
-%     dA = A.domain             % includes breakpoint at zero
-%     sz = size(A)              % 3 by 3 block array
-%     [Am,An] = blockSizes(A)   % sizes of the blocks
+%     dA = A.domain                 % includes breakpoint at zero
+%     sz = size(A)                  % 3 by 3 block array
+%     [Am, An] = blockSizes(A)      % sizes of the blocks
 %
-%     spy(A)           % show the block structures
-%     matrix(A,[4 4])  % discretize with 4 points in each subdomain
-%     matrix(A*u,[4 4]) 
+%     spy(A)                % show the block structures
+%     matrix(A, [4 4])      % discretize with 4 points in each subdomain
+%     matrix(A*u, [4 4]) 
 %
-%     A21 = A(2,1);   % get just the (2,1) block
-%     A21.domain      % no breakpoint
-%     matrix(A21,6)   % Clenshaw-Curtis weights
+%     A21 = A(2, 1);    % get just the (2,1) block
+%     A21.domain        % no breakpoint
+%     matrix(A21,6)     % Clenshaw-Curtis weights
 %
 %   See also CHEBOPPREF, LINOP, CHEBMATRIX.MATRIX, CHEBMATRIX.SPY.
     
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
-    
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Developer notes
+%
+% CHEBMATRIX is the class that enables concatenating various classes of objects
+% of Chebfun into a single object. It has four fields:
+%   * blocks: A Matlab cell used to store the components.
+%   * prefs: A CHEBOPPREF is attached to the object.
+%   * domain: The domain of the componenents, including the union of all
+%             breakpoints.
+%   * diffOrder: A dependent property. diffOrder is matrix valued, with values
+%                corresponding to the diffOrders of each components, so that
+%                each order of differentiation gives +1, and each order of
+%                anti-derivative gives -1.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
     properties
+        % A cell used to store the components of a CHEBMATRIX internally.
         blocks = {}
         prefs = cheboppref 
         domain
     end
     
     properties (Dependent)
+        % diffOrder is a dependent property
         diffOrder
     end
     
@@ -64,23 +81,23 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         
         % Constructor.
         function A = chebmatrix(data)
-            if isempty(data)
+            if ( isempty(data) )
                 return
-            elseif isa(data,'chebmatrix')
-                A.blocks = data.blocks;
-                A.domain = data.domain;
-            elseif isa(data,'chebfun') || isa(data,'linBlock')
-                A.blocks = {data};
-                A.domain = data.domain;
-            elseif iscell(data)
+            elseif ( iscell(data) )
                 A.blocks = data;
                 A.domain = merge(data{:});
+            elseif ( isa(data, 'chebmatrix') )
+                A.blocks = data.blocks;
+                A.domain = data.domain;
+            elseif ( isa(data, 'chebfun') || isa(data, 'linBlock') )
+                A.blocks = {data};
+                A.domain = data.domain;
             end
         end
             
-        function A = set.domain(A,d)
+        function A = set.domain(A, d)
             % We don't allow removing breakpoints, or changing endpoints.
-            A.domain = merge(d,A.domain);
+            A.domain = merge(d, A.domain);
         end
         
         function d = get.diffOrder(L)
@@ -88,7 +105,10 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         end
                
         function d = getDiffOrder(A)
+        % GETDIFFORDER      Investigate the components of a CHEBMATRIX to find
+        %   its diffOrder. 
             d = zeros(size(A));
+            % Loop through all elements
             for j = 1:numel(A.blocks);
                 if ( isa(A.blocks{j}, 'operatorBlock') )
                     d(j) = A.blocks{j}.diffOrder;
@@ -96,7 +116,10 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             end
         end
         
-        function out = isFunVariable(A,k)
+        function out = isFunVariable(A, k)
+        % TODO: What does this method do, and why do we need it? Is its output a
+        % row vector with a value 1 if the corresponding column of a CHEBMATRIX
+        % is able to operate on functions?
             [rowSize, colSize] = blockSizes(A);
             out = isinf(colSize(1, :));
             if ( nargin > 1 )
