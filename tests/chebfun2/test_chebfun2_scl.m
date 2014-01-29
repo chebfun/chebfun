@@ -5,7 +5,7 @@ function pass = test_chebfun2_scl( pref )
 if ( nargin < 1 ) 
     pref = chebpref; 
 end 
-tol = pref.cheb2Prefs.eps; 
+tol = 10*pref.cheb2Prefs.eps; 
 j = 1;
 
 % Scale invariant
