@@ -23,19 +23,16 @@ end
 % rank-1 and off [-1 1 -1 1]. 
 f = chebfun2(@(x,y) x.*y,[-1 2 -1 2]); 
 try 
-    plot(f),  
-    surf(f), 
-    contour(f),  
-    waterfall(f),
-    surfc(f)
+    plot(f) 
+    surf(f)
+    contour(f)  
+    waterfall(f)
     close all 
     pass(2)=1; 
 catch
     close all 
     pass(2)=0;
 end
-
-
 end
 
 

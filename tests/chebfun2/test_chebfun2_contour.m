@@ -30,4 +30,5 @@ catch ME
     pass = 0; 
 end
 
+close all
 end

@@ -5,28 +5,22 @@ if ( nargin == 0)
     pref = chebpref; 
 end
 
-tol = 1000*pref.cheb2Prefs.eps; 
-j = 1; 
 
 f = chebfun2(@(x,y) cos(x.*y)); 
-x = -1:.1:1;
-[xx, yy] = meshgrid(x); 
+x = chebfun2(@(x,y) x); 
+y = chebfun2(@(x,y) y); 
 
 pass = 1; 
 try 
    surf( f )
    surf( f , f)
    surf( f, f, f )
-   surf(f, 'numpts', 100)
-   surf(xx, yy, f)
-   surf(xx, yy, f, 'edgecolor', 'r')
-   surfc( f )
-   surfc( f , f)
-   surfc( f, f, f )
-   surfc(f, 'numpts', 100)
-   surfc(xx, yy, f)
-   surfc(xx, yy, f, 'edgecolor', 'r')
+   surf(f, 'numpts', 10)
+   surf(x, y, f)
+   surf(x, y, f, 'edgecolor', 'r')
 catch ME 
     pass = 0; 
 end
+close all
+
 end
