@@ -197,13 +197,13 @@ while ( ~isempty(varargin) )
     pos = 0;
     styleData = [];
 
+    lv = length(varargin);
     % Find the location of the next CHEBFUN in the input array:
-    while ( (pos < length(varargin)) && ~isa(varargin{pos + 1}, 'chebfun') )
-        pos = pos + 1;
-        if ( (pos < length(varargin)) && isnumeric(varargin{pos}) && isnumeric(varargin{pos+1}) )
-            pos = pos - 1;
+    while ( (pos < lv) && ~isa(varargin{pos+1}, 'chebfun') )
+        if ( pos+1 < lv && isnumeric(varargin{pos+1}) && isnumeric(varargin{pos+2}) )
             break
         end
+        pos = pos + 1;
     end
     
     if ( pos > 0 )
@@ -243,7 +243,7 @@ while ( ~isempty(varargin) )
         lineData = [lineData, newData(k).xLine, newData(k).yLine, styleData];
         pointData = [pointData, newData(k).xPoints, newData(k).yPoints, ...
             styleData];
-        jumpData = [jumpData, newData(k).xJumps, newData(k).yJumps, styleData, jumpStyle];
+        jumpData = [jumpData, newData(k).xJumps, newData(k).yJumps, styleData];
     end
     
 end
