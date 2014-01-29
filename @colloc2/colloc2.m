@@ -4,7 +4,7 @@ classdef colloc2 < chebDiscretization
 %   collocation using 2nd kind Chebyshev points for differential and integral
 %   operators and systems. To use COLLOC2 for a linop L, set
 %
-%     L.prefs.discretizer = @colloc2;
+%     L.prefs.discretization = @colloc2;
 %
 %   Linear algebra operations with COLLOC2 operators generally take O(N^3)
 %   flops, where N is determined automatically to resolve the solution. You can
@@ -28,17 +28,18 @@ classdef colloc2 < chebDiscretization
         mldivideData = [];  % stores LU factors of a matrix for repeated solves
     end
      
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
-
     methods
-        function disc = colloc2(source,dimension,domain)
+        function disc = colloc2(source, dimension, domain)
+        % COLLOC2 constructor
+        
+            % If SOURCE is not passed, return an empty object.
             if isempty(source)
                 return
             end
+            % Attach SOURCE and the DOMAIN information to the object.
             disc.source = source; 
-            disc.domain = source.domain;
 
+            % Assign DIMENSIONS and DOMAIN if they were passed.
             if ( nargin > 1 )
                 disc.dimension = dimension;
                 if nargin > 2
