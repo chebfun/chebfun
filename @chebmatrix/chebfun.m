@@ -1,5 +1,5 @@
 function f = chebfun(A)
-%CHEBFUN Convert a chebmatrix to an array-valued chebfun, if possible. 
+%CHEBFUN Convert a CHEBMATRIX to an array-valued CHEBFUN, if possible. 
 %   F = CHEBFUN(A) converts a chebmatrix A to an array-valued chebfun F, if
 %   A is a row or column chebmatrix whose entries are all chebfuns or
 %   scalars.
@@ -10,7 +10,8 @@ function f = chebfun(A)
 %  See http://www.chebfun.org for Chebfun information.
 
 if ( ~any( size(A)==1 ) )
-    error('Only a row or column chebmatrix can be converted to chebfun.')
+    error('CHEBFUN:CHEBMATRIX:chebfun', ...
+        'Only a row or column chebmatrix can be converted to chebfun.')
 end
 
 cls = blockClasses(A);
@@ -23,7 +24,7 @@ for n = 1:length(A.blocks)
     if ( isFun(n) )
         f = [f, A.blocks{n}];
     elseif ( isVal(n) )
-        f = [f, chebfun(A.blocks{n},A.domain)];
+        f = [f, chebfun(A.blocks{n}, A.domain)];
     else
         error('Cannot convert element %i to a chebfun.',n)
     end

@@ -29,7 +29,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) linop 
 %           I, x.^2, D ];
 % 
 %     A = linop(A);
-%     z = functionalBlock.zeros(d);
+%     z = functionalBlock.zero(d);
 %     A = addbc( A, [E(-2), 0, z], 0 );         % set u{1}(-2) = 0
 %     A = addbc( A, [E(2)*D, 0, E(2)], 0 );     % set u{1}'(2) + u{3}(2) = 0
 %

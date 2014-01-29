@@ -10,21 +10,24 @@ function I = identity(A)
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
-if ( size(A,1) ~= size(A,2) )
+if ( size(A, 1) ~= size(A, 2) )
     error('Chebmatrix must be square.')
 end
 
+% Start with a chebmatrix of correct dimensions
 I = chebmatrix(A.blocks);
+% Todo: What does this variable stand for? Perhaps OK if isFunVariable had more
+% documentation.
 isFun = isFunVariable(A);
-n = size(A,1);
+n = size(A, 1);
 d = A.domain;
 for i = 1:n
     
     % Diagonal block maps variable type to itself--just two cases.
     if ( isFun(i) )
-        I.blocks{i,i} = operatorBlock.eye(d);
+        I.blocks{i, i} = operatorBlock.eye(d);
     else
-        I.blocks{i,i} = 1;
+        I.blocks{i, i} = 1;
     end
     
     % Off diagonal blocks have 2x2 cases.
@@ -32,18 +35,18 @@ for i = 1:n
         if ( isFun(i) )
             if ( isFun(j) )
                 % fun -> fun
-                I.blocks{i,j} = operatorBlock.zeros(d);
+                I.blocks{i, j} = operatorBlock.zeros(d);
             else
                 % scalar -> fun
-                I.blocks{i,j} = chebfun(0,d);
+                I.blocks{i, j} = chebfun(0, d);
             end
         else
             if ( isFun(j) )
                 % fun -> scalar
-                I.blocks{i,j} = functionalBlock.zero(d);
+                I.blocks{i, j} = functionalBlock.zero(d);
             else
                 % scalar -> scalar
-                I.blocks{i,j} = 0;
+                I.blocks{i, j} = 0;
             end
         end
     end
