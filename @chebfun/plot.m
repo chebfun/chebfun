@@ -124,7 +124,7 @@ jumpData = {};
 while ( ~isempty(varargin) )
 
     % Acquire plotting data for each CHEBFUN / pair of CHEBFUNs:
-    if ( (numel(varargin) > 1) && isa(varargin{2}, 'chebfun') ) % PLOT(f, g).
+    if ( (numel(varargin) > 1) && isa(varargin{2}, 'chebfun') || isnumeric(varargin{2}) ) % PLOT(f, g).
         % Remove CHEBFUN objects from array input:
         f = varargin{1};
         g = varargin{2};
@@ -140,7 +140,16 @@ while ( ~isempty(varargin) )
         end
         
         % Call PLOTDATA():
-        if ( numel(f) == 1 && numel(g) == 1 )
+        if ( isnumeric(f) )
+            % For plotting numeric data in a CHEBFUN/PLOT() call.
+            newData.xLine = NaN;
+            newData.yLine = NaN;
+            newData.xPoints = f;
+            newData.yPoints = g;
+            newData.xJumps = NaN;
+            newData.yJumps = NaN;   
+            % Do nothing
+        elseif ( numel(f) == 1 && numel(g) == 1 )
             % Array-valued CHEBFUN case:
             newData = plotData(f, g);
         else
@@ -191,7 +200,12 @@ while ( ~isempty(varargin) )
     % Find the location of the next CHEBFUN in the input array:
     while ( (pos < length(varargin)) && ~isa(varargin{pos + 1}, 'chebfun') )
         pos = pos + 1;
+        if ( (pos < length(varargin)) && isnumeric(varargin{pos}) && isnumeric(varargin{pos+1}) )
+            pos = pos - 1;
+            break
+        end
     end
+    
     if ( pos > 0 )
         styleData = varargin(1:pos);
         varargin(1:pos) = [];
@@ -229,11 +243,10 @@ while ( ~isempty(varargin) )
         lineData = [lineData, newData(k).xLine, newData(k).yLine, styleData];
         pointData = [pointData, newData(k).xPoints, newData(k).yPoints, ...
             styleData];
-        jumpData = [jumpData, newData(k).xJumps, newData(k).yJumps, styleData];
-
+        jumpData = [jumpData, newData(k).xJumps, newData(k).yJumps, styleData, jumpStyle];
     end
+    
 end
-
 % Plot the lines:
 h1 = plot(lineData{:});
 set(h1, 'Marker', 'none')
@@ -252,6 +265,7 @@ if ( isempty(jumpData) || ischar(jumpData{1}) )
 end
 h3 = plot(jumpData{:});
 % Change the style accordingly:
+% jumpStyle
 if ( isempty(jumpStyle) )
     if ( isComplex )
         %[TODO]: The following statement can not be reached:
@@ -310,5 +324,8 @@ for idx = 1:numel(varargin)
     end
     return
 end
+% if ( isempty(jumpStyle) )
+%     jumpStyle = {'LineStyle', ':', 'Marker', 'none'};
+% end
 
 end
