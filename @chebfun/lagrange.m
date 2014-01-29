@@ -12,6 +12,7 @@ function f = lagrange(x, varargin)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Check inputs:
 n = length(x);
 if ( n == 0 )
     f = chebfun();
@@ -25,9 +26,14 @@ end
 if ( length(unique(x)) ~= n )
     error('CHEBFUN:LAGRANGE:nonunique', 'Interpolation points must be unique.')
 end
-    
+
 % Make interpolation data (identity matrix):
-y = eye(n);
+y = eye(n); 
+
+% X values must be sorted for INTERP1:
+[x, idx] = sort(x);
+y = y(:,idx);
+
 % Call INTERP1():
 f = chebfun.interp1(x, y, 'poly', varargin);
 
