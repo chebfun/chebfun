@@ -30,12 +30,12 @@ mag = [rand(3,3); zeros(3,3)]; loc = rand(1,3);
 %mag(end,end) = 1e-12;
 % constructor simplifies
 d = deltafun([], mag, loc); d.impulses
-d.location
+d.deltaLoc
 
 %%
 mag = [rand(3,3); zeros(3,3)]; loc = [-1 -1+4*eps -1+8*eps ]; 
 mag(end,end) = 1e-12;
-d = deltafun([], mag, loc); d.impulses, d.location
+d = deltafun([], mag, loc); d.impulses, d.deltaLoc
 d = simplify(d); d.impulses - sum(mag,2)
 
 

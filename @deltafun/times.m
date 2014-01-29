@@ -47,25 +47,25 @@ if ( isa(g, 'deltafun') )
     h = deltafun;
     h.funPart = F.funPart .* g.funPart;
 
-    if ( ~isempty(F.location) && ~isempty( g.location) )
-       if ( ~isempty(deltafun.numIntersect(F.location, g.location)))
+    if ( ~isempty(F.deltaLoc) && ~isempty( g.deltaLoc) )
+       if ( ~isempty(deltafun.numIntersect(F.deltaLoc, g.deltaLoc)))
            error( 'CHEBFUN:DELTAFUN:times', 'delta functions at same points can not be multiplied' );
        end
     end
     
     deltaMag1 = [];
     deltaMag2 = [];
-    if ( ~isempty(F.location) )
-        deltaMag1 = funTimesDelta(g.funPart, F.deltaMag, F.location);
+    if ( ~isempty(F.deltaLoc) )
+        deltaMag1 = funTimesDelta(g.funPart, F.deltaMag, F.deltaLoc);
     end
     
-    if ( ~isempty(g.location) )
-        deltaMag2 = funTimesDelta(F.funPart, g.deltaMag, g.location);
+    if ( ~isempty(g.deltaLoc) )
+        deltaMag2 = funTimesDelta(F.funPart, g.deltaMag, g.deltaLoc);
     end
     
-    [deltaMag, deltaLoc] = deltafun.mergeImpulses( deltaMag1, F.location, deltaMag2, g.location );
+    [deltaMag, deltaLoc] = deltafun.mergeImpulses( deltaMag1, F.deltaLoc, deltaMag2, g.deltaLoc );
     h.deltaMag = deltaMag;
-    h.location = deltaLoc;
+    h.deltaLoc = deltaLoc;
 else
     % Class of g unknown, throw an error:
     error( 'DELTAFUN:times', 'unknown argument type' );

@@ -34,12 +34,12 @@ end
 f = simplify(f);
 g = simplify(g);
 
-if ( any( size(f.location) ~= size(g.location) ) )
+if ( any( size(f.deltaLoc) ~= size(g.deltaLoc) ) )
     out = 0;
     return
 end
 
-if ( any(abs((f.location - g.location)) > proximityTol) )
+if ( any(abs((f.deltaLoc - g.deltaLoc)) > proximityTol) )
     out = 0;
     return
 end

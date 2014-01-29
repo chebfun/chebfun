@@ -19,7 +19,7 @@ d = deltafun(f, [1 1 1 1], [-.5, -.25, 0, 1] );
 A = restrict(d, [-1 0 .5 1]);
 d1 = A{1}; d2 = A{2}; d3 = A{3};
 
-pass(5) = all(d1.location == [-.5 -.25 0] );
+pass(5) = all(d1.deltaLoc == [-.5 -.25 0] );
 pass(6) = all(d2.funPart.domain == [0, .5] );
 pass(7) = all(d3.deltaMag == 1 );
 end

@@ -41,12 +41,13 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         deltaMag % double matrix [M X N]
         
         % Location of the delta functions.
-        location % double vector [1 X N]            
+        deltaLoc % double vector [1 X N]            
     end
     
     %% DELTAFUN CLASS CONSTRUCTOR:
     methods ( Static = true )
-        function obj = deltafun(funPart, deltaMag, location, pref)
+        function obj = deltafun(funPart, deltaMag, deltaLoc, pref)
+            
             %%
             % Check for preferences in the very beginning.
             if ( (nargin < 4) || isempty(pref) )
@@ -60,44 +61,41 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
             %% Cases based on the number of arguments
             % Case 0: No input arguments, return an empty object.
             if ( nargin == 0 )
-                obj.funPart = [];
-                obj.deltaMag = [];
-                obj.location = [];                               
                 return
             end
             
             %%
             % Case 1: One input argument.
-            % This input should be a fun.
+            % This input should be a FUN.
             if ( nargin == 1 )
                 if ( isempty(funPart) )
                     obj.funPart = [];
                 elseif ( ~isa(funPart, 'fun') )
-                    error( 'DELTAFUN:ctor', 'funPart must be a fun' );
+                    error('DELTAFUN:ctor', 'funPart must be a FUN.');
                 else
                     obj.funPart = funPart;
                 end
                 deltaMag = [];
-                location = [];
+                deltaLoc = [];
             end
             %%
             % Case 2: Two input arguments.
             % Assume the argumenst passed are impulses and their locations. 
             if ( nargin == 2 )
-                % Assign empty fun:
+                % Assign empty FUN:
                 obj.funPart = [];
-                location = deltaMag;
+                deltaLoc = deltaMag;
                 deltaMag = funPart;
                 % Do no checks here, they are all done below.
             end
             
             %%
             % Case 3: Three input arguments.
-            if ( nargin >= 3)                            
+            if ( nargin >= 3 )                            
                 if ( isempty(funPart) )
                     obj.funPart = [];
                 elseif ( ~isa(funPart, 'fun') )
-                    error( 'DELTAFUN:ctor', 'funPart must be a fun' );
+                    error( 'DELTAFUN:ctor', 'funPart must be a FUN.' );
                 else
                     obj.funPart = funPart;
                 end
@@ -106,40 +104,39 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
                
             %% Check all the arguments:            
             
-            % If one of impulses or location is empty, make both empty:
-            if ( isempty(deltaMag) || isempty(location) )
+            % If one of deltaMag or deltaLoc is empty, make both empty:
+            if ( isempty(deltaMag) || isempty(deltaLoc) )
                 deltaMag = [];
-                location = [];    
+                deltaLoc = [];    
             end            
             
             % Make sure location is a row vector:
-            if ( ~isempty(location) )
-                if ( min(size(location)) > 1 )
-                    error('DELTAFUN:dim', 'location should be a vector');
+            if ( ~isempty(deltaLoc) )
+                if ( min(size(deltaLoc)) > 1 )
+                    error('DELTAFUN:dim', 'deltaLoc should be a vector.');
                 end
-                location = location(:).';
+                deltaLoc = deltaLoc(:).';
             end
             
             % Check sizes:
-            if ( ~isempty(deltaMag) )
-                if ( size(deltaMag, 2) ~= length(location) )
-                    error('DELTAFUN:dim', 'Impulse matrix should have the same number of columns as locations' );
-                end
+            if ( ~isempty(deltaMag) && ( size(deltaMag, 2) ~= length(deltaLoc) ) )
+                error('CHEBFUN:deltafun:dim', ...
+                    ['Impulse matrix (deltaMag) should have the same number' ...
+                     ' of columns as locations (deltaLoc).']);
             end                         
       
             % Locations of delta functions should be within the domain:
-            if ( ~isempty(location) )
-                if ( ~isempty(obj.funPart) )
-                    dom = obj.funPart.domain;
-                    if( max(location) > dom(2) || min(location) < dom(1)  )
-                        error('DELTAFUN:domain', 'Location of a delta fun is outside the domain');
-                    end
+            if ( ~isempty(deltaLoc) && ~isempty(obj.funPart) )
+                dom = obj.funPart.domain;
+                if ( (max(deltaLoc) > dom(2)) || (min(deltaLoc) < dom(1)) )
+                    error('CHEBFUN:deltafun:domain', ...
+                        'Location of a delta fun is outside the domain.');
                 end
             end
             
             % All checks done, assign inputs to the current object:
             obj.deltaMag = deltaMag;
-            obj.location = location;
+            obj.deltaLoc = deltaLoc;
                                 
             % Simplify to merge redundant impulses:
             obj = simplify(obj, pref);

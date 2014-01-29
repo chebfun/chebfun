@@ -34,7 +34,7 @@ pass(3) = max(abs(F.funPart - cumsum(f))) < tol && ...
 clc
 f = fun.constructor(@(x) sin(x));
 d = deltafun(f, rand(2,5), rand(1,5));
-d = deltafun(1,0)
+d = deltafun(1,0);
 D = cumsum(d);
 
 for i = 1:length(D)
@@ -48,7 +48,7 @@ end
 hold off
 shg
 d.deltaMag
-d.location
+d.deltaLoc
 
 %%
 f = fun.constructor(0);
@@ -58,7 +58,7 @@ for i = 1:length(D)
     if ( isa( D{i}, 'deltafun') )
         plot( D{i}.funPart );
         D{i}.deltaMag
-        D{i}.location
+        D{i}.deltaLoc
     else
         plot(D{i});
     end

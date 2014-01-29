@@ -63,7 +63,7 @@ end
 
 % Get location and magnitudes of delta functions:
 f = simplify(f);
-deltaLoc = f.location;
+deltaLoc = f.deltaLoc;
 numDeltas = length(deltaLoc);
 deltaMag = f.deltaMag;
 m = size(deltaMag, 1);

@@ -40,7 +40,7 @@ df2 = deltafun(f2, [], []);
 
 s = df1 .* df2;
 pass(5) = iszero(s.funPart - f1.*f2);
-pass(6) = norm(s.location - sort(l1), inf) == 0;
+pass(6) = norm(s.deltaLoc - sort(l1), inf) == 0;
 
 c1 = [ feval(diff(f2,2), l1(1));
        -2*feval(diff(f2,1), l1(1));
@@ -68,7 +68,7 @@ df2 = deltafun( f2, d2, l2);
 %%
 s = df1 .* df2;
 pass(8) = iszero(s.funPart - f1.*f2);
-pass(9) = norm(s.location - sort(union(l1,l2)), inf) == 0;
+pass(9) = norm(s.deltaLoc - sort(union(l1,l2)), inf) == 0;
 %%
 c1 = [ feval(diff(f1,0), l2(1));
        0;

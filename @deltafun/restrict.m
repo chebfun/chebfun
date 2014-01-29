@@ -44,12 +44,12 @@ if ( length(s) == 2 )
     % Only restricting to one subinterval, this will return a DELTAFUN:   
     g = deltafun();
     g.funPart = restrictedFuns;
-    if ( ~isempty(f.location) )
-        idx = (f.location >= s(1)) & (f.location <= s(2));
-        g.location = f.location(idx);
+    if ( ~isempty(f.deltaLoc) )
+        idx = (f.deltaLoc >= s(1)) & (f.deltaLoc <= s(2));
+        g.deltaLoc = f.deltaLoc(idx);
         g.deltaMag = f.deltaMag(:, idx);
-        if ( isempty(g.location) )
-            g.location = [];
+        if ( isempty(g.deltaLoc) )
+            g.deltaLoc = [];
             g.deltaMag = [];
         end
     end
@@ -74,14 +74,14 @@ else
             gk.funPart = [];
         end
         
-        if ( ~isempty(f.location) )
-            idx = (f.location >= s(k)) & (f.location <= s(k+1));
-            gk.location = f.location(idx);
+        if ( ~isempty(f.deltaLoc) )
+            idx = (f.deltaLoc >= s(k)) & (f.deltaLoc <= s(k+1));
+            gk.deltaLoc = f.deltaLoc(idx);
             gk.deltaMag = f.deltaMag(:, idx);
         end
         
-        if ( isempty(gk.location) )
-            gk.location = [];
+        if ( isempty(gk.deltaLoc) )
+            gk.deltaLoc = [];
             gk.deltaMag = [];
         end
         g{k} = gk;

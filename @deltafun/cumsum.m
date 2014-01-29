@@ -24,7 +24,7 @@ if ( isempty(f) )
 end
 
 deltaMag = f.deltaMag;
-deltaLoc = f.location;
+deltaLoc = f.deltaLoc;
 
 % Get tolerance:
 pref = chebpref();

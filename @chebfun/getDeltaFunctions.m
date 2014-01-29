@@ -44,7 +44,7 @@ if ( maxRows > 0 )
                 % Get the delta functions:
                 sz = size(d.deltaMag);
                 deltaMag(1:sz(1), k:k+sz(2)-1) = d.deltaMag;
-                deltaLoc(1, k:k+sz(2)-1) = d.location;
+                deltaLoc(1, k:k+sz(2)-1) = d.deltaLoc;
                 k = k + sz(2);
             end
         end

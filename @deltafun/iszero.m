@@ -17,7 +17,7 @@ if ( ~isempty(f.funPart) )
     end
 end
 
-if ( isempty(f.location ) || isempty(f.deltaMag) )
+if ( isempty(f.deltaLoc ) || isempty(f.deltaMag) )
     out = 1;
     return
 end

@@ -25,12 +25,12 @@ else
 end
 
 % Mathematically, point values of distributions do not make sense:
-if ( ~isempty(f.location) )
+if ( ~isempty(f.deltaLoc) )
     pref = chebpref();
     proximityTol = pref.deltaPrefs.proximityTol;        
     % Make sure there are no trivial delta functions:
     f = simplify(f);
-    deltaLoc = f.location;    
+    deltaLoc = f.deltaLoc;    
     for i = 1:length(deltaLoc)        
         if ( deltaLoc(i) == 0 ) 
             % Avoid divide by zero:

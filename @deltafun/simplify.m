@@ -11,7 +11,7 @@ if ( nargin < 2 || isempty(pref) )
     pref = chebpref();
 end
 
-deltaLoc = f.location;
+deltaLoc = f.deltaLoc;
 deltaMag = f.deltaMag;
 % Merge columns if location of deltafunction are almost equal:
 [deltaMag, deltaLoc] = deltafun.mergeColumns(deltaMag, deltaLoc, pref);
@@ -31,7 +31,7 @@ if ( isempty(deltaLoc) || isempty(deltaMag) )
 end
 
 % Assign back:
-f.location = deltaLoc;
+f.deltaLoc = deltaLoc;
 f.deltaMag = deltaMag;
 
 end

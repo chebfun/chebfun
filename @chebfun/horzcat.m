@@ -80,7 +80,7 @@ else
 end
 
 % TODO: Also check to see if an input is a SINGFUN.
-isSingular = any(cellfun(@issing, varargin));
+isSingular = any(cellfun(@issing, varargin))
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%% FORM A QUASIMATRIX %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

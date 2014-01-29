@@ -27,7 +27,7 @@ end
 % if ( ~isempty(f.impulses) )
 %     % We can only plot the delta functions, not their derivatives:
 %     deltaMag = f.impulses(1, :).';
-%     deltaLoc = f.location.';
+%     deltaLoc = f.deltaLoc.';
 %     
 %     % Make vertical line data:
 %     deltaY = zeros(2*length(deltaMag), 1);

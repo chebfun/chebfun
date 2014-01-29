@@ -17,7 +17,7 @@ if ( ~isempty(f.funPart) )
 end
 
 % Smooth part is finite, check the distributional part:
-if ( isempty(f.location) || isempty(f.deltaMag) )
+if ( isempty(f.deltaLoc) || isempty(f.deltaMag) )
     out = 1;
     return
 end

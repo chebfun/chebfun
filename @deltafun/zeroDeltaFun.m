@@ -20,5 +20,5 @@ f = fun.constructor(0, domain);
 s = deltafun();
 s.funPart = f;
 s.deltaMag = [];
-s.location = [];
+s.deltaLoc = [];
 end
