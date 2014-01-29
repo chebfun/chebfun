@@ -67,5 +67,3 @@ if ( (a ~= -1) || (b ~= 1) )
 else
     out = onefunPoly;
 end
-    
-
