@@ -4,10 +4,11 @@ function C = mtimes(A, B)
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
-if ( isnumeric(A) )  % suspect these aren't necessary...historical...
-    % TODO: Can we remove this then? AB, 28/01/14?
+% Scalar operand is scalar*identity. But it's faster to interpret it as a
+% special case. 
+if ( isnumeric(A) && (numel(A)==1) )  
     C = scalartimes(B, A);
-elseif ( isnumeric(B) )
+elseif ( isnumeric(B) && (numel(B)==1) )
     C = scalartimes(A, B);
 else
     % If either input is a singe entity of a LINBLOCK, need to wrap in a cell to
@@ -22,9 +23,12 @@ else
     [m, n] = size(A);
     Adata = A.blocks;   % needed to avoid subsref call later
     Bdata = B.blocks;
-    [n, p] = size(B);
-    C = cell(m, p);
+    [nB, p] = size(B);
+    if ( n ~= nB )
+        error('Operand inner dimensions must agree.')
+    end
     
+    C = cell(m, p);    
     % Do the composition
     for i = 1:m
         for j = 1:p
@@ -40,6 +44,7 @@ else
     % Convert the resulting cell C to a chebmatrix to be returned.
     C = chebmatrix(C);
 end
+
 end
 
 function C = scalartimes(A, z)

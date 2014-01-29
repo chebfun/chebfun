@@ -105,8 +105,8 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         end
                
         function d = getDiffOrder(A)
-        % GETDIFFORDER      Investigate the components of a CHEBMATRIX to find
-        %   its diffOrder. 
+% GETDIFFORDER      Differential order of each chebmatrix block. 
+%    Also accessible via property: A.diffOrder
             d = zeros(size(A));
             % Loop through all elements
             for j = 1:numel(A.blocks);
@@ -117,9 +117,12 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         end
         
         function out = isFunVariable(A, k)
-        % TODO: What does this method do, and why do we need it? Is its output a
-        % row vector with a value 1 if the corresponding column of a CHEBMATRIX
-        % is able to operate on functions?
+%ISFUNVARIABLE Which variables of the chebmatrix are functions?
+%   A chebmatrix can operate on other chebmatrices. Operator and function blocks
+%   are applied to function components, whereas functions and scalar blocks
+%   multiply scalar components. The output of this function is a logical vector
+%   that is 1 for those columns of the chebmatrix which expect to operate on
+%   function components, and 0 for those that expect to multiply scalars. 
             [rowSize, colSize] = blockSizes(A);
             out = isinf(colSize(1, :));
             if ( nargin > 1 )

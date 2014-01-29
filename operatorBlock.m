@@ -135,7 +135,6 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
         end
         
         function out = iszero(A)
-            % TODO: Implement this.
             out = false;
         end
         
