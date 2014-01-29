@@ -1,7 +1,7 @@
 function varargout = size(L, varargin)
 %SIZE      Number of blocks in each dimension.
 %   S = SIZE(L) returns both dimensions.
-%   S = SIZE(L, K) returns Kth dimension (K = 1,2).
+%   S = SIZE(L, K) returns Kth dimension (K = 1, 2).
 %   [M, N] = SIZE(L) returns both as scalars.
 % 
 %   See also CHEBMATRIX.BLOCKSIZES.

@@ -1,4 +1,4 @@
-function C = plus(A,B)
+function C = plus(A, B)
 %+         Sum of chebmatrices.
 
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.

@@ -1,8 +1,8 @@
 function C = vertcat(varargin)
 %VERTCAT   Horizontally concatenate chebmatrices.
-%   Z = [A;B;C;...] vertically combines the chebmatrices, operator
-%   blocks, chebfuns, and scalars given in the call, if their column sizes
-%   are compatible. 
+%   Z = [A; B; C; ...] vertically combines the chebmatrices, operator blocks,
+%   chebfuns, and scalars given in the call, if their column sizes are
+%   compatible.
 %
 %   See also CHEBMATRIX.CAT, CHEBMATRIX.HORZCAT.
 
@@ -30,7 +30,7 @@ for j = 1:nargin
 end
 
 % Now check the column sizes. Create an empty vessel if OK.
-[m,n] = cellfun(@size,blocks);
+[m, n] = cellfun(@size, blocks);
 if ( all(n==n(1)) )
     B = cell( sum(m), n(1) );
 else
