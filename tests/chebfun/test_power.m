@@ -89,7 +89,7 @@ xq = quasimatrix(x);
 gq = xq.^xq;
 pass(21) = normest(g - gq, [.1, 2]) < 10*epslevel(h)*vscale(h);
 
-%%%%%%%%%%%%%%%%%%%%%%%%% Integration of SINGFUN: %%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%% singular function: %%%%%%%%%%%%%%%%%%%%%%%%%%
 dom = [-2 7];
 
 % Generate a few random points to use as test values:
@@ -287,6 +287,82 @@ vals_g = feval(g, x);
 vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
 pass(33) = ( norm(err, inf) < 1e1*epslevel(f).*norm(vals_exact, inf) );
+
+%%%%%%%%%%%%%%%%%%%%%%% function on unbounded domain: %%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Functions on [-inf inf]:
+
+% Set the domain:
+dom = [-Inf Inf];
+domCheck = [-1e2 1e2];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+% General power of a function converging to constant values at -Inf and Inf:
+op = @(x) x.^2.*exp(-x.^2)+2;
+pow = 0.6;
+opg = @(x) (x.^2.*exp(-x.^2)+2).^pow;
+f = chebfun(op, dom);
+g = power(f, pow);
+gVals = feval(g, x);
+gExact = opg(x);
+err = gVals - gExact;
+pass(34) = norm(err, inf) < epslevel(g)*vscale(g);
+
+% Blow-up function and general power:
+op = @(x) x.^2.*(1-exp(-x.^2))+2;
+pow = 1.5;
+opg = @(x) (x.^2.*(1-exp(-x.^2))+2).^pow;
+pref.singPrefs.exponents = [2 2];
+f = chebfun(op, dom, pref);
+g = power(f, pow);
+gVals = feval(g, x);
+gExact = opg(x);
+err = gVals - gExact;
+pass(35) = norm(err, inf) < 1e6*epslevel(g)*vscale(g);
+
+%% Functions on [a inf]:
+
+% Set the domain:
+dom = [1 Inf];
+domCheck = [1 1e2];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+% Integer power of a function converging to a constant at Inf:
+op = @(x) x.*exp(-x)+3;
+pow = 2;
+opg = @(x) (x.*exp(-x)+3).^pow;
+f = chebfun(op, dom);
+g = power(f, pow);
+gVals = feval(g, x);
+gExact = opg(x);
+err = gVals - gExact;
+pass(36) = norm(err, inf) < 1e1*epslevel(g)*vscale(g);
+
+% Oscillatory function with varying sign and integer power:
+op = @(x) 0.1+sin(10*x)./exp(x);
+pow = 3;
+opg = @(x) (0.1+sin(10*x)./exp(x)).^pow;
+f = chebfun(op, dom, 'splitting', 'on');
+g = power(f, pow);
+gVals = feval(g, x);
+gExact = opg(x);
+err = gVals - gExact;
+pass(37) = norm(err, inf) < epslevel(g)*vscale(g);
+
+% Blow-up function and negative integer power:
+op = @(x) x.*(5+exp(-x.^3));
+pow = -3;
+opg = @(x) (x.*(5+exp(-x.^3))).^pow;
+f = chebfun(op, dom, 'exps', [0 1]);
+g = power(f, pow);
+gVals = feval(g, x);
+gExact = opg(x);
+err = gVals - gExact;
+pass(38) = norm(err, inf) < 2e1*epslevel(g)*vscale(g);
 
 end
 

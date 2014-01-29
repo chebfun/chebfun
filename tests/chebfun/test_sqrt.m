@@ -96,4 +96,75 @@ vals_exact = feval(opExact, x);
 err = vals_g - vals_exact;
 pass(6) = ( norm(err, inf) < 1e2*epslevel(f).*norm(vals_exact, inf) );
 
+%%%%%%%%%%%%%%%%%%%%%%% function on unbounded domain: %%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Functions on [-inf inf]:
+
+% Set the domain:
+dom = [-Inf Inf];
+domCheck = [-1e2 1e2];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+% A function converging to constant values at -Inf and Inf:
+op = @(x) x.^2.*exp(-x.^2)+2;
+opg = @(x) sqrt(x.^2.*exp(-x.^2)+2);
+f = chebfun(op, dom);
+g = sqrt(f);
+gVals = feval(g, x);
+gExact = opg(x);
+err = gVals - gExact;
+pass(7) = norm(err, inf) < epslevel(g)*vscale(g);
+
+% Blow-up function:
+op = @(x) x.^2.*(1-exp(-x.^2))+2;
+opg = @(x) sqrt(x.^2.*(1-exp(-x.^2))+2);
+pref.singPrefs.exponents = [2 2];
+f = chebfun(op, dom, pref);
+g = sqrt(f);
+gVals = feval(g, x);
+gExact = opg(x);
+err = gVals - gExact;
+pass(8) = norm(err, inf) < 1e1*epslevel(g)*vscale(g);
+
+%% Functions on [a inf]:
+
+% Set the domain:
+dom = [1 Inf];
+domCheck = [1 1e2];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+% Integer power of a function converging to a constant at Inf:
+op = @(x) x.*exp(-x)+3;
+opg = @(x) sqrt(x.*exp(-x)+3);
+f = chebfun(op, dom);
+g = sqrt(f);
+gVals = feval(g, x);
+gExact = opg(x);
+err = gVals - gExact;
+pass(9) = norm(err, inf) < epslevel(g)*vscale(g);
+
+% Oscillatory function with varying sign and integer power:
+op = @(x) 0.1+sin(10*x)./exp(x);
+opg = @(x) sqrt(0.1+sin(10*x)./exp(x));
+f = chebfun(op, dom, 'splitting', 'on');
+g = sqrt(f);
+gVals = feval(g, x);
+gExact = opg(x);
+err = gVals - gExact;
+pass(10) = norm(err, inf) < epslevel(g)*vscale(g);
+
+% Blow-up function and negative integer power:
+op = @(x) x.*(5+exp(-x.^3));
+opg = @(x) sqrt(x.*(5+exp(-x.^3)));
+f = chebfun(op, dom, 'exps', [0 1]);
+g = sqrt(f);
+gVals = feval(g, x);
+gExact = opg(x);
+err = gVals - gExact;
+pass(11) = norm(err, inf) < epslevel(g)*vscale(g);
+
 end

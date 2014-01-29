@@ -136,7 +136,7 @@ classdef unbndfun < fun
     %% METHODS IMPLEMENTED BY THIS CLASS.
     methods
         
-        % [TODO]: Compose an UNBNDFUN with an operator or another UNBNDFUN.
+        % Compose an UNBNDFUN with an operator or another FUN.
         f = compose(f, op, g, pref)
         
         % Indefinite integral of an UNBNDFUN.
@@ -145,8 +145,7 @@ classdef unbndfun < fun
         % Derivative of an UNBNDFUN.
         f = diff(f, k, dim)
        
-        % Change of domains of UNBNDFUN via linear change of variables. [TODO]:
-        % linear or nonlinear?
+        % Change of domains of UNBNDFUN via linear change of variables.
         f = changeMap(f,newdom)
         
         % Evaluate an UNBNDFUN.
@@ -172,6 +171,9 @@ classdef unbndfun < fun
                 
         % Polynomial coefficients of a UNBNDFUN.
         out = poly(f)
+        
+        % UNBNDFUN power function.
+        f = power(f, b)
         
         % QR factorisation of an array-valued UNBNDFUN.
         [f, R, E] = qr(f, flag)
