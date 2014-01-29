@@ -1,4 +1,4 @@
-function f = mat2fun(disc,values)
+function f = mat2fun(disc, values)
 % Convert a matrix of values to cell of chebfuns.
 %
 % Input data layout:
@@ -26,22 +26,29 @@ function f = mat2fun(disc,values)
 %     {   [ varN,col1       varN,col2      ...  ]   }
 %
 
-n = disc.dimension;
-isFun = disc.source.isFunVariable; 
-numvar = length(isFun);
+% Start by obtaining required information
+n = disc.dimension;                 % Discretization points of each function
+isFun = disc.source.isFunVariable;  % Which variables are functions? 
+numVar = length(isFun);             % Number of functions to return
 
+% If input is a cell, convert to matrix form
 if ( iscell(values) )
     values = cell2mat(values);
 end
 
-m = ones(1,numvar);
+% TODO: Is this chopping the VALUES matrix into pieces corresponding to each
+% function?
+m = ones(1, numVar);
 m(isFun) = sum(n);
 values = mat2cell( values, m, size(values,2) );
 
-f = cell(numvar,1);
-for j = 1:numvar
+% TODO: Presumably, this then goes through the VALUES cell and converts each
+% component to a CHEBFUN in case isFun(j) = 1, or simply puts f{j} = values{j}
+% otherwise. So f will be a cell-array of either chebfuns or scalars?
+f = cell(numVar, 1);
+for j = 1:numVar
     if ( isFun(j) )
-        f{j} = toFunction(disc,values{j});
+        f{j} = toFunction(disc, values{j});
     else
         f{j} = values{j};
     end

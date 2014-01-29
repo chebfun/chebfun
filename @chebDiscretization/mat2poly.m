@@ -28,12 +28,16 @@ function c = mat2poly(disc,values)
 % on the jth interval, with rows giving decreasing degree. If the ith variable
 % is a scalar, then out{i} is just a row vector of values. 
 
-isFun = disc.source.isFunVariable; 
-numvar = length(isFun);
+% Start by obtaining required information
+isFun = disc.source.isFunVariable;  % Which variables are functions? 
+numVar = length(isFun);             % Number of functions to return 
 
+% Take discrete values and convert to CHEBFUN objects.
 f = mat2fun(disc,values);
-c = cell(numvar,1);
-for i = 1:numvar
+
+% Loop through the cell array C, and compute chebpoly of all CHEBFUNS in C.
+c = cell(numVar,1);
+for i = 1:numVar
     if ( isFun(i) )
         for j = 1:disc.numIntervals
             c{i}{j} = chebpoly(f{i},j).';
