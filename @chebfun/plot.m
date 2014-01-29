@@ -305,7 +305,7 @@ for idx = 1:numel(varargin)
     if ( ~isempty(mm) )
         jumpStyle = [jumpStyle, 'Marker', mm];
     end
-    if ( any(strcmpi(tmp, {'none', 'off'})))      % off
+    if ( any(strcmpi(tmp, {'none', 'off', ''})))      % off
         jumpStyle = {'LineStyle', 'none'};
     end
     return
