@@ -70,7 +70,7 @@ f2 = bndfun(@(x) 1i*cos(20*x), dom);
 pass(9) = norm(abs(vals) - abs([vals1 vals2]), inf) < ...
     10*max(get(f, 'vscale').*get(f, 'epslevel'));
     
-%% Tests on UNBNDFUN:
+%% Tests for UNBNDFUN:
 
 % Doubly-infinite domain:
 

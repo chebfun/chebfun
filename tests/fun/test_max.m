@@ -45,7 +45,8 @@ tol = get(f, 'vscale').*get(f, 'epslevel');
 pass(7) = (all(abs(y - exact_max) < tol) && ...
     all(abs(fx - exact_max) < tol));
       
-%% UNBNDFUN:
+%% Test for UNBNDFUN:
+
 % Functions on [a inf]:
 
 % Set the domain:
