@@ -5,7 +5,7 @@ function out = var(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-if  ( ~f.isTransposed )
+if  ( ~f(1).isTransposed )
     Y = f - mean(f);
     out = mean(Y.*conj(Y));
 else

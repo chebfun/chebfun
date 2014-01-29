@@ -77,15 +77,21 @@ function [values, giveUp] = composeResample1(op, values, pref, f)
             n = 2^(floor(pow) + 1) + 1;
         end
     end
-    
-    % n is too large.
+
+    % n is too large:
     if ( n > pref.maxPoints )
-        giveUp = true;
-        return
+        % Don't give up if we haven't sampled at least once.
+        if ( isempty(values) )
+            n = pref.maxPoints;
+            giveUp = false;
+        else
+            giveUp = true;
+            return
+        end
     else
         giveUp = false;
     end
-    
+
     % Update f values:
     f = prolong(f, n);
     v1 = f.values;
@@ -110,15 +116,21 @@ function [values, giveUp] = composeResample2(op, values, pref, f, g)
             n = 2^(floor(pow) + 1) + 1;
         end
     end
-    
+
     % n is too large:
     if ( n > pref.maxPoints )
-        giveUp = true;
-        return
+        % Don't give up if we haven't sampled at least once.
+        if ( isempty(values) )
+            n = pref.maxPoints;
+            giveUp = false;
+        else
+            giveUp = true;
+            return
+        end
     else
         giveUp = false;
     end
-        
+
     % Update f and g values:
     f = prolong(f, n);
     v1 = f.values;

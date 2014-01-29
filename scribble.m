@@ -121,4 +121,3 @@ f = chebfun(fData, ends);
     end
 
 end
-

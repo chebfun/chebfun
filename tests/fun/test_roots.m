@@ -52,7 +52,7 @@ for n = 1:1  %[TODO]: unbndfun
     %% Test a some simple polynomials:
     f = testclass.make([-2 ; 7], dom, [], [], pref);
     r = roots(f);
-    pass(n, 4) = r < get(f, 'epslevel').*get(f, 'vscale');;
+    pass(n, 4) = r < get(f, 'epslevel').*get(f, 'vscale');
 
     f = testclass.make([20.25 ; 0 ; 20.25]);
     r = roots(f);
@@ -79,6 +79,17 @@ for n = 1:1  %[TODO]: unbndfun
     r = roots(f);
     r2 = [-2:7 -1.5:6.5 NaN(1,11)].';
     pass(n, 9) = all( r(:) - r2 < max(get(f, 'epslevel').*get(f, 'vscale')) | isnan(r2) );
+    
+    %% Test on singular function:
+    pow = -0.5;
+    op = @(x) (x-dom(1)).^pow.*cos(x);
+    pref.singPrefs.exponents = [pow 0];
+    f = bndfun(op, dom, [], [], pref);
+    r = roots(f);
+    r_exact = [-1/2; 1/2; 3/2]*pi;
+    err = r - r_exact;
+    pass(n, 10) = (norm(err, inf) < 1e2*get(f, 'vscale')*get(f, 'epslevel'));
+
 end
 
 end

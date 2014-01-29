@@ -24,7 +24,7 @@ if ( nargin == 3 )
 end
 
 % Deal with row CHEBFUN objects:
-if ( f.isTransposed )
+if ( f(1).isTransposed )
     if ( nargin == 1 )
         out = transpose(cov(transpose(f)));
     else
@@ -36,13 +36,13 @@ end
 % Conditional on COV(f) and COV(f, g).
 if ( nargin == 1 ) % COV(f)
     
-    if ( size(f.funs{1}, 2) == 1 )
+    if ( numColumns(f) == 1 )
         % The covariance of a scalar-valued CHEBFUN is the same as the variance:
         out = var(f);
         return
         
     else
-        % Array-valued CHEBFUN.
+        % Array-valued CHEBFUN or quasimatrix.
         
         Y = f - mean(f);
         out = diag(mean(Y.*conj(Y)));
@@ -62,9 +62,9 @@ if ( nargin == 1 ) % COV(f)
         
 else               % COV(f, g)
     
-    % Compute cell arrays of scalar-valued CHEBFUN objects:
-    Y = mat2cell(f - mean(f));
-    Z = mat2cell(g - mean(g));
+    % Convert to cell arrays of scalar-valued CHEBFUN objects:
+    Y = cheb2cell(f - mean(f));
+    Z = cheb2cell(g - mean(g));
     % Initialise output matrix:
     out = zeros(numel(f));
     % Loop over each of the columns:

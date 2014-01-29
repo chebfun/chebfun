@@ -23,60 +23,93 @@ function data = plotData(f, g, h)
 
 % Initialise the output structure:
 data = struct('xLine', [], 'yLine', [], 'xPoints', [], 'yPoints', [], ...
-    'xJumps', [], 'yJumps', []);
+    'xJumps', [], 'yJumps', [], 'yLim', []);
 
-if ( nargin == 1 || isempty(g) )
+yLim = [inf, -inf];
+
+if ( nargin == 1 )
     % PLOT(F)
 
     % Loop over each FUN for Line and Points data:
-    for k = 1:numel(f.funs)
+    nFuns = numel(f.funs);
+    for k = 1:nFuns
         % Get the data from the FUN:
         dataNew = plotData(f.funs{k});
-        myNaN = NaN(1, size(dataNew.yLine, 2)); % Array of NaNs.
+        
+        yLim = [min(dataNew.yLim(1), yLim(1)), max(dataNew.yLim(2), yLim(2))];
+        
+        if ( k == 1 )
+            dataNew.xJumps(1) = [];
+            dataNew.yJumps(1,:) = [];
+        end
+        
+        if ( k == nFuns )
+            dataNew.xJumps(end) = [];
+            dataNew.yJumps(end,:) = [];
+        end
+        
+        if ( any(~isreal(dataNew.yLine)) )
+            % Deal with complex-valued functions:
+            
+            % Assign x to be the real part, and y to be the imaginary part:
+            dataNew.xLine = real(dataNew.yLine);
+            dataNew.yLine = imag(dataNew.yLine);
+            dataNew.xPoints = real(dataNew.yPoints);
+            dataNew.yPoints = imag(dataNew.yPoints);
+            dataNew.xJumps = real(dataNew.yJumps);
+            dataNew.yJumps = imag(dataNew.yJumps);
+
+        end
+        
         % Insert a NaN (or array of NaNs) and append new data to array:
-        data.xLine = [data.xLine ; NaN ; dataNew.xLine];
-        data.yLine = [data.yLine ; myNaN ; dataNew.yLine];
-        data.xPoints = [data.xPoints ; NaN ; dataNew.xPoints];
-        data.yPoints = [data.yPoints ; myNaN ; dataNew.yPoints];
+        xNaN = NaN(1, size(dataNew.xLine, 2)); % Array of NaNs.
+        yNaN = NaN(1, size(dataNew.yLine, 2)); % Array of NaNs.
+
+        data.xLine = [data.xLine ; xNaN ; dataNew.xLine];
+        data.yLine = [data.yLine ; yNaN ; dataNew.yLine];
+        data.xPoints = [data.xPoints ; xNaN ; dataNew.xPoints];
+        data.yPoints = [data.yPoints ; yNaN ; dataNew.yPoints];
+        data.xJumps = [data.xJumps ; dataNew.xJumps];
+        data.yJumps = [data.yJumps ; dataNew.yJumps];
+
     end
 
-    % Return NaNs if there are no jumps:
-    data.xJumps = NaN;
-    data.yJumps = myNaN;
-    % Loop over each FUN for Jumps data:
-    for k = 1:(numel(f.funs) - 1)
-        data.xJumps = [data.xJumps ; NaN ; f.funs{k}.domain(2) ; ...
-            f.funs{k+1}.domain(1)];
-        data.yJumps = [data.yJumps ; myNaN ; get(f.funs{k}, 'rval') ; ...
-            get(f.funs{k+1}, 'lval')];
-    end
-    
 elseif ( nargin == 2 )
     % PLOT(F, G)
-
-    [f, g] = overlap(f, g);
     
+    [f, g] = overlap(f, g);
+
     % Loop over each FUN for Line and Points data:
-    for k = 1:numel(f.funs)
+    nFuns = numel(f.funs);
+    for k = 1:nFuns
         % Get the data from the FUN objects:
         dataNew = plotData(f.funs{k}, g.funs{k});
-        myNaN = NaN(1, size(dataNew.yLine, 2)); % Array of NaNs.
+        yLim = [min(dataNew.yLim(1), yLim(1)), max(dataNew.yLim(2), yLim(2))];
+        
+        % Discard the unnecessary jump data:
+        if ( k == 1 )
+            dataNew.xJumps(1,:) = [];
+            dataNew.yJumps(1,:) = [];
+        end
+        
+        if ( k == nFuns )
+            dataNew.xJumps(end,:) = [];
+            dataNew.yJumps(end,:) = [];
+        end
+
+        % Array of NaNs:
+        xNaN = NaN(1, size(dataNew.xLine, 2)); 
+        yNaN = NaN(1, size(dataNew.yLine, 2)); 
+        
         % Insert a NaN (or array of NaNs) and append new data to array:
-        data.xLine = [data.xLine ; myNaN ; dataNew.xLine];
-        data.yLine = [data.yLine ; myNaN ; dataNew.yLine];
-        data.xPoints = [data.xPoints ; myNaN ; dataNew.xPoints];
-        data.yPoints = [data.yPoints ; myNaN ; dataNew.yPoints];
+        data.xLine = [data.xLine ; xNaN ; dataNew.xLine];
+        data.yLine = [data.yLine ; yNaN ; dataNew.yLine];
+        data.xPoints = [data.xPoints ; xNaN ; dataNew.xPoints];
+        data.yPoints = [data.yPoints ; yNaN ; dataNew.yPoints];
+        data.xJumps = [data.xJumps ; dataNew.xJumps];
+        data.yJumps = [data.yJumps ; dataNew.yJumps];
     end
-
-    % Loop over each FUN for Jumps data:
-    for k = 1:(numel(f.funs) - 1)
-        % Append [oldData, NaN, rval_k, lval_{k+1}]:
-        data.xJumps = [data.xJumps ; myNaN ; get(f.funs{k}, 'rval') ; ...
-            get(f.funs{k+1}, 'lval')];
-        data.yJumps = [data.yJumps ; myNaN ; get(g.funs{k}, 'rval') ; ...
-            get(g.funs{k+1}, 'lval')];        
-    end
-
+    
 else
     % PLOT(F, G, H)
     
@@ -85,42 +118,45 @@ else
     data.zPoints = [];
     data.zJumps = [];
 
-    % [TODO]: Fix this once OVERLAP() is implemented.
-    if ( any( f.domain ~= g.domain ) )
-        [f, g] = overlap(f, g);
-    end
-    if ( any( g.domain ~= h.domain ) )
-        [g, h] = overlap(g, h);
-        [h, f] = overlap(h, f);
-    end
+    % Overlap the CHEBFUN objects:
+    [f, g] = overlap(f, g);
+    [g, h] = overlap(g, h);
+    [h, f] = overlap(h, f);
     
     % Loop over each FUN for Line and Points data:
-    for k = 1:numel(f.funs)
+    nFuns = numel(f.funs);
+    for k = 1:nFuns
         % Get the data from the FUN objects:
         dataNew = plotData(f.funs{k}, g.funs{k}, h.funs{k});
+        yLim = [min(dataNew.yLim(1), yLim(1)), max(dataNew.yLim(2), yLim(2))];
         myNaN = NaN(1, size(dataNew.yLine, 2)); % Array of NaNs.
         % Insert a NaN (or array of NaNs) and append new data to array:
         data.xLine = [data.xLine ; myNaN ; dataNew.xLine];
         data.yLine = [data.yLine ; myNaN ; dataNew.yLine];
-        data.zLine = [data.zLine ; myNaN ; dataNew.zLine];        
+        data.zLine = [data.zLine ; myNaN ; dataNew.zLine];
         data.xPoints = [data.xPoints ; myNaN ; dataNew.xPoints];
         data.yPoints = [data.yPoints ; myNaN ; dataNew.yPoints];
-        data.zPoints = [data.zPoints ; myNaN ; dataNew.zPoints];        
+        data.zPoints = [data.zPoints ; myNaN ; dataNew.zPoints];
     end
-
+    
+    % Return NaNs if there are no jumps:
+    data.xJumps = myNaN;
+    data.yJumps = myNaN;
+    data.zJumps = myNaN;
     
     % Loop over each FUN for Jumps data:
-    for k = 1:(numel(f.funs) - 1)
+    for k = 1:(nFuns - 1)
         % Append [oldData, NaN, rval_k, lval_{k+1}]:
         data.xJumps = [data.xJumps ; myNaN ; get(f.funs{k}, 'rval') ; ...
             get(f.funs{k+1}, 'lval')];
         data.yJumps = [data.yJumps ; myNaN ; get(g.funs{k}, 'rval') ; ...
-            get(g.funs{k+1}, 'lval')]; 
+            get(g.funs{k+1}, 'lval')];
         data.zJumps = [data.zJumps ; myNaN ; get(h.funs{k}, 'rval') ; ...
-            get(h.funs{k+1}, 'lval')];         
+            get(h.funs{k+1}, 'lval')];
     end
     
 end
-    
-    
+
+data.yLim = yLim;
+
 end

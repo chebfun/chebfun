@@ -1,19 +1,14 @@
-function g = sind(f, pref)
+function F = sind(F, varargin)
 %SIND   Sine of a CHEBFUN, result in degrees.
 %   SIND(F) computes the sine (in degrees) of the CHEBFUN F.
 %
-%   SIND(F, PREF) does the same but uses the CHEBPREF object PREF when
-%   computing the composition.
+%   SIND(F, PREF) does the same but uses the CHEBPREF object PREF when computing
+%   the composition.
 %
 % See also ASIND, SIN.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
-
-% Obtain preferences:
-if ( nargin == 1 )
-    pref = chebpref();
-end
 
 % [TODO]:  Restore or change this once we have decided the proper behavior or
 % isfinite() and defined that function.
@@ -23,6 +18,6 @@ end
 % end
 
 % Call the compose method:
-g = compose(f, @sind, pref);
+F = compose(F, @sind, varargin{:});
 
 end

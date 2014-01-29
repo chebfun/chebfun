@@ -1,4 +1,4 @@
-function g = airy(K, f, scale)
+function F = airy(K, F, scale, pref)
 %AIRY   Airy function of a CHEBFUN.
 %   AIRY(F) returns the Airy function Ai(F) of a CHEBFUN F.
 %
@@ -20,15 +20,33 @@ function g = airy(K, f, scale)
 
 % Parse the inputs as described in help text:
 if ( nargin == 1 )
-    f = K;
+    F = K;
     K = 0;
+    pref = chebpref();
 end
 if ( nargin < 3 )
     scale = 0;
+    pref = chebpref();
+end
+if ( nargin == 3 )
+    if ( isa(scale, 'chebpref') )
+        pref = scale;
+        scale = 0;
+    else
+        pref = chebpref;
+    end
 end
 
+for k = 1:numel(F)
+    F(k) = columnAiry(K, F(k), scale, pref);
+end
+
+end
+
+function g = columnAiry(K, f, scale, pref)
+
 % The standard Airy function:
-g = compose(f, @(x) airy(K, x));
+g = compose(f, @(x) airy(K, x), [], pref);
 
 if ( scale == 0 )
     % Standard case (no scaling).

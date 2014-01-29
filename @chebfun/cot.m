@@ -1,4 +1,4 @@
-function g = cot(f, pref)
+function F = cot(F, varargin)
 %COT   Cotangent of a CHEBFUN.
 %   COT(F) computes the cotangent of the CHEBFUN F.
 %
@@ -10,11 +10,6 @@ function g = cot(f, pref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-% Obtain preferences:
-if ( nargin == 1 )
-    pref = chebpref();
-end
-
 % [TODO]:  Restore or change this once we have decided the proper behavior or
 % isfinite() and defined that function.
 % if ( ~isfinite(f) )
@@ -23,6 +18,6 @@ end
 % end
 
 % Call the compose method:
-g = compose(f, @cot, pref);
+F = compose(F, @cot, varargin{:});
 
 end

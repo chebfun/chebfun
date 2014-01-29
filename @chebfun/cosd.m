@@ -1,4 +1,4 @@
-function g = cosd(f, pref)
+function F = cosd(F, varargin)
 %COSD   Cosine of a CHEBFUN, result in degrees.
 %   COSD(F) computes the cosine (in degrees) of the CHEBFUN F.
 %
@@ -10,11 +10,6 @@ function g = cosd(f, pref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-% Obtain preferences:
-if ( nargin == 1 )
-    pref = chebpref();
-end
-
 % [TODO]:  Restore or change this once we have decided the proper behavior or
 % isfinite() and defined that function.
 % if ( ~isfinite(f) )
@@ -23,6 +18,6 @@ end
 % end
 
 % Call the compose method:
-g = compose(f, @cosd, pref);
+F = compose(F, @cosd, varargin{:});
 
 end

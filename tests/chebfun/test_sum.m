@@ -11,6 +11,8 @@ end
 seedRNG(7681);
 xr = 2 * rand(1000, 1) - 1;
 
+%% SCALAR-VALUED
+
 % Check the empty case.
 pass(1) = sum(chebfun()) == 0;
 
@@ -48,7 +50,7 @@ F3 = sum(f, a, b);
 F3_exact = @(x) exp(-x.^2 + 1) - exp(x.^2 - 1);
 pass(10) = norm(feval(F3, xr) - F3_exact(xr), inf) < 10*vscale(F3)*epslevel(F3);
 
-% Check operation for array-valued chebfuns.
+%% ARRAY-VALUED
 f = chebfun(@(x) [sin(x) cos(x) exp(x)], [-1 -0.5 0 0.5 1]);
 pass(11) = norm(sum(f) - [0 2*sin(1) (exp(1) - exp(-1))], inf) < ...
     10*vscale(f)*epslevel(f);
@@ -92,7 +94,7 @@ F3_exact = @(x) [F3_col1_exact(x) F3_col2_exact(x) F3_col3_exact(x)];
 err = feval(F3, xr) - F3_exact(xr);
 pass(18) = norm(err(:), inf) < 10*vscale(F3)*epslevel(F3);
 
-% Check dim argument.
+%% Check dim argument.
 g = sum(f, 2);
 g_exact = @(x) sin(x) + cos(x) + exp(x);
 pass(19) = norm(feval(g, xr) - g_exact(xr), inf) < 10*vscale(g)*epslevel(g);
@@ -101,7 +103,7 @@ g = sum(ft, 1);
 g_exact = @(x) (sin(x) + cos(x) + exp(x)).';
 pass(20) = norm(feval(g, xr) - g_exact(xr), inf) < 10*vscale(g)*epslevel(g);
 
-% Check error conditions.
+%% Check error conditions.
 try
     s = sum(f, -2, 2);
     pass(21) = false;
@@ -122,5 +124,35 @@ try
 catch ME
     pass(23) = strcmp(ME.identifier, 'CHEBFUN:sum:b');
 end
+
+%% QUASIMATRICES:
+
+f = quasimatrix(@(x) [sin(x) cos(x) exp(x)], [-1 -0.5 0 0.5 1]);
+pass(24) = norm(sum(f) - [0 2*sin(1) (exp(1) - exp(-1))], inf) < ...
+    10*vscale(f)*epslevel(f);
+
+ft = f.';
+pass(25) = norm(sum(ft) - [0 2*sin(1) (exp(1) - exp(-1))], inf) < ...
+    10*vscale(ft)*epslevel(ft);
+
+pass(26) = norm(sum(f, [-1 1]) - [0 2*sin(1) (exp(1) - exp(-1))], inf) < ...
+    10*vscale(f)*epslevel(f);
+
+pass(27) = norm(sum(f, [-1 0]) - [(cos(-1) - 1) sin(1) (1 - exp(-1))], inf) ...
+    < 10*vscale(f)*epslevel(f);
+
+%% Test on singular function: piecewise smooth chebfun - splitting on.
+
+% Set a domain
+dom = [-2 7];
+
+pow = -0.5;
+op = @(x) (x - dom(1)).^pow.*sin(100*x);
+pref.singPrefs.exponents = [pow 0];
+pref.enableBreakpointDetection = 1;
+f = chebfun(op, dom, pref);
+I = sum(f);
+I_exact = 0.17330750941063138;
+pass(28) = ( abs(I-I_exact) < 2*get(f, 'epslevel')*abs(I_exact) );
 
 end

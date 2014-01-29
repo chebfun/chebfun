@@ -2,8 +2,8 @@ function f = definePoint(f, s, v)
 %DEFINEPOINT   Supply new definition for a CHEBFUN at a point or set of points.
 %   F = DEFINEPOINT(F, S, V) redefines the CHEBFUN F to take the values V at the
 %   points S in F.DOMAIN. If F is a scalar-valued CHEBFUN, then S and V should
-%   vectors of the same length. If F is an array-valued CHEBFUN, then V should
-%   be a matrix of size LENGTH(S)*SIZE(F, 2).
+%   be vectors of the same length. If F is an array-valued CHEBFUN or a
+%   quasimatrix, then V should be a matrix of size LENGTH(S)*NUMCOLUMNS(F).
 %
 %   An equivalent syntax is F(S) = V.
 %
@@ -16,6 +16,32 @@ function f = definePoint(f, s, v)
 if ( isempty(s) )
     return
 end
+
+
+if ( numel(f) == 1 )
+    % Array-valued CHEBFUN case:
+    
+    f = columnDefinePoint(f, s, v);
+    
+else
+    % Quasimatrix case:
+    
+    % Expand v if required:
+    if ( size(v, 2 - f(1).isTransposed) == 1 )
+        v = repmat(v, 1, numColumns(f));
+    end
+    if ( f(1).isTransposed )
+        v = v.';
+    end
+    % Loop over the columns:
+    for k = numel(f)
+        f(k) = columnDefinePoint(f(k), s, v(:,k));
+    end
+end
+
+end
+
+function f = columnDefinePoint(f, s, v)
 
 % Some error checking:
 if ( isempty(v) )
