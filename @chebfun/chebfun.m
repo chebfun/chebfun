@@ -193,7 +193,7 @@ classdef chebfun
             end
 
             if ( doTrunc )
-                c = chebpoly(f, 0, truncLength);
+                c = chebpoly(f, truncLength);
                 f = chebfun(c.', f.domain([1, end]), 'coeffs');
             end
         end
