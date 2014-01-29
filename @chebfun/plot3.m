@@ -60,6 +60,10 @@ else
     end
 end
 
+
+% Deail with 'jumpLine' input.
+[jumpStyle, varargin] = parseJumpStyle(varargin{:});
+
 % Style data.
 pos = 0; styleData = [];
 % Find the location of the next CHEBFUN in the input array:
@@ -76,15 +80,16 @@ lineData = {};
 pointData = {};
 jumpData = {};
 
+
 % Loop over the columns:
 for k = 1:numel(newData)
     % Append the data:
     lineData = [lineData, newData(k).xLine, newData(k).yLine, ...
         newData(k).zLine, styleData];
     pointData = [pointData, newData(k).xPoints, newData(k).yPoints, ...
-        newData(k).yPoints, styleData];
+        newData(k).zPoints, styleData];
     jumpData = [jumpData, newData(k).xJumps, newData(k).yJumps, ...
-        newData(k).yJumps, styleData];
+        newData(k).zJumps, styleData];
 end
 
 % Plot the curve
@@ -105,7 +110,11 @@ if ( isempty(jumpData) || ischar(jumpData{1}) )
 end
 h3 = plot3(jumpData{:});
 % Change the style accordingly:
-set(h3,'LineStyle', ':', 'Marker', 'none')
+if ( isempty(jumpStyle) )
+    set(h3, 'LineStyle', ':', 'Marker', 'none')
+else
+    set(h3, jumpStyle{:});
+end
 
 % Return hold state to what it was before:
 if ( ~holdState )
@@ -130,4 +139,37 @@ if ( numel(f) ~= numCols )
               'CHEBFUN objects must have the same number of columns.');
     end
 end
+end
+
+
+function [jumpStyle, varargin] = parseJumpStyle(varargin)
+jumpStyle = {};
+for idx = 1:numel(varargin)
+    if ( ~strcmpi(varargin{idx}, 'jumpline') )
+        continue
+    end
+    tmp = varargin{idx+1};
+    varargin(idx:(idx+1)) = [];
+    if ( iscell(tmp) )
+        jumpStyle = tmp;
+        return
+    end
+    ll = regexp(tmp, '[-:.]+','match');           % style
+    if ( ~isempty(ll) )
+        jumpStyle = [jumpStyle, 'LineStyle', ll];
+    end
+    cc = regexp(tmp,'[bgrcmykw]', 'match');       % color
+    if ( ~isempty(cc) )
+        jumpStyle = [jumpStyle, 'Color', cc];
+    end
+    mm = regexp(tmp,'[.ox+*sdv^<>ph]', 'match');  % marker
+    if ( ~isempty(mm) )
+        jumpStyle = [jumpStyle, 'Marker', mm];
+    end
+    if ( any(strcmpi(tmp, {'none', 'off', ''})))      % off
+        jumpStyle = {'LineStyle', 'none'};
+    end
+    return
+end
+
 end
