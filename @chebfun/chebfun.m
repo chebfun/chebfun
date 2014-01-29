@@ -137,19 +137,7 @@ classdef chebfun
             if ( (nargin == 0) || isempty(varargin{1}) )
                 return
             end
-            
-            % Assign variable to workspace for string input:
-            % TODO: Document this.
-            if ( all(cellfun(@isvarname, varargin)) )
-                f = {};
-                for k = numel(varargin):-1:1
-                    f{k} = chebfun(str2op(varargin{k}));
-                    assignin('caller', varargin{k}, f{k});
-                end
-                f = horzcat(f{:});
-                return
-            end
-            
+                       
             % Parse inputs:
             [op, dom, pref] = parseInputs(varargin{:});
             
