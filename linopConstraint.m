@@ -1,10 +1,9 @@
 classdef linopConstraint
 %LINOPCONSTRAINT Constraint class for linops.
-%   A linop operates on a set of chebfuns and scalars (the "variable" of
-%   the linop). An instance of this class may be assigned to the
-%   'constraint' property of a linop in order to impose a constraint on
-%   that variable (for purposes of solving a linear system or eigenvalue
-%   problem). 
+%   A linop operates on a set of chebfuns and scalars (the "variables" of the
+%   linop). An instance of this class may be assigned to the 'constraint'
+%   property of a linop in order to impose a constraint on that variable (for
+%   purposes of solving a linear system or eigenvalue problem).
 % 
 %   Each LINOPCONSTRAINT object has a 'functional' property, which is a
 %   chebmatrix of vertically concatenated functionalBlocks, and a 'values'
