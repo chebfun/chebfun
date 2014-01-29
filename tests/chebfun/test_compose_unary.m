@@ -47,8 +47,8 @@ pass(8) = test_one_compose_unary(@(x) [cos(2*(x + 0.2)), sin(2*(x - 0.1))], ...
     [-1 1], @exp, pref);
 
 % Test quasimatrix.
-pass(9) = test_one_compose_unary_quasi(@(x) [cos(2*(x + 0.2)), sin(2*(x - 0.1))], ...
-    [-1 1], @exp, pref);
+pass(9) = test_one_compose_unary_quasi(@(x) [cos(2*(x + 0.2)), ...
+    sin(2*(x - 0.1))], [-1 1], @exp, pref);
 
 end
 

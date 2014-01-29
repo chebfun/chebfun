@@ -145,7 +145,7 @@ classdef unbndfun < fun
         % Derivative of an UNBNDFUN.
         f = diff(f, k, dim)
        
-        % Change of domains of UNBNDFUN via linear change of variables.
+        % Change of domains of an UNBNDFUN via linear change of variables.
         f = changeMap(f,newdom)
         
         % Evaluate an UNBNDFUN.
@@ -160,16 +160,16 @@ classdef unbndfun < fun
         % Left matrix divide for UNBNDFUN objects.
         X = mldivide(A, B)
 
-        % Right matrix divide for a UNBNDFUN.
+        % Right matrix divide for an UNBNDFUN.
         X = mrdivide(B, A)
         
-        % Estimate the Inf-norm of a UNBNDFUN
+        % Estimate the Inf-norm of an UNBNDFUN
         out = normest(f);
         
-        % Data for plotting a UNBNDFUN
+        % Data for plotting an UNBNDFUN
         data = plotData(f, g);
                 
-        % Polynomial coefficients of a UNBNDFUN.
+        % Polynomial coefficients of an UNBNDFUN.
         out = poly(f)
         
         % UNBNDFUN power function.
