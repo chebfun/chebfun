@@ -567,12 +567,30 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             out = f(pos);
         end
         
+        function f = heaviside(f) %#ok<MANU>
+            % HEAVISIDE is not Frechet differentiable, so an error is thrown.
+            error('CHEBFUN:AD:heaviside:NotDifferentiable', ...
+                'HEAVISIDE() is not Frechet differentiable.');
+        end
+        
+        function out = hscale(f)
+            % HSCALE    Horizontal scale of the FUNC part of an ADCHEBFUN.
+            %
+            % See also: CHEBFUN/HSCALE
+            out = hscale(f.func);
+        end
+        
         function u = jacreset(u)
             % U = JACRESET(U)
-            
+            % TODO: Document
             u.jacobian = operatorBlock.eye(u.domain);
             u.isConstant = 1;
         end 
+        
+        function l = length(f)
+            % LENGTH(F) where F is an ADCHEBFUN is the same as LENGTH(F.FUNC)
+            l = length(f.func);
+        end
         
         function f = log(f)
             % F = LOG(F)   LOG of an ADCHEBFUN.
@@ -852,7 +870,12 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % Update CHEBFUN part
             f.func = sinh(f.func);
         end
-
+        
+        function varargout = size(f, varargin)
+            % SIZE(F) where F is an ADCHEBFUN is the same as SIZE(F.FUNC)
+            [varargout{1:nargout}] = size(f.func, varargin{:});
+        end
+        
         function out = subsref(f, index)
             % TODO: Document
             switch index(1).type
@@ -934,7 +957,14 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             end
 
         end
-
+        
+        function out = vscale(f)
+            % VSCALE    Vertical scale of the FUNC part of an ADCHEBFUN.
+            %
+            % See also: CHEBFUN/VSCALE
+            out = vscale(f.func);
+        end
+        
         function f = uminus(f)
             % -     Unary minus of an ADCHEBFUN
             
