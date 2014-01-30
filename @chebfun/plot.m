@@ -124,7 +124,8 @@ jumpData = {};
 while ( ~isempty(varargin) )
 
     % Acquire plotting data for each CHEBFUN / pair of CHEBFUNs:
-    if ( (numel(varargin) > 1) && isa(varargin{2}, 'chebfun') ) % PLOT(f, g).
+    if ( (numel(varargin) > 1) && ... % PLOT(f, g).
+            (isa(varargin{2}, 'chebfun') || isnumeric(varargin{2})) ) 
         % Remove CHEBFUN objects from array input:
         f = varargin{1};
         g = varargin{2};
@@ -140,7 +141,17 @@ while ( ~isempty(varargin) )
         end
         
         % Call PLOTDATA():
-        if ( numel(f) == 1 && numel(g) == 1 )
+        if ( isnumeric(f) )
+            % For plotting numeric data in a CHEBFUN/PLOT() call.
+            newData = plotData(chebfun());
+            newData.xLine = f;
+            newData.yLine = g;
+            newData.xPoints = f;
+            newData.yPoints = g;
+            newData.xJumps = NaN;
+            newData.yJumps = NaN;   
+            % Do nothing
+        elseif ( numel(f) == 1 && numel(g) == 1 )
             % Array-valued CHEBFUN case:
             newData = plotData(f, g);
         else
@@ -188,10 +199,15 @@ while ( ~isempty(varargin) )
     pos = 0;
     styleData = [];
 
+    lv = length(varargin);
     % Find the location of the next CHEBFUN in the input array:
-    while ( (pos < length(varargin)) && ~isa(varargin{pos + 1}, 'chebfun') )
+    while ( (pos < lv) && ~isa(varargin{pos+1}, 'chebfun') )
+        if ( pos+1 < lv && isnumeric(varargin{pos+1}) && isnumeric(varargin{pos+2}) )
+            break
+        end
         pos = pos + 1;
     end
+    
     if ( pos > 0 )
         styleData = varargin(1:pos);
         varargin(1:pos) = [];
@@ -230,10 +246,9 @@ while ( ~isempty(varargin) )
         pointData = [pointData, newData(k).xPoints, newData(k).yPoints, ...
             styleData];
         jumpData = [jumpData, newData(k).xJumps, newData(k).yJumps, styleData];
-
     end
+    
 end
-
 % Plot the lines:
 h1 = plot(lineData{:});
 set(h1, 'Marker', 'none')

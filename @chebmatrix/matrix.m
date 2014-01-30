@@ -2,7 +2,7 @@ function M = matrix(A, varargin)
 %MATRIX  Discretize a chebmatrix as an ordinary matrix.
 %   M = MATRIX(A, DIM) discretizes each block in the chebmatrix A using the
 %   dimension vector DIM for all functions. In case the domain of A has
-%   breakpoints, the vector DIM must specify the desired discretisation
+%   breakpoints, the vector DIM must specify the desired discretization
 %   dimension for each subinterval.
 %
 %   M = MATRIX(A, DIM, DOMAIN) replaces the 'native' domain of A with DOMAIN.
@@ -23,9 +23,7 @@ function M = matrix(A, varargin)
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
-% TODO: Confirm with TAD why this was A.prefs.discretizatino, calling a
-% dependent property? AB, 27/1/14.
-d = A.prefs.discretisation(A, varargin{:});
+d = A.prefs.discretization(A, varargin{:});
 M = matrix(d);
 
 end
