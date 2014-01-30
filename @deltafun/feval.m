@@ -23,16 +23,15 @@ val = feval(f.funPart, x);
 pref = chebpref();
 proximityTol = pref.deltaPrefs.proximityTol;        
 % Make sure there are no trivial delta functions:
-f = simplify(f);
+% f = simplify(f); %TODO
 deltaLoc = f.deltaLoc;    
 for i = 1:length(deltaLoc)        
     if ( deltaLoc(i) == 0 ) 
         % Avoid divide by zero:
-        idx = abs(x - deltaLoc(i)) < proximityTol;        
-        val(idx) = NaN;                
+        idx = abs(x - deltaLoc(i)) < proximityTol;                     
     else
         % Check the relative distance from delta function locations:
         idx = abs(x - deltaLoc(i))./deltaLoc(i) < proximityTol;
-        val(idx) = NaN;
     end        
+    val(idx) = NaN;
 end     

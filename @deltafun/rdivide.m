@@ -8,12 +8,11 @@ function s = rdivide(f, g)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-
-% Case of empty arguments.
+% Case of empty arguments:
 if ( isempty(f) || isempty(g) )
     % Return an empty DELTAFUN:
     s = deltafun();
-    return;
+    return
 end
 
 % Check if inputs are other than DELTAFUNs, CLASSICFUNs or doubles.
@@ -26,7 +25,7 @@ end
 %% Reciprocal: ( CLASSICFUN or DOUBLE ). / DELTAFUN
 if ( isa(f, 'double') || isa( f, 'classicfun') && isa(g, 'deltafun') )    
     if ( anyDelta(g) )
-        error( 'DELTAFUN:rdivide', 'division by delta functions is not defined' );
+        error('DELTAFUN:rdivide', 'Division by delta functions is not defined.');
     end
     % A smooth function is returned in this case:
     s = f ./ g.funPart;
@@ -56,11 +55,10 @@ if ( isa(f, 'deltafun') && isa(g, 'classicfun') )
     return
 end
 
-
 %% DELTAFUN./DELTAFUN
 if ( isa(f, 'deltafun') && isa(g, 'deltafun') )
     if ( anyDelta(g) )
-        error( 'DELTAFUN:rdivide', 'division by delta functions is not defined' );
+        error('DELTAFUN:rdivide', 'Division by delta functions is not defined.');
     end
     % Take reciprocal of the funPart only and make a DELTAFUN:
     g = deltafun( 1 ./ g.funPart, [], []);

@@ -6,11 +6,12 @@ if ( nargin < 1 )
     pref = chebpref();
 end
 %%
-d = deltafun([], 1,0);
+f = bndfun(@sin);
+d = deltafun(f, 1,0);
 pass(1) = isnan(feval(d, 0));
 
 f = fun.constructor(@(x) sin(x));
-d = deltafun( f, [], []);
+d = deltafun(f, [], []);
 x = rand(1, 4);
 pass(2) = norm(feval(f, x) - feval(d, x), inf) == 0;
 

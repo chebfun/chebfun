@@ -1,6 +1,6 @@
 function [minVal, minPos] = min(f)
-%MIN   Global minimum of a SINGFUN on [-1,1].
-%   MINVAL = MIN(F) returns the global minimum of the SINGFUN F on [-1,1].
+%MIN   Global minimum of a DELTAFUN on [-1,1].
+%   MINVAL = MIN(F) returns the global minimum of the DELTAFUN F on [-1,1].
 %
 %   [MINVAL, MINPOS] = MIN(F) returns also a value such that MINVAL = F(MINPOS).
 %

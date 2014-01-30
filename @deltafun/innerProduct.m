@@ -5,73 +5,75 @@ function out = innerProduct(f, g)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Empty cases:
-if( isempty(f) || isempty(g) )
+% TODO: NH: This requires a test!
+
+%% Trivial cases:
+if ( isempty(f) || isempty(g) )
     out = [];
     return
 end
 
-if( isa(f, 'deltafun') && isa(g, 'deltafun') )
-    % If f and g are both smooth, delegate to
-    % the innerproduct of the function part.
-    if( ~anyDelta(f) && ~anyDelta(g) )
-        out = f.funPart' * g.funPart;
+if ( ~isa(f, 'deltafun') )
+    % Ensure first input is a DELTAFUN:
+    out = innerProduct(g, f);
+    return
+end
+
+%% Easy cases:
+if ( isa(f, 'deltafun') && isa(g, 'deltafun') ) % Both are DELTAFUNS
+    
+    % If f and g are both smooth, delegate to the innerproduct of the funPart.
+    if ( ~anyDelta(f) && ~anyDelta(g) )   % No deltas
+        out = innerProduct(f.funPart, g.funPart);
         return
+    elseif ( anyDelta(f) && anyDelta(g) ) % Both deltas
+        % If both f and g are non-trivial distributions, then the inner product
+        % is not defined. [TODO]: Can we try something in this case as well?
+        error('DELTAFUN:innerProduct', ...
+            'At least one distribution should be smooth' );
+    elseif ( anyDelta(g) )                % Deltas on g
+        F = g;
+        g = f.funPart;
+    else                                  % Deltas on f
+        F = f;
     end
-    % If both f and g are non-trivial distributions, then the inner product is
-    % not defined.
-    % [TODO]: Can we try something in this case as well?
-    if ( anyDelta(f) && anyDelta(g) )
-        error('DELTAFUN:innerProduct', 'At least one distribution should be smooth' );
-    end    
+    
+elseif ( ~anyDelta(f) )                         % f is a (trivial) DELTAFUN
+    
+    % Both f and g are smooth, so this is the normal innerproduct:
+    out = innerProduct(f.funPart, g);
+    return
+    
+else                                            % f is a non-trivial DELTAFUN
+    F = f;
 end
 
-% One deltafun and the other something else. Make sure F is a deltafun and 
-% g contains the other argument:
-if( isa(f, 'deltafun') )
-    F = f;    
-else
-    % If f is not a DELTAFUN, g must be:
-    F = g;
-    g = f;
-end
-
-% If F is smooth, then since g is also smooth, this is the nomral innerproduct.
-if ( ~anyDelta(F) )
-    out = F.funPart' * g;
-    return;
-end
-
-% By this point, F is not a smooth DELTAFUN. If g is not a CLASSICFUN or 
-% a DELTAFUN, we upgrade it to a DELTAFUN with constant FUNPART, if g is
-% something else, it's an error.
-if( isnumeric(g) )
-    if( numel(g) > 1 )
-        error( 'DELTAFUN:innerProduct', 'if g is numeric, it should be a scalar' );
+%% Non-trivial case:
+% By this point F is a non-trivial DELTAFUN and g is either a CLASSICFUN or a
+% scalar. 
+if ( isnumeric(g) )
+    if ( isscalar(g) )
+        error('DELTAFUN:innerProduct', 'If g is numeric it must be a scalar.');
     end
-    g = fun.constructor(g, F.funPart.domain);
-elseif( ~isa(g, 'fun') )
-    error( 'DELTAFUN:innerProduct', 'unknown data type' );
+    % Upgrade a scalar to a CLASSICFUN:
+    g = fun.constructor(g, domain(F));
+elseif ( ~isa(g, 'fun') )
+    error('DELTAFUN:innerProduct', 'Unknown data type.');
 end
 
-% Compute the smooth part of the inner product.
-if ( ~isempty(F.funPart) )
-    funIP = innerProduct(F.funPart, g);
-else
-    funIP = 0;
-end
+% Compute the funPart of the inner product.
+funIP = innerProduct(F.funPart, g);
 
 % Get location and magnitudes of delta functions:
-f = simplify(f);
-deltaLoc = f.deltaLoc;
-numDeltas = length(deltaLoc);
-deltaMag = f.deltaMag;
+deltaLoc = F.deltaLoc;
+deltaMag = F.deltaMag;
 m = size(deltaMag, 1);
 
 % Compute the derivatives needed:
 maxDiffOrder = m-1;
 
-G = zeros(m, numDeltas);
+% TODO: Explain this
+G = zeros(m, length(deltaLoc));
 G(1,:) = feval(g, deltaLoc);
 for k = 1:maxDiffOrder
     g = diff(g);
@@ -80,9 +82,9 @@ end
 
 % The output is always a scalar double:
 deltaIP = 0;
-v = (-1).^(0:maxDiffOrder).';
+v = ones(maxDiffOrder+1,1); v(2:2:end) = -1; % v = (-1).^(0:maxDiffOrder).';
 for k = 1:length(deltaLoc)
-    %[TODO]: Please explain this voodoo
+    %[TODO]: Please explain this voodoo!
     ipk = (v.*deltaMag(:, k)).' * G(:, k) ;
     deltaIP = deltaIP + ipk;
 end

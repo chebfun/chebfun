@@ -10,4 +10,6 @@ function out = isnan(f)
 % Check if any values are NaN:
 out = isnan(f.smoothPart) || any(isnan(feval(f, [-1 ; 1])));
 
+% TODO: NH: This must be wrong ([-1, 1]).
+
 end

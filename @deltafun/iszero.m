@@ -3,18 +3,15 @@ function out = iszero(f)
 %   ISZERO(F) returns logical TRUE if F has a non-zero smooth part of some
 %   non trivial delta functions
 
-
 % Empty DELTAFUN is considered as a zero DELTAFUN:
 if ( isempty(f) )
     out = 1;
     return
 end
 
-if ( ~isempty(f.funPart) )
-    if ( ~iszero(f.funPart) )
-        out = 0;
-        return
-    end
+if ( ~iszero(f.funPart) )
+    out = 0;
+    return
 end
 
 if ( isempty(f.deltaLoc ) || isempty(f.deltaMag) )

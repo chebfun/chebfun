@@ -8,30 +8,34 @@ function f = mtimes(f, c)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty(f) || isempty(c) )     % DELTAFUN * [] = []
+    
     f = []; 
     return
     
 elseif ( ~isa(f, 'deltafun') )       % First input is not a DELTAFUN
+    
+    % C must be a DELTAFUN and F a scalar double. Call MTIMES again.
+    f = mtimes(c, f);
+
+elseif ( isa(c, 'double') )         % DELTAFUN * double 
+    
     % DOUBLE*DELTAFUN requires that the double to be scalar.
-    if ( numel(f) > 1 )
+    if ( ~isscalar(c) )
         error('CHEBFUN:DELTAFUN:mtimes:size', ...
               'Inner matrix dimensions must agree.');
     end
     
-    % C must be a DELTAFUN and F a scalar double. Call MTIMES again.
-    f = mtimes(c, f);
-    return
-    
-elseif ( isa(c, 'double') )         % DELTAFUN * double  
     % Multiply c with the smooth part:
     f.funPart = f.funPart * c;    
     f.deltaMag = f.deltaMag * c;
     
 elseif ( isa(c, 'deltafun') )        % DELTAFUN * DELTAFUN  
+    
     error('CHEBFUN:DELTAFUN:mtimes:deltafunMtimesdeltafun', ...
           'Use .* to multiply DELTAFUN objects.');
     
 else                                % DELTAFUN * ???
+    
     error('CHEBFUN:SINGFUN:mtimes:singfunMtimesUnknown', ...
           'mtimes does not know how to multiply a SINGFUN and a %s.', class(c));
 end

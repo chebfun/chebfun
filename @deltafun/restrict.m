@@ -16,76 +16,53 @@ if ( isempty(f) )
     return
 end
 
-if ( isempty(f.funPart) )
-    % If the funPart is empty, then there is no constraint on the values in s:
-    a = -inf;
-    b = inf;
-else
-    dom = f.funPart.domain;
-    a = dom(1); 
-    b = dom(2);
-end
+% Get the domain:
+dom = domain(f);
+a = dom(1); 
+b = dom(2);
 
 % Check if s is actually a subinterval:
 if ( (s(1) < a) || (s(end) > b) || (any(diff(s) <= 0)) )
-    error('DELTAFUN:restrict:badinterval', 'Not a valid interval.')
+    error('DELTAFUN:restrict:badinterval', 'Not a valid subinterval.')
 elseif ( (numel(s) == 2) && all(s == [a, b]) )
     % Nothing to do here!
     return
 end
 
-if ( ~isempty(f.funPart) )
-    restrictedFuns = restrict(f.funPart, s);
-else
-    restrictedFuns = [];
+% Restrict the funPart:
+restrictedFunParts = restrict(f.funPart, s);
+if ( ~iscell(restrictedFunParts) )
+    restrictedFunParts = {restrictedFunParts};
 end
 
-if ( length(s) == 2 )
-    % Only restricting to one subinterval, this will return a DELTAFUN:   
-    g = deltafun();
-    g.funPart = restrictedFuns;
-    if ( ~isempty(f.deltaLoc) )
-        idx = (f.deltaLoc >= s(1)) & (f.deltaLoc <= s(2));
-        g.deltaLoc = f.deltaLoc(idx);
-        g.deltaMag = f.deltaMag(:, idx);
-        if ( isempty(g.deltaLoc) )
-            g.deltaLoc = [];
-            g.deltaMag = [];
-        end
+% Create a cell to be returned.
+g = cell(1, numel(s)-1);
+
+% Loop over each of the new subintervals, make a DELTAFUN and store in a cell:
+for k = 1:(numel(s) - 1)
+    funPart = restrictedFunParts{k};
+
+    idx = (f.deltaLoc >= s(k)) & (f.deltaLoc <= s(k+1));
+    deltaLoc = f.deltaLoc(idx);
+    deltaMag = f.deltaMag(:,idx);
+
+    if ( isempty(deltaLoc) )
+        deltaLoc = [];
+        deltaMag = [];
     end
-else
-    % Restricting to multiple subintervals, this returns a cell-array of 
-    % DELTAFUN objects.
-    
-    % Create a cell to be returned.
-    g = cell(1, numel(s) - 1);
-    
-    % Create an empty DELTAFUN:
-    emptyDeltaFun = deltafun();
-    
-    % Loop over each of the new subintervals, make a DELTAFUN and store in 
-    % the cell returned:
-    for k = 1:(numel(s) - 1)
-        gk = emptyDeltaFun;
-        
-        if ( ~isempty(restrictedFuns) )
-            gk.funPart = restrictedFuns{k};
-        else
-            gk.funPart = [];
-        end
-        
-        if ( ~isempty(f.deltaLoc) )
-            idx = (f.deltaLoc >= s(k)) & (f.deltaLoc <= s(k+1));
-            gk.deltaLoc = f.deltaLoc(idx);
-            gk.deltaMag = f.deltaMag(:, idx);
-        end
-        
-        if ( isempty(gk.deltaLoc) )
-            gk.deltaLoc = [];
-            gk.deltaMag = [];
-        end
-        g{k} = gk;
+
+    % Construct the new deltafun:
+    if ( isempty(deltaLoc) )
+        g{k} = funPart;
+    else
+        g{k} = deltafun(funPart, deltaMag, deltaLoc);
     end
 end
+
+% Return a DELTAFUN or CLASSICFUN if only one subinterval is requested:
+if ( numel(s) == 2 )
+    g = g{1};
+end
+
 
 end

@@ -1,8 +1,8 @@
-function [x, idxV, idxW] = numIntersect( V, W, tol)
+function [x, idxV, idxW] = numIntersect(V, W, tol)
 %NUMINTERSECT   Find the intersection of V and W with a relative tolerance.
 %   The code does not always return unique elements.
 
-if( nargin < 3 || isempty(tol) )
+if ( nargin < 3 || isempty(tol) )
     pref = chebpref();
     tol = pref.deltaPrefs.proximityTol;
 end
@@ -22,7 +22,7 @@ for i = 1:length(V)
     absVi = abs(V(i));
     for j = 1:length(W)
         absWj = abs(W(j));
-        if ( V(i) == W(j) ) % Aslo handles when both are zero.
+        if ( V(i) == W(j) ) % Also handles when both are zero.
             % If they are exactly equal:
             x(k + 1) = V(i);
             idxV(k + 1) = i;
@@ -47,4 +47,6 @@ else
     x = x(1:k);
     idxV = idxV(1:k);
     idxW = idxW(1:k);
+end
+
 end

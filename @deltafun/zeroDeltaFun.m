@@ -10,15 +10,14 @@ function s = zeroDeltaFun(domain)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin < 1 )
-    domain = [-1, 1];
+    pref = chebpref();
+    domain = pref.domain;
 end
 
 % Create a zero fun on the domain:
 f = fun.constructor(0, domain);
 
 % Create a zero DELTAFUN object:
-s = deltafun();
-s.funPart = f;
-s.deltaMag = [];
-s.deltaLoc = [];
+s = deltafun(f, [], []);
+
 end

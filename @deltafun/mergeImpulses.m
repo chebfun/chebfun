@@ -1,6 +1,8 @@
 function [D, w] = mergeImpulses( A, u, B, v)
-%MERGEIMPULSES   merges impulse matrices and their locations.
+%MERGEIMPULSES   Merges impulse matrices and their locations.
 %   A and B are matrices.
+
+% TODO: NH: Better documentation!
 
 % Get the sizes of both matrices:
 szA = size(A);
@@ -12,15 +14,11 @@ if ( any(szA == 0 ) && any(szB == 0 ) )
     D = [];
     w = [];
     return
-end
-
-if ( any(szA == 0 ) )
+elseif ( any(szA == 0 ) )
     D = B;
     w = v;
     return
-end
-
-if ( any(szB == 0 ) )
+elseif ( any(szB == 0 ) )
     D = A;
     w = u;
     return
@@ -31,10 +29,10 @@ end
 d = szA(1) - szB(1);
 if ( d >= 0 )
     % A has more rows, expand B:
-    B = [ B; zeros(d, szB(2)) ];
+    B = [B ; zeros(d, szB(2))];
 else
     % B has more rows, expand A:
-    A = [ A; zeros(-d, szA(2)) ];
+    A = [A ; zeros(-d, szA(2))];
 end
 
 % Concatenate:
@@ -47,4 +45,5 @@ w = [ u, v ];
 [D, w] = deltafun.cleanColumns(D, w);
 % If there are trivial trailing rows, remove them:
 D = deltafun.cleanRows(D);
+
 end

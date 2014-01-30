@@ -18,6 +18,8 @@ function [vals, pos] = minandmax(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% TODO: NH: THIS IS THE SINGFUN IMPLEMENTATION!
+
 tol = singfun.pref.singfun.exponentTol;
 
 if ( ~any(f.exponents) || all(abs(f.exponents) < tol) )

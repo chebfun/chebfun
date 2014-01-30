@@ -9,7 +9,7 @@ function [A, v] = cleanColumns(A, v, pref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-% TODO: Comment on tolerance.
+% TODO: NH: Comment on tolerance.
 
 % Get the tolerance:
 if ( nargin < 3 || isempty(pref) )

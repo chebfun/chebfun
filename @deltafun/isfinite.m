@@ -9,11 +9,9 @@ function out = isfinite(f)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Check the smooth part:
-if ( ~isempty(f.funPart) )
-    if ( ~isfinite(f.funPart) )
-        out = 0;
-        return
-    end
+if ( ~isfinite(f.funPart) )
+    out = 0;
+    return
 end
 
 % Smooth part is finite, check the distributional part:

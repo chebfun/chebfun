@@ -9,13 +9,14 @@ end
 d = deltafun();
 pass(1) = isempty(d);
 
-d = deltafun([], []);
+f = bndfun([]);
+d = deltafun(f, [], []);
 pass(2) = isempty(d);
 
-d = deltafun([], [], []);
+d = deltafun(f, [], []);
 pass(3) = isempty(d);
 
-d = deltafun([], [], [], []);
+d = deltafun(f, [], [], []);
 pass(4) = isempty(d);
 
 end

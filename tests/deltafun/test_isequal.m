@@ -30,12 +30,13 @@ d1.deltaLoc = d1.deltaLoc(1:end-1);
 
 pass(5) = ~isequal(d1, d2);
 
-d1 = deltafun( [], 1, 0);
-d2 = deltafun( [], [1; 0], 0 );
+f = bndfun(@sin);
+d1 = deltafun( f, 1, 0);
+d2 = deltafun( f, [1; 0], 0 );
 pass(6) = isequal(d1, d2);
 
 d1 = deltafun(f, [], [] );
-d2 = deltafun([], [], []);
+d2 = deltafun(bndfun([]), [], []);
 
 pass(7) = ~isequal(d1, d2);
 

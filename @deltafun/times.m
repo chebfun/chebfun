@@ -1,5 +1,5 @@
-function h = times(f,g)
-%.*   Multiply DELTAFUNS with DELTAFUNS
+function h = times(f, g)
+%.*   Multiply DELTAFUNS with DELTAFUNS.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -13,21 +13,17 @@ if ( isempty(f) || isempty(g) )
     return
 end
 
-% Make sure F is a deltafun and copy the other input in g
+% Make sure F is a DELTAFUN and copy the other input in g:
 if ( ~isa(f, 'deltafun') )
-    % Then g must be a deltafun
-    F = g;
-    g = f;
-else
-    % f is a deltafun
-    F = f;
+    h = times(g, f);
+    return
 end
-    
+
 %% Multiplication by a scalar
 if ( isa(g, 'double') )
-    h = F;
+    h = f;
     % Scale everything and return:
-    h.funPart = g * F.funPart;
+    h.funPart = g * f.funPart;
     h.deltaMag = g * h.deltaMag;
     h = simplify(h);
     return
@@ -35,48 +31,46 @@ end
 
 %% Multiplication by a FUN:
 if ( isa(g, 'classicfun') )
-    % Upgrade to a deltafun and recurse:
-    s = deltafun.zeroDeltaFun(g.domain);
-    s.funPart = g;
-    h = F.*s;
-    return
+    % Upgrade to a DELTAFUN:
+    g = deltafun(g, [], []);
 end
 
 %% Multiplication of two DELTAFUNs:
 if ( isa(g, 'deltafun') )
-    h = deltafun;
-    h.funPart = F.funPart .* g.funPart;
-
-    if ( ~isempty(F.deltaLoc) && ~isempty( g.deltaLoc) )
-       if ( ~isempty(deltafun.numIntersect(F.deltaLoc, g.deltaLoc)))
-           error( 'CHEBFUN:DELTAFUN:times', 'delta functions at same points can not be multiplied' );
-       end
+    funPart = f.funPart .* g.funPart;
+    
+    if ( ~isempty(f.deltaLoc) && ~isempty( g.deltaLoc) )
+        if ( ~isempty(deltafun.numIntersect(f.deltaLoc, g.deltaLoc)))
+            error( 'CHEBFUN:DELTAFUN:times', ...
+                'Delta functions at same points can not be multiplied' );
+        end
     end
     
-    deltaMag1 = [];
-    deltaMag2 = [];
-    if ( ~isempty(F.deltaLoc) )
-        deltaMag1 = funTimesDelta(g.funPart, F.deltaMag, F.deltaLoc);
+    if ( ~isempty(f.deltaLoc) )
+        deltaMag1 = funTimesDelta(g.funPart, f.deltaMag, f.deltaLoc);
+    else
+        deltaMag1 = [];
     end
-    
     if ( ~isempty(g.deltaLoc) )
-        deltaMag2 = funTimesDelta(F.funPart, g.deltaMag, g.deltaLoc);
+        deltaMag2 = funTimesDelta(f.funPart, g.deltaMag, g.deltaLoc);
+    else
+        deltaMag2 = [];
     end
     
-    [deltaMag, deltaLoc] = deltafun.mergeImpulses( deltaMag1, F.deltaLoc, deltaMag2, g.deltaLoc );
-    h.deltaMag = deltaMag;
-    h.deltaLoc = deltaLoc;
+    % Merge impulses:
+    [deltaMag, deltaLoc] = ...
+        deltafun.mergeImpulses(deltaMag1, f.deltaLoc, deltaMag2, g.deltaLoc);
+    
+    % Assumble the DELTAFUN:
+    h = deltafun(funPart, deltaMag, deltaLoc);
 else
     % Class of g unknown, throw an error:
     error( 'DELTAFUN:times', 'unknown argument type' );
 end
+
 %%
 % Check if after multiplication h has become smooth:
-if ( ~anyDelta(h) )
-    h = h.funPart;
-else
-    h = simplify(h);
-end
+h = simplify(h);
 
 end
 

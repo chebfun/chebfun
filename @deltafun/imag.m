@@ -8,12 +8,10 @@ function f = imag(f)
 % See http://www.chebfun.org for Chebfun information.
 
 % Compute the imaginary part of the values:
-f.smoothPart = imag(f.smoothPart);
+f.funPart = imag(f.funPart);
 
-% If F is real and its smooth part is zero, then remove singularities from
-% the imaginary part.
-if ( iszero(f.smoothPart) )
-    f.exponents = [0, 0];
-end
+% TODO: Is this right?
+f.deltaMag = imag(f.deltaMag);
+f = simplify(f);
 
 end

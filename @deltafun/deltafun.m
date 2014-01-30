@@ -70,6 +70,8 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
             if ( nargin == 1 )
                 if ( ~isa(funPart, 'fun') )
                     error('DELTAFUN:ctor', 'funPart must be a FUN.');
+                elseif isa(funPart, 'deltafun')
+                    obj = funPart;
                 else
                     obj.funPart = funPart;
                 end
@@ -87,6 +89,8 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
             if ( nargin >= 3 )                            
                 if ( ~isa(funPart, 'fun') )
                     error( 'DELTAFUN:ctor', 'funPart must be a FUN.' );
+                elseif isa(funPart, 'deltafun')
+                    obj = funPart;
                 else
                     obj.funPart = funPart;
                 end

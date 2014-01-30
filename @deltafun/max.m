@@ -1,6 +1,6 @@
 function [maxVal, maxPos] = max(f)
-%MAX   Global maximum of a SINGFUN on [-1,1].
-%   MAXVAL = MAX(F) returns the global maximum of the SINGFUN F on [-1,1].
+%MAX   Global maximum of a DELTAFUN on [-1,1].
+%   MAXVAL = MAX(F) returns the global maximum of the DELTAFUN F on [-1,1].
 %
 %   [MAXVAL, MAXPOS] = MAX(F) returns also a value such that MAXVAL = F(MAXPOS).
 %
@@ -17,5 +17,7 @@ function [maxVal, maxPos] = max(f)
 [maxVal, maxPos] = minandmax(f);
 maxVal = maxVal(2,:);
 maxPos = maxPos(2,:);
+
+% TODO: NH: DOCS are for SINGFUN!
 
 end

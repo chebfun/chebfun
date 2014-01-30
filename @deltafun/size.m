@@ -1,4 +1,4 @@
-function [size1, size2] = size(f, varargin)
+function varargout = size(f, varargin)
 %SIZE   Size of a DELTAFUN.
 %   [S1, S2] = SIZE(F) returns the size of the funPart of F.
 %
@@ -10,12 +10,6 @@ function [size1, size2] = size(f, varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % The size of a DELTAFUN is the size of its funPart.
-size1 = size(f.funPart, varargin{:});
-
-% Return two outputs:
-if ( nargout == 2 )
-    size2 = size1(2);
-    size1 = size1(1);
-end
+varargout{1:nargout} = size(f.funPart, varargin{:});
 
 end

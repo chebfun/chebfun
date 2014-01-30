@@ -6,6 +6,8 @@ if ( nargin < 1 )
      pref = chebpref();
 end
 
+f = bndfun(0);
+
 %%
 deltaTol = pref.deltaPrefs.deltaTol;
 proximityTol = pref.deltaPrefs.proximityTol;
@@ -21,12 +23,12 @@ d = deltafun(fun.constructor(@(x) sin(x), [0, 1]));
 pass(3) = isa(d, 'deltafun') && isempty(d.deltaMag) ...
     && isempty(d.deltaLoc) && ~iszero(d.funPart);
 
-d = deltafun(rand(3,3), rand(1,3) );
-pass(4) = isempty(d.funPart) && all(size(d.deltaMag) == [3, 3]) ...
+d = deltafun(f,rand(3,3), rand(1,3) );
+pass(4) = all(size(d.deltaMag) == [3, 3]) ...
     && all(size(d.deltaLoc) == [1, 3]);
 
-d = deltafun(rand(5,5), rand(5,1));
-pass(5) = isempty(d.funPart) && all(size(d.deltaMag) == [5, 5]) ...
+d = deltafun(f,rand(5,5), rand(5,1));
+pass(5) = all(size(d.deltaMag) == [5, 5]) ...
     && all(size(d.deltaLoc) == [1, 5]);
 
 deltas = rand(5,5);

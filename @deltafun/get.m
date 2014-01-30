@@ -14,11 +14,14 @@ switch prop
     case fieldnames(f)
         % Allow access to any of the properties of F via GET:
         out = f.(prop);
+        
     case fieldnames(f.funPart)
         % Access to any of the properties of the smooth part of F:
         out = f.funPart.(prop);
+        
     case fieldnames(f.funPart.onefun)
-        out = f.funPart.onefun.(prop);        
+        out = f.funPart.onefun.(prop);  
+        
     case {'lval', 'rval'}
         % Get the values at a or b (where f.domain = [a, b]):
         out = get(f.funPart, prop);

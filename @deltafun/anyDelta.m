@@ -6,6 +6,8 @@ function out = anyDelta(f)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
+% TODO: NH: Comment on tolerance.
+
 if ( isempty(f) )
     out = 0;
     return 

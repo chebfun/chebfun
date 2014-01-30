@@ -16,11 +16,11 @@ loc = rand(1,5);
 d = deltafun(f, mag, loc);
 pass(2) = anyDelta(d);
 
-d = deltafun(1,0);
+d = deltafun(f,1,0);
 pass(3) = anyDelta(d);
 
 deltaTol = pref.deltaPrefs.deltaTol;
-d = deltafun(deltaTol/2, 0);
+d = deltafun(f,deltaTol/2, 0);
 pass(4) = ~anyDelta(d);
 
 d = deltafun(f, [], []);

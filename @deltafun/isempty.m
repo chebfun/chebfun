@@ -5,16 +5,7 @@ function out = isempty(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( numel(f) > 1 )
-    % An array cannot be empty.
-    out = false;    
-elseif ( numel(f) == 1 )
-    % Check if the delta part and the Chebfun is empty:
-    out = isempty(f.deltaLoc) | isempty(f.deltaMag);
-    out = out & isempty(f.funPart);
-else 
-    % numel(f) == 0, so f must be empty.
-    out = true;    
-end
+% Check if the delta part and the Chebfun is empty:
+out = isempty(f.deltaLoc) && isempty(f.funPart);
 
 end

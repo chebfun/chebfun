@@ -9,9 +9,10 @@ end
 d = deltafun();
 pass(1) = isempty(restrict(d, [-.5, .5]));
 
-d = deltafun([], 1, 0);
-pass(2) = ~anyDelta(restrict(d, [-1, -.5]));
-pass(3) = ~anyDelta(restrict(d, [.5, 1]));
+f = bndfun(@sin);
+d = deltafun(f, 1, 0);
+pass(2) = ~isa(restrict(d, [-1, -.5]), 'deltafun');
+pass(3) = ~isa(restrict(d, [.5, 1]), 'deltafun');
 pass(4) = anyDelta(restrict(d, [-.5, .5]));
 
 f = fun.constructor(@(x) exp(x), [-1, 1] );

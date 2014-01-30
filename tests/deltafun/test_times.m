@@ -9,19 +9,21 @@ end
 % Get the tolerance:
 dTol = pref.deltaPrefs.deltaTol;
 
-d = deltafun(1, 0);
+d = deltafun(bndfun(@sin),1, 0);
 pass(1) = isempty(deltafun() .* deltafun());
 pass(2) = isempty(deltafun() .* d) && isempty(d .* deltafun());
 
 f = fun.constructor(@(x) exp(-x));
+g = bndfun(@sin);
 df1 = deltafun(f, [], [] );
-df2 = deltafun([0; 0; 0; 0; 1], 0 );
+df2 = deltafun(g, [0; 0; 0; 0; 1], 0 );
 s = df1.*df2;
 pass(3) = norm(s.deltaMag - [1, 4, 6, 4, 1].', inf) < dTol;
 
 f = fun.constructor(@(x) exp(x));
+g = bndfun(@sin);
 df1 = deltafun(f, [], [] );
-df2 = deltafun([0; 0; 0; 1], 0 );
+df2 = deltafun(g,[0; 0; 0; 1], 0 );
 s = df1.*df2;
 pass(4) = norm(s.deltaMag - [-1, 3, -3, 1].', inf) < dTol;
 

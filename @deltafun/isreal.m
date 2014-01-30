@@ -7,8 +7,9 @@ function out = isreal(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org for Chebfun information.
 
-% Check if the funPart is real
+% Check if the funPart is real:
 out = isreal(f.funPart);
-%[TODO]: What to do with deltafunctions
+
+%[TODO]: What to do with deltafunctions?
 
 end

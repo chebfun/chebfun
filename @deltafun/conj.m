@@ -10,6 +10,6 @@ function f = conj(f)
 
 % Conjugate the classical part:
 f.funPart = conj(f.funPart);
-f.deltaMag = conf(f.deltaMag);
+f.deltaMag = conj(f.deltaMag);
 
 end
