@@ -68,16 +68,15 @@ if ( isa(f, 'singfun') && isa(g, 'singfun') )
     % Set a tolerance:
     tol = 1e2*get(g, 'vscale')*eps;
     
-    if ( all( boundaryValues > tol ) )
+    if ( all(boundaryValues > tol) )
         % No vanishing boundary values, then take advantage of the information
         % we know about the exponents:
         
-        s = singfun();
-        pref = chebtech.techPref;
         pref.extrapolate = 1;
-        s.smoothPart = f.constructSmoothPart(@(x) feval(f.smoothPart, x)./ ...
+        h = f.constructSmoothPart(@(x) feval(f.smoothPart, x)./ ...
             feval(g.smoothPart, x), [], [], pref);
-        s.exponents = f.exponents - g.exponents;
+        s = singfun(h, f.exponents - g.exponents, [], [], [], []);
+
     else
         % Construct the SINGFUN by a direct call to the constructor:
         s = singfun(@(x) feval(f, x)./feval(g, x));

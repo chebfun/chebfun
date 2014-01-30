@@ -17,15 +17,13 @@ if ( ~isnumeric(f) )
     endVals = [get(f, 'lval'); get(f, 'rval')];
     tol = 1e1*get(f, 'vscale').*get(f, 'epslevel');
     
-    if any( any( endVals < tol ) )
+    if ( any(any(endVals < repmat(tol, 2, 1))) )
         
         if ( issmooth(f) ) 
             
             % If F is a SMOOTHFUN, call EXTRACTBOUNDARYROOTS@SMOOTHFUN:            
             [f.onefun, rootsLeft, rootsRight] = extractBoundaryRoots(f.onefun);
-            h = singfun();
-            h.smoothPart = f.onefun;
-            h.exponents = [rootsLeft rootsRight];
+            h = singfun(f.onefun, [rootsLeft rootsRight], [], [], [], []);
             f.onefun = h;
             
         elseif ( issing(f) ) 

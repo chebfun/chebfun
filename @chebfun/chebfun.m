@@ -517,7 +517,8 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
                 pref.enableSingularityDetection = 0;
             else
                 % If 'blowup' is not 'off'.
-                if ( args{2} == 1 )
+                if ( (isnumeric(args{2}) && args{2} == 1 ) || ...
+                        strcmpi(args{2}, 'on') )
                     
                     % Translate "blowup" and flag "1" -->
                     % "enableSingularityDetection" and "poles only".
@@ -528,8 +529,7 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
                         singTypes{j} = 'pole';
                     end
                     pref.singPrefs.singType = singTypes;
-                elseif ( (isnumeric(args{2}) && args{2} == 2 ) || ...
-                        strcmpi(args{2}, 'on') )
+                elseif ( args{2} == 2 )
                     
                     % Translate "blowup" and flag "2" -->
                     % "enableSingularityDetection" and "fractional singularity".

@@ -8,7 +8,7 @@ function f = singFun2SmoothFun(f)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Take no action if f is already a SMOOTHFUN:
-if ( isa(f, 'smoothfun') )
+if ( issmooth(f) )
     return
 end
 

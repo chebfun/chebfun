@@ -57,7 +57,7 @@ dom = [0 1];
 seedRNG(6178);
 x = diff(dom) * rand(100, 1) + dom(1);
 
-f = chebfun(@(x) sqrt(x), dom, 'blowup', 'on');
+f = chebfun(@(x) sqrt(x), dom, 'blowup', 2);
 g = sin(f);
 gVals = feval(g, x);
 opg = @(x) sin(sqrt(x));

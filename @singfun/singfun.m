@@ -180,7 +180,8 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
             %% Find Exponents
             % If exponents were passed, make sure they are in correct shape.
             if ( ~isempty(exponents) )
-                if ( any(size(exponents) ~= [1, 2]) || ~isa(exponents, 'double') )
+                if ( any(size(exponents) ~= [1, 2]) || ...
+                        ~isa(exponents, 'double') )
                     error( 'CHEBFUN:SINGFUN:constructor', ...
                         'Exponents must be a 1X2 vector of doubles.' );
                 end
@@ -199,8 +200,8 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
                 smoothOp = singOp2SmoothOp(op, obj.exponents);
                 
                 % Construct the smooth part.
-                obj.smoothPart = singfun.constructSmoothPart(smoothOp, vscale, ...
-                    hscale, pref);
+                obj.smoothPart = singfun.constructSmoothPart(smoothOp, ...
+                    vscale, hscale, pref);
             end
         end
     end

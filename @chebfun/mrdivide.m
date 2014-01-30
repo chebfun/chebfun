@@ -16,13 +16,6 @@ if ( isscalar(A) )
 elseif ( size(A, 2) ~= size(B, 2) )
     error('CHEBFUN:mldivide:dimensions', 'Matrix dimensions must agree.')
     
-elseif ( isa(A, 'chebfun') && any(cellfun(@(f) isa(f.onefun, 'singfun'), A.funs)) )
-    
-    % If SINGFUN is involved, call rdivide as A and B mustn't be of
-    % array-valued:
-    X = rdivide(B, A);
-    return
-    
 elseif ( isnumeric(A) )
     % [INF x M] * [M x N] = [INF x N]:
     [Q, R] = qr(B, 0);

@@ -54,24 +54,18 @@ err = g_vals - g_exact;
 pass(6) = norm(err, inf) < 1e4*vscale(g)*epslevel(g);
 
 % [1 x INF] * [INF x 1] = scalar => scalar/column SINGFUN:
-f = chebfun(@(x)(sin(100*x).^2+1)./(x+1), 'exps', [-1 0], 'splitting', 'on');
-g = 3/f;
-op = @(x) 3*(x+1)./(sin(100*x).^2+1);
-g_vals = feval(g, xr);
-g_exact = op(xr);
-err = g_vals - g_exact;
-pass(7) = norm(err, inf) < vscale(g)*epslevel(g);
+f = chebfun(@(x)(sin(100*x).^2+1)./(1-x).^0.4, 'exps', [0 -0.4], 'splitting', 'on');
+g = 5/f;
+err = g*f - 5;
+pass(7) = abs(err) < vscale(g)*epslevel(g);
 
-% CHEBFUN * [1 x INF] = [1 x INF] => row SINGFUN/row SINGFUN:
-f = chebfun(@(x)(sin(100*x).^2+1)./(x+1), 'exps', [-1 0], 'splitting', 'on');
+% SCALAR * [1 x INF] = [1 x INF] => row SINGFUN/row SINGFUN:
+f = chebfun(@(x)(sin(30*x).^2+1)./(1-x).^0.3, 'exps', [0 -0.3], 'splitting', 'on');
 f = f.';
-g = chebfun(@(x)(x.^2+3)./(x+1).^0.5, 'exps', [-0.5 0], 'splitting', 'on');
+g = chebfun(@(x)9*(sin(30*x).^2+1)./(1-x).^0.3, 'exps', [0 -0.3], 'splitting', 'on');
 g = g.';
 h = g/f;
-op = @(x) (x.^2+3).*(x+1).^0.5./(sin(100*x).^2+1);
-h_vals = feval(h, xr);
-h_exact = op(xr).';
-err = h_vals - h_exact;
-pass(8) = norm(err, inf) < vscale(h)*epslevel(h);
+err = h - 9;
+pass(8) = abs(err) < 3*vscale(f)*epslevel(f);
 
 end
