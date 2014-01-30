@@ -145,7 +145,7 @@ classdef chebfun
             if ( (nargin == 0) || isempty(varargin{1}) )
                 return
             end
-            
+                       
             % Parse inputs:
             [op, dom, pref] = parseInputs(varargin{:});
             
