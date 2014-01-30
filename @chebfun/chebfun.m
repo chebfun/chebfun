@@ -259,6 +259,9 @@ classdef chebfun
         
         % Parse the inputs to the CHEBFUN constructor.
         [op, domain, pref] = parseInputs(op, domain, varargin);
+
+        % Parse the 'jumpline' style for CHEBFUN plot functions.
+        [jumpStyle, varargin] = parseJumpStyle(varargin);
         
         % Convert a string input to a function_handle.
         op = str2op(op);
