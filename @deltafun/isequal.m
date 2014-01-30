@@ -30,8 +30,8 @@ if ( ~isequal(f.funPart, g.funPart) )
 end
 
 % Simplify f and g:
-f = simplify(f);
-g = simplify(g);
+f = simplifyDeltas(f);
+g = simplifyDeltas(g);
 
 % Test sizes and values of deltaLoc and deltaMag fields:
 if ( any( size(f.deltaLoc) ~= size(g.deltaLoc) ) )

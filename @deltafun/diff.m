@@ -31,6 +31,6 @@ m = size(deltaMag, 2);
 f.deltaMag = [zeros(k, m) ; deltaMag];
 
 % Simplify:
-f = simplify(f);                 
+f = simplifyDeltas(f);                 
 
 end

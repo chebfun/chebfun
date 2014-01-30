@@ -135,7 +135,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
             obj.deltaLoc = deltaLoc;
                                 
             % Simplify to merge redundant impulses:
-            obj = simplify(obj, pref);
+            obj = simplifyDeltas(obj, pref);
             if ( ~isa(obj, 'deltafun') )
                 obj = deltafun(obj);
             end
@@ -254,6 +254,9 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         
         % Simplify a DELTAFUN
         f = simplify(f, pref)
+        
+        % Simplify Impuses
+        f = simplifyDeltas(f, pref);
         
         % Definite integral of a DELTAFUN.
         out = sum(f, dim)

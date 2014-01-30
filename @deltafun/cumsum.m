@@ -35,7 +35,7 @@ if ( isempty(deltaLoc) || isempty(deltaMag) )
     jumpEnd = 0;
 else
     % Clean up delta functions:
-    f = simplify(f);
+    f = simplifyDeltas(f);
      
     % If f does not have a funPart, construct one compatible with delta
     % function locations:

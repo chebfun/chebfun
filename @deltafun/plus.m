@@ -39,7 +39,7 @@ funPart = f.funPart + g.funPart;
 s = deltafun(funPart, deltaMag, deltaLoc);
 
 % Simplify:
-s = simplify(s);
+s = simplifyDeltas(s);
 
 end
 

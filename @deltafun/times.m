@@ -25,7 +25,7 @@ if ( isa(g, 'double') )
     % Scale everything and return:
     h.funPart = g * f.funPart;
     h.deltaMag = g * h.deltaMag;
-    h = simplify(h);
+    h = simplifyDeltas(h);
     return
 end
 
@@ -70,7 +70,7 @@ end
 
 %%
 % Check if after multiplication h has become smooth:
-h = simplify(h);
+h = simplifyDeltas(h);
 
 end
 

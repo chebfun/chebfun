@@ -12,6 +12,6 @@ f.funPart = imag(f.funPart);
 
 % TODO: Is this right?
 f.deltaMag = imag(f.deltaMag);
-f = simplify(f);
+f = simplifyDeltas(f);
 
 end
