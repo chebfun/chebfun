@@ -1,25 +1,25 @@
 function chebvar(varargin)
 %CHEBVAR   Short-cut for constructing CHEBFUN variables.
-% CHEBVAR arg1 arg2 ...
-% is short-hand notation for creating symbolic variables
-%        arg1 = chebfun('arg1');
-%        arg2 = chebfun('arg2'); ...
-% The outputs are created in the current workspace.
+%   CHEBVAR arg1 arg2 ...
+%   is short-hand notation for creating symbolic variables
+%          arg1 = chebfun('arg1');
+%          arg2 = chebfun('arg2'); ...
+%   The outputs are created in the current workspace.
 %
-% CHEBVAR arg1 arg2 ... DOM constucts the CHEBFUN objects on the domain DOM,
-% i.e.,  arg1 = chebfun('arg1', DOM);
-%        arg2 = chebfun('arg2', DOM); ...
+%   CHEBVAR arg1 arg2 ... DOM constructs the CHEBFUN objects on the domain DOM,
+%   i.e.,  arg1 = chebfun('arg1', DOM);
+%          arg2 = chebfun('arg2', DOM); ...
 %
-% In both cases, the CHEBFUN is created according to the state of the current
-% global CHEBPREF.
+%   In both cases, the CHEBFUN is created according to the currently stored
+%   default preferences.
 %
-% Example:
-%   chebvar x
-%   f = sin(x)
+%   Example:
+%     chebvar x
+%     f = sin(x)
 %
 % See also CHEBFUN, CHEBPREF.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
 % Trivial case:
@@ -28,7 +28,7 @@ if ( nargin == 0 )
 end
 dom = [];
 
-% Locat valid variable names:
+% Locate valid variable names:
 isVar = cellfun(@isvarname, varargin);
 
 % The last entry may be a domain:
@@ -42,7 +42,7 @@ end
 
 % Check validity of variable name:
 if ( ~all(isVar) )
-    error('CHEBFUN:chebvar:getnames', 'Not a valid variable name.');
+    error('CHEBFUN:chebvar:badName', 'Not a valid variable name.');
 end
 
 % Acquire some preferences:
