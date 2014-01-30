@@ -11,35 +11,28 @@ if ( isempty(x) )
     val = x;
     return
 end
-
 if ( isempty(f) )
-    error( 'DELTAFUN:feval', 'can not evaluate an empty deltafun');
+    val = zeros(size(x));
+    return
 end
 
-%%
 % Evaluate the smooth part.
-if ( isempty(f.funPart) )
-    val = 0*x;
-else
-    val = feval(f.funPart, x);
-end
+val = feval(f.funPart, x);
 
-% Mathematically, point values of distributions do not make sense:
-if ( ~isempty(f.deltaLoc) )
-    pref = chebpref();
-    proximityTol = pref.deltaPrefs.proximityTol;        
-    % Make sure there are no trivial delta functions:
-    f = simplify(f);
-    deltaLoc = f.deltaLoc;    
-    for i = 1:length(deltaLoc)        
-        if ( deltaLoc(i) == 0 ) 
-            % Avoid divide by zero:
-            idx = abs(x - deltaLoc(i)) < proximityTol;        
-            val(idx) = NaN;                
-        else
-            % Check the relative distance from delta function locations:
-            idx = abs(x - deltaLoc(i))./deltaLoc(i) < proximityTol;
-            val(idx) = NaN;
-        end        
-    end     
-end
+% Point values of distributions do not make sense mathematically, so return NaN.
+pref = chebpref();
+proximityTol = pref.deltaPrefs.proximityTol;        
+% Make sure there are no trivial delta functions:
+f = simplify(f);
+deltaLoc = f.deltaLoc;    
+for i = 1:length(deltaLoc)        
+    if ( deltaLoc(i) == 0 ) 
+        % Avoid divide by zero:
+        idx = abs(x - deltaLoc(i)) < proximityTol;        
+        val(idx) = NaN;                
+    else
+        % Check the relative distance from delta function locations:
+        idx = abs(x - deltaLoc(i))./deltaLoc(i) < proximityTol;
+        val(idx) = NaN;
+    end        
+end     

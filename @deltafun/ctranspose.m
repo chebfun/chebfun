@@ -5,6 +5,5 @@ function f = ctranspose(f) %#ok<*INUSD>
 % See http://www.chebfun.org/ for Chebfun information.
 
 f = conj(f);
-f.isTransposed = ~f.isTransposed;
-%[TODO]: What should we do with the funPart of f?
+
 end

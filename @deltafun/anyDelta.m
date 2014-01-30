@@ -11,10 +11,11 @@ if ( isempty(f) )
     return 
 end
 
-% Get tolerance for exponents:
+% Get tolerance for deltas:
 pref = chebpref();
 deltaTol = pref.deltaPrefs.deltaTol;
 
 % Check if f has no or only below tolerance delta functions.
 out = any(abs(f.deltaMag(:)) > deltaTol);
+
 end

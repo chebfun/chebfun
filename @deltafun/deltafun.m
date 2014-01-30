@@ -68,33 +68,24 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
             % Case 1: One input argument.
             % This input should be a FUN.
             if ( nargin == 1 )
-                if ( isempty(funPart) )
-                    obj.funPart = [];
-                elseif ( ~isa(funPart, 'fun') )
+                if ( ~isa(funPart, 'fun') )
                     error('DELTAFUN:ctor', 'funPart must be a FUN.');
                 else
                     obj.funPart = funPart;
                 end
-                deltaMag = [];
-                deltaLoc = [];
+                return
             end
             %%
             % Case 2: Two input arguments.
-            % Assume the argumenst passed are impulses and their locations. 
+            % This is not allowed!
             if ( nargin == 2 )
-                % Assign empty FUN:
-                obj.funPart = [];
-                deltaLoc = deltaMag;
-                deltaMag = funPart;
-                % Do no checks here, they are all done below.
+                error( 'DELTAFUN:ctor', 'Not enough input arguments.' );
             end
             
             %%
             % Case 3: Three input arguments.
             if ( nargin >= 3 )                            
-                if ( isempty(funPart) )
-                    obj.funPart = [];
-                elseif ( ~isa(funPart, 'fun') )
+                if ( ~isa(funPart, 'fun') )
                     error( 'DELTAFUN:ctor', 'funPart must be a FUN.' );
                 else
                     obj.funPart = funPart;
@@ -105,7 +96,8 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
             %% Check all the arguments:            
             
             % If one of deltaMag or deltaLoc is empty, make both empty:
-            if ( isempty(deltaMag) || isempty(deltaLoc) )
+            if ( xor(isempty(deltaMag), isempty(deltaLoc)) )
+                warning('Inconsistent deltaLoc and deltaMag.')
                 deltaMag = [];
                 deltaLoc = [];    
             end            
@@ -140,6 +132,9 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
                                 
             % Simplify to merge redundant impulses:
             obj = simplify(obj, pref);
+            if ( ~isa(obj, 'deltafun') )
+                obj = deltafun(obj);
+            end
         end
     end
     

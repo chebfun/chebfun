@@ -22,12 +22,13 @@ deltaMag = f.deltaMag;
 % Remove ending rows of zeros.
 deltaMag = deltafun.cleanRows(deltaMag, pref);
 
-
 % If any of these is empty, make everything empty explicitly. This is to avoid 
 % annoying cases of m x 0 empty matrix or 0 x n empty matrix.
 if ( isempty(deltaLoc) || isempty(deltaMag) )
     deltaLoc = [];
     deltaMag = [];
+    f = f.funPart;
+    return
 end
 
 % Assign back:

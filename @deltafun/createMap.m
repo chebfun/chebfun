@@ -17,3 +17,7 @@ map = struct('for', @(y) b*(y + 1)/2 + a*(1 - y)/2, ...
     
 % Note: writing the map in this form ensures that -1 is mapped to a and 1
 % is mapped to b (in the presence of rounding errors).
+
+% TODO: This is duplicated in BNDFUN?
+
+end
