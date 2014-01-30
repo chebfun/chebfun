@@ -116,8 +116,8 @@ lineData = {};
 pointData = {};
 jumpData = {};
 
-% Deail with 'jumpLine' input.
-[jumpStyle, varargin] = parseJumpStyle(varargin{:});
+% Deal with 'jumpLine' input.
+[jumpStyle, varargin] = chebfun.parseJumpStyle(varargin{:});
 
 %%
 % Get the data for plotting from PLOTDATA():
@@ -276,39 +276,6 @@ end
 % Give an output to the plot handles if requested:
 if ( nargout > 0 )
     varargout = {h1 ; h2 ; h3};
-end
-
-end
-
-
-function [jumpStyle, varargin] = parseJumpStyle(varargin)
-jumpStyle = {};
-for idx = 1:numel(varargin)
-    if ( ~strcmpi(varargin{idx}, 'jumpline') )
-        continue
-    end
-    tmp = varargin{idx+1};
-    varargin(idx:(idx+1)) = [];
-    if ( iscell(tmp) )
-        jumpStyle = tmp;
-        return
-    end
-    ll = regexp(tmp, '[-:.]+','match');           % style
-    if ( ~isempty(ll) )
-        jumpStyle = [jumpStyle, 'LineStyle', ll];
-    end
-    cc = regexp(tmp,'[bgrcmykw]', 'match');       % color
-    if ( ~isempty(cc) )
-        jumpStyle = [jumpStyle, 'Color', cc];
-    end
-    mm = regexp(tmp,'[.ox+*sdv^<>ph]', 'match');  % marker
-    if ( ~isempty(mm) )
-        jumpStyle = [jumpStyle, 'Marker', mm];
-    end
-    if ( any(strcmpi(tmp, {'none', 'off', ''})))      % off
-        jumpStyle = {'LineStyle', 'none'};
-    end
-    return
 end
 
 end
