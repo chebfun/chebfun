@@ -386,6 +386,45 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f.func = coth(f.func);
         end
         
+        function g = csc(f)
+            % F = CSC(F)   CSC of an ADCHEBFUN.
+            
+            % Copy F to the output G to enable reuse of computed function value
+            g = f;
+            % Linearity information
+            g.isConstant = iszero(f.jacobian);
+            % Update CHEBFUN part.
+            g.func = csc(f.func);
+            % Update derivative part
+            g.jacobian = operatorBlock.mult(-cot(f.func).*g.func)*f.jacobian;
+        end
+        
+        function g = cscd(f)
+            % F = CSCD(F)   CSCD of an ADCHEBFUN.
+            
+            % Copy F to the output G to enable reuse of computed function value
+            g = f;
+            % Linearity information
+            g.isConstant = iszero(f.jacobian);
+            % Update CHEBFUN part.
+            g.func = cscd(f.func);
+            % Update derivative part
+            g.jacobian = operatorBlock.mult(-pi/180*cotd(f.func).*g.func)*f.jacobian;
+        end  
+        
+        function g = csch(f)
+            % F = CSCH(F)   CSCH of an ADCHEBFUN.
+            
+            % Copy F to the output G to enable reuse of computed function value
+            g = f;
+            % Linearity information
+            g.isConstant = iszero(f.jacobian);
+            % Update CHEBFUN part.
+            g.func = csch(f.func);
+            % Update derivative part
+            g.jacobian = operatorBlock.mult(-coth(f.func).*g.func)*f.jacobian; 
+        end       
+        
         function f = cumsum(f, k)
             % F = CUMSUM(F, K)   CUMSUM of an ADCHEBFUN
             
@@ -790,6 +829,17 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f.jacobian = operatorBlock.mult(cos(f.func))*f.jacobian;
             % Update CHEBFUN part
             f.func = sin(f.func);
+        end
+        
+        function f = sind(f)
+            % F = SIND(F)   SIND of an ADCHEBFUN.
+            
+            % Linearity information
+            f.isConstant = iszero(f.jacobian);
+            % Update derivative part
+            f.jacobian = operatorBlock.mult(pi/180*cosd(f.func))*f.jacobian;
+            % Update CHEBFUN part.
+            f.func = sind(f.func);
         end
         
         function f = sinh(f)
