@@ -1,4 +1,4 @@
-function [isDone,epsLevel] = testConvergence(disc,values)
+function [isDone, epsLevel] = testConvergence(disc, values)
 %TESTCONVERGENCE Happiness check.
 %   Given a discretization, and a cell array of discretized functions,
 %   check the equivalent Chebyshev polynomial representation for sufficient
@@ -10,30 +10,33 @@ s = 1 ./ (3*(1:numel(values))).';
 newvalues = cell2mat(values(:).')*s;
 
 % Convert to a piecewise chebfun.
-u = toFunction(disc,newvalues);
+u = toFunction(disc, newvalues);
 
 % Test convergence on each piece.
-numInt = numel(disc.domain)-1;
+numInt = numel(disc.domain) - 1;
 isDone = true(1, numInt);
 epsLevel = 0;
 for i = 1:numInt
-    [isDone(i), t2] = testPiece(u,i);
+    [isDone(i), t2] = testPiece(u, i);
     epsLevel = max(epsLevel, t2);
 end
    
 end
 
 
-function [isDone, epsLevel] = testPiece(u,interval)
-
+function [isDone, epsLevel] = testPiece(u, interval)
 % Test convergence on a single subinterval.
+
+%TODO:  There is a lot of voodoo going on in this method, seems to be mostly
+% called in EIGS and EXPM. At some point, we should properly document what's
+% going on.
 
 isDone = false;
 epsLevel = eps;
 thresh = 1e-6;  % demand at least this much accuracy
 
 % Convert to Chebyshev coefficients, zero degree first.
-c = chebpoly(u,interval);
+c = chebpoly(u, interval);
 c = c(end:-1:1);
 
 n = length(c);
@@ -41,17 +44,17 @@ if n < 17, return, end
 
 % Magnitude and rescale.
 ac = abs(c);
-ac = ac/min(max(ac),1);
+ac = ac/min(max(ac), 1);
 
 % Smooth using a windowed max to dampen symmetry oscillations.
 maxac = ac;
 for k = 1:8
-    maxac = max(maxac(1:end-1),ac(k+1:end));
+    maxac = max(maxac(1:end - 1), ac(k + 1:end));
 end
 
 % If too little accuracy has been achieved, do nothing.
-t = find(maxac<thresh,1);
-if isempty(t) || n-t < 16
+t = find(maxac < thresh, 1);
+if ( isempty(t) || n - t < 16 )
     return
 end
 
@@ -60,12 +63,16 @@ end
 dmax = diff( conv( [1 1 1 1]/4, log(maxac(t:end)) ) );
 mindmax = dmax;
 for k = 1:2
-    mindmax = min(mindmax(1:end-1),dmax(k+1:end));
+    mindmax = min(mindmax(1:end - 1), dmax(k + 1:end));
 end
 
+% TODO: Could we remove the line below?
 %cut = t+k+8 + find(mindmax < 0.02*min(mindmax), 1, 'last');
+
+% TODO: What's the meaning of the variable cut? Presumably that's where we'd
+% like to chop-off the Chebyshev series if we have converged? AB, 29/1/14
 cut = find(mindmax > 0.01*min(mindmax), 3);
-if isempty(cut)
+if ( isempty(cut) )
     cut = 1;
 else
     cut = cut(end) + t + k + 3;
@@ -74,7 +81,8 @@ end
 % Are we satisfied?
 if cut < n
     isDone = true;
-    epsLevel = max( abs(c(cut+1)) );
+    % Use the information from CUT to deduce an epsLevel
+    epsLevel = max( abs(c(cut + 1)) );
 end
 
 end

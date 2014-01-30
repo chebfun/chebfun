@@ -52,7 +52,7 @@ function varargout = eigs(L,varargin)
 % Parsing inputs.
 M = [];  k = 6;  sigma = []; 
 prefs = L.prefs;
-discType = prefs.discretisation;
+discType = prefs.discretization;
 gotk = false;
 j = 1;
 while (nargin > j)
@@ -84,7 +84,7 @@ if ( m ~= size(L, 1) )
     error('LINOP:eigs:notsquare','Block size must be square.')
 end
 
-%% Set up the discretisation:
+%% Set up the discretization:
 if ( isa(discType, 'function_handle') )
     % Create a discretization object
     disc = discType(L);  
@@ -92,18 +92,18 @@ if ( isa(discType, 'function_handle') )
     % Set the allowed discretisation lengths:
     dimVals = L.prefs.dimensionValues;
     
-    % Update the discretistion dimension on unhappy pieces:
+    % Update the discretiztion dimension on unhappy pieces:
     disc.dimension = repmat(dimVals(1), 1, numel(disc.domain)-1);
     dimVals(1) = [];
 else
-    % A discretisation is given:
+    % A discretization is given:
     disc = discType;
     
     % Initialise dimVals;
     dimVals = max(disc.dimension);
 end
 
-% Attach a domain to the discretisation
+% Attach a domain to the discretization
 dom = L.domain;
 disc.domain = dom;
 
@@ -207,7 +207,7 @@ for dim = dimVals
     if ( all(isDone) )
         break
     else
-        % Update the discretistion dimension on unhappy pieces:
+        % Update the discretiztion dimension on unhappy pieces:
         disc.dimension(~isDone) = dim;
     end
     

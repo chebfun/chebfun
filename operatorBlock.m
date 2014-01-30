@@ -17,19 +17,20 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
 
     methods
         function A = operatorBlock(domain)
-            % OPERATORBLOCK constructor, simply calls the LINBLOCK
-            % constructor.
+        % OPERATORBLOCK constructor
+            
+            % Simply calls the LINBLOCK constructor.
             A = A@linBlock(domain);
         end
         
         function varargout = size(A, dim)
-            % SIZE  Size of a OPERATORBLOCK.
-            % The commands
-            %   S = SIZE(A)
-            %   [M, N] = SIZE(A)
-            %   P = SIZE(A, K)
-            % return the results expected from standard MATLAB syntax.
-            
+        % SIZE  Size of a OPERATORBLOCK.
+        % The commands
+        %   S = SIZE(A)
+        %   [M, N] = SIZE(A)
+        %   P = SIZE(A, K)
+        % return the results expected from standard MATLAB syntax.
+
             % An OPERATORBLOCK is always of dimensions Inf x Inf.
             m = [Inf Inf];
 
@@ -51,18 +52,18 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
         
 
         function C = mtimes(A, B)
-            % *    Operator composition, multiplication or application.
-            %
-            % C = A*B, where A is a OPERATORBLOCK and B is an OPERATORBLOCK,
-            % returns the OPERATORBLOCK C that is the the result of composing
-            % the operators A and B.
-            %
-            % C = A*B, or C = B*A,  where A is a OPERATORBLOCK and B is a
-            % scalar, returns the OPERATORBLOCK C that is the the result of
-            % multiplying A with B.
-            %
-            % C = A*F, where A is a OPERATORBLOCK and F is a CHEBFUN, returns
-            % the CHEBFUN C which is the the result of applying A to F.
+        % *    Operator composition, multiplication or application.
+        %
+        % C = A*B, where A is a OPERATORBLOCK and B is an OPERATORBLOCK, returns
+        % the OPERATORBLOCK C that is the the result of composing the operators
+        % A and B.
+        %
+        % C = A*B, or C = B*A,  where A is a OPERATORBLOCK and B is a scalar,
+        % returns the OPERATORBLOCK C that is the the result of multiplying A
+        % with B.
+        %
+        % C = A*F, where A is a OPERATORBLOCK and F is a CHEBFUN, returns the
+        % CHEBFUN C which is the the result of applying A to F.
             
             % Which case?
             if ( isa(B, 'chebfun') )
@@ -92,15 +93,14 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
         end
         
         function C = plus(A, B)
-            % +    Operator addition.
-            % 
-            % C = A + B, where A and B are both OPERATORBLOCK objects return the
-            % OPERATORBLOCK C that is the result of adding the operators A and
-            % B.
-            %
-            % C = A + B, or C = B + A, A is an OPERATORBLOCK and B is a scalar
-            % is interpreted as C = A + B*I, where I is the identity operator on
-            % the domain A is defined on.
+        % +    Operator addition.
+        % 
+        % C = A + B, where A and B are both OPERATORBLOCK objects return the
+        % OPERATORBLOCK C that is the result of adding the operators A and B.
+        %
+        % C = A + B, or C = B + A, A is an OPERATORBLOCK and B is a scalar is
+        % interpreted as C = A + B*I, where I is the identity operator on the
+        % domain A is defined on.
 
             % Did we get passed a scalar?
             if ( isnumeric(A) )
@@ -117,11 +117,11 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
         end
         
         function B = mpower(A, pow)
-            % ^    Repeated application of an operator.
-            % 
-            % C = A^M, where A is an OPERATORBLOCK and M a nonnegative integer,
-            % returns the OPERATORBLOCK representing M-fold application of A.
-            
+        % ^    Repeated application of an operator.
+        % 
+        % C = A^M, where A is an OPERATORBLOCK and M a nonnegative integer,
+        % returns the OPERATORBLOCK representing M-fold application of A.
+
             % Check second argument is accepted.
             if ( pow ~= round(pow) || pow < 0 )
                 error('Power must be a positive integer.')
@@ -143,17 +143,19 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
     methods (Static = true)
         
         function C = cumsum(varargin)
-% OPERATORBLOCK.CUMSUM  Antiderivative operator.
-%
-%   C = OPERATORBLOCK.CUMSUM returns the first-order antiderivative operator C
-%   for functions defined on [-1, 1]. The result of applying the operator is
-%   defined uniquely by having value zero at the left endpoint.
-%
-%   C = OPERATORBLOCK.CUMSUM(DOMAIN) returns the first-order antiderivative
-%   operator C which applies to functions defined on DOMAIN, which may include
-%   breakpoints.
-%
-%   C = OPERATORBLOCK.CUMSUM(DOMAIN, M) is the mth-repeated antiderivative.
+        % OPERATORBLOCK.CUMSUM  Antiderivative operator.
+        %
+        %   C = OPERATORBLOCK.CUMSUM returns the first-order antiderivative
+        %   operator C for functions defined on [-1, 1]. The result of applying
+        %   the operator is defined uniquely by having value zero at the left
+        %   endpoint.
+        %
+        %   C = OPERATORBLOCK.CUMSUM(DOMAIN) returns the first-order
+        %   antiderivative operator C which applies to functions defined on
+        %   DOMAIN, which may include breakpoints.
+        %
+        %   C = OPERATORBLOCK.CUMSUM(DOMAIN, M) is the mth-repeated
+        %   antiderivative.
             
             % Use inputParser to parse the arguments to the method.
             p = inputParser;
@@ -173,16 +175,16 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
         end
         
         function D = diff(varargin)
-            % OPERATORBLOCK.DIFF  Differentiation operator.
-            %
-            % D = OPERATORBLOCK.DIFF returns the first-order differentation
-            % operator D for functions defined on [-1, 1].
-            %
-            % D = OPERATORBLOCK.DIFF(DOMAIN) returns the first-order
-            % differentation operator D which applies to functions defined on
-            % DOMAIN, which may include breakpoints.
-            %
-            % D = OPERATORBLOCK.DIFF(DOMAIN, M) is the mth order derivative.
+        % OPERATORBLOCK.DIFF  Differentiation operator.
+        %
+        % D = OPERATORBLOCK.DIFF returns the first-order differentation operator
+        % D for functions defined on [-1, 1].
+        %
+        % D = OPERATORBLOCK.DIFF(DOMAIN) returns the first-order differentation
+        % operator D which applies to functions defined on DOMAIN, which may
+        % include breakpoints.
+        %
+        % D = OPERATORBLOCK.DIFF(DOMAIN, M) is the mth order derivative.
             
             % Use inputParser to parse the arguments to the method.
             p = inputParser;
@@ -202,10 +204,10 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
         end
         
         function I = eye(domain)
-            % OPERATORBLOCK.EYE  Identity operator.
-            %
-            % I = OPERATORBLOCK.EYE(DOMAIN) returns the identity operator for
-            % functions on the domain DOMAIN.
+        % OPERATORBLOCK.EYE  Identity operator.
+        %
+        % I = OPERATORBLOCK.EYE(DOMAIN) returns the identity operator for
+        % functions on the domain DOMAIN.
             pref = cheboppref;
             if ( nargin == 0 )
                 domain = pref.domain; 
@@ -218,24 +220,23 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
         end
 
         function M = mult(u)
-            % OPERATORBLOCK.MULT  Multiplication operator.
-            %
-            % M = OPERATORBLOCK.MULT(U) returns the multiplication operator from
-            % the CHEBFUN U, i.e. the operator that maps a CHEBFUN f(x) to
-            % u(x)f(x).
-            
-            % Create the OPERATORBLOCK with information now available.
+        % OPERATORBLOCK.MULT  Multiplication operator.
+        %
+        % M = OPERATORBLOCK.MULT(U) returns the multiplication operator from the
+        % CHEBFUN U, i.e. the operator that maps a CHEBFUN f(x) to u(x)f(x).
+
+        % Create the OPERATORBLOCK with information now available.
             M = operatorBlock(u.domain);
             M.stack = @(z) mult(z, u);
             M.diffOrder = 0;
         end
         
         function Z = zeros(domain)
-            % OPERATORBLOCK.ZEROS  Zero operator.
-            %
-            % Z = OPERATORBLOCK.ZEROS(DOMAIN) returns the zero operator for
-            % functions on the domain DOMAIN (i.e., the operator that maps all
-            % functions to the zero function on the DOMAIN).
+        % OPERATORBLOCK.ZEROS  Zero operator.
+        %
+        % Z = OPERATORBLOCK.ZEROS(DOMAIN) returns the zero operator for
+        % functions on the domain DOMAIN (i.e., the operator that maps all
+        % functions to the zero function on the DOMAIN).
             pref = cheboppref;
             if ( nargin == 0 )
                 domain = pref.domain;
@@ -248,52 +249,52 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
         end
         
         function F = fred(domain, kernel, varargin)
-%FRED      Fredholm integral operator.
-%   F = FRED(K,D) constructs the Fredholm integral operator with kernel K for
-%   functions in domain D=[a,b]:
-%    
-%      (F*v)(x) = int( K(x,y)*v(y), y=a..b )
-%  
-%   The kernel function K(x,y) should be smooth for best results.
-%
-%   K must be defined as a function of two inputs X and Y. These may be scalar
-%   and vector, or they may be matrices defined by NDGRID to represent a tensor
-%   product of points in DxD.
-%
-%   Example: To solve u(x) - x * int( exp(x-y)*u(y), y=0..2 ) = f(x):
-%     d = [0 2];
-%     x = chebfun('x',d);
-%     X = operatorBlock.mult(x);
-%     I = operatorBlock.eye(d);
-%     F = operatorBlock.fred(d,@(x,y) exp(x-y));  
-%     A = linop( I - X*F );
-%     tic, u = A \ sin(exp(3.5*x)); toc
-%        %  (Elapsed time is 0.622 seconds.)   
-%
-%   FRED(K,D,'onevar') will avoid calling K with tensor product matrices X 
-%   and Y. Instead, the kernel function K should interpret a call K(x) as 
-%   a vector x defining the tensor product grid. This format allows a 
-%   separable or sparse representation for increased efficiency in
-%   some cases.
-%
-%   Example: Continuing the previous example, to exploit
-%   exp(x-y)=exp(x)*exp(-y), first write:
-%
-%     function K = kernel(X,Y)
-%       if nargin==1   % tensor product call
-%         K = exp(X)*exp(-X');   % vector outer product
-%       else  % normal call
-%         K = exp(X-Y);
-%       end
-%     end
-%
-%   At the prompt:
-%     F = operatorBlock.fred(d,@kernel,'onevar'); 
-%     A = linop( I - X*F );
-%     tic, u = A \ sin(exp(3.5*x)); toc
-%        %  (Elapsed time is 0.500 seconds.)
-%
-%   See also OPERATORBLOCK.VOLT.
+        %FRED      Fredholm integral operator.
+        %   F = FRED(K, D) constructs the Fredholm integral operator with kernel
+        %   K for functions in domain D=[a,b]:
+        %    
+        %      (F*v)(x) = int( K(x,y)*v(y), y=a..b )
+        %  
+        %   The kernel function K(x,y) should be smooth for best results.
+        %
+        %   K must be defined as a function of two inputs X and Y. These may be
+        %   scalar and vector, or they may be matrices defined by NDGRID to
+        %   represent a tensor product of points in DxD.
+        %
+        %   Example: To solve u(x) - x * int( exp(x-y)*u(y), y=0..2 ) = f(x):
+        %     d = [0 2];
+        %     x = chebfun('x',d);
+        %     X = operatorBlock.mult(x);
+        %     I = operatorBlock.eye(d);
+        %     F = operatorBlock.fred(d,@(x,y) exp(x-y));  
+        %     A = linop( I - X*F );
+        %     tic, u = A \ sin(exp(3.5*x)); toc
+        %        %  (Elapsed time is 0.622 seconds.)   
+        %
+        %   FRED(K, D, 'onevar') will avoid calling K with tensor product
+        %   matrices X and Y. Instead, the kernel function K should interpret a
+        %   call K(x) as a vector x defining the tensor product grid. This
+        %   format allows a separable or sparse representation for increased
+        %   efficiency in some cases.
+        %
+        %   Example: Continuing the previous example, to exploit
+        %   exp(x-y)=exp(x)*exp(-y), first write:
+        %
+        %     function K = kernel(X,Y)
+        %       if nargin==1   % tensor product call
+        %         K = exp(X)*exp(-X');   % vector outer product
+        %       else  % normal call
+        %         K = exp(X-Y);
+        %       end
+        %     end
+        %
+        %   At the prompt:
+        %     F = operatorBlock.fred(d,@kernel,'onevar'); 
+        %     A = linop( I - X*F );
+        %     tic, u = A \ sin(exp(3.5*x)); toc
+        %        %  (Elapsed time is 0.500 seconds.)
+        %
+        %   See also OPERATORBLOCK.VOLT.
 
             F = operatorBlock(domain);
             F.stack = @(z) fred(z, kernel, varargin{:});
@@ -301,29 +302,29 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
         end
         
         function V = volt(domain, kernel, varargin)
-%VOLT      Volterra integral operator.
-%   V = VOLT(K,D) constructs the Volterra integral operator with kernel K for
-%   functions in domain D=[a,b]:
-%    
-%      (V*u)(x) = int( K(x,y)*u(y), y=a..x )
-%  
-%   The kernel function K(x,y) should be smooth for best results.
-%
-%   K must be defined as a function of two inputs X and Y. These may be scalar
-%   and vector, or they may be matrices defined by NDGRID to represent a tensor
-%   product of points in DxD.
-%
-%   Example: To solve u(x) - x * int( exp(x-y)*u(y), y=0..x ) = f(x):
-%     d = [0 2];
-%     x = chebfun('x',d);
-%     X = operatorBlock.mult(x);
-%     I = operatorBlock.eye(d);
-%     V = operatorBlock.volt(d,@(x,y) exp(x-y));  
-%     A = linop( I - X*V );
-%     u = A \ sin(exp(2*x));
-%     plot(u{1})
-%
-%   See also OPERATORBLOCK.FRED.
+        %VOLT      Volterra integral operator.
+        %   V = VOLT(K, D) constructs the Volterra integral operator with kernel
+        %   K for functions in domain D=[a, b]:
+        %    
+        %      (V*u)(x) = int( K(x,y)*u(y), y=a..x )
+        %  
+        %   The kernel function K(x,y) should be smooth for best results.
+        %
+        %   K must be definedz as a function of two inputs X and Y. These may be
+        %   scalar and vector, or they may be matrices defined by NDGRID to
+        %   represent a tensor product of points in DxD.
+        %
+        %   Example: To solve u(x) - x * int( exp(x-y)*u(y), y=0..x ) = f(x):
+        %     d = [0 2];
+        %     x = chebfun('x',d);
+        %     X = operatorBlock.mult(x);
+        %     I = operatorBlock.eye(d);
+        %     V = operatorBlock.volt(d,@(x,y) exp(x-y));  
+        %     A = linop( I - X*V );
+        %     u = A \ sin(exp(2*x));
+        %     plot(u{1})
+        %
+        %   See also OPERATORBLOCK.FRED.
 
             V = operatorBlock(domain);
             V.stack = @(z) volt(z, kernel, varargin{:});
