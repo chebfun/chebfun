@@ -211,12 +211,15 @@ classdef chebfun
         % Interpolate data:
         f = interp1(x, y, method, dom);
         
-        % Determine values of chebfun at breakpoints.
+        % Determine values of CHEBFUN at breakpoints.
         vals = getValuesAtBreakpoints(funs, ends, op);
-        
+
         % Merge domains.
         newDom = mergeDomains(varargin)
-        
+
+        % Compute Lagrange basis functions for a given set of points.
+        f = lagrange(x, varargin);
+
         % ODE113 with CHEBFUN output.
         [t, y] = ode113(varargin);
         
