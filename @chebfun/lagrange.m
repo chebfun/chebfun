@@ -35,6 +35,6 @@ y = eye(n);
 y = y(:,idx);
 
 % Call INTERP1():
-f = chebfun.interp1(x, y, 'poly', varargin);
+f = chebfun.interp1(x, y, 'poly', varargin{:});
 
 end
