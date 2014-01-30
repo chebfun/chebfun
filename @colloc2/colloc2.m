@@ -38,7 +38,8 @@ classdef colloc2 < chebDiscretization
             end
             % Attach SOURCE and the DOMAIN information to the object.
             disc.source = source; 
-
+            disc.domain = source.domain;
+  
             % Assign DIMENSIONS and DOMAIN if they were passed.
             if ( nargin > 1 )
                 disc.dimension = dimension;
