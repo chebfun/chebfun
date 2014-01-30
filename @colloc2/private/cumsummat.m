@@ -1,9 +1,13 @@
 function Q = cumsummat(N)
-
 % CUMSUMMAT  Chebyshev integration matrix.
 % Q = CUMSUMMAT(N) is the matrix that maps function values at N Chebyshev
 % points to values of the integral of the interpolating polynomial at
 % those points, with the convention that the first value is zero.
+
+% TODO: This method is also used in the methods JACPTS and LEGPTS. It should
+% probably be made a static method of CHEBTECH (or its subclasses). Thus, it has
+% not been reviewed as a part of the LINOP code review. AB, 30/01/14.
+
 
 % TODO: More efficient implementation?
 
