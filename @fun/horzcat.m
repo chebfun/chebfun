@@ -21,7 +21,7 @@ end
 out = varargin{1};
 
 tol = norm(out.domain, inf)*get(out, 'epslevel');
-if ( any( cellfun(@(f) any(f.domain - out.domain) > tol, varargin)) )
+if ( any(cellfun(@(f) any(f.domain - out.domain > tol), varargin)) )
     error('FUN:horzcat:domains', 'Domain mismatch.');
 end
 
