@@ -7,17 +7,18 @@ function u = expm(L,t,u0)
 %
 %   The output is a chebmatrix. If T is a vector, then U will have one
 %   column for each entry of T.
-%   TODO: Or is it going to be a quasimatrix?
 %
-%    L should have appropriate boundary conditions to make the problem
-%    well-posed. Those conditions have zero values; i.e. are represented by
-%    B*u(t)=0 for a linear functional B.
+%   L should have appropriate boundary conditions to make the problem
+%   well-posed. Those conditions have zero values; i.e. are represented by
+%   B*u(t)=0 for a linear functional B.
 %
-%    EXAMPLE: Heat equation
+%   EXAMPLE: Heat equation
 %      d = [-1 1];  x = chebfun('x',d);
 %      D = operatorBlock.diff(d);  
 %      A = linop( D^2 );  
-%      A = addlbc(A,0);  A = addrbc(A,0);
+%      E = functionalBlock.eval(d);
+%      A = addBC(A,E(d(1)),0);   % left Dirichlet condition
+%      A = addBC(A,E(d(2)),0);   % right Dirichlet condition
 %      u0 = exp(-20*(x+0.3).^2);  
 %      t = [0 0.001 0.01 0.1 0.5 1];
 %      u = expm(A,t,u0);
@@ -25,7 +26,7 @@ function u = expm(L,t,u0)
 %      clf, set(gcf,'defaultaxescolororder',colr)
 %      plot(chebfun(u),'linewidth',2)
 %
-% See also LINOP/ADDBC.
+%    See also LINOP/ADDBC.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
@@ -41,7 +42,7 @@ if ( isa(discType, 'function_handle') )
     % Merge domains of the operator and the initial condition.
     disc.domain = chebfun.mergeDomains(disc.domain, u0.domain); 
     
-    % Set the allowed discretisation lengths: (TODO: A preference?)
+    % Set the allowed discretisation lengths: 
     dimVals = L.prefs.dimensionValues;
     
     dimVals( dimVals < length(u0) ) = [];
@@ -107,16 +108,6 @@ for i = 1:length(t)
     end
     
     %% Tidy the solution for output:
-    % The variable u is a cell array with the different components of the
-    % solution. Because each function component may be piecewise defined, we
-    % will loop through one by one.
-    %u = mat2fun(disc,u); 
-    %for k = find( isFun )
-    %    u{k} = disc.toFunction(u{k});
-        %     u{k} = simplify(u{k}, epsLevel);
-    %end
-    % TODO: Remove the above?
-    
     ucell = mat2fun(disc, u);
     allu = [ allu, chebmatrix(ucell) ];
 end

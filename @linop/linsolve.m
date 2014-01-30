@@ -71,8 +71,8 @@ end
 numInt = disc.numIntervals;
 isDone = false(1, numInt);
 
-%% Loop over a finer and finer grid until happy:
-% TODO: What implications does the isFun variable have? 
+%% Loop over a finer and finer grid until happy.
+% We need to know which solution components to check for happiness:
 isFun = isFunVariable(L); 
 for dim = dimVals
 
