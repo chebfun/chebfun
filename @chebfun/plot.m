@@ -124,7 +124,8 @@ jumpData = {};
 while ( ~isempty(varargin) )
 
     % Acquire plotting data for each CHEBFUN / pair of CHEBFUNs:
-    if ( (numel(varargin) > 1) && isa(varargin{2}, 'chebfun') || isnumeric(varargin{2}) ) % PLOT(f, g).
+    if ( (numel(varargin) > 1) && ... % PLOT(f, g).
+            (isa(varargin{2}, 'chebfun') || isnumeric(varargin{2})) ) 
         % Remove CHEBFUN objects from array input:
         f = varargin{1};
         g = varargin{2};
@@ -142,8 +143,9 @@ while ( ~isempty(varargin) )
         % Call PLOTDATA():
         if ( isnumeric(f) )
             % For plotting numeric data in a CHEBFUN/PLOT() call.
-            newData.xLine = NaN;
-            newData.yLine = NaN;
+            newData = plotData(chebfun());
+            newData.xLine = f;
+            newData.yLine = g;
             newData.xPoints = f;
             newData.yPoints = g;
             newData.xJumps = NaN;
@@ -265,7 +267,6 @@ if ( isempty(jumpData) || ischar(jumpData{1}) )
 end
 h3 = plot(jumpData{:});
 % Change the style accordingly:
-% jumpStyle
 if ( isempty(jumpStyle) )
     if ( isComplex )
         %[TODO]: The following statement can not be reached:
@@ -324,8 +325,5 @@ for idx = 1:numel(varargin)
     end
     return
 end
-% if ( isempty(jumpStyle) )
-%     jumpStyle = {'LineStyle', ':', 'Marker', 'none'};
-% end
 
 end
