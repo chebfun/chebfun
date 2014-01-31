@@ -11,7 +11,7 @@ function f = extractBoundaryRoots(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Extract the roots from the boundaries
+% Extract the roots from the boundaries:
 [f.smoothPart, rootsL, rootsR] = extractBoundaryRoots(f.smoothPart);
 
 % Increment the exponents:

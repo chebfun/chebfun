@@ -1,4 +1,3 @@
-
 % Test file for chebtech/compose.m
 
 function pass = test_compose(pref)
@@ -65,14 +64,14 @@ for n = 1:4
     pass(n, 6) = norm(h.values - g.values, inf) < ...
         max(10*h.vscale.*h.epslevel);
     
-    % Compose f(g), when f and g are CHEBTECH objects:
+    % Compose g(f), when f and g are CHEBTECH objects:
     f = testclass.make(@(x) x.^2);
     g = testclass.make(@(x) sin(x));
     h = compose(f, g);
     x = testclass.chebpts(length(h));
     pass(n, 7) = norm(h.values - sin(x.^2), inf) < 10*h.vscale.*h.epslevel;
     
-    % Compose f(g), when f and g are CHEBTECH objects and g is array-valued:
+    % Compose g(f), when f and g are CHEBTECH objects and g is array-valued:
     f = testclass.make(@(x) x.^2);
     g = testclass.make(@(x) [sin(x) cos(x)]);
     h = compose(f, g);
@@ -80,7 +79,7 @@ for n = 1:4
     pass(n, 8) = norm(h.values - [sin(x.^2) cos(x.^2)], inf) < ...
         10*max(h.vscale.*h.epslevel);
     
-    % Compose f(g), when f and g are CHEBTECH objects and f is array-valued:
+    % Compose g(f), when f and g are CHEBTECH objects and f is array-valued:
     f = testclass.make(@(x) [x x.^2]);
     g = testclass.make(@(x) sin(x));
     h = compose(f, g);
