@@ -20,8 +20,8 @@ d = disc.domain;
 numInt = disc.numIntervals;
 n = disc.dimension;
 
-% TODO: Deprecated usage. Could be dangerous. 
-if (numel(n) == 1)
+% FIXME: This is deprecated usage. Is it necessary?  
+if ( numel(n) == 1 )
     n = repmat(n, 1, numInt);
 end
 

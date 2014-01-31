@@ -45,7 +45,7 @@ if isa(L, 'chebmatrix')
     varargout(1:m) = out(1:m);
 else
     % The source must be a chebfun, or...?
-    % TODO: Figure out if this is ever called.
+    % FIXME: Figure out if this is ever called.
     [varargout{1:nargout}] = instantiate(disc,L);
 end
 
