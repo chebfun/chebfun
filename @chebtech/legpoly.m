@@ -24,13 +24,11 @@ end
 if ( nargin > 1 )
     s = size(b);
     if ( s(1) > n + 1 )
-        b = b(end-n:end, :);
+        b = b(end-n+1:end, :);
     else
         b = [b ; zeros(n-s(1), s(2))];
     end
 end
-
-% b = b.';
 
 end
 
