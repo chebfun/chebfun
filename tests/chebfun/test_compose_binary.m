@@ -41,6 +41,23 @@ pass(7:9) = test_one_compose_binary_quasi(@(x) [cos(2*(x + 0.2)) sin(2*(x - 0.1)
     [-1 1], @(x) [exp(x) 1./(1 + 25*(x - 0.1).^2)], [-1 1], ...
     @(x, y) x + 2*y, pref);
 
+%% Test for singular function:
+dom = [-2 7];
+
+% Generate a few random points to use as test values.
+seedRNG(6178);
+x = diff(dom) * rand(100, 1) + dom(1);
+
+f = chebfun(@(x) sin(20*x)./(x-dom(1)), dom, 'exps', [-1 0]);
+g = chebfun(@(x) x.^2./(x-dom(1)), dom, 'exps', [-1 0]);
+h = compose(f, @plus, g);
+hVals = feval(h, x);
+oph = @(x) (sin(20*x)+x.^2)./(x-dom(1));
+hExact = oph(x);
+err = hVals - hExact;
+pass(10) = ( norm(err, inf) < 1e5*vscale(h)*epslevel(h) ) && ...
+    ( isequal(oph(dom(2)), feval(h, dom(2))) );
+
 end
 
 % Test composition with binary operators.
