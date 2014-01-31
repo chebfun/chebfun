@@ -148,6 +148,11 @@ classdef (InferiorClasses = {?double}) chebop
             
         end
         
+        function L = linop(N)
+           % TODO: Implement
+           error('chebop.linop is yet to be implemented')
+        end
+        
         function u = mldivide(N, rhs)
         %\      Chebop backslash.
         %

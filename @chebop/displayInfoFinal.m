@@ -12,9 +12,9 @@ display  = pref.display;
 plotMode = pref.plotting;
 
 % Do we want to print to the command window?
-if strcmp(display,'iter') || strcmp(display,'final')
+if ( strcmp(display,'iter') || strcmp(display,'final') )
     % Create a long string of dashes...
-    dashString = repmat('-',1,62);
+    dashString = repmat('-', 1, 62);
     % ... and print to the command window
     fprintf('%s\n', dashString);
     
@@ -27,14 +27,15 @@ if strcmp(display,'iter') || strcmp(display,'final')
         '%29.2e (boundary conditions). \n\n'], errEstDE, errEstBC);
 end
 
-
 % Do we want to show a plot of the final solution and correction step?
 if ~( strcmpi(plotMode,'off') )
     figure(displayFig);
-    subplot(2,1,1)
-    plot(chebfun(u),'.-'), title('Final solution')
+    subplot(2, 1, 1)
+    plot(chebfun(u), '.-')
+    title('Solution at the end of Newton iteration')
     subplot(2,1,2)
-    plot(chebfun(delta),'.-'), title('Final correction step')
+    plot(chebfun(delta),'.-')
+    title('Final correction step')
     
 end
 
