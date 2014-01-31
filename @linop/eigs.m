@@ -79,7 +79,6 @@ if ( isnan(k) || isempty(k) )
     k = 6; 
 end
 
-% maxdegree = cheboppref('maxdegree'); % TODO: remove?
 m = size(L, 2);
 if ( m ~= size(L, 1) )
     error('LINOP:eigs:notsquare','Block size must be square.')
@@ -90,7 +89,7 @@ if ( isa(discType, 'function_handle') )
     % Create a discretization object
     disc = discType(L);  
         
-    % Set the allowed discretization lengths: (TODO: A preference?)
+    % Set the allowed discretisation lengths:
     dimVals = L.prefs.dimensionValues;
     
     % Update the discretiztion dimension on unhappy pieces:
@@ -113,13 +112,15 @@ if ( isempty(L.continuity) )
      disc.source = deriveContinuity(disc.source);
 end
 
-% TODO: What's going on here?
+% If there is a generalized eigenproblem, the right-side operator needs to have
+% its domain merged in and its own discretization.
 discM = [];
 if ( ~isempty(M) )
-    dom = chebfun.mergeDomains(disc.domain, dom,M.domain);
-    disc.domain = dom;
-    dconstructor = str2fun( class(disc) );
-    discM = dconstructor(M.disc.dimension,disc.domain);
+    dom = chebfun.mergeDomains(disc.domain,dom,M.domain);
+    disc.domain = dom;   % update the discretization domain for L
+    constructor = str2fun( class(disc) );   % constructor handle
+    discM = constructor(M,disc.dimension,disc.domain);
+    % Copy constraints from the left side operator.
     discM.source.constraint = disc.source.constraint;
     discM.source.continuity = disc.source.continuity;
 end
@@ -146,7 +147,7 @@ if ( isempty(sigma) )
     lam2 = diag(D2);
     dif = bsxfun(@minus, lam1.', lam2);
     delta = min( abs(dif) );   % diffs from 33->65
-    % TODO: What's the meaning behind the variable bigDel?
+    % These are the significantly large differences from 33->65.
     bigDel = (delta > 1e-12*norm(lam1,Inf));
     
     % Trim off things that are still changing a lot (relative to new size).
@@ -185,9 +186,9 @@ if ( isempty(sigma) )
     end
 end
 
-% Linear combination coefficients for convergence test.
-% TODO: Short explanation why we get away with doing a linear combination for
-% the convergence test?
+% Linear combination coefficients for convergence test. The convergence of the
+% combination is the same as the worst constituent function. The nontrivial
+% coefficents are to make accidental cancellations extremely unlikely. 
 coeff = 1./(2*(1:k)');
 
 for dim = dimVals
@@ -270,7 +271,7 @@ function [V,D] = getEigenvalues(disc, discM, k, sigma)
         V = V(:, idx);
         D = D(idx, idx);
     else
-        % TODO: Experimental.
+        % FIXME: Experimental.
         [V, D] = eigs(A, B, k, sigma);
     end
     
@@ -331,24 +332,22 @@ isFun = disc.source.isFunVariable;
 while ~isempty(queue)
     j = queue(1);
     
-    % TODO: vc is not a transparent variable name.
-    vc = mat2poly(disc, V(:,idx(j)));
-    vc = vc(isFun);
-    % TODO: Nor is vcsq
-    vcsq = 0;
-    for i = 1:numel(vc)
-        for q = 1:numel(vc{i})
-            vcsq = vcsq + (vc{i}{q}.*conj(vc{i}{q}));
+    vcoeff = mat2poly(disc, V(:,idx(j)));
+    vcoeff = vcoeff(isFun);
+    vcoeffsquared = 0;
+    for i = 1:numel(vcoeff)
+        for q = 1:numel(vcoeff{i})
+            vcoeffsquared = vcoeffsquared + (vcoeff{i}{q}.*conj(vcoeff{i}{q}));
         end
     end
-    vc = sqrt( flipud( sum(vcsq,2) ) ); 
+    vcoeff = sqrt( flipud( sum(vcoeffsquared,2) ) ); 
       
     % Recipe: More than half of the energy in the last 90% of the Chebyshev
     % modes is in the highest 10% modes, and the energy of the last 90% is
     % not really small (1e-8) compared to the first 10% (i.e. is not noise).
-    norm90 = norm(vc(ii90)); % Norm of last 90%
-    norm10 = norm(vc(ii10)); % Norm of last 10%
-    normFirst10 = norm(vc(iif10)); % Norm of first 10%
+    norm90 = norm(vcoeff(ii90)); % Norm of last 90%
+    norm10 = norm(vcoeff(ii10)); % Norm of last 10%
+    normFirst10 = norm(vcoeff(iif10)); % Norm of first 10%
     if ( norm10 > 0.5*norm90 && norm90 > 1e-8*normFirst10 )
         keeper(j) = false;
         if queue(end) < length(idx)

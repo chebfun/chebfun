@@ -23,7 +23,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
 %     d = [-2 2];   % function domain
 %     I = operatorBlock.eye(d);     % identity operator
 %     D = operatorBlock.diff(d);    % differentiation operator
-%     x = chebfun(@(x)x, d);        % the variable x on d
+%     x = chebfun(@(x) x, d);       % the variable x on d
 %     M = operatorBlock.mult(x.^2); % multiplication operator
 %     S = functionalBlock.sum(d);   % integration functional 
 %     E = functionalBlock.eval(d);  % evaluation functional generator
@@ -85,7 +85,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
                 return
             elseif ( iscell(data) )
                 A.blocks = data;
-                A.domain = merge(data{:});
+                A.domain = A.mergeDomains(data{:});
             elseif ( isa(data, 'chebmatrix') )
                 A.blocks = data.blocks;
                 A.domain = data.domain;
@@ -97,7 +97,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             
         function A = set.domain(A, d)
             % We don't allow removing breakpoints, or changing endpoints.
-            A.domain = merge(d, A.domain);
+            A.domain = A.mergeDomains(d, A.domain);
         end
         
         function d = get.diffOrder(L)
@@ -105,8 +105,9 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         end
                
         function d = getDiffOrder(A)
-% GETDIFFORDER      Differential order of each chebmatrix block. 
-%    Also accessible via property: A.diffOrder
+        % GETDIFFORDER      Differential order of each chebmatrix block. 
+        %   Also accessible via property: A.diffOrder
+            
             d = zeros(size(A));
             % Loop through all elements
             for j = 1:numel(A.blocks);
@@ -117,12 +118,14 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         end
         
         function out = isFunVariable(A, k)
-%ISFUNVARIABLE Which variables of the chebmatrix are functions?
-%   A chebmatrix can operate on other chebmatrices. Operator and function blocks
-%   are applied to function components, whereas functions and scalar blocks
-%   multiply scalar components. The output of this function is a logical vector
-%   that is 1 for those columns of the chebmatrix which expect to operate on
-%   function components, and 0 for those that expect to multiply scalars. 
+        %ISFUNVARIABLE  Which variables of the chebmatrix are functions?
+        %
+        %   A chebmatrix can operate on other chebmatrices. Operator and
+        %   function blocks are applied to function components, whereas
+        %   functions and scalar blocks multiply scalar components. The output
+        %   of this function is a logical vector that is 1 for those columns of
+        %   the chebmatrix which expect to operate on function components, and 0
+        %   for those that expect to multiply scalars.
             [rowSize, colSize] = blockSizes(A);
             out = isinf(colSize(1, :));
             if ( nargin > 1 )
@@ -132,4 +135,10 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         
     end
     
+    methods (Static = true, Access = protected)
+        
+        % Merges domains (union of breakpoints, while checking endpoints)
+        d = mergeDomains(varargin)
+        
+    end
 end
