@@ -41,10 +41,12 @@ elseif ( isa(op, 'smoothfun') || isa(op, 'singfun') )
               'Cannot compose two array-valued ONEFUN objects.')
     end
 
-    if ( norm(get(f, 'values'), inf) > 1 )
-        error('CHEBFUN:SINGFUN:compose:range', ...
-              'The range of f is not contained in the domain of g.')
-    end
+    % [TODO]: How to check domain-range matchup in SINGFUN?  ('values' may not
+    % be available for every tech.)
+    % if ( norm(get(f, 'values'), inf) > 1 )
+    %    error('CHEBFUN:SINGFUN:compose:range', ...
+    %          'The range of f is not contained in the domain of g.')
+    % end
 
 end
 
@@ -62,12 +64,5 @@ f = simplify(f);
 
 % Degenerate to SMOOTHFUN:
 f = singFun2SmoothFun(f);
-
-% Throw a warning:
-if ( ~get(f, 'epslevel') )
-    warning('CHEBFUN:SINGFUN:compose:convfail', ...
-        [ 'Composition with ', func2str(op), ...
-          ' failed to converge with ', int2str(length(f)), ' points.' ]);
-end
 
 end
