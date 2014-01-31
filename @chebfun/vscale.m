@@ -26,7 +26,7 @@ end
 
 % % [TODO]: Remove this hack.
 % if ( ~all(out) )
-%     out(~out) = 1;
+%     out(~out) = eps;
 % end
 
 end

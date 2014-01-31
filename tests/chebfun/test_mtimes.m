@@ -2,6 +2,8 @@
 
 function pass = test_mtimes(pref)
 
+% TODO: Test Chebfun2 outerproducts!
+
 % Get preferences.
 if (nargin < 1)
     pref = chebpref();
@@ -116,13 +118,6 @@ try
     pass(20) = false;
 catch ME
     pass(20) = strcmp(ME.identifier, 'CHEBFUN:mtimes:dims');
-end
-
-try
-    h = f*g.';
-    pass(21) = false;
-catch ME
-    pass(21) = strcmp(ME.identifier, 'CHEBFUN:mtimes:colTimesRow');
 end
 
 end

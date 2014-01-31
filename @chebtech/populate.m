@@ -95,7 +95,10 @@ if ( isnumeric(op) || iscell(op) )
     f.ishappy = true;
     
     % Scale the epslevel relative to the largest column:
-    f.epslevel = 10*eps(max(f.vscale))./f.vscale;
+    vscale = f.vscale;
+    f.epslevel = 10*eps(max(f.vscale));
+    vscale(vscale <= f.epslevel) = 1;
+    f.epslevel = f.epslevel./vscale;
 
     return
 end
@@ -149,15 +152,19 @@ end
 vscaleOut = max(abs(f.values), [], 1);
 % Update vertical scale one last time:
 vscaleGlobal = max(vscale, vscaleOut);
-% Adjust the epslevel appropriately:
-if ( any(vscaleOut > 0) )
-    epslevel = epslevel*vscaleGlobal./vscaleOut;
-else 
-    % Deal with zero vscale:
-    epslevel = epslevel./(1+vscaleOut);
-end
+
 % Output the 'true' vscale (i.e., the max of the stored values):
 vscale = vscaleOut;
+
+% Adjust the epslevel appropriately:
+% if ( any(vscaleOut > 0) )
+%     epslevel = epslevel*vscaleGlobal./vscaleOut;
+% else 
+%     % Deal with zero vscale:
+%     epslevel = epslevel./(1+vscaleOut);
+% end
+vscaleOut(vscaleOut < epslevel) = 1;
+epslevel = epslevel*vscaleGlobal./vscaleOut;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% Assign to CHEBTECH object. %%%%%%%%%%%%%%%%%%%%%%%%%%
 f.coeffs = coeffs;

@@ -98,7 +98,7 @@ function f = diffContinuousDim(f, k)
         f = f.make(z, z, f.hscale);
         return
     end
-
+    
     % Loop for higher derivatives:
     while ( k > 0 ) % Note that n > k.
         % Decrease k:
