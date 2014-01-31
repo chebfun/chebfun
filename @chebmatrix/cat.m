@@ -1,7 +1,7 @@
 function C = cat(dim, varargin)
-%CAT    Concatenation of chebmatrices.
-%   C = CAT(dim,A,B,...) concatenates chebmatrices along the indicated
-%   dimension.
+%CAT    Concatenation of CHEBMATRIX objects.
+%   C = CAT(dim, A, B,...) concatenates chebmatrices along the indicated
+%   dimension following Matlab conventions.
 %
 %   See also CHEBMATRIX.HORZCAT, CHEBMATRIX.VERTCAT.
 

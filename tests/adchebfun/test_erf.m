@@ -17,10 +17,10 @@ pass = zeros(2, numel(errFunctions));
 % Do the tests.
 for k = 1:numel(errFunctions)
     % First, check that the computed function values match what we expect
-    pass(1, k) = ( valueTesting(errFunctions{k}) == 0 );
+    pass(1, k) = ( adchebfun.valueTesting(errFunctions{k}) == 0 );
     
     % Call the taylorTesting method
-    [order1, order2] = taylorTesting(errFunctions{k}, numSteps);
+    [order1, order2] = adchebfun.taylorTesting(errFunctions{k}, numSteps);
     % We expect all elements of ORDER1 to be close to 1, and of ORDER2 to be
     % close to 2.
     pass(2, k) = ( max(abs(order1 - 1)) < tol ) & ...

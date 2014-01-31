@@ -1,7 +1,7 @@
 function out = horzcat(varargin)
 %HORZCAT   Horizontal concatenation.
 %   [A B] horizontally concatenates the FUN objects A and B to form an
-%   array-valued FUN. [A,B] does the same. Any number of FUN objects can be
+%   array-valued FUN. [A, B] does the same. Any number of FUN objects can be
 %   concatenated within one pair of brackets. Vertical concatenation is not
 %   supported.
 
@@ -20,10 +20,12 @@ end
 % Make an output FUN:
 out = varargin{1};
 
-tol = norm(out.domain, inf)*get(out, 'epslevel');
-if ( any( cellfun(@(f) any(f.domain - out.domain) > tol, varargin)) )
-    error('FUN:horzcat:domains', 'Domain mismatch.');
-end
+% % TODO: Remove this at some point.
+% % Checking is done at the CHEBFUN level, so this is not required.
+% tol = max(norm(out.domain, inf)*get(out, 'epslevel'));
+% if ( any( cellfun(@(f) any(f.domain - out.domain) > tol, varargin)) )
+%     error('FUN:horzcat:domains', 'Domain mismatch.');
+% end
 
 % Extract the ONEFUNs:
 onefuns = cellfun(@(f) f.onefun, varargin, 'UniformOutput', false);

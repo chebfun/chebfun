@@ -386,6 +386,45 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f.func = coth(f.func);
         end
         
+        function g = csc(f)
+            % F = CSC(F)   CSC of an ADCHEBFUN.
+            
+            % Copy F to the output G to enable reuse of computed function value
+            g = f;
+            % Linearity information
+            g.isConstant = iszero(f.jacobian);
+            % Update CHEBFUN part.
+            g.func = csc(f.func);
+            % Update derivative part
+            g.jacobian = operatorBlock.mult(-cot(f.func).*g.func)*f.jacobian;
+        end
+        
+        function g = cscd(f)
+            % F = CSCD(F)   CSCD of an ADCHEBFUN.
+            
+            % Copy F to the output G to enable reuse of computed function value
+            g = f;
+            % Linearity information
+            g.isConstant = iszero(f.jacobian);
+            % Update CHEBFUN part.
+            g.func = cscd(f.func);
+            % Update derivative part
+            g.jacobian = operatorBlock.mult(-pi/180*cotd(f.func).*g.func)*f.jacobian;
+        end  
+        
+        function g = csch(f)
+            % F = CSCH(F)   CSCH of an ADCHEBFUN.
+            
+            % Copy F to the output G to enable reuse of computed function value
+            g = f;
+            % Linearity information
+            g.isConstant = iszero(f.jacobian);
+            % Update CHEBFUN part.
+            g.func = csch(f.func);
+            % Update derivative part
+            g.jacobian = operatorBlock.mult(-coth(f.func).*g.func)*f.jacobian; 
+        end       
+        
         function f = cumsum(f, k)
             % F = CUMSUM(F, K)   CUMSUM of an ADCHEBFUN
             
@@ -528,12 +567,30 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             out = f(pos);
         end
         
+        function f = heaviside(f) %#ok<MANU>
+            % HEAVISIDE is not Frechet differentiable, so an error is thrown.
+            error('CHEBFUN:AD:heaviside:NotDifferentiable', ...
+                'HEAVISIDE() is not Frechet differentiable.');
+        end
+        
+        function out = hscale(f)
+            % HSCALE    Horizontal scale of the FUNC part of an ADCHEBFUN.
+            %
+            % See also: CHEBFUN/HSCALE
+            out = hscale(f.func);
+        end
+        
         function u = jacreset(u)
             % U = JACRESET(U)
-            
+            % TODO: Document
             u.jacobian = operatorBlock.eye(u.domain);
             u.isConstant = 1;
         end 
+        
+        function l = length(f)
+            % LENGTH(F) where F is an ADCHEBFUN is the same as LENGTH(F.FUNC)
+            l = length(f.func);
+        end
         
         function f = log(f)
             % F = LOG(F)   LOG of an ADCHEBFUN.
@@ -792,6 +849,17 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f.func = sin(f.func);
         end
         
+        function f = sind(f)
+            % F = SIND(F)   SIND of an ADCHEBFUN.
+            
+            % Linearity information
+            f.isConstant = iszero(f.jacobian);
+            % Update derivative part
+            f.jacobian = operatorBlock.mult(pi/180*cosd(f.func))*f.jacobian;
+            % Update CHEBFUN part.
+            f.func = sind(f.func);
+        end
+        
         function f = sinh(f)
             % F = SINH(F)   SINH of an ADCHEBFUN.
             
@@ -802,7 +870,12 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % Update CHEBFUN part
             f.func = sinh(f.func);
         end
-
+        
+        function varargout = size(f, varargin)
+            % SIZE(F) where F is an ADCHEBFUN is the same as SIZE(F.FUNC)
+            [varargout{1:nargout}] = size(f.func, varargin{:});
+        end
+        
         function out = subsref(f, index)
             % TODO: Document
             switch index(1).type
@@ -884,7 +957,14 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             end
 
         end
-
+        
+        function out = vscale(f)
+            % VSCALE    Vertical scale of the FUNC part of an ADCHEBFUN.
+            %
+            % See also: CHEBFUN/VSCALE
+            out = vscale(f.func);
+        end
+        
         function f = uminus(f)
             % -     Unary minus of an ADCHEBFUN
             
@@ -926,6 +1006,15 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
         
     end
+    
+    methods (Static = true)
+        % Taylor testing for correctness of derivatives
+        [order1, order2] = taylorTesting(f,hMax,plotting)
+        
+        % Value testing for correctness of computed function
+        error = valueTesting(f)
+    end
+    
 end
 
 

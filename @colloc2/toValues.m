@@ -1,5 +1,5 @@
 function fx = toValues(disc,f)
-%TOVALUES  Convert chebfun to a COLLOC2 discretization.
+%TOVALUES  Convert CHEBFUN to a COLLOC2 discretization.
 
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.

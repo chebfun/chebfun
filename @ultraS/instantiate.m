@@ -22,7 +22,12 @@ end
 function [L,S] = instantiateOne(disc,item)
 
 if (isa(item, 'operatorBlock') )
-    [L, S] = quasi2USdiffmat(disc);
+    if ( ~isempty(disc.coeffs) )
+        [L, S] = quasi2USdiffmat(disc);
+    else
+        error('CHEBFUN:ultraS:fail', ...
+            'ultraS cannot represent this operator. Suggest you use colloc2.')   
+    end 
 elseif ( isa(item, 'functionalBlock') )
     dim = disc.dimension;
     dom = disc.domain;
