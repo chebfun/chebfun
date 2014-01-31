@@ -19,10 +19,10 @@ pass = zeros(2, numel(trigFunctions));
 for k = 1:numel(trigFunctions)
 
     % First, check that the computed function values match what we expect
-    pass(1, k) = ( valueTesting(trigFunctions{k}) == 0 );
+    pass(1, k) = ( adchebfun.valueTesting(trigFunctions{k}) == 0 );
     
     % Call the taylorTesting method
-    [order1, order2] = taylorTesting(trigFunctions{k}, numSteps);
+    [order1, order2] = adchebfun.taylorTesting(trigFunctions{k}, numSteps);
     % We expect all elements of ORDER1 to be close to 1, and of ORDER2 to be
     % close to 2.
     pass(2, k) = ( max(abs(order1 - 1)) < tol ) & ...
