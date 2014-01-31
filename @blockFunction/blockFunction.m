@@ -82,9 +82,9 @@ classdef blockFunction
         %
         % Returns a BLOCKFUNCTION corresponding to a call to chebfun/feval.    
             if ( direction < 0 )
-                E = blockFunction( @(u) feval(u, location, -1) );
+                E = blockFunction( @(u) feval(u, location, 'left') );
             elseif ( direction > 0 )
-                E = blockFunction( @(u) feval(u, location, 1) );
+                E = blockFunction( @(u) feval(u, location, 'right') );
             else
                 E = blockFunction( @(u) feval(u, location) );
             end
