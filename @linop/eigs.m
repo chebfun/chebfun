@@ -50,32 +50,32 @@ function varargout = eigs(L,varargin)
 % See http://www.chebfun.org for Chebfun information.
 
 % Parsing inputs.
-M = [];  k = 6;  sigma = []; 
+M = [];       % no generalized operator
+k = [];       % will be made default value below
+sigma = [];   % default 'auto' mode
 prefs = L.prefs;
 discType = prefs.discretization;
-gotk = false;
-j = 1;
-while (nargin > j)
+gotk = false; % until we detect a value of k in inputs
+for j = 1:nargin-1 
     item = varargin{j};
     if ( isa(item, 'linop') )
         % Generalized operator term
         M = item;
     elseif ( isa(item, 'chebDiscretization') )
         discType = item;
+    elseif ( ~gotk && isnumeric(item) && (item > 0) && (item == round(item) ) )
+        % k should be given before sigma (which might also be integer)
+        k = item;
+        gotk = true;
+    elseif ( ischar(item) || isnumeric(item) )
+        sigma = item;            
     else
-        % k must be given before sigma.
-        if ( ~gotk || ischar(item) )
-            k = item;
-            gotk = true;
-        else
-            sigma = item;
-        end
+        error('Could not parse argument number %i.',j+1)
     end
-    j = j+1;
 end
 
 % Assign default to k if needed.
-if ( isnan(k) || isempty(k) )
+if ( isempty(k) || isnan(k) )
     k = 6; 
 end
 
@@ -118,7 +118,7 @@ discM = [];
 if ( ~isempty(M) )
     dom = chebfun.mergeDomains(disc.domain,dom,M.domain);
     disc.domain = dom;   % update the discretization domain for L
-    constructor = str2fun( class(disc) );   % constructor handle
+    constructor = str2func( class(disc) );   % constructor handle
     discM = constructor(M,disc.dimension,disc.domain);
     % Copy constraints from the left side operator.
     discM.source.constraint = disc.source.constraint;
