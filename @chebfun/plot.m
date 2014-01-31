@@ -73,14 +73,16 @@ end
 
 % Store the hold state of the current axis:
 holdState = ishold;
-if ( holdState == true )
-    % Respect current limits:
-    yLim = get(gca, 'ylim');
-else
-    yLim = [inf, -inf];
+
+% Store the current Y-limits:
+if ( holdState )
+    yLimCurrent = get(gca, 'ylim');
 end
+
+% Initialize flags:
 isComplex = false;
 intervalIsSet = false;
+yLim = [inf, -inf];
 
 % Initialise storage:
 lineData = {};
@@ -278,8 +280,14 @@ else
     set(h3, jumpStyle{:});
 end
 
-% Set the y limits if appropriate values have been suggested:
+% Set the Y-limits if appropriate values have been suggested:
 if ( all(isfinite(yLim)) )
+
+    % If holding, then make sure not to shrink the Y-limits.
+    if ( holdState )
+        yLim = [min(yLimCurrent(1), yLim(1)), max(yLimCurrent(2), yLim(2))];
+    end
+
     set(gca, 'ylim', yLim)
 end
 
