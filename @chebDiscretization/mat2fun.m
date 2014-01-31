@@ -36,15 +36,13 @@ if ( iscell(values) )
     values = cell2mat(values);
 end
 
-% TODO: Is this chopping the VALUES matrix into pieces corresponding to each
-% function?
-m = ones(1, numVar);
-m(isFun) = sum(n);
-values = mat2cell( values, m, size(values,2) );
+% Break each chebmatrix component into its own cell. 
+componentLength = ones(1, numVar); % all scalars
+componentLength(isFun) = sum(n);   % total length of each function component
+values = mat2cell( values, componentLength, size(values,2) );
 
-% TODO: Presumably, this then goes through the VALUES cell and converts each
-% component to a CHEBFUN in case isFun(j) = 1, or simply puts f{j} = values{j}
-% otherwise. So f will be a cell-array of either chebfuns or scalars?
+% Output is the same size cell, but with each function component entry converted
+% from vector of values to chebfun.
 f = cell(numVar, 1);
 for j = 1:numVar
     if ( isFun(j) )
