@@ -120,9 +120,7 @@ if ( ~isempty(M) )
     disc.domain = dom;   % update the discretization domain for L
     constructor = str2func( class(disc) );   % constructor handle
     discM = constructor(M,disc.dimension,disc.domain);
-    % Copy constraints from the left side operator.
-    discM.source.constraint = disc.source.constraint;
-    discM.source.continuity = disc.source.continuity;
+    % We can ignore constraints and continuity--enforced on the left side. 
 end
 
 
@@ -251,20 +249,22 @@ end
 function [V,D] = getEigenvalues(disc, discM, k, sigma)
 % Formulate the discrete problem and solve for the eigenvalues
 
-    % Discretize the operator (incl. constraints/continuity):
-    [A, P, C] = matrix(disc);
-    nc = size(C, 1);
+    % Discretize the LHS operator (incl. constraints/continuity):
+    [PA, P, C, A] = matrix(disc);
+
+    % Discretize the RHS operator, or use identity. 
     if ( ~isempty(discM) )
         discM.dimension = disc.dimension;
-        discM.domain = disc.domain;
-        B = matrix(discM);
-        B(1:nc, :) = 0;  % don't need the constraints on this side
+        [~,~,~,B] = matrix(discM);
+        % Project RHS matrix and prepend rows for the LHS constraints.
+        PB = [ zeros(size(C)); P*B ];
     else
-        B = [ zeros(nc, size(A, 2)); P ];
+        PB = [ zeros(size(C)); P ];
     end
     
-    if ( length(A) <= 2000 )
-        [V,D] = eig(full(A), full(B));
+    % Compute eigenvalues.
+    if ( length(PA) <= 2000 )
+        [V,D] = eig(full(PA), full(PB));
         % Find the ones we're looking for.
         N = disc.dimension;
         idx = nearest(diag(D), V, sigma, min(k, N), N,disc);
@@ -272,7 +272,7 @@ function [V,D] = getEigenvalues(disc, discM, k, sigma)
         D = D(idx, idx);
     else
         % FIXME: Experimental.
-        [V, D] = eigs(A, B, k, sigma);
+        [V, D] = eigs(PA, PB, k, sigma);
     end
     
 end
