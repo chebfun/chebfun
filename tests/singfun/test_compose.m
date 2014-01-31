@@ -21,7 +21,7 @@ op = @(x) (sin(x)+cos(x))./(x+1);
 hVals = feval(h, x);
 hExact = op(x);
 err = hVals - hExact;
-pass(1) = norm(err, inf) < 2e1*get(h, 'epslevel')*get(h, 'vscale');
+pass(1) = norm(err, inf) < 1e3*get(h, 'epslevel')*get(h, 'vscale');
 
 % Composition of an operator and a SINGFUN - OP(F)
 f = singfun(@(x) sqrt(x+1), [0.5 0], [], [], [], []);
