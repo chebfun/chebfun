@@ -7,7 +7,7 @@ end
 % Test on piecewise-smooth chebfun
 f = chebfun(@(x)sin(100*x), 'splitting', 'on');
 n = 20;
-p = chebpoly(f, nan, n).';
+p = chebpoly(f, n).';
 
 g = chebfun(@(x)sin(100*x));
 c = g.funs{1}.onefun.coeffs;

@@ -1,6 +1,6 @@
 function out = issmooth(f)
 %ISSMOOTH   Test if a FUN object is built upon SMOOTHFUN.
-%   out = ISSMOOTH(F) returns logical true if its ONEFUN is a SMOOTHFUN and 
+%   OUT = ISSMOOTH(F) returns logical true if its ONEFUN is a SMOOTHFUN and 
 %   false otherwise.
 
 % [TODO]: Should the name of this function go camel case? So far, all is*

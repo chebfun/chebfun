@@ -43,7 +43,16 @@ function varargout = plot(varargin)
 %   than one CHEBFUN in a call like PLOT(F, 'b', G, '--r', 'interval', [A, B])
 %   this property is applied globally.
 %
-%   Note that the PLOT(F, 'numpts', N) option for V4 is depricated, and this
+%   Besides the usual parameters that control the specifications of lines (see
+%   linespec), the parameter JumpLines determines the linestyle for
+%   discontinuities of the CHEBFUN F. For example, PLOT(F, 'JumpLine', '-r')
+%   will plot discontinuities as solid red lines. By default the plotting style
+%   is ':', and colours are chosen to match the lines they correspond to. It is
+%   possible to modify other properties of JumpLines syntax like PLOT(F,
+%   'JumpLine', {'color', 'r', 'LineWidth', 5}). JumpLines can be suppressed
+%   with the argument 'JumpLine','none'.
+%
+%   Note that the PLOT(F, 'numpts', N) option for V4 is deprecated, and this
 %   call now has no effect.
 %
 % See also PLOTDATA, PLOT3.
@@ -64,14 +73,21 @@ end
 
 % Store the hold state of the current axis:
 holdState = ishold;
+
+% Store the current Y-limits:
+if ( holdState )
+    yLimCurrent = get(gca, 'ylim');
+end
+
+% Initialize flags:
 isComplex = false;
 intervalIsSet = false;
+yLim = [inf, -inf];
 
 % Initialise storage:
 lineData = {};
 pointData = {};
 jumpData = {};
-yLimData = {};
 intervalIsSet = false;
 
 % Suppress inevitable warning for growing these arrays:
@@ -101,13 +117,17 @@ end
 lineData = {};
 pointData = {};
 jumpData = {};
-    
+
+% Deal with 'jumpLine' input.
+[jumpStyle, varargin] = chebfun.parseJumpStyle(varargin{:});
+
 %%
 % Get the data for plotting from PLOTDATA():
 while ( ~isempty(varargin) )
 
     % Acquire plotting data for each CHEBFUN / pair of CHEBFUNs:
-    if ( (numel(varargin) > 1) && isa(varargin{2}, 'chebfun') ) % PLOT(f, g).
+    if ( (numel(varargin) > 1) && ... % PLOT(f, g).
+            (isa(varargin{2}, 'chebfun') || isnumeric(varargin{2})) ) 
         % Remove CHEBFUN objects from array input:
         f = varargin{1};
         g = varargin{2};
@@ -123,7 +143,17 @@ while ( ~isempty(varargin) )
         end
         
         % Call PLOTDATA():
-        if ( numel(f) == 1 && numel(g) == 1 )
+        if ( isnumeric(f) )
+            % For plotting numeric data in a CHEBFUN/PLOT() call.
+            newData = plotData(chebfun());
+            newData.xLine = f;
+            newData.yLine = g;
+            newData.xPoints = f;
+            newData.yPoints = g;
+            newData.xJumps = NaN;
+            newData.yJumps = NaN;   
+            % Do nothing
+        elseif ( numel(f) == 1 && numel(g) == 1 )
             % Array-valued CHEBFUN case:
             newData = plotData(f, g);
         else
@@ -151,58 +181,76 @@ while ( ~isempty(varargin) )
 
     else                                                       % PLOT(f).
         
-        % Call PLOTDATA():
-        f = varargin{1};
-        if ( intervalIsSet )
-            f = restrict(f, interval([1,end]));
-        end
-        newData = plotData(f);
-
         % Remove CHEBFUN from array input:
         f = varargin{1};
         varargin(1) = [];
-
         isComplex = ~isreal(f);
+        
         % Loop over the columns:
         for k = 1:numel(f)
-            newData(k) = plotData(f(k));
-            if ( isComplex ) % Deal with complex-valued functions.
-                % Assign x to be the real part, and y to be the imagiary part:
-                newData(k).xLine = real(newData(k).yLine);
-                newData(k).yLine = imag(newData(k).yLine);
-                newData(k).xPoints = real(newData(k).yPoints);
-                newData(k).yPoints = imag(newData(k).yPoints);
-                newData(k).xJumps = real(newData(k).yJumps);
-                newData(k).yJumps = imag(newData(k).yJumps);
+            if ( isComplex )
+                newData(k) = plotData(real(f(k)), imag(f(k)));
+            else
+                newData(k) = plotData(f(k));
             end
         end
-        
+
     end
     
     % Style data.
-    pos = 0; styleData = [];
+    pos = 0;
+    styleData = [];
+
+    lv = length(varargin);
     % Find the location of the next CHEBFUN in the input array:
-    while ( (pos < length(varargin)) && ~isa(varargin{pos + 1}, 'chebfun') )
+    while ( (pos < lv) && ~isa(varargin{pos+1}, 'chebfun') )
+        if ( pos+1 < lv && isnumeric(varargin{pos+1}) && isnumeric(varargin{pos+2}) )
+            break
+        end
         pos = pos + 1;
     end
+    
     if ( pos > 0 )
         styleData = varargin(1:pos);
         varargin(1:pos) = [];
-        % Remove depricated 'numpts' option:
+        % Remove deprecated 'numpts' option:
         idx = find(strcmp(styleData, 'numpts'), 1);
         if ( any(idx) )
             styleData(idx:(idx+1)) = [];
         end
     end
     
-    % Append new data to the arrays which will be passed to built in PLOT():
-    lineData = [lineData, newData.xLine, newData.yLine, styleData];
-    pointData = [pointData, newData.xPoints, newData.yPoints, styleData];
-    jumpData = [jumpData, newData.xJumps, newData.yJumps, styleData];
-    yLimData = [yLimData, newData.yLim];
+    for k = 1:numel(newData)
+        yLim = [min(newData(k).yLim(1), yLim(1)), max(newData(k).yLim(2), yLim(2))];
+    end
 
+    % Loop over the columns:
+    for k = 1:numel(newData)
+        % TODO: Remove this?
+        % 'INTERVAL' stuff:
+        if ( ~isComplex && intervalIsSet && (size(newData(k).xLine, 2) == 1) )
+            ind = newData(k).xLine < interval(1) | ...
+                newData(k).xLine > interval(end);
+            newData(k).xLine(ind) = [];
+            newData(k).yLine(ind,:) = [];
+            ind = newData(k).xPoints < interval(1) | ...
+                newData(k).xPoints > interval(end);
+            newData(k).xPoints(ind) = [];
+            newData(k).yPoints(ind,:) = [];
+            ind = newData(k).xJumps < interval(1) | ...
+                newData(k).xJumps > interval(end);
+            newData(k).xJumps(ind) = [];
+            newData(k).yJumps(ind,:) = [];
+        end
+
+        % Append new data:
+        lineData = [lineData, newData(k).xLine, newData(k).yLine, styleData];
+        pointData = [pointData, newData(k).xPoints, newData(k).yPoints, ...
+            styleData];
+        jumpData = [jumpData, newData(k).xJumps, newData(k).yJumps, styleData];
+    end
+    
 end
-
 % Plot the lines:
 h1 = plot(lineData{:});
 set(h1, 'Marker', 'none')
@@ -221,11 +269,26 @@ if ( isempty(jumpData) || ischar(jumpData{1}) )
 end
 h3 = plot(jumpData{:});
 % Change the style accordingly:
-if ( isComplex )
-    %[TODO]: The following statement can not be reached:
-    set(h3, 'LineStyle', 'none', 'Marker', 'none')
+if ( isempty(jumpStyle) )
+    if ( isComplex )
+        %[TODO]: The following statement can not be reached:
+        set(h3, 'LineStyle', 'none', 'Marker', 'none')
+    else
+        set(h3, 'LineStyle', ':', 'Marker', 'none')
+    end
 else
-    set(h3, 'LineStyle', ':', 'Marker', 'none')
+    set(h3, jumpStyle{:});
+end
+
+% Set the Y-limits if appropriate values have been suggested:
+if ( all(isfinite(yLim)) )
+
+    % If holding, then make sure not to shrink the Y-limits.
+    if ( holdState )
+        yLim = [min(yLimCurrent(1), yLim(1)), max(yLimCurrent(2), yLim(2))];
+    end
+
+    set(gca, 'ylim', yLim)
 end
 
 % Return hold state to what it was before:

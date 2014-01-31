@@ -1,24 +1,20 @@
 function out = chebpoly(f, varargin)
 %CHEBPOLY   Chebyshev polynomial coefficients of a CHEBFUN.
-%   A = CHEBPOLY(F) returns the row vector of coefficients such that F_1 = A(1)
-%   T_M(x) + ... + A(M) T_1(x) + A(M+1) T_0(x), where T_M(x) denotes the M-th
-%   Chebyshev polynomial and F_1 denotes the first FUN of CHEBFUN F.
+%   A = CHEBPOLY(F, N) returns the first N Chebyshev coefficients of F, i.e.,
+%   the row vector such that F = ... + A(1) T_N(x) + ... + A(N) T_1(x) +
+%   A(N+1) T_0(x), where T_M(x) denotes the M-th Chebyshev polynomial.
 %
-%   A = CHEBPOLY(F, I) returns the coefficients for the I-th FUN.
-%
-%   A = CHEBPOLY(F, I, N) truncates or pads the vector A so that N coefficients
-%   of the I-th FUN of F are returned. However, if I is 0 then the global
-%   coefficients of the whole CHEBFUN F are returned (by computing relevant
-%   inner products with Chebyshev polynomials).
-%
+%   If F is a smooth CHEBFUN (i.e., with no breakpoints), the CHEBPOLY(F) is
+%   equivalent to CHEBPOLY(F, LENGTH(F)).
+% 
 %   If F is array-valued with M columns, then A is an MxN matrix.
 %
-%   C = CHEBPOLY(F, ..., 'kind', 2) returns the vector of coefficients for the
-%   Chebyshev expansion of F in 2nd-kind Chebyshev polynomials F_1 = C(1) U_M(x)
-%   + ... + C(M) U_1(x) + C(M+1) U_0(x).
+%   C = CHEBPOLY(F, N, 'kind', 2) returns the vector of coefficients for the
+%   Chebyshev expansion of F in 2nd-kind Chebyshev polynomials F = ... + C(1)
+%   U_N(x) + ... + C(N) U_1(x) + C(N+1) U_0(x).
 %
 %   There is also a CHEBPOLY command in the Chebfun trunk directory, which
-%   computes the CHEBFUN corresponding to the Chebyshev polynomial T_n.
+%   computes the CHEBFUN corresponding to the Chebyshev polynomial T_M(x).
 %
 % See also LEGPOLY.
 
@@ -32,12 +28,12 @@ if ( isempty(f) )
 end
 
 if ( numel(f) > 1 )
+    % TODO: Why not?
     error('CHEBFUN:chebpoly:quasia', 'CHEBPOLY does not support quasimatrices.');
 end
 
 %% Initialise:
 argin = {}; 
-ii = []; 
 N = [];
 numFuns = numel(f.funs);
 kind = 1;
@@ -52,35 +48,19 @@ while ( ~isempty(varargin) )
         varargin(1) = [];
     end
 end
-if ( numel(argin) > 0 )
-    ii = argin{1}; 
-end
-if ( numel(argin) > 1 ) 
-    N = argin{2}; 
+if ( numel(argin) > 0 ) 
+    N = argin{1};
 end
 
 %% Error checking:
-if ( isempty(ii) )
-    if ( numFuns > 1 )
-        warning('CHEBFUN:chebpoly:nfuns1',['Chebfun has more than one fun. ' ...
-                'Returning Chebyshev coefficients for the first fun only. ' ...
-                'Use CHEBPOLY(F, 1) to suppress this warning.']);
-    end
-    ii = 1; 
-    % [TODO]: Perhaps ii = 0 should be the default behaviour?  (If we do this,
-    % we need to pick a sane value for N.)
+if ( isempty(N) && numFuns == 1 )
+    N = length(f);
 end
-if ( ii > numFuns )
-    error('CHEBFUN:chebpoly:nfuns2', 'Chebfun only has %s FUNSs.', ...
-        num2str(numFuns));
+if ( isempty(N) )
+    error('CHEBFUN:chebpoly:inputN', ...
+        'Input N is required for piecewise CHEBFUN objects.');
 end
-if ( (numel(ii) > 1) || (numel(N) > 1) )
-    error('CHEBFUN:chebpoly:scalar', 'Inputs I and N must be scalars.');
-end
-if ( (ii == 0) && isempty(N) )
-    error('CHEBFUN:chebpoly:inputs', 'Input N must not be empty if I is zero.');
-end
-if ( ~isempty(N) && ~isnumeric(N) )
+if ( ~isscalar(N) || isnan(N) )
     error('CHEBFUN:chebpoly:inputN', 'Input N must be a scalar.');
 end
 if ( any(isinf(f.domain)) )
@@ -89,12 +69,13 @@ if ( any(isinf(f.domain)) )
         'Infinite intervals are not supported here.');
 end
 
+if ( numFuns ~= 1 )
+    f = merge(f);
+    numFuns = numel(f.funs);
+end
+
 %% Compute the coefficients:
-if ( ii > 0 )
-    % CHEBPOLY() of a smooth piece:
-    out = chebpoly(f.funs{ii}, N).';
-    
-elseif ( (ii == 0) && (numFuns == 1))
+if ( numFuns == 1 )
     
     % CHEBPOLY() of a smooth piece:
     out = chebpoly(f.funs{1}, N).';    
@@ -105,7 +86,7 @@ else
     % Compute coefficients via inner products.
     d = f.domain([1, end]);
     x = chebfun('x', d);
-    w = 1./sqrt((x-d(1)).*(d(2)-x));
+    w = 1./sqrt((x - d(1)).*(d(2) - x));
     numCols = numColumns(f);
     out = zeros(numCols, N);
     f = mat2cell(f);

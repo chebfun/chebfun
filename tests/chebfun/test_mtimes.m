@@ -125,6 +125,26 @@ catch ME
     pass(21) = strcmp(ME.identifier, 'CHEBFUN:mtimes:colTimesRow');
 end
 
+%% Test on SINGFUN - multiplication by scalar:
+
+f = chebfun(@(x) sin(20*x)./((x+1).^0.5), 'exps', [-0.5 0], 'splitting', 'on');
+h = 3*f;
+h_op = @(x) 3*sin(20*x)./((x+1).^0.5);
+h_vals = feval(h, x);
+h_exact = h_op(x);
+err = h_vals - h_exact;
+pass(22) = norm(err, inf) < 2e2*vscale(h)*epslevel(h);
+
+%% Test on SINGFUN - multiplication of a column CHEBFUN and a row CHEBFUN:
+
+f = chebfun(@(x) sin(20*x)./((x+1).^0.5), 'exps', [-0.5 0], 'splitting', 'on');
+f = f.';
+g = chebfun(@(x) cos(30*x), 'splitting', 'on');
+h = f*g;
+h_exact = 0.13033807496531659;
+err = h - h_exact;
+pass(23) = abs(err) < 1e1*h_exact*max(epslevel(f), epslevel(g));
+
 %% Tests for function defined on unbounded domain:
 
 % Functions on [-inf b]:
@@ -146,7 +166,7 @@ gVals = feval(g, x);
 op = @(x) [exp(x) x.*exp(x) (1-exp(x))./x]*A;
 gExact = op(x);
 err = gVals - gExact;
-pass(22) = norm(err, inf) < 1e1*max(get(g,'epslevel').*get(g,'vscale'));
+pass(24) = norm(err, inf) < 1e1*max(get(g,'epslevel').*get(g,'vscale'));
 
 end
 

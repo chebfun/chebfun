@@ -105,8 +105,8 @@ vals_exact = feval(op, x);
 err = fval - vals_exact;
 pass(4) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
 
-% Same thing but using 'blowup', 'on' instead:
-f = chebfun(op, dom, 'blowup', 'on');
+% Same thing but using 'blowup' and flag '2' instead:
+f = chebfun(op, dom, 'blowup', 2);
 fval = feval(f, x);
 vals_exact = feval(op, x);
 err = fval - vals_exact;
@@ -312,5 +312,30 @@ fval = feval(f, x);
 vals_exact = feval(op, x);
 err = fval - vals_exact;
 pass(13) = all( norm(err, inf) < 1e1*get(f,'epslevel')*norm(vals_exact, inf) );
+
+%% Multipole subdomains with blowup flag set 1:
+
+% Set the domain:
+dom = [-2 0 7];
+op1 = @(x) sin(x)./((x-dom(1)).*(dom(2)-x));
+op2 = @(x) cos(x)./((x-dom(2)).^2.*(dom(3)-x));
+op = {op1 op2};
+f = chebfun(op, dom, 'blowup', 1);
+
+% check values:
+
+% Generate a few random points to use as test values:
+x1 = diff(dom(1:2)) * rand(100, 1) + dom(1);
+x2 = diff(dom(2:3)) * rand(100, 1) + dom(2);
+
+fval1 = feval(f, x1);
+vals_exact1 = feval(op1, x1);
+err1 = fval1 - vals_exact1;
+fval2 = feval(f, x2);
+vals_exact2 = feval(op2, x2);
+err2 = fval2 - vals_exact2;
+
+pass(14) = norm([err1; err2], inf) < 2e1*epslevel(f)* ...
+    norm([vals_exact1; vals_exact2], inf);
 
 end

@@ -20,22 +20,9 @@ if ( isempty(f) || isempty(g) )
     return
 end
 
-% Cast G to SINGFUN if G has vanishing values at the endpoints:
-if ( ~isnumeric(g) && issmooth(g) )
-    % Get the boundary values:
-    endVals = [get(g, 'lval'); get(g, 'rval')];
-    tol = 1e1*get(g, 'vscale').*get(g, 'epslevel');
-    
-    if any( any( endVals < repmat(tol, 2, 1) ) )
-        
-        [g.onefun, rootsLeft, rootsRight] = extractBoundaryRoots(g.onefun);
-        h = singfun();
-        h.smoothPart = g.onefun;
-        h.exponents = [rootsLeft rootsRight];
-        g.onefun = h;
-        
-    end
-    
+% Cast ONEFUN of G to SINGFUN if G has vanishing values at the endpoints:
+if ( ~isnumeric(g) )
+    g = extractBoundaryRoots(g);
 end
 
 % Look at different cases:

@@ -20,4 +20,8 @@ pass(3) = all(f);
 f = chebfun(@(x) [sin(x) sin(x - 0.1) exp(2*pi*1i*x)], [-1 -0.5 0 0.5 1], pref);
 pass(4) = isequal(all(f), logical([0 0 1]));
 
+% Test on SINGFUN:
+f = chebfun(@(x) sin(x)./(x+1), 'exps', [-1 0]);
+pass(5) = ~( all(f) );
+
 end

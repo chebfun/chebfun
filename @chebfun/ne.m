@@ -38,7 +38,8 @@ for k = 1:numel(h.funs)
 end
 
 % Impulses:
-h.impulses = double(logical(h.impulses));
+ind = isnan(h.impulses);
+h.impulses(~ind) = double(logical(h.impulses(~ind)));
 
 % Tidy the result:
 h = merge(h);
