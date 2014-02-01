@@ -126,7 +126,7 @@ classdef bndfun < fun
     %% METHODS IMPLEMENTED BY THIS CLASS.
     methods
 
-        % Compose a BNDFUN with an operator or another BNDFUN
+        % Compose a BNDFUN with an operator or another BNDFUN.
         f = compose(f, op, g, pref)
         
         % Indefinite integral of a BNDFUN.
@@ -135,7 +135,7 @@ classdef bndfun < fun
         % Derivative of a BNDFUN.
         f = diff(f, k, dim)
        
-        % Change of domains of BNDFUN via linear change of variables
+        % Change of domains of BNDFUN via linear change of variables.
         f = changeMap(f,newdom)
         
         % Evaluate a BNDFUN.
@@ -152,12 +152,6 @@ classdef bndfun < fun
 
         % Right matrix divide for a BNDFUN.
         X = mrdivide(B, A)
-        
-        % Return Legendre coefficients of a BNDFUN.
-        c_leg = legpoly(f, n)
-        
-        % Estimate the Inf-norm of a BNDFUN
-        out = normest(f);
         
         % Data for plotting a BNDFUN
         data = plotData(f, g, h);
