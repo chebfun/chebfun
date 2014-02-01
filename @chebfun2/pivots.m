@@ -13,7 +13,7 @@ function p = pivots(f, varargin)
 if ( nargin < 2 )
     
     p = f.pivotValues;  % Return the pivot values. 
-    p = p(:)            % make column vector
+    p = p(:);            % make column vector
     
 elseif ( strcmpi(varargin{1},'normalise') ... 
                                || strcmpi(varargin{1},'normalize') )
