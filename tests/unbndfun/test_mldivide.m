@@ -7,8 +7,6 @@ if (nargin < 1)
     pref = chebpref();
 end
 
-%% Functions on [-inf b]:
-
 % Set the domain:
 dom = [-Inf 3*pi];
 domCheck = [-1e6 3*pi];

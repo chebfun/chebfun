@@ -42,7 +42,7 @@ C(3, 1) = -1/3;
 C(4,2) = -3/5;
 pass(5) = norm(X - C, inf) < 1e2*epslevel(L);
 
-%% Test on SINGFUN:
+%% Test for singular functions:
 
 % [INF x 1] * scalar = [INF x 1] => column SINGFUN/scalar:
 f = chebfun(@(x)sin(20*x)./(x+1), 'exps', [-1 0], 'splitting', 'on');
@@ -67,5 +67,40 @@ g = g.';
 h = g/f;
 err = h - 9;
 pass(8) = abs(err) < 3*vscale(f)*epslevel(f);
+
+%% Test for functions defined on unbounded domain:
+
+% Set the domain:
+dom = [-Inf 3*pi];
+domCheck = [-1e6 3*pi];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+% Case 1: X*B = A, where B is a scalar and A is an array-valued UNBNDFUN
+%         ==> X = A/B, i.e. UNBNDFUN / double
+
+op = @(x) [exp(x) x.*exp(x) (1-exp(x))./x];
+A = chebfun(op, dom);
+B = 3;
+X = A/B; 
+opExact = @(x) [exp(x)/3 x.*exp(x)/3 (1-exp(x))./(3*x)];
+XVals = feval(X, x);
+XExact = opExact(x);
+err = XVals - XExact;
+pass(9) = norm(err, inf) < 2*max(get(X,'epslevel').*get(X,'vscale'));
+
+%% [TODO]: Revive the following test:
+
+% Case 2: X*B = A, where B is a numerical matrix and A is an array-valued 
+%         UNBNDFUN ==> X = A/B, i.e. UNBNDFUN / numerical matrix
+
+% op = @(x) [exp(x) x.*exp(x) (1-exp(x))./x];
+% A = chebfun(op, dom);
+% B = rand(3,3);
+% X = A/B; 
+% res = X*B - A;
+% err = feval(res, x);
+% pass(10) = norm(err(:), inf) < 1e1*max(get(X,'epslevel').*get(X,'vscale'));
 
 end

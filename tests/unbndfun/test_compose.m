@@ -6,14 +6,14 @@ if ( nargin < 1 )
     pref = chebpref();
 end
 
-%%%%%%%%%%%%%%%% Compose an UNBNDFUN with an operator (OP(F)) %%%%%%%%%%%%%%%%%%
-
 % Set the domain:
 dom = [0 Inf];
 domCheck = [0 1e2];
 
 % Generate a few random points to use as test values:
 x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+%%%%%%%%%%%%%%%% Compose an UNBNDFUN with an operator (OP(F)) %%%%%%%%%%%%%%%%%%
 
 opf = @(x) exp(-x);
 opg = @(x) sin(exp(-x));
@@ -25,13 +25,6 @@ err = gVals - gExact;
 pass(1) = norm(err, inf) < get(g,'epslevel')*get(g,'vscale');
 
 %%%%%%%%%%%%%%%%%%% Compose two UNBNDFUNs (F + G) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Set the domain:
-dom = [0 Inf];
-domCheck = [0 1e2];
-
-% Generate a few random points to use as test values:
-x = diff(domCheck) * rand(100, 1) + domCheck(1);
 
 opf = @(x) exp(-x);
 opg = @(x) x.*exp(-x);
@@ -45,13 +38,6 @@ err = hVals - hExact;
 pass(2) = norm(err, inf) < get(h,'epslevel')*get(h,'vscale');
 
 %%%%%%%%%%%%%%%%%%% Compose an UNBNDFUN with a BNDFUN (G(F)) %%%%%%%%%%%%%%%%%%%
-
-% Set the domain:
-dom = [0 Inf];
-domCheck = [0 1e2];
-
-% Generate a few random points to use as test values:
-x = diff(domCheck) * rand(100, 1) + domCheck(1);
 
 opf = @(x) exp(-x);
 opg = @(x) cos(x);

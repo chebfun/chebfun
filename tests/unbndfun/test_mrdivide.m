@@ -7,13 +7,11 @@ if (nargin < 1)
     pref = chebpref();
 end
 
-%% Functions on [-inf b]:
-
 % Set the domain:
 dom = [-Inf 3*pi];
 domCheck = [-1e6 3*pi];
 
-% Generate a few random points to use as test values:
+%% Generate a few random points to use as test values:
 x = diff(domCheck) * rand(100, 1) + domCheck(1);
 
 % Case 1: X*B = A, where B is a scalar and A is an array-valued UNBNDFUN
@@ -29,7 +27,7 @@ XExact = opExact(x);
 err = XVals - XExact;
 pass(1) = norm(err, inf) < 2*max(get(X,'epslevel').*get(X,'vscale'));
 
-% Case 2: X*B = A, where B is a numerical matrix and A is an array-valued 
+%% Case 2: X*B = A, where B is a numerical matrix and A is an array-valued 
 %         UNBNDFUN ==> X = A/B, i.e. UNBNDFUN / numerical matrix
 
 op = @(x) [exp(x) x.*exp(x) (1-exp(x))./x];

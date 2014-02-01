@@ -65,6 +65,25 @@ gExact = opg(x);
 err = gVals - gExact;
 pass(10) = ( norm(err, inf) < 1e1*vscale(g)*epslevel(g) ) && ...
         isequal(opg(domain(f)), feval(g, domain(f)));
+    
+%% Compose a function defined on an unbounded domain with an operator, i.e. 
+% OP(F)
+
+% Set the domain:
+dom = [0 Inf];
+domCheck = [0 1e2];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+opf = @(x) exp(-x);
+opg = @(x) sin(exp(-x));
+f = unbndfun(opf, dom);
+g = compose(f, @sin);
+gVals = feval(g, x);
+gExact = opg(x);
+err = gVals - gExact;
+pass(11) = norm(err, inf) < get(g,'epslevel')*get(g,'vscale');
 
 end
 
