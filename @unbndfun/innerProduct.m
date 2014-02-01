@@ -52,9 +52,9 @@ forDer = onefun.constructor(f.mapping.forder, [], [], pref);
 
 % Assign the output to be the inner product of the onefuns of the input,
 % but multiplied by the derivative of the map.
-% out = innerProduct(f.onefun, g.onefun.*forDer);
 
 integrand = conj(f.onefun).*g.onefun.*forDer;
+
 if ( isa(integrand, 'singfun') && all( integrand.exponents <= 0 ) )
     exps = integrand.exponents;
     % Try to see if we can extract boundary roots:

@@ -175,7 +175,7 @@ classdef unbndfun < fun
         % UNBNDFUN power function.
         f = power(f, b)
         
-        % QR factorisation of an array-valued UNBNDFUN.
+        % QR factorisation for UNBNDFUN object is not supported.
         [f, R, E] = qr(f, flag)
 
         % Restrict an UNBNDFUN to a subinterval.
