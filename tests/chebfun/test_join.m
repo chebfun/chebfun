@@ -58,7 +58,7 @@ catch ME
         strcmp(ME.identifier, 'CHEBFUN:join:dim');
 end
 
-% Test on SINGFUN:
+% Test for singular function:
 op1 = @(x) sin(x)./(x+1);
 op2 = @(x) sin(x);
 f = chebfun(op1, [-1 -0.5 0], 'exps', [-1 0 0]);
@@ -74,6 +74,32 @@ h_exact = [h_exact1; h_exact2];
 err = h_exact - h_vals;
 pass(6) = isequal(h.domain, [-1 -0.5 0 1]) && ...
     norm(err, inf) < 5e3*vscale(h)*epslevel(h);
+
+% Test for function defined on unbounded domain:
+
+% Set the domain:
+domf = [-Inf -3];
+domg = [1 Inf];
+domCheck = [-1e2 1e2];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+opf = @(x) x.*exp(x);
+f = chebfun(opf, domf);
+opg = @(x) (1-exp(-x))./x;
+g = chebfun(opg, domg);
+h = join(f, g);
+x = sort(x);
+h_vals = feval(h, x);
+ind = ( x < -3 );
+indComp = ~ind;
+h_exactf = feval(opf, x(ind));
+h_exactg = feval(opg, x(indComp) + (domg(1) - domf(2)));
+h_exact = [h_exactf; h_exactg];
+err = h_exact - h_vals;
+pass(7) = isequal(h.domain, [-Inf -3 Inf]) && ...
+    norm(err, inf) < vscale(h)*epslevel(h);
 
 end
 

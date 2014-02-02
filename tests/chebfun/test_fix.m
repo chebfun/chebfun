@@ -52,4 +52,23 @@ catch ME
     pass(7) = strcmp(ME.identifier, 'CHEBFUN:fix:inf');
 end
 
+% Test for function defined on unbounded domain:
+
+% Functions on [-inf b]:
+
+% Set the domain:
+dom = [-Inf -3*pi];
+domCheck = [-1e6 -3*pi];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+op = @(x) x.*exp(x);
+f = chebfun(op, dom);
+fVals = feval(f, x);
+opExact = @(x) fix(op(x));
+fExact = opExact(x);
+err = fVals - fExact;
+pass(8) = norm(err, inf) < epslevel(f)*vscale(f);
+
 end

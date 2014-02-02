@@ -78,6 +78,7 @@ F2Exact = oph(x);
 err1 = F1Vals - F1Exact;
 err2 = F2Vals - F2Exact;
 
-pass(7) = norm([err1; err2(:)], inf) < 1e1*max(get(f,'epslevel').*get(f,'vscale'));
+pass(7) = norm([err1; err2(:)], inf) < ...
+    1e1*max(get(f,'epslevel').*get(f,'vscale'));
 
 end
