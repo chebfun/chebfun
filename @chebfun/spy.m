@@ -37,18 +37,22 @@ for j = 1:numCols
     if ( isTransposed )
         [jj, ss] = deal(ss, jj);
     end
-    linespec = varargin{:}; 
+    if ( nargin > 1 ) 
+        linespec = varargin{:};
+    else
+        linespec = ''; 
+    end
     marks = {'.-', 'o', 'x', '+', '*', 's', 'd', 'v', '^', '<', '>', 'p', 'h'}; 
     reg = regexp(linespec, marks );
     if ( ~isempty( cell2mat( reg ) ) )
         % This allows the zero structure of a quasimatrix to be plotted
         rts = roots( Aj );
         rj = repmat(j, length(rts), 1);
-        plot(jj, ss, varargin{:}, 'markersize', eps, 'color', 'b')
+        plot(jj, ss, linespec, 'markersize', eps, 'color', 'b')
         hold on 
-        plot(rj, rts, varargin{:}, 'linestyle', 'none')
+        plot(rj, rts, linespec, 'linestyle', 'none')
     else
-        plot(jj, ss, varargin{:}); 
+        plot(jj, ss, linespec); 
         hold on
     end
 
