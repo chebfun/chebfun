@@ -48,11 +48,11 @@ for j = 1:numCols
         % This allows the zero structure of a quasimatrix to be plotted
         rts = roots( Aj );
         rj = repmat(j, length(rts), 1);
-        plot(jj, ss, linespec, 'markersize', eps, 'color', 'b')
+        plot(jj, ss, varargin{:}, 'markersize', eps, 'color', 'b')
         hold on 
-        plot(rj, rts, linespec, 'linestyle', 'none')
+        plot(rj, rts, varargin{:}, 'linestyle', 'none')
     else
-        plot(jj, ss, linespec); 
+        plot(jj, ss, varargin{:}); 
         hold on
     end
 

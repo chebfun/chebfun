@@ -32,7 +32,7 @@ end
 
 L = A; 
 U = zeros( size(L, 2) ); 
-p = zeros( size(L, 2), 1);
+p = NaN( size(L, 2), 1);
 % Do GE with partial pivoting: 
 for j = 1 : size(A, 2)
     Acol = extractColumns(A, j);
@@ -42,7 +42,12 @@ for j = 1 : size(A, 2)
     [ignored, idx] = max( abs( vals ) ); 
     pos = pos( idx );
     mx = feval( Acol, pos ); 
-    Arow = feval(A, pos); 
+    Arow = feval(A, pos);     
+    
+    if ( ismember(pos, p) )
+        error('CHEBFUN:LU:PIVOT',...
+            'Duplicated pivot location, likely due to ill-conditioning.');
+    end
     
     % Store upper-triangular part: 
     U( j, : ) = Arow; 
@@ -56,7 +61,7 @@ for j = 1 : size(A, 2)
     A = A - Acol * Arow / mx; 
     
     % store pivot locations: 
-    p( j ) = pos; 
+    p( j ) = pos;
 end
 
 % Make upper-triangular even with rounding errors:
