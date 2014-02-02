@@ -14,7 +14,7 @@ function varargout = cdr( f )
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 if ( isempty( f ) )
-    varargout = {[]}; 
+    varargout = cell(1, nargout); 
     return
 end
 
