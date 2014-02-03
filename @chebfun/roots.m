@@ -137,19 +137,22 @@ r(abs(r) < el*vs*hs/10) = 0;
 r = sort(r, 1);             % Sort will place NaNs in the final rows.
 r(all(isnan(r), 2),:) = []; % This removes any rows which contain only NaNs.
 
+
+%%
+% TODO: Explain / justify this.
+
 % Get rid of spurious roots which are caused by fast decay of function defined
 % in an unbounded domain:
 ends = domain(f);
-
 if ( isinf(ends(1)) )
     mask = ( r < -1e-1/vtol );
     r(mask) = [];
 end
-
 if ( isinf(ends(end)) )
     mask = ( r > 1e-1/vtol );
     r(mask) = [];
 end
+
 
 end
 

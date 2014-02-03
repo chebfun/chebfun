@@ -14,6 +14,7 @@ if ( ~issing(f) )
     return
 end
 
+% TODO: What are exponents?!
 % Non-trivial exponents at both endpoints?
 if ( any(~get(f, 'exponents') ) )
     return

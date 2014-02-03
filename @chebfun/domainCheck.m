@@ -39,20 +39,10 @@ elseif ( ~isa(f, 'chebfun') )      % f, g both not empty. g is a CHEBFUN.
 else                               % f, g both not empty CHEBFUN objects.
     % Grab the hscale:
     hs = max(hscale(f), hscale(g));
-    if all( isfinite([domain(f) domain(g)]) )
-        
-        % bounded domain:
-        pass = norm(f(1).domain([1, end]) - g(1).domain([1, end]), inf) ...
-            < 1e-15*hs;
-    else
-        
-        % unbounded domain:
-        maskF = isinf(f(1).domain([1, end]));
-        maskG = isinf(g(1).domain([1, end]));
-        pass = ( norm(f(1).domain(~maskF) - g(1).domain(~maskG), inf) < ...
-            1e-15*hs ) && all( maskF == maskG );
-        
-    end
+    % Compare the domains:
+    err = domain(f, 'ends') - domain(g, 'ends');
+    % Should be either less than tolerance or NaN (from inf - inf).
+    pass = all(err < 1e-15*hs | isnan(err));
     
 end
 

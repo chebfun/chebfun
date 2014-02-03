@@ -40,6 +40,7 @@ else
     % Evaluate the function handle at the breaks:
     vals(1:numFuns+1,:) = feval(op, ends.');
     
+    %TODO: Explain the need for this:
     % Replace all NaNs by the appropriate function values obtained using FUNs:
     mask = isnan(vals(1:numFuns+1,:));
     if any( mask(1,:) )
