@@ -1,6 +1,6 @@
-function E = feval(disc,location,direction)
+function E = feval(disc, location, direction)
 %FEVAL     Evaluation functional for COLLOC2 discretization.
-%   FEVAL(DISC,LOC,DIRN) returns a functional that evaluates the Chebyshev
+%   FEVAL(DISC, LOC, DIRN) returns a functional that evaluates the Chebyshev
 %   polynomial represented by a COLLOC2 discretization at the given point LOC as
 %   approached from the direction DIRN (either +1 or -1). 
 
@@ -11,13 +11,13 @@ n = disc.dimension;
 
 % Find the collocation points and create an empty functional.
 x = points(disc);
-offset = cumsum([0;n(:)]);
+offset = cumsum([0; n(:)]);
 N = offset(end);
-E = zeros(1,N);
+E = zeros(1, N);
 
 % Only one subinterval creates nonzero entries in E.
-intnum = disc.whichInterval(location,direction);
+intnum = disc.whichInterval(location, direction);
 active = offset(intnum) + (1:n(intnum));
-E(1,active) = barymat(location,x(active));
+E(1, active) = barymat(location, x(active));
 
 end

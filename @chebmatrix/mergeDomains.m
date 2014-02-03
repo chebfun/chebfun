@@ -1,4 +1,4 @@
-function d = merge(varargin)
+function d = mergeDomains(varargin)
 % D = MERGEDOMAINS(D1,D2,...) merges domains (union of breakpoints,
 % while checking endpoints). Each input is inspected.
 %   If numeric scalar, it's ignored.

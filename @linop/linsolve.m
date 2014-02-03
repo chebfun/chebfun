@@ -48,7 +48,7 @@ end
 % Use a given discretization, or create one?
 dimVals = pref.dimensionValues;
 if isempty(disc)
-    disc = pref.discretisation(L);
+    disc = pref.discretization(L);
     % Update the domain if new breakpoints are needed
     disc.domain = chebfun.mergeDomains(disc.domain, f.domain); 
     % Update the dimensions to work with the correct number of breakpoints
@@ -71,8 +71,8 @@ end
 numInt = disc.numIntervals;
 isDone = false(1, numInt);
 
-%% Loop over a finer and finer grid until happy:
-% TODO: What implications does the isFun variable have? 
+%% Loop over a finer and finer grid until happy.
+% We need to know which solution components to check for happiness:
 isFun = isFunVariable(L); 
 for dim = dimVals
 
@@ -99,7 +99,7 @@ for dim = dimVals
     if ( all(isDone) )
         break
     else
-        % Update the discretistion dimension on unhappy pieces:
+        % Update the discretiztion dimension on unhappy pieces:
         disc.dimension(~isDone) = dim;
     end
     

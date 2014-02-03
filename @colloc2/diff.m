@@ -1,17 +1,20 @@
-function D = diff(disc,m)
+function D = diff(disc, m)
 %DIFF    Differentiation operator for COLLOC2 discretization.
 %   D = DIFF(DISC) gives the matrix such that if v=D*u, then v=u', where u is a
-%   COLLOC2 representation of a Chebyshev polynomial. \
+%   COLLOC2 representation of a Chebyshev polynomial.
 %
-%   DIFF(DISC,M) for positive integer M returns D^M (through a better algorithm
-%   than multiplication). 
+%   DIFF(DISC, M) for positive integer M returns D^M (through a better algorithm
+%   than multiplication).
 
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
+
+% Store information about domain and dimensions.
 d = disc.domain;
 n = disc.dimension;
 
 if m == 0
+    % Trivial case
     D = eye(sum(n));
 else
     numIntervals = disc.numIntervals;
@@ -20,10 +23,10 @@ else
     blocks = cell(numIntervals);
     for k = 1:numIntervals
         len = d(k+1) - d(k);
-        blocks{k} = diffmat(n(k),m) * (2/len)^m;
+        blocks{k} = diffmat(n(k),m) * (2/len)^m; % Scaled diffmats
     end
     
-    % Assemble.
+    % Assemble!
     D = blkdiag(blocks{:});
 end
 end

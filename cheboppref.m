@@ -1,15 +1,15 @@
 classdef cheboppref < chebpref
+% TODO: Add CHEBPREF style documentation of the options available. To be written
+% when we introduce nonlinear ODEs, since those involve a number of options.
     
+% TODO: The relationship between CHEBOPPREF and CHEBPREF needs some serious
+% consideration.
+
     % See above for documentation.
     properties
-%         discretisation = @colloc2
+%         discretization = @colloc2
 %         scale = NaN
 %         dimensionValues = [32 64 128 256 512 724 1024 1448 2048]
-    end
-    
-    properties (Dependent)
-        % TODO: Check how to get this working again.
-        discretization
     end
 
     methods
@@ -23,21 +23,13 @@ classdef cheboppref < chebpref
             outPref.prefList.enableSingularityDetection = false;  % not supported
             
             % Default new properties.
-            outPref.prefList.discretisation = @colloc2;
+            outPref.prefList.discretization = @colloc2;
             outPref.prefList.scale = NaN;
             outPref.prefList.dimensionValues =[32 64 128 256 512 724 1024 1448 2048];
             
             
         end
         
-        function out = get.discretization(pref)
-            out = pref.discretisation;
-        end
-
-        function pref = set.discretization(pref,disc)
-            pref.discretisation = disc;
-        end
-
         function out = subsref(pref, ind)
         %SUBSREF   Subscripted referencing for CHEBOPPREF.
         %   P.PROP, where P is a CHEBOPPREF object, returns the value of the

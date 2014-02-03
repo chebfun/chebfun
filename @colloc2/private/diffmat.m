@@ -1,7 +1,4 @@
 function D = diffmat(N,k)
-
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
 % DIFFMAT  Chebyshev differentiation matrix
 % D = DIFFMAT(N) is the matrix that maps function values at N Chebyshev
 % points to values of the derivative of the interpolating polynomial at
@@ -11,6 +8,11 @@ function D = diffmat(N,k)
 %
 % The matrices are computed using the 'hybrid' formula of Schneider &
 % Werner [1] and Welfert [2] proposed by Tee [3].
+
+% TODO: This method is also used in the methods JACPTS and LEGPTS. It should
+% probably be made a static method of CHEBTECH (or its subclasses). Thus, it has
+% not been reviewed as a part of the LINOP code review. AB, 30/01/14.
+
 
 % Copyright 2011 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
