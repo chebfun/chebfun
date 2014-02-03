@@ -63,7 +63,9 @@ elseif ( lambda == 1 )
 else
     % Want the C^{lam}C^{lam} Cheb Multiplication matrix.
     
-    dummy = blockUS(n, [-1 1]);
+    dummy = ultraS([]);
+    dummy.domain = f.domain;
+    dummy.dimension = n;
     
     % Convert ChebT of a to ChebC^{lam}
     a = convert(dummy, 0, lambda-1) * a;

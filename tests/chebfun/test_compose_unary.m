@@ -50,6 +50,22 @@ pass(8) = test_one_compose_unary(@(x) [cos(2*(x + 0.2)), sin(2*(x - 0.1))], ...
 pass(9) = test_one_compose_unary_quasi(@(x) [cos(2*(x + 0.2)), sin(2*(x - 0.1))], ...
     [-1 1], @exp, pref);
 
+%% Test for singular function:
+dom = [0 1];
+
+% Generate a few random points to use as test values.
+seedRNG(6178);
+x = diff(dom) * rand(100, 1) + dom(1);
+
+f = chebfun(@(x) sqrt(x), dom, 'blowup', 2);
+g = sin(f);
+gVals = feval(g, x);
+opg = @(x) sin(sqrt(x));
+gExact = opg(x);
+err = gVals - gExact;
+pass(10) = ( norm(err, inf) < 1e1*vscale(g)*epslevel(g) ) && ...
+        isequal(opg(domain(f)), feval(g, domain(f)));
+
 end
 
 % Test composition of a function with a unary operator.

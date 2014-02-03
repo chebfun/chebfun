@@ -153,10 +153,10 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
             
             %% Misc Checks on the Inputs
             
-            % Make sure that op is a function handle
-            if ( ~isa(op, 'function_handle') )
+            % Make sure that op is a function handle or a smoothfun:
+            if ( ~isa(op, 'function_handle') && ~isa(op, 'smoothfun') )
                 error( 'CHEBFUN:SINGFUN:constructor', ...
-                    'First argument must be a function handle.');
+                    'First argument must be a function handle or a smoothfun.');
             end
             
             % Check to avoid array-valued operators:
@@ -180,7 +180,8 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
             %% Find Exponents
             % If exponents were passed, make sure they are in correct shape.
             if ( ~isempty(exponents) )
-                if ( any(size(exponents) ~= [1, 2]) || ~isa(exponents, 'double') )
+                if ( any(size(exponents) ~= [1, 2]) || ...
+                        ~isa(exponents, 'double') )
                     error( 'CHEBFUN:SINGFUN:constructor', ...
                         'Exponents must be a 1X2 vector of doubles.' );
                 end
@@ -189,14 +190,19 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
                 obj.exponents = singfun.findSingExponents(op, singType);
             end
             
-            %% Construct New Function Handle
-            % Factor out singular terms from the operator based on the values
-            % in exponents.
-            smoothOp = singOp2SmoothOp(op, obj.exponents);
-            
-            % Construct the smooth part.
-            obj.smoothPart = singfun.constructSmoothPart(smoothOp, vscale, ...
-                hscale, pref);
+            % If a smoothfun has been passed as the op, store it directly:
+            if ( isa(op, 'smoothfun') )
+                obj.smoothPart = op;
+            else
+                %% Construct New Function Handle
+                % Factor out singular terms from the operator based on the values
+                % in exponents.
+                smoothOp = singOp2SmoothOp(op, obj.exponents);
+                
+                % Construct the smooth part.
+                obj.smoothPart = singfun.constructSmoothPart(smoothOp, ...
+                    vscale, hscale, pref);
+            end
         end
     end
     
@@ -208,7 +214,7 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
 
         % True if any element of a SINGFUN is a nonzero number, ignoring NaN.
         a = any(f, dim)
-        
+
         % Convert an array of ONEFUN objects into an array-valued ONEFUN.
         f = cell2mat(f)
         
@@ -227,14 +233,23 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         % Extract information for DISPLAY.
         info = dispData(f)
         
+        % Extract the boundary roots of the SMOOTHPART of a SINGFUN.
+        f = extractBoundaryRoots(f)
+        
         % Evaluate a SINGFUN.
         y = feval(f, x)
+        
+        % SINGFUN does not support FIX.
+        g = fix(f);
         
         % Flip columns of an array-valued SINGFUN object.
         f = fliplr(f)
         
         % Flip/reverse a SINGFUN object.
         f = flipud(f)
+        
+        % SINGFUN does not support FLOOR.
+        g = floor(f);
         
         % Get method:
         val = get(f, prop);
@@ -347,9 +362,12 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         % Roots of a SINGFUN in the interval [-1,1].
         out = roots(f, varargin)
         
+        % Convert a SINGFUN to a SMOOTHFUN.
+        f = singFun2SmoothFun(f) 
+        
         % Size of a SINGFUN.
         [siz1, siz2] = size(f, varargin)
-        
+
         % Definite integral of a SINGFUN on the interval [-1,1].
         out = sum(f, dim)
         
@@ -386,10 +404,10 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         
         % Retrieve and modify preferences for this class.
         prefs = pref(varargin)
-        
-        % Convert SMOOTHFUN objects to SINGFUN objects:
-        f = smoothFun2SingFun(f);
       
+        % Convert a SMOOTHFUN to a SINGFUN.
+        f = smoothFun2SingFun(f) 
+        
         % Construct a zero SINGFUN
         s = zeroSingFun()
     end

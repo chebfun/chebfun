@@ -73,14 +73,16 @@ end
 
 % Store the hold state of the current axis:
 holdState = ishold;
-if ( holdState == true )
-    % Respect current limits:
-    yLim = get(gca, 'ylim');
-else
-    yLim = [inf, -inf];
+
+% Store the current Y-limits:
+if ( holdState )
+    yLimCurrent = get(gca, 'ylim');
 end
+
+% Initialize flags:
 isComplex = false;
 intervalIsSet = false;
+yLim = [inf, -inf];
 
 % Initialise storage:
 lineData = {};
@@ -116,8 +118,8 @@ lineData = {};
 pointData = {};
 jumpData = {};
 
-% Deail with 'jumpLine' input.
-[jumpStyle, varargin] = parseJumpStyle(varargin{:});
+% Deal with 'jumpLine' input.
+[jumpStyle, varargin] = chebfun.parseJumpStyle(varargin{:});
 
 %%
 % Get the data for plotting from PLOTDATA():
@@ -278,8 +280,14 @@ else
     set(h3, jumpStyle{:});
 end
 
-% Set the y limits if appropriate values have been suggested:
+% Set the Y-limits if appropriate values have been suggested:
 if ( all(isfinite(yLim)) )
+
+    % If holding, then make sure not to shrink the Y-limits.
+    if ( holdState )
+        yLim = [min(yLimCurrent(1), yLim(1)), max(yLimCurrent(2), yLim(2))];
+    end
+
     set(gca, 'ylim', yLim)
 end
 
@@ -291,39 +299,6 @@ end
 % Give an output to the plot handles if requested:
 if ( nargout > 0 )
     varargout = {h1 ; h2 ; h3};
-end
-
-end
-
-
-function [jumpStyle, varargin] = parseJumpStyle(varargin)
-jumpStyle = {};
-for idx = 1:numel(varargin)
-    if ( ~strcmpi(varargin{idx}, 'jumpline') )
-        continue
-    end
-    tmp = varargin{idx+1};
-    varargin(idx:(idx+1)) = [];
-    if ( iscell(tmp) )
-        jumpStyle = tmp;
-        return
-    end
-    ll = regexp(tmp, '[-:.]+','match');           % style
-    if ( ~isempty(ll) )
-        jumpStyle = [jumpStyle, 'LineStyle', ll];
-    end
-    cc = regexp(tmp,'[bgrcmykw]', 'match');       % color
-    if ( ~isempty(cc) )
-        jumpStyle = [jumpStyle, 'Color', cc];
-    end
-    mm = regexp(tmp,'[.ox+*sdv^<>ph]', 'match');  % marker
-    if ( ~isempty(mm) )
-        jumpStyle = [jumpStyle, 'Marker', mm];
-    end
-    if ( any(strcmpi(tmp, {'none', 'off'})))      % off
-        jumpStyle = {'LineStyle', 'none'};
-    end
-    return
 end
 
 end
