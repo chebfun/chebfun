@@ -98,8 +98,12 @@ classdef blockFunction
         end
                                
         function C = mtimes(A, B)
-        %*      Composition of BLOCKFUNCTION objects
-            C = blockFunction( @(z) A.func(B.func(z)) );
+%*      Composition of BLOCKFUNCTION objects.
+            if ( isnumeric(A) )
+                C = blockFunction( @(z) A*B.func(z) );
+            else
+                C = blockFunction( @(z) A.func(B.func(z)) );
+            end
         end
 
         function F = mult(A, f)
