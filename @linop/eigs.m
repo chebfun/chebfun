@@ -170,13 +170,13 @@ if ( isempty(sigma) )
         end
         
         % Convert the discrete Z values to CHEBFUN
-        z = toFunction(disc,Z);
+        z = toFunction(disc, Z);
         
         % Compute the 1-norm of the polynomial expansions, summing over smooth
         % pieces, for all columns.
         onenorm = 0;
         for j = 1:disc.numIntervals
-            onenorm = onenorm + sum( abs( chebpoly(z,j) ), 2 );
+            onenorm = onenorm + sum( abs( chebpoly(z) ), 2 );
         end
         
         [~,index] = min(onenorm);  
@@ -224,7 +224,7 @@ if ( nargout < 2 )  % Return the eigenvalues only
     varargout = { diag(D) };
 else            % Unwrap the eigenvectors for output  
     
-    u = mat2fun(disc,V);
+    u = mat2fun(disc, V);
         
     % Find the norm in each eigenfunction (aggregated over variables).
     nrmsq = zeros(1,k);
