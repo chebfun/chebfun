@@ -4,7 +4,7 @@ function spy(L,dim)
 %   discretization of L. Block boundaries are indicated by gray lines, and
 %   side condition rows are marked off by dashed lines (boundary and
 %   continuity conditions).
-%   
+%
 %   SPY(L,DIM) uses the dimension vector DIM to create the picture.
 %
 %   See also LINOP.
@@ -51,22 +51,22 @@ hold on
 
 % Find all block sizes, substituting in the discretization size for Inf.
 [m, n] = blockSizes(L);
-m(isinf(m)) = sum(dim);  
+m(isinf(m)) = sum(dim);
 n(isinf(n)) = sum(dim);
 
 % Draw vertical block boundaries.
 cscol = cumsum(n(1, :));
-coldiv = cscol(1:end-1) + 1/2; 
+coldiv = cscol(1:end-1) + 1/2;
 rowmax = sum(m(:, 1));
-plot([coldiv;coldiv], [0; rowmax + 1], 'color', [.6 .6 .6])
+plot([coldiv;coldiv], [0; rowmax+1]*ones(size(coldiv)), 'color', [.6 .6 .6])
 
-% Draw horizontal block boundaries. Account for the down-sampling of each
-% row.
-csrow = cumsum( m(:, 1)' - sizeReduction(L)' );     % remove down-sampling
+% Draw horizontal block boundaries. Account for the down-sampling of each row.
+sizeRedux = sizeReduction(L);                       % could be a row or column?
+csrow = cumsum( m(:, 1)' - sizeRedux(:)' );         % remove down-sampling
 rowdiv = csrow(1:end - 1) + 1/2;                    % boundary after each block
 rowdiv = nbc + ncon + rowdiv;                       % offset from top rows
 colmax = sum(n(1, :));
-plot([0; colmax + 1],[rowdiv; rowdiv], 'color', [.6 .6 .6])
+plot([0; colmax+1]*ones(size(rowdiv)), [rowdiv; rowdiv], 'color', [.6 .6 .6])
 
 % Draw horizontal BC and continuity boundaries.
 y = nbc + 1/2;
