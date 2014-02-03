@@ -50,32 +50,32 @@ function varargout = eigs(L,varargin)
 % See http://www.chebfun.org for Chebfun information.
 
 % Parsing inputs.
-M = [];  k = 6;  sigma = []; 
+M = [];       % no generalized operator
+k = [];       % will be made default value below
+sigma = [];   % default 'auto' mode
 prefs = L.prefs;
 discType = prefs.discretization;
-gotk = false;
-j = 1;
-while (nargin > j)
+gotk = false; % until we detect a value of k in inputs
+for j = 1:nargin-1 
     item = varargin{j};
     if ( isa(item, 'linop') )
         % Generalized operator term
         M = item;
     elseif ( isa(item, 'chebDiscretization') )
         discType = item;
+    elseif ( ~gotk && isnumeric(item) && (item > 0) && (item == round(item) ) )
+        % k should be given before sigma (which might also be integer)
+        k = item;
+        gotk = true;
+    elseif ( ischar(item) || isnumeric(item) )
+        sigma = item;            
     else
-        % k must be given before sigma.
-        if ( ~gotk || ischar(item) )
-            k = item;
-            gotk = true;
-        else
-            sigma = item;
-        end
+        error('Could not parse argument number %i.',j+1)
     end
-    j = j+1;
 end
 
 % Assign default to k if needed.
-if ( isnan(k) || isempty(k) )
+if ( isempty(k) || isnan(k) )
     k = 6; 
 end
 
@@ -118,11 +118,9 @@ discM = [];
 if ( ~isempty(M) )
     dom = chebfun.mergeDomains(disc.domain,dom,M.domain);
     disc.domain = dom;   % update the discretization domain for L
-    constructor = str2fun( class(disc) );   % constructor handle
+    constructor = str2func( class(disc) );   % constructor handle
     discM = constructor(M,disc.dimension,disc.domain);
-    % Copy constraints from the left side operator.
-    discM.source.constraint = disc.source.constraint;
-    discM.source.continuity = disc.source.continuity;
+    % We can ignore constraints and continuity--enforced on the left side. 
 end
 
 
@@ -251,20 +249,22 @@ end
 function [V,D] = getEigenvalues(disc, discM, k, sigma)
 % Formulate the discrete problem and solve for the eigenvalues
 
-    % Discretize the operator (incl. constraints/continuity):
-    [A, P, C] = matrix(disc);
-    nc = size(C, 1);
+    % Discretize the LHS operator (incl. constraints/continuity):
+    [PA, P, C, A] = matrix(disc);
+
+    % Discretize the RHS operator, or use identity. 
     if ( ~isempty(discM) )
         discM.dimension = disc.dimension;
-        discM.domain = disc.domain;
-        B = matrix(discM);
-        B(1:nc, :) = 0;  % don't need the constraints on this side
+        [~,~,~,B] = matrix(discM);
+        % Project RHS matrix and prepend rows for the LHS constraints.
+        PB = [ zeros(size(C)); P*B ];
     else
-        B = [ zeros(nc, size(A, 2)); P ];
+        PB = [ zeros(size(C)); P ];
     end
     
-    if ( length(A) <= 2000 )
-        [V,D] = eig(full(A), full(B));
+    % Compute eigenvalues.
+    if ( length(PA) <= 2000 )
+        [V,D] = eig(full(PA), full(PB));
         % Find the ones we're looking for.
         N = disc.dimension;
         idx = nearest(diag(D), V, sigma, min(k, N), N,disc);
@@ -272,7 +272,7 @@ function [V,D] = getEigenvalues(disc, discM, k, sigma)
         D = D(idx, idx);
     else
         % FIXME: Experimental.
-        [V, D] = eigs(A, B, k, sigma);
+        [V, D] = eigs(PA, PB, k, sigma);
     end
     
 end

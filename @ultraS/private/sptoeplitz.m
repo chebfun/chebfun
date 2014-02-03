@@ -1,6 +1,4 @@
 function T = sptoeplitz(col,row)
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
 % SPTOEPLITZ Sparse Toeplitz matrix.
 %    SPTOEPLITZ(C,R) produces a sparse nonsymmetric Toeplitz matrix having
 %    C as its first column and R as its first row. Neither C nor R needs to
@@ -11,6 +9,8 @@ function T = sptoeplitz(col,row)
 %    Examples:
 %       sptoeplitz( real( (1i).^(0:8) ) )   % 9x9, 41 nonzeros
 %       sptoeplitz( [-2 1 zeros(1,9998)] ); % classic 2nd difference
+% 
+%    ( This is needed by Ultraspherical multiplication operators.)
 %
 %    See also TOEPLITZ, SPDIAGS.
 

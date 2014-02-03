@@ -27,9 +27,7 @@ end
 function [isDone, epsLevel] = testPiece(u, interval)
 % Test convergence on a single subinterval.
 
-%TODO:  There is a lot of voodoo going on in this method, seems to be mostly
-% called in EIGS and EXPM. At some point, we should properly document what's
-% going on.
+% FIXME: This is the v4 test. It still has an ad hoc nature. 
 
 isDone = false;
 epsLevel = eps;
@@ -66,23 +64,19 @@ for k = 1:2
     mindmax = min(mindmax(1:end - 1), dmax(k + 1:end));
 end
 
-% TODO: Could we remove the line below?
-%cut = t+k+8 + find(mindmax < 0.02*min(mindmax), 1, 'last');
-
-% TODO: What's the meaning of the variable cut? Presumably that's where we'd
-% like to chop-off the Chebyshev series if we have converged? AB, 29/1/14
-cut = find(mindmax > 0.01*min(mindmax), 3);
-if ( isempty(cut) )
-    cut = 1;
+% Find the place to chop the series. 
+cutHere = find(mindmax > 0.01*min(mindmax), 3);
+if ( isempty(cutHere) )
+    cutHere = 1;
 else
-    cut = cut(end) + t + k + 3;
+    cutHere = cutHere(end) + t + k + 3;
 end
 
-% Are we satisfied?
-if cut < n
+% If the cut location is within the given coefficients, we're done. 
+if ( cutHere < n )
     isDone = true;
-    % Use the information from CUT to deduce an epsLevel
-    epsLevel = max( abs(c(cut + 1)) );
+    % Use the information from cut to deduce an epsLevel
+    epsLevel = max( abs(c(cutHere + 1)) );
 end
 
 end
