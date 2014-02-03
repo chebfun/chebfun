@@ -1,4 +1,22 @@
 classdef ultraS < chebDiscretization
+%ULTRAS   ULTRASPHERICAL class for discretizating differential operators 
+%         on bounded domain. 
+%
+%    This class uses the ultraspherical spectral to discretize and ultimately
+%    solve 1D boundary value problem defined on a bounded interval.  
+% 
+% ULTRAS(SOURCE, DIMENSION, DOMAIN) constructs a ultraspherical spectral 
+% discretization of SOURCE of size DIMENSION-by-DIMENSION for BVPs on the
+% interval DOMAIN. 
+% 
+% ULTRAS(SOURCE, DIMESION) takes the DOMAIN from SOURCE. 
+%
+% ULTRAS(SOURCE) takes the dimension from SOURCE. 
+
+% For more details about the ultrapsherical spectral methods, see: 
+% S. Olver and A. Townsend, A fast and well-conditioned spectral method, SIAM
+% Review, 55 (2013), pp. 462-489.
+    
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
     properties
