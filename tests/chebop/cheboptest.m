@@ -4,11 +4,7 @@ p.plotting = 'on';
 p.damped = 1;
 switch problemno
     case 1
-        p.discretization = @ultraS;
-        N = chebop(@(x,u) diff(u,2) + sin(u),[-1 0 1]);
-        N.lbc = @(u) u-2; N.rbc = @(u) u -2;
-        N.init = chebfun(@(x) 0*x+2);
-        rhs = 0;
+        error('This test has been moved to a separate file')
     case 2
         N = chebop(@(x,u) 0.05*diff(u,2) + u.^2 - 1);
         N.lbc = @(u) u; N.rbc = @(u) u - 1;
