@@ -44,16 +44,16 @@ if ( isnumeric(rhs) )
     rhs = N.convertToRHS(rhs, residual);
 end
 
+% Attach the preferences to the linop before continuing
+L.prefs = pref;
+
 % Solve:
 if ( all(isLinear) )
     % TODO: Should this be calling the linop solve method directly (rather than
     % use backslash)?
     
-    % Set the preferred discretization for the linop
-    L.discretizer = pref.discretization;
-    
     % Solve the linear problem
-    u = L\(rhs - residual);
+    u = linsolve(L, rhs - residual);
     
     % TODO: Return residual as well?
     uBlocks = u.blocks;

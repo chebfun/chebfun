@@ -214,8 +214,8 @@ while ( ~terminate )
         % Need to subtract RHS from the residual
         res = res - rhs;
         
-        % Assign the preferred discretisation method to the linop.
-%         L.discretizer = discType;
+        % Assign the preferences to the linop.
+        L.prefs = pref;
     end
 end
 
