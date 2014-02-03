@@ -39,8 +39,8 @@ function varargout = eigs(L,varargin)
 %   d = [0 pi];
 %   A = linop( operatorBlock.diff(d,2) );
 %   E = functionalBlock.eval(d);
-%   A = addbc(A,E(0),0);
-%   A = addbc(A,E(pi),0);
+%   A = addBC(A,E(0),0);
+%   A = addBC(A,E(pi),0);
 %   [V,D] = eigs(A,10);
 %   format long, sqrt(-diag(D))  % integers, to 14 digits
 %

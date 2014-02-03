@@ -13,6 +13,16 @@ function [u, disc] = linsolve(L, f, varargin)
 %   problem. This can be used, for example, to introduce new breakpoints that
 %   are not in the domain of either L or F.
 %
+%   EXAMPLE:
+%     d = [0,pi];
+%     [Z,I,D] = linop.primitiveOperators(d);
+%     A = linop( D^2 - I );
+%     E = functionalBlock.eval(d);
+%     A = addBC(A,E(0),0);
+%     A = addBC(A,E(pi),1);
+%     u = A \ chebfun('x',d);
+%     plot(u{1})
+%
 %   See also CHEBOPPREF, CHEBOP.MLDIVIDE.
 
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
