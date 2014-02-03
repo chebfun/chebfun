@@ -6,10 +6,11 @@ d = [-pi pi];
 x = chebfun('x',d);
 
 %%
-[Z,I,D,C] = linop.primitiveOperators(d);
+[Z, I, D, C] = linop.primitiveOperators(d);
+[z, E, s] = linop.primitiveFunctionals(d);
 A = linop( D^2 );
-A = addlbc(A,1);
-A = addrbc(A,0);
+A = addConstraint(A, E(-pi), 1);
+A = addConstraint(A, E(pi), 0);
 
 %%
 % smooth initial condition
