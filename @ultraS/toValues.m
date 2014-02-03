@@ -7,7 +7,7 @@ dim = disc.dimension;
 f = restrict(f, dom);
 c = cell(numInts, 1);
 for k = 1:numInts
-    c{k} = flipud(chebpoly(f, k, dim(k)).');
+    c{k} = flipud(chebpoly(f.funs{k}, dim(k)));
 end
 c = cell2mat(c);
 S = convert(disc, 0, disc.outputSpace);
