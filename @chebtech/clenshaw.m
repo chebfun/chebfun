@@ -49,15 +49,60 @@ end
 
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% function y = clenshaw_scl(x, c)
+% % Clenshaw scheme for scalar-valued functions.
+% bk1 = zeros(size(x)); 
+% bk2 = bk1;
+% x = 2*x;
+% for k = 1:size(c,1)-1
+%     bk = c(k) + x.*bk1 - bk2;
+%     bk2 = bk1; 
+%     bk1 = bk;
+% end
+% y = c(end) + .5*x.*bk1 - bk2;
+% end
+
+% function y = clenshaw_vec(x, c)
+% % Clenshaw scheme for array-valued functions.
+% x = repmat(x(:), 1, size(c, 2));
+% bk1 = zeros(size(x, 1), size(c, 2)); 
+% bk2 = bk1;
+% e = ones(size(x, 1), 1);
+% x = 2*x;
+% for k = 1:(size(c, 1) - 1)
+%     bk = e*c(k,:) + x.*bk1 - bk2;
+%     bk2 = bk1; 
+%     bk1 = bk;
+% end
+% y = e*c(end,:) + .5*x.*bk1 - bk2;
+% end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% These code are the same as above with the exception that it does two steps of
+% the algorithm at once. This means that the intermediate variablesdo not need
+% to be updated at each step, and can result in a non-trivial speedup. NH 02/14
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 function y = clenshaw_scl(x, c)
 % Clenshaw scheme for scalar-valued functions.
 bk1 = zeros(size(x)); 
 bk2 = bk1;
 x = 2*x;
-for k = 1:size(c,1)-1
-    bk = c(k) + x.*bk1 - bk2;
-    bk2 = bk1; 
-    bk1 = bk;
+n = size(c,1)-1;
+for k = 1:2:(n-1)
+    bk2 = c(k) + x.*bk1 - bk2;
+    bk1 = c(k+1) + x.*bk2 - bk1;
+end
+if ( mod(n, 2) )
+    [bk1, bk2] = deal(c(n) + x.*bk1 - bk2, bk1);
 end
 y = c(end) + .5*x.*bk1 - bk2;
 end
@@ -69,10 +114,13 @@ bk1 = zeros(size(x, 1), size(c, 2));
 bk2 = bk1;
 e = ones(size(x, 1), 1);
 x = 2*x;
-for k = 1:size(c, 1)-1
-    bk = e*c(k,:) + x.*bk1 - bk2;
-    bk2 = bk1; 
-    bk1 = bk;
+n = size(c, 1)-1;
+for k = 1:2:(n-1)
+    bk2 = e*c(k,:) + x.*bk1 - bk2;
+    bk1 = e*c(k+1,:) + x.*bk2 - bk1;
+end
+if ( mod(n, 2) )
+    [bk1, bk2] = deal(e*c(n,:) + x.*bk1 - bk2, bk1);
 end
 y = e*c(end,:) + .5*x.*bk1 - bk2;
 end

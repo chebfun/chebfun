@@ -191,6 +191,9 @@ classdef fun % (Abstract)
         % Extract information for DISPLAY.
         info = dispData(f)
         
+        % Extract boundary roots and represent them by an appropriate ONEFUN.
+        f = extractBoundaryRoots(f)
+
         % Extract columns of an array-valued FUN object.
         f = extractColumns(f, columnIndex);
 
@@ -230,6 +233,9 @@ classdef fun % (Abstract)
         % Test if a FUN object is built upon SINGFUN.
         out = issing(f)
         
+        % Test if a FUN object is built upon SMOOTHFUN.
+        out = issmooth(f)
+
         % True for zero FUN objects
         out = iszero(f)
         
