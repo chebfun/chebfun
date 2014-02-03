@@ -20,8 +20,10 @@ if ( isempty(f) || isempty(g) )
     return
 end
 
-% TODO: FUN/RDIVIDE() should check for roots at the ends of the domain. If any
-% are found, then it must convert the .ONEFUN to a SINGFUN.
+% Cast ONEFUN of G to SINGFUN if G has vanishing values at the endpoints:
+if ( ~isnumeric(g) )
+    g = extractBoundaryRoots(g);
+end
 
 % Look at different cases:
 

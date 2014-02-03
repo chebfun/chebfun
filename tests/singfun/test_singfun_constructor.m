@@ -81,3 +81,12 @@ f = singfun(fh);
 pass(17) = norm(f.exponents + [a,b], inf) < pref.singPrefs.exponentTol;
 xx = x(20:80);
 pass(18) = norm(feval(fh,xx) - feval(f,xx), inf) < 1e1*get(f, 'epslevel');
+
+%%
+% Construction with smoothfuns:
+f = smoothfun.constructor( @(x) sin(x));
+s = singfun(f);
+pass(19) = iszero(f - s.smoothPart);
+s = singfun(f, [-1.5, -1], {'sing', 'sing'} );
+pass(20) = iszero(f - s.smoothPart);
+pass(21) = norm(s.exponents - [-1.5, -1], inf) < pref.singPrefs.exponentTol;

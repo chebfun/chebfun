@@ -1,6 +1,6 @@
 function f = smoothFun2SingFun(f)
-%SMOOTH2SINGFUN   Convert a SMOOTHFUN to a SINGFUN.
-%   SMOOTH2SINGFUN(F) Converts the SMOOTHFUN object F to a SINGFUN F.
+%SMOOTHFUN2SINGFUN   Convert a SMOOTHFUN to a SINGFUN.
+%   SMOOTHFUN2SINGFUN(F) Converts the SMOOTHFUN object F to a SINGFUN F.
 %
 % See also MAKE.
 

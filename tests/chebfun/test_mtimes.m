@@ -125,6 +125,26 @@ catch ME
     pass(21) = strcmp(ME.identifier, 'CHEBFUN:mtimes:colTimesRow');
 end
 
+%% Test on SINGFUN - multiplication by scalar:
+
+f = chebfun(@(x) sin(20*x)./((x+1).^0.5), 'exps', [-0.5 0], 'splitting', 'on');
+h = 3*f;
+h_op = @(x) 3*sin(20*x)./((x+1).^0.5);
+h_vals = feval(h, x);
+h_exact = h_op(x);
+err = h_vals - h_exact;
+pass(15) = norm(err, inf) < 2e2*vscale(h)*epslevel(h);
+
+%% Test on SINGFUN - multiplication of a column CHEBFUN and a row CHEBFUN:
+
+f = chebfun(@(x) sin(20*x)./((x+1).^0.5), 'exps', [-0.5 0], 'splitting', 'on');
+f = f.';
+g = chebfun(@(x) cos(30*x), 'splitting', 'on');
+h = f*g;
+h_exact = 0.13033807496531659;
+err = h - h_exact;
+pass(16) = abs(err) < 1e1*h_exact*max(epslevel(f), epslevel(g));
+
 end
 
 % Test the multiplication of a chebfun F, specified by F_OP, by a scalar ALPHA

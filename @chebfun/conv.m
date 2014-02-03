@@ -164,6 +164,7 @@ for k = 1:numPatches
     dk_mid   = a + dk(2); %   /____|/
     dk_right = b + dk(2); %  dkl  dkm   dkr
     gk = g_restricted{k};                          % g on this subdomain
+    gk = simplify(gk);                             % Simplify for efficiency
     gk_leg = chebtech.cheb2leg(get(gk, 'coeffs')); % Its Legendre coefficients
     [hLegL, hLegR] = easyConv(f_leg, gk_leg);      % Convolution on this domain
     
@@ -204,7 +205,8 @@ else
     %     fl a+d     b+d
 
     finishLocation = a + c + numPatches*(b - a);    % Where patches got to. (fl) 
-    gk = restrict(g, d-[(b-a) 0]);                  % g on appropriate domain        
+    gk = restrict(g, d-[(b-a) 0]);                  % g on appropriate domain   
+    gk = simplify(gk);                              % Simplify for efficiency
     gk_leg = chebtech.cheb2leg(get(gk, 'coeffs'));  % Legendre coeffs
     [hLegL, hLegR] = easyConv(f_leg, gk_leg);       % Conv on A and B
     hLegR = chebtech.leg2cheb(flipud(hLegR));       % Cheb coeffs on A
@@ -222,8 +224,10 @@ else
         
         % C: 
         fk = restrict(f, b + [-remainderWidth, 0]);     % Restrict f
+        fk = simplify(fk);                              % Simplify f
         fk_leg = chebtech.cheb2leg(get(fk, 'coeffs'));  % Legendre coeffs
         gk = restrict(g, [finishLocation, d + a] - b);  % Restrict g
+        gk = simplify(gk);                              % Simplify g
         gk_leg = chebtech.cheb2leg(get(gk, 'coeffs'));  % Legendre coeffs
         [ignored, hLegR] = easyConv(fk_leg, gk_leg);    % Conv 
         z = map(x(ind), finishLocation, d + a);         % Map to [-1, 1]
@@ -301,7 +305,7 @@ gammaR = rec(M, -alpha, beta, 1); % Chebyshev coeffs for the right piece
         
         % The scalar case is trivial:
         if ( length(beta) == 1 )
-                return
+            return
         end
         
         % Second column of B:
@@ -328,8 +332,14 @@ gammaR = rec(M, -alpha, beta, 1); % Chebyshev coeffs for the right piece
             
             vOld = v;
             v = vNew;
+            
         end
         
+        ag = abs(gamma);
+        mg = max(ag);
+        loc = find(ag > eps*mg, 1, 'last');
+        gamma = gamma(1:loc);
+
     end
 
 end

@@ -590,7 +590,7 @@ y = zeros(size(x));
 % Handle matrices of evaluation points one column at a time.
 if ( (size(x, 1) > 1) && (size(x, 2) > 1) )
     for k = 1:size(x, 2)
-        y(:,k) = ratbary2(x(:,k), px, qx, xp, xq, wp, wq);
+        y(:,k) = ratbary(x(:,k), px, qx, xp, xq, wp, wq);
     end
     return
 end

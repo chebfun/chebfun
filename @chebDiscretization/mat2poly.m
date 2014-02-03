@@ -35,13 +35,12 @@ numVar = length(isFun);             % Number of functions to return
 % Take discrete values and convert to CHEBFUN objects.
 f = mat2fun(disc,values);
 
-% Loop through the cell array C, and compute chebpoly of all CHEBFUNS in C.
+% Loop through the cell array C, and obtain the coefficients of all CHEBFUNS in
+% C.
 c = cell(numVar,1);
 for i = 1:numVar
     if ( isFun(i) )
-        for j = 1:disc.numIntervals
-            c{i}{j} = chebpoly(f{i},j).';
-        end
+        c{i} = get(f{i}, 'coeffs').';
     else
         c{i} = f{i};
     end
