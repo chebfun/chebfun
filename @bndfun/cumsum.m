@@ -41,6 +41,8 @@ if ( nargin < 4 )
     shift = 0;
 end
 
+% TODO: Please move this 'shift' operation back to the CHEBFUN level.
+
 if ( dim == 1 )
     
     % Check if we need to add breakpoints:

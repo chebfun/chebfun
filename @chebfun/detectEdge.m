@@ -1,4 +1,4 @@
-function edge = detectEdge(op, domain, vscale, hscale, derHandle, forHandle)
+function edge = detectEdge(op, domain, vscale, hscale, derHandle)
 %DETECTEDGE   Edge detection.
 %   EDGE = DETECTEDGE(F, DOMAIN, HSCALE, VSCALE) detects a blowup in the first,
 %   second, third, or fourth derivatives of F in [A,B]. HSCALE is the horizontal
@@ -42,12 +42,6 @@ function edge = detectEdge(op, domain, vscale, hscale, derHandle, forHandle)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% [TODO]: This may be required when we have unbounded maps again.
-
-if ( nargin < 6 )
-    forHandle = [];
-end
-
 if ( nargin < 5 )
     derHandle = @(x) 0*x + 1;
 end
@@ -70,12 +64,6 @@ if ( abs(domain(1) - edge) <= htol )
     edge = domain(1) + diff(domain)/100;
 elseif ( abs(domain(2) - edge) <= htol )
     edge = domain(2) - diff(domain)/100;
-end
-
-% If the forward map is given, map the edge to the its real location. This
-% is used when the domain is unbounded.
-if ( nargin > 5 )
-    edge = forHandle(edge);
 end
 
 end

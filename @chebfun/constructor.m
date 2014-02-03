@@ -219,9 +219,10 @@ while ( any(sad) )
     elseif ( any( isinf( ends(k:k+1) ) ) )
         forHandle = funs{k}.mapping.for;
         opkDetectEdge = @(x) opk(forHandle(x));
-        forDer = funs{k}.mapping.forder;
+        forDer = funs{k}.mapping.forDer;
         edge = chebfun.detectEdge(opkDetectEdge, [-1+eps, 1-eps], vscale, ...
-            hscale, forDer, forHandle);
+            hscale, forDer);
+        edge = forHandle(edge);
     end
 
     if ( ~isempty(exps) )
