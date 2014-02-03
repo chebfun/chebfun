@@ -1,12 +1,12 @@
 classdef unbndfun < fun
-%UNBNDFUN     Represent global functions on an unbounded interval [-inf inf] or 
-% a semi-infinite domain [-inf b] or [a inf].
+%UNBNDFUN    Represent global functions on an unbounded interval [-inf inf] or
+% a semi-infinite interval [-inf b] or [a inf].
 %
 % Constructor inputs:
-%   UNBNDFUN(OP, DOMAIN) constructs an UNBNDFUN object from the function handle 
-%   OP by mapping the DOMAIN to [-1, 1], and constructing an ONEFUN object to
+%   UNBNDFUN(OP, DOMAIN) constructs an UNBNDFUN object from the function handle
+%   OP by mapping the DOMAIN to [-1 1], and constructing an ONEFUN object to
 %   represent the function prescribed by OP. DOMAIN should be a row vector with
-%   two elements in increasing order and at least one entry of this two-entry 
+%   two elements in increasing order and at least one entry of this two-entry
 %   vector should be inf or -inf. OP should be vectorised (i.e., accept a vector
 %   input) and output a vector of the same length as its input.
 %
@@ -15,24 +15,23 @@ classdef unbndfun < fun
 %   given (or given as empty), the VSCALE defaults to 0 initially, and HSCALE
 %   defaults to 1.
 %
-%   UNBNDFUN(OP, DOMAIN, VSCALE, HSCALE, PREF) overrides the default behavior 
-%   with that given by the preference structure PREF. See FUN.pref for details.
+%   UNBNDFUN(OP, DOMAIN, VSCALE, HSCALE, PREF) overrides the default behavior
+%   with that given by the preference structure PREF. See CHEBPREF.
 %
-%   UNBNDFUN(VALUES, DOMAIN, VSCALE, HSCALE, PREF) returns a UNBNDFUN object 
+%   UNBNDFUN(VALUES, DOMAIN, VSCALE, HSCALE, PREF) returns a UNBNDFUN object
 %   with a ONEFUN constructed by the data in the columns of VALUES (if supported
 %   by ONEFUN class constructor).
 %
 % See ONEFUN for further documentation of the ONEFUN class.
 %
-% See also FUN, FUN.pref, ONEFUN.
+% See also FUN, CHEBPREF, ONEFUN.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % UNBNDFUN Class Description:
 %
-% The UNBNDFUN class is an abstract class for representations of global
-% functions on the infinite or semi-infinite interval [-inf, b], [a, inf], or 
-% [-inf, inf]. It achieves this by taking a onefun on [-1, 1] and applying 
-% a nonlinear mapping.
+% The UNBNDFUN class represents global functions on the infinite or
+% semi-infinite interval [-inf, b], [a, inf], or [-inf, inf]. It achieves this
+% by taking a onefun on [-1, 1] and applying a nonlinear mapping.
 %
 % Note that all binary UNBNDFUN operators (methods which can take two UNBNDFUN
 % arguments) assume that the domains of the UNBNDFUN objects agree. The methods
@@ -51,7 +50,7 @@ classdef unbndfun < fun
         function obj = unbndfun(op, domain, vscale, hscale, pref)
             
             % Construct an empty unbndfun
-            if ( nargin == 0 || isempty(op) )
+            if ( (nargin == 0) || isempty(op) )
                 return
             end
             
@@ -63,7 +62,7 @@ classdef unbndfun < fun
             end
             
             % Use default domain if none given:
-            if ( nargin < 2 || isempty(domain) )
+            if ( (nargin < 2) || isempty(domain) )
                 domain = pref.unbndfun.domain;
             end
             
@@ -72,7 +71,7 @@ classdef unbndfun < fun
                 domain = pref.unbndfun.domain;
             elseif ( ~any(isinf(domain)) )
                 error('CHEBFUN:UNBNDFUN:BoundedDomain',...
-                    'Should not encounter bounded domain in unbndfun class.');
+                    'Domain argument should be unbounded.');
             elseif ( ~all(size(domain) == [1, 2]) )
                 error('CHEBFUN:UNBNDFUN:domain',...
                     'Domain argument should be a row vector with two entries.');
@@ -84,15 +83,14 @@ classdef unbndfun < fun
             end
             
             if ( (nargin < 4) || isempty(hscale) )
-                % The hscale of an unbounded domain is alway 2.
-                % [TODO]: Why!?
-                hscale = 2;
+                % The hscale of an unbounded domain is always 2.
+                % [TODO]: Why!? Note, DOCs above say 1?)
+                hscale = 1;
             end
 
             unbndmap = unbndfun.createMap(domain);
             % Include nonlinear mapping from [-1,1] to [a,b] in the op:
-            if ( isa(op, 'function_handle') && ~all(domain == [-1 1]) ...
-                                            && ~isnumeric(op) )
+            if ( isa(op, 'function_handle') )
                 op = @(x) op(unbndmap.for(x));
             elseif ( isnumeric(op) )
                 % [TODO]: Does this make sense for an UNBNDFUN?
@@ -101,9 +99,9 @@ classdef unbndfun < fun
             % Preprocess the exponents supplied by the user:
             if ( ~isempty(pref.singPrefs.exponents) )
                 % Since the exponents provided by the user are in the sense of
-                % unbounded domain, we need to negate them when the domain of 
+                % unbounded domain, we need to negate them when the domain of
                 % the original operator/function handle is mapped to [-1 1]
-                % using the forward map, i.e. UNBNDMAP.FOR().
+                % using the forward map, i.e., UNBNDMAP.FOR().
                 ind = isinf(domain);
                 pref.singPrefs.exponents(ind) = -pref.singPrefs.exponents(ind);
             end

@@ -28,7 +28,7 @@ else
     
     % Construct the UNBNDFUN object for the derivative of the inverse map:
     invDer = f; 
-    invDer.onefun = onefun.constructor(@(x) f.mapping.invder(x));
+    invDer.onefun = onefun.constructor(@(x) f.mapping.invDer(x));
 
     % Loop for higher derivatives:
     for j = 1:k

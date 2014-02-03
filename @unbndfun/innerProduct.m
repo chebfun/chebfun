@@ -44,11 +44,11 @@ if ( ~isa(f, 'unbndfun') || ~isa(g, 'unbndfun') )
         'innerProduct() only operates on two UNBNDFUN objects.');
 end
 
-% Compute the derivative of the map. Here we assume that the domains and
-% therefore the maps of f and g are identical.
+% Compute the derivative of the map: (Here we assume that the domains and
+% therefore the maps of f and g are identical.)
 pref = chebpref();
-pref.singPrefs.exponents = f.mapping.forderExps;
-forDer = onefun.constructor(f.mapping.forder, [], [], pref);
+pref.singPrefs.exponents = f.mapping.forDerExps;
+forDer = onefun.constructor(f.mapping.forDer, [], [], pref);
 
 % Assign the output to be the inner product of the onefuns of the input,
 % but multiplied by the derivative of the map.

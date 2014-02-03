@@ -12,6 +12,8 @@ function X = mldivide(A, B)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% TODO: Since we don't check the domains, why bother checking this?
+
 % Require both inputs to be UNBNDFUN objects.
 if ( ~isa(A, 'unbndfun') || ~isa(B, 'unbndfun') )
     error('CHEBFUN:UNBNDFUN:mldivide:bndfunMldivideUnknown', ...

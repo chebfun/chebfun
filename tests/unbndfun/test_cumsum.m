@@ -25,8 +25,9 @@ g = cumsum(f);
 gVals = feval(g, x);
 opg = @(x) sqrt(pi)*erf(x)/2 + sqrt(pi)/2;
 gExact = opg(x);
-errg = gVals - gExact;
-pass(1) = norm(errg, inf) < 5e1*get(g,'epslevel').*get(g,'vscale');
+errg = norm(gVals - gExact, inf);
+tol = 1e3*get(g,'epslevel').*get(g,'vscale');
+pass(1) = errg < tol;
 
 % [TODO]: Revive when log is ready.
 % h = cumsum(f, 2);

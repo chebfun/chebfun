@@ -42,8 +42,8 @@ g = diff(f);
 op_g = @(x) 2*exp(-x.^2) + (exp(-x.^2) - 1)./x.^2;
 gVals = feval(g, x);
 gExact = op_g(x);
-err = gVals - gExact;
-pass(3) = norm(err, inf) < get(g,'epslevel')*get(g,'vscale');
+err = norm(gVals - gExact,inf);
+pass(3) = err < 1e1*get(g,'epslevel')*get(g,'vscale');
 
 op = @(x) x.^2.*(1-exp(-x.^2));
 pref.singPrefs.exponents = [2 2];

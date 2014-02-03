@@ -52,6 +52,8 @@ if ( issing(f) )
     
 end
 
+vscale = get(f, 'vscale');
+
 % Loop over each subdomain:
 for k = 1:numSubDom
     pref = chebpref();
@@ -63,8 +65,8 @@ for k = 1:numSubDom
         end
     end
     
-    % [TODO]: Should 'vscale' be passed to the fun ctor here?
-    g{k} = fun.constructor(@(x) feval(f, x), s(k:k+1), get(f, 'vscale'), [], pref);
+    % [TODO]: Should 'vscale' be passed to the FUN ctor here?
+    g{k} = fun.constructor(@(x) feval(f, x), s(k:k+1), vscale, [], pref);
 end
 
 % When there is only one cell, return the UNBNDFUN instead:
