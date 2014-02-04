@@ -1,12 +1,12 @@
 function f = simplify(f, varargin)
 %SIMPLIFY  Simplifys a DELTAFUN object F.
+%   F = SIMPLIFY(F) simplifies the FUNPART and removes any trivial delta
+%   functions from the delta fun F. Prefrences can be passed via VARARGIN.
 %
-% See also SUM, CUMSUM.
+% See also SIMPLIFY, CLEANROWS, CLEANCOLUMNS
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
-
-%TODO: NH: DOCS
 
 f.funPart = simplify(f.funPart, varargin{:});
 f = simplifyDeltas(f, varargin{:});

@@ -10,7 +10,6 @@ function f = imag(f)
 % Compute the imaginary part of the values:
 f.funPart = imag(f.funPart);
 
-% TODO: Is this right?
 f.deltaMag = imag(f.deltaMag);
 f = simplifyDeltas(f);
 

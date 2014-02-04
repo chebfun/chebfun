@@ -71,8 +71,6 @@ m = size(deltaMag, 1);
 
 % Compute the derivatives needed:
 maxDiffOrder = m-1;
-
-% TODO: Explain this
 G = zeros(m, length(deltaLoc));
 G(1,:) = feval(g, deltaLoc);
 for k = 1:maxDiffOrder
@@ -82,9 +80,10 @@ end
 
 % The output is always a scalar double:
 deltaIP = 0;
-v = ones(maxDiffOrder+1,1); v(2:2:end) = -1; % v = (-1).^(0:maxDiffOrder).';
+v = ones(maxDiffOrder+1,1); v(2:2:end) = -1;
 for k = 1:length(deltaLoc)
-    %[TODO]: Please explain this voodoo!
+    % Apply the definition of inner product with delta functions:
+    % <sum(ai dirac^(i)(x-xk)), f(x)> = sum ai*(-1)^i f^(i)(xk)
     ipk = (v.*deltaMag(:, k)).' * G(:, k) ;
     deltaIP = deltaIP + ipk;
 end

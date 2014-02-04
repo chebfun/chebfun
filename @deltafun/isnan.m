@@ -1,6 +1,7 @@
 function out = isnan(f)
-%ISNAN   Test if a SINGFUN has any NaN values.
-%   ISNAN(F) returns TRUE if F has any NaN values and FALSE otherwise.
+%ISNAN   Test if the FUNPART of a DELTAFUN has any NaN values.
+%   ISNAN(F) returns TRUE if the FUNPART of F has any NaN values and 
+%   FALSE otherwise.
 %
 % See also ISFINITE, ISINF.
 
@@ -8,8 +9,6 @@ function out = isnan(f)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Check if any values are NaN:
-out = isnan(f.smoothPart) || any(isnan(feval(f, [-1 ; 1])));
-
-% TODO: NH: This must be wrong ([-1, 1]).
+out = isnan(f.funPart);
 
 end

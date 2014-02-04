@@ -1,8 +1,8 @@
 function f = simplifyDeltas(f, pref)
 %SIMPLIFYDELTAS   Simplifys a implulses of a DELTAFUN object.
-%   SIMPLIFYDELTAS(F) removes trivial rows and columns from the magnitude matrix
-%   of the DELTAFUN F based on the tolerance and merges columns in the impulse
-%   matrix if the location of delta functions is really close.
+%   F = SIMPLIFYDELTAS(F) removes trivial rows and columns from the magnitude 
+%   matrix of the DELTAFUN F based on the tolerance and merges columns in the 
+%   impulse matrix if the location of delta functions is really close.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -25,8 +25,8 @@ deltaMag = deltafun.cleanRows(deltaMag, pref);
 
 % If any of these is empty, return just the funPart:
 if ( isempty(deltaLoc) || isempty(deltaMag) )
-    deltaLoc = [];
-    deltaMag = [];
+    f.deltaLoc = [];
+    f.deltaMag = [];
     f = f.funPart;
     return
 end

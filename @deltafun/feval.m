@@ -22,8 +22,9 @@ val = feval(f.funPart, x);
 % Point values of distributions do not make sense mathematically, so return NaN.
 pref = chebpref();
 proximityTol = pref.deltaPrefs.proximityTol;        
+
 % Make sure there are no trivial delta functions:
-% f = simplify(f); %TODO
+f = simplifyDeltas(f);
 deltaLoc = f.deltaLoc;    
 for i = 1:length(deltaLoc)        
     if ( deltaLoc(i) == 0 ) 
