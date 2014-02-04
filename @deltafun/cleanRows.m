@@ -5,7 +5,7 @@ function A = cleanRows(A, pref)
 %   tolerance provided by CHEBPREF and uses that tolerance to decide whether
 %   a delta function is trivial or not.
 %
-% See also MERGECOLUMNS, MERGEIMPULSES, CLEANCOLUMNS.
+% See also MERGECOLUMNS, MERGEDELTAS, CLEANCOLUMNS.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.

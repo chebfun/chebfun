@@ -25,14 +25,16 @@ proximityTol = pref.deltaPrefs.proximityTol;
 
 % Make sure there are no trivial delta functions:
 f = simplifyDeltas(f);
-deltaLoc = f.deltaLoc;    
-for i = 1:length(deltaLoc)        
-    if ( deltaLoc(i) == 0 ) 
-        % Avoid divide by zero:
-        idx = abs(x - deltaLoc(i)) < proximityTol;                     
-    else
-        % Check the relative distance from delta function locations:
-        idx = abs(x - deltaLoc(i))./deltaLoc(i) < proximityTol;
-    end        
-    val(idx) = NaN;
-end     
+if ( isa(f, 'deltafun') )
+    deltaLoc = f.deltaLoc;
+    for i = 1:length(deltaLoc)
+        if ( deltaLoc(i) == 0 )
+            % Avoid divide by zero:
+            idx = abs(x - deltaLoc(i)) < proximityTol;
+        else
+            % Check the relative distance from delta function locations:
+            idx = abs(x - deltaLoc(i))./deltaLoc(i) < proximityTol;
+        end
+        val(idx) = NaN;
+    end
+end

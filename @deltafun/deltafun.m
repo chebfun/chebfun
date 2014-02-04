@@ -134,7 +134,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
             obj.deltaMag = deltaMag;
             obj.deltaLoc = deltaLoc;
                                 
-            % Simplify to merge redundant impulses:
+            % Simplify to merge redundant delta functions:
             obj = simplifyDeltas(obj, pref);
             if ( ~isa(obj, 'deltafun') )
                 obj = deltafun(obj);
@@ -243,7 +243,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         % Real part of a DELTAFUN.
         f = real(f)
         
-        % Restrict a SINGFUN to a subinterval.
+        % Restrict a DELTAFUN to a subinterval.
         f = restrict(f, s)
         
         % Roots of a DELTAFUN.
@@ -255,7 +255,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         % Simplify a DELTAFUN
         f = simplify(f, pref)
         
-        % Simplify Impuses
+        % Simplify Delta functions
         f = simplifyDeltas(f, pref);
         
         % Definite integral of a DELTAFUN.
@@ -296,8 +296,8 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         % Merge columns of a matrix based on duplicate values in v.
         [A, v] = mergeColumns(A, v, pref)
         
-        % Merge impulse matrix
-        [D, w] = mergeImpulses(A, v, B, u);
+        % Merge delta function matrix
+        [D, w] = mergeDeltas(A, v, B, u);
         
         % Costruct a zero DELTAFUN
         s = zeroDeltaFun(domain)

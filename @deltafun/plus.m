@@ -32,7 +32,7 @@ end
 funPart = f.funPart + g.funPart;
 
 % Add the delta functions:    
-[deltaMag, deltaLoc] = deltafun.mergeImpulses(f.deltaMag, f.deltaLoc, ...
+[deltaMag, deltaLoc] = deltafun.mergeDeltas(f.deltaMag, f.deltaLoc, ...
     g.deltaMag, g.deltaLoc);    
 
 % Assemble the output DELTAFUN:

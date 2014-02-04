@@ -1,8 +1,16 @@
-function [D, w] = mergeImpulses( A, u, B, v)
-%MERGEIMPULSES   Merges impulse matrices and their locations.
-%   A and B are matrices.
+function [D, w] = mergeDeltas( A, u, B, v)
+%MERGEDELTAS   Merges delta functions and their locations.
+%   [D, w] = mergeDeltas(A, u, B, v) assumes that A and B are matrices
+%   representing delta functions and their derivatives at loctions indicated by
+%   the vectors U and V respectively. The funciton then tries to see if there
+%   are locations in U and V that are the same or are very close to each other
+%   and merges the corresponding delta functions in D and their locations in the
+%   vector W.
+%
+% See also SIMPLIFY, CLEANROWS, CLEANCOLUMNS
 
-% TODO: NH: Better documentation!
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Get the sizes of both matrices:
 szA = size(A);

@@ -27,9 +27,9 @@ f = varargin{1};
 varargin(1) = [];
 [h1, h2] = plot( f.funPart, varargin{:} );
 
-if ( ~isempty(f.deltaLoc) && ~isempty(f.impulses) )
+if ( ~isempty(f.deltaLoc) && ~isempty(f.deltaMag) )
     deltaLoc = f.deltaLoc;
-    deltaMag = f.impulses;
+    deltaMag = f.deltaMag;
     hold on
     for i = 1:length(deltaLoc)
         plot( [deltaLoc(i), deltaLoc(i)], [0, deltaMag(1,i)], '-' );

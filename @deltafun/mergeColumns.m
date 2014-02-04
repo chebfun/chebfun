@@ -3,7 +3,7 @@ function [A, v] = mergeColumns(A, v, pref)
 %   [A v] = MERGECOLUMNS(A, V) merges two columns if the corresponding entries
 %   in V are equal or close to each other more than a certain tolerance.
 %
-% See also CLEANCOLUMNS, MERGEIMPULSES, CLEANROWS.
+% See also CLEANCOLUMNS, MERGEDELTAS, CLEANROWS.
 
 % Get the tolerance:
 if ( nargin < 3 || isempty(pref) )

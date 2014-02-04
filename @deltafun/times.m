@@ -57,9 +57,9 @@ if ( isa(g, 'deltafun') )
         deltaMag2 = [];
     end
     
-    % Merge impulses:
+    % Merge delta functions:
     [deltaMag, deltaLoc] = ...
-        deltafun.mergeImpulses(deltaMag1, f.deltaLoc, deltaMag2, g.deltaLoc);
+        deltafun.mergeDeltas(deltaMag1, f.deltaLoc, deltaMag2, g.deltaLoc);
     
     % Assumble the DELTAFUN:
     h = deltafun(funPart, deltaMag, deltaLoc);

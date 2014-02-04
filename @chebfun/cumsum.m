@@ -87,18 +87,28 @@ for l = 1:m
         % concatenate doesn't make any sense.
         
         % Call CUMSUM@BNDFUN:
-        cumsumFunJ = cumsum(f.funs{j}, 1, 1, rval);
+        jumpVal = 0;
+        [cumsumFunJ, jumpVal] = cumsum(f.funs{j}, 1, 1, rval);
         
         if ( iscell( cumsumFunJ ) )
             % Update the value of the right end:
-            rval = get(cumsumFunJ{2}, 'rval') + deltas(j+1,:);
+            rval = get(cumsumFunJ{end}, 'rval') + deltas(j+1,:) + jumpVal;
         else
             % Update the value of the right end:
-            rval = get(cumsumFunJ, 'rval') + deltas(j+1,:);
+            rval = get(cumsumFunJ, 'rval') + deltas(j+1,:) + jumpVal;
         end
         
         % Store FUNs:
-        funs = [funs, {cumsumFunJ}];
+        funs = [funs, cumsumFunJ];
+        
+        % Update the domain vector:
+        L = length(cumsumFunJ)-1;
+        newBreakPts = zeros(1, L);        
+        for i = 1:L
+            dom = cumsumFunJ{i+1}.domain;
+            newBreakPts(i) = dom(1);
+        end
+        f.domain = union(f.domain, newBreakPts);                        
         
     end
     

@@ -1,5 +1,5 @@
 function f = simplifyDeltas(f, pref)
-%SIMPLIFYDELTAS   Simplifys a implulses of a DELTAFUN object.
+%SIMPLIFYDELTAS   Simplifys delta functions of a DELTAFUN object.
 %   F = SIMPLIFYDELTAS(F) removes trivial rows and columns from the magnitude 
 %   matrix of the DELTAFUN F based on the tolerance and merges columns in the 
 %   impulse matrix if the location of delta functions is really close.

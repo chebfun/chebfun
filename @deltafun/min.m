@@ -1,12 +1,8 @@
 function [minVal, minPos] = min(f)
-%MIN   Global minimum of a DELTAFUN on [-1,1].
-%   MINVAL = MIN(F) returns the global minimum of the DELTAFUN F on [-1,1].
+%MIN   Global minimum of a DELTAFUN.
+%   MINVAL = MIN(F) returns the global minimum of the DELTAFUN F.
 %
 %   [MINVAL, MINPOS] = MIN(F) returns also a value such that MINVAL = F(MINPOS).
-%
-%   [TODO]: If F is complex-valued then absolute values are taken to determine
-%   maxima but the resulting value corresponds to that of the original function.
-%   That is, MINVAL = FEVAL(F, MINPOS) where [~, MINPOS] = MIN(ABS(F)).
 %
 % See also MAX, MINANDMAX.
 
