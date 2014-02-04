@@ -91,18 +91,16 @@ for l = 1:m
             L = length(cumsumFunJ)-1;
             newBreakPts = zeros(1, L);
             for i = 1:L
+                % Get the break points in the interior:
                 dom = cumsumFunJ{i+1}.domain;
                 newBreakPts(i) = dom(1);
             end
+            % Append them to the existing break points:
             f.domain = union(f.domain, newBreakPts);
         else
             % Store FUNs:
             funs = [funs, {cumsumFunJ}];
         end
-        
-        
-        
-        
     end
     
     % Get the new pointValues:
