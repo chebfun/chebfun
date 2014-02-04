@@ -1,4 +1,4 @@
-function f = cumsum(f, k, dim, shift)
+function [f, rval] = cumsum(f, k, dim, shift)
 %CUMSUM   Indefinite integral of a BNDFUN.
 %   CUMSUM(F) is the indefinite integral of the BNDFUN F on an interval [a,b],
 %   with the constant of integration chosen so that F(a) = 0.
@@ -63,7 +63,8 @@ if ( iscell(f) )
             f{j}.onefun = cumsum(f{j}.onefun, k, dim);
         end
     end
-
+    % Get rval of the last bndfun:
+    rval = get(f{2}, 'rval');
 else
     % Rescaling factor, (b-a)/2, to the kth power
     rescaleFactork = (.5*diff(f.domain))^k;
@@ -82,7 +83,7 @@ else
     % piece making the entire function as continuous as possible.
     if ( ~any( issing(f) ) )
         
-        % Grab the indice correspond to infinite shift:
+        % Grab the indices correspond to infinite shift:
         ind = isinf(shift);
         
         % Zero the infinite shift:
@@ -91,6 +92,8 @@ else
         % Shift:
         f = f + shift - get(f, 'lval');
     end
+    % Get rval of f:
+    rval = get(f, 'rval');
     
 end
 

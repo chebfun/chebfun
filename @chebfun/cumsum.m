@@ -18,9 +18,6 @@ function f = cumsum(f, m, dim)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-% [TODO]: Update the above help text once we have deltafun. Dirac deltas already
-% existing in F will decrease their degree.
-
 % TODO: The input sequence is not the same as MATLAB. In particular, MATLAB only
 % supports m = 1.
 
@@ -69,9 +66,7 @@ numFuns = numel(f.funs);
 
 % Loop m times:
 for l = 1:m
-    deltas = zeros(length(dom), numCols);
-    
-    rval = deltas(1,:);
+    rval = 0;    
     funs = [];
     
     % Main loop for looping over each piece and do the integration:
@@ -86,29 +81,27 @@ for l = 1:m
         % infinite at the right end, then shifting the current piece to 
         % concatenate doesn't make any sense.
         
-        % Call CUMSUM@BNDFUN:
-        jumpVal = 0;
-        [cumsumFunJ, jumpVal] = cumsum(f.funs{j}, 1, 1, rval);
+        % Call CUMSUM@BNDFUN:        
+        [cumsumFunJ, rval] = cumsum(f.funs{j}, 1, 1, rval);
         
         if ( iscell( cumsumFunJ ) )
-            % Update the value of the right end:
-            rval = get(cumsumFunJ{end}, 'rval') + deltas(j+1,:) + jumpVal;
+            % Store FUNs:
+            funs = [funs, cumsumFunJ];
+            % Update the domain vector:
+            L = length(cumsumFunJ)-1;
+            newBreakPts = zeros(1, L);
+            for i = 1:L
+                dom = cumsumFunJ{i+1}.domain;
+                newBreakPts(i) = dom(1);
+            end
+            f.domain = union(f.domain, newBreakPts);
         else
-            % Update the value of the right end:
-            rval = get(cumsumFunJ, 'rval') + deltas(j+1,:) + jumpVal;
+            % Store FUNs:
+            funs = [funs, {cumsumFunJ}];
         end
         
-        % Store FUNs:
-        funs = [funs, cumsumFunJ];
         
-        % Update the domain vector:
-        L = length(cumsumFunJ)-1;
-        newBreakPts = zeros(1, L);        
-        for i = 1:L
-            dom = cumsumFunJ{i+1}.domain;
-            newBreakPts(i) = dom(1);
-        end
-        f.domain = union(f.domain, newBreakPts);                        
+        
         
     end
     
