@@ -456,6 +456,61 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % DIFF is a linear operation, so no need to update linearity info.
             % f.isConstant = f.isConstant;
         end
+        
+        function [sm, cm, dm] = ellipj(f, m)
+            % [SM, CM, DM] = ELLIPJ(F, M)    Ellip-J function of an ADCHEBFUN.
+            %
+            % See also chebfun/ellipj.
+            
+            % Either F or M could be an ADCHEBFUN, but be we currently only
+            % support the case where the first argument is an ADCHEBFUN
+            if ~( isa(f, 'adchebfun') )
+               error('CHEBFUN:ADCHEBFUN:ellipj', ...
+                   ['Currently, ADCHEBFUN only supports calls to ellipj ' ...
+                   'where the first input is a ADCHEBFUN.']);
+            end
+            
+            % Initialise an empty ADCHEBFUN
+            sm = adchebfun;
+            % Copy the domain information
+            sm.domain = f.domain;
+            % Linearity information
+            sm.isConstant = iszero(f.jacobian);
+            
+            % Copy the ADCHEBFUN SM to CM and DM to work with objects of correct
+            % types, with correct domains and linearity info
+            cm = sm;
+            dm = sm;
+            
+            % Do the function computation. Again, either F or M could have been
+            % the ADCHEBFUN
+            [smtemp, cmtemp, dmtemp] = ellipj(f.func, m);
+            
+            % Assign the functional part to SM
+            sm.func = smtemp;
+            
+            % We know we always want the derivative info about SM
+            sm.jacobian = operatorBlock.mult(cmtemp.*dmtemp)*f.jacobian;
+            
+            % Compute as much derivative information is required, depending on
+            % the number of outputs requested
+            if ( nargout >= 2)
+                % Assign the function part to CM
+                cm.func = cmtemp;
+                
+                % Derivative computation
+                cm.jacobian = operatorBlock.mult(-smtemp.*dmtemp);
+                
+                if ( nargout >= 3)      % Also want DM
+                    % Function part
+                    dm.func = dmtemp;
+                    
+                    % Derivative
+                    dm.jacobian = operatorBlock.mult(-m.*smtemp.*cmtemp);
+                end
+            end
+            
+        end
        
         function f = erf(f)
             % F = ERF(F)   ERF of an ADCHEBFUN.
@@ -1009,10 +1064,10 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
     
     methods (Static = true)
         % Taylor testing for correctness of derivatives
-        [order1, order2] = taylorTesting(f,hMax,plotting)
+        [order1, order2] = taylorTesting(f, hMax, numOut, plotting)
         
         % Value testing for correctness of computed function
-        error = valueTesting(f)
+        error = valueTesting(f, numOut)
     end
     
 end
