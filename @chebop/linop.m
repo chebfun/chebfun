@@ -14,18 +14,16 @@ function [L, f] = linop(N)
 % We will throw an error if the chebop is nonlinear
 linCheck = 1; 
 
-if nargout == 1
-    [L bc isLin] = linearize(N,[],linCheck);
-else
-    % We must compute the affine part
-    [L bc isLin f] = linearize(N,[],linCheck);
-end
+% Linearize, thus obtaining linearity information and a LINOP
+[L, f, isLinear] = linearize(N, [], [], linCheck);
 
 % We need the entire operator (including BCs) to be linear
-isLin = all(isLin);
+isLinear = all(isLinear);
+
+warning('Linearity detection for chebops is not yet fully implemented');
 
 % Throw an error is the chebop is nonlinear
-if ~isLin
+if ~( isLinear )
     error('CHEBOP:linop:nonlinear',...
         'Chebop does not appear to be a linear operator.')
 end

@@ -4,10 +4,10 @@ function [L, res, isLinear] = linearize(N, x, u, flag)
 isLinear = true(1, 4);
 numVars = nargin(N.op) - 1;
 
-if ( nargin < 2 )
+if ( nargin < 2 || isempty(x) )
     x = chebfun(@(x) x, N.domain);
 end
-if ( nargin < 3 )
+if ( nargin < 3 || isempty(u) )
     % Initialise a zero ADCHEBFUN:
     zeroFun = chebfun(0, N.domain);
     u = cell(numVars, 1);
