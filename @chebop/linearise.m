@@ -49,6 +49,12 @@ L = linop(vertcat(get(w, 'jacobian')));
 res = vertcat(get(w, 'func'));
 isLinear(1) = all(vertcat(get(w, 'isConstant')));
 
+
+% Merge the domains of L obtained from evaluating the operator part above, with
+% the domain of N, as we want to respect the breakpoints originally assigned
+% to N (when its domain was defined)
+L.domain = chebfun.mergeDomains(L.domain, N.domain);
+
 BC = linopConstraint();
 %%
 % Add BCs

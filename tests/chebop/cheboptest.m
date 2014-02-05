@@ -22,13 +22,6 @@ switch problemno
         N = chebop(@(x,u) diff(u,2)-8.*sinh(8.*u), dom);
         N.lbc = @(u) u; N.rbc = @(u) u - 1;
         N.init = chebfun(@(x) x, dom);
-        rhs = 0;
-    case 5
-        % Problem with a breakpoint
-        N = chebop(@(x,u) diff(u,2) + sign(x).*sin(u),[-1 .5 1]);
-        N.lbc = @(u) u-2; N.rbc = @(u) u -2;
-        N.init = chebfun(@(x) 0*x+2);
-        rhs = 0;
-        
+        rhs = 0;        
 end
 [u, info] = solvebvp(N, rhs, p);
