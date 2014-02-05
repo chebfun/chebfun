@@ -40,7 +40,9 @@ end
 
 if ( nargin > 3 && isa(varargin{1}, 'chebpref') )
     defaults = chebpref();
-    pref = mergePrefs(defaults, varargin{1});
+    pref = chebpref.mergePrefs(defaults, varargin{1});
+else
+    pref = chebpref(); 
 end
 
 if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
@@ -122,8 +124,7 @@ elseif ( numel(domain) ~= 4 )
 end
 
 % Get default preferences from chebPref:
-prefs = chebpref;
-prefStruct = prefs.cheb2Prefs;
+prefStruct = pref.cheb2Prefs;
 maxRank = prefStruct.maxRank;
 maxLength = prefStruct.maxLength;
 pseudoLevel = prefStruct.eps;
