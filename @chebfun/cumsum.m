@@ -68,8 +68,9 @@ transState = f(1).isTransposed;
 
 % Loop m times:
 for l = 1:m
-    rVal = 0;    
+
     funs = {};
+    rVal = 0;
     
     % Main loop for looping over each piece and do the integration:
     for j = 1:numFuns
@@ -78,20 +79,14 @@ for l = 1:m
         [newFuns, rValNew] = cumsum(f.funs{j});
         
         if ( ~iscell( newFuns ) )
-            newFuns = {newFuns};
+            newFuns = {newFuns + rVal};
+        else
+            newFuns{end} = newFuns{end} + rVal;
         end
-        
-        % Add the constant term that came from the left:
-        for k = 1:numel(newFuns)
-            newFuns{k} = newFuns{k} + rVal;
-        end
-
+        rVal = rVal + rValNew;
+                
         % Store FUNs:
-        funs = [funs, newFuns]; %#ok<AGROW>
-        
-        % Update the rval:
-        rVal = get(funs{end}, 'rval') + rValNew;
-        
+        funs = [funs, newFuns]; %#ok<AGROW>               
     end
     
     % Assemble the new CHEBFUN:

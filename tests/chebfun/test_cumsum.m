@@ -20,6 +20,7 @@ pass(1) = isempty(cumsum(chebfun()));
 f1 = chebfun(@cos, [-1 -0.5 0.5 1], pref);
 If1 = cumsum(f1);
 If1_exact = @(x) sin(x) - sin(-1);
+plot(If1)
 pass(2) = norm(feval(If1, xr) - If1_exact(xr), inf) < ...
     10*vscale(If1)*epslevel(If1);
 
@@ -126,7 +127,7 @@ dom = [-1 1];
 domCheck = [dom(1)+0.1 dom(2)-0.1];
 
 op = @(x) sin(100*x)./((x-dom(1)).^0.5.*(x-dom(2)).^0.5);
-f = chebfun(op, dom, 'exps', [-0.5 -0.5], 'splitting', 'off');
+f = chebfun(op, dom, 'exps', [-0.5 -0.5], 'splitting', 'on');
 g = cumsum(f);
 
 %%
