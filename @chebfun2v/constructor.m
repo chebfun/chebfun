@@ -39,7 +39,7 @@ if ( nargin >= 3 )
         len = numel(varargin); 
         j = 0; 
         while ( ( j < len) && isa( varargin{j+1}, 'chebfun2' ) )
-            if ( ~chebfun2.domainCheck(op, varargin{j+1}) )
+            if ( ~domainCheck(op, varargin{j+1}) )
                 error('CHEBFUN2V:CONSTRUCTOR','Domain not the same.');
             end
             j = j + 1;

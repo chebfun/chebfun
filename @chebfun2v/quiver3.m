@@ -62,7 +62,7 @@ end
 varargin = argin; 
 
 if ( isa(F, 'chebfun2v') && ...
-        (isempty(varargin) || ~isa(varargin{1},'chebfun2v')) ) 
+        (isempty(varargin) || ~isa(varargin{1}, 'chebfun2v')) ) 
     % quiver3(F,...)
     
     nF = F.nComponents; 
@@ -81,22 +81,22 @@ if ( isa(F, 'chebfun2v') && ...
         h = quiver3( xx, yy, zz, vals1, vals2, vals3, varargin{:} );
     end
 
-elseif ( isa(F,'chebfun2') && isa(varargin{1},'chebfun2v') )  
+elseif ( isa(F, 'chebfun2') && isa(varargin{1}, 'chebfun2v') )  
     % quiver(Z,F,...)
     
     % Extract arguments:
     Z = F; 
     F = varargin{1};
     % Domain check:
-    if ( ~chebfun2.domainCheck(Z, F.components{1} ) )
-        error('CHEBFUN2V:QUIVER3','Object are not on the same domain.');
+    if ( ~domainCheck(Z, F.components{1} ) )
+        error('CHEBFUN2V:QUIVER3', 'Object are not on the same domain.');
     end
     % Workout plotting locations:
     zz = new_data_locations( Z, numpts );
     %Plot: 
     h = quiver3( zz, F, varargin{2:end} );
     
-elseif ( isa(F,'double') && isa(varargin{1},'chebfun2v') )  
+elseif ( isa(F, 'double') && isa(varargin{1}, 'chebfun2v') )  
     % quiver(zz,F,...)
     
     nF = F.nComponents; 
@@ -153,7 +153,7 @@ elseif ( nargin > 3 )
             error('CHEBFUN2V:QUIVER3:INPUTS','Unrecognised input arguments.');
         end
         % Check domains: 
-        if ( ~chebfun2.domainCheck(X, Y) || (~chebfun2.domainCheck(Y, Z) ) )
+        if ( ~domainCheck(X, Y) || (~domainCheck(Y, Z) ) )
             error('CHEBFUN2V:QUIVER3','Object are not on the same domain.');
         end
         
