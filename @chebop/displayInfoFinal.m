@@ -3,6 +3,8 @@ function displayInfoFinal(u, delta, iterNo, errEstDE, errEstBC, displayFig, disp
 %
 % Utility routine for displaying iteration progress in the solve functions. This
 % method prints out information after Newton iteration finishes.
+%
+% See also: displayInfo
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.

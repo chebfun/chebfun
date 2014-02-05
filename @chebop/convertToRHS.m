@@ -16,6 +16,9 @@ function newRHS = convertToRHS(rhs, residual)
 %
 % is not an accepted syntax.
 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org for Chebfun information.
+
 % Check the size of the residual (the output the dimensions of the
 % CHEBOP).
 [numRow, numCol] = size(residual);
@@ -49,6 +52,7 @@ for rhsCounter = 1:numRow
         rhsBlocks{rhsCounter} = rhs(rhsCounter);
     end
 end
+
 % Convert the cell-array to a chebmatrix
 newRHS = chebmatrix(rhsBlocks);
 end

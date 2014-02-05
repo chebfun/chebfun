@@ -3,6 +3,20 @@ function [displayFig, displayTimer] = displayInfo(mode, varargin)
 %
 % Utility routine of the CHEBOP class for displaying iteration progress in the
 % solve functions.
+% 
+% Calling sequence:
+%   [DISPLAYFIG, DISPLAYTIME] = DISPLAYINFO(MODE, VARARGIN)
+% where
+%   MODE: What phase in Newton iteration are we in?
+%   VARARGIN: Various useful information passed from the Newton solver
+%             to this method.
+% and
+%   DISPLAYFIG: Handle to the figure plots are drawn.
+%   DISPLAYTIME: Handle to the Matlab timer used for pausing the desired time
+%                between plots (cf. t = tic).
+%
+% See also: chebop/displayInfoFinal, chebop/displayInfoInit, 
+%           chebop/displayInfoInit
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
