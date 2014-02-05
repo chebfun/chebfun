@@ -1,14 +1,13 @@
 function H = discriminant(f, x, y, varargin)
-%DISCRIMINANT the determinant of Hessian of a chebfun2 at (x,y) 
-%
-% H = DISCRIMINANT(F,x,y) returns the determinant of the Hessian of F at
-% (x,y).  The gradient of F should be zero at (x,y). 
+%DISCRIMINANT the determinant of Hessian of a CHEBFUN2 at (x,y) 
+%   H = DISCRIMINANT(F,x,y) returns the determinant of the Hessian of F at
+%   (x,y). The gradient of F should be zero at (x,y).
 % 
-% H = DISCRIMINANT(F,G,x,y) returnes the determinant of the 'border' Hessian
-% of F at (x,y).
+%   H = DISCRIMINANT(F,G,x,y) returnes the determinant of the 'border' Hessian
+%   of F at (x,y).
 %
-% Note that we cannot represent the Hessian matrix because we do not allow
-% horizontal concatenation of chebfun2 objects. 
+%   Note that we cannot represent the Hessian matrix because we do not allow
+%   horizontal concatenation of CHEBFUN2 objects.
 %
 % See also JACOBIAN. 
 
@@ -26,8 +25,7 @@ fxx = diff(f, 2, 2);
 fyy = diff(f, 2, 1); 
 fxy = diff(f, [1 1]);
     
-
-if ( nargin == 3 )  % Standard Hessian
+if ( nargin == 3 )      % Standard Hessian
     % Evaluate at (x,y):
     fxx = feval(fxx, x, y);
     fxy = feval(fxy, x, y);
@@ -51,9 +49,12 @@ elseif ( nargin == 4 )  % Bordered Hessian
     gx = feval(gx, x, y); 
     gy = feval(gy, x, y);
     
-    % determinant of bordered hessian.
+    % Determinant of bordered Hessian.
     H = -gx.*(gx.*fyy - gy.*fxy) + gy.*(gx.*fxy - gy.*fxx);
+    
 else
-    error('CHEBFUN2:DISCRIMINANT','Invalid input arguments.');
+    error('CHEBFUN2:DISCRIMINANT', 'Invalid input arguments.');
+end
+
 end
     

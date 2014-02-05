@@ -1,10 +1,9 @@
 function [out1, out2] = length(F)
 %LENGTH  The rank of a chebfun2.
+%   K = LENGTH(F) returns the rank of the CHEBFUN2.
 %
-% K = LENGTH(F) returns the rank of the chebfun2.
-%
-% [m, n] = LENGTH(F) returns the polynomial degree of the column and row
-%        slices.
+%   [M, N] = LENGTH(F) returns the polynomial degree of the column and row
+%   slices.
 %
 % See also RANK.
 

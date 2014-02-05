@@ -1,14 +1,13 @@
 function varargout = chebpolyplot( f, varargin )
-%CHEBPOLYPLOT Display the chebpolyplot of the column and row slices.
+%CHEBPOLYPLOT   Display the CHEBPOLYPLOT of the column and row slices.
+%   CHEBPOLYPLOT(F) plots the Chebyshev coefficients of the one-dimensional
+%   slices that form F on a semilogy scale. It returns two figures one for the
+%   row slices and one for the column slices. By default only the first six row
+%   and column slices are plotted.
 %
-% CHEBPOLYPLOT(F) plots the Chebyshev coefficients of the one-dimensional
-% slices that form F on a semilogy scale. It returns two figures one for
-% the row slices and one for the column slices.  By default only the first
-% six row and column slices are plotted.
-%
-% CHEBPOLYPLOT(F,S) allows further plotting options, such as linestyle, 
-% linecolor, etc. If S contains a string 'LOGLOG', the coefficients will 
-% be displayed on a log-log scale.
+%   CHEBPOLYPLOT(F, S) allows further plotting options, such as linestyle,
+%   linecolor, etc. If S contains a string 'LOGLOG', the coefficients will be
+%   displayed on a log-log scale.
 %
 % See also CHEBPOLYPLOT2, CHEBPOLY2.
 
@@ -25,16 +24,15 @@ end
 cols = f.cols; 
 rows = f.rows; 
 
-%%
-% There are two figures. One plots the chebpolyplot of the column slices
-% and the other the chebpolyplot of the row slices. 
+% There are two figures. One plots the CHEBPOLYPLOT of the column slices and the
+% other the CHEBPOLYPLOT of the row slices.
 
-figure % first figure plots column slices.
-h1 = chebpolyplot( cols );  % chebpolyplot of column slices.
+figure % First figure plots column slices.
+h1 = chebpolyplot( cols, varargin{:} ); % CHEBPOLYPLOT of column slices.
 title('Chebpolyplot of column slices', 'FontSize', 16)
 
-figure  % second figure plots row slices.
-h2 = chebpolyplot( rows ); % chebpolyplot of row slices.
+figure % Second figure plots row slices.
+h2 = chebpolyplot( rows, varargin{:} ); % CHEBPOLYPLOT of row slices.
 title('Chebpolyplot of row slices', 'FontSize', 16)
  
 % Return plot handles when appropriate.
@@ -42,4 +40,6 @@ if ( nargout == 1 )
     varargout = { h1 };
 elseif ( nargout == 2 )
     varargout = { h1, h2 };
+end
+
 end

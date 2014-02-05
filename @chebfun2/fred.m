@@ -1,13 +1,12 @@
 function f = fred( K, v )
-%FRED  Fredholm integral operator with a chebfun2 kernel.
-%
-%  F = FRED(K, V) computes the Fredholm integral with kernel K:
+%FRED   Fredholm integral operator with a CHEBFUN2 kernel.
+%   F = FRED(K, V) computes the Fredholm integral with kernel K:
 %
 %       (F*v)(x) = int( K(x,y)*v(y), y=c..d ),  x=a..b
 %
-%  where [c d] = domain(V) and [a b c d] = domain(K). The kernel function
-%  K(x,y) should be smooth for best results. K is a chebfun2 and V is a chebfun.
-%  The result is a row chebfun object.
+%   where [c d] = domain(V) and [a b c d] = domain(K). The kernel function
+%   K(x,y) should be smooth for best results. K is a CHEBFUN2 and V is a
+%   chebfun. The result is a row CHEBFUN object.
 %
 % See also VOLT.
 
@@ -23,11 +22,7 @@ end
 dom = K.domain;
 
 % Get the low rank representation for f: 
-cols = K.cols; 
-rows = K.rows; 
-piv = K.pivotValues; 
-d = 1./piv; 
-d(d==inf) = 0;  % set infinite values to zero. 
+[cols, D, rows] = cdr(f);
 
 % Make sure v is a chebfun:
 if ( isa( v, 'function_handle' ) )
@@ -40,6 +35,6 @@ else
 end
 
 cols = ( cols.' * v ).';
-f = cols * diag( d ) * rows.';
+f = cols * D * rows.';
 
 end

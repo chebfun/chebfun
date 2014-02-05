@@ -4,11 +4,11 @@ classdef chebfun2
 %   Class for approximating functions defined on finite rectangles. The 
 %   functions should be smooth.
 %
-% CHEBFUN2(F) constructs a chebfun2 object representing the function F on 
-% [-1,1] x [-1 1]. F can be a string, e.g. 'sin(x.*y)', a
-% function handle, e.g. @(x,y) x.*y + cos(x), or a matrix of values. For 
-% the first two, F should in most cases be "vectorized" in the sense that
-% it may be evaluated at a matrix of points and returns a matrix output.
+% CHEBFUN2(F) constructs a CHEBFUN2 object representing the function F on
+% [-1,1]x[-1 1]. F can be a string, e.g., 'sin(x.*y)', a function handle, e.g.,
+% @(x,y) x.*y + cos(x), or a matrix of values. For the first two, F should in
+% most cases be "vectorized" in the sense that it may be evaluated at a matrix
+% of points and returns a matrix output.
 %
 % If F is a matrix, A = (a_ij), the numbers aij are used as function values
 % at tensor Chebyshev points of the 2nd kind. 
@@ -39,7 +39,7 @@ classdef chebfun2
         pivotValues
         % PIVOTLOCATIONS: pivot locations used in GE
         pivotLocations
-        % DOMAIN: rectangle of chebfun2, default is [-1,1]x[-1,1]
+        % DOMAIN: rectangle of chebfun2, default is [-1,1] x [-1,1]
         domain = [-1 1 -1 1];
     end
     
@@ -69,11 +69,14 @@ classdef chebfun2
         
         [xx, yy] = chebpts2(nx, ny, domain);
         
-        F = outerProduct(f, g);   % outer-product of two chebfuns.
+        % Outer-product of two chebfuns.
+        F = outerProduct(f, g);   
         
-        [bol, wzero] = singleSignTest( f ); % heuristic check to see if f changes sign.
+        % Heuristic check to see if f changes sign.
+        [bol, wzero] = singleSignTest( f ); 
         
-        bol = domainCheck(f, g); % 2D domain check 
+        % 2D domain check.
+        bol = domainCheck(f, g); 
     end
 
     % Private methods implemented by CHEBFUN2 class.

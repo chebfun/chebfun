@@ -1,7 +1,6 @@
 function f = imag( f )
-%IMAG imaginary part of a chebfun2 
-% 
-% IMAG(F) returns the imaginary part of a chebfun2.
+%IMAG   Imaginary part of a CHEBFUN2.
+%   IMAG(F) returns the imaginary part of a CHEBFUN2.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.

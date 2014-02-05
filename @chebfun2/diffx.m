@@ -1,14 +1,14 @@
 function g = diffx(f, n)
-%DIFFX differentiate a chebfun2 with respect to its first argument
+%DIFFX   Differentiate a CHEBFUN2 with respect to its first argument.
 %
-% G = DIFFX(F) returns a chebfun2 representing the derivative of F in its 
-% first argument. This is the same as DIFF(F,1,2).
+%   G = DIFFX(F) returns a CHEBFUN2 representing the derivative of F in its
+%   first argument. This is the same as DIFF(F,1,2).
 %
-% G = DIFFX(F,N) returns a chebfun2 representing the Nth derivative of F in
-% its first argument. This is the same as DIFF(F,N,2).
+%   G = DIFFX(F,N) returns a CHEBFUN2 representing the Nth derivative of F in
+%   its first argument. This is the same as DIFF(F,N,2).
 %
-% This command is for convenience as the syntax for DIFF, inherited from
-% the DIFF command for matrices, can be confusing.
+%   This command is for convenience as the syntax for DIFF, inherited from the
+%   DIFF command for matrices, can be confusing.
 % 
 % See also DIFFY, DIFF. 
 

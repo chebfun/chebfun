@@ -1,20 +1,18 @@
 function varargout = ellipsoid( a, b, c )
-%ELLIPSOID Generate an ellipsoid-like surface. Not necessarily an
-%ellipsoid.
+%ELLIPSOID  Generate an ellipsoid-like surface. (Not necessarily an ellipsoid!)
+%   ELLIPSOID(A,B,C), where A, B, and C are CHEBFUN2 objects on the domain [0
+%   pi]x[0 2*pi] plots the "ELLIPSOID" of semi axis lengths A(th,phi),
+%   B(th,phi), and C(th,phi).
 %
-%  ELLIPSOID(A,B,C), where A, B, and C are chebfun2 objects on the domain 
-%  [0 pi]x[0 2*pi] plots the "ELLIPSOID" of semi axis lengths A(th,phi), 
-%  B(th,phi), and C(th,phi).
-%
-%  [X Y Z]=ELLIPSOID(A,B,C) returns X, Y, and Z as chebfun2 objects such that
-%  SURF(X,Y,Z) plots an ELLIPSOID of semi axis lengths A(th,phi), 
-%  B(th,phi), and C(th,phi).
+%   [X Y Z]=ELLIPSOID(A,B,C) returns X, Y, and Z as CHEBFUN2 objects such that
+%   SURF(X,Y,Z) plots an ELLIPSOID of semi axis lengths A(th,phi), B(th,phi),
+%   and C(th,phi).
 % 
-%  F = ELLIPSOID(A,B,C) returns the chebfun2v representing the ELLIPSOID 
-%  SURF(F) plots the ELLIPSOID. 
+%   F = ELLIPSOID(A,B,C) returns the CHEBFUN2V representing the ELLIPSOID
+%   SURF(F) plots the ELLIPSOID.
 %
-%  Omitting output arguments causes the ELLIPSOID command to be displayed 
-%  with a SURF command and no outputs are returned.
+%   Omitting output arguments causes the ELLIPSOID command to be displayed with
+%   a SURF command and no outputs are returned.
 %
 % For the ellipsoid: 
 %   a = chebfun2(@(th,phi) 1+0*th,[0 pi 0 2*pi]);
@@ -35,15 +33,16 @@ end
 
 % ELLIPSOID with axis lengths a(th,phi), b(th,phi), c(th,phi).  
 dom = [0 pi 0 2*pi]; 
-th = chebfun2(@(th,phi) th, dom);
-phi = chebfun2(@(th,phi) phi, dom);
+th = chebfun2(@(th, phi) th, dom);
+phi = chebfun2(@(th, phi) phi, dom);
 
 x = a.*sin(th).*cos(phi);
 y = b.*sin(th).*sin(phi);
 z = c.*cos(th);
 
 if ( nargout == 0 )
-    surf(x, y, z), axis equal
+    surf(x, y, z)
+    axis equal
 elseif ( nargout == 1 )
     varargout = { [x ; y ; z] };
 else

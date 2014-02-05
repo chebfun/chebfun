@@ -1,14 +1,13 @@
 function varargout = chebpolyval2( f, varargin )
-%CHEBPOLYVAL2 values on a tensor Chebyshev grid.
+%CHEBPOLYVAL2   Values on a tensor Chebyshev grid.
+%   X = CHEBPOLYVAL2(F) returns the matrix of values of F on a Chebyshev tensor
+%   grid.
 %
-% X = CHEBPOLYVAL2(F) returns the matrix of values of F on a Chebyshev tensor
-% grid. 
+%   [U, D, V] = CHEBPOLYVAL2(F) returns the low rank representation of the
+%   values of F on a tensor Chebyshev grid. X = U * D * V'.
 %
-% [U, D, V] = CHEBPOLYVAL2(F) returns the low rank representation of the values
-% of F on a tensor Chebyshev grid. X = U * D * V'.
-%
-% [U, D, V] = CHEBPOLYVAL2(F,M,N) returns the values of F on a M-by-N Chebyshev 
-% tensor grid. 
+%   [U, D, V] = CHEBPOLYVAL2(F,M,N) returns the values of F on a M-by-N
+%   Chebyshev tensor grid.
 %
 % See also CHEBPOLY2, CHEBPOLYPLOT2. 
 
@@ -21,25 +20,22 @@ if ( isempty( f ) )
     return
 end
 
-if ( nargin == 1) 
-    [m, n] = length( f );  % Get degrees
+if ( nargin == 1 ) 
+    % Get degrees:
+    [m, n] = length( f );  
 elseif ( nargin == 2 ) 
-    error('CHEBFUN2:CHEBPOLYVAL2:INPUTS','Dimension not specified.'); 
+    error('CHEBFUN2:CHEBPOLYVAL2:INPUTS', 'Dimension not specified.'); 
 else
     m = varargin{ 1 }; 
     n = varargin{ 2 }; 
 end
 
 % Get the low rank representation for f. 
-cols = f.cols; 
-rows = f.rows; 
-piv = f.pivotValues; 
-d = 1./piv; 
-d(d==inf) = 0;  % set infinite values to zero. 
+[cols, d, rows] = cdr(f);
 
 % Evaluate the columns / rows
 C = resize( chebpoly( cols ).', n );
-R = resize( chebpoly( rows ).', m);
+R = resize( chebpoly( rows ).', m );
 
 % Convert these values to coefficients.
 C = chebtech2.coeffs2vals( C );
@@ -62,11 +58,11 @@ function X = resize( X, N )
 [mX, nX] = size( X ); 
 
 if ( mX > N ) 
-    % truncate 
-    X = X(end-N+1:end, :); 
+    % Truncate:
+    X = X((end-N+1):end, :); 
 else
-    % pad
-    X = [zeros(N-mX, nX); X]; 
+    % Pad:
+    X = [zeros(N - mX, nX) ; X]; 
 end
 
 end

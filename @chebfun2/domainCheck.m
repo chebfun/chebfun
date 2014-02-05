@@ -1,4 +1,4 @@
-function bol = domainCheck(f, g)
+function out = domainCheck(f, g)
 %DOMAINCHECK   True if the domains of two CHEBFUN2 objects are the same.
 %   DOMAINCHECK(F, G) returns TRUE if the domains of the two
 %   CHEBFUN2 objects F and G coincide up to a tolerance depending on their
@@ -16,12 +16,11 @@ function bol = domainCheck(f, g)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Empty check: 
-if ( isempty( f ) ) 
-    if ( isempty( g ) ) 
-        bol = true; 
-    else 
-        bol = false; 
-    end
+if ( isempty( f ) && isempty( g ) ) 
+    out = true; 
+    return
+elseif ( xor(isempty( f ), isempty( g ) ) 
+    out = false; 
     return
 end
 
@@ -32,6 +31,6 @@ gcols = g.cols;
 grows = g.rows; 
 
 % Call 1D domain check: 
-bol = domainCheck(fcols, gcols) & domainCheck(frows, grows); 
+out = domainCheck(fcols, gcols) & domainCheck(frows, grows); 
 
 end

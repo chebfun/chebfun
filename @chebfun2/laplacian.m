@@ -1,7 +1,6 @@
 function L = laplacian(f)
-%LAPLACIAN Laplacian of a chebfun2.
-%
-% L = LAPLACIAN(F) returns a chebfun2 representing the Laplacian of F. 
+%LAPLACIAN   Laplacian of a CHEBFUN2.
+%   L = LAPLACIAN(F) returns a CHEBFUN2 representing the Laplacian of F.
 %
 % See also LAP.
 

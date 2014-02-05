@@ -1,12 +1,13 @@
 function f = cos( f ) 
-% COS   Cosine of a chebfun2.
+%COS   Cosine of a CHEBFUN2.
+%   COS(F) returns the cosine of F.
 %
 % See also COSH.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-% Check for empty
+% Check for empty:
 if ( isempty( f ) )
     return
 end 

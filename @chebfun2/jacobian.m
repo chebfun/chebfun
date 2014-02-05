@@ -1,11 +1,9 @@
 function J = jacobian( f, g )
-%JACOBIAN Jacobian determinant of two chebfun2.
+%JACOBIAN   Jacobian determinant of two CHEBFUN2.
+%   J = JACOBIAN(F,G) returns the Jacobian determinant of the Jacobian matrix.
 %
-% J = JACOBIAN(F,G) returns the Jacobian determinant of the Jacobian
-% matrix. 
-%
-% Note we return the determinant of the Jacobian matrix and not the
-% Jacobian matrix itself. 
+%   Note we return the determinant of the Jacobian matrix and not the Jacobian
+%   matrix itself.
 %
 % See also CHEBFUN2V/JACOBIAN. 
 
@@ -18,7 +16,7 @@ if ( isempty( f ) || isempty( g ) )
     return
 end
 
-% Call chebfun2v/jacobian:
+% Call CHEBFUN2V/JACOBIAN():
 J = jacobian( chebfun2v( { f, g } ) );
 
 end

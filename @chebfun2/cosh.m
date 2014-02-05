@@ -1,11 +1,10 @@
 function f = cosh( f )
-%COSH Hyperbolic cosine of a chebfun2.
-%
-% COSH(F) returns the hyperbolic cosine of F.
+%COSH   Hyperbolic cosine of a CHEBFUN2.
+%   COSH(F) returns the hyperbolic cosine of F.
 % 
 % See also SINH, COS.
 
-% check for empty chebfun2
+% Check for empty:
 if ( isempty( f ) ) 
     return 
 end 

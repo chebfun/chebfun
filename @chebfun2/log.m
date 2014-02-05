@@ -1,9 +1,11 @@
 function f = log( f )
-%LOG Natural logarithm of a chebfun2.
+%LOG   Natural logarithm of a chebfun2.
 % 
-% LOG(F) is the natural logarithm of F. This function does not
-% work if the function passes through or becomes numerically close to
-% zero.
+%   LOG(F) is the natural logarithm of F. This function does not work if the
+%   function passes through or becomes numerically close to zero.
+
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % Empty check: 
 if ( isempty( f ) ) 

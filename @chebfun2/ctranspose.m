@@ -1,9 +1,9 @@
 function f = ctranspose( f )
-%'	  Complex conjugate transpose of a chebfun2.
-% 
-% F' is the complex conjugate transpose of F.
+%'	 Complex conjugate transpose of a CHEBFUN2.
+%   F' is the complex conjugate transpose of F.
+%   G = CTRANSPOSE(F) is called for the syntax F'.  
 %
-% G = CTRANSPOSE(F) is called for the syntax F'.  
+% See also CONJ, TRANSPOSE.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
@@ -13,7 +13,5 @@ f = conj( f );
 
 % Call transpose:
 f = transpose( f ); 
-
-
 
 end

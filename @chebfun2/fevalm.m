@@ -1,5 +1,10 @@
 function z = fevalm(f, x, y)
-% FEVALM   Evaluate a chebfun2
+% FEVALM   Evaluate a CHEBFUN2.
+
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+
+% TODO: Document.
 
 if ( isempty(f) )
     varargout = {[]}; 
@@ -7,14 +12,10 @@ if ( isempty(f) )
 end
 
 % Get the low rank representation for f. 
-cols = f.cols; 
-rows = f.rows; 
-piv = f.pivotValues; 
-d = 1./piv; 
-d(d==inf) = 0;  % set infinite values to zero. 
+[cols, D, rows] = cdr(f);
+
 zCol = feval(f.cols, y(:));
 zRow = feval(f.rows, x(:));
-
-z = zCol*diag( d )*zRow.';
+z = zCol * D * zRow.';
 
 end

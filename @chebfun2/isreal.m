@@ -1,17 +1,16 @@
-function isReal = isreal( f )
-%ISREAL Real-valued chebfun2 test.
-%
-% ISREAL(F) returns logical true if F does not have an imaginary part
-% and false otherwise.
+function out = isreal( f )
+%ISREAL   Real-valued CHEBFUN2 test.
+%   ISREAL(F) returns logical true if F does not have an imaginary part and
+%   false otherwise.
 %  
-% ~ISREAL(F) detects chebfun2 object that have an imaginary part even if
-% it is all zero.
+%   ~ISREAL(F) detects CHEBFUN2 object that have an imaginary part even if it is
+%   all zero.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 if ( isempty( f ) )
-    isReal = [];
+    out = true;
     return
 end
 
@@ -21,6 +20,6 @@ rows = f.rows;
 piv = f.pivotValues;
 
 % Check individual columns and rows. 
-isReal = isreal( cols ) && isreal( rows ) && isreal( piv );
+out = isreal( piv ) && isreal( cols ) && isreal( rows );
 
 end
