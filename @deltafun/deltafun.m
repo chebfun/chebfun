@@ -149,7 +149,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         % True if the DELTAFUN object has no delta functions       
         out = anyDelta(f)
 
-        % Compose a DELTAFUN with an operator or another DELTAFUN
+        % Compose a DELTAFUN with an affine operator or another DELTAFUN
         f = compose(f, op, g, pref)
         
         % Complex conjugate of a DELTAFUN.

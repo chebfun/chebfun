@@ -19,14 +19,14 @@ mag = rand(5,5);
 loc = sort(rand(1,5));
 
 d = deltafun(f, mag, loc);
-[F, jumpVals] = cumsum(d);
+[F, rval] = cumsum(d);
 pass(2) = iscell(F);
 %%
 f = fun.constructor(@(x) sin(pi*x));
 d = deltafun( f, [-1, 1], [-1, 1]);
-[F, jumpVals] = cumsum(d);
+[F, rval] = cumsum(d);
 
 pass(3) = ~isa(F, 'deltafun') && feval(F, -1) == -1 ...
-    && jumpVals == 1 && feval(F, 1) == -1; 
+    && rval == 1 + get(F, 'rval') && feval(F, 1) == -1; 
 
 end

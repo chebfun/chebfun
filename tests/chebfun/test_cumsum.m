@@ -7,6 +7,7 @@ if ( nargin == 0 )
     pref = chebpref();
 end
 
+%%
 % Generate a few random points in [-1 1] to use as test values.
 seedRNG(7681);
 xr = 2 * rand(1000, 1) - 1;
@@ -14,6 +15,7 @@ xr = 2 * rand(1000, 1) - 1;
 % Check empty casee.
 pass(1) = isempty(cumsum(chebfun()));
 
+%%
 % Check an example with breakpoints but no impulses.
 f1 = chebfun(@cos, [-1 -0.5 0.5 1], pref);
 If1 = cumsum(f1);
@@ -21,13 +23,14 @@ If1_exact = @(x) sin(x) - sin(-1);
 pass(2) = norm(feval(If1, xr) - If1_exact(xr), inf) < ...
     10*vscale(If1)*epslevel(If1);
 
+%%
 % Check behavior for row chebfuns.
 f1t = f1.';
 If1t = cumsum(f1t);
 If1t_exact = @(x) (sin(x) - sin(-1)).';
 pass(3) = norm(feval(If1t, xr) - If1t_exact(xr), inf) < ...
     10*vscale(If1t)*epslevel(If1t);
-
+%%
 % Check behavior for array-valued chebfuns.
 f3 = chebfun(@(x) [cos(x) -sin(x) exp(x)], [-1 -0.5 0.5 1], pref);
 If3 = cumsum(f3);

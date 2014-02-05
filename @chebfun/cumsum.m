@@ -82,32 +82,19 @@ for l = 1:m
         % concatenate doesn't make any sense.
         
         % Call CUMSUM@BNDFUN:        
-        [cumsumFunJ, rval] = cumsum(f.funs{j}, 1, 1, rval);
+        [newFuns, rval] = cumsum(f.funs{j}, 1, 1, rval);
         
-        if ( iscell( cumsumFunJ ) )
-            % Store FUNs:
-            funs = [funs, cumsumFunJ];
-            % Update the domain vector:
-            L = length(cumsumFunJ)-1;
-            newBreakPts = zeros(1, L);
-            for i = 1:L
-                % Get the break points in the interior:
-                dom = cumsumFunJ{i+1}.domain;
-                newBreakPts(i) = dom(1);
-            end
-            % Append them to the existing break points:
-            f.domain = union(f.domain, newBreakPts);
-        else
-            % Store FUNs:
-            funs = [funs, {cumsumFunJ}];
+        if ( ~iscell( newFuns ) )
+            newFuns = {newFuns};
         end
+        
+        % Store FUNs:
+        funs = [funs, newFuns]; %#ok<AGROW>
+        
     end
     
-    % Get the new pointValues:
-    f.pointValues = chebfun.getValuesAtBreakpoints(funs, dom);
-    
-    % Append the updated FUNs:
-    f.funs = funs;
+    % Assemble the new CHEBFUN:
+    f = chebfun(funs);
     
 end
 

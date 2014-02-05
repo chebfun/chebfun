@@ -1,20 +1,24 @@
-function [g, jumpEnd] = cumsum(f, k, dim, shift)
+function [g, rval] = cumsum(f, k, dim)
 %CUMSUM   Indefinite integral of a DELTAFUN.
-%   CUMSUM(F) is the indefinite integral of the DELTAFUN F. If F has no delta
-%   functions, then G is just the CUMSUM of the funPart of F. Any derivatives of
-%   delta functions are integrated by once. This is done by shifting the rows of
-%   the DELTAMAG matrix once upward. In case there are delta functions in F, a
-%   cell array of FUNS is returned. If F has a delta function at the right end
-%   point, it's magnitude is returned in JUMPEND, other wiase JUMPEND is set to
-%   zero. The value in JUMPEND can be used by highe classes to CUMSUM 
-%   conacatenated DELTAFUNS.
+%   [G, RVAL] = CUMSUM(F) is the indefinite integral of the DELTAFUN F. If F 
+%   has no delta functions, then G is just the CUMSUM of the funPart of F
+%   RVAL is the value of G at the right end point. Any derivatives of delta 
+%   functions are integrated by shifting the rows of the DELTAMAG matrix once
+%   upward. 
+%
+%   In case there are delta functions in F, a cell array of FUNS is returned. 
+%   If F has a delta function at the right end point, it's magnitude is added
+%   to the right end point value of the funPart of the last deltafun. The 
+%   value in RVAL can be used by higher classes to CUMSUM conacatenated 
+%   DELTAFUNS.
+%
 % See also SUM
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% [TODO]: Document and implemet k, dim and shift
+% [TODO]: Document and implemet k, dim
 
 % Trivial case:
 if ( isempty(f) )
@@ -32,7 +36,8 @@ deltaTol = pref.deltaPrefs.deltaTol;
 
 if ( isempty(deltaLoc) || isempty(deltaMag) )
     g = cumsum(f.funPart);
-    jumpEnd = 0;
+    % Store the value of g at the right end point:
+    rval = get(g, 'rval');
 else
     % Clean up delta functions:
     f = simplifyDeltas(f);
@@ -57,7 +62,7 @@ else
     % Determine the value of jumps;
     jumpVals = deltaMag(1, idx);
     
-    % Integrate and clean the deltaMag matrix:
+    % Remove the first row of deltaMag matrix since it is being integrated:
     if ( size(deltaMag, 1) > 1 )
         deltaMag = deltaMag(2:end, :);
         [deltaMag, deltaLoc] = deltafun.cleanColumns(deltaMag, deltaLoc);
@@ -73,8 +78,9 @@ else
         else
             g = deltafun(cumsum(f.funPart), deltaMag, deltaLoc);
         end
-        % There are no jumps and hence no jump at the end:
-        jumpEnd = 0;
+        % There are no delta functions, so simply return the value of the funPart at
+        % the right end point:
+        rval = get(g, 'rval');
         return
     else
         % There are delta functions, which will introduce jumps. First take care
@@ -98,10 +104,7 @@ else
         else
             deltaRight = 1;
         end
-        
-        % The last jump:
-        jumpEnd = jumpVals(end);
-        
+                
         % If the only jumps are at the left or the right end point, i.e. there
         % is no delta function in the interior, integrate and leave. There are
         % three possibilities of this sort:
@@ -111,11 +114,12 @@ else
         p3 = nJumps == 2 && deltaLeft && deltaRight;
         if ( p1 || p2 || p3)
             s = cumsum(f.funPart) + jumpVals(1);
+            rval = jumpVals(end) + get(s, 'rval');
             if ( isempty(deltaLoc) || isemtpy(deltaMag) )
-                g = s;
+                g = s;                
             else
                 g = deltafun(s, deltaMag, deltaLoc);
-            end
+            end            
             return
         end
         
@@ -157,6 +161,14 @@ else
             else
                 g{k} = fk;
             end
+        end
+        % Compute the value at the right end point based on whether the last fun
+        % is DELTAFUN or a CLASSICFUN
+        gEnd = g{nfuns};
+        if ( isa(gEnd, 'deltafun') )
+            rval = get(gEnd.funPart, 'rval') + jumpVals(end);
+        else
+            rval = get(gEnd, 'rval') + jumpVals(end);
         end
     end
 end
