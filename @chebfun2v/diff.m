@@ -21,7 +21,7 @@ if ( isempty(F) )
 end
 
 % Defaults:
-if ( nargin == 1 || ismpty(n) )
+if ( nargin == 1 || isempty(n) )
     n = 1;
 end
 if ( nargin < 3 ) 
