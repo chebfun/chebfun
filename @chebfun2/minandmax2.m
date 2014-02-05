@@ -1,14 +1,12 @@
 function [Y, X] = minandmax2( f )
-%MINANDMAX2, find global minimum and maximum of a chebfun2.
+%MINANDMAX2   Find global minimum and maximum of a CHEBFUN2.
+%   Y = minandmax2(F) returns the minimum and maximum value of a chebfun2 over
+%   its domain. Y is a vector of length 2 such that Y(1) = min(f(x,y)) and Y(2)
+%   = max(f(x,y)).
 %
-% Y = minandmax2(F) returns the minimum and maximum value of a chebfun2 over
-% its domain. Y is a vector of length 2 such that Y(1) = min(f(x,y)) and
-% Y(2) = max(f(x,y)).
-%
-% [Y X] = minandmax2(F) also returns the position of the minimum and maximum.
-% That is,
-%
-%  F(X(1,1),X(1,2)) = Y(1)     and      F(X(2,1),X(2,2)) = Y(2)
+%   [Y, X] = minandmax2(F) also returns the position of the minimum and maximum.
+%   That is,
+%       F(X(1,1),X(1,2)) = Y(1)     and      F(X(2,1),X(2,2)) = Y(2)
 %
 % See also MAX2, MIN2, NORM.
 
@@ -21,7 +19,9 @@ if ( isempty( f ) ) % check for empty chebfun2.
     return
 end
 
-maxsize = 4e3;   % Maximum possible sample matrix size.
+% Maximum possible sample matrix size:
+maxsize = 4e3; 
+
 % Is the function the zero function?
 if ( norm( f.cols ) < 10*eps )
     dom = f.domain;
@@ -31,7 +31,7 @@ if ( norm( f.cols ) < 10*eps )
     return
 end
 
-% Extract low rank representation
+% Extract low rank representation:
 frows = f.rows;
 fcols = f.cols;
 piv = f.pivotValues;
@@ -44,9 +44,8 @@ frows = frows * diag( sq.'.*sgn );
 fcols = fcols * diag( sq );
 
 
-if ( length(f) == 1 ) % rank-1 is easy:
+if ( length(f) == 1 ) % Rank-1 is easy:
     % We can find it from taking maximum and minimum in x and y direction.
-    %share out the scaling.
     
     % Find minandmax of rows and columns:
     [yr, xr] = minandmax( frows );
@@ -78,9 +77,10 @@ if ( length(f) == 1 ) % rank-1 is easy:
     if ( mod(indmx,2) == 1 ),
         X(2,2) = xc(1);
     end
+    
 elseif ( length(f) <= maxsize )
-    % We are looking for a fast initial guess.  So we first truncate the
-    % chebfun2.
+    
+    % We seek a fast initial guess. So we first truncate the CHEBFUN2.
     ypts = chebpts(length(fcols), fcols.domain); 
     xpts = chebpts(length(frows), frows.domain);
     cvals = feval(fcols, ypts); 
@@ -107,15 +107,15 @@ elseif ( length(f) <= maxsize )
     % maximum.
     try
         warnstate = warning;
-        warning('off'); % disable verbose warnings from fmincon.
-        options = optimset('Display','off','TolFun', eps, 'TolX', eps);
+        warning('off'); % Disable verbose warnings from fmincon.
+        options = optimset('Display', 'off', 'TolFun', eps, 'TolX', eps);
         [mn, Y(1)] = fmincon(@(x,y) feval(f, x(1), x(2)), X(1, :), ...
             [], [], [], [], lb, ub, [], options);
         [mx, Y(2)] = fmincon(@(x) -feval(f, x(1), x(2)), X(2,:), ...
             [], [], [], [], lb, ub, [], options);
         Y(2) = -Y(2);
-        X(1, :) = mn;
-        X(2, :) = mx;
+        X(1,:) = mn;
+        X(2,:) = mx;
         warning(warning);
     catch
         % Nothing is going to work so initial guesses will have to do.
@@ -123,8 +123,10 @@ elseif ( length(f) <= maxsize )
     end
     
     
-elseif length(f) >= maxsize
-    error('Chebfun2:max:length','Rank is too large.');
+elseif ( length(f) >= maxsize )
+    
+    error('Chebfun2:max:length', 'Rank is too large.');
+    
 end
 
 

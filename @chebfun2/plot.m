@@ -1,21 +1,21 @@
 function varargout = plot( f, varargin )
-%PLOT surface plot of a chebfun2
+%PLOT  Surface plot of a CHEBFUN2.
 %
-% PLOT(F) if F is a real-valued chebfun2 then this is the surface plot and
-% is the same as surf(F). If F is a complex valued then this returns a
-% domain colouring plot of F. 
+%   PLOT(F) if F is a real-valued chebfun2 then this is the surface plot and is
+%   the same as surf(F). If F is a complex valued then this returns a domain
+%   colouring plot of F.
 %
-% PLOT(F) if F is a complex-valued chebfun2 then we do Wegert's phase portrait 
-% plots.
+%   PLOT(F) if F is a complex-valued chebfun2 then we do Wegert's phase portrait
+%   plots.
 %
-% PLOT(F,S) Plotting with option string plots the column and row slices,
-% and pivot locations used in the construction of F.
+%   PLOT(F, S) Plotting with option string plots the column and row slices, and
+%   pivot locations used in the construction of F.
 %
-% When the first argument in options is a string giving details about
-% linestyle, markerstyle or colour then pivot locations are plotted.
-% Various line types, plot symbols and colors may be obtained with
-% plot(F,S) where S i a character string made from one element from any
-% or all the following 3 columns, similar as in the usual plot command:
+%   When the first argument in options is a string giving details about
+%   linestyle, markerstyle or colour then pivot locations are plotted. Various
+%   line types, plot symbols and colors may be obtained with plot(F,S) where S i
+%   a character string made from one element from any or all the following 3
+%   columns, similar as in the usual plot command:
 %
 %           b     blue          .     point              -     solid
 %           g     green         o     circle             :     dotted
@@ -31,26 +31,27 @@ function varargout = plot( f, varargin )
 %                               p     pentagram
 %                               h     hexagram
 %
-% For phase portraits see: E. Wegert, Visual Complex Functions: An
-% introduction with Phase Portraits, Springer Basel, 2012, or for MATLAB
-% code to produce many different styles of phase portraits go to: 
-% http://www.visual.wegert.com
+%   For phase portraits see: E. Wegert, Visual Complex Functions: An
+%   introduction with Phase Portraits, Springer Basel, 2012, or for MATLAB code
+%   to produce many different styles of phase portraits go to:
+%   http://www.visual.wegert.com
 % 
 % See also SURF, MESH.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information. 
 
-
-myish = ishold;
+holdState = ishold;
 if ( ~isempty(varargin) )
     % See if first set of option makes it a pivot plot.
+    
     if ( length(varargin{1}) < 5 )
-%% Column, row, pivot plot
+    
+        %% Column, row, pivot plot
 
         % Only option with <=3 letters is a colour, marker, line
         ll = regexp( varargin{1}, '[-:.]+', 'match' );
-        cc = regexp( varargin{1}, '[bgrcmykw]', 'match' );  % color
+        cc = regexp( varargin{1}, '[bgrcmykw]', 'match' );       % color
         mm = regexp( varargin{1}, '[.ox+*sdv^<>ph]', 'match' );  % marker
         
         if ( ~isempty(ll) )
@@ -76,7 +77,7 @@ if ( ~isempty(varargin) )
         x = dom(1); y = dom(3);
         w = dom(2)-dom(1);
         ht = dom(4)-dom(3);
-        LW='LineWidth';
+        LW = 'LineWidth';
         
         % Calculate boundary of plotting region.
         sw = dom(1) - w/4;
@@ -84,11 +85,11 @@ if ( ~isempty(varargin) )
         nw = dom(3) - ht/4;
         ne = dom(4) +  ht/4;
         
-        % plot the square domain
+        % Plot the square domain:
         rectangle('Position', [x y w ht], LW, 2); hold on;
         axis( [sw se nw ne] ); axis equal;
         
-        % Plot pivots
+        % Plot pivots:
         crosses = f.pivotLocations;
         defaultopts = { 'MarkerSize', 7 };
         extraopts = { 'Marker', mm{:}, 'LineStyle', 'none', 'Color', cc{:} };
@@ -103,42 +104,42 @@ if ( ~isempty(varargin) )
             if ( ~isempty(ll) )
                 opts = { opts{:}, 'LineStyle', ll{:}, 'color', cc{:} };
             end
-            %plot column lines:
+            % Plot column lines:
             line( [crosses(:,1) crosses(:,1)].', [nw+ht/8 ne-ht/8], opts{:} );
-            %plot row lines:
+            % Plot row lines:
             line( [sw+w/8 se-w/8], [crosses(:,2), crosses(:,2)].', opts{:} );
         end
         hold off
     else
-%% Standard surface plot 
-
+        
+        %% Standard surface plot 
         h = surf(f, varargin{:});
     end
 else
     if ( isreal( f ) )
         h = surf( f );
+        
     else
-%% Phase Protrait plot 
-        % The following is a slightly modified version of Wegert's code 
-        % from p345 of his book.  
+        %% Phase Protrait plot 
+        % The following is a slightly modified version of Wegert's code from
+        % p345 of his book.
         dom = f.domain; 
         nx = 500; 
         ny = 500;
         x = linspace(dom(1), dom(2), nx); 
         y = linspace(dom(3), dom(4), ny);
-        [xx, yy]=meshgrid(x,y); 
+        [xx, yy] = meshgrid(x, y); 
         zz = xx + 1i*yy;
         f = feval(f, xx, yy);
         h = surf( real(zz), imag(zz), 0*zz, angle(-f) );
         set(h, 'EdgeColor', 'none');
         caxis([-pi pi]), colormap hsv(600)
-        view(0,90), axis equal, axis off        
+        view(0, 90), axis equal, axis off  
+        
     end
 end
 
-%%
-
-if ( ~myish )
+if ( ~holdState )
     hold off
 end
 if ( nargout > 0 )

@@ -1,45 +1,52 @@
 function [normF, normloc] = norm( f, p )
-%NORM   norm of a Chebfun2
-%
-% For chebfun2 objects:
+%NORM   Norm of a CHEBFUN2
+% For CHEBFUN2 objects:
 %    NORM(F) = sqrt(integral of abs(F)^2).
-%    NORM(F,2) = largest singular value of F.
+%    NORM(F, 2) = largest singular value of F.
 %    NORM(F,'fro') is the same as NORM(F).
-%    NORM(F,1) = NOT IMPLEMENTED.
-%    NORM(F,inf) = global maximum in absolute value.
-%    NORM(F,max) = global maximum in absolute value.
-%    NORM(F,min) = NOT IMPLEMENTED
+%    NORM(F, 1) = NOT IMPLEMENTED.
+%    NORM(F, inf) = global maximum in absolute value.
+%    NORM(F, max) = global maximum in absolute value.
+%    NORM(F, min) = NOT IMPLEMENTED
 %
-% Furthermore, the inf norm for chebfun2 objects also returns a second
-% output, giving a position where the max occurs.
+% Furthermore, the inf norm for CHEBFUN2 objects also returns a second output,
+% giving a position where the max occurs.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-if ( nargin == 1 ) % default to 2-norm.
+if ( nargin == 1 ) 
+    % Default to 2-norm.
     p = 2;
 end
 
-if ( isempty( f ) )  % Empty chebfun has norm 0
+if ( isempty( f ) )  
+    % Empty chebfun has norm 0.
     normF = [];
+    
 else
-    switch ( p )  % different cases on different norms.
+    switch ( p )  % Different cases on different norms.
         case 1
-            error('CHEBFUN2:norm','Chebfun2 does not support L1-norm, yet');
-        case {2,'fro'}
-            % definite integral of f.^2
-            normF = sqrt( sum( svd( f ).^2 ) );  % L^2-norm is sum of squares of sv.
-        case {inf,'inf','max'}
+            error('CHEBFUN2:norm', 'CHEBFUN2 does not support L1-norm, yet');
+            
+        case {2, 'fro'}  % Definite integral of f.^2
+            % L^2-norm is sum of squares of sv.
+            normF = sqrt( sum( svd( f ).^2 ) );  
+            
+        case {inf, 'inf', 'max'}
             [Y, X] = minandmax2(f);
             [normF, idx] = max( abs( Y ) );
             normloc = X( idx, : );
-        case {-inf,'-inf','min'}
-            error('CHEBFUN2:norm','Chebfun2 does not support this norm.');
-        case {'op','operator'}
+            
+        case {-inf, '-inf', 'min'}
+            error('CHEBFUN2:norm', 'CHEBFUN2 does not support this norm.');
+            
+        case {'op', 'operator'}
             [C, D, R] = cdr( f ); 
             L = C * D * R; 
             s = svd( L ); 
             normF = s(1);
+            
         otherwise
             if ( isnumeric(p) && isreal(p) )
                 if ( abs(round(p) - p) < eps )
@@ -47,16 +54,20 @@ else
                     if ( ~mod(p,2) )
                         normF = ( sum2( f ) ).^( 1/p );
                     else
-                        error('CHEBFUN2:norm','p-norm must have p even for now.');
+                        error('CHEBFUN2:norm', ...
+                            'p-norm must have p even for now.');
                     end
                 else
-                    error('CHEBFUN2:norm','Chebfun2 does not support this norm');
+                    error('CHEBFUN2:norm', ...
+                        'CHEBFUN2 does not support this norm.');
                 end
             else
-                error('CHEBFUN:norm:unknown','Unknown norm');
+                error('CHEBFUN:norm:unknown', 'Unknown norm.');
             end
+            
     end
 end
+
 end
 
 %%% 

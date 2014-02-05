@@ -1,8 +1,7 @@
 function g = std( f, varargin )
-%STD Standard deviation of a chebfun2 along one variable.
-%
-%  G = STD(F) returns the standard deviation of F in the y-variable
-%  (default). That is, if F is defined on the rectangle [a,b] x [c,d] then
+%STD   Standard deviation of a CHEBFUN2 along one variable.
+%   G = STD(F) returns the standard deviation of F in the y-variable (default).
+%   That is, if F is defined on the rectangle [a,b] x [c,d] then
 %
 %                         d 
 %                        /
@@ -10,9 +9,9 @@ function g = std( f, varargin )
 %                        /
 %                        c
 %
-%  G = STD(F,FLAG,DIM) takes the standard deviation along the y-variable if
-%  DIM = 1 and along the x-variable if DIM = 2.  The FLAG is ignored and
-%  kept in this function so the syntax agrees with the Matlab STD command.
+%   G = STD(F, FLAG, DIM) takes the standard deviation along the y-variable if
+%   DIM = 1 and along the x-variable if DIM = 2. The FLAG is ignored and kept in
+%   this function so the syntax agrees with the Matlab STD command.
 %
 % See also CHEBFUN/STD, CHEBFUN2/MEAN.
 
@@ -21,15 +20,12 @@ function g = std( f, varargin )
 
 % Empty check: 
 if ( isempty( f ) ) 
-    g = chebfun;
+    g = chebfun();
     return
 end
 
 dom = f.domain; 
-
-if ( nargin == 1 )
-    dim = 1;   % default to std over the y-variable. 
-elseif ( nargin == 2 )
+if ( nargin < 3 )
     dim = 1;   % default to std over the y-variable. 
 elseif ( nargin == 3 )
     dim = varargin{ 2 }; 
@@ -40,11 +36,11 @@ end
 if ( dim == 1 )          % y-variable.
     mx = chebfun2( @(x,y) feval( mean(f, 2), x ), dom );
     g = sqrt( 1/( diff( dom(3:4) ) ) * sum( ( f - mx ).^2, 1 ) ) ;
-elseif ( dim == 2 )  %  x-variable.
+elseif ( dim == 2 )      %  x-variable.
     my = chebfun2( @(x,y) feval( mean(f, 1), y), dom );
     g = sqrt( 1/( diff( rect(1:2) ) ) * sum( ( f - my ).^2, 2 ) );
 else
-   error('CHEBFUN2:STD:DIM','Third argument should have value 1 or 2.'); 
+   error('CHEBFUN2:STD:DIM', 'Third argument should have value 1 or 2.'); 
 end
 
 end

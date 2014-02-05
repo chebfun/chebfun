@@ -22,7 +22,7 @@ end
 dom = K.domain;
 
 % Get the low rank representation for f: 
-[cols, D, rows] = cdr(f);
+[cols, D, rows] = cdr(K);
 
 % Make sure v is a chebfun:
 if ( isa( v, 'function_handle' ) )

@@ -1,11 +1,11 @@
 function g = constructor(g, op, domain, varargin)
-%CONSTRUCTOR The main Chebfun2 constructor.
+%CONSTRUCTOR   The main Chebfun2 constructor.
 % 
-% This code is when functions of two variables are represented as chebfun2
-% objects. A chebfun2 object is a low rank representation and expresses a
-% function as a sum of rank-0 or 1 outerproduct of univariate functions. 
+% This code is when functions of two variables are represented as CHEBFUN2
+% objects. A CHEBFUN2 object is a low rank representation and expresses a
+% function as a sum of rank-0 or 1 outerproduct of univariate functions.
 %
-% The algorithm for constructing a chebfun2 comes in two phases: 
+% The algorithm for constructing a CHEBFUN2 comes in two phases: 
 %
 % PHASE 1: The first phase attempts to determine the numerical rank of the
 % function by performing Gaussian elimination with complete pivoting on a tensor
@@ -19,9 +19,8 @@ function g = constructor(g, op, domain, varargin)
 % slice fall below machine precision. 
 % 
 % The algorithm is fully described in: 
-% 
-% A. Townsend and L. N. Trefethen, An extension of Chebfun to two dimensions,
-% SISC, 35 (2013), C495-C518.
+%  A. Townsend and L. N. Trefethen, An extension of Chebfun to two dimensions,
+%  SISC, 35 (2013), C495-C518.
 % 
 % See also CHEBFUN2.
 
@@ -40,11 +39,11 @@ if ( nargin < 3 || isempty(domain) )
 end
 
 if ( nargin > 3 && isa(varargin{1}, 'chebpref') )
-    defaults = chebpref;
+    defaults = chebpref();
     pref = mergePrefs(defaults, varargin{1});
 end
 
-if ( isa(op, 'double') )                        % CHEBFUN2( DOUBLE )
+if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
     if ( numel( op ) == 1 )
         % LNT wants this: 
         g = constructor(g, @(x,y) op + 0*x, domain);
@@ -70,7 +69,7 @@ if ( isa(op, 'double') )                        % CHEBFUN2( DOUBLE )
     return
 end
 
-if ( isa(op, 'char') )                          % CHEBFUN2( CHAR )
+if ( isa(op, 'char') )     % CHEBFUN2( CHAR )
     op = str2op( op );
 end
 
@@ -94,7 +93,7 @@ if (any(strcmpi(domain, 'coeffs')) || any(strcmpi(domain, 'coeffs')) )
     op = coeffs2vals( op );
     g = chebfun2( op );
     return
-elseif (( nargin > 3 ) && ( any(strcmpi(varargin{1}, 'coeffs')) ||...
+elseif ( (nargin > 3) && ( any(strcmpi(varargin{1}, 'coeffs')) ||...
                                        any(strcmpi(varargin{1}, 'coeffs'))))
     op = coeffs2vals( op );
     g = chebfun2( op, domain );
@@ -102,24 +101,24 @@ elseif (( nargin > 3 ) && ( any(strcmpi(varargin{1}, 'coeffs')) ||...
 end
 
 fixedRank = 0;
-% If the domain isn't of length 4, search for the other 2 endpoints:
-% For instance, allow CHEBFUN2( OP, [-1 1], [-1 1]).
+% If the domain isn't of length 4, search for the other 2 endpoints: For
+% instance, allow CHEBFUN2( OP, [-1 1], [-1 1]).
 if ( numel(domain) == 2 )
     if ( ( nargin > 3) && isa(varargin{1}, 'double') )
         ends = varargin{1};
         if ( numel( ends ) == 2 )
-            domain = [domain(:);ends(:)]';
+            domain = [domain(:) ; ends(:)].';
         else
-            error('CHEBFUN2:CONSTRUCTOR:DOMAIN','Domain not fully determined.');
+            error('CHEBFUN2:CONSTRUCTOR:DOMAIN', 'Domain not fully determined.');
         end
     else
-        error('CHEBFUN2:CONSTRUCTOR:DOMAIN','Domain not fully determined.');
+        error('CHEBFUN2:CONSTRUCTOR:DOMAIN', 'Domain not fully determined.');
     end
 elseif ( numel(domain) == 1 )
     fixedRank = domain;
     domain = [-1 1 -1 1];
 elseif ( numel(domain) ~= 4 )
-    error('CHEBFUN2:CONSTRUCTOR:DOMAIN','Domain not fully determined.');
+    error('CHEBFUN2:CONSTRUCTOR:DOMAIN', 'Domain not fully determined.');
 end
 
 % Get default preferences from chebPref:
@@ -132,8 +131,8 @@ sampleTest = prefStruct.sampleTest;
 grid = 9;   % minsample
 
 % If the vectorize flag is off, do we need to give user a warning? 
-if ( vectorize == 0 )                                       % another check
-    % check for cases: @(x,y) x*y, and @(x,y) x*y'
+if ( vectorize == 0 ) % another check
+    % Check for cases: @(x,y) x*y, and @(x,y) x*y'
     [xx, yy] = meshgrid( domain(1:2), domain(3:4));
     A = op(xx, yy);
     B = zeros(2);
@@ -143,8 +142,8 @@ if ( vectorize == 0 )                                       % another check
         end
     end
     if ( any(any( abs(A - B.') > min( 1000*pseudoLevel, 1e-4 ) ) ) )
-        % function handle probably needs vectorizing, give user a warning and
-        % then vectorize. 
+        % Function handle probably needs vectorizing, give user a warning and
+        % then vectorize.
         warning('CHEBFUN2:CTOR:VECTORIZE','Function did not correctly evaluate on an array. Turning on the ''vectorize'' flag. Did you intend this? Use the ''vectorize'' flag in the chebfun2 constructor call to avoid this warning message.');
         g = chebfun2(op, domain, 'vectorize');
         return
@@ -165,7 +164,7 @@ while ( ~isHappy )
         error('FUN2:CTOR', 'Function returned NaN when evaluated');
     end
     
-    % Two-dimensional version of Chebfun's tolerance:
+    % Two-dimensional version of CHEBFUN's tolerance:
     tol = grid.^(4/3) * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
     
     %%% PHASE 1: %%%
@@ -177,7 +176,7 @@ while ( ~isHappy )
         % Double sampling on tensor grid:
         grid = 2^( floor( log2( grid ) ) + 1) + 1;                
         [xx, yy] = chebfun2.chebpts2(grid, grid, domain);
-        vals = evaluate(op, xx, yy, vectorize);            % resample
+        vals = evaluate(op, xx, yy, vectorize); % resample
         vscale = max(abs(vals(:)));
         % New tolerance: 
         tol = grid.^(4/3) * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
@@ -271,9 +270,9 @@ while ( ~isHappy )
         
     end
     
-    % For some reason, on some computers simplify is giving back a
-    % scalar zero.  In which case the function is numerically zero.
-    % Artifically set the columns and rows to zero.
+    % For some reason, on some computers simplify is giving back a scalar zero.
+    % In which case the function is numerically zero. Artifically set the
+    % columns and rows to zero.
     if ( norm(colValues) == 0 || norm(rowValues) == 0)
         colValues = 0;
         rowValues = 0;
@@ -292,7 +291,8 @@ while ( ~isHappy )
     % Sample Test:
     if ( sampleTest )
         % Evaluate at arbitrary point in domain:
-        r = 0.029220277562146; s = 0.237283579771521;
+        r = 0.029220277562146; 
+        s = 0.237283579771521;
         r = (domain(2)+domain(1))/2 + r*(domain(2)-domain(1));
         s = (domain(4)+domain(3))/2 + s*(domain(4)-domain(3));
         if ( abs( op(r,s) - feval(g, r, s) ) > 1e5 * tol )
@@ -307,62 +307,67 @@ g = fixTheRank( g , fixedRank );
 
 end
 
-function [PivotValue, PivotElement, Rows, Cols, ifail] = CompleteACA(A, tol)
+function [pivotValue, pivotElement, rows, cols, ifail] = CompleteACA(A, tol)
 % Adaptive Cross Approximation with complete pivoting. This command is
 % the continuous analogue of Gaussian elimination with complete pivoting.
 % Here, we attempt to adaptively find the numerical rank of the function.
 
 % Set up output variables.
-[nx,ny]=size(A);
-width = min(nx,ny);         % Use to tell us how many pivots we can take.
-PivotValue = zeros(1);      % Store an unknown number of Pivot values.
-PivotElement = zeros(1,2);  % Store (j,k) entries of pivot location.
+[nx, ny] = size(A);
+width = min(nx, ny);        % Use to tell us how many pivots we can take.
+pivotValue = zeros(1);      % Store an unknown number of Pivot values.
+pivotElement = zeros(1, 2); % Store (j,k) entries of pivot location.
 ifail = 1;                  % Assume we fail.
-factor = 4*(tol>0);         % ratio between size of matrix and no. pivots. If tol = 0, then do full no. of steps.
+factor = 4*(tol > 0);       % ratio between size of matrix and no. pivots. If tol = 0, then do full no. of steps.
 
 % Main algorithm
-zrows = 0;                  % count number of zero cols/rows.
-[ infnorm , ind ]=max( abs ( reshape(A,numel(A),1) ) );
-[ row , col ]=myind2sub( size(A) , ind);
-scl = infnorm;
+zRows = 0;                  % count number of zero cols/rows.
+[infNorm, ind] = max( abs ( reshape(A,numel(A),1) ) );
+[row, col] = myind2sub( size(A) , ind);
+scl = infNorm;
 
 % If the function is the zero function.
-if scl == 0
-    PivotValue=0;
-    Rows = 0; Cols = 0;
+if ( scl == 0 )
+    pivotValue = 0;
+    rows = 0; 
+    cols = 0;
     ifail = 0;
 else
-    Rows(1, :) = zeros(1, size(A, 2));
-    Cols(:, 1) = zeros(size(A, 1), 1);
+    rows(1,:) = zeros(1, size(A, 2));
+    cols(:,1) = zeros(size(A, 1), 1);
 end
-while ( ( infnorm > tol ) && ( zrows < width / factor) )
-    Rows(zrows+1,:) = A( row , : ) ;
-    Cols(:,zrows+1) = A( : , col ) ;    % Extract the columns out
+
+while ( ( infNorm > tol ) && ( zRows < width / factor) )
+    rows(zRows+1,:) = A(row,:);
+    cols(:,zRows+1) = A(:,col);              % Extract the columns.
     PivVal = A(row,col);
-    A = A - Cols(:,zrows+1)*(Rows(zrows+1,:)./PivVal); % One step of GE.
+    A = A - cols(:,zRows+1)*(rows(zRows+1,:)./PivVal); % One step of GE.
     
     % Keep track of progress.
-    zrows = zrows + 1;                  % One more row is zero.
-    PivotValue(zrows) = PivVal;         % Store pivot value.
-    PivotElement(zrows,:)=[row col];    % Store pivot location.
+    zRows = zRows + 1;                       % One more row is zero.
+    pivotValue(zRows) = PivVal;              % Store pivot value.
+    pivotElement(zRows,:)=[row col];         % Store pivot location.
     
-    %Next pivot.
-    [ infnorm , ind ]=max( abs ( A(:) ) );  % slightly faster.
+    % Next pivot.
+    [ infNorm , ind ] = max( abs ( A(:) ) ); % Slightly faster.
     [ row , col ] = myind2sub( size(A) , ind );
 end
 
-if infnorm <= tol, ifail = 0; end  % We didn't fail.
-if (zrows >= width / factor), ifail = 1; end  % We did fail.
+if ( infNorm <= tol )
+    ifail = 0;                               % We didn't fail.
+end           
+if (zRows >= width / factor)
+    ifail = 1;                               % We did fail.
+end  
 
 end
 
 
 
 function [row, col] = myind2sub(siz, ndx)
-% My version of ind2sub. In2sub is slow because it has a varargout. Since
-% this is at the very inner part of the constructor and slowing things down
-% we will make our own.
-% This version is about 1000 times faster than MATLAB ind2sub.
+% My version of ind2sub. In2sub is slow because it has a varargout. Since this
+% is at the very inner part of the constructor and slowing things down we will
+% make our own. This version is about 1000 times faster than MATLAB ind2sub.
 
 vi = rem( ndx - 1, siz(1) ) + 1 ;
 col = ( ndx - vi ) / siz(1) + 1;
@@ -373,7 +378,7 @@ end
 
 function vals = evaluate( op, xx, yy, flag )
 % EVALUATE  Wrap the function handle in a FOR loop if the vectorize flag is
-% turned on. 
+% turned on.
 
 if ( flag )
     vals = zeros( size( yy, 1), size( xx, 2) );
@@ -383,31 +388,32 @@ if ( flag )
         end
     end
 else
-    vals = op( xx, yy );              % Matrix of values at cheb2 pts.
+    vals = op( xx, yy );  % Matrix of values at cheb2 pts.
 end
+
 end
 
 
 function op = str2op( op )
-% OP = STR2OP(OP), finds the dependent variables in a string and returns
-% an op handle than can be evaluated.
+% OP = STR2OP(OP), finds the dependent variables in a string and returns an op
+% handle than can be evaluated.
+
 depvar = symvar( op );
 if ( numel(depvar) > 2 )
-    error('FUN2:fun2:depvars',...
-        'Too many dependent variables in string input.');
+    error('FUN2:fun2:depvars', 'Too many dependent variables in string input.');
 end
 if ( numel(depvar) == 1 )
-    warning('CHEBFUN2:chebfun2:depvars',...
-        'Not a bivariate function handle.');  % exclude the case @(x) for now..
+    % Exclude the case @(x) for now..
+    warning('CHEBFUN2:chebfun2:depvars', 'Not a bivariate function handle.');  
     
-    % Not sure if this should be a warning or not.
-    
+    % TODO: Not sure if this should be a warning or not.
 end
 op = eval(['@(' depvar{1} ',' depvar{2} ')' op]);
+
 end
 
 function g = fixTheRank( g , fixedRank )
-% Fix the rank of a chebfun2. Used for nonadaptive calls to the constructor.
+% Fix the rank of a CHEBFUN2. Used for nonadaptive calls to the constructor.
 
 if ( fixedRank < 0 )
     error('CHEBFUN2:CONSTRUCTOR','Nonadaptive rank should be positive.')
@@ -432,3 +438,4 @@ if ( fixedRank > 0 )
 end
 
 end
+

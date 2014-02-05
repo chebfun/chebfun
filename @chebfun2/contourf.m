@@ -104,7 +104,7 @@ elseif ( isa(f, 'chebfun2') )
         argin(1:2) = [];
         
         % Check CONTOUR objects are on the same domain.
-        if ( ~chebfun2.domainCheck(xx, yy) || ~chebfun2.domainCheck(yy, f) )
+        if ( ~domainCheck(xx, yy) || ~domainCheck(yy, f) )
             error('CHEBFUN2:CONTOUR:DOMAIN', ...
                 'Domains of chebfun2 objects are not consistent.');
         end

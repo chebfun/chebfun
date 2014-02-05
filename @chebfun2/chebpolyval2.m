@@ -43,9 +43,9 @@ R = chebtech2.coeffs2vals( R );
 
 % Evaluate: 
 if ( nargout <= 1 )
-    varargout = {C * diag(d) * R.'}; 
+    varargout = {C * d * R.'}; 
 else
-    varargout = {C , diag(d), R}; 
+    varargout = {C , d, R}; 
 end
     
 

@@ -1,5 +1,5 @@
 function f = real( f )
-%REAL  real part of a chebfun2.
+%REAL  Real part of a chebfun2.
 %
 % See also IMAG.
 
@@ -12,7 +12,7 @@ if ( isempty( f ) )
     return
 end
 
-op = @(x,y) real( feval( f, x, y ) );  % Resample.
+op = @(x,y) real( feval( f, x, y ) );   % Resample.
 f = chebfun2( op, f.domain );           % Call constructor.
 
 end

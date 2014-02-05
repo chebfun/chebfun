@@ -1,16 +1,15 @@
 function varargout = waterfall( f, varargin )
-%WATERFALL   waterfall plot of a chebfun2.
+%WATERFALL   Waterfall plot of a CHEBFUN2.
+%   WATERFALL(F) displays the waterfall plot of F.
 %
-% WATERFALL(F) displays the waterfall plot of F.
+%   WATERFALL(F, S) displays the column and row chebfuns of F that are used for
+%   its approximation.  This is a 3D version of plot(f,S), where S is a string
+%   (see PLOT).
 %
-% WATERFALL(F,S) displays the column and row chebfuns of F that are
-% used for its approximation.  This is a 3D version of plot(f,S), where S 
-% is a string (see PLOT).
+%   WATERFALL(F, S, 'nslices', N) displays the first min(N,length(f)) columns
+%   and rows.
 %
-% WATERFALL(F,S,'nslices',N) displays the first min(N,length(f)) 
-% columns and rows.
-%
-% WATERFALL returns a handle to a waterfall plot object.
+%   H = WATERFALL(...) returns a handle to a waterfall plot object.
 %
 % See also PLOT.
 
@@ -22,12 +21,12 @@ numpts = 200;
 % Empty check: 
 if ( isempty(f) ) 
     h = plot( [] );
-    if nargin > 0
+    if ( nargin > 0 )
         varargout = { h };
     end
 end
 
-% Number of points to slices
+% Number of points to slices:
 nslices = length(f); 
 j = 1; argin = {};
 while ( ~isempty(varargin) )
@@ -44,26 +43,31 @@ nslices = min( nslices, length(f) );
 varargin = argin; 
 mynargin = length(varargin) + 1; 
 
+% Get domain:
+dom = f.domain;     
 
-dom = f.domain;     % get domain
-
-if ( mynargin == 1 )     % standard waterfall plot
+if ( mynargin == 1 )     
+    % Standard waterfall plot
+    
     x = linspace(dom(1), dom(2), numpts);
     y = linspace(dom(3), dom(4), numpts);
     [xx, yy] = meshgrid(x, y);
     vals = feval( f, xx, yy );
     h = waterfall( xx, yy, vals );
     return
+    
 else
     % See if first set of option makes it a pivot plot.
-    if ( length(varargin{1})<5 )% Column and row waterfall plot
+    
+    if ( length(varargin{1})<5 )
+        % Column and row waterfall plot
         
-        ish = ishold;
+        holdState = ishold;
 
-        % Only option with <=3 letters is a colour, marker, line
+        % Only option with <= 3 letters is a colour, marker, line
         ll = regexp(varargin{1},'[-:.]+','match');
-        cc = regexp(varargin{1},'[bgrcmykw]','match');  % color
-        mm = regexp(varargin{1},'[.ox+*sdv^<>ph]','match');  % marker
+        cc = regexp(varargin{1},'[bgrcmykw]','match');        % color
+        mm = regexp(varargin{1},'[.ox+*sdv^<>ph]', 'match');  % marker
         
         if ( ~isempty(ll) )
             if ( strcmpi(ll{1},'.') )
@@ -74,7 +78,8 @@ else
                 ll{1} = '-';
             end
         end
-        plotline = ~isempty(ll);  % plot row and col pivot lines?
+        % Plot row and col pivot lines?
+        plotline = ~isempty(ll); 
         if ( isempty(mm) ) 
             mm{1}= '.';
         end
@@ -82,18 +87,18 @@ else
             cc{1}= 'b';
         end
         % Evaluate on a grid.
-        P = f.pivotLocations;  % get pivot locations
+        P = f.pivotLocations;
         
-        defaultopts = {'MarkerSize',7};
-        extraopts = {'Marker',mm{:},'Color',cc{:}};
-        lineopts = {'linewidth',2,'linestyle',ll{:}};
+        defaultopts = {'MarkerSize', 7};
+        extraopts = {'Marker', mm{:}, 'Color', cc{:}};
+        lineopts = {'linewidth', 2, 'linestyle', ll{:}};
         if ( ~plotline )
-            % just plot the pivots at height f(x,y)
+            % Just plot the pivots at height f(x,y)
             h = plot3(P(:,1), P(:,2), feval( f, P(:,1), P(:,2) ), '.', ...
-                                             extraopts{:},defaultopts{:});
+                                             extraopts{:}, defaultopts{:});
         else
-            % plots the pivots.
-            ss = 1 : nslices;
+            % Plot the pivots.
+            ss = 1:nslices;
             h1 = plot3(P(ss, 1), P(ss, 2), feval( f, P(ss ,1), P(ss, 2) ),...
                                 '.', extraopts{:}, defaultopts{:} ); hold on
             
@@ -101,7 +106,7 @@ else
             [xx, yy]=meshgrid (P(:, 1), chebpts( length(f.cols), dom(3:4) ) );
             vals = feval( f, xx, yy );
             
-            %% Plot column slices
+            % Plot column slices
             xx = [];
             yy = []; 
             zz = [];
@@ -127,7 +132,7 @@ else
             axis equal
             
             h = [h1(:) ; h2(:) ; h3(:)];
-            if ( ~ish )
+            if ( ~holdState )
                 hold off
             end
         end
@@ -136,7 +141,7 @@ end
 
 %% Output
 
-if nargout > 0
+if ( nargout > 0 )
     varargout = {h};
 end
 

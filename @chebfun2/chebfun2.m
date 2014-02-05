@@ -72,11 +72,6 @@ classdef chebfun2
         % Outer-product of two chebfuns.
         F = outerProduct(f, g);   
         
-        % Heuristic check to see if f changes sign.
-        [bol, wzero] = singleSignTest( f ); 
-        
-        % 2D domain check.
-        bol = domainCheck(f, g); 
     end
 
     % Private methods implemented by CHEBFUN2 class.

@@ -1,11 +1,9 @@
 function r = rank(f, tol)
-% RANK   Rank of a chebfun2.
+%RANK  Rank of a CHEBFUN2.
+%   RANK(F) produces an estimate of the rank of the approximant F.
 %
-% RANK(F) produces an estimate of the rank of the approximant F. Note that
-% RANK(F)<=LENGTH(F) since 
-%
-% RANK(F,TOL) is the number of singular values of F greater than TOL/N, 
-% where N is the first singular value of F.
+%   RANK(F, TOL) is the number of singular values of F greater than TOL/N, where
+%   N is the first singular value of F.
 %
 % See also LENGTH.
 
@@ -29,9 +27,9 @@ s = svd( f );
 % Check for zero function.
 if ( max( s ) == 0  )  
     r = 0; 
-    return
 else
-    r = find( s/s(1) > tol, 1, 'last');  % r = no. of s.v. about relative tol
+    % r = no. of s.v. above relative tol.
+    r = find( s/s(1) > tol, 1, 'last');  
 end
 
 end

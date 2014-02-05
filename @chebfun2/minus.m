@@ -8,6 +8,6 @@ function f = minus(f, g)
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % f - g = f + (-g)
-f = plus( f, uminus(g) ); 
+f = plus(f, uminus(g)); 
 
 end

@@ -1,11 +1,10 @@
 function I = quad2d(f, a, b, c, d, varargin)
-% QUAD2D Complete definite integral of chebfun2. 
-%
-% I = QUAD2D( F ), returns the definite integral of a chebfun2. Integrated
-% over its domain of definition. 
+%QUAD2D  Complete definite integral of CHEBFUN2. 
+%   I = QUAD2D( F ), returns the definite integral of a CHEBFUN2 integrated
+%   over its domain of definition.
 % 
-% I = QUAD2D(F, a, b, c, d), returns the definite integral of a chebfun2.
-% Integrated over the domangle [a b] x [c d].
+%   I = QUAD2D(F, a, b, c, d), returns the definite integral of a CHEBFUN2.
+%   Integrated over the domangle [a b] x [c d].
 % 
 % See also INTEGRAL2, SUM2, INTEGRAL.
 
@@ -18,7 +17,7 @@ if ( ( a < dom(1) ) || ( b > dom(2) ) || ( c < dom(3) ) || ( d > dom(4) ) )
     error('CHEBFUN2:QUAD2D','Can only integrate within the chebfun2''s domain');
 end
 
-% Form a new chebfun2 and integrate. (This can be faster.)
+% Form a new CHEBFUN2 and integrate. (This can be faster.)
 I = integral2( restrict( f, [a, b, c, d] ) ); % Any extra arguments are ignored. 
 
 end

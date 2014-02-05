@@ -1,5 +1,5 @@
 function f = sinh( f )
-%SINH Hyperbolic sine of a chebfun2.
+%SINH   Hyperbolic sine of a CHEBFUN2.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.

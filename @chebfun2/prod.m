@@ -1,9 +1,8 @@
 function v = prod(f, varargin)
 %PROD  Product integral of a chebfun2. 
+%   PROD(F) returns exp( sum(log(F)) )
 % 
-%   prod(F) returns the chebfun exp(  sum(log(F)) )
-% 
-%   prod(F, DIM) returns the chebfun exp( sum(log(F), DIM) )
+%   PROD(F, DIM) returns the chebfun exp( sum(log(F), DIM) )
 % 
 % See also CUMPROD.
 
@@ -17,7 +16,7 @@ else
 end
 
 if ( numel( dim ) ~= 1 )
-    error('CHEBFUN2:PROD:DIM','DIM should be either 1 or 2.');
+    error('CHEBFUN2:PROD:DIM', 'DIM should be either 1 or 2.');
 end
 
 v = exp( sum( log(f), dim ) );

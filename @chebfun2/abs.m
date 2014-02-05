@@ -11,7 +11,7 @@ if ( isempty( f ) ) % check for empty chebfun2.
 end 
 
 % Positive/negative test. 
-bol = chebfun2.singleSignTest( f );  % Returns TRUE if there is no sign change.
+bol = singleSignTest( f );  % Returns TRUE if there is no sign change.
 
 if ( ~bol )
    error('CHEBFUN2:ABS', ...

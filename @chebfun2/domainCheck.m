@@ -19,7 +19,7 @@ function out = domainCheck(f, g)
 if ( isempty( f ) && isempty( g ) ) 
     out = true; 
     return
-elseif ( xor(isempty( f ), isempty( g ) ) 
+elseif ( xor(isempty( f ), isempty( g ) ) )
     out = false; 
     return
 end

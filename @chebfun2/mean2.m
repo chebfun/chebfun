@@ -1,15 +1,14 @@
 function v = mean2( f )
-%MEAN2 mean of a chebfun2
-%
-% V = MEAN2(F) returns the mean of a chebfun2: 
+%MEAN2   Mean of a CHEBFUN2
+%   V = MEAN2(F) returns the mean of a CHEBFUN: 
 % 
-%                       d  b
-%                      /  /   
-%  V = 1/(d-c)/(b-a)   |  |   f(x,y) dx dy 
-%                      /  /
-%                     c  a
+%                        d  b
+%                       /  /   
+%   V = 1/(d-c)/(b-a)   |  |   f(x,y) dx dy 
+%                       /  /
+%                      c  a
 % 
-% where the domain of f is [a,b] x [c,d]. 
+% 	where the domain of F is [a,b] x [c,d]. 
 %
 % See also MEAN, STD2.
 

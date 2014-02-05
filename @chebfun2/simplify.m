@@ -1,5 +1,7 @@
 function f = simplify( f ) 
-% Simplify a chebfun2 
+% Simplify a CHEBFUN2
+
+% TODO: DOCs
 
 % Simplify the column and row slices. 
 f.cols = simplify( f.cols ); 

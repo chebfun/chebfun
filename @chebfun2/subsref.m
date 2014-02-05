@@ -1,10 +1,10 @@
 function varargout = subsref(f, index)
 %SUBSREF   CHEBFUN2 subsref.
 % ( )
-%   F(X, Y) returns the values of the CHEBFUN2 F evaluated at (X,Y).  
-%   See CHEBFUN/FEVAL for further details. F(:, Y) returns a chebfun
-%   representing the function F along that column slice, and F(X, :) returns a
-%   chebfun representing F along that row slice. F(:, :) returns F. 
+%   F(X, Y) returns the values of the CHEBFUN2 F evaluated at (X,Y). See
+%   CHEBFUN/FEVAL for further details. F(:, Y) returns a chebfun representing
+%   the function F along that column slice, and F(X, :) returns a chebfun
+%   representing F along that row slice. F(:, :) returns F.
 %
 %   F(G), where G is also a CHEBFUN2V with two components 
 %   computes the composition of F and G.
@@ -14,7 +14,7 @@ function varargout = subsref(f, index)
 %
 % {}
 %   F{S1, S2, S3, S4} restricts F to the domain [S1, S2, S3, S4]. See
-%   CHEBFUN2/RESTRICT for further details. Note that F{[S1,S2, S3, S4]} is not 
+%   CHEBFUN2/RESTRICT for further details. Note that F{[S1,S2, S3, S4]} is not
 %   supported due to the behaviour of the MATLAB subsref() command.
 %
 % See also FEVAL, GET, RESTRICT, SUBSREF.
@@ -43,7 +43,8 @@ switch index(1).type
             varargout = { out }; 
             return
         else
-            error('CHEBFUN2:SUBSREF:INPUTS','Can only evaluate at functions (X,Y)')
+            error('CHEBFUN2:SUBSREF:INPUTS', ...
+                'Can only evaluate at functions (X,Y)')
         end
         
         if ( strcmp(y, ':') && strcmp(x, ':'))
@@ -87,6 +88,7 @@ switch index(1).type
             ['??? Unexpected index.type of ', index(1).type]);
 end
 
-% convert to cell 
+% Convert to cell:
 varargout = { out }; 
+
 end

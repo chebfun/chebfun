@@ -1,27 +1,24 @@
 function varargout = pivotplot( f, varargin )
-%PIVOTPLOT( F ) semilogy plot of the pivot values
+%PIVOTPLOT   Semilogy plot of pivot values.
+%   PIVOTPLOT( F ) semilogy plot of the Gaussian elimination pivots taken during
+%   the construction of the CHEBFUN2 F.
 %
-% PIVOTPLOT( F ) semilogy plot of the Gaussian elimination pivots taken
-% during the construction of the chebfun2 F.
+%   H = PIVOTPLOT( F ) returns a handle H to the figure.
 %
-% H = PIVOTPLOT( F ) returns a handle H to the figure.
-%
-% PIVOTPLOT( F, S ) allows further plotting options, such as linestyle,
-% linecolor, etc. If S contains a string 'LOGLOG', the psudeo sig will be
-% displayed on a log-log scale.
+%   PIVOTPLOT( F, S ) allows further plotting options, such as linestyle,
+%   linecolor, etc. If S contains a string 'LOGLOG', the psuedo sig will be
+%   displayed on a log-log scale.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-scaleTypeLog = false;
-doWeHoldOn = ishold;
-
+% Empty check:
 if ( isempty( f ) ) 
-   error('CHEBFUN2:PIVOTPLOT', 'Empty chebfun2 has no pivots to plot');
+    error('CHEBFUN2:PIVOTPLOT', 'Empty chebfun2 has no pivots to plot');
 end 
 
-
-% Parse input arguments
+% Parse input arguments:
+scaleTypeLog = false;
 if ( nargin > 1 )
     for j = 1:length(varargin)
         if ( strcmpi(varargin{j}, 'loglog') )
@@ -32,25 +29,21 @@ if ( nargin > 1 )
     end
 end
 
-%% 
-% Plot a semilogy or loglog 
-plotopts = varargin;
-S = [ {1:length(pivots(f)), abs(pivots(f))}, plotopts ]; % store
-
+% Plot a semilogy or loglog: 
+plotData = abs(pivots(f));
+holdState = ishold;
 if ( ~scaleTypeLog )
-    h = semilogy( S{:} );            % semilogy plot
+    h = semilogy( plotData, varargin{:} );            % semilogy plot
 else
-    h = loglog( S{:} );              % loglog plot
+    h = loglog( plotData, varargin{:} );              % loglog plot
 end
 
-%%
-
-if ( ~doWeHoldOn )
-    hold off;  % hold off if we can. 
+if ( ~holdState )
+    hold off
 end
 
-% output handle if appropriate
-if ( nargout ~=0 )
+% Output handle if appropriate:
+if ( nargout > 0 )
     varargout = { h };
 end
 

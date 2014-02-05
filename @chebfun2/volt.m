@@ -1,45 +1,42 @@
 function f = volt( K, v )
 %VOLT  Volterra integral operator.
+%   V = VOLT(K, f) returns a row chebfun resulting from the integral
 %
-% V = VOLT(K,f) returns a row chebfun resulting from the integral
-%     
 %      f(x) = (K*v)(x) = int( K(x,y) v(y), y=a..x ),
 %
-% where K is defined on a domain [a,b]x[a,b]. 
-% 
-% The kernel function K(x,y) must be a smooth chebfun2 defined on a square domain.
+%   where K is defined on a domain [a,b]x[a,b].
+%
+%   The kernel function K(x,y) must be a smooth CHEBFUN2 defined on a square
+%   domain.
 %
 % Example:
-% 
-% f = VOLT(chebfun2(@(x,y) exp(x-y)),chebfun('x'));  
-% 
-% See also FRED. 
+%   f = VOLT(chebfun2(@(x,y) exp(x-y)),chebfun('x'));
+%
+% See also FRED.
 
 % Copyright 2013 by The University of Oxford and The Chebfun2 Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun2 information.
 
 if ( ~isa( K, 'chebfun2' ) )
-    error('CHEBFUN2:VOLT:input','First argument must be a chebfun2');
+    error('CHEBFUN2:VOLT:input', 'First argument must be a CHEBFUN2.');
 end
 
-% Get the low rank representation for f. 
-cols = K.cols; 
-rows = K.rows; 
-piv = K.pivotValues; 
-d = 1./piv; 
-d(d==inf) = 0;  % set infinite values to zero. 
-dom = K.domain; 
+% Get the low rank representation for f.
+[cols, D, rows] = cdr(K);
+dom = K.domain;
 
 if isa( v, 'function_handle' )
-    v = chebfun( v, dom(3:4) );  % convert to a chebfun on the right interval. 
+    % Convert to a CHEBFUN on the right interval.
+    v = chebfun( v, dom(3:4) );  
 end
 
-% Domain compatibility: 
+% Domain compatibility:
 if ( ~domainCheck(cols, v) )
-    error('CHEBFUN2:VOLT:CHEBDOMAIN','Domain of chebfun and chebfun2 kernel do not match');
+    error('CHEBFUN2:VOLT:CHEBDOMAIN', ...
+        'Domain of CHEBFUN and CHEBFUN2 kernel do not match.');
 end
 
-RR = diag( d ) * rows;
+RR = D * rows;
 
 % Cumsum with cols and v:  (This can be sped up.)
 f = chebfun( 0, dom(1:2) );
@@ -48,7 +45,7 @@ for jj = length(K) : -1 : 1
     f = f + CC .* RR(:,jj);
 end
 
-% Transpose to preserve linear algebra: 
-f = f.'; 
+% Transpose to preserve linear algebra:
+f = f.';
 
 end

@@ -26,9 +26,9 @@ rows_coeffs = chebpoly( rows )';
 
 if ( nargout <= 1 )
     % Return the matrix of coefficients
-    varargout = { cols_coeffs * diag( d ) * rows_coeffs' }; 
+    varargout = { cols_coeffs * d * rows_coeffs' }; 
 elseif ( nargout <= 3 )
-    varargout = {cols_coeffs, diag( d ), rows_coeffs};
+    varargout = {cols_coeffs, d, rows_coeffs};
 else
     % Two output variables are not allowed.
     error('CHEBFUN2:CHEBPOLY2:outputs', 'Incorrect number of outputs.'); 
