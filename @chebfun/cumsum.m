@@ -64,38 +64,43 @@ numCols = size(f.funs{1}, 2);
 dom = f.domain;
 numFuns = numel(f.funs);
 
+transState = f(1).isTransposed;
+
 % Loop m times:
 for l = 1:m
-    rval = 0;    
-    funs = [];
+    rVal = 0;    
+    funs = {};
     
     % Main loop for looping over each piece and do the integration:
     for j = 1:numFuns
-        
-        % CUMSUM@BNDFUN will check if the current piece, i.e. cumsumFunJ.onefun 
-        % is a SINGFUN. If so, then we don't want to shift the current piece up 
-        % or down to stick the left end of the current piece to the right end of
-        % the last one, since SINGFUN + CONSTANT won't be accurate and may 
-        % trigger annoying SINGFUN warning messages. Such a difficulty may be 
-        % mitigated when SING MAP is re-adopted. Also if the last piece is
-        % infinite at the right end, then shifting the current piece to 
-        % concatenate doesn't make any sense.
-        
-        % Call CUMSUM@BNDFUN:        
-        [newFuns, rval] = cumsum(f.funs{j}, 1, 1, rval);
+
+        % Call FUN/CUMSUM():        
+        [newFuns, rValNew] = cumsum(f.funs{j});
         
         if ( ~iscell( newFuns ) )
             newFuns = {newFuns};
         end
         
+        % Add the constant term that came from the left:
+        for k = 1:numel(newFuns)
+            newFuns{k} = newFuns{k} + rVal;
+        end
+
         % Store FUNs:
         funs = [funs, newFuns]; %#ok<AGROW>
+        
+        % Update the rval:
+        rVal = get(funs{end}, 'rval') + rValNew;
         
     end
     
     % Assemble the new CHEBFUN:
     f = chebfun(funs);
     
+end
+
+if ( transState )
+    f = f.';
 end
 
 end

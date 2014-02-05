@@ -126,9 +126,10 @@ dom = [-1 1];
 domCheck = [dom(1)+0.1 dom(2)-0.1];
 
 op = @(x) sin(100*x)./((x-dom(1)).^0.5.*(x-dom(2)).^0.5);
-f = chebfun(op, dom, 'exps', [-0.5 -0.5], 'splitting', 'on');
+f = chebfun(op, dom, 'exps', [-0.5 -0.5], 'splitting', 'off');
 g = cumsum(f);
 
+%%
 % check values:
 
 % Generate a few random points to use as test values:

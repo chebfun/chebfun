@@ -70,19 +70,6 @@ else
         f.onefun = cumsum(f.onefun, k, dim);
     end
     
-%     % Shift F up or down. This is useful at the chebfun level to concatenate the
-%     % piece making the entire function as continuous as possible.
-%     if ( ~any( issing(f) ) )
-%         
-%         % Grab the indices correspond to infinite shift:
-%         ind = isinf(shift);
-%         
-%         % Zero the infinite shift:
-%         shift( ind ) = 0;
-%         
-%         % Shift:
-%         f = f + shift - get(f, 'lval');
-%     end
     % Get rval of f:
     rval = get(f, 'rval');
     
