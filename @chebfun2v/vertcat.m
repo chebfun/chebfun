@@ -1,13 +1,12 @@
 function F = vertcat( F , G )
 %VERTCAT Vertical concatenation of chebfun2v objects.
+%   [F ; f] where F is a chebfun2v with two components, and f is a chebfun2 or
+%   scalar then returns a chebfun2v with three components.  The first and second
+%   component remain unchanged and the third component is f.
 % 
-% [F;f] where F is a chebfun2v with two components, and f is a chebfun2
-% or scalar then returns a chebfun2v with three components.  The first
-% and second component remain unchanged and the third component is f. 
-% 
-% [f;F] where F is a chebfun2v with two components, and f is a chebfun2 or
-% scalar then returns a chebfun2v with three components. The first is f,
-% and the second and third are the first and second components of F. 
+%   [f ; F] where F is a chebfun2v with two components, and f is a chebfun2 or
+%   scalar then returns a chebfun2v with three components. The first is f, and
+%   the second and third are the first and second components of F.
 
 % Copyright 2013 by The University of Oxford and The Chebfun2 Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun2 information.
@@ -26,12 +25,13 @@ elseif ( isa(F, 'double') )
     dom = Gc{1}.domain;
     F = chebfun2( F, Gc{1}.domain ); 
 elseif ( isa(G, 'chebfun2') )
-    if ( ~chebfun2.domainCheck(F.components{1}, G) ) 
-        error('CHEBFUN2V:VERTCAT:DOMAIN','Inconsistent domains.')
+    if ( ~domainCheck(F.components{1}, G) ) 
+        error('CHEBFUN2V:VERTCAT:DOMAIN', 'Inconsistent domains.')
     end
     dom = G.domain; 
 else
-        error('CHEBFUN2V:VERTCAT','Vertical concatenation of these objects is not supported.')
+    error('CHEBFUN2V:VERTCAT', ...
+        'Vertical concatenation of these objects is not supported.')
 end
 
 if ( isa(F, 'chebfun2v') )

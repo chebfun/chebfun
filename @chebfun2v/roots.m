@@ -1,56 +1,62 @@
 function varargout = roots( F, varargin )
-%ROOTS Find the common zeros of a chebfun2v object.
+%ROOTS   Find the common zeros of a chebfun2v object.
+%   r = ROOTS(F) finds the common zeros of the two bivariate functions F(1) and
+%   F(2) in their domain of definition under the assumption that the solution
+%   set is zero-dimensional. R is a matrix with two columns storing the x- and
+%   y-values of the solutions. This script is also called by the syntax
+%   ROOTS(f,g), where f and g are chebfun2 objects.
 %
-% r = ROOTS(F) finds the common zeros of the two bivariate functions F(1)
-% and F(2) in their domain of definition under the assumption that the
-% solution set is zero-dimensional. R is a matrix with two columns storing
-% the x- and y-values of the solutions. This script is also called by the syntax
-% ROOTS(f,g), where f and g are chebfun2 objects.
+%   [x, y] = ROOTS(F) returns the x- and y-values as two separate columns.
 %
-% [x,y] = ROOTS(F) returns the x- and y-values as two separate columns.
+%   Currently, if the maximum degree of F(1) and F(2) is greater than 200 then
+%   an algorithm based on Marching squares is employed, and an algorithm based
+%   on a resultant method is used otherwise (see [1]).
 %
-% Currently, if the maximum degree of F(1) and F(2) is greater than 200
-% then an algorithm based on Marching squares is employed, and an algorithm
-% based on a resultant method is used otherwise (see [1]).
+%   ROOTS(F, 'ms') or ROOTS(F, 'marchingsquares') always employs the marching
+%   squares algorithm.
 %
-% ROOTS(F,'ms') or ROOTS(F,'marchingsquares') always employs the
-% marching squares algorithm.
+%   ROOTS(F,'resultant') always employs the algorithm based on the hidden
+%   variable resultant method.
 %
-% ROOTS(F,'resultant') always employs the algorithm based on the
-% hidden variable resultant method.
-%
-% [1] Y. Nakatsukasa, V. Noferini, and A. Townsend, Computing the common
-% zeros of two bivariate functions via Bezout resultants, (2013).
+%   [1] Y. Nakatsukasa, V. Noferini, and A. Townsend, Computing the common zeros
+%   of two bivariate functions via Bezout resultants, (2013).
 %
 % See also CHEBFUN2/ROOTS, CHEBFUN/ROOTS.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-max_degree = 200;  % maximum degree for resultant method.
+% Maximum degree for resultant method:
+max_degree = 200;  
 
-if isempty(F)  % empty check.
+% Empty check:
+if isempty(F)  
     varargout = {[]};
-    return;
+    return
 end
 
-f = F.components{1}; g = F.components{2};
-[nf,mf]=length(f);[ng,mg]=length(g);
-dd = max([mf nf mg ng]);  % maximum degree
+f = F.components{1}; 
+g = F.components{2};
+[nf, mf] = length(f);
+[ng, mg] = length(g);
+% Maximum degree:
+dd = max([mf nf mg ng]);  
 
 if ( isempty(varargin) && dd <= max_degree )
-    [xroots,yroots] = roots_resultant(F);
-    xroots = xroots.'; yroots = yroots.';
+    [xroots, yroots] = roots_resultant(F);
+    xroots = xroots.'; 
+    yroots = yroots.';
 elseif ( isempty(varargin) )
-    [xroots,yroots] = roots_marchingSquares(F);
+    [xroots, yroots] = roots_marchingSquares(F);
 else
-    if strcmpi(varargin{1},'ms') || strcmpi(varargin{1},'marchingsquares')
-        [xroots,yroots]=roots_marchingSquares(F);
+    if strcmpi(varargin{1}, 'ms') || strcmpi(varargin{1}, 'marchingsquares')
+        [xroots,yroots] = roots_marchingSquares(F);
     elseif strcmpi(varargin{1},'resultant')
-        [xroots,yroots]=roots_resultant(F);
-        xroots = xroots.'; yroots = yroots.';
+        [xroots,yroots] = roots_resultant(F);
+        xroots = xroots.'; 
+        yroots = yroots.';
     else
-        error('CHEBFUN2V:ROOTS','Unrecognised optional argument.');
+        error('CHEBFUN2V:ROOTS', 'Unrecognised optional argument.');
     end
 end
 

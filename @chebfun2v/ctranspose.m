@@ -1,5 +1,5 @@
 function F = ctranspose( F )
-% ' conjugate transpose of a chebfun2v
+% '   Conjugate transpose of a chebfun2v
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information. 

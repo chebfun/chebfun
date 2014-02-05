@@ -1,7 +1,6 @@
 function vals = feval(F, x, y)
 %FEVAL pointwise evaluate a chebfun2v.
-%
-%  F(X,Y) returns the evaluation of F at the coordinate (X,Y).
+%   F(X,Y) returns the evaluation of F at the coordinate (X,Y).
 %
 % See also SUBSREF.
 
@@ -18,7 +17,7 @@ nF = F.nComponents;
 vals = zeros(nF, length(x)); 
 
 % Evaluate each component:
-for jj = 1 : nF
+for jj = 1:nF
    vals(jj, :) = feval(F.components{jj}, x, y);  
 end
 

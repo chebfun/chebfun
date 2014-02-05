@@ -1,8 +1,6 @@
 function L = laplacian( F )
 %LAPLACIAN Vector Laplacian of a chebfun2v.
-%
-% L = LAPLACIAN(F) returns a chebfun2v representing the vector 
-% Laplacian of F. 
+%   LAPLACIAN(F) returns a chebfun2v representing the vector Laplacian of F.
 %
 % See also CHEBFUN2V/LAP.
 
@@ -15,6 +13,7 @@ if ( isempty( F ) )
     return
 end
 
-L = diff(F, 2, 1) + diff(F, 2, 2);   % laplacian = f_xx + f_yy
+% laplacian = f_xx + f_yy
+L = diff(F, 2, 1) + diff(F, 2, 2);   
 
 end

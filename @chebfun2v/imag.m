@@ -1,7 +1,6 @@
 function F = imag( F )
-%IMAG imaginary part of a chebfun2v 
-% 
-% IMAG(F) returns the imaginary part of a chebfun2v.
+%IMAG   Imaginary part of a chebfun2v.
+%   IMAG(F) returns the imaginary part of a chebfun2v.
 %
 % See also CONJ, REAL.
 
@@ -13,7 +12,7 @@ if ( isempty( F ) )
     return
 end
 
-% Take conj part of each component:
+% Take imag part of each component:
 F.components = cellfun( @imag, F.components, 'UniformOutput', false );
 
 end

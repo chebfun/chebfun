@@ -1,5 +1,5 @@
 function varargout = subsref( F, ref )
-% SUBSREF Chebfun2v subsref.
+%SUBSREF   Chebfun2v subsref.
 % 
 % ( )
 %   F(X,Y) returns the values of the chebfun2 F evaluated on the array (X,Y).
@@ -24,6 +24,7 @@ end
 indx = ref(1).subs;
 
 switch ( ref(1).type )
+    
     case '.'
         if ( numel( ref ) == 1 )
             % This is a get call to get a property. 
@@ -43,6 +44,7 @@ switch ( ref(1).type )
                 varargout = { out };
             end
         end
+        
     case '()'
         if ( length(indx) > 1 )
             x = indx{1}; 
@@ -62,6 +64,11 @@ switch ( ref(1).type )
                 end
             end
         end
+        
     otherwise
         error('CHEBFUN2v:UnexpectedType', ['??? Unexpected index.type of ' index(1).type]);
+        
 end
+
+end
+

@@ -1,28 +1,26 @@
 function varargout = quiver( F, varargin )
-%QUIVER plot of chebfun2v
+%QUIVER   Quiver plot of chebfun2v.
+%   QUIVER(F) plots the vector velocity field of F. QUIVER automatically
+%   attempts to scale the arrows to fit within the grid. The arrows are on a
+%   uniform grid.
 %
-% QUIVER(F) plots the vector velocity field of F. QUIVER automatically
-% attempts to scale the arrows to fit within the grid. The arrows are
-% on a uniform grid.
+%   QUIVER(F,S) automatically scales the arrows to fit within the grid and then
+%   stretches them by S.  Use S=0 to plot the arrows without the automatic
+%   scaling. The arrows are on a uniform grid.
 %
-% QUIVER(F,S) automatically scales the arrows to fit within the grid
-% and then stretches them by S.  Use S=0 to plot the arrows without the
-% automatic scaling. The arrows are on a uniform grid.
+%   QUIVER(X,Y,F,...) is the same as QUIVER(F,...) except the arrows are on the
+%   grid given in X and Y.
 %
-% QUIVER(X,Y,F,...) is the same as QUIVER(F,...) except the arrows are on the
-% grid given in X and Y.
+%   QUIVER(...,LINESPEC) uses the plot linestyle specified for the velocity
+%   vectors.  Any marker in LINESPEC is drawn at the base instead of an arrow on
+%   the tip.  Use a marker of '.' to specify no marker at all.  See PLOT for
+%   other possibilities.
 %
-% QUIVER(...,LINESPEC) uses the plot linestyle specified for
-% the velocity vectors.  Any marker in LINESPEC is drawn at the base
-% instead of an arrow on the tip.  Use a marker of '.' to specify
-% no marker at all.  See PLOT for other possibilities.
+%   QUIVER(...,'numpts',N) plots arrows on a N by N uniform grid.
 %
-% QUIVER(...,'numpts',N) plots arrows on a N by N uniform grid.
+%   H = QUIVER(...) returns a quivergroup handle.
 %
-% H = QUIVER(...) returns a quivergroup handle.
-%
-% If F is a chebfun2v with three non-zero components then this calls
-% QUIVER3.
+%   If F is a chebfun2v with three non-zero components then this calls QUIVER3.
 %
 % See also QUIVER3.
 
@@ -56,8 +54,8 @@ while ( ~isempty( varargin ) )
 end
 varargin = argin;
 
-
-if ( isa(F, 'chebfun2v') )            % quiver(F,...)
+if ( isa(F, 'chebfun2v') )             % quiver(F,...)
+    
     nF = F.nComponents;
     if ( nF == 3 )
         h = quiver3(F, varargin{:});   % Call quiver3 instead.
@@ -69,7 +67,8 @@ if ( isa(F, 'chebfun2v') )            % quiver(F,...)
         [xx, yy] = meshgrid(x, y);
         h = quiver(xx, yy, F, varargin{:});
     end
-elseif ( nargin >= 3 )                  % quiver(x,y,F,...)
+    
+elseif ( nargin >= 3 )                 % quiver(x,y,F,...)
     
     % First two arguments contain arrow locations:
     xx = F;
@@ -79,7 +78,7 @@ elseif ( nargin >= 3 )                  % quiver(x,y,F,...)
         F = varargin{2};
         nF = F.nComponents;
         if ( nF == 3 )
-            h = quiver3(F,varargin{:});   % Call quiver3 instead.
+            h = quiver3(F,varargin{:}); % Call quiver3 instead.
         else
             F1 = F.components{1}; F2 = F.components{2};
             vals1 = feval(F1, xx, yy);
@@ -89,7 +88,8 @@ elseif ( nargin >= 3 )                  % quiver(x,y,F,...)
             axis(1.1*dom);
         end
     else
-        error('CHEBFUN2V:QUIVER:INPUTS', 'Third argument should be a chebfun2v.');
+        error('CHEBFUN2V:QUIVER:INPUTS', ...
+            'Third argument should be a chebfun2v.');
     end
     
 end

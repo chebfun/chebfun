@@ -1,9 +1,7 @@
 function f = divergence( F )
-%DIVERGENCE the divergence of a chebfun2v.
-%
-% f = DIVERGENCE(F) returns the divergence of the chebfun2v i.e. 
-% 
-%  divergence(F) = F_x + F_y
+%DIVERGENCE   Divergence of a chebfun2v.
+%   DIVERGENCE(F) returns the divergence of the chebfun2v i.e.,
+%       divergence(F) = F_x + F_y.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information. 
@@ -18,6 +16,7 @@ if ( isempty( F ) )
 end
 
 Fc = F.components; 
-f = diff( Fc{1}, 1, 2 ) + diff( Fc{2}, 1, 1 );  % divergence = f_x + f_y
+% divergence = f_x + f_y
+f = diff( Fc{1}, 1, 2 ) + diff( Fc{2}, 1, 1 );  
 
 end

@@ -1,8 +1,7 @@
 function f = dot( F, G )
-%DOT  Vector dot product.
-% 
-% f = dot(F,G) returns the dot product of the chebfun2v objects F and G.
-% dot(F,G) is the same as F'*G.
+%DOT   Vector dot product.
+%   DOT(F, G) returns the dot product of the chebfun2v objects F and G. DOT(F,
+%   G) is the same as F'*G.
 % 
 % See also CROSS. 
 
@@ -10,14 +9,15 @@ function f = dot( F, G )
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information. 
 
 if ( isempty( F ) || isempty( G ) ) 
-    f = chebfun2;
+    f = chebfun2();
     return
 end
 
 nF = F.nComponents; 
 nG = G.nComponents; 
 if ( nG ~= nF ) 
-    error('CHEBFUN2:DOT:COMPONENTS','Chebfun2v object should have the same number of components.');
+    error('CHEBFUN2:DOT:COMPONENTS', ...
+        'Chebfun2v object should have the same number of components.');
 end
 
 Fc = F.components; 
@@ -30,4 +30,5 @@ f = chebfun2( 0, G.components{1}.domain );
 for jj = 1 : nF
     f = f + Fc{jj};
 end
+
 end

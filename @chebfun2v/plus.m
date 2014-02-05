@@ -1,13 +1,12 @@
 function F = plus( F, G ) 
 % + PLUS of two chebfun2v objects. 
+%   F + G if F and G are chebfun2v objects does componentwise addition. 
+%
+%   F + G if F is a double and G is a chebfun2v does componentwise addition. 
 % 
-% F + G if F and G are chebfun2v objects does componentwise addition. 
+%   F + G if F is a chebfun2v and G is a double does componentwise addition.
 % 
-% F + G if F is a double and G is a chebfun2v does componentwise addition. 
-% 
-% F + G if F is a chebfun2v and G is a double does componentwise addition. 
-% 
-% plus(F,G) is called for the syntax F + G. 
+%   PLUS(F,G) is called for the syntax F + G. 
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information. 
@@ -37,19 +36,20 @@ if ( isa(G, 'double') )              % CHEBFUN2V + DOUBLE
     else
         error('CHEBFUN2V:PLUS:doubleSize', 'Dimension mismatch.')
     end
-elseif ( isa(G, 'chebfun2') )         % CHEBFUN2V + CHEBFUN
+elseif ( isa(G, 'chebfun2') )        % CHEBFUN2V + CHEBFUN
     for jj = 1 : nF 
         F.components{jj} = plus(F.components{jj}, G);
     end
 elseif ( isa(G, 'chebfun2v') )       % CHEBFUN2V + CHEBFUN2v
     nG = G.nComponents; 
     if ( nG ~= nF ) 
-        error('CHEBFUN2V:PLUS:components', 'The chebfun2v objects do not have the same components.')
+        error('CHEBFUN2V:PLUS:components', ...
+            'The chebfun2v objects do not have the same components.')
     end
     if ( G.isTransposed ~= F.isTransposed )
         error('CHEBFUN2V:PLUS:Transposed', 'Dimension mismatch.')
     end
-    for jj = 1 : nF                    % Add each component together
+    for jj = 1 : nF                  % Add each component together
         F.components{jj} = plus(F.components{jj}, G.components{jj});
     end
 else
