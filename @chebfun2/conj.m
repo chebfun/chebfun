@@ -10,7 +10,8 @@ if ( isempty( f ) )
    return
 end
 
-% TODO: Why is it necessary to resample?
+% TODO: Write down the formulas for conj, instead of calling the 
+% edconstructor.
 
 op = @(x,y) conj( feval(f, x, y) );  % Resample. 
 f = chebfun2( op, f.domain );        % Call constructor. 

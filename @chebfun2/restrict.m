@@ -1,12 +1,12 @@
 function f = restrict(f, dom)
 % RESTRICT  Restrict the domain of a CHEBFUN2.
 %
-% F = RESTRICT(F, DOM) approximates the CHEBFUN2 on the domain DOM.
+% F = RESTRICT(F, DOM) returns a CHEBFUN2 on the domain DOM that approximates F
+% F on that domain.  DOM should be a vector of length 4 giving the coordinates
+% of the corners. 
 
 % Copyright 2013 by The University of Oxford and The Chebfun2 Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun2 information.
-
-% TODO: Better DOCs
 
 if ( isa( dom, 'double' ) )    
     if ( numel( dom ) == 4 )                   % Restrict to DOM. 

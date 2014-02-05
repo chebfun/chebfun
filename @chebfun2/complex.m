@@ -22,8 +22,8 @@ else
     if ( ~isreal( A ) )
         error('CHEBFUN:COMPLEX:notreal', 'Input must be real valued.');
     end
-    % Make complex. % TODO: Is this right?!
-    C = A + realmin*1i;   
+    % Make complex.
+    C = A + 0*1i;   
 end
 
 end

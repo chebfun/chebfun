@@ -1,10 +1,12 @@
 function z = fevalm(f, x, y)
 % FEVALM   Evaluate a CHEBFUN2.
+% 
+% Z = FEVALM(F, X, Y) returns a matrix of values Z of size length(X)-by-length(Y). 
+% X and Y should be vectors of doubles. This is equivalent to making a meshgrid 
+% of the vectors X and Y and then using FEVAL to evaluate at that grid.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
-
-% TODO: Document.
 
 if ( isempty(f) )
     varargout = {[]}; 

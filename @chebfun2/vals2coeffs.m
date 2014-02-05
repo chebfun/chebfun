@@ -1,12 +1,17 @@
 function varargout = vals2coeffs( U, S, V )
 %VALS2COEFFS   Convert matrix of values to Chebyshev coefficients. 
 % 
+% V = VALS2COEFFS( C ) given a matrix C of va.ues on a tensor grid, this returns
+% the corresponding bivaraite Chebyshev coefficients, V, which is a matrix of 
+% size(C).
+% 
+% [U, S, V] = VALS2COEFFS( U, S, V ) the same as above but keeps everything in low
+% rank form. 
+% 
 % See also COEFFS2VALS
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
-
-% TODO: Document input arguments.
 
 if ( nargin == 1 )
     U = chebtech2.vals2coeffs( U ); 

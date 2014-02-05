@@ -1,7 +1,11 @@
 function out = iszero( f )
 % ISZERO   Check if a CHEBFUN2 is identically zero on its domain.
+%
+% OUT = ISZERO( F ) return 1 if the CHEBFUN2 is exactly the zero function, and
+% 0 otherwise. 
 
-% TODO: Document.
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 pivots = f.pivotValues;
 cols = f.cols;

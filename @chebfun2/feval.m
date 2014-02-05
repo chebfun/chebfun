@@ -31,7 +31,7 @@ elseif ( strcmpi(x, ':') && isnumeric( y ) ) % f(:, y)
     % Make evaluation points a vector.
     y = y(:);
     % Evaluate (returns a column chebfun):
-    out = feval( cols, y ) * D * rows'; % TODO: .'?
+    out = feval( cols, y ) * D * rows.'; 
     % Simplify:
     out = simplify( out );
     
@@ -39,7 +39,7 @@ elseif ( isnumeric( x ) && strcmpi(y, ':') ) % f(x, :)
     % Make evaluation points a vector.
     x = x( : );
     % Evaluate (returns a row chebfun):
-    out = cols * D * feval( rows, x )'; % TODO: .'?
+    out = cols * D * feval( rows, x ).'; 
     % Simplify:
     out = simplify( out );
     

@@ -402,12 +402,6 @@ depvar = symvar( op );
 if ( numel(depvar) > 2 )
     error('CHEBFUN2:fun2:depvars', 'Too many dependent variables in string input.');
 end
-if ( numel(depvar) == 1 )
-    % Exclude the case @(x) for now..
-    warning('CHEBFUN2:chebfun2:depvars', 'Not a bivariate function handle.');  
-    
-    % TODO: Not sure if this should be a warning or not.
-end
 op = eval(['@(' depvar{1} ',' depvar{2} ')' op]);
 
 end
