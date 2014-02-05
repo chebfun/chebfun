@@ -1,8 +1,8 @@
 function varargout = subsref( F, ref )
-%SUBSREF   Chebfun2v subsref.
+%SUBSREF   CHEBFUN2V subsref.
 % 
 % ( )
-%   F(X,Y) returns the values of the chebfun2 F evaluated on the array (X,Y).
+%   F(X,Y) returns the values of the CHEBFUN2 F evaluated on the array (X,Y).
 %   F(k) returns the first component of F if k=1, the second if k=2, and
 %   the third if k=3. 
 %
@@ -15,7 +15,7 @@ function varargout = subsref( F, ref )
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-% check for empty chebfun2v object. 
+% check for empty CHEBFUN2V object. 
 if ( isempty( F ) )
    varargout = {[]};
    return
@@ -60,13 +60,13 @@ switch ( ref(1).type )
                 elseif ( ( all(indx{1} == 3) ) && ( ~isempty(F.components(3)) ) )
                     varargout = F.components(3);
                 else
-                    error('CHEBFUN2v:subsref:index', 'Chebfun2v only contains two/three components');
+                    error('CHEBFUN2V:subsref:index', 'CHEBFUN2V only contains two/three components');
                 end
             end
         end
         
     otherwise
-        error('CHEBFUN2v:UnexpectedType', ['??? Unexpected index.type of ' index(1).type]);
+        error('CHEBFUN2V:UnexpectedType', ['??? Unexpected index.type of ' index(1).type]);
         
 end
 

@@ -1,7 +1,7 @@
 function H = mrdivide(F,g)
-%/   Chebfun2v right divide.
+%/   CHEBFUN2V right divide.
 %
-% F/c divides each component of a chebfun2v by a scalar. 
+% F/c divides each component of a CHEBFUN2V by a scalar. 
 % 
 % Only allowed to divide by scalars. 
 % 

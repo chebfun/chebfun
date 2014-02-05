@@ -1,5 +1,5 @@
 function F = diff(F, n, dim)
-%DIFF   Componentwise derivative of a chebfun2v.
+%DIFF   Componentwise derivative of a CHEBFUN2V.
 %   DIFF(F) is the derivative of each component of F along the y direction.
 %
 %   DIFF(F, N) is the Nth derivative of each component of F in the y direction.

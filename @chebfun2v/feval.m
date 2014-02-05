@@ -1,5 +1,5 @@
 function vals = feval(F, x, y)
-%FEVAL pointwise evaluate a chebfun2v.
+%FEVAL pointwise evaluate a CHEBFUN2V.
 %   F(X,Y) returns the evaluation of F at the coordinate (X,Y).
 %
 % See also SUBSREF.

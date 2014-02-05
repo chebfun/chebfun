@@ -1,11 +1,11 @@
 function F = vertcat( F , G )
-%VERTCAT Vertical concatenation of chebfun2v objects.
-%   [F ; f] where F is a chebfun2v with two components, and f is a chebfun2 or
-%   scalar then returns a chebfun2v with three components.  The first and second
+%VERTCAT Vertical concatenation of CHEBFUN2V objects.
+%   [F ; f] where F is a CHEBFUN2V with two components, and f is a CHEBFUN2 or
+%   scalar then returns a CHEBFUN2V with three components.  The first and second
 %   component remain unchanged and the third component is f.
 % 
-%   [f ; F] where F is a chebfun2v with two components, and f is a chebfun2 or
-%   scalar then returns a chebfun2v with three components. The first is f, and
+%   [f ; F] where F is a CHEBFUN2V with two components, and f is a CHEBFUN2 or
+%   scalar then returns a CHEBFUN2V with three components. The first is f, and
 %   the second and third are the first and second components of F.
 
 % Copyright 2013 by The University of Oxford and The Chebfun2 Developers.

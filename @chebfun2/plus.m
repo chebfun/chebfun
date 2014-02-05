@@ -1,5 +1,5 @@
 function h = plus(f, g)
-%+	  Plus for chebfun2 objects.
+%+	  Plus for CHEBFUN2 objects.
 %
 % F + G adds F and G. F and G can be scalars or CHEBFUN2 objects.
 
@@ -40,7 +40,7 @@ else                            % CHEBFUN2 + CHEBFUN2
     elseif ( iszero( g ) )
         h = f;
     else
-        % Add together two nonzero chebfun2 objects
+        % Add together two nonzero CHEBFUN2 objects
         h = compression_plus(f, g);
     end
 end

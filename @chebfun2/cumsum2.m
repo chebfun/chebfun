@@ -1,5 +1,5 @@
 function f = cumsum2( f )
-%CUMSUM2   Double indefinite integral of a chebfun2.
+%CUMSUM2   Double indefinite integral of a CHEBFUN2.
 %   F = CUMSUM2(F) returns the double indefinite integral of a CHEBFUN2. That is
 %                   y  x
 %                  /  /

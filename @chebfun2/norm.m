@@ -75,7 +75,7 @@ end
 % faster than the current. It is kept here because it may be useful for later.
 %%% 
 % function [normF, normloc] = power_method( f )
-%     % Maximise a chebfun2 using a fast low rank power method.
+%     % Maximise a CHEBFUN2 using a fast low rank power method.
 %     [C, D, R] = cdr( f );
 %     n = max( length( C ), length( R ) );
 %     x = ones(n,1) ./ n;

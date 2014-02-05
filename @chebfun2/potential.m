@@ -1,6 +1,6 @@
 function G = potential( f )
 %POTENTIAL  2D vector potential of a CHEBFUN2.
-%   G = POTENTIAL(F) where F is a CHEBFUN2 returns a vector-valued chebfun2v
+%   G = POTENTIAL(F) where F is a CHEBFUN2 returns a vector-valued CHEBFUN2V
 %   with two components such that F = curl(G).
 % 
 %   Note this is NOT the 3D vector potential because CHEBFUN2 represents

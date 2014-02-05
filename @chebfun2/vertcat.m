@@ -1,8 +1,8 @@
 function F = vertcat( varargin )
-%VERTCAT Vertical concatenation of chebfun2 objects.
+%VERTCAT Vertical concatenation of CHEBFUN2 objects.
 %
-% VERTCAT(F, G) is the vertical concatenation of chebfun2 objects F and G, and this
-% function returns a chebfun2v object. 
+% VERTCAT(F, G) is the vertical concatenation of CHEBFUN2 objects F and G, and this
+% function returns a CHEBFUN2V object. 
 % 
 % [F ; G] is different syntax for VERTCAT(F, G)
 % 
@@ -16,7 +16,7 @@ if ( nargin > 1 )
         f = varargin{1}; 
         F = varargin{2}; 
         if ( F.nComponents > 2 ) 
-            error('CHEBFUN2:VERTCAT', 'Only Chebfun2v objects with 2 or 3 components are valid.');
+            error('CHEBFUN2:VERTCAT', 'Only CHEBFUN2V objects with 2 or 3 components are valid.');
         else
             Fc = F.components; 
             g = Fc{1};
@@ -24,11 +24,11 @@ if ( nargin > 1 )
             F = chebfun2v( {f, g, h} );
         end
     elseif ( isa(varargin{ 2 }, 'chebfun2' ) )
-        % call the chebfun2v constructor.
+        % call the CHEBFUN2V constructor.
         F = chebfun2v( varargin );
     end
 else
-    error('CHEBFUN2:VERTCAT','Cannot vertically concatenate more than three chebfun2 objects.');
+    error('CHEBFUN2:VERTCAT','Cannot vertically concatenate more than three CHEBFUN2 objects.');
 end
     
 

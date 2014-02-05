@@ -1,6 +1,6 @@
 function f = divgrad(f)
-%DIVGRAD   Laplacian of a chebfun2v.
-%   F = DIVGRAD(F) returns the Laplacian of a chebfun2v i.e.,
+%DIVGRAD   Laplacian of a CHEBFUN2V.
+%   F = DIVGRAD(F) returns the Laplacian of a CHEBFUN2V i.e.,
 %       divgrad(f) = f_xx + f_yy 
 %
 % Also see CHEBFUN2V/LAP.

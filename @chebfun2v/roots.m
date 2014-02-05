@@ -1,10 +1,10 @@
 function varargout = roots( F, varargin )
-%ROOTS   Find the common zeros of a chebfun2v object.
+%ROOTS   Find the common zeros of a CHEBFUN2V object.
 %   r = ROOTS(F) finds the common zeros of the two bivariate functions F(1) and
 %   F(2) in their domain of definition under the assumption that the solution
 %   set is zero-dimensional. R is a matrix with two columns storing the x- and
 %   y-values of the solutions. This script is also called by the syntax
-%   ROOTS(f,g), where f and g are chebfun2 objects.
+%   ROOTS(f,g), where f and g are CHEBFUN2 objects.
 %
 %   [x, y] = ROOTS(F) returns the x- and y-values as two separate columns.
 %
@@ -76,11 +76,11 @@ end
 
 function [xroots,yroots] = roots_resultant(F)
 
-% extract out the two chebfun2 objects.
+% extract out the two CHEBFUN2 objects.
 f = F.components{1}; g = F.components{2};
 
 % Useful parameters
-rect = f.domain;  % rectangular domain of chebfun2.
+rect = f.domain;  % rectangular domain of CHEBFUN2.
 [nf,mf]=length(f);[ng,mg]=length(g);
 dd = max([mf nf mg ng]); % max degree
 max_degree = min( 16 , dd ); % subdivision threshold degree
@@ -887,7 +887,7 @@ dom = fy.domain;
 
 nf = f.nComponents; 
 if ( nf > 2 )
-    error('CHEBFUN2:ROOTS','Chebfun2 is unable to find zero surfaces.');
+    error('CHEBFUN2:ROOTS','CHEBFUN2 is unable to find zero surfaces.');
 end
 
 if ( length(fx) == 1 || length(fy) == 1 )   % one of them is of the form u(x)v(y)

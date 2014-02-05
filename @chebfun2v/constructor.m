@@ -1,12 +1,12 @@
 function G = constructor(G, op, varargin)
-% CTOR  chebfun2v constructor
-% This function calls the chebfun2 constructor once for each non-zero
-% component because a chebfun2v is just vector of chebfun2 objects.
+% CTOR  CHEBFUN2V constructor
+% This function calls the CHEBFUN2 constructor once for each non-zero
+% component because a CHEBFUN2V is just vector of CHEBFUN2 objects.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-if isa(op,'chebfun2v') % argument is a chebfun2v so there is nothing to do.
+if isa(op,'chebfun2v') % argument is a CHEBFUN2V so there is nothing to do.
     G = op;
     return
 end
@@ -34,7 +34,7 @@ if ( nargin >= 3 )
             varargin = []; 
         end
     elseif ( isa( op, 'chebfun2' ) && isa( varargin{1}, 'chebfun2' ) ) 
-        % The constructor is given the components as chebfun2 objects. 
+        % The constructor is given the components as CHEBFUN2 objects. 
         domain = op.domain; 
         len = numel(varargin); 
         j = 0; 

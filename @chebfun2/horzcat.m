@@ -1,5 +1,5 @@
 function varargout = horzcat( varargin ) %#ok<STOUT>
-%HORZCAT Horizontal concatenation of chebfun2 objects.
+%HORZCAT Horizontal concatenation of CHEBFUN2 objects.
 %   This is not allowed and returns an error.  This function exists so that the
 %   error message is meaningful to a CHEBFUN2 user.
 

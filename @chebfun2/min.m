@@ -13,7 +13,7 @@ function g = min( f, g, dim )
 
 % Empty check: 
 if ( isempty( f ) ) 
-    error('CHEBFUN2:MIN:INPUT','Chebfun2 is empty');
+    error('CHEBFUN2:MIN:INPUT','CHEBFUN2 is empty');
 end
 
 % Do not allow min(F, G).

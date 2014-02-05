@@ -1,6 +1,6 @@
 function f = div( f )
-%DIV   Divergence of a chebfun2v.
-%   F = DIV(F) returns the divergence of the chebfun2v i.e., div(F) = F_x + F_y.
+%DIV   Divergence of a CHEBFUN2V.
+%   F = DIV(F) returns the divergence of the CHEBFUN2V i.e., div(F) = F_x + F_y.
 % 
 % See also DIVERGENCE.
 

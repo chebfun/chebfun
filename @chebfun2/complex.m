@@ -1,5 +1,5 @@
 function C = complex( A, B )
-%COMPLEX Construct complex chebfun2 from real and imaginary parts.
+%COMPLEX Construct complex CHEBFUN2 from real and imaginary parts.
 %   C = COMPLEX(A, B) returns the complex CHEBFUN2 A + Bi, where A and B are
 %   real valued CHEBFUN2 objects with the same domain.
 %
@@ -13,7 +13,7 @@ function C = complex( A, B )
 
 if ( nargin == 2 )
     if ( ~isa(B, 'chebfun2') )
-        error('CHEBFUN:COMPLEX:INPUT', 'Second input must be a chebfun2.');
+        error('CHEBFUN:COMPLEX:INPUT', 'Second input must be a CHEBFUN2.');
     elseif ( ~isreal( A ) || ~isreal( B ) )
         error('CHEBFUN:COMPLEX:notreal', 'Inputs must be real valued.');
     end

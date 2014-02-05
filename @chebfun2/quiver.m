@@ -110,7 +110,7 @@ end
 end
 
 function [xx, yy] = new_data_locations( f1, f2, numpts )
-% Generate new arrow location if first two inputs are chebfun2 objects. 
+% Generate new arrow location if first two inputs are CHEBFUN2 objects. 
 
 % Domain Check: 
 if ( ~domainCheck(f1, f2) )

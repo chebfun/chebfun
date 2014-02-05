@@ -1,5 +1,5 @@
 function H = ldivide( F, G )
-%.\   Pointwise chebfun2v left divide.
+%.\   Pointwise CHEBFUN2V left divide.
 %
 % See also RDIVIDE.
 
@@ -30,7 +30,7 @@ else                                     % CHEBFUN2V .\ CHEBFUN2V
     nG = G.nComponents;
     if ( nF ~= nG )
         error('CHEBFUN2V:LDIVIDE', ...
-            'Chebfun2v do not have the same number of components.')
+            'CHEBFUN2V do not have the same number of components.')
     end
     H = F;
     for j = 1 : nF

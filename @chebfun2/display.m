@@ -1,18 +1,18 @@
 function display( F )
-%DISPLAY   Display a chebfun2 to the command line.
+%DISPLAY   Display a CHEBFUN2 to the command line.
 % 
-% DISPLAY(F) outputs important information about the chebfun2 F to the
+% DISPLAY(F) outputs important information about the CHEBFUN2 F to the
 % command window, including its domain of definition, length (number of 
 % pivots used to represent it), and a summary of its structure. 
 %
 % It is called automatically when the semicolon is not used at the
-% end of a statement that results in a chebfun2.
+% end of a statement that results in a CHEBFUN2.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 %%
-% Get display style and remove trivial empty chebfun2 case. 
+% Get display style and remove trivial empty CHEBFUN2 case. 
 
 loose = strcmp( get(0, 'FormatSpacing'), 'loose' );
 if ( loose )

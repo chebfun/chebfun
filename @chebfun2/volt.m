@@ -10,7 +10,7 @@ function f = volt( K, v )
 %   domain.
 %
 % Example:
-%   f = VOLT(chebfun2(@(x,y) exp(x-y)),chebfun('x'));
+%   f = volt(chebfun2(@(x,y) exp(x-y)),chebfun('x'));
 %
 % See also FRED.
 

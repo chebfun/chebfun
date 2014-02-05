@@ -1,6 +1,6 @@
 function [Y, X] = minandmax2( f )
 %MINANDMAX2   Find global minimum and maximum of a CHEBFUN2.
-%   Y = minandmax2(F) returns the minimum and maximum value of a chebfun2 over
+%   Y = minandmax2(F) returns the minimum and maximum value of a CHEBFUN2 over
 %   its domain. Y is a vector of length 2 such that Y(1) = min(f(x,y)) and Y(2)
 %   = max(f(x,y)).
 %
@@ -13,7 +13,7 @@ function [Y, X] = minandmax2( f )
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-if ( isempty( f ) ) % check for empty chebfun2.
+if ( isempty( f ) ) % check for empty CHEBFUN2.
     Y = []; 
     X = [];
     return
@@ -125,7 +125,7 @@ elseif ( length(f) <= maxsize )
     
 elseif ( length(f) >= maxsize )
     
-    error('Chebfun2:max:length', 'Rank is too large.');
+    error('CHEBFUN2:max:length', 'Rank is too large.');
     
 end
 

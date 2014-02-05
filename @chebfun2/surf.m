@@ -5,7 +5,7 @@ function varargout = surf( f, varargin )
 %
 %   SURF(F) uses colors proportional to surface height.
 %
-%   SURF(X, Y, F, ...) is the same as SURF(F, ...) when X and Y are chebfun2
+%   SURF(X, Y, F, ...) is the same as SURF(F, ...) when X and Y are CHEBFUN2
 %   objects except X and Y supplies the plotting locations are  mapped by X and
 %   Y.
 %
@@ -64,7 +64,7 @@ if ( isa(f,'chebfun2') )
         xlim(dom(1:2)), ylim(dom(3:4))
         
     elseif ( nargin > 2)                    
-        % surf(x,y,f,...), with x, y, f chebfun2 objects
+        % surf(x,y,f,...), with x, y, f CHEBFUN2 objects
         
         x = f; 
         y = argin{1};

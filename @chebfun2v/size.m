@@ -1,7 +1,7 @@
 function varargout = size( F, dim ) 
-%SIZE size of a chebfun2v object
+%SIZE size of a CHEBFUN2V object
 %   D = SIZE(F) returns a three-element vector D = [K,M,N]. If F is a column
-%   chebfun2v object then K is the number of components in F, N and M are INF.
+%   CHEBFUN2V object then K is the number of components in F, N and M are INF.
 %   If F is a row vector then K and M are INF and N is the number of components
 %   of F.
 %

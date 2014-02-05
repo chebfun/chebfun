@@ -1,5 +1,5 @@
 function I = dblquad(f, a, b, c, d, varargin)
-%DBLQUAD   Complete definite integral of chebfun2. 
+%DBLQUAD   Complete definite integral of CHEBFUN2. 
 %   I = DBLQUAD(F, a, b, c, d), returns the definite integral of a CHEBFUN2 over
 %   the region [a, b, c, d].
 % 

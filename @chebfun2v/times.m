@@ -1,9 +1,9 @@
 function F = times( F , G ) 
-%.* Times of two chebfun2v objects. 
-%   F.*G if F is a chebfun2v and G is double returns the chebfun2v after
+%.* Times of two CHEBFUN2V objects. 
+%   F.*G if F is a CHEBFUN2V and G is double returns the CHEBFUN2V after
 %   componentwise multiplication.
 %
-%   F.*G if F is a double and G is a chebfun2v returns the chebfun2v after
+%   F.*G if F is a double and G is a CHEBFUN2V returns the CHEBFUN2V after
 %   componentwise multiplication.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
@@ -22,8 +22,8 @@ end
 
 nF = F.nComponents; 
 
-if ( isa(G, 'double') )             % chebfun2v.*double
-    if ( numel(G) == 1 )            % chebfun2v.*scalar
+if ( isa(G, 'double') )             % CHEBFUN2V.*double
+    if ( numel(G) == 1 )            % CHEBFUN2V.*scalar
         scalar = G;
         for jj = 1 : nF 
             F.components{jj} = times(F.components{jj}, scalar); 
@@ -33,25 +33,25 @@ if ( isa(G, 'double') )             % chebfun2v.*double
             F.components{jj} = times( F.components{jj}, G(jj) ); 
         end   
     else
-        error('CHEBFUN2v:times:double', 'Chebfun2v and double size mismatch.');
+        error('CHEBFUN2V:times:double', 'CHEBFUN2V and double size mismatch.');
     end  
     
-elseif ( isa(G, 'chebfun2v') )      % chebfun2v . * chebfun2v
+elseif ( isa(G, 'chebfun2v') )      % CHEBFUN2V . * CHEBFUN2V
     nG = G.nComponents; 
     if ( nF ~= nG ) 
-         error('CHEBFUN2v:times', 'Chebfun2v components mismatch.');
+         error('CHEBFUN2V:times', 'CHEBFUN2V components mismatch.');
     end
     for jj = 1:nF 
         F.components{jj} = times(F.components{jj}, G.components{jj}); 
     end
     
-elseif ( isa(G, 'chebfun2') )       % chebfun2 * chebfun2v
+elseif ( isa(G, 'chebfun2') )       % CHEBFUN2 * CHEBFUN2V
     for jj = 1 : nF 
             F.components{jj} = times(F.components{jj}, G); 
     end
     
 else  % error
-    error( 'CHEBFUN2v:times:inputs', 'Unrecognized input arguments.' );
+    error( 'CHEBFUN2V:times:inputs', 'Unrecognized input arguments.' );
 end
 
 end

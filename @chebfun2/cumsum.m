@@ -1,6 +1,6 @@
 function f = cumsum(f, dim)
-%CUMSUM   Indefinite integral of a chebfun2.
-%   F = CUMSUM(F) returns the indefinite integral of a chebfun2 with respect to
+%CUMSUM   Indefinite integral of a CHEBFUN2.
+%   F = CUMSUM(F) returns the indefinite integral of a CHEBFUN2 with respect to
 %   one variable and hence, returns a chebfun. The integration is done by
 %   default in the y-direction.
 %

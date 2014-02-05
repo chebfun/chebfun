@@ -80,7 +80,7 @@ elseif ( isa(x, 'chebfun') )
                 out = chebfun( @(t) feval(f, x(t), y(t)), x.domain, 'vectorize');
             else
                 error('CHEBFUN2:feval:path', ...
-                    'Chebfun path has domain inconsistency.');
+                    'CHEBFUN path has domain inconsistency.');
             end
         else
             error('CHEBFUN2:feval:complex', ...

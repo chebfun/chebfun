@@ -1,5 +1,5 @@
 function f = exp(f) 
-%EXP  Exponential of a chebfun2
+%EXP  Exponential of a CHEBFUN2
 %   EXP(F) returns the exponential of a CHEBFUN2. 
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.

@@ -1,5 +1,5 @@
 function f = real( f )
-%REAL  Real part of a chebfun2.
+%REAL  Real part of a CHEBFUN2.
 %
 % See also IMAG.
 

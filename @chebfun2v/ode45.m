@@ -1,10 +1,10 @@
 function varargout = ode45(F,tspan,init,varargin)
-% ODE45  Solve autonomous systems defined by a Chebfun2v.
+% ODE45  Solve autonomous systems defined by a CHEBFUN2V.
 %
 %  [T, Y] = ODE45(F,TSPAN,Y0) with TSPAN = [T0 TFINAL] solves the autonomous
 %  system of ODE y = f(y,y'), y'=g(y,y'), where f and g are the first and second
 %  components of F, respectively, from time T0 to TFINAL with initial conditions
-%  Y0. F is a chebfun2v and Y is a complex valued chebfun representing the
+%  Y0. F is a CHEBFUN2V and Y is a complex-valued CHEBFUN representing the
 %  solution, i.e., Y = y(t) + i*y'(t). To obtain solutions that interpolate at
 %  T0,T1,...,TFINAL use TSPAN = [T0 T1 ... TFINAL].
 %
@@ -89,13 +89,13 @@ else
 end
 
 if ( size(ys,2) == 2 )
-    % Always ensure the result is complex valued.
+    % Always ensure the result is complex-valued.
     y = chebfun(ys(:,1) + 1i*ys(:,2) + eps*1i, tspan);
 else
     y = chebfun(ys(1,:).' + 1i*ys(2,:).' + eps*1i, tspan);
 end
 
-% We have no hope of storing this as a complex-valued chebfun just pass back as
+% We have no hope of storing this as a complex-valued CHEBFUN just pass back as
 % a quasimatrix.
 if ( nF == 3 )
     if size(ys,2) == 2

@@ -1,10 +1,10 @@
 function F = plus( F, G ) 
-% + PLUS of two chebfun2v objects. 
-%   F + G if F and G are chebfun2v objects does componentwise addition. 
+% + PLUS of two CHEBFUN2V objects. 
+%   F + G if F and G are CHEBFUN2V objects does componentwise addition. 
 %
-%   F + G if F is a double and G is a chebfun2v does componentwise addition. 
+%   F + G if F is a double and G is a CHEBFUN2V does componentwise addition. 
 % 
-%   F + G if F is a chebfun2v and G is a double does componentwise addition.
+%   F + G if F is a CHEBFUN2V and G is a double does componentwise addition.
 % 
 %   PLUS(F,G) is called for the syntax F + G. 
 
@@ -40,7 +40,7 @@ elseif ( isa(G, 'chebfun2') )        % CHEBFUN2V + CHEBFUN
     for jj = 1 : nF 
         F.components{jj} = plus(F.components{jj}, G);
     end
-elseif ( isa(G, 'chebfun2v') )       % CHEBFUN2V + CHEBFUN2v
+elseif ( isa(G, 'chebfun2v') )       % CHEBFUN2V + CHEBFUN2V
     nG = G.nComponents; 
     if ( nG ~= nF ) 
         error('CHEBFUN2V:PLUS:components', ...

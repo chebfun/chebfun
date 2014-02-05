@@ -1,7 +1,7 @@
 function J = jacobian( F )
-%JACOBIAN   Jacobian determinant of a chebfun2v.
+%JACOBIAN   Jacobian determinant of a CHEBFUN2V.
 %   J = JACOBIAN(F) computes the determinant of the Jacobian matrix associated
-%   to the vector-valued chebfun2v F. The chebfun2v must have two components.
+%   to the vector-valued CHEBFUN2V F. The CHEBFUN2V must have two components.
 %
 %   Note we return the determinant of the Jacobian matrix and not the Jacobian
 %   matrix itself.

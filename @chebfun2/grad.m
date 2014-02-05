@@ -4,7 +4,7 @@ function varargout = grad( f )
 %   is the derivative of F in the x direction and FY is the derivative of F in
 %   the y direction. Both derivatives are returned as CHEBFUN2 objects.
 %
-%   G = GRAD(F) returns a chebfun2v which represents
+%   G = GRAD(F) returns a CHEBFUN2V which represents
 %
 %            G = (F_x ; F_y )
 %

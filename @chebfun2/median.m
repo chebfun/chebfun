@@ -1,5 +1,5 @@
 function g = median( f, dim )
-%MEDIAN   Median value of a chebfun2
+%MEDIAN   Median value of a CHEBFUN2
 %   G = MEDIAN(F) returns a chebfun G representing the median of the CHEBFUN2
 %   along the y direction, i.e., G = @(x) median( F ( x, : ) ).
 %

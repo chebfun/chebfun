@@ -1,14 +1,14 @@
 function varargout = quiver3( F, varargin )
-%QUIVER3   3-D quiver plot of a chebfun2v.
+%QUIVER3   3-D quiver plot of a CHEBFUN2V.
 %   QUIVER3(F) plots velocity vectors as arrows with components F(1), F(2),
-%   F(3), which are chebfun2 objects. QUIVER3 automatically scales the arrows to
+%   F(3), which are CHEBFUN2 objects. QUIVER3 automatically scales the arrows to
 %   fit. The arrows are plotted on a uniform grid.
 %
 %   QUIVER3(Z,F) plots velocity vectors at the equally spaced surface points
-%   specified by the matrix or chebfun2 Z. If Z is a chebfun2 then we use Z to
+%   specified by the matrix or CHEBFUN2 Z. If Z is a CHEBFUN2 then we use Z to
 %   map the uniform grid.
 %
-%   QUIVER3(X,Y,Z,F) plots velocity vectors at (x,y,z). If X, Y, Z are chebfun2
+%   QUIVER3(X,Y,Z,F) plots velocity vectors at (x,y,z). If X, Y, Z are CHEBFUN2
 %   objects then we use X, Y, Z to map the uniform grid.
 %
 %   QUIVER3(F,S), QUIVER3(Z,F,S) or QUIVER3(X,Y,Z,F,S) automatically scales the
@@ -26,7 +26,7 @@ function varargout = quiver3( F, varargin )
 %
 %   H = QUIVER3(...) returns a quiver object.
 %
-%   If F is a chebfun2v with two components then we recommend using
+%   If F is a CHEBFUN2V with two components then we recommend using
 %   CHEBFUN2V/QUIVER.
 %
 % See also QUIVER.
@@ -177,9 +177,9 @@ end
 end
 
 function newloc = new_data_locations( f1 , numpts )
-% Generate new arrow location if first two inputs are chebfun2 objects.
+% Generate new arrow location if first two inputs are CHEBFUN2 objects.
 
-% Check the chebfun2 objects are on the same domain.
+% Check the CHEBFUN2 objects are on the same domain.
 dom = f1.domain;
 
 % mesh 'em up for the quiver arrows.
@@ -187,7 +187,7 @@ x = linspace(dom(1), dom(2), numpts);
 y = linspace(dom(3), dom(4), numpts);
 
 [xx, yy] = meshgrid(x, y);
-% Use chebfun2 to generate data locations.
+% Use CHEBFUN2 to generate data locations.
 newloc = feval(f1, xx, yy);      
 
 end

@@ -1,7 +1,7 @@
 function varargout = surf(F, varargin)
-%SURF Plot of the surface represented by a chebfun2v.
+%SURF Plot of the surface represented by a CHEBFUN2V.
 %
-% SURF(F) is the surface plot of F, where F is a chebfun2v with three
+% SURF(F) is the surface plot of F, where F is a CHEBFUN2V with three
 % components.
 %
 % SURF(F,'-') also shows the seams of the parameterisation on the surface.
@@ -27,7 +27,7 @@ ish = ishold;
 nF = F.nComponents;
 
 if ( nF == 2 )
-    error('CHEBFUN2V:SURF','Chebfun2v does not represent a surface as it has only two components');
+    error('CHEBFUN2V:SURF','CHEBFUN2V does not represent a surface as it has only two components');
 end
 
 % Making varargin non-empty
@@ -58,7 +58,7 @@ if ( ~isempty(varargin) )
             cc{1} = 'k';
         end
         
-        % call to chebfun2/surf
+        % call to CHEBFUN2/SURF
         F1 = F.components{1};
         F2 = F.components{2};
         F3 = F.components{3};
@@ -91,11 +91,11 @@ if ( ~isempty(varargin) )
             h = h1;
         end
     else
-        % straight call to chebfun2/surf
+        % straight call to CHEBFUN2/SURF
         h = surf(F.components{1}, F.components{2}, F.components{3}, varargin{:});
     end
 else
-    % straight call to chebfun2/surf
+    % straight call to CHEBFUN2/SURF
     h = surf(F.components{1}, F.components{2}, F.components{3}, varargin{:});
 end
 

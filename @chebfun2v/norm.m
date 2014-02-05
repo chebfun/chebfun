@@ -1,5 +1,5 @@
 function v = norm( F )
-%NORM   Frobenius norm of a chebfun2v.
+%NORM   Frobenius norm of a CHEBFUN2V.
 %   V = NORM(F) returns the Frobenius norm of the two/three components, i.e. 
 %       V = sqrt(norm(F1).^2 + norm(F2).^2),
 %   or

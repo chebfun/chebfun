@@ -1,23 +1,23 @@
 function varargout = quiver3( Z, F, varargin )
-%QUIVER3  3-D quiver plot of a chebfun2v at data mapped by a chebfun2.
+%QUIVER3  3-D quiver plot of a CHEBFUN2V at data mapped by a CHEBFUN2.
 %
 % QUIVER3(Z, F) plots velocity vectors at the equally spaced surface points
-% specified by the chebfun2 Z. We use Z to map a uniform grid. F should be
-% a chebfun2v.
+% specified by the CHEBFUN2 Z. We use Z to map a uniform grid. F should be
+% a CHEBFUN2V.
 %
 % QUIVER3(X, Y, Z, F) plots velocity vectors at (x,y,z), where X, Y, Z are
-% chebfun2 objects which we use to to map a uniform grid. F should be a
-% chebfun2v.
+% CHEBFUN2 objects which we use to to map a uniform grid. F should be a
+% CHEBFUN2V.
 %
 % Alternative syntax for this command is:
 % QUIVER3(X,Y,Z,[f;g;h]) or QUIVER3(X,Y,Z,f,g,h), where f, g, and h are
-% chebfun2 objects.
+% CHEBFUN2 objects.
 %
 % QUIVER(...,'numpts',N) plots arrows on a N x N uniform grid.
 %
 %
 % This command is a wrapper to CHEBFUN2V/QUIVER3, and is required because
-% chebfun2 methods take priority over chebfun2v methods.
+% CHEBFUN2 methods take priority over CHEBFUN2V methods.
 %
 % See also CHEBFUN2V/QUIVER3.
 
@@ -27,7 +27,7 @@ function varargout = quiver3( Z, F, varargin )
 numpts = 20; 
 
 if ( ~isa(Z, 'chebfun2') )
-    error('CHEBFUN2:QUIVER3:INPUT','First argument to this command should be chebfun2.');
+    error('CHEBFUN2:QUIVER3:INPUT','First argument to this command should be CHEBFUN2.');
 end
 
 if ( isempty(varargin) )
@@ -88,7 +88,7 @@ end
 
 
 function newloc = new_data_locations(f1, numpts)
-% Generate new arrow location if first two inputs are chebfun2 objects.
+% Generate new arrow location if first two inputs are CHEBFUN2 objects.
 
 dom = f1.domain;
 
@@ -97,6 +97,6 @@ x = linspace(dom(1), dom(2), numpts);
 y = linspace(dom(3), dom(4), numpts);
 
 [xx, yy] = meshgrid(x, y);
-newloc = feval(f1, xx, yy);      % use chebfun2 to generate data locations.
+newloc = feval(f1, xx, yy);      % use CHEBFUN2 to generate data locations.
 
 end

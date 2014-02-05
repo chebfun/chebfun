@@ -1,5 +1,5 @@
 function varargout = quiver( F, varargin )
-%QUIVER   Quiver plot of chebfun2v.
+%QUIVER   Quiver plot of CHEBFUN2V.
 %   QUIVER(F) plots the vector velocity field of F. QUIVER automatically
 %   attempts to scale the arrows to fit within the grid. The arrows are on a
 %   uniform grid.
@@ -20,7 +20,7 @@ function varargout = quiver( F, varargin )
 %
 %   H = QUIVER(...) returns a quivergroup handle.
 %
-%   If F is a chebfun2v with three non-zero components then this calls QUIVER3.
+%   If F is a CHEBFUN2V with three non-zero components then this calls QUIVER3.
 %
 % See also QUIVER3.
 

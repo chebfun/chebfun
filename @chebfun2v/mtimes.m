@@ -1,7 +1,7 @@
 function F = mtimes( F, G )
-%*  mtimes for chebfun2v.
+%*  mtimes for CHEBFUN2V.
 %
-%  c*F or F*c multiplies each component of a chebfun2v by a scalar.
+%  c*F or F*c multiplies each component of a CHEBFUN2V by a scalar.
 %
 %  A*F multiplies the vector of functions F by the matrix A assuminG that
 %  size(A,2) == size(F,1).
@@ -21,7 +21,7 @@ if ( ( isempty(F) ) || ( isempty(G) ) )
     return
 end
 
-% If the chebfun2v object is transposed, then compute (G.'*f.').'
+% If the CHEBFUN2V object is transposed, then compute (G.'*f.').'
 if ( isa( F, 'chebfun2v' ) && ~isa( G,  'chebfun2v' ) )
     if ( F.isTransposed )
         F = mtimes( G.', F.' );
@@ -36,14 +36,14 @@ if ( isa(G, 'chebfun2v') && ~isa(F, 'chebfun2v') )
     end
 end
 
-if ( isa( F, 'double' ) )      % doubles * chebfun2v
-    if ( numel(F) == 1 )       % scalar * chebfun2v
+if ( isa( F, 'double' ) )      % doubles * CHEBFUN2V
+    if ( numel(F) == 1 )       % scalar * CHEBFUN2V
         const = F;
         F = G;
         for j = 1:F.nComponents
             F.components{j} = const * F.components{j};
         end
-    elseif ( size(F, 2) == G.nComponents )   % matrix * column chebfun2v
+    elseif ( size(F, 2) == G.nComponents )   % matrix * column CHEBFUN2V
         vec = F;
         nG = G.nComponents;
         if ( size(vec, 1) == 1 ) 
@@ -59,22 +59,22 @@ if ( isa( F, 'double' ) )      % doubles * chebfun2v
             F = chebfun2v(store); 
         end
     else
-        error('CHEBFUN2v:mtimes:double','Dimension mismatch.');
+        error('CHEBFUN2V:mtimes:double','Dimension mismatch.');
     end
     
-elseif( isa(G, 'double') )          % chebfun2v * double
+elseif( isa(G, 'double') )          % CHEBFUN2V * double
     
-    if ( numel( G ) == 1 )          % chebfun2v * scalar
+    if ( numel( G ) == 1 )          % CHEBFUN2V * scalar
         F = mtimes( G, F );
     else
-        error('CHEBFUN2v:mtimes:double','Chebfun2v and double size mismatch.');
+        error('CHEBFUN2V:mtimes:double','CHEBFUN2V and double size mismatch.');
     end
 elseif (isa(F,'chebfun2v') && isa(G,'chebfun2v') ) % dot product if dimensions are riGht.
     
     if ( ( F.isTransposed ) && ( ~G.isTransposed ) )
         F = dot( F, G );
     else
-        error('CHEBFUN2v:mtimes:sizes', 'Dimensions mismatch.');
+        error('CHEBFUN2V:mtimes:sizes', 'Dimensions mismatch.');
     end
     
 elseif isa(F,'chebfun2v') && isa(G,'chebfun2')
@@ -82,6 +82,6 @@ elseif isa(F,'chebfun2v') && isa(G,'chebfun2')
     F = mtimes( G , F );
     
 else 
-    error('CHEBFUN2v:mtimes:inputs','Chebfun2v can only mtimes to chebfun2v or double');
+    error('CHEBFUN2V:mtimes:inputs','CHEBFUN2V can only mtimes to chebfun2v or double');
 end
 end

@@ -1,5 +1,5 @@
 function F = rdivide( F, G )
-%./   Pointwise chebfun2v right divide.
+%./   Pointwise CHEBFUN2V right divide.
 %
 % See also LDIVIDE.
 

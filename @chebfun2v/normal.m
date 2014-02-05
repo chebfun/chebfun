@@ -1,10 +1,10 @@
 function N = normal( F, varargin )
-%NORMAL normal vector to a surface represented by a chebfun2v.
-%   N = NORMAL(F) returns a chebfun2v representing the normal vector to the
+%NORMAL normal vector to a surface represented by a CHEBFUN2V.
+%   N = NORMAL(F) returns a CHEBFUN2V representing the normal vector to the
 %   surface F. The vector has the same magntiude as the surface's tangent vector
 %
 %   N = NORMAL(F,'unit') returns the unit normal vector, represented as a
-%   chebfun2v, to the surface F.
+%   CHEBFUN2V, to the surface F.
 %
 % See also CHEBFUN/NORMAL. 
 

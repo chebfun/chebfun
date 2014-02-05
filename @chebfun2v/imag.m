@@ -1,6 +1,6 @@
 function F = imag( F )
-%IMAG   Imaginary part of a chebfun2v.
-%   IMAG(F) returns the imaginary part of a chebfun2v.
+%IMAG   Imaginary part of a CHEBFUN2V.
+%   IMAG(F) returns the imaginary part of a CHEBFUN2V.
 %
 % See also CONJ, REAL.
 

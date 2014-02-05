@@ -1,9 +1,9 @@
 function F = power( F, G )
-%.^ Componentwise power for chebfun2v.
-%   F.^G where F is a chebfun2v and G is a double returns the result from
+%.^ Componentwise power for CHEBFUN2V.
+%   F.^G where F is a CHEBFUN2V and G is a double returns the result from
 %   componentwise powers.
 %
-%   F.^G where F is a double and G is a chebfun2 returns from componentwise
+%   F.^G where F is a double and G is a CHEBFUN2 returns from componentwise
 %   powers.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
@@ -15,7 +15,7 @@ if ( isempty( F ) || isempty( G ) )
     return
 end
 
-if ( isa( F ,'double' ) )       % scalar . ^ chebfun2v
+if ( isa( F ,'double' ) )       % scalar . ^ CHEBFUN2V
     
     if ( numel(F) == 1 )
         scalar = F;
@@ -24,10 +24,10 @@ if ( isa( F ,'double' ) )       % scalar . ^ chebfun2v
             F.components{jj} = power( scalar, G.components{jj} );
         end
     else
-        error('CHEBFUN2v:mtimes:double', 'Dimension mismatch.');
+        error('CHEBFUN2V:mtimes:double', 'Dimension mismatch.');
     end
     
-elseif ( isa(G, 'double') )      % chebfun2v . ^ scalar
+elseif ( isa(G, 'double') )      % CHEBFUN2V . ^ scalar
     
     if ( numel(G) == 1 )
         scalar = G;
@@ -35,16 +35,16 @@ elseif ( isa(G, 'double') )      % chebfun2v . ^ scalar
             F.components{jj} = power( F.components{jj}, scalar );
         end
     else
-        error('CHEBFUN2v:mtimes:double', 'Chebfun2v and double size mismatch.');
+        error('CHEBFUN2V:mtimes:double', 'CHEBFUN2V and double size mismatch.');
     end
     
-elseif (isa(F,'chebfun2v') && isa(G,'chebfun2v') )  % chebfun2v.^chebfun2v
+elseif (isa(F,'chebfun2v') && isa(G,'chebfun2v') )  % CHEBFUN2V.^CHEBFUN2V
     
-    error('CHEBFUN2v:power:size', 'Chebfun2v dimension mismatch.');
+    error('CHEBFUN2V:power:size', 'CHEBFUN2V dimension mismatch.');
     
 else  % error
     
-    error('CHEBFUN2v:power:inputs', 'Unrecognized input arguments.');
+    error('CHEBFUN2V:power:inputs', 'Unrecognized input arguments.');
     
 end
 

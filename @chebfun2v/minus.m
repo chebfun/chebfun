@@ -1,6 +1,6 @@
 function f = minus( f, g )
-% - MINUS. Minus of two chebfun2v.  
-%   F - G substracts the chebfun2v F from G componentwise. 
+% - MINUS. Minus of two CHEBFUN2V.  
+%   F - G substracts the CHEBFUN2V F from G componentwise. 
 %
 %   minus(F, G) is called for the syntax f - g.
 

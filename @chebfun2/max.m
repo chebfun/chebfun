@@ -1,6 +1,6 @@
 function g = max( f, g, dim )
 %MAX   Maximum value of a CHEBFUN in one direction.
-%   MAX(f) returns a chebfun representing the maximum of the chebfun2 along the
+%   MAX(f) returns a chebfun representing the maximum of the CHEBFUN2 along the
 %   y direction, i.e, MAX(f) = @(x) max( f ( x, : ) )
 %
 %   MAX(f, [], dim) returns a CHEFBUN representing the maximum of f along the

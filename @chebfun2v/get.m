@@ -1,11 +1,11 @@
 function val = get( f, propName )
-%GET   Get chebfun2v properties.
+%GET   Get CHEBFUN2V properties.
 %
 %   P = GET(F, PROP) returns the property P specified in the string PROP from
-%   the chebfun2v F. Valid entries for the string PROP are:
-%    'components'  - The chebfun2 in the first component.
-%    'nComponents'  - The number of components in a chebfun2.
-%    'isTransposed' - Is the chebfun2v a column or row vector?
+%   the CHEBFUN2V F. Valid entries for the string PROP are:
+%    'components'  - The CHEBFUN2 in the first component.
+%    'nComponents'  - The number of components in a CHEBFUN2.
+%    'isTransposed' - Is the CHEBFUN2V a column or row vector?
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
@@ -27,7 +27,7 @@ switch propName
     case 'isTransposed'
         val = f.isTransposed;
     otherwise
-        error('CHEBFUN2v:get:propnam', ...
+        error('CHEBFUN2V:get:propnam', ...
             [propName, ' is not a valid chebfun2v property.'])
 end
 

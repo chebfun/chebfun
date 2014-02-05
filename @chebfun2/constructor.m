@@ -1,5 +1,5 @@
 function g = constructor(g, op, domain, varargin)
-%CONSTRUCTOR   The main Chebfun2 constructor.
+%CONSTRUCTOR   The main CHEBFUN2 constructor.
 % 
 % This code is when functions of two variables are represented as CHEBFUN2
 % objects. A CHEBFUN2 object is a low rank representation and expresses a
@@ -58,7 +58,7 @@ if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
         end
         % Perform GE with complete pivoting: 
         [pivotValue, ignored, rowValues, colValues] = CompleteACA(op, 0);
-        % Construct a chebfun2: 
+        % Construct a CHEBFUN2: 
         g.pivotValues = pivotValue;
         g.cols = chebfun(colValues, domain(3:4) );
         g.rows = chebfun(rowValues.', domain(1:2) );
@@ -159,9 +159,9 @@ while ( ~isHappy )
     % Does the function blow up or evaluate to NaN?:
     vscale = max(abs(vals(:)));
     if ( isinf(vscale) )
-        error('FUN2:CTOR', 'Function returned INF when evaluated');
+        error('CHEBFUN2:CTOR', 'Function returned INF when evaluated');
     elseif ( any(isnan(vals(:)) ) )
-        error('FUN2:CTOR', 'Function returned NaN when evaluated');
+        error('CHEBFUN2:CTOR', 'Function returned NaN when evaluated');
     end
     
     % Two-dimensional version of CHEBFUN's tolerance:
@@ -190,7 +190,7 @@ while ( ~isHappy )
     
     % If the rank of the function is above maxRank then stop.
     if ( grid > maxRank )
-        error('FUN2:CTOR', 'Not a low-rank function.');
+        error('CHEBFUN2:CTOR', 'Not a low-rank function.');
     end
     
     % Check if the column and row slices are resolved.
@@ -265,7 +265,7 @@ while ( ~isHappy )
         
         % STOP if degree is over maxLength:
         if ( max(m, n) >= maxLength ) 
-            error('FUN2:CTOR', 'Unresolved with maximum Chebfun length: %u.', maxLength);
+            error('CHEBFUN2:CTOR', 'Unresolved with maximum CHEBFUN length: %u.', maxLength);
         end
         
     end
@@ -400,7 +400,7 @@ function op = str2op( op )
 
 depvar = symvar( op );
 if ( numel(depvar) > 2 )
-    error('FUN2:fun2:depvars', 'Too many dependent variables in string input.');
+    error('CHEBFUN2:fun2:depvars', 'Too many dependent variables in string input.');
 end
 if ( numel(depvar) == 1 )
     % Exclude the case @(x) for now..

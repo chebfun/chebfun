@@ -28,9 +28,9 @@ dom = K.domain;
 if ( isa( v, 'function_handle' ) )
     v = chebfun( v, dom(3:4) );
 else
-    % Check that the domain of chebfun2 and chebfun are correct.
+    % Check that the domain of CHEBFUN2 and chebfun are correct.
     if ( ~domainCheck( v, cols ) )
-        error('CHEBFUN2:FRED:CHEBDOMAIN','Domain of chebfun and chebfun2 kernel do not match');
+        error('CHEBFUN2:FRED:CHEBDOMAIN','Domain of CHEBFUN and CHEBFUN2 kernel do not match');
     end
 end
 

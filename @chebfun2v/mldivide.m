@@ -1,9 +1,9 @@
 function H = mldivide( f, G )
-%\  Chebfun2v left divide.
+%\  CHEBFUN2V left divide.
 %
-%  c\F Divides each component of a chebfun2v by the scalar c. 
+%  c\F Divides each component of a CHEBFUN2V by the scalar c. 
 %
-%  Only allowed to divide a chebfun2v by a scalar.
+%  Only allowed to divide a CHEBFUN2V by a scalar.
 %
 % See also MRDIVIDE.
 

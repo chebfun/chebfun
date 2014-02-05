@@ -1,5 +1,5 @@
 function varargout = size( f , dim) %#ok<INUSL>
-% SIZE   Size of a chebfun2
+% SIZE   Size of a CHEBFUN2
 %   D = SIZE(F) returns the two-element row vector D = [inf,inf].
 %
 %   [M, N] = SIZE(F) returns M = inf and N = inf.

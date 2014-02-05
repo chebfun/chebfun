@@ -1,6 +1,6 @@
 function F = uminus( F )
-%- Unary minus of a chebfun2v
-%   -F returns the chebfun2v negated componentwise. 
+%- Unary minus of a CHEBFUN2V
+%   -F returns the CHEBFUN2V negated componentwise. 
 %
 %   UMINUS(F) is called by the syntax -F. 
 

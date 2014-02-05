@@ -1,5 +1,5 @@
 function v = integral( F, c )
-%INTEGRAL   Line integration of a chebfun2v.
+%INTEGRAL   Line integration of a CHEBFUN2V.
 %
 %   INTEGRAL(F, C) computes the line integral of F along the curve C, i.e.,
 %                  

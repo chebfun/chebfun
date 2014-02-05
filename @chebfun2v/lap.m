@@ -1,6 +1,6 @@
 function L = lap( F )
-%LAP   Vector Laplacian of a chebfun2v.
-%   LAP( F ) returns a chebfun2 representing the Laplacian of F. 
+%LAP   Vector Laplacian of a CHEBFUN2V.
+%   LAP( F ) returns a CHEBFUN2 representing the Laplacian of F. 
 %
 %   This is shorthand for LAPLACIAN( F )
 %

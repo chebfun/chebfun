@@ -1,12 +1,12 @@
 function f = abs( f )
-%ABS Absolute value of a chebfun2.
+%ABS Absolute value of a CHEBFUN2.
 %   ABS(F) returns the absolute value of a CHEBFUN2. This function does not work
 %   if the function passes through or becomes numerically close to zero.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( isempty( f ) ) % check for empty chebfun2.
+if ( isempty( f ) ) % check for empty CHEBFUN2.
     return 
 end 
 

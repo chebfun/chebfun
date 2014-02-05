@@ -1,5 +1,5 @@
 function L = lap( f )
-%LAP   Laplacian of a chebfun2.
+%LAP   Laplacian of a CHEBFUN2.
 %   L = LAP(F) returns a CHEBFUN2V representing the Laplacian of F. 
 %
 %   This is shorthand for LAPLACIAN(F)

@@ -1,5 +1,5 @@
 function varargout = contour( f, varargin )
-%CONTOUR  contour plot of a chebfun2.
+%CONTOUR  contour plot of a CHEBFUN2.
 %   CONTOUR(F) is a contour plot of F treating the values of F as heights above
 %   a plane. A contour plot are the level curves of F for some values V. The
 %   values V are chosen automatically.
@@ -18,8 +18,7 @@ function varargout = contour( f, varargin )
 %   CLABEL.
 %
 %   CONTOUR(F, 'NUMPTS', N) plots the contour lines on a N by N uniform grid. If
-%   NUMPTS is not given then we plot at a N by N grid, where N is decided by a
-%   field in the chebfun2pref object.
+%   NUMPTS is not given then we plot on an 200 by 200 grid.
 %
 %   CONTOUR(F, 'PIVOTS', STR) plots the contour lines with the pivot locations
 %   used during constructor.

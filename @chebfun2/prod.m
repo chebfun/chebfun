@@ -1,5 +1,5 @@
 function v = prod(f, varargin)
-%PROD  Product integral of a chebfun2. 
+%PROD  Product integral of a CHEBFUN2. 
 %   PROD(F) returns exp( sum(log(F)) )
 % 
 %   PROD(F, DIM) returns the chebfun exp( sum(log(F), DIM) )
