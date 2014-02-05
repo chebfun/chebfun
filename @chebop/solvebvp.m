@@ -35,8 +35,8 @@ end
 % Initialise the dependent variable:
 x = chebfun(@(x) x, dom);
 
-% Linearise
-[L, residual, isLinear] = linearise(N, x, u0);
+% Linearize
+[L, residual, isLinear] = linearize(N, x, u0);
 
 % If the RHS passed is numerical, cast it to a chebmatrix of appropriate size
 % before continuing

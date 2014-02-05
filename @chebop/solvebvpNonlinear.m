@@ -208,8 +208,8 @@ while ( ~terminate )
         warning('CHEBOP:solvebvpNonlinear','Newton iteration failed.')
         break
     else
-        % Linearise around current solution:
-        [L, res] = linearise(N, x, ub, []); % flag to negate contraint RHSs.
+        % Linearize around current solution:
+        [L, res] = linearize(N, x, ub, []); % flag to negate contraint RHSs.
         
         % Need to subtract RHS from the residual
         res = res - rhs;

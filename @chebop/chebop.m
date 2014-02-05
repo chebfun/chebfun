@@ -150,6 +150,8 @@ classdef (InferiorClasses = {?double}) chebop
         
         function L = linop(N)
            % TODO: Implement
+           L = linearise(
+           
            error('chebop.linop is yet to be implemented')
         end
         
@@ -288,8 +290,8 @@ classdef (InferiorClasses = {?double}) chebop
             end
         end
         
-        % Linearise a CHEBOP around a CHEBFUN u.
-        [L, res, isLinear] = linearise(N, x, u, flag);
+        % Linearize a CHEBOP around a CHEBFUN u.
+        [L, res, isLinear] = linearize(N, x, u, flag);
         
         
     end

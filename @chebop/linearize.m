@@ -1,4 +1,6 @@
-function [L, res, isLinear] = linearise(N, x, u, flag)
+function [L, res, isLinear] = linearize(N, x, u, flag)
+% TODO: Flag should determine whether we just want to do a linearity check, i.e.
+% stop if we're trying to convert a chebop to a linop.
 isLinear = true(1, 4);
 numVars = nargin(N.op) - 1;
 
