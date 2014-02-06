@@ -22,7 +22,7 @@ function [normF, normLoc] = norm(f, n)
 % Furthermore, the +\-inf norms for scalar-valued CHEBFUN objects may also
 % return a second output, giving the position where the max/min occurs. For
 % array-valued CHEBFUN objects, the 1 norm can return as its 2nd output the
-% index of the column with the largest norm, while the inf, -inf, and p-norms
+% index of the column with the largest norm, while the inf and -inf norms
 % can return as their 2nd output the point in the domain of the CHEBFUN at
 % which the norm is attained.
 %
@@ -32,7 +32,7 @@ function [normF, normLoc] = norm(f, n)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty CHEBFUN has norm 0:
-if ( isempty(f) )           
+if ( isempty(f) )
     normF = 0;
     return
 end
@@ -58,7 +58,7 @@ if ( numCols == 1 )
                         'Cannot return two outputs for 1-norms');
             end
             normF = sum(abs(f));
-            
+
         case {2, 'fro'}
             if ( nargout == 2 )
                 error('CHEBFUN:norm:argout', ...
@@ -66,7 +66,7 @@ if ( numCols == 1 )
             end
             f.isTransposed = 0;
             normF = sqrt(abs(innerProduct(f, f)));
-            
+
         case {inf, 'inf'}
             if ( isreal(f) )
                 [normF, normLoc] = minandmax(f);
@@ -76,11 +76,11 @@ if ( numCols == 1 )
                 [normF, normLoc] = max(conj(f).*f);
                 normF = sqrt(normF);
             end
-            
+
         case {-inf, '-inf'}
             [normF, normLoc] = min(conj(f).*f);
             normF = sqrt(normF);
-            
+
         otherwise
             if ( isnumeric(n) && isreal(n) )
                 if ( nargout == 2 )
@@ -97,13 +97,13 @@ if ( numCols == 1 )
                  'The only matrix norms available are 1, 2, inf, and ''fro''.');
             end
     end
-    
+
 %% %%%%%%%%%%%%%%%%%%%%%%%%%% ARRAY-VALUED CHEBFUNS %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-else 
+else
     if ( f(1).isTransposed )
         f = f.';
     end
-    
+
     switch n
         case 1
             f = mat2cell(f);
@@ -112,7 +112,7 @@ else
                 normF(k) = norm(f{k}, 1);
             end
             [normF, normLoc] = max(normF);
-            
+
         case 2
             if (nargout == 2 )
                 error('CHEBFUN:norm:argout', ...
@@ -121,7 +121,7 @@ else
             end
             s = svd(f, 0);
             normF = s(1);
-            
+
         case 'fro'
             if ( nargout == 2 )
                 error('CHEBFUN:norm:argout', ...
@@ -129,13 +129,13 @@ else
                      'array-valued CHEBFUNs.']);
             end
             normF = sqrt(sum(sum(f.*conj(f))));
-            
+
         case {'inf', inf}
             [normF, normLoc] = max(sum(abs(f), 2));
-            
+
         case {'-inf', -inf}
             [normF, normLoc] = min(sum(abs(f), 2));
-            
+
         otherwise
             if ( isnumeric(n) && isreal(n) )
                 [normF, normLoc] = max(sum(abs(f).^n, 2));
@@ -144,9 +144,9 @@ else
                 error('CHEBFUN:norm:unknownNorm', ...
                  'The only matrix norms available are 1, 2, inf, and ''fro''.');
             end
-            
+
     end
-    
+
 end
 
 % Discard possible imaginary rounding errors:
