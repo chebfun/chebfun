@@ -1,8 +1,8 @@
 function p = interp1(x, y, method, dom)
 %INTERP1   CHEBFUN polynomial interpolant at any distribution of points.
-%   P = INTERP1(X, Y), where X and Y are vectors, returns the CHEBFUN P defined
-%   on the domain [X(1), X(end)] corresponding to the polynomial interpolant
-%   through the data Y(j) at points X(j).
+%   P = CHEBFUN.INTERP1(X, Y), where X and Y are vectors, returns the CHEBFUN P
+%   defined on the domain [X(1), X(end)] corresponding to the polynomial
+%   interpolant through the data Y(j) at points X(j).
 %
 %   If Y is a matrix with more than one column then then Y(:,j) is taken as the
 %   value to be matched at X(j) and P is an array-valued CHEBFUN with each
@@ -17,8 +17,8 @@ function p = interp1(x, y, method, dom)
 %       f = chebfun(ff, d);
 %       plot(f, 'k', p, 'r-'), hold on, plot(x, ff(x), 'r.'), grid on
 %
-%   P = INTERP1(X, Y, METHOD) specifies alternate interpolation methods. The
-%   default is as described above. (Use an empty matrix [] to specify the
+%   P = CHEBFUN.INTERP1(X, Y, METHOD) specifies alternate interpolation methods.
+%   The default is as described above. (Use an empty matrix [] to specify the
 %   default.) Available methods are:
 %       'linear'   - linear interpolation
 %       'spline'   - piecewise cubic spline interpolation (SPLINE)
@@ -26,7 +26,8 @@ function p = interp1(x, y, method, dom)
 %       'cubic'    - same as 'pchip'
 %       'poly'     - polynomial interpolation, as described above
 %
-%   P = INTERP1(X, Y, METHOD, DOM) restricts the result P to the domain DOM.
+%   P = CHEBFUN.INTERP1(X, Y, METHOD, DOM) restricts the result P to the domain
+%   DOM.
 %
 % See also SPLINE, PCHIP.
 
@@ -35,7 +36,7 @@ function p = interp1(x, y, method, dom)
 
 % Parse inputs:
 if ( nargin == 2 )
-    method = 'poly';
+    method = [];
     dom = [];
 end
 
@@ -44,15 +45,23 @@ if ( nargin == 3 )
         dom = [];
     else
         dom = method;
-        method = 'poly';
+        method = [];
     end
+end
+
+if ( isempty(method) )
+    % Default to poly:
+    method = 'poly';
 end
 
 % Ensure x and y are both column vectors:
 if ( size(x, 1) == 1 )
     x = x.';
 end
-
+x = sort(x);
+if ( isa(y, 'chebfun') )
+    y = feval(y, x);
+end
 if ( size(y, 1) == 1 )
     y = y.';
 end
@@ -66,9 +75,9 @@ switch method
     case 'poly'
         p = interp1Poly(x, y, dom);
     case 'spline'
-        p = chebfun.spline(x, y, dom);
+        p = spline(x, y, dom);
     case {'pchip', 'cubic'}
-        p = chebfun.pchip(x, y, dom);
+        p = pchip(x, y, dom);
     case 'linear'
         p = interp1Linear(x, y, dom);
     otherwise
@@ -77,23 +86,27 @@ end
 
 end
 
-function p = interp1Poly(x, y, breaks)
+function p = interp1Poly(x, y, dom)
 % Polynomial interpolation
+
+dom = double(dom);
 
 % Compute barycentric weights for these points:
 w = baryWeights(x);
 % Define the interpolant using CHEBTECH.BARY():
 f = @(z) chebtech.bary(z, y, x, w);
 % Construct a CHEBFUN:
-p = chebfun(f, breaks, length(x));
+p = chebfun(f, dom, length(x));
 
 end
 
-function p = interp1Linear(x, y, d)
+function p = interp1Linear(x, y, dom)
 % Linear interpolation
 
+dom = double(dom);
+
 % Include breaks defined in the domain
-breaks = unique([d(:) ; x(:)].');
+breaks = unique([dom(:) ; x(:)].');
 
 % Number of intervals:
 numInts = numel(breaks) - 1;
@@ -109,8 +122,8 @@ data = mat2cell(yy, repmat(2, numInts, 1), size(yy, 2));
 p = chebfun(data, breaks);
 
 % Restrict if needed:
-if ( (d(1) > x(1)) || (d(end) < x(end)) )
-    p = restrict(p, d);
+if ( (dom(1) > x(1)) || (dom(end) < x(end)) )
+    p = restrict(p, dom);
 end
 
 end
