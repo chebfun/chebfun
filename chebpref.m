@@ -9,13 +9,12 @@ classdef chebpref
 %
 % Available Preferences:
 %
-%   maxTotalLength             - Maximum total CHEBFUN length.
-%    [65537]
+%   domain                     - Construction domain.
+%    [-1, 1]
 %
-%      Sets the maximum allowed "length" of the constructed CHEBFUN when
-%      breakpoint detection is disabled, where the notion of length is
-%      determined by the underlying representation technology (e.g., the number
-%      of Chebyshev points used for Chebyshev polynomial interpolation).
+%      This sets the default domain that will be used for CHEBFUN and/or FUN
+%      construction if no domain argument is explicitly passed to the
+%      constructor.
 %
 %   enableBreakpointDetection  - Enable/disable breakpoint detection.
 %     true
@@ -43,13 +42,6 @@ classdef chebpref
 %         This is the maximum total length of the CHEBFUN (i.e., the sum of the
 %         lengths of all the FUNs) allowed by the constructor when breakpoint
 %         detection is enabled.
-%
-%   domain                     - Construction domain.
-%    [-1, 1]
-%
-%      This sets the default domain that will be used for CHEBFUN and/or FUN
-%      construction if no domain argument is explicitly passed to the
-%      constructor.
 %
 %   enableSingularityDetection - Enable/disable singularity detection.
 %     true
@@ -423,8 +415,6 @@ classdef chebpref
             prefList = pref.prefList;
 
             fprintf('chebpref object with the following preferences:\n');
-            fprintf([padString('    maxTotalLength:') '%d\n'], ...
-                prefList.maxTotalLength);
             fprintf([padString('    domain:') '[%g, %g]\n'], ...
                 prefList.domain(1), prefList.domain(end));
             fprintf([padString('    enableBreakpointDetection:') '%d\n'], ...
@@ -679,11 +669,10 @@ classdef chebpref
         %   all of the "factory default" values of the CHEBFUN
         %   construction-time preferences.
 
-            factoryPrefs.maxTotalLength = 65537;
+            factoryPrefs.domain = [-1 1];
             factoryPrefs.enableBreakpointDetection = false;
                 factoryPrefs.breakpointPrefs.splitMaxLength = 129;
                 factoryPrefs.breakpointPrefs.splitMaxTotalLength = 6000;
-            factoryPrefs.domain = [-1 1];
             factoryPrefs.enableSingularityDetection = false;
                 factoryPrefs.singPrefs.exponentTol = 1.1*1e-11;
                 factoryPrefs.singPrefs.maxPoleOrder = 20;
