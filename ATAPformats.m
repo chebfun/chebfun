@@ -22,6 +22,7 @@ end
 if ( nargin == 0 )
     % Change to the ATAP settings.
 
+    evalin('caller', 'clear all')
     close all 
     set(0, 'defaultfigureposition', [380 320 540 200])
     set(0, 'defaultaxeslinewidth', 0.9)
