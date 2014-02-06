@@ -25,14 +25,14 @@ classdef chebfun
 %   CHEBFUN(@(x) abs(x), [-1, 0, 1]).
 % If a domain is passed to the constructor, it should always be the 2nd input.
 %
-% CHEBFUN(A) or CHEBFUN(A, 'chebpts2'), where A is an Nx1 matrix, constructs a
-% CHEBFUN object which interpolates the data in A on an N-point Chebyshev grid
-% of the second kind (see >> help chebpts). CHEBFUN(A, 'chebpts1') and
+% CHEBFUN(A) or CHEBFUN(A, 'chebkind', 2), where A is an Nx1 matrix, constructs
+% a CHEBFUN object which interpolates the data in A on an N-point Chebyshev grid
+% of the second kind (see >> help chebpts). CHEBFUN(A, 'chebkind', 1) and
 % CHEBFUN(A, 'equi') are similar, but here the data is assumed to come from a
 % 1st-kind Chebyshev or equispaced grid linspace(-1, 1, N), respectively. (In
 % the latter case, a smooth interpolant is constructed using an adaptive
 % Floater-Hormann scheme [Numer. Math. 107, 315-331 (2007)].). CHEBFUN(F, N) or
-% CHEBFUN(F, N, 'chebpts2') is equivalent to CHEBFUN(feval(F, chebpts(N)).
+% CHEBFUN(F, N, 'chebkind', 2) is equivalent to CHEBFUN(feval(F, chebpts(N)).
 %
 % CHEBFUN({F1,...,Fk}, ENDS) constructs a piecewise smooth CHEBFUN which
 % represents Fj on the interval [ENDS(j), END(j+1)]. Each entry Fj may be a
@@ -47,7 +47,7 @@ classdef chebfun
 % 'splitting', 'on') allows the constructor to adaptively determine breakpoints
 % to better represent piecewise smooth functions F. For example,
 %   CHEBFUN(@(x) sign(x - .3), [-1, 1], 'splitting', 'on')
-% CHEBFUN(F,'extrapolate','on') prevents the constructor from evaluating the
+% CHEBFUN(F, 'extrapolate', 'on') prevents the constructor from evaluating the
 % function F at the endpoints of the domain. Note that it is not possible to mix
 % PROP/VAL and PREF inputs in a single constructor call.
 %
@@ -145,7 +145,7 @@ classdef chebfun
             if ( (nargin == 0) || isempty(varargin{1}) )
                 return
             end
-            
+                       
             % Parse inputs:
             [op, dom, pref] = parseInputs(varargin{:});
             
@@ -193,7 +193,7 @@ classdef chebfun
             end
 
             if ( doTrunc )
-                c = chebpoly(f, 0, truncLength);
+                c = chebpoly(f, truncLength);
                 f = chebfun(c.', f.domain([1, end]), 'coeffs');
             end
         end
@@ -211,12 +211,15 @@ classdef chebfun
         % Interpolate data:
         f = interp1(x, y, method, dom);
         
-        % Determine values of chebfun at breakpoints.
+        % Determine values of CHEBFUN at breakpoints.
         vals = getValuesAtBreakpoints(funs, ends, op);
-        
+
         % Merge domains.
         newDom = mergeDomains(varargin)
-        
+
+        % Compute Lagrange basis functions for a given set of points.
+        f = lagrange(x, varargin);
+
         % ODE113 with CHEBFUN output.
         [t, y] = ode113(varargin);
         
@@ -256,6 +259,9 @@ classdef chebfun
         
         % Parse the inputs to the CHEBFUN constructor.
         [op, domain, pref] = parseInputs(op, domain, varargin);
+
+        % Parse the 'jumpline' style for CHEBFUN plot functions.
+        [jumpStyle, varargin] = parseJumpStyle(varargin);
         
         % Convert a string input to a function_handle.
         op = str2op(op);
@@ -535,17 +541,29 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
                 pref.enableSingularityDetection = 0;
             else
                 % If 'blowup' is not 'off'.
-                if ( args{2} == 1 )
+                if ( (isnumeric(args{2}) && args{2} == 1 ) || ...
+                        strcmpi(args{2}, 'on') )
+                    
                     % Translate "blowup" and flag "1" -->
                     % "enableSingularityDetection" and "poles only".
+                    
                     pref.enableSingularityDetection = 1;
-                    pref.singPrefs.singType = {'pole', 'pole'};
-                elseif ( (isnumeric(args{2}) && args{2} == 2 ) || ...
-                    strcmpi(args{2}, 'on') )
+                    singTypes = cell(1, 2*(numel(domain)-1));
+                    for j = 1:2*(numel(domain)-1)
+                        singTypes{j} = 'pole';
+                    end
+                    pref.singPrefs.singType = singTypes;
+                elseif ( args{2} == 2 )
+                    
                     % Translate "blowup" and flag "2" -->
                     % "enableSingularityDetection" and "fractional singularity".
+                    
                     pref.enableSingularityDetection = 1;
-                    pref.singPrefs.singType = {'sing', 'sing'};
+                    singTypes = cell(1, 2*(numel(domain)-1));
+                    for j = 1:2*(numel(domain)-1)
+                        singTypes{j} = 'sing';
+                    end
+                    pref.singPrefs.singType = singTypes;
                 else
                     error('CHEBFUN:constructor:parseInputs', ...
                         'Invalid value for ''blowup'' option.');

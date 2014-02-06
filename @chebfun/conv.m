@@ -140,10 +140,9 @@ end
 % Note, for simplicity we work with the FUNs, rather than the CHEBFUNs.
 
 % Useful things:
-m = length(f);                               % Length of f
-n = length(g);                               % Length of g
+N = length(g);                               % Length of g
 numPatches = floor((d - c) / (b - a));       % Number of patches required
-x = chebpts(n, [b+c, a+d], 1);               % Chebyshev grid for interior piece
+x = chebpts(N, [b+c, a+d], 1);               % Chebyshev grid for interior piece
 y = 0*x;                                     % Initialise values in interior
 map = @(x, a, b) (x-a)/(b-a) - (b-x)/(b-a);  % Map from [a, b] --> [-1, 1]
 f_leg = chebtech.cheb2leg(get(f, 'coeffs')); % Legendre coefficients of f
@@ -164,6 +163,7 @@ for k = 1:numPatches
     dk_mid   = a + dk(2); %   /____|/
     dk_right = b + dk(2); %  dkl  dkm   dkr
     gk = g_restricted{k};                          % g on this subdomain
+    gk = simplify(gk);                             % Simplify for efficiency
     gk_leg = chebtech.cheb2leg(get(gk, 'coeffs')); % Its Legendre coefficients
     [hLegL, hLegR] = easyConv(f_leg, gk_leg);      % Convolution on this domain
     
@@ -204,7 +204,8 @@ else
     %     fl a+d     b+d
 
     finishLocation = a + c + numPatches*(b - a);    % Where patches got to. (fl) 
-    gk = restrict(g, d-[(b-a) 0]);                  % g on appropriate domain        
+    gk = restrict(g, d-[(b-a) 0]);                  % g on appropriate domain   
+    gk = simplify(gk);                              % Simplify for efficiency
     gk_leg = chebtech.cheb2leg(get(gk, 'coeffs'));  % Legendre coeffs
     [hLegL, hLegR] = easyConv(f_leg, gk_leg);       % Conv on A and B
     hLegR = chebtech.leg2cheb(flipud(hLegR));       % Cheb coeffs on A
@@ -222,8 +223,10 @@ else
         
         % C: 
         fk = restrict(f, b + [-remainderWidth, 0]);     % Restrict f
+        fk = simplify(fk);                              % Simplify f
         fk_leg = chebtech.cheb2leg(get(fk, 'coeffs'));  % Legendre coeffs
         gk = restrict(g, [finishLocation, d + a] - b);  % Restrict g
+        gk = simplify(gk);                              % Simplify g
         gk_leg = chebtech.cheb2leg(get(gk, 'coeffs'));  % Legendre coeffs
         [ignored, hLegR] = easyConv(fk_leg, gk_leg);    % Conv 
         z = map(x(ind), finishLocation, d + a);         % Map to [-1, 1]
@@ -268,44 +271,44 @@ alpha = flipud(alpha);
 beta = flipud(beta);
 
 % Maximum degree of result:
-N = length(alpha) + length(beta);
+MN = length(alpha) + length(beta);
 
 % Pad to make length n + 1.
-alpha = [ alpha ; zeros(N - length(alpha), 1) ];
+alpha = [ alpha ; zeros(MN - length(alpha), 1) ];
 
-% M represents multiplication by 1/z in spherical Bessel space:
-e = [[1 ; 1./(2*(1:(N-1)).'+1)], [1 ; zeros(N-1, 1)], -1./(2*(0:N-1).'+1)];
-M = spdiags(e, -1:1, N, N);
+% S represents multiplication by 1/z in spherical Bessel space:
+e = [[1 ; 1./(2*(1:(MN-1)).'+1)], [1 ; zeros(MN-1, 1)], -1./(2*(0:MN-1).'+1)];
+S = spdiags(e, -1:1, MN, MN);
 
-gammaL = rec(M, alpha, beta, -1); % Chebyshev coeffs for the left piece
-M(1,1) = -1;                      % Update M
-gammaR = rec(M, -alpha, beta, 1); % Chebyshev coeffs for the right piece
+gammaL = rec(S, alpha, beta, -1); % Chebyshev coeffs for the left piece
+S(1,1) = -1;                      % Update S
+gammaR = rec(S, -alpha, beta, 1); % Chebyshev coeffs for the right piece
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%% MATRIX FREE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    function gamma = rec(M, alpha, beta, sgn)
+    function gamma = rec(S, alpha, beta, sgn)
         % Compute the Legendre coefficients of the convolution on L/R piece.
         % TODO: Document further once paper is complete.
         
         % Initialise scl:
-        nb = length(beta);
-        scl = 1./(2*(1:nb).'-1);
+        N = length(beta);
+        scl = 1./(2*(1:N).'-1);
         scl(2:2:end) = -scl(2:2:end);
         
         % First column of B:
-        vNew = M*alpha;
+        vNew = S*alpha;
         v = vNew;
         gamma = beta(1)*vNew;
         beta_scl = scl.*beta;
         beta_scl(1) = 0;
-        gamma(1) = gamma(1) + vNew(1:nb).'*beta_scl;
+        gamma(1) = gamma(1) + vNew(1:N).'*beta_scl;
         
         % The scalar case is trivial:
         if ( length(beta) == 1 )
-                return
+            return
         end
         
         % Second column of B:
-        vNew = M*v + sgn*v;
+        vNew = S*v + sgn*v;
         vOld = v;
         v = vNew;
         vNew(1) = 0;
@@ -313,23 +316,29 @@ gammaR = rec(M, -alpha, beta, 1); % Chebyshev coeffs for the right piece
         gamma = gamma + beta(2)*vNew;
         beta_scl = -beta_scl*((2 - 0.5)/(2 - 1.5));
         beta_scl(2) = 0;
-        gamma(2) = gamma(2) + vNew(1:nb).'*beta_scl;
+        gamma(2) = gamma(2) + vNew(1:N).'*beta_scl;
         
         % Loop over remaining columns using recurrence:
-        for k = 3:nb
-            vNew = (2*k-3) * (M * v) + vOld; % Recurrence
-            vNew(1:k-1) = 0;                 % Zero terms 
-            gamma = gamma + vNew*beta(k);    % Append to g
+        for n = 3:N
+            vNew = (2*n-3) * (S * v) + vOld; % Recurrence
+            vNew(1:n-1) = 0;                 % Zero terms 
+            gamma = gamma + vNew*beta(n);    % Append to g
             
             % Recurrence is unstable for j < k. Correct for upper-tri part:
-            beta_scl = -beta_scl*((k-.5)/(k-1.5));
-            beta_scl(k) = 0;
-            gamma(k) = gamma(k) + vNew(1:nb).'*beta_scl;
+            beta_scl = -beta_scl*((n-.5)/(n-1.5));
+            beta_scl(n) = 0;
+            gamma(n) = gamma(n) + vNew(1:N).'*beta_scl;
             
             vOld = v;
             v = vNew;
+            
         end
         
+        ag = abs(gamma);
+        mg = max(ag);
+        loc = find(ag > eps*mg, 1, 'last');
+        gamma = gamma(1:loc);
+
     end
 
 end

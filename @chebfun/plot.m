@@ -73,14 +73,16 @@ end
 
 % Store the hold state of the current axis:
 holdState = ishold;
-if ( holdState == true )
-    % Respect current limits:
-    yLim = get(gca, 'ylim');
-else
-    yLim = [inf, -inf];
+
+% Store the current Y-limits:
+if ( holdState )
+    yLimCurrent = get(gca, 'ylim');
 end
+
+% Initialize flags:
 isComplex = false;
 intervalIsSet = false;
+yLim = [inf, -inf];
 
 % Initialise storage:
 lineData = {};
@@ -116,15 +118,16 @@ lineData = {};
 pointData = {};
 jumpData = {};
 
-% Deail with 'jumpLine' input.
-[jumpStyle, varargin] = parseJumpStyle(varargin{:});
+% Deal with 'jumpLine' input.
+[jumpStyle, varargin] = chebfun.parseJumpStyle(varargin{:});
 
 %%
 % Get the data for plotting from PLOTDATA():
 while ( ~isempty(varargin) )
 
     % Acquire plotting data for each CHEBFUN / pair of CHEBFUNs:
-    if ( (numel(varargin) > 1) && isa(varargin{2}, 'chebfun') ) % PLOT(f, g).
+    if ( (numel(varargin) > 1) && ... % PLOT(f, g).
+            (isa(varargin{2}, 'chebfun') || isnumeric(varargin{2})) ) 
         % Remove CHEBFUN objects from array input:
         f = varargin{1};
         g = varargin{2};
@@ -140,7 +143,17 @@ while ( ~isempty(varargin) )
         end
         
         % Call PLOTDATA():
-        if ( numel(f) == 1 && numel(g) == 1 )
+        if ( isnumeric(f) )
+            % For plotting numeric data in a CHEBFUN/PLOT() call.
+            newData = plotData(chebfun());
+            newData.xLine = f;
+            newData.yLine = g;
+            newData.xPoints = f;
+            newData.yPoints = g;
+            newData.xJumps = NaN;
+            newData.yJumps = NaN;   
+            % Do nothing
+        elseif ( numel(f) == 1 && numel(g) == 1 )
             % Array-valued CHEBFUN case:
             newData = plotData(f, g);
         else
@@ -188,10 +201,15 @@ while ( ~isempty(varargin) )
     pos = 0;
     styleData = [];
 
+    lv = length(varargin);
     % Find the location of the next CHEBFUN in the input array:
-    while ( (pos < length(varargin)) && ~isa(varargin{pos + 1}, 'chebfun') )
+    while ( (pos < lv) && ~isa(varargin{pos+1}, 'chebfun') )
+        if ( pos+1 < lv && isnumeric(varargin{pos+1}) && isnumeric(varargin{pos+2}) )
+            break
+        end
         pos = pos + 1;
     end
+    
     if ( pos > 0 )
         styleData = varargin(1:pos);
         varargin(1:pos) = [];
@@ -230,10 +248,9 @@ while ( ~isempty(varargin) )
         pointData = [pointData, newData(k).xPoints, newData(k).yPoints, ...
             styleData];
         jumpData = [jumpData, newData(k).xJumps, newData(k).yJumps, styleData];
-
     end
+    
 end
-
 % Plot the lines:
 h1 = plot(lineData{:});
 set(h1, 'Marker', 'none')
@@ -263,8 +280,14 @@ else
     set(h3, jumpStyle{:});
 end
 
-% Set the y limits if appropriate values have been suggested:
+% Set the Y-limits if appropriate values have been suggested:
 if ( all(isfinite(yLim)) )
+
+    % If holding, then make sure not to shrink the Y-limits.
+    if ( holdState )
+        yLim = [min(yLimCurrent(1), yLim(1)), max(yLimCurrent(2), yLim(2))];
+    end
+
     set(gca, 'ylim', yLim)
 end
 
@@ -276,39 +299,6 @@ end
 % Give an output to the plot handles if requested:
 if ( nargout > 0 )
     varargout = {h1 ; h2 ; h3};
-end
-
-end
-
-
-function [jumpStyle, varargin] = parseJumpStyle(varargin)
-jumpStyle = {};
-for idx = 1:numel(varargin)
-    if ( ~strcmpi(varargin{idx}, 'jumpline') )
-        continue
-    end
-    tmp = varargin{idx+1};
-    varargin(idx:(idx+1)) = [];
-    if ( iscell(tmp) )
-        jumpStyle = tmp;
-        return
-    end
-    ll = regexp(tmp, '[-:.]+','match');           % style
-    if ( ~isempty(ll) )
-        jumpStyle = [jumpStyle, 'LineStyle', ll];
-    end
-    cc = regexp(tmp,'[bgrcmykw]', 'match');       % color
-    if ( ~isempty(cc) )
-        jumpStyle = [jumpStyle, 'Color', cc];
-    end
-    mm = regexp(tmp,'[.ox+*sdv^<>ph]', 'match');  % marker
-    if ( ~isempty(mm) )
-        jumpStyle = [jumpStyle, 'Marker', mm];
-    end
-    if ( any(strcmpi(tmp, {'none', 'off', ''})))      % off
-        jumpStyle = {'LineStyle', 'none'};
-    end
-    return
 end
 
 end
