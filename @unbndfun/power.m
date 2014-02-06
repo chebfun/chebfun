@@ -18,14 +18,14 @@ function f = power(f, b)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% % If there are roots at the end of the domain, then make the f.onefun a singfun:
-% lval = get(f, 'lval');                          % Value at left of domain.
-% rval = get(f, 'rval');                          % Value at right of domain.
-% tol = 1e2*get(f, 'epslevel').*get(f, 'vscale'); % Tolerance for a root.
-% if ( any(abs(lval) < tol) || any(abs(rval) < tol) ) && ...
-%         ( ~isa(f.onefun, 'singfun') )
-%     f.onefun = singfun(f.onefun);               % Cast f.onefun to a SINGFUN.
-% end
+% If there are roots at the end of the domain, then make the f.onefun a singfun:
+lval = get(f, 'lval');                          % Value at left of domain.
+rval = get(f, 'rval');                          % Value at right of domain.
+tol = 1e2*get(f, 'epslevel').*get(f, 'vscale'); % Tolerance for a root.
+if ( any(abs(lval) < tol) || any(abs(rval) < tol) ) && ...
+        ( ~isa(f.onefun, 'singfun') )
+    f.onefun = singfun(f.onefun);               % Cast f.onefun to a SINGFUN.
+end
 
 % Call POWER() of the ONEFUN:
 f.onefun = power(f.onefun, b);

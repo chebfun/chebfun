@@ -65,7 +65,6 @@ for k = 1:numSubDom
         end
     end
     
-    % [TODO]: Should 'vscale' be passed to the FUN ctor here?
     g{k} = fun.constructor(@(x) feval(f, x), s(k:k+1), vscale, [], pref);
 end
 

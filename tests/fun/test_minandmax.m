@@ -86,7 +86,7 @@ pExact = [-1.120906422778534 ; 1.120906422778534];
 errV = vals - vExact;
 errP = pos - pExact;
 pass(10) = ( norm(errV, inf) < get(f,'epslevel')*get(f,'vscale') ) && ...
-    ( norm(errP, inf) < get(f,'epslevel')*get(f,'vscale') );
+    ( norm(errP, inf) < 2*get(f,'epslevel')*get(f,'vscale') );
 
 end
 

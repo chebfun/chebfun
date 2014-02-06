@@ -18,8 +18,6 @@ a = ends(1); b = ends(2);
 % Initialise the map structure:
 m = struct('for', [], 'inv', [], 'forDer', [], 'invDer', [], 'forDerExps', []);
 
-% TODO: Why are NAME and PAR needed?
-
 % Fixed map parameters:
 s = 1;
 c = 0;

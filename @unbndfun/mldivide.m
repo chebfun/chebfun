@@ -12,14 +12,6 @@ function X = mldivide(A, B)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TODO: Since we don't check the domains, why bother checking this?
-
-% Require both inputs to be UNBNDFUN objects.
-if ( ~isa(A, 'unbndfun') || ~isa(B, 'unbndfun') )
-    error('CHEBFUN:UNBNDFUN:mldivide:bndfunMldivideUnknown', ...
-            'Arguments to UNBNDFUN mldivide must both be UNBNDFUN objects');
-end
-
 % Call MLDIVIDE of the onefun fields of A and B.
 X = A.onefun\B.onefun;
 

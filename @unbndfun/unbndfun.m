@@ -83,8 +83,8 @@ classdef unbndfun < fun
             end
             
             if ( (nargin < 4) || isempty(hscale) )
-                % The hscale of an unbounded domain is always 2.
-                % [TODO]: Why!? Note, DOCs above say 1?)
+                % The hscale of an unbounded domain is always 1.
+                % [TODO]: Why?
                 hscale = 1;
             end
 
