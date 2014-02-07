@@ -18,33 +18,30 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
 % solving nonlinear boundary-value problems (BVPs) of ordinary differential
 % equations (ODEs). It also enables the system to determine whether operators
 % are linear or not, which allows a convenient for syntax for specifying linear
-% operators, and accessing methods specific to linear operators, such as eigs
-% and expm.
+% operators, and accessing methods specific to linear operators, such as EIGS()
+% and EXPM().
 %
-% An ADCHEBFUN object has four properties:
-%
-%   1) func: A CHEBFUN, which corresponds to the function the ADCHEBFUN
-%           represents.
-%   2) jacobian: The Frechet derivative of the function the ADCHEBFUN
-%           represents, with respect to a selected basis variable. The basis
-%           variable is selected at the start of computation with ADCHEBFUN
-%           objects, and has the identity operators as its Frechet derivative.
-%   3) isConstant: This is used for linearity detection. A value equal to 1
-%           indicates that the function the ADCHEBFUN represents has Frechet
-%           derivatives which has a constant value with respect to the selected
-%           basis variable.
-%   4) domain: The domain on which the function ADCHEBFUN represents lives.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     %% Properties of ADCHEBFUN objects.
     properties ( Access = public )
-        % The CHEBFUN / constant:
+        % FUNC: A CHEBFUN (or double) , which corresponds to the function the
+        % ADCHEBFUN  represents.
         func
-        % The jacobian:
+        
+        % JACOBIAN: The Frechet derivative of the function the ADCHEBFUN
+        % represents, with respect to a selected basis variable. The basis
+        % variable is selected at the start of computation with ADCHEBFUN
+        % objects, and has the identity operators as its Frechet derivative.
         jacobian
-        % Linearity information:
-        isConstant = 1;        
-        % Domain of the ADchebfun:
+        
+        % ISCONSTANT: This is used for linearity detection. A value equal to 1
+        % indicates that the function the ADCHEBFUN represents has Frechet
+        % derivatives which has a constant value with respect to the selected
+        % basis variable.
+        isConstant = 1;  
+        
+        % DOMAIN: Domain of the ADchebfun.
         domain
     end
     
