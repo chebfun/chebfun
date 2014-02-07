@@ -42,7 +42,7 @@ else                               % f, g both not empty CHEBFUN objects.
     % Compare the domains:
     err = domain(f, 'ends') - domain(g, 'ends');
     % Should be either less than tolerance or NaN (from inf - inf).
-    pass = all(err < 1e-15*hs | isnan(err));
+    pass = all(abs(err) < 1e-15*hs | isnan(err));
     
 end
 
