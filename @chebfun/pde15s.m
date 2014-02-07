@@ -78,6 +78,16 @@ DMAT = {};
 DOMAIN = [];
 SYSSIZE = 0;
 
+if ( nargin == 0 || isempty(pdeFun) )
+    x = chebfun('x', [-1 1]);
+    u0 = (x-.5).*sin(pi*x);
+    pdeFun = @(u, t, x) diff(u,2) + 15*fred(@(x, y) exp(-100*(x-y-.1).^2), u);
+    pdeFun = @(u, t, x) diff((1.1+sin(10*pi*x)).*diff(u));
+    tt = 0:.05:3;
+    bc = 'dirichlet';
+    varargin{1} = pdeset('Ylim', [-1 1], 'PlotStyle', {'LineWidth', 2});
+end
+
 % Default options:
 tol = 1e-6;             % 'eps' in chebfun terminology
 doPlot = 1;             % plot after every time chunk?
@@ -190,7 +200,7 @@ xd = chebfun(@(x) x, DOMAIN);
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%  PARSE INPUTS TO PDEFUN  %%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Determine the size of the system
-SYSSIZE = min(size(u0));  
+SYSSIZE = min(size(u0));
 pdeFun = parseFun(pdeFun);
 if ( isfield(opt, 'difforder') )
     DIFFORDER = opt.difforder;
@@ -210,8 +220,8 @@ end
 
 % Initialise some rubbish:
 GLOBX = 1;
-leftNonlinBCLocs = []; 
-rightNonlinBCLocs = [];    
+leftNonlinBCLocs = [];
+rightNonlinBCLocs = [];
 BCRHS = {};
 
 if ( ischar(bc) && strcmpi(bc, 'periodic') )
@@ -232,7 +242,7 @@ if ( ischar(bc) && strcmpi(bc, 'periodic') )
     BCRHS = num2cell(zeros(1, numel(r)));
     
 else
-
+    
     if ( isfield(bc, 'left') && ~isfield(bc, 'right') )
         bc.right = [];
     elseif ( isfield(bc, 'right') && ~isfield(bc, 'left') )
@@ -245,9 +255,9 @@ else
     % Deal with struct and numeric input:
     bc.left = dealWithStructInput(bc.left);
     bc.right = dealWithStructInput(bc.right);
-   
+    
     if ( ischar(bc.left) || (iscell(bc.left) && ischar(bc.left{1})) )
-    %% %%%%%%%%%%%%%%%%%%%%% DIRICHLET AND NEUMANN BCS (LEFT) %%%%%%%%%%%%%%%%%%        
+        %% %%%%%%%%%%%%%%%%%%%%% DIRICHLET AND NEUMANN BCS (LEFT) %%%%%%%%%%%%%%%%%%
         if ( iscell(bc.left) )
             v = bc.left{2};
             bc.left = bc.left{1};
@@ -271,9 +281,10 @@ else
         end
         BCRHS = num2cell(repmat(v, SYSSIZE, 1));
     elseif ( numel(bc.left) == 1 && isa(bc.left, 'function_handle') )
-    %% %%%%%%%%%%%%%%%%%%%%%%%%%  GENERAL BCS (LEFT)  %%%%%%%%%%%%%%%%%%%%%%%%%%
+        %% %%%%%%%%%%%%%%%%%%%%%%%%%  GENERAL BCS (LEFT)  %%%%%%%%%%%%%%%%%%%%%%%%%%
         op = parseFun(bc.left);
-        sizeOp = size(op(ones(1, SYSSIZE), 0, mean(DOMAIN)));
+        tmp = chebdouble(ones(1, SYSSIZE));
+        sizeOp = size(op(tmp, 0, mean(DOMAIN)));
         leftNonlinBCLocs = 1:max(sizeOp);
         bc.left.op = {@(n) zeros(max(sizeOp), SYSSIZE*n)}; % Dummy entries.
         BCRHS = num2cell(zeros(1, max(sizeOp)));
@@ -281,9 +292,9 @@ else
     else
         error('Unknown BC syntax');
     end
-
+    
     if ( ischar(bc.right) || (iscell(bc.right) && ischar(bc.right{1})) )
-    %% %%%%%%%%%%%%%%%%%%%%% DIRICHLET AND NEUMANN BCS (RIGHT) %%%%%%%%%%%%%%%%%
+        %% %%%%%%%%%%%%%%%%%%%%% DIRICHLET AND NEUMANN BCS (RIGHT) %%%%%%%%%%%%%%%%%
         if ( iscell(bc.right) )
             v = bc.right{2};
             bc.right = bc.right{1};
@@ -308,9 +319,10 @@ else
         BCRHS = [BCRHS num2cell(repmat(v, SYSSIZE, 1))];
         
     elseif ( numel(bc.right) == 1 && isa(bc.right, 'function_handle') )
-    %% %%%%%%%%%%%%%%%%%%%%%%%%  GENERAL BCS (RIGHT)  %%%%%%%%%%%%%%%%%%%%%%%%%%
+        %% %%%%%%%%%%%%%%%%%%%%%%%%  GENERAL BCS (RIGHT)  %%%%%%%%%%%%%%%%%%%%%%%%%%
         op = parseFun(bc.right);
-        sizeOp = size(op(ones(1, SYSSIZE), 0, mean(DOMAIN)));
+        tmp = chebdouble(ones(1, SYSSIZE));
+        sizeOp = size(op(tmp, 0, mean(DOMAIN)));
         rightNonlinBCLocs = 1:max(sizeOp);
         bc.right.op = {@(n) zeros(max(sizeOp), SYSSIZE*n)};  % Dummy entries.
         bc.right.val = zeros(max(sizeOp),1);
@@ -400,10 +412,10 @@ B = []; q = []; rows = []; M = []; n = [];
 % Set the preferences:
 pref = chebpref;
 pref.techPrefs.eps = tol;
-pref.refinementFunction = 'resampling'; 
+pref.refinementFunction = 'resampling';
 pref.enableBreakpointDetection = 0;
-pref.techPrefs.sampleTest = 0; 
-pref.enableSingularityDetection = 0; 
+pref.techPrefs.sampleTest = 0;
+pref.enableSingularityDetection = 0;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%% TIME CHUNKS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -414,8 +426,11 @@ for nt = 1:length(tt)-1
     % Solve one chunk:
     if ( isnan(optN) )
         % Size of current length:
-        currentLength = length(simplify(uCurrent, tol));
+        currentVscale = vscale(uCurrent);
+        tmp = max(currentVscale, vscl) - currentVscale;
+        currentLength = length(simplify(uCurrent + tmp, tol));
         pref.techPrefs.minPoints = max(2*currentLength, 9);
+        vscl = max([vscl, currentVscale]);
         chebfun( @(x) vscl + oneStep(x), DOMAIN, pref);
     else
         % Non-adaptive in space:
@@ -430,7 +445,7 @@ for nt = 1:length(tt)-1
     if ( SYSSIZE == 1 )
         % TODO?
         out = [uOut uCurrent];
-%         uOut(nt+1) = uCurrent;
+        %         uOut(nt+1) = uCurrent;
     else
         for k = 1:SYSSIZE
             uOut{nt+1} = uCurrent;
@@ -458,45 +473,45 @@ for nt = 1:length(tt)-1
             grid on
         end
         title(sprintf('%s = %.3f,  len = %i', tlabel, tt(nt+1), currentLength)), drawnow
-%     elseif ( guiFlag )
-%         drawnow
+        %     elseif ( guiFlag )
+        %         drawnow
     end
     
-%     if ( guiFlag )
-%         % Interupt comutation if stop or pause  button is pressed in the GUI.
-%         if ( strcmp(get(solveButton, 'String'), 'Solve') )
-%             tt = tt(1:nt+1);
-%             if SYSSIZE == 1,
-%                 uOut = uOut(1:nt+1);
-%             else
-%                 for k = 1:SYSSIZE
-%                     uOut{k} = uOut{k}(1:nt+1);
-%                 end
-%             end
-%             break
-%         elseif ( strcmp(get(clearButton, 'String'), 'Continue') )
-%             defaultlinewidth = 2;
-%             axes(axesNorm)
-%             if ( ~iscell(uOut) )
-%                 waterfall(uOut(1:nt+1), tt(1:nt+1), 'simple', 'linewidth', defaultlinewidth)
-%                 xlabel(xLabel), ylabel(tlabel), zlabel(varnames)
-%             else
-%                 cols = get(0, 'DefaultAxesColorOrder');
-%                 for k = 1:numel(uOut)
-%                     plot(0, NaN, 'linewidth', defaultlinewidth, 'color', cols(k, :)), hold on
-%                 end
-%                 legend(varnames);
-%                 for k = 1:numel(uOut)
-%                     waterfall(uOut{k}, tt(1:nt+1), 'simple', 'linewidth', ...
-%                           defaultlinewidth, 'edgecolor', cols(k, :)), hold on
-%                     xlabel(xLabel), ylabel(tlabel)
-%                 end
-%                 view([322.5 30]), box off, grid on, hold off
-%             end
-%             axes(axesSol)
-%             waitfor(clearButton, 'String');
-%         end
-%     end
+    %     if ( guiFlag )
+    %         % Interupt comutation if stop or pause  button is pressed in the GUI.
+    %         if ( strcmp(get(solveButton, 'String'), 'Solve') )
+    %             tt = tt(1:nt+1);
+    %             if SYSSIZE == 1,
+    %                 uOut = uOut(1:nt+1);
+    %             else
+    %                 for k = 1:SYSSIZE
+    %                     uOut{k} = uOut{k}(1:nt+1);
+    %                 end
+    %             end
+    %             break
+    %         elseif ( strcmp(get(clearButton, 'String'), 'Continue') )
+    %             defaultlinewidth = 2;
+    %             axes(axesNorm)
+    %             if ( ~iscell(uOut) )
+    %                 waterfall(uOut(1:nt+1), tt(1:nt+1), 'simple', 'linewidth', defaultlinewidth)
+    %                 xlabel(xLabel), ylabel(tlabel), zlabel(varnames)
+    %             else
+    %                 cols = get(0, 'DefaultAxesColorOrder');
+    %                 for k = 1:numel(uOut)
+    %                     plot(0, NaN, 'linewidth', defaultlinewidth, 'color', cols(k, :)), hold on
+    %                 end
+    %                 legend(varnames);
+    %                 for k = 1:numel(uOut)
+    %                     waterfall(uOut{k}, tt(1:nt+1), 'simple', 'linewidth', ...
+    %                           defaultlinewidth, 'edgecolor', cols(k, :)), hold on
+    %                     xlabel(xLabel), ylabel(tlabel)
+    %                 end
+    %                 view([322.5 30]), box off, grid on, hold off
+    %             end
+    %             axes(axesSol)
+    %             waitfor(clearButton, 'String');
+    %         end
+    %     end
 end
 
 if ( doPlot && ~ish )
@@ -531,7 +546,7 @@ clear global SYSSIZE
         % Constructs the result of one time chunk at fixed discretization.
         
         if ( length(x) == 2 )
-            U = [0 ; 0]; 
+            U = [0 ; 0];
             return
         end
         
@@ -545,11 +560,8 @@ clear global SYSSIZE
             n = length(x);
             
             % Set the global variable x
-            GLOBX = x;      
+            GLOBX = x;
             
-            % Compute the new differentiation matrices:
-            makeDMAT(n);
-
             % Linear constraints:
             bcop = [bc.left.op ; bc.right.op];
             B = cell2mat(cellfun(@(f) feval(f, n), bcop, 'UniformOutput', false));
@@ -564,8 +576,8 @@ clear global SYSSIZE
             rows = 1:size(B, 1);
             
             % Multiply by user-defined mass matrix
-            if ( userMassSet ) 
-                M = feval(userMass, n)*M; 
+            if ( userMassSet )
+                M = feval(userMass, n)*M;
             end
             
         end
@@ -590,13 +602,15 @@ clear global SYSSIZE
         %% %%%%%%%%%%%%%%%%%%%%%%%%%%%  ODEFUN  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         function F = odeFun(t, U)
-        % This is what ODE15S() calls.
-        
+            % This is what ODE15S() calls.
+            
             % Reshape to n by SYSSIZE:
             U = reshape(U, n, SYSSIZE);
             
             % Evaluate the PDEFUN:
-            F = pdeFun(U, t, x);
+            Utmp = chebdouble(U, DOMAIN);
+            F = pdeFun(Utmp, t, x);
+            F = double(F);
             F = M*F(:);
             
             % Get the algebraic right-hand sides: (may be time-dependent)
@@ -614,7 +628,8 @@ clear global SYSSIZE
             % Replacements for the nonlinear BC conditions:
             if ( ~isempty(leftNonlinBCLocs) )
                 indx = 1:length(leftNonlinBCLocs);
-                tmp = feval(leftNonlinBCFuns, U, t, x);
+                tmp = leftNonlinBCFuns( Utmp, t, x);
+                tmp = double(tmp);
                 if ( size(tmp, 1) ~= n )
                     tmp = reshape(tmp, n, numel(tmp)/n);
                 end
@@ -622,7 +637,8 @@ clear global SYSSIZE
             end
             if ( ~isempty(rightNonlinBCLocs) )
                 indx = numel(BCRHS) + 1 - rightNonlinBCLocs;
-                tmp = feval(rightNonlinBCFuns, U, t, x);
+                tmp = rightNonlinBCFuns(Utmp, t, x);
+                tmp = double(tmp);
                 if ( size(tmp, 1) ~= n )
                     tmp = reshape(tmp, n, numel(tmp)/n);
                 end
@@ -636,191 +652,6 @@ clear global SYSSIZE
 
 end
 
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  DIFF %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% The differential operators
-function up = Diff(u, k)
-% Computes the k-th derivative of u using Chebyshev differentiation
-% matrices defined by barymat.
-
-global DIFFORDER DMAT
-
-% Assume first-order derivative:
-if ( nargin == 1 )
-    k = 1; 
-end
-
-% For finding the diff order of the RHS operator:
-if ( any(isnan(u)) )
-    idx = find(isnan(u), 1);
-    if ( isempty(DIFFORDER) )
-        DIFFORDER(idx) = k;
-    else
-        DIFFORDER(idx) = max(DIFFORDER(idx), k); 
-    end
-    up = u;
-    return
-end
-
-% Trivial scalar and zero cases:
-if ( size(u, 1) == 1 || ~any(u) )
-    up = 0*u;
-    return
-end
-
-% Find the derivative by muliplying by the kth-order differentiation matrix
-up = DMAT{k}*u;
-
-end
-
-function makeDMAT(n)
-    global DIFFORDER DOMAIN DMAT
-    % Make the diffmats for this n:
-    c = 2/diff(DOMAIN([1 end])); % Interval scaling
-    DMAT = cell(max(DIFFORDER), 1);
-    for kk = max(DIFFORDER):-1:1
-        % TODO: Can this be done more efficiently?
-        DMAT{kk} = c^kk*diffmat(n, kk);
-    end
-end
-
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  SUM  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% The differential operators
-function I = Sum(u, a, b)
-% Computes the integral of u using clenshaw-curtis nodes and weights
-% (which are stored for speed).
-
-global GLOBX DOMAIN
-persistent W
-if ( isempty(W) )
-    W = {};
-end
-
-% For finding the order of the RHS:
-if ( any(isnan(u)) )
-    I = u;
-    return
-end
-
-N = length(u);
-
-% Deal with the 3 args case. This can be integrating a sub-domain or
-% indefinite integration. (Or integrating the whole domain...)
-if ( nargin == 3 )
-    x = GLOBX;
-    if ( length(b) > 1 )
-        if ( ~all(b == x) )
-            error('CHEBFUN:pde15s:sumb', ...
-                ['Limits in sum must be scalars or the indep space var ', ...
-                 '(typically ''x'').']);
-        elseif ( a < x(1) )
-            error('CHEBFUN:pde15s:sumint', ...
-                'Limits of integration outside of domain.');
-        end
-        
-        I = Cumsum(u);
-        I = I - bary(a, I, x);
-        return
-    elseif ( length(a) > 1 )
-        if ( ~all(a == x) )
-            error('CHEBFUN:pde15s:suma', ...
-                ['Limits in sum must be scalars or the indep space var ', ...
-                 '(typically ''x'').']);
-        elseif ( b > x(end) )
-            error('CHEBFUN:pde15s:sumint', ...
-                'Limits of integration outside of domain.');
-        end
-        I = Cumsum(u);
-        I = bary(b, I, x) - I;
-        return
-    elseif ( a ~= x(1) || b ~= x(end) )
-        if ( a < x(1) || b > x(end) )
-            error('CHEBFUN:pde15s:sumint', ...
-            'Limits of integration outside of domain.');
-        end
-        I = Cumsum(u);
-        I = bary(b, I, x) - bary(a, I, x);
-        return
-    else
-        % Sum(u, a, b) is the same as below!
-    end
-end
-
-% Retrieve or compute weights::
-if ( N > 5 && numel(W) >= N && ~isempty(W{N}) )
-    % Weights are already in storage!
-else
-    c = diff(DOMAIN)/2; % Interval scaling.
-    W{N} = c*chebtech2.quadwts(N);
-end
-
-% Find the sum by muliplying by the weights vector:
-I = W{N}*u;
-
-end
-
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  CUMSUM  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% The differential operators
-function U = Cumsum(u)
-% Computes the indefinite integral of u.
-
-global DOMAIN
-persistent CMAT
-
-% For finding the order of the RHS:
-if ( any(isnan(u)) )
-    U = u;
-    return
-end
-
-N = length(u);
-if ( N == 1 )
-    U = u; 
-    return
-end
-
-% Compute cumsum matrix:
-if ( numel(CMAT) ~= N )
-    c = diff(DOMAIN)/2; % Interval scaling.
-    CMAT = cumsummat(N);
-end
-
-% Compute the indefinite integral:
-U = CMAT*u;
-
-end
-
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  FRED  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% The differential operators
-function U = Fred(K, u)
-% Computes the Fredholm integral of u.
-
-global GLOBX DOMAIN
-persistent W
-if ( isempty(W) )
-    W = {};
-end
-
-% For finding the order of the RHS:
-if ( any(isnan(u)) )
-    U = u;
-    return
-end
-
-N = length(u);
-
-% Retrieve or compute weights::
-if ( N > 5 && numel(W) >= N && ~isempty(W{N}) )
-    % Weights are already in storage!
-else
-    c = diff(DOMAIN)/2; % Interval scaling.
-    W{N} = c*chebtech2.quadwts(N).';
-end
-
-[X, Y] = ndgrid(GLOBX);
-U = K(X, Y) * (W{N}.*u);
-
-end
-
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%  MISC  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function outfun = parseFun(inFun)
@@ -829,80 +660,48 @@ function outfun = parseFun(inFun)
 
 global SYSSIZE
 
-Nin = nargin(inFun);
-tmp = NaN(1, SYSSIZE);
-% Determine number of operators, (i.e. diff, sum, cumsum) present in infun:
-k = 1; Nops = [];
-opsList = {@Diff, @Sum, @Cumsum, @Fred};
-while ( k < 5 && isempty(Nops) )
-    tmp2 = repmat({tmp}, 1, nargin(inFun)-k);
-    ops = opsList(1:k);
-    try
-        inFun(tmp2{:}, ops{:});
-        Nops = k;
-    catch ME
-        try 
-            % Try setting t to a scalar.
-            tmp2{SYSSIZE+1} = NaN;
-            inFun(tmp2{:}, ops{:});
-            Nops = k;
-        catch ME2
-            %
-        end
-        % 
-    end
-    k = k+1;
-end
-if ( isempty(Nops) )
-    error('CHEBFUN:pde15s:inputs', 'Unable to parse input function.');
-end
-
-% Convert inFun to accept quasimatrix inputs and remove ops from fun_handle:
-ops = opsList(1:Nops);
-
 % We don't accept only time or space as input args (i.e., both or nothing).
-Nind = Nin - Nops - SYSSIZE;
+Nind = nargin(inFun) - SYSSIZE;
 if ( Nind == 0 )
-    outfun = @(u, t, x) conv2cell(inFun, u, ops{:});
+    outfun = @(u, t, x) conv2cell(inFun, u);
 elseif ( Nind == 2 )
-    outfun = @(u, t, x) conv2cell(inFun, u, t, x, ops{:});
+    outfun = @(u, t, x) conv2cell(inFun, u, t, x);
 else
     error('CHEBFUN:pde15s:inputs_ind', ['Incorrect number of independant ' ...
         'variables in input function. (Must be 0 or 2).']);
 end
 
-    function newFun = conv2cell(oldFun, u, varargin)
-        % This function allows the use of different variables in the anonymous
-        % function, rather than using the clunky quasi-matrix notation.
-        
-        % Note. This is faster than mat2cell!
-        tmpCell = cell(1, SYSSIZE);
-        if ( isa(u, 'chebfun') )
-            for qk = 1:SYSSIZE
-                tmpCell{qk} = u(qk);
-            end
-        else
-            for qk = 1:SYSSIZE
-                tmpCell{qk} = u(:, qk);
-            end
-        end
-        newFun = oldFun(tmpCell{:}, varargin{:});
-    end
+end
 
+function newFun = conv2cell(oldFun, u, varargin)
+% This function allows the use of different variables in the anonymous
+% function, rather than using the clunky quasi-matrix notation.
+
+global SYSSIZE
+
+% Note. This is faster than mat2cell!
+tmpCell = cell(1, SYSSIZE);
+if ( isa(u, 'chebfun') )
+    for qk = 1:SYSSIZE
+        tmpCell{qk} = u(qk);
+    end
+else
+    for qk = 1:SYSSIZE
+        tmpCell{qk} = u(:, qk);
+    end
+end
+newFun = oldFun(tmpCell{:}, varargin{:});
 end
 
 function getDIFFORDER(pdeFun)
 % Extract the DIFFORDER by evaluating the operator at some NaN values.
 global DIFFORDER SYSSIZE
+
 % Find the order of each of the variables:
-DIFFORDER = zeros(1,SYSSIZE);
-% tmp = repmat({zeros(1, SYSSIZE).'}, 1, SYSSIZE)
-tmp = zeros(SYSSIZE);
-for k = 1:SYSSIZE
-    tmp(k,k) = NaN;
-    pdeFun(tmp, 0, 0);
-    tmp(k,k) = 0;
-end
+tmp = chebdouble(zeros(SYSSIZE));
+v = pdeFun(tmp, 0, 0);
+DIFFORDER = get(v, 'diffOrder');
+
 end
 
 function out = dealWithStructInput(in)
@@ -922,131 +721,4 @@ elseif ( isnumeric(in) )
 else
     out = in;
 end
-end
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% TODO: DIFFMAT and CUMSUMMAT are in @colloc2/private/. Below should be removed.
-
-function D = diffmat(N,k)
-
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
-% DIFFMAT  Chebyshev differentiation matrix
-% D = DIFFMAT(N) is the matrix that maps function values at N Chebyshev
-% points to values of the derivative of the interpolating polynomial at
-% those points.
-%
-% D = DIFFMAT(N,K) is the same, but for the Kth derivative.
-%
-% The matrices are computed using the 'hybrid' formula of Schneider &
-% Werner [1] and Welfert [2] proposed by Tee [3].
-
-% Copyright 2011 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
-
-% References:
-%  [1] Schneider, C. and Werner, W., "Some new aspects of rational
-%   interpolation", Math. Comp. (47) 285--299, 1986.
-%  [2] Welfert, B. D., "Generation of pseudospectral matrices I", SINUM,
-%   (34) 1640--1657.
-%  [3] Tee, T. W., "An adaptive rational spectral method for differential
-%   equations with rapidly varying solutions", Oxford DPhil Thesis, 2006.
-
-if nargin < 2, k = 1; end
-
-if N == 0, D = []; return, end
-if N == 1, D = 0; return, end
-
-% construct Chebyshev grid and weights
-x = chebtech2.chebpts(N);
-w = [.5 ; ones(N-1,1)]; w(2:2:end) = -1; w(N) = .5*w(N);
-
-ii = (1:N+1:N^2)';              % indices of diagonal
-Dx = bsxfun(@minus,x,x');       % all pairwise differences
-Dx(ii) = Dx(ii) + 1;            % add identity
-Dxi = 1./Dx;                    % reciprocal
-Dw = bsxfun(@rdivide,w.',w);    % pairwise divisions
-Dw(ii) = Dw(ii) - 1;            % subtract identity
-
-% k = 1
-D = Dw .* Dxi;
-D(ii) = 0; D(ii) = - sum(D,2);              % negative sum trick
-
-if k == 1, return, end
-
-% k = 2
-D = 2*D .* (repmat(D(ii),1,N) - Dxi);
-D(ii) = 0; D(ii) = - sum(D,2);              % negative sum trick
-
-% higher orders
-for n = 3:k
-    D = n*Dxi .* (Dw.*repmat(D(ii),1,N) - D);
-    D(ii) = 0; D(ii) = - sum(D,2);          % negative sum trick
-end
-
-end
-
-function Q = cumsummat(N)
-
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
-% CUMSUMMAT  Chebyshev integration matrix.
-% Q = CUMSUMMAT(N) is the matrix that maps function values at N Chebyshev
-% points to values of the integral of the interpolating polynomial at
-% those points, with the convention that the first value is zero.
-
-% Copyright 2011 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
-
-N = N-1;
-
-persistent cache    % stores computed values for fast return
-if isempty(cache), cache = {}; end    % first call
-
-if length(cache) >= N && ~isempty(cache{N})
-    Q = cache{N};
-    return
-else
-    cache{N} = [];
-end
-
-% Matrix mapping coeffs -> values.
-T = cp2cdm(N);
-
-% Matrix mapping values -> coeffs.
-Tinv = cd2cpm(N);
-
-% Matrix mapping coeffs -> integral coeffs. Note that the highest order
-% term is truncated.
-k = 1:N;
-k2 = 2*(k-1);  k2(1) = 1;  % avoid divide by zero
-B = diag(1./(2*k),-1) - diag(1./k2,1);
-v = ones(N,1); v(2:2:end) = -1;
-B(1,:) = sum( diag(v)*B(2:N+1,:), 1 );
-B(:,1) = 2*B(:,1);
-
-Q = T*B*Tinv;
-Q(1,:) = 0;  % make exact
-cache{N} = Q;
-
-end
-
-function T = cp2cdm(N)
-% Values of Cheb. polys at Cheb nodes, x(n)=-cos(pi*n/N).
-theta = pi*(N:-1:0)'/N;
-T = cos( theta*(0:N) );
-end
-
-function C = cd2cpm(N)
-% Three steps: Double the data around the circle, apply the DFT matrix,
-% and then take half the result with 0.5 factor at the ends.
-theta = (pi/N)*(0:2*N-1)';
-F = exp( -1i*theta*(0:2*N-1) );  % DFT matrix
-rows = 1:N+1;  % output upper half only
-% Impose symmetries on data and coeffs.
-C = real( [ F(rows,N+1) F(rows,N:-1:2)+F(rows,N+2:2*N) F(rows,1) ] );
-C = C/N;  C([1 N+1],:) = 0.5*C([1 N+1],:);
 end
