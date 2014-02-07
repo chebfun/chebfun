@@ -39,6 +39,16 @@ classdef (InferiorClasses = {?chebfun}) domain < double
     %% STATIC METHODS IMPLEMENTED BY THIS CLASS:
     methods ( Static = true )
         
+        function varargin = toDouble(varargin)
+            for k = 1:nargin
+                if ( isa(varargin{k}, 'domain') )
+                    % Cast DOMAN to DOUBLE:
+                    varargin{k} = double(varargin{k});
+                end
+            end
+            
+        end
+        
     end
     
     %% METHODS IMPLEMENTED BY THIS CLASS:
@@ -74,17 +84,12 @@ classdef (InferiorClasses = {?chebfun}) domain < double
             % This is required as built-in subsref does not know what to do with
             % a DOMAIN object.
             
-            for k = 1:nargin
-                if ( isa(varargin{k}, 'domain') )
-                    % Cast DOMAN to DOUBLE:
-                    varargin{k} = double(varargin{k});
-                end
-            end
+            varargin = domain2double(varargin{:});
+            
             % Call built-in SPRINTF:
             varargout{1:nargout} = sprintf(varargin{:});
         end
-            
-           
+                   
     end
     
 end
