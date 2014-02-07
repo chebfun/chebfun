@@ -382,13 +382,12 @@ classdef chebdouble
                 u = v;
             else
                 u.values = u.values.*v.values;
+                u.diffOrder = max(u.diffOrder, v.diffOrder);
             end
         end
         function out = norm(u)
             out = sqrt(sum(u.*u));
         end
-        
-        
         function u = rdivide(u, v)
             if ( isnumeric(v) )
                 u.values = u.values./v;
@@ -397,6 +396,7 @@ classdef chebdouble
                 u = v;
             else
                 u.values = u.values./v.values;
+                u.diffOrder = max(u.diffOrder, v.diffOrder);
             end
         end
         function u = plus(u, v)
@@ -457,6 +457,7 @@ classdef chebdouble
                 u = v;
             else
                 u.values = u.values.*v.values;
+                u.diffOrder = max(u.diffOrder, v.diffOrder);                
             end
         end
         function u = transpose(u)
