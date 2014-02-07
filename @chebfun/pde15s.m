@@ -192,7 +192,11 @@ xd = chebfun(@(x) x, DOMAIN);
 % Determine the size of the system
 SYSSIZE = min(size(u0));  
 pdeFun = parseFun(pdeFun);
-getDIFFORDER(pdeFun)
+if ( isfield(opt, 'difforder') )
+    DIFFORDER = opt.difforder;
+else
+    getDIFFORDER(pdeFun);
+end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% %%%%%%%%%%%%%%%%%%%%%%%%% PARSE BOUNDARY CONDITIONS %%%%%%%%%%%%%%%%%%%%%%%%%
@@ -785,6 +789,37 @@ U = CMAT*u;
 
 end
 
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  FRED  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% The differential operators
+function U = Fred(K, u)
+% Computes the Fredholm integral of u.
+
+global GLOBX DOMAIN
+persistent W
+if ( isempty(W) )
+    W = {};
+end
+
+% For finding the order of the RHS:
+if ( any(isnan(u)) )
+    U = u;
+    return
+end
+
+N = length(u);
+
+% Retrieve or compute weights::
+if ( N > 5 && numel(W) >= N && ~isempty(W{N}) )
+    % Weights are already in storage!
+else
+    c = diff(DOMAIN)/2; % Interval scaling.
+    W{N} = c*chebtech2.quadwts(N).';
+end
+
+[X, Y] = ndgrid(GLOBX);
+U = K(X, Y) * (W{N}.*u);
+
+end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%  MISC  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -798,8 +833,8 @@ Nin = nargin(inFun);
 tmp = NaN(1, SYSSIZE);
 % Determine number of operators, (i.e. diff, sum, cumsum) present in infun:
 k = 1; Nops = [];
-opsList = {@Diff, @Sum, @Cumsum};
-while ( k < 4 && isempty(Nops) )
+opsList = {@Diff, @Sum, @Cumsum, @Fred};
+while ( k < 5 && isempty(Nops) )
     tmp2 = repmat({tmp}, 1, nargin(inFun)-k);
     ops = opsList(1:k);
     try
