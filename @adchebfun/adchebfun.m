@@ -157,8 +157,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % Linearity information
             f.isConstant = iszero(f.jacobian);
             % Update derivative part
-            f.jacobian = operatorBlock.mult(-1./(f.func.^2 - 1))*...
-                f.jacobian;
+            f.jacobian = operatorBlock.mult(-1./(f.func.^2 - 1))*f.jacobian;
             % Update CHEBFUN part.
             f.func = acoth(f.func);
         end
@@ -638,6 +637,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         function u = jacreset(u)
             % U = JACRESET(U)
             % TODO: Document
+            % TODO: Dimension?
             u.jacobian = operatorBlock.eye(u.domain);
             u.isConstant = 1;
         end 
@@ -713,7 +713,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f = plus(f, -g);
         end
                 
-        function [normF, normLoc] = norm(f, varargin)
+        function varargout = norm(f, varargin)
             % NORM(F, K)    Norm of ADCHEBFUN objects.
             %
             % Input argument follow the expected pattern from CHEBFUN/norm.
@@ -722,11 +722,8 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             
             % TODO: Do we want this method to return an ADCHEBFUN? Makes sense
             % in the 2-norm case, in particular for 2-norm squared.
-            if nargout == 2
-                [normF, normLoc]  = norm(f.func, varargin{:});
-            else
-                normF = norm(f.func, varargin{:});
-            end
+            
+            [varargout{1:nargout}] = norm(f.func, varargin{:});
         end
             
         function f = mtimes(f, g)

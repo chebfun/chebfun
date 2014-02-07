@@ -6,6 +6,8 @@ function err = valueTesting(f, numOut)
 %   numOut is an optional argument, used for methods with more than one outputs
 %       (in particular, ellipj)
 
+% TODO: Describe algorithm.
+
 % Default value of NUMOUT
 if ( nargin == 1)
     numOut = 1;
