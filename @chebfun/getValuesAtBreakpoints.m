@@ -40,8 +40,12 @@ else
     % Evaluate the function handle at the breaks:
     vals(1:numFuns+1,:) = feval(op, ends.');
     
-    %TODO: Explain the need for this:
-    % Replace all NaNs by the appropriate function values obtained using FUNs:
+    % When functions are defined on unbounded domains, indeterminate form may
+    % occur and the evaluation of the function handle may return NaNs. For
+    % example, NaN is return when we try to evaluate x*exp(x) at -Inf.
+    % Therefore, we need to replace all NaNs by the appropriate function values 
+    % obtained using FUNs, i.e. by interpolation:
+    
     mask = isnan(vals(1:numFuns+1,:));
     if any( mask(1,:) )
         lvals = get(funs{1}, 'lval');

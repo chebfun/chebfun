@@ -27,4 +27,22 @@ onefunRoots = roots(f.onefun, varargin{:});
 % Map the roots found on [-1,1] to the interval [a,b]:
 r = f.mapping.for(onefunRoots);
 
+%% Get rid of spurious roots which are caused by fast decay of function defined
+% in an unbounded domain:
+
+% Set a threshold for the 'farfield':
+farfield = 1e-1/eps;
+
+ends = get(f, 'domain');
+
+if ( isinf(ends(1)) )
+    mask = ( r < -farfield );
+    r(mask) = [];
+end
+
+if ( isinf(ends(2)) )
+    mask = ( r > farfield );
+    r(mask) = [];
+end
+
 end
