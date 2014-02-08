@@ -327,6 +327,9 @@ classdef chebtech < smoothfun % (Abstract)
         % Compute the inner product of two CHEBTECH objects.
         out = innerProduct(f, g)
 
+        % Test if a CHEBTECH decays faster than a single root at endpoints.
+        out = isdecay(f)
+
         % True for an empty CHEBTECH.
         out = isempty(f)
 
