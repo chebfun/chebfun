@@ -114,7 +114,7 @@ try
     h = f./g;
     pass(11) = false;
 catch ME
-    pass(11) = strcmp(ME.identifier, 'CHEBFUN:restrict:subdom');
+    pass(11) = strcmp(ME.identifier, 'CHEBFUN:rdivide:domain');
 end
 
 %% Test on singular function: piecewise smooth chebfun - splitting on.

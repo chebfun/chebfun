@@ -14,38 +14,20 @@ function data = plotData(f, g, h)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Get the data from the ONEFUN:
 if ( nargin == 1 || isempty(g) )
     % PLOT(F):
-    
-    % Get the data from the ONEFUN:
     data = plotData(f.onefun);
-    
     % Map the 'x' data using f.mapping.for:
     data.xLine = f.mapping.for(data.xLine);
     data.xPoints = f.mapping.for(data.xPoints);
-   
-    % Grab the boundary values:
-    lval = get(f, 'lval');
-    rval = get(f, 'rval');
-    
-    % Consider a FUN with infinite value:
-    ind = isinf(lval);
-    if ( any( ind ) )
-        lval(ind) = data.yLine(1, ind);
-    end
-    
-    ind = isinf(rval);
-    if ( ind )
-        rval = data.yLine(end, ind);
-    end
-    
-    % Consider the ylim:
-    data.yLim = [min(min([data.yLine; lval; rval])) ...
-        max(max([data.yLine; lval; rval]))];
     
     % Sort out the jumps:
-    data.xJumps = [f.domain(1); NaN; f.domain(2)];
+    data.xJumps = [f.domain(1) ; NaN ; f.domain(2)];
     data.yJumps = getJumps(f, data.yLine);
+    
+    % Sort out the xLim:
+    data.xLim = f.domain;
     
 elseif ( nargin == 2 )
     % PLOT(F, G):
@@ -81,4 +63,3 @@ function jumps = getJumps(f, fLine)
     myNaN = nan(size(lvalF));
     jumps = [lvalF ; myNaN ; rvalF];
 end
-

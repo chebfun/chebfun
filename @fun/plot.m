@@ -92,6 +92,9 @@ if ( all(strcmp(get(h2, 'Marker'), 'none')) && length(f) < 257 )
     set(h2,'Marker', 'o')
 end
 
+set(gca, 'xlim', data.xLim)
+set(gca, 'ylim', data.yLim)
+
 %%
 % Return hold state to what it was before:
 if ( ~holdState )

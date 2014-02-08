@@ -19,63 +19,69 @@ if ( nargin == 1 || isempty(g) )
     data.xLine = f.mapping.for(data.xLine);
     data.xPoints = f.mapping.for(data.xPoints);
     
-    % The plotting window is [-window, window] for doubly infinite domains, and
-    % of width 2*window for singly infinite domains.
+    %% Figure out the xlim:
+    data.xLim = get(f, 'domain');
+    
+    % Size of the window:
     window = 10;
-    dom = f.domain;
-    if ( all(isinf(dom)) ) % [-Inf, Inf]
+    
+    if ( isinf(f) )
         
-        % Line data:
-        data.yLine(data.xLine > window | data.xLine < -window) = [];
-        data.xLine(data.xLine > window | data.xLine < -window) = [];
-        % Point data:
-        data.yPoints(data.xPoints > window | data.xPoints < -window) = [];
-        data.xPoints(data.xPoints > window | data.xPoints < -window) = [];
+        % If F is infinite, figure out where the mininum of ABS(F) takes place:
+        [ignored, minLoc] = min(abs(f));
         
-    elseif ( isinf(dom(1)) ) % [-Inf, b]
+        % If the left endpoint is -Inf:
+        if ( isinf(data.xLim(1)) )
+            if ( isfinite(minLoc) )
+                data.xLim(1) = minLoc - window;
+            else
+                data.xLim(1) = data.xLim(2) - window;
+            end
+        end
         
-        % Line data:
-        data.yLine(data.xLine < dom(2) - 2*window) = [];
-        data.xLine(data.xLine < dom(2) - 2*window) = [];
-        % Point data:
-        data.yPoints(data.xPoints < dom(2) - 2*window) = [];
-        data.xPoints(data.xPoints < dom(2) - 2*window) = [];
+        % If the right endpoint is Inf:
+        if ( isinf(data.xLim(2)) )
+            if ( isfinite(minLoc) )
+                data.xLim(2) = minLoc + window;
+            else
+                data.xLim(2) = data.xLim(1) + window;
+            end
+        end
         
-    elseif ( isinf(dom(2)) ) % [a, Inf]
+    else
+        % If F is finite, figure out where the maxinum of ABS(F) takes place:
+        [ignored, maxLoc] = max(abs(f));
         
-        % Line data:
-        data.yLine(data.xLine > dom(1) + 2*window) = [];
-        data.xLine(data.xLine > dom(1) + 2*window) = [];
-        % Point data:
-        data.yPoints(data.xPoints > dom(1) + 2*window) = [];
-        data.xPoints(data.xPoints > dom(1) + 2*window) = [];
+        % If the left endpoint is -Inf:
+        if ( isinf(data.xLim(1)) )
+            data.xLim(1) = maxLoc - window;
+        end
+        
+        % If the right endpoint is Inf:
+        if ( isinf(data.xLim(2)) )
+            data.xLim(2) = maxLoc + window;
+        end
         
     end
     
-    % Grab the boundary values:
-    lval = get(f, 'lval');
-    rval = get(f, 'rval');
-    
-    % Consider the ylim:
-    data.yLim = [min(min([data.yLine; lval; rval])) ...
-        max(max([data.yLine; lval; rval]))];
-    
-    % Consider the jump values for an infinite FUN:
-    data.xJumps = [f.domain(1); NaN; f.domain(2)];
-    
-    ind = isinf(lval);
-    if ( any( ind ) )
-        lval(ind) = data.yLine(1, ind);
-    end
-    
-    ind = isinf(rval);
-    if ( ind )
-        rval = data.yLine(end, ind);
-    end
-    
-    myNaN = nan(size(lval));
-    data.yJumps = [lval; myNaN; rval];
+    % Sort out the jumps:
+    data.xJumps = [f.domain(1) ; NaN ; f.domain(2)];
+    data.yJumps = getJumps(f, data.yLine);
     
 end
 
+end
+
+function jumps = getJumps(f, fLine)
+    lvalF = get(f, 'lval');
+    rvalF = get(f, 'rval');
+    
+    % Deal with functions which blow up:
+    ind = isinf(lvalF);
+    lvalF(ind) = fLine(2, ind);
+    ind = isinf(rvalF);
+    rvalF(ind) = fLine(end-1, ind);
+    
+    myNaN = nan(size(lvalF));
+    jumps = [lvalF ; myNaN ; rvalF];
 end

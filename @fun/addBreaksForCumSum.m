@@ -9,14 +9,10 @@ function f = addBreaksForCumSum(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-% Is F made of SINGFUN?
-if ( ~issing(f) )
-    return
-end
+% If F is not a SINGFUN or a SINGFUN with only one nonzero exponent, then return
+% without doing anything:
 
-% TODO: What are exponents?!
-% Non-trivial exponents at both endpoints?
-if ( any(~get(f, 'exponents') ) )
+if ( ~issing(f) || any(~get(f, 'exponents')) )
     return
 end
 
