@@ -37,6 +37,13 @@ elseif ( nargin == 2 )
     data.xJumps = getJumps(f, data.xLine);
     data.yJumps = getJumps(g, data.yLine);
     
+    % Sort out the xLim: 
+    % Note that we can't use [min(data.xLine) max(data.xLine)], since 
+    % min(f) = min(data.xLine) and max(f) = max(data.xLine) when first kind of
+    % Chebyshev points are used.
+    
+    data.xLim = [min(f) max(f)];
+    
 else
     % PLOT(F, G, H):
     data = plotData(f.onefun, g.onefun, h.onefun);
@@ -46,6 +53,8 @@ else
     data.yJumps = getJumps(g, data.yLine);
     data.zJumps = getJumps(h, data.zLine);
     
+    % Sort out the xLim:
+    data.xLim = [min(f) max(f)];
 end
 
 end
