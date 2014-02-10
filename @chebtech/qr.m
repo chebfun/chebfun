@@ -67,7 +67,7 @@ if ( size(f, 2) == 1 )
 end
 
 % Simplify so that we don't do any extra work: (QR is O(m*n^2)? :/ )
-f = simplify(f);
+% f = simplify(f);
 
 % Decide which algorithm to use:
 if ( strcmpi(methodFlag, 'householder') )
@@ -90,6 +90,7 @@ end
 col_acc = f.epslevel.*f.vscale;  % Accuracy of each column in f.
 glob_acc = max(col_acc);         % The best of these.
 Q.epslevel = glob_acc./Q.vscale; % Scale out vscale of Q.
+% Q.epslevel = 0*Q.epslevel + eps;
 
 end
 

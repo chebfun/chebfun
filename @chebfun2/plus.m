@@ -65,14 +65,15 @@ gScl = diag( 1./g.pivotValues );
 cols = [f.cols, g.cols];
 rows = [f.rows, g.rows];
 
-[Qleft, Rleft] = qr( cols );
-[Qright, Rright] = qr( rows );
+[Qcols, Rcols] = qr( cols );
+[Qrows, Rrows] = qr( rows );
 
 Z = zeros( length(fScl), length(gScl) );
-[U, S, V] = svd( Rleft * [fScl Z ; Z.' gScl] * Rright.' );
+D = [fScl Z ; Z.' gScl];
+[U, S, V] = svd( Rcols * D * Rrows.' );
 
-h.cols = Qleft  * U;
-h.rows = Qright * V;
+h.cols = Qcols * U;
+h.rows = Qrows * V;
 h.pivotValues = 1./diag( S );
 
 end
