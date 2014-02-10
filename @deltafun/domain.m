@@ -7,6 +7,6 @@ function d = domain(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-d = f.funPart.domain;
+d = get(f.funPart, 'domain');
 
 end

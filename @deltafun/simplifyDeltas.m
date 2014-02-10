@@ -17,7 +17,7 @@ deltaMag = f.deltaMag;
 % Merge columns if location of deltafunction are almost equal:
 [deltaMag, deltaLoc] = deltafun.mergeColumns(deltaMag, deltaLoc, pref);
 
-% Remove columns which are entriely below tolerance:
+% Remove columns which are entirely below tolerance:
 [deltaMag, deltaLoc] = deltafun.cleanColumns(deltaMag, deltaLoc, pref);
 
 % Remove ending rows of zeros:
@@ -25,8 +25,6 @@ deltaMag = deltafun.cleanRows(deltaMag, pref);
 
 % If any of these is empty, return just the funPart:
 if ( isempty(deltaLoc) || isempty(deltaMag) )
-    f.deltaLoc = [];
-    f.deltaMag = [];
     f = f.funPart;
     return
 end

@@ -133,7 +133,7 @@ classdef bndfun < classicfun
         f = compose(f, op, g, pref)
         
         % Indefinite integral of a BNDFUN.
-        [f, rval] = cumsum(f, m, dim, shift)
+        [f, rval] = cumsum(f, m, dim)
         
         % Derivative of a BNDFUN.
         f = diff(f, k, dim)

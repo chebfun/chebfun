@@ -8,8 +8,6 @@ function out = isreal(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org for Chebfun information.
 
-out = 1;
-
 % Check if the funPart is real:
 if ( ~isreal(f.funPart) )
     out = 0;
@@ -17,10 +15,6 @@ if ( ~isreal(f.funPart) )
 end
 
 % Check the delta functions:
-if ( isempty(f.deltaMag) )
-    return
-else
-    out = isreal(f.deltaMag);
-end
+out = isreal(f.deltaMag);
 
 end

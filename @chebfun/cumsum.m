@@ -10,7 +10,7 @@ function f = cumsum(f, m, dim)
 %   CUMSUM(F, N) returns the fractional integral of order N as defined by the
 %   Riemann-Liouville integral.
 %
-%   CUMSUM(F, N, 2) will take the Mth cumulative sum over the columns F an
+%   CUMSUM(F, N, 2) will take the Nth cumulative sum over the columns F an
 %   array-valued CHEBFUN or quasimatrix.
 %
 % See also SUM, INTEGRAL.
@@ -81,6 +81,7 @@ for l = 1:m
         if ( ~iscell( newFuns ) )
             newFuns = {newFuns + rVal};
         else
+            % TODO: I think rVal needs to be added to both of the pieces?
             newFuns{end} = newFuns{end} + rVal;
         end
         rVal = rVal + rValNew;

@@ -16,6 +16,8 @@ if ( nargin < 3 )
     pref = chebpref;
 end
 
+% TODO: NH: What about COMPOSE(f, op, g)?
+
 if ( isa(op, 'function_handle') )
     % OP is a function handle:
     f.funPart = compose(f.funPart, op, [], pref);
