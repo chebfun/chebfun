@@ -23,9 +23,10 @@ vends = [get(g, 'lval'), get(g, 'rval')];
 % Get the epslevel and vscale of the function g.
 tol = 1e1*get(g, 'epslevel')*get(g, 'vscale');
 
-if ( ~issing(g) ) || ( ~any(get(g, 'exponents')) )
+% TODO: NH: get('exponents') breaks encapsulation.
+if ( ~issing(g) || ~any(get(g, 'exponents')) )
     
-    % Cases for onefun has no singularities. The function may be decaying or
+    % Cases for ONEFUN has no singularities. The function may be decaying or
     % approach a constant value at infinities.
     
     % A dirty checklist:
@@ -50,9 +51,9 @@ if ( ~issing(g) ) || ( ~any(get(g, 'exponents')) )
     decay = isdecay(g.onefun);
     
     maskInf = isinf(dom);
-    if any(~decay & maskInf)
+    if ( any(~decay & maskInf) )
         warning('CHEBFUN:UNBNDFUN:sum:slowdecay', ...
-            ['Result may not be accurate, ' ...
+            ['Result may not be accurate ' ...
             'as the function decays slowly at infinity.'])
     end
     
@@ -71,7 +72,7 @@ if ( ~issing(g) ) || ( ~any(get(g, 'exponents')) )
     % Call the sum at onefun level.
     out = sum(integrand);
     
-elseif ( issing(g) ) % Cases for onefun has singularities at the end points.
+elseif ( issing(g) ) % Cases for ONEFUN has singularities at the end points.
     
     % Construct the ONEFUN presentation of the derivative of the forward map.
     pref.singPrefs.exponents = g.mapping.forDerExps;
@@ -80,11 +81,11 @@ elseif ( issing(g) ) % Cases for onefun has singularities at the end points.
     % Form the new integrand:
     integrand = g.onefun.*forDer;
     
-    % Call the sum at onefun level.
+    % Call the sum at ONEFUN level.
     out = sum(integrand);
     
 else
-    error('CHEBFUN:UNBNDFUN:IrrecognizableInput',...
+    error('CHEBFUN:UNBNDFUN:IrrecognizableInput', ...
         'The input can not be recognized.');
 end
 

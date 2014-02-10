@@ -223,17 +223,10 @@ while ( ~isempty(varargin) )
         end
     end
     
-    for k = 1:numel(newData)
-        xLim = [min(newData(k).xLim(1), xLim(1)), ...
-            max(newData(k).xLim(2), xLim(2))];
-        yLim = [min(newData(k).yLim(1), yLim(1)), ...
-            max(newData(k).yLim(2), yLim(2))];
-    end
-
     % Loop over the columns:
     for k = 1:numel(newData)
-        % TODO: Remove this?
-        % 'INTERVAL' stuff:
+        
+        % 'INTERVAL' stuff: (TODO: Remove this?)
         if ( ~isComplex && intervalIsSet && (size(newData(k).xLine, 2) == 1) )
             ind = newData(k).xLine < interval(1) | ...
                 newData(k).xLine > interval(end);
@@ -248,6 +241,12 @@ while ( ~isempty(varargin) )
             newData(k).xJumps(ind) = [];
             newData(k).yJumps(ind,:) = [];
         end
+        
+        % Update axis limits:
+        xLim = [min(newData(k).xLim(1), xLim(1)), ...
+            max(newData(k).xLim(2), xLim(2))];
+        yLim = [min(newData(k).yLim(1), yLim(1)), ...
+            max(newData(k).yLim(2), yLim(2))];
 
         % Append new data:
         lineData = [lineData, newData(k).xLine, newData(k).yLine, styleData];
