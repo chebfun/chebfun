@@ -13,7 +13,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
 %   the location of a column in the DELTAMAG matrix.
 %
 % Constructor inputs:
-%   DELTAFUN(IMPULSES, LOCATION) creates a DELTAFUN object with an empty
+%   DELTAFUN(DELTAMAG, LOCATION) creates a DELTAFUN object with an empty
 %   FUNPART, while the delta functions and their locations are specified by
 %   DELTAMAG and LOCATION.
 % 
