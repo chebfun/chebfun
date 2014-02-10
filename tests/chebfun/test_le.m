@@ -68,4 +68,13 @@ catch ME
     pass(8) = strcmp(ME.identifier, 'CHEBFUN:le:array');
 end
 
+%% Test on SINGFUN:
+
+f = chebfun(@(x) -sin(x)./(x+1), 'exps', [-1 0]);
+g = chebfun(@(x) x*0);
+h = ( f <= g );
+h_vals = feval(h, x);
+h_exact = hvsde(x);
+pass(9) = ( h.impulses(2) == 1 ) && all( abs( h_vals - h_exact ) == 0 );
+
 end

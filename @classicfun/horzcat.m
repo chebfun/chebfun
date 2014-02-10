@@ -20,11 +20,6 @@ end
 % Make an output CLASSICFUN:
 out = varargin{1};
 
-tol = norm(out.domain, inf)*get(out, 'epslevel');
-if ( any( cellfun(@(f) any(f.domain - out.domain) > tol, varargin)) )
-    error('CLASSICFUN:horzcat:domains', 'Domain mismatch.');
-end
-
 % Extract the ONEFUNs:
 onefuns = cellfun(@(f) f.onefun, varargin, 'UniformOutput', false);
 

@@ -11,9 +11,15 @@ tol = vscale(f)*epslevel(f);
 a = all(abs(f.pointValues) > tol);
 
 % Check to see if there are any roots:
-if ( any(a == true) )
+if ( any(a) )
     r = roots(f, 'nojump');
-    a = a & ~any(r, 1);
+    if ( isempty(r) )
+        return
+    end
+    
+    indNaN = isnan(r);
+    noRoots = all(indNaN, 1);
+    a = a & noRoots;
 end
 
 end

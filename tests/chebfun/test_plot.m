@@ -85,6 +85,11 @@ pass(27) = doesNotCrash(@() plot(fsr2, 'interval', [-0.5 0.5]));
 pass(28) = doesNotCrash(@() plot(fsr2, [-0.5 0.5]));
 pass(29) = doesNotCrash(@() plot(fdc, 'jumpline', 'r-'));
 pass(30) = doesNotCrash(@() plot(fdc, 'jumpline', 'none'));
+pass(31) = doesNotCrash(@() plot3(fdc, fsr1, fsr2, 'jumpline', 'r-'));
+
+% Check plotting discrete data alongside CHEBFUN objects
+x = linspace(-1,1,10).';
+pass(32) = doesNotCrash(@() plot(far1, 'b', far2, 'r', x, far1(x), 'om', x, far3(x), '-ok'));
 
 close(hfig);
 

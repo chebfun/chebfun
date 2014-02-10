@@ -43,7 +43,7 @@ if ( nfuns == 2 )
               'Matrix dimensions must agree.')
     end
 
-    % Grab some data from G2:
+    % Grab some data from G:
     vscale = max(vscale, g.vscale);
     pref.minPoints = max(pref.minPoints, length(g));
     pref.eps = max(pref.eps, g.epslevel);
