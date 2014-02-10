@@ -633,6 +633,12 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             out = hscale(f.func);
         end
         
+        function varargout = integral(varargin)
+            % F = INTEGRAL(F)   INTEGRAL(F) synonym for SUM(F).
+            
+            [varargout{1:nargout}] = sum(varargin{:});
+        end
+        
         function u = jacreset(u)
             % U = JACRESET(U)
             % TODO: Document
@@ -924,6 +930,8 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         
         function f = sum(f)
             % F = SUM(F)   Definite integral of an ADCHEBFUN.
+            
+            % TODO: SUM(F, A, B) ?
             
             % Compute the definite integral of the CHEBFUN part. This will be a
             % scalar, but we want to return and ADCHEBFUN in order to be able to
