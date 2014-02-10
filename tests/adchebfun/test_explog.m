@@ -3,7 +3,7 @@
 function pass = test_explog
 
 % List of trigonometric functions to test.
-explogFunctions = {@exp, @log, @log10, @log1p, @log2};
+explogFunctions = {@exp, @expm1, @log, @log10, @log1p, @log2};
 
 % How many iterations we want to in the Taylor testing
 numSteps = 4;

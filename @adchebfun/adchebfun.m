@@ -14,8 +14,8 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ADCHEBFUN class description:
 %
-% The ADCHEBFUN is used by the CHEBOP class to supply Frechet derivatives for
-% solving nonlinear boundary-value problems (BVPs) of ordinary differential
+% The ADCHEBFUN class is used by the CHEBOP class to supply Frechet derivatives
+% for solving nonlinear boundary-value problems (BVPs) of ordinary differential
 % equations (ODEs). It also enables the system to determine whether operators
 % are linear or not, which allows a convenient for syntax for specifying linear
 % operators, and accessing methods specific to linear operators, such as EIGS()
@@ -71,24 +71,6 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % ABS   ABS is not Frechet differentiable, so an error is thrown.
             error('CHEBFUN:AD:abs:NotDifferentiable', ...
                 'ABS() is not Frechet differentiable.');
-        end
-        
-        function f = airy(k, f)
-            % F = AIRY(K,F)   Airy function of an ADCHEBFUN.
-            %
-            % F = AIRY(F) where F is a CHEBFUN is the same as above, with K = 0.
-            
-            % Default value of K
-            if ( nargin == 1 )
-                f = k;
-                k = 0;
-            end
-            % Linearity information
-            f.isConstant = iszero(f.jacobian);
-            % Update derivative part
-            f.jacobian = operatorBlock.mult(airy(k + 1, f.func))*f.jacobian;
-            % Update CHEBFUN part.
-            f.func = airy(k, f.func);
         end
 
         function f = acos(f)
@@ -195,6 +177,23 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f.func = acsch(f.func);
         end
         
+                
+        function f = airy(k, f)
+            % F = AIRY(K,F)   Airy function of an ADCHEBFUN.
+            
+            % Default value of K
+            if ( nargin == 1 )
+                f = k;
+                k = 0;
+            end
+            % Linearity information
+            f.isConstant = iszero(f.jacobian);
+            % Update derivative part
+            f.jacobian = operatorBlock.mult(airy(k + 1, f.func))*f.jacobian;
+            % Update CHEBFUN part.
+            f.func = airy(k, f.func);
+        end
+        
         function f = asec(f)
             % F = ASEC(F)   ASEC of an ADCHEBFUN.
             
@@ -298,22 +297,17 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f.func = atanh(f.func);
         end
         
-        function g = besselj(nu, f)
-            % G = BESSELJ(NU, F)    Bessel-J function of an ADCHEBFUN.
-            %
-            % See also chebfun/besselj.
-            
-            % Initialise an empty ADCHEBFUN
-            g = adchebfun;
-            % Copy the domain information
-            g.domain = f.domain;
+        function f = besselj(nu, f)
+            % BESSELJ(NU, F)   Bessel-J function of an ADCHEBFUN.
+
             % Linearity information
-            g.isConstant = iszero(f.jacobian);
+            f.isConstant = iszero(f.jacobian);
             % Function composition
-            g.func = besselj(nu, f.func);
+            tmp = besselj(nu, f.func);
             % Derivative computation
-            g.jacobian = operatorBlock.mult(-besselj(nu+1,f.func) + ...
-                nu*(g.func)./f.func)*f.jacobian;
+            f.jacobian = operatorBlock.mult(-besselj(nu+1, f.func) + ...
+                nu*tmp./f.func)*f.jacobian;
+            f.func = tmp;
         end
         
         function f = cos(f)
@@ -440,14 +434,14 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         function f = diff(f, k)
             % F = DIFF(F, K)   DIFF of an ADCHEBFUN
             
-            % By default, compute first derivative
+            % By default, compute first derivative:
             if ( nargin < 2 )
                 k = 1; 
             end
             
-            % Update CHEBFUN part
+            % Update CHEBFUN part:
             f.func = diff(f.func, k);
-            % Update derivative part
+            % Update derivative part:
             f.jacobian = operatorBlock.diff(f.domain, k)*f.jacobian;
             % DIFF is a linear operation, so no need to update linearity info.
             % f.isConstant = f.isConstant;
@@ -455,55 +449,52 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         
         function [sm, cm, dm] = ellipj(f, m)
             % [SM, CM, DM] = ELLIPJ(F, M)    Ellip-J function of an ADCHEBFUN.
-            %
-            % See also chebfun/ellipj.
             
             % Either F or M could be an ADCHEBFUN, but be we currently only
             % support the case where the first argument is an ADCHEBFUN
-            if ~( isa(f, 'adchebfun') )
+            if ( ~isa(f, 'adchebfun') )
                error('CHEBFUN:ADCHEBFUN:ellipj', ...
-                   ['Currently, ADCHEBFUN only supports calls to ellipj ' ...
+                   ['Currently, ADCHEBFUN only supports calls to ELLIPJ() ' ...
                    'where the first input is a ADCHEBFUN.']);
             end
             
-            % Initialise an empty ADCHEBFUN
-            sm = adchebfun;
-            % Copy the domain information
-            sm.domain = f.domain;
-            % Linearity information
+            % Copy F to the output G to enable reuse of computed function value:
+            sm = f;
+            % Linearity information:
             sm.isConstant = iszero(f.jacobian);
             
-            % Copy the ADCHEBFUN SM to CM and DM to work with objects of correct
-            % types, with correct domains and linearity info
+            % Copy the ADCHEBFUN SM to CM and DM also:
             cm = sm;
             dm = sm;
             
             % Do the function computation. Again, either F or M could have been
-            % the ADCHEBFUN
+            % the ADCHEBFUN:
             [smtemp, cmtemp, dmtemp] = ellipj(f.func, m);
             
-            % Assign the functional part to SM
+            % Assign the functional part to SM:
             sm.func = smtemp;
             
-            % We know we always want the derivative info about SM
+            % We know we always want the derivative info about SM:
             sm.jacobian = operatorBlock.mult(cmtemp.*dmtemp)*f.jacobian;
             
             % Compute as much derivative information is required, depending on
-            % the number of outputs requested
+            % the number of outputs requested:
             if ( nargout >= 2)
-                % Assign the function part to CM
-                cm.func = cmtemp;
                 
-                % Derivative computation
+                % Assign the function part to CM:
+                cm.func = cmtemp;
+                % Derivative computation:
                 cm.jacobian = operatorBlock.mult(-smtemp.*dmtemp);
                 
-                if ( nargout >= 3)      % Also want DM
-                    % Function part
-                    dm.func = dmtemp;
+                if ( nargout > 2 )  % Also want DM!
                     
-                    % Derivative
+                    % Function part:
+                    dm.func = dmtemp;
+                    % Derivative:
                     dm.jacobian = operatorBlock.mult(-m.*smtemp.*cmtemp);
+                    
                 end
+                
             end
             
         end
@@ -573,11 +564,22 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         
         function f = exp(f)
             % F = EXP(F)   EXP of an ADCHEBFUN.
-            
+
             % Linearity information
             f.isConstant = iszero(f.jacobian);
             % Update CHEBFUN part
             f.func = exp(f.func);
+            % Update derivative part
+            f.jacobian = operatorBlock.mult(f.func)*f.jacobian;        
+        end
+        
+        function f = expm1(f)
+            % F = EXPM1(F)   EXPM1 of an ADCHEBFUN.
+            
+            % Linearity information
+            f.isConstant = iszero(f.jacobian);
+            % Update CHEBFUN part
+            f.func = expm1(f.func);
             % Update derivative part
             f.jacobian = operatorBlock.mult(f.func)*f.jacobian;        
         end
@@ -696,33 +698,16 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f = updateDomain(f);
         end
         
-        function h = loglog(f, varargin)
+        function varargout = loglog(f, varargin)
             % LOGLOG    log-log plot of the CHEBFUN part of an ADCHEBFUN
-            if nargout == 1
-                h = loglog(f.func, varargin{:});
-            else
-                loglog(f.func, varargin{:});
-            end
+            [varargout{1:nargout}] = loglog(f.func, varargin{:});
         end
         
         function f = minus(f, g)
             % -     Subtraction of ADCHEBFUN objects
             f = plus(f, -g);
         end
-                
-        function varargout = norm(f, varargin)
-            % NORM(F, K)    Norm of ADCHEBFUN objects.
-            %
-            % Input argument follow the expected pattern from CHEBFUN/norm.
-            %
-            % See also CHEBFUN/norm.
-            
-            % TODO: Do we want this method to return an ADCHEBFUN? Makes sense
-            % in the 2-norm case, in particular for 2-norm squared.
-            
-            [varargout{1:nargout}] = norm(f.func, varargin{:});
-        end
-            
+        
         function f = mtimes(f, g)
             % TODO: Document
             if ( ~isa(g, 'adchebfun') )
@@ -737,15 +722,24 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                     ['Matrix dimensions must agree. Use f.*g to multiply ' ...
                      'two chebfun objects.']);
             end
-        end        
+        end   
+                
+        function varargout = norm(f, varargin)
+            % NORM(F, K)    Norm of ADCHEBFUN objects.
+            %
+            % Input argument follow the expected pattern from CHEBFUN/norm.
+            %
+            % See also CHEBFUN/norm.
+            
+            % TODO: Do we want this method to return an ADCHEBFUN? Makes sense
+            % in the 2-norm case, in particular for 2-norm squared.
+            
+            [varargout{1:nargout}] = norm(f.func, varargin{:});
+        end     
         
-        function h = plot(f, varargin)
+        function varargout = plot(f, varargin)
             % PLOT      Plot the CHEBFUN part of an ADCHEBFUN
-            if nargout == 1
-                h = plot(f.func, varargin{:});
-            else
-                plot(f.func, varargin{:});
-            end
+            [varargout{1:nargout}] = plot(f.func, varargin{:});
         end
         
         function f = plus(f, g)
@@ -869,22 +863,14 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             g.jacobian = operatorBlock.mult(-tanh(f.func).*g.func)*f.jacobian;
         end
         
-        function h = semilogx(f, varargin)
+        function varargout = semilogx(f, varargin)
             % SEMILOGX      Semilogx plot of the CHEBFUN part of an ADCHEBFUN
-            if nargout == 1
-                h = semilogx(f.func, varargin{:});
-            else
-                semilogx(f.func, varargin{:});
-            end
+            [varargout{1:nargout}] = semilogx(f.func, varargin{:});
         end
         
-        function h = semilogy(f, varargin)
+        function varargout = semilogy(f, varargin)
             % SEMILOGY      semilogy plot of the CHEBFUN part of an ADCHEBFUN
-            if nargout == 1
-                h = semilogy(f.func, varargin{:});
-            else
-                semilogy(f.func, varargin{:});
-            end
+            [varargout{1:nargout}] = semilogy(f.func, varargin{:});
         end
         
         function f = sin(f)
@@ -1007,13 +993,6 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
 
         end
         
-        function out = vscale(f)
-            % VSCALE    Vertical scale of the FUNC part of an ADCHEBFUN.
-            %
-            % See also: CHEBFUN/VSCALE
-            out = vscale(f.func);
-        end
-        
         function f = uminus(f)
             % -     Unary minus of an ADCHEBFUN
             
@@ -1022,21 +1001,6 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f.jacobian = -f.jacobian;         
         end
 
-        function f = uplus(f)
-            % -     Unary plus of an ADCHEBFUN
-            
-            % This method does nothing.
-        end
-        
-% TODO: Delete? Why was this here to start with?
-%         function f = vertcat(varargin)
-%             if ( nargin > 1 )
-%                 f = chebmatrix(varargin.');
-%             else
-%                 f = varargin{1};
-%             end
-%         end
-        
         function f = updateDomain(f)
             % UPDATEDOMAIN      Update the domain of an ADCHEBFUN
             %
@@ -1052,6 +1016,19 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % If the func part is a scalar.
             end
             f.domain = union(f.domain, f.jacobian.domain);
+        end
+        
+        function f = uplus(f)
+            % -     Unary plus of an ADCHEBFUN
+            
+            % This method does nothing.
+        end
+        
+        function out = vscale(f)
+            % VSCALE    Vertical scale of the FUNC part of an ADCHEBFUN.
+            %
+            % See also: CHEBFUN/VSCALE
+            out = vscale(f.func);
         end
         
     end
