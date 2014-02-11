@@ -415,6 +415,14 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             g.jacobian = operatorBlock.mult(-coth(f.func).*g.func)*f.jacobian; 
         end       
         
+        function f = cumprod(f)
+            % F = CUMPROD(F)       CUMPROD of an ADCHEBFUN
+            %
+            % See also chebfun/cumprod.
+            
+            f = exp(cumsum(log(f)));
+        end
+        
         function f = cumsum(f, k)
             % F = CUMSUM(F, K)   CUMSUM of an ADCHEBFUN
             
@@ -819,6 +827,14 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f = power(2, f);
         end
       
+        function f = prod(f)
+            % F = PROD(F)       PROD of an ADCHEBFUN
+            % 
+            % See also chebfun/prod.
+            
+            f = exp(sum(log(f)));
+        end     
+        
         function u = seed(u, k, m)
             % TODO: Document
             dom = u.domain;
