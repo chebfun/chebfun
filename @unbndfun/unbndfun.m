@@ -179,6 +179,9 @@ classdef unbndfun < fun
         % Restrict an UNBNDFUN to a subinterval.
         f = restrict(f, s)
         
+        % Roots of an UNBNDFUN in an unbounded domain.
+        out = roots(f, varargin)
+        
         % Definite integral of an UNBNDFUN on the its domain.
         out = sum(f, dim)
     end    

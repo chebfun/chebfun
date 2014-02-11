@@ -13,7 +13,7 @@ function f = addBreaksForCumSum(f)
 % without doing anything:
 
 % TODO: NH: Funs may NOT know about exponents!
-if ( ~issing(f) || any(~get(f, 'exponents')) )
+if ( ~issing(f) ) || ( any(~get(f, 'exponents')) )
     return
 end
 
