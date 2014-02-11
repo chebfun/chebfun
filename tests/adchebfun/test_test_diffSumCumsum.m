@@ -1,0 +1,31 @@
+% Test file for ADCHEBFUN DIFF and related functions
+
+function pass = test_diffSumCumsum
+
+% List of trigonometric functions to test.
+diffFunctions = {@diff, @(u)diff(u,2), @(u)diff(u,4), ...
+                 @sum, ...
+                 @cumsum, @(u)cumsum(u,2)};
+
+% How many iterations we want to in the Taylor testing
+numSteps = 4;
+
+% Tolerance for Taylor testing
+tol = 1e-2;
+
+% Initialise vector with pass information
+pass = zeros(2, numel(diffFunctions));
+
+% Do the tests.
+for k = 1:numel(diffFunctions)
+    % First, check that the computed function values match what we expect
+    pass(1,k) = ( adchebfun.valueTesting(diffFunctions{k}) == 0 );
+    
+    % Call the taylorTesting method
+    order1 = adchebfun.taylorTesting(diffFunctions{k}, numSteps);
+    % We expect all elements of ORDER1 to be close to 1, and of ORDER2 to be
+    % close to 2.
+    pass(2,k) = ( max(abs(order1 - 1)) < tol );
+end
+
+end

@@ -6,6 +6,8 @@ function [order1, order2] = taylorTesting(f, hMax, numOut, plotting)
 %   numOut is an optional argument, used for methods with more than one outputs
 %       (in particular, ellipj)
 
+% TODO: Describe algorithm.
+
 % Default NUMOUT is 1
 if ( nargin < 3 )
     numOut = 1;
