@@ -54,11 +54,16 @@ function h = compression_plus(f, g)
 % If A = XY^T and B = WZ^T, then A + B = [X W]*[Y Z]^T,
 % [Qleft, Rleft] = qr([X W])
 % [Qright, Rright] = qr([Y Z])
-% A = Qleft * (Rleft * Rright') * Qright'
+% A + B = Qleft * (Rleft * Rright') * Qright'
 % [U, S, V] = svd( Rleft * Rright' )
-% A = (Qleft * U) * S * (V' * Qright')     -> new low rank representation
+% A + B = (Qleft * U) * S * (V' * Qright')     -> new low rank representation
 
-h = f;
+% Hack: Ensure g has the smaller pivot values.
+if ( norm(f.pivotValues, -inf) < norm(g.pivotValues, -inf) )
+    % TODO: Understand why this works!
+    h = compression_plus(g, f);
+    return
+end
 
 fScl = diag( 1./f.pivotValues );
 gScl = diag( 1./g.pivotValues );
@@ -72,6 +77,7 @@ Z = zeros( length(fScl), length(gScl) );
 D = [fScl Z ; Z.' gScl];
 [U, S, V] = svd( Rcols * D * Rrows.' );
 
+h = f;
 h.cols = Qcols * U;
 h.rows = Qrows * V;
 h.pivotValues = 1./diag( S );

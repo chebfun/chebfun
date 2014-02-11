@@ -90,7 +90,6 @@ end
 col_acc = f.epslevel.*f.vscale;  % Accuracy of each column in f.
 glob_acc = max(col_acc);         % The best of these.
 Q.epslevel = glob_acc./Q.vscale; % Scale out vscale of Q.
-% Q.epslevel = 0*Q.epslevel + eps;
 
 end
 
@@ -144,8 +143,6 @@ f.values = Q;                           % Adjust values of f.
 f.coeffs = f.vals2coeffs(Q);            % Compute new coefficients.
 f.vscale = max(abs(Q), [], 1);
 
-% [TODO]: Update epslevel?
-
 end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -184,7 +181,7 @@ end
 f.coeffs = f.vals2coeffs(Q);
 % Trim the unneeded ones:
 f.coeffs(1:newN/2,:) = [];
-% Comute new values:
+% Compute new values:
 f.values = f.coeffs2vals(f.coeffs);
 
 % Update the vscale:
@@ -196,128 +193,6 @@ if ( nargout == 3 )
         Eperm = 1:numCols;
     else
         Eperm = eye(numCols);
-    end
-end
-
-end
-
-% [TODO]:  We should remove qr_householder_old() once the rest of the qr()
-% stuff has settled down.
-
-function [f, R, E] = qr_householder_old(f, flag)
-% See L.N. Trefethen, "Householder triangularization of a quasimatrix", IMA J
-% Numer Anal (2010) 30 (4): 887-897. 
-
-% Specify a tolerance:
-tol = max(f.epslevel.*f.vscale);
-
-% Grab the size:
-[n, m] = size(f);
-
-% Create the Chebyshev nodes and quadrature weights of double the length:
-% (Note: we double the size so that sum(f*f) is exact for f in P_{n}.)
-x = f.chebpts(2*n);
-w = f.quadwts(2*n);
-
-    % Define the inner product as a nested function:
-    function res = innerProd(a, b)
-        res = w*(conj(a).*b);
-    end
-
-% Make the matrix of function values on a doubled grid so that Q*R=A:
-A = get(prolong(f, 2*n), 'values');
-
-% Generate the Legendre-Vandermonde matrix E via the standard recurrence:
-E = ones(2*n, m);
-E(:,2) = x;
-for k = 3:m
-    E(:,k) = ((2*k-3)*x.*E(:,k-1) - (k - 2)*E(:,k-2)) / (k - 1);
-end
-for k = 1:m
-    E(:,k) = E(:,k) * sqrt(k - .5);
-end
-
-% Pre-allocate memory for R and V:
-R = zeros(m);
-V = zeros(2*n, m);
-
-% Discretised version of code from Trefethen's paper:
-for k = 1:m
-    
-    % Indices of the previous and following columns:
-    I = 1:k-1; 
-    J = k+1:m;
-    scl = max(max(abs(E(:,k))), max(abs(A(:,k))));
-    
-    % Multiply the kth column of A with the basis in E:
-    ex = innerProd(E(:,k), A(:,k));
-    aex = abs(ex);
-    
-    % Adjust the sign of the kth column in E:
-    if ( aex < eps*scl )
-        s = 1; 
-    else
-        s = -sign(ex/aex);
-    end
-    E(:,k) = E(:,k) * s;
-    
-    % Compute the norm of the kth column of A:
-    r = sqrt(innerProd(A(:,k), A(:,k)));
-    R(k,k) = r;
-    
-    % Compute the reflection v:
-    v = r*E(:,k) - A(:,k);
-    % Make it more orthogonal:
-    for j = I
-        ev = innerProd(E(:,j), v);
-        v = v - E(:,j)*ev;
-    end
-    
-    % Normalize and store v:
-    nv = sqrt(innerProd(v, v));
-    if ( nv < tol*scl )
-        v = E(:,k);
-    else
-        v = v / nv;
-    end
-    V(:,k) = v;
-    
-    % Subtract v from the remaining columns of A:
-    for j = J
-        av = innerProd(v, A(:,j));
-        A(:,j) = A(:,j) - 2*v*av;
-        rr = innerProd(E(:,k), A(:,j));
-        A(:,j) = A(:,j) - E(:,k)*rr;
-        R(k,j) = rr;
-    end
-    
-end
-
-% Form a discrete Q from the columns of V:
-Q = E;
-for k = m:-1:1
-    for j = k:m
-        vq = innerProd(V(:,k), Q(:,j));
-        Q(:,j) = Q(:,j) - 2*V(:,k)*vq;
-    end
-end
-
-% Compute the corresponding Chebyshev coefficients:
-f.coeffs = f.vals2coeffs(Q);
-% Trim the unneeded ones:
-f.coeffs(1:n,:) = [];
-% Compute new values:
-f.values = f.coeffs2vals(f.coeffs);
-
-% Update the vscale:
-f.vscale = max(abs(Q), [], 1);
-
-% Additional output argument:
-if ( nargout == 3 )
-    if ( nargin == 2 && strcmp(flag, 'vector') )
-        E = 1:m;
-    else
-        E = eye(m);
     end
 end
 
