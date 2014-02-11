@@ -812,6 +812,12 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             end
             f = updateDomain(f);
         end
+        
+        function f = pow2(f)
+            % F = POW2(F)       POW2 of an ADCHEBFUN
+            
+            f = power(2, f);
+        end
       
         function u = seed(u, k, m)
             % TODO: Document
