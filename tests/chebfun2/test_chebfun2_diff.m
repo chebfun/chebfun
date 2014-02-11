@@ -16,7 +16,6 @@ fy = {@(x,y) 0*x, @(x,y) cos(x).*exp(y),@(x,y) -x.*sin(x.*y), @(x,y) 2*x.*y};
 
 % Domains
 D = [-1 1 -1 1;... 
-     -2 2 -2 2;...
      -3 1 -1 2];
      
 % loop over the various options. 
