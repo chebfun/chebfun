@@ -400,12 +400,8 @@ vscl = get(u0, 'vscale');
 
 % Initial condition:
 uCurrent = u0;
-% storage
-if ( SYSSIZE == 1 )
-    uOut(1) = uCurrent;
-else
+% Storage:
     uOut{1} = uCurrent;
-end
 
 % Initialise variables for ONESTEP():
 B = []; q = []; rows = []; M = []; n = [];
@@ -443,15 +439,7 @@ for nt = 1:length(tt)-1
     uCurrent = chebfun(unew, DOMAIN);
     
     % Store in uOut:
-    if ( SYSSIZE == 1 )
-        % TODO?
-        out = [uOut uCurrent];
-        %         uOut(nt+1) = uCurrent;
-    else
-        for k = 1:SYSSIZE
-            uOut{nt+1} = uCurrent;
-        end
-    end
+    uOut{nt + 1} = uCurrent;
     
     % Plotting:
     if ( doPlot )
@@ -517,6 +505,10 @@ end
 
 if ( doPlot && ~ish )
     hold off
+end
+
+if ( SYSSIZE == 1 )
+    uOut = horzcat(uOut{:})
 end
 
 switch nargout

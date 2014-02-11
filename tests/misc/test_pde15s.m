@@ -18,7 +18,8 @@ u = exp(3*sin(pi*x));
 plot(u); hold on
 f = @(u) -diff(u);
 opts = pdeset('eps', 1e-4, 'abstol', 1e-4, 'reltol', 1e-4, 'plot', 1);
-pde15s(f, 0:.05:2, u, 'periodic', opts);
+uu = pde15s(f, 0:.05:2, u, 'periodic', opts);
+
 
 %% Nonuniform Advection
 close all
@@ -26,7 +27,7 @@ d = [-1, 1]; x = chebfun('x', d);
 u = exp(3*sin(pi*x));
 f = @(u, t, x) -(1+0.3*sin(pi*x)).*diff(u) + 1e-6*diff(u, 2);
 opts = pdeset('eps', 1e-4, 'abstol', 1e-4, 'reltol', 1e-4, 'plot', 1);
-pde15s(f, 0:.05:2, u, 'periodic', opts);
+uu = pde15s(f, 0:.05:2, u, 'periodic', opts);
 
 %% Advection-diffusion
 close all
@@ -34,7 +35,8 @@ d = [-1, 1]; x = chebfun('x', d);
 u = (1-x.^2).*exp(-30*(x+.5).^2);
 f = @(u, t, x) -diff(u)+.002*diff(u, 2);
 opts = pdeset('eps', 1e-4, 'abstol', 1e-4, 'reltol', 1e-4, 'plot', 1);
-pde15s(f, 0:.05:2, u, 'dirichlet', opts);
+uu = pde15s(f, 0:.05:2, u, 'dirichlet', opts);
+waterfall(uu), shg
 
 %% Advection-diffusion2
 close all
