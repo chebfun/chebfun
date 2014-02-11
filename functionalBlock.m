@@ -95,6 +95,9 @@ classdef functionalBlock < linBlock
             C.diffOrder = max(A.diffOrder, B.diffOrder);
         end        
         
+        function out = iszero(A)
+            out = false;
+        end
 
     end
     
