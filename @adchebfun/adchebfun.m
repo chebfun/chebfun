@@ -578,10 +578,10 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             
             % Linearity information
             f.isConstant = iszero(f.jacobian);
-            % Update CHEBFUN part
-            f.func = expm1(f.func);
             % Update derivative part
-            f.jacobian = operatorBlock.mult(f.func)*f.jacobian;        
+            f.jacobian = operatorBlock.mult(exp(f.func))*f.jacobian;  
+            % Update CHEBFUN part
+            f.func = expm1(f.func);      
         end
         
         function f = feval(f, x)
