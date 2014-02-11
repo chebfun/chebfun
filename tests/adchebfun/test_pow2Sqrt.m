@@ -1,6 +1,6 @@
 % Test file for ADCHEBFUN POW2() and SQRT()
 
-function pass = test_pow2sqrt
+function pass = test_pow2Sqrt
 
 % List of trigonometric functions to test.
 pow2sqrtFunctions= {@pow2, @sqrt};

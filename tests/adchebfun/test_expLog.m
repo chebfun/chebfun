@@ -1,6 +1,6 @@
 % Test file for ADCHEBFUN exp, log related functions
 
-function pass = test_explog
+function pass = test_expLog
 
 % List of trigonometric functions to test.
 explogFunctions = {@exp, @expm1, @log, @log10, @log1p, @log2};

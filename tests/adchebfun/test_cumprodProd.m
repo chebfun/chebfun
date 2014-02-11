@@ -1,6 +1,6 @@
 % Test file for ADCHEBFUN CUMPROD() and PROD()
 
-function pass = test_cumprodprod
+function pass = test_cumprodProd
 
 % List of trigonometric functions to test.
 prodFunctions= {@cumprod, @prod};

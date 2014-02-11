@@ -1,6 +1,6 @@
-% Test file for ADCHEBFUN CUMSUM, DIFF, and related functions
+% Test file for ADCHEBFUN CUMSUM, DIFF, and SUM
 
-function pass = test_diffSumCumsum
+function pass = test_cumsumDiffSum
 
 % List of trigonometric functions to test.
 diffFunctions = {@diff, @(u)diff(u,2), @(u)diff(u,4), ...
