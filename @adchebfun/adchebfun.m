@@ -923,6 +923,12 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             [varargout{1:nargout}] = size(f.func, varargin{:});
         end
         
+        function f = sqrt(f)
+            % F = SQRT(F)       SQRT of an ADCHEBFUN
+            
+            f = power(f, 0.5);
+        end
+        
         function out = subsref(f, index)
             % TODO: Document
             switch index(1).type
