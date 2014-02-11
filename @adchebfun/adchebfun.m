@@ -1008,23 +1008,6 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f.func = -f.func;
             f.jacobian = -f.jacobian;         
         end
-
-        function f = updateDomain(f)
-            % UPDATEDOMAIN      Update the domain of an ADCHEBFUN
-            %
-            % Various ADCHEBFUN method can cause new breakpoints to be
-            % introduced in the CHEBFUN part of the ADCHEBFUN. This method
-            % updates the breakpoint information in the domain field of the
-            % ADCHEBFUN at the end of such methods to ensure they agree.
-            
-            % If the func part is a CHEBFUN
-            if ( isa(f.func, 'chebfun') )
-                f.domain = union(f.domain, f.func.domain);
-                
-            % If the func part is a scalar.
-            end
-            f.domain = union(f.domain, f.jacobian.domain);
-        end
         
         function f = uplus(f)
             % -     Unary plus of an ADCHEBFUN
@@ -1047,6 +1030,26 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         
         % Value testing for correctness of computed function
         error = valueTesting(f, numOut)
+    end
+    
+    methods ( Access = private )
+        
+        function f = updateDomain(f)
+            % UPDATEDOMAIN      Update the domain of an ADCHEBFUN
+            %
+            % Various ADCHEBFUN method can cause new breakpoints to be
+            % introduced in the CHEBFUN part of the ADCHEBFUN. This method
+            % updates the breakpoint information in the domain field of the
+            % ADCHEBFUN at the end of such methods to ensure they agree.
+            
+            % If the func part is a CHEBFUN
+            if ( isa(f.func, 'chebfun') )
+                f.domain = union(f.domain, f.func.domain);
+                
+                % If the func part is a scalar.
+            end
+            f.domain = union(f.domain, f.jacobian.domain);
+        end
     end
     
 end
