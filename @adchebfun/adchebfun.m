@@ -1054,7 +1054,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
     
     methods (Static = true)
         % Taylor testing for correctness of derivatives
-        [order1, order2] = taylorTesting(f, hMax, numOut, plotting)
+        [order1, order2, nDiff2] = taylorTesting(f, hMax, numOut, plotting)
         
         % Value testing for correctness of computed function
         error = valueTesting(f, numOut)

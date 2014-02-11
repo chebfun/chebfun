@@ -1,4 +1,4 @@
-function [order1, order2] = taylorTesting(f, hMax, numOut, plotting)
+function [order1, order2, nDiff2] = taylorTesting(f, hMax, numOut, plotting)
 % VALUETESTING  Test that ADCHEBFUN is constructing the correct derivatives
 %
 % Here:

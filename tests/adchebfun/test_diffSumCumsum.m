@@ -1,4 +1,4 @@
-% Test file for ADCHEBFUN DIFF and related functions
+% Test file for ADCHEBFUN CUMSUM, DIFF, and related functions
 
 function pass = test_diffSumCumsum
 
@@ -11,8 +11,8 @@ diffFunctions = {@diff, @(u)diff(u,2), @(u)diff(u,4), ...
 numSteps = 4;
 
 % Tolerance for Taylor testing
-tol = 1e-2;
-
+tolOrder = 1e-2;
+tolDiff = 1e-12;
 % Initialise vector with pass information
 pass = zeros(2, numel(diffFunctions));
 
@@ -22,10 +22,15 @@ for k = 1:numel(diffFunctions)
     pass(1,k) = ( adchebfun.valueTesting(diffFunctions{k}) == 0 );
     
     % Call the taylorTesting method
-    order1 = adchebfun.taylorTesting(diffFunctions{k}, numSteps);
-    % We expect all elements of ORDER1 to be close to 1, and of ORDER2 to be
-    % close to 2.
-    pass(2,k) = ( max(abs(order1 - 1)) < tol );
+    [order1, order2, nDiff2] = adchebfun.taylorTesting(diffFunctions{k}, numSteps);
+    
+    % We expect all elements of ORDER1 to be close to 1. Since the methods being
+    % tested in this case are all linear, ORDER2 will be noise. However, since
+    % the methods are indeed linear, we should expect nDiff2 to have values all
+    % close to machine epsilon, which we can use to check for the correctness of
+    % the derivative computed.
+    pass(2,k) = ( max(abs(order1 - 1)) < tolOrder && ...
+        max(abs(nDiff2)) < tolDiff);
 end
 
 end
