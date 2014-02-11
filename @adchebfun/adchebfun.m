@@ -1042,6 +1042,10 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         
         % Value testing for correctness of computed function
         error = valueTesting(f, numOut)
+        
+        % Value testing for correctness of computed function for binary
+        % operators.
+        error = valueTestingBinary(f)
     end
     
     methods ( Access = private )
