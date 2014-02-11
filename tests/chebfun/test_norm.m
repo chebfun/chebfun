@@ -183,7 +183,7 @@ pass(30) = norm(err, inf) < vscale(f).*epslevel(f);
 
 % -Inf-norm:
 [normF, normLoc] = norm(f, -Inf);
-pass(31) = ( abs(normF) < vscale(f).*epslevel(f) ) && ...
+pass(31) = ( abs(normF) < vscale(f)*epslevel(f) ) && ...
     ( normLoc == Inf );
 
 %% Array-valued function defined on unbounded domain:

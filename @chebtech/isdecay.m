@@ -12,10 +12,19 @@ function out = isdecay(f)
 out = zeros(1, 2);
 
 % Set a tolerance:
-tol = 1e3*get(f, 'epslevel')*get(f, 'vscale');
+tol = 1e4*get(f, 'epslevel')*get(f, 'vscale');
 
 % Get the points at which the function is sampled and the function values:
 x = get(f, 'points');
+
+%% If G is a constant:
+
+if ( length(f) == 1 )
+    if ( ( f.values < tol ) || ( f.values == 0 ) )
+        out = ones(1, 2);
+    end
+    return
+end
 
 %% Right endpoint:
 
@@ -32,7 +41,7 @@ g.values = extrapolate(g);
 rate = diff(abs(g.values(end-1:end)));
 
 % Check decaying speed:
-if all( abs(g.values(end-4:end)) < 1e2*tol ) || ... % If exponentially decay
+if all( abs(g.values(end-1:end)) < 1e1*tol ) || ... % If exponentially decay
    ( ( abs(g.values(end)) < tol ) && ( rate < 0 ) ) % If decays fast enough
     out(2) = 1;
 end
@@ -52,7 +61,7 @@ g.values = extrapolate(g);
 rate = diff(abs(g.values(1:2)));
 
 % Check decaying speed:
-if all( abs(g.values(1:5)) < 1e2*tol ) || ... % If exponentially decay
+if all( abs(g.values(1:2)) < 1e1*tol ) || ... % If exponentially decay
    ( ( abs(g.values(1)) < tol ) && ( rate > 0 ) ) % If decays fast enough
     out(1) = 1;
 end

@@ -31,7 +31,7 @@ pass(4) = abs(sum(f) - (exp(1) + 1)) < 10*vscale(f)*epslevel(f);
 % Check sum over a subdomain.
 pass(5) = abs(sum(f, [-1 1]) - (exp(1) + 1)) < 10*vscale(f)*epslevel(f);
 pass(6) = abs(sum(f, [-1 0])) < 10*vscale(f)*epslevel(f);
-pass(7) = abs(sum(f, [0 1]) - (exp(1) + 1)) < 10*vscale(f)*epslevel(f);
+pass(7) = abs(sum(f, [0 1]) - (exp(1) - 1)) < 10*vscale(f)*epslevel(f);
 
 % Check sum between chebfun limits.
 f = chebfun(@exp, [-1 -0.5 0 0.5 1], pref);

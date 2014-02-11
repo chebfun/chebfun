@@ -1,4 +1,4 @@
-function f = cumsum(f, k, dim, shift)
+function [f, rVal] = cumsum(f, k, dim)
 %CUMSUM   Indefinite integral of an UNBNDFUN.
 %   CUMSUM(F) is the indefinite integral of the UNBNDFUN F on an interval [a,b],
 %   with the constant of integration chosen so that F(a) = 0.
@@ -10,9 +10,10 @@ function f = cumsum(f, k, dim, shift)
 %   CUMSUM(F, K, 2) will take the Kth cumulative sum over the columns F an
 %   array-valued UNBNDFUN.
 %
-%   CUMSUM(F, K, DIM, S) will shift F up by S. Note that this could be useful at
-%   the CHEBFUN level to concatenate different pieces forming a countinuous
-%   object.
+%   [F, RVAL] = CUMSUM(F), [F, RVAL] = CUMSUM(F, K), and [F, RVAL] = 
+%   CUMSUM(F, K, 2) will do the same thing as above, but also return the value
+%   of the integral at the right endpoint, which will be used at CHEBFUN level
+%   for concatenating neighboring pieces.
 %
 % See also DIFF, SUM.
 
@@ -31,37 +32,17 @@ if ( nargin == 1 || isempty(k) )
 end
 
 if ( nargin < 3 )
-    % Assume dim = 1 by default
+    % Assume dim = 1 by default.
     dim = 1;
 end
 
-if ( nargin < 4 )
-    % Assume no need to shift:
-    shift = 0;
-end
-
-% TODO: Allow this to be passed!
-% Grab the preference:
-pref = chebpref();
-
-%%
+%% Treat separately for different dimensions:
 
 if ( dim == 1 )
     
+    % Compute the indefinite integral along the continuous dimension:
     for j = 1:k
         f = cumsumCtsDim(f);
-    end
-    
-    % TODO: This shouldn't be done here.
-    % Shift F up or down. This is useful at the CHEBFUN level to concatenate the
-    % piece making the entire function as continuous as possible.
-    if ( ~any( issing(f) ) && ( ~iscell(f) ) )
-        % Grab the indices correspond to infinite shift:
-        ind = isinf(shift);
-        % Zero the infinite shift:
-        shift( ind ) = 0;
-        % Shift:
-        f = f + shift - get(f, 'lval');
     end
     
 elseif ( dim == 2 )
@@ -74,12 +55,21 @@ else
         'The third argument is unrecognizable.');
 end
 
+% Value of F at the right endpoint:
+if ( iscell(f) )
+    rVal = cellfun(@(f) get(f, 'rval'), f);
+else
+    rVal = get(f, 'rval');
 end
 
+end
 
 function g = cumsumCtsDim(f, pref)
 
-% TODO: This needs much better documentation. Why is g a cell?
+% Since we don't know how to integrate a SINGFUN with non-zero exponents at both
+% endpoints, there may be cases in which F is a cell of two UNBNDFUNs which are 
+% obtained by adding a new breakpoint at the midpoint of the original domain 
+% which is introduced by ADDBREAKSFORCUMSUM.
 
 % Make a copy of F:
 g = f;
@@ -87,6 +77,7 @@ g = f;
 if ( iscell(g) )
     
     for l = 1:2
+        
         % Rescaling factor is the derivative of the forward map:
         pref.singPrefs.exponents = g{l}.mapping.forDerExps;
         rescaleFactor = onefun.constructor( @(x) g{l}.mapping.forDer(x), ...
@@ -156,6 +147,5 @@ else
         
     end
 end
-
 
 end

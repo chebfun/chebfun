@@ -1,4 +1,4 @@
-function f = cumsum(f, k, dim, shift)
+function [f, rVal] = cumsum(f, k, dim)
 %CUMSUM   Indefinite integral of a BNDFUN.
 %   CUMSUM(F) is the indefinite integral of the BNDFUN F on an interval [a,b],
 %   with the constant of integration chosen so that F(a) = 0.
@@ -10,9 +10,10 @@ function f = cumsum(f, k, dim, shift)
 %   CUMSUM(F, K, 2) will take the Kth cumulative sum over the columns F an
 %   array-valued BNDFUN.
 %
-%   CUMSUM(F, K, DIM, S) will shift F up by S. Note that this could be useful at
-%   the CHEBFUN level to concatenate different pieces forming a countinuous
-%   object.
+%   [F, RVAL] = CUMSUM(F), [F, RVAL] = CUMSUM(F, K), and [F, RVAL] = 
+%   CUMSUM(F, K, 2) will do the same thing as above, but also return the value
+%   of the integral at the right endpoint, which will be used at CHEBFUN level
+%   for concatenating neighboring pieces.
 %
 % See also DIFF, SUM.
 
@@ -35,13 +36,6 @@ if ( nargin < 3 )
     % Assume dim = 1 by default
     dim = 1;
 end
-
-if ( nargin < 4 )
-    % Assume no need to shift:
-    shift = 0;
-end
-
-% TODO: Please move this 'shift' operation back to the CHEBFUN level.
 
 if ( dim == 1 )
     
@@ -72,22 +66,6 @@ if ( dim == 1 )
         % Assign the ONEFUN of the output to be the output of the CUMSUM method
         % of the ONEFUN of the input:
         f.onefun = cumsum(f.onefun, k, dim)*rescaleFactork;
-        
-        
-        % Shift F up or down. This is useful at the chebfun level to concatenate the
-        % piece making the entire function as continuous as possible.
-        if ( ~any( issing(f) ) )
-            
-            % Grab the indice correspond to infinite shift:
-            ind = isinf(shift);
-            
-            % Zero the infinite shift:
-            shift( ind ) = 0;
-            
-            % Shift:
-            f = f + shift - get(f, 'lval');
-        end
-        
     end
     
 elseif ( dim == 2 )
@@ -100,6 +78,13 @@ elseif ( dim == 2 )
 else
     error('CHEBFUN:BNDFUN:cumsum:input', ...
         'The third argument is unrecognizable.');
+end
+
+% Value of F at the right endpoint:
+if ( iscell(f) )
+    rVal = cellfun(@(f) get(f, 'rval'), f);
+else
+    rVal = get(f, 'rval');
 end
 
 end
