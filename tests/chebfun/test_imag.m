@@ -1,6 +1,6 @@
 % Test file for @chebfun/real.m.
 
-function pass = test_real(pref)
+function pass = test_imag(pref)
 
 % Get preferences.
 if ( nargin < 1 )
@@ -32,5 +32,12 @@ pass(3) = isreal(imf) && (norm(err(:), inf) < 10*imf.vscale.*imf.epslevel);
 f = chebfun(@(x) 1i*cos(x).*abs(x - 0.1), [-1 1], pref);
 imf = real(f);
 pass(4) = iszero(imf);
+
+%% Test on singular function:
+
+dom = [-2 7];
+pow = -1.64;
+f = chebfun(@(x) 1i*(x-dom(1)).^pow, dom, 'exps', [pow 0], 'splitting', 'on');
+pass(5) = ( isequal(imag(f), -1i*f) );
 
 end

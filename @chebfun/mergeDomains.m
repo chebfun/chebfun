@@ -35,7 +35,7 @@ if ( isscalar(varargin{end}) )
     doms(end) = [];
 else
     % 10*eps*hscale:
-    tol = 10*eps*max(cellfun(@max, doms));
+    tol = 10*eps*max(cellfun(@(d) norm(d, inf), doms));
 end
 
 % Check to see if the domains are compatible:

@@ -1,4 +1,4 @@
-function g = besselk(nu, f, scale, pref)
+function F = besselk(nu, F, scale, pref)
 %BESSELK   Modified Bessel function of second kind of a CHEBFUN.
 %   K = BESSELK(NU, F) computes the modified Bessel function of second kind
 %   K_NU(F) of the nonzero CHEBFUN F. If F passes through the origin in its
@@ -20,6 +20,18 @@ function g = besselk(nu, f, scale, pref)
 if ( nargin < 4 )
     pref = chebpref();
 end
+if ( nargin < 3 )
+    scale = 0;
+end
+
+% Loop over the columns:
+for k = 1:numel(F)
+    F(k) = columnBesselk(nu, F(k), scale, pref);
+end
+
+end
+
+function g = columnBesselk(nu, f, scale, pref)
 
 % Check for roots:
 r = roots(f, 'nojump', 'nozerofun');
@@ -31,7 +43,7 @@ end
 g = compose(f, @(x) besselk(nu, x), pref);
 
 % Scale (as described in help documentation):
-if ( (nargin >= 3) && (scale == 1) )
+if ( scale == 1 )
     scl = exp(f);
     g = scl.*g;
 end

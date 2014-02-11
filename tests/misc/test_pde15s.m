@@ -1,12 +1,12 @@
-function pass = test_pde15s(pref)
-
-if ( nargin == 0 )
-    pref = chebpref();
-end
-
-pass = 1;
-
-end
+% function pass = test_pde15s(pref)
+% 
+% if ( nargin == 0 )
+%     pref = chebpref();
+% end
+% 
+% pass = 1;
+% 
+% end
 
 %% pde15s_demos
 % Some demos of pde15s (and pdesolve)

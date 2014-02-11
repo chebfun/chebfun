@@ -188,6 +188,12 @@ classdef fun % (Abstract)
         % FUN objects are not transposable.
         f = ctranspose(f)
         
+        % Extract information for DISPLAY.
+        info = dispData(f)
+        
+        % Extract boundary roots and represent them by an appropriate ONEFUN.
+        f = extractBoundaryRoots(f)
+
         % Extract columns of an array-valued FUN object.
         f = extractColumns(f, columnIndex);
 
@@ -224,6 +230,12 @@ classdef fun % (Abstract)
         % True for real FUN.
         out = isreal(f)
         
+        % Test if a FUN object is built upon SINGFUN.
+        out = issing(f)
+        
+        % Test if a FUN object is built upon SMOOTHFUN.
+        out = issmooth(f)
+
         % True for zero FUN objects
         out = iszero(f)
         

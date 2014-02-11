@@ -1,4 +1,4 @@
-function g = acsc(f, pref)
+function F = acsc(F, varargin)
 %ACSC   Inverse cosecant of a CHEBFUN.
 %   ACSC(F) computes the inverse cosecant of the CHEBFUN F.
 %
@@ -10,12 +10,7 @@ function g = acsc(f, pref)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org for Chebfun information.
 
-% Obtain preferences:
-if ( nargin == 1 )
-    pref = chebpref();
-end
-
 % Call the compose method:
-g = compose(f, @acsc, pref);
+F = compose(F, @acsc, varargin{:});
 
 end

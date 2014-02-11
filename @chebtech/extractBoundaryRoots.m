@@ -1,6 +1,6 @@
 function [f, rootsLeft, rootsRight] = extractBoundaryRoots(f)
 %EXTRACTBOUNDARYROOTS   Extract roots at the boundary points -1 and 1.
-%   [F, ROOTSLEFT, ROOTSRIGHT] = EXTRACTBOUNDARYROOTS(F) returns a CHEBTECH G
+%   [G, ROOTSLEFT, ROOTSRIGHT] = EXTRACTBOUNDARYROOTS(F) returns a CHEBTECH G
 %   which is free of roots at the boundary points -1 and 1. The multiplicity of
 %   the boundary roots at -1 and 1 are ROOTSLEFT and ROOTRIGHT respectively.
 %
@@ -14,7 +14,7 @@ m = size(f, 2);
 
 % Tolerance for a root (we will loosen this with each run of the loop below if
 % there are multiple roots):
-tol = 10*f.vscale*f.epslevel;
+tol = 1e2*f.vscale.*f.epslevel;
 
 % Values at ends:
 endValues = abs([feval(f, -1); feval(f, 1)]);

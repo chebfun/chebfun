@@ -1,6 +1,6 @@
 % Test file for @chebfun/fliplr.m.
 
-function pass = test_flipud(pref)
+function pass = test_fliplr(pref)
 
 % Get preferences.
 if ( nargin < 1 )
@@ -44,5 +44,45 @@ gg_exact = @(x) [cos(x).*sign(x + 0.2) sin(x).*abs(x - 0.1)];
 err = feval(gg, xr) - gg_exact(xr);
 pass(8) = norm(err(:), inf) < 10*gg.vscale.*gg.epslevel;
 pass(9) = isequal(fliplr(gg), g);
+
+%% Test on singular function - A column CHEBFUN:
+
+% Set the domain:
+dom = [-2 7];
+
+% Generate a few random points to use as test values.
+seedRNG(6178);
+x = diff(dom) * rand(100, 1) + dom(1);
+
+pow = -0.5;
+op = @(x) (x - dom(1)).^pow.*sin(100*x).*(x - dom(2)).^pow;
+f = chebfun(op, dom, 'exps', [pow pow], 'splitting', 'on');
+g = fliplr(f);
+vals_f = feval(f,x);
+vals_g = feval(g,x);
+err = vals_f - vals_g;
+pass(10) = ( norm(err, inf) < get(f,'epslevel')*norm(vals_f, inf) );
+
+%% Test on singular function - a row CHEBFUN:
+
+% Set the domain:
+dom = [-2 7];
+
+% Generate a few random points to use as test values.
+seedRNG(6178);
+x = diff(dom) * rand(100, 1) + dom(1);
+
+pow1 = -0.5;
+pow2 = -0.5;
+op = @(x) (x - dom(1)).^pow1.*sin(100*x).*(x - dom(2)).^pow2;
+opflip = @(x) (dom(1)-x).^pow1.*sin(100*(sum(dom)-x)).*(dom(2)-x).^pow2;
+
+f = chebfun(op, dom, 'exps', [pow1 pow2], 'splitting', 'off');
+f = f.';
+g = fliplr(f);
+vals_g = feval(g,x);
+vals_exact = feval(opflip,x).';
+err = vals_g - vals_exact;
+pass(11) = ( norm(err, inf) < 1e2*get(f,'epslevel')*norm(vals_exact, inf) );
 
 end

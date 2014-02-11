@@ -14,6 +14,8 @@ x = 2 * rand(100, 1) - 1;
 % Random numbers to use as arbitrary multiplicative constants.
 alpha = -0.194758928283640 + 0.075474485412665i;
 
+%% SCALAR-VALUED
+
 % Check operation for empty inputs.
 f = chebfun(@sin, [-1 1], pref);
 pass(1) = isempty(f*[]);
@@ -32,6 +34,8 @@ f = chebfun({@(x) sin(2*pi*x), @(x) cos(2*pi*x)}, [-1 0 1]);
 g = chebfun({@(x) exp(2*pi*1i*x), @(x) cos(2*pi*x)}, [-1 0 1]);
 tol = 10*max(f.vscale*f.epslevel, g.vscale*g.epslevel);
 pass(5) = abs(g.'*f - (0.5 + 0.5i)) < tol;
+
+%% ARRAY-VALUED
 
 % Test operation for array-valued chebfuns.
 f2_op = @(x) [sin(x).*abs(x - 0.1)  exp(x)];
@@ -57,34 +61,89 @@ h_exact = @(x) A*[sin(x).*abs(x - 0.1)  exp(x)].';
 err = abs(feval(h, x) - h_exact(x));
 pass(10) = max(err(:)) < 10*vscale(h)*epslevel(h);
 
-% Test error conditions.
+%% QUASIMATRIX
+
+% Test operation for array-valued chebfuns.
+f2_op = @(x) [sin(x).*abs(x - 0.1)  exp(x)];
+f2q = quasimatrix(f2_op, pref);
+pass(11:12) = test_mult_function_by_scalar(f2q, f2_op, alpha, x);
+
+f = chebfun({@(x) [sin(2*pi*x) sin(2*pi*x)], ...
+    @(x) [cos(2*pi*x) cos(4*pi*x)]}, [-1 0 1]);
+g = chebfun({@(x) [sin(4*pi*x) sin(4*pi*x)], ...
+    @(x) [cos(2*pi*x) cos(4*pi*x)]}, [-1 0 1]);
+fq = quasimatrix(f);
+gq = quasimatrix(g);
+
+err = gq.'*f - [0.5 0; 0 0.5];
+tol = 10*max(vscale(f)*epslevel(f), vscale(g)*epslevel(g));
+pass(13) = norm(err(:), inf) < tol;
+err = g.'*fq - [0.5 0; 0 0.5];
+tol = 10*max(vscale(f)*epslevel(f), vscale(g)*epslevel(g));
+pass(14) = norm(err(:), inf) < tol;
+err = gq.'*fq - [0.5 0; 0 0.5];
+tol = 10*max(vscale(f)*epslevel(f), vscale(g)*epslevel(g));
+pass(15) = norm(err(:), inf) < tol;
+
+A = randn(2, 2);
+g = f2q*A;
+g_exact = @(x) f2_op(x)*A;
+err = abs(feval(g, x) - g_exact(x));
+pass(16) = max(err(:)) < 10*vscale(g)*epslevel(g);
+
+h = A*f2q.';
+h_exact = @(x) A*[sin(x).*abs(x - 0.1)  exp(x)].';
+err = abs(feval(h, x) - h_exact(x));
+pass(17) = max(err(:)) < 10*vscale(h)*epslevel(h);
+
+%% Test error conditions.
 try
     h = f*'X';
-    pass(11) = false;
+    pass(18) = false;
 catch ME
-    pass(11) = strcmp(ME.identifier, 'CHEBFUN:mtimes:unknown');
+    pass(18) = strcmp(ME.identifier, 'CHEBFUN:mtimes:unknown');
 end
 
 try
     h = f*f1;
-    pass(12) = false;
+    pass(19) = false;
 catch ME
-    pass(12) = strcmp(ME.identifier, 'CHEBFUN:mtimes:dims');
+    pass(19) = strcmp(ME.identifier, 'CHEBFUN:mtimes:dims');
 end
 
 try
     h = f*g;
-    pass(13) = false;
+    pass(20) = false;
 catch ME
-    pass(13) = strcmp(ME.identifier, 'CHEBFUN:mtimes:dims');
+    pass(20) = strcmp(ME.identifier, 'CHEBFUN:mtimes:dims');
 end
 
 try
     h = f*g.';
-    pass(14) = false;
+    pass(21) = false;
 catch ME
-    pass(14) = strcmp(ME.identifier, 'CHEBFUN:mtimes:colTimesRow');
+    pass(21) = strcmp(ME.identifier, 'CHEBFUN:mtimes:colTimesRow');
 end
+
+%% Test on SINGFUN - multiplication by scalar:
+
+f = chebfun(@(x) sin(20*x)./((x+1).^0.5), 'exps', [-0.5 0], 'splitting', 'on');
+h = 3*f;
+h_op = @(x) 3*sin(20*x)./((x+1).^0.5);
+h_vals = feval(h, x);
+h_exact = h_op(x);
+err = h_vals - h_exact;
+pass(15) = norm(err, inf) < 2e2*vscale(h)*epslevel(h);
+
+%% Test on SINGFUN - multiplication of a column CHEBFUN and a row CHEBFUN:
+
+f = chebfun(@(x) sin(20*x)./((x+1).^0.5), 'exps', [-0.5 0], 'splitting', 'on');
+f = f.';
+g = chebfun(@(x) cos(30*x), 'splitting', 'on');
+h = f*g;
+h_exact = 0.13033807496531659;
+err = h - h_exact;
+pass(16) = abs(err) < 1e1*h_exact*max(epslevel(f), epslevel(g));
 
 end
 
@@ -96,6 +155,6 @@ function result = test_mult_function_by_scalar(f, f_op, alpha, x)
     result(1) = isequal(g1, g2);
     g_exact = @(x) f_op(x) * alpha;
     err = feval(g1, x) - g_exact(x);
-    result(2) = norm(err(:), inf) < 10*max(g1.vscale.*g1.epslevel);
+    result(2) = norm(err(:), inf) < 10*max(vscale(g1).*epslevel(g1));
 end
 

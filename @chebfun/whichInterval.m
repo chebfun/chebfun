@@ -1,4 +1,4 @@
-function indx = whichInterval(dom, x, direction)
+function indx = whichInterval(dom, x)
 %WHICHINTERVAL   Determine which interval a point lies in.
 %   INDX = WHICHINTERVAL(DOM, X) returns a matrix of size(X) whos j,k entry is a
 %   positive integer denoting which subinterval of the domain DOM (which should
@@ -21,22 +21,14 @@ indx = NaN(size(x));
 % Points to the left of the domain:
 indx(xReal < dom(1)) = -inf;
 
-% Deal with the points that lie on breakpoints:
-if ( nargin > 2 && direction > 0 )
-    mygt = @(x, y) x >= y;
-    mylt = @(x, y) x < y;
-else
-    mygt = @(x, y) x > y;
-    mylt = @(x, y) x <= y;
-end
-
 % Points within the domain:
 for j = 1:numInts
-    indx( mygt(xReal, dom(j)) & mylt(xReal, dom(j+1)) ) = j;
+    indx( ( xReal >= dom(j) ) & ( xReal < dom(j+1) ) ) = j;
 end
 indx(xReal == dom(end)) = numInts;
 
 % Points to the right of the domain:
 indx(xReal > dom(end)) = -inf;
+indx(xReal > dom(end)) = inf;
 
 end

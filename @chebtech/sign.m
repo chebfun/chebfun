@@ -1,8 +1,8 @@
 function f = sign(f, pref)
 %SIGN   Signum of a CHEBTECH object.
-%   SIGN(F) returns the absolute value of F, where F is a CHEBTECH object with
-%   no roots in its domain.  If F has roots, then SIGN(F) will return garbage
-%   with no warning.
+%   SIGN(F) returns the sign of F, where F is a CHEBTECH object with no 
+%   roots in its domain.  If F has roots, then SIGN(F) will return garbage
+%   with no warning. 
 %
 %   For the nonzero elements of complex F, SIGN(F) = F ./ ABS(F).
 %

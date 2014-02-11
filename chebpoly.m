@@ -52,14 +52,8 @@ for k = 1:numel(n)
     c(N-n(k), k) = 1;
 end
 
-% [TODO]: This is cheating!
-
-% Construct a CHEBTECH:
-f_chebtech = chebtech2({[], c});
-% Construct a FUN:
-f_fun = bndfun(f_chebtech, d([1, end]));
-% Construct a CHEBFUN:
-f = chebfun({f_fun});
+% Construct a CHEBFUN from the coefficients:
+f = chebfun(c, d([1, end]), 'coeffs');
 
 % Introudce interior breakpoints:
 if ( numel(d) > 2 )

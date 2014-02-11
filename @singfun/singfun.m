@@ -111,8 +111,16 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
             
             % Case 1: One input argument.
             if ( nargin == 1 )
-                % Make sure the exponents are empty.
-                exponents = [];
+                if ( isa(op, 'smoothfun') )
+                    % if OP is a SMOOTHFUN, cast it to a SINGFUN:
+                    obj.smoothPart = op;
+                    obj.exponents = [0, 0];
+                    
+                    return
+                else
+                    % Make sure the exponents are empty.
+                    exponents = [];
+                end
             end
             
             % Case 2: Two input arguments.
@@ -145,10 +153,10 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
             
             %% Misc Checks on the Inputs
             
-            % Make sure that op is a function handle
-            if ( ~isa(op, 'function_handle') )
+            % Make sure that op is a function handle or a smoothfun:
+            if ( ~isa(op, 'function_handle') && ~isa(op, 'smoothfun') )
                 error( 'CHEBFUN:SINGFUN:constructor', ...
-                    'First argument must be a function handle.');
+                    'First argument must be a function handle or a smoothfun.');
             end
             
             % Check to avoid array-valued operators:
@@ -172,7 +180,8 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
             %% Find Exponents
             % If exponents were passed, make sure they are in correct shape.
             if ( ~isempty(exponents) )
-                if ( any(size(exponents) ~= [1, 2]) || ~isa(exponents, 'double') )
+                if ( any(size(exponents) ~= [1, 2]) || ...
+                        ~isa(exponents, 'double') )
                     error( 'CHEBFUN:SINGFUN:constructor', ...
                         'Exponents must be a 1X2 vector of doubles.' );
                 end
@@ -181,20 +190,31 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
                 obj.exponents = singfun.findSingExponents(op, singType);
             end
             
-            %% Construct New Function Handle
-            % Factor out singular terms from the operator based on the values
-            % in exponents.
-            smoothOp = singOp2SmoothOp(op, obj.exponents);
-            
-            % Construct the smooth part.
-            obj.smoothPart = singfun.constructSmoothPart(smoothOp, vscale, ...
-                hscale, pref);
+            % If a smoothfun has been passed as the op, store it directly:
+            if ( isa(op, 'smoothfun') )
+                obj.smoothPart = op;
+            else
+                %% Construct New Function Handle
+                % Factor out singular terms from the operator based on the values
+                % in exponents.
+                smoothOp = singOp2SmoothOp(op, obj.exponents);
+                
+                % Construct the smooth part.
+                obj.smoothPart = singfun.constructSmoothPart(smoothOp, ...
+                    vscale, hscale, pref);
+            end
         end
     end
     
     %% METHODS (NON-STATIC) IMPLEMENTED BY THIS CLASS.
     methods
         
+        % SINGFUN logical AND.
+        h = and(f, g)
+
+        % True if any element of a SINGFUN is a nonzero number, ignoring NaN.
+        a = any(f, dim)
+
         % Convert an array of ONEFUN objects into an array-valued ONEFUN.
         f = cell2mat(f)
         
@@ -205,19 +225,31 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         f = ctranspose(f)
         
         % Indefinite integral of a SINGFUN.
-        f = cumsum(f, m, pref)
+        f = cumsum(f, m, dim)
         
         % Derivative of a SINGFUN.
-        f = diff(f, k)
+        f = diff(f, k, dim)
+        
+        % Extract information for DISPLAY.
+        info = dispData(f)
+        
+        % Extract the boundary roots of the SMOOTHPART of a SINGFUN.
+        f = extractBoundaryRoots(f)
         
         % Evaluate a SINGFUN.
         y = feval(f, x)
+        
+        % SINGFUN does not support FIX.
+        g = fix(f);
         
         % Flip columns of an array-valued SINGFUN object.
         f = fliplr(f)
         
         % Flip/reverse a SINGFUN object.
         f = flipud(f)
+        
+        % SINGFUN does not support FLOOR.
+        g = floor(f);
         
         % Get method:
         val = get(f, prop);
@@ -255,6 +287,9 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         % Length of a SINGFUN.
         len = length(f)
         
+        % SINGFUN logical.
+        f = logical(f)
+        
         % Convert an array-valued SINGFUN into an ARRAY of SINGFUN objects.
         g = mat2cell(f, M, N)
         
@@ -285,6 +320,12 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         % Estimate of the norm of a SINGFUN object.
         out = normest(f)
         
+        % SINGFUN logical NOT.
+        f = not(f)
+
+        % SINGFUN logical OR.
+        h = or(f, g)
+        
         % Basic linear plot for SINGFUN objects.
         varargout = plot(f, varargin)
         
@@ -300,24 +341,33 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         % Polynomial coefficients of a ONEFUN.
         out = poly(f)
         
+        % SINGFUN power function.
+        f = power(f, b)
+
         % QR factorisation of an array-valued ONEFUN.
         [f, R, E] = qr(f, flag, methodFlag)
         
-        % Dividing two SINGFUNs
+        % Dividing two SINGFUNs.
         f = rdivide(f, g)
         
         % Real part of a SINGFUN.
         f = real(f)
         
+        % Simplify the exponents of a SINGFUN.
+        f = simplifyExponents(f)
+
         % Restrict a SINGFUN to a subinterval.
         f = restrict(f, s)
         
         % Roots of a SINGFUN in the interval [-1,1].
         out = roots(f, varargin)
         
+        % Convert a SINGFUN to a SMOOTHFUN.
+        f = singFun2SmoothFun(f) 
+        
         % Size of a SINGFUN.
         [siz1, siz2] = size(f, varargin)
-        
+
         % Definite integral of a SINGFUN on the interval [-1,1].
         out = sum(f, dim)
         
@@ -354,10 +404,10 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         
         % Retrieve and modify preferences for this class.
         prefs = pref(varargin)
-        
-        % Convert SMOOTHFUN objects to SINGFUN objects:
-        f = smoothFun2SingFun(f);
       
+        % Convert a SMOOTHFUN to a SINGFUN.
+        f = smoothFun2SingFun(f) 
+        
         % Construct a zero SINGFUN
         s = zeroSingFun()
     end

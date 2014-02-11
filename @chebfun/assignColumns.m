@@ -5,12 +5,11 @@ function f = assignColumns(f, colIdx, g)
 %   specified by the vector COLIDX so that F(:,COLIDX) = G. COLIDX need not be
 %   increasing in order or unique but must contain only integers in the range
 %   [1, M] (where F has M columns) and have a length equal to the number of
-%   columns (or rows) of G.  Setting COLIDX to ':' has the same effect as
-%   setting it to 1:SIZE(F, 2).
+%   columns (or rows) of G. Setting COLIDX to ':' has the same effect as setting
+%   it to 1:SIZE(F, 2).
 %
-%   If F is a row CHEBFUN, then ASSIGNCOLUMNS(F, ROWIDX, G) behaves as
-%   described above, except that it assigns the rows of F so that F(ROWIDX,:) =
-%   G.
+%   If F is a row CHEBFUN, then ASSIGNCOLUMNS(F, ROWIDX, G) behaves as described
+%   above, except that it assigns the rows of F so that F(ROWIDX,:) = G.
 %
 %   In both cases, G may also be a numerical vector of the appropriate
 %   orientation (column or row).  In this case, G is treated as an array-valued
@@ -27,7 +26,7 @@ if ( ~isa(f, 'chebfun') )
 end
 
 % Number of columns (or rows if f.isTransposed) of f:
-numColsF = min(size(f));
+numColsF = numColumns(f);
 
 % Expand ':' to 1:end:
 if ( ~isnumeric(colIdx) && strcmp(colIdx, ':') )
@@ -36,16 +35,16 @@ end
 
 % Allow scalar expansion:
 if ( isnumeric(g) )
-    if ( f.isTransposed )
+    if ( f(1).isTransposed )
         g = g.';
-        g = chebfun(g, f.domain).';
+        g = chebfun(g, domain(f, 'ends')).';
     else
-        g = chebfun(g, f.domain);
+        g = chebfun(g, domain(f, 'ends'));
     end
 end
 
 % Check dimensions of g:
-if ( xor(f.isTransposed, g.isTransposed) || (numel(colIdx) ~= min(size(g))) )
+if ( xor(f(1).isTransposed, g(1).isTransposed) || (numel(colIdx) ~= numColumns(g)) )
     error('CHEBFUN:assignColumns:numCols', ...
         'Subscripted assignment dimension mismatch.')
 end
@@ -66,15 +65,25 @@ if ( max(colIdx) > numColsF )
     error('CHEBFUN:assignColumns:dims', 'Index exceeds CHEBFUN dimensions.')
 end
 
-% Make sure f and g have the same breakpoints:
-[f, g] = overlap(f, g);
-
-% Assign the columns of the FUNs:
-for k = 1:numel(f.funs)
-    f.funs{k} = assignColumns(f.funs{k}, colIdx, g.funs{k});
-end
-
-% Assign the columns to the impulses:
-f.impulses(:,colIdx,:) = g.impulses;
+if ( numel(f) == 1 && numel(g) == 1)
+    % Array-valued CHEBFUN case:
+    
+    % Make sure f and g have the same breakpoints:
+    [f, g] = overlap(f, g);
+    % Assign the columns of the FUNs:
+    for k = 1:numel(f.funs)
+        f.funs{k} = assignColumns(f.funs{k}, colIdx, g.funs{k});
+    end
+    % Assign the columns to the impulses:
+    f.impulses(:,colIdx,:) = g.impulses;
+else
+    % Quasimatrix case:
+    
+    % Ensure f is a quasimatrix:
+    f = cheb2quasi(f);
+    g = cheb2cell(g);
+    for k = 1:numel(colIdx)
+        f(colIdx(k)) = g{k};
+    end
 
 end
