@@ -42,6 +42,7 @@ elseif ( nargin == 2 )
     % min(f) = min(data.xLine) and max(f) = max(data.xLine) when first kind of
     % Chebyshev points are used.
     
+    % TODO: NH: I don't really like this..
     data.xLim = [min(f) max(f)];
     
 else

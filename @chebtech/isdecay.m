@@ -1,10 +1,12 @@
 function out = isdecay(f)
 %ISDECAY   Test if a CHEBTECH decays faster than a single root at endpoints.
 %   ISDECAY(F) returns a 1x2 row vector each of which indicates whether F
-%   vanishes at one of the endpoints faster than a sinle root. An entry TRUE is
+%   vanishes at one of the endpoints faster than a sinhle root. An entry TRUE is
 %   returned if F has a boundary root with multiplicity larger than one, FALSE
-%   otherwise. Note that ISDECAY is designed and expected to be called only by 
-%   UNBNDFUN class for handling functions defined on unbounded domains.
+%   otherwise. 
+%
+%   Note that ISDECAY is designed and expected to be called only by UNBNDFUN
+%   class for handling functions defined on unbounded domains.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
@@ -31,6 +33,7 @@ end
 % Copy F:
 g = f;
 
+% TODO: This should be done in coefficient space (more stable).
 % Peel off a factor of (1-x):
 g.values = g.values./(1-x);
 
@@ -51,6 +54,7 @@ end
 % Copy F:
 g = f;
 
+% TODO: This should be done in coefficient space (more stable).
 % Peel off a factor of (1+x):
 g.values = g.values./(1+x);
 
