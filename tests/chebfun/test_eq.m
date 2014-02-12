@@ -19,13 +19,17 @@ pass(1) = isempty(f == g)  && isempty(g == f);
 g = chebfun(@(x) 0*x + sqrt(2)/2, pref);
 h = f == g;
 ind = find(h.impulses == 1);
-pass(2) = abs(h.domain(ind) - pi/4) < 10*vscale(h)*epslevel(h);
+err = abs(h.domain(ind) - pi/4);
+tol = 10*epslevel(h);
+pass(2) = err < tol;
 
 f = chebfun(@(x) exp(x), pref);
 g = chebfun(@(x) (exp(0.5) - exp(-0.5))*(x + 0.5) + exp(-0.5), pref);
 h = f == g;
 ind = find(h.impulses == 1);
-pass(3) = norm(h.domain(ind) - [-0.5 0.5], inf) < 10*vscale(h)*epslevel(h);
+err = norm(h.domain(ind) - [-0.5 0.5], inf);
+tol = 10*epslevel(h);
+pass(3) = err < tol;
 
 h = f == f;
 pass(4) = (numel(h.funs) == 1) && all(feval(h, x) == 1);
@@ -38,7 +42,7 @@ f = chebfun(@(x) exp(x), [-1 -0.5 0 0.5 1], pref);
 g = chebfun(@(x) (exp(0.5) - exp(-0.5))*(x + 0.5) + exp(-0.5), pref);
 h = f == g;
 ind = find(h.impulses == 1);
-pass(6) = norm(h.domain(ind) - [-0.5 0.5], inf) < 10*vscale(h)*epslevel(h);
+pass(6) = norm(h.domain(ind) - [-0.5 0.5], inf) < 10*epslevel(h);
 
 % Check error conditions.
 f = chebfun(@(x) [sin(x) cos(x) exp(x)], [-1 -0.5 0 0.5 1], pref);

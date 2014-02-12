@@ -24,9 +24,4 @@ for k = 1:numel(F)
     out = max(out, max(v(:)));
 end
 
-% [TODO]: Remove this hack.
-if ( ~all(out) )
-    out(~out) = 1;
-end
-
 end

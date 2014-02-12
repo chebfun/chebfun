@@ -1,4 +1,4 @@
-function f = polyfit(y, n, varargin)
+function f = polyfit(y, n)
 %POLYFIT   Fit polynomial to a CHEBFUN.
 %   F = POLYFIT(Y, N) returns a CHEBFUN F corresponding to the polynomial of
 %   degree N that fits the CHEBFUN Y in the least-squares sense.
@@ -6,10 +6,10 @@ function f = polyfit(y, n, varargin)
 %   If Y is a global polynomial of degree n then this code has an O(n (log n)^2)
 %   complexity. If Y is piecewise polynomial then it has an O(n^2) complexity.
 %
-%   F = POLYFIT(CHEBFUN, X, Y, N, D) returns a CHEBFUN F on the domain D which
-%   corresponds to the polynomial of degree N that fits the data (X, Y) in the
-%   least-squares sense. If D is not given, it is assumed to be [X(1), X(end)].
-%   X should be a real-valued column vector.
+%   F = POLYFIT(X, Y, N, D), where D is a DOMAIN object, returns a CHEBFUN F on
+%   the domain D which corresponds to the polynomial of degree N that fits the
+%   data (X, Y) in the least-squares sense. X should be a real-valued column
+%   vector and Y should be a matrix with size(Y,1) = size(X,1).
 %
 %   Note CHEBFUN/POLYFIT does not not support more than one output argument in
 %   the way that MATLAB/POLYFIT does.
@@ -19,70 +19,22 @@ function f = polyfit(y, n, varargin)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-% TODO: Come up with a better way of accessing POLYFIT(X, Y, N, D).
-
-if ( nargout > 1 )
-    error('CHEBFUN:polyfit:nargout', ...
-        'Chebfun/polyfit only supports one output argument.');
+if ( ~isscalar(n) || round(n) ~= n )
+    error('CHEBFUN:polyfit:input2', 'N must be scalar integer.')
 end
-
-if ( nargin > 2 )
-    % POLYFIT(CHEBFUN, X, Y, N, D)
-    f = discretePolyfit(n, varargin{:});
-    return
-else
-    % POLYFIT(Y, D)
-    if ( ~isscalar(n) || round(n) ~= n )
-        error('CHEBFUN:polyfit:input2', 'N must be scalar integer.')
-    end
-    f = continuousPolyfit(y, n);
-    f.isTransposed = y.isTransposed;  % Deal with row CHEBFUNs.
-    return
-end
-
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function f = discretePolyfit(x, y, n, dom)
-%DISCRETEPOLYFIT
-% Fit discrete data {X, Y} using a degree N polynomial on the domain DOM.
-
-if ( nargin < 4 )
-    % Use x data to determine domain:
-    dom = [x(1), x(end)];
-end
-
-% % Call built in POLYFIT():
-% p = polyfit(x, y, n);
-% % Create a CHEBFUN:
-% f = chebfun(@(x) polyval(p, x), dom, length(p));
-
-% Use BARY():
-w = baryWeights(x);                    % Barycentric weights for x.
-xCheb = chebpts(n, dom);               % Chebyshev grid.
-yCheb = chebtech.bary(xCheb, y, x, w); % Evaluate interpolant at xCheb.
-f = chebfun(yCheb, dom);               % Create a CHEBFUN of the result.
-
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function p = continuousPolyfit(f, n)
-%CONTINUOUSPOLYFIT
-% Compute best L2 polynomial approximation to a given CHEBFUN F.
-
-if ( any(isinf(f.domain)) )
+    
+if ( any(isinf(y.domain)) )
     error('CHEBFUN:polyfit:unbounded', 'Unbounded domains are not supported.');
 end
-if ( n > length(f) && numel(f.funs) == 1 && isa(f.funs{1}.onefun, 'chebtech') )
+
+if ( n > length(y) && numel(y.funs) == 1 && isa(y.funs{1}.onefun, 'chebtech') )
     % Nothing to do here!
-    p = f;
+    f = y;
     return
 end
 
 % Compute first n Legendre coeffs:
-cleg = legpoly(f, n).';                      
+cleg = legpoly(y, n+1).';
 
 % Convert to Chebyshev coeffs:
 c = zeros(size(cleg));
@@ -90,18 +42,12 @@ for k = 1:size(c, 2)
     c(:,k) = chebtech.leg2cheb(cleg(:,k));   
 end
 
-% Make a CHEBTECH:
-if ( isa(f.funs{1}.onefun, 'chebtech') )
-    % Make the CHEBTECH be of the same type as that in F:
-    p_chebtech = f.funs{1}.onefun.make({[], c}); 
-else
-    p_chebtech = chebtech.constructor({[], c});
-end
-
-% Make a BNDFUN:
-p_fun = fun.constructor(p_chebtech, f.domain([1, end]));    
-
 % Make a CHEBFUN:
-p = chebfun({p_fun});                        
+f = chebfun(c, domain(y, 'ends'), 'coeffs');    
+
+% Deal with row CHEBFUNs.
+if ( y.isTransposed )    
+    f = f.';
+end
 
 end

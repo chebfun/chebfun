@@ -26,7 +26,7 @@ if ( nargin > 1 )
     if ( s(1) > n + 1 )
         b = b(end-n+1:end, :);
     else
-        b = [b ; zeros(n-s(1), s(2))];
+        b = [zeros(n-s(1), s(2)) ; b];
     end
 end
 
