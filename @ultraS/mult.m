@@ -16,10 +16,11 @@ function M = mult(A, f, lambda)
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
+% Start by obtaining useful information.
 n = A.dimension;
 d = A.domain;
 f = restrict(f, d);
-numIntervals = length(d)-1;
+numIntervals = length(d) - 1;
 
 % Find the diagonal blocks.
 blocks = cell(numIntervals);
@@ -35,31 +36,36 @@ end
 
 function M = multmat(n, f, lambda)
 
-% get Chebyshev T coefficients
+% Get Chebyshev T coefficients
 a = flipud(get(f, 'coeffs'));
 
+% Multiplying by a scalar is easy.
 if ( numel(a) == 1 )
     M = a*speye(n);
     return
 end
 
-% prolong or truncate coefficients
+% Prolong or truncate coefficients
 if ( numel(a) < n )
-    a = [a ; zeros(n - numel(a), 1)];
+    a = [a ; zeros(n - numel(a), 1)];   % Prolong
 else
-    a = a(1:n);  % truncate.
+    a = a(1:n);                         % Truncate.
 end
 
-if ( lambda == 0 )
+if ( lambda == 0 )          % Multiplication in Chebyshev T coefficients.
     a = a/2;  % just to make formula easier.
-    M = sptoeplitz([2*a(1);a(2:end)], [2*a(1);a(2:end)]);
-    H = sphankel(a(2:end));
-    sub1 = 2:length(a); sub2 = 1:length(a)-1;
-    M(sub1, sub2) = M(sub1, sub2)+ H;
-elseif ( lambda == 1 )
-    M = sptoeplitz([2*a(1);a(2:end)], [2*a(1);a(2:end)])/2;
-    sub = 1:length(a)-2;
-    M(sub, sub) = M(sub, sub) - sphankel(a(3:end)/2);
+    M = ultraS.sptoeplitz([2*a(1);a(2:end)], [2*a(1);a(2:end)]);
+    H = ultraS.sphankel(a(2:end));
+    % TODO: What do the variables sub1 and sub2 represent?
+    sub1 = 2:length(a); 
+    sub2 = 1:length(a)-1;
+    M(sub1, sub2) = M(sub1, sub2) + H;
+    
+elseif ( lambda == 1 )      % Multiplication in Chebyshev U coefficients.
+    M = ultraS.sptoeplitz([2*a(1);a(2:end)], [2*a(1);a(2:end)])/2;
+    sub = 1:length(a) - 2;
+    M(sub, sub) = M(sub, sub) - ultraS.sphankel(a(3:end)/2);
+    
 else
     % Want the C^{lam}C^{lam} Cheb Multiplication matrix.
     
@@ -68,24 +74,26 @@ else
     dummy.dimension = n;
     
     % Convert ChebT of a to ChebC^{lam}
-    a = convert(dummy, 0, lambda-1) * a;
+    a = convert(dummy, 0, lambda - 1) * a;
     
     M0 = speye(n);
     
-    d1 = [1 (2*lambda:2*lambda+n-2)]./[1 (2*((lambda+1):lambda+n-1))];
-    d2 = (1:n)./(2*(lambda:lambda+n-1));
-    B = [d2' zeros(n,1) d1'];
-    Mx = spdiags(B,[-1 0 1],n,n);
+    d1 = [1 (2*lambda : 2*lambda + n - 2)]./ ...
+        [1 (2*((lambda+1) : lambda + n - 1))];
+    d2 = (1:n)./(2*(lambda:lambda + n - 1));
+    B = [d2' zeros(n, 1) d1'];
+    Mx = spdiags(B,[-1 0 1], n, n);
     M1 = 2*lambda*Mx;
     
     % Construct the multiplication operator by a three-term recurrence: 
     M = a(1)*M0;
     M = M + a(2)*M1;
-    for nn = 1:length(a)-2
-        M2 = 2*(nn+lambda)/(nn+1) * Mx * M1 - (nn+2*lambda-1)/(nn+1) * M0;
-        M = M + a(nn+2)*M2;
-        M0 = M1; M1 = M2;
-        if ( abs(a(nn+3:end)) < eps ), break, end
+    for nn = 1:length(a) - 2
+        M2 = 2*(nn + lambda)/(nn + 1)*Mx*M1 - (nn + 2*lambda - 1)/(nn + 1)*M0;
+        M = M + a(nn + 2)*M2;
+        M0 = M1;
+        M1 = M2;
+        if ( abs(a(nn + 3:end)) < eps ), break, end
     end
     
 end

@@ -1,8 +1,10 @@
 function b = rhs(disc, f)
+% TODO: Documentation missing. AB, 12/2/14.
+
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
-fdisc = ultraS(f,disc.dimension,disc.domain);
+fdisc = ultraS(f, disc.dimension, disc.domain);
 fdisc.outputSpace = disc.outputSpace;
 
 row = instantiate(fdisc,f.blocks);
