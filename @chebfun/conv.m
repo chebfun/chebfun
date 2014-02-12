@@ -276,12 +276,12 @@ MN = length(alpha) + length(beta);
 % Pad to make length n + 1.
 alpha = [ alpha ; zeros(MN - length(alpha), 1) ];
 
-% M represents multiplication by 1/z in spherical Bessel space:
+% S represents multiplication by 1/z in spherical Bessel space:
 e = [[1 ; 1./(2*(1:(MN-1)).'+1)], [1 ; zeros(MN-1, 1)], -1./(2*(0:MN-1).'+1)];
 S = spdiags(e, -1:1, MN, MN);
 
 gammaL = rec(S, alpha, beta, -1); % Chebyshev coeffs for the left piece
-S(1,1) = -1;                      % Update M
+S(1,1) = -1;                      % Update S
 gammaR = rec(S, -alpha, beta, 1); % Chebyshev coeffs for the right piece
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%% MATRIX FREE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

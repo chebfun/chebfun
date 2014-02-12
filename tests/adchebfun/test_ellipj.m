@@ -17,6 +17,8 @@ tol = 1e-2;
 % Initialise vector with pass information
 pass = zeros(2, numel(ellipFunctions));
 
+% TODO: Test CM and DM.
+
 % Do the tests.
 for k = 1:numel(ellipFunctions)
     % First, check that the computed function values match what we expect

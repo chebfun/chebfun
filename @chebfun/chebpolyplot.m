@@ -46,6 +46,7 @@ if ( isempty(col) )
         varargin(colIdx+(0:1)) = [];
     else
         col = get(0, 'DefaultAxesColorOrder');
+        col = repmat(col, ceil(numColumns(f)/7), 1);
     end
 end
 
@@ -66,6 +67,7 @@ for k = 1:numel(f)
         colk = col(1:numColsFk, :);
         col(1:numColsFk, :) = [];
     end
+    
 
     % Call the column version:
     [h1{k}, h2{k}] = columnChebpolyplot(fk, colk, varargin{:});

@@ -95,6 +95,9 @@ classdef functionalBlock < linBlock
             C.diffOrder = max(A.diffOrder, B.diffOrder);
         end        
         
+        function out = iszero(A)
+            out = false;
+        end
 
     end
     
@@ -108,25 +111,29 @@ classdef functionalBlock < linBlock
         end
         
         function E = eval(varargin)
-%   EVAL(DOMAIN) returns a function E. The output of E(X) is an evaluator at X
-%   in the domain. See also FEVAL. 
+        %   EVAL(DOMAIN) returns a function E. The output of E(X) is an
+        %   evaluator at X in the domain.
+        %
+        %   See also FEVAL. 
             E = @(x) functionalBlock.feval(x, varargin{:});
         end
         
         function J = jump(location,domain,order)
-%JUMP      Jump at a point.
-%   JUMP(LOC,DOMAIN,ORDER) returns a functional evaluating the jump (difference
-%   of limit from right minus limit from left) in derivative ORDER at the point
-%   LOC. 
+        %JUMP      Jump at a point.
+        %
+        %   JUMP(LOC,DOMAIN,ORDER) returns a functional evaluating the jump
+        %   (difference of limit from right minus limit from left) in derivative
+        %   ORDER at the point LOC.
             Er = functionalBlock.feval(location,domain,1);
             El = functionalBlock.feval(location,domain,-1);
             J = (Er-El)*operatorBlock.diff(domain,order);
         end
         
         function J = jumpAt(domain)
-%JUMPAT   Jump generator. 
-%   JUMP(DOMAIN) returns a callable function JMP. JMP(LOC,ORDER) calls
-%   functionalBlock.jump(LOC,DOMAIN,ORDER). 
+        %JUMPAT   Jump generator. 
+        %
+        %   JUMP(DOMAIN) returns a callable function JMP. JMP(LOC,ORDER) calls
+        %   functionalBlock.jump(LOC,DOMAIN,ORDER). 
             J = @(loc,order) functionalBlock.jump(loc,domain,order);
         end
         

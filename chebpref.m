@@ -9,13 +9,12 @@ classdef chebpref
 %
 % Available Preferences:
 %
-%   maxTotalLength             - Maximum total CHEBFUN length.
-%    [65537]
+%   domain                     - Construction domain.
+%    [-1, 1]
 %
-%      Sets the maximum allowed "length" of the constructed CHEBFUN when
-%      breakpoint detection is disabled, where the notion of length is
-%      determined by the underlying representation technology (e.g., the number
-%      of Chebyshev points used for Chebyshev polynomial interpolation).
+%      This sets the default domain that will be used for CHEBFUN and/or FUN
+%      construction if no domain argument is explicitly passed to the
+%      constructor.
 %
 %   enableBreakpointDetection  - Enable/disable breakpoint detection.
 %     true
@@ -43,13 +42,6 @@ classdef chebpref
 %         This is the maximum total length of the CHEBFUN (i.e., the sum of the
 %         lengths of all the FUNs) allowed by the constructor when breakpoint
 %         detection is enabled.
-%
-%   domain                     - Construction domain.
-%    [-1, 1]
-%
-%      This sets the default domain that will be used for CHEBFUN and/or FUN
-%      construction if no domain argument is explicitly passed to the
-%      constructor.
 %
 %   enableSingularityDetection - Enable/disable singularity detection.
 %     true
@@ -303,6 +295,15 @@ classdef chebpref
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     properties
+        maxTotalLength
+        enableBreakpointDetection
+        breakpointPrefs
+        domain
+        enableSingularityDetection
+        singPrefs
+        tech
+        techPrefs
+        cheb2Prefs
         % This is a MATLAB structure which stores the system preferences.  As a
         % class invariant, this structure is guaranteed to contain fields for
         % each of the preferences of the upper layers listed above.  It is also
@@ -322,6 +323,27 @@ classdef chebpref
             end
 
             % Initialize default preference values.
+            outPref.maxTotalLength = 65537;
+            outPref.enableBreakpointDetection = false;
+                outPref.breakpointPrefs.splitMaxLength = 129;
+                outPref.breakpointPrefs.splitMaxTotalLength = 6000;
+            outPref.domain = [-1 1];
+            outPref.enableSingularityDetection = false;
+                outPref.singPrefs.exponentTol = 1.1*1e-11;
+                outPref.singPrefs.maxPoleOrder = 20;
+            outPref.tech = 'chebtech';
+            outPref.techPrefs = struct();
+                outPref.techPrefs.eps = 2^(-52);
+                outPref.techPrefs.maxLength = 65537;
+                outPref.techPrefs.exactLength = NaN;
+                outPref.techPrefs.extrapolate = false;
+                outPref.techPrefs.sampleTest = true;
+            outPref.cheb2Prefs = struct(); 
+                outPref.cheb2Prefs.maxRank = 1025; 
+                outPref.cheb2Prefs.maxLength = 65537; 
+                outPref.cheb2Prefs.eps = 2^(-52); 
+                outPref.cheb2Prefs.exactLength = false;
+                outPref.cheb2Prefs.sampleTest = true; 
             outPref.prefList = chebpref.manageDefaultPrefs('get');
 
             % Copy fields from q, placing unknown ones in techPrefs and merging
@@ -423,8 +445,6 @@ classdef chebpref
             prefList = pref.prefList;
 
             fprintf('chebpref object with the following preferences:\n');
-            fprintf([padString('    maxTotalLength:') '%d\n'], ...
-                prefList.maxTotalLength);
             fprintf([padString('    domain:') '[%g, %g]\n'], ...
                 prefList.domain(1), prefList.domain(end));
             fprintf([padString('    enableBreakpointDetection:') '%d\n'], ...
@@ -441,6 +461,17 @@ classdef chebpref
                 prefList.singPrefs.exponentTol');
             fprintf([padString('        maxPoleOrder:') '%d\n'], ...
                 prefList.singPrefs.maxPoleOrder');
+            fprintf('    cheb2Prefs\n');
+            fprintf([padString('        maxRank:') '%d\n'], ...
+                prefList.cheb2Prefs.maxRank');
+            fprintf([padString('        maxLength:') '%d\n'], ...
+                prefList.cheb2Prefs.maxLength');            
+            fprintf([padString('        eps:') '%d\n'], ...
+                prefList.cheb2Prefs.eps');            
+            fprintf([padString('        exactLength:') '%d\n'], ...
+                prefList.cheb2Prefs.exactLength');            
+            fprintf([padString('        sampleTest:') '%d\n'], ...
+                prefList.cheb2Prefs.sampleTest');            
             fprintf([padString('    scale:') '%d\n'], ...
                 prefList.scale);
             fprintf([padString('    tech:') '''%s''\n'], ...
@@ -679,11 +710,10 @@ classdef chebpref
         %   all of the "factory default" values of the CHEBFUN
         %   construction-time preferences.
 
-            factoryPrefs.maxTotalLength = 65537;
+            factoryPrefs.domain = [-1 1];
             factoryPrefs.enableBreakpointDetection = false;
                 factoryPrefs.breakpointPrefs.splitMaxLength = 129;
                 factoryPrefs.breakpointPrefs.splitMaxTotalLength = 6000;
-            factoryPrefs.domain = [-1 1];
             factoryPrefs.enableSingularityDetection = false;
                 factoryPrefs.singPrefs.exponentTol = 1.1*1e-11;
                 factoryPrefs.singPrefs.maxPoleOrder = 20;
@@ -697,6 +727,12 @@ classdef chebpref
                 factoryPrefs.techPrefs.exactLength = NaN;
                 factoryPrefs.techPrefs.extrapolate = false;
                 factoryPrefs.techPrefs.sampleTest = true;
+            factoryPrefs.cheb2Prefs = struct(); 
+                factoryPrefs.cheb2Prefs.maxRank = 1000;   
+                factoryPrefs.cheb2Prefs.maxLength = 65537;   
+                factoryPrefs.cheb2Prefs.eps = 2^(-52);   
+                factoryPrefs.cheb2Prefs.exactLength = 0; 
+                factoryPrefs.cheb2Prefs.sampleTest = 1;
         end
 
     end
