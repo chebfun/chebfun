@@ -1,12 +1,12 @@
-% Test file for ADCHEBFUN plus and minus
+% Test file for ADCHEBFUN times
 
-function pass = test_plusMinus
+function pass = test_times
 
 % Functions to be tested
-funcList = {@plus, @minus};
+funcList = {@times};
 
 % Initialise pass vector
-pass = zeros(4, 5);
+pass = zeros(2*length(funcList), 5);
 
 % Steps to be taken in Taylor testing
 numSteps = 6;
@@ -34,8 +34,17 @@ for funcCounter = 1:length(funcList)
     % the methods are indeed linear, we should expect nDiff2 to have values all
     % close to machine epsilon, which we can use to check for the correctness of
     % the derivative computed.
-    pass(2*(funcCounter-1) + 2, :) = ( (max(abs(order1 - 1)) < tolOrder) & ...
-        (max(abs(nDiff2)) < tolDiff) );
+    
+    % Check whether we get the expected results for linear and nonlinear
+    % operations.
+    linearOpResults = ( ((max(abs(order1(:, 2:end))) - 1) < tolOrder) & ...
+        (max(abs(nDiff2(:, 2:end))) < tolDiff) );
+    
+    nonlinearOpResults = ( (max(abs(order1(:, 1) - 1)) < tolOrder) && ...
+        (max(abs(order2(:, 1) - 2)) < tolOrder) );
+    
+    % Concatenate results
+    pass(2*(funcCounter-1) + 2, :) = [nonlinearOpResults, linearOpResults];
     
 end
 
