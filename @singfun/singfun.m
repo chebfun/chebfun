@@ -111,7 +111,10 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
             
             % Case 1: One input argument.
             if ( nargin == 1 )
-                if ( isa(op, 'smoothfun') )
+                if ( isa(op, 'singfun') )
+                    obj = op;
+                    return
+                elseif ( isa(op, 'smoothfun') )
                     % if OP is a SMOOTHFUN, cast it to a SINGFUN:
                     obj.smoothPart = op;
                     obj.exponents = [0, 0];
