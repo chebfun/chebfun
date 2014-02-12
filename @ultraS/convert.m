@@ -16,11 +16,14 @@ function S = convert(A, K1, K2)
 d = A.domain;
 n = A.dimension;
 numIntervals = length(d) - 1;
+
 % Find the diagonal blocks.
 blocks = cell(numIntervals);
 for k = 1:numIntervals
     blocks{k} = ultraS.convertmat(n(k), K1, K2);
 end
+
 % Assemble.
 S = blkdiag(blocks{:});
+
 end

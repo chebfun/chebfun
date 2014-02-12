@@ -20,13 +20,15 @@ classdef ultraS < chebDiscretization
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
     properties
+        % Coefficients of the operator
         coeffs
+        % The range of the ultrapspherical spectral operator.
         outputSpace = [];
     end
     
     methods
-        function disc = ultraS(source,dimension,domain)
-            %ULTRAS constructor.
+        function disc = ultraS(source, dimension, domain)
+            %ULTRAS(SOURCE, DIMENSION, DOMAIN)   ULTRAS constructor.
             
             if ( nargin == 0 || isempty(source) )
                 % Construct an empty ULTRAS.
@@ -41,7 +43,7 @@ classdef ultraS < chebDiscretization
             end
             
             disc.source = source; 
-            disc.domain = chebfun.mergeDomains(source.domain,disc.domain); 
+            disc.domain = chebfun.mergeDomains(source.domain, disc.domain); 
             
             % Obtain the coeffs and output space required for this source:
             disc.coeffs = ultraS.getCoeffs(source);
@@ -62,9 +64,8 @@ classdef ultraS < chebDiscretization
     methods ( Access = private )
         
         % Conversion (transformation) operator for Ultraspherical method.
-        S = convert( A, K1, K2 )
+        S = convert(A, K1, K2)
 
-        
     end
     
     methods ( Access = private, Static = true)

@@ -15,4 +15,5 @@ S = speye(n);
 for s = K1:K2
     S = ultraS.spconvert(n, s) * S;
 end
+
 end

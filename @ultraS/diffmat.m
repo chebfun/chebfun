@@ -13,7 +13,7 @@ function D = diffmat(n, m)
 
 % Create the differentation matrix.
 if ( m > 0 )
-    D = spdiags((0:n-1)', 1, n, n);
+    D = spdiags((0 : n - 1)', 1, n, n);
     for s = 1:m-1
         D = spdiags(2*s*ones(n, 1), 1, n, n) * D;
     end
