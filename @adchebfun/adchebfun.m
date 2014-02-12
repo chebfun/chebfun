@@ -723,18 +723,16 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
         
         function f = mtimes(f, g)
-            % TODO: Document
-            if ( ~isa(g, 'adchebfun') )
-                f.func = f.func*g;
-                f.jacobian = f.jacobian*g;
-            elseif ( ~isa(f, 'adchebfun') )
-                g.func = f*g.func;
-                g.jacobian = f*g.jacobian;
-                f = g;
+            %*   ADCHEBFUN multiplication.
+            %     A*F and F*A multiplies the ADCHEBFUN F by the scalar A.
+   
+            % If either input is numeric, call times. Otherwise, throw an error.
+            if ( isnumeric(f) || isnumeric(g) )
+                f = times(f, g);  
             else
                 error('CHEBFUN:AD:mtimes:dims', ...
                     ['Matrix dimensions must agree. Use f.*g to multiply ' ...
-                     'two chebfun objects.']);
+                     'two ADCHEBFUN or CHEBFUN objects.']);
             end
         end   
                 
@@ -1004,27 +1002,44 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
         
         function f = times(f, g)
-            % TODO: Document
-            if ( isnumeric(f) ) || ( isnumeric(g) )
-                f = mtimes(f, g);
-            elseif ( ~isa(f, 'adchebfun') )
-                g.jacobian = operatorBlock.mult(f)*g.jacobian;
-                g.func = f.*g.func;
-%                 g.isConstant = g.isConstant;
-                g = updateDomain(g);
+            % .*    ADCHEBFUN multiplication
+            %
+            % F.*G multiplies F and G, where F and G may be ADHCEBFUN or CHEBFUN
+            % objects or scalars.
+            
+            if ( isnumeric(g) )                 % ADCHEBFUN.*SCALAR
+                f.func = f.func*g;
+                f.jacobian = f.jacobian*g;
+                
+            elseif ( isnumeric(f) )             % SCALAR.*ADCHEBFUN
+                g.func = f*g.func;
+                g.jacobian = f*g.jacobian;
+                % Swap variables for output
                 f = g;
-            elseif  ( ~isa(g, 'adchebfun') )
+            elseif  ( ~isa(g, 'adchebfun') )    % ADCHEBFUN.*CHEBFUN
                 f.jacobian = operatorBlock.mult(g)*f.jacobian;
                 f.func = f.func.*g;
+                % Update domain in case new breakpoints were introduced.
                 f = updateDomain(f);
-%                 f.isConstant = f.isConstant;
-            else
+            elseif ( ~isa(f, 'adchebfun') )     % CHEBFUN.*ADCHEBFUN
+                g.jacobian = operatorBlock.mult(f)*g.jacobian;
+                g.func = f.*g.func;
+                % Update domain in case new breakpoints were introduced.
+                g = updateDomain(g);
+                % Swap variables for output
+                f = g;
+            else                                % ADCHEBFUN.*ADCHEBFUN
+                f.jacobian = operatorBlock.mult(f.func)*g.jacobian + ...
+                    operatorBlock.mult(g.func)*f.jacobian;
+                f.func = times(f.func, g.func);
+                
+                % Rather complicated linearity information
                 f.isConstant = ...
                     ( f.isConstant & g.isConstant) & ...
-                      ( ( all(iszero(f.jacobian)) || all(iszero(g.jacobian)) ) | ...
-                        ( iszero(f.jacobian) & iszero(g.jacobian) ) );
-                f.jacobian = operatorBlock.mult(f.func)*g.jacobian + operatorBlock.mult(g.func)*f.jacobian;
-                f.func = times(f.func, g.func);
+                    ( ( all(iszero(f.jacobian)) || all(iszero(g.jacobian)) ) | ...
+                    ( iszero(f.jacobian) & iszero(g.jacobian) ) );
+                
+                % Update domain in case new breakpoints were introduced.
                 f = updateDomain(f);
             end
 

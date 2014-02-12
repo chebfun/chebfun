@@ -29,8 +29,8 @@ for k = 1:numel(diffFunctions)
     % the methods are indeed linear, we should expect nDiff2 to have values all
     % close to machine epsilon, which we can use to check for the correctness of
     % the derivative computed.
-    pass(2,k) = ( max(abs(order1 - 1)) < tolOrder && ...
-        max(abs(nDiff2)) < tolDiff);
+    pass(2,k) = ( (max(abs(order1 - 1)) < tolOrder) && ...
+        (max(abs(nDiff2)) < tolDiff) );
 end
 
 end
