@@ -29,6 +29,7 @@ r = 0.126986816293506; s = 0.632359246225410; % two fixed random number in domai
 pass(j) = (abs(f(r,s) - g(r,s))<tol);j=j+1;
 
 % Are we evaluating on arrays correctly
+rng(0)
 r = rand(10,1); s = rand(10,1); [rr, ss]=meshgrid(r,s);
 pass(j) = (norm((f(r,s) - g(r,s)))<tol);j=j+1;
 pass(j) = (norm((f(rr,ss) - g(rr,ss)))<tol); j=j+1;% on arrays as well. 
