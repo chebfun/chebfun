@@ -149,6 +149,17 @@ classdef chebfun
             % Parse inputs:
             [op, dom, pref] = parseInputs(varargin{:});
             
+            % Deal with 'trunc' option:
+            doTrunc = false;
+            truncLength = NaN;
+            for k = 1:length(varargin)
+                if ( strcmpi(varargin{k}, 'trunc') )
+                    doTrunc = true;
+                    truncLength = varargin{k+1};
+                    break
+                end
+            end
+            
             if ( iscell(op) && all(cellfun(@(x) isa(x, 'fun'), op)) )
                 % Construct a CHEBFUN from a cell array of FUN objects:
                 
@@ -166,6 +177,11 @@ classdef chebfun
                 % Update values at breakpoints (first row of f.impulses):
                 f.impulses = chebfun.getValuesAtBreakpoints(f.funs, f.domain);
                 
+            elseif ( isa(op, 'chebfun') && doTrunc )
+                % Deal with the particular case when we're asked to truncate a
+                % CHEBFUN:
+                f = op;
+                
             else
                 % Construct from function_handle, numeric, or string input:
                 
@@ -180,19 +196,9 @@ classdef chebfun
                 f = merge(f, index(:).', pref);
                 
             end
-            
-            % Deal with 'trunc' option:
-            doTrunc = false;
-            truncLength = NaN;
-            for k = 1:length(varargin)
-                if ( strcmpi(varargin{k}, 'trunc') )
-                    doTrunc = true;
-                    truncLength = varargin{k+1};
-                    break;
-                end
-            end
 
             if ( doTrunc )
+                % Truncate the CHEBFUN to the required length:
                 c = chebpoly(f, truncLength);
                 f = chebfun(c.', f.domain([1, end]), 'coeffs');
             end
