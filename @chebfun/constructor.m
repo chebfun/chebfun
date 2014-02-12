@@ -27,8 +27,7 @@ function [funs, ends] = constructor(op, domain, pref)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Initial setup:
-ends = domain;
-numIntervals = numel(ends) - 1;
+numIntervals = numel(domain) - 1;
 
 % Initialise hscale and vscale:
 hscale = norm(domain, inf);
@@ -37,6 +36,9 @@ if ( isinf(hscale) )
 end
 vscale = pref.scale;
 
+% Sort out exponent and singularity information.
+[exps, singTypes] = parseSingPrefs(pref, domain);
+
 % Sanity check:
 if ( iscell(op) && (numel(op) ~= numIntervals) )
     error('CHEBFUN:constructor:cellInput', ...
@@ -44,12 +46,31 @@ if ( iscell(op) && (numel(op) ~= numIntervals) )
          'intervals in DOMAIN.'])
 end
 
+% Construct the FUNs.
+if ( pref.enableBreakpointDetection )
+    [funs, ends] = constructorSplit(op, domain, pref, vscale, hscale, ...
+        exps, singTypes);
+else
+    [funs, ends] = constructorNoSplit(op, domain, pref, vscale, hscale, ...
+        exps, singTypes);
+end
+
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function [exps, singTypes] = parseSingPrefs(pref, domain)
+% TODO:  Move this to the main input parsing routine.
+
+% Initial setup:
+numIntervals = numel(domain) - 1;
+
 % Sort out the exponents:
 exps = [];
 if ( ~isempty(pref.singPrefs.exponents) )
     exps = pref.singPrefs.exponents;
     nExps = numel(pref.singPrefs.exponents);
-    
+   
     if ( nExps == 1 )
         
         % If only one exponent is supplied, assume the exponent at other
@@ -77,9 +98,9 @@ if ( ~isempty(pref.singPrefs.exponents) )
 end
 
 % Sort out the singularity types:
-type = [];
+singTypes = [];
 if ( ~isempty(pref.singPrefs.singType) )
-    type = pref.singPrefs.singType;
+    singTypes = pref.singPrefs.singType;
     nType = numel(pref.singPrefs.singType);
     
     if ( nType ~= 2*numIntervals )
@@ -91,55 +112,68 @@ if ( ~isempty(pref.singPrefs.singType) )
     end
 end
 
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%  SPLITTING OFF %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% In 'OFF' mode, seek only one piece with length < maxLength.
-if ( ~pref.enableBreakpointDetection )
-    % Set maximum length (i.e., number of sample points for CHEBTECH):
-    maxn = pref.maxTotalLength;
-    % Initialise the FUN array:
-    funs{numIntervals} = fun.constructor();
-    % We only want to throw this warning once:
-    warningThrown = false;
+end
 
-    % Loop over the intervals:
-    for k = 1:numIntervals
-        endsk = ends(k:k+1);
-        % Unwrap if OP is a cell:
-        if ( iscell(op) )
-            opk = op{k};
-        else
-            opk = op;
-        end
-        
-        % Extract the exponents for this interval:
-        if ( ~isempty(exps) )
-            pref.singPrefs.exponents = exps(2*k-1:2*k);
-        end
-        
-        % Replace the information for the singularity type in the preference:
-        if ( ~isempty(type) )
-            pref.singPrefs.singType = type(2*k-1:2*k);
-        end
-        
-        % Call GETFUN() (which calls FUN.CONSTRUCTOR()):
-        [funs{k}, ishappy, vscale] = getFun(opk, endsk, vscale, hscale, pref);
-        
-        % Warn if unhappy (as we're unable to split the domain to improve):
-        if ( ~ishappy && ~warningThrown)
-            warning('CHEBFUN:constructor', ...
-                ['Function not resolved using %d pts.', ...
-                ' Have you tried ''splitting on''?'], maxn);
-            warningThrown = true;
-        end
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%  SPLITTING OFF %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function [funs, ends] = constructorNoSplit(op, domain, pref, vscale, hscale, ...
+    exps, singTypes)
+% In 'OFF' mode, seek only one piece with length < maxLength.
+
+% Initial setup:
+numIntervals = numel(domain) - 1;
+ends = domain;
+
+% Initialise the FUN array:
+funs{numIntervals} = fun.constructor();
+% We only want to throw this warning once:
+warningThrown = false;
+
+% Loop over the intervals:
+for k = 1:numIntervals
+    endsk = ends(k:k+1);
+    % Unwrap if OP is a cell:
+    if ( iscell(op) )
+        opk = op{k};
+    else
+        opk = op;
     end
-    return
+
+    % Extract the exponents for this interval:
+    if ( ~isempty(exps) )
+        pref.singPrefs.exponents = exps(2*k-1:2*k);
+    end
+
+    % Replace the information for the singularity type in the preference:
+    if ( ~isempty(singTypes) )
+        pref.singPrefs.singType = singTypes(2*k-1:2*k);
+    end
+
+    % Call GETFUN() (which calls FUN.CONSTRUCTOR()):
+    [funs{k}, ishappy, vscale] = getFun(opk, endsk, vscale, hscale, pref);
+
+    % Warn if unhappy (as we're unable to split the domain to improve):
+    if ( ~ishappy && ~warningThrown )
+        warning('CHEBFUN:constructor', ...
+            ['Function not resolved using %d pts.', ...
+            ' Have you tried ''splitting on''?'], pref.techPrefs.maxLength);
+        warningThrown = true;
+    end
+end
+
 end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%  SPLITTING ON %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function [funs, ends] = constructorSplit(op, domain, pref, vscale, hscale, ...
+    exps, singTypes)
 % In 'ON' mode, seek only many pieces with total length < maxlength.
 
+% Initial setup:
+numIntervals = numel(domain) - 1;
+ends = domain;
+
 % Set the maximum length (i.e., number of sample points for CHEBTECH):
-pref.maxTotalLength = pref.breakpointPrefs.splitMaxTotalLength;
 pref.techPrefs.maxLength = pref.breakpointPrefs.splitMaxLength;
 % We extrapolate when splitting so that we can construct functions like
 % chebfun(@sign,[-1 1]), which otherwise would not be happy at x = 0.
@@ -165,8 +199,8 @@ for k = 1:numIntervals
     end
     
     % Replace the information for the singularity type in the preference:
-    if ( ~isempty(type) )
-        pref.singPrefs.singType = type(2*k-1:2*k);
+    if ( ~isempty(singTypes) )
+        pref.singPrefs.singType = singTypes(2*k-1:2*k);
     end
 
     [funs{k}, ishappy(k), vscale] = ...
@@ -223,9 +257,9 @@ while ( any(sad) )
         pref.singPrefs.exponents = [exps(2*k-1) 0];
     end
     
-    if ( ~isempty(type) )
+    if ( ~isempty(singTypes) )
         % Before constructing the left FUN, sort out the singType:
-        pref.singPrefs.singType = [type(2*k-1) type(2*k-1)];
+        pref.singPrefs.singType = [singTypes(2*k-1) singTypes(2*k-1)];
     end
     
     % Try to obtain happy child FUN objects on each new subinterval:
@@ -245,9 +279,9 @@ while ( any(sad) )
         pref.singPrefs.exponents = [0 exps(2*k)];
     end
     
-    if ( ~isempty(type) )
+    if ( ~isempty(singTypes) )
         % Before constructing the right FUN, sort out the singType:
-        pref.singPrefs.singType = [type(2*k) type(2*k)];
+        pref.singPrefs.singType = [singTypes(2*k) singTypes(2*k)];
     end
     
     [childRight, happyRight, vscale] = ...
@@ -272,8 +306,9 @@ while ( any(sad) )
         exps = [exps(1:2*k-1), zeros(1,2), exps(2*k:end)];
     end
     
-    if ( ~isempty(type) )
-        type = [type(1:2*k-1), type(2*k-1), type(2*k) type(2*k:end)];
+    if ( ~isempty(singTypes) )
+        singTypes = [singTypes(1:2*k-1), singTypes(2*k-1), ...
+            singTypes(2*k) singTypes(2*k:end)];
     end
     
     % If a cell was given, we must store pieces on new intervals:
@@ -282,7 +317,8 @@ while ( any(sad) )
     end
 
     % Fail if too many points are required:
-    if ( sum(cellfun(@length, funs)) > pref.maxTotalLength )
+    len = sum(cellfun(@length, funs));
+    if ( len > pref.breakpointPrefs.splitMaxTotalLength )
         warning('Function not resolved using %d pts.', ...
             sum(cellfun(@length, funs)));
         return
