@@ -805,14 +805,25 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end        
         
         function f = power(f, b)
-            % TODO: Document
+            %.^   ADCHEBFUN power
+            %
+            % See also: chebfun/power
+            
+            % ADCHEBFUN.^ADCHEBFUN
             if ( isa(f, 'adchebfun') && isa(b, 'adchebfun') )
-                f.isConstant = iszero(f.jacobian) & iszero(g.jacobian) & ...
-                    f.isConstant & b.isConstant; 
+                % Linearity information
+                f.isConstant = iszero(f.jacobian) & iszero(b.jacobian) & ...
+                    f.isConstant & b.isConstant;
+                % Temporarily store the function value to be returned                
                 tmp = power(f.func, b.func);
-                f.jacobian = diag(b.func.*f.func^(b.func-1))*f.jacobian + ...
-                    diag(tmp.*log(f.func))*b.jacobian; 
+                % Derivative information
+                f.jacobian = operatorBlock.mult(b.func.*f.func.^(b.func-1))*...
+                    f.jacobian + ...
+                    operatorBlock.mult(tmp.*log(f.func))*b.jacobian; 
+                % Assign the function value
                 f.func = tmp;             
+                
+            % ADCHEBFUN.^SCALAR or ADCHEBFUN.^CHEBFUN    
             elseif ( isa(f, 'adchebfun') )
                 if ( isnumeric(b) )
                     if ( b == 1 )
@@ -821,22 +832,28 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                     elseif ( b == 0 )
                         f.func = power(f.func, 0);
                         f.jacobian = 0*f.jacobian;
-                        f.isConstant = 1;
+                        f.isConstant = true(size(f.jacobian));
                         return
                     end
                 end
+                % Linearity information
                 f.isConstant = iszero(f.jacobian);
-                f.jacobian = operatorBlock.mult(b*power(f.func, b - 1))* ...
+                % Update derivative of function value
+                f.jacobian = operatorBlock.mult(b.*power(f.func, b - 1))* ...
                     f.jacobian;
                 f.func = power(f.func, b);
                 
+            % SCALAR.^ADCHEBFUN or CHEBFUN.^ADCHEBFUN
             elseif ( isa(b, 'adchebfun') )
                 b.isConstant = iszero(b.jacobian);
                 b.func = power(f, b.func);
                 b.jacobian = operatorBlock.mult(b.func.*log(f))*b.jacobian; 
                 b.domain = b.func.domain;
+                % Swap variables to get output of method
                 f = b;
             end
+            
+            % Check whether new breakpoints have to be introduced.
             f = updateDomain(f);
         end
       
