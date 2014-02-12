@@ -416,9 +416,9 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end       
         
         function f = cumprod(f)
-            % F = CUMPROD(F)       CUMPROD of an ADCHEBFUN
+            % F = CUMPROD(F)    CUMPROD of an ADCHEBFUN
             %
-            % See also chebfun/cumprod.
+            % See also CHEBFUN/CUMPROD().
             
             f = exp(cumsum(log(f)));
         end
@@ -797,6 +797,13 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
 
         end
         
+        
+        function f = pow2(f)
+            % F = POW2(F)   POW2 of an ADCHEBFUN
+            
+            f = power(2, f);
+        end        
+        
         function f = power(f, b)
             % TODO: Document
             if ( isa(f, 'adchebfun') && isa(b, 'adchebfun') )
@@ -831,12 +838,6 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 f = b;
             end
             f = updateDomain(f);
-        end
-        
-        function f = pow2(f)
-            % F = POW2(F)       POW2 of an ADCHEBFUN
-            
-            f = power(2, f);
         end
       
         function f = prod(f)
@@ -1010,7 +1011,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
         
         function f = sqrt(f)
-            % F = SQRT(F)       SQRT of an ADCHEBFUN
+            % F = SQRT(F)   SQRT of an ADCHEBFUN
             
             f = power(f, 0.5);
         end
