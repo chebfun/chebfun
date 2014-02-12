@@ -68,6 +68,7 @@ classdef ultraS < chebDiscretization
     end
     
     methods ( Access = private, Static = true)
+        
         % Conversion matrix used in the ultraspherical spectral method.
         S = convertmat(n, K1, K2)
         
@@ -79,5 +80,15 @@ classdef ultraS < chebDiscretization
         
         % Obtain the range of the ultrapspherical spectral operator.
         outputSpace = getOutputSpace(source)
+        
+        % Compute sparse representation for conversion operators. 
+        T = spconvert(n, lam)
+        
+        % Construct a sparse Hankel operator.
+        H = sphankel(r)
+
+        % Sparse Toeplitz matrix.
+        T = sptoeplitz(col, row)
+
     end
 end

@@ -52,14 +52,14 @@ end
 
 if ( lambda == 0 )
     a = a/2;  % just to make formula easier.
-    M = sptoeplitz([2*a(1);a(2:end)], [2*a(1);a(2:end)]);
-    H = sphankel(a(2:end));
+    M = ultraS.sptoeplitz([2*a(1);a(2:end)], [2*a(1);a(2:end)]);
+    H = ultraS.sphankel(a(2:end));
     sub1 = 2:length(a); sub2 = 1:length(a)-1;
     M(sub1, sub2) = M(sub1, sub2)+ H;
 elseif ( lambda == 1 )
-    M = sptoeplitz([2*a(1);a(2:end)], [2*a(1);a(2:end)])/2;
+    M = ultraS.sptoeplitz([2*a(1);a(2:end)], [2*a(1);a(2:end)])/2;
     sub = 1:length(a)-2;
-    M(sub, sub) = M(sub, sub) - sphankel(a(3:end)/2);
+    M(sub, sub) = M(sub, sub) - ultraS.sphankel(a(3:end)/2);
 else
     % Want the C^{lam}C^{lam} Cheb Multiplication matrix.
     
