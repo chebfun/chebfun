@@ -655,6 +655,22 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             u.isConstant = 1;
         end 
         
+        function u = jump(u, x, c)
+            % U = JUMP(U)       JUMP of an ADCHEBFUN
+            %
+            % 
+            if ( nargin < 3)
+                c = 0;
+            end
+            
+            % Update the domain, introducing a break at the jump location
+            u.domain = union(u.domain, x);
+            % Compute the value of the jump
+            u.func = jump(u.func, x, c);
+            % Derivative part
+            u.jacobian = functionalBlock.jump(x, u.domain, 0)*u.jacobian;
+        end 
+        
         function l = length(f)
             % LENGTH(F) where F is an ADCHEBFUN is the same as LENGTH(F.FUNC)
             l = length(f.func);
