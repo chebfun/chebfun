@@ -1,4 +1,4 @@
-function S = convert( A, K1, K2 )
+function S = convert(A, K1, K2)
 %CONVERT   Conversion (transformation) operator for Ultraspherical method.
 %
 % S = CONVERT(A, K1, K2) returns the operators that maps a vector of C^{(K1)}
@@ -12,14 +12,14 @@ function S = convert( A, K1, K2 )
 %  See http://www.chebfun.org for Chebfun information.
 
 
-%CONVERT(A, K1, K2), convert C^(K1) to C^(K2)
+% Start by obtaining useful information.
 d = A.domain;
 n = A.dimension;
 numIntervals = length(d) - 1;
 % Find the diagonal blocks.
 blocks = cell(numIntervals);
 for k = 1:numIntervals
-    blocks{k} = convertmat(n(k), K1, K2);
+    blocks{k} = ultraS.convertmat(n(k), K1, K2);
 end
 % Assemble.
 S = blkdiag(blocks{:});

@@ -16,7 +16,7 @@ else
     blocks = cell(numIntervals);
     for k = 1:numIntervals
         len = d(k+1) - d(k);
-        blocks{k} = diffmat(n(k), m) * (2/len)^m;
+        blocks{k} = ultraS.diffmat(n(k), m) * (2/len)^m;
     end
     % Assemble.
     D = blkdiag(blocks{:});

@@ -1,4 +1,4 @@
-function outputSpace = getOutputSpace( source )
+function outputSpace = getOutputSpace(source)
 %GETOUTPUTSPACE    Obtain the range of the ultrapspherical spectral operator.
 %
 % OUT = GETOUTPUTSPACE( SOURCE ) returns OUT to indiciate which ultrapsherical

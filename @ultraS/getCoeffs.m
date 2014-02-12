@@ -1,5 +1,5 @@
 function c = getCoeffs( source )
-%GETCOEFFS     Get coefficients, private method. 
+%GETCOEFFS     Get coefficients. Static, private method. 
 % 
 % C = GETCOEFFS( SOURCE ) returns the Chebyshev T coefficients 
 

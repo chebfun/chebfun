@@ -43,9 +43,9 @@ classdef ultraS < chebDiscretization
             disc.source = source; 
             disc.domain = chebfun.mergeDomains(source.domain,disc.domain); 
             
-            % Obtain the coeffs and output psace required for this source:
-            disc.coeffs = getCoeffs(source);
-            disc.outputSpace = getOutputSpace(source);
+            % Obtain the coeffs and output space required for this source:
+            disc.coeffs = ultraS.getCoeffs(source);
+            disc.outputSpace = ultraS.getOutputSpace(source);
             
         end
         
@@ -59,4 +59,25 @@ classdef ultraS < chebDiscretization
 
     end
     
+    methods ( Access = private )
+        
+        % Conversion (transformation) operator for Ultraspherical method.
+        S = convert( A, K1, K2 )
+
+        
+    end
+    
+    methods ( Access = private, Static = true)
+        % Conversion matrix used in the ultraspherical spectral method.
+        S = convertmat(n, K1, K2)
+        
+        % Differentiation matrices for ultraspherical spectral method.
+        D = diffmat(n, m)
+        
+        % Get coefficients.
+        c = getCoeffs( source )
+        
+        % Obtain the range of the ultrapspherical spectral operator.
+        outputSpace = getOutputSpace(source)
+    end
 end
