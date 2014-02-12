@@ -77,7 +77,7 @@ switch method
     case 'spline'
         p = chebfun.spline(x, y, dom);
     case {'pchip', 'cubic'}
-        p = chbfun.pchip(x, y, dom);
+        p = chebfun.pchip(x, y, dom);
     case 'linear'
         p = interp1Linear(x, y, dom);
     otherwise
