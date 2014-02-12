@@ -722,6 +722,20 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f = plus(f, -g);
         end
         
+        function f = mrdivide(f, g)
+            %/    Right matrix divide for CHEBFUN objects.
+            %     F/A divides the ADCHEBFUN F by the scalar A.
+            
+            % If second input is numeric, call rdivide. Otherwise, throw an error.
+            if ( isnumeric(g) )
+                f = rdivide(f, g);
+            else
+                error('CHEBFUN:AD:mrdivide:dims', ...
+                    ['Matrix dimensions must agree. Use f./g to divide' ...
+                    'ADCHEBFUN objects.']);
+            end
+        end
+        
         function f = mtimes(f, g)
             %*   ADCHEBFUN multiplication.
             %     A*F and F*A multiplies the ADCHEBFUN F by the scalar A.
@@ -832,6 +846,64 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             
             f = exp(sum(log(f)));
         end     
+        
+        function f = rdivide(f, g)
+            % ./    ADCHEBFUN division
+            %
+            % F./G divides F and G, where F and G may be ADHCEBFUN or CHEBFUN
+            % objects or scalars.
+            
+            % TODO: Can the scalar and chebfun cases be merged once we can pass
+            % domains to the operatorBlock.mult method?
+            % ADCHEBFUN./SCALAR or ADCHEBFUN./CHEBFUN
+            if ( isnumeric(g) || ~isa(g, 'adchebfun') ) 
+                f = f.*(1./g);
+            elseif ( isnumeric(f) )             % SCALAR./ADCHEBFUN
+                % Temporariy store the function of 1./g
+                tmp = 1./g.func;
+                % Update function part
+                g.func = f.*tmp;
+                % Linearity information
+                g.isConstant = iszero(g.jacobian);
+                % Derivative part
+                g.jacobian = operatorBlock.mult(-f.*tmp.^2)*g.jacobian;
+                % Update domain in case new breakpoints were introduced
+                g = updateDomain(g);
+                % Swap variables for output
+                f = g;
+            elseif ( ~isa(f, 'adchebfun') )     % CHEBFUN./ADCHEBFUN
+                % Temporariy store the function of 1./g
+                tmp = 1./g.func;
+                % Update function part
+                g.func = f.*tmp;
+                % Linearity information
+                g.isConstant = iszero(g.jacobian);
+                % Derivative part
+                g.jacobian = operatorBlock.mult(-f.*tmp.^2)*g.jacobian;
+                % Update domain in case new breakpoints were introduced
+                g = updateDomain(g);
+                % Swap variables for output
+                f = g;
+            else                                % ADCHEBFUN.*ADCHEBFUN
+                % Temporarily store the function of 1./g
+                tmp = 1./g.func;
+                
+                % Derivative part
+                f.jacobian = operatorBlock.mult(tmp)*f.jacobian - ...
+                    operatorBlock.mult(f.func.*tmp.^2)*g.jacobian;
+                % Function part
+                f.func = f.func.*tmp;
+                
+                % Rather complicated linearity information.
+                % TODO: Fix this! We were doing linearity checking incorrectly
+                % for ./ in the past.
+                f.isConstant = iszero(g.jacobian);
+                
+                % Update domain in case new breakpoints were introduced.
+                f = updateDomain(f);
+            end
+            
+        end
         
         function u = seed(u, k, m)
             % TODO: Document
@@ -1005,6 +1077,9 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             %
             % F.*G multiplies F and G, where F and G may be ADHCEBFUN or CHEBFUN
             % objects or scalars.
+            
+            % TODO: Can the scalar and chebfun cases be merged once we can pass
+            % domains to the operatorBlock.mult method?
             
             if ( isnumeric(g) )                 % ADCHEBFUN.*SCALAR
                 f.func = f.func*g;
