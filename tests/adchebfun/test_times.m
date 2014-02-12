@@ -21,11 +21,11 @@ pass(1, :) = ( err == 0 );
 % Taylor testing
 [order1, order2, nDiff2] = adchebfun.taylorTestingBinary(func);
 
-% We expect all elements of ORDER1 to be close to 1. Since the methods being
-% tested in this case are all linear, ORDER2 will be noise. However, since
-% the methods are indeed linear, we should expect nDiff2 to have values all
-% close to machine epsilon, which we can use to check for the correctness of
-% the derivative computed.
+% We expect all elements of ORDER1 to be close to 1. Since depending on the
+% combinations of variables (ADCHEBFUN, CHEBFUN and SCALAR), we should expect
+% some of ORDER2 to be noise (for linear operations), in which case NDIFF2
+% should have values close to machine epsilon. For the nonlinear operations,
+% ORDER2 will be close having all elements value close to 2.
 
 % Check whether we get the expected results for linear and nonlinear
 % operations.
