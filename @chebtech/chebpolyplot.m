@@ -61,8 +61,8 @@ absCoeffs = abs(f.coeffs);
 % Add a tiny amount to zeros to make plots look nicer:
 if ( f.vscale > 0 )
     % (Min of epslevel*vscale and the miniumum non-zero coefficient)
-    absCoeffs(~absCoeffs) = min( f.epslevel*min(f.vscale), ...
-                                 min(absCoeffs(logical(absCoeffs))) );
+    absCoeffs(~absCoeffs) = min( min(f.epslevel.*f.vscale), ...
+                                 min(absCoeffs(logical(absCoeffs))) );                             
 else
     % (add epslevel for zero CHEBTECHs)
     absCoeffs = absCoeffs + f.epslevel;
@@ -75,7 +75,7 @@ if ( plotEpsLevel )
     % Plot the coeffs AND the epslevel:
     h = semilogy(n-1:-1:0, absCoeffs, args{:});
     hold on
-    h2 = semilogy([0 n-1], repmat(f.vscale, 2, 1)*f.epslevel, args{:});
+    h2 = semilogy([0 n-1], repmat(f.vscale.*f.epslevel, 2, 1), args{:});
     h = [h ; h2];
     for k = 1:m
         c = get(h(k), 'color');

@@ -14,14 +14,16 @@ l = arcLength(f);
 % The exact result is obtained using method 'integral' of Matlab:
 lExact = 63.549358387599270; 
 err = abs(l - lExact);
-pass(1) = ( err < 1e5*lExact*vscale(f).*epslevel(f) );
+tol = 1e6*lExact*vscale(f).*epslevel(f);
+pass(1) = ( err < tol );
 
 dom = [-0.5 0.7];
-lPart = arcLength(f, dom); 
+lPart = arcLength(f{dom(1), dom(2)});
 % The exact result is obtained using method 'integral' of Matlab:
-lPartExact = 38.339961332457015; 
+lPartExact = 38.339961332457015;
 err = abs(lPart - lPartExact);
-pass(2) = ( err < 1e6*lPartExact*vscale(f).*epslevel(f) );
+tol = 1e6*lPartExact*vscale(f).*epslevel(f);
+pass(2) = ( err < tol );
 
 % A piecewise smooth CHEBFUN:
 f = chebfun({@(x)sin(x) @(x)cos(2*x)}, [-1 1 2]);

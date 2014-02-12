@@ -97,8 +97,9 @@ h = h - feval(h, 1) + feval(u, 1);
 
 vals_g = feval(g, x);
 vals_exact = feval(h, x);
-err = vals_g - vals_exact;
-pass(7) = (norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf));
+err = norm(vals_g - vals_exact, inf);
+tol = 1e4*get(f,'epslevel')*norm(vals_exact, inf);
+pass(7) = (err < tol);
 
 %%
 % Fractional pole at the right endpoint and multiple integration:
@@ -119,8 +120,9 @@ h = h + feval(u, -1);
 
 vals_g = feval(g, x);
 vals_exact = feval(h, x);
-err = vals_g - vals_exact;
-pass(8) = (norm(err, inf) < 1e7*get(f,'epslevel')*norm(vals_exact, inf));
+err = norm(vals_g - vals_exact, inf);
+tol = 1e7*get(f,'epslevel')*norm(vals_exact, inf);
+pass(8) = (err < tol);
 
 %%
 % fractional root at the left endpoint:

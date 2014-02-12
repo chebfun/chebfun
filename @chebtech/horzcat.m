@@ -31,7 +31,6 @@ out.values = cell2mat(cellfun(@(f) f.values, F, 'UniformOutput', false));
 % Vscales:
 vscales = cellfun(@(f) f.vscale, F, 'UniformOutput', false);
 out.vscale = cell2mat(vscales);
-% vscales = cellfun(@max, vscales);
 
 % Epslevel:
 epslevels = cellfun(@(f) f.epslevel, F, 'UniformOutput', false);

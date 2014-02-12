@@ -25,7 +25,7 @@ h.coeffs(:, colIdx) = g.coeffs;
 % Update happiness, vscale, and epslevel:
 h.ishappy = f.ishappy && g.ishappy;
 h.vscale = max(abs(h.values), [], 1);
-h.epslevel = max(max(f.epslevel.*f.vscale), max(g.epslevel.*g.vscale)) ...
-    / max(h.vscale);
+h.epslevel = f.epslevel;
+h.epslevel(colIdx) = g.epslevel;
 
 end
