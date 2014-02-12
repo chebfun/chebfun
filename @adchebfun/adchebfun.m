@@ -999,6 +999,20 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f.func = sin(f.func);
         end
         
+        function f = sinc(f)
+            % F = SINC(F)  SINC of an ADCHEBFUN.
+            
+            % Linearity information
+            f.isConstant = iszero(f.jacobian);
+            % Update derivative part
+            u = f.func;
+            v = (pi*u.*cos(pi*u) - sin(pi*u))./(pi*u.^2);
+            f.jacobian = operatorBlock.mult(v)*f.jacobian;
+            % Update CHEBFUN part
+            f.func = sinc(f.func);
+            
+        end
+        
         function f = sind(f)
             % F = SIND(F)   SIND of an ADCHEBFUN.
             
