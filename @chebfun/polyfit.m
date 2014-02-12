@@ -1,4 +1,4 @@
-function y = polyfit(y, n)
+function f = polyfit(y, n)
 %POLYFIT   Fit polynomial to a CHEBFUN.
 %   F = POLYFIT(Y, N) returns a CHEBFUN F corresponding to the polynomial of
 %   degree N that fits the CHEBFUN Y in the least-squares sense.
@@ -26,6 +26,7 @@ end
 if ( any(isinf(y.domain)) )
     error('CHEBFUN:polyfit:unbounded', 'Unbounded domains are not supported.');
 end
+
 if ( n > length(y) && numel(y.funs) == 1 && isa(y.funs{1}.onefun, 'chebtech') )
     % Nothing to do here!
     f = y;
@@ -33,7 +34,7 @@ if ( n > length(y) && numel(y.funs) == 1 && isa(y.funs{1}.onefun, 'chebtech') )
 end
 
 % Compute first n Legendre coeffs:
-cleg = legpoly(y, n).';                      
+cleg = legpoly(y, n+1).';
 
 % Convert to Chebyshev coeffs:
 c = zeros(size(cleg));
