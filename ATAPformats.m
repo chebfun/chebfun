@@ -32,12 +32,12 @@ elseif ( any(strcmpi(flag, {'reset', 'factory'})) )
     % Revert to MATLAB factory values.
 
     close all
-    set(0, 'defaultfigureposition', get(0, 'factoryfigureposition'));
-    set(0, 'defaultaxeslinewidth',  get(0, 'factoryaxeslinewidth'));
-    set(0, 'defaultaxesfontsize',   get(0, 'factoryaxesfontsize'));
-    set(0, 'defaultlinelinewidth',  get(0, 'factorylinelinewidth'));
-    set(0, 'defaultpatchlinewidth', get(0, 'factorypatchlinewidth'));
-    set(0, 'defaultlinemarkersize', get(0, 'factorylinemarkersize')); 
+    set(0, 'defaultfigureposition', 'factory');
+    set(0, 'defaultaxeslinewidth',  'factory');
+    set(0, 'defaultaxesfontsize',   'factory');
+    set(0, 'defaultlinelinewidth',  'factory');
+    set(0, 'defaultpatchlinewidth', 'factory');
+    set(0, 'defaultlinemarkersize', 'factory');
     chebpref.setDefaults('factory');
     
 end
