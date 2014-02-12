@@ -9,7 +9,7 @@ function f = poly(v, d)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with array input:
-if ( min(size(v)) > 1) )
+if ( min(size(v)) > 1 )
     f = cell(1, size(v, 2));
     for k = 1:size(v, 2)
         f{k} = poly(v(:,k), d);
