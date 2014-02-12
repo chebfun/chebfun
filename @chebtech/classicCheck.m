@@ -56,8 +56,9 @@ ishappy = false;
 if ( nargin == 1 )
     pref = f.techPref();
     epslevel = pref.eps;
-elseif ( isnumeric(f) )
+elseif ( isnumeric(pref) )
     epslevel = pref;
+    pref = f.techPref();
 else
     epslevel = pref.eps;
 end

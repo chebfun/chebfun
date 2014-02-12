@@ -14,7 +14,9 @@ for k = 1:numel(F)
     out = max(out, columnEpslevel(F(k)));
 end
 % Make it a _relative_ error estimate:
-out = out / vscale(F);
+vs = vscale(F);
+vs(vs < out) = 1;
+out = out / vs;
 
 end
 

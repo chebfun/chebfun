@@ -30,8 +30,7 @@ pass(3) = all(abs(y - y_exact) <= 10*vscale(f)*epslevel(f)) && ...
     all(abs(feval(f, x) - y_exact) <= 10*vscale(f)*epslevel(f));
 
 % Check operation for complex-valued chebfuns.
-f = chebfun({@(x) exp((1 + 1i)*x), @(x) sec(1i*(x - 0.5))}, [-1 0 1], ...
-    pref);
+f = chebfun({@(x) exp((1 + 1i)*x), @(x) 1-x/10}, [-1 0 1],  pref);
 [y, x] = max(f);
 y_exact = 1;
 pass(4) = all(abs(y - y_exact) <= 10*vscale(f)*epslevel(f)) && ...
