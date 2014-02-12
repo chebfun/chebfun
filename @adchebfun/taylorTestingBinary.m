@@ -1,38 +1,47 @@
 function [order1, order2, nDiff2] = taylorTestingBinary(func, hMax, plotting)
-% VALUETESTING  Test that ADCHEBFUN is constructing the correct derivatives
+% VALUETESTING  Test that ADCHEBFUN is constructing the correct derivatives.
 %
 % Here:
 %   F is a function handle
 
 % TODO: Describe algorithm.
 
-% By default, plotting is off.
+%% Parse inputs and initialise
+
+if ( nargin < 2 )
+    % Default hMax:
+    hMax = 4;
+end
 if ( nargin < 3 )
+    % By default, plotting is off.
     plotting = 0;
 end
 
 % Seed random generator to ensure same values.
 seedRNG(6179);
 
-% Generate two arbitrary ADCHEBFUN objects to evaluate the function at
-u1 = adchebfun(0.1*rand(15,1) + .5, [-1 1]);
-u2 = adchebfun(0.1*rand(15,1) + .5, [-1 1]);
+% Length of test functions and perturbations:
+N = 8;
 
-% Create copies with re-seeded derivatives (i.e. 1x2 CHEBMATRIX derivatives)
+% Generate two arbitrary ADCHEBFUN objects to evaluate the function at:
+u1 = adchebfun(0.1*rand(N, 1) + .5, [-1 1]);
+u2 = adchebfun(0.1*rand(N, 1) + .5, [-1 1]);
+
+% Create copies with re-seeded derivatives (i.e., 1x2 CHEBMATRIX derivatives)
 v1 = seed(u1, 1, 2);
 v2 = seed(u2, 2, 2);
 
 % Also create two arbitrary CHEBFUNS to test with
-w1 = 0.1*chebfun(rand(15,1)) + .5;
-w2 = 0.1*chebfun(rand(15,1)) + .5;
+w1 = chebfun(0.1*rand(N, 1) + .5);
+w2 = chebfun(0.1*rand(N, 1) + .5);
  
-% And finally two scalars to test with
-s1 = rand;
-s2 = rand;
+% And two scalars to test with:
+s1 = rand();
+s2 = rand();
  
-% Two CHEBFUNS used to create perturbations
-p1 = chebfun(0.01*rand(8,1)+.05,[-1 1]);
-p2 = chebfun(0.01*rand(8,1)+.05,[-1 1]);
+% Two CHEBFUNS used to create perturbations:
+p1 = chebfun(0.01*rand(N, 1) + .05, [-1 1]);
+p2 = chebfun(0.01*rand(N, 1) + .05, [-1 1]);
 
 %% Create various combinations of variables
 
@@ -51,7 +60,7 @@ u1s2 = func(u1, s2);
 % Evaluate func at s1 and u2 -- SCALAR and ADCHEBFUN
 s1u2 = func(s1, u2);
 
-% Extract Frechet derivatives
+% Extract Frechet derivatives:
 v1v2Jac = v1v2.jacobian;
 u1w2Jac = u1w2.jacobian;
 w1u2Jac = w1u2.jacobian;
@@ -65,21 +74,20 @@ nDiff1 = zeros(hMax, 5);
 nDiff2 = zeros(hMax, 5);
 
 % Factor we decrease by
-fact = 5;
+fact = 1/5;
 
 for hCounter = 1:hMax
     % Compute a perturbation function
-    pert1 = fact^-(hCounter+1)*p1;
-    pert2 = fact^-(hCounter+1)*p2;
+    pert1 = fact^(hCounter+1)*p1;
+    pert2 = fact^(hCounter+1)*p2;
 
     % Evaluate the function handle passed in at the function obtained by adding
     % perturbations to the ADCHEBFUN objects
-    v1v2Pert = func(v1+pert1, v2 + pert2);
+    v1v2Pert = func(v1 + pert1, v2 + pert2);
     u1w2Pert = func(u1 + pert1, w2);
     w1u2Pert = func(w1, u2 + pert2);
     u1s2Pert = func(u1 + pert1, s2);
     s1u2Pert = func(s1, u2 + pert2);
-
     
     % Compute information for Taylor testing.
     
@@ -102,11 +110,13 @@ for hCounter = 1:hMax
     nDiff2(hCounter,4) = norm(u1s2Pert - u1s2 - u1s2Jac*(pert1));
     nDiff2(hCounter,5) = norm(s1u2Pert - s1u2 - s1u2Jac*(pert2));
 end
+
 %% Compute the orders of convergence
+
 % Expect this to have entries close to 1
-order1 = bsxfun(@rdivide, diff(log(nDiff1)), diff(log(fact.^-(2:hMax+1))'));
+order1 = bsxfun(@rdivide, diff(log(nDiff1)), diff(log(fact.^(2:hMax+1))'));
 % Expect this to have entries close to 2
-order2 = bsxfun(@rdivide, diff(log(nDiff2)), diff(log(fact.^-(2:hMax+1))'));
+order2 = bsxfun(@rdivide, diff(log(nDiff2)), diff(log(fact.^(2:hMax+1))'));
 
 % We expect order1 to have values around 1 and order2 to have values around 2.
 % Thus, we can simply take the minimum values of each row, since incorrect
@@ -117,17 +127,12 @@ order2 = bsxfun(@rdivide, diff(log(nDiff2)), diff(log(fact.^-(2:hMax+1))'));
 %% Plotting
 
 if ( plotting == 1 )
-    loglog(fact.^-(1:hMax),nDiff1,'-*'), hold on
-    % Expected rate of convergence
-    loglog([1 5^-20],[1 5^-20],'k--')
-    
-    loglog(fact.^-(1:hMax),nDiff2,'r-*'), hold on
-    % Expected rate of convergence
-    loglog([1 5^-10],[1 5^-20],'k--')
-    set(gca,'XDir','reverse'), shg
-    grid on
-    shg
-    axis equal
+    loglog(fact.^(1:hMax), nDiff1, '-*'), hold on
+    loglog(fact.^(1:hMax), nDiff2, 'r-*')
+    % Expected rates of convergence
+    loglog([1 fact^10], [1 fact^20], 'k--')
+    loglog([1 fact^20], [1 fact^20], 'k--'); hold off
+    set(gca, 'XDir', 'reverse'), grid on, axis('equal'), shg
 end
 
 end
