@@ -147,7 +147,7 @@ delta = deltamin;
 if ( delta/normf > opts.tol )
     warning('CHEBFUN:remez:convergence', ...
         ['Remez algorithm did not converge after ', num2str(iter), ...
-         ' iterations to the tolerance ', num2str(tol), '.']);
+         ' iterations to the tolerance ', num2str(opts.tol), '.']);
 end
 
 % Form the outputs.
