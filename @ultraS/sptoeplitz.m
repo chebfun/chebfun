@@ -30,22 +30,25 @@ else
   end
 end
 
-
 % Size of result.
 m = length(col(:));
 n = length(row(:));
-%m=n;
 
-%Only use toeplitz if you have too... fairly slow. 
-if((m<2e3 && n<2e3) )%&& length(find(col))>m/2 && length(find(row))>n/2)
-    if(nnz(col)==1)
+% Only use toeplitz if you have too... fairly slow. 
+if( ( m < 2e3 ) && ( n < 2e3 ) )%&& length(find(col))>m/2 && length(find(row))>n/2) TODO: Remove comment?
+    % Note: nnz(col) -- Number of nonzero elements in col
+    
+    % TODO: Add a line what's going on? AB, 12/2/14
+    if( nnz(col) == 1 )
         Ic=find(col);
-        if(Ic==1), T = spdiags(col(Ic)*ones(m,1),0,m,n);
+        if( Ic == 1 )
+            T = spdiags(col(Ic)*ones(m, 1), 0, m, n);
         else
-            T = spdiags([col(Ic)*ones(m,1) col(Ic)*ones(m,1)],[-Ic+1,Ic-1],m,n);
+            T = spdiags([col(Ic)*ones(m, 1) col(Ic)*ones(m , 1)], ...
+                [-Ic + 1, Ic - 1], m, n);
         end
     else
-        T = toeplitz(col,row);
+        T = toeplitz(col, row);
         T = sparse(T); 
     end
 else
@@ -57,6 +60,6 @@ else
     % Use spdiags for construction.
     d = [ ir - 1; 1 - ic ];
     B = repmat( [ sr; sc ].', min(m, n), 1 );
-    T = spdiags( B, d, m, n );
+    T = spdiags(B, d, m, n);
 end
 end
