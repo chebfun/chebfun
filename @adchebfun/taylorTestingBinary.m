@@ -10,7 +10,7 @@ function [order1, order2, nDiff2] = taylorTestingBinary(func, hMax, plotting)
 
 if ( nargin < 2 )
     % Default hMax:
-    hMax = 4;
+    hMax = 3;
 end
 if ( nargin < 3 )
     % By default, plotting is off.

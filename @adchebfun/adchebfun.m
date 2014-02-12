@@ -888,7 +888,6 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             else                                % ADCHEBFUN.*ADCHEBFUN
                 % Temporarily store the function of 1./g
                 tmp = 1./g.func;
-                
                 % Derivative part
                 f.jacobian = operatorBlock.mult(tmp)*f.jacobian - ...
                     operatorBlock.mult(f.func.*tmp.^2)*g.jacobian;

@@ -2,12 +2,8 @@
 
 function pass = test_times
 
-
 % Initialise pass vector
 pass = zeros(2, 5);
-
-% Steps to be taken in Taylor testing
-numSteps = 6;
 
 % Tolerance for Taylor testing
 tolOrder = 1e-2;
@@ -23,7 +19,7 @@ err = adchebfun.valueTestingBinary(func);
 pass(1, :) = ( err == 0 );
 
 % Taylor testing
-[order1, order2, nDiff2] = adchebfun.taylorTestingBinary(func, numSteps);
+[order1, order2, nDiff2] = adchebfun.taylorTestingBinary(func);
 
 % We expect all elements of ORDER1 to be close to 1. Since the methods being
 % tested in this case are all linear, ORDER2 will be noise. However, since
