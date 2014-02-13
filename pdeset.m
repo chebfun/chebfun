@@ -27,10 +27,13 @@ function varargout = pdeset(varargin)
 %
 %       PDEflag - Specify which entries correspond to time derivatives. 
 %           [ vector of logicals {true} ].
+%
+%   See also: odeset
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
+%  PDE specific options
 names = ['Eps      ' 
          'N        '
          'Plot     '
@@ -39,13 +42,13 @@ names = ['Eps      '
          'PlotStyle'
          'PDEflag  ']; 
      
-m = size(names,1);
-shortNames = cell(m,1);
+m = size(names, 1);
+shortNames = cell(m, 1);
 for k = 1:m
-    shortNames{k} = strtrim(names(k,:));
+    shortNames{k} = strtrim(names(k, :));
 end
 
-% initialise
+% Initialise:
 opts = {};
 pdeOpts = {};
 
@@ -78,10 +81,10 @@ if ( isstruct(varargin{1}) )
     varargin(1) = [];
 end
 
-% Remember the old PDEOT values:
+% Remember the old PDEOPT values:
 for k = 1:m
     namek = shortNames{k};
-    if ( isfield(opts,namek) )
+    if ( isfield(opts, namek) )
         pdeOpts = [ pdeOpts {namek, opts.(namek)}];
     end
 end
@@ -91,12 +94,12 @@ k = 1;
 while ( k < length(varargin) )
     if ( ~any(strcmpi(fieldnames(odeset), varargin{k})) )
         if ( strcmpi(varargin{k}, 'Plot') || strcmpi(varargin{k}, 'HoldPlot') )
-            varargin{k+1} = onoff(varargin{k+1});
+            varargin{k + 1} = onoff(varargin{k + 1});
         end
-        pdeOpts = [pdeOpts varargin(k:k+1)];
-        varargin(k:k+1) = [];
+        pdeOpts = [pdeOpts varargin(k : k + 1)];
+        varargin(k : k + 1) = [];
     else
-        k = k+2;
+        k = k + 2;
     end
 end
 
@@ -112,7 +115,7 @@ end
 for k = 1:2:length(pdeOpts)
     for j = 1:m
         if ( strcmpi(pdeOpts{k}, shortNames{j}) )
-            opts.(shortNames{j}) = pdeOpts{k+1};
+            opts.(shortNames{j}) = pdeOpts{k + 1};
             break
         end
         if ( j == m )
@@ -139,6 +142,3 @@ function out = onoff(in)
         out = in;
     end
 end
-        
-    
-    
