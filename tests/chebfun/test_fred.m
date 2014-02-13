@@ -1,0 +1,26 @@
+function pass = test_fred(pref)
+
+if ( nargin == 0 )
+    pref = chebpref();
+end
+
+% A simple kernel:
+K = @(u, v) exp(-(u-v).^2);
+% Asimple CHEBFUN:
+f = chebfun(@sin, pref);
+% Call VOLT
+F = fred(K, f);
+
+% Test against some V4 results:
+pass(1) = abs(F(.5) - 0.293968048825243) < vscale(F)*epslevel(F);
+pass(2) = abs(norm(F) - 0.392002900508830) < vscale(F)*epslevel(F);
+
+% Test 3rd input argument. (Simply make sure we don't crash!)
+try 
+    F2 = fred(K, f, 1);
+    pass(3) = 1;
+catch
+    pass(3) = 0;
+end
+
+end
