@@ -1,10 +1,31 @@
 classdef chebdouble
-% TODO: Documentation of this class. Why do we need it, and what do the
-% properties represent? (In particular, why do we store a diffOrder in the
-% object).
+%CHEBDOUBLE  Chebyshev double class. For example, DIFF means Chebyshev difference.
+%
+%   PDE15S likes to work with doubles (for speed). However, the problem is that
+%   a call to PDE15s of the form pdeFun = @(u) diff(u) will simply call the
+%   built-in DIFF method and compute a finite difference method, rather than the
+%   derivative of the Chebyshev interpolant to the data.
+%
+%   To get around this, we use this CHEBDOUBLE class, which behaves in the same
+%   way as a double for almost all methods, except for DIFF, SUM, CUMSUM, and
+%   FEVAL, in which the stored values are presumbed to be values on a Chebyshev
+%   grid, and the appropriate action is taken.
+%
+%   This class in intended solely as a worker-class for PDE15s.
+
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
     properties ( GetAccess = 'public', SetAccess = 'public' )
+        
+        % VALUES: Values of a Chebyshev interpolant.
         values = [];
+        
+        % DOMAIN: Domain of the interpolant.
         domain = [-1,1];
+        
+        % DIFFORDER: Used to determine the highest order spatial derivative in a
+        % PDE or system of PDEs.
         diffOrder = 0;
     end
     
@@ -21,18 +42,14 @@ classdef chebdouble
 
         %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  DIFF  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         function u = diff(u, k)
-            % Computes the k-th derivative of u using Chebyshev differentiation
-            % matrices defined by diffmat.
+            %DIFF   Compute the k-th derivative of u using Chebyshev
+            % differentiation matrices defined by diffmat.
             
             % Store the diffmat D as a persistent variable to allow speeding up
             % if we work with the same discretization at multiple time steps.
             % Note that the matrix D is independent of the domain, since it is
             % scaled separately below.
             persistent D
-            
-            % Todo: Should we try to cache more matrices -- i.e. rather than
-            % just storing one, storing all matrices used in a given problem? We
-            % could then clear the cache at the end of a PDE solve?
             
             % Assume first-order derivative
             if ( nargin == 1 )
@@ -60,12 +77,10 @@ classdef chebdouble
         %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  SUM  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % The differential operators
         function I = sum(u, a, b)
-            % Computes the integral of u using clenshaw-curtis nodes and weights
-            % (which are stored for speed).
+            %SIM  Compute the integral of u using Clenshaw-Curtis nodes and
+            %     weights (which are stored for speed).
             
             persistent W
-            % TODO: Same as above, do we want to store more then one previous
-            % discretization?
             
             if ( isempty(W) )
                 W = {};
@@ -134,21 +149,22 @@ classdef chebdouble
         %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  CUMSUM  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % The differential operators
         function u = cumsum(u)
-            % Computes the indefinite integral of u.
+            %CUMSUM   Compute the indefinite integral of the Chebyshev
+            %         interpolant to u.
             
-            persistent CMAT
+            persistent C
 
             % Extract the data:
             N = length(u.values);
+            c = diff(u.domain)/2; % Interval scaling.
             
             % Compute cumsum matrix:
-            if ( numel(CMAT) ~= N )
-                c = diff(u.domain)/2; % Interval scaling.
-                CMAT = cumsummat(N);
+            if ( numel(C) ~= N )
+                C = cumsummat(N);
             end
             
             % Compute the indefinite integral:
-            u.values = CMAT*u.values;
+            u.values = c*(C*u.values);
             
             % Update the difforder:
             u.diffOrder = u.diffOrder - 1;
@@ -157,6 +173,10 @@ classdef chebdouble
         
         %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  FRED  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         function u = fred(K, u)
+            %FRED  Fredholm operator with kernel K.
+            %   FRED(K, U) computes the action of the Fredholm operator with
+            %   kernel K on the Chebyshev interpolant to the points in the
+            %   vector U.
             
             persistent X W
             if ( isempty(W) )
@@ -180,15 +200,38 @@ classdef chebdouble
             
         end
         
+        %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  VOLT  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        function u = volt(K, u)
+            %VOLT  Volterra operator with kernel K.
+            %   VOLT(K, U) computes the action of the Volterra operator with
+            %   kernel K on the Chebyshev interpolant to the points in the
+            %   vector U.
+            
+            persistent X C
+            
+            % Extract the data:
+            N = length(u.values);
+            c = diff(u.domain)/2; % Interval scaling.
+            
+            % Compute cumsum matrix:
+            if ( numel(C) ~= N )
+                X = chebpts(N, u.domain);
+                C = cumsummat(N);
+            end
+            
+            % The Fredholm operator:
+            [xx, yy] = ndgrid(X{N});
+            u = K(xx, yy) * C * (c*u.values);
+            
+        end
+
         %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  FEVAL  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
-        function uy = feval(u, y)
-            % TODO: This is evaluating an approximation of a function
-            % (represented at u) at a point y, using barycentric interpolation?
+        function out = feval(u, y)
+            %FEVAL   Evaluate polynomial interpolant of data {X_cheb, U} at a
+            % point y using barycentric interpolation.
             [x, w, v] = chebpts(length(u.values), u.domain);
-            uy = bary(y, u.values, x, v);
-            % TODO: Why this out variable? It's not returned.
-            out = bary(y, u, x, v);
+            out = bary(y, u.values, x, v);
         end
         
         %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  MISC  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -261,29 +304,24 @@ classdef chebdouble
         function u = atanh(u)
             u.values = atanh(u.values);
         end
-        function u = besselh(nu, k, z, varargin)
+        function u = besselh(nu, k, u, varargin)
             if ( nargin == 2 )
                 u = k;
                 u.values = besselh(nu, u.values);
             else
-                u = z;
                 u.values = besselh(nu, k, u.values, varargin{:});
             end
         end
-        function u = besseli(nu, z, varargin)
-            u = z;
+        function u = besseli(nu, u, varargin)
             u.values = besseli(nu, u.values, varargin{:});
         end
-        function u = besselj(nu, z, varargin)
-            u = z;
+        function u = besselj(nu, u, varargin)
             u.values = besselj(nu, u.values, varargin{:});
         end
-        function u = besselk(nu, z, varargin)
-            u = z;
+        function u = besselk(nu, u, varargin)
             u.values = besselk(nu, u.values, varargin{:});
         end                
-        function u = bessely(nu, z, varargin)
-            u = z;
+        function u = bessely(nu, u, varargin)
             u.values = bessely(nu, u.values, varargin{:});
         end  
         function u = conj(u)
@@ -391,11 +429,15 @@ classdef chebdouble
             u = plus(u, -v);
         end
         function u = mrdivide(u, v)
-            % TODO: This would get stuck in an infinite recursion call. Surely
-            % you want mrdivide(u.values, v.values), but you need to treat cases
-            % where u or v are numeric like below? Or are you intending to call
-            % rdivide?
-            u = mrdivide(u, v);
+             if ( isnumeric(v) )
+                u.values = u.values/v;
+            elseif ( isnumeric(u) )
+                v.values = u/v.values;
+                u = v;
+            else
+                error('CHEBFUN:chebdouble:rdivide:dim', ...
+                    'Matrix dimensions must agree.');
+            end
         end
         function u = mtimes(u, v)
             if ( isnumeric(v) )
@@ -404,11 +446,8 @@ classdef chebdouble
                 v.values = u*v.values;
                 u = v;
             else
-                % TODO: Do we actually want to alloow this? I find it weird that
-                % you get away with u*v in pde15s, but not Chebfun. Throwing an
-                % error would be more natural here.
-                u.values = u.values.*v.values;
-                u.diffOrder = max(u.diffOrder, v.diffOrder);
+                error('CHEBFUN:chebdouble:rdivide:dim', ...
+                    'Matrix dimensions must agree.');
             end
         end
         function out = norm(u)
@@ -487,7 +526,7 @@ classdef chebdouble
             end
         end
         function u = transpose(u)
-            u.values = tan(u.values);
+            u.values = transpose(u.values);
         end
         function u = uminus(u)
             u.values = -u.values;
@@ -502,9 +541,8 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% TODO: DIFFMAT and CUMSUMMAT are in @colloc2/private/. Below should be removed.
-
-% TODO 2: Aren't they also in chebtech2?
+% TODO: DIFFMAT and CUMSUMMAT are in @colloc2/private/ (and other places...)
+% Below should be removed.
 
 function D = diffmat(N,k)
 
