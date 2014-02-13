@@ -640,7 +640,9 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             %       P = GET(F, PROP, POS)
             %   to obtain the desired property of the element in the position
             %   POS only.
-           
+            %
+            %   See also: adchebfun/getElement, adchebfun/subsref.
+            
             % Allow access to any of F's properties via GET.
             if nargin == 2
                 out = vertcat(f.(prop));
@@ -650,8 +652,19 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
         
         function out = getElement(f, pos)
-            % TODO: Document
-            
+            % GETELEMENT    Access an element of an ADCHEBFUN array
+            %
+            % OUT = GETELEMENT(F, POS) returns the ADCHEBFUN in the position POS
+            % of an ADCHEBFUN array.
+            %
+            % The reason why we need this method is that concatenation of
+            % ADCHEBFUN objects result in arrays of ADCHEBFUNS. However, we
+            % reserve the syntax u(1) and similar for evaluating an ADCHEBFUN
+            % object at a point in its domain (i.e. feval). Thus, we can't
+            % access elements of ADCHEBFUN arrays in the standard Matlab way.
+            %
+            %   See also: adchebfun/getElement, adchebfun/subsref.
+
             % Return the pos-th element
             out = f(pos);
         end
@@ -686,7 +699,9 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         function u = jump(u, x, c)
             % U = JUMP(U)       JUMP of an ADCHEBFUN
             %
-            % 
+            % See also: chebfun/jump, functionalBlock.jump
+            
+            % Default value for the magnitude of the jump
             if ( nargin < 3)
                 c = 0;
             end
@@ -1087,7 +1102,20 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
         
         function out = subsref(f, index)
-            % TODO: Document
+        %  subsref   ADCHEBFUN subsref.
+        %   ( )
+        %     F(X) returns the value of the CHEBFUN part of the ADCHEBFUN F
+        %     evaluated on the array X.
+        %   .
+        %     F.PROP returns the property PROP of F as defined by 
+        %     GET(F, 'PROP').
+        %  
+        %   {}
+        %     F{S1, S2} restricts F to the domain [S1, S2] < [F.ENDS(1),
+        %     F.ENDS(end)].
+        %
+        %   See also: feval, get, restrict, chebfun/subsref
+        
             switch index(1).type
                 case '()'
                     out = feval(f, index.subs{1});
