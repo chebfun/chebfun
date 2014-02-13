@@ -100,7 +100,7 @@ end
 function out = roots_scalar(f, varargin)
 
 % Default preferences:
-rootsPref = struct('all', 0, 'recurse', 1, 'prune', 0, 'zeroFun', 1);
+rootsPref = struct('all', 0, 'recurse', 1, 'prune', 0, 'zeroFun', 1, 'qz', 0);
 % Subdivision maps [-1,1] into [-1, splitPoint] and [splitPoint, 1].
 splitPoint = -0.004849834917525;   % This is an arbitrary number.
 
@@ -118,6 +118,9 @@ while ( j <= length(varargin) )
     elseif ( strcmpi(varargin{j}, 'complex') )
         rootsPref.all = varargin{j+1};
         j = j + 2;
+    elseif ( strcmpi(varargin{j}, 'qz') )
+        rootsPref.qz = varargin{j+1}; 
+        j = j + 2; 
     else
         j = j + 1;
     end
@@ -215,7 +218,10 @@ end
         elseif ( ~rootsPref.recurse || (n <= 50) )
 
             % Adjust the coefficients for the colleague matrix:
-            c = -0.5 * c(1:end-1) / c(end);
+            
+            d = c(end); 
+            c = -0.5 * c(1:end-1) / d;
+ 
             c(end-1) = c(end-1) + 0.5;
             oh = 0.5 * ones(length(c)-1, 1);
 
@@ -224,10 +230,22 @@ end
             A = diag(oh, 1) + diag(oh, -1);
             A(end-1,end) = 1;
             A(:,1) = flipud(c);
+            
 
-            % Compute roots as eig(A):
-            r = eig(A);
-
+            % Compute roots by an EP if qz is 'off' and 
+            % by a GEP if qz is 'on'. QZ is theoretically stable, while 
+            % QR is not:
+            if ( rootsPref.qz )
+                % Set up the GEP: 
+                B = eye(length(c)); 
+                B(1,1) = d;
+                A(:,1) = A(:,1)*d; 
+                r = eig(A, B);
+            else
+                % Standard colleague:
+                r = eig(A); 
+            end
+           
             % Clean the roots up a bit:
             if ( ~rootsPref.all )
             
