@@ -6,20 +6,23 @@ function varargout = pde15s(pdeFun, tt, u0, bc, varargin)
 %   x) with the initial condition U0 and boundary conditions BC over the time
 %   interval TT.
 %
-%   PDEFUN should take the form @(U1, U2, ..., UN, T, X, D, S, C), where U1,
-%   ..., UN are the unknown dependent variables to be solved for, T is time, X
-%   is space, D is the differential operator, S is the definite integral
-%   operator (i.e., 'sum'), and C the indefinite integral operator (i.e.,
-%   'cumsum').
+%   PDEFUN should take the form @(U1, U2, ..., UN, T, X), where U1, ..., UN are
+%   the unknown dependent variables to be solved for, T is time, and X is space.
 %
-%   For equations of one variable, UU is output as a quasimatrix, where UU(:, k)
-%   is the solution at TT(k). For systems, the solution is returned as a cell
-%   array of quasimatrices.
+%   For backwards compatability, the syntax @(U1, U2, ..., UN, T, X, D, S, C)
+%   for PDEFUN, where U1, ..., UN are the unknown dependent variables to be
+%   solved for, T is time, X is space, D is the differential operator, S is the
+%   definite integral operator (i.e., 'sum'), and C the indefinite integral
+%   operator (i.e., 'cumsum') is also supported.
+%
+%   For equations of one variable, UU is output as an array valued chebfun,
+%   where UU(:, k) is the solution at TT(k). For systems, the solution is
+%   returned as a cell array of array valued chebfuns.
 %
 % Example 1: Nonuniform advection
 %     x = chebfun('x', [-1 1]);
 %     u = exp(3*sin(pi*x));
-%     f = @(u, t, x, diff) -(1+0.6*sin(pi*x)).*diff(u) + 5e-5*diff(u,2);
+%     f = @(u, t, x) -(1 + 0.6*sin(pi*x)).*diff(u) + 5e-5*diff(u, 2);
 %     opts = pdeset('Ylim', [0 20], 'PlotStyle', {'LineWidth', 2});
 %     uu = pde15s(f, 0:.05:3, u, 'periodic', opts);
 %     surf(uu, 0:.05:3)
@@ -27,9 +30,9 @@ function varargout = pde15s(pdeFun, tt, u0, bc, varargin)
 % Example 2: Kuramoto-Sivashinsky
 %     x = chebfun('x');
 %     u = 1 + 0.5*exp(-40*x.^2);
-%     bc.left = @(u, diff) [u - 1, diff(u)];
-%     bc.right = @(u, diff) [u - 1, diff(u)];
-%     f = @(u, diff) u.*diff(u) - diff(u, 2) - 0.006*diff(u, 4);
+%     bc.left = @(u) [u - 1, diff(u)];
+%     bc.right = @(u) [u - 1, diff(u)];
+%     f = @(u) u.*diff(u) - diff(u, 2) - 0.006*diff(u, 4);
 %     opts = pdeset('Ylim', [-30 30], 'PlotStyle', {'LineWidth', 2});
 %     uu = pde15s(f, 0:.01:.5, u, bc, opts);
 %     surf(uu, 0:.01:.5)
@@ -58,8 +61,8 @@ function varargout = pde15s(pdeFun, tt, u0, bc, varargin)
 %   such as
 %       x = chebfun('x', [-1 1]);
 %       u = exp(-3*x.^2);
-%       f = @(u, t, x, diff) .1*diff(u, 2);
-%       bc.left = @(u, t, x, diff) u - t;
+%       f = @(u, t, x) .1*diff(u, 2);
+%       bc.left = @(u, t, x) u - t;
 %       bc.right = 0;
 %       opts = pdeset('Ylim', [0 2], 'PlotStyle', {'LineWidth', 2});
 %       uu = pde15s(f, 0:.1:2, u, bc, opts);
@@ -71,6 +74,8 @@ function varargout = pde15s(pdeFun, tt, u0, bc, varargin)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.
 
+% TODO: Why do all of these variables need to be global? It's slightly
+% concerning -- couldn't we instead pass them to the methods that require them?
 global DIFFORDER GLOBX DMAT DOMAIN SYSSIZE
 DIFFORDER = 0;
 GLOBX = [];
@@ -78,6 +83,10 @@ DMAT = {};
 DOMAIN = [];
 SYSSIZE = 0;
 
+
+% TODO: When is this ever called? Is this for a demo purpose? Are we even able
+% to get to this method without input arguments, since it resides in the
+% @chebfun folder?
 if ( nargin == 0 || isempty(pdeFun) )
     x = chebfun('x', [-1 1]);
     u0 = (x-.5).*sin(pi*x);
@@ -89,10 +98,10 @@ if ( nargin == 0 || isempty(pdeFun) )
 end
 
 % Default options:
-tol = 1e-6;             % 'eps' in chebfun terminology
-doPlot = 1;             % plot after every time chunk?
-doHold = 0;             % hold plot?
-plotOpts = {'-'};         % Plot Style
+tol = 1e-6;             % 'eps' in Chebfun terminology
+doPlot = 1;             % Plot after every time chunk?
+doHold = 0;             % Hold plot?
+plotOpts = {'-'};       % Plotting style
 
 % Parse the variable inputs:
 if ( numel(varargin) == 2 )
@@ -136,6 +145,7 @@ end
 
 % Determine which figure to plot to (for CHEBGUI) and set default display values
 % for variables.
+% TODO: Ensure this still works when CHEBGUI gets merged into development.
 YLim = opt.YLim;
 gridOn = 0;
 guiFlag = false;
@@ -195,11 +205,12 @@ end
 % Get the domain and the independent variable 'x':
 DOMAIN = domain(u0);
 DOMAIN = DOMAIN([1 end]);
+% TODO: Remove xd, doesn't seem to be used elsewhere?
 xd = chebfun(@(x) x, DOMAIN);
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%  PARSE INPUTS TO PDEFUN  %%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Determine the size of the system
+% Determine the size of the system, i.e. number of dependent variables.
 SYSSIZE = min(size(u0));
 pdeFun = parseFun(pdeFun);
 if ( isfield(opt, 'difforder') )
