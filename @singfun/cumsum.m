@@ -56,7 +56,10 @@ elseif ( all(f.exponents) ) % Singularities at both endpoints:
     % Introduce a new break point at 0 using RESTRICT:
     f = restrict(f, [-1 0 1]);
     g{1} = singIntegral(f{1}, m)/(2^m);
+    rVal = get(g{1}, 'rval');
     g{2} = singIntegral(f{2}, m)/(2^m);
+    % Adjust the second piece:
+    g{2} = g{2} + (rVal - get(g{2}, 'lval'));
 else % Error message thrown for other cases:
     error('SINGFUN:cumsum:nosupport', ...
         'CUMSUM() does not support the given case.')

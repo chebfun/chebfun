@@ -127,7 +127,11 @@ pow2 = -0.5;
 op = @(x) (x-dom(1)).^pow1.*(dom(2)-x).^pow2;
 pref.singPrefs.exponents = [pow1 pow2];
 f = bndfun(op, dom, [], [], pref);
+
+% We temporarily disable this warning: 
+warning('off', 'CHEBFUN:SINGFUN:plus');
 g = cumsum(f);
+warning('on', 'CHEBFUN:SINGFUN:plus');
 x = sort(x);
 x1 = x(x <= mid);
 x2 = x(x > mid);
