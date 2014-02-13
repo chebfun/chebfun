@@ -59,7 +59,7 @@ elseif ( all(f.exponents) ) % Singularities at both endpoints:
     g{2} = singIntegral(f{2}, m)/(2^m);
 else % Error message thrown for other cases:
     error('SINGFUN:cumsum:nosupport', ...
-        'CUMSUM() does not support the case with the current exponents.')
+        'CUMSUM() does not support the given case.')
 end
 
 end
