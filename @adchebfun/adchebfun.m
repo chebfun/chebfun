@@ -610,6 +610,20 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % f.isConstant = f.isConstant;
         end 
         
+        function f = fred(K, f, varargin)
+            % FRED   Fredholm operator.
+            
+            % Update CHEBFUN part
+            f.func = fred(K, f.func);
+            
+            % Update derivative part
+            f.jacobian = operatorBlock.fred(f.domain, K, varargin{:})*f.jacobian;
+            
+            % FRED is a linear operation, so no need to update linearity info.
+            % f.isConstant = f.isConstant;
+            
+        end
+        
         function out = get(f, prop, pos)
             % TODO: Document
             
@@ -759,7 +773,6 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             
             % TODO: Do we want this method to return an ADCHEBFUN? Makes sense
             % in the 2-norm case, in particular for 2-norm squared.
-            
             [varargout{1:nargout}] = norm(f.func, varargin{:});
         end     
         
@@ -1148,7 +1161,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
         
         function f = uminus(f)
-            % -     Unary minus of an ADCHEBFUN
+            % -  Unary minus of an ADCHEBFUN
             
             % Do the obvious things...
             f.func = -f.func;
@@ -1156,9 +1169,23 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
         
         function f = uplus(f)
-            % -     Unary plus of an ADCHEBFUN
+            % -  Unary plus of an ADCHEBFUN
             
             % This method does nothing.
+        end
+        
+        function f = volt(K, f, varargin)
+            % VOLT   Volterra operator.
+            
+            % Update CHEBFUN part
+            f.func = volt(K, f.func);
+            
+            % Update derivative part
+            f.jacobian = operatorBlock.volt(f.domain, K, varargin{:})*f.jacobian;
+            
+            % VOLT is a linear operation, so no need to update linearity info.
+            % f.isConstant = f.isConstant;
+            
         end
         
         function out = vscale(f)
