@@ -218,9 +218,8 @@ end
         elseif ( ~rootsPref.recurse || (n <= 50) )
 
             % Adjust the coefficients for the colleague matrix:
-            
-            d = c(end); 
-            c = -0.5 * c(1:end-1) / d;
+            cold = c(:); 
+            c = -0.5 * c(1:end-1) / c(end);
  
             c(end-1) = c(end-1) + 0.5;
             oh = 0.5 * ones(length(c)-1, 1);
@@ -228,18 +227,21 @@ end
             % Modified colleague matrix:
             % [TODO]: Would the upper-Hessenberg form be better?
             A = diag(oh, 1) + diag(oh, -1);
-            A(end-1,end) = 1;
-            A(:,1) = flipud(c);
+            A(end-1, end) = 1;
+            A(:, 1) = flipud( c );
             
-
             % Compute roots by an EP if qz is 'off' and 
             % by a GEP if qz is 'on'. QZ is theoretically stable, while 
             % QR is not:
-            if ( rootsPref.qz )
-                % Set up the GEP: 
-                B = eye(length(c)); 
-                B(1,1) = d;
-                A(:,1) = A(:,1)*d; 
+            if ( isfield(rootsPref, 'qz') && rootsPref.qz )
+                % Set up the GEP. This is more involved because we are 
+                % scaling for extra stability.  
+                B = eye( size( A ) ); 
+                cold = cold / norm( cold, inf ); 
+                B(1, 1) = cold( end );
+                cold = -0.5 * cold( 1:end-1 );
+                cold( end-1 ) = cold( end-1 ) + 0.5 * B(1, 1);
+                A(:, 1) = flipud( cold ); 
                 r = eig(A, B);
             else
                 % Standard colleague:
