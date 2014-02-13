@@ -168,10 +168,6 @@ classdef fun % (Abstract)
     %% METHODS IMPLEMENTED BY THIS CLASS.
     methods
         
-        % Introduce new breakpoint to facilitate the computation of the
-        % indefinite integral of a FUN.
-        f = addBreaksForCumSum(f)
-        
         % Absolute value of a FUN. (f should have no zeros in its domain)
         f = abs(f, pref)
 

@@ -11,7 +11,7 @@ end
 seedRNG(7681);
 xr = 2 * rand(1000, 1) - 1;
 
-% Check empty casee.
+% Check empty case.
 pass(1) = isempty(cumsum(chebfun()));
 
 % Check an example with breakpoints but no impulses.
@@ -76,7 +76,6 @@ vals_exact = feval(g_exact, x);
 err = vals_g - vals_exact;
 pass(8) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
 
-
 %% piecewise smooth chebfun: smoothfun + singfun & splitting off:
 
 % define the domain:
@@ -110,11 +109,12 @@ for j = 1:3
     fval = feval(g, x);
     vals_exact = feval(opi{j}, x);
     err = fval - vals_exact;
-    result(j) = ( norm(err-mean(err), inf) < 1e7*get(f,'epslevel')*norm(vals_exact, inf) );
+    result(j) = ( norm(err-mean(err), inf) < ...
+        1e7*get(f,'epslevel')*norm(vals_exact, inf) );
 end
 pass(9) = all( result );
 
-%% piecewise smooth chebfun: smoothfun + singfu.
+%% piecewise smooth chebfun: SMOOTHFUN + SINGFUN.
 
 % define the domain:
 dom = [-1 1];

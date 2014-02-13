@@ -47,11 +47,16 @@ end
 % If f has no singularity at any endpoint, then just integrate its smooth part
 % and return.
 
-if ( issmooth(f) )     % No exponents. Integrate the smooth part:
+if ( issmooth(f) ) % No exponents. Integrate the smooth part:
     g = cumsum(f.smoothPart);
     return
 elseif ( ~all(f.exponents) ) % One fractional pole or one pole, or one root:
     g = singIntegral(f, m);
+elseif ( all(f.exponents) ) % Singularities at both endpoints:
+    % Introduce a new break point at 0 using RESTRICT:
+    f = restrict(f, [-1 0 1]);
+    g{1} = singIntegral(f{1}, m)/(2^m);
+    g{2} = singIntegral(f{2}, m)/(2^m);
 else % Error message thrown for other cases:
     error('SINGFUN:cumsum:nosupport', ...
         'CUMSUM() does not support the case with the current exponents.')
@@ -180,7 +185,9 @@ for k = 1:m
             g.exponents = [exps(1)+rootsLeft 0];
         else % The general case that both terms are non-trivial
             g.smoothPart = u + CM*xa;
-            g.exponents = [exps(1) 0];
+            [g.smoothPart, rootsLeft, ignored] = ...
+                extractBoundaryRoots(g.smoothPart);
+            g.exponents = [exps(1)+rootsLeft 0];
         end
         
     elseif ( abs(Cm) < tol*f.smoothPart.vscale )
