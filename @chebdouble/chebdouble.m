@@ -1,5 +1,7 @@
 classdef chebdouble
-    
+% TODO: Documentation of this class. Why do we need it, and what do the
+% properties represent? (In particular, why do we store a diffOrder in the
+% object).
     properties ( GetAccess = 'public', SetAccess = 'public' )
         values = [];
         domain = [-1,1];
@@ -22,7 +24,15 @@ classdef chebdouble
             % Computes the k-th derivative of u using Chebyshev differentiation
             % matrices defined by diffmat.
             
+            % Store the diffmat D as a persistent variable to allow speeding up
+            % if we work with the same discretization at multiple time steps.
+            % Note that the matrix D is independent of the domain, since it is
+            % scaled separately below.
             persistent D
+            
+            % Todo: Should we try to cache more matrices -- i.e. rather than
+            % just storing one, storing all matrices used in a given problem? We
+            % could then clear the cache at the end of a PDE solve?
             
             % Assume first-order derivative
             if ( nargin == 1 )
@@ -31,14 +41,15 @@ classdef chebdouble
             
             N = length(u.values);
             
+            % Construct D if we don't match a previous discretization.
             if ( isempty(D) || numel(D) < k || size(D{k}, 1) ~= N )
-                D{k} = diffmat(N,k); % Diffmat
+                D{k} = diffmat(N, k); % Diffmat
             end
             
             % Interval scaling
             c = 2/diff(u.domain);     
             
-            % <uliplying by the kth-order differentiation matrix
+            % Muliplying by the kth-order differentiation matrix
             u.values = c^k*(D{k}*u.values);
             
             % Update the difforder:
@@ -53,6 +64,9 @@ classdef chebdouble
             % (which are stored for speed).
             
             persistent W
+            % TODO: Same as above, do we want to store more then one previous
+            % discretization?
+            
             if ( isempty(W) )
                 W = {};
             end
@@ -67,8 +81,8 @@ classdef chebdouble
                 if ( length(b) > 1 )
                     if ( ~all(b == x) )
                         error('CHEBFUN:pde15s:sumb', ...
-                            ['Limits in sum must be scalars or the indep ', ...
-                            'space var (typically ''x'').']);
+                            ['Limits in sum must be scalars or the ', ...
+                            'independent space variable (typically ''x'').']);
                     elseif ( a < x(1) )
                         error('CHEBFUN:pde15s:sumint', ...
                             'Limits of integration outside of domain.');
@@ -79,8 +93,8 @@ classdef chebdouble
                 elseif ( length(a) > 1 )
                     if ( ~all(a == x) )
                         error('CHEBFUN:pde15s:suma', ...
-                            ['Limits in sum must be scalars or the indep', ...
-                            ' space var (typically ''x'').']);
+                            ['Limits in sum must be scalars or the ', ...
+                            'independent space variable (typically ''x'').']);
                     elseif ( b > x(end) )
                         error('CHEBFUN:pde15s:sumint', ...
                             'Limits of integration outside of domain.');
@@ -169,12 +183,17 @@ classdef chebdouble
         %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  FEVAL  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         function uy = feval(u, y)
+            % TODO: This is evaluating an approximation of a function
+            % (represented at u) at a point y, using barycentric interpolation?
             [x, w, v] = chebpts(length(u.values), u.domain);
             uy = bary(y, u.values, x, v);
+            % TODO: Why this out variable? It's not returned.
             out = bary(y, u, x, v);
         end
         
         %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  MISC  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % Standard Matlab methods. Most of these proceed by simply calling the
+        % corresponding method on the values property of the CHEBDOUBLE object.
         
         function u = abs(u)
             u.values = abs(u.values);
@@ -369,9 +388,13 @@ classdef chebdouble
             out = sum(f)/diff(f.domain);
         end
         function u = minus(u, v)
-            u = plus(u,-v);
+            u = plus(u, -v);
         end
         function u = mrdivide(u, v)
+            % TODO: This would get stuck in an infinite recursion call. Surely
+            % you want mrdivide(u.values, v.values), but you need to treat cases
+            % where u or v are numeric like below? Or are you intending to call
+            % rdivide?
             u = mrdivide(u, v);
         end
         function u = mtimes(u, v)
@@ -381,6 +404,9 @@ classdef chebdouble
                 v.values = u*v.values;
                 u = v;
             else
+                % TODO: Do we actually want to alloow this? I find it weird that
+                % you get away with u*v in pde15s, but not Chebfun. Throwing an
+                % error would be more natural here.
                 u.values = u.values.*v.values;
                 u.diffOrder = max(u.diffOrder, v.diffOrder);
             end
@@ -477,6 +503,8 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % TODO: DIFFMAT and CUMSUMMAT are in @colloc2/private/. Below should be removed.
+
+% TODO 2: Aren't they also in chebtech2?
 
 function D = diffmat(N,k)
 
