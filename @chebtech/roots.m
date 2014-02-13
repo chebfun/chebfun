@@ -57,6 +57,10 @@ function out = roots(f, varargin)
 %  * L. N. Trefethen, Approximation Theory and Approximation Practice, SIAM,
 %    2013, chapter 18.
 %
+%  [TODO]: Update this reference.
+%  * Y. Nakatsukasa and V. Noferini, On the stability of polynomial rootfinding
+%  via linearizations in nonmonomial bases, (In Prep).
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Deal with empty case:
@@ -102,7 +106,7 @@ function out = roots_scalar(f, varargin)
 % Default preferences:
 rootsPref = struct('all', 0, 'recurse', 1, 'prune', 0, 'zeroFun', 1, 'qz', 0);
 % Subdivision maps [-1,1] into [-1, splitPoint] and [splitPoint, 1].
-splitPoint = -0.004849834917525;   % This is an arbitrary number.
+splitPoint = -0.004849834917525; % This is an arbitrary number.
 
 if ( nargin > 1 && isa(varargin{1}, 'struct') )
     rootsPref = varargin{1};
@@ -218,53 +222,47 @@ end
         elseif ( ~rootsPref.recurse || (n <= 50) )
 
             % Adjust the coefficients for the colleague matrix:
-            cold = c(:); 
+            cOld = c(:); 
             c = -0.5 * c(1:end-1) / c(end);
- 
             c(end-1) = c(end-1) + 0.5;
-            oh = 0.5 * ones(length(c)-1, 1);
-
+            
             % Modified colleague matrix:
             % [TODO]: Would the upper-Hessenberg form be better?
+            oh = 0.5 * ones(length(c)-1, 1);
             A = diag(oh, 1) + diag(oh, -1);
             A(end-1, end) = 1;
             A(:, 1) = flipud( c );
             
-            % Compute roots by an EP if qz is 'off' and 
-            % by a GEP if qz is 'on'. QZ is theoretically stable, while 
-            % QR is not:
+            % Compute roots by an EP if qz is 'off' and by a GEP if qz is 'on'.
+            % QZ has been proved to be stable, while QR is not (see [Nakatsukasa
+            % & Noferini, 2014]):
             if ( isfield(rootsPref, 'qz') && rootsPref.qz )
-                % Set up the GEP. This is more involved because we are 
-                % scaling for extra stability.  
+                % Set up the GEP. (This is more involved because we are scaling
+                % for extra stability.)
                 B = eye( size( A ) ); 
-                cold = cold / norm( cold, inf ); 
-                B(1, 1) = cold( end );
-                cold = -0.5 * cold( 1:end-1 );
-                cold( end-1 ) = cold( end-1 ) + 0.5 * B(1, 1);
-                A(:, 1) = flipud( cold ); 
+                cOld = cOld / norm( cOld, inf ); 
+                B(1, 1) = cOld( end );
+                cOld = -0.5 * cOld( 1:end-1 );
+                cOld( end-1 ) = cOld( end-1 ) + 0.5 * B(1, 1);
+                A(:, 1) = flipud( cOld ); 
                 r = eig(A, B);
             else
-                % Standard colleague:
+                % Standard colleague (See [Good, 1961]):
                 r = eig(A); 
             end
            
             % Clean the roots up a bit:
             if ( ~rootsPref.all )
-            
                 % Remove dangling imaginary parts:
                 mask = abs(imag(r)) < htol;
                 r = real( r(mask) );
-                
                 % Keep roots inside [-1 1]:
                 r = sort( r(abs(r) <= 1 + htol) );
-                
                 % Correct roots over ends:
                 if ( ~isempty(r) )
                     r(1) = max(r(1), -1);
                     r(end) = min(r(end), 1);
                 end
-
-            % Prune?
             elseif ( rootsPref.prune )
                 rho = sqrt(eps)^(-1/n);
                 rho_roots = abs(r + sqrt(r.^2 - 1));
