@@ -137,6 +137,8 @@ if ( ~isempty(opt.PlotStyle) )
 end
 
 % Experimental feature for coupled ode/pde systems:
+% TODO: Explain the variable pdeFlag. An entry equal to 1 denotes that the
+% corresponding variable appears with a time derivative, 0 otherwise?
 if ( isfield(opt, 'PDEflag') )
     pdeFlag = opt.PDEflag;
 else
@@ -229,7 +231,10 @@ elseif ( iscell(bc) && numel(bc) == 2 )
     bc = struct( 'left', bc{1}, 'right', bc{2});
 end
 
-% Initialise some rubbish:
+% Initialise some rubbish.
+% Todo: Rubbish?
+% TODO: Do we still need all of this if we get rid of some of the global
+% variables?
 GLOBX = 1;
 leftNonlinBCLocs = [];
 rightNonlinBCLocs = [];
@@ -237,7 +242,7 @@ BCRHS = {};
 
 if ( ischar(bc) && strcmpi(bc, 'periodic') )
     %% %%%%%%%%%%%%%%%%%%%%%%%%%%% PERIODIC BCS  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    r = cell(sum(DIFFORDER),1);
+    r = cell(sum(DIFFORDER), 1);
     count = 1;
     for j = 1:SYSSIZE
         for k = 1:DIFFORDER(j)
@@ -279,7 +284,7 @@ else
             error('For BCs of the form {char, val} val must be numeric.')
         end
         if ( strcmpi(bc.left, 'dirichlet') )
-            A = @(n) [1 zeros(1, n-1)];
+            A = @(n) [1 zeros(1, n - 1)];
         elseif ( strcmpi(bc.left, 'neumann') )
             % TODO: Make right diff operator explicitly.
             A = @(n) [1 zeros(1, n-1)]*diffmat(n)*diff(DOMAIN)/2;
@@ -288,7 +293,8 @@ else
         end
         bc.left.op = cell(SYSSIZE, 1);
         for k = 1:SYSSIZE
-            bc.left.op{k} = @(n) [zeros(1,(k-1)*n) A(n) zeros(1,(SYSSIZE-k)*n)];
+            bc.left.op{k} = @(n) [zeros(1, ( k -1)*n) A(n) ...
+                zeros(1 , (SYSSIZE - k)*n)];
         end
         BCRHS = num2cell(repmat(v, SYSSIZE, 1));
     elseif ( numel(bc.left) == 1 && isa(bc.left, 'function_handle') )
@@ -377,12 +383,12 @@ if ( doPlot )
     plot(u0, plotOpts{:});
     
     % Hold?
-    ish = ishold();
+    ish = ishold(); % Store to be able to return to previous state once finished
     if ( doHold )
         hold on
     end
     
-    % Y limits?
+    % Fix Y limits?
     if ( ~isempty(YLim) )
         ylim(YLim);
     end
@@ -404,6 +410,7 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% MISC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% TODO: Unused variable?
 t0 = tt(1);
 
 % The vertical scale of the intial condition:
@@ -450,6 +457,8 @@ for nt = 1:length(tt)-1
     uCurrent = chebfun(unew, DOMAIN);
     
     % Store in uOut:
+    % TODO: Could we preallocate uOut? We know what the dimensions will be,
+    % since the number of columns is determined by TT?
     uOut{nt + 1} = uCurrent;
     
     % Plotting:
@@ -477,6 +486,7 @@ for nt = 1:length(tt)-1
         %         drawnow
     end
     
+    % TODO: Restore once CHEBGUI is operating.
     %     if ( guiFlag )
     %         % Interupt comutation if stop or pause  button is pressed in the GUI.
     %         if ( strcmp(get(solveButton, 'String'), 'Solve') )
@@ -518,8 +528,12 @@ if ( doPlot && ~ish )
     hold off
 end
 
+% If we only had one dependent variable, return an array valued CHEBFUN instead
+% of a QUASIMATRIX.
+% TODO: In case of systems, could we return cells of array valued chebfuns
+% instead of cells of quasimatrices?
 if ( SYSSIZE == 1 )
-    uOut = horzcat(uOut{:})
+    uOut = horzcat(uOut{:});
 end
 
 switch nargout
