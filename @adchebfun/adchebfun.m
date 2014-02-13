@@ -625,8 +625,22 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
         
         function out = get(f, prop, pos)
-            % TODO: Document
-            
+            %GET   Access properties of ADCHEBFUN objects.
+            %   P = GET(F, PROP) returns the property P specified in the string
+            %   PROP from the CHEBFUN F. Valid entries for the string PROP are:
+            %       'DOMAIN'     -   The domain of definintion of F.
+            %       'FUNC'       -   The chebfun/scalar part of F.
+            %       'JACOBIAN'   -   The derivative of F w.r.t. the seeding
+            %                        variable.
+            %       'ISCONSTANT' -   Whether F has a constant derivative w.r.t.
+            %                        the seeding variable (useful for linearity
+            %                        detection).
+            %
+            %   In case F is an ADCHEBFUN array, use the call
+            %       P = GET(F, PROP, POS)
+            %   to obtain the desired property of the element in the position
+            %   POS only.
+           
             % Allow access to any of F's properties via GET.
             if nargin == 2
                 out = vertcat(f.(prop));
