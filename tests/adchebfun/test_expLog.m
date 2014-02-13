@@ -5,9 +5,6 @@ function pass = test_expLog
 % List of trigonometric functions to test.
 explogFunctions = {@exp, @expm1, @log, @log10, @log1p, @log2};
 
-% How many iterations we want to in the Taylor testing
-numSteps = 4;
-
 % Tolerance for Taylor testing
 tol = 1e-2;
 
@@ -20,7 +17,7 @@ for k = 1:numel(explogFunctions)
     pass(1, k) = ( adchebfun.valueTesting(explogFunctions{k}) == 0 );
     
     % Call the taylorTesting method
-    [order1, order2] = adchebfun.taylorTesting(explogFunctions{k}, numSteps);
+    [order1, order2] = adchebfun.taylorTesting(explogFunctions{k});
     % We expect all elements of ORDER1 to be close to 1, and of ORDER2 to be
     % close to 2.
     pass(2, k) = ( max(abs(order1 - 1)) < tol ) & ...

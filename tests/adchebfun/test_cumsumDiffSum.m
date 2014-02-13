@@ -7,9 +7,6 @@ diffFunctions = {@diff, @(u)diff(u,2), @(u)diff(u,4), ...
                  @sum, ...
                  @cumsum, @(u)cumsum(u,2)};
 
-% How many iterations we want to in the Taylor testing
-numSteps = 4;
-
 % Tolerance for Taylor testing
 tolOrder = 1e-2;
 tolDiff = 1e-12;
@@ -22,7 +19,7 @@ for k = 1:numel(diffFunctions)
     pass(1,k) = ( adchebfun.valueTesting(diffFunctions{k}) == 0 );
     
     % Call the taylorTesting method
-    [order1, order2, nDiff2] = adchebfun.taylorTesting(diffFunctions{k}, numSteps);
+    [order1, order2, nDiff2] = adchebfun.taylorTesting(diffFunctions{k});
     
     % We expect all elements of ORDER1 to be close to 1. Since the methods being
     % tested in this case are all linear, ORDER2 will be noise. However, since
