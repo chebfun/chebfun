@@ -16,6 +16,6 @@ if ( nargin == 1 )
 end
 
 % Call the compose method:
-F = compose(F(k), @(x) sin(pi*x)./(pi*x), pref);
+F = compose(F, @(x) sin(pi*x)./(pi*x), pref);
 
 end
