@@ -817,8 +817,8 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 % Temporarily store the function value to be returned                
                 tmp = power(f.func, b.func);
                 % Derivative information
-                f.jacobian = operatorBlock.mult(b.func.*f.func.^(b.func-1))*...
-                    f.jacobian + ...
+                f.jacobian = ...
+                    operatorBlock.mult(b.func.*f.func.^(b.func-1))*f.jacobian + ...
                     operatorBlock.mult(tmp.*log(f.func))*b.jacobian; 
                 % Assign the function value
                 f.func = tmp;             
@@ -839,8 +839,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 % Linearity information
                 f.isConstant = iszero(f.jacobian);
                 % Update derivative of function value
-                f.jacobian = operatorBlock.mult(b.*power(f.func, b - 1))* ...
-                    f.jacobian;
+                f.jacobian = operatorBlock.mult(b.*power(f.func, b-1))*f.jacobian;
                 f.func = power(f.func, b);
                 
             % SCALAR.^ADCHEBFUN or CHEBFUN.^ADCHEBFUN
@@ -848,7 +847,6 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 b.isConstant = iszero(b.jacobian);
                 b.func = power(f, b.func);
                 b.jacobian = operatorBlock.mult(b.func.*log(f))*b.jacobian; 
-                b.domain = b.func.domain;
                 % Swap variables to get output of method
                 f = b;
             end
@@ -907,7 +905,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 tmp = 1./g.func;
                 % Derivative part
                 f.jacobian = operatorBlock.mult(tmp)*f.jacobian - ...
-                    operatorBlock.mult(f.func.*tmp.^2)*g.jacobian;
+                             operatorBlock.mult(f.func.*tmp.^2)*g.jacobian;
                 % Function part
                 f.func = f.func.*tmp;
                 
@@ -979,12 +977,12 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
         
         function varargout = semilogx(f, varargin)
-            % SEMILOGX      Semilogx plot of the CHEBFUN part of an ADCHEBFUN
+            % SEMILOGX   Semilogx plot of the CHEBFUN part of an ADCHEBFUN
             [varargout{1:nargout}] = semilogx(f.func, varargin{:});
         end
         
         function varargout = semilogy(f, varargin)
-            % SEMILOGY      semilogy plot of the CHEBFUN part of an ADCHEBFUN
+            % SEMILOGY   Semilogy plot of the CHEBFUN part of an ADCHEBFUN
             [varargout{1:nargout}] = semilogy(f.func, varargin{:});
         end
         
@@ -1005,9 +1003,8 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % Linearity information
             f.isConstant = iszero(f.jacobian);
             % Update derivative part
-            u = f.func;
-            v = (pi*u.*cos(pi*u) - sin(pi*u))./(pi*u.^2);
-            f.jacobian = operatorBlock.mult(v)*f.jacobian;
+            Jop = @(u) (pi*u.*cos(pi*u) - sin(pi*u))./(pi*u.^2);
+            f.jacobian = operatorBlock.mult(compose(f.func, Jop))*f.jacobian;
             % Update CHEBFUN part
             f.func = sinc(f.func);
             
