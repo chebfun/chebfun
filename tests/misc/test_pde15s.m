@@ -164,3 +164,16 @@ bc.left = @(u, v) u; bc.right = @(u, v) v;        % New way
 opt = pdeset('eps', 1e-6, 'Ylim', pi/2*[-1 1], 'AbsTol', 1e-6, 'RelTol', 1e-6);
 uu = pde15s(f, 0:.05:2, u, bc, opt, 64);
 
+%% 
+%chebop-style synatx
+
+close all
+x = chebfun('x');
+u = 1 + 0.5*exp(-40*x.^2);
+bcc = @(u, x) [u(-1)-1 ; feval(diff(u),-1) ; u(1)-1 ; feval(diff(u),1)];
+f = @(u) u.*diff(u) - diff(u, 2) - 0.006*diff(u, 4);
+opts = pdeset('Ylim', [-30 30], 'PlotStyle', {'LineWidth', 2});
+uu = pde15s(f, 0:.025:.5, u, bcc, opts);
+surf(uu, 0:.025:.5)
+
+

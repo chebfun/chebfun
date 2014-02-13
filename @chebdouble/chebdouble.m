@@ -398,6 +398,9 @@ classdef chebdouble
         function u = expm1(u)
             u.values = expm1(u.values);
         end
+        function u = extractColumns(u, k)
+            u.values = u.values(:, k);
+        end
         function val = get(u, prop)
             switch prop
                 case 'diffOrder'
@@ -503,7 +506,11 @@ classdef chebdouble
             u.values = sinh(u.values);
         end
         function u = subsref(u, s)
-            u.values = subsref(u.values, s);
+            if ( isnumeric(s.subs{1}) )
+                u = feval(u, s.subs{1});
+            else
+                u = subsref(u.values, s);
+            end
         end
         function u = tan(u)
             u.values = tan(u.values);

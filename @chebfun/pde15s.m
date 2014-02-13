@@ -74,28 +74,11 @@ function varargout = pde15s(pdeFun, tt, u0, bc, varargin)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.
 
-% TODO: Why do all of these variables need to be global? It's slightly
-% concerning -- couldn't we instead pass them to the methods that require them?
-global DIFFORDER GLOBX DMAT DOMAIN SYSSIZE
+% TODO: Syncronise with CHEBOP syntax. (In particular, .lbc, .rbc, and .bc).
+
+global DIFFORDER SYSSIZE
 DIFFORDER = 0;
-GLOBX = [];
-DMAT = {};
-DOMAIN = [];
 SYSSIZE = 0;
-
-
-% TODO: When is this ever called? Is this for a demo purpose? Are we even able
-% to get to this method without input arguments, since it resides in the
-% @chebfun folder?
-if ( nargin == 0 || isempty(pdeFun) )
-    x = chebfun('x', [-1 1]);
-    u0 = (x-.5).*sin(pi*x);
-    pdeFun = @(u, t, x) diff(u,2) + 15*fred(@(x, y) exp(-100*(x-y-.1).^2), u);
-    pdeFun = @(u, t, x) diff((1.1+sin(10*pi*x)).*diff(u));
-    tt = 0:.05:3;
-    bc = 'dirichlet';
-    varargin{1} = pdeset('Ylim', [-1 1], 'PlotStyle', {'LineWidth', 2});
-end
 
 % Default options:
 tol = 1e-6;             % 'eps' in Chebfun terminology
@@ -136,9 +119,8 @@ if ( ~isempty(opt.PlotStyle) )
     plotOpts = opt.PlotStyle;
 end
 
-% Experimental feature for coupled ode/pde systems:
-% TODO: Explain the variable pdeFlag. An entry equal to 1 denotes that the
-% corresponding variable appears with a time derivative, 0 otherwise?
+% Experimental feature for coupled ode/pde systems: (An entry equal to 1 denotes
+% that the corresponding variable appears with a time derivative. 0 otherwise.)
 if ( isfield(opt, 'PDEflag') )
     pdeFlag = opt.PDEflag;
 else
@@ -205,10 +187,7 @@ else
 end
 
 % Get the domain and the independent variable 'x':
-DOMAIN = domain(u0);
-DOMAIN = DOMAIN([1 end]);
-% TODO: Remove xd, doesn't seem to be used elsewhere?
-xd = chebfun(@(x) x, DOMAIN);
+DOMAIN = domain(u0, 'ends');
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%  PARSE INPUTS TO PDEFUN  %%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -230,13 +209,13 @@ if ( ischar(bc) && (strcmpi(bc, 'neumann') || strcmpi(bc, 'dirichlet')) )
 elseif ( iscell(bc) && numel(bc) == 2 )
     bc = struct( 'left', bc{1}, 'right', bc{2});
 end
+if ( isstruct(bc) && ~isfield(bc, 'middle') )
+    bc.middle.op = [];
+end
 
-% Initialise some rubbish.
-% Todo: Rubbish?
-% TODO: Do we still need all of this if we get rid of some of the global
-% variables?
-GLOBX = 1;
+% Initialise some global variables.
 leftNonlinBCLocs = [];
+middleNonlinBCLocs = [];
 rightNonlinBCLocs = [];
 BCRHS = {};
 
@@ -264,15 +243,18 @@ else
     elseif ( isfield(bc, 'right') && ~isfield(bc, 'left') )
         bc.left = [];
     elseif ( ~isfield(bc, 'left') && ~isfield(bc, 'right') )
-        bc.left = bc;
-        bc.right = bc.left;
+        bc = struct('left', [], 'right', [], 'middle', bc);
+%         bc.left = bc;
+%         bc.right = bc.left;
     end
     
     % Deal with struct and numeric input:
     bc.left = dealWithStructInput(bc.left);
     bc.right = dealWithStructInput(bc.right);
     
-    if ( ischar(bc.left) || (iscell(bc.left) && ischar(bc.left{1})) )
+    if ( isempty(bc.left) )
+        bc.left.op = [];
+    elseif ( ischar(bc.left) || (iscell(bc.left) && ischar(bc.left{1})) )
         %% %%%%%%%%%%%%%%%%%%%%% DIRICHLET AND NEUMANN BCS (LEFT) %%%%%%%%%%%%%%%%%%
         if ( iscell(bc.left) )
             v = bc.left{2};
@@ -286,7 +268,7 @@ else
         if ( strcmpi(bc.left, 'dirichlet') )
             A = @(n) [1 zeros(1, n - 1)];
         elseif ( strcmpi(bc.left, 'neumann') )
-            % TODO: Make right diff operator explicitly.
+            % TODO: Make left diff operator explicitly.
             A = @(n) [1 zeros(1, n-1)]*diffmat(n)*diff(DOMAIN)/2;
         else
             error('Unknown BC syntax');
@@ -311,7 +293,21 @@ else
         error('Unknown BC syntax');
     end
     
-    if ( ischar(bc.right) || (iscell(bc.right) && ischar(bc.right{1})) )
+    if ( isfield(bc, 'middle') && isa(bc.middle, 'function_handle') )
+        %% %%%%%%%%%%%%%%%%%%%%%  GENERAL BCS (MIDDLE)  %%%%%%%%%%%%%%%%%%%%%%%%
+        op = parseFun(bc.middle);
+        tmp = chebdouble(ones(1, SYSSIZE));
+        sizeOp = size(op(tmp, 0, mean(DOMAIN)));
+        middleNonlinBCLocs = 1:max(sizeOp);
+        bc.middle = [];
+        bc.middle.op = {@(n) zeros(max(sizeOp), SYSSIZE*n)}; % Dummy entries.
+        BCRHS = num2cell(zeros(1, max(sizeOp)));
+        middleNonlinBCFuns = op;
+    end
+    
+    if ( isempty(bc.right) )
+        bc.right.op = [];
+    elseif ( ischar(bc.right) || (iscell(bc.right) && ischar(bc.right{1})) )
         %% %%%%%%%%%%%%%%%%%%%%% DIRICHLET AND NEUMANN BCS (RIGHT) %%%%%%%%%%%%%%%%%
         if ( iscell(bc.right) )
             v = bc.right{2};
@@ -322,6 +318,8 @@ else
         if ( ~isnumeric(v) )
             error('For BCs of the form {char, val} val must be numeric.')
         end
+        
+            
         if ( strcmpi(bc.right, 'dirichlet') )
             A = @(n) [zeros(1, n-1), 1];
         elseif ( strcmpi(bc.right, 'neumann') )
@@ -352,6 +350,9 @@ else
     
 end
 
+if ( ~isfield(bc, 'middle') )
+    bc.middle.op = [];
+end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%% Support for coupled BVP-PDEs! %%%%%%%%%%%%%%%%%%%%%%
 % TODO: Test this!
@@ -410,16 +411,14 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% MISC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% TODO: Unused variable?
-t0 = tt(1);
-
 % The vertical scale of the intial condition:
 vscl = get(u0, 'vscale');
 
 % Initial condition:
 uCurrent = u0;
 % Storage:
-    uOut{1} = uCurrent;
+uOut = cell(1, numel(tt));
+uOut{1} = uCurrent;
 
 % Initialise variables for ONESTEP():
 B = []; q = []; rows = []; M = []; n = [];
@@ -457,8 +456,6 @@ for nt = 1:length(tt)-1
     uCurrent = chebfun(unew, DOMAIN);
     
     % Store in uOut:
-    % TODO: Could we preallocate uOut? We know what the dimensions will be,
-    % since the number of columns is determined by TT?
     uOut{nt + 1} = uCurrent;
     
     % Plotting:
@@ -530,8 +527,7 @@ end
 
 % If we only had one dependent variable, return an array valued CHEBFUN instead
 % of a QUASIMATRIX.
-% TODO: In case of systems, could we return cells of array valued chebfuns
-% instead of cells of quasimatrices?
+% TODO: Determine what we want to output for systems of equations. CHEBMATRIX?
 if ( SYSSIZE == 1 )
     uOut = horzcat(uOut{:});
 end
@@ -552,8 +548,6 @@ switch nargout
 end
 
 clear global DIFFORDER
-clear global GLOBX
-clear global DMAT
 clear global SYSSIZE
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -577,11 +571,8 @@ clear global SYSSIZE
             % The new discretisation length
             n = length(x);
             
-            % Set the global variable x
-            GLOBX = x;
-            
             % Linear constraints:
-            bcop = [bc.left.op ; bc.right.op];
+            bcop = [bc.left.op ; bc.middle.op ; bc.right.op];
             B = cell2mat(cellfun(@(f) feval(f, n), bcop, 'UniformOutput', false));
             
             % Project / mass matrix.
@@ -653,6 +644,11 @@ clear global SYSSIZE
                 end
                 F(rows(indx)) = tmp(1, :);
             end
+            if ( ~isempty(middleNonlinBCLocs) )
+                % TODO: This won't work if there are also left nonlin BCs
+                indx = 1:length(middleNonlinBCLocs);
+                F(rows(indx)) = double(middleNonlinBCFuns(Utmp, t, x));
+            end            
             if ( ~isempty(rightNonlinBCLocs) )
                 indx = numel(BCRHS) + 1 - rightNonlinBCLocs;
                 tmp = rightNonlinBCFuns(Utmp, t, x);
@@ -704,14 +700,9 @@ global SYSSIZE
 
 % Note. This is faster than mat2cell!
 tmpCell = cell(1, SYSSIZE);
-if ( isa(u, 'chebfun') )
-    for qk = 1:SYSSIZE
-        tmpCell{qk} = u(qk);
-    end
-else
-    for qk = 1:SYSSIZE
-        tmpCell{qk} = u(:, qk);
-    end
+d = get(u, 'domain');
+for qk = 1:SYSSIZE
+    tmpCell{qk} = extractColumns(u, qk);
 end
 newFun = oldFun(tmpCell{:}, varargin{:});
 end
@@ -739,6 +730,8 @@ if ( isstruct(in) )
     else
         error('PDE15S no longer supports struct inputs for bc.left and bc.right.')
     end
+elseif ( isempty(in) )
+    out = [];
 elseif ( isnumeric(in) )
     out = {'dirichlet', in};
 else
