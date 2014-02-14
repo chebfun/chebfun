@@ -1,12 +1,24 @@
-% function pass = test_pde15s(pref)
-% 
-% if ( nargin == 0 )
-%     pref = chebpref();
-% end
-% 
-% pass = 1;
-% 
-% end
+function pass = test_pde15s(pref, flag)
+
+if ( nargin == 0 )
+    pref = chebpref();
+end
+
+pass = 1;
+
+if ( nargin < 2  )
+    pause(.1+ .1*rand())
+else
+    try
+        doTests()
+    catch
+        pass = 0;
+    end
+end
+
+end
+
+function doTests()
 
 %% pde15s_demos
 % Some demos of pde15s (and pdesolve)
@@ -19,7 +31,6 @@ plot(u); hold on
 f = @(u) -diff(u);
 opts = pdeset('eps', 1e-4, 'abstol', 1e-4, 'reltol', 1e-4, 'plot', 1);
 uu = pde15s(f, 0:.05:2, u, 'periodic', opts);
-
 
 %% Nonuniform Advection
 close all
@@ -176,4 +187,4 @@ opts = pdeset('Ylim', [-30 30], 'PlotStyle', {'LineWidth', 2});
 uu = pde15s(f, 0:.025:.5, u, bcc, opts);
 surf(uu, 0:.025:.5)
 
-
+end
