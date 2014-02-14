@@ -96,8 +96,21 @@ classdef unbndfun < fun
                 % [TODO]: Does this make sense for an UNBNDFUN?
             end
             
-            % Preprocess the exponents supplied by the user:
-            if ( ~isempty(pref.singPrefs.exponents) )
+            % Try to determine if the function is singular:
+            if ( isempty(pref.singPrefs.exponents) )
+                
+                % Test if the function has infinite values at the far field. If
+                % so turn the default 'blowup' mode by assuming the
+                % singularities are poles:
+                lVal = feval(op, -1);
+                rVal = feval(op, 1);
+                if ( any(isinf([lVal rVal])) )
+                    pref.singPrefs.singType = {'pole', 'pole'};
+                end
+            
+            else
+                % Preprocess the exponents supplied by the user:
+                
                 % Since the exponents provided by the user are in the sense of
                 % unbounded domain, we need to negate them when the domain of
                 % the original operator/function handle is mapped to [-1 1]
