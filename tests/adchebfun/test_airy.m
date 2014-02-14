@@ -6,9 +6,6 @@ function pass = test_airy
 airy2 = @(f) airy(2, f);
 airyFunctions = {@airy, airy2};
 
-% How many iterations we want to in the Taylor testing
-numSteps = 6;
-
 % Tolerance for Taylor testing
 tol = 1e-2;
 
@@ -21,7 +18,7 @@ for k = 1:numel(airyFunctions)
     pass(1, k) = ( adchebfun.valueTesting(airyFunctions{k}) == 0 );
     
     % Call the taylorTesting method
-    [order1, order2] = adchebfun.taylorTesting(airyFunctions{k}, numSteps);
+    [order1, order2] = adchebfun.taylorTesting(airyFunctions{k});
     % We expect all elements of ORDER1 to be close to 1, and of ORDER2 to be
     % close to 2.
     pass(2, k) = ( max(abs(order1 - 1)) < tol ) & ...

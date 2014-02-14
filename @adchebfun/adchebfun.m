@@ -610,11 +610,41 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % f.isConstant = f.isConstant;
         end 
         
+        function f = fred(K, f, varargin)
+            % FRED   Fredholm operator.
+            
+            % Update CHEBFUN part
+            f.func = fred(K, f.func);
+            
+            % Update derivative part
+            f.jacobian = operatorBlock.fred(f.domain, K, varargin{:})*f.jacobian;
+            
+            % FRED is a linear operation, so no need to update linearity info.
+            % f.isConstant = f.isConstant;
+            
+        end
+        
         function out = get(f, prop, pos)
-            % TODO: Document
+            %GET   Access properties of ADCHEBFUN objects.
+            %   P = GET(F, PROP) returns the property P specified in the string
+            %   PROP from the CHEBFUN F. Valid entries for the string PROP are:
+            %       'DOMAIN'     -   The domain of definintion of F.
+            %       'FUNC'       -   The chebfun/scalar part of F.
+            %       'JACOBIAN'   -   The derivative of F w.r.t. the seeding
+            %                        variable.
+            %       'ISCONSTANT' -   Whether F has a constant derivative w.r.t.
+            %                        the seeding variable (useful for linearity
+            %                        detection).
+            %
+            %   In case F is an ADCHEBFUN array, use the call
+            %       P = GET(F, PROP, POS)
+            %   to obtain the desired property of the element in the position
+            %   POS only.
+            %
+            % See also: adchebfun/getElement, adchebfun/subsref.
             
             % Allow access to any of F's properties via GET.
-            if nargin == 2
+            if ( nargin == 2 )
                 out = vertcat(f.(prop));
             else
                 out = f(pos).(prop);
@@ -622,8 +652,18 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
         
         function out = getElement(f, pos)
-            % TODO: Document
-            
+            %GETELEMENT   Access an element of an ADCHEBFUN array
+            %   OUT = GETELEMENT(F, POS) returns the ADCHEBFUN in the position
+            %   POS of an ADCHEBFUN array.
+            %
+            %   The reason why we need this method is that concatenation of
+            %   ADCHEBFUN objects result in arrays of ADCHEBFUNS. However, we
+            %   reserve the syntax u(1) and similar for evaluating an ADCHEBFUN
+            %   object at a point in its domain (i.e. feval). Thus, we can't
+            %   access elements of ADCHEBFUN arrays in the standard Matlab way.
+            %
+            % See also: adchebfun/getElement, adchebfun/subsref.
+
             % Return the pos-th element
             out = f(pos);
         end
@@ -658,7 +698,9 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         function u = jump(u, x, c)
             % U = JUMP(U)       JUMP of an ADCHEBFUN
             %
-            % 
+            % See also: chebfun/jump, functionalBlock.jump
+            
+            % Default value for the magnitude of the jump
             if ( nargin < 3)
                 c = 0;
             end
@@ -775,7 +817,6 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             
             % TODO: Do we want this method to return an ADCHEBFUN? Makes sense
             % in the 2-norm case, in particular for 2-norm squared.
-            
             [varargout{1:nargout}] = norm(f.func, varargin{:});
         end     
         
@@ -833,8 +874,8 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 % Temporarily store the function value to be returned                
                 tmp = power(f.func, b.func);
                 % Derivative information
-                f.jacobian = operatorBlock.mult(b.func.*f.func.^(b.func-1))*...
-                    f.jacobian + ...
+                f.jacobian = ...
+                    operatorBlock.mult(b.func.*f.func.^(b.func-1))*f.jacobian + ...
                     operatorBlock.mult(tmp.*log(f.func))*b.jacobian; 
                 % Assign the function value
                 f.func = tmp;             
@@ -855,8 +896,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 % Linearity information
                 f.isConstant = iszero(f.jacobian);
                 % Update derivative of function value
-                f.jacobian = operatorBlock.mult(b.*power(f.func, b - 1))* ...
-                    f.jacobian;
+                f.jacobian = operatorBlock.mult(b.*power(f.func, b-1))*f.jacobian;
                 f.func = power(f.func, b);
                 
             % SCALAR.^ADCHEBFUN or CHEBFUN.^ADCHEBFUN
@@ -864,7 +904,6 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 b.isConstant = iszero(b.jacobian);
                 b.func = power(f, b.func);
                 b.jacobian = operatorBlock.mult(b.func.*log(f))*b.jacobian; 
-                b.domain = b.func.domain;
                 % Swap variables to get output of method
                 f = b;
             end
@@ -923,7 +962,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 tmp = 1./g.func;
                 % Derivative part
                 f.jacobian = operatorBlock.mult(tmp)*f.jacobian - ...
-                    operatorBlock.mult(f.func.*tmp.^2)*g.jacobian;
+                             operatorBlock.mult(f.func.*tmp.^2)*g.jacobian;
                 % Function part
                 f.func = f.func.*tmp;
                 
@@ -995,12 +1034,12 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
         
         function varargout = semilogx(f, varargin)
-            % SEMILOGX      Semilogx plot of the CHEBFUN part of an ADCHEBFUN
+            % SEMILOGX   Semilogx plot of the CHEBFUN part of an ADCHEBFUN
             [varargout{1:nargout}] = semilogx(f.func, varargin{:});
         end
         
         function varargout = semilogy(f, varargin)
-            % SEMILOGY      semilogy plot of the CHEBFUN part of an ADCHEBFUN
+            % SEMILOGY   Semilogy plot of the CHEBFUN part of an ADCHEBFUN
             [varargout{1:nargout}] = semilogy(f.func, varargin{:});
         end
         
@@ -1021,9 +1060,8 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % Linearity information
             f.isConstant = iszero(f.jacobian);
             % Update derivative part
-            u = f.func;
-            v = (pi*u.*cos(pi*u) - sin(pi*u))./(pi*u.^2);
-            f.jacobian = operatorBlock.mult(v)*f.jacobian;
+            Jop = @(u) (pi*u.*cos(pi*u) - sin(pi*u))./(pi*u.^2);
+            f.jacobian = operatorBlock.mult(compose(f.func, Jop))*f.jacobian;
             % Update CHEBFUN part
             f.func = sinc(f.func);
             
@@ -1063,7 +1101,20 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
         
         function out = subsref(f, index)
-            % TODO: Document
+        %  subsref   ADCHEBFUN subsref.
+        %   ( )
+        %     F(X) returns the value of the CHEBFUN part of the ADCHEBFUN F
+        %     evaluated on the array X.
+        %   .
+        %     F.PROP returns the property PROP of F as defined by 
+        %     GET(F, 'PROP').
+        %  
+        %   {}
+        %     F{S1, S2} restricts F to the domain [S1, S2] < [F.ENDS(1),
+        %     F.ENDS(end)].
+        %
+        %   See also: feval, get, restrict, chebfun/subsref
+        
             switch index(1).type
                 case '()'
                     out = feval(f, index.subs{1});
@@ -1167,7 +1218,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
         
         function f = uminus(f)
-            % -     Unary minus of an ADCHEBFUN
+            % -  Unary minus of an ADCHEBFUN
             
             % Do the obvious things...
             f.func = -f.func;
@@ -1175,9 +1226,23 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
         
         function f = uplus(f)
-            % -     Unary plus of an ADCHEBFUN
+            % -  Unary plus of an ADCHEBFUN
             
             % This method does nothing.
+        end
+        
+        function f = volt(K, f, varargin)
+            % VOLT   Volterra operator.
+            
+            % Update CHEBFUN part
+            f.func = volt(K, f.func);
+            
+            % Update derivative part
+            f.jacobian = operatorBlock.volt(f.domain, K, varargin{:})*f.jacobian;
+            
+            % VOLT is a linear operation, so no need to update linearity info.
+            % f.isConstant = f.isConstant;
+            
         end
         
         function out = vscale(f)

@@ -1,11 +1,12 @@
 % Test file for ADCHEBFUN CUMSUM, DIFF, and SUM
 
-function pass = test_cumsumDiffSum
+function pass = test_fredVolt
+
+K = @(s, t)  exp(-(s-t).^2);
 
 % List of trigonometric functions to test.
-diffFunctions = {@diff, @(u)diff(u,2), @(u)diff(u,4), ...
-                 @sum, ...
-                 @cumsum, @(u)cumsum(u,2)};
+diffFunctions = {@(u) fred(K, u), @(u) volt(K, u)};
+diffFunctions = {@(u) fred(K, u)};
 
 % Tolerance for Taylor testing
 tolOrder = 1e-2;
