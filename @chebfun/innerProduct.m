@@ -12,6 +12,13 @@ function out = innerProduct(f, g)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Cast numerical input to a CHEBFUN
+if ( isnumeric(f) )
+    f = chebfun(f, domain(g));
+elseif ( isnumeric(g) )
+    g = chebfun(g, domain(f));
+end
+
 numColsF = numColumns(f);
 numColsG = numColumns(g);
 

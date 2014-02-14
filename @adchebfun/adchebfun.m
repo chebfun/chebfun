@@ -681,12 +681,19 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             out = hscale(f.func);
         end
         
+        function f = innerProduct(f, g)
+            % F = INNERPRODUCT(F, G)   INNERPRODUCT of ADCHEBFUN objects.
+            
+            % Compute the inner product
+            f = sum(times(f, g));
+        end
+        
         function varargout = integral(varargin)
             % F = INTEGRAL(F)   INTEGRAL(F) synonym for SUM(F).
             
             [varargout{1:nargout}] = sum(varargin{:});
         end
-        
+              
         function u = jacreset(u)
             % U = JACRESET(U)
             % TODO: Document
