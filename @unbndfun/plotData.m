@@ -28,7 +28,9 @@ if ( nargin == 1 || isempty(g) )
     if ( isinf(f) )
         
         % If F is infinite, figure out where the mininum of ABS(F) takes place:
-        [ignored, minLoc] = min(abs(f));
+        [ignored, idx] = min(abs(get(f, 'values')));
+        pts = get(f, 'points');
+        minLoc = pts(idx);
         
         % If the left endpoint is -Inf:
         if ( isinf(data.xLim(1)) )
@@ -50,7 +52,9 @@ if ( nargin == 1 || isempty(g) )
         
     else
         % If F is finite, figure out where the maxinum of ABS(F) takes place:
-        [ignored, maxLoc] = max(abs(f));
+        [ignored, idx] = max(abs(get(f, 'values')));
+        pts = get(f, 'points');
+        maxLoc = pts(idx);
         
         % If the left endpoint is -Inf:
         if ( isinf(data.xLim(1)) )
