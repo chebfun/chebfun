@@ -83,7 +83,7 @@ if ( ~isa(f.smoothPart, 'chebtech') )
         'smoothPart.'])
 end
 
-for k = 1:m
+for l = 1:m
 
     % When the singularity is at the right end, we flip f so that the
     % singularity is at the left end of the domain.
