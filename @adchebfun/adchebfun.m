@@ -641,10 +641,10 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             %   to obtain the desired property of the element in the position
             %   POS only.
             %
-            %   See also: adchebfun/getElement, adchebfun/subsref.
+            % See also: adchebfun/getElement, adchebfun/subsref.
             
             % Allow access to any of F's properties via GET.
-            if nargin == 2
+            if ( nargin == 2 )
                 out = vertcat(f.(prop));
             else
                 out = f(pos).(prop);
@@ -652,18 +652,17 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
         
         function out = getElement(f, pos)
-            % GETELEMENT    Access an element of an ADCHEBFUN array
+            %GETELEMENT   Access an element of an ADCHEBFUN array
+            %   OUT = GETELEMENT(F, POS) returns the ADCHEBFUN in the position
+            %   POS of an ADCHEBFUN array.
             %
-            % OUT = GETELEMENT(F, POS) returns the ADCHEBFUN in the position POS
-            % of an ADCHEBFUN array.
+            %   The reason why we need this method is that concatenation of
+            %   ADCHEBFUN objects result in arrays of ADCHEBFUNS. However, we
+            %   reserve the syntax u(1) and similar for evaluating an ADCHEBFUN
+            %   object at a point in its domain (i.e. feval). Thus, we can't
+            %   access elements of ADCHEBFUN arrays in the standard Matlab way.
             %
-            % The reason why we need this method is that concatenation of
-            % ADCHEBFUN objects result in arrays of ADCHEBFUNS. However, we
-            % reserve the syntax u(1) and similar for evaluating an ADCHEBFUN
-            % object at a point in its domain (i.e. feval). Thus, we can't
-            % access elements of ADCHEBFUN arrays in the standard Matlab way.
-            %
-            %   See also: adchebfun/getElement, adchebfun/subsref.
+            % See also: adchebfun/getElement, adchebfun/subsref.
 
             % Return the pos-th element
             out = f(pos);
