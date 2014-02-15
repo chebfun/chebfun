@@ -30,7 +30,7 @@ if ( nargin == 1 || isempty(g) )
         % If F is infinite, figure out where the mininum of ABS(F) takes place:
         [ignored, idx] = min(abs(get(f, 'values')));
         pts = get(f, 'points');
-        minLoc = pts(idx);
+        minLoc = f.mapping.for(pts(idx));
         
         % If the left endpoint is -Inf:
         if ( isinf(data.xLim(1)) )
@@ -54,7 +54,7 @@ if ( nargin == 1 || isempty(g) )
         % If F is finite, figure out where the maxinum of ABS(F) takes place:
         [ignored, idx] = max(abs(get(f, 'values')));
         pts = get(f, 'points');
-        maxLoc = pts(idx);
+        maxLoc = f.mapping.for(pts(idx));
         
         % If the left endpoint is -Inf:
         if ( isinf(data.xLim(1)) )
