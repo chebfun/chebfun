@@ -19,7 +19,7 @@ err = adchebfun.valueTestingBinary(func);
 % exact zero, due to slightly different mechanisms used in
 % CHEBFUN/INNERPRODUCT() and ADCHEBFUN/INNERPRODUCT() for computing the value of
 % the inner products.
-pass(1, :) = ( err == 0 );
+pass(1, :) = ( err < tolDiff );
 
 % Taylor testing
 [order1, order2, nDiff2] = adchebfun.taylorTestingBinary(func);
