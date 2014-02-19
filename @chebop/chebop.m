@@ -294,16 +294,19 @@ classdef (InferiorClasses = {?double}) chebop
         % Controls information displayed for Newton iterations
         [displayFig, displayTimer] = displayInfo(mode, varargin);
         
+        % Display at the finish of Newton iteration.
+        displayInfoFinal(u, delta, iterNo, errEstDE, errEstBC, displayFig, ...
+            displayTimer, pref)
+        
         % Display at the start of Newton iteration.        
         [displayFig, displayTimer] = displayInfoInit(u,pref);
         
         % Display during Newton iteration.        
         displayInfoIter(u, delta, iterNo, normdu, cFactor, errEst, lendu, ...
             lambda, lenu, displayFig, displayTimer, pref);
-
-        % Display at the finish of Newton iteration.        
-        displayInfoFinal(u, delta, iterNo, errEstDE, errEstBC, displayFig, ...
-            displayTimer, pref)
+        
+        % Display special information for linear problems
+        displayInfoLinear(u, normRes, pref)
         
         % Convert RHS to a format used internally in chebop.
         newRHS = convertToRHS(rhs, residual)

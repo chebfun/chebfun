@@ -44,6 +44,10 @@ switch mode
     % Once iteration is over
     case 'final'
         chebop.displayInfoFinal(varargin{:});
+        
+    % Display special information in case of linear problems
+    case 'linear'
+        chebop.displayInfoLinear(varargin{:});
 end
 
 end

@@ -57,6 +57,13 @@ if ( all(isLinear) )
     
     % TODO: Return residual as well?
     uBlocks = u.blocks;
+    
+    % Norm of residual
+    normRes = norm(chebfun(L*u-rhs));
+    
+    % Print information after linear problem has been solved
+    displayInfo('linear', u, normRes, pref)
+    
     % TODO: Probably want a norm method for chebmatrices. THIS WILL BREAK IN
     % CASE OF SYSTEMS.
     err = feval(N.op, x , uBlocks{:}) - rhs;
