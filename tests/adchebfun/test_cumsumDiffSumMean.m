@@ -1,11 +1,12 @@
-% Test file for ADCHEBFUN CUMSUM, DIFF, and SUM
+% Test file for ADCHEBFUN CUMSUM, DIFF, MEAN and SUM
 
-function pass = test_cumsumDiffSum
+function pass = test_cumsumDiffSumMean
 
 % List of trigonometric functions to test.
-diffFunctions = {@diff, @(u)diff(u,2), @(u)diff(u,4), ...
-                 @sum, ...
-                 @cumsum, @(u)cumsum(u,2)};
+diffFunctions = {@diff, @(u)diff(u, 2), @(u)diff(u, 4), ...
+                 @sum, @(u) sum(u, -.25, .8), ...
+                 @cumsum, @(u)cumsum(u,2), ...
+                 @mean};
 
 % Tolerance for Taylor testing
 tolOrder = 1e-2;
