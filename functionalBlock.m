@@ -41,10 +41,9 @@ classdef functionalBlock < linBlock
             end
         end
 
-        function C = uminus(A)
+        function A = uminus(A)
             % Unary minus of a FUNCTIONALBLOCK
-            C = functionalBlock(A.domain);
-            C.stack = @(z) -A.stack(z);
+            A.stack = @(z) -A.stack(z);
         end
         
         function C = mtimes(A, B)
@@ -78,11 +77,13 @@ classdef functionalBlock < linBlock
                 C = functionalBlock(B.domain);
                 C.stack = @(z) A*B.stack(z);
                 C.diffOrder = B.diffOrder;
+                C.iszero = ( (A == 0) || B.iszero ); 
             elseif ( isa(B, 'operatorBlock') )
                 % Compose functional with operator. 
                 C = functionalBlock(A.domain);
                 C.stack = @(z) A.stack(z) * B.stack(z);
                 C.diffOrder = A.diffOrder + B.diffOrder;
+                C.iszero = A.iszero || B.iszero;
             else 
                 error('Unrecognized operand types.')
             end
@@ -93,10 +94,11 @@ classdef functionalBlock < linBlock
             C = functionalBlock(A.domain);
             C.stack = @(z) A.stack(z) + B.stack(z);
             C.diffOrder = max(A.diffOrder, B.diffOrder);
+            C.iszero = A.iszero && B.iszero;
         end        
         
         function out = iszero(A)
-            out = false;
+            out = A.iszero;
         end
 
     end
@@ -185,7 +187,7 @@ classdef functionalBlock < linBlock
             % functional on the domain DOMAIN (i.e. the functional that maps a
             % function to its definite integral).
             pref = cheboppref;
-            if ( nargin==0 )
+            if ( nargin == 0 )
                 domain = pref.domain;
             end
             
@@ -210,6 +212,9 @@ classdef functionalBlock < linBlock
             Z = functionalBlock(domain);
             Z.stack = @(z) zero(z);
             Z.diffOrder = 0;
+            
+            % This is the zero functional:
+            Z.iszero = true;
         end
     end
     
