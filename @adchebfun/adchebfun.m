@@ -782,6 +782,22 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             [varargout{1:nargout}] = loglog(f.func, varargin{:});
         end
         
+        function f = mean(f)
+            % MEAN(F) is the mean value of the ADCHEBFUN F.
+            
+            % Check to see if the domain is unbounded:
+            dom = f.domain;
+            infEnds = isinf(dom([1, end]));
+            
+            if ( any(infEnds) )
+                error('CHEBFUN:ADCHEBFUN:mean:domain', ...
+                    'The adchebfun/mean() method only supports finite domains');
+            end
+            
+            % Compute the mean, which is easy on a bounded domain.
+            f = sum(f)/diff(dom([1, end])); 
+        end
+        
         function f = minus(f, g)
             % -     Subtraction of ADCHEBFUN objects
             f = plus(f, -g);
