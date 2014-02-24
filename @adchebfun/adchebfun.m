@@ -1131,17 +1131,43 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             end
         end
         
-        function f = sum(f)
-            % F = SUM(F)   Definite integral of an ADCHEBFUN.
+        function f = sum(f, a, b)
+            %SUM   Definite integral of an ADCHEBFUN.
+            %
+            %   S = SUM(F) is the integral of an ADCHEBFUN over its domain of
+            %   definition.
+            %  
+            %   S = SUM(F, A, B), where A and B are scalars, integrates an
+            %   ADCHEBFUN F over [A, B], which must be a subdomain of F.domain.
             
-            % TODO: SUM(F, A, B) ?
-            
-            % Compute the definite integral of the CHEBFUN part. This will be a
-            % scalar, but we want to return and ADCHEBFUN in order to be able to
-            % return the derivative information as well.
-            f.func = sum(f.func);
-            % Update derivative information
-            f.jacobian = functionalBlock.sum(f.domain)*f.jacobian;
+            % Easy case, definite integral over the whole domain
+            if ( nargin == 1)
+                % Compute the definite integral of the CHEBFUN part. This will
+                % be a scalar, but we want to return and ADCHEBFUN in order to
+                % be able to return the derivative information as well.
+                f.func = sum(f.func);
+                % Update derivative information
+                f.jacobian = functionalBlock.sum(f.domain)*f.jacobian;
+            elseif ( nargin == 3 )
+                % In the case we got passed in a subdomain of F.DOMAIN, first
+                % ensure the points actually make up a subdomain
+                if ( (a < f.domain(1)) || (b > f.domain(end)) )
+                    error('CHEBFUN:ADCHEBFUN:sum:domain', ...
+                        ['Domain passed to SUM must be a subdomain of ', ...
+                        'the original domain.']);
+                end
+                
+                % Now call cumsum:
+                f = cumsum(f);
+                % The desired result is the difference of the output from above
+                % evaluated at the points B and A. The FEVAL() method of
+                % ADCHEBFUN ensures that the derivative will have correct form:
+                f = feval(f, b) - feval(f, a);
+            else
+                error('CHEBFUN:ADCHEBFUN:sum:nargin', ...
+                    'The sum method of ADCHEBFUN expects one or three inputs.');
+            end
+
         end
         
         function f = tan(f)
