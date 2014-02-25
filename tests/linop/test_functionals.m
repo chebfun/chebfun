@@ -9,7 +9,7 @@ f = cos(x)./(1+x.^2);
 
 %%
 [z,e,s,dt] = linop.primitiveFunctionals(d);
-A = [s; -2*dt(x.^2)];
+A = [s-z; -2*dt(x.^2)];
 Af = A*chebmatrix(f);
 pass(1) = abs( sum(f) - Af{1} ) < 100*eps;
 pass(2) = abs( -2*(f'*x.^2) - Af{2} ) < 100*eps;
