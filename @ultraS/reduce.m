@@ -1,16 +1,22 @@
-function [B, P] = reduce(disc, blocks)
-% TODO: Documentation missing. AB, 12/2/14.
+function [PA, P] = reduce(disc, blocks)
+%REDUCE Row dimension reduction for operator's matrix. 
+
+%   Each block row of the operator DISC.source has an associated dimension
+%   reduction to make room for constraints. Given discretized results in BLOCKS,
+%   the output PA has one cell per block row, with the resulting projected
+%   matrix. The output P has one cell per block row with the projection operator
+%   for the row.
 
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
 r = sizeReduction(disc.source);
 dim = disc.dimension;
-B = cell(size(blocks,1),1);
+PA = cell(size(blocks,1),1);
 P = cell(size(blocks,1),1);
 for i = 1:size(blocks,1)
     M = cat(2, blocks{i,:});
-    [B{i}, P{i}] = reduceOne(disc, M, dim - r(i));
+    [PA{i}, P{i}] = reduceOne(disc, M, dim - r(i));
 end
 
 end

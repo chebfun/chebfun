@@ -1,4 +1,4 @@
-function err = valueTesting(f, numOut)
+function [err, lin] = valueTesting(f, numOut)
 %VALUETESTING  Test that ADCHEBFUN is calling the correct method for the
 %   function part of the methods.
 %
@@ -33,5 +33,8 @@ v = adchebfun(u);
 
 % We should expect that the FUNC field of FV matches the FU
 err = max(cellfun(@(fu, fv) norm(fu - fv.func,'inf'), fu, fv));
+
+% Is the output linear?
+lin = cellfun(@(fv) fv.isConstant, fv);
 
 end
