@@ -1,5 +1,16 @@
 function varargout = matrix(disc, dimension, domain)
-% TODO: Documentation? AB, 12/2/14
+%MATRIX    Convert operator to matrix using ULTRAS discretization.
+%   MATRIX(DISC) uses the parameters in DISC to discretize DISC.source as a
+%   matrix. 
+%
+%   MATRIX(DISC, DIM, DOMAIN) overrides the native 'dimension' and 'domain'
+%   properties in DISC.
+%
+%   [PA, P, B, A] = MATRIX(...) returns the additional component matrices
+%   resulting from boundary condition manipulations, as described in
+%   ULTRAS.APPLYCONSTRAINTS.
+%
+%   See also: ULTRAS/INSTANTIATE.
 
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
