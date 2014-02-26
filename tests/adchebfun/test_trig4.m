@@ -29,7 +29,7 @@ for k = 1:numel(trigFunctions)
         ( max(abs(order2 - 2)) < tol );
     
     % Check that we received the correct linearity information
-    pass(3, k) = ( lin == 0);
+    pass(3, k) = ( lin == 0 );
 end
 
 end
