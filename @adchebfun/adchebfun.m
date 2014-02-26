@@ -1310,8 +1310,9 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         % Taylor testing for correctness of derivatives of binary operators
         [order1, order2, nDiff2] = taylorTestingBinary(f, hMax, plotting)
         
-        % Value testing for correctness of computed function
-        error = valueTesting(f, numOut)
+        % Value testing for correctness of computed function, also returns
+        % linearity information.
+        [err, lin] = valueTesting(f, numOut)
         
         % Value testing for correctness of computed function for binary
         % operators.
