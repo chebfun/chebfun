@@ -209,7 +209,7 @@ while ( ~terminate )
         break
     else
         % Linearize around current solution:
-        [L, res] = linearize(N, x, ub, []); % flag to negate contraint RHSs.
+        [L, res] = linearize(N, x, ub);
         
         % Need to subtract RHS from the residual
         res = res - rhs;

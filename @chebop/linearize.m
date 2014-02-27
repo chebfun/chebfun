@@ -118,10 +118,8 @@ if ~( isempty(N.lbc) )
         lbcUk = getElement(lbcU, k);
         % Evaluate the function at the left endpoint
         lbcUk = feval(lbcUk, N.domain(1));
-        % TODO: This should probably be moved to LINOP()
-        if ( nargin == 4 ), lbcUk.func = -lbcUk.func; end
         % Add the new condition to the LINOPCONSTRAINT BC.
-        BC = append(BC, lbcUk.jacobian, -lbcUk.func);
+        BC = append(BC, lbcUk.jacobian, lbcUk.func);
     end
     % Update linearity information.
     isLinear(2) = all(get(lbcU, 'isConstant'));
@@ -150,8 +148,6 @@ if ( ~isempty(N.rbc) )
         rbcUk = getElement(rbcU, k);
         % Evaluate the function at the right endpoint
         rbcUk = feval(rbcUk, N.domain(end));
-        % TODO: This should probably be moved to LINOP()
-        if ( nargin == 4 ), rbcUk.func = -rbcUk.func; end
         % Add the new condition to the LINOPCONSTRAINT BC.
         BC = append(BC, rbcUk.jacobian, -rbcUk.func);
     end
@@ -178,8 +174,6 @@ if ( ~isempty(N.bc) )
     
     % Gather all residuals of evaluating N.BC in one column vector.
     vals = cat(1, get(bcU, 'func'));
-    % TODO: This should probably be moved to LINOP()
-    if ( nargin == 4 ), vals = -vals; end
     % Loop through the conditions and append to the BC object.
     for k = 1:numel(bcU)
         BC = append(BC, get(bcU, 'jacobian', k), -vals(k));
