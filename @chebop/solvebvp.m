@@ -1,11 +1,12 @@
 function [u, info] = solvebvp(N, rhs, pref, displayInfo)
 
 % No preferences passed, use the current chebopprefs
-if nargin < 3
+if ( nargin < 3 )
     pref = cheboppref;
 end
 
-if nargin < 4
+% If no DISPLAYINFO function handle passed, use the default CHEBOP one.
+if ( nargin < 4 )
     displayInfo = @N.displayInfo;
 end
 
@@ -38,7 +39,7 @@ x = chebfun(@(x) x, dom);
 % Linearize
 [L, residual, isLinear] = linearize(N, x, u0);
 
-% If the RHS passed is numerical, cast it to a chebmatrix of appropriate size
+% If the RHS passed is numerical, cast it to a CHEBMATRIX of appropriate size
 % before continuing
 if ( isnumeric(rhs) )
     rhs = N.convertToRHS(rhs, residual);
@@ -59,7 +60,7 @@ if ( all(isLinear) )
     uBlocks = u.blocks;
     
     % Norm of residual
-    normRes = norm(chebfun(L*u-rhs));
+    normRes = norm(chebfun(L*u - rhs));
     
     % Print information after linear problem has been solved
     displayInfo('linear', u, normRes, pref)
@@ -79,8 +80,8 @@ else
     [u, info] = solvebvpNonlinear(N, rhs, L, u0, residual, pref, displayInfo);
 end
 
-% If we were solving a scalar problem, return a chebfun rather than a
-% chebmatrix.
+% If we were solving a scalar problem, return a CHEBFUN rather than a
+% CHEBMATRIX.
 if ( all(size(u) == [1 1]) )
     u = u{1};
 end
