@@ -141,7 +141,7 @@ if ( ~isempty(N.rbc) )
         % Evaluate the function at the right endpoint
         rbcUk = feval(rbcUk, N.domain(end));
         % Add the new condition to the LINOPCONSTRAINT BC.
-        BC = append(BC, rbcUk.jacobian, -rbcUk.func);
+        BC = append(BC, rbcUk.jacobian, rbcUk.func);
     end
     % Update linearity information.
     isLinear(3) = all(get(rbcU, 'isConstant'));
@@ -164,7 +164,7 @@ if ( ~isempty(N.bc) )
     vals = cat(1, get(bcU, 'func'));
     % Loop through the conditions and append to the BC object.
     for k = 1:numel(bcU)
-        BC = append(BC, get(bcU, 'jacobian', k), -vals(k));
+        BC = append(BC, get(bcU, 'jacobian', k), vals(k));
     end
     % Update linearity information.
     isLinear(4) = all(get(bcU, 'isConstant'));
