@@ -52,7 +52,7 @@ if ( nargin < 3 || isempty(u) )
 end
 
 % By default, set FLAG to 0.
-if ( nargin < 4)
+if ( nargin < 4 || isempty(flag) )
     flag = 0;
 end
 
