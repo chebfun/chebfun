@@ -7,14 +7,14 @@ function [L, res, isLinear] = linearize(N, x, u, flag)
 %   (from N.LBC and N.RBC) and other constraints (from N.BC).
 %
 % L = LINEARIZE(N, X, U) linearizes the CHEBOP N around the function U. Here, X
-%   denotes the independent variable on N.domain. Note that calling 
+%   denotes the independent variable on N.domain. Note that calling
 %   LINEARIZE(N, [], U) is also supported, i.e., the method will create the
 %   variable X. Here, U can either be a CHEBFUN or a CHEBMATRIX.
 %
 % L = LINEARIZE(N, X, U, FLAG) is useful when we call LINOP(CHEBOP), i.e.
 %   converting a linear CHEBOP to a LINOP. If FLAG = 1, the method will stop
 %   execution and return as soon as it encounters a nonlinear field in N.
-%   
+%
 % [L, RES] = LINEARIZE(N, ...) also returns the CHEBMATRIX RES, that corresponds
 %   to the residual of the differential equation part of N at the function it
 %   was linearized. In other words, RES is the result of evaluating N at the
@@ -106,11 +106,7 @@ if ~( isempty(N.lbc) )
     lbcU = N.lbc(u{:});
     
     % Ensure conditions were concatenated vertically, not horizontally
-    if ( size(lbcU, 2) > 1 )
-        error('CHEBFUN:CHEBOP:linearize:lbcConcat', ...
-            ['Chebop conditions must be vertically concatenated with a ' ...
-             ''';'',\nnot horizontally with a '',''.']);
-    end
+    checkConcat(lbcU);
     
     % Loop through the components of LBCU.
     for k = 1:numel(lbcU)
@@ -136,11 +132,7 @@ if ( ~isempty(N.rbc) )
     rbcU = N.rbc(u{:});
     
     % Ensure conditions were concatenated vertically, not horizontally
-    if ( size(rbcU, 2) > 1 )
-        error('CHEBFUN:CHEBOP:linearize:rbcConcat', ...
-            ['Chebop conditions must be vertically concatenated with a ' ...
-             ''';'',\nnot horizontally with a '',''.']);
-    end
+    checkConcat(rbcU);
     
     % Loop through the components of RBCU.
     for k = 1:numel(rbcU)
@@ -166,11 +158,7 @@ if ( ~isempty(N.bc) )
     bcU = N.bc(x, u{:});
     
     % Ensure conditions were concatenated vertically, not horizontally
-    if ( size(bcU, 2) > 1 )
-        error('CHEBFUN:CHEBOP:linearize:bcConcat', ...
-            ['Chebop conditions must be vertically concatenated with a ' ...
-            ''';'',\nnot horizontally with a '',''.']);
-    end
+    checkConcat(bcU);
     
     % Gather all residuals of evaluating N.BC in one column vector.
     vals = cat(1, get(bcU, 'func'));
@@ -183,4 +171,13 @@ if ( ~isempty(N.bc) )
 end
 % Append all constraints to the LINOP returned.
 L.constraint = BC;
+end
+
+function checkConcat(bc)
+% Ensure conditions were concatenated vertically, not horizontally
+if ( size(bc, 2) > 1 )
+    error('CHEBFUN:CHEBOP:linearize:bcConcat', ...
+        ['Chebop conditions must be vertically concatenated with a '';'',' ...
+        '\nnot horizontally with a '',''.']);
+end
 end
