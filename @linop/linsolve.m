@@ -6,10 +6,11 @@ function [u, disc] = linsolve(L, f, varargin)
 %   U = LINSOLVE(L, F), or U = L\F, solves the linear system defined by L*U=F
 %   for a linop L and chebmatrix F. The result is a chebmatrix.
 %
-%   Parameters controlling the method of solution are found and set using
-%   L.prefs. 
+%   LINSOLVE(L, F, PREFS) accepts a preference structure or object like that created
+%   by CHEBOPPREF in order to control the behavior of the algorithms. If empty,
+%   defaults are used. 
 %
-%   U = LINSOLVE(L, F, CDISC) uses the chebDiscretization CDISC to solve the
+%   U = LINSOLVE(...,CDISC) uses the chebDiscretization CDISC to solve the
 %   problem. This can be used, for example, to introduce new breakpoints that
 %   are not in the domain of either L or F.
 %
@@ -35,18 +36,21 @@ function [u, disc] = linsolve(L, f, varargin)
 % first to save time.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Store preferences of the input LINOP
-pref = L.prefs;
-disc = [];
-
 % Parse input
+prefs = [];    % no prefs given
+disc = [];     % no discretization given
 for j = 1:nargin-2
     item = varargin{j};
-    if isa(item, 'chebpref')
-        error('Preferences must be set to the ''prefs'' property of the linop.')
-    elseif isa(item,'chebDiscretization')
+    if ( isa(item, 'chebpref') || isstruct(item) )
+        prefs = item;
+    elseif ( isa(item,'chebDiscretization') )
         disc = item;
     end
+end
+
+% Grab defaults.
+if ( isempty(prefs) )
+    prefs = cheboppref;
 end
 
 % If RHS is a CHEBFUN, need to convert it to CHEBMATRIX in order for the method
@@ -56,9 +60,9 @@ if isa( f, 'chebfun' )
 end
 
 % Use a given discretization, or create one?
-dimVals = pref.dimensionValues;
+dimVals = prefs.dimensionValues;
 if isempty(disc)
-    disc = pref.discretization(L);
+    disc = prefs.discretization(L);
     % Update the domain if new breakpoints are needed
     disc.domain = chebfun.mergeDomains(disc.domain, f.domain); 
     % Update the dimensions to work with the correct number of breakpoints

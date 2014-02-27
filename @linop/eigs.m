@@ -29,6 +29,9 @@ function varargout = eigs(L,varargin)
 %   SIGMA must be chosen appropriately for the given operator. For example,
 %   'LM' for an unbounded operator will fail to converge.
 %
+%   EIGS(...,PREFS) accepts a preference structure or object like that defined
+%   by CHEBOPPREF to control the behavior of the algorithm.
+%
 %   This version of EIGS does not use iterative methods as in the built-in
 %   EIGS for sparse matrices. Instead, it uses the built-in EIG on dense
 %   matrices of increasing size, stopping when the targeted eigenfunctions
@@ -53,16 +56,15 @@ function varargout = eigs(L,varargin)
 M = [];       % no generalized operator
 k = [];       % will be made default value below
 sigma = [];   % default 'auto' mode
-prefs = L.prefs;
-discType = prefs.discretization;
+prefs = [];
 gotk = false; % until we detect a value of k in inputs
 for j = 1:nargin-1 
     item = varargin{j};
     if ( isa(item, 'linop') )
         % Generalized operator term
         M = item;
-    elseif ( isa(item, 'chebDiscretization') )
-        discType = item;
+    elseif ( isstruct(item) || isa(item,'cheboppref') )
+        prefs = item;
     elseif ( ~gotk && isnumeric(item) && (item > 0) && (item == round(item) ) )
         % k should be given before sigma (which might also be integer)
         k = item;
@@ -74,11 +76,20 @@ for j = 1:nargin-1
     end
 end
 
+% Grab defaults if needed.
+if ( isempty(prefs) )
+    prefs = cheboppref;
+end
+
+% Discretization type.
+discType = prefs.discretization;
+
 % Assign default to k if needed.
 if ( isempty(k) || isnan(k) )
     k = 6; 
 end
 
+% Check for square operator. (This is not strict enough, technically.)
 m = size(L, 2);
 if ( m ~= size(L, 1) )
     error('LINOP:eigs:notsquare','Block size must be square.')
@@ -90,7 +101,7 @@ if ( isa(discType, 'function_handle') )
     disc = discType(L);  
         
     % Set the allowed discretisation lengths:
-    dimVals = L.prefs.dimensionValues;
+    dimVals = prefs.dimensionValues;
     
     % Update the discretiztion dimension on unhappy pieces:
     disc.dimension = repmat(dimVals(1), 1, numel(disc.domain)-1);
