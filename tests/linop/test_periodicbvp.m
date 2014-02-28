@@ -21,11 +21,12 @@ L = addbc(L,'periodic');
 %%
 
 type = {@colloc2, @ultraS, @colloc2, @ultraS};
+prefs = cheboppref;
 w = [];
 for k = 1:4
     wold = w;
-    L.prefs.discretization = type{k};
-    w = L\f;
+    prefs.discretization = type{k};
+    w = linsolve(L,f,prefs);
 
     %%
     % check the ODEs
