@@ -1,10 +1,9 @@
 function [u, disc] = linsolve(L, f, varargin)
 %LINSOLVE  Solve a linear differential/integral equation.
-%   Important: While you can construct a LINOP and apply this method, the 
-%   recommended procedure is to use CHEBOP.MLDIVIDE instead. 
-%   
 %   U = LINSOLVE(L, F), or U = L\F, solves the linear system defined by L*U=F
 %   for a linop L and chebmatrix F. The result is a chebmatrix.
+%
+%   An equivalent syntax to U = LINSOLVE(L, F) is U = L\F.
 %
 %   LINSOLVE(L, F, PREFS) accepts a preference structure or object like that created
 %   by CHEBOPPREF in order to control the behavior of the algorithms. If empty,
