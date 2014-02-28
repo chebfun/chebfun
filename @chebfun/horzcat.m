@@ -9,6 +9,7 @@ function out = horzcat(varargin)
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
+% error('CHEBFUN:horzcat:noSupport', 'HORZCAT of a CHEBFUN is not yet supported.');
 
 % TODO: Document quasimatrix vs array-valued CHEBFUN
 
