@@ -124,6 +124,11 @@ classdef functionalBlock < linBlock
         %   JUMP(LOC,DOMAIN,ORDER) returns a functional evaluating the jump
         %   (difference of limit from right minus limit from left) in derivative
         %   ORDER at the point LOC.
+        
+            % Introduce the jump location as a breakpoint.
+            withBreak = sort( [ domain location ] );
+            domain = chebfun.mergeDomains(domain,withBreak);
+            
             Er = functionalBlock.feval(location,domain,1);
             El = functionalBlock.feval(location,domain,-1);
             J = (Er-El)*operatorBlock.diff(domain,order);
