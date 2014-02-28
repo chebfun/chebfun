@@ -143,6 +143,17 @@ classdef functionalBlock < linBlock
         end
         
         function E = feval(location, varargin)
+%FEVAL     Point evaluation functional.
+%   F = FUNCTIONALBLOCK.FEVAL(LOC,DOMAIN) returns a functional F such that
+%   F*u is u(LOC) for a chebfun u defined on the domain DOMAIN.
+%
+%   FUNCTIONALBLOCK.FEVAL(LOC,DOMAIN,DIREC) adds a direction to the
+%   evaluation point: 'left', '-', or -1 to get the limit approaching from
+%   the left, and 'right', '+', or +1 to get the limit approaching from
+%   the right.
+%
+%   See also FUNCTIONALBLOCK.EVAL.
+
             % Use inputParser to parse the arguments to the method.
             p = inputParser;
             addRequired(p, 'location');
