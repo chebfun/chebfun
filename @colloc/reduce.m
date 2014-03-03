@@ -1,6 +1,6 @@
 function [PA, P] = reduce(disc, blocks)
 %REDUCE Dimension reduction for operator matrix. 
-%
+
 %   Each block row of the operator DISC.source has an associated dimension
 %   reduction to make room for constraints. Given discretized results in BLOCKS,
 %   the output PA has one cell per block row, with the resulting projected
@@ -44,9 +44,9 @@ P = cell(1, numInt);
 for k = 1:numInt
     disc.domain = domain(k:k + 1);
     disc.dimension = m(k);
-    xOut = points(disc, 1);  % projection into 1st kind points
+    xOut = equationPoints(disc);  % projection into 1st kind points
     disc.dimension = n(k);
-    xIn = points(disc, 2);
+    xIn = functionPoints(disc);
     % Store the kth projection matrix in the cell P
     P{k} = barymat(xOut, xIn);
 end

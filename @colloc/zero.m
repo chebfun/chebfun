@@ -1,5 +1,5 @@
 function Z = zero(disc)
-%ZERO      Zero functional in COLLOC2.
+%ZERO      Zero functional in COLLOC.
 %
 %   See also FUNCTIONALBLOCK.ZERO.
 

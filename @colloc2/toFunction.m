@@ -15,6 +15,6 @@ end
 
 % Convert the VALUES matrix into a CHEBFUN on the appropriate domain
 % (potentially an array-valued CHEBFUN).
-f = chebfun(values, disc.domain);
+f = chebfun(values, disc.domain, 'chebkind', 2);
 
 end

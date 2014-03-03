@@ -1,9 +1,11 @@
-function F = mult(disc, f)
-%MULT      Multiplication operator in COLLOC2.
+function A = uplus(A)
+%+         Unary plus for COLLOC.
 
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
-F = diag( toValues(disc, f) );
+% Step 1. Sit down.
+% Step 2. Keep doing it.
+% Step 3. The end.
 
 end

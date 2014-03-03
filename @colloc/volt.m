@@ -17,7 +17,7 @@ C = chebmatrix( operatorBlock.cumsum(disc.domain) );
 
 % Matrix form. Each row of the result, when taken as an inner product with
 % function values, does the proper quadrature.
-x = points(disc, 2);
+x = functionPoints(disc);
 n = disc.dimension;
 
 if ( oneVar )

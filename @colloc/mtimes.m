@@ -1,9 +1,9 @@
-function B = uminus(A)
-%-         Negation in COLLOC2.
+function C = mtimes(A, B)
+%*      Multiplication of COLLOC discretizations.
 
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
-B = -A;
+C = A*B;
 
 end

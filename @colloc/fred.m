@@ -13,7 +13,7 @@ end
 
 % At given n, multiply function values by CC quadrature weights, then apply
 % kernel as inner products.
-[x, s] = points(disc, 2);
+[x, s] = functionPoints(disc);
 n = disc.dimension;
 
 if ( oneVar )  % experimental

@@ -1,5 +1,6 @@
 function [v, disc] = mldivide(disc, A, b)
-%Overloads the default A\b for a discrete linear algebra problem. 
+%   Overloads the default A\b for a discrete linear algebra problem. 
+
 %   If a valid factorization of A is stored in DISC, it is used. Otherwise the
 %   factors are found and stored in the DISC output as well. The first output is
 %   always v=A\b. 
