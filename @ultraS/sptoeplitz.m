@@ -14,8 +14,8 @@ function T = sptoeplitz(col, row)
 %
 %    See also TOEPLITZ, SPDIAGS.
 
+%    Based on SPTOEPLITZ.M on the Mathworks File Exchange, 
 %    Copyright (c) 2006 by Tobin Driscoll (tobin.driscoll@gmail.com).
-%    First version, 11 December 2006.
 
 % This part is borrowed from built-in Toeplitz.
 if nargin < 2  % symmetric case
@@ -35,7 +35,7 @@ m = length(col(:));
 n = length(row(:));
 
 % Only use toeplitz if you have too... fairly slow. 
-if( ( m < 2e3 ) && ( n < 2e3 ) )%&& length(find(col))>m/2 && length(find(row))>n/2) TODO: Remove comment?
+if( ( m < 2e3 ) && ( n < 2e3 ) )
     % Note: nnz(col) -- Number of nonzero elements in col
     
     % TODO: Add a line what's going on? AB, 12/2/14

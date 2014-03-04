@@ -27,6 +27,7 @@ if ( (length(disc.domain) - 1) ~= length(disc.dimension) )
     error('Must specify one dimension value for each subinterval.')
 end
 
+% TODO: Add some documentation below please. AB, 1/3/14.
 A = disc.source;
 if ( isa(A, 'chebmatrix') )
     c = disc.coeffs;
