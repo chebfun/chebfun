@@ -1,13 +1,23 @@
 function err = valueTesting(f, numOut)
-%VALUETESTING  Test that ADCHEBFUN is calling the correct method for the
-%   function part of the methods.
+% ERR = VALUETESTING(F, NUMOUT)  Test that ADCHEBFUN is calling the correct
+%   method for the function part of the methods.
 %
-% Here:
-%   F is a function handle
-%   numOut is an optional argument, used for methods with more than one outputs
+% Here, the inputs are:
+%   F       -- a function handle
+%   numOut  -- an optional argument, used for methods with more than one outputs
 %       (in particular, ellipj)
+%
+% and the output is
+%   err     --  a vector containing the infinity norm of the difference between
+%               applying F to a CHEBFUN and an ADCHEBFUN.
+%
+% % See also: valueTestingBinary, taylorTesting.
 
-% TODO: Describe algorithm.
+% This method proceeds as follows:
+%   1. Construct an arbitrary CHEBFUN U, and a corresponding ADCHEBFUN V.
+%   2. Evaluate the function handle F on both U and V.
+%   3. Return the infinity norm of the difference between the results (which we
+%      should expect to be zero).
 
 % Default value of NUMOUT
 if ( nargin == 1)
