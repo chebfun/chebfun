@@ -1024,21 +1024,32 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             %   U. The Kth block will be the identity operator on the domain of
             %   U.
 
-            % Extract domain information, and construct the building blocks of
-            % the identity and zero operators.
+            % Extract domain information, and construct the identity operator on
+            % the domain.
             dom = u.domain;
             I = operatorBlock.eye(dom);
-            Z = operatorBlock.zeros(dom);
-            % Populate a cell with the operators.
-            blocks = cell(1, m);
-            for j = [1:(k - 1), (k + 1):m] 
-                blocks{1,j} = Z;
+            
+            % Things are easy if we only have one variable involved.
+            if ( m == 1 )
+                u.jacobian = I;
+            else
+                % Working in the system case.
+                
+                % Now we also need the zero operator:
+                Z = operatorBlock.zeros(dom);
+                
+                % Populate a cell with the operators.
+                blocks = cell(1, m);
+                for j = [1:(k - 1), (k + 1):m] 
+                    blocks{1,j} = Z;
+                end
+                % The Kth block is the identity operator
+                blocks{1,k} = I;
+                % Convert the cell-array to a CHEBMATRIX and assign to the
+                % derivative field of U:
+                u.jacobian = chebmatrix(blocks);
             end
-            % The Kth block is the identity operator
-            blocks{1,k} = I;
-            % Convert the cell-array to a CHEBMATRIX and assign to U.
-            u.jacobian = chebmatrix(blocks);
-        end        
+        end
    
         function g = sec(f)
             % F = SEC(F)   SEC of an ADCHEBFUN.
