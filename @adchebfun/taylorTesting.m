@@ -1,25 +1,27 @@
 function [order1, order2, nDiff2] = taylorTesting(f, hMax, numOut, plotting)
-%TAYLORTESTING      Test that ADCHEBFUN is constructing the correct derivatives.
+%TAYLORTESTING   Test that ADCHEBFUN is constructing the correct derivatives.
 %
-% This method is called like follows:
+% This method is called as follows:
 %   [ORDER1, ORDER2, NDIFF2] = TAYLORTESTING(F, HMAX, NUMOUT, PLOTTING)
 %
 % The inputs are:
 %   F        --  A function handle.
-%   hMax     --  (optional) Number of times we want to decrease the amplitude of
+%   HMAX     --  (optional) Number of times we want to decrease the amplitude of
 %                the perturbation used for testing. Default value: 4.
-%   numOut   --  (optional) Used for methods with more than one outputs (in
+%   NUMOUT   --  (optional) Used for methods with more than one outputs (in
 %                particular, ellipj). Default value: 1.
-%   plotting --  (optional) Value of 1 denotes that the results are to be
+%   PLOTTING --  (optional) Value of 1 denotes that the results are to be
 %                plotted (useful for debugging purposes). Default value: 0.
 %
 % The outputs are:
-%   order1   --  Computed values that correspond which should give first order
+%   ORDER1   --  Computed values that correspond which should give first order
 %                of convergence
-%   order2   --  Computed values that correspond which should give second order
+%   ORDER2   --  Computed values that correspond which should give second order
 %                of convergence
-%   nDiff2   --  Norm of difference between first order perturbation using AD
+%   NDIFF2   --  Norm of difference between first order perturbation using AD
 %                computed derivatives.
+%
+% See also: TAYLORTESTINGBINARY, VALUETESTING, VALUETESTINGBINARY.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
@@ -46,7 +48,6 @@ function [order1, order2, nDiff2] = taylorTesting(f, hMax, numOut, plotting)
 % we repeatedly half $h$, and check whether
 %
 %       T_2(h/2)/T_2(h) ~ 1/4.
-%
 
 %% Parse inputs and initialise
 
