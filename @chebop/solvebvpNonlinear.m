@@ -211,6 +211,9 @@ while ( ~terminate )
         % Linearize around current solution:
         [L, res] = linearize(N, x, ub);
         
+        % TODO: Ensure this actually takes care of resetting derivative
+        % information as well!
+        
         % Need to subtract RHS from the residual
         res = res - rhs;
         
