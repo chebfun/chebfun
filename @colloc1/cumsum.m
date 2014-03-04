@@ -75,10 +75,10 @@ else
 end
 
 % Matrix mapping coeffs -> values.
-T = chebtech2.coeffs2vals(eye(N+1));
+T = chebtech1.coeffs2vals(eye(N+1));
 
 % Matrix mapping values -> coeffs.
-Tinv = chebtech2.vals2coeffs(eye(N+1));
+Tinv = chebtech1.vals2coeffs(eye(N+1));
 
 % Matrix mapping coeffs -> integral coeffs. Note that the highest order
 % term is truncated.
@@ -93,4 +93,16 @@ Q = T*B(end:-1:1,end:-1:1)*Tinv;
 Q(1,:) = 0;  % make exact
 cache{N} = Q;
 
+end
+
+
+function C = cd2cpm(N)
+% Three steps: Double the data around the circle, apply the DFT matrix,
+% and then take half the result with 0.5 factor at the ends.
+theta = (pi/N)*(0:2*N-1)';
+F = exp( -1i*theta*(0:2*N-1) );  % DFT matrix
+rows = 1:N+1;  % output upper half only
+% Impose symmetries on data and coeffs.
+C = real( [ F(rows,N+1) F(rows,N:-1:2)+F(rows,N+2:2*N) F(rows,1) ] );
+C = C/N;  C([1 N+1],:) = 0.5*C([1 N+1],:);
 end

@@ -61,7 +61,7 @@ classdef colloc < chebDiscretization
     end
     
     methods ( Static )
-        function [x, w] = points(disc, kind)
+        function [x, w, v] = points(disc, kind)
 %POINTS    Discretization points.
 %   X = COLLOC.POINTS(DISC,KIND) returns KIND-kind points using the domain and
 %   dimension stored in DISC. KIND must be either 1 or 2.
@@ -79,14 +79,15 @@ classdef colloc < chebDiscretization
             % Create output as cells for convenience.
             x = cell(numInt, 1);
             w = cell(1, numInt);
+            v = cell(numInt, 1);
             for k = 1:numInt
                 
                 % To save time, don't call again unless the dimension has changed.
                 if ( k==1 ) || ( n(k) ~= n(k-1) )
                     if ( kind == 2 )
-                        [x0, w0] = chebtech2.chebpts(n(k));
+                        [x0, w0, v0] = chebtech2.chebpts(n(k));
                     else
-                        [x0, w0] = chebtech1.chebpts(n(k));
+                        [x0, w0, v0] = chebtech1.chebpts(n(k));
                     end
                 end
                 
@@ -97,14 +98,20 @@ classdef colloc < chebDiscretization
                 
                 if ( nargout > 1 )
                     w{k} = w0*dif;
+                    if ( nargout > 2 )
+                        v{k} = v0;
+                    end
                 end
                 
             end
             
             % Convert output to vectors.
             x = cell2mat(x);
-            if (nargout > 1)
+            if ( nargout > 1 )
                 w = cell2mat(w);
+                if ( nargout > 2 )
+                    v = cell2mat(v);
+                end
             end
             
         end
