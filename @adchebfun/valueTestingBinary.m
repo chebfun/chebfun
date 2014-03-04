@@ -21,6 +21,10 @@ function err = valueTestingBinary(func)
 %      the results of the matching operations (which we should expect to be zero
 %      in all cases).
 
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org for Chebfun information.
+
+
 %% Initialise
 
 % Seed random generator to ensure same values.

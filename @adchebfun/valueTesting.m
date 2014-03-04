@@ -13,11 +13,16 @@ function err = valueTesting(f, numOut)
 %
 % % See also: valueTestingBinary, taylorTesting.
 
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org for Chebfun information.
+
 % This method proceeds as follows:
 %   1. Construct an arbitrary CHEBFUN U, and a corresponding ADCHEBFUN V.
 %   2. Evaluate the function handle F on both U and V.
 %   3. Return the infinity norm of the difference between the results (which we
 %      should expect to be zero).
+
+
 
 % Default value of NUMOUT
 if ( nargin == 1)
