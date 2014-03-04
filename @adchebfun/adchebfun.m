@@ -1275,7 +1275,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
         
         function f = uplus(f)
-            % -  Unary plus of an ADCHEBFUN
+            % +  Unary plus of an ADCHEBFUN
             
             % This method does nothing.
         end
