@@ -7,6 +7,10 @@ function out = innerProduct(f, g)
 %   result is a matrix whose i,j entry is the inner product of the ith column of
 %   F with the jth column of G.
 %
+%   If either F or G is a numeric array, it is cast to a CHEBFUN on the domain
+%   of the other argument. The inner product of the resulting CHEBFUN and the
+%   other input argument is then computed.
+%
 % See also NORM.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.

@@ -1,6 +1,29 @@
 function err = valueTestingBinary(func)
+% ERR = VALUETESTING(F)  Test that ADCHEBFUN is calling the correct method for
+%   the function part of the methods. This method is used for binary operators.
+%
+% Here, the input is:
+%   F       -- a function handle
+%
+% and the output is
+%   err     --  a vector containing the infinity norm of the difference between
+%               applying F to CHEBFUNS and an ADCHEBFUNS.
+%
+% See also: valueTesting, taylorTestingBinary.
 
-% TODO: Document.
+% This method proceeds as follows:
+%   1. Construct arbitrary CHEBFUNS U1 and U2, and corresponding ADCHEBFUNS V1
+%      and V2. Also construct two other arbitrary CHEBFUNS W1 and W2, as well as
+%      arbitrary scalars S1 and S2.
+%   2. Evaluate the function handle F on various combinations of U1 and U2 along
+%      with W1, W2, S1 and S2, and then do the same operations for V1 and V2. 
+%   3. Return a vector containing the infinity norm of the difference between
+%      the results of the matching operations (which we should expect to be zero
+%      in all cases).
+
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org for Chebfun information.
+
 
 %% Initialise
 
@@ -55,26 +78,5 @@ err(2) = norm(v1w2.func - u1w2);
 err(3) = norm(w1v2.func - w1u2);
 err(4) = norm(v1s2.func - u1s2);
 err(5) = norm(s1v2.func - s1u2);
-
-% Check correctness of derivatives
-%     v1v2der = v1v2.jacobian;
-%     v1w2der = v1w2.jacobian;
-%     w1v2der = w1v2.jacobian;
-%     v1s2der = v1s2.jacobian;
-%     s1v2der = s1v2.jacobian;
-
-%     % Compare derivatives with expected values. For third and fifth operation,
-%     % need to call func with 0 as the first argument to get the correct sign.
-%     pass(funcCounter + 2, 1) = ...
-%         ( norm(v1v2der*w1 - (func(v1.jacobian, v2.jacobian))*w1 ) == 0 );
-%     pass(funcCounter + 2, 2) = ...
-%         ( norm(v1w2der*w2 - v1.jacobian*w2 ) == 0 );
-%     pass(funcCounter + 2, 3) = ...
-%         ( norm(w1v2der*w1 - func(0,v2.jacobian)*w1 ) == 0 );
-%     pass(funcCounter + 2, 4) = ...
-%         ( norm(v1s2der*w2 - v1.jacobian*w2 ) == 0 );
-%     pass(funcCounter + 2, 5) = ...
-%         ( norm(s1v2der*w1 - func(0,v2.jacobian)*w1 ) == 0 );
-
 
 end

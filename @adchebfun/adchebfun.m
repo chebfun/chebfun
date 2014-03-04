@@ -6,7 +6,29 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
 % 
 %   This class is not intended to be called directly by the end user.
 %
-% See also CHEBFUN, LINBLOCK, LINOP, CHEBOP.
+%   V = ADCHEBFUN(U), where U is a CHEBFUN, returns the ADCHEBFUN
+%   object V, which has a derivatives seeded as the identity
+%   operator on the domain of U.
+%
+%   V = ADCHEBFUN(...), where the input is the same as would be
+%   passed to the CHEBFUN constructor, constructs a CHEBFUN from the
+%   input to the method. It then returns the ADCHEBFUN object V with
+%   the function part consisting of the CHEBFUN constructed, and the
+%   derivative part as the identity operator on the domain.
+%
+%   Example 1: Construct and ADCHEBFUN from a CHEBFUN
+%       u = chebfun(@(x) sin(x)+x.^2, [0 5]);
+%       v = adchebfun(u);
+%
+%   Example 2: Construct an ADCHEBFUN directly
+%       v = adchebfun(@(x) sin(x) + x.^2, [0 5]);
+%
+%   In case of coupled systems, the blocks of the derivative (i.e.
+%   which blocks are zero blocks and what block is the identity
+%   block) have to be seeded using the ADCHEBFUN/SEED() method.
+%
+%
+% See also CHEBFUN, LINBLOCK, LINOP, CHEBOP, ADCHEBFUN/SEED
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -50,8 +72,8 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
     methods
         
         function obj = adchebfun(varargin)
-            % TODO: Document. Do we want to allow passing derivatives here for
-            % instant seeding at construction time?
+            %ADCHEBFUN  The ADCHEBFUN constructor.
+            
             if ( nargin == 1 && isa(varargin{1}, 'chebfun') )
                 obj.func = varargin{1};
             else
@@ -694,14 +716,6 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             [varargout{1:nargout}] = sum(varargin{:});
         end
               
-        function u = jacreset(u)
-            % U = JACRESET(U)
-            % TODO: Document
-            % TODO: Dimension?
-            u.jacobian = operatorBlock.eye(u.domain);
-            u.isConstant = 1;
-        end 
-        
         function u = jump(u, x, c)
             % U = JUMP(U)       JUMP of an ADCHEBFUN
             %
@@ -839,7 +853,8 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % See also CHEBFUN/norm.
             
             % TODO: Do we want this method to return an ADCHEBFUN? Makes sense
-            % in the 2-norm case, in particular for 2-norm squared.
+            % in the 2-norm case, in particular for 2-norm squared. Perhaps we
+            % want a speical 2-norm squared method?
             [varargout{1:nargout}] = norm(f.func, varargin{:});
         end     
         
@@ -991,7 +1006,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 
                 % Rather complicated linearity information.
                 % TODO: Fix this! We were doing linearity checking incorrectly
-                % for ./ in the past.
+                % for ./ in the past. To be fixed in feature-linearityDetection.
                 f.isConstant = iszero(g.jacobian);
                 
                 % Update domain in case new breakpoints were introduced.
@@ -1001,17 +1016,40 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
         
         function u = seed(u, k, m)
-            % TODO: Document
+            %SEED   Seed the derivative of an ADCHEBFUN
+            %
+            %   U = SEED(U, K, M) reseeds the derivative of the ADCHEBFUN U, so
+            %   that it consist of M blocks. All blocks in the derivative of U,
+            %   except the Kth one, will be the zero operator on the domain of
+            %   U. The Kth block will be the identity operator on the domain of
+            %   U.
+
+            % Extract domain information, and construct the identity operator on
+            % the domain.
             dom = u.domain;
             I = operatorBlock.eye(dom);
-            Z = operatorBlock.zeros(dom);
-            blocks = cell(1, m);
-            for j = 1:m
-                blocks{1,j} = Z;
+            
+            % Things are easy if we only have one variable involved.
+            if ( m == 1 )
+                u.jacobian = I;
+            else
+                % Working in the system case.
+                
+                % Now we also need the zero operator:
+                Z = operatorBlock.zeros(dom);
+                
+                % Populate a cell with the operators.
+                blocks = cell(1, m);
+                for j = [1:(k - 1), (k + 1):m] 
+                    blocks{1,j} = Z;
+                end
+                % The Kth block is the identity operator
+                blocks{1,k} = I;
+                % Convert the cell-array to a CHEBMATRIX and assign to the
+                % derivative field of U:
+                u.jacobian = chebmatrix(blocks);
             end
-            blocks{1,k} = I;
-            u.jacobian = chebmatrix(blocks);
-        end        
+        end
    
         function g = sec(f)
             % F = SEC(F)   SEC of an ADCHEBFUN.
@@ -1275,7 +1313,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
         
         function f = uplus(f)
-            % -  Unary plus of an ADCHEBFUN
+            % +  Unary plus of an ADCHEBFUN
             
             % This method does nothing.
         end
