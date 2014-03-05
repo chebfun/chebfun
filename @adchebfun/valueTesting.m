@@ -7,14 +7,14 @@ function [err, lin] = valueTesting(f, numOut)
 %
 % Here, the inputs are:
 %   F       -- a function handle
-%   numOut  -- an optional argument, used for methods with more than one outputs
-%       (in particular, ellipj)
+%   NUMOUT  -- an optional argument, used for methods with more than one output
+%              (in particular, ellipj)
 %
 % and the output is
-%   err     --  a vector containing the infinity norm of the difference between
+%   ERR     --  a vector containing the infinity norm of the difference between
 %               applying F to a CHEBFUN and an ADCHEBFUN.
 %
-% % See also: valueTestingBinary, taylorTesting.
+% See also: TAYLORTESTING, TAYLORTESTINGBINARY, VALUETESTINGBINARY.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.

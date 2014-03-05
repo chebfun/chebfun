@@ -1,14 +1,26 @@
 function [order1, order2, nDiff2] = taylorTestingBinary(func, hMax, plotting)
-%TAYLORTESTING      Test that ADCHEBFUN is constructing the correct derivatives
+%TAYLORTESTING   Test that ADCHEBFUN is constructing the correct derivatives
 %   for binary operators.
 %
-% This method is called like follows:
-%   [ORDER1, ORDER2, NDIFF2] = TAYLORTESTING(F, NUMOUT, PLOTTING)
+% This method is called as follows:
+%   [ORDER1, ORDER2, NDIFF2] = TAYLORTESTINGBINARY(F, HMAX, PLOTTING)
 %
-% See ADCHEBFUN/TAYLORTESTING for description of input and output variables, as
-% well as for description of the algorithm.
+% The inputs are:
+%   F        --  A function handle.
+%   HMAX     --  (optional) Number of times we want to decrease the amplitude of
+%                the perturbation used for testing. Default value: 4.
+%   PLOTTING --  (optional) Value of 1 denotes that the results are to be
+%                plotted (useful for debugging purposes). Default value: 0.
 %
-% See also: taylorTesting, valueTestingBinary.
+% The outputs are:
+%   ORDER1   --  Computed values that correspond which should give first order
+%                of convergence
+%   ORDER2   --  Computed values that correspond which should give second order
+%                of convergence
+%   NDIFF2   --  Norm of difference between first order perturbation using AD
+%                computed derivatives.
+%
+% See also: TAYLORTESTING, VALUETESTING, VALUETESTINGBINARY.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.

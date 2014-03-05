@@ -28,7 +28,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
 %   block) have to be seeded using the ADCHEBFUN/SEED() method.
 %
 %
-% See also CHEBFUN, LINBLOCK, LINOP, CHEBOP, ADCHEBFUN/SEED
+% See also CHEBFUN, LINBLOCK, LINOP, CHEBOP, ADCHEBFUN/SEED.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

@@ -1,15 +1,15 @@
 function err = valueTestingBinary(func)
-% ERR = VALUETESTING(F)  Test that ADCHEBFUN is calling the correct method for
+%ERR = VALUETESTING(F)   Test that ADCHEBFUN is calling the correct method for
 %   the function part of the methods. This method is used for binary operators.
 %
 % Here, the input is:
 %   F       -- a function handle
 %
 % and the output is
-%   err     --  a vector containing the infinity norm of the difference between
+%   ERR     --  a vector containing the infinity norm of the difference between
 %               applying F to CHEBFUNS and an ADCHEBFUNS.
 %
-% See also: valueTesting, taylorTestingBinary.
+% See also: TAYLORTESTING, TAYLORTESTINGBINARY, VALUETESTING.
 
 % This method proceeds as follows:
 %   1. Construct arbitrary CHEBFUNS U1 and U2, and corresponding ADCHEBFUNS V1
