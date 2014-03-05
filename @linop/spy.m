@@ -1,4 +1,4 @@
-function spy(L,dim)
+function spy(L,dim,prefs)
 %SPY    Visualize a linop.
 %   SPY(L) creates a picture of the nonzero pattern of the default
 %   discretization of L. Block boundaries are indicated by gray lines, and
@@ -7,21 +7,28 @@ function spy(L,dim)
 %
 %   SPY(L,DIM) uses the dimension vector DIM to create the picture.
 %
-%   See also LINOP.
+%   SPY(L,DIM,PREFS) uses a preferences structure or object like that created by
+%   CHEBOPPREF. This allows you to change the type of discretization used for
+%   the visualization.
+%
+%   See also LINOP, CHEBOPPREF.
 
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
-% Default dimensions used to create the spy plot.
-if ( nargin < 2 )
-    if ( length(L.domain) == 2 )
-        dim = 10;
-    else
-        dim = repmat(6, 1, length(L.domain) - 1);
+% Set defaults as needed.
+if ( nargin < 3 )
+    prefs = cheboppref;
+    if ( nargin < 2 )
+        if ( length(L.domain) == 2 )
+            dim = 10;
+        else
+            dim = repmat(6, 1, length(L.domain) - 1);
+        end
     end
 end
 
-disc = L.prefs.discretization(L);
+disc = prefs.discretization(L);
 disc.dimension = dim;
 
 % Check whether we need to derive continuity conditions.

@@ -2,24 +2,19 @@ classdef colloc2 < chebDiscretization
 %COLLOC2   Collocation based on 2nd-kind Chebyshev points.
 %   COLLOC2 is an implementation of CHEBDISCRETIZATION that applies spectral
 %   collocation using 2nd kind Chebyshev points for differential and integral
-%   operators and systems. To use COLLOC2 for a linop L, set
+%   operators and systems. 
 %
-%     L.prefs.discretization = @colloc2;
+%   The default discretization type to use is set by CHEBOPPREF. You can also
+%   use CHEBOPPREF to create a preferences object and change its
+%   'discretization' property. 
 %
 %   Linear algebra operations with COLLOC2 operators generally take O(N^3)
-%   flops, where N is determined automatically to resolve the solution. You can
-%   control the allowed values of N through the setting
+%   flops, where in most contexts N is determined automatically to resolve the
+%   solution. The allowed values of N are governed by the 'dimensionValues'
+%   property in CHEBOPPREF. You can also set the maximum N (including systems
+%   and piecewise definitions) through the 'maxTotalLength' property.
 %
-%     L.prefs.dimensionValues = [ values ] 
-%
-%   If you give a single value here, the discretization will be of fixed size.
-%   Note that the matrix might not use that value exactly due to breakpoints and
-%   multiple variables. You can also set the maximum N through
-%  
-%      L.prefs.maxTotalLength = N
-%
-%   which limits N summed over all variables; i.e. the actual matrix being
-%   manipulated.
+%   See also CHEBOPPREF, CHEBDISCRETIZATION.
 
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
