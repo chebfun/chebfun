@@ -11,7 +11,8 @@ function [L, S] = instantiate(disc, data)
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
-% TODO: Why two outputs L and S? What do they mean?
+% TODO: Why two outputs L and S? What do they mean? You say M is a cell-array,
+% this seems to be oudated info. Aren't L and S just matrices?
 
 if ( iscell(data) )
     % Loop through cells

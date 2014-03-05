@@ -16,4 +16,12 @@ function L = addContinuity(L, varargin)
 % input linop.
 L.continuity = append(L.continuity, varargin{:});
 
+% We may have to update the domain, if a new breakpoint was introduced.
+n1 = length(L.domain);
+F = L.continuity.functional;
+n2 = length(F.domain);
+if ( n1 ~= n2 )
+    L.domain = chebfun.mergeDomains(L.domain,F.domain);
+end
+
 end

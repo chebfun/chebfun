@@ -1,12 +1,53 @@
 function [order1, order2, nDiff2] = taylorTesting(f, hMax, numOut, plotting)
-% VALUETESTING  Test that ADCHEBFUN is constructing the correct derivatives.
+%TAYLORTESTING   Test that ADCHEBFUN is constructing the correct derivatives.
 %
-% Here:
-%   F is a function handle
-%   numOut is an optional argument, used for methods with more than one outputs
-%       (in particular, ellipj)
+% This method is called as follows:
+%   [ORDER1, ORDER2, NDIFF2] = TAYLORTESTING(F, HMAX, NUMOUT, PLOTTING)
+%
+% The inputs are:
+%   F        --  A function handle.
+%   HMAX     --  (optional) Number of times we want to decrease the amplitude of
+%                the perturbation used for testing. Default value: 4.
+%   NUMOUT   --  (optional) Used for methods with more than one outputs (in
+%                particular, ellipj). Default value: 1.
+%   PLOTTING --  (optional) Value of 1 denotes that the results are to be
+%                plotted (useful for debugging purposes). Default value: 0.
+%
+% The outputs are:
+%   ORDER1   --  Computed values that correspond which should give first order
+%                of convergence
+%   ORDER2   --  Computed values that correspond which should give second order
+%                of convergence
+%   NDIFF2   --  Norm of difference between first order perturbation using AD
+%                computed derivatives.
+%
+% See also: TAYLORTESTINGBINARY, VALUETESTING, VALUETESTINGBINARY.
 
-% TODO: Describe algorithm.
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org for Chebfun information.
+
+% The following is taken from Birkisson's DPhil thesis [TODO: Citation?].
+%
+% Taylor testing is based on the observation that given an operator $F$, an
+% argument $u$ and a perturbation to the argument $\delta u$, then by Taylor's
+% theorem, one expects
+%
+%       T_1(h) := || F(u+h\delta u) - F(u) || -> 0 at O(h).
+%
+% However, if additionally, one has the \Frechet derivate of $F$ at $u$,
+% $F'(u)$, then Taylor's theorem dictates that
+%
+%       T_2(h) := || F(u+h\delta u) - F(u) - h F'(u)\delta u || -> 0 at O(h^2).
+%
+% $T_1$ and $T_2$ are known as first- and second-order Taylor remainders,
+% respectively.
+%
+% The procedure of Taylor testing is as follows. Let an operator $F$ be given.
+% Assume that we have another operator $A$, and want to test whether $A$ is the
+% \Frechet derivative of $F$. Then, to test whether the relation $A = F'$ holds,
+% we repeatedly half $h$, and check whether
+%
+%       T_2(h/2)/T_2(h) ~ 1/4.
 
 %% Parse inputs and initialise
 
@@ -44,6 +85,7 @@ nDiff2 = zeros(hMax, numOut);
 % Factor we decrease by:
 fact = 1/5;
 
+% Evalute F at u:
 [fu{1:numOut}] = f(u);
 for hCounter = 1:hMax
     % Compute a perturbation function:

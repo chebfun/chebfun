@@ -2,12 +2,30 @@ function [err, lin] = valueTesting(f, numOut)
 %VALUETESTING  Test that ADCHEBFUN is calling the correct method for the
 %   function part of the methods.
 %
-% Here:
-%   F is a function handle
-%   numOut is an optional argument, used for methods with more than one outputs
-%       (in particular, ellipj)
+% ERR = VALUETESTING(F, NUMOUT)  Test that ADCHEBFUN is calling the correct
+%   method for the function part of the methods.
+%
+% Here, the inputs are:
+%   F       -- a function handle
+%   NUMOUT  -- an optional argument, used for methods with more than one output
+%              (in particular, ellipj)
+%
+% and the output is
+%   ERR     --  a vector containing the infinity norm of the difference between
+%               applying F to a CHEBFUN and an ADCHEBFUN.
+%
+% See also: TAYLORTESTING, TAYLORTESTINGBINARY, VALUETESTINGBINARY.
 
-% TODO: Describe algorithm.
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org for Chebfun information.
+
+% This method proceeds as follows:
+%   1. Construct an arbitrary CHEBFUN U, and a corresponding ADCHEBFUN V.
+%   2. Evaluate the function handle F on both U and V.
+%   3. Return the infinity norm of the difference between the results (which we
+%      should expect to be zero).
+
+% TODO: Update documentation to include linearity detection.
 
 % Default value of NUMOUT
 if ( nargin == 1)
