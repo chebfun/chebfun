@@ -5,13 +5,12 @@ function [u, disc] = linsolve(L, f, varargin)
 %
 %   An equivalent syntax to U = LINSOLVE(L, F) is U = L\F.
 %
-%   LINSOLVE(L, F, PREFS) accepts a preference structure or object like that created
-%   by CHEBOPPREF in order to control the behavior of the algorithms. If empty,
-%   defaults are used. 
-%
-%   U = LINSOLVE(...,CDISC) uses the chebDiscretization CDISC to solve the
+%   LINSOLVE(L,F,CDISC) uses the chebDiscretization CDISC to solve the
 %   problem. This can be used, for example, to introduce new breakpoints that
 %   are not in the domain of either L or F.
+%
+%   LINSOLVE(...,PREFS) accepts a CHEBOPPREF to control the behavior of
+%   the algorithms. If empty, defaults are used.
 %
 %   EXAMPLE:
 %     d = [0,pi];
@@ -40,10 +39,12 @@ prefs = [];    % no prefs given
 disc = [];     % no discretization given
 for j = 1:nargin-2
     item = varargin{j};
-    if ( isa(item, 'chebpref') || isstruct(item) )
+    if ( isa(item, 'chebpref') )
         prefs = item;
     elseif ( isa(item,'chebDiscretization') )
         disc = item;
+    else
+        error('Could not parse argument number %i.',j+2)
     end
 end
 
@@ -63,7 +64,7 @@ dimVals = prefs.dimensionValues;
 if isempty(disc)
     disc = prefs.discretization(L);
     % Update the domain if new breakpoints are needed
-    disc.domain = chebfun.mergeDomains(disc.domain, f.domain); 
+    disc.domain = chebfun.mergeDomains(disc.domain, f.domain);
     % Update the dimensions to work with the correct number of breakpoints
     disc.dimension = repmat(dimVals(1), 1, numel(disc.domain) - 1);
     dimVals(1) = [];
@@ -86,36 +87,36 @@ isDone = false(1, numInt);
 
 %% Loop over a finer and finer grid until happy.
 % We need to know which solution components to check for happiness:
-isFun = isFunVariable(L); 
+isFun = isFunVariable(L);
 for dim = dimVals
 
     % Discretize the operator (incl. constraints/continuity), unless there is a
-    % currently valid factorization at hand. 
+    % currently valid factorization at hand.
     if ( ~isFactored(disc) )
         A = matrix(disc);
     else
         A = [];
     end
-    
+
     % Discretize the RHS (incl. constraints/continuity):
     b = rhs(disc, f);
- 
+
     % Solve the linear system:
     [v, disc] = mldivide(disc, A, b);
-    
+
     % Convert the different components into cells
     u = partition(disc, v);
-   
+
     % Test the happieness of the function pieces:
     [isDone, epsLevel] = testConvergence(disc, u(isFun));
-    
+
     if ( all(isDone) )
         break
     else
         % Update the discretiztion dimension on unhappy pieces:
         disc.dimension(~isDone) = dim;
     end
-    
+
 end
 
 if ( ~all(isDone) )
@@ -128,7 +129,7 @@ end
 % Because each function component may be piecewise defined, we will loop through
 % one by one.
 for k = find( isFun )
-    u{k} = disc.toFunction(u{k}); 
+    u{k} = disc.toFunction(u{k});
     u{k} = simplify(u{k}, epsLevel);
 end
 
