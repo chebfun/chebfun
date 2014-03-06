@@ -24,10 +24,10 @@ pass(j) = norm( tril( U( :, pivPos( :, 1 ) ) , -1) ) < sqrt(tol); j = j + 1;
 
 
 % Try the same thing on different domain: 
-x = chebpts(100, [-2.1 4.3]);
-y = chebpts(100, [-2.1 4.3]);
+x = chebpts(100, [-2.1, 4.3]);
+y = chebpts(100, [-1, 2.7]);
 
-f = chebfun2( @(x,y) cos( x.*y ), [-2.1 4.3 -1 2.7]);
+f = chebfun2( @(x,y) cos( x.*y ), [-2.1, 4.3, -1, 2.7]);
 [L, U] = lu( f );
 g = L * U; 
 pivPos = f.pivotLocations; 
