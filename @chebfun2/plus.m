@@ -42,7 +42,8 @@ else                            % CHEBFUN2 + CHEBFUN2
     else
         % Add together two nonzero CHEBFUN2 objects
         h = compression_plus(f, g);
-    end
+        %h = chebfun2(@(x, y) feval(f, x, y) + feval(g, x, y), f.domain); 
+    end 
 end
 
 end
