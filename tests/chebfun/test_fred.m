@@ -4,12 +4,9 @@ if ( nargin == 0 )
     pref = chebpref();
 end
 
-% A simple kernel:
-K = @(u, v) exp(-(u-v).^2);
-% Asimple CHEBFUN:
-f = chebfun(@sin, pref);
-% Call VOLT
-F = fred(K, f);
+K = @(u, v) exp(-(u-v).^2);     % A simple kernel.
+f = chebfun(@sin, pref);        % A simple chebfun.
+F = fred(K, f);                 % Call fred().
 
 % Test against some V4 results:
 pass(1) = abs(F(.5) - 0.293968048825243) < vscale(F)*epslevel(F);

@@ -1,10 +1,10 @@
 function F = fred(k, v, onevar)
 %FRED   Fredholm integral operator.
-% 
+%
 %   F = FRED(K, V) computes the Fredholm integral with kernel K:
-%    
+%
 %      (F*v)(x) = int( K(x,y)*v(y), y=a..b ),
-% 
+%
 %   where [a b] = domain(V). The kernel function K(x,y) should be smooth for
 %   best results.
 %
@@ -17,22 +17,22 @@ function F = fred(k, v, onevar)
 %   defining the tensor product grid. This format allows a separable or sparse
 %   representation for increased efficiency in some cases.
 %
-% See also VOLT.
+% See also VOLT, CHEBOP.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
     % Inputs in correct order. Let this slide...
     if ( isa(k, 'chebfun') )
-        tmp = v; 
-        v = k; 
-        k = tmp; 
+        tmp = v;
+        v = k;
+        k = tmp;
     end
 
     % Default onevar to false
     if ( nargin == 2 )
-        onevar = false; 
-    end     
+        onevar = false;
+    end
 
     % Loop for quasimatrix support:
     for j = numel(v):-1:1
@@ -43,21 +43,18 @@ end
 
 function F = fred_col(k, v, onevar)
     % At each x, do an adaptive quadrature.
-    
+
     % Result can be resolved relative to norm(u). (For instance, if the kernel
     % is nearly zero by cancellation on the interval, don't try to resolve it
     % relative to its own scale.)
-    
+
     normv = norm(v);
     d = domain(v);
-    
+
     opt1 = {'resampling', false, 'splitting', true, 'blowup', 'off', 'scale', normv};
     int = @(x) sum(chebfun(@(y) feval(v,y).*k(x,y), d, opt1{:}));
-    
+
     opt2 = {'sampletest', false, 'resampling', false, 'blowup', 'off', 'vectorize', 'scale', normv};
     F = chebfun(int, d, opt2{:});
-    
+
 end
-
-
-
