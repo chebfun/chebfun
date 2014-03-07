@@ -108,4 +108,3 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) linop 
     end
 
 end
-

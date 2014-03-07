@@ -5,25 +5,39 @@ function M = matrix(A, varargin)
 %   breakpoints, the vector DIM must specify the desired discretization
 %   dimension for each subinterval.
 %
-%   M = MATRIX(A, DIM, DOMAIN) replaces the 'native' domain of A with DOMAIN.
+%   MATRIX(A, DIM, DOMAIN) replaces the 'native' domain of A with DOMAIN.
 %   Usually this would be done to introduce a breakpoint.
 %
-%   The discretization type is controlled by the 'prefs' property of A.
+%   MATRIX(A,...,DISCTYPE) uses the chebDiscretization whose consructor is
+%   DISCTYPE. The default is set by CHEBOPPREF. 
 %
 %   Example:
 %     d = [0 1];
 %     A = [ operatorBlock.eye(d), operatorBlock.diff(d) ];
-%     A.prefs.discretization = @colloc2;
-%     matrix(A, 5)
-%     A.prefs.discretization = @ultraS;
-%     matrix(A, 5)
+%     matrix(A, 5, @colloc2)
+%     matrix(A, 5, @ultraS)
 %
 %   See also CHEBOPPREF, CHEBDISCRETIZATION, CHEBDISCRETIZATION/MATRIX. 
 
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
-d = A.prefs.discretization(A, varargin{:});
+% Any non-numeric argument should be a chebDiscretization constructor. 
+discType = [];
+numericargs = cellfun(@isnumeric,varargin);
+for k = find( ~numericargs(:)' )
+    discType = varargin{k};
+    varargin(k) = [];  % delete from list
+end
+
+% Apply the default if needed.
+if ( isempty(discType) || ~isa(discType,'function_handle') )
+    p = cheboppref;
+    discType = p.discretization;
+end
+
+% Discretize.
+d = discType(A, varargin{:});
 M = matrix(d);
 
 end
