@@ -219,14 +219,23 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
             I.diffOrder = 0;
         end
 
-        function M = mult(u)
+        function M = mult(u, dom)
         % OPERATORBLOCK.MULT  Multiplication operator.
         %
         % M = OPERATORBLOCK.MULT(U) returns the multiplication operator from the
         % CHEBFUN U, i.e. the operator that maps a CHEBFUN f(x) to u(x)f(x).
+        %
+        % M = OPERATORBLOCK.MULT(U, DOM) allows passing a domain one which the
+        % multiplcation operator is to be constructed (useful for the ADCHEBFUN
+        % class)
+        
+            % Check whether domain information was passed
+            if ( nargin < 2 )
+                dom = u.domain;
+            end
 
-        % Create the OPERATORBLOCK with information now available.
-            M = operatorBlock(u.domain);
+            % Create the OPERATORBLOCK with information now available.
+            M = operatorBlock(dom);
             M.stack = @(z) mult(z, u);
             M.diffOrder = 0;
         end
