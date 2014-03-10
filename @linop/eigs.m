@@ -183,14 +183,17 @@ if ( isempty(sigma) )
         % Convert the discrete Z values to CHEBFUN
         z = toFunction(disc, Z);
 
+        % Obtain all coefficients to use below
+        coeffs = get(z, 'coeffs');
+        
         % Compute the 1-norm of the polynomial expansions, summing over smooth
         % pieces, for all columns.
         onenorm = 0;
         for j = 1:disc.numIntervals
-            onenorm = onenorm + sum( abs( chebpoly(z) ), 2 );
+            onenorm = onenorm + sum( abs( coeffs{j} ), 1 )'
         end
-
-        [~,index] = min(onenorm);
+        
+        [~, index] = min(onenorm);
         sigma = lam2(index);
     end
 end
