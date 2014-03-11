@@ -11,11 +11,7 @@ if ( nargin==2 )
     oneVar = false; 
 end    
 
-% Make use of the cumsum operator. Note that while C(n) would be triangular
-% for low-order quadrature, for spectral methods it is not.
-C = chebmatrix( operatorBlock.cumsum(disc.domain) );
-
-% Matrix form. Each row of the result, when taken as an inner product with
+% Each row of the result, when taken as an inner product with
 % function values, does the proper quadrature.
 x = functionPoints(disc);
 n = disc.dimension;
@@ -27,7 +23,12 @@ else
     V = kernel(X, Y);
 end
 
-V = V .* matrix(C, n); 
+% Make use of the cumsum operator. Note that while C(n) would be triangular
+% for low-order quadrature, for spectral methods it is not.
+C = operatorBlock.cumsum(disc.domain);
+disc.source = linop(C);    % make sure we use the correct disc. type
+
+V = V .* matrix(disc, n); 
 
 end
 

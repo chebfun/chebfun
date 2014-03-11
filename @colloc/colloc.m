@@ -1,37 +1,26 @@
 classdef colloc < chebDiscretization
-%COLLOC   Collocation discretization of operators.
-%   COLLOC is an implementation of CHEBDISCRETIZATION that applies spectral
-%   collocation using 2nd kind Chebyshev points for differential and integral
-%   operators and systems. To use COLLOC2 for a linop L, set
+%COLLOC   Abstract class for collocation discretization of operators.
 %
-%     L.prefs.discretization = @colloc2;
-%
-%   Linear algebra operations with COLLOC2 operators generally take O(N^3)
-%   flops, where N is determined automatically to resolve the solution. You can
-%   control the allowed values of N through the setting
-%
-%     L.prefs.dimensionValues = [ values ]
-%
-%   If you give a single value here, the discretization will be of fixed size.
-%   Note that the matrix might not use that value exactly due to breakpoints and
-%   multiple variables. You can also set the maximum N through
-%
-%      L.prefs.maxTotalLength = N
-%
-%   which limits N summed over all variables; i.e. the actual matrix being
-%   manipulated.
+%   See COLLOC1, COLLOC2, CHEBDISCRETIZATION.
+
+%   COLLOC is a partial implementation of CHEBDISCRETIZATION that creates
+%   scaffolding common to first-kind and second-kind points. COLLOC cannot
+%   be used directly as a discretization for linops. Both COLLOC1 and
+%   COLLOC2 are full implementations.
 
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
     
     properties (Access=private)
-        mldivideData = [];  % stores LU factors of a matrix for repeated solves
+        % Stores LU factors of a matrix, for repeated solves at fixed size:
+        mldivideData = [];  
     end
     
     methods
         function disc = colloc(source, dimension, domain)
             %COLLOC    Collocation discretization constructor.
             
+            % Called by subclasses for parts in common. 
             % If SOURCE is not passed, return an empty object.
             if isempty(source)
                 return
@@ -51,6 +40,7 @@ classdef colloc < chebDiscretization
         
     end
         
+    % These must be implemented by a subclass.
     methods ( Abstract )
         C = cumsum(disc)    % indefinite integration
         D = diff(disc,m)    % differentiation 
@@ -61,20 +51,36 @@ classdef colloc < chebDiscretization
     end
     
     methods ( Static )
-        function [x, w, v] = points(disc, kind)
+        function [x, w, v] = points(varargin)
 %POINTS    Discretization points.
 %   X = COLLOC.POINTS(DISC,KIND) returns KIND-kind points using the domain and
 %   dimension stored in DISC. KIND must be either 1 or 2.
 %
-%   [X, W] = COLLOC.POINTS(DISC,KIND) also returns Clenshaw-Curtis weights.
+%   An alternate calling sequence is COLLOC.POINTS(DOMAIN,DIMENSION,KIND).
+%
+%   [X, W, V] = COLLOC.POINTS(DISC,KIND) also returns Clenshaw-Curtis
+%   weights and barycentric interpolation weights, respectively.
 
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
+
+            if ( nargin == 2 )
+                disc = varargin{1};
+                kind = varargin{2};
+                d = disc.domain;
+                n = disc.dimension;
+
+            elseif ( nargin == 3 )
+                d = varargin{1};
+                n = varargin{2};
+                kind = varargin{3};
+                
+            else
+                error('Must be called with two or three arguments.')
+                
+            end
             
-            % Obtain useful info
-            d = disc.domain;
-            numInt = disc.numIntervals;
-            n = disc.dimension;
+            numInt = length(n);
             
             % Create output as cells for convenience.
             x = cell(numInt, 1);

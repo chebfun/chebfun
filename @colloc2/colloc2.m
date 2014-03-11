@@ -1,18 +1,23 @@
 classdef colloc2 < colloc
-%   operators and systems. 
-%   The default discretization type to use is set by CHEBOPPREF. You can also
-%   use CHEBOPPREF to create a preferences object and change its
-%   'discretization' property. 
-%   flops, where in most contexts N is determined automatically to resolve the
-%   solution. The allowed values of N are governed by the 'dimensionValues'
-%   property in CHEBOPPREF. You can also set the maximum N (including systems
-%   and piecewise definitions) through the 'maxTotalLength' property.
-%   See also CHEBOPPREF, CHEBDISCRETIZATION.
+%COLLOC2    Collocation discretization on 2nd kind points.
+%   COLLOC2 is an implementation of CHEBDISCRETIZATION that implements
+%   spectral collocation on 2nd-kind Chebyshev points for differential and
+%   integral operators. 
+%
+%   Linear algebra operations generally take O(N^3) flops, where N is
+%   determined automatically to resolve the solution. You can control the
+%   allowed values of N through CHEBOPPREF.
+%
+%   See also CHEBDISCRETIZATION, CHEBOPPREF, CHEBOP. 
+
+%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  See http://www.chebfun.org for Chebfun information.
+
+    % No subclass-specific properties needed, and no special constructor
+    % either. 
     
     methods
         function disc = colloc2(varargin)
- %COLLOC2    Collocation discretization on 2nd kind points.
-            
             disc = disc@colloc(varargin{:});
        end
     end

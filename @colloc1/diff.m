@@ -1,7 +1,7 @@
 function D = diff(disc, m)
 %DIFF    Differentiation operator for COLLOC1 discretization.
 %   D = DIFF(DISC) gives the matrix such that if v=D*u, then v=u', where u
-%   is a COLLOC representation of a Chebyshev polynomial.
+%   is a COLLOC1 representation of a Chebyshev polynomial.
 %
 %   DIFF(DISC, M) for positive integer M returns D^M (through a better
 %   algorithm than multiplication).
@@ -57,13 +57,16 @@ Dw(ii) = Dw(ii) - 1;            % subtract identity
 D = Dw .* Dxi;
 D(ii) = 0; D(ii) = - sum(D,2);              % negative sum trick
 
-D2 = 2*D .* (repmat(D(ii),1,n) - Dxi);
-D2(ii) = 0; D2(ii) = - sum(D2,2);              % negative sum trick
+if ( k > 1 )
+    % 2nd order
+    D = 2*D .* (repmat(D(ii),1,n) - Dxi);
+    D(ii) = 0; D(ii) = - sum(D,2);              % negative sum trick
 
-% higher orders
-for m = 3:k
-    D = m*Dxi .* (Dw.*repmat(D(ii),1,N) - D);
-    D(ii) = 0; D(ii) = - sum(D,2);          % negative sum trick
+    % higher orders
+    for m = 3:k
+        D = m*Dxi .* (Dw.*repmat(D(ii),1,N) - D);
+        D(ii) = 0; D(ii) = - sum(D,2);          % negative sum trick
+    end
 end
 
 

@@ -90,9 +90,9 @@ for i = 1:length(t)
         E = expm(disc, t(i));
         
         % Discretize the initial condition.
-        %v0 = instantiate(disc, u0.blocks) 
-        %v0 = cell2mat(v0);
-        v0 = matrix(u0,disc.dimension,disc.domain);
+        discu = disc;
+        discu.source = u0;
+        v0 = matrix(discu);
         
         % Propagate.
         v = E*v0;

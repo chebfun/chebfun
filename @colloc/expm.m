@@ -32,6 +32,8 @@ else
     
     % Propagator for the original variables: Reduce, propagate, lift. 
     E = Q*E*P;
+
+%     E = expm( [B;P] \ [zeros(size(B));P*A]*t );
 end
 
 end
