@@ -43,6 +43,6 @@ pass(1) = norm(e - v4results) < tol;
 prefs.discretization = @ultraS;
 e = eigs(L, 6, 0, prefs);
 tol = 1e-10;
-pass(2) = norm(e + (1:6)'.^2, inf) < tol;
+pass(2) = norm(e - v4results, inf) < tol;
 
 end
