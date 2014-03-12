@@ -183,14 +183,17 @@ if ( isempty(sigma) )
         % Convert the discrete Z values to CHEBFUN
         z = toFunction(disc, Z);
 
+        % Obtain all coefficients to use below
+        coeffs = get(z, 'coeffs');
+        
         % Compute the 1-norm of the polynomial expansions, summing over smooth
         % pieces, for all columns.
         onenorm = 0;
         for j = 1:disc.numIntervals
-            onenorm = onenorm + sum( abs( chebpoly(z) ), 2 );
+            onenorm = onenorm + sum( abs( coeffs{j} ), 1 )';
         end
-
-        [~,index] = min(onenorm);
+        
+        [~, index] = min(onenorm);
         sigma = lam2(index);
     end
 end
@@ -345,13 +348,23 @@ while ~isempty(queue)
 
     vcoeff = mat2poly(disc, V(:,idx(j)));
     vcoeff = vcoeff(isFun);
-    vcoeffsquared = 0;
+    vcoeffsq = 0;
     for i = 1:numel(vcoeff)
         for q = 1:numel(vcoeff{i})
-            vcoeffsquared = vcoeffsquared + (vcoeff{i}{q}.*conj(vcoeff{i}{q}));
+            newcoeff2 = vcoeff{i}{q}.*conj(vcoeff{i}{q});
+            lnc2 = length(newcoeff2);
+            lvcs = length(vcoeffsq);
+            if ( lnc2 > lvcs )
+                % Pad with leading zeros
+                vcoeffsq = [ zeros(lnc2-lvcs,1); vcoeffsq ];
+            else
+                % Only the most significant rows affected
+                rows = lvcs-lnc2+1:lvcs;
+                vcoeffsq(rows) = vcoeffsq(rows) + newcoeff2;
+            end
         end
     end
-    vcoeff = sqrt( flipud( sum(vcoeffsquared,2) ) );
+    vcoeff = sqrt( flipud( sum(vcoeffsq,2) ) );
 
     % Recipe: More than half of the energy in the last 90% of the Chebyshev
     % modes is in the highest 10% modes, and the energy of the last 90% is
