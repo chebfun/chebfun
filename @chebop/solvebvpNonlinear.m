@@ -54,10 +54,10 @@ lambda = 1;
 res = res - rhs;
 while ( ~terminate )
     % Compute a Newton update
-    [delta, disc] = linsolve(L, res, discType);
+    [delta, disc] = linsolve(L, res, pref);
     % We had two output arguments above, need to negate delta
     delta = -delta;
-    %     delta = -(L\res);     % Old fashioned
+
     % Store the norm of the update
     normDelta = mynorm(delta);
     

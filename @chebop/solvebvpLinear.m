@@ -10,7 +10,7 @@ L.constraint = flipSigns(L.constraint);
 % TODO: Pass in preferences?
 
 % Solve the linear problem
-u = linsolve(L, rhs - residual);
+u = linsolve(L, rhs - residual, pref);
 
 % TODO: Return residual as well?
 uBlocks = u.blocks;
