@@ -18,7 +18,6 @@ errEstDE = NaN;
 errEstBC = .5678;
 % Store preferences used in the Newton iteration in separate variables
 maxIter  = pref.maxIter;
-discType = pref.discretization;
 errTol   = pref.errTol;
 % Did the user request damped or undamped Newton iteration?
 damped = pref.damped;
