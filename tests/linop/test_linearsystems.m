@@ -30,11 +30,12 @@ L = addbc(L,B3,0);
 %%
 
 type = {@colloc2, @ultraS, @colloc2, @ultraS};
+prefs = cheboppref;
 w = [];
 for k = 1:4
     wold = w;
-    L.prefs.discretization = type{k};
-    w = L\f;
+    prefs.discretization = type{k};
+    w = linsolve(L,f,prefs);
 
     %%
 %     subplot(1, 2, k)

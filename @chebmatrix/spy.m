@@ -1,10 +1,13 @@
-function spy(A, dim)
+function spy(A, dim, discType)
 %SPY    Visualize a chebmatrix.
 %   If A is a chebmatrix, SPY(A) creates a picture of the nonzero pattern of the
 %   default discretization of A. Block boundaries are indicated by gray
 %   lines. 
 %   
 %   SPY(A, DIM) uses the dimension vector DIM to create the picture.
+%
+%   SPY(A, DIM, DISCTYPE) uses a the chebDiscretization constructor DISCTYPE for
+%   the visualization.
 %
 %   See also CHEBMATRIX, CHEBMATRIX.MATRIX, CHEBOPPREF.
 
@@ -14,20 +17,24 @@ function spy(A, dim)
 % Obtain domain information.
 dom = A.domain;
 
-% Select a reasonable default discretization if a value of DIM was not passed.
-if ( nargin < 2 )
-    if ( length(dom)==2 )   % no breakpoints
-        dim = 10;
-    else
-        dim = repmat(6, [1 length(dom)-1]);
+% Set defaults as needed.
+if ( nargin < 3 )
+    prefs = cheboppref;
+    discType = prefs.discretization;
+    if ( nargin < 2 )
+        if ( length(L.domain) == 2 )
+            dim = 10;
+        else
+            dim = repmat(6, 1, length(L.domain) - 1);
+        end
     end
 end
 
 % Discretize and do a regular spy plot.
-data = matrix(A, dim, dom);
+data = matrix(A, dim, dom, discType);
 spy(data)
 s =  sprintf('%i,', dim);    % list of sizes
-s = [ 'discretization = [', s(1:end-1), ']' ];
+s = [ 'piecewise dimension = [', s(1:end-1), ']' ];
 xlabel(s)
 
 % Override hold state.

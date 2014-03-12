@@ -7,9 +7,9 @@ classdef cheboppref < chebpref
 
     % See above for documentation.
     properties
-%         discretization = @colloc2
-%         scale = NaN
-%         dimensionValues = [32 64 128 256 512 724 1024 1448 2048]
+         discretization = @colloc2
+         scale = NaN
+         dimensionValues = [32 64 128 256 512 724 1024 1448 2048]
     end
 
     methods

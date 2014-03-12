@@ -15,14 +15,15 @@ L = addbc(L, El, 0);
 L = addbc(L, Er, 0);
 
 %%
-L.prefs.discretization = @colloc2;
-e = eigs(L, 6);
+prefs = cheboppref;
+prefs.discretization = @colloc2;
+e = eigs(L, 6, prefs);
 tol = 1e-10;
 pass(1) = norm(e + (1:6)'.^2, inf) < tol;
 
 %%
-L.prefs.discretization = @ultraS;
-e = eigs(L, 6, 0);
+prefs.discretization = @ultraS;
+e = eigs(L, 6, 0, prefs);
 tol = 1e-10;
 pass(2) = norm(e + (1:6)'.^2, inf) < tol;
 

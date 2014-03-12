@@ -1,4 +1,4 @@
-function u = expm(L, t, u0)
+function u = expm(L, t, u0, prefs)
 %EXPM      Exponential semigroup of a linop.
 %   u = EXPM(L, T, U0) uses matrix exponentiation to propagate an initial
 %   condition U0 for time T through the differential equation u' = L*u, where L
@@ -11,6 +11,9 @@ function u = expm(L, t, u0)
 %   L should have appropriate boundary conditions to make the problem
 %   well-posed. Those conditions have zero values; i.e. are represented by
 %   B*u(t)=0 for a linear functional B.
+%
+%   EXPM(...,PREFS) accepts a preference structure or object like that created
+%   by CHEBOPPREF.
 %
 %   EXAMPLE: Heat equation
 %      d = [-1 1];  x = chebfun('x',d);
@@ -31,7 +34,11 @@ function u = expm(L, t, u0)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-discType = L.prefs.discretization;
+if ( nargin < 4 )
+    prefs = cheboppref;
+end
+
+discType = prefs.discretization;
 isFun = isFunVariable(L); 
 
 %% Set up the discretization:
@@ -43,7 +50,7 @@ if ( isa(discType, 'function_handle') )
     disc.domain = chebfun.mergeDomains(disc.domain, u0.domain); 
     
     % Set the allowed discretisation lengths: 
-    dimVals = L.prefs.dimensionValues;
+    dimVals = prefs.dimensionValues;
     
     dimVals( dimVals < length(u0) ) = [];
     
