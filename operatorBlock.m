@@ -225,8 +225,8 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
         % M = OPERATORBLOCK.MULT(U) returns the multiplication operator from the
         % CHEBFUN U, i.e. the operator that maps a CHEBFUN f(x) to u(x)f(x).
         %
-        % M = OPERATORBLOCK.MULT(U, DOM) allows passing a domain one which the
-        % multiplcation operator is to be constructed (useful for the ADCHEBFUN
+        % M = OPERATORBLOCK.MULT(U, DOM) allows passing a domain on which the
+        % multiplication operator is to be constructed (useful for the ADCHEBFUN
         % class)
         
             % Check whether domain information was passed
