@@ -64,46 +64,46 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) linop 
     
     methods ( Static )
         function [Z, I, D, C, M] = primitiveOperators(domain)
-%LINOP.PRIMITIVEOPERATORS Frequently used operator blocks.
-%   [Z, I, D, C, M] = LINOP.PRIMITIVEOPERATORS(DOMAIN) returns shorcuts to 
-%   frequently used linear operators:
-%     * Z is the zero operator on DOMAIN.
-%     * I is the identity operator on DOMAIN.
-%     * D is the differentiation operator on DOMAIN.
-%     * C is the indefinite integration operator on DOMAIN.
-%     * M(F) is the operator of pointwise multiplication by F.
-%
-%   Note that the 'linop' is just a convenient name. The outputs are *not*
-%   linops.
-%
-%   See also OPERATORBLOCK.
+        %LINOP.PRIMITIVEOPERATORS Frequently used operator blocks.
+        %   [Z, I, D, C, M] = LINOP.PRIMITIVEOPERATORS(DOMAIN) returns shortcuts
+        %   to frequently used linear operators:
+        %     * Z is the zero operator on DOMAIN.
+        %     * I is the identity operator on DOMAIN.
+        %     * D is the differentiation operator on DOMAIN.
+        %     * C is the indefinite integration operator on DOMAIN.
+        %     * M(F) is the operator of pointwise multiplication by F.
+        %
+        %   Note that the 'linop' is just a convenient name. The outputs are
+        %   *not* linops.
+        %
+        %   See also OPERATORBLOCK.
 
             Z = operatorBlock.zeros(domain);
             I = operatorBlock.eye(domain);
-            D = operatorBlock.diff(domain,1);
-            C = operatorBlock.cumsum(domain,1);
-            M = @(f) operatorBlock.mult(f);
+            D = operatorBlock.diff(domain, 1);
+            C = operatorBlock.cumsum(domain, 1);
+            M = @(f) operatorBlock.mult(f, domain);
         end
 
         function [zr, ev, su, dt] = primitiveFunctionals(domain)
-%LINOP.PRIMITIVEFUNCTIONALS Frequently used functional blocks.
-%   [Z, E, S, D] = LINOP.PRIMITIVEFUNCTIONALS(DOMAIN) returns shortcuts to
-%   frequently used functional blocks:
-%     * Z is the zero functional on DOMAIN. 
-%     * E(X) is an evaluation functional
-%     at the point X. E(X, DIR) adds a direction (+1/-1) to the evaluation.
-%     * S is definite integration on DOMAIN.
-%     * D(F) is the functional that takes the inner product with F.
-%
-%   Note that the 'linop' is just a convenient name. The outputs are *not*
-%   linops.
-%
-%   See also FUNCTIONALBLOCK.
+        %LINOP.PRIMITIVEFUNCTIONALS Frequently used functional blocks.
+        %   [Z, E, S, D] = LINOP.PRIMITIVEFUNCTIONALS(DOMAIN) returns shortcuts
+        %   to frequently used functional blocks:
+        %     * Z is the zero functional on DOMAIN. 
+        %     * E(X) is an evaluation functional at the point X. 
+        %       E(X, DIR) adds a direction (+1/-1) to the evaluation.
+        %     * S is definite integration on DOMAIN.
+        %     * D(F) is the functional that takes the inner product with F.
+        %
+        %   Note that the 'linop' is just a convenient name. The outputs are *not*
+        %   linops.
+        %
+        %   See also FUNCTIONALBLOCK.
             
             zr = functionalBlock.zero(domain);
             ev = functionalBlock.eval(domain);
             su = functionalBlock.sum(domain);
-            dt = @(f) functionalBlock.inner(f);
+            dt = @(f) functionalBlock.inner(f, domain);
         end
     end
 
