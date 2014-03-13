@@ -17,8 +17,11 @@ pass = zeros(2, numel(funcList));
 
 % Do the tests.
 for k = 1:numel(funcList)
+    % Call the valueTesting method, which also returns linearity information
+    [err, lin] = adchebfun.valueTesting(funcList{k});
+    
     % First, check that the computed function values match what we expect
-    pass(1,k) = ( adchebfun.valueTesting(funcList{k}) == 0 );
+    pass(1, k) = ( err == 0 );
     
     % Call the taylorTesting method
     [order1, order2, nDiff2] = adchebfun.taylorTesting(funcList{k});
@@ -38,6 +41,9 @@ for k = 1:numel(funcList)
     else
         pass(2,2) = ~any(nDiff2);
     end
+    
+    % Check that we received the correct linearity information
+    pass(3, k) = ( lin == 1 );
 end
 
 end

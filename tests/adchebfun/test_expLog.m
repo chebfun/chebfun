@@ -3,25 +3,26 @@
 function pass = test_expLog
 
 % List of trigonometric functions to test.
-explogFunctions = {@exp, @expm1, @log, @log10, @log1p, @log2};
+funcList = {@exp, @expm1, @log, @log10, @log1p, @log2};
 
 % Tolerance for Taylor testing
 tol = 1e-2;
 
 % Initialise vector with pass information
-pass = zeros(3, numel(explogFunctions));
+pass = zeros(3, numel(funcList));
 
 % Do the tests.
-for k = 1:numel(explogFunctions)   
+for k = 1:numel(funcList)   
     
     % Call the valueTesting method, which also returns linearity information
-    [err, lin] = adchebfun.valueTesting(explogFunctions{k});
+    [err, lin] = adchebfun.valueTesting(funcList{k});
+
     
     % First, check that the computed function values match what we expect
     pass(1, k) = ( err == 0 );
     
     % Call the taylorTesting method
-    [order1, order2] = adchebfun.taylorTesting(explogFunctions{k});
+    [order1, order2] = adchebfun.taylorTesting(funcList{k});
     % We expect all elements of ORDER1 to be close to 1, and of ORDER2 to be
     % close to 2.
     pass(2, k) = ( max(abs(order1 - 1)) < tol ) & ...
