@@ -40,7 +40,6 @@ hfig = figure('Visible', 'off');
 
 % Plots of real scalar functions.
 pass(1) = doesNotCrash(@() plot(fsr1));
-plot(fsr1, fsr2)
 pass(2) = doesNotCrash(@() plot(fsr1, fsr2));
 pass(3) = doesNotCrash(@() plot3(fsr1, fsr2, fsr3));
 
@@ -90,6 +89,16 @@ pass(31) = doesNotCrash(@() plot3(fdc, fsr1, fsr2, 'jumpline', 'r-'));
 % Check plotting discrete data alongside CHEBFUN objects
 x = linspace(-1,1,10).';
 pass(32) = doesNotCrash(@() plot(far1, 'b', far2, 'r', x, far1(x), 'om', x, far3(x), '-ok'));
+
+% Check SURF, SURFACE, SURFC, and MESH.
+pass(33) = doesNotCrash(@() surf(far1));
+pass(34) = doesNotCrash(@() surf(fqr1));
+% (SURFACE is a wrapper for SURF, so we don't need to be so thorough.)
+pass(35) = doesNotCrash(@() surface(fqr1));
+pass(36) = doesNotCrash(@() surfc(far1));
+pass(37) = doesNotCrash(@() surfc(fqr1));
+pass(38) = doesNotCrash(@() mesh(far1));
+pass(39) = doesNotCrash(@() mesh(fqr1));
 
 close(hfig);
 

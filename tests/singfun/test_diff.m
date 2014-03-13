@@ -89,7 +89,7 @@ df_exact = singfun(@(x) -2*(1 - x).^(b-1).*(x + 1).^(b-1)...
     {'sing', 'sing'}, [], [], pref);
 vals_exact = feval(df_exact, x);
 err = vals_df - vals_exact;
-pass(8) = (norm(err, inf) < get(f,'epslevel')*norm(vals_exact, inf));
+pass(8) = (norm(err, inf) < 2*get(f,'epslevel')*norm(vals_exact, inf));
 
 %%
 % Check higher-order derivatives.
