@@ -194,12 +194,20 @@ classdef functionalBlock < linBlock
             E.stack = @(z) feval(z, location, direction);
         end
 
-        function F = inner(f)
-        %INNER   Inner product functional.
-        %
-        %   FUNCTIONALBLOCK.INNER(F) is the functional mapping a function
-        %   to its inner product with the chebfun F.
-            F = functionalBlock(f.domain);
+        function F = inner(f, domain)
+            %FUNCTIONALBLOCK.INNER   Inner product functional
+            %
+            %   FUNCTIONALBLOCK(F) is the functional mapping a function to
+            %   its inner product with the chebfun F.
+            %
+            %   FUNCTIONALBLOCK.INNER(F, DOMAIN) returns the functional on the
+            %   interval DOMAIN that maps a function to its inner product with
+            %   the chebfun F.
+            if ( nargin == 1 )
+                F = functionalBlock(f.domain);
+            else
+                F = functionalBlock(domain);
+            end
             F.stack = @(z) inner(z, f);
             F.diffOrder = 0;
         end
