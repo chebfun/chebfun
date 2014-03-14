@@ -130,7 +130,7 @@ end
 % one by one.
 for k = find( isFun )
     u{k} = disc.toFunction(u{k});
-    u{k} = simplify(u{k}, epsLevel);
+    u{k} = simplify( u{k}, max(eps,epsLevel) );
 end
 
 % Convert to chebmatrix

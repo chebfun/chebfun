@@ -243,6 +243,10 @@ else            % Unwrap the eigenvectors for output
     % Find the norm in each eigenfunction (aggregated over variables).
     nrmsq = zeros(1,k);
     for j = 1:length(u)
+        if ( isFun(j) )
+            % Compress the representation.
+            u{j} = simplify( u{j}, max(eps,epsLevel) );
+        end
         nrmsq = nrmsq + sum( u{j}.*conj(u{j}), 1 );
     end
 

@@ -33,7 +33,6 @@ type = {@colloc2, @ultraS, @colloc2, @ultraS};
 prefs = cheboppref;
 w = [];
 for k = 1:4
-    wold = w;
     prefs.discretization = type{k};
     w = linsolve(L,f,prefs);
 
