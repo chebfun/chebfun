@@ -1388,6 +1388,9 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         % Taylor testing for correctness of derivatives of binary operators
         [order1, order2, nDiff2] = taylorTestingBinary(f, hMax, plotting)
         
+        % Testing for most unary operators
+        pass = testUnary(funcList)
+        
         % Value testing for correctness of computed function, also returns
         % linearity information.
         [err, lin] = valueTesting(f, numOut)
