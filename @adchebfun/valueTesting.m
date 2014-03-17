@@ -11,8 +11,10 @@ function [err, lin] = valueTesting(f, numOut)
 %              (in particular, ellipj)
 %
 % and the output is
-%   ERR     --  a vector containing the infinity norm of the difference between
-%               applying F to a CHEBFUN and an ADCHEBFUN.
+%   ERR     --  the infinity norm of the difference between applying F to a
+%               CHEBFUN and an ADCHEBFUN.
+%   LIN     --  linearity information. LIN == 1 if the method is determined to
+%               be linear, 0 otherwise.
 %
 % See also: TAYLORTESTING, TAYLORTESTINGBINARY, VALUETESTINGBINARY.
 
