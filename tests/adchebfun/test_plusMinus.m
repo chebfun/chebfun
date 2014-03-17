@@ -34,8 +34,8 @@ for funcCounter = 1:length(funcList)
     pass(3*(funcCounter-1) + 2, :) = ( (max(abs(order1 - 1)) < tolOrder) & ...
         (max(abs(nDiff2)) < tolDiff) );
     
-    % Linearity checking
-    pass(3*(funcCounter-1) + 3, :) = ( lin == [1 1 1 1 1]);
+    % Linearity checking. All operations should be detected as linear.
+    pass(3*(funcCounter-1) + 3, :) = ( lin == 1);
     
 end
 
