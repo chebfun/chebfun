@@ -6,7 +6,7 @@ function pass = test_plusMinus
 funcList = {@plus, @minus};
 
 % Initialise pass vector
-pass = zeros(4, 5);
+pass = zeros(3*numel(funcList), 5);
 
 % Tolerance for Taylor testing
 tolOrder = 1e-2;
@@ -18,10 +18,10 @@ for funcCounter = 1:length(funcList)
     func = funcList{funcCounter};
     
     % Compare values
-    err = adchebfun.valueTestingBinary(func);
+    [err, lin] = adchebfun.valueTestingBinary(func);
     
     % Confirm that the error returned is zero
-    pass(2*(funcCounter-1) + 1, :) = ( err == 0 );
+    pass(3*(funcCounter-1) + 1, :) = ( err == 0 );
     
     % Taylor testing
     [order1, order2, nDiff2] = adchebfun.taylorTestingBinary(func);
@@ -31,8 +31,11 @@ for funcCounter = 1:length(funcList)
     % the methods are indeed linear, we should expect nDiff2 to have values all
     % close to machine epsilon, which we can use to check for the correctness of
     % the derivative computed.
-    pass(2*(funcCounter-1) + 2, :) = ( (max(abs(order1 - 1)) < tolOrder) & ...
+    pass(3*(funcCounter-1) + 2, :) = ( (max(abs(order1 - 1)) < tolOrder) & ...
         (max(abs(nDiff2)) < tolDiff) );
+    
+    % Linearity checking
+    pass(3*(funcCounter-1) + 3, :) = ( lin == [1 1 1 1 1]);
     
 end
 

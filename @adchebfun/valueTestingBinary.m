@@ -1,4 +1,4 @@
-function err = valueTestingBinary(func)
+function [err, lin] = valueTestingBinary(func)
 %ERR = VALUETESTING(F)   Test that ADCHEBFUN is calling the correct method for
 %   the function part of the methods. This method is used for binary operators.
 %
@@ -8,6 +8,9 @@ function err = valueTestingBinary(func)
 % and the output is
 %   ERR     --  a vector containing the infinity norm of the difference between
 %               applying F to CHEBFUNS and an ADCHEBFUNS.
+%   LIN     --  linearity information. LIN(i) == 1 if the method is determined
+%               to be linear for the ith combination of variables, 0 otherwise.
+%          
 %
 % See also: TAYLORTESTING, TAYLORTESTINGBINARY, VALUETESTING.
 
@@ -49,9 +52,9 @@ w2 = chebfun(0.1*rand(N,1) + .5);
 s1 = rand();
 s2 = rand();
 
-% Initialise error vector:
+% Initialise error and linearity vectors:
 err = zeros(1,5);
-
+lin = err;
 %% Create various combinations
 
 % ADCHEBFUN and ADCHEBFUN:
@@ -79,4 +82,10 @@ err(3) = norm(w1v2.func - w1u2);
 err(4) = norm(v1s2.func - u1s2);
 err(5) = norm(s1v2.func - s1u2);
 
+%% Linearity information
+lin(1) = v1v2.isConstant;
+lin(2) = v1w2.isConstant;
+lin(3) = w1v2.isConstant;
+lin(4) = v1s2.isConstant;
+lin(5) = s1v2.isConstant;
 end

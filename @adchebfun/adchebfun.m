@@ -1397,7 +1397,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         
         % Value testing for correctness of computed function for binary
         % operators.
-        error = valueTestingBinary(f)
+        [err, lin] = valueTestingBinary(f)
     end
     
     methods ( Access = private )
