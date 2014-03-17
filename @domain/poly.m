@@ -38,20 +38,20 @@ end
 [ignored, j] = max(abs(v));
 z = v(j);
 v(j) = [];
-for k = 1:(N - 1)
-    P = zeros(N - k, 1);
-    for l = 1:(N - k)
+for k = 1:(N-1)
+    P = zeros(N-k, 1);
+    for l = 1:(N-k)
         P(l) = prod(z - v(l));
     end
     [ignored, j] = max(abs(P));
-    z(k + 1) = v(j);
+    z(k+1) = v(j);
     v(j) = [];
 end
 v = z;
 
 % Evaluate at Chebyshev points:
-x = chebpts(N + 1, d);
-p = ones(N + 1, 1);
+x = chebpts(N+1, d);
+p = ones(N+1, 1);
 for k = 1:N
     p = p.*(x - v(k));
 end

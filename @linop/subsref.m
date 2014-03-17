@@ -17,7 +17,7 @@ function B = subsref(A, sr)
 % the A(n) realization syntax from version 4, which is referenced in
 % Approximation Theory and Approximation Practice. 
 
-if ( length(sr)==1  && strcmp(sr(1).type, '()') && length(sr(1).subs)==1 )
+if ( length(sr)==1 && strcmp(sr(1).type, '()') && length(sr(1).subs)==1 )
     B = feval(A, sr(1).subs{1});
 else
     B = subsref@chebmatrix(A, sr);

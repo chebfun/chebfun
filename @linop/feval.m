@@ -37,7 +37,7 @@ else
             k2 = ceil(k/2);         % about half for top
             A(1:k2,:) = B(1:k2,:);
             krem = k - k2;          % number remaining
-            A(end - krem + 1:end, :) = B(k2 + 1:end, :);
+            A(end-krem+1:end, :) = B(k2+1:end, :);
             M = A;
     end
 end
