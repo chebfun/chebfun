@@ -39,7 +39,7 @@ end
 z = v(j);
 v(j) = [];
 for k = 1:(N-1)
-    P = zeros(N-k, 1);
+    P = zeros(N - k, 1);
     for l = 1:(N-k)
         P(l) = prod(z - v(l));
     end
