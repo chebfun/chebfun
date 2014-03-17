@@ -6,6 +6,11 @@ classdef (InferiorClasses = {?chebfun}) domain < double
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % DOMAIN Class Description:
+    %
+    % DOMAIN inherits from a standard Matlab DOUBLE. A domain object only
+    % contains vector for the endpoints and breakpoints of the interval it
+    % represents. This class is lightly documented, since it is mostly intended
+    % for backward compatability.
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     %% PROPERTIES OF DOMAIN OBJECTS.
@@ -19,7 +24,7 @@ classdef (InferiorClasses = {?chebfun}) domain < double
         function obj = domain(varargin)
             %Constructor for the DOMIAN class.
             
-            % Return an empty CHEBTECH2 on null input:
+            % Return an empty DOMAIN on null input:
             if ( nargin == 0 )
                 data = [];
             else
@@ -29,9 +34,6 @@ classdef (InferiorClasses = {?chebfun}) domain < double
             % Create the domain:
             obj = obj@double(data);
             
-            % Validate it:
-%             validate(obj);
-            
         end
         
     end
@@ -40,9 +42,9 @@ classdef (InferiorClasses = {?chebfun}) domain < double
     methods ( Static = true )
         
         function varargin = toDouble(varargin)
+            % Cast DOMAIN to DOUBLE:
             for k = 1:nargin
                 if ( isa(varargin{k}, 'domain') )
-                    % Cast DOMAN to DOUBLE:
                     varargin{k} = double(varargin{k});
                 end
             end
