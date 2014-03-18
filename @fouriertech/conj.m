@@ -16,10 +16,10 @@ end
 % Conjugate the values:
 f.values = conj(f.values);
 
-% This won't quite work for the coefficients:
-% % Conjugate the coefficients:
-% f.coeffs = conj(f.coeffs);
-% So instead just recompute the coefficients for the conjugated values.
-f.coeffs = f.vals2coeffs(f.values);
+% Could just recompute the coefficients for the conjugated values.
+% f.coeffs = f.vals2coeffs(f.values);
+% But this exploits the properties of the interpolant in complex exponential
+% form:
+f.coeffs = flipud(conj(f.coeffs));
 
 end

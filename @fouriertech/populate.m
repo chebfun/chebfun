@@ -1,7 +1,36 @@
-function f = populate(f, op, vscale, hscale, pref)
+%POPULATE   Populate a FOURIERTECH class with values.
+%   F = F.POPULATE(OP) returns a FOURIERTECH representation populated with values
+%   F.VALUES of the function OP evaluated on an equally spaced grid. The fields
+%   F.ISHAPPY and F.EPSLEVEL indicate whether the representation is deemed
+%   'happy' and to what accuracy (see HAPPINESSCHECK.m). Essentially this means
+%   that such an interpolant is a sufficiently accurate (i.e., to a relative
+%   accuracy of F.EPSLEVEL) approximation to OP. If F.ISHAPPY is FALSE, then
+%   POPULATE was not able to obtain a happy result.
+%
+%   OP should be vectorized (i.e., accept a vector input), and output a vector
+%   of the same length. Furthermore, OP may be an array-valued function, in
+%   which case it should accept a vector of length N and return a matrix of size
+%   NxM.
+%
+%   F.POPULATE(OP, VSCALE, HSCALE) enforces that the happiness check is relative
+%   to the initial vertical scale VSCALE and horizontal scale HSCALE. These
+%   values default to 0 and 1 respectively. During refinement, VSCALE updates
+%   itself to be the largest magnitude values to which (each of the columns in)
+%   OP evaluated to.
+%
+%   F.POPULATE(OP, VSCALE, HSCALE, PREF) enforces any additional preferences
+%   specified in the preference structure PREF (see FOURIERTECH.TECHPREF).
+%
+%   F.POPULATE(VALUES, ...) (or F.POPULATE({VALUES, COEFFS}, ...)) populates F
+%   non-adaptively with the VALUES (and COEFFS) passed. These values are still
+%   tested for happiness in the same way as described above, but the length of
+%   the representation is not altered.
+%
+% See also FOURIERTECH, TECHPREF, HAPPINESSCHECK.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
+function f = populate(f, op, vscale, hscale, pref)
 
 if ( (nargin < 3) || isempty(vscale) )
     vscale = 0;
@@ -11,6 +40,10 @@ if ( (nargin < 4) || isempty(hscale) )
 else
     f.hscale = hscale;
 end
+if ( nargin < 5 )
+    pref = chebtech.techPref();
+end
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% Non-adaptive construction. %%%%%%%%%%%%%%%%%%%%%%%%%%
 % Values (and possibly coefficients) have been given.
@@ -41,8 +74,11 @@ if ( isnumeric(op) || iscell(op) )
     % We're always happy if given discrete data:
     f.ishappy = true;
     
-    % TODO: Is this the correct vscale?
-    f.epslevel = max(eps(max(f.vscale)) + 0*f.vscale, eps);
+    % Scale the epslevel relative to the largest column:
+    vscale = f.vscale;
+    f.epslevel = 10*eps(max(f.vscale));
+    vscale(vscale <= f.epslevel) = 1;
+    f.epslevel = f.epslevel./vscale;
 
     return
 end
@@ -66,24 +102,46 @@ while ( 1 )
         break
     end    
     
-    % Update vertical scale:
-    f.vscale = max(vscale, max(abs(f.values), [], 1));
-
+    % Update vertical scale: (Only include sampled finite values)
+    valuesTemp = f.values;
+    valuesTemp(~isfinite(f.values)) = 0;
+    vscale = max(vscale, max(abs(valuesTemp(:))));
     
     % Compute the Fourier coefficients:
-    f.coeffs = f.vals2coeffs(f.values);
+    coeffs = f.vals2coeffs(f.values);
     
     % Check for happiness:
+    f.coeffs = coeffs;
+    f.vscale = vscale;
     [ishappy, epslevel, cutoff] = happinessCheck(f, op, pref); 
         
     % We're happy! :)
     if ( ishappy ) 
-        f.coeffs = f.alias(f.coeffs, cutoff); % Alias the discarded coefficients.
-        f.values = f.coeffs2vals(f.coeffs);   % Compute values on this grid.
+        coeffs = f.alias(coeffs, cutoff);     % Alias the discarded coefficients.
+        f.values = f.coeffs2vals(coeffs);   % Compute values on this grid.
         break
     end
 
 end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Update the vscale. %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Compute the 'true' vscale (as defined in CHEBTECH classdef):
+vscaleOut = max(abs(f.values), [], 1);
+% Update vertical scale one last time:
+vscaleGlobal = max(vscale, vscaleOut);
+
+% Output the 'true' vscale (i.e., the max of the stored values):
+vscale = vscaleOut;
+
+% Adjust the epslevel appropriately:
+% if ( any(vscaleOut > 0) )
+%     epslevel = epslevel*vscaleGlobal./vscaleOut;
+% else 
+%     % Deal with zero vscale:
+%     epslevel = epslevel./(1+vscaleOut);
+% end
+vscaleOut(vscaleOut < epslevel) = 1;
+epslevel = epslevel*vscaleGlobal./vscaleOut;
 
 % This may not be the best place to do this.
 if f.isReal
@@ -91,6 +149,8 @@ if f.isReal
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% Assign to FOURIERTECH object. %%%%%%%%%%%%%%%%%%%%%%%%%%
+f.coeffs = coeffs;
+f.vscale = vscale;
 f.ishappy = ishappy;
 f.epslevel = epslevel;
 

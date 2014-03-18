@@ -52,7 +52,7 @@ values = mat2cell(f.values, n, N);
 coeffs = mat2cell(f.coeffs, n, N);
 vscale = mat2cell(f.vscale, 1, N);
 epslevel = mat2cell(f.epslevel, 1, N);
-isReal = mat2cell(f.isReal, 1, N);
+isReal = mat2cell(f.isReal*N, 1, N);
 
 % Create a cell for storing the FOURIETECH objects
 g = cell(1, numel(N));
@@ -70,7 +70,7 @@ for k = 1:numel(N)
     gk.epslevel = epslevel{k};
     gk.isReal = isReal{k};
     
-    % Store the CHEBTECH in the cell-array returned.
+    % Store the FOURIETECH in the cell-array returned.
     g{k} = gk;
 end
 
