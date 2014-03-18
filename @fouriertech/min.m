@@ -1,0 +1,22 @@
+function [minVal, minPos] = min(f)
+%MIN   Global minimum of a FOURIERTECH on [-pi,pi].
+%   MINVAL = MIN(F) returns the global minimum of the FOURIERTECH F on [-1,1].  If
+%   F is an array-valued FOURIERTECH, MINVAL is a row vector whose Kth entry is the
+%   global minimum of the Kth column of F.
+%
+%   [MINVAL, MINPOS] = MIN(F) returns also a value such that MINVAL = F(MINPOS).
+%
+%   If F is complex-valued then absolute values are taken to determine maxima
+%   but the resulting value corresponds to that of the original function. That
+%   is, MINVAL = FEVAL(F, MINPOS) where [~, MINPOS] = MIN(ABS(F)).
+%
+% See also MAX, MINANDMAX.
+
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+% Simply create a chebfun of the FOURIERTECH and call min on it.
+g = chebfun(@(x) f.feval(x),[-pi,pi]);
+[minVal, minPos] = min(g);
+
+end
