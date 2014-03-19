@@ -15,8 +15,9 @@ function [minVal, minPos] = min(f)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Simply create a chebfun of the FOURIERTECH and call min on it.
-g = chebfun(@(x) f.feval(x),[-pi,pi]);
-[minVal, minPos] = min(g);
+% To avoid code duplication, we simply call MINANDMAX:
+[minVal, minPos] = minandmax(f);
+minVal = minVal(1,:);
+minPos = minPos(1,:);
 
 end

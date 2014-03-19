@@ -1,9 +1,9 @@
 function varargout = chebpolyplot(f, varargin)
-%CHEBPOLYPLOT   Display Chebyshev coefficients graphically.
+%CHEBPOLYPLOT   Display Fourier coefficients graphically.
 %
-%   CHEBPOLYPLOT(F) plots the Chebyshev coefficients of a CHEBTECH F on a
+%   CHEBPOLYPLOT(F) plots the Fourier coefficients of a FOURIERTECH F on a
 %   semilogy scale. A horizontal line at the EPSLEVEL of F is also plotted. If F
-%   is an array-valued CHEBTECH then a curve is plotted for each component
+%   is an array-valued FOURIERTECH then a curve is plotted for each component
 %   (column) of F.
 %
 %   CHEBPOLYPLOT(F, S) allows further plotting options, such as linestyle,
@@ -64,7 +64,7 @@ if ( f.vscale > 0 )
     absCoeffs(~absCoeffs) = min( f.epslevel*min(f.vscale), ...
                                  min(absCoeffs(logical(absCoeffs))) );
 else
-    % (add epslevel for zero CHEBTECHs)
+    % (add epslevel for zero FOURIERTECHs)
     absCoeffs = absCoeffs + f.epslevel;
 end
 
@@ -77,13 +77,14 @@ if ( plotEpsLevel )
     hold on
     h2 = semilogy([(n-1)/2 -(n-1)/2], repmat(f.vscale, 2, 1)*f.epslevel, args{:});
     h = [h ; h2];
+    set(gca,'XDir', 'Reverse')
     for k = 1:m
         c = get(h(k), 'color');
         set(h(m+k), 'linestyle', ':', 'linewidth', 1, 'marker', 'none', 'color', c);
     end
 else
     % Plot just the coefficients:
-    h = semilogy(n:-1:1, absCoeffs, args{:});
+    h = semilogy((n-1)/2:-1:-(n-1)/2, absCoeffs, args{:});
 end
 
 % For constant functions, plot a dot:

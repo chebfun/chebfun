@@ -125,7 +125,7 @@ while ( 1 )
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Update the vscale. %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Compute the 'true' vscale (as defined in CHEBTECH classdef):
+% Compute the 'true' vscale (as defined in FOURIERTECH classdef):
 vscaleOut = max(abs(f.values), [], 1);
 % Update vertical scale one last time:
 vscaleGlobal = max(vscale, vscaleOut);

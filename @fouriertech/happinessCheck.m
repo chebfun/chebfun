@@ -1,9 +1,9 @@
 function  [ishappy, epslevel, cutoff] = happinessCheck(f, op, pref)
-%HAPPINESSCHECK   Happiness test for a CHEBTECH
+%HAPPINESSCHECK   Happiness test for a FOURIERTECH
 %
 % See also CLASSICCHECK, LOOSECHECK, STRICTCHECK, SAMPLETEST.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Grab preferences:
@@ -39,7 +39,6 @@ else
     
 end
 
-% TODO: Reimplement SAMPLETEST?
 % % Check also that sampleTest is happy:
 % if ( ishappy && ~isempty(op) && ~isnumeric(op) && pref.sampleTest )
 %     f.epslevel = epslevel;
