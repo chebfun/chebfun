@@ -738,6 +738,15 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             
             [varargout{1:nargout}] = sum(varargin{:});
         end
+        
+        function isl = isLinear(f)
+            %ISLINEAR       Returns linearity information about an ADCHEBFUN
+            %
+            % ISL = ISLINEAR(F) returns 1 if ALL(F.ISCONSTANT) == 1, 0
+            % otherwise.
+            isl = all(f.isConstant);
+        end
+        
               
         function u = jump(u, x, c)
             % U = JUMP(U)       JUMP of an ADCHEBFUN
@@ -1051,6 +1060,8 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % Things are easy if we only have one variable involved.
             if ( m == 1 )
                 u.jacobian = I;
+                % Reset linearity information
+                u.isConstant = 1;
             else
                 % Working in the system case.
                 
@@ -1067,6 +1078,9 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 % Convert the cell-array to a CHEBMATRIX and assign to the
                 % derivative field of U:
                 u.jacobian = chebmatrix(blocks);
+                % Initalise linearity information. The output is linear in all
+                % variables.
+                u.isConstant = ones(1, m);
             end
         end
    

@@ -55,6 +55,6 @@ v = adchebfun(u);
 err = max(cellfun(@(fu, fv) norm(fu - fv.func,'inf'), fu, fv));
 
 % Is the output linear?
-lin = cellfun(@(fv) fv.isConstant, fv);
+lin = cellfun(@(fv) isLinear(fv), fv);
 
 end
