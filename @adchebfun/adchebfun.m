@@ -1022,7 +1022,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 g = updateDomain(g);
                 % Swap variables for output
                 f = g;
-            else                                % ADCHEBFUN.*ADCHEBFUN
+            else                                % ADCHEBFUN./ADCHEBFUN
                 % Temporarily store the function of 1./g
                 tmp = 1./g.func;
                 % Derivative part
@@ -1033,10 +1033,9 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 f.func = f.func.*tmp;
                 
                 % Rather complicated linearity information.
-                % TODO: Fix this! We were doing linearity checking incorrectly
-                % for ./ in the past. To be fixed in feature-linearityDetection.
-                f.isConstant = iszero(g.jacobian);
-                
+                f.isConstant = ( f.isConstant & iszero(g.jacobian) ) & ...
+                    ( all(iszero(g.jacobian)) | iszero(f.jacobian) );
+                                
                 % Update domain in case new breakpoints were introduced.
                 f = updateDomain(f);
             end
