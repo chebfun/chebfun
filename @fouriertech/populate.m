@@ -117,7 +117,7 @@ while ( 1 )
         
     % We're happy! :)
     if ( ishappy ) 
-        coeffs = f.alias(coeffs, cutoff);     % Alias the discarded coefficients.
+        coeffs = f.alias(coeffs, cutoff);   % Alias the discarded coefficients.
         f.values = f.coeffs2vals(coeffs);   % Compute values on this grid.
         break
     end

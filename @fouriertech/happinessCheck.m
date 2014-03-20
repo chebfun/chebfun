@@ -39,14 +39,14 @@ else
     
 end
 
-% % Check also that sampleTest is happy:
-% if ( ishappy && ~isempty(op) && ~isnumeric(op) && pref.sampleTest )
-%     f.epslevel = epslevel;
-%     ishappy = sampleTest(op, f);
-%     if ( ~ishappy )
-%         % It wasn't. Revert cutoff. :(
-%         cutoff = size(f.values, 1);
-%     end
-% end
+% Check also that sampleTest is happy:
+if ( ishappy && ~isempty(op) && ~isnumeric(op) && pref.sampleTest )
+    f.epslevel = epslevel;
+    ishappy = sampleTest(op, f);
+    if ( ~ishappy )
+        % It wasn't. Revert cutoff. :(
+        cutoff = size(f.values, 1);
+    end
+end
 
 end

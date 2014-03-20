@@ -1,9 +1,9 @@
 function [ishappy, epslevel, cutoff] = classicCheck(f, pref)
-%CLASSICCHECK   Attempt to trim trailing Chebyshev coefficients in a CHEBTECH.
+%CLASSICCHECK   Attempt to trim trailing Fourier coefficients in a FOURIERTECH.
 %
 % See also STRICTCHECK, LOOSECHECK.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with special cases ------------------------------------------------------
@@ -96,7 +96,7 @@ if ( max(ac(1:testLength)) < epslevel )    % We have converged! Now chop tail:
     % Obtain an estimate for much accuracy we'd gain compared to reducing
     % length ("bang for buck"):
     Tbpb = log(1e3*epslevel./ac) ./ (n - (1:Tloc)');
-    [ignored, Tchop] = max(Tbpb(3:Tloc));  % Position at which to chop.
+    [~, Tchop] = max(Tbpb(3:Tloc));  % Position at which to chop.
 
     % We want to keep [c(0), c(1), ..., c(cutoff)]:
     cutoff = n - Tchop - 2;
@@ -112,7 +112,7 @@ end
 
 function [testLength, epslevel] = ...
     happinessRequirements(values, coeffs, x, vscale, hscale, epslevel) %#ok<INUSL>
-%HAPPINESSREQUIREMENTS   Define what it means for a CHEBTECH to be happy.
+%HAPPINESSREQUIREMENTS   Define what it means for a FOURIERTECH to be happy.
 %   See documentation above.
 
 % Grab the size:
@@ -122,7 +122,8 @@ n = size(values, 1);
 minPrec = 1e-4; % Worst case precision!
 
 % Length of tail to test.
-testLength = min(n, max(5, round((n-1)/8)));
+% testLength = min(n, max(5, round((n-1)/8)));
+testLength = min(n, max(4, round((n-1)/8)));
 
 % Look at length of tail to loosen tolerance:
 tailErr = eps*testLength^(2/3);

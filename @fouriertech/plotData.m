@@ -1,5 +1,5 @@
 function data = plotData(f, g, h)
-%PLOTDATA   Useful data values for plotting a CHEBTECH object.
+%PLOTDATA   Useful data values for plotting a FOURIERTECH object.
 %   DATA = PLOTDATA(F) returns a struct containing data that can be used for
 %   plotting F. The struct DATA contains the following fields:
 %
@@ -16,7 +16,7 @@ function data = plotData(f, g, h)
 %   PLOT(F,'-o').
 %
 %   DATA = PLOTDATA(F, G) is similar but for plot calls of the form PLOT(F, G),
-%   where both F and G are CHEBTECH objects. 
+%   where both F and G are FOURIERTECH objects. 
 % 
 %   DATA = PLOTDATA(F, G, H) is for plots of the form PLOT3(F, G, H). In this
 %   instance, DATA also contains fields zLine and zPoints for the data
@@ -24,7 +24,7 @@ function data = plotData(f, g, h)
 %
 % See also PLOT.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin == 1 )
@@ -37,64 +37,62 @@ end
 % Get the number of points: (Oversample the wavelength)
 len = max([length(f), length(g), length(h)]);
 npts = min(max(501, round(4*pi*len)), chebtech.techPref().maxPoints);
-npts = npts + mod(npts+1, 2);
 
 % Initialise the output structure:
 data = struct('xLine', [], 'yLine', [], 'xPoints', [], 'yPoints', []);
 if ( isempty(g) )       
     % PLOT(F):
     
-    % Values on oversampled Chebyshev grid (faster than evaluating a uniform grid!).
+    % Values on oversampled Fourier grid (equally spaced).
     data.xLine = fourierpts(npts);
     tmp = prolong(f, npts);
     data.yLine = tmp.values;
 
-    % Values on the Cheyshev grid tied to the CHEBTECH F:
+    % Values on the Fourier grid tied to the FOURIERTECH F:
     data.xPoints = f.points();
     data.yPoints = f.values;
 
-elseif ( isa(g, 'chebtech') )   
+elseif ( isa(g, 'fouriertech') )   
     % PLOT(F, G)
     
     % Also return the grid points used.
     % Grid data for f:
-    data.fGrid.xLine = f.chebpts(npts);
+    data.fGrid.xLine = fourierpts(size(f.values,1));
     % Use the maximum of the lenghts of f, g and h to match the number of
     % values returned:
-    data.fGrid.xPoints = f.chebpts(len);
+    data.fGrid.xPoints = fourierpts(len);
     
     % Grid data for g:
-    data.gGrid.xLine = g.chebpts(npts);
+    data.gGrid.xLine = fourierpts(npts);
     % Use the maximum of the lenghts of f, g and h to match the number of
     % values returned:    
-    data.gGrid.xPoints = g.chebpts(len);
+    data.gGrid.xPoints = fourierpts(len);
     
-    % Values on oversampled Chebyshev grid (faster than evaluating a uniform grid!).
+    % Values on oversampled Fourier grid (equally spaced)
     data.xLine = get(prolong(f, npts), 'values');
     data.yLine = get(prolong(g, npts), 'values');
 
-    % Values on the largest Cheyshev grid tied to the CHEBTECH objects F and G:
+    % Values on the largest uniform grid tied to the FOURIERTECH objects F and G:
     data.xPoints = get(prolong(f, len), 'values');
     data.yPoints = get(prolong(g, len), 'values');
     
-    if ( isa(h, 'chebtech') )
+    if ( isa(h, 'fouriertech') )
         % PLOT3(F, G, H)
         
         % Grid data for h:
-        data.hGrid.xLine = h.chebpts(npts);
+        data.hGrid.xLine = fourierpts(npts);
         % Use the maximum of the lenghts of f, g and h to match the number of
         % values returned:    
-        data.hGrid.xPoints = h.chebpts(len);
+        data.hGrid.xPoints = fourierpts(len);
         
-         % Values on oversampled Chebyshev grid:
+         % Values on oversampled uniform grid:
         data.zLine = get(prolong(h, npts), 'values');
         data.zPoints = get(prolong(h, len), 'values');  
     end
     
 else
-    error('CHEBFUN:CHEBTECH:plotdata:DataType', ...
+    error('CHEBFUN:FOURIERTECH:plotdata:DataType', ...
         'Invalid data types.');
-    
 end
 
 end

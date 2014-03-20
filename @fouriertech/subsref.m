@@ -1,14 +1,14 @@
 function varargout = subsref(f, index)
-%SUBSREF   FOURIERFUN subsref.
+%SUBSREF   FOURIERTECH subsref.
 % ( )
-%   F(X) returns the values of the FOURIERFUN F evaluated on the array X.
+%   F(X) returns the values of the FOURIERTECH F evaluated on the array X.
 %
-%   If F is an array-valued FOURIERFUN then F(X, COL) returns the values of the
+%   If F is an array-valued FOURIERTECH then F(X, COL) returns the values of the
 %   columns specified by the vector COL at the points X. Similarly, F(:, COL)
-%   returns a new array-vlaued FOURIERFUN containing only the columns specified in
+%   returns a new array-vlaued FOURIERTECH containing only the columns specified in
 %   COL. In both cases, COL should be a row vector.
 %
-%   F(G), where G is also a FOURIERFUN, computes the composition of F and G. See
+%   F(G), where G is also a FOURIERTECH, computes the composition of F and G. See
 %   CHEBFUN/COMPOSE for further details.
 %
 % .
@@ -24,7 +24,7 @@ switch index(1).type
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%% FEVAL / COMPOSE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     case '()'
-%         % Deal with row FOURIERFUN objects:
+%         % Deal with row FOURIERTECH objects:
 %         isTransposed = f.isTransposed;
 %         if ( isTransposed )
 %             f = f.';
@@ -127,7 +127,7 @@ switch index(1).type
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% RESTRICT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     case '{}'
-        error('Restriction of a fourierfun is not allowed');
+        error('Restriction of a fouriertech is not allowed');
         % Later we could think about restricting a fourierfun to an
         % interval contained in (-pi,pi) by converting it to a chebfun.
         if ( length(idx) == 1 )

@@ -1,7 +1,7 @@
 function [values, giveUp] = refine(op, values, pref)
-%REFINE   Refinement method for CHEBTECH2 construction.
+%REFINE   Refinement method for FOURIERTECH construction.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Obtain some preferences:
@@ -28,6 +28,8 @@ elseif ( strcmpi(refFunc, 'resampling') )
     [values, giveUp] = refineResampling(op, values, pref);
 else
     % User defined refinement function:
+    error('CHEBFUN:FOURIETECH:refine', ...
+          'No user defined refinement options allowed')
 %     [values, giveUp] = refFunc(op, values, pref);
 end
     
@@ -38,15 +40,15 @@ function [values, giveUp] = refineResampling(op, values, pref)
 
     if ( isempty(values) )
         % Choose initial n based upon minPoints:
-        n = 2^ceil(log2(pref.minPoints - 1)) + 1;
+        n = 2^ceil(log2(pref.minPoints - 1));
     else
         % (Approximately) powers of sqrt(2):
-        pow = log2(size(values, 1) - 1);
+        pow = log2(size(values, 1));
         if ( (pow == floor(pow)) && (pow > 5) )
             n = round(2^(floor(pow) + .5)) + 1;
             n = n - mod(n, 2) + 1;
         else
-            n = 2^(floor(pow) + 1) + 1;
+            n = 2^(floor(pow) + 1);
         end
     end
     
@@ -58,19 +60,18 @@ function [values, giveUp] = refineResampling(op, values, pref)
         giveUp = false;
     end
    
-    % 2nd-kind Chebyshev grid:
-%     x = chebtech2.chebpts(n);
-    x = fourierpts(n);
+    % TODO: Allow "first-kind" fourier points.
+    x = fourierpts(n);    
 
+    % TODO: What if preferences is set to extrapolate?
     % Evaluate the operator:
-    if ( pref.extrapolate )
-        valuesTemp = feval(op, x(2:n-1));
-        nans = NaN(1, size(valuesTemp, 2));
-        values = [ nans; valuesTemp; nans ];
-    else
-        values = feval(op, x);
-    end
-
+    values = feval(op, x);
+    
+    % Force the value at x(1) to be equal to the value at x(1)+2*pi, thus
+    % enforcing symmetry.
+    valRightBoundary = feval(op,x(1)+2*pi);
+    
+    values(1,:) = 0.5*(values(1,:) + valRightBoundary);
 end
 
 function [values, giveUp] = refineNested(op, values, pref)
@@ -84,7 +85,7 @@ function [values, giveUp] = refineNested(op, values, pref)
     else
     
         % Compute new n by doubling (we must do this when not resampling).
-        n = 2*size(values, 1) - 1;
+        n = 2*size(values, 1);
         
         % n is too large:
         if ( n > pref.maxPoints )
@@ -94,15 +95,15 @@ function [values, giveUp] = refineNested(op, values, pref)
             giveUp = false;
         end
         
-        % 2nd-kind Chebyshev grid:
-        x = chebtech2.chebpts(n);
+        % 2nd-kind Fourier points:
+        x = fourierpts(n);
         % Take every 2nd entry:
-        x = x(2:2:end-1);
+        x = x(2:2:end);
 
         % Shift the stored values:
         values(1:2:n,:) = values;
         % Compute and insert new ones:
-        values(2:2:end-1,:) = feval(op, x);
+        values(2:2:end,:) = feval(op, x);
 
     end
 end

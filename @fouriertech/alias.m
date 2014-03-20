@@ -28,9 +28,42 @@ n = size(coeffs, 1);
 
 % Pad with zeros:
 if ( m > n )
-%     coeffs = [ zeros(m-n, size(coeffs, 2)) ; coeffs ];
-    z = zeros(ceil((m-n)/2), size(coeffs, 2));
-    coeffs = [ z ; coeffs ; z ];
+    k = ceil((m-n)/2);
+    z = zeros(k, size(coeffs, 2));
+    % Need to handle the odd vs. even case separately.
+    if mod(n,2) == 0
+        %
+        % First account for the asymmetry in the coefficients when n is even.
+        %
+        % This will account for the cos(N/2) coefficient, which is stored
+        % in the coeffs(n,:) entry, using properties of the complex
+        % exponential.
+        coeffs = [coeffs(n,:)/2;coeffs(1:n-1,:);coeffs(n,:)/2];
+        coeffs = [z(1:end-1,:); coeffs; z];
+        
+        % Next check if m is odd.  If it is then coeffs is too long and we
+        % need to remove the last row.
+        if mod(m,2) == 1
+            coeffs = coeffs(1:end-1,:);
+        end
+    else
+        % There is no asymmetry in the coefficients just pad them.
+        coeffs = [ z ; coeffs ; z];
+        % Only need to check if m is even, in which case coeffs is too 
+        % long and we need to remove the first row.
+        if mod(m,2) == 0
+            coeffs = coeffs(2:end,:);
+        end
+    end
+%     numCoeffs = 2*k + n;
+%     
+%     % If the number of coefficients does not match m then remove the last
+%     % row of the matrix.  This could happen when n is even and m is odd or
+%     % when n is off and m is even.
+%     if numCoeffs == m+1
+%         coeffs = coeffs(2:end,:);
+%     end
+        
     return
 end
 

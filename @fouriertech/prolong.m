@@ -1,15 +1,15 @@
 function f = prolong(f, nOut)
-%PROLONG   Manually adjust the number of points used in a CHEBTECH.
-%   G = PROLONG(F, N) returns a CHEBTECH G where LENGTH(G) = N and G represents
-%   the same function as F but using more interpolation points/Chebyshev
+%PROLONG   Manually adjust the number of points used in a FOURIERTECH.
+%   G = PROLONG(F, N) returns a FOURIERTECH G where LENGTH(G) = N and G represents
+%   the same function as F but using more interpolation points/Fourier
 %   coefficients then were stored in F.
 %
 %   If N < LENGTH(F) than the representation is compressed (by aliasing the
 %   coefficients), which may result in loss of accuracy.
 %
-% See also CHEBTECH1/ALIAS, CHEBTECH2/ALIAS.
+% See also FOURIERTECH/ALIAS
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Store the number of values the input function has:
@@ -35,5 +35,10 @@ end
 % Prolong the points using the FFT:
 f.coeffs = f.alias(f.coeffs, nOut);
 f.values = f.coeffs2vals(f.coeffs);
+
+% Return a strictly real result if the values are real.
+if f.isReal
+    f.values = real(f.values);
+end
 
 end

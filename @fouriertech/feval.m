@@ -21,13 +21,13 @@ if ( isempty(f) )
     return 
 end
 
-% Reshape x to be a column vector for passing to CLENSHAW():
+% Reshape x to be a column vector for passing to polyval:
 [~, m] = size(f);
 fourierCoeff = f.coeffs;
 N = size(fourierCoeff,1);
 sizex = size(x);
 ndimsx = ndims(x);
-x = x(:)+pi;
+x = x(:);
 
 if m > 1
     % If N is odd, no modification is needed.
@@ -61,5 +61,16 @@ end
 if f.isReal
     y = real(y);
 end
+
+    % Vectorized version of Horner's scheme for evaluating multiple
+    % polynomilas of the same degree at the same locations.
+    function q = polyvalv(c,x)
+        nValsX = size(x,1);
+        degreePoly = size(c,1);
+        q = ones(nValsX,1)*c(1,:);
+        for j = 2:degreePoly
+            q = bsxfun(@minus,bsxfun(@times,x,q),-c(j,:));
+        end
+    end
 
 end

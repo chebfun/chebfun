@@ -1,6 +1,6 @@
 function varargout = plot(f, varargin)
-%PLOT   Basic linear plot for CHEBTECH objects. 
-%   PLOT(F) plots the CHEBTECH object F.
+%PLOT   Basic linear plot for FOURIERTECH objects. 
+%   PLOT(F) plots the FOURIERTECH object F.
 %
 %   PLOT(F, S) allows various line types, plot symbols, and colors to be used
 %   when S is a character string made from one element from any or all the
@@ -20,24 +20,24 @@ function varargout = plot(f, varargin)
 %                                p     pentagram
 %                                h     hexagram
 %
-%   The entries from the centre columns are plotted at the Chebyshev grid being
+%   The entries from the centre columns are plotted at Fourier grid being
 %   used to represent F. If no options from this column are chosen, 'o' is
 %   chosen by default if LENGTH(F) < 256.
 %
 %   The X,Y pairs, or X,Y,S triples, can be followed by parameter/value pairs to
 %   specify additional properties of the lines. For example, 
-%            f = chebtech.constructor(@sin);
+%            f = fouriertech.constructor(@sin);
 %            plot(f, 'LineWidth', 2, 'Color', [.6 0 0]) 
 %   will create a plot with a dark red line width of 2 points.
 %
 %   H1 = PLOT(F) returns a column vector of handles to lineseries objects, one
-%   handle per plotted line (in the case of array-valued CHEBTECH objects).
+%   handle per plotted line (in the case of array-valued FOURIERTECH objects).
 %   [H1, H2] returns a second vector of column handles, this time for each of
 %   the marker plots.
 %
 % See also PLOT3, PLOTDATA.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with an empty input:
@@ -53,7 +53,7 @@ holdState = ishold;
 
 %%
 % Get the data for plotting from PLOTDATA():
-if ( nargin > 1 && isa(varargin{1}, 'chebtech') )
+if ( nargin > 1 && isa(varargin{1}, 'fouriertech') )
     % Deal with plot(f, g);
     g = varargin{1};
     varargin(1) = [];

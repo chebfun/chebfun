@@ -78,13 +78,19 @@ function f = diffContinuousDim(f, k)
     % Get the coefficients:
     c = f.coeffs;
 
-    % If n is odd things are easy
+    % If N is odd things are easy
     if ( mod(N,2) == 1 )
-        % The negative is needed in front of the -(1i)^k term because of
+        % Arrange the wavenumbers the way the coefficients are stored.
         % the way the coefficients are stored.
-        waveNumber = -(-(N-1)/2:(N-1)/2).';
+        waveNumber = ((N-1)/2:-1:-(N-1)/2).';
     else
-        waveNumber = -([0 (-N/2+1):(N/2-1)]).';
+        % If N is even then we need to zero out the sawtooth mode for odd
+        % order derivatives (see Trefethen SMM p. 23)
+        if mod(k,2)
+            waveNumber = ([(N/2-1):-1:(-N/2+1) 0]).';
+        else
+            waveNumber = ([(N/2-1):-1:(-N/2+1) -N/2]).';
+        end
     end
     % Derivative in Fourier space.
     c = bsxfun(@times,c,(1i*waveNumber).^k);

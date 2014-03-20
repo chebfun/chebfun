@@ -39,7 +39,7 @@ pref.sampleTest = false;
 
 if ( nfuns == 2 )
     if ( size(f, 2) ~= size(g, 2) )
-        error('FOURIETECH:FOURIETECH:compose:dim', ...
+        error('CHEBFUN:FOURIETECH:compose:dim', ...
               'Matrix dimensions must agree.')
     end
 

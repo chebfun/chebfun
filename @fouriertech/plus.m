@@ -14,10 +14,10 @@ if ( isempty(f) || isempty(g) ) % FOURIERTECH + [] = []
     
     f = [];
     
-elseif ( isa(g, 'double') ) % CHEBTECH + double
+elseif ( isa(g, 'double') ) % FOURIERTECH + double
     
     % Update values (use bsxfun() to handle the case in which g is a vector
-    % and f is an array-valued CHEBTECH):
+    % and f is an array-valued FOURIERTECH):
     f.values = bsxfun(@plus, f.values, g);
     % Update coeffs:
     if ( (size(g, 2) > 1) && (size(f.coeffs, 2) == 1) )
@@ -37,7 +37,7 @@ elseif ( isa(g, 'double') ) % CHEBTECH + double
     f.coeffs(const_index,:) = f.coeffs(const_index,:) + g;
     % Update scale:
     vscaleNew = max(abs(f.values), [], 1);
-    % See CHEBTECH CLASSDEF file for documentation on this:
+    % See FOURIERTECH CLASSDEF file for documentation on this:
     f.epslevel = (f.epslevel.*f.vscale + abs(g)*eps)./vscaleNew;
     f.vscale = vscaleNew;
     
@@ -77,7 +77,7 @@ else % FOURIERTECH + FOURIERTECH
     else
         % Update vscale, epslevel, and ishappy:
         vscaleNew = max(abs(f.values), [], 1);
-        % See CHEBTECH CLASSDEF file for documentation on this:
+        % See FOURIERTECH CLASSDEF file for documentation on this:
         f.epslevel = (f.epslevel.*f.vscale + g.epslevel.*g.vscale)./vscaleNew;
         f.vscale = vscaleNew;
         f.ishappy = f.ishappy && g.ishappy;
