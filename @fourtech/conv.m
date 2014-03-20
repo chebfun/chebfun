@@ -1,6 +1,6 @@
 function h = conv(f, g)
-%CONV   Convolution of FOURIERTECH objects.
-%   H = CONV(F, G) produces the convolution of FOURIERTECH objects F and G:
+%CONV   Convolution of FOURTECH objects.
+%   H = CONV(F, G) produces the convolution of FOURTECH objects F and G:
 %                     - 
 %                    /
 %           H(x) =   |    F(t) G(x-t) dt,  x in [-pi, pi]
@@ -67,7 +67,7 @@ function h = conv(f, g)
 %   /___|__:/
 %  a+c fl a+d     b+d
 %
-% Rather than make a FOURIERTECH corresponding to the each of the patches, we
+% Rather than make a FOURTECH corresponding to the each of the patches, we
 % instead evaluate directly on a corresonding Chebyshev grid of appropriate
 % size, which turns out to be far more efficient. 
 %
@@ -86,12 +86,12 @@ end
 
 % No support for quasimatrices:
 if ( numColumns(f) > 1 || numColumns(g) > 1 )
-    error('FOURIERTECH:conv:quasi', 'No support for array-valued FOURIERTECH objects.');
+    error('FOURTECH:conv:quasi', 'No support for array-valued FOURTECH objects.');
 end
 
 % Check transpose state:
 if ( xor(f(1).isTransposed, g(1).isTransposed) )
-    error('FOURIERTECH:conv:transposed', 'FOURIERTECH dimensions do not agree.');
+    error('FOURTECH:conv:transposed', 'FOURTECH dimensions do not agree.');
 end
 transState = f(1).isTransposed;
 
@@ -100,8 +100,8 @@ transState = f(1).isTransposed;
 [c, d] = domain(g);
 
 if ( any(isinf([a b c d])) )
-    error('FOURIERTECH:conv:bounded', ...
-        'CONV only supports FOURIERTECH objects on bounded domains.');
+    error('FOURTECH:conv:bounded', ...
+        'CONV only supports FOURTECH objects on bounded domains.');
 end
 
 if ( issing(f) || issing(g) )
@@ -116,7 +116,7 @@ if ( (b - a) > (d - c) )
     return
 end
     
-% Deal with piecewise FOURIERTECH objects.
+% Deal with piecewise FOURTECH objects.
 if ( (numel(f.funs) > 1) || (numel(g.funs) > 1) )
     h = 0;
     % Loop over each of the interactions:
@@ -131,7 +131,7 @@ else
     f = f.funs{1};
     g = g.funs{1};
 end
-% Note, for simplicity we work with the FUNs, rather than the FOURIERTECHs.
+% Note, for simplicity we work with the FUNs, rather than the FOURTECHs.
 
 % Useful things:
 N = length(g);                               % Length of g
@@ -165,7 +165,7 @@ for k = 1:numPatches
     ind = (dk_left <= x) & (x < dk_mid); % Locate the grid values in [dkl, dkr]:
     if ( k == 1 ) % First piece:
         hLegL = chebtech.leg2cheb(flipud(hLegL));  % Cheb. coeffs of left tri.
-        h_left = chebfun(hLegL, [dk_left, dk_mid], 'coeffs'); % Make FOURIERTECH
+        h_left = chebfun(hLegL, [dk_left, dk_mid], 'coeffs'); % Make FOURTECH
     else          % Subsequent left pieces
         z = map(x(ind), dk_left, dk_mid);          % Map grid points to [-1, 1]
         tmp = clenshawLegendre(z, hLegL);          % Evaluate via recurrence
@@ -185,7 +185,7 @@ end
 if ( numPatches == 1 )
     % If there's only one patch, then we already have all the information reqd.
     hLegR = chebtech.leg2cheb(flipud(hLegR));       % Cheb coeffs of right tri.
-    h_right = chebfun(hLegR, d + [a, b], 'coeffs'); % Make FOURIERTECH
+    h_right = chebfun(hLegR, d + [a, b], 'coeffs'); % Make FOURTECH
     h_mid = chebfun();
     
 else  
@@ -203,7 +203,7 @@ else
     gk_leg = chebtech.cheb2leg(get(gk, 'coeffs'));  % Legendre coeffs
     [hLegL, hLegR] = easyConv(f_leg, gk_leg);       % Conv on A and B
     hLegR = chebtech.leg2cheb(flipud(hLegR));       % Cheb coeffs on A
-    h_right = chebfun(hLegR, [d+a, d+b], 'coeffs'); % Make FOURIERTECH
+    h_right = chebfun(hLegR, [d+a, d+b], 'coeffs'); % Make FOURTECH
     
     % Remainder piece: (between fl and a+d)
     remainderWidth = d + a - finishLocation; % b+d-fl-(b-a)
@@ -230,7 +230,7 @@ else
     
     % Convert values to coeffs (we don't want to construct a chebtech1)
     y = chebtech1.vals2coeffs(y);
-    % Construct FOURIERTECH of the interior (rectangle).
+    % Construct FOURTECH of the interior (rectangle).
     h_mid = chebfun(y, [b+c, a+d], 'coeffs');
     
 end
@@ -417,7 +417,7 @@ for k = 1:length(dom)-1
     funs{k} = newFun;
 end
 
-% Construct FOURIERTECH:
+% Construct FOURTECH:
 h = chebfun(funs);
 h = simplify(h);
 h.isTransposed = f.isTransposed;
@@ -426,7 +426,7 @@ end
 
 function out = convIntegral(x, f, g)
 %CONVINTEGRAL   Evaluate convolution integral.
-%   Y = CONVINTEGRAL(X, F, G) evaluates the convolution of the FOURIERTECHs F and G
+%   Y = CONVINTEGRAL(X, F, G) evaluates the convolution of the FOURTECHs F and G
 %   at the points X.
 
 a = f.domain(1);

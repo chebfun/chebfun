@@ -1,11 +1,11 @@
 function f = make(varargin)
-%MAKE   Constructor shortcut for FOURIERTECH objects.
-%   For FOURIERTECH methods implemented at the FOURIERTECH level, it is not possible
-%   to call the class constructor file corresponding to a FOURIERTECH object
+%MAKE   Constructor shortcut for FOURTECH objects.
+%   For FOURTECH methods implemented at the FOURTECH level, it is not possible
+%   to call the class constructor file corresponding to a FOURTECH object
 %   directly. F = MAKE(VARARGIN) allows us to get around this and construct a
-%   FOURIERTECH.
+%   FOURTECH.
 %
-% See also FOURIERTECH.
+% See also FOURTECH.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -17,6 +17,6 @@ function f = make(varargin)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-f = fouriertech(varargin{:}); 
+f = fourtech(varargin{:}); 
 
 end

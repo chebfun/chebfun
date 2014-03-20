@@ -1,7 +1,7 @@
 function out = horzcat(varargin)
 %HORZCAT   Horizontal concatenation.
-%   [A B] horizontally concatenates the FOURIERTECH objects A and B to form an
-%   array-valued FOURIERTECH. [A,B] does the same. Any number of FOURIERTECH objects
+%   [A B] horizontally concatenates the FOURTECH objects A and B to form an
+%   array-valued FOURTECH. [A,B] does the same. Any number of FOURTECH objects
 %   can be concatenated within one pair of brackets. Vertical concatenation is
 %   not supported.
 
@@ -17,11 +17,11 @@ else
     varargin(empties) = [];
 end
   
-% Prolong each fouriertech to the same length:
+% Prolong each fourtech to the same length:
 n = max(cellfun(@length, varargin));
 F = cellfun(@(f) prolong(f, n), varargin, 'UniformOutput', false);
 
-% Extract the data and collate the an array-valued FOURIERTECH:
+% Extract the data and collate the an array-valued FOURTECH:
 out = varargin{1};
 
 % Coeffs and Values:

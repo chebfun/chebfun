@@ -1,8 +1,8 @@
 function f = plus(f, g)
-%+   Addition of two FOURIERTECH objects.
-%   F + G adds F and G, where F and G may be FOURIERTECH objects or scalars.
+%+   Addition of two FOURTECH objects.
+%   F + G adds F and G, where F and G may be FOURTECH objects or scalars.
 %
-%   If F is an array-valued FOURIERTECH, then F + C is supported if C is a row
+%   If F is an array-valued FOURTECH, then F + C is supported if C is a row
 %   vector of doubles with the same number of columns as F.
 %
 % See also MINUS, UPLUS.
@@ -10,14 +10,14 @@ function f = plus(f, g)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( isempty(f) || isempty(g) ) % FOURIERTECH + [] = []
+if ( isempty(f) || isempty(g) ) % FOURTECH + [] = []
     
     f = [];
     
-elseif ( isa(g, 'double') ) % FOURIERTECH + double
+elseif ( isa(g, 'double') ) % FOURTECH + double
     
     % Update values (use bsxfun() to handle the case in which g is a vector
-    % and f is an array-valued FOURIERTECH):
+    % and f is an array-valued FOURTECH):
     f.values = bsxfun(@plus, f.values, g);
     % Update coeffs:
     if ( (size(g, 2) > 1) && (size(f.coeffs, 2) == 1) )
@@ -37,16 +37,16 @@ elseif ( isa(g, 'double') ) % FOURIERTECH + double
     f.coeffs(const_index,:) = f.coeffs(const_index,:) + g;
     % Update scale:
     vscaleNew = max(abs(f.values), [], 1);
-    % See FOURIERTECH CLASSDEF file for documentation on this:
+    % See FOURTECH CLASSDEF file for documentation on this:
     f.epslevel = (f.epslevel.*f.vscale + abs(g)*eps)./vscaleNew;
     f.vscale = vscaleNew;
     
-elseif ( isa(f, 'double') ) % double + FOURIERTECH
+elseif ( isa(f, 'double') ) % double + FOURTECH
     
-    % Switch argument order and call FOURIERTECH/PLUS again:
+    % Switch argument order and call FOURTECH/PLUS again:
     f = plus(g, f);
     
-else % FOURIERTECH + FOURIERTECH
+else % FOURTECH + FOURTECH
     
     % We will simply add the values together then compute the coefficients
     % of the result.  This is probably not the most efficient means of
@@ -67,7 +67,7 @@ else % FOURIERTECH + FOURIERTECH
     
     % Look for a zero output:
     if ( ~any(f.values(:)) || ~any(f.coeffs(:)) )
-        % Create a zero FOURIERTECH:
+        % Create a zero FOURTECH:
         epslevel = max(f.epslevel, g.epslevel);
         ishappy = f.ishappy && g.ishappy;
         z = zeros(1, size(f.values, 2));
@@ -77,7 +77,7 @@ else % FOURIERTECH + FOURIERTECH
     else
         % Update vscale, epslevel, and ishappy:
         vscaleNew = max(abs(f.values), [], 1);
-        % See FOURIERTECH CLASSDEF file for documentation on this:
+        % See FOURTECH CLASSDEF file for documentation on this:
         f.epslevel = (f.epslevel.*f.vscale + g.epslevel.*g.vscale)./vscaleNew;
         f.vscale = vscaleNew;
         f.ishappy = f.ishappy && g.ishappy;

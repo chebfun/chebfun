@@ -1,5 +1,5 @@
 function data = plotData(f, g, h)
-%PLOTDATA   Useful data values for plotting a FOURIERTECH object.
+%PLOTDATA   Useful data values for plotting a FOURTECH object.
 %   DATA = PLOTDATA(F) returns a struct containing data that can be used for
 %   plotting F. The struct DATA contains the following fields:
 %
@@ -16,7 +16,7 @@ function data = plotData(f, g, h)
 %   PLOT(F,'-o').
 %
 %   DATA = PLOTDATA(F, G) is similar but for plot calls of the form PLOT(F, G),
-%   where both F and G are FOURIERTECH objects. 
+%   where both F and G are FOURTECH objects. 
 % 
 %   DATA = PLOTDATA(F, G, H) is for plots of the form PLOT3(F, G, H). In this
 %   instance, DATA also contains fields zLine and zPoints for the data
@@ -48,11 +48,11 @@ if ( isempty(g) )
     tmp = prolong(f, npts);
     data.yLine = tmp.values;
 
-    % Values on the Fourier grid tied to the FOURIERTECH F:
+    % Values on the Fourier grid tied to the FOURTECH F:
     data.xPoints = f.points();
     data.yPoints = f.values;
 
-elseif ( isa(g, 'fouriertech') )   
+elseif ( isa(g, 'fourtech') )   
     % PLOT(F, G)
     
     % Also return the grid points used.
@@ -72,11 +72,11 @@ elseif ( isa(g, 'fouriertech') )
     data.xLine = get(prolong(f, npts), 'values');
     data.yLine = get(prolong(g, npts), 'values');
 
-    % Values on the largest uniform grid tied to the FOURIERTECH objects F and G:
+    % Values on the largest uniform grid tied to the FOURTECH objects F and G:
     data.xPoints = get(prolong(f, len), 'values');
     data.yPoints = get(prolong(g, len), 'values');
     
-    if ( isa(h, 'fouriertech') )
+    if ( isa(h, 'fourtech') )
         % PLOT3(F, G, H)
         
         % Grid data for h:
@@ -91,7 +91,7 @@ elseif ( isa(g, 'fouriertech') )
     end
     
 else
-    error('CHEBFUN:FOURIERTECH:plotdata:DataType', ...
+    error('CHEBFUN:FOURTECH:plotdata:DataType', ...
         'Invalid data types.');
 end
 

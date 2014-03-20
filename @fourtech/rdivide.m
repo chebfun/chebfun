@@ -1,9 +1,9 @@
 function f = rdivide(f, c, pref)
-%./   Right array divide for a FOURIERTECH.
-%   F ./ C divides a FOURIERTECH F by an array C. If F is an array-valued FOURIERTECH
+%./   Right array divide for a FOURTECH.
+%   F ./ C divides a FOURTECH F by an array C. If F is an array-valued FOURTECH
 %   with M columns, then C must be either a scalar or a 1xM array.
 %
-%   Alternatively C can be a FOURIERTECH and F can either be a FOURIERTECH with the
+%   Alternatively C can be a FOURTECH and F can either be a FOURTECH with the
 %   same number of columns as C or a scalar.  In this case, C must have no
 %   roots in [-pi, pi], or else F ./ C may return garbage with no warning.  The
 %   division is performed column-wise.
@@ -19,12 +19,12 @@ if ( isa(c, 'double') )
     % This can never work (as size(f, 1) == inf):
     if ( (size(c, 1) > 1) || ...
            ( (numel(c) > 1) && (size(f.values, 2) ~= size(c, 2)) ) )
-        error('CHEBFUN:FOURIERTECH:rdivide:size', ...
+        error('CHEBFUN:FOURTECH:rdivide:size', ...
             'Matrix dimensions must agree.');
     end
     
     if ( ~any(c(:)) )  
-        % Division by zero produces a NaN FOURIERTECH:
+        % Division by zero produces a NaN FOURTECH:
         f = f.make(NaN(1, size(f, 2)));
     elseif ( numel(c) == 1 )
         % Scalar
@@ -32,7 +32,7 @@ if ( isa(c, 'double') )
         f.coeffs = f.coeffs/c;      % Divide coeffs
         f.vscale = f.vscale/abs(c); % Divide vscale
     else
-        % Array-valued FOURIERTECH
+        % Array-valued FOURTECH
         n = size(f.values, 1);   
         f.values = f.values./repmat(c, n, 1);   % Divide values
         f.coeffs = f.coeffs./repmat(c, n, 1);   % Divide coeffs
@@ -43,17 +43,17 @@ if ( isa(c, 'double') )
         f.vscale(:, c == 0) = NaN;
     end
 else
-    % Dividing by another fouriertech is harder. Call COMPOSE.
+    % Dividing by another fourtech is harder. Call COMPOSE.
     
     % Obtain preferences:
     if ( nargin < 3 )
-        pref = fouriertech.techPref(); % c is a fouriertech.
+        pref = fourtech.techPref(); % c is a fourtech.
     end
 
     % Call COMPOSE.
-    if ( isa(f, 'fouriertech') )   % FOURIERTECH / FOURIERTECH
+    if ( isa(f, 'fourtech') )   % FOURTECH / FOURTECH
         f = compose(f, @rdivide, c, pref);
-    else                       % DOUBLE / FOURIERTECH
+    else                       % DOUBLE / FOURTECH
         op = @(x) f./x;
         f = compose(c, op, [], pref);
     end

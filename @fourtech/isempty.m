@@ -1,6 +1,6 @@
 function out = isempty(f)
-%ISEMPTY   True for an empty FOURIERTECH.
-%   ISEMPTY(F) returns TRUE if F is an empty FOURIERTECH and FALSE otherwise.
+%ISEMPTY   True for an empty FOURTECH.
+%   ISEMPTY(F) returns TRUE if F is an empty FOURTECH and FALSE otherwise.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.

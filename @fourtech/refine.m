@@ -1,5 +1,5 @@
 function [values, giveUp] = refine(op, values, pref)
-%REFINE   Refinement method for FOURIERTECH construction.
+%REFINE   Refinement method for FOURTECH construction.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.

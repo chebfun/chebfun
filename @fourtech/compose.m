@@ -48,7 +48,7 @@ if ( nfuns == 2 )
     pref.minPoints = max(pref.minPoints, length(g));
     pref.eps = max(pref.eps, g.epslevel);
     
-elseif ( isa(op, 'fouriertech') )
+elseif ( isa(op, 'fourtech') )
     % If OP is a FOURIETECH, we grab some of its data:
     if ( (size(op, 2) > 1) && (size(f, 2) > 1) )
         error('CHEBFUN:CHEBTECH:compose:arrval', ...

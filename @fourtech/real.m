@@ -1,5 +1,5 @@
 function f = real(f)
-%REAL   Real part of a FOURIERTECH.
+%REAL   Real part of a FOURTECH.
 %   REAL(F) is the real part of F.
 %
 %   See also ISREAL, IMAG, CONJ.
@@ -12,7 +12,7 @@ f.values = real(f.values);
 f.vscale = max(abs(f.values), [], 1);
 
 if ( ~any(f.values(:)) )
-    % Input was imaginary, so output a zero FOURIERTECH:
+    % Input was imaginary, so output a zero FOURTECH:
     f = f.make(zeros(1, size(f.values, 2)), f.vscale, f.hscale);
     f.ishappy = 1;
 else

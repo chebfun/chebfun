@@ -1,5 +1,5 @@
-%POPULATE   Populate a FOURIERTECH class with values.
-%   F = F.POPULATE(OP) returns a FOURIERTECH representation populated with values
+%POPULATE   Populate a FOURTECH class with values.
+%   F = F.POPULATE(OP) returns a FOURTECH representation populated with values
 %   F.VALUES of the function OP evaluated on an equally spaced grid. The fields
 %   F.ISHAPPY and F.EPSLEVEL indicate whether the representation is deemed
 %   'happy' and to what accuracy (see HAPPINESSCHECK.m). Essentially this means
@@ -19,14 +19,14 @@
 %   OP evaluated to.
 %
 %   F.POPULATE(OP, VSCALE, HSCALE, PREF) enforces any additional preferences
-%   specified in the preference structure PREF (see FOURIERTECH.TECHPREF).
+%   specified in the preference structure PREF (see FOURTECH.TECHPREF).
 %
 %   F.POPULATE(VALUES, ...) (or F.POPULATE({VALUES, COEFFS}, ...)) populates F
 %   non-adaptively with the VALUES (and COEFFS) passed. These values are still
 %   tested for happiness in the same way as described above, but the length of
 %   the representation is not altered.
 %
-% See also FOURIERTECH, TECHPREF, HAPPINESSCHECK.
+% See also FOURTECH, TECHPREF, HAPPINESSCHECK.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -125,7 +125,7 @@ while ( 1 )
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Update the vscale. %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Compute the 'true' vscale (as defined in FOURIERTECH classdef):
+% Compute the 'true' vscale (as defined in FOURTECH classdef):
 vscaleOut = max(abs(f.values), [], 1);
 % Update vertical scale one last time:
 vscaleGlobal = max(vscale, vscaleOut);
@@ -148,7 +148,7 @@ if f.isReal
     f.values = real(f.values);
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%% Assign to FOURIERTECH object. %%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%% Assign to FOURTECH object. %%%%%%%%%%%%%%%%%%%%%%%%%%
 f.coeffs = coeffs;
 f.vscale = vscale;
 f.ishappy = ishappy;

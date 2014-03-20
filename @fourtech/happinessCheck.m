@@ -1,5 +1,5 @@
 function  [ishappy, epslevel, cutoff] = happinessCheck(f, op, pref)
-%HAPPINESSCHECK   Happiness test for a FOURIERTECH
+%HAPPINESSCHECK   Happiness test for a FOURTECH
 %
 % See also CLASSICCHECK, LOOSECHECK, STRICTCHECK, SAMPLETEST.
 

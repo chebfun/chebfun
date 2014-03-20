@@ -1,9 +1,9 @@
 function f = times(f, g, varargin)
-%.*   FOURIERTECH multiplication.
-%   F.*G multiplies FOURIERTECH objects F and G or a FOURIERTECH by a scalar if either
+%.*   FOURTECH multiplication.
+%   F.*G multiplies FOURTECH objects F and G or a FOURTECH by a scalar if either
 %   F or G is a scalar.
 %
-%   If F is an array-valued FOURIERTECH, then F.*C is supported if C is a row
+%   If F is an array-valued FOURTECH, then F.*C is supported if C is a row
 %   vector of doubles with the same number of columns as F.
 %
 % See also MTIMES, RDIVIDE.
@@ -11,16 +11,16 @@ function f = times(f, g, varargin)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% FOURIERTECH * [] = []:
+% FOURTECH * [] = []:
 if ( isempty(f) || isempty(g) )
     f = []; 
     return
 end
 
-if ( ~isa(f, 'fouriertech') )      % Ensure F is a FOURIERTECH
+if ( ~isa(f, 'fourtech') )      % Ensure F is a FOURTECH
     f = times(g, f, varargin{:});
     return
-elseif ( isa(g, 'double') )     % FOURIERTECH .* double
+elseif ( isa(g, 'double') )     % FOURTECH .* double
     
     % Do the multiplication:
     if ( size(g, 2) > 1 )
@@ -37,14 +37,14 @@ elseif ( isa(g, 'double') )     % FOURIERTECH .* double
     return
     
 elseif ( size(f.values, 1) == 1 )
-    % If we have (constant FOURIERTECH).*FOURIERTECH, reverse the order and call TIMES
+    % If we have (constant FOURTECH).*FOURTECH, reverse the order and call TIMES
     % again:
     f = times(g, f.values);
     f.epslevel = max(f.epslevel, g.epslevel);
     return
     
 elseif ( size(g.values, 1) == 1)
-    % If we have FOURIERTECH.*(constant FOURIERTECH), convert the (constant CHEBTECH)
+    % If we have FOURTECH.*(constant FOURTECH), convert the (constant CHEBTECH)
     % to a scalar and call TIMES again:
     f = times(f, g.values); 
     f.epslevel = max(f.epslevel, g.epslevel);
@@ -69,7 +69,7 @@ if ( fm ~= gm )
         g.values = repmat(g.values, 1, fm);
         g.coeffs = repmat(g.coeffs, 1, fm);
     else
-        error('FOURIERTECH:times:dim2', ...
+        error('FOURTECH:times:dim2', ...
             'Inner matrix dimensions must agree.');
     end
 end

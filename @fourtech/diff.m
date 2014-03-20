@@ -1,11 +1,11 @@
 function f = diff(f, k, dim)
-%DIFF   Derivative of a FOURIERTECH.
+%DIFF   Derivative of a FOURTECH.
 %   DIFF(F) is the derivative of F and DIFF(F, K) is the Kth derivative.
 %
 %   DIFF(F, K, DIM), where DIM is one of 1 or 2, takes the Kth difference along
 %   dimension DIM. For DIM = 1, this is the same as above. For DIM = 2, this
-%   is a finite difference along the columns of an array-valued FOURIERTECH.
-%   If F has L columns, an empty FOURIERTECH will be returned for K >= L.
+%   is a finite difference along the columns of an array-valued FOURTECH.
+%   If F has L columns, an empty FOURTECH will be returned for K >= L.
 %
 % See also SUM, CUMSUM.
 
@@ -15,7 +15,7 @@ function f = diff(f, k, dim)
 
 %% Check the inputs:
 
-% Trivial case of an empty FOURIERTECH:
+% Trivial case of an empty FOURTECH:
 if ( isempty(f) )
     return
 end

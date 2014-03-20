@@ -1,5 +1,5 @@
 function f = uminus(f)
-%UMINUS   Unary minus of a FOURIERTECH.
+%UMINUS   Unary minus of a FOURTECH.
 %   UMINUS(F) is the negative of F.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 

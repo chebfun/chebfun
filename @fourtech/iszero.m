@@ -1,5 +1,5 @@
 function out = iszero(f)
-%ISZERO    True for zero FOURIERTECH objects.
+%ISZERO    True for zero FOURTECH objects.
 %   ISZERO(F) returns logical TRUE is F.values has only zero entries and logical
 %   FALSE otherwise.
 

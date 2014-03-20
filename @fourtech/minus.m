@@ -1,6 +1,6 @@
 function f = minus(f, g)
-%-   Subtraction of two FOURIERTECH objects.
-%   F - G subtracts G from F, where F and G are FOURIERTECH objects or scalars.
+%-   Subtraction of two FOURTECH objects.
+%   F - G subtracts G from F, where F and G are FOURTECH objects or scalars.
 %
 % See also PLUS, UMINUS.
 

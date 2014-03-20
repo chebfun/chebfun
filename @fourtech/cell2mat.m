@@ -1,12 +1,12 @@
 function g = cell2mat(f)
-%CELL2MAT   Convert an array of FOURIERTECH objects into an array-valued FOURIERTECH.
+%CELL2MAT   Convert an array of FOURTECH objects into an array-valued FOURTECH.
 %
-%   G = CELL2MAT(F) converts the FOURIERTECH array F into a single array-valued
-%   FOURIERTECH G. F should be a vector array (i.e., not a matrix).
+%   G = CELL2MAT(F) converts the FOURTECH array F into a single array-valued
+%   FOURTECH G. F should be a vector array (i.e., not a matrix).
 %
 % Example:
-%   f = fouriertech.constructor(@sin);
-%   g = fouriertech.constructor(@cos);
+%   f = fourtech.constructor(@sin);
+%   g = fourtech.constructor(@cos);
 %   h = cell2mat([f g]);
 %
 % See also MAT2CELL.
@@ -22,7 +22,7 @@ if ( isempty(f) || numel(f) == 1 )
     return
 end
 
-% Extract the values from each of the FOURIERTECH objects:
+% Extract the values from each of the FOURTECH objects:
 values = { f.values };
 
 % These should all have the same length...
@@ -38,8 +38,8 @@ if ( minlength ~= maxlength )
     values = { f.values };
 end
 
-% Append new data to an empty FOURIERTECH:
-g = f.make(); % Make an empty FOURIERTECH.
+% Append new data to an empty FOURTECH:
+g = f.make(); % Make an empty FOURTECH.
 g.vscale = [f.vscale];
 g.ishappy = min([f.ishappy]);
 g.epslevel = [f.epslevel];

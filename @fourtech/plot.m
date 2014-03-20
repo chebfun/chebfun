@@ -1,6 +1,6 @@
 function varargout = plot(f, varargin)
-%PLOT   Basic linear plot for FOURIERTECH objects. 
-%   PLOT(F) plots the FOURIERTECH object F.
+%PLOT   Basic linear plot for FOURTECH objects. 
+%   PLOT(F) plots the FOURTECH object F.
 %
 %   PLOT(F, S) allows various line types, plot symbols, and colors to be used
 %   when S is a character string made from one element from any or all the
@@ -26,12 +26,12 @@ function varargout = plot(f, varargin)
 %
 %   The X,Y pairs, or X,Y,S triples, can be followed by parameter/value pairs to
 %   specify additional properties of the lines. For example, 
-%            f = fouriertech.constructor(@sin);
+%            f = fourtech.constructor(@sin);
 %            plot(f, 'LineWidth', 2, 'Color', [.6 0 0]) 
 %   will create a plot with a dark red line width of 2 points.
 %
 %   H1 = PLOT(F) returns a column vector of handles to lineseries objects, one
-%   handle per plotted line (in the case of array-valued FOURIERTECH objects).
+%   handle per plotted line (in the case of array-valued FOURTECH objects).
 %   [H1, H2] returns a second vector of column handles, this time for each of
 %   the marker plots.
 %
@@ -53,7 +53,7 @@ holdState = ishold;
 
 %%
 % Get the data for plotting from PLOTDATA():
-if ( nargin > 1 && isa(varargin{1}, 'fouriertech') )
+if ( nargin > 1 && isa(varargin{1}, 'fourtech') )
     % Deal with plot(f, g);
     g = varargin{1};
     varargin(1) = [];

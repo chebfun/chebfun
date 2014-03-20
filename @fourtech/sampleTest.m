@@ -1,6 +1,6 @@
 function pass = sampleTest(op, f)
-%SAMPLETEST   Test an evaluation of input OP against a FOURIERTECH approximation.
-%   SAMPLETEST(OP, F) evaluates both the function OP and its FOURIERTECH
+%SAMPLETEST   Test an evaluation of input OP against a FOURTECH approximation.
+%   SAMPLETEST(OP, F) evaluates both the function OP and its FOURTECH
 %   representation F at one or more points within [-pi,pi). The difference of
 %   these values is computed, and if this is sufficiently small (relative to
 %   F.VSCALE, F.HSCALE, and F.EPSLEVEL) the test passes and returns TRUE. If the
@@ -34,13 +34,13 @@ else
 end
 xeval = [-pi+1e-12 ; xeval ; pi-1e-12];
 
-% Evaluate the FOURIERTECH:
+% Evaluate the FOURTECH:
 vFun = feval(f, xeval);
 
 % Evaluate the op:
 vOp = feval(op, xeval);
 
-% If the FOURIERTECH evaluation differs from the op evaluation, SAMPLETEST failed:
+% If the FOURTECH evaluation differs from the op evaluation, SAMPLETEST failed:
 err = bsxfun(@rdivide, abs(vOp - vFun), f.vscale); % Relative (to vscale) error.
 if ( all(max(abs(err)) > tol) )
     pass = false; % :(

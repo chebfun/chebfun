@@ -1,9 +1,9 @@
 function out = innerProduct(f, g)
-%INNERPRODUCT   Compute the inner product of two FOURIERTECH objects.
+%INNERPRODUCT   Compute the inner product of two FOURTECH objects.
 %   INNERPRODUCT(F, G) returns the L2 inner product (on [-PI,PI]) of the two
-%   FOURIERTECH objects F and G (conjugate linear in F).
+%   FOURTECH objects F and G (conjugate linear in F).
 %
-%   If F and/or G are array-valued FOURIERTECH objects, then the result is a matrix
+%   If F and/or G are array-valued FOURTECH objects, then the result is a matrix
 %   whose i,j entry is the inner product of the ith column of F with the jth
 %   column of G.
 
@@ -16,9 +16,9 @@ if ( isempty(f) || isempty(g) )
     return
 end
 
-if ( ~isa(f, 'fouriertech') || ~isa(g, 'fouriertech') )
-    error('FOURIERTECH:FOURIERTECH:innerProduct:input', ...
-        'innerProduct() only operates on two FOURIERTECH objects.');
+if ( ~isa(f, 'fourtech') || ~isa(g, 'fourtech') )
+    error('FOURTECH:FOURTECH:innerProduct:input', ...
+        'innerProduct() only operates on two FOURTECH objects.');
 end
 
 % Prolong to sum of current lengths (so that quadrature is exact):

@@ -1,12 +1,12 @@
 function out = sum(f, dim)
-%SUM   Definite integral of a FOURIERTECH on the interval [-PI,PI].
+%SUM   Definite integral of a FOURTECH on the interval [-PI,PI].
 %   SUM(F) is the integral of F from -PI to PI.
 %
-%   If F is an array-valued FOURIERTECH, then the result is a row vector
+%   If F is an array-valued FOURTECH, then the result is a row vector
 %   containing the definite integrals of each column.
 %
 %   SUM(F, 2) sums over the second dimension of F, i.e., adds up its columns.
-%   If F is a scalar-valued FOURIERTECH, this simply returns F.
+%   If F is a scalar-valued FOURTECH, this simply returns F.
 %
 % See also CUMSUM, DIFF.
 

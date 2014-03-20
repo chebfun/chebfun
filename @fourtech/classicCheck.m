@@ -1,5 +1,5 @@
 function [ishappy, epslevel, cutoff] = classicCheck(f, pref)
-%CLASSICCHECK   Attempt to trim trailing Fourier coefficients in a FOURIERTECH.
+%CLASSICCHECK   Attempt to trim trailing Fourier coefficients in a FOURTECH.
 %
 % See also STRICTCHECK, LOOSECHECK.
 
@@ -112,7 +112,7 @@ end
 
 function [testLength, epslevel] = ...
     happinessRequirements(values, coeffs, x, vscale, hscale, epslevel) %#ok<INUSL>
-%HAPPINESSREQUIREMENTS   Define what it means for a FOURIERTECH to be happy.
+%HAPPINESSREQUIREMENTS   Define what it means for a FOURTECH to be happy.
 %   See documentation above.
 
 % Grab the size:

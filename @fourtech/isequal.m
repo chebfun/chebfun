@@ -1,6 +1,6 @@
 function out = isequal(f, g)
-%ISEQUAL   Test if FOURIERTECH objects are equal.
-%   ISEQUAL(F, G) returns TRUE if the FOURIERTECH objects F and G have the same
+%ISEQUAL   Test if FOURTECH objects are equal.
+%   ISEQUAL(F, G) returns TRUE if the FOURTECH objects F and G have the same
 %   length, values, and coefficients. They may have different values of vscale
 %   and epslevel.
 

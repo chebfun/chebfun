@@ -1,0 +1,130 @@
+function f = cumsum(f, m, dim)
+%CUMSUM   Indefinite integral of a FOURIERTECH.
+%   CUMSUM(F) is the indefinite integral of the FOURIERTECH F, whose mean
+%   is zero, with the constant of integration chosen so that F(-pi) = 0.
+%   If the mean of F is not zero, then this function subtracts off the
+%   mean before computing the indefinite integral.  In this way the result
+%   is guaranteed to be a periodic function on [-pi,pi).
+%
+%   CUMSUM(F, M) will compute the Mth definite integral with the constant of
+%   integration chosen so that each intermediary integral evaluates to 0 at -pi.
+%   Thus, CUMSUM(F, 2) is equivalent to CUMSUM(CUMSUM(F)).
+%
+%   CUMSUM(F, M, 2) will take the Mth cumulative sum over the columns F an
+%   array-valued FOURIERTECH.
+%
+% See also DIFF, SUM.
+
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org for Chebfun information.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% If the FOURIERTECH G of length n is represented as
+%       \sum_{k=-(n-1)/2}^{(n-1)/2} c_k exp(ikx)
+% its integral is represented with a FOURIERTECH of length n given by
+%       \sum_{k=-(n-1)/2}^{(n-1)/2} b_k exp(ikx)
+% where b_0 is determined from the constant of integration as
+%       b_0 = \sum_{k=-(n-1)/2}^{(n-1)/2} (-1)^k/(ik) c_k;
+% with c_0 := 0. The other coefficients are given by
+%       b_k = c_k/(ik), 
+%
+% If the FOURIERTECH G of length n is represented as
+%       \sum_{k=-n/2+1}^{n/2-1} c_k exp(ikx) + c(n/2)cos(n/2x)
+% then first set c(n) = 0.5*c(n) and define a = [0.5*c(n/2) c] so that we
+% have the equivalent polynomial:
+%       \sum_{k=-n/2}^{n/2} a_k exp(ikx)
+% The integral of this is represented with a FOURIERTECH of length n+1 given by
+%       \sum_{k=-n/2}^{n/2} b_k exp(ikx)
+% where b_0 is determined from the constant of integration as
+%       b_0 = \sum_{k=-n/2}^{n/2} (-1)^k/(ik) a_k;
+% with a_0 := 0. The other coefficients are given by
+%       b_k = a_k/(ik), 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Trivial case of an empty FOURIERTECH:
+if ( isempty(f) )
+    return
+end
+
+if ( nargin < 2 || isempty(m) )
+    % Order of intergration not passed in. Assume 1 by default:
+    m = 1; 
+elseif ( m == 0 )
+    % Nothing to do here!
+    return
+end    
+
+% Sum with respect to the continuous variable by default:
+if ( nargin < 3 )
+    dim = 1;
+end
+
+if ( dim == 1 )
+    % Take difference across 1st dimension:
+    f = cumsumContinuousDim(f, m);
+else
+    % Take difference across 2nd dimension:
+    f = cumsumFiniteDim(f, m);
+end
+
+end
+
+function f = cumsumContinuousDim(f, m)
+% CUMSUM over the continuous dimension.
+    % Initialize storage:
+    c = f.coeffs;                         % Obtain Fourier coefficients {c_k}
+    numCoeffs = size(c,1);
+    
+    % Force the mean of the fouriertech to be zero.
+    if mod(numCoeffs,2) == 1
+        c((numCoeffs+1)/2,:) = 0;
+        highestDegree = (numCoeffs-1)/2;
+    else
+        c(numCoeffs/2,:) = 0;
+        % Expand the coefficients to be symmetric (see above discussion).
+        c(numCoeffs,:) = 0.5*c(numCoeffs,:);
+        c = [c(numCoeffs,:);c];
+        highestDegree = numCoeffs/2;
+    end
+    % Loop for integration factor for each coefficient:
+    sumIndicies = (highestDegree:-1:-highestDegree).';
+    integrationFactor = (-1i./sumIndicies).^m;
+    % Zero out the one corresponding to the constant term.
+    integrationFactor(highestDegree+1) = 0;
+    c = bsxfun(@times,c,integrationFactor);
+    % Fix the constant term.    
+    c(highestDegree+1,:) = -sum(bsxfun(@times,c,(-1).^sumIndicies));
+            
+    % Recover values and attach to output:
+    f.values = f.coeffs2vals(c);
+    if f.isReal
+        f.values = real(f.values);
+    end
+    f.coeffs = c;
+
+    % Update vscale: [TODO]: Update epslevel?
+    f.vscale = max(abs(f.values), [], 1);
+    
+%     % Simplify (as suggested in Chebfun ticket #128)
+%     f = simplify(f);
+    
+    % Ensure f(-1) = 0:
+    lval = get(f, 'lval');
+    f.coeffs(end,:) = f.coeffs(end,:) - lval;
+    f.values = bsxfun(@minus, f.values, lval);
+end
+
+function f = cumsumFiniteDim(f, m)
+% CUMSUM over the finite dimension.
+
+    for k = 1:m
+        f.values = cumsum(f.values, 2);
+        f.coeffs = cumsum(f.coeffs, 2);
+        vscale = max(abs(f.values), [], 1);
+        f.epslevel = sum(f.epslevel.*f.vscale, 2)/sum(vscale, 2); % TODO: Is this right?
+        f.vscale = vscale;
+    end
+
+end
+
+

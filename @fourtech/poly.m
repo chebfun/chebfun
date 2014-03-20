@@ -1,5 +1,5 @@
 function out = poly(f)
-%POLY   Polynomial coefficients of a FOURIERTECH.
+%POLY   Polynomial coefficients of a FOURTECH.
 %   C = POLY(F) returns the polynomial coefficients of F so that 
 %       
 %   If N is odd
@@ -9,8 +9,8 @@ function out = poly(f)
 %                  1/2*C(N)*(z^(N/2) + z^(-N/2))
 %   where z = exp(1i*x) and -pi <= x <= pi.
 %   
-%   Note that unlike the MATLAB POLY command, FOURIERTECH/POLY can operate on
-%   array-valued FOURIERTECH objects, and hence produce a matrix output. In such
+%   Note that unlike the MATLAB POLY command, FOURTECH/POLY can operate on
+%   array-valued FOURTECH objects, and hence produce a matrix output. In such
 %   instances, the rows of C correspond to the columns of F = [F1, F2, ...].
 %   That is, in the case N is odd
 %        F1(x) = C(1,1)*z^(N-1)/2 + C(1,2)*z^((N-1)/2-1) + ... + C(1,N)*z^(-(N-1)/2)

@@ -1,9 +1,9 @@
 function varargout = coefplot(f, varargin)
 %COEFPLOT   Display Fourier coefficients graphically.
 %
-%   COEFPLOT(F) plots the Fourier coefficients of a FOURIERTECH F on a
+%   COEFPLOT(F) plots the Fourier coefficients of a FOURTECH F on a
 %   semilogy scale. A horizontal line at the EPSLEVEL of F is also plotted. If F
-%   is an array-valued FOURIERTECH then a curve is plotted for each component
+%   is an array-valued FOURTECH then a curve is plotted for each component
 %   (column) of F.
 %
 %   CHEBPOLYPLOT(F, S) allows further plotting options, such as linestyle,
@@ -64,7 +64,7 @@ if ( f.vscale > 0 )
     absCoeffs(~absCoeffs) = min( f.epslevel*min(f.vscale), ...
                                  min(absCoeffs(logical(absCoeffs))) );
 else
-    % (add epslevel for zero FOURIERTECHs)
+    % (add epslevel for zero FOURTECHs)
     absCoeffs = absCoeffs + f.epslevel;
 end
 

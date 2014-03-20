@@ -1,5 +1,5 @@
 function out = get(f, prop)
-%GET   GET method for the FOURIERTECH class.
+%GET   GET method for the FOURTECH class.
 %   P = GET(F,PROP) returns the property P specified in the string PROP from
 %   the fun F. Valid entries for the string PROP are:
 %       'VALUES' - Values of F at Chebyshev points.
@@ -27,8 +27,8 @@ switch prop
         % The value at pi:
         out = f.values(end,:);
     otherwise
-        error('FOURIERTECH:GET:proname', ...
-            'Unknown property name ''%s'' for object of type fouriertech.', prop);
+        error('FOURTECH:GET:proname', ...
+            'Unknown property name ''%s'' for object of type fourtech.', prop);
 end
 
 end

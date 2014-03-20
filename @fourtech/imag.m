@@ -1,5 +1,5 @@
 function f = imag(f)
-%IMAG   Imaginary part of a FOURIERTECH.
+%IMAG   Imaginary part of a FOURTECH.
 %   IMAG(F) is the imaginary part of F.
 %
 %   See also REAL, ISREAL, CONJ.
@@ -8,7 +8,7 @@ function f = imag(f)
 % See http://www.chebfun.org for Chebfun information.
 
 if ( f.isReal )
-    % Input was real, so output a zero FOURIERTECH:
+    % Input was real, so output a zero FOURTECH:
     f = f.make(zeros(1, size(f.values, 2)), f.vscale, f.hscale);
     f.ishappy = 1;
 else

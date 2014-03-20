@@ -1,29 +1,29 @@
-classdef fouriertech
+classdef fourtech
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-    %% Properties of FOURTIER objects.
+    %% Properties of FOURTECH objects.
     properties ( Access = public )
 
-        % Values of FOURIERTECH at equally spaced points from [-pi,pi).
-        % For array-valued FOURIERTECH objects, each column
+        % Values of FOURTECH at equally spaced points from [-pi,pi).
+        % For array-valued FOURTECH objects, each column
         % represents the interpolated values of a single function.
         values % (nxm double)
 
         % Coefficients are represented for the complex exponential form of 
         % the interpolant. The coefficients are stored in descending 
         % order so that c_{(N-1)/2} is
-        % the first entry and c_{-(N-1)/2} is the last. For array-valued FOURIERTECH
+        % the first entry and c_{-(N-1)/2} is the last. For array-valued FOURTECH
         % objects, each column represents the coefficients of a single function.
         coeffs % (nxm double)
 
-        % Vertical scale of the FOURIERTECH. This is a row vector storing the
+        % Vertical scale of the FOURTECH. This is a row vector storing the
         % magnitude of the largest entry in each column of VALUES. It is
         % convenient to store this as a property.
         vscale = 0 % (1xm double >= 0)
 
-        % Horizontal scale of the FOURIERTECH. Although FOURIERTECH objects have in
+        % Horizontal scale of the FOURTECH. Although FOURTECH objects have in
         % principle no notion of horizontal scale invariance (since they always
         % live on [-pi,pi)), the input OP may have been implicitly mapped.
         % HSCALE is then used to enforce horizontal scale invariance in
@@ -31,22 +31,22 @@ classdef fouriertech
         % defaults to 1 and is never updated.
         hscale = 1 % (scalar > 0)
 
-        % Boolean value designating whether the FOURIERTECH is 'happy' or not. See
+        % Boolean value designating whether the FOURTECH is 'happy' or not. See
         % HAPPINESSCHECK.m for full documentation.
         ishappy % (logical)
 
-        % Happiness level to which the FOURIERTECH was constructed (See
+        % Happiness level to which the FOURTECH was constructed (See
         % HAPPINESSCHECK.m for full documentation) or a rough accuracy estimate
-        % of subsequent operations (See FOURIERTECH class documentation for
+        % of subsequent operations (See FOURTECH class documentation for
         % details).
         epslevel % (double >= 0)
         
-        % Boolean value designating whether the FOURIERTECH represents a
+        % Boolean value designating whether the FOURTECH represents a
         % real-valued function. This allows us to always return a real
         % result for things like evaluating a fourierfun.
         isReal = false;
 
-        % Boolean value designating whether the FOURIERTECH represents a
+        % Boolean value designating whether the FOURTECH represents a
         % purely imaginary function. This allows us to always return an
         % imaginary result for things like evaluating a fourierfun.
         % isImag = false;
@@ -55,7 +55,7 @@ classdef fouriertech
     %% METHODS IMPLEMENTED BY THIS M-FILE:
     methods
         
-        function obj = fouriertech(op, vscale, hscale, pref)
+        function obj = fourtech(op, vscale, hscale, pref)
             %Constructor for the CHEBTECH2 class.
             
             % Return an empty CHEBTECH2 on null input:
@@ -107,13 +107,13 @@ classdef fouriertech
         % Convert coefficients to values:
         values = coeffs2vals(coeffs);
         
-        % Make a FOURIERTECH (constructor shortcut):
+        % Make a FOURTECH (constructor shortcut):
         f = make(varargin);
         
         % Compute Fourier quadrature weights (trapezoidal rule):
         w = quadwts(n)
         
-        % Refinement function for FOURIERTECH construction (evaluates OP on grid):
+        % Refinement function for FOURTECH construction (evaluates OP on grid):
         [values, points, giveUp] = refine(op, values, pref)
         
         % Convert values to coefficients:
@@ -136,7 +136,7 @@ classdef fouriertech
     %% METHODS IMPLEMENTED BY THIS CLASS:
     methods
         
-        % Compose two FOURIERTECH objects or a FOURIERTECH with a function handle:
+        % Compose two FOURTECH objects or a FOURTECH with a function handle:
         h = compose(f, op, g, pref)
         
         % Get method:

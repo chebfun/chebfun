@@ -1,14 +1,14 @@
 function varargout = subsref(f, index)
-%SUBSREF   FOURIERTECH subsref.
+%SUBSREF   FOURTECH subsref.
 % ( )
-%   F(X) returns the values of the FOURIERTECH F evaluated on the array X.
+%   F(X) returns the values of the FOURTECH F evaluated on the array X.
 %
-%   If F is an array-valued FOURIERTECH then F(X, COL) returns the values of the
+%   If F is an array-valued FOURTECH then F(X, COL) returns the values of the
 %   columns specified by the vector COL at the points X. Similarly, F(:, COL)
-%   returns a new array-vlaued FOURIERTECH containing only the columns specified in
+%   returns a new array-vlaued FOURTECH containing only the columns specified in
 %   COL. In both cases, COL should be a row vector.
 %
-%   F(G), where G is also a FOURIERTECH, computes the composition of F and G. See
+%   F(G), where G is also a FOURTECH, computes the composition of F and G. See
 %   CHEBFUN/COMPOSE for further details.
 %
 % .
@@ -24,7 +24,7 @@ switch index(1).type
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%% FEVAL / COMPOSE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     case '()'
-%         % Deal with row FOURIERTECH objects:
+%         % Deal with row FOURTECH objects:
 %         isTransposed = f.isTransposed;
 %         if ( isTransposed )
 %             f = f.';
@@ -83,7 +83,7 @@ switch index(1).type
             extraColons = mat2cell(extraColons, 1, ones(1, extraDims));
             out = out(:, outCols(:), extraColons{:});
 
-        elseif ( isa(x, 'fouriertech') )
+        elseif ( isa(x, 'fourtech') )
             % Call COMPOSE():
             out = compose(x, f);
         elseif ( isequal(x, ':') )
@@ -127,7 +127,7 @@ switch index(1).type
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% RESTRICT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     case '{}'
-        error('Restriction of a fouriertech is not allowed');
+        error('Restriction of a fourtech is not allowed');
         % Later we could think about restricting a fourierfun to an
         % interval contained in (-pi,pi) by converting it to a chebfun.
         if ( length(idx) == 1 )
