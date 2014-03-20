@@ -50,12 +50,11 @@ if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
         % LNT wants this:
         g = constructor(g, @(x,y) op + 0*x, domain);
         % Look for coeffs flag:
-    elseif (any(strcmpi(domain, 'coeffs')) || any(strcmpi(domain, 'coeffs')))
+    elseif ( any(strcmpi(domain, 'coeffs')) )
         op = chebfun2.coeffs2vals( op );
         g = chebfun2( op, varargin{:} );
         return
-    elseif ( (nargin > 3) && ( any(strcmpi(varargin{1}, 'coeffs')) ||...
-            any(strcmpi(varargin{1}, 'coeffs'))))
+    elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, 'coeffs')) )
         op = chebfun2.coeffs2vals( op );
         g = chebfun2( op, domain );
         return
