@@ -83,9 +83,9 @@ err(4) = norm(v1s2.func - u1s2);
 err(5) = norm(s1v2.func - s1u2);
 
 %% Linearity information
-lin(1) = v1v2.isConstant;
-lin(2) = v1w2.isConstant;
-lin(3) = w1v2.isConstant;
-lin(4) = v1s2.isConstant;
-lin(5) = s1v2.isConstant;
+lin(1) = v1v2.linearity;
+lin(2) = v1w2.linearity;
+lin(3) = w1v2.linearity;
+lin(4) = v1s2.linearity;
+lin(5) = s1v2.linearity;
 end
