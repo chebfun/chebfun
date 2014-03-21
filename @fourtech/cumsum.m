@@ -1,6 +1,6 @@
 function f = cumsum(f, m, dim)
-%CUMSUM   Indefinite integral of a FOURIERTECH.
-%   CUMSUM(F) is the indefinite integral of the FOURIERTECH F, whose mean
+%CUMSUM   Indefinite integral of a FOURTECH.
+%   CUMSUM(F) is the indefinite integral of the FOURTECH F, whose mean
 %   is zero, with the constant of integration chosen so that F(-pi) = 0.
 %   If the mean of F is not zero, then this function subtracts off the
 %   mean before computing the indefinite integral.  In this way the result
@@ -11,7 +11,7 @@ function f = cumsum(f, m, dim)
 %   Thus, CUMSUM(F, 2) is equivalent to CUMSUM(CUMSUM(F)).
 %
 %   CUMSUM(F, M, 2) will take the Mth cumulative sum over the columns F an
-%   array-valued FOURIERTECH.
+%   array-valued FOURTECH.
 %
 % See also DIFF, SUM.
 
@@ -19,21 +19,21 @@ function f = cumsum(f, m, dim)
 % See http://www.chebfun.org for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% If the FOURIERTECH G of length n is represented as
+% If the FOURTECH G of length n is represented as
 %       \sum_{k=-(n-1)/2}^{(n-1)/2} c_k exp(ikx)
-% its integral is represented with a FOURIERTECH of length n given by
+% its integral is represented with a FOURTECH of length n given by
 %       \sum_{k=-(n-1)/2}^{(n-1)/2} b_k exp(ikx)
 % where b_0 is determined from the constant of integration as
 %       b_0 = \sum_{k=-(n-1)/2}^{(n-1)/2} (-1)^k/(ik) c_k;
 % with c_0 := 0. The other coefficients are given by
 %       b_k = c_k/(ik), 
 %
-% If the FOURIERTECH G of length n is represented as
+% If the FOURTECH G of length n is represented as
 %       \sum_{k=-n/2+1}^{n/2-1} c_k exp(ikx) + c(n/2)cos(n/2x)
 % then first set c(n) = 0.5*c(n) and define a = [0.5*c(n/2) c] so that we
-% have the equivalent polynomial:
+% have the equivalent expansion:
 %       \sum_{k=-n/2}^{n/2} a_k exp(ikx)
-% The integral of this is represented with a FOURIERTECH of length n+1 given by
+% The integral of this is represented with a FOURTECH of length n+1 given by
 %       \sum_{k=-n/2}^{n/2} b_k exp(ikx)
 % where b_0 is determined from the constant of integration as
 %       b_0 = \sum_{k=-n/2}^{n/2} (-1)^k/(ik) a_k;
@@ -41,7 +41,7 @@ function f = cumsum(f, m, dim)
 %       b_k = a_k/(ik), 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Trivial case of an empty FOURIERTECH:
+% Trivial case of an empty FOURTECH:
 if ( isempty(f) )
     return
 end
@@ -75,16 +75,18 @@ function f = cumsumContinuousDim(f, m)
     c = f.coeffs;                         % Obtain Fourier coefficients {c_k}
     numCoeffs = size(c,1);
     
-    % Force the mean of the fouriertech to be zero.
-    if mod(numCoeffs,2) == 1
-        c((numCoeffs+1)/2,:) = 0;
-        highestDegree = (numCoeffs-1)/2;
-    else
+    fIsEven = mod(numCoeffs,2) == 0;
+    
+    % Force the mean of the fourtech to be zero.
+    if fIsEven
         c(numCoeffs/2,:) = 0;
         % Expand the coefficients to be symmetric (see above discussion).
         c(numCoeffs,:) = 0.5*c(numCoeffs,:);
         c = [c(numCoeffs,:);c];
         highestDegree = numCoeffs/2;
+    else
+        c((numCoeffs+1)/2,:) = 0;
+        highestDegree = (numCoeffs-1)/2;
     end
     % Loop for integration factor for each coefficient:
     sumIndicies = (highestDegree:-1:-highestDegree).';
@@ -92,8 +94,24 @@ function f = cumsumContinuousDim(f, m)
     % Zero out the one corresponding to the constant term.
     integrationFactor(highestDegree+1) = 0;
     c = bsxfun(@times,c,integrationFactor);
+    % If this is an odd order cumsum and there are an even number of
+    % coefficients then zero out the cofficient corresponding to sin(N/2x)
+    % term, since this will be zero on the Fourier grid.
+    if mod(m,2) == 1 && fIsEven
+        c(1,:) = 0;
+        c(numCoeffs+1,:) = 0;
+    end
+    
     % Fix the constant term.    
     c(highestDegree+1,:) = -sum(bsxfun(@times,c,(-1).^sumIndicies));
+    
+    % If the original fourtech had an even number of coefficients then
+    % shrink the coefficent vector corresponding to its indefinite integral
+    % back to its original size since it was increased by one above to make
+    % the integration code slicker.
+    if fIsEven 
+        c = c(2:end,:);
+    end    
             
     % Recover values and attach to output:
     f.values = f.coeffs2vals(c);
