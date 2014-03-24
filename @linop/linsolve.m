@@ -88,6 +88,7 @@ isDone = false(1, numInt);
 %% Loop over a finer and finer grid until happy.
 % We need to know which solution components to check for happiness:
 isFun = isFunVariable(L);
+
 for dim = dimVals
 
     % Discretize the operator (incl. constraints/continuity), unless there is a
@@ -107,7 +108,7 @@ for dim = dimVals
     % Convert the different components into cells
     u = partition(disc, v);
 
-    % Test the happieness of the function pieces:
+    % Test the happiness of the function pieces:
     [isDone, epsLevel] = testConvergence(disc, u(isFun));
 
     if ( all(isDone) )
