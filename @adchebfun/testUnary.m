@@ -3,7 +3,18 @@ function pass = testUnary(funcList, tol)
 %   derivatives and lineary information. Used for most unary operators (e.g.
 %   sin, cos, exp, ...).
 
-% TODO: Further documentation.
+% This method proceeds as follows:
+%
+% 1. Loops through the list of functions to be tested, passed by test methods in
+%    the test/adchebfun folder.
+% 2. For each function handle:
+%       a) Check that correct values for the function are computed, using the
+%          valueTesting() method. 
+%       b) Check that the correct derivative is computed, using the
+%          taylorTesting() method.
+%       c) Check that the correct linearity information was computed, from the
+%          LIN variable returned by the valueTesting() method.
+% 3. Return the pass vector with all results.
 
 % Default tolerance
 if ( nargin < 2 )
