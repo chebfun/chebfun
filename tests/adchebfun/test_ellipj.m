@@ -17,9 +17,8 @@ tol = 1e-2;
 % Initialise vector with pass information
 pass = zeros(2, numel(ellipFunctions));
 
-% TODO: Test CM and DM.
-
-% Do the tests.
+% Do the tests. Note that all three outputs of ellipj: SN, CN and DN are tested
+% at the same time in the valueTesting and taylorTesting methods.
 for k = 1:numel(ellipFunctions)
     % Call the valueTesting method, which also returns linearity information
     [err, lin] = adchebfun.valueTesting(ellipFunctions{k});
