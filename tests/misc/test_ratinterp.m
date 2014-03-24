@@ -78,4 +78,9 @@ pass(15) = max(abs((f(xx) - r(xx)))) < 0.6;
 pass(16) = norm(f - p./q,inf) < 0.6;
 pass(17) = max(abs((f(xx) - r(xx)))) < 0.6;
 
+% Robustness will get rid of the denominator in this scenario.
+f = @(x) 1./(x - 1.7);
+[p, q, r, mu, nu, pol] = ratinterp(f, 128, 1, [], 'type0', 1e-14);
+pass(18) = (nu == 0);
+
 end

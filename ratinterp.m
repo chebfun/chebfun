@@ -371,7 +371,7 @@ function a = computeNumeratorCoeffs(f, m, n, xi_type, Z, b, fEven, fOdd, N, N1)
 
 if ( strncmpi(xi_type, 'type', 4) )
     if ( xi_type(5) == '0' )      % Roots of unity.
-        a = fft(ifft(b, N1) .* f);
+        a = fft(ifft(b, N1, 1) .* f);
         a = a(1:(m+1));
     elseif ( xi_type(5) == '1' )  % 1st-kind Chebyshev points.
         a = dct1(idct1([b ; zeros(N - n, 1)]) .* f);
