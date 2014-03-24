@@ -13,7 +13,7 @@ tolDiff = 1e-14;
 func = @rdivide;
 
 % Compare values
-err = adchebfun.valueTestingBinary(func);
+[err, lin] = adchebfun.valueTestingBinary(func);
 
 % Confirm that the error returned is zero
 pass(1, :) = ( err < tolDiff );
@@ -42,5 +42,8 @@ pass(2,2) = linearOpResults(2);         % ADCHEBFUN and CHEBFUN
 pass(2,3) = nonlinearOpResults(3);      % CHEBFUN and ADCHEBFUN
 pass(2,4) = linearOpResults(4);         % ADCHEBFUN and SCALAR
 pass(2,5) = nonlinearOpResults(5);      % SCALAR and ADCHEBFUN
+
+% Linearity checking
+pass(3, :) = ( lin == [0, 1, 0, 1, 0] );
 
 end
