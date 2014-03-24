@@ -26,8 +26,8 @@ function [err, lin] = valueTesting(f, numOut)
 %   2. Evaluate the function handle F on both U and V.
 %   3. Return the infinity norm of the difference between the results (which we
 %      should expect to be zero).
-
-% TODO: Update documentation to include linearity detection.
+%   4. Also return the variable LIN, that contains linearity information for the
+%      function handle we were evaluating.
 
 % Default value of NUMOUT
 if ( nargin == 1)
