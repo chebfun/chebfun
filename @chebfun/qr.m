@@ -114,7 +114,7 @@ tol = eps * vscale(A);
 dom = A.domain;
 a = dom(1);
 b = dom(end);
-numFuns = length(dom)-1;
+numFuns = length(dom) - 1;
 
 % Get the sizes of the funs in the columns of A, keeping in mind that we
 % will have to multiply with the columns of E and the norm of A's columns.
