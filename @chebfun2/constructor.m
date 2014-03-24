@@ -1,27 +1,27 @@
 function g = constructor(g, op, domain, varargin)
 %CONSTRUCTOR   The main CHEBFUN2 constructor.
-% 
+%
 % This code is when functions of two variables are represented as CHEBFUN2
 % objects. A CHEBFUN2 object is a low rank representation and expresses a
 % function as a sum of rank-0 or 1 outerproduct of univariate functions.
 %
-% The algorithm for constructing a CHEBFUN2 comes in two phases: 
+% The algorithm for constructing a CHEBFUN2 comes in two phases:
 %
 % PHASE 1: The first phase attempts to determine the numerical rank of the
 % function by performing Gaussian elimination with complete pivoting on a tensor
 % grid of sample values. GE is perform until the pivoting elements fall below
 % machine precision.  At the end of this stage we have candidate pivot locations
-% and pivot elements. 
-% 
+% and pivot elements.
+%
 % PHASE 2: The second phase attempts to resolve the corresponding column and row
 % slices by sampling along the slices and performing GE on the skeleton.
 % Sampling along each slice is increased until the Chebyshev coefficients of the
-% slice fall below machine precision. 
-% 
-% The algorithm is fully described in: 
+% slice fall below machine precision.
+%
+% The algorithm is fully described in:
 %  A. Townsend and L. N. Trefethen, An extension of Chebfun to two dimensions,
 %  SISC, 35 (2013), C495-C518.
-% 
+%
 % See also CHEBFUN2.
 
 if ( nargin == 0 )          % CHEBFUN2( )
@@ -42,15 +42,24 @@ if ( nargin > 3 && isa(varargin{1}, 'chebpref') )
     defaults = chebpref();
     pref = chebpref.mergePrefs(defaults, varargin{1});
 else
-    pref = chebpref(); 
+    pref = chebpref();
 end
 
 if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
     if ( numel( op ) == 1 )
-        % LNT wants this: 
+        % LNT wants this:
         g = constructor(g, @(x,y) op + 0*x, domain);
+        % Look for coeffs flag:
+    elseif ( any(strcmpi(domain, 'coeffs')) )
+        op = chebfun2.coeffs2vals( op );
+        g = chebfun2( op, varargin{:} );
+        return
+    elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, 'coeffs')) )
+        op = chebfun2.coeffs2vals( op );
+        g = chebfun2( op, domain );
+        return
     else
-        % If CHEBFUN2(f, rk), then nonadaptive call: 
+        % If CHEBFUN2(f, rk), then nonadaptive call:
         if ( numel(domain) == 1 )
             fixedRank = domain;
             domain = [-1 1 -1 1];
@@ -58,9 +67,9 @@ if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
             % Otherwise its an adaptive call:
             fixedRank = 0;
         end
-        % Perform GE with complete pivoting: 
+        % Perform GE with complete pivoting:
         [pivotValue, ignored, rowValues, colValues] = CompleteACA(op, 0);
-        % Construct a CHEBFUN2: 
+        % Construct a CHEBFUN2:
         g.pivotValues = pivotValue;
         g.cols = chebfun(colValues, domain(3:4) );
         g.rows = chebfun(rowValues.', domain(1:2) );
@@ -86,20 +95,8 @@ if (any(strcmpi(domain, 'vectorize')) || any(strcmpi(domain, 'vectorise')))
     vectorize = 1;
     domain = [-1 1 -1 1];
 elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, 'vectorize')) ||...
-                                     any(strcmpi(varargin{1}, 'vectorise'))))
+        any(strcmpi(varargin{1}, 'vectorise'))))
     vectorize = 1;
-end
-
-% Look for coeffs flag: 
-if (any(strcmpi(domain, 'coeffs')) || any(strcmpi(domain, 'coeffs')) )
-    op = coeffs2vals( op );
-    g = chebfun2( op );
-    return
-elseif ( (nargin > 3) && ( any(strcmpi(varargin{1}, 'coeffs')) ||...
-                                       any(strcmpi(varargin{1}, 'coeffs'))))
-    op = coeffs2vals( op );
-    g = chebfun2( op, domain );
-    return
 end
 
 fixedRank = 0;
@@ -131,7 +128,7 @@ pseudoLevel = prefStruct.eps;
 sampleTest = prefStruct.sampleTest;
 grid = 9;   % minsample
 
-% If the vectorize flag is off, do we need to give user a warning? 
+% If the vectorize flag is off, do we need to give user a warning?
 if ( vectorize == 0 ) % another check
     % Check for cases: @(x,y) x*y, and @(x,y) x*y'
     [xx, yy] = meshgrid( domain(1:2), domain(3:4));
@@ -151,11 +148,11 @@ if ( vectorize == 0 ) % another check
     end
 end
 
-isHappy = 0; 
+isHappy = 0;
 while ( ~isHappy )
     % Sample function on a Chebyshev tensor grid:
     [xx, yy] = chebfun2.chebpts2(grid, grid, domain);
-    vals = evaluate(op, xx, yy, vectorize);        
+    vals = evaluate(op, xx, yy, vectorize);
     
     % Does the function blow up or evaluate to NaN?:
     vscale = max(abs(vals(:)));
@@ -169,19 +166,19 @@ while ( ~isHappy )
     tol = grid.^(4/3) * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
     
     %%% PHASE 1: %%%
-    % Do GE with complete pivoting: 
+    % Do GE with complete pivoting:
     [pivotValue, pivotPosition, rowValues, colValues, iFail] = CompleteACA(vals, tol);
     
     strike = 1;
     while ( iFail && grid <= maxRank && strike < 3)
         % Double sampling on tensor grid:
-        grid = 2^( floor( log2( grid ) ) + 1) + 1;                
+        grid = 2^( floor( log2( grid ) ) + 1) + 1;
         [xx, yy] = chebfun2.chebpts2(grid, grid, domain);
         vals = evaluate(op, xx, yy, vectorize); % resample
         vscale = max(abs(vals(:)));
-        % New tolerance: 
+        % New tolerance:
         tol = grid.^(4/3) * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
-        % New GE: 
+        % New GE:
         [pivotValue, pivotPosition, rowValues, colValues, iFail] = CompleteACA(vals, tol);
         % If the function is 0+noise then stop after three strikes.
         if ( abs(pivotValue(1))<1e4*vscale*tol )
@@ -201,7 +198,7 @@ while ( ~isHappy )
     resolvedRows = happinessCheck(rowChebtech);
     isHappy = resolvedRows & resolvedCols;
     
-    % If the function is zero, set midpoint of domain as pivot location. 
+    % If the function is zero, set midpoint of domain as pivot location.
     if ( length(pivotValue) == 1 && pivotValue == 0 )
         PivPos = [0, 0];
         isHappy = 1;
@@ -210,8 +207,8 @@ while ( ~isHappy )
         PP = pivotPosition;
     end
     
-    %%% PHASE 2: %%% 
-    % Now resolve along the column and row slices: 
+    %%% PHASE 2: %%%
+    % Now resolve along the column and row slices:
     n = grid;  m = grid;
     while ( ~isHappy )
         if ( ~resolvedCols )
@@ -227,19 +224,19 @@ while ( ~isHappy )
             colValues = evaluate(op, xx, yy, vectorize);
         end
         if ( ~resolvedRows )
-             % Double sampling along rows
+            % Double sampling along rows
             m = 2^( floor( log2( m ) ) + 1 ) + 1;
             [xx, yy] = meshgrid(chebpts(m, domain(1:2)), PivPos(:, 2));
             rowValues = evaluate(op, xx, yy, vectorize);
             % find location of pivots on new grid  (using nesting property).
-            oddm = 1:2:m; 
-            PP(:, 2) = oddm(PP(:, 2)); 
+            oddm = 1:2:m;
+            PP(:, 2) = oddm(PP(:, 2));
         else
             [xx, yy] = meshgrid(chebpts(m, domain(1:2)), PivPos(:, 2));
             rowValues = evaluate(op, xx, yy, vectorize);
         end
         
-        % Do GE on the skeleton to update slices: 
+        % Do GE on the skeleton to update slices:
         nn = numel(pivotValue);
         for kk = 1:nn-1
             colValues(:, kk+1:end) = colValues(:, kk+1:end) -...
@@ -248,9 +245,9 @@ while ( ~isHappy )
                 colValues(PP(kk+1:nn, 1), kk)*(rowValues(kk, :)./pivotValue(kk));
         end
         
-        % If function is on rank-1 then make rowValues a row vector: 
+        % If function is on rank-1 then make rowValues a row vector:
         if ( nn == 1 )
-            rowValues = rowValues(:).'; 
+            rowValues = rowValues(:).';
         end
         
         % Are the columns and rows resolved now?
@@ -265,7 +262,7 @@ while ( ~isHappy )
         isHappy = resolvedRows & resolvedCols;
         
         % STOP if degree is over maxLength:
-        if ( max(m, n) >= maxLength ) 
+        if ( max(m, n) >= maxLength )
             error('CHEBFUN2:CTOR', 'Unresolved with maximum CHEBFUN length: %u.', maxLength);
         end
         
@@ -292,7 +289,7 @@ while ( ~isHappy )
     % Sample Test:
     if ( sampleTest )
         % Evaluate at arbitrary point in domain:
-        r = 0.029220277562146; 
+        r = 0.029220277562146;
         s = 0.237283579771521;
         r = (domain(2)+domain(1))/2 + r*(domain(2)-domain(1));
         s = (domain(4)+domain(3))/2 + s*(domain(4)-domain(3));
@@ -325,12 +322,20 @@ factor = 4*(tol > 0);       % ratio between size of matrix and no. pivots. If to
 zRows = 0;                  % count number of zero cols/rows.
 [infNorm, ind] = max( abs ( reshape(A,numel(A),1) ) );
 [row, col] = myind2sub( size(A) , ind);
+
+% Bias toward diagonal for square matrices (see reasoning below):
+if ( ( nx == ny ) && ( max( abs( diag( A ) ) ) - infNorm ) > -tol )
+    [infNorm, ind] = max( abs ( diag( A ) ) );
+    row = ind; 
+    col = ind;
+end
+
 scl = infNorm;
 
 % If the function is the zero function.
 if ( scl == 0 )
     pivotValue = 0;
-    rows = 0; 
+    rows = 0;
     cols = 0;
     ifail = 0;
 else
@@ -338,7 +343,8 @@ else
     cols(:,1) = zeros(size(A, 1), 1);
 end
 
-while ( ( infNorm > tol ) && ( zRows < width / factor) )
+while ( ( infNorm > tol ) && ( zRows < width / factor)...
+        && ( zRows < min(nx, ny) ) )
     rows(zRows+1,:) = A(row,:);
     cols(:,zRows+1) = A(:,col);              % Extract the columns.
     PivVal = A(row,col);
@@ -352,14 +358,25 @@ while ( ( infNorm > tol ) && ( zRows < width / factor) )
     % Next pivot.
     [ infNorm , ind ] = max( abs ( A(:) ) ); % Slightly faster.
     [ row , col ] = myind2sub( size(A) , ind );
+    
+    % Have a bias towards the diagonal of A, so that it can be used as a test
+    % for nonnegative definite functions. (Complete GE and Cholesky are the
+    % same as nonnegative definite functions have an absolute maximum on the
+    % diagonal, except there is the possibility of a tie with an off-diagonal
+    % absolute maximum. Bias toward diagonal maxima to prevent this.)
+    if ( ( nx == ny ) && ( max( abs( diag( A ) ) ) - infNorm ) > -tol )
+        [infNorm, ind] = max( abs ( diag( A ) ) );
+        row = ind; 
+        col = ind;
+    end
 end
 
 if ( infNorm <= tol )
     ifail = 0;                               % We didn't fail.
-end           
+end
 if (zRows >= width / factor)
     ifail = 1;                               % We did fail.
-end  
+end
 
 end
 
