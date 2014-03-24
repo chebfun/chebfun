@@ -1,7 +1,7 @@
 % TIMES_LINTEST   Check that correct linearity information is returned for
 % various operations with .*
 
-function pass = test_lintest_mtimes()
+function pass = test_lintest_times()
 %% Initialisation
 x = chebfun('x');
 u = adchebfun('x')+2;

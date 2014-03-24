@@ -40,9 +40,10 @@ N = 8;
 u1 = chebfun(0.1*rand(N, 1) + .5);
 u2 = chebfun(0.1*rand(N,1) + .5);
 
-% Construct corresponding ADCHEBFUN objects:
-v1 = adchebfun(u1);
-v2 = adchebfun(u2);
+% Construct corresponding ADCHEBFUN objects. Here, we seed the ADCHEBFUN objects
+% to ensure that the dimensions of their derivatives are correct:
+v1 = seed(adchebfun(u1), 1, 2);
+v2 = seed(adchebfun(u2), 2, 2);
 
 % Also create two arbitrary CHEBFUNS to test with:
 w1 = chebfun(0.1*rand(N, 1) + .5);
@@ -83,9 +84,9 @@ err(4) = norm(v1s2.func - u1s2);
 err(5) = norm(s1v2.func - s1u2);
 
 %% Linearity information
-lin(1) = v1v2.linearity;
-lin(2) = v1w2.linearity;
-lin(3) = w1v2.linearity;
-lin(4) = v1s2.linearity;
-lin(5) = s1v2.linearity;
+lin(1) = isLinear(v1v2);
+lin(2) = isLinear(v1w2);
+lin(3) = isLinear(w1v2);
+lin(4) = isLinear(v1s2);
+lin(5) = isLinear(s1v2);
 end
