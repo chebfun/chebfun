@@ -685,7 +685,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             %       'FUNC'       -   The chebfun/scalar part of F.
             %       'JACOBIAN'   -   The derivative of F w.r.t. the seeding
             %                        variable.
-            %       'linearity' -   Whether F has a constant derivative w.r.t.
+            %       'LINEARITY'  -   Whether F has a constant derivative w.r.t.
             %                        the seeding variable (useful for linearity
             %                        detection).
             %
@@ -748,10 +748,10 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
         
         function isl = isLinear(f)
-            %ISLINEAR       Returns linearity information about an ADCHEBFUN
+            %ISLINEAR   Linearity test for an ADCHEBFUN.
             %
-            % ISL = ISLINEAR(F) returns 1 if ALL(F.linearity) == 1, 0
-            % otherwise.
+            %   ISL = ISLINEAR(F) returns 1 if ALL(F.linearity) == 1, and 0
+            %   otherwise.
             isl = all(f.linearity);
         end
         

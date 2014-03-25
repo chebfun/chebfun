@@ -1,16 +1,16 @@
 function [err, lin] = valueTesting(f, numOut)
-%VALUETESTING  Test that ADCHEBFUN is calling the correct method for the
+%VALUETESTING   Test that ADCHEBFUN is calling the correct method for the
 %   function part of the methods.
 %
-% ERR = VALUETESTING(F, NUMOUT)  Test that ADCHEBFUN is calling the correct
+%   ERR = VALUETESTING(F, NUMOUT) tests that ADCHEBFUN is calling the correct
 %   method for the function part of the methods.
 %
-% Here, the inputs are:
+%   Here, the inputs are:
 %   F       -- a function handle
 %   NUMOUT  -- an optional argument, used for methods with more than one output
 %              (in particular, ellipj)
 %
-% and the output is
+%   and the output is
 %   ERR     --  the infinity norm of the difference between applying F to a
 %               CHEBFUN and an ADCHEBFUN.
 %   LIN     --  linearity information. LIN == 1 if the method is determined to
