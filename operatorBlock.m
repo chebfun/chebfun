@@ -243,6 +243,8 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
             % Check whether domain information was passed
             if ( nargin < 2 )
                 dom = u.domain;
+            else
+                dom = chebfun.mergeDomains(u.domain,dom);
             end
 
             % Create the OPERATORBLOCK with information now available.
