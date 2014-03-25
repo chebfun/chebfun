@@ -203,11 +203,12 @@ classdef functionalBlock < linBlock
             %   FUNCTIONALBLOCK.INNER(F, DOMAIN) returns the functional on the
             %   interval DOMAIN that maps a function to its inner product with
             %   the chebfun F.
-            if ( nargin == 1 )
-                F = functionalBlock(f.domain);
-            else
-                F = functionalBlock(domain);
+            if ( nargin < 2 )
+                domain = f.domain;
+             else
+                domain = chebfun.mergeDomains(f.domain,domain);
             end
+            F = functionalBlock(domain);
             F.stack = @(z) inner(z, f);
             F.diffOrder = 0;
         end
