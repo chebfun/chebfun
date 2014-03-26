@@ -1,18 +1,20 @@
 function [err, lin] = valueTesting(f, numOut)
-%VALUETESTING  Test that ADCHEBFUN is calling the correct method for the
+%VALUETESTING   Test that ADCHEBFUN is calling the correct method for the
 %   function part of the methods.
 %
-% ERR = VALUETESTING(F, NUMOUT)  Test that ADCHEBFUN is calling the correct
+%   ERR = VALUETESTING(F, NUMOUT) tests that ADCHEBFUN is calling the correct
 %   method for the function part of the methods.
 %
-% Here, the inputs are:
+%   Here, the inputs are:
 %   F       -- a function handle
 %   NUMOUT  -- an optional argument, used for methods with more than one output
 %              (in particular, ellipj)
 %
-% and the output is
-%   ERR     --  a vector containing the infinity norm of the difference between
-%               applying F to a CHEBFUN and an ADCHEBFUN.
+%   and the output is
+%   ERR     --  the infinity norm of the difference between applying F to a
+%               CHEBFUN and an ADCHEBFUN.
+%   LIN     --  linearity information. LIN == 1 if the method is determined to
+%               be linear, 0 otherwise.
 %
 % See also: TAYLORTESTING, TAYLORTESTINGBINARY, VALUETESTINGBINARY.
 
@@ -24,8 +26,8 @@ function [err, lin] = valueTesting(f, numOut)
 %   2. Evaluate the function handle F on both U and V.
 %   3. Return the infinity norm of the difference between the results (which we
 %      should expect to be zero).
-
-% TODO: Update documentation to include linearity detection.
+%   4. Also return the variable LIN, that contains linearity information for the
+%      function handle we were evaluating.
 
 % Default value of NUMOUT
 if ( nargin == 1)
@@ -53,6 +55,6 @@ v = adchebfun(u);
 err = max(cellfun(@(fu, fv) norm(fu - fv.func,'inf'), fu, fv));
 
 % Is the output linear?
-lin = cellfun(@(fv) fv.isConstant, fv);
+lin = cellfun(@(fv) isLinear(fv), fv);
 
 end

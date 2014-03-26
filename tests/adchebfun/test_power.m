@@ -3,7 +3,7 @@
 function pass = test_power
 
 % Initialise pass vector
-pass = zeros(2, 5);
+pass = zeros(3, 5);
 
 % Tolerance for Taylor testing
 tolOrder = 1e-2;
@@ -13,7 +13,7 @@ tolDiff = 1e-14;
 func = @power;
 
 % Compare values
-err = adchebfun.valueTestingBinary(func);
+[err, lin] = adchebfun.valueTestingBinary(func);
 
 % Confirm that the error returned is zero
 pass(1, :) = ( err < tolDiff );
@@ -29,4 +29,6 @@ pass(1, :) = ( err < tolDiff );
 pass(2,:) = ( (max(abs(order1 - 1)) < tolOrder) & ...
               (max(abs(order2 - 2)) < tolOrder) );
 
+% Linearity checking. All operations should be detected as nonlinear.
+pass(3,:) = ( lin == 0 );
 end
