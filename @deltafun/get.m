@@ -20,16 +20,11 @@ switch prop
         out = f.funPart.(prop);
         
     case fieldnames(f.funPart.onefun)
-        out = f.funPart.onefun.(prop);  
+        out = f.funPart.onefun.(prop); 
         
-    case {'lval', 'rval'}
-        % Get the values at a or b (where f.domain = [a, b]):
-        out = get(f.funPart, prop);
+    case {'lval', 'rval', 'points', 'vscale', 'epslevel'}
+        out = get(f.funPart, prop);            
         
-    case {'points'}
-        % Get the underlying grid:
-        out = get(f.funPart, prop);
-
     otherwise
         error('DELTAFUN:GET:propname', ...
               'Unknown property name "%s" for object of type DELTAFUN.', prop);
