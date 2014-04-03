@@ -302,7 +302,7 @@ else                                 % Other nodes.
     end
 
     [C, R] = qr(C);
-    Z = C.' * diag(f) * C(:, 1:(n+1));
+    Z = C' * diag(f) * C(:, 1:(n+1));
 end
 
 end

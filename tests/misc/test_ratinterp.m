@@ -10,7 +10,6 @@ x = chebfun(@(x) x, dom);
 cf = f(x);
 N = 100;
 
-
 % Approximate on different point sets using the anonymous function.
 [p, q, r, mu, nu, poles, res] = ratinterp(dom, f, 10, 10, [], 'type0');
 pass(1) = (mu == 4) && (nu == 2) && ...
@@ -82,5 +81,12 @@ pass(17) = max(abs((f(xx) - r(xx)))) < 0.6;
 f = @(x) 1./(x - 1.7);
 [p, q, r, mu, nu, pol] = ratinterp(f, 128, 1, [], 'type0', 1e-14);
 pass(18) = (nu == 0);
+
+% Check interpolation in arbitrary complex nodes.  (Use roots of unity but
+% don't inform ratinterp().)
+f = @(x) sin(x)./(x - 0.1);
+zk = exp(2*pi*1i*(0:1:31).'/32);
+[p, q, r, mu, nu, pol] = ratinterp(f, 30, 1, [], zk, 1e-14);
+pass(19) = abs(pol - 0.1) < 1e-10;
 
 end
