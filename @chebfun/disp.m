@@ -131,26 +131,6 @@ for j = 1:numFuns
     end
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Dispaly for delta functions:
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-[deltaMag, deltaLoc] = getDeltaFunctions(f);
-if ( ~isempty(deltaMag) )    
-    fprintf('Delta functions:\n')    
-    m = size(deltaMag, 1);
-    n = size(deltaMag, 2);
-    for i = 1: m
-        for j = 1:n            
-            fprintf('%8.2g', deltaMag(i, j));
-        end
-        fprintf('\n');
-    end
-    fprintf( 'Locations:\n');
-    fprintf('%8.2g', deltaLoc);
-    fprintf('\n');
-end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 % Display epslevel:
 s = [s, sprintf('Epslevel = %i.', epslevel(f))];
 s = [s, sprintf('  Vscale = %i.', vscale(f))];
@@ -159,5 +139,25 @@ s = [s, sprintf('  Vscale = %i.', vscale(f))];
 if ( numFuns > 1 )
     s = [s, sprintf('  Total length = %i.', sum(len))];
 end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Dispaly for delta functions:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+[deltaMag, deltaLoc] = getDeltaFunctions(f);
+if ( ~isempty(deltaMag) )    
+    s = [s, sprintf('\nDelta functions:\n')];
+    m = size(deltaMag, 1);
+    n = size(deltaMag, 2);
+    for i = 1: m
+        for j = 1:n            
+            s = [s, sprintf('%8.2g', deltaMag(i, j))];
+        end
+        s = [s, sprintf('\n')];
+    end
+    s = [s, sprintf( 'Locations:\n')];
+    s = [s, sprintf('%8.2g', deltaLoc)];
+    s = [s, sprintf('\n')];
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 end
