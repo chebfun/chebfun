@@ -53,7 +53,7 @@ if ( numel(A) > 1 )
         
     else
         % Legendre matrix:
-        E = legpoly(0:numCols-1, A.domain, 'norm', 1);
+        E = legpoly(0:numCols-1, domain(A), 'norm', 1);
         E = restrict(E, get(A, 'domain'));
         % Convert the Legendre-Vandermonde matrix to a quasimatrix:
         E = cheb2quasi(E);
