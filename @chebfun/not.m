@@ -21,7 +21,6 @@ for k = 1:numel(f.funs)
 end
 
 % pointValues:
-tol = vscale(f)*epslevel(f);
 f.pointValues = abs(f.pointValues) < tol;
 
 end

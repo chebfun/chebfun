@@ -38,6 +38,6 @@ Q = [f f];
 Q = [Q f];
 Q_exact = @(x) [sin(x) sin(x) sin(x)];
 err = feval(Q, xr) - Q_exact(xr);
-pass(5) = numel(Q) == 1 && norm(err(:), inf) < 10*vscale(Q)*epslevel(Q);
+pass(5) = numel(Q) == 3 && norm(err(:), inf) < 10*vscale(Q)*epslevel(Q);
 
 end

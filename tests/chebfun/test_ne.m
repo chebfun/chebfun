@@ -62,6 +62,6 @@ end
 
 f = chebfun(@(x) -sin(x)./(x+1), 'exps', [-1 0]);
 g = ( f ~= f );
-pass(9) = ( g.impulses(2) == 0 && ~any(feval(g, x)) );
+pass(9) = ( g.pointValues(1) == 0 && ~any(feval(g, x)) );
 
 end

@@ -75,6 +75,6 @@ g = chebfun(@(x) x*0);
 h = ( f < g );
 h_vals = feval(h, x);
 h_exact = hvsde(x);
-pass(9) = ( h.impulses(2) == 0 ) && all( abs( h_vals - h_exact ) == 0 );
+pass(9) = ( h.pointValues(1) == 0 ) && all( abs( h_vals - h_exact ) == 0 );
 
 end
