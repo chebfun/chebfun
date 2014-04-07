@@ -83,9 +83,11 @@ end
 % TODO: Also check to see if an input is a SINGFUN.
 isSingular = any(cellfun(@issing, varargin));
 
+%isDelta = any(cellfun(@isdelta, varargin));
+isDelta = 1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%% FORM A QUASIMATRIX %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-if ( differentBreakpoints || isSingular )  % (form a quasimatrix)
+if ( differentBreakpoints || isSingular || isDelta )  % (form a quasimatrix)
     isArrayCheb = cellfun(@(f) isa(f, 'chebfun') && size(f, 2) > 1, varargin);
     if ( any(isArrayCheb) )
         % Break up array-valued CHEBFUNs into single columns:

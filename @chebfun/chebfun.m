@@ -360,6 +360,9 @@ classdef chebfun
         % True for real CHEBFUN.
         out = isreal(f);
         
+        % Test if a CHEBFUN object is built upon DELTAFUN.
+        out = isdelta(f);
+        
         % Test if a CHEBFUN object is built upon SINGFUN.
         out = issing(f)
         
