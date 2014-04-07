@@ -118,7 +118,7 @@ if ~( isempty(N.lbc) )
         BC = append(BC, lbcUk.jacobian, lbcUk.func);
     end
     % Update linearity information.
-    isLinear(2) = all(get(lbcU, 'linearity'));
+    isLinear(2) = all(all(get(lbcU, 'linearity')));
 end
 
 % If N is nonlinear, and we were looking to only test linearity, return
@@ -144,7 +144,7 @@ if ( ~isempty(N.rbc) )
         BC = append(BC, rbcUk.jacobian, rbcUk.func);
     end
     % Update linearity information.
-    isLinear(3) = all(get(rbcU, 'linearity'));
+    isLinear(3) = all(all(get(rbcU, 'linearity')));
 end
 
 % If N is nonlinear, and we were looking to only test linearity, return
@@ -167,7 +167,7 @@ if ( ~isempty(N.bc) )
         BC = append(BC, get(bcU, 'jacobian', k), vals(k));
     end
     % Update linearity information.
-    isLinear(4) = all(get(bcU, 'linearity'));
+    isLinear(4) = all(all(get(bcU, 'linearity')));
 end
 % Append all constraints to the LINOP returned.
 L.constraint = BC;
