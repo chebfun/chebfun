@@ -82,7 +82,4 @@ fval = feval(h2, x);
 err = fval - 1;
 pass(14) = ~any( err );
 
-r = roots(f);
-pass(15) = ~any( h2(r) );
-
 end

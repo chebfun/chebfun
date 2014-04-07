@@ -28,16 +28,20 @@ end
 
 function f = columnSimplify(f, tol)
 
-% Choose a tolerance:
-% [TODO]: This seems to be the best we can do without vector epslevels?
-glob_acc = epslevel(f).*vscale(f); % Global error estimate of the CHEBFUN.
-loc_vscl = get(f, 'vscale-local'); % Local vscale of the FUN objects.
-loc_vscl(loc_vscl == 0) = 1;       % Zero vscale will give inf tol, so remove.
-glob_acc(glob_acc == inf) = 0;     % TODO: Stop this returning inf!
-tol = max(max(tol, glob_acc) ./ loc_vscl, [], 2); % Simplification tolerances.
+if ( nargin < 2 ) 
+    % Choose a tolerance:
+    loc_epsl = get(f, 'epslevel-local'); % Epslevel of each columns and each fun
+    loc_vscl = get(f, 'vscale-local');   % Vscale of each columns and each fun
+    loc_acc = loc_epsl.*loc_vscl;        % Pointwise multiply of the two
+    glob_acc = max(max(loc_acc));        % Maximum over all columns and funs
+    col_vscl = max(loc_vscl, [], 1);     % Vscale of each column
+    col_vscl(col_vscl == 0) = 1;         % Remove zero vscales (TODO: Improve?)
+    tol = loc_acc./col_vscl;             % Factor out col_vscl (TODO: loc_vscl?)
+end
+
 % Simplfy each of the FUN objects:
 for k = 1:numel(f.funs)
-    f.funs{k} = simplify(f.funs{k}, tol(k,:));
+    f.funs{k} = simplify(f.funs{k}, tol);
 end
 
 end

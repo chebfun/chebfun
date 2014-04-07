@@ -95,9 +95,8 @@ else                        % CHEBFUN' * CHEBFUN
 %         % Output in f:
 %         f = S;
     else                                     % Column times row.
-        % [TODO]:  Implement (and document) this once we have CHEBFUN2.
-        error('CHEBFUN:mtimes:colTimesRow', ...
-              'Support for (column)*(row) products not yet implemented.');
+        % Outer-product of two chebfuns is a chebfun2. 
+        f = chebfun2.outerProduct(f, g);
     end
 
 end

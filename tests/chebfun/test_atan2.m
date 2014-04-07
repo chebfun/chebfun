@@ -28,9 +28,10 @@ pass(2) = norm(hi - h.pointValues) < tol;
 
 %% Scalar-valued, tan(g, f):
 h = atan2(g, f);
-tol = 10*epslevel(h);
+tol = 10*epslevel(h).*vscale(h);
 hh = atan2(gg, ff);
-pass(3) = norm(feval(h, xx) - hh, inf) < tol;
+err = norm(feval(h, xx) - hh, inf);
+pass(3) = err < tol;
 
 ends = h.domain;
 hi = atan2(feval(g, ends), feval(f, ends)).';

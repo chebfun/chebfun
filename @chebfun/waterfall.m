@@ -27,7 +27,7 @@ end
 holdState = ishold;
 
 % Check for 2nd input:
-if ( isnumeric(varargin{1}) )
+if ( nargin > 1 && isnumeric(varargin{1}) )
     t = varargin{1};
     varargin(1) = [];
 else

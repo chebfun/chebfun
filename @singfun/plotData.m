@@ -25,8 +25,13 @@ if ( nargin == 1 )
     data = plotData(f.smoothPart);
 elseif (nargin == 2)
     h = [];
+    f = singfun(f);
+    g = singfun(g);
     data = plotData(f.smoothPart, g.smoothPart);
 elseif (nargin == 3)
+    f = singfun(f);
+    g = singfun(g);
+    h = singfun(h);
     data = plotData(f.smoothPart, g.smoothPart, h.smoothPart);
 end
 
@@ -39,7 +44,9 @@ if ( isempty(g) )
     data.yLine = scaleData(data.xLine, data.yLine, f.exponents);
     % Scale the sample point y-data:
     data.yPoints = scaleData(data.xPoints, data.yPoints, f.exponents);
-elseif ( isa(g, 'singfun') )
+end
+    
+if ( isa(g, 'singfun') )
     % PLOT(F, G)
     
     % Acquire the grid data of f and scale appropriately:
@@ -49,15 +56,14 @@ elseif ( isa(g, 'singfun') )
     % Acquire the grid data of g and scale appropriately:
     data.yLine = scaleData(data.gGrid.xLine, data.yLine, g.exponents);
     data.yPoints = scaleData(data.gGrid.xPoints, data.yPoints, g.exponents);
-    
-    if ( isa(h, 'singfun') )
-        % PLOT3(F, G, H)
-        
-        % Acquire the grid data of h and scale appropriately:
-        data.zLine = scaleData(data.hGrid.xLine, data.zLine, h.exponents);
-        data.zPoints = scaleData(data.hGrid.xPoints, data.zPoints, h.exponents);
-        
-    end
+end
+
+if ( isa(h, 'singfun') )
+    % PLOT3(F, G, H)
+
+    % Acquire the grid data of h and scale appropriately:
+    data.zLine = scaleData(data.hGrid.xLine, data.zLine, h.exponents);
+    data.zPoints = scaleData(data.hGrid.xPoints, data.zPoints, h.exponents);
 end
 
 % Set the y-limits to something sensible:

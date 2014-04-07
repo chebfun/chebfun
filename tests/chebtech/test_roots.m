@@ -78,6 +78,17 @@ for n = 1:2
     r = roots(f);
     r2 = [-1 0 1 -.5 .5 NaN].';
     pass(n, 9) = all( r(:) - r2 < 10*length(f)*max(f.epslevel) | isnan(r2) );
+
+    % Adding test for 'qz' flag: 
+    f = testclass.make(@(x) 1e-10*x.^3 + x.^2 - 1e-12, [], [], pref); 
+    r = roots(f, 'qz', 1);
+    pass(n, 10) = ~isempty( r );
+    pass(n, 11) = norm(feval(f, r), inf) < f.epslevel; 
+    
+    % Add a rootfinding test for low degree non-even functions: 
+    f = testclass.make(@(x) (x-.5).*(x-1/3), [], [], pref); 
+    r = roots(f, 'qz', 1);
+    pass(n, 12) = norm(feval(f, r), inf) < f.epslevel; 
 end
 
 end

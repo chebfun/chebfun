@@ -1,4 +1,4 @@
-function chebtest(varargin)
+function varargout = chebtest(varargin)
 %CHEBTEST   Run Chebfun test suite.
 %
 %   CHEBTEST executes all of the m-files found in the top level folders of the
@@ -72,13 +72,14 @@ cd(testsDir);
 numDirs = length(testDirNames);
 passDir = zeros(numDirs, 1);
 timeDir = zeros(numDirs, 1);
+failFiles = cell(numDirs, 1);
 
 % Loop over the test directories and run the tests in each one.
 for k = 1:numDirs
     testDir = testDirNames{k};
     if ( exist(testDir, 'dir') )
         fprintf(['Running tests in ' testDir ':\n']);
-        [passDir(k), timeDir(k)] = runTestsInDirectory(testDir);
+        [passDir(k), timeDir(k), failFiles{k}] = runTestsInDirectory(testDir);
     else
         warning('CHEBFUN:chebtest:DirNotFound', ...
             'Test directory ''%s'' not found. Skipping.', testDir);
@@ -86,11 +87,15 @@ for k = 1:numDirs
     fprintf('\n');
 end
 
+
 if ( all(passDir) )
     % All tests have passed. Yay!
     fprintf('All tests passed in %4.4fs\n', sum(timeDir));
+
 else
-    % There's been a failure. List the directories which failed.
+    % There's been a failure. 
+
+    % List the directories which failed.
     if ( sum(~passDir) == 1 )
         % A single directory:
         fprintf('Tests failed/crashed in directory:\n   tests/%s.\n\n', ...
@@ -105,14 +110,19 @@ else
         end
         fprintf(['Tests failed in directories:'  failedDirsStr '.\n\n']);
     end
+
 end
 
 % Return to current directory and return:
 cd(currDir);
 
+if ( nargout > 0 )
+    varargout{1} = [failFiles{:}].';
 end
 
-function [passFile, timeFile] = runTestsInDirectory(testDir)
+end
+
+function [passFile, timeFile, failFile] = runTestsInDirectory(testDir)
 %RUNTESTSINDIRECTORY   Run all the tests in the given directory.
 %   RUNTESTSINDIRECTORY(TESTDIR) will change the current working directory to
 %   TESTDIR, locate all the *.m files within it using dir, and execute each of
@@ -138,6 +148,7 @@ maxLength = max(cellfun(@length, testFiles));
 numFiles = numel(testFiles);
 passFile = zeros(numFiles, 1);
 timeFile = zeros(numFiles, 1);
+resultStr = cell(1, numFiles);
 
 % Attempt to run all of the tests:
 try % Note, we try-catch as we've CD'd and really don't want to end up elsewhere
@@ -146,8 +157,8 @@ try % Note, we try-catch as we've CD'd and really don't want to end up elsewhere
         % Next file to test: (.m extension is removed).
         testFile = testFiles{k}(1:end-2);
         printTestInfo(testDir, testFile, k, maxLength);
-        [passFile(k), timeFile(k), resultStr] = runTest(testFile);
-        fprintf([resultStr '\n']);
+        [passFile(k), timeFile(k), resultStr{k}] = runTest(testFile);
+        fprintf([resultStr{k} '\n']);
     end
 catch ME
     % We failed. Return to the starting directory and rethrow the error:
@@ -165,10 +176,13 @@ end
 % Restore the current working directory and return:
 cd(currDir);
 
-% Collapse to scalar for output:
-passFile = all(passFile);
-timeFile = sum(timeFile);
+% Store failed file names:
+failFile = cellfun(@(f, r) [testDir '/' f '  (' r ').'], ...
+    testFiles(~passFile), resultStr(~passFile), 'UniformOutput', 0);
 
+% Collapse to scalar for output:
+timeFile = sum(timeFile);
+passFile = all(passFile);
 end
 
 
