@@ -82,9 +82,8 @@ end
 
 % TODO: Also check to see if an input is a SINGFUN.
 isSingular = any(cellfun(@issing, varargin));
+isDelta = any(cellfun(@isdelta, varargin));
 
-%isDelta = any(cellfun(@isdelta, varargin));
-isDelta = 1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%% FORM A QUASIMATRIX %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if ( differentBreakpoints || isSingular || isDelta )  % (form a quasimatrix)
