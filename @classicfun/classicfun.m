@@ -190,6 +190,9 @@ classdef classicfun < fun % (Abstract)
         % Imaginary part of a CLASSICFUN.
         f = imag(f)
 
+        % Always returns false, since CLASSICFUNs don't handle delta functions.
+        out = isdelta(f)
+
         % True for an empty CLASSICFUN.
         out = isempty(f)
 

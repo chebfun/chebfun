@@ -6,12 +6,6 @@ function out = isdelta(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-out = any(cellfun(@(f) isDeltaFun(f), f.funs));
-
-end
-
-function out = isDeltaFun(f)
-
-out = isa(f, 'deltafun');
+out = any(cellfun(@(f) isdelta(f), f.funs));
 
 end

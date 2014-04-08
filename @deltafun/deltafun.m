@@ -182,12 +182,15 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         % Compute the inner product of two DELTAFUN objects.
         out = innerProduct(f, g)
                 
+        % Always returns true, since DELTAFUN manages delta functions.
+        out = isdelta(f)
+
         % True for an empty DELTAFUN.
         out = isempty(f)
         
         % Test if DELTAFUN objects are equal.
         out = isequal(f, g)
-        
+
         % Test if a DELTAFUN is bounded.
         out = isfinite(f)
         

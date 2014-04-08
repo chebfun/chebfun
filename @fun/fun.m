@@ -134,6 +134,9 @@ classdef fun % (Abstract)
         % Imaginary part of a FUN.
         f = imag(f)
 
+        % Test if a FUN object manages delta functions.
+        out = isdelta(f)
+
         % True for an empty FUN.
         out = isempty(f)
 
