@@ -155,13 +155,6 @@ else
             get(h.funs{k+1}, 'lval')];
     end
     
-    % Get data for delta functions:
-    [deltaMag, deltaLoc] = getDeltaFunctions(f);
-    % Only delta functions can be plotted, ignore higher order delta functions:
-    deltaMag = deltaMag(1, :);
-    
-    data.xDeltas = deltaMag;
-    data.yDeltas = deltaLoc;
 end
 
 data.yLim = yLim;
