@@ -12,15 +12,13 @@ function [PA, P] = reduce(disc, blocks)
 
 % Setup
 r = sizeReduction(disc.source);
-dim = disc.dimension;
+space = max(disc.source.diffOrder, [], 1);
 
 % Outputs will be cells for convenience
-PA = cell(size(blocks, 1), 1);
-P = cell(size(blocks, 1), 1);
-
-for i = 1:size(blocks, 1)       % for each block row
-    M = cat(2, blocks{i, :});   % combine the blocks for the row into a matrix
-    [PA{i}, P{i}] = reduceOne(disc, M,dim - r(i), dim);  % do reduction
+PA = cell(1, size(blocks, 2));
+P = cell(1, size(blocks, 2));
+for i = 1:size(blocks, 2)       % for each block column
+    [PA{i}, P{i}] = reduceOne(disc, blocks(:,i), r(i), disc.dimension+space(i));  % do reduction
 end
 
 end
@@ -29,12 +27,12 @@ end
 function [PA, P] = reduceOne(disc, A, m, n)
 % Does reduction for one block row.
 
-if ( m == n )   % do nothing
-    PA = A;
-    P = eye(size(A, 1));
-    return
-end
-        
+% if ( m == 0 )   % do nothing
+%     PA = A;
+%     P = eye(size(A, 1));
+%     return
+% end
+   
 % Step by intervals in the domain.
 domain = disc.domain;
 numInt = disc.numIntervals;
@@ -43,7 +41,7 @@ P = cell(1, numInt);
 % Loop through intervals
 for k = 1:numInt
     disc.domain = domain(k:k + 1);
-    disc.dimension = m(k);
+    disc.dimension = n(k)-m;
     xOut = equationPoints(disc);  % projection result
     disc.dimension = n(k);
     [xIn,~,barywght] = functionPoints(disc);
@@ -53,6 +51,7 @@ end
 
 % Convert the projection matrices P into a blockdiagonal matrix.
 P = blkdiag(P{:});
-PA = P*A;
+PA = cellfun(@(A) P*A, A, 'uniformOutput', false);
+PA = cell2mat(PA);
 
 end

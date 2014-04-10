@@ -1,4 +1,4 @@
-function varargout = matrix(disc, dimension, domain)
+function varargout = matrix(disc, dimension, domain, space)
 %MATRIX    Convert operator to matrix using COLLOC discretization.
 %   MATRIX(DISC) uses the parameters in DISC to discretize DISC.source as a
 %   matrix using COLLOC. 
@@ -29,13 +29,17 @@ if ( (length(disc.domain) - 1) ~= length(disc.dimension) )
 end
 
 L = disc.source;
-if isa(L, 'chebmatrix')
-    A = instantiate(disc, L.blocks);
+if ( isa(L, 'chebmatrix') )
+    
+    if ( nargin < 4 )
+        space = max(L.diffOrder, [], 1);
+    end
+    A = instantiate(disc, L.blocks, space);
     
     % We want output on different format depending on whether the source L is a
     % LINOP or another object (most likely a CHEBMATRIX).
-    if isa(L, 'linop')
-        [out{1:4}] = applyConstraints(disc, A);
+    if ( isa(L, 'linop') )
+        [out{1:4}] = applyConstraints(disc, A, space);
     else
         out{1} = cell2mat(A);
     end

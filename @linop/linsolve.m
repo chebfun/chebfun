@@ -61,7 +61,7 @@ end
 
 % Use a given discretization, or create one?
 dimVals = prefs.dimensionValues;
-if isempty(disc)
+if ( isempty(disc) )
     disc = prefs.discretization(L);
     % Update the domain if new breakpoints are needed
     disc.domain = chebfun.mergeDomains(disc.domain, f.domain);
@@ -93,20 +93,19 @@ for dim = dimVals
     % Discretize the operator (incl. constraints/continuity), unless there is a
     % currently valid factorization at hand.
     if ( ~isFactored(disc) )
-        A = matrix(disc);
+        [A, P] = matrix(disc);
     else
         A = [];
     end
 
     % Discretize the RHS (incl. constraints/continuity):
     b = rhs(disc, f);
-
+    
     % Solve the linear system:
     [v, disc] = mldivide(disc, A, b);
-
+    
     % Convert the different components into cells
-    u = partition(disc, v);
-
+    u = partition(disc, P*v);
     % Test the happieness of the function pieces:
     [isDone, epsLevel] = testConvergence(disc, u(isFun));
 

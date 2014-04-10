@@ -8,11 +8,18 @@ function b = rhs(disc, f)
 %   The original function(s) are discretized, then reduced in dimension the same
 %   way as the operator. The constraints are prepended to the top of the vector.
 
-% Instantiate the RHS on the grid, then reduce
-row = instantiate(disc, f.blocks);
-row = reduce(disc, row);
+% % Instantiate the RHS on the grid, then reduce
+% row = instantiate(disc, f.blocks);
+% row = reduce(disc, row);
+% b = cell2mat(row);  % transform into matrix
 
-b = cell2mat(row);  % transform into matrix
+xOut = equationPoints(disc);
+for k = 1:numel(f.blocks)
+    if ( ~isnumeric(f.blocks{k}) )
+        f.blocks{k} = feval(f.blocks{k}, xOut);
+    end
+end
+b = cell2mat(f.blocks);       
 
 % Prepend the values of the constraints. First do the constraints, then add
 % continuity conditions.

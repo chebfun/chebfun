@@ -1,4 +1,4 @@
-function [M, P, B, A] = applyConstraints(disc, blocks)
+function [M, P, B, A] = applyConstraints(disc, blocks, space)
 %APPLYCONSTRAINTS Modify discrete operator to accommodate constraints.
 %   M = APPLYCONSTRAINTS(DISC, BLOCKS) uses a cell of matrix BLOCKS created by
 %   the discretization DISC in order to return a matrix that incorporates both
@@ -13,7 +13,7 @@ function [M, P, B, A] = applyConstraints(disc, blocks)
 %  See http://www.chebfun.org for Chebfun information.
 
 % Convert the blocks to the original, unconstrained matrix.
-A = cell2mat(blocks);
+A = (blocks);
 
 % Project rows down, and record the projection matrix as well.
 [rows, P] = disc.reduce(blocks);
@@ -31,13 +31,13 @@ B = [];
 if ( ~isempty(L.constraint) )
     % Instantiate a discretization of this constraint. 
     disc2 = discType(L.constraint.functional, dim, dom);
-    constr = matrix(disc2);
+    constr = matrix(disc2, dim, dom, space);
     B = [ constr; B ];
 end
 if ( ~isempty(L.continuity) )
     % Instantiate a discretization of this constraint. 
     disc2 = discType(L.continuity.functional, dim, dom);
-    constr = matrix(disc2);
+    constr = matrix(disc2, dim, dom, space);
     B = [ constr; B ];
 end
 
