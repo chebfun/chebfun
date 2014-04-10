@@ -75,8 +75,9 @@ h = f.*g;
 vals_h = feval(h, x);
 h_exact = @(x) (1-x).^b.*(x.^5).*exp(x).*sin(5*x);
 vals_exact = feval(h_exact, x);
-err = vals_h - vals_exact;
-pass(7) = all( abs(err) < 1e2*max(get(f, 'epslevel'), get(g, 'epslevel')) );
+err = norm(vals_h - vals_exact, inf);
+tol = 10*norm(vals_h, inf)*max(get(f, 'epslevel'), get(g, 'epslevel'));
+pass(7) = err < tol;
 
 % a combination of fractional pole and fractional root
 f = singfun(@(x) (1+x).^b.*sin(x), [b 0], {'sing', 'none'}, [], [], pref);
@@ -106,7 +107,8 @@ h = f.*g;
 vals_h = feval(h, x);
 h_exact = @(x) exp(x).*x.^3.*sin(2*x).*exp(1-x).^(3/2);
 vals_exact = feval(h_exact, x);
-err = vals_h - vals_exact;
-pass(10) = all( abs(err) < 1e2*max(get(f, 'epslevel'), get(g, 'epslevel')) );
+err = norm(vals_h - vals_exact, inf);
+tol = 1e3*norm(vals_h, inf)*max(get(f, 'epslevel'), get(g, 'epslevel'));
+pass(10) = err < tol;
 
 end

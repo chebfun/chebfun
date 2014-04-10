@@ -42,6 +42,11 @@ elseif ( isa(c, 'double') )         % CHEBTECH * double
         vscaleNew = max(abs(f.values), [], 1);
         f.epslevel = ((f.epslevel.*f.vscale)*abs(c))./vscaleNew;
         f.vscale = vscaleNew;
+
+        % Assume condition number 1.
+%         glob_acc = max(f.epslevel.*f.vscale);
+%         f.vscale = max(abs(f.values), [], 1);
+%         f.epslevel = glob_acc./f.vscale;
     end
     
     % If the vertical scale is zero, set the CHEBTECH to zero:

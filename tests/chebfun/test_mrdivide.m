@@ -56,8 +56,9 @@ pass(6) = norm(err, inf) < 1e4*vscale(g)*epslevel(g);
 % [1 x INF] * [INF x 1] = scalar => scalar/column SINGFUN:
 f = chebfun(@(x)(sin(100*x).^2+1)./(1-x).^0.4, 'exps', [0 -0.4], 'splitting', 'on');
 g = 5/f;
-err = g*f - 5;
-pass(7) = abs(err) < vscale(g)*epslevel(g);
+err = abs(g*f - 5);
+tol = 100*vscale(g)*epslevel(g);
+pass(7) = abs(err) < tol;
 
 % SCALAR * [1 x INF] = [1 x INF] => row SINGFUN/row SINGFUN:
 f = chebfun(@(x)(sin(30*x).^2+1)./(1-x).^0.3, 'exps', [0 -0.3], 'splitting', 'on');
@@ -66,7 +67,8 @@ g = chebfun(@(x)9*(sin(30*x).^2+1)./(1-x).^0.3, 'exps', [0 -0.3], 'splitting', '
 g = g.';
 h = g/f;
 err = h - 9;
-pass(8) = abs(err) < 3*vscale(f)*epslevel(f);
+tol = 100*vscale(f)*epslevel(f);
+pass(8) = abs(err) < tol;
 
 %% Test for functions defined on unbounded domain:
 

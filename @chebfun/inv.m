@@ -60,7 +60,7 @@ end
 % Compute the inverse:
 gDomain = minandmax(f).';
 if ( opts.algorithm == 1 )     % Algorithm based on ROOTS.
-    g = chebfun(@(x) fInverseRoots(f, x), gDomain, pref);
+    g = chebfun(@(x) fInverseRoots(f, x, tol), gDomain, pref);
 elseif ( opts.algorithm == 2 ) % Newton iteration algorithm.
     g = chebfun(@(x) fInverseNewton(f, fp, x, tol), gDomain, pref);
 end
@@ -179,8 +179,8 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function y = fInverseRoots(f, x)
-%FINVERSEROOTS(F, X)   Compute F^{-1}(X) using CHEBFUN.ROOTS().
+function y = fInverseRoots(f, x, tol)
+%FINVERSEROOTS(F, X, TOL)   Compute F^{-1}(X) using CHEBFUN.ROOTS().
 
 y = zeros(length(x), 1);
 % Vectorise:
@@ -228,7 +228,7 @@ if ( length(x) >= length(f) )
         y(j,1) = t;
     end
 else
-    y = fInverseRoots(f, x);
+    y = fInverseRoots(f, x, tol);
 end
 
 end

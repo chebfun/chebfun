@@ -70,10 +70,13 @@ end
 %%
 % Spot-check the results for a given BNDFUN.
 function result = test_spotcheck_min(fun_op, dom, exact_min, pref)
+
 f = bndfun(fun_op, dom, [], [], pref);
 [y, x] = min(f);
 fx = fun_op(x);
-tol = 50*get(f, 'vscale').*get(f, 'epslevel');
-result = ((abs(y - exact_min) < tol) && ... 
-          (abs(fx - exact_min) < tol));
+err1 = abs(y - exact_min);
+err2 = abs(fx - exact_min);
+tol = 2e3*get(f, 'vscale')*get(f, 'epslevel');
+result = (err1 < tol) && (err2 < tol);
+
 end

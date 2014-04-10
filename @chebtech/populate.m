@@ -94,14 +94,16 @@ if ( isnumeric(op) || iscell(op) )
     % We're always happy if given discrete data:
     f.ishappy = true;
     
-    % TODO: Is this the correct vscale?
-    f.epslevel = max(eps(max(f.vscale)) + 0*f.vscale, eps);
+    % Scale the epslevel relative to the largest column:
+    vscale = f.vscale;
+    f.epslevel = 10*eps(max(f.vscale));
+    vscale(vscale <= f.epslevel) = 1;
+    f.epslevel = f.epslevel./vscale;
 
     return
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% Adaptive construction. %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 % Initialise empty values to pass to refine:
 f.values = [];
 
@@ -119,7 +121,7 @@ while ( 1 )
     % Update vertical scale: (Only include sampled finite values)
     valuesTemp = f.values;
     valuesTemp(~isfinite(f.values)) = 0;
-    vscale = max(vscale, max(abs(valuesTemp), [], 1));
+    vscale = max(vscale, max(abs(valuesTemp(:))));
     
     % Extrapolate out NaNs:
     [f.values, maskNaN, maskInf] = extrapolate(f);
@@ -150,15 +152,19 @@ end
 vscaleOut = max(abs(f.values), [], 1);
 % Update vertical scale one last time:
 vscaleGlobal = max(vscale, vscaleOut);
-% Adjust the epslevel appropriately:
-if ( any(vscaleOut > 0) )
-    epslevel = epslevel*vscaleGlobal./vscaleOut;
-else 
-    % Deal with zero vscale:
-    epslevel = epslevel./(1+vscaleOut);
-end
+
 % Output the 'true' vscale (i.e., the max of the stored values):
 vscale = vscaleOut;
+
+% Adjust the epslevel appropriately:
+% if ( any(vscaleOut > 0) )
+%     epslevel = epslevel*vscaleGlobal./vscaleOut;
+% else 
+%     % Deal with zero vscale:
+%     epslevel = epslevel./(1+vscaleOut);
+% end
+vscaleOut(vscaleOut < epslevel) = 1;
+epslevel = epslevel*vscaleGlobal./vscaleOut;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% Assign to CHEBTECH object. %%%%%%%%%%%%%%%%%%%%%%%%%%
 f.coeffs = coeffs;

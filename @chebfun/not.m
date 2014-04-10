@@ -9,13 +9,18 @@ function f = not(f)
 % Add breaks at the roots (since these will take the value 1 in the output).
 f = addBreaksAtRoots(f);
 
+% Tolerance:
+vs = vscale(f);
+el = epslevel(f);
+vs(vs < el) = 1;
+tol = el.*vs;
+
 % Loop over the FUNs:
 for k = 1:numel(f.funs)
     f.funs{k} = not(f.funs{k});
 end
 
 % Impulses:
-tol = vscale(f)*epslevel(f);
 f.impulses = abs(f.impulses(:,:,1)) < tol;
 
 end

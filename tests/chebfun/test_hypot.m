@@ -4,6 +4,8 @@ if ( nargin == 0 )
     pref = chebpref();
 end
 
+% TODO: This test is meaningless
+
 % Test the exmaple given in the file.
 f = chebfun(@(x) 3*[1e300*x 1e-300*x], pref);
 g = chebfun(@(x) 4*[1e300*x 1e-300*x], pref);
