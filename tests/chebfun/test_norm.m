@@ -157,7 +157,7 @@ f = chebfun(op, dom);
 p = norm(f);
 pExact = 0.860548225417173;  % This is obtained using Matlab symbolic toolbox.
 err = p - pExact;
-pass(27) = abs(err) < 1e6*epslevel(f)*vscale(f);
+pass(27) = abs(err) < 1e7*epslevel(f)*vscale(f);
 
 % 1-norm:
 op = @(x) (1-exp(-x))./(x.^2);

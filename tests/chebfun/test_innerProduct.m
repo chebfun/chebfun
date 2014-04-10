@@ -42,7 +42,7 @@ g = chebfun(opg, dom);
 I = innerProduct(f, g);
 IExact = (sqrt(pi)*(4 - sqrt(2)))/2;
 err = abs(I - IExact);
-pass(2) = err < 2e6*max(get(f,'epslevel')*get(f,'vscale'), ...
+pass(2) = err < 2e7*max(get(f,'epslevel')*get(f,'vscale'), ...
     get(g,'epslevel')*get(g,'vscale'));
 
 %% Functions on [a inf]:
@@ -59,7 +59,7 @@ g = chebfun(opg, dom);
 I = innerProduct(f, g);
 IExact = 2*exp(-1);
 err = abs(I - IExact);
-pass(3) = err < 1e8*max(get(f,'epslevel')*get(f,'vscale'), ...
+pass(3) = err < 1e9*max(get(f,'epslevel')*get(f,'vscale'), ...
     get(g,'epslevel')*get(g,'vscale'));
 
 %% Functions on [-inf b]:

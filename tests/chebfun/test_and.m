@@ -98,9 +98,9 @@ x = diff(domCheck) * rand(100, 1) + domCheck(1);
 
 op = @(x) 1./x;
 f = chebfun(op, dom);
-g = chebfun(0, dom);
+g = chebfun(@(x) 0*x, dom);
 h = f & g;
 hVals = feval(h, x);
-pass(8) = ~any( hVals );
+pass(12) = ~any( hVals );
 
 end

@@ -72,7 +72,7 @@ f = chebfun(op, dom, 'exps', [0 -1]);
 pass(13) = ~iszero(f);
 
 % Zero function:
-f = chebfun(0, dom); 
+f = chebfun(@(x) 0*x, dom); 
 pass(14) = iszero(f);
 
 % [TODO]: Add these once SUBSREF is implemented.

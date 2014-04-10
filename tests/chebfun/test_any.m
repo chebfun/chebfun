@@ -96,7 +96,7 @@ op = @(x) 1./x.^2;
 f = chebfun(op, dom, 'exps', [0 -2]);
 pass(16) = any(f);
 
-g = chebfun(0, dom);
+g = chebfun(@(x) 0*x, dom);
 pass(17) = ~any(g);
 
 end
