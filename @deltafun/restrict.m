@@ -52,7 +52,7 @@ for k = 1:numFuns
     deltaLoc = f.deltaLoc(idx);
     deltaMag = f.deltaMag(:,idx);
     
-    % If there are delta functions at the break point, divide them
+    % If there are delta functions at a break point, divide them
     % by two. Each adjacent fun will get half the contribution. The first 
     % break point of the first fun and the last break point of the last 
     % fun do not get divided by half.
