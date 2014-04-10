@@ -104,8 +104,12 @@ for dim = dimVals
     % Solve the linear system:
     [v, disc] = mldivide(disc, A, b);
     
+    if ( isa(disc, 'colloc') )
+        v = P*v;
+    end
+    
     % Convert the different components into cells
-    u = partition(disc, P*v);
+    u = partition(disc, v);
     % Test the happieness of the function pieces:
     [isDone, epsLevel] = testConvergence(disc, u(isFun));
 

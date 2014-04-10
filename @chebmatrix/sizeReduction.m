@@ -23,6 +23,9 @@ function [reduce,d,dRow,dVar] = sizeReduction(L)
 d = L.diffOrder;
 dRow = max(d,[],2);
 dVar = max(d,[],1);
+reduce = dVar;
+
+return
 
 dRow(~dRow) = NaN;
 dVar(~dVar) = NaN;
@@ -40,26 +43,26 @@ totalVar = sum( dVar(~isnan(dVar)) );
 % if ( totalRow == totalVar )
 %     reduce = dRow;
 
-if ( totalVar == numBC )
+% if ( totalVar == numBC )
     reduce = dVar; % Nick's Choice
-else
-    % The only reasonable thing is to spread out the D.O. reductions
-    % as evenly as possible among the rows. 
-    
-    % TODO: Update for Nick's choice.
-    reduce = NaN(1,m);
-    isOp = ~isnan(dRow);
-    numOp = sum(isOp);
-    k = floor( totalVar / numOp );
-    reduce(isOp) = k;  % even distribution of order
-    i = rem(totalVar, numOp);  % leftover to be made up
-    if i > 0
-        % Increment the first i rows
-        incr = find(isOp,i);
-        reduce(incr) = reduce(incr) + 1;
-    end
-end
-
-reduce(isnan(reduce)) = 0;
-
-end
+% else
+%     % The only reasonable thing is to spread out the D.O. reductions
+%     % as evenly as possible among the rows. 
+%     
+%     % TODO: Update for Nick's choice.
+%     reduce = NaN(1,m);
+%     isOp = ~isnan(dRow);
+%     numOp = sum(isOp);
+%     k = floor( totalVar / numOp );
+%     reduce(isOp) = k;  % even distribution of order
+%     i = rem(totalVar, numOp);  % leftover to be made up
+%     if i > 0
+%         % Increment the first i rows
+%         incr = find(isOp,i);
+%         reduce(incr) = reduce(incr) + 1;
+%     end
+% end
+% 
+% reduce(isnan(reduce)) = 0;
+% 
+% end

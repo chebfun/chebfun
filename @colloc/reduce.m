@@ -27,12 +27,12 @@ end
 function [PA, P] = reduceOne(disc, A, m, n)
 % Does reduction for one block row.
 
-% if ( m == 0 )   % do nothing
-%     PA = A;
-%     P = eye(size(A, 1));
+% if ( m == 0 && size(A{1},2) < sum(n) )   % do nothing
+%     PA = cell2mat(A);
+%     P = eye(size(A, 2));
 %     return
 % end
-   
+
 % Step by intervals in the domain.
 domain = disc.domain;
 numInt = disc.numIntervals;
@@ -51,7 +51,19 @@ end
 
 % Convert the projection matrices P into a blockdiagonal matrix.
 P = blkdiag(P{:});
-PA = cellfun(@(A) P*A, A, 'uniformOutput', false);
+PA = cell(size(A));
+for j = 1:numel(A)
+    if ( size(P, 2) == size(A{j}, 1) )
+        PA{j} = P*A{j};
+    else
+        PA{j} = A{j};
+    end
+end
+% PA = cellfun(@(A) P*A, A, 'uniformOutput', false);
 PA = cell2mat(PA);
 
+if ( m == 0 && size(A{1},2) < sum(n) )
+    % We don't want to project scalars.
+    P = eye(size(A, 2));
+end
 end

@@ -15,6 +15,10 @@ function [M, P, B, A] = applyConstraints(disc, blocks, space)
 % Convert the blocks to the original, unconstrained matrix.
 A = (blocks);
 
+if ( nargin < 3 )
+    space = {};
+end
+
 % Project rows down, and record the projection matrix as well.
 [rows, P] = disc.reduce(blocks);
 M = cell2mat(rows);
@@ -31,15 +35,16 @@ B = [];
 if ( ~isempty(L.constraint) )
     % Instantiate a discretization of this constraint. 
     disc2 = discType(L.constraint.functional, dim, dom);
-    constr = matrix(disc2, dim, dom, space);
+    constr = matrix(disc2, dim, dom, space{:});
     B = [ constr; B ];
 end
 if ( ~isempty(L.continuity) )
     % Instantiate a discretization of this constraint. 
     disc2 = discType(L.continuity.functional, dim, dom);
-    constr = matrix(disc2, dim, dom, space);
+    constr = matrix(disc2, dim, dom, space{:});
     B = [ constr; B ];
 end
+% B = cell2mat(B);
 
 % This should restore squareness to the final matrix.
 M = [ B; M ];

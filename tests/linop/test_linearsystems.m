@@ -4,7 +4,7 @@ function pass = test_linearsystems
 tol = 1e-8; 
 
 %% Building blocks
-dom = [-2 2];
+dom = [-1 1];
 I = operatorBlock.eye(dom);
 D = operatorBlock.diff(dom);
 Z = operatorBlock.zeros(dom);
@@ -25,7 +25,18 @@ B4 = [Er,-El,2];
 L = addbc(L,B1,0);
 L = addbc(L,B2,1);
 L = addbc(L,B3,0);
-%L = addbc(L,B4,0);
+% L = addbc(L,B4,0);
+
+% %% Solve a linear system 
+% L = [ D^2, -I; C D] ;
+% f = [(x-1); chebfun(0,dom)];
+% B1 = [El, -Er];
+% B2 = [functionalBlock.sum(dom), El];
+% B3 = [Er*D, functionalBlock.zero(dom)];
+% B4 = [Er,-El,2];
+% L = addbc(L,B1,0);
+% L = addbc(L,B2,1);
+% %L = addbc(L,B4,0);
 
 %%
 
@@ -60,8 +71,8 @@ for k = 1:6
     %%
     % check the BCs
     v = w{2};  u = w{1};
-    err(k,4) = abs( u(-2)-v(2) );
-    err(k,5) = abs( sum(u)+v(-2) - 1);
+    err(k,4) = abs( u(dom(1))-v(dom(2)) );
+    err(k,5) = abs( sum(u)+v(dom(1)) - 1);
     err(k,6) = abs( feval(diff(u),dom(end)) );
     
     %%
