@@ -1,5 +1,5 @@
 function out = feval(f,x)
-%FEVAL   Evaluate the specfied function.
+%FEVAL   Evaluate the specified function.
 %   Y = FEVAL(F, X) evaluates the UNBNDFUN F at the points X. 
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 

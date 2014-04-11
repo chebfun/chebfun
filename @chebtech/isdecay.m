@@ -28,7 +28,7 @@ end
 %% Left endpoint:
 
 if ( abs(get(f, 'lval')) < tol )
-    % Extract a sinle boundary root at the left end points:
+    % Extract a single boundary root at the left end points:
     g = extractBoundaryRoots(f, [1 ; 0]);
     
     % Check decaying speed:
@@ -40,7 +40,7 @@ end
 %% Right endpoint:
 
 if ( abs(get(f, 'rval')) < tol )
-    % Extract a sinle boundary root at the left end points:
+    % Extract a single boundary root at the left end points:
     g = extractBoundaryRoots(f, [0 ; 1]);
     
     % Check decaying speed:
