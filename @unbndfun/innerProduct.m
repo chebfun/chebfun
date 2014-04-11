@@ -38,7 +38,7 @@ if ( isempty(f) || isempty(g) )
     return
 end
 
-% If any irrecognizable input, throw an error message.
+% If any unrecognizable input, throw an error message.
 if ( ~isa(f, 'unbndfun') || ~isa(g, 'unbndfun') )
     error('CHEBFUN:UNBNDFUN:innerProduct:input', ...
         'innerProduct() only operates on two UNBNDFUN objects.');

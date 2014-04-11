@@ -26,6 +26,9 @@ classdef unbndfun < fun
 %
 % See also FUN, CHEBPREF, ONEFUN.
 
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org for Chebfun information.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % UNBNDFUN Class Description:
 %
