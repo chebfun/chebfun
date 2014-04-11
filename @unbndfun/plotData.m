@@ -51,19 +51,20 @@ if ( nargin == 1 || isempty(g) )
         end
         
     else
-        % If F is finite, figure out where the maxinum of ABS(F) takes place:
-        [ignored, idx] = max(abs(get(f, 'values')));
-        pts = get(f, 'points');
-        maxLoc = f.mapping.for(pts(idx));
+        % [TODO]: We need to find a better way to determine the center and the 
+        % width of the window.
+        
+        % Center the window at the origin.
+        center = 0;
         
         % If the left endpoint is -Inf:
         if ( isinf(data.xLim(1)) )
-            data.xLim(1) = maxLoc - window;
+            data.xLim(1) = center - window;
         end
         
         % If the right endpoint is Inf:
         if ( isinf(data.xLim(2)) )
-            data.xLim(2) = maxLoc + window;
+            data.xLim(2) = center + window;
         end
         
     end
