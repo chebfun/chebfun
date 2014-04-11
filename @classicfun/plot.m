@@ -65,6 +65,11 @@ else
 end
 
 %%
+% Classicfun has no delta functions:
+data.xDeltas = [];
+data.yDeltas = [];
+
+%%
 % Plot the curve:
 if ( isreal(f) )
     h1 = plot(data.xLine, data.yLine, varargin{:}); 

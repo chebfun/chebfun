@@ -23,7 +23,7 @@ function data = plotData(f, g, h)
 
 % Initialise the output structure:
 data = struct('xLine', [], 'yLine', [], 'xPoints', [], 'yPoints', [], ...
-    'xJumps', [], 'yJumps', [], 'yLim', []);
+    'xJumps', [], 'yJumps', [], 'xDeltas', [], 'yDeltas', [], 'yLim', []);
 
 yLim = [inf, -inf];
 
@@ -58,7 +58,7 @@ if ( nargin == 1 )
             dataNew.yPoints = imag(dataNew.yPoints);
             dataNew.xJumps = real(dataNew.yJumps);
             dataNew.yJumps = imag(dataNew.yJumps);
-
+            
         end
         
         % Insert a NaN (or array of NaNs) and append new data to array:
@@ -71,6 +71,9 @@ if ( nargin == 1 )
         data.yPoints = [data.yPoints ; yNaN ; dataNew.yPoints];
         data.xJumps = [data.xJumps ; dataNew.xJumps];
         data.yJumps = [data.yJumps ; dataNew.yJumps];
+        data.xDeltas = [data.xDeltas ; dataNew.xDeltas];
+        data.yDeltas = [data.yDeltas ; dataNew.yDeltas];
+        
 
     end
 

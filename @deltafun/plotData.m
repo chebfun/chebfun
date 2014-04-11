@@ -13,38 +13,32 @@ if ( nargin == 1 )
     g = [];
 end
 
-% Get plot data from the smooth parth
+% Get plot data from the funParth
 if ( isempty(g) )
     data = plotData(f.funPart);
 else
     data = plotData(f.funPart, g.funPart);
 end
 
-% [TODO]: This is commented out since chebfun plot will figure out about
-% deltafunctions
-%
-% % Append vertical lines for deltafunctions
-% if ( ~isempty(f.impulses) )
-%     % We can only plot the delta functions, not their derivatives:
-%     deltaMag = f.impulses(1, :).';
-%     deltaLoc = f.deltaLoc.';
-%     
-%     % Make vertical line data:
-%     deltaY = zeros(2*length(deltaMag), 1);
-%     deltaY(1:2:end) = zeros(length(deltaMag), 1);
-%     deltaY(2:2:end) = deltaMag;
-%     deltaX = zeros(2*length(deltaMag), 1);
-%     deltaX(1:2:end) = deltaLoc;
-%     deltaX(2:2:end) = deltaLoc;
-%     
-%     % Append it to existing line data:
-%     data.xLine = [data.xLine; deltaX];
-%     data.yLine = [data.yLine; deltaY];
-%     
-%     % Sort the data
-%     [data.xLine, index] = sort(data.xLine); 
-%     data.yLine = data.yLine(index);
-%     
-% end
+% Handle delta functions (Derivatives of Delta-functions are not plotted):
+if ( ~isempty(f.deltaLoc) )
+    % Remove higher derivatives of delta-functions from f:
+    f.deltaMag = f.deltaMag(1, :);
+    f = simplifyDeltas(f);
+    deltaLoc = f.deltaLoc;
+    deltaMag = f.deltaMag;
+
+    data.xDeltas = zeros(3*length(deltaLoc), 1);
+    data.xDeltas(1:3:end) = deltaLoc;
+    data.xDeltas(2:3:end) = deltaLoc;
+    data.xDeltas(3:3:end) = NaN;
+    
+    data.yDeltas = zeros(3*length(deltaLoc), 1);
+    data.yDeltas(2:3:end) = deltaMag(1, :);
+    data.yDeltas(3:3:end) = NaN;
+else
+    data.xDelta = [];
+    data.yDelta = [];
+end
     
 end
