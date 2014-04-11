@@ -28,9 +28,8 @@ if ( nargin == 1 || isempty(g) )
     if ( isinf(f) )
         
         % If F is infinite, figure out where the mininum of ABS(F) takes place:
-        [ignored, idx] = min(abs(get(f, 'values')));
-        pts = get(f, 'points');
-        minLoc = f.mapping.for(pts(idx));
+        [ignored, idx] = min(abs(data.yLine));
+        minLoc = f.mapping.for(data.xLine(idx));
         
         % If the left endpoint is -Inf:
         if ( isinf(data.xLim(1)) )
