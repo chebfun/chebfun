@@ -10,6 +10,11 @@ function out = innerProduct(f, g)
 %   The BNDFUN objects F and G are assumed to have the same domain. The method
 %   gives no warning if their domains don't agree, but the output of the method
 %   will be meaningless.
+%
+% See also SUM.
+
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with empty case:
 if ( isempty(f) || isempty(g) )

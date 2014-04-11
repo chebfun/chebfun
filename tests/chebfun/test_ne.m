@@ -18,13 +18,13 @@ pass(1) = isempty(f ~= g)  && isempty(g ~= f);
 % Check a few simple examples.
 g = chebfun(@(x) 0*x + sqrt(2)/2, pref);
 h = f ~= g;
-ind = find(h.impulses == 0);
+ind = (h.impulses == 0);
 pass(2) = abs(h.domain(ind) - pi/4) < 10*vscale(h)*epslevel(h);
 
 f = chebfun(@(x) exp(x), pref);
 g = chebfun(@(x) (exp(0.5) - exp(-0.5))*(x + 0.5) + exp(-0.5), pref);
 h = f ~= g;
-ind = find(h.impulses == 0);
+ind = (h.impulses == 0);
 pass(3) = norm(h.domain(ind) - [-0.5 0.5], inf) < 10*vscale(h)*epslevel(h);
 
 h = f ~= f;
@@ -37,7 +37,7 @@ pass(5) = (numel(h.funs) == 1) && all(feval(h, x) == 1);
 f = chebfun(@(x) exp(x), [-1 -0.5 0 0.5 1], pref);
 g = chebfun(@(x) (exp(0.5) - exp(-0.5))*(x + 0.5) + exp(-0.5), pref);
 h = f ~= g;
-ind = find(h.impulses == 0);
+ind = (h.impulses == 0);
 pass(6) = norm(h.domain(ind) - [-0.5 0.5], inf) < 10*vscale(h)*epslevel(h);
 
 % Check error conditions.
@@ -58,10 +58,29 @@ catch ME
     pass(8) = strcmp(ME.identifier, 'CHEBFUN:ne:array');
 end
 
-%% Test on SINGFUN:
+%% Test for singular function:
 
 f = chebfun(@(x) -sin(x)./(x+1), 'exps', [-1 0]);
 g = ( f ~= f );
 pass(9) = ( g.impulses(2) == 0 && ~any(feval(g, x)) );
+
+%% Test for function defined on unbounded domain:
+
+% Functions on [-inf inf]:
+
+% Set the domain:
+dom = [-Inf Inf];
+domCheck = [-1e2 1e2];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+% Blow-up function:
+op = @(x) x.^2.*(1-exp(-x.^2));
+pref.singPrefs.exponents = [2 2];
+f = chebfun(op, dom, pref); 
+g = ( f ~= f );
+gVals = feval(g, x);
+pass(10) = ~any(gVals);
 
 end

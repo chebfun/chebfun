@@ -46,6 +46,24 @@ pass(5) = (norm(f5.domain - [-1 -0.2 0.1 1], inf) < 10*eps) && ...
     (norm(feval(f5, xx5) - feval(F5, xx5), inf) < ...
     tol*max(f5.epslevel.*f5.vscale));
 
+%% Test for function defined on unbounded domain:
+
+% Function defined on [0 Inf]:
+
+% Specify the domain: 
+dom = [0 Inf];
+domCheck = [0 100];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+op = @(x) 0.75+sin(10*x)./exp(x);
+f = chebfun(op, dom, 'splitting', 'on');
+fVals = feval(f, x);
+fExact = op(x);
+err = fVals - fExact;
+pass(6) = norm(err, inf) < 1e1*epslevel(f)*vscale(f);
+
 % % Test X*LOG(X) on [0 1]:
 % F4 = @(x) x.*log(x);
 % f4 = chebfun(F4, [0, 1], pref, 'splitting', 'on', 'blowup', 'off');

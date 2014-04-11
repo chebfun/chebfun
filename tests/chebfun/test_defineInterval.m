@@ -99,4 +99,42 @@ check(2) = ( norm(feval(h, -0.6) - op4(-0.6)) < 1e1*epslevel(g)*get(g, 'vscale')
 check(3) = ( norm(feval(h, -0.25) - 1) < 10*epslevel(f) );
 
 pass(16) = all( check );
+
+%% Test for function defined on unbounded domain:
+
+% define the domain:
+dom = [-2 0 Inf];
+domCheck = [-2 -1 1 100];
+
+% Generate a few random points to use as test values:
+x1 = diff(domCheck(1:2)) * rand(100, 1) + domCheck(1);
+x2 = diff(domCheck(3:4)) * rand(100, 1) + domCheck(3);
+x3 = diff(domCheck(2:3)) * rand(100, 1) + domCheck(2);
+
+op1 = @(x) exp(x) - x;
+op2 = @(x) 0.75+sin(10*x)./exp(x);
+op3 = @(x) cos(x).^2;
+op = {op1, op2};
+
+f = chebfun(op, dom);
+g = chebfun(op3, [-1, 1]);
+h = defineInterval(f, [-1 1], g);
+hVals1 = feval(h, x1);
+hVals2 = feval(h, x2);
+hVals3 = feval(h, x3);
+hExact1 = op1(x1);
+hExact2 = op2(x2);
+hExact3 = op3(x3);
+err1 = hVals1 - hExact1;
+err2 = hVals2 - hExact2;
+err3 = hVals3 - hExact3;
+
+% check values:
+check = zeros(1,4);
+check(1) = all(h.domain == [-2 -1 1 Inf]);
+check(2) = ( norm(err1, inf) < 1e1*epslevel(h)*vscale(h) );
+check(3) = ( norm(err2, inf) < 1e1*epslevel(h)*vscale(h) );
+check(4) = ( norm(err3, inf) < 1e1*epslevel(h)*vscale(h) );
+
+pass(17) = all( check );
 end

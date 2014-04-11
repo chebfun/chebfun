@@ -91,4 +91,27 @@ vals_exact = feval(op, x);
 err = vals_h - vals_exact;
 pass(11) = ( norm(err, inf) < 1e1*epslevel(h)*norm(vals_exact, inf) );
 
+%% Test on function defined on unbounded domain:
+
+% Functions on [-inf b]:
+
+% Set the domain:
+dom = [-Inf -3*pi];
+domCheck = [-1e6 -3*pi];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+% Array-valued function:
+opf = @(x) x.*exp(x);
+opg = @(x) (1-exp(x))./x;
+oph = @(x) x.*exp(x) + 1i*(1-exp(x))./x;
+f = chebfun(opf, dom);
+g = chebfun(opg, dom);
+h = complex(f, g);
+hVals = feval(h, x);
+hExact = oph(x);
+err = hVals - hExact;
+pass(12) = norm(err, inf) < epslevel(h).*vscale(h);
+
 end

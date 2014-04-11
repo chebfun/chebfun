@@ -44,5 +44,32 @@ g = chebfun(@(x) sin(100*x).*(x-dom(1)).^pow, dom, 'exps', [pow 0], ...
     'splitting', 'off');
 pass(8) = ~isequal(f, g);
 
+%% Tests for functions defined on unbounded domain:
+
+% Functions on [-inf inf]:
+
+% Set the domain:
+dom = [-Inf Inf];
+
+op = @(x) (1-exp(-x.^2))./x;
+f = chebfun(op, dom);
+pass(7) = isequal(f, f);
+
+% Blow-up function:
+op = @(x) x.^2.*(1-exp(-x.^2));
+g = chebfun(op, dom, 'exps', [2 2]); 
+pass(8) = ~isequal(f, g);
+pass(9) = ~isequal(g, f);
+
+%% Functions on [-inf b]:
+
+% Set the domain:
+dom = [-Inf -3*pi];
+
+% Array-valued function:
+op = @(x) [exp(x) x.*exp(x) (1-exp(x))./x];
+f = chebfun(op, dom);
+pass(10) = isequal(f, f);
+
 end
 

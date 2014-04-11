@@ -100,5 +100,44 @@ r = roots(f);
 r_exact = (((-19:66)+1/2)*pi/30).';
 err = r - r_exact;
 pass(8) = (norm(err, inf) < 5*get(f, 'vscale')*get(f, 'epslevel'));
+
+%% Tests for functions defined on unbounded domain:
+
+% Functions on [-inf inf]:
+
+% Set the domain:
+dom = [-Inf Inf];
+
+op = @(x) (1-exp(-x.^2))./x;
+f = chebfun(op, dom);
+r = roots(f);
+r = r( isfinite(r) );
+rExact = 0;
+err = r - rExact;
+pass(9) = norm(err, inf) < 1e1*epslevel(f)*vscale(f);
+
+% Blow-up function:
+op = @(x) x.^2.*(1-exp(-x.^2))-2;
+pref.singPrefs.exponents = [2 2];
+f = chebfun(op, dom, pref); 
+r = roots(f);
+rExact = [-1.4962104914103104707 ; 1.4962104914103104707];
+err = r - rExact;
+pass(10) = norm(err, inf) < epslevel(f)*vscale(f);
+
+% Functions on [a inf]:
+dom = [0 Inf];
+
+op = @(x) 0.15+sin(10*x)./exp(x);
+f = chebfun(op, dom);
+r = roots(f);
+rExact = [0.33529141416564289113; 
+          0.60061694515161002799;
+          0.98375750309184861332;
+          1.2042605667187311146;
+          1.6619482204330474390;
+          1.7760894757659030239];
+err = r - rExact;
+pass(11) = norm(err, inf) < epslevel(f)*vscale(f);
     
 end

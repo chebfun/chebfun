@@ -59,7 +59,7 @@ catch ME
     pass(7) = strcmp(ME.identifier, 'CHEBFUN:and:doms');
 end
 
-%% Test on SINGFUN:
+%% Test for singular functions:
 
 % define the domain:
 dom = [-2 7];
@@ -86,5 +86,21 @@ fval = feval(h2, x);
 err = fval - 1;
 pass(10) = ~any( err );
 pass(11) = ~any( h2(r) );
+
+%% Test for function defined on unbounded domain:
+
+% Set the domain:
+dom = [1 Inf];
+domCheck = [1 1e2];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+op = @(x) 1./x;
+f = chebfun(op, dom);
+g = chebfun(@(x) 0*x, dom);
+h = f & g;
+hVals = feval(h, x);
+pass(12) = ~any( hVals );
 
 end

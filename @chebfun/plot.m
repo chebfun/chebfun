@@ -74,14 +74,16 @@ end
 % Store the hold state of the current axis:
 holdState = ishold;
 
-% Store the current Y-limits:
+% Store the current X and Y-limits:
 if ( holdState )
+    xLimCurrent = get(gca, 'xlim');
     yLimCurrent = get(gca, 'ylim');
 end
 
 % Initialize flags:
 isComplex = false;
 intervalIsSet = false;
+xLim = [inf, -inf];
 yLim = [inf, -inf];
 
 % Initialise storage:
@@ -204,7 +206,8 @@ while ( ~isempty(varargin) )
     lv = length(varargin);
     % Find the location of the next CHEBFUN in the input array:
     while ( (pos < lv) && ~isa(varargin{pos+1}, 'chebfun') )
-        if ( pos+1 < lv && isnumeric(varargin{pos+1}) && isnumeric(varargin{pos+2}) )
+        if ( pos+1 < lv && isnumeric(varargin{pos+1}) && ...
+                isnumeric(varargin{pos+2}) )
             break
         end
         pos = pos + 1;
@@ -220,14 +223,10 @@ while ( ~isempty(varargin) )
         end
     end
     
-    for k = 1:numel(newData)
-        yLim = [min(newData(k).yLim(1), yLim(1)), max(newData(k).yLim(2), yLim(2))];
-    end
-
     % Loop over the columns:
     for k = 1:numel(newData)
-        % TODO: Remove this?
-        % 'INTERVAL' stuff:
+        
+        % 'INTERVAL' stuff: (TODO: Remove this?)
         if ( ~isComplex && intervalIsSet && (size(newData(k).xLine, 2) == 1) )
             ind = newData(k).xLine < interval(1) | ...
                 newData(k).xLine > interval(end);
@@ -242,6 +241,12 @@ while ( ~isempty(varargin) )
             newData(k).xJumps(ind) = [];
             newData(k).yJumps(ind,:) = [];
         end
+        
+        % Update axis limits:
+        xLim = [min(newData(k).xLim(1), xLim(1)), ...
+            max(newData(k).xLim(2), xLim(2))];
+        yLim = [min(newData(k).yLim(1), yLim(1)), ...
+            max(newData(k).yLim(2), yLim(2))];
 
         % Append new data:
         lineData = [lineData, newData(k).xLine, newData(k).yLine, styleData];
@@ -278,6 +283,17 @@ if ( isempty(jumpStyle) )
     end
 else
     set(h3, jumpStyle{:});
+end
+
+% Set the X-limits if appropriate values have been suggested:
+if ( all(isfinite(xLim)) )
+
+    % If holding, then make sure not to shrink the X-limits.
+    if ( holdState )
+        xLim = [min(xLimCurrent(1), xLim(1)), max(xLimCurrent(2), xLim(2))];
+    end
+
+    set(gca, 'xlim', xLim)
 end
 
 % Set the Y-limits if appropriate values have been suggested:

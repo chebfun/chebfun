@@ -62,4 +62,16 @@ catch ME
     pass(8) = strcmp(ME.identifier, 'CHEBFUN:eq:array');
 end
 
+% Test for singular function:
+
+dom = [-2 7];
+
+% Generate a few random points to use as test values:
+x = diff(dom) * rand(100, 1) + dom(1);
+
+f = chebfun(@(x) cos(10*x)./(x - dom(1)).^0.6, dom, 'exps', [-0.6 0]);
+h = (f == f);
+hVals = feval(h, x);
+pass(8) = ~any(hVals - 1);
+
 end

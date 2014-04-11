@@ -38,7 +38,7 @@ g = not(f);
 pass(6) = isequal(g.impulses, [0 0 1 0 0 ; 0 0 0 0 0].') && ...
     all(all(feval(g, x) == 0));
 
-%% Test on SINGFUN:
+%% Test for singular function:
 
 % define the domain:
 dom = [-2 7];
@@ -57,5 +57,26 @@ pass(7) = ~any( fval );
 
 r = roots(f);
 pass(8) = ~any( h(r) - 1 );
+
+%% Test for function defined on unbounded domain:
+
+% Functions on [-inf b]:
+
+% Set the domain:
+dom = [-Inf 0 3*pi ];
+domCheck = [-1e6 3*pi];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+% Blow-up function:
+op = @(x) -0.5+exp(x.^3);
+opExact = @(x) not(op(x));
+f = chebfun({op 0}, dom);
+g = not(f);
+gVals = feval(g, x);
+gExact = opExact(x);
+err = gVals - gExact;
+pass(9) = ( ~any(err) ) && all(g.impulses == [0 1 0 1].');
 
 end

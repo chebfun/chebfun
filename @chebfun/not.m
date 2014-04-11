@@ -1,7 +1,7 @@
 function f = not(f)
 %~   CHEBFUN logical NOT.
 %   NOT(F) returns a CHEBFUN which evaluates to zero at all points where F is
-%   zero and one otherwise.
+%   nonzero and one otherwise.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

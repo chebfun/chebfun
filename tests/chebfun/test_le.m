@@ -66,7 +66,7 @@ catch ME
     pass(8) = strcmp(ME.identifier, 'CHEBFUN:le:array');
 end
 
-%% Test on SINGFUN:
+%% Test for singular function:
 
 f = chebfun(@(x) -sin(x)./(x+1), 'exps', [-1 0]);
 g = chebfun(@(x) x*0);
@@ -74,5 +74,29 @@ h = ( f <= g );
 h_vals = feval(h, x);
 h_exact = hvsde(x);
 pass(9) = ( h.impulses(2) == 1 ) && all( abs( h_vals - h_exact ) == 0 );
+
+%% Test for function defined on unbounded domain:
+
+% Functions on [a inf]:
+
+% Set the domain:
+dom = [-1 Inf];
+domCheck = [-1 1e2];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+opf = @(x) exp(-x)-1;
+opg = @(x) x.*exp(-x);
+oph = @(x) opf(x) <= opg(x);
+
+f = chebfun(opf, dom);
+g = chebfun(opg, dom);
+h = ( f <= g );
+
+hVals = feval(h, x);
+hExact = oph(x);
+err = hVals - hExact;
+pass(10) = ( ~any(err) ) && all(h.impulses == [0 1 1].');
 
 end

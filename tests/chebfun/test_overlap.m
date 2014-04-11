@@ -82,9 +82,47 @@ vals_g = feval(op2, x);
 check = zeros(1,4);
 check(1) = all( fout.domain == gout.domain );
 check(2) = all( fout.domain == unique([f.domain, g.domain]) );
-check(3) = ( norm(vals_fout - vals_f, inf) < 5*epslevel(fout)*norm(vals_fout, inf) );
-check(4) = ( norm(vals_gout - vals_g, inf) < 5*epslevel(gout)*norm(vals_gout, inf) );
+check(3) = ( norm(vals_fout - vals_f, inf) < ...
+    5*epslevel(fout)*norm(vals_fout, inf) );
+check(4) = ( norm(vals_gout - vals_g, inf) < ...
+    5*epslevel(gout)*norm(vals_gout, inf) );
 
 pass(6) = all( check );
+
+%% Test for function defined on unbounded domain:
+
+% Function defined on [0 Inf]:
+
+% Specify the domain: 
+dom = [0 Inf];
+domCheck = [0 100];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+% A decaying function:
+opf = @(x) 0.75+sin(10*x)./exp(x);
+f = chebfun(opf, dom, 'splitting', 'on');
+
+% Blow-up function:
+opg = @(x) x.*(5+exp(-x.^3))./(x - dom(1));
+g = chebfun(opg, dom, 'exps', [-1 0]);
+
+[fout, gout] = overlap(f, g);
+
+vals_fout = feval(fout, x);
+vals_gout = feval(gout, x);
+vals_f = feval(opf, x);
+vals_g = feval(opg, x);
+
+check = zeros(1,4);
+check(1) = all( fout.domain == gout.domain );
+check(2) = all( fout.domain == unique([f.domain, g.domain]) );
+check(3) = ( norm(vals_fout - vals_f, inf) < ...
+    2e1*epslevel(fout)*norm(vals_fout, inf) );
+check(4) = ( norm(vals_gout - vals_g, inf) < ...
+    1e1*epslevel(gout)*norm(vals_gout, inf) );
+
+pass(7) = all( check );
 
 end

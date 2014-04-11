@@ -105,6 +105,8 @@ pass(10) = (norm(diff(err), inf) < get(F3, 'vscale')^3*get(f, 'epslevel')) && ..
 
 %% Test on singular function:
 
+% Singularity at one endpoint:
+
 dom = [-2 7];
 pow = -0.64;
 op = @(x) (x-dom(1)).^pow;
@@ -116,5 +118,37 @@ g_exact = @(x) (x-a).^(pow+1)./(pow+1);
 vals_exact = feval(g_exact, x);
 err = vals_g - vals_exact;
 pass(11) = ( norm(err, inf) < 10*get(f,'epslevel')*norm(vals_exact, inf) );
+
+% Singularities at both endpoints:
+mid = mean(dom);
+x = diff(dom) * rand(100, 1) + dom(1);
+pow1 = -0.5;
+pow2 = -0.5;
+op = @(x) (x-dom(1)).^pow1.*(dom(2)-x).^pow2;
+pref.singPrefs.exponents = [pow1 pow2];
+f = bndfun(op, dom, [], [], pref);
+
+% We temporarily disable this warning: 
+warning('off', 'CHEBFUN:SINGFUN:plus');
+g = cumsum(f);
+warning('on', 'CHEBFUN:SINGFUN:plus');
+x = sort(x);
+x1 = x(x <= mid);
+x2 = x(x > mid);
+vals_g1 = feval(g{1}, x1); 
+vals_g2 = feval(g{2}, x2);
+
+% This exact solution is acquired using Matlab symbolic toolbox:
+g_exact = @(x) 4*atan((sqrt(dom(2)) - sqrt(dom(2) - x))./ ...
+    (sqrt(x - dom(1)) - sqrt(-dom(1)))); 
+g_exact1 = @(x) g_exact(x) - g_exact(dom(1)) + get(g{1}, 'lval');
+g_exact2 = @(x) g_exact(x) - g_exact(dom(2)) + get(g{2}, 'rval');
+vals_exact1 = feval(g_exact1, x1);
+vals_exact2 = feval(g_exact2, x2);
+err1 = vals_g1 - vals_exact1;
+err2 = vals_g2 - vals_exact2;
+pass(12) = ( norm(err1, inf) < 1e3*get(g{1},'epslevel')* ...
+    norm(vals_exact1, inf) ) && ...
+    ( norm(err2, inf) < 1e3*get(g{2},'epslevel')*norm(vals_exact2, inf) );
 
 end
