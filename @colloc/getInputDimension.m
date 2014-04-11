@@ -1,4 +1,4 @@
-function space = getInputSpace(L)
+function space = getInputDimension(L)
 
 if ( isa(L, 'linop') )
     space = max(getDiffOrder(L), [], 1);

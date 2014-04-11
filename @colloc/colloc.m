@@ -18,7 +18,7 @@ classdef colloc < chebDiscretization
     
     properties
         % Store the size of the input space relative to disc.dimension
-        inputSpace = [];
+        inputDimension = [];
     end
     
     methods
@@ -63,7 +63,7 @@ classdef colloc < chebDiscretization
         
         [x, w, v] = points(varargin);
         
-        space = getInputSpace(L);
+        space = getInputDimension(L);
         
     end
     
