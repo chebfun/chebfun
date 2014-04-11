@@ -30,17 +30,13 @@ end
 
 L = disc.source;
 if ( isa(L, 'chebmatrix') )
-    
-    if ( nargin < 4 )
-        space = max(L.diffOrder, [], 1);
-        space = max(space, 0);
-    end
-    A = instantiate(disc, L.blocks, space);
+
+    A = instantiate(disc, L.blocks);
     
     % We want output on different format depending on whether the source L is a
     % LINOP or another object (most likely a CHEBMATRIX).
     if ( isa(L, 'linop') )
-        [out{1:4}] = applyConstraints(disc, A, {space});
+        [out{1:4}] = applyConstraints(disc, A);
     else
         [rows, P] = disc.reduce(A);
         out{1} = cell2mat(rows);

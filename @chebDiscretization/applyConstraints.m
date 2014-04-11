@@ -1,5 +1,5 @@
-function [M, P, B, A] = applyConstraints(disc, blocks, space)
-%APPLYCONSTRAINTS Modify discrete operator to accommodate constraints.
+function [M, P, B, A] = applyConstraints(disc, blocks)
+%APPLYCONSTRAINTS   Modify discrete operator to accommodate constraints.
 %   M = APPLYCONSTRAINTS(DISC, BLOCKS) uses a cell of matrix BLOCKS created by
 %   the discretization DISC in order to return a matrix that incorporates both
 %   the linear operator and its constraints.
@@ -7,17 +7,13 @@ function [M, P, B, A] = applyConstraints(disc, blocks, space)
 %   [M, P, B, A] = APPLYCONSTRAINTS(DISC, BLOCKS) also returns the individual
 %   matrices that represent down-projection of the operator (P), boundary,
 %   continuity, and other constraints (B), and the original operator (A). The
-%   output M is equivalent to M = [B; P*A] and is square.
+%   output M is equivalent to M = [B ; P*A] and is square.
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
+%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
+%  See http://www.chebfun.org/ for Chebfun information.
 
 % Convert the blocks to the original, unconstrained matrix.
-A = (blocks);
-
-if ( nargin < 3 )
-    space = {};
-end
+A = blocks;
 
 % Project rows down, and record the projection matrix as well.
 [rows, P] = disc.reduce(blocks);
@@ -35,18 +31,23 @@ B = [];
 if ( ~isempty(L.constraint) )
     % Instantiate a discretization of this constraint. 
     disc2 = discType(L.constraint.functional, dim, dom);
-    constr = matrix(disc2, dim, dom, space{:});
+    disc2.inputDimension = repmat(disc.inputDimension(1,:), size(disc2.source, 1), 1);
+    constr = matrix(disc2, dim, dom);
     B = [ constr; B ];
 end
 if ( ~isempty(L.continuity) )
     % Instantiate a discretization of this constraint. 
     disc2 = discType(L.continuity.functional, dim, dom);
-    constr = matrix(disc2, dim, dom, space{:});
+    disc2.inputDimension = repmat(disc.inputDimension(1,:), size(disc2.source, 1), 1);
+    constr = matrix(disc2, dim, dom);
     B = [ constr; B ];
 end
-% B = cell2mat(B);
 
 % This should restore squareness to the final matrix.
 M = [ B; M ];
+if ( size(M, 1) ~= size(M, 2) )
+    % TODO: Improve this warning.
+    warning('Matrix is not square!');
+end
 
 end
