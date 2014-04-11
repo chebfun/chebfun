@@ -89,13 +89,15 @@ pass(11) = all( check );
 dom = [-Inf Inf];
 
 % Blow-up function:
-op = @(x) x.^2.*(1-exp(-x.^2));
-f = chebfun(op, dom, 'exps', [2 2]); 
+op = @(x) (1-exp(-x.^2));
+f = chebfun(op, dom); 
 brkpts = zeros(1,2);
 brkpts(1) = -7;
 brkpts(2) = 2;
 g = definePoint(f, brkpts(1), 3);
+tic
 g(brkpts(2)) = 4;
+toc
 
 % check values:
 check = zeros(1,4);
