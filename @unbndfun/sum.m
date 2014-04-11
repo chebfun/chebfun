@@ -23,8 +23,7 @@ vends = [get(g, 'lval'), get(g, 'rval')];
 % Get the epslevel and vscale of the function g.
 tol = 1e1*get(g, 'epslevel')*get(g, 'vscale');
 
-% TODO: NH: get('exponents') breaks encapsulation.
-if ( ~issing(g) || ~any(get(g, 'exponents')) )
+if ( ~issing(g) )
     
     % Cases for ONEFUN has no singularities. The function may be decaying or
     % approach a constant value at infinities.
