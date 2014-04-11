@@ -93,7 +93,9 @@ classdef unbndfun < fun
             if ( isa(op, 'function_handle') )
                 op = @(x) op(unbndmap.for(x));
             elseif ( isnumeric(op) )
-                % [TODO]: Does this make sense for an UNBNDFUN?
+                %[TODO]: Implement this.
+                error('CHEBFUN:UNBNDFUN:inputValues',...
+                    'UNBNDFUN does not support construction from values.');
             end
             
             % Try to determine if the function is singular:

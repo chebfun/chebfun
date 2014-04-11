@@ -95,7 +95,4 @@ else
     
 end
 
-% Set the y-limits:
-data.yLim = [min(data.yLine) max(data.yLine)];
-
 end
