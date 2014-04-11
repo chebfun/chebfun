@@ -26,11 +26,17 @@ function out = innerProduct(f, g)
 %   Whether the inner product exists depends on the integrability of the
 %   integrand conj(f)*g*m', which is handled by the INNERPRODUCT at ONEFUN
 %   level.
-
+%
+%   Note: UNBNDFUN INNERPRODUCT does not support array-valued inputs.
+%
 % See also SUM.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
+
+% Developer note: UNBNDFUN INNERPRODUCT does not support array-valued inputs,
+% because SINGFUN does not, and a SINGFUN will be introduced when we multiply by
+% the derivative of the nonlinear map.
 
 % Deal with empty case:
 if ( isempty(f) || isempty(g) )
