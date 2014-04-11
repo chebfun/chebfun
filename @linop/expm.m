@@ -87,15 +87,25 @@ for i = 1:length(t)
         disc.dimension(~isDone) = dim;
 
         % Discretize the operator (incl. constraints/continuity):
-        E = expm(disc, t(i));
+        [E, P] = expm(disc, t(i));
         
         % Discretize the initial condition.
         discu = disc;
-        discu.source = u0;
-        v0 = matrix(discu);
+%         discu.source = u0;
+%         v0 = matrix(discu);
+        do = max(getDiffOrder(disc.source), 0);
+        do = max(do, [], 1);
+        for k = 1:numel(u0.blocks)
+            discu.dimension = disc.dimension + +do(k);
+            xIn = functionPoints(discu);
+            if ( ~isnumeric(u0.blocks{k}) )
+                f.blocks{k} = feval(u0.blocks{k}, xIn);
+            end
+        end
+        v0 = cell2mat(f.blocks);  
         
         % Propagate.
-        v = E*v0;
+        v = P*(E*v0);
         
         % Convert the different components into cells
         u = partition(disc, v);

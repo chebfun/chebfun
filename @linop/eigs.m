@@ -151,7 +151,7 @@ if ( isempty(sigma) )
     disc.dimension = 33*ones(1, numInts);
     [V1,D1] = getEigenvalues(disc, discM, 33, 0);
     disc.dimension(:) = 65;
-    [V2,D2] = getEigenvalues(disc, discM, 33, 0);
+    [V2,D2, P] = getEigenvalues(disc, discM, 33, 0);
     lam1 = diag(D1);
     lam2 = diag(D2);
     dif = bsxfun(@minus, lam1.', lam2);
@@ -171,7 +171,7 @@ if ( isempty(sigma) )
     else
         % One by one, convert the eigenvectors to functions and check their cheb
         % expansion coefficients.
-        U = partition(disc, V2);  % each cell is array valued, for one variable
+        U = partition(disc, P*V2);  % each cell is array valued, for one variable
 
         % Combine the different variable components into a single variable for
         % coefficient conversion.
@@ -202,13 +202,13 @@ coeff = 1./(2*(1:k)');
 
 for dim = dimVals
 
-    [V,D] = getEigenvalues(disc, discM, k, sigma);
+    [V,D, P] = getEigenvalues(disc, discM, k, sigma);
 
     % Combine the eigenfunctions into a composite.
     v = V*coeff(1:size(V,2));
 
     % Convert the different components into cells
-    u = partition(disc,v);
+    u = partition(disc,P*v);
 
     % Test the happieness of the function pieces:
     [isDone, epsLevel] = testConvergence(disc, u(isFun));
@@ -257,7 +257,7 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%
-function [V,D] = getEigenvalues(disc, discM, k, sigma)
+function [V,D,P] = getEigenvalues(disc, discM, k, sigma)
 % Formulate the discrete problem and solve for the eigenvalues
 
     % Discretize the LHS operator (incl. constraints/continuity):
@@ -278,7 +278,7 @@ function [V,D] = getEigenvalues(disc, discM, k, sigma)
         [V,D] = eig(full(PA), full(PB));
         % Find the ones we're looking for.
         N = disc.dimension;
-        idx = nearest(diag(D), V, sigma, min(k, N), N,disc);
+        idx = nearest(diag(D), P*V, sigma, min(k, N), N,disc);
         V = V(:, idx);
         D = D(idx, idx);
     else
