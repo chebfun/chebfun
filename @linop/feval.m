@@ -35,6 +35,11 @@ else
         otherwise  % oldschool
             k = size(B,1);     % number of rows to drop
             k2 = ceil(k/2);    % about half for top
+            try 
+                A = cell2mat(A);
+            catch
+                error('oldschool does not support this problem');
+            end
             A(1:k2,:) = B(1:k2,:);
             krem = k-k2;         % number remaining
             A(end-krem+1:end,:) = B(k2+1:end,:);
