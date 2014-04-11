@@ -25,47 +25,20 @@ if ( nargin == 1 || isempty(g) )
     % Size of the window:
     window = 10;
     
-    if ( isinf(f) )
-        
-        % If F is infinite, figure out where the mininum of ABS(F) takes place:
-        [ignored, idx] = min(abs(data.yLine));
-        minLoc = f.mapping.for(data.xLine(idx));
-        
-        % If the left endpoint is -Inf:
-        if ( isinf(data.xLim(1)) )
-            if ( isfinite(minLoc) )
-                data.xLim(1) = minLoc - window;
-            else
-                data.xLim(1) = data.xLim(2) - window;
-            end
-        end
-        
-        % If the right endpoint is Inf:
-        if ( isinf(data.xLim(2)) )
-            if ( isfinite(minLoc) )
-                data.xLim(2) = minLoc + window;
-            else
-                data.xLim(2) = data.xLim(1) + window;
-            end
-        end
-        
-    else
-        % [TODO]: We need to find a better way to determine the center and the 
-        % width of the window.
-        
-        % Center the window at the origin.
-        center = 0;
-        
-        % If the left endpoint is -Inf:
-        if ( isinf(data.xLim(1)) )
-            data.xLim(1) = center - window;
-        end
-        
-        % If the right endpoint is Inf:
-        if ( isinf(data.xLim(2)) )
-            data.xLim(2) = center + window;
-        end
-        
+    % [TODO]: We need to find a better way to determine the center and the
+    % width of the window.
+    
+    % Center the window at the origin.
+    center = 0;
+    
+    % If the left endpoint is -Inf:
+    if ( isinf(data.xLim(1)) )
+        data.xLim(1) = center - window;
+    end
+    
+    % If the right endpoint is Inf:
+    if ( isinf(data.xLim(2)) )
+        data.xLim(2) = center + window;
     end
     
     % Sort out the jumps:
