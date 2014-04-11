@@ -1,7 +1,7 @@
 function Z = zeros(disc)
-%ZEROS     Zero operator in COLLOC2.
+%ZEROS     Zero operator in COLLOC.
 %
-%   See also FUNCTIONALBLOCK.ZEROs.
+%   See also FUNCTIONALBLOCK.ZEROS.
 
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.

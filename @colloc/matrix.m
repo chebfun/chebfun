@@ -1,16 +1,16 @@
 function varargout = matrix(disc, dimension, domain)
-%MATRIX    Convert operator to matrix using COLLOC2 discretization.
+%MATRIX    Convert operator to matrix using COLLOC discretization.
 %   MATRIX(DISC) uses the parameters in DISC to discretize DISC.source as a
-%   matrix using COLLOC2. 
+%   matrix using COLLOC. 
 %
 %   MATRIX(DISC, DIM, DOMAIN) overrides the native 'dimension' and 'domain'
 %   properties in DISC.
 %
 %   [PA, P, B, A] = MATRIX(...) returns the additional component matrices
 %   resulting from boundary condition manipulations, as described in
-%   COLLOC2.APPLYCONSTRAINTS.
+%   COLLOC.APPLYCONSTRAINTS.
 %
-%   See also: COLLOC2/INSTANTIATE
+%   See also: COLLOC/INSTANTIATE
 
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.

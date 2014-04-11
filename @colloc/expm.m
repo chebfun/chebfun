@@ -1,8 +1,8 @@
 function E = expm(disc, t)
-%EXPM      Operator exponential for COLLOC2 discretization.
+%EXPM      Operator exponential for COLLOC discretization.
 %   This EXPM is called by LINOP.EXPM to perform propagation of a discrete
 %   initial condition via matrix exponential. The returned matrix is the
-%   propagator for a COLLOC2 discretization of the problem.
+%   propagator for a discretization of the problem.
 %
 %   See also LINOP.EXPM.
 
@@ -32,6 +32,8 @@ else
     
     % Propagator for the original variables: Reduce, propagate, lift. 
     E = Q*E*P;
+
+%     E = expm( [B;P] \ [zeros(size(B));P*A]*t );
 end
 
 end

@@ -1,5 +1,5 @@
 function F = inner(disc, f)
-%INNER     Inner product functional for COLLOC2.
+%INNER     Inner product functional for COLLOC.
 
 % INNER(DISC,F) returns a row vector. The dot product of this vector with a COLLOC2
 % discretization vector V results in the inner product of F with the function
@@ -11,7 +11,7 @@ function F = inner(disc, f)
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
-[x, w] = points(disc);
+[x, w] = functionPoints(disc);
 F = w.*f(x.');    % Curtis-Clenshaw weights times function values
 
 end

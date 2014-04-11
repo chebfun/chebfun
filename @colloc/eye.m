@@ -1,9 +1,10 @@
-function C = plus(A, B)
-%+      Addition of COLLOC2 discretizations.
+function I = eye(disc)
+%EYE    Identity operator for COLLOC discretization.
 
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
-C = A + B;
+n = disc.dimension;
+I = eye(sum(n));
 
 end

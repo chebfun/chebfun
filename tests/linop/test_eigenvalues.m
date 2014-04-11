@@ -1,9 +1,5 @@
-function pass = test_eigenvalues(pref)
+function pass = test_eigenvalues()
 % TAD, 10 Jan 2014
-
-if ( nargin == 0 )
-    pref = chebpref();
-end
 
 dom = [-pi/2, pi/2];
 D2 = operatorBlock.diff(dom, 2);
@@ -26,5 +22,12 @@ prefs.discretization = @ultraS;
 e = eigs(L, 6, 0, prefs);
 tol = 1e-10;
 pass(2) = norm(e + (1:6)'.^2, inf) < tol;
+
+
+%%
+prefs.discretization = @colloc1;
+e = eigs(L, 6, 0, prefs);
+tol = 8e-10;
+pass(3) = norm(e + (1:6)'.^2, inf) < tol;
 
 end

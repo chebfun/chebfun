@@ -1,7 +1,7 @@
-classdef colloc2 < colloc
-%COLLOC2    Collocation discretization on 2nd kind points.
-%   COLLOC2 is an implementation of CHEBDISCRETIZATION that implements
-%   spectral collocation on 2nd-kind Chebyshev points for differential and
+classdef colloc1 < colloc
+%COLLOC1    Collocation discretization on 1st kind points.
+%   COLLOC1 is an implementation of CHEBDISCRETIZATION that implements
+%   spectral collocation on 1st-kind Chebyshev points for differential and
 %   integral operators. 
 %
 %   Linear algebra operations generally take O(N^3) flops, where N is
@@ -15,11 +15,11 @@ classdef colloc2 < colloc
 
     % No subclass-specific properties needed, and no special constructor
     % either. 
-    
+
     methods
-        function disc = colloc2(varargin)
+        function disc = colloc1(varargin)            
             disc = disc@colloc(varargin{:});
-       end
+        end
     end
     
 end
