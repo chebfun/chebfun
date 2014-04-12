@@ -154,7 +154,7 @@ while ( ~isempty(varargin) )
             newData.xJumps = NaN;
             newData.yJumps = NaN;  
             newData.xDeltas = NaN;
-            newData.yDeltas = Nan;
+            newData.yDeltas = NaN;
             % Do nothing
         elseif ( numel(f) == 1 && numel(g) == 1 )
             % Array-valued CHEBFUN case:

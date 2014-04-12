@@ -71,10 +71,11 @@ if ( nargin == 1 )
         data.yPoints = [data.yPoints ; yNaN ; dataNew.yPoints];
         data.xJumps = [data.xJumps ; dataNew.xJumps];
         data.yJumps = [data.yJumps ; dataNew.yJumps];
-        data.xDeltas = [data.xDeltas ; dataNew.xDeltas];
-        data.yDeltas = [data.yDeltas ; dataNew.yDeltas];
-        
 
+        if ( isfield(dataNew, 'xDeltas') && isfield(dataNew, 'yDeltas') )
+            data.xDeltas = [data.xDeltas ; dataNew.xDeltas];
+            data.yDeltas = [data.yDeltas ; dataNew.yDeltas];
+        end
     end
 
 elseif ( nargin == 2 )
