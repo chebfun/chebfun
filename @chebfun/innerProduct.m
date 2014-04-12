@@ -23,6 +23,14 @@ elseif ( isnumeric(g) )
     g = chebfun(g, domain(f));
 end
 
+% If either of the functions is defined on an infinite domain, we need to cast 
+% to quasimatrices, since UNBNDFUN INNERPRODUCT does not support array-valued 
+% inputs.
+if ( any(isinf(domain(f))) || any(isinf(domain(g))) )
+    f = cheb2quasi(f);
+    g = cheb2quasi(g);
+end
+
 numColsF = numColumns(f);
 numColsG = numColumns(g);
 
@@ -34,7 +42,7 @@ if ( numel(f) == 1 && numel(g) == 1 )
     
     % Overlap the CHEBFUN objects:
     [f, g] = overlap(f, g);
-
+    
     % Loop over the FUNs:
     for k = 1:numel(f.funs)
         out = out + innerProduct(f.funs{k}, g.funs{k});

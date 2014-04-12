@@ -60,8 +60,6 @@ function f = cumsumContinousDim(f, m)
 % CUMSUM over continuous dimension.
 
 % Get some basic information from f:
-numCols = size(f.funs{1}, 2);
-dom = f.domain;
 numFuns = numel(f.funs);
 
 transState = f(1).isTransposed;
@@ -79,15 +77,20 @@ for l = 1:m
         [newFuns, rValNew] = cumsum(f.funs{j});
         
         if ( ~iscell( newFuns ) )
-            newFuns = {newFuns + rVal};
-        else
-            % TODO: I think rVal needs to be added to both of the pieces?
-            newFuns{end} = newFuns{end} + rVal;
+            newFuns = {newFuns};
         end
-        rVal = rVal + rValNew;
-                
+        
+        % Add the constant term that came from the left:
+        for k = 1:numel(newFuns)
+            newFuns{k} = newFuns{k} + rVal;
+        end
+
         % Store FUNs:
-        funs = [funs, newFuns]; %#ok<AGROW>               
+        funs = [funs, newFuns]; %#ok<AGROW>
+        
+        % Update the rval:
+        rVal = get(funs{end}, 'lval') + rValNew;
+        
     end
     
     % Assemble the new CHEBFUN:

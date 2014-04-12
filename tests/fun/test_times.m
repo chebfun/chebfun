@@ -7,7 +7,7 @@ if (nargin < 1)
     pref = chebpref();
 end
 
-% Set a domain
+% Set a domain for BNDFUN.
 dom = [-2 7];
 
 % Generate a few random points to use as test values.
@@ -20,14 +20,12 @@ beta = -0.526634844879922 - 0.685484380523668i;
 
 %%
 % Check operation in the face of empty arguments.
-
 f = bndfun();
 g = bndfun(@(x) x, dom, [], [], pref);
 pass(1) = (isempty(f .* f) && isempty(f .* g) && isempty(g .* f));
 
 %%
 % Check multiplication by scalars.
-
 f_op = @(x) sin(x);
 f = bndfun(f_op, dom, [], [], pref);
 pass(2:3) = test_mult_function_by_scalar(f, f_op, alpha, x);
@@ -38,13 +36,13 @@ pass(4:5) = test_mult_function_by_scalar(f, f_op, alpha, x);
 
 %%
 % Check multiplication by constant functions.
-
 f_op = @(x) sin(x);
 f = bndfun(f_op, dom, [], [], pref);
 g_op = @(x) alpha*ones(size(x));
 g = bndfun(g_op, dom, [], [], pref);
 pass(6) = test_mult_function_by_function(f, f_op, g, g_op, x, false);
 
+%% 
 % This should fail with a dimension mismatch error from bndfun.mtimes().
 f_op = @(x) [sin(x) cos(x)];
 f = bndfun(f_op, dom, [], [], pref);
@@ -55,7 +53,6 @@ pass(7) = test_mult_function_by_function(f, f_op, g, g_op, x, false);
 %%
 % Spot-check multiplication of two bndfun objects for a few test
 % functions.
-
 f_op = @(x) ones(size(x));
 f = bndfun(f_op, dom, [], [], pref);
 pass(8) = test_mult_function_by_function(f, f_op, f, f_op, x, false);
@@ -76,8 +73,7 @@ g = bndfun(g_op, dom, [], [], pref);
 pass(11) = test_mult_function_by_function(f, f_op, g, g_op, x, false);
 
 %%
-% Check operation for array-valued bndfun objects.
-
+% Check operation for array-valued BNDFUN objects.
 f = bndfun(@(x) [sin(x) cos(x) exp(x)], dom, [], [], pref);
 g = bndfun(@(x) tanh(x), dom, [], [], pref);
 h1 = f .* g;
@@ -93,6 +89,7 @@ h_exact = @(x) [sinh(x).*sin(x) cosh(x).*cos(x) tanh(x).*exp(x)];
 err = feval(h, x) - h_exact(x);
 pass(14) = max(abs(err(:))) < 10*max(get(h, 'vscale').*get(h, 'epslevel'));
 
+%%
 % This should fail with a dimension mismatch error.
 try
     g = bndfun(@(x) [sinh(x) cosh(x)], dom, [], [], pref);
@@ -105,7 +102,6 @@ end
 %%
 % Check specially handled cases, including some in which an adjustment for
 % positivity is performed.
-
 f_op = @(t) sinh(t*exp(2*pi*1i/6));
 f = bndfun(f_op, dom, [], [], pref);
 pass(16) = test_mult_function_by_function(f, f_op, f, f_op, x, false);
@@ -120,18 +116,18 @@ pass(19:20) = test_mult_function_by_function(f, f_op, f, f_op, x, false);
 
 %%
 % Check that multiplication and direct construction give similar results.
-
-tol = 100*eps;
 g_op = @(x) 1./(1 + x.^2);
 g = bndfun(g_op, dom, [], [], pref);
 h1 = f .* g;
+h1_vals = feval(h1, x);
 h2 = bndfun(@(x) f_op(x) .* g_op(x), dom, [], [], pref);
-pass(21) = normest(h1 - h2) < tol;
+h2_vals = feval(h2, x);
+pass(21) = ( norm(h1_vals - h2_vals, inf) < ...
+    1e1*get(h1, 'epslevel').*get(h1, 'vscale') );
 
 %%
 % Check that multiplying a BNDFUN by an unhappy BNDFUN gives an unhappy
 % result.
-
 f = bndfun(@(x) cos(x+1), dom);    % Happy
 g = bndfun(@(x) sqrt(x+1), dom);   % Unhappy
 h = f.*g;  % Multiply unhappy by happy.
@@ -139,16 +135,10 @@ pass(22) = (~get(g, 'ishappy')) && (~get(h, 'ishappy')); %#ok<*BDSCI,*BDLGI>
 h = g.*f;  % Multiply happy by unhappy.
 pass(23) = (~get(g, 'ishappy')) && (~get(h, 'ishappy'));
 
-%% Test on singular function:
+%% 
+% Test on singular BNDFUN.
 
-dom = [-2 7];
-
-% Generate a few random points to use as test values.
-seedRNG(6178);
-x = diff(dom) * rand(100, 1) + dom(1);
-
-%% Case of a scalar and a function:
-
+% Case of a scalar and a function:
 c = 3;
 pow = -0.5;
 op = @(x) (x - dom(2)).^pow.*sin(x);
@@ -161,8 +151,7 @@ g_exact = bndfun(op_exact, dom, [], [], pref);
 err = norm(feval(g, x) - feval(g_exact, x), inf);
 pass(24) = ( err < 5*get(f, 'epslevel')*norm(feval(g_exact, x), inf) );
 
-%% Case of two functions:
-
+% Case of two functions:
 pow1 = -0.3;
 pow2 = -0.5;
 op1 = @(x) (x - dom(2)).^pow1.*sin(x);
@@ -180,8 +169,31 @@ err = norm(feval(h, x) - feval(h_exact, x), inf);
 pass(25) = ( err < 1e1*max(get(f, 'epslevel'), get(g, 'epslevel'))*...
     norm(feval(h_exact, x), inf) );
 
+%% Tests for UNBNDFUN:
+
+% Functions on [-inf inf]:
+
+% Set the domain:
+dom = [-Inf Inf];
+domCheck = [-1e2 1e2];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+opf = @(x) x.^2.*exp(-x.^2);
+opg = @(x) (1-exp(-x.^2))./x;
+oph = @(x) x.*exp(-x.^2).*(1-exp(-x.^2));
+f = unbndfun(opf, dom);
+g = unbndfun(opg, dom);
+h = f.*g;
+hVals = feval(h, x);
+hExact = oph(x);
+err = hVals - hExact;
+pass(26) = norm(err, inf) < get(f,'epslevel')*get(f,'vscale');
+
 end
 
+%% 
 % Test the multiplication of a BNDFUN F, specified by F_OP, by a scalar ALPHA
 % using a grid of points X in [a  b] for testing samples.
 function result = test_mult_function_by_scalar(f, f_op, alpha, x)
@@ -193,6 +205,7 @@ tol = 10*max(get(g1, 'vscale').*get(g1, 'epslevel'));
 result(2) = norm(feval(g1, x) - g_exact(x), inf) < tol;
 end
 
+%% 
 % Test the multiplication of two BNDFUN objects F and G, specified by F_OP and
 % G_OP, using a grid of points X in [a  b] for testing samples.  If CHECKPOS is
 % TRUE, an additional check is performed to ensure that the values of the result
@@ -205,5 +218,4 @@ result(1) = all(max(abs(feval(h, x) - h_exact(x))) < 5*tol);
 if ( checkpos )
     result(2) = all(feval(h, x) >= 0);
 end
-
 end

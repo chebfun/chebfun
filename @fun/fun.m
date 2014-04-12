@@ -73,7 +73,6 @@ classdef fun % (Abstract)
 
                 end
             end
-        
         end
         
     end
@@ -83,9 +82,14 @@ classdef fun % (Abstract)
 
     end
 
-    %% ABSTRACT STATIC METHODS REQUIRED BY ONEFUN CLASS.
-    methods ( Abstract = true, Static = true )
+    %% ABSTRACT STATIC METHODS REQUIRED BY THIS CLASS.
+    methods (Abstract = true, Static = true)
 
+        % Map from [-1, 1] to the domain of the FUN.
+        m = createMap(domain);  
+        
+        % Make a FUN. (Constructor shortcut)
+        f = make(varargin);
     end
     
     %% METHODS IMPLEMENTED BY THIS CLASS.
@@ -160,9 +164,15 @@ classdef fun % (Abstract)
         
         % Test if a FUN object is built upon SMOOTHFUN.
         out = issmooth(f)
+        
+        % Test if a FUN object is defined on an unbounded domain.
+        out = isunbnd(f)
 
-        % True for zero FUN objects
+        % True for zero FUN objects.
         out = iszero(f)
+        
+        % Return Legendre coefficients of a FUN object.
+        c_leg = legpoly(f, n)
         
         % Length of a FUN.
         len = length(f)
@@ -187,7 +197,10 @@ classdef fun % (Abstract)
 
         % Multiplication of FUN objects.
         f = mtimes(f, c)
-
+        
+        % Estimate the Inf-norm of a FUN object.
+        out = normest(f);
+        
         % FUN logical NOT.
         f = not(f)
 

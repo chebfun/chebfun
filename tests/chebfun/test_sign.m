@@ -107,4 +107,22 @@ vals_exact = feval(s_exact, x);
 err = vals_s - vals_exact;
 pass(7,:) = ( norm(err, inf) < 1e1*epslevel(s).*get(s, 'vscale') );
 
+%% Functions on [-inf inf]:
+
+% Set the domain:
+dom = [-Inf Inf];
+domCheck = [-1e2 1e2];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+op = @(x) (1-exp(-x.^2))./x;
+f = chebfun(op, dom);
+s = sign(f);
+sVals = feval(s, x);
+op = @(x) 2*heaviside(x) - 1;
+sExact = op(x);
+err = sVals - sExact;
+pass(8,:) = all( ~norm(err, inf) );
+
 end

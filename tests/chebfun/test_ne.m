@@ -58,10 +58,29 @@ catch ME
     pass(8) = strcmp(ME.identifier, 'CHEBFUN:ne:array');
 end
 
-%% Test on SINGFUN:
+%% Test for singular function:
 
 f = chebfun(@(x) -sin(x)./(x+1), 'exps', [-1 0]);
 g = ( f ~= f );
 pass(9) = ( g.pointValues(1) == 0 && ~any(feval(g, x)) );
+
+%% Test for function defined on unbounded domain:
+
+% Functions on [-inf inf]:
+
+% Set the domain:
+dom = [-Inf Inf];
+domCheck = [-1e2 1e2];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+% Blow-up function:
+op = @(x) x.^2.*(1-exp(-x.^2));
+pref.singPrefs.exponents = [2 2];
+f = chebfun(op, dom, pref); 
+g = ( f ~= f );
+gVals = feval(g, x);
+pass(10) = ~any(gVals);
 
 end

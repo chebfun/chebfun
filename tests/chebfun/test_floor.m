@@ -53,4 +53,24 @@ pass(6) = (norm(err(:), inf) <= 10*vscale(g)*epslevel(g));
 %     pass(7) = strcmp(ME.identifier, 'CHEBFUN:floor:inf');
 % end
 
+% Test for function defined on unbounded domain:
+
+% Functions on [a inf]:
+
+% Set the domain:
+dom = [1 Inf];
+domCheck = [1 1e2];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+op = @(x) 1./x.^3;
+f = chebfun(op, dom);
+g = floor(f);
+opExact = @(x) floor(op(x));
+fVals = feval(g, x);
+fExact = opExact(x);
+err = fVals - fExact;
+pass(7) = norm(err, inf) < 1e1*epslevel(f)*vscale(f);
+
 end

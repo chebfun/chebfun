@@ -317,7 +317,7 @@ classdef chebfun
 
         % Accuracy estimate of a CHEBFUN object.
         out = epslevel(f);
-        
+
         % Extract columns of an array-valued CHEBFUN object.
         f = extractColumns(f, columnIndex);
         

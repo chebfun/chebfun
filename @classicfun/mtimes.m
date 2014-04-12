@@ -22,7 +22,7 @@ elseif ( ~isa(f, 'classicfun') )           % CLASSICFUN is not the first input
     
     % DOUBLE*CLASSICFUN requires that the double is scalar:
     if ( numel(f) > 1 )
-        error('CHEBFUN:FUN:CLASSICFUN:mtimes:size', ...
+        error('CHEBFUN:CLASSICFUN:mtimes:size', ...
             'Inner matrix dimensions must agree.');
     end
     
@@ -39,12 +39,12 @@ elseif ( isa(c, 'double') )         % CLASSICFUN * double
     
 elseif ( isa(c, 'classicfun') )            % CLASSICFUN * CLASSICFUN
     
-    error('CHEBFUN:FUN:CLASSICFUN:mtimes:CLASSICFUNMtimesCLASSICFUN', ...
+    error('CHEBFUN:CLASSICFUN:mtimes:CLASSICFUNMtimesCLASSICFUN', ...
         'Use .* to multiply CLASSICFUN objects.');
     
 else                                % CLASSICFUN * ???
     
-    error('CHEBFUN:FUN:CLASSICFUN:mtimes:CLASSICFUNMtimesUnknown',...
+    error('CHEBFUN:CLASSICFUN:mtimes:CLASSICFUNMtimesUnknown',...
         'mtimes does not know how to multiply a CLASSICFUN and a %s.', class(c));
     
 end

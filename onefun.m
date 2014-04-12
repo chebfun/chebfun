@@ -57,7 +57,7 @@ classdef onefun % (Abstract)
             else
                 pref = chebpref(pref);
             end
-
+       
             % Call the relevent constructor:
             if ( isa(op, 'onefun') )
                 % OP is already a ONEFUN!

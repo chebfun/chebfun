@@ -146,4 +146,21 @@ I = sum(f);
 I_exact = 0.17330750941063138;
 pass(26) = ( abs(I-I_exact) < 2*get(f, 'epslevel')*abs(I_exact) );
 
+
+%% Test for functions defined on unbounded domain:
+
+% Functions on [-inf inf]:
+
+% Set the domain:
+dom = [-Inf 2 Inf];
+
+op1 = @(x) x.^2.*exp(-x.^2);
+op2 = @(x) (1-exp(-x.^2))./x.^2;
+f = chebfun({op1 op2}, dom);
+I = sum(f);
+% The exact solution is obtained using Matlab symbolic toolbox:
+IExact = 1.364971769155161;
+err = abs(I - IExact);
+pass(27) = err < 1e7*get(f,'epslevel')*get(f,'vscale');
+
 end

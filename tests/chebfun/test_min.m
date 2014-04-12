@@ -133,4 +133,22 @@ h = min(f, .75);
 pass(16) = norm(h([-.9 0 .9].') - [sin(-.9) cos(-.9) ; 0 .75 ; .75 cos(.9)]) ...
     < epslevel(h)*vscale(h);
 
+%% test on function defined on unbounded domain:
+
+% Functions on [-inf b]:
+
+% Set the domain:
+dom = [-Inf -3*pi];
+
+% A blow-up function:
+op = @(x) x.*(5+exp(x.^3))./(dom(2)-x);
+pref.singPrefs.exponents = [0 -1];
+f = chebfun(op, dom, pref); 
+[y, x] = min(f);
+yExact = -Inf;
+xExact = dom(2);
+errX = x - xExact;
+pass(17) = ( norm(errX, inf) < epslevel(f)*vscale(f) ) && ...
+    ( y == yExact );
+
 end

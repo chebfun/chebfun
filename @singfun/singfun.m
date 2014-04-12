@@ -236,8 +236,8 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         % Extract information for DISPLAY.
         info = dispData(f)
         
-        % Extract the boundary roots of the SMOOTHPART of a SINGFUN.
-        f = extractBoundaryRoots(f)
+        % Extract roots at the boundary points -1 and 1.
+        [f, rootsLeft, rootsRight] = extractBoundaryRoots(f, numRoots)
         
         % Evaluate a SINGFUN.
         y = feval(f, x)

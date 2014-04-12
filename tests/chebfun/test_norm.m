@@ -106,7 +106,7 @@ catch ME
     pass(21) = strcmp(ME.identifier, 'CHEBFUN:norm:unknownNorm');
 end
 
-%% Tests on SINGFUN-related stuff:
+%% Tests for singular functions:
 
 % p-norm (p = 3) - Tests on power:
 f = chebfun(@(x) sin(50*x), 'splitting', 'on');
@@ -133,15 +133,73 @@ pass(24) = norm(err, inf) < 1e5*vscale(f).*epslevel(f);
 % Inf-norm:
 f = chebfun(@(x) sin(x).*((1-x).^0.6), 'exps', [0 0.6], 'splitting', 'on');
 [normF, normLoc] = norm(f, Inf);
-p_exact = [1.275431511911148 -1];
+p_exact = [1.275431511911148 -1]; % This is obtained using Mathematica.
 err = [normF, normLoc] - p_exact;
 pass(25) = norm(err, inf) < vscale(f).*epslevel(f);
 
 % -Inf-norm:
 f = chebfun(@(x) (sin(x)-0.4).*((x+1).^0.8), 'exps', [0.8 0], 'splitting', 'on');
 [normF, normLoc] = norm(f, -Inf);
-p_exact = [0 -1];
+p_exact = [0 -1]; % This is obtained using Mathematica.
 err = [normF, normLoc] - p_exact;
 pass(26) = norm(err, inf) < vscale(f).*epslevel(f);
 
+%% Test for functions defined on unbounded domain:
+
+% Functions on [a inf]:
+
+% Set the domain:
+dom = [1 Inf];
+
+% 2-norm and fro-norm:
+op = @(x) (1-exp(-x))./x;
+f = chebfun(op, dom);
+p = norm(f);
+pExact = 0.860548225417173;  % This is obtained using Matlab symbolic toolbox.
+err = p - pExact;
+pass(27) = abs(err) < 1e7*epslevel(f)*vscale(f);
+
+% 1-norm:
+op = @(x) (1-exp(-x))./(x.^2);
+f = chebfun(op, dom);
+p = norm(f, 1);
+pExact = 0.851504493224078;  % This is obtained using Matlab symbolic toolbox.
+err = p - pExact;
+pass(28) = abs(err) < 1e6*epslevel(f)*vscale(f);
+
+% P-norm (here P = 3):
+op = @(x) (1-exp(-x))./x;
+f = chebfun(op, dom);
+p = norm(f, 3);
+pExact = 0.631964633132246;  % This is obtained using Matlab symbolic toolbox.
+err = p - pExact;
+pass(29) = abs(err) < 2e3*epslevel(f)*vscale(f);
+
+% Inf-norm:
+[normF, normLoc] = norm(f, Inf);
+p_exact = [op(1) 1];
+err = [normF, normLoc] - p_exact;
+pass(30) = norm(err, inf) < vscale(f).*epslevel(f);
+
+% -Inf-norm:
+[normF, normLoc] = norm(f, -Inf);
+pass(31) = ( abs(normF) < vscale(f)*epslevel(f) ) && ...
+    ( normLoc == Inf );
+
+%% Array-valued function defined on unbounded domain:
+
+% Functions on [-inf b]:
+
+% Set the domain:
+dom = [-Inf -1];
+
+% 1-norm:
+op = @(x) [exp(x) x.*exp(x) (1-exp(x))./(x.^2)];
+
+f = chebfun(op, dom);
+p = norm(f, 1);
+pExact = 0.851504493224078;  % This is obtained using Matlab symbolic toolbox.
+err = p - pExact;
+pass(32) = abs(err) < 2e8*vscale(f)*epslevel(f);
+    
 end

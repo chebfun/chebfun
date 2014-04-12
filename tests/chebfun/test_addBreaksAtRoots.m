@@ -40,10 +40,68 @@ err = vals_g - vals_check;
 
 r_exact = (((-19:66)+1/2)*pi/30).';
 
-pass(3) = ( norm(err-mean(err), inf) < ...
-    1e2*get(f,'epslevel')*norm(vals_check, inf) ) && ...
+pass(3) = ( norm(err, inf) < 1e2*epslevel(f)*norm(vals_check, inf) ) && ...
     ( norm( [dom(1); r_exact; dom(2)] - g.domain.', inf) < ...
-    get(f,'epslevel')*norm(r_exact, inf) );
+    epslevel(f)*norm(r_exact, inf) );
+
+
+%% Tests for functions defined on unbounded domain:
+
+% Functions on [-inf inf]:
+
+% Set the domain:
+dom = [-Inf Inf];
+domCheck = [-1e2 1e2];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+op = @(x) (1-exp(-x.^2))./x;
+f = chebfun(op, dom);
+g = addBreaksAtRoots(f);
+rExact = 0;
+
+vals_g = feval(g, x);
+vals_check = feval(op, x);
+err = vals_g - vals_check;
+pass(4) = ( norm(err, inf) < 1e2*epslevel(f)*vscale(f) ) && ...
+    ( norm( rExact - g.domain(2:end-1).', inf) < 2*epslevel(f)*vscale(f) );
+
+% Blow-up function:
+op = @(x) x.^2.*(1-exp(-x.^2))-2;
+pref.singPrefs.exponents = [2 2];
+f = chebfun(op, dom, pref); 
+g = addBreaksAtRoots(f);
+rExact = [-1.4962104914103104707 ; 1.4962104914103104707];
+
+vals_g = feval(g, x);
+vals_check = feval(op, x);
+err = vals_g - vals_check;
+pass(5) = ( norm(err, inf) < 5e3*epslevel(f)*vscale(f) ) && ...
+    ( norm( rExact - g.domain(2:end-1).', inf) < epslevel(f)*vscale(f) );
+
+% Functions on [a inf]:
+dom = [0 Inf];
+domCheck = [0 100];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+op = @(x) 0.15+sin(10*x)./exp(x);
+f = chebfun(op, dom);
+g = addBreaksAtRoots(f);
+rExact = [0.33529141416564289113; 
+          0.60061694515161002799;
+          0.98375750309184861332;
+          1.2042605667187311146;
+          1.6619482204330474390;
+          1.7760894757659030239];
+      
+vals_g = feval(g, x);
+vals_check = feval(op, x);
+err = vals_g - vals_check;
+pass(6) = ( norm(err, inf) < epslevel(f)*vscale(f) ) && ...
+    ( norm( rExact - g.domain(2:end-1).', inf) < 2*epslevel(f)*vscale(f) );
 
 % TODO: Add more tests.
 

@@ -26,6 +26,7 @@ data = struct('xLine', [], 'yLine', [], 'xPoints', [], 'yPoints', [], ...
     'xJumps', [], 'yJumps', [], 'xDeltas', [], 'yDeltas', [], 'yLim', []);
 
 yLim = [inf, -inf];
+xLim = [inf, -inf];
 
 if ( nargin == 1 )
     % PLOT(F)
@@ -36,6 +37,7 @@ if ( nargin == 1 )
         % Get the data from the FUN:
         dataNew = plotData(f.funs{k});
         
+        xLim = [min(dataNew.xLim(1), xLim(1)), max(dataNew.xLim(2), xLim(2))];
         yLim = [min(dataNew.yLim(1), yLim(1)), max(dataNew.yLim(2), yLim(2))];
         
         if ( k == 1 )
@@ -88,6 +90,7 @@ elseif ( nargin == 2 )
     for k = 1:nFuns
         % Get the data from the FUN objects:
         dataNew = plotData(f.funs{k}, g.funs{k});
+        xLim = [min(dataNew.xLim(1), xLim(1)), max(dataNew.xLim(2), xLim(2))];
         yLim = [min(dataNew.yLim(1), yLim(1)), max(dataNew.yLim(2), yLim(2))];
         
         % Discard the unnecessary jump data:
@@ -132,6 +135,7 @@ else
     for k = 1:nFuns
         % Get the data from the FUN objects:
         dataNew = plotData(f.funs{k}, g.funs{k}, h.funs{k});
+        xLim = [min(dataNew.xLim(1), xLim(1)), max(dataNew.xLim(2), xLim(2))];
         yLim = [min(dataNew.yLim(1), yLim(1)), max(dataNew.yLim(2), yLim(2))];
         myNaN = NaN(1, size(dataNew.yLine, 2)); % Array of NaNs.
         % Insert a NaN (or array of NaNs) and append new data to array:
@@ -161,6 +165,7 @@ else
     
 end
 
+data.xLim = xLim;
 data.yLim = yLim;
 
 end

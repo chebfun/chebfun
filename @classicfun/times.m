@@ -1,16 +1,16 @@
 function f = times(f, g, varargin)
 %.*   CLASSICFUN multiplication.
-%   F.*G multiplies CLASSICFUN objects F and G or a CLASSICFUN by a scalar if either F or G is
-%   a scalar.
+%   F.*G multiplies CLASSICFUN objects F and G or a CLASSICFUN by a scalar if
+%   either F or G is a scalar.
 %
-%   If F is an array-valued CLASSICFUN, then F.*C is supported if C is a row vector of
-%   doubles with the same number of columns as F. Similarly if F if a row
-%   vector of doubles and C is an array-valued CLASSICFUN
+%   If F is an array-valued CLASSICFUN, then F.*C is supported if C is a row
+%   vector of doubles with the same number of columns as F. Similarly if F if a
+%   row vector of doubles and C is an array-valued CLASSICFUN
 %
-%   If F and G are both CLASSICFUN objects, they are assumed to have the same domain
-%   and, if they are array-valued, the same number of columns. The method gives
-%   no warning if their domains don't agree, but the output of the method will
-%   be meaningless.
+%   If F and G are both CLASSICFUN objects, they are assumed to have the same
+%   domain and, if they are array-valued, the same number of columns. The
+%   method gives no warning if their domains don't agree, but the output of the
+%   method will be meaningless.
 %
 % See also MTIMES, RDIVIDE.
 

@@ -55,7 +55,7 @@ pass(10) = isnumeric(out) && all(size(out) == [3, 1]) && ...
 
 %% Test on singular function:
 
-% Set a domain
+% Set a domain:
 dom = [-2 7];
 
 pow = -0.5;
@@ -65,6 +65,17 @@ pref.enableBreakpointDetection = 1;
 f = chebfun(op, dom, pref);
 out = f(end);
 pass(11) = ( isnumeric(out) ) && all( size(out) == ones(1,2) );
+
+%% Test for function defined on unbounded domain:
+
+% Set a domain:
+dom = [0 Inf];
+
+op = @(x) 0.75+sin(10*x)./exp(x);
+f = chebfun(op, dom, 'splitting', 'on');
+out = f(end);
+pass(12) = ( isnumeric(out) ) && all(size(out) == ones(1, 2) ) && ...
+    ( abs(out - 0.75) < 1e1*epslevel(f) );
 
 end
 

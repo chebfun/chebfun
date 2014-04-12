@@ -137,4 +137,20 @@ h = max(f, .75);
 pass(17) = norm(h([-.9 0 .8 .9].') - ...
     [.75 .75 ;.75 1 ; .75 .75 ; sin(.9) .75]) < epslevel(h)*vscale(h);
 
+%% Test on function defined on unbounded domain:
+
+% Functions on [a inf]:
+
+% Set the domain:
+dom = [1 Inf];
+
+op = @(x) x.*exp(-x);
+f = chebfun(op, dom);
+[y, x] = max(f);
+yExact = exp(-1);
+xExact = 1;
+errY = y - yExact;
+errX = x - xExact;
+pass(18) = norm([errY errX], inf) < epslevel(f).*vscale(f);
+
 end

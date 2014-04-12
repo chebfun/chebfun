@@ -37,7 +37,7 @@ f = chebfun(@(x) [x, x.^2], [-1 -.1 -.1+eps 0 1]);
 g = merge(f);
 pass(9) = numel(g.domain) == 2 && all(g.domain == [-1 1]);
 
-%% Integration of SINGFUN:
+%% Test for singular function:
 % Set the domain:
 dom = [-2 7];
 
@@ -60,5 +60,21 @@ vals_h = feval(h, x);
 vals_exact = feval(op, x);
 err = vals_h - vals_exact;
 pass(10) = (norm(err, inf) < 5e1*get(h, 'vscale')*get(h, 'epslevel'));
+
+%% Test for function defined on unbounded domain:
+
+dom = [0:10:100 Inf];
+domCheck = [0 100];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+op = @(x) 0.75+sin(10*x)./exp(x);
+f = chebfun(op, dom, 'splitting', 'on');
+g = merge(f);
+gVals = feval(g, x);
+gExact = op(x);
+err = gVals - gExact;
+pass(11) = norm(err, inf) < epslevel(f)*vscale(f);
 
 end

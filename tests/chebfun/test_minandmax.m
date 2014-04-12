@@ -121,4 +121,23 @@ fx = op(x);
 pass(12) = ((max(abs(y - y_exact)) < 2e1*get(f, 'epslevel')) && ... 
           (max(abs(fx - y_exact)) < 2e1*get(f, 'epslevel')));
 
+%% Tests on function defined on unbounded domain:
+
+% Doubly-infinite domain:
+
+% Set the domain:
+dom = [-Inf Inf];
+
+op = @(x) (1-exp(-x.^2))./x;
+f = chebfun(op, dom);
+[vals, pos] = minandmax(f);
+% These exact solutions are obtained using Mathematica:
+vExact = [-0.6381726863389515 ; 0.6381726863389515];
+pExact = [-1.120906422778534 ; 1.120906422778534];
+errV = vals - vExact;
+errP = pos - pExact;
+pass(13) = ( norm(errV, inf) < epslevel(f)*vscale(f) ) && ...
+    ( norm(errP, inf) < 2*epslevel(f)*vscale(f) );
+      
+
 end

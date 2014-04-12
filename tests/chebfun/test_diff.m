@@ -87,6 +87,26 @@ vals_exact = feval(df_exact, x);
 err = vals_df - vals_exact;
 pass(10) = ( norm(err, inf) < 1e1*get(f,'epslevel')*norm(vals_exact, inf) );
 
+%% Test on function defined on unbounded domain:
+
+% Function on [-inf inf]:
+
+% Set the domain:
+dom = [-Inf Inf];
+domCheck = [-1e2 1e2];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+op = @(x) (1-exp(-x.^2))./x;
+f = chebfun(op, dom, 'splitting', 'on');
+g = diff(f);
+op_g = @(x) 2*exp(-x.^2) + (exp(-x.^2) - 1)./x.^2;
+gVals = feval(g, x);
+gExact = op_g(x);
+err = gVals - gExact;
+pass(11) = norm(err, inf) < 2*get(g,'epslevel')*get(g,'vscale');
+
 % [TODO]:  Check fractional derivatives once implemented.
 
 end

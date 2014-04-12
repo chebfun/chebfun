@@ -40,7 +40,9 @@ for k = 1:numel(h.funs)
 end
 
 % pointValues:
-h.pointValues = ~h.pointValues;
+nanMask = isnan(h.pointValues);
+ind = ~nanMask;
+h.pointValues(ind) = ~h.pointValues(ind);
 
 % Tidy the result:
 h = merge(h);
