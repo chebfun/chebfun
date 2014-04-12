@@ -20,22 +20,29 @@ else
     data = plotData(f.funPart, g.funPart);
 end
 
+% Initialise fields for holding data:
+data.xDeltas = [];
+data.yDeltas = [];
+
 % Handle delta functions (Derivatives of Delta-functions are not plotted):
 if ( ~isempty(f.deltaLoc) )
     % Remove higher derivatives of delta-functions from f:
     f.deltaMag = f.deltaMag(1, :);
     f = simplifyDeltas(f);
-    deltaLoc = f.deltaLoc;
-    deltaMag = f.deltaMag;
-
-    data.xDeltas = zeros(length(deltaLoc), 1);
-    data.xDeltas = deltaLoc;
-    
-    data.yDeltas = zeros(length(deltaLoc), 1);
-    data.yDeltas = deltaMag(1, :);    
-else
-    data.xDelta = [];
-    data.yDelta = [];
+    if ( ~isa(f ,'deltafun') ) 
+        % No zeroth order delta functions, return:
+        return;
+    else
+        % There are delta functions, prepare data for plotting:
+        deltaLoc = f.deltaLoc;
+        deltaMag = f.deltaMag;
+        
+        data.xDeltas = zeros(length(deltaLoc), 1);
+        data.xDeltas = deltaLoc;
+        
+        data.yDeltas = zeros(length(deltaLoc), 1);
+        data.yDeltas = deltaMag(1, :);
+    end
 end
     
 end
