@@ -20,7 +20,6 @@ pass(1) = isempty(cumsum(chebfun()));
 f1 = chebfun(@cos, [-1 -0.5 0.5 1], pref);
 If1 = cumsum(f1);
 If1_exact = @(x) sin(x) - sin(-1);
-plot(If1)
 pass(2) = norm(feval(If1, xr) - If1_exact(xr), inf) < ...
     10*vscale(If1)*epslevel(If1);
 
@@ -179,7 +178,7 @@ gVals = feval(g, x);
 opg = @(x) sqrt(pi)*erf(x)/2 + sqrt(pi)/2;
 gExact = opg(x);
 errg = gVals - gExact;
-pass(11) = norm(errg, inf) < 5e1*get(g,'epslevel').*get(g,'vscale');
+pass(11) = norm(errg, inf) < 1e2*get(g,'epslevel').*get(g,'vscale');
 
 %% Function on [a inf]:
 

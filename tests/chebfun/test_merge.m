@@ -75,6 +75,6 @@ g = merge(f);
 gVals = feval(g, x);
 gExact = op(x);
 err = gVals - gExact;
-pass(11) = norm(err, inf) < epslevel(f)*vscale(f);
+pass(11) = norm(err, inf) < 10*epslevel(f)*vscale(f);
 
 end

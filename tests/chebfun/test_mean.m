@@ -80,7 +80,7 @@ dom = [0 Inf];
 op = @(x) 0.75+sin(10*x)./exp(x);
 f = chebfun(op, dom, 'splitting', 'on');
 M = mean(f);
-pass(13) = ( abs(M - 0.75) < 2*epslevel(f).*vscale(f) );
+pass(13) = abs(M - 0.75) < 10*epslevel(f).*vscale(f);
 
 end
 
