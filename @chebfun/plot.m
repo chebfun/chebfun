@@ -155,8 +155,8 @@ while ( ~isempty(varargin) )
             newData.yPoints = g;
             newData.xJumps = NaN;
             newData.yJumps = NaN;  
-            newData.xDeltas = NaN;
-            newData.yDeltas = NaN;
+            newData.xDeltas = [];
+            newData.yDeltas = [];
             % Do nothing
         elseif ( numel(f) == 1 && numel(g) == 1 )
             % Array-valued CHEBFUN case:
@@ -298,7 +298,7 @@ end
 if ( isempty(deltaData) )
     deltaData = {[]};
 end
-h4 = plot(deltaData{:});
+h4 = stem(deltaData{:}, 'd', 'fill');
 
 %% 
 % Do we want a style for delta functions?
