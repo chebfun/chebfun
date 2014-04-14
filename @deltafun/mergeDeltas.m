@@ -1,8 +1,8 @@
 function [D, w] = mergeDeltas( A, u, B, v)
 %MERGEDELTAS   Merges delta functions and their locations.
 %   [D, w] = mergeDeltas(A, u, B, v) assumes that A and B are matrices
-%   representing delta functions and their derivatives at loctions indicated by
-%   the vectors U and V respectively. The funciton then tries to see if there
+%   representing delta functions and their derivatives at locations indicated by
+%   the vectors U and V respectively. The function then tries to see if there
 %   are locations in U and V that are the same or are very close to each other
 %   and merges the corresponding delta functions in D and their locations in the
 %   vector W.
@@ -33,7 +33,7 @@ elseif ( any(szB == 0 ) )
 end
 
 %%
-% Both matrices are non empty, get the differnece of rows:
+% Both matrices are non empty, get the difference of rows:
 d = szA(1) - szB(1);
 if ( d >= 0 )
     % A has more rows, expand B:

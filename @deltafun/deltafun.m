@@ -8,7 +8,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
 %   pair of properties: DELTAMAG and LOCATION, which store the magnitude
 %   and the location of the delta functions respectively. DELTAMAG is
 %   generally a matrix, with its first row representing the delta functions,
-%   while derivativeds of delta functions are represented by higher rows of
+%   while derivatives of delta functions are represented by higher rows of
 %   this matrix. LOCATION is a vector, each element of which corresponds to
 %   the location of a column in the DELTAMAG matrix.
 %

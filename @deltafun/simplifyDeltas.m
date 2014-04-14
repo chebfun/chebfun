@@ -14,7 +14,7 @@ end
 deltaLoc = f.deltaLoc;
 deltaMag = f.deltaMag;
 
-% Merge columns if location of deltafunction are almost equal:
+% Merge columns if locations of delta function are almost equal:
 [deltaMag, deltaLoc] = deltafun.mergeColumns(deltaMag, deltaLoc, pref);
 
 % Remove columns which are entirely below tolerance:

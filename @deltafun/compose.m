@@ -3,7 +3,7 @@ function f = compose(f, op, g, pref)
 %   H = COMPOSE(F, OP) returns a BNDFUN representing OP(F) where F is also a
 %   BNDFUN object, and OP is a function handle of a linear function of the form
 %   op = @(x) a*x + b for some constants a and b. No check is made on the
-%   funciton handle and it is assumed that OP is of the correct form.
+%   function handle and it is assumed that OP is of the correct form.
 %
 %   H = COMPOSE(F, OP, PREF) where OP is a function handle, passes the options 
 %   passed by the preferences structure PREF to the composition of the FUNPART

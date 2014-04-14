@@ -1,5 +1,5 @@
 function f = imag(f)
-%IMAG   Imaginary part of a SINGFUN.
+%IMAG   Imaginary part of a DELTAFUN.
 %   IMAG(F) is the imaginary part of F.
 %
 % See also REAL, ISREAL, CONJ.

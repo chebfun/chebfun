@@ -1,6 +1,6 @@
 function f = conj(f)
 %CONJ   Complex conjugate of a DELTAFUN.
-%   CONJ(F) is the complex conjugate of F. The FUNPART is conjugatd as well as
+%   CONJ(F) is the complex conjugate of F. The FUNPART is conjugated as well as
 %   the matrix of delta function magnitude.
 %
 % See also REAL, IMAG.

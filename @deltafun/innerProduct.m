@@ -1,6 +1,6 @@
 function out = innerProduct(f, g)
-%INNERPRODCUT Compute the inner product of two DELTAFUN objects.
-%   INNERPROTCUT(F, G) is the inner-product of DELTAFUN F and G. 
+%INNERPRODUCT Compute the inner product of two DELTAFUN objects.
+%   INNERPRODUCT(F, G) is the inner-product of DELTAFUN F and G. 
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.

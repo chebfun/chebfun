@@ -1,6 +1,6 @@
 function s = zeroDeltaFun(domain)
 %ZERODELTAFUN   Constructs the zero DELTAFUN on DOMAIN. 
-%   S = ZERODELTAFUN(DOMAIN) creates a DELTAFUN with no delta funcitons but
+%   S = ZERODELTAFUN(DOMAIN) creates a DELTAFUN with no delta functions but
 %   its FUNPART is the zero fun. If no DOMAIN is provided, the FUN is created
 %   on [-1, 1].
 %

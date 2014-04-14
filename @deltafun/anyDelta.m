@@ -1,5 +1,5 @@
 function out = anyDelta(f)
-%ANYDELTA   True if a DELTAFUN object F has atleast one delta function.
+%ANYDELTA   True if a DELTAFUN object F has at least one delta function.
 %   ANYDELTA(F) returns TRUE if the DELTAFUN object F has non-trivial delta
 %   functions. The test is FALSE otherwise. This function uses the tolerance
 %   provided by CHEBPREF and uses that tolerance to decide whether a delta

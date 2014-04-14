@@ -7,7 +7,7 @@ function len = length(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% The length of a SINGFUN object is the length of its smooth part.
+% The length of a DELTAFUN object is the length of its funPart.
 len = length(f.funPart);
 
 end

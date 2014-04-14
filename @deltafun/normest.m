@@ -1,6 +1,6 @@
 function out = normest(f)
 %NORMEST   Estimate the norm of a DELTAFUN.
-%   NORMEST(F) returns the normest of the funPart of a DELTAFUN F.
+%   NORMEST(F) returns NORMEST of the funPart of a DELTAFUN F.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.

@@ -9,7 +9,7 @@ function [g, rval] = cumsum(f, k, dim)
 %   In case there are delta functions in F, a cell array of FUNS is returned. 
 %   If F has a delta function at the right end point, it's magnitude is added
 %   to the right end point value of the funPart of the last deltafun. The 
-%   value in RVAL can be used by higher classes to CUMSUM conacatenated 
+%   value in RVAL can be used by higher classes to CUMSUM concatenated
 %   DELTAFUNS.
 %
 % See also SUM
@@ -18,7 +18,7 @@ function [g, rval] = cumsum(f, k, dim)
 % See http://www.chebfun.org for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% [TODO]: Document and implemet k, dim
+% [TODO]: Document and implement k, dim
 
 % Trivial case:
 if ( isempty(f) )
