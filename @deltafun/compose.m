@@ -16,7 +16,7 @@ if ( nargin < 3 )
     pref = chebpref;
 end
 
-% TODO: NH: What about COMPOSE(f, op, g)?
+% TODO: NH: What about COMPOSE(f, op, g)? ANS: Not defined.
 
 if ( isa(op, 'function_handle') )
     % OP is a function handle:
@@ -32,7 +32,7 @@ if ( isa(op, 'function_handle') )
         % Apply the shifting:
         deltaLoc = (-b + deltaLoc)/a;
         
-        % Discard delta function that are now outside the domain:
+        % Discard delta functions that are now outside the domain:
         idx = deltaLoc >= dom(1) & deltaLoc <= dom(2);
         deltaLoc = deltaLoc(idx);
         deltaMag = deltaMag(:, idx);

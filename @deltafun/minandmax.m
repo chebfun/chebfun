@@ -18,7 +18,7 @@ if ( ~anyDelta(f) )
     
 else
     
-    % If there are delta functions, maximan and minima are undefined:
+    % If there are delta functions, maxima and minima are undefined:
     vals = [NaN; NaN];
     pos  = [NaN; NaN];
 end
