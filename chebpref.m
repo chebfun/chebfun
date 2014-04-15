@@ -54,6 +54,22 @@ classdef chebpref
 %      CHEBFUN F passes through zero). See SINGFUN for more information.
 %
 %   enableDeltaFunctions - Enable delta functions.
+%     true
+%    [false]
+%       
+%      If true, the deltafun class will be invoked to manage any delta 
+%      functions present in the object.
+%   deltaPrefs                 - Preferences for delta functions.
+%
+%      deltaTol                - Tolerance for magnitude of delta functions.
+%       [1e-11]
+%
+%         This is the tolerance up to which delta functions will be negligible.
+%
+%      proxomityTol          - Minimum distance between delta functions. 
+%       [1e-11]
+%         If two delta functions are located closer than this tolerance, they 
+%         will be merged.
 %
 %   scale                      - The vertical scale constructor should use.
 %    [0]
