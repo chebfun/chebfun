@@ -11,70 +11,16 @@ function [vals, pos] = minandmax(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-tol = 1;
-
-if ( ~any(f.exponents) || all(abs(f.exponents) < tol) )
+if ( ~anyDelta(f) )
     
-    % The function is actually smooth!
+    % The function has no delta functions:
     [vals, pos] = minandmax(f.smoothPart);
     
 else
     
-    % Initialise:
-    minF = [];
-    maxF = [];
-    minLoc = [];
-    maxLoc = [];   
-    
-    if ( f.exponents(1) < -tol ) % Singularity at the left end.
-        fVal = feval(f, -1);
-        if ( fVal == inf )
-            maxF = inf;
-            maxLoc = -1;
-        elseif ( fVal == -inf )
-            minF = -inf;
-            minLoc = -1;
-        else
-            error('CHEBFUN:SINGFUN:minandmax:boundedness', ...
-            'function has a singularity but bounded at the left end point');
-        end
-    end
-    
-    if ( f.exponents(2) < -tol ) % Singularity at the right end.
-        fVal = feval(f, 1);
-        if ( fVal == inf )
-            maxF = inf;
-            maxLoc = 1;
-        elseif ( fVal == -inf )
-            minF = -inf;
-            minLoc = 1;
-        else
-            error('CHEBFUN:SINGFUN:minandmax:boundedness', ...
-            'function has a singularity but bounded at the right end point');
-        end
-    end
-    
-    % If min or max is empty, then we need to do more work:
-    if ( isempty(minF) || isempty(maxF) )       
-        % Find the roots of the derivative for local minima:
-        fp = diff(f);
-        r = roots(fp);
-        % Append the end points and remove duplicates:
-        r = unique([-1 ; r ; 1]);
-        if ( isempty(maxF) )
-            % Take the maximum of the local maxima:
-            [maxF, maxIndex] = max(feval(f, r));
-            maxLoc = r(maxIndex);
-        end
-        if ( isempty(minF) )
-            % Take the minimum of the local minima:
-            [minF, minIndex] = min(feval(f, r));
-            minLoc = r(minIndex);
-        end             
-    end    
-    vals = [ minF; maxF ];
-    pos = [ minLoc; maxLoc ];
-    
+    % If there are delta functions, maximan and minima are undefined:
+    vals = [NaN; NaN];
+    pos  = [NaN; NaN];
 end
   
 end
