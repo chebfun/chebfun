@@ -53,6 +53,32 @@ classdef chebpref
 %      singularities are being created, (e.g., by SQRT(F) at points where a
 %      CHEBFUN F passes through zero). See SINGFUN for more information.
 %
+%   enableDeltaFunctions - Enable delta functions.
+%     true
+%    [false]
+%       
+%      If true, the deltafun class will be invoked to manage any delta 
+%      functions present in the object.
+%   deltaPrefs                 - Preferences for delta functions.
+%
+%      deltaTol                - Tolerance for magnitude of delta functions.
+%       [1e-11]
+%
+%         This is the tolerance up to which delta functions will be negligible.
+%
+%      proxomityTol          - Minimum distance between delta functions. 
+%       [1e-11]
+%         If two delta functions are located closer than this tolerance, they 
+%         will be merged.
+%
+%   scale                      - The vertical scale constructor should use.
+%    [0]
+%
+%      Typically the CHEBFUN constructor will resolve relative to a vertical
+%      scale determined by it's own function evaluations. However, in some
+%      situations one would like to the resolve relative to a fixed vertical
+%      scale. This can be set using this preference.
+%
 %   singPrefs                  - Preferences for singularity detection.
 %
 %      exponentTol             - Tolerance for exponents.
@@ -719,6 +745,10 @@ classdef chebpref
                 factoryPrefs.singPrefs.maxPoleOrder = 20;
                 factoryPrefs.singPrefs.exponents = [];
                 factoryPrefs.singPrefs.singType = {};
+            factoryPrefs.enableDeltaFunctions = false;
+                factoryPrefs.deltaPrefs.deltaTol = 1e-11;
+                factoryPrefs.deltaPrefs.proximityTol = 1e-11;
+
             factoryPrefs.scale = 0;
             factoryPrefs.tech = 'chebtech';
             factoryPrefs.techPrefs = struct();

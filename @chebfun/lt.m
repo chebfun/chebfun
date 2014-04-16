@@ -41,8 +41,8 @@ for k = 1:numel(h.funs)
     end
 end
 
-% Set impulses that are 0.5 to 0 FUNs:
-h.impulses(h.impulses == .5) = 0;
+% Set pointValues that are 0.5 to 0 FUNs:
+h.pointValues(h.pointValues == .5) = 0;
 
 % Tidy the result:
 h = merge(h);

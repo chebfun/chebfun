@@ -37,9 +37,9 @@ for k = 1:numel(h.funs)
     end
 end
 
-% Impulses:
-ind = isnan(h.impulses);
-h.impulses(~ind) = double(logical(h.impulses(~ind)));
+% pointValues:
+ind = isnan(h.pointValues);
+h.pointValues = double(logical(h.pointValues(~ind)));
 
 % Tidy the result:
 h = merge(h);

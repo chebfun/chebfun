@@ -7,10 +7,10 @@ function f = thresholdBreakpointValues(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-for k = 1:numel(f)
-    breakVals = f(k).impulses(:,:,1);
+for k = 1:numel(f)    
+    breakVals = f(k).pointValues;
     breakVals(abs(breakVals) < vscale(f(k))*epslevel(f(k))) = 0;
-    f(k).impulses(:,:,1) = breakVals;
+    f(k).pointValues = breakVals;
 end
 
 end

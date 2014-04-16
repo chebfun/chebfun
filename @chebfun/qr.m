@@ -42,7 +42,9 @@ if ( numel(A) > 1 )
 
     isSimple = true;
     for k = 1:numel(A)
-        isSimple = isSimple && all(cellfun(@(f) isa(f.onefun, 'chebtech'), A(k).funs));
+        %isSimple = isSimple && all(cellfun(@(f) isa(f.onefun, 'chebtech'), A(k).funs));
+        isSimple = isSimple && ~isdelta(A(k)) ...
+            && all(cellfun(@(f) isa(f.onefun, 'chebtech'), A(k).funs));
     end
 
     if ( isSimple )

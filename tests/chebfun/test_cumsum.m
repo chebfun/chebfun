@@ -7,6 +7,7 @@ if ( nargin == 0 )
     pref = chebpref();
 end
 
+%%
 % Generate a few random points in [-1 1] to use as test values.
 seedRNG(7681);
 xr = 2 * rand(1000, 1) - 1;
@@ -14,6 +15,7 @@ xr = 2 * rand(1000, 1) - 1;
 % Check empty case.
 pass(1) = isempty(cumsum(chebfun()));
 
+%%
 % Check an example with breakpoints but no impulses.
 f1 = chebfun(@cos, [-1 -0.5 0.5 1], pref);
 If1 = cumsum(f1);
@@ -21,6 +23,7 @@ If1_exact = @(x) sin(x) - sin(-1);
 pass(2) = norm(feval(If1, xr) - If1_exact(xr), inf) < ...
     10*vscale(If1)*epslevel(If1);
 
+%%
 % Check behavior for row chebfuns.
 f1t = f1.';
 If1t = cumsum(f1t);
@@ -28,6 +31,7 @@ If1t_exact = @(x) (sin(x) - sin(-1)).';
 pass(3) = norm(feval(If1t, xr) - If1t_exact(xr), inf) < ...
     10*vscale(If1t)*epslevel(If1t);
 
+%%
 % Check behavior for array-valued chebfuns.
 f3 = chebfun(@(x) [cos(x) -sin(x) exp(x)], [-1 -0.5 0.5 1], pref);
 If3 = cumsum(f3);
@@ -43,10 +47,22 @@ If3t_exact = @(x) ([sin(x) cos(x) exp(x)] - ...
 pass(5) = max(max(abs(feval(If3t, xr) - If3t_exact(xr)))) < ...
     10*vscale(If3t)*epslevel(If3t);
 
+f4 = chebfun(@(x) [cos(x) -sin(x)], [-1 -0.5 0.5 1], pref);
+If4 = cumsum(f4);
+If4_exact = @test_If4;
+pass(6) = max(max(abs(feval(If4, xr) - If4_exact(xr)))) < ...
+    10*vscale(If4)*epslevel(If4);
+
 % Check second argument.
 I2f1 = cumsum(f1, 2);
 I2f1_exact = @(x) -cos(x) - sin(-1)*x - (-cos(-1) - sin(-1)*-1);
-pass(6) = norm(feval(I2f1, xr) - I2f1_exact(xr), inf) < ...
+pass(7) = norm(feval(I2f1, xr) - I2f1_exact(xr), inf) < ...
+    10*vscale(I2f1)*epslevel(I2f1);
+
+% Check second argument.
+I2f1 = cumsum(f1, 2);
+I2f1_exact = @(x) -cos(x) - sin(-1)*x - (-cos(-1) - sin(-1)*-1);
+pass(8) = norm(feval(I2f1, xr) - I2f1_exact(xr), inf) < ...
     10*vscale(I2f1)*epslevel(I2f1);
 
 I2f3 = cumsum(f3, 2);
@@ -54,7 +70,7 @@ I2f3_exact = @(x) [-cos(x) sin(x) exp(x)] - ...
     [sin(-1)*x cos(-1)*x exp(-1)*x] - ...
     repmat([(-cos(-1) - sin(-1)*-1) (sin(-1) - cos(-1)*-1) ...
             (exp(-1) - exp(-1)*-1)], size(x, 1), 1);
-pass(7) = max(max(abs(feval(I2f3, xr) - I2f3_exact(xr)))) < ...
+pass(9) = max(max(abs(feval(I2f3, xr) - I2f3_exact(xr)))) < ...
     10*vscale(I2f3)*epslevel(I2f3);
 
 %% Test on singular function:
@@ -74,7 +90,7 @@ vals_g = feval(g, x);
 g_exact = @(x) (x-dom(1)).^(pow+1)./(pow+1);
 vals_exact = feval(g_exact, x);
 err = vals_g - vals_exact;
-pass(8) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(10) = ( norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf) );
 
 %% piecewise smooth chebfun: smoothfun + singfun & splitting off:
 
@@ -112,7 +128,7 @@ for j = 1:3
     result(j) = ( norm(err-mean(err), inf) < ...
         1e7*get(f,'epslevel')*norm(vals_exact, inf) );
 end
-pass(9) = all( result );
+pass(11) = all( result );
 
 %% piecewise smooth chebfun: SMOOTHFUN + SINGFUN.
 
@@ -127,6 +143,7 @@ warning('off', 'CHEBFUN:SINGFUN:plus');
 g = cumsum(f);
 warning('on', 'CHEBFUN:SINGFUN:plus');
 
+%%
 % check values:
 
 % Generate a few random points to use as test values:
@@ -139,7 +156,7 @@ g_check = cumsum(f_check);
 
 vals_check = feval(g_check, x);
 err = gval - vals_check;
-pass(10) = norm(err-mean(err), inf) < 5e5*get(f,'epslevel')*...
+pass(12) = norm(err-mean(err), inf) < 5e4*get(f,'epslevel')*...
     norm(vals_check, inf);
 
 %% Tests for functions defined on unbounded domain:
@@ -161,7 +178,7 @@ gVals = feval(g, x);
 opg = @(x) sqrt(pi)*erf(x)/2 + sqrt(pi)/2;
 gExact = opg(x);
 errg = gVals - gExact;
-pass(11) = norm(errg, inf) < 5e1*get(g,'epslevel').*get(g,'vscale');
+pass(11) = norm(errg, inf) < 1e2*get(g,'epslevel').*get(g,'vscale');
 
 %% Function on [a inf]:
 
@@ -211,4 +228,16 @@ pass(13) = norm([err1 ; err2], inf) < 5e3*get(g,'epslevel').*get(g,'vscale');
 
 % [TODO]:  Check fractional antiderivatives once implemented.
 
+end
+
+function y = test_If4(x)
+    y = [zeros(size(x)) zeros(size(x))];
+    int1 = (-1 < x) & (x < -0.5);
+    int2 = (-0.5 < x) & (x < 1);
+    y(int1, 1) = sin(x(int1));
+    y(int1, 2) = cos(x(int1));
+    y(int2, 1) = sin(x(int2));
+    y(int2, 2) = cos(x(int2));
+
+    y = y - repmat([sin(-1) cos(-1)], size(x, 1), 1);
 end

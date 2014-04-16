@@ -19,13 +19,13 @@ f = chebfun(@(x) sin(x), [-1 -0.5 0.5 1], pref);
 
 g = chebfun(@(x) 0*x);
 h = f | g;
-ind = find(h.impulses == 0);
+ind = find(h.pointValues == 0);
 pass(2) = all(feval(h, x) == 1) && (numel(ind) == 1) && ...
     (abs(h.domain(ind)) < 10*vscale(h)*epslevel(h));
 
 g = chebfun(@(x) exp(x));
 h = f | g;
-pass(3) = isequal(h.impulses, [1 1].') && all(feval(h, x) == 1);
+pass(3) = isequal(h.pointValues, [1 1].') && all(feval(h, x) == 1);
 
 f = chebfun(@(x) [sin(x) cos(x)], pref);
 g = chebfun(@(x) [0*x exp(x)], pref);
@@ -33,12 +33,12 @@ g = chebfun(@(x) [0*x exp(x)], pref);
 h = f | g;
 h_exact = @(x) [(sin(x) | 0*x) (0*x + 1)];
 err = feval(h, x) - h_exact(x);
-pass(4) = (norm(err(:), inf) == 0) && isequal(h.impulses, [1 1 ; 0 1 ; 1 1]);
+pass(4) = (norm(err(:), inf) == 0) && isequal(h.pointValues, [1 1 ; 0 1 ; 1 1]);
 
 h = f.' | g.';
 h_exact = @(x) [(sin(x) | 0*x) (0*x + 1)].';
 err = feval(h, x) - h_exact(x);
-pass(5) = (norm(err(:), inf) == 0) && isequal(h.impulses, [1 1 ; 0 1 ; 1 1]);
+pass(5) = (norm(err(:), inf) == 0) && isequal(h.pointValues, [1 1 ; 0 1 ; 1 1]);
 
 % Check error conditions.
 try
@@ -109,6 +109,6 @@ h = logical(f);
 hVals = feval(h, x);
 hExact = opExact(x);
 err = hVals - hExact;
-pass(12) = ( ~any(err) ) && all(h.impulses == [1 1 0].');
+pass(12) = ( ~any(err) ) && all(h.pointValues == [1 1 0].');
 
 end

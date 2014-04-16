@@ -115,16 +115,9 @@ classdef chebfun
         % (F.DOMAIN(k), F.DOMAIN(k+1)). If M = size(f.funs, 2) is greater than
         % 1, then the CHEBFUN object is referred to as "array valued".
         funs                % (Kx1 cell array of FUN objects)
-
-        % IMPULSES is a three-dimensional array storing information about the
-        % values of the CHEBFUN object at the points in DOMAIN. The rows
-        % correspond to the breakpoints in the DOMAIN vector, and if M > 1 then
-        % the columns correspond to the columns in an array-valued CHEBFUN.
-        % Thus, F.IMPULSES(:, :, 1) is a matrix consisting of the values of
-        % each column of F at each breakpoint. The third dimension is used for
-        % storing information about higher-order delta functions that may be
-        % present at breakpoints. (See "help dirac" for more details.)
-        impulses = [];      % ((K+1) x M x (D+1) double)
+        
+        % POINTVALUES Values of the function at the break points.
+        pointValues = [];      % (1 x (K+1) double)
 
         % ISTRANSPOSED determines whether a (possibly array-valued) CHEBFUN F
         % should be interpreted as a collection of "column" CHEBFUN objects (if
@@ -174,8 +167,8 @@ classdef chebfun
                 dom = cellfun(@(fun) get(fun, 'domain'), f.funs, ...
                     'uniformOutput', false);
                 f.domain = unique([dom{:}]);
-                % Update values at breakpoints (first row of f.impulses):
-                f.impulses = chebfun.getValuesAtBreakpoints(f.funs, f.domain);
+                % Update values at breakpoints (first row of f.pointValues):
+                f.pointValues = chebfun.getValuesAtBreakpoints(f.funs, f.domain);
                 
             elseif ( isa(op, 'chebfun') && doTrunc )
                 % Deal with the particular case when we're asked to truncate a
@@ -188,8 +181,8 @@ classdef chebfun
                 % Call the main constructor:
                 [f.funs, f.domain] = chebfun.constructor(op, dom, pref);
                 
-                % Update values at breakpoints (first row of f.impulses):
-                f.impulses = chebfun.getValuesAtBreakpoints(f.funs, f.domain, op);
+                % Update values at breakpoints (first row of f.pointValues):
+                f.pointValues = chebfun.getValuesAtBreakpoints(f.funs, f.domain, op);
                 
                 % Remove unnecessary breaks (but not those that were given):
                 [ignored, index] = setdiff(f.domain, dom);
@@ -250,9 +243,6 @@ classdef chebfun
     end
 
     methods (Access = private)
-        % Remove zero layers from impulses array.
-        f = tidyImpulses(f);
-
         % Set small breakpoint values to zero.
         f = thresholdBreakpointValues(f);
     end
@@ -343,6 +333,9 @@ classdef chebfun
         % Get properties of a CHEBFUN object.
         out = get(f, prop);
         
+        % Get Delta functions withing a chebfun
+        [deltaMag, deltLoc] = getDeltaFunctions(f);
+        
         % Horizontal scale of a CHEBFUN object.
         out = hscale(f);
 
@@ -366,6 +359,9 @@ classdef chebfun
         
         % True for real CHEBFUN.
         out = isreal(f);
+        
+        % Test if a CHEBFUN object is built upon DELTAFUN.
+        out = isdelta(f);
         
         % Test if a CHEBFUN object is built upon SINGFUN.
         out = issing(f)
@@ -634,4 +630,3 @@ g = @loopwrapper;
         end
     end
 end
-

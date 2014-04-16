@@ -9,7 +9,7 @@ function r = roots(f, varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Call ROOTS@FUN:
-r = roots@fun(f, varargin{:});
+r = roots@classicfun(f, varargin{:});
 
 % Get rid of spurious roots which are caused by fast decay of function defined
 % in an unbounded domain:

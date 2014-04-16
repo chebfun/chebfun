@@ -33,9 +33,16 @@ err(4) = feval(u{2},1) - 1;
 
 %%
 % ODEs
-err(5) = norm( D^2*u{1} + u{2} - x);
-err(6) = norm( -D*u{1} + D^2*u{2} + u{2} );
+% [TODO]: The following lines use a hack. This needs to be changed:
+g = D^2*u{1}+u{2};
+g.funs{1} = g.funs{1}.funPart;
+g.funs{2} = g.funs{2}.funPart;
+err(5) = norm(g - x);
 
+f = -D*u{1} + D^2*u{2} + u{2};
+f.funs{1} = f.funs{1}.funPart;
+f.funs{2} = f.funs{2}.funPart;
+err(6) = norm(f);
 %%
 pass = abs(err) < tol;
 

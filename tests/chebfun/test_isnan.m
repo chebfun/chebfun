@@ -16,24 +16,22 @@ pass(2) = ~isnan(f);
 g = chebfun(@(x) [sin(x) cos(x) exp(x)], [-1 -0.5 0 0.5 1], pref);
 pass(3) = ~isnan(g);
 
-% Check NaN impulse values.
-f.impulses(2,1,1) = NaN;
+% Check NaN piontValues values.
+f.pointValues(2,1) = NaN;
 pass(4) = isnan(f);
-g.impulses(4,3,3) = NaN;
-pass(5) = isnan(g);
 
 % Check a case with a NaN fun.  This is an artificial construction, but it's
 % the only way to do this at the moment.
 nanfun = chebtech2(NaN);
 f.funs{2}.onefun = nanfun;
-pass(6) = isnan(f);
+pass(5) = isnan(f);
 
 %% Test on singular function:
 dom = [-2 7];
 pow = -1.64;
 f = chebfun(@(x) sin(100*x).*(x-dom(1)).^pow, dom, 'exps', [pow 0], ...
     'splitting', 'on');
-pass(7) = ~isnan(f);
+pass(6) = ~isnan(f);
 
 %% Test for function defined on unbounded domain:
 
@@ -44,7 +42,7 @@ dom = [0 Inf];
 
 op = @(x) 0.75+sin(10*x)./exp(x);
 f = chebfun(op, dom, 'splitting', 'on');
-pass(8) = ~isnan(f);
+pass(7) = ~isnan(f);
 
 % Function defined on [0 Inf]:
 
@@ -54,6 +52,6 @@ dom = [-Inf -3*pi];
 % Blow-up function:
 op = @(x) x.*(5+exp(x.^3))./(dom(2)-x);
 f = chebfun(op, dom, 'exps', [0 -1]); 
-pass(9) = ~isnan(f);
+pass(8) = ~isnan(f);
 
 end

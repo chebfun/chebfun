@@ -34,25 +34,15 @@ err2 = abs(feval(f, x) - y_exact);
 pass(4) = all(err1 <= 10*vscale(f)*epslevel(f)) && ...
     all(err2 <= 10*vscale(f)*epslevel(f));
 
-% Check operation for impulses.
+% Check operation for pointValues.
 f = chebfun({-1, 1, 2}, [-1, 0, 1, 2]);
 [y, ignored] = minandmax(f);
 pass(5) = all(y == [-1 ; 2]);
 
-f.impulses(1,1,1) = 10;
-f.impulses(3,1,1) = -10;
+f.pointValues(1,1) = 10;
+f.pointValues(3,1) = -10;
 [y, x] = minandmax(f);
 pass(6) = all(y == [-10 ; 10]) && all(x == [1 ; -1]);
-
-f = chebfun({-1, 1, 2}, [-1, 0, 1, 2]);
-f.impulses(1,1,2) = -1;
-f.impulses(2,1,3) = 1;
-[y, x] = minandmax(f);
-pass(7) = all(y == [-inf ; inf]) && all(x == [-1 ; 0]);
-
-f.impulses(2,1,2) = -1;
-[y, x] = minandmax(f);
-pass(8) = all(y == [-inf ; 2]) && all(x == [-1 ; 1]);
 
 % Check computation of local extrema.
 f = chebfun(@(x) sin(x).^2 + sin(x.^2), [0, 4]);
@@ -71,7 +61,7 @@ x_exact = [        0
    3.308480466603983
    3.776766383330969
    4.000000000000000];
-pass(9) = numel(y == 7) && norm(y - y_exact, inf) < 10*vscale(f)*epslevel(f);
+pass(7) = numel(y == 7) && norm(y - y_exact, inf) < 10*vscale(f)*epslevel(f);
 
 % Check operation for array-valued chebfuns.
 f = chebfun(@(x) [sin(10*x) cos(10*x) exp(x)], [-1 -0.5 0.5 1]);
@@ -79,7 +69,7 @@ f = chebfun(@(x) [sin(10*x) cos(10*x) exp(x)], [-1 -0.5 0.5 1]);
 y_exact = [-1 -1 exp(-1) ; 1 1 exp(1)];
 fx = feval(f, x(:));
 fx = [fx(1:2,1) fx(3:4,2) fx(5:6,3)];
-pass(10) = all(abs(y(:) - y_exact(:)) <= 10*vscale(f)*epslevel(f)) && ...
+pass(8) = all(abs(y(:) - y_exact(:)) <= 10*vscale(f)*epslevel(f)) && ...
     all(abs(fx(:) - y_exact(:)) <= 10*vscale(f)*epslevel(f));
 
 f = chebfun(@(x) [exp((1 + 1i)*x) sec(1i*(x - 0.5))], [-1 0 1], ...
@@ -88,14 +78,8 @@ f = chebfun(@(x) [exp((1 + 1i)*x) sec(1i*(x - 0.5))], [-1 0 1], ...
 y_exact = [exp(-1 - 1i) sec(-1.5i) ; exp(1 + 1i) 1];
 fx = feval(f, x(:));
 fx = [fx(1:2,1) fx(3:4,2)];
-pass(11) = all(abs(y(:) - y_exact(:)) <= 10*vscale(f)*epslevel(f)) && ...
+pass(9) = all(abs(y(:) - y_exact(:)) <= 10*vscale(f)*epslevel(f)) && ...
     all(abs(fx(:) - y_exact(:)) <= 10*vscale(f)*epslevel(f));
-
-f = chebfun({[-1 1 2], [1 -1 3]}, [-1 0 1]);
-f.impulses(3, 1, 2) = 1;
-f.impulses(2, 3, 3) = -1;
-[y, x] = minandmax(f);
-pass(12) = isequal(y, [-1 -1 -inf ; inf 1 3]) && isequal(x, [-1 0 0 ; 1 -1 0]);
 
 op = @(x) sin(x).^2 + sin(x.^2);
 f = chebfun(@(x) [op(x) op(x/2)], [0, 4]);
@@ -116,9 +100,9 @@ x_exact = [        0                  0
    4.000000000000000  NaN];
 fx1 = feval(f, x_exact(:,1));
 fx2 = feval(f, x_exact(1:3,2));
-pass(13) = isequal(size(y), [7 2]) && ...
+pass(10) = isequal(size(y), [7 2]) && ...
     all(isnan(y(4:end,2))) && all(isnan(x(4:end,2)));
-pass(14) = norm(y(:,1) - y_exact(:,1), inf) < 10*vscale(f)*epslevel(f) && ...
+pass(11) = norm(y(:,1) - y_exact(:,1), inf) < 10*vscale(f)*epslevel(f) && ...
     norm(y(1:3,2) - y_exact(1:3,2), inf) < 10*vscale(f)*epslevel(f) && ...
     norm(fx1(:,1) - y_exact(:,1), inf) < 10*vscale(f)*epslevel(f) && ...
     norm(fx2(:,2) - y_exact(1:3,2), inf) < 10*vscale(f)*epslevel(f);
@@ -134,7 +118,7 @@ f = chebfun(op, dom, pref);
 [y, x] = minandmax(f);
 y_exact = [0 ; Inf];
 fx = op(x);
-pass(15) = ((max(abs(y - y_exact)) < 2e1*get(f, 'epslevel')) && ... 
+pass(12) = ((max(abs(y - y_exact)) < 2e1*get(f, 'epslevel')) && ... 
           (max(abs(fx - y_exact)) < 2e1*get(f, 'epslevel')));
 
 %% Tests on function defined on unbounded domain:
@@ -152,7 +136,7 @@ vExact = [-0.6381726863389515 ; 0.6381726863389515];
 pExact = [-1.120906422778534 ; 1.120906422778534];
 errV = vals - vExact;
 errP = pos - pExact;
-pass(16) = ( norm(errV, inf) < epslevel(f)*vscale(f) ) && ...
+pass(13) = ( norm(errV, inf) < epslevel(f)*vscale(f) ) && ...
     ( norm(errP, inf) < 2*epslevel(f)*vscale(f) );
       
 

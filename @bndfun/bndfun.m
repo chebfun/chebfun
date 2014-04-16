@@ -1,4 +1,4 @@
-classdef bndfun < fun
+classdef bndfun < classicfun
 %BNDFUN   Represent global functions on a bounded interval [a, b].
 %
 %   Class for representing global functions on a bounded interval [a, b].
@@ -27,7 +27,7 @@ classdef bndfun < fun
 %
 % See ONEFUN for further documentation of the ONEFUN class.
 %
-% See also FUN, CHEBPREF, ONEFUN.
+% See also CLASSICFUN, CHEBPREF, ONEFUN.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % BNDFUN Class Description:
@@ -41,7 +41,7 @@ classdef bndfun < fun
 % will not issue warnings if this condition is violated, but the results will
 % not be meaningful.
 %
-% Class diagram: [<<FUN>>] <>-- [<<onefun>>]
+% Class diagram: [<<CLASSICFUN>>] <>-- [<<onefun>>]
 %                   ^
 %                   |  
 %                [bndfun]
@@ -130,7 +130,7 @@ classdef bndfun < fun
         f = compose(f, op, g, pref)
         
         % Indefinite integral of a BNDFUN.
-        [f, rVal] = cumsum(f, m, dim, shift)
+        [f, rVal] = cumsum(f, m, dim)
         
         % Derivative of a BNDFUN.
         f = diff(f, k, dim)

@@ -60,7 +60,6 @@ function varargout = plot(varargin)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-% [TODO]: Implement plotting of delta functions.
 % TODO: Figure out the y axis limit for functions which blow up.
 
 % Deal with an empty input:
@@ -90,6 +89,7 @@ yLim = [inf, -inf];
 lineData = {};
 pointData = {};
 jumpData = {};
+deltaData = {};
 intervalIsSet = false;
 
 % Suppress inevitable warning for growing these arrays:
@@ -119,6 +119,7 @@ end
 lineData = {};
 pointData = {};
 jumpData = {};
+deltaData = {};
 
 % Deal with 'jumpLine' input.
 [jumpStyle, varargin] = chebfun.parseJumpStyle(varargin{:});
@@ -153,7 +154,9 @@ while ( ~isempty(varargin) )
             newData.xPoints = f;
             newData.yPoints = g;
             newData.xJumps = NaN;
-            newData.yJumps = NaN;   
+            newData.yJumps = NaN;  
+            newData.xDeltas = [];
+            newData.yDeltas = [];
             % Do nothing
         elseif ( numel(f) == 1 && numel(g) == 1 )
             % Array-valued CHEBFUN case:
@@ -239,7 +242,12 @@ while ( ~isempty(varargin) )
             ind = newData(k).xJumps < interval(1) | ...
                 newData(k).xJumps > interval(end);
             newData(k).xJumps(ind) = [];
-            newData(k).yJumps(ind,:) = [];
+            newData(k).yJumps(ind,:) = [];            
+            ind = newData(k).xDeltas < interval(1) | ...
+                newData(k).xDeltas > interval(end);
+            newData(k).xDeltas(ind) = [];
+            newData(k).yDeltas(ind,:) = [];
+            
         end
         
         % Update axis limits:
@@ -253,6 +261,7 @@ while ( ~isempty(varargin) )
         pointData = [pointData, newData(k).xPoints, newData(k).yPoints, ...
             styleData];
         jumpData = [jumpData, newData(k).xJumps, newData(k).yJumps, styleData];
+        deltaData = [deltaData, newData(k).xDeltas, newData(k).yDeltas];
     end
     
 end
@@ -285,6 +294,25 @@ else
     set(h3, jumpStyle{:});
 end
 
+% Plot the Delta functions:
+if ( isempty(deltaData) )
+    deltaData = {[]};
+end
+h4 = stem(deltaData{:}, 'd', 'fill');
+
+%% 
+% Do we want a style for delta functions?
+% if ( isempty(jumpStyle) )
+%     if ( isComplex )
+%         %[TODO]: The following statement can not be reached:
+%         set(h3, 'LineStyle', 'none', 'Marker', 'none')
+%     else
+%         set(h3, 'LineStyle', ':', 'Marker', 'none')
+%     end
+% else
+%     set(h3, jumpStyle{:});
+% end
+
 % Set the X-limits if appropriate values have been suggested:
 if ( all(isfinite(xLim)) )
 
@@ -314,7 +342,7 @@ end
 
 % Give an output to the plot handles if requested:
 if ( nargout > 0 )
-    varargout = {h1 ; h2 ; h3};
+    varargout = {h1 ; h2 ; h3 ; h4};
 end
 
 end

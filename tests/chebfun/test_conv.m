@@ -55,9 +55,13 @@ pass(5) = abs(feval(g, 1) - 23/96) < 100*epslevel(g);
 
 %% 6. Test the example from the HELP text:
 f = chebfun(1/2); g = f;
-for j = 2:4, g = conv(f, g); end
+for j = 2:4
+    g = conv(f, g); 
+end
 g1 = g(.1);
-for j = 1:4, g = diff(g); end
+for j = 1:4
+    g = diff(g); 
+end
 g2 = g(.1);
 err = abs(g1 - 0.332114583333333) + abs(g2 - 0);
 pass(6) = err < 1e-14;
@@ -71,8 +75,6 @@ h = conv(f, g);
 err = abs(norm(h,2) - 0.029781437647379);
 tol = 10*max(get(f, 'vscale')*get(f, 'epslevel'), get(g, 'epslevel')*get(g, 'vscale'));
 pass(7) = err < tol;
-
-
 
 end
 

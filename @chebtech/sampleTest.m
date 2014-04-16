@@ -13,7 +13,6 @@ function pass = sampleTest(op, f)
 % [TODO]: Describe where we evaluate? (Approx to largest derivative and at
 % -1+1e-12, 1-1e-12?)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 % Get the interpolation points:
 n = length(f);
 x = f.chebpts(n);

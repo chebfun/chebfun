@@ -2,9 +2,7 @@ function [f, g] = overlap(f, g)
 %OVERLAP   Overlap the domain of two CHEBFUN objects.
 %   [FOUT, GOUT] = OVERLAP(F, G) returns two CHEBFUNs such that FOUT.DOMAIN ==
 %   GOUT.DOMAIN and F(x) = FOUT(x), G(x) = GOUT(x) for all x in the domain of
-%   F. The third dimension of the IMPULSES fields of F and G will be padded with
-%   zeros if necessary so that FOUT.IMPULSES and GOUT.IMPULSES store impulse
-%   data to the same order.
+%   F. 
 %
 %   If F and G are array-valued, they must have the same numer of columns/rows,
 %   else an error is thrown.
@@ -78,14 +76,5 @@ if ( (length(f.domain) ~= length(g.domain)) || ~all(f.domain == g.domain) )
     g = restrict(g, newDomain);
     
 end
-
-% Pad the impulse arrays so that outputs store impulse data to the same order.
-fImps = f.impulses;
-gImps = g.impulses;
-maxImpOrder = max(size(fImps, 3), size(gImps, 3));
-padF = zeros(size(fImps, 1), size(fImps, 2), maxImpOrder - size(fImps, 3));
-f.impulses = cat(3, fImps, padF);
-padG = zeros(size(gImps, 1), size(gImps, 2), maxImpOrder - size(gImps, 3));
-g.impulses = cat(3, gImps, padG);
 
 end
