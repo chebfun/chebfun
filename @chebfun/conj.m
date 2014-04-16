@@ -10,15 +10,13 @@ function F = conj(F)
 % Loop over the columns of F:
 for j = 1:numel(F)
     
-    % Conjugate the impulses:
-    % [TODO]:  Is this the right thing to do for higher-order impulses?
-    F(j).impulses = conj(F(j).impulses);
+    % Conjugate the point values:
+    F(j).pointValues = conj(F(j).pointValues);
     
     % Conjugate the FUNs:
     for k = 1:numel(F(j).funs)
         F(j).funs{k} = conj(F(j).funs{k});
-    end
-    
+    end    
 end
 
 end

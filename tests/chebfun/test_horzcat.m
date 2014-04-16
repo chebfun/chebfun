@@ -34,6 +34,8 @@ Q_exact = @(x) [sin(x) cos(x) exp(x)];
 err = feval(Q, xr) - Q_exact(xr);
 pass(4) = numel(Q) == 3 && norm(err(:), inf) < 10*vscale(Q)*epslevel(Q);
 
+% These functions have the same breakpoints, so we should get an array-valued
+% CHEBFUN instead of a quasimatrix.
 Q = [f f];
 Q = [Q f];
 Q_exact = @(x) [sin(x) sin(x) sin(x)];

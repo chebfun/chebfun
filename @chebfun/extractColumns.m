@@ -44,8 +44,7 @@ else
     end
 
     % Extract the columns from the impulses:
-    F.impulses = F.impulses(:,colIdx,:);
-
+    F.pointValues = F.pointValues(:,colIdx);
 end
 
 end

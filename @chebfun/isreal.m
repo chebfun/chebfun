@@ -22,7 +22,7 @@ end
 function out = columnIsreal(f)
 
 % Check to see is the impulses are real:
-out = isreal(f.impulses);
+out = isreal(f.pointValues);
 if ( ~out )
     % Complex number found. Break:
     return

@@ -13,9 +13,8 @@ if ( isempty(F) )
 end
 
 for j = 1:numel(F)
-    % Take real part of the impulses:
-    % [TODO]:  Is this the right thing to do for higher-order impulses?
-    F(j).impulses = real(F(j).impulses);
+    % Take real part of the pointValues:
+    F(j).pointValues = real(F(j).pointValues);
 
     % Take real part of the FUNs:
     for k = 1:numel(F(j).funs)

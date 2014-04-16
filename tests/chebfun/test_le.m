@@ -20,7 +20,7 @@ pass(1) = isempty(f <= g)  && isempty(g <= f);
 g = chebfun(@(x) 0*x + sqrt(2)/2, pref);
 h = f <= g;
 ind = find(abs(h.domain - pi/4) < 10*vscale(h)*epslevel(h));
-pass(2) = ~isempty(ind) && (h.impulses(ind) == 1) && ...
+pass(2) = ~isempty(ind) && (h.pointValues(ind) == 1) && ...
     all(feval(h, x) - hvsde(sqrt(2)/2 - sin(x)) == 0);
 
 f = chebfun(@(x) exp(x), pref);
@@ -29,8 +29,9 @@ g = chebfun(g_op, pref);
 h = f <= g;
 ind1 = find(abs(h.domain - 0.5) < 10*vscale(h)*epslevel(h));
 ind2 = find(abs(h.domain + 0.5) < 10*vscale(h)*epslevel(h));
-pass(3) = ~isempty(ind1) && (h.impulses(ind1) == 1) && ...
-    ~isempty(ind2) && (h.impulses(ind2) == 1) && ...
+
+pass(3) = ~isempty(ind1) && (h.pointValues(ind1) == 1) && ...
+    ~isempty(ind2) && (h.pointValues(ind2) == 1) && ...
     all(feval(h, x) - hvsde(g_op(x) - exp(x)) == 0);
 
 h = f <= f;
@@ -44,8 +45,9 @@ f = chebfun(@(x) exp(x), [-1 -0.5 0 0.5 1], pref);
 h = f <= g;
 ind1 = find(abs(h.domain - 0.5) < 10*vscale(h)*epslevel(h));
 ind2 = find(abs(h.domain + 0.5) < 10*vscale(h)*epslevel(h));
-pass(6) = ~isempty(ind1) && (h.impulses(ind1) == 1) && ...
-    ~isempty(ind2) && (h.impulses(ind2) == 1) && ...
+
+pass(6) = ~isempty(ind1) && (h.pointValues(ind1) == 1) && ...
+    ~isempty(ind2) && (h.pointValues(ind2) == 1) && ...
     all(feval(h, x) - hvsde(g_op(x) - exp(x)) == 0);
 
 % Check error conditions.
@@ -73,7 +75,7 @@ g = chebfun(@(x) x*0);
 h = ( f <= g );
 h_vals = feval(h, x);
 h_exact = hvsde(x);
-pass(9) = ( h.impulses(2) == 1 ) && all( abs( h_vals - h_exact ) == 0 );
+pass(9) = ( h.pointValues(1) == 0 ) && all( abs( h_vals - h_exact ) == 0 );
 
 %% Test for function defined on unbounded domain:
 
@@ -97,6 +99,6 @@ h = ( f <= g );
 hVals = feval(h, x);
 hExact = oph(x);
 err = hVals - hExact;
-pass(10) = ( ~any(err) ) && all(h.impulses == [0 1 1].');
+pass(10) = ( ~any(err) ) && all(h.pointValues == [0 1 1].');
 
 end

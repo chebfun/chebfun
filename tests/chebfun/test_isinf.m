@@ -17,22 +17,16 @@ pass(2) = ~isinf(f);
 
 % Test on function with infinite breakpoint value.
 % [TODO]:  Test with a less artificial example.
-val = f.impulses(1, 1);
-f.impulses(1, 1) = Inf;
+f.pointValues(1, 1) = Inf;
 pass(3) = isinf(f);
 
-% Test on function with nontrivial higher-order impulses.
-% [TODO]:  Test with a less artificial example.
-f.impulses(1, 1) = val;
-f.impulses(:,:,2) = ones(size(f.impulses, 1), size(f.impulses, 2));
-pass(4) = isinf(f);
 
 %% Test on singular function:
 dom = [-2 7];
 pow = -1.64;
 f = chebfun(@(x) sin(100*x).*(x-dom(1)).^pow, dom, 'exps', [pow 0], ...
     'splitting', 'on');
-pass(5) = isinf(f);
+pass(4) = isinf(f);
 
 %% Test for functions defined on unbounded domain:
 
@@ -43,7 +37,7 @@ dom = [0 Inf];
 
 op = @(x) 0.75+sin(10*x)./exp(x);
 f = chebfun(op, dom, 'splitting', 'on');
-pass(6) = ~isinf(f);
+pass(5) = ~isinf(f);
 
 % Function defined on [0 Inf]:
 
@@ -53,6 +47,6 @@ dom = [-Inf -3*pi];
 % Blow-up function:
 op = @(x) x.*(5+exp(x.^3))./(dom(2)-x);
 f = chebfun(op, dom, 'exps', [0 -1]); 
-pass(7) = isinf(f);
+pass(6) = isinf(f);
 
 end

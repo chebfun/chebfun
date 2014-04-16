@@ -1,4 +1,4 @@
-classdef unbndfun < fun
+classdef unbndfun < classicfun
 %UNBNDFUN    Represent global functions on an unbounded interval [-inf inf] or
 % a semi-infinite interval [-inf b] or [a inf].
 %
@@ -41,7 +41,7 @@ classdef unbndfun < fun
 % will not throw warnings if assumption is violated, but the results will not be
 % meaningful under that circumstance.
 %
-% Class diagram: [<<FUN>>] <>-- [<<onefun>>]
+% Class diagram: [<<CLASSICFUN>>] <>-- [<<onefun>>]
 %                    ^
 %                    |
 %                [unbndfun]

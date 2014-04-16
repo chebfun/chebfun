@@ -39,10 +39,10 @@ for k = 1:numel(h.funs)
     end
 end
 
-% Impulses:
-nanMask = isnan(h.impulses);
+% pointValues:
+nanMask = isnan(h.pointValues);
 ind = ~nanMask;
-h.impulses(ind) = ~h.impulses(ind);
+h.pointValues(ind) = ~h.pointValues(ind);
 
 % Tidy the result:
 h = merge(h);

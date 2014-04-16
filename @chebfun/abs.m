@@ -33,8 +33,8 @@ for k = 1:numel(g.funs)
     g.funs{k} = abs(g.funs{k});
 end
 
-% Take the absolute value of the impulses in the first row:
-g.impulses = abs(g.impulses(:,:,1));
+% Take the absolute value of the point values at break points:
+g.pointValues = abs(g.pointValues);
 
 % [TODO]: Do we want to do this?
 % [ignored, idx] = setdiff(f.domain, g.domain);

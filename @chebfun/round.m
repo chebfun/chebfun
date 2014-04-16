@@ -45,8 +45,8 @@ for k = 1:numel(f.funs)
     f.funs{k} = round(f.funs{k});
 end
 
-% Round the impulses:
-f.impulses = round(f.impulses(:,:,1));
+% Round the pointValues:
+f.pointValues = round(f.pointValues);
 
 % Simplify the result:
 f = merge(f);

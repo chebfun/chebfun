@@ -57,14 +57,14 @@ pass(8) = max(err(:)) < 2*max(get(g, 'vscale').*get(g, 'epslevel'));
     
 %%
 % Verify error handling and corner cases.
-    
+
 % Multiply non-scalar double and fun.
 try
     f = bndfun(@(x) exp(x), dom);
     disp([1 2 3]*f)
 catch ME
-    pass(9) = strcmp(ME.identifier, 'CHEBFUN:FUN:mtimes:size') ...
-    && strcmp(ME.message, 'Inner matrix dimensions must agree.');
+    pass(9) = strcmp(ME.identifier, 'CHEBFUN:CLASSICFUN:mtimes:size') ...
+        && strcmp(ME.message, 'Inner matrix dimensions must agree.');
 end
     
 % Multiply fun and non-scalar double with mismatching dimensions.
@@ -83,7 +83,7 @@ try
     disp(f*g);
     pass(11) = false;
 catch ME
-    pass(11) = strcmp(ME.message, 'Use .* to multiply FUN objects.');
+    pass(11) = strcmp(ME.message, 'Use .* to multiply CLASSICFUN objects.');
 end
     
 % Using * to multiply a fun and something else.
@@ -92,7 +92,7 @@ try
     pass(12) = false;
 catch ME
     pass(12) = strcmp(ME.message, ...
-        'mtimes does not know how to multiply a FUN and a uint8.');
+        'mtimes does not know how to multiply a CLASSICFUN and a uint8.');
 end
 
 %% Tests for UNBNDFUN:

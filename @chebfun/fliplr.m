@@ -36,10 +36,8 @@ if ( ~f.isTransposed )
         f.funs{k} = fliplr(f.funs{k});
     end
 
-    % Flip the impulses:
-    for k = 1:size(f.impulses, 3)
-        f.impulses(:,:,k) = fliplr(f.impulses(:,:,k));
-    end
+    % Flip the pointValues:
+    f.pointValues = fliplr(f.pointValues);
 
 else
 

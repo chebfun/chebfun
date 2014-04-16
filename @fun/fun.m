@@ -1,79 +1,27 @@
-classdef fun % (Abstract)
-%FUN   Represent global functions on an interval [a, b].
+classdef fun % (Abstract) 
+%FUN   Approximate functions on arbitrary domains.
+%   Abstract (interface) class for approximating functions on the arbitrary 
+%   intervals.
 %
-%   Abstract (interface) class for representing global functions on an interval
-%   [a, b], which can either be bounded or unbounded. Functions are
-%   approximated via a ONEFUN object, which lives on the interval [-1, 1],
-%   stored in the FUN.  Forward and inverse maps stored in the FUN object map
-%   the interval [-1, 1] to [a, b], and vice versa.
-%
-% Constructor inputs:
-%   FUN.CONSTRUCTOR(OP, DOMAIN) constructs a FUN object from the function handle
-%   OP by mapping the DOMAIN to [-1, 1], and constructing an ONEFUN object to
-%   represent the function prescribed by OP. DOMAIN should be a row vector with
-%   two elements in increasing order. OP should be vectorised (i.e., accept a
-%   vector input) and output a vector of the same length as its input.
-%
-%   FUN.CONSTRUCTOR(OP, DOMAIN, VSCALE, HSCALE) allows the constructor of the
-%   ONEFUN of the FUN to use information about vertical and horizontal scales.
-%   If not given (or given as empty), the VSCALE defaults to 0 initially, and
-%   HSCALE defaults to 1.
-%
-%   FUN.CONSTRUCTOR(OP, DOMAIN, VSCALE, HSCALE, PREF) overrides the default
-%   behavior with that given by the CHEBPREF object PREF. See CHEBPREF for
-%   details.
-%
-%   FUN.CONSTRUCTOR(VALUES, DOMAIN, VSCALE, HSCALE, PREF) returns a FUN object
-%   with a ONEFUN constructed by the data in the columns of VALUES (if supported
-%   by ONEFUN class constructor).
-%
-% See ONEFUN for further documentation of the ONEFUN class.
-%
-% See also CHEBPREF, ONEFUN, BNDFUN, UNBNDFUN.
+% See also DELTAFUN, CLASSICFUN.
 
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FUN Class Description:
+%  [TODO]
 %
-% The FUN class is an abstract class for representations of functions on the
-% interval [a, b]. It achieves this by taking a ONEFUN on [-1, 1] and applying
-% a mapping.
-%
-% The current instances of FUNs are BNDFUNs and UNBNDFUNs. The former are used
-% to represent functions on bounded domains, whereas the latter are able to
-% represent some functions on unbounded domains.
-%
-% Note that all binary FUN operators (methods which can take two FUN arguments)
-% assume that the domains of the FUN objects agree. The methods will not throw
-% warnings in case the domains don't agree, but their output will not be
-% meaningful.
-%
-% Class diagram: [chebfun] <>-- [<<FUN>>] <>-- [<<onefun>>]
-%                                 ^   ^
-%                                /     \
-%                          [bndfun]   [unbndfun]
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-    %% Properties of FUN objects.
-    properties (Access = public)
-        % The domain of the FUN object, [a, b].
-        domain
+% Class diagram: [<<CHEBFUN>>] <>-- [<<FUN>>] <----[<<classicfun>>]
+%                                             <----[    deltafun  ]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-        % The mapping which maps [-1, 1] to [a, b], and vice versa.
-        mapping
+% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
 
-        % The ONEFUN of the FUN object, which does the actual approximation of
-        % the function the FUN object represents. The ONEFUN object lives on the
-        % interval [-1, 1], the mapping of the FUN object takes care of mapping
-        % between [-1, 1] and vice versa.
-        onefun
-    end
-    
-    %% CLASS CONSTRUCTOR:
-    methods (Static = true)
-        function obj = constructor(op, domain, vscale, hscale, pref)
+    methods (Static)
+        function obj = constructor(op, domain, vscale, hscale, pref)            
             
-            % We can't return an empty FUN, so pass an empty OP down.
             if ( nargin == 0  )
                 op = [];
             end
@@ -85,45 +33,55 @@ classdef fun % (Abstract)
                 pref = chebpref(pref);
             end
             
-            % Get domain if none given:
-            if ( nargin < 2 || isempty(domain) )
-                domain = pref.domain;
-            end
-            
-            % Get vscale if none given:
-            if ( nargin < 3 || isstruct(vscale) )
-                vscale = 0;
-            end
-            
-            % Get hscale if none given:
-            if ( nargin < 4 || isempty(vscale) )
-                hscale = norm(domain, inf);
-            end
+            % Check if delta functions are required:
+            if ( pref.enableDeltaFunctions )                
+                % Generalized function mode; call DELTAFUN constructor:                
+                % Then op is a classicfun, vscale and hscale are magnitude 
+                % and location of delta functions. domain is a spurious argument.
+                deltaMag = vscale;
+                deltaLoc = hscale;
+                %[TODO]: pass preferences as well.
+                obj = deltafun(op, deltaMag, deltaLoc);
+            else             
+                % Get domain if none given:
+                if ( nargin < 2 || isempty(domain) )
+                    domain = pref.domain;
+                end
 
-            % [TODO]: Explain this. Only becomes relevant with UNBNDFUN
-            if ( isinf(hscale) )
-                hscale = 1;
-            end
+                % Get vscale if none given:
+                if ( nargin < 3 || isstruct(vscale) )
+                    vscale = 0;
+                end
 
-            % Call constructor depending on domain:
-            if ( ~any(isinf(domain)) )
-                % Construct a BNDFUN object:
-                obj = bndfun(op, domain, vscale, hscale, pref);
-                
-            else
-                % Construct an UNBNDFUN object:
-                obj = unbndfun(op, domain, vscale, hscale, pref);
+                % Get hscale if none given:
+                if ( nargin < 4 || isempty(vscale) )
+                    hscale = norm(domain, inf);
+                end
+
+                % [TODO]: Explain this. Only becomes relevant with UNBNDFUN
+                if ( isinf(hscale) )
+                    hscale = 1;
+                end
+
+                % Call the relevent constructor:
+                if ( isa(op, 'fun') )
+                    % OP is already a ONEFUN!
+                    obj = op;               
+                else
+                    % STANDARD mode; call SMOOTHFUN constructor:
+                    obj = classicfun.constructor(op, domain, vscale, hscale, pref);
+
+                end
             end
-            
         end
-
+        
     end
     
-    %% STATIC METHODS IMPLEMENTED BY THIS CLASS.
-    methods (Static = true)
+    %% ABSTRACT (NON-STATIC) METHODS REQUIRED BY FUN CLASS.
+    methods ( Abstract = true )
 
     end
-    
+
     %% ABSTRACT STATIC METHODS REQUIRED BY THIS CLASS.
     methods (Abstract = true, Static = true)
 
@@ -133,37 +91,6 @@ classdef fun % (Abstract)
         % Make a FUN. (Constructor shortcut)
         f = make(varargin);
     end
-    
-    %% ABSTRACT METHODS REQUIRED BY THIS CLASS.
-    methods(Abstract = true)
-        % [TODO]: Once UNBNDFUN and CHEBFUN advance, we should revisit this
-        % list, and add/throw away abstract methods as appropriate.
-        
-        % Compose a FUN with an operator or another FUN
-        f = compose(f, op, g, pref)
-        
-        % Indefinite integral of a FUN.
-        f = cumsum(f, m, pref)
-        
-        % Derivative of a FUN.
-        f = diff(f, k, dim)
-        
-        % Evaluate a FUN.
-        y = feval(f, x)
-        
-        % Compute the inner product of two FUN objects.
-        out = innerProduct(f, g)
-        
-        % Data for plotting a FUN
-        data = plotData(f, g);
-        
-        % Restrict a FUN to a subinterval.
-        f = restrict(f, s)
-        
-        % Definite integral of a FUN on its domain of definition.
-        out = sum(f, dim)
-        
-    end           
     
     %% METHODS IMPLEMENTED BY THIS CLASS.
     methods
@@ -210,6 +137,9 @@ classdef fun % (Abstract)
         
         % Imaginary part of a FUN.
         f = imag(f)
+
+        % Test if a FUN object manages delta functions.
+        out = isdelta(f)
 
         % True for an empty FUN.
         out = isempty(f)
@@ -279,45 +209,6 @@ classdef fun % (Abstract)
 
         % Basic linear plot for FUN objects.
         varargout = plot(f, varargin)
-        
-        % 3-D plot for FUN objects.
-        varargout = plot3(f, g, h, varargin)
-
-        % Addition of two FUN objects.
-        f = plus(f, g)
-
-        % Right array divide for a FUN.
-        f = rdivide(f, c, pref)
-
-        % Real part of a FUN.
-        f = real(f)
-
-        % Roots of a FUN in the interval [a,b].
-        out = roots(f, varargin)
-        
-        % Round a FUN towards nearest integer.
-        g = round(f)
-        
-        % Signum of a FUN. (f should have no zeros in its domain)
-        f = sign(f, pref)
-
-        % Simplify the ONEFUN of a FUN object.
-        f = simplify(f, tol)
-
-        % Size of a FUN.
-        [size1, size2] = size(f, varargin)
-
-        % FUN multiplication.
-        f = times(f, g, varargin)
-        
-        % FUN objects are not transposable.
-        f = transpose(f)
-
-        % Unary minus of a FUN.
-        f = uminus(f)
-
-        % Unary plus of a FUN.
-        f = uplus(f)
-
     end
+    
 end

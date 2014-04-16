@@ -213,7 +213,7 @@ else
     n = 1000;
     
     [x, w] = jacpts(ceil(n/2) + 1, f.exponents(2), f.exponents(1));
-    out = w*f.smoothPart.feval(x);
+    out = w*feval(f.smoothPart, x);
     
 end
 

@@ -10,7 +10,7 @@ function f = cumsum(f, m, dim)
 %   CUMSUM(F, N) returns the fractional integral of order N as defined by the
 %   Riemann-Liouville integral.
 %
-%   CUMSUM(F, N, 2) will take the Mth cumulative sum over the columns F an
+%   CUMSUM(F, N, 2) will take the Nth cumulative sum over the columns F an
 %   array-valued CHEBFUN or quasimatrix.
 %
 % See also SUM, INTEGRAL.
@@ -66,8 +66,9 @@ transState = f(1).isTransposed;
 
 % Loop m times:
 for l = 1:m
-    rVal = 0;    
+
     funs = {};
+    rVal = 0;
     
     % Main loop for looping over each piece and do the integration:
     for j = 1:numFuns

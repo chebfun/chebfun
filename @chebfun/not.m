@@ -20,7 +20,7 @@ for k = 1:numel(f.funs)
     f.funs{k} = not(f.funs{k});
 end
 
-% Impulses:
-f.impulses = abs(f.impulses(:,:,1)) < tol;
+% pointValues:
+f.pointValues = abs(f.pointValues) < tol;
 
 end

@@ -140,4 +140,24 @@ if ( numFuns > 1 )
     s = [s, sprintf('  Total length = %i.', sum(len))];
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Dispaly for delta functions:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+[deltaMag, deltaLoc] = getDeltaFunctions(f);
+if ( ~isempty(deltaMag) )    
+    s = [s, sprintf('\nDelta functions:\n')];
+    m = size(deltaMag, 1);
+    n = size(deltaMag, 2);
+    for i = 1: m
+        for j = 1:n            
+            s = [s, sprintf('%8.2g', deltaMag(i, j))];
+        end
+        s = [s, sprintf('\n')];
+    end
+    s = [s, sprintf( 'Locations:\n')];
+    s = [s, sprintf('%8.2g', deltaLoc)];
+    s = [s, sprintf('\n')];
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 end

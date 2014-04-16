@@ -22,18 +22,18 @@ if ( nargin == 1 )
 
         elseif ( all(infEnds == [1, 0]) )
             % If unbounded to the left, take the left impulse as the mean:
-            h = f.impulses(1);
+            h = f.pointValues(1);
 
         elseif ( all(infEnds == [0, 1]) )
             % If unbounded to the right, take the right impulse as the mean:
-            h = f.impulses(end);
+            h = f.pointValues(end);
 
         elseif ( all(infEnds == [1, 1]) )
             % If doubly unbounded...
-            if ( abs(f.impulses(1) - f.impulses(end)) < ...
+            if ( abs(f.pointValues(1) - f.pointValues(end)) < ...
                     max(vscale(f).*epslevel(f)) )
                 % Return the impulse at left/right if they are the same.
-                h = f.impulses(1);
+                h = f.pointValues(1);
             else
                 % Or return a NaN if they are different:
                 h = NaN;
