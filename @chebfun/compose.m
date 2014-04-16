@@ -303,6 +303,10 @@ end
 %         minF, maxF, g.domain(1), g.domain(end))
 % end
 
+if ( isdelta(f) || isdelta(g) )
+    warning('CHEBFUN:COMPOSE:DELTACOMPOSE', ...
+        'Composition ignores delta functions. Results may not make any sense.');
+end
 
 %% Locate breakpoints in G:
 
