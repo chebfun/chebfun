@@ -56,9 +56,14 @@ switch index(1).type
             out = feval(f, ':', y) ; 
         elseif ( isnumeric( x ) && isnumeric( y ) )
             out = feval(f, x, y) ;
+        elseif ( isa(x,'chebfun') && isa(y,'chebfun') )
+            if ( ~isreal(x) || ~isreal(y) ) 
+                error('CHEBFUN2:subsref:real','Both chebfuns must be real-valued.')
+            end
+            out = feval(f, x, y) ;
         else
             error('CHEBFUN2:subsref:nonnumeric',...
-              'Cannot evaluate chebfun2 for non-numeric type.');
+              'Cannot evaluate chebfun2 for these inputs type.');
         end
     
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% GET %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
