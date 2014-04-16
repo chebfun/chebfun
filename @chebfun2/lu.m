@@ -13,9 +13,6 @@ function varargout = lu( f, thresh )
 %
 % [L, U, P] = LU(F, THRESH) returns the LU factorization of F that removes 
 % the tail of pivots below THRESH.
-%
-% WARNING: Due to round errors the unit lower triangular quasimatrix L may
-% have 
 % 
 % For more information about the factorization: 
 % A. Townsend and L. N. Trefethen, Continuous analogues of matrix
