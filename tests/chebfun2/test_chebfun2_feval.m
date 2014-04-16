@@ -69,12 +69,4 @@ pass(j) = ( all( size( feval(f, [1 1;1 1], [1 1; 1 1]) ) == [2 2] ) );
 pass(j) = ( all( size( feval(f, x, x) ) == [n 1] ) );
 pass(j) = ( all( size( feval(f, xx, yy)  ) == [n n] ) );
 
-% Test evaluation syntax for chebfun inputs. 
-f = chebfun2(@(x,y) x.*y); 
-c1 = chebfun(@(t) 1 + 0*t);
-c2 = chebfun(@(t) -.3 + 0*t);
-pass(j) = ( norm( f(c1, c2) +.3 ) < tol );
-pass(j) = ( norm( f(c1 + 1i*c2) +.3 ) < tol );
-pass(j) = ( norm( feval(f,c1,c2) - f(c1,c2) ) < tol );
-
 end
