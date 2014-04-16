@@ -42,19 +42,6 @@ else
     % Clean up delta functions:
     f = simplifyDeltas(f);
      
-    % If f does not have a funPart, construct one compatible with delta
-    % function locations:
-    if ( isempty(f.funPart) )
-        a = deltaLoc(1);
-        if ( length(deltaLoc) < 2 )
-            a = a-1;
-            b = a+2;
-        else
-            b = deltaLoc(end);
-        end
-        f.funPart = fun.constructor(0, [a, b]);
-    end
-                
     % Determine locations where jumps are to be introduced:
     idx = abs(deltaMag(1,:)) >= deltaTol;
     jumpLocs = deltaLoc(idx);
