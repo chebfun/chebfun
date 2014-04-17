@@ -20,17 +20,17 @@ pass(2) = all(size(C5) == [10, 5]);
 %%
 C = [A, B];
 C5 = matrix(C,[5 5]);
-pass(3) = all(size(C5) == [10, 24]);
+pass(3) = all(size(C5) == [10, 20]);
 
 C = [A; B];
 C5 = matrix(C,[5 5]);
-pass(4) = all(size(C5) == [20, 14]);
+pass(4) = all(size(C5) == [20, 10]);
 
 %%
 C = [A, B];
 E = [ C; 2*C ];
 C5 = matrix(C,[5 5]);
-pass(5) = all(size(C5) == [10, 24]);
+pass(5) = all(size(C5) == [10, 20]);
 
 C = [A, x];
 C5 = matrix(C,5);
@@ -43,7 +43,7 @@ pass(7) = all(size(C5) == [5,  6]);
 %%
 x = chebfun('x',[0 .5 2]);
 C5 = (matrix([x, D],[5 5 5]));
-pass(8) = all(size(C5) == [15,  19]);
+pass(8) = all(size(C5) == [15,  16]);
 
 
 end

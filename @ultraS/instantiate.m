@@ -16,19 +16,21 @@ function [L, S] = instantiate(disc, data)
 
 if ( iscell(data) )
     % Loop through cells
-    [L, S] = cellfun(@(x) instantiateOne(disc, x), data, 'uniform', false);
+    [L, S] = cellfun(@(x, s) instantiateOne(disc, x, s), data, ...
+        num2cell(disc.inputDimension), 'uniform', false);
 else
-    [L, S] = instantiateOne(disc,data);
+    [L, S] = instantiateOne(disc, data, disc.inputDimension);
 end
 
 end
 
-function [L,S] = instantiateOne(disc, item)
+function [L,S] = instantiateOne(disc, item, space)
 % Instantiate one block of data.
 %
 % TODO: Why two outputs L and S? What do they mean?
 
 if (isa(item, 'operatorBlock') )
+    disc.dimension = disc.dimension + space;
     % Convert a square block
     if ( ~isempty(disc.coeffs) )
         % Coefficients of the block are available, convert to a diffmat.
@@ -39,6 +41,7 @@ if (isa(item, 'operatorBlock') )
     end 
 elseif ( isa(item, 'functionalBlock') )
     % Convert a row block
+    disc.dimension = disc.dimension + space;
     
     % TODO: More documentation please. AB, 12/2/14
     dim = disc.dimension;

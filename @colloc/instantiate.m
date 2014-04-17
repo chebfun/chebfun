@@ -1,4 +1,4 @@
-function M = instantiate(disc, data)
+function M = instantiate(disc, data, dim)
 %INSTANTIATE Convert an item to discrete form in COLLOC2.
 %   M = INSTANTIATE(DISC, DATA) converts each item DATA{k} to discrete form
 %   using the information in discretization DISC. The result M is a cell array.
@@ -13,28 +13,33 @@ function M = instantiate(disc, data)
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
+if ( nargin == 2 )
+    dim = disc.dimension;
+    if ( iscell(data) )
+        dim = repmat({dim}, size(data));
+    end
+end
+
 if ( iscell(data) )
-    M = cellfun(@(x, s) instantiateOne(disc, x, s), data, ...
-        num2cell(disc.inputDimension), 'uniform', false);
+    M = cellfun(@(x, dim) instantiateOne(x, dim), data, dim, 'uniform', false);
 else
-    M = instantiateOne(disc, data, disc.inputDimension);
+    M = instantiateOne(data, dim);
 end
 
-end
 
-function A = instantiateOne(disc, item, space)
-% Instantiate individual component of a discretization+chebmatrix combo.
-
-if ( isa(item, 'linBlock') )
-    disc.source = item;
-    disc.dimension = disc.dimension + space;
-    A = disc.source.stack( disc );
-elseif ( isa(item, 'chebfun') )
-    A = disc.toValues(item);
-elseif ( isnumeric(item) )
-    A = item;
-else
-    error('CHEBFUN:COLLOC2:instantiate:instantiateOne', 'Unrecognized item.')
-end
+    function A = instantiateOne(item, dim)
+    % Instantiate individual component of a discretization+chebmatrix combo.
+        if ( isa(item, 'linBlock') )
+            disc.source = item;
+            disc.dimension = dim;
+            A = disc.source.stack( disc );
+        elseif ( isa(item, 'chebfun') )
+            A = disc.toValues(item);
+        elseif ( isnumeric(item) )
+            A = item;
+        else
+            error('CHEBFUN:COLLOC2:instantiate:instantiateOne', 'Unrecognized item.')
+        end
+    end
 
 end

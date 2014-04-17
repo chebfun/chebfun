@@ -25,6 +25,8 @@ classdef (Abstract) chebDiscretization
         source = []       % linop or chebmatrix to be discretized
         domain = []       % may generalize that of the source
         dimension = []    % vector of lengths, one per subinterval
+        % Store the size of the input space relative to disc.dimension
+        inputDimension = [];
     end
         
     properties (Dependent)
@@ -80,6 +82,8 @@ classdef (Abstract) chebDiscretization
         
         % Reduces (projects) block rows to make space for the constraints.
         [PA,P] = reduce(disc, blocks)
+        
+%         space = getInputDimension(L)
         
     end
     

@@ -16,11 +16,6 @@ classdef colloc < chebDiscretization
         mldivideData = [];
     end
     
-    properties
-        % Store the size of the input space relative to disc.dimension
-        inputDimension = [];
-    end
-    
     methods
         function disc = colloc(source, dimension, domain)
             %COLLOC    Collocation discretization constructor.

@@ -5,7 +5,7 @@ if ( isa(L, 'linop') )
     space = max(space, 0);
     space = repmat(space, size(L, 1), 1);
 else
-    space = 0;
+    space = zeros(size(L));
 end
 
 end

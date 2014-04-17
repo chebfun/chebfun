@@ -1,4 +1,4 @@
-function [M, P, B, A] = applyConstraints(disc, blocks)
+function B = getConstraints(disc, blocks)
 %APPLYCONSTRAINTS   Modify discrete operator to accommodate constraints.
 %   M = APPLYCONSTRAINTS(DISC, BLOCKS) uses a cell of matrix BLOCKS created by
 %   the discretization DISC in order to return a matrix that incorporates both
@@ -11,14 +11,6 @@ function [M, P, B, A] = applyConstraints(disc, blocks)
 
 %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org/ for Chebfun information.
-
-% Convert the blocks to the original, unconstrained matrix.
-A = blocks;
-
-% Project rows down, and record the projection matrix as well.
-[rows, P] = disc.reduce(blocks);
-M = cell2mat(rows);
-P = blkdiag(P{:});
 
 % Some preparation.
 dim = disc.dimension;
@@ -41,13 +33,6 @@ if ( ~isempty(L.continuity) )
     disc2.inputDimension = repmat(disc.inputDimension(1,:), size(disc2.source, 1), 1);
     constr = matrix(disc2, dim, dom);
     B = [ constr; B ];
-end
-
-% This should restore squareness to the final matrix.
-M = [ B; M ];
-if ( size(M, 1) ~= size(M, 2) )
-    % TODO: Improve this warning.
-    warning('Matrix is not square!');
 end
 
 end

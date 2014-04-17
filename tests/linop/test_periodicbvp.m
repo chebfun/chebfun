@@ -28,8 +28,7 @@ xtest = dom(1)+diff(dom)*(xtest+1)/2;
 qtest = qtest*diff(dom)/2;
 
 w = [];
-for k = 1:6
-    wold = w;
+for k = 3
     prefs.discretization = type{k};
     w = linsolve(L,f,prefs);
 
@@ -64,6 +63,7 @@ for k = 1:6
         % introduce breakpoints
         f = [abs(cos(x)); 0*x; 1 ];
     end
+
 end
 
 err;

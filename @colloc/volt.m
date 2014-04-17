@@ -25,9 +25,8 @@ end
 
 % Make use of the cumsum operator. Note that while C(n) would be triangular
 % for low-order quadrature, for spectral methods it is not.
-C = operatorBlock.cumsum(disc.domain);
-disc.source = linop(C);    % make sure we use the correct disc. type
-
+disc.source = operatorBlock.cumsum(disc.domain);
+ 
 V = V .* matrix(disc, n); 
 
 end

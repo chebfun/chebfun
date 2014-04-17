@@ -17,7 +17,7 @@ fdisc.outputSpace = disc.outputSpace;
 row = instantiate(fdisc, f.blocks);
 % Reduce each compomenent of the cell array as appropriate to make space for
 % constraints and continuity conditions.
-row = reduce(disc, row);
+% row = reduce(disc, row);
 
 % Convert cells to a vector.
 b = cell2mat(row);

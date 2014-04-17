@@ -12,13 +12,19 @@ function [PA, P] = reduce(disc, blocks)
 
 % Setup
 r = sizeReduction(disc.source);
-space = max(disc.source.diffOrder, [], 1);
+dim = disc.dimension;
+space = disc.inputDimension(1,:);
+
+if ( numel(space) == 1 )
+    space = repmat(space, 1, size(blocks, 2));
+end
 
 % Outputs will be cells for convenience
 PA = cell(1, size(blocks, 2));
 P = cell(1, size(blocks, 2));
+
 for i = 1:size(blocks, 2)       % for each block column
-    [PA{i}, P{i}] = reduceOne(disc, blocks(:,i), r(i), disc.dimension+space(i));  % do reduction
+    [PA{i}, P{i}] = reduceOne(disc, blocks(:,i), r(i), dim+space(i));  % do reduction
 end
 
 end
@@ -26,12 +32,6 @@ end
 
 function [PA, P] = reduceOne(disc, A, m, n)
 % Does reduction for one block row.
-
-% if ( m == 0 && size(A{1},2) < sum(n) )   % do nothing
-%     PA = cell2mat(A);
-%     P = eye(size(A, 2));
-%     return
-% end
 
 % Step by intervals in the domain.
 domain = disc.domain;
@@ -59,11 +59,11 @@ for j = 1:numel(A)
         PA{j} = A{j};
     end
 end
-% PA = cellfun(@(A) P*A, A, 'uniformOutput', false);
 PA = cell2mat(PA);
 
 if ( m == 0 && size(A{1},2) < sum(n) )
     % We don't want to project scalars.
     P = eye(size(A, 2));
 end
+
 end

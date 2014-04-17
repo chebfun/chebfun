@@ -64,5 +64,5 @@ end
 % pass(5) = norm( u - sin(x) ) < 1e6*tol;
 % pass(6) = norm( A*u - f ) < 1e4*tol;
 
-pass = err(:) < tol;
+pass = err(:).' < tol;
 end

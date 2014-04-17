@@ -55,7 +55,7 @@ end
 
 % If RHS is a CHEBFUN, need to convert it to CHEBMATRIX in order for the method
 % to be able to work with it.
-if isa( f, 'chebfun' )
+if ( isa( f, 'chebfun' ) )
     f = chebmatrix(f);
 end
 
@@ -63,6 +63,7 @@ end
 dimVals = prefs.dimensionValues;
 if ( isempty(disc) )
     disc = prefs.discretization(L);
+%     disc = ultraS(L)
     % Update the domain if new breakpoints are needed
     disc.domain = chebfun.mergeDomains(disc.domain, f.domain);
     % Update the dimensions to work with the correct number of breakpoints
@@ -92,21 +93,22 @@ for dim = dimVals
 
     % Discretize the operator (incl. constraints/continuity), unless there is a
     % currently valid factorization at hand.
-    if ( ~isFactored(disc) )
-        [A, P] = matrix(disc);
-    else
+    if ( isFactored(disc) )
         A = [];
+    else
+        [A, P] = matrix(disc);
+        if ( size(A, 1) ~= size(A, 2) )
+            % TODO: Improve this warning.
+            warning('Matrix is not square!');
+        end
     end
-
+    
     % Discretize the RHS (incl. constraints/continuity):
     b = rhs(disc, f);
     
     % Solve the linear system:
     [v, disc] = mldivide(disc, A, b);
-    
-    if ( isa(disc, 'colloc') )
-        v = P*v;
-    end
+    v = P*v;
     
     % Convert the different components into cells
     u = partition(disc, v);

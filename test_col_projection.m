@@ -12,7 +12,12 @@ A = [ D^3 I cos(x);
       D^2 D -x ; 
       S*D E(0) 1];
   
+pref = cheboppref;
+pref.discretization = @ultraS;
+  
+A.prefs = pref;
 A = linop(A);
+
 A = addbc( A, [E(-1), z,     1], 1 );
 A = addbc( A, [E(1),  z,     2], 0 ); 
 A = addbc( A, [z,     E(1),  3], 1 ); 

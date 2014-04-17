@@ -1,4 +1,4 @@
-function varargout = matrix(disc, dimension, domain)
+function [M, P, B, A] = matrix(disc, dimension, domain)
 %MATRIX    Convert operator to matrix using ULTRAS discretization.
 %   MATRIX(DISC) uses the parameters in DISC to discretize DISC.source as a
 %   matrix. 
@@ -32,25 +32,44 @@ A = disc.source;
 if ( isa(A, 'chebmatrix') )
     c = disc.coeffs;
     outputSpaces = disc.outputSpace;
+    inputDimension = disc.inputDimension;
     L = cell(size(A));
     S = cell(size(A));
     for j = 1:size(A, 1)
         disc.outputSpace = outputSpaces(j);
         for k = 1:size(A, 2)
             disc.coeffs = c{j, k};
-            [L{j, k}, S{j, k}] = instantiate(disc, A.blocks{j, k});
+            disc.inputDimension = inputDimension(j,k);
+            [L{j,k}, S{j,k}] = instantiate(disc, A.blocks{j, k});
         end
     end
+    disc.inputDimension = inputDimension;
+    
     if ( isa(A, 'linop') )
-        [out{1:4}] = applyConstraints(disc, L);
-        out{2} = out{2}*cell2mat(S);
+        [rows, P] = disc.reduce(L);
+        PA = cell2mat(rows);
+        P = blkdiag(P{:});
+        B = getConstraints(disc, L);
+
+        % This should restore squareness to the final matrix.
+        M = [ B ; PA ];
+
+        if ( size(M, 1) ~= size(M, 2) )
+            % TODO: Improve this warning.
+             warning('Matrix is not square!');
+        end
     else
-        out{1} = cell2mat(L);
+        M = cell2mat(L);
     end
-    m = max(1, nargout);
-    varargout(1:m) = out(1:m);    
+
+    
+
+    
+
+        
 else
     disc.coeffs = disc.coeffs{1};
     [varargout{1:nargout}] = instantiate(disc, A);
 end
+
 end

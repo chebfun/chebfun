@@ -49,6 +49,8 @@ classdef ultraS < chebDiscretization
             disc.coeffs = ultraS.getCoeffs(source);
             disc.outputSpace = ultraS.getOutputSpace(source);
             
+            disc.inputDimension = ultraS.getInputDimension(source);
+            
         end
         
         
@@ -67,6 +69,11 @@ classdef ultraS < chebDiscretization
         S = convert(A, K1, K2)
 
     end
+    
+    methods ( Static )
+            space = getInputDimension(L)
+    end
+            
     
     methods ( Access = private, Static = true)
         

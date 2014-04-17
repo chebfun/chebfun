@@ -12,31 +12,50 @@ function [PA, P] = reduce(disc, blocks)
 
 r = sizeReduction(disc.source);
 dim = disc.dimension;
-PA = cell(size(blocks, 1), 1);
-P = cell(size(blocks, 1), 1);
+space = disc.inputDimension(1,:);
+
+PA = cell(1, size(blocks, 1));
+P = cell(1, size(blocks, 1));
 % Loop through the block-rows of the operator.
-for i = 1:size(blocks, 1)
-    M = cat(2, blocks{i, :});
-    [PA{i}, P{i}] = reduceOne(disc, M, dim - r(i));
+
+for i = 1:size(blocks, 2)       % for each block column
+    [PA{i}, P{i}] = reduceOne(disc, blocks(:,i), r(i), dim+space(i));  % do reduction
 end
 
 end
 
 
-function [A, P] = reduceOne(disc, A, m)
+function [PA, P] = reduceOne(disc, A, m, n)
 % TODO: What do the input variables stand for? DISC is clear
 % from above, presumably, A is a block-row. What does m do?
 % AB, 1/3/14.
 dom = disc.domain;
-n = disc.dimension;
+
 % chop off some rows and columns
 % TODO: It's not really obvious what's going on here. AB, 1/3/14.
 v = [];
 nn = cumsum([0 n]);
-P = eye(size(A, 1));
+P = {};
 for k = 1:numel(dom) - 1
-    v = [v m(k) + nn(k) + (1:(n(k) - m(k)))];
+    v = [v nn(k) + n(k) - (1:m)];
 end
-A(v.', :) = [];
-P(v.', :) = [];
+P = eye(sum(n));
+P(v,:) = [];
+
+% Convert the projection matrices P into a blockdiagonal matrix.
+PA = A;
+for j = 1:numel(PA)
+    if ( size(P, 2) == size(A{j}, 1) )
+        PA{j}(v.', :) = [];
+    else
+        PA{j} = A{j};
+    end
+end
+PA = cell2mat(PA);
+
+if ( m == 0 && size(A{1},2) < sum(n) )
+    % We don't want to project scalars.
+    P = eye(size(A, 2));
+end
+
 end
