@@ -21,6 +21,11 @@ function f = chebpoly(n, d, kind)
 defaultKind = 1;
 
 % Parse input
+if ( n < 0 || (n - round(n)) >= eps(n) )
+    error('CHEBFUN:chebpoly:integern', ...
+    'The first argument must be a non-negative integer.');
+end
+
 if ( nargin == 1 )
     d = chebpref().domain;
     kind = defaultKind;
