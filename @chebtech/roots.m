@@ -170,16 +170,17 @@ end
         % Find the final coefficient about tailMax:
         n = find(abs(c) > tailMmax, 1, 'last');
 
-        % [TODO]: Should we alias or truncate here?
+        % Should we alias or truncate here? We truncate here for speed (about
+        % 30-50% faster on example with a large amount of subdivision. 
         % Wrap (i.e., alias), don't just truncate:
-        if ( ~isempty(n) && (n > 1) && (n < length(c)) )
-            c = chebtech2.alias(c(end:-1:1), n);
-            c = c(end:-1:1);
-        end
-%         % Truncate the coefficients (rather than alias):
 %         if ( ~isempty(n) && (n > 1) && (n < length(c)) )
-%             c = c(1:n);
+%             c = chebtech2.alias(c(end:-1:1), n);
+%             c = c(end:-1:1);
 %         end
+        % Truncate the coefficients (rather than alias):
+        if ( ~isempty(n) && (n > 1) && (n < length(c)) )
+            c = c(1:n);
+        end
 
         % Trivial case, n == []:
         if ( isempty(n) )
