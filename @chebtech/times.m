@@ -13,7 +13,7 @@ function f = times(f, g, varargin)
 
 % CHEBTECH * [] = []:
 if ( isempty(f) || isempty(g) )
-    f = []; 
+    f = [];
     return
 end
 
@@ -45,7 +45,7 @@ elseif ( size(f.values, 1) == 1 )
 elseif ( size(g.values, 1) == 1)
     % If we have CHEBTECH.*(constant CHEBTECH), convert the (constant CHEBTECH)
     % to a scalar and call TIMES again:
-    f = times(f, g.values); 
+    f = times(f, g.values);
     f.epslevel = max(f.epslevel, g.epslevel);
     return
 end
@@ -54,19 +54,21 @@ end
 [fn, fm] = size(f.values);
 [gn, gm] = size(g.values);
 
-% The length of the product is known:
-fNew = prolong(f, fn + gn - 1); 
+fNew = flipud(f.coeffs);
+gNew = flipud(g.coeffs);
+
+% prolong:
+fNew((fn+1):(fn+gn+1),:) = 0;
+gNew((gn+1):(fn+gn+1),:) = 0;
 
 % Check dimensions:
 if ( fm ~= gm )
     if ( fm == 1 )
         % Allow [Inf x 1] .* [Inf x m].
-        fNew.values = repmat(fNew.values, 1, gm);
-        fNew.coeffs = repmat(fNew.coeffs, 1, gm);
+        fNew = repmat(fNew, 1, gm);
     elseif ( gm == 1 )
         % Allow [Inf x m] .* [Inf x 1].
-        g.values = repmat(g.values, 1, fm);
-        g.coeffs = repmat(g.coeffs, 1, fm);
+        gNew = repmat(gNew, 1, fm);
     else
         error('CHEBFUN:CHEBTECH:times:dim2', ...
             'Inner matrix dimensions must agree.');
@@ -79,21 +81,28 @@ pos = false;
 
 % Multiply values:
 if ( isequal(f, g) )
-   values = fNew.values.^2;          
-   if ( isreal(f) )
-       pos = true; 
-   end
+    %values = fNew.values.^2;
+    coeffs = coeff_times( fNew, gNew );
+    if ( isreal(f) )
+        pos = true;
+    end
 elseif ( isequal(conj(f), g) )
-   values = conj(fNew.values).*fNew.values;
-   pos = true;
+%     values = conj(fNew.values).*fNew.values;
+    coeffs = coeff_times( conj(fNew), gNew );
+    pos = true;
 else
-   gNew = prolong(g, fn + gn - 1); 
-   values = fNew.values.*gNew.values;
+    %gNew = prolong(g, fn + gn - 1);
+    coeffs = coeff_times( fNew, gNew );
+    %values = fNew.values.*gNew.values;
 end
 
 % Assign values and coefficients back to f:
-f.values = values;
-f.coeffs = f.vals2coeffs(values);
+coeffs = flipud(coeffs);
+%coeffs(bsxfun(@minus, abs(coeffs), f.epslevel.*f.vscale.^2) < 0) = 0;
+
+f.coeffs = coeffs; 
+f.values = f.coeffs2vals(coeffs);
+% f.coeffs = f.vals2coeffs(values);
 
 % Update vscale, epslevel, and ishappy:
 vscale = max(abs(f.values), [], 1);
@@ -108,8 +117,32 @@ f = simplify(f);
 if ( pos )
     % Here we know that the product of F and G should be positive. However,
     % SIMPLIFY may have destroyed this property, so we enforce it.
-    f.values = abs(f.values); 
+    f.values = abs(f.values);
     f.coeffs = f.vals2coeffs(f.values);
 end
+
+end
+
+
+function hc = coeff_times(fc, gc)
+% COEFF_TIMES(FC, GC) multiplication in coefficient space
+% 
+% HC = COEFF_TIMES(FC, GC) returns the vector of Chebyshev coefficients, HC,
+% resulting from the multiplication of two functions with FC and GC
+% coefficients. The vectors have already been prolonged. 
+
+% Multiplication in coefficient space is a Toeplitz-plus-Hankel-plus-rank-one
+% operator (see Olver & Townsend, A fast and well-conditioned spectral
+% method, SIAM Review, 2013). This can be embedded into a Circular matrix and
+% applied using the FFT: 
+
+mn = length(fc);
+t = [2*fc(1,:) ; fc(2:end,:)];                    % Toeplitz vector.
+x = [2*gc(1,:) ; gc(2:end,:)];                    % Embed in Circulant.
+xprime = fft([x ; x(end:-1:2,:)]);              % FFT for Circulant mult.
+aprime = fft([t ; t(end:-1:2,:)]);
+Tfg = ifft(aprime.*xprime);                   % Diag in function space.
+hc = .25*[Tfg(1,:); Tfg(2:end,:) + Tfg(end:-1:2,:)];% Extract out result.
+hc = hc(1:mn,:);                                % Take the first half.
 
 end
