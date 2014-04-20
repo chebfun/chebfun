@@ -22,10 +22,13 @@ switch prop
         out = f.points();
     case 'lval'
         % The value at -1:
-        out = f.values(1,:);
+        out = feval(f,-1); %f.values(1,:);
     case 'rval'
         % The value at +1:
-        out = f.values(end,:);
+        out = feval(f,1);
+%         out = f.values(end,:);
+    case 'values'
+        out = f.coeffs2vals(f.coeffs);
     otherwise
         error('CHEBFUN:CHEBTECH2:GET:proname', ...
             'Unknown property name ''%s'' for object of type chebtech2.', prop);

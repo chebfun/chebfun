@@ -30,7 +30,9 @@ g = prolong(g, n);
 w = f.quadwts(n);
 
 % Compute the inner product via a weighted discrete inner product:
-out = bsxfun(@times, w.', f.values)' * g.values;
+fvalues = f.coeffs2vals(f.coeffs); 
+gvalues = g.coeffs2vals(g.coeffs); 
+out = bsxfun(@times, w.', fvalues)' * gvalues;
 
 % Force real output if the inputs are equal:
 % TODO: Also ABS()?

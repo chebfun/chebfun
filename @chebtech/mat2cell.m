@@ -30,7 +30,7 @@ if ( isempty(f) )
 end
 
 % Get the size of the values matrix:
-[n, m] = size(f.values);
+[n, m] = size(f.coeffs);
 
 % Parse the inputs:
 if ( nargin == 1 )
@@ -48,7 +48,7 @@ if ( ~isscalar(M) || (M ~= 1) )
 end
 
 % Split the values and the coefficients into cells of the correct size:
-values = mat2cell(f.values, n, N);
+% values = mat2cell(f.values, n, N);
 coeffs = mat2cell(f.coeffs, n, N);
 vscale = mat2cell(f.vscale, 1, N);
 epslevel = mat2cell(f.epslevel, 1, N);
@@ -63,7 +63,7 @@ for k = 1:numel(N)
     
     % Assign values to the fields of the CHEBTECH
     gk.ishappy = f.ishappy;
-    gk.values = values{k};
+%     gk.values = values{k};
     gk.coeffs = coeffs{k};
     gk.vscale = vscale{k};
     gk.epslevel = epslevel{k};

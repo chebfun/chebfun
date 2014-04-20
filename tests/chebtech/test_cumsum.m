@@ -66,7 +66,8 @@ for n = 1:2
   G = cumsum(f);
   err = G - F;
   tol = 10*G.vscale.*G.epslevel;
-  pass(n, 5) = (std(err.values) < tol) && (abs(feval(G, -1)) < tol);
+  values = err.coeffs2vals(err.coeffs); 
+  pass(n, 5) = (std(values) < tol) && (abs(feval(G, -1)) < tol);
   
   %%
   % Check that diff(cumsum(f)) == f and that cumsum(diff(f)) == f up to a 

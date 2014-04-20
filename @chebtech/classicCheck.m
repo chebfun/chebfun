@@ -1,4 +1,4 @@
-function [ishappy, epslevel, cutoff] = classicCheck(f, pref)
+function [ishappy, epslevel, cutoff] = classicCheck(f, values, pref)
 %CLASSICCHECK   Attempt to trim trailing Chebyshev coefficients in a CHEBTECH.
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F) returns an estimated
 %   location, the CUTOFF, at which the CHEBTECH F could be truncated to maintain
@@ -97,7 +97,7 @@ vscale = max(f.vscale);
 
 % Happiness requirements:
 [testLength, epslevel] = ...
-    happinessRequirements(f.values, f.coeffs, f.points(), vscale, f.hscale, epslevel);
+    happinessRequirements(values, f.coeffs, f.points(), vscale, f.hscale, epslevel);
 
 if ( max(ac(1:testLength)) < epslevel )    % We have converged! Now chop tail:
 

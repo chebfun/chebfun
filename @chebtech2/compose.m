@@ -100,7 +100,7 @@ function [values, giveUp] = composeResample1(op, values, pref, f)
 
     % Update f values:
     f = prolong(f, n);
-    v1 = f.values;
+    v1 = f.coeffs2vals(f.coeffs);
 
     % Evaluate the operator
     if ( pref.extrapolate )
@@ -147,9 +147,11 @@ function [values, giveUp] = composeResample2(op, values, pref, f, g)
 
     % Update f and g values:
     f = prolong(f, n);
-    v1 = f.values;
+    v1 = f.coeffs2vals(f.coeffs);
+%     v1 = f.values;
     g = prolong(g, n);
-    v2 = g.values;
+%     v2 = g.values;
+    v2 = g.coeffs2vals(g.coeffs);
 
     if ( pref.extrapolate )
         % Avoid evaluating the endpoints:
@@ -183,7 +185,8 @@ function [values, giveUp] = composeNested1(op, values, pref, f)
         
         % Update f values:
         f = prolong(f, n);
-        v1 = f.values(2:2:end-1,:);
+        fvalues = f.coeffs2vals(f.coeffs); 
+        v1 = fvalues(2:2:end-1,:);
 
         % Shift the stored values:
         values(1:2:n,:) = values;
@@ -216,9 +219,11 @@ function [values, giveUp] = composeNested2(op, values, pref, f, g)
         
         % Update f and g values:
         f = prolong(f, n);
-        v1 = f.values(2:2:end-1,:);
+        fvalues = f.coeffs2vals(f.coeffs); 
+        v1 = fvalues(2:2:end-1,:);
         g = prolong(g, n);
-        v2 = g.values(2:2:end-1,:);
+        gvalues = g.coeffs2vals(g.coeffs); 
+        v2 = gvalues(2:2:end-1,:);
         
         % Shift the stored values:
         values(1:2:n,:) = values;

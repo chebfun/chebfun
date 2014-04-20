@@ -8,16 +8,16 @@ function f = real(f)
 % See http://www.chebfun.org for Chebfun information.
 
 % Compute the real part of the values:
-f.values = real(f.values);
-f.vscale = max(abs(f.values), [], 1);
+% f.values = real(f.values);
 
-if ( ~any(f.values(:)) )
+f.coeffs = real(f.coeffs);
+if ( ~any(f.coeffs(:)) )
     % Input was imaginary, so output a zero CHEBTECH:
-    f = f.make(zeros(1, size(f.values, 2)), f.vscale, f.hscale);
+    f = f.make(zeros(1, size(f.coeffs, 2)), f.vscale, f.hscale);
     f.ishappy = 1;
 else
     % Compute real part of the coefficients:
     f.coeffs = real(f.coeffs);
 end
-
+f.vscale = getvscl(f); % max(abs(f.values), [], 1);
 end

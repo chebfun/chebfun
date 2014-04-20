@@ -26,7 +26,7 @@ out = varargin{1};
 
 % Coeffs and Values:
 out.coeffs = cell2mat(cellfun(@(f) f.coeffs, F, 'UniformOutput', false));
-out.values = cell2mat(cellfun(@(f) f.values, F, 'UniformOutput', false));
+% out.values = cell2mat(cellfun(@(f) f.values, F, 'UniformOutput', false));
 
 % Vscales:
 vscales = cellfun(@(f) f.vscale, F, 'UniformOutput', false);

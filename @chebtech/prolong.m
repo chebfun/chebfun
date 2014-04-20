@@ -13,7 +13,7 @@ function f = prolong(f, nOut)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Store the number of values the input function has:
-nIn = size(f.values, 1);
+nIn = size(f.coeffs, 1);
 
 % nDiff is the number of new values needed (negative if compressing).
 nDiff = nOut - nIn;
@@ -26,14 +26,14 @@ end
 
 % Constant case:
 if ( nIn == 1 )
-    m = size(f.values, 2);
-    f.values = repmat(f.values, nOut, 1);
+    m = size(f.coeffs, 2);
+%     f.values = repmat(f.values, nOut, 1);
     f.coeffs = [zeros(nDiff, m) ; f.coeffs(1,:)];
     return
 end
 
 % Prolong the points using the FFT:
 f.coeffs = f.alias(f.coeffs, nOut);
-f.values = f.coeffs2vals(f.coeffs);
+% f.values = f.coeffs2vals(f.coeffs);
 
 end

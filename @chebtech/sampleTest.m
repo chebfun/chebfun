@@ -1,4 +1,4 @@
-function pass = sampleTest(op, f)
+function pass = sampleTest(op, values, f)
 %SAMPLETEST   Test an evaluation of input OP against a CHEBTECH approximation.
 %   SAMPLETEST(OP, F) evaluates both the function OP and its CHEBTECH
 %   representation F at one or more points within [-1,1]. The difference of
@@ -25,7 +25,7 @@ if ( n == 1 )
     xeval = 0.61; % Pseudo-random test value
 else
     % Test a point where the (finite difference) gradient of values is largest:
-    [ignored, index] = max(bsxfun(@rdivide, abs(diff(f.values)), diff(x)));
+    [ignored, index] = max(bsxfun(@rdivide, abs(diff(values)), diff(x)));
     xeval = ( x(index + 1) + 1.41*x(index) ) / 2.41;
 end
 xeval = [-1+1e-12 ; xeval ; 1-1e-12];

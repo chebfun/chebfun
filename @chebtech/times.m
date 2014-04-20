@@ -24,35 +24,35 @@ elseif ( isa(g, 'double') )     % CHEBTECH .* double
     
     % Do the multiplication:
     if ( size(g, 2) > 1 )
-        f.values = bsxfun(@times, f.values, g);
+        %f.values = bsxfun(@times, f.values, g);
         f.coeffs = bsxfun(@times, f.coeffs, g);
-        f.vscale = f.vscale.*abs(g);
+        %f.vscale = f.vscale.*abs(g);
     else
-        f.values = f.values*g;
+        %f.values = f.values*g;
         f.coeffs = f.coeffs*g;
-        f.vscale = f.vscale*abs(g);
+        %f.vscale = f.vscale*abs(g);
     end
     f.epslevel = f.epslevel + eps(g);
     return
     
-elseif ( size(f.values, 1) == 1 )
+elseif ( size(f.coeffs, 1) == 1 )
     % If we have (constant CHEBTECH).*CHEBTECH, reverse the order and call TIMES
     % again:
-    f = times(g, f.values);
+    f = times(g, f.coeffs);
     f.epslevel = max(f.epslevel, g.epslevel);
     return
     
-elseif ( size(g.values, 1) == 1)
+elseif ( size(g.coeffs, 1) == 1)
     % If we have CHEBTECH.*(constant CHEBTECH), convert the (constant CHEBTECH)
     % to a scalar and call TIMES again:
-    f = times(f, g.values);
+    f = times(f, g.coeffs);
     f.epslevel = max(f.epslevel, g.epslevel);
     return
 end
 
 % Get the size of each CHEBTECH:
-[fn, fm] = size(f.values);
-[gn, gm] = size(g.values);
+[fn, fm] = size(f.coeffs);
+[gn, gm] = size(g.coeffs);
 
 fNew = flipud(f.coeffs);
 gNew = flipud(g.coeffs);
@@ -101,14 +101,14 @@ coeffs = flipud(coeffs);
 %coeffs(bsxfun(@minus, abs(coeffs), f.epslevel.*f.vscale.^2) < 0) = 0;
 
 f.coeffs = coeffs; 
-f.values = f.coeffs2vals(coeffs);
+%f.values = f.coeffs2vals(coeffs);
 % f.coeffs = f.vals2coeffs(values);
 
 % Update vscale, epslevel, and ishappy:
-vscale = max(abs(f.values), [], 1);
+vscale = getvscl(f);
 % See CHEBTECH CLASSDEF file for documentation on this:
 f.epslevel = (f.epslevel + g.epslevel) .* (f.vscale.*g.vscale./vscale);
-f.vscale  = vscale;
+% f.vscale  = vscale;
 f.ishappy = f.ishappy && g.ishappy;
 
 % Simplify!
@@ -117,8 +117,9 @@ f = simplify(f);
 if ( pos )
     % Here we know that the product of F and G should be positive. However,
     % SIMPLIFY may have destroyed this property, so we enforce it.
-    f.values = abs(f.values);
-    f.coeffs = f.vals2coeffs(f.values);
+    values = f.coeffs2vals(f.coeffs); 
+    values = abs(values);
+    f.coeffs = f.vals2coeffs(values);
 end
 
 end

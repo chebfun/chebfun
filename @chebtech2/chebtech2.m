@@ -104,14 +104,14 @@ classdef chebtech2 < chebtech
             % Check for NaNs (if not happy):
             if ( pref.extrapolate )
                 % Check for NaNs in interior only (because extrapolate was on):
-                if ( any(any(isnan(obj.values(2:end-1,:)))) )
+                if ( any(any(isnan(obj.coeffs(2:end-1,:)))) )
                     error('CHEBFUN:CHEBTECH2:constructor:naneval', ...
                         'Function returned NaN when evaluated.')
                 end
                 % We make sure not to return NaNs at +1 and -1.
                 valuesTemp = extrapolate(obj);
                 obj.values([1,end],:) = valuesTemp([1,end],:);
-            elseif ( any(isnan(obj.values(:))) )
+            elseif ( any(isnan(obj.coeffs(:))) )
                 % Here we throw an error if NaNs were encountered anywhere.
                 error('CHEBFUN:CHEBTECH2:constructor:naneval2', ...
                     'Function returned NaN when evaluated.')

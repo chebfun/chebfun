@@ -1,4 +1,4 @@
-function [values, maskNaN, maskInf] = extrapolate(f)
+function [values, maskNaN, maskInf] = extrapolate(f, values)
 %EXTRAPOLATE  Extrapolate data values from values at Chebyshev points of 
 %   1st kind.
 %
@@ -19,7 +19,7 @@ function [values, maskNaN, maskInf] = extrapolate(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-values = f.values;
+% values = f.values;
 maskNaN = any(isnan(values), 2);
 maskInf = any(isinf(values), 2);
 mask = maskNaN | maskInf;

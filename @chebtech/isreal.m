@@ -9,6 +9,6 @@ function out = isreal(f)
 % See http://www.chebfun.org for Chebfun information.
 
 % Check if all the values are real:
-out = isreal(f.values);
+out = isreal(f.coeffs);
 
 end

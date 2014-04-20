@@ -26,6 +26,8 @@ switch prop
     case 'rval'
         % The value at +1:
         out = feval(f, 1);
+    case 'values' 
+        out = f.coeffs2vals(f.coeffs);
     otherwise
         error('CHEBFUN:CHEBTECH1:GET:proname', ...
             'Unknown property name ''%s'' for object of type chebtech1.', prop);

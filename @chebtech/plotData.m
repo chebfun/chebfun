@@ -49,7 +49,7 @@ if ( isempty(g) )
 
     % Values on the Cheyshev grid tied to the CHEBTECH F:
     data.xPoints = f.points();
-    data.yPoints = f.values;
+    data.yPoints = f.coeffs2vals(f.coeffs);
 
 elseif ( isa(g, 'chebtech') )   
     % PLOT(F, G)

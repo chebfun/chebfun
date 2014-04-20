@@ -144,7 +144,7 @@ classdef chebtech < smoothfun % (Abstract)
         % of the concrete class (1st kind for CHEBTECH1 and 2nd kind for
         % CHEBTECH2).  For array-valued CHEBTECH objects, each column
         % represents the interpolated values of a single function.
-        values % (nxm double)
+        %values % (nxm double)
 
         % Coefficients in 1st-kind Chebyshev series expansion of the CHEBTECH on
         % [-1,1]. The coefficients are stored in descending order so that c_N is
@@ -277,7 +277,7 @@ classdef chebtech < smoothfun % (Abstract)
         h = chebpolyplot(f, varargin)
 
         % Check the happiness of a CHEBTECH. (Classic definition).
-        [ishappy, epslevel, cutoff] = classicCheck(f, pref)
+        [ishappy, epslevel, cutoff] = classicCheck(f, values, pref)
 
         % Complex conjugate of a CHEBTECH.
         f = conj(f)
@@ -301,7 +301,7 @@ classdef chebtech < smoothfun % (Abstract)
         [f, rootsLeft, rootsRight] = extractBoundaryRoots(f, numRoots)
 
         % Extrapolate (for NaNs / Infs).
-        [values, maskNaN, maskInf] = extrapolate(f)
+        [values, maskNaN, maskInf] = extrapolate(f, values)
 
         % Evaluate a CHEBTECH.
         y = feval(f, x)
@@ -319,7 +319,7 @@ classdef chebtech < smoothfun % (Abstract)
         f = flipud(f)
 
         % Happiness test for a CHEBTECH
-        [ishappy, epslevel, cutoff] = happinessCheck(f, op, pref)
+        [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, pref)
 
         % Imaginary part of a CHEBTECH.
         f = imag(f)
@@ -361,7 +361,7 @@ classdef chebtech < smoothfun % (Abstract)
         f = logical(f)
 
         % A 'loose' (i.e., not too strict) check for happiness.
-        [ishappy, epslevel, cutoff] = looseCheck(f, pref)
+        [ishappy, epslevel, cutoff] = looseCheck(f, values, pref)
 
         % Convert an array-valued CHEBTECH into an ARRAY of CHEBTECH objects.
         g = mat2cell(f, M, N)
@@ -439,7 +439,7 @@ classdef chebtech < smoothfun % (Abstract)
         g = round(f)
 
         % Test an evaluation of the input OP against a CHEBTECH approx.
-        pass = sampleTest(op, f)
+        pass = sampleTest(op, values, f)
         
         % Signum of a CHEBTECH. (f should have no zeros in its domain)
         f = sign(f, pref)
@@ -451,7 +451,7 @@ classdef chebtech < smoothfun % (Abstract)
         [siz1, siz2] = size(f, varargin)
 
         % Strict happiness check.
-        [ishappy, epslevel, cutoff] = strictCheck(f, pref)
+        [ishappy, epslevel, cutoff] = strictCheck(f, values, pref)
 
         % Definite integral of a CHEBTECH on the interval [-1,1].
         out = sum(f, dim)

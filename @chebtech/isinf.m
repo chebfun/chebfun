@@ -8,6 +8,6 @@ function out = isinf(f)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Check if any values are infinite:
-out = any(isinf(f.values(:)));
+out = any(isinf(f.coeffs(:)));
 
 end

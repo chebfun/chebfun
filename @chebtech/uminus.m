@@ -6,7 +6,7 @@ function f = uminus(f)
 % See http://www.chebfun.org for Chebfun information.
 
 % Negate the values:
-f.values = -f.values; 
+% f.values = -f.values; 
 
 % Negate the coefficients:
 f.coeffs = -f.coeffs;

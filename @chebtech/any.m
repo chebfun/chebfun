@@ -20,13 +20,13 @@ if ( nargin < 2 )
 end
 
 if ( dim  == 1 )        % ANY down the columns.
-    a = any(f.values);
+    a = any(f.coeffs);
 elseif ( dim == 2 )     % ANY down the rows.
     a = f;
     arbitraryPoint = 0.1273881594;
-    a.values = any(feval(a, arbitraryPoint));
-    a.coeffs = a.values;
-    a.vscale = abs(a.values);
+    a.coeffs = any(feval(a, arbitraryPoint));
+%     a.coeffs = a.values;
+    a.vscale = getvscl(a);
     a.epslevel = eps;
 else
     error('CHEBFUN:CHEBTECH:any:dim', 'DIM input must be 1 or 2.');

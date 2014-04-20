@@ -9,7 +9,7 @@ function f = conj(f)
 % See http://www.chebfun.org for Chebfun information.
 
 % Conjugate the values:
-f.values = conj(f.values);
+% f.values = conj(f.values);
 
 % Conjugate the coefficients:
 f.coeffs = conj(f.coeffs);

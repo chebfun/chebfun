@@ -40,7 +40,7 @@ for n = 1:2
         10*g1.vscale.*g1.epslevel;
     
     g = 0*f;
-    pass(n, 4) = all(g.values == 0) && all(g.coeffs == 0);
+    pass(n, 4) = all(g.coeffs == 0);
     
     %%
     % Check operation for array-valued chebtech objects.
@@ -54,7 +54,7 @@ for n = 1:2
     pass(n, 6) = max(err(:)) < 10*max(g1.vscale.*g1.epslevel);
     
     g = 0*f;
-    pass(n, 7) = all(g.values == 0) && all(g.coeffs == 0);
+    pass(n, 7) =  all(g.coeffs == 0);
     
     A = randn(3, 3);
     g = f*A;

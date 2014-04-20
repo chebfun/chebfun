@@ -1,4 +1,4 @@
-function  [ishappy, epslevel, cutoff] = happinessCheck(f, op, pref)
+function  [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, pref)
 %HAPPINESSCHECK   Happiness test for a CHEBTECH
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = HAPPINESSCHECK(F, OP) tests if the CHEBTECH
 %   with values F.VALUES and coefficients F.COEFFS would be a 'happy'
@@ -49,30 +49,30 @@ if ( strcmpi(pref.happinessCheck, 'classic') )
     % Use the default happiness check procedure from Chebfun V4.
     
     % Check the coefficients are happy:
-    [ishappy, epslevel, cutoff] = classicCheck(f, pref);
+    [ishappy, epslevel, cutoff] = classicCheck(f, values, pref);
 
 elseif ( strcmpi(pref.happinessCheck, 'strict') )
     % Use the 'strict' happiness check:
-    [ishappy, epslevel, cutoff] = strictCheck(f, pref);
+    [ishappy, epslevel, cutoff] = strictCheck(f, values, pref);
     
 elseif ( strcmpi(pref.happinessCheck, 'loose') )
     % Use the 'loose' happiness check:
-    [ishappy, epslevel, cutoff] = looseCheck(f, pref);
+    [ishappy, epslevel, cutoff] = looseCheck(f, values, pref);
     
 else
     % Call a user-defined happiness check:
     [ishappy, epslevel, cutoff] = ...
-        pref.happinessCheck(f, pref);
+        pref.happinessCheck(f, values, pref);
     
 end
 
 % Check also that sampleTest is happy:
 if ( ishappy && ~isempty(op) && ~isnumeric(op) && pref.sampleTest )
     f.epslevel = epslevel;
-    ishappy = sampleTest(op, f);
+    ishappy = sampleTest(op, values, f);
     if ( ~ishappy )
         % It wasn't. Revert cutoff. :(
-        cutoff = size(f.values, 1);
+        cutoff = size(values, 1);
     end
 end
 

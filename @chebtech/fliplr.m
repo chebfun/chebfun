@@ -8,7 +8,7 @@ function f = fliplr(f)
 
 % Flip the orders of the columns of the matrices storing the values and
 % coefficients.
-f.values = fliplr(f.values);
+% f.values = fliplr(f.values);
 f.coeffs = fliplr(f.coeffs);
 
 end

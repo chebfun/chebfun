@@ -8,6 +8,6 @@ function out = isnan(f)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Check if any values are NaN:
-out = any(isnan(f.values(:)));
+out = any(isnan(f.coeffs(:)));
 
 end

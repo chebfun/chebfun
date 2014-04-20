@@ -8,6 +8,6 @@ function out = isfinite(f)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Check if values are finite:
-out = all(isfinite(f.values(:)));
+out = all(isfinite(f.coeffs(:)));
 
 end

@@ -77,7 +77,7 @@ end
 if ( isnumeric(op) || iscell(op) )
     if ( isnumeric(op) )
         % OP is just the values.
-        f.values = op;
+%         f.values = op;
         f.coeffs = f.vals2coeffs(op);
     else                 
         % OP is a cell {values, coeffs}
@@ -89,7 +89,7 @@ if ( isnumeric(op) || iscell(op) )
     end
     
     % Update vscale:
-    f.vscale = max(abs(f.values), [], 1);
+    f.vscale = getvscl(f); %max(abs(f.values), [], 1);
     
     % We're always happy if given discrete data:
     f.ishappy = true;
@@ -105,13 +105,13 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% Adaptive construction. %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Initialise empty values to pass to refine:
-f.values = [];
+values = [];
 
 % Loop until ISHAPPY or GIVEUP:
 while ( 1 )
 
     % Call the appropriate refinement routine: (in PREF.REFINEMENTFUNCTION)
-    [f.values, giveUp] = f.refine(op, f.values, pref);
+    [values, giveUp] = f.refine(op, values, pref);
 
     % We're giving up! :(
     if ( giveUp ) 
@@ -119,37 +119,37 @@ while ( 1 )
     end    
     
     % Update vertical scale: (Only include sampled finite values)
-    valuesTemp = f.values;
-    valuesTemp(~isfinite(f.values)) = 0;
+    valuesTemp = values;
+    valuesTemp(~isfinite(values)) = 0;
     vscale = max(vscale, max(abs(valuesTemp(:))));
     
     % Extrapolate out NaNs:
-    [f.values, maskNaN, maskInf] = extrapolate(f);
+    [values, maskNaN, maskInf] = extrapolate(f, values);
 
     % Compute the Chebyshev coefficients:
-    coeffs = f.vals2coeffs(f.values);
+    coeffs = f.vals2coeffs(values);
     
     % Check for happiness:
     f.coeffs = coeffs;
     f.vscale = vscale;
-    [ishappy, epslevel, cutoff] = happinessCheck(f, op, pref); 
+    [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, pref); 
         
     % We're happy! :)
     if ( ishappy ) 
         coeffs = f.alias(coeffs, cutoff);  % Alias the discarded coefficients.
-        f.values = f.coeffs2vals(coeffs);  % Compute values on this grid.
+        values = f.coeffs2vals(coeffs);  % Compute values on this grid.
         break
     end
     
     % Replace any NaNs or Infs we may have extrapolated:
-    f.values(maskNaN,:) = NaN;
-    f.values(maskInf,:) = Inf;
+    values(maskNaN,:) = NaN;
+    values(maskInf,:) = Inf;
 
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Update the vscale. %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Compute the 'true' vscale (as defined in CHEBTECH classdef):
-vscaleOut = max(abs(f.values), [], 1);
+vscaleOut = max(abs(values), [], 1);
 % Update vertical scale one last time:
 vscaleGlobal = max(vscale, vscaleOut);
 

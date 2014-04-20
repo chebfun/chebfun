@@ -8,6 +8,6 @@ function len = length(f)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % The length of a CHEBTECH is the length of its vector of values.
-len = size(f.values, 1);
+len = size(f.coeffs, 1);
 
 end

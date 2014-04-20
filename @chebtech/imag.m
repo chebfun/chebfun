@@ -8,16 +8,19 @@ function f = imag(f)
 % See http://www.chebfun.org for Chebfun information.
 
 % Compute the imaginary part of the values:
-f.values = imag(f.values);
-f.vscale = max(abs(f.values), [], 1);
+% values = f.coeffs2vals(f.coeffs); 
+% values = imag(values);
 
-if ( ~any(f.values(:)) )
+
+if ( ~any(f.coeffs(:)) )
     % Input was real, so output a zero CHEBTECH:
-    f = f.make(zeros(1, size(f.values, 2)), 0, f.hscale);
+    f = f.make(zeros(1, size(f.coeffs, 2)), 0, f.hscale);
     f.ishappy = 1;
 else
     % Compute imaginary part of the coefficients:
     f.coeffs = imag(f.coeffs);
 end
+f = simplify(f); 
+f.vscale = getvscl(f); %max(abs(values), [], 1);
 
 end

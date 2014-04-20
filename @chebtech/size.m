@@ -11,7 +11,7 @@ function [size1, size2] = size(f, varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % The size of a CHEBTECH is the size of its vector of values.
-size1 = size(f.values, varargin{:});
+size1 = size(f.coeffs, varargin{:});
 
 % Return two outputs:
 if ( nargout == 2 )

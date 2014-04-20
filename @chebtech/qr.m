@@ -114,8 +114,9 @@ P = barymat(xl, xc, vc);
 W = spdiags(sqrt(wl.'), 0, n, n);
 
 % Compute the weighted QR factorisation:
+values = f.coeffs2vals(f.coeffs);
 if ( nargout == 3 )
-    [Q, R, E] = qr(W * P * f.values, 0);
+    [Q, R, E] = qr(W * P * values, 0);
     % For consistency with the MATLAB QR behavior:
     if ( (nargin == 1) || ...
         ~(strcmpi(outputFlag, 'vector') || isequal(outputFlag, 0)) )
@@ -124,7 +125,7 @@ if ( nargout == 3 )
         E = I(:,E);
     end
 else
-    [Q, R] = qr(W * P * f.values, 0);
+    [Q, R] = qr(W * P * values, 0);
 end
 
 % Revert to the Chebyshev grid (and remove the weight and enforce diag(R) >= 0).
@@ -139,7 +140,7 @@ Q = Pinv*Winv*Q*S;          % Fix Q.
 R = S*R;                    % Fix R.
 
 % Apply data to chebtech:
-f.values = Q;                           % Adjust values of f.
+% f.values = Q;                           % Adjust values of f.
 f.coeffs = f.vals2coeffs(Q);            % Compute new coefficients.
 f.vscale = max(abs(Q), [], 1);
 
@@ -182,10 +183,10 @@ f.coeffs = f.vals2coeffs(Q);
 % Trim the unneeded ones:
 f.coeffs(1:newN/2,:) = [];
 % Compute new values:
-f.values = f.coeffs2vals(f.coeffs);
+% f.values = f.coeffs2vals(f.coeffs);
 
 % Update the vscale:
-f.vscale = max(abs(f.values), [], 1);
+f.vscale = getvscl(f); % max(abs(f.values), [], 1);
 
 % Additional output argument:
 if ( nargout == 3 )

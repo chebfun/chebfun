@@ -67,11 +67,11 @@ function f = diffFiniteDim(f, k)
     else 
         for j = 1:k
             % Differentiate values across dim:
-            f.values = diff(f.values, 1, 2);
+%             f.values = diff(f.values, 1, 2);
             % Differentiate coefficients across dim:
             f.coeffs = diff(f.coeffs, 1, 2);
             % Update vscale and epslevel as in PLUS().
-            vscale = max(abs(f.values), [], 1);
+            vscale = getvscl(f); %max(abs(f.values), [], 1);
             ev = f.epslevel.*f.vscale;
             for l = 1:size(f,2)-1
                 f.epslevel(l) = ev(l)+ev(l+1);
@@ -87,7 +87,7 @@ function f = diffContinuousDim(f, k)
 % Differentiate in the first dimension (i.e., df/dx).
 
     % Get the length:
-    n = size(f.values,1);
+    n = size(f.coeffs,1);
 
     % Get the coefficients:
     c = f.coeffs;
@@ -124,7 +124,7 @@ function f = diffContinuousDim(f, k)
 
     % Store new coefficients and values:
     f.coeffs = c;
-    f.values = v;
+%     f.values = v;
 end
       
 function cout = computeDerCoeffs(c)
