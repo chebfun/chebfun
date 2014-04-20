@@ -65,4 +65,7 @@ f = chebfun(@abs, 'trunc', 10, 'splitting', 'on');
 c = get(f, 'coeffs');
 pass(12) = abs(-4/63/pi - c{1}(2)) < get(f, 'epslevel');
 
+f = chebfun({'x','x-1'}, [0 1 2]);
+pass(13) = norm(feval(f, [.5, 1.5]) - .5) < get(f, 'epslevel');
+
 end
