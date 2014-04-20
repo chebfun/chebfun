@@ -36,7 +36,7 @@ if ( any(diff(s) <= 0) )
     error('BNDFUN:restrict:badinterval', 'Not a valid interval.')
 end
 
-if ( (numel(s) == 2) && all( abs(s - f.domain)) < hs )
+if ( (numel(s) == 2) && all( s == f.domain) )    
     % Nothing to do here!
     g = f;
     return
