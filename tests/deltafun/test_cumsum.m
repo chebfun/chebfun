@@ -24,9 +24,9 @@ pass(2) = iscell(F);
 %%
 f = fun.constructor(@(x) sin(pi*x));
 d = deltafun( f, [-1, 1], [-1, 1]);
-[F, rval] = cumsum(d);
+[F, rJump] = cumsum(d);
 
 pass(3) = ~isa(F, 'deltafun') && feval(F, -1) == -1 ...
-    && rval == 1 + get(F, 'rval') && feval(F, 1) == -1; 
+    && rJump == 1 && feval(F, 1) == -1; 
 
 end
