@@ -49,33 +49,14 @@ vals_exact = feval(g_exact, x);
 err = vals_g - vals_exact;
 pass(3) = (norm(err, inf) < get(f,'epslevel')*norm(vals_exact, inf));
 
-% fractional pole with order < -1 at the right endpoint with multiple 
-% integration:
-f = singfun(@(x) (1-x).^(2*d), [0 2*d], {'none', 'sing'}, [], [], pref);
-g = cumsum(f, 2);
-vals_g = feval(g, x);
-g_exact = @(x)(1-x).^(2*(d+1))./((2*d+1)*(2*d+2));
-vals_exact = feval(g_exact, x);
-err = vals_g - vals_exact;
-pass(4) = (norm(err, inf) < get(f,'epslevel')*norm(vals_exact, inf));
-
 % Integer pole:
 f = singfun(@(x) (1-x).^(-4), [0 -4], {'none', 'pole'}, [], [], pref);
-g = cumsum(f, 1);
+g = cumsum(f);
 vals_g = feval(g, x);
 g_exact = @(x)(1-x).^(-3)/3;
 vals_exact = feval(g_exact, x);
 err = vals_g - vals_exact;
-pass(5) = (norm(err, inf) < get(f,'epslevel')*norm(vals_exact, inf));
-
-% Integer root:
-f = singfun(@(x) (1+x).^2, [2 0], {'none', 'sing'}, [], [], pref);
-g = cumsum(f, 2);
-vals_g = feval(g, x);
-g_exact = @(x)(1+x).^4/12;
-vals_exact = feval(g_exact, x);
-err = vals_g - vals_exact;
-pass(6) = (norm(err, inf) < get(f,'epslevel')*norm(vals_exact, inf));
+pass(4) = (norm(err, inf) < get(f,'epslevel')*norm(vals_exact, inf));
 
 %% Tests without closed form solution:
 
@@ -99,30 +80,7 @@ vals_g = feval(g, x);
 vals_exact = feval(h, x);
 err = norm(vals_g - vals_exact, inf);
 tol = 1e4*get(f,'epslevel')*norm(vals_exact, inf);
-pass(7) = (err < tol);
-
-%%
-% Fractional pole at the right endpoint and multiple integration:
-dom = [-1 1-10^(-D)];
-scl = (dom(2)-dom(1))/2;
-
-% Integrate first, then restrict:
-f = singfun(@(x) sin(x).*((1-x).^e), [0 e], {'none', 'sing'}, [], [], pref);
-u = cumsum(f, 2);
-C = feval(cumsum(f), -1);  % Get the constant of integration
-g = restrict(u, dom);
-
-% Restrict first, then integrate:
-v = restrict(f, dom);
-vv = scl*cumsum(v) + C;
-h = scl*cumsum(vv);
-h = h + feval(u, -1);
-
-vals_g = feval(g, x);
-vals_exact = feval(h, x);
-err = norm(vals_g - vals_exact, inf);
-tol = 1e7*get(f,'epslevel')*norm(vals_exact, inf);
-pass(8) = (err < tol);
+pass(5) = (err < tol);
 
 %%
 % fractional root at the left endpoint:
@@ -142,7 +100,7 @@ h = h - feval(h, 1) + feval(u, 1);
 vals_g = feval(g, x);
 vals_exact = feval(h, x);
 err = vals_g - vals_exact;
-pass(9) = (norm(err, inf) < 1e2*get(f,'epslevel')*norm(vals_exact, inf));
+pass(6) = (norm(err, inf) < 1e2*get(f,'epslevel')*norm(vals_exact, inf));
 
 % Integer pole at the right endpoint (This can be tested only when log is ready):
 % f = singfun(@(x)sin(2+x.^2)./(1-x).^2, [0 -2], {'none', 'pole'}, [], [], pref);
@@ -151,6 +109,6 @@ pass(9) = (norm(err, inf) < 1e2*get(f,'epslevel')*norm(vals_exact, inf));
 % vals_g = feval(g, x);
 % vals_exact = feval(h, x);
 % err = vals_g - vals_exact;
-% pass(10) = (norm(err, inf) < get(f,'epslevel')*norm(vals_exact, inf));
+% pass(7) = (norm(err, inf) < get(f,'epslevel')*norm(vals_exact, inf));
 
 end
