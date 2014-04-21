@@ -92,7 +92,7 @@ for j = 1:L
         case {'~'}, t = c([.2+.45i .3+.55i .5+.45i .6+.55i]);
         case {'@'}, t = c([.8 0 1i .8+1i .8+.25i .2+.25i .2+.75i .6+.75i .6+.25i]);
         case {'$'}, t = [c([.8+1i .9i .6i .8+.4i .8+.1i 0]) c([.4 .4+1i])];
-        case {'£', '�'}, t = c([.8+1i .3+1i .2+.5i .5+.5i .5i .2+.5i .2 0.1 .8]);
+        case {'£', '�'}, t = c([.8+1i .3+1i .2+.5i .5+.5i .5i .2+.5i .2 0.1 .8]);
         case {'&'}, t = c([.8 .7i 1i .7+1i .7+.7i .3i 0 .4 .8+.27i]);
             
         otherwise,
@@ -114,9 +114,38 @@ f = chebfun(fData, ends);
 
     function cv = c(v)
         cv = cell(1, length(v)-1);
-        for l = 2:length(v)
-            cv{l-1} = (v(l-1:l).' + (j-1))*2/L - 1;
-            ends = ends + 1;
+        
+        % Grab the current preference:
+        pref = chebpref();
+        
+        % CHEBTECH1 and CHEBTECH2 are treated differently: 
+        if ( pref.techPrefs.gridType == 1 )
+            
+            % Grab the 2-point grid of the first kind:
+            p = chebpts(2, 1);
+            for l = 2:length(v)
+                
+                % Locate the stroke:
+                stroke = (v(l-1:l).' + (j-1))*2/L - 1;
+                sr = real(stroke);
+                si = imag(stroke);
+                
+                % Get the corresponding locations of the 2-point first-kind grid
+                % from the locations of the endpoints of the stroke:
+                preal = diff(sr)*(1+p)/2+sr(1);
+                pimag = diff(si)*(1+p)/2+si(1);
+                
+                % Form the numeric input for CHEBFUN constructor:
+                cv{l-1} = complex(preal, pimag);
+                
+                % Update the number of the strokes:
+                ends = ends + 1;
+            end
+        else
+            for l = 2:length(v)
+                cv{l-1} = (v(l-1:l).' + (j-1))*2/L - 1;
+                ends = ends + 1;
+            end
         end
     end
 
