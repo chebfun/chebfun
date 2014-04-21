@@ -336,7 +336,7 @@ classdef chebfun
         % Get Delta functions withing a chebfun
         [deltaMag, deltLoc] = getDeltaFunctions(f);
         
-        % Horizontal scale of a CHEBFUN obconstructor.mject.
+        % Horizontal scale of a CHEBFUN object.
         out = hscale(f);
 
         % Imaginary part of a CHEBFUN.
