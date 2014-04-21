@@ -6,7 +6,7 @@ function varargout = pde15s(pdeFun, tt, u0, bc, varargin)
 %   x) with the initial condition U0 and boundary conditions BC over the time
 %   interval TT.
 %
-%   PDEFUN should take the form @(U1, U2, ..., UN, T, X), where U1, ..., UN are
+%   PDEFUN should take the form @(T, X, U1, U2, ..., UN), where U1, ..., UN are
 %   the unknown dependent variables to be solved for, T is time, and X is space.
 %
 %   For backwards compatability, the syntax @(U1, U2, ..., UN, T, X, D, S, C)
@@ -22,7 +22,7 @@ function varargout = pde15s(pdeFun, tt, u0, bc, varargin)
 % Example 1: Nonuniform advection
 %     x = chebfun('x', [-1 1]);
 %     u = exp(3*sin(pi*x));
-%     f = @(u, t, x) -(1 + 0.6*sin(pi*x)).*diff(u) + 5e-5*diff(u, 2);
+%     f = @(t, x, u) -(1 + 0.6*sin(pi*x)).*diff(u) + 5e-5*diff(u, 2);
 %     opts = pdeset('Ylim', [0 20], 'PlotStyle', {'LineWidth', 2});
 %     uu = pde15s(f, 0:.05:3, u, 'periodic', opts);
 %     surf(uu, 0:.05:3)
@@ -61,8 +61,8 @@ function varargout = pde15s(pdeFun, tt, u0, bc, varargin)
 %   such as
 %       x = chebfun('x', [-1 1]);
 %       u = exp(-3*x.^2);
-%       f = @(u, t, x) .1*diff(u, 2);
-%       bc.left = @(u, t, x) u - t;
+%       f = @(t, x, u) .1*diff(u, 2);
+%       bc.left = @(t, x, u) u - t;
 %       bc.right = 0;
 %       opts = pdeset('Ylim', [0 2], 'PlotStyle', {'LineWidth', 2});
 %       uu = pde15s(f, 0:.1:2, u, bc, opts);
@@ -670,7 +670,7 @@ end
 
 function outFun = parseFun(inFun)
 % Rewrites the input function handle to call the right DIFF, SUM, methods, etc,
-% and convert the input @(x, t, u, v, w, ...) to @(x, t, U).
+% and convert the input @(t, x, u, v, w, ...) to @(t, x, U).
 
 global SYSSIZE
 
