@@ -283,7 +283,7 @@ else
         %% %%%%%%%%%%%%%%%%%%%%%%%%%  GENERAL BCS (LEFT)  %%%%%%%%%%%%%%%%%%%%%%%%%%
         op = parseFun(bc.left);
         tmp = chebdouble(ones(1, SYSSIZE));
-        sizeOp = size(op(tmp, 0, mean(DOMAIN)));
+        sizeOp = size(op(0, mean(DOMAIN), tmp));
         leftNonlinBCLocs = 1:max(sizeOp);
         bc.left = [];
         bc.left.op = {@(n) zeros(max(sizeOp), SYSSIZE*n)}; % Dummy entries.
@@ -297,7 +297,7 @@ else
         %% %%%%%%%%%%%%%%%%%%%%%  GENERAL BCS (MIDDLE)  %%%%%%%%%%%%%%%%%%%%%%%%
         op = parseFun(bc.middle);
         tmp = chebdouble(ones(1, SYSSIZE));
-        sizeOp = size(op(tmp, 0, mean(DOMAIN)));
+        sizeOp = size(op(0, mean(DOMAIN), tmp));
         middleNonlinBCLocs = 1:max(sizeOp);
         bc.middle = [];
         bc.middle.op = {@(n) zeros(max(sizeOp), SYSSIZE*n)}; % Dummy entries.
@@ -338,7 +338,7 @@ else
         %% %%%%%%%%%%%%%%%%%%%%%%%%  GENERAL BCS (RIGHT)  %%%%%%%%%%%%%%%%%%%%%%%%%%
         op = parseFun(bc.right);
         tmp = chebdouble(ones(1, SYSSIZE));
-        sizeOp = size(op(tmp, 0, mean(DOMAIN)));
+        sizeOp = size(op(0, mean(DOMAIN), tmp));
         rightNonlinBCLocs = 1:max(sizeOp);
         bc.right = [];
         bc.right.op = {@(n) zeros(max(sizeOp), SYSSIZE*n)};
@@ -618,7 +618,7 @@ clear global SYSSIZE
             
             % Evaluate the PDEFUN:
             Utmp = chebdouble(U, DOMAIN);
-            F = pdeFun(Utmp, t, x);
+            F = pdeFun(t, x, Utmp);
             F = double(F);
             F = M*F(:);
             
@@ -637,7 +637,7 @@ clear global SYSSIZE
             % Replacements for the nonlinear BC conditions:
             if ( ~isempty(leftNonlinBCLocs) )
                 indx = 1:length(leftNonlinBCLocs);
-                tmp = leftNonlinBCFuns( Utmp, t, x);
+                tmp = leftNonlinBCFuns(t, x, Utmp);
                 tmp = double(tmp);
                 if ( size(tmp, 1) ~= n )
                     tmp = reshape(tmp, n, numel(tmp)/n);
@@ -647,11 +647,11 @@ clear global SYSSIZE
             if ( ~isempty(middleNonlinBCLocs) )
                 % TODO: This won't work if there are also left nonlin BCs
                 indx = 1:length(middleNonlinBCLocs);
-                F(rows(indx)) = double(middleNonlinBCFuns(Utmp, t, x));
+                F(rows(indx)) = double(middleNonlinBCFuns(t, x, Utmp));
             end            
             if ( ~isempty(rightNonlinBCLocs) )
                 indx = numel(BCRHS) + 1 - rightNonlinBCLocs;
-                tmp = rightNonlinBCFuns(Utmp, t, x);
+                tmp = rightNonlinBCFuns(t, x, Utmp);
                 tmp = double(tmp);
                 if ( size(tmp, 1) ~= n )
                     tmp = reshape(tmp, n, numel(tmp)/n);
@@ -668,23 +668,24 @@ end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%  MISC  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function outfun = parseFun(inFun)
+function outFun = parseFun(inFun)
 % Rewrites the input function handle to call the right DIFF, SUM, methods, etc,
-% and convert the input @(u, v, w, x, t) to @(U, x, t).
+% and convert the input @(x, t, u, v, w, ...) to @(x, t, U).
 
 global SYSSIZE
 
+% Ensure backwards compatability by procesing the input function.
 inFun = backCompat(inFun);
 
 % V4: We don't accept only time or space as input args (i.e., both or nothing).
 % V5: Actually, we now accept @(u, x) diff(u, 2) + sin(x).*u (for chebops).
 Nind = nargin(inFun) - SYSSIZE;
 if ( Nind == 0 )
-    outfun = @(u, t, x) conv2cell(inFun, u);
+    outFun = @(t, x, u) conv2cell(inFun, u);
 elseif ( Nind == 1 )
-    outfun = @(u, t, x) conv2cell(inFun, u, x);
+    outFun = @(t, x, u) conv2cell(inFun, u, x);
 elseif ( Nind == 2 )
-    outfun = @(u, t, x) conv2cell(inFun, u, t, x);
+    outFun = @(t, x, u) conv2cell(inFun, u, t, x);
 else
     error('CHEBFUN:pde15s:inputs_ind', ['Incorrect number of independant ' ...
         'variables in input function. (Must be 0, 1, or 2).']);
@@ -700,11 +701,12 @@ global SYSSIZE
 
 % Note. This is faster than mat2cell!
 tmpCell = cell(1, SYSSIZE);
+
 d = get(u, 'domain');
 for qk = 1:SYSSIZE
     tmpCell{qk} = extractColumns(u, qk);
 end
-newFun = oldFun(tmpCell{:}, varargin{:});
+newFun = oldFun(varargin{:}, tmpCell{:});
 end
 
 function getDIFFORDER(pdeFun)
@@ -713,7 +715,7 @@ global DIFFORDER SYSSIZE
 
 % Find the order of each of the variables:
 tmp = chebdouble(zeros(SYSSIZE));
-v = pdeFun(tmp, 0, 0);
+v = pdeFun(0, 0, tmp);
 DIFFORDER = get(v, 'diffOrder');
 
 end
@@ -721,14 +723,16 @@ end
 function out = dealWithStructInput(in)
 if ( isstruct(in) )
     if ( numel(in) == 1)
-        warning('PDE15S no longer supports struct inputs for bc.left and bc.right.')
+        warning('CHEBFUN:pde15s:bcstruct', ...
+            'PDE15S no longer supports struct inputs for bc.left and bc.right.')
         if ( isfield(in, 'val') )
             out = {in.op, in.val};
         else
             out = in.op;
         end
     else
-        error('PDE15S no longer supports struct inputs for bc.left and bc.right.')
+        error('CHEBFUN:pde15s:bcstruct', ...
+            'PDE15S no longer supports struct inputs for bc.left and bc.right.')
     end
 elseif ( isempty(in) )
     out = [];
@@ -750,6 +754,8 @@ function outFun = backCompat(inFun)
 % 'D'. If we find any of these, we assume the old syntax is being used, and
 % redefine the function handle appropriately. Of course, this is not fool-proof,
 % but it should work most of the time.
+
+global SYSSIZE
 
 % Determine the variable names:
 str = func2str(inFun);
@@ -773,15 +779,25 @@ if ( isempty(idx) )
     return
 end
 
+warning('CHEBFUN:pde15s:oldSyntax', ...
+    ['The syntax\n ' str '\nis depricated and may not be supported in future releases.\n', ...
+    'Please see the PDE15S documentation for details.'] )
+
+% Switch the order for V5 syntax:
+varNamesNewOrder = varNames([(1+SYSSIZE):(idx-1), 1:SYSSIZE]);
+
 % Get the new list of variables:
-newVarList = varNames{1};
+varList1 = varNamesNewOrder{1};
+varList2 = varNames{1};
 for k = 2:idx-1
-    newVarList = [newVarList, ',', varNames{k}]; %#ok<AGROW>
+    varList1 = [varList1, ',', varNamesNewOrder{k}]; %#ok<AGROW>
+    varList2 = [varList2, ',', varNames{k}]; %#ok<AGROW>
 end
+
 
 % Compile the new function string:
 funList = {'@diff', '@sum', '@cumsum', '@fred'};
-newStr = ['@(', newVarList, ')' 'inFun(' newVarList];    
+newStr = ['@(', varList1, ')' 'inFun(' varList2];
 for k = 0:(nargin(inFun) - idx)
     newStr = [newStr, ',', funList{k+1}]; %#ok<AGROW>
 end
