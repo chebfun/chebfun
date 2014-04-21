@@ -19,14 +19,14 @@ end
 % Check if s is actually a subinterval:
 hs = diff(f.domain)*max(get(f, 'epslevel')); % Some wiggle room.
 if ( s(1) < f.domain(1) )
-    if ( abs( s(1) - f.domain(1) ) < hs )
+    if ( abs(s(1) - f.domain(1)) < hs )
         s(1) = f.domain(1);
     else
         error('BNDFUN:restrict:badinterval', 'Not a valid interval.')
     end
 end
-if ( s(end) < f.domain(1) )
-    if ( abs( s(1) - f.domain(2) ) < hs )
+if ( s(end) > f.domain(2) )
+    if ( abs(s(end) - f.domain(2)) < hs )
         s(end) = f.domain(2);
     else
         error('BNDFUN:restrict:badinterval', 'Not a valid interval.')
