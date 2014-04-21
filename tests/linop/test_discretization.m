@@ -1,5 +1,7 @@
 function pass = test_discretization
 
+% TODO: Tests 2,3,5 assume a colloc2 discretization.
+
 %% Building blocks
 dom = [-2 2];
 I = chebmatrix( operatorBlock.eye(dom) );

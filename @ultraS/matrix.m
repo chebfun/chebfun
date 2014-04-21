@@ -28,48 +28,40 @@ if ( (length(disc.domain) - 1) ~= length(disc.dimension) )
 end
 
 % TODO: Add some documentation below please. AB, 1/3/14.
-A = disc.source;
-if ( isa(A, 'chebmatrix') )
+L = disc.source;
+if ( isa(L, 'chebmatrix') )
     c = disc.coeffs;
     outputSpaces = disc.outputSpace;
     inputDimension = disc.inputDimension;
-    L = cell(size(A));
-    S = cell(size(A));
-    for j = 1:size(A, 1)
+    A = cell(size(L));
+    S = cell(size(L));
+    for j = 1:size(L, 1)
         disc.outputSpace = outputSpaces(j);
-        for k = 1:size(A, 2)
+        for k = 1:size(L, 2)
             disc.coeffs = c{j, k};
             disc.inputDimension = inputDimension(j,k);
-            [L{j,k}, S{j,k}] = instantiate(disc, A.blocks{j, k});
+            [A{j,k}, S{j,k}] = instantiate(disc, L.blocks{j, k});
         end
     end
     disc.inputDimension = inputDimension;
     
-    if ( isa(A, 'linop') )
-        [rows, P] = disc.reduce(L);
+    if ( isa(L, 'linop') )
+        [rows, P] = disc.reduce(A);
         PA = cell2mat(rows);
         P = blkdiag(P{:});
-        B = getConstraints(disc, L);
+        B = getConstraints(disc, A);
 
         % This should restore squareness to the final matrix.
         M = [ B ; PA ];
 
-        if ( size(M, 1) ~= size(M, 2) )
-            % TODO: Improve this warning.
-             warning('Matrix is not square!');
-        end
     else
-        M = cell2mat(L);
+        M = cell2mat(A);
     end
-
-    
-
-    
 
         
 else
     disc.coeffs = disc.coeffs{1};
-    [varargout{1:nargout}] = instantiate(disc, A);
+    [varargout{1:nargout}] = instantiate(disc, L);
 end
 
 end

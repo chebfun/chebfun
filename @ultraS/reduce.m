@@ -37,7 +37,7 @@ v = [];
 nn = cumsum([0 n]);
 P = {};
 for k = 1:numel(dom) - 1
-    v = [v nn(k) + n(k) - (1:m)];
+    v = [v nn(k) + n(k) - (0:m-1)];
 end
 P = eye(sum(n));
 P(v,:) = [];

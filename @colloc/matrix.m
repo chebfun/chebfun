@@ -31,11 +31,19 @@ end
 L = disc.source;
 if ( isa(L, 'chebmatrix') )
     
-    blocks = L.blocks;
-    if ( numel(disc.inputDimension) == 1 )
-        disc.inputDimension = repmat(disc.inputDimension, size(blocks));
+    % TODO: Do these things ever occur?
+    if ( isempty(disc.inputDimension) )
+        disc.inputDimension = 0;
     end
-    A = cell(size(blocks));
+    if ( numel(disc.inputDimension) == 1 )
+        disc.inputDimension = repmat(disc.inputDimension, size(L.blocks));
+    end
+    
+    % Construct a square representation of each block individually and
+    % store in a cell array. The size of the j,k block is determined by
+    % disc.dimension + disc.inputDimension(j,k).
+    blocks = L.blocks;
+    A = cell(size(blocks));    
     for j = 1:size(blocks,1)
         for k = 1:size(blocks,2)
             dim = disc.dimension + disc.inputDimension(j,k);

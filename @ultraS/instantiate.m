@@ -1,4 +1,4 @@
-function [L, S] = instantiate(disc, data)
+function [L, S] = instantiate(disc, data, dim)
 %INSTANTIATE Convert an item to discrete form in ULTRAS.
 %   [L, S] = INSTANTIATE(DISC, DATA) converts each item DATA{k} to discrete form
 %   using the information in discretization DISC. The result M is a cell array.

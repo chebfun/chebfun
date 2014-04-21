@@ -63,7 +63,6 @@ end
 dimVals = prefs.dimensionValues;
 if ( isempty(disc) )
     disc = prefs.discretization(L);
-%     disc = ultraS(L)
     % Update the domain if new breakpoints are needed
     disc.domain = chebfun.mergeDomains(disc.domain, f.domain);
     % Update the dimensions to work with the correct number of breakpoints
@@ -108,10 +107,18 @@ for dim = dimVals
     
     % Solve the linear system:
     [v, disc] = mldivide(disc, A, b);
+    
+    % Project the solution:
     v = P*v;
     
+    % TODO: We could test each variable at their input dimension, but then
+    % each would be different and we would nopt be able to use the trick of
+    % taking a linear combination. Instead we project and test convergence
+    % at the size of the output dimension.
+
     % Convert the different components into cells
     u = partition(disc, v);
+    
     % Test the happieness of the function pieces:
     [isDone, epsLevel] = testConvergence(disc, u(isFun));
 
