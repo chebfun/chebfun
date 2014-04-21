@@ -1,4 +1,4 @@
-function [g, rval] = cumsum(f, k, dim)
+function [g, rJump] = cumsum(f, k, dim)
 %CUMSUM   Indefinite integral of a DELTAFUN.
 %   [G, RVAL] = CUMSUM(F) is the indefinite integral of the DELTAFUN F. If F 
 %   has no delta functions, then G is just the CUMSUM of the funPart of F
@@ -38,6 +38,7 @@ if ( isempty(deltaLoc) || isempty(deltaMag) )
     g = cumsum(f.funPart);
     % Store the value of g at the right end point:
     rval = get(g, 'rval');
+    rJump = 0;
 else
     % Clean up delta functions:
     f = simplifyDeltas(f);
@@ -68,6 +69,7 @@ else
         % There are no delta functions, so simply return the value of the funPart at
         % the right end point:
         rval = get(g, 'rval');
+        rJump = 0;
         return
     else
         % There are delta functions, which will introduce jumps. First take care
@@ -101,7 +103,8 @@ else
         p3 = nJumps == 2 && deltaLeft && deltaRight;
         if ( p1 || p2 || p3)
             s = cumsum(f.funPart) + jumpVals(1);
-            rval = jumpVals(end) + get(s, 'rval');
+            rval = jumpVals(end);
+            rJump = jumpVals(end);
             if ( isempty(deltaLoc) || isemtpy(deltaMag) )
                 g = s;                
             else
@@ -150,12 +153,14 @@ else
             end
         end
         % Compute the value at the right end point based on whether the last fun
-        % is DELTAFUN or a CLASSICFUN
+        % is a DELTAFUN or a CLASSICFUN
         gEnd = g{nfuns};
         if ( isa(gEnd, 'deltafun') )
             rval = get(gEnd.funPart, 'rval') + jumpVals(end);
+            rJump = jumpVals(end);
         else
             rval = get(gEnd, 'rval') + jumpVals(end);
+            rJump = jumpVals(end);
         end
     end
 end
