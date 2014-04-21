@@ -24,9 +24,6 @@ function out = feval(F, x, varargin)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-% [TODO]: Add support for multi-rowed impulses and deltas and update the
-% preceding text accordingly.
-
 % If F or x are empty, there's nothing to do.
 if ( isempty(F) )
     out = [];
@@ -104,14 +101,12 @@ if ( nargin > 2 )
     end
     % We deal with this by reassigning imps to be left/right values.
     if ( lrFlag(1) || lrFlag(3) ) % left
-        f.impulses(:,:,2:end) = []; % Level 2 imps are not needed here
         for j = 1:numFuns
-            f.impulses(j+1,:,1) = get(funs{j}, 'rval');
+            f.pointValues(j+1,:) = get(funs{j}, 'rval');
         end
     elseif ( lrFlag(2) || lrFlag(4) ) % right
-        f.impulses(:,:,2:end) = []; % Level 2 imps are not needed here
         for j = 1:numFuns
-            f.impulses(j,:,1) = get(funs{j}, 'lval');
+            f.pointValues(j,:) = get(funs{j}, 'lval');
         end
     end
 end
@@ -140,28 +135,19 @@ if ( any(I(:)) )
     out(I,:) =  feval(funs{end}, x(I));
 end
 
-%% IMPULSES:
+%% POINTVALUES:
 % If the evaluation point corresponds to a breakpoint, we get the value from
-% imps. If there is only one row, the value is given by the corresponding entry
-% in that row. If the second row is nonzero the value is -inf or inf
-% corresponding to the sign of the entry in the 2nd row. If the entry in the
-% corresponding 3rd or higher rows is nonzero, we return NaN.
+% pointValues. 
 
-higherImpulses = f.impulses(:,:,2:end);
-% Only one row:
-if ( ~any(higherImpulses(:)) )
-    % Loop over the FUNs:
-    for k = 1:numFuns + 1
-        index = x == dom(k);
-        if ( any(index) )
-            imps = repmat(f.impulses(k,:,1), sum(index), 1);
-            out(index,:) = imps;
-        end
+% Loop over the FUNs:
+for k = 1:numFuns + 1
+    index = x == dom(k);
+    if ( any(index) )
+        pointValues = repmat(f.pointValues(k,:), sum(index), 1);
+        out(index,:) = pointValues;
     end
-    
-else
-    % [TODO]: Higher-order impulses.
 end
+    
 
 %% RESHAPE FOR OUTPUT:
 % Reshape fx, which is a column vector or horizontal concatenation of column

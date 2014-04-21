@@ -75,7 +75,7 @@ if ( numel(f) == 1 && numel(g) == 1)
         f.funs{k} = assignColumns(f.funs{k}, colIdx, g.funs{k});
     end
     % Assign the columns to the impulses:
-    f.impulses(:,colIdx,:) = g.impulses;
+    f.pointValues(:, colIdx, :) = g.pointValues;
 else
     % Quasimatrix case:
     
@@ -85,5 +85,4 @@ else
     for k = 1:numel(colIdx)
         f(colIdx(k)) = g{k};
     end
-
 end

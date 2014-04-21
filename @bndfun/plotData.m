@@ -26,6 +26,9 @@ if ( nargin == 1 || isempty(g) )
     data.xJumps = [f.domain(1) ; NaN ; f.domain(2)];
     data.yJumps = getJumps(f, data.yLine);
     
+    % Sort out the xLim:
+    data.xLim = f.domain;
+    
 elseif ( nargin == 2 )
     % PLOT(F, G):
     data = plotData(f.onefun, g.onefun);
@@ -33,6 +36,9 @@ elseif ( nargin == 2 )
     % Sort out the jumps:
     data.xJumps = getJumps(f, data.xLine);
     data.yJumps = getJumps(g, data.yLine);
+    
+    % Sort out the xLim: 
+    data.xLim = [min(get(f, 'values')) max(get(f, 'values'))];
     
 else
     % PLOT(F, G, H):
@@ -43,6 +49,8 @@ else
     data.yJumps = getJumps(g, data.yLine);
     data.zJumps = getJumps(h, data.zLine);
     
+    % Sort out the xLim:
+    data.xLim = [min(get(f, 'values')) max(get(f, 'values'))];
 end
 
 end
@@ -60,4 +68,3 @@ function jumps = getJumps(f, fLine)
     myNaN = nan(size(lvalF));
     jumps = [lvalF ; myNaN ; rvalF];
 end
-

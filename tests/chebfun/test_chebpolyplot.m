@@ -27,6 +27,7 @@ pass(5) = doesNotCrash(@() chebpolyplot(Q));
 % Check plot flags and other options.
 pass(6) = doesNotCrash(@() chebpolyplot(g, 'noepslevel'));
 pass(7) = doesNotCrash(@() chebpolyplot(g, 'loglog'));
+pass(8) = doesNotCrash(@() chebpolyplot(g, '.--'));
 
 close(hfig);
 

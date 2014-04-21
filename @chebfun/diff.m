@@ -97,7 +97,6 @@ function f = diffContinuousDim(f, n)
 funs = f.funs;
 numFuns = numel(funs);
 numCols = size(f.funs{1}, 2);
-imps = f.impulses;
 
 % Set a tolerance: (used for introducing Dirac deltas at jumps)
 tol = epslevel(f)*hscale(f);
@@ -108,32 +107,38 @@ for j = 1:n
     vs = vs(:);
 
     % Detect jumps in the original function and create new deltas.
-    newDeltas = zeros(numFuns + 1, numCols, 1);
+    deltaMag = zeros(numFuns + 1, numCols);
     for k = 1:numFuns-1
         jmp = get(funs{k+1}, 'lval') - get(funs{k}, 'rval');
         scl = 0.5*(vs(k) + vs(k+1,:));
         if ( any(abs(jmp) > tol*scl) )
-           newDeltas(k+1,:,:) = jmp;
+           deltaMag(k+1, :) = jmp;
         end
     end
 
     % Differentiate each FUN in turn:
     for k = 1:numFuns
         funs{k} = diff(funs{k});
+        % If there is a delta function at the join, recreate the fun using the
+        % deltafun constructor:
+        p.enableDeltaFunctions = true;
+        pref = chebpref(p);
+        tol = pref.deltaPrefs.deltaTol;
+        if ( any(abs(deltaMag(k, :) > tol)) || any(abs(deltaMag(k+1, :) > tol)) )
+            % [TODO]: This does not handle array valuedness at the moment.
+            % Delta functions are only possible at the ends of each domain:
+            deltaLoc = funs{k}.domain;
+            funs{k} = fun.constructor(funs{k}, funs{k}.domain, [deltaMag(k)/2, deltaMag(k+1)/2], deltaLoc, pref);
+        end
     end
+    
 
     % Compute new function values at breaks using JUMPVALS():
-    imps(:,:,1) = chebfun.getValuesAtBreakpoints(funs);
-    % Update impulses:
-    if ( size(imps, 3) > 1 )
-       imps = cat(3, imps(:,:,1), newDeltas, imps(:,:,2:end));
-    elseif ( any(newDeltas) )
-       imps(:,:,2) = newDeltas;
-    end
-
+    pointValues = chebfun.getValuesAtBreakpoints(funs);
+    
     % Reassign data to f:
     f.funs = funs;
-    f.impulses = imps;
+    f.pointValues = pointValues;
 
 end
 

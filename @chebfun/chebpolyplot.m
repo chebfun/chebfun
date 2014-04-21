@@ -34,9 +34,13 @@ col = [];
 if ( nargin > 1 && ischar(varargin{1}) && numel(varargin{1}) < 4 )
     % (Note. LineStyle definitions have at most 4 characters. Other plotting
     % parameters have more than characters.)
-    str = varargin{1};
     col = regexp(varargin{1}, '[bgrcmykw]', 'match');
-    col = col{:};
+    if ( numel(col) > 1 )
+        error('CHEBFUN:chebpolyplot:color', ...
+            'Error in color/linetype argument.');
+    elseif ( ~isempty(col) )
+        col = col{:};
+    end
     varargin(1) = [];
 end
 if ( isempty(col) )

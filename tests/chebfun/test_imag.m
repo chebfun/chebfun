@@ -40,4 +40,25 @@ pow = -1.64;
 f = chebfun(@(x) 1i*(x-dom(1)).^pow, dom, 'exps', [pow 0], 'splitting', 'on');
 pass(5) = ( isequal(imag(f), -1i*f) );
 
+%% Test on function defined on unbounded domain:
+
+% Functions on [-inf b]:
+
+% Set the domain:
+dom = [-Inf -3*pi];
+domCheck = [-1e6 -3*pi];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+% Array-valued function:
+op = @(x) x.*exp(x) + 1i*(1-exp(x))./x;
+opg = @(x) (1-exp(x))./x;
+f = chebfun(op, dom);
+g = imag(f);
+gVals = feval(g, x);
+gExact = opg(x);
+err = gVals - gExact;
+pass(6) = norm(err, inf) < epslevel(f).*vscale(f);
+
 end

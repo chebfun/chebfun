@@ -48,7 +48,7 @@ for j = 1:size(f.funs{1}, 2)
         end
     end
     
-    xnew = fj.domain(fj.impulses(:,1,1) ~= 0);   % Does all the real work.
+    xnew = fj.domain(fj.pointValues(:,1) ~= 0);   % Does all the real work.
     x = [x, xnew];                               %#ok<AGROW>
     idx = [idx, repmat(j, size(xnew))];          %#ok<AGROW>
 end

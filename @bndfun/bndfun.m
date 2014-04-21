@@ -1,4 +1,4 @@
-classdef bndfun < fun
+classdef bndfun < classicfun
 %BNDFUN   Represent global functions on a bounded interval [a, b].
 %
 %   Class for representing global functions on a bounded interval [a, b].
@@ -27,7 +27,7 @@ classdef bndfun < fun
 %
 % See ONEFUN for further documentation of the ONEFUN class.
 %
-% See also FUN, CHEBPREF, ONEFUN.
+% See also CLASSICFUN, CHEBPREF, ONEFUN.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % BNDFUN Class Description:
@@ -41,7 +41,7 @@ classdef bndfun < fun
 % will not issue warnings if this condition is violated, but the results will
 % not be meaningful.
 %
-% Class diagram: [<<FUN>>] <>-- [<<onefun>>]
+% Class diagram: [<<CLASSICFUN>>] <>-- [<<onefun>>]
 %                   ^
 %                   |  
 %                [bndfun]
@@ -125,20 +125,17 @@ classdef bndfun < fun
     
     %% METHODS IMPLEMENTED BY THIS CLASS.
     methods
-        % Introduce new breakpoint to facilitate the computation of the 
-        % indefinite integral of a BNDFUN.
-        f = addBreaksForCumSum(f)
 
-        % Compose a BNDFUN with an operator or another BNDFUN
+        % Compose a BNDFUN with an operator or another BNDFUN.
         f = compose(f, op, g, pref)
         
         % Indefinite integral of a BNDFUN.
-        f = cumsum(f, m, dim, shift)
+        [f, rVal] = cumsum(f, m, dim)
         
         % Derivative of a BNDFUN.
         f = diff(f, k, dim)
        
-        % Change of domains of BNDFUN via linear change of variables
+        % Change of domains of BNDFUN via linear change of variables.
         f = changeMap(f,newdom)
         
         % Evaluate a BNDFUN.
@@ -155,12 +152,6 @@ classdef bndfun < fun
 
         % Right matrix divide for a BNDFUN.
         X = mrdivide(B, A)
-        
-        % Return Legendre coefficients of a BNDFUN.
-        c_leg = legpoly(f, n)
-        
-        % Estimate the Inf-norm of a BNDFUN
-        out = normest(f);
         
         % Data for plotting a BNDFUN
         data = plotData(f, g, h);
@@ -181,4 +172,3 @@ classdef bndfun < fun
         out = sum(f, dim)
     end
 end
-   

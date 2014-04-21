@@ -42,7 +42,9 @@ if ( numel(A) > 1 )
 
     isSimple = true;
     for k = 1:numel(A)
-        isSimple = isSimple && all(cellfun(@(f) isa(f.onefun, 'chebtech'), A(k).funs));
+        %isSimple = isSimple && all(cellfun(@(f) isa(f.onefun, 'chebtech'), A(k).funs));
+        isSimple = isSimple && ~isdelta(A(k)) ...
+            && all(cellfun(@(f) isa(f.onefun, 'chebtech'), A(k).funs));
     end
 
     if ( isSimple )
@@ -53,7 +55,7 @@ if ( numel(A) > 1 )
         
     else
         % Legendre matrix:
-        E = legpoly(0:numCols-1, A.domain, 'norm', 1);
+        E = legpoly(0:numCols-1, domain(A), 'norm', 1);
         E = restrict(E, get(A, 'domain'));
         % Convert the Legendre-Vandermonde matrix to a quasimatrix:
         E = cheb2quasi(E);
@@ -110,10 +112,11 @@ A = simplify(A);
 % Get some useful values
 numCols = numColumns(A);
 tol = epslevel(A)*vscale(A);
+tol = eps * vscale(A); 
 dom = A.domain;
 a = dom(1);
 b = dom(end);
-numFuns = length(dom)-1;
+numFuns = length(dom) - 1;
 
 % Get the sizes of the funs in the columns of A, keeping in mind that we
 % will have to multiply with the columns of E and the norm of A's columns.

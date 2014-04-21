@@ -37,9 +37,8 @@ if ( nargin < 2 )
     end
 end
 
-% Impulses:
-% TODO:  What about higher-order impulses?
-out = all(f.impulses(:,:,1) <= tol);
+% pointValues:
+out = all(f.pointValues <= tol);
 
 % Loop over each of the FUNs:
 % TODO:  We don't use TOL here?

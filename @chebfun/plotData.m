@@ -23,9 +23,10 @@ function data = plotData(f, g, h)
 
 % Initialise the output structure:
 data = struct('xLine', [], 'yLine', [], 'xPoints', [], 'yPoints', [], ...
-    'xJumps', [], 'yJumps', [], 'yLim', []);
+    'xJumps', [], 'yJumps', [], 'xDeltas', [], 'yDeltas', [], 'yLim', []);
 
 yLim = [inf, -inf];
+xLim = [inf, -inf];
 
 if ( nargin == 1 )
     % PLOT(F)
@@ -35,7 +36,13 @@ if ( nargin == 1 )
     for k = 1:nFuns
         % Get the data from the FUN:
         dataNew = plotData(f.funs{k});
-        
+
+        if ( ~any(ismember(fields(dataNew), 'xDeltas' )) )
+            dataNew.xDeltas = [];
+            dataNew.yDeltas = [];
+        end
+
+        xLim = [min(dataNew.xLim(1), xLim(1)), max(dataNew.xLim(2), xLim(2))];
         yLim = [min(dataNew.yLim(1), yLim(1)), max(dataNew.yLim(2), yLim(2))];
         
         if ( k == 1 )
@@ -58,7 +65,7 @@ if ( nargin == 1 )
             dataNew.yPoints = imag(dataNew.yPoints);
             dataNew.xJumps = real(dataNew.yJumps);
             dataNew.yJumps = imag(dataNew.yJumps);
-
+            
         end
         
         % Insert a NaN (or array of NaNs) and append new data to array:
@@ -72,6 +79,8 @@ if ( nargin == 1 )
         data.xJumps = [data.xJumps ; dataNew.xJumps];
         data.yJumps = [data.yJumps ; dataNew.yJumps];
 
+        data.xDeltas = [data.xDeltas ; dataNew.xDeltas];
+        data.yDeltas = [data.yDeltas ; dataNew.yDeltas];
     end
 
 elseif ( nargin == 2 )
@@ -84,6 +93,13 @@ elseif ( nargin == 2 )
     for k = 1:nFuns
         % Get the data from the FUN objects:
         dataNew = plotData(f.funs{k}, g.funs{k});
+
+        if ( ~any(ismember(fields(dataNew), 'xDeltas' )) )
+            dataNew.xDeltas = [];
+            dataNew.yDeltas = [];
+        end
+
+        xLim = [min(dataNew.xLim(1), xLim(1)), max(dataNew.xLim(2), xLim(2))];
         yLim = [min(dataNew.yLim(1), yLim(1)), max(dataNew.yLim(2), yLim(2))];
         
         % Discard the unnecessary jump data:
@@ -128,7 +144,15 @@ else
     for k = 1:nFuns
         % Get the data from the FUN objects:
         dataNew = plotData(f.funs{k}, g.funs{k}, h.funs{k});
+
+        if ( ~any(ismember(fields(dataNew), 'xDeltas' )) )
+            dataNew.xDeltas = [];
+            dataNew.yDeltas = [];
+        end
+
+        xLim = [min(dataNew.xLim(1), xLim(1)), max(dataNew.xLim(2), xLim(2))];
         yLim = [min(dataNew.yLim(1), yLim(1)), max(dataNew.yLim(2), yLim(2))];
+
         myNaN = NaN(1, size(dataNew.yLine, 2)); % Array of NaNs.
         % Insert a NaN (or array of NaNs) and append new data to array:
         data.xLine = [data.xLine ; myNaN ; dataNew.xLine];
@@ -157,6 +181,7 @@ else
     
 end
 
+data.xLim = xLim;
 data.yLim = yLim;
 
 end

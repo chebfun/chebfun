@@ -64,6 +64,27 @@ catch ME
     pass(10) = true;
 end
 
+%% Compose a function defined on unbounded domain with a function defined on
+% bounded domain, i.e. G(F):
+
+% Set the domain:
+dom = [0 Inf];
+domCheck = [0 1e2];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+opf = @(x) exp(-x);
+opg = @(x) cos(x);
+oph = @(x) cos(exp(-x));
+f = chebfun(opf, dom);
+g = chebfun(opg, [-1 1]);
+h = compose(f, g);
+hVals = feval(h, x);
+hExact = oph(x);
+err = hVals - hExact;
+pass(11) = norm(err, inf) < get(h,'epslevel')*get(h,'vscale');
+
 end
 
 % Test composition of two chebfuns.
@@ -94,8 +115,3 @@ function pass = test_one_compose_chebfuns_quasi(f_exact, g_exact, dom, pref, f, 
     pass = (err < 20*vscale(h)*epslevel(h)) && ...
         isequal(feval(g, feval(f, dom)), feval(h, dom));
 end
-
-
-
-
-

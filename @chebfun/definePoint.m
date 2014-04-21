@@ -81,8 +81,8 @@ end
 snew = [f.domain(1) ; s(:) ; f.domain(end)]';
 f = restrict(f, snew);
 
-% Assign the values in v to the new impulses;
+% Assign the values in v to the new pointValues;
 [mem, loc] = ismember(s, f.domain);
-f.impulses(loc,:,1) = v(mem, :);
+f.pointValues(loc,:) = v(mem, :);
 
 end

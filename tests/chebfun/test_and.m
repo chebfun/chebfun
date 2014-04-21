@@ -19,11 +19,11 @@ f = chebfun(@(x) sin(x), [-1 -0.5 0.5 1], pref);
 
 g = chebfun(@(x) 0*x);
 h = f & g;
-pass(2) = all(h.impulses == 0) && all(feval(h, x) == 0);
+pass(2) = all(h.pointValues == 0) && all(feval(h, x) == 0);
 
 g = chebfun(@(x) exp(x));
 h = f & g;
-ind = find(h.impulses == 0);
+ind = find(h.pointValues == 0);
 pass(3) = all(feval(h, x) == 1) && (numel(ind) == 1) && ...
     (abs(h.domain(ind)) < 10*vscale(h)*epslevel(h));
 
@@ -33,12 +33,12 @@ g = chebfun(@(x) [exp(x) 0*x], pref);
 h = f & g;
 h_exact = @(x) [(sin(x) & exp(x)) 0*x];
 err = feval(h, x) - h_exact(x);
-pass(4) = (norm(err(:), inf) == 0) && isequal(h.impulses, [1 0 ; 0 0 ; 1 0]);
+pass(4) = (norm(err(:), inf) == 0) && isequal(h.pointValues, [1 0 ; 0 0 ; 1 0]);
 
 h = f.' & g.';
 h_exact = @(x) [(sin(x) & exp(x)) 0*x].';
 err = feval(h, x) - h_exact(x);
-pass(5) = (norm(err(:), inf) == 0) && isequal(h.impulses, [1 0 ; 0 0 ; 1 0]);
+pass(5) = (norm(err(:), inf) == 0) && isequal(h.pointValues, [1 0 ; 0 0 ; 1 0]);
 
 % Check error conditions.
 try
@@ -59,7 +59,7 @@ catch ME
     pass(7) = strcmp(ME.identifier, 'CHEBFUN:and:doms');
 end
 
-%% Test on SINGFUN:
+%% Test for singular functions:
 
 % define the domain:
 dom = [-2 7];
@@ -86,5 +86,21 @@ fval = feval(h2, x);
 err = fval - 1;
 pass(10) = ~any( err );
 pass(11) = ~any( h2(r) );
+
+%% Test for function defined on unbounded domain:
+
+% Set the domain:
+dom = [1 Inf];
+domCheck = [1 1e2];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+op = @(x) 1./x;
+f = chebfun(op, dom);
+g = chebfun(@(x) 0*x, dom);
+h = f & g;
+hVals = feval(h, x);
+pass(12) = ~any( hVals );
 
 end

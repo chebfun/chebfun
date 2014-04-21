@@ -140,6 +140,29 @@ h_exact = 0.13033807496531659;
 err = h - h_exact;
 pass(22) = abs(err) < 1e1*h_exact*max(epslevel(f), epslevel(g));
 
+%% Tests for function defined on unbounded domain:
+
+% Functions on [-inf b]:
+
+% Set the domain:
+dom = [-Inf -3*pi];
+domCheck = [-1e6 -3*pi];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+% Array-valued function:
+op = @(x) [exp(x) x.*exp(x) (1-exp(x))./x];
+f = chebfun(op, dom);
+A = randn(3, 3);
+g = f*A;
+gVals = feval(g, x);
+
+op = @(x) [exp(x) x.*exp(x) (1-exp(x))./x]*A;
+gExact = op(x);
+err = gVals - gExact;
+pass(23) = norm(err, inf) < 1e1*max(get(g,'epslevel').*get(g,'vscale'));
+
 end
 
 % Test the multiplication of a chebfun F, specified by F_OP, by a scalar ALPHA
@@ -152,4 +175,3 @@ function result = test_mult_function_by_scalar(f, f_op, alpha, x)
     err = feval(g1, x) - g_exact(x);
     result(2) = norm(err(:), inf) < 10*max(vscale(g1).*epslevel(g1));
 end
-

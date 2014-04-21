@@ -40,11 +40,11 @@ vs = vscale(p);
 el = epslevel(p);
 tol = 100*el*vs;
 
-% Store data about the impulses for later:
+% Store data about the pointValues for later:
 lvals = feval(p, p.domain, 'left').';
 rvals = feval(p, p.domain, 'right').';
-idxl = abs(p.impulses(:,:,1) - lvals) < 100*tol;
-idxr = abs(p.impulses(:,:,1) - rvals) < 100*tol;
+idxl = abs(p.pointValues - lvals) < 100*tol;
+idxr = abs(p.pointValues - rvals) < 100*tol;
 
 % Find the jumps:
 idx1 = mymod(abs(lvals - rvals), 2*jumpTol) < tol;
@@ -58,9 +58,9 @@ for j = 2:numel(p.funs)
     p.funs{j} = p.funs{j} + shift(j);
 end
 
-% Update the impulses:
-p.impulses(idxl,:,1) = feval(p, p.domain(idxl), 'left');
-p.impulses(idxr,:,1) = feval(p, p.domain(idxr), 'right');
+% Update the pointValues:
+p.pointValues(idxl,:) = feval(p, p.domain(idxl), 'left');
+p.pointValues(idxr,:) = feval(p, p.domain(idxr), 'right');
 
 % Merge to tidy up unneeded breakpoints:
 p = merge(p, find(idx).');

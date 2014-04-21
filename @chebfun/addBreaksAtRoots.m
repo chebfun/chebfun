@@ -47,7 +47,7 @@ if ( ~isempty(rBreaks) )
     if ( ~isequal(f.domain, oldDomain) )
         for k = 1:min(size(f))
             % TODO: Allow a tolerance?
-            f.impulses(ismember(f.domain, rAll(:,k)), k, :) = 0;
+            f.pointValues(ismember(f.domain, rAll(:,k)), k, :) = 0;
         end
     end
 end

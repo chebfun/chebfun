@@ -53,21 +53,21 @@ if ( (newDomain(1) < oldDomain(1)) || (newDomain(end) > oldDomain(end)) || ...
     error('CHEBFUN:restrict:subdom', 'Not a valid subdomain.');
 end
 
-% Obtain FUN cell and impulses from f:
+% Obtain FUN cell and pointValues from f:
 funs = f.funs;
-imps = f.impulses;
+pointValues = f.pointValues;
 
 % Discard intervals to the left:
 discardIntsLeft = oldDomain(2:end) < newDomain(1);
 oldDomain([discardIntsLeft, false]) = [];
 funs(discardIntsLeft) = [];
-imps([discardIntsLeft, false],:,:) = [];
+pointValues([discardIntsLeft, false],:,:) = [];
 
 % Discard intervals to the right:
 discardIntsRright = oldDomain(1:end-1) > newDomain(end);
 oldDomain([false, discardIntsRright]) = [];
 funs(discardIntsRright) = [];
-imps([false, discardIntsRright],:,:) = [];
+pointValues([false, discardIntsRright],:,:) = [];
 
 % Take the union of the new and old domains:
 if ( ~isempty( oldDomain(2:end-1) ) ) % Required due to Matlab union() behavior.
@@ -76,9 +76,9 @@ if ( ~isempty( oldDomain(2:end-1) ) ) % Required due to Matlab union() behavior.
 end
 numFuns = numel(funs);
 
-% Initialise storage for new FUN objects and impulses:
+% Initialise storage for new FUN objects and pointValues:
 newFuns = cell(1, numel(newDomain)-1);
-newImps = zeros(numel(newDomain), size(imps, 2), size(imps, 3));
+newPointValues = zeros(numel(newDomain), size(pointValues, 2), size(pointValues, 3));
 
 % Loop through each fun and restrict as required:
 l = 0;
@@ -99,16 +99,16 @@ for k = 1:numFuns
     end
 end
 
-% Update the impulses:
-newImps(:,:,1) = chebfun.getValuesAtBreakpoints(newFuns);
-% Restore existing impulses:
+% Update the pointValues:
+newPointValues = chebfun.getValuesAtBreakpoints(newFuns);
+% Restore existing pointValues:
 [mask, locB] = ismember(oldDomain, newDomain);
 locB(~logical(locB)) = [];
-newImps(locB,:,:) = imps(mask,:,:);
+newPointValues(locB,:) = pointValues(mask,:);
 
 % Attach data to CHEBFUN to return as output:
 f.domain = newDomain;
 f.funs = newFuns;
-f.impulses = newImps;
+f.pointValues = newPointValues;
 
 end

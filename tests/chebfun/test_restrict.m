@@ -102,6 +102,32 @@ op = @(x) (x - dom(1)).^pow.*sin(100*x).*(x - dom(2)).^pow;
 f = chebfun(op, dom, 'exps', [pow pow], 'splitting', 'on');
 pass(23) = test_restrict_one_function(f, op, domNew, map, xr);
 
+%% Test on function defined on unbounded domain:
+
+% piecewise function on [-inf b]:
+
+% Set the domain:
+dom = [-Inf 1 3*pi];
+domRestrict = [-Inf -1 pi 2*pi];
+domCheck = [-100 1 2*pi];
+
+% Generate a few random points to use as test values:
+x1 = diff(domCheck(1:2)) * rand(100, 1) + domCheck(1);
+x2 = diff(domCheck(2:3)) * rand(100, 1) + domCheck(2);
+
+op1 = @(x) exp(x);
+op2 = @(x) sin(3*x);
+f = chebfun({op1 op2}, dom);
+g = restrict(f, domRestrict);
+g1Vals = feval(g, x1);
+g2Vals = feval(g, x2);
+g1Exact = op1(x1);
+g2Exact = op2(x2);
+err1 = g1Vals - g1Exact;
+err2 = g2Vals - g2Exact;
+
+pass(24) = norm([err1 ; err2], inf) < 2*get(g,'epslevel').*get(g,'vscale');
+
 end
 
 % Check restriction of a single function.

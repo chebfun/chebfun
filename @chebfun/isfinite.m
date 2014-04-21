@@ -15,10 +15,8 @@ end
 
 function out = columnIsfinite(f)
 
-% Check for infinite breakpoint values or higher-order impulses.
-tol = epslevel(f);
-if ( any(any(~isfinite(f.impulses(:,:,1)))) || ...
-        any(any(any(f.impulses(:,:,2:end) > tol))) )
+% Check for infinite breakpoint values:
+if ( any(~isfinite(f.pointValues(:))) )
     out = false;
     return
 end

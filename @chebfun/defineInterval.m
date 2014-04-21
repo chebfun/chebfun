@@ -83,23 +83,23 @@ if ( ~isempty(g) )
         padding = chebfun(0, [g.domain(end), f.domain(1)]);
         f.domain = [g.domain, f.domain];
         f.funs = [g.funs, padding.funs, f.funs];
-        f.impulses = [g.impulses ; f.impulses];
+        f.pointValues = [g.pointValues ; f.pointValues];
         
     elseif ( subInt(1) > f.domain(end) )         % Extension to the right
-        % Append FUNs, domain, and impulses:
+        % Append FUNs, domain, and pointValues:
         padding = chebfun(0, [f.domain(end), g.domain(1)]);
         f.domain = [f.domain, g.domain];
         f.funs = [f.funs, padding.funs, g.funs];
-        f.impulses = [f.impulses ; g.impulses];
+        f.pointValues = [f.pointValues ; g.pointValues];
         
     else                                         % SubInt intersects f.domain
         fLeft = restrict(f, [f.domain(1), subInt(1)]);
         fRight = restrict(f, [subInt(end), f.domain(end)]);
-        % Insert FUNs, domain, and impulses:
+        % Insert FUNs, domain, and pointValues:
         f.funs = [fLeft.funs, g.funs, fRight.funs];
         f.domain = [fLeft.domain(1:end-1), g.domain, fRight.domain(2:end)];
-        f.impulses = [fLeft.impulses(1:end-1,:,:) ; g.impulses ; ...
-            fRight.impulses(2:end,:,:)];
+        f.pointValues = [fLeft.pointValues(1:end-1,:) ; g.pointValues ; ...
+            fRight.pointValues(2:end,:)];
         
     end
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% DELETION %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -125,10 +125,10 @@ else
             for j = 1:numel(fRight.funs)  
                 fRight.funs{j} = changeMap(fRight.funs{j}, newEnds(j:j+1));
             end
-            % Insert FUNs, domain, and impulses:
+            % Insert FUNs, domain, and pointValues:
             f.funs = [fLeft.funs, fRight.funs];
             f.domain = [fLeft.domain(1:end-1), newEnds];
-            f.impulses = [fLeft.impulses(1:end-1,:,:) ; fRight.impulses];
+            f.pointValues = [fLeft.pointValues(1:end-1,:) ; fRight.pointValues];
         end
         
     end

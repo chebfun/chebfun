@@ -9,6 +9,7 @@ function out = horzcat(varargin)
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
+% error('CHEBFUN:horzcat:noSupport', 'HORZCAT of a CHEBFUN is not yet supported.');
 
 % TODO: Document quasimatrix vs array-valued CHEBFUN
 
@@ -81,10 +82,11 @@ end
 
 % TODO: Also check to see if an input is a SINGFUN.
 isSingular = any(cellfun(@issing, varargin));
+isDelta = any(cellfun(@isdelta, varargin));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%% FORM A QUASIMATRIX %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-if ( differentBreakpoints || isSingular )  % (form a quasimatrix)
+if ( differentBreakpoints || isSingular || isDelta )  % (form a quasimatrix)
     isArrayCheb = cellfun(@(f) isa(f, 'chebfun') && size(f, 2) > 1, varargin);
     if ( any(isArrayCheb) )
         % Break up array-valued CHEBFUNs into single columns:
@@ -115,9 +117,9 @@ else % (form an array-valued CHEBFUN)
         funs = cellfun(@(f) f.funs{k}, varargin, 'UniformOutput', false);
         out.funs{k} = horzcat(funs{:});
     end
-    % Concatenate impulses:
-    imps = cellfun(@(f) f.impulses, varargin, 'UniformOutput', false);
-    out.impulses = cell2mat(imps);
+    % Concatenate pointValues:
+    imps = cellfun(@(f) f.pointValues, varargin, 'UniformOutput', false);
+    out.pointValues = cell2mat(imps);
 
 end
 
