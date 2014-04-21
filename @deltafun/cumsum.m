@@ -1,10 +1,10 @@
 function [g, rJump] = cumsum(f, k, dim)
 %CUMSUM   Indefinite integral of a DELTAFUN.
-%   [G, RVAL] = CUMSUM(F) is the indefinite integral of the DELTAFUN F. If F 
+%   [G, RJUMP] = CUMSUM(F) is the indefinite integral of the DELTAFUN F. If F 
 %   has no delta functions, then G is just the CUMSUM of the funPart of F
-%   RVAL is the value of G at the right end point. Any derivatives of delta 
-%   functions are integrated by shifting the rows of the DELTAMAG matrix once
-%   upward. 
+%   RJUMP is the value of the delta function a the at the right end point of f.
+%   Any derivatives of delta functions are integrated by shifting the rows 
+%   of the DELTAMAG matrix once upward. 
 %
 %   In case there are delta functions in F, a cell array of FUNS is returned. 
 %   If F has a delta function at the right end point, it's magnitude is added
@@ -36,8 +36,7 @@ deltaTol = pref.deltaPrefs.deltaTol;
 
 if ( isempty(deltaLoc) || isempty(deltaMag) )
     g = cumsum(f.funPart);
-    % Store the value of g at the right end point:
-    rval = get(g, 'rval');
+    % The jump at the right end is zero in this case:
     rJump = 0;
 else
     % Clean up delta functions:
@@ -66,9 +65,7 @@ else
         else
             g = deltafun(cumsum(f.funPart), deltaMag, deltaLoc);
         end
-        % There are no delta functions, so simply return the value of the funPart at
-        % the right end point:
-        rval = get(g, 'rval');
+        % There are no delta functions, so the jump is zero:
         rJump = 0;
         return
     else
@@ -103,7 +100,6 @@ else
         p3 = nJumps == 2 && deltaLeft && deltaRight;
         if ( p1 || p2 || p3)
             s = cumsum(f.funPart) + jumpVals(1);
-            rval = jumpVals(end);
             rJump = jumpVals(end);
             if ( isempty(deltaLoc) || isemtpy(deltaMag) )
                 g = s;                
@@ -152,16 +148,8 @@ else
                 g{k} = fk;
             end
         end
-        % Compute the value at the right end point based on whether the last fun
-        % is a DELTAFUN or a CLASSICFUN
-        gEnd = g{nfuns};
-        if ( isa(gEnd, 'deltafun') )
-            rval = get(gEnd.funPart, 'rval') + jumpVals(end);
-            rJump = jumpVals(end);
-        else
-            rval = get(gEnd, 'rval') + jumpVals(end);
-            rJump = jumpVals(end);
-        end
+        % Record the jump at the right end:
+        rJump = jumpVals(end);
     end
 end
 
