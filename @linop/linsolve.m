@@ -88,7 +88,9 @@ isDone = false(1, numInt);
 %% Loop over a finer and finer grid until happy.
 % We need to know which solution components to check for happiness:
 isFun = isFunVariable(L);
-for dim = dimVals
+for dim = [dimVals inf]
+    
+    % TODO: It's weird that the current value of dim is the _next_ disc size.
 
     % Discretize the operator (incl. constraints/continuity), unless there is a
     % currently valid factorization at hand.
@@ -122,7 +124,7 @@ for dim = dimVals
     % Test the happieness of the function pieces:
     [isDone, epsLevel] = testConvergence(disc, u(isFun));
 
-    if ( all(isDone) )
+    if ( all(isDone) || isinf(dim) )
         break
     else
         % Update the discretiztion dimension on unhappy pieces:
