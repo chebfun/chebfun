@@ -81,15 +81,10 @@ end
 
 % Initialize flags:
 isComplex = false;
-intervalIsSet = false;
 xLim = [inf, -inf];
 yLim = [inf, -inf];
 
 % Initialise storage:
-lineData = {};
-pointData = {};
-jumpData = {};
-deltaData = {};
 intervalIsSet = false;
 
 % Suppress inevitable warning for growing these arrays:
@@ -248,6 +243,7 @@ while ( ~isempty(varargin) )
             newData(k).xDeltas(ind) = [];
             newData(k).yDeltas(ind,:) = [];
             
+            newData(k).xLim = interval;            
         end
         
         % Update axis limits:
