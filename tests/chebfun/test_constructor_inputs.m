@@ -65,7 +65,13 @@ f = chebfun(@abs, 'trunc', 10, 'splitting', 'on');
 c = get(f, 'coeffs');
 pass(12) = abs(-4/63/pi - c{1}(2)) < get(f, 'epslevel');
 
+% Test construction from cells of strings:
 f = chebfun({'x','x-1'}, [0 1 2]);
 pass(13) = norm(feval(f, [.5, 1.5]) - .5) < get(f, 'epslevel');
+
+% Test construction from a piecewise chebfun:
+f = chebfun(chebfun({'x','x'}, [-1 0 1]));
+x = [-.5, .5];
+pass(14) = numel(f.funs) == 1  && norm(feval(f, x) - x) < get(f, 'epslevel');
 
 end

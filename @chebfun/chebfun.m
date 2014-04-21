@@ -614,6 +614,9 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
             % [TODO]: Should we reinstate VECTORCHECK()?
             op = vec(op);
         end
+        if ( isa(op, 'chebfun') )
+            op = @(x) feval(op, x);
+        end
 
         if ( isa(op, 'function_handle') && strcmp(pref.tech, 'funqui') )
             if ( isfield(pref.techPrefs, 'exactLength') && ...
