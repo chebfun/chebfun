@@ -336,7 +336,7 @@ classdef chebfun
         % Get Delta functions withing a chebfun
         [deltaMag, deltLoc] = getDeltaFunctions(f);
         
-        % Horizontal scale of a CHEBFUN object.
+        % Horizontal scale of a CHEBFUN obconstructor.mject.
         out = hscale(f);
 
         % Imaginary part of a CHEBFUN.
@@ -613,6 +613,9 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
         if ( isa(op, 'function_handle') && vectorize )
             % [TODO]: Should we reinstate VECTORCHECK()?
             op = vec(op);
+        end
+        if ( isa(op, 'chebfun') )
+            op = @(x) feval(op, x);
         end
 
         if ( isa(op, 'function_handle') && strcmp(pref.tech, 'funqui') )
