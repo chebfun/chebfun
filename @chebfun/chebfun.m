@@ -531,7 +531,11 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
             args(1:2) = [];            
         elseif ( isnumeric(args{1}) )
             % g = chebfun(@(x) f(x), N)
-            pref.techPrefs.exactLength = args{1};
+            if ( (numel(args{1}) > 1) && (numel(args{1}) ~= numel(domain)+1) )
+                domain = args{1};
+            else
+                pref.techPrefs.exactLength = args{1};
+            end
             args(1) = [];
         elseif ( strcmpi(args{1}, 'splitting') )
             % Translate "splitting" --> "enableBreakpointDetection".
