@@ -286,7 +286,7 @@ classdef chebtech < smoothfun % (Abstract)
         f = ctranspose(f)
 
         % Indefinite integral of a CHEBTECH.
-        f = cumsum(f, m, pref)
+        f = cumsum(f, dim)
 
         % Derivative of a CHEBTECH.
         f = diff(f, k, dim)

@@ -1,19 +1,14 @@
-function [f, rVal] = cumsum(f, k, dim)
+function [f, rVal] = cumsum(f, dim)
 %CUMSUM   Indefinite integral of a BNDFUN.
 %   CUMSUM(F) is the indefinite integral of the BNDFUN F on an interval [a,b],
 %   with the constant of integration chosen so that F(a) = 0.
 %
-%   CUMSUM(F, K) will compute the Kth indefinite integral with the constant of
-%   integration chosen so that each intermediate integral evaluates to 0 at x=a.
-%   Thus CUMSUM(F, 2) is equivalent to CUMSUM(CUMSUM(F)).
-%
-%   CUMSUM(F, K, 2) will take the Kth cumulative sum over the columns F an
+%   CUMSUM(F, 2) will take the cumulative sum over the columns F which is an
 %   array-valued BNDFUN.
 %
-%   [F, RVAL] = CUMSUM(F), [F, RVAL] = CUMSUM(F, K), and [F, RVAL] = 
-%   CUMSUM(F, K, 2) will do the same thing as above, but also return the value
-%   of the integral at the right endpoint, which will be used at CHEBFUN level
-%   for concatenating neighboring pieces.
+%   [F, RVAL] = CUMSUM(F) and [F, RVAL] = CUMSUM(F, 2) will do the same thing as 
+%   above, but also return the value of the integral at the right endpoint, 
+%   which will be used at CHEBFUN level for concatenating neighboring pieces.
 %
 % See also DIFF, SUM.
 
@@ -27,12 +22,7 @@ if ( isempty(f) )
 end
 
 % Parse inputs:
-if ( nargin == 1 || isempty(k) )
-    % Compute first indefinite intergral by default
-    k = 1;
-end
-
-if ( nargin < 3 )
+if ( nargin < 2 )
     % Assume dim = 1 by default
     dim = 1;
 end
@@ -67,34 +57,10 @@ if ( dim == 1 )
         % Rescaling for integration:
         f{2}.onefun = g{2}*diff(f{2}.domain);
         
-        % Integrate each piece further K-1 times:
-        if ( k > 1 )
-            for j = 1:2
-                
-                % Rescaling factor, (b-a)/2, to the kth power
-                rescaleFactork = (.5*diff(f{j}.domain))^(k-1);
-                
-                % Assign the ONEFUN of the output to be the output of the CUMSUM method
-                % of the ONEFUN of the input:
-                
-                f{j}.onefun = cumsum(f{j}.onefun, k-1, dim)*rescaleFactork;
-            end
-        end
-        
     else
         
         % Integrate once:
         f.onefun = (.5*diff(f.domain))*g;
-        
-        % Integrate further K-1 times:
-        if ( k > 1 )
-            % Rescaling factor, (b-a)/2, to the kth power
-            rescaleFactork = (.5*diff(f.domain))^(k-1);
-            
-            % Assign the ONEFUN of the output to be the output of the CUMSUM method
-            % of the ONEFUN of the input:
-            f.onefun = cumsum(f.onefun, k-1, dim)*rescaleFactork;
-        end
         
     end
     
@@ -103,7 +69,7 @@ elseif ( dim == 2 )
     % When the third argument is 2, i.e. dim = 2, we compute the cumlative sum
     % over columns, in which case, no rescale is needed.
     
-    f.onefun = cumsum(f.onefun, k, dim);
+    f.onefun = cumsum(f.onefun, dim);
     
 else
     error('CHEBFUN:BNDFUN:cumsum:input', ...

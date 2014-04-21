@@ -86,23 +86,6 @@ pass(8) = (norm(diff(err), inf) < ...
     10*max(get(f, 'vscale').*get(f, 'epslevel'))) && ...
     all(abs(feval(F, a)) < max(get(f, 'vscale').*get(f, 'epslevel')));
 
-%%
-% Check operation for second and third order cumsums.
-f = bndfun(@(x) sin(x), dom, [], [], pref);
-F2_exact = bndfun(@(x) -sin(x) + x.*cos(a), dom, [], [], pref);
-
-F2 = cumsum(f, 2);
-err = feval(F2, x) - feval(F2_exact, x);
-pass(9) = (norm(diff(err), inf) < 2*get(F2, 'vscale')^2*get(f, 'epslevel')) && ...
-    abs(feval(F2, a)) < get(F2, 'vscale')^2*get(f, 'epslevel');
-
-F3_exact = bndfun(@(x) cos(x) + x.^2*cos(a)/2 + x*(sin(a) - a*cos(a)), ...
-    dom, [], [], pref);
-F3 = cumsum(f, 3);
-err = feval(F3, x) - feval(F3_exact, x);
-pass(10) = (norm(diff(err), inf) < get(F3, 'vscale')^3*get(f, 'epslevel')) && ...
-    abs(feval(F3, a)) < get(F3, 'vscale')^3*get(f, 'epslevel');
-
 %% Test on singular function:
 
 % Singularity at one endpoint:
@@ -117,7 +100,7 @@ vals_g = feval(g, x);
 g_exact = @(x) (x-a).^(pow+1)./(pow+1);
 vals_exact = feval(g_exact, x);
 err = vals_g - vals_exact;
-pass(11) = ( norm(err, inf) < 10*get(f,'epslevel')*norm(vals_exact, inf) );
+pass(9) = ( norm(err, inf) < 10*get(f,'epslevel')*norm(vals_exact, inf) );
 
 % Singularities at both endpoints:
 mid = mean(dom);
@@ -147,7 +130,7 @@ vals_exact1 = feval(g_exact1, x1);
 vals_exact2 = feval(g_exact2, x2);
 err1 = vals_g1 - vals_exact1;
 err2 = vals_g2 - vals_exact2;
-pass(12) = ( norm(err1, inf) < 1e3*get(g{1},'epslevel')* ...
+pass(10) = ( norm(err1, inf) < 1e3*get(g{1},'epslevel')* ...
     norm(vals_exact1, inf) ) && ...
     ( norm(err2, inf) < 1e3*get(g{2},'epslevel')*norm(vals_exact2, inf) );
 
