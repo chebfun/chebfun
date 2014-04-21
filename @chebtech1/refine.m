@@ -8,11 +8,13 @@ function [values, giveUp] = refine(op, values, pref)
 %   flag where TRUE means the refinement procedure has failed (typically when
 %   the maximum number of points, PREF.MAXPOINTS, has been reached).
 %
-%   As opposed to CHEBTECH2, the only built-in refinement strategy is
-%   'RESAMPLING'. It makes use of grids of the form 2^(3:6 6:.5:16)+1 and
-%   resamples all of the values each time N is increased. When
-%   PREF.REFINEMENTFUNCTION is a character string, resampling will be carried
-%   out.
+%   The two built-in refinement strategies are 'NESTED' and 'RESAMPLING'. The
+%   former makes use of the nested property of the 1st-kind grid by taking N
+%   (the interpolation degree) to be 8*3^(0:8)+1 and doesn't resample previously
+%   evaluated values. The latter uses grids of the form 2^(3:6 6:.5:16)+1 and
+%   resamples all of the values each time N is increased. The 'RESAMPLING'
+%   option should be used for functions which are not sampleable, for example,
+%   anything that depends on the length of the input to OP.
 %
 %   Alternative refinement strategies can be used if the
 %   PREF.REFINEMENTFUNCTION field is a function handle. The function handle
