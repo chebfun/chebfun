@@ -81,11 +81,9 @@ end
 
 % Initialize flags:
 isComplex = false;
+intervalIsSet = false;
 xLim = [inf, -inf];
 yLim = [inf, -inf];
-
-% Initialise storage:
-intervalIsSet = false;
 
 % Suppress inevitable warning for growing these arrays:
 %#ok<*AGROW>
@@ -111,6 +109,7 @@ else
     end
 end
 
+% Initialise storage:
 lineData = {};
 pointData = {};
 jumpData = {};
