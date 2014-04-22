@@ -76,7 +76,8 @@ pass(7) = err < tol;
 op = @(x) (1-exp(-x))./x.^2;
 f = unbndfun(op, dom);
 I = sum(f);
-IExact = 1 - exp(-1) - ei(-1);
+% This exact value is obtained using Matlab's symbolic toolbox:
+IExact = 0.851504493224078; 
 err = abs(I - IExact);
 tol = 1e4*get(f,'epslevel')*get(f,'vscale');
 pass(8) = err < 2*tol;
