@@ -223,7 +223,7 @@ while ( ~isempty(varargin) )
     % Loop over the columns:
     for k = 1:numel(newData)
         
-        % 'INTERVAL' stuff: (TODO: Remove this?)
+        % Handle the 'interval' flag:
         if ( ~isComplex && intervalIsSet && (size(newData(k).xLine, 2) == 1) )
             ind = newData(k).xLine < interval(1) | ...
                 newData(k).xLine > interval(end);
