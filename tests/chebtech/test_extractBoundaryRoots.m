@@ -49,7 +49,7 @@ for n = 1:2
     [g, l, r] = extractBoundaryRoots(f);
     gexact = testclass.make(@(x) x.^2 + exp(x) + 1i*cos(2*x), [], [], pref);
     err = feval(g, x) - feval(gexact, x);
-    pass(n, 4) = (norm(err, Inf) < (1e1^(ml + mr))*f.epslevel) && ...
+    pass(n, 4) = (norm(err, Inf) < (2e1^(ml + mr))*f.epslevel) && ...
         (l == ml) && (r == mr);
     
     %% Test when no roots:
