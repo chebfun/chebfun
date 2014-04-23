@@ -57,9 +57,7 @@ classdef colloc < chebDiscretization
     methods ( Static )
         
         [x, w, v] = points(varargin);
-        
-        space = getInputDimension(L);
-        
+
     end
     
 end

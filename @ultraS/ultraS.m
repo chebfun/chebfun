@@ -69,12 +69,7 @@ classdef ultraS < chebDiscretization
         S = convert(A, K1, K2)
 
     end
-    
-    methods ( Static )
-            space = getInputDimension(L)
-    end
-            
-    
+        
     methods ( Access = private, Static = true)
         
         % Conversion matrix used in the ultraspherical spectral method.

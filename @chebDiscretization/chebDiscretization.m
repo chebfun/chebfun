@@ -63,6 +63,11 @@ classdef (Abstract) chebDiscretization
         end           
         
     end
+    
+    methods ( Static )
+        space = getInputDimension(L)
+    end
+            
         
     methods (Abstract)        
         % Converts a chebfun into a vector of values (or coefficients,
