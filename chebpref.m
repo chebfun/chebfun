@@ -365,7 +365,7 @@ classdef chebpref
                 outPref.techPrefs.extrapolate = false;
                 outPref.techPrefs.sampleTest = true;
             outPref.cheb2Prefs = struct(); 
-                outPref.cheb2Prefs.maxRank = 1025; 
+                outPref.cheb2Prefs.maxRank = 2049; 
                 outPref.cheb2Prefs.maxLength = 65537; 
                 outPref.cheb2Prefs.eps = 2^(-52); 
                 outPref.cheb2Prefs.exactLength = false;
@@ -758,7 +758,7 @@ classdef chebpref
                 factoryPrefs.techPrefs.extrapolate = false;
                 factoryPrefs.techPrefs.sampleTest = true;
             factoryPrefs.cheb2Prefs = struct(); 
-                factoryPrefs.cheb2Prefs.maxRank = 1025;   
+                factoryPrefs.cheb2Prefs.maxRank = 2049;   
                 factoryPrefs.cheb2Prefs.maxLength = 65537;   
                 factoryPrefs.cheb2Prefs.eps = 2^(-52);   
                 factoryPrefs.cheb2Prefs.exactLength = 0; 
