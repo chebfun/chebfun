@@ -25,19 +25,19 @@ end
 
 % Check subinterval compatibility of domain and dimension.
 if ( (length(disc.domain) - 1) ~= length(disc.dimension) )
-    error('Must specify one dimension value for each subinterval.')
+    error('CHEBFUN:chebDiscretisation:matrix:subIntDim', ...
+        'Must specify one dimension value for each subinterval.')
 end
 
-L = disc.source;
-if ( isa(L, 'chebmatrix') )
+if ( isa(disc.source, 'chebmatrix') )
     
     % Construct a square representation of each block individually and
     % store in a cell array.
     A = instantiate(disc);
 
     % We want output on different format depending on whether the source L is a
-    % LINOP or another object (most likely a CHEBMATRIX).
-    if ( isa(L, 'linop') )
+    % LINOP or another object (most likely a CHEBMATRIX):
+    if ( isa(disc.source, 'linop') )
         % Project rows down, and record the projection matrix as well.
         [rows, P] = disc.reduce(A);
         PA = cell2mat(rows);
@@ -45,17 +45,44 @@ if ( isa(L, 'chebmatrix') )
         B = getConstraints(disc);
         
         % This should restore squareness to the final matrix.
-        M = [ B; PA ];
+        M = [ B ; PA ];
+        
     else
         % Everything should be of the same dimension.
         M = cell2mat(A);
+        
+        % Additional outputs (not typically useful)
+        if ( nargout > 1 )
+            if ( issparse(M) )
+                P = speye(size(M));
+            else
+                P = eye(size(M));
+            end
+        end
+        if ( nargout > 2 )
+            B = [];
+        end 
+        
     end
 
 else
     
     % The source must be a chebfun, or...?
     % Note, this is called by ultraS for functionalBlocks
-    M = instantiate(disc, L);
+    M = instantiate(disc);
+    
+    % Additional outputs (not typically useful)
+    if ( nargout > 1 )
+        if ( issparse(M) )
+            P = speye(size(M));
+        else
+            P = eye(size(M));
+        end
+    end
+    if ( nargout > 2 )
+        B = [];
+    end
+    A = disc.source;
     
 end
 

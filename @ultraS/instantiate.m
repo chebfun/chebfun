@@ -1,9 +1,10 @@
-function [M, S] = instantiate(disc, data)
-%INSTANTIATE Convert an item to discrete form in ULTRAS.
-%   [M, S] = INSTANTIATE(DISC, DATA) converts each item DATA{k} to discrete form
-%   using the information in discretization DISC. The result M is a cell array.
+function [M, S] = instantiate(disc)
+%INSTANTIATE   Convert an item to discrete form in ULTRAS.
+%   [M, S] = INSTANTIATE(DISC) converts each item DISC.SOURCE to discrete form
+%   using the information in discretization DISC. The result M is a cell
+%   array if DISC.SOURCE has more than one compnent.
 %
-%   Each item may be:
+%   Each block entry in DISC.SOURCE may be:
 %      linBlock (becomes a matrix)
 %      chebfun (becomes a vector)
 %      numeric (not changed)
@@ -11,8 +12,7 @@ function [M, S] = instantiate(disc, data)
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
-% TODO: Why two outputs L and S? What do they mean? You say M is a cell-array,
-% this seems to be oudated info. Aren't L and S just matrices?
+% TODO: Why two outputs M and S? What do they mean?
 
 if ( nargin < 2 )
     data = disc.source.blocks;
@@ -27,56 +27,75 @@ if ( iscell(data) )
             [M{j,k}, S{j,k}] = instantiate(discJK);
         end
     end
+    return
 else
-    [M, S] = instantiateOne(data);
+    [M, S] = instantiateOne(disc, data);
 end
 
-    function [L,S] = instantiateOne(item)
-        % Instantiate one block of data.
-        %
-        % TODO: Why two outputs L and S? What do they mean?
-        
-        if (isa(item, 'operatorBlock') )
-            % Convert a square block
-            if ( ~isempty(disc.coeffs) )
-                % Coefficients of the block are available, convert to a diffmat.
-                [L, S] = quasi2USdiffmat(disc);
-            else
-                error('CHEBFUN:ultraS:fail', ...
-                    'ultraS cannot represent this operator. Suggest you use colloc2.')
-            end
-        elseif ( isa(item, 'functionalBlock') )
-            % Convert a row block
-            
-            % TODO: More documentation please. AB, 12/2/14
-            dim = disc.dimension;
-            dom = disc.domain;
-            collocDisc = colloc2(item, dim, dom);
-            L = matrix(collocDisc);
-            cumsumDim = [0, cumsum(dim)];
-            numInts = numel(dom) - 1;
-            tmp = cell(1, numInts);
-            for l = 1:numInts
-                Lk = L(cumsumDim(l) + (1:dim(l)));
-                tmp{l} = flipud(chebtech2.coeffs2vals(Lk.')).';
-            end
-            L = cell2mat(tmp);
-            S = zeros(size(L));
-        elseif ( isa(item, 'chebfun') )
-            % Block is a CHEBFUN. Convert to value space.
-            L = toValues(disc, item);
-            if ( item.isTransposed )
-                error % TODO: ?
-                L = L.';
-            end
-            S = zeros(size(L));
-        elseif ( isnumeric(item) )
-            % Block is numeric, don't need to do much.
-            L = item;
-            S = 1;
-        else
-            error('Unrecognized item type.')
-        end
+end
+
+function [M, S] = instantiateOne(disc, item)
+% Instantiate one block of data.
+
+if ( isa(item, 'operatorBlock') )
+    % Convert a square block
+    
+    if ( ~isempty(disc.coeffs) )
+        % Coefficients of the block are available, convert to a diffmat.
+        [M, S] = quasi2USdiffmat(disc);
+    else
+        error('CHEBFUN:ultraS:fail', ...
+            'ultraS cannot represent this operator. Suggest you use colloc2.')
     end
+    
+elseif ( isa(item, 'functionalBlock') )
+    % Convert a row block.
+    
+    % Developer note: In general we can't represent functional
+    % blocks via coeffs. To get around this we instantiate a
+    % COLLOC2 discretization and convert it to coefficient space
+    % using COEFFS2VALS(). (Note it's COEFFS2VALS() rather than
+    % VALS2COEFFS() because it's a right-multiply (I think..).)
+    
+    % For convenience:
+    dim = disc.dimension;
+    dom = disc.domain;
+    
+    % Create a colloc2 discretization:
+    collocDisc = colloc2(item, dim, dom);
+    M = matrix(collocDisc);
+    
+    % Convert from colloc-space to coeff-space using COEFFS2VALS.
+    cumsumDim = [0, cumsum(dim)];
+    tmp = cell(1, numel(dom)-1);
+    for l = 1:numel(tmp)
+        Ml = M(cumsumDim(l) + (1:dim(l)));
+        tmp{l} = flipud(chebtech2.coeffs2vals(Ml.')).';
+    end
+    M = cell2mat(tmp);
+    S = zeros(size(M));
+    
+elseif ( isa(item, 'chebfun') )
+    % Block is a CHEBFUN. Convert to value space.
+    
+    M = toValues(disc, item);
+    if ( item.isTransposed )
+        M = M.';
+    end
+    S = zeros(size(M));
+    
+elseif ( isnumeric(item) )
+    % Block is numeric, don't need to do much.
+    
+    M = item;
+    S = 1;
+    
+else
+    
+    error('CHEBFUN:ultraS:instantiate:inputType', ...
+        'Unrecognized item type.')
+    
+end
 
 end
+
