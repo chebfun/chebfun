@@ -13,10 +13,10 @@ function [PA, P] = reduce(disc, blocks)
 % Setup
 r = sizeReduction(disc.source);
 dim = disc.dimension;
-space = disc.inputDimension(1,:);
+dimAdjust = disc.inputDimensionAdjustment(1,:);
 
-if ( numel(space) == 1 )
-    space = repmat(space, 1, size(blocks, 2));
+if ( numel(dimAdjust) == 1 )
+    dimAdjust = repmat(dimAdjust, 1, size(blocks, 2));
 end
 
 % Outputs will be cells for convenience
@@ -24,7 +24,7 @@ PA = cell(1, size(blocks, 2));
 P = cell(1, size(blocks, 2));
 
 for i = 1:size(blocks, 2)       % for each block column
-    [PA{i}, P{i}] = reduceOne(disc, blocks(:,i), r(i), dim+space(i));  % do reduction
+    [PA{i}, P{i}] = reduceOne(disc, blocks(:,i), r(i), dim+dimAdjust(i));  % do reduction
 end
 
 end

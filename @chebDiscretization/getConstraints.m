@@ -1,4 +1,4 @@
-function B = getConstraints(disc, blocks)
+function B = getConstraints(disc)
 %APPLYCONSTRAINTS   Modify discrete operator to accommodate constraints.
 %   M = APPLYCONSTRAINTS(DISC, BLOCKS) uses a cell of matrix BLOCKS created by
 %   the discretization DISC in order to return a matrix that incorporates both
@@ -15,7 +15,7 @@ function B = getConstraints(disc, blocks)
 % Some preparation.
 dim = disc.dimension;
 dom = disc.domain;
-inputDims = disc.inputDimension(1,:);
+inputDimsAdj = disc.inputDimensionAdjustment(1,:);
 discType = str2func( class(disc) );  % constructor of the discretization's type
 L = disc.source;
 
@@ -24,14 +24,14 @@ B = [];
 if ( ~isempty(L.constraint) )
     % Instantiate a discretization of this constraint. 
     disc2 = discType(L.constraint.functional, dim, dom);
-    disc2.inputDimension = repmat(inputDims, size(disc2.source, 1), 1);
+    disc2.inputDimensionAdjustment = repmat(inputDimsAdj, size(disc2.source, 1), 1);
     constr = matrix(disc2, dim, dom);
     B = [ constr; B ];
 end
 if ( ~isempty(L.continuity) )
     % Instantiate a discretization of this constraint. 
     disc2 = discType(L.continuity.functional, dim, dom);
-    disc2.inputDimension = repmat(inputDims, size(disc2.source, 1), 1);
+    disc2.inputDimensionAdjustment = repmat(inputDimsAdj, size(disc2.source, 1), 1);
     constr = matrix(disc2, dim, dom);
     B = [ constr; B ];
 end

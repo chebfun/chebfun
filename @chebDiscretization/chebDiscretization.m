@@ -26,7 +26,7 @@ classdef (Abstract) chebDiscretization
         domain = []       % may generalize that of the source
         dimension = []    % vector of lengths, one per subinterval
         % Store the size of the input space relative to disc.dimension
-        inputDimension = [];
+        inputDimensionAdjustment = [];
     end
         
     properties (Dependent)
@@ -65,7 +65,7 @@ classdef (Abstract) chebDiscretization
     end
     
     methods ( Static )
-        space = getInputDimension(L)
+        space = getInputDimensionAdjustment(L)
     end
             
         

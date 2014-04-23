@@ -55,7 +55,7 @@ classdef ultraS < chebDiscretization
                 disc.outputSpace = ultraS.getOutputSpace(source);
             end
             
-            disc.inputDimension = ultraS.getInputDimension(source);
+            disc.inputDimensionAdjustment = ultraS.getInputDimensionAdjustment(source);
             
         end
         

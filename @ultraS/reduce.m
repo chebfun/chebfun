@@ -12,14 +12,14 @@ function [PA, P] = reduce(disc, blocks)
 
 r = sizeReduction(disc.source);
 dim = disc.dimension;
-space = disc.inputDimension(1,:);
+dimAdjust = disc.inputDimensionAdjustment(1,:);
 
 PA = cell(1, size(blocks, 1));
 P = cell(1, size(blocks, 1));
 % Loop through the block-rows of the operator.
 
 for i = 1:size(blocks, 2)       % for each block column
-    [PA{i}, P{i}] = reduceOne(disc, blocks(:,i), r(i), dim+space(i));  % do reduction
+    [PA{i}, P{i}] = reduceOne(disc, blocks(:,i), r(i), dim+dimAdjust(i));  % do reduction
 end
 
 end

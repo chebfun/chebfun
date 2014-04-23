@@ -32,16 +32,7 @@ L = disc.source;
 if ( isa(L, 'chebmatrix') )
     
     % Construct a square representation of each block individually and
-    % store in a cell array. The size of the j,k block is determined by
-    % disc.dimension + disc.inputDimension(j,k).
-%     blocks = L.blocks;
-%     A = cell(size(blocks));    
-%     for j = 1:size(blocks,1)
-%         for k = 1:size(blocks,2)
-%             discJK = extractBlock(disc, j, k);
-%             A{j,k} = instantiate(discJK);
-%         end
-%     end
+    % store in a cell array.
     A = instantiate(disc);
 
     % We want output on different format depending on whether the source L is a
@@ -51,19 +42,21 @@ if ( isa(L, 'chebmatrix') )
         [rows, P] = disc.reduce(A);
         PA = cell2mat(rows);
         P = blkdiag(P{:});
-        B = getConstraints(disc, L.blocks);
+        B = getConstraints(disc);
         
         % This should restore squareness to the final matrix.
         M = [ B; PA ];
     else
+        % Everything should be of the same dimension.
         M = cell2mat(A);
     end
 
 else
+    
     % The source must be a chebfun, or...?
     % Note, this is called by ultraS for functionalBlocks
-    [varargout{1:nargout}] = instantiate(disc,L);
-    M = instantiate(disc,L);
+    M = instantiate(disc, L);
+    
 end
 
 end

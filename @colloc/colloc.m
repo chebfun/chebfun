@@ -38,7 +38,7 @@ classdef colloc < chebDiscretization
                 end
             end
 
-            disc.inputDimension = disc.getInputDimension(source);
+            disc.inputDimensionAdjustment = disc.getInputDimensionAdjustment(source);
             
         end
         
