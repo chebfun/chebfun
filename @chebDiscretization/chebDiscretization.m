@@ -54,7 +54,7 @@ classdef (Abstract) chebDiscretization
             t = false;
         end
         
-        function [x,disc] = mldivide(disc, A, b)
+        function [x, disc] = mldivide(disc, A, b)
         % CHEBDISCRETIZATION.MLDIVIDE 
         %
         % By default, the solution of a discrete Ax=b uses standard backslash.
@@ -72,18 +72,12 @@ classdef (Abstract) chebDiscretization
         % Converts a vector of values (or coefficients) to a chebfun.
         f = toFunction(disc, values)
         
-        % Returns a matrix (or set of matrices) using the designated
-        % discretization parameters.
-        out = matrix(disc, varargin)
-        
         % Returns a linear system RHS using the designated discretization
         % parameters.
-        b = rhs(disc,f, varargin)
+        b = rhs(disc, f, varargin)
         
         % Reduces (projects) block rows to make space for the constraints.
-        [PA,P] = reduce(disc, blocks)
-        
-%         space = getInputDimension(L)
+        [PA, P] = reduce(disc, blocks)
         
     end
     

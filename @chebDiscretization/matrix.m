@@ -1,4 +1,4 @@
-function [M, P, B, A] = matrix(disc, outputDim, domain)
+function [M, P, B, A] = matrix(disc, dim, domain)
 %MATRIX    Convert operator to matrix using COLLOC discretization.
 %   MATRIX(DISC) uses the parameters in DISC to discretize DISC.source as a
 %   matrix using COLLOC. 
@@ -8,16 +8,16 @@ function [M, P, B, A] = matrix(disc, outputDim, domain)
 %
 %   [PA, P, B, A] = MATRIX(...) returns the additional component matrices
 %   resulting from boundary condition manipulations, as described in
-%   COLLOC.APPLYCONSTRAINTS.
+%   APPLYCONSTRAINTS.
 %
-%   See also: COLLOC/INSTANTIATE
+%   See also: INSTANTIATE
 
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
 % Parse inputs
 if ( nargin > 1 )
-    disc.dimension = outputDim;
+    disc.dimension = dim;
     if ( nargin > 2 )
         disc.domain = domain;
     end
