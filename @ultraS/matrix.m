@@ -30,21 +30,19 @@ end
 % TODO: Add some documentation below please. AB, 1/3/14.
 L = disc.source;
 if ( isa(L, 'chebmatrix') )
-    c = disc.coeffs;
-    outputSpaces = disc.outputSpace;
-    inputDimension = disc.inputDimension;
-    A = cell(size(L));
-    S = cell(size(L));
-    for j = 1:size(L, 1)
-        disc.outputSpace = outputSpaces(j);
-        for k = 1:size(L, 2)
-            disc.coeffs = c{j, k};
-            disc.inputDimension = inputDimension(j,k);
-            [A{j,k}, S{j,k}] = instantiate(disc, L.blocks{j, k});
+
+    % Construct a square representation of each block individually and
+    % store in a cell array. The size of the j,k block is determined by
+    % disc.dimension + disc.inputDimension(j,k).
+    blocks = L.blocks;
+    A = cell(size(blocks));    
+    for j = 1:size(blocks,1)
+        for k = 1:size(blocks,2)
+            discJK = extractBlock(disc, j, k);
+            A{j,k} = instantiate(discJK);
         end
     end
-    disc.inputDimension = inputDimension;
-    
+        
     if ( isa(L, 'linop') )
         [rows, P] = disc.reduce(A);
         PA = cell2mat(rows);

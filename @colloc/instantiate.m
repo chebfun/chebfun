@@ -1,4 +1,4 @@
-function M = instantiate(disc, data, dim)
+function M = instantiate(disc, data)
 %INSTANTIATE Convert an item to discrete form in COLLOC2.
 %   M = INSTANTIATE(DISC, DATA) converts each item DATA{k} to discrete form
 %   using the information in discretization DISC. The result M is a cell array.
@@ -13,25 +13,21 @@ function M = instantiate(disc, data, dim)
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
-if ( nargin == 2 )
-    dim = disc.dimension;
-    if ( iscell(data) )
-        dim = repmat({dim}, size(data));
-    end
+if ( nargin < 2 )
+    data = disc.source.blocks;
 end
 
 if ( iscell(data) )
-    M = cellfun(@(x, dim) instantiateOne(x, dim), data, dim, 'uniform', false);
+    M = cellfun(@(x) instantiateOne(x), data, 'uniform', false);
 else
-    M = instantiateOne(data, dim);
+    M = instantiateOne(data);
 end
 
 
-    function A = instantiateOne(item, dim)
+    function A = instantiateOne(item)
     % Instantiate individual component of a discretization+chebmatrix combo.
         if ( isa(item, 'linBlock') )
             disc.source = item;
-            disc.dimension = dim;
             A = disc.source.stack( disc );
         elseif ( isa(item, 'chebfun') )
             A = disc.toValues(item);

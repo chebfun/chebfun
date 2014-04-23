@@ -46,8 +46,8 @@ if ( isa(L, 'chebmatrix') )
     A = cell(size(blocks));    
     for j = 1:size(blocks,1)
         for k = 1:size(blocks,2)
-            dim = disc.dimension + disc.inputDimension(j,k);
-            A{j,k} = instantiate(disc, blocks{j,k}, dim);
+            discJK = extractBlock(disc, j, k);
+            A{j,k} = instantiate(discJK);
         end
     end
 
@@ -58,7 +58,7 @@ if ( isa(L, 'chebmatrix') )
         [rows, P] = disc.reduce(A);
         PA = cell2mat(rows);
         P = blkdiag(P{:});
-        B = getConstraints(disc, blocks);
+        B = getConstraints(disc, L.blocks);
         
         % This should restore squareness to the final matrix.
         M = [ B; PA ];
