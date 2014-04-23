@@ -27,7 +27,7 @@ classdef ultraS < chebDiscretization
     end
     
     methods
-        function disc = ultraS(source, dimension, domain)
+        function disc = ultraS(source, dimension, domain, outputSpace)
             %ULTRAS(SOURCE, DIMENSION, DOMAIN)   ULTRAS constructor.
             
             if ( nargin == 0 || isempty(source) )
@@ -37,9 +37,12 @@ classdef ultraS < chebDiscretization
             
             if ( nargin > 1 )
                 disc.dimension = dimension;
-                if ( nargin > 2 )
-                    disc.domain = domain;
-                end
+            end
+            if ( nargin > 2 )
+                disc.domain = domain;
+            end
+            if ( nargin > 3 )
+                disc.outputSpace = outputSpace;
             end
             
             disc.source = source; 
@@ -47,7 +50,10 @@ classdef ultraS < chebDiscretization
             
             % Obtain the coeffs and output space required for this source:
             disc.coeffs = ultraS.getCoeffs(source);
-            disc.outputSpace = ultraS.getOutputSpace(source);
+            
+            if ( isempty(disc.outputSpace) )
+                disc.outputSpace = ultraS.getOutputSpace(source);
+            end
             
             disc.inputDimension = ultraS.getInputDimension(source);
             

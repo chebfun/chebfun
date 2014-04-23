@@ -18,7 +18,13 @@ if ( nargin < 2 )
 end
 
 if ( iscell(data) )
-    M = cellfun(@(x) instantiateOne(x), data, 'uniform', false);
+    M = cell(size(data));    
+    for j = 1:size(data, 1)
+        for k = 1:size(data, 2)
+            discJK = extractBlock(disc, j, k);
+            M{j,k} = instantiate(discJK);
+        end
+    end
 else
     M = instantiateOne(data);
 end

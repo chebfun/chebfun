@@ -1,5 +1,5 @@
 function b = rhs(disc, f)
-%RHS      Discretize the right-hand side of a linear system for COLLOC2.
+%RHS    Discretize the right-hand side of a linear system for COLLOC2.
 
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
@@ -25,10 +25,10 @@ b = cell2mat(f.blocks);
 % continuity conditions.
 L = disc.source;
 if ( ~isempty(L.constraint) )
-    b = [ L.constraint.values; b ];
+    b = [ L.constraint.values ; b ];
 end
 if ( ~isempty(L.continuity) )
-    b = [ L.continuity.values; b ];
+    b = [ L.continuity.values ; b ];
 end
 
 end

@@ -1,6 +1,6 @@
-function [L, S] = instantiate(disc, data)
+function [M, S] = instantiate(disc, data)
 %INSTANTIATE Convert an item to discrete form in ULTRAS.
-%   [L, S] = INSTANTIATE(DISC, DATA) converts each item DATA{k} to discrete form
+%   [M, S] = INSTANTIATE(DISC, DATA) converts each item DATA{k} to discrete form
 %   using the information in discretization DISC. The result M is a cell array.
 %
 %   Each item may be:
@@ -19,12 +19,17 @@ if ( nargin < 2 )
 end
 
 if ( iscell(data) )
-    % Loop through cells
-    [L, S] = cellfun(@(x) instantiateOne(x), data, 'uniform', false);
+    M = cell(size(data));
+    S = cell(size(data));
+    for j = 1:size(data, 1)
+        for k = 1:size(data, 2)
+            discJK = extractBlock(disc, j, k);
+            [M{j,k}, S{j,k}] = instantiate(discJK);
+        end
+    end
 else
-    [L, S] = instantiateOne(data);
+    [M, S] = instantiateOne(data);
 end
-
 
     function [L,S] = instantiateOne(item)
         % Instantiate one block of data.
@@ -51,9 +56,9 @@ end
             cumsumDim = [0, cumsum(dim)];
             numInts = numel(dom) - 1;
             tmp = cell(1, numInts);
-            for k = 1:numInts
-                Lk = L(cumsumDim(k) + (1:dim(k)));
-                tmp{k} = flipud(chebtech2.coeffs2vals(Lk.')).';
+            for l = 1:numInts
+                Lk = L(cumsumDim(l) + (1:dim(l)));
+                tmp{l} = flipud(chebtech2.coeffs2vals(Lk.')).';
             end
             L = cell2mat(tmp);
             S = zeros(size(L));
