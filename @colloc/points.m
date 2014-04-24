@@ -11,6 +11,8 @@ function [x, w, v] = points(varargin)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% TODO: I find it weird that this exists. NH Apr 2014
+
 if ( nargin == 2 )
     disc = varargin{1};
     kind = varargin{2};

@@ -1,8 +1,8 @@
 function B = uminus(A)
-%-         Negation in COLLOC.
+%-   Negation in COLLOC.
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org for Chebfun information.
 
 B = -A;
 

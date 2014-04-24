@@ -32,23 +32,20 @@ end
 end
 
 function D = diffmat(N,k)
-% DIFFMAT  Chebyshev differentiation matrix
-% D = DIFFMAT(N) is the matrix that maps function values at N Chebyshev
-% points to values of the derivative of the interpolating polynomial at
-% those points.
+%DIFFMAT  Chebyshev differentiation matrix
+%   D = DIFFMAT(N) is the matrix that maps function values at N Chebyshev points
+%   to values of the derivative of the interpolating polynomial at those points.
 %
-% D = DIFFMAT(N,K) is the same, but for the Kth derivative.
+%   D = DIFFMAT(N,K) is the same, but for the Kth derivative.
 %
-% The matrices are computed using the 'hybrid' formula of Schneider &
-% Werner [1] and Welfert [2] proposed by Tee [3].
+%   The matrices are computed using the 'hybrid' formula of Schneider & Werner
+%   [1] and Welfert [2] proposed by Tee [3].
 
-% TODO: This method is also used in the methods JACPTS and LEGPTS. It should
-% probably be made a static method of CHEBTECH (or its subclasses). Thus, it has
-% not been reviewed as a part of the LINOP code review. AB, 30/01/14.
+% TODO: Duplicated?
+% TODO: Cache this?
 
-
-% Copyright 2011 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % References:
 %  [1] Schneider, C. and Werner, W., "Some new aspects of rational
@@ -58,10 +55,9 @@ function D = diffmat(N,k)
 %  [3] Tee, T. W., "An adaptive rational spectral method for differential
 %   equations with rapidly varying solutions", Oxford DPhil Thesis, 2006.
 
-if nargin < 2, k = 1; end
-
-if N == 0, D = []; return, end
-if N == 1, D = 0; return, end
+if ( nargin < 2 ), k = 1; end
+if ( N == 0 ), D = []; return, end
+if ( N == 1 ), D = 0; return, end
 
 % construct Chebyshev grid and weights
 x = chebtech2.chebpts(N);
@@ -78,7 +74,7 @@ Dw(ii) = Dw(ii) - 1;            % subtract identity
 D = Dw .* Dxi;
 D(ii) = 0; D(ii) = - sum(D,2);              % negative sum trick
 
-if k == 1, return, end
+if ( k == 1 ), return, end
 
 % k = 2
 D = 2*D .* (repmat(D(ii),1,N) - Dxi);

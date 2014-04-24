@@ -1,10 +1,16 @@
 function [PA, P, PS] = reduce(disc, A, S)
 %REDUCE   Dimension reduction for operator matrix. 
-%   Each block row of the operator DISC.source has an associated dimension
-%   reduction to make room for constraints. Given discretized results in BLOCKS,
-%   the output PA has one cell per block row, with the resulting projected
-%   matrix. The output P has one cell per block row with the projection operator
-%   for the row.
+%   PA = REDUCE(DISC, A) reduces the row dimension of each block column in the
+%   cell array A (which is typically a discretization of DISC.SOURCE) so that
+%   the reduced discretization, PA, can be formed as a matrix. In particular, PA
+%   will have sum(DISC.dimension) rows and sum(cellfun(@(a) size(A, 2), A(1,:))
+%   columns.
+%
+%   [PA, P] = REDUCE(DISC, A) returns also the block-diagonal reduction matrix
+%   P. For COLLOC discretizations, this blocks are BARYMAT projections.
+%
+%   [PA, P, PS] = REDUCE(DISC, A, S) is required for consistency with other
+%   chebDiscretization reductions. Here S is ignored and PS = P.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -22,18 +28,22 @@ P = cell(1, size(A, 2));
 % Do reduction for each block column:
 for i = 1:size(A, 2) 
     [PA{i}, P{i}] = reduceOne(disc, A(:,i), r(i), dim + dimAdjust(i));  
+%     [PS{i}, ~] = reduceOne(disc, S(:,i), r(i), dim + dimAdjust(i));      
 end
 
 % Convert cell arrays to matrices:
 P = blkdiag(P{:});
 PA = cell2mat(PA);
+% PS = cell2mat(PS);
 PS = P;
 
 end
 
-
 function [PA, P] = reduceOne(disc, A, m, n)
-% Does reduction for one block row.
+%REDUCEONE   Reduce one block column.
+%   [PA, P] = REDUCEONE(DISC, A, M, N) reduces entries of the column cell arrays
+%   A from a sum(N)xsum(N) discretization to sum(N-M)xsum(N) version, PA, using
+%   the block-projection operator P.
 
 % Step by intervals in the domain.
 domain = disc.domain;

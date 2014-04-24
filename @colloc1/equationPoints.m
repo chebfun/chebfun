@@ -1,6 +1,6 @@
-function [x,w,v] = equationPoints(disc)
-%EQUATIONPOINTS Points at which collocation is enforced.
+function varargout = equationPoints(disc)
+%EQUATIONPOINTS   Points at which collocation is enforced.
 
-[x,w,v] = colloc.points(disc,1);
+[varargout{1:nargout}] = colloc.points(disc, 1);
 
 end

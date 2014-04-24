@@ -52,7 +52,7 @@ qtest = qtest*diff(dom)/2;
 for k = 1:6
 
     prefs.discretization = type{k};
-    w = linsolve(L,f,prefs);
+    w = linsolve(L, f, prefs);
 
     %%
 %     subplot(1, 2, k)
@@ -64,7 +64,7 @@ for k = 1:6
     % check the ODEs
     w1 = w{1};  w2 = w{2};  w3 = w{3};
     f1 = f{1};  f2 = f{2}; f3 = f{3};
-    residual1= feval(diff(w1,2),xtest)-w2(xtest)+sin(xtest)*w3 - f1(xtest);
+    residual1 = feval(diff(w1,2),xtest)-w2(xtest)+sin(xtest)*w3 - f1(xtest);
     err(k,1) = norm( sqrt(qtest').*residual1 );
     residual2 = c(xtest).*w1(xtest) + feval(diff(w2),xtest) + 0 - f2(xtest);
     err(k,2) = norm( sqrt(qtest').*residual2 );

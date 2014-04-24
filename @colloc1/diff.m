@@ -29,22 +29,28 @@ else
     % Assemble!
     D = blkdiag(blocks{:});
 end
+
 end
 
-function D = diffmat(n,k)
-% DIFFMAT  Chebyshev differentiation matrix
-% D = DIFFMAT(N) is the matrix that maps function values at N Chebyshev
-% points to values of the derivative of the interpolating polynomial at
-% those points.
+function D = diffmat(n, k)
+%DIFFMAT   Chebyshev differentiation matrix
+%   D = DIFFMAT(N) is the matrix that maps function values at N Chebyshev
+%   points to values of the derivative of the interpolating polynomial at
+%   those points.
 %
-% D = DIFFMAT(N,K) is the same, but for the Kth derivative.
-%
-% 1st-kind Chebyshev grid:
-x = sin((-n+1:2:n-1)*pi/(2*n)).';
+%   D = DIFFMAT(N,K) is the same, but for the Kth derivative.
 
+% TODO: Duplicated?
+% TODO: Cache this?
+
+if ( nargin < 2 ), k = 1; end
+if ( n == 0 ), D = []; return, end
+if ( n == 1 ), D = 0; return, end
+
+% 1st-kind Chebyshev grid:
+x = chebtech1.chebpts(n);
 % 1st-kind Barycentric weights:
-w = sin((2*(n-1:-1:0)+1)*pi/(2*n)).';
-w(end-1:-2:1) = -w(end-1:-2:1);
+w = chebtech1.barywts(n);
 
 ii = (1:n+1:n^2)';              % indices of diagonal
 Dx = bsxfun(@minus,x,x');       % all pairwise differences
@@ -55,7 +61,7 @@ Dw(ii) = Dw(ii) - 1;            % subtract identity
 
 % k = 1
 D = Dw .* Dxi;
-D(ii) = 0; D(ii) = - sum(D,2);              % negative sum trick
+D(ii) = 0; D(ii) = - sum(D,2);                  % negative sum trick
 
 if ( k > 1 )
     % 2nd order
@@ -68,7 +74,6 @@ if ( k > 1 )
         D(ii) = 0; D(ii) = - sum(D,2);          % negative sum trick
     end
 end
-
 
 end
 

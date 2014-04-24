@@ -1,15 +1,22 @@
 function [PA, P, PS] = reduce(disc, A, S)
-%REDUCE   Row dimension reduction for operator's matrix. 
-%   Each block row of the operator DISC.source has an associated dimension
-%   reduction to make room for constraints. Given discretized results in BLOCKS,
-%   the output PA has one cell per block row, with the resulting projected
-%   matrix. The output P has one cell per block row with the projection operator
-%   for the row.
+%REDUCE   Dimension reduction for operator matrix. 
+%   PA = REDUCE(DISC, A) reduces the row dimension of each block column in the
+%   cell array A (which is typically a discretization of DISC.SOURCE) so that
+%   the reduced discretization, PA, can be formed as a matrix. In particular, PA
+%   will have sum(DISC.dimension) rows and sum(cellfun(@(a) size(A, 2), A(1,:))
+%   columns.
+%
+%   [PA, P] = REDUCE(DISC, A) returns also the block-diagonal reduction matrix
+%   P. For ultraS discretizations, this is a sparse identity matrix with some
+%   missing rows.
+%
+%   [PA, P, PS] = REDUCE(DISC, A, S) returns also a matrix of the projected
+%   conversion operator cell array S.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Setup
+% Setup:
 r = sizeReduction(disc.source);
 dim = disc.dimension;
 dimAdjust = disc.dimAdjust(1,:);
@@ -31,18 +38,17 @@ PS = cell2mat(PS);
 
 end
 
-
 function [PA, P, PS] = reduceOne(disc, A, S, m, n)
-% TODO: What do the input variables stand for? DISC is clear
-% from above, presumably, A is a block-row. What does m do?
-% AB, 1/3/14.
-dom = disc.domain;
+%REDUCEONE   Reduce one block column.
+%   [PA, P, PS] = REDUCEONE(DISC, A, S, M, N) reduces entries of the column cell
+%   arrays A and S from sum(N)xsum(N) discretizations to sum(N-M)xsum(N)
+%   versions (PA and PS, respectively) using the block-projection operator P.
 
 % Projection matrix for US removes the last m coeffs:
 P = speye(sum(n));
 v = []; % Row indicies which are to be removed by projection.
 nn = cumsum([0 n]);
-for k = 1:numel(dom) - 1
+for k = 1:disc.numIntervals
     v = [v nn(k) + n(k) - (0:m-1)];
 end
 P(v,:) = [];

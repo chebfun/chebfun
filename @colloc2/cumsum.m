@@ -1,18 +1,20 @@
 function C = cumsum(disc, m)
-%CUMSUM    Indefinite integration operator for COLLOC2 discretization.
+%CUMSUM   Indefinite integration operator for COLLOC2 discretization.
 %   C = CUMSUM(DISC) gives the matrix such that if v=C*u, then u=v' and v=0
 %   at the left endpoint, as accurately as possible in Chebyshev polynomial
 %   discretization.
+%
+%   CUMSUM(DISC, M) for positive integer M returns C^M.
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org for Chebfun information.
 
 % Store information about domain and dimensions.
 d = disc.domain;
 n = disc.dimension;
 
-if m == 0
-    % Trivial case
+if ( m == 0 )
+    % Trivial case:
     C = eye(sum(n));
 else
     numIntervals = disc.numIntervals;
@@ -42,35 +44,31 @@ else
     end
     C = C^m;
 end
+
 end
 
 function Q = cumsummat(N)
-% CUMSUMMAT  Chebyshev integration matrix.
-% Q = CUMSUMMAT(N) is the matrix that maps function values at N Chebyshev
-% points to values of the integral of the interpolating polynomial at
-% those points, with the convention that the first value is zero.
-
-% TODO: This method is also used in the methods JACPTS and LEGPTS. It should
-% probably be made a static method of CHEBTECH (or its subclasses). Thus, it has
-% not been reviewed as a part of the LINOP code review. AB, 30/01/14.
-
+%CUMSUMMAT   Chebyshev integration matrix.
+%   Q = CUMSUMMAT(N) is the matrix that maps function values at N Chebyshev
+%   points to values of the integral of the interpolating polynomial at
+%   those points, with the convention that the first value is zero.
 
 % TODO: More efficient implementation?
+% TODO: This is duplicated in a number of places.
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
-
+%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
+%  See http://www.chebfun.org/ for Chebfun information.
 
 N = N-1;
 
-persistent cache    % stores computed values for fast return
-if isempty(cache), cache = {}; end    % first call
+persistent CACHE  % Stores computed values for fast return
+if isempty(CACHE), CACHE = {}; end    % first call
 
-if length(cache) >= N && ~isempty(cache{N})
-    Q = cache{N};
+if length(CACHE) >= N && ~isempty(CACHE{N})
+    Q = CACHE{N};
     return
 else
-    cache{N} = [];
+    CACHE{N} = [];
 end
 
 % Matrix mapping coeffs -> values.
@@ -89,7 +87,10 @@ B(1,:) = sum( diag(v)*B(2:N+1,:), 1 );
 B(:,1) = 2*B(:,1);
 
 Q = T*B(end:-1:1,end:-1:1)*Tinv;
-Q(1,:) = 0;  % make exact
-cache{N} = Q;
+% Make exact:
+Q(1,:) = 0;  
+
+% Store:
+CACHE{N} = Q;
 
 end

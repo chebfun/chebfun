@@ -1,13 +1,14 @@
 function V = volt(disc, kernel, oneVar)
-%VOLT      Volterra integral operator.
-%
-%   For the calling sequence to this method, see also OPERATORBLOCK.VOLT.
+%VOLT    Volterra integral operator.
+%   For the calling sequence to this method, see OPERATORBLOCK.VOLT.
+% 
+% See also OPERATORBLOCK.VOLT.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Default onevar to false.
-if ( nargin==2 )
+if ( nargin == 2 )
     oneVar = false; 
 end    
 
@@ -19,7 +20,7 @@ n = disc.dimension;
 if ( oneVar )
     V = kernel(x);
 else
-    [X,Y] = ndgrid(x);
+    [X, Y] = ndgrid(x);
     V = kernel(X, Y);
 end
 
