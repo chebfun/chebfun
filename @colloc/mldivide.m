@@ -11,21 +11,22 @@ function [v, disc] = mldivide(disc, A, b)
 if ( isFactored(disc) )
     
     % Use the existing factorization. 
-    [L, U, s] = deal(disc.mldivideData{:});
+    [L, U, p, s] = deal(disc.mldivideData{:});
     
 else
     
     % If there are no usable factors, find them:
     s = 1./ max(1, max(abs(A), [], 2) );  % Row scaling to improve accuracy
     A = bsxfun(@times, s, A);
-    [L, U] = lu(A);
+    [L, U, p] = lu(A, 'vector');
     
     % Store factors:
-    disc.mldivideData = {L, U, s};
+    disc.mldivideData = {L, U, p, s};
     
 end
 
 % Solve the system:
-v = U \ ( L \ (s.*b) );
+sb = s.*b;
+v = U \ ( L \ sb(p) );
 
 end
