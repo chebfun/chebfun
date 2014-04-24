@@ -3,7 +3,7 @@ function pass = test_linjump
 % Test jump condition in an ODE.
 % TAD, 31 Jan 2014
 
-tol = 1e-9;
+tol = 1e-8;
 
 solver = { @colloc2, @colloc1, @ultraS }; % FIXME
 kind = [2 1 2];

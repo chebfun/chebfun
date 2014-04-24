@@ -88,6 +88,7 @@ isDone = false(1, numInt);
 %% Loop over a finer and finer grid until happy.
 % We need to know which solution components to check for happiness:
 isFun = isFunVariable(L);
+
 for dim = [dimVals inf]
     
     % TODO: It's weird that the current value of dim is the _next_ disc size.
@@ -120,8 +121,8 @@ for dim = [dimVals inf]
 
     % Convert the different components into cells
     u = partition(disc, v);
-    
-    % Test the happieness of the function pieces:
+
+    % Test the happiness of the function pieces:
     [isDone, epsLevel] = testConvergence(disc, u(isFun));
 
     if ( all(isDone) || isinf(dim) )
@@ -144,7 +145,7 @@ end
 % one by one.
 for k = find( isFun )
     u{k} = disc.toFunction(u{k});
-    u{k} = simplify(u{k}, epsLevel);
+    u{k} = simplify( u{k}, max(eps,epsLevel) );
 end
 
 % Convert to chebmatrix

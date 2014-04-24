@@ -43,12 +43,14 @@ L = addbc(L,B3,0);
 type = {@colloc2, @ultraS, @colloc1, @colloc2, @ultraS, @colloc1};
 prefs = cheboppref;
 w = [];
+
 % FIXME: necessary until issue #205 has been resolved
 [xtest,qtest] = chebtech2.chebpts(50);
 xtest = dom(1)+diff(dom)*(xtest+1)/2;
 qtest = qtest*diff(dom)/2;
 
 for k = 1:6
+
     prefs.discretization = type{k};
     w = linsolve(L,f,prefs);
 

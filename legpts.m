@@ -322,7 +322,7 @@ idx = max(find(t < mint, 1) - 1, 1);
 dt = inf;
 % Newton iteration: (Always converges)
 while ( norm(dt, inf) > sqrt(eps)/1000 )       % <-- Enough, as again below
-    [vals, ders] = feval_asy1(n, t , mint, 1); % Evaluate via asy formulae
+    [vals, ders] = feval_asy1(n, t , mint, 0); % Evaluate via asy formulae
     dt = vals./ders;                           % Newton step
     t = t - dt;                                % Newton update
     dt = dt(1:idx-1);                          % Ignore boundary terms
@@ -394,58 +394,60 @@ M05onesT = M05*onesT;
 twoSinT = onesM*(2*sin(t));
 denom = cumprod(twoSinT)./sqrt(twoSinT);
 
-% alpha = onesM*(n*t) + M05onesT.*(onesM*(t-.5*pi));
-% cosAlpha = cos(alpha);
-% sinAlpha = sin(alpha);
+alpha = onesM*(n*t) + M05onesT.*(onesM*(t-.5*pi));
+if ( ~flag )
+    cosAlpha = cos(alpha);
+    sinAlpha = sin(alpha);
+else
+    %%%%%%%%%%%%%%%% Taylor expansion of cos(alpha0) %%%%%%%%%%%%%%
+    k = numel(t):-1:1;
+    rho = n + 0.5;
+    % HI-LO expansion, to accurately compute rho*t - (k-.25)*pi
+    ta = double(single(t));
+    tb = t - ta;
+    hi = rho*ta;
+    lo = rho*tb;
+    pia = double(single(pi));
+    pib = -8.742278000372485e-08; %pib = pi - pia;
+    dh = (hi-(k-.25)*pia) + lo - (k-.25)*pib;
 
-%%%%%%%%%%%%%%%% Taylor expansion of cos(alpha0) %%%%%%%%%%%%%%
-k = numel(t):-1:1;
-rho = n + 0.5;
-% HI-LO expansion, to accurately compute rho*t - (k-.25)*pi
-ta = double(single(t));
-tb = t - ta;
-hi = rho*ta;
-lo = rho*tb;
-pia = double(single(pi));
-pib = -8.742278000372485e-08; %pib = pi - pia;
-dh = (hi-(k-.25)*pia) + lo - (k-.25)*pib;
+    % Compute cosAlpha(1,:) using Taylor series:
+    tmp = 0; sgn = 1; fact = 1; DH = dh; dh2 = dh.*dh;
+    for j = 0:20
+        dc = sgn*DH/fact;
+        tmp = tmp + dc;
+        sgn = -sgn;
+        fact = fact*(2*j+3)*(2*j+2);
+        DH = DH.*dh2;
+        if ( norm(dc,inf) ) < eps/2000, break, end
+    end
+    tmp(2:2:end) = -tmp(2:2:end);
+    tmp = sign(cos((n+.5)*t(2)-.25*pi)*tmp(2))*tmp;
+    cosAlpha(1,:) = tmp;
 
-% Compute cosAlpha(1,:) using Taylor series:
-tmp = 0; sgn = 1; fact = 1; DH = dh; dh2 = dh.*dh;
-for j = 0:20
-    dc = sgn*DH/fact;
-    tmp = tmp + dc;
-    sgn = -sgn;
-    fact = fact*(2*j+3)*(2*j+2);
-    DH = DH.*dh2;
-    if ( norm(dc,inf) ) < eps/2000, break, end
-end
-tmp(2:2:end) = -tmp(2:2:end);
-tmp = sign(cos((n+.5)*t(2)-.25*pi)*tmp(2))*tmp;
-cosAlpha(1,:) = tmp;
+    % Compute sinAlpha(1,:) using Taylor series:
+    tmp = 0; sgn = 1; fact = 1; DH = 1; dh2 = dh.*dh;
+    for j = 0:20
+        dc = sgn*DH/fact;
+        tmp = tmp + dc;
+        sgn = -sgn;
+        fact = fact*(2*j+2)*(2*j+1);
+        DH = DH.*dh2;
+        if (norm(dc, inf)) < eps/2000, break, end
+    end
+    tmp(2:2:end) = -tmp(2:2:end);
+    tmp = sign(sin((n+.5)*t(2)-.25*pi)*tmp(2))*tmp;
+    sinAlpha(1,:) = tmp;
 
-% Compute sinAlpha(1,:) using Taylor series:
-tmp = 0; sgn = 1; fact = 1; DH = 1; dh2 = dh.*dh;
-for j = 0:20
-    dc = sgn*DH/fact;
-    tmp = tmp + dc;
-    sgn = -sgn;
-    fact = fact*(2*j+2)*(2*j+1);
-    DH = DH.*dh2;
-    if (norm(dc, inf)) < eps/2000, break, end
-end
-tmp(2:2:end) = -tmp(2:2:end);
-tmp = sign(sin((n+.5)*t(2)-.25*pi)*tmp(2))*tmp;
-sinAlpha(1,:) = tmp;
-
-% Compute cosAlpha(k,:) and sinAlpha(k,:) for k = 2,...,M:
-sint = sin(t);
-cost = cos(t);
-for k = 2:M
-    cosAlpha(k,:) = cosAlpha(k-1,:).*sint+sinAlpha(k-1,:).*cost;
-    sinAlpha(k,:) = sinAlpha(k-1,:).*sint-cosAlpha(k-1,:).*cost;
-end
+    % Compute cosAlpha(k,:) and sinAlpha(k,:) for k = 2,...,M:
+    sint = sin(t);
+    cost = cos(t);
+    for k = 2:M
+        cosAlpha(k,:) = cosAlpha(k-1,:).*sint+sinAlpha(k-1,:).*cost;
+        sinAlpha(k,:) = sinAlpha(k-1,:).*sint-cosAlpha(k-1,:).*cost;
+    end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+end
 
 % Sum up all the terms:
 vals = C*(c*(cosAlpha./denom));
@@ -459,7 +461,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [x, w, v, t, ders] = asy2(n, npts)
-%ASY2 BOundary asymptotics method.
+%ASY2 Boundary asymptotics method.
 
 if ( npts > ceil((n+1)/2) )
     error('CHEBFUN:legpts:asy2:N', 'NPTS must be <= N/2');
@@ -475,7 +477,6 @@ phik = jk(1:npts)/(n+.5);
 t = phik + (phik.*cot(phik)-1)./(8*phik*(n+.5)^2);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
 [tB1, A2, tB2, A3] = asy2_higherterms(0, 0, t, n);
 dt = inf;
 % Newton iteration: (Always converges)
@@ -484,10 +485,8 @@ while ( norm(dt,inf) > sqrt(eps)/1000 )  % <-- Enough as once more below
     dt = vals./ders;                     % Newton update
     t = t + dt;                          % Next iterate
 end
-if ( norm(dt) > eps )
-    % Once more for good ders.
-    [vals, ders] = feval_asy2(n, t, 1);
-end
+% Once more for good ders.
+[vals, ders] = feval_asy2(n, t, 1);
 
 % Flip:
 t = t(npts:-1:1);

@@ -126,6 +126,8 @@ for i = 1:length(t)
     
     %% Tidy the solution for output:
     ucell = mat2fun(disc, u);
+    doSimplify = @(f) simplify( f, max(eps,epsLevel) );
+    ucell = cellfun( doSimplify, ucell, 'uniform', false );
     allu = [ allu, chebmatrix(ucell) ];
 end
 
