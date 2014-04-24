@@ -12,10 +12,14 @@ t = false;
 
 % Check whether any factorisation data is stored
 if ( ~isempty(disc.mldivideData) )
+    % Total discretization size is the sum over the pieces, times the
+    % number of function variables, plus the number of scalar variables. 
+    isFun = isFunVariable(disc.source);
+    len = sum(isFun)*sum(disc.dimension) + sum(~isFun);
+    
+    % Compare length to that of stored data.
     L = disc.mldivideData{1};
-    % Check whether dimensions stored are compatible with current discretization
-    % size.
-    if ( sum(disc.dimension) == size(L, 1) )
+    if ( len == size(L, 1) )
         t = true;
     end
 end
