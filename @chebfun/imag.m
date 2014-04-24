@@ -13,16 +13,13 @@ if ( isempty(F) )
 end
 
 for j = 1:numel(F)
-
-    % Take imaginary part of the impulses:
-    % [TODO]:  Is this the right thing to do for higher-order impulses?
-    F(j).impulses = imag(F(j).impulses);
+    % Take imaginary part of the pointValues:
+    F(j).pointValues = imag(F(j).pointValues);
 
     % Take imaginary part of the FUNs:
     for k = 1:numel(F(j).funs)
         F(j).funs{k} = imag(F(j).funs{k});
     end
-
 end
 
 end

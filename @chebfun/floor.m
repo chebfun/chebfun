@@ -45,8 +45,8 @@ for k = 1:numel(f.funs)
     f.funs{k} = floor(f.funs{k});
 end
 
-% Floor the impulses:
-f.impulses = floor(f.impulses(:,:,1));
+% Floor the pointValues:
+f.pointValues = floor(f.pointValues);
 
 % Simplify the result:
 f = merge(f);

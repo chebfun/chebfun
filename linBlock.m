@@ -40,7 +40,11 @@ classdef (InferiorClasses = {?chebfun}) linBlock
         stack = [];
                 
         % Used to track differential order.
-        diffOrder = 0;        
+        diffOrder = 0;
+        
+        % Is the operator the zero operator or the zero functional? Usually not,
+        % so default value is set to 0: 
+        iszero = false;
     end
     
     methods

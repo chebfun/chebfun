@@ -6,15 +6,14 @@ if ( nargin < 1 )
     pref = chebpref();
 end
 
-% Generate a few random points to use as test values.
-seedRNG(6178);
-x = 2 * rand(100, 1) - 1;
-
 funlist = {@chebfun, @quasimatrix};
 
 for k = 1:2
     myfun = funlist{k};
-
+    
+    % Generate a few random points to use as test values.
+    seedRNG(6178);
+    x = 2 * rand(100, 1) - 1;
 
     % Check a few examples.
     f = myfun(@(x) [sin(x) cos(x) exp(x)], [-1 0 1], pref);
@@ -91,6 +90,28 @@ for k = 1:2
     catch ME
         pass(k,12) = strcmp(ME.identifier, 'CHEBFUN:assignColumns:dims');
     end
+    
+    %% Test for function defined on unbounded domain:
+    
+    % Functions on [-inf b]:
+    
+    % Set the domain:
+    dom = [-Inf -3*pi];
+    domCheck = [-1e6 -3*pi];
+    
+    % Generate a few random points to use as test values:
+    x = diff(domCheck) * rand(100, 1) + domCheck(1);
+    
+    % Array-valued function:
+    op = @(x) [exp(x) x.*exp(x) (1-exp(x))./x];
+    opg = @(x) exp(-x.^2);
+    oph = @(x) [exp(x) exp(-x.^2) (1-exp(x))./x];
+    
+    f = myfun(op, dom);
+    g = myfun(opg, dom);
+    h = assignColumns(f, 2, g);
+    err = feval(h, x) - oph(x);    
+    pass(k,13) = norm(err, inf) < 2*vscale(h)*epslevel(h);
     
 end
 

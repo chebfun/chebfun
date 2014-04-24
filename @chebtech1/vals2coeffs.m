@@ -12,8 +12,9 @@ function coeffs = vals2coeffs(values)
 %
 % See also COEFFS2VALS, CHEBPTS.
 
+% Developer Note: This is euqivalent to Discrete Cosine Transform of Type II.
+
 % [Mathematical reference] [TODO!]
-% TODO: note this is euqivalent to a ??-kind DCT.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org for Chebfun information.

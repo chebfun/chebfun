@@ -9,6 +9,14 @@ function out = isequal(f, g)
 
 tol = chebpref().singPrefs.exponentTol;
 
+if ( isa(f, 'smoothfun') )
+    f = singfun.smoothFun2SingFun(f);
+end
+
+if ( isa(g, 'smoothfun') )
+    g = singfun.smoothFun2SingFun(g);
+end
+
 out = all(abs(f.exponents - g.exponents) < tol) && ...
     isequal(f.smoothPart, g.smoothPart);
 

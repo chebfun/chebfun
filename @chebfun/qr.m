@@ -42,7 +42,9 @@ if ( numel(A) > 1 )
 
     isSimple = true;
     for k = 1:numel(A)
-        isSimple = isSimple && all(cellfun(@(f) isa(f.onefun, 'chebtech'), A(k).funs));
+        %isSimple = isSimple && all(cellfun(@(f) isa(f.onefun, 'chebtech'), A(k).funs));
+        isSimple = isSimple && ~isdelta(A(k)) ...
+            && all(cellfun(@(f) isa(f.onefun, 'chebtech'), A(k).funs));
     end
 
     if ( isSimple )
@@ -53,7 +55,7 @@ if ( numel(A) > 1 )
         
     else
         % Legendre matrix:
-        E = legpoly(0:numCols-1, A.domain, 'norm', 1);
+        E = legpoly(0:numCols-1, domain(A), 'norm', 1);
         E = restrict(E, get(A, 'domain'));
         % Convert the Legendre-Vandermonde matrix to a quasimatrix:
         E = cheb2quasi(E);

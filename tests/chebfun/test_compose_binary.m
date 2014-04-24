@@ -58,6 +58,27 @@ err = hVals - hExact;
 pass(10) = ( norm(err, inf) < 1e5*vscale(h)*epslevel(h) ) && ...
     ( isequal(oph(dom(2)), feval(h, dom(2))) );
 
+
+%% Compose two functions defined on an unbounded domain, i.e. F + G:
+
+% Set the domain:
+dom = [0 Inf];
+domCheck = [0 1e2];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+opf = @(x) exp(-x);
+opg = @(x) x.*exp(-x);
+oph = @(x) (x+1).*exp(-x);
+f = chebfun(opf, dom);
+g = chebfun(opg, dom);
+h = compose(f, @plus, g);
+hVals = feval(h, x);
+hExact = oph(x);
+err = hVals - hExact;
+pass(11) = norm(err, inf) < get(h,'epslevel')*get(h,'vscale');
+
 end
 
 % Test composition with binary operators.

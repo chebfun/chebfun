@@ -50,15 +50,18 @@ else
 end
 
 % Loop over each column or row:
-fPrime = diff(f);
+fPrime = f;
+for i = 1:numel(f.funs)
+    % This makes sure that no delta functions are 
+    % generated due to jump discontinuities. pointValus of fPrime are not
+    % updated since they are not needed.
+    fPrime.funs{i} = diff(f.funs{i});
+end
+
 if ( isreal(f) )
     g = sqrt(1 + fPrime.^2);
     out = sum(g, dom(1), dom(2));
     
-    % Substract the sum of impulses to get rid of the account for jumps:
-    if ( size(g.impulses, 3) > 1 )
-        out = out - sum(g.impulses(:,:,2));
-    end
 else
     out = sum(abs(fPrime), dom(1), dom(2));
 end

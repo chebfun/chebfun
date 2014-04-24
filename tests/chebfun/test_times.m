@@ -125,6 +125,28 @@ err = norm(feval(h, x) - feval(h_exact, x), inf);
 pass(25) = ( err < 1e1*max(get(f, 'epslevel'), get(g, 'epslevel'))*...
     norm(feval(h_exact, x), inf) );
 
+%% Tests for function defined on unbounded domain:
+
+% Functions on [-inf inf]:
+
+% Set the domain:
+dom = [-Inf Inf];
+domCheck = [-1e2 1e2];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+opf = @(x) x.^2.*exp(-x.^2);
+opg = @(x) (1-exp(-x.^2))./x;
+oph = @(x) x.*exp(-x.^2).*(1-exp(-x.^2));
+f = chebfun(opf, dom);
+g = chebfun(opg, dom);
+h = f.*g;
+hVals = feval(h, x);
+hExact = oph(x);
+err = hVals - hExact;
+pass(26) = norm(err, inf) < 2*get(f,'epslevel')*get(f,'vscale');
+
 end
 
 %% The tests
@@ -150,4 +172,3 @@ function result = test_mult_function_by_function(f, f_op, g, g_op, x)
     err = feval(h1, x) - h_exact(x);
     result(2) = norm(err(:), inf) < 10*max(vscale(h1).*epslevel(h1));
 end
-

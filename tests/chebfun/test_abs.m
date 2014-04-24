@@ -23,12 +23,12 @@ f = chebfun(@(x) cos(3*x), pref);
 f1 = abs(f);
 pass(1,2) = all(feval(f1, x) >= 0);
 
-% Test if impulses are dealt with correctly: 
+% Test if pointValues are dealt with correctly: 
 f = restrict(f + 2, sort(x)');
 %f = chebfun(@(x) sin(x) + 2, sort(x)', pref);
-f.impulses(:,:,1) = x;
+f.pointValues = x;
 f1 = abs(f);
-pass(1,3) = all(f1.impulses(:,:,1) == abs(x));
+pass(1,3) = all(f1.pointValues == abs(x));
 
 % Test also on longer intervals:
 f = chebfun(@(x) x, [-1 100], pref);
@@ -59,11 +59,11 @@ g = chebfun(@(x) gHandle1(x), -2:2, pref);
 g1 = abs(g);
 pass(2,1) = length(g1.funs) == 4;
 pass(2,2) = normest(f - g1) < tol;
-pass(2,3) = all(g1.impulses == abs(sin(pi*(-2:2)))');
+pass(2,3) = all(g1.pointValues == abs(sin(pi*(-2:2)))');
 h1 = chebfun(@(x) abs( gHandle1(x) ), -2:2, pref);
 pass(2,4) = length(h1.funs) == 4;
 pass(2,5) = normest(f - h1) < tol;
-pass(2,6) = all(h1.impulses == abs(sin(pi*(-2:2)))');
+pass(2,6) = all(h1.pointValues == abs(sin(pi*(-2:2)))');
 
 %% Imaginary CHEBFUN
 gHandle2 = @(x) 1i*cos(pi*(x-.5));
@@ -162,5 +162,52 @@ vals_check = feval(op, x);
 err = vals_g - abs(vals_check);
 pass(8,:) = ( norm(err-mean(err), inf) < ...
     100*get(f,'epslevel')*norm(vals_check, inf) );
+
+%% Tests for functions defined on unbounded domain:
+
+% Functions on [-inf inf]:
+
+% Set the domain:
+dom = [-Inf Inf];
+domCheck = [-1e2 1e2];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+op = @(x) (1-exp(-x.^2))./x;
+f = chebfun(op, dom);
+g = abs(f);
+gVals = feval(g, x);
+opAbs = @(x) abs((1-exp(-x.^2))./x);
+gExact = opAbs(x);
+err = gVals - gExact;
+pass(9,:) = norm(err, inf) < 1e1*epslevel(g)*vscale(g);
+
+% Blow-up function:
+op = @(x) -x.^2.*(1+exp(-x.^2));
+pref.singPrefs.exponents = [2 2];
+f = chebfun(op, dom, pref);
+g = abs(f);
+gVals = feval(g, x);
+opAbs = @(x) abs(-x.^2.*(1+exp(-x.^2)));
+gExact = opAbs(x);
+err = gVals - gExact;
+pass(10,:) = norm(err, inf) < 2*epslevel(g)*vscale(g);
+
+% Functions on [a inf]:
+dom = [0 Inf];
+domCheck = [0 100];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+op = @(x) 0.75+sin(10*x)./exp(x);
+opAbs = @(x) abs(0.75+sin(10*x)./exp(x));
+f = chebfun(op, dom);
+g = abs(f);
+gVals = feval(g, x);
+gExact = opAbs(x);
+err = gVals - gExact;
+pass(11,:) = norm(err, inf) < 2e1*epslevel(g)*vscale(g);
 
 end

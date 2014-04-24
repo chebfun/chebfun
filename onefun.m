@@ -28,8 +28,8 @@ classdef onefun % (Abstract)
 % used to represenet smooth functions on [-1,1}, whereas the latter are able to
 % represent some forms of endpoint singularites. 
 %
-% Class diagram: [<<fun>>] <>-- [<<ONEFUN>>] <-- [<<smoothfun>>]
-%                                            <-- [singfun]
+% Class diagram: [<<CLASSICFUN>>] <>-- [<<ONEFUN>>] <-- [<<smoothfun>>]
+%                                                   <-- [   singfun   ] 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
@@ -57,7 +57,7 @@ classdef onefun % (Abstract)
             else
                 pref = chebpref(pref);
             end
-
+       
             % Call the relevent constructor:
             if ( isa(op, 'onefun') )
                 % OP is already a ONEFUN!

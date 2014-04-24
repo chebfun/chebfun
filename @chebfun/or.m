@@ -32,9 +32,8 @@ for k = 1:1:numel(h.funs)
     h.funs{k} = f.funs{k} | g.funs{k};
 end
 
-% Deal with the impulses (call ANY() to ensure higher-order impulses are
-% treated as nonzero):
-h.impulses = any(f.impulses, 3) | any(g.impulses, 3);
+% Deal with the pointValues:
+h.pointValues = f.pointValues | g.pointValues;
 
 % Get rid of unnecessary breakpoints:
 h = merge(h);

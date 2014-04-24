@@ -3,26 +3,9 @@
 function pass = test_trig1
 
 % List of trigonometric functions to test.
-trigFunctions = {@acos, @acosd, @acosh, @acot, @acotd, @acoth, @acsc, @acscd};
+funcList = {@acos, @acosd, @acosh, @acot, @acotd, @acoth, @acsc, @acscd};
 
-% Tolerance for Taylor testing
-tol = 1e-2;
-
-% Initialise vector with pass information
-pass = zeros(2, numel(trigFunctions));
-
-% Do the tests.
-for k = 1:numel(trigFunctions)   
-    
-    % First, check that the computed function values match what we expect
-    pass(1, k) = ( adchebfun.valueTesting(trigFunctions{k}) == 0 );
-    
-    % Call the taylorTesting method
-    [order1, order2] = adchebfun.taylorTesting(trigFunctions{k});
-    % We expect all elements of ORDER1 to be close to 1, and of ORDER2 to be
-    % close to 2.
-    pass(2, k) = ( max(abs(order1 - 1)) < tol ) & ...
-        ( max(abs(order2 - 2)) < tol );
-end
+% Call the ADCHEBFUN testUnary() method to do the tests.
+pass = adchebfun.testUnary(funcList);
 
 end

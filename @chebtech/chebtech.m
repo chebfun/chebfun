@@ -285,7 +285,7 @@ classdef chebtech < smoothfun % (Abstract)
         f = ctranspose(f)
 
         % Indefinite integral of a CHEBTECH.
-        f = cumsum(f, m, pref)
+        f = cumsum(f, dim)
 
         % Derivative of a CHEBTECH.
         f = diff(f, k, dim)
@@ -297,7 +297,7 @@ classdef chebtech < smoothfun % (Abstract)
         f = extractColumns(f, columnIndex)
 
         % Extract roots at the boundary points -1 and 1.
-        [f, rootsLeft, rootsRight] = extractBoundaryRoots(f)
+        [f, rootsLeft, rootsRight] = extractBoundaryRoots(f, numRoots)
 
         % Extrapolate (for NaNs / Infs).
         [values, maskNaN, maskInf] = extrapolate(f)
@@ -325,6 +325,9 @@ classdef chebtech < smoothfun % (Abstract)
 
         % Compute the inner product of two CHEBTECH objects.
         out = innerProduct(f, g)
+
+        % Test if a CHEBTECH decays faster than a single root at endpoints.
+        out = isdecay(f)
 
         % True for an empty CHEBTECH.
         out = isempty(f)

@@ -45,7 +45,7 @@ g = chebfun(@(x) [exp(-x) exp(x)], [-1 1], pref);
 h = f./g;
 h_exact = @(x) [exp(2*x) exp(-2*x)];
 err = feval(h, x) - h_exact(x);
-pass(6) = norm(err(:), inf) < 10*vscale(h)*epslevel(h);
+pass(6) = norm(err(:), inf) < 10*max(vscale(h).*epslevel(h));
 
 ft = f.';
 gt = g.';
@@ -137,9 +137,31 @@ g = chebfun(op2, dom, pref);
 h = f./g;
 vals_h = feval(h, x);
 pow = pow1-pow2;
-op = @(x)  (x - dom(2)).^pow.*(sin(100*x)./(cos(300*x).^2+1));
+op = @(x) (x - dom(2)).^pow.*(sin(100*x)./(cos(300*x).^2+1));
 h_exact = op(x);
-pass(12) = ( norm(vals_h-h_exact, inf) < 1e1*max(get(f, 'epslevel'), get(g, 'epslevel'))*...
-    norm(h_exact, inf) );
+pass(12) = ( norm(vals_h-h_exact, inf) < 1e1*max(get(f, 'epslevel'), ...
+    get(g, 'epslevel'))*norm(h_exact, inf) );
+
+%% Test for function defined on unbounded domain:
+
+% Functions on [2 inf]:
+
+% Set the domain:
+dom = [2 Inf];
+domCheck = [2 1e2];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+opf = @(x) exp(-x.^2);
+opg = @(x) x.^2;
+oph = @(x) exp(-x.^2).*x.^-2;
+f = chebfun(opf, dom);
+g = chebfun(opg, dom, 'exps', [0 2]);
+h = f./g;
+hVals = feval(h, x);
+hExact = oph(x);
+err = hVals - hExact;
+pass(13) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
 
 end

@@ -15,13 +15,10 @@ for k = 1:length(solver)
     [z,e,s] = linop.primitiveFunctionals(domain);
     j = functionalBlock.jumpAt(domain);
 
+    % ODE:
     A = linop( [ D^2, I; -D D^2+I ] );
 
-    % A = addConstraint(A,[e(0) z],-1);
-    % A = addConstraint(A,[z e(1)],1);
-    % A = addContinuity(A,[j(0.3,1) z],2);
-    % A = addContinuity(A,[j(0.3,0) j(0.3,0)],0);
-
+    % Add constraints:
     A = addConstraint(A,[e(0) z],-1);
     A = addConstraint(A,[e(1) z],0);
     A = addConstraint(A,[z e(0)],0);
@@ -49,11 +46,17 @@ for k = 1:length(solver)
 
     %%
     % ODEs
-    err(k,5) = norm( D^2*u{1} + u{2} - x);
-    err(k,6) = norm( -D*u{1} + D^2*u{2} + u{2} );
-
+    % [TODO]: The following lines use a hack. This needs to be changed:
+    g = D^2*u{1}+u{2};
+    g.funs{1} = g.funs{1}.funPart;
+    g.funs{2} = g.funs{2}.funPart;
+    err(k,5) = norm(g - x);
+    % TODO: We would like to do this but deltafuns interfere:
+    % err(k,5) = norm( D^2*u{1} + u{2} - x);
+    err(k,6) = norm( -D*u{1} + D^2*u{2} + u{2} ); 
+    
 end
 
-pass = abs(err) < tol;
+pass = err < tol;
 
 end

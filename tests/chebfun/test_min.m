@@ -37,25 +37,15 @@ y_exact = exp(-1 - 1i);
 pass(4) = all(abs(y - y_exact) <= 10*vscale(f)*epslevel(f)) && ...
     all(abs(feval(f, x) - y_exact) <= 10*vscale(f)*epslevel(f));
 
-% Check operation for impulses.
+% Check operation for pointValues.
 f = chebfun({-1, 1, 2}, [-1, 0, 1, 2]);
 [y, ignored] = min(f);
 pass(5) = y == -1;
 
-f.impulses(1,1,1) = 10;
-f.impulses(3,1,1) = -10;
+f.pointValues(1,1) = 10;
+f.pointValues(3,1) = -10;
 [y, x] = min(f);
 pass(6) = (y == -10) && (x == 1);
-
-f = chebfun({-1, 1, 2}, [-1, 0, 1, 2]);
-f.impulses(1,1,2) = -1;
-f.impulses(2,1,3) = 1;
-[y, x] = min(f);
-pass(7) = (y == -inf) && (x == -1);
-
-f.impulses(2,1,2) = -1;
-[y, x] = min(f);
-pass(8) = (y == -inf) && (x == -1);
 
 % Check computation of local extrema.
 f = chebfun(@(x) sin(x).^2 + sin(x.^2), [0, 4]);
@@ -68,7 +58,7 @@ x_exact = [        0
    2.220599667639221
    3.308480466603983
    4.000000000000000];
-pass(9) = numel(y == 4) && (norm(y - y_exact, inf) < 10*vscale(f)*epslevel(f));
+pass(7) = numel(y == 4) && (norm(y - y_exact, inf) < 10*vscale(f)*epslevel(f));
 
 % Check operation for array-valued chebfuns.
 f = chebfun(@(x) [sin(10*x) cos(10*x) exp(x)], [-1 -0.5 0.5 1]);
@@ -76,14 +66,8 @@ f = chebfun(@(x) [sin(10*x) cos(10*x) exp(x)], [-1 -0.5 0.5 1]);
 y_exact = [-1 -1 exp(-1)];
 fx = feval(f, x(:));
 fx = [fx(1, 1) fx(2, 2) fx(3, 3)];
-pass(10) = all(abs(y(:) - y_exact(:)) <= 10*vscale(f)*epslevel(f)) && ...
+pass(8) = all(abs(y(:) - y_exact(:)) <= 10*vscale(f)*epslevel(f)) && ...
     all(abs(fx(:) - y_exact(:)) <= 10*vscale(f)*epslevel(f));
-
-f = chebfun({[-1 1 2], [1 -1 3]}, [-1 0 1]);
-f.impulses(3, 1, 2) = 1;
-f.impulses(2, 3, 3) = -1;
-[y, x] = min(f);
-pass(11) = isequal(y, [-1 -1 -inf]) && isequal(x, [-1 0 0]);
 
 op = @(x) sin(x).^2 + sin(x.^2);
 f = chebfun(@(x) [op(x) op(x/2)], [0, 4]);
@@ -98,9 +82,9 @@ x_exact = [        0                  0
    4.000000000000000  NaN];
 fx1 = feval(f, x_exact(:,1));
 fx2 = feval(f, x_exact(1:2,2));
-pass(12) = isequal(size(y), [4 2]) && ...
+pass(9) = isequal(size(y), [4 2]) && ...
     all(isnan(y(3:end,2))) && all(isnan(x(3:end,2)));
-pass(13) = norm(y(:,1) - y_exact(:,1), inf) < 10*vscale(f)*epslevel(f) && ...
+pass(10) = norm(y(:,1) - y_exact(:,1), inf) < 10*vscale(f)*epslevel(f) && ...
     norm(y(1:2,2) - y_exact(1:2,2), inf) < 10*vscale(f)*epslevel(f) && ...
     norm(fx1(:,1) - y_exact(:,1), inf) < 10*vscale(f)*epslevel(f) && ...
     norm(fx2(:,2) - y_exact(1:2,2), inf) < 10*vscale(f)*epslevel(f);
@@ -110,12 +94,12 @@ f = chebfun(@(x) sin(2*pi*x), [-1 -0.5 0 0.5 1], pref);
 g = chebfun(@(x) cos(2*pi*x), [-1 -0.5 0 0.5 1], pref);
 h = min(f, g);
 h_exact = @(x) min(sin(2*pi*x), cos(2*pi*x));
-pass(14) = norm(feval(h, xr) - h_exact(xr), inf) < 10*vscale(h)*epslevel(h);
+pass(11) = norm(feval(h, xr) - h_exact(xr), inf) < 10*vscale(h)*epslevel(h);
 
 g = chebfun(@(x) exp(2*pi*1i*x), [-1 -0.5 0 0.5 1], pref);
 h = min(f, g);
 h_exact = @(x) min(sin(2*pi*x), exp(2*pi*1i*x));
-pass(15) = norm(feval(h, xr) - h_exact(xr), inf) < 10*vscale(h)*epslevel(h);
+pass(12) = norm(feval(h, xr) - h_exact(xr), inf) < 10*vscale(h)*epslevel(h);
 
 % NB:  The call to complex() in this next test is to force MATLAB to do
 % complex-valued comparison where it wants to do real-valued.  This is
@@ -127,26 +111,44 @@ h = min(f, g);
 h_exact = @(x) [min(sin(2*pi*x), exp(2*pi*1i*x)) ...
     min(cos(2*pi*x), complex(sin(2*pi*x)))];
 err = feval(h, xr) - h_exact(xr);
-pass(16) = norm(err(:), inf) < 10*vscale(h)*epslevel(h);
+pass(13) = norm(err(:), inf) < 10*vscale(h)*epslevel(h);
 
 % Check 'global' syntax.
 f = chebfun(@(x) (x - 0.1).^2 - 1, [-1 -0.5 0 0.5 1], pref);
 [y, x] = min(f, 'global');
-pass(17) = (abs(y + 1) < 10*epslevel(f)*vscale(f)) && ...
+pass(14) = (abs(y + 1) < 10*epslevel(f)*vscale(f)) && ...
     (abs(feval(f, x) + 1) < 10*epslevel(f)*vscale(f));
 
 % Check error condition.
 try
     y = max(f, 'bad');
-    pass(18) = false;
+    pass(15) = false;
 catch ME
-    pass(18) = strcmp(ME.identifier, 'CHEBFUN:max:flag');
+    pass(15) = strcmp(ME.identifier, 'CHEBFUN:max:flag');
 end
 
 %% Check min of a CHEBFUN and a scalar:
 f = chebfun(@(x) [sin(x) cos(x)]);
 h = min(f, .75);
-pass(19) = norm(h([-.9 0 .9].') - [sin(-.9) cos(-.9) ; 0 .75 ; .75 cos(.9)]) ...
+pass(16) = norm(h([-.9 0 .9].') - [sin(-.9) cos(-.9) ; 0 .75 ; .75 cos(.9)]) ...
     < epslevel(h)*vscale(h);
+
+%% test on function defined on unbounded domain:
+
+% Functions on [-inf b]:
+
+% Set the domain:
+dom = [-Inf -3*pi];
+
+% A blow-up function:
+op = @(x) x.*(5+exp(x.^3))./(dom(2)-x);
+pref.singPrefs.exponents = [0 -1];
+f = chebfun(op, dom, pref); 
+[y, x] = min(f);
+yExact = -Inf;
+xExact = dom(2);
+errX = x - xExact;
+pass(17) = ( norm(errX, inf) < epslevel(f)*vscale(f) ) && ...
+    ( y == yExact );
 
 end

@@ -58,6 +58,10 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) linop 
     
     methods
         function L = linop(M)
+            if ( nargin == 0 )
+                M = 0;
+            end
+            
             L = L@chebmatrix(M);
         end
     end
