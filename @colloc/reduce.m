@@ -26,9 +26,9 @@ PA = cell(1, size(A, 2));
 P = cell(1, size(A, 2));
 
 % Do reduction for each block column:
-for i = 1:size(A, 2) 
-    [PA{i}, P{i}] = reduceOne(disc, A(:,i), r(i), dim + dimAdjust(i));  
-%     [PS{i}, ~] = reduceOne(disc, S(:,i), r(i), dim + dimAdjust(i));      
+for k = 1:size(A, 2) 
+    [PA{k}, P{k}] = reduceOne(disc, A(:,k), r(k), dim + dimAdjust(k));  
+%     [PS{k}, ~] = reduceOne(disc, S(:,k), r(k), dim + dimAdjust(k));      
 end
 
 % Convert cell arrays to matrices:

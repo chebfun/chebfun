@@ -18,9 +18,9 @@ function [M, P, B, A, PS] = matrix(disc, dim, domain)
 % Parse inputs
 if ( nargin > 1 )
     disc.dimension = dim;
-    if ( nargin > 2 )
-        disc.domain = domain;
-    end
+end
+if ( nargin > 2 )
+    disc.domain = domain;
 end
 
 % Check subinterval compatibility of domain and dimension.
