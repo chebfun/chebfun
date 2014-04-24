@@ -1,4 +1,4 @@
-function [M, P, B, A] = matrix(disc, dim, domain)
+function [M, P, B, A, PS] = matrix(disc, dim, domain)
 %MATRIX    Convert operator to matrix using COLLOC discretization.
 %   MATRIX(DISC) uses the parameters in DISC to discretize DISC.source as a
 %   matrix using COLLOC. 
@@ -33,17 +33,17 @@ if ( isa(disc.source, 'chebmatrix') )
     
     % Construct a square representation of each block individually and
     % store in a cell array.
-    A = instantiate(disc);
+    [A, S] = instantiate(disc);
 
     % We want output on different format depending on whether the source L is a
     % LINOP or another object (most likely a CHEBMATRIX):
     if ( isa(disc.source, 'linop') )
         % Project rows down, and record the projection matrix as well.
-        [rows, P] = disc.reduce(A);
-        PA = cell2mat(rows);
-        P = blkdiag(P{:});
+        [PA, P, PS] = disc.reduce(A, S);
+                
+        % Get constraints:
         B = getConstraints(disc);
-        
+
         % This should restore squareness to the final matrix.
         M = [ B ; PA ];
         
@@ -51,17 +51,10 @@ if ( isa(disc.source, 'chebmatrix') )
         % Everything should be of the same dimension.
         M = cell2mat(A);
         
-        % Additional outputs (not typically useful)
         if ( nargout > 1 )
-            if ( issparse(M) )
-                P = speye(size(M));
-            else
-                P = eye(size(M));
-            end
+            error('matrix of a chebmatrix can only return one output.')
         end
-        if ( nargout > 2 )
-            B = [];
-        end 
+
         
     end
 

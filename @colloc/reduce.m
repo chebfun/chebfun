@@ -1,4 +1,4 @@
-function [PA, P] = reduce(disc, blocks)
+function [PA, P, PS] = reduce(disc, A, S)
 %REDUCE Dimension reduction for operator matrix. 
 
 %   Each block row of the operator DISC.source has an associated dimension
@@ -16,16 +16,21 @@ dim = disc.dimension;
 dimAdjust = disc.inputDimensionAdjustment(1,:);
 
 if ( numel(dimAdjust) == 1 )
-    dimAdjust = repmat(dimAdjust, 1, size(blocks, 2));
+    dimAdjust = repmat(dimAdjust, 1, size(A, 2));
 end
 
-% Outputs will be cells for convenience
-PA = cell(1, size(blocks, 2));
-P = cell(1, size(blocks, 2));
+% Outputs will be cells for convenience:
+PA = cell(1, size(A, 2));
+P = cell(1, size(A, 2));
 
-for i = 1:size(blocks, 2)       % for each block column
-    [PA{i}, P{i}] = reduceOne(disc, blocks(:,i), r(i), dim+dimAdjust(i));  % do reduction
+for i = 1:size(A, 2) % Do reduction for each block column:
+    [PA{i}, P{i}] = reduceOne(disc, A(:,i), r(i), dim + dimAdjust(i));  
 end
+
+% Convert cell arrays to matrices:
+P = blkdiag(P{:});
+PA = cell2mat(PA);
+PS = P;
 
 end
 

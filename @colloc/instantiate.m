@@ -1,4 +1,4 @@
-function M = instantiate(disc)
+function [M, S] = instantiate(disc)
 %INSTANTIATE Convert an item to discrete form in COLLOC2.
 %   M = INSTANTIATE(DISC, DATA) converts each item DATA{k} to discrete form
 %   using the information in discretization DISC. The result M is a cell array.
@@ -31,6 +31,8 @@ if ( iscell(data) )
 else
     M = instantiateOne(disc, data);
 end
+
+S = {};
 
 end
 

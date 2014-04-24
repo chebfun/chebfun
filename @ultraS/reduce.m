@@ -1,4 +1,4 @@
-function [PA, P] = reduce(disc, blocks)
+function [PA, P, PS] = reduce(disc, A, S)
 %REDUCE Row dimension reduction for operator's matrix. 
 
 %   Each block row of the operator DISC.source has an associated dimension
@@ -10,17 +10,36 @@ function [PA, P] = reduce(disc, blocks)
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
+% Setup
 r = sizeReduction(disc.source);
 dim = disc.dimension;
 dimAdjust = disc.inputDimensionAdjustment(1,:);
 
-PA = cell(1, size(blocks, 1));
-P = cell(1, size(blocks, 1));
-% Loop through the block-rows of the operator.
-
-for i = 1:size(blocks, 2)       % for each block column
-    [PA{i}, P{i}] = reduceOne(disc, blocks(:,i), r(i), dim+dimAdjust(i));  % do reduction
+if ( numel(dimAdjust) == 1 )
+    dimAdjust = repmat(dimAdjust, 1, size(A, 2));
 end
+
+% Outputs will be cells for convenience:
+PA = cell(1, size(A, 2));
+P = cell(1, size(A, 2));
+
+for i = 1:size(A, 2) % Do reduction for each block column:
+    [PA{i}, P{i}] = reduceOne(disc, A(:,i), r(i), dim + dimAdjust(i));  
+end
+
+PS = S;
+for j = 1:size(S, 1)
+    for k = 1:size(S, 2)
+        if ( size(A{j,k}, 1) > 1 )
+            PS{j,k} = P{k}*S{j,k};
+        end
+    end
+end
+
+% Convert cell arrays to matrices:
+P = blkdiag(P{:});
+PA = cell2mat(PA);
+PS = cell2mat(PS);
 
 end
 
@@ -39,7 +58,7 @@ P = {};
 for k = 1:numel(dom) - 1
     v = [v nn(k) + n(k) - (0:m-1)];
 end
-P = eye(sum(n));
+P = speye(sum(n));
 P(v,:) = [];
 
 % Convert the projection matrices P into a blockdiagonal matrix.
@@ -55,7 +74,7 @@ PA = cell2mat(PA);
 
 if ( m == 0 && size(A{1},2) < sum(n) )
     % We don't want to project scalars.
-    P = eye(size(A, 2));
+    P = speye(size(A, 2));
 end
 
 end
