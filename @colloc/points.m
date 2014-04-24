@@ -1,15 +1,15 @@
 function [x, w, v] = points(varargin)
 %POINTS    Discretization points.
-%   X = COLLOC.POINTS(DISC,KIND) returns KIND-kind points using the domain and
+%   X = COLLOC.POINTS(DISC, KIND) returns KIND-kind points using the domain and
 %   dimension stored in DISC. KIND must be either 1 or 2.
 %
-%   An alternate calling sequence is COLLOC.POINTS(DOMAIN,DIMENSION,KIND).
+%   An alternate calling sequence is COLLOC.POINTS(DOMAIN, DIMENSION, KIND).
 %
-%   [X, W, V] = COLLOC.POINTS(DISC,KIND) also returns Clenshaw-Curtis
+%   [X, W, V] = COLLOC.POINTS(DISC, KIND) also returns Clenshaw-Curtis
 %   weights and barycentric interpolation weights, respectively.
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin == 2 )
     disc = varargin{1};

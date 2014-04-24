@@ -9,14 +9,11 @@ function b = rhs(disc, f)
 %   way as the operator. The constraints are prepended to the top of the vector.
 
 % Create an ULTRAS object from the CHEBMATRIX F:
-fdisc = ultraS(f, disc.dimension, disc.domain, disc.outputSpace);
+fDisc = ultraS(f, disc.dimension, disc.domain);
+fDisc.outputSpace = disc.outputSpace;
 
-% Instantiate (discretize) the ULTRAS discretisation. The output ROW will be a
-% cell-array.
-row = instantiate(fdisc);
-
-% Convert cells to a vector.
-b = cell2mat(row);
+% Instantiate (discretize) the ULTRAS discretisation.
+b = cell2mat(instantiate(fDisc));
 
 % Prepend constraints.
 L = disc.source;

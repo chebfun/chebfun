@@ -21,7 +21,7 @@ D5 = [
 
 %%
 A = [ I,Z; D,U ];
-M = matrix(A,[5 5 5]);
+M = matrix(A, [5 5 5]);
 DD = blkdiag(2/1.5*D5,2/1.5*D5,2/1*D5);
 [xx, ww] = chebpts([5 5 5], dom);
 UU = diag(u(xx));

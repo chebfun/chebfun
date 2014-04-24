@@ -1,23 +1,24 @@
 function [M, S] = instantiate(disc)
-%INSTANTIATE Convert an item to discrete form in COLLOC2.
-%   M = INSTANTIATE(DISC, DATA) converts each item DATA{k} to discrete form
-%   using the information in discretization DISC. The result M is a cell array.
+%INSTANTIATE   Convert a COLLOC discretization to discrete form.
+%   M = INSTANTIATE(DISC) converts each item DISC.SOURCE to discrete form
+%   using the information in discretization DISC. The result M is a cell
+%   array if DISC.SOURCE has more than one component.
 %
-%   Each item may be:
+%   DISC.SOURCE may be one or a cell array of:
 %      linBlock (becomes a matrix)
 %      chebfun (becomes a vector)
 %      numeric (not changed)
 %
-%   See also: MATRIX
+% See also: MATRIX
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org for Chebfun information.
 
-if ( nargin < 2 )
-    data = disc.source;
-    if ( isa(data, 'chebmatrix') )
-        data = data.blocks;
-    end
+% TODO: Document S.
+
+data = disc.source;
+if ( isa(data, 'chebmatrix') )
+    data = data.blocks;
 end
 
 if ( iscell(data) )
@@ -47,8 +48,7 @@ elseif ( isa(item, 'chebfun') )
 elseif ( isnumeric(item) )
     A = item;
 else   
-    error('CHEBFUN:COLLOC2:instantiate:instantiateOne', ...
-        'Unrecognized item.')
+    error('CHEBFUN:COLLOC2:instantiate:instantiateOne', 'Unrecognized item.')
 end
 
 end

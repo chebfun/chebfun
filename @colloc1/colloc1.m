@@ -10,8 +10,8 @@ classdef colloc1 < colloc
 %
 %   See also CHEBDISCRETIZATION, CHEBOPPREF, CHEBOP. 
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
+%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
+%  See http://www.chebfun.org/ for Chebfun information.
 
     % No subclass-specific properties needed, and no special constructor
     % either. 

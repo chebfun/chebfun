@@ -10,8 +10,8 @@ classdef colloc2 < colloc
 %
 %   See also CHEBDISCRETIZATION, CHEBOPPREF, CHEBOP. 
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
+%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
+%  See http://www.chebfun.org/ for Chebfun information.
 
     % No subclass-specific properties needed, and no special constructor
     % either. 
@@ -19,7 +19,7 @@ classdef colloc2 < colloc
     methods
         function disc = colloc2(varargin)
             disc = disc@colloc(varargin{:});
-       end
+        end
     end
     
 end

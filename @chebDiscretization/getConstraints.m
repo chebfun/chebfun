@@ -15,7 +15,7 @@ function B = getConstraints(disc)
 % Some preparation.
 dim = disc.dimension;
 dom = disc.domain;
-inputDimsAdj = disc.inputDimensionAdjustment(1,:);
+dimAdjust = disc.dimAdjust(1,:);
 discType = str2func( class(disc) );  % constructor of the discretization's type
 L = disc.source;
 
@@ -24,14 +24,14 @@ B = [];
 if ( ~isempty(L.constraint) )
     % Instantiate a discretization of this constraint. 
     disc2 = discType(L.constraint.functional, dim, dom);
-    disc2.inputDimensionAdjustment = repmat(inputDimsAdj, size(disc2.source, 1), 1);
+    disc2.dimAdjust = repmat(dimAdjust, size(disc2.source, 1), 1);
     constr = matrix(disc2, dim, dom);
     B = [ constr; B ];
 end
 if ( ~isempty(L.continuity) )
     % Instantiate a discretization of this constraint. 
     disc2 = discType(L.continuity.functional, dim, dom);
-    disc2.inputDimensionAdjustment = repmat(inputDimsAdj, size(disc2.source, 1), 1);
+    disc2.dimAdjust = repmat(dimAdjust, size(disc2.source, 1), 1);
     constr = matrix(disc2, dim, dom);
     B = [ constr; B ];
 end

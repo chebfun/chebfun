@@ -1,16 +1,16 @@
 function t = isFactored(disc)
-% ISFACTORED
-% 
-% T = ISFACTORED(DISC) returns true if the discretization has stored LU factors
-% whose dimensions are compatible with the current discretization size.
+%ISFACTORED   Check if a useful factorization of a COLLOC is stored.
+%   ISFACTORED(DISC) returns true if the discretization has stored LU
+%   factors whose dimensions are compatible with the current discretization
+%   size.
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org for Chebfun information.
 
-% Assume false
+% Assume false:
 t = false;
 
-% Check whether any factorisation data is stored
+% Check whether any factorisation data is stored:
 if ( ~isempty(disc.mldivideData) )
     % Total discretization size is the sum over the pieces, times the
     % number of function variables, plus the number of scalar variables. 

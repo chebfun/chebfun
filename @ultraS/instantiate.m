@@ -1,21 +1,22 @@
 function [M, S] = instantiate(disc)
-%INSTANTIATE   Convert an item to discrete form in ULTRAS.
-%   [M, S] = INSTANTIATE(DISC) converts each item DISC.SOURCE to discrete form
+%INSTANTIATE   Convert a ULTRAS discretization to discrete form.
+%   M = INSTANTIATE(DISC) converts each item DISC.SOURCE to discrete form
 %   using the information in discretization DISC. The result M is a cell
-%   array if DISC.SOURCE has more than one compnent.
+%   array if DISC.SOURCE has more than one component.
 %
-%   Each block entry in DISC.SOURCE may be:
+%   DISC.SOURCE may be one or a cell array of:
 %      linBlock (becomes a matrix)
 %      chebfun (becomes a vector)
 %      numeric (not changed)
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org for Chebfun information.
 
-% TODO: Why two outputs M and S? What do they mean?
+% TODO: Document S.
 
-if ( nargin < 2 )
-    data = disc.source.blocks;
+data = disc.source;
+if ( isa(data, 'chebmatrix') )
+    data = data.blocks;
 end
 
 if ( iscell(data) )

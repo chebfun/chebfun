@@ -2,13 +2,13 @@ classdef (Abstract) chebDiscretization
 %CHEBDISCRETIZATION Convert a chebmatrix or linop to discrete form.
 %   This class is not called directly by the end user. 
 %
-%   See also COLLOC2, ULTRAS.
+%   See also COLLOC, ULTRAS.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
+%  See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Developer notes
+% Developer notes:
 %
 % Objects of this class store a source (either a CHEBMATRIX or a LINOP), domain,
 % and dimension (vector of discretization lengths). In other words, they have a
@@ -25,17 +25,17 @@ classdef (Abstract) chebDiscretization
         source = []       % linop or chebmatrix to be discretized
         domain = []       % may generalize that of the source
         dimension = []    % vector of lengths, one per subinterval
-        % Store the size of the input space relative to disc.dimension
-        inputDimensionAdjustment = [];
+        dimAdjust = []    % size of the input space relative to disc.dimension
     end
         
-    properties (Dependent)
+    properties ( Dependent )
         numIntervals      % number of intervals in the domain
     end
 
     methods
+        
         function n = get.numIntervals(disc)
-        % NUMINTERVALS    Number of subintervals a CHEBDISCRETIZATION acts on.
+        %NUMINTERVALS    Number of subintervals a CHEBDISCRETIZATION acts on.
             n = length(disc.domain) - 1;
         end        
 
@@ -46,7 +46,7 @@ classdef (Abstract) chebDiscretization
         end
 
         function t = isFactored(disc)
-        % CHEBDISCRETIZATION.ISFACTORED
+        %CHEBDISCRETIZATION.ISFACTORED
         %
         % This method gives a discretization a chance to overload and store
         % matrix factors for the purpose of short-circuiting the linsolve
@@ -55,7 +55,7 @@ classdef (Abstract) chebDiscretization
         end
         
         function [x, disc] = mldivide(disc, A, b)
-        % CHEBDISCRETIZATION.MLDIVIDE 
+        %CHEBDISCRETIZATION.MLDIVIDE 
         %
         % By default, the solution of a discrete Ax=b uses standard backslash.
         % But concrete implementations may overload it.
@@ -65,11 +65,10 @@ classdef (Abstract) chebDiscretization
     end
     
     methods ( Static )
-        space = getInputDimensionAdjustment(L)
+        space = getDimAdjust(L)
     end
             
-        
-    methods (Abstract)        
+    methods ( Abstract )        
         % Converts a chebfun into a vector of values (or coefficients,
         % depending on the implementation). 
         values = toValues(disc, f)
@@ -82,7 +81,10 @@ classdef (Abstract) chebDiscretization
         b = rhs(disc, f, varargin)
         
         % Reduces (projects) block rows to make space for the constraints.
-        [PA, P] = reduce(disc, blocks)
+        [PA, P, PS] = reduce(disc, blocks)
+        
+        % Extract the j-k block from a discretization.
+        discjk = extractBlock(disc, j, k)
         
     end
     
