@@ -4,8 +4,8 @@ function [pass, u1, u2, info1, info2] = test_scalarODE_sign
 dom = [-1 .5 1];
 p = cheboppref;
 p.plotting = 'off';
+p.display = 'off';
 p.damped = 1;
-
 
 N = chebop(@(x,u) diff(u,2) + sign(x).*sin(u), dom);
 N.lbc = @(u) u - 2;

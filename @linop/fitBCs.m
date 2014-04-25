@@ -35,26 +35,18 @@ j = 0;
 while ( rank(B) < size(B, 1) && j < 5 )
     
     disc = discType(L, dim);
+    disc.dimAdjust = zeros(size(disc.dimAdjust));
 
-    % Create the discrete (matrix) version of the BCs:
-    % TODO: This should be replaced by a call to getConstraints().
-    B = [];
+    % Create the discrete (matrix) version of the BCs and rhs values:
+    B = getConstraints(disc);
     b = [];
     if ( ~isempty(L.constraint) )
-        % Instantiate a discretization of this constraint. 
-        disc2 = discType(L.constraint.functional, dim, dom);
-        constr = matrix(disc2);
-        B = [ constr ; B ];
         b = [ L.constraint.values ; b ];
     end
     if ( ~isempty(L.continuity) )
-        % Instantiate a discretization of this constraint. 
-        disc2 = discType(L.continuity.functional, dim, dom);
-        constr = matrix(disc2);
-        B = [ constr ; B ];
         b = [ L.continuity.values ; b ];
     end
-    
+
     dim = dim + 1;
     j = j + 1;
 end
@@ -80,7 +72,7 @@ u0disc = partition(disc, u0disc);
 % Convert to a chebfun:
 u0 = cell(numel(u0disc),1);
 for k = 1:numel(u0)
-    u0{k} = disc.toFunction(u0disc{k});
+    u0{k} = disc.toFunction(u0disc{k}, 2);
 end
 u0 = chebmatrix(u0);
 

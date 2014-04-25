@@ -77,6 +77,7 @@ end
 % Evaluate N.op. The output will be the ADCHEBFUN NU. In case of systems, NU
 % will be an array-valued ADCHEBFUN.
 Nu = N.op(x, u{:});
+
 % Construct the LINOP L by vertically concatenating the derivatives stored in
 % NU.
 L = linop(vertcat(get(Nu, 'jacobian')));
