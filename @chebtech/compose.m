@@ -79,7 +79,7 @@ end
 f = f.make(op, vscale, f.hscale, pref);
 
 % Throw a warning:
-if ( ~f.epslevel )
+if ( ~f.ishappy )
     warning('CHEBFUN:CHEBTECH:compose:convfail', ...
         [ 'Composition with ', func2str(op), ...
           ' failed to converge with ', int2str(length(f)), ' points.' ]);
