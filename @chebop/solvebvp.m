@@ -26,11 +26,12 @@ if ( isempty(N.init) )
         u0{k} = zeroFun;
     end
     u0 = chebmatrix(u0);
+    
 else
     u0 = N.init;
     % TODO: This should be done automatically when N.init is assigned
     if ( isa(u0, 'chebfun') )
-        u0 = chebmatrix({u0});
+        u0 = chebmatrix(u0);
     end
 end
 % Initialise the dependent variable:
@@ -55,6 +56,12 @@ if ( all(isLinear) )
 else
     % Call solver method for nonlinear problems.
     % TODO: Swith between residual and error oriented Newton methods
+    
+    % Create initial guess which satisfies the linearised boundary conditions:
+    if ( isempty(N.init) )
+        u0 = fitBCs(L);
+    end
+
     [u, info] = solvebvpNonlinear(N, rhs, L, u0, residual, pref, displayInfo);
 end
 
