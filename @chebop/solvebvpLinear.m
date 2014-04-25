@@ -25,8 +25,8 @@ displayInfo('linear', u, normRes, pref)
 % CASE OF SYSTEMS.
 err = feval(N.op, x , uBlocks{:}) - rhs;
 if isa(err, 'chebmatrix')
-    err = err.blocks;
-    info.error = norm(norm(err{:}));
+    err = chebfun(err);
+    info.error = norm(err, 2);
 else
     info.error = norm(err);
 end

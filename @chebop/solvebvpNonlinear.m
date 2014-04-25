@@ -102,7 +102,18 @@ while ( ~terminate )
             
             uTrialb = uTrial.blocks;
             
-            deResFunTrial = N.op(x, uTrialb{:}) - rhs;
+            % TODO: This is a hack, we shouldn't need this!
+            NopTrial = N.op(x, uTrialb{:});
+            
+            if (isa(NopTrial, 'chebfun') && size(NopTrial, 2) > 1)
+                NopTemp = {};
+                for NopCounter = 1:size(NopTrial, 2)
+                    NopTemp{NopCounter} = NopTrial(:, NopCounter);
+                end
+                NopTrial = chebmatrix(NopTemp');
+            end
+            
+            deResFunTrial = NopTrial - rhs;
             
             % Compute a simplified Newton step, using the current derivative of
             % the operator, but with a new right-hand side.
