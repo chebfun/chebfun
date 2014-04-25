@@ -22,17 +22,17 @@ x = diff(dom) * rand(100, 1) + dom(1);
 
 % We get a known exact solution in this case.
 f = bndfun(@(x) sin(x), dom, [], [], pref);
-x = f \ f;
-err = f - x*f;
-pass(1) = abs(x - 1) < tol;
+g = f \ f;
+err = f - g*f;
+pass(1) = abs(g - 1) < tol;
 pass(2) = max(abs(feval(err, x))) < tol;
 
 % Same here.
 f = bndfun(@(x) [sin(x) cos(x)], dom, [], [], pref);
 g = bndfun(@(x) sin(x + pi/4), dom, [], [], pref);
-x = f \ g;
-err = g - f*x;
-pass(3) = max(abs(x - [1/sqrt(2) ; 1/sqrt(2)])) < tol;
+h = f \ g;
+err = g - f*h;
+pass(3) = max(abs(h - [1/sqrt(2) ; 1/sqrt(2)])) < tol;
 pass(4) = max(abs(feval(err, x))) < tol;
 
 % A known least-squares solution.

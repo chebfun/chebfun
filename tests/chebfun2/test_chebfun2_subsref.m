@@ -21,8 +21,15 @@ slice2 = chebfun(@(y) sin(pi/6.*(y-.1)), [-3 4] );
 pass(j) = ( norm( f( pi/4, : ) - slice ) < tol ); j = j + 1;
 pass(j) = ( norm( f( [pi/4 pi/6], : ) - [slice slice2] ) < tol ); j = j + 1;
 
-
 pass(j) = ( norm( f( :, : ) - f ) < tol ); j = j + 1;
+
+% Test evaluation syntax for chebfun inputs. 
+f = chebfun2(@(x,y) x.*y); 
+c1 = chebfun(@(t) 1 + 0*t);
+c2 = chebfun(@(t) -.3 + 0*t);
+pass(j) = ( norm( f(c1, c2) +.3 ) < tol );
+pass(j) = ( norm( f(c1 + 1i*c2) +.3 ) < tol );
+pass(j) = ( norm( feval(f, c1, c2) - f(c1, c2) ) < tol );
 
 % GET properties 
 f = chebfun2(@(x,y) x); 

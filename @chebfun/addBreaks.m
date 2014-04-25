@@ -24,9 +24,24 @@ end
 % we simply take unique(breaks(:)).
 breaks = unique(breaks(:));
 
-% Avoid introducing new breakpoints close to existing ones:
-breakTol = max(100*epslevel(f)*max(min(diff(f.domain)), 1), tol);
-breaks(any(abs(bsxfun(@minus, breaks, f.domain)) < breakTol, 2)) = [];
+% Get rid of new breakpoints at infinity:
+breaks( isinf(breaks) ) = [];
+
+% Get rid of new breakpoints at infinity:
+domain = f.domain( isfinite(f.domain) );
+
+% Set a tolerance:
+breakTol = max(100*epslevel(f)*max(min(diff(domain)), 1), tol);
+
+% Distance between new breakpoints and existing ones:
+dist = abs(bsxfun(@minus, breaks, domain));
+
+% Avoid introducing new breakpoints close to existing ones: 
+% Note that: 1. In case of [-Inf Inf], DIST is empty.
+%            2. In case of [a Inf] or [-Inf b], BREAKTOL is empty.
+if ( ~isempty(dist) && ~isempty(breakTol) )
+    breaks( any(dist < breakTol, 2) ) = [];
+end
 
 % Add new breaks if required:
 if ( ~isempty(breaks) )

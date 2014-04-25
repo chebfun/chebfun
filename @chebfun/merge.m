@@ -17,7 +17,7 @@ function [f, mergedPts] = merge(f, index, pref)
 %   breakpoints.)
 %
 %   In all cases, elimination is attempted from left to right, and non-trivial
-%   impulses will prevent merging at the corresponding breakpoints.
+%   pointValues will prevent merging at the corresponding breakpoints.
 %
 %   Example:
 %       f = chebfun(@(x) abs(x), 'splitting','on');
@@ -92,10 +92,10 @@ tol = epslevel(f);
 mergedPts = [];
 
 % Store data from input CHEBFUN:
-oldImps = f.impulses;
+oldPointValues = f.pointValues;
 oldDom = f.domain;
 oldFuns = f.funs;
-newImps = oldImps;
+newPointValues = oldPointValues;
 newDom = oldDom;
 newFuns = oldFuns;
 
@@ -113,16 +113,8 @@ for k = index
         continue
     end
 
-    % Prevent merge if nontrivial impulses:
-    % [TODO:] Should there be a tolerance enforced 
-    % on impulse magnitudes e.g. 100*tol etc.?
-    if ( any(any(oldImps(k, :, 2:end))) )
-        % Skip to next breakpoint:
-        continue
-    end
-
     % Prevent merging if there are jumps:
-    v = [ oldImps(k,:,1) ; get(oldFuns{k-1}, 'rval') ; get(oldFuns{k}, 'lval') ];
+    v = [ oldPointValues(k,:) ; get(oldFuns{k-1}, 'rval') ; get(oldFuns{k}, 'lval') ];
     if ( norm(v([1,1],:) - v(2:3,:), inf) >= 1e3*tol )
         % Skip to next breakpoint:
         continue
@@ -133,9 +125,9 @@ for k = index
     % If the underlying tech samples right at the endpoints, this prevents
     % discontinuities that occur there from messing things up.
     g = f;
-    g.impulses(k-1,:,1) = get(oldFuns{k-1}, 'lval');
-    g.impulses(k+1,:,1) = get(oldFuns{k}, 'rval');
-    
+    g.pointValues(k-1,:) = get(oldFuns{k-1}, 'lval');
+    g.pointValues(k+1,:) = get(oldFuns{k}, 'rval');
+
     % Grab the correct exponents:
     
     if ( issing(f) )
@@ -169,13 +161,13 @@ for k = index
     newFuns{j-1} = mergedFun;   % Insert new fun.
     newFuns(j) = [];            % Remove unneeded fun.
     newDom = [newDom(1:j-1), newDom(j+1:end)];        % Update domain.
-    newImps = [newImps(1:j-1,:,:) ; newImps(j+1:end,:,:)]; % Update impulses.
+    newPointValues = [newPointValues(1:j-1,:) ; newPointValues(j+1:end,:)]; % Update pointValues.
 
 end
 
 % Assign data to CHEBFUN:
 f.domain = newDom;
 f.funs = newFuns;
-f.impulses = newImps;
+f.pointValues = newPointValues;
 
 end

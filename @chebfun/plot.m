@@ -60,7 +60,6 @@ function varargout = plot(varargin)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-% [TODO]: Implement plotting of delta functions.
 % TODO: Figure out the y axis limit for functions which blow up.
 
 % Deal with an empty input:
@@ -74,21 +73,17 @@ end
 % Store the hold state of the current axis:
 holdState = ishold;
 
-% Store the current Y-limits:
+% Store the current X and Y-limits:
 if ( holdState )
+    xLimCurrent = get(gca, 'xlim');
     yLimCurrent = get(gca, 'ylim');
 end
 
 % Initialize flags:
 isComplex = false;
 intervalIsSet = false;
+xLim = [inf, -inf];
 yLim = [inf, -inf];
-
-% Initialise storage:
-lineData = {};
-pointData = {};
-jumpData = {};
-intervalIsSet = false;
 
 % Suppress inevitable warning for growing these arrays:
 %#ok<*AGROW>
@@ -114,9 +109,11 @@ else
     end
 end
 
+% Initialise storage:
 lineData = {};
 pointData = {};
 jumpData = {};
+deltaData = {};
 
 % Deal with 'jumpLine' input.
 [jumpStyle, varargin] = chebfun.parseJumpStyle(varargin{:});
@@ -151,7 +148,9 @@ while ( ~isempty(varargin) )
             newData.xPoints = f;
             newData.yPoints = g;
             newData.xJumps = NaN;
-            newData.yJumps = NaN;   
+            newData.yJumps = NaN;  
+            newData.xDeltas = [];
+            newData.yDeltas = [];
             % Do nothing
         elseif ( numel(f) == 1 && numel(g) == 1 )
             % Array-valued CHEBFUN case:
@@ -204,7 +203,8 @@ while ( ~isempty(varargin) )
     lv = length(varargin);
     % Find the location of the next CHEBFUN in the input array:
     while ( (pos < lv) && ~isa(varargin{pos+1}, 'chebfun') )
-        if ( pos+1 < lv && isnumeric(varargin{pos+1}) && isnumeric(varargin{pos+2}) )
+        if ( pos+1 < lv && isnumeric(varargin{pos+1}) && ...
+                isnumeric(varargin{pos+2}) )
             break
         end
         pos = pos + 1;
@@ -220,14 +220,10 @@ while ( ~isempty(varargin) )
         end
     end
     
-    for k = 1:numel(newData)
-        yLim = [min(newData(k).yLim(1), yLim(1)), max(newData(k).yLim(2), yLim(2))];
-    end
-
     % Loop over the columns:
     for k = 1:numel(newData)
-        % TODO: Remove this?
-        % 'INTERVAL' stuff:
+        
+        % Handle the 'interval' flag:
         if ( ~isComplex && intervalIsSet && (size(newData(k).xLine, 2) == 1) )
             ind = newData(k).xLine < interval(1) | ...
                 newData(k).xLine > interval(end);
@@ -240,14 +236,27 @@ while ( ~isempty(varargin) )
             ind = newData(k).xJumps < interval(1) | ...
                 newData(k).xJumps > interval(end);
             newData(k).xJumps(ind) = [];
-            newData(k).yJumps(ind,:) = [];
+            newData(k).yJumps(ind,:) = [];            
+            ind = newData(k).xDeltas < interval(1) | ...
+                newData(k).xDeltas > interval(end);
+            newData(k).xDeltas(ind) = [];
+            newData(k).yDeltas(ind,:) = [];
+            
+            newData(k).xLim = interval;            
         end
+        
+        % Update axis limits:
+        xLim = [min(newData(k).xLim(1), xLim(1)), ...
+            max(newData(k).xLim(2), xLim(2))];
+        yLim = [min(newData(k).yLim(1), yLim(1)), ...
+            max(newData(k).yLim(2), yLim(2))];
 
         % Append new data:
         lineData = [lineData, newData(k).xLine, newData(k).yLine, styleData];
         pointData = [pointData, newData(k).xPoints, newData(k).yPoints, ...
             styleData];
         jumpData = [jumpData, newData(k).xJumps, newData(k).yJumps, styleData];
+        deltaData = [deltaData, newData(k).xDeltas, newData(k).yDeltas];
     end
     
 end
@@ -280,6 +289,36 @@ else
     set(h3, jumpStyle{:});
 end
 
+% Plot the Delta functions:
+if ( isempty(deltaData) )
+    deltaData = {[]};
+end
+h4 = stem(deltaData{:}, 'd', 'fill');
+
+%% 
+% Do we want a style for delta functions?
+% if ( isempty(jumpStyle) )
+%     if ( isComplex )
+%         %[TODO]: The following statement can not be reached:
+%         set(h3, 'LineStyle', 'none', 'Marker', 'none')
+%     else
+%         set(h3, 'LineStyle', ':', 'Marker', 'none')
+%     end
+% else
+%     set(h3, jumpStyle{:});
+% end
+
+% Set the X-limits if appropriate values have been suggested:
+if ( all(isfinite(xLim)) )
+
+    % If holding, then make sure not to shrink the X-limits.
+    if ( holdState )
+        xLim = [min(xLimCurrent(1), xLim(1)), max(xLimCurrent(2), xLim(2))];
+    end
+
+    set(gca, 'xlim', xLim)
+end
+
 % Set the Y-limits if appropriate values have been suggested:
 if ( all(isfinite(yLim)) )
 
@@ -298,7 +337,7 @@ end
 
 % Give an output to the plot handles if requested:
 if ( nargout > 0 )
-    varargout = {h1 ; h2 ; h3};
+    varargout = {h1 ; h2 ; h3 ; h4};
 end
 
 end

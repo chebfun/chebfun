@@ -1,6 +1,6 @@
 % Test file for @chebfun/addBreaks.m
 
-function pass = test_addBreaksAtRoots(pref)
+function pass = test_addBreaks(pref)
 
 if ( nargin == 0 )
     pref = chebpref();

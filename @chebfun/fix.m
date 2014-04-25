@@ -45,8 +45,8 @@ for k = 1:numel(f.funs)
     f.funs{k} = fix(f.funs{k});
 end
 
-% Fix the impulses:
-f.impulses = fix(f.impulses(:,:,1));
+% Fix the pointValues:
+f.pointValues = fix(f.pointValues);
 
 % Simplify the result:
 f = merge(f);

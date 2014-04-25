@@ -23,7 +23,7 @@ function varargout = subsref(f, index)
 %   CHEBFUN/RESTRICT for further details. Note that F{[S1, S2]} is not supported
 %   due to the behaviour of the MATLAB subsref() command.
 %
-% See also FEVAL, COMPOSE, GET, RESTRICT, SUBSREF.
+% See also FEVAL, COMPOSE, GET, RESTRICT.
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.

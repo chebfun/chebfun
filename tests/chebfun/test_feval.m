@@ -205,4 +205,68 @@ vals_exact = feval(op, x);
 err = fval - vals_exact;
 pass(31) = ( norm(err, inf) < 1e1*get(f,'epslevel')*norm(vals_exact, inf) );
 
+%% Test for function defined on unbounded domain:
+
+% Functions on [-inf inf]:
+
+% Set the domain:
+dom = [-Inf Inf];
+domCheck = [-1e2 1e2];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+op = @(x) (1-exp(-x.^2))./x;
+f = chebfun(op, dom);
+fVals = feval(f, x);
+fExact = op(x);
+err = fVals - fExact;
+pass(32) = ( norm(err, inf) < 1e1*epslevel(f)*vscale(f) ) && ...
+    ( feval(f, Inf) < epslevel(f)*vscale(f) ) && ...
+    ( feval(f, -Inf) < epslevel(f)*vscale(f) );
+
+% Blow-up function:
+op = @(x) x.^2.*(1-exp(-x.^2));
+f = chebfun(op, dom, 'exps', [2 2]); 
+fVals = feval(f, x);
+fExact = op(x);
+err = fVals - fExact;
+pass(33) = ( norm(err, inf) < 1e4*epslevel(f)*vscale(f) ) && ...
+    ( feval(f, Inf) == Inf ) && ( feval(f, -Inf) == Inf );
+
+%% Functions on [a inf]:
+
+% Set the domain:
+dom = [1 Inf];
+domCheck = [1 1e2];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+op = @(x) x.*exp(-x);
+f = chebfun(op, dom);
+fVals = feval(f, x);
+fExact = op(x);
+err = fVals - fExact;
+pass(34) = ( norm(err, inf) < epslevel(f)*vscale(f) ) && ...
+     ( feval(f, Inf) < 5*epslevel(f)*vscale(f) );
+
+%% Functions on [-inf b]:
+
+% Set the domain:
+dom = [-Inf -3*pi];
+domCheck = [-1e6 -3*pi];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+% Array-valued function:
+op = @(x) [exp(x) x.*exp(x) (1-exp(x))./x];
+f = chebfun(op, dom);
+fVals = feval(f, x);
+fExact = op(x);
+err = fVals - fExact;
+pass(35) = ( norm(err, inf) < 2*max(epslevel(f).*vscale(f)) ) && ...
+    all( feval(f, -Inf) < epslevel(f).*vscale(f) );
+
 end

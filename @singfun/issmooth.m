@@ -8,6 +8,6 @@ function out = issmooth(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-out = all(f.exponents == 0) || iszero(f.smoothPart);
+out = all(f.exponents == 0) || all(iszero(f.smoothPart));
 
 end

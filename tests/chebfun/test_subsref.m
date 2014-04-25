@@ -1,6 +1,6 @@
 % Test file for @chebfun/subsref.m.
 
-function pass = test_feval(pref)
+function pass = test_subsref(pref)
 
 % [TODO]: test calls of the form f(:,1) and f(1,:), etc.
 

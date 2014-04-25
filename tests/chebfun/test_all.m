@@ -22,6 +22,18 @@ pass(4) = isequal(all(f), logical([0 0 1]));
 
 % Test on SINGFUN:
 f = chebfun(@(x) sin(x)./(x+1), 'exps', [-1 0]);
-pass(5) = ~( all(f) );
+pass(5) = ~all(f);
+
+% Test for function defined on unbounded domain:
+
+% Blowing-up functions on [-inf inf]:
+
+% Set the domain:
+dom = [-Inf Inf];
+
+op = @(x) x.^2.*(1-exp(-x.^2))+3;
+pref.singPrefs.exponents = [2 2];
+f = chebfun(op, dom, pref); 
+pass(6) = all(f);
 
 end

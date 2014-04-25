@@ -4,5 +4,4 @@ function display(f)
 
 s = disp(f, inputname(1));
 disp(s)
-
 end

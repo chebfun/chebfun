@@ -45,9 +45,9 @@ if ( numel(f.funs) ~= numel(g.funs) )
     return
 end
 
-% Check the impulses:
+% Check the pointValues:
 tol = max(epslevel(f), epslevel(g));
-if ( norm(f.impulses(:) - g.impulses(:), inf) > tol )
+if ( norm(f.pointValues(:) - g.pointValues(:), inf) > tol )
     out = false;
     return
 end

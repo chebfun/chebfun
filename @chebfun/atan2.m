@@ -88,11 +88,12 @@ end
 %% Compose:
 % Do the composition:
 p = compose(x, @(x, y) atan2(y, x), y, pref);
-% Sort out the new impulses:
+
+% Sort out the new point values:
 if ( ~isempty(r) )
-    % Set impulses to zero if x(r) = y(r) = 0:
-    idx = ((abs(x.impulses(:,:,1)) < tol) & (abs(y.impulses(:,:,1)) < tol));
-    p.impulses(idx,1,1) = 0;  
+    % Set point values to zero if x(r) = y(r) = 0:
+    idx = ((abs(x.pointValues) < tol) & (abs(y.pointValues) < tol));
+    p.pointValues(idx) = 0;
 end
 
 end

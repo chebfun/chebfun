@@ -94,8 +94,8 @@ function f = sumColumns(f)
         for k = 1:numel(f.funs)
             f.funs{k} = sum(f.funs{k}, 2);
         end
-        % Sum the impulses across the columns:
-        f.impulses = sum(f.impulses, 2);
+        % Sum the pointValues across the columns:
+        f.pointValues = sum(f.pointValues, 2);
     else
         s = f(1);
         for k = 2:numel(f)
@@ -114,19 +114,11 @@ function out = sumFullDom(f)
     for k = 1:numel(f.funs)
         out = out + sum(f.funs{k});
     end
-
-    % Deal with impulses:
-    if ( size(f.impulses, 3) > 1 )
-        % Only add the delta functions (the integral of derivatives of delta
-        % functions is always zero).
-        out = out + sum(f.impulses(:,:,2));
-    end
     
     % To avoid things like NaN + 1i*NaN:
     if ( isnan(out) )
         out = nan;
     end
-
 end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%% SUM on a subdomain %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

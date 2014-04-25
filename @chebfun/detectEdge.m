@@ -42,7 +42,6 @@ function edge = detectEdge(op, domain, vscale, hscale, derHandle)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% [TODO]: This may be required when we have unbounded maps again.
 if ( nargin < 5 )
     derHandle = @(x) 0*x + 1;
 end
@@ -58,6 +57,7 @@ edge = detectedgeMain(op, domain, vscale, hscale, derHandle);
 if ( isempty(edge) )
     edge = mean(domain);
 end
+
 htol = 1e-14*hscale;
 % If the edge is at the end of the domain, move it in by 1%:
 if ( abs(domain(1) - edge) <= htol )
