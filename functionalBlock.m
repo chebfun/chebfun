@@ -83,6 +83,7 @@ classdef functionalBlock < linBlock
                 C = functionalBlock(A.domain);
                 C.stack = @(z) A.stack(z) * B.stack(z);
                 C.diffOrder = A.diffOrder + B.diffOrder;
+                C.iszero  = ( A.iszero || B.iszero);
             else
                 error('Unrecognized operand types.')
             end
