@@ -3,7 +3,7 @@
 function pass = test_innerProduct
 
 % Initialise pass vector
-pass = zeros(2, 5);
+pass = zeros(3, 5);
 
 % Tolerance for Taylor testing
 tolOrder = 1e-2;
@@ -13,7 +13,7 @@ tolDiff = 1e-14;
 func = @innerProduct;
 
 % Compare values
-err = adchebfun.valueTestingBinary(func);
+[err, lin] = adchebfun.valueTestingBinary(func);
 
 % Confirm that the error returned is close to zero. Note that the error won't be
 % exact zero, due to slightly different mechanisms used in
@@ -41,5 +41,6 @@ nonlinearOpResults = ( (max(abs(order1(:, 1) - 1)) < tolOrder) && ...
 % Concatenate results
 pass(2, :) = [nonlinearOpResults, linearOpResults];
 
-
+% Check whether we received correct linearity information.
+pass(3, :) = ( lin == [0, 1, 1, 1, 1]);
 end

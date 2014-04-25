@@ -58,6 +58,10 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) linop 
     
     methods
         function L = linop(M)
+            if ( nargin == 0 )
+                M = 0;
+            end
+            
             L = L@chebmatrix(M);
         end
     end
@@ -82,7 +86,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) linop 
             I = operatorBlock.eye(domain);
             D = operatorBlock.diff(domain, 1);
             C = operatorBlock.cumsum(domain, 1);
-            M = @(f) operatorBlock.mult(f, domain);
+            M = @(f) operatorBlock.mult(f);
         end
 
         function [zr, ev, su, dt] = primitiveFunctionals(domain)
@@ -103,7 +107,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) linop 
             zr = functionalBlock.zero(domain);
             ev = functionalBlock.eval(domain);
             su = functionalBlock.sum(domain);
-            dt = @(f) functionalBlock.inner(f, domain);
+            dt = @(f) functionalBlock.inner(f);
         end
     end
 

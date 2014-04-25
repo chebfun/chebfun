@@ -43,11 +43,9 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
             end
         end
 
-        function C = uminus(A)
-        %-   Unary minus of an OPERATORBLOCK.
-            C = operatorBlock(A.domain);
-            C.stack = @(z) -A.stack(z);
-            C.diffOrder = A.diffOrder;
+        function A = uminus(A)
+            % Unary minus of an OPERATORBLOCK.
+            A.stack = @(z) -A.stack(z);
         end
 
 
@@ -75,9 +73,14 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
                 % A scalar is converted into a constant CHEBFUN, which can then
                 % be used to create a multiplication OPERATORBLOCK.
                 if ( isnumeric(A) )
+                    % Need to store whether we got passed in a zero scalar.
+                    isz = ( A == 0 );
                     A = operatorBlock.mult( chebfun(A, B.domain) );
+                    A.iszero = isz;
                 elseif ( isnumeric(B) )
+                    isz = ( B == 0);
                     B = operatorBlock.mult( chebfun(B, A.domain) );
+                    B.iszero = isz;
                 end
 
                 % Create an OPERATORBLOCK to be returned.
@@ -89,6 +92,10 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
 
                 % Difforder of returned OPERATORBLOCK.
                 C.diffOrder = A.diffOrder + B.diffOrder;
+                
+                % Output is a zero operator if either operator was a zero
+                % operator
+                C.iszero = A.iszero || B.iszero;
             end
         end
 
@@ -114,6 +121,7 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
             C = operatorBlock(dom);
             C.stack = @(z) A.stack(z) + B.stack(z);
             C.diffOrder = max(A.diffOrder, B.diffOrder);
+            C.iszero = A.iszero && B.iszero;
         end
 
         function B = mpower(A, pow)
@@ -132,10 +140,13 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
             for i = 1:pow
                 B = B*A;
             end
+            
+            % Were we repeatedly applying the zero operator?
+            B.iszero = A.iszero;
         end
 
         function out = iszero(A)
-            out = false;
+            out = A.iszero;
         end
 
     end
@@ -255,6 +266,9 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
             Z = operatorBlock(domain);
             Z.stack = @(z) zeros(z);
             Z.diffOrder = 0;
+            
+            % This is actually a zero operator
+            Z.iszero = true;
         end
 
         function F = fred(domain, kernel, varargin)

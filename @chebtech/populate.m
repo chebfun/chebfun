@@ -163,7 +163,7 @@ vscale = vscaleOut;
 %     % Deal with zero vscale:
 %     epslevel = epslevel./(1+vscaleOut);
 % end
-vscaleOut(vscaleOut < epslevel) = 1;
+vscaleOut(vscaleOut < epslevel) = epslevel;
 epslevel = epslevel*vscaleGlobal./vscaleOut;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% Assign to CHEBTECH object. %%%%%%%%%%%%%%%%%%%%%%%%%%

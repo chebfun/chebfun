@@ -34,25 +34,22 @@ g = chebfun(@sin, [-1 0 0.5 1], pref);
 xx = linspace(-1, 1);
 pass(3) = isequal(f2.domain, g2.domain) && ...
     norm(feval(f, xx) - feval(f2, xx), inf) < 10*epslevel(f)*vscale(f) && ...
-    norm(feval(g, xx) - feval(g2, xx), inf) < 10*epslevel(g)*vscale(g) && ...
-    isequal(size(f2.impulses, 3), size(g2.impulses, 3));
+    norm(feval(g, xx) - feval(g2, xx), inf) < 10*epslevel(g)*vscale(g);
 
+% [TODO]: Are these the same tests as above?
 % Check correct behavior for higher-order impulses.  [TODO]:  Use a function
 % with real higher-order impulses instead of just faking them like this.
-f.impulses = cat(3, f.impulses, zeros(5, 1, 1));
 [f2, g2] = overlap(f, g);
 xx = linspace(-1, 1);
 pass(4) = isequal(f2.domain, g2.domain) && ...
     norm(feval(f, xx) - feval(f2, xx), inf) < 10*epslevel(f)*vscale(f) && ...
-    norm(feval(g, xx) - feval(g2, xx), inf) < 10*epslevel(g)*vscale(g) && ...
-    isequal(size(f2.impulses, 3), size(g2.impulses, 3));
+    norm(feval(g, xx) - feval(g2, xx), inf) < 10*epslevel(g)*vscale(g);
 
 [g2, f2] = overlap(g, f);
 xx = linspace(-1, 1);
 pass(5) = isequal(f2.domain, g2.domain) && ...
     norm(feval(f, xx) - feval(f2, xx), inf) < 10*epslevel(f)*vscale(f) && ...
-    norm(feval(g, xx) - feval(g2, xx), inf) < 10*epslevel(g)*vscale(g) && ...
-    isequal(size(f2.impulses, 3), size(g2.impulses, 3));
+    norm(feval(g, xx) - feval(g2, xx), inf) < 10*epslevel(g)*vscale(g);
 
 %% Test on singular function: piecewise smooth chebfun - splitting on.
 
@@ -82,9 +79,47 @@ vals_g = feval(op2, x);
 check = zeros(1,4);
 check(1) = all( fout.domain == gout.domain );
 check(2) = all( fout.domain == unique([f.domain, g.domain]) );
-check(3) = ( norm(vals_fout - vals_f, inf) < 5*epslevel(fout)*norm(vals_fout, inf) );
-check(4) = ( norm(vals_gout - vals_g, inf) < 5*epslevel(gout)*norm(vals_gout, inf) );
+check(3) = ( norm(vals_fout - vals_f, inf) < ...
+    5*epslevel(fout)*norm(vals_fout, inf) );
+check(4) = ( norm(vals_gout - vals_g, inf) < ...
+    5*epslevel(gout)*norm(vals_gout, inf) );
 
 pass(6) = all( check );
+
+%% Test for function defined on unbounded domain:
+
+% Function defined on [0 Inf]:
+
+% Specify the domain: 
+dom = [0 Inf];
+domCheck = [0 100];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+% A decaying function:
+opf = @(x) 0.75+sin(10*x)./exp(x);
+f = chebfun(opf, dom, 'splitting', 'on');
+
+% Blow-up function:
+opg = @(x) x.*(5+exp(-x.^3))./(x - dom(1));
+g = chebfun(opg, dom, 'exps', [-1 0]);
+
+[fout, gout] = overlap(f, g);
+
+vals_fout = feval(fout, x);
+vals_gout = feval(gout, x);
+vals_f = feval(opf, x);
+vals_g = feval(opg, x);
+
+check = zeros(1,4);
+check(1) = all( fout.domain == gout.domain );
+check(2) = all( fout.domain == unique([f.domain, g.domain]) );
+check(3) = ( norm(vals_fout - vals_f, inf) < ...
+    2e1*epslevel(fout)*norm(vals_fout, inf) );
+check(4) = ( norm(vals_gout - vals_g, inf) < ...
+    1e1*epslevel(gout)*norm(vals_gout, inf) );
+
+pass(7) = all( check );
 
 end

@@ -1,6 +1,6 @@
 % Test file for @chebfun/minus.m.
 
-function pass = test_plus(pref)
+function pass = test_minus(pref)
 
 % Get preferences.
 if ( nargin < 1 )
@@ -62,6 +62,29 @@ try
 catch ME
     pass(16) = true;
 end
+
+%% Tests for function defined on unbounded domain:
+
+% Functions on [-inf b]:
+
+% Set the domain:
+dom = [-Inf 3*pi];
+domCheck = [-1e6 3*pi];
+
+% Generate a few random points to use as test values:
+x = diff(domCheck) * rand(100, 1) + domCheck(1);
+
+opf = @(x) x.*exp(x);
+opg = @(x) (1-exp(x))./x;
+oph = @(x) x.*exp(x) - (1-exp(x))./x;
+f = chebfun(opf, dom);
+g = chebfun(opg, dom);
+h = f - g;
+
+hVals = feval(h, x);
+hExact = oph(x);
+err = hVals - hExact;
+pass(17) = norm(err, inf) < get(h,'epslevel').*get(h,'vscale');
 
 end
 

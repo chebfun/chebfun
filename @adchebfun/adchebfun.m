@@ -57,11 +57,19 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         % objects, and has the identity operators as its Frechet derivative.
         jacobian
         
-        % ISCONSTANT: This is used for linearity detection. A value equal to 1
-        % indicates that the function the ADCHEBFUN represents has Frechet
-        % derivatives which has a constant value with respect to the selected
-        % basis variable.
-        isConstant = 1;  
+        % LINEARITY: This is used for linearity detection. This is a vector of
+        % equal dimensions to the block dimension of F.JACOBIAN. If 
+        %   LINEARITY(K) == 1,
+        % then the ADCHEBFUN F is linear in the Kth variable of the input
+        % variables that derivatives were seeded with respect to at the start of
+        % the computation. Otherwise, ISLINEAR(K) == 0.
+        % 
+        % An equivalent way to express the fact that
+        %   LINEARITY(K) == 1
+        % is that the derivative of F has a constant value with respect to the
+        % selected basis variable, that is, the derivative would remain the same
+        % if we were to evaluate the program/operator for a different input.
+        linearity = 1;  
         
         % DOMAIN: Domain of the ADchebfun.
         domain
@@ -99,7 +107,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = ACOS(F)   ACOS of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update derivative part
             f.jacobian = operatorBlock.mult(-1./sqrt(1 - f.func.^2), ...
                 f.domain)*f.jacobian;
@@ -111,7 +119,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = ACOSD(F)   ACOSD of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update derivative part
             f.jacobian = operatorBlock.mult(-(180/pi)./sqrt(1 - f.func.^2), ...
                 f.domain)*f.jacobian;
@@ -123,7 +131,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = ACOSH(F)   ACOSH of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update derivative part
             f.jacobian = operatorBlock.mult(1./sqrt(f.func.^2 - 1), ...
                 f.domain)*f.jacobian;
@@ -135,7 +143,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = ACOT(F)   ACOT of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update derivative part
             f.jacobian = operatorBlock.mult(-1./(1 + f.func.^2), ...
                 f.domain)*f.jacobian;
@@ -147,7 +155,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = ACOTD(F)   ACOTD of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update derivative part
             f.jacobian = operatorBlock.mult(-(180/pi)./(1 + f.func.^2), ...
                 f.domain)*f.jacobian;
@@ -159,7 +167,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = ACOTH(F)   ACOTH of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update derivative part
             f.jacobian = operatorBlock.mult(-1./(f.func.^2 - 1), ...
                 f.domain)*f.jacobian;
@@ -171,7 +179,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = ACSC(F)   ACSC of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update derivative part
             f.jacobian = operatorBlock.mult(-1./(abs(f.func).* ...
                 sqrt(f.func.^2 - 1)), f.domain)*f.jacobian;
@@ -183,7 +191,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = ACSCD(F)   ACSCD of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update derivative part
             f.jacobian = operatorBlock.mult(-(180/pi)./(abs(f.func).* ...
                 sqrt(f.func.^2 - 1)), f.domain)*f.jacobian;
@@ -195,7 +203,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = ACSCH(F)   ACSCH of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update derivative part
             f.jacobian = operatorBlock.mult(-1./(f.func.* ...
                 sqrt(1 + f.func.^2)), f.domain)*f.jacobian;
@@ -213,7 +221,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 k = 0;
             end
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update derivative part
             f.jacobian = operatorBlock.mult(airy(k + 1, f.func), ...
                 f.domain)*f.jacobian;
@@ -225,7 +233,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = ASEC(F)   ASEC of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update derivative part
             f.jacobian = operatorBlock.mult(1./(abs(f.func).* ...
                 sqrt(f.func.^2-1)), f.domain)*f.jacobian;
@@ -237,7 +245,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = ASECD(F)   ASECD of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update derivative part
             f.jacobian = operatorBlock.mult((180/pi)./(abs(f.func).* ...
                 sqrt(f.func.^2-1)), f.domain)*f.jacobian;
@@ -249,7 +257,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = ASECH(F)   ASECH of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update derivative part
             f.jacobian = operatorBlock.mult(-1./(f.func.* ...
                 sqrt(1-f.func.^2)), f.domain)*f.jacobian;
@@ -261,7 +269,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = ASIN(F)   ASIN of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update derivative part
             f.jacobian = operatorBlock.mult(1./sqrt(1-f.func.^2), ...
                 f.domain)*f.jacobian;
@@ -273,7 +281,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = ASIND(F)   ASIND of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update derivative part
             f.jacobian = operatorBlock.mult((180/pi)./sqrt(1-f.func.^2), ...
                 f.domain)*f.jacobian;
@@ -285,7 +293,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = ASINH(F)   ASINH of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update derivative part
             f.jacobian = operatorBlock.mult(1./sqrt(f.func.^2+1), ...
                 f.domain)*f.jacobian;
@@ -297,7 +305,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = ATAN(F)   ATAN of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update derivative part
             f.jacobian = operatorBlock.mult(1./(1+f.func.^2), ...
                 f.domain)*f.jacobian;
@@ -309,7 +317,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = ATAND(F)   ATAND of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update derivative part
             f.jacobian = operatorBlock.mult((180/pi)./(1+f.func.^2), ...
                 f.domain)*f.jacobian;
@@ -321,7 +329,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = ATANH(F)   ATANH of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update derivative part
             f.jacobian = operatorBlock.mult(1./(1-f.func.^2), ...
                 f.domain)*f.jacobian;
@@ -333,7 +341,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % BESSELJ(NU, F)   Bessel-J function of an ADCHEBFUN.
 
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Function composition
             tmp = besselj(nu, f.func);
             % Derivative computation
@@ -346,7 +354,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = COS(F)   COS of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             f.jacobian = operatorBlock.mult(-sin(f.func), ...
                 f.domain)*f.jacobian;
             % Update CHEBFUN part.
@@ -357,7 +365,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = COSD(F)   COSD of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update derivative part
             f.jacobian = operatorBlock.mult(-pi/180*sind(f.func), ...
                 f.domain)*f.jacobian;
@@ -369,7 +377,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = COSH(F)   COSH of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update derivative part
             f.jacobian = operatorBlock.mult(sinh(f.func), ...
                 f.domain)*f.jacobian;
@@ -381,7 +389,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = COT(F)   COT of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update derivative part
             f.jacobian = operatorBlock.mult(-csc(f.func).^2, ...
                 f.domain)*f.jacobian;
@@ -393,7 +401,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = COTD(F)   COTD of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update derivative part
             f.jacobian = operatorBlock.mult(-(pi/180)*cscd(f.func).^2, ...
                 f.domain)*f.jacobian;
@@ -405,7 +413,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = COTH(F)   COTH of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update derivative part
             f.jacobian = operatorBlock.mult(-csch(f.func).^2, ...
                 f.domain)*f.jacobian;
@@ -419,7 +427,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % Copy F to the output G to enable reuse of computed function value
             g = f;
             % Linearity information
-            g.isConstant = iszero(f.jacobian);
+            g.linearity = iszero(f.jacobian);
             % Update CHEBFUN part.
             g.func = csc(f.func);
             % Update derivative part
@@ -433,7 +441,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % Copy F to the output G to enable reuse of computed function value
             g = f;
             % Linearity information
-            g.isConstant = iszero(f.jacobian);
+            g.linearity = iszero(f.jacobian);
             % Update CHEBFUN part.
             g.func = cscd(f.func);
             % Update derivative part
@@ -447,7 +455,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % Copy F to the output G to enable reuse of computed function value
             g = f;
             % Linearity information
-            g.isConstant = iszero(f.jacobian);
+            g.linearity = iszero(f.jacobian);
             % Update CHEBFUN part.
             g.func = csch(f.func);
             % Update derivative part
@@ -476,7 +484,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % Update derivative part
             f.jacobian = operatorBlock.cumsum(f.domain, k)*f.jacobian;
             % CUMSUM is a linear operation, so no need to update linearity info.
-            % f.isConstant = f.isConstant;
+            % f.linearity = f.linearity;
         end
         
         function f = diff(f, k)
@@ -492,7 +500,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % Update derivative part:
             f.jacobian = operatorBlock.diff(f.domain, k)*f.jacobian;
             % DIFF is a linear operation, so no need to update linearity info.
-            % f.isConstant = f.isConstant;
+            % f.linearity = f.linearity;
         end
         
         function [sm, cm, dm] = ellipj(f, m)
@@ -509,7 +517,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % Copy F to the output G to enable reuse of computed function value:
             sm = f;
             % Linearity information:
-            sm.isConstant = iszero(f.jacobian);
+            sm.linearity = iszero(f.jacobian);
             
             % Copy the ADCHEBFUN SM to CM and DM also:
             cm = sm;
@@ -554,7 +562,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = ERF(F)   ERF of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update derivative part
             f.jacobian = operatorBlock.mult(2*exp(-f.func.^2)/sqrt(pi), ...
                 f.domain)*f.jacobian;
@@ -566,7 +574,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = ERFC(F)   ERFC of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update derivative part
             f.jacobian = operatorBlock.mult(-2*exp(-f.func.^2)/sqrt(pi), ...
                 f.domain)*f.jacobian;
@@ -578,7 +586,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = ERFCINV(F)   ERFCINV of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update CHEBFUN part
             f.func = erfcinv(f.func);
             % Update derivative part
@@ -593,7 +601,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % compute derivatives below.
             g = f;
             % Linearity information
-            g.isConstant = iszero(f.jacobian);
+            g.linearity = iszero(f.jacobian);
             % Update CHEBFUN part
             g.func = erfcx(f.func);
             % Update derivative part
@@ -605,7 +613,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = ERFINV(F)   ERFINV of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update CHEBFUN part
             f.func = erfinv(f.func);
             % Update derivative part
@@ -617,7 +625,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = EXP(F)   EXP of an ADCHEBFUN.
 
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update CHEBFUN part
             f.func = exp(f.func);
             % Update derivative part
@@ -628,7 +636,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = EXPM1(F)   EXPM1 of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update derivative part
             f.jacobian = operatorBlock.mult(exp(f.func), ...
                 f.domain)*f.jacobian;  
@@ -651,7 +659,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f.func = feval(f.func, x);
             % Evaluation is a linear operation, so no need to update linearity
             % information.
-            % f.isConstant = f.isConstant;
+            % f.linearity = f.linearity;
         end 
         
         function f = fred(K, f, varargin)
@@ -665,7 +673,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 f.jacobian;
             
             % FRED is a linear operation, so no need to update linearity info.
-            % f.isConstant = f.isConstant;
+            % f.linearity = f.linearity;
             
         end
         
@@ -677,7 +685,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             %       'FUNC'       -   The chebfun/scalar part of F.
             %       'JACOBIAN'   -   The derivative of F w.r.t. the seeding
             %                        variable.
-            %       'ISCONSTANT' -   Whether F has a constant derivative w.r.t.
+            %       'LINEARITY'  -   Whether F has a constant derivative w.r.t.
             %                        the seeding variable (useful for linearity
             %                        detection).
             %
@@ -738,6 +746,15 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             
             [varargout{1:nargout}] = sum(varargin{:});
         end
+        
+        function isl = isLinear(f)
+            %ISLINEAR   Linearity test for an ADCHEBFUN.
+            %
+            %   ISL = ISLINEAR(F) returns 1 if ALL(F.linearity) == 1, and 0
+            %   otherwise.
+            isl = all(f.linearity);
+        end
+        
               
         function u = jump(u, x, c)
             % U = JUMP(U)       JUMP of an ADCHEBFUN
@@ -766,7 +783,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = LOG(F)   LOG of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update derivative part
             f.jacobian = operatorBlock.mult(1./f.func, f.domain)*f.jacobian;
             % Update CHEBFUN part
@@ -779,7 +796,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = LOG1P(F)   LOG1P of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update derivative part
             f.jacobian = operatorBlock.mult(1./(f.func + 1), ...
                 f.domain)*f.jacobian;
@@ -793,7 +810,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = LOG2(F)   LOG2 of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update derivative part
             f.jacobian = operatorBlock.mult(1./(log(2)*f.func), ...
                 f.domain)*f.jacobian;
@@ -807,7 +824,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = LOG10(F)   LOG10 of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update derivative part
             f.jacobian = operatorBlock.mult(1./(log(10)*f.func), ...
                 f.domain)*f.jacobian;
@@ -906,7 +923,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % ADCHEBFUN + ADCHEBFUN
             else
                 % Update linearity information
-                f.isConstant = f.isConstant & g.isConstant;
+                f.linearity = f.linearity & g.linearity;
                 % Derivative part
                 f.func = f.func + g.func;
                 % Derivative part
@@ -933,8 +950,8 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % ADCHEBFUN.^ADCHEBFUN
             if ( isa(f, 'adchebfun') && isa(b, 'adchebfun') )
                 % Linearity information
-                f.isConstant = iszero(f.jacobian) & iszero(b.jacobian) & ...
-                    f.isConstant & b.isConstant;
+                f.linearity = iszero(f.jacobian) & iszero(b.jacobian) & ...
+                    f.linearity & b.linearity;
                 % Temporarily store the function value to be returned                
                 tmp = power(f.func, b.func);
                 % Derivative information
@@ -955,12 +972,12 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                     elseif ( b == 0 )
                         f.func = power(f.func, 0);
                         f.jacobian = 0*f.jacobian;
-                        f.isConstant = true(size(f.jacobian));
+                        f.linearity = true(size(f.jacobian));
                         return
                     end
                 end
                 % Linearity information
-                f.isConstant = iszero(f.jacobian);
+                f.linearity = iszero(f.jacobian);
                 % Update derivative of function value
                 f.jacobian = operatorBlock.mult(b.*power(f.func, b-1), ...
                     f.domain)*f.jacobian;
@@ -968,7 +985,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 
             % SCALAR.^ADCHEBFUN or CHEBFUN.^ADCHEBFUN
             elseif ( isa(b, 'adchebfun') )
-                b.isConstant = iszero(b.jacobian);
+                b.linearity = iszero(b.jacobian);
                 b.func = power(f, b.func);
                 b.jacobian = operatorBlock.mult(b.func.*log(f), ...
                     b.domain)*b.jacobian; 
@@ -994,18 +1011,18 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F./G divides F and G, where F and G may be ADHCEBFUN or CHEBFUN
             % objects or scalars.
             
-            % TODO: Can the scalar and chebfun cases be merged once we can pass
-            % domains to the operatorBlock.mult method?
             % ADCHEBFUN./SCALAR or ADCHEBFUN./CHEBFUN
             if ( isnumeric(g) || ~isa(g, 'adchebfun') ) 
                 f = f.*(1./g);
-            elseif ( isnumeric(f) )             % SCALAR./ADCHEBFUN
-                % Temporariy store the function of 1./g
+                
+            % SCALAR./ADCHEBFUN or CHEBFUN./ADCHEBFUN    
+            elseif ( isnumeric(f) ||  ~isa(f, 'adchebfun') )
+                % Temporarily store the function of 1./g
                 tmp = 1./g.func;
                 % Update function part
                 g.func = f.*tmp;
                 % Linearity information
-                g.isConstant = iszero(g.jacobian);
+                g.linearity = iszero(g.jacobian);
                 % Derivative part
                 g.jacobian = operatorBlock.mult(-f.*tmp.^2, ...
                     g.domain)*g.jacobian;
@@ -1013,21 +1030,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 g = updateDomain(g);
                 % Swap variables for output
                 f = g;
-            elseif ( ~isa(f, 'adchebfun') )     % CHEBFUN./ADCHEBFUN
-                % Temporariy store the function of 1./g
-                tmp = 1./g.func;
-                % Update function part
-                g.func = f.*tmp;
-                % Linearity information
-                g.isConstant = iszero(g.jacobian);
-                % Derivative part
-                g.jacobian = operatorBlock.mult(-f.*tmp.^2, ...
-                    g.domain)*g.jacobian;
-                % Update domain in case new breakpoints were introduced
-                g = updateDomain(g);
-                % Swap variables for output
-                f = g;
-            else                                % ADCHEBFUN.*ADCHEBFUN
+            else                                % ADCHEBFUN./ADCHEBFUN
                 % Temporarily store the function of 1./g
                 tmp = 1./g.func;
                 % Derivative part
@@ -1038,10 +1041,9 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 f.func = f.func.*tmp;
                 
                 % Rather complicated linearity information.
-                % TODO: Fix this! We were doing linearity checking incorrectly
-                % for ./ in the past. To be fixed in feature-linearityDetection.
-                f.isConstant = iszero(g.jacobian);
-                
+                f.linearity = ( f.linearity & iszero(g.jacobian) ) & ...
+                    ( all(iszero(g.jacobian)) | iszero(f.jacobian) );
+                                
                 % Update domain in case new breakpoints were introduced.
                 f = updateDomain(f);
             end
@@ -1065,6 +1067,8 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % Things are easy if we only have one variable involved.
             if ( m == 1 )
                 u.jacobian = I;
+                % Reset linearity information
+                u.linearity = 1;
             else
                 % Working in the system case.
                 
@@ -1081,6 +1085,9 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 % Convert the cell-array to a CHEBMATRIX and assign to the
                 % derivative field of U:
                 u.jacobian = chebmatrix(blocks);
+                % Initalise linearity information. The output is linear in all
+                % variables.
+                u.linearity = ones(1, m);
             end
         end
    
@@ -1091,7 +1098,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % compute derivatives below.
             g = f;
             % Linearity information
-            g.isConstant = iszero(f.jacobian);
+            g.linearity = iszero(f.jacobian);
             % Update CHEBFUN part
             g.func = sec(f.func);
             % Update derivative part
@@ -1106,7 +1113,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % compute derivatives below.
             g = f;
             % Linearity information
-            g.isConstant = iszero(f.jacobian);
+            g.linearity = iszero(f.jacobian);
             % Update CHEBFUN part
             g.func = secd(f.func);
             % Update derivative part
@@ -1121,7 +1128,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % compute derivatives below.
             g = f;
             % Linearity information
-            g.isConstant = iszero(f.jacobian);
+            g.linearity = iszero(f.jacobian);
             % Update CHEBFUN part
             g.func = sech(f.func);
             % Update derivative part
@@ -1143,7 +1150,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = SIN(F)   SIN of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update derivative part
             f.jacobian = operatorBlock.mult(cos(f.func), f.domain)*f.jacobian;
             % Update CHEBFUN part
@@ -1154,7 +1161,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = SINC(F)  SINC of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update derivative part
             Jop = @(u) (pi*u.*cos(pi*u) - sin(pi*u))./(pi*u.^2);
             f.jacobian = operatorBlock.mult(compose(f.func, Jop), ...
@@ -1168,7 +1175,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = SIND(F)   SIND of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update derivative part
             f.jacobian = operatorBlock.mult(pi/180*cosd(f.func), ...
                 f.domain)*f.jacobian;
@@ -1180,7 +1187,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = SINH(F)   SINH of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update derivative part
             f.jacobian = operatorBlock.mult(cosh(f.func), ...
                 f.domain)*f.jacobian;
@@ -1266,7 +1273,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = TAN(F)   TAN of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update derivative part
             f.jacobian = operatorBlock.mult(sec(f.func).^2, ...
                 f.domain)*f.jacobian;
@@ -1278,7 +1285,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = TAND(F)   TAND of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             % Update derivative part
             f.jacobian = operatorBlock.mult((pi/180)*secd(f.func).^2, ...
                 f.domain)*f.jacobian;
@@ -1290,7 +1297,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % F = TANH(F)   TANH of an ADCHEBFUN.
             
             % Linearity information
-            f.isConstant = iszero(f.jacobian);
+            f.linearity = iszero(f.jacobian);
             f.jacobian = operatorBlock.mult(sech(f.func).^2, ...
                 f.domain)*f.jacobian;
             % Update CHEBFUN part
@@ -1302,10 +1309,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             %
             % F.*G multiplies F and G, where F and G may be ADHCEBFUN or CHEBFUN
             % objects or scalars.
-            
-            % TODO: Can the scalar and chebfun cases be merged once we can pass
-            % domains to the operatorBlock.mult method?
-            
+                        
             if ( isnumeric(g) )                 % ADCHEBFUN.*SCALAR
                 f.func = f.func*g;
                 f.jacobian = f.jacobian*g;
@@ -1333,8 +1337,8 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 f.func = times(f.func, g.func);
                 
                 % Rather complicated linearity information
-                f.isConstant = ...
-                    ( f.isConstant & g.isConstant) & ...
+                f.linearity = ...
+                    ( f.linearity & g.linearity) & ...
                     ( ( all(iszero(f.jacobian)) || all(iszero(g.jacobian)) ) | ...
                     ( iszero(f.jacobian) & iszero(g.jacobian) ) );
                 
@@ -1368,7 +1372,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f.jacobian = operatorBlock.volt(f.domain, K, varargin{:})*f.jacobian;
             
             % VOLT is a linear operation, so no need to update linearity info.
-            % f.isConstant = f.isConstant;
+            % f.linearity = f.linearity;
             
         end
         
@@ -1388,12 +1392,16 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         % Taylor testing for correctness of derivatives of binary operators
         [order1, order2, nDiff2] = taylorTestingBinary(f, hMax, plotting)
         
-        % Value testing for correctness of computed function
-        error = valueTesting(f, numOut)
+        % Testing for most unary operators
+        pass = testUnary(funcList)
+        
+        % Value testing for correctness of computed function, also returns
+        % linearity information.
+        [err, lin] = valueTesting(f, numOut)
         
         % Value testing for correctness of computed function for binary
         % operators.
-        error = valueTestingBinary(f)
+        [err, lin] = valueTestingBinary(f)
     end
     
     methods ( Access = private )

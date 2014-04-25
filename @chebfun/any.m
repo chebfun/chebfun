@@ -48,10 +48,10 @@ function a = anyDim1(f)
 %ANYDIM1   Column-wise ANY() for a column CHEBFUN.
 
 % NB:  This code handles empty f without an extra check, since in this case,
-% f.impulses is empty and numel(f.funs) = 0, so the loop will never execute.
+% f.pointValues is empty and numel(f.funs) = 0, so the loop will never execute.
 
-% Check the impulses:
-a = any(f.impulses(:,:,1));
+% Check the pointValues:
+a = any(f.pointValues);
 
 % If necessary, check all of the FUNs:
 k = 1;
@@ -80,10 +80,13 @@ for (k = 1:1:numel(a.funs))
     a.funs{k} = any(a.funs{k}, 2);
 end
 
+% Deal with the pointValues:
+% [TODO]; not sure about this:
 % Deal with the impulses:
 %   1.  Call ANY() along the third dimension to pick up higher-order impulses.
-%   2.  Call ANY() along the second dimension to collapse to a single column.
-a.impulses = any(any(a.impulses, 3), 2);
+% a.impulses = any(any(a.impulses, 3), 2);
+
+a.pointValues = any(any(a.pointValues, 3), 2);
 
 % Get rid of unnecessary breakpoints:
 a = merge(a);

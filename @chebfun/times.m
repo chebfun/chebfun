@@ -38,11 +38,11 @@ elseif ( isnumeric(g) )        % CHEBFUN * double
             f.funs{k} = times(f.funs{k}, g);
         end
 
-        % Multiply the impulses:
+        % Multiply the pointValues:
         if ( numel(g) > 1 )
-            f.impulses = bsxfun(@times, f.impulses, g);
+            f.pointValues = bsxfun(@times, f.pointValues, g);
         else
-            f.impulses = f.impulses .* g;
+            f.pointValues = f.pointValues .* g;
         end
     
     else
@@ -85,12 +85,7 @@ else                           % CHEBFUN .* CHEBFUN
         for k = 1:numel(f.funs)
             f.funs{k} = times(f.funs{k}, g.funs{k});
         end
-
-        % Multiply the impulses:
-        % [TODO]:  This doesn't make sense for higher-order impulses:  you can't
-        % multiply two Dirac deltas!  What to do?
-        f.impulses = f.impulses .* g.impulses;
-
+        f.pointValues = f.pointValues .* g.pointValues;        
     else
         % QUASIMATRIX case:
         if ( numColumns(f) ~= numColumns(g) )
@@ -105,8 +100,6 @@ else                           % CHEBFUN .* CHEBFUN
         end
 
     end
-
-
 end
 
 % Set small breakpoint values to zero:

@@ -1,13 +1,9 @@
-function f = cumsum(f, m, dim)
+function f = cumsum(f, dim)
 %CUMSUM   Indefinite integral of a CHEBTECH.
 %   CUMSUM(F) is the indefinite integral of the CHEBTECH F with the constant of
 %   integration chosen so that F(-1) = 0. 
 %
-%   CUMSUM(F, M) will compute the Mth definite integral with the constant of
-%   integration chosen so that each intermediary integral evaluates to 0 at -1.
-%   Thus, CUMSUM(F, 2) is equivalent to CUMSUM(CUMSUM(F)).
-%
-%   CUMSUM(F, M, 2) will take the Mth cumulative sum over the columns F an
+%   CUMSUM(F, 2) will take cumulative sum over the columns of F which is an
 %   array-valued CHEBTECH.
 %
 % See also DIFF, SUM.
@@ -36,52 +32,40 @@ if ( isempty(f) )
     return
 end
 
-if ( nargin < 2 || isempty(m) )
-    % Order of intergration not passed in. Assume 1 by default:
-    m = 1; 
-elseif ( m == 0 )
-    % Nothing to do here!
-    return
-end    
-
 % Sum with respect to the continuous variable by default:
-if ( nargin < 3 )
+if ( nargin < 2 )
     dim = 1;
 end
 
 if ( dim == 1 )
     % Take difference across 1st dimension:
-    f = cumsumContinuousDim(f, m);
+    f = cumsumContinuousDim(f);
 else
     % Take difference across 2nd dimension:
-    f = cumsumFiniteDim(f, m);
+    f = cumsumFiniteDim(f);
 end
 
 end
 
-function f = cumsumContinuousDim(f, m)
+function f = cumsumContinuousDim(f)
 % CUMSUM over the continuous dimension.
 
     % Initialise storage:
     c = f.coeffs;                         % Obtain Chebyshev coefficients {c_r}
 
-    % Loop for higher-order integrals:
-    for k = 1:m
+    [n, m] = size(c);
+    c = [ zeros(2, m) ; c ];          %#ok<AGROW> % Pad with zeros
+    b = zeros(n-1, m);                % Initialize vector b = {b_r}
 
-        [n, m] = size(c);
-        c = [ zeros(2, m) ; c ];          %#ok<AGROW> % Pad with zeros
-        b = zeros(n-1, m);                % Initialize vector b = {b_r}
+    % Compute b_(n+1) ... b_2:
+    b(1:n-1,:) = (c(3:end-1,:) - c(1:end-3,:)) ./ repmat(2*(n:-1:2)', 1, m);
+    b(n,:) = c(end,:) - c(end-2,:)/2; % Compute b_1
+    v = ones(1, n);
+    v(end-1:-2:1) = -1;
+    b(n+1,:) = v*b;                   % Compute b_0 (satisfies f(-1) = 0)
 
-        % Compute b_(n+1) ... b_2:
-        b(1:n-1,:) = (c(3:end-1,:) - c(1:end-3,:)) ./ repmat(2*(n:-1:2)', 1, m);
-        b(n,:) = c(end,:) - c(end-2,:)/2; % Compute b_1
-        v = ones(1, n);
-        v(end-1:-2:1) = -1;
-        b(n+1,:) = v*b;                   % Compute b_0 (satisfies f(-1) = 0)
-
-        % Copy coefficients back into c for loop:
-        c = b;
-    end
+    % Copy coefficients back into c:
+    c = b;
 
     % Recover values and attach to output:
     f.values = f.coeffs2vals(c);
@@ -100,18 +84,13 @@ function f = cumsumContinuousDim(f, m)
 
 end
 
-function f = cumsumFiniteDim(f, m)
+function f = cumsumFiniteDim(f)
 % CUMSUM over the finite dimension.
 
-    for k = 1:m
-        f.values = cumsum(f.values, 2);
-        f.coeffs = cumsum(f.coeffs, 2);
-        vscale = max(abs(f.values), [], 1);
-        f.epslevel = sum(f.epslevel.*f.vscale, 2)/sum(vscale, 2); % TODO: Is this right?
-        f.vscale = vscale;
-    end
-    out = f;
+    f.values = cumsum(f.values, 2);
+    f.coeffs = cumsum(f.coeffs, 2);
+    vscale = max(abs(f.values), [], 1);
+    f.epslevel = sum(f.epslevel.*f.vscale, 2)/sum(vscale, 2); % TODO: Is this right?
+    f.vscale = vscale;
 
 end
-
-

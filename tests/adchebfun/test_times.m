@@ -3,7 +3,7 @@
 function pass = test_times
 
 % Initialise pass vector
-pass = zeros(2, 5);
+pass = zeros(3, 5);
 
 % Tolerance for Taylor testing
 tolOrder = 1e-2;
@@ -13,7 +13,7 @@ tolDiff = 1e-14;
 func = @times;
 
 % Compare values
-err = adchebfun.valueTestingBinary(func);
+[err, lin] = adchebfun.valueTestingBinary(func);
 
 % Confirm that the error returned is zero
 pass(1, :) = ( err == 0 );
@@ -38,5 +38,6 @@ nonlinearOpResults = ( (max(abs(order1(:, 1) - 1)) < tolOrder) && ...
 % Concatenate results
 pass(2, :) = [nonlinearOpResults, linearOpResults];
 
-
+% Linearity checking
+pass(3, :) = ( lin == [0, 1, 1, 1, 1] );
 end
