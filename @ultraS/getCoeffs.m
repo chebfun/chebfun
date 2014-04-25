@@ -1,13 +1,12 @@
 function c = getCoeffs(source)
-%GETCOEFFS     Get coefficients. Static, private method. 
-% 
-% C = GETCOEFFS( SOURCE ) returns the Chebyshev T coefficients 
+%GETCOEFFS    Get coefficients. Static, private method. 
+%   C = GETCOEFFS( SOURCE ) returns the Chebyshev T coefficients 
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
-if ( isa(source, 'chebmatrix') )    % Note: LINOP is a CHEBMATRIX
-    % Get the coefficients of each block of the CHEBMATRIX
+if ( isa(source, 'chebmatrix') )  % Note: LINOP is a CHEBMATRIX
+    % Get the coefficients of each block of the CHEBMATRIX:
     c = cell(size(source));
     for k = 1:numel(c)
         try
@@ -25,4 +24,5 @@ else
         c = {};
     end
 end
+
 end

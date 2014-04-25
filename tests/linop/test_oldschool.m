@@ -20,14 +20,15 @@ pass(8) = norm( D(8) - matrix(D,8) ) < 2e-14;
 
 %% Test boundary condition syntax
 A = D^2;
-A0 = matrix(A,10);   % version with no BCs
+[~, ~, ~, A0] = matrix(A,10);   % version with no BCs
 [z,e,s,dif] = linop.primitiveFunctionals(d([1 end]));
 A = addConstraint(A,e(d(1)),0);
 A = addConstraint(A,e(d(end))*D,0);
 A1 = matrix(A,10);   % first two rows hold BCs
-correct = A0; 
+correct = cell2mat(A0); 
 correct([1 end],:) = A1(1:2,:);  % classic row replacement
-pass(9) = norm( correct - feval(A,10,'oldschool') ) < 2e-14;
+Aold = feval(A,10,'oldschool');
+pass(9) = norm( correct - Aold ) < 2e-14;
 
 end
 

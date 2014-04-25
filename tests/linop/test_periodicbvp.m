@@ -20,19 +20,27 @@ L = addbc(L,'periodic');
 
 %%
 
-type = {@colloc2, @ultraS, @colloc2, @ultraS};
+type = {@colloc2, @colloc1, @ultraS, @colloc2, @colloc1, @ultraS};
 prefs = cheboppref;
+% FIXME: necessary until issue #205 has been resolved
+[xtest,qtest] = chebtech2.chebpts(80);
+xtest = dom(1)+diff(dom)*(xtest+1)/2;
+qtest = qtest*diff(dom)/2;
+
 w = [];
-for k = 1:4
-    wold = w;
+for k = 3
     prefs.discretization = type{k};
     w = linsolve(L,f,prefs);
 
     %%
     % check the ODEs
-    err(k,1) = norm( diff(w{1},2)-w{2}+sin(x)*w{3} - f{1} );
-    err(k,2) = norm( c.*w{1} + diff(w{2}) + 0 - f{2} );
-    err(k,3) = abs( 0 + feval(w{2},dom(1)) + 4*w{3} - f{3} );
+    w1 = w{1};  w2 = w{2};  w3 = w{3};
+    f1 = f{1};  f2 = f{2}; f3 = f{3};
+    residual1= feval(diff(w1,2),xtest)-w2(xtest)+sin(xtest)*w3 - f1(xtest);
+    err(k,1) = norm( sqrt(qtest').*residual1 );
+    residual2 = c(xtest).*w1(xtest) + feval(diff(w2),xtest) + 0 - f2(xtest);
+    err(k,2) = norm( sqrt(qtest').*residual2 );
+    err(k,3) = abs( 0 + feval(w2,dom(1)) + 4*w3 - f3 );
 
     %%
     % check the BCs
@@ -55,6 +63,7 @@ for k = 1:4
         % introduce breakpoints
         f = [abs(cos(x)); 0*x; 1 ];
     end
+
 end
 
 err;

@@ -37,9 +37,10 @@ Br.domain = s.domain;
 Bs = chebmatrix(s);
 
 %%
-n = [31, 20];
-pass(4) = abs(matrix(Bl,n)*matrix(Bs,n)-cl)<tol;
-pass(5) = abs(matrix(Br,n)*matrix(Bs,n)-cr)<tol;
+% TODO: We should no longer expect this to work:
+% n = [31, 20];
+% pass(4) = abs(matrix(Bl,n)*matrix(Bs,n)-cl)<tol;
+% pass(5) = abs(matrix(Br,n)*matrix(Bs,n)-cr)<tol;
 
 %%
 % Check composition with the derivatives
@@ -48,6 +49,6 @@ Al = Ll*D;
 Ar = Lr*D;
 cpl = sqrt(2)/2;
 cpr = -sqrt(2)/2;
-pass(end+1) = abs(Al*s-cpl) < 1e3*tol;
-pass(end+1) = abs(Ar*s-cpr) < 1e3*tol;
+pass(4) = abs(Al*s-cpl) < 1e3*tol;
+pass(5) = abs(Ar*s-cpr) < 1e3*tol;
 
