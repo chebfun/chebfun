@@ -15,7 +15,7 @@ function f = scribble(s)
 
 L = length(s);
 fData = {};
-ends = [0 1];
+ends = 0;
 for j = 1:L
     switch upper(s(j))
         % Alphabet
@@ -109,43 +109,27 @@ for j = 1:L
 end
 
 % Rescale the ends to [-1 1]:
-ends = 2*(0:ends(1))/ends(1) - 1;
+ends = 0:ends;
+
+% Construct the CHEBFUN representation of the text:
 f = chebfun(fData, ends);
 
     function cv = c(v)
         cv = cell(1, length(v)-1);
-        
-        % Grab the current preference:
-        pref = chebpref();
-        
-        % CHEBTECH1 and CHEBTECH2 are treated differently: 
-        if ( pref.techPrefs.gridType == 1 )
+        for l = 2:length(v)
             
-            % Grab the 2-point grid of the first kind:
-            p = chebpts(2, 1);
-            for l = 2:length(v)
-                
-                % Locate the stroke:
-                stroke = (v(l-1:l).' + (j-1))*2/L - 1;
-                sr = real(stroke);
-                si = imag(stroke);
-                
-                % Get the corresponding locations of the 2-point first-kind grid
-                % from the locations of the endpoints of the stroke:
-                preal = diff(sr)*(1+p)/2+sr(1);
-                pimag = diff(si)*(1+p)/2+si(1);
-                
-                % Form the numeric input for CHEBFUN constructor:
-                cv{l-1} = complex(preal, pimag);
-                
-                % Update the number of the strokes:
-                ends = ends + 1;
-            end
-        else
-            for l = 2:length(v)
-                cv{l-1} = (v(l-1:l).' + (j-1))*2/L - 1;
-                ends = ends + 1;
-            end
+            % Shift:
+            stroke = (v(l-1:l).' + (j-1))*2/L - 1;
+            
+            % Grab the x- and y-coordinates:
+            sr = real(stroke);
+            si = imag(stroke);
+
+            % Construct the function handle:
+            cv{l-1} = @(t)(t-ends)*(sr(2)-sr(1))+sr(1)+1i*((t-ends)*(si(2)-si(1))+si(1));
+            
+            % Count the total number of the strokes:
+            ends = ends + 1;
         end
     end
 
