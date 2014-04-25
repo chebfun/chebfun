@@ -1,8 +1,15 @@
-function f = scribble(s)
+function f = scribble(s, dom)
 %SCRIBBLE   Write text with a complex-valued CHEBFUN.
-%  SCRIBBLE('STRING') returns a complex CHEBFUN representing the text in STRING.
-%  The full United States QWERTY keyboard layout is supported (though letters
-%  will be printed only in upper-case), as well as some special and
+%  F = JSCRIBBLE('STRING') returns a complex CHEBFUN representing the text in
+%  STRING. F is paramterized by a real variable on the interval [-1, 1] and
+%  maps the range of F is contained in the box [-1 1]x[0 1] in the complex
+%  plane.
+%
+%  F = SCRIBBLE('STRING', DOM) paramterises F by a real variable on the
+%  interval DOM.
+%
+%  The full United States QWERTY keyboard layout is supported (though
+%  letters will be printed only in upper-case), as well as some special and
 %  international characters. To contribute a character, please write it and
 %  email it to develop@chebfun.org.
 %
@@ -10,13 +17,13 @@ function f = scribble(s)
 %   f = scribble('The quick brown fox jumps over the lazy dog. 0123456789');
 %   plot(f), axis equal
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org/ for Chebfun information.
 
-L = length(s);
+lengthS = length(s);
 fData = {};
-ends = [0 1];
-for j = 1:L
+ns = 0; % Store the total number of strokes.
+for j = 1:lengthS
     switch upper(s(j))
         % Alphabet
         case {'A'}, t = c([0 .4+1i .8 .6+.5i .2+.5i]);
@@ -92,7 +99,7 @@ for j = 1:L
         case {'~'}, t = c([.2+.45i .3+.55i .5+.45i .6+.55i]);
         case {'@'}, t = c([.8 0 1i .8+1i .8+.25i .2+.25i .2+.75i .6+.75i .6+.25i]);
         case {'$'}, t = [c([.8+1i .9i .6i .8+.4i .8+.1i 0]) c([.4 .4+1i])];
-        case {'£', '�'}, t = c([.8+1i .3+1i .2+.5i .5+.5i .5i .2+.5i .2 0.1 .8]);
+        case {'£', '�'}, t = c([.8+1i .3+1i .2+.5i .5+.5i .5i .2+.5i .2 0.1 .8]);
         case {'&'}, t = c([.8 .7i 1i .7+1i .7+.7i .3i 0 .4 .8+.27i]);
             
         otherwise,
@@ -108,15 +115,27 @@ for j = 1:L
     
 end
 
-% Rescale the ends to [-1 1]:
-ends = 2*(0:ends(1))/ends(1) - 1;
-f = chebfun(fData, ends);
+% Construct the CHEBFUN representation of the text:
+f = chebfun(fData, (0:ns));
+
+% Rescale the ends to [-1 1] (or a given domain):
+if ( nargin < 2 )
+    dom = [-1, 1];
+end
+f = newDomain(f, dom);
 
     function cv = c(v)
         cv = cell(1, length(v)-1);
         for l = 2:length(v)
-            cv{l-1} = (v(l-1:l).' + (j-1))*2/L - 1;
-            ends = ends + 1;
+            % Shift:
+            stroke = (v(l-1:l).' + (j-1))*2/lengthS - 1;           
+            % Grab the x- and y-coordinates:
+            sr = real(stroke);
+            si = imag(stroke);
+            % Construct the function handle:
+            cv{l-1} = @(t)(t-ns)*(sr(2)-sr(1))+sr(1)+1i*((t-ns)*(si(2)-si(1))+si(1));
+            % Count the total number of the strokes:
+            ns = ns + 1;            
         end
     end
 
