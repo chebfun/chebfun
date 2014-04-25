@@ -17,10 +17,10 @@ function varargout = matrix(A, varargin)
 %     matrix(A, 5, @colloc2)
 %     matrix(A, 5, @ultraS)
 %
-%   See also CHEBOPPREF, CHEBDISCRETIZATION, CHEBDISCRETIZATION/MATRIX. 
+% See also CHEBOPPREF, CHEBDISCRETIZATION, CHEBDISCRETIZATION/MATRIX. 
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org for Chebfun information.
 
 % Any non-numeric argument should be a chebDiscretization constructor. 
 discType = [];

@@ -10,60 +10,19 @@ function [reduce, d, dRow, dVar] = sizeReduction(L)
 %   differential orders of the variables give the correct total result, they are
 %   used; otherwise the reductions are spread as evenly as possible.
 %
-%   [DOWN, D, DROW, DVAR] = SIZEREDUCTION(L) also returns the differential order
-%   of each variable, the differential order of each system row (equation), and
-%   the differential order of each system variable (column).
+%   [REDUCE, D, DROW, DVAR] = SIZEREDUCTION(L) also returns the
+%   differential order of each variable, the differential order of each
+%   system row (equation), and the differential order of each system
+%   variable (column).
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
+% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org for Chebfun information.
 
-[m,n] = size(L);
+% TODO: Adjust documentation. By default chebmatrices are not reduced.
+
 d = L.diffOrder;
-dRow = max(d,[],2);
-dVar = max(d,[],1);
-reduce = dVar; % Nick H's choice;
-reduce = max(reduce, 0); % Nick H's choice;
+dRow = max(d, [], 2);
+dVar = max(d, [], 1);
+reduce = 0*dVar;
 
-% TODO: Figure out what is going on here!
-
-return
-
-dRow(~dRow) = NaN;
-dVar(~dVar) = NaN;
-
-% This will determine how much is downsampled. 
-numBC = length(L.constraint);
-
-% Each variable requires a downsampling contribution equal to its
-% differential order. The total diff. orders of the variables might
-% not equal the total of the rows.
-totalRow = sum( dRow(~isnan(dRow)) );
-totalVar = sum( dVar(~isnan(dVar)) );
-
-% totalVar = numBC;  % Alex's cho ice
-% if ( totalRow == totalVar )
-%     reduce = dRow;
-
-% if ( totalVar == numBC )
-    reduce = dVar; % Nick's Choice
-% else
-%     % The only reasonable thing is to spread out the D.O. reductions
-%     % as evenly as possible among the rows. 
-%     
-%     % TODO: Update for Nick's choice.
-%     reduce = NaN(1,m);
-%     isOp = ~isnan(dRow);
-%     numOp = sum(isOp);
-%     k = floor( totalVar / numOp );
-%     reduce(isOp) = k;  % even distribution of order
-%     i = rem(totalVar, numOp);  % leftover to be made up
-%     if i > 0
-%         % Increment the first i rows
-%         incr = find(isOp,i);
-%         reduce(incr) = reduce(incr) + 1;
-%     end
-% end
-% 
-% reduce(isnan(reduce)) = 0;
-% 
-% end
+end
