@@ -5,13 +5,10 @@ dom = [0 pi];
 if ( nargin == 0 )
     pref = cheboppref;
 end
-pref.plotting = 'off';
-pref.display = 'off';
-pref.damped = 1;
 
 N = chebop(@(x,u) diff(u,2) + sin(u-.2), dom);
-N.lbc = @(u) u-2; N.rbc = @(u) u - 3;
-N.init = chebfun(@(x) x/pi + 2, dom);
+N.lbc = @(u) u-2; 
+N.rbc = @(u) u - 3;
 rhs = 0;
 
 %% Try different discretizations
