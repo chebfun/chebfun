@@ -128,8 +128,13 @@ classdef (InferiorClasses = {?double}) chebop
             if ( nargin < 2 )
                 % Need to access chebfunpref to create an operator on the
                 % default domain if none is passed.
-                p = chebpref();
-                dom = p.domain;
+                if ( isnumeric(op) )
+                    dom = op;
+                    op = [];
+                else
+                    p = chebpref();
+                    dom = p.domain;
+                end
             end
             
             % Assign operator and domain
@@ -217,6 +222,13 @@ classdef (InferiorClasses = {?double}) chebop
                     error('CHEBFUN:CHEBOP:SETLBC', ...
                     'Can only assign scalar BCs to scalar problems');
                 end
+            elseif ( strcmpi(val, 'dirichlet') )
+                if ( nin <= 2 )
+                    N.lbc = @(u) u;
+                else
+                    error('CHEBFUN:CHEBOP:SETLBC', ...
+                    'Can only assign scalar BCs to scalar problems');
+                end                
             else
                 error('CHEBFUN:CHEBOP:SETLBC', ...
                     'Unsupported format of BCs')
@@ -266,6 +278,13 @@ classdef (InferiorClasses = {?double}) chebop
                     error('CHEBFUN:CHEBOP:SETLBC', ...
                     'Can only assign scalar BCs to scalar problems');
                 end
+            elseif ( strcmpi(val, 'dirichlet') )
+                if ( nin <= 2 )
+                    N.rbc = @(u) u;
+                else
+                    error('CHEBFUN:CHEBOP:SETLBC', ...
+                    'Can only assign scalar BCs to scalar problems');
+                end                     
             else
                 error('CHEBFUN:CHEBOP:SETRBC', ...
                     'Unsupported format of BCs')

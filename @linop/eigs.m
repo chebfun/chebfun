@@ -238,7 +238,7 @@ if ( nargout < 2 )  % Return the eigenvalues only
     varargout = { diag(D) };
 else            % Unwrap the eigenvectors for output
 
-    u = mat2fun(disc, V);
+    u = mat2fun(disc, P*V);
 
     % Find the norm in each eigenfunction (aggregated over variables).
     nrmsq = zeros(1,k);
