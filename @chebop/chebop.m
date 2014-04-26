@@ -297,10 +297,12 @@ classdef (InferiorClasses = {?double}) chebop
         % Offers more control of setting other conditions than simply accessing
         % the .bc field, or using standard subsref.
         
-            % Don't allow passing numerical values to the .BC field.
+            % Allow passing numerical values to the .BC field, which will impose
+            % the conditions at both the left and right end of the domain. This
+            % is for backwards compatability.
             if ( isnumeric(val) )
-                error('CHEBFUN:CHEBOP:SETBC', ...
-                    'Can not assign numerical BCs to .bc field.');
+                N.lbc = val; %#ok<MCSUP>
+                N.rbc = val; %#ok<MCSUP>
             
             % When assigning to the BC field, we request that the number of
             % input arguments of the function handle is the same as the number
