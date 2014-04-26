@@ -65,7 +65,7 @@ if ( j == 5 )
 end
 
 % Solve for the discrete values of the initial guess:
-u0disc = B\(-b); % TODO: Why mu b be negated?
+u0disc = B\(-b); % TODO: Why must b be negated?
 
 u0disc = partition(disc, u0disc);
 

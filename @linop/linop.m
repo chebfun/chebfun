@@ -81,6 +81,10 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) linop 
         %   *not* linops.
         %
         %   See also OPERATORBLOCK.
+            
+            if ( nargin == 0 )
+                domain = [-1 1];
+            end
 
             Z = operatorBlock.zeros(domain);
             I = operatorBlock.eye(domain);
@@ -103,6 +107,10 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) linop 
         %   linops.
         %
         % See also FUNCTIONALBLOCK.
+        
+            if ( nargin == 0 )
+                domain = [-1 1];
+            end
             
             zr = functionalBlock.zero(domain);
             ev = functionalBlock.eval(domain);
