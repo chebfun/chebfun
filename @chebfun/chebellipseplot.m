@@ -33,7 +33,7 @@ function varargout = chebellipseplot(u, varargin)
 
 if ( numColumns(u) > 1 )
     error('CHEBFUN:chebellipseplot:quasi', ['CHEBELLPISEPLOT does not ', ... 
-        'support array-valued CHEBFUN objects or  quasimatries.']);
+        'support array-valued CHEBFUN objects or quasimatries.']);
 end
 
 if ( isempty(u) )
