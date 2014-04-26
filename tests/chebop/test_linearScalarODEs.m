@@ -55,8 +55,7 @@ u4 = solvebvp(N, rhs, pref);
 tol = pref.errTol;
 pass(4) = norm(N(u3)-rhs) < tol && ( u3(-1) - 2 < tol) && ( u3(pi) + 1 < tol);
 pass(5) = norm(N(u4)-rhs) < tol && ( u4(-1) - 2 < tol) && ( u4(pi) + 1 < tol);
-pass(6) = norm(u3(0,'right')-u3(0,'left')) < tol && ...
-    norm(u4(0,'right')-u4(0,'left')); 
+pass(6) = norm(jump(u3,0)) < tol && norm(jump(u4,0)) < tol;
 pass(7) = ( norm(u3-u4) ~= 0 );
 
 
@@ -86,6 +85,7 @@ pass(8) = norm(N(u5)-rhs) < 10*tol && ...
     ( u5(-1) - 2 < tol) && ( u5(pi) + 1 < tol);
 pass(9) = norm(N(u6)-rhs) < 10*tol && ...
     ( u6(-1) - 2 < tol) && ( u6(pi) + 1 < tol);
-pass(10) = ( norm(u5-u6) ~= 0 );
+pass(10) = norm(jump(u5,0)) < tol && norm(jump(u5,0)) < tol;
+pass(11) = ( norm(u5-u6) ~= 0 );
 
 end
