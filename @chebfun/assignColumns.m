@@ -17,7 +17,7 @@ function f = assignColumns(f, colIdx, g)
 %
 % See also EXTRACTCOLUMNS, MAT2CELL.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % This shouldn't happen:
@@ -62,7 +62,18 @@ end
 
 % Check dimensions of f:
 if ( max(colIdx) > numColsF )
-    error('CHEBFUN:assignColumns:dims', 'Index exceeds CHEBFUN dimensions.')
+%     error('CHEBFUN:assignColumns:dims', 'Index exceeds CHEBFUN dimensions.')
+
+    if ( isempty(f) )
+        dom = g.domain;
+    else
+        dom = f.domain;
+    end
+    
+    % Pad with zeros so that f has sufficiently many columns:
+    z = chebfun(zeros(1, max(colIdx) - numColsF), dom);
+    f = [f z];
+
 end
 
 if ( numel(f) == 1 && numel(g) == 1)
