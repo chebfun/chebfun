@@ -10,7 +10,6 @@ p.damped = 1;
 N = chebop(@(x,u) diff(u,2) + sign(x).*sin(u), dom);
 N.lbc = @(u) u - 2;
 N.rbc = @(u) u - 2;
-N.init = chebfun(@(x) 0*x + 2);
 rhs = 0;
 
 %% Try different discretizations
@@ -28,3 +27,5 @@ tol = p.errTol;
 pass(1) = norm(N(u1)) < tol;
 pass(2) = norm(N(u2)) < tol;
 pass(3) = ( norm(u1 - u2) ~= 0 );
+
+end

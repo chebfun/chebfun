@@ -65,7 +65,7 @@ if ( j == 5 )
         u0{k} = zeroFun;
     end
     u0 = chebmatrix(u0);
-    
+   
     warning('Unable to construct a suitable initial guess. Using a zero guess.')
     return
 end

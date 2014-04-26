@@ -60,6 +60,8 @@ else
     % Create initial guess which satisfies the linearised boundary conditions:
     if ( isempty(N.init) )
         u0 = fitBCs(L);
+        % Linearize about the new initial guess:
+        [L, residual, isLinear] = linearize(N, x, u0);
     end
 
     [u, info] = solvebvpNonlinear(N, rhs, L, u0, residual, pref, displayInfo);
