@@ -33,7 +33,7 @@ function varargout = chebellipseplot(u, varargin)
 
 if ( numColumns(u) > 1 )
     error('CHEBFUN:chebellipseplot:quasi', ['CHEBELLPISEPLOT does not ', ... 
-        'support array-valued CHEBFUN objects or  quasimatries.']);
+        'support array-valued CHEBFUN objects or quasimatries.']);
 end
 
 if ( isempty(u) )
@@ -42,7 +42,7 @@ if ( isempty(u) )
 end
 
 % Parse the inputs.
-[k, ee, numpts, legends] = parseInputs(varargin{:});
+[k, ee, numpts, legends, args] = parseInputs(varargin{:});
 if ( isnan(ee) )
     ee = epslevel(u);
 end
@@ -73,7 +73,7 @@ for j = k
     endsk = uk.domain;
     rhok = exp(abs(log(ee)) / length(uk));
     ek = .5*sum(endsk) + .25*diff(endsk)*(rhok*c + 1./(rhok*c));
-    UK = [UK, {real(ek), imag(ek)}, varargin{:}]; % Add the variable args.
+    UK = [UK, {real(ek), imag(ek)}, args{:}]; % Add the variable args.
 end
 
 holdState = ishold();
@@ -89,7 +89,7 @@ end
 
 % Plot the interval (with ticks).
 dom = u.domain;
-h2 = plot(dom, 0*dom, varargin{:});
+h2 = plot(dom, 0*dom, args{:});
 set(h2, 'color', [0 0 0], 'marker', '+');
 h = [h ; h2];
 
@@ -104,13 +104,14 @@ end
 
 end
 
-function [k, ee, numpts, legends] = parseInputs(varargin)
+function [k, ee, numpts, legends, args] = parseInputs(varargin)
 
 % Default options
 k = 0;                  % plot all funs by default
 ee = NaN;               % Default EPS
 numpts = 101;           % Number of points in plots
 legends = 1;            % Display legends?
+args = {};              % Additional plotting args.
 
 % Sort out the inputs.
 if ( nargin > 1 )
@@ -142,5 +143,7 @@ if ( nargin > 1 )
         end
     end
 end
+
+args = varargin;
 
 end
