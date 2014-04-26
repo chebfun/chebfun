@@ -15,6 +15,10 @@ numInts = length(dom) - 1;
 % information can be obtained from the iszero information of the linearised
 % BCs in the linop L.
 
+if ( numInts > 1 && isempty(L.continuity) )
+     L = deriveContinuity(L, dom);
+end
+
 numVar = size(L, 2);
 polyDegree = zeros(1, numVar);
 if ( ~isempty(L.constraint.functional) )
@@ -50,7 +54,8 @@ while ( rank(B) < size(B, 1) && j < 5 )
     dim = dim + 1;
     j = j + 1;
 end
-
+B
+b
 if ( j == 5 )
     % We failed. Returns a zero initial guess.
     
