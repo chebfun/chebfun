@@ -56,8 +56,8 @@ if ( j == 5 )
     
     zeroFun = chebfun(0, dom);
     % Convert to a chebmatrix of correct dimensions
-    u0 = cell(numVars, 1);
-    for k = 1:numVars
+    u0 = cell(numVar, 1);
+    for k = 1:numVar
         u0{k} = zeroFun;
     end
     u0 = chebmatrix(u0);

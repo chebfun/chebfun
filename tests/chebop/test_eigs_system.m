@@ -27,7 +27,7 @@ err(1) = norm( lam - lamCorrect, inf );
 A.domain = [0, pi/2, pi];
 [~, D] = eigs(A, 5, pref);
 lam_pw = diag(D);
-err(2) = norm( lam_pw - lamCorrect, inf )
+err(2) = norm( lam_pw - lamCorrect, inf );
 
 %%
 
