@@ -54,8 +54,7 @@ while ( rank(B) < size(B, 1) && j < 5 )
     dim = dim + 1;
     j = j + 1;
 end
-B
-b
+
 if ( j == 5 )
     % We failed. Returns a zero initial guess.
     
