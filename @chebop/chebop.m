@@ -128,8 +128,13 @@ classdef (InferiorClasses = {?double}) chebop
             if ( nargin < 2 )
                 % Need to access chebfunpref to create an operator on the
                 % default domain if none is passed.
-                p = chebpref();
-                dom = p.domain;
+                if ( isnumeric(op) )
+                    dom = op;
+                    op = [];
+                else
+                    p = chebpref();
+                    dom = p.domain;
+                end
             end
             
             % Assign operator and domain
@@ -148,7 +153,7 @@ classdef (InferiorClasses = {?double}) chebop
             
         end
                 
-        function u = mldivide(N, rhs)
+        function u = mldivide(N, rhs, pref)
         %\      Chebop backslash.
         %
         % Note that CHEBOP requires the RHS of coupled systems to match the
@@ -161,8 +166,10 @@ classdef (InferiorClasses = {?double}) chebop
         % is not an accepted syntax.
         % See also: chebop/solvebvp
             
-            % Create a cheboppref...
-            pref = cheboppref;
+            if ( nargin < 3 )
+                % Create a cheboppref...
+                pref = cheboppref;
+            end
             % ... and pass it along the inputs to solvebvp
             u = solvebvp(N, rhs, pref);
         end
@@ -184,7 +191,7 @@ classdef (InferiorClasses = {?double}) chebop
             % Only allow scalar numerical values to be passed if we are dealing
             % with a scalar problem.
             if ( isnumeric(val) )
-                if nin <= 2
+                if ( nin <= 2 )
                     N.lbc = @(u) u - val;
                 else
                     error('CHEBFUN:CHEBOP:SETLBC', ...
@@ -208,6 +215,20 @@ classdef (InferiorClasses = {?double}) chebop
                     error('CHEBFUN:CHEBOP:SETLBC', ...
                     'Number of inputs to BCs do not match operator.');
                 end
+            elseif ( strcmpi(val, 'neumann') )
+                if ( nin <= 2 )
+                    N.lbc = @(u) diff(u);
+                else
+                    error('CHEBFUN:CHEBOP:SETLBC', ...
+                    'Can only assign scalar BCs to scalar problems');
+                end
+            elseif ( strcmpi(val, 'dirichlet') )
+                if ( nin <= 2 )
+                    N.lbc = @(u) u;
+                else
+                    error('CHEBFUN:CHEBOP:SETLBC', ...
+                    'Can only assign scalar BCs to scalar problems');
+                end                
             else
                 error('CHEBFUN:CHEBOP:SETLBC', ...
                     'Unsupported format of BCs')
@@ -250,6 +271,20 @@ classdef (InferiorClasses = {?double}) chebop
                     error('CHEBFUN:CHEBOP:SETRBC', ...
                     'Number of inputs to BCs do not match operator.');
                 end
+            elseif ( strcmpi(val, 'neumann') )
+                if ( nin <= 2 )
+                    N.rbc = @(u) diff(u);
+                else
+                    error('CHEBFUN:CHEBOP:SETLBC', ...
+                    'Can only assign scalar BCs to scalar problems');
+                end
+            elseif ( strcmpi(val, 'dirichlet') )
+                if ( nin <= 2 )
+                    N.rbc = @(u) u;
+                else
+                    error('CHEBFUN:CHEBOP:SETLBC', ...
+                    'Can only assign scalar BCs to scalar problems');
+                end                     
             else
                 error('CHEBFUN:CHEBOP:SETRBC', ...
                     'Unsupported format of BCs')
@@ -284,8 +319,7 @@ classdef (InferiorClasses = {?double}) chebop
         end
         
         % Linearize a CHEBOP around a CHEBFUN u.
-        [L, res, isLinear] = linearize(N, x, u, flag);
-        
+        [L, res, isLinear] = linearize(N, x, u, flag);       
         
     end
         
