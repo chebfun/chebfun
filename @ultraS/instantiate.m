@@ -1,72 +1,102 @@
-function [L, S] = instantiate(disc, data)
-%INSTANTIATE Convert an item to discrete form in ULTRAS.
-%   [L, S] = INSTANTIATE(DISC, DATA) converts each item DATA{k} to discrete form
-%   using the information in discretization DISC. The result M is a cell array.
+function [M, S] = instantiate(disc)
+%INSTANTIATE   Convert a ULTRAS discretization to discrete form.
+%   M = INSTANTIATE(DISC) converts each item DISC.SOURCE to discrete form
+%   using the information in discretization DISC. The result M is a cell
+%   array if DISC.SOURCE has more than one component.
 %
-%   Each item may be:
+%   DISC.SOURCE may be one or a cell array of:
 %      linBlock (becomes a matrix)
 %      chebfun (becomes a vector)
 %      numeric (not changed)
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org for Chebfun information.
 
-% TODO: Why two outputs L and S? What do they mean? You say M is a cell-array,
-% this seems to be oudated info. Aren't L and S just matrices?
+% TODO: Document S.
+
+data = disc.source;
+if ( isa(data, 'chebmatrix') )
+    data = data.blocks;
+end
 
 if ( iscell(data) )
-    % Loop through cells
-    [L, S] = cellfun(@(x) instantiateOne(disc, x), data, 'uniform', false);
+    M = cell(size(data));
+    S = cell(size(data));
+    for j = 1:size(data, 1)
+        for k = 1:size(data, 2)
+            discJK = extractBlock(disc, j, k);
+            [M{j,k}, S{j,k}] = instantiate(discJK);
+        end
+    end
+    return
 else
-    [L, S] = instantiateOne(disc,data);
+    [M, S] = instantiateOne(disc, data);
 end
 
 end
 
-function [L,S] = instantiateOne(disc, item)
+function [M, S] = instantiateOne(disc, item)
 % Instantiate one block of data.
-%
-% TODO: Why two outputs L and S? What do they mean?
 
-if (isa(item, 'operatorBlock') )
+if ( isa(item, 'operatorBlock') )
     % Convert a square block
+    
     if ( ~isempty(disc.coeffs) )
         % Coefficients of the block are available, convert to a diffmat.
-        [L, S] = quasi2USdiffmat(disc);
+        [M, S] = quasi2USdiffmat(disc);
     else
         error('CHEBFUN:ultraS:fail', ...
-            'ultraS cannot represent this operator. Suggest you use colloc2.')   
-    end 
-elseif ( isa(item, 'functionalBlock') )
-    % Convert a row block
+            'ultraS cannot represent this operator. Suggest you use colloc2.')
+    end
     
-    % TODO: More documentation please. AB, 12/2/14
+elseif ( isa(item, 'functionalBlock') )
+    % Convert a row block.
+    
+    % Developer note: In general we can't represent functional
+    % blocks via coeffs. To get around this we instantiate a
+    % COLLOC2 discretization and convert it to coefficient space
+    % using COEFFS2VALS(). (Note it's COEFFS2VALS() rather than
+    % VALS2COEFFS() because it's a right-multiply (I think..).)
+    
+    % For convenience:
     dim = disc.dimension;
     dom = disc.domain;
+    
+    % Create a colloc2 discretization:
     collocDisc = colloc2(item, dim, dom);
-    L = matrix(collocDisc);
+    M = matrix(collocDisc);
+    
+    % Convert from colloc-space to coeff-space using COEFFS2VALS.
     cumsumDim = [0, cumsum(dim)];
-    numInts = numel(dom) - 1;
-    tmp = cell(1, numInts);
-    for k = 1:numInts
-        Lk = L(cumsumDim(k) + (1:dim(k)));
-        tmp{k} = flipud(chebtech2.coeffs2vals(Lk.')).';
+    tmp = cell(1, numel(dom)-1);
+    for l = 1:numel(tmp)
+        Ml = M(cumsumDim(l) + (1:dim(l)));
+        tmp{l} = flipud(chebtech2.coeffs2vals(Ml.')).';
     end
-    L = cell2mat(tmp);
-    S = zeros(size(L));
+    M = cell2mat(tmp);
+    S = zeros(size(M));
+    
 elseif ( isa(item, 'chebfun') )
     % Block is a CHEBFUN. Convert to value space.
-    L = toValues(disc, item);
+    
+    M = toValues(disc, item);
     if ( item.isTransposed )
-        error % TODO: ?
-        L = L.';
+        M = M.';
     end
-    S = zeros(size(L));
+    S = zeros(size(M));
+    
 elseif ( isnumeric(item) )
     % Block is numeric, don't need to do much.
-    L = item;
+    
+    M = item;
     S = 1;
+    
 else
-    error('Unrecognized item type.')
+    
+    error('CHEBFUN:ultraS:instantiate:inputType', ...
+        'Unrecognized item type.')
+    
 end
+
 end
+

@@ -4,6 +4,7 @@ function [pass, u1, u2, info1, info2] = test_scalarODE
 dom = [0 pi];
 p = cheboppref;
 p.plotting = 'off';
+p.display = 'off';
 p.damped = 1;
 
 N = chebop(@(x,u) diff(u,2) + sin(u-.2), dom);

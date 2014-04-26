@@ -87,15 +87,25 @@ for i = 1:length(t)
         disc.dimension(~isDone) = dim;
 
         % Discretize the operator (incl. constraints/continuity):
-        E = expm(disc, t(i));
+        [E, P] = expm(disc, t(i));
         
         % Discretize the initial condition.
-        %v0 = instantiate(disc, u0.blocks) 
-        %v0 = cell2mat(v0);
-        v0 = matrix(u0,disc.dimension,disc.domain);
+        discu = disc;
+%         discu.source = u0;
+%         v0 = matrix(discu);
+        do = max(getDiffOrder(disc.source), 0);
+        do = max(do, [], 1);
+        for k = 1:numel(u0.blocks)
+            discu.dimension = disc.dimension + +do(k);
+            xIn = functionPoints(discu);
+            if ( ~isnumeric(u0.blocks{k}) )
+                f.blocks{k} = feval(u0.blocks{k}, xIn);
+            end
+        end
+        v0 = cell2mat(f.blocks);  
         
         % Propagate.
-        v = E*v0;
+        v = P*(E*v0);
         
         % Convert the different components into cells
         u = partition(disc, v);
@@ -116,6 +126,8 @@ for i = 1:length(t)
     
     %% Tidy the solution for output:
     ucell = mat2fun(disc, u);
+    doSimplify = @(f) simplify( f, max(eps,epsLevel) );
+    ucell = cellfun( doSimplify, ucell, 'uniform', false );
     allu = [ allu, chebmatrix(ucell) ];
 end
 
