@@ -46,7 +46,7 @@ try
         varargin{1} = linop(varargin{1});
     end
 catch ME
-    if ( strcmp(ME.identifier, 'CHEBOP:linop:nonlinear') )
+    if ( strcmp(ME.identifier, 'CHEBFUN:CHEBOP:linop:nonlinear') )
         error('CHEBOP:eigs', ...
             ['Chebop appears to be nonlinear. Currently, EIGS() only' ...
             '\nhas support for linear CHEBOP objects.']);
