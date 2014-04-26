@@ -29,12 +29,13 @@ if ( isempty(N.init) )
     
 else
     u0 = N.init;
-    % TODO: This should be done automatically when N.init is assigned
+    % Ensure that N.init is a CHEBMATRIX, not a CHEBFUN
     if ( isa(u0, 'chebfun') )
         u0 = chebmatrix(u0);
     end
 end
-% Initialise the dependent variable:
+
+% Initialise the independent variable:
 x = chebfun(@(x) x, dom);
 
 % Linearize
