@@ -29,11 +29,11 @@ classdef cheboppref < chebpref
             
             % Preferences for nonlinear ODEs
             outPref.prefList.damped = 1;
-            outPref.prefList.display = 'iter';
+            outPref.prefList.display = 'off';
             outPref.prefList.errTol = 1e-10;
             outPref.prefList.lambdaMin = 1e-6;
             outPref.prefList.maxIter = 25;
-            outPref.prefList.plotting = 1;
+            outPref.prefList.plotting = 'off';
         end
         
         function out = subsref(pref, ind)
