@@ -1,4 +1,4 @@
-function [u, info] = solvebvpLinear(N, L, rhs, residual, x, displayInfo, pref)
+function [u, info] = solvebvpLinear(L, rhs, residual, displayInfo, pref)
 
 % All values of the LINOPCONSTRAINT stored in L will be of incorrect sign
 % when returned from LINEARIZE(), if we want to use it for a LINOP
@@ -10,9 +10,6 @@ L.constraint = flipSigns(L.constraint);
 
 % Solve the linear problem
 u = linsolve(L, rhs - residual, pref);
-
-% TODO: Return residual as well?
-uBlocks = u.blocks;
 
 % Norm of residual. Any affine parts will be stored in the RESIDUAL variable, so
 % need to subtract that from RHS to get the correct answer.
