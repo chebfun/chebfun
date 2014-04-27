@@ -6,8 +6,6 @@ end
 
 % Setup
 dom = [0 1 2 pi];
-pref.plotting = 'on';
-pref.display = 'iter';
 pref.damped = 1;
 
 N = chebop(@(x,u) diff(u,2) + sin(u-.2), dom);

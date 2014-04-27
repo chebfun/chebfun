@@ -20,11 +20,8 @@ linCheck = 1;
 % We need the entire operator (including BCs) to be linear
 isLinear = all(isLinear);
 
-% TODO: Remove once linearity detection is ready.
-warning('Linearity detection for chebops is not yet fully implemented');
-
 % Throw an error is the chebop is nonlinear
-if ~( isLinear )
+if ( ~isLinear )
     error('CHEBFUN:CHEBOP:linop:nonlinear',...
         'Chebop does not appear to be a linear operator.')
 end

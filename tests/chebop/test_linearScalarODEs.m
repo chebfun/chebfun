@@ -52,7 +52,7 @@ u4 = solvebvp(N, rhs, pref);
 %% Did we pass? 
 % To pass, both residuals have to be small, but we should not expect u3 and u4
 % to be identical!
-tol = pref.errTol;
+tol = 10*pref.errTol;
 pass(4) = norm(N(u3)-rhs) < tol && ( u3(-1) - 2 < tol) && ( u3(pi) + 1 < tol);
 pass(5) = norm(N(u4)-rhs) < tol && ( u4(-1) - 2 < tol) && ( u4(pi) + 1 < tol);
 pass(6) = norm(jump(u3,0)) < tol && norm(jump(u4,0)) < tol;
