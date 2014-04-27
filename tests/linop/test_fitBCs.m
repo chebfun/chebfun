@@ -68,7 +68,6 @@ for k = 1:3
     A = addContinuity(A,[z j(0.3,0)],-.5);
     A.prefs = pref;
     uu = fitBCs(A);
-    plot(uu{1}, 'b', uu{2}, 'r')
     u1 = uu{1};
     u2 = uu{2};
     err(k, 4) = norm([u1(0)-1
