@@ -7,8 +7,6 @@ function pass = test_linearSystem1(pref)
 if ( nargin == 0 )
     pref = cheboppref;
 end
-pref.plotting = 'off';
-pref.display = 'off';
 
 tol = 1e-10;
 
