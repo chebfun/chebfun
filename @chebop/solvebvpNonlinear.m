@@ -158,9 +158,13 @@ while ( ~terminate )
     end
 end
 
+% Now that we have exited the Newton iteration, compute the error of satisfying
+% the BCs as well!
+
 % TODO: Replace with real values further down in code (temp values to test
 % display methods)
-errEstBC = .5678;
+% errEstBC = .5678;
+errEstBC = evalBCnorm(N, u, x);
 
 % Show final information
 displayInfo('final', u, delta, newtonCounter, errEstDE, errEstBC, displayFig, ...
@@ -177,4 +181,64 @@ if ( isa(f, 'chebmatrix') )
 else
     out = get(f, 'vscale');
 end
+end
+
+function bcNorm = evalBCnorm(N, u, x)
+% TODO: This might be useful elsewehere (i.e. chebop/linearize), do we want to
+% move this into a separate file?
+
+bcNorm = 0;
+
+uBlocks = u.blocks;
+
+% Evaluate left boundary condition(s):
+if ~( isempty(N.lbc) )
+    % Evaluate.
+    lbcU = N.lbc(uBlocks{:});
+    
+    % The output might be a CHEBFUN, or a chebmatrix
+    if ( isa(lbcU, 'chebfun') )
+        bcNorm = bcNorm + feval(lbcU, N.domain(1))^2;
+    elseif ( isa(lbcU, 'chebmatrix') ) 
+        % Loop through the components of LBCU.
+        for k = 1:numel(lbcU)
+            % Obtain the kth element of the CHEBMATRIX
+            lbcUk = lbcU{k};
+            % Evaluate the function at the left endpoint
+            bcNorm = bcNorm + feval(lbcUk, N.domain(1))^2;
+        end
+    end
+end
+
+
+% Evaluate right boundary condition(s):
+if ~( isempty(N.rbc) )
+    % Evaluate.
+    rbcU = N.rbc(uBlocks{:});
+    
+    % The output might be a CHEBFUN, or a chebmatrix
+    if ( isa(rbcU, 'chebfun') )
+        bcNorm = bcNorm + feval(rbcU, N.domain(end))^2;
+    elseif ( isa(rbcU, 'chebmatrix') ) 
+        % Loop through the components of RBCU.
+        for k = 1:numel(rbcU)
+            % Obtain the kth element of the CHEBMATRIX
+            rbcUk = rbcU{k};
+            % Evaluate the function at the left endpoint
+            bcNorm = bcNorm + feval(rbcUk, N.domain(1))^2;
+        end
+    end
+end
+
+
+% Evaluate and linearise the remaining constraints:
+if ( ~isempty(N.bc) )
+    % Evaluate. The output, BCU, will be a vector.
+    bcU = N.bc(x, uBlocks{:});
+    
+    bcNorm = bcNorm + bcU^2;
+end
+
+bcNorm = sqrt(bcNorm);
+
 end

@@ -26,7 +26,7 @@ if ( strcmp(display,'iter') || strcmp(display,'final') )
         fprintf('Newton''s method converged in %i iterations.\n',iterNo);
     end
     fprintf(['Final error estimate: %.2e (differential equation) \n' ...
-        '%29.2e (boundary conditions). \n\n'], errEstDE, errEstBC);
+        '%30.2e (boundary conditions). \n\n'], errEstDE, errEstBC);
 end
 
 % Do we want to show a plot of the final solution and correction step?

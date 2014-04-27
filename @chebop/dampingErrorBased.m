@@ -52,7 +52,7 @@ while ( ~accept )
     if lambda < lambdaMin
         disp('Convergence failure')
         % Take full Newton step
-        u = u + delta;
+        uTrial = u + delta;
         accept = 1;
         normDeltaOld = normDelta;
         initPrediction = 1;
