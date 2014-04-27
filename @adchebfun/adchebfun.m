@@ -1217,6 +1217,12 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 case '.'
 %                     out = vertcat(f.(index(1).subs));
                     out = f.(index(1).subs);
+                    
+                    if ( numel(index) > 1 )
+                        % Recurse on SUBSREF():
+                        index(1) = [];
+                        out = subsref(out, index);
+                    end
             end
         end
         
