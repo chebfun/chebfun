@@ -476,23 +476,26 @@ function op = str2op(op)
     end
 end
 
-function [op, domain, pref] = parseInputs(op, domain, varargin)
+function [op, dom, pref] = parseInputs(op, dom, varargin)
 % Parse inputs.
 
     args = varargin;
     if ( nargin == 1 )
         % chebfun(op)
         pref = chebpref();
-        domain = pref.domain;
-    elseif ( isstruct(domain) || isa(domain, 'chebpref') )
+        dom = pref.domain;
+    elseif ( isa(dom, 'domain') )
+        dom = double(dom);
+        pref = chebpref();
+    elseif ( isstruct(dom) || isa(dom, 'chebpref') )
         % chebfun(op, pref)
-        pref = chebpref(domain);
-        domain = pref.domain;
-    elseif ( ~isnumeric(domain) || (length(domain) == 1) )
+        pref = chebpref(dom);
+        dom = pref.domain;
+    elseif ( ~isnumeric(dom) || (length(dom) == 1) )
         % chebfun(op, prop1, val1, ...)
         pref = chebpref();
-        args = [domain, args];
-        domain = pref.domain;
+        args = [dom, args];
+        dom = pref.domain;
     elseif ( nargin < 3 )
         % chebfun(op, domain)
         pref = chebpref();
@@ -506,8 +509,8 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
     end
 
     % Take the default domain if an empty one was given:
-    if ( isempty(domain) )
-        domain = pref.domain;
+    if ( isempty(dom) )
+        dom = pref.domain;
     end
 
     vectorize = false;
@@ -550,8 +553,8 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
                     % "enableSingularityDetection" and "poles only".
                     
                     pref.enableSingularityDetection = 1;
-                    singTypes = cell(1, 2*(numel(domain)-1));
-                    for j = 1:2*(numel(domain)-1)
+                    singTypes = cell(1, 2*(numel(dom)-1));
+                    for j = 1:2*(numel(dom)-1)
                         singTypes{j} = 'pole';
                     end
                     pref.singPrefs.singType = singTypes;
@@ -561,8 +564,8 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
                     % "enableSingularityDetection" and "fractional singularity".
                     
                     pref.enableSingularityDetection = 1;
-                    singTypes = cell(1, 2*(numel(domain)-1));
-                    for j = 1:2*(numel(domain)-1)
+                    singTypes = cell(1, 2*(numel(dom)-1));
+                    for j = 1:2*(numel(dom)-1)
                         singTypes{j} = 'sing';
                     end
                     pref.singPrefs.singType = singTypes;
@@ -621,7 +624,7 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
         if ( isa(op, 'function_handle') && strcmp(pref.tech, 'funqui') )
             if ( isfield(pref.techPrefs, 'exactLength') && ...
                  ~isnan(pref.techPrefs.exactLength) )
-                x = linspace(domain(1), domain(end), pref.techPrefs.exactLength).';
+                x = linspace(dom(1), dom(end), pref.techPrefs.exactLength).';
                 op = feval(op, x);
                 pref.techPrefs.exactLength = NaN;
             end

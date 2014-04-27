@@ -5,6 +5,6 @@ function V = volt(k, d, varargin)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-V = linop( operatorBlock.volt(k, d, varargin{:}) );
+V = linop( operatorBlock.volt(d, k, varargin{:}) );
 
 end
