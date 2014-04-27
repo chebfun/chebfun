@@ -28,7 +28,7 @@ xtest = dom(1)+diff(dom)*(xtest+1)/2;
 qtest = qtest*diff(dom)/2;
 
 w = [];
-for k = 3
+for k = 1:6
     prefs.discretization = type{k};
     w = linsolve(L,f,prefs);
 
