@@ -200,7 +200,11 @@ if ( ~isempty(N.bc) )
        end
     else
         % Evaluate. The output, BCU, will be an ADCHEBFUN.
-        bcU = N.bc(x, u{:});
+        if ( nargin(N.bc) == 1 )
+            bcU = N.bc(u{:});
+        else
+            bcU = N.bc(x, u{:});
+        end
 
         % Ensure conditions were concatenated vertically, not horizontally
         checkConcat(bcU);
