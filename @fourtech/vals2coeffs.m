@@ -1,6 +1,5 @@
 function coeffs = vals2coeffs(values)
 %VALS2COEFFS   Convert values at equally spaced points between [-pi pi).
-%   TODO: NEEDS UPDATING
 %   C = VALS2COEFFS(V) returns the vector of N coefficients such that 
 %
 %   If N is odd

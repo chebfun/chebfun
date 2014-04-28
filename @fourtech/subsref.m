@@ -9,15 +9,15 @@ function varargout = subsref(f, index)
 %   COL. In both cases, COL should be a row vector.
 %
 %   F(G), where G is also a FOURTECH, computes the composition of F and G. See
-%   CHEBFUN/COMPOSE for further details.
+%   FOURTECH/COMPOSE for further details.
 %
 % .
 %   F.PROP returns the property PROP of F as defined by GET(F, 'PROP').
 %
 % See also FEVAL, COMPOSE, GET, SUBSREF.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% Copyright 2014 by The University of Oxford and The FOURTECH Developers.
+% See http://www.chebfun.org for FOURTECH information.
 
 idx = index(1).subs;
 switch index(1).type
@@ -37,7 +37,7 @@ switch index(1).type
         x = idx{1}; 
         
         % Initialise:
-        columnIndex = 1:size(f, 2); % Column index for array-valued CHEBFUNs.
+        columnIndex = 1:size(f, 2); % Column index for array-valued FOURTECH.
         varin = {};                 % Additional arguments.
         
         % Deal with additional arguments:
@@ -47,7 +47,7 @@ switch index(1).type
             varin = {idx(2)};
             
         elseif ( length(idx) == 2 )
-            % f(x, m), for array-valued CHEBFUN objects:
+            % f(x, m), for array-valued FOURTECH objects:
             if ( strcmp(idx{2}, ':') )
                 % Do nothing, as this has already been done above:
                 % columnIndex = 1:size(f, 2);
@@ -59,8 +59,8 @@ switch index(1).type
             % This is OK.
             
         elseif ( length(idx) > 1 )
-            error('CHEBFUN:subsref:dimensions', ...
-                'Index exceeds CHEBFUN dimensions.')
+            error('CHEBFUN:FOURTECH:subsref:dimensions', ...
+                'Index exceeds FOURTECH dimensions.')
             
         end
 
@@ -97,19 +97,19 @@ switch index(1).type
             end
             
         else
-            error('CHEBFUN:subsref:nonnumeric',...
-              'Cannot evaluate chebfun for non-numeric type.')
+            error('CHEBFUN:FOURTECH:subsref:nonnumeric',...
+              'Cannot evaluate FOURTECH for non-numeric type.')
           
         end
         
-%         % Deal with row CHEBFUN objects:
+%         % Deal with row FOURTECH objects:
 %         if ( isTransposed )
 %             if ( isnumeric(out) )
 %                 % (Call PERMUTE instead of TRANSPOSE for numeric objects in
 %                 % case OUT is multidimensional).
 %                 out = permute(out, [2 1 3:ndims(out)]);
 %             else
-%                 % Call TRANSPOSE for everything else (e.g., CHEBFUNs):
+%                 % Call TRANSPOSE for everything else (e.g., FOURTECHs):
 %                 out = out.';
 %             end
 %         end
@@ -129,13 +129,13 @@ switch index(1).type
     case '{}'
         error('Restriction of a fourtech is not allowed');
         % Later we could think about restricting a fourierfun to an
-        % interval contained in (-pi,pi) by converting it to a chebfun.
+        % interval contained in (-pi,pi) by converting it to a FOURTECH.
         if ( length(idx) == 1 )
             if ( isequal(idx{1}, ':') )
                 % F{:} returns F:
                 out = f;
             else
-                error('CHEBFUN:subsref:baddomain', 'Invalid domain syntax.')
+                error('FOURTECH:subsref:baddomain', 'Invalid domain syntax.')
             end
             
         elseif ( size(idx, 1) == 1 )
@@ -144,14 +144,14 @@ switch index(1).type
             out = restrict(f, x);
             
         else
-            error('CHEBFUN:subsref:dimensions', ...
-                'Index exceeds chebfun dimensions.')
+            error('FOURTECH:subsref:dimensions', ...
+                'Index exceeds FOURTECH dimensions.')
             
         end
         
     otherwise
         
-        error('CHEBFUN:subsref:unexpectedType',...
+        error('FOURTECH:subsref:unexpectedType',...
             ['??? Unexpected index.type of ', index(1).type]);
 end
 

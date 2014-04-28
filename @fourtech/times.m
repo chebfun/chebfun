@@ -44,14 +44,14 @@ elseif ( size(f.values, 1) == 1 )
     return
     
 elseif ( size(g.values, 1) == 1)
-    % If we have FOURTECH.*(constant FOURTECH), convert the (constant CHEBTECH)
+    % If we have FOURTECH.*(constant FOURTECH), convert the (constant FOURTECH)
     % to a scalar and call TIMES again:
     f = times(f, g.values); 
     f.epslevel = max(f.epslevel, g.epslevel);
     return
 end
 
-% Get the size of each CHEBTECH:
+% Get the size of each FOURTECH:
 [fn, fm] = size(f.values);
 [gn, gm] = size(g.values);
 
