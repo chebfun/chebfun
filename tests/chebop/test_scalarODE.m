@@ -6,8 +6,8 @@ if ( nargin == 0 )
     pref = cheboppref;
 end
 
-N = chebop(@(x,u) diff(u,2) + sin(u-.2), dom);
-N.lbc = @(u) u-2; 
+N = chebop(@(u) diff(u, 2) + sin(u - .2), dom);
+N.lbc = @(u) u - 2; 
 N.rbc = @(u) u - 3;
 rhs = 0;
 
@@ -25,6 +25,6 @@ pref.discretization = @ultraS;
 tol = pref.errTol;
 pass(1) = norm(N(u1)) < tol;
 pass(2) = norm(N(u2)) < tol;
-pass(3) = ( norm(u1-u2) ~= 0 );
+pass(3) = (norm(u1 - u2) ~= 0);
 
 end

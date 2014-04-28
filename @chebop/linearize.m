@@ -33,6 +33,12 @@ function [L, res, isLinear] = linearize(N, x, u, flag)
 
 % Start by assuming that N is linear.
 isLinear = true(1, 4);
+
+% Support single input argument for autonomous scalar problems:
+if ( nargin(N) == 1 )
+    N.op = @(x, u) N.op(u);
+end
+
 % Number of unknown variables N acts on. Subtract 1 from nargin(N.op), since the
 % first argument is the independent variable x.
 numVars = nargin(N.op) - 1;

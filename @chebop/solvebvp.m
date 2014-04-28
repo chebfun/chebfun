@@ -10,6 +10,11 @@ if ( nargin < 4 )
     displayInfo = @N.displayInfo;
 end
 
+% Support single input argument for autonomous scalar problems:
+if ( nargin(N) == 1 )
+    N.op = @(x, u) N.op(u);
+end
+
 % NUMVARS indicate how many unknown function we seek.
 numVars = max(nargin(N) - 1, 1);
 
