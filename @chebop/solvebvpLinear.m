@@ -1,4 +1,4 @@
-function [u, info] = solvebvpLinear(N, L, rhs, residual, x, displayInfo, pref)
+function [u, info] = solvebvpLinear(L, rhs, residual, displayInfo, pref)
 
 % All values of the LINOPCONSTRAINT stored in L will be of incorrect sign
 % when returned from LINEARIZE(), if we want to use it for a LINOP
@@ -7,28 +7,18 @@ function [u, info] = solvebvpLinear(N, L, rhs, residual, x, displayInfo, pref)
 % iteration, we have to add the output of the LINOP solution to the current
 % guess. Thus, flip the signs of the values of L.constraint:
 L.constraint = flipSigns(L.constraint);
-% TODO: Pass in preferences?
 
 % Solve the linear problem
 u = linsolve(L, rhs - residual, pref);
 
-% TODO: Return residual as well?
-uBlocks = u.blocks;
-
-% Norm of residual
-normRes = norm(chebfun(L*u - rhs));
+% Norm of residual. Any affine parts will be stored in the RESIDUAL variable, so
+% need to subtract that from RHS to get the correct answer.
+normRes = norm(chebfun(L*u - (rhs-residual)), 2);
 
 % Print information after linear problem has been solved
 displayInfo('linear', u, normRes, pref)
 
-% TODO: Probably want a norm method for chebmatrices. THIS WILL BREAK IN
-% CASE OF SYSTEMS.
-err = feval(N.op, x , uBlocks{:}) - rhs;
-if isa(err, 'chebmatrix')
-    err = chebfun(err);
-    info.error = norm(err, 2);
-else
-    info.error = norm(err);
-end
+% Return the norm of the residual in the INFO struct.
+info.error = normRes;
 
 end

@@ -346,6 +346,9 @@ classdef (InferiorClasses = {?double}) chebop
         
         % Display special information for linear problems
         displayInfoLinear(u, normRes, pref)
+        
+        % Solve a linear problem posed with CHEBOP.
+        [u, info] = solvebvpLinear(L, rhs, residual, displayInfo, pref)
 
     end
     

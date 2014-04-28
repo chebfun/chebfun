@@ -236,7 +236,7 @@ if ( ~isempty(N.bc) )
     % Evaluate. The output, BCU, will be a vector.
     bcU = N.bc(x, uBlocks{:});
     
-    bcNorm = bcNorm + bcU^2;
+    bcNorm = bcNorm + norm(bcU)^2;
 end
 
 bcNorm = sqrt(bcNorm);

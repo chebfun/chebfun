@@ -53,7 +53,7 @@ L.prefs = pref;
 % Solve:
 if ( all(isLinear) )
     % Call solver method for linear problems.
-    [u, info] = solvebvpLinear(N, L, rhs, residual, x, displayInfo, pref);
+    [u, info] = N.solvebvpLinear(L, rhs, residual, displayInfo, pref);
 else
     % Call solver method for nonlinear problems.
     % TODO: Swith between residual and error oriented Newton methods
