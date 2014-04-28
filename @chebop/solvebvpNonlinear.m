@@ -158,12 +158,7 @@ while ( ~terminate )
     end
 end
 
-% Now that we have exited the Newton iteration, compute the error of satisfying
-% the BCs as well!
-
-% TODO: Replace with real values further down in code (temp values to test
-% display methods)
-% errEstBC = .5678;
+% Evaluate how far off we are from satisfying the boundary conditions.
 errEstBC = evalBCnorm(N, u, x);
 
 % Show final information
