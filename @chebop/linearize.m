@@ -28,6 +28,9 @@ function [L, res, isLinear] = linearize(N, x, u, flag)
 %       ISLINEAR(3) = 1 if N.RBC is linear, 0 otherwise.
 %       ISLINEAR(4) = 1 if N.BC is linear, 0 otherwise.
 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. See
+% http://www.chebfun.org/ for Chebfun information.
+
 % TODO: Flag should determine whether we just want to do a linearity check, i.e.
 % stop if we're trying to convert a chebop to a linop.
 
@@ -94,18 +97,30 @@ res = vertcat(get(Nu, 'func'));
 % Linearity information
 isLinear(1) = all(all(vertcat(get(Nu, 'linearity'))));
 
+% Deal with parameterized problems:
 do = L.diffOrder;
 one = chebfun(1, dom);
 blocks = L.blocks;
+isDiag = ~do;
 for k = 1:size(blocks, 2)
     for j = 1:size(blocks,1);
-        if ( ~any(do(:,k)) )
+        if ( all(isDiag(:,k)) )
+            tmp = chebmatrix(blocks(j,k));
+            tmp = matrix(tmp, repmat(5, 1, numel(tmp.domain)-1));
+            if ( norm(diag(diag(tmp))-tmp) > 1e-14 )
+                isDiag(j,k) = false;
+            end
+        end
+    end
+end
+for k = 1:size(blocks, 2)
+    for j = 1:size(blocks,1);
+        if ( all(isDiag(:,k)) )
             blocks{j,k} = blocks{j,k}*one;
         end
     end
 end
 L.blocks = blocks;
-
 
 % If N is nonlinear, and we were looking to only test linearity, return.
 if ( flag && ~all(isLinear) )
@@ -191,15 +206,18 @@ if ( ~isempty(N.bc) )
     isLinear(4) = all(all(get(bcU, 'linearity')));
 end
 
-blocks = BC.functional.blocks;
-for k = 1:size(blocks, 2)
-    for j = 1:size(blocks,1);
-        if ( ~any(do(:,k)) )
-            blocks{j,k} = blocks{j,k}*one;
+if ( ~isempty(BC) )
+    % Deal with parameterized problems:
+    blocks = BC.functional.blocks;
+    for k = 1:size(blocks, 2)
+        for j = 1:size(blocks,1);
+            if ( all(isDiag(:,k)) )
+                blocks{j,k} = blocks{j,k}*one;
+            end
         end
     end
+    BC.functional.blocks = blocks;
 end
-BC.functional.blocks = blocks;
 
 % Append all constraints to the LINOP returned.
 L.constraint = BC;
