@@ -1,6 +1,6 @@
 classdef colloc2 < colloc
 %COLLOC2    Collocation discretization on 2nd kind points.
-%   COLLOC2 is an implementation of CHEBDISCRETIZATION that implements spectral
+%   COLLOC2 is an implementation of COLLOC that implements spectral
 %   collocation on 2nd-kind Chebyshev points for differential and integral
 %   operators.
 %

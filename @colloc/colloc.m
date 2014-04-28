@@ -50,7 +50,7 @@ classdef colloc < chebDiscretization
         C = cumsum(disc)    
         
         % Differentiation:
-        D = diff(disc,m)  
+        D = diff(disc, m)  
         
         % Points where function values are represented:
         [x, w] = functionPoints(disc)
