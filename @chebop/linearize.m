@@ -190,20 +190,30 @@ end
 
 % Evaluate and linearise the remaining constraints:
 if ( ~isempty(N.bc) )
-    % Evaluate. The output, BCU, will be an ADCHEBFUN.
-    bcU = N.bc(x, u{:});
     
-    % Ensure conditions were concatenated vertically, not horizontally
-    checkConcat(bcU);
-    
-    % Gather all residuals of evaluating N.BC in one column vector.
-    vals = cat(1, get(bcU, 'func'));
-    % Loop through the conditions and append to the BC object.
-    for k = 1:numel(bcU)
-        BC = append(BC, get(bcU, 'jacobian', k), vals(k));
+    if ( strcmp(N.bc, 'periodic') )
+        % Apply periodic boundary conditions:
+       contConds = deriveContinuity(L, dom, true);
+       contConds = contConds.continuity.functional;
+       for k = 1:numel(contConds.blocks)
+            BC = append(BC, contConds.blocks{k}, 0);
+       end
+    else
+        % Evaluate. The output, BCU, will be an ADCHEBFUN.
+        bcU = N.bc(x, u{:});
+
+        % Ensure conditions were concatenated vertically, not horizontally
+        checkConcat(bcU);
+
+        % Gather all residuals of evaluating N.BC in one column vector.
+        vals = cat(1, get(bcU, 'func'));
+        % Loop through the conditions and append to the BC object.
+        for k = 1:numel(bcU)
+            BC = append(BC, get(bcU, 'jacobian', k), vals(k));
+        end
+        % Update linearity information.
+        isLinear(4) = all(all(get(bcU, 'linearity')));
     end
-    % Update linearity information.
-    isLinear(4) = all(all(get(bcU, 'linearity')));
 end
 
 if ( ~isempty(BC) )

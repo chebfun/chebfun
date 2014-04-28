@@ -1,15 +1,15 @@
 function L = addConstraint(L, varargin)
 %ADDCONSTRAINT Append to linop constraints.
-%   L = ADDCONSTRAINT(L,FUN,VAL) adds a new constraint on the linop L. The
+%   L = ADDCONSTRAINT(L, FUN, VAL) adds a new constraint on the linop L. The
 %   functional FUN when applied to a function will be required to be VAL.
 %
-%   L = ADDCONSTRAINT(L,'periodic') replaces all side conditions with continuity
+%   L = ADDCONSTRAINT(L, 'periodic') replaces all side conditions with continuity
 %   meant to ensure that the function is periodic.
 %
 %   Example:
 %     [Z, I, D, C] = linop.primitiveOperators([-1 1]);
 %     [z, E, s] = linop.primitiveFunctionals([-1 1]);
-%     A = [ D^2+I, D;  Z, D^2-I ];  % 2-by-2 chebmatrix
+%     A = [ D^2+I, D;  Z, D^2-I ];    % 2-by-2 chebmatrix
 %     op1 = [ E(-1), z ];   
 %     A = addConstraint(A, op1, 1);   % impose u{1}(-1) + 0*u{2} = 1
 %     op2 = [ E(1), -E(1) ]; 
@@ -24,8 +24,8 @@ function L = addConstraint(L, varargin)
 %  Copyright 2013 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
-if isequal( varargin{1}, 'periodic' )
-    if ~isempty( L.constraint )
+if ( isequal(varargin{1}, 'periodic') )
+    if ( ~isempty(L.constraint) )
         warning('Clearing existing constraints to replace with periodicity.')
     end
     

@@ -71,7 +71,7 @@ function varargout = pde15s(pdeFun, tt, u0, bc, varargin)
 %
 % See also PDESET, ODE15S.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. See
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.
 
 % TODO: Syncronise with CHEBOP syntax. (In particular, .lbc, .rbc, and .bc).
