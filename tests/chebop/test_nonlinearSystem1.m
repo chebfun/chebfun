@@ -8,9 +8,6 @@ if ( nargin == 0 )
     pref = cheboppref;
 end
 
-pref.display = 'iter';
-pref.plotting = 'pause';
-
 tol = 1e-10;
 
 % Smooth domain:
@@ -63,7 +60,7 @@ pass(6) = norm(bcFunLeft(d(1))) < tol && norm(bcFunRight(d(end))) < tol;
 pass(7) = norm(u5jump) < tol && norm(u6jump) < tol;
 %% Piecewise:
 A.domain = [-pi 0 pi];
-pref.discretization = @colloc2;
+pref.discretization = @ultraS;
 u78 = mldivide(A, f, pref);
 u7 = u78{1}; u8 = u78{2};
 
