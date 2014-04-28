@@ -1,28 +1,28 @@
 function [L, res, isLinear] = linearize(N, x, u, flag)
-% LINEARIZE     Linearize a CHEBOP.
-%
-% L = LINEARIZE(N) returns a LINOP that corresponds to linearising the CHEBOP N
-%   around the zero function on N.domain. The linop L will both include the
+%LINEARIZE    Linearize a CHEBOP.
+%   L = LINEARIZE(N) returns a LINOP that corresponds to linearising the CHEBOP
+%   N around the zero function on N.domain. The linop L will both include the
 %   linearised differential equation, as well as linearised boundary conditions
 %   (from N.LBC and N.RBC) and other constraints (from N.BC).
 %
-% L = LINEARIZE(N, X, U) linearizes the CHEBOP N around the function U. Here, X
-%   denotes the independent variable on N.domain. Note that calling
+%   L = LINEARIZE(N, X, U) linearizes the CHEBOP N around the function U. Here,
+%   X denotes the independent variable on N.domain. Note that calling
 %   LINEARIZE(N, [], U) is also supported, i.e., the method will create the
 %   variable X. Here, U can either be a CHEBFUN or a CHEBMATRIX.
 %
-% L = LINEARIZE(N, X, U, FLAG) is useful when we call LINOP(CHEBOP), i.e.
+%   L = LINEARIZE(N, X, U, FLAG) is useful when we call LINOP(CHEBOP), i.e.,
 %   converting a linear CHEBOP to a LINOP. If FLAG = 1, the method will stop
-%   execution and return as soon as it encounters a nonlinear field in N.
+%   execution and return as soon as it encounters a nonlinear field in N. in
+%   this case L is returned as an empty LINOP.
 %
-% [L, RES] = LINEARIZE(N, ...) also returns the CHEBMATRIX RES, that corresponds
-%   to the residual of the differential equation part of N at the function it
-%   was linearized. In other words, RES is the result of evaluating N at the
-%   zero function if no function is passed to LINEARIZE(), or the function U if
-%   it is passed.
+%   [L, RES] = LINEARIZE(N, ...) also returns the CHEBMATRIX RES, that
+%   corresponds to the residual of the differential equation part of N at the
+%   function it was linearized. In other words, RES is the result of evaluating
+%   N at the zero function if no additioanl function is passed to LINEARIZE(),
+%   or the function U if it is passed.
 %
-% [L, RES, ISLINEAR] = LINEARIZE(N, ...) also returns the vector ISLINEAR, with
-%   entries as follows:
+%   [L, RES, ISLINEAR] = LINEARIZE(N, ...) also returns the vector ISLINEAR,
+%   with entries as follows:
 %       ISLINEAR(1) = 1 if N.OP is linear, 0 otherwise.
 %       ISLINEAR(2) = 1 if N.LBC is linear, 0 otherwise.
 %       ISLINEAR(3) = 1 if N.RBC is linear, 0 otherwise.
@@ -30,9 +30,6 @@ function [L, res, isLinear] = linearize(N, x, u, flag)
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.
-
-% TODO: Flag should determine whether we just want to do a linearity check, i.e.
-% stop if we're trying to convert a chebop to a linop.
 
 % Start by assuming that N is linear.
 isLinear = true(1, 4);
@@ -81,49 +78,23 @@ for k = 1:numVars
     u{k} = seed(adchebfun(u{k}), k, numVars);
 end
 
-
 %% Evaluate N.op to get a linearisation of the differential equation:
 
 % Evaluate N.op. The output will be the ADCHEBFUN NU. In case of systems, NU
 % will be an array-valued ADCHEBFUN.
 Nu = N.op(x, u{:});
 
-% Construct the LINOP L by vertically concatenating the derivatives stored in
-% NU.
+% Construct a LINOP L by vertically concatenating the derivatives stored in NU.
 L = linop(vertcat(get(Nu, 'jacobian')));
 % Construct the residual by vertically concatenating all functions stored in NU.
 % RES will be a CHEBMATRIX.
 res = vertcat(get(Nu, 'func'));
-% Linearity information
+% Linearity information:
 isLinear(1) = all(all(vertcat(get(Nu, 'linearity'))));
-
-% Deal with parameterized problems:
-do = L.diffOrder;
-one = chebfun(1, dom);
-blocks = L.blocks;
-isDiag = ~do;
-for k = 1:size(blocks, 2)
-    for j = 1:size(blocks,1);
-        if ( all(isDiag(:,k)) )
-            tmp = chebmatrix(blocks(j,k));
-            tmp = matrix(tmp, repmat(5, 1, numel(tmp.domain)-1));
-            if ( norm(diag(diag(tmp))-tmp) > 1e-14 )
-                isDiag(j,k) = false;
-            end
-        end
-    end
-end
-for k = 1:size(blocks, 2)
-    for j = 1:size(blocks,1);
-        if ( all(isDiag(:,k)) )
-            blocks{j,k} = blocks{j,k}*one;
-        end
-    end
-end
-L.blocks = blocks;
 
 % If N is nonlinear, and we were looking to only test linearity, return.
 if ( flag && ~all(isLinear) )
+    L = linop();
     return
 end
 
@@ -131,6 +102,10 @@ end
 % the domain of N, as we want to respect the breakpoints originally assigned
 % to N (when its domain was defined)
 L.domain = chebfun.mergeDomains(L.domain, dom);
+
+%% Deal with parameterized problems:
+isd = isDiag(L);
+L = diagonalise(L, isd);
 
 %% Add BCs
 % Initalise an empty LINOPCONSTRAINT.
@@ -159,6 +134,7 @@ end
 
 % If N is nonlinear, and we were looking to only test linearity, return
 if ( flag && ~all(isLinear) )
+    L = linop();
     return
 end
 
@@ -185,12 +161,12 @@ end
 
 % If N is nonlinear, and we were looking to only test linearity, return
 if ( flag && ~all(isLinear) )
+    L = linop();
     return
 end
 
 % Evaluate and linearise the remaining constraints:
 if ( ~isempty(N.bc) )
-    
     if ( strcmp(N.bc, 'periodic') )
         % Apply periodic boundary conditions:
        contConds = deriveContinuity(L, dom, true);
@@ -198,6 +174,7 @@ if ( ~isempty(N.bc) )
        for k = 1:numel(contConds.blocks)
             BC = append(BC, contConds.blocks{k}, 0);
        end
+       isLinear(4) = true;
     else
         % Evaluate. The output, BCU, will be an ADCHEBFUN.
         if ( nargin(N.bc) == 1 )
@@ -220,17 +197,15 @@ if ( ~isempty(N.bc) )
     end
 end
 
+% If N is nonlinear, and we were looking to only test linearity, return
+if ( flag && ~all(isLinear) )
+    L = linop();
+    return
+end
+
 if ( ~isempty(BC) )
     % Deal with parameterized problems:
-    blocks = BC.functional.blocks;
-    for k = 1:size(blocks, 2)
-        for j = 1:size(blocks,1);
-            if ( all(isDiag(:,k)) )
-                blocks{j,k} = blocks{j,k}*one;
-            end
-        end
-    end
-    BC.functional.blocks = blocks;
+    BC.functional = diagonalise(BC.functional, isd);
 end
 
 % Append all constraints to the LINOP returned.
@@ -244,4 +219,31 @@ if ( size(bc, 2) > 1 )
         ['Chebop conditions must be vertically concatenated with a '';'',' ...
         '\nnot horizontally with a '',''.']);
 end
+end
+
+function isd = isDiag(L)
+% Start by assuming operators with zero difforder are diagonal operators:
+isd = ~(L.diffOrder);
+% Manually check these to confirm that they are really diagonal:
+for k = find(isd).'
+    tmp = chebmatrix(L.blocks(k));
+    tmp = matrix(tmp, repmat(5, 1, numel(tmp.domain)-1));
+    if ( norm(diag(diag(tmp))-tmp) > 1e-14 )
+        isd(k) = false;
+    end
+end
+end
+
+function L = diagonalise(L, isd)
+% Multiply the blocks in columns specified by ISD by the unitary CHEBFUN ONE.
+blocks = L.blocks;
+one = chebfun(1, L.domain);
+for k = 1:size(blocks, 2)
+    for j = 1:size(blocks,1);
+        if ( all(isd(:,k)) )
+            blocks{j,k} = blocks{j,k}*one;
+        end
+    end
+end
+L.blocks = blocks;
 end

@@ -1,9 +1,8 @@
 function out = get(N, prop)
-%GET   GET method for the CHEBTECH2 class.
-%   P = GET(N, PROP) returns the property P specified in the string PROP from
-%   the CHEBOP N.
+%GET   GET method for the CHEBOP class.
+%   P = GET(N, PROP) returns the property P specified in N.(PROP).
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 switch prop
