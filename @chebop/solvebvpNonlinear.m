@@ -109,21 +109,14 @@ while ( ~terminate )
                 damped = prefDamped;
                 continue
             end
-%             contraFactor(newtonCounter-1) = 2*cFactor;
+            
+            % Error estimate a la Deuflhard
             errEst =  normDelta/(1-cFactor^2);
-            errEstDE = errEst;
-            errEstVec(newtonCounter) =  errEst;
-%             terminate = eEstSob < deltol;
-%             omega = 2*nrmDelta/nrmDeltaVec(newtonCounter)^2;
-            % TODO: Error estimate
         end
     end
     
-    % Evaluate the residual
-    ub = u.blocks;
-    
     % Update counter of Newton steps taken
-    newtonCounter = newtonCounter +1;
+    newtonCounter = newtonCounter + 1;
     dampingInfo.newtonCounter = newtonCounter;
         
     % Store information about the norm of the updates
@@ -132,12 +125,13 @@ while ( ~terminate )
     normDeltaOld = normDelta;
     dampingInfo.normDeltaOld = normDeltaOld;
     
+    % Grab the blocks of U so that we can print info and evaluate the residual.
+    ub = u.blocks;
+    
     % Print info to command window, and/or show plot of progress
     displayInfo('iter', u, delta, newtonCounter, normDelta, cFactor, ...
         length(delta{1}), lambda, length(ub{1}), displayFig, displayTimer, pref)
     
-    % TODO: Replace with error estimate -- introduce errorTol in cheboppref
-%     errEst = normDelta; % .5*(errEstDE + errEstBC)
     if ( errEst < errTol )
         terminate = 1;
     elseif (newtonCounter > maxIter)
@@ -162,7 +156,7 @@ end
 errEstBC = evalBCnorm(N, u, x);
 
 % Show final information
-displayInfo('final', u, delta, newtonCounter, errEstDE, errEstBC, displayFig, ...
+displayInfo('final', u, delta, newtonCounter, errEst, errEstBC, displayFig, ...
     displayTimer, pref)
 
 % Return useful information in the INFO structure
