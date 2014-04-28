@@ -31,7 +31,6 @@ switch index(1).type
         args = {};
         for k = 1:numel(idx)
             if ( isa(idx{k}, 'chebmatrix') )
-                idx{k}.blocks
                 args = [args ; idx{k}.blocks];
             else
                 args = [args ; idx(k)];

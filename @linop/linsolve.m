@@ -53,10 +53,12 @@ if ( isempty(prefs) )
     prefs = cheboppref;
 end
 
-% If RHS is a CHEBFUN, need to convert it to CHEBMATRIX in order for the method
-% to be able to work with it.
+% If RHS is a CHEBFUN or a DOUBLE, we need to convert it to CHEBMATRIX in
+% order for the method to be able to work with it.
 if ( isa( f, 'chebfun' ) )
     f = chebmatrix(f);
+elseif ( isnumeric(f) )
+    f = chebmatrix(mat2cell(f));
 end
 
 % Use a given discretization, or create one?

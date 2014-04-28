@@ -40,7 +40,7 @@ if ( isa(disc.source, 'chebmatrix') )
     if ( isa(disc.source, 'linop') )
         % Project rows down, and record the projection matrix as well.
         [PA, P, PS] = disc.reduce(A, S);
-                
+                        
         % Get constraints:
         B = getConstraints(disc);
 

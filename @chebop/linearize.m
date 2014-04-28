@@ -36,17 +36,18 @@ isLinear = true(1, 4);
 % Number of unknown variables N acts on. Subtract 1 from nargin(N.op), since the
 % first argument is the independent variable x.
 numVars = nargin(N.op) - 1;
+dom = N.domain;
 
 % Construct the independent variable X if needed.
 if ( nargin < 2 || isempty(x) )
-    x = chebfun(@(x) x, N.domain);
+    x = chebfun(@(x) x, dom);
 end
 
 % Construct the zero function on N.DOMAIN to linearize around if no U was
 % passed.
 if ( nargin < 3 || isempty(u) )
     % Initialise a zero CHEBFUN:
-    zeroFun = chebfun(0, N.domain);
+    zeroFun = chebfun(0, dom);
     % Wrap in a cell and call repmat() to get correct dimensions
     u = repmat({zeroFun}, numVars, 1);
 end
@@ -87,6 +88,19 @@ res = vertcat(get(Nu, 'func'));
 % Linearity information
 isLinear(1) = all(all(vertcat(get(Nu, 'linearity'))));
 
+do = L.diffOrder;
+one = chebfun(1, dom);
+blocks = L.blocks;
+for k = 1:size(blocks, 2)
+    for j = 1:size(blocks,1);
+        if ( ~any(do(:,k)) )
+            blocks{j,k} = blocks{j,k}*one;
+        end
+    end
+end
+L.blocks = blocks;
+
+
 % If N is nonlinear, and we were looking to only test linearity, return.
 if ( flag && ~all(isLinear) )
     return
@@ -95,7 +109,7 @@ end
 % Merge the domains of L obtained from evaluating the operator part above, with
 % the domain of N, as we want to respect the breakpoints originally assigned
 % to N (when its domain was defined)
-L.domain = chebfun.mergeDomains(L.domain, N.domain);
+L.domain = chebfun.mergeDomains(L.domain, dom);
 
 %% Add BCs
 % Initalise an empty LINOPCONSTRAINT.
@@ -114,7 +128,7 @@ if ~( isempty(N.lbc) )
         % Obtain the kth element of the ADCHEBFUN array.
         lbcUk = getElement(lbcU, k);
         % Evaluate the function at the left endpoint
-        lbcUk = feval(lbcUk, N.domain(1));
+        lbcUk = feval(lbcUk, dom(1));
         % Add the new condition to the LINOPCONSTRAINT BC.
         BC = append(BC, lbcUk.jacobian, lbcUk.func);
     end
@@ -140,7 +154,7 @@ if ( ~isempty(N.rbc) )
         % Obtain the kth element of the ADCHEBFUN array.
         rbcUk = getElement(rbcU, k);
         % Evaluate the function at the right endpoint
-        rbcUk = feval(rbcUk, N.domain(end));
+        rbcUk = feval(rbcUk, dom(end));
         % Add the new condition to the LINOPCONSTRAINT BC.
         BC = append(BC, rbcUk.jacobian, rbcUk.func);
     end
@@ -170,6 +184,17 @@ if ( ~isempty(N.bc) )
     % Update linearity information.
     isLinear(4) = all(all(get(bcU, 'linearity')));
 end
+
+blocks = BC.functional.blocks;
+for k = 1:size(blocks, 2)
+    for j = 1:size(blocks,1);
+        if ( ~any(do(:,k)) )
+            blocks{j,k} = blocks{j,k}*one;
+        end
+    end
+end
+BC.functional.blocks = blocks;
+
 % Append all constraints to the LINOP returned.
 L.constraint = BC;
 end
