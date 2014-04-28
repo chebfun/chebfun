@@ -35,8 +35,7 @@ end
 
 % If domain is empty take [-1 1 -1 1]:
 if ( nargin < 3 || isempty(domain) )
-    pref = chebpref();
-    domain = getDefaultDomain( pref.cheb2Prefs.technology );
+    domain = [-pi pi -pi pi];
 end
 
 if ( nargin > 3 && isa(varargin{1}, 'chebpref') )
@@ -44,15 +43,6 @@ if ( nargin > 3 && isa(varargin{1}, 'chebpref') )
     pref = chebpref.mergePrefs(defaults, varargin{1});
 else
     pref = chebpref();
-end
-
-% Get prefclass
-if ( strcmpi( pref.cheb2Prefs.technology, 'chebyshev') )
-    prefclass = chebtech2;
-elseif ( strcmpi( pref.cheb2Prefs.technology, 'fourier') )
-    prefclass = fourtech;
-else
-    error('CHEBFUN2:TECHNOLOGY:PREF','Unrecognized technology in preferences.');
 end
 
 if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
@@ -164,7 +154,7 @@ end
 isHappy = 0;
 while ( ~isHappy )
     % Sample function on a Chebyshev tensor grid:
-    [xx, yy] = getTensorGrid(grid, grid, domain, prefStruct.technology);
+    [xx, yy] = getTensorGrid(grid, grid, domain);
     vals = evaluate(op, xx, yy, vectorize);
     
     % Does the function blow up or evaluate to NaN?:
@@ -186,7 +176,7 @@ while ( ~isHappy )
     while ( iFail && grid <= maxRank && strike < 3)
         % Double sampling on tensor grid:
         grid = 2^( floor( log2( grid ) ) + 1) + 1;
-        [xx, yy] = getTensorGrid(grid, grid, domain, prefStruct.technology);
+        [xx, yy] = getTensorGrid(grid, grid, domain);
         vals = evaluate(op, xx, yy, vectorize); % resample
         vscale = max(abs(vals(:)));
         % New tolerance:
@@ -205,19 +195,11 @@ while ( ~isHappy )
     end
     
     % Check if the column and row slices are resolved.
-    if ( strcmpi( prefStruct.technology, 'chebyshev') )
-        colChebtech = chebtech2(sum(colValues,2), domain(3:4) );
-        resolvedCols = happinessCheck(colChebtech);
-        rowChebtech = chebtech2(sum(rowValues.',2), domain(1:2) );
-        resolvedRows = happinessCheck(rowChebtech);
-        isHappy = resolvedRows & resolvedCols;
-    elseif ( strcmpi( prefStruct.technology, 'fourier') )
-        colChebtech = fourtech(sum(colValues,2), domain(3:4) );
-        resolvedCols = happinessCheck(colChebtech);
-        rowChebtech = fourtech(sum(rowValues.',2), domain(1:2) );
-        resolvedRows = happinessCheck(rowChebtech);
-        isHappy = resolvedRows & resolvedCols;
-    end
+    colChebtech = fourtech(sum(colValues,2), domain(3:4) );
+    resolvedCols = happinessCheck(colChebtech);
+    rowChebtech = fourtech(sum(rowValues.',2), domain(1:2) );
+    resolvedRows = happinessCheck(rowChebtech);
+    isHappy = resolvedRows & resolvedCols;
     
     % If the function is zero, set midpoint of domain as pivot location.
     if ( length(pivotValue) == 1 && pivotValue == 0 )
@@ -235,45 +217,29 @@ while ( ~isHappy )
         if ( ~resolvedCols )
             % Double sampling along columns
             n = 2^( floor( log2( n ) ) + 1) + 1;
-            if ( strcmpi( prefStruct.technology, 'chebyshev') )
-                [xx, yy] = meshgrid(PivPos(:, 1), chebpts(n, domain(3:4)));
-            elseif ( strcmpi( prefStruct.technology, 'fourier') )
-                x = linspace(domain(3), domain(4), n);
-                [xx, yy] = meshgrid(PivPos(:, 1), x);
-            end
+            x = linspace(domain(3), domain(4), n);
+            [xx, yy] = meshgrid(PivPos(:, 1), x);
             colValues = evaluate(op, xx, yy, vectorize);
             % Find location of pivots on new grid (using nesting property).
             oddn = 1:2:n;
             PP(:, 1) = oddn(PP(:, 1));
         else
-            if ( strcmpi( prefStruct.technology, 'chebyshev') )
-                [xx, yy] = meshgrid(PivPos(:, 1), chebpts(n, domain(3:4)));
-            elseif ( strcmpi( prefStruct.technology, 'fourier') )
-                x = linspace(domain(3), domain(4), n); 
-                [xx, yy] = meshgrid(PivPos(:, 1), x);
-            end
+            x = linspace(domain(3), domain(4), n);
+            [xx, yy] = meshgrid(PivPos(:, 1), x);
             colValues = evaluate(op, xx, yy, vectorize);
         end
         if ( ~resolvedRows )
             % Double sampling along rows
             m = 2^( floor( log2( m ) ) + 1 ) + 1;
-            if ( strcmpi( prefStruct.technology, 'chebyshev') )
-                [xx, yy] = meshgrid(chebpts(m, domain(1:2)), PivPos(:, 2));
-            elseif ( strcmpi( prefStruct.technology, 'fourier') )
-                x = linspace(domain(1), domain(2), m); 
-                [xx, yy] = meshgrid(x, PivPos(:, 2));
-            end
+            x = linspace(domain(1), domain(2), m);
+            [xx, yy] = meshgrid(x, PivPos(:, 2));
             rowValues = evaluate(op, xx, yy, vectorize);
             % find location of pivots on new grid  (using nesting property).
             oddm = 1:2:m;
             PP(:, 2) = oddm(PP(:, 2));
         else
-            if ( strcmpi( prefStruct.technology, 'chebyshev') )
-                [xx, yy] = meshgrid(chebpts(m, domain(1:2)), PivPos(:, 2));
-            elseif ( strcmpi( prefStruct.technology, 'fourier') )
-                x = linspace(domain(1), domain(2), m);
-                [xx, yy] = meshgrid(x, PivPos(:, 2));
-            end
+            x = linspace(domain(1), domain(2), m);
+            [xx, yy] = meshgrid(x, PivPos(:, 2));
             rowValues = evaluate(op, xx, yy, vectorize);
         end
         
@@ -293,21 +259,13 @@ while ( ~isHappy )
         
         % Are the columns and rows resolved now?
         if ( ~resolvedCols )
-            if ( strcmpi( prefStruct.technology, 'chebyshev') )
-                colChebtech = chebtech2(sum(colValues,2));
-            elseif ( strcmpi( prefStruct.technology, 'fourier') )
-                colValues(end,:) = [];
-                colChebtech = fourtech(sum(colValues,2));
-            end
+            colValues(end,:) = [];
+            colChebtech = fourtech(sum(colValues,2));
             resolvedCols = happinessCheck(colChebtech);
         end
         if ( ~resolvedRows )
-            if ( strcmpi( prefStruct.technology, 'chebyshev') )
-                rowChebtech = chebtech2(sum(rowValues.',2));
-            elseif ( strcmpi( prefStruct.technology, 'fourier') )
-                rowValues(:,end) = [];
-                rowChebtech = fourtech(sum(rowValues.',2));
-            end
+            rowValues(:,end) = [];
+            rowChebtech = fourtech(sum(rowValues.',2));
             resolvedRows = happinessCheck(rowChebtech);
         end
         isHappy = resolvedRows & resolvedCols;
@@ -332,27 +290,22 @@ while ( ~isHappy )
     
     % Construct a CHEBFUN2:
     g.pivotValues = pivotValue;
-    if ( strcmpi( prefStruct.technology, 'chebyshev') )
-        g.cols = chebfun(colValues, domain(3:4) );
-        g.rows = chebfun(rowValues.', domain(1:2) );
-    elseif ( strcmpi( prefStruct.technology, 'fourier') )
-        g.cols = fourtech(colValues, domain(3:4) );
-        g.rows = fourtech(rowValues.', domain(1:2) );
-    end
+    g.cols = fourtech(colValues, domain(3:4) );
+    g.rows = fourtech(rowValues.', domain(1:2) );
     g.pivotLocations = PivPos;
     g.domain = domain;
     
-%     % Sample Test:
-%     if ( sampleTest )
-%         % Evaluate at arbitrary point in domain:
-%         r = 0.029220277562146;
-%         s = 0.237283579771521;
-%         r = (domain(2)+domain(1))/2 + r*(domain(2)-domain(1));
-%         s = (domain(4)+domain(3))/2 + s*(domain(4)-domain(3));
-%         if ( abs( op(r,s) - feval(g, r, s) ) > 1e5 * tol )
-%             isHappy = 0;
-%         end
-%     end
+    %     % Sample Test:
+    %     if ( sampleTest )
+    %         % Evaluate at arbitrary point in domain:
+    %         r = 0.029220277562146;
+    %         s = 0.237283579771521;
+    %         r = (domain(2)+domain(1))/2 + r*(domain(2)-domain(1));
+    %         s = (domain(4)+domain(3))/2 + s*(domain(4)-domain(3));
+    %         if ( abs( op(r,s) - feval(g, r, s) ) > 1e5 * tol )
+    %             isHappy = 0;
+    %         end
+    %     end
     
 end
 
@@ -500,18 +453,18 @@ end
 
 end
 
-function [xx, yy] = getTensorGrid( nx, ny, D, technology)
+function [xx, yy] = getTensorGrid( nx, ny, D)
 % Get Tensor grid.
-
-if ( strcmpi( technology, 'chebyshev') )
-    [xx, yy] = fourfun2.chebpts2(nx, ny, domain);
-elseif ( strcmpi( technology, 'fourier') )
-    x = linspace( D(1), D(2), nx );     % x grid.
-    y = linspace( D(3), D(4), ny );     % y grid
-    [xx, yy] = meshgrid(x, y);   % Tensor product.
-else
-    error('CHEBFUN2:TECHNOLOGY:PREF','Unrecognized technology in preferences.');
-end
+%
+% if ( strcmpi( technology, 'chebyshev') )
+%     [xx, yy] = fourfun2.chebpts2(nx, ny, domain);
+% elseif ( strcmpi( technology, 'fourier') )
+x = linspace( D(1), D(2), nx );     % x grid.
+y = linspace( D(3), D(4), ny );     % y grid
+[xx, yy] = meshgrid(x, y);   % Tensor product.
+% else
+%     error('CHEBFUN2:TECHNOLOGY:PREF','Unrecognized technology in preferences.');
+% end
 
 end
 
