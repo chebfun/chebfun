@@ -67,7 +67,7 @@ while ( ~terminate )
     delta = -delta;
 
     % Store the norm of the update
-    normDelta = mynorm(delta);
+    normDelta = N.norm(delta);
     
     dampingInfo.normDelta = normDelta;
     
@@ -162,14 +162,6 @@ displayInfo('final', u, delta, newtonCounter, errEst, errEstBC, displayFig, ...
 % Return useful information in the INFO structure
 info.normDelta = normDeltaVec(1:newtonCounter);
 info.error = errEst;
-end
-
-function out = mynorm(f, type)
-if ( isa(f, 'chebmatrix') )
-    out = max(cellfun(@(u) get(u, 'vscale'), f.blocks));
-else
-    out = get(f, 'vscale');
-end
 end
 
 function bcNorm = evalBCnorm(N, u, x)

@@ -42,7 +42,7 @@ while ( ~accept )
     if newtonCounter > 0 && initPrediction
         % Compute a prediction value
         mu = (normDeltaOld*normDeltaBar)/...
-            (mynorm(deltaBar-delta, 'fro')*normDelta)*lambda;
+            (N.norm(deltaBar-delta, 'fro')*normDelta)*lambda;
         lambda = min(1,mu);
         % Indicate that we will now be in correction mode until next
         % Newton step.
@@ -94,13 +94,13 @@ while ( ~accept )
     
     % The norm of the simplified Newton step is used to compute a
     % contraction factor
-    normDeltaBar = mynorm(deltaBar);
+    normDeltaBar = N.norm(deltaBar);
     
     % Contraction factor
     cFactor = normDeltaBar/normDelta;
     
     muPrime = (.5*normDelta*lambda^2)/...
-        (mynorm(deltaBar-(1-lambda)*delta,'fro'));
+        (N.norm(deltaBar-(1-lambda)*delta,'fro'));
     
     if cFactor >=1
         lambda = min(muPrime,.5*lambda);
@@ -140,12 +140,4 @@ dampingInfo.normDeltaBar = normDeltaBar;
 dampingInfo.deltaBar = deltaBar;
 
 
-end
-
-function out = mynorm(f, type)
-if ( isa(f, 'chebmatrix') )
-    out = max(cellfun(@(u) get(u, 'vscale'), f.blocks));
-else
-    out = get(f, 'vscale');
-end
 end

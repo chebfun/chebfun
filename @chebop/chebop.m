@@ -389,6 +389,18 @@ classdef (InferiorClasses = {?double}) chebop
         
         % Solve a linear problem posed with CHEBOP.
         [u, info] = solvebvpLinear(L, rhs, residual, displayInfo, pref)
+        
+        % Compute norm when using CHEBOP (useful because we don't have a norm
+        % method for the CHEBMATRIX class)
+        function out = norm(f, type)
+        % F is probably a CHEBMATRIX (might in some cases be a CHEBFUN).
+        % TYPE determines what norm we use (currently not in use).
+            if ( isa(f, 'chebmatrix') )
+                out = max(cellfun(@(u) get(u, 'vscale'), f.blocks));
+            else
+                out = get(f, 'vscale');
+            end
+        end
 
     end
     
