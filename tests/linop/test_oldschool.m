@@ -20,7 +20,7 @@ pass(8) = norm( D(8) - matrix(D,8) ) < 2e-14;
 
 %% Test boundary condition syntax
 A = D^2;
-[~, ~, ~, A0] = matrix(A,10);   % version with no BCs
+[dummy1, dummy2, dummy3, A0] = matrix(A,10);   % version with no BCs
 [z,e,s,dif] = linop.primitiveFunctionals(d([1 end]));
 A = addConstraint(A,e(d(1)),0);
 A = addConstraint(A,e(d(end))*D,0);

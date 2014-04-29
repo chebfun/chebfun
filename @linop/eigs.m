@@ -273,15 +273,12 @@ function [V,D,P] = getEigenvalues(disc, discM, k, sigma)
     % Discretize the RHS operator, or use identity.
     if ( ~isempty(discM) )
         discM.dimension = disc.dimension;
-        [~, ~, ~, B] = matrix(discM);
+        [dummy1, dummy2, dummy3, B] = matrix(discM);
         % Project RHS matrix and prepend rows for the LHS constraints.
         PB = [ zeros(size(C)) ; P*B ];
     else
         PB = [ zeros(size(C)) ; PS ];
     end
-    
-%     PB
-%     error
     
     % Compute eigenvalues.
     if ( length(PA) <= 2000 )

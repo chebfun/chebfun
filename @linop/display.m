@@ -1,7 +1,7 @@
 function display(L)
 %DISPLAY   Pretty-print a linop summary.
 
-% Copyright 20143 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Obtain size of the linop

@@ -11,7 +11,7 @@ function E = feval(disc, location, direction)
 n = disc.dimension;
 
 % Find the collocation points and create an empty functional.
-[x, ~, barywght] = functionPoints(disc);
+[x, dummy, barywght] = functionPoints(disc);
 offset = cumsum([0 ; n(:)]);
 N = offset(end);
 E = zeros(1, N);

@@ -91,8 +91,6 @@ for i = 1:length(t)
         
         % Discretize the initial condition.
         discu = disc;
-%         discu.source = u0;
-%         v0 = matrix(discu);
         do = max(getDiffOrder(disc.source), 0);
         do = max(do, [], 1);
         for k = 1:numel(u0.blocks)
@@ -126,7 +124,7 @@ for i = 1:length(t)
     
     %% Tidy the solution for output:
     ucell = mat2fun(disc, u);
-    doSimplify = @(f) simplify( f, max(eps,epsLevel) );
+    doSimplify = @(f) simplify( f, max(eps, epsLevel) );
     ucell = cellfun( doSimplify, ucell, 'uniform', false );
     allu = [ allu, chebmatrix(ucell) ];
 end

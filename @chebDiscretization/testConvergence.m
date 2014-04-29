@@ -15,22 +15,23 @@ u = toFunction(disc, newvalues);
 % Test convergence on each piece. Start by obtaining the Chebyshev coefficients
 % of all pieces, which we can then pass down to the testPiece method
 coeffs = get(u, 'coeffs');
-values = get(u,'values');
+values = get(u, 'values');
 d = disc.domain;
 numInt = numel(d) - 1;
 isDone = false(1, numInt);
 epsLevel = 0;
 for i = 1:numInt
     %    f = chebtech.constructor(values{i},u.vscale,hscale(i));
-    [isDone(i),neweps] = plateauCheck(coeffs{i},u.vscale);
+    [isDone(i),neweps] = plateauCheck(coeffs{i}, u.vscale);
     epsLevel = max( epsLevel, neweps );
 end
 
 end
 
 
-function [ishappy, epslevel, cutoff] = plateauCheck(coeff,vscale)
-
+function [ishappy, epslevel, cutoff] = plateauCheck(coeff, vscale)
+%TODO: A summary documenting what's going on in this method would
+% be nice. Also a short description of the outputs.
 
 n = length(coeff);
 epslevel = eps;
