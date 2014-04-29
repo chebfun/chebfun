@@ -40,9 +40,9 @@ classdef chebfun
 %   CHEBFUN({@(x) sin(x), @(x) cos(x)}, [-1, 0, 1])
 %
 % CHEBFUN(F, PREF) or CHEBFUN(F, [A, B], PREF) constructs a CHEBFUN object from
-% F with the options determined by the CHEBPREF object PREF. Construction time
+% F with the options determined by the CHEBFUNPREF object PREF. Construction time
 % options may also be passed directly to the constructor in the form CHEBFUN(F,
-% [A, B], PROP1, VAL1, PROP2, VAL2, ...). (See CHEBPREF for details of the
+% [A, B], PROP1, VAL1, PROP2, VAL2, ...). (See CHEBFUNPREF for details of the
 % various preference options and their defaults.). In particular, CHEBFUN(F,
 % 'splitting', 'on') allows the constructor to adaptively determine breakpoints
 % to better represent piecewise smooth functions F. For example,
@@ -71,7 +71,7 @@ classdef chebfun
 % domain [-1, 0, 1]. The latter defines a single column CHEBFUN which represents
 % sin(x) in the interval [-1, 0) and cos(x) on the interval (0, 1]. 
 %
-% See also CHEBPREF, CHEBPTS.
+% See also CHEBFUNPREF, CHEBPTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
@@ -482,30 +482,30 @@ function [op, dom, pref] = parseInputs(op, dom, varargin)
     args = varargin;
     if ( nargin == 1 )
         % chebfun(op)
-        pref = chebpref();
+        pref = chebfunpref();
         dom = pref.domain;
     elseif ( isa(dom, 'domain') )
         dom = double(dom);
-        pref = chebpref();
-    elseif ( isstruct(dom) || isa(dom, 'chebpref') )
+        pref = chebfunpref();
+    elseif ( isstruct(dom) || isa(dom, 'chebfunpref') )
         % chebfun(op, pref)
-        pref = chebpref(dom);
+        pref = chebfunpref(dom);
         dom = pref.domain;
     elseif ( ~isnumeric(dom) || (length(dom) == 1) )
         % chebfun(op, prop1, val1, ...)
-        pref = chebpref();
+        pref = chebfunpref();
         args = [dom, args];
         dom = pref.domain;
     elseif ( nargin < 3 )
         % chebfun(op, domain)
-        pref = chebpref();
-    elseif ( isstruct(varargin{1}) || isa(varargin{1}, 'chebpref') )
+        pref = chebfunpref();
+    elseif ( isstruct(varargin{1}) || isa(varargin{1}, 'chebfunpref') )
         % chebfun(op, domain, pref)
-        pref = chebpref(args{1});
+        pref = chebfunpref(args{1});
         args(1) = [];
     else
         % chebfun(op, domain, prop1, val1, ...)
-        pref = chebpref();
+        pref = chebfunpref();
     end
 
     % Take the default domain if an empty one was given:

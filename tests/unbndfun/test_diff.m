@@ -3,7 +3,7 @@
 function pass = test_diff(pref)
 
 if ( nargin == 1 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Seed for random number:

@@ -3,7 +3,7 @@ function pass = chebfun2v_syntax( pref )
 % Alex Townsend, March 2013.
 
 if ( nargin < 1 )
-    pref = chebpref;
+    pref = chebfunpref;
 end
 tol = 1e5 * pref.cheb2Prefs.eps; 
 

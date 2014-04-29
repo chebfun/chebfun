@@ -3,7 +3,7 @@
 function pass = test_compose(pref)
 
 if ( nargin < 1 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Set the domain:

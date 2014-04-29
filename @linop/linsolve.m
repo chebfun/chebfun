@@ -39,7 +39,7 @@ prefs = [];    % no prefs given
 disc = [];     % no discretization given
 for j = 1:nargin-2
     item = varargin{j};
-    if ( isa(item, 'chebpref') )
+    if ( isa(item, 'chebfunpref') )
         prefs = item;
     elseif ( isa(item,'chebDiscretization') )
         disc = item;

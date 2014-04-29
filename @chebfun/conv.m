@@ -119,7 +119,7 @@ hs = max(hscale(f), hscale(g));
 vs = 2*max([vscale(f), vscale(g)]);
 
 % Avoid resampling for speed up:
-p = chebpref();
+p = chebfunpref();
 p.enableBreakpointDetection = false;
 p.enableSingularityDetection = false;
 p.techPrefs.extrapolate = true;

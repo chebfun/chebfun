@@ -1,8 +1,8 @@
-classdef cheboppref < chebpref
-% TODO: Add CHEBPREF style documentation of the options available. To be written
+classdef cheboppref < chebfunpref
+% TODO: Add CHEBFUNPREF style documentation of the options available. To be written
 % when we introduce nonlinear ODEs, since those involve a number of options.
     
-% TODO: The relationship between CHEBOPPREF and CHEBPREF needs some serious
+% TODO: The relationship between CHEBOPPREF and CHEBFUNPREF needs some serious
 % consideration.
 
     % See above for documentation.
@@ -16,7 +16,7 @@ classdef cheboppref < chebpref
 
         function outPref = cheboppref()           
             
-            outPref = outPref@chebpref;
+            outPref = outPref@chebfunpref;
             
             % TODO: Check with AA about preferences
             outPref.prefList.maxTotalLength = 2500;

@@ -20,7 +20,7 @@ end
 val = feval(f.funPart, x);
 
 % Point values of distributions do not make sense mathematically, so return NaN.
-pref = chebpref();
+pref = chebfunpref();
 proximityTol = pref.deltaPrefs.proximityTol;        
 
 % Make sure there are no trivial delta functions:

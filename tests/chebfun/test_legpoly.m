@@ -3,7 +3,7 @@
 function pass = test_legpoly(pref)
 
 if ( nargin < 1 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Check coefficients of Legendre polynomials.

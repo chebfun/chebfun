@@ -2,7 +2,7 @@ function pass = test_chebpolyval2()
 % Check the chebpolyval2 commands in trunk and @chebfun2 folder 
 
 if ( nargin < 1 ) 
-    pref = chebpref; 
+    pref = chebfunpref; 
 end 
 tol = 100 * pref.cheb2Prefs.eps; 
 j = 1;

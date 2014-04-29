@@ -4,7 +4,7 @@ function pass = test_changeMap(pref)
 
 % Get preferences:
 if ( nargin < 1 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Seed for random number:

@@ -4,7 +4,7 @@
 function pass = test_cf(pref)
 
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 f = chebfun(@exp);

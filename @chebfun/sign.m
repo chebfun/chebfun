@@ -18,7 +18,7 @@ if ( isempty(F) )
 end
 
 if ( nargin < 2 ) 
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 for k = 1:numel(F)

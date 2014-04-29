@@ -2,7 +2,7 @@ function pass = test_chebfun2_surf( pref )
 % Test surf
 
 if ( nargin == 0) 
-    pref = chebpref; 
+    pref = chebfunpref; 
 end
 
 

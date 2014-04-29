@@ -122,7 +122,7 @@ for j = 1:n
         % If there is a delta function at the join, recreate the fun using the
         % deltafun constructor:
         p.enableDeltaFunctions = true;
-        pref = chebpref(p);
+        pref = chebfunpref(p);
         tol = pref.deltaPrefs.deltaTol;
         if ( any(abs(deltaMag(k, :) > tol)) || any(abs(deltaMag(k+1, :) > tol)) )
             % [TODO]: This does not handle array valuedness at the moment.

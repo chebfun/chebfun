@@ -1,11 +1,11 @@
-classdef chebpref
-%CHEBPREF   Class for managing Chebfun preferences.
-%   CHEBPREF is a class for managing Chebfun construction-time preferences such
-%   as the construction tolerance, whether or not to perform breakpoint and
-%   singularity detection, and the various options that those features require.
-%   These objects can be supplied to the CHEBFUN constructor (as well as the
-%   constructors of other classes in the CHEBFUN system), which will interpret
-%   them and adjust the construction process accordingly.
+classdef chebfunpref
+%CHEBFUNPREF   Class for managing Chebfun preferences.
+%   CHEBFUNPREF is a class for managing Chebfun construction-time preferences
+%   such as the construction tolerance, whether or not to perform breakpoint
+%   and singularity detection, and the various options that those features
+%   require.  These objects can be supplied to the CHEBFUN constructor (as well
+%   as the constructors of other classes in the CHEBFUN system), which will
+%   interpret them and adjust the construction process accordingly.
 %
 % Available Preferences:
 %
@@ -66,7 +66,7 @@ classdef chebpref
 %
 %         This is the tolerance up to which delta functions will be negligible.
 %
-%      proxomityTol          - Minimum distance between delta functions. 
+%      proximityTol            - Minimum distance between delta functions.
 %       [1e-11]
 %         If two delta functions are located closer than this tolerance, they 
 %         will be merged.
@@ -112,7 +112,7 @@ classdef chebpref
 %         op2 = @(x) 1./(1+x);
 %         op3 = @(x) x+1;
 %         op = {op1, op2, op3};
-%         pref = chebpref();
+%         pref = chebfunpref();
 %         pref.singPrefs.exponents = [0 0 -1 0 0 0];
 %         f = chebfun(op, dom, pref);
 %
@@ -132,7 +132,7 @@ classdef chebpref
 %         and that for the right endpoint of the last piece. The exponents for
 %         all other interior endpoints are simply assumed zeros. For example,
 %
-%         pref = chebpref();
+%         pref = chebfunpref();
 %         pref.singPrefs.exponents = [-1 0];
 %         pref.enableBreakpointDetection = 1;
 %         f = chebfun(@(x) sin(100*x)./(x+2), [-2 7], pref)
@@ -162,7 +162,7 @@ classdef chebpref
 %
 %         dom = [-1 1];
 %         op = @(x) (x - dom(1)).^-0.5.*sin(x);
-%         pref = chebpref();
+%         pref = chebfunpref();
 %         pref.singPrefs.singType = {'sing', 'none'};
 %         f = chebfun(op, dom, pref);
 %
@@ -235,14 +235,14 @@ classdef chebpref
 %        ensure that behavior hasn't been missed, e.g., due to undersampling.
 %
 % The default values for any of these preferences may be globally overridden
-% using CHEBPREF.SETDEFAULTS(); see the documentation for that function for
+% using CHEBFUNPREF.SETDEFAULTS(); see the documentation for that function for
 % further details.
 %
 % Constructor inputs:
-%   P = CHEBPREF() creates a CHEBPREF object with the default values of the
+%   P = CHEBFUNPREF() creates a CHEBFUNPREF object with the default values of the
 %   preferences.  For a list of all available preferences, see above.
 %
-%   P = CHEBPREF(Q), where Q is a MATLAB structure uses the field/value pairs
+%   P = CHEBFUNPREF(Q), where Q is a MATLAB structure uses the field/value pairs
 %   in Q to set the properties of P.  If a field of Q has a name which matches
 %   a property of P, the value of that property of P is set to the value
 %   associated to that field in Q.  Any fields of Q that are not properties of
@@ -251,32 +251,32 @@ classdef chebpref
 %   this are the fields BREAKPOINTPREFS, SINGPREFS, and TECHPREFS.  If Q has
 %   fields with these names, they will be assumed to be MATLAB structures and
 %   will be "merged" with the structures of default preferences stored in the
-%   properties of the same names in P using CHEBPREF.MERGEPREFS().
+%   properties of the same names in P using CHEBFUNPREF.MERGEPREFS().
 %
-%   P = CHEBPREF(Q), where Q is a CHEBPREF, sets P to be a copy of Q.
+%   P = CHEBFUNPREF(Q), where Q is a CHEBFUNPREF, sets P to be a copy of Q.
 %
 % Notes:
-%   When building a CHEBPREF from a structure using the second calling syntax
-%   above, one should take care to ensure that preferences for the underlying
-%   representation technology are specified once and only once; e.g., do not
-%   simultaneously set Q.MYPREF = 1 and Q.TECHPREFS.MYPREF = 2.  The value of
-%   P.TECHPREFS.MYPREF that gets set from P = CHEBPREF(Q) in this circumstance
-%   is implementation-defined.
+%   When building a CHEBFUNPREF from a structure using the second calling
+%   syntax above, one should take care to ensure that preferences for the
+%   underlying representation technology are specified once and only once;
+%   e.g., do not simultaneously set Q.MYPREF = 1 and Q.TECHPREFS.MYPREF = 2.
+%   The value of P.TECHPREFS.MYPREF that gets set from P = CHEBFUNPREF(Q) in
+%   this circumstance is implementation-defined.
 %
 % Examples:
-%   Create a CHEBPREF for building a CHEBFUN based on CHEBTECH (default) with
+%   Create a CHEBFUNPREF for building a CHEBFUN based on CHEBTECH (default) with
 %   breakpoint detection, a splitting length of 257 (pieces of polynomial degree
 %   256, and a custom CHEBTECH refinement function:
 %      p.enableBreakpointDetection = true;
 %      p.breakpointPrefs.splitLength = 257;
 %      p.techPrefs.refinementFunction = @custom;
-%      pref = chebpref(p);
+%      pref = chebfunpref(p);
 %
 %   Same thing with a slightly shorter syntax:
 %      p.enableBreakpointDetection = true;
 %      p.breakpointPrefs.splitLength = 257;
 %      p.refinementFunction = @custom;
-%      pref = chebpref(p);
+%      pref = chebfunpref(p);
 %
 % See also SUBSREF, SUBSASGN, MERGEPREFS
 
@@ -299,7 +299,7 @@ classdef chebpref
 %    following "abstract" preferences in an appropriate manner:  eps,
 %    maxLength, exactLength, extrapolate, and sampleTest.
 %
-%  - The original idea was that the techPrefs field of the CHEBPREF would be
+%  - The original idea was that the techPrefs field of the CHEBFUNPREF would be
 %    the only thing that gets passed to the tech constructor.  This is
 %    attainable if one is constructing a CHEBFUN by calling the constructor
 %    directly but not, e.g., if one is constructing using COMPOSE().  The
@@ -307,17 +307,17 @@ classdef chebpref
 %    the tech COMPOSE() (and therefore should drop the unneeded prefs) or the
 %    SINGFUN COMPOSE() (for which it needs to keep them).  Techs can deal with
 %    this by dropping the unnecessary information themselves either by doing
-%    so directly or by calling CHEBPREF.MERGEPREFS().
+%    so directly or by calling CHEBFUNPREF.MERGEPREFS().
 %
 %    We considered other designs that deal with this problem more gracefully
 %    but ultimately found them cumbersome compared to the present one.
 %
 % The other major design goal was to make this object behave just like a plain
 % struct but a little more "intelligently" with respect to system preferences.
-% The end result is that CHEBPREFs and ordinary structs are almost
+% The end result is that CHEBFUNPREFs and ordinary structs are almost
 % interchangeable, and one can easily write functions that accept both types of
-% arguments by calling P = CHEBPREF(P), where P is the preference input to the
-% function.
+% arguments by calling P = CHEBFUNPREF(P), where P is the preference input to
+% the function.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     properties
@@ -330,6 +330,7 @@ classdef chebpref
         tech
         techPrefs
         cheb2Prefs
+
         % This is a MATLAB structure which stores the system preferences.  As a
         % class invariant, this structure is guaranteed to contain fields for
         % each of the preferences of the upper layers listed above.  It is also
@@ -340,8 +341,8 @@ classdef chebpref
 
     methods
 
-        function outPref = chebpref(inPref)
-            if ( (nargin == 1) && isa(inPref, 'chebpref') )
+        function outPref = chebfunpref(inPref)
+            if ( (nargin == 1) && isa(inPref, 'chebfunpref') )
                 outPref = inPref;
                 return
             elseif ( nargin < 1 )
@@ -370,7 +371,7 @@ classdef chebpref
                 outPref.cheb2Prefs.eps = 2^(-52); 
                 outPref.cheb2Prefs.exactLength = false;
                 outPref.cheb2Prefs.sampleTest = true; 
-            outPref.prefList = chebpref.manageDefaultPrefs('get');
+            outPref.prefList = chebfunpref.manageDefaultPrefs('get');
 
             % Copy fields from q, placing unknown ones in techPrefs and merging
             % incomplete substructures.
@@ -378,7 +379,7 @@ classdef chebpref
                 if ( isfield(outPref.prefList, field{1}) )
                     if ( isstruct(outPref.prefList.(field{1})) )
                         outPref.prefList.(field{1}) = ...
-                            chebpref.mergePrefs(outPref.prefList.(field{1}), ...
+                            chebfunpref.mergePrefs(outPref.prefList.(field{1}), ...
                             inPref.(field{1}));
                     else
                         outPref.prefList.(field{1}) = inPref.(field{1});
@@ -390,18 +391,19 @@ classdef chebpref
         end
 
         function out = subsref(pref, ind)
-        %SUBSREF   Subscripted referencing for CHEBPREF.
-        %   P.PROP, where P is a CHEBPREF object, returns the value of the
-        %   CHEBPREF property PROP stored in P.  If PROP is not a CHEBPREF
+        %SUBSREF   Subscripted referencing for CHEBFUNPREF.
+        %   P.PROP, where P is a CHEBFUNPREF object, returns the value of the
+        %   CHEBFUNPREF property PROP stored in P.  If PROP is not a CHEBFUNPREF
         %   property, P.TECHPREFS.PROP will be returned instead.  If PROP is
-        %   neither a CHEBPREF property nor a field in P.TECHPREFS, an error
+        %   neither a CHEBFUNPREF property nor a field in P.TECHPREFS, an error
         %   will be thrown.
         %
         %   For access to fields PROP of TECHPREFS that have the same name as a
-        %   CHEBPREF property, use the syntax P.TECHPREFS.PROP.
+        %   CHEBFUNPREF property, use the syntax P.TECHPREFS.PROP.
         %
-        %   CHEBPREF does not support any other subscripted referencing types,
-        %   including '()' and '{}'.
+        %   CHEBFUNPREF does not support any other subscripted referencing
+        %   types, including '()' and '{}'.
+
             switch ( ind(1).type )
                 case '.'
                     if ( isfield(pref.prefList, ind(1).subs) )
@@ -420,17 +422,18 @@ classdef chebpref
         end
 
         function pref = subsasgn(pref, ind, val)
-        %SUBSASGN   Subscripted assignment for CHEBPREF.
-        %   P.PROP = VAL, where P is a CHEBPREF object, assigns the value VAL
-        %   to the CHEBPREF property PROP stored in P.  If PROP is not a
-        %   CHEBPREF property, the assignment will be made to P.TECHPREFS.PROP
-        %   instead.
+        %SUBSASGN   Subscripted assignment for CHEBFUNPREF.
+        %   P.PROP = VAL, where P is a CHEBFUNPREF object, assigns the value
+        %   VAL to the CHEBFUNPREF property PROP stored in P.  If PROP is not a
+        %   CHEBFUNPREF property, the assignment will be made to
+        %   P.TECHPREFS.PROP instead.
         %
         %   To assign to fields PROP of TECHPREFS that have the same name as a
-        %   CHEBPREF property, use the syntax P.TECHPREFS.PROP = VAL.
+        %   CHEBFUNPREF property, use the syntax P.TECHPREFS.PROP = VAL.
         %
-        %   CHEBPREF does not support any other subscripted assignment types,
+        %   CHEBFUNPREF does not support any other subscripted assignment types,
         %   including '()' and '{}'.
+
             switch ( ind(1).type )
                 case '.'
                     if ( isfield(pref.prefList, ind(1).subs) )
@@ -447,9 +450,9 @@ classdef chebpref
         end
 
         function display(pref)
-        %DISPLAY   Display a CHEBPREF object.
+        %DISPLAY   Display a CHEBFUNPREF object.
         %   DISPLAY(PREF) prints out a list of the preferences stored in the
-        %   CHEBPREF object PREF.
+        %   CHEBFUNPREF object PREF.
 
             % Compute the screen column in which pref values start.
             valueCol = 34; % length('    enableSingularityDetection:   ');
@@ -470,7 +473,7 @@ classdef chebpref
             % Print values of "known" preferences.
             prefList = pref.prefList;
 
-            fprintf('chebpref object with the following preferences:\n');
+            fprintf('chebfunpref object with the following preferences:\n');
             fprintf([padString('    domain:') '[%g, %g]\n'], ...
                 prefList.domain(1), prefList.domain(end));
             fprintf([padString('    enableBreakpointDetection:') '%d\n'], ...
@@ -533,19 +536,19 @@ classdef chebpref
 
         function pref1 = mergePrefs(pref1, pref2, map)
         %MERGEPREFS   Merge preference structures.
-        %   P = CHEBPREF.MERGEPREFS(P, Q), where P and Q are MATLAB structures,
-        %   "merges" Q into P by replacing the contents of fields in P with
-        %   those of identically-named fields in Q.  If Q has a field whose
-        %   name does not match any of those in P, it is added to P.
+        %   P = CHEBFUNPREF.MERGEPREFS(P, Q), where P and Q are MATLAB
+        %   structures, "merges" Q into P by replacing the contents of fields
+        %   in P with those of identically-named fields in Q.  If Q has a field
+        %   whose name does not match any of those in P, it is added to P.
         %
-        %   P = CHEBPREF.MERGEPREFS(P, Q, MAP) does the same but uses the
+        %   P = CHEBFUNPREF.MERGEPREFS(P, Q, MAP) does the same but uses the
         %   structure MAP to "translate" the names of fields of Q into names of
         %   fields of P.  If Q has a field FIELD and MAP has a field of the
         %   same name, then the value of P.(MAP.FIELD) will be replaced by the
         %   contents of Q.FIELD.  If P does not have a field matching the
         %   string stored in MAP.FIELD, one will be added to P.
         %
-        %   P and Q may also be CHEBPREF objects.  In this case, P and Q are
+        %   P and Q may also be CHEBFUNPREF objects.  In this case, P and Q are
         %   replaced by P.TECHPREFS and Q.TECHPREFS before proceeding, and the
         %   output is a MATLAB structure suitable for passing as a preference
         %   argument to a "tech" constructor.
@@ -560,11 +563,11 @@ classdef chebpref
         %    context of the tech object whose preferences are stored in P.
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-            if ( isa(pref1, 'chebpref') )
+            if ( isa(pref1, 'chebfunpref') )
                 pref1 = pref1.prefList.techPrefs;
             end
 
-            if ( isa(pref2, 'chebpref') )
+            if ( isa(pref2, 'chebfunpref') )
                 pref2 = pref2.prefList.techPrefs;
             end
 
@@ -583,17 +586,18 @@ classdef chebpref
 
         function pref = getFactoryDefaults(getFactory)
         %GETFACTORYDEFAULTS   Get factory default preferences.
-        %   PREF = CHEBPREF.GETFACTORYDEFAULTS() returns a CHEBPREF object with
-        %   the preferences set to their factory defaults, irrespective of the
-        %   currently defined values of the default preferences.  This function
-        %   is useful if the user wishes to construct a CHEBFUN using the
-        %   factory defaults when other user-set defaults are currently in
+        %   PREF = CHEBFUNPREF.GETFACTORYDEFAULTS() returns a CHEBFUNPREF
+        %   object with the preferences set to their factory defaults,
+        %   irrespective of the currently defined values of the default
+        %   preferences.  This function is useful if the user wishes to
+        %   construct a CHEBFUN using the factory defaults when other user-set
+        %   defaults are currently in
         %   force.
         %
         % See also GETDEFAULTS, SETDEFAULTS.
 
-            fd = chebpref.factoryDefaultPrefs();
-            pref = chebpref(fd);
+            fd = chebfunpref.factoryDefaultPrefs();
+            pref = chebfunpref(fd);
 
             % Undo any merging of the factory default techPrefs with the
             % currently defined default techPrefs.  This is necessary, e.g., if
@@ -604,29 +608,30 @@ classdef chebpref
 
         function pref = getDefaults()
         %GETDEFAULTS   Get default preferences.
-        %   PREF = CHEBPREF.GETDEFAULTS() returns a CHEBPREF object with the
-        %   preferences set to the currently stored default values.  It is
-        %   equivalent to PREF = CHEBPREF().
+        %   PREF = CHEBFUNPREF.GETDEFAULTS() returns a CHEBFUNPREF object with
+        %   the preferences set to the currently stored default values.  It is
+        %   equivalent to PREF = CHEBFUNPREF().
         %
         % See also GETFACTORYDEFAULTS, SETDEFAULTS.
 
-            pref = chebpref();
+            pref = chebfunpref();
         end
 
         function setDefaults(varargin)
         %SETDEFAULTS   Set default preferences.
-        %   CHEBPREF.SETDEFAULTS(PREF1, VAL1, PREF2, VAL2, ...) sets the
+        %   CHEBFUNPREF.SETDEFAULTS(PREF1, VAL1, PREF2, VAL2, ...) sets the
         %   default values for the preferences whose names are stored in the
         %   strings PREF1, PREF2, ..., etc. to VAL1, VAL2, ..., etc.  All
-        %   subsequently constructed CHEBPREF objects will use these values as
-        %   the defaults.
+        %   subsequently constructed CHEBFUNPREF objects will use these values
+        %   as the defaults.
         %
-        %   CHEBPREF.SETDEFAULTS(PREF) sets the default values to the
-        %   preferences stored in the CHEBPREF object PREF.  PREF can also be a
-        %   MATLAB structure, in which case it is converted to a CHEBPREF as
-        %   described in the documentation for the CHEBPREF constructor first.
+        %   CHEBFUNPREF.SETDEFAULTS(PREF) sets the default values to the
+        %   preferences stored in the CHEBFUNPREF object PREF.  PREF can also
+        %   be a MATLAB structure, in which case it is converted to a
+        %   CHEBFUNPREF as described in the documentation for the CHEBFUNPREF
+        %   constructor first.
         %
-        %   CHEBPREF.SETDEFAULTS('factory') resets the default preferences to
+        %   CHEBFUNPREF.SETDEFAULTS('factory') resets the default preferences to
         %   their factory values.
         %
         % See also GETDEFAULTS, GETFACTORYDEFAULTS.
@@ -638,29 +643,29 @@ classdef chebpref
         % with the second).
 
             if ( nargin < 1)
-                error('CHEBPREF:setDefaults:notEnoughArguments', ...
+                error('CHEBFUNPREF:setDefaults:notEnoughArguments', ...
                     'Not enough arguments.');
             end
 
             if ( nargin == 1 )
                 if ( isstruct(varargin{1}) )
-                    varargin{1} = chebpref(varargin{1});
+                    varargin{1} = chebfunpref(varargin{1});
                 end
 
                 if ( ischar(varargin{1}) && strcmp(varargin{1}, 'factory') )
-                    chebpref.manageDefaultPrefs('set-factory');
-                elseif ( isa(varargin{1}, 'chebpref') )
-                    chebpref.manageDefaultPrefs('set', varargin{1}.prefList);
+                    chebfunpref.manageDefaultPrefs('set-factory');
+                elseif ( isa(varargin{1}, 'chebfunpref') )
+                    chebfunpref.manageDefaultPrefs('set', varargin{1}.prefList);
                 else
-                    error('CHEBPREF:setDefaults:badArg', ...
-                        ['When calling chebpref.setDefaults() with just ' ...
+                    error('CHEBFUNPREF:setDefaults:badArg', ...
+                        ['When calling chebfunpref.setDefaults() with just ' ...
                          'one argument, that argument must be ''factory'', ' ...
-                         'a CHEBPREF object, or a MATLAB structure.']);
+                         'a CHEBFUNPREF object, or a MATLAB structure.']);
                 end
             elseif ( mod(nargin, 2) == 0 )
-                chebpref.manageDefaultPrefs('set', varargin{:});
+                chebfunpref.manageDefaultPrefs('set', varargin{:});
             else
-                error('CHEBPREF:setDefaults:unpairedArg', ...
+                error('CHEBFUNPREF:setDefaults:unpairedArg', ...
                     'Unpaired argument in name-value pair list.');
             end
         end
@@ -670,19 +675,19 @@ classdef chebpref
 
         function varargout = manageDefaultPrefs(varargin)
         %MANAGEDEFAULTPREFS   Private method for handling default preferences.
-        %   CHEBPREF.MANAGEDEFAULTPREFS('get') returns a structure suitable for
-        %   storing in the prefList property of a CHEBPREF with all of the
-        %   currently stored default preferences suitable for initializing a
-        %   CHEBPREF object.
+        %   CHEBFUNPREF.MANAGEDEFAULTPREFS('get') returns a structure suitable
+        %   for storing in the prefList property of a CHEBFUNPREF with all of
+        %   the currently stored default preferences suitable for initializing
+        %   a CHEBFUNPREF object.
         %
-        %   CHEBPREF.MANAGEDEFAULTPREFS('set-factory') restores the default
+        %   CHEBFUNPREF.MANAGEDEFAULTPREFS('set-factory') restores the default
         %   preferences to their "factory" values.
         %
-        %   CHEBPREF.MANAGEDEFAULTPREFS('set', PREFLIST) sets the default
+        %   CHEBFUNPREF.MANAGEDEFAULTPREFS('set', PREFLIST) sets the default
         %   values to those stored in the structure PREFLIST.  PREFLIST should
-        %   be a structure suitable for use as a CHEBPREF prefList.
+        %   be a structure suitable for use as a CHEBFUNPREF prefList.
         %
-        %   CHEBPREF.MANAGEDEFAULTPREFS('set', PREF1, VAL1, PREF2, VAL2, ...)
+        %   CHEBFUNPREF.MANAGEDEFAULTPREFS('set', PREF1, VAL1, PREF2, VAL2, ...)
         %   sets the default values for PREF1, PREF2, ..., etc. to VAL1, VAL2,
         %   ..., etc.
 
@@ -696,20 +701,20 @@ classdef chebpref
         %    awkward syntax and so is not user-facing.
         %  - More importantly, this function is also not user-facing because
         %    its inputs and outputs depend on the internal representation of a
-        %    CHEBPREF as a MATLAB structure, and that's not something with which
-        %    anyone outside of CHEBPREF should be concerned.
+        %    CHEBFUNPREF as a MATLAB structure, and that's not something with
+        %    which anyone outside of CHEBFUNPREF should be concerned.
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
             persistent defaultPrefs;
 
             if ( isempty(defaultPrefs) )
-                defaultPrefs = chebpref.factoryDefaultPrefs();
+                defaultPrefs = chebfunpref.factoryDefaultPrefs();
             end
 
             if ( strcmp(varargin{1}, 'get') )
                 varargout{1} = defaultPrefs;
             elseif ( strcmp(varargin{1}, 'set-factory') )
-                defaultPrefs = chebpref.factoryDefaultPrefs();
+                defaultPrefs = chebfunpref.factoryDefaultPrefs();
             elseif ( strcmp(varargin{1}, 'set') )
                     varargin(1) = [];
                 if ( isstruct(varargin{1}) )
@@ -731,9 +736,9 @@ classdef chebpref
 
         function factoryPrefs = factoryDefaultPrefs()
         %FACTORYDEFAULTPREFS   Get structure of factory default preferences.
-        %   S = CHEBPREF.FACTORYDEFAULTREFS() returns a structure suitable for
-        %   storing in the prefList property of a CHEBPREF object that contains
-        %   all of the "factory default" values of the CHEBFUN
+        %   S = CHEBFUNPREF.FACTORYDEFAULTREFS() returns a structure suitable
+        %   for storing in the prefList property of a CHEBFUNPREF object that
+        %   contains all of the "factory default" values of the CHEBFUN
         %   construction-time preferences.
 
             factoryPrefs.domain = [-1 1];

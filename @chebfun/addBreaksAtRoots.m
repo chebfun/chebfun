@@ -22,7 +22,7 @@ function f = addBreaksAtRoots(f, tol)
 % Parse inputs:
 if ( nargin == 1 )
     tol = 0;
-elseif ( isa(tol, 'chebpref') )
+elseif ( isa(tol, 'chebfunpref') )
     tol = tol.techPrefs.eps;
 end
 

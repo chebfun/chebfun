@@ -2,7 +2,7 @@ function pass = test_optimization( pref )
 % Can we do global optimization?
 
 if ( nargin < 1 ) 
-    pref = chebpref; 
+    pref = chebfunpref; 
 end 
 
 tol = 100*pref.cheb2Prefs.eps; 

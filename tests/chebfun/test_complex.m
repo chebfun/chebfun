@@ -4,7 +4,7 @@ function pass = test_complex(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 pref.enableBreakpointDetection = 1;

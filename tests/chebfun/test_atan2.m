@@ -1,7 +1,7 @@
 function pass = test_atan2(pref)
 
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 a = -2.25*pi;

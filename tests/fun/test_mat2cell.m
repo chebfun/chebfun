@@ -4,7 +4,7 @@ function pass = test_mat2cell(pref)
 
 % Get preferences.
 if ( nargin < 2 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Set a domain for BNDFUN.

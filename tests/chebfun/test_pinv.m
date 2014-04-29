@@ -3,7 +3,7 @@
 function pass = test_pinv(pref)
 
 if ( nargin < 1 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Check a few simple examples.

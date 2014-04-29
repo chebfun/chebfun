@@ -57,7 +57,7 @@ function v = applyVolt(u, dom, kernel)
     % TODO: Explore the correct preferences for best behavior.
     %    p.techPrefs.eps = nrmu*eps;
     %    p.enableBreakpointDetection = true;
-    p = chebpref(p);
+    p = chebfunpref(p);
     
     breaks = dom(2:end-1);
     
