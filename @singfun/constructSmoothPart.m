@@ -5,7 +5,7 @@ function s = constructSmoothPart(op, vscale, hscale, pref)
 %   VSCALE, HSCALE and preferences to the SMOOTHFUN class are passed through
 %   the corresponding arguments.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
 if ( isempty(pref) )

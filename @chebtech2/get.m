@@ -10,7 +10,7 @@ function out = get(f, prop)
 %       'LVAL' - Value of F at -1.
 %       'RVAL' - Value of F at +1.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 switch prop

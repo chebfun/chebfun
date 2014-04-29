@@ -10,7 +10,7 @@ function f = fred( K, v )
 %
 % See also VOLT.
 
-% Copyright 2013 by The University of Oxford and The Chebfun2 Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun2 Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % Empty check:

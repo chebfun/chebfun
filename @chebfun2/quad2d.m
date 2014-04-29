@@ -8,7 +8,7 @@ function I = quad2d(f, a, b, c, d, varargin)
 % 
 % See also INTEGRAL2, SUM2, INTEGRAL.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % Is [a b c d]  subset of the domain of f ? 

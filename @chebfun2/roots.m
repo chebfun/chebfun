@@ -14,7 +14,7 @@ function r = roots( f, g )
 %
 % See also CHEBFUN2V/ROOTS.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 tol = 1e-5; % Go for five digits.

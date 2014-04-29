@@ -12,7 +12,7 @@ function w = quadwts(n)
 %
 %   [2] Joerg Waldvogel, www.chebfun.org/and_beyond/programme/slides/wald.pdf
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
 if ( n == 0 )                      % Special case (no points!)

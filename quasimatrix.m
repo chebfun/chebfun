@@ -4,7 +4,7 @@ function G = quasimatrix(F, varargin)
 %   TODO: Use this to document the difference between an array-valued CHEBFUN
 %   and a quasimatrix.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % This method is simply a wrapper for CHEB2QUASI() of the CHEBFUN constructor:

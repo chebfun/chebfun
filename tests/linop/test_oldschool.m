@@ -22,16 +22,17 @@ warning(warnState);
 
 %% Test boundary condition syntax
 A = D^2;
-A0 = matrix(A,10);   % version with no BCs
+[dummy1, dummy2, dummy3, A0] = matrix(A,10);   % version with no BCs
 [z,e,s,dif] = linop.primitiveFunctionals(d([1 end]));
 A = addConstraint(A,e(d(1)),0);
 A = addConstraint(A,e(d(end))*D,0);
 A1 = matrix(A,10);   % first two rows hold BCs
-correct = A0; 
+correct = cell2mat(A0); 
 correct([1 end],:) = A1(1:2,:);  % classic row replacement
 warnState = warning('off', 'chebfun:linop:fevalDeprecated');
-pass(9) = norm( correct - feval(A,10,'oldschool') ) < 2e-14;
+Aold = feval(A,10,'oldschool');
 warning(warnState);
+pass(9) = norm( correct - Aold ) < 2e-14;
 
 end
 
