@@ -141,6 +141,9 @@ classdef (InferiorClasses = {?double}) chebop
                     dom = op;
                     op = [];                    
                 end
+            elseif ( nargin == 2 && isnumeric(op) )
+                dom = [op, dom];
+                op = [];
             end
             
             % Assign operator and domain:
@@ -264,7 +267,7 @@ classdef (InferiorClasses = {?double}) chebop
         %   CHEBOP.SET.RBC offers more control of setting left boundary
         %   conditions than simply accessing the .rbc field, or using standard
         %   subsref.
-        
+
             % Need to know the nargin of the CHEBOP:
             nIn = nargin(N);
             
@@ -338,7 +341,11 @@ classdef (InferiorClasses = {?double}) chebop
                     N.bc = val;
                 end
             elseif ( strcmpi(val, 'periodic') )
-                N.bc = 'periodic';                
+                N.bc = 'periodic';    
+            elseif ( strcmpi(val, 'dirichlet') || strcmpi(val, 'neumann') )
+                N.bc = [];
+                N.lbc = val; %#ok<MCSUP>
+                N.rbc = val; %#ok<MCSUP>
             else
                 error('CHEBFUN:CHEBOP:SETRBC', ...
                     'Unsupported format of BCs')
