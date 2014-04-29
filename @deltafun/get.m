@@ -7,7 +7,7 @@ function out = get(f, prop)
 %       'DELTAMAG'    - Magnitude of the delta functions
 %       'FUNPART'     - The smooth function contained in DELTAFUN.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 switch prop

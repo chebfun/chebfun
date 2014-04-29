@@ -31,7 +31,7 @@
 %
 % See also LEGPTS and CHEBPTS.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. See
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -894,7 +894,7 @@ function Q = cumsummat(N)
 % to values of the integral of the interpolating polynomial at those points,
 % with the convention that the first value is zero.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Nm1 = N - 1:

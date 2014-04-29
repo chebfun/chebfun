@@ -13,7 +13,7 @@ for k = 1:2
     
     % Generate a few random points to use as test values.
     seedRNG(6178);
-    x = 2 * rand(100, 1) - 1;
+    x = 2 * rand(10, 1) - 1;
 
     % Check a few examples.
     f = myfun(@(x) [sin(x) cos(x) exp(x)], [-1 0 1], pref);
@@ -84,13 +84,12 @@ for k = 1:2
         pass(k,11) = strcmp(ME.identifier, 'CHEBFUN:assignColumns:domain');
     end
 
-    try
-        h = assignColumns(f, [1 2 4], g);
-        pass(k,12) = false;
-    catch ME
-        pass(k,12) = strcmp(ME.identifier, 'CHEBFUN:assignColumns:dims');
-    end
-    
+    % Test assign outside of dimension of f:
+    h = assignColumns(f, [1 2 4], g);
+    h_exact = @(x) [x x.^2 exp(x) x.^3];
+    err = feval(h, x) - h_exact(x);
+    pass(k,12) = norm(err(:), inf) < 10*vscale(h)*epslevel(h);
+
     %% Test for function defined on unbounded domain:
     
     % Functions on [-inf b]:

@@ -15,7 +15,7 @@ function varargout = ode45(varargin)
 %
 % See also ODESET, ODE113, ODE15S,
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Call the built in ODE45():

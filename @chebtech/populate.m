@@ -29,7 +29,7 @@ function f = populate(f, op, vscale, hscale, pref)
 %
 % See also CHEBTECH, TECHPREF, HAPPINESSCHECK.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -157,13 +157,8 @@ vscaleGlobal = max(vscale, vscaleOut);
 vscale = vscaleOut;
 
 % Adjust the epslevel appropriately:
-% if ( any(vscaleOut > 0) )
-%     epslevel = epslevel*vscaleGlobal./vscaleOut;
-% else 
-%     % Deal with zero vscale:
-%     epslevel = epslevel./(1+vscaleOut);
-% end
 vscaleOut(vscaleOut < epslevel) = epslevel;
+vscaleGlobal(vscaleGlobal < epslevel) = epslevel;
 epslevel = epslevel*vscaleGlobal./vscaleOut;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% Assign to CHEBTECH object. %%%%%%%%%%%%%%%%%%%%%%%%%%

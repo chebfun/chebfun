@@ -1,49 +1,24 @@
-classdef colloc2 < chebDiscretization
-%COLLOC2   Collocation based on 2nd-kind Chebyshev points.
-%   COLLOC2 is an implementation of CHEBDISCRETIZATION that applies spectral
-%   collocation using 2nd kind Chebyshev points for differential and integral
-%   operators and systems. 
+classdef colloc2 < colloc
+%COLLOC2    Collocation discretization on 2nd kind points.
+%   COLLOC2 is an implementation of COLLOC that implements spectral
+%   collocation on 2nd-kind Chebyshev points for differential and integral
+%   operators.
 %
-%   The default discretization type to use is set by CHEBOPPREF. You can also
-%   use CHEBOPPREF to create a preferences object and change its
-%   'discretization' property. 
+%   Linear algebra operations generally take O(N^3) flops, where N is determined
+%   automatically to resolve the solution. You can control the allowed values of
+%   N through CHEBOPPREF.
 %
-%   Linear algebra operations with COLLOC2 operators generally take O(N^3)
-%   flops, where in most contexts N is determined automatically to resolve the
-%   solution. The allowed values of N are governed by the 'dimensionValues'
-%   property in CHEBOPPREF. You can also set the maximum N (including systems
-%   and piecewise definitions) through the 'maxTotalLength' property.
-%
-%   See also CHEBOPPREF, CHEBDISCRETIZATION.
+%   See also COLLOC, CHEBDISCRETIZATION, CHEBOPPREF, CHEBOP. 
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
-    properties (Access=private)
-        mldivideData = [];  % stores LU factors of a matrix for repeated solves
-    end
-     
+    % No subclass-specific properties needed, and no special constructor either.
+    
     methods
-        function disc = colloc2(source, dimension, domain)
-        % COLLOC2 constructor
-        
-            % If SOURCE is not passed, return an empty object.
-            if isempty(source)
-                return
-            end
-            % Attach SOURCE and the DOMAIN information to the object.
-            disc.source = source; 
-            disc.domain = source.domain;
-  
-            % Assign DIMENSIONS and DOMAIN if they were passed.
-            if ( nargin > 1 )
-                disc.dimension = dimension;
-                if nargin > 2
-                    disc.domain = domain;
-                end
-            end
+        function disc = colloc2(varargin)
+            disc = disc@colloc(varargin{:});
         end
-         
     end
-        
+    
 end

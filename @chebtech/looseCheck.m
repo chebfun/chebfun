@@ -3,7 +3,7 @@ function [ishappy, epslevel, cutoff] = looseCheck(f, pref)  %#ok<INUSD,STOUT>
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = LOOSECHECK(F, PREF). This file is not yet
 %   implemented.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % [TODO]: Implement this method.
