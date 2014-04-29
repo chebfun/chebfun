@@ -117,21 +117,20 @@ numpts = 101;           % Number of points in plots
 legends = 1;            % Display legends?
 args = {};              % Additional plotting args.
 
+isPosInt = @(v) abs(round(v)) == v;
+
 % Sort out the inputs.
 if ( nargin >= 1 )
     % Check arguments for EPS and K, if they exist.
-    if ( isnumeric(varargin{1}) )
-        if ( varargin{1} == 1 )
-            if abs(round(varargin{1})-varargin{1}) == 0
-                k = varargin{1};
-            else
-                ee = varargin{1};
-            end
+    v1 = varargin{1};
+    if ( isnumeric(v1) )
+        if ( v1 == 1 )
+            k = v1;
         else
-            if (abs(round(varargin{1})-varargin{1}) == 0) && (~isnumeric(varargin{2}))
-                k = varargin{1};
-            elseif (isnumeric(varargin{2}))
-                ee = varargin{1};
+            if ( isPosInt(v1) && ~isnumeric(varargin{2}) )
+                k = v1;
+            elseif ( isnumeric(varargin{2}) )
+                ee = v1;
                 k = varargin{2};
                 varargin(2) = [];
             end
