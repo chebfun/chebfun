@@ -57,6 +57,7 @@ while ( ~accept )
         normDeltaOld = normDelta;
         initPrediction = 1;
         lambda = 1;
+        giveUp = 1;
         continue
     end
     
@@ -110,9 +111,12 @@ while ( ~accept )
     lambdaPrime = min(1,muPrime);
     
     if lambdaPrime == 1 && normDeltaBar < errTol
+        %TODO: We have converged within the damped phase! Do we need to treat
+        % this case separately within solvebvpNonlinear?
         u = uTrial + deltaBar;
-        newtonCounter
-        terminate = 1;
+%         newtonCounter
+%         terminate = 1;
+        giveUp = 0; 
         break
     end
     
@@ -127,9 +131,10 @@ while ( ~accept )
         continue;
     end
     
-    % If we get all the way here, accept iterate
+    % If we get all the way here, accept iterate, and tell the Newton iteration
+    % to keep up the good work!
     accept = 1;
-    
+    giveUp = 0;
 end
 
 % Return uTrial, and update the dampingInfo structur
@@ -138,6 +143,6 @@ dampingInfo.lambda = lambda;
 dampingInfo.cFactor = cFactor;
 dampingInfo.normDeltaBar = normDeltaBar;
 dampingInfo.deltaBar = deltaBar;
-
+dampingInfo.giveUp = giveUp;
 
 end
