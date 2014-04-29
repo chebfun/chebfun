@@ -1,8 +1,12 @@
 function [M, S] = instantiate(disc)
 %INSTANTIATE   Convert a ULTRAS discretization to discrete form.
 %   M = INSTANTIATE(DISC) converts each item DISC.SOURCE to discrete form
-%   using the information in discretization DISC. The result M is a cell
+%   using the information in discretization DISC. The result M is return a cell
 %   array if DISC.SOURCE has more than one component.
+%
+%   [M, S] = INSTANTIATE(DISC) retusn a second output, S, which is a cell array
+%   containing the dscrete form of the ultraS conversion operator for each block
+%   of DISC.SOURCE.
 %
 %   DISC.SOURCE may be one or a cell array of:
 %      linBlock (becomes a matrix)
@@ -11,8 +15,6 @@ function [M, S] = instantiate(disc)
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
-
-% TODO: Document S.
 
 data = disc.source;
 if ( isa(data, 'chebmatrix') )

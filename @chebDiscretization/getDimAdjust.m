@@ -1,24 +1,28 @@
 function dimAdjust = getDimAdjust(L)
+%GETDIMADJUST   Adjust dimension of discretization.
+%   GETDIMADJUST(L) returns zero unless L is a LINOP.
+%
+%   A = GETDIMADJUST(L), where L is a LINOP,  returns a matrix of values, A, of
+%   the same dimension as L.BLOCKS, which informs discretization methods how the
+%   dimension L.DIM of that block must be adjusted (usually increased) so that
+%   the higest order derivatives of each of the variables appearing in the LINOP
+%   system are discretized at the same dimension.
 
-% TODO: Document.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
-% This is used to determine the different discretisation sizes for
-% different variables in a system of ODES. The approach taken is that
-% thehighest appearing derivatives of each variable should be discretized at
-% the same number of points.
-
-if ( isa(L, 'linop') )
+if ( ~isa(L, 'linop') )
+    
+    % No adjustment
+    dimAdjust = 0;
+    
+else
     
     % The input adjustment size of the (j,k) entry is max(diffOrder(:,k))
     dimAdjust = max(getDiffOrder(L), [], 1);
     dimAdjust = max(dimAdjust, 0);
     dimAdjust = repmat(dimAdjust, size(L, 1), 1);
     
-else
-    
-    % Other type of course are not projected.
-    dimAdjust = 0;
-    
 end
-
+    
 end

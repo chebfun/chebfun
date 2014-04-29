@@ -18,7 +18,7 @@ function [reduce, d, dRow, dVar] = sizeReduction(L)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-[~, d, dRow, dVar] = sizeReduction@chebmatrix(L);
+[dummy, d, dRow, dVar] = sizeReduction@chebmatrix(L);
 reduce = dVar;           % Nick H's choice;
 reduce = max(reduce, 0); % Nick H's choice;
 

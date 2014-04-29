@@ -1,6 +1,6 @@
 classdef colloc1 < colloc
 %COLLOC1    Collocation discretization on 1st kind points.
-%   COLLOC1 is an implementation of CHEBDISCRETIZATION that implements spectral
+%   COLLOC1 is an implementation of COLLOC that implements spectral
 %   collocation on 1st-kind Chebyshev points for differential and integral
 %   operators.
 %
