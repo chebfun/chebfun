@@ -12,7 +12,7 @@ function b = legpoly(f, n)
 %
 % See also CHEBPOLY.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 c_cheb = f.coeffs;

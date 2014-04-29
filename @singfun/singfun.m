@@ -68,7 +68,7 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
 %   SINGTYPE, VSCALE, and HSCALE can be omitted or empty in this calling
 %   sequence in the presence of PREF.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %% NOTES:
@@ -451,7 +451,7 @@ function op = singOp2SmoothOp(op, exponents)
 %
 % See also SINGFUN.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( all(exponents) )

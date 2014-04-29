@@ -24,7 +24,7 @@ function varargout = bvp5c(fun1, fun2, y0, varargin)
 %
 % See also BVPINIT, BVPSET, BVP4C, ODE113.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Parse the inputs.

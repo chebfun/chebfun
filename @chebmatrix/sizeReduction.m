@@ -15,7 +15,7 @@ function [reduce, d, dRow, dVar] = sizeReduction(L)
 %   system row (equation), and the differential order of each system
 %   variable (column).
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
 % TODO: Adjust documentation. By default chebmatrices are not reduced.

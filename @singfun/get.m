@@ -6,7 +6,7 @@ function out = get(f, prop)
 %       'SMOOTHPART' - The smooth part of F on [-1, 1], which is a CHEBTECH.
 %   GET also allows access to the properties of the smoothPart.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 switch prop

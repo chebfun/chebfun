@@ -4,7 +4,7 @@ function out = isequal(f, g)
 %   underlying SMOOTHPART and the same EXPONENTS. By same EXPONENTS we mean
 %   that they agree upto SINGFUN tolerance.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 tol = chebpref().singPrefs.exponentTol;

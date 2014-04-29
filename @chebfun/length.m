@@ -6,7 +6,7 @@ function out = length(F)
 %
 % See also SIZE.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty(F) )
