@@ -318,8 +318,8 @@ classdef (InferiorClasses = {?double}) chebop
         end
         
         function N = set.bc(N, val)
-        %CHEBOP.SET.BC   Set rigt boundary condition of a CHEBOP.
-        %   CHEBOP.SET.BC offers more control of setting left boundary
+        %CHEBOP.SET.BC   Set right boundary condition of a CHEBOP.
+        %   CHEBOP.SET.BC offers more control of setting right boundary
         %   conditions than simply accessing the .bc field, or using standard
         %   subsref.
         
@@ -349,6 +349,28 @@ classdef (InferiorClasses = {?double}) chebop
             else
                 error('CHEBFUN:CHEBOP:SETRBC', ...
                     'Unsupported format of BCs')
+            end
+        end   
+        
+        function N = set.op(N, val)
+        %CHEBOP.SET.OP   Set the differential equation part of a CHEBOP.
+        %   CHEBOP.SET.OP offers more control of setting the DE left boundary
+        %   conditions than simply accessing the .op field, or using standard
+        %   subsref.
+        
+            % We're happy with function handles
+            if ( isa(val, 'function_handle') )
+                N.op = val;
+            elseif ( iscell(val) )
+                error('CHEBFUN:CHEBOP:setOp:type', ...
+                    ['Specifying differential equation as a cell of ', ...
+                     'anonymous \nfunctions is no longer supported. Please '...
+                     'use the syntax \n   N.op = @(x,u,v) [diff(u,2) + v; ' ...
+                     '...]\ninstead of \n   N.op = {@(x,u,v) diff(u) + v; ' ...
+                     '@{x,u,v) ...}']);
+            else
+                error('CHEBFUN:CHEBOP:setOp:type', ...
+                    'Unknown type of argument for .op field of a chebop.');
             end
         end   
         
