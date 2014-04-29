@@ -321,16 +321,6 @@ classdef chebfunpref
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     properties
-        maxTotalLength
-        enableBreakpointDetection
-        breakpointPrefs
-        domain
-        enableSingularityDetection
-        singPrefs
-        tech
-        techPrefs
-        cheb2Prefs
-
         % This is a MATLAB structure which stores the system preferences.  As a
         % class invariant, this structure is guaranteed to contain fields for
         % each of the preferences of the upper layers listed above.  It is also
@@ -350,27 +340,6 @@ classdef chebfunpref
             end
 
             % Initialize default preference values.
-            outPref.maxTotalLength = 65537;
-            outPref.enableBreakpointDetection = false;
-                outPref.breakpointPrefs.splitMaxLength = 129;
-                outPref.breakpointPrefs.splitMaxTotalLength = 6000;
-            outPref.domain = [-1 1];
-            outPref.enableSingularityDetection = false;
-                outPref.singPrefs.exponentTol = 1.1*1e-11;
-                outPref.singPrefs.maxPoleOrder = 20;
-            outPref.tech = 'chebtech';
-            outPref.techPrefs = struct();
-                outPref.techPrefs.eps = 2^(-52);
-                outPref.techPrefs.maxLength = 65537;
-                outPref.techPrefs.exactLength = NaN;
-                outPref.techPrefs.extrapolate = false;
-                outPref.techPrefs.sampleTest = true;
-            outPref.cheb2Prefs = struct(); 
-                outPref.cheb2Prefs.maxRank = 513; 
-                outPref.cheb2Prefs.maxLength = 65537; 
-                outPref.cheb2Prefs.eps = 2^(-52); 
-                outPref.cheb2Prefs.exactLength = false;
-                outPref.cheb2Prefs.sampleTest = true; 
             outPref.prefList = chebfunpref.manageDefaultPrefs('get');
 
             % Copy fields from q, placing unknown ones in techPrefs and merging
@@ -753,7 +722,6 @@ classdef chebfunpref
             factoryPrefs.enableDeltaFunctions = false;
                 factoryPrefs.deltaPrefs.deltaTol = 1e-11;
                 factoryPrefs.deltaPrefs.proximityTol = 1e-11;
-
             factoryPrefs.scale = 0;
             factoryPrefs.tech = 'chebtech';
             factoryPrefs.techPrefs = struct();
