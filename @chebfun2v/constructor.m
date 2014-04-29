@@ -3,7 +3,7 @@ function G = constructor(G, op, varargin)
 % This function calls the CHEBFUN2 constructor once for each non-zero
 % component because a CHEBFUN2V is just vector of CHEBFUN2 objects.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 if isa(op,'chebfun2v') % argument is a CHEBFUN2V so there is nothing to do.

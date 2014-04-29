@@ -6,7 +6,7 @@ function out = isreal( f )
 %   ~ISREAL(F) detects CHEBFUN2 object that have an imaginary part even if it is
 %   all zero.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 if ( isempty( f ) )

@@ -8,7 +8,7 @@ function D = diffmat(n, m)
 %
 % This methods is static and private.
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
 % Create the differentation matrix.

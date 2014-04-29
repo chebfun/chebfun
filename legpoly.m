@@ -22,7 +22,7 @@ function p = legpoly(n, dom, normalize, method)
 %
 % See also CHEBPOLY, LEGPTS, and LEG2CHEB.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % TODO: This code needs a test.

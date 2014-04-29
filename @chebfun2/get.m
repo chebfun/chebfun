@@ -8,7 +8,7 @@ function val = get( f, propName )
 %    'PIVOTVALUES'
 %    'PIVOTLOCATIONS'
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Loop through an array of CHEBFUN2 objects.

@@ -59,7 +59,7 @@ function [p, q, r, mu, nu, poles, residues] = ratinterp(varargin)
 %
 % See also INTERP1, CHEBPADE.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % TODO:  Deal with array-valued CHEBFUNs / quasimatrices.
