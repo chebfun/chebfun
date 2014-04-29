@@ -78,11 +78,11 @@ end
 % Make CHEBTECH object:
 f = f.make(op, vscale, f.hscale, pref);
 
-% Throw a warning:
-if ( ~f.ishappy )
-    warning('CHEBFUN:CHEBTECH:compose:convfail', ...
-        [ 'Composition with ', func2str(op), ...
-          ' failed to converge with ', int2str(length(f)), ' points.' ]);
-end
+% % Throw a warning: (Removed by NH Apr 2014. See #282)
+% if ( ~f.ishappy )
+%     warning('CHEBFUN:CHEBTECH:compose:convfail', ...
+%         [ 'Composition with ', func2str(op), ...
+%           ' failed to converge with ', int2str(length(f)), ' points.' ]);
+% end
 
 end
