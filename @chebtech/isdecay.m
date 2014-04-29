@@ -8,7 +8,7 @@ function out = isdecay(f)
 %   Note that ISDECAY is designed and expected to be called only by UNBNDFUN
 %   class for handling functions defined on unbounded domains.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
 out = zeros(1, 2);

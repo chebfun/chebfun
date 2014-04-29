@@ -1,7 +1,7 @@
 function C = mtimes(A, B)
 %*         Composition of chebmatrices.
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
 % Scalar operand is scalar*identity. But it's faster to interpret it as a
