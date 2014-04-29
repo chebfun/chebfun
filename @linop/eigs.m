@@ -149,9 +149,9 @@ isFun = isFunVariable(L);
 if ( isempty(sigma) )
     % Try to determine where the 'most interesting' eigenvalue is.
     disc.dimension = 33*ones(1, numInts);
-    [V1,D1] = getEigenvalues(disc, discM, 33, 0);
+    [V1, D1] = getEigenvalues(disc, discM, 33, 0);
     disc.dimension(:) = 65;
-    [V2,D2] = getEigenvalues(disc, discM, 33, 0);
+    [V2, D2, P] = getEigenvalues(disc, discM, 33, 0);
     lam1 = diag(D1);
     lam2 = diag(D2);
     dif = bsxfun(@minus, lam1.', lam2);
@@ -162,16 +162,16 @@ if ( isempty(sigma) )
     % Trim off things that are still changing a lot (relative to new size).
     lam1b = lam1;
     lam1b(bigDel) = 0;
-    bigDel = logical((delta > 1e-3*norm(lam1b,Inf)) + bigDel);
+    bigDel = logical((delta > 1e-3*norm(lam1b, inf)) + bigDel);
 
     if ( all(bigDel) )
         % All values changed somewhat-- choose the one changing the least.
-        [~,idx] = min(delta);
+        [~, idx] = min(delta);
         sigma = lam1(idx);
     else
         % One by one, convert the eigenvectors to functions and check their cheb
         % expansion coefficients.
-        U = partition(disc, V2);  % each cell is array valued, for one variable
+        U = partition(disc, P*V2);  % each cell is array valued, for one variable
 
         % Combine the different variable components into a single variable for
         % coefficient conversion.
@@ -190,7 +190,7 @@ if ( isempty(sigma) )
         % pieces, for all columns.
         onenorm = 0;
         for j = 1:disc.numIntervals
-            onenorm = onenorm + sum( abs( coeffs{j} ), 1 )';
+            onenorm = onenorm + sum(abs(coeffs{j}), 1 ).';
         end
         
         [~, index] = min(onenorm);
@@ -205,13 +205,13 @@ coeff = 1./(2*(1:k)');
 
 for dim = dimVals
 
-    [V,D] = getEigenvalues(disc, discM, k, sigma);
+    [V, D, P] = getEigenvalues(disc, discM, k, sigma);
 
     % Combine the eigenfunctions into a composite.
     v = V*coeff(1:size(V,2));
 
     % Convert the different components into cells
-    u = partition(disc,v);
+    u = partition(disc, P*v);
 
     % Test the happieness of the function pieces:
     [isDone, epsLevel] = testConvergence(disc, u(isFun));
@@ -243,7 +243,11 @@ else            % Unwrap the eigenvectors for output
     % Find the norm in each eigenfunction (aggregated over variables).
     nrmsq = zeros(1,k);
     for j = 1:length(u)
-        nrmsq = nrmsq + sum( u{j}.*conj(u{j}), 1 );
+        if ( isFun(j) )
+            % Compress the representation.
+            u{j} = simplify(u{j}, max(eps,epsLevel));
+        end
+        nrmsq = nrmsq + sum(u{j}.*conj(u{j}), 1);
     end
 
     % Normalize each eigenfunction.
@@ -252,7 +256,7 @@ else            % Unwrap the eigenvectors for output
         u{j} = u{j}*scale;
     end
 
-     varargout = { chebmatrix(u), D };
+     varargout = {chebmatrix(u), D};
 end
 
 end
@@ -260,30 +264,30 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%
-function [V,D] = getEigenvalues(disc, discM, k, sigma)
+function [V,D,P] = getEigenvalues(disc, discM, k, sigma)
 % Formulate the discrete problem and solve for the eigenvalues
 
     % Discretize the LHS operator (incl. constraints/continuity):
-    [PA, P, C, A] = matrix(disc);
+    [PA, P, C, A, PS] = matrix(disc);
 
     % Discretize the RHS operator, or use identity.
     if ( ~isempty(discM) )
         discM.dimension = disc.dimension;
-        [~,~,~,B] = matrix(discM);
+        [dummy1, dummy2, dummy3, B] = matrix(discM);
         % Project RHS matrix and prepend rows for the LHS constraints.
-        PB = [ zeros(size(C)); P*B ];
+        PB = [ zeros(size(C)) ; P*B ];
     else
-        PB = [ zeros(size(C)); P ];
+        PB = [ zeros(size(C)) ; PS ];
     end
-
+    
     % Compute eigenvalues.
     if ( length(PA) <= 2000 )
-        [V,D] = eig(full(PA), full(PB));
+        [V, D] = eig(full(PA), full(PB));
         % Find the ones we're looking for.
         N = disc.dimension;
-        idx = nearest(diag(D), V, sigma, min(k, N), N,disc);
-        V = V(:, idx);
-        D = D(idx, idx);
+        idx = nearest(diag(D), P*V, sigma, min(k,N), N, disc);
+        V = V(:,idx);
+        D = D(idx,idx);
     else
         % FIXME: Experimental.
         [V, D] = eigs(PA, PB, k, sigma);
