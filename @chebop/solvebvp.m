@@ -44,7 +44,7 @@ end
 x = chebfun(@(x) x, dom);
 
 % Linearize
-[L, residual, isLinear] = linearize(N, x, u0);
+[L, residual, isLinear] = linearize(N, u0, x);
 
 % If the RHS passed is numerical, cast it to a CHEBMATRIX of appropriate size
 % before continuing
@@ -67,7 +67,7 @@ else
     if ( isempty(N.init) )
         u0 = fitBCs(L);
         % Linearize about the new initial guess:
-        [L, residual, isLinear] = linearize(N, x, u0);
+        [L, residual, isLinear] = linearize(N, u0, x);
     end
 
     [u, info] = solvebvpNonlinear(N, rhs, L, u0, residual, pref, displayInfo);

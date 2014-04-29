@@ -139,7 +139,7 @@ while ( ~terminate )
         break
     else
         % Linearize around current solution:
-        [L, res] = linearize(N, x, ub);
+        [L, res] = linearize(N, ub, x);
         
         % TODO: Ensure this actually takes care of resetting derivative
         % information as well!
@@ -164,7 +164,7 @@ info.normDelta = normDeltaVec(1:newtonCounter);
 info.error = errEst;
 end
 
-function out = mynorm(f,type)
+function out = mynorm(f, type)
 if ( isa(f, 'chebmatrix') )
     out = max(cellfun(@(u) get(u, 'vscale'), f.blocks));
 else

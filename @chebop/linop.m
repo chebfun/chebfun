@@ -15,7 +15,7 @@ function [L, f] = linop(N)
 linCheck = 1; 
 
 % Linearize, thereby obtaining linearity information and a LINOP:
-[L, f, isLinear] = linearize(N, [], N.init, linCheck);
+[L, f, isLinear] = linearize(N, N.init, [], linCheck);
 
 % We need the entire operator (including BCs) to be linear:
 isLinear = all(isLinear);

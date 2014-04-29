@@ -1,16 +1,18 @@
-function [L, res, isLinear] = linearize(N, x, u, flag)
+function [L, res, isLinear] = linearize(N, u, x, flag)
 %LINEARIZE    Linearize a CHEBOP.
 %   L = LINEARIZE(N) returns a LINOP that corresponds to linearising the CHEBOP
 %   N around the zero function on N.domain. The linop L will both include the
 %   linearised differential equation, as well as linearised boundary conditions
 %   (from N.LBC and N.RBC) and other constraints (from N.BC).
 %
-%   L = LINEARIZE(N, X, U) linearizes the CHEBOP N around the function U. Here,
-%   X denotes the independent variable on N.domain. Note that calling
-%   LINEARIZE(N, [], U) is also supported, i.e., the method will create the
-%   variable X. Here, U can either be a CHEBFUN or a CHEBMATRIX.
+%   L = LINEARIZE(N, U) linearizes the CHEBOP N around the function U. Here, U
+%   can either be a CHEBFUN or a CHEBMATRIX. IF U = [] then N is linearized
+%   around the zero function, as above.
 %
-%   L = LINEARIZE(N, X, U, FLAG) is useful when we call LINOP(CHEBOP), i.e.,
+%   L = LINEARIZE(N, U, X) passes the independent variable, X, on N.domain.
+%   If X = [] then LINEARIZE constructs the variable itself internally.
+%
+%   L = LINEARIZE(N, U, X, FLAG) is useful when we call LINOP(CHEBOP), i.e.,
 %   converting a linear CHEBOP to a LINOP. If FLAG = 1, the method will stop
 %   execution and return as soon as it encounters a nonlinear field in N. in
 %   this case L is returned as an empty LINOP.
@@ -44,18 +46,18 @@ end
 numVars = nargin(N.op) - 1;
 dom = N.domain;
 
-% Construct the independent variable X if needed.
-if ( nargin < 2 || isempty(x) )
-    x = chebfun(@(x) x, dom);
-end
-
 % Construct the zero function on N.DOMAIN to linearize around if no U was
 % passed.
-if ( nargin < 3 || isempty(u) )
+if ( nargin < 2 || isempty(u) )
     % Initialise a zero CHEBFUN:
     zeroFun = chebfun(0, dom);
     % Wrap in a cell and call repmat() to get correct dimensions
     u = repmat({zeroFun}, numVars, 1);
+end
+
+% Construct the independent variable X if needed.
+if ( nargin < 3 || isempty(x) )
+    x = chebfun(@(x) x, dom);
 end
 
 % By default, set FLAG to 0.

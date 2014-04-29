@@ -359,7 +359,7 @@ classdef (InferiorClasses = {?double}) chebop
     methods
             
         % Linearize a CHEBOP around a CHEBFUN u.
-        [L, res, isLinear] = linearize(N, x, u, flag);   
+        [L, res, isLinear] = linearize(N, u, x, flag);   
         
     end
     
