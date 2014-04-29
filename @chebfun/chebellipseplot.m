@@ -9,8 +9,7 @@ function varargout = chebellipseplot(u, varargin)
 %   CHEBELLIPSEPLOT(U, EPS) allows a user-specified EPS.
 %
 %   CHEBELLIPSEPLOT(U, K) and CHEBELLIPSEPLOT(U, EPS, K) plot ellipses for
-%   the funs of U indexed by the vector K. If U is a quasimatrix, only
-%   the first column/row is considered.
+%   the funs of U indexed by the vector K.
 %
 %   CHEBELLIPSEPLOT(U, ..., S) allows plotting options to be passed. For
 %   example, for black lines one may write CHEBELLIPSEPLOT(U, 'k-').
@@ -36,8 +35,13 @@ if ( numColumns(u) > 1 )
         'support array-valued CHEBFUN objects or quasimatries.']);
 end
 
+
 if ( isempty(u) )
     h = plot([]);
+    % Output the axis handle.
+    if ( nargout ~= 0 )
+        varargout = {h};
+    end
     return
 end
 
@@ -113,15 +117,20 @@ numpts = 101;           % Number of points in plots
 legends = 1;            % Display legends?
 args = {};              % Additional plotting args.
 
+isPosInt = @(v) abs(round(v)) == v;
+
 % Sort out the inputs.
-if ( nargin > 1 )
+if ( nargin >= 1 )
     % Check arguments for EPS and K, if they exist.
-    if ( isnumeric(varargin{1}) )
-        if ( varargin{1} >= 1 )
-            k = varargin{1};
+    v1 = varargin{1};
+    if ( isnumeric(v1) )
+        if ( v1 == 1 )
+            k = v1;
         else
-            ee = varargin{1};
-            if ( (numel(varargin) > 1) && (isnumeric(varargin{2})) )
+            if ( isPosInt(v1) && ~isnumeric(varargin{2}) )
+                k = v1;
+            elseif ( isnumeric(varargin{2}) )
+                ee = v1;
                 k = varargin{2};
                 varargin(2) = [];
             end
