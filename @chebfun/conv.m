@@ -384,17 +384,6 @@ end
 
 function h = oldConv(f, g)
 
-% Remove deltas from f:
-fImps = f.impulses(:,:,2:end);
-if ( size(f.impulses, 3) > 1 )
-    f.impulses = f.impulses(:,:,1); 
-end
-gImps = g.impulses(:,:,2:end);
-% Remove deltas from g:
-if ( size(g.impulses, 3) > 1 )
-    g.impulses = g.impulses(:,:,1); 
-end
-
 % Find all breakpoints in the convolution:
 [A, B] = meshgrid(f.domain, g.domain);
 dom = unique(A(:) + B(:)).';
