@@ -5,7 +5,7 @@ function H = sphankel(r)
 % down Toeplitz matrix. This is required by the ultraspherical multiplication
 % operator. 
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
 % Hankel is an upside-down Toeplitz matrix. 

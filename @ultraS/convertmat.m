@@ -7,7 +7,7 @@ function S = convertmat(n, K1, K2)
 % C^{K2} basis. Here, C^{(K)} is the ultraspherical polynomial basis with
 % parameter K.
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
 % Create the conversion matrix.

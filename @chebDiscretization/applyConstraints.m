@@ -9,7 +9,7 @@ function [M, P, B, A] = applyConstraints(disc, blocks)
 %   continuity, and other constraints (B), and the original operator (A). The
 %   output M is equivalent to M = [B; P*A] and is square.
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
 % Convert the blocks to the original, unconstrained matrix.

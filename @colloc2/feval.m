@@ -4,7 +4,7 @@ function E = feval(disc, location, direction)
 %   polynomial represented by a COLLOC2 discretization at the given point LOC as
 %   approached from the direction DIRN (either +1 or -1). 
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
 n = disc.dimension;

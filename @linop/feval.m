@@ -1,7 +1,7 @@
 function M = feval(L, n, flag)
 %FEVAL     Deprecated function, provided for limited backward compatability.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 warning('chebfun:linop:fevalDeprecated',...

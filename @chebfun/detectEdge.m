@@ -5,7 +5,7 @@ function edge = detectEdge(op, domain, vscale, hscale, derHandle)
 %   scale and VSCALE is the vertical scale (note that both are required). If no
 %   edge is detected, EDGE is set to the midpoint of DOMAIN.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
 %[TODO]: This code will need to be revisited once unbounded domains and blowup

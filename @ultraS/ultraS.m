@@ -17,7 +17,7 @@ classdef ultraS < chebDiscretization
 % S. Olver and A. Townsend, A fast and well-conditioned spectral method, SIAM
 % Review, 55 (2013), pp. 462-489.
     
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
     properties
         % Coefficients of the operator

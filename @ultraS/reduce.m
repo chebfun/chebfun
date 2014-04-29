@@ -7,7 +7,7 @@ function [PA, P] = reduce(disc, blocks)
 %   matrix. The output P has one cell per block row with the projection operator
 %   for the row.
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
 r = sizeReduction(disc.source);

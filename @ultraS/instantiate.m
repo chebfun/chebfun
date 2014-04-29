@@ -8,7 +8,7 @@ function [L, S] = instantiate(disc, data)
 %      chebfun (becomes a vector)
 %      numeric (not changed)
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
 % TODO: Why two outputs L and S? What do they mean? You say M is a cell-array,

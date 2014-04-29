@@ -7,7 +7,7 @@ function [x, w] = points(disc, kind)
 %
 %   POINTS(DISC, KIND) overrides to allow returning 1st kind points if KIND=1. 
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
 % Default to second kind points

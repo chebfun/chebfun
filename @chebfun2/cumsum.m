@@ -9,7 +9,7 @@ function f = cumsum(f, dim)
 %
 % See also CUMSUM2.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % Check for empty:

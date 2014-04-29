@@ -5,7 +5,7 @@ function out = normest(f)
 %
 % See also NORM.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Since f.vscale = max(abs(f.values)) calling max(f.vscale) is sufficient:

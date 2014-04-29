@@ -1,7 +1,7 @@
 function b = rhs(disc, f)
 %RHS      Discretize the right-hand side of a linear system for COLLOC2.
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
 % Developers note: This method works as follows. 

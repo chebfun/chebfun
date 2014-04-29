@@ -5,7 +5,7 @@ function f = toFunction(disc, values)
 % converts those to a CHEBFUN. The input may be piecewise smooth, as indicated
 % by the dimension property of the discretization.
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
 dom = disc.domain;          % Domain we're working on, including breakpoints

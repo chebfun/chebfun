@@ -15,7 +15,7 @@ function F = restrict(F, newDomain)
 %
 % See also OVERLAP, SUBSREF, DEFINE.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 for k = 1:numel(F)
