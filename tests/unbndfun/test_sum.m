@@ -70,7 +70,7 @@ f = unbndfun(op, dom);
 I = sum(f);
 IExact = 2*exp(-1);
 err = abs(I - IExact);
-tol = 1e6*get(f,'epslevel')*get(f,'vscale');
+tol = 1e7*get(f,'epslevel')*get(f,'vscale');
 pass(7) = err < tol;
 
 op = @(x) (1-exp(-x))./x.^2;
