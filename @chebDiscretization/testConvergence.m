@@ -30,8 +30,8 @@ for i = 1:numInt
     %    f = chebtech.constructor(values{i},u.vscale,hscale(i));
     % TODO: The line above below is a hack, we should be using plataeuCheck? TAD
     % to check. AB 27/4/14.
-%     [isDone(i),neweps] = classicCheck(u.funs{i}.onefun, pref);
-    [isDone(i),neweps] = plateauCheck(coeffs{i},u.vscale);
+    [isDone(i),neweps] = classicCheck(u.funs{i}.onefun, pref);
+%     [isDone(i),neweps] = plateauCheck(coeffs{i},u.vscale);
     epsLevel = max( epsLevel, neweps );
 end
 
