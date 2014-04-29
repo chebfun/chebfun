@@ -65,6 +65,6 @@ err(4,3) = abs( u(pi) );
 
 
 %%
-pass = ( err(:) < tol );
+pass = ( err < tol );
 
 end

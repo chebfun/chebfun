@@ -1,7 +1,7 @@
 function pass = test_eigenvalues()
 % TAD, 10 Jan 2014
 
-tol = 1e-9;
+tol = 1e-8;
 
 dom = [-pi/2, pi/2];
 D2 = operatorBlock.diff(dom, 2);
@@ -20,14 +20,15 @@ err(1) = norm(e + (1:6)'.^2, inf);
 
 %%
 prefs.discretization = @ultraS;
-% TODO: FIXME!
-% e = eigs(L, 6, 0, prefs);
-% err(2) = norm(e + (1:6)'.^2, inf);
+e = eigs(L, 6, 0, prefs);
+err(2) = norm(e + (1:6)'.^2, inf);
 
 %%
 prefs.discretization = @colloc1;
 e = eigs(L, 6, 0, prefs);
 err(3) = norm(e + (1:6)'.^2, inf);
+
+%%
 
 pass = err < tol;
 

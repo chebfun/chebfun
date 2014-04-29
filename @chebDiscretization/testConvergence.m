@@ -4,6 +4,9 @@ function [isDone, epsLevel] = testConvergence(disc, values)
 %   check the equivalent Chebyshev polynomial representation for sufficient
 %   convergence.
 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org for Chebfun information.
+
 % We will test on an arbitrary linear combination of the individual
 % functions.
 s = 1 ./ (3*(1:numel(values))).';
@@ -20,9 +23,15 @@ d = disc.domain;
 numInt = numel(d) - 1;
 isDone = false(1, numInt);
 epsLevel = 0;
+
+pref = chebpref();
+pref.eps = 1e-14;
 for i = 1:numInt
     %    f = chebtech.constructor(values{i},u.vscale,hscale(i));
-    [isDone(i),neweps] = plateauCheck(coeffs{i}, u.vscale);
+    % TODO: The line above below is a hack, we should be using plataeuCheck? TAD
+    % to check. AB 27/4/14.
+%     [isDone(i),neweps] = classicCheck(u.funs{i}.onefun, pref);
+    [isDone(i),neweps] = plateauCheck(coeffs{i},u.vscale);
     epsLevel = max( epsLevel, neweps );
 end
 
@@ -74,7 +83,6 @@ elseif ( n < 17 )
     ishappy = false;
     epslevel = absCoeff(n);
     cutoff = n;
-    
     
 else
     %% Apply the plateau test.
@@ -132,4 +140,3 @@ else
 end
 
 end
-

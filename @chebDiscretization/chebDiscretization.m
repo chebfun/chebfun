@@ -31,14 +31,39 @@ classdef (Abstract) chebDiscretization
     properties ( Dependent )
         numIntervals      % number of intervals in the domain
     end
+    
+    %% METHODS IMPLEMENTED IN THIS FILE:
 
     methods
         
         function n = get.numIntervals(disc)
         %NUMINTERVALS    Number of subintervals a CHEBDISCRETIZATION acts on.
             n = length(disc.domain) - 1;
-        end        
+        end    
+        
+        function disc = extractBlock(disc, j, k)
+        %EXTRACTBLOCK   Extract the j-k block from a discretization.
+        %   DISCJK = EXTRACTBLOCK(DISC, J, K) extracts information relating to the
+        %   J-K block of the dscretization DISC and returns a new discretization
+        %   DISCJK. DISCJK.dimension will be modified by the amount specified in
+        %   DISC.dimAdjust(j,k).
 
+        % Copyright 2014 by The University of Oxford and The Chebfun Developers.
+        % See http://www.chebfun.org/ for Chebfun information.
+
+        % Extract the j-k block:
+        disc.source.blocks = disc.source.blocks{j,k};
+
+        % Extract the dimension adjustment for this block and adjust the dimension:
+        if ( numel(disc.dimAdjust) > 1 )
+            disc.dimAdjust = disc.dimAdjust(j,k);
+        end
+        disc.dimension = disc.dimension + disc.dimAdjust;
+
+        % Set the dimension adjustment to zero:
+        disc.dimAdjust = 0;
+
+        end
 
         function t = isempty(disc)
         % Returns true if source property of a CHEBDISCRETIZATION is empty.
@@ -64,9 +89,13 @@ classdef (Abstract) chebDiscretization
         
     end
     
+    %% STATIC METHODS:
+    
     methods ( Static )
         space = getDimAdjust(L)
     end
+    
+    %% ABSTRACT METHODS:
             
     methods ( Abstract )        
         % Converts a chebfun into a vector of values (or coefficients,
@@ -82,9 +111,6 @@ classdef (Abstract) chebDiscretization
         
         % Reduces (projects) block rows to make space for the constraints.
         [PA, P, PS] = reduce(disc, blocks)
-        
-        % Extract the j-k block from a discretization.
-        discjk = extractBlock(disc, j, k)
         
     end
     

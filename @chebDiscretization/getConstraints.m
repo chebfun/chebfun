@@ -1,39 +1,37 @@
 function B = getConstraints(disc)
-%APPLYCONSTRAINTS   Modify discrete operator to accommodate constraints.
-%   M = APPLYCONSTRAINTS(DISC, BLOCKS) uses a cell of matrix BLOCKS created by
-%   the discretization DISC in order to return a matrix that incorporates both
-%   the linear operator and its constraints.
-%
-%   [M, P, B, A] = APPLYCONSTRAINTS(DISC, BLOCKS) also returns the individual
-%   matrices that represent down-projection of the operator (P), boundary,
-%   continuity, and other constraints (B), and the original operator (A). The
-%   output M is equivalent to M = [B ; P*A] and is square.
+%GETONSTRAINTS   Get constraints and continuity of a linear operator.
+%   B = GETONSTRAINTS(DISC) returns a matrix discretization of the constraints
+%   and continuity conditions from the linear operator in DISC.SOURCE. 
 
-%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org/ for Chebfun information.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
-% Some preparation.
-dim = disc.dimension;
+% Developer note:
+%   The continuity conditions go above the constraints. This must be the same
+%   when the RHS is formed.
+
+% Some preparation:
 dom = disc.domain;
+dim = disc.dimension;
 dimAdjust = disc.dimAdjust(1,:);
-discType = str2func( class(disc) );  % constructor of the discretization's type
+discType = str2func(class(disc));
 L = disc.source;
-
-% Now apply the constraints and continuity conditions and collect as rows of B.
 B = [];
+
+% Instantiate a matrix discretization of the constraints.
 if ( ~isempty(L.constraint) )
-    % Instantiate a discretization of this constraint. 
     disc2 = discType(L.constraint.functional, dim, dom);
-    disc2.dimAdjust = repmat(dimAdjust, size(disc2.source, 1), 1);
-    constr = matrix(disc2, dim, dom);
-    B = [ constr; B ];
+    numRows = size(disc2.source, 1);
+    disc2.dimAdjust = repmat(dimAdjust, numRows, 1);
+    B = matrix(disc2, dim, dom);
 end
+
+% Instantiate a matrix discretization of the continuity conditions.
 if ( ~isempty(L.continuity) )
-    % Instantiate a discretization of this constraint. 
     disc2 = discType(L.continuity.functional, dim, dom);
-    disc2.dimAdjust = repmat(dimAdjust, size(disc2.source, 1), 1);
-    constr = matrix(disc2, dim, dom);
-    B = [ constr; B ];
+    numRows = size(disc2.source, 1);
+    disc2.dimAdjust = repmat(dimAdjust, numRows, 1);
+    B = [  matrix(disc2, dim, dom) ; B ];
 end
 
 end

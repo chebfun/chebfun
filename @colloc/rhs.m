@@ -20,6 +20,9 @@ for k = 1:numel(f.blocks)
 end
 b = cell2mat(f.blocks);       
 
+% Developer note:
+%   The continuity conditions go above the constraints. See getConstraints().
+
 % Prepend the values of the constraints and continuity conditions.
 L = disc.source;
 if ( ~isempty(L.constraint) )
