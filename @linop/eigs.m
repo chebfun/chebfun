@@ -114,24 +114,42 @@ else
     dimVals = max(disc.dimension);
 end
 
-% Attach a domain to the discretization
-dom = L.domain;
-disc.domain = dom;
-
-if ( isempty(L.continuity) )
-     % Apply continuity conditions:
-     disc.source = deriveContinuity(disc.source);
-end
-
 % If there is a generalized eigenproblem, the right-side operator needs to have
 % its domain merged in and its own discretization.
 discM = [];
 if ( ~isempty(M) )
-    dom = chebfun.mergeDomains(disc.domain,dom,M.domain);
+    dom = chebfun.mergeDomains(disc.domain, M.domain);
     disc.domain = dom;   % update the discretization domain for L
+    
     constructor = str2func( class(disc) );   % constructor handle
-    discM = constructor(M,disc.dimension,disc.domain);
+    discM = constructor(M, disc.dimension, disc.domain);
     % We can ignore constraints and continuity--enforced on the left side.
+    
+    if ( ~isempty(discM.source.constraint) )
+        discM.source.constraint = [];
+        warning('CHEBFUN:linop:eigs:constraints', ...
+                'Constraints on B are ignored.')
+    end
+    if ( ~isempty(discM.source.continuity) )
+        discM.source.continuity = [];
+        warning('CHEBFUN:linop:eigs:continuity', ...
+                'Continuity conditions on B are ignored.')
+    end       
+    
+    disc.dimAdjust = max(disc.dimAdjust, discM.dimAdjust);
+    disc.projOrder = max(disc.projOrder, discM.projOrder);
+    
+    discM.dimAdjust = disc.dimAdjust;
+    discM.projOrder = disc.projOrder;
+    if ( isa(disc, 'ultraS') )
+        disc.outputSpace = max(disc.outputSpace, discM.outputSpace);
+        discM.outputSpace = disc.outputSpace;
+    end
+end
+
+    if ( isempty(L.continuity) )
+     % Apply continuity conditions:
+     disc.source = deriveContinuity(disc.source);
 end
 
 
@@ -234,11 +252,17 @@ if ( size(D,1) < k )
     k = size(D,1);
 end
 
+% Sort eigenvalues:
+d = diag(D);
+[d, idx] = sort(d);
+V = V(:,idx);
+D = diag(d);
+
 if ( nargout < 2 )  % Return the eigenvalues only
     varargout = { diag(D) };
 else            % Unwrap the eigenvectors for output
 
-    u = mat2fun(disc, V);
+    u = mat2fun(disc, P*V);
 
     % Find the norm in each eigenfunction (aggregated over variables).
     nrmsq = zeros(1,k);
@@ -264,7 +288,7 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%
-function [V,D,P] = getEigenvalues(disc, discM, k, sigma)
+function [V, D, P] = getEigenvalues(disc, discM, k, sigma)
 % Formulate the discrete problem and solve for the eigenvalues
 
     % Discretize the LHS operator (incl. constraints/continuity):
@@ -272,10 +296,11 @@ function [V,D,P] = getEigenvalues(disc, discM, k, sigma)
 
     % Discretize the RHS operator, or use identity.
     if ( ~isempty(discM) )
+        % TODO: This is untidy. Can we make a method to do this? NH Apr 2014.
         discM.dimension = disc.dimension;
-        [dummy1, dummy2, dummy3, B] = matrix(discM);
+        PB = matrix(discM);
         % Project RHS matrix and prepend rows for the LHS constraints.
-        PB = [ zeros(size(C)) ; P*B ];
+        PB = [ zeros(size(C)) ; PB ];
     else
         PB = [ zeros(size(C)) ; PS ];
     end
