@@ -1,7 +1,7 @@
 function B = mpower(A, pow)
 %^         Repeated composition of a chebmatrix.
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
 if ( pow ~= round(pow) || pow < 0 )

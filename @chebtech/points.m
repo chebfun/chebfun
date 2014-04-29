@@ -6,7 +6,7 @@ function out = points(f)
 %
 % See also CHEBPTS, LENGTH.
 %
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 out = f.chebpts(length(f));

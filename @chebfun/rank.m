@@ -7,7 +7,7 @@ function r = rank(A, tol)
 %
 % See also SVD, QR.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Compute the singular values:

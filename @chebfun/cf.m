@@ -48,7 +48,7 @@ function [p, q, r, s] = cf(f, m, n, M)
 %
 % See also REMEZ.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % TODO:  Handle quasimatrices/array-valued CHEBFUNs.

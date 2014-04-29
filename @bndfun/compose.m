@@ -21,7 +21,7 @@ function f = compose(f, op, g, pref)
 %   alter the constructor's behavior to take advantage of the fact that F (and
 %   possibly OP or G) has additional structure beyond just being an object.
 %
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Parse inputs:

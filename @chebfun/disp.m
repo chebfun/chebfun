@@ -6,7 +6,7 @@ function s = disp(f, name)
 %   DISPLAY(F) is called automatically when the semicolon is not used at the end
 %   of a statement that results in a CHEBFUN.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
 % If the 'format loose' setting is enabled, we print additional linebreaks:
