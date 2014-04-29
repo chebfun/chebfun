@@ -121,7 +121,8 @@ pass(12) = err < tol;
 op = @(x) (1-exp(x))./x.^2;
 f = unbndfun(op, dom);
 I = sum(f);
-IExact = (exp(-3*pi)*(exp(3*pi)-1))/(3*pi)-ei(-3*pi);
+% This exact value is obtained using Matlab's symbolic toolbox:
+IExact = 0.106102535711326;
 err = abs(I - IExact);
 tol = 1e5*get(f,'epslevel')*get(f,'vscale');
 pass(13) = err < tol;
