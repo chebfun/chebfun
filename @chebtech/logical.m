@@ -9,8 +9,8 @@ function f = logical(f)
 % See http://www.chebfun.org for Chebfun information.
 
 % TODO:  Should we use a tolerance here instead of any()?
-f.values = any(f.values, 1);
-f.coeffs = f.values;
-f.vscale = abs(f.values);
+values = f.coeffs2vals(f.coeffs); 
+f.coeffs = any(values, 1);
+f.vscale = abs(f.coeffs);
 
 end
