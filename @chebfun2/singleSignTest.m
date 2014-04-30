@@ -13,7 +13,7 @@ function [out, wzero] = singleSignTest( F )
 %
 % See also ABS, SQRT, LOG. 
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 out = false;                  % Assume false

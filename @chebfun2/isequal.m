@@ -5,7 +5,7 @@ function out = isequal( f, g )
 % CHEBFUN2, up to relative machine precision. If returns 0 then F and G are
 % not the same up to relative machine precision. 
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 if ( isempty(f) )

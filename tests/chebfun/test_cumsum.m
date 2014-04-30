@@ -178,7 +178,7 @@ gVals = feval(g, x);
 opg = @(x) sqrt(pi)*erf(x)/2 + sqrt(pi)/2;
 gExact = opg(x);
 errg = gVals - gExact;
-pass(11) = norm(errg, inf) < 1e2*get(g,'epslevel').*get(g,'vscale');
+pass(11) = norm(errg, inf) < 1e3*get(g,'epslevel').*get(g,'vscale');
 
 %% Function on [a inf]:
 
@@ -199,7 +199,7 @@ gVals = feval(g, x);
 opg = @(x) 5*x.^2/2 - 5/2 + get(g, 'lval');
 gExact = opg(x);
 err = gVals - gExact;
-pass(12) = norm(err, inf) < 1e-1*get(g,'epslevel').*get(g,'vscale');
+pass(12) = norm(err, inf) < 10*get(g,'epslevel').*get(g,'vscale');
 
 %% piecewise function on [-inf b]:
 

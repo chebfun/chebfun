@@ -9,7 +9,7 @@ function varargout = pivotplot( f, varargin )
 %   linecolor, etc. If S contains a string 'LOGLOG', the psuedo sig will be
 %   displayed on a log-log scale.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % Empty check:

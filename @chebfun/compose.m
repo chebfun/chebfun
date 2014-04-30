@@ -18,7 +18,7 @@ function f = compose(f, op, g, pref)
 %   advance, they should be applied to F and/or G using RESTRICT() before the
 %   call to COMPOSE().
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -168,12 +168,17 @@ newFuns = {};
 % Initialise new domain vector:
 newDom = f.domain(1);
 
+if ( pref.enableBreakpointDetection) % Is splitting on?
+    % Set the maximum length (i.e., number of sample points for CHEBTECH):
+    pref.techPrefs.maxLength = pref.breakpointPrefs.splitMaxLength;
+end
+
 % Suppress growing vector Mlint warnings (which are inevitable here):
 %#ok<*AGROW>
 
 %% Loop through each interval:
 for k = 1:numInts
-
+    
     % Attempt to generate FUN objects using FUN/COMPOSE().
     if ( isempty(g) )
         newFun = compose(f.funs{k}, op, [], pref);

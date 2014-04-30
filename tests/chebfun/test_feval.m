@@ -249,7 +249,7 @@ fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
 pass(34) = ( norm(err, inf) < epslevel(f)*vscale(f) ) && ...
-     ( feval(f, Inf) < 5*epslevel(f)*vscale(f) );
+     ( feval(f, Inf) < 1e1*epslevel(f)*vscale(f) );
 
 %% Functions on [-inf b]:
 

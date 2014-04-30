@@ -1,13 +1,13 @@
 function fx = toValues(disc, f)
-%TOVALUES  Convert a CHEBFUN to its ULTRAS discretization.
-%
-% Input should be a single (perhaps piecewise smooth) CHEBFUN. 
+%TOVALUES   Convert a CHEBFUN to its ULTRAS discretization.
+%   C = TOVALUES(DISC, F) converts the (perhaps piecewise smooth) chebfun F
+%   to coefficients C for use by an ULTRAS discretization DISC.
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
+% Copyright 20134 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org for Chebfun information.
 
 dom = disc.domain;
-numInts = numel(dom) - 1; % Number of subintervals
+numInts = disc.numIntervals();
 dim = disc.dimension;
 
 % Restrict F to DOM (e.g. if we need to introduce more breakpoints in F)

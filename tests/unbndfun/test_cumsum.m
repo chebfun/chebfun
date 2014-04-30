@@ -60,7 +60,7 @@ gVals = feval(g, x);
 opg = @(x) -exp(-x).*(x + 1) + 2*exp(-1);
 gExact = opg(x);
 err = gVals - gExact;
-pass(3) = norm(err, inf) < 2e4*get(g,'epslevel').*get(g,'vscale');
+pass(3) = norm(err, inf) < 1e5*get(g,'epslevel').*get(g,'vscale');
 
 % Blow-up function:
 op = @(x) 5*x;
@@ -72,7 +72,7 @@ gVals = feval(g, x);
 opg = @(x) 5*x.^2/2 - 5/2 + get(g, 'lval');
 gExact = opg(x);
 err = gVals - gExact;
-pass(4) = norm(err, inf) < 1e-1*get(g,'epslevel').*get(g,'vscale');
+pass(4) = norm(err, inf) < 10*get(g,'epslevel').*get(g,'vscale');
 
 %% Functions on [-inf b]:
 
