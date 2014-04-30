@@ -11,7 +11,6 @@ function f = extractColumns(f, colIdx)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Extract/re-order the columns from f.values, f.coeffs, and f.vscale:
-f.values = f.values(:, colIdx);
 f.coeffs = f.coeffs(:, colIdx);
 f.vscale = f.vscale(colIdx);
 f.epslevel = f.epslevel(colIdx);
