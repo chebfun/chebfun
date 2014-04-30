@@ -1,16 +1,20 @@
 function [u, dampingInfo] = dampingErrorBased(N, u, rhs, delta, L, disc, dampingInfo)
-%DAMPINGERRORBASED      Finds the step-size for damped Newton method.
+%DAMPINGERRORBASED     Finds the step-size for damped Newton method.
+%   DAMPINGERRORBASED finds the step-size lambda used in the damped Newton
+%   iteration. It is affine invariant, and error controlled, that is, it seeks
+%   to minimize the error in the SOLUTION SPACE, not the RESIDUAL SPACE.
 %
-% This algorithm finds the step-size lambda used in the damped Newton iteration.
-% It is affine invariant, and error controlled, that is, it seeks to minimize
-% the error in the SOLUTION SPACE, not the RESIDUAL SPACE.
+%   For further details, see
+%       [1] P. Deuflhard. Newton Methods for Nonlinear Problems. Springer, 2004.
 %
-% For further details, see
-%   [1] P. Deuflhard. Newton Methods for Nonlinear Problems. Springer, 2004.
-%
-%   [2] A. Birkisson. Numerical Solution of Nonlinear Boundary Value Problems
-%         for Ordinary Differential Equations in the Continuous Framework.
-%         Dphil Thesis, Oxford, 2013.
+%       [2] A. Birkisson. Numerical Solution of Nonlinear Boundary Value
+%       Problems for Ordinary Differential Equations in the Continuous
+%       Framework. Dphil Thesis, Oxford, 2013.
+
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+% TODO: Document calling sequence.
 
 % Extract info from the dampingInfo struct
 errTol = dampingInfo.errTol;
@@ -22,10 +26,10 @@ normDeltaBar = dampingInfo.normDeltaBar;
 normDeltaOld = dampingInfo.normDeltaOld;
 deltaBar = dampingInfo.deltaBar;
 
-%TODO: should not really need x here, but just evaluate the chebop
+%TODO: should not really need x here, but just evaluate the CHEBOP:
 x = dampingInfo.x;
 
-% Monitors whether we want to accept the current steplength
+% Monitors whether we want to accept the current steplength:
 accept = 0;
 
 % Indicates whether we are in prediction or correction mode (i. e. whether we
@@ -33,7 +37,7 @@ accept = 0;
 % are correcting the value initially predicted for that step).
 initPrediction = 1;
 
-% Iterate until we find a step-size lambda that we accept
+% Iterate until we find a step-size lambda that we accept:
 while ( ~accept )
     
     % Check whether we want to predict a value for lambda. Can only do so once
@@ -44,8 +48,8 @@ while ( ~accept )
         mu = (normDeltaOld*normDeltaBar)/...
             (N.norm(deltaBar-delta, 'fro')*normDelta)*lambda;
         lambda = min(1,mu);
-        % Indicate that we will now be in correction mode until next
-        % Newton step.
+        % Indicate that we will now be in correction mode until next Newton
+        % step.
         initPrediction = 0;
     end
     

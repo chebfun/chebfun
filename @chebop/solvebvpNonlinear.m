@@ -9,6 +9,8 @@ function [u, info] = solvebvpNonlinear(N, rhs, L, u0, res, pref, displayInfo)
 %   pref:   Cheboppref preference structure
 %
 
+% TODO: Document properly.
+
 % Store preferences used in the Newton iteration in separate variables
 maxIter  = pref.maxIter;
 errTol   = pref.errTol;

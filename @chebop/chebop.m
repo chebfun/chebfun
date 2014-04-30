@@ -179,31 +179,15 @@ classdef (InferiorClasses = {?double}) chebop
     
     methods
                 
-        function u = mldivide(N, rhs, pref)
-        %\   Chebop backslash.
-        %
-        %   Note that CHEBOP requires the RHS of coupled systems to match the
-        %   system, even for scalars right-hand sides, e.g.,
-        %       N = chebop(@(x, u, v) [diff(u) + v ; u + diff(v)]);
-        %       N.bc = @(x, u, v) [u(-1) ; v(1)];
-        %       uv = N\0;
-        %   is not an accepted syntax.
-        %
-        % See also: CHEBOP/SOLVEBVP.
-            
-            if ( nargin < 3 )
-                % Create a CHEBOPPREF:
-                pref = cheboppref();
-            end
-            
-            % Call SOLVEBVP(), where the work is done:
-            u = solvebvp(N, rhs, pref);
-            
-        end
+
         
-        function nin = nargin(N)
+        function nIn = nargin(N)
         %CHEBOP.NARGIN   The number of input arguments to a CHEBOP .OP field.
-            nin = nargin(N.op);
+            if ( ~isempty(N.op) )
+                nIn = nargin(N.op);
+            else
+                nIn = 0;
+            end
         end
         
         function N = set.lbc(N, val)
@@ -359,7 +343,7 @@ classdef (InferiorClasses = {?double}) chebop
         %   subsref.
         
             % We're happy with function handles
-            if ( isa(val, 'function_handle') )
+            if ( isa(val, 'function_handle') || isempty(val) )
                 N.op = val;
             elseif ( iscell(val) )
                 error('CHEBFUN:CHEBOP:setOp:type', ...
@@ -381,7 +365,10 @@ classdef (InferiorClasses = {?double}) chebop
     methods
             
         % Linearize a CHEBOP around a CHEBFUN u.
-        [L, res, isLinear] = linearize(N, u, x, flag);   
+        [L, res, isLinear] = linearize(N, u, x, flag);  
+        
+        %\   Chebop backslash.
+        u = mldivide(N, rhs, pref)
         
     end
     
