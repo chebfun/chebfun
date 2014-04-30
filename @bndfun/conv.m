@@ -13,12 +13,6 @@ function h = conv(f, g)
 %
 %   Note that CONV only supports piecewise-smooth functions on bounded domains.
 %
-%   Example:
-%     f = chebfun(1/2); g = f;
-%     subplot(2, 2, 1), plot(f)
-%     for j = 2:4, g = conv(f, g); subplot(2, 2, j), plot(g), end
-%     figure, for j = 1:4, subplot(2,2,j), plot(g), g = diff(g); end
-
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 %
@@ -73,16 +67,12 @@ function h = conv(f, g)
 %   /___|__:/
 %  a+c fl a+d     b+d
 %
-% Rather than make a CHEBFUN corresponding to the each of the patches, we
+% Rather than make a BNDFUN corresponding to the each of the patches, we
 % instead evaluate directly on a corresonding Chebyshev grid of appropriate
 % size, which turns out to be far more efficient. 
 %
 % Total complexity: O( R*(m*n + n*n) + m*m )
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% TODO: Force size(B) = [n, min(m, n)] for the interior convolutions?
-% TODO: Refactor so that most of this lives at the FUN and/or CHEBTECH level?
-% TODO: Support for delta functions?
 
 % Return empty for an empty input:
 if ( isempty(f) || isempty(g) )

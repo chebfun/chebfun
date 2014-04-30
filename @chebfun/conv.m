@@ -25,64 +25,8 @@ function h = conv(f, g)
 % Nick Hale and Alex Townsend, 2014
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Devoloper note:
-%
-% For further details, see Hale and Townsend, "The convolution of compactly
-% supported functions", (To appear in SISC)
-% 
-% In the following, it is assumed that the length of the domain of g is greater
-% than the length of the domain of f. If this is not the case, then simply
-% compute h = conv(g, f), which is equivalent. We assume f and g are polynomials
-% of degree M and N, resepectively. If f and g are piecewise-defined, one can
-% use the bilinearity of convolution and convolve each each the FUNs
-% individually.
-%
-% The general convolution domain (for smooth functions) is as follows:
-%           .___________________________
-%          /|                  |      /
-%        /  |                  |    /
-%      /    |                  |  /
-%    /______|__________________|/
-%  a+c     b+c                a+d     b+d 
-%
-% The triangular pieces at end are dealt with using a convolution theorem for
-% Legendre polynomials, which leads to a convenient recurrence relation. The
-% cost of this is O(m*n) and results in a polynomial of degree m+n. See
-% EASYCONV() for details.
-%
-% Similarly one can show the interior rectangle results in a polynomial of
-% degree n. This can be computed by patching with R = floor[(d-c) / (b-a)]
-% parallelograms (although triangle Z is not used). Each parallelogram requires
-% restricting g to a suitable subdomain, which costs O(n^2) operations. Total
-% complexity ratio*(m*n + n*n)
-%            ___________________________
-%          /       /       /:     /   /
-%        /       /       /  : Z /   /          <-- R patches
-%      /       /       /    : /   /           
-%    /_______/_______/______/__ /
-%  a+c     b+c             fl  a+d     b+d
-%
-% The final piece is computed via further parallelogram subdivision starting
-% from the right (B), and a smaller subdivision in both f and g (C).
-% Contributions from D and E are discarded, as they have already been counted
-% above. Complexity O(m^2 + n^2)
-%   ________________
-%   : /E|C/:      / 
-%   : ??/  :    /
-%   : /D|B :  /
-%   /___|__:/
-%  a+c fl a+d     b+d
-%
-% Rather than make a CHEBFUN corresponding to the each of the patches, we
-% instead evaluate directly on a corresonding Chebyshev grid of appropriate
-% size, which turns out to be far more efficient. 
-%
-% Total complexity: O( R*(m*n + n*n) + m*m )
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % TODO: Force size(B) = [n, min(m, n)] for the interior convolutions?
-% TODO: Refactor so that most of this lives at the FUN and/or CHEBTECH level?
-% TODO: Support for delta functions?
 
 % Return empty for an empty input:
 if ( isempty(f) || isempty(g) )
@@ -128,12 +72,39 @@ h = 0;
 % Loop over each of the interactions:
 for j = 1:numel(f.funs)
     for k = 1:numel(g.funs)
+        % Compute the contribution of jth fun of with kth fun of g:
         hjk = chebfun(conv(f.funs{j}, g.funs{k}));        
+        % Add this contribution:
         h = myplus(h, hjk);
     end
 end
 
+if ( transState )
+    h = h.';
 end
+
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function h = myplus(f, g)
+% Modified PLUS() which pads with zeros to fulfil domain requirements.
+
+if ( isnumeric(f) )
+    h = f + g;
+else
+    [a, b] = domain(f);
+    [c, d] = domain(g);
+    dom = union([a, b], [c, d]);
+    h = chebfun(0, dom);
+    h = defineInterval(h, [a, b], f);        % h{a, b} = f;
+    hTmp = restrict(h, [c, d]);
+    h = defineInterval(h, [c, d], hTmp + g); % h{c, d} = h{c, d} + g;
+end
+
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function h = oldConv(f, g)
 
@@ -197,4 +168,3 @@ for k = 1:length(x)
 end
 
 end
-
