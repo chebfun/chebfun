@@ -5,8 +5,8 @@ tol = 1e-9;
 
 %% Building blocks
 dom = [-pi pi];
-[Z,I,D,C] = linop.primitiveOperators(dom);
-[z,E,s] = linop.primitiveFunctionals(dom);
+[Z, I, D, C] = linop.primitiveOperators(dom);
+[z, E, s] = linop.primitiveFunctionals(dom);
 x = chebfun('x', dom);
 c = sin(x.^2);
 C = operatorBlock.mult(c);   
@@ -66,5 +66,6 @@ for k = 1:6
 
 end
 
-err;
 pass = err < tol;
+
+end

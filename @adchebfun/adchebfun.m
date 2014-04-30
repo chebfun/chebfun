@@ -774,11 +774,6 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             u.jacobian = functionalBlock.jump(x, u.domain, 0)*u.jacobian;
         end 
         
-        function l = length(f)
-            % LENGTH(F) where F is an ADCHEBFUN is the same as LENGTH(F.FUNC)
-            l = length(f.func);
-        end
-        
         function f = log(f)
             % F = LOG(F)   LOG of an ADCHEBFUN.
             
@@ -972,7 +967,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                     elseif ( b == 0 )
                         f.func = power(f.func, 0);
                         f.jacobian = 0*f.jacobian;
-                        f.linearity = true(size(f.jacobian));
+                        f.linearity = true;
                         return
                     end
                 end
@@ -1195,11 +1190,6 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f.func = sinh(f.func);
         end
         
-        function varargout = size(f, varargin)
-            % SIZE(F) where F is an ADCHEBFUN is the same as SIZE(F.FUNC)
-            [varargout{1:nargout}] = size(f.func, varargin{:});
-        end
-        
         function f = sqrt(f)
             % F = SQRT(F)   SQRT of an ADCHEBFUN
             
@@ -1227,6 +1217,12 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 case '.'
 %                     out = vertcat(f.(index(1).subs));
                     out = f.(index(1).subs);
+                    
+                    if ( numel(index) > 1 )
+                        % Recurse on SUBSREF():
+                        index(1) = [];
+                        out = subsref(out, index);
+                    end
             end
         end
         
@@ -1421,10 +1417,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 % If the func part is a scalar.
             end
             f.domain = union(f.domain, f.jacobian.domain);
+            f.jacobian.domain = f.domain;
         end
     end
-    
 end
-
-
-   
