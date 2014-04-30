@@ -199,7 +199,10 @@ classdef (InferiorClasses = {?double}) chebop
             % Need to know the nargin of the CHEBOP:
             nIn = nargin(N);
             
-            if ( isnumeric(val) )
+            if ( isempty(val) )
+                N.lbc = [];
+                
+            elseif ( isnumeric(val) )
                 if ( nIn > 2 )
                     % Only allow scalar numerical values to be passed if we are
                     % dealing with a scalar problem.
@@ -255,7 +258,10 @@ classdef (InferiorClasses = {?double}) chebop
             % Need to know the nargin of the CHEBOP:
             nIn = nargin(N);
             
-            if ( isnumeric(val) )
+            if ( isempty(val) )
+                N.rbc = [];
+                
+            elseif ( isnumeric(val) )
                 if ( nIn > 2 )
                     % Only allow scalar numerical values to be passed if we are
                     % dealing with a scalar problem.
@@ -307,10 +313,13 @@ classdef (InferiorClasses = {?double}) chebop
         %   conditions than simply accessing the .bc field, or using standard
         %   subsref.
         
+            if ( isempty(val) )
+                N.bc = [];
+            
+            elseif ( isnumeric(val) )
             % Allow passing numerical values to the .BC field, which will impose
             % the conditions at both the left and right end of the domain. This
-            % is for backwards compatability.
-            if ( isnumeric(val) )
+            % is for backwards compatability.          
                 N.lbc = val; %#ok<MCSUP>
                 N.rbc = val; %#ok<MCSUP>
             
