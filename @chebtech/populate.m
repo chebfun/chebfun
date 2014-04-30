@@ -78,7 +78,11 @@ if ( isnumeric(op) || iscell(op) )
     values = op;
     if ( isnumeric(op) )
         % OP is just the values.
-        values = extrapolate(f, values); 
+        if ( all(isnan(op)) )
+            values = op;
+        else
+            values = extrapolate(f, values); 
+        end
         f.coeffs = f.vals2coeffs(values);
     else                 
         % OP is a cell {values, coeffs}

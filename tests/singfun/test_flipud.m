@@ -87,6 +87,6 @@ vals_df2 = feval(df2, x);
 df2_exact = @(x) -(1-x).^a.*sin(x).*(1+x).^b;
 vals_exact = feval(df2_exact, x);
 err = vals_df2 - vals_exact;
-pass(7) = (norm(err, inf) < 2*get(f, 'epslevel')*norm(vals_exact, inf));
+pass(7) = (norm(err, inf) < 5*get(f, 'epslevel')*norm(vals_exact, inf));
 
 end
