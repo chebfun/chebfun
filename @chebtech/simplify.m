@@ -5,16 +5,15 @@ function f = simplify(f, tol)
 %  a relative sense: ||G - F|| < G.EPSLEVEL*G.VSCALE. It does this by zeroing
 %  out all coefficients of F that are relatively small; more precisely, it sets
 %  to zero all coefficients smaller in magnitude than the product of F.VSCALE
-%  and the default CHEBTECH EPS preference. It then removes all trailing zero
-%  coefficients from F if there are any. G.EPSLEVEL is set to the maximum of
-%  F.EPSLEVEL and the default CHEBTECH EPS.
+%  and F.EPSLEVEL. It then removes all trailing zero coefficients from F if
+%  there are any. G.EPSLEVEL is set to F.EPSLEVEL.
 %
 %  If F is not happy, F is returned unchanged.
 %
 %  G = SIMPLIFY(F, TOL) does the same as above but uses TOL instead of the
-%  default CHEBTECH EPS preference as the relative threshold level for deciding
-%  whether a coefficient is small enough to be zeroed. Here, G.EPSLEVEL is set
-%  to the maximum of F.EPSLEVEL and TOL.
+%  F.EPSLEVEL as the relative threshold level for deciding whether a coefficient
+%  is small enough to be zeroed. Here, G.EPSLEVEL is set to the maximum of
+%  F.EPSLEVEL and TOL.
 %
 % See also HAPPINESSCHECK.
 
@@ -26,19 +25,14 @@ if ( isempty(f) )
     return
 end
 
-% Do nothing to an unhappy CHEBTECH. ([TODO]: Is this the right thing to do?)
+% Do nothing to an unhappy CHEBTECH:
 if ( ~f.ishappy )
-    return;
+    return
 end
 
-% Use the default tolerance if none was supplied:
+% Use the f.epslevel if no tolerance was supplied:
 if ( nargin < 2 )
-    pref = chebtech.techPref();
-    tol = f.epslevel.*f.vscale;
-    % TODO: Document this.
-%     vscale = f.vscale;
-%     vscale(vscale < f.epslevel) = 1;
-%     tol = max(tol)./vscale;
+    tol = f.epslevel;
 end
 
 % Zero all coefficients smaller than the tolerance relative to F.VSCALE:
@@ -49,7 +43,7 @@ f.coeffs(bsxfun(@minus, abs(f.coeffs), tol.*f.vscale) < 0) = 0;
 
 % If the whole thing's now zero, leave just one coefficient:
 if ( isempty(firstNonZeroRow) )
-    firstNonZeroRow = length(f);
+    firstNonZeroRow = size(f, 1);
 end
 
 % Remove trailing zeros:
