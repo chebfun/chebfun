@@ -1,5 +1,7 @@
 function [u, info] = solvebvpLinear(L, rhs, residual, displayInfo, pref)
 
+% TODO: Document.
+
 % All values of the LINOPCONSTRAINT stored in L will be of incorrect sign
 % when returned from LINEARIZE(), if we want to use it for a LINOP
 % backslash. This is because when problems are solved with LINOP backslash,
