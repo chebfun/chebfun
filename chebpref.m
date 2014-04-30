@@ -56,4 +56,22 @@ classdef chebpref
         display(pref)
     end
 
+    methods ( Static = true )
+
+        function pref1 = mergePrefs(pref1, pref2, map)
+            if ( nargin < 3 )
+                map = struct();
+            end
+
+            for field = fieldnames(pref2).'
+                if ( isfield(map, field{1}) )
+                    pref1.(map.(field{1})) = pref2.(field{1});
+                else
+                    pref1.(field{1}) = pref2.(field{1});
+                end
+            end
+        end
+
+    end
+
 end

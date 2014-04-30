@@ -535,13 +535,7 @@ classdef chebfunpref < chebpref
                 map = struct();
             end
 
-            for field = fieldnames(pref2).'
-                if ( isfield(map, field{1}) )
-                    pref1.(map.(field{1})) = pref2.(field{1});
-                else
-                    pref1.(field{1}) = pref2.(field{1});
-                end
-            end
+            pref1 = chebpref.mergePrefs(pref1, pref2, map);
         end
 
         function pref = getFactoryDefaults(getFactory)
