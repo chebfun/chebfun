@@ -17,20 +17,20 @@ temp = 1;
 
 % Check if A contains only CHEBFUN and DOUBLE objects.
 for j = 1:sz
-   if  ( isa(A.blocks{j}, 'chebfun') | isa(A.blocks{j}, 'double') )
-   else
-      temp = 0;    
-   end
+    if  ( isa(A.blocks{j}, 'chebfun') | isa(A.blocks{j}, 'double') )
+    else
+        temp = 0;    
+    end
 end
 
 % If so, convert A to a QUASIMATRIX, and call CHEBFUN/PLOT.
 if temp == 1
-   F = chebfun(A);
-   plot(F);
+    A = chebfun(A);
+    plot(A);
 
 % If not, call CHEBMATRIX/SPY,
 else
-   spy(A);
+    spy(A);
 end
 
 end
