@@ -1,8 +1,11 @@
-function f = toFunction(disc, values)
+function f = toFunction(disc, values, inOut) %#ok<INUSD>
 %TOFUNCTION   Convert COLLOC1 discretization to a CHEBFUN. 
 %   TOFUNCTION(DISC, VALUES) converts the values of a COLLOC1-discretized
 %   function to a CHEBFUN. If DISC.DOMAIN has breakpoints, the input should have
 %   cell arrrays corresponding to smooth pieces.
+%
+%   TOFUNCTION(DISC, VALUES, INOUT) is the same as above, since the input
+%   and output space of COLLOC1 discretizations are the same.
 %
 %   If VALUES is matrix valued, the output is an array-valued CHEBFUN, where
 %   each column of the CHEBFUN corresponds to a column of the input.

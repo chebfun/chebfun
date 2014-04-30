@@ -84,7 +84,7 @@ for k = 1:6
     err(k,8) = feval(v,1,'left') - feval(v,1,'right');
     err(k,9) = feval(Du,1,'left') - feval(Du,1,'right');
     
-    if ( k == 2 )
+    if ( k == 3 )
         f = [abs(x-1); 0*x; 1 ];
     end
 end
