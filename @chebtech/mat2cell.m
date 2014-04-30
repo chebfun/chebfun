@@ -63,7 +63,6 @@ for k = 1:numel(N)
     
     % Assign values to the fields of the CHEBTECH
     gk.ishappy = f.ishappy;
-%     gk.values = values{k};
     gk.coeffs = coeffs{k};
     gk.vscale = vscale{k};
     gk.epslevel = epslevel{k};

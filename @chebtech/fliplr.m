@@ -6,9 +6,7 @@ function f = fliplr(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-% Flip the orders of the columns of the matrices storing the values and
-% coefficients.
-% f.values = fliplr(f.values);
+% Flip the orders of the columns of the matrices storing the coefficients.
 f.coeffs = fliplr(f.coeffs);
 
 end

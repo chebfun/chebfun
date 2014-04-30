@@ -19,5 +19,5 @@ else
     % Compute real part of the coefficients:
     f.coeffs = real(f.coeffs);
 end
-f.vscale = getvscl(f); % max(abs(f.values), [], 1);
+f.vscale = getvscl(f);
 end

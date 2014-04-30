@@ -2,17 +2,17 @@ function [values, maskNaN, maskInf] = extrapolate(f, values)
 %EXTRAPOLATE  Extrapolate data values from values at Chebyshev points of 
 %   1st kind.
 %
-%   EXTRAPOLATE(F) uses barycentric interpolants to extrapolate out 
-%   NaNs or Infs from the numeric data in F.VALUES.
+%   EXTRAPOLATE(F, VALUES) uses barycentric interpolants to extrapolate out 
+%   NaNs or Infs from the numeric data in VALUES.
 %
-%   [VALUES, MASKNAN, MASKINF] = EXTRAPOLATE(F) returns logical
-%   vectors indicating when a NaN or Inf was encountered in rows of F.VALUES.
+%   [VALUES, MASKNAN, MASKINF] = EXTRAPOLATE(F, VALUES) returns logical
+%   vectors indicating when a NaN or Inf was encountered in rows of VALUES.
 %
 %   Note that if any column of an array-valued function returns NaN or Inf,
 %   then _all_ columns are extrapolated at the point. Thus MASKNAN and MASKINF
-%   are always column vectors, even if F.VALUES is a matrix.
+%   are always column vectors, even if VALUES is a matrix.
 %
-%   The F.COEFFS field is not used/required; only F.VALUES is needed.
+%   The F.COEFFS field is not used/required; only VALUES is needed.
 %
 % See also PREF.
 

@@ -77,15 +77,10 @@ end
 if ( isnumeric(op) || iscell(op) )
     if ( isnumeric(op) )
         % OP is just the values.
-%         f.values = op;
         f.coeffs = f.vals2coeffs(op);
     else                 
         % OP is a cell {values, coeffs}
-        f.values = op{1};
         f.coeffs = op{2};
-        if ( isempty(f.values) )
-            f.values = f.coeffs2vals(f.coeffs);
-        end
     end
     
     % Update vscale:

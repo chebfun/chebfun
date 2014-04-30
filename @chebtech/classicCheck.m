@@ -1,9 +1,9 @@
 function [ishappy, epslevel, cutoff] = classicCheck(f, values, pref)
 %CLASSICCHECK   Attempt to trim trailing Chebyshev coefficients in a CHEBTECH.
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F) returns an estimated
+%   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F, VALUES) returns an estimated
 %   location, the CUTOFF, at which the CHEBTECH F could be truncated to maintain
 %   an accuracy of EPSLEVEL relative to F.VSCALE and F.HSCALE. ISHAPPY is
-%   TRUE if CUTOFF < MIN(LENGTH(F.VALUES),2) or F.VSCALE = 0, and FALSE
+%   TRUE if CUTOFF < MIN(LENGTH(VALUES),2) or F.VSCALE = 0, and FALSE
 %   otherwise.
 %
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F, PREF) allows additional

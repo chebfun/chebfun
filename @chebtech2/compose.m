@@ -148,9 +148,7 @@ function [values, giveUp] = composeResample2(op, values, pref, f, g)
     % Update f and g values:
     f = prolong(f, n);
     v1 = f.coeffs2vals(f.coeffs);
-%     v1 = f.values;
     g = prolong(g, n);
-%     v2 = g.values;
     v2 = g.coeffs2vals(g.coeffs);
 
     if ( pref.extrapolate )

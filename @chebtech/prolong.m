@@ -27,13 +27,11 @@ end
 % Constant case:
 if ( nIn == 1 )
     m = size(f.coeffs, 2);
-%     f.values = repmat(f.values, nOut, 1);
     f.coeffs = [zeros(nDiff, m) ; f.coeffs(1,:)];
     return
 end
 
 % Prolong the points using the FFT:
 f.coeffs = f.alias(f.coeffs, nOut);
-% f.values = f.coeffs2vals(f.coeffs);
 
 end

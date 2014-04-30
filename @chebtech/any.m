@@ -25,7 +25,6 @@ elseif ( dim == 2 )     % ANY down the rows.
     a = f;
     arbitraryPoint = 0.1273881594;
     a.coeffs = any(feval(a, arbitraryPoint));
-%     a.coeffs = a.values;
     a.vscale = getvscl(a);
     a.epslevel = eps;
 else

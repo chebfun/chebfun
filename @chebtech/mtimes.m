@@ -31,7 +31,6 @@ elseif ( isa(c, 'double') )         % CHEBTECH * double
             'Inner matrix dimensions must agree.');
     end
     
-%     f.values = f.values*c;
     f.coeffs = f.coeffs*c;
     if ( numel(c) == 1 )
         % See CHEBTECH CLASSDEF file for documentation on this.
@@ -39,7 +38,7 @@ elseif ( isa(c, 'double') )         % CHEBTECH * double
         f.epslevel = f.epslevel + eps;
     else
         % See CHEBTECH CLASSDEF file for documentation on this.
-        vscaleNew = getvscl(f); % max(abs(f.values), [], 1);
+        vscaleNew = getvscl(f);
         f.epslevel = ((f.epslevel.*f.vscale)*abs(c))./vscaleNew;
         f.vscale = vscaleNew;
 
@@ -51,7 +50,6 @@ elseif ( isa(c, 'double') )         % CHEBTECH * double
     
     % If the vertical scale is zero, set the CHEBTECH to zero:
     if ( all(f.vscale == 0) )
-%         f.values = zeros(1, size(f.values, 2));
         f.coeffs = zeros(1, size(f.coeffs, 2));
     end
     

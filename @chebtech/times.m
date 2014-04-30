@@ -24,13 +24,9 @@ elseif ( isa(g, 'double') )     % CHEBTECH .* double
     
     % Do the multiplication:
     if ( size(g, 2) > 1 )
-        %f.values = bsxfun(@times, f.values, g);
         f.coeffs = bsxfun(@times, f.coeffs, g);
-        %f.vscale = f.vscale.*abs(g);
     else
-        %f.values = f.values*g;
         f.coeffs = f.coeffs*g;
-        %f.vscale = f.vscale*abs(g);
     end
     f.epslevel = f.epslevel + eps(g);
     return
@@ -81,28 +77,21 @@ pos = false;
 
 % Multiply values:
 if ( isequal(f, g) )
-    %values = fNew.values.^2;
     coeffs = coeff_times( fNew, gNew );
     if ( isreal(f) )
         pos = true;
     end
 elseif ( isequal(conj(f), g) )
-%     values = conj(fNew.values).*fNew.values;
     coeffs = coeff_times( conj(fNew), gNew );
     pos = true;
 else
-    %gNew = prolong(g, fn + gn - 1);
     coeffs = coeff_times( fNew, gNew );
-    %values = fNew.values.*gNew.values;
 end
 
 % Assign values and coefficients back to f:
 coeffs = flipud(coeffs);
-%coeffs(bsxfun(@minus, abs(coeffs), f.epslevel.*f.vscale.^2) < 0) = 0;
 
 f.coeffs = coeffs; 
-%f.values = f.coeffs2vals(coeffs);
-% f.coeffs = f.vals2coeffs(values);
 
 % Update vscale, epslevel, and ishappy:
 vscale = getvscl(f);

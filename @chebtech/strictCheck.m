@@ -1,11 +1,11 @@
 function [ishappy, epslevel, cutoff] = strictCheck(f, values, pref)
 %STRICTCHECK   Attempt to trim trailing Chebyshev coefficients in a CHEBTECH.
-%   [ISHAPPY, CUTOFF, EPSLEVEL] = STRICTCHECK(F) returns an estimated location
-%   CUTOFF at which the CHEBTECH F could be truncated to maintain an accuracy
-%   of EPSLEVEL relative to F.VSCALE and F.HSCALE. ISHAPPY is TRUE if
-%   CUTOFF < MIN(LENGTH(F.VALUES), 2) or F.VSCALE = 0, and FALSE otherwise.
+%   [ISHAPPY, CUTOFF, EPSLEVEL] = STRICTCHECK(F, VALUES) returns an estimated 
+%   location CUTOFF at which the CHEBTECH F could be truncated to maintain an 
+%   accuracy of EPSLEVEL relative to F.VSCALE and F.HSCALE. ISHAPPY is TRUE if
+%   CUTOFF < MIN(LENGTH(VALUES), 2) or F.VSCALE = 0, and FALSE otherwise.
 %
-%   [ISHAPPY, CUTOFF, EPSLEVEL] = STRICTCHECK(F, PREF) allows additional
+%   [ISHAPPY, CUTOFF, EPSLEVEL] = STRICTCHECK(F, VALUES, PREF) allows additional
 %   preferences to be passed. In particular, one can adjust the target accuracy
 %   with PREF.EPS.
 %

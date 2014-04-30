@@ -140,7 +140,6 @@ Q = Pinv*Winv*Q*S;          % Fix Q.
 R = S*R;                    % Fix R.
 
 % Apply data to chebtech:
-% f.values = Q;                           % Adjust values of f.
 f.coeffs = f.vals2coeffs(Q);            % Compute new coefficients.
 f.vscale = max(abs(Q), [], 1);
 
@@ -182,8 +181,6 @@ end
 f.coeffs = f.vals2coeffs(Q);
 % Trim the unneeded ones:
 f.coeffs(1:newN/2,:) = [];
-% Compute new values:
-% f.values = f.coeffs2vals(f.coeffs);
 
 % Update the vscale:
 f.vscale = getvscl(f); % max(abs(f.values), [], 1);

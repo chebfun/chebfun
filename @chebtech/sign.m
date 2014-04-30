@@ -14,7 +14,6 @@ function f = sign(f, pref)
 if ( isreal(f) )
     arbitraryPoint = 0.1273881594;
     f.coeffs = sign(feval(f, arbitraryPoint));
-%     f.coeffs = f.values;
     f.vscale = abs(f.coeffs);
 else
     if ( nargin == 1 )

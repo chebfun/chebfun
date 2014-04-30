@@ -1,6 +1,6 @@
 function pass = sampleTest(op, values, f)
 %SAMPLETEST   Test an evaluation of input OP against a CHEBTECH approximation.
-%   SAMPLETEST(OP, F) evaluates both the function OP and its CHEBTECH
+%   SAMPLETEST(OP, VALUES, F) evaluates both the function OP and its CHEBTECH
 %   representation F at one or more points within [-1,1]. The difference of
 %   these values is computed, and if this is sufficiently small (relative to
 %   F.VSCALE, F.HSCALE, and F.EPSLEVEL) the test passes and returns TRUE. If the

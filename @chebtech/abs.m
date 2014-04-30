@@ -8,7 +8,7 @@ function f = abs(f, varargin)
 %  See http://www.chebfun.org for Chebfun information.
 
 if ( isreal(f) || isreal(1i*f) )    
-%     f.values = abs(f.values);
+    % Convert to values and then compute ABS(). 
     values = f.coeffs2vals(f.coeffs); 
     values = abs(values);
     f.coeffs = f.vals2coeffs(values);

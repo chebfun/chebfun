@@ -18,7 +18,6 @@ elseif ( isa(g, 'double') ) % CHEBTECH + double
     
     % Update values (use bsxfun() to handle the case in which g is a vector
     % and f is an array-valued CHEBTECH):
-%     f.values = bsxfun(@plus, f.values, g);
     % Update coeffs:
     if ( (size(g, 2) > 1) && (size(f.coeffs, 2) == 1) )
         % Perform singleton expansion of f:
@@ -26,7 +25,6 @@ elseif ( isa(g, 'double') ) % CHEBTECH + double
     end
     f.coeffs(end,:) = f.coeffs(end,:) + g;
     % Update scale:
-%     vscaleNew = max(abs(f.values), [], 1);
     vscaleNew = getvscl(f); 
     % See CHEBTECH CLASSDEF file for documentation on this:
     f.epslevel = (f.epslevel.*f.vscale + abs(g)*eps)./vscaleNew;
@@ -51,7 +49,6 @@ else % CHEBTECH + CHEBTECH
     end
     
     % Update values and coefficients:
-%     f.values = f.values + g.values;
     f.coeffs = f.coeffs + g.coeffs;
     
     % Look for a zero output:

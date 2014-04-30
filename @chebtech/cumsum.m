@@ -83,12 +83,11 @@ function f = cumsumContinuousDim(f, m)
         c = b;
     end
 
-    % Recover values and attach to output:
-%     f.values = f.coeffs2vals(c);
+    % Recover coeffs:
     f.coeffs = c;
 
     % Update vscale: [TODO]: Update epslevel?
-    f.vscale = getvscl(f); % max(abs(f.values), [], 1);
+    f.vscale = getvscl(f);
     
     % Simplify (as suggested in Chebfun ticket #128)
     f = simplify(f);
@@ -104,9 +103,8 @@ function f = cumsumFiniteDim(f, m)
 % CUMSUM over the finite dimension.
 
     for k = 1:m
-%         f.values = cumsum(f.values, 2);
         f.coeffs = cumsum(f.coeffs, 2);
-        vscale = getvscl(f); % max(abs(f.values), [], 1);
+        vscale = getvscl(f);
         f.epslevel = sum(f.epslevel.*f.vscale, 2)/sum(vscale, 2); % TODO: Is this right?
         f.vscale = vscale;
     end

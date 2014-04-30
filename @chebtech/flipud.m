@@ -5,9 +5,6 @@ function f = flipud(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org for Chebfun information.
 
-% Flip the values:
-% f.values = flipud(f.values);
-
 % Negate the odd coefficients:
 f.coeffs(end-1:-2:1,:) = -f.coeffs(end-1:-2:1,:);
 % Note: we use end-1:-2:1 rather than 1:2:end-1 as we only want to change the

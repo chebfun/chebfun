@@ -59,7 +59,6 @@ epslevel = repmat(f.epslevel.*f.vscale, 1, numInts)./vscale;
 % same as the product of the epslevel and vscale of their 'parent'.)
 
 % Append data to CHEBTECH:
-% f.values = values;
 f.coeffs = coeffs;
 f.vscale = vscale;
 f.epslevel = epslevel;

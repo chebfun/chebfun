@@ -96,7 +96,6 @@ function [vals, pos] = minandmaxColumn(f, fp, xpts)
     pos(2) = r(index);
 
     % Take the maximum of the computed maximum and the function values:
-%     values = f.coeffs2vals(f.coeffs);
     [vmax, vindex] = min([ vals(2); values ]);
     if ( vmax > vals(2) )
         vals(2) = vmax;

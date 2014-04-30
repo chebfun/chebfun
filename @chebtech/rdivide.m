@@ -28,17 +28,14 @@ if ( isa(c, 'double') )
         f = f.make(NaN(1, size(f, 2)));
     elseif ( numel(c) == 1 )
         % Scalar
-%         f.values = f.values/c;      % Divide values
         f.coeffs = f.coeffs/c;      % Divide coeffs
         f.vscale = f.vscale/abs(c); % Divide vscale
     else
         % Array-valued CHEBTECH
         n = size(f.coeffs, 1);   
-%         f.values = f.values./repmat(c, n, 1);   % Divide values
         f.coeffs = f.coeffs./repmat(c, n, 1);   % Divide coeffs
         f.vscale = f.vscale./abs(c);            % Divide vscale
         
-%         f.values(:, c == 0) = NaN;
         f.coeffs(:, c == 0) = NaN;
         f.vscale(:, c == 0) = NaN;
     end

@@ -139,13 +139,6 @@ classdef chebtech < smoothfun % (Abstract)
     %% Properties of CHEBTECH objects.
     properties ( Access = public )
 
-        % Values of CHEBTECH at Chebyshev points (stored in order from left to
-        % right). The particular Chebyshev points used depend on the instance
-        % of the concrete class (1st kind for CHEBTECH1 and 2nd kind for
-        % CHEBTECH2).  For array-valued CHEBTECH objects, each column
-        % represents the interpolated values of a single function.
-        %values % (nxm double)
-
         % Coefficients in 1st-kind Chebyshev series expansion of the CHEBTECH on
         % [-1,1]. The coefficients are stored in descending order so that c_N is
         % the first entry and c_0 is the last. For array-valued CHEBTECH
