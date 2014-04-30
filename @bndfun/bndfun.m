@@ -125,6 +125,9 @@ classdef bndfun < classicfun
     
     %% METHODS IMPLEMENTED BY THIS CLASS.
     methods
+        
+        % Convolution of BNDFUN F with BNDFUN G.
+        h = conv(f, g)
 
         % Compose a BNDFUN with an operator or another BNDFUN.
         f = compose(f, op, g, pref)
