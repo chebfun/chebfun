@@ -367,6 +367,23 @@ classdef (InferiorClasses = {?double}) chebop
             end
         end   
         
+        function N = set.init(N, val)
+        %CHEBOP.SET.OP   Set the differential equation part of a CHEBOP.
+        %   CHEBOP.SET.OP offers more control of setting the DE left boundary
+        %   conditions than simply accessing the .op field, or using standard
+        %   subsref.
+        
+            % We're happy with function handles
+            if ( isa(val, 'chebfun') && size(val, 2) > 1 )
+                val = chebmatrix(mat2cell(val).');
+                warning('Please use vertical concatenation for initial guess.')
+            end
+            
+            N.init = val;
+                
+        end   
+
+        
     end
     
     %% METHODS IMPLEMENTED IN OTHER FILES:

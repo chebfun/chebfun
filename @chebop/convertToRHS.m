@@ -21,8 +21,14 @@ function newRHS = convertToRHS(rhs, residual)
 
 % Check whether dimensions match:
 if ( ~all(size(rhs) == [numRow, numCol]) )
-    error('CHEBFUN:CHEBOP:CONVERTTORHS', ...
-        'RHS does not match output dimensions of operator.');
+    if ( all(size(rhs) == [numCol, numRow]) )
+        warning('CHEBFUN:CHEBOP:CONVERTTORHS', ...
+            'RHS does not match output dimensions of operator.');
+        rhs = rhs.';
+    else
+        error('CHEBFUN:CHEBOP:CONVERTTORHS', ...
+            'RHS does not match output dimensions of operator.');
+    end
 end
 
 % Prepare to convert the RHS to a CHEBMATRIX:

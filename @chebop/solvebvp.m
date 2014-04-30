@@ -65,11 +65,16 @@ L.prefs = pref;
 % before continuing
 if ( isnumeric(rhs) )
     rhs = N.convertToRHS(rhs, residual);
+elseif ( isa(rhs, 'chebfun') && size(rhs, 2) > 1 )
+    rhs = chebmatrix(mat2cell(rhs).');
+    warning('Please use vertical concatenation for RHS.')
 end
+
 % Do the same for the RHS:
 if ( isnumeric(u0) )
     u0 = N.convertToRHS(u0, residual);
 end
+
 
 % Solve:
 if ( all(isLinear) )
