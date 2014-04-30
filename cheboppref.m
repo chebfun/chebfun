@@ -86,32 +86,8 @@ classdef cheboppref < chebpref
         end
 
         function setDefaults(varargin)
-            if ( nargin < 1)
-                error('CHEBOPPREF:setDefaults:notEnoughArguments', ...
-                    'Not enough arguments.');
-            end
-
-            if ( nargin == 1 )
-                if ( isstruct(varargin{1}) )
-                    varargin{1} = cheboppref(varargin{1});
-                end
-
-                if ( ischar(varargin{1}) && strcmp(varargin{1}, 'factory') )
-                    cheboppref.manageDefaultPrefs('set-factory');
-                elseif ( isa(varargin{1}, 'cheboppref') )
-                    cheboppref.manageDefaultPrefs('set', varargin{1}.prefList);
-                else
-                    error('CHEBOPPREF:setDefaults:badArg', ...
-                        ['When calling cheboppref.setDefaults() with just ' ...
-                         'one argument, that argument must be ''factory'', ' ...
-                         'a CHEBOPPREF object, or a MATLAB structure.']);
-                end
-            elseif ( mod(nargin, 2) == 0 )
-                cheboppref.manageDefaultPrefs('set', varargin{:});
-            else
-                error('CHEBOPPREF:setDefaults:unpairedArg', ...
-                    'Unpaired argument in name-value pair list.');
-            end
+            chebpref.setDefaults(@(inPref) cheboppref(inPref), ...
+                @cheboppref.manageDefaultPrefs, varargin{:});
         end
     end
 

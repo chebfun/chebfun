@@ -596,32 +596,8 @@ classdef chebfunpref < chebpref
         % using the first syntax listed above (though they still can be set
         % with the second).
 
-            if ( nargin < 1)
-                error('CHEBFUNPREF:setDefaults:notEnoughArguments', ...
-                    'Not enough arguments.');
-            end
-
-            if ( nargin == 1 )
-                if ( isstruct(varargin{1}) )
-                    varargin{1} = chebfunpref(varargin{1});
-                end
-
-                if ( ischar(varargin{1}) && strcmp(varargin{1}, 'factory') )
-                    chebfunpref.manageDefaultPrefs('set-factory');
-                elseif ( isa(varargin{1}, 'chebfunpref') )
-                    chebfunpref.manageDefaultPrefs('set', varargin{1}.prefList);
-                else
-                    error('CHEBFUNPREF:setDefaults:badArg', ...
-                        ['When calling chebfunpref.setDefaults() with just ' ...
-                         'one argument, that argument must be ''factory'', ' ...
-                         'a CHEBFUNPREF object, or a MATLAB structure.']);
-                end
-            elseif ( mod(nargin, 2) == 0 )
-                chebfunpref.manageDefaultPrefs('set', varargin{:});
-            else
-                error('CHEBFUNPREF:setDefaults:unpairedArg', ...
-                    'Unpaired argument in name-value pair list.');
-            end
+            chebpref.setDefaults(@(inPref) chebfunpref(inPref), ...
+                @chebfunpref.manageDefaultPrefs, varargin{:});
         end
     end
 

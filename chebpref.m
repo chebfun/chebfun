@@ -74,4 +74,39 @@ classdef chebpref
 
     end
 
+    methods ( Static = true )
+
+        function setDefaults(makeSC, manageSCDefaults, varargin)
+            nargs = length(varargin);
+
+            if ( nargs < 1)
+                error('CHEBPREF:setDefaults:notEnoughArguments', ...
+                    'Not enough arguments.');
+            end
+
+            if ( nargs == 1 )
+                if ( isstruct(varargin{1}) )
+                    varargin{1} = makeSC(varargin{1});
+                end
+
+                if ( ischar(varargin{1}) && strcmp(varargin{1}, 'factory') )
+                    manageSCDefaults('set-factory');
+                elseif ( isa(varargin{1}, 'chebpref') )
+                    manageSCDefaults('set', varargin{1}.prefList);
+                else
+                    error('CHEBPREF:setDefaults:badArg', ...
+                        ['When calling chebpref.setDefaults() with just ' ...
+                         'one argument, that argument must be ''factory'', ' ...
+                         'a subclass of CHEBPREF, or a MATLAB structure.']);
+                end
+            elseif ( mod(nargs, 2) == 0 )
+                manageSCDefaults('set', varargin{:});
+            else
+                error('CHEBPREF:setDefaults:unpairedArg', ...
+                    'Unpaired argument in name-value pair list.');
+            end
+        end
+
+    end
+
 end
