@@ -181,9 +181,13 @@ classdef (InferiorClasses = {?double}) chebop
                 
 
         
-        function nin = nargin(N)
+        function nIn = nargin(N)
         %CHEBOP.NARGIN   The number of input arguments to a CHEBOP .OP field.
-            nin = nargin(N.op);
+            if ( ~isempty(N.op) )
+                nIn = nargin(N.op);
+            else
+                nIn = 0;
+            end
         end
         
         function N = set.lbc(N, val)

@@ -1417,6 +1417,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 % If the func part is a scalar.
             end
             f.domain = union(f.domain, f.jacobian.domain);
+            f.jacobian.domain = f.domain;
         end
     end
     
