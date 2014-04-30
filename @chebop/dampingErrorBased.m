@@ -58,6 +58,7 @@ while ( ~accept )
         initPrediction = 1;
         lambda = 1;
         giveUp = 1;
+        cFactor = NaN;
         continue
     end
     
