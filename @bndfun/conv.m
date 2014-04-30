@@ -208,8 +208,12 @@ else
     
 end
 
-% Return the three pieces as a cell array:
-h = {h_left*(b-a)/2, h_mid*(b-a)/2, h_right*(b-a)/2};
+% h_mid can be empty so return the three or two pieces as a cell array:
+if ( isempty(h_mid) )
+    h = {h_left*(b-a)/2, h_right*(b-a)/2};
+else    
+    h = {h_left*(b-a)/2, h_mid*(b-a)/2, h_right*(b-a)/2};
+end
 
 end
 

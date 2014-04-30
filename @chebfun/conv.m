@@ -121,21 +121,16 @@ if ( (b - a) > (d - c) )
     h = conv(g, f);
     return
 end
-    
+
+% Initialize output:
+h = 0;
 % Deal with piecewise CHEBFUN objects.
-if ( (numel(f.funs) > 1) || (numel(g.funs) > 1) )
-    h = 0;
-    % Loop over each of the interactions:
-    for j = 1:numel(f.funs)
-        for k = 1:numel(g.funs)
-            % TODO: Tidy this!
-            h = myplus(h, conv(chebfun(f.funs(j)), chebfun(g.funs(k))));
-        end
+% Loop over each of the interactions:
+for j = 1:numel(f.funs)
+    for k = 1:numel(g.funs)
+        hjk = chebfun(conv(f.funs{j}, g.funs{k}));        
+        h = myplus(h, hjk);
     end
-    return
-else
-    f = f.funs{1};
-    g = g.funs{1};
 end
 
 end
