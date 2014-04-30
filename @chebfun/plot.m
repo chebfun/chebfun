@@ -307,7 +307,6 @@ h4 = stem(deltaData{:}, 'd', 'fill');
 % else
 %     set(h3, jumpStyle{:});
 % end
-
 % Set the X-limits if appropriate values have been suggested:
 if ( all(isfinite(xLim)) )
 
@@ -316,7 +315,7 @@ if ( all(isfinite(xLim)) )
         xLim = [min(xLimCurrent(1), xLim(1)), max(xLimCurrent(2), xLim(2))];
     end
 
-    set(gca, 'xlim', xLim)
+    set(gca, 'xlim', sort(xLim))
 end
 
 % Set the Y-limits if appropriate values have been suggested:
@@ -327,7 +326,7 @@ if ( all(isfinite(yLim)) )
         yLim = [min(yLimCurrent(1), yLim(1)), max(yLimCurrent(2), yLim(2))];
     end
 
-    set(gca, 'ylim', yLim)
+    set(gca, 'ylim', sort(yLim))
 end
 
 % Return hold state to what it was before:

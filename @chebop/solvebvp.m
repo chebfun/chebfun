@@ -66,6 +66,10 @@ L.prefs = pref;
 if ( isnumeric(rhs) )
     rhs = N.convertToRHS(rhs, residual);
 end
+% Do the same for the RHS:
+if ( isnumeric(u0) )
+    u0 = N.convertToRHS(u0, residual);
+end
 
 % Solve:
 if ( all(isLinear) )

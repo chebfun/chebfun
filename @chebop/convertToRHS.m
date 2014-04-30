@@ -28,20 +28,18 @@ end
 % Prepare to convert the RHS to a CHEBMATRIX:
 rhsBlocks = cell(numRow, numCol);
 
-% Obtain the blocks of the residual CHEBMATRIX, in order to be able
-% to ensure all components of the RHS will be of a type that matches
-% that of the residual.
+% Obtain the blocks of the residual CHEBMATRIX, in order to be able to ensure
+% all components of the RHS will be of a type that matches that of the residual.
 resBlocks = residual.blocks;
 
-% Need the domain of the residual in order to create the RHS
-% CHEBMATRIX.
+% Need the domain of the residual in order to create the RHS CHEBMATRIX.
 dom = residual.domain;
 
 % Convert numerical values in RHS vector into chebmatrix:
 for rhsCounter = 1:numRow
     if isa(resBlocks{rhsCounter}, 'chebfun')
-        % If corresponding block in the residual is a chebfun, the
-        % rhs must also be made to be a chebfun
+        % If corresponding block in the residual is a chebfun, the rhs must also
+        % be made to be a chebfun
         rhsBlocks{rhsCounter} = chebfun(rhs(rhsCounter), dom);
     else
         % Otherwise, the entry in the chebmatrix will be a scalar

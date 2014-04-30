@@ -967,7 +967,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                     elseif ( b == 0 )
                         f.func = power(f.func, 0);
                         f.jacobian = 0*f.jacobian;
-                        f.linearity = true(size(f.jacobian));
+                        f.linearity = true;
                         return
                     end
                 end

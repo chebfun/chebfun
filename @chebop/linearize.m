@@ -70,6 +70,13 @@ end
 if ( isa(u, 'chebmatrix') )
     u = u.blocks;
 end
+if ( isnumeric(u) )
+    tmp = cell(numel(u), 1);
+    for k = 1:numel(u)
+    	tmp{k} = chebfun(u(k), N.domain);
+    end
+    u = tmp;
+end
 if ( isa(u, 'chebfun') )
     u = {u};
 end
@@ -119,7 +126,7 @@ if ~( isempty(N.lbc) )
     lbcU = N.lbc(u{:});
     
     % Ensure conditions were concatenated vertically, not horizontally
-    checkConcat(lbcU);
+    lbcU = checkConcat(lbcU);
     
     % Loop through the components of LBCU.
     for k = 1:numel(lbcU)
@@ -146,7 +153,7 @@ if ( ~isempty(N.rbc) )
     rbcU = N.rbc(u{:});
     
     % Ensure conditions were concatenated vertically, not horizontally
-    checkConcat(rbcU);
+    rbcU = checkConcat(rbcU);
     
     % Loop through the components of RBCU.
     for k = 1:numel(rbcU)
@@ -186,7 +193,7 @@ if ( ~isempty(N.bc) )
         end
 
         % Ensure conditions were concatenated vertically, not horizontally
-        checkConcat(bcU);
+        bcU = checkConcat(bcU);
 
         % Gather all residuals of evaluating N.BC in one column vector.
         vals = cat(1, get(bcU, 'func'));
@@ -214,12 +221,14 @@ end
 L.constraint = BC;
 end
 
-function checkConcat(bc)
+function bc = checkConcat(bc)
 % Ensure conditions were concatenated vertically, not horizontally
 if ( size(bc, 2) > 1 )
-    error('CHEBFUN:CHEBOP:linearize:bcConcat', ...
-        ['Chebop conditions must be vertically concatenated with a '';'',' ...
-        '\nnot horizontally with a '',''.']);
+    warning('CHEBFUN:CHEBOP:linearize:bcConcat', ...
+        ['CHEBOP conditions should be vertically concatenated with a '';'', ' ...
+        'not horizontally with a '',''.\nHorizontal concatenation may ' ...
+        'not be supported in future release.']);
+    bc = bc.';
 end
 end
 

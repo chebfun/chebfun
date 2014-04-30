@@ -206,7 +206,7 @@ if ~( isempty(N.lbc) )
     
     % The output might be a CHEBFUN, or a chebmatrix
     if ( isa(lbcU, 'chebfun') )
-        bcNorm = bcNorm + feval(lbcU, N.domain(1))^2;
+        bcNorm = bcNorm + sum(feval(lbcU, N.domain(1)).^2);
     elseif ( isa(lbcU, 'chebmatrix') ) 
         % Loop through the components of LBCU.
         for k = 1:numel(lbcU)
@@ -226,7 +226,7 @@ if ~( isempty(N.rbc) )
     
     % The output might be a CHEBFUN, or a chebmatrix
     if ( isa(rbcU, 'chebfun') )
-        bcNorm = bcNorm + feval(rbcU, N.domain(end))^2;
+        bcNorm = bcNorm + sum(feval(rbcU, N.domain(end)).^2);
     elseif ( isa(rbcU, 'chebmatrix') ) 
         % Loop through the components of RBCU.
         for k = 1:numel(rbcU)
@@ -244,7 +244,7 @@ if ( ~isempty(N.bc) )
     % Evaluate. The output, BCU, will be a vector.
     bcU = N.bc(x, uBlocks{:});
     
-    bcNorm = bcNorm + norm(bcU)^2;
+    bcNorm = bcNorm + sum(norm(bcU).^2);
 end
 
 bcNorm = sqrt(bcNorm);
