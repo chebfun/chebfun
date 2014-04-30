@@ -12,7 +12,7 @@ fBlocks = f.blocks;
 isz = zeros(size(f));
 % Loop through all elements
 for j = 1:numel(fBlocks);
-    if ( isa(fBlocks{j}, 'operatorBlock') )
+    if ( isa(fBlocks{j}, 'linBlock') )
         isz(j) = fBlocks{j}.iszero;
     end
 end
