@@ -13,7 +13,7 @@ function f = chebpoly(n, d, kind)
 %
 % See also CHEBFUN/CHEBPOLY, LEGPOLY, and CHEBPTS.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information. 
 
 % TODO: This method requires a test.

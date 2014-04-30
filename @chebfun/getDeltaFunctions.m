@@ -5,7 +5,7 @@ function [deltaMag, deltaLoc] = getDeltaFunctions(f)
 %   magnitude of the delta functions and their higher derivatives, while
 %   DELTALOC is a an array containing the location of delta functions.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
 % Initialize variables:

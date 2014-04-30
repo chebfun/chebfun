@@ -39,7 +39,7 @@ len = max([length(f), length(g), length(h)]);
 npts = min(max(501, round(4*pi*len)), chebtech.techPref().maxPoints);
 
 % Initialise the output structure:
-data = struct('xLine', [], 'yLine', [], 'xPoints', [], 'yPoints', []);
+data = struct('xLine', [], 'yLine', [], 'xPoints', [], 'yPoints', [], 'yLim', [inf -inf]);
 if ( isempty(g) )       
     % PLOT(F):
     

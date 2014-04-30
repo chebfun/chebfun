@@ -1,7 +1,7 @@
 function M = feval(L, n, flag)
 %FEVAL     Deprecated function, provided for limited backward compatability.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 warning('chebfun:linop:fevalDeprecated',...
@@ -33,8 +33,15 @@ else
         case 'bc'
             M = [B; PA];
         otherwise  % oldschool
-            k = size(B, 1);         % number of rows to drop
-            k2 = ceil(k/2);         % about half for top
+
+            k = size(B,1);     % number of rows to drop
+            k2 = ceil(k/2);    % about half for top
+            try 
+                A = cell2mat(A);
+            catch
+                error('oldschool does not support this problem');
+            end
+
             A(1:k2,:) = B(1:k2,:);
             krem = k - k2;          % number remaining
             A(end-krem+1:end, :) = B(k2+1:end, :);

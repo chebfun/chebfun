@@ -9,7 +9,7 @@ function m = createMap(ends)
 %   M.INVDER is the derivative of the map defined in MAP.INV.
 %   M.NAME is a string that identifies the map.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org for Chebfun information.
 
 % The domain:

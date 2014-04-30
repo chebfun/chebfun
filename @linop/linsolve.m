@@ -24,7 +24,7 @@ function [u, disc] = linsolve(L, f, varargin)
 %
 %   See also CHEBOPPREF, CHEBOP.MLDIVIDE.
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -55,13 +55,13 @@ end
 
 % If RHS is a CHEBFUN, need to convert it to CHEBMATRIX in order for the method
 % to be able to work with it.
-if isa( f, 'chebfun' )
+if ( isa( f, 'chebfun' ) )
     f = chebmatrix(f);
 end
 
 % Use a given discretization, or create one?
 dimVals = prefs.dimensionValues;
-if isempty(disc)
+if ( isempty(disc) )
     disc = prefs.discretization(L);
     % Update the domain if new breakpoints are needed
     disc.domain = chebfun.mergeDomains(disc.domain, f.domain);
@@ -88,29 +88,44 @@ isDone = false(1, numInt);
 %% Loop over a finer and finer grid until happy.
 % We need to know which solution components to check for happiness:
 isFun = isFunVariable(L);
-for dim = dimVals
+
+for dim = [dimVals inf]
+    
+    % TODO: It's weird that the current value of dim is the _next_ disc size.
 
     % Discretize the operator (incl. constraints/continuity), unless there is a
     % currently valid factorization at hand.
-    if ( ~isFactored(disc) )
-        A = matrix(disc);
-    else
+    if ( isFactored(disc) )
         A = [];
+    else
+        [A, P] = matrix(disc);
+        if ( size(A, 1) ~= size(A, 2) )
+            % TODO: Improve this warning.
+            warning('Matrix is not square!');
+        end
     end
-
+    
     % Discretize the RHS (incl. constraints/continuity):
     b = rhs(disc, f);
-
+    
     % Solve the linear system:
     [v, disc] = mldivide(disc, A, b);
+    
+    % Project the solution:
+    v = P*v;
+    
+    % TODO: We could test each variable at their input dimension, but then
+    % each would be different and we would nopt be able to use the trick of
+    % taking a linear combination. Instead we project and test convergence
+    % at the size of the output dimension.
 
     % Convert the different components into cells
     u = partition(disc, v);
 
-    % Test the happieness of the function pieces:
+    % Test the happiness of the function pieces:
     [isDone, epsLevel] = testConvergence(disc, u(isFun));
 
-    if ( all(isDone) )
+    if ( all(isDone) || isinf(dim) )
         break
     else
         % Update the discretiztion dimension on unhappy pieces:
@@ -130,7 +145,7 @@ end
 % one by one.
 for k = find( isFun )
     u{k} = disc.toFunction(u{k});
-    u{k} = simplify(u{k}, epsLevel);
+    u{k} = simplify( u{k}, max(eps,epsLevel) );
 end
 
 % Convert to chebmatrix

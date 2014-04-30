@@ -3,7 +3,7 @@ function varargout = ode113(varargin)
 %   
 % This syntax is depricated. Please use chebfun.ode113(...) instead.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 warning('CHEBFUN:ode113:depricated', ...

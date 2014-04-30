@@ -29,14 +29,13 @@ classdef chebtech < smoothfun % (Abstract)
 %   PREF.GRIDTYPE = 1.
 %
 %   CHEBTECH.CONSTRUCTOR(VALUES, VSCALE, HSCALE, PREF) returns a CHEBTECH object
-%   which interpolates the data in the columns of VALUES on a Chebyshev grid.
+%   that interpolates the data in the columns of VALUES on a Chebyshev grid.
 %   Whether this grid is of first- or second-kind points is determined by
 %   PREF.GRIDTYPE, as above. CHEBTECH.CONSTRUCTOR({VALUES, COEFFS}, ...)
 %   allows for the corresponding Chebyshev coefficients to be passed also, and
-%   if VALUES is empty the CHEBTECH is constructed directly from the COEFFS. No
-%   adaptivity takes place with this form of construction, but VALUES are still
-%   checked for happiness. If COEFFS are passed, the resulting CHEBTECH is
-%   always deemed 'happy'.
+%   if VALUES is empty the CHEBTECH is constructed directly from the COEFFS. 
+%   In any type of VALUES/COEFFS call, no adaptivity takes place, and happiness 
+%   is not checked.
 %
 % Examples:
 %   % Basic construction:
@@ -51,7 +50,7 @@ classdef chebtech < smoothfun % (Abstract)
 %
 % See also CHEBTECH.TECHPREF, HAPPINESSCHECK, CHEBTECH1, CHEBTECH2.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

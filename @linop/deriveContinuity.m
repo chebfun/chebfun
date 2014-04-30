@@ -14,7 +14,7 @@ function L = deriveContinuity(L, domain, makePeriodic)
 %   constraint of periodicity. This is called by ADDBC, which then moves
 %   the conditions to the 'constraint' property.
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
 if ( nargin < 3 )

@@ -13,7 +13,7 @@ classdef chebdouble
 %
 %   This class in intended solely as a worker-class for PDE15s.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
     properties ( GetAccess = 'public', SetAccess = 'public' )
@@ -553,7 +553,7 @@ end
 
 function D = diffmat(N,k)
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 % DIFFMAT  Chebyshev differentiation matrix
 % D = DIFFMAT(N) is the matrix that maps function values at N Chebyshev
@@ -611,7 +611,7 @@ end
 
 function Q = cumsummat(N)
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 % CUMSUMMAT  Chebyshev integration matrix.
 % Q = CUMSUMMAT(N) is the matrix that maps function values at N Chebyshev
