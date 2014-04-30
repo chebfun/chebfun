@@ -190,6 +190,9 @@ classdef (InferiorClasses = {?double}) chebop
         %   is not an accepted syntax.
         %
         % See also: CHEBOP/SOLVEBVP.
+        
+        % TODO: This is a user-facing function. It requires better
+        % documentation.        
             
             if ( nargin < 3 )
                 % Create a CHEBOPPREF:
@@ -359,7 +362,7 @@ classdef (InferiorClasses = {?double}) chebop
         %   subsref.
         
             % We're happy with function handles
-            if ( isa(val, 'function_handle') )
+            if ( isa(val, 'function_handle') || isempty(val) )
                 N.op = val;
             elseif ( iscell(val) )
                 error('CHEBFUN:CHEBOP:setOp:type', ...
