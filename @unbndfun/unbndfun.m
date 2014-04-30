@@ -26,7 +26,7 @@ classdef unbndfun < classicfun
 %
 % See also FUN, CHEBPREF, ONEFUN.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -156,7 +156,7 @@ classdef unbndfun < classicfun
         f = compose(f, op, g, pref)
         
         % Indefinite integral of an UNBNDFUN.
-        [f, rVal] = cumsum(f, m, dim, shift)
+        [f, rVal] = cumsum(f, dim)
         
         % Derivative of an UNBNDFUN.
         f = diff(f, k, dim)

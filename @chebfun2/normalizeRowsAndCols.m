@@ -1,7 +1,7 @@
 function F = normalizeRowsAndCols(F, p)
 %NORMALIZEROWSANDCOLS   Normalize the rows and columns of a CHEBFUN2.
 
-% Copyright 2013 by The University of Oxford and The Chebfun2 Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun2 Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun2 information.
 
 % TODO: Document

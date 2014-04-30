@@ -1,4 +1,4 @@
-function M = matrix(A, varargin)
+function varargout = matrix(A, varargin)
 %MATRIX  Discretize a chebmatrix as an ordinary matrix.
 %   M = MATRIX(A, DIM) discretizes each block in the chebmatrix A using the
 %   dimension vector DIM for all functions. In case the domain of A has
@@ -17,10 +17,10 @@ function M = matrix(A, varargin)
 %     matrix(A, 5, @colloc2)
 %     matrix(A, 5, @ultraS)
 %
-%   See also CHEBOPPREF, CHEBDISCRETIZATION, CHEBDISCRETIZATION/MATRIX. 
+% See also CHEBOPPREF, CHEBDISCRETIZATION, CHEBDISCRETIZATION/MATRIX. 
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org for Chebfun information.
 
 % Any non-numeric argument should be a chebDiscretization constructor. 
 discType = [];
@@ -38,6 +38,6 @@ end
 
 % Discretize.
 d = discType(A, varargin{:});
-M = matrix(d);
+[varargout{1:nargout}] = matrix(d);
 
 end

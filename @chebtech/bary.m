@@ -9,7 +9,7 @@ function fx = bary(x, fvals, xk, vk)
 
 % [TODO]: Move this to either the trunk/ folder or an @utils class.
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
 % Parse inputs

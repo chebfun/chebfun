@@ -280,7 +280,7 @@ classdef chebpref
 %
 % See also SUBSREF, SUBSASGN, MERGEPREFS
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -365,7 +365,7 @@ classdef chebpref
                 outPref.techPrefs.extrapolate = false;
                 outPref.techPrefs.sampleTest = true;
             outPref.cheb2Prefs = struct(); 
-                outPref.cheb2Prefs.maxRank = 1025; 
+                outPref.cheb2Prefs.maxRank = 513; 
                 outPref.cheb2Prefs.maxLength = 65537; 
                 outPref.cheb2Prefs.eps = 2^(-52); 
                 outPref.cheb2Prefs.exactLength = false;
@@ -758,7 +758,7 @@ classdef chebpref
                 factoryPrefs.techPrefs.extrapolate = false;
                 factoryPrefs.techPrefs.sampleTest = true;
             factoryPrefs.cheb2Prefs = struct(); 
-                factoryPrefs.cheb2Prefs.maxRank = 1000;   
+                factoryPrefs.cheb2Prefs.maxRank = 513;   
                 factoryPrefs.cheb2Prefs.maxLength = 65537;   
                 factoryPrefs.cheb2Prefs.eps = 2^(-52);   
                 factoryPrefs.cheb2Prefs.exactLength = 0; 

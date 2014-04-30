@@ -16,48 +16,42 @@ classdef ultraS < chebDiscretization
 % For more details about the ultrapsherical spectral methods, see: 
 % S. Olver and A. Townsend, A fast and well-conditioned spectral method, SIAM
 % Review, 55 (2013), pp. 462-489.
-    
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
+
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
     properties
-        % Coefficients of the operator
-        coeffs
-        % The range of the ultrapspherical spectral operator.
-        outputSpace = [];
+        coeffs        % Coefficients of the operator
+        outputSpace   % The range of the ultraspherical spectral operator
     end
     
     methods
         function disc = ultraS(source, dimension, domain)
             %ULTRAS(SOURCE, DIMENSION, DOMAIN)   ULTRAS constructor.
             
-            if ( nargin == 0 || isempty(source) )
+            if ( (nargin == 0) || isempty(source) )
                 % Construct an empty ULTRAS.
                 return
             end
             
-            if ( nargin > 1 )
-                disc.dimension = dimension;
-                if ( nargin > 2 )
-                    disc.domain = domain;
-                end
-            end
-            
+            % Attach SOURCE and the DOMAIN information to the object:
             disc.source = source; 
-            disc.domain = chebfun.mergeDomains(source.domain, disc.domain); 
-            
+            disc.domain = source.domain;
             % Obtain the coeffs and output space required for this source:
             disc.coeffs = ultraS.getCoeffs(source);
+            % Determine the dimension adjustment and outputSpace:
+            disc.dimAdjust = ultraS.getDimAdjust(source);
             disc.outputSpace = ultraS.getOutputSpace(source);
             
+            % Assign DIMENSIONS and DOMAIN if they were passed.
+            if ( nargin > 1 )
+                disc.dimension = dimension;
+            end
+            if ( nargin > 2 )
+                disc.domain = chebfun.mergeDomains(domain, disc.domain); 
+            end
+            
         end
-        
-        
-%         function [isDone, epsLevel] = testConvergence(disc,v)
-%             % Test convergence on a single interval:
-%             v = full(v);
-%             f = chebtech2({[], flipud(v)});
-%             [isDone, epsLevel] = strictCheck(f);
-%         end
 
     end
     
@@ -67,7 +61,7 @@ classdef ultraS < chebDiscretization
         S = convert(A, K1, K2)
 
     end
-    
+        
     methods ( Access = private, Static = true)
         
         % Conversion matrix used in the ultraspherical spectral method.
@@ -76,7 +70,7 @@ classdef ultraS < chebDiscretization
         % Differentiation matrices for ultraspherical spectral method.
         D = diffmat(n, m)
         
-        % Get coefficients.
+        % Get coefficient representation of the source.
         c = getCoeffs( source )
         
         % Obtain the range of the ultrapspherical spectral operator.

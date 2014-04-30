@@ -7,7 +7,7 @@ function val = get( f, propName )
 %    'nComponents'  - The number of components in a CHEBFUN2.
 %    'isTransposed' - Is the CHEBFUN2V a column or row vector?
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 

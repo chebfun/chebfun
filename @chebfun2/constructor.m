@@ -170,7 +170,8 @@ while ( ~isHappy )
     [pivotValue, pivotPosition, rowValues, colValues, iFail] = CompleteACA(vals, tol);
     
     strike = 1;
-    while ( iFail && grid <= maxRank && strike < 3)
+    % grid <= 4*(maxRank-1)+1, see Chebfun2 paper. 
+    while ( iFail && grid <= 4*(maxRank-1)+1 && strike < 3)
         % Double sampling on tensor grid:
         grid = 2^( floor( log2( grid ) ) + 1) + 1;
         [xx, yy] = chebfun2.chebpts2(grid, grid, domain);
@@ -187,7 +188,7 @@ while ( ~isHappy )
     end
     
     % If the rank of the function is above maxRank then stop.
-    if ( grid > maxRank )
+    if ( grid > 4*(maxRank-1)+1 )
         error('CHEBFUN2:CTOR', 'Not a low-rank function.');
     end
     

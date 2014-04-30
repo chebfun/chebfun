@@ -7,7 +7,7 @@ function [f, g] = overlap(f, g)
 %   If F and G are array-valued, they must have the same numer of columns/rows,
 %   else an error is thrown.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % TODO: Should we allow scalar expansion?

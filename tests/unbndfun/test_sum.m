@@ -70,13 +70,14 @@ f = unbndfun(op, dom);
 I = sum(f);
 IExact = 2*exp(-1);
 err = abs(I - IExact);
-tol = 1e6*get(f,'epslevel')*get(f,'vscale');
+tol = 1e7*get(f,'epslevel')*get(f,'vscale');
 pass(7) = err < tol;
 
 op = @(x) (1-exp(-x))./x.^2;
 f = unbndfun(op, dom);
 I = sum(f);
-IExact = 1 - exp(-1) - ei(-1);
+% This exact value is obtained using Matlab's symbolic toolbox:
+IExact = 0.851504493224078; 
 err = abs(I - IExact);
 tol = 1e4*get(f,'epslevel')*get(f,'vscale');
 pass(8) = err < 2*tol;
@@ -120,7 +121,8 @@ pass(12) = err < tol;
 op = @(x) (1-exp(x))./x.^2;
 f = unbndfun(op, dom);
 I = sum(f);
-IExact = (exp(-3*pi)*(exp(3*pi)-1))/(3*pi)-ei(-3*pi);
+% This exact value is obtained using Matlab's symbolic toolbox:
+IExact = 0.106102535711326;
 err = abs(I - IExact);
 tol = 1e5*get(f,'epslevel')*get(f,'vscale');
 pass(13) = err < tol;

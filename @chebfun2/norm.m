@@ -12,7 +12,7 @@ function [normF, normloc] = norm( f, p )
 % Furthermore, the inf norm for CHEBFUN2 objects also returns a second output,
 % giving a position where the max occurs.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 if ( nargin == 1 ) 

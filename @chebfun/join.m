@@ -14,7 +14,7 @@ function f = join(varargin)
 %
 % See also HORZCAT, VERTCAT.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % [TODO]:  Deal with functions on unbounded intervals. (Requires UNBNDFUN.)

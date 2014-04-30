@@ -16,7 +16,7 @@ function [values, maskNaN, maskInf] = extrapolate(f, values)
 %
 % See also PREF.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % values = f.values;

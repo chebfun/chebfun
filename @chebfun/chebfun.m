@@ -73,7 +73,7 @@ classdef chebfun
 %
 % See also CHEBPREF, CHEBPTS.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -596,25 +596,39 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
         end
     end
     
-    % [TODO]: Should we do the following for all elements in a cell input?
-    % Convert string input to function_handle:
-    if ( ischar(op) )
-        op = str2op(op);
-    end
-    if ( isa(op, 'function_handle') && vectorize )
-        % [TODO]: Should we reinstate VECTORCHECK()?
-        op = vec(op);
+    if ( iscell(op) )
+        for k = 1:numel(op)
+            op{k} = parseOp(op{k});
+        end
+    else
+        op = parseOp(op);
     end
     
-    if ( isa(op, 'function_handle') && strcmp(pref.tech, 'funqui') )
-        if ( isfield(pref.techPrefs, 'exactLength') && ...
-             ~isnan(pref.techPrefs.exactLength) )
-            x = linspace(domain(1), domain(end), pref.techPrefs.exactLength).';
-            op = feval(op, x);
-            pref.techPrefs.exactLength = NaN;
+    function op = parseOp(op)
+        
+        % Convert string input to function_handle:
+        if ( ischar(op) )
+            op = str2op(op);
         end
-    end
+        if ( isa(op, 'function_handle') && vectorize )
+            % [TODO]: Should we reinstate VECTORCHECK()?
+            op = vec(op);
+        end
+        if ( isa(op, 'chebfun') )
+            op = @(x) feval(op, x);
+        end
 
+        if ( isa(op, 'function_handle') && strcmp(pref.tech, 'funqui') )
+            if ( isfield(pref.techPrefs, 'exactLength') && ...
+                 ~isnan(pref.techPrefs.exactLength) )
+                x = linspace(domain(1), domain(end), pref.techPrefs.exactLength).';
+                op = feval(op, x);
+                pref.techPrefs.exactLength = NaN;
+            end
+        end
+        
+    end
+        
 end
 
 function g = vec(f)

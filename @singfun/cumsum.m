@@ -1,11 +1,9 @@
-function g = cumsum(f, m, dim)
+function g = cumsum(f, dim)
 %CUMSUM   Indefinite integral of a SINGFUN.
 %   CUMSUM(F) is the indefinite integral of the SINGFUN F with the constant of
 %   integration chosen zero.
 %
-%   CUMSUM(F, M) will compute the Mth definite integral with vanishing constant.
-%
-%   Note that the third argument must be 1, indicating that no support for
+%   Note that the second argument must be 1, indicating that no support for
 %   array-valued F.
 %
 %   WARNING: The current version of CUMSUM is limited.  In particular,
@@ -15,7 +13,7 @@ function g = cumsum(f, m, dim)
 %
 % See also SUM.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
 % [TODO]: Improvement on the algorithm to handle the case with singularities at
@@ -34,14 +32,9 @@ function g = cumsum(f, m, dim)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Check the dimension, i.e. the third argument:
-if ( nargin == 3 ) && ( dim ~= 1 )
+if ( nargin == 2 ) && ( dim ~= 1 )
     error('SINGFUN:cumsum:nosupport', ...
         'SINGFUN does not support array-valued objects.')
-end
-
-% Check the value of M:
-if ( nargin < 2 )
-    m = 1;
 end
 
 % If f has no singularity at any endpoint, then just integrate its smooth part
@@ -51,13 +44,13 @@ if ( issmooth(f) ) % No exponents. Integrate the smooth part:
     g = cumsum(f.smoothPart);
     return
 elseif ( ~all(f.exponents) ) % One fractional pole or one pole, or one root:
-    g = singIntegral(f, m);
+    g = singIntegral(f);
 elseif ( all(f.exponents) ) % Singularities at both endpoints:
     % Introduce a new break point at 0 using RESTRICT:
     f = restrict(f, [-1 0 1]);
-    g{1} = singIntegral(f{1}, m)/(2^m);
+    g{1} = singIntegral(f{1})/2;
     rVal = get(g{1}, 'rval');
-    g{2} = singIntegral(f{2}, m)/(2^m);
+    g{2} = singIntegral(f{2})/2;
     % Adjust the second piece:
     g{2} = g{2} + (rVal - get(g{2}, 'lval'));
 else % Error message thrown for other cases:
@@ -75,15 +68,13 @@ end
 % modification are made during Chebfun v5 refactorization. See the working note
 % by Nick Hale and Sheehan Olver for the detail about the algorithm.
 
-function g = singIntegral(f, m)
+function g = singIntegral(f)
 
-if ( ~isa(f.smoothPart, 'chebtech') )
-    error('SINGFUN:cumsum:nosupport', ...
-        ['CUMSUM() does not support a singfun with the current type of ' ...
-        'smoothPart.'])
-end
-
-for l = 1:m
+    if ( ~isa(f.smoothPart, 'chebtech') )
+        error('SINGFUN:cumsum:nosupport', ...
+            ['CUMSUM() does not support a singfun with the current type of ' ...
+            'smoothPart.'])
+    end
 
     % When the singularity is at the right end, we flip f so that the
     % singularity is at the left end of the domain.
@@ -211,9 +202,5 @@ for l = 1:m
     if ( flip )
         g = -flipud(g);
     end
-    
-    f = g;
-    
-end
 
 end

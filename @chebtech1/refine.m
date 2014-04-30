@@ -8,11 +8,13 @@ function [values, giveUp] = refine(op, values, pref)
 %   flag where TRUE means the refinement procedure has failed (typically when
 %   the maximum number of points, PREF.MAXPOINTS, has been reached).
 %
-%   As opposed to CHEBTECH2, the only built-in refinement strategy is
-%   'RESAMPLING'. It makes use of grids of the form 2^(3:6 6:.5:16)+1 and
-%   resamples all of the values each time N is increased. When
-%   PREF.REFINEMENTFUNCTION is a character string, resampling will be carried
-%   out.
+%   The two built-in refinement strategies are 'NESTED' and 'RESAMPLING'. The
+%   former makes use of the nested property of the 1st-kind grid by taking N
+%   (the interpolation degree) to be 8*3^(0:8)+1 and doesn't resample previously
+%   evaluated values. The latter uses grids of the form 2^(3:6 6:.5:16)+1 and
+%   resamples all of the values each time N is increased. The 'RESAMPLING'
+%   option should be used for functions which are not sampleable, for example,
+%   anything that depends on the length of the input to OP.
 %
 %   Alternative refinement strategies can be used if the
 %   PREF.REFINEMENTFUNCTION field is a function handle. The function handle
@@ -22,7 +24,7 @@ function [values, giveUp] = refine(op, values, pref)
 %   structure containing CHEBTECH preferences. It should return either a new
 %   set of VALUES (typically on a finer grid) or set the GIVEUP flag to TRUE.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Obtain some preferences:
@@ -39,8 +41,11 @@ end
 refFunc = pref.refinementFunction;
 
 % Decide which refinement to use:
-if ( ischar(refFunc) )
-    % Re-sampling:
+if ( strcmpi(refFunc, 'nested') )
+    % Nested ('single') sampling:
+    [values, giveUp] = refineNested(op, values, pref);
+elseif ( strcmpi(refFunc, 'resampling') )
+    % Double sampling:
     [values, giveUp] = refineResampling(op, values, pref);
 else
     % User defined refinement function:
@@ -85,4 +90,45 @@ function [values, giveUp] = refineResampling(op, values, pref)
 
     values = feval(op, x);
 
+end
+
+function [values, giveUp] = refineNested(op, values, pref)
+%REFINENESTED  Default refinement function for single ('nested') sampling.
+
+    if ( isempty(values) )
+        % The first time we are called, there are no values
+        % and REFINENESTED is the same as REFINERESAMPLING.
+        [values, giveUp] = refineResampling(op, values, pref);
+
+    else
+    
+        % Compute new n by tripling (we must do this when not resampling).
+        n = 3*size(values, 1);
+        
+        % n is too large:
+        if ( n > pref.maxPoints )
+            giveUp = true;
+            return
+        else
+            giveUp = false;
+        end
+        
+        % 1st-kind Chebyshev grid:
+        x = chebtech1.chebpts(n);
+        
+        % Re-group the points:
+        x1 = x(1:3:end-2);
+        x3 = x(3:3:end);
+        
+        % Copy of the sampled function values:
+        oldValues = values;
+                
+        % Compute and insert new ones:
+        values(1:3:n,:) = feval(op, x1);
+        values(3:3:n,:) = feval(op, x3);
+        
+        % Re-distribute the stored values:
+        values(2:3:n,:) = oldValues;
+        
+    end
 end

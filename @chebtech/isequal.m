@@ -4,7 +4,7 @@ function out = isequal(f, g)
 %   length, values, and coefficients. They may have different values of vscale
 %   and epslevel.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 out = all(size(f.coeffs) == size(g.coeffs))  ...
