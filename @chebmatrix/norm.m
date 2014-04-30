@@ -1,4 +1,4 @@
-function normA = norm(A)
+function [normA, normLoc] = norm(A, n)
 %NORM   Norm of a CHEBMATRIX object.
 %   NORM(A) computes the norm of the CHEBMATRIX object A.
 %
@@ -11,6 +11,16 @@ function normA = norm(A)
 
 %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
+
+% Empty CHEBMATRIX has norm 0:
+if ( isempty(A) )
+    normA = 0;
+    return
+end
+
+if ( nargin == 1 )
+    n = 'fro'; 	% Frobenius norm is the default.
+end
 
 sz = size(A, 1)*size(A, 2);
 temp = 1;
@@ -26,11 +36,12 @@ end
 % If so, convert A to a QUASIMATRIX, and call CHEBFUN/NORM.
 if temp == 1
    F = chebfun(A);
-   normA = norm(F);
+   [normA, normLoc] = norm(F, n);
 
 % If not, ?. [TODO]
 else
    normA = 0;
+   normLoc = 0;
 end
 
 end
