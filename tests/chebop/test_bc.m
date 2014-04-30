@@ -60,7 +60,7 @@ err(10) = norm(N.bc(x, u));
 
 %%
 
-tol = 1e-10;
+tol = 1e-9;
 pass = err < tol;
 
 end
