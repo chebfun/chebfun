@@ -1,4 +1,4 @@
-classdef chebfunpref
+classdef chebfunpref < chebpref
 %CHEBFUNPREF   Class for managing Chebfun preferences.
 %   CHEBFUNPREF is a class for managing Chebfun construction-time preferences
 %   such as the construction tolerance, whether or not to perform breakpoint
@@ -319,15 +319,6 @@ classdef chebfunpref
 % arguments by calling P = CHEBFUNPREF(P), where P is the preference input to
 % the function.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-    properties
-        % This is a MATLAB structure which stores the system preferences.  As a
-        % class invariant, this structure is guaranteed to contain fields for
-        % each of the preferences of the upper layers listed above.  It is also
-        % guaranteed to contain a techPrefs field, but no guarantees are made
-        % about its contents.
-        prefList
-    end
 
     methods
 
