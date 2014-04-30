@@ -1,13 +1,13 @@
-function plot(A)
-%PLOT   Plot for CHEBMATRIX objects.
-%   PLOT(A) plots the CHEBMATRIX object A.
+function normA = norm(A)
+%NORM   Norm of a CHEBMATRIX object.
+%   NORM(A) computes the norm of the CHEBMATRIX object A.
 %
 %   If A contains only CHEBFUN and DOUBLE objects, A is converted to a
-%   QUASIMATRIX, and CHEBFUN/PLOT is called.
+%   QUASIMATRIX, and CHEBFUN/NORM is called.
 %
-%   If not, CHEBMATRIX/SPY is called.
+%   If not, CHEBMATRIX/? is called. [TODO]
 %
-%   See also CHEBMATRIX, CHEMATRIX/SPY, CHEBFUN/PLOT.
+%   See also CHEBMATRIX, CHEBFUN/NORM.
 
 %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
@@ -23,14 +23,14 @@ for j = 1:sz
    end
 end
 
-% If so, convert A to a QUASIMATRIX, and call CHEBFUN/PLOT.
+% If so, convert A to a QUASIMATRIX, and call CHEBFUN/NORM.
 if temp == 1
    F = chebfun(A);
-   plot(F);
+   normA = norm(F);
 
-% If not, call CHEBMATRIX/SPY,
+% If not, ?. [TODO]
 else
-   spy(A);
+   normA = 0;
 end
 
 end
