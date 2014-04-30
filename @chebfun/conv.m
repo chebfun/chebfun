@@ -26,8 +26,6 @@ function h = conv(f, g)
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% TODO: Force size(B) = [n, min(m, n)] for the interior convolutions?
-
 % Return empty for an empty input:
 if ( isempty(f) || isempty(g) )
     h = chebfun();
@@ -49,13 +47,14 @@ transState = f(1).isTransposed;
 [a, b] = domain(f);
 [c, d] = domain(g);
 
+% No support for unbounded domains:s
 if ( any(isinf([a b c d])) )
     error('CHEBFUN:conv:bounded', ...
         'CONV only supports CHEBFUN objects on bounded domains.');
 end
 
 if ( issing(f) || issing(g) )
-    % Call the old (and slow) version of CONV if we are not based on CHETECHS.
+    % Call the old (and slow) version of CONV if we are not based on CHEBTECHS.
     h = oldConv(f, g);
     return
 end
@@ -68,11 +67,10 @@ end
 
 % Initialize output:
 h = 0;
-% Deal with piecewise CHEBFUN objects.
-% Loop over each of the interactions:
+% Deal with piecewise CHEBFUN objects by looping over each of the interactions:
 for j = 1:numel(f.funs)
     for k = 1:numel(g.funs)
-        % Compute the contribution of jth fun of with kth fun of g:
+        % Compute the contribution of jth fun of f with kth fun of g:
         hjk = chebfun(conv(f.funs{j}, g.funs{k}));        
         % Add this contribution:
         h = myplus(h, hjk);
