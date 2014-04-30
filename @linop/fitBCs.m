@@ -35,21 +35,29 @@ end
 if ( ~isempty(L.continuity.functional) )
     polyDegree = polyDegree + sum(~iszero(L.continuity.functional), 1);
 end
-polyDegree = 2;
+
+% We fit a polynomial of degree the maximum degree required for any component to
+% every component. This could actually lead to unnecessary degrees of freedom,
+% see issue #301 on Github. AB, 30/04/14.
 polyDegree = max(max(polyDegree), 1);
+% We need one dim entry for each subinterval.
 dim = repmat(polyDegree(1), 1, numInts);
 
 % Create a discretization of the linear BCs:
 discType = L.prefs.discretization;
 
+% Initialize the discretization
 B = 0;
-j = 0;
-while ( rank(B) < size(B, 1) && j < 5 )
-    
+% Try finer discretizations until we have a discretized operator of a sufficient
+% rank.
+dimCounter = 0;
+while ( rank(B) < size(B, 1) && dimCounter < 5 )
+    % Create a discretization, and set its dimAdjust to all-zeros
     disc = discType(L, dim);
     disc.dimAdjust = zeros(size(disc.dimAdjust));
 
-    % Create the discrete (matrix) version of the BCs and rhs values:
+    % Obtain the constraints and create the discrete (matrix) version of the BCs
+    % and rhs values:
     B = getConstraints(disc);
     b = [];
     if ( ~isempty(L.constraint) )
@@ -59,11 +67,15 @@ while ( rank(B) < size(B, 1) && j < 5 )
         b = [ L.continuity.values ; b ];
     end
 
+    % Try increasing the discretization if we were not successful in getting a
+    % full-rank B.
+    % TODO: If we were to do things more intelligently with the required
+    % discretization needed for each compoment, would we still need this?
     dim = dim + 1;
-    j = j + 1;
+    dimCounter = dimCounter + 1;
 end
 
-if ( j == 5 )
+if ( dimCounter == 5 )
     % We failed. Returns a zero initial guess.
     
     zeroFun = chebfun(0, dom);
@@ -81,6 +93,7 @@ end
 % Solve for the discrete values of the initial guess:
 u0disc = B\(-b); % TODO: Why must b be negated?
 
+% Chop u0disc into pieces.
 u0disc = partition(disc, u0disc);
 
 % Convert to a cell-array of CHEBFUN objects:
