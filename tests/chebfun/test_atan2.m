@@ -18,7 +18,7 @@ xx = linspace(.99*a, .99*b, 100);
 ff = feval(f, xx);
 gg = feval(g, xx);
 hh = atan2(ff, gg);
-pass(1) = norm(feval(h, xx) - hh, inf) < tol;
+pass(1) = norm(feval(h, xx) - hh, inf) < 3*tol;
 
 ends = h.domain;
 fi = feval(f, ends);

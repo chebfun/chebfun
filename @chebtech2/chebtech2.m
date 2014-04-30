@@ -94,7 +94,7 @@ classdef chebtech2 < chebtech
             end
             
             % Actual construction takes place here:
-            obj = populate(obj, op, vscale, hscale, pref);
+            [obj, values] = populate(obj, op, vscale, hscale, pref);
             
             if ( obj.ishappy || isnumeric(op) || iscell(op) )
                 % No need to error check if we are happy:
@@ -109,8 +109,8 @@ classdef chebtech2 < chebtech
                         'Function returned NaN when evaluated.')
                 end
                 % We make sure not to return NaNs at +1 and -1.
-                valuesTemp = extrapolate(obj);
-                obj.values([1,end],:) = valuesTemp([1,end],:);
+                valuesTemp = extrapolate(obj, values);
+                obj.coeffs([1,end],:) = obj.vals2coeffs(valuesTemp([1,end],:));
             elseif ( any(isnan(obj.coeffs(:))) )
                 % Here we throw an error if NaNs were encountered anywhere.
                 error('CHEBFUN:CHEBTECH2:constructor:naneval2', ...

@@ -404,7 +404,7 @@ classdef chebtech < smoothfun % (Abstract)
         out = poly(f)
 
         % Populate a CHEBTECH class with values.
-        f = populate(f, op, vscale, hscale, pref)
+        [f, values] = populate(f, op, vscale, hscale, pref)
         
         % Power function of a CHEBTECH.
         f = power(f, b)

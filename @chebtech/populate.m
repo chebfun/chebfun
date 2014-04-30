@@ -1,7 +1,7 @@
-function f = populate(f, op, vscale, hscale, pref)
+function [f, values] = populate(f, op, vscale, hscale, pref)
 %POPULATE   Populate a CHEBTECH class with values.
 %   F = F.POPULATE(OP) returns a CHEBTECH representation populated with values
-%   F.VALUES of the function OP evaluated on a Chebyshev grid. The fields
+%   VALUES of the function OP evaluated on a Chebyshev grid. The fields
 %   F.ISHAPPY and F.EPSLEVEL indicate whether the representation is deemed
 %   'happy' and to what accuracy (see HAPPINESSCHECK.m). Essentially this means
 %   that such an interpolant is a sufficiently accurate (i.e., to a relative
@@ -75,6 +75,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%% Non-adaptive construction. %%%%%%%%%%%%%%%%%%%%%%%%%%
 % Values (and possibly coefficients) have been given.
 if ( isnumeric(op) || iscell(op) )
+    values = op;
     if ( isnumeric(op) )
         % OP is just the values.
         f.coeffs = f.vals2coeffs(op);
