@@ -1,5 +1,18 @@
 classdef chebpref
+%CHEBPREF   Abstract class for Chebfun system preferences.
+%   CHEBPREF is an abstract class for managing preferences of the various
+%   subsystems comprising Chebfun.  On its own, it provides little more than a
+%   wrapper around a MATLAB struct.  Concrete preference classes inherit from
+%   CHEBPREF and add to its functionality as desired.
+%
+% See also CHEBFUNPREF, CHEBOPPREF.
+
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+
     properties ( Access = protected )
+        % MATLAB struct to hold a list of preferences for a given subsystem.
         prefList
     end
 
@@ -53,12 +66,26 @@ classdef chebpref
     end
 
     methods ( Abstract = true )
+        % Display information about a CHEBPREF object.
         display(pref)
     end
 
     methods ( Static = true )
 
         function pref1 = mergePrefs(pref1, pref2, map)
+        %MERGEPREFS   Merge preference structures.
+        %   P = CHEBPREF.MERGEPREFS(P, Q), where P and Q are MATLAB structures,
+        %   "merges" Q into P by replacing the contents of fields in P with
+        %   those of identically-named fields in Q.  If Q has a field whose
+        %   name does not match any of those in P, it is added to P.
+        %
+        %   P = CHEBPREF.MERGEPREFS(P, Q, MAP) does the same but uses the
+        %   structure MAP to "translate" the names of fields of Q into names of
+        %   fields of P.  If Q has a field FIELD and MAP has a field of the
+        %   same name, then the value of P.(MAP.FIELD) will be replaced by the
+        %   contents of Q.FIELD.  If P does not have a field matching the
+        %   string stored in MAP.FIELD, one will be added to P.
+
             if ( nargin < 3 )
                 map = struct();
             end
@@ -74,9 +101,33 @@ classdef chebpref
 
     end
 
-    methods ( Static = true )
+    methods ( Static = true, Hidden = true  )
 
         function setDefaults(makeSC, manageSCDefaults, varargin)
+        %SETDEFAULTS   Set default preferences.
+        %   CHEBPREF.SETDEFAULTS(MAKESC, MANAGESCDEFAULTS, ...) sets the
+        %   persistently stored defaults of a subclass of CHEBPREF.  MAKESC is
+        %   a handle to the subclass constructor, and MANAGESCDEFAULTS is a
+        %   handle to the subclass static method responsible for managing the
+        %   stored defaults.
+        %
+        %   Users should not call CHEBPREF.SETDEFAULTS.  Call the SETDEFAULTS
+        %   method of the appropriate Chebfun subsystem whose defaults need to
+        %   be altered instead.
+
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % Developer notes:
+        %  - This is a template method to prevent subclasses from needing to
+        %    duplicate the logic required to set persistently-stored defaults
+        %    As the help text says, this method is not user-facing.
+        %  - This method is not likely to work if the subclass does not handle
+        %    things in the exact same way that the existing CHEBFUNPREF and
+        %    CHEBOPPREF subclasses do.
+        %  - The function referred to by the MANAGESCDEFAULTS input needs to
+        %    conform to a specific prototype.  See the documentation for
+        %    CHEBFUNPREF.MANAGEDEFAULTPREFS for an example.
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
             nargs = length(varargin);
 
             if ( nargs < 1)

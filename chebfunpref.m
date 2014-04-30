@@ -1,10 +1,10 @@
 classdef chebfunpref < chebpref
-%CHEBFUNPREF   Class for managing Chebfun preferences.
+%CHEBFUNPREF   Class for managing Chebfun construction-time preferences.
 %   CHEBFUNPREF is a class for managing Chebfun construction-time preferences
 %   such as the construction tolerance, whether or not to perform breakpoint
 %   and singularity detection, and the various options that those features
 %   require.  These objects can be supplied to the CHEBFUN constructor (as well
-%   as the constructors of other classes in the CHEBFUN system), which will
+%   as the constructors of other classes in the Chebfun system), which will
 %   interpret them and adjust the construction process accordingly.
 %
 % Available Preferences:
@@ -239,8 +239,8 @@ classdef chebfunpref < chebpref
 % further details.
 %
 % Constructor inputs:
-%   P = CHEBFUNPREF() creates a CHEBFUNPREF object with the default values of the
-%   preferences.  For a list of all available preferences, see above.
+%   P = CHEBFUNPREF() creates a CHEBFUNPREF object with the default values of
+%   the preferences.  For a list of all available preferences, see above.
 %
 %   P = CHEBFUNPREF(Q), where Q is a MATLAB structure uses the field/value pairs
 %   in Q to set the properties of P.  If a field of Q has a name which matches
@@ -278,7 +278,7 @@ classdef chebfunpref < chebpref
 %      p.refinementFunction = @custom;
 %      pref = chebfunpref(p);
 %
-% See also SUBSREF, SUBSASGN, MERGEPREFS
+% See also CHEBOPPREF.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -376,7 +376,7 @@ classdef chebfunpref < chebpref
                         out = subsref(out, ind(2:end));
                     end
                 otherwise
-                    error('CHEBTECH:subsref:badType', ...
+                    error('CHEBFUNPREF:subsref:badType', ...
                         'Invalid subscripted reference type.')
             end
         end
@@ -404,7 +404,7 @@ classdef chebfunpref < chebpref
                             pref.prefList.techPrefs, ind, val);
                     end
                 otherwise
-                    error('CHEBTECH:subsasgn:badType', ...
+                    error('CHEBFUNPREF:subsasgn:badType', ...
                         'Invalid subscripted assignment type.')
             end
         end
@@ -666,7 +666,7 @@ classdef chebfunpref < chebpref
 
         function factoryPrefs = factoryDefaultPrefs()
         %FACTORYDEFAULTPREFS   Get structure of factory default preferences.
-        %   S = CHEBFUNPREF.FACTORYDEFAULTREFS() returns a structure suitable
+        %   S = CHEBFUNPREF.FACTORYDEFAULTPREFS() returns a structure suitable
         %   for storing in the prefList property of a CHEBFUNPREF object that
         %   contains all of the "factory default" values of the CHEBFUN
         %   construction-time preferences.
