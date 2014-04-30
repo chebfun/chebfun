@@ -52,4 +52,8 @@ classdef chebpref
 
     end
 
+    methods ( Abstract = true )
+        display(pref)
+    end
+
 end
