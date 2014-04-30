@@ -1,7 +1,7 @@
 function u0 = fitBCs(L)
-%FITBCS    Find a low-order polynomial which satisfiers BCs of a Linop.
-%   U0 = FITBCS(L) Returns a chebfun which will satisfy the BCs and
-%   other conditions of the linop L.
+%FITBCS    Find a low-order polynomial which satisfies the BCs of a LINOP.
+%   U0 = FITBCS(L) Returns a CHEBMATRIX which will satisfy the BCs
+%        and other conditions of the linop L.
 
 % Store the total number of interior breakpoints
 dom = L.domain;
@@ -15,15 +15,23 @@ numInts = length(dom) - 1;
 % information can be obtained from the iszero information of the linearised
 % BCs in the linop L.
 
+% If we have subintervals, but no continuity conditions were passed, we need to
+% create them.
 if ( numInts > 1 && isempty(L.continuity) )
      L = deriveContinuity(L, dom);
 end
 
+% Number of variables appearing in the problem
 numVar = size(L, 2);
+
+% We will construct a low-degree polynomial for each unknown function in the
+% problem. The degree of the polynomial depends on the number of conditions that
+% the unknown function appears in, find that degree!
 polyDegree = zeros(1, numVar);
 if ( ~isempty(L.constraint.functional) )
     polyDegree = polyDegree + sum(~iszero(L.constraint.functional), 1);
 end
+
 if ( ~isempty(L.continuity.functional) )
     polyDegree = polyDegree + sum(~iszero(L.continuity.functional), 1);
 end
@@ -75,11 +83,13 @@ u0disc = B\(-b); % TODO: Why must b be negated?
 
 u0disc = partition(disc, u0disc);
 
-% Convert to a chebfun:
+% Convert to a cell-array of CHEBFUN objects:
 u0 = cell(numel(u0disc),1);
 for k = 1:numel(u0)
     u0{k} = disc.toFunction(u0disc{k}, 2);
 end
+
+% Convert the cell-array of CHEBFUN objects to a CHEBMATRIX
 u0 = chebmatrix(u0);
 
 end
