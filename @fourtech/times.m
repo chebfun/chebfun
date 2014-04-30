@@ -103,8 +103,8 @@ f.epslevel = (f.epslevel + g.epslevel) .* (f.vscale.*g.vscale./vscale);
 f.vscale  = vscale;
 f.ishappy = f.ishappy && g.ishappy;
 
-% NOT IMPLEMENTED: Simplify
-% f = simplify(f);
+% Simplify
+f = simplify(f);
 
 if ( pos )
     % Here we know that the product of F and G should be positive. However,

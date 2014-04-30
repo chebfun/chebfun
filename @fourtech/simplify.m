@@ -34,7 +34,7 @@ end
 % Use the default tolerance if none was supplied:
 if ( nargin < 2 )
     pref = fourtech.techPref();
-    tol = f.epslevel.*f.vscale;
+    tol = f.epslevel.*f.vscale/2;
     % TODO: Document this.
 %     vscale = f.vscale;
 %     vscale(vscale < f.epslevel) = 1;
@@ -57,20 +57,26 @@ else
     cn = c(1:(numCoeffs+1)/2,:);
 end
 
-% Only need to work with the coefficients corresponding to the positve
-% modes of the Fourier expansion;
+% Need to check both the positive and negative coeficients in the Fourier
+% expansion.
 
 % Zero all coefficients smaller than the tolerance relative to F.VSCALE:
-id = bsxfun(@minus, abs(cp), tol.*f.vscale) < 0;
-cp(id) = 0;
-cn(id) = 0;
+idp = bsxfun(@minus, abs(cp), tol) < 0;
+idn = bsxfun(@minus, abs(cn), tol) < 0;
+cp(idp) = 0;
+cn(idn) = 0;
 
 % Check for trailing zero coefficients:
-[ignored, firstNonZeroRow] = find(cp.' ~= 0, 1);
+[ignored, firstNonZeroRowP] = find(cp.' ~= 0, 1);
+[ignored, firstNonZeroRowN] = find(cn.' ~= 0, 1);
 
 % If the whole thing's now zero, leave just one coefficient:
-if ( isempty(firstNonZeroRow) )
+if ( isempty(firstNonZeroRowP) || isempty(firstNonZeroRowN))
     firstNonZeroRow = length(cp);
+% The negative and positive cofficient vectors need to be the same length
+% So, we remove the smaller of the tails from both.
+else
+    firstNonZeroRow = min(firstNonZeroRowP,firstNonZeroRowN);
 end
 
 % Remove trailing zeros:
@@ -79,13 +85,7 @@ if ( firstNonZeroRow > 0 )
     cn = cn(firstNonZeroRow:end,:);
 end
 
-% % Now put the coefficients vector back together.
-% if fIsEven
-%     c = [cn(end-1:-1:2,:);cp(1:end,:)];
-%     c(end,:) = 2*c(end,:);
-% else
-%     c = [cn(end:-1:2,:);cp(1:end,:)];
-% end
+% Now put the coefficients vector back together.
 f.coeffs = [cn(1:end-1,:);cp(end:-1:1)];
 
 % Update values and epslevel:

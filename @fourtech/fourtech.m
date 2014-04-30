@@ -102,7 +102,7 @@ classdef fourtech
         
         % Compute Fourier points (x) and optionally quadrature (w)
         % and barycentric (v) weights:
-        [x, w, v] = chebpts(n);
+        [x, w, v] = fourpts(n);
         
         % Convert coefficients to values:
         values = coeffs2vals(coeffs);
@@ -119,15 +119,6 @@ classdef fourtech
         % Convert values to coefficients:
         coeffs = vals2coeffs(values)
                 
-%         % Convert Chebshev coefficients to Legendre coefficients.
-%         c_leg = cheb2leg(c_cheb, M);
-% 
-%         % Clenshaw's algorithm for evaluating a Chebyshev polynomial.
-%         out = clenshaw(x, coeffs)
-%         
-%         % Convert Legendre coefficients to Chebshev coefficients.
-%         c_cheb = leg2cheb(c_leg, M);
-
         % Retrieve and modify preferences for this class.
         p = techPref(q)
         
@@ -139,6 +130,9 @@ classdef fourtech
         % Compose two FOURTECH objects or a FOURTECH with a function handle:
         h = compose(f, op, g, pref)
         
+        % Plot (semilogy) the Chebyshev coefficients of a CHEBTECH object.
+        h = coeffplot(f, varargin)
+
         % Get method:
         val = get(f, prop);
         
