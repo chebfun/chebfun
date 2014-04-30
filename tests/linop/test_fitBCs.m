@@ -6,10 +6,9 @@ end
 
 tol = 1e-10;
 
-% TODO: Avoid use of Chebop to form the BC functionals.
-
 % Loop over discretization types:
 type = {@colloc1, @colloc2, @ultraS};
+err = Inf + zeros(length(type), 4);
 for k = 1:3
     
     % Set disc type:
