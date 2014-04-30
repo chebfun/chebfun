@@ -96,7 +96,7 @@ f.coeffs = coeffs;
 % Update vscale, epslevel, and ishappy:
 vscale = getvscl(f);
 % See CHEBTECH CLASSDEF file for documentation on this:
-f.epslevel = (f.epslevel + g.epslevel) .* (f.vscale.*g.vscale./vscale);
+f.epslevel = (f.epslevel + g.epslevel) .* (vscale.*g.vscale./vscale);
 % f.vscale  = vscale;
 f.ishappy = f.ishappy && g.ishappy;
 

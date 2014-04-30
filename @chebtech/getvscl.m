@@ -11,7 +11,7 @@ if ( isempty( f.coeffs ) )
     vscale = 0;
 else
     % compute values
-    values = f.coeffs2vals( f.coeffs ); 
+    values = f.coeffs2vals( f.coeffs );
     vscale = max(abs(values), [], 1);
 end
 
