@@ -136,8 +136,13 @@ classdef cheboppref < chebpref
         %
         % See also GETDEFAULTS, GETFACTORYDEFAULTS.
 
+            % The reason we don't just use manageDefaults as the second
+            % argument to chebpref.setDefaults and wrap it in an additional
+            % anonymous function instead is to get around what seems to be a
+            % bug in MATLAB.  See commit messages for more information.
+            manageDefaults = @cheboppref.manageDefaultPrefs;
             chebpref.setDefaults(@(inPref) cheboppref(inPref), ...
-                @cheboppref.manageDefaultPrefs, varargin{:});
+                @(varargin) manageDefaults(varargin{:}), varargin{:});
         end
     end
 

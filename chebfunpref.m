@@ -596,8 +596,13 @@ classdef chebfunpref < chebpref
         % using the first syntax listed above (though they still can be set
         % with the second).
 
+            % The reason we don't just use manageDefaults as the second
+            % argument to chebpref.setDefaults and wrap it in an additional
+            % anonymous function instead is to get around what seems to be a
+            % bug in MATLAB.  See commit messages for more information.
+            manageDefaults = @chebfunpref.manageDefaultPrefs;
             chebpref.setDefaults(@(inPref) chebfunpref(inPref), ...
-                @chebfunpref.manageDefaultPrefs, varargin{:});
+                @(varargin) manageDefaults(varargin{:}), varargin{:});
         end
     end
 
