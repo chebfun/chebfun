@@ -3,9 +3,9 @@
 
 function pass = test_lintest_rdivide()
 %% Initialisation
-x = chebfun('x');
-u = adchebfun('x')+2;
-v = adchebfun('x')+3;
+x = chebfun(@(x) x);
+u = adchebfun(x) + 2;
+v = adchebfun(x) + 3;
 
 %% One variable involved
 pass = [];

@@ -27,7 +27,13 @@ classdef cheboppref < chebpref
             outPref.prefList.scale = NaN;
             outPref.prefList.dimensionValues =[32 64 128 256 512 724 1024 1448 2048];
             
-            
+            % Preferences for nonlinear ODEs
+            outPref.prefList.damped = 1;
+            outPref.prefList.display = 'off';
+            outPref.prefList.errTol = 1e-10;
+            outPref.prefList.lambdaMin = 1e-6;
+            outPref.prefList.maxIter = 25;
+            outPref.prefList.plotting = 'off';
         end
         
         function out = subsref(pref, ind)

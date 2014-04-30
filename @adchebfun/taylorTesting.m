@@ -71,7 +71,7 @@ seedRNG(6179);
 N = 8;
 
 % Initial u we evaluate f at:
-u = adchebfun(0.1*rand(N, 1) + .5, [-1 1]);
+u = adchebfun(chebfun(0.1*rand(N, 1) + .5, [-1 1]));
 
 % Chebfun used to create a perturbation:
 p = chebfun(0.01*rand(N, 1) + .05, [-1 1]);
