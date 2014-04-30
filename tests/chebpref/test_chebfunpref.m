@@ -2,8 +2,8 @@
 
 function pass = test_chebfunpref()
 
-% Test construction from a chebpref.
-p = chebpref();
+% Test construction from a chebfunpref.
+p = chebfunpref();
 pass(1) = isequalNaN(p, chebfunpref(p));
 
 % Test construction from a struct.
@@ -62,14 +62,14 @@ p.techPrefs.testPref = 'test';
 q = struct();
 q.testPref = 'testq';
 pass(12) = isequalNaN(chebfunpref.mergePrefs(p, q), ...
-    chebpref.mergePrefs(p.techPrefs, q));
+    chebfunpref.mergePrefs(p.techPrefs, q));
 pass(13) = isequalNaN(chebfunpref.mergePrefs(q, p), ...
-    chebpref.mergePrefs(q, p.techPrefs));
+    chebfunpref.mergePrefs(q, p.techPrefs));
 
 q = chebfunpref();
 q.techPrefs.testPref = 'testq';
 pass(14) = isequalNaN(chebfunpref.mergePrefs(p, q), ...
-    chebpref.mergePrefs(p.techPrefs, q.techPrefs));
+    chebfunpref.mergePrefs(p.techPrefs, q.techPrefs));
 
 % Test functions for managing default preferences.
 savedPrefs = chebfunpref();
