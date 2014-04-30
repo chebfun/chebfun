@@ -4,7 +4,7 @@ function pass = test_chebpref()
 
 % Test construction from a chebpref.
 p = chebpref();
-pass(1) = isequaln(p, chebpref(p));
+pass(1) = isequalNaN(p, chebpref(p));
 
 % Test construction from a struct.
 q = struct();
@@ -46,7 +46,7 @@ pass(8) = strcmp(p.techPrefs.testPref2, 'test2');
 p = struct();
 p.testPref = 'test';
 q = struct();
-pass(9) = isequaln(chebpref.mergePrefs(p, q), p);
+pass(9) = isequalNaN(chebpref.mergePrefs(p, q), p);
 
 q.testPref = 'testq';
 pass(10) = strcmp(chebpref.mergePrefs(p, q).testPref, 'testq');
@@ -61,14 +61,14 @@ p = chebpref();
 p.techPrefs.testPref = 'test';
 q = struct();
 q.testPref = 'testq';
-pass(12) = isequaln(chebpref.mergePrefs(p, q), ...
+pass(12) = isequalNaN(chebpref.mergePrefs(p, q), ...
     chebpref.mergePrefs(p.techPrefs, q));
-pass(13) = isequaln(chebpref.mergePrefs(q, p), ...
+pass(13) = isequalNaN(chebpref.mergePrefs(q, p), ...
     chebpref.mergePrefs(q, p.techPrefs));
 
 q = chebpref();
 q.techPrefs.testPref = 'testq';
-pass(14) = isequaln(chebpref.mergePrefs(p, q), ...
+pass(14) = isequalNaN(chebpref.mergePrefs(p, q), ...
     chebpref.mergePrefs(p.techPrefs, q.techPrefs));
 
 % Test functions for managing default preferences.
@@ -77,7 +77,7 @@ savedPrefs = chebpref();
 chebpref.setDefaults('factory');
 factoryPrefs = chebpref.getFactoryDefaults();
 p = chebpref();
-pass(15) = isequaln(p, factoryPrefs);
+pass(15) = isequalNaN(p, factoryPrefs);
 
 chebpref.setDefaults('factory');
 p = chebpref();
@@ -102,4 +102,12 @@ pass(18) = strcmp(chebpref().testPref, 'testq') && ...
 
 chebpref.setDefaults(savedPrefs);
 
+end
+
+function out = isequalNaN(a, b)
+    if ( verLessThan('matlab', '7.14') )
+        out = isequalwithequalnans(a, b);
+    else
+        out = isequaln(a, b);
+    end
 end
