@@ -34,8 +34,13 @@ x = chebfun(@(x) x, N.domain);
 newtonCounter = 0;
 
 % Variable that controls whether we want to stop the Newton iteration, either
-% because we converged, or the process has been identified to be nonconvergent.
+% because we converged, we have reached the maximum number of iterations, or the
+% process has been identified to be nonconvergent. Also initalise related
+% control variables.
 terminate = 0;
+success = 0;
+giveUp = 0;
+maxIterExceeded = 0;
 
 % Store a vector with information about the norm of the Newton updates
 normDeltaVec = zeros(maxIter, 1);
@@ -89,6 +94,9 @@ while ( ~terminate )
         % Do we want to keep Newton in damped mode?
         damped = dampingInfo.damped;
         
+        % Is the damping strategy telling us to give up?
+        giveUp = dampingInfo.giveUp;
+        
     else    % We are in undamped phase
         % Update lambda so that we will print correct information
         lambda = 1;
@@ -132,11 +140,10 @@ while ( ~terminate )
     displayInfo('iter', u, delta, newtonCounter, normDelta, cFactor, ...
         length(delta{1}), lambda, length(ub{1}), displayFig, displayTimer, pref)
     
-    if ( errEst < errTol )
-        terminate = 1;
+    if ( errEst < errTol )  % Sweet, we have converged!      
+        success = 1;
     elseif (newtonCounter > maxIter)
-        warning('CHEBOP:solvebvpNonlinear','Newton iteration failed.')
-        break
+        maxIterExceeded = 1;
     else
         % Linearize around current solution:
         [L, res] = linearize(N, ub, x);
@@ -150,14 +157,32 @@ while ( ~terminate )
         % Assign the preferences to the linop.
         L.prefs = pref;
     end
+    
+    % Should we stop the Newton iteration?
+    if ( success || maxIterExceeded || giveUp )
+        terminate = 1;
+    end
 end
 
 % Evaluate how far off we are from satisfying the boundary conditions.
 errEstBC = evalBCnorm(N, u, x);
 
-% Show final information
+% Print information depending on why we stopped the Newton iteration
+if ( success )
+
+% Show final information.
 displayInfo('final', u, delta, newtonCounter, errEst, errEstBC, displayFig, ...
     displayTimer, pref)
+elseif ( maxIterExceeded )
+    warning('CHEBOP:solvebvpNonlinear:maxIter',...
+        ['Newton iteration failed. Maximum number of iterations exceeded.\n',...
+        'See help cheboppref for how to increase the number of steps allowed'])
+else
+    warning('CHEBOP:solvebvpNonlinear:notConvergent',...
+        ['Newton iteration failed. Newton iteration is not convergent.\n', ...
+        'Please try supplying a better initial guess via the .init field \n' ...
+        'of the chebop'])
+end
 
 % Return useful information in the INFO structure
 info.normDelta = normDeltaVec(1:newtonCounter);

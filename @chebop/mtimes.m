@@ -19,7 +19,11 @@ if ( isa(A, 'chebfun') )
     error('CHEBOP:mtimes:invalid', 'Operation is undefined.');
     
 elseif ( isa(B, 'chebfun') )    % Let A operate on B
-    C = feval(A,B);
+    if ( nargin(A.op) == 1 )
+        C = feval(A, B);
+    else
+        C = feval(A, chebfun(@(x) x, A.domain), B);
+    end
     
 elseif ( isnumeric(A) || isnumeric(B) )
     % Switch argument to make sure A is numeric
