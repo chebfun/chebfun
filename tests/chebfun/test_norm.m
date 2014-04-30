@@ -143,7 +143,6 @@ f = chebfun(@(x) (sin(x+1.1)).*((x+1).^0.8), 'exps', [0.8 0], 'splitting', 'on')
 p_exact = [0 -1]; % This is obtained using Mathematica.
 err = [normF, normLoc] - p_exact;
 pass(26) = norm(err, inf) < 1e3*vscale(f).*epslevel(f);
->>>>>>> development
 
 %% Test for functions defined on unbounded domain:
 
