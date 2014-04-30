@@ -7,20 +7,32 @@ classdef cheboppref < chebpref
 
     methods
 
-        function outPref = cheboppref()           
-            %outPref = outPref@chebfunpref;
+        function outPref = cheboppref(inPref)
+            if ( (nargin == 1) && isa(inPref, 'cheboppref') )
+                outPref = inPref;
+                return
+            elseif ( nargin < 1 )
+                inPref = struct();
+            end
 
-            % Default new properties.
-            outPref.prefList.domain = [-1 1];
-            outPref.prefList.discretization = @colloc2;
-            outPref.prefList.scale = NaN;
-            outPref.prefList.dimensionValues = [32 64 128 256 512 724 1024 1448 2048];
-            outPref.prefList.damped = 1;
-            outPref.prefList.display = 'off';
-            outPref.prefList.errTol = 1e-10;
-            outPref.prefList.lambdaMin = 1e-6;
-            outPref.prefList.maxIter = 25;
-            outPref.prefList.plotting = 'off';
+            % Initialize default preference values.
+            outPref.prefList = cheboppref.manageDefaultPrefs('get');
+
+            % Copy fields from q, merging incomplete substructures.
+            for field = fieldnames(inPref).'
+                if ( isfield(outPref.prefList, field{1}) )
+                    if ( isstruct(outPref.prefList.(field{1})) )
+                        outPref.prefList.(field{1}) = ...
+                            chebpref.mergePrefs(outPref.prefList.(field{1}), ...
+                            inPref.(field{1}));
+                    else
+                        outPref.prefList.(field{1}) = inPref.(field{1});
+                    end
+                else
+                    error('CHEBOPPREF:cheboppref:badPref', ...
+                        'Unrecognized preference name.');
+                end
+            end
         end
 
        function display(pref)
@@ -59,6 +71,94 @@ classdef cheboppref < chebpref
                 prefList.maxIter);
             fprintf([padString('    plotting:') '%s\n'], ...
                 prefList.plotting);
+        end
+
+    end
+
+    methods ( Static = true )
+        function pref = getFactoryDefaults(getFactory)
+            fd = cheboppref.factoryDefaultPrefs();
+            pref = cheboppref(fd);
+        end
+
+        function pref = getDefaults()
+            pref = cheboppref();
+        end
+
+        function setDefaults(varargin)
+            if ( nargin < 1)
+                error('CHEBOPPREF:setDefaults:notEnoughArguments', ...
+                    'Not enough arguments.');
+            end
+
+            if ( nargin == 1 )
+                if ( isstruct(varargin{1}) )
+                    varargin{1} = cheboppref(varargin{1});
+                end
+
+                if ( ischar(varargin{1}) && strcmp(varargin{1}, 'factory') )
+                    cheboppref.manageDefaultPrefs('set-factory');
+                elseif ( isa(varargin{1}, 'cheboppref') )
+                    cheboppref.manageDefaultPrefs('set', varargin{1}.prefList);
+                else
+                    error('CHEBOPPREF:setDefaults:badArg', ...
+                        ['When calling cheboppref.setDefaults() with just ' ...
+                         'one argument, that argument must be ''factory'', ' ...
+                         'a CHEBOPPREF object, or a MATLAB structure.']);
+                end
+            elseif ( mod(nargin, 2) == 0 )
+                cheboppref.manageDefaultPrefs('set', varargin{:});
+            else
+                error('CHEBOPPREF:setDefaults:unpairedArg', ...
+                    'Unpaired argument in name-value pair list.');
+            end
+        end
+    end
+
+    methods ( Static = true, Access = private )
+
+        function varargout = manageDefaultPrefs(varargin)
+            persistent defaultPrefs;
+
+            if ( isempty(defaultPrefs) )
+                defaultPrefs = cheboppref.factoryDefaultPrefs();
+            end
+
+            if ( strcmp(varargin{1}, 'get') )
+                varargout{1} = defaultPrefs;
+            elseif ( strcmp(varargin{1}, 'set-factory') )
+                defaultPrefs = cheboppref.factoryDefaultPrefs();
+            elseif ( strcmp(varargin{1}, 'set') )
+                    varargin(1) = [];
+                if ( isstruct(varargin{1}) )
+                    defaultPrefs = varargin{1};
+                else
+                    while ( ~isempty(varargin) )
+                        prefName = varargin{1};
+                        prefValue = varargin{2};
+                        if ( isfield(defaultPrefs, prefName) )
+                            defaultPrefs.(prefName) = prefValue;
+                        else
+                            error('CHEBOPPREF:manageDefaultPrefs:badPref', ...
+                                'Unrecognized preference name.');
+                        end
+                        varargin(1:2) = [];
+                    end
+                end
+            end
+        end
+
+        function factoryPrefs = factoryDefaultPrefs()
+            factoryPrefs.domain = [-1 1];
+            factoryPrefs.discretization = @colloc2;
+            factoryPrefs.scale = NaN;
+            factoryPrefs.dimensionValues = [32 64 128 256 512 724 1024 1448 2048];
+            factoryPrefs.damped = 1;
+            factoryPrefs.display = 'off';
+            factoryPrefs.errTol = 1e-10;
+            factoryPrefs.lambdaMin = 1e-6;
+            factoryPrefs.maxIter = 25;
+            factoryPrefs.plotting = 'off';
         end
 
     end
