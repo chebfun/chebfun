@@ -42,16 +42,6 @@ for n = 1:2
         pass(n, 5) = strcmpi(ME.message, 'Too many NaNs/Infs to handle.');
     end
 
-    % Test a non-adaptive construction
-    p.numPoints = 11;
-    try
-        f = testclass.make(@(x) myfun(x), [], [], p);
-        pass(n, 6) = isnan(f);
-    catch ME
-        pass(n, 6) = strcmpi(ME.message, ...
-            'Function returned NaN when evaluated.');
-    end
-
 end
 
 end

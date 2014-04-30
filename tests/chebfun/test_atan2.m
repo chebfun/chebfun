@@ -53,7 +53,7 @@ ends = h.domain;
 fi = feval(f, ends);
 fi(abs(fi) < tol) = 0;
 gi = feval(g, ends);
-gi(abs(gi) < tol) = 0;
+gi(abs(gi) < 100*tol) = 0;
 hi = atan2(fi, gi).';
 pass(6) = norm(hi - h.pointValues) < epslevel(h);
 
@@ -68,7 +68,7 @@ ends = h.domain;
 fi = feval(f, ends);
 fi(abs(fi) < tol) = 0;
 gi = feval(g, ends);
-gi(abs(gi) < tol) = 0;
+gi(abs(gi) < 100*tol) = 0;
 hi = atan2(gi, fi).';
 pass(8) = norm(hi - h.pointValues) < tol;
 

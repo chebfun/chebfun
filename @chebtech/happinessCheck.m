@@ -40,8 +40,10 @@ if ( nargin == 1 )
 elseif ( (nargin == 2) && isstruct(op) )
     pref = op;
     op = [];
-elseif ( nargin < 3 )
+elseif ( nargin < 4 )
     pref = f.techPref();
+elseif ( nargin == 3 ) 
+    pref = f.techPref(); 
 end
 
 % What does happiness mean to you?

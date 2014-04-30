@@ -110,7 +110,8 @@ classdef chebtech2 < chebtech
                 end
                 % We make sure not to return NaNs at +1 and -1.
                 valuesTemp = extrapolate(obj, values);
-                obj.coeffs([1,end],:) = obj.vals2coeffs(valuesTemp([1,end],:));
+                valuesTemp([1 end], :) = valuesTemp([1,end],:);
+                obj.coeffs = obj.vals2coeffs(valuesTemp);
             elseif ( any(isnan(obj.coeffs(:))) )
                 % Here we throw an error if NaNs were encountered anywhere.
                 error('CHEBFUN:CHEBTECH2:constructor:naneval2', ...
