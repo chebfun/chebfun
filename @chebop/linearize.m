@@ -84,7 +84,7 @@ end
 % Convert each CHEBFUN object in the cell-array U to an ADCHEBFUN, and seed the
 % derivative so it'll be of correct dimensions (i.e. correct block-size).
 for k = 1:numVars
-    u{k} = seed(adchebfun(u{k}), k, numVars);
+    u{k} = seed(adchebfun(u{k}, N.domain), k, numVars);
 end
 
 %% Evaluate N.op to get a linearisation of the differential equation:

@@ -431,7 +431,14 @@ classdef (InferiorClasses = {?double}) chebop
         % F is probably a CHEBMATRIX (might in some cases be a CHEBFUN).
         % TYPE determines what norm we use (currently not in use).
             if ( isa(f, 'chebmatrix') )
-                out = max(cellfun(@(u) get(u, 'vscale'), f.blocks));
+                out = 0;
+                for k = 1:numel(f.blocks)
+                    if ( isnumeric(f.blocks{k}) )
+                        out = max(out, f.blocks{k});
+                    else
+                        out = max(out, get(f.blocks{k}, 'vscale'));
+                    end
+                end
             else
                 out = get(f, 'vscale');
             end
