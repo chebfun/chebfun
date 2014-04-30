@@ -12,33 +12,17 @@ end
 f = chebfun(@(x) sin(x), [-1 -0.5 0 0.5 1], pref);
 g = chebfun(@(x) cos(x), [-1 -0.5 0 0.5 1], pref);
 h = chebfun(@(x) exp(x), [-1 -0.5 0 0.5 1], pref);
-A = [ f; g; h];
-[normVal, col] = norm(A, 1);
-pass(1) = (col == 3) && abs(normVal - (exp(1) - exp(-1))) < ...
-        (chebfun(A).vscale)*(chebfun(A).epslevel);
-                                   
-pass(2) = abs(norm(A) - 2.372100421113536830) < ...
+A = [ f; g; h;];
+
+pass(1) = abs(norm(A) - 2.372100421113536830) < ...
         (chebfun(A).vscale)*(chebfun(A).epslevel);
                                             
-pass(3) = abs(norm(A, 'fro') - 2.372100421113536830) < ...
+pass(2) = abs(norm(A, 'fro') - 2.372100421113536830) < ...
         (chebfun(A).vscale)*(chebfun(A).epslevel);
-                                                                                      
-[normVal, loc] = norm(A, inf);
-pass(4) = (loc == 1) && abs(normVal - (exp(1) + sin(1) + cos(1))) < ...
+    
+pass(3) = abs(norm(A, 2) - 2.372100421113536830) < ...
         (chebfun(A).vscale)*(chebfun(A).epslevel);
-
-[normVal, loc] = norm(A, -inf);
-pass(5) = (loc == -1) && abs(normVal - (exp(-1) + sin(1) + cos(1))) < ...
-        (chebfun(A).vscale)*(chebfun(A).epslevel);
-                                          
-U = chebfun(@(x) [(1 + 0*x) exp(2*pi*1i*x) exp(2*pi*1i*2*x)], [0 1], pref);
-S = diag([pi ; exp(1) ; 1]);
-V = [1/sqrt(2) -1/sqrt(2) 0 ; 1/sqrt(2) 1/sqrt(2) 0 ; 0 0 1];
-h = U*S*V';
-A = [ h(:, 1); h(:, 2); h(:, 3) ];
-
-pass(6) = abs(norm(A, 2) - pi) < (chebfun(A).vscale)...
-                                 *(chebfun(A).epslevel);         
+    
 %% [TODO]
 % A has entries of all types: OPERATORBLOCK, FUNCTIONBLOCK,
 % CHEBFUN and DOUBLE. 

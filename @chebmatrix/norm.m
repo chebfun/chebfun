@@ -1,18 +1,21 @@
-function [normA, normLoc] = norm(A, n)
+function normA = norm(A, n)
 %NORM   Norm of a CHEBMATRIX object.
-%   NORM(A) computes the norm of the CHEBMATRIX object A.
+%   NORM(A) computes the Frobenius norm of the CHEBMATRIX object A, defined as
+%   the sum of the squares of the 2-norms of each of the blocks.
 %
-%   If A contains only CHEBFUN and DOUBLE objects, A is converted to a
-%   QUASIMATRIX, and CHEBFUN/NORM is called.
+%   NORM(A, 2) or NORM(A, 'fro') is the same as above.
 %
-%   If not [TODO].
+%   NORM(A, INF) computes the infinity norm of the CHEBMATRIX A, defined as the
+%   maximum infinity norm of each of the blocks.
 %
 %   See also CHEBMATRIX, CHEBFUN/NORM.
 
 %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
-% Empty CHEBMATRIX has norm 0:
+% [TODO]: Add support for norms of operators (inf x inf blocks) .
+
+% Empty CHEBMATRIX has norm 0.
 if ( isempty(A) )
     normA = 0;
     return
@@ -22,64 +25,30 @@ if ( nargin == 1 )
     n = 'fro'; 	% Frobenius norm is the default.
 end
 
-% Initialise:
-normLoc = [];
-temp = 1;
-sz = size(A, 1)*size(A, 2);
-
-% Check if A contains only CHEBFUN and DOUBLE objects.
-for j = 1:sz
-    if  ( isa(A.blocks{j}, 'chebfun') | isa(A.blocks{j}, 'double') )
-    else
-        temp = 0;    
-    end
+% The norm of a chebmatrix with inf x inf block(s) is not supported.
+s = cellfun(@(b) min(size(b)), A.blocks);
+if ( ~all(isfinite(s(:))) )
+    error('CHEBFUN:chebmatrix:norm', ...
+    'Norm of a chebmatrix with inf x inf block(s) is not supported.')
 end
 
-% If so, convert A to a QUASIMATRIX.
-if temp == 1
-    A = chebfun(A);
-    numCols = size(A, 2);
-    % If A is actually simply a CHEBFUN, that is a QUASIMATRIX with 
-    % one column.
-    if ( numCols == 1 )
-        switch n
-            case {1, 2, 'fro'}
-            normA = norm(A, n);
-        
-            case {inf, 'inf', -inf, '-inf'} 
-            [normA, normLoc] = norm(A, n); 
-            
-            otherwise
-                if ( isnumeric(n) && isreal(n) )
-                    [normA, normLoc] = norm(A, n); 
-                else
-                error('CHEBMATRIX:norm:unknownNorm', ...
-                 'The only matrix norms available are 1, 2, inf, and ''fro''.');
-            end
+% Initialise.
+normA = 0;
+
+% Deal with different cases.
+switch n
+    
+    case {'fro', 2}
+        for k = 1:numel(A.blocks)
+            normA = normA + norm(A.blocks{k}, 2).^2;
         end
-    % If A is a QUASIMATRIX with more that one column.
-    else
-        switch n
-            case {2, 'fro'}
-            normA = norm(A, n);
+        normA = sqrt(normA);
         
-            case {1, inf, 'inf', -inf, '-inf'} 
-            [normA, normLoc] = norm(A, n);
-            
-            otherwise
-                if ( isnumeric(n) && isreal(n) )
-                    [normA, normLoc] = norm(A, n); 
-                else
-                error('CHEBMATRIX:norm:unknownNorm', ...
-                 'The only matrix norms available are 1, 2, inf, and ''fro''.');
-            end
+    case {inf, 'inf'}
+        for k = 1:numel(A.blocks)
+            normA = max(normA, norm(A.blocks{k}, inf));
         end
-    end
-   
-% If not [TODO].
-else
-    normA = 0;
-    normLoc = 0;
+        
 end
 
 end
