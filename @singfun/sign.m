@@ -14,12 +14,8 @@ function g = sign(f, pref)
 % Extract the smoothPart of F:
 g = f.smoothPart;
     
-if ( isreal(f) )
-    % Pick a random point:
-    arbitraryPoint = 0.1273881594;
-    
-    g.values = sign(feval(g, arbitraryPoint));
-    g.coeffs = g.values;
+if ( isreal(f) )    
+    g = sign( g ); 
 else
     
     % If no preference is passed, the grab the default one:
