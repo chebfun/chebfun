@@ -967,7 +967,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                     elseif ( b == 0 )
                         f.func = power(f.func, 0);
                         f.jacobian = 0*f.jacobian;
-                        f.linearity = true(size(f.jacobian));
+                        f.linearity = true;
                         return
                     end
                 end
@@ -1417,10 +1417,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 % If the func part is a scalar.
             end
             f.domain = union(f.domain, f.jacobian.domain);
+            f.jacobian.domain = f.domain;
         end
     end
-    
 end
-
-
-   
