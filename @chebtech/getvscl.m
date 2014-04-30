@@ -6,8 +6,13 @@ function vscale = getvscl( f )
 % interpolation data. If F is an array-valued chebtech with K columns, then 
 % VSCALE is a row vector of length K. 
 
-% compute values
-values = f.coeffs2vals( f.coeffs ); 
-vscale = max(abs(values), [], 1);
+% Check isempty: 
+if ( isempty( f.coeffs ) ) 
+    vscale = 0;
+else
+    % compute values
+    values = f.coeffs2vals( f.coeffs ); 
+    vscale = max(abs(values), [], 1);
+end
 
 end

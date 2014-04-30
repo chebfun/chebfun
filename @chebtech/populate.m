@@ -85,7 +85,7 @@ if ( isnumeric(op) || iscell(op) )
     end
     
     % Update vscale:
-    f.vscale = getvscl(f); %max(abs(f.values), [], 1);
+    f.vscale = getvscl(f);
     
     % We're always happy if given discrete data:
     f.ishappy = true;
