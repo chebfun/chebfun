@@ -58,51 +58,8 @@ elseif ( size(g.coeffs, 1) == 1)
     
 end
 
-% Get the size of each CHEBTECH:
-[fn, fm] = size(f.coeffs);
-[gn, gm] = size(g.coeffs);
-
-fNew = flipud(f.coeffs);
-gNew = flipud(g.coeffs);
-
-% prolong:
-fNew((fn+1):(fn+gn+1),:) = 0;
-gNew((gn+1):(fn+gn+1),:) = 0;
-
-% Check dimensions:
-if ( fm ~= gm )
-    if ( fm == 1 )
-        % Allow [Inf x 1] .* [Inf x m].
-        fNew = repmat(fNew, 1, gm);
-    elseif ( gm == 1 )
-        % Allow [Inf x m] .* [Inf x 1].
-        gNew = repmat(gNew, 1, fm);
-    else
-        error('CHEBFUN:CHEBTECH:times:dim2', ...
-            'Inner matrix dimensions must agree.');
-    end
-end
-
-% Check for two cases where the output is known in advance to be positive,
-% namely F == conj(G) or F == G and isreal(F).
-pos = false;
-
-% Multiply values:
-if ( isequal(f, g) )
-    coeffs = coeff_times( fNew, gNew );
-    if ( isreal(f) )
-        pos = true;
-    end
-elseif ( isequal(conj(f), g) )
-    coeffs = coeff_times( conj(fNew), gNew );
-    pos = true;
-else
-    coeffs = coeff_times( fNew, gNew );
-end
-
-% Assign values and coefficients back to f: % TODO: Why is this needed here?
-coeffs = flipud(coeffs);
-f.coeffs = coeffs; 
+% Do muliplication in coefficient space:
+[f.coeffs, pos] = coeff_times_main(f.coeffs, g.coeffs); 
 
 % Update vscale, epslevel, and ishappy:
 vscale = getvscl(f);
@@ -125,17 +82,66 @@ end
 end
 
 
-function hc = coeff_times(fc, gc)
-% COEFF_TIMES(FC, GC) multiplication in coefficient space
-% 
-% HC = COEFF_TIMES(FC, GC) returns the vector of Chebyshev coefficients, HC,
-% resulting from the multiplication of two functions with FC and GC
-% coefficients. The vectors have already been prolonged. 
+function [coeffs, pos] = coeff_times_main(f, g)
 
-% Multiplication in coefficient space is a Toeplitz-plus-Hankel-plus-rank-one
-% operator (see Olver & Townsend, A fast and well-conditioned spectral
-% method, SIAM Review, 2013). This can be embedded into a Circular matrix and
-% applied using the FFT: 
+% Flip for convenience:
+f = flipud(f);
+g = flipud(g);
+
+% Get the size of each CHEBTECH:
+[fn, fm] = size(f);
+[gn, gm] = size(g);
+
+% Prolong:
+f((fn+1):(fn+gn+1),:) = 0;
+g((gn+1):(fn+gn+1),:) = 0;
+
+% Check dimensions:
+if ( fm ~= gm )
+    if ( fm == 1 )
+        % Allow [Inf x 1] .* [Inf x m].
+        f = repmat(f, 1, gm);
+    elseif ( gm == 1 )
+        % Allow [Inf x m] .* [Inf x 1].
+        g = repmat(g, 1, fm);
+    else
+        error('CHEBFUN:CHEBTECH:times:dim2', ...
+            'Inner matrix dimensions must agree.');
+    end
+end
+
+% Check for two cases where the output is known in advance to be positive,
+% namely F == conj(G) or F == G and isreal(F).
+pos = false;
+
+% Multiply values:
+if ( all(f == g) )
+    coeffs = coeff_times( f, g );
+    if ( isreal(f) )
+        pos = true;
+    end
+elseif ( all( conj(f) == g ) )
+    coeffs = coeff_times( conj(f), g );
+    pos = true;
+else
+    coeffs = coeff_times( f, g );
+end
+
+% Assign values and coefficients back to f: % TODO: Why is this needed here?
+coeffs = flipud(coeffs);
+
+end
+
+function hc = coeff_times(fc, gc)
+%COEFF_TIMES(FC, GC)   Multiplication in coefficient space
+%   HC = COEFF_TIMES(FC, GC) returns the vector of Chebyshev coefficients, HC,
+%   resulting from the multiplication of two functions with FC and GC
+%   coefficients. The vectors have already been prolonged.
+
+%   Multiplication in coefficient space is a Toeplitz-plus-Hankel-plus-rank-one
+%   operator (see Olver & Townsend, A fast and well-conditioned spectral method,
+%   SIAM Review, 2013). This can be embedded into a Circular matrix and applied
+%   using the FFT:
 
 mn = length(fc);
 t = [2*fc(1,:) ; fc(2:end,:)];                    % Toeplitz vector.
