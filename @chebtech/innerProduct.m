@@ -34,10 +34,10 @@ fvalues = f.coeffs2vals(f.coeffs);
 gvalues = g.coeffs2vals(g.coeffs); 
 out = bsxfun(@times, w.', fvalues)' * gvalues;
 
-% Force real output if the inputs are equal:
-% TODO: Also ABS()?
+% Force non-negative output if the inputs are equal:
 if ( isequal(f, g) )
-    out = real(out);
+    dout = diag(diag(out));
+    out = out - dout + abs(dout);
 end
 
 end

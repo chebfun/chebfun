@@ -11,8 +11,8 @@ function f = times(f, g, varargin)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% CHEBTECH * [] = []:
 if ( isempty(f) || isempty(g) )
+    % CHEBTECH * [] = []:
     f = [];
     return
 end
@@ -33,11 +33,12 @@ elseif ( isa(g, 'double') )     % CHEBTECH .* double
     % Simplify zero CHEBTECHs:
     if ( ~any(f.coeffs) )
         f.coeffs = 0*f.coeffs(1,:);
-        f.values = 0*f.values(1,:);
     end
     
     % Update epslevel:
     f.epslevel = f.epslevel + eps(g);
+    
+    % TODO: Vscale is not updated?
     
     return
     
@@ -99,16 +100,15 @@ else
     coeffs = coeff_times( fNew, gNew );
 end
 
-% Assign values and coefficients back to f:
+% Assign values and coefficients back to f: % TODO: Why is this needed here?
 coeffs = flipud(coeffs);
-
 f.coeffs = coeffs; 
 
 % Update vscale, epslevel, and ishappy:
 vscale = getvscl(f);
 % See CHEBTECH CLASSDEF file for documentation on this:
-f.epslevel = (f.epslevel + g.epslevel) .* (vscale.*g.vscale./vscale);
-% f.vscale  = vscale;
+f.epslevel = (f.epslevel + g.epslevel) .* (f.vscale.*g.vscale./vscale);
+f.vscale  = vscale;
 f.ishappy = f.ishappy && g.ishappy;
 
 % Simplify!
