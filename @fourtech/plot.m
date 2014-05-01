@@ -70,7 +70,7 @@ end
 %%
 % Plot the curve:
 if ( isreal(f) )
-    h1 = plot(data.xLine, data.yLine, varargin{:}); 
+    h1 = plot(real(data.xLine), real(data.yLine), varargin{:}); 
 else
     h1 = plot(data.yLine, varargin{:}); 
 end
@@ -80,7 +80,7 @@ hold on
 %%
 % Plot the points:
 if ( isreal(f) )
-    h2 = plot(data.xPoints, data.yPoints, varargin{:});
+    h2 = plot(real(data.xPoints), real(data.yPoints), varargin{:});
 else
     h2 = plot(data.yPoints, varargin{:});
 end

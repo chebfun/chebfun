@@ -51,6 +51,11 @@ if ( isempty(g) )
     % Values on the Fourier grid tied to the FOURTECH F:
     data.xPoints = f.points();
     data.yPoints = f.values;
+    
+    if ( isreal( f ) )
+        data.yLine = real( data.yLine ); 
+        data.yPoints = real(data.yPoints); 
+    end
 
 elseif ( isa(g, 'fourtech') )   
     % PLOT(F, G)
@@ -76,6 +81,16 @@ elseif ( isa(g, 'fourtech') )
     data.xPoints = get(prolong(f, len), 'values');
     data.yPoints = get(prolong(g, len), 'values');
     
+    if ( isreal(f) ) 
+        data.xLine = real(data.xLine); 
+        data.xPoints = real(data.xPoints); 
+    end
+    
+    if ( isreal( g ) )
+        data.yLine = real(data.yLine);
+        data.yPoints = real(data.yPoints);
+    end
+    
     if ( isa(h, 'fourtech') )
         % PLOT3(F, G, H)
         
@@ -88,6 +103,11 @@ elseif ( isa(g, 'fourtech') )
          % Values on oversampled uniform grid:
         data.zLine = get(prolong(h, npts), 'values');
         data.zPoints = get(prolong(h, len), 'values');  
+        
+        if ( isreal( h ) ) 
+            data.zLine = real(data.zLine); 
+            data.zPoints = real(data.zPoints); 
+        end
     end
     
 else

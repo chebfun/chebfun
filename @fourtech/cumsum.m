@@ -114,10 +114,8 @@ function f = cumsumContinuousDim(f, m)
     end    
             
     % Recover values and attach to output:
+    c = c/pi; 
     f.values = f.coeffs2vals(c);
-    if f.isReal
-        f.values = real(f.values);
-    end
     f.coeffs = c;
 
     % Update vscale: [TODO]: Update epslevel?

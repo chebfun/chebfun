@@ -67,9 +67,9 @@ function [values, giveUp] = refineResampling(op, values, pref)
     % Evaluate the operator:
     values = feval(op, x);
     
-    % Force the value at x(1) to be equal to the value at x(1)+2*pi, thus
+    % Force the value at -1 to be equal to the value at 1, thus
     % enforcing symmetry.
-    valRightBoundary = feval(op,x(1)+2*pi);
+    valRightBoundary = feval(op,x(1)+2);
     
     values(1,:) = 0.5*(values(1,:) + valRightBoundary);
 end

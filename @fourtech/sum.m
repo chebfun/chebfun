@@ -17,7 +17,7 @@ function out = sum(f, dim)
 n = size(f.values, 1);
 
 %%
-% Sum across array-valued CHEBTECH columns if dim = 2:
+% Sum across array-valued FOURTECH columns if dim = 2:
 if ( nargin > 1 && dim == 2 )
     f.values = sum(f.values, dim);
     f.coeffs = sum(f.coeffs, dim);
@@ -33,11 +33,15 @@ end
 
 % Trivial cases:
 if ( isempty(f) )    
-    % Empty CHEBTECH
+    % Empty FOURTECH
     out = []; 
 else
     % Trapezium rule:
-    out = sum(f.values, 1)*(2*pi/length(f));
+    out = sum(f.values, 1)*(2/length(f));
+end
+
+if ( isreal( f ) ) 
+    out = real( out ) ; 
 end
 
 end

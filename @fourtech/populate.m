@@ -51,21 +51,11 @@ if ( isnumeric(op) || iscell(op) )
     if ( isnumeric(op) )
         % OP is just the values.
         f.values = op;
-        f.isReal = isreal(op);
         f.coeffs = f.vals2coeffs(op);
     else                 
         % OP is a cell {values, coeffs}
         f.values = op{1};
-        f.isReal = isreal(op);
         f.coeffs = op{2};
-        if ( isempty(f.values) )
-            f.values = f.coeffs2vals(f.coeffs);
-            if max(abs(imag(f.values))) > 1e3*eps
-                f.isReal = false;
-            else
-                f.isReal = true;
-            end
-        end
     end
     
     % Update vscale:
@@ -87,9 +77,6 @@ end
 
 % Initialise empty values to pass to refine:
 f.values = [];
-
-% Check a random value of op in (-pi,pi) to see if the result is complex.
-f.isReal = isreal(feval(op,pi*(2*rand-1)));
 
 % Loop until ISHAPPY or GIVEUP:
 while ( 1 )
@@ -142,11 +129,6 @@ vscale = vscaleOut;
 % end
 vscaleOut(vscaleOut < epslevel) = 1;
 epslevel = epslevel*vscaleGlobal./vscaleOut;
-
-% This may not be the best place to do this.
-if f.isReal
-    f.values = real(f.values);
-end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% Assign to FOURTECH object. %%%%%%%%%%%%%%%%%%%%%%%%%%
 f.coeffs = coeffs;

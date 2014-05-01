@@ -9,6 +9,5 @@ function out = isreal(f)
 % See http://www.chebfun.org for Chebfun information.
 
 % Check if all the values are real:
-out = f.isReal;
-
+out = all( imag( f.values ) < f.epslevel * f.vscale );
 end

@@ -30,9 +30,9 @@ else
 %     [~, index] = max(bsxfun(@rdivide, abs(diff(f.values)), diff(x)));
 %     xeval = ( x(index + 1) + 1.41*x(index) ) / 2.41;
     % For now just pick a random value.
-    xeval = pi*(2*rand-1);
+    xeval = (2*rand-1);
 end
-xeval = [-pi+1e-12 ; xeval ; pi-1e-12];
+xeval = [-1+1e-12 ; xeval ; 1-1e-12];
 
 % Evaluate the FOURTECH:
 vFun = feval(f, xeval);

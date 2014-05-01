@@ -93,7 +93,7 @@ function f = diffContinuousDim(f, k)
         end
     end
     % Derivative in Fourier space.
-    c = bsxfun(@times,c,(1i*waveNumber).^k);
+    c = bsxfun(@times,c,(1i*pi*waveNumber).^k);
     
     v = f.coeffs2vals(c);
 
