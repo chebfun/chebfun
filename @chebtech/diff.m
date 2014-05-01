@@ -68,13 +68,13 @@ function f = diffFiniteDim(f, k)
         for j = 1:k
             % Differentiate coefficients across dim:
             f.coeffs = diff(f.coeffs, 1, 2);
-            % Update vscale and epslevel as in PLUS().
-            vscale = getvscl(f); 
-            ev = f.epslevel.*vscale;
+            % Update vscale and epslevel as in PLUS()
+            ev = f.epslevel.*f.vscale;
             for l = 1:size(f,2)-1
                 f.epslevel(l) = ev(l)+ev(l+1);
             end
             f.epslevel(end) = [];
+            vscale = getvscl(f);
             f.epslevel = f.epslevel./vscale;
             f.vscale = vscale;
         end

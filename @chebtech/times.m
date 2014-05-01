@@ -38,7 +38,7 @@ elseif ( isa(g, 'double') )     % CHEBTECH .* double
     % Update epslevel:
     f.epslevel = f.epslevel + eps(g);
     
-    f.vscale = g.*f.vscale;
+    f.vscale = abs(g).*f.vscale;
     
     return
     
