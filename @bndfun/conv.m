@@ -21,7 +21,7 @@ function h = conv(f, g)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Devoloper note:
 %
-% For further details, see Hale and Townsend, "An Algorithm for the convolution
+% For further details, see Hale and Townsend, "An algorithm for the convolution
 % of Legendre series", (To appear in SISC
 % 
 % In the following, it is assumed that the length of the domain of g is greater
@@ -146,7 +146,7 @@ for k = 1:numPatches
     end
 end
 
-if ( (b-a) == (d-c) )
+if ( abs((b-a)-(d-c)) < 10*eps(max([a b c d])) )
     % If there's only one patch, then we already have all the information reqd.
     hLegR = chebtech.leg2cheb(flipud(hLegR));       % Cheb coeffs of right tri.
     h_right = bndfun({[], hLegR}, d + [a, b]); % Make BNDFUN from coeffs
