@@ -13,7 +13,7 @@ function h = conv(f, g)
 %
 %   Note that CONV only supports piecewise-smooth functions on bounded domains.
 %
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 %
 % Nick Hale and Alex Townsend, 2014
@@ -21,8 +21,8 @@ function h = conv(f, g)
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Devoloper note:
 %
-% For further details, see Hale and Townsend, "The convolution of compactly
-% supported functions", (To appear in SISC)
+% For further details, see Hale and Townsend, "An Algorithm for the convolution
+% of Legendre series", (To appear in SISC
 % 
 % In the following, it is assumed that the length of the domain of g is greater
 % than the length of the domain of f. If this is not the case, then simply
@@ -146,7 +146,7 @@ for k = 1:numPatches
     end
 end
 
-if ( numPatches == 1 )
+if ( (b-a) == (d-c) )
     % If there's only one patch, then we already have all the information reqd.
     hLegR = chebtech.leg2cheb(flipud(hLegR));       % Cheb coeffs of right tri.
     h_right = bndfun({[], hLegR}, d + [a, b]); % Make BNDFUN from coeffs
