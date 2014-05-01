@@ -15,15 +15,15 @@ for n = 1:2
     end
 
     % Test a scalar-valued function:
-    p.numPoints = 11;
-    y = testclass.chebpts(p.numPoints); % Force singularity to fall on grid.
-    f = testclass.make(@(x) 1./(x - y(4)), [], [], p);
+    y = ones(11,1); 
+    y(4) = inf; 
+    f = testclass.make({[],y}, [], []);
     pass(n, 1) = isinf(f);
     
     % Test an array-valued function:
-    p.numPoints = 11;
-    y = testclass.chebpts(p.numPoints); % Force singularity to fall on grid.
-    f = testclass.make(@(x) [1./(x - y(4)), x], [], [], p);
+    y = ones(11,1); 
+    y(4) = inf;
+    f = testclass.make({[],y}, [], []);
     pass(n, 2) = isinf(f);
     
     % Test a finite scalar-valued function:

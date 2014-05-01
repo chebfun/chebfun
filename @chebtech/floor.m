@@ -14,8 +14,7 @@ function f = floor(f)
 % See http://www.chebfun.org/ for Chebfun information.
 
 arbitraryPoint = 0.1273881594;
-f.values = floor(feval(f, arbitraryPoint));
-f.coeffs = f.values;
-f.vscale = abs(f.values);
+f.coeffs = floor(feval(f, arbitraryPoint));
+f.vscale = abs(f.coeffs);
 
 end

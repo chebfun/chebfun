@@ -24,7 +24,7 @@ pass(6) = abs(maxVal - exp(1)) < 10*vscale(f).*epslevel(f) && ...
 
 [minVal, minLoc] = norm(f, -inf);
 pass(7) = abs(minVal - 1) < 10*vscale(f).*epslevel(f) && ...
-    abs(feval(f, minLoc) - 1) < 10*vscale(f).*epslevel(f);
+    abs(abs(feval(f, minLoc)) - 1) < 10*vscale(f).*epslevel(f);
 
 g = chebfun(@(x) 1./(1 + (x - 0.1).^2), [-1 -0.5 0 0.5 1]);
 [maxVal, maxLoc] = norm(g, inf);
@@ -143,7 +143,6 @@ f = chebfun(@(x) (sin(x+1.1)).*((x+1).^0.8), 'exps', [0.8 0], 'splitting', 'on')
 p_exact = [0 -1]; % This is obtained using Mathematica.
 err = [normF, normLoc] - p_exact;
 pass(26) = norm(err, inf) < 1e3*vscale(f).*epslevel(f);
-
 %% Test for functions defined on unbounded domain:
 
 % Functions on [a inf]:

@@ -19,13 +19,15 @@ switch prop
         out = f.(prop);
     case 'points'
         % Get the Chebyshev grid corresponding to the VALUES:
-        out = chebtech1.chebpts(size(f.values,1));
+        out = f.points();
     case 'lval'
         % The value at -1:
         out = feval(f, -1);
     case 'rval'
         % The value at +1:
         out = feval(f, 1);
+    case 'values' 
+        out = f.coeffs2vals(f.coeffs);
     otherwise
         error('CHEBFUN:CHEBTECH1:GET:proname', ...
             'Unknown property name ''%s'' for object of type chebtech1.', prop);

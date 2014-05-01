@@ -1,9 +1,9 @@
-function [ishappy, epslevel, cutoff] = classicCheck(f, pref)
+function [ishappy, epslevel, cutoff] = classicCheck(f, values, pref)
 %CLASSICCHECK   Attempt to trim trailing Chebyshev coefficients in a CHEBTECH.
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F) returns an estimated
+%   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F, VALUES) returns an estimated
 %   location, the CUTOFF, at which the CHEBTECH F could be truncated to maintain
 %   an accuracy of EPSLEVEL relative to F.VSCALE and F.HSCALE. ISHAPPY is
-%   TRUE if CUTOFF < MIN(LENGTH(F.VALUES),2) or F.VSCALE = 0, and FALSE
+%   TRUE if CUTOFF < MIN(LENGTH(VALUES),2) or F.VSCALE = 0, and FALSE
 %   otherwise.
 %
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F, PREF) allows additional
@@ -12,10 +12,9 @@ function [ishappy, epslevel, cutoff] = classicCheck(f, pref)
 %
 %   CLASSICCHECK first queries HAPPINESSREQUIREMENTS to obtain TESTLENGTH and
 %   EPSLEVEL (see documentation below). If |F.COEFFS(1:TESTLENGTH)|/VSCALE <
-%   EPSLEVEL, then the representation defined by F.VALUES and F.COEFFS is
-%   deemed happy. The value returned in CUTOFF is essentially that from
-%   TESTLENGTH (although it can be reduced if there are further COEFFS which
-%   fall below EPSLEVEL).
+%   EPSLEVEL, then the representation defined by F.COEFFS is deemed happy. The
+%   value returned in CUTOFF is essentially that from TESTLENGTH (although it
+%   can be reduced if there are further COEFFS which fall below EPSLEVEL).
 %
 %   HAPPINESSREQUIREMENTS defines what it means for a CHEBTECH to be happy.
 %   [TESTLENGTH, EPSLEVEL] = HAPPINESSREQUIREMENTS(VALUES, COEFFS, VSCALE, PREF)
@@ -87,6 +86,11 @@ if ( any(isnan(f.coeffs(:))) )
         'Function returned NaN when evaluated.')
 end
 
+% Compute some values if none were given:
+if ( nargin < 2 )
+    values = f.coeffs2vals(f.coeffs);
+end
+
 % Check for convergence and chop location --------------------------------------
 
 % Absolute value of coefficients, relative to vscale: (max across columns)
@@ -97,7 +101,7 @@ vscale = max(f.vscale);
 
 % Happiness requirements:
 [testLength, epslevel] = ...
-    happinessRequirements(f.values, f.coeffs, f.points(), vscale, f.hscale, epslevel);
+    happinessRequirements(values, f.coeffs, f.points(), vscale, f.hscale, epslevel);
 
 if ( max(ac(1:testLength)) < epslevel )    % We have converged! Now chop tail:
 

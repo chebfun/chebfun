@@ -99,7 +99,7 @@ for hCounter = 1:hMax
     % Expect this to be O(h)
     nDiff1(hCounter, :) = cellfun(@(u, v) norm(u - v), fuPert, fu);
     
-    % Use derivative information as well. Expect this to be O(h^2)    
+    % Use derivative information as well. Expect this to be O(h^2)   
     nDiff2(hCounter, :) = ...
         cellfun(@(u, v) norm(u - v - v.jacobian*pert), fuPert, fu);
     
@@ -120,7 +120,6 @@ order1 = min(order1, [], 2);
 order2 = min(order2, [], 2);
 
 %% Plotting
-
 if ( plotting == 1 )
     loglog(fact.^(1:hMax), nDiff1, '-*'), hold on
     loglog(fact.^(1:hMax), nDiff2, 'r-*')
