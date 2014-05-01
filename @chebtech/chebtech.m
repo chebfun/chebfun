@@ -90,29 +90,29 @@ classdef chebtech < smoothfun % (Abstract)
 % Here is a rough guide to how scale and accuracy information is propagated in
 % subsequent operations after construction:
 %   h = f + c:
-%     h.vscale = max(h.values, [], 1);
+%     h.vscale = getvscl(h);
 %     h.epslevel = (f.epslevel*f.vscale + eps(c))/h.vscale;
 %
 %   h = f * c:
-%     h.vscale = max(abs(h.values), [], 1) = abs(c)*f.vscale;
+%     h.vscale = getvscl(h) = abs(c)*f.vscale;
 %     h.epslevel = f.epslevel + eps(c)/c;
 %
 %   h = f + g:
-%     h.vscale = max(abs(h.values), [], 1);
+%     h.vscale = getvscl(h);
 %     h.epslevel = (f.epslevel*f.vscale + g.epslevel*g.vscale)/h.vscale
 %
 %   h = f .* g:
-%     h.vscale = max(abs(h.values), [], 1);
+%     h.vscale = getvscl(h);
 %     h.epslevel = (f.epslevel + g.epslevel) * (f.vscale*g.vscale)/h.vscale
 %
 %   h = diff(f):
-%     h.vscale = max(abs(h.values), [], 1);
+%     h.vscale = getvscl(h);
 %     % [TODO]: Figure this out rigourously.
 %     h.epslevel = n*log(n)f.epslevel*f.vscale; % *(h.vscale/h.vscale)
 %     % We don't divide by h.vscale here as we must also multiply by it.
 %
 %   h = cumsum(f):
-%     h.vscale = max(abs(h.values), [], 1);
+%     h.vscale = getvscl(h);
 %     [TODO]: h.epslevel = ???
 %
 % If the input operator OP evaluates to NaN or Inf at any of the sample points

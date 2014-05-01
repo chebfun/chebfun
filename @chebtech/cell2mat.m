@@ -21,11 +21,11 @@ if ( isempty(f) || numel(f) == 1 )
     return
 end
 
-% Extract the values from each of the CHEBTECH objects:
-values = { f.values };
+% Extract the coeffs from each of the CHEBTECH objects:
+coeffs = { f.coeffs }; 
 
 % These should all have the same length...
-lengths = cellfun(@(x) size(x, 1), values);
+lengths = cellfun(@(x) size(x, 1), coeffs);
 minlength = min(lengths);
 maxlength = max(lengths);
 
@@ -34,7 +34,7 @@ if ( minlength ~= maxlength )
     for k = 1:numel(f)
         f(k) = prolong(f(k), maxlength);
     end
-    values = { f.values };
+    coeffs = { f.coeffs };
 end
 
 % Append new data to an empty CHEBTECH:
@@ -42,7 +42,6 @@ g = f.make(); % Make an empty CHEBTECH.
 g.vscale = [f.vscale];
 g.ishappy = min([f.ishappy]);
 g.epslevel = max([f.epslevel]);
-g.values = cell2mat(values);
-g.coeffs = [f.coeffs];
+g.coeffs = cell2mat(coeffs);
 
 end
