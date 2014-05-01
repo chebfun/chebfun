@@ -1,7 +1,6 @@
 function [values, maskNaN, maskInf] = extrapolate(f, values)
 %EXTRAPOLATE  Extrapolate data values from values at Chebyshev points of 
-%   1st kind.
-%
+%             1st kind.
 %   EXTRAPOLATE(F, VALUES) uses barycentric interpolants to extrapolate out 
 %   NaNs or Infs from the numeric data in VALUES.
 %
@@ -19,7 +18,6 @@ function [values, maskNaN, maskInf] = extrapolate(f, values)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% values = f.values;
 maskNaN = any(isnan(values), 2);
 maskInf = any(isinf(values), 2);
 mask = maskNaN | maskInf;

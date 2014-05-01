@@ -12,10 +12,9 @@ function [ishappy, epslevel, cutoff] = classicCheck(f, values, pref)
 %
 %   CLASSICCHECK first queries HAPPINESSREQUIREMENTS to obtain TESTLENGTH and
 %   EPSLEVEL (see documentation below). If |F.COEFFS(1:TESTLENGTH)|/VSCALE <
-%   EPSLEVEL, then the representation defined by F.VALUES and F.COEFFS is
-%   deemed happy. The value returned in CUTOFF is essentially that from
-%   TESTLENGTH (although it can be reduced if there are further COEFFS which
-%   fall below EPSLEVEL).
+%   EPSLEVEL, then the representation defined by F.COEFFS is deemed happy. The
+%   value returned in CUTOFF is essentially that from TESTLENGTH (although it
+%   can be reduced if there are further COEFFS which fall below EPSLEVEL).
 %
 %   HAPPINESSREQUIREMENTS defines what it means for a CHEBTECH to be happy.
 %   [TESTLENGTH, EPSLEVEL] = HAPPINESSREQUIREMENTS(VALUES, COEFFS, VSCALE, PREF)
@@ -85,6 +84,11 @@ end
 if ( any(isnan(f.coeffs(:))) )
     error('CHEBFUN:FUN:classicCheck:NaNeval', ...
         'Function returned NaN when evaluated.')
+end
+
+% Compute some values if none were given:
+if ( nargin < 2 )
+    values = f.coeffs2vals(f.coeffs);
 end
 
 % Check for convergence and chop location --------------------------------------

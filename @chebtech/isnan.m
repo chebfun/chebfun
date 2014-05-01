@@ -7,7 +7,7 @@ function out = isnan(f)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Check if any values are NaN:
+% Check if any coefficients are NaN:
 out = any(isnan(f.coeffs(:)));
 
 end

@@ -19,7 +19,7 @@ switch prop
         out = f.(prop);
     case 'points'
         % Get the Chebyshev grid corresponding to the VALUES:
-        out = chebtech1.chebpts(size(f.values,1));
+        out = f.points();
     case 'lval'
         % The value at -1:
         out = feval(f, -1);

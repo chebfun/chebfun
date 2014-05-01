@@ -31,7 +31,7 @@ if ( nIn == 1 )
     return
 end
 
-% Prolong the points using the FFT:
+% Prolong the coefficients using an FFT:
 f.coeffs = f.alias(f.coeffs, nOut);
 
 end

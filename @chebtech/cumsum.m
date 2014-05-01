@@ -51,10 +51,10 @@ function f = cumsumContinuousDim(f)
 % CUMSUM over the continuous dimension.
 
 % Initialise storage:
-c = f.coeffs;                         % Obtain Chebyshev coefficients {c_r}
+c = f.coeffs;                     % Obtain Chebyshev coefficients {c_r}
 
 [n, m] = size(c);
-c = [ zeros(2, m) ; c ];          %#ok<AGROW> % Pad with zeros
+c = [ zeros(2, m) ; c ];          % Pad with zeros
 b = zeros(n-1, m);                % Initialize vector b = {b_r}
 
 % Compute b_(n+1) ... b_2:
@@ -79,7 +79,6 @@ f = simplify(f);
 % Ensure f(-1) = 0:
 lval = get(f, 'lval');
 f.coeffs(end,:) = f.coeffs(end,:) - lval;
-%     f.values = bsxfun(@minus, f.values, lval);
 
 end
 

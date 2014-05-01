@@ -151,10 +151,10 @@ classdef chebtech < smoothfun % (Abstract)
 
         % Horizontal scale of the CHEBTECH. Although CHEBTECH objects have in
         % principle no notion of horizontal scale invariance (since they always
-        % live on [-1,1]), the input OP may have been implicitly mapped.
-        % HSCALE is then used to enforce horizontal scale invariance in
-        % construction and other subsequent operations that require it. It
-        % defaults to 1 and is never updated.
+        % live on [-1,1]), the input OP may have been implicitly mapped. HSCALE
+        % is then used to enforce horizontal scale invariance in construction
+        % and other subsequent operations that require it. It defaults to 1 and
+        % is never updated.
         hscale = 1 % (scalar > 0)
 
         % Boolean value designating whether the CHEBTECH is 'happy' or not. See

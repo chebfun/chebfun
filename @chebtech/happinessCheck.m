@@ -8,7 +8,9 @@ function  [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, pref)
 %   and CUTOFF indicates the point to which the coefficients COEFFS may be
 %   truncated. Even if ISHAPPY is FALSE, the attempted happiness level is still
 %   returned in EPSLEVEL (i.e., we attempted to be happy at EPSLEVEL but failed)
-%   and CUTOFF is returned as size(f.values, 1).
+%   and CUTOFF is returned as size(F.COEFFS, 1).
+%
+%   HAPPINESSCHECK(F) computes VALUES used above from F.COEFFS2VALS(F.COEFFS).
 %
 %   HAPPINESSCHECK(F, OP, VALUES, PREF) allows different preferences to be used; in
 %   particular PREF.EPS sets the target tolerance for happiness.
@@ -44,6 +46,10 @@ elseif ( nargin < 4 )
     pref = f.techPref();
 elseif ( nargin == 3 ) 
     pref = f.techPref(); 
+end
+
+if ( nargin < 3 )
+    values = f.coeffs2vals(f.coeffs);
 end
 
 % What does happiness mean to you?

@@ -13,6 +13,7 @@ function f = mtimes(f, c)
 if ( isempty(f) || isempty(c) )     % CHEBTECH * [] = []
     f = []; 
     return
+    
 elseif ( ~isa(f, 'chebtech') )      % CHEBTECH is not the first input
     % DOUBLE*CHEBTECH requires that the double is scalar.
     if ( numel(f) > 1 )
@@ -44,7 +45,7 @@ elseif ( isa(c, 'double') )         % CHEBTECH * double
 
         % Assume condition number 1.
 %         glob_acc = max(f.epslevel.*f.vscale);
-%         f.vscale = max(abs(f.values), [], 1);
+%         f.vscale = getvscl(f);
 %         f.epslevel = glob_acc./f.vscale;
     end
     
@@ -56,9 +57,11 @@ elseif ( isa(c, 'double') )         % CHEBTECH * double
 elseif ( isa(c, 'chebtech') )       % CHEBTECH * CHEBTECH  
     error('CHEBFUN:CHEBTECH:mtimes:chebtechMtimesChebtech', ...
         'Use .* to multiply CHEBTECH objects.');
+    
 else                                % CHEBTECH * ???
     error('CHEBFUN:CHEBTECH:mtimes:chebtechMtimesUnknown',...
         'mtimes does not know how to multiply a CHEBTECH and a %s.', class(c));
+    
 end
 
 end

@@ -66,6 +66,7 @@ if ( size(f, 2) == 1 )
     return
 end
 
+% TODO: This should probably be put back in if possible? NH Apr 2014
 % Simplify so that we don't do any extra work: (QR is O(m*n^2)? :/ )
 % f = simplify(f);
 
@@ -97,7 +98,7 @@ end
 
 function [f, R, E] = qr_builtin(f, outputFlag)
 
-% We must enforce that f.values has at least as many rows as columns:
+% We must enforce that f.coeffs has at least as many rows as columns:
 [n, m] = size(f);
 if ( n < m )
     f = prolong(f, m);
@@ -183,7 +184,7 @@ f.coeffs = f.vals2coeffs(Q);
 f.coeffs(1:newN/2,:) = [];
 
 % Update the vscale:
-f.vscale = getvscl(f); % max(abs(f.values), [], 1);
+f.vscale = getvscl(f);
 
 % Additional output argument:
 if ( nargout == 3 )

@@ -1,6 +1,6 @@
 function out = iszero(f)
 %ISZERO    True for zero CHEBTECH objects.
-%   ISZERO(F) returns logical TRUE is F.values has only zero entries and logical
+%   ISZERO(F) returns logical TRUE is F.COEFFS has only zero entries and logical
 %   FALSE otherwise.
 
 out = ~any(f.coeffs, 1);

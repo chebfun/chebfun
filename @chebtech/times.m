@@ -20,6 +20,7 @@ end
 if ( ~isa(f, 'chebtech') )      % Ensure F is a CHEBTECH
     f = times(g, f, varargin{:});
     return
+    
 elseif ( isa(g, 'double') )     % CHEBTECH .* double
     
     % Do the multiplication:
@@ -44,6 +45,7 @@ elseif ( size(g.coeffs, 1) == 1)
     f = times(f, g.coeffs);
     f.epslevel = max(f.epslevel, g.epslevel);
     return
+    
 end
 
 % Get the size of each CHEBTECH:

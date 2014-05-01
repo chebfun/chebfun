@@ -10,7 +10,7 @@ function [size1, size2] = size(f, varargin)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% The size of a CHEBTECH is the size of its vector of values.
+% The size of a CHEBTECH is the size of its vector of coeffs.
 size1 = size(f.coeffs, varargin{:});
 
 % Return two outputs:
