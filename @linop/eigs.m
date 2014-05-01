@@ -47,9 +47,9 @@ function varargout = eigs(L,varargin)
 %   [V,D] = eigs(A,10);
 %   format long, sqrt(-diag(D))  % integers, to 14 digits
 %
-%   See also CHEBOPPREF, CHEBOP.EIGS.
+% See also CHEBOPPREF, CHEBOP.EIGS.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
 % Parsing inputs.
@@ -118,13 +118,15 @@ end
 % its domain merged in and its own discretization.
 discM = [];
 if ( ~isempty(M) )
-    dom = chebfun.mergeDomains(disc.domain, M.domain);
-    disc.domain = dom;   % update the discretization domain for L
     
+    % Update the discretization domain for L:
+    disc.domain = chebfun.mergeDomains(disc.domain, M.domain);
+    
+    % Construct a discretization for M:
     constructor = str2func( class(disc) );   % constructor handle
-    discM = constructor(M, disc.dimension, disc.domain);
-    % We can ignore constraints and continuity--enforced on the left side.
+    discM = constructor(M);
     
+    % We can ignore constraints and continuity--enforced on the left side.
     if ( ~isempty(discM.source.constraint) )
         discM.source.constraint = [];
         warning('CHEBFUN:linop:eigs:constraints', ...
@@ -136,22 +138,15 @@ if ( ~isempty(M) )
                 'Continuity conditions on B are ignored.')
     end       
     
-    disc.dimAdjust = max(disc.dimAdjust, discM.dimAdjust);
-    disc.projOrder = max(disc.projOrder, discM.projOrder);
+    % Merge the two discretizations:
+    [disc, discM] = merge(disc, discM);
     
-    discM.dimAdjust = disc.dimAdjust;
-    discM.projOrder = disc.projOrder;
-    if ( isa(disc, 'ultraS') )
-        disc.outputSpace = max(disc.outputSpace, discM.outputSpace);
-        discM.outputSpace = disc.outputSpace;
-    end
 end
 
-    if ( isempty(L.continuity) )
+if ( isempty(L.continuity) )
      % Apply continuity conditions:
      disc.source = deriveContinuity(disc.source);
 end
-
 
 % 'SM' is equivalent to eigenvalues nearest zero.
 if ( strcmpi(sigma, 'SM') )
