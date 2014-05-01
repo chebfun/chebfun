@@ -11,10 +11,10 @@ function h = conv(f, g, flag)
 %   x - c).  The breakpoints of H are all pairwise sums of the breakpoints of F
 %   and G.
 %
-%   If F and G are simple, in the sense that their FUNS are CHEBTECH objects,
-%   a fast algorith due to Hale and Townsend is used [1]. Otherwise, the integral is
-%   comuted by brute force. CONV(F, G, 'old') forces the brute force approach,
-%   even when the fast algoirthm may be used.
+%   If F and G are simple, in the sense that their FUNS are CHEBTECH objects, a
+%   fast algorithm due to Hale and Townsend is used [1]. Otherwise, the integral
+%   is computed by brute force. CONV(F, G, 'old') forces the brute force
+%   approach, even when the fast algorithm may be used.
 %
 %   Note that CONV only supports piecewise-smooth functions on bounded domains.
 %
@@ -23,16 +23,12 @@ function h = conv(f, g, flag)
 %     subplot(2, 2, 1), plot(f)
 %     for j = 2:4, g = conv(f, g); subplot(2, 2, j), plot(g), end
 %     figure, for j = 1:4, subplot(2,2,j), plot(g), g = diff(g); end
-%
-%   [1] N. Hale and A. Townsend, "An Algorithm for the convolution of Legendre
-%   series", (To appear in SISC)
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 %
-% Nick Hale and Alex Townsend, 2014
-
-
+% [1] N. Hale and A. Townsend, "An Algorithm for the convolution of Legendre
+% series", (To appear in SISC)
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -83,7 +79,7 @@ for j = 1:numel(f.funs)
         % Compute the contribution of jth fun of f with kth fun of g:
         hjk = conv(f.funs{j}, g.funs{k});  
         % Add this contribution:
-        h = myplus(h, hjk);
+        h = myplus(h, chebfun(hjk));
     end
 end
 
@@ -97,8 +93,6 @@ end
 
 function h = myplus(f, g)
 % Modified PLUS() which pads with zeros to fulfil domain requirements.
-
-g = chebfun(g);
 
 if ( isnumeric(f) )
     h = f + g;
