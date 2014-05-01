@@ -38,7 +38,7 @@ elseif ( isa(g, 'double') )     % CHEBTECH .* double
     % Update epslevel:
     f.epslevel = f.epslevel + eps(g);
     
-    % TODO: Vscale is not updated?
+    f.vscale = g.*f.vscale;
     
     return
     

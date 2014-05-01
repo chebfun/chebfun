@@ -70,7 +70,7 @@ function f = diffFiniteDim(f, k)
             f.coeffs = diff(f.coeffs, 1, 2);
             % Update vscale and epslevel as in PLUS().
             vscale = getvscl(f); 
-            ev = f.epslevel.*f.vscale;
+            ev = f.epslevel.*vscale;
             for l = 1:size(f,2)-1
                 f.epslevel(l) = ev(l)+ev(l+1);
             end
