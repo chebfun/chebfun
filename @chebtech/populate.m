@@ -172,6 +172,7 @@ f.epslevel = epslevel;
 
 if ( ishappy )
     % We're done, and can return.
+    f = simplify(f, f.epslevel/100);
     return
 end
 
