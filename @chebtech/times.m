@@ -29,7 +29,16 @@ elseif ( isa(g, 'double') )     % CHEBTECH .* double
     else
         f.coeffs = f.coeffs*g;
     end
+    
+    % Simplify zero CHEBTECHs:
+    if ( ~any(f.coeffs) )
+        f.coeffs = 0*f.coeffs(1,:);
+        f.values = 0*f.values(1,:);
+    end
+    
+    % Update epslevel:
     f.epslevel = f.epslevel + eps(g);
+    
     return
     
 elseif ( size(f.coeffs, 1) == 1 )
