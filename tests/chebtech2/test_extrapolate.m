@@ -21,35 +21,35 @@ for k = 1:2
     % Test once for a vector of coeffs and against for a matrix.
 
     % Interior NaN;
-    f.values = sin(x)./x;
-    newValues = f.extrapolate();
+    values = sin(x)./x;
+    newValues = f.extrapolate(values);
     pass(1 + s) = all( abs(newValues((n+1)/2,:) - 1) < tol );
     
     % Interior Inf;
-    f.values = sin(x-eps)./x;
-    newValues = f.extrapolate();
+    values = sin(x-eps)./x;
+    newValues = f.extrapolate(values);
     pass(2 + s) = all( abs(newValues((n+1)/2,:) - 1) < tol );
 
     % Extrapolate left end:
-    f.values = sign(x+1);
-    f.values(1, :) = NaN;
-    newValues = f.extrapolate();
+    values = sign(x+1);
+    values(1, :) = NaN;
+    newValues = f.extrapolate(values);
     pass(3 + s) = all( abs(newValues(1,:) - 1) < tol );
     
     % Extrapolate right end:
-    f.values = sign(x-1);
-    f.values(end, :) = NaN;
-    newValues = f.extrapolate();
+    values = sign(x-1);
+    values(end, :) = NaN;
+    newValues = f.extrapolate(values);
     pass(4 + s) = all( abs(newValues(end,:) + 1) < tol );
 
     % Check reverting of endpoint values:
-    f.values = sin(x);
-    newValues = f.extrapolate();
-    pass(5 + s) = ~any(f.values(:) - newValues(:));
+    values = sin(x);
+    newValues = f.extrapolate(values);
+    pass(5 + s) = ~any(values(:) - newValues(:));
     
-    f.values = sin(x)./x;
-    newValues = f.extrapolate();
-    pass(6 + s) = ~any(f.values(:) - newValues(:));
+    values = sin(x)./x;
+    newValues = f.extrapolate(values);
+    pass(6 + s) = ~any(values(:) - newValues(:));
    
     % Make x a matrix and repeat:
     x = repmat(x, 1, 2);

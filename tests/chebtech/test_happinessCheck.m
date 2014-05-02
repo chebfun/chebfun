@@ -22,7 +22,8 @@ for n = 1:2
     x = testclass.chebpts(33);
     f = @(x) sin(x);
     g = testclass.make(f(x));
-    [ishappy, epslevel, tail] = happinessCheck(g, f, pref);
+    values = g.coeffs2vals(g.coeffs); 
+    [ishappy, epslevel, tail] = happinessCheck(g, f, values, pref);
     pass(n, 1) = tail == 14;
     pass(n, 2) = ishappy && epslevel < tol;
     
@@ -30,7 +31,8 @@ for n = 1:2
     % Test on an array-valued function:
     f = @(x) [sin(x) cos(x) exp(x)];
     g = testclass.make(f(x));
-    [ishappy, epslevel, tail] = happinessCheck(g, f, pref);
+    values = g.coeffs2vals(g.coeffs); 
+    [ishappy, epslevel, tail] = happinessCheck(g, f, values, pref);
     pass(n, 3) = abs(tail - 15) < 2;
     pass(n, 4) = ishappy && epslevel < tol;
     
@@ -43,7 +45,8 @@ for n = 1:2
     % This should be happy, as aliasing fools the happiness test:
     pref.sampleTest = 0;
     g = testclass.make(f(x));
-    [ishappy, epslevel, tail] = happinessCheck(g, f, pref);
+    values = g.coeffs2vals(g.coeffs); 
+    [ishappy, epslevel, tail] = happinessCheck(g, f, values, pref);
     if (n == 1)
         pass(n, 5) = ( ishappy && tail == 15);
     else
@@ -53,7 +56,8 @@ for n = 1:2
     % This should be unhappy, as sampletest fixes things:
     pref.sampleTest = 1;
     g = testclass.make(f(x));
-    [ishappy, epslevel, tail] = happinessCheck(g, f, pref);
+    values = g.coeffs2vals(g.coeffs); 
+    [ishappy, epslevel, tail] = happinessCheck(g, f, values, pref);
     pass(n, 6) = ~ishappy && tail == 33;
 end
 

@@ -48,8 +48,8 @@ for n = 1:2
     pass(n, 5) = norm(feval(g, x) - g_exact(x), inf) < 10*max(g.epslevel);
     
     g = f ./ [alpha 0];
-    pass(n, 6) = isnan(g) && ~any(isnan(g.values(:, 1))) ...
-                       && all(isnan(g.values(:, 2)));
+    pass(n, 6) = isnan(g) && ~any(isnan(g.coeffs(:, 1))) ...
+                       && all(isnan(g.coeffs(:, 2)));
     
     %%
     % Check division of a scalar by a chebtech object.
@@ -109,12 +109,12 @@ for n = 1:2
     f = testclass.make(@(x) sin(x), [], [], pref);
     h1 = f ./ alpha;
     h2 = testclass.make(@(x) sin(x) ./ alpha, [], [], pref);
-    pass(n, 14) = norm(h1.values - h2.values, inf) < tol;
+    pass(n, 14) = norm(h1.coeffs - h2.coeffs, inf) < tol;
     
     g = testclass.make(@(x) exp(x), [], [], pref);
     h1 = f ./ g;
     h2 = testclass.make(@(x) sin(x) ./ exp(x), [], [], pref);
-    pass(n, 15) = norm(h1.values - h2.values, inf) < tol;
+    pass(n, 15) = norm(h1.coeffs - h2.coeffs, inf) < tol;
 end
 
 end

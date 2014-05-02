@@ -1,7 +1,6 @@
 function g = mat2cell(f, M, N)
 %MAT2CELL   Convert an array-valued CHEBTECH into a cell array of CHEBTECH
-%objects.
-%
+%           objects.
 %   G = MAT2CELL(F, C) breaks up the array-valued CHEBTECH F into a single row
 %   cell array G of CHEBTECH objects. C is the vector of column sizes, and if F
 %   has COL columns this must sum to COL. The elements of C determine the size
@@ -19,7 +18,7 @@ function g = mat2cell(f, M, N)
 %   g = mat2cell(f, 1, [1 2 1])
 %
 % See also CELL2MAT.
-%
+
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
@@ -30,7 +29,7 @@ if ( isempty(f) )
 end
 
 % Get the size of the values matrix:
-[n, m] = size(f.values);
+[n, m] = size(f.coeffs);
 
 % Parse the inputs:
 if ( nargin == 1 )
@@ -44,11 +43,10 @@ end
 if ( ~isscalar(M) || (M ~= 1) )
     error('CHEBFUN:CHEBTECH:mat2cell:size', ...
         ['Input arguments M and N must sum to each dimension of the', ...
-        ' input matrix size, [1,%d].'], size(f.values, 2));
+        ' input matrix size, [1,%d].'], size(f.coeffs, 2));
 end
 
-% Split the values and the coefficients into cells of the correct size:
-values = mat2cell(f.values, n, N);
+% Split the coefficients into cells of the correct size:
 coeffs = mat2cell(f.coeffs, n, N);
 vscale = mat2cell(f.vscale, 1, N);
 epslevel = mat2cell(f.epslevel, 1, N);
@@ -63,7 +61,6 @@ for k = 1:numel(N)
     
     % Assign values to the fields of the CHEBTECH
     gk.ishappy = f.ishappy;
-    gk.values = values{k};
     gk.coeffs = coeffs{k};
     gk.vscale = vscale{k};
     gk.epslevel = epslevel{k};
