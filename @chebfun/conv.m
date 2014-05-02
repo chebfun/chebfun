@@ -79,7 +79,10 @@ for j = 1:numel(f.funs)
         % Compute the contribution of jth fun of f with kth fun of g:
         hjk = conv(f.funs{j}, g.funs{k});  
         % Add this contribution:
-        h = myplus(h, chebfun(hjk));
+%        h = myplus(h, chebfun(hjk));
+        for i = 1:numel(hjk)
+            h = myplus(h, chebfun(hjk(i)));
+        end
     end
 end
 
@@ -103,6 +106,7 @@ else
     h = chebfun(0, dom);
     h = defineInterval(h, [a, b], f);        % h{a, b} = f;
     hTmp = restrict(h, [c, d]);
+    hTmp.pointValues = 0*hTmp.pointValues;
     h = defineInterval(h, [c, d], hTmp + g); % h{c, d} = h{c, d} + g;
 end
 
