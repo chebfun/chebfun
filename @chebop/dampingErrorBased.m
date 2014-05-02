@@ -46,7 +46,7 @@ while ( ~accept )
     if newtonCounter > 0 && initPrediction
         % Compute a prediction value
         mu = (normDeltaOld*normDeltaBar)/...
-            (N.norm(deltaBar-delta, 'fro')*normDelta)*lambda;
+            (norm(deltaBar-delta, 'fro')*normDelta)*lambda;
         lambda = min(1,mu);
         % Indicate that we will now be in correction mode until next Newton
         % step.
@@ -100,13 +100,13 @@ while ( ~accept )
     
     % The norm of the simplified Newton step is used to compute a
     % contraction factor
-    normDeltaBar = N.norm(deltaBar);
+    normDeltaBar = norm(deltaBar);
     
     % Contraction factor
     cFactor = normDeltaBar/normDelta;
     
     muPrime = (.5*normDelta*lambda^2)/...
-        (N.norm(deltaBar-(1-lambda)*delta,'fro'));
+        (norm(deltaBar-(1-lambda)*delta,'fro'));
     
     if cFactor >=1
         lambda = min(muPrime,.5*lambda);
