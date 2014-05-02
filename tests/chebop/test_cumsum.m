@@ -13,4 +13,7 @@ Q = chebop(@(u) cumsum(u), d);
 f = chebfun(@(x) exp(sin(x).^2+2), d);
 pass(1) = norm(Q*f - cumsum(f)) < tol;
 
+[L, res, isLinear] = linearize(Q);
+pass(2) = all(isLinear);
+
 end
