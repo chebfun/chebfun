@@ -49,8 +49,8 @@ function varargout = eigs(L,varargin)
 %
 %   See also CHEBOPPREF, CHEBOP.EIGS.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Parsing inputs.
 M = [];       % no generalized operator
@@ -372,7 +372,7 @@ ii10 = (N-tenPercent):N; % Indices of last 10%
 % Check for high frequency energy (indicative of spurious eigenvalues) in
 % each of the remaining valid eigenfunctions.
 isFun = disc.source.isFunVariable;
-while ~isempty(queue)
+while ( ~isempty(queue) )
     j = queue(1);
 
     vcoeff = mat2poly(disc, V(:,idx(j)));
@@ -385,15 +385,15 @@ while ~isempty(queue)
             lvcs = length(vcoeffsq);
             if ( lnc2 > lvcs )
                 % Pad with leading zeros
-                vcoeffsq = [ zeros(lnc2-lvcs,1); vcoeffsq ];
-            else
-                % Only the most significant rows affected
-                rows = lvcs-lnc2+1:lvcs;
-                vcoeffsq(rows) = vcoeffsq(rows) + newcoeff2;
+                vcoeffsq = [ zeros(lnc2-lvcs,1) ; vcoeffsq ];
+                lvcs = length(vcoeffsq);
             end
+            % Only the most significant rows affected
+            rows = lvcs-lnc2+1:lvcs;
+            vcoeffsq(rows) = vcoeffsq(rows) + newcoeff2;
         end
     end
-    vcoeff = sqrt( flipud( sum(vcoeffsq,2) ) );
+    vcoeff = sqrt( flipud( sum(vcoeffsq, 2) ) );
 
     % Recipe: More than half of the energy in the last 90% of the Chebyshev
     % modes is in the highest 10% modes, and the energy of the last 90% is
