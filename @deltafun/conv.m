@@ -5,8 +5,9 @@ function h = conv(f, g)
 %                    /
 %           H(x) =   |    F(t) G(x-t) dt,  x in [a + c, b + d]
 %                    /
-%          
-% If the answer is zero, an empty cell is returned.
+%   The output H is a cell array of DELTAFUNs or CLASSICFUNS. If the result of
+%   the convolution of F and G is zero, an empty cell is returned. The cell
+%   array returned is used by higher level convolutions.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -79,7 +80,7 @@ h(zeroIndices) = [];
 % df * (g + dg/2):
 if( ~isempty(deltaLocF))
     [m, n] = size(deltaMagF);
-    % loop through the delta function matrix
+    % Loop through the delta function matrix:
     for i = 1:m
         for j = 1:n
             if ( abs(deltaMagF(i, j)) > deltaTol )
@@ -104,6 +105,7 @@ end
 % dg * (f + df/2);
 if ( ~isempty(deltaLocG) )
     [m, n] = size(deltaMagG);
+    % Loop through the delta function matrix:    
     for i = 1:m
         for j = 1:n
             if ( abs(deltaMagG(i, j)) > deltaTol )

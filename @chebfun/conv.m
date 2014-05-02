@@ -71,7 +71,7 @@ if ( (b - a) > (d - c) )
     return
 end
 
-% Initialize output:
+% Initialize the output:
 h = chebfun(0, [a + c, b + d]);
 % Deal with piecewise CHEBFUN objects by looping over each of the interactions:
 for j = 1:numel(f.funs)
@@ -79,7 +79,6 @@ for j = 1:numel(f.funs)
         % Compute the contribution of jth fun of f with kth fun of g:
         hjk = conv(f.funs{j}, g.funs{k});  
         % Add this contribution:
-%        h = myplus(h, chebfun(hjk));
         for i = 1:numel(hjk)
             h = myplus(h, chebfun(hjk(i)));
         end
@@ -102,7 +101,7 @@ function f = myplus(f, g)
 fTmp = restrict(f, [c, d]); % f{c, d}
 f = defineInterval(f, [c, d], fTmp + g); % f{c, d} = f{c, d} + g;
 
-% Make sure the point values are not added twice:
+% Make sure that point values are not added twice:
 dom = domain(f);
 intDom = dom(2:end-1);
 f.pointValues(2:end-1) = 1/2*(feval(f, intDom.', 'left') + feval(f, intDom.', 'right'));

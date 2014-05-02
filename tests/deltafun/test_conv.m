@@ -25,5 +25,3 @@ pass(2) = max(abs(minandmax(g-f))) < tol;
 g = conv(d1, diff(d2));
 g = g{1};
 pass(3) = max(abs(minandmax(g-1))) < tol;
-
-%%
