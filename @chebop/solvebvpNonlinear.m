@@ -74,7 +74,7 @@ while ( ~terminate )
     delta = -delta;
 
     % Store the norm of the update
-    normDelta = N.norm(delta);
+    normDelta = norm(delta);
     
     dampingInfo.normDelta = normDelta;
     
