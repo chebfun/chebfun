@@ -9,6 +9,8 @@ if ( nargin == 0 )
 end
 tol = 1e-10;
 
+%%
+
 d = [-1, 1];
 x = chebfun(@(x) x, d);
 A = chebop(@(x, u) diff(u) - u, d);

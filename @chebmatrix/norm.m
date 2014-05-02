@@ -1,16 +1,17 @@
-function [normA, normLoc] = norm(A, n)
+function normA = norm(A, n)
 %NORM   Norm of a CHEBMATRIX object.
-%   NORM(A) computes the norm of the CHEBMATRIX object A.
+%   NORM(A) computes the Frobenius norm of the CHEBMATRIX object A, defined as
+%   the sum of the squares of the 2-norms of each of the blocks.
 %
-%   If A contains only CHEBFUN and DOUBLE objects, A is converted to a
-%   QUASIMATRIX, and CHEBFUN/NORM is called.
+%   NORM(A, 2) or NORM(A, 'fro') is the same as above.
 %
-%   If not, CHEBMATRIX/? is called. [TODO]
-%
-%   See also CHEBMATRIX, CHEBFUN/NORM.
+%   NORM(A, INF) computes the infinity norm of the CHEBMATRIX A, defined as the
+%   maximum infinity norm of each of the blocks.
 
-%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org for Chebfun information.
+
+% [TODO]: Add support for norms of operators.
 
 % Empty CHEBMATRIX has norm 0:
 if ( isempty(A) )
@@ -22,26 +23,27 @@ if ( nargin == 1 )
     n = 'fro'; 	% Frobenius norm is the default.
 end
 
-sz = size(A, 1)*size(A, 2);
-temp = 1;
-
-% Check if A contains only CHEBFUN and DOUBLE objects.
-for j = 1:sz
-   if  ( isa(A.blocks{j}, 'chebfun') | isa(A.blocks{j}, 'double') )
-   else
-      temp = 0;    
-   end
+s = cellfun(@(b) min(size(b)), A.blocks);
+if ( ~all(isfinite(s(:))) )
+    error('CHEBFUN:chebmatrix:norm', ...
+    'Norm of a inf x inf chebmatrix is not supported.')
 end
 
-% If so, convert A to a QUASIMATRIX, and call CHEBFUN/NORM.
-if temp == 1
-   F = chebfun(A);
-   [normA, normLoc] = norm(F, n);
+normA = 0;
 
-% If not, ?. [TODO]
-else
-   normA = 0;
-   normLoc = 0;
+switch n
+    
+    case {'fro', 2}
+        for k = 1:numel(A.blocks)
+            normA = normA + norm(A.blocks{k}, 2).^2;
+        end
+        normA = sqrt(normA);
+        
+    case {inf, 'inf'}
+        for k = 1:numel(A.blocks)
+            normA = max(normA, norm(A.blocks{k}, inf));
+        end
+        
 end
 
 end

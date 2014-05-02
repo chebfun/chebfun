@@ -1,28 +1,45 @@
-function displayInfoLinear(u, normRes, pref)
-%DISPLAYINFOLINEAR
+function varargout = displayInfoLinear(u, normRes, pref)
+%DISPLAYINFOLINEAR   Utility routine for displaying linear solve progress.
+%   DISPLAYINFOLINEAR(U, NORMRES) pretty-prints the CHEBFUN solution U to a
+%   linear CHEBOP along with the norm of the residual, NORMRES, to the screen. U
+%   is also plotted in a new figure window.
 %
-% Utility routine for displaying iteration progress in the solve functions. This
-% method prints out information for linear problems that are solved using the
-% CHEBOP framework.
+%   H = DISPLAYINFOLINEAR(U, NORMRES) returns a figure handle to the plot.
 %
-% See also: displayInfo
+%   DISPLAYINFOLINEAR(U, NORMRES, PREF) accepts preferences through a CHEBOPPREF
+%   object PREF. In particular, PREF.DISPLAY = 'off' will prevent printing of any
+%   information, and PREF.PLOTTING = "off" prevents plotting.
+%
+% See also: CHEBOP.DISPLAYINFO.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
-% Obtain preferences for what we want to show
+% Obtain preferences for what we want to show:
+if ( nargin < 3 )
+    pref = cheboppref();
+end
 display  = pref.display;
 plotMode = pref.plotting;
 
 % Do we want to print to the command window?
-if ( strcmp(display,'iter') || strcmp(display,'final') )
+if ( strcmp(display, 'iter') || strcmp(display, 'final') )
+    
     % Create a long string of dashes...
     dashString = repmat('-', 1, 62);
     % ... and print to the command window
     fprintf('%s\n', dashString);
+
+    % Determine the length of the solution:
+    if ( isa(u, 'chebmatrix') )
+        l = max(cellfun(@length, u.blocks));
+    else
+        l = length(u);
+    end
     
+    % Plot info:
     fprintf('Linear equation detected. Converged in one step.\n');
-    fprintf('Length of solution: %i.\n',length(chebfun(u)));
+    fprintf('Length of solution: %i.\n', l);
     fprintf('Norm of residual: %.2e.\n', normRes);
     
     % Repeat the long string of dashes:
@@ -31,9 +48,17 @@ if ( strcmp(display,'iter') || strcmp(display,'final') )
 end
 
 % Do we want to show a plot of the solution?
-if ~( strcmpi(plotMode,'off') )
+if ( ~strcmpi(plotMode, 'off') )
     figure
-    plot(chebfun(u), '.-')
+    h = plot(chebfun(u), '.-')
     title('Solution of linear ODE')    
+else
+    h = [];
+end
+
+if ( nargout > 0 )
+    varargout = {h};
+end
+
 end
 

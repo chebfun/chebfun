@@ -1,9 +1,5 @@
 function [displayFig, displayTimer] = displayInfo(mode, varargin)
-%DISPLAYINFO
-%
-% Utility routine of the CHEBOP class for displaying iteration progress in the
-% solve functions.
-% 
+%DISPLAYINFO    Utility routine for displaying iteration progress.
 % Calling sequence:
 %   [DISPLAYFIG, DISPLAYTIME] = DISPLAYINFO(MODE, VARARGIN)
 % where
@@ -18,8 +14,8 @@ function [displayFig, displayTimer] = displayInfo(mode, varargin)
 % See also: chebop/displayInfoFinal, chebop/displayInfoInit, 
 %           chebop/displayInfoInit
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Developers note: This method was introduced to allow the nonlinear solvers to
@@ -32,7 +28,8 @@ function [displayFig, displayTimer] = displayInfo(mode, varargin)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Display information depending on what phase in the Newton iteration we're in.
-switch mode
+switch ( mode )
+    
     % Start of iteration
     case 'init'
         [displayFig, displayTimer] = chebop.displayInfoInit(varargin{:});
@@ -47,7 +44,8 @@ switch mode
         
     % Display special information in case of linear problems
     case 'linear'
-        chebop.displayInfoLinear(varargin{:});
+        displayFig = chebop.displayInfoLinear(varargin{:});
+        
 end
 
 end

@@ -14,10 +14,10 @@ for n = 1:2
     end
 
     f = testclass.make(@(x) sin(x), [], [], pref);
-    pass(n, 1) = all(size(f) == size(f.values));
+    pass(n, 1) = all(size(f) == size(f.coeffs));
     
     f = testclass.make(@(x) [sin(x), cos(x), 1i*exp(x)], [], [], pref);
-    pass(n, 2) = all(size(f) == size(f.values));
+    pass(n, 2) = all(size(f) == size(f.coeffs));
     
     p = pref;
     p.numPoints = 101;

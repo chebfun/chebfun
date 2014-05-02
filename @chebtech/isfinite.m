@@ -7,7 +7,7 @@ function out = isfinite(f)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Check if values are finite:
-out = all(isfinite(f.values(:)));
+% Check if coefficients are finite:
+out = all(isfinite(f.coeffs(:)));
 
 end

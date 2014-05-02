@@ -19,7 +19,7 @@ tol = 1e2*get(f, 'epslevel')*get(f, 'vscale');
 %% If G is a constant:
 
 if ( length(f) == 1 )
-    if ( ( f.values < tol ) || ( f.values == 0 ) )
+    if ( ( f.coeffs < tol ) || ( f.coeffs == 0 ) )
         out = ones(1, 2);
     end
     return

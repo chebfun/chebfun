@@ -12,9 +12,9 @@ function [u, info] = solvebvp(N, rhs, pref, displayInfo)
 
 % TODO: This is a user-facing function. It requires much better documentation.
             
-% No preferences passed, use the current chebopprefs
+% No preferences passed; use the current chebopprefs:
 if ( nargin < 3 )
-    pref = cheboppref;
+    pref = cheboppref();
 end
 
 % If no DISPLAYINFO function handle passed, use the default CHEBOP one.
@@ -37,16 +37,15 @@ dom = N.domain;
 if ( isempty(N.init) )
     % Initialise a zero CHEBFUN:
     zeroFun = chebfun(0, dom);
-    % Convert to a chebmatrix of correct dimensions
+    % Convert to a chebmatrix of correct dimensions:
     u0 = cell(numVars, 1);
     for k = 1:numVars
         u0{k} = zeroFun;
     end
     u0 = chebmatrix(u0);
-    
 else
     u0 = N.init;
-    % Ensure that N.init is a CHEBMATRIX, not a CHEBFUN
+    % Ensure that N.init is a CHEBMATRIX, not a CHEBFUN:
     if ( isa(u0, 'chebfun') )
         u0 = chebmatrix(u0);
     end
@@ -55,31 +54,36 @@ end
 % Initialise the independent variable:
 x = chebfun(@(x) x, dom);
 
-% Linearize
+% Linearize and attach preferences:
 [L, residual, isLinear] = linearize(N, u0, x);
-
-% Attach preferences to the LINOP:
 L.prefs = pref;
 
 % If the RHS passed is numerical, cast it to a CHEBMATRIX of appropriate size
 % before continuing
 if ( isnumeric(rhs) )
-    rhs = N.convertToRHS(rhs, residual);
+    [rhs, fail] = N.convert2rhs(rhs, residual);
+    if ( fail )
+        error('CHEBFUN:chebop:solvebvp:rhs', ...
+            'RHS does not match output dimensions of operator.');
+    end
 elseif ( isa(rhs, 'chebfun') && size(rhs, 2) > 1 )
     rhs = chebmatrix(mat2cell(rhs).');
-    warning('Please use vertical concatenation for RHS.')
+    warning('CHEBFUN:chebop;solvebvp:vertcat', ...
+        'Please use vertical concatenation for RHS.')
 end
-
-% Do the same for the RHS:
+% Do the same for the initial guess:
 if ( isnumeric(u0) )
-    u0 = N.convertToRHS(u0, residual);
+    [u0, fail] = N.convert2rhs(u0, residual);
+    if ( fail )
+        error('CHEBFUN:chebop:solvebvp:init', ...
+            'N.init does not match input dimensions of operator.');
+    end
 end
-
 
 % Solve:
 if ( all(isLinear) )
     % Call solver method for linear problems.
-    [u, info] = N.solvebvpLinear(L, rhs, residual, displayInfo, pref);
+    [u, info] = N.solvebvpLinear(L, rhs - residual, pref, displayInfo);
     
 else
     % TODO: Switch between residual and error oriented Newton methods
@@ -101,7 +105,7 @@ if ( all(size(u) == [1 1]) )
     u = u{1};
 end
 
-% Return the linearity information as well
+% Return the linearity information as well:
 info.isLinear = isLinear;
 
 end
