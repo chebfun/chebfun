@@ -26,6 +26,7 @@ classdef chebDiscretization
         domain = []       % may generalize that of the source
         dimension = []    % vector of lengths, one per subinterval
         dimAdjust = []    % size of the input space relative to disc.dimension
+        projOrder = []    % projection order for rectangularizing
     end
         
     properties ( Dependent )
@@ -62,6 +63,9 @@ classdef chebDiscretization
 
         % Set the dimension adjustment to zero:
         disc.dimAdjust = 0;
+        if ( numel(disc.dimAdjust) > 1 )
+            disc.projOrder = disc.projOrder(j);
+        end
 
         end
 
@@ -92,7 +96,9 @@ classdef chebDiscretization
     %% STATIC METHODS:
     
     methods ( Static )
-        space = getDimAdjust(L)
+        dimAdjust = getDimAdjust(L)
+        
+        projOrder = getProjOrder(L)
     end
     
     %% ABSTRACT METHODS:
