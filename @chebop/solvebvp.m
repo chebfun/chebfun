@@ -1,5 +1,39 @@
 function [u, info] = solvebvp(N, rhs, pref, displayInfo)
-%SOLVEBVP  Solve CHEBOP BVP system.
+%SOLVEBVP  Solve a linear or nonlinear CHEBOP BVP system.
+%
+%   U = SOLVEBVP(N, RHS), where N is a CHEBOP and RHS is a CHEBMATRIX, CHEBFUN
+%   or a vector of doubles attempts to solve the BVP
+%
+%       N(U) = RHS + boundary conditions specified by N
+%
+%   Observe that U = SOLVEBVP(N, RHS) has the same effect as U = N\RHS, but this
+%   method allows greater flexibility than CHEBOP backslash, as described below.
+%
+%   If successful, the solution returned, U, is a CHEBFUN if N specifies a
+%   scalar problem, and a CHEBMATRIX if N specifies a coupled systems of
+%   ordinary differential equations. If N specifies a linear operator, the BVP
+%   is solved using a spectral or a pseudospectral method. If N specifies a
+%   nonlinear operator, damped Newton iteration in function space is performed,
+%   where each linear problem arising is solved via a spectral/pseudospectral
+%   method.
+%
+%   U = solvebvp(N, RHS, PREF) is the same as above, using the preferences
+%   specified by the CHEBOPPREF variable PREF.
+%
+%   [U, INFO] = solvebvp(N, RHS, PREF) is the same as above, but also returns
+%   the MATLAB struct INFO, which contains useful information about the solution
+%   process. The fields of INFO are as follows:
+%       ERROR:    The residual of the differential equation.
+%       ISLINEAR: A vector with for entries, containing linearity information
+%           for N. More specifically, 
+%               ISLINEAR(1) = 1 if N.OP is linear
+%               ISLINEAR(2) = 1 if N.LBC is linear
+%               ISLINEAR(3) = 1 if N.RBC is linear
+%               ISLINEAR(4) = 1 if N.BC is linear
+%           Otherwise, the corresponding element of ISLINEAR is equal to 0.
+%
+%   TODO: INFO will have more fields once we move into nonlinear problems,
+%   update the list accordingly.
 %
 %   Note that CHEBOP requires the RHS of coupled systems to match the
 %   system, even for scalars right-hand sides, e.g.,
@@ -8,10 +42,19 @@ function [u, info] = solvebvp(N, rhs, pref, displayInfo)
 %       uv = solvebvp(N, 0);
 %   is not an accepted syntax.
 %
-% See also: CHEBOP/MLDIVIDE.
+% See also: CHEBOP, CHEBOP/MLDIVIDE, CHEBOPPREF, CHEBOP/SOLVEBVPLINEAR, 
+%   CHEBOP/SOLVEBVPNONLINEAR, LINOP/MLDIVIDE.
 
-% TODO: This is a user-facing function. It requires much better documentation.
-            
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+% Developers note:
+%   U = solvebvp(N, RHS, PREF, DISPLAYINFO) allows passing in a function handle
+%   to a displaying method that is called during the damped Newton iteration.
+%   This allows separating the displaying process for regular CHEBOP use and
+%   CHEBGUI. See chebop/displayInfo() and chebgui/displayInfo() for more
+%   details.
+
 % No preferences passed; use the current chebopprefs:
 if ( nargin < 3 )
     pref = cheboppref();
@@ -96,7 +139,7 @@ if ( all(isLinear) )
     [u, info] = N.solvebvpLinear(L, rhs - residual, pref, displayInfo);
     
 else
-    % TODO: Switch between residual and error oriented Newton methods
+    % TODO: Switch between residual and error oriented Newton methods.
     
     % Create initial guess which satisfies the linearised boundary conditions:
     if ( isempty(N.init) )
