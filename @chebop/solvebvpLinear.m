@@ -1,4 +1,22 @@
 function [u, info] = solvebvpLinear(L, rhs, pref, displayInfo)
+%SOLVEBVP  Solve a linear CHEBOP BVP system.
+%
+% [U, INFO] = SOLVEBVPLINEAR(L, RHS, PREF, DISPLAYINFO), where:
+%   L is a linear CHEBOP
+%   RHS is a CHEBMATRIX
+%   PREF is a CHEBOPPREF
+%   DISPLAYINFO is a function handle
+%
+% attempts to solve the linear BVP
+%
+%       L*U = RHS + boundary conditions specified by L
+%
+% The output U is a CHEBMATRIX, and INFO is a MATLAB struct with useful
+% information. This method should generally not called directly by the user,
+% which should rather call the CHEBOP/MLDIVIDE or CHEBOP/SOLVEBVP methods.
+%
+% Observe that when this method is called, any affine parts of the original
+% CHEBOP have been absorbed into RHS.
 
 % TODO: Document.
 
