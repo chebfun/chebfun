@@ -58,25 +58,35 @@ x = chebfun(@(x) x, dom);
 [L, residual, isLinear] = linearize(N, u0, x);
 L.prefs = pref;
 
-% If the RHS passed is numerical, cast it to a CHEBMATRIX of appropriate size
-% before continuing
+% If the RHS passed is numerical, cast it to a CHEBMATRIX of the appropriate
+% size before continuing:
 if ( isnumeric(rhs) )
-    [rhs, fail] = N.convert2rhs(rhs, residual);
-    if ( fail )
-        error('CHEBFUN:chebop:solvebvp:rhs', ...
-            'RHS does not match output dimensions of operator.');
+    try
+        rhs = N.double2chebmatrix(rhs, residual);
+    catch ME
+        if ( strcmp(ME.identifier, 'CHEBFUN:CHEBOP:double2chebmatrix'))
+            error('CHEBFUN:chebop:solvebvp:rhs', ...
+                'RHS does not match output dimensions of operator.');
+        else
+            rethrow(ME)
+        end
     end
 elseif ( isa(rhs, 'chebfun') && size(rhs, 2) > 1 )
     rhs = chebmatrix(mat2cell(rhs).');
-    warning('CHEBFUN:chebop;solvebvp:vertcat', ...
-        'Please use vertical concatenation for RHS.')
+    warning('CHEBFUN:CHEBOP:solvebvp:vertcat', ...
+        'Please use vertical concatenation for RHS ')
 end
 % Do the same for the initial guess:
 if ( isnumeric(u0) )
-    [u0, fail] = N.convert2rhs(u0, residual);
-    if ( fail )
-        error('CHEBFUN:chebop:solvebvp:init', ...
-            'N.init does not match input dimensions of operator.');
+    try
+        u0 = N.double2chebmatrix(rhs, residual);
+    catch ME
+        if ( strcmp(ME.identifier, 'CHEBFUN:CHEBOP:double2chebmatrix'))
+            error('CHEBFUN:chebop:solvebvp:init', ...
+                'N.init does not match input dimensions of operator.');
+        else
+            rethrow(ME)
+        end
     end
 end
 

@@ -18,7 +18,7 @@ A = chebop(@(x,u,v) [u - diff(v) ; diff(u) + v],d);
 A.lbc = @(u,v) u + 1;
 A.rbc = @(u,v) v;
 x = chebfun('x',d);
-f = [ 0*x ; 0*x ];
+f = [ 0 ; 0 ];
 u = mldivide(A, f, pref);
 
 u1 = u{1}; u2 = u{2};
