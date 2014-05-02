@@ -68,7 +68,9 @@ vscale(vscale <= f.epslevel) = 1;
 f.epslevel = f.epslevel./vscale;
 
 f = simplify(f);
-f.isReal = g.isReal && f.isReal;
+if isreal(f)
+    f.values = real(f.values);
+end
 f.ishappy = f.ishappy && g.ishappy;
 
 end

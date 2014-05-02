@@ -49,7 +49,7 @@ else
 end
 a = 1i/N/pi*log(4/ee+1);
 
-UK = [-pi+a; pi+a;nan;-pi-a; pi-a];
+UK = [-1+a; 1+a;nan;-1-a; 1-a];
 
 holdState = ishold();
 hold on
@@ -59,11 +59,11 @@ h = plot(UK,args{:});
 clr = get(h,'Color');
 
 % Plot the interval (with ticks).
-dom = [-pi pi];
+dom = [-1 1];
 h2 = plot(dom, 0*dom, args{:});
 set(h2, 'color', [0 0 0], 'marker', '+');
 
-UK  = [-pi+a; pi+a;pi-a; -pi-a;-pi+a];
+UK  = [-1+a; 1+a;1-a; -1-a;-1+a];
 h3 = fill(real(UK),imag(UK),clr,'EdgeColor','none','FaceAlpha',0.2);
 
 h = [h; h2; h3];

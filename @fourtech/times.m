@@ -32,7 +32,6 @@ elseif ( isa(g, 'double') )     % FOURTECH .* double
         f.coeffs = f.coeffs*g;
         f.vscale = f.vscale*abs(g);
     end
-    f.isReal = f.isReal & isreal(g);
     f.epslevel = f.epslevel + eps(g);
     return
     
@@ -111,9 +110,6 @@ if ( pos )
     % SIMPLIFY may have destroyed this property, so we enforce it.
     f.values = abs(f.values); 
     f.coeffs = f.vals2coeffs(f.values);
-    f.isReal = true;
-else
-    f.isReal = f.isReal & g.isReal;
 end
 
 end

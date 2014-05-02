@@ -41,10 +41,10 @@ classdef fourtech
         % details).
         epslevel % (double >= 0)
         
-        % Boolean value designating whether the FOURTECH represents a
-        % real-valued function. This allows us to always return a real
-        % result for things like evaluating a fourierfun.
-        isReal = false;
+%         % Boolean value designating whether the FOURTECH represents a
+%         % real-valued function. This allows us to always return a real
+%         % result for things like evaluating a fourierfun.
+%         isReal = false;
 
         % Boolean value designating whether the FOURTECH represents a
         % purely imaginary function. This allows us to always return an

@@ -9,7 +9,7 @@ function f = conj(f)
 % See http://www.chebfun.org for Chebfun information.
 
 % No need to conjugate a real function
-if f.isReal
+if isreal(f)
     return;
 end
 
