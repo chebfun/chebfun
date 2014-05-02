@@ -20,7 +20,6 @@ classdef (Abstract) chebDiscretization
 % which yields solution to problems of ODEs.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
     properties
         source = []       % linop or chebmatrix to be discretized
         domain = []       % may generalize that of the source
@@ -53,7 +52,9 @@ classdef (Abstract) chebDiscretization
         % See http://www.chebfun.org/ for Chebfun information.
 
         % Extract the j-k block:
-        disc.source.blocks = disc.source.blocks{j,k};
+        if ( iscell(disc.source.blocks) )
+            disc.source.blocks = disc.source.blocks{j,k};
+        end
 
         % Extract the dimension adjustment for this block and adjust the dimension:
         if ( numel(disc.dimAdjust) > 1 )
