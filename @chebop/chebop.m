@@ -396,7 +396,7 @@ classdef (InferiorClasses = {?double}) chebop
         % TODO: These should be private methods as well
         
         % Convert RHS to a format used internally in chebop.
-        newRHS = convertToRHS(rhs, residual)
+        newRHS = convert2RHS(rhs, residual)
         
         % Controls information displayed for Newton iterations
         [displayFig, displayTimer] = displayInfo(mode, varargin);

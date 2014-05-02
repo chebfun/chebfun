@@ -1,5 +1,5 @@
-function newRHS = convertToRHS(rhs, residual)
-%CONVERTTORHS    Convert RHS to a useful format.
+function newRHS = convert2rhs(rhs, residual)
+%CONVERT2RHS    Convert RHS to a useful format.
 %   CHEBOP backslash accepts a variety of syntax for specifying right-hand sides
 %   (scalars, CHEBFUNS and CHEBMATRICES). This method takes care of converting
 %   the input to a format used internally in chebop.
@@ -23,11 +23,11 @@ function newRHS = convertToRHS(rhs, residual)
 % Check whether dimensions match:
 if ( ~all(size(rhs) == [numRow, numCol]) )
     if ( all(size(rhs) == [numCol, numRow]) )
-        warning('CHEBFUN:CHEBOP:CONVERTTORHS', ...
+        warning('CHEBFUN:CHEBOP:CONVERT2RHS', ...
             'RHS does not match output dimensions of operator.');
         rhs = rhs.';
     else
-        error('CHEBFUN:CHEBOP:CONVERTTORHS', ...
+        error('CHEBFUN:CHEBOP:CONVERT2RHS', ...
             'RHS does not match output dimensions of operator.');
     end
 end
