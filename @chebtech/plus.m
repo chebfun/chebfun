@@ -18,7 +18,6 @@ elseif ( isa(g, 'double') ) % CHEBTECH + double
     
     % Update values (use bsxfun() to handle the case in which g is a vector
     % and f is an array-valued CHEBTECH):
-    f.values = bsxfun(@plus, f.values, g);
     % Update coeffs:
     if ( (size(g, 2) > 1) && (size(f.coeffs, 2) == 1) )
         % Perform singleton expansion of f:
@@ -26,7 +25,7 @@ elseif ( isa(g, 'double') ) % CHEBTECH + double
     end
     f.coeffs(end,:) = f.coeffs(end,:) + g;
     % Update scale:
-    vscaleNew = max(abs(f.values), [], 1);
+    vscaleNew = getvscl(f); 
     % See CHEBTECH CLASSDEF file for documentation on this:
     f.epslevel = (f.epslevel.*f.vscale + abs(g)*eps)./vscaleNew;
     f.vscale = vscaleNew;
@@ -39,8 +38,8 @@ elseif ( isa(f, 'double') ) % double + CHEBTECH
 else % CHEBTECH + CHEBTECH
     
     % Make both CHEBTECH objects have the same length:
-    nf = size(f.values, 1);
-    ng = size(g.values, 1);
+    nf = size(f.coeffs, 1);
+    ng = size(g.coeffs, 1);
     if ( nf > ng )
         % Increase the length of g (via PROLONG):
         g = prolong(g, nf);
@@ -50,21 +49,20 @@ else % CHEBTECH + CHEBTECH
     end
     
     % Update values and coefficients:
-    f.values = f.values + g.values;
     f.coeffs = f.coeffs + g.coeffs;
     
     % Look for a zero output:
-    if ( ~any(f.values(:)) || ~any(f.coeffs(:)) )
+    if ( ~any(f.coeffs(:)) )
         % Create a zero CHEBTECH:
         epslevel = max(f.epslevel, g.epslevel);
         ishappy = f.ishappy && g.ishappy;
-        z = zeros(1, size(f.values, 2));
+        z = zeros(1, size(f.coeffs, 2));
         f = f.make(z, z, f.hscale);
         f.epslevel = epslevel;
         f.ishappy = ishappy;
     else
         % Update vscale, epslevel, and ishappy:
-        vscaleNew = max(abs(f.values), [], 1);
+        vscaleNew = getvscl(f); 
         % See CHEBTECH CLASSDEF file for documentation on this:
         f.epslevel = (f.epslevel.*f.vscale + g.epslevel.*g.vscale)./vscaleNew;
         f.vscale = vscaleNew;

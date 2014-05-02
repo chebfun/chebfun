@@ -22,7 +22,7 @@ for n = 1:2
     x = f \ f;
     err = f - x*f;
     pass(n, 1) = abs(x - 1) < 10*f.vscale.*f.epslevel;
-    pass(n, 2) = max(abs(err.values(:))) < 10*f.vscale.*f.epslevel;
+    pass(n, 2) = max(abs(err.coeffs(:))) < 10*f.vscale.*f.epslevel;
 
     % Same here.
     f = testclass.make(@(x) [sin(x) cos(x)], [], [], pref);
@@ -32,7 +32,7 @@ for n = 1:2
     x = f \ g;
     err = g - f*x;
     pass(n, 3) = max(abs(x - [1/sqrt(2) ; 1/sqrt(2)])) < max(tol_f, tol_g);
-    pass(n, 4) = max(abs(err.values(:))) < max(tol_f, tol_g);
+    pass(n, 4) = max(abs(err.coeffs(:))) < max(tol_f, tol_g);
 
     % A known least-squares solution.
     f = testclass.make(@(x) [ones(size(x)) x x.^2 x.^3], [], [], pref);

@@ -33,7 +33,7 @@ F2_vals = feval(F{2}, x);
 F3_vals = feval(F{3}, x);
 
 err1 = normest(F{1} - g);
-tol1 = 10*get(g, 'epslevel')*get(g, 'vscale');
+tol1 = 1e2*get(g, 'epslevel')*get(g, 'vscale');
 pass(1) = ~isempty(F{1}) && (err1 < tol1);
 
 err2 = normest(F{2} - h);
@@ -51,7 +51,7 @@ F2_vals = feval(F{2}, x);
 F3_vals = feval(F{3}, x);
 
 err4 = normest(F{1} - g);
-tol4 = 10*get(g, 'epslevel')*get(g, 'vscale');
+tol4 = 1e2*get(g, 'epslevel')*get(g, 'vscale');
 pass(4) = ~isempty(F{1}) && (err4 < tol4);
     norm(F1_vals - g_vals, inf) < 1e1*get(g, 'epslevel')*get(g, 'vscale');
 

@@ -5,7 +5,7 @@ if ( nargin < 1 )
     pref = chebpref; 
 end 
 
-tol = 100*pref.cheb2Prefs.eps; 
+tol = 1000*pref.cheb2Prefs.eps; 
 j = 1; 
 
 Battery = {@(x,y) cos(pi*x.*y),...
@@ -88,12 +88,18 @@ Mini = [
     0
     ];
 
-tt=[];
-for jj=1:length(Battery)
+tt = [];
+for jj = 1:length(Battery)
     f = Battery{jj};
     g = chebfun2(f,[0 1 0 1]);
-    s=tic; [Y, X] = minandmax2(g); t = toc(s);  tt = [tt t];
-    pass(jj) = (norm(Y(1) - Mini(jj))<100*tol && norm(Y(2) - Maxi(jj))<100*tol);
+    s = tic; 
+     [Y, X] = minandmax2(g); 
+    t = toc(s);  
+    tt(jj) = t;
+    err(jj) = norm(Y(1) - Mini(jj)) + norm(Y(2) - Maxi(jj));
 end
+
+%%
+pass = err < tol;
 
 end

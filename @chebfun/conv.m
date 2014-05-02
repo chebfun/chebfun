@@ -1,4 +1,4 @@
-function h = conv(f, g)
+function h = conv(f, g, flag)
 %CONV   Convolution of CHEBFUN objects.
 %   H = CONV(F, G) produces the convolution of CHEBFUN objects F and G:
 %                     - 
@@ -11,6 +11,11 @@ function h = conv(f, g)
 %   x - c).  The breakpoints of H are all pairwise sums of the breakpoints of F
 %   and G.
 %
+%   If F and G are simple, in the sense that their FUNS are CHEBTECH objects, a
+%   fast algorithm due to Hale and Townsend is used [1]. Otherwise, the integral
+%   is computed by brute force. CONV(F, G, 'old') forces the brute force
+%   approach, even when the fast algorithm may be used.
+%
 %   Note that CONV only supports piecewise-smooth functions on bounded domains.
 %
 %   Example:
@@ -22,7 +27,8 @@ function h = conv(f, g)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 %
-% Nick Hale and Alex Townsend, 2014
+% [1] N. Hale and A. Townsend, "An Algorithm for the convolution of Legendre
+% series", (To appear in SISC)
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -53,7 +59,7 @@ if ( any(isinf([a b c d])) )
         'CONV only supports CHEBFUN objects on bounded domains.');
 end
 
-if ( issing(f) || issing(g) )
+if ( issing(f) || issing(g) || nargin == 3 )
     % Call the old (and slow) version of CONV if we are not based on CHEBTECHS.
     h = oldConv(f, g);
     return
@@ -71,9 +77,9 @@ h = 0;
 for j = 1:numel(f.funs)
     for k = 1:numel(g.funs)
         % Compute the contribution of jth fun of f with kth fun of g:
-        hjk = chebfun(conv(f.funs{j}, g.funs{k}));        
+        hjk = conv(f.funs{j}, g.funs{k});  
         % Add this contribution:
-        h = myplus(h, hjk);
+        h = myplus(h, chebfun(hjk));
     end
 end
 

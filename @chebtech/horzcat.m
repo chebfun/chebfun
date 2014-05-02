@@ -24,9 +24,8 @@ F = cellfun(@(f) prolong(f, n), varargin, 'UniformOutput', false);
 % Extract the data and collate the an array-valued CHEBTECH:
 out = varargin{1};
 
-% Coeffs and Values:
+% Coeffs:
 out.coeffs = cell2mat(cellfun(@(f) f.coeffs, F, 'UniformOutput', false));
-out.values = cell2mat(cellfun(@(f) f.values, F, 'UniformOutput', false));
 
 % Vscales:
 vscales = cellfun(@(f) f.vscale, F, 'UniformOutput', false);

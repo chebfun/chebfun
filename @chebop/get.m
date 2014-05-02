@@ -6,12 +6,15 @@ function out = get(N, prop)
 % See http://www.chebfun.org/ for Chebfun information.
 
 switch prop
+    
     case fieldnames(N)
         % Allow access to any of the properties of F via GET:
         out = N.(prop);
+        
     otherwise
         error('CHEBFUN:CHEBOP:GET:proname', ...
             'Unknown property name ''%s'' for object of type CHEBOP.', prop);
+        
 end
 
 end
