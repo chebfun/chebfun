@@ -365,7 +365,8 @@ classdef (InferiorClasses = {?double}) chebop
             % We're happy with function handles
             if ( isa(val, 'chebfun') && size(val, 2) > 1 )
                 val = chebmatrix(mat2cell(val).');
-                warning('Please use vertical concatenation for initial guess.')
+                warning('CHEBFUN:chebop:set.init:vertcat', ...
+                    'Please use vertical concatenation for initial guess.')
             end
             
             N.init = val;
@@ -379,6 +380,9 @@ classdef (InferiorClasses = {?double}) chebop
     
     methods
         
+        % Find selected eigenvalues and eigenfunctions of a linear CHEBOP.
+        varargout = eigs(N, varargin)
+        
         % Linearize a CHEBOP around a CHEBFUN u.
         [L, res, isLinear] = linearize(N, u, x, flag);  
         
@@ -390,13 +394,22 @@ classdef (InferiorClasses = {?double}) chebop
         
     end
     
+    %% HIDDEN METHODS IMPLEMENTED IN OTHER FILES:
+    
+    methods ( Hidden = true )
+        
+        % Find selected eigenvalues and eigenfunctions of a linear CHEBOP.
+        varargout = eig(varargin);
+        
+    end
+    
     %% STATIC HIDDEN METHODS:
         
     methods ( Static = true, Hidden = true )
         % TODO: These should be private methods as well
         
         % Convert RHS to a format used internally in chebop.
-        newRHS = convert2RHS(rhs, residual)
+        [newRHS, FAIL] = convert2rhs(rhs, residual)
         
         % Controls information displayed for Newton iterations
         [displayFig, displayTimer] = displayInfo(mode, varargin);
@@ -425,30 +438,6 @@ classdef (InferiorClasses = {?double}) chebop
         
         % Solve a linear problem posed with CHEBOP.
         [u, info] = solvebvpLinear(L, rhs, residual, displayInfo, pref)
-        
-        
-        function out = norm(f, type)   
-        % Compute norm when using CHEBOP (useful because we don't have a norm
-        % method for the CHEBMATRIX class)
-        
-        % F is probably a CHEBMATRIX (might in some cases be a CHEBFUN).
-        % TYPE determines what norm we use (currently not in use).
-        
-        % TODO: This is probably no longer necessary?
-        
-            if ( isa(f, 'chebmatrix') )
-                out = 0;
-                for k = 1:numel(f.blocks)
-                    if ( isnumeric(f.blocks{k}) )
-                        out = max(out, f.blocks{k});
-                    else
-                        out = max(out, get(f.blocks{k}, 'vscale'));
-                    end
-                end
-            else
-                out = get(f, 'vscale');
-            end
-        end
 
     end
     

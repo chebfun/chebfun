@@ -1,4 +1,4 @@
-function newRHS = convert2rhs(rhs, residual)
+function [newRHS, FAIL] = convert2rhs(rhs, residual)
 %CONVERT2RHS    Convert RHS to a useful format.
 %   CHEBOP backslash accepts a variety of syntax for specifying right-hand sides
 %   (scalars, CHEBFUNS and CHEBMATRICES). This method takes care of converting
@@ -15,17 +15,22 @@ function newRHS = convert2rhs(rhs, residual)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TODO: Document inputs.
+% TODO: Document inputs. note, [NEWRHS, FAIL] = ... prevents error.
 
 % Check the size of the residual (the output the dimensions of the CHEBOP).
 [numRow, numCol] = size(residual);
 
 % Check whether dimensions match:
+FAIL = false;
 if ( ~all(size(rhs) == [numRow, numCol]) )
     if ( all(size(rhs) == [numCol, numRow]) )
         warning('CHEBFUN:CHEBOP:CONVERT2RHS', ...
             'RHS does not match output dimensions of operator.');
         rhs = rhs.';
+    elseif ( nargout > 1 )
+        newRHS = [];
+        FAIL = true;
+        return
     else
         error('CHEBFUN:CHEBOP:CONVERT2RHS', ...
             'RHS does not match output dimensions of operator.');

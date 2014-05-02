@@ -1,8 +1,5 @@
 function pass = test_eigs(pref)
 
-% Test the chebop eigs method.
-% Asgeir Birkisson, December 2010
-
 % NOTE: This was taken chebop_eigs in the V4 tests.
 
 if ( nargin == 0 )
@@ -28,9 +25,6 @@ N.rbc = 'dirichlet';
 [~, D] = eigs(N, 10, pref);
 e2 = sqrt(-diag(D));
 err(2) = norm(e2 - (1:10).',inf);
-
-%% Should be the same?
-err(3) = norm(e1 -e2, inf);
 
 pass = err < 1e-10;
 

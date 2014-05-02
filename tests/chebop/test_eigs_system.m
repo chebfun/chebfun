@@ -14,7 +14,7 @@ lamCorrect = [ 0
                -.5 + sqrt(15)/2*1i
                -.5 - sqrt(15)/2*1i];
 
-%% Smooth domain
+%% Smooth domain:
 d = [0, pi];
 A = chebop(@(x, u, v) [-u + diff(v) ; diff(u)], d);
 A.lbc = @(u, v) u;
@@ -23,7 +23,7 @@ A.rbc = @(u, v) u;
 lam = diag(D);
 err(1) = norm( lam - lamCorrect, inf );
 
-%% Piecewise domain
+%% Piecewise domain:
 A.domain = [0, pi/2, pi];
 [~, D] = eigs(A, 5, pref);
 lam_pw = diag(D);
