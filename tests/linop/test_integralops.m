@@ -42,27 +42,6 @@ for k = 1:length(kind)
     err(k,3) = norm( Au{1} - f{1} ) ;
 end
 
-%% TODO: chebop version
-%
-% % Fredholm
-% d = [0,1];
-% x = chebfun(@(x) x, d);
-% K = @(x,y) sin(2*pi*(x-y));
-% A = chebop(@(u) u + fred(K,u), d);
-% u = x.*exp(x);
-% f = A*u;
-% pass(4) = norm(u-A\f) < 1e6*tol;
-%
-% % Volterra
-% d = [0,pi];
-% x = chebfun(@(x) x, d);
-% K = @(x,y) x.*y;
-% A = chebop(@(u) u - volt(K,u), d);
-% f = x.^2.*cos(x) + (1-x).*sin(x);
-% u = A\f;
-%
-% pass(5) = norm( u - sin(x) ) < 1e6*tol;
-% pass(6) = norm( A*u - f ) < 1e4*tol;
-
 pass = err(:).' < tol;
+
 end

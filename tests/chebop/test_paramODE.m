@@ -4,6 +4,10 @@ function pass = test_paramODE(pref)
 
 % NOTE: Taken from V4 test chebop_paramODE.
 
+pass = false;
+
+return
+
 if ( nargin == 0 )
     pref = cheboppref();
 end

@@ -4,6 +4,9 @@ function pass = test_eigs_system(pref)
 
 % NOTE: This was taken chebop_systemeig in the V4 tests.
 
+% NOTE: We compare ABS values to avoid confusions over ordering of complex
+% values.
+
 if ( nargin == 0 )
     pref = cheboppref();
 end
@@ -21,12 +24,15 @@ A.lbc = @(u, v) u;
 A.rbc = @(u, v) u;
 [~, D] = eigs(A, 5, pref);
 lam = diag(D);
+lam = abs(lam);
+lamCorrect = abs(lamCorrect);
 err(1) = norm( lam - lamCorrect, inf );
 
 %% Piecewise domain
 A.domain = [0, pi/2, pi];
 [~, D] = eigs(A, 5, pref);
 lam_pw = diag(D);
+lam_pw = abs(lam_pw);
 err(2) = norm( lam_pw - lamCorrect, inf );
 
 %%
