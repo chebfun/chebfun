@@ -7,8 +7,8 @@ function y = feval(f, x)
 %   ...], where size(F_k(X)) = size(X).
 %
 %   Example:
-%     f = fourtech(@(x) exp(cos(x)) );
-%     x = linspace(-pi, pi, 1000);
+%     f = fourtech(@(x) exp(cos(pi*x)) );
+%     x = linspace(-1, 1, 1000);
 %     fx = feval(f, x);
 %     plot(x,fx,'r-')
 %
@@ -33,11 +33,11 @@ if m > 1
     % If N is odd, no modification is needed.
     if ( mod(N,2) == 1 )
        % Compute using vectorized polyval (Horner's scheme)
-       y = bsxfun(@times,exp(-1i*(N-1)/2*x),polyvalv(fourierCoeff,exp(1i*x)));
+       y = bsxfun(@times,exp(-1i*pi*(N-1)/2*x),polyvalv(fourierCoeff,exp(1i*pi*x)));
     else % The the degree (N/2 term) needs to be handled separately.   
        % Compute using vectorized polyval (Horner's scheme)
        y = cos(N/2*pi*x)*fourierCoeff(N,:) + ...
-           bsxfun(@times,exp(-1i*(N/2-1)*x),polyvalv(fourierCoeff(1:N-1,:),exp(1i*x)));
+           bsxfun(@times,exp(-1i*pi*(N/2-1)*x),polyvalv(fourierCoeff(1:N-1,:),exp(1i*pi*x)));
     end
 else
     % If N is odd, no modification is needed.

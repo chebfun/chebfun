@@ -7,7 +7,7 @@ function f = imag(f)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org for Chebfun information.
 
-if ( f.isReal )
+if ( isreal(f) )
     % Input was real, so output a zero FOURTECH:
     f = f.make(zeros(1, size(f.values, 2)), f.vscale, f.hscale);
     f.ishappy = 1;
@@ -18,6 +18,5 @@ else
     f.coeffs = f.vals2coeffs(f.values);
     f.vscale = max(abs(f.values), [], 1);
 end
-f.isReal = true;
 
 end

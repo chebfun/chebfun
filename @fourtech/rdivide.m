@@ -5,7 +5,7 @@ function f = rdivide(f, c, pref)
 %
 %   Alternatively C can be a FOURTECH and F can either be a FOURTECH with the
 %   same number of columns as C or a scalar.  In this case, C must have no
-%   roots in [-pi, pi], or else F ./ C may return garbage with no warning.  The
+%   roots in [-1, 1], or else F ./ C may return garbage with no warning.  The
 %   division is performed column-wise.
 %
 % See also MRDIVIDE, TIMES.

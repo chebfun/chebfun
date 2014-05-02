@@ -1,6 +1,6 @@
 function out = innerProduct(f, g)
 %INNERPRODUCT   Compute the inner product of two FOURTECH objects.
-%   INNERPRODUCT(F, G) returns the L2 inner product (on [-PI,PI]) of the two
+%   INNERPRODUCT(F, G) returns the L2 inner product (on [-1,1]) of the two
 %   FOURTECH objects F and G (conjugate linear in F).
 %
 %   If F and/or G are array-valued FOURTECH objects, then the result is a matrix

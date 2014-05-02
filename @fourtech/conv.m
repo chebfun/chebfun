@@ -9,8 +9,8 @@ function f = conv(f, g)
 %   Note that CONV only supports smooth periodic functions on [-pi,pi]
 %
 %   Example:
-%     f = fourtech(@(x) exp(cos(40*x))); 
-%     g = fourtech(@(x) exp(-1./max(1-x.^2,0).^2));
+%     f = fourtech(@(x) exp(cos(40*pi*x))); 
+%     g = fourtech(@(x) exp(-(20*x).^2);
 %     h = conv(f,g);
 %     plot(h);
 

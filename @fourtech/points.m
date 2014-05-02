@@ -1,12 +1,12 @@
 function out = points(f)
-%POINTS   Return the points used by a CHEBTECH.
+%POINTS   Return the points used by a FOURTECH.
 %
-%   POINTS(F) or F.POINTS() returns the Chebyshev points used by F.
-%   This is equivalent to F.CHEBPTS(LENGTH(F)).
+%   POINTS(F) or F.POINTS() returns the Fourier points used by F.
+%   This is equivalent to F.FOURPTS(LENGTH(F)).
 %
-% See also CHEBPTS, LENGTH.
+% See also FOURPTS, LENGTH.
 %
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 out = fourierpts(length(f));

@@ -1,6 +1,6 @@
 function values = coeffs2vals(coeffs)
 %COEFFS2VALS   Convert Fourier coefficients to values at N equally spaced
-%points between [-pi pi), where N is the number of coefficients.
+%points between [-1 1), where N is the number of coefficients.
 %   V = COEFFS2VALS(C) returns the values of the trignometric polynomial 
 %   as follows:
 %   If N is odd
@@ -8,7 +8,7 @@ function values = coeffs2vals(coeffs)
 %   If N is even
 %       F(x) = C(1)*z^(N/2-1) + C(2)*z^(N/2-2) + ... + C(N-1)*z^(-N/2-1) +
 %                  1/2*C(N)*(z^(N/2) + z^(-N/2))
-%   where z = exp(1i*x) and -pi <= x <= pi. 
+%   where z = exp(1i*pi*x) and -1 <= x <= 1. 
 %
 %   If the input C is an (N+1)xM matrix then V = COEFFS2VALS(C) returns the
 %   (N+1)xM matrix of values V such that V(i,j) is the ith value of the

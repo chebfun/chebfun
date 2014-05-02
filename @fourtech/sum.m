@@ -1,6 +1,6 @@
 function out = sum(f, dim)
-%SUM   Definite integral of a FOURTECH on the interval [-PI,PI].
-%   SUM(F) is the integral of F from -PI to PI.
+%SUM   Definite integral of a FOURTECH on the interval [-1,1].
+%   SUM(F) is the integral of F from -1 to 1.
 %
 %   If F is an array-valued FOURTECH, then the result is a row vector
 %   containing the definite integrals of each column.

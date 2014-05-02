@@ -1,6 +1,6 @@
 function [maxVal, maxPos] = max(f)
-%MAX   Global maximum of a FOURTECH on [-pi,pi].
-%   MAXVAL = MAX(F) returns the global maximum of the FOURTECH on [-pi,pi].  If
+%MAX   Global maximum of a FOURTECH on [-1,1].
+%   MAXVAL = MAX(F) returns the global maximum of the FOURTECH on [-1,1].  If
 %   F is an array-valued FOURTECH, MAXVAL is a row vector whose Kth entry is the
 %   global maximum of the Kth column of F.
 %

@@ -1,13 +1,14 @@
 function f = cumsum(f, m, dim)
 %CUMSUM   Indefinite integral of a FOURTECH.
 %   CUMSUM(F) is the indefinite integral of the FOURTECH F, whose mean
-%   is zero, with the constant of integration chosen so that F(-pi) = 0.
+%   is zero, with the constant of integration chosen so that F(-1) = 0.
 %   If the mean of F is not zero, then this function subtracts off the
 %   mean before computing the indefinite integral.  In this way the result
-%   is guaranteed to be a periodic function on [-pi,pi).
+%   is guaranteed to be a periodic function on [-1,1).
 %
 %   CUMSUM(F, M) will compute the Mth definite integral with the constant of
-%   integration chosen so that each intermediary integral evaluates to 0 at -pi.
+%   integration chosen so that each intermediary integral evaluates to 0 at
+%   -1.
 %   Thus, CUMSUM(F, 2) is equivalent to CUMSUM(CUMSUM(F)).
 %
 %   CUMSUM(F, M, 2) will take the Mth cumulative sum over the columns F an
@@ -20,23 +21,23 @@ function f = cumsum(f, m, dim)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % If the FOURTECH G of length n is represented as
-%       \sum_{k=-(n-1)/2}^{(n-1)/2} c_k exp(ikx)
+%       \sum_{k=-(n-1)/2}^{(n-1)/2} c_k exp(i*pi*kx)
 % its integral is represented with a FOURTECH of length n given by
-%       \sum_{k=-(n-1)/2}^{(n-1)/2} b_k exp(ikx)
+%       \sum_{k=-(n-1)/2}^{(n-1)/2} b_k exp(i*pi*kx)
 % where b_0 is determined from the constant of integration as
-%       b_0 = \sum_{k=-(n-1)/2}^{(n-1)/2} (-1)^k/(ik) c_k;
+%       b_0 = \sum_{k=-(n-1)/2}^{(n-1)/2} (-1)^k/(i*pi*k) c_k;
 % with c_0 := 0. The other coefficients are given by
-%       b_k = c_k/(ik), 
+%       b_k = c_k/(i*pi*k), 
 %
 % If the FOURTECH G of length n is represented as
-%       \sum_{k=-n/2+1}^{n/2-1} c_k exp(ikx) + c(n/2)cos(n/2x)
+%       \sum_{k=-n/2+1}^{n/2-1} c_k exp(i*pi*kx) + c(n/2)cos(n*pi/2x)
 % then first set c(n) = 0.5*c(n) and define a = [0.5*c(n/2) c] so that we
 % have the equivalent expansion:
-%       \sum_{k=-n/2}^{n/2} a_k exp(ikx)
+%       \sum_{k=-n/2}^{n/2} a_k exp(i*pi*kx)
 % The integral of this is represented with a FOURTECH of length n+1 given by
-%       \sum_{k=-n/2}^{n/2} b_k exp(ikx)
+%       \sum_{k=-n/2}^{n/2} b_k exp(i*pi*kx)
 % where b_0 is determined from the constant of integration as
-%       b_0 = \sum_{k=-n/2}^{n/2} (-1)^k/(ik) a_k;
+%       b_0 = \sum_{k=-n/2}^{n/2} (-1)^k/(i*pi*k) a_k;
 % with a_0 := 0. The other coefficients are given by
 %       b_k = a_k/(ik), 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -90,7 +91,7 @@ function f = cumsumContinuousDim(f, m)
     end
     % Loop for integration factor for each coefficient:
     sumIndicies = (highestDegree:-1:-highestDegree).';
-    integrationFactor = (-1i./sumIndicies).^m;
+    integrationFactor = (-1i./sumIndicies/pi).^m;
     % Zero out the one corresponding to the constant term.
     integrationFactor(highestDegree+1) = 0;
     c = bsxfun(@times,c,integrationFactor);
@@ -114,15 +115,14 @@ function f = cumsumContinuousDim(f, m)
     end    
             
     % Recover values and attach to output:
-    c = c/pi; 
     f.values = f.coeffs2vals(c);
     f.coeffs = c;
 
     % Update vscale: [TODO]: Update epslevel?
     f.vscale = max(abs(f.values), [], 1);
     
-%     % Simplify (as suggested in Chebfun ticket #128)
-%     f = simplify(f);
+    % Simplify (as suggested in Chebfun ticket #128)
+    f = simplify(f);
     
     % Ensure f(-1) = 0:
     lval = get(f, 'lval');

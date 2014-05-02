@@ -37,7 +37,7 @@ f.coeffs = f.alias(f.coeffs, nOut);
 f.values = f.coeffs2vals(f.coeffs);
 
 % Return a strictly real result if the values are real.
-if f.isReal
+if isreal(f)
     f.values = real(f.values);
 end
 

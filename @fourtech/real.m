@@ -19,6 +19,5 @@ else
     % Compute real part of the coefficients:
     f.coeffs = f.vals2coeffs(f.values);
 end
-f.isReal = true;
 
 end

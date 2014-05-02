@@ -129,12 +129,17 @@ vscale = vscaleOut;
 % end
 vscaleOut(vscaleOut < epslevel) = 1;
 epslevel = epslevel*vscaleGlobal./vscaleOut;
-
+    
 %%%%%%%%%%%%%%%%%%%%%%%%%% Assign to FOURTECH object. %%%%%%%%%%%%%%%%%%%%%%%%%%
 f.coeffs = coeffs;
 f.vscale = vscale;
 f.ishappy = ishappy;
 f.epslevel = epslevel;
+
+% Force the values to be real if the imaginary part is numerically zero
+if isreal(f)
+    f.values = real(f.values);
+end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Ouput. %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

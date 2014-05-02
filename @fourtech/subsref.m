@@ -128,8 +128,8 @@ switch index(1).type
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% RESTRICT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     case '{}'
         error('Restriction of a fourtech is not allowed');
-        % Later we could think about restricting a fourierfun to an
-        % interval contained in (-pi,pi) by converting it to a FOURTECH.
+        % Later we could think about restricting a periodic chebfun to an
+        % interval contained in (-1,1) by converting it to a FOURTECH.
         if ( length(idx) == 1 )
             if ( isequal(idx{1}, ':') )
                 % F{:} returns F:

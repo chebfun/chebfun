@@ -1,13 +1,13 @@
 function out = roots(f, varargin)
-%ROOTS   Roots of a FOURTECH in the interval [-pi,pi].
-%   ROOTS(F) returns the real roots of the FOURTECH F in the interval [-pi,pi].
+%ROOTS   Roots of a FOURTECH in the interval [-1,1].
+%   ROOTS(F) returns the real roots of the FOURTECH F in the interval [-1,1].
 %
 %   ROOTS(F, PROP1, VAL1, PROP2, VAL2, ...) modifies the default ROOTS
 %   properties. The PROPs (strings) and VALs may be any of the following:
 %
 %   ALL: 
-%       [0] - Return only real-valued roots in [-pi,pi].
-%        1  - Return roots outside of [-pi,pi] (including complex roots).
+%       [0] - Return only real-valued roots in [-1,1].
+%        1  - Return roots outside of [-1,1] (including complex roots).
 %
 %   RECURSE:
 %        0  - Compute roots without interval subdivision (slower).
@@ -27,7 +27,7 @@ function out = roots(f, varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Simply create a chebfun of the FOURTECH and call min on it.
-g = chebfun(@(x) f.feval(x),[-pi,pi]);
+g = chebfun(@(x) f.feval(x),[-1,1]);
 out = roots(g,varargin{:});
 
 end

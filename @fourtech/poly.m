@@ -7,7 +7,7 @@ function out = poly(f)
 %   If N is even
 %       F(x) = C(1)*z^(N/2-1) + C(2)*z^(N/2-2) + ... + C(N-1)*z^(-N/2-1) +
 %                  1/2*C(N)*(z^(N/2) + z^(-N/2))
-%   where z = exp(1i*x) and -pi <= x <= pi.
+%   where z = exp(1i*pi*x) and -1 <= x <= 1.
 %   
 %   Note that unlike the MATLAB POLY command, FOURTECH/POLY can operate on
 %   array-valued FOURTECH objects, and hence produce a matrix output. In such

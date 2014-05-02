@@ -7,7 +7,7 @@ function f = compose(f, op, g, pref)
 %   are FOURIETECH objects, and OP is a function handle.
 %
 %   FOURIETECH(F, G) returns a FOURIETECH representing G(F), where both F and G are
-%   also FOURIETECH objects. If the range of F is not in [-PI, PI] then an error is
+%   also FOURIETECH objects. If the range of F is not in [-1, 1] then an error is
 %   thrown.
 %
 %   COMPOSE(F, OP, G, PREF) or COMPOSE(F, OP, [], PREF) uses the options passed

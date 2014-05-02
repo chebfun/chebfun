@@ -1,5 +1,5 @@
 function coeffs = vals2coeffs(values)
-%VALS2COEFFS   Convert values at equally spaced points between [-pi pi).
+%VALS2COEFFS   Convert values at equally spaced points between [-1 1).
 %   C = VALS2COEFFS(V) returns the vector of N coefficients such that 
 %
 %   If N is odd
@@ -7,9 +7,9 @@ function coeffs = vals2coeffs(values)
 %   If N is even
 %       F(x) = C(1)*z^(N/2-1) + C(2)*z^(N/2-2) + ... + C(N-1)*z^(-N/2-1) +
 %                  1/2*C(N)*(z^(N/2) + z^(-N/2))
-%   where z = exp(1i*x) and -pi <= x <= pi. 
+%   where z = exp(1i*pi*x) and -1 <= x <= 1. 
 %   F(x) interpolates the data [V(1) ; ... ; V(N)] at the N equally 
-%   spaced points x_k = -pi + 2*k/N, k=0:N-1. 
+%   spaced points x_k = -1 + 2*k/N, k=0:N-1. 
 %
 %   If the input V is an (N+1)xM matrix, then C = VALS2COEFFS(V) returns the
 %   (N+1)xM matrix of coefficients C such that F_j(x) intterpolates

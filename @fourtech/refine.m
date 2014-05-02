@@ -5,9 +5,9 @@ function [values, giveUp] = refine(op, values, pref)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Obtain some preferences:
-% if ( nargin < 3 )
+if ( nargin < 3 )
     pref = chebtech.techPref();
-% end
+end
 
 % No values were given:
 if ( nargin < 2 )
@@ -28,7 +28,7 @@ elseif ( strcmpi(refFunc, 'resampling') )
     [values, giveUp] = refineResampling(op, values, pref);
 else
     % User defined refinement function:
-    error('CHEBFUN:FOURIETECH:refine', ...
+    error('CHEBFUN:FOURTECH:refine', ...
           'No user defined refinement options allowed')
 %     [values, giveUp] = refFunc(op, values, pref);
 end

@@ -1,7 +1,7 @@
 function varargout = fourstripplot(u, varargin)
 %FOURSTRIPPLOT   Plot the strip of analyticity.
 %   FOURSTRIPPLOT(U) plots estimated strip of analyticity in the complex
-%   plane for U.  The width of the strip is 2*a(k)=1/N(k)*log(2*pi/EPS+1),
+%   plane for U.  The width of the strip is 2*a(k)=1/N(k)/pi*log(4/EPS+1),
 %   where EPS is the EPSLEVEL of U and N(k) is the number of Fourier modes.
 %
 %   FOURSTRIPPLOT(U, EPS) allows a user-specified EPS.
@@ -12,7 +12,7 @@ function varargout = fourstripplot(u, varargin)
 %   H = FOURSTRIPPLOT(U) returns a handle H to the figure.
 %
 %   Example:
-%       u = fourtech(@(x) 1./(1 + sin(x).^2));
+%       u = fourtech(@(x) 1./(1 + sin(pi*x).^2));
 %       fourstripplot(u,'r--');
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
@@ -47,7 +47,7 @@ if ( mod(M,2) == 1 )
 else
     N = M/2-1;
 end
-a = 1i/N*log(2*pi/ee+1);
+a = 1i/N/pi*log(4/ee+1);
 
 UK = [-pi+a; pi+a;nan;-pi-a; pi-a];
 

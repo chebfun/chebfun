@@ -1,7 +1,7 @@
 function pass = sampleTest(op, f)
 %SAMPLETEST   Test an evaluation of input OP against a FOURTECH approximation.
 %   SAMPLETEST(OP, F) evaluates both the function OP and its FOURTECH
-%   representation F at one or more points within [-pi,pi). The difference of
+%   representation F at one or more points within [-1,1). The difference of
 %   these values is computed, and if this is sufficiently small (relative to
 %   F.VSCALE, F.HSCALE, and F.EPSLEVEL) the test passes and returns TRUE. If the
 %   difference is large, it returns FALSE.
@@ -11,7 +11,7 @@ function pass = sampleTest(op, f)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % [TODO]: Describe where we evaluate? (Approx to largest derivative and at
-% -pi+1e-12, pi-1e-12?)
+% -1+1e-12, 1-1e-12?)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Get the interpolation points:

@@ -6,7 +6,7 @@ classdef fourtech
     %% Properties of FOURTECH objects.
     properties ( Access = public )
 
-        % Values of FOURTECH at equally spaced points from [-pi,pi).
+        % Values of FOURTECH at equally spaced points from [-1,1).
         % For array-valued FOURTECH objects, each column
         % represents the interpolated values of a single function.
         values % (nxm double)
@@ -25,7 +25,7 @@ classdef fourtech
 
         % Horizontal scale of the FOURTECH. Although FOURTECH objects have in
         % principle no notion of horizontal scale invariance (since they always
-        % live on [-pi,pi)), the input OP may have been implicitly mapped.
+        % live on [-1,1)), the input OP may have been implicitly mapped.
         % HSCALE is then used to enforce horizontal scale invariance in
         % construction and other subsequent operations that require it. It
         % defaults to 1 and is never updated.

@@ -3,10 +3,10 @@ function out = get(f, prop)
 %   P = GET(F,PROP) returns the property P specified in the string PROP from
 %   the fun F. Valid entries for the string PROP are:
 %       'VALUES' - Values of F at Chebyshev points.
-%       'COEFFS' - Chebyshev coefficients of F.
+%       'COEFFS' - Fourier coefficients of F.
 %       'VSCALE' - Vertical scale of F.
 %       'EPSLEVEL' - Happiness level of F.
-%       'POINTS' - 2nd-kind Chebyshev grid corresponding to F.
+%       'POINTS' - Equally spaced points where F is sampled.
 %       'LVAL' - Value of F at -1.
 %       'RVAL' - Value of F at +1.
 
@@ -21,10 +21,10 @@ switch prop
         % Get the Fourier grid corresponding to the VALUES:
         out = f.points();
     case 'lval'
-        % The value at -pi:
+        % The value at -1:
         out = f.values(1,:);
     case 'rval'
-        % The value at pi:
+        % The value at 1:
         out = f.values(end,:);
     otherwise
         error('FOURTECH:GET:proname', ...
