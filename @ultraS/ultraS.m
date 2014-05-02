@@ -39,8 +39,9 @@ classdef ultraS < chebDiscretization
             disc.domain = source.domain;
             % Obtain the coeffs and output space required for this source:
             disc.coeffs = ultraS.getCoeffs(source);
-            % Determine the dimension adjustment and outputSpace:
+            % Determine the dimension adjustments and outputSpace:
             disc.dimAdjust = ultraS.getDimAdjust(source);
+            disc.projOrder = ultraS.getProjOrder(source);
             disc.outputSpace = ultraS.getOutputSpace(source);
             
             % Assign DIMENSIONS and DOMAIN if they were passed.

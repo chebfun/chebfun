@@ -34,7 +34,7 @@ op_g = @(x) 2*x.*exp(-x.^2) - 2*x.^3.*exp(-x.^2);
 gVals = feval(g, x);
 gExact = op_g(x);
 err = gVals - gExact;
-pass(2) = norm(err, inf) < 1e1*get(g,'epslevel')*get(g,'vscale');
+pass(2) = norm(err, inf) < 2e1*get(g,'epslevel')*get(g,'vscale');
 
 op = @(x) (1-exp(-x.^2))./x;
 f = unbndfun(op, dom);

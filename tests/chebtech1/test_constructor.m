@@ -12,30 +12,32 @@ end
 pref.refinementFunction = 'nested';
 f = @(x) sin(x);
 g = populate(chebtech1, f, [], [], pref);
-x = chebtech1.chebpts(length(g.values));
-pass(1) = norm(f(x) - g.values, inf) < 10*g.vscale.*g.epslevel;
+x = chebtech1.chebpts(length(g.coeffs));
+values = g.coeffs2vals(g.coeffs);
+pass(1) = norm(f(x) - values, inf) < 10*g.vscale.*g.epslevel;
 
 % Test on an array-valued function:
 pref.refinementFunction = 'nested';
 f = @(x) [sin(x) cos(x) exp(x)];
 g = populate(chebtech1, f, [], [], pref);
-x = chebtech1.chebpts(length(g.values));
-pass(2) = norm(f(x) - g.values, inf) < 10*max(g.vscale.*g.epslevel);
+x = chebtech1.chebpts(length(g.coeffs));
+values = g.coeffs2vals(g.coeffs);
+pass(2) = norm(f(x) - values, inf) < 10*max(g.vscale.*g.epslevel);
 
 %%
 % Test on a scalar-valued function:
 pref.refinementFunction = 'resampling';
 f = @(x) sin(x);
-g = populate(chebtech1, f, [], [], pref);
-x = chebtech1.chebpts(length(g.values));
-pass(3) = norm(f(x) - g.values, inf) < 10*g.vscale.*g.epslevel;
+[g, values] = populate(chebtech1, f, [], [], pref);
+x = chebtech1.chebpts(length(values));
+pass(3) = norm(f(x) - values, inf) < 10*g.vscale.*g.epslevel;
 
 % Test on an array-valued function:
 pref.refinementFunction = 'resampling';
 f = @(x) [sin(x) cos(x) exp(x)];
-g = populate(chebtech1, f, [], [], pref);
-x = chebtech1.chebpts(length(g.values));
-pass(4) = norm(f(x) - g.values, inf) < 10*max(g.vscale.*g.epslevel);
+[g, values] = populate(chebtech1, f, [], [], pref);
+x = chebtech1.chebpts(length(values));
+pass(4) = norm(f(x) - values, inf) < 10*max(g.vscale.*g.epslevel);
 
 %%
 % Some other tests:

@@ -1,10 +1,14 @@
-function [L, f] = linop(N)
+function [L, f, FAIL] = linop(N)
 %LINOP Converts a chebop to a linop
 %   L = LINOP(N) converts a CHEBOP N to a linop L if N is a linear operator. If
 %   N is not linear, an error message is returned.
 %
 %   [L, F] = LINOP(N) returns also the affine part F of the linear chebop N such
 %   that L*u + F(x) = N.op(x,u).
+%
+%   [L, F, FAIL] = LINOP(N) will prevent an error from being throw if N is not
+%   linear, but instead return FAIL = TRUE and L = []. If N is linear, FAIL =
+%   FALSE.
 %
 % See also LINOP, CHEBOP/LINEARIZE, CHEBOP/ISLINEAR.
 
@@ -18,10 +22,10 @@ linCheck = 1;
 [L, f, isLinear] = linearize(N, N.init, [], linCheck);
 
 % We need the entire operator (including BCs) to be linear:
-isLinear = all(isLinear);
+FAIL = ~all(isLinear);
 
 % Throw an error is the CHEBOP is nonlinear:
-if ( ~isLinear )
+if ( FAIL && (nargout < 3) )
     error('CHEBFUN:CHEBOP:linop:nonlinear',...
         'Chebop does not appear to be a linear operator.')
 end

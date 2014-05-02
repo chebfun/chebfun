@@ -32,25 +32,6 @@ sizex = size(x);
 ndimsx = ndims(x);
 x = x(:);
 
-% [TODO]: Remove this.
-%% Legacy code for using BARY() on [-1, 1] and CLENSHAW() in the complex plane.
-% % Locate the elements of x designated as 'real':
-% tol = f.hscale*1e-15;
-% realmask = abs(imag(x)) < tol;
-% 
-% % Initialise y:
-% y = zeros(length(x), m);
-% 
-% % Evaluation is done via the barycentric formula for real values:
-% if ( any(realmask) )
-%     y(realmask,:) = f.bary(x(realmask), f.values);
-% end
-% 
-% % And via Clenshaw's algorithm for complex values:
-% if ( ~all(realmask) )
-%     y(~realmask, :) = f.clenshaw(x(~realmask), f.coeffs);
-% end
-
 % Evaluate using Clenshaw's algorithm:
 y = f.clenshaw(x, f.coeffs);
 

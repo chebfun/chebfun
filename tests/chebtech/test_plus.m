@@ -90,7 +90,8 @@ for n = 1:2
     g = testclass.make(@(x) cos(x) - 1, [], [], pref);
     h1 = f + g;
     h2 = testclass.make(@(x) x + cos(x) - 1, [], [], pref);
-    pass(n, 19) = norm(h1.values - h2.values, inf) < tol;
+    
+    pass(n, 19) = norm(h1.coeffs - h2.coeffs, inf) < tol;
 
     %%
     % Check that adding a CHEBTECH to an unhappy CHEBTECH gives an unhappy
@@ -119,7 +120,7 @@ for n = 1:2
     g = f + [1 2 3];
     g_exact = @(x) [(1 + sin(x)) (2 + sin(x)) (3 + sin(x))];
     err = feval(g, x) - g_exact(x);
-    pass(n, 23) = isequal(size(g.values, 2), 3) && norm(err(:), inf) < ...
+    pass(n, 23) = isequal(size(g.coeffs, 2), 3) && norm(err(:), inf) < ...
         10*max(g.vscale.*g.epslevel);
 end
 

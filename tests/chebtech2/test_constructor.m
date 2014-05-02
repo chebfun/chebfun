@@ -15,29 +15,33 @@ pref.extrapolate = 0;
 pref.refinementFunction = 'nested';
 f = @(x) sin(x);
 g = populate(chebtech2, f, [], [], pref);
-x = chebtech2.chebpts(length(g.values));
-pass(1) = norm(f(x) - g.values, inf) < tol;
+x = chebtech2.chebpts(length(g.coeffs));
+values = g.coeffs2vals(g.coeffs);
+pass(1) = norm(f(x) - values, inf) < tol;
 pass(2) = g.vscale == sin(1) && g.ishappy && g.epslevel < tol;
 
 pref.extrapolate = 1;
 pref.refinementFunction = 'nested';
 g = populate(chebtech2, f, [], [], pref);
-x = chebtech2.chebpts(length(g.values));
-pass(3) = norm(f(x) - g.values, inf) < tol;
+x = chebtech2.chebpts(length(g.coeffs));
+values = g.coeffs2vals(g.coeffs);
+pass(3) = norm(f(x) - values, inf) < tol;
 pass(4) = norm(g.vscale - sin(1), inf) < tol && logical(g.epslevel);
 
 pref.extrapolate = 0;
 pref.refinementFunction = 'resampling';
 g = populate(chebtech2, f, [], [], pref);
-x = chebtech2.chebpts(length(g.values));
-pass(5) = norm(f(x) - g.values, inf) < tol;
+x = chebtech2.chebpts(length(g.coeffs));
+values = g.coeffs2vals(g.coeffs);
+pass(5) = norm(f(x) - values, inf) < tol;
 pass(6) = g.vscale == sin(1) && logical(g.epslevel);
 
 pref.extrapolate = 1;
 pref.refinementFunction = 'resampling';
 g = populate(chebtech2, f, [], [], pref);
-x = chebtech2.chebpts(length(g.values));
-pass(7) = norm(f(x) - g.values, inf) < tol;
+x = chebtech2.chebpts(length(g.coeffs));
+values = g.coeffs2vals(g.coeffs);
+pass(7) = norm(f(x) - values, inf) < tol;
 pass(8) = norm(g.vscale - sin(1), inf) < tol && logical(g.epslevel);
 
 %%
@@ -46,26 +50,30 @@ pref.extrapolate = 0;
 pref.refinementFunction = 'nested';
 f = @(x) [sin(x) cos(x) exp(x)];
 g = populate(chebtech2, f, [], [], pref);
-x = chebtech2.chebpts(length(g.values));
-pass(9) = norm(f(x) - g.values, inf) < tol;
+x = chebtech2.chebpts(length(g.coeffs));
+values = g.coeffs2vals(g.coeffs);
+pass(9) = norm(f(x) - values, inf) < tol;
 
 pref.extrapolate = 1;
 pref.refinementFunction = 'nested';
 g = populate(chebtech2, f, [], [], pref);
-x = chebtech2.chebpts(length(g.values));
-pass(10) = norm(f(x) - g.values, inf) < tol;
+x = chebtech2.chebpts(length(g.coeffs));
+values = g.coeffs2vals(g.coeffs);
+pass(10) = norm(f(x) - values, inf) < tol;
 
 pref.extrapolate = 0;
 pref.refinementFunction = 'resampling';
 g = populate(chebtech2, f, [], [], pref);
-x = chebtech2.chebpts(length(g.values));
-pass(11) = norm(f(x) - g.values, inf) < tol;
+x = chebtech2.chebpts(length(g.coeffs));
+values = g.coeffs2vals(g.coeffs);
+pass(11) = norm(f(x) - values, inf) < tol;
 
 pref.extrapolate = 1;
 pref.refinementFunction = 'resampling';
 g = populate(chebtech2, f, [], [], pref);
-x = chebtech2.chebpts(length(g.values));
-pass(12) = norm(f(x) - g.values, inf) < tol;
+x = chebtech2.chebpts(length(g.coeffs));
+values = g.coeffs2vals(g.coeffs);
+pass(12) = norm(f(x) - values, inf) < tol;
 
 %%
 % Some other tests:

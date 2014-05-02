@@ -116,8 +116,10 @@ ve = v.*e;
 % Add a tiny amount to zeros to make plots look nicer:
 minve = min(ve, [], 2);
 for k = 1:numFuns
-    % Use smaller of min. of (vscale)*(epslevel) and the smallest nonzero coeff.
-    c{k}(~c{k}) = min(minve(k), min(c{k}(logical(c{k}(:)))));
+    if ( any(c{k}) )
+    % Use smaller of min. of (vscale)*(epslevel) and the smallest nonzero coeff.        
+        c{k}(~c{k}) = min(minve(k), min(c{k}(logical(c{k}(:)))));
+    end
 end
 
 % Shape it:
@@ -132,7 +134,6 @@ varargin(noEpsLevel) = [];
 doEpsLevel = ~any(noEpsLevel);
 
 % Plot the coeffs:
-% h1 = semilogy(data{:}, varargin{:}, 'color', col);
 h1 = semilogy(data{:}, varargin{:});
 
 % Set the colors (loop over columns if we have an array-valued CHEBFUN):

@@ -86,7 +86,7 @@ for n = 1:2
     g = testclass.make(@(x) tanh(x), [], [], pref);
     h1 = f .* g;
     h2 = g .* f;
-    pass(n, 12) = isequal(h1, h2);
+    pass(n, 12) = (norm(h1.coeffs-h2.coeffs) < 10*max(h1.epslevel));
     h_exact = @(x) [tanh(x).*sin(x) tanh(x).*cos(x) tanh(x).*exp(x)];
     err = feval(h1, x) - h_exact(x);
     pass(n, 13) = max(abs(err(:))) < 10*max(h1.epslevel);
@@ -131,7 +131,7 @@ for n = 1:2
     h1 = f .* g;
     h2 = testclass.make(@(x) f_op(x) .* g_op(x), [], [], pref);
     h2 = prolong(h2, length(h1));
-    pass(n, 21) = norm(h1.values - h2.values, inf) < tol;
+    pass(n, 21) = norm(h1.coeffs - h2.coeffs, inf) < tol;
 
     %%
     % Check that multiplying a CHEBTECH by an unhappy CHEBTECH gives an unhappy
@@ -170,6 +170,7 @@ function result = test_mult_function_by_function(f, f_op, g, g_op, x, checkpos)
     result(1) = norm(feval(h, x) - h_exact(x), inf) < ...
         10*max(h.vscale.*h.epslevel);
     if ( checkpos )
-        result(2) = all(h.values >= 0);
+        values = h.coeffs2vals(h.coeffs); 
+        result(2) = all(values >= 0);
     end
 end

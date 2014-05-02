@@ -10,29 +10,14 @@ if ( nargin == 0 )
 end
 tol = 1e-10;
 
-% Fredholm
-d = domain(0, 1); 
-x = chebfun(@(x) x, d);
-F = fred(@(x, y) sin(2*pi*(x-y)), d);
-A = eye(d) + F;
-u = x.*exp(x);
-f = A*u;
-res = u-mldivide(linop(A), f, pref);
-pass(1) = norm(res{1}) < 1e6*tol;
-
-% Volterra
-d = domain(0,pi);
-x = chebfun(@(x) x, d);
-V = operatorBlock.volt(d, @(x, y) x.*y);
-f = x.^2.*cos(x) + (1-x).*sin(x);
-u = mldivide(linop(1-V), f, pref);
-res1 = u - sin(x);
-pass(2) = norm( res1{1}) < 1e6*tol;
-res2 = (1-V)*u - f;
-pass(3) = norm( res2{1} ) < 1e4*tol;
-
-
-%% Now available as chebops!
+% From http://en.wikipedia.org/wiki/Integro-differential_equation
+d = [0 5];
+x = chebfun('x', d);
+N = chebop(@(u) diff(u) + 2*u + 5*cumsum(u), d);
+N.lbc = 0;
+u = N\1;
+u_exact = 0.5*exp(-x).*sin(2*x);
+err(1) = norm(u - u_exact);
 
 % Fredholm
 d = [0, 1];
@@ -41,7 +26,7 @@ K = @(x,y) sin(2*pi*(x-y));
 A = chebop(@(x,u) u + fred(K,u), d);
 u = x.*exp(x);
 f = A*u;
-pass(4) = norm(u-A\f) < 1e6*tol;
+err(2) = norm(u - mldivide(A, f, pref));
 
 % Volterra
 d = [0, pi];
@@ -50,9 +35,10 @@ K = @(x,y) x.*y;
 A = chebop(@(x,u) u - volt(K,u), d);
 f = x.^2.*cos(x) + (1-x).*sin(x);
 u = mldivide(A, f, pref);
+err(3) = norm( u - sin(x) );
+err(4) = norm( A*u - f );
 
-pass(5) = norm( u - sin(x) ) < 1e6*tol;
-pass(6) = norm( A*u - f ) < 1e4*tol;
+pass = err < tol;
 
 end
 
