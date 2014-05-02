@@ -5,7 +5,8 @@ function h = conv(f, g)
 %                    /
 %           H(x) =   |    F(t) G(x-t) dt,  x in [a + c, b + d]
 %                    /
-%                   -
+%          
+% If the answer is zero, an empty cell is returned.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -17,31 +18,37 @@ if ( isempty(f) || isempty(g) )
 end
 
 if ( ~isa(f, 'deltafun') )
-    % Then g must be a deltafun
-    h = conv(g, f);
-    return
-end
-  
-if ( ~isa(f, 'deltafun') )    
     deltaMagF = [];
     deltaLocF = [];
     funF = f;
 else
     f = simplifyDeltas(f);
-    deltaMagF = f.deltaMag;
-    deltaLocF = f.deltaLoc; 
-    funF = f.funPart;
+    if ( isa(f, 'deltafun') )
+        deltaMagF = f.deltaMag;
+        deltaLocF = f.deltaLoc; 
+        funF = f.funPart;
+    else
+        deltaMagF = [];
+        deltaLocF = [];
+        funF = f;
+    end
 end
 
-if ( ~isa(g, 'deltafun') )    
+if ( ~isa(g, 'deltafun') )
     deltaMagG = [];
     deltaLocG = [];
     funG = g;
 else
     g = simplifyDeltas(g);
-    deltaMagG = g.deltaMag;
-    deltaLocG = g.deltaLoc; 
-    funG = g.funPart;
+    if ( isa(g, 'deltafun') )
+        deltaMagG = g.deltaMag;
+        deltaLocG = g.deltaLoc; 
+        funG = g.funPart;
+    else
+        deltaMagG = [];
+        deltaLocG = [];
+        funG = g;
+    end
 end
 
 
@@ -50,7 +57,6 @@ domF = funF.domain;
 domG = funG.domain;
 a = domF(1);
 b = domF(end);
-
 c = domG(1);
 d = domG(end);
 
@@ -61,6 +67,9 @@ deltaTol = pref.deltaPrefs.deltaTol;
 % Compute the convolution of funParts and append it to the output cell:
 h = conv(funF, funG);
 
+% Remove zero funs for simplicity:
+zeroIndices = cellfun( @(hk) iszero(hk), h);
+h(zeroIndices) = [];
 
 %% Get all the deltafunction contributions
 % (f + df) * (g + dg) = f*g + dg * (f + df) + df * (g + dg) - df * dg
@@ -81,7 +90,11 @@ if( ~isempty(deltaLocF))
                 if ( isa(hij, 'deltafun') )
                     hij.deltaMag = hij.deltaMag/2;
                 end
-                h = [h, {hij}]; %#ok<AGROW>
+                
+                % If the result is non-zero, append it:
+                if ( ~iszero(hij) )
+                    h = [h, {hij}]; %#ok<AGROW>
+                end
             end
         end
     end
@@ -101,7 +114,11 @@ if ( ~isempty(deltaLocG) )
                 if ( isa(hij, 'deltafun') )
                     hij.deltaMag = hij.deltaMag/2;
                 end
-                h = [h, {hij}]; %#ok<AGROW>                    
+                
+                % If the result is non-zero, append it:
+                if ( ~iszero(hij) )
+                    h = [h, {hij}]; %#ok<AGROW>
+                end                
             end
         end
     end
