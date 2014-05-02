@@ -15,7 +15,7 @@ d = [0 5];
 x = chebfun('x', d);
 N = chebop(@(u) diff(u) + 2*u + 5*cumsum(u), d);
 N.lbc = 0;
-u = N\1;
+u = mldivide(N, 1, pref);
 u_exact = 0.5*exp(-x).*sin(2*x);
 err(1) = norm(u - u_exact);
 

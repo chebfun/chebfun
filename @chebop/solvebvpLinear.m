@@ -1,8 +1,6 @@
-function [u, info] = solvebvpLinear(L, rhs, res, pref, displayInfo)
+function [u, info] = solvebvpLinear(L, rhs, pref, displayInfo)
 
 % TODO: Document.
-
-% TODO: Pass RHS - RES as RHS?
 
 % Get defaults:
 if ( nargin < 3 )
@@ -18,20 +16,19 @@ end
 L.constraint = flipSigns(L.constraint);
 
 % Solve the linear problem:
-u = linsolve(L, rhs - res, pref);
+u = linsolve(L, rhs, pref);
 
-% Norm of residual. Any affine parts will be stored in the RES variable, so need
-% to subtract that from RHS to get the correct answer:
-resNorm = norm(L*u - (rhs - res), 'fro');
+% Norm of residual:
+normRes = norm(L*u - rhs, 'fro');
 
 if ( nargin > 4 )
     % Print information after linear problem has been solved:
-    displayInfo('linear', u, resNorm, pref)
+    displayInfo('linear', u, normRes, pref)
 end
 
 if ( nargout > 1 )
     % Return the norm of the residual in the INFO struct:
-    info.error = resNorm;
+    info.error = normRes;
 end
 
 end
