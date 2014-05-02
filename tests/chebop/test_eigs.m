@@ -6,6 +6,8 @@ if ( nargin == 0 )
     pref = cheboppref();
 end
 
+tol = 1e-10;
+
 %% With linops
 d = domain(0, pi);
 L = -diff(d, 2);
@@ -25,7 +27,8 @@ N.rbc = 'dirichlet';
 [~, D] = eigs(N, 10, pref);
 e2 = sqrt(-diag(D));
 err(2) = norm(e2 - 1i*(1:10).',inf);
+%%
 
-pass = err < 1e-10;
+pass = err < tol;
 
 end
