@@ -408,8 +408,8 @@ classdef (InferiorClasses = {?double}) chebop
     methods ( Static = true, Hidden = true )
         % TODO: These should be private methods as well
         
-        % Convert RHS to a format used internally in chebop.
-        [newRHS, FAIL] = convert2rhs(rhs, residual)
+        % Convert doubles to CHEBMATRIX objects used internally in CHEBOP.
+        [newRHS, FAIL] = double2chebmatrix(rhs, residual)
         
         % Controls information displayed for Newton iterations
         [displayFig, displayTimer] = displayInfo(mode, varargin);
