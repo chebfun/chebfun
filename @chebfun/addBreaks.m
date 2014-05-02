@@ -1,5 +1,5 @@
 function f = addBreaks(f, breaks, tol)
-%ADDBREAKS   Add breakpoints to the domain of a CHEBFUN
+%ADDBREAKS   Add breakpoints to the domain of a CHEBFUN.
 %   ADDBREAKS(F, BREAKS) attempts to insert breakpoints in F at the points in
 %   the vector BREAKS.  BREAKS need not be sorted or have only unique values,
 %   but it should consist only of points in the domain of F.  Breakpoints will

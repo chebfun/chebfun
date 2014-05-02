@@ -1,6 +1,5 @@
 function varargout = chebpolyplot(f, varargin)
 %CHEBPOLYPLOT   Display Chebyshev coefficients graphically.
-%
 %   CHEBPOLYPLOT(F) plots the Chebyshev coefficients of a CHEBTECH F on a
 %   semilogy scale. A horizontal line at the EPSLEVEL of F is also plotted. If F
 %   is an array-valued CHEBTECH then a curve is plotted for each component

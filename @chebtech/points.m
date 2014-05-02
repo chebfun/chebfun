@@ -1,6 +1,5 @@
 function out = points(f)
 %POINTS   Return the points used by a CHEBTECH.
-%
 %   POINTS(F) or F.POINTS() returns the Chebyshev points used by F.
 %   This is equivalent to F.CHEBPTS(LENGTH(F)).
 %
