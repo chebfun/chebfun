@@ -146,7 +146,7 @@ for k = 1:numPatches
     end
 end
 
-if ( abs((b-a)-(d-c)) < 10*eps(max([a b c d])) )
+if ( abs((b-a)-(d-c)) < 10*eps(norm([a b c d], inf)) )
     % If there's only one patch, then we already have all the information reqd.
     hLegR = chebtech.leg2cheb(flipud(hLegR));       % Cheb coeffs of right tri.
     h_right = bndfun({[], hLegR}, d + [a, b]); % Make BNDFUN from coeffs
