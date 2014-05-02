@@ -159,7 +159,7 @@ err2 = g2Vals - fExact2;
 err3 = g3Vals - fExact3;
 pass(6) = ( norm(err1, inf) < 1e1*get(g{1},'epslevel')*get(g{1},'vscale') ...
     && norm(err2, inf) < 1e1*get(g{2},'epslevel')*get(g{2},'vscale') ...
-    && norm(err3, inf) < 5e1*get(g{3},'epslevel')*get(g{3},'vscale') );
+    && norm(err3, inf) < 1e2*get(g{3},'epslevel')*get(g{3},'vscale') );
 
 % Array-valued function:
 op = @(x) [exp(x) x.*exp(x) (1-exp(x))./x];

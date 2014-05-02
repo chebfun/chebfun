@@ -54,8 +54,9 @@ elseif ( isa(op, 'chebtech') )
         error('CHEBFUN:CHEBTECH:compose:arrval', ...
               'Cannot compose two array-valued CHEBTECH objects.')
     end
-
-    if ( norm(f.values(:), inf) > 1 )
+    
+    values = f.coeffs2vals(f.coeffs);
+    if ( norm(values(:), inf) > 1 )
         error('CHEBFUN:CHEBTECH:compose:range', ...
               'The range of f is not contained in the domain of g.')
     end

@@ -7,7 +7,7 @@ function out = isinf(f)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Check if any values are infinite:
-out = any(isinf(f.values(:)));
+% Check if any coefficients are infinite:
+out = any(isinf(f.coeffs(:)));
 
 end

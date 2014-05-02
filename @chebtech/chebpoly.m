@@ -12,8 +12,6 @@ function out = chebpoly(f, N)
 %
 % See also LEGPOLY.
 
-% TODO: Implement LEGPOLY() at @CHEBTECH level?
-
 if ( nargin == 1 )
     N = length(f);
 end

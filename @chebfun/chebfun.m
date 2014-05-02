@@ -199,22 +199,13 @@ classdef chebfun
     end
     
     % Static methods implemented by CHEBFUN class.
-    methods (Static = true)
+    methods ( Static = true )
         
         % Main constructor.
         [funs, ends] = constructor(op, domain, pref);
-        
-        % Edge detector.
-        [edge, vscale] = detectEdge(op, domain, hscale, vscale, derHandle);
-        
+
         % Interpolate data:
         f = interp1(x, y, method, dom);
-        
-        % Determine values of CHEBFUN at breakpoints.
-        vals = getValuesAtBreakpoints(funs, ends, op);
-
-        % Merge domains.
-        newDom = mergeDomains(varargin)
 
         % Compute Lagrange basis functions for a given set of points.
         f = lagrange(x, varargin);
@@ -228,27 +219,39 @@ classdef chebfun
         % ODE45 with CHEBFUN output.
         [t, y] = ode45(varargin);
         
-        % Retrieve and modify preferences for this class.
-        prefs = pref(varargin);
-        
         % Cubic Hermite interpolation:
         f = pchip(x, y, method);
         
         % Cubic spline interpolant:
         f = spline(x, y, d);
         
+    end
+    
+        % Static methods implemented by CHEBFUN class.
+    methods ( Hidden = true, Static = true )
+        
+        % Edge detector.
+        [edge, vscale] = detectEdge(op, domain, hscale, vscale, derHandle);
+        
+        % Determine values of CHEBFUN at breakpoints.
+        vals = getValuesAtBreakpoints(funs, ends, op);
+        
+        % Merge domains.
+        newDom = mergeDomains(varargin)
+        
+                
         % Which interval is a point in?
         out = whichInterval(dom, x, direction);
         
     end
 
-    methods (Access = private)
+    methods ( Access = private )
         % Set small breakpoint values to zero.
         f = thresholdBreakpointValues(f);
     end
     
     % Static private methods implemented by CHEBFUN class.
-    methods (Static = true, Access = private)
+    methods ( Static = true, Access = private )
         
         % Convert ODE solutions into CHEBFUN objects:
         [y, t] = odesol(sol, opt);
@@ -272,9 +275,6 @@ classdef chebfun
 
         % Absolute value of a CHEBFUN.
         f = abs(f, pref)
-        
-        % Add breaks at appropriate roots of a CHEBFUN
-        f = addBreaksAtRoots(f, tol)
         
         % True if any element of a CHEBFUN is a nonzero number, ignoring NaN.
         a = any(f, dim)
@@ -305,21 +305,12 @@ classdef chebfun
         
         % Complex transpose of a CHEBFUN.
         f = ctranspose(f)
-
-        % Useful information for DISPLAY.
-        [name, data] = dispData(f)
         
         % Display a CHEBFUN object.
         display(f);
-        
-        % Compare domains of two CHEBFUN objects.
-        pass = domainCheck(f, g);
 
         % Accuracy estimate of a CHEBFUN object.
         out = epslevel(f);
-
-        % Extract columns of an array-valued CHEBFUN object.
-        f = extractColumns(f, columnIndex);
         
         % Evaluate a CHEBFUN.
         y = feval(f, x, varargin)
@@ -332,9 +323,6 @@ classdef chebfun
 
         % Get properties of a CHEBFUN object.
         out = get(f, prop);
-        
-        % Get Delta functions withing a chebfun
-        [deltaMag, deltLoc] = getDeltaFunctions(f);
         
         % Horizontal scale of a CHEBFUN object.
         out = hscale(f);
@@ -393,9 +381,6 @@ classdef chebfun
         % Plot a CHEBFUN object:
         varargout = plot(f, varargin);
         
-        % Obtain data used for plotting a CHEBFUN object:
-        data = plotData(f, g, h)
-        
         % 3-D plot for CHEBFUN objects.
         varargout = plot3(f, g, h, varargin)
         
@@ -441,9 +426,6 @@ classdef chebfun
         % Transpose a CHEBFUN.
         f = transpose(f)
         
-        % Adjust nearby common break points in domains of CHEBFUN objects.
-        [f, g, newBreaksLocF, newBreaksLocG] = tweakDomain(f, g, tol)
-
         % Unary minus of a CHEBFUN.
         f = uminus(f)
 
@@ -452,6 +434,57 @@ classdef chebfun
         
         % Vertical scale of a CHEBFUN object.
         out = vscale(f);
+    end
+    
+    % Hidden methods implemented by CHEBFUN class.
+    
+    methods ( Hidden = true )
+        
+        % Add breakpoints to the domain of a CHEBFUN.
+        f = addBreaks(f, breaks, tol)
+                
+        % Add breaks at appropriate roots of a CHEBFUN.
+        f = addBreaksAtRoots(f, tol)
+        
+        % Assign columns (or rows) of an array-valued CHEBFUN.
+        f = assignColumns(f, colIdx, g)
+        
+        % Supply a new definition for a CHEBFUN on a subinterval.
+        f = defineInterval(f, subInt, g)
+        
+        % Supply new definition for a CHEBFUN at a point or set of points.
+        f = definePoint(f, s, v)
+        
+        % Useful information for DISPLAY.
+        [name, data] = dispData(f)
+        
+        % Compare domains of two CHEBFUN objects.
+        pass = domainCheck(f, g);        
+        
+        % Extract columns of an array-valued CHEBFUN object.
+        f = extractColumns(f, columnIndex);
+        
+        % Get Delta functions within a CHEBFUN.
+        [deltaMag, deltLoc] = getDeltaFunctions(f);
+        
+        % Get roots of a CHEBFUN and polish for use as breakpoints.        
+        [rBreaks, rAll] = getRootsForBreaks(f, tol)
+        
+        % Number of columns (or rows) of a CHEBFUN quasimatrix.
+        out = numColumns(f)
+        
+        % Obtain data used for plotting a CHEBFUN object:
+        data = plotData(f, g, h)
+        
+        % Set pointValues property:
+        f = setPointValues(f, j, k, vals)
+        
+        % Remove all-zero layers of higher-order impulses.
+        f = tidyImpulses(f)
+        
+        % Adjust nearby common break points in domains of CHEBFUN objects.
+        [f, g, newBreaksLocF, newBreaksLocG] = tweakDomain(f, g, tol)
+        
     end
     
 end
@@ -476,23 +509,26 @@ function op = str2op(op)
     end
 end
 
-function [op, domain, pref] = parseInputs(op, domain, varargin)
+function [op, dom, pref] = parseInputs(op, dom, varargin)
 % Parse inputs.
 
     args = varargin;
     if ( nargin == 1 )
         % chebfun(op)
         pref = chebpref();
-        domain = pref.domain;
-    elseif ( isstruct(domain) || isa(domain, 'chebpref') )
+        dom = pref.domain;
+    elseif ( isa(dom, 'domain') )
+        dom = double(dom);
+        pref = chebpref();
+    elseif ( isstruct(dom) || isa(dom, 'chebpref') )
         % chebfun(op, pref)
-        pref = chebpref(domain);
-        domain = pref.domain;
-    elseif ( ~isnumeric(domain) || (length(domain) == 1) )
+        pref = chebpref(dom);
+        dom = pref.domain;
+    elseif ( ~isnumeric(dom) || (length(dom) == 1) )
         % chebfun(op, prop1, val1, ...)
         pref = chebpref();
-        args = [domain, args];
-        domain = pref.domain;
+        args = [dom, args];
+        dom = pref.domain;
     elseif ( nargin < 3 )
         % chebfun(op, domain)
         pref = chebpref();
@@ -506,8 +542,8 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
     end
 
     % Take the default domain if an empty one was given:
-    if ( isempty(domain) )
-        domain = pref.domain;
+    if ( isempty(dom) )
+        dom = pref.domain;
     end
 
     vectorize = false;
@@ -550,8 +586,8 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
                     % "enableSingularityDetection" and "poles only".
                     
                     pref.enableSingularityDetection = 1;
-                    singTypes = cell(1, 2*(numel(domain)-1));
-                    for j = 1:2*(numel(domain)-1)
+                    singTypes = cell(1, 2*(numel(dom)-1));
+                    for j = 1:2*(numel(dom)-1)
                         singTypes{j} = 'pole';
                     end
                     pref.singPrefs.singType = singTypes;
@@ -561,8 +597,8 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
                     % "enableSingularityDetection" and "fractional singularity".
                     
                     pref.enableSingularityDetection = 1;
-                    singTypes = cell(1, 2*(numel(domain)-1));
-                    for j = 1:2*(numel(domain)-1)
+                    singTypes = cell(1, 2*(numel(dom)-1));
+                    for j = 1:2*(numel(dom)-1)
                         singTypes{j} = 'sing';
                     end
                     pref.singPrefs.singType = singTypes;
@@ -621,7 +657,7 @@ function [op, domain, pref] = parseInputs(op, domain, varargin)
         if ( isa(op, 'function_handle') && strcmp(pref.tech, 'funqui') )
             if ( isfield(pref.techPrefs, 'exactLength') && ...
                  ~isnan(pref.techPrefs.exactLength) )
-                x = linspace(domain(1), domain(end), pref.techPrefs.exactLength).';
+                x = linspace(dom(1), dom(end), pref.techPrefs.exactLength).';
                 op = feval(op, x);
                 pref.techPrefs.exactLength = NaN;
             end
