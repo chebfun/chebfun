@@ -42,4 +42,10 @@ pass(4) = norm(diff(cumsum(f)) - f) < tol;
 x = chebfun('x');
 f = dirac(x-.5) + dirac(x) + dirac(x+.5) + heaviside(x);
 pass(5) = norm(diff(cumsum(f)) - f) < tol;
+
+%% A test case provided by LNT:
+x = chebfun('x'); 
+f = sign(x)+sign(x-.5); 
+f2 = f(-1)+cumsum(diff(f)); 
+pass(6) = norm(f-f2) < tol;
 end
