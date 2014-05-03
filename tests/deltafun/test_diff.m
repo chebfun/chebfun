@@ -6,6 +6,7 @@ if (nargin < 1)
     pref = chebpref();
 end
 
+tol = pref.deltaPrefs.deltaTol;
 %%
 a = -4; b = 4;
 d = deltafun();
@@ -24,5 +25,19 @@ pass(3) = iszero(diff(f,4) - dp4.funPart);
 pass(4) = norm(dp4.deltaLoc - loc, inf) == 0;
 A = [zeros(4,4); mag] - dp4.deltaMag;
 pass(5) = ~any(A(:));
+
+%% A test based on an example by LNT:
+x = chebfun('x',[0 5]);
+f = 0.5*sin(x);
+A = randn(4, 1);
+for j = 1:4
+  f = f + A(j)*dirac(x-j);
+end
+F = cumsum(.5*sin(x));
+for j = 1:4
+  F = F + A(j)*heaviside(x-j);
+end
+pass(6) = norm(diff(F) - (f - f(0))) < tol;
+
 
 end
