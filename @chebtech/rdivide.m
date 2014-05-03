@@ -50,10 +50,13 @@ else
     % Call COMPOSE.
     if ( isa(f, 'chebtech') )   % CHEBTECH / CHEBTECH
         f = compose(f, @rdivide, c, pref);
-    else                       % DOUBLE / CHEBTECH
+    else                        % DOUBLE / CHEBTECH
         op = @(x) f./x;
         f = compose(c, op, [], pref);
     end
+    
+    % TODO: Estimate expected epslevels in the above? See #325.
+    
 end
 
 end

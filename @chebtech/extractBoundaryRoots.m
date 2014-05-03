@@ -30,9 +30,12 @@ m = size(f, 2);
 rootsLeft = zeros(1, m);
 rootsRight = zeros(1, m);
 
+% Tol min: We don't want to be _too_ generous with the tolereance.
+tolMin = 1e-3;
+
 % Tolerance for a root (we will loosen this with each run of the loop below if
 % there are multiple roots):
-tol = 1e2*f.vscale.*f.epslevel;
+tol = min(1e2*f.vscale.*f.epslevel, tolMin);
 
 % Values at ends:
 endValues = abs([feval(f, -1); feval(f, 1)]);
@@ -108,11 +111,13 @@ while ( ( ( nargin == 1 ) && any( min(endValues, [], 1) <= tol ) ) ...
     endValues = abs([feval(f, -1); feval(f, 1)]);
     
     % Loosen the tolerance for checking multiple roots:
-    tol = 1e3*tol;
+    tol = min(1e3*tol, tolMin);
     
 end
 
-% Call simplify to simplify and update the vscale:
-f = simplify(f);
+% TODO: Call simplify?
+% f = simplify(f); % Removed by NH. 03 May 2014. Why simplify here?
+
+% TODO: Update vscale?
 
 end
