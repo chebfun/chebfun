@@ -1,6 +1,5 @@
 function varargout = chebtest(varargin)
 %CHEBTEST   Run Chebfun test suite.
-%
 %   CHEBTEST executes all of the m-files found in the top level folders of the
 %   directory <chebfunroot>/tests/. These m-files should return a scalar,
 %   vector, or matrix of logical values. A test is deemed to pass if all the
@@ -33,11 +32,19 @@ function varargout = chebtest(varargin)
 %     All tests passed in 6.213s.
 %   If not, then a list of the failed directories is reported:
 %     Tests failed/crashed in directory: tests/chebtech2.
+%
+%   CHEBTEST('--quiet', ...) performs a queiter version of the test, whereby
+%   information is only displayed for tests which fail.
+%
+%   CHEBTEST('--light', ...) will only perform tests in the following
+%   directories: chebtech/, chebtech1/, chebtech2/, fun/, bndfun/, chebfun/.
+%   This list is maintained at the top of the CHEBTEST.M code block, and can be
+%   readily modified to suit your needs.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% [TODO]:  Preferences.
+% [TODO]: Preferences.
 
 % Find directory in which Chebfun was installed:
 installDir = fileparts(which('chebtest'));
@@ -45,9 +52,34 @@ installDir = fileparts(which('chebtest'));
 % Set path to the tests/ subdirectory:
 testsDir = [installDir '/tests'];
 
-if ( nargin > 0 ) 
+% Folders to test in 'light' mode.
+lightDirs = {'chebtech', 'chebtech1', 'chebtech2', 'fun', 'bndfun', 'chebfun'};
+
+% Parse for optional input arguments:
+quietMode = false;
+lightMode = false;
+args = varargin;
+for k = numel(args):-1:1
+    if ( strcmpi(args{k}, '--quiet') )
+        quietMode = true;
+        args(k) = [];
+    elseif ( strcmpi(args{k}, '--light') )
+        lightMode = true;
+        args(k) = [];
+    elseif ( strcmpi(args{k}, '--yolo') )
+        fprintf('All tests passed in 0s. YOLO.\n');
+        return
+    end
+end
+
+% In '--light' mode, only test these directories.
+if ( lightMode )
+    args = lightDirs;
+end
+
+if ( numel(args) > 0 ) 
     % We are given a list of directories to test:
-    testDirNames = varargin;
+    testDirNames = args;
 else
     % if not, run all the ones we can find in the tests/ folder.
     testDirNames = dir(testsDir);       % List test directories.
@@ -79,7 +111,7 @@ for k = 1:numDirs
     testDir = testDirNames{k};
     if ( exist(testDir, 'dir') )
         fprintf(['Running tests in ' testDir ':\n']);
-        [passDir(k), timeDir(k), failFiles{k}] = runTestsInDirectory(testDir);
+        [passDir(k), timeDir(k), failFiles{k}] = runTestsInDirectory(testDir, quietMode);
     else
         warning('CHEBFUN:chebtest:DirNotFound', ...
             'Test directory ''%s'' not found. Skipping.', testDir);
@@ -90,10 +122,10 @@ end
 
 if ( all(passDir) )
     % All tests have passed. Yay!
-    fprintf('All tests passed in %4.4fs\n', sum(timeDir));
+    fprintf('All tests passed in %4.4fs.\n', sum(timeDir));
 
 else
-    % There's been a failure. 
+    % There's been a failure. :(
 
     % List the directories which failed.
     if ( sum(~passDir) == 1 )
@@ -122,7 +154,7 @@ end
 
 end
 
-function [passFile, timeFile, failFile] = runTestsInDirectory(testDir)
+function [passFile, timeFile, failFile] = runTestsInDirectory(testDir, quietMode)
 %RUNTESTSINDIRECTORY   Run all the tests in the given directory.
 %   RUNTESTSINDIRECTORY(TESTDIR) will change the current working directory to
 %   TESTDIR, locate all the *.m files within it using dir, and execute each of
@@ -132,6 +164,10 @@ function [passFile, timeFile, failFile] = runTestsInDirectory(testDir)
 %
 %   If all the tests in TESTDIR pass, then the total execution time for this
 %   directory is also printed to screen.
+
+if ( nargin < 2 )
+    quietMode = false;
+end
 
 % Store the current directory: (We will return here when we're done.)
 currDir = pwd();
@@ -156,9 +192,17 @@ try % Note, we try-catch as we've CD'd and really don't want to end up elsewhere
     for k = 1:numFiles
         % Next file to test: (.m extension is removed).
         testFile = testFiles{k}(1:end-2);
-        printTestInfo(testDir, testFile, k, maxLength);
-        [passFile(k), timeFile(k), resultStr{k}] = runTest(testFile);
-        fprintf([resultStr{k} '\n']);
+        if ( ~quietMode )
+            printTestInfo(testDir, testFile, k, maxLength);
+            [passFile(k), timeFile(k), resultStr{k}] = runTest(testFile);
+            fprintf([resultStr{k} '\n']);
+        else
+            [passFile(k), timeFile(k), resultStr{k}] = runTest(testFile);
+            if ( ~passFile(k) )
+                printTestInfo(testDir, testFile, k, maxLength);
+                fprintf([resultStr{k} '\n']);
+            end
+        end
     end
 catch ME
     % We failed. Return to the starting directory and rethrow the error:
@@ -214,7 +258,6 @@ ws = repmat(' ', 1, maxLength - length(testFile) - 1); % Whitespace.
 fprintf('  Test #%3.3d: %s ...%s', k, link, ws);       % Print to screen.
 
 end
-
 
 function [pass, time, resultStr] = runTest(testFile)
 %RUNTEST Runs the given test file.
