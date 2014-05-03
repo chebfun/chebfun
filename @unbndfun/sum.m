@@ -81,7 +81,9 @@ elseif ( issing(g) ) % Cases for ONEFUN has singularities at the end points.
     integrand = g.onefun.*forDer;
     
     % Simplify the exponents:
-    integrand = cancelExponents(integrand);
+    if ( isa(integrand, 'singfun') )
+        integrand = cancelExponents(integrand);
+    end
     
     % Call the sum at ONEFUN level.
     out = sum(integrand);
