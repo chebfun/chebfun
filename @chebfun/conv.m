@@ -96,6 +96,9 @@ end
 function f = myplus(f, g)
 % Modified PLUS() which pads with zeros to fulfil domain requirements.
 
+% Tidy the domains:
+[f, g] = tweakDomain(f, g);
+
 % f is always on the largest possible domain. g is on a subdomain of f:
 [c, d] = domain(g);    
 fTmp = restrict(f, [c, d]); % f{c, d}
