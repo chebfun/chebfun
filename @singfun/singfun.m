@@ -218,6 +218,9 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         % True if any element of a SINGFUN is a nonzero number, ignoring NaN.
         a = any(f, dim)
 
+        %Cancel the negative exponents of a SINGFUN.
+        f = cancelExponents(f)
+
         % Convert an array of ONEFUN objects into an array-valued ONEFUN.
         f = cell2mat(f)
         
