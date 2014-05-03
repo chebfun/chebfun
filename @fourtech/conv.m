@@ -55,9 +55,13 @@ elseif ( nf < ng )
     % Increase the length of f (via PROLONG):
     f = prolong(f, ng);
 end
+n = size(f.coeffs,1);
+f = prolong(f,2*n);
+g = prolong(g,2*n);
+
 % Convolution is just multiplication of the Fourier coefficients.
 % Shift g horizontally to -pi.
-f.values = ifft(fft(f.values).*fft(feval(g,fourierpts(size(g,1))+pi)));
+f.values = ifft(fft(f.values).*fft(feval(g,fourierpts(size(g,1))+1)));
 f.coeffs = f.vals2coeffs(f.values);
 % Update the vscale
 f.vscale = max(abs(f.values), [], 1);
