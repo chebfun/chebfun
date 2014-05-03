@@ -27,7 +27,7 @@ function h = conv(f, g, flag)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 %
-% [1] N. Hale and A. Townsend, "An Algorithm for the convolution of Legendre
+% [1] N. Hale and A. Townsend, "An algorithm for the convolution of Legendre
 % series", (To appear in SISC)
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -110,6 +110,8 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function h = oldConv(f, g)
+% The old convolution algorithm based on quadrature. See section 2 of [1] for a
+% description of the algorithm. 
 
 % Find all breakpoints in the convolution:
 [A, B] = meshgrid(f.domain, g.domain);
