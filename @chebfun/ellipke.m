@@ -18,11 +18,11 @@ function [k, e] = ellipke(m, pref)
 % Choose a tolerance:
 tol = get(m, 'epslevel');
 if ( nargin == 1 )
-    pref = chebpref();
+    pref = chebfunpref();
     tol = max(pref.techPrefs.eps, tol);
 elseif ( isnumeric(pref) )
     tol = max(pref, tol);
-    pref = chebpref();
+    pref = chebfunpref();
     pref.techPrefs.eps = tol;
 else
     tol = max(pref.techPrefs.eps, tol);

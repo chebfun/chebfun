@@ -879,7 +879,7 @@ function [xroots, yroots] = roots_marchingSquares( f )
 
 fx = f.components{1}; 
 fy = f.components{2};
-prefs = chebpref; 
+prefs = chebfunpref; 
 tol = prefs.eps;
 num = 0; 
 r = zeros(1,2); 

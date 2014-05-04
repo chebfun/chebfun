@@ -16,7 +16,7 @@ end
 
 % Obtain preferences:
 if ( nargin < 2 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Add breaks at the roots of f:

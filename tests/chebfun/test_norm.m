@@ -4,7 +4,7 @@ function pass = test_norm(pref)
 
 % Obtain preferences.
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Check empty case.

@@ -20,7 +20,7 @@ classdef classicfun < fun % (Abstract)
 %   HSCALE defaults to 1.
 %
 %   CLASSICFUN.CONSTRUCTOR(OP, DOMAIN, VSCALE, HSCALE, PREF) overrides the default
-%   behavior with that given by the CHEBPREF object PREF. See CHEBPREF for
+%   behavior with that given by the CHEBFUNPREF object PREF. See CHEBFUNPREF for
 %   details.
 %
 %   CLASSICFUN.CONSTRUCTOR(VALUES, DOMAIN, VSCALE, HSCALE, PREF) returns a CLASSICFUN object
@@ -29,7 +29,7 @@ classdef classicfun < fun % (Abstract)
 %
 % See ONEFUN for further documentation of the ONEFUN class.
 %
-% See also CHEBPREF, ONEFUN, BNDFUN, UNBNDFUN.
+% See also CHEBFUNPREF, ONEFUN, BNDFUN, UNBNDFUN.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -80,9 +80,9 @@ classdef classicfun < fun % (Abstract)
             
             % Obtain preferences if none given:
             if ( nargin < 5 )
-                pref = chebpref();
+                pref = chebfunpref();
             else
-                pref = chebpref(pref);
+                pref = chebfunpref(pref);
             end
             
             % Get domain if none given:

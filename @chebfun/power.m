@@ -17,7 +17,7 @@ if ( isempty(f) || isempty(b) )
 end
 
 if ( nargin < 3 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% CHEBFUN .^ CHEBFUN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 

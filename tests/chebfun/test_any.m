@@ -3,7 +3,7 @@
 function pass = test_any(pref)
 
 if ( nargin <  1 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Enable breakpoint detection.

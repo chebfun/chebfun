@@ -3,7 +3,7 @@ function pass = test_chebfun2v_ctor( pref )
 % operations. 
 
 if ( nargin < 1 ) 
-    pref = chebpref; 
+    pref = chebfunpref; 
 end 
 
 pass = 1; 

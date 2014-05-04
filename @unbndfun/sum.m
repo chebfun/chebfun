@@ -13,7 +13,7 @@ dom = g.domain;
 
 % Get the fun class preference if no preference is passed.
 if ( nargin < 2 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Get the function values at the end of the domain. Note that the end point of

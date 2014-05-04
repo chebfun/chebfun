@@ -3,7 +3,7 @@
 function pass = test_poly(pref)
 
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 %% Test POLY on [-1 1]:

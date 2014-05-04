@@ -3,7 +3,7 @@
 function pass = test_feval(pref)
 
 if ( nargin < 1 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 %%
 f = bndfun(@sin);

@@ -14,7 +14,7 @@ function F = besselj(nu, F, scale, pref)
 % See http://www.chebfun.org for Chebfun information.
 
 if ( nargin < 4 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 if ( nargin < 3 ) 
     scale = 0;
