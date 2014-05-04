@@ -218,6 +218,9 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         % True if any element of a SINGFUN is a nonzero number, ignoring NaN.
         a = any(f, dim)
 
+        % Cancel the negative exponents of a SINGFUN.
+        f = cancelExponents(f)
+
         % Convert an array of ONEFUN objects into an array-valued ONEFUN.
         f = cell2mat(f)
         
@@ -390,16 +393,16 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
     
     %% STATIC METHODS IMPLEMENTED BY THIS CLASS.
     methods ( Static = true )
-        % smooth fun constructor
+        % SmoothPart constructor
         s = constructSmoothPart( op, vscale, hscale, pref )
         
-        % method for finding the order of singularities
+        % Method for finding the order of singularities
         exponents = findSingExponents( op, singType )
         
-        % method for finding integer order singularities, i.e. poles
+        % Find integer order singularities, i.e. poles
         poleOrder = findPoleOrder( op, SingEnd )
         
-        % method for finding fractional order singularities (+ve or -ve).
+        % Finding fractional order singularities (+ve or -ve).
         branchOrder = findSingOrder( op, SingEnd )
         
         % Make a SINGFUN (constructor shortcut):
