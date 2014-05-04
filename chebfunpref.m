@@ -686,7 +686,7 @@ classdef chebfunpref < chebpref
                 factoryPrefs.singPrefs.exponents = [];
                 factoryPrefs.singPrefs.singType = {};
             factoryPrefs.enableDeltaFunctions = false;
-                factoryPrefs.deltaPrefs.deltaTol = 1e-11;
+                factoryPrefs.deltaPrefs.deltaTol = 1e-9;
                 factoryPrefs.deltaPrefs.proximityTol = 1e-11;
             factoryPrefs.scale = 0;
             factoryPrefs.tech = 'chebtech';
