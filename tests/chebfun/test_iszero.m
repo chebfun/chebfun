@@ -1,7 +1,7 @@
 function pass = test_iszero(pref)
 
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Test scalars:

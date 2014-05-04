@@ -69,7 +69,7 @@ nIter = 0;
 
 %%
 % Tolerance for exponents:
-tol = chebpref().singPrefs.exponentTol;
+tol = chebfunpref().singPrefs.exponentTol;
 
 % Maximum number of iterations allowed:
 maxIter = 100; 

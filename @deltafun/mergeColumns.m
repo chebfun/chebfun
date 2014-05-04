@@ -7,7 +7,7 @@ function [A, v] = mergeColumns(A, v, pref)
 
 % Get the tolerance:
 if ( nargin < 3 || isempty(pref) )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 tol = pref.deltaPrefs.proximityTol;
 

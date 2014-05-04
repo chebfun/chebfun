@@ -31,13 +31,13 @@ function [x, w, v] = chebpts(n, dom, type)
 if ( nargin == 2 )
     if ( length(dom) == 1 )
         type = dom;
-        dom = chebpref().domain;
+        dom = chebfunpref().domain;
     else
         type = chebtech.techPref().gridType;
     end
 end
 if ( nargin == 1 )
-    dom = chebpref().domain;
+    dom = chebfunpref().domain;
     type = chebtech.techPref().gridType;
 end
 

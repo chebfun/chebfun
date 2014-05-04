@@ -1,7 +1,7 @@
 function pass = test_sqrt(pref)
 
 if ( nargin == 0 ) 
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Define a domain:

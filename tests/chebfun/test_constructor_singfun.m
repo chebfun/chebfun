@@ -3,7 +3,7 @@
 function pass = test_constructor_singfun(pref)
 
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 %% Specify the singularity by passing the exact exponents to preferences:
@@ -70,7 +70,7 @@ pow = -0.5;
 op = @(x) (x - dom(1)).^pow.*sin(x);
 
 % specify the singularity in preference:
-pref = chebpref();
+pref = chebfunpref();
 pref.singPrefs.singType = {'sing', 'none'};
 
 % construction:
@@ -127,7 +127,7 @@ pow = -1;
 op = @(x) (x - dom(1)).^pow.*sin(x);
 
 % specify the singularity in preference:
-pref = chebpref();
+pref = chebfunpref();
 pref.singPrefs.singType = {'pole', 'none'};
 
 % construction:
@@ -183,7 +183,7 @@ pow = -0.5;
 op = @(x) (x - dom(1)).^pow.*sin(x);
 
 % specify the singularity in preference:
-pref = chebpref();
+pref = chebfunpref();
 pref.singPrefs.singType = {'sing', 'none'};
 
 % construction:
@@ -233,7 +233,7 @@ pow = -1;
 op = @(x) (x - dom(1)).^pow.*sin(x);
 
 % specify the singularity in preference:
-pref = chebpref();
+pref = chebfunpref();
 pref.singPrefs.singType = {'pole', 'none'};
 
 % construction:

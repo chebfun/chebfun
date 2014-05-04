@@ -4,7 +4,7 @@ function pass = test_innerProduct(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Set a domain
@@ -52,7 +52,7 @@ dom = [1 Inf];
 
 opf = @(x) x;
 opg = @(x) exp(-x);
-pref = chebpref();
+pref = chebfunpref();
 pref.singPrefs.exponents = [0 1];
 f = chebfun(opf, dom, pref);
 g = chebfun(opg, dom);

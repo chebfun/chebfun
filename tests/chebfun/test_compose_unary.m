@@ -4,7 +4,7 @@ function pass = test_compose_unary(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Create preference structure with splitting enabled.

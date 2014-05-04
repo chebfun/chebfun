@@ -8,7 +8,7 @@ function f = simplifyDeltas(f, pref)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin < 2 || isempty(pref) )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 deltaLoc = f.deltaLoc;

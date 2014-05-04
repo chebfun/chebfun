@@ -2,7 +2,7 @@ function pass = test_rank( pref )
 % Try some pretty functions and ensure k <= min(m,n)
 
 if ( nargin < 1 ) 
-    pref = chebpref; 
+    pref = chebfunpref; 
 end 
 
 tol = pref.cheb2Prefs.eps; 

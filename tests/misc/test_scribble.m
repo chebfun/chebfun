@@ -3,7 +3,7 @@
 function pass = test_scribble(pref)
 
 if ( nargin < 1 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Save the current warning state and then clear it in case scribble() issued a

@@ -26,7 +26,7 @@ if ( nargin == 0 )
     set(0, 'defaultlinemarkersize', 15); 
     format compact
     format long
-    chebpref.setDefaults('factory');
+    chebfunpref.setDefaults('factory');
     
 elseif ( any(strcmpi(flag, {'reset', 'factory'})) )
     % Revert to MATLAB factory values.
@@ -38,7 +38,7 @@ elseif ( any(strcmpi(flag, {'reset', 'factory'})) )
     set(0, 'defaultlinelinewidth',  'factory');
     set(0, 'defaultpatchlinewidth', 'factory');
     set(0, 'defaultlinemarkersize', 'factory');
-    chebpref.setDefaults('factory');
+    chebfunpref.setDefaults('factory');
     
 end
 

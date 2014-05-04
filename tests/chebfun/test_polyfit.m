@@ -3,7 +3,7 @@
 function pass = test_polyfit(pref)
 
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 seedRNG(7681);

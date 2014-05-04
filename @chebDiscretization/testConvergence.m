@@ -24,7 +24,7 @@ numInt = numel(d) - 1;
 isDone = false(1, numInt);
 epsLevel = 0;
 
-pref = chebpref();
+pref = chebfunpref();
 pref.eps = 1e-14;
 for i = 1:numInt
     %    f = chebtech.constructor(values{i},u.vscale,hscale(i));
