@@ -102,7 +102,7 @@ tol = epslevel(f)*hscale(f);
 
 p.enableDeltaFunctions = true;
 pref = chebfunpref(p);
-tol = pref.deltaPrefs.deltaTol; % TODO: Which tol is correct?
+deltaTol = pref.deltaPrefs.deltaTol; % TODO: Which tol is correct?
 
 % Loop n times for nth derivative:
 for j = 1:n
@@ -134,15 +134,14 @@ end
         deltaMag = zeros(numFuns + 1, numCols);
         for l = 1:(numFuns - 1)
             jmp = get(funs{l+1}, 'lval') - get(funs{l}, 'rval');
-            scl = 0.5*(vs(l) + vs(l+1,:));
-            if ( any(abs(jmp) > tol*scl) )
+            if ( any(abs(jmp) > deltaTol ) )
                 deltaMag(l+1, :) = jmp;
             end
         end
     end
 
     function f = addDeltas(f, deltaMag)
-        if ( any(abs(deltaMag(:)) > tol) )
+        if ( any(abs(deltaMag(:)) > deltaTol) )
             % [TODO]: This does not handle array-valuedness at the moment.
             if ( size(deltaMag, 2) > 1 )
                 warning('CHEBFUN:diff:dirac:array', ...
