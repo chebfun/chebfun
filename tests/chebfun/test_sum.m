@@ -181,4 +181,11 @@ I2 = sum(g);
 err2 = abs(I2 - IExact);
 pass(29) = err2 < 1e10*get(f,'epslevel')*get(f,'vscale');
 
+% Function on [-Inf Inf]:
+f = chebfun('exp(-x.^2/16).*(1+.2*cos(10*x))',[-inf,inf]);
+I = sum(f);
+IExact = 7.0898154036220641;
+err = abs(I - IExact);
+pass(30) = err < 1e9*get(f,'epslevel')*get(f,'vscale');
+
 end

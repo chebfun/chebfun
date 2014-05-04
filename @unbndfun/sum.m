@@ -21,7 +21,7 @@ end
 vends = [get(g, 'lval'), get(g, 'rval')];
 
 % Get the epslevel and vscale of the function g.
-tol = 1e1*get(g, 'epslevel')*get(g, 'vscale');
+tol = 1e2*get(g, 'epslevel')*get(g, 'vscale');
 
 if ( ~issing(g) )
     
