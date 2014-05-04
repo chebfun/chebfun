@@ -30,8 +30,8 @@ for i = 1:numInt
     %    f = chebtech.constructor(values{i},u.vscale,hscale(i));
     % TODO: The line above below is a hack, we should be using plataeuCheck? TAD
     % to check. AB 27/4/14.
-%     [isDone(i),neweps] = classicCheck(u.funs{i}.onefun, pref);
-    [isDone(i),neweps] = plateauCheck(coeffs{i},u.vscale);
+%    [isDone(i),neweps] = classicCheck(u.funs{i}.onefun, pref);
+     [isDone(i),neweps] = plateauCheck(coeffs{i},u.vscale);
     epsLevel = max( epsLevel, neweps );
 end
 
@@ -87,7 +87,7 @@ elseif ( n < 17 )
 else
     %% Apply the plateau test.
     ishappy = false;
-    thresh = 1e-6;  % demand at least this much accuracy
+    thresh = log(1e-6);  % demand at least this much accuracy
     
     % Convergence is usually not far from linear in the log scale.
     logabs = log(absCoeff);
@@ -100,10 +100,20 @@ else
     % Goal: Look for a sustained leveling off in the decrease of the
     % coefficients.
     
+    % Symmetries can cause one or more consecutive coefficients to be zero,
+    % and we only care about the nonzero ones. Use a windowed max to remove
+    % the small values.
+    % TODO: Use the van Herk filter to do this more efficiently.
+    winsize = 6;
+    n = n - winsize+1;
+    % This makes index = [1,2,...,w; 2,3,...,w+1; ...; n,...,w+n-1 ]:
+    index = bsxfun(@plus, (1:n)', 0:winsize-1);  
+    logabs = max(logabs(index),[],2);
+    
     % Start with a low pass filter that introduces a lag.
-    lag = 8;
-    LPA = [1 zeros(1,lag-1) -2 zeros(1,lag-1) 1]/(lag^2);
-    LPB = [1 -2 1];
+    lag = 6;
+    LPA = [1, zeros(1,lag-1), -2, zeros(1, lag-1) 1]/(lag^2);
+    LPB = [1, -2, 1];
     smoothLAC = filter( LPA, LPB, logabs );
     
     % If too little accuracy has been achieved, do nothing.
@@ -127,13 +137,13 @@ else
     
     % Find the first run of 5 consecutive slow hits.
     first = find( slow(5:end) - slow(1:end-4) == 4, 1 );  % may be empty
-    cutoff = slow(first);  % may be empty
+    cutoff = slow(first);  % may be empty, will give false next
     
     % If the cut location is within the coefficient sequence, we're done.
     if ( cutoff < n )
         ishappy = true;
         % Use the information from the cut to deduce an eps level.
-        window = min( n, cutoff+(1:4) );
+        window = min( n, cutoff + (1:4) );
         epslevel = exp( max( logabs(window) ) );
     end
     
