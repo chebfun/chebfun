@@ -34,15 +34,23 @@ else
         negIdx = deltaFuns < 0;
         
         if ( isempty(negIdx) )
+            % If there is no delta function with negative magnitude, return
+            % the location of the first delta function.
             locMin = deltaLoc(1);
         else
+            % If there is a delta function with negative magnitude, return the
+            % location of first such occurance.
             locMin = deltaLoc(negIdx);
             locMin = locMin(1);
         end
         
         if ( isempty(posIdx) )
+            % If there is no delta function with positive magnitude, return
+            % the location of the first delta function.            
             locMax = deltaLoc(1);
         else
+            % If there is a delta function with positive magnitude, return the
+            % location of first such occurance.            
             locMax = deltaLoc(posIdx);
             locMax = locMax(1);
         end

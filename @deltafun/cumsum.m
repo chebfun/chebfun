@@ -110,11 +110,7 @@ else
         end
         
         %% Cell Array case:
-        
-        % Calculate the cumulative jump vector, entries of this vector will be used
-        % to off-set the cumsum by the correct value.
-        %cumJump = cumsum(jumpVals);
-        
+               
         % Add end points to existing break points:
         breakPts = sort(union(f.funPart.domain, jumpLocs));
         
