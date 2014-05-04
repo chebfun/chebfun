@@ -3,7 +3,7 @@
 function pass = test_null(pref)
 
 if ( nargin < 1 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Check some simple examples.

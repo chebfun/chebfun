@@ -3,7 +3,7 @@
 function pass = test_erfX(pref)
 
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 F = {@erf, @erfinv, @erfc,  @erfcx, @(x) erfcinv(x+1)};

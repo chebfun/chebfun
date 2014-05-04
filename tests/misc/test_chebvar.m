@@ -1,7 +1,7 @@
 function pass = test_chebvar(pref)
 
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 chebvar x

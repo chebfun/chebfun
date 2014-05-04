@@ -2,7 +2,7 @@ function F = sech(F, varargin)
 %SECH   Hyperbolic secant of a CHEBFUN.
 %   SECH(F) computes the hyperbolic secant of the CHEBFUN F.
 %
-%   SECH(F, PREF) does the same but uses the CHEBPREF object PREF when computing
+%   SECH(F, PREF) does the same but uses the CHEBFUNPREF object PREF when computing
 %   the composition.
 %
 % See also ASECH.

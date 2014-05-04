@@ -9,7 +9,7 @@ function s = constructSmoothPart(op, vscale, hscale, pref)
 % See http://www.chebfun.org for Chebfun information.
 
 if ( isempty(pref) )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 pref.techPrefs.sampleTest = 0;

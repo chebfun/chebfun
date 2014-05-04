@@ -1,7 +1,7 @@
 function pass = test_chebpoly(pref)
 
 if ( nargin == 0 ) 
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Test on piecewise-smooth chebfun

@@ -40,7 +40,7 @@ end
 g = cell(1, numel(s)-1);
 
 % Get preferences:
-pref = chebpref();
+pref = chebfunpref();
 pTol = pref.deltaPrefs.proximityTol;
 
 % Loop over each of the new subintervals, make a DELTAFUN and store in a cell:

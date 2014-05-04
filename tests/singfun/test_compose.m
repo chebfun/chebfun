@@ -3,7 +3,7 @@
 function pass = test_compose(pref)
 
 if ( nargin < 1 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Generate a few random points to use as test values.
@@ -14,7 +14,7 @@ x = 2*(1-10^(-d)) * rand(100, 1) - (1-10^(-d));
 % Composition of two SINGFUNs - OP(F, G):
 f = singfun(@(x) sin(x)./(x+1), [-1 0], [], [], [], []);
 g = singfun(@(x) cos(x)./(x+1), [-1 0], [], [], [], []);
-pref = chebpref();
+pref = chebfunpref();
 pref.singPrefs.exponents = [-1 0];
 h = compose(f, @plus, g, pref);
 op = @(x) (sin(x)+cos(x))./(x+1);

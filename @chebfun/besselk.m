@@ -9,7 +9,7 @@ function F = besselk(nu, F, scale, pref)
 %         0 - (default) is the same as BESSELK(NU, F),
 %         1 - scales K_NU(F) by exp(F)).
 %
-%   K = BESSELK(NU, F, SCALE, PREF) uses the CHEBPREF object PREF when
+%   K = BESSELK(NU, F, SCALE, PREF) uses the CHEBFUNPREF object PREF when
 %   building the CHEBFUN K.
 %
 % See also AIRY, BESSELH, BESSELI, BESSELJ, BESSELY.
@@ -18,7 +18,7 @@ function F = besselk(nu, F, scale, pref)
 % See http://www.chebfun.org for Chebfun information.
 
 if ( nargin < 4 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 if ( nargin < 3 )
     scale = 0;

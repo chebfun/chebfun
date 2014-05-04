@@ -4,7 +4,7 @@ function pass = test_real(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Check for empty cases:

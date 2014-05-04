@@ -3,7 +3,7 @@ function pass = test_chebfun2v_roots1( pref )
 % Uncomment tests if harder tests should be executed.
 
 if ( nargin < 1 ) 
-    pref = chebpref; 
+    pref = chebfunpref; 
 end 
 tol = 1e3 * pref.cheb2Prefs.eps; 
 j = 1;

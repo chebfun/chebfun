@@ -3,7 +3,7 @@
 function pass = test_getValuesAtBreakpoints(pref)
 
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 f = chebfun(@(x) x, [-1 0 .5 1]);

@@ -1,7 +1,7 @@
 function pass = test_mean(pref)
 
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 %% Two arguments:

@@ -22,7 +22,7 @@ if ( isnumeric(f) && ~any(f) )
 end
 
 if ( nargin < 3 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% CHEBFUN ./ CHEBFUN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 

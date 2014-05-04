@@ -2,7 +2,7 @@ function pass = test_chebfun2_integralEqns( pref )
 % Test fred and volt
 
 if ( nargin == 0) 
-    pref = chebpref; 
+    pref = chebfunpref; 
 end
 
 tol = 1000*pref.cheb2Prefs.eps; 

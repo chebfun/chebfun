@@ -4,7 +4,7 @@ function pass = test_minandmax(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % The order of the exponents:
