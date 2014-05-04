@@ -52,7 +52,6 @@ else
     end
 end
 
-
 % Extract the domains of f and g:
 domF = funF.domain;
 domG = funG.domain;
@@ -78,24 +77,22 @@ h(zeroIndices) = [];
 
 % Contributions due to deltafunctions in F:
 % df * (g + dg/2):
-if( ~isempty(deltaLocF))
-    [m, n] = size(deltaMagF);
-    % Loop through the delta function matrix:
-    for i = 1:m
-        for j = 1:n
-            if ( abs(deltaMagF(i, j)) > deltaTol )
-                % Take appropriate derivative, scale and shift the function:
-                hij = deltaMagF(i, j) * changeMap(diff(g,i-1), deltaLocF(j) + [c d]);
-                % The half below is to make sure that delta-delta interaction
-                % is not counted twice:                
-                if ( isa(hij, 'deltafun') )
-                    hij.deltaMag = hij.deltaMag/2;
-                end
-                
-                % If the result is non-zero, append it:
-                if ( ~iszero(hij) )
-                    h = [h, {hij}]; %#ok<AGROW>
-                end
+[m, n] = size(deltaMagF);
+% Loop through the delta function matrix:
+for i = 1:m
+    for j = 1:n
+        if ( abs(deltaMagF(i, j)) > deltaTol )
+            % Take appropriate derivative, scale and shift the function:
+            hij = deltaMagF(i, j) * changeMap(diff(g,i-1), deltaLocF(j) + [c d]);
+            % The half below is to make sure that delta-delta interaction
+            % is not counted twice:                
+            if ( isa(hij, 'deltafun') )
+                hij.deltaMag = hij.deltaMag/2;
+            end
+
+            % If the result is non-zero, append it:
+            if ( ~iszero(hij) )
+                h = [h, {hij}]; %#ok<AGROW>
             end
         end
     end
@@ -103,25 +100,23 @@ end
 
 % Contributions due to delta functions in G:
 % dg * (f + df/2);
-if ( ~isempty(deltaLocG) )
-    [m, n] = size(deltaMagG);
-    % Loop through the delta function matrix:    
-    for i = 1:m
-        for j = 1:n
-            if ( abs(deltaMagG(i, j)) > deltaTol )
-                % Take appropriate derivative, scale and shift the function
-                hij = deltaMagG(i, j) * changeMap(diff(f,i-1), deltaLocG(j) + [a b]);
-                % The half below is to make sure that delta-delta interaction
-                % is not counted twice:
-                if ( isa(hij, 'deltafun') )
-                    hij.deltaMag = hij.deltaMag/2;
-                end
-                
-                % If the result is non-zero, append it:
-                if ( ~iszero(hij) )
-                    h = [h, {hij}]; %#ok<AGROW>
-                end                
+[m, n] = size(deltaMagG);
+% Loop through the delta function matrix:    
+for i = 1:m
+    for j = 1:n
+        if ( abs(deltaMagG(i, j)) > deltaTol )
+            % Take appropriate derivative, scale and shift the function
+            hij = deltaMagG(i, j) * changeMap(diff(f,i-1), deltaLocG(j) + [a b]);
+            % The half below is to make sure that delta-delta interaction
+            % is not counted twice:
+            if ( isa(hij, 'deltafun') )
+                hij.deltaMag = hij.deltaMag/2;
             end
+
+            % If the result is non-zero, append it:
+            if ( ~iszero(hij) )
+                h = [h, {hij}]; %#ok<AGROW>
+            end                
         end
     end
 end
