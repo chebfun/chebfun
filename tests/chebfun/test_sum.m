@@ -146,7 +146,6 @@ I = sum(f);
 I_exact = 0.17330750941063138;
 pass(26) = ( abs(I-I_exact) < 2*get(f, 'epslevel')*abs(I_exact) );
 
-
 %% Test for functions defined on unbounded domain:
 
 % Functions on [-inf inf]:
@@ -162,5 +161,24 @@ I = sum(f);
 IExact = 1.364971769155161;
 err = abs(I - IExact);
 pass(27) = err < 1e7*get(f,'epslevel')*get(f,'vscale');
+
+% Functions on [0 inf]:
+
+% Set the domain:
+dom = [0 Inf];
+
+op1 = @(x) x.*exp(-x);
+f = chebfun(op1, dom);
+I1 = sum(f);
+
+IExact = 1;
+err1 = abs(I1 - IExact);
+pass(28) = err1 < 2e5*get(f,'epslevel')*get(f,'vscale');
+
+x = chebfun('x', dom);
+g = x.*exp(-x);
+I2 = sum(g);
+err2 = abs(I2 - IExact);
+pass(29) = err2 < 1e10*get(f,'epslevel')*get(f,'vscale');
 
 end
