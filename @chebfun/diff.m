@@ -124,7 +124,7 @@ for j = 1:n
         p.enableDeltaFunctions = true;
         pref = chebpref(p);
         tol = pref.deltaPrefs.deltaTol;
-        if ( any(abs(deltaMag(k, :) > tol)) || any(abs(deltaMag(k+1, :) > tol)) )
+        if ( any(abs(deltaMag(k, :)) > tol) || any(abs(deltaMag(k+1, :)) > tol) )
             % [TODO]: This does not handle array valuedness at the moment.
             % Delta functions are only possible at the ends of each domain:
             deltaLoc = funs{k}.domain;
