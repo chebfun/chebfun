@@ -132,7 +132,6 @@ for j = 1:n
         end
     end
     
-
     % Compute new function values at breaks using JUMPVALS():
     pointValues = chebfun.getValuesAtBreakpoints(funs);
     
