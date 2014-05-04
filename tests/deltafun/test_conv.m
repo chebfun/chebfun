@@ -3,7 +3,7 @@
 function pass = test_conv(pref)
 
 if (nargin < 1)
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 %%

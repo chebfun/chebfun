@@ -17,7 +17,7 @@ function chebvar(varargin)
 %     chebvar x
 %     f = sin(x)
 %
-% See also CHEBFUN, CHEBPREF.
+% See also CHEBFUN, CHEBFUNPREF.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
@@ -46,7 +46,7 @@ if ( ~all(isVar) )
 end
 
 % Acquire some preferences:
-pref = chebpref();
+pref = chebfunpref();
 if ( isempty(dom) )
     dom = pref.domain;
 end

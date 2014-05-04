@@ -5,7 +5,7 @@ function pass = test_qr(pref)
 % [TODO]: This test needs to be much more extensive.
 
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 %% Test a smooth CHEBFUN:

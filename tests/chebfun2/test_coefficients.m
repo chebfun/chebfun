@@ -3,7 +3,7 @@ function pass = test_Coefficients( pref )
 % coefficients correctly.
 
 if ( nargin < 1 ) 
-    pref = chebpref; 
+    pref = chebfunpref; 
 end 
 tol = 100 * pref.cheb2Prefs.eps; 
 

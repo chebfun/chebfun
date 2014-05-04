@@ -2,7 +2,7 @@ function pass = test_chebfun2_sum( pref )
 % Test for integration of a fun2 object. 
 
 if ( nargin < 1 ) 
-    pref = chebpref; 
+    pref = chebfunpref; 
 end 
 
 tol = 100*pref.cheb2Prefs.eps; 

@@ -4,7 +4,7 @@ function pass = test_conv(pref)
 
 % Grab some preferences
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Construct a few CHEBFUN objects for the tests.

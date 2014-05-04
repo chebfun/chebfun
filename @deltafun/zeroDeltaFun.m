@@ -10,7 +10,7 @@ function s = zeroDeltaFun(domain)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin < 1 )
-    pref = chebpref();
+    pref = chebfunpref();
     domain = pref.domain;
 end
 

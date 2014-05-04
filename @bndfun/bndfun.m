@@ -19,7 +19,7 @@ classdef bndfun < classicfun
 %   defaults to 1.
 %
 %   BNDFUN(OP, DOMAIN, VSCALE, HSCALE, PREF) overrides the default behavior with
-%   that given by the preference structure PREF. See CHEBPREF for details.
+%   that given by the preference structure PREF. See CHEBFUNPREF for details.
 %
 %   BNDFUN(VALUES, DOMAIN, VSCALE, HSCALE, PREF) returns a BNDFUN object with a
 %   ONEFUN constructed by the data in the columns of VALUES (if supported by
@@ -27,7 +27,7 @@ classdef bndfun < classicfun
 %
 % See ONEFUN for further documentation of the ONEFUN class.
 %
-% See also CLASSICFUN, CHEBPREF, ONEFUN.
+% See also CLASSICFUN, CHEBFUNPREF, ONEFUN.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % BNDFUN Class Description:
@@ -59,9 +59,9 @@ classdef bndfun < classicfun
             
             % Obtain preferences if none given:
             if ( (nargin < 5) || isempty(pref))
-                pref = chebpref();
+                pref = chebfunpref();
             else
-                pref = chebpref(pref);
+                pref = chebfunpref(pref);
             end
             
             % Use default domain if none given. Otherwise, check whether the

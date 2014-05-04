@@ -3,7 +3,7 @@
 function pass = test_merge(pref)
 
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Test something easy (the example from docs):
@@ -44,7 +44,7 @@ dom = [-2 7];
 pow1 = -1;
 pow2 = -1;
 op = @(x) (x - dom(1)).^pow1.*sin(10*x).*(x - dom(2)).^pow2;
-pref = chebpref();
+pref = chebfunpref();
 pref.singPrefs.exponents = [-1 -1];
 f = chebfun(op, dom, pref);
 g = addBreaksAtRoots(f);

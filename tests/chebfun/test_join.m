@@ -3,7 +3,7 @@
 function pass = test_join(pref)
 
 if ( nargin < 1 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Generate a few random points in [-1 1] to use as test values.

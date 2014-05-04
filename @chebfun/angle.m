@@ -8,7 +8,7 @@ function p = angle(f, pref)
 % See http://www.chebfun.org for Chebfun information.
 
 if ( nargin < 2 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Call ATAN2():

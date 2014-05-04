@@ -31,7 +31,7 @@ deltaMag = f.deltaMag;
 deltaLoc = f.deltaLoc;
 
 % Get tolerance:
-pref = chebpref();
+pref = chebfunpref();
 deltaTol = pref.deltaPrefs.deltaTol;
 
 if ( ~anyDelta(f) )

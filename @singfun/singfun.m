@@ -95,10 +95,10 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
             % Check for preferences in the very beginning.
             if ( (nargin < 6) || isempty(pref) )
                 % Determine preferences if not given.
-                pref = chebpref();
+                pref = chebfunpref();
             else
                 % Merge if some preferences are given.
-                pref = chebpref(pref);
+                pref = chebfunpref(pref);
             end           
             
             %% Cases based on the number of arguments

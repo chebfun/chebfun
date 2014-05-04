@@ -62,7 +62,7 @@ c = domG(1);
 d = domG(end);
 
 % Get the threshold for deltafunctions:
-pref = chebpref();
+pref = chebfunpref();
 deltaTol = pref.deltaPrefs.deltaTol;
 
 % Compute the convolution of funParts and append it to the output cell:

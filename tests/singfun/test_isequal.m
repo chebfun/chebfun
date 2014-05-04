@@ -4,7 +4,7 @@ function pass = test_isequal(pref)
 
 % Get preferences if not given
 if ( nargin < 1 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 %%
