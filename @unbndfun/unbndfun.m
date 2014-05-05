@@ -16,7 +16,7 @@ classdef unbndfun < classicfun
 %   defaults to 1.
 %
 %   UNBNDFUN(OP, DOMAIN, VSCALE, HSCALE, PREF) overrides the default behavior
-%   with that given by the preference structure PREF. See CHEBPREF.
+%   with that given by the preference structure PREF. See CHEBFUNPREF.
 %
 %   UNBNDFUN(VALUES, DOMAIN, VSCALE, HSCALE, PREF) returns a UNBNDFUN object
 %   with a ONEFUN constructed by the data in the columns of VALUES (if supported
@@ -24,7 +24,7 @@ classdef unbndfun < classicfun
 %
 % See ONEFUN for further documentation of the ONEFUN class.
 %
-% See also FUN, CHEBPREF, ONEFUN.
+% See also FUN, CHEBFUNPREF, ONEFUN.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
@@ -59,9 +59,9 @@ classdef unbndfun < classicfun
             
             % Obtain preferences if none given:
             if ( (nargin < 5) || isempty(pref))
-                pref = chebpref();
+                pref = chebfunpref();
             else
-                pref = chebpref(pref);
+                pref = chebfunpref(pref);
             end
             
             % Use default domain if none given:

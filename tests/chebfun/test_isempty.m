@@ -1,7 +1,7 @@
 function pass = test_isempty(pref)
 
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 f = chebfun();

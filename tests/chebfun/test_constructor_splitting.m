@@ -4,7 +4,7 @@ function pass = test_constructor_splitting(pref)
 
 % Grab some preferences:
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 tol = 2000;

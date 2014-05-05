@@ -1,7 +1,7 @@
 function pass = test_chebpoly(pref)
 
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 f = singfun(@(x) sqrt(1-x));

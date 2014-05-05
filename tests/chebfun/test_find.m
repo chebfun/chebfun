@@ -3,7 +3,7 @@
 function pass = test_find(pref)
 
 if ( nargin < 1 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Check the empty case:

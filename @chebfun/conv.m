@@ -27,7 +27,7 @@ function h = conv(f, g, flag)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 %
-% [1] N. Hale and A. Townsend, "An Algorithm for the convolution of Legendre
+% [1] N. Hale and A. Townsend, "An algorithm for the convolution of Legendre
 % series", (To appear in SISC)
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -71,15 +71,17 @@ if ( (b - a) > (d - c) )
     return
 end
 
-% Initialize output:
-h = 0;
+% Initialize the output:
+h = chebfun(0, [a + c, b + d]);
 % Deal with piecewise CHEBFUN objects by looping over each of the interactions:
 for j = 1:numel(f.funs)
     for k = 1:numel(g.funs)
         % Compute the contribution of jth fun of f with kth fun of g:
         hjk = conv(f.funs{j}, g.funs{k});  
         % Add this contribution:
-        h = myplus(h, chebfun(hjk));
+        for i = 1:numel(hjk)
+            h = myplus(h, chebfun(hjk(i)));
+        end
     end
 end
 
@@ -91,26 +93,28 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function h = myplus(f, g)
+function f = myplus(f, g)
 % Modified PLUS() which pads with zeros to fulfil domain requirements.
 
-if ( isnumeric(f) )
-    h = f + g;
-else
-    [a, b] = domain(f);
-    [c, d] = domain(g);
-    dom = union([a, b], [c, d]);
-    h = chebfun(0, dom);
-    h = defineInterval(h, [a, b], f);        % h{a, b} = f;
-    hTmp = restrict(h, [c, d]);
-    h = defineInterval(h, [c, d], hTmp + g); % h{c, d} = h{c, d} + g;
-end
+% Tidy the domains:
+[f, g] = tweakDomain(f, g);
 
+% f is always on the largest possible domain. g is on a subdomain of f:
+[c, d] = domain(g);    
+fTmp = restrict(f, [c, d]); % f{c, d}
+f = defineInterval(f, [c, d], fTmp + g); % f{c, d} = f{c, d} + g;
+
+% Make sure that point values are not added twice:
+dom = domain(f);
+intDom = dom(2:end-1);
+f.pointValues(2:end-1) = 1/2*(feval(f, intDom.', 'left') + feval(f, intDom.', 'right'));
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function h = oldConv(f, g)
+% The old convolution algorithm based on quadrature. See section 2 of [1] for a
+% description of the algorithm. 
 
 % Find all breakpoints in the convolution:
 [A, B] = meshgrid(f.domain, g.domain);
@@ -125,7 +129,7 @@ hs = max(hscale(f), hscale(g));
 vs = 2*max([vscale(f), vscale(g)]);
 
 % Avoid resampling for speed up:
-p = chebpref();
+p = chebfunpref();
 p.enableBreakpointDetection = false;
 p.enableSingularityDetection = false;
 p.techPrefs.extrapolate = true;

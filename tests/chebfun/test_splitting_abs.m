@@ -3,7 +3,7 @@
 function pass = test_splitting_abs(pref)
 
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 pref.enableBreakpointDetection = true;

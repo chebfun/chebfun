@@ -59,7 +59,7 @@ else
     % out = OP(F,G).
     
     if ( nargin == 3 )       
-        pref = chebpref();
+        pref = chebfunpref();
     end
     
     % Call ONEFUN/COMPOSE():

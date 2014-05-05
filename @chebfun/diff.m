@@ -63,7 +63,6 @@ else
     end
 end
 
-
 end
 
 function f = diffFiniteDim(f, n)
@@ -91,7 +90,7 @@ end
 end
 
 function f = diffContinuousDim(f, n)
-% Differentiate along continous dimension (i.e., df/dx).
+% Differentiate along continuous dimension (i.e., df/dx).
 
 % Grab some fields from f:
 funs = f.funs;
@@ -101,39 +100,28 @@ numCols = size(f.funs{1}, 2);
 % Set a tolerance: (used for introducing Dirac deltas at jumps)
 tol = epslevel(f)*hscale(f);
 
+p.enableDeltaFunctions = true;
+pref = chebfunpref(p);
+deltaTol = pref.deltaPrefs.deltaTol; % TODO: Which tol is correct?
+
 % Loop n times for nth derivative:
 for j = 1:n
     vs = get(f, 'vscale-local'); 
     vs = vs(:);
 
     % Detect jumps in the original function and create new deltas.
-    deltaMag = zeros(numFuns + 1, numCols);
-    for k = 1:numFuns-1
-        jmp = get(funs{k+1}, 'lval') - get(funs{k}, 'rval');
-        scl = 0.5*(vs(k) + vs(k+1,:));
-        if ( any(abs(jmp) > tol*scl) )
-           deltaMag(k+1, :) = jmp;
-        end
-    end
+    deltaMag = getDeltaMag();
 
     % Differentiate each FUN in turn:
     for k = 1:numFuns
         funs{k} = diff(funs{k});
-        % If there is a delta function at the join, recreate the fun using the
-        % deltafun constructor:
-        p.enableDeltaFunctions = true;
-        pref = chebpref(p);
-        tol = pref.deltaPrefs.deltaTol;
-        if ( any(abs(deltaMag(k, :) > tol)) || any(abs(deltaMag(k+1, :) > tol)) )
-            % [TODO]: This does not handle array valuedness at the moment.
-            % Delta functions are only possible at the ends of each domain:
-            deltaLoc = funs{k}.domain;
-            funs{k} = fun.constructor(funs{k}, funs{k}.domain, [deltaMag(k)/2, deltaMag(k+1)/2], deltaLoc, pref);
-        end
+        
+        % If there is a delta function at the join, recreate the FUN using the
+        % DELTAFUN constructor:
+        funs{k} = addDeltas(funs{k}, deltaMag(k:k+1,:));
     end
     
-
-    % Compute new function values at breaks using JUMPVALS():
+    % Compute new function values at breaks:
     pointValues = chebfun.getValuesAtBreakpoints(funs);
     
     % Reassign data to f:
@@ -141,5 +129,28 @@ for j = 1:n
     f.pointValues = pointValues;
 
 end
+
+    function deltaMag = getDeltaMag()
+        deltaMag = zeros(numFuns + 1, numCols);
+        for l = 1:(numFuns - 1)
+            jmp = get(funs{l+1}, 'lval') - get(funs{l}, 'rval');
+            if ( any(abs(jmp) > deltaTol ) )
+                deltaMag(l+1, :) = jmp;
+            end
+        end
+    end
+
+    function f = addDeltas(f, deltaMag)
+        if ( any(abs(deltaMag(:)) > deltaTol) )
+            % [TODO]: This does not handle array-valuedness at the moment.
+            if ( size(deltaMag, 2) > 1 )
+                warning('CHEBFUN:diff:dirac:array', ...
+                    'No support here for array-valuedness at the moment.');
+                deltaMag = [0 ; 0];
+            end
+            % New delta functions are only possible at the ends of the domain:
+            f = fun.constructor(f, f.domain, deltaMag.'/2, f.domain, pref);
+        end
+    end
 
 end

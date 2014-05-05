@@ -52,7 +52,7 @@ end
 
 % Compute the derivative of the map: (Here we assume that the domains and
 % therefore the maps of f and g are identical.)
-pref = chebpref();
+pref = chebfunpref();
 pref.singPrefs.exponents = f.mapping.forDerExps;
 forDer = onefun.constructor(f.mapping.forDer, [], [], pref);
 

@@ -3,7 +3,7 @@ function g = inv(f, varargin)
 %   FINV = INV(F) attempts to compute the inverse of the monotonic CHEBFUN F.
 %
 %   FINV =INV(F, PREF) uses the preferences specified by the structure or
-%   CHEBPREF object PREF when constructing the inverse.
+%   CHEBFUNPREF object PREF when constructing the inverse.
 %
 %   FINV = INV(..., 'SPLITTING', 'ON') enables breakpoint detection locally for
 %   INV.  Setting this option (or the equivalent preference in PREF) is
@@ -84,11 +84,11 @@ opts.rangeCheck = false;
 opts.algorithm = 1;
 
 % Parse preference input:
-if ( (nargin > 1) && isa(varargin{1}, 'chebpref') )
+if ( (nargin > 1) && isa(varargin{1}, 'chebfunpref') )
     pref = varargin{1};
     varargin(1) = [];
 else
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Enable breakpoint detection if F is piecewise:

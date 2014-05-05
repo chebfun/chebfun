@@ -1,7 +1,7 @@
 function pass = test_innerProduct(pref)
 
 if ( nargin == 1 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Seed for random number:
@@ -30,7 +30,7 @@ dom = [1 Inf];
 
 opf = @(x) x;
 opg = @(x) exp(-x);
-pref = chebpref();
+pref = chebfunpref();
 pref.singPrefs.exponents = [0 1];
 f = unbndfun(opf, dom, [], [], pref);
 g = unbndfun(opg, dom);

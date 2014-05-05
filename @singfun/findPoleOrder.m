@@ -62,7 +62,7 @@ end
 % Test parameters
 % [TODO]: Should there be a field for this test?
 testRatio = 1.01; 
-maxPoleOrder = chebpref().singPrefs.maxPoleOrder;
+maxPoleOrder = chebfunpref().singPrefs.maxPoleOrder;
 
 poleOrder = 0;
 

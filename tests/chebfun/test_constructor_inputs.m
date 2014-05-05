@@ -1,7 +1,7 @@
 function pass = test_constructor_inputs(pref)
 
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % [TODO]: This test needs to be updated to include more exotic input options.
