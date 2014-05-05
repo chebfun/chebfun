@@ -36,19 +36,6 @@ function out = double2chebmatrix(dVec, residual)
 % Check the size of the residual (the output the dimensions of the CHEBOP).
 [numRow, numCol] = size(residual);
 
-% Check whether dimensions match:
-if ( ~all(size(dVec) == [numRow, numCol]) )
-    if ( all(size(dVec) == [numCol, numRow]) )
-        warning('CHEBFUN:CHEBOP:double2chebmatrix', ...
-            ['Vector input does not match output dimensions of operator. '...
-            'Transposing.']);
-        dVec = dVec.';
-    else
-        error('CHEBFUN:CHEBOP:double2chebmatrix', ...
-            'Dimensions mismatch.');
-    end
-end
-
 % Prepare to convert the RHS to a CHEBMATRIX:
 outBlocks = cell(numRow, numCol);
 

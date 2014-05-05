@@ -17,8 +17,11 @@ function [u, info] = solvebvpLinear(L, rhs, pref, displayInfo)
 %
 % Observe that when this method is called, any affine parts of the original
 % CHEBOP have been absorbed into RHS.
+%
+% See also: chebop/solvebvp
 
-% TODO: Document.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Get defaults:
 if ( nargin < 3 )

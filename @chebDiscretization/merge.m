@@ -1,6 +1,6 @@
 function [A, B] = merge(A, B)
-%MERGE   Merge information from two CHEBDSICRETIZATION objects.
-%   [A, B] = MERGE(A, B) merges two CHEBDISCRETOAZTIONS A and B.
+%MERGE   Merge information from two CHEBDISCRETIZATION objects.
+%   [A, B] = MERGE(A, B) merges two CHEBDISCRETIZATIONS A and B.
 %
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

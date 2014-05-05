@@ -101,36 +101,50 @@ x = chebfun(@(x) x, dom);
 [L, residual, isLinear] = linearize(N, u0, x);
 L.prefs = pref;
 
+% Check the size of the residual (the output the dimensions of the CHEBOP).
+[numRow, numCol] = size(residual);
+
 % If the RHS passed is numerical, cast it to a CHEBMATRIX of the appropriate
 % size before continuing:
 if ( isnumeric(rhs) )
-    try
-        rhs = N.double2chebmatrix(rhs, residual);
-    catch ME
-        if ( strcmp(ME.identifier, 'CHEBFUN:CHEBOP:double2chebmatrix'))
-            error('CHEBFUN:chebop:solvebvp:rhs', ...
-                'RHS does not match output dimensions of operator.');
+    % Check whether dimensions match:
+    if ( ~all(size(rhs) == [numRow, numCol]) )
+        if ( all(size(rhs) == [numCol, numRow]) )
+            warning('CHEBFUN:CHEBOP:solvebvp', ...
+                'Please concatenate RHS of the BVP vertically. Transposing.')
+            rhs = rhs.';
         else
-            rethrow(ME)
+            error('CHEBFUN:CHEBOP:solvebvp:rhs', ...
+               'RHS does not match output dimensions of operator.');
         end
     end
+    
+    % Convert the initial guess to a CHEBMATRIX    
+    rhs = N.double2chebmatrix(rhs, residual);
+    
 elseif ( isa(rhs, 'chebfun') && size(rhs, 2) > 1 )
     rhs = chebmatrix(mat2cell(rhs).');
     warning('CHEBFUN:CHEBOP:solvebvp:vertcat', ...
         'Please use vertical concatenation for RHS ')
 end
+
 % Do the same for the initial guess:
 if ( isnumeric(u0) )
-    try
-        u0 = N.double2chebmatrix(rhs, residual);
-    catch ME
-        if ( strcmp(ME.identifier, 'CHEBFUN:CHEBOP:double2chebmatrix'))
-            error('CHEBFUN:chebop:solvebvp:init', ...
-                'N.init does not match input dimensions of operator.');
+    % Check whether dimensions match:
+    if ( ~all(size(u0) == [numRow, numCol]) )
+        if ( all(size(u0) == [numCol, numRow]) )
+            warning('CHEBFUN:CHEBOP:solvebvp', ...
+                ['Please concatenate the initial guess of the solution for '...
+                'the BVP vertically. Transposing.']);
+            u0 = u0.';
         else
-            rethrow(ME)
+            error('CHEBFUN:CHEBOP:solvebvp:init', ...
+                'Initial guess does not match output dimensions of operator.');
         end
     end
+    
+    % Convert the initial guess to a CHEBMATRIX
+    u0 = N.double2chebmatrix(u0, residual);
 end
 
 % Solve:
