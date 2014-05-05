@@ -2,7 +2,7 @@ function pass = test_chebfun2_feval( pref )
 % Test feval
 
 if ( nargin == 0) 
-    pref = chebpref; 
+    pref = chebfunpref; 
 end
 
 tol = 100*pref.cheb2Prefs.eps; 

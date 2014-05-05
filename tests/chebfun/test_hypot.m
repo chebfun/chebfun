@@ -1,7 +1,7 @@
 function pass = test_hypot(pref)
 
 if ( nargin == 0 ) 
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % TODO: This test is meaningless

@@ -22,18 +22,18 @@ function F = airy(K, F, scale, pref)
 if ( nargin == 1 )
     F = K;
     K = 0;
-    pref = chebpref();
+    pref = chebfunpref();
 end
 if ( nargin < 3 )
     scale = 0;
-    pref = chebpref();
+    pref = chebfunpref();
 end
 if ( nargin == 3 )
-    if ( isa(scale, 'chebpref') )
+    if ( isa(scale, 'chebfunpref') )
         pref = scale;
         scale = 0;
     else
-        pref = chebpref;
+        pref = chebfunpref;
     end
 end
 

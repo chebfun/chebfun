@@ -2,7 +2,7 @@ function pass = test_chebfun2_lu( pref )
 % Test for LU decomposition of a chebfun2. 
 
 if ( nargin == 0 ) 
-    pref = chebpref; 
+    pref = chebfunpref; 
 end 
 
 tol = 100*pref.cheb2Prefs.eps; 

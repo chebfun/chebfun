@@ -42,7 +42,7 @@ end
 w = baryWeights(x);
 
 % Set preferences.
-pref = chebpref();
+pref = chebfunpref();
 pref.techPrefs.sampleTest = false;
 if ( strcmp(pref.tech, 'chebtech') )
     % In between the interpolation nodes, the Lebesgue function is guaranteed

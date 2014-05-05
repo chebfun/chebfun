@@ -3,7 +3,7 @@
 function pass = test_legpoly(pref)
 
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 %% Test method 1 on [-1 1]:

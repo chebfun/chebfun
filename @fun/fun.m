@@ -28,9 +28,9 @@ classdef fun % (Abstract)
             
             % Obtain preferences if none given:
             if ( nargin < 5 )
-                pref = chebpref();
+                pref = chebfunpref();
             else
-                pref = chebpref(pref);
+                pref = chebfunpref(pref);
             end
             
             % Check if delta functions are required:
