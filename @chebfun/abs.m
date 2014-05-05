@@ -13,7 +13,7 @@ if ( isempty(F) )
 end
 
 if ( nargin < 2 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Loop over the columns of F:

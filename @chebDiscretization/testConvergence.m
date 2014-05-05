@@ -24,7 +24,7 @@ numInt = numel(d) - 1;
 isDone = false(1, numInt);
 epsLevel = 0;
 
-pref = chebpref();
+pref = chebfunpref();
 pref.eps = 1e-14;
 for i = 1:numInt
     %    f = chebtech.constructor(values{i},u.vscale,hscale(i));
@@ -105,15 +105,15 @@ else
     % the small values.
     % TODO: Use the van Herk filter to do this more efficiently.
     winsize = 6;
-    n = n-winsize+1;
-    % This makes index=[1,2,...,w; 2,3,...,w+1; ...; n-w+1,...,n ]:
-    index = bsxfun(@plus,(1:n)',0:winsize-1);  
+    n = n - winsize+1;
+    % This makes index = [1,2,...,w; 2,3,...,w+1; ...; n,...,w+n-1 ]:
+    index = bsxfun(@plus, (1:n)', 0:winsize-1);  
     logabs = max(logabs(index),[],2);
     
     % Start with a low pass filter that introduces a lag.
     lag = 6;
-    LPA = [1 zeros(1,lag-1) -2 zeros(1,lag-1) 1]/(lag^2);
-    LPB = [1 -2 1];
+    LPA = [1, zeros(1,lag-1), -2, zeros(1, lag-1) 1]/(lag^2);
+    LPB = [1, -2, 1];
     smoothLAC = filter( LPA, LPB, logabs );
     
     % If too little accuracy has been achieved, do nothing.
@@ -143,7 +143,7 @@ else
     if ( cutoff < n )
         ishappy = true;
         % Use the information from the cut to deduce an eps level.
-        window = min( n, cutoff+(1:4) );
+        window = min( n, cutoff + (1:4) );
         epslevel = exp( max( logabs(window) ) );
     end
     

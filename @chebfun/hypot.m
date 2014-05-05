@@ -17,7 +17,7 @@ function H = hypot(f, g, pref)
 
 % Grab some preferences:
 if ( nargin < 3 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Insert breaks at the roots:

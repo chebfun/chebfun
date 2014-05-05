@@ -1,7 +1,7 @@
 function pass = test_end(pref)
 
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 %% test end in infinite dimension:

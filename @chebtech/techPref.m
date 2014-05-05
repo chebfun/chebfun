@@ -76,7 +76,7 @@ outPref.happinessCheck     = 'classic';
 if ( nargin == 1 )
     map.maxLength = 'maxPoints';
     map.exactLength = 'numPoints';
-    outPref = chebpref.mergePrefs(outPref, inPref, map);
+    outPref = chebfunpref.mergePrefs(outPref, inPref, map);
 end
 
 end

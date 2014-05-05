@@ -4,7 +4,7 @@ function pass = test_make(pref)
 
 % Get preferences:
 if ( nargin < 1 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % tests on different calling sequences:

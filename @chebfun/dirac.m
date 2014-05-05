@@ -114,7 +114,7 @@ if ( rootB )
 end
 
 % Enable DELTAFUNs:
-pref = chebpref();
+pref = chebfunpref();
 pref.enableDeltaFunctions = true;
 
 % Call the DELTAFUN constructor directly:

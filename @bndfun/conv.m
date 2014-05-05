@@ -22,7 +22,7 @@ function h = conv(f, g)
 % Devoloper note:
 %
 % For further details, see Hale and Townsend, "An algorithm for the convolution
-% of Legendre series", (To appear in SISC
+% of Legendre series", (To appear in SISC)
 % 
 % In the following, it is assumed that the length of the domain of g is greater
 % than the length of the domain of f. If this is not the case, then simply
@@ -245,7 +245,7 @@ gammaR = rec(S, -alpha, beta, 1); % Chebyshev coeffs for the right piece
 %%%%%%%%%%%%%%%%%%%%%%%%%%% MATRIX FREE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     function gamma = rec(S, alpha, beta, sgn)
         % Compute the Legendre coefficients of the convolution on L/R piece.
-        % TODO: Document further once paper is complete.
+        % See Theorem 4.1 of paper.
         
         % Initialise scl:
         N = length(beta);

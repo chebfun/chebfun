@@ -2,7 +2,7 @@ function A = cleanRows(A, pref)
 %CLEANROWS   Remove trailing zero rows from a matrix.
 %   A = CLEANROWS(A) removes rows at the bottom of A which have negligible
 %   entries. A is typically the matrix of impulses. This function uses the
-%   tolerance provided by CHEBPREF and uses that tolerance to decide whether
+%   tolerance provided by CHEBFUNPREF and uses that tolerance to decide whether
 %   a delta function is trivial or not.
 %
 % See also MERGECOLUMNS, MERGEDELTAS, CLEANCOLUMNS.
@@ -16,7 +16,7 @@ end
 
 % Get the tolerance:
 if ( nargin < 3 || isempty(pref) )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 deltaTol = pref.deltaPrefs.deltaTol;
 
