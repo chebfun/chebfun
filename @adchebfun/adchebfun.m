@@ -79,15 +79,24 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
     
     methods
         
-        function obj = adchebfun(varargin)
+        function obj = adchebfun(u, varargin)
             %ADCHEBFUN  The ADCHEBFUN constructor.
             
-            if ( nargin == 1 && isa(varargin{1}, 'chebfun') )
-                obj.func = varargin{1};
+            if ( nargin == 0 )
+                return
+            elseif ( isa(u, 'chebfun') )
+                obj.func = u;
+                dom = u.domain;
+            elseif ( isnumeric(u) )
+                obj.func = u;
+                if ( nargin == 2 )
+                    dom = varargin{1};
+                end
             else
                 obj.func = chebfun(varargin{:});
+                dom = obj.func.domain;
             end
-            dom = obj.func.domain;
+            
             obj.domain = dom;
             obj.jacobian = operatorBlock.eye(dom);
         end
@@ -1420,4 +1429,8 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             f.jacobian.domain = f.domain;
         end
     end
+    
 end
+
+
+   
