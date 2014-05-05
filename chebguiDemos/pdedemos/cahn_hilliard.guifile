@@ -1,0 +1,10 @@
+'Cahn-Hilliard equation'
+'scalar'
+domain = '[-3 3]';
+t = '0:.1:6';
+DE = 'u_t = -.02*u'''''''' + (u^3-u)''''';
+LBC = {'u = -1','u''=0'}; RBC = {'u = -1','u''=0'};
+init = 'u = cos(x) - exp(-4*x^2)';
+tol = '1e-6'; plotting = 'on';
+fixYaxisLower = '-1'; fixYaxisUpper = '1.2';
+type  = 'pde';

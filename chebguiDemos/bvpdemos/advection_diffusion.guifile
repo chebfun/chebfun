@@ -1,0 +1,10 @@
+'Advection-diffusion equation'
+'bvp'
+domain = '[0,1]';
+DE = '0.02*u'''' + u'' + u = 0';
+BC = {'u(0) = 0','u(1) = 1'};
+init = ''; 
+tol = '1e-10';
+damping = '0';
+plotting = '0.1';
+type = 'bvp';
