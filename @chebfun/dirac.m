@@ -101,6 +101,16 @@ else
     end
 end
 
+
+% Initialize a zero CHEBFUN:
+d = chebfun(0, [a, b]);
+
+% If there is no root of F within the domain or at the end points, return with a
+% zero CHEBFUN:
+if ( isempty( r ) )
+    return
+end
+
 % Check if any of the roots is not simple by looking at the derivative of F:
 fp = diff(f);
 fpVals = feval(fp, r);
