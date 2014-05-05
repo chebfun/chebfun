@@ -180,7 +180,11 @@ else
     tolNum = str2num(tolInput);
 end
 
-if tolNum < options.techPrefs.eps
+% We need a CHEBFUNPREF as well to ensure the tolerance requested is not
+% stricter than current CHEBFUN epsilon
+chebfunp = chebfunpref;
+
+if tolNum < chebfunp.techPrefs.eps
     warndlg('Tolerance specified is less than current chebfun epsilon','Warning','modal');
     uiwait(gcf)
 end
