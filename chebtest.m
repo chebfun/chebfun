@@ -1,8 +1,7 @@
 function varargout = chebtest(varargin)
-%CHEBTEST   Run Chebfun test suite.
-%
+%CHEBTEST   Chebfun test suite.
 %   RESULTS = CHEBTEST executes all of the m-files found in the top level
-%   folders of the directory <chebfunroot>/tests/. These m-files should return
+%   folders of the directory $chebfunroot/tests/. These m-files should return
 %   a scalar, vector, or matrix of logical values. A test is deemed to pass if
 %   all the returned values are logical true. If the output argument RESULTS is
 %   an N-by-3 cell-array with one row per test and columns:
@@ -13,13 +12,13 @@ function varargout = chebtest(varargin)
 %         -2 == crash.
 %
 %   CHEBTEST('DIR1', 'DIR2', ...) will run only those tests given as inputs,
-%   i.e., those in <chebfunroot>/tests/DIR1, <chebfunroot>/tests/DIR2, and so
+%   i.e., those in <chebfunroot>/tests/DIR1, $chebfunroot/tests/DIR2, and so
 %   on. If the given folder does not exist, a warning is given and that folder
 %   skipped.
 %
 %   CHEBTEST(..., '--log') will write the results of the tests to the file
-%   "chebtest-YYYYMMDDHHMMSS.log" in the current directory, with
-%   "YYYYMMDDHHMMSS" a numeric datetime.
+%   "chebtest-YYYYMMDDHHMMSS.log" in the directory $chebfunroot/logs/,
+%   with "YYYYMMDDHHMMSS" a numeric datetime.
 %
 %   CHEBTEST will time each of the tests, and print the time for each test
 %   that passes. If any of the values returned by a test m-file are logical
@@ -54,7 +53,7 @@ function varargout = chebtest(varargin)
 installDir = fileparts(which('chebtest'));
 
 % Set path to the tests/ subdirectory:
-testsDir = [installDir '/tests'];
+testsDir = fullfile(installDir, 'tests');
 
 % Set the flag for logging results.
 writeLog = false;
@@ -62,12 +61,12 @@ if ( nargin > 0 )
     % We are given a list of directories to test:
     if ( strcmp(varargin{end}, '--log') )
         writeLog = true;
-        varargin = {varargin{1:end-1}};
+        varargin(end) = [];
     end
 end
 
 % Sort out other input arguments, the directories to test.
-if ( length(varargin) )
+if ( ~isempty(varargin) )
     testDirNames = varargin;
 else
     % if not, run all the ones we can find in the tests/ folder.
@@ -91,7 +90,7 @@ cd(testsDir);
 
 % Initialise storage for which directories pass and the time they take.
 numDirs = length(testDirNames);
-allResults = cell(0,3);
+allResults = cell(0, 3);
 
 % Loop over the test directories and run the tests in each one.
 for k = 1:numDirs
@@ -110,6 +109,7 @@ end
 durations = [allResults{:,3}];
 if ( all(durations > 0) )
     % All tests have passed. Yay!
+    
     fprintf('All tests passed in %4.4fs\n', sum(durations));
 
 else
@@ -128,8 +128,15 @@ cd(currDir);
 
 % Write the log if requested to.
 if ( writeLog )
+    logDir = fullfile(installDir, 'logs');
+    if ( ~exist(logDir, 'dir') )
+        [success, msg] = mkdir(installDir, 'logs');
+        if ( ~success )
+            warning('CHEBFUN:chebtest:writepermission', msg);
+        end
+    end
     filename = ['chebtest-' datestr(now, 'yyyymmddHHMMSS') '.log'];
-    writeToLog(filename, allResults);
+    writeToLog(fullfile(logDir, filename), allResults);
 end
 
 % Return.
@@ -266,7 +273,7 @@ try
     duration = toc(tstart);
 
     pass = all(pass(:));
-    if ~pass,
+    if ( ~pass )
         % The test failed, so return FAILED flag.
         duration = -1;
     end
@@ -295,9 +302,14 @@ function writeToLog(filename, data)
 columnTitles = {'dir_name', 'test_name', 'duration'};
 data = data';
 
-fid = fopen(filename, 'w');
-fprintf(fid, '%s,%s,%s\n', columnTitles{:});
-fprintf(fid, '%s,%s,%f\n', data{:});
-fclose(fid);
+fid = fopen(filename, 'w+');
+if ( fid < 0 )
+    warning('CHEBFUN:chebtest:writepermission', ...
+        'Unable to write to file %s', filename);
+else
+    fprintf(fid, '%s,%s,%s\n', columnTitles{:});
+    fprintf(fid, '%s,%s,%f\n', data{:});
+    fclose(fid);
+end
 
 end
