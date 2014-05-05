@@ -9,5 +9,5 @@ function out = isreal(f)
 % See http://www.chebfun.org for Chebfun information.
 
 % Check if all the values are real:
-out = all( imag( f.values ) < f.epslevel * f.vscale );
+out = all( imag( f.values(:) ) < max(f.epslevel.* f.vscale) );
 end
