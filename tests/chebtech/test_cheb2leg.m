@@ -1,7 +1,7 @@
 function pass = test_cheb2leg(pref)
 
 if ( nargin == 0 ) 
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % TODO: Test dimension?

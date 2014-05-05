@@ -33,7 +33,7 @@ out = max(ve(:));
 
 % [TODO]: Remove this hack!
 if ( isnan(out) || ~logical(out) )
-    out = chebpref().eps;
+    out = chebfunpref().eps;
 end
 
 end

@@ -4,7 +4,7 @@
 function pass = test_lebesgue(pref)
 
 if ( nargin < 1 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 tol = pref.eps;

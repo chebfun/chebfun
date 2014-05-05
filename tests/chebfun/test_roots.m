@@ -1,7 +1,7 @@
 function pass = test_roots(pref)
 
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 %%

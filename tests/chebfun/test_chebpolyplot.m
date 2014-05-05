@@ -3,7 +3,7 @@
 function pass = test_chebpolyplot(pref)
 
 if ( nargin < 1 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 f = chebfun(@sin, pref);

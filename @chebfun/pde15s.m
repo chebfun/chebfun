@@ -424,7 +424,7 @@ uOut{1} = uCurrent;
 B = []; q = []; rows = []; M = []; n = [];
 
 % Set the preferences:
-pref = chebpref;
+pref = chebfunpref;
 pref.techPrefs.eps = tol;
 pref.refinementFunction = 'resampling';
 pref.enableBreakpointDetection = 0;

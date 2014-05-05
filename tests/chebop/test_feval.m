@@ -1,7 +1,7 @@
 function pass = test_feval(pref)
 
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 %% Scalar equation:

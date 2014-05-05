@@ -20,7 +20,7 @@ function [L, res, isLinear] = linearize(N, u, x, flag)
 %   [L, RES] = LINEARIZE(N, ...) also returns RES; to the residual of the
 %   differential equation part of N at the function it was linearized. In other
 %   words, RES is the result of evaluating N at the zero function if no
-%   additioanl function is passed to LINEARIZE(), or the function U if it is
+%   additional function is passed to LINEARIZE(), or the function U if it is
 %   passed. If N.OP is a scalar equation, RES is a CHEBFUN, otherwise it is a
 %   CHEBMATRIX.
 %
@@ -68,7 +68,7 @@ if ( nargin < 4 || isempty(flag) )
     flag = 0;
 end
 
-% Convert the linerization variable to cell=-array form so that we can create
+% Convert the linerization variable to cell-array form so that we can create
 % and seed ADCHEBFUN objects:
 if ( isa(u, 'chebmatrix') )
     u = u.blocks;

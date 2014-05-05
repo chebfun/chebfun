@@ -3,7 +3,7 @@
 function pass = test_addBreaks(pref)
 
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Generate a few random points to use as test values.

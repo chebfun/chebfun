@@ -3,7 +3,7 @@
 function pass = test_roots(pref)
 
 if ( nargin < 1 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Set a domain for BNDFUN.

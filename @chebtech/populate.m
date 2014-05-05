@@ -135,10 +135,9 @@ while ( 1 )
     f.vscale = vscale;
     [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, pref); 
         
-    % We're happy! :)
-    if ( ishappy ) 
-        coeffs = f.alias(coeffs, cutoff);  % Alias the discarded coefficients.
-        values = f.coeffs2vals(coeffs);  % Compute values on this grid.
+    if ( ishappy ) % We're happy! :)
+        % Alias the discarded coefficients:
+        coeffs = f.alias(coeffs, cutoff);  
         break
     end
     

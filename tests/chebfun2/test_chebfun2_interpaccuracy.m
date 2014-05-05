@@ -3,7 +3,7 @@ function pass = test_chebfun2_interpaccuracy( pref )
 % Alex Townsend, March 2013. 
 
 if ( nargin < 1 ) 
-    pref = chebpref; 
+    pref = chebfunpref; 
 end 
 
 tol = 100*pref.cheb2Prefs.eps; 

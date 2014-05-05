@@ -14,8 +14,8 @@ function F = simplify(F, tol)
 % See http://www.chebfun.org for Chebfun information.
 
 if ( nargin == 1 )
-    tol = chebpref().techPrefs.eps;
-elseif ( isa(tol, 'chebpref') )
+    tol = chebfunpref().techPrefs.eps;
+elseif ( isa(tol, 'chebfunpref') )
     tol = tol.techPrefs.eps;
 end
 

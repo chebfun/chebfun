@@ -1,7 +1,7 @@
 function pass = test_definePoint(pref)
 
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Test a scalar-valued CHEBFUN object:

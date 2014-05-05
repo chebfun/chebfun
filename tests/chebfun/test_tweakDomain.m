@@ -1,7 +1,7 @@
 function pass = test_tweakDomain(pref)
 
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Tweak left endpoint:
