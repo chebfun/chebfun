@@ -139,7 +139,7 @@ classdef (InferiorClasses = {?double}) chebop
             if ( nargin < 2 )
                 if ( ~isnumeric(op) )
                     % Get default domain from CHEBPREF():
-                    p = chebpref();
+                    p = cheboppref();
                     dom = p.domain;
                 else
                     % DOM was passed, but no OP.

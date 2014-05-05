@@ -1,7 +1,7 @@
 function pass = test_mtimes(pref)
 
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Note that N*u where u is a chebfun or chebmatrix is tested in test_feval.
