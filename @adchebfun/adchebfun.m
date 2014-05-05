@@ -1054,45 +1054,62 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             
         end
         
-        function u = seed(u, k, m)
+        function u = seed(u, k, v)
             %SEED   Seed the derivative of an ADCHEBFUN
+            %   U = SEED(U, K, V) reseeds the derivative of the ADCHEBFUN U, so
+            %   that it consist of numel(V) blocks. All blocks in the derivative
+            %   of U, except the Kth one, will be either the zero operator or
+            %   zero function on the domain of U. The Kth block will be the
+            %   identity operator of identity function on the domain of U.
+            %   if V(j) == TRUE, then the jth block is an operator, otherwise it
+            %   is a function.
             %
-            %   U = SEED(U, K, M) reseeds the derivative of the ADCHEBFUN U, so
-            %   that it consist of M blocks. All blocks in the derivative of U,
-            %   except the Kth one, will be the zero operator on the domain of
-            %   U. The Kth block will be the identity operator on the domain of
-            %   U.
+            %   U = SEED(U, K, M) where M is a positive integer is shorthand for
+            %   U = SEED(U, K, true(1, M));
 
-            % Extract domain information, and construct the identity operator on
-            % the domain.
+            % Parse the inputs:
+            m = numel(v);
+            if ( m == 1 )
+                m = v;
+                v = true(1, m);
+            end
+            
             dom = u.domain;
             I = operatorBlock.eye(dom);
             
-            % Things are easy if we only have one variable involved.
             if ( m == 1 )
+                 % Things are easy if we only have one variable involved.
                 u.jacobian = I;
                 % Reset linearity information
                 u.linearity = 1;
+                
             else
-                % Working in the system case.
-                
-                % Now we also need the zero operator:
+
+                % Extract domain information, and construct the identity
+                % operator on the domain.
                 Z = operatorBlock.zeros(dom);
-                
-                % Populate a cell with the operators.
+                z = chebfun(0, dom);
+
+                % Populate a cell operators / functions as required.
                 blocks = cell(1, m);
-                for j = [1:(k - 1), (k + 1):m] 
-                    blocks{1,j} = Z;
+                blocks(1,v) = {Z};
+                blocks(1,~v) = {z};
+                % The Kth block is the identity operator / function.
+                if ( v(k) )
+                    blocks{1,k} = I;
+                else
+                    blocks{1,k} = chebfun(1, dom);
                 end
-                % The Kth block is the identity operator
-                blocks{1,k} = I;
+
                 % Convert the cell-array to a CHEBMATRIX and assign to the
                 % derivative field of U:
                 u.jacobian = chebmatrix(blocks);
                 % Initalise linearity information. The output is linear in all
                 % variables.
                 u.linearity = ones(1, m);
+                
             end
+            
         end
    
         function g = sec(f)
