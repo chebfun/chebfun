@@ -7,12 +7,16 @@ if ( nargin < 1 )
     pref = chebtech.techPref();
 end
 
+inputPref = pref;
+
 for n = 1:2
     if ( n == 1 )
         testclass = chebtech1();
     else 
         testclass = chebtech2();
     end
+
+    pref = inputPref;
 
     % Set the tolerance:
     tol = 10*pref.eps;
@@ -59,6 +63,42 @@ for n = 1:2
     values = g.coeffs2vals(g.coeffs); 
     [ishappy, epslevel, tail] = happinessCheck(g, f, values, pref);
     pass(n, 6) = ~ishappy && tail == 33;
+
+    % g1 has a few coefficients that are small but not enough to satisfy
+    % strictCheck, while g2 has just enough.  g1 will still pass with
+    % classicCheck.
+    pref.eps = 2^(-52);
+    pref.happinessCheck = 'strict';
+    f = @(x) sin(10*(x - 0.1));
+
+    g1 = testclass.make(f(testclass.chebpts(39)));
+    values1 = g1.coeffs2vals(g1.coeffs);
+    ishappy1 = happinessCheck(g1, f, values1, pref);
+
+    g2 = testclass.make(f(testclass.chebpts(41)));
+    values2 = g2.coeffs2vals(g2.coeffs);
+    ishappy2 = happinessCheck(g2, f, values2, pref);
+
+    pref.happinessCheck = 'classic';
+    ishappy3 = happinessCheck(g1, f, values1, pref);
+
+    pass(n, 7) = ~ishappy1 && ishappy2 && ishappy3;
+
+    % Test strictCheck with an array-valued input:
+    pref.eps = 2^(-52);
+    pref.happinessCheck = 'strict';
+    f = @(x) [sin(10*(x - 0.1)) exp(x)];
+
+    g1 = testclass.make(f(testclass.chebpts(39)));
+    values1 = g1.coeffs2vals(g1.coeffs);
+    ishappy1 = happinessCheck(g1, f, values1, pref);
+
+    g2 = testclass.make(f(testclass.chebpts(41)));
+    values2 = g2.coeffs2vals(g2.coeffs);
+    ishappy2 = happinessCheck(g2, f, values2, pref);
+
+    pass(n, 8) = ~ishappy1 && ishappy2;
+
 end
 
 end
