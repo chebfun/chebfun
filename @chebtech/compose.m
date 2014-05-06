@@ -37,7 +37,6 @@ pref.minPoints = max(pref.minPoints, length(f));
 pref.sampleTest = false;
 % pref.eps = max(pref.eps, f.epslevel);
 pref.eps = updateEpslevel(pref.eps, f.epslevel, [], length(f));
-pref.happinessCheck = 'strict';
 
 if ( nfuns == 2 )
     if ( size(f, 2) ~= size(g, 2) )
@@ -80,6 +79,10 @@ if ( ischar(pref.refinementFunction) )
     end
 end
 
+% % Lower epslevel so that we do not get too much degredation on repeated calls
+% % to COMPOSE():
+% pref.eps = max(eps, pref.eps/100);
+
 % Make CHEBTECH object:
 f = f.make(op, vscale, f.hscale, pref);
 
@@ -113,6 +116,7 @@ if ( nargin < 4 || isempty(n2) )
 end
 testLength = min(n1, max(5, round((n1-1)/8)));
 testLength2 = min(n2, max(5, round((n2-1)/8)));
+% el = max(el1, el2);
 el = max(el1/testLength^(2/3), el2/testLength2^(2/3));
 
 end
