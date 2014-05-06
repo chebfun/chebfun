@@ -68,7 +68,7 @@ rowmax = sum(m(:, 1));
 plot([coldiv;coldiv], [0; rowmax+1]*ones(size(coldiv)), 'color', [.6 .6 .6])
 
 % Draw horizontal block boundaries. Account for the down-sampling of each row.
-sizeRedux = sizeReduction(L);                       % could be a row or column?
+sizeRedux = getProjOrder(L);                        % could be a row or column?
 csrow = cumsum( m(:, 1)' - sizeRedux(:)' );         % remove down-sampling
 rowdiv = csrow(1:end - 1) + 1/2;                    % boundary after each block
 rowdiv = nbc + ncon + rowdiv;                       % offset from top rows
