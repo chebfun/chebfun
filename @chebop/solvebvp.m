@@ -17,14 +17,14 @@ function [u, info] = solvebvp(N, rhs, pref, displayInfo)
 %   where each linear problem arising is solved via a spectral/pseudospectral
 %   method.
 %
-%   U = solvebvp(N, RHS, PREF) is the same as above, using the preferences
+%   U = SOLVEBVP(N, RHS, PREF) is the same as above, using the preferences
 %   specified by the CHEBOPPREF variable PREF.
 %
-%   [U, INFO] = solvebvp(N, RHS, PREF) is the same as above, but also returns
+%   [U, INFO] = SOLVEBVP(N, RHS, PREF) is the same as above, but also returns
 %   the MATLAB struct INFO, which contains useful information about the solution
 %   process. The fields of INFO are as follows:
 %       ERROR:    The residual of the differential equation.
-%       ISLINEAR: A vector with for entries, containing linearity information
+%       ISLINEAR: A vector with four entries containing linearity information
 %           for N. More specifically, 
 %               ISLINEAR(1) = 1 if N.OP is linear
 %               ISLINEAR(2) = 1 if N.LBC is linear
@@ -35,12 +35,13 @@ function [u, info] = solvebvp(N, rhs, pref, displayInfo)
 %   TODO: INFO will have more fields once we move into nonlinear problems,
 %   update the list accordingly.
 %
-%   Note that CHEBOP requires the RHS of coupled systems to match the
-%   system, even for scalars right-hand sides, e.g.,
+%   Note that CHEBOP allows the RHS of coupled system of ODEs to be a scalar,
+%   e.g., one can both call
 %       N = chebop(@(x, u, v) [diff(u) + v ; u + diff(v)]);
 %       N.bc = @(x, u, v) [u(-1) ; v(1)];
 %       uv = solvebvp(N, 0);
-%   is not an accepted syntax.
+%   and
+%       uv = solvebvp(N, [0; 0]);
 %
 % See also: CHEBOP, CHEBOP/MLDIVIDE, CHEBOPPREF, CHEBOP/SOLVEBVPLINEAR, 
 %   CHEBOP/SOLVEBVPNONLINEAR, LINOP/MLDIVIDE.
@@ -49,7 +50,7 @@ function [u, info] = solvebvp(N, rhs, pref, displayInfo)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Developers note:
-%   U = solvebvp(N, RHS, PREF, DISPLAYINFO) allows passing in a function handle
+%   U = SOLVEBVP(N, RHS, PREF, DISPLAYINFO) allows passing in a function handle
 %   to a displaying method that is called during the damped Newton iteration.
 %   This allows separating the displaying process for regular CHEBOP use and
 %   CHEBGUI. See chebop/displayInfo() and chebgui/displayInfo() for more
