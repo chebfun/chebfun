@@ -12,25 +12,17 @@ function plot(A)
 %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
-sz = size(A, 1)*size(A, 2);
-temp = 1;
+s = cellfun(@(b) min(size(b)), A.blocks);
 
-% Check if A contains only CHEBFUN and DOUBLE objects.
-for j = 1:sz
-    if  ( isa(A.blocks{j}, 'chebfun') | isa(A.blocks{j}, 'double') )
-    else
-        temp = 0;    
-    end
-end
-
-% If so, convert A to a QUASIMATRIX, and call CHEBFUN/PLOT.
-if temp == 1
+% If A contains inf x inf blocks, call SPY().
+if ( ~all(isfinite(s(:))) )
+    spy(A);
+    
+% If A contains only CHEBFUN or DOUBLE, convert it to a QUASIMATRIX, and
+% cal CHEBFUN/PLOT().
+else
     A = chebfun(A);
     plot(A);
-
-% If not, call CHEBMATRIX/SPY,
-else
-    spy(A);
 end
 
 end

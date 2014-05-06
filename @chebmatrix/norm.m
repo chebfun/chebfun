@@ -13,7 +13,7 @@ function normA = norm(A, n)
 %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
-% [TODO]: Add support for norms of operators (inf x inf blocks) .
+% [TODO]: Add support for norms of operators (inf x inf blocks).
 
 % Empty CHEBMATRIX has norm 0.
 if ( isempty(A) )

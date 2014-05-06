@@ -23,9 +23,10 @@ pass(2) = abs(norm(A, 'fro') - 2.372100421113536830) < ...
 pass(3) = abs(norm(A, 2) - 2.372100421113536830) < ...
         (chebfun(A).vscale)*(chebfun(A).epslevel);
     
-%% [TODO]
+%% [TODO]: Add tests for norms of operators (inf x inf blocks).
 % A has entries of all types: OPERATORBLOCK, FUNCTIONBLOCK,
 % CHEBFUN and DOUBLE. 
+%
 % d = [-2 2];                   % function domain
 % I = operatorBlock.eye(d);     % identity operator
 % D = operatorBlock.diff(d);    % differentiation operator

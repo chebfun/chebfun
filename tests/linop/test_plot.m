@@ -4,6 +4,7 @@ function pass = test_plot
 %% 
 % A has entries of all types: OPERATORBLOCK, FUNCTIONBLOCK,
 % CHEBFUN and DOUBLE.
+
 d = [-2 2];                   % function domain
 I = operatorBlock.eye(d);     % identity operator
 D = operatorBlock.diff(d);    % differentiation operator
@@ -16,8 +17,9 @@ figure, plot(A);
 
 %% 
 % The entries of A are only CHEBFUN or DOUBLE.
-d = [-1 1];  
-f = chebfun(@(x) x, d); 
+
+d = [-1 1];                     
+f = chebfun(@(x) x, d);         
 g = chebfun(@(x) exp(x), d);
 A = [f, g; 2*f, 3*g];
 figure, plot(A)
