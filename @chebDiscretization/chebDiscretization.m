@@ -20,12 +20,12 @@ classdef chebDiscretization
 % which yields solution to problems of ODEs.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
     properties
         source = []       % linop or chebmatrix to be discretized
         domain = []       % may generalize that of the source
         dimension = []    % vector of lengths, one per subinterval
         dimAdjust = []    % size of the input space relative to disc.dimension
+        projOrder = []    % projection order for rectangularizing
     end
         
     properties ( Dependent )
@@ -52,7 +52,9 @@ classdef chebDiscretization
         % See http://www.chebfun.org/ for Chebfun information.
 
         % Extract the j-k block:
-        disc.source.blocks = disc.source.blocks{j,k};
+        if ( iscell(disc.source.blocks) )
+            disc.source.blocks = disc.source.blocks{j,k};
+        end
 
         % Extract the dimension adjustment for this block and adjust the dimension:
         if ( numel(disc.dimAdjust) > 1 )
@@ -62,6 +64,9 @@ classdef chebDiscretization
 
         % Set the dimension adjustment to zero:
         disc.dimAdjust = 0;
+        if ( numel(disc.dimAdjust) > 1 )
+            disc.projOrder = disc.projOrder(j);
+        end
 
         end
 
@@ -92,7 +97,9 @@ classdef chebDiscretization
     %% STATIC METHODS:
     
     methods ( Static )
-        space = getDimAdjust(L)
+        dimAdjust = getDimAdjust(L)
+        
+        projOrder = getProjOrder(L)
     end
     
     %% ABSTRACT METHODS:
