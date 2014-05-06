@@ -19,21 +19,12 @@ if ( isa(L, 'chebDiscretization' ) )
     L = L.source;
 end
 
-try
-    % Attempt to call the getProjOrder() method of L.
+% LINOP objects have nontrivial projection orders. In general, a CHEBMATRIX will
+% have a zero projOrder.
+if ( isa(L, 'linop') )
     projOrder = getProjOrder(L);
-    
-catch ME
-    % Calling getProjOrder(L) failed...
-    
-    if ( strcmp(ME.identifier, 'MATLAB:UndefinedFunction') )
-        % If no such method exists, return a zero projection order:
-        projOrder = 0;
-    else
-        % If a different error occured, rethrow that:
-        rethrow(ME);
-    end
-
-end      
+else
+    projOrder = 0;
+end
     
 end
