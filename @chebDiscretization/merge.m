@@ -12,23 +12,35 @@ if ( class(A) ~= class(B) )
 end
 
 % Merge the domains:
-dom = chebfun.mergeDomain(A.domain, B.domain);
+dom = chebfun.mergeDomains(A.domain, B.domain);
 A.domain = dom;
 B.domain = dom;
 
 % Merge the discretization lengths:
-dim = max(A.dim, B.dim);
-A.domain = dim;
-B.domin = dim;
+dim = mymax(A.dimension, B.dimension);
+A.dimension = dim;
+B.dimension = dim;
 
 % Merge the dimension adjustments:
-dimAdjust = max(A.dimAdjust, B.dimAdjust);
+dimAdjust = mymax(A.dimAdjust, B.dimAdjust);
 A.dimAdjust = dimAdjust;
 B.dimAdjust = dimAdjust;
 
 % Merge the projection orders:
-projOrder = max(A.projOrder, B.projOrder);
+projOrder = mymax(A.projOrder, B.projOrder);
 A.projOrder = projOrder;
 B.projOrder = projOrder;
+
+end
+
+function out = mymax(a, b)
+%MYMAX   Take maximum, but avoid empties.
+if ( isempty(a) )
+    out = b;
+elseif ( isempty(b) )
+    out = a;
+else
+    out = max(a, b);
+end
 
 end
