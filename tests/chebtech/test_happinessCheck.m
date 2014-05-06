@@ -34,7 +34,7 @@ for n = 1:2
     values = g.coeffs2vals(g.coeffs); 
     [ishappy, epslevel, tail] = happinessCheck(g, f, values, pref);
     pass(n, 3) = abs(tail - 15) < 2;
-    pass(n, 4) = ishappy && epslevel < tol;
+    pass(n, 4) = ishappy && all(epslevel < tol);
     
     %%
     k = 32;
