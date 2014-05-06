@@ -8,14 +8,13 @@ function f = sign(f, pref)
 %
 % See also ABS.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
 if ( isreal(f) )
     arbitraryPoint = 0.1273881594;
-    f.values = sign(feval(f, arbitraryPoint));
-    f.coeffs = f.values;
-    f.vscale = abs(f.values);
+    f.coeffs = sign(feval(f, arbitraryPoint));
+    f.vscale = abs(f.coeffs);
 else
     if ( nargin == 1 )
         pref = chebtech.techPref();

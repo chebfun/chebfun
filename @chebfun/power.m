@@ -7,7 +7,7 @@ function g = power(f, b)
 %
 % See also SQRT, COMPOSE.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Empty case.
@@ -17,7 +17,7 @@ if ( isempty(f) || isempty(b) )
 end
 
 if ( nargin < 3 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% CHEBFUN .^ CHEBFUN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 

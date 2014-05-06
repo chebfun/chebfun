@@ -1,6 +1,5 @@
 function g = cell2mat(f)
 %CELL2MAT   Convert an array of CHEBTECH objects into an array-valued CHEBTECH.
-%
 %   G = CELL2MAT(F) converts the CHEBTECH array F into a single array-valued
 %   CHEBTECH G. F should be a vector array (i.e., not a matrix).
 %
@@ -11,7 +10,7 @@ function g = cell2mat(f)
 %
 % See also MAT2CELL.
 %
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % TODO: This function is probably not needed anymore.
@@ -22,11 +21,11 @@ if ( isempty(f) || numel(f) == 1 )
     return
 end
 
-% Extract the values from each of the CHEBTECH objects:
-values = { f.values };
+% Extract the coeffs from each of the CHEBTECH objects:
+coeffs = { f.coeffs }; 
 
 % These should all have the same length...
-lengths = cellfun(@(x) size(x, 1), values);
+lengths = cellfun(@(x) size(x, 1), coeffs);
 minlength = min(lengths);
 maxlength = max(lengths);
 
@@ -35,7 +34,7 @@ if ( minlength ~= maxlength )
     for k = 1:numel(f)
         f(k) = prolong(f(k), maxlength);
     end
-    values = { f.values };
+    coeffs = { f.coeffs };
 end
 
 % Append new data to an empty CHEBTECH:
@@ -43,7 +42,6 @@ g = f.make(); % Make an empty CHEBTECH.
 g.vscale = [f.vscale];
 g.ishappy = min([f.ishappy]);
 g.epslevel = max([f.epslevel]);
-g.values = cell2mat(values);
-g.coeffs = [f.coeffs];
+g.coeffs = cell2mat(coeffs);
 
 end

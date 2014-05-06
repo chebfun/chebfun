@@ -3,8 +3,8 @@ function fx = toValues(disc, f)
 %   C = TOVALUES(DISC, F) converts the (perhaps piecewise smooth) chebfun F
 %   to coefficients C for use by an ULTRAS discretization DISC.
 
-% Copyright 20134 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 dom = disc.domain;
 numInts = disc.numIntervals();

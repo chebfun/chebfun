@@ -1,7 +1,7 @@
 function pass = test_volt(pref)
 
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 K = @(u, v) exp(-(u-v).^2);     % A simple kernel.

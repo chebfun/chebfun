@@ -3,7 +3,7 @@
 function pass = test_max(pref)
 
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Generate a few random points to use as test values.
@@ -151,6 +151,6 @@ yExact = exp(-1);
 xExact = 1;
 errY = y - yExact;
 errX = x - xExact;
-pass(18) = norm([errY errX], inf) < epslevel(f).*vscale(f);
+pass(18) = norm([errY errX], inf) < 100*epslevel(f).*vscale(f);
 
 end

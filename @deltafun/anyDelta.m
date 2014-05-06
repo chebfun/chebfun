@@ -2,7 +2,7 @@ function out = anyDelta(f)
 %ANYDELTA   True if a DELTAFUN object F has at least one delta function.
 %   ANYDELTA(F) returns TRUE if the DELTAFUN object F has non-trivial delta
 %   functions. The test is FALSE otherwise. This function uses the tolerance
-%   provided by CHEBPREF and uses that tolerance to decide whether a delta
+%   provided by CHEBFUNPREF and uses that tolerance to decide whether a delta
 %   function is trivial or not.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
@@ -14,7 +14,7 @@ if ( isempty(f) )
 end
 
 % Get tolerance for deltas:
-pref = chebpref();
+pref = chebfunpref();
 deltaTol = pref.deltaPrefs.deltaTol;
 
 % Check if f has no or only below tolerance delta functions.

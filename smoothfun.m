@@ -11,7 +11,7 @@ classdef smoothfun < onefun % (Abstract)
 %
 % See also CHEBTECH.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -47,9 +47,9 @@ classdef smoothfun < onefun % (Abstract)
 
             % Determine preferences if not given, merge if some are given:
             if ( nargin < 4 || isempty(pref) )
-                pref = chebpref();
+                pref = chebfunpref();
             else
-                pref = chebpref(pref);
+                pref = chebfunpref(pref);
             end
             
             if ( strcmp(pref.tech, 'funqui') )

@@ -3,11 +3,11 @@ function out = isequal(f, g)
 %   ISEQUAL(F, G) returns TRUE if the DELTAFUN objects F and G have the same
 %   underlying FUNPART and the same delta functions.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Get the tolerances:
-pref = chebpref();
+pref = chebfunpref();
 proximityTol = pref.deltaPrefs.proximityTol;
 deltaTol = pref.deltaPrefs.deltaTol;
 

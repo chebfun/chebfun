@@ -14,7 +14,7 @@ function f = restrict(f, s)
 %
 %   Note that restrict does not 'simplify' its output.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with empty case:
@@ -59,7 +59,6 @@ epslevel = repmat(f.epslevel.*f.vscale, 1, numInts)./vscale;
 % same as the product of the epslevel and vscale of their 'parent'.)
 
 % Append data to CHEBTECH:
-f.values = values;
 f.coeffs = coeffs;
 f.vscale = vscale;
 f.epslevel = epslevel;

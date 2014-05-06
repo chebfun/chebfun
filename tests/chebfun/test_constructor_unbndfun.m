@@ -3,7 +3,7 @@
 function pass = test_constructor_unbndfun(pref)
 
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 %% Functions on [-inf inf]:

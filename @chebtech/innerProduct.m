@@ -7,7 +7,7 @@ function out = innerProduct(f, g)
 %   whose i,j entry is the inner product of the ith column of F with the jth
 %   column of G.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with empty case:
@@ -30,12 +30,14 @@ g = prolong(g, n);
 w = f.quadwts(n);
 
 % Compute the inner product via a weighted discrete inner product:
-out = bsxfun(@times, w.', f.values)' * g.values;
+fvalues = f.coeffs2vals(f.coeffs); 
+gvalues = g.coeffs2vals(g.coeffs); 
+out = bsxfun(@times, w.', fvalues)' * gvalues;
 
-% Force real output if the inputs are equal:
-% TODO: Also ABS()?
+% Force non-negative output if the inputs are equal:
 if ( isequal(f, g) )
-    out = real(out);
+    dout = diag(diag(out));
+    out = out - dout + abs(dout);
 end
 
 end

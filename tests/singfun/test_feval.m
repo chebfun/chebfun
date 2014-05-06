@@ -4,7 +4,7 @@ function pass = test_feval(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Generate a few random points to use as test values.
@@ -27,7 +27,7 @@ a = 1 + rand();
 b = 1 + rand();
 fh = @(x) sin(cos(10*x.^2))./((1+x).^a.*(1-x).^b);
 f = singfun(fh, [-a, -b], {'sing', 'sing'});
-pass(3) = norm(feval(f,x) - feval(fh,x), inf) < 40*get(f, 'epslevel');
+pass(3) = norm(feval(f,x) - feval(fh,x), inf) < 1e2*get(f, 'epslevel');
 
 %%
 % Check feval on a SINGFUN with positive exponents

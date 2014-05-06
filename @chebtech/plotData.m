@@ -24,7 +24,7 @@ function data = plotData(f, g, h)
 %
 % See also PLOT.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin == 1 )
@@ -49,7 +49,7 @@ if ( isempty(g) )
 
     % Values on the Cheyshev grid tied to the CHEBTECH F:
     data.xPoints = f.points();
-    data.yPoints = f.values;
+    data.yPoints = f.coeffs2vals(f.coeffs);
 
 elseif ( isa(g, 'chebtech') )   
     % PLOT(F, G)

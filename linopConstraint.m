@@ -17,7 +17,7 @@ classdef linopConstraint
 %
 %   See also LINOP, LINOP.ADDBC.
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
     properties
@@ -59,10 +59,23 @@ classdef linopConstraint
             if ( nargin < 3 )
                 value = 0;
             end
-            validateattributes(value, {'double'}, {'numel', 1})
+            validateattributes(value, {'double'}, {})
             
             C.functional = [ C.functional ; func ];
-            C.values(n+1, 1) = value; 
+            C.values = [ C.values ; value ];
+        end
+        
+        function C = flipSigns(C)
+        %FLIPSIGNS  Flip the signs of the VALUES property of a LINOPCONSTRAINT.
+        %
+        %   This is useful at the CHEBOP level, where we need different signs
+        %   for the boundary conditions of a LINOP when we call LINOP(N) where N
+        %   is a CHEBOP, compared to what we want when we call LINEARIZE() from
+        %   within a Newton iteration. This is because when problems are solved
+        %   with LINOP backslash, the solution to the problem is the output
+        %   itself, while in a Newton iteration, we have to add the output of
+        %   the LINOP solution to the current guess.
+            C.values = -C.values;
         end
         
     end

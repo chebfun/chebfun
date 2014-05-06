@@ -4,7 +4,7 @@ function s = plus(f, g)
 %
 % See also MINUS.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % If one of the arguments is empty:
@@ -58,7 +58,7 @@ end
 
 fExps = f.exponents;
 gExps = g.exponents;
-tolExps = chebpref().singPrefs.exponentTol;
+tolExps = chebfunpref().singPrefs.exponentTol;
 tolSmth = 1e2*eps;
 
 %%

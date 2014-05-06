@@ -10,7 +10,7 @@ function poleOrder = findPoleOrder(op, singEnd)
 %
 % See also FINDSINGORDER, FINDSINGEXPONENTS.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%
@@ -62,7 +62,7 @@ end
 % Test parameters
 % [TODO]: Should there be a field for this test?
 testRatio = 1.01; 
-maxPoleOrder = chebpref().singPrefs.maxPoleOrder;
+maxPoleOrder = chebfunpref().singPrefs.maxPoleOrder;
 
 poleOrder = 0;
 

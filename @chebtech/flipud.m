@@ -2,11 +2,8 @@ function f = flipud(f)
 %FLIPUD   Flip/reverse a CHEBTECH object.
 %   G = FLIPUD(F) returns G such that G(x) = F(-x) for all x in [-1,1].
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org for Chebfun information.
-
-% Flip the values:
-f.values = flipud(f.values);
 
 % Negate the odd coefficients:
 f.coeffs(end-1:-2:1,:) = -f.coeffs(end-1:-2:1,:);

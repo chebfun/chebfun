@@ -60,7 +60,7 @@ function outPref = techPref(inPref)
 %
 % See also CHEBTECH, CHEBTECH1, CHEBTECH2
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
 outPref.eps                = 2^-52;
@@ -76,7 +76,7 @@ outPref.happinessCheck     = 'classic';
 if ( nargin == 1 )
     map.maxLength = 'maxPoints';
     map.exactLength = 'numPoints';
-    outPref = chebpref.mergePrefs(outPref, inPref, map);
+    outPref = chebfunpref.mergePrefs(outPref, inPref, map);
 end
 
 end

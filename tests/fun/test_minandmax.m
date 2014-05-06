@@ -4,7 +4,7 @@ function pass = test_minandmax(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Set a domain for BNDFUN.
@@ -86,7 +86,7 @@ pExact = [-1.120906422778534 ; 1.120906422778534];
 errV = vals - vExact;
 errP = pos - pExact;
 pass(10) = ( norm(errV, inf) < get(f,'epslevel')*get(f,'vscale') ) && ...
-    ( norm(errP, inf) < 2*get(f,'epslevel')*get(f,'vscale') );
+    ( norm(errP, inf) < 1e1*get(f,'epslevel')*get(f,'vscale') );
 
 end
 

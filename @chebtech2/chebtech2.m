@@ -40,7 +40,7 @@ classdef chebtech2 < chebtech
 %
 % See also CHEBTECH, CHEBTECH.TECHPREF, CHEBPTS, HAPPINESSCHECK, REFINE.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -94,7 +94,7 @@ classdef chebtech2 < chebtech
             end
             
             % Actual construction takes place here:
-            obj = populate(obj, op, vscale, hscale, pref);
+            [obj, values] = populate(obj, op, vscale, hscale, pref);
             
             if ( obj.ishappy || isnumeric(op) || iscell(op) )
                 % No need to error check if we are happy:
@@ -104,14 +104,15 @@ classdef chebtech2 < chebtech
             % Check for NaNs (if not happy):
             if ( pref.extrapolate )
                 % Check for NaNs in interior only (because extrapolate was on):
-                if ( any(any(isnan(obj.values(2:end-1,:)))) )
+                if ( any(any(isnan(obj.coeffs(2:end-1,:)))) )
                     error('CHEBFUN:CHEBTECH2:constructor:naneval', ...
                         'Function returned NaN when evaluated.')
                 end
                 % We make sure not to return NaNs at +1 and -1.
-                valuesTemp = extrapolate(obj);
-                obj.values([1,end],:) = valuesTemp([1,end],:);
-            elseif ( any(isnan(obj.values(:))) )
+                valuesTemp = extrapolate(obj, values);
+                valuesTemp([1 end], :) = valuesTemp([1,end],:);
+                obj.coeffs = obj.vals2coeffs(valuesTemp);
+            elseif ( any(isnan(obj.coeffs(:))) )
                 % Here we throw an error if NaNs were encountered anywhere.
                 error('CHEBFUN:CHEBTECH2:constructor:naneval2', ...
                     'Function returned NaN when evaluated.')

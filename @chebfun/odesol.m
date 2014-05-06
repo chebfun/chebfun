@@ -11,7 +11,7 @@ function varargout = odesol(sol, opt)
 %   Y. Note that the order of outputs is the reverse of that from calls to
 %   BVP4C(), ODE45(), etc.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % [TODO]: Think about tolerances.
@@ -53,7 +53,7 @@ end
 relTol = max(relTol(:), absTol(:)./vscale(:));
 
 %% Create a CHEBFUN object.
-p = chebpref();
+p = chebfunpref();
 p.techPrefs.eps = max(relTol); % Use the same tolerance for each column.
 y = chebfun(@(x) deval(sol, x).', d, p);
 

@@ -3,7 +3,7 @@
 function pass = test_chebpoly(pref)
 
 if (nargin < 1)
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 a = -4; b = 4;

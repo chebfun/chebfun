@@ -1,7 +1,7 @@
-function f = populate(f, op, vscale, hscale, pref)
+function [f, values] = populate(f, op, vscale, hscale, pref)
 %POPULATE   Populate a CHEBTECH class with values.
 %   F = F.POPULATE(OP) returns a CHEBTECH representation populated with values
-%   F.VALUES of the function OP evaluated on a Chebyshev grid. The fields
+%   VALUES of the function OP evaluated on a Chebyshev grid. The fields
 %   F.ISHAPPY and F.EPSLEVEL indicate whether the representation is deemed
 %   'happy' and to what accuracy (see HAPPINESSCHECK.m). Essentially this means
 %   that such an interpolant is a sufficiently accurate (i.e., to a relative
@@ -29,7 +29,7 @@ function f = populate(f, op, vscale, hscale, pref)
 %
 % See also CHEBTECH, TECHPREF, HAPPINESSCHECK.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -75,21 +75,22 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%% Non-adaptive construction. %%%%%%%%%%%%%%%%%%%%%%%%%%
 % Values (and possibly coefficients) have been given.
 if ( isnumeric(op) || iscell(op) )
+    values = op;
     if ( isnumeric(op) )
         % OP is just the values.
-        f.values = op;
-        f.coeffs = f.vals2coeffs(op);
+        if ( all(isnan(op)) )
+            values = op;
+        else
+            values = extrapolate(f, values); 
+        end
+        f.coeffs = f.vals2coeffs(values);
     else                 
         % OP is a cell {values, coeffs}
-        f.values = op{1};
         f.coeffs = op{2};
-        if ( isempty(f.values) )
-            f.values = f.coeffs2vals(f.coeffs);
-        end
     end
     
     % Update vscale:
-    f.vscale = max(abs(f.values), [], 1);
+    f.vscale = getvscl(f);
     
     % We're always happy if given discrete data:
     f.ishappy = true;
@@ -105,13 +106,13 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% Adaptive construction. %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Initialise empty values to pass to refine:
-f.values = [];
+values = [];
 
 % Loop until ISHAPPY or GIVEUP:
 while ( 1 )
 
     % Call the appropriate refinement routine: (in PREF.REFINEMENTFUNCTION)
-    [f.values, giveUp] = f.refine(op, f.values, pref);
+    [values, giveUp] = f.refine(op, values, pref);
 
     % We're giving up! :(
     if ( giveUp ) 
@@ -119,37 +120,36 @@ while ( 1 )
     end    
     
     % Update vertical scale: (Only include sampled finite values)
-    valuesTemp = f.values;
-    valuesTemp(~isfinite(f.values)) = 0;
+    valuesTemp = values;
+    valuesTemp(~isfinite(values)) = 0;
     vscale = max(vscale, max(abs(valuesTemp(:))));
     
     % Extrapolate out NaNs:
-    [f.values, maskNaN, maskInf] = extrapolate(f);
+    [values, maskNaN, maskInf] = extrapolate(f, values);
 
     % Compute the Chebyshev coefficients:
-    coeffs = f.vals2coeffs(f.values);
+    coeffs = f.vals2coeffs(values);
     
     % Check for happiness:
     f.coeffs = coeffs;
     f.vscale = vscale;
-    [ishappy, epslevel, cutoff] = happinessCheck(f, op, pref); 
+    [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, pref); 
         
-    % We're happy! :)
-    if ( ishappy ) 
-        coeffs = f.alias(coeffs, cutoff);  % Alias the discarded coefficients.
-        f.values = f.coeffs2vals(coeffs);  % Compute values on this grid.
+    if ( ishappy ) % We're happy! :)
+        % Alias the discarded coefficients:
+        coeffs = f.alias(coeffs, cutoff);  
         break
     end
     
     % Replace any NaNs or Infs we may have extrapolated:
-    f.values(maskNaN,:) = NaN;
-    f.values(maskInf,:) = Inf;
+    values(maskNaN,:) = NaN;
+    values(maskInf,:) = Inf;
 
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Update the vscale. %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Compute the 'true' vscale (as defined in CHEBTECH classdef):
-vscaleOut = max(abs(f.values), [], 1);
+vscaleOut = max(abs(values), [], 1);
 % Update vertical scale one last time:
 vscaleGlobal = max(vscale, vscaleOut);
 
@@ -157,13 +157,8 @@ vscaleGlobal = max(vscale, vscaleOut);
 vscale = vscaleOut;
 
 % Adjust the epslevel appropriately:
-% if ( any(vscaleOut > 0) )
-%     epslevel = epslevel*vscaleGlobal./vscaleOut;
-% else 
-%     % Deal with zero vscale:
-%     epslevel = epslevel./(1+vscaleOut);
-% end
 vscaleOut(vscaleOut < epslevel) = epslevel;
+vscaleGlobal(vscaleGlobal < epslevel) = epslevel;
 epslevel = epslevel*vscaleGlobal./vscaleOut;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% Assign to CHEBTECH object. %%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -176,6 +171,7 @@ f.epslevel = epslevel;
 
 if ( ishappy )
     % We're done, and can return.
+    f = simplify(f, f.epslevel/100);
     return
 end
 

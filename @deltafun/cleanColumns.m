@@ -3,17 +3,17 @@ function [A, v] = cleanColumns(A, v, pref)
 %   [A, V] = CLEANCOLUMNS(A, V) removes impulse columns from A which have all
 %   entries negligible and removes the corresponding entry in the vector V. A is
 %   typically the matrix of impulses and V is the vector containing locations.
-%   This function uses the tolerance provided by CHEBPREF and uses that tolerance 
+%   This function uses the tolerance provided by CHEBFUNPREF and uses that tolerance 
 %   to decide whether a delta function is trivial or not.
 %
 % See also MERGECOLUMNS, MERGEDELTAS, CLEANROWS.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
 % Get the tolerance:
 if ( nargin < 3 || isempty(pref) )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 deltaTol = pref.deltaPrefs.deltaTol;
 

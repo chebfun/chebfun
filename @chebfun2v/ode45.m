@@ -32,7 +32,7 @@ function varargout = ode45(F,tspan,init,varargin)
 %  events occurred. Columns of SOL.ye are the corresponding solutions, and
 %  indices in vector SOL.ie specify which event occurred.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % [TODO: When using events the default tolerance should be machine precision.]
@@ -44,7 +44,7 @@ end
 
 nF = F.nComponents;
 
-prefs = chebpref;
+prefs = chebfunpref;
 abstol = 100*prefs.cheb2Prefs.eps;
 % We don't expect 16 digits of relative tolerance, but at least require some.
 reltol = 1e8*abstol;

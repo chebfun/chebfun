@@ -7,12 +7,13 @@ function f = mtimes(f, c)
 %
 % See also TIMES.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isempty(f) || isempty(c) )     % CHEBTECH * [] = []
     f = []; 
     return
+    
 elseif ( ~isa(f, 'chebtech') )      % CHEBTECH is not the first input
     % DOUBLE*CHEBTECH requires that the double is scalar.
     if ( numel(f) > 1 )
@@ -26,12 +27,11 @@ elseif ( ~isa(f, 'chebtech') )      % CHEBTECH is not the first input
     
 elseif ( isa(c, 'double') )         % CHEBTECH * double  
     % Check dimensions:
-    if ( (size(f.values, 2) ~= size(c, 1)) && (numel(c) > 1) )
+    if ( (size(f.coeffs, 2) ~= size(c, 1)) && (numel(c) > 1) )
         error('CHEBFUN:CHEBTECH:mtimes:size2', ...
             'Inner matrix dimensions must agree.');
     end
     
-    f.values = f.values*c;
     f.coeffs = f.coeffs*c;
     if ( numel(c) == 1 )
         % See CHEBTECH CLASSDEF file for documentation on this.
@@ -39,28 +39,29 @@ elseif ( isa(c, 'double') )         % CHEBTECH * double
         f.epslevel = f.epslevel + eps;
     else
         % See CHEBTECH CLASSDEF file for documentation on this.
-        vscaleNew = max(abs(f.values), [], 1);
+        vscaleNew = getvscl(f);
         f.epslevel = ((f.epslevel.*f.vscale)*abs(c))./vscaleNew;
         f.vscale = vscaleNew;
 
         % Assume condition number 1.
 %         glob_acc = max(f.epslevel.*f.vscale);
-%         f.vscale = max(abs(f.values), [], 1);
+%         f.vscale = getvscl(f);
 %         f.epslevel = glob_acc./f.vscale;
     end
     
     % If the vertical scale is zero, set the CHEBTECH to zero:
     if ( all(f.vscale == 0) )
-        f.values = zeros(1, size(f.values, 2));
-        f.coeffs = zeros(1, size(f.values, 2));
+        f.coeffs = zeros(1, size(f.coeffs, 2));
     end
     
 elseif ( isa(c, 'chebtech') )       % CHEBTECH * CHEBTECH  
     error('CHEBFUN:CHEBTECH:mtimes:chebtechMtimesChebtech', ...
         'Use .* to multiply CHEBTECH objects.');
+    
 else                                % CHEBTECH * ???
     error('CHEBFUN:CHEBTECH:mtimes:chebtechMtimesUnknown',...
         'mtimes does not know how to multiply a CHEBTECH and a %s.', class(c));
+    
 end
 
 end

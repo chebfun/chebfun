@@ -4,7 +4,7 @@ function out = iszero( f )
 % OUT = ISZERO( F ) return 1 if the CHEBFUN2 is exactly the zero function, and
 % 0 otherwise. 
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 pivots = f.pivotValues;

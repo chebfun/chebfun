@@ -15,7 +15,7 @@ function out = legpoly(f, varargin)
 %
 % See also CHEBPOLY.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( numel(f) > 1 )

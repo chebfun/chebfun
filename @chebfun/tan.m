@@ -2,12 +2,12 @@ function F = tan(F, varargin)
 %TAN   Tangent of a CHEBFUN.
 %   TAN(F) computes the tangent of the CHEBFUN F.
 %
-%   TAN(F, PREF) does the same but uses the CHEBPREF object PREF when
+%   TAN(F, PREF) does the same but uses the CHEBFUNPREF object PREF when
 %   computing the composition.
 %
 % See also ATAN, TAND.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
 % [TODO]:  Restore or change this once we have decided the proper behavior or

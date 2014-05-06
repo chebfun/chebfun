@@ -15,7 +15,7 @@ function varargout = chebpolyplot(f, varargin)
 %
 % See also CHEBFUN/PLOT
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with an empty input:
@@ -116,8 +116,10 @@ ve = v.*e;
 % Add a tiny amount to zeros to make plots look nicer:
 minve = min(ve, [], 2);
 for k = 1:numFuns
-    % Use smaller of min. of (vscale)*(epslevel) and the smallest nonzero coeff.
-    c{k}(~c{k}) = min(minve(k), min(c{k}(logical(c{k}(:)))));
+    if ( any(c{k}) )
+    % Use smaller of min. of (vscale)*(epslevel) and the smallest nonzero coeff.        
+        c{k}(~c{k}) = min(minve(k), min(c{k}(logical(c{k}(:)))));
+    end
 end
 
 % Shape it:
@@ -132,7 +134,6 @@ varargin(noEpsLevel) = [];
 doEpsLevel = ~any(noEpsLevel);
 
 % Plot the coeffs:
-% h1 = semilogy(data{:}, varargin{:}, 'color', col);
 h1 = semilogy(data{:}, varargin{:});
 
 % Set the colors (loop over columns if we have an array-valued CHEBFUN):

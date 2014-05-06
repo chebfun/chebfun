@@ -8,7 +8,7 @@ function X = mrdivide(A, B)
 %
 % See also QR, RDIVIDE, MLDIVIDE.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -25,7 +25,6 @@ elseif ( isa(B, 'double') )  % CHEBTECH / double
     elseif ( isscalar(B) )
         % Scalar case is easy:
         X = A;                              % Copy A to X
-        X.values = A.values/B;              % Divide values
         X.coeffs = A.coeffs/B;              % Divide coeffs
         X.vscale = A.vscale/abs(B);         % Divide vscale
     else

@@ -2,12 +2,12 @@ function F = cotd(F, varargin)
 %COSD   Cotangent of a CHEBFUN, result in degrees.
 %   COSD(F) computes the cotangent (in degrees) of the CHEBFUN F.
 %
-%   COSD(F, PREF) does the same but uses the CHEBPREF object PREF when
+%   COSD(F, PREF) does the same but uses the CHEBFUNPREF object PREF when
 %   computing the composition.
 %
 % See also ACOTD, COT.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
 % [TODO]:  Restore or change this once we have decided the proper behavior or

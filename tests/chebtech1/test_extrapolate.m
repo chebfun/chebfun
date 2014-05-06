@@ -21,13 +21,13 @@ for k = 1:2
     % Test once for a vector of coeffs and against for a matrix.
 
     % Interior NaN;
-    f.values = sin(x-x(4))./(x-x(4));
-    newValues = f.extrapolate();
+    values = sin(x-x(4))./(x-x(4));
+    newValues = f.extrapolate(values);
     pass(1 + s) = all( abs(newValues(4,:) - 1) < tol );
     
     % Interior Inf;
-    f.values = sin(x-x(4)-eps)./(x-x(4));
-    newValues = f.extrapolate();
+    values = sin(x-x(4)-eps)./(x-x(4));
+    newValues = f.extrapolate(values);
     pass(2 + s) = all( abs(newValues(4,:) - 1) < tol );
     
     % Make x a matrix and repeat:

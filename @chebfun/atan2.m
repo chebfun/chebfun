@@ -13,13 +13,13 @@ function p = atan2(y, x, pref)
 %
 % See also ATAN, ATAN2D.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
 %% Set up:
 % Grab some preferences:
 if ( nargin < 3)
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 if ( ~isreal(y) || ~isreal(x) )

@@ -23,9 +23,9 @@ function [f, mergedPts] = merge(f, index, pref)
 %       f = chebfun(@(x) abs(x), 'splitting','on');
 %       [g, mergedPts] = merge(f.^2);
 %
-% See also CHEBPREF.
+% See also CHEBFUNPREF.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
 if ( numel(f) > 1 )
@@ -37,16 +37,16 @@ if ( nargin == 1 )
     % Choose all indices by default:
     index = 2:numel(f.funs);
     % Obtain preferences:
-    pref = chebpref();
+    pref = chebfunpref();
 elseif ( nargin == 2 )
-    if ( isstruct(index) || isa(index, 'chebpref') ) % MERGE(F, PREF)
-        % index actually is a struct of perefernces or a CHEBPREF
-        pref = chebpref(index);
+    if ( isstruct(index) || isa(index, 'chebfunpref') ) % MERGE(F, PREF)
+        % index actually is a struct of perefernces or a CHEBFUNPREF
+        pref = chebfunpref(index);
         % Choose all indices by default:
         index = 2:numel(f.funs);
     else                   % MERGE(F, INDEX)
         % indices passed, obtain preferences:
-        pref = chebpref();
+        pref = chebfunpref();
     end
 end
 

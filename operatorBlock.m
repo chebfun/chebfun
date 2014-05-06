@@ -4,7 +4,7 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
 %
 % See also LINBLOCK, LINOP, CHEBOP, CHEBOPPREF.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -89,13 +89,18 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
                 % The instantiation class must recognize mtimes as a
                 % functional composition.
                 C.stack = @(z) A.stack(z) * B.stack(z);
-
-                % Difforder of returned OPERATORBLOCK.
-                C.diffOrder = A.diffOrder + B.diffOrder;
                 
                 % Output is a zero operator if either operator was a zero
                 % operator
                 C.iszero = A.iszero || B.iszero;
+
+                % Difforder of returned OPERATORBLOCK.
+                if ( C.iszero )
+                    C.diffOrder = 0;
+                else
+                    C.diffOrder = A.diffOrder + B.diffOrder;
+                end
+
             end
         end
 

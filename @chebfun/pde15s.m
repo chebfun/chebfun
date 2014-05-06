@@ -71,7 +71,7 @@ function varargout = pde15s(pdeFun, tt, u0, bc, varargin)
 %
 % See also PDESET, ODE15S.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. See
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.
 
 % TODO: Syncronise with CHEBOP syntax. (In particular, .lbc, .rbc, and .bc).
@@ -424,7 +424,7 @@ uOut{1} = uCurrent;
 B = []; q = []; rows = []; M = []; n = [];
 
 % Set the preferences:
-pref = chebpref;
+pref = chebfunpref;
 pref.techPrefs.eps = tol;
 pref.refinementFunction = 'resampling';
 pref.enableBreakpointDetection = 0;
@@ -814,7 +814,7 @@ end
 
 function D = diffmat(N,k)
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 % DIFFMAT  Chebyshev differentiation matrix
 % D = DIFFMAT(N) is the matrix that maps function values at N Chebyshev

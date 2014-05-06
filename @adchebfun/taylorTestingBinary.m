@@ -22,7 +22,7 @@ function [order1, order2, nDiff2] = taylorTestingBinary(func, hMax, plotting)
 %
 % See also: TAYLORTESTING, VALUETESTING, VALUETESTINGBINARY.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
 %% Parse inputs and initialise
@@ -43,8 +43,8 @@ seedRNG(6179);
 N = 8;
 
 % Generate two arbitrary ADCHEBFUN objects to evaluate the function at:
-u1 = adchebfun(0.1*rand(N, 1) + .5, [-1 1]);
-u2 = adchebfun(0.1*rand(N, 1) + .5, [-1 1]);
+u1 = adchebfun(chebfun(0.1*rand(N, 1) + .5, [-1 1]));
+u2 = adchebfun(chebfun(0.1*rand(N, 1) + .5, [-1 1]));
 
 % Create copies with re-seeded derivatives (i.e., 1x2 CHEBMATRIX derivatives)
 v1 = seed(u1, 1, 2);

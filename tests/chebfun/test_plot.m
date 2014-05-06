@@ -3,7 +3,7 @@
 function pass = test_plot(pref)
 
 if ( nargin < 1 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Real scalar functions.

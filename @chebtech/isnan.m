@@ -4,10 +4,10 @@ function out = isnan(f)
 %
 % See also ISFINITE, ISINF.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Check if any values are NaN:
-out = any(isnan(f.values(:)));
+% Check if any coefficients are NaN:
+out = any(isnan(f.coeffs(:)));
 
 end

@@ -25,11 +25,11 @@ for n = 1:2
     % Require scale*chebtech(f) = chebtech(scale*f)):
     scale = 2^300;
     f1 = testclass.make(@(x) F(x)*scale, [], [], pref);
-    pass(n,1) = ~any(f.values - f1.values/scale);
+    pass(n,1) = ~any(f.coeffs - f1.coeffs/scale);
 
     % Require chebtech(f)/scale = chebtech(f/scale):
     f2 = testclass.make(@(x) F(x)/scale, [], [], pref);
-    pass(n,2) = ~any(f.values - f2.values*scale);
+    pass(n,2) = ~any(f.coeffs - f2.coeffs*scale);
     
     pref.happinessCheck = 'strict';
     
@@ -40,11 +40,11 @@ for n = 1:2
     % Require scale*chebtech(f) = chebtech(scale*f)):
     scale = 2^300;
     f1 = testclass.make(@(x) F(x)*scale, [], [], pref);
-    pass(n,3) = ~any(f.values - f1.values/scale);
+    pass(n,3) = ~any(f.coeffs - f1.coeffs/scale);
 
     % Require chebtech(f)/scale = chebtech(f/scale):
     f2 = testclass.make(@(x) F(x)/scale, [], [], pref);
-    pass(n,4) = ~any(f.values - f2.values*scale);
+    pass(n,4) = ~any(f.coeffs - f2.coeffs*scale);
     
 end
 

@@ -10,7 +10,7 @@ function B = subsref(A, sr)
 %
 %   See also CHEBMATRIX.SUBSASGN.
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
 switch(sr(1).type)
@@ -20,9 +20,10 @@ switch(sr(1).type)
         B = subsref(A.blocks, sr(1));
     otherwise
         B = A.(sr(1).subs);
-        if length(sr) > 1
-            B = subsref(B, sr(2));
-        end
+end
+
+if ( length(sr) > 1 )
+    B = subsref(B, sr(2));
 end
 
 end

@@ -5,7 +5,7 @@ function out = horzcat(varargin)
 %   can be concatenated within one pair of brackets. Vertical concatenation is
 %   not supported.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
 % Remove empties:
@@ -24,9 +24,8 @@ F = cellfun(@(f) prolong(f, n), varargin, 'UniformOutput', false);
 % Extract the data and collate the an array-valued CHEBTECH:
 out = varargin{1};
 
-% Coeffs and Values:
+% Coeffs:
 out.coeffs = cell2mat(cellfun(@(f) f.coeffs, F, 'UniformOutput', false));
-out.values = cell2mat(cellfun(@(f) f.values, F, 'UniformOutput', false));
 
 % Vscales:
 vscales = cellfun(@(f) f.vscale, F, 'UniformOutput', false);

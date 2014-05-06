@@ -21,7 +21,7 @@ function f = compose(f, op, g, pref)
 %   possibly OP or G) has additional structure beyond just being an UNBNDFUN
 %   object.
 %
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Parse inputs:
@@ -59,7 +59,7 @@ else
     % out = OP(F,G).
     
     if ( nargin == 3 )       
-        pref = chebpref();
+        pref = chebfunpref();
     end
     
     % Call ONEFUN/COMPOSE():

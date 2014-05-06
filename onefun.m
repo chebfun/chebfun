@@ -15,7 +15,7 @@ classdef onefun % (Abstract)
 %
 % See also SINGFUN, SMOOTHFUN.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -32,7 +32,7 @@ classdef onefun % (Abstract)
 %                                                   <-- [   singfun   ] 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
     methods (Static)
@@ -53,9 +53,9 @@ classdef onefun % (Abstract)
             end
             % Determine preferences if not given, merge if some are given:
             if ( nargin < 4 || isempty(pref) )
-                pref = chebpref();
+                pref = chebfunpref();
             else
-                pref = chebpref(pref);
+                pref = chebfunpref(pref);
             end
        
             % Call the relevent constructor:

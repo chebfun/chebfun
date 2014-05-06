@@ -10,7 +10,7 @@ function out = get(f, prop)
 %       'LVAL' - Value of F at -1.
 %       'RVAL' - Value of F at +1.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 switch prop
@@ -22,10 +22,12 @@ switch prop
         out = f.points();
     case 'lval'
         % The value at -1:
-        out = f.values(1,:);
+        out = feval(f,-1); 
     case 'rval'
         % The value at +1:
-        out = f.values(end,:);
+        out = feval(f,1);
+    case 'values'
+        out = f.coeffs2vals(f.coeffs);
     otherwise
         error('CHEBFUN:CHEBTECH2:GET:proname', ...
             'Unknown property name ''%s'' for object of type chebtech2.', prop);

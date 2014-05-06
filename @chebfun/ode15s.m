@@ -17,7 +17,7 @@ function varargout = ode15s(varargin)
 
 % [TODO]: This example performs poorly.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Call the built in ODE15S():

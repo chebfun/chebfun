@@ -4,10 +4,10 @@ function out = isinf(f)
 %
 % See also ISFINITE, ISNAN.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Check if any values are infinite:
-out = any(isinf(f.values(:)));
+% Check if any coefficients are infinite:
+out = any(isinf(f.coeffs(:)));
 
 end

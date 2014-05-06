@@ -4,7 +4,7 @@ function pass = test_imag(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 pref.enableBreakpointDetection = 1;
@@ -59,6 +59,6 @@ g = imag(f);
 gVals = feval(g, x);
 gExact = opg(x);
 err = gVals - gExact;
-pass(6) = norm(err, inf) < epslevel(f).*vscale(f);
+pass(6) = norm(err, inf) < 1e1*epslevel(f).*vscale(f);
 
 end

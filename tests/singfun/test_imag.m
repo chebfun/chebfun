@@ -4,7 +4,7 @@ function pass = test_imag(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Check for empty cases:
@@ -17,11 +17,11 @@ pass(2) = ~isa(imag(f), 'singfun');
 
 % Imaginary smooth.
 f = singfun(@(x) 1i*exp(x) );
-pass(3) = isequal(1i*imag(f), f.smoothPart);
+pass(3) = ( normest(1i*imag(f) - f.smoothPart) < 10*f.smoothPart.epslevel );
 
 % Imaginary with exponents.
 f = singfun( @(x) 1i./((1+x).*(1-x)));
-pass(4) = isequal(1i*imag(f), f);
+pass(4) = ( normest(1i*imag(f) - f) < 10*f.smoothPart.epslevel  );
 
 % Purely real.
 f = 1i*f;

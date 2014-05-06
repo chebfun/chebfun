@@ -17,7 +17,7 @@ function [vals, pos] = minandmax(f)
 %
 % See also MIN, MAX.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( ~isreal(f) )
@@ -84,7 +84,8 @@ function [vals, pos] = minandmaxColumn(f, fp, xpts)
     pos(1) = r(index);
 
     % Take the minimum of the computed minimum and the function values:
-    [vmin, vindex] = min([ vals(1); f.values ]);
+    values = f.coeffs2vals(f.coeffs);
+    [vmin, vindex] = min([ vals(1); values ]);
     if ( vmin < vals(1) )
         vals(1) = vmin;
         pos(1) = xpts(vindex - 1);
@@ -95,7 +96,7 @@ function [vals, pos] = minandmaxColumn(f, fp, xpts)
     pos(2) = r(index);
 
     % Take the maximum of the computed maximum and the function values:
-    [vmax, vindex] = min([ vals(2); f.values ]);
+    [vmax, vindex] = min([ vals(2); values ]);
     if ( vmax > vals(2) )
         vals(2) = vmax;
         pos(2) = xpts(vindex - 1);

@@ -16,7 +16,7 @@ function [sn, cn, dn] = ellipj(u, m, pref)
 %
 % See also ELLIPKE.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -25,11 +25,11 @@ function [sn, cn, dn] = ellipj(u, m, pref)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if ( nargin < 3 )
-    pref = chebpref();
+    pref = chebfunpref();
     tol = pref.techPrefs.eps;
 elseif ( ~isstruct(pref) )
     tol = pref;
-    pref = chebpref();
+    pref = chebfunpref();
 else
     tol = pref.techPrefs.eps;
 end

@@ -4,7 +4,7 @@ classdef functionalBlock < linBlock
 %
 %   See also LINBLOCK, LINOP, CHEBOP, CHEBOPPREF.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -83,6 +83,7 @@ classdef functionalBlock < linBlock
                 C = functionalBlock(A.domain);
                 C.stack = @(z) A.stack(z) * B.stack(z);
                 C.diffOrder = A.diffOrder + B.diffOrder;
+                C.iszero  = ( A.iszero || B.iszero);
             else
                 error('Unrecognized operand types.')
             end

@@ -10,7 +10,7 @@ function [Q, R] = qr(A, econ)
 %
 % See also SVD, MRDIVIDE, RANK.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -153,7 +153,7 @@ end
 [Q, R] = abstractQR(A, E, ip, @(v) norm(v, inf), tol);
 
 % Construct a CHEBFUN from the discrete values:
-pref = chebpref();
+pref = chebfunpref();
 pref.gridType = chebType;
 Q = mat2cell(Q, sizes, numCols);
 Q = chebfun(Q, dom, pref);

@@ -8,7 +8,7 @@ function J = jacobian( F )
 %
 % See also CHEBFUN2/GRADIENT. 
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % Empty check. 

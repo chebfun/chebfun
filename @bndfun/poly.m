@@ -12,7 +12,7 @@ function out = poly(f)
 %   This strange behaviour is a result of MATLAB's decision to return a row
 %   vector from the POLY command, even for column vector input.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -36,7 +36,17 @@ a = f.domain(1);
 b = f.domain(2);
 
 % Convert coefficients on [-1,1] to [a,b].
-% TODO: Explain why this formula works/give reference.
+
+% We take four steps below:
+% 1. Get onefun monomial coefficients on [-1,1]. (We want them on [a,b].)
+% 2. Write down the linear transform that takes you from [a,b] to [-1,1], 
+%    i.e., x = 2/(b-a) s - (b+a)/(b-a). (We want the monomial coefficients 
+%    in the s variable.)
+% 3. Every time you see an 'x' replace it with 2/(b-a) s - (b+a)/(b-a). The 
+%    monomial representation now has terms like: 
+%    ( 2/(b-a) s - (b+a)/(b-a) )^k.
+% 4. Expand them out using binomial's theorem.
+    
 if ( (a ~= -1) || (b ~= 1) )
     % Constants for rescaling
     alpha = 2/(b - a);

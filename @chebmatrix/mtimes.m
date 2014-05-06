@@ -1,7 +1,7 @@
 function C = mtimes(A, B)
 %*         Composition of chebmatrices.
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
 % Scalar operand is scalar*identity. But it's faster to interpret it as a
@@ -11,11 +11,10 @@ if ( isnumeric(A) && (numel(A)==1) )
 elseif ( isnumeric(B) && (numel(B)==1) )
     C = scalartimes(A, B);
 else
-    % If either input is a singe entity of a LINBLOCK, need to wrap in a cell to
-    % simplify code below,
-    if ( isa(A, 'linBlock') )
+    % Ensure both A and B are chebmatrices so that we can compare blocks.
+    if ( ~isa(A, 'chebmatrix') )
         A = chebmatrix({A});
-    elseif ( isa(B, 'linBlock') )
+    elseif ( ~isa(B, 'chebmatrix') )
         B = chebmatrix({B});
     end
     

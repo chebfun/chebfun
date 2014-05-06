@@ -31,7 +31,7 @@ function out = innerProduct(f, g)
 %
 % See also SUM.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Developer note: UNBNDFUN INNERPRODUCT does not support array-valued inputs,
@@ -52,7 +52,7 @@ end
 
 % Compute the derivative of the map: (Here we assume that the domains and
 % therefore the maps of f and g are identical.)
-pref = chebpref();
+pref = chebfunpref();
 pref.singPrefs.exponents = f.mapping.forDerExps;
 forDer = onefun.constructor(f.mapping.forDer, [], [], pref);
 

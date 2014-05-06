@@ -5,10 +5,10 @@ function out = isreal(f)
 %
 %   See also REAL, IMAG.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org for Chebfun information.
 
-% Check if all the values are real:
-out = isreal(f.values);
+% Check if all the coefficients are real:
+out = isreal(f.coeffs);
 
 end

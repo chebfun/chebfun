@@ -15,7 +15,7 @@ function f = compose(f, op, g, pref)
 %   particular, one can set PREF.REFINEMENTFUNCTION to be a function which takes
 %   advantage of F and possibly OP or G being CHEBTECH objects.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -94,7 +94,7 @@ function [values, giveUp] = composeResample1(op, values, pref, f)
 
     % Update f values:
     f = prolong(f, n);
-    v1 = f.values;
+    v1 = f.coeffs2vals(f.coeffs);
     values = feval(op, v1);
 
 end
@@ -133,9 +133,9 @@ function [values, giveUp] = composeResample2(op, values, pref, f, g)
 
     % Update f and g values:
     f = prolong(f, n);
-    v1 = f.values;
+    v1 = f.coeffs2vals(f.coeffs);
     g = prolong(g, n);
-    v2 = g.values;
+    v2 = g.coeffs2vals(g.coeffs);
     values = feval(op, v1, v2);
 
 end

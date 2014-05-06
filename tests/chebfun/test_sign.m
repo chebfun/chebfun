@@ -1,12 +1,13 @@
 function pass = test_sign(pref)
 
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Initialise random vector:
 seedRNG(6178);
 x = 2 * rand(100, 1) - 1;
+hvsde = @(x) .5*(sign(x) + 1);
 
 %% Simple tests
 pref.enableBreakpointDetection = 0;
@@ -120,7 +121,7 @@ op = @(x) (1-exp(-x.^2))./x;
 f = chebfun(op, dom);
 s = sign(f);
 sVals = feval(s, x);
-op = @(x) 2*heaviside(x) - 1;
+op = @(x) 2*hvsde(x) - 1;
 sExact = op(x);
 err = sVals - sExact;
 pass(8,:) = all( ~norm(err, inf) );

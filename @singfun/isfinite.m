@@ -5,10 +5,10 @@ function out = isfinite(f)
 %
 % See also ISINF, ISNAN.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-tol = chebpref().singPrefs.exponentTol;
+tol = chebfunpref().singPrefs.exponentTol;
 
 % Check if F has exponents and the smooth part is finite:
 out = all(f.exponents > -tol) && isfinite(f.smoothPart);

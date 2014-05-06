@@ -10,7 +10,7 @@ function f = rdivide(f, c, pref)
 %
 % See also MRDIVIDE, TIMES.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( isa(c, 'double') )
@@ -18,7 +18,7 @@ if ( isa(c, 'double') )
     
     % This can never work (as size(f, 1) == inf):
     if ( (size(c, 1) > 1) || ...
-           ( (numel(c) > 1) && (size(f.values, 2) ~= size(c, 2)) ) )
+           ( (numel(c) > 1) && (size(f.coeffs, 2) ~= size(c, 2)) ) )
         error('CHEBFUN:CHEBTECH:rdivide:size', ...
             'Matrix dimensions must agree.');
     end
@@ -28,17 +28,14 @@ if ( isa(c, 'double') )
         f = f.make(NaN(1, size(f, 2)));
     elseif ( numel(c) == 1 )
         % Scalar
-        f.values = f.values/c;      % Divide values
         f.coeffs = f.coeffs/c;      % Divide coeffs
         f.vscale = f.vscale/abs(c); % Divide vscale
     else
         % Array-valued CHEBTECH
-        n = size(f.values, 1);   
-        f.values = f.values./repmat(c, n, 1);   % Divide values
+        n = size(f.coeffs, 1);   
         f.coeffs = f.coeffs./repmat(c, n, 1);   % Divide coeffs
         f.vscale = f.vscale./abs(c);            % Divide vscale
         
-        f.values(:, c == 0) = NaN;
         f.coeffs(:, c == 0) = NaN;
         f.vscale(:, c == 0) = NaN;
     end

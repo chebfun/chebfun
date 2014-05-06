@@ -57,7 +57,7 @@ function varargout = plot(varargin)
 %
 % See also PLOTDATA, PLOT3.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
 % TODO: Figure out the y axis limit for functions which blow up.
@@ -307,7 +307,6 @@ h4 = stem(deltaData{:}, 'd', 'fill');
 % else
 %     set(h3, jumpStyle{:});
 % end
-
 % Set the X-limits if appropriate values have been suggested:
 if ( all(isfinite(xLim)) )
 
@@ -316,7 +315,7 @@ if ( all(isfinite(xLim)) )
         xLim = [min(xLimCurrent(1), xLim(1)), max(xLimCurrent(2), xLim(2))];
     end
 
-    set(gca, 'xlim', xLim)
+    set(gca, 'xlim', sort(xLim))
 end
 
 % Set the Y-limits if appropriate values have been suggested:
@@ -327,7 +326,7 @@ if ( all(isfinite(yLim)) )
         yLim = [min(yLimCurrent(1), yLim(1)), max(yLimCurrent(2), yLim(2))];
     end
 
-    set(gca, 'ylim', yLim)
+    set(gca, 'ylim', sort(yLim))
 end
 
 % Return hold state to what it was before:

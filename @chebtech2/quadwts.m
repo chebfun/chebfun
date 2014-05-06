@@ -5,15 +5,13 @@ function w = quadwts(n)
 %
 % See also CHEBPTS, BARYWTS.
 
-%   References:
-%
-%   [1] Joerg Waldvogel, "Fast construction of the Fejer and Clenshaw-Curtis
-%   quadrature rules", BIT Numerical Mathematics 46 (2006), pp 195-202.
-%
-%   [2] Joerg Waldvogel, www.chebfun.org/and_beyond/programme/slides/wald.pdf
-
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
+
+%   References:
+%    [1] Joerg Waldvogel, "Fast construction of the Fejer and Clenshaw-Curtis
+%     quadrature rules", BIT Numerical Mathematics 46 (2006), pp 195-202.
+%    [2] Joerg Waldvogel, www.chebfun.org/and_beyond/programme/slides/wald.pdf
 
 if ( n == 0 )                      % Special case (no points!)
     w = [];

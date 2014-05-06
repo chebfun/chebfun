@@ -14,12 +14,12 @@ function f = compose(f, op, g, pref)
 %   particular, one can set PREF.REFINEMENTFUNCTION to be a function which takes
 %   advantage of F and possibly OP or G being SINGFUN objects.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Parse inputs:
 if ( nargin < 4 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 if ( (nargin < 3) || isempty(g) )

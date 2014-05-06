@@ -4,7 +4,7 @@ function F = abs(F, pref)
 %
 % See also SIGN, ANGLE, UNWRAP, HYPOT.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
 % Trivial case: (F is empty)
@@ -13,7 +13,7 @@ if ( isempty(F) )
 end
 
 if ( nargin < 2 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Loop over the columns of F:

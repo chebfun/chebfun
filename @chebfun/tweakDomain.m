@@ -17,7 +17,7 @@ function [f, g, newBreaksLocF, newBreaksLocG] = tweakDomain(f, g, tol)
 %
 % See also CHEBFUN/OVERLAP.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
 % Return if either f or g are empty as there is nothing to do here:

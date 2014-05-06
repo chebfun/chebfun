@@ -4,7 +4,7 @@ function out = chebpoly(f, varargin)
 %   the row vector such that F = ... + A(1) T_N(x) + ... + A(N) T_1(x) +
 %   A(N+1) T_0(x), where T_M(x) denotes the M-th Chebyshev polynomial.
 %
-%   If F is a smooth CHEBFUN (i.e., with no breakpoints), the CHEBPOLY(F) is
+%   If F is a smooth CHEBFUN (i.e., with no breakpoints), then CHEBPOLY(F) is
 %   equivalent to CHEBPOLY(F, LENGTH(F)).
 % 
 %   If F is array-valued with M columns, then A is an MxN matrix.
@@ -18,7 +18,7 @@ function out = chebpoly(f, varargin)
 %
 % See also LEGPOLY.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Trivial empty case:

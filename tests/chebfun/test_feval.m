@@ -4,7 +4,7 @@ function pass = test_feval(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Generate a few random points in [-1 1] to use as test values.
@@ -249,7 +249,7 @@ fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
 pass(34) = ( norm(err, inf) < epslevel(f)*vscale(f) ) && ...
-     ( feval(f, Inf) < 5*epslevel(f)*vscale(f) );
+     ( feval(f, Inf) < 1e1*epslevel(f)*vscale(f) );
 
 %% Functions on [-inf b]:
 

@@ -4,7 +4,7 @@ function out = epslevel(F)
 %   is defined as the maximum of the product of the local vscales and epslevels,
 %   divided by the global vscale.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % TODO: Is this the right measure?
@@ -33,7 +33,7 @@ out = max(ve(:));
 
 % [TODO]: Remove this hack!
 if ( isnan(out) || ~logical(out) )
-    out = chebpref().eps;
+    out = chebfunpref().eps;
 end
 
 end

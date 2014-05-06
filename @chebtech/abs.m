@@ -4,12 +4,14 @@ function f = abs(f, varargin)
 %   roots in [-1 1]. If ~isempty(roots(F)), then ABS(F) will return garbage
 %   with no warning. F may be complex.
 
-%  Copyright 2013 by The University of Oxford and The Chebfun Developers.
+%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
 if ( isreal(f) || isreal(1i*f) )    
-    f.values = abs(f.values);
-    f.coeffs = f.vals2coeffs(f.values);
+    % Convert to values and then compute ABS(). 
+    values = f.coeffs2vals(f.coeffs); 
+    values = abs(values);
+    f.coeffs = f.vals2coeffs(values);
 else
     f = compose(f, @abs, [], varargin{:});
 end

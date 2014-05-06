@@ -4,11 +4,11 @@ function f = simplifyDeltas(f, pref)
 %   matrix of the DELTAFUN F based on the tolerance and merges columns in the 
 %   impulse matrix if the location of delta functions is really close.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin < 2 || isempty(pref) )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 deltaLoc = f.deltaLoc;

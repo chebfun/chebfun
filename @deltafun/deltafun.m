@@ -26,7 +26,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
 %
 % See also CLASSICFUN, ONEFUN, FUN
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
     %% Properties of DELTAFUN objects
@@ -52,10 +52,10 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
             % Check for preferences in the very beginning.
             if ( (nargin < 4) || isempty(pref) )
                 % Determine preferences if not given.
-                pref = chebpref();
+                pref = chebfunpref();
             else
                 % Merge if some preferences are given.
-                pref = chebpref(pref);
+                pref = chebfunpref(pref);
             end
                         
             %% Cases based on the number of arguments

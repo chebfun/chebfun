@@ -13,7 +13,7 @@ function f = chebpoly(n, d, kind)
 %
 % See also CHEBFUN/CHEBPOLY, LEGPOLY, and CHEBPTS.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information. 
 
 % TODO: This method requires a test.
@@ -28,14 +28,14 @@ if ( any(n < 0) || any(mod(n, 1) ~= 0) )
 end
 
 if ( nargin == 1 )
-    d = chebpref().domain;
+    d = chebfunpref().domain;
     kind = defaultKind;
 elseif ( nargin == 2 )
     if ( numel(d) > 1 )
         kind = defaultKind;
     else
         kind = d;
-        d = chebpref().domain;
+        d = chebfunpref().domain;
     end
 end    
 

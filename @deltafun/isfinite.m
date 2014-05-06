@@ -5,7 +5,7 @@ function out = isfinite(f)
 %
 % See also ISINF, ISNAN.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Check the smooth part:
@@ -21,7 +21,7 @@ if ( isempty(f.deltaLoc) || isempty(f.deltaMag) )
 end
 
 % Get the tolerance:
-pref = chebpref();
+pref = chebfunpref();
 deltaTol = pref.deltaPrefs.deltaTol;
 
 if ( max(abs(f.deltaMag)) < deltaTol )

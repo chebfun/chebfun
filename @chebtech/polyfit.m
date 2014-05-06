@@ -11,11 +11,15 @@ function f = polyfit(f, n)
 %
 % See also LEG2CHEB, CHEB2LEG.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % [TODO]: 
 %   Array-valued CHEBFUN objects.
+if ( size(f, 2) > 1 )
+    error('CHEBFUN:chebtech:polyfit', ...
+        'Array-valued CHEBTECH objects are ot supported by POLYFIT().');
+end
 
 if ( n <= length(f) )
     
@@ -27,11 +31,8 @@ if ( n <= length(f) )
     c_leg = c_leg((end-n+1):end);
     % Convert to Chebyshev coefficients:
     c_cheb = chebtech.leg2cheb(c_leg);
-    % Compute corresponding values on a Chebyshev grid:
-    v_cheb = f.coeffs2vals(c_cheb);
-    % Update the values, coefficients, and vscale of the CHEBTECH:
     f.coeffs = c_cheb;
-    f.values = v_cheb;
-    f.vscale = max(abs(v_cheb), [], 1);
+    % Update vscale of the CHEBTECH:
+    f.vscale = getvscl(f);
     
 end

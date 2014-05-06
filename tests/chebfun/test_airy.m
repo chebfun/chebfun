@@ -2,7 +2,7 @@ function pass = test_airy(pref)
 
 % Grab some preferences
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Choose a domain:
@@ -27,7 +27,13 @@ for im = [0 1]
         % [TODO] Implement scale = 1 (requires SINGFUNS)
         for scale = 0
 
-            F = @(x) airy(K, (1+im*1i)*x, scale);
+            % AIRY does not support the "scale" input prior to R2013a.
+            if ( verLessThan('matlab', '8.1') )
+                F = @(x) airy(K, (1+im*1i)*x);
+            else
+                F = @(x) airy(K, (1+im*1i)*x, scale);
+            end
+
             f = F(x);
             pass(im+1,k) = norm(feval(f,xx) - F(xx), inf) < 20*max(f.epslevel.*f.vscale);
             k = k + 1;

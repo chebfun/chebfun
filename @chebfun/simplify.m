@@ -10,12 +10,12 @@ function F = simplify(F, tol)
 %  G = SIMPLIFY(F, TOL) does the same as above but uses TOL instead of the
 %  default simplification tolerances as the relative threshold level.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
 if ( nargin == 1 )
-    tol = chebpref().techPrefs.eps;
-elseif ( isa(tol, 'chebpref') )
+    tol = chebfunpref().techPrefs.eps;
+elseif ( isa(tol, 'chebfunpref') )
     tol = tol.techPrefs.eps;
 end
 

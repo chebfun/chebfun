@@ -14,7 +14,7 @@ function g = power(f, b)
 %
 % See also SQRT.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % If F is complex and the imaginary part of F vanishes exactly at the domain 

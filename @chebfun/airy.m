@@ -15,25 +15,25 @@ function F = airy(K, F, scale, pref)
 %
 % See also BESSELJ.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
 % Parse the inputs as described in help text:
 if ( nargin == 1 )
     F = K;
     K = 0;
-    pref = chebpref();
+    pref = chebfunpref();
 end
 if ( nargin < 3 )
     scale = 0;
-    pref = chebpref();
+    pref = chebfunpref();
 end
 if ( nargin == 3 )
-    if ( isa(scale, 'chebpref') )
+    if ( isa(scale, 'chebfunpref') )
         pref = scale;
         scale = 0;
     else
-        pref = chebpref;
+        pref = chebfunpref;
     end
 end
 

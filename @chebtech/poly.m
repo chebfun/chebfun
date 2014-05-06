@@ -11,15 +11,16 @@ function out = poly(f)
 %           F2(x) = C(2,1)*x^N + C(2,2)*x^(N-1) + ... + C(2,N)*x + C(2,N+1).
 %   This strange behaviour is a result of MATLAB's decision to return a row
 %   vector from the POLY command, even for column vector input.
+%
+% See also CHEBPOLY, LEFGPOLY.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % [Mathematical reference]: Section 3.3 Mason & Handscomb, "Chebyshev
 % Polynomials". Chapman & Hall/CRC (2003).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 
 % Deal with empty case:
 if ( isempty(f) )

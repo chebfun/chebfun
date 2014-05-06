@@ -9,7 +9,7 @@ function g = restrict(f, s)
 %   that is, length(S) == 2, then the FUN object g is returned. This 
 %   facilitates the use of the result by other functions, e.g. plot etc.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with empty case:
@@ -56,7 +56,7 @@ vscale = get(f, 'vscale');
 
 % Loop over each subdomain:
 for k = 1:numSubDom
-    pref = chebpref();
+    pref = chebfunpref();
     if ( ~isempty(exps) && any(exps(k:k+1)) )
         pref.singPrefs.exponents = exps(k:k+1);
         

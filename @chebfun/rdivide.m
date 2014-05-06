@@ -6,7 +6,7 @@ function h = rdivide(f, g, pref)
 %
 % See also MRDIVIDE, TIMES.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Trivial empty case:
@@ -22,7 +22,7 @@ if ( isnumeric(f) && ~any(f) )
 end
 
 if ( nargin < 3 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% CHEBFUN ./ CHEBFUN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 

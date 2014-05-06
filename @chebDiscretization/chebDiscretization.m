@@ -1,4 +1,4 @@
-classdef (Abstract) chebDiscretization 
+classdef chebDiscretization 
 %CHEBDISCRETIZATION Convert a chebmatrix or linop to discrete form.
 %   This class is not called directly by the end user. 
 %
@@ -110,7 +110,7 @@ classdef (Abstract) chebDiscretization
         values = toValues(disc, f)
         
         % Converts a vector of values (or coefficients) to a chebfun.
-        f = toFunction(disc, values)
+        f = toFunction(disc, values, inOut)
         
         % Returns a linear system RHS using the designated discretization
         % parameters.

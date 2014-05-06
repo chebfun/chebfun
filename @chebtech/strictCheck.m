@@ -1,13 +1,14 @@
-function [ishappy, epslevel, cutoff] = strictCheck(f, pref)
+function [ishappy, epslevel, cutoff] = strictCheck(f, values, pref)
 %STRICTCHECK   Attempt to trim trailing Chebyshev coefficients in a CHEBTECH.
-%   [ISHAPPY, CUTOFF, EPSLEVEL] = STRICTCHECK(F) returns an estimated location
-%   CUTOFF at which the CHEBTECH F could be truncated to maintain an accuracy
-%   of EPSLEVEL relative to F.VSCALE and F.HSCALE. ISHAPPY is TRUE if
-%   CUTOFF < MIN(LENGTH(F.VALUES), 2) or F.VSCALE = 0, and FALSE otherwise.
+%   [ISHAPPY, CUTOFF, EPSLEVEL] = STRICTCHECK(F) returns an estimated 
+%   location CUTOFF at which the CHEBTECH F could be truncated to maintain an 
+%   accuracy of EPSLEVEL relative to F.VSCALE and F.HSCALE. ISHAPPY is TRUE if
+%   CUTOFF < MIN(LENGTH(F.COEFFS), 2) or F.VSCALE = 0, and FALSE otherwise.
 %
-%   [ISHAPPY, CUTOFF, EPSLEVEL] = STRICTCHECK(F, PREF) allows additional
+%   [ISHAPPY, CUTOFF, EPSLEVEL] = STRICTCHECK(F, VALUES, PREF) allows additional
 %   preferences to be passed. In particular, one can adjust the target accuracy
-%   with PREF.EPS.
+%   with PREF.EPS. The VALUES field is ignored, but included for consistency
+%   with other happiness checks.
 %
 %   STRICTCHECK tests to see if the absolute values of the entries in the tail
 %   of coeffs, i.e., f.coeffs(1:TESTLENGTH,:), where
@@ -24,7 +25,7 @@ function [ishappy, epslevel, cutoff] = strictCheck(f, pref)
 %
 % See also STRICTCHECK, LOOSECHECK.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with special cases ------------------------------------------------------
