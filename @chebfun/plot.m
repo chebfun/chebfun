@@ -293,7 +293,10 @@ end
 if ( isempty(deltaData) )
     deltaData = {[]};
 end
-h4 = stem(deltaData{:}, 'd', 'fill');
+%h4 = stem(deltaData{:}, 'd', 'fill');
+dx = cell2mat(deltaData(1:2:end));
+dy = cell2mat(deltaData(2:2:end));    
+h4 = stem(dx, dy, 'd', 'fill');
 
 %% 
 % Do we want a style for delta functions?
