@@ -564,7 +564,8 @@ function [op, dom, pref] = parseInputs(op, dom, varargin)
             args(1) = [];
         elseif ( strcmpi(args{1}, 'trunc') )
             % Pull out this preference, which is checked for later.
-            args(1:2) = [];            
+            args(1:2) = [];     
+            pref.enableBreakpointDetection = true;
         elseif ( isnumeric(args{1}) )
             % g = chebfun(@(x) f(x), N)
             pref.techPrefs.exactLength = args{1};
