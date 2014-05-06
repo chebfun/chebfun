@@ -24,7 +24,7 @@ try
     projOrder = getProjOrder(L);
     
 catch ME
-    % Calling getProjOrder(L) failed..
+    % Calling getProjOrder(L) failed...
     
     if ( strcmp(ME.identifier, 'MATLAB:UndefinedFunction') )
         % If no such method exists, return a zero projection order:

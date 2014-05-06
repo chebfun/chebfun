@@ -1,9 +1,9 @@
 function varargout = merge(varargin)
-%MERGE   Merge information from two CHEBDSICRETIZATION objects.
+%MERGE   Merge information from two CHEBDISCRETIZATION objects.
 %   [A, B] = MERGE(A, B) synchronize the properties of CHEBDISCRETIZATIONS A and
 %   B so that they will behave compatably when instantiated.
 %
-%   [A1, A2, ...] = MERGE(A1, A2, ...) is the sae, but for multiple
+%   [A1, A2, ...] = MERGE(A1, A2, ...) is the same as above, but for multiple
 %   discretizations.
 %
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
@@ -16,7 +16,7 @@ dimAdjust = 0;
 projOrder = 0;
 varargout = varargin;
 
-% loop over each discretization:
+% Loop over each discretization:
 for k = 1:nargin
     disc = varargin{k};
 

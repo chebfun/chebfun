@@ -1,5 +1,5 @@
 function pass = test_eigenvaluesGeneralized(pref)
-
+% Test generalized eigenvalueproblems for LINOP
 if ( nargin == 0 )
     pref = cheboppref();
 end
@@ -42,7 +42,7 @@ err(1,3) = norm(er - e_true) + norm(imag(e));
 
 %%
 
-% Now try putting the higest derivative on the right:
+% Now try putting the highest derivative on the right:
 
 % 1i*D*u = (1/lam)*D*u, u(-1) = u(1) = 0.
 A = linop(D^2);
@@ -113,20 +113,3 @@ err(3,3) = norm(e - e_true);
 pass = err < tol;
 
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
