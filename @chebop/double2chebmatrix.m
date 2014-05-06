@@ -22,7 +22,6 @@ function out = double2chebmatrix(dVec, residual)
 % Check the size of the residual (the output the dimensions of the CHEBOP).
 [numRow, numCol] = size(residual);
 
-
 % Prepare to convert the RHS to a CHEBMATRIX:
 outBlocks = cell(numRow, numCol);
 

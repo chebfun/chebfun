@@ -1,5 +1,4 @@
-function varargout = eig(varargin)
-%EIG   Find selected eigenvalues and eigenfunctions of a linear CHEBOP.
+function eig(varargin)
 %   EIG(N) is not supported. Use EIGS(N) to find selected eigenvalues of a
 %   linear operator.
 %
