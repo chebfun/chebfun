@@ -30,11 +30,9 @@ x = chebfun('x',d);
 f = [chebfun(0, d) ; cos(x)];
 A.bc = 'periodic';
 uv = mldivide(A, f, pref);
-u = uv{1}; v = uv{2};
 
-trueSoln = [cos(x+3*pi/4), cos(x+pi/4)]/sqrt(2);
-err(2) = norm([u v] - trueSoln);
-
+trueSoln = [cos(x+3*pi/4)/sqrt(2) ; cos(x+pi/4)/sqrt(2)];
+err(2) = norm(uv - trueSoln);
 
 %% Eigenvalue problem:
 
