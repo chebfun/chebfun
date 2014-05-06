@@ -71,10 +71,16 @@ classdef chebfun
 % domain [-1, 0, 1]. The latter defines a single column CHEBFUN which represents
 % sin(x) in the interval [-1, 0) and cos(x) on the interval (0, 1]. 
 %
+% CHEBFUN --UPDATE can be used to update to the latest stable release of CHEBFUN
+% (obviously an internet connection is required!). CHEBFUN --UPDATE-DEVEL will
+% update to the latest development release, but we recommend instead that you
+% checkout from the Github repo https://github.com/chebfun/chebfun. See
+% UPDATECHEBFUN() for further details.
+%
 % See also CHEBFUNPREF, CHEBPTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % CHEBFUN Class Description:
@@ -141,6 +147,11 @@ classdef chebfun
                        
             % Parse inputs:
             [op, dom, pref] = parseInputs(varargin{:});
+            
+            if ( strcmp(op, 'update') )
+                % An update was performed. Exit gracefully:
+                throwAsCaller(MException('', ''))
+            end
             
             % Deal with 'trunc' option:
             doTrunc = false;
@@ -511,6 +522,23 @@ end
 
 function [op, dom, pref] = parseInputs(op, dom, varargin)
 % Parse inputs.
+
+    % Deal with string input options.
+    if ( strncmp(op, '--', 2) )
+        % An option has been passed to the constructor.
+        if ( strcmpi(op, '--update') )
+            updateChebfun();
+        elseif ( strcmpi(op, '--update-devel') )
+            updateChebfun('development');
+        else 
+            error('CHEBFUN:parseInputs:unknown', ...
+                'Unknow command %s.', op);
+        end
+        op = 'update';
+        dom = [];
+        pref = [];
+        return
+    end
 
     args = varargin;
     if ( nargin == 1 )
