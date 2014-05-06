@@ -380,11 +380,11 @@ while ( ~isempty(queue) )
             lvcs = length(vcoeffsq);
             if ( lnc2 > lvcs )
                 % Pad with leading zeros
-                vcoeffsq = [ zeros(lnc2-lvcs,1) ; vcoeffsq ];
+                vcoeffsq = [ zeros(lnc2 - lvcs,1) ; vcoeffsq ];
                 lvcs = length(vcoeffsq);
             end
             % Only the most significant rows affected
-            rows = lvcs-lnc2+1:lvcs;
+            rows = (lvcs - lnc2 + 1):lvcs;
             vcoeffsq(rows) = vcoeffsq(rows) + newcoeff2;
         end
     end
@@ -399,7 +399,7 @@ while ( ~isempty(queue) )
     if ( norm10 > 0.5*norm90 && norm90 > 1e-8*normFirst10 )
         keeper(j) = false;
         if queue(end) < length(idx)
-            m = queue(end)+1;
+            m = queue(end) + 1;
             keeper(m) = true;
             queue = [queue(:); m];
         end

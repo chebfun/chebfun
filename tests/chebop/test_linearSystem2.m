@@ -23,11 +23,11 @@ u1 = u{1}; u2 = u{2};
 pass(1) = norm( diff(u1)+u1+2*u2-exp(x)) < tol;
 pass(2) = norm( diff(u1)-u1+diff(u2)-1 ) < tol;
 
-
 % Want to check BCs as well.
 bcFunLeft = A.lbc(u1,u2);
 bcFunRight = A.rbc(u1,u2);
 pass(3) = norm(bcFunLeft(d(1))) < tol && norm(bcFunRight(d(end))) < tol;
+
 %% Piecewise:
 A.domain = [-1 0 1];
 u = mldivide(A, f, pref);
@@ -46,9 +46,9 @@ bcValRight = bcFunRight(d(2));
 u1jump = jump(u1, 0);
 u2jump = jump(u2, 0);
 
-
 pass(4) = norm( err1 ) < tol;
 pass(5) = norm( err2 ) < tol;
 pass(6) = norm(bcValLeft) < tol && norm(bcValRight) < tol;
 pass(7) = norm(u1jump) < tol && norm(u2jump) < tol;
+
 end

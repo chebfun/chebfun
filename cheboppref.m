@@ -9,10 +9,10 @@ classdef cheboppref < chebpref
 % Available Preferences:
 %
 %   domain                     - Construction domain.
-%    [-1, 1]
+%     [-1, 1]
 %
-%      This sets the default domain that will be used for CHEBOP construction if
-%      no domain argument is explicitly passed to the constructor.
+%     This sets the default domain that will be used for CHEBOP construction if
+%     no domain argument is explicitly passed to the constructor.
 %
 %   discretization             - Discretization of linear problems
 %     [@colloc2]
@@ -45,7 +45,7 @@ classdef cheboppref < chebpref
 %
 %     If 'final', information is only printed after the solver of BVPs has
 %     finished. If 'iter', information is printed at every Newton step. If
-%     'off', no information is printed'
+%     'off', no information is printed.
 %
 %
 % The default values for any of these preferences may be globally overridden
