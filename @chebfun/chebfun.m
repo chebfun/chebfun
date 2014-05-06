@@ -530,7 +530,14 @@ function [op, dom, pref] = parseInputs(op, dom, varargin)
             updateChebfun();
         elseif ( strcmpi(op, '--update-devel') )
             updateChebfun('development');
-        else 
+        elseif ( strcmpi(op, '--version') )
+            installDir = fileparts(which('chebtest'));
+            fid = fopen(fullfile(installDir, 'Contents.m'), 'r');
+            fgetl(fid);
+            str = fgetl(fid);
+            disp(['Chebfun ', str(3:end)]);
+            fclose(fid);
+        else
             error('CHEBFUN:parseInputs:unknown', ...
                 'Unknow command %s.', op);
         end
