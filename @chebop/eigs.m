@@ -12,7 +12,8 @@ function varargout = eigs(N, varargin)
 %   EIGS(A, B) solves the generalized eigenproblem A*V = B*V*D, where B is
 %   another chebop on the same domain.
 %
-%   EIGS(A, K) and EIGS(A, B, K) find the K smoothest eigenvalues. 
+%   EIGS(A, K) and EIGS(A, B, K) for an integer K > 0 find the K smoothest
+%   eigenvalues.
 %
 %   EIGS(A, K, SIGMA) and EIGS(A, B, K, SIGMA) find K eigenvalues. If SIGMA is a
 %   scalar, the eigenvalues found are the ones closest to SIGMA. Other

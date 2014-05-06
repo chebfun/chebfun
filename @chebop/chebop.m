@@ -379,11 +379,14 @@ classdef (InferiorClasses = {?double}) chebop
         %   that the guess is of an appropriate form (i.e., CHEBMATRIX rather
         %   than quasimatrix.). See CHEBOP documentation for further details.
         
-            % We're happy with function handles
+            % Did we get a horizontally concatenated initial guess?
             if ( isa(val, 'chebfun') && size(val, 2) > 1 )
                 val = chebmatrix(mat2cell(val).');
-                warning('CHEBFUN:chebop:set.init:vertcat', ...
-                    'Please use vertical concatenation for initial guess.')
+                warning('CHEBFUN:CHEBOP:setInit:vertcat', ...
+                    ['Passing a horizontally concatenated initial guess is ' ...
+                    'deprecated, and might not be supported in future ' ...
+                    'versions of Chebfun. Please use vertical concatenation '...
+                    'for initial guesses.'])
             end
             
             N.init = val;
