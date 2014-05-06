@@ -28,7 +28,7 @@ u2 = solvebvp(N, rhs, pref);
 tol = pref.errTol;
 pass(1) = norm(N(u1)-rhs) < tol && ( u1(0) - 2 < tol) && ( u1(pi) - 3 < tol);
 pass(2) = norm(N(u2)-rhs) < tol && ( u2(0) - 2 < tol) && ( u2(pi) - 3 < tol);
-pass(3) = ( norm(u1-u2) ~= 0 );
+pass(3) = ( norm(u1 - u2) ~= 0 );
 
 
 %% Problem with breakpoints

@@ -18,8 +18,7 @@ A = chebop(@(x,u,v) [u - diff(v) ; diff(u) + v],d);
 A.lbc = @(u,v) u + 1;
 A.rbc = @(u,v) v;
 x = chebfun('x',d);
-f = [ 0 ; 0 ];
-u = mldivide(A, f, pref);
+u = mldivide(A, 0, pref);
 
 u1 = u{1}; u2 = u{2};
 
@@ -33,7 +32,7 @@ pass(3) = norm(bcFunLeft(d(1))) < tol && norm(bcFunRight(d(end))) < tol;
 
 %% Piecewise:
 A.domain = [-pi 0 pi];
-u = mldivide(A, f, pref);
+u = mldivide(A, 0, pref);
 u1 = u{1}; u2 = u{2};
 
 % Want to check BCs as well.

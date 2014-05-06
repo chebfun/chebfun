@@ -1,6 +1,5 @@
 function out = double2chebmatrix(dVec, residual)
 %DOUBLE2CHEBMATRIX  Convert RHS and initial guesses to a useful format.
-%
 %   OUT = DOUBLE2CHEBMATRIX(DVEC, RESIDUAL) returns a CHEBMATRIX NEWRHS,
 %   constructed from DVEC. Here, DVEC can be a double or a vector of doubles.
 %   The input RESIDUAL is a CHEBMATRIX. The dimensions of DVEC must match the
@@ -11,19 +10,6 @@ function out = double2chebmatrix(dVec, residual)
 %   
 %   The kth block of OUT will be an object of the same class as the
 %   kth entry of the CHEBMATRIX RESIDUAL.
-% 
-%   This method also takes care of checking that the dimension of DVEC matches
-%   the dimensions of the operator. Note that CHEBOP requires the RHS and
-%   initial guesses of coupled systems to match the dimension of the system,
-%   even for scalar right-hand sides. For example,
-%       N = chebop(@(x, u, v) [diff(u) + v ; u + diff(v)]);
-%       N.bc = @(x, u, v) [u(-1); v(1)];
-%       uv = N\[0; 0];
-%   is an accepted syntax, while
-%       N = chebop(@(x, u, v) [diff(u) + v ; u + diff(v)]);
-%       N.bc = @(x, u, v) [u(-1); v(1)];
-%       uv = N\0;
-%   is not.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -35,6 +21,7 @@ function out = double2chebmatrix(dVec, residual)
 
 % Check the size of the residual (the output the dimensions of the CHEBOP).
 [numRow, numCol] = size(residual);
+
 
 % Prepare to convert the RHS to a CHEBMATRIX:
 outBlocks = cell(numRow, numCol);
