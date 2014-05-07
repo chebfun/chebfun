@@ -39,7 +39,7 @@ pref.sampleTest = false;
 
 if ( nfuns == 2 )
     if ( size(f, 2) ~= size(g, 2) )
-        error('CHEBFUN:FOURIETECH:compose:dim', ...
+        error('CHEBFUN:FOURTECH:compose:dim', ...
               'Matrix dimensions must agree.')
     end
 
@@ -51,12 +51,12 @@ if ( nfuns == 2 )
 elseif ( isa(op, 'fourtech') )
     % If OP is a FOURIETECH, we grab some of its data:
     if ( (size(op, 2) > 1) && (size(f, 2) > 1) )
-        error('CHEBFUN:CHEBTECH:compose:arrval', ...
-              'Cannot compose two array-valued CHEBTECH objects.')
+        error('CHEBFUN:FOURTECH:compose:arrval', ...
+              'Cannot compose two array-valued FOURTECH objects.')
     end
 
     if ( norm(f.values(:), inf) > 1 )
-        error('CHEBFUN:CHEBTECH:compose:range', ...
+        error('CHEBFUN:FOURTECH:compose:range', ...
               'The range of f is not contained in the domain of g.')
     end
 
@@ -80,7 +80,7 @@ f = f.make(op, vscale, f.hscale, pref);
 
 % Throw a warning:
 if ( ~f.epslevel )
-    warning('FOURIETECH:FOURIETECH:compose:convfail', ...
+    warning('FOURTECH:FOURTECH:compose:convfail', ...
         [ 'Composition with ', func2str(op), ...
           ' failed to converge with ', int2str(length(f)), ' points.' ]);
 end

@@ -58,8 +58,9 @@ end
 n = size(f.coeffs,1);
 
 % Convolution is just multiplication of the Fourier coefficients.
-% Shift g horizontally to -pi.
-f.values = 2/n*ifft(fft(f.values).*fft(feval(g,fourierpts(size(g,1))+1)));
+% Shift g horizontally to -1.
+g = circshift(g,-1);
+f.values = 2/n*ifft(fft(f.values).*fft(g.values));
 f.coeffs = f.vals2coeffs(f.values);
 % Update the vscale
 f.vscale = max(abs(f.values), [], 1);
