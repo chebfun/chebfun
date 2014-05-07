@@ -26,7 +26,7 @@ gVals = feval(g, x);
 opg = @(x) sqrt(pi)*erf(x)/2 + sqrt(pi)/2;
 gExact = opg(x);
 errg = norm(gVals - gExact, inf);
-tol = 1e3*get(g,'epslevel').*get(g,'vscale');
+tol = 1e4*get(g,'epslevel').*get(g,'vscale');
 pass(1) = errg < tol;
 
 % [TODO]: Revive when log is ready.
@@ -71,8 +71,9 @@ gVals = feval(g, x);
 
 opg = @(x) 5*x.^2/2 - 5/2 + get(g, 'lval');
 gExact = opg(x);
-err = gVals - gExact;
-pass(4) = norm(err, inf) < 10*get(g,'epslevel').*get(g,'vscale');
+err = norm(gVals - gExact, inf);
+tol = 20*get(g,'epslevel').*get(g,'vscale');
+pass(4) = err < tol;
 
 %% Functions on [-inf b]:
 

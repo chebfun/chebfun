@@ -75,14 +75,16 @@ catch ME
     pass(18) = strcmp(ME.message, 'Matrix dimensions must agree.');
 end
 
+
 %% 
 % Check that direct construction and PLUS give comparable results.
-tol = 10*eps;
 f = bndfun(@(x) x, dom, [], [], pref);
 g = bndfun(@(x) cos(x) - 1, dom, [], [], pref);
 h1 = f + g;
 h2 = bndfun(@(x) x + cos(x) - 1, dom, [], [], pref);
-pass(19) = norm(feval(h1, x) - feval(h2, x), inf) < 2*tol;
+err = norm(feval(h1, x) - feval(h2, x), inf)
+tol = 50*eps;
+pass(19) = err < tol;
 
 %% 
 % Check that adding a BNDFUN to an unhappy BNDFUN gives an unhappy

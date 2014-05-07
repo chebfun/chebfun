@@ -54,6 +54,8 @@ pass(6) = ( abs(I-I_exact) < get(f, 'epslevel') );
 f = singfun(@(x) exp(x).*x.^3.*sin(2*x), [0 0], {'none', 'none'}, [], [], pref);
 I = sum(f);
 I_exact = 0.644107794617991224;
-pass(7) = ( abs(I-I_exact) < get(f, 'epslevel')*abs(I_exact) );
+err = abs(I-I_exact);
+tol = 10*get(f, 'epslevel')*abs(I_exact);
+pass(7) = ( err < tol );
 
 end

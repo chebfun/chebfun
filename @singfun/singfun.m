@@ -158,8 +158,10 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
             
             % Make sure that op is a function handle or a smoothfun:
             if ( ~isa(op, 'function_handle') && ~isa(op, 'smoothfun') )
+                class(op)
                 error( 'CHEBFUN:SINGFUN:constructor', ...
-                    'First argument must be a function handle or a smoothfun.');
+                    ['First argument must be a function handle or a ', ...
+                     'SMOOTHFUN, not a %s.'], class(op));
             end
             
             % Check to avoid array-valued operators:

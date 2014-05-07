@@ -19,7 +19,7 @@ f = unbndfun(op, dom);
 I = sum(f);
 IExact = sqrt(pi);
 err = abs(I - IExact);
-tol = 5e3*get(f,'epslevel')*get(f,'vscale');
+tol = 8e3*get(f,'epslevel')*get(f,'vscale');
 pass(1) = err < tol;
 
 op = @(x) x.^2.*exp(-x.^2);
@@ -35,7 +35,7 @@ f = unbndfun(op, dom);
 I = sum(f);
 IExact = 2*sqrt(pi);
 err = abs(I - IExact);
-tol = 1e4*get(f,'epslevel')*get(f,'vscale');
+tol = 3e4*get(f,'epslevel')*get(f,'vscale');
 pass(3) = err < tol;
 
 % Blow-up function:
@@ -62,7 +62,7 @@ f = unbndfun(op, dom);
 I = sum(f);
 IExact = exp(-1);
 err = abs(I - IExact);
-tol = 1e4*get(f,'epslevel')*get(f,'vscale');
+tol = 1e5*get(f,'epslevel')*get(f,'vscale');
 pass(6) = err < tol;
 
 op = @(x) x.*exp(-x);
@@ -141,7 +141,7 @@ f = unbndfun(op, dom, [], [], pref);
 I = sum(f);
 IExact = 1/(3*pi);
 err = abs(I - IExact);
-tol = 1e1*get(f,'epslevel')*get(f,'vscale');
+tol = 5e1*get(f,'epslevel')*get(f,'vscale');
 pass(15) = err < tol;
 
 op = @(x) 0*x + 2;

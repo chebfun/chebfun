@@ -33,12 +33,13 @@ g3Vals = feval(g{3}, x3);
 fExact1 = op(x1);
 fExact2 = op(x2);
 fExact3 = op(x3);
-err1 = g1Vals - fExact1;
-err2 = g2Vals - fExact2;
-err3 = g3Vals - fExact3;
-pass(1) = ( norm(err1, inf) < get(g{1},'epslevel')*get(g{1},'vscale') ...
-    && norm(err2, inf) < get(g{2},'epslevel')*get(g{2},'vscale') ...
-    && norm(err3, inf) < 2*get(g{3},'vscale') );
+err1 = norm(g1Vals - fExact1, inf);
+err2 = norm(g2Vals - fExact2, inf);
+err3 = norm(g3Vals - fExact3, inf);
+tol1 = 10*get(g{1},'epslevel')*get(g{1},'vscale');
+tol2 = 10*get(g{2},'epslevel')*get(g{2},'vscale');
+tol3 = 10*get(g{3},'vscale');
+pass(1) = ( err1 < tol1 && err2 < tol2 && err3 < tol3);
 
 % Blow-up function:
 op = @(x) x.^2.*(1-exp(-x.^2));
@@ -135,12 +136,13 @@ g3Vals = feval(g{3}, x3);
 fExact1 = op(x1);
 fExact2 = op(x2);
 fExact3 = op(x3);
-err1 = g1Vals - fExact1;
-err2 = g2Vals - fExact2;
-err3 = g3Vals - fExact3;
-pass(5) = ( norm(err1, inf) < 2*get(g{1},'vscale') ...
-    && norm(err2, inf) < 2*get(g{2},'vscale') ...
-    && norm(err3, inf) < 1e1*get(g{3},'epslevel')*get(g{3},'vscale') );
+err1 = norm(g1Vals - fExact1, inf);
+err2 = norm(g2Vals - fExact2, inf);
+err3 = norm(g3Vals - fExact3, inf);
+tol1 = max(2*get(g{1},'vscale'), eps);
+tol2 = max(2*get(g{2},'vscale'), eps);
+tol3 = max(1e1*get(g{3},'epslevel')*get(g{3},'vscale'), eps);
+pass(5) = ( err1 < tol1 && err2 < tol2 && err3 < tol3);
 
 % Blow-up function:
 op = @(x) x.*(5+exp(x.^3))./(dom(2)-x);

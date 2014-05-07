@@ -47,13 +47,16 @@ pass(3) = length(r) == 4 && norm(feval(f, r), inf) < 10*get(f, 'epslevel').*get(
 
 %%
 %  Test a some simple polynomials BNDFUN:
-f = bndfun([-2 ; 7], dom, [], [], pref);
+f = bndfun(@(x) x, dom, [], [], pref);
 r = roots(f);
-pass(4) = r < get(f, 'epslevel').*get(f, 'vscale');
+tol = get(f, 'epslevel').*get(f, 'vscale');
+pass(4) = abs(r) < tol;
 
 f = bndfun([20.25 ; 0 ; 20.25]);
 r = roots(f);
-pass(5) = numel(r) == 2 && (norm(r, inf) < get(f, 'epslevel').*get(f, 'vscale'));
+err = norm(r, inf);
+tol = get(f, 'epslevel').*get(f, 'vscale');
+pass(5) = numel(r) == 2 && ( err < tol );
 
 %%
 % Test some complex roots of BNDFUN:
@@ -68,7 +71,7 @@ pass(7) = norm( r - [1i ; -1i]/5, inf) < get(f, 'epslevel').*get(f, 'vscale');
 f = bndfun(@(x) sin(10*pi*x), dom);
 r1 = roots(f, 'complex', 1, 'recurse', 0);
 r2 = roots(f, 'complex', 1);
-pass(8) = numel(r1) == 195 & numel(r2) >= 195;
+pass(8) = numel(r2) >= numel(r1);
 
 %%
 % Test an array-valued BNDFUN:

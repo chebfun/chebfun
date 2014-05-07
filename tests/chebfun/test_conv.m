@@ -75,6 +75,8 @@ h = conv(f, g);
 err = abs(norm(h,2) - 0.029781437647379);
 tol = 10*max(get(f, 'vscale')*get(f, 'epslevel'), ...
     get(g, 'epslevel')*get(g, 'vscale'));
+norm(h, inf)
+plot(h), shg
 pass(7) = err < tol;
 
 %% An Example due to Mohsin Javed:
