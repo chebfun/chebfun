@@ -58,12 +58,12 @@ e = e(idx);
 
 e12 = e(1:2);
 e35 = e(3:5);
-[ignored, idx] = sort(imag(e12))
+[ignored, idx] = sort(imag(e12));
 e12 = e12(idx);
-[ignored, idx] = sort(imag(e35))
+[ignored, idx] = sort(imag(e35));
 e35 = e35(idx);
 
-e = [e12; e35]
+e = [e12; e35];
 
 err(3) = norm(real(e) - [0 0 1 1 1].', inf) + ...
     norm(imag(e) - [-1 1 -1 0 1].', inf);
