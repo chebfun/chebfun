@@ -82,7 +82,7 @@ f = bndfun(@(x) x, dom, [], [], pref);
 g = bndfun(@(x) cos(x) - 1, dom, [], [], pref);
 h1 = f + g;
 h2 = bndfun(@(x) x + cos(x) - 1, dom, [], [], pref);
-err = norm(feval(h1, x) - feval(h2, x), inf)
+err = norm(feval(h1, x) - feval(h2, x), inf);
 tol = 50*eps;
 pass(19) = err < tol;
 

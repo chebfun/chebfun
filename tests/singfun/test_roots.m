@@ -38,8 +38,11 @@ err = r - r_exact;
 pass(3) = (norm(err, inf) < 10*get(f, 'vscale')*get(f, 'epslevel'));
 
 % no fractional pole but a root at the right endpoint.
-f = singfun(@(x) (1-x).^b.*(exp(x)-exp(1)), [0 1+b], {'none', 'root'}, [], [], pref);
+p = pref;
+p.eps = max(pref.eps, 1e-15);
+f = singfun(@(x) (1-x).^b.*(exp(x)-exp(1)), [0 1+b], {'none', 'root'}, [], [], p);
 r = roots(f);
+
 r_exact = 1;
 err = r - r_exact;
 pass(4) = (norm(err, inf) < 10*get(f, 'vscale')*get(f, 'epslevel'));
