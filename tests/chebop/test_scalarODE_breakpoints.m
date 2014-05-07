@@ -26,7 +26,7 @@ pref.discretization = @ultraS;
 % to be identical!
 tol = pref.errTol;
 pass(1) = normest(N(u1)) < tol;
-pass(2) = normest(N(u2)) < tol;
+pass(2) = normest(N(u2)) < 50*tol;
 pass(3) = ( norm(u1-u2) ~= 0 );
 
 end
