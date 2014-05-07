@@ -41,6 +41,10 @@ switch prop
     case {'points'}
         % Get the underlying grid:
         out = get(f.onefun, prop);
+        
+    case {'values'}
+        % Get values. 
+        out = get(f.onefun, prop); 
 
     otherwise
         error('CHEBFUN:ONEFUN:GET:propname', ...

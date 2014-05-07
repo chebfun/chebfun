@@ -52,7 +52,7 @@ for n = 1:2
     f = testclass.make(@(x) 0.5*x - 0.0625*sin(8*x), [], [], pref);
     df = testclass.make(@(x) sin(4*x).^2, [], [], pref);
     err = diff(f) - df;
-    pass(n, 5) = (norm(err.values, inf) < 100*df.vscale.*df.epslevel);
+    pass(n, 5) = (norm(err.coeffs, inf) < 100*df.vscale.*df.epslevel);
     
     %%
     % Verify basic differentiation rules.
@@ -124,7 +124,7 @@ for n = 1:2
     % DIM option should return an empty chebtech for non-array-valued input.
     f = testclass.make(@(x) x.^3);
     dim2df = diff(f, 1, 2);
-    pass(n, 15) = (isempty(dim2df.values) && isempty(dim2df.coeffs));
+    pass(n, 15) = (isempty(dim2df.coeffs));
 end
 
 end

@@ -4,7 +4,7 @@ function pass = test_times(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Generate a few random points to use as test values.
@@ -167,7 +167,7 @@ end
 function result = test_mult_function_by_function(f, f_op, g, g_op, x)
     h1 = f .* g;
     h2 = g .* f;
-    result(1) = isequal(h1, h2);
+    result(1) = norm(h1 - h2) < 10*max(vscale(h1).*epslevel(h1));
     h_exact = @(x) f_op(x) .* g_op(x);
     err = feval(h1, x) - h_exact(x);
     result(2) = norm(err(:), inf) < 10*max(vscale(h1).*epslevel(h1));

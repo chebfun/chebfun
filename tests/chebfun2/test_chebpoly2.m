@@ -2,7 +2,7 @@ function pass = test_chebpoly2( pref )
 % Test chebpoly2 
 
 if ( nargin == 0) 
-    pref = chebpref; 
+    pref = chebfunpref; 
 end
 
 tol = 1000*pref.cheb2Prefs.eps; 

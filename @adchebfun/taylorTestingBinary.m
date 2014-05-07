@@ -43,8 +43,8 @@ seedRNG(6179);
 N = 8;
 
 % Generate two arbitrary ADCHEBFUN objects to evaluate the function at:
-u1 = adchebfun(0.1*rand(N, 1) + .5, [-1 1]);
-u2 = adchebfun(0.1*rand(N, 1) + .5, [-1 1]);
+u1 = adchebfun(chebfun(0.1*rand(N, 1) + .5, [-1 1]));
+u2 = adchebfun(chebfun(0.1*rand(N, 1) + .5, [-1 1]));
 
 % Create copies with re-seeded derivatives (i.e., 1x2 CHEBMATRIX derivatives)
 v1 = seed(u1, 1, 2);

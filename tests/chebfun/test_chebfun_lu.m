@@ -2,7 +2,7 @@ function pass = test_chebfun_lu( pref )
 % Test Chebfun LU command. 
 
 if ( nargin == 0) 
-    pref = chebpref; 
+    pref = chebfunpref; 
 end
 
 tol = pref.cheb2Prefs.eps; 

@@ -3,7 +3,7 @@
 function pass = test_minandmax(pref)
 
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Check empty case.

@@ -1,7 +1,7 @@
 function pass = test_roots(pref)
 
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 %%
@@ -38,7 +38,7 @@ f.pointValues(3,4) = 0;
 exact = NaN(5,4);
 exact(:,1) = linspace(-1,1,5); exact(1,[2,4]) = [0,1]; exact([1,2],3) = [-1,1]./sqrt(2);
 r = roots(f);
-pass(5) = all(size(r) == [5,4]) && max(abs(exact(:)-r(:))) < epslevel(f);
+pass(5) = all(size(r) == [5,4]) && max(abs(exact(:)-r(:))) < 10*epslevel(f);
 
 % Test a quasimatrix:
 f = quasimatrix(@(x) [sin(2*pi*x), sign(x), x.^2-.5, 1+0*x], [-1, 0, 1], 'extrapolate', 'on');
@@ -46,7 +46,7 @@ f = setPointValues(f, 3, 4, 0);
 exact = NaN(5,4);
 exact(:,1) = linspace(-1,1,5); exact(1,[2,4]) = [0,1]; exact([1,2],3) = [-1,1]./sqrt(2);
 r = roots(f);
-pass(6) = all(size(r) == [5,4]) && max(abs(exact(:)-r(:))) < epslevel(f);
+pass(6) = all(size(r) == [5,4]) && max(abs(exact(:)-r(:))) < 10*epslevel(f);
 
 %%
 

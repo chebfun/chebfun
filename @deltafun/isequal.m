@@ -7,7 +7,7 @@ function out = isequal(f, g)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Get the tolerances:
-pref = chebpref();
+pref = chebfunpref();
 proximityTol = pref.deltaPrefs.proximityTol;
 deltaTol = pref.deltaPrefs.deltaTol;
 

@@ -19,7 +19,7 @@ if ( isempty(f.deltaLoc ) || isempty(f.deltaMag) )
     return
 end
 
-pref = chebpref;
+pref = chebfunpref;
 deltaTol = pref.deltaPrefs.deltaTol;
 if ( max(abs(f.deltaMag(:))) < deltaTol )
     out = 1;

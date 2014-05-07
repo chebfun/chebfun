@@ -108,7 +108,7 @@ elseif ( length(f) <= maxsize )
     try
         warnstate = warning;
         warning('off'); % Disable verbose warnings from fmincon.
-        options = optimset('Display', 'off', 'TolFun', eps, 'TolX', eps);
+        options = optimset('Display', 'none', 'TolFun', eps, 'TolX', eps, 'algorithm', 'active-set');
         [mn, Y(1)] = fmincon(@(x,y) feval(f, x(1), x(2)), X(1, :), ...
             [], [], [], [], lb, ub, [], options);
         [mx, Y(2)] = fmincon(@(x) -feval(f, x(1), x(2)), X(2,:), ...

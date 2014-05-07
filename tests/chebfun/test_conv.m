@@ -4,7 +4,7 @@ function pass = test_conv(pref)
 
 % Grab some preferences
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Construct a few CHEBFUN objects for the tests.
@@ -73,8 +73,47 @@ t = 1e-7;
 f = chebfun(@(x) exp(-x.^2/(4*t))/sqrt(4*pi*t),.003*[-1 1]);
 h = conv(f, g);
 err = abs(norm(h,2) - 0.029781437647379);
-tol = 10*max(get(f, 'vscale')*get(f, 'epslevel'), get(g, 'epslevel')*get(g, 'vscale'));
+tol = 10*max(get(f, 'vscale')*get(f, 'epslevel'), ...
+    get(g, 'epslevel')*get(g, 'vscale'));
 pass(7) = err < tol;
+
+%% An Example due to Mohsin Javed:
+f = chebfun(@(x) x, [-1.5 0] );
+g = chebfun(@(x) sin(x), [-1 1]);
+h1 = conv(f, g);
+h2 = conv(f, g, 'old');
+tol = 10*max(get(f, 'vscale')*get(f, 'epslevel'), ...
+    get(g, 'epslevel')*get(g, 'vscale'));
+pass(8) = norm(h1 - h2, inf) < tol;
+
+%% Testing Delta function convolution
+% Delta funciton reproduces the function under convolution:
+f = chebfun({@(x) sin(x), @(x) cos(x), @(x) sin(4*x.^2)}, [-2, -1, 0, 1] );
+x = chebfun('x', [-2, 1] );
+d = dirac(x);
+g = conv(d, f);
+g = restrict(g, [-2, 1]);
+g.pointValues(1) = 2*g.pointValues(1);
+g.pointValues(end) = 2*g.pointValues(end);
+pass(9) = norm(f - g, inf) < tol;
+
+% Derivative of delta function differentiates the function:
+x = chebfun('x');
+f = sin(x);
+g = conv(f, diff(dirac(x)));
+g = restrict(g, [-1, 1] );
+g.pointValues(1) = 2*g.pointValues(1);
+g.pointValues(end) = 2*g.pointValues(end);
+pass(10) = norm(g - cos(x), inf ) < tol;
+
+% Second order ODE via delta functions and convolutions:
+% g = f'' + f
+f = sin(x);
+g = conv(f, diff(dirac(x), 2) + dirac(x));
+g = restrict(g, [-1, 1] );
+g.pointValues(1) = 2*g.pointValues(1);
+g.pointValues(end) = 2*g.pointValues(end);
+pass(11) = norm(g , inf ) < 1e3*tol;
 
 end
 

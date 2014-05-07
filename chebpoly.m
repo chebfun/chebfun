@@ -28,14 +28,14 @@ if ( any(n < 0) || any(mod(n, 1) ~= 0) )
 end
 
 if ( nargin == 1 )
-    d = chebpref().domain;
+    d = chebfunpref().domain;
     kind = defaultKind;
 elseif ( nargin == 2 )
     if ( numel(d) > 1 )
         kind = defaultKind;
     else
         kind = d;
-        d = chebpref().domain;
+        d = chebfunpref().domain;
     end
 end    
 

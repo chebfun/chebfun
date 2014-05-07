@@ -1,7 +1,7 @@
 function pass = test_atan2(pref)
 
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 a = -2.25*pi;
@@ -18,7 +18,7 @@ xx = linspace(.99*a, .99*b, 100);
 ff = feval(f, xx);
 gg = feval(g, xx);
 hh = atan2(ff, gg);
-pass(1) = norm(feval(h, xx) - hh, inf) < tol;
+pass(1) = norm(feval(h, xx) - hh, inf) < 3*tol;
 
 ends = h.domain;
 fi = feval(f, ends);
@@ -53,7 +53,7 @@ ends = h.domain;
 fi = feval(f, ends);
 fi(abs(fi) < tol) = 0;
 gi = feval(g, ends);
-gi(abs(gi) < tol) = 0;
+gi(abs(gi) < 100*tol) = 0;
 hi = atan2(fi, gi).';
 pass(6) = norm(hi - h.pointValues) < epslevel(h);
 
@@ -68,7 +68,7 @@ ends = h.domain;
 fi = feval(f, ends);
 fi(abs(fi) < tol) = 0;
 gi = feval(g, ends);
-gi(abs(gi) < tol) = 0;
+gi(abs(gi) < 100*tol) = 0;
 hi = atan2(gi, fi).';
 pass(8) = norm(hi - h.pointValues) < tol;
 

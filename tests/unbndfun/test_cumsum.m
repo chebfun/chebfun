@@ -3,7 +3,7 @@
 function pass = test_cumsum(pref)
 
 if ( nargin == 1 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Seed for random number:
@@ -72,7 +72,7 @@ gVals = feval(g, x);
 opg = @(x) 5*x.^2/2 - 5/2 + get(g, 'lval');
 gExact = opg(x);
 err = gVals - gExact;
-pass(4) = norm(err, inf) < 1e-1*get(g,'epslevel').*get(g,'vscale');
+pass(4) = norm(err, inf) < 10*get(g,'epslevel').*get(g,'vscale');
 
 %% Functions on [-inf b]:
 

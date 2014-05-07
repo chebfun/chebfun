@@ -22,10 +22,10 @@ if ( nargin < 3 )
     prefs = cheboppref;
     discType = prefs.discretization;
     if ( nargin < 2 )
-        if ( length(L.domain) == 2 )
+        if ( length(A.domain) == 2 )
             dim = 10;
         else
-            dim = repmat(6, 1, length(L.domain) - 1);
+            dim = repmat(6, 1, length(A.domain) - 1);
         end
     end
 end

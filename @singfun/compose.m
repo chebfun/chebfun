@@ -19,7 +19,7 @@ function f = compose(f, op, g, pref)
 
 % Parse inputs:
 if ( nargin < 4 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 if ( (nargin < 3) || isempty(g) )

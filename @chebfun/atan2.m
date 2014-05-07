@@ -19,7 +19,7 @@ function p = atan2(y, x, pref)
 %% Set up:
 % Grab some preferences:
 if ( nargin < 3)
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 if ( ~isreal(y) || ~isreal(x) )

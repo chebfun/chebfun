@@ -53,9 +53,9 @@ classdef onefun % (Abstract)
             end
             % Determine preferences if not given, merge if some are given:
             if ( nargin < 4 || isempty(pref) )
-                pref = chebpref();
+                pref = chebfunpref();
             else
-                pref = chebpref(pref);
+                pref = chebfunpref(pref);
             end
        
             % Call the relevent constructor:

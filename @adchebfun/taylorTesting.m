@@ -71,7 +71,7 @@ seedRNG(6179);
 N = 8;
 
 % Initial u we evaluate f at:
-u = adchebfun(0.1*rand(N, 1) + .5, [-1 1]);
+u = adchebfun(chebfun(0.1*rand(N, 1) + .5, [-1 1]));
 
 % Chebfun used to create a perturbation:
 p = chebfun(0.01*rand(N, 1) + .05, [-1 1]);
@@ -99,7 +99,7 @@ for hCounter = 1:hMax
     % Expect this to be O(h)
     nDiff1(hCounter, :) = cellfun(@(u, v) norm(u - v), fuPert, fu);
     
-    % Use derivative information as well. Expect this to be O(h^2)    
+    % Use derivative information as well. Expect this to be O(h^2)   
     nDiff2(hCounter, :) = ...
         cellfun(@(u, v) norm(u - v - v.jacobian*pert), fuPert, fu);
     
@@ -120,7 +120,6 @@ order1 = min(order1, [], 2);
 order2 = min(order2, [], 2);
 
 %% Plotting
-
 if ( plotting == 1 )
     loglog(fact.^(1:hMax), nDiff1, '-*'), hold on
     loglog(fact.^(1:hMax), nDiff2, 'r-*')

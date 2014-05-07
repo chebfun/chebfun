@@ -2,7 +2,7 @@ function pass = test_composition_operators( pref )
 % Check that composition operations are working. 
 
 if ( nargin == 0 )
-    pref = chebpref; 
+    pref = chebfunpref; 
 end
 
 tol = 1000*pref.cheb2Prefs.eps;

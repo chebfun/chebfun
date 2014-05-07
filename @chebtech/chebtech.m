@@ -90,29 +90,29 @@ classdef chebtech < smoothfun % (Abstract)
 % Here is a rough guide to how scale and accuracy information is propagated in
 % subsequent operations after construction:
 %   h = f + c:
-%     h.vscale = max(h.values, [], 1);
+%     h.vscale = getvscl(h);
 %     h.epslevel = (f.epslevel*f.vscale + eps(c))/h.vscale;
 %
 %   h = f * c:
-%     h.vscale = max(abs(h.values), [], 1) = abs(c)*f.vscale;
+%     h.vscale = getvscl(h) = abs(c)*f.vscale;
 %     h.epslevel = f.epslevel + eps(c)/c;
 %
 %   h = f + g:
-%     h.vscale = max(abs(h.values), [], 1);
+%     h.vscale = getvscl(h);
 %     h.epslevel = (f.epslevel*f.vscale + g.epslevel*g.vscale)/h.vscale
 %
 %   h = f .* g:
-%     h.vscale = max(abs(h.values), [], 1);
+%     h.vscale = getvscl(h);
 %     h.epslevel = (f.epslevel + g.epslevel) * (f.vscale*g.vscale)/h.vscale
 %
 %   h = diff(f):
-%     h.vscale = max(abs(h.values), [], 1);
+%     h.vscale = getvscl(h);
 %     % [TODO]: Figure this out rigourously.
 %     h.epslevel = n*log(n)f.epslevel*f.vscale; % *(h.vscale/h.vscale)
 %     % We don't divide by h.vscale here as we must also multiply by it.
 %
 %   h = cumsum(f):
-%     h.vscale = max(abs(h.values), [], 1);
+%     h.vscale = getvscl(h);
 %     [TODO]: h.epslevel = ???
 %
 % If the input operator OP evaluates to NaN or Inf at any of the sample points
@@ -138,13 +138,6 @@ classdef chebtech < smoothfun % (Abstract)
     %% Properties of CHEBTECH objects.
     properties ( Access = public )
 
-        % Values of CHEBTECH at Chebyshev points (stored in order from left to
-        % right). The particular Chebyshev points used depend on the instance
-        % of the concrete class (1st kind for CHEBTECH1 and 2nd kind for
-        % CHEBTECH2).  For array-valued CHEBTECH objects, each column
-        % represents the interpolated values of a single function.
-        values % (nxm double)
-
         % Coefficients in 1st-kind Chebyshev series expansion of the CHEBTECH on
         % [-1,1]. The coefficients are stored in descending order so that c_N is
         % the first entry and c_0 is the last. For array-valued CHEBTECH
@@ -158,10 +151,10 @@ classdef chebtech < smoothfun % (Abstract)
 
         % Horizontal scale of the CHEBTECH. Although CHEBTECH objects have in
         % principle no notion of horizontal scale invariance (since they always
-        % live on [-1,1]), the input OP may have been implicitly mapped.
-        % HSCALE is then used to enforce horizontal scale invariance in
-        % construction and other subsequent operations that require it. It
-        % defaults to 1 and is never updated.
+        % live on [-1,1]), the input OP may have been implicitly mapped. HSCALE
+        % is then used to enforce horizontal scale invariance in construction
+        % and other subsequent operations that require it. It defaults to 1 and
+        % is never updated.
         hscale = 1 % (scalar > 0)
 
         % Boolean value designating whether the CHEBTECH is 'happy' or not. See
@@ -276,7 +269,7 @@ classdef chebtech < smoothfun % (Abstract)
         h = chebpolyplot(f, varargin)
 
         % Check the happiness of a CHEBTECH. (Classic definition).
-        [ishappy, epslevel, cutoff] = classicCheck(f, pref)
+        [ishappy, epslevel, cutoff] = classicCheck(f, values, pref)
 
         % Complex conjugate of a CHEBTECH.
         f = conj(f)
@@ -300,7 +293,7 @@ classdef chebtech < smoothfun % (Abstract)
         [f, rootsLeft, rootsRight] = extractBoundaryRoots(f, numRoots)
 
         % Extrapolate (for NaNs / Infs).
-        [values, maskNaN, maskInf] = extrapolate(f)
+        [values, maskNaN, maskInf] = extrapolate(f, values)
 
         % Evaluate a CHEBTECH.
         y = feval(f, x)
@@ -318,7 +311,7 @@ classdef chebtech < smoothfun % (Abstract)
         f = flipud(f)
 
         % Happiness test for a CHEBTECH
-        [ishappy, epslevel, cutoff] = happinessCheck(f, op, pref)
+        [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, pref)
 
         % Imaginary part of a CHEBTECH.
         f = imag(f)
@@ -360,7 +353,7 @@ classdef chebtech < smoothfun % (Abstract)
         f = logical(f)
 
         % A 'loose' (i.e., not too strict) check for happiness.
-        [ishappy, epslevel, cutoff] = looseCheck(f, pref)
+        [ishappy, epslevel, cutoff] = looseCheck(f, values, pref)
 
         % Convert an array-valued CHEBTECH into an ARRAY of CHEBTECH objects.
         g = mat2cell(f, M, N)
@@ -411,7 +404,7 @@ classdef chebtech < smoothfun % (Abstract)
         out = poly(f)
 
         % Populate a CHEBTECH class with values.
-        f = populate(f, op, vscale, hscale, pref)
+        [f, values] = populate(f, op, vscale, hscale, pref)
         
         % Power function of a CHEBTECH.
         f = power(f, b)
@@ -438,7 +431,7 @@ classdef chebtech < smoothfun % (Abstract)
         g = round(f)
 
         % Test an evaluation of the input OP against a CHEBTECH approx.
-        pass = sampleTest(op, f)
+        pass = sampleTest(op, values, f)
         
         % Signum of a CHEBTECH. (f should have no zeros in its domain)
         f = sign(f, pref)
@@ -450,7 +443,7 @@ classdef chebtech < smoothfun % (Abstract)
         [siz1, siz2] = size(f, varargin)
 
         % Strict happiness check.
-        [ishappy, epslevel, cutoff] = strictCheck(f, pref)
+        [ishappy, epslevel, cutoff] = strictCheck(f, values, pref)
 
         % Definite integral of a CHEBTECH on the interval [-1,1].
         out = sum(f, dim)
