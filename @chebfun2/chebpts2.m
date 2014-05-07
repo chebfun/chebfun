@@ -8,6 +8,9 @@ function [xx, yy] = chebpts2(nx, ny, D)
 %
 %   [XX YY] = CHEBPTS2(NX,NY,D) constructs an NX by NY grid of Chebyshev tensor
 %   points on the rectangle [a b] x [c d], where D = [a b c d].
+% 
+%   The particular tensor grid that is returned is based on the currently
+%   underlying technology. 
 %
 % See also CHEBPTS.
 

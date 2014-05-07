@@ -1,11 +1,11 @@
-function pass = test_Coefficients( pref )
+function pass = test_coefficients( pref )
 % Test to check that Chebfun2 can compute its bivariate tensor Chebyshev 
 % coefficients correctly.
 
 if ( nargin < 1 ) 
-    pref = chebfunpref; 
+    pref = chebfun2pref; 
 end 
-tol = 100 * pref.cheb2Prefs.eps; 
+tol = 100 * pref.eps; 
 
 n = 10; 
 f = chebpoly(n); 

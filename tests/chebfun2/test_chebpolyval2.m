@@ -2,9 +2,9 @@ function pass = test_chebpolyval2()
 % Check the chebpolyval2 commands in trunk and @chebfun2 folder 
 
 if ( nargin < 1 ) 
-    pref = chebfunpref; 
+    pref = chebfun2pref; 
 end 
-tol = 100 * pref.cheb2Prefs.eps; 
+tol = 100 * pref.eps; 
 j = 1;
 
 % check the trunk chebpolyval2 command.
