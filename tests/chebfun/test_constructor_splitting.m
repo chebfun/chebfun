@@ -7,6 +7,7 @@ if ( nargin == 0 )
     pref = chebfunpref();
 end
 
+seedRNG(6178);
 tol = 2000;
 
 % Test SQRT(X) on [0 1]:

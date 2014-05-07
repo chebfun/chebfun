@@ -6,6 +6,7 @@ if ( nargin == 0 )
     pref = chebfunpref();
 end
 
+seedRNG(6178);
 pref.enableBreakpointDetection = true;
 
 % Some basic test functions:

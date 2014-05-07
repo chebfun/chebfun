@@ -179,7 +179,8 @@ x = chebfun('x', dom);
 g = x.*exp(-x);
 I2 = sum(g);
 err2 = abs(I2 - IExact);
-pass(29) = err2 < 1e10*get(f,'epslevel')*get(f,'vscale');
+tol = 2e10*get(f,'epslevel')*get(f,'vscale');
+pass(29) = err2 < tol;
 
 % Function on [-Inf Inf]:
 f = chebfun('exp(-x.^2/16).*(1+.2*cos(10*x))',[-inf,inf]);

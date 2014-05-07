@@ -53,12 +53,13 @@ g3Vals = feval(g{3}, x3);
 fExact1 = op(x1);
 fExact2 = op(x2);
 fExact3 = op(x3);
-err1 = g1Vals - fExact1;
-err2 = g2Vals - fExact2;
-err3 = g3Vals - fExact3;
-pass(2) = ( norm(err1, inf) < get(g{1},'epslevel')*get(g{1},'vscale') ...
-    && norm(err2, inf) < 2*get(g{2},'epslevel')*get(g{2},'vscale') ...
-    && norm(err3, inf) < 2e1*get(g{3},'epslevel')*get(g{3},'vscale') );
+err1 = norm(g1Vals - fExact1, inf);
+err2 = norm(g2Vals - fExact2, inf);
+err3 = norm(g3Vals - fExact3, inf);
+tol1 = 100*get(g{1},'epslevel')*get(g{1},'vscale');
+tol2 = 10*get(g{2},'epslevel')*get(g{2},'vscale');
+tol3 = 10*get(g{3},'epslevel')*get(g{3},'vscale');
+pass(2) = ( err1 < tol1 && err2 < tol2 && err3 < tol3);
 
 %% Functions on [a inf]:
 

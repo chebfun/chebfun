@@ -96,9 +96,9 @@ h = f.*g;
 vals_h = feval(h, x);
 h_exact = @(x) sin(x).*(1-x).^b.*cos(x).^3.*(1+x).^(b+p);
 vals_exact = feval(h_exact, x);
-err = vals_h - vals_exact;
-pass(9) = all( abs(err) < 1e1*max(get(f, 'epslevel'), get(g, 'epslevel'))* ...
-    abs(vals_exact) );
+err = norm((vals_h - vals_exact)./(vals_exact), inf);
+tol = 5e1*max(get(f, 'epslevel'), get(g, 'epslevel'));
+pass(9) = all( err < tol );
 
 % Check the trivial case with both vanishing alpha and beta.
 f = singfun(@(x) exp(x).*x.^3.*sin(2*x), [0 0], {'none', 'none'}, [], [], pref);
