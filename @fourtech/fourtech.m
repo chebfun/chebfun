@@ -108,7 +108,7 @@ classdef fourtech
         values = coeffs2vals(coeffs);
         
         % Make a FOURTECH (constructor shortcut):
-        f = make(varargin);
+        f = make( varargin );
         
         % Compute Fourier quadrature weights (trapezoidal rule):
         w = quadwts(n)

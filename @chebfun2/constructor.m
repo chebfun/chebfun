@@ -201,9 +201,17 @@ while ( ~isHappy )
     end
     
     % Check if the column and row slices are resolved.
-    colChebtech = tech.make(sum(colValues,2), domain(3:4) );
+    SumcolValues = sum(colValues,2);
+    if isa(tech, 'fourtech')
+        SumcolValues(end) = [];
+    end
+    colChebtech = tech.make(SumcolValues, domain(3:4) );
     resolvedCols = happinessCheck(colChebtech);
-    rowChebtech = tech.make(sum(rowValues.',2), domain(1:2) );
+    SumrowValues = sum(rowValues.',2);
+    if isa(tech, 'fourtech')
+        SumrowValues(end) = [];
+    end
+    rowChebtech = tech.make(SumrowValues, domain(1:2) );
     resolvedRows = happinessCheck(rowChebtech);
     isHappy = resolvedRows & resolvedCols;
     
@@ -472,7 +480,8 @@ if ( isa(tech, 'chebtech2') )
 elseif ( isa(tech, 'chebtech1') ) 
     x = chebpts( n, dom, 1 );   % x grid.
 elseif ( isa(tech, 'fourtech') ) 
-    x = fourier( n, dom );   % x grid.
+    x = fourierpts( n-1, dom );   % x grid.
+    x = [x;dom(2)]; 
 else
     error('CHEBFUN2:PTS', 'Unrecognized technology');
 end 
