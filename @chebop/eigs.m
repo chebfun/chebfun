@@ -12,7 +12,8 @@ function varargout = eigs(N, varargin)
 %   EIGS(A, B) solves the generalized eigenproblem A*V = B*V*D, where B is
 %   another chebop on the same domain.
 %
-%   EIGS(A, K) and EIGS(A, B, K) find the K smoothest eigenvalues. 
+%   EIGS(A, K) and EIGS(A, B, K) for an integer K > 0 find the K smoothest
+%   eigenvalues.
 %
 %   EIGS(A, K, SIGMA) and EIGS(A, B, K, SIGMA) find K eigenvalues. If SIGMA is a
 %   scalar, the eigenvalues found are the ones closest to SIGMA. Other
@@ -39,12 +40,12 @@ function varargout = eigs(N, varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Linearize and check whether the chebop is linear:
-[L, ignored, fail] = linop(N);
+[L, ignored, fail] = linop(N); %#ok<ASGLU>
 
 % Support for generalised problems:
 if ( ~fail && nargin > 1 && isa(varargin{1}, 'chebop') )
     % Linearise the second CHEBOP:
-    [varargin{1}, ignored, fail] = linop(varargin{1});
+    [varargin{1}, ignored, fail] = linop(varargin{1}); %#ok<ASGLU>
 end
 
 if ( fail )

@@ -8,7 +8,7 @@ function varargout = displayInfoLinear(u, normRes, pref)
 %
 %   DISPLAYINFOLINEAR(U, NORMRES, PREF) accepts preferences through a CHEBOPPREF
 %   object PREF. In particular, PREF.DISPLAY = 'off' will prevent printing of any
-%   information, and PREF.PLOTTING = "off" prevents plotting.
+%   information, and PREF.PLOTTING = 'off' prevents plotting.
 %
 % See also: CHEBOP.DISPLAYINFO.
 

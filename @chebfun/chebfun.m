@@ -564,7 +564,8 @@ function [op, dom, pref] = parseInputs(op, dom, varargin)
             args(1) = [];
         elseif ( strcmpi(args{1}, 'trunc') )
             % Pull out this preference, which is checked for later.
-            args(1:2) = [];            
+            args(1:2) = [];     
+            pref.enableBreakpointDetection = true;
         elseif ( isnumeric(args{1}) )
             % g = chebfun(@(x) f(x), N)
             pref.techPrefs.exactLength = args{1};
@@ -572,6 +573,10 @@ function [op, dom, pref] = parseInputs(op, dom, varargin)
         elseif ( strcmpi(args{1}, 'splitting') )
             % Translate "splitting" --> "enableBreakpointDetection".
             pref.enableBreakpointDetection = strcmpi(args{2}, 'on');
+            args(1:2) = [];
+        elseif ( strcmpi(args{1}, 'minsamples') )
+            % Translate "minsamples" --> "techPrefs.minPoints".
+            pref.techPrefs.minPoints = args{2};
             args(1:2) = [];
         elseif ( strcmpi(args{1}, 'blowup') )
             if ( strcmpi(args{2}, 'off') )
