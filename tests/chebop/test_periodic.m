@@ -45,16 +45,13 @@ B.op = @(x, u, v) [v + u ; diff(v)];
 
 [V, D] = eigs(A, B, 5, 0, pref);
 e = diag(D);
+[ignore, idx] = sort(angle(e));
+e = e(idx);
 
-% Sort the eigenvalues to ensure things will work on all machines.
-% `sort(x)` sorts complex values by abs() and then by angle(). In order have
-% consistent sorting, we move all the eigenvalues up into the first quadrant
-% before sorting them.
-sort(e+(10+10i)) - (10+10i);
-
-err(3) = norm(real(e) - [0 0 1 1 1].', inf) + ...
-    norm(imag(e) - [-1 1 0 -1 1].', inf);
+err(3) = norm(real(e) - [0 1 1 1 0].', inf) + ...
+    norm(imag(e) - [-1 -1 0 1 1].', inf);
 err(4) = norm(V{1}(pi) - V{1}(pi), inf) + norm(V{2}(pi) - V{2}(pi), inf);
+
 
 %%
 
