@@ -109,8 +109,11 @@ classdef chebDiscretization
         % depending on the implementation). 
         values = toValues(disc, f)
         
-        % Converts a vector of values (or coefficients) to a chebfun.
-        f = toFunction(disc, values, inOut)
+        % Converts a vector of values (or coefficients) to a CHEBFUN.
+        f = toFunctionIn(disc, values)
+        
+        % Converts a vector of values (or coefficients) to a CHEBFUN.
+        f = toFunctionOut(disc, values)
         
         % Returns a linear system RHS using the designated discretization
         % parameters.
