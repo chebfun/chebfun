@@ -40,12 +40,12 @@ function varargout = eigs(N, varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Linearize and check whether the chebop is linear:
-[L, ignored, fail] = linop(N);
+[L, ignored, fail] = linop(N); %#ok<ASGLU>
 
 % Support for generalised problems:
 if ( ~fail && nargin > 1 && isa(varargin{1}, 'chebop') )
     % Linearise the second CHEBOP:
-    [varargin{1}, ignored, fail] = linop(varargin{1});
+    [varargin{1}, ignored, fail] = linop(varargin{1}); %#ok<ASGLU>
 end
 
 if ( fail )
