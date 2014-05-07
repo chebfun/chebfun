@@ -428,9 +428,6 @@ classdef (InferiorClasses = {?double}) chebop
     methods ( Static = true, Hidden = true )
         % TODO: These should be private methods as well
         
-        % Convert doubles to CHEBMATRIX objects used internally in CHEBOP.
-        out = double2chebmatrix(dVec, residual)
-        
         % Controls information displayed for Newton iterations
         [displayFig, displayTimer] = displayInfo(mode, varargin);
         

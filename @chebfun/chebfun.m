@@ -574,6 +574,10 @@ function [op, dom, pref] = parseInputs(op, dom, varargin)
             % Translate "splitting" --> "enableBreakpointDetection".
             pref.enableBreakpointDetection = strcmpi(args{2}, 'on');
             args(1:2) = [];
+        elseif ( strcmpi(args{1}, 'minsamples') )
+            % Translate "minsamples" --> "techPrefs.minPoints".
+            pref.techPrefs.minPoints = args{2};
+            args(1:2) = [];
         elseif ( strcmpi(args{1}, 'blowup') )
             if ( strcmpi(args{2}, 'off') )
                 % If 'blowup' is 'off'.
