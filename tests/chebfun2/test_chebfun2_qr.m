@@ -2,10 +2,10 @@ function pass = test_chebfun2_qr( pref )
 % Test for QR decomposition of a chebfun2. 
 
 if ( nargin == 0 ) 
-    pref = chebfunpref; 
+    pref = chebfun2pref; 
 end 
 
-tol = 100*pref.cheb2Prefs.eps; 
+tol = 100*pref.eps; 
 j = 1; 
 
 % Decomposition on [-1,1,-1,1]: 

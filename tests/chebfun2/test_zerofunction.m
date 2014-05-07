@@ -3,9 +3,9 @@ function pass = test_zerofunction( pref )
 % common commands. 
 
 if ( nargin < 1 ) 
-    pref = chebfunpref; 
+    pref = chebfun2pref; 
 end 
-tol = 100 * pref.cheb2Prefs.eps; 
+tol = 100 * pref.eps; 
 
 % construction
 f = chebfun2(0); 

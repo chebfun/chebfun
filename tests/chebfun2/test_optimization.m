@@ -2,10 +2,10 @@ function pass = test_optimization( pref )
 % Can we do global optimization?
 
 if ( nargin < 1 ) 
-    pref = chebfunpref; 
+    pref = chebfun2pref; 
 end 
 
-tol = 1000*pref.cheb2Prefs.eps; 
+tol = 1000*pref.eps; 
 j = 1; 
 
 Battery = {@(x,y) cos(pi*x.*y),...

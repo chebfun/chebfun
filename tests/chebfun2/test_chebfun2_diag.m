@@ -2,10 +2,10 @@ function pass = test_chebfun2_diag( pref )
 % Test diag
 
 if ( nargin == 0) 
-    pref = chebfunpref; 
+    pref = chebfun2pref; 
 end
 
-tol = 1000*pref.cheb2Prefs.eps; 
+tol = 1000*pref.eps; 
 j = 1; 
 
 % checking diag

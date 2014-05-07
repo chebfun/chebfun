@@ -4,9 +4,9 @@ function pass = test_chebfun2v_arithmetic
 
 
 if ( nargin < 1 ) 
-    pref = chebfunpref; 
+    pref = chebfun2pref; 
 end 
-tol = 1e3 * pref.cheb2Prefs.eps; 
+tol = 1e3 * pref.eps; 
 j = 1;
 
 % These function chosen so that scl does not change.

@@ -1,10 +1,10 @@
 function pass = test_cumsum( pref )
 
 if ( nargin == 0 )
-    pref = chebfunpref; 
+    pref = chebfun2pref; 
 end
 
-tol = 100*pref.cheb2Prefs.eps; 
+tol = 100*pref.eps; 
 j = 1; 
 
 % Check cumsum on square domain
