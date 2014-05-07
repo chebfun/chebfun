@@ -4,12 +4,13 @@ function [Y, X] = max2( f )
 %   
 %   [Y, X] = MAX2(F) returns the global maximum in Y and its location X.  
 %
-%   For high accuracy results this command requires the Optimization Toolbox.
+%   For certain problems this problem can be slow if the MATLAB Optimization
+%   Toolbox is not available.
 % 
 % See also MIN2, MINANDMAX2.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Call MINANDMAX2:
 [Y, X] = minandmax2(f);   
