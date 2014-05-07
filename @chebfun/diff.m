@@ -45,10 +45,6 @@ if ( ~any(dim == [1, 2]) )
 end
     
 if ( round(n) ~= n )
-    % Fractional integral:
-    % [TODO]: Implement this!
-    error('CHEBFUN:diff:notImplemented', ...
-        'Fractional derivatives not yet implemented.');
     F = fracCalc(F, n);
     return
 end

@@ -320,6 +320,9 @@ classdef chebfun
         
         % Round a CHEBFUN towards minus infinity.
         g = floor(f);
+        
+        % Fractional calculus of a CHEBFUN.
+        g = fracCalc(f, m)
 
         % Get properties of a CHEBFUN object.
         out = get(f, prop);
