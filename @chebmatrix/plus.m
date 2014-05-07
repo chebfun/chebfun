@@ -1,37 +1,52 @@
 function C = plus(A, B)
-%+     Sum of CHEBMATRICEs or a CHEBMATRIX and another compatible object.
+%+     Sum of CHEBMATRIX objects or a CHEBMATRIX and another compatible object.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-% Ensure the first arument is a CHEMBATRIX:
+% Ensure the first argument is a CHEBMATRIX:
 if ( ~isa(A, 'chebmatrix') )
     C = plus(B, A);
     return
 end
 
-% Allow scalar expansion for doubles:
-if ( isnumeric(B) && max(size(B)) == 1 )
+% Obtain dimensions involved:
+[m, n] = size(A);
+[mB, nB] = size(B);
+
+% Add a CHEBMATRIX and doubles
+if ( isnumeric(B) )
+    % Initialize output as a CHEBMATRIX
     C = A;
-    for k = 1:numel(C.blocks)
-        C.blocks{k} = C.blocks{k} + B;
+    
+    if ( max(mB, nB) == 1)              % Scalar expansion for doubles
+        for k = 1:numel(C.blocks)
+            C.blocks{k} = C.blocks{k} + B;
+        end
+    elseif ( (m == mB) && (n == nB) )   % CHEBMATRIX + vector
+        for k = 1:numel(C.blocks)
+            C.blocks{k} = C.blocks{k} + B(k);
+        end
+    else
+        error('CHEBFUN:CHEBMATRIX:plus', 'Operands must have the same size.')
     end
     return
 end
-    
-% If B is not a CHEBMATRIX, need to wrap it in a cell to allow simpler code
-% below.
+
+% If we get here, we know B is not a DOUBLE. If B is also not a CHEBMATRIX, need
+% to wrap it in a cell to allow simpler code below.
 if ( ~isa(B, 'chebmatrix') )
     B = chebmatrix({B});
+    % Update size information
+    [mB, nB] = size(B);
 end
 
-% Set up for addition
-[m, n] = size(A);
-[mB, nB] = size(B);
+% Check that dimension of two CHEBMATRIX objects match
 if (  (m ~= mB ) || (n ~= nB) )
-    error('Operands must have the same size.')
+    error('CHEBFUN:CHEBMATRIX:plus', 'Operands must have the same size.')
 end
 
+% Initalize a cell for addition
 C = cell(m, n);
 % Loop through the blocks of A and B
 for i = 1:m

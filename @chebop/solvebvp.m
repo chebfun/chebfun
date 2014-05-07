@@ -109,24 +109,20 @@ L.prefs = pref;
 % size before continuing:
 if ( isnumeric(rhs) )
     % Check whether dimensions match:
-    if ( ~all(size(rhs) == [numRow, numCol]) )
+    if ( ~(all(size(rhs) == [numRow, numCol])) &&  (max(size(rhs)) > 1) )
         if ( all(size(rhs) == [numCol, numRow]) )
             warning('CHEBFUN:CHEBOP:solvebvp', ...
                 'Please concatenate RHS of the BVP vertically. Transposing.')
             rhs = rhs.';
-            % Convert the initial guess to a CHEBMATRIX    
-            rhs = N.double2chebmatrix(rhs, residual);
-        elseif ( max(size(rhs)) == 1 )
-            % Allow scalar expansion of doubles:
-            rhs = rhs + 0*residual;
         else
             error('CHEBFUN:CHEBOP:solvebvp:rhs', ...
                'RHS does not match output dimensions of operator.');
         end
-    else
-        % Convert the initial guess to a CHEBMATRIX    
-        rhs = N.double2chebmatrix(rhs, residual);
     end
+    
+    % If we get here, we have something compatable, this is a simple way to
+    % convert RHS to a CHEBMATRIX:
+    rhs = rhs + 0*residual;
     
 elseif ( isa(rhs, 'chebfun') && size(rhs, 2) > 1 )
     rhs = chebmatrix(mat2cell(rhs).');
@@ -150,7 +146,7 @@ if ( isnumeric(u0) )
     end
     
     % Convert the initial guess to a CHEBMATRIX
-    u0 = N.double2chebmatrix(u0, residual);
+    u0 = u0 + 0*residual;
 end
 
 % Solve:
