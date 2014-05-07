@@ -71,6 +71,6 @@ opExact = @(x) floor(op(x));
 fVals = feval(g, x);
 fExact = opExact(x);
 err = fVals - fExact;
-pass(7) = norm(err, inf) < 1e1*epslevel(f)*vscale(f);
+pass(7) = norm(err, inf) < 1e2*epslevel(f)*vscale(f);
 
 end

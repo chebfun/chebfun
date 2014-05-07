@@ -37,7 +37,7 @@ vals_df = feval(g, x);
 flip_exact = @(x) -(1-x).^d.*sin(x);
 vals_exact = feval(flip_exact, x);
 err = vals_df - vals_exact;
-pass(2) = (norm(err, inf) < get(f, 'epslevel')*norm(vals_exact, inf));
+pass(2) = (norm(err, inf) < 10*get(f, 'epslevel')*norm(vals_exact, inf));
 
 % fractional root at the right endpoint
 f = singfun(@(x) (1-x).^c.*cos(x), [0 c], {'none', 'root'}, [], [], pref);
