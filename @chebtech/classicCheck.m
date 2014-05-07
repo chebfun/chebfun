@@ -88,7 +88,7 @@ end
 % If one column of f is the zero function, we will get into trouble further
 % down when we take the absolute value of the coefficients relative to vscale
 % and compute the relative condition number estimate in happinessCheck.  We
-% zero vscales by eps to avoid division by zero.
+% replace zero vscales by eps to avoid division by zero.
 ind = f.vscale == 0;
 f.vscale(ind) = eps;
 
@@ -118,7 +118,7 @@ if ( all(max(ac(1:testLength, :)) < epslevel) ) % We have converged! Chop tail:
     ishappy = true;
 
     % Find first row of coeffs with entry above epslevel:
-    rowsWithLargeCoeffs = sum(bsxfun(@ge, ac, epslevel), 2);
+    rowsWithLargeCoeffs = any(bsxfun(@ge, ac, epslevel), 2);
     Tloc = find(rowsWithLargeCoeffs, 1, 'first') - 1;
 
     % Check for the zero function!
