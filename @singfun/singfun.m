@@ -99,7 +99,7 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
             else
                 % Merge if some preferences are given.
                 pref = chebfunpref(pref);
-            end           
+            end         
             
             %% Cases based on the number of arguments
             % Case 0: No input arguments, return an empty object.
@@ -158,7 +158,6 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
             
             % Make sure that op is a function handle or a smoothfun:
             if ( ~isa(op, 'function_handle') && ~isa(op, 'smoothfun') )
-                class(op)
                 error( 'CHEBFUN:SINGFUN:constructor', ...
                     ['First argument must be a function handle or a ', ...
                      'SMOOTHFUN, not a %s.'], class(op));
@@ -200,6 +199,12 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
                 obj.smoothPart = op;
             else
                 %% Construct New Function Handle
+                
+                % Loosen tolerance:
+                if ( any(obj.exponents) )
+                    pref.eps = max(pref.eps, 1e-14);
+                end
+                
                 % Factor out singular terms from the operator based on the values
                 % in exponents.
                 smoothOp = singOp2SmoothOp(op, obj.exponents);
