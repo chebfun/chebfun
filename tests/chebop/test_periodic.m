@@ -46,8 +46,12 @@ B.op = @(x, u, v) [v + u ; diff(v)];
 [V, D] = eigs(A, B, 5, 0, pref);
 e = diag(D);
 
-err(3) = norm(real(e) - [1 0 0 1 1].', inf) + ...
-    norm(abs(imag(e)) - [0 1 1 1 1].', inf);
+% Sort the eigenvalues to ensure things will work on all machines
+[ignore, idx] = sort(real(e));
+e = e(idx);
+
+err(3) = norm(real(e) - [0 0 1 1 1].', inf) + ...
+    norm(imag(e) - [-1 1 0 -1 1].', inf);
 err(4) = norm(V{1}(pi) - V{1}(pi), inf) + norm(V{2}(pi) - V{2}(pi), inf);
 
 %%

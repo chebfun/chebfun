@@ -25,10 +25,10 @@ e_crit = e(idx);
 e_crit_v4 = -0.000078029804093 - 0.261565915010080i;
 err = abs(e_crit - e_crit_v4);
 
-tol = 1e-6;
+tol = 2e-6;
 pass(1) = err < tol;
 
-% If We had to remove some entries, then there were spurious eigenvalues..
+% If we had to remove some entries, then there were spurious eigenvalues..
 pass(2) = numel(e) == 50;
 
 end
