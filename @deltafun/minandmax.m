@@ -30,8 +30,8 @@ else
         % This means at least one delta function so maxima and minima are inf 
         % and -inf regardless of the sign of the delta function.
         vals = [-inf, inf];        
-        posIdx = deltaFuns > 0;
-        negIdx = deltaFuns < 0;
+        posIdx = find(deltaFuns > 0);
+        negIdx = find(deltaFuns < 0);
         
         if ( isempty(negIdx) )
             % If there is no delta function with negative magnitude, return
