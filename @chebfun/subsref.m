@@ -118,16 +118,10 @@ switch index(1).type
         
         % Deal with row CHEBFUN objects:
         if ( isTransposed )
-            if ( isnumeric(out) )
-                % (Call PERMUTE instead of TRANSPOSE for numeric objects in
-                % case OUT is multidimensional).
-                out = permute(out, [2 1 3:ndims(out)]);
-            else
-                % Call TRANSPOSE for everything else (e.g., CHEBFUNs):
-                out = out.';
-            end
+            out = permute(out, [2, 1, 3:ndims(out)]);
         end
         
+        % Recurse on SUBSREF():
         if ( numel(index) > 1 )
             out = subsref(out, index(2:end));
         end
