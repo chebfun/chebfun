@@ -33,8 +33,16 @@ if ( isa(f, 'deltafun') )
             idx = abs(x - deltaLoc(i)) < proximityTol;
         else
             % Check the relative distance from delta function locations:
-            idx = abs(x - deltaLoc(i))./deltaLoc(i) < proximityTol;
+            idx = abs((x - deltaLoc(i))./deltaLoc(i)) < proximityTol;
         end
-        val(idx) = NaN;
+        
+        if ( abs(f.deltaMag(1, i)) > 0 )
+            % If there is a delta function, assign a signed infinity:
+            val(idx) = Inf*sign(f.deltaMag(1, i));
+        else
+            % If there is no delta function but higer order, assign NaNs:
+            val(idx) = NaN;
+        end
     end
+end
 end
