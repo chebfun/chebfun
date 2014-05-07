@@ -56,9 +56,9 @@ classdef fourtech
     methods
         
         function obj = fourtech(op, vscale, hscale, pref)
-            %Constructor for the CHEBTECH2 class.
+            %Constructor for the FOURTECH class.
             
-            % Return an empty CHEBTECH2 on null input:
+            % Return an empty FOURTECH on null input:
             if ( (nargin == 0) || isempty(op) )
                 return
             end
@@ -130,7 +130,7 @@ classdef fourtech
         % Compose two FOURTECH objects or a FOURTECH with a function handle:
         h = compose(f, op, g, pref)
         
-        % Plot (semilogy) the Chebyshev coefficients of a CHEBTECH object.
+        % Plot (semilogy) the Chebyshev coefficients of a FOURTECH object.
         h = coeffplot(f, varargin)
 
         % Get method:

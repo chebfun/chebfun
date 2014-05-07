@@ -48,13 +48,28 @@ if ( any(isnan(f.coeffs(:))) )
         'Function returned NaN when evaluated.')
 end
 
-% TODO: Tidy this up!
-c = abs(f.coeffs);
-m = floor(n/2);
-c2 = c(1:ceil(n/2),:);
-c2(1:m,:) = c2(1:m,:) + flipud(c(end-m+1:end,:));
-f.coeffs = c2;
-n = size(c2, 1);
+% Do the test on the vector formed by the sum of the absolute value of the
+% positive and negative mode coefficients.
+absCoeffs = abs(f.coeffs);
+
+% Need to handle odd/even cases separately
+isEven = ~mod(n,2);
+if isEven
+    % In this case the positive cofficients have an additional term
+    % corresponding to the cos(N/2*x) coefficient.
+%     f.coeffs = [absCoeffs(n/2,:);absCoeffs(n/2+1:n-1,:)+absCoeffs(n/2-1:-1:1,:);absCoeffs(n,:)];
+    f.coeffs = [absCoeffs(n,:);absCoeffs(n-1:-1:n/2+1,:)+absCoeffs(1:n/2-1,:);absCoeffs(n/2,:)];
+else
+%     f.coeffs = [absCoeffs((n+1)/2,:);absCoeffs((n+1)/2+1:n,:)+absCoeffs((n+1)/2-1:-1:1,:)];
+    f.coeffs = [absCoeffs(n:-1:(n+1)/2+1,:)+absCoeffs(1:(n+1)/2-1,:);absCoeffs((n+1)/2,:)];
+end
+
+% c = abs(f.coeffs);
+% m = floor(n/2);
+% c2 = c(1:ceil(n/2),:);
+% c2(1:m,:) = c2(1:m,:) + flipud(c(end-m+1:end,:));
+% f.coeffs = c2;
+n = size(f.coeffs, 1);
 
 % Check for convergence and chop location --------------------------------------
 
@@ -116,7 +131,7 @@ function [testLength, epslevel] = ...
 %   See documentation above.
 
 % Grab the size:
-n = size(values, 1);
+n = size(coeffs, 1);
 
 % We will not allow the estimated rounding errors to be cruder than this value:
 minPrec = 1e-4; % Worst case precision!
