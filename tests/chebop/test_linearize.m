@@ -24,7 +24,7 @@ err(2) = norm(L*u - (diff(u, 2) + diff(u) + sin(x).*u));
 
 N = chebop(@(u) u.^2, dom);
 L = linearize(N, u);
-err(3) = norm(L.blocks{1} - 2*u);
+err(3) = norm(L*v - 2*u.*v);
 
 N = chebop(@(u) diff(u,2) + u.^2, dom);
 L = linearize(N, u);
