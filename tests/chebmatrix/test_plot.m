@@ -22,6 +22,6 @@ d = [-1 1];
 f = chebfun(@(x) x, d);         
 g = chebfun(@(x) exp(x), d);
 A = [f, g; 2*f, 3*g];
-figure, plot(A)
+figure, plot(A, '.-')
 
 end
