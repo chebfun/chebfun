@@ -114,14 +114,19 @@ if ( isnumeric(rhs) )
             warning('CHEBFUN:CHEBOP:solvebvp', ...
                 'Please concatenate RHS of the BVP vertically. Transposing.')
             rhs = rhs.';
+            % Convert the initial guess to a CHEBMATRIX    
+            rhs = N.double2chebmatrix(rhs, residual);
+        elseif ( max(size(rhs)) == 1 )
+            % Allow scalar expansion of doubles:
+            rhs = rhs + 0*residual;
         else
             error('CHEBFUN:CHEBOP:solvebvp:rhs', ...
                'RHS does not match output dimensions of operator.');
         end
+    else
+        % Convert the initial guess to a CHEBMATRIX    
+        rhs = N.double2chebmatrix(rhs, residual);
     end
-    
-    % Convert the initial guess to a CHEBMATRIX    
-    rhs = N.double2chebmatrix(rhs, residual);
     
 elseif ( isa(rhs, 'chebfun') && size(rhs, 2) > 1 )
     rhs = chebmatrix(mat2cell(rhs).');

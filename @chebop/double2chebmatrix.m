@@ -35,7 +35,7 @@ dom = residual.domain;
 
 % Convert numerical values in RHS vector into a CHEBMATRIX:
 for outCounter = 1:numRow
-    if isa(resBlocks{outCounter}, 'chebfun')
+    if ( isa(resBlocks{outCounter}, 'chebfun') )
         % If corresponding block in the residual is a CHEBFUN, the output must
         % also be made to be a CHEBFUN
         outBlocks{outCounter} = chebfun(dVec(outCounter), dom);
