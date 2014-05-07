@@ -256,7 +256,7 @@ while ( ~isempty(varargin) )
         pointData = [pointData, newData(k).xPoints, newData(k).yPoints, ...
             styleData];
         jumpData = [jumpData, newData(k).xJumps, newData(k).yJumps, styleData];
-        deltaData = [deltaData, newData(k).xDeltas, newData(k).yDeltas];
+        deltaData = [deltaData, newData(k).xDeltas, newData(k).yDeltas, styleData];
     end
     
 end
@@ -293,10 +293,10 @@ end
 if ( isempty(deltaData) )
     deltaData = {[]};
 end
-%h4 = stem(deltaData{:}, 'd', 'fill');
-dx = cell2mat(deltaData(1:2:end));
-dy = cell2mat(deltaData(2:2:end));    
-h4 = stem(dx, dy, 'd', 'fill');
+h4 = plotDeltaData(deltaData);
+%dx = cell2mat(deltaData(1:2:end));
+%dy = cell2mat(deltaData(2:2:end));    
+%h4 = stem(dx, dy, 'd', 'fill');
 
 %% 
 % Do we want a style for delta functions?
@@ -343,3 +343,42 @@ if ( nargout > 0 )
 end
 
 end
+
+function [h1, h2, h3] = plotDeltaData(deltaData)
+if ( isempty(deltaData) )
+    h1 = [];
+    h2 = [];
+    h3 = [];
+    return;
+end
+k = 1;
+while ( k <= numel(deltaData) )
+    if ( isnumeric(deltaData{k}) && ~isempty(deltaData{k}) )
+        xdelta = deltaData{k};       
+        ydelta = deltaData{k+1};               
+        m = size(xdelta, 1);
+        n = size(xdelta, 2);        
+        newxDelta = zeros(3*m + 1, n);        
+        newyDelta = zeros(3*m + 1, n);        
+        
+        
+        newxDelta(1:3:end, :) = NaN;
+        newxDelta(2:3:end, :) = xdelta;
+        newxDelta(3:3:end, :) = xdelta;
+        
+        newyDelta(1:3:end, :) = NaN;
+        newyDelta(2:3:end, :) = 0;
+        newyDelta(3:3:end, :) = ydelta;       
+        
+        deltaData(k) = {newxDelta};        
+        deltaData(k+1) = {newyDelta};
+        k = k + 2;
+    else
+        k = k + 1;
+    end
+end
+h1 = plot(deltaData{:});
+h2 = [];
+h3 = [];
+end
+
