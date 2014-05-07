@@ -2,7 +2,7 @@ function displayInfoIter(u, delta, iterNo, normDelta, cFactor, lenDelta, lambda,
 %DISPLAYINFOITER
 %
 % Utility routine for displaying iteration progress in the solve functions. This
-% method prints during the Newton iteration.
+% method prints and plots during the Newton iteration.
 %
 % See also: displayInfo
 
