@@ -69,7 +69,7 @@ if ( isempty(f) )
     return
 end
 
-if ( size(f.values, 2) == 1 )   % F is a scalar-value CHEBTECH.
+if ( size(f.coeffs, 2) == 1 )   % F is a scalar-value CHEBTECH.
     
     % Simply call roots_scalar():
     out = roots_scalar(f, varargin{:});
@@ -77,13 +77,13 @@ if ( size(f.values, 2) == 1 )   % F is a scalar-value CHEBTECH.
 else                            % Support for array-valued CHEBTECH objects.
 
     % Initialise a cell array to hold roots of each column:
-    r = cell(1, size(f.values, 2));
+    r = cell(1, size(f.coeffs, 2));
     
     % Copy columns of f into an array g:
     g = mat2cell(f);
 
     % Loop over the columns of f / elements of g:
-    for j = 1:size(f.values, 2)
+    for j = 1:size(f.coeffs, 2)
         r{j} = roots_scalar(g{j}, varargin{:}); 
     end
 
@@ -132,7 +132,7 @@ end
 
 % Trivial case for f constant:
 if ( length(f) == 1 )
-    if ( f.values(1) == 0 && rootsPref.zeroFun )
+    if ( f.coeffs(1) == 0 && rootsPref.zeroFun )
         % Return a root at centre of domain:
         out = 0;
     else

@@ -3,7 +3,7 @@
 function pass = test_sum(pref)
 
 if ( nargin == 1 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Seed for random number:
@@ -116,7 +116,7 @@ I = sum(f);
 IExact = -exp(-3*pi)*(3*pi+1);
 err = abs(I - IExact);
 tol = 1e4*get(f,'epslevel')*get(f,'vscale');
-pass(12) = err < tol;
+pass(12) = err < 10*tol;
 
 op = @(x) (1-exp(x))./x.^2;
 f = unbndfun(op, dom);

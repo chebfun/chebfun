@@ -38,11 +38,11 @@ if ( nargin < 3 || isempty(domain) )
     domain = [-1 1 -1 1];
 end
 
-if ( nargin > 3 && isa(varargin{1}, 'chebpref') )
-    defaults = chebpref();
-    pref = chebpref.mergePrefs(defaults, varargin{1});
+if ( nargin > 3 && isa(varargin{1}, 'chebfunpref') )
+    defaults = chebfunpref();
+    pref = chebfunpref.mergePrefs(defaults, varargin{1});
 else
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
@@ -120,7 +120,7 @@ elseif ( numel(domain) ~= 4 )
     error('CHEBFUN2:CONSTRUCTOR:DOMAIN', 'Domain not fully determined.');
 end
 
-% Get default preferences from chebPref:
+% Get default preferences from chebfunpref:
 prefStruct = pref.cheb2Prefs;
 maxRank = prefStruct.maxRank;
 maxLength = prefStruct.maxLength;
@@ -194,9 +194,9 @@ while ( ~isHappy )
     
     % Check if the column and row slices are resolved.
     colChebtech = chebtech2(sum(colValues,2), domain(3:4) );
-    resolvedCols = happinessCheck(colChebtech);
+    resolvedCols = happinessCheck(colChebtech,[],sum(colValues,2));
     rowChebtech = chebtech2(sum(rowValues.',2), domain(1:2) );
-    resolvedRows = happinessCheck(rowChebtech);
+    resolvedRows = happinessCheck(rowChebtech,[],sum(rowValues.',2));
     isHappy = resolvedRows & resolvedCols;
     
     % If the function is zero, set midpoint of domain as pivot location.
@@ -254,11 +254,11 @@ while ( ~isHappy )
         % Are the columns and rows resolved now?
         if ( ~resolvedCols )
             colChebtech = chebtech2(sum(colValues,2));
-            resolvedCols = happinessCheck(colChebtech);
+            resolvedCols = happinessCheck(colChebtech,[],sum(colValues,2));
         end
         if ( ~resolvedRows )
             rowChebtech = chebtech2(sum(rowValues.',2));
-            resolvedRows = happinessCheck(rowChebtech);
+            resolvedRows = happinessCheck(rowChebtech,[],sum(rowValues.',2));
         end
         isHappy = resolvedRows & resolvedCols;
         

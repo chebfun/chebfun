@@ -58,7 +58,7 @@ end
 
 fExps = f.exponents;
 gExps = g.exponents;
-tolExps = chebpref().singPrefs.exponentTol;
+tolExps = chebfunpref().singPrefs.exponentTol;
 tolSmth = 1e2*eps;
 
 %%

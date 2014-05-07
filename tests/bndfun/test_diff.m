@@ -4,7 +4,7 @@ function pass = test_diff(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Set the domain.

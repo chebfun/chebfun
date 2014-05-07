@@ -84,7 +84,7 @@ for n = 1:2
     % DIM option with non-array-valued input should leave everything alone.
     h = testclass.make(@(x) cos(x));
     sumh2 = sum(h, 2);
-    pass(n, 11) = all((h.values == sumh2.values) & (h.coeffs == sumh2.coeffs));
+    pass(n, 11) = all((h.coeffs == sumh2.coeffs));
 end
 
 end

@@ -6,7 +6,7 @@ function pass = test_mtimes(pref)
 
 % Get preferences.
 if (nargin < 1)
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Generate a few random points to use as test values.

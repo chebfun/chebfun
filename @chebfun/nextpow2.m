@@ -19,7 +19,7 @@ end
 
 % Grab preferences:
 if ( nargin < 2 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Compute the absolute value of f:

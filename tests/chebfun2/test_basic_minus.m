@@ -2,7 +2,7 @@ function pass = test_basic_minus( pref )
 % This tests the basic arithmetic operations on chebfun2 objects.
 
 if ( nargin < 1 ) 
-    pref = chebpref; 
+    pref = chebfunpref; 
 end 
 tol = 1e5 * pref.cheb2Prefs.eps; 
 j = 1;

@@ -13,7 +13,7 @@ dom = g.domain;
 
 % Get the fun class preference if no preference is passed.
 if ( nargin < 2 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Get the function values at the end of the domain. Note that the end point of
@@ -21,7 +21,7 @@ end
 vends = [get(g, 'lval'), get(g, 'rval')];
 
 % Get the epslevel and vscale of the function g.
-tol = 1e1*get(g, 'epslevel')*get(g, 'vscale');
+tol = 1e2*get(g, 'epslevel')*get(g, 'vscale');
 
 if ( ~issing(g) )
     
@@ -79,6 +79,11 @@ elseif ( issing(g) ) % Cases for ONEFUN has singularities at the end points.
     
     % Form the new integrand:
     integrand = g.onefun.*forDer;
+    
+    % Simplify the exponents:
+    if ( isa(integrand, 'singfun') )
+        integrand = cancelExponents(integrand);
+    end
     
     % Call the sum at ONEFUN level.
     out = sum(integrand);

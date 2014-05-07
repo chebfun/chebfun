@@ -1,8 +1,11 @@
-function f = toFunction(disc, coeffs)
+function f = toFunction(disc, coeffs, inOut) %#ok<INUSD>
 %TOFUNCTION   Convert discrete values of an ULTRAS discretization to a CHEBFUN.
 %   F = TOFUNCTION(DISC, COEFFS) converts the coeffs returned by ULTRAS to a
 %   CHEBFUN. The input may be piecewise smooth, as indicated by the dimension
 %   property of the discretization.
+%
+%   TOFUNCTION(DISC, VALUES, INOUT) has the same effect, regardless of
+%   INOUT, but is required for consistency with other discretizations.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.

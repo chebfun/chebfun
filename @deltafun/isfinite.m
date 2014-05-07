@@ -21,7 +21,7 @@ if ( isempty(f.deltaLoc) || isempty(f.deltaMag) )
 end
 
 % Get the tolerance:
-pref = chebpref();
+pref = chebfunpref();
 deltaTol = pref.deltaPrefs.deltaTol;
 
 if ( max(abs(f.deltaMag)) < deltaTol )

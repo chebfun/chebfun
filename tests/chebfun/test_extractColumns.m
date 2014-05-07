@@ -1,7 +1,7 @@
 function pass = test_extractColumns(pref)
 
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 f = chebfun(@(x) [sin(x), cos(x), exp(x)], pref);

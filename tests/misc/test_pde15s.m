@@ -1,7 +1,7 @@
 function pass = test_pde15s(pref, flag)
 
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 pass = 1;

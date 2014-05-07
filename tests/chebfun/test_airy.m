@@ -2,7 +2,7 @@ function pass = test_airy(pref)
 
 % Grab some preferences
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Choose a domain:

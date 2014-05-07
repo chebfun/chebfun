@@ -1,13 +1,14 @@
-function [ishappy, epslevel, cutoff] = strictCheck(f, pref)
+function [ishappy, epslevel, cutoff] = strictCheck(f, values, pref)
 %STRICTCHECK   Attempt to trim trailing Chebyshev coefficients in a CHEBTECH.
-%   [ISHAPPY, CUTOFF, EPSLEVEL] = STRICTCHECK(F) returns an estimated location
-%   CUTOFF at which the CHEBTECH F could be truncated to maintain an accuracy
-%   of EPSLEVEL relative to F.VSCALE and F.HSCALE. ISHAPPY is TRUE if
-%   CUTOFF < MIN(LENGTH(F.VALUES), 2) or F.VSCALE = 0, and FALSE otherwise.
+%   [ISHAPPY, CUTOFF, EPSLEVEL] = STRICTCHECK(F) returns an estimated 
+%   location CUTOFF at which the CHEBTECH F could be truncated to maintain an 
+%   accuracy of EPSLEVEL relative to F.VSCALE and F.HSCALE. ISHAPPY is TRUE if
+%   CUTOFF < MIN(LENGTH(F.COEFFS), 2) or F.VSCALE = 0, and FALSE otherwise.
 %
-%   [ISHAPPY, CUTOFF, EPSLEVEL] = STRICTCHECK(F, PREF) allows additional
+%   [ISHAPPY, CUTOFF, EPSLEVEL] = STRICTCHECK(F, VALUES, PREF) allows additional
 %   preferences to be passed. In particular, one can adjust the target accuracy
-%   with PREF.EPS.
+%   with PREF.EPS. The VALUES field is ignored, but included for consistency
+%   with other happiness checks.
 %
 %   STRICTCHECK tests to see if the absolute values of the entries in the tail
 %   of coeffs, i.e., f.coeffs(1:TESTLENGTH,:), where
@@ -45,6 +46,11 @@ else
     epslevel = pref.eps;
 end
 
+% Convert scalar epslevel/tolerance inputs into vectors.
+if ( isscalar(epslevel) )
+    epslevel = repmat(epslevel, size(f.vscale));
+end
+
 % Deal with the trivial case:
 if ( n < 2 )  % (Can't be simpler than a constant.)
     cutoff = n;
@@ -63,6 +69,13 @@ elseif ( any(isinf(f.vscale)) )
     return
 end
 
+% If one column of f is the zero function, we will get into trouble further
+% down when we take the absolute value of the coefficients relative to vscale
+% and compute the relative condition number estimate in happinessCheck.  We
+% zero vscales by eps to avoid division by zero.
+ind = f.vscale == 0;
+f.vscale(ind) = eps;
+
 % NaNs are not allowed.
 if ( any(isnan(f.coeffs(:))) )
     error('CHEBFUN:FUN:strictCheck:NaNeval', ...
@@ -72,7 +85,7 @@ end
 % Check for convergence and chop location --------------------------------------
 testLength = min(n, max(5, round((n-1)/8))); 
 ac = bsxfun(@rdivide, abs(f.coeffs), f.vscale);
-f.coeffs(ac < epslevel) = 0;
+f.coeffs(bsxfun(@le, ac, epslevel)) = 0;
 tail = f.coeffs(1:testLength,:);
 if ( ~any(tail(:)) )
     cutoff = n - find(max(f.coeffs, [], 2) > 0, 1, 'first') + 1;

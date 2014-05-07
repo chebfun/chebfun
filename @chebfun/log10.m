@@ -9,7 +9,7 @@ function g = log10(f, pref)
 % See http://www.chebfun.org/ for Chebfun information. 
 
 if ( nargin < 2 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Add breaks at the roots of f:

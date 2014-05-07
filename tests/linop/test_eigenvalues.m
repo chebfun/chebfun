@@ -12,23 +12,26 @@ L = linop(D2);
 L = addbc(L, El, 0);
 L = addbc(L, Er, 0);
 
+e_true = flipud(-(1:6).'.^2);
+
 %%
 prefs = cheboppref;
 prefs.discretization = @colloc2;
 e = eigs(L, 6, prefs);
-err(1) = norm(e + (1:6)'.^2, inf);
+err(1) = norm(e - e_true, inf);
 
 %%
 prefs.discretization = @ultraS;
 e = eigs(L, 6, 0, prefs);
-err(2) = norm(e + (1:6)'.^2, inf);
+err(2) = norm(e - e_true, inf);
 
 %%
 prefs.discretization = @colloc1;
 e = eigs(L, 6, 0, prefs);
-err(3) = norm(e + (1:6)'.^2, inf);
+err(3) = norm(e - e_true, inf);
 
 %%
+
 
 pass = err < tol;
 

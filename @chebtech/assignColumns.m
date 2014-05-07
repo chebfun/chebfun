@@ -17,14 +17,13 @@ elseif ( length(g) > length(f) )
     f = prolong(f, length(g));
 end
 
-% Assign the columns of h.values and h.coeffs:
+% Assign the columns of h.coeffs:
 h = f;
-h.values(:, colIdx) = g.values;
 h.coeffs(:, colIdx) = g.coeffs;
 
 % Update happiness, vscale, and epslevel:
 h.ishappy = f.ishappy && g.ishappy;
-h.vscale = max(abs(h.values), [], 1);
+h.vscale = getvscl(h);   % get vscl from values. 
 h.epslevel = f.epslevel;
 h.epslevel(colIdx) = g.epslevel;
 

@@ -1,4 +1,4 @@
-function L = addBC(L, varargin)
+function L = addbc(L, varargin)
 % Synonym for ADDCONSTRAINT.
 %
 % See also: linop.addConstraint

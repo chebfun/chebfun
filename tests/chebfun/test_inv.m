@@ -5,7 +5,7 @@ function pass = test_inv(pref)
 % Taken from Chebfun v4 test, invtest.m, by Nick Hale  07/06/2009.
 
 if ( nargin == 0 ) 
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 algoList = {'roots', 'newton'};
