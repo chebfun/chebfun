@@ -7,7 +7,7 @@ function f = permute(f, order)
 %   dimensions, ORDER must be one of [1, 2, ...] or [2, 1, ...]. In the first
 %   case, G = F, and in the second, G = F.';
 %
-% See also TRANPOSE.
+% See also TRANSPOSE.
 
 % For simplicity, we attempt to permute a small matrix and catch any errors
 % in inputs this way.
@@ -21,4 +21,3 @@ if ( order(1) == 2 )
 end
 
 end
-
