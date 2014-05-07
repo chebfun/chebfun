@@ -21,11 +21,11 @@ for n = 1:2
 
     % Check behavior for any() across rows.
     g = any(f, 2);
-    pass(n, 3) = isequal(g.values, 1) && isequal(g.coeffs, 1);
+    pass(n, 3) = isequal(g.coeffs, 1);
 
     f = testclass.make(@(x) [0*x 0*x]);
     g = any(f, 2);
-    pass(n, 4) = isequal(g.values, 0) && isequal(g.values, 0);
+    pass(n, 4) = isequal(g.coeffs, 0);
 end
 
 end

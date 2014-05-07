@@ -4,9 +4,9 @@ function pass = test_chebfun2v_vertcat( pref )
 
 % Testing chebfun2v objects with three components. 
 if ( nargin < 1 ) 
-    pref = chebpref; 
+    pref = chebfun2pref; 
 end 
-tol = 1e3 * pref.cheb2Prefs.eps; 
+tol = 1e3 * pref.eps; 
 j = 1;
 
 f = chebfun2(@(x,y) cos(x.*y)); 

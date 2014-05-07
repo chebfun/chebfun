@@ -12,7 +12,7 @@ function f = compose(f, op, g, pref)
 %   or if F and G do not have the same dimensions, then an error is thrown.
 %
 %   COMPOSE(F, OP, PREF), COMPOSE(F, OP, G, PREF), and COMPOSE(F, G, PREF) use
-%   the options passed by the CHEBPREF object PREF.
+%   the options passed by the CHEBFUNPREF object PREF.
 %
 %   Note: If the locations of required breakpoints in the output are known in
 %   advance, they should be applied to F and/or G using RESTRICT() before the
@@ -48,11 +48,11 @@ if ( (nargin == 4) && ~isempty(g) )           % compose(f, op, g, pref)
     opIsBinary = true;
 end
 if ( (nargin < 4) || ((nargin == 4) && isempty(pref)) )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 if ( nargin == 3 )
-    if ( isstruct(g) || isa(g, 'chebpref') )  % compose(f, op, pref)
-        pref = chebpref(g);
+    if ( isstruct(g) || isa(g, 'chebfunpref') )  % compose(f, op, pref)
+        pref = chebfunpref(g);
         g = [];
     else                                      % compose(f, op, g)
         opIsBinary = true;

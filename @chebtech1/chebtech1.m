@@ -104,7 +104,7 @@ classdef chebtech1 < chebtech
             end
             
             % Check for NaNs (if not happy):
-            if ( any(isnan(obj.values(:))) )
+            if ( any(isnan(obj.coeffs(:))) )
                 % Here we throw an error if NaNs were encountered anywhere.
                 error('CHEBFUN:CHEBTECH1:constructor:naneval', ...
                     'Function returned NaN when evaluated.')

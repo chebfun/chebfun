@@ -3,7 +3,7 @@
 function pass = test_times(pref)
 
 if (nargin < 1)
-    pref = chebpref();
+    pref = chebfunpref();
 end
 %%
 % Get the tolerance:

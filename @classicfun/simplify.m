@@ -8,7 +8,7 @@ function f = simplify(f, varargin)
 %   G = SIMPLIFY(F, TOL) does the same, but simplifies according to the
 %   tolerance TOL on the right-hand side of the above inequality.
 %
-% See also CHEBPREF.
+% See also CHEBFUNPREF.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.

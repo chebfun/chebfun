@@ -56,7 +56,7 @@ vscale = get(f, 'vscale');
 
 % Loop over each subdomain:
 for k = 1:numSubDom
-    pref = chebpref();
+    pref = chebfunpref();
     if ( ~isempty(exps) && any(exps(k:k+1)) )
         pref.singPrefs.exponents = exps(k:k+1);
         

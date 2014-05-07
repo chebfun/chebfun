@@ -38,10 +38,10 @@ if ( ~isempty(f.deltaLoc) )
         deltaMag = f.deltaMag;
         
         data.xDeltas = zeros(length(deltaLoc), 1);
-        data.xDeltas = deltaLoc;
+        data.xDeltas = deltaLoc.';
         
         data.yDeltas = zeros(length(deltaLoc), 1);
-        data.yDeltas = deltaMag(1, :);
+        data.yDeltas = deltaMag(1, :).';
     end
 end
     

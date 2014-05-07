@@ -3,7 +3,7 @@
 function pass = test_iszero(pref)
 
 if (nargin < 1)
-    pref = chebpref();
+    pref = chebfunpref();
 end
 %%
 d1 = deltafun();

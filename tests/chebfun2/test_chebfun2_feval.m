@@ -2,10 +2,10 @@ function pass = test_chebfun2_feval( pref )
 % Test feval
 
 if ( nargin == 0) 
-    pref = chebpref; 
+    pref = chebfun2pref; 
 end
 
-tol = 100*pref.cheb2Prefs.eps; 
+tol = 100*pref.eps; 
 j = 1; 
 
 f = chebfun2(@(x,y) x); 

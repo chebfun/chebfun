@@ -3,9 +3,9 @@ function pass = test_chebfun2v_times
 % Alex Townsend, March 2013.
 
 if ( nargin < 1 ) 
-    pref = chebpref; 
+    pref = chebfun2pref; 
 end 
-tol = 1e3 * pref.cheb2Prefs.eps; 
+tol = 1e3 * pref.eps; 
 j = 1;
 
 f = chebfun2(@(x,y) cos(x.*y)); 

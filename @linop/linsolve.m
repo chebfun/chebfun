@@ -39,7 +39,7 @@ prefs = [];    % no prefs given
 disc = [];     % no discretization given
 for j = 1:nargin-2
     item = varargin{j};
-    if ( isa(item, 'chebpref') )
+    if ( isa(item, 'cheboppref') )
         prefs = item;
     elseif ( isa(item,'chebDiscretization') )
         disc = item;
@@ -53,10 +53,12 @@ if ( isempty(prefs) )
     prefs = cheboppref;
 end
 
-% If RHS is a CHEBFUN, need to convert it to CHEBMATRIX in order for the method
-% to be able to work with it.
+% If RHS is a CHEBFUN or a DOUBLE, we need to convert it to CHEBMATRIX in
+% order for the method to be able to work with it.
 if ( isa( f, 'chebfun' ) )
     f = chebmatrix(f);
+elseif ( isnumeric(f) )
+    f = chebmatrix(mat2cell(f));
 end
 
 % Use a given discretization, or create one?
@@ -152,4 +154,3 @@ end
 u = chebmatrix(u);
 
 end
-

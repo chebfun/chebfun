@@ -4,9 +4,9 @@ function pass = test_chebfun2v_threecomponents( pref )
 
 % Testing chebfun2v objects with three components. 
 if ( nargin < 1 ) 
-    pref = chebpref; 
+    pref = chebfun2pref; 
 end 
-tol = 1e5 * pref.cheb2Prefs.eps; 
+tol = 1e5 * pref.eps; 
 j = 1;
 
 % Different calls to the constructor. 

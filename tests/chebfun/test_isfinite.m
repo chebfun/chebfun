@@ -4,7 +4,7 @@ function pass = test_isfinite(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Test finite scalar function.

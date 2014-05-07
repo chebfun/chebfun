@@ -3,7 +3,7 @@
 function pass = test_nextpow2(pref)
 
 if ( nargin < 1 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Generate a few random points to use as test values.
@@ -14,7 +14,8 @@ x = 2 * rand(100, 1) - 1;
 f = chebfun({1, 3, 4, 7, 9}, [-1 -0.5 0 0.25 0.75 1], pref);
 g = nextpow2(f);
 g_exact = chebfun({0, 2, 2, 3, 4}, [-1 -0.5 0 0.25 0.75 1], pref);
-pass(1) = norm(feval(g, x) - feval(g_exact, x), Inf) == 0;
+pass(1) = norm(feval(g, x) - feval(g_exact, x), Inf) < ...
+    vscale(f).*epslevel(f);
 
 f = chebfun(@(x) 4 + 3*sin(x), [-1 0 1], pref);
 g = nextpow2(f, pref);

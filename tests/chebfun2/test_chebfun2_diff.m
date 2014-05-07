@@ -2,9 +2,9 @@ function pass = test_chebfun2_diff( pref )
 % Check the diff command in Chebfun2
 
 if ( nargin < 1 ) 
-    pref = chebpref; 
+    pref = chebfun2pref; 
 end 
-tol = 1e6 * pref.cheb2Prefs.eps; 
+tol = 1e6 * pref.eps; 
 j = 1; 
 
 % Battery:  functions, df/dx, and df/dy

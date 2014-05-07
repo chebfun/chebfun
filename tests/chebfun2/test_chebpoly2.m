@@ -2,10 +2,10 @@ function pass = test_chebpoly2( pref )
 % Test chebpoly2 
 
 if ( nargin == 0) 
-    pref = chebpref; 
+    pref = chebfun2pref; 
 end
 
-tol = 1000*pref.cheb2Prefs.eps; 
+tol = 1000*pref.eps; 
 j = 1; 
 
 % Rank-2 function

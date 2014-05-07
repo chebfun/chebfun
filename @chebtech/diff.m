@@ -66,17 +66,15 @@ function f = diffFiniteDim(f, k)
         return
     else 
         for j = 1:k
-            % Differentiate values across dim:
-            f.values = diff(f.values, 1, 2);
             % Differentiate coefficients across dim:
             f.coeffs = diff(f.coeffs, 1, 2);
-            % Update vscale and epslevel as in PLUS().
-            vscale = max(abs(f.values), [], 1);
+            % Update vscale and epslevel as in PLUS()
             ev = f.epslevel.*f.vscale;
             for l = 1:size(f,2)-1
                 f.epslevel(l) = ev(l)+ev(l+1);
             end
             f.epslevel(end) = [];
+            vscale = getvscl(f);
             f.epslevel = f.epslevel./vscale;
             f.vscale = vscale;
         end
@@ -87,7 +85,7 @@ function f = diffContinuousDim(f, k)
 % Differentiate in the first dimension (i.e., df/dx).
 
     % Get the length:
-    n = size(f.values,1);
+    n = size(f.coeffs,1);
 
     % Get the coefficients:
     c = f.coeffs;
@@ -124,7 +122,6 @@ function f = diffContinuousDim(f, k)
 
     % Store new coefficients and values:
     f.coeffs = c;
-    f.values = v;
 end
       
 function cout = computeDerCoeffs(c)
@@ -134,12 +131,10 @@ function cout = computeDerCoeffs(c)
 %   whose columns are the derivatives of those of the original.
     
     [n, m] = size(c);
-    cout = zeros(n+1, m);                     % Initialize vector {c_r}
+    cout = zeros(n-1, m);                     % Initialize vector {c_r}
     w = repmat(2*(n-1:-1:1)', 1, m);
-    v = [zeros(2, m) ; w.*c(1:end-1,:)];      % Temporal vector
+    v = w.*c(1:end-1,:);                      % Temporal vector
     cout(1:2:end,:) = cumsum(v(1:2:end,:));   % Compute c_{n-2}, c_{n-4},...
     cout(2:2:end,:) = cumsum(v(2:2:end,:));   % Compute c_{n-3}, c_{n-5},...
     cout(end,:) = .5*cout(end,:);             % Adjust the value for c_0
-    cout = cout(3:end,:);                     % Trim unneeded coefficients
-    
 end

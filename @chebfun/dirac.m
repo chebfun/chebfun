@@ -66,22 +66,41 @@ r = roots(f, 'nojump', 'nozerofun');
 r = sort(r(:));
 
 % Check roots at the end points of f:
-if ( r(1) > a )
-    rootA = 0;
-elseif ( abs(feval(f, a, 'right')) < 100*tol*f.vscale )
-    rootA = 1;
-    if ( r(1) ~= a )
-        r = [a ; r];
+if ( isempty(r) )
+    % If there are no roots, still check roots at the end points:
+    if ( abs(feval(f, a, 'right')) < 100*tol*f.vscale )
+        rootA = 1;
+        r = [r; a];
+    else
+        rootA = 0;
+    end
+    
+    if ( abs(feval(f, b, 'left')) < 100*tol*f.vscale )
+        rootB = 1;
+        r = [r; b];
+    else
+        rootB = 0;
+    end    
+else    
+    % If there are roots, check if they are at the end points:
+    if ( r(1) > a )
+        rootA = 0;
+    elseif ( abs(feval(f, a, 'right')) < 100*tol*f.vscale )
+        rootA = 1;
+        if ( r(1) ~= a )
+            r = [a ; r];
+        end
+    end
+    if ( r(end) < b )
+        rootB = 0;
+    elseif ( abs(feval(f, b, 'left')) < 100*tol*f.vscale )
+        rootB = 1;
+        if ( r(end) ~= b )
+            r = [r ; b];
+        end
     end
 end
-if ( r(end) < b )
-    rootB = 0;
-elseif ( abs(feval(f, b, 'left')) < 100*tol*f.vscale )
-    rootB = 1;
-    if ( r(end) ~= b )
-        r = [r ; b];
-    end
-end
+
 
 % Initialize a zero CHEBFUN:
 d = chebfun(0, [a, b]);
@@ -114,7 +133,7 @@ if ( rootB )
 end
 
 % Enable DELTAFUNs:
-pref = chebpref();
+pref = chebfunpref();
 pref.enableDeltaFunctions = true;
 
 % Call the DELTAFUN constructor directly:
