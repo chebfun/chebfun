@@ -1,15 +1,27 @@
 function [u, info] = solvebvpNonlinear(N, rhs, L, u0, res, pref, displayInfo)
-% Solve a nonlinear BVP, using damped Newton iteration in function space.
-% Here
-%   N:      Nonlinear chebop
-%   rhs:    Right hand side of ODE
-%   L:      Linearisation of N around the initial guess
-%   u0:     Initial guess of solution
-%   res:    Residual of ODE at initial guess
-%   pref:   Cheboppref preference structure
+%SOLVEBVPNONLINAR Solve a nonlinear BVP, using damped Newton iteration.
 %
+% The inputs to the method are:
+%   N:      Nonlinear CHEBOP
+%   rhs:    A CHEBMATRIX, right hand side of ODE
+%   L:      A LINOP, linearisation of N around the initial guess
+%   u0:     A CHEBMATRIX, an initial guess of solution
+%   res:    A CHEBMATRIX, residual of ODE at initial guess
+%   pref:   CHEBOPPREF preference structure
+%
+% The outputs are
+%   u:      A CHEBMATRIX, that represents the solution of the BVP if the method
+%           converged to a solution.
+%   info:   A MATLAB struct with useful information about the Newton iteration.
+%
+% See also: chebop/solvebvp, chebop/dampingErrorBased
 
-% TODO: Document properly.
+% Developers note:
+%   This method also accepts the function handle DISPLAYINFO, that allows
+%   passing in a function handle to a displaying method that is called during
+%   the Newton iteration. This allows separating the displaying process
+%   for regular CHEBOP use and CHEBGUI. See chebop/displayInfo() and
+%   chebgui/displayInfo() for more details.
 
 % Store preferences used in the Newton iteration in separate variables
 maxIter  = pref.maxIter;
@@ -20,10 +32,7 @@ errTol   = pref.errTol;
 prefDamped = pref.damped;
 damped = prefDamped;
 
-% Minimum allowed steplength
-lambdaMin = pref.lambdaMin;
-
-% Assign initial guess to u
+% Assign initial guess to u:
 u = u0;
 
 % Initialise the independent variable:
@@ -44,21 +53,23 @@ success = 0;
 giveUp = 0;
 maxIterExceeded = 0;
 
-% Store a vector with information about the norm of the Newton updates
+% Store a vector with information about the norm of the Newton updates:
 normDeltaVec = zeros(maxIter, 1);
 
-% Initial damping parameter
+% Initial damping parameter:
 lambda = 1;
 
-% Need to subtract the rhs from the residual passed in
+% Need to subtract the rhs from the residual passed in.
 res = res - rhs;
 
-% Some initializations
+% Some initializations of the DAMPINGINFO struct. See 
+%   >> help dampingErrorBased 
+% for discussion of this struct. 
 dampingInfo.errTol = errTol;
 dampingInfo.normDeltaOld = [];
 dampingInfo.normDeltaBar = [];
 dampingInfo.lambda = lambda;
-dampingInfo.lambdaMin = lambdaMin;
+dampingInfo.lambdaMin = pref.lambdaMin;
 dampingInfo.newtonCounter = newtonCounter;
 dampingInfo.deltaBar = [];
 dampingInfo.damped = damped;
@@ -67,29 +78,30 @@ dampingInfo.x = x;
 % Start the Newton iteration!
 while ( ~terminate )
     
-    % Compute a Newton update
+    % Compute a Newton update:
     [delta, disc] = linsolve(L, res, pref);
     
-    % We had two output arguments above, need to negate delta.
+    % We had two output arguments above, need to negate DELTA.
     delta = -delta;
 
-    % Store the norm of the update
+    % Store the norm of the update:
     normDelta = norm(delta);
     
+    % Assign to the DAMPINGINFO struct:
     dampingInfo.normDelta = normDelta;
     
     % Are we in damped mode?
     if ( damped )
         
         % Find the next Newton iterate (the method finds the step-size, then
-        % takes the damped Newton and returns the next iterate)
+        % takes the damped Newton and returns the next iterate).
         [u, dampingInfo] = dampingErrorBased(N, u, rhs, delta, ...
             L, disc, dampingInfo);
         
-        % If we're in damped mode, we don't get an error estimate
+        % If we're in damped mode, we don't get an error estimate...
         errEst = NaN;
         
-        % Extract info from the dampingInfo struct, used for printing
+        % Extract info from the dampingInfo struct, used for printing:
         lambda = dampingInfo.lambda;
         cFactor = dampingInfo.cFactor;
         
@@ -100,10 +112,11 @@ while ( ~terminate )
         giveUp = dampingInfo.giveUp;
         
     else    % We are in undamped phase
-        % Update lambda so that we will print correct information
+        % Update lambda so that we will print correct information in the
+        % displayInfo() method.
         lambda = 1;
         
-        % Take a full Newton step
+        % Take a full Newton step:
         u = u + delta;
         
         % Compute a contraction factor and an error estimate. Can only do so
@@ -111,27 +124,31 @@ while ( ~terminate )
         if ( newtonCounter == 0 )
             cFactor = NaN;
         else
+            % Compute the contraction factor of this iterate:
             cFactor = normDelta/normDeltaOld;
             
-            if cFactor >= 1
-                % Have to resort back to damped (but only if the user wanted
-                % damped Newton in the first place).
+            if ( cFactor >= 1 )
+                % We're not observing the nice convergence of Newton iteration
+                % anymore. Have to resort back to damped iteration (but only if
+                % the user wanted damped Newton in the first place).
                 damped = prefDamped;
-                continue
+                continue    % Go back to the start of loop
             end
             
-            % Error estimate a la Deuflhard
+            % Error estimate based on the norm of the update and the contraction
+            % factor.
             errEst =  normDelta/(1-cFactor^2);
         end
     end
     
-    % Update counter of Newton steps taken
+    % Update counter of Newton steps taken:
     newtonCounter = newtonCounter + 1;
     dampingInfo.newtonCounter = newtonCounter;
         
-    % Store information about the norm of the updates
+    % Store information about the norm of the updates:
     normDeltaVec(newtonCounter) = normDelta;
-    % Need to store the norm of the current update to use in damping strategy
+    
+    % Need to store the norm of the current update to use in damping strategy:
     normDeltaOld = normDelta;
     dampingInfo.normDeltaOld = normDeltaOld;
     
@@ -144,16 +161,13 @@ while ( ~terminate )
     
     if ( errEst < errTol )  % Sweet, we have converged!      
         success = 1;
-    elseif (newtonCounter > maxIter)
+    elseif ( newtonCounter > maxIter )
         maxIterExceeded = 1;
     else
         % Linearize around current solution:
         [L, res] = linearize(N, ub, x);
         
-        % TODO: Ensure this actually takes care of resetting derivative
-        % information as well!
-        
-        % Need to subtract RHS from the residual
+        % Need to subtract the original RHS from the residual:
         res = res - rhs;
         
         % Assign the preferences to the linop.
@@ -169,12 +183,11 @@ end
 % Evaluate how far off we are from satisfying the boundary conditions.
 errEstBC = evalBCnorm(N, u, x);
 
-% Print information depending on why we stopped the Newton iteration
+% Print information depending on why we stopped the Newton iteration.
 if ( success )
-
-% Show final information.
-displayInfo('final', u, delta, newtonCounter, errEst, errEstBC, displayFig, ...
-    displayTimer, pref)
+    % Show final information.
+    displayInfo('final', u, delta, newtonCounter, errEst, errEstBC, ...
+        displayFig, displayTimer, pref)
 elseif ( maxIterExceeded )
     warning('CHEBOP:solvebvpNonlinear:maxIter',...
         ['Newton iteration failed. Maximum number of iterations exceeded.\n',...
@@ -195,8 +208,10 @@ function bcNorm = evalBCnorm(N, u, x)
 % TODO: This might be useful elsewehere (i.e. chebop/linearize), do we want to
 % move this into a separate file?
 
+% Initialize
 bcNorm = 0;
 
+% Extract the blocks from the CHEBMATRIX U.
 uBlocks = u.blocks;
 
 % Evaluate left boundary condition(s):
@@ -204,7 +219,7 @@ if ~( isempty(N.lbc) )
     % Evaluate.
     lbcU = N.lbc(uBlocks{:});
     
-    % The output might be a CHEBFUN, or a chebmatrix
+    % The output might be a CHEBFUN, or a CHEBMATRIX
     if ( isa(lbcU, 'chebfun') )
         bcNorm = bcNorm + sum(feval(lbcU, N.domain(1)).^2);
     elseif ( isa(lbcU, 'chebmatrix') ) 
@@ -224,7 +239,7 @@ if ~( isempty(N.rbc) )
     % Evaluate.
     rbcU = N.rbc(uBlocks{:});
     
-    % The output might be a CHEBFUN, or a chebmatrix
+    % The output might be a CHEBFUN, or a CHEBMATRIX
     if ( isa(rbcU, 'chebfun') )
         bcNorm = bcNorm + sum(feval(rbcU, N.domain(end)).^2);
     elseif ( isa(rbcU, 'chebmatrix') ) 
@@ -247,6 +262,7 @@ if ( ~isempty(N.bc) )
     bcNorm = bcNorm + sum(norm(bcU).^2);
 end
 
+% Return the square-root
 bcNorm = sqrt(bcNorm);
 
 end

@@ -1,15 +1,30 @@
 function [u, dampingInfo] = dampingErrorBased(N, u, rhs, delta, L, disc, dampingInfo)
 %DAMPINGERRORBASED     Finds the step-size for damped Newton method.
-%   DAMPINGERRORBASED finds the step-size lambda used in the damped Newton
-%   iteration. It is affine invariant, and error controlled, that is, it seeks
-%   to minimize the error in the SOLUTION SPACE, not the RESIDUAL SPACE.
 %
-%   For further details, see
-%       [1] P. Deuflhard. Newton Methods for Nonlinear Problems. Springer, 2004.
+% Here
+%   N:      Nonlinear CHEBOP
+%   u:      Current guess of the solution of the BVP specified by N
+%   rhs:    Current right-hand side of the differential equation
+%   delta:  Current Newton corrections
+%   L:      A LINOP, that is the linearization of N around U
+%   disc:   The CHEBDISCRETIZATION object arising from L
+%   rhs:    Right hand side of ODE
 %
-%       [2] A. Birkisson. Numerical Solution of Nonlinear Boundary Value
+% Furthermore, the method takes in as an argument the MATLAB struct
+% DAMPINGINFO. The fields of the struct are as follows:
+%   
+%   TODO: List the fields
+%
+% DAMPINGERRORBASED finds the step-size lambda used in the damped Newton
+% iteration. It is affine invariant, and error controlled, that is, it seeks
+% to minimize the error in the SOLUTION SPACE, not the RESIDUAL SPACE.
+%
+% For further details, see
+%   [1] P. Deuflhard. Newton Methods for Nonlinear Problems. Springer, 2004.
+%
+%   [2] A. Birkisson. Numerical Solution of Nonlinear Boundary Value
 %       Problems for Ordinary Differential Equations in the Continuous
-%       Framework. Dphil Thesis, Oxford, 2013.
+%       Framework. DPhil Thesis, Oxford, 2013.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

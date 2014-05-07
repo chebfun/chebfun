@@ -425,7 +425,7 @@ classdef (InferiorClasses = {?double}) chebop
     
     %% STATIC HIDDEN METHODS:
         
-    methods ( Static = true, Hidden = true )
+    methods ( Static = true, Access = private )
         % TODO: These should be private methods as well
         
         % Controls information displayed for Newton iterations
