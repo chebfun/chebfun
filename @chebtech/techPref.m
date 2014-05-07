@@ -64,7 +64,7 @@ function outPref = techPref(inPref)
 % See http://www.chebfun.org for Chebfun information.
 
 outPref.eps                = 2^-52;
-outPref.gridType           = 2;
+outPref.gridType           = 1;
 outPref.minPoints          = 9;
 outPref.maxPoints          = 2^16 + 1;
 outPref.numPoints          = NaN;
