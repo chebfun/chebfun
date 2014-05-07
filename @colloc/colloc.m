@@ -30,6 +30,7 @@ classdef colloc < chebDiscretization
             disc.domain = source.domain;
             % Determine the dimension adjustment:
             disc.dimAdjust = colloc.getDimAdjust(source);
+            disc.projOrder = colloc.getProjOrder(source);
             
             % Assign DIMENSIONS and DOMAIN if they were passed:
             if ( nargin > 1 )

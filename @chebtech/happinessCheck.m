@@ -12,8 +12,10 @@ function  [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, pref)
 %
 %   HAPPINESSCHECK(F) computes VALUES used above from F.COEFFS2VALS(F.COEFFS).
 %
-%   HAPPINESSCHECK(F, OP, VALUES, PREF) allows different preferences to be used; in
-%   particular PREF.EPS sets the target tolerance for happiness.
+%   HAPPINESSCHECK(F, OP, VALUES, PREF) allows different preferences to be
+%   used; in particular PREF.EPS sets the target tolerance for happiness.  If
+%   constructing an array-valued CHEBTECH, PREF.EPS may be a row vector of
+%   target tolerances for each column.
 %
 %   Furthermore, alternative definitions of happiness can be chosen by setting
 %   the PREF.HAPPINESSCHECK field. This field may be one of the built in

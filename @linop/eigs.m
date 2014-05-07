@@ -47,10 +47,10 @@ function varargout = eigs(L,varargin)
 %   [V,D] = eigs(A,10);
 %   format long, sqrt(-diag(D))  % integers, to 14 digits
 %
-%   See also CHEBOPPREF, CHEBOP.EIGS.
+% See also CHEBOPPREF, CHEBOP.EIGS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Parsing inputs.
 M = [];       % no generalized operator
@@ -114,26 +114,39 @@ else
     dimVals = max(disc.dimension);
 end
 
-% Attach a domain to the discretization
-dom = L.domain;
-disc.domain = dom;
+% If there is a generalized eigenproblem, the right-side operator needs to have
+% its domain merged in and its own discretization.
+discM = [];
+if ( ~isempty(M) )
+    
+    % Update the discretization domain for L:
+    disc.domain = chebfun.mergeDomains(disc.domain, M.domain);
+    
+    % Construct a discretization for M:
+    constructor = str2func( class(disc) );   % constructor handle
+    discM = constructor(M);
+    
+    % We can ignore constraints and continuity--enforced on the left side.
+    if ( ~isempty(discM.source.constraint) )
+        discM.source.constraint = [];
+        warning('CHEBFUN:linop:eigs:constraints', ...
+                'Constraints on B are ignored.')
+    end
+    if ( ~isempty(discM.source.continuity) )
+        discM.source.continuity = [];
+        warning('CHEBFUN:linop:eigs:continuity', ...
+                'Continuity conditions on B are ignored.')
+    end       
+    
+    % Merge the two discretizations:
+    [disc, discM] = merge(disc, discM);
+    
+end
 
 if ( isempty(L.continuity) )
      % Apply continuity conditions:
      disc.source = deriveContinuity(disc.source);
 end
-
-% If there is a generalized eigenproblem, the right-side operator needs to have
-% its domain merged in and its own discretization.
-discM = [];
-if ( ~isempty(M) )
-    dom = chebfun.mergeDomains(disc.domain,dom,M.domain);
-    disc.domain = dom;   % update the discretization domain for L
-    constructor = str2func( class(disc) );   % constructor handle
-    discM = constructor(M,disc.dimension,disc.domain);
-    % We can ignore constraints and continuity--enforced on the left side.
-end
-
 
 % 'SM' is equivalent to eigenvalues nearest zero.
 if ( strcmpi(sigma, 'SM') )
@@ -234,6 +247,12 @@ if ( size(D,1) < k )
     k = size(D,1);
 end
 
+% Sort eigenvalues:
+d = diag(D);
+[d, idx] = sort(d);
+V = V(:,idx);
+D = diag(d);
+
 if ( nargout < 2 )  % Return the eigenvalues only
     varargout = { diag(D) };
 else            % Unwrap the eigenvectors for output
@@ -264,7 +283,7 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%
-function [V,D,P] = getEigenvalues(disc, discM, k, sigma)
+function [V, D, P] = getEigenvalues(disc, discM, k, sigma)
 % Formulate the discrete problem and solve for the eigenvalues
 
     % Discretize the LHS operator (incl. constraints/continuity):
@@ -272,10 +291,11 @@ function [V,D,P] = getEigenvalues(disc, discM, k, sigma)
 
     % Discretize the RHS operator, or use identity.
     if ( ~isempty(discM) )
+        % TODO: This is untidy. Can we make a method to do this? NH Apr 2014.
         discM.dimension = disc.dimension;
-        [dummy1, dummy2, dummy3, B] = matrix(discM);
+        PB = matrix(discM);
         % Project RHS matrix and prepend rows for the LHS constraints.
-        PB = [ zeros(size(C)) ; P*B ];
+        PB = [ zeros(size(C)) ; PB ];
     else
         PB = [ zeros(size(C)) ; PS ];
     end
@@ -347,7 +367,7 @@ ii10 = (N-tenPercent):N; % Indices of last 10%
 % Check for high frequency energy (indicative of spurious eigenvalues) in
 % each of the remaining valid eigenfunctions.
 isFun = disc.source.isFunVariable;
-while ~isempty(queue)
+while ( ~isempty(queue) )
     j = queue(1);
 
     vcoeff = mat2poly(disc, V(:,idx(j)));
@@ -360,15 +380,15 @@ while ~isempty(queue)
             lvcs = length(vcoeffsq);
             if ( lnc2 > lvcs )
                 % Pad with leading zeros
-                vcoeffsq = [ zeros(lnc2-lvcs,1); vcoeffsq ];
-            else
-                % Only the most significant rows affected
-                rows = lvcs-lnc2+1:lvcs;
-                vcoeffsq(rows) = vcoeffsq(rows) + newcoeff2;
+                vcoeffsq = [ zeros(lnc2-lvcs,1) ; vcoeffsq ];
+                lvcs = length(vcoeffsq);
             end
+            % Only the most significant rows affected
+            rows = lvcs-lnc2+1:lvcs;
+            vcoeffsq(rows) = vcoeffsq(rows) + newcoeff2;
         end
     end
-    vcoeff = sqrt( flipud( sum(vcoeffsq,2) ) );
+    vcoeff = sqrt( flipud( sum(vcoeffsq, 2) ) );
 
     % Recipe: More than half of the energy in the last 90% of the Chebyshev
     % modes is in the highest 10% modes, and the energy of the last 90% is
