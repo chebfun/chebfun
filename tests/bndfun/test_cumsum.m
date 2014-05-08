@@ -131,7 +131,7 @@ vals_exact2 = feval(g_exact2, x2);
 err1 = norm(vals_g1 - vals_exact1, inf);
 err2 = norm(vals_g2 - vals_exact2, inf);
 tol1 = 1e3*get(g{1},'epslevel')*norm(vals_exact1, inf);
-tol2 = 1e3*get(g{2},'epslevel')*norm(vals_exact2, inf);
+tol2 = 1e7*get(g{2},'epslevel')*norm(vals_exact2, inf);
 
 pass(10) = (err1 < tol1) && (err2 < tol2);
 
