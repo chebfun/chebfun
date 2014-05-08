@@ -79,7 +79,7 @@ if ( ischar(pref.refinementFunction) )
 end
 
 % Make CHEBTECH object:
-f = f.make(op, 0, f.hscale, pref);
+f = f.make(op, [], f.hscale, pref);
 
 % % Throw a warning: (Removed by NH Apr 2014. See #282)
 % if ( ~f.ishappy )
