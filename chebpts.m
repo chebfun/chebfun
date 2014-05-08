@@ -21,14 +21,11 @@ function [x, w, v] = chebpts(n, dom, type)
 %
 %   [1] Jarg Waldvogel, "Fast construction of the Fejer and Clenshaw-Curtis
 %   quadrature rules", BIT Numerical Mathematics, 46, (2006), pp 195-202. 
-
+%
 % See also LEGPTS, JACPTS, LAGPTS, and HERMPTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
-
-% Create a preference object:
-pref = chebfunpref();
 
 % Parse inputs:
 if ( nargin == 2 )

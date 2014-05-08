@@ -5,7 +5,7 @@ function p = legpoly(n, dom, normalize, method)
 %   is an array-valued CHEBFUN.
 %
 %   P = LEGPOLY(N, D) computes the Legendre polynomials as above, but on the
-%   interval given by the domain D, which must be bounded. note that interior
+%   interval given by the domain D, which must be bounded. Note that interior
 %   breakpoints in D are ignored.
 %
 %   P = LEGPOLY(N, D, 'norm') or P = LEGPOLY(N, 'norm') normalises so that
@@ -108,7 +108,6 @@ switch method
             L0 = tmp;
         end
         C = chebtech2.vals2coeffs(P(:,cc));       % Convert to coefficients
-        p = chebfun(C, dom, pref, 'coeffs');      % Make a CHEBFUN from coeffs
     
     case 2 % QR
 
@@ -127,18 +126,19 @@ switch method
         end
         C = chebtech2.vals2coeffs(PP);            % Convert to coefficients
         C(1:nMax1,:) = [];                        % Trim coefficients > nMax+1
-        p = chebfun(C, dom, pref, 'coeffs');      % Make a CHEBFUN from coeffs
         
     case 3 % LEG2CHEB
 
         c_leg = [1 ; zeros(n, 1)];                % Legendre coefficients
-        c_cheb = chebtech.leg2cheb(c_leg);        % Chebyshev coefficients
+        C = chebtech.leg2cheb(c_leg);             % Chebyshev coefficients
         if ( normalize )
-            c_cheb = c_cheb*sqrt((n+.5));
+            C = C*sqrt((n+.5));
         end
-        p = chebfun(c_cheb, dom, pref, 'coeffs'); % Make a CHEBFUN from coeffs
     
 end
+
+% Construct CHEBFUN from coeffs:
+p = chebfun(C, dom, pref, 'coeffs');              
 
 if ( ~strcmp(defaultPref.tech, 'chebtech') )
     % Construct a CHEBFUN of the approprate form by evaluating p:
