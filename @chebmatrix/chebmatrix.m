@@ -117,8 +117,29 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             end
         end
         
+        function e = end(A, k, n)
+        %END   Last index of a CHEBMATRIX.
+        %   END(A, K, N) is called for indexing expressions involving a
+        %   CHEBMATRIX A when end is part of the K-th index out of N indices.
+        %   For example, the expression A(end-1,:) calls A's end method with
+        %   END(A, 1, 2). Note that N must be less than or equal to two.
+
+            if ( n > 2 )
+                error('CHEBFUN:end:ngt2', ...
+                    'Index exceeds CHEBMATRIX dimensions.');
+            end
+            
+            s = size(A.blocks);
+            if ( n == 1 )
+                e = prod(s);
+            else
+                e = s(k);
+            end
+            
+        end
+        
         function out = isFunVariable(A, k)
-        %ISFUNVARIABLE  Which variables of the chebmatrix are functions?
+        %ISFUNVARIABLE  Which variables of the CHEBMATRIX are functions?
         %
         %   A chebmatrix can operate on other chebmatrices. Operator and
         %   function blocks are applied to function components, whereas
@@ -131,6 +152,28 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             if ( nargin > 1 )
                 out = out(k);
             end
+        end
+        
+        function A = ctranspose(A)
+        %CTRANSPOSE   Transpose a CHEBMATRIX.
+        %   CTRANSPOSE(A) transposes A.BLOCKS and each of the entries in
+        %   A.BLOCKS. Note the block entries are transposed, not conjugate
+        %   tranposed.
+        
+            for k = 1:numel(A.blocks)
+                % TODO: TRANSPOSE() or CTRANSPOSE()?
+                A.blocks{k} = transpose(A.blocks{k});
+            end
+            A.blocks = transpose(A.blocks);
+            
+        end
+        
+        function A = transpose(A)
+        %TRANSPOSE   Transpose a CHEBMATRIX.
+        %   TRANSPOSE(A) transposes A.BLOCKS, but _not_ its entries.
+        
+            A.blocks = ctranspose(A.blocks);
+            
         end
         
     end
