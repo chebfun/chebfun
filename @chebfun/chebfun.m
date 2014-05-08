@@ -562,6 +562,9 @@ function [op, dom, pref] = parseInputs(op, dom, varargin)
             % Hack to support construction from coefficients.
             op = {{[], op}};
             args(1) = [];
+        elseif ( strcmpi(args{1}, 'coeffs') && iscell(op) )
+            error('CHEBFUN:parseInputs:coeffcell', ...
+                'Cannot construct CHEBFUN from a cell array of coefficidnts.');
         elseif ( strcmpi(args{1}, 'trunc') )
             % Pull out this preference, which is checked for later.
             args(1:2) = [];     
