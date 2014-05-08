@@ -24,9 +24,10 @@ dom = [.01, 10.01];
 x = (0:10)';  
 y = [sin(x), cos(x)];
 f = chebfun.interp1(x, y, 'linear', dom);
+err = norm(feval(f, x(2:end-1)) - y(2:end-1,:));
 tol = 10*epslevel(f);
 pass(7) = all(f.domain == [dom(1), 1:10, dom(2)]);
-pass(8) = norm(feval(f, x(2:end)) - y(2:end,:)) < tol;
+pass(8) = err < tol;
 pass(9) = numel(f.funs) == 11;
 pass(10) = length(f) == 22;
 
