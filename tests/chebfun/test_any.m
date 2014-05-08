@@ -82,9 +82,6 @@ fval = feval(h2, x);
 err = fval - 1;
 pass(14) = ~any( err );
 
-r = roots(f);
-pass(15) = ~any( h2(r) );
-
 %% Test for function defined on unbounded domain:
 
 % Functions on [a inf]:
@@ -94,9 +91,9 @@ dom = [1 Inf];
 
 op = @(x) 1./x.^2;
 f = chebfun(op, dom, 'exps', [0 -2]);
-pass(16) = any(f);
+pass(15) = any(f);
 
 g = chebfun(@(x) 0*x, dom);
-pass(17) = ~any(g);
+pass(16) = ~any(g);
 
 end

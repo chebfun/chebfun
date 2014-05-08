@@ -123,8 +123,8 @@ L.domain = chebfun.mergeDomains(L.domain, dom);
 % double entries, we should seed differently so that linearisation is not
 % necessary.
 
-isd = isDiag(L);
-L = diagonalise(L, isd);
+% isd = isDiag(L);
+% L = diagonalise(L, isd);
 
 %% Add BCs
 % Initalise an empty LINOPCONSTRAINT.
@@ -220,10 +220,10 @@ if ( flag && ~all(isLinear) )
     return
 end
 
-if ( ~isempty(BC) )
-    % Deal with parameterized problems:
-    BC.functional = diagonalise(BC.functional, isd);
-end
+% if ( ~isempty(BC) )
+%     % Deal with parameterized problems:
+%     BC.functional = diagonalise(BC.functional, isd);
+% end
 
 % Append all constraints to the LINOP returned.
 L.constraint = BC;

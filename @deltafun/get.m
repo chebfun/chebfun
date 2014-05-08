@@ -22,9 +22,28 @@ switch prop
     case fieldnames(f.funPart.onefun)
         out = f.funPart.onefun.(prop); 
         
-    case {'lval', 'rval', 'points', 'vscale', 'epslevel'}
+    case {'points', 'vscale', 'epslevel'}
         out = get(f.funPart, prop);            
-        
+    case {'lval'}        
+        % If there is a delta functions at the left end point, we weil either
+        % get an Inf or a NaN:
+        dom = f.domain;
+        out = feval(f, dom(1));
+        if ( ~isinf(out) && ~isnan(out) )
+            % If there is no delta function at the left end, call the property
+            % of the funPart:
+            out = get(f.funPart, prop);
+        end
+    case {'rval'}
+        % If there is a delta functions at the right end point, we weil either
+        % get an Inf or a NaN:
+        dom = f.domain;
+        out = feval(f, dom(2));
+        if ( ~isinf(out) && ~isnan(out) )
+            % If there is no delta function at the right end, call the property
+            % of the funPart:
+            out = get(f.funPart, prop);
+        end                       
     otherwise
         error('DELTAFUN:GET:propname', ...
               'Unknown property name "%s" for object of type DELTAFUN.', prop);
