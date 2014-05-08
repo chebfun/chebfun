@@ -66,6 +66,13 @@ switch index(1).type
                 % columnIndex = 1:size(f, 2);
             elseif ( max(idx{2}) <= columnIndex(end) )
                 columnIndex = idx{2};
+                if ( size(columnIndex, 2) == 1 )
+                    columnIndex = columnIndex.';
+                end
+                if ( size(columnIndex, 1) > 1 )
+                    error('CHEBFUN:subsref:colidx', ...
+                        'Column index must be a vector of integers.')
+                end                
             end
 
         elseif ( length(idx) == 2 && strcmp(idx{2}, ':') )
