@@ -31,13 +31,13 @@ function [x, w, v] = chebpts(n, dom, type)
 if ( nargin == 2 )
     if ( length(dom) == 1 )
         type = dom;
-        dom = pref.domain;
+        dom = chebfunpref().domain;
     else
         type = 2;
     end
 end
 if ( nargin == 1 )
-    dom = pref.domain;
+    dom = chebfunpref().domain;
     type = 2;
 end
 
