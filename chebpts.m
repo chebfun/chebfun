@@ -27,18 +27,21 @@ function [x, w, v] = chebpts(n, dom, type)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Create a preference object:
+pref = chebfunpref();
+
 % Parse inputs:
 if ( nargin == 2 )
     if ( length(dom) == 1 )
         type = dom;
-        dom = chebfunpref().domain;
+        dom = pref.domain;
     else
-        type = chebtech.techPref().gridType;
+        type = 2;
     end
 end
 if ( nargin == 1 )
-    dom = chebfunpref().domain;
-    type = chebtech.techPref().gridType;
+    dom = pref.domain;
+    type = 2;
 end
 
 % Verify that the number of points requested and the domains match:
