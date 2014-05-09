@@ -156,8 +156,9 @@ while ( ~terminate )
     ub = u.blocks;
     
     % Print info to command window, and/or show plot of progress
-    displayInfo('iter', u, delta, newtonCounter, normDelta, cFactor, ...
-        length(delta{1}), lambda, length(ub{1}), displayFig, displayTimer, pref)
+    displayTimer = displayInfo('iter', u, delta, newtonCounter, normDelta, ...
+        cFactor, length(delta{1}), lambda, length(ub{1}), displayFig, ...
+        displayTimer, pref);
     
     if ( errEst < errTol )  % Sweet, we have converged!      
         success = 1;

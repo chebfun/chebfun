@@ -28,7 +28,7 @@ if ( strcmpi(display, 'iter') )
     fprintf(initString);
 
     % Create a long string of dashes...
-    dashString = repmat('-',1,62);
+    dashString = repmat('-', 1, 62);
     % ... and print to the command window
     fprintf('\n%s\n', dashString);
     
@@ -37,8 +37,14 @@ end
 % Do we want to show a plot of the initial guess?
 if ~( strcmpi(plotMode, 'off') )
     displayFig = figure('name','BVP solver convergence');
-    plot(chebfun(u),'.-'), 
+    plot(chebfun(u), '.-'), 
     title('Initial guess of solution', 'Fontsize', 12)
+    
+    drawnow
+    % Do we need to pause?
+    if ( strcmpi(plotMode, 'pause') )
+        pause
+    end
 else
     % If we did not want to plot, we return an empty output instead of a
     % graphics handle.
