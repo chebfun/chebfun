@@ -159,6 +159,6 @@ function result = test_div_function_by_function(f, f_op, g, g_op, x)
     h = f ./ g;
     h_exact = @(x) f_op(x) ./ g_op(x);
     err = norm(feval(h, x) - h_exact(x), inf);
-    tol = 100*max(get(h, 'vscale').*get(h, 'epslevel'));
+    tol = 200*max(get(h, 'vscale').*get(h, 'epslevel'));
     result = err < tol;
 end
