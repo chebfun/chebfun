@@ -1,10 +1,10 @@
 function varargout = pde15s(pdeFun, tt, u0, bc, varargin)
 %PDE15S   Solve PDEs using the CHEBFUN system.
 %   UU = PDE15s(PDEFUN, TT, U0, BC) where PDEFUN is a handle to a function with
-%   arguments u, t, x, and D, TT is a vector, U0 is a chebfun, and BC is a
-%   chebop boundary condition structure will solve the PDE dUdt = PDEFUN(UU, t,
-%   x) with the initial condition U0 and boundary conditions BC over the time
-%   interval TT.
+%   arguments u, t, x, and D, TT is a vector, U0 is a CHEBFUN or a CHEBMATRIX,
+%   and BC is a chebop boundary condition structure will solve the PDE dUdt =
+%   PDEFUN(UU, t, x) with the initial condition U0 and boundary conditions BC
+%   over the time interval TT.
 %
 %   PDEFUN should take the form @(T, X, U1, U2, ..., UN), where U1, ..., UN are
 %   the unknown dependent variables to be solved for, T is time, and X is space.
@@ -15,9 +15,10 @@ function varargout = pde15s(pdeFun, tt, u0, bc, varargin)
 %   definite integral operator (i.e., 'sum'), and C the indefinite integral
 %   operator (i.e., 'cumsum') is also supported.
 %
-%   For equations of one variable, UU is output as an array valued chebfun,
-%   where UU(:, k) is the solution at TT(k). For systems, the solution is
-%   returned as a cell array of array valued chebfuns.
+%   For equations of one variable, UU is output as an array-valued CHEBFUN,
+%   where UU(:, k) is the solution at TT(k). For systems, the solution UU is
+%   returned as a CHEBMATRIX with the different variables along the rows, and
+%   time slices along the columns.
 %
 % Example 1: Nonuniform advection
 %     x = chebfun('x', [-1 1]);
@@ -75,8 +76,6 @@ function varargout = pde15s(pdeFun, tt, u0, bc, varargin)
 % http://www.chebfun.org/ for Chebfun information.
 
 % TODO: Syncronise with CHEBOP syntax. (In particular, .lbc, .rbc, and .bc).
-
-% TODO: Document output for systems. CHEBMATRIX? 
 
 global DIFFORDER SYSSIZE
 DIFFORDER = 0;
