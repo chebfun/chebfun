@@ -80,6 +80,8 @@ end
 
 %% Plot:
 
+holdState = ishold;
+
 % Plot the potential function:
 LW = 'linewidth';
 plot(V, 'k', LW, 2, 'jumpline', '-k'), hold on   
@@ -126,6 +128,11 @@ if ( ymax > Vxmin )
 end                                          
 if ( ymax > Vxmax )
     plot(xmax*[1, 1], [ymax Vxmax], 'k', LW, 2)    
+end
+
+if ( ~holdState )
+    % Stop holding:
+    hold off
 end
   
 end                                            
