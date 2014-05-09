@@ -1,15 +1,30 @@
 function [u, dampingInfo] = dampingErrorBased(N, u, rhs, delta, L, disc, dampingInfo)
 %DAMPINGERRORBASED     Finds the step-size for damped Newton method.
-%   DAMPINGERRORBASED finds the step-size lambda used in the damped Newton
-%   iteration. It is affine invariant, and error controlled, that is, it seeks
-%   to minimize the error in the SOLUTION SPACE, not the RESIDUAL SPACE.
 %
-%   For further details, see
-%       [1] P. Deuflhard. Newton Methods for Nonlinear Problems. Springer, 2004.
+% Here
+%   N:      Nonlinear CHEBOP
+%   u:      Current guess of the solution of the BVP specified by N
+%   rhs:    Current right-hand side of the differential equation
+%   delta:  Current Newton corrections
+%   L:      A LINOP, that is the linearization of N around U
+%   disc:   The CHEBDISCRETIZATION object arising from L
+%   rhs:    Right hand side of ODE
 %
-%       [2] A. Birkisson. Numerical Solution of Nonlinear Boundary Value
+% Furthermore, the method takes in as an argument the MATLAB struct
+% DAMPINGINFO. The fields of the struct are as follows:
+%   
+%   TODO: List the fields
+%
+% DAMPINGERRORBASED finds the step-size lambda used in the damped Newton
+% iteration. It is affine invariant, and error controlled, that is, it seeks
+% to minimize the error in the SOLUTION SPACE, not the RESIDUAL SPACE.
+%
+% For further details, see
+%   [1] P. Deuflhard. Newton Methods for Nonlinear Problems. Springer, 2004.
+%
+%   [2] A. Birkisson. Numerical Solution of Nonlinear Boundary Value
 %       Problems for Ordinary Differential Equations in the Continuous
-%       Framework. Dphil Thesis, Oxford, 2013.
+%       Framework. DPhil Thesis, Oxford, 2013.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -40,7 +55,7 @@ initPrediction = 1;
 % Iterate until we find a step-size lambda that we accept:
 while ( ~accept )
     
-    % Check whether we want to predict a value for lambda. Can only do so once
+    % Check whether we want to predict a value for LAMBDA. Can only do so once
     % we have taken one Newton step, as it is based on information obtained from
     % the previous step
     if newtonCounter > 0 && initPrediction
@@ -88,39 +103,36 @@ while ( ~accept )
     % the operator, but with a new right-hand side.
     [deltaBar, disc] = linsolve(L, deResFunTrial, disc);
     
-    % TODO: Why are we doing this twice?
-    
     % We had two output arguments above, need to negate deltaBar
-    %             deltaBar = -deltaBar;
-    deltaBar = -(L\deResFunTrial);    % Old fashion, to be removed
-    % TODO: We also need to update the values of the RHS for the BCs
-    % here!
+    deltaBar = -deltaBar;    
     
-    
-    
+    % TODO: Do we need to update the values of the RHS for the BCs here?
+      
     % The norm of the simplified Newton step is used to compute a
-    % contraction factor
+    % contraction factor.
     normDeltaBar = norm(deltaBar);
     
-    % Contraction factor
+    % Contraction factor:
     cFactor = normDeltaBar/normDelta;
     
+    % Correction factor for the step-size:
     muPrime = (.5*normDelta*lambda^2)/...
         (norm(deltaBar-(1-lambda)*delta,'fro'));
     
+    % If we don't observe contraction, decrease LAMBDA
     if cFactor >=1
         lambda = min(muPrime,.5*lambda);
+        % Go back to the start of the loop.
         continue;
     end
     
+    % New potential candidate for LAMBDA
     lambdaPrime = min(1,muPrime);
     
     if lambdaPrime == 1 && normDeltaBar < errTol
         %TODO: We have converged within the damped phase! Do we need to treat
         % this case separately within solvebvpNonlinear?
         u = uTrial + deltaBar;
-%         newtonCounter
-%         terminate = 1;
         giveUp = 0; 
         break
     end
@@ -142,7 +154,7 @@ while ( ~accept )
     giveUp = 0;
 end
 
-% Return uTrial, and update the dampingInfo structur
+% Return UTRIAL, and update the dampingInfo structure
 u = uTrial;
 dampingInfo.lambda = lambda;
 dampingInfo.cFactor = cFactor;

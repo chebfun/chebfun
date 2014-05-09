@@ -1,15 +1,15 @@
 function displayInfoFinal(u, delta, iterNo, errEstDE, errEstBC, displayFig, displayTimer, pref)
 %DISPLAYINFOFINAL
 %
-%   Utility routine for displaying iteration progress in the solve functions. This
-%   method prints out information after Newton iteration finishes.
+%  Utility routine for displaying iteration progress in the solve functions.
+%  This method prints out information after Newton iteration finishes and a plot
+%  of the final solution obtain, if it is specified in the CHEBOPPREF argument
+%  passed to this method that the user wants to see the info/plot.
 %
 % See also: displayInfo
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
-
-% TODO: Document
 
 % Obtain preferences for what we want to show
 display  = pref.display;
@@ -22,11 +22,14 @@ if ( strcmp(display,'iter') || strcmp(display,'final') )
     % ... and print to the command window
     fprintf('%s\n', dashString);
     
+    % How many steps did we need
     if iterNo == 1
         fprintf('Newton''s method converged in 1 iteration\n');
     else
         fprintf('Newton''s method converged in %i iterations.\n',iterNo);
     end
+    
+    % Print info about the final error estimates.
     fprintf(['Final error estimate: %.2e (differential equation) \n' ...
         '%30.2e (boundary conditions). \n\n'], errEstDE, errEstBC);
 end

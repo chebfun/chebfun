@@ -2,7 +2,7 @@ function displayInfoIter(u, delta, iterNo, normDelta, cFactor, lenDelta, lambda,
 %DISPLAYINFOITER
 %
 % Utility routine for displaying iteration progress in the solve functions. This
-% method prints during the Newton iteration.
+% method prints and plots during the Newton iteration.
 %
 % See also: displayInfo
 
@@ -33,6 +33,7 @@ if ( strcmpi(display,'iter') )
 end
 
 % Do we want to show a plot of the initial guess?
+% TODO: Work with specified delays, and plotting = 'pause'
 if ~( strcmpi(plotMode,'off') )
     figure(displayFig);
     subplot(2, 1, 1)

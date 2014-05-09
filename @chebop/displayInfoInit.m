@@ -1,9 +1,13 @@
 function [displayFig, displayTimer] = displayInfoInit(u, pref)
-%DISPLAYINFOITER
+%DISPLAYINFOINIT
 %
 % Utility routine for displaying iteration progress in the solve functions. This
 % method prints out information before the Newton iteration starts.
 %
+% The outputs of this function are:
+%   displayFig:     A handle to the MATLAB figure plots will be drawn on.
+%   displayTimer:   A tic/toc timer, so that we can control the pause between
+%                   plots.
 % See also: displayInfo
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.

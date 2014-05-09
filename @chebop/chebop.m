@@ -85,29 +85,35 @@ classdef (InferiorClasses = {?double}) chebop
 %
 % Example:
 %
-%    N = chebop(-5, 5);  % Constructs an empty CHEBOP on the interval [-5,5]
-%    N.op = @(x, u) 0.01*diff(u, 2) - x.*u;
-%    N.bc = 'dirichlet';
-%    plot(N\1)
+%   N = chebop(-5, 5);  % Constructs an empty CHEBOP on the interval [-5,5]
+%   N.op = @(x, u) 0.01*diff(u, 2) - x.*u;
+%   N.bc = 'dirichlet';
+%   plot(N\1)
 %
 % %% PARAMETER DEPENDENT PROBLEMS: %%
 %
-% TODO: Revisit help text on parameter problems.
-%
-% There is some support for solving systems of equations containing unknown
-% parameters without the need to introduce extra equations into the system. 
+% CHEBOP supports solving systems of equations containing unknown parameters
+% without the need to introduce extra equations into the system. Simply add the
+% unknown parameters as the final variables. 
 %
 % Example:
 %
-    % y'' + x.*y + p = 0, y(-1) = 1, y'(-1) = 1, y(1) = 1 can be solved via
-%    N = chebop(@(x, y, p) diff(y,2) + x.*y + p)
-%    N.lbc = @(y, p) [y - 1 ; diff(y)];
-%    N.rbc = @(y, p) y - 1;
-%    plot(N\0)
+%   % y'' + x.*y + p = 0, y(-1) = 1, y'(-1) = 1, y(1) = 1 can be solved via
+%   N = chebop(@(x, y, p) diff(y,2) + x.*y + p)
+%   N.lbc = @(y, p) [y - 1 ; diff(y)];
+%   N.rbc = @(y, p) y - 1;
+%   plot(N\0)
 %
-% This syntax will work whenever p is not differentiated within N.op, i.e.,
-% something like @(x,y,p) diff(p*diff(y)) will require a second equation
-% explicitly enforcing that diff(p) = 0.
+% Parameters can be positioned at different locations if a double is passed in
+% the CHEBMATRIX input to N.init. 
+%
+% Example:
+%
+%   N = chebop(@(x, p, y) diff(y,2) + x.*y + p)
+%   N.lbc = @(p, y) [y - 1 ; diff(y)];
+%   N.rbc = @(p, y) y - 1;
+%   N.init = [1 ; chebfun(1)];
+%   plot(N\0)
 %
 % See also CHEBOP/MTIMES, CHEBOP/MLDIVIDE, CHEBOPPREF.   
 
@@ -379,11 +385,14 @@ classdef (InferiorClasses = {?double}) chebop
         %   that the guess is of an appropriate form (i.e., CHEBMATRIX rather
         %   than quasimatrix.). See CHEBOP documentation for further details.
         
-            % We're happy with function handles
+            % Did we get a horizontally concatenated initial guess?
             if ( isa(val, 'chebfun') && size(val, 2) > 1 )
                 val = chebmatrix(mat2cell(val).');
-                warning('CHEBFUN:chebop:set.init:vertcat', ...
-                    'Please use vertical concatenation for initial guess.')
+                warning('CHEBFUN:CHEBOP:setInit:vertcat', ...
+                    ['Passing a horizontally concatenated initial guess is ' ...
+                    'deprecated, and might not be supported in future ' ...
+                    'versions of Chebfun. Please use vertical concatenation '...
+                    'for initial guesses.'])
             end
             
             N.init = val;
@@ -422,11 +431,8 @@ classdef (InferiorClasses = {?double}) chebop
     
     %% STATIC HIDDEN METHODS:
         
-    methods ( Static = true, Hidden = true )
+    methods ( Static = true, Access = private )
         % TODO: These should be private methods as well
-        
-        % Convert doubles to CHEBMATRIX objects used internally in CHEBOP.
-        [newRHS, FAIL] = double2chebmatrix(rhs, residual)
         
         % Controls information displayed for Newton iterations
         [displayFig, displayTimer] = displayInfo(mode, varargin);

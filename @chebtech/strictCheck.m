@@ -46,6 +46,11 @@ else
     epslevel = pref.eps;
 end
 
+% Convert scalar epslevel/tolerance inputs into vectors.
+if ( isscalar(epslevel) )
+    epslevel = repmat(epslevel, size(f.vscale));
+end
+
 % Deal with the trivial case:
 if ( n < 2 )  % (Can't be simpler than a constant.)
     cutoff = n;
@@ -64,6 +69,13 @@ elseif ( any(isinf(f.vscale)) )
     return
 end
 
+% If one column of f is the zero function, we will get into trouble further
+% down when we take the absolute value of the coefficients relative to vscale
+% and compute the relative condition number estimate in happinessCheck.  We
+% zero vscales by eps to avoid division by zero.
+ind = f.vscale == 0;
+f.vscale(ind) = eps;
+
 % NaNs are not allowed.
 if ( any(isnan(f.coeffs(:))) )
     error('CHEBFUN:FUN:strictCheck:NaNeval', ...
@@ -73,7 +85,7 @@ end
 % Check for convergence and chop location --------------------------------------
 testLength = min(n, max(5, round((n-1)/8))); 
 ac = bsxfun(@rdivide, abs(f.coeffs), f.vscale);
-f.coeffs(ac < epslevel) = 0;
+f.coeffs(bsxfun(@le, ac, epslevel)) = 0;
 tail = f.coeffs(1:testLength,:);
 if ( ~any(tail(:)) )
     cutoff = n - find(max(f.coeffs, [], 2) > 0, 1, 'first') + 1;

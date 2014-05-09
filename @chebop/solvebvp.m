@@ -17,14 +17,14 @@ function [u, info] = solvebvp(N, rhs, pref, displayInfo)
 %   where each linear problem arising is solved via a spectral/pseudospectral
 %   method.
 %
-%   U = solvebvp(N, RHS, PREF) is the same as above, using the preferences
+%   U = SOLVEBVP(N, RHS, PREF) is the same as above, using the preferences
 %   specified by the CHEBOPPREF variable PREF.
 %
-%   [U, INFO] = solvebvp(N, RHS, PREF) is the same as above, but also returns
+%   [U, INFO] = SOLVEBVP(N, RHS, PREF) is the same as above, but also returns
 %   the MATLAB struct INFO, which contains useful information about the solution
 %   process. The fields of INFO are as follows:
 %       ERROR:    The residual of the differential equation.
-%       ISLINEAR: A vector with for entries, containing linearity information
+%       ISLINEAR: A vector with four entries containing linearity information
 %           for N. More specifically, 
 %               ISLINEAR(1) = 1 if N.OP is linear
 %               ISLINEAR(2) = 1 if N.LBC is linear
@@ -35,12 +35,13 @@ function [u, info] = solvebvp(N, rhs, pref, displayInfo)
 %   TODO: INFO will have more fields once we move into nonlinear problems,
 %   update the list accordingly.
 %
-%   Note that CHEBOP requires the RHS of coupled systems to match the
-%   system, even for scalars right-hand sides, e.g.,
+%   Note that CHEBOP allows the RHS of coupled system of ODEs to be a scalar,
+%   e.g., one can both call
 %       N = chebop(@(x, u, v) [diff(u) + v ; u + diff(v)]);
 %       N.bc = @(x, u, v) [u(-1) ; v(1)];
 %       uv = solvebvp(N, 0);
-%   is not an accepted syntax.
+%   and
+%       uv = solvebvp(N, [0; 0]);
 %
 % See also: CHEBOP, CHEBOP/MLDIVIDE, CHEBOPPREF, CHEBOP/SOLVEBVPLINEAR, 
 %   CHEBOP/SOLVEBVPNONLINEAR, LINOP/MLDIVIDE.
@@ -49,7 +50,7 @@ function [u, info] = solvebvp(N, rhs, pref, displayInfo)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Developers note:
-%   U = solvebvp(N, RHS, PREF, DISPLAYINFO) allows passing in a function handle
+%   U = SOLVEBVP(N, RHS, PREF, DISPLAYINFO) allows passing in a function handle
 %   to a displaying method that is called during the damped Newton iteration.
 %   This allows separating the displaying process for regular CHEBOP use and
 %   CHEBGUI. See chebop/displayInfo() and chebgui/displayInfo() for more
@@ -101,36 +102,51 @@ x = chebfun(@(x) x, dom);
 [L, residual, isLinear] = linearize(N, u0, x);
 L.prefs = pref;
 
+% Check the size of the residual (the output the dimensions of the CHEBOP).
+[numRow, numCol] = size(residual);
+
 % If the RHS passed is numerical, cast it to a CHEBMATRIX of the appropriate
 % size before continuing:
 if ( isnumeric(rhs) )
-    try
-        rhs = N.double2chebmatrix(rhs, residual);
-    catch ME
-        if ( strcmp(ME.identifier, 'CHEBFUN:CHEBOP:double2chebmatrix'))
-            error('CHEBFUN:chebop:solvebvp:rhs', ...
-                'RHS does not match output dimensions of operator.');
+    % Check whether dimensions match:
+    if ( ~(all(size(rhs) == [numRow, numCol])) &&  (max(size(rhs)) > 1) )
+        if ( all(size(rhs) == [numCol, numRow]) )
+            warning('CHEBFUN:CHEBOP:solvebvp', ...
+                'Please concatenate RHS of the BVP vertically. Transposing.')
+            rhs = rhs.';
         else
-            rethrow(ME)
+            error('CHEBFUN:CHEBOP:solvebvp:rhs', ...
+               'RHS does not match output dimensions of operator.');
         end
     end
+    
+    % If we get here, we have something compatable, this is a simple way to
+    % convert RHS to a CHEBMATRIX:
+    rhs = rhs + 0*residual;
+    
 elseif ( isa(rhs, 'chebfun') && size(rhs, 2) > 1 )
     rhs = chebmatrix(mat2cell(rhs).');
     warning('CHEBFUN:CHEBOP:solvebvp:vertcat', ...
         'Please use vertical concatenation for RHS ')
 end
+
 % Do the same for the initial guess:
 if ( isnumeric(u0) )
-    try
-        u0 = N.double2chebmatrix(rhs, residual);
-    catch ME
-        if ( strcmp(ME.identifier, 'CHEBFUN:CHEBOP:double2chebmatrix'))
-            error('CHEBFUN:chebop:solvebvp:init', ...
-                'N.init does not match input dimensions of operator.');
+    % Check whether dimensions match:
+    if ( ~all(size(u0) == [numRow, numCol]) )
+        if ( all(size(u0) == [numCol, numRow]) )
+            warning('CHEBFUN:CHEBOP:solvebvp', ...
+                ['Please concatenate the initial guess of the solution for '...
+                'the BVP vertically. Transposing.']);
+            u0 = u0.';
         else
-            rethrow(ME)
+            error('CHEBFUN:CHEBOP:solvebvp:init', ...
+                'Initial guess does not match output dimensions of operator.');
         end
     end
+    
+    % Convert the initial guess to a CHEBMATRIX
+    u0 = u0 + 0*residual;
 end
 
 % Solve:

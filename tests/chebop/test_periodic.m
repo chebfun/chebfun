@@ -30,11 +30,9 @@ x = chebfun('x',d);
 f = [chebfun(0, d) ; cos(x)];
 A.bc = 'periodic';
 uv = mldivide(A, f, pref);
-u = uv{1}; v = uv{2};
 
-trueSoln = [cos(x+3*pi/4), cos(x+pi/4)]/sqrt(2);
-err(2) = norm([u v] - trueSoln);
-
+trueSoln = [cos(x+3*pi/4)/sqrt(2) ; cos(x+pi/4)/sqrt(2)];
+err(2) = norm(uv - trueSoln);
 
 %% Eigenvalue problem:
 
@@ -48,8 +46,27 @@ B.op = @(x, u, v) [v + u ; diff(v)];
 [V, D] = eigs(A, B, 5, 0, pref);
 e = diag(D);
 
-err(3) = norm(real(e) - [1 0 0 1 1].', inf) + ...
-    norm(abs(imag(e)) - [0 1 1 1 1].', inf);
+% Sort the eigenvalues to ensure things will work on all machines. Eigs() does
+% not appear to return the eigenvalues in a consistent way for different
+% machines. We expect five pair of eigenvalues to appear, check whether they are
+% all there
+% `sort(x)` sorts complex values by abs() and then by angle(). In order have
+% consistent sorting, we move all the eigenvalues up into the first quadrant
+% before sorting them.
+[ignored, idx] = sort(real(e));
+e = e(idx);
+
+e12 = e(1:2);
+e35 = e(3:5);
+[ignored, idx] = sort(imag(e12));
+e12 = e12(idx);
+[ignored, idx] = sort(imag(e35));
+e35 = e35(idx);
+
+e = [e12; e35];
+
+err(3) = norm(real(e) - [0 0 1 1 1].', inf) + ...
+    norm(imag(e) - [-1 1 -1 0 1].', inf);
 err(4) = norm(V{1}(pi) - V{1}(pi), inf) + norm(V{2}(pi) - V{2}(pi), inf);
 
 %%
@@ -57,4 +74,3 @@ err(4) = norm(V{1}(pi) - V{1}(pi), inf) + norm(V{2}(pi) - V{2}(pi), inf);
 pass = err < tol;
 
 end
-

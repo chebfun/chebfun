@@ -4,3 +4,5 @@
 *.asv
 
 *.m.orig
+
+logs/

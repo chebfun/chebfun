@@ -68,8 +68,7 @@ if ( nargin < 4 || isempty(flag) )
     flag = 0;
 end
 
-% Convert the linerization variable to cell-array form so that we can create
-% and seed ADCHEBFUN objects:
+% Convert the linerization variable to cell-array form:
 if ( isa(u, 'chebmatrix') )
     u = u.blocks;
 end
@@ -84,10 +83,13 @@ if ( ~iscell(u) )
     u = {u};
 end
 
-% Convert each CHEBFUN object in the cell-array U to an ADCHEBFUN, and seed the
+% Convert each element in the cell-array U to an ADCHEBFUN, and seed the
 % derivative so it'll be of correct dimensions (i.e. correct block-size).
+% Blocks corresponding to functions (i.e., CHEBFUNs) will be square, wheres the
+% derivative blocks of scalars will by 1xINF.
+isFun = ~cellfun(@isnumeric, u);
 for k = 1:numVars
-    u{k} = seed(adchebfun(u{k}, N.domain), k, numVars);
+    u{k} = seed(adchebfun(u{k}, N.domain), k, isFun);
 end
 
 %% Evaluate N.op to get a linearisation of the differential equation:
@@ -119,14 +121,35 @@ L.domain = chebfun.mergeDomains(L.domain, dom);
 
 %% Deal with parameterized problems:
 
-% TODO: This needs to be improved. in particular, if the u is a chebmatrix with
-% double entries, we should seed differently so that linearisation is not
-% necessary.
+% For problems with parameters, the system in L may not be square. This is OK if
+% u0 contains doubles for the parameter entries. If not, we correct for this
+% below by assuming the final few variables represent parameters.
 
-% isd = isDiag(L);
-% L = diagonalise(L, isd);
+[s1, s2] = size(L.blocks);
+numParams = s2 - s1;
+if ( all(isFun) && numParams > 0 )
+    % We've found a paramterised problem, but weren't informed by u0. 
+    
+    % TODO: Do we really want to throw a warning?
+%     % Throw a warning: 
+%     if ( numParams == 1 )
+%         warnStr = 'Assuming final variable is a parameter.';
+%     else
+%         warnStr = ['Assuming final ' int2str(numParams) ' variables are parameters.'];
+%     end
+%     warning('CHEBFUN:chebop:linearize:params', warnStr);
+    
+    % Reseed the final numParam variables as constants and linearize again:
+    u = cellfun(@(b) b.func, u, 'UniformOutput', false);
+    for k = 0:numParams-1
+        u{end-k} = feval(u{end-k}, L.domain(1)); % Convert to a scalar.
+    end
+    [L, res, isLinear] = linearize(N, u, x, flag);
+    return
+end
 
 %% Add BCs
+
 % Initalise an empty LINOPCONSTRAINT.
 BC = linopConstraint();
 
@@ -220,7 +243,7 @@ if ( flag && ~all(isLinear) )
     return
 end
 
-% if ( ~isempty(BC) )
+% if ( ~isempty(BC) && all(isFun) )
 %     % Deal with parameterized problems:
 %     BC.functional = diagonalise(BC.functional, isd);
 % end
@@ -239,31 +262,4 @@ if ( size(bc, 2) > 1 )
         'not be supported in future release.']);
     bc = bc.';
 end
-end
-
-function isd = isDiag(L)
-% Start by assuming operators with zero difforder are diagonal operators:
-isd = ~(L.diffOrder);
-% Manually check these to confirm that they are really diagonal:
-for k = find(isd).'
-    tmp = chebmatrix(L.blocks(k));
-    tmp = matrix(tmp, repmat(5, 1, numel(tmp.domain)-1));
-    if ( norm(diag(diag(tmp))-tmp) > 1e-14 )
-        isd(k) = false;
-    end
-end
-end
-
-function L = diagonalise(L, isd)
-% Multiply the blocks in columns specified by ISD by the unitary CHEBFUN ONE.
-blocks = L.blocks;
-one = chebfun(1, L.domain);
-for k = 1:size(blocks, 2)
-    for j = 1:size(blocks,1);
-        if ( all(isd(:,k)) )
-            blocks{j,k} = blocks{j,k}*one;
-        end
-    end
-end
-L.blocks = blocks;
 end

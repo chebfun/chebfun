@@ -6,7 +6,7 @@ function [L, f, FAIL] = linop(N)
 %   [L, F] = LINOP(N) returns also the affine part F of the linear chebop N such
 %   that L*u + F(x) = N.op(x,u).
 %
-%   [L, F, FAIL] = LINOP(N) will prevent an error from being throw if N is not
+%   [L, F, FAIL] = LINOP(N) will prevent an error from being thrown if N is not
 %   linear, but instead return FAIL = TRUE and L = []. If N is linear, FAIL =
 %   FALSE.
 %
@@ -35,7 +35,7 @@ end
 % because when problems are solved with LINOP backslash, the solution to the
 % problem is the output itself, while in a Newton iteration, we have to add the
 % output of the LINOP solution to the current guess. Thus, flip the signs of the
-% values of L.constraint
+% values of L.constraint.
 L.constraint = flipSigns(L.constraint);
 
 end
