@@ -6,16 +6,16 @@ function varargout = pde15s(varargin)
 %   x) with the initial condition U0 and boundary conditions BC over the time
 %   interval TT.
 %
-%   This method is basically, a wrapper for @CHEBFUN/PDES(). See that file for
+%   This method is basically, a wrapper for @CHEBFUN/PDE15S(). See that file for
 %   further details.
 %
-% See also CHEBFUN/PDE15S
+% See also CHEBFUN/PDE15S, PDESET.
 
-for j = 1:nargin
-    if ( isa(varargin{j}, 'chebmatrix') )
-        varargin{j} = chebfun(varargin{j});
-    end
-end
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. See
+% http://www.chebfun.org/ for Chebfun information.
+
+% Convert a CHEBMATRIX input to a CHEBFUN:
+varargin{3} = chebfun(varargin{3}); % Third input should be the only CHEBMATRIX.
 
 [varargout{1:nargout}] = pde15s(varargin{:});
 
