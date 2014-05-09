@@ -43,19 +43,28 @@ if ( ~isreal(f) || ~isreal(t) )
     t = real(t);
 end
 
+% Remove deprecated input flags:
 k = 1;
-% Remove depricated syntax:
 while k <= numel(varargin)  
     if ( strcmpi(varargin{k}, 'simple') )
         varargin(k) = [];
+        warning('CHEBFUN:waterfall:deprecatedSimple', ...
+                '''simple'' input to WATERFALL is deprecated.');
     elseif ( strcmpi(varargin{k}, 'fill') )
         varargin(k) = [];
+        warning('CHEBFUN:waterfall:deprecatedFill', ...
+                '''fill'' input to WATERFALL is deprecated.');
     elseif ( strcmpi(varargin{k}, 'numpts') )
         varargin(k:k+1) = [];
+        warning('CHEBFUN:waterfall:deprecatedNumpts', ...
+                '''numpts'' input to WATERFALL is deprecated.');
     elseif ( strcmpi(varargin{k}, 'edgecolor') )
         varargin{k} = 'color';        
+        warning('CHEBFUN:waterfall:deprecatedColor', ...
+                ['''edgecolor'' input to WATERFALL is deprecated. ' ...
+                 'Use ''color'' instead.']);
     else
-        k = k+1;
+        k = k + 1;
     end
 end
 
