@@ -352,33 +352,44 @@ if ( isempty(deltaData) )
     return;
 end
 k = 1;
+deltaMarkers = [];
 while ( k <= numel(deltaData) )
     if ( isnumeric(deltaData{k}) && ~isempty(deltaData{k}) )
-        xdelta = deltaData{k};       
-        ydelta = deltaData{k+1};               
-        m = size(xdelta, 1);
-        n = size(xdelta, 2);        
+        xDelta = deltaData{k};       
+        yDelta = deltaData{k+1};               
+        deltaMarkers = [deltaMarkers, {xDelta}, {yDelta}];
+        
+        m = size(xDelta, 1);
+        n = size(xDelta, 2);        
         newxDelta = zeros(3*m + 1, n);        
         newyDelta = zeros(3*m + 1, n);        
-        
-        
+                
         newxDelta(1:3:end, :) = NaN;
-        newxDelta(2:3:end, :) = xdelta;
-        newxDelta(3:3:end, :) = xdelta;
+        newxDelta(2:3:end, :) = xDelta;
+        newxDelta(3:3:end, :) = xDelta;
         
         newyDelta(1:3:end, :) = NaN;
         newyDelta(2:3:end, :) = 0;
-        newyDelta(3:3:end, :) = ydelta;       
+        newyDelta(3:3:end, :) = yDelta;       
         
         deltaData(k) = {newxDelta};        
         deltaData(k+1) = {newyDelta};
         k = k + 2;
     else
-        k = k + 1;
+        deltaMarkers = [deltaMarkers, deltaData(k)];
+        k = k + 1;        
     end
 end
+if ( ~isnumeric(deltaData{1}) )
+    deltaData = {[]};
+end
+
+if ( ~isnumeric(deltaMarkers{1}) )
+    deltaMarkers = {[]};
+end
+
 h1 = plot(deltaData{:});
-h2 = [];
+h2 = plot(deltaMarkers{:});
 h3 = [];
 end
 
