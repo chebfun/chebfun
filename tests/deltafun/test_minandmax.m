@@ -1,4 +1,4 @@
-% Test file for @deltafun/cumsum.m
+% Test file for @deltafun/test_minandmax.m
 
 function pass = test_minandmax(pref)
 
