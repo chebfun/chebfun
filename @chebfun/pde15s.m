@@ -76,6 +76,8 @@ function varargout = pde15s(pdeFun, tt, u0, bc, varargin)
 
 % TODO: Syncronise with CHEBOP syntax. (In particular, .lbc, .rbc, and .bc).
 
+% TODO: Document output for systems. CHEBMATRIX? 
+
 global DIFFORDER SYSSIZE
 DIFFORDER = 0;
 SYSSIZE = 0;
@@ -527,9 +529,15 @@ end
 
 % If we only had one dependent variable, return an array valued CHEBFUN instead
 % of a QUASIMATRIX.
-% TODO: Determine what we want to output for systems of equations. CHEBMATRIX?
 if ( SYSSIZE == 1 )
     uOut = horzcat(uOut{:});
+else
+    % TODO: Determine what output we want for systems of equations. CHEBMATRIX?
+    blocks = cell(SYSSIZE, numel(uOut));
+    for k = 1:SYSSIZE
+        blocks(k,:) = cellfun(@(u) extractColumns(u, k), uOut, 'UniformOutput', false);
+    end
+    uOut = chebmatrix(blocks); % CHEBMATRIX
 end
 
 switch nargout
