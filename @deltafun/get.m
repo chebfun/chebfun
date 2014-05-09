@@ -3,9 +3,15 @@ function out = get(f, prop)
 %   P = GET(F, PROP) returns the property P specified in the string PROP from
 %   the DELTAFUN object F. Valid entries for the string PROP are:
 %
-%       'LOCATION'    - Location of the delta functions 
-%       'DELTAMAG'    - Magnitude of the delta functions
-%       'FUNPART'     - The smooth function contained in DELTAFUN.
+%       'LOCATION'     - Location of the delta functions 
+%       'DELTAMAG'     - Magnitude of the delta functions
+%       'FUNPART'      - The smooth function contained in DELTAFUN.
+%       'LVAL', 'RVAL' - Evaluate a DELTAFUN at an end point of the domain.
+%                        If there is no delta function at the left or the right 
+%                        end point, this is equivalent to evaluating the funPart 
+%                        at the left or right end, otherwise, appropriately, 
+%                        a  signed infinitey or a NaN is returned. 
+%                        See DELTAFUN/FEVAL for fruther help on this.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -15,19 +21,20 @@ switch prop
         % Allow access to any of the properties of F via GET:
         out = f.(prop);
         
-    case fieldnames(f.funPart)
-        % Access to any of the properties of the smooth part of F:
-        out = f.funPart.(prop);
+    case 'lval'        
+        % Evaluate at the lefthand end of the domain:
+        dom = f.domain;
+        out = feval(f, dom(1));
         
-    case fieldnames(f.funPart.onefun)
-        out = f.funPart.onefun.(prop); 
-        
-    case {'lval', 'rval', 'points', 'vscale', 'epslevel'}
-        out = get(f.funPart, prop);            
+    case 'rval'
+        % Evaluate at the righthand end of the domain:
+        dom = f.domain;
+        out = feval(f, dom(end));
         
     otherwise
-        error('DELTAFUN:GET:propname', ...
-              'Unknown property name "%s" for object of type DELTAFUN.', prop);
+        % Delegate to the get method of funPart. All error handling will also be
+        % done here:
+        out = get(f.funPart, prop);                    
 end
 
 end
