@@ -36,6 +36,8 @@ switch prop
             out = get(f.funPart, prop);
         end                       
     otherwise
+        % Delegate to the get method of funPart. All error handling will also be
+        % done here:
         out = get(f.funPart, prop);                    
 end
 
