@@ -44,11 +44,12 @@ Bs = chebmatrix(s);
 
 %%
 % Check composition with the derivatives
+s = cos(x+pi/4).*abs(x)+.5;
 D = operatorBlock.diff(s.domain);
 Al = Ll*D;
 Ar = Lr*D;
-cpl = sqrt(2)/2;
-cpr = -sqrt(2)/2;
+cpl = -sqrt(2)/2;
+cpr = sqrt(2)/2;
 pass(4) = abs(Al*s-cpl) < 1e3*tol;
 pass(5) = abs(Ar*s-cpr) < 1e3*tol;
 
