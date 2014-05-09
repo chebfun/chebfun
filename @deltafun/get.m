@@ -6,6 +6,13 @@ function out = get(f, prop)
 %       'LOCATION'    - Location of the delta functions 
 %       'DELTAMAG'    - Magnitude of the delta functions
 %       'FUNPART'     - The smooth function contained in DELTAFUN.
+%       'LVAL'        - Evaluate a DELTAFUN at the left end point of the domain.
+%       'RVAL'        - Evaluate a DELTAFUN at the right end point of the domain.
+%                       If there is no DELTAFUN at the left or right end point,
+%                       this is equivalent to evaluating the funPart at the left
+%                       or right end, otherwise, appropriately, a signed
+%                       infinitey or a NaN is returned. See DELTAFUN/FEVAL for
+%                       fruther help on this.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -15,26 +22,16 @@ switch prop
         % Allow access to any of the properties of F via GET:
         out = f.(prop);
         
-    case {'lval'}        
-        % If there is a delta functions at the left end point, we weil either
-        % get an Inf or a NaN:
+    case 'lval'        
+        % Evaluate at the lefthand end of the domain:
         dom = f.domain;
         out = feval(f, dom(1));
-        if ( ~isinf(out) && ~isnan(out) )
-            % If there is no delta function at the left end, call the property
-            % of the funPart:
-            out = get(f.funPart, prop);
-        end
-    case {'rval'}
-        % If there is a delta functions at the right end point, we weil either
-        % get an Inf or a NaN:
+        
+    case 'rval'
+        % Evaluate at the righthand end of the domain:
         dom = f.domain;
-        out = feval(f, dom(2));
-        if ( ~isinf(out) && ~isnan(out) )
-            % If there is no delta function at the right end, call the property
-            % of the funPart:
-            out = get(f.funPart, prop);
-        end                       
+        out = feval(f, dom(end));
+        
     otherwise
         % Delegate to the get method of funPart. All error handling will also be
         % done here:

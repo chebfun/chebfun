@@ -1,7 +1,9 @@
 function val = feval(f, x)
 %FEVAL   Evaluate a DELTAFUN.
 %   FEVAL(F, X) evaluates the DELTAFUN F at the given points X. If the point of
-%   evaluation has a non-trivial delta function, NaN is returned.
+%   evaluation has a non-trivial delta function but no higer order delta 
+%   functions, a signed infinity is returned. If howerver, there are higher
+%   order delta functions present as well, a NaN is returned.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org for Chebfun information.
