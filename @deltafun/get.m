@@ -3,16 +3,15 @@ function out = get(f, prop)
 %   P = GET(F, PROP) returns the property P specified in the string PROP from
 %   the DELTAFUN object F. Valid entries for the string PROP are:
 %
-%       'LOCATION'    - Location of the delta functions 
-%       'DELTAMAG'    - Magnitude of the delta functions
-%       'FUNPART'     - The smooth function contained in DELTAFUN.
-%       'LVAL'        - Evaluate a DELTAFUN at the left end point of the domain.
-%       'RVAL'        - Evaluate a DELTAFUN at the right end point of the domain.
-%                       If there is no DELTAFUN at the left or right end point,
-%                       this is equivalent to evaluating the funPart at the left
-%                       or right end, otherwise, appropriately, a signed
-%                       infinitey or a NaN is returned. See DELTAFUN/FEVAL for
-%                       fruther help on this.
+%       'LOCATION'     - Location of the delta functions 
+%       'DELTAMAG'     - Magnitude of the delta functions
+%       'FUNPART'      - The smooth function contained in DELTAFUN.
+%       'LVAL', 'RVAL' - Evaluate a DELTAFUN at an end point of the domain.
+%                        If there is no delta function at the left or the right 
+%                        end point, this is equivalent to evaluating the funPart 
+%                        at the left or right end, otherwise, appropriately, 
+%                        a  signed infinitey or a NaN is returned. 
+%                        See DELTAFUN/FEVAL for fruther help on this.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
