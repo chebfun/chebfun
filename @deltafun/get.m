@@ -15,15 +15,6 @@ switch prop
         % Allow access to any of the properties of F via GET:
         out = f.(prop);
         
-    case fieldnames(f.funPart)
-        % Access to any of the properties of the smooth part of F:
-        out = f.funPart.(prop);
-        
-    case fieldnames(f.funPart.onefun)
-        out = f.funPart.onefun.(prop); 
-        
-    case {'points', 'vscale', 'epslevel'}
-        out = get(f.funPart, prop);            
     case {'lval'}        
         % If there is a delta functions at the left end point, we weil either
         % get an Inf or a NaN:
@@ -45,8 +36,7 @@ switch prop
             out = get(f.funPart, prop);
         end                       
     otherwise
-        error('DELTAFUN:GET:propname', ...
-              'Unknown property name "%s" for object of type DELTAFUN.', prop);
+        out = get(f.funPart, prop);                    
 end
 
 end
