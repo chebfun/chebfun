@@ -1,6 +1,10 @@
-function [displayFig, displayTimer] = displayInfoInit(u, pref)
+function [displayFig, displayTimer] = displayInfoInit(u0, pref)
 %DISPLAYINFOINIT   Utility routine for displaying linear solve progress.
-% This method prints out information before the Newton iteration starts.
+% [displayFig, displayTimer] = displayInfoInit(U0, PREF) prints out information
+% before the Newton iteration starts. In particular if PREF.display = true it
+% prints the header information for subsequent calls to DISPLAYINFOITER. If
+% PREF.plotting = true, it plots the initial guess, U0.
+%
 % The outputs of this function are:
 %   displayFig:     A handle to the MATLAB figure plots will be drawn on.
 %   displayTimer:   A tic/toc timer, so that we can control the pause between
@@ -10,8 +14,6 @@ function [displayFig, displayTimer] = displayInfoInit(u, pref)
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
-
-% TODO: Document inputs.
 
 % Obtain preferences for what we want to show
 display  = pref.display;
@@ -37,7 +39,7 @@ end
 % Do we want to show a plot of the initial guess?
 if ( ~strcmpi(plotMode, 'off') )
     displayFig = figure('name', 'BVP solver convergence');
-    plot(chebfun(u), '.-'), 
+    plot(u0, '.-'), 
     title('Initial guess of solution', 'Fontsize', 12)
     drawnow
     

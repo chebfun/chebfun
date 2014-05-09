@@ -1,20 +1,31 @@
 function [u, dampingInfo] = dampingErrorBased(N, u, rhs, delta, L, disc, dampingInfo)
-%DAMPINGERRORBASED   Find the step-size for damped Newton method.
+%DAMPINGERRORBASED   Find the next step for damped Newton method.
 %   DAMPINGERRORBASED finds the step-size lambda used in the damped Newton
 %   iteration. It is affine invariant, and error controlled, that is, it seeks
 %   to minimize the error in the SOLUTION SPACE, not the RESIDUAL SPACE.
 %
-%   Here
+%   [V, DAMPINGINFO] = DAMPINGERRORBASED(N, U, RHS, DELTA, L, DISC, DAMPINGINFO)
+%   where
 %    N:      Nonlinear CHEBOP
-%    u:      Current guess of the solution of the BVP specified by N
-%    rhs:    Current right-hand side of the differential equation
-%    delta:  Current Newton corrections
+%    U:      Current guess of the solution of the BVP specified by N
+%    RHS:    Current right-hand side of the differential equation
+%    DELTA:  Current Newton corrections
 %    L:      A LINOP, that is the linearization of N around U
-%    disc:   The CHEBDISCRETIZATION object arising from L
-%    rhs:    Right hand side of ODE
+%    DISC:   The CHEBDISCRETIZATION object arising from L
+%    RHS:    Right hand side of ODE
+%    V:      The new solution
 %
-%   Furthermore, the method takes in as an argument the MATLAB struct
-%   DAMPINGINFO. The fields of the struct are as follows:
+%   Furthermore, the method takes in and returns the MATLAB struct DAMPINGINFO.
+%   The fields of the struct are as follows:
+%
+%    errTol =       Description.
+%    lambda =       Description.
+%    lambdaMin =    Description. 
+%    newtonCounter: Description.
+%    normDelta:     Description.
+%    normDeltaBar:  Description.
+%    normDeltaOld:  Description.
+%    deltaBar:      Description.
 %   
 %   For further details, see
 %    [1] P. Deuflhard. Newton Methods for Nonlinear Problems. Springer, 2004.
@@ -26,8 +37,7 @@ function [u, dampingInfo] = dampingErrorBased(N, u, rhs, delta, L, disc, damping
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TODO: Document calling sequence.
-% TODO: List the fields
+% TODO: Describe the fields
 
 % Extract info from the dampingInfo struct
 errTol =        dampingInfo.errTol;
@@ -125,7 +135,7 @@ while ( ~accept )
     if ( lambdaPrime == 1 && normDeltaBar < errTol )
         % TODO: We have converged within the damped phase! 
         % Do we need to treat this case separately within solvebvpNonlinear?
-        u = uTrial + deltaBar;
+        u = uTrial + deltaBar; %#ok<NASGU>
         giveUp = 0; 
         break
     end
@@ -145,6 +155,7 @@ while ( ~accept )
     % to keep up the good work!
     accept = 1;
     giveUp = 0;
+    
 end
 
 % Return UTRIAL:

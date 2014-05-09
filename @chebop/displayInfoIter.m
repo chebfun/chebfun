@@ -1,20 +1,21 @@
-function displayTimer = displayInfoIter(u, delta, iterNo, normDelta, cFactor, lenDelta, lambda, lenu, displayFig, displayTimer, pref)
-%DISPLAYINFOITER
+function displayTimer = displayInfoIter(u, delta, iterNo, normDelta, cFactor, ...
+    lenDelta, lambda, lenu, displayFig, displayTimer, pref)
+%DISPLAYINFOITER   Utility routine for displaying nonlinear iteration progress.
+% This method prints and plots during the Newton iteration.
 %
-% Utility routine for displaying iteration progress in the solve functions. This
-% method prints and plots during the Newton iteration.
-%
-% See also: displayInfo
+% See also: DISPLAYINFO.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+% TODO: Document inputs / outputs.
 
 % Obtain preferences for what we want to show
 display  = pref.display;
 plotMode = pref.plotting;
 
 % Do we want to print to the command window?
-if ( strcmpi(display,'iter') )
+if ( strcmpi(display, 'iter') )
     
     % Create a string with information about the convergence. Want a slightly
     % neater output if we are taking a full step.
@@ -26,38 +27,38 @@ if ( strcmpi(display,'iter') )
             iterNo, normDelta, cFactor, lambda, lenDelta, lenu);
     end
     
-    % Print to the command window
+    % Print to the command window:
     fprintf(iterString);
     fprintf('\n');
     
 end
 
 % Do we want to show a plot of the initial guess?
-if ~( strcmpi(plotMode,'off') )
+if ( ~strcmpi(plotMode, 'off') )
     
     % Do we need to pause?
     if ( strcmpi(plotMode, 'pause') )
         pause
     elseif ( isnumeric(plotMode) )
-        % Specified a numerical value for the pause
+        % Specified a numerical value for the pause:
         pause( plotMode - toc(displayTimer) )
     end
     
-    % Set focus on the correct figure
+    % Set focus on the correct figure:
     figure(displayFig);
     
-    % Plot current solution
+    % Plot current solution;
     subplot(2, 1, 1)
     plot(chebfun(u), '.-')
     title('Current solution', 'Fontsize', 12)
     
-    % Plot current correction
+    % Plot current correction:
     subplot(2, 1, 2)
     plot(chebfun(delta),'.-')
     title('Current correction step', 'Fontsize', 12)
     
     drawnow
 
-    % Restart the timer
+    % Restart the timer:
     displayTimer = tic;
 end
