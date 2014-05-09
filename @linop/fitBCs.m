@@ -39,6 +39,9 @@ end
 % We fit a polynomial of degree the maximum degree required for any component to
 % every component. This could actually lead to unnecessary degrees of freedom,
 % see issue #301 on Github. AB, 30/04/14.
+% TODO: Here, we are artificially fixing the degree, which we shouldn't need to
+% do.
+polyDegree = 2;
 polyDegree = max(max(polyDegree), 1);
 % We need one dim entry for each subinterval.
 dim = repmat(polyDegree(1), 1, numInts);
