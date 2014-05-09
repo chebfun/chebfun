@@ -5,6 +5,9 @@ function pass = test_feval(pref)
 if ( nargin < 1 )
     pref = chebfunpref();
 end
+
+seedRNG(1337)
+
 %%
 f = bndfun(@sin);
 d = deltafun(f, 1,0);
