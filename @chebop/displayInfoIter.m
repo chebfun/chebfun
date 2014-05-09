@@ -33,6 +33,7 @@ if ( strcmpi(display,'iter') )
 end
 
 % Do we want to show a plot of the initial guess?
+% TODO: Work with specified delays, and plotting = 'pause'
 if ~( strcmpi(plotMode,'off') )
     figure(displayFig);
     subplot(2, 1, 1)

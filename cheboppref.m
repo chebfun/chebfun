@@ -47,6 +47,37 @@ classdef cheboppref < chebpref
 %     finished. If 'iter', information is printed at every Newton step. If
 %     'off', no information is printed.
 %
+%   errTol                     - Error tolerance
+%     [1e-10]
+%
+%     The termination criteria for the Newton iteration. The Newton iteration is
+%     considered to have converged if the error estimate it computes is less
+%     than the value of errTol.
+%
+%   lambdaMin                   - Minimum allowed step-size
+%     [1e-6]
+%
+%     The value of lambdaMin determines the minimum allowed step-size that the
+%     damped Newton iteration is allowed to take.
+%
+%   maxIter                     - Maximum number of Newton steps
+%     [1e-6]
+%
+%   The maximum number of steps that the (damped) Newton iteration is allowed to
+%   take, before it is considered to be non-convergent.
+%
+%   plotting                    - Plotting of intermediate Newton steps
+%     DELAY
+%     'on'
+%     ['off']
+%     'pause'
+%
+%   If plotting = 'on', the current iterate in the Newton solution is plotted at
+%   every step, as well as the current Newton correction. If plotting = DELAY,
+%   where DELAY has a numerical value, the iteration is paused and the plots are
+%   shown for the time DELAY. If plotting = 'pause', the iteration is paused and
+%   the plots are shown until the user presses a button. If plotting = 'off', no
+%   plots are shown during the Newton iteration.
 %
 % The default values for any of these preferences may be globally overridden
 % using CHEBOPPREF.SETDEFAULTS(); see the documentation for that function for
