@@ -432,8 +432,7 @@ classdef (InferiorClasses = {?double}) chebop
     %% STATIC HIDDEN METHODS:
         
     methods ( Static = true, Access = private )
-        % TODO: These should be private methods as well
-        
+
         % Controls information displayed for Newton iterations
         [displayFig, displayTimer] = displayInfo(mode, varargin);
         
@@ -445,8 +444,8 @@ classdef (InferiorClasses = {?double}) chebop
         [displayFig, displayTimer] = displayInfoInit(u,pref);
         
         % Display during Newton iteration.        
-        displayInfoIter(u, delta, iterNo, normdu, cFactor, errEst, lendu, ...
-            lambda, lenu, displayFig, displayTimer, pref);
+        displayTimer = displayInfoIter(u, delta, iterNo, normdu, cFactor, ...
+            errEst, lendu, lambda, lenu, displayFig, displayTimer, pref);
         
         % Display special information for linear problems
         displayInfoLinear(u, normRes, pref)

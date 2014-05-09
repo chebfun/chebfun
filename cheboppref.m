@@ -75,9 +75,9 @@ classdef cheboppref < chebpref
 %   If plotting = 'on', the current iterate in the Newton solution is plotted at
 %   every step, as well as the current Newton correction. If plotting = DELAY,
 %   where DELAY has a numerical value, the iteration is paused and the plots are
-%   shown for the time DELAY. If plotting = 'pause', the iteration is paused and
-%   the plots are shown until the user presses a button. If plotting = 'off', no
-%   plots are shown during the Newton iteration.
+%   shown for the time DELAY seconds. If plotting = 'pause', the iteration is
+%   paused and the plots are shown until the user presses a button. If plotting
+%   = 'off', no plots are shown during the Newton iteration.
 %
 % The default values for any of these preferences may be globally overridden
 % using CHEBOPPREF.SETDEFAULTS(); see the documentation for that function for
