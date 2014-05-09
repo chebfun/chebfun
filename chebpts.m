@@ -21,7 +21,7 @@ function [x, w, v] = chebpts(n, dom, type)
 %
 %   [1] Jarg Waldvogel, "Fast construction of the Fejer and Clenshaw-Curtis
 %   quadrature rules", BIT Numerical Mathematics, 46, (2006), pp 195-202. 
-
+%
 % See also LEGPTS, JACPTS, LAGPTS, and HERMPTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
@@ -33,12 +33,12 @@ if ( nargin == 2 )
         type = dom;
         dom = chebfunpref().domain;
     else
-        type = chebtech.techPref().gridType;
+        type = 2;
     end
 end
 if ( nargin == 1 )
     dom = chebfunpref().domain;
-    type = chebtech.techPref().gridType;
+    type = 2;
 end
 
 % Verify that the number of points requested and the domains match:
