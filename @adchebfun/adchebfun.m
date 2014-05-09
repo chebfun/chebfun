@@ -911,7 +911,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
         
         function f = plus(f, g)
-            % +     Addition of ADCHEBFUN objects
+            %+     Addition of ADCHEBFUN objects
             
             % If F is not an ADCHEBFUN, we know G is, so add to the CHEBFUN part
             % of G.
@@ -1056,13 +1056,42 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         
         function u = seed(u, k, v)
             %SEED   Seed the derivative of an ADCHEBFUN
+            %
             %   U = SEED(U, K, V) reseeds the derivative of the ADCHEBFUN U, so
-            %   that it consist of numel(V) blocks. All blocks in the derivative
-            %   of U, except the Kth one, will be either the zero operator or
-            %   zero function on the domain of U. The Kth block will be the
-            %   identity operator of identity function on the domain of U.
-            %   if V(j) == TRUE, then the jth block is an operator, otherwise it
-            %   is a function.
+            %   that it consist of numel(V) blocks. See below for further
+            %   discussion on what form the resulting derivative will be.
+            %
+            %   The most common use of this method is within CHEBOP/LINEARIZE().
+            %   Parameter dependent problems require special consideration in
+            %   Chebfun. The Frechet derivative of a function with respect to a
+            %   parameter is a CHEBFUN, not an OPERATORBLOCK. To see why, think
+            %   of differentiating the function
+            %       f = lambda*exp(u)
+            %   with respect to first the Inf x 1 CHEBFUN u, then the 1 x 1
+            %   parameter lambda. 
+            %
+            %   In the first case, the derivative is an Inf x Inf operator (the
+            %   multiplication operator v |-> exp(u)v). Thus, the derivative
+            %   will be represented as an OPERATORBLOCK.
+            %
+            %   In the second case, the derivative is the Inf x 1 function u.
+            %   Thus, the derivative will be represented as a CHEBFUN.
+            %
+            %   By calling U = SEED(U, K, V), all blocks in the derivative of U,
+            %   except the Kth one, will be either the zero operator or zero
+            %   function on the interval U is defined on.
+            %
+            %   The vector variable V determines whether the blocks are CHEBFUN
+            %   or OPERATORBLOCK objects. If V(j) = TRUE, then U.JACOBIAN{j} is
+            %   an OPERATORBLOCK, representing the identity operator if j = k,
+            %   and the zero operator if j != k. If V(j) = FALSE, then
+            %   U.JACOBIAN{j} is a CHEBFUN, representing the identity function
+            %   if j = k, and the zero function if j != k.
+            %
+            %   The convention of V having values of either TRUE or FALSE stems
+            %   from CHEBOP/LINEARIZE(), where the method checks which
+            %   components of a solution are functions, and which components are
+            %   scalars.
             %
             %   U = SEED(U, K, M) where M is a positive integer is shorthand for
             %   U = SEED(U, K, true(1, M));
