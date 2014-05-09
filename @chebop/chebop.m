@@ -85,29 +85,35 @@ classdef (InferiorClasses = {?double}) chebop
 %
 % Example:
 %
-%    N = chebop(-5, 5);  % Constructs an empty CHEBOP on the interval [-5,5]
-%    N.op = @(x, u) 0.01*diff(u, 2) - x.*u;
-%    N.bc = 'dirichlet';
-%    plot(N\1)
+%   N = chebop(-5, 5);  % Constructs an empty CHEBOP on the interval [-5,5]
+%   N.op = @(x, u) 0.01*diff(u, 2) - x.*u;
+%   N.bc = 'dirichlet';
+%   plot(N\1)
 %
 % %% PARAMETER DEPENDENT PROBLEMS: %%
 %
-% TODO: Revisit help text on parameter problems.
-%
-% There is some support for solving systems of equations containing unknown
-% parameters without the need to introduce extra equations into the system. 
+% CHEBOP supports solving systems of equations containing unknown parameters
+% without the need to introduce extra equations into the system. Simply add the
+% unknown parameters as the final variables. 
 %
 % Example:
 %
-    % y'' + x.*y + p = 0, y(-1) = 1, y'(-1) = 1, y(1) = 1 can be solved via
-%    N = chebop(@(x, y, p) diff(y,2) + x.*y + p)
-%    N.lbc = @(y, p) [y - 1 ; diff(y)];
-%    N.rbc = @(y, p) y - 1;
-%    plot(N\0)
+%   % y'' + x.*y + p = 0, y(-1) = 1, y'(-1) = 1, y(1) = 1 can be solved via
+%   N = chebop(@(x, y, p) diff(y,2) + x.*y + p)
+%   N.lbc = @(y, p) [y - 1 ; diff(y)];
+%   N.rbc = @(y, p) y - 1;
+%   plot(N\0)
 %
-% This syntax will work whenever p is not differentiated within N.op, i.e.,
-% something like @(x,y,p) diff(p*diff(y)) will require a second equation
-% explicitly enforcing that diff(p) = 0.
+% Parameters can be positioned at different locations if a double is passed in
+% the CHEBMATRIX input to N.init. 
+%
+% Example:
+%
+%   N = chebop(@(x, p, y) diff(y,2) + x.*y + p)
+%   N.lbc = @(p, y) [y - 1 ; diff(y)];
+%   N.rbc = @(p, y) y - 1;
+%   N.init = [1 ; chebfun(1)];
+%   plot(N\0)
 %
 % See also CHEBOP/MTIMES, CHEBOP/MLDIVIDE, CHEBOPPREF.   
 
