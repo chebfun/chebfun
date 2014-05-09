@@ -126,7 +126,7 @@ g = sqrt(f);
 gVals = feval(g, x);
 gExact = opg(x);
 err = gVals - gExact;
-pass(8) = norm(err, inf) < 1e1*epslevel(g)*vscale(g);
+pass(8) = norm(err, inf) < 1e2*epslevel(g)*vscale(g);
 
 %% Functions on [a inf]:
 
