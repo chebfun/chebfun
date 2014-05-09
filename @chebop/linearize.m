@@ -1,5 +1,5 @@
 function [L, res, isLinear] = linearize(N, u, x, flag)
-%LINEARIZE    Linearize a CHEBOP.
+%LINEARIZE   Linearize a CHEBOP.
 %   L = LINEARIZE(N) returns a LINOP that corresponds to linearising the CHEBOP
 %   N around the zero function on N.DOMAIN. The linop L will both include the
 %   linearised differential equation, as well as linearised boundary conditions
@@ -30,6 +30,8 @@ function [L, res, isLinear] = linearize(N, u, x, flag)
 %       ISLINEAR(2) = 1 if N.LBC is linear, 0 otherwise.
 %       ISLINEAR(3) = 1 if N.RBC is linear, 0 otherwise.
 %       ISLINEAR(4) = 1 if N.BC is linear, 0 otherwise.
+%
+% See also LINOP.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.
