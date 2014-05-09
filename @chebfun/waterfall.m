@@ -6,7 +6,7 @@ function varargout = waterfall(f, varargin)
 %   planes with opaque whitespace or connect edges to zero.
 %
 %   Additional plotting options can also be passed, for example
-%       WATERFALL(U,T,'linewidth',2).
+%       WATERFALL(U, T, 'linewidth', 2).
 %
 % See also PLOT, PLOT3, PLOTDATA.
 
@@ -14,6 +14,8 @@ function varargout = waterfall(f, varargin)
 % See http://www.chebfun.org for Chebfun information.
 
 % [TODO]: Implement plotting of delta functions.
+
+%#ok<*AGROW> % Suppress MLINT warnings
 
 % Deal with an empty input:
 if ( isempty(f) )
@@ -41,6 +43,22 @@ if ( ~isreal(f) || ~isreal(t) )
     t = real(t);
 end
 
+k = 1;
+% Remove depricated syntax:
+while k <= numel(varargin)  
+    if ( strcmpi(varargin{k}, 'simple') )
+        varargin(k) = [];
+    elseif ( strcmpi(varargin{k}, 'fill') )
+        varargin(k) = [];
+    elseif ( strcmpi(varargin{k}, 'numpts') )
+        varargin(k:k+1) = [];
+    elseif ( strcmpi(varargin{k}, 'edgecolor') )
+        varargin{k} = 'color';        
+    else
+        k = k+1;
+    end
+end
+
 % Convert array-valued CHEBFUN to a quasimatrix:
 f = cheb2quasi(f);
 
@@ -51,7 +69,7 @@ styleData = varargin;
 lineData = {}; pointData = {}; jumpData = {};
 for k = 1:numel(f)
     % Get the data from PLOTDATA():
-    newData(k) = plotData(f(k));
+    newData(k) = plotData(f(k)); 
 
     % Get the y data:
     ydl = repmat(t(k), size(newData(k).xLine, 1), 1);
@@ -59,20 +77,20 @@ for k = 1:numel(f)
     ydj = repmat(t(k), size(newData(k).xJumps, 1), 1);
 
     % Append new data:
-    lineData = [lineData, newData(k).xLine, ydl, newData(k).yLine, styleData]; 
-    pointData = [pointData, newData(k).xPoints, ydp, newData(k).yPoints, styleData];
-    jumpData = [jumpData, newData(k).xJumps, ydj, newData(k).yJumps, styleData];
+    lineData = [lineData, newData(k).xLine, ydl, newData(k).yLine,]; 
+    pointData = [pointData, newData(k).xPoints, ydp, newData(k).yPoints];
+    jumpData = [jumpData, newData(k).xJumps, ydj, newData(k).yJumps];
 end
-    
+
 % Plot the lines:
-h1 = plot3(lineData{:});
+h1 = plot3(lineData{:}, styleData{:});
 set(h1, 'Marker', 'none')
 
 % Ensure the plot is held:
 hold on
 
 % Plot the points:
-h2 = plot3(pointData{:});
+h2 = plot3(pointData{:}, styleData{:});
 % Change the style accordingly:
 set(h2, 'LineStyle', 'none')
 
