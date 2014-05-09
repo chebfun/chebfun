@@ -455,6 +455,9 @@ classdef chebfun
         % Supply new definition for a CHEBFUN at a point or set of points.
         f = definePoint(f, s, v)
         
+        % Multiplication operator.
+        M = diag(f)
+
         % Useful information for DISPLAY.
         [name, data] = dispData(f)
         
