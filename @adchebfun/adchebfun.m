@@ -1096,36 +1096,41 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             %   U = SEED(U, K, M) where M is a positive integer is shorthand for
             %   U = SEED(U, K, true(1, M));
 
-            % Parse the inputs:
-            m = numel(v);
-            if ( m == 1 )
-                m = v;
-                v = true(1, m);
-            end
-            
+            % Domain information
             dom = u.domain;
-            I = operatorBlock.eye(dom);
             
-            if ( m == 1 )
-                 % Things are easy if we only have one variable involved.
-                u.jacobian = I;
+            % Do we just want one block?
+            if ( (numel(v) == 1) && (v < 2) )
+                if ( v )
+                    % Initialize as an OPERATORBLOCK
+                    u.jacobian = operatorBlock.eye(dom);
+                else
+                    % Initalize as a CHEBFUN
+                    u.jacobian = chebfun(1, dom);
+                end
+
                 % Reset linearity information
                 u.linearity = 1;
+            
+            else        % Multiple blocks involved
                 
-            else
-
-                % Extract domain information, and construct the identity
-                % operator on the domain.
-                Z = operatorBlock.zeros(dom);
-                z = chebfun(0, dom);
+                % Check whether the shortcut was being used
+                if ( numel(v) == 1 )
+                    m = v;
+                    v = true(1,m);
+                else
+                    % If not, we will be needing numel(v) blocks
+                    m = numel(v);
+                end
 
                 % Populate a cell operators / functions as required.
                 blocks = cell(1, m);
-                blocks(1,v) = {Z};
-                blocks(1,~v) = {z};
+                blocks(1,v) = { operatorBlock.zeros(dom) };
+                blocks(1,~v) = { chebfun(0, dom) };
+                
                 % The Kth block is the identity operator / function.
                 if ( v(k) )
-                    blocks{1,k} = I;
+                    blocks{1,k} = operatorBlock.eye(dom);
                 else
                     blocks{1,k} = chebfun(1, dom);
                 end
@@ -1133,6 +1138,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                 % Convert the cell-array to a CHEBMATRIX and assign to the
                 % derivative field of U:
                 u.jacobian = chebmatrix(blocks);
+                
                 % Initalise linearity information. The output is linear in all
                 % variables.
                 u.linearity = ones(1, m);
