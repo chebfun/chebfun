@@ -28,7 +28,7 @@ end
 
 if ( length(sr) > 1 )
     % Recurse on SUBSREF:
-    varargout = cellfun(@(v) subsref(v, sr(2:end)), varargout);
+    varargout = cellfun(@(v) subsref(v, sr(2:end)), varargout, 'uniformOut', false);
 end
 
 end
