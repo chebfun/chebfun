@@ -1,6 +1,5 @@
 function [u, info] = solvebvpNonlinear(N, rhs, L, u0, res, pref, displayInfo)
-%SOLVEBVPNONLINAR Solve a nonlinear BVP, using damped Newton iteration.
-%
+%SOLVEBVPNONLINAR   Solve a nonlinear BVP, using damped Newton iteration.
 % The inputs to the method are:
 %   N:      Nonlinear CHEBOP
 %   rhs:    A CHEBMATRIX, right hand side of ODE
@@ -14,14 +13,16 @@ function [u, info] = solvebvpNonlinear(N, rhs, L, u0, res, pref, displayInfo)
 %           converged to a solution.
 %   info:   A MATLAB struct with useful information about the Newton iteration.
 %
-% See also: chebop/solvebvp, chebop/dampingErrorBased
+% See also: CHEBOP/SOLVEBVP, CHEBOP/DAMPINGERRORBASED.
 
-% Developers note:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Developer note:
 %   This method also accepts the function handle DISPLAYINFO, that allows
 %   passing in a function handle to a displaying method that is called during
-%   the Newton iteration. This allows separating the displaying process
-%   for regular CHEBOP use and CHEBGUI. See chebop/displayInfo() and
+%   the Newton iteration. This allows separating the displaying process for
+%   regular CHEBOP use and CHEBGUI. See chebop/displayInfo() and
 %   chebgui/displayInfo() for more details.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Store preferences used in the Newton iteration in separate variables
 maxIter  = pref.maxIter;
@@ -30,7 +31,7 @@ errTol   = pref.errTol;
 % Did the user request damped or undamped Newton iteration? Start in mode
 % requested (later on, the code can switch between modes).
 prefDamped = pref.damped;
-damped = prefDamped;
+damped =     prefDamped;
 
 % Assign initial guess to u:
 u = u0;
@@ -38,17 +39,15 @@ u = u0;
 % Initialise the independent variable:
 x = chebfun(@(x) x, N.domain);
 
-% Print info to command window, and/or show plot of progress
+% Print info to command window, and/or show plot of progress:
 [displayFig, displayTimer] = displayInfo('init', u0, pref);
 
 % Counter for number of Newton steps taken.
 newtonCounter = 0;
 
-% Variable that controls whether we want to stop the Newton iteration, either
+% Variables that controls whether we want to stop the Newton iteration, either
 % because we converged, we have reached the maximum number of iterations, or the
-% process has been identified to be nonconvergent. Also initalise related
-% control variables.
-terminate = 0;
+% process has been identified to be nonconvergent.
 success = 0;
 giveUp = 0;
 maxIterExceeded = 0;
@@ -65,18 +64,18 @@ res = res - rhs;
 % Some initializations of the DAMPINGINFO struct. See 
 %   >> help dampingErrorBased 
 % for discussion of this struct. 
-dampingInfo.errTol = errTol;
-dampingInfo.normDeltaOld = [];
-dampingInfo.normDeltaBar = [];
-dampingInfo.lambda = lambda;
-dampingInfo.lambdaMin = pref.lambdaMin;
+dampingInfo.errTol =        errTol;
+dampingInfo.normDeltaOld =  [];
+dampingInfo.normDeltaBar =  [];
+dampingInfo.lambda =        lambda;
+dampingInfo.lambdaMin =     pref.lambdaMin;
 dampingInfo.newtonCounter = newtonCounter;
-dampingInfo.deltaBar = [];
-dampingInfo.damped = damped;
-dampingInfo.x = x;
+dampingInfo.deltaBar =      [];
+dampingInfo.damped =        damped;
+dampingInfo.x =             x;
 
 % Start the Newton iteration!
-while ( ~terminate )
+while ( 1 )
     
     % Compute a Newton update:
     [delta, disc] = linsolve(L, res, pref);
@@ -111,7 +110,8 @@ while ( ~terminate )
         % Is the damping strategy telling us to give up?
         giveUp = dampingInfo.giveUp;
         
-    else    % We are in undamped phase
+    else % We are in undamped phase
+        
         % Update lambda so that we will print correct information in the
         % displayInfo() method.
         lambda = 1;
@@ -125,7 +125,7 @@ while ( ~terminate )
             cFactor = NaN;
         else
             % Compute the contraction factor of this iterate:
-            cFactor = normDelta/normDeltaOld;
+            cFactor = normDelta / normDeltaOld;
             
             if ( cFactor >= 1 )
                 % We're not observing the nice convergence of Newton iteration
@@ -137,8 +137,9 @@ while ( ~terminate )
             
             % Error estimate based on the norm of the update and the contraction
             % factor.
-            errEst =  normDelta/(1-cFactor^2);
+            errEst =  normDelta / (1 - cFactor^2);
         end
+        
     end
     
     % Update counter of Newton steps taken:
@@ -152,37 +153,38 @@ while ( ~terminate )
     normDeltaOld = normDelta;
     dampingInfo.normDeltaOld = normDeltaOld;
     
-    % Grab the blocks of U so that we can print info and evaluate the residual.
-    ub = u.blocks;
+    % Find the maximum length of the current solution:
+    len = max(cellfun(@length, u.blocks(:)));
     
     % Print info to command window, and/or show plot of progress
     displayTimer = displayInfo('iter', u, delta, newtonCounter, normDelta, ...
-        cFactor, length(delta{1}), lambda, length(ub{1}), displayFig, ...
+        cFactor, length(delta{1}), lambda, len, displayFig, ...
         displayTimer, pref);
     
-    if ( errEst < errTol )  % Sweet, we have converged!      
+    if ( errEst < errTol )  
+        % Sweet, we have converged!      
         success = 1;
     elseif ( newtonCounter > maxIter )
+        % Suck, we failed.
         maxIterExceeded = 1;
     else
         % Linearize around current solution:
-        [L, res] = linearize(N, ub, x);
-        
+        [L, res] = linearize(N, u, x);
         % Need to subtract the original RHS from the residual:
         res = res - rhs;
-        
         % Assign the preferences to the linop.
         L.prefs = pref;
     end
     
     % Should we stop the Newton iteration?
     if ( success || maxIterExceeded || giveUp )
-        terminate = 1;
+        break
     end
+    
 end
 
 % Evaluate how far off we are from satisfying the boundary conditions.
-errEstBC = evalBCnorm(N, u, x);
+errEstBC = normBCres(N, u, x);
 
 % Print information depending on why we stopped the Newton iteration.
 if ( success )
@@ -192,31 +194,38 @@ if ( success )
 elseif ( maxIterExceeded )
     warning('CHEBOP:solvebvpNonlinear:maxIter',...
         ['Newton iteration failed. Maximum number of iterations exceeded.\n',...
-        'See help cheboppref for how to increase the number of steps allowed'])
+        'See help cheboppref for how to increase the number of steps allowed.'])
 else
     warning('CHEBOP:solvebvpNonlinear:notConvergent',...
-        ['Newton iteration failed. Newton iteration is not convergent.\n', ...
+        ['Newton iteration failed.\n', ...
         'Please try supplying a better initial guess via the .init field \n' ...
-        'of the chebop'])
+        'of the chebop.'])
 end
 
 % Return useful information in the INFO structure
 info.normDelta = normDeltaVec(1:newtonCounter);
 info.error = errEst;
+
 end
 
-function bcNorm = evalBCnorm(N, u, x)
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function bcNorm = normBCres(N, u, x)
+%NORMBCRES   Compute residual norm of the boundary conditions.
+%   NORMBCRES(N, U, X) returns the combined Frobenius norm of N.lbc(U),
+%   N.rbc(U), and N.bc(X, U).
+
 % TODO: This might be useful elsewehere (i.e. chebop/linearize), do we want to
 % move this into a separate file?
 
-% Initialize
+% Initialize:
 bcNorm = 0;
 
 % Extract the blocks from the CHEBMATRIX U.
 uBlocks = u.blocks;
 
 % Evaluate left boundary condition(s):
-if ~( isempty(N.lbc) )
+if ( ~isempty(N.lbc) )
     % Evaluate.
     lbcU = N.lbc(uBlocks{:});
     
@@ -234,9 +243,8 @@ if ~( isempty(N.lbc) )
     end
 end
 
-
 % Evaluate right boundary condition(s):
-if ~( isempty(N.rbc) )
+if ( ~isempty(N.rbc) )
     % Evaluate.
     rbcU = N.rbc(uBlocks{:});
     
@@ -249,18 +257,16 @@ if ~( isempty(N.rbc) )
             % Obtain the kth element of the CHEBMATRIX
             rbcUk = rbcU{k};
             % Evaluate the function at the left endpoint
-            bcNorm = bcNorm + feval(rbcUk, N.domain(1))^2;
+            bcNorm = bcNorm + feval(rbcUk, N.domain(end))^2;
         end
     end
 end
-
 
 % Evaluate and linearise the remaining constraints:
 if ( ~isempty(N.bc) )
     % Evaluate. The output, BCU, will be a vector.
     bcU = N.bc(x, uBlocks{:});
-    
-    bcNorm = bcNorm + sum(norm(bcU).^2);
+    bcNorm = bcNorm + norm(bcU, 2).^2;
 end
 
 % Return the square-root

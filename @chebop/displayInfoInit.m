@@ -1,17 +1,19 @@
-function [displayFig, displayTimer] = displayInfoInit(u, pref)
-%DISPLAYINFOINIT
-%
-% Utility routine for displaying iteration progress in the solve functions. This
-% method prints out information before the Newton iteration starts.
+function [displayFig, displayTimer] = displayInfoInit(u0, pref)
+%DISPLAYINFOINIT   Utility routine for displaying linear solve progress.
+% [displayFig, displayTimer] = displayInfoInit(U0, PREF) prints out information
+% before the Newton iteration starts. In particular if PREF.display = true it
+% prints the header information for subsequent calls to DISPLAYINFOITER. If
+% PREF.plotting = true, it plots the initial guess, U0.
 %
 % The outputs of this function are:
 %   displayFig:     A handle to the MATLAB figure plots will be drawn on.
 %   displayTimer:   A tic/toc timer, so that we can control the pause between
 %                   plots.
-% See also: displayInfo
+%
+% See also: DISAPLYINFO.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Obtain preferences for what we want to show
 display  = pref.display;
@@ -35,21 +37,25 @@ if ( strcmpi(display, 'iter') )
 end
 
 % Do we want to show a plot of the initial guess?
-if ~( strcmpi(plotMode, 'off') )
-    displayFig = figure('name','BVP solver convergence');
-    plot(chebfun(u), '.-'), 
+if ( ~strcmpi(plotMode, 'off') )
+    displayFig = figure('name', 'BVP solver convergence');
+    plot(u0, '.-'), 
     title('Initial guess of solution', 'Fontsize', 12)
-    
     drawnow
+    
     % Do we need to pause?
     if ( strcmpi(plotMode, 'pause') )
         pause
     end
+    
 else
     % If we did not want to plot, we return an empty output instead of a
     % graphics handle.
     displayFig = [];
+    
 end
 
 % Start a timer, which is used to control the pause between successive pauses
 displayTimer = tic;
+
+end
