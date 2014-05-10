@@ -1,5 +1,6 @@
 function [u, dampingInfo] = dampingErrorBased(N, u, rhs, delta, L, disc, dampingInfo)
-%DAMPINGERRORBASED     Finds the step-size for damped Newton method.
+%DAMPINGERRORBASED     Finds the step-size for damped Newton method, and returns
+%                      the damped step.
 %
 % Here
 %   N:      Nonlinear CHEBOP
@@ -13,11 +14,21 @@ function [u, dampingInfo] = dampingErrorBased(N, u, rhs, delta, L, disc, damping
 % Furthermore, the method takes in as an argument the MATLAB struct
 % DAMPINGINFO. The fields of the struct are as follows:
 %   
-%   TODO: List the fields
+%   errTol:         Error tolerance, used as termination criterion for Newton.
+%   lambda:         Previous step-size of the damped iteration.
+%   lambdaMin:      Minimum allowed step-size in the Newton iteration.
+%   newtonCounter:  Number of Newton steps that have been taken.
+%   normDelta:      Norm of the current Newton correction.
+%   normDeltaBar:   Norm of previous simplified Newton step.
+%   normDeltaOld:   Norm of previous Newton correction.
+%   deltaBar:       Previous simplified Newton step.
+%   x:              The independent variable on the interval.
 %
 % DAMPINGERRORBASED finds the step-size lambda used in the damped Newton
 % iteration. It is affine invariant, and error controlled, that is, it seeks
-% to minimize the error in the SOLUTION SPACE, not the RESIDUAL SPACE.
+% to minimize the error in the SOLUTION SPACE, not the RESIDUAL SPACE. It
+% employs a predictor-corrector strategy, as further described in the references
+% below.
 %
 % For further details, see
 %   [1] P. Deuflhard. Newton Methods for Nonlinear Problems. Springer, 2004.
@@ -29,8 +40,6 @@ function [u, dampingInfo] = dampingErrorBased(N, u, rhs, delta, L, disc, damping
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TODO: Document calling sequence.
-
 % Extract info from the dampingInfo struct
 errTol = dampingInfo.errTol;
 lambda = dampingInfo.lambda;
@@ -41,7 +50,7 @@ normDeltaBar = dampingInfo.normDeltaBar;
 normDeltaOld = dampingInfo.normDeltaOld;
 deltaBar = dampingInfo.deltaBar;
 
-%TODO: should not really need x here, but just evaluate the CHEBOP:
+% Extract X, so that we can evaluate the CHEBOP below.
 x = dampingInfo.x;
 
 % Monitors whether we want to accept the current steplength:
@@ -55,9 +64,9 @@ initPrediction = 1;
 % Iterate until we find a step-size lambda that we accept:
 while ( ~accept )
     
-    % Check whether we want to predict a value for LAMBDA. Can only do so once
-    % we have taken one Newton step, as it is based on information obtained from
-    % the previous step
+    % Check whether we want to predict a value for LAMBDA. In other words, this
+    % is the predictor step. We can only predict LAMBA once we have taken one
+    % Newton step, as it is based on information obtained from the previous step
     if newtonCounter > 0 && initPrediction
         % Compute a prediction value
         mu = (normDeltaOld*normDeltaBar)/...
@@ -68,9 +77,13 @@ while ( ~accept )
         initPrediction = 0;
     end
     
+    % Below, we apply the correction strategy.
+    
     if lambda < lambdaMin
-        disp('Convergence failure')
-        % Take full Newton step
+        % If LAMBDA falls below LAMBDAMIN, we try to take a full Newton step in
+        % the hope that will put us in a different point in solution space that
+        % we have a chance of converging from. If we don't observe convergence
+        % in the following step, we then give up.
         uTrial = u + delta;
         accept = 1;
         normDeltaOld = normDelta;
@@ -97,6 +110,7 @@ while ( ~accept )
         NopTrial = chebmatrix(NopTemp');
     end
     
+    % Trial residual.
     deResFunTrial = NopTrial - rhs;
     
     % Compute a simplified Newton step, using the current derivative of
