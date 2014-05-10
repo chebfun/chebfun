@@ -71,7 +71,7 @@ classdef (InferiorClasses = {?double}) chebop
 %
 % Boundary condition can also be assigned to the CHEBOP N after it has been
 % constructed, by N.lbc = ..., N.rbc = ..., and N.bc = ... . This will overwrite
-% the consditions currently stored in the field being assigned to, but not the
+% the conditions currently stored in the field being assigned to, but not the
 % other fields).
 %
 % CHEBOP(OP, ..., 'init', U) provides a CHEBFUN/CHEBMATRIX as a starting point
