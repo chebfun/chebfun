@@ -59,10 +59,9 @@ classdef (InferiorClasses = {?double}) chebop
 %
 % Note that the 'dirichlet' and 'neumann' keywords impose behavior that may not
 % be identical to the common understanding of Dirichlet or Neumann conditions in
-% every problem.
-%
-% Note that when BC is passed in the CHEBOP call, the more specialized fields
-% LBC and RBC are ignored.
+% every problem. When BC is passed in the CHEBOP call, the more specialized
+% fields LBC and RBC are ignored. Furthermore, note that CHEBOP(OP, DOM, 0) is
+% not equivalent to CHEBOP(OP, DOM, 0, []).
 %
 % If BC is given a function handle, then each condition must give points
 % explicitly or otherwise evaluate to a scalar. The function handle must return
@@ -70,44 +69,51 @@ classdef (InferiorClasses = {?double}) chebop
 %   @(x, u) [ u(1) - u(0) ; sum(x.*u) ] % set u(1) = u(0), and definite integral
 %                                       % of x.*u over the whole interval = 0.
 %
-% BCs can also be assigned to the CHEBOP N after it has been constructed, by
-% N.lbc = ..., N.rbc = ..., and N.bc = ... . This will overwrite the BCs
-% currently stored in the field being assigned to, but not the other fields).
+% Boundary condition can also be assigned to the CHEBOP N after it has been
+% constructed, by N.lbc = ..., N.rbc = ..., and N.bc = ... . This will overwrite
+% the conditions currently stored in the field being assigned to, but not the
+% other fields).
 %
 % CHEBOP(OP, ..., 'init', U) provides a CHEBFUN/CHEBMATRIX as a starting point
 % for nonlinear iterations or a PDE solution. See CHEBOP/SOLVEBVP and
 % CHEBOP/PDE15S for details.
 %
 % Note that many fields can be set after the CHEBOP object N is created: N.op,
-% N.lbc, N.rbc, N.bc, N.init can all be assigned new values. Note again that
-% writing to N.bc supercedes anything already present in the N.lbc and N.rbc
-% fields.
+% N.lbc, N.rbc, N.bc, N.init can all be assigned new values. Setting N.bc to any
+% of 'dirichlet', 'neumann', or 'periodic', removes pre-existing entries in
+% N.lbc and N.rbc (and N.bc).
 %
 % Example:
 %
-%    N = chebop(-5, 5);  % Constructs an empty CHEBOP on the interval [-5,5]
-%    N.op = @(x, u) 0.01*diff(u, 2) - x.*u;
-%    N.bc = 'dirichlet';
-%    plot(N\1)
+%   N = chebop(-5, 5);  % Constructs an empty CHEBOP on the interval [-5,5]
+%   N.op = @(x, u) 0.01*diff(u, 2) - x.*u;
+%   N.bc = 'dirichlet';
+%   plot(N\1)
 %
 % %% PARAMETER DEPENDENT PROBLEMS: %%
 %
-% TODO: Revisit help text on parameter problems.
-%
-% There is some support for solving systems of equations containing unknown
-% parameters without the need to introduce extra equations into the system. 
+% CHEBOP supports solving systems of equations containing unknown parameters
+% without the need to introduce extra equations into the system. Simply add the
+% unknown parameters as the final variables. 
 %
 % Example:
 %
-    % y'' + x.*y + p = 0, y(-1) = 1, y'(-1) = 1, y(1) = 1 can be solved via
-%    N = chebop(@(x, y, p) diff(y,2) + x.*y + p)
-%    N.lbc = @(y, p) [y - 1 ; diff(y)];
-%    N.rbc = @(y, p) y - 1;
-%    plot(N\0)
+%   % y'' + x.*y + p = 0, y(-1) = 1, y'(-1) = 1, y(1) = 1 can be solved via
+%   N = chebop(@(x, y, p) diff(y,2) + x.*y + p)
+%   N.lbc = @(y, p) [y - 1 ; diff(y)];
+%   N.rbc = @(y, p) y - 1;
+%   plot(N\0)
 %
-% This syntax will work whenever p is not differentiated within N.op, i.e.,
-% something like @(x,y,p) diff(p*diff(y)) will require a second equation
-% explicitly enforcing that diff(p) = 0.
+% Parameters can be positioned at different locations if a double is passed in
+% the CHEBMATRIX input to N.init. 
+%
+% Example:
+%
+%   N = chebop(@(x, p, y) diff(y,2) + x.*y + p)
+%   N.lbc = @(p, y) [y - 1 ; diff(y)];
+%   N.rbc = @(p, y) y - 1;
+%   N.init = [1 ; chebfun(1)];
+%   plot(N\0)
 %
 % See also CHEBOP/MTIMES, CHEBOP/MLDIVIDE, CHEBOPPREF.   
 
@@ -218,7 +224,8 @@ classdef (InferiorClasses = {?double}) chebop
                     N.lbc = val;
                 else
                     error('CHEBFUN:CHEBOP:SETLBC', ...
-                    'Number of inputs to BCs do not match operator.');
+                        ['Number of inputs to N.LBC must match the number ', ... 
+                         'of inputs to N.OP (or be one less if N.OP = @(x, ...))']);     
                 end
                 
             elseif ( strcmpi(val, 'neumann') )
@@ -277,7 +284,8 @@ classdef (InferiorClasses = {?double}) chebop
                     N.rbc = val;
                 else
                     error('CHEBFUN:CHEBOP:SETRBC', ...
-                    'Number of inputs to BCs do not match operator.');
+                        ['Number of inputs to N.RBC must match the number ', ... 
+                         'of inputs to N.OP (or be one less if N.OP = @(x, ...))']);      
                 end
                 
             elseif ( strcmpi(val, 'neumann') )
@@ -302,10 +310,12 @@ classdef (InferiorClasses = {?double}) chebop
         end
         
         function N = set.bc(N, val)
-        %CHEBOP.SET.BC   Set right boundary condition of a CHEBOP.
-        %   CHEBOP.SET.BC offers more control of setting right boundary
-        %   conditions than simply accessing the .bc field, or using standard
-        %   subsref.
+        %CHEBOP.SET.BC   Set constraints of a CHEBOP.
+        %   CHEBOP.SET.BC offers more control of setting constraints than simply
+        %   accessing the .bc field, or using standard subsref. In particular,
+        %   note that setting SET.BC(N, VAL) where VAL is numeric will actually
+        %   set N.BC = [] and N.LBC = N.RBC = VAL. SET.BC(N, STR) works
+        %   similarly when STR is one of 'dirichlet', 'neuman', or 'periodic'.
         
             if ( isempty(val) )
                 N.bc = [];
@@ -326,11 +336,12 @@ classdef (InferiorClasses = {?double}) chebop
                     % of input arguments of the function handle is the same as
                     % the number of inputs to the OP field.
                     error('CHEBFUN:CHEBOP:SETBC', ...
-                        'Number of inputs to BCs must match operator.');                    
+                        ['Number of inputs to N.BC must match the number ', ... 
+                         'of inputs to N.OP.']);                    
                 else
                     N.bc = val;
-                    N.lbc = []; %#ok<MCSUP>
-                    N.rbc = []; %#ok<MCSUP>
+%                     N.lbc = []; %#ok<MCSUP>
+%                     N.rbc = []; %#ok<MCSUP>  
                 end
                 
             elseif ( strcmpi(val, 'periodic') )
@@ -345,7 +356,7 @@ classdef (InferiorClasses = {?double}) chebop
                 
             else
                 error('CHEBFUN:CHEBOP:SETRBC', ...
-                    'Unsupported format of BCs')
+                    'Unsupported format of BCs.')
             end
         end   
         
@@ -425,9 +436,8 @@ classdef (InferiorClasses = {?double}) chebop
     
     %% STATIC HIDDEN METHODS:
         
-    methods ( Static = true, Hidden = true )
-        % TODO: These should be private methods as well
-        
+    methods ( Static = true, Access = private )
+
         % Controls information displayed for Newton iterations
         [displayFig, displayTimer] = displayInfo(mode, varargin);
         
@@ -439,8 +449,8 @@ classdef (InferiorClasses = {?double}) chebop
         [displayFig, displayTimer] = displayInfoInit(u,pref);
         
         % Display during Newton iteration.        
-        displayInfoIter(u, delta, iterNo, normdu, cFactor, errEst, lendu, ...
-            lambda, lenu, displayFig, displayTimer, pref);
+        displayTimer = displayInfoIter(u, delta, iterNo, normdu, cFactor, ...
+            errEst, lendu, lambda, lenu, displayFig, displayTimer, pref);
         
         % Display special information for linear problems
         displayInfoLinear(u, normRes, pref)

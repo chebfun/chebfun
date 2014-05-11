@@ -39,6 +39,8 @@ end
 % We fit a polynomial of degree the maximum degree required for any component to
 % every component. This could actually lead to unnecessary degrees of freedom,
 % see issue #301 on Github. AB, 30/04/14.
+% TODO: Here, we are artificially fixing the degree, which we shouldn't need to
+% do.
 polyDegree = 2;
 polyDegree = max(max(polyDegree), 1);
 % We need one dim entry for each subinterval.
@@ -100,7 +102,7 @@ u0disc = partition(disc, u0disc);
 % Convert to a cell-array of CHEBFUN objects:
 u0 = cell(numel(u0disc),1);
 for k = 1:numel(u0)
-    u0{k} = disc.toFunction(u0disc{k}, 2);
+    u0{k} = disc.toFunctionIn(u0disc{k});
 end
 
 % Convert the cell-array of CHEBFUN objects to a CHEBMATRIX

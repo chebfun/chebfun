@@ -23,7 +23,7 @@ function coeffs = vals2coeffs(values)
 n = size(values, 1);
 
 % Trivial case (constant):
-if ( n == 1 )
+if ( n <= 1 )
     coeffs = values; 
     return
 end

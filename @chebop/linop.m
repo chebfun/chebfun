@@ -1,5 +1,5 @@
 function [L, f, FAIL] = linop(N)
-%LINOP Converts a chebop to a linop
+%LINOP   Convert a CHEBOP to a LINOP.
 %   L = LINOP(N) converts a CHEBOP N to a linop L if N is a linear operator. If
 %   N is not linear, an error message is returned.
 %

@@ -1,10 +1,10 @@
 function varargout = pde15s(pdeFun, tt, u0, bc, varargin)
 %PDE15S   Solve PDEs using the CHEBFUN system.
 %   UU = PDE15s(PDEFUN, TT, U0, BC) where PDEFUN is a handle to a function with
-%   arguments u, t, x, and D, TT is a vector, U0 is a chebfun, and BC is a
-%   chebop boundary condition structure will solve the PDE dUdt = PDEFUN(UU, t,
-%   x) with the initial condition U0 and boundary conditions BC over the time
-%   interval TT.
+%   arguments u, t, x, and D, TT is a vector, U0 is a CHEBFUN or a CHEBMATRIX,
+%   and BC is a chebop boundary condition structure will solve the PDE dUdt =
+%   PDEFUN(UU, t, x) with the initial condition U0 and boundary conditions BC
+%   over the time interval TT.
 %
 %   PDEFUN should take the form @(T, X, U1, U2, ..., UN), where U1, ..., UN are
 %   the unknown dependent variables to be solved for, T is time, and X is space.
@@ -15,9 +15,10 @@ function varargout = pde15s(pdeFun, tt, u0, bc, varargin)
 %   definite integral operator (i.e., 'sum'), and C the indefinite integral
 %   operator (i.e., 'cumsum') is also supported.
 %
-%   For equations of one variable, UU is output as an array valued chebfun,
-%   where UU(:, k) is the solution at TT(k). For systems, the solution is
-%   returned as a cell array of array valued chebfuns.
+%   For equations of one variable, UU is output as an array-valued CHEBFUN,
+%   where UU(:, k) is the solution at TT(k). For systems, the solution UU is
+%   returned as a CHEBMATRIX with the different variables along the rows, and
+%   time slices along the columns.
 %
 % Example 1: Nonuniform advection
 %     x = chebfun('x', [-1 1]);
@@ -527,9 +528,15 @@ end
 
 % If we only had one dependent variable, return an array valued CHEBFUN instead
 % of a QUASIMATRIX.
-% TODO: Determine what we want to output for systems of equations. CHEBMATRIX?
 if ( SYSSIZE == 1 )
     uOut = horzcat(uOut{:});
+else
+    % TODO: Determine what output we want for systems of equations. CHEBMATRIX?
+    blocks = cell(SYSSIZE, numel(uOut));
+    for k = 1:SYSSIZE
+        blocks(k,:) = cellfun(@(u) extractColumns(u, k), uOut, 'UniformOutput', false);
+    end
+    uOut = chebmatrix(blocks); % CHEBMATRIX
 end
 
 switch nargout

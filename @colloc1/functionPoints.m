@@ -1,6 +1,10 @@
-function [x,w,v] = functionPoints(disc)
-%FUNCTIONPOINTS Points at which functions are discretized.
+function varargout = functionPoints(disc)
+%FUNCTIONPOINTS   Points at which functions are discretized.
 
-[x,w,v] = colloc.points(disc,1);
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+pointsFun = @(n) chebtech1.chebpts(n);
+[varargout{1:nargout}] = colloc.points(disc, pointsFun);
 
 end
