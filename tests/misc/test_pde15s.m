@@ -90,7 +90,7 @@ f = @(u) u.*(1-u.^2) + 5e-4*diff(u, 2);
 bc.left = struct('op', 'dirichlet', 'val', -1);
 bc.right = struct('op', 'dirichlet', 'val', 1);
 opts = pdeset('Ylim', [-1.1 1.1]);
-pde15s(f, 0:0.1:5, u, bc, opts);
+pde15s(f, 0:0.1:3, u, bc, opts);
 
 %% Burgers
 close all
@@ -185,7 +185,6 @@ bcc = @(x, u) [u(-1)-1 ; feval(diff(u),-1) ; u(1)-1 ; feval(diff(u),1)];
 f = @(u) u.*diff(u) - diff(u, 2) - 0.006*diff(u, 4);
 opts = pdeset('Ylim', [-30 30], 'PlotStyle', {'LineWidth', 2});
 uu = pde15s(f, 0:.025:.5, u, bcc, opts);
-surf(uu, 0:.025:.5)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% V4 syntax

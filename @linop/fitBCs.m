@@ -102,7 +102,7 @@ u0disc = partition(disc, u0disc);
 % Convert to a cell-array of CHEBFUN objects:
 u0 = cell(numel(u0disc),1);
 for k = 1:numel(u0)
-    u0{k} = disc.toFunction(u0disc{k}, 2);
+    u0{k} = disc.toFunctionIn(u0disc{k});
 end
 
 % Convert the cell-array of CHEBFUN objects to a CHEBMATRIX
