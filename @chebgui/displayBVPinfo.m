@@ -1,10 +1,12 @@
-function [displayFig, displayTimer] = displayBVPinfo(handles, mode, varargin)
+function varargout = displayBVPinfo(handles, mode, varargin)
 
 switch mode
     case 'init'
         [displayFig, displayTimer] = displayBVPinfoInit(handles, varargin{:});
+        varargout{1} = displayFig;
+        varargout{2} = displayTimer;
     case 'iter'
-        displayBVPinfoIter(handles, varargin{:});
+        varargout{1} = displayBVPinfoIter(handles, varargin{:});
     case 'final'
         %         chebgui.displayBVPinfoFinal(handles, varargin{:});
     case 'linear'
@@ -47,7 +49,7 @@ displayTimer = 5;
 end
 
 
-function displayBVPinfoIter(handles, u, delta, iterNo, normDelta, cFactor, lenDelta, lambda, lenu, displayFig, displayTimer, pref)
+function displayTimer = displayBVPinfoIter(handles, u, delta, iterNo, normDelta, cFactor, lenDelta, lambda, lenu, displayFig, displayTimer, pref)
 
 % Create a string for displaying information about the iteration.
 if ( lambda == 1 )
