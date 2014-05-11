@@ -198,7 +198,7 @@ if ( isempty(sigma) )
         end
 
         % Convert the discrete Z values to CHEBFUN
-        z = toFunction(discA, Z);
+        z = toFunctionOut(discA, Z);
 
         % Obtain all coefficients to use below
         coeffs = get(z, 'coeffs');
