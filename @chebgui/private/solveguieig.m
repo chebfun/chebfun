@@ -143,9 +143,9 @@ else
     tolNum = str2double(tolInput);
 end
 
-cpref = chebpref;
+chebfunp = chebfunpref;
 
-if ( tolNum < cpref.eps )
+if ( tolNum < chebfunp.techPrefs.eps )
     warndlg('Tolerance specified is less than current chebfun epsilon','Warning','modal');
     uiwait(gcf)
 end
@@ -167,18 +167,18 @@ end
 % Compute the eigenvalues.
 if generalized
     if isempty(sigma)
-        [V D] = eigs(A,B,K);
+        [V, D] = eigs(A, B, K);
     else
-        [V D] = eigs(A,B,K,sigma);
+        [V, D] = eigs(A, B, K, sigma);
     end
 else
     if isempty(sigma)
-        [V D] = eigs(A,K);
+        [V, D] = eigs(A, K);
     else
-        [V D] = eigs(A,K,sigma);
+        [V, D] = eigs(A, K, sigma);
     end
 end
-[D idx] = sort(diag(D));
+[D, idx] = sort(diag(D));
 
 % TODO: What happens in case of coupled systems.
 % For now, assume scalar problems
