@@ -37,58 +37,27 @@ classdef chebDiscretization
     methods
         
         function n = get.numIntervals(disc)
-        %NUMINTERVALS    Number of subintervals a CHEBDISCRETIZATION acts on.
+        %NUMINTERVALS   Number of subintervals a CHEBDISCRETIZATION acts on.
             n = length(disc.domain) - 1;
         end    
         
-        function disc = extractBlock(disc, j, k)
-        %EXTRACTBLOCK   Extract the j-k block from a discretization.
-        %   DISCJK = EXTRACTBLOCK(DISC, J, K) extracts information relating to the
-        %   J-K block of the dscretization DISC and returns a new discretization
-        %   DISCJK. DISCJK.dimension will be modified by the amount specified in
-        %   DISC.dimAdjust(j,k).
-
-        % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-        % See http://www.chebfun.org/ for Chebfun information.
-
-        % Extract the j-k block:
-        if ( iscell(disc.source.blocks) )
-            disc.source.blocks = disc.source.blocks{j,k};
-        end
-
-        % Extract the dimension adjustment for this block and adjust the dimension:
-        if ( numel(disc.dimAdjust) > 1 )
-            disc.dimAdjust = disc.dimAdjust(j,k);
-        end
-        disc.dimension = disc.dimension + disc.dimAdjust;
-
-        % Set the dimension adjustment to zero:
-        disc.dimAdjust = 0;
-        if ( numel(disc.dimAdjust) > 1 )
-            disc.projOrder = disc.projOrder(j);
-        end
-
-        end
-
         function t = isempty(disc)
-        % Returns true if source property of a CHEBDISCRETIZATION is empty.
+        %ISEMPTY   Check if source property of a CHEBDISCRETIZATION is empty.
             t = isempty(disc.source);
         end
 
-        function t = isFactored(disc)
-        %CHEBDISCRETIZATION.ISFACTORED
-        %
-        % This method gives a discretization a chance to overload and store
-        % matrix factors for the purpose of short-circuiting the linsolve
-        % process. By default it never happens.
+        function t = isFactored(disc) %#ok<MANU>
+        %ISFACTORED   Check if a factorization of the source already exists.
+        %   This method gives a discretization a chance to overload and store
+        %   matrix factors for the purpose of short-circuiting the linsolve
+        %   process. By default it never happens.
             t = false;
         end
         
         function [x, disc] = mldivide(disc, A, b)
         %CHEBDISCRETIZATION.MLDIVIDE 
-        %
-        % By default, the solution of a discrete Ax=b uses standard backslash.
-        % But concrete implementations may overload it.
+        %   By default, the solution of a discrete Ax = b uses standard
+        %   backslash. But concrete implementations may overload it.
             x = A\b;
         end           
         
@@ -97,8 +66,11 @@ classdef chebDiscretization
     %% STATIC METHODS:
     
     methods ( Static )
+        
+        % Get dimension adjustment:
         dimAdjust = getDimAdjust(L)
         
+        % Get projection order:
         projOrder = getProjOrder(L)
     end
     
@@ -109,8 +81,11 @@ classdef chebDiscretization
         % depending on the implementation). 
         values = toValues(disc, f)
         
-        % Converts a vector of values (or coefficients) to a chebfun.
-        f = toFunction(disc, values, inOut)
+        % Converts a vector of values (or coefficients) to a CHEBFUN.
+        f = toFunctionIn(disc, values)
+        
+        % Converts a vector of values (or coefficients) to a CHEBFUN.
+        f = toFunctionOut(disc, values)
         
         % Returns a linear system RHS using the designated discretization
         % parameters.

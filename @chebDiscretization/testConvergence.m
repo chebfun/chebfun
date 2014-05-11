@@ -10,15 +10,14 @@ function [isDone, epsLevel] = testConvergence(disc, values)
 % We will test on an arbitrary linear combination of the individual
 % functions.
 s = 1 ./ (3*(1:numel(values))).';
-newvalues = cell2mat(values(:).')*s;
+newValues = cell2mat(values(:).')*s;
 
 % Convert to a piecewise chebfun.
-u = toFunction(disc, newvalues);
+u = toFunctionOut(disc, newValues);
 
 % Test convergence on each piece. Start by obtaining the Chebyshev coefficients
 % of all pieces, which we can then pass down to the testPiece method
 coeffs = get(u, 'coeffs');
-values = get(u, 'values');
 d = disc.domain;
 numInt = numel(d) - 1;
 isDone = false(1, numInt);
@@ -27,16 +26,11 @@ epsLevel = 0;
 pref = chebfunpref();
 pref.eps = 1e-14;
 for i = 1:numInt
-    %    f = chebtech.constructor(values{i},u.vscale,hscale(i));
-    % TODO: The line above below is a hack, we should be using plataeuCheck? TAD
-    % to check. AB 27/4/14.
-%    [isDone(i),neweps] = classicCheck(u.funs{i}.onefun, pref);
-     [isDone(i),neweps] = plateauCheck(coeffs{i},u.vscale);
+    [isDone(i),neweps] = plateauCheck(coeffs{i}, u.vscale);
     epsLevel = max( epsLevel, neweps );
 end
 
 end
-
 
 function [ishappy, epslevel, cutoff] = plateauCheck(coeff, vscale)
 %TODO: A summary documenting what's going on in this method would
@@ -60,7 +54,6 @@ if ( vscale == 0 )
     cutoff = 1;
     return
 end
-
 
 %% Serious checking starts here.
 
