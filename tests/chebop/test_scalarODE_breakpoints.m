@@ -14,12 +14,17 @@ N.rbc = @(u) u - 3;
 rhs = 0;
 
 %% Try different discretizations
-% Start with collocation -- no further action required
+% Start with colloc2
+pref.discretization = @colloc2;
 [u1, info1] = solvebvp(N, rhs, pref);
 
 %% Change to ultraS
 pref.discretization = @ultraS;
 [u2, info2] = solvebvp(N, rhs, pref);
+
+%% Change to colloc1
+pref.discretization = @colloc1;
+[u3, info3] = solvebvp(N, rhs, pref);
 
 %% Did we pass? 
 % To pass, both residuals have to be small, but we should not expect u1 and u2
@@ -27,8 +32,11 @@ pref.discretization = @ultraS;
 tol = pref.errTol;
 err1 = normest(N(u1));
 err2 = normest(N(u2));
+err3 = normest(N(u3));
 pass(1) = err1 < tol;
 pass(2) = err2 < 300*tol;
-pass(3) = ( norm(u1-u2) ~= 0 );
+pass(3) = err3 < tol;
+pass(4) = ( (norm(u1 - u2) ~= 0) && (norm(u2 - u3) ~= 0) && ...
+    (norm(u1 - u3) ~= 0));
 
 end

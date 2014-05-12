@@ -7,8 +7,6 @@ function pass = test_bc(pref)
 if ( nargin == 0 )
     pref = cheboppref;
 end
-pref.plotting = 'off';
-pref.display = 'off';
 
 %% linear: numeric and string input
 d = [-3 4];

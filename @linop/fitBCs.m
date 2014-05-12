@@ -3,17 +3,22 @@ function u0 = fitBCs(L)
 %   U0 = FITBCS(L) Returns a CHEBMATRIX which will satisfy the BCs
 %        and other conditions of the linop L.
 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org for Chebfun information.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% DEVELOPER NOTE:
+%  Determines how big discretization we want for each component. We want to
+%  obtain the lowest degree polynomial which satisfies all boundary conditions.
+%  In case of a system, this might mean that this won't be governed by
+%  individual diffOrders, but rather, in how many BCs an unknown function
+%  appears (e.g. u'+v = 0, u-v' = 0, u(-1) = u(1) = 0). This information can be
+%  obtained from the iszero information of the linearised BCs in the linop L.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 % Store the total number of interior breakpoints
 dom = L.domain;
 numInts = length(dom) - 1;
-
-% Determines how big discretization we want for each component. We want to
-% obtain the lowest degree polynomial which satisfies all boundary
-% conditions. In case of a system, this might mean that this won't be
-% governed by individual diffOrders, but rather, in how many BCs an unknown
-% function appears (e.g. u'+v = 0, u-v' = 0, u(-1) = u(1) = 0). This
-% information can be obtained from the iszero information of the linearised
-% BCs in the linop L.
 
 % If we have subintervals, but no continuity conditions were passed, we need to
 % create them.
@@ -31,17 +36,15 @@ polyDegree = zeros(1, numVar);
 if ( ~isempty(L.constraint.functional) )
     polyDegree = polyDegree + sum(~iszero(L.constraint.functional), 1);
 end
-
+% If continuity conditions are to be enforced, we need the polynomials to be at
+% least the difforder of the variable it represents:
 if ( ~isempty(L.continuity.functional) )
-    polyDegree = polyDegree + sum(~iszero(L.continuity.functional), 1);
+    polyDegree = max(polyDegree, max(L.diffOrder, [], 1));
 end
 
 % We fit a polynomial of degree the maximum degree required for any component to
 % every component. This could actually lead to unnecessary degrees of freedom,
-% see issue #301 on Github. AB, 30/04/14.
-% TODO: Here, we are artificially fixing the degree, which we shouldn't need to
-% do.
-polyDegree = 2;
+% see issue #301 on GitHub. AB, 30/04/14.
 polyDegree = max(max(polyDegree), 1);
 % We need one dim entry for each subinterval.
 dim = repmat(polyDegree(1), 1, numInts);
@@ -51,10 +54,11 @@ discType = L.prefs.discretization;
 
 % Initialize the discretization
 B = 0;
-% Try finer discretizations until we have a discretized operator of a sufficient
-% rank.
+% As a safeguard, we try finer discretizations until we have a discretized
+% operator of a sufficient rank.
 dimCounter = 0;
-while ( rank(B) < size(B, 1) && dimCounter < 5 )
+dimCounterMax = 5;
+while ( rank(B) < size(B, 1) && dimCounter < dimCounterMax )
     % Create a discretization, and set its dimAdjust to all-zeros
     disc = discType(L, dim);
     disc.dimAdjust = zeros(size(disc.dimAdjust));
@@ -72,14 +76,12 @@ while ( rank(B) < size(B, 1) && dimCounter < 5 )
 
     % Try increasing the discretization if we were not successful in getting a
     % full-rank B.
-    % TODO: If we were to do things more intelligently with the required
-    % discretization needed for each compoment, would we still need this?
     dim = dim + 1;
     dimCounter = dimCounter + 1;
 end
 
-if ( dimCounter == 5 )
-    % We failed. Returns a zero initial guess.
+if ( dimCounter == dimCounterMax )
+    % We failed. Return a zero initial guess.
     
     zeroFun = chebfun(0, dom);
     % Convert to a chebmatrix of correct dimensions
@@ -89,8 +91,10 @@ if ( dimCounter == 5 )
     end
     u0 = chebmatrix(u0);
    
-    warning('Unable to construct a suitable initial guess. Using a zero guess.')
+    warning('CHEBFUN:linop:fitBCs:failure', ...
+        'Unable to construct a suitable initial guess. Using a zero guess.')
     return
+    
 end
 
 % Solve for the discrete values of the initial guess:
