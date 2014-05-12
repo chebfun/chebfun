@@ -1,10 +1,16 @@
 function [pass, u1, u2, info1, info2] = test_scalarODE_breakpoints(pref)
+% A nonlinear CHEBOP test. This test tests a scalar ODE, where there are two
+% breakpoints in the domain of the CHEBOP.  It solves the problem using colloc1,
+% colloc2 and ultraS discretizations.
+%
+% Asgeir Birkisson, May 2014.
 
+
+%% Setup
 if ( nargin == 0 )
     pref = cheboppref;
 end
 
-% Setup
 dom = [0 1 2 pi];
 pref.damped = 1;
 

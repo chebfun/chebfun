@@ -1,6 +1,12 @@
 function [pass, u1, u2, info1, info2] = test_scalarODE(pref)
+% The basic nonlinear CHEBOP test. This test tests a simple scalar ODE, where no
+% breakpoints occur. It solves the problem using colloc1, colloc2 and ultraS
+% discretizations. The problem solved is simple enough that no damping is
+% required.
+%
+% Asgeir Birkisson, May 2014.
 
-% Setup
+%% Setup
 dom = [0 pi];
 if ( nargin == 0 )
     pref = cheboppref;
