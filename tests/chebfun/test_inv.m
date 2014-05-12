@@ -8,9 +8,9 @@ if ( nargin == 0 )
     pref = chebfunpref();
 end
 
-algoList = {'roots', 'newton'};
+algoList = {'roots', 'newton', 'bisection'};
 
-for k = 1:2
+for k = 1:3
     x = chebfun('x');
     f = sin(x);
     g = chebfun(@(x) asin(x), [sin(-1), sin(1)]);
@@ -18,7 +18,9 @@ for k = 1:2
     tol = 100*epslevel(f_inv).*vscale(f_inv);
     pass(k,1) = norm(g - f_inv, inf) < tol;
 
-    pass(k,2) = norm(f - inv(f_inv, 'algorithm', algoList{k}), inf) < tol;
+    g = inv(f_inv, 'algorithm', algoList{k});
+    [f, g] = tweakDomain(f, g, 2e-15);
+    pass(k,2) = norm(f - g, inf) < tol;
 
     x = chebfun('x');
     f = chebfun(@(x) sausagemap(x));

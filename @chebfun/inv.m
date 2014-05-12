@@ -63,6 +63,8 @@ if ( opts.algorithm == 1 )     % Algorithm based on ROOTS.
     g = chebfun(@(x) fInverseRoots(f, x, tol), gDomain, pref);
 elseif ( opts.algorithm == 2 ) % Newton iteration algorithm.
     g = chebfun(@(x) fInverseNewton(f, fp, x, tol), gDomain, pref);
+elseif ( opts.algorithm == 3 ) % bisection based algorithm.
+    g = chebfun(@(x) fInverseBisection(f, x, tol), gDomain, pref);
 end
 
 % Scale so that the range of g is the domain of f:
@@ -111,6 +113,8 @@ while ( numel(varargin) > 1 )
             opts.algorithm = 1;
         elseif ( strcmpi(varargin{2}, 'newton') )
             opts.algorithm = 2;
+        elseif ( strcmpi(varargin{2}, 'bisection') )
+            opts.algorithm = 3;
         else
             error('CHEBFUN:inv:badAlgo', ...
                 'Unrecognized value for ''algorithm'' input.');
@@ -162,7 +166,7 @@ if ( ~isempty(tPoints) )
     elseif ( ~splitYesNo )
         warning('CHEBFUN:inv:singularEndpoints', ...
             ['F is monotonic, but its inverse has singular endpoints. ' ...
-             'Enabling breakpoint detection is advised.']);
+            'Enabling breakpoint detection is advised.']);
     end
 end
 
@@ -173,7 +177,7 @@ function g = adjustRange(g, fDomain)
 x = chebfun(@(x) x, g.domain);
 [gRange, gx] = minandmax(g);
 g = g + (gx(2) - x)*(fDomain(1) - gRange(1))/diff(gx) ...
-      + (x - gx(1))*(fDomain(end) - gRange(2))/diff(gx);
+    + (x - gx(1))*(fDomain(end) - gRange(2))/diff(gx);
 
 end
 
@@ -231,4 +235,21 @@ else
     y = fInverseRoots(f, x, tol);
 end
 
+end
+
+
+function y = fInverseBisection(f, x, tol)
+%FINVERSEBISECTION(F, X)   Compute F^{-1}(X) using Bisection.
+a = f.domain(1)*ones(length(x),1);
+b = f.domain(2)*ones(length(x),1);
+while norm(b-a,inf) >= eps
+    vals = feval(f, (a+b)/2);
+    % Bisection:
+    I1 = ((vals-x) <= -tol);
+    I2 = ((vals-x) >= tol);
+    I3 = ~I1 & ~I2;
+    a = I1.*(a+b)/2 + I2.*a + I3.*(a+b)/2;
+    b = I1.*b + I2.*(a+b)/2 + I3.*(a+b)/2;
+end
+y = (a+b)/2;
 end
