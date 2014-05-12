@@ -18,7 +18,7 @@ function g = constructor(g, op, domain, varargin)
 % Sampling along each slice is increased until the Chebyshev coefficients of the
 % slice fall below machine precision.
 %
-% Chebfun2 does not currently work with Chebyshev grids of the 1st kind. 
+% Chebfun2 does not currently work with Chebyshev grids of the 1st kind.
 %
 % The algorithm is fully described in:
 %  A. Townsend and L. N. Trefethen, An extension of Chebfun to two dimensions,
@@ -129,12 +129,16 @@ pseudoLevel = pref.eps;
 sampleTest = pref.sampleTest;
 grid = 9;   % minsample
 
-% Go find out what tech I'm based on: 
+% Go find out what tech I'm based on:
 tech = chebfun2pref().tech();
 
-if ( isa(tech, 'chebtech1') )
-    error('CHEBFUN2:TECH', 'Chebfun2 does not work with 1st kind grids.')
+if ( isa(tech, 'fourtech') ) 
+    grid = 8; 
 end
+% 
+% if ( isa(tech, 'chebtech1') )
+%     error('CHEBFUN2:TECH', 'Chebfun2 does not work with 1st kind grids.')
+% end
 
 % If the vectorize flag is off, do we need to give user a warning?
 if ( vectorize == 0 ) % another check
@@ -178,10 +182,9 @@ while ( ~isHappy )
     [pivotValue, pivotPosition, rowValues, colValues, iFail] = CompleteACA(vals, tol);
     
     strike = 1;
-    % grid <= 4*(maxRank-1)+1, see Chebfun2 paper. 
+    % grid <= 4*(maxRank-1)+1, see Chebfun2 paper.
     while ( iFail && grid <= 4*(maxRank-1)+1 && strike < 3)
-        % Double sampling on tensor grid:
-        grid = 2^( floor( log2( grid ) ) + 1) + 1;
+        grid = gridRefine( grid );
         [xx, yy] = chebfun2.chebpts2(grid, grid, domain);
         vals = evaluate(op, xx, yy, vectorize); % resample
         vscale = max(abs(vals(:)));
@@ -201,17 +204,9 @@ while ( ~isHappy )
     end
     
     % Check if the column and row slices are resolved.
-    SumcolValues = sum(colValues,2);
-    if isa(tech, 'fourtech')
-        SumcolValues(end) = [];
-    end
-    colChebtech = tech.make(SumcolValues, domain(3:4) );
+    colChebtech = tech.make(sum(colValues,2), domain(3:4) );
     resolvedCols = happinessCheck(colChebtech);
-    SumrowValues = sum(rowValues.',2);
-    if isa(tech, 'fourtech')
-        SumrowValues(end) = [];
-    end
-    rowChebtech = tech.make(SumrowValues, domain(1:2) );
+    rowChebtech = tech.make(sum(rowValues.',2), domain(1:2) );
     resolvedRows = happinessCheck(rowChebtech);
     isHappy = resolvedRows & resolvedCols;
     
@@ -229,25 +224,21 @@ while ( ~isHappy )
     n = grid;  m = grid;
     while ( ~isHappy )
         if ( ~resolvedCols )
-            % Double sampling along columns
-            n = 2^( floor( log2( n ) ) + 1) + 1;
+            [n, nesting] = gridRefine( n ); 
             [xx, yy] = meshgrid(PivPos(:, 1), mypoints(n, domain(3:4)));
             colValues = evaluate(op, xx, yy, vectorize);
             % Find location of pivots on new grid (using nesting property).
-            oddn = 1:2:n;
-            PP(:, 1) = oddn(PP(:, 1));
+            PP(:, 1) = nesting(PP(:, 1));
         else
             [xx, yy] = meshgrid(PivPos(:, 1), mypoints(n, domain(3:4)));
             colValues = evaluate(op, xx, yy, vectorize);
         end
         if ( ~resolvedRows )
-            % Double sampling along rows
-            m = 2^( floor( log2( m ) ) + 1 ) + 1;
+            [m, nesting] = gridRefine( m ); 
             [xx, yy] = meshgrid(mypoints(m, domain(1:2)), PivPos(:, 2));
             rowValues = evaluate(op, xx, yy, vectorize);
             % find location of pivots on new grid  (using nesting property).
-            oddm = 1:2:m;
-            PP(:, 2) = oddm(PP(:, 2));
+            PP(:, 2) = nesting(PP(:, 2));
         else
             [xx, yy] = meshgrid(mypoints(m, domain(1:2)), PivPos(:, 2));
             rowValues = evaluate(op, xx, yy, vectorize);
@@ -298,7 +289,7 @@ while ( ~isHappy )
     
     % Construct a CHEBFUN2:
     g.pivotValues = pivotValue;
-    g.cols = chebfun(colValues, domain(3:4) );
+    g.cols = chebfun(colValues, domain(3:4));
     g.rows = chebfun(rowValues.', domain(1:2) );
     g.pivotLocations = PivPos;
     g.domain = domain;
@@ -343,7 +334,7 @@ zRows = 0;                  % count number of zero cols/rows.
 % Bias toward diagonal for square matrices (see reasoning below):
 if ( ( nx == ny ) && ( max( abs( diag( A ) ) ) - infNorm ) > -tol )
     [infNorm, ind] = max( abs ( diag( A ) ) );
-    row = ind; 
+    row = ind;
     col = ind;
 end
 
@@ -360,7 +351,7 @@ else
     cols(:,1) = zeros(size(A, 1), 1);
 end
 
-while ( ( infNorm > tol ) && ( zRows < width / factor)...
+while ( ( infNorm > tol ) && ( zRows < width / factor )...
         && ( zRows < min(nx, ny) ) )
     rows(zRows+1,:) = A(row,:);
     cols(:,zRows+1) = A(:,col);              % Extract the columns.
@@ -383,7 +374,7 @@ while ( ( infNorm > tol ) && ( zRows < width / factor)...
     % absolute maximum. Bias toward diagonal maxima to prevent this.)
     if ( ( nx == ny ) && ( max( abs( diag( A ) ) ) - infNorm ) > -tol )
         [infNorm, ind] = max( abs ( diag( A ) ) );
-        row = ind; 
+        row = ind;
         col = ind;
     end
 end
@@ -469,21 +460,42 @@ end
 end
 
 function x = mypoints(n, dom)
-% Get the sample points that correspond to the right grid for a particular 
-% technology. 
+% Get the sample points that correspond to the right grid for a particular
+% technology.
 
-% What tech am I based on?: 
+% What tech am I based on?:
 tech = chebfun2pref().tech();
 
 if ( isa(tech, 'chebtech2') )
     x = chebpts( n, dom, 2 );   % x grid.
-elseif ( isa(tech, 'chebtech1') ) 
+elseif ( isa(tech, 'chebtech1') )
     x = chebpts( n, dom, 1 );   % x grid.
-elseif ( isa(tech, 'fourtech') ) 
-    x = fourierpts( n-1, dom );   % x grid.
-    x = [x;dom(2)]; 
+elseif ( isa(tech, 'fourtech') )
+    x = fourierpts( n, dom );   % x grid.
 else
     error('CHEBFUN2:PTS', 'Unrecognized technology');
-end 
+end
 
+end
+
+function [grid, nesting] = gridRefine( grid )
+
+% What tech am I based on?:
+tech = chebfun2pref().tech();
+
+% What is the next grid size?
+if ( isa(tech, 'chebtech2') )
+    % Double sampling on tensor grid:
+    grid = 2^( floor( log2( grid ) ) + 1) + 1;
+    nesting = 1:2:grid; 
+elseif ( isa(tech, 'fourtech') )
+    % Double sampling on tensor grid:
+    grid = 2^( floor( log2( grid ) + 1 ));
+    nesting = 1:2:grid;
+elseif ( isa(tech, 'chebtech1' ) )
+    grid = 3^( floor( log2( grid )/log2(3) ) + 1);
+    nesting = 2:3:grid; 
+else
+    error('CHEBFUN2:TECHTYPE','Technology is unrecognized.');
+end
 end
