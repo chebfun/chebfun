@@ -14,13 +14,21 @@ if ( isempty(f) )
     return
 end
 
+% Deal with the integer part of M:
+for k = 1:m
+    f = cumsum(f);
+end
+
+% The fractional part:
+fracM = m - floor(m);
+
 % Grab some fields from f:
 funs = f.funs;
 numFuns = numel(funs);
 
 % Loop over each FUN:
-for k = 1: numFuns
-    f.funs{k} = fracCalc(funs{k}, m);
+for k = 1:numFuns
+    f.funs{k} = bndfun.fracCalc(funs(1:k), fracM);
 end
 
 end
