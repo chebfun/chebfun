@@ -641,8 +641,8 @@ f(idx) = A.*(1./ti.^2 - 1./(2*sin(ti/2)).^2);
 f = f - fcos;
 
 % Integrals for B1: (Note that N isn't large, so we don't need to be fancy).
-C = cumsummat(N)*(.5*c);
-D = diffmat(N)*(2/c);
+C = colloc2.cumsummat(N)*(.5*c);
+D = colloc2.diffmat(N)*(2/c);
 I = (C*A1p_t);
 J = (C*(f.*A1));
 
@@ -722,108 +722,5 @@ tB2 = @(theta) chebtech.bary(theta, tB2, t, v);
 A3 = @(theta) chebtech.bary(theta, A3, t, v);
 tB3 = @(theta) chebtech.bary(theta, tB3, t, v);
 A4 = @(theta) chebtech.bary(theta, A4, t, v);
-
-end
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% [TODO]: The codes below are only here temporarily.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function Q = cumsummat(N)
-%CUMSUMMAT   Chebyshev integration matrix.
-% Q = CUMSUMMAT(N) is the matrix that maps function values at N Chebyshev points
-% to values of the integral of the interpolating polynomial at those points,
-% with the convention that the first value is zero.
-
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org/ for Chebfun information.
-
-% Nm1 = N - 1:
-Nm1 = N - 1;
-
-% Matrix mapping coeffs -> values:
-T = chebCoeffs2Vals(Nm1);
-
-% Matrix mapping values -> coeffs:
-Tinv = chebVals2Coeffs(Nm1);
-
-% Matrix mapping coeffs -> integral coeffs. Note that the highest order term is
-% truncated.
-k = 1:Nm1;
-k2 = 2*(k-1);
-k2(1) = 1;          % Avoid divide by zero
-B = diag(1./(2*k),-1) - diag(1./k2,1);
-v = ones(Nm1, 1);
-v(2:2:end) = -1;
-B(1,:) = sum( diag(v)*B(2:Nm1+1,:), 1 );
-B(:,1) = 2*B(:,1);
-
-% Form the CUMSUM matrix:
-Q = T*B*Tinv;
-
-end
-
-function T = chebCoeffs2Vals(N)
-%CHEBCOEFFS2VALS   Chebyshev-Vandermonde matrix,  mapping coeffs -> values
-theta = pi*(N:-1:0)'/N;
-T = cos( theta*(0:N) );
-end
-
-function C = chebVals2Coeffs(N)
-%CHEBVALS2COEFFS    Matrix mapping values -> coeffs.
-% Three steps: Double the data around the circle, apply the DFT matrix, and then
-% take half the result with 0.5 factor at the ends.
-theta = (pi/N)*(0:2*N-1)';       % Doubled grid in theta space
-F = exp( -1i*theta*(0:2*N-1) );  % DFT matrix
-rows = 1:N+1;                    % Output upper half only
-% Impose symmetries on data and coeffs:
-C = real( [ F(rows,N+1) F(rows,N:-1:2)+F(rows,N+2:2*N) F(rows,1) ] ) / N;
-C([1 N+1],:) = 0.5*C([1 N+1],:); % Halve the ends
-end
-
-function D = diffmat(N)  
-%DIFFMAT   Chebyshev differentiation matrix
-% D = DIFFMAT(N) is the matrix that maps function values at N Chebyshev
-% points to values of the derivative of the interpolating polynomial at
-% those points. 
-%
-% The matrices are computed using the 'hybrid' formula of Schneider & 
-% Werner [1] and Welfert [2] proposed by Tee [2].
-
-% References:
-%  [1] Schneider, C. and Werner, W., "Some new aspects of rational 
-%      interpolation", Math. Comp. (47) 285--299, 1986.
-%  [2] Welfert, B. D., "Generation of pseudospectral matrices I", SINUM, (34) 
-%      1640--1657.
-%  [2] Tee, T. W., "An adaptive rational spectral method for differential
-%      equations with rapidly varying solutions", Oxford DPhil Thesis, 2006.
-
-% Trivial cases:
-if ( N == 0 )
-    D = []; 
-    return
-end
-if ( N == 1 )
-    D = 0; 
-    return
-end
-
-% Construct Chebyshev grid and weights
-x = chebtech2.chebpts(N);
-w = chebtech2.barywts(N);
-
-% Construct the differntiation matrix:
-ii = (1:N+1:N^2)';              % indices of diagonal
-Dx = bsxfun(@minus, x, x');     % all pairwise differences
-Dx(ii) = Dx(ii) + 1;            % add identity
-Dxi = 1./Dx;                    % reciprocal 
-Dw = bsxfun(@rdivide, w.', w);  % pairwise divisions
-Dw(ii) = Dw(ii) - 1;            % subtract identity
-D = Dw .* Dxi;                  % combine
-
-% Negative sum trick:
-D(ii) = 0; 
-D(ii) = - sum(D,2);              
 
 end
