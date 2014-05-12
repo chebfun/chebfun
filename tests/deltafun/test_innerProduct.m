@@ -3,7 +3,7 @@
 function pass = test_innerProduct(pref)
 
 if (nargin < 1)
-    pref = chebpref();
+    pref = chebfunpref();
 end
 %%
 % Get the tolerance:

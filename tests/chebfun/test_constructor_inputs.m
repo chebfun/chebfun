@@ -1,10 +1,14 @@
 function pass = test_constructor_inputs(pref)
 
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % [TODO]: This test needs to be updated to include more exotic input options.
+
+% Generate a few random points to use as test values.
+seedRNG(6178);
+xx = 2 * rand(100, 1) - 1;
 
 % Test the vectorise flag:
 try
@@ -73,5 +77,13 @@ pass(13) = norm(feval(f, [.5, 1.5]) - .5) < get(f, 'epslevel');
 f = chebfun(chebfun({'x','x'}, [-1 0 1]));
 x = [-.5, .5];
 pass(14) = numel(f.funs) == 1  && norm(feval(f, x) - x) < get(f, 'epslevel');
+
+% Test 'minsamples' flag.
+f_op = @(x) -x - x.^2 + exp(-(30*(x - .5)).^4);
+f1 = chebfun(f_op);
+err1 = norm(feval(f1, xx) - f_op(xx), inf);
+f2 = chebfun(f_op, 'minsamples', 17);
+err2 = norm(feval(f2, xx) - f_op(xx), inf);
+pass(15) = (err1 > 1e-3) && (err2 < 10*vscale(f2)*epslevel(f2));
 
 end

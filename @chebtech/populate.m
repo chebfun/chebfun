@@ -122,7 +122,7 @@ while ( 1 )
     % Update vertical scale: (Only include sampled finite values)
     valuesTemp = values;
     valuesTemp(~isfinite(values)) = 0;
-    vscale = max(vscale, max(abs(valuesTemp(:))));
+    vscale = max(vscale, max(abs(valuesTemp)));
     
     % Extrapolate out NaNs:
     [values, maskNaN, maskInf] = extrapolate(f, values);
@@ -135,10 +135,9 @@ while ( 1 )
     f.vscale = vscale;
     [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, pref); 
         
-    % We're happy! :)
-    if ( ishappy ) 
-        coeffs = f.alias(coeffs, cutoff);  % Alias the discarded coefficients.
-        values = f.coeffs2vals(coeffs);  % Compute values on this grid.
+    if ( ishappy ) % We're happy! :)
+        % Alias the discarded coefficients:
+        coeffs = f.alias(coeffs, cutoff);  
         break
     end
     
@@ -158,9 +157,11 @@ vscaleGlobal = max(vscale, vscaleOut);
 vscale = vscaleOut;
 
 % Adjust the epslevel appropriately:
-vscaleOut(vscaleOut < epslevel) = epslevel;
-vscaleGlobal(vscaleGlobal < epslevel) = epslevel;
-epslevel = epslevel*vscaleGlobal./vscaleOut;
+ind = vscaleOut < epslevel;
+vscaleOut(ind) = epslevel(ind);
+ind = vscaleGlobal < epslevel;
+vscaleGlobal(ind) = epslevel(ind);
+epslevel = epslevel.*vscaleGlobal./vscaleOut;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% Assign to CHEBTECH object. %%%%%%%%%%%%%%%%%%%%%%%%%%
 f.coeffs = coeffs;

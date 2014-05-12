@@ -4,7 +4,7 @@ function pass = test_overlap(pref)
 
 % Grab some preferences:
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % TODO: Test for array-valued CHEBFUNS and quasimatrices.

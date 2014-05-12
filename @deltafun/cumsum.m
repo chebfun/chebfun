@@ -31,10 +31,10 @@ deltaMag = f.deltaMag;
 deltaLoc = f.deltaLoc;
 
 % Get tolerance:
-pref = chebpref();
+pref = chebfunpref();
 deltaTol = pref.deltaPrefs.deltaTol;
 
-if ( isempty(deltaLoc) || isempty(deltaMag) )
+if ( ~anyDelta(f) )
     g = cumsum(f.funPart);
     % The jump at the right end is zero in this case:
     rJump = 0;
@@ -110,11 +110,7 @@ else
         end
         
         %% Cell Array case:
-        
-        % Calculate the cumulative jump vector, entries of this vector will be used
-        % to off-set the cumsum by the correct value.
-        cumJump = cumsum(jumpVals);
-        
+               
         % Add end points to existing break points:
         breakPts = sort(union(f.funPart.domain, jumpLocs));
         
@@ -124,10 +120,15 @@ else
         % Initialize output:
         nfuns = numel(funParts);
         g = cell(1, nfuns);
+        
+        % Value of the previous fun at the right end point of its domain:
+        prevFunVal = 0;
         for k = 1:nfuns
             % Integrate the funPart and add the appropriate jump:
-            fk = cumsum(funParts{k}) + cumJump(k);
+            fk = cumsum(funParts{k}) + jumpVals(k) + prevFunVal;
             domk = fk.domain;
+            prevFunVal = feval(fk, domk(end));            
+            
             
             % Check whether there are delta functions in between the end points of
             % the current fun:

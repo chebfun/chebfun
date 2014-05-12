@@ -131,12 +131,10 @@ function cout = computeDerCoeffs(c)
 %   whose columns are the derivatives of those of the original.
     
     [n, m] = size(c);
-    cout = zeros(n+1, m);                     % Initialize vector {c_r}
+    cout = zeros(n-1, m);                     % Initialize vector {c_r}
     w = repmat(2*(n-1:-1:1)', 1, m);
-    v = [zeros(2, m) ; w.*c(1:end-1,:)];      % Temporal vector
+    v = w.*c(1:end-1,:);                      % Temporal vector
     cout(1:2:end,:) = cumsum(v(1:2:end,:));   % Compute c_{n-2}, c_{n-4},...
     cout(2:2:end,:) = cumsum(v(2:2:end,:));   % Compute c_{n-3}, c_{n-5},...
     cout(end,:) = .5*cout(end,:);             % Adjust the value for c_0
-    cout = cout(3:end,:);                     % Trim unneeded coefficients
-    
 end

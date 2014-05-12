@@ -39,7 +39,7 @@ prefs = [];    % no prefs given
 disc = [];     % no discretization given
 for j = 1:nargin-2
     item = varargin{j};
-    if ( isa(item, 'chebpref') )
+    if ( isa(item, 'cheboppref') )
         prefs = item;
     elseif ( isa(item,'chebDiscretization') )
         disc = item;
@@ -146,7 +146,7 @@ end
 % Because each function component may be piecewise defined, we will loop through
 % one by one.
 for k = find( isFun )
-    u{k} = disc.toFunction(u{k});
+    u{k} = disc.toFunctionOut(u{k});
     u{k} = simplify( u{k}, max(eps,epsLevel) );
 end
 

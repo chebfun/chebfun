@@ -3,7 +3,7 @@
 function pass = test_minandmax(pref)
 
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Check empty case.
@@ -137,7 +137,7 @@ pExact = [-1.120906422778534 ; 1.120906422778534];
 errV = vals - vExact;
 errP = pos - pExact;
 pass(13) = ( norm(errV, inf) < epslevel(f)*vscale(f) ) && ...
-    ( norm(errP, inf) < 2*epslevel(f)*vscale(f) );
+    ( norm(errP, inf) < 3*epslevel(f)*vscale(f) );
       
 
 end

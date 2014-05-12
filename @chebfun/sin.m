@@ -2,7 +2,7 @@ function F = sin(F, varargin)
 %SIN   Sine of a CHEBFUN.
 %   SIN(F) computes the sine of the CHEBFUN F.
 %
-%   SIN(F, PREF) does the same but uses the CHEBPREF object PREF when computing
+%   SIN(F, PREF) does the same but uses the CHEBFUNPREF object PREF when computing
 %   the composition.
 %
 % See also ASIN, SIND.

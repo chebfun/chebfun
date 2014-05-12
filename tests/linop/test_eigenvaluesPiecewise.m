@@ -5,7 +5,7 @@ function pass = test_eigenvaluesPiecewise(pref)
 %% Setup
 
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % Domain, RHS, constants

@@ -4,7 +4,7 @@ function pass = test_arclength(pref)
 
 % Obtain preferences.
 if ( nargin == 0 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 % A simple example:

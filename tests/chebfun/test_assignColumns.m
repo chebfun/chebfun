@@ -3,7 +3,7 @@
 function pass = test_assignColumns(pref)
 
 if ( nargin < 1 )
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 funlist = {@chebfun, @quasimatrix};

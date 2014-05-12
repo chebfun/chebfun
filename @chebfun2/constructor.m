@@ -38,11 +38,11 @@ if ( nargin < 3 || isempty(domain) )
     domain = [-1 1 -1 1];
 end
 
-if ( nargin > 3 && isa(varargin{1}, 'chebpref') )
-    defaults = chebpref();
-    pref = chebpref.mergePrefs(defaults, varargin{1});
+if ( nargin > 3 && isa(varargin{1}, 'chebfunpref') )
+    defaults = chebfunpref();
+    pref = chebfunpref.mergePrefs(defaults, varargin{1});
 else
-    pref = chebpref();
+    pref = chebfunpref();
 end
 
 if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
@@ -120,7 +120,7 @@ elseif ( numel(domain) ~= 4 )
     error('CHEBFUN2:CONSTRUCTOR:DOMAIN', 'Domain not fully determined.');
 end
 
-% Get default preferences from chebPref:
+% Get default preferences from chebfunpref:
 prefStruct = pref.cheb2Prefs;
 maxRank = prefStruct.maxRank;
 maxLength = prefStruct.maxLength;

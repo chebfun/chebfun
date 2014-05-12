@@ -11,16 +11,41 @@ function [vals, pos] = minandmax(f)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( ~anyDelta(f) )
+% Check for the empty case:
+if ( isempty(f) )
+    vals = [];
+    pos = [];
+    return
+end
+
+% Take the minandmax of the funPart:
+[vals, pos] = minandmax(f.funPart);
     
-    % The function has no delta functions:
-    [vals, pos] = minandmax(f.smoothPart);
+f = simplifyDeltas(f);
+% Deal with the case when there are delta functions:
+% NOTE: Higer order delta functions have no effect on maxima or minima of the
+% function.
+if ( isa(f, 'deltafun') )
+    deltaMag = f.deltaMag;       % All delta functions in f.
+    deltaFuns = deltaMag(1, :);  % zeroth order delta functions.
+    deltaLoc = f.deltaLoc;   
     
-else
+    posIdx = find(deltaFuns > 0 );
+    negIdx = find(deltaFuns < 0 );    
     
-    % If there are delta functions, maxima and minima are undefined:
-    vals = [NaN; NaN];
-    pos  = [NaN; NaN];
+    % If there is a positive delta function, maxima is Inf:
+    if ( ~isempty(posIdx) )
+        vals(2) = Inf;
+        loc = deltaLoc(posIdx);
+        pos(2) = loc(1);
+    end
+    
+    % If there is a negative delta function, minima is Inf:
+    if ( ~isempty(negIdx) )
+        vals(1) = -Inf;
+        loc = deltaLoc(negIdx);
+        pos(1) = loc(1);
+    end        
 end
   
 end

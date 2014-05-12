@@ -66,6 +66,13 @@ switch index(1).type
                 % columnIndex = 1:size(f, 2);
             elseif ( max(idx{2}) <= columnIndex(end) )
                 columnIndex = idx{2};
+                if ( size(columnIndex, 2) == 1 )
+                    columnIndex = columnIndex.';
+                end
+                if ( size(columnIndex, 1) > 1 )
+                    error('CHEBFUN:subsref:colidx', ...
+                        'Column index must be a vector of integers.')
+                end                
             end
 
         elseif ( length(idx) == 2 && strcmp(idx{2}, ':') )
@@ -118,16 +125,10 @@ switch index(1).type
         
         % Deal with row CHEBFUN objects:
         if ( isTransposed )
-            if ( isnumeric(out) )
-                % (Call PERMUTE instead of TRANSPOSE for numeric objects in
-                % case OUT is multidimensional).
-                out = permute(out, [2 1 3:ndims(out)]);
-            else
-                % Call TRANSPOSE for everything else (e.g., CHEBFUNs):
-                out = out.';
-            end
+            out = permute(out, [2, 1, 3:ndims(out)]);
         end
         
+        % Recurse on SUBSREF():
         if ( numel(index) > 1 )
             out = subsref(out, index(2:end));
         end
