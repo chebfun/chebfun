@@ -250,11 +250,6 @@ if ( flag && ~all(isLinear) )
     return
 end
 
-% if ( ~isempty(BC) && all(isFun) )
-%     % Deal with parameterized problems:
-%     BC.functional = diagonalise(BC.functional, isd);
-% end
-
 % Append all constraints to the LINOP returned.
 L.constraint = BC;
 
