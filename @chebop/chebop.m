@@ -127,8 +127,6 @@ classdef (InferiorClasses = {?double}) chebop
         rbc = [];       % Right boundary condition(s)
         bc = [];        % Other/internal/mixed boundary conditions
         init = [];      % Initial guess of a solution
-        % Default discretization for linear(ized) problems:
-        discretizationType = @colloc2;
     end
     
     %% CONSTRUCTOR:
