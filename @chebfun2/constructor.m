@@ -54,10 +54,18 @@ if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
         op = chebfun2.coeffs2vals( op );
         g = chebfun2( op, varargin{:} );
         return
+    elseif ( any(strcmpi(domain, 'padua')) )
+        [ignored, op] = chebfun2.pad2ten( op );
+        g = chebfun2( op );
+        return        
     elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, 'coeffs'))) )
         op = chebfun2.coeffs2vals( op );
         g = chebfun2( op, domain );
         return
+    elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, 'padua'))) )
+        [ignored, op] = chebfun2.pad2ten( op, domain );
+        g = chebfun2( op, domain );
+        return        
     else
         % If CHEBFUN2(f, rk), then nonadaptive call:
         if ( numel(domain) == 1 )
