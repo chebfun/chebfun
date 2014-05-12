@@ -16,11 +16,11 @@ f = [ 0*x ; 0*x ];
 
 %% COLLOC2
 
-A = chebop(@(x,u,v) [u - diff(v,2) + (1-x.^2).*u.^2; diff(u,2) + sin(v)], d);
+A = chebop(@(x,u,v) [u - diff(v,2) + (1-x.^2).*u.^2; .3*diff(u,2) + sin(v)], d);
 A.lbc = @(u,v) [u-1; v+1];
 A.rbc = @(u,v) [v-1/2; diff(v)];
 
-pref.discretization = @colloc2;
+pref.discretization = @ultraS;
 u56 = mldivide(A, f, pref);
 u5 = u56{1}; u6 = u56{2};
 
@@ -36,7 +36,7 @@ pass(1) = norm( chebfun(A(x, u5, u6))) < tol;
 pass(2) = norm(bcFunLeft(d(1))) < tol && norm(bcFunRight(d(end))) < tol;
 pass(3) = norm(u5jump) < tol && norm(u6jump) < tol;
 
-%% Piecewise:
+%% ULTRAS:
 
 pref.discretization = @ultraS;
 u78 = mldivide(A, f, pref);
