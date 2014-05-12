@@ -16,6 +16,8 @@ x = chebfun('x',d);
 f = [ 0*x ; 0*x ];
 
 %% Colloc2
+pref.discretization = @colloc2;
+
 A = chebop(@(x,u,v) [u - diff(v,2) + u.^2; diff(u) + sin(v)],d);
 A.lbc = @(u,v) u-1;
 A.rbc = @(u,v) [v-1/2; diff(v)];
@@ -43,6 +45,22 @@ bcFunRight = chebfun(A.rbc(u3,u4));
 pass(3) = norm( chebfun(A(x, u3, u4))) < tol;
 pass(4) = norm(bcFunLeft(d(1))) < tol && norm(bcFunRight(d(end))) < tol;
 
+%% Try with colloc1
+pref.discretization = @colloc1;
+u56 = mldivide(A, f, pref);
+
+u5 = u56{1}; u6 = u56{2};
+
+% Want to check BCs as well.
+bcFunLeft = A.lbc(u5,u6);
+bcFunRight = chebfun(A.rbc(u5,u6));
+
+pass(5) = norm( chebfun(A(x, u5, u6))) < tol;
+pass(6) = norm(bcFunLeft(d(1))) < tol && norm(bcFunRight(d(end))) < tol;
+
+%% We expect the solutions to be similar, but not identical!
+pass(7) = ( (norm(u12 - u34) ~= 0) && (norm(u12 - u56) ~= 0) && ...
+    (norm(u34 - u56) ~= 0));
 
 end
 

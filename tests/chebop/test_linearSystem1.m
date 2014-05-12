@@ -10,8 +10,6 @@ end
 
 tol = 1e-10;
 
-pref.display = 'iter';
-
 %% Smooth domain:
 d = [-pi pi];
 A = chebop(@(x,u,v) [u - diff(v) ; diff(u) + v],d);
