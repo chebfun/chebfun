@@ -39,7 +39,7 @@ end
 % Do we want to show a plot of the initial guess?
 if ( ~strcmpi(plotMode, 'off') )
     displayFig = figure('name', 'BVP solver convergence');
-    plot(u0, '.-'), 
+    plot(chebfun(u0), '.-'), 
     title('Initial guess of solution', 'Fontsize', 12)
     drawnow
     
