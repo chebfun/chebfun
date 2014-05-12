@@ -17,6 +17,10 @@ A = chebop(@(x, u) [diff(u{1}) + u{1} + 2*u{2} ; ...
 A.lbc = @(u) u{1}+diff(u{1});
 A.rbc = @(u) diff(u{2});
 x = chebfun('x',d);
+
+% TODO: Shouldn't need to pass an initial guess, but necessary to get the
+% correct dimension information!
+A.init = [0*x; 0*x];
 f = [ exp(x) ; chebfun(1,d) ];
 u = mldivide(A, f, pref);
 
@@ -25,8 +29,9 @@ pass(1) = norm( diff(u1)+u1+2*u2-exp(x)) < tol;
 pass(2) = norm( diff(u1)-u1+diff(u2)-1 ) < tol;
 
 % Want to check BCs as well.
-bcFunLeft = A.lbc(u1,u2);
-bcFunRight = A.rbc(u1,u2);
+% TODO: Shouldn't need to extract the blocks first!
+bcFunLeft = A.lbc(u.blocks);
+bcFunRight = A.rbc(u.blocks);
 pass(3) = norm(bcFunLeft(d(1))) < tol && norm(bcFunRight(d(end))) < tol;
 
 %% Piecewise:
@@ -38,8 +43,9 @@ err1 = diff(u1) + u1 + 2*u2 - exp(x);
 err2 = diff(u1) - u1 + diff(u2) - 1;
 
 % Want to check BCs as well.
-bcFunLeft = A.lbc(u1,u2);
-bcFunRight = A.rbc(u1,u2);
+% TODO: Shouldn't need to extract the blocks!
+bcFunLeft = A.lbc(u.blocks);
+bcFunRight = A.rbc(u.blocks);
 bcValLeft = bcFunLeft(d(1));
 bcValRight = bcFunRight(d(2));
 

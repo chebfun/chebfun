@@ -44,10 +44,12 @@ if ( nargin(N) == 1 )
     N.op = @(x, u) N.op(u);
 end
 
+% The domain that the problem is specified on
+dom = N.domain;
+
 % Number of unknown variables N acts on. Subtract 1 from nargin(N.op), since the
 % first argument is the independent variable x.
 numVars = nargin(N.op) - 1;
-dom = N.domain;
 
 %% Construct a suitable function to linearize about:
 
@@ -85,6 +87,16 @@ if ( ~iscell(u) )
     u = {u};
 end
 
+% If numVars == 2, but the dimension of the initial guess passed is greater than
+% 1, we are working with the @(x,u) [diff(u{1}) + u{2}; ...] syntax. Need to
+% make the code aware of this.
+if ( numVars == 1 && numel(u) > 1 )
+    numVars = numel(u);
+    cellArg = 1;
+else
+    cellArg = 0;
+end
+
 % Convert each element in the cell-array U to an ADCHEBFUN, and seed the
 % derivative so it'll be of correct dimensions (i.e. correct block-size).
 % Blocks corresponding to functions (i.e., CHEBFUNs) will be square, wheres the
@@ -97,8 +109,15 @@ end
 %% Evaluate N.op to get a linearisation of the differential equation:
 
 % Evaluate N.op. The output will be the ADCHEBFUN NU. In case of systems, NU
-% will be an array-valued ADCHEBFUN.
-Nu = feval(N, x, u{:}); % N.op(x, u{:});
+% will be an array-valued ADCHEBFUN. Need different calling sequences depending
+% on whether N has a cell-argument or not
+if ( cellArg )
+    % No need to expand the cell U
+    Nu = feval(N, x, u);
+else
+    % Need to expand the cell U
+    Nu = feval(N, x, u{:});
+end
 
 % Construct a LINOP L by vertically concatenating the derivatives stored in NU.
 L = linop(vertcat(get(Nu, 'jacobian')));
@@ -158,7 +177,11 @@ BC = linopConstraint();
 % Evaluate and linearise left boundary condition(s):
 if ( ~isempty(N.lbc) )
     % Evaluate. The output, LBCU, will be an ADCHEBFUN.
-    lbcU = N.lbc(u{:});
+    if ( cellArg )
+        lbcU = N.lbc(u);
+    else
+        lbcU = N.lbc(u{:});
+    end
     
     % Ensure conditions were concatenated vertically, not horizontally
     lbcU = checkConcat(lbcU);
@@ -185,7 +208,11 @@ end
 % Evaluate and linearise right boundary condition(s):
 if ( ~isempty(N.rbc) )
     % Evaluate. The output, RBCU, will be an ADCHEBFUN.
-    rbcU = N.rbc(u{:});
+    if ( cellArg )
+        rbcU = N.rbc(u);    
+    else
+        rbcU = N.rbc(u{:});
+    end
     
     % Ensure conditions were concatenated vertically, not horizontally
     rbcU = checkConcat(rbcU);
@@ -221,6 +248,8 @@ if ( ~isempty(N.bc) )
         % Evaluate. The output, BCU, will be an ADCHEBFUN.
         if ( nargin(N.bc) == 1 )
             bcU = N.bc(u{:});
+        elseif ( cellArg )
+            bcU = N.bc(x, u);
         else
             bcU = N.bc(x, u{:});
         end
