@@ -1,6 +1,9 @@
 function pass = test_linearScalarODEs(pref)
+% A linear CHEBOP test. This test tests a scalar ODE, both with and without
+% breakpoints, as well as with discontinuous coefficients. It solves the
+% problems using colloc1, colloc2 and ultraS discretizations.
 
-% Setup
+%% Setup
 dom = [0 pi];
 if ( nargin == 0 )
     pref = cheboppref;
