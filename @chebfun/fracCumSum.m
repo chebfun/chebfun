@@ -1,8 +1,8 @@
-function f = fracCalc(f, m)
-%FRACCALC   Differentiation or integral of a CHEBFUN for a fractional order.
-%  FRACCALC(F, M) is called by DIFF(F, M) and CUMSUM(F, M) when M is not an
-%  integer and computes the fractional integral of order M of F, as defined
-%  by the Riemann–Liouville integral.
+function f = fracCumSum(f, m)
+%FRACCUMSUM   Indefinite integral of a CHEBFUN for a fractional order.
+%  FRACCUMSUM(F, M) is called by DIFF(F, M) and CUMSUM(F, M) when M is not 
+%  integer and computes the fractional indefinite integral of order M of F, as 
+%  defined by the Riemann–Liouville integral.
 %
 % See also CUMSUM, DIFF.
 
@@ -26,9 +26,9 @@ fracM = m - floor(m);
 funs = f.funs;
 numFuns = numel(funs);
 
-% Loop over each FUN:
+% Loop over each FUN by calling FRACCumSum@BNDFUN:
 for k = 1:numFuns
-    f.funs{k} = bndfun.fracCalc(funs(1:k), fracM);
+    f.funs{k} = bndfun.fracCumSum(funs(1:k), fracM);
 end
 
 end

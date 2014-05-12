@@ -118,8 +118,8 @@ classdef bndfun < classicfun
         % Linear map from [-1, 1] to the domain of the BNDFUN.
         m = createMap(domain);
         
-        % Differentiation or integral of a BNDFUN for a fractional order.
-        f = fracCalc(funs, k, fracM)
+        % Indefinite integral of a BNDFUN for a fractional order.
+        f = fracCumSum(funs, k, fracM)
         
         % Make a BNDFUN (constructor shortcut):
         f = make(varargin);

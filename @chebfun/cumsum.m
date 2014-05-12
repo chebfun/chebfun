@@ -36,7 +36,7 @@ if ( nargin < 3 )
 end
 
 if ( round(m) ~= m )
-    f = fracCalc(f, m);
+    f = fracCumSum(f, m);
     return
 end
 

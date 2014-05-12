@@ -405,6 +405,9 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         % Finding fractional order singularities (+ve or -ve).
         branchOrder = findSingOrder( op, SingEnd )
         
+        % Fractional indefinite integral of a ONEFUN.
+        f = fracCumSum(oneFuns, maps ,fracM)
+            
         % Make a SINGFUN (constructor shortcut):
         f = make(varargin);
         
