@@ -26,8 +26,8 @@ function out = roots(f, varargin)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Simply create a chebfun of the FOURTECH and call min on it.
-g = chebfun(@(x) f.feval(x),[-1,1]);
+% Simply create a chebtech of the FOURTECH and call min on it.
+g = chebtech2(@(x) f.feval(x));
 out = roots(g,varargin{:});
 
 end
