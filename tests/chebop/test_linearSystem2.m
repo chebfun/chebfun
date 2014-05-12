@@ -7,14 +7,15 @@ function pass = test_linearSystem2(pref)
 if ( nargin == 0 )
     pref = cheboppref;
 end
-
+%%
 tol = 1e-10;
 
 % Smooth domain:
 d = [-1 1];
-A = chebop(@(x,u,v) [diff(u) + u + 2*v ; diff(u) - u + diff(v)], d);
-A.lbc = @(u,v) u+diff(u);
-A.rbc = @(u,v) diff(v);
+A = chebop(@(x, u) [diff(u{1}) + u{1} + 2*u{2} ; ...
+    diff(u{1}) - u{1} + diff(u{2})], d);
+A.lbc = @(u) u{1}+diff(u{1});
+A.rbc = @(u) diff(u{2});
 x = chebfun('x',d);
 f = [ exp(x) ; chebfun(1,d) ];
 u = mldivide(A, f, pref);
