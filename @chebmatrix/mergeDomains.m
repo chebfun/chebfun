@@ -10,7 +10,8 @@ for i = 1:nargin
     item = varargin{i};
     if ( isnumeric(item) && length(item) > 1 )
         d = chebfun.mergeDomains(d,item);
-    elseif ( isa(item,'chebfun') || isa(item,'linBlock') )
+    elseif ( isa(item,'chebfun') || isa(item, 'adchebfun') || ...
+            isa(item,'linBlock') )
         d = chebfun.mergeDomains(d,item.domain);
     end
 end

@@ -1419,6 +1419,20 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % This method does nothing.
         end
         
+        function out = vertcat(varargin)
+            %VERTCAT    Vertical concatenation of ADCHEBFUN objects.
+            %
+            %   OUT = VERTCAT(F1, F2, ...) results in the CHEBMATRIX that
+            %   consists of the vertically concatenated blocks F1, F2, ...
+            %
+            %   See also: chebmatrix
+            
+            % Developers notes: We should only expect to require the capability
+            % of vertically concatenating ADCHEBFUN objects when evaluating
+            % CHEBOPS. Hence this method is quite simple.
+            out = chebmatrix(varargin.');
+        end
+        
         function f = volt(K, f, varargin)
             % VOLT   Volterra operator.
             

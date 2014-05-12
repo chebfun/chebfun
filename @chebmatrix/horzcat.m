@@ -22,7 +22,8 @@ for n = 1:nargin
     item = varargin{n};
     if ( isa(item, 'chebmatrix') )   % already a cell
         blocks{n} = item.blocks;
-    elseif ( isa(item, 'linBlock') || isa(item,'chebfun') )
+    elseif ( isa(item, 'linBlock') || isa(item,'chebfun') || ...
+            isa(item, 'adchebfun'))
         blocks{n} = { item };        % encase in a cell
     elseif ( ~isempty(item) )   
         blocks{n} = num2cell(item);  % encase in cell(s)

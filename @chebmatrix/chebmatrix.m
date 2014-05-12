@@ -89,7 +89,8 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             elseif ( isa(data, 'chebmatrix') )
                 A.blocks = data.blocks;
                 A.domain = data.domain;
-            elseif ( isa(data, 'chebfun') || isa(data, 'linBlock') )
+            elseif ( isa(data, 'chebfun') || isa(data, 'adchebfun') || ...
+                    isa(data, 'linBlock') )
                 A.blocks = {data};
                 A.domain = data.domain;
             end
