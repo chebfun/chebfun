@@ -1,124 +1,124 @@
 classdef (InferiorClasses = {?double}) chebop
-    %CHEBOP  CHEBOP class for representing operators on functions defined on [a,b].
-    % N = CHEBOP(OP) creates a CHEBOP object N with operator defined by OP, which
-    % should be a handle to a function (often created using an anonymous function)
-    % that accepts a chebfun or a chebmatrix consisting of chebfuns and scalars as
-    % input and returns a CHEBFUN (or CHEBMATRIX). The first input argument to OP is
-    % the independent variable X, while all others represent dependent functions of
-    % X; if only one input argument is accepted by OP, it is the dependent variable.
-    % In case of coupled systems, the function OP must return vertically, not
-    % horizontally, concatenated elements. Note, this differs from the V4 syntax.
-    %
-    % Examples of N.OP:
-    %
-    %   @(x, u) x.*diff(u) + u;                             % one dependent variable
-    %   @(x, u, v, w) [ u.*diff(v) ; diff(u,2)+w; diff(w)-v ];    % 3 dependent vars
-    %   @(u) diff(u,2) - exp(u);                  % no explicit independent variable
-    %
-    % The number of elements in the output CHEBMATRIX should typically equal the
-    % number of dependent variables, whether specified as names or CHEBMATRIX
-    % elements (see section on parameter-dependent problems below).
-    %
-    % By default, the operator acts on CHEBFUN objects defined on the domain [-1,1].
-    % CHEBOP(OP, D), for a vector D, gives a different domain, with breakpoints (if
-    % any) described by D.
-    %
-    % %% BOUNDARY CONDITIONS: %%
-    %
-    % CHEBOP(OP, D, LBC, RBC) specifies boundary conditions for functions at the
-    % left and right endpoints of the domain D. Possible values for LBC and RBC are:
-    %
-    %   []          : No condition (for only assigning LBC or RBC in constructor).
-    %   scalar      : All variables equal the given value.
-    %   'dirichlet' : All variables equal zero.
-    %   'neumann'   : All variables have derivative zero.
-    %   function    : A function handle that must accept all dependent variables as
-    %                 given in OP and return a CHEBFUN or CHEBMATRIX. All elements
-    %                 of the result are evaluated at the endpoint, and for the
-    %                 solution of the BVP, they are made to equal zero.
-    %
-    % A boundary condition function may be nonlinear; it must not accept the
-    % independent variable X as an input. Again, in case of systems, the function
-    % describing the boundary conditions must return vertically concatenated
-    % elements (again, differing from V4 syntax).
-    %
-    % Examples of boundary condition functionals::
-    %
-    %   @(u) diff(u) - 2;               % set u' = 2 at the appropriate endpoint
-    %   @(u, v, w) [ u - 1 ; w ];       % set u = 1 and w = 0 at the endpoint
-    %   @(u, v, w) u.*v - diff(w)       % set u*v = w' at the endpoint
-    %
-    % CHEBOP(OP, D, BC) gives boundary or other side conditions in an alternate
-    % form. Choices for BC are:
-    %
-    %   scalar      : All variables equal the given value at both endpoints.
-    %   'dirichlet' : All variables equal zero at both endpoints.
-    %   'neumann'   : All variables have derivative zero at both endpoints.
-    %   'periodic'  : Impose periodicity on all dependent variables.
-    %   function    : See below.
-    %
-    % Note that the 'dirichlet' and 'neumann' keywords impose behavior that may not
-    % be identical to the common understanding of Dirichlet or Neumann conditions in
-    % every problem. When BC is passed in the CHEBOP call, the more specialized
-    % fields LBC and RBC are ignored. Furthermore, note that CHEBOP(OP, DOM, 0) is
-    % not equivalent to CHEBOP(OP, DOM, 0, []).
-    %
-    % If BC is given a function handle, then each condition must give points
-    % explicitly or otherwise evaluate to a scalar. The function handle must return
-    % a column vector, not a row vector. Example:
-    %   @(x, u) [ u(1) - u(0) ; sum(x.*u) ] % set u(1) = u(0), and integral
-    %                                       % of x.*u over the whole interval = 0.
-    %
-    % Boundary conditions may also be assigned to the CHEBOP N after it has been
-    % constructed, by N.lbc = ..., N.rbc = ..., and N.bc = ... . This will overwrite
-    % the conditions currently stored in the field being assigned to, but not the
-    % other fields, with an exception of keywords as noted below).
-    %
-    % CHEBOP(OP, ..., 'init', U) provides a CHEBFUN/CHEBMATRIX as a starting point
-    % for nonlinear iterations or a PDE solution. See CHEBOP/SOLVEBVP and
-    % CHEBOP/PDE15S for details.
-    %
-    % Note that many fields can be set after the CHEBOP object N is created: N.op,
-    % N.lbc, N.rbc, N.bc, N.init can all be assigned new values. Setting N.bc to any
-    % of 'dirichlet', 'neumann', or 'periodic', removes pre-existing entries in
-    % N.lbc, N.rbc, and N.bc.
-    %
-    % Example:
-    %
-    %   N = chebop(-5, 5);  % Constructs an empty CHEBOP on the interval [-5,5]
-    %   N.op = @(x, u) 0.01*diff(u, 2) - x.*u;
-    %   N.bc = 'dirichlet';
-    %   plot(N\1)
-    %
-    % %% PARAMETER DEPENDENT PROBLEMS: %%
-    %
-    % CHEBOP supports solving systems of equations containing unknown parameters
-    % without the need to introduce extra equations into the system. Simply add the
-    % unknown parameters as the final variables.
-    %
-    % Example:
-    %
-    %   % y'' + x.*y + p = 0, y(-1) = 1, y'(-1) = 1, y(1) = 1 can be solved via
-    %   N = chebop(@(x, y, p) diff(y,2) + x.*y + p)
-    %   N.lbc = @(y, p) [y - 1 ; diff(y)];
-    %   N.rbc = @(y, p) y - 1;
-    %   plot(N\0)
-    %
-    % Parameters can be positioned at different locations if a double is passed in
-    % the CHEBMATRIX input to N.init.
-    %
-    % Example:
-    %
-    %   N = chebop(@(x, p, y) diff(y,2) + x.*y + p)
-    %   N.lbc = @(p, y) [y - 1 ; diff(y)];
-    %   N.rbc = @(p, y) y - 1;
-    %   N.init = [1 ; chebfun(1)];
-    %   plot(N\0)
-    %
-    % See also CHEBOP/MTIMES, CHEBOP/MLDIVIDE, CHEBOPPREF.
-    
-    % Copyright 2014 by The University of Oxford and The Chebfun Developers. See
-    % http://www.chebfun.org/ for Chebfun information.
+%CHEBOP  CHEBOP class for representing operators on functions defined on [a,b].
+% N = CHEBOP(OP) creates a CHEBOP object N with operator defined by OP, which
+% should be a handle to a function (often created using an anonymous function)
+% that accepts a chebfun or a chebmatrix consisting of chebfuns and scalars as
+% input and returns a CHEBFUN (or CHEBMATRIX). The first input argument to OP is
+% the independent variable X, while all others represent dependent functions of
+% X; if only one input argument is accepted by OP, it is the dependent variable.
+% In case of coupled systems, the function OP must return vertically, not
+% horizontally, concatenated elements. Note, this differs from the V4 syntax.
+%
+% Examples of N.OP:
+%
+%   @(x, u) x.*diff(u) + u;                             % one dependent variable
+%   @(x, u, v, w) [ u.*diff(v) ; diff(u,2)+w; diff(w)-v ];    % 3 dependent vars
+%   @(u) diff(u,2) - exp(u);                  % no explicit independent variable
+%
+% The number of elements in the output CHEBMATRIX should typically equal the
+% number of dependent variables, whether specified as names or CHEBMATRIX
+% elements (see section on parameter-dependent problems below).
+%
+% By default, the operator acts on CHEBFUN objects defined on the domain [-1,1].
+% CHEBOP(OP, D), for a vector D, gives a different domain, with breakpoints (if
+% any) described by D.
+%
+% %% BOUNDARY CONDITIONS: %%
+%
+% CHEBOP(OP, D, LBC, RBC) specifies boundary conditions for functions at the
+% left and right endpoints of the domain D. Possible values for LBC and RBC are:
+%
+%   []          : No condition (for only assigning LBC or RBC in constructor).
+%   scalar      : All variables equal the given value.
+%   'dirichlet' : All variables equal zero.
+%   'neumann'   : All variables have derivative zero.
+%   function    : A function handle that must accept all dependent variables as
+%                 given in OP and return a CHEBFUN or CHEBMATRIX. All elements
+%                 of the result are evaluated at the endpoint, and for the
+%                 solution of the BVP, they are made to equal zero.
+%
+% A boundary condition function may be nonlinear; it must not accept the
+% independent variable X as an input. Again, in case of systems, the function
+% describing the boundary conditions must return vertically concatenated
+% elements (again, differing from V4 syntax).
+%
+% Examples of boundary condition functionals::
+%
+%   @(u) diff(u) - 2;               % set u' = 2 at the appropriate endpoint
+%   @(u, v, w) [ u - 1 ; w ];       % set u = 1 and w = 0 at the endpoint
+%   @(u, v, w) u.*v - diff(w)       % set u*v = w' at the endpoint
+%
+% CHEBOP(OP, D, BC) gives boundary or other side conditions in an alternate
+% form. Choices for BC are:
+%
+%   scalar      : All variables equal the given value at both endpoints.
+%   'dirichlet' : All variables equal zero at both endpoints.
+%   'neumann'   : All variables have derivative zero at both endpoints.
+%   'periodic'  : Impose periodicity on all dependent variables.
+%   function    : See below.
+%
+% Note that the 'dirichlet' and 'neumann' keywords impose behavior that may not
+% be identical to the common understanding of Dirichlet or Neumann conditions in
+% every problem. When BC is passed in the CHEBOP call, the more specialized
+% fields LBC and RBC are ignored. Furthermore, note that CHEBOP(OP, DOM, 0) is
+% not equivalent to CHEBOP(OP, DOM, 0, []).
+%
+% If BC is given a function handle, then each condition must give points
+% explicitly or otherwise evaluate to a scalar. The function handle must return
+% a column vector, not a row vector. Example:
+%   @(x, u) [ u(1) - u(0) ; sum(x.*u) ] % set u(1) = u(0), and integral
+%                                       % of x.*u over the whole interval = 0.
+%
+% Boundary conditions may also be assigned to the CHEBOP N after it has been
+% constructed, by N.lbc = ..., N.rbc = ..., and N.bc = ... . This will overwrite
+% the conditions currently stored in the field being assigned to, but not the
+% other fields, with an exception of keywords as noted below).
+%
+% CHEBOP(OP, ..., 'init', U) provides a CHEBFUN/CHEBMATRIX as a starting point
+% for nonlinear iterations or a PDE solution. See CHEBOP/SOLVEBVP and
+% CHEBOP/PDE15S for details.
+%
+% Note that many fields can be set after the CHEBOP object N is created: N.op,
+% N.lbc, N.rbc, N.bc, N.init can all be assigned new values. Setting N.bc to any
+% of 'dirichlet', 'neumann', or 'periodic', removes pre-existing entries in
+% N.lbc, N.rbc, and N.bc.
+%
+% Example:
+%
+%   N = chebop(-5, 5);  % Constructs an empty CHEBOP on the interval [-5,5]
+%   N.op = @(x, u) 0.01*diff(u, 2) - x.*u;
+%   N.bc = 'dirichlet';
+%   plot(N\1)
+%
+% %% PARAMETER DEPENDENT PROBLEMS: %%
+%
+% CHEBOP supports solving systems of equations containing unknown parameters
+% without the need to introduce extra equations into the system. Simply add the
+% unknown parameters as the final variables.
+%
+% Example:
+%
+%   % y'' + x.*y + p = 0, y(-1) = 1, y'(-1) = 1, y(1) = 1 can be solved via
+%   N = chebop(@(x, y, p) diff(y,2) + x.*y + p)
+%   N.lbc = @(y, p) [y - 1 ; diff(y)];
+%   N.rbc = @(y, p) y - 1;
+%   plot(N\0)
+%
+% Parameters can be positioned at different locations if a double is passed in
+% the CHEBMATRIX input to N.init.
+%
+% Example:
+%
+%   N = chebop(@(x, p, y) diff(y,2) + x.*y + p)
+%   N.lbc = @(p, y) [y - 1 ; diff(y)];
+%   N.rbc = @(p, y) y - 1;
+%   N.init = [1 ; chebfun(1)];
+%   plot(N\0)
+%
+% See also CHEBOP/MTIMES, CHEBOP/MLDIVIDE, CHEBOPPREF.
+
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. See
+% http://www.chebfun.org/ for Chebfun information.
     
     properties ( GetAccess = 'public', SetAccess = 'public' )
         domain = [];    % Domain of the operator
@@ -196,7 +196,7 @@ classdef (InferiorClasses = {?double}) chebop
             %   conditions than simply accessing the .lbc field, or using standard
             %   subsref.
             
-            N.lbc = parsebc(N,val);            
+            N.lbc = parsebc(N, val);            
         end
         
         function N = set.rbc(N, val)
@@ -205,27 +205,28 @@ classdef (InferiorClasses = {?double}) chebop
             %   conditions than simply accessing the .rbc field, or using standard
             %   subsref.
             
-            N.rbc = parsebc(N,val);
+            N.rbc = parsebc(N, val);
         end
         
         function N = set.bc(N, val)
             %CHEBOP.SET.BC   Set constraints of a CHEBOP.
-            %   CHEBOP.SET.BC offers more control of setting constraints than simply
-            %   accessing the .bc field, or using standard subsref. In particular,
-            %   note that setting SET.BC(N, VAL) where VAL is numeric will actually
-            %   set N.BC = [] and N.LBC = N.RBC = VAL. SET.BC(N, STR) works
-            %   similarly when STR is one of 'dirichlet', 'neuman', or 'periodic'.
+            %   CHEBOP.SET.BC offers more control of setting constraints than
+            %   simply accessing the .bc field, or using standard subsref. In
+            %   particular, note that setting SET.BC(N, VAL) where VAL is
+            %   numeric will actually set N.BC = [] and N.LBC = N.RBC = VAL.
+            %   SET.BC(N, STR) works similarly when STR is one of 'dirichlet',
+            %   'neuman', or 'periodic'.
             
             % Do this in a separate method for clarity.
             if ( isstruct(val) )
                 if ( isfield(val,'left') )
-                    N.lbc = parsebc(N,val.left); %#ok<MCSUP>
+                    N.lbc = parsebc(N, val.left); %#ok<MCSUP>
                 end
-                if ( isfield(val,'right') )
-                    N.rbc = parsebc(N,val.right); %#ok<MCSUP>
+                if ( isfield(val, 'right') )
+                    N.rbc = parsebc(N, val.right); %#ok<MCSUP>
                 end
-                if ( isfield(val,'other') )
-                    N.bc = parsebc(N,val.other);
+                if ( isfield(val, 'other') )
+                    N.bc = parsebc(N, val.other);
                 end
                 
             elseif ( strcmpi(val, 'periodic') )
@@ -236,13 +237,13 @@ classdef (InferiorClasses = {?double}) chebop
                 % V4 style keywords and numeric settings are understood to
                 % apply to both ends.
                 N.bc = [];
-                result = parsebc(N,val);
+                result = parsebc(N, val);
                 N.lbc = result; %#ok<MCSUP>
                 N.rbc = result; %#ok<MCSUP>
                 
             else
                 % A proper function was supplied.
-                N.bc = parsebc(N,val);
+                N.bc = parsebc(N, val);
                 
             end
             
@@ -251,9 +252,9 @@ classdef (InferiorClasses = {?double}) chebop
         
         function N = set.op(N, val)
             %CHEBOP.SET.OP   Set the differential equation part of a CHEBOP.
-            %   CHEBOP.SET.OP offers more control of setting the DE left boundary
-            %   conditions than simply accessing the .op field, or using standard
-            %   subsref.
+            %   CHEBOP.SET.OP offers more control of setting the DE left
+            %   boundary conditions than simply accessing the .op field, or
+            %   using standard subsref.
             
             % We're happy with function handles
             if ( isa(val, 'function_handle') || isempty(val) )
@@ -273,11 +274,12 @@ classdef (InferiorClasses = {?double}) chebop
         
         function N = set.init(N, val)
             %CHEBOP.SET.INIT   Set the initial guess for a nonlinear CHEBOP.
-            %   CHEBOP.SET.INIT offers more control of setting the initial guess for
-            %   the Newton solves used for nonlinar ODES than simply accessing the
-            %   .init field, or using standard subsref. In particular, it checks
-            %   that the guess is of an appropriate form (i.e., CHEBMATRIX rather
-            %   than quasimatrix.). See CHEBOP documentation for further details.
+            %   CHEBOP.SET.INIT offers more control of setting the initial guess
+            %   for the Newton solves used for nonlinar ODES than simply
+            %   accessing the .init field, or using standard subsref. In
+            %   particular, it checks that the guess is of an appropriate form
+            %   (i.e., CHEBMATRIX rather than quasimatrix.). See CHEBOP
+            %   documentation for further details.
             
             % Did we get a horizontally concatenated initial guess?
             if ( isa(val, 'chebfun') && size(val, 2) > 1 )
