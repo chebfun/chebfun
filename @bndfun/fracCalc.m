@@ -18,21 +18,18 @@ for k = 1:numFuns
 end
 
 exps = funs{end}.onefun.exponents;
-
 if ( numFuns == 1 )
-    f = funs{1};
-    f.onefun = (diff(funs{1}.domain)/2)^fracM*(1/gamma(fracM))*...
-        singfun(@(x) opOnePiece(funs{1}.onefun, x, fracM), [exps(1)+fracM exps(2)]);
-else
-    f = funs{end};
-    f.onefun = (diff(funs{1}.domain)/2)^fracM*(1/gamma(fracM))*...
-        singfun(@(x) opMultiPiece(funs, x, fracM), exps);
+    exps(1) = exps(1) + fracM;
 end
+
+f = funs{end};
+f.onefun = (diff(funs{end}.domain)/2)^fracM*(1/gamma(fracM))*...
+    singfun(@(x) op(funs, x, fracM), exps);
 
 end
 
 %%
-function y = opMultiPiece(funs, x, fracM)
+function y = op(funs, x, fracM)
 
 % Get the exponents of G:
 g = funs{end}.onefun;
@@ -46,11 +43,8 @@ y = zeros(l, 1);
 
 numFuns = numel(funs);
 
-subDoms = zeros(numFuns, 2);
 maps = cell(1, numFuns);
-
 for j = 1:numFuns
-    subDoms(j, :) = funs{j}.domain;
     maps{j} = funs{j}.mapping;
 end
 
@@ -82,41 +76,6 @@ for k = 1:l
         rsp = restrict(sp, [-1 x(k)]);
         h = singfun(rsp, [exps(1) fracM-1]);
         y(k) = I + ((x(k)+1)/2)^fracM*sum(h);
-    end
-end
-
-y = reshape(y, oldSize);
-
-end
-
-%%
-function y = opOnePiece(f, x, M)
-
-% Get the exponents of F:
-exps = f.exponents;
-sp = f.smoothPart;
-
-oldSize = size(x);
-x = x(:);
-l = length(x);
-y = zeros(l, 1);
-
-for k = 1:l
-    
-    if ( x(k) == -1 )
-        % When sampled at -1, the definite integral given above, i.e.
-        % sum(integrand(f, x)) should be zero, which is equivalent to a zero
-        % SINGFUN:
-        y(k) = 0;
-    elseif ( x(k) == 1 )
-        % Call SINGFUN constructor:
-        g = singfun(sp, [exps(1) exps(2)+M-1]);
-        y(k) = sum(g);
-    else
-        % Call SINGFUN constructor:
-        rsp = restrict(sp, [-1 x(k)]);
-        g = singfun(rsp, [exps(1) M-1]);
-        y(k) = ((x(k)+1)/2)^M*sum(g);
     end
 end
 
