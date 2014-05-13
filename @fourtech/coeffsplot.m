@@ -1,4 +1,4 @@
-function varargout = coeffplot(f, varargin)
+function varargout = coeffsplot(f, varargin)
 %COEFFPLOT   Display Fourier coefficients graphically.
 %
 %   COEFFPLOT(F) plots the Fourier coefficients of a FOURTECH F on a

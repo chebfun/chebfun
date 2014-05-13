@@ -1,4 +1,4 @@
-classdef fourtech
+classdef fourtech < smoothfun
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -136,6 +136,18 @@ classdef fourtech
         % Get method:
         val = get(f, prop);
         
+    end
+    
+    methods        
+        function c = legpoly(f)
+            error('CHEBFUN:FOURTECH:legpoly:NotAvailable',...
+                'Cannot convert a Fourier based chebfun to a Legendre Series. Try first converting the f to a Chebyshev based chebfun');
+        end
+        
+        function X = mldivide(A, B)
+            error('CHEBFUN:FOURTECH:mldivide:NotAvaliable',...
+                'Cannot perform mldivide on a fourtech');
+        end
     end
     
 end

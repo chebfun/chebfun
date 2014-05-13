@@ -55,12 +55,10 @@ absCoeffs = abs(f.coeffs);
 % Need to handle odd/even cases separately
 isEven = ~mod(n,2);
 if isEven
-    % In this case the positive cofficients have an additional term
+    % In this case the negative cofficients have an additional term
     % corresponding to the cos(N/2*x) coefficient.
-%     f.coeffs = [absCoeffs(n/2,:);absCoeffs(n/2+1:n-1,:)+absCoeffs(n/2-1:-1:1,:);absCoeffs(n,:)];
     f.coeffs = [absCoeffs(n,:);absCoeffs(n-1:-1:n/2+1,:)+absCoeffs(1:n/2-1,:);absCoeffs(n/2,:)];
 else
-%     f.coeffs = [absCoeffs((n+1)/2,:);absCoeffs((n+1)/2+1:n,:)+absCoeffs((n+1)/2-1:-1:1,:)];
     f.coeffs = [absCoeffs(n:-1:(n+1)/2+1,:)+absCoeffs(1:(n+1)/2-1,:);absCoeffs((n+1)/2,:)];
 end
 

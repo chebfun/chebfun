@@ -46,15 +46,15 @@ numCoeffs = size(c,1);
 fIsEven = mod(numCoeffs,2) == 0;
 % Split the coefficients into the positive and negative Fourier modes
 if fIsEven
-    % In this case the positive cofficients have an additional term
+    % In this case the negative cofficients have an additional term
     % corresponding to the cos(N/2*x) coefficient. We account for this by
     % making the positive coefficients symmetric 
-    cp = c(numCoeffs:-1:numCoeffs/2,:);
-    cp(1,:) = 0.5*c(numCoeffs,:);
-    cn = [cp(1,:);c(1:numCoeffs/2,:)];
+    cn = c(numCoeffs:-1:numCoeffs/2,:);
+    cn(1,:) = 0.5*c(numCoeffs,:);
+    cp = [cn(1,:);c(1:numCoeffs/2,:)];
 else
-    cp = c(numCoeffs:-1:(numCoeffs+1)/2,:);
-    cn = c(1:(numCoeffs+1)/2,:);
+    cn = c(numCoeffs:-1:(numCoeffs+1)/2,:);
+    cp = c(1:(numCoeffs+1)/2,:);
 end
 
 % Need to check both the positive and negative coeficients in the Fourier
@@ -86,7 +86,7 @@ if ( firstNonZeroRow > 0 )
 end
 
 % Now put the coefficients vector back together.
-f.coeffs = [cn(1:end-1,:);cp(end:-1:1)];
+f.coeffs = [cp(1:end,:);cn(end-1:-1:1)];
 
 % Update values and epslevel:
 f.values = f.coeffs2vals(f.coeffs);

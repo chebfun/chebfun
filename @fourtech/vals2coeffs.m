@@ -3,7 +3,7 @@ function coeffs = vals2coeffs(values)
 %   C = VALS2COEFFS(V) returns the vector of N coefficients such that 
 %
 %   If N is odd
-%       F(x) = C(1)*z^(N-1)/2 + C(2)*z^((N-1)/2-1) + ... + C(N)*z^(-(N-1)/2)
+%       F(x) = C(1)*z^((N-1)/2) + C(2)*z^((N-1)/2-1) + ... + C(N)*z^(-(N-1)/2)
 %   If N is even
 %       F(x) = C(1)*z^(N/2-1) + C(2)*z^(N/2-2) + ... + C(N-1)*z^(-N/2-1) +
 %                  1/2*C(N)*(z^(N/2) + z^(-N/2))

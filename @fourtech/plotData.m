@@ -62,10 +62,10 @@ elseif ( isa(g, 'fourtech') )
     
     % Also return the grid points used.
     % Grid data for f:
-    data.fGrid.xLine = fourierpts(size(f.values,1));
+    data.fGrid.xLine = fourtech.fourpts(size(f.values,1));
     % Use the maximum of the lenghts of f, g and h to match the number of
     % values returned:
-    data.fGrid.xPoints = fourierpts(len);
+    data.fGrid.xPoints = fourtech.fourpts(len);
     
     % Grid data for g:
     data.gGrid.xLine = fourierpts(npts);
@@ -111,7 +111,7 @@ elseif ( isa(g, 'fourtech') )
     end
     
 else
-    error('CHEBFUN:FOURTECH:plotdata:DataType', ...
+    error('CHEBFUN:FOURTECH:plotData:DataType', ...
         'Invalid data types.');
 end
 
