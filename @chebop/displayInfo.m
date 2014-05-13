@@ -46,7 +46,7 @@ switch ( mode )
         
     % Display special information in case of linear problems
     case 'linear'
-        varargout{1} = chebop.displayInfoLinear(varargin{:});
+        chebop.displayInfoLinear(varargin{:});
         
 end
 
