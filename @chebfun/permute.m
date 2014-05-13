@@ -9,6 +9,9 @@ function f = permute(f, order)
 %
 % See also TRANSPOSE.
 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
+
 % For simplicity, we attempt to permute a small matrix and catch any errors
 % in inputs this way.
 tmp = eye(2);
