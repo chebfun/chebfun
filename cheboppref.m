@@ -86,13 +86,14 @@ classdef cheboppref < chebpref
 
             % Copy fields from q, merging incomplete substructures.
             for field = fieldnames(inPref).'
-                if ( isfield(outPref.prefList, field{1}) )
-                    if ( isstruct(outPref.prefList.(field{1})) )
-                        outPref.prefList.(field{1}) = ...
-                            chebpref.mergePrefs(outPref.prefList.(field{1}), ...
-                            inPref.(field{1}));
+                field1 = field{1};
+                if ( isfield(outPref.prefList, field1) )
+                    if ( isstruct(outPref.prefList.(field1)) )
+                        outPref.prefList.(field1) = ...
+                            chebpref.mergePrefs(outPref.prefList.(field1), ...
+                            inPref.(field1));
                     else
-                        outPref.prefList.(field{1}) = inPref.(field{1});
+                        outPref.prefList.(field1) = inPref.(field1);
                     end
                 else
                     error('CHEBOPPREF:cheboppref:badPref', ...
@@ -142,7 +143,7 @@ classdef cheboppref < chebpref
     end
 
     methods ( Static = true )
-        function pref = getFactoryDefaults(getFactory)
+        function pref = getFactoryDefaults(varargin)
         %GETFACTORYDEFAULTS   Get factory default preferences.
         %   PREF = CHEBOPPREF.GETFACTORYDEFAULTS() returns a CHEBOPPREF
         %   object with the preferences set to their factory defaults,

@@ -417,8 +417,8 @@ classdef chebfunpref < chebpref
             % Compute the screen column in which pref values start.
             valueCol = 34; % length('    enableSingularityDetection:   ');
             for field = fieldnames(pref.prefList.techPrefs).'
-                field = field{1};
-                col = length(['        ' field '  ']);
+                field1 = field{1};
+                col = length(['        ' field1 '  ']);
                 if ( col > valueCol )
                     valueCol = col;
                 end
@@ -469,23 +469,23 @@ classdef chebfunpref < chebpref
 
             % Format and print values of tech preferences.
             for field = fieldnames(prefList.techPrefs).'
-                field = field{1};
-                printStr = padString(['        ' field ':']);
+                field1 = field1{1};
+                printStr = padString(['        ' field1 ':']);
 
-                if ( isempty(prefList.techPrefs.(field)) )
+                if ( isempty(prefList.techPrefs.(field1)) )
                     fprintf([printStr 'empty\n']);
-                elseif ( ischar(prefList.techPrefs.(field)) && ...
-                         isrow(prefList.techPrefs.(field)) )
-                    fprintf([printStr '''%s''\n'], prefList.techPrefs.(field))
-                elseif ( numel(prefList.techPrefs.(field)) > 1 )
-                    fprintf([printStr class(prefList.techPrefs.(field)) ...
+                elseif ( ischar(prefList.techPrefs.(field1)) && ...
+                         isrow(prefList.techPrefs.(field1)) )
+                    fprintf([printStr '''%s''\n'], prefList.techPrefs.(field1))
+                elseif ( numel(prefList.techPrefs.(field1)) > 1 )
+                    fprintf([printStr class(prefList.techPrefs.(field1)) ...
                         ' array\n']);
-                elseif ( isfloat(prefList.techPrefs.(field)) )
-                    fprintf([printStr '%0.16g\n'], prefList.techPrefs.(field))
-                elseif ( islogical(prefList.techPrefs.(field)) )
-                    fprintf([printStr '%d\n'], prefList.techPrefs.(field))
+                elseif ( isfloat(prefList.techPrefs.(field1)) )
+                    fprintf([printStr '%0.16g\n'], prefList.techPrefs.(field1))
+                elseif ( islogical(prefList.techPrefs.(field1)) )
+                    fprintf([printStr '%d\n'], prefList.techPrefs.(field1))
                 else
-                    fprintf([printStr class(prefList.techPrefs.(field)) '\n']);
+                    fprintf([printStr class(prefList.techPrefs.(field1)) '\n']);
                 end
             end
         end
@@ -538,7 +538,7 @@ classdef chebfunpref < chebpref
             pref1 = chebpref.mergePrefs(pref1, pref2, map);
         end
 
-        function pref = getFactoryDefaults(getFactory)
+        function pref = getFactoryDefaults(varargin)
         %GETFACTORYDEFAULTS   Get factory default preferences.
         %   PREF = CHEBFUNPREF.GETFACTORYDEFAULTS() returns a CHEBFUNPREF
         %   object with the preferences set to their factory defaults,
