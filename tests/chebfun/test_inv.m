@@ -52,20 +52,6 @@ catch ME
     end
 end
 
-% Check that things still fail if we give inv() a non-monotonic function
-% without 'monocheck' enabled.
-try
-    f = chebfun(@(x) x.^2);
-    f_inv = inv(f, pref, 'splitting', 'on');
-    pass(:,7) = false;
-catch ME
-    if ( strcmpi(ME.identifier, 'CHEBFUN:inv:notmonotonic2') )
-        pass(:,7) = true;
-    else
-        pass(:,7) = false;
-    end
-end
-
 end
 
 function g = sausagemap(s,d)

@@ -2,28 +2,28 @@ function g = inv(f, varargin)
 %INV   Invert a CHEBFUN.
 %   FINV = INV(F) attempts to compute the inverse of the monotonic CHEBFUN F.
 %
-%   FINV =INV(F, PREF) uses the preferences specified by the structure or
+%   FINV = INV(..., 'ALGORITHM', ALGSTR) selects the algorithm used to compute
+%   the values of the inverse of F.  Possible values for ALGSTR are:
+%      'ROOTS'  - Compute the inverse using ROOTS().
+%      'NEWTON' - Compute the inverse using a Newton iteration.
+%      'BISECTION' - Compute the inverse using bisection as the rootfinder.
+%   The default algorithm is 'BISECTION'.
+%
+%   FINV = INV(F, PREF) uses the preferences specified by the structure or
 %   CHEBFUNPREF object PREF when constructing the inverse.
+%
+%   FINV = INV(..., 'EPS', TOL) will construct with the relative tolerance set
+%   by TOL.  If no tolerance is passed, TOL = EPSLEVEL(F) is used.
 %
 %   FINV = INV(..., 'SPLITTING', 'ON') enables breakpoint detection locally for
 %   INV.  Setting this option (or the equivalent preference in PREF) is
 %   particularly advisable if F has zero derivatives at its endpoints.
-%
-%   FINV = INV(..., 'EPS', TOL) will construct with the relative tolerance set
-%   by TOL.  If no tolerance is passed, TOL = EPSLEVEL(F) is used.
 %
 %   FINV = INV(..., 'MONOCHECK', 'ON') enables an optional check for
 %   monotonicity.
 %
 %   FINV = INV(..., 'RANGECHECK', 'ON') enforces that the range of FINV exactly
 %   matches the domain of F (by adding a linear function).
-%
-%   FINV = INV(..., 'ALGORITHM', ALGSTR) selects the algorithm used to compute
-%   the values of the inverse of F.  Possible values for ALGSTR are:
-%      'ROOTS'  - Compute the inverse using ROOTS().
-%      'NEWTON' - Compute the inverse using a Newton iteration.
-%      'BISECTION' - Compute the inverse using bisection as the rootfinder.
-%   The default algorithm is 'ROOTS'.
 %
 %   Any of the name-value option pairs listed above can be used in tandem.
 %
@@ -32,9 +32,9 @@ function g = inv(f, varargin)
 %      f = sign(x) + x;
 %      g = inv(f, 'splitting', 'on');
 %
-%   NB:  This function is experimental and slow!  Use of the 'ROOTS' algorithm
-%   (default) may be the better choice for piecewise functions, whereas the
-%   'NEWTON' algorithm is good for smooth functions.
+%   NB:  This function is experimental and slow!  Use of the 'BISECTION'
+%   (default) and 'ROOTS' algorithm may be the better choice for piecewise
+%   functions, whereas the 'NEWTON' algorithm is good for smooth functions.
 %
 % See also ROOTS.
 
@@ -50,22 +50,22 @@ end
 % Parse the inputs:
 [tol, opts, pref] = parseInputs(f, varargin{:});
 
-% Compute the derivative:
-fp = diff(f);
-
-% Monotonicity check:
 if ( opts.monoCheck )
+    % Compute the derivative:
+    fp = diff(f);
+    % Monotonicity check:
     doMonoCheck(f, fp, tol, pref.enableBreakpointDetection);
+else
+    fp = [];
 end
 
-% TODO: Should the default algorithm be bisection? 
 % Compute the inverse:
 gDomain = minandmax(f).';
 if ( opts.algorithm == 1 )     % Algorithm based on ROOTS.
     g = chebfun(@(x) fInverseRoots(f, x, tol), gDomain, pref);
 elseif ( opts.algorithm == 2 ) % Newton iteration algorithm.
     g = chebfun(@(x) fInverseNewton(f, fp, x, tol), gDomain, pref);
-elseif ( opts.algorithm == 3 ) % bisection based algorithm.
+elseif ( opts.algorithm == 3 ) % Bisection based algorithm.
     g = chebfun(@(x) fInverseBisection(f, x), gDomain, pref);
 end
 
@@ -85,7 +85,7 @@ function [tol, opts, pref] = parseInputs(f, varargin)
 tol = epslevel(f);
 opts.monoCheck = false;
 opts.rangeCheck = false;
-opts.algorithm = 1;
+opts.algorithm = 3;
 
 % Parse preference input:
 if ( (nargin > 1) && isa(varargin{1}, 'chebfunpref') )
@@ -184,6 +184,7 @@ g = g + (gx(2) - x)*(fDomain(1) - gRange(1))/diff(gx) ...
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Inverse finding algorithms.
 
 function y = fInverseRoots(f, x, tol)
 %FINVERSEROOTS(F, X, TOL)   Compute F^{-1}(X) using CHEBFUN.ROOTS().
@@ -210,6 +211,11 @@ function y = fInverseNewton(f, fp, x, tol)
 
 tol = tol/5;
 y = zeros(length(x), 1);
+
+% compute the derivative of f:
+if ( isempty(fp) )
+    fp = diff(f);
+end
 
 % If the sample points are dense enough in the construction domain that our
 % initial guesses scheme for the Newton iteration will work (see below), use
@@ -239,19 +245,24 @@ end
 
 end
 
-
 function y = fInverseBisection(f, x)
 %FINVERSEBISECTION(F, X)   Compute F^{-1}(X) using Bisection.
-a = f.domain(1)*ones(length(x),1);
-b = f.domain(2)*ones(length(x),1);
-while norm(b-a,inf) >= eps
-    vals = feval(f, (a+b)/2);
+
+a = f.domain(1)*ones(length(x), 1);
+b = f.domain(end)*ones(length(x), 1);
+c = (a + b)/2;
+
+while ( norm(b - a, inf) >= eps )   
+    vals = feval(f, c);
     % Bisection:
     I1 = ((vals-x) <= -eps);
     I2 = ((vals-x) >= eps);
     I3 = ~I1 & ~I2;
-    a = I1.*(a+b)/2 + I2.*a + I3.*(a+b)/2;
-    b = I1.*b + I2.*(a+b)/2 + I3.*(a+b)/2;
+    a = I1.*c + I2.*a + I3.*c;
+    b = I1.*b + I2.*c + I3.*c;
+    c = (a+b)/2;
 end
-y = (a+b)/2;
+
+y = c;
+
 end
