@@ -40,7 +40,7 @@ if ( strcmp(display, 'iter') || strcmp(display, 'final') )
     % Plot info:
     fprintf('Linear equation detected. Converged in one step.\n');
     
-    % Show what diunscretization was used
+    % Show what discretization was used
     if ( strcmpi(func2str(pref.discretization), 'ultraS') )
         discString = 'Ultraspherical';
     else

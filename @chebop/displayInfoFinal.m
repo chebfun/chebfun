@@ -30,6 +30,14 @@ if ( strcmp(display,'iter') || strcmp(display,'final') )
         fprintf('Newton''s method converged in %i iterations.\n', iterNo);
     end
     
+    % Show what discretization was used
+    if ( strcmpi(func2str(pref.discretization), 'ultraS') )
+        discString = 'Ultraspherical';
+    else
+        discString = 'Collocation';
+    end
+    fprintf('Discretization method used: %s. \n', discString);
+    
     % Print info about the final error estimates.
     fprintf(['Final error estimate: %.2e (differential equation) \n' ...
         '%30.2e (boundary conditions). \n\n'], errEstDE, errEstBC);
