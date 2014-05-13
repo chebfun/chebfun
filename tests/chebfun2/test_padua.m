@@ -1,8 +1,8 @@
-function pass = test_padua(pref)
-
-if ( nargin == 0 )
-    pref = chebfunpref();
-end
+% function pass = test_padua(pref)
+% 
+% if ( nargin == 0 )
+%     pref = chebfunpref();
+% end
 
 tol = 1e-13;
 seedRNG(0)
@@ -40,4 +40,4 @@ err(3) = norm(FF(0,0) - G(0,0));
 
 pass = err < tol;
 
-end
+% end

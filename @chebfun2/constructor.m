@@ -55,7 +55,7 @@ if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
         g = chebfun2( op, varargin{:} );
         return
     elseif ( any(strcmpi(domain, 'padua')) )
-        [ignored, op] = chebfun2.pad2ten( op );
+        [ignored, op] = chebfun2.paduaVals2coeffs( op );
         g = chebfun2( op );
         return        
     elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, 'coeffs'))) )
@@ -63,7 +63,7 @@ if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
         g = chebfun2( op, domain );
         return
     elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, 'padua'))) )
-        [ignored, op] = chebfun2.pad2ten( op, domain );
+        [ignored, op] = chebfun2.paduaVals2coeffs( op, domain );
         g = chebfun2( op, domain );
         return        
     else

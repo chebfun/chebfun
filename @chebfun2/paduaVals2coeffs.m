@@ -1,26 +1,37 @@
-function [C, V, X, Y] = pad2ten(f, dom)
-%CHEBFUN2.PAD2TEN   Evaluate Padua interpolant on a tensor product grid.
-%   C = CHEBFUN2.PAD2TEN(F) returns the bivariate Chebyshev coefficients C of
+function [C, V, X, Y] = paduaVals2coeffs(f, dom)
+%CHEBFUN2.PADUAVALS2COEFFS   Get Chebyshev coefficients of a Padua interpolant.
+%   CHEBFUN2.PADUAVALS2COEFFS(F) returns the bivariate Chebyshev coefficients of
 %   the Padua interpolant to the data {X, F}, where X is the Padua grid returned
 %   by PADUAPTS(N) for an appropriately chosen value of N.
 %
-%   [C, V, X, Y] = CHEBFUN2.PAD2TEN(F) returns also the values V of the same
-%   interpolant evaluated at an (N+1)x(N+1) point Chebyshev tensor product
+%   [C, V, X, Y] = CHEBFUN2.PADUAVALS2COEFFS(F) returns also the values V of the
+%   same interpolant evaluated at an (N+1)x(N+1) point Chebyshev tensor product
 %   grid, {X, Y}.
 %
-%   ... = CHEBFUN2.PAD2TEN(F, [a, b, c, d]) is as above, but when F is given by
-%   PADUAPTS(N, [a, b, c, d]).
+%   ... = CHEBFUN2.PADUAVALS2COEFFS(F, [a, b, c, d]) is as above, but when F is
+%   given by PADUAPTS(N, [a, b, c, d]).
 %
 %   Notes: 
-%      * The ordering of V is consistent with CHEBFUN2 matrix inputs.
+%      * The ordering of C and V is consistent with CHEBFUN2.VALS2COEFFS().
 %      * This code is inspired by the algorithm in [1].
 %
-% See also PADUAPTS.
+% See also PADUAPTS, COEFFS2VALS, VALS2COEFFS.
+
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % References:
 %  [1]  Marco Caliari, Stefano De Marchi, Alvise Sommariva, Marco Vianello
 %       "Padua2DM: fast interpolation and cubature at the Padua points in
 %       Matlab/Octave."
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% DEVELOPER NOTE:
+%   To compute the values on the Padua interpolant on a tensor product grid, we
+%   _could_ use V = COEFFS2VALS(PADUAVALS2COEFFS(F)), however it's slightly more
+%   efficient to use [~, V] = PADUAVALS2COEFFS(F) as the DCT matrices required
+%   for COEFFS2VALS() have already been constructed in PADUAVALS2COEFFS().
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Use matrices for small n, DCTs for large n. 
 useFFTwhenNisMoreThan = 100; % This decides to switching point.
@@ -31,6 +42,8 @@ n = round(-1.5 + sqrt(.25+2*m));
 
 % Compute the Padua points:
 [x, idx] = paduapts(n);
+
+%%%%%%%%%%%%%%%%%%%%%%% COMPUTE CHEBYSHEV COEFFICIENTS  %%%%%%%%%%%%%%%%%%%%%%%%
 
 % Interpolation weights:
 w = 0*x(:,1) + 1./(n*(n+1));
@@ -65,9 +78,14 @@ C = triu(C(:,end:-1:1));
 C = C(:,end:-1:1);  
 
 if ( nargout < 2 )
+    % For consistency with CHEBFUN2:
+    C = rot90(C, 2);
+    
     % No need to go any further!
     return
 end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%% EVALUATE ON A TENSOR GRID %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Evaluate on a tensor product grid:
 if ( n < useFFTwhenNisMoreThan )
@@ -77,7 +95,9 @@ else
     % Use DCT:
     V = dct(dct(C.').');    
 end
-% For consistency with Chebfun2.
+
+% For consistency with CHEBFUN2.
+C = rot90(C, 2);
 V = rot90(V, 2); 
 
 if ( nargout < 3 )
