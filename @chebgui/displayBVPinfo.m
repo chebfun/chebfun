@@ -8,7 +8,7 @@ switch mode
     case 'iter'
         varargout{1} = displayBVPinfoIter(handles, varargin{:});
     case 'final'
-        %         chebgui.displayBVPinfoFinal(handles, varargin{:});
+        displayBVPInfoFinal(handles, varargin{:});
     case 'linear'
         displayBVPinfoLinear(handles, varargin{:});
 end
@@ -106,9 +106,62 @@ end
 
 end
 
-function [displayFig, displayTimer] = displayBVPinfoLinear(handles, u, nrmRes, pref)
+function displayBVPInfoFinal(handles, u, delta, iterNo, errEstDE, errEstBC, displayFig, ...
+    displayTimer, pref) %#ok<INUSL>
+%DISPLAYINFOFINAL   Utility routine for displaying nonlinear solve progress.
+%  This method prints out information after Newton iteration finishes when
+%  problems are solved using CHEBGUI.
+%
+% See also: displayInfo
+
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+% How many steps did we need
+if ( iterNo == 1 )
+    finalStr = {'Newton''s method converged in 1 iteration\n'};
+else
+    finalStr = {sprintf('Newton''s method converged in %i iterations.\n',....
+        iterNo)};
+end
+
+% Show what discretization was used
+if ( strcmpi(func2str(pref.discretization), 'ultraS') )
+    discString = 'Ultraspherical';
+else
+    discString = 'Collocation';
+end
+finalStr = [finalStr; sprintf('Discretization method used: %s. \n', ...
+    discString)];
+    
+% Print info about the final error estimates.
+finalStr = [finalStr; ...
+    sprintf('Final error estimate: %.2e (differential equation) \n', errEstDE)];
+% and the error in the boundary conditions.
+finalStr = [finalStr; ...
+    sprintf('%30.2e (boundary conditions).', errEstBC)];
+
+% Update the iteration information on the GUI
+currString = get(handles.iter_list,'String');
+set(handles.iter_list,'String', [currString; finalStr]);
+
+% Set focus to bottom of printed list
+set(handles.iter_list,'Value',iterNo + 4);
+
+end
+
+function displayBVPinfoLinear(handles, u, nrmRes, pref)
 
 str = {'Linear equation detected. Converged in one step.'};
+
+% Show what discretization was used
+if ( strcmpi(func2str(pref.discretization), 'ultraS') )
+    discString = 'Ultraspherical';
+else
+    discString = 'Collocation';
+end
+str = [str; sprintf('Discretization method used: %s. \n', discString)];
+
 str = [str; sprintf('Length of solution: %i.\n',length(chebfun(u)))];
 str = [str; sprintf('Norm of residual: %.2e.\n', nrmRes)];
 
@@ -117,7 +170,4 @@ str = [str; sprintf('Norm of residual: %.2e.\n', nrmRes)];
 set(handles.iter_list,'String', str);
 set(handles.iter_list,'Value',1);
 
-
-displayFig = 4;
-displayTimer = 5;
 end
