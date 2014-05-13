@@ -1724,8 +1724,15 @@ if handles.hasSolution
     axes(handles.fig_norm)            
     switch newVal
         case 1
-            plot([0 1],[1 2])
-            'abc'
+            axes(handles.fig_norm)
+            normDelta = handles.normDelta;
+            semilogy(normDelta,'-*','Linewidth',2),title('Norm of updates'), xlabel('Iteration number')
+            if length(normDelta) > 1
+                XTickVec = 1:max(floor(length(normDelta)/5),1):length(normDelta);
+                set(gca,'XTick', XTickVec), xlim([1 length(normDelta)]), grid on
+            else % Don't display fractions on iteration plots
+                set(gca,'XTick', 1)
+            end
         case 2
             chebpolyplot(handles.latest.solution,'linewidth',2);
     end

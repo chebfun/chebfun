@@ -237,6 +237,8 @@ if guiMode
     handles.xLim = xLimit;
     set(handles.fig_sol,'Visible','On');
     set(handles.fig_norm,'Visible','On');
+    
+    set(handles.popupmenu_bottomFig, 'Value', 1);
 end
 
 % Call solvebvp with different arguments depending on whether we're in GUI
@@ -293,6 +295,9 @@ if guiMode
         title('Solution');
     end
     if ~isLinear
+        % Store the norm of the Newton updates
+        handles.normDelta = info.normDelta;
+        
         axes(handles.fig_norm)
         normDelta = info.normDelta;
         semilogy(normDelta,'-*','Linewidth',2),title('Norm of updates'), xlabel('Iteration number')
