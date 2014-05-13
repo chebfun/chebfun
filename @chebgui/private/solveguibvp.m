@@ -258,6 +258,12 @@ isLinear = all(info.isLinear);
 
 % Now do some more stuff specific to GUI
 if guiMode
+    % Convert u from a CHEBMATRIX to an array valued CHEBFUN to make plotting
+    % easier
+    if ( isa(u, 'chebmatrix') )
+        u = chebfun(u);
+    end
+    
     % Store in handles latest chebop, solution, vector of norm of updates etc.
     % (enables exporting later on)
     handles.latest.type = 'bvp';
@@ -270,7 +276,7 @@ if guiMode
     handles.hasSolution = 1;
     
     axes(handles.fig_sol)
-    plot(u,'Linewidth',2)
+    plot(u, 'Linewidth',2)
     % Do different things depending on whether the solution is real or not
     if isreal(u)
         xlim(xLimit)
