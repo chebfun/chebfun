@@ -67,6 +67,9 @@ classdef chebfun2
         
         X = vals2coeffs( U ); 
         
+        % Padua points to tensor grid:
+        [C, V, X, Y] = paduaVals2coeffs( F, dom ); 
+        
         [xx, yy] = chebpts2(nx, ny, domain);
         
         % Outer-product of two chebfuns.
