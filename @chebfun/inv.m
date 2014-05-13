@@ -64,7 +64,7 @@ if ( opts.algorithm == 1 )     % Algorithm based on ROOTS.
 elseif ( opts.algorithm == 2 ) % Newton iteration algorithm.
     g = chebfun(@(x) fInverseNewton(f, fp, x, tol), gDomain, pref);
 elseif ( opts.algorithm == 3 ) % bisection based algorithm.
-    g = chebfun(@(x) fInverseBisection(f, x, tol), gDomain, pref);
+    g = chebfun(@(x) fInverseBisection(f, x), gDomain, pref);
 end
 
 % Scale so that the range of g is the domain of f:
@@ -238,15 +238,15 @@ end
 end
 
 
-function y = fInverseBisection(f, x, tol)
+function y = fInverseBisection(f, x)
 %FINVERSEBISECTION(F, X)   Compute F^{-1}(X) using Bisection.
 a = f.domain(1)*ones(length(x),1);
 b = f.domain(2)*ones(length(x),1);
 while norm(b-a,inf) >= eps
     vals = feval(f, (a+b)/2);
     % Bisection:
-    I1 = ((vals-x) <= -tol);
-    I2 = ((vals-x) >= tol);
+    I1 = ((vals-x) <= -eps);
+    I2 = ((vals-x) >= eps);
     I3 = ~I1 & ~I2;
     a = I1.*(a+b)/2 + I2.*a + I3.*(a+b)/2;
     b = I1.*b + I2.*(a+b)/2 + I3.*(a+b)/2;
