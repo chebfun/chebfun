@@ -82,7 +82,7 @@ generalized = 1;
 % Create the chebops, and try to linearise them.
 % We will always have a string for the LHS, if the one for RHS is empty, we
 % know we have a non-generalised problem.
-N_LHS = chebop(d,LHS,BC);
+N_LHS = chebop(LHS, d, BC);
 try
     A = linop(N_LHS);
 catch ME
@@ -98,7 +98,7 @@ end
 % Check for a generalised problem
 if ~isempty(rhsString)
     RHS  = eval(rhsString);
-    N_RHS = chebop(d,RHS);
+    N_RHS = chebop(RHS, d);
     try
         B = linop(N_RHS);
     catch ME
@@ -114,11 +114,24 @@ if ~isempty(rhsString)
     
     % Check whether we are working with generalized
     % problems or not by comparing B with the identity operator on the domain.
-    I = eye(B.domain);
-    Iblock = blkdiag(I,B.blocksize(1));
+    I = operatorBlock.eye(str2num(dom));
+    % Set a discretization size for comparing operators
+    discDim = 10;    
+    % Obtain a discretisation of the operator B
+    Bdisc = matrix(B, discDim);
+    % Obtain a discretization of the identity operator on the domain
+    Idisc = matrix(linop(I), discDim);
+    % In case of systems, B will have a block structure. Need to get the
+    % corresponding block identity operator by tiling the identity operator.
+    % Start by wrapping in a cell and call repmat
+    Idisc = repmat({Idisc}, [1, size(B,1)]);
+    % Expand to a block diagonal matrix
+    Idisc = blkdiag(Idisc{:});
     
-    opDifference = B(10)-Iblock(10);
-    opSum = B(10)+Iblock(10);
+    % Compare the discretizations to see whether they are the same
+    opDifference = Bdisc-Idisc;
+    opSum = Bdisc + Idisc;
+    
     if isempty(nonzeros(opDifference)), generalized = 0; end
     if isempty(nonzeros(opSum)), generalized = 0; A = -A; end
 else
@@ -154,17 +167,17 @@ else
     fprintf(fid,'.\n');
 end
 
-fprintf(fid,'%% Define the domain we''re working on.\n');
+fprintf(fid,'\n%%%% Define the domain we''re working on.\n');
 fprintf(fid,'dom = %s;\n',dom);
 if ~generalized
     fprintf(fid,['\n%% Assign the equation to a chebop N such that' ...
         ' N(u) = %s*u.\n'],lname);
-    fprintf(fid,'N = chebop(%s,dom);\n',lhsString);
+    fprintf(fid,'N = chebop(%s, dom);\n',lhsString);
 else
     fprintf(fid,['\n%% Assign the equation to two chebops N and B such that' ...
         ' N(u) = %s*B(u).\n'],lname);
-    fprintf(fid,'N = chebop(%s,dom);\n',lhsString);
-    fprintf(fid,'B = chebop(%s,dom);\n',rhsString);
+    fprintf(fid,'N = chebop(%s, dom);\n',lhsString);
+    fprintf(fid,'B = chebop(%s, dom);\n',rhsString);
 end
 
 % Make assignments for BCs.
@@ -181,30 +194,30 @@ end
 fprintf(fid,'\n%% Number of eigenvalue and eigenmodes to compute.\n');
 fprintf(fid,'k = %s;\n',K);
 
-fprintf(fid,'\n%% Solve the eigenvalue problem.\n');
+fprintf(fid,'\n%%%% Solve the eigenvalue problem.\n');
 if ~generalized
     if ~isempty(sigma)
-        fprintf(fid,'[V D] = eigs(N,k,%s);\n',sigma);
+        fprintf(fid,'[V, D] = eigs(N, k, %s);\n',sigma);
     else
-        fprintf(fid,'[V D] = eigs(N,k);\n');
+        fprintf(fid,'[V, D] = eigs(N, k);\n');
     end
 else
     if ~isempty(sigma)
-            fprintf(fid,'[V D] = eigs(N,B,k,%s);\n',sigma);
+            fprintf(fid,'[V, D] = eigs(N, B, k, %s);\n',sigma);
         else
-            fprintf(fid,'[V D] = eigs(N,B,k);\n');
+            fprintf(fid,'[V, D] = eigs(N, B, k);\n');
     end
 end
-fprintf(fid,'\n%% Plot the eigenvalues.\n');
+fprintf(fid,'\n%%%% Plot the eigenvalues.\n');
 fprintf(fid,'D = diag(D);\n');
 fprintf(fid,'figure\n');
-fprintf(fid,'plot(real(D),imag(D),''.'',''markersize'',25)\n');
+fprintf(fid,'plot(real(D), imag(D), ''.'', ''markersize'', 25)\n');
 fprintf(fid,'title(''Eigenvalues''); xlabel(''real''); ylabel(''imag'');\n');
 
 if ischar(allVarNames) || numel(allVarNames) == 1
     fprintf(fid,'\n%% Plot the eigenmodes.\n');
     fprintf(fid,'figure\n');
-    fprintf(fid,'plot(real(V),''linewidth'',2);\n');
+    fprintf(fid,'plot(real(V), ''linewidth'', 2);\n');
     fprintf(fid,'title(''Eigenmodes''); xlabel(''%s''); ylabel(''%s'');\n',indVarName{1},allVarString);
 end
 
