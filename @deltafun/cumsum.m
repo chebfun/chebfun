@@ -101,7 +101,7 @@ else
         if ( p1 || p2 || p3)
             s = cumsum(f.funPart) + jumpVals(1);
             rJump = jumpVals(end);
-            if ( isempty(deltaLoc) || isemtpy(deltaMag) )
+            if ( isempty(deltaLoc) || isempTy(deltaMag) )
                 g = s;                
             else
                 g = deltafun(s, deltaMag, deltaLoc);

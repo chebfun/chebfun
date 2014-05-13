@@ -54,7 +54,7 @@ classdef (InferiorClasses = {?chebfun}) linBlock
             % A = LINBLOCK(DOMAIN)  Null object on the domain.
             
             if ( nargin == 0 )
-                p = chebpopref;
+                p = chebpopref();
                 A.domain = p.domain;
             elseif ( nargin == 1 && isa(varargin{1}, 'linBlock') )
                 A = varargin{1};
