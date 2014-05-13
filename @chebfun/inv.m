@@ -22,6 +22,7 @@ function g = inv(f, varargin)
 %   the values of the inverse of F.  Possible values for ALGSTR are:
 %      'ROOTS'  - Compute the inverse using ROOTS().
 %      'NEWTON' - Compute the inverse using a Newton iteration.
+%      'BISECTION' - Compute the inverse using bisection as the rootfinder.
 %   The default algorithm is 'ROOTS'.
 %
 %   Any of the name-value option pairs listed above can be used in tandem.
@@ -57,6 +58,7 @@ if ( opts.monoCheck )
     doMonoCheck(f, fp, tol, pref.enableBreakpointDetection);
 end
 
+% TODO: Should the default algorithm be bisection? 
 % Compute the inverse:
 gDomain = minandmax(f).';
 if ( opts.algorithm == 1 )     % Algorithm based on ROOTS.
