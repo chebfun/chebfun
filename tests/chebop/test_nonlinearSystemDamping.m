@@ -16,6 +16,8 @@ A.lbc = @(u,v) [u-1; v+1];
 A.rbc = @(u,v) [v-1/2; diff(v)];
 x = chebfun('x',d);
 f = [ 0*x ; 0*x ];
+
+pref.discretization = @colloc2;
 u12 = mldivide(A, f, pref);
 
 u1 = u12{1}; u2 = u12{2};

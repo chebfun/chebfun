@@ -20,7 +20,8 @@ A = chebop(@(x,u,v) [u - diff(v,2) + (1-x.^2).*u.^2; .3*diff(u,2) + sin(v)], d);
 A.lbc = @(u,v) [u-1; v+1];
 A.rbc = @(u,v) [v-1/2; diff(v)];
 
-pref.discretization = @ultraS;
+pref.discretization = @colloc2;
+
 u56 = mldivide(A, f, pref);
 u5 = u56{1}; u6 = u56{2};
 

@@ -28,6 +28,7 @@ end
 
 % Number of variables appearing in the problem
 numVar = size(L, 2);
+isFun = isFunVariable(L);
 
 % We will construct a low-degree polynomial for each unknown function in the
 % problem. The degree of the polynomial depends on the number of conditions that
@@ -39,32 +40,35 @@ end
 % If continuity conditions are to be enforced, we need the polynomials to be at
 % least the difforder of the variable it represents:
 if ( ~isempty(L.continuity.functional) )
-    polyDegree = max(polyDegree, max(L.diffOrder, [], 1));
+    polyDegree = max(polyDegree, max(L.diffOrder, [], 1)-1);
 end
-
-% We fit a polynomial of degree the maximum degree required for any component to
-% every component. This could actually lead to unnecessary degrees of freedom,
-% see issue #301 on GitHub. AB, 30/04/14.
-polyDegree = max(max(polyDegree), 1);
-% We need one dim entry for each subinterval.
-dim = repmat(polyDegree(1), 1, numInts);
+% Ensure that scalars only have length 1:
+polyDegree(~isFun) = 1;
+% And that each variable has degree at least 1:
+polyDegree = max(polyDegree, 1);
 
 % Create a discretization of the linear BCs:
 discType = L.prefs.discretization;
 
+% Set a size zero discretization. Actual size is controlled by dimAdjust.
+dim = zeros(1, numInts);
+
 % Initialize the discretization
 B = 0;
+
 % As a safeguard, we try finer discretizations until we have a discretized
 % operator of a sufficient rank.
 dimCounter = 0;
 dimCounterMax = 5;
 while ( rank(B) < size(B, 1) && dimCounter < dimCounterMax )
-    % Create a discretization, and set its dimAdjust to all-zeros
+    
+    % Create a discretization:
     disc = discType(L, dim);
-    disc.dimAdjust = zeros(size(disc.dimAdjust));
+    % Set its dimAdjust to required degree:
+    disc.dimAdjust = polyDegree;
 
-    % Obtain the constraints and create the discrete (matrix) version of the BCs
-    % and rhs values:
+    % Obtain constraints and create the discrete (matrix) version of the BCs and
+    % rhs values:
     B = getConstraints(disc);
     b = [];
     if ( ~isempty(L.constraint) )
@@ -73,12 +77,19 @@ while ( rank(B) < size(B, 1) && dimCounter < dimCounterMax )
     if ( ~isempty(L.continuity) )
         b = [ L.continuity.values ; b ];
     end
+    
+    % Remove trivial rows:
+    idx = ~any(B, 2);
+    B(idx,:) = [];
+    b(idx) = [];
 
     % Try increasing the discretization if we were not successful in getting a
     % full-rank B.
     dim = dim + 1;
     dimCounter = dimCounter + 1;
+
 end
+
 
 if ( dimCounter == dimCounterMax )
     % We failed. Return a zero initial guess.
@@ -87,7 +98,11 @@ if ( dimCounter == dimCounterMax )
     % Convert to a chebmatrix of correct dimensions
     u0 = cell(numVar, 1);
     for k = 1:numVar
-        u0{k} = zeroFun;
+        if ( isFun(k) )
+            u0{k} = zeroFun;
+        else
+            u0{k} = 0;
+        end
     end
     u0 = chebmatrix(u0);
    
@@ -101,15 +116,48 @@ end
 u0disc = B\(-b); % TODO: Why must b be negated?
 
 % Chop u0disc into pieces.
-u0disc = partition(disc, u0disc);
+u0disc = mypartition(disc, u0disc, polyDegree);
 
 % Convert to a cell-array of CHEBFUN objects:
 u0 = cell(numel(u0disc),1);
 for k = 1:numel(u0)
-    u0{k} = disc.toFunctionIn(u0disc{k});
+    tmpDisc = disc;
+    if ( isFun(k) )
+        tmpDisc.dimension = tmpDisc.dimension + polyDegree(k);
+    end
+    u0{k} = toFunctionIn(tmpDisc, u0disc{k});
 end
 
 % Convert the cell-array of CHEBFUN objects to a CHEBMATRIX
 u0 = chebmatrix(u0);
+
+end
+
+function u = mypartition(disc, values, dimAdjust)
+%CHEBDISCRETIZATION.PARTITION   Partition values to appropriate variables.
+%   U = CHEBDISCRETIZATION.PARTITION(DISC, VALUES) will, given a vector or
+%   matrix (columnwise) VALUES of values corresponding to all the discretized
+%   variables and scalars in a system DISC, convert to a cell-valued partition
+%   of individual variables in the system. I.e., deduce the variable boundaries
+%   within the discretization.
+
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org for Chebfun information.
+
+% TODO: Document dimAdjust.
+
+% Which variables are functions (as opposed to scalars)?
+isFun = isFunVariable(disc.source);
+
+if ( nargin < 3 )
+    dimAdjust = zeros(size(isFun));
+end
+
+% Allocate the discretization size to each function variable.
+m = ones(size(isFun));
+m(isFun) = sum(disc.dimension) + dimAdjust(isFun)*disc.numIntervals;
+
+% Do the partition.
+u = mat2cell(values, m, size(values, 2));
 
 end

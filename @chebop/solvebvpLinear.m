@@ -42,7 +42,7 @@ u = linsolve(L, rhs, pref);
 % Norm of residual:
 normRes = norm(L*u - rhs, 'fro');
 
-if ( nargin > 4 )
+if ( nargin > 3 )
     % Print information after linear problem has been solved:
     displayInfo('linear', u, normRes, pref)
 end
