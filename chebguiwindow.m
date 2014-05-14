@@ -1726,6 +1726,16 @@ if handles.hasSolution
         case 1
             axes(handles.fig_norm)
             normDelta = handles.normDelta;
+            
+            % If normDelta is empty, we actually had a linear problem! So don't
+            % do anything.
+            if ( isempty(normDelta) )
+                warndlg(['Problem was linear. Convergence information for' ...
+                    ' Newton iteration is not available.'], 'Linear problem');
+                set(handles.popupmenu_bottomFig,'Value',2);
+                return
+            end
+            
             semilogy(normDelta,'-*','Linewidth',2),title('Norm of updates'), xlabel('Iteration number')
             if length(normDelta) > 1
                 XTickVec = 1:max(floor(length(normDelta)/5),1):length(normDelta);

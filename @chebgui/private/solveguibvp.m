@@ -161,6 +161,10 @@ if ~isempty(initInput{1}) && isempty(guess)
     end
 end
 
+% Before continuing, clear any previous information about the norm of the Newton
+% updates in the handles struct
+handles.normDelta = [];
+
 % Create the chebop
 if ~isempty(guess)
     N = chebop(DE, dom, BC, guess);
