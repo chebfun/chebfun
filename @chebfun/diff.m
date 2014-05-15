@@ -11,18 +11,17 @@ function F = diff(F, n, dim)
 %
 %   DIFF(F, N) or DIFF(F, N, 1) computes the Nth derivative of F if F is a
 %   column CHEBFUN and the Nth-order finite difference of F along its rows if F
-%   is a row CHEBFUN.
+%   is a row CHEBFUN. The order N does not have to be integer. When it is not,
+%   the result is the corresponding fractional derivatives of F. For N > 1, 
+%   the Riemann-Liouville definition is used by default. One can switch to 
+%   the Caputo definition with a call of the form DIFF(F, N,'Caputo'),
+%   with the third argument serving as the indicator of the definition
+%   used.
 %
 %   DIFF(F, N, 2) is the Nth-order finite difference of F along its columns if
 %   F is a column CHEBFUN and the Nth derivative of F if F is a row CHEBFUN.
 %
 % See also SUM, CUMSUM.
-
-%   [TODO]: Fractional derivatives. DIFF(F, ALPHA), when ALPHA is not an
-%   integer, offers some support for fractional derivatives (of degree ALPHA) of
-%   F. For ALPHA > 1 the Riemann- Liouville definition is used by default. On
-%   can switch to the Caputo definition with a call of the form DIFF(F, ALPHA,
-%   'Caputo'). [Requires SINGFUN].
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
@@ -45,7 +44,14 @@ if ( ~any(dim == [1, 2]) )
 end
     
 if ( round(n) ~= n )
-    F = fracCalc(F, n);
+    if strcmpi(dim, 'Caputo')
+        % Caputo definition - differentiate then integrate:
+        F = fracCumSum(diff(F, ceil(n)), ceil(n)-n); 
+    else
+        % Riemann-Liouville definition - integrate then differentiate:
+        F = diff(fracCumSum(F, ceil(n)-n), ceil(n)); 
+    end
+    
     return
 end
 
