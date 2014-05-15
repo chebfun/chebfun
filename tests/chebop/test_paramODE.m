@@ -77,7 +77,7 @@ u = mldivide(N, chebfun(0), pref);
 res = N(x, u);
 Nlbc = N.lbc(u{1},u{2});
 Nrbc = N.rbc(u{1},u{2});
-err(4) = norm(res) + Nlbc{1}(-1) + Nlbc{2}(-1) + Nrbc(1);
+err(5) = norm(res) + Nlbc{1}(-1) + Nlbc{2}(-1) + Nrbc(1);
 %%
 
 pass = err < tol;

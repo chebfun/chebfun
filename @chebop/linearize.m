@@ -157,10 +157,8 @@ if ( all(isFun) && numParams > 0 )
     for k = 0:numParams-1
         u{end-k} = feval(u{end-k}, L.domain(1)); % Convert to a scalar.
     end
-    [L, res, isLinear] = linearize(N, u, x, flag);
-    
-    % Cast U back to a CHEBMATRIC
-    u = chebmatrix(u);
+    [L, res, isLinear, u] = linearize(N, u, x, flag);
+
     return
 end
 
@@ -261,6 +259,13 @@ end
 
 % Append all constraints to the LINOP returned.
 L.constraint = BC;
+
+% Cast the cell U back to a CHEBMATRIX, consisting of CHEBFUNs and scalars
+for k = 1:numVars
+    u{k} = u{k}.func;
+end
+
+u = chebmatrix(u);
 
 end
 
