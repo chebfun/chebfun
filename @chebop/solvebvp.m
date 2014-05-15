@@ -91,19 +91,26 @@ if ( isempty(N.init) )
         u0{k} = zeroFun;
     end
     u0 = chebmatrix(u0);
+    
+    % Indicate that we did not get an initial guess passed
+    initPassed = 0;
 else
     u0 = N.init;
     % Ensure that N.init is a CHEBMATRIX, not a CHEBFUN:
     if ( isa(u0, 'chebfun') )
         u0 = chebmatrix(u0);
     end
+    
+    % Indicate that we get an inital guess passed.
+    initPassed = 1;
 end
 
 % Initialise the independent variable:
 x = chebfun(@(x) x, dom);
 
-% Linearize and attach preferences:
+% Linearize and attach preferences.
 [L, residual, isLinear] = linearize(N, u0, x);
+
 L.prefs = pref;
 
 % Check the size of the residual (the output the dimensions of the CHEBOP).
@@ -164,8 +171,12 @@ else
     % Create initial guess which satisfies the linearised boundary conditions:
     if ( isempty(N.init) )
         u0 = fitBCs(L);
-        % Linearize about the new initial guess:
-        [L, residual, isLinear] = linearize(N, u0, x);
+        % Linearize about the new initial guess. If we are working with
+        % parameter dependent problems, and did not get an initial condition
+        % passed, we might have to cast some components in the CHEBMATRIX U0
+        % from a CHEBFUN to a scalar. Hence, call LINEARIZE() with four outputs.
+        [L, residual, isLinear, u0] = linearize(N, u0, x);
+
     end
 
     % Call solver method for nonlinear problems.

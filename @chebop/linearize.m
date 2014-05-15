@@ -1,4 +1,4 @@
-function [L, res, isLinear] = linearize(N, u, x, flag)
+function [L, res, isLinear, u] = linearize(N, u, x, flag)
 %LINEARIZE   Linearize a CHEBOP.
 %   L = LINEARIZE(N) returns a LINOP that corresponds to linearising the CHEBOP
 %   N around the zero function on N.DOMAIN. The linop L will both include the
@@ -30,6 +30,12 @@ function [L, res, isLinear] = linearize(N, u, x, flag)
 %       ISLINEAR(2) = 1 if N.LBC is linear, 0 otherwise.
 %       ISLINEAR(3) = 1 if N.RBC is linear, 0 otherwise.
 %       ISLINEAR(4) = 1 if N.BC is linear, 0 otherwise.
+%
+%   [L, RES, ISLINEAR, U] = LINEARIZE(N, ...) also returns CHEBMATRIX U that N
+%   was linearized around. This is useful for parameter dependent problem, as
+%   LINEARIZE() is where it is discovered that problems are parameter dependent,
+%   so the CHEBMATRIX can be made to have to correct collection of CHEBFUN
+%   objects and doubles, rather than just CHEBFUNs.
 %
 % See also LINOP.
 
@@ -152,6 +158,9 @@ if ( all(isFun) && numParams > 0 )
         u{end-k} = feval(u{end-k}, L.domain(1)); % Convert to a scalar.
     end
     [L, res, isLinear] = linearize(N, u, x, flag);
+    
+    % Cast U back to a CHEBMATRIC
+    u = chebmatrix(u);
     return
 end
 
