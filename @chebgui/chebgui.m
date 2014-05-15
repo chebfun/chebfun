@@ -1,4 +1,7 @@
 classdef chebgui
+
+% TODO:  Reread this documentation and make sure it makes sense in v5.
+
 % INTRODUCTION TO CHEBGUI
 %
 % Chebgui is a graphical user interface to Chebfun's capabilities for
@@ -96,8 +99,8 @@ classdef chebgui
 % See also chebop/solvebvp, chebop/eigs, chebfun/pde15s, chebfun/ode45,
 % chebfun/ode113, chebfun/ode15s, chebfun/bvp4c, chebfun/bvp5c.
 
-% Copyright 2011 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
     
     properties
         type = '';          % Type of chebgui (bvp, pde, or eig)
@@ -110,18 +113,27 @@ classdef chebgui
         sigma = '';         % Third input to an EIGS call
         init = '';          % Initial guess/condition for nonlin BVPs/PDEs
         tol = 1e-10;        % Solution tolerance
-        options = struct('damping','1','plotting','0.5','grid',1,...
-            'discretization',@colloc2, ...
-            'pdeholdplot',0,'fixYaxisLower','', ...
-            'fixYaxisUpper','','fixN','','numeigs','');
+
+	% TODO:  Documentation.
+        options = struct('damping', '1', ...
+	    'plotting', '0.5', ...
+	    'grid', 1, ...
+            'discretization', @colloc2, ...
+            'pdeholdplot', 0, ...
+	    'fixYaxisLower', '',  ...
+            'fixYaxisUpper', '', ...
+	    'fixN', '', ...
+	    'numeigs', '');
     end
     
     methods
         function c = chebgui(varargin)
+
+	% TODO:  Document inputs to this more carefully.
             
             % No input --> load random example to the GUI window
-            if isempty(varargin)
-                c = loadexample(chebgui('type','bvp'),-1);
+            if ( isempty(varargin) )
+                c = loadexample(chebgui('type', 'bvp'), -1);
                 show(c); % Open the GUI
                 return
             end
@@ -129,21 +141,21 @@ classdef chebgui
             v1 = varargin{1};
             
             % Single input --> load existing chebgui object/file
-            if nargin == 1
-                if isa(v1,'chebgui')
-                    % Calling the chebgui constructor with a chebgui loads the GUI`
+            if ( nargin == 1 )
+                if ( isa(v1, 'chebgui') )
+                    % Calling chebgui constructor with a chebgui loads the GUI.
                     c = v1;
-                elseif ischar(v1)
+                elseif ( ischar(v1) )
                     % Calling with a single string loads a .guifile`
-                    if ~exist(v1,'file')
+                    if ( ~exist(v1,'file') )
                         % Throw a method if this .guifie is not found
-                        error('CHEBFUN:chebgui:missingfile',...
-                            'Unable to find file: %s',v1);
+                        error('CHEBFUN:chebgui:missingfile', ...
+                              'Unable to find file: %s', v1);
                     end
                     % Load the existing demp
-                    c = loaddemos(chebgui('type','bvp'),v1);
+                    c = loaddemos(chebgui('type', 'bvp'), v1);
                 end
-                if nargout == 0
+                if ( nargout == 0 )
                     show(c); % Open the GUI
                 end
                 return
@@ -151,8 +163,8 @@ classdef chebgui
             
             % Multiple inputs --> loop through them (using CHEBGUI/SET)
             k = 1;
-            while k < nargin
-                c = set(c,varargin{k:k+1});
+            while ( k < nargin )
+                c = set(c, varargin{k:k+1});
                 k = k + 2;
             end
 
@@ -166,12 +178,16 @@ classdef chebgui
         
         function initialiseFigures(handles)
             %INITIALISEFIGURES      Reset figures in the CHEBGUI window.
+
             % Reset the top figures
             cla(handles.fig_sol, 'reset');
-            title('Solutions'), box on
+            title('Solutions')
+	    box on
+
             % Reset the bottom figure
             cla(handles.fig_norm, 'reset');
-            title('Updates'), box on
+            title('Updates')
+	    box on
         end
     end
     

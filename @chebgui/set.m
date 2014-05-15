@@ -1,4 +1,4 @@
-function cg = set(cg,propName,val)
+function cg = set(cg, propName, val)
 % SET   Set chebgui properties.
 %
 %    'type' - 'bvp','pde','eig'
@@ -21,21 +21,25 @@ function cg = set(cg,propName,val)
 %      'fixyaxislower' - fix y axis on plots (lower)
 %      'fixyaxisupper' - fix y axis on plots (upper)
 
-
-% Copyright 2011 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/chebfun/ for Chebfun information.
 
 % Avoid storing {''} in fields, rather store ''
-if iscell(val) && isempty(val{1}), val = ''; end
-% Store strings, not numbers.
-if isnumeric(val), val = num2str(val); end
+if ( iscell(val) && isempty(val{1}) )
+    val = '';
+end
 
-switch lower(propName)
+% Store strings, not numbers.
+if ( isnumeric(val) )
+    val = num2str(val);
+end
+
+switch ( lower(propName) )
     case 'type'
-        if ~any(strcmpi(val,{'bvp','ivp','pde','eig'}))
+        if ( ~any(strcmpi(val, {'bvp', 'ivp', 'pde', 'eig'})) )
             error('CHEBGUI:set:type',...
                 [val,' is not a valid type of problem.'])
-        elseif strcmpi(val,'ivp')
+        elseif ( strcmpi(val, 'ivp') )
             warning('CHEBGUI:set:type',...
                 'Type of problem changed from IVP to BVP');
             cg.type = 'bvp';
@@ -65,8 +69,8 @@ switch lower(propName)
     case 'damping'
         cg.options.damping = val;
     case 'plotting'
-        if isnumeric(val)
-      val = num2str(val);
+        if ( isnumeric(val) )
+            val = num2str(val);
         end
         cg.options.plotting = val;
     case 'grid'
@@ -83,5 +87,5 @@ switch lower(propName)
         cg.options.numeigs = val;
     otherwise
         error('CHEBGUI:set:propname',...
-      [propName,' is not a valid chebgui property.'])
+            [propName,' is not a valid chebgui property.'])
 end

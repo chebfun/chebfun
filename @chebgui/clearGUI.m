@@ -1,8 +1,10 @@
 function [newGUI, handles] = clearGUI(guifile, handles)
 %CLEARGUI   Reset CHEBGUI, clear all fields and reset options.
 
-% Copyright 2011 by The University of Oxford and The Chebfun Developers. 
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% TODO:  Documentation.
+
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Clear the input fields
 set(handles.input_domain, 'String', '');

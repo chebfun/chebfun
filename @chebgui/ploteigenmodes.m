@@ -1,16 +1,26 @@
-function ploteigenmodes(guifile,handles,selection,h1,h2)
+function ploteigenmodes(guifile, handles, selection, h1, h2)
 % Plot the eigenmodes in the GUI
 
-% Copyright 2011 by The University of Oxford and The Chebfun Developers. 
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% TODO:  Documentation.
+
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/chebfun/ for Chebfun information.
 
 % selection == 0 corresponds to no selection being made, i.e. plot everything
-if nargin < 3, selection = 0; end 
-if nargin < 4, h1 = handles.fig_sol; end
-if nargin < 5, h2 = handles.fig_norm; end
+if ( nargin < 3 )
+    selection = 0;
+end
+
+if ( nargin < 4 )
+    h1 = handles.fig_sol;
+end
+
+if ( nargin < 5 )
+    h2 = handles.fig_norm;
+end
 
 % No recent solution available
-if ~handles.hasSolution
+if ( ~handles.hasSolution )
     return
 end
 
@@ -20,8 +30,8 @@ V = handles.latest.solutionT;
 
 % Always create the same number of colours to preserve colours if selection
 % is changed.
-C = get(0,'DefaultAxesColorOrder');
-C = repmat(C,ceil(size(D)/size(C,1)),1);
+C = get(0, 'DefaultAxesColorOrder');
+C = repmat(C, ceil(size(D)/size(C, 1)), 1);
 
 % Number of unknown variables in the problem
 numVar = size(V, 1);
@@ -51,37 +61,48 @@ if ( selection )
     C = C(selection,:);
 end
 
-if ~isempty(h1)
+if ( ~isempty(h1) )
     % Ensure that we still have the same x and y-limits on the plots. Only
     % do that when we are not plotting all the information
-    if selection
-        xlim_sol = xlim(h1); ylim_sol = ylim(h1);
+    if ( selection )
+        xlim_sol = xlim(h1);
+        ylim_sol = ylim(h1);
     end
     
     axes(h1)
     for k = 1:size(D)
-        plot(real(D(k)),imag(D(k)),'.','markersize',25,'color',C(k,:)); hold on
+        plot(real(D(k)), imag(D(k)), '.', 'markersize', 25, 'color', C(k,:));
+        hold on
     end
     hold off
-    if guifile.options.grid, grid on, end
-    title('Eigenvalues'); xlabel('real'); ylabel('imag');
-    if any(selection) && nargin < 4
-        xlim(h1,xlim_sol); ylim(h1,ylim_sol);
+
+    if ( guifile.options.grid )
+        grid on
     end
+
+    title('Eigenvalues');
+    xlabel('real');
+    ylabel('imag');
+
+    if ( any(selection) && (nargin < 4) )
+        xlim(h1, xlim_sol);
+        ylim(h1, ylim_sol);
+    end
+
     axis equal
 end
 
-if isempty(h2), return, end
+if ( isempty(h2) )
+    return
+end
 
-
-isSystem = (  numVar > 1 );
-
+isSystem = numVar > 1;
 
 nV = numel(V);
 
-realplot = get(handles.button_realplot,'Value');
+realplot = get(handles.button_realplot, 'Value');
 W = V;
-if realplot
+if ( realplot )
     for k = 1:numVar
         V(k) = real(V{k});
     end
@@ -91,6 +112,7 @@ else
         V(k) = imag(V{k});
     end
     s = 'Imaginary part of eigenmodes';
+% TODO:  If this is really no longer necessary, remove this.
 % else
 %     V = V.*conj(V);
 %     s = 'Absolute value of eigenmodes';
@@ -102,57 +124,71 @@ maxPlotPoints = 2001;
 
 axes(h2)
 % set(h2,'NextPlot','add')
-set(h2,'ColorOrder',C)
-if any(selection) && nargin < 4
-    xlim_norm = xlim(h2); ylim_norm = ylim(h2);
+set(h2, 'ColorOrder', C)
+if ( any(selection) && (nargin < 4) )
+    xlim_norm = xlim(h2);
+    ylim_norm = ylim(h2);
 end
-if ~isSystem
-    if numCol == 1 && ~isreal(chebfun(W)) && ~isreal(1i*chebfun(W))
-        xx = union(linspace(V.ends(1),V.ends(end),maxPlotPoints),V.ends);
+
+if ( ~isSystem )
+    if ( (numCol == 1) && ~isreal(chebfun(W)) && ~isreal(1i*chebfun(W)) )
+        xx = union(linspace(V.ends(1), V.ends(end), maxPlotPoints), V.ends);
         
         %TODO: Is there no slicker way to evaluate an array-valued CHEBFUN?
         Wxx = feval(chebfun(W), xx);
         
         WW = abs(reshape(Wxx, length(xx), size(V, 2)));
         
-        plot(V(:,1),'-','linewidth',2,'color',C(1,:)); hold on
-        plot(xx,WW,'-',xx,-WW,'-','linewidth',1,'color','k'); hold off
+        plot(V(:,1), '-', 'linewidth', 2, 'color', C(1,:));
+        hold on
+        plot(xx, WW, '-', xx, -WW, '-', 'linewidth', 1, 'color', 'k');
+        hold off
         xLims = V(:,1).domain;
     else
         % Convert to a CHEBFUN
         V = chebfun(V);
         for k = 1:size(V,2)
-            plot(V(:,k),'linewidth',2,'color',C(k,:)); hold on
+            plot(V(:,k), 'linewidth', 2, 'color', C(k,:));
+            hold on
         end
         xLims = V(:,k).domain;
         hold off
     end
-    if guifile.options.grid, grid on, end
+
+    if ( guifile.options.grid )
+        grid on
+    end
+
     ylabel(handles.varnames);
 else
-    LS = repmat({'-','--',':','-.'}, 1, ceil(numVar/4));
+    LS = repmat({'-', '--', ':', '-.'}, 1, ceil(numVar/4));
     ylab = [];
-    if numCol == 1 && ~isreal(W{1}) && ~isreal(1i*W{1})
+    if ( (numCol == 1) && ~isreal(W{1}) && ~isreal(1i*W{1}) )
         V1 = V{1};
-        xx = union(linspace(V1.ends(1),V1.ends(end),maxPlotPoints),V1.ends);
+        xx = union(linspace(V1.ends(1), V1.ends(end), maxPlotPoints), V1.ends);
         for selCounter = 1:nV
             WW = abs(W{selCounter}(xx));
-            plot(real(V{selCounter}),'-','linewidth',2,'linestyle',LS{selCounter}); hold on
-            plot(xx,WW,'k',xx,-WW,'k','linestyle',LS{selCounter});
+            plot(real(V{selCounter}), '-', 'linewidth', 2, 'linestyle', ...
+                LS{selCounter});
+            hold on
+            plot(xx, WW, 'k', xx, -WW, 'k', 'linestyle', LS{selCounter});
         end
         xLims = V{selCounter}.domain;
         hold off
     else
         for selCounter = 1:numVar
             % If we are plotting selected e-funs, we need to pick out the colors
-            if any(selection)
+            if ( any(selection) )
                 for sCounter = 1:length(selection)
-                    plot(real(V{selCounter}(:,sCounter)),'linewidth',2,...
-                        'linestyle',LS{selCounter},'Color',C(sCounter,:)); hold on
+                    plot(real(V{selCounter}(:,sCounter)), 'linewidth', 2, ...
+                        'linestyle', LS{selCounter}, 'Color', C(sCounter,:));
+                    hold on
                 end
                 xLims = V{selCounter}(:,sCounter).domain;
             else
-                plot(real(V{selCounter}),'linewidth',2,'linestyle',LS{selCounter}); hold on
+                plot(real(V{selCounter}), 'linewidth', 2, 'linestyle',  ...
+                    LS{selCounter});
+                hold on
                 xLims = V{selCounter}(:,1).domain;
             end
             ylab = [ylab handles.varnames{selCounter} ', ' ];
@@ -161,17 +197,15 @@ else
     hold off
     ylabel(ylab(1:end-2));
 end
-if any(selection) && nargin < 4
+if ( any(selection) && (nargin < 4) )
     xlim(xlim_norm);
 else
     Vdom = V.domain;
     xlim([Vdom(1) Vdom(end)]);
 end
-set(h2,'NextPlot','replace')
+set(h2, 'NextPlot', 'replace')
 
 xlabel(handles.indVarName);
 
 % Set the xlim according to the domain of the function
 title(s);
-
-

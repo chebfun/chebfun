@@ -1,11 +1,13 @@
-function [treeOut] = splitTree_commas_equalSigns(guifile,treeIn)
+function [treeOut] = splitTree_commas_equalSigns(guifile, treeIn)
 % SPLITTREE_COMMAS_EQUALSIGNS This is the basic method for splitting syntax
 % trees. It looks for individual expressions separated by commas (e.g. u(1)
 % = 0, u'(3) = 4), and in each expression, converts the = into a - so that
 % we end up with expressions corresponding to u(1)-0, u'(3)-4
 
-% Copyright 2011 by The University of Oxford and The Chebfun Developers. 
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% TODO:  Documentation.
+
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/chebfun/ for Chebfun information.
 
 treeOut = treeIn;
 
@@ -22,10 +24,10 @@ treeOut = treeIn;
 for k = 1:numel(treeOut)
     treeCenter = treeIn(k).center;
     % Check for commas and =. Do nothing otherwise.
-    if strcmp(treeCenter{2},'COMMA')
-        treeOut(k).left = splitTree_commas_equalSigns(guifile,treeOut.left);
-        treeOut(k).right = splitTree_commas_equalSigns(guifile,treeOut.right);
-    elseif strcmp(treeCenter{2},'OP=')
+    if ( strcmp(treeCenter{2}, 'COMMA') )
+        treeOut(k).left = splitTree_commas_equalSigns(guifile, treeOut.left);
+        treeOut(k).right = splitTree_commas_equalSigns(guifile, treeOut.right);
+    elseif ( strcmp(treeCenter{2}, 'OP=') )
         treeOut(k).center = {'-', 'OP-'};
     end
 end

@@ -1,4 +1,4 @@
-function val = get(cg,propName)
+function val = get(cg, propName)
 % GET   Get chebgui properties.
 %
 %    'type' - 'bvp','pde','eig'
@@ -21,9 +21,8 @@ function val = get(cg,propName)
 %      'fixyaxislower' - fix y axis on plots (lower)
 %      'fixyaxisupper' - fix y axis on plots (upper)
 
-
-% Copyright 2011 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 switch lower(propName)
     case 'type'
@@ -65,6 +64,6 @@ switch lower(propName)
     case 'numeigs'
         val = cg.options.numeigs;
     otherwise
-        error('CHEBGUI:get:propname',...
-      [propName,' is not a valid chebgui property.'])
+        error('CHEBGUI:get:propname', ...
+            [propName,' is not a valid chebgui property.'])
 end

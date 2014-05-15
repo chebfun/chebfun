@@ -1,5 +1,7 @@
 function varargout = displayBVPinfo(handles, mode, varargin)
 
+% TODO:  Documentation.
+
 switch mode
     case 'init'
         [displayFig, displayTimer] = displayBVPinfoInit(handles, varargin{:});
@@ -17,26 +19,28 @@ end
 
 function [displayFig, displayTimer] = displayBVPinfoInit(handles, u, pref)
 
+% TODO:  Documentation.
+
 % Update the iteration information header on the GUI
 initString = ' Iter.       || du ||        Contra.fact.     stepsize        len(du)          len(u)';
 set(handles.iter_text,'String', initString);
 
 % Clear the update plot
 axes(handles.fig_norm)
-plot(0,0)
+plot(0, 0)
 xlim(handles.xLim)
 cla
 
 % Switch focus to the fig_sol plot on the GUI
 axes(handles.fig_sol)
+
 % Plot initial guess
 plot(chebfun(u), '.-')
 title('Initial guess of solution')
 
-% Do different things for the axes depending on whether the solution is real or
-% not.
+% Do different things for the axes depending on if the solution is real.
 % TODO: This should be calling isreal of chebmatrices.
-if isreal(u.blocks{1})
+if ( isreal(u.blocks{1}) )
     xlim(handles.xLim)
 else
     axis equal
@@ -46,10 +50,13 @@ drawnow
 
 displayFig = 4;
 displayTimer = 5;
+
 end
 
 
 function displayTimer = displayBVPinfoIter(handles, u, delta, iterNo, normDelta, cFactor, lenDelta, lambda, lenu, displayFig, displayTimer, pref)
+
+% TODO:  Documentation.
 
 % Create a string for displaying information about the iteration.
 if ( lambda == 1 )
@@ -60,19 +67,19 @@ else
         iterNo, normDelta, cFactor, lambda, lenDelta, lenu);
 end
 
-% Update the iteration information on the GUI
-currString = get(handles.iter_list,'String');
-set(handles.iter_list,'String', [currString;iterString]);
-set(handles.iter_list,'Value',iterNo);
+% Update the iteration information on the GUI.
+currString = get(handles.iter_list, 'String');
+set(handles.iter_list, 'String', [currString ; iterString]);
+set(handles.iter_list, 'Value', iterNo);
 
-
-% Switch focus to the fig_sol plot on the GUI
+% Switch focus to the fig_sol plot on the GUI.
 axes(handles.fig_sol)
+
 % Plot initial guess
-plot(chebfun(u) ,'.-')
+plot(chebfun(u), '.-')
 title('Current solution')
-% Do different things for the axes depending on whether the solution is real or
-% not.
+
+% Do different things for the axes depending on if the solution is real.
 % TODO: This should be calling isreal of chebmatrices.
 if isreal(u.blocks{1})
     xlim(handles.xLim)
@@ -80,39 +87,42 @@ else
     axis equal
 end
 
-% Now plot the Newton updates
-% Switch focus to the fig_norm plot on the GUI
+% Now plot the Newton updates.
+
+% Switch focus to the fig_norm plot on the GUI.
 axes(handles.fig_norm)
-% Plot initial guess
-plot(chebfun(delta),'.-')
+
+% Plot initial guess.
+plot(chebfun(delta), '.-')
 title('Current correction step')
-% Do different things for the axes depending on whether the solution is real or
-% not.
+
+% Do different things for the axes depending on if the solution is real.
 % TODO: This should be calling isreal of chebmatrices.
-if isreal(u.blocks{1})
+if ( isreal(u.blocks{1}) )
     xlim(handles.xLim)
 else
     axis equal
 end
-
 
 drawnow
 
-
-% If the user has pressed the pause button on the GUI, we pause
-if ~isempty(handles) && strcmpi(get(handles.button_clear,'String'),'Continue')
-    waitfor(handles.button_clear,'String')
+% If the user has pressed the pause button on the GUI, we pause.
+if ( ~isempty(handles) ...
+	&& strcmpi(get(handles.button_clear, 'String'), 'Continue') )
+    waitfor(handles.button_clear, 'String')
 end
 
 end
 
-function displayBVPInfoFinal(handles, u, delta, iterNo, errEstDE, errEstBC, displayFig, ...
-    displayTimer, pref) %#ok<INUSL>
+function displayBVPInfoFinal(handles, u, delta, iterNo, errEstDE, errEstBC, ...
+	displayFig, displayTimer, pref) %#ok<INUSL>
 %DISPLAYINFOFINAL   Utility routine for displaying nonlinear solve progress.
 %  This method prints out information after Newton iteration finishes when
 %  problems are solved using CHEBGUI.
 %
 % See also: displayInfo
+
+% TODO:  Documentation.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -134,23 +144,25 @@ end
 finalStr = [finalStr; sprintf('Discretization method used: %s. \n', ...
     discString)];
     
-% Print info about the final error estimates.
+% Print info about the final error estimates...
 finalStr = [finalStr; ...
     sprintf('Final error estimate: %.2e (differential equation) \n', errEstDE)];
-% and the error in the boundary conditions.
+% ...and the error in the boundary conditions.
 finalStr = [finalStr; ...
     sprintf('%30.2e (boundary conditions).', errEstBC)];
 
 % Update the iteration information on the GUI
-currString = get(handles.iter_list,'String');
-set(handles.iter_list,'String', [currString; finalStr]);
+currString = get(handles.iter_list, 'String');
+set(handles.iter_list,'String', [currString ; finalStr]);
 
 % Set focus to bottom of printed list
-set(handles.iter_list,'Value',iterNo + 4);
+set(handles.iter_list, 'Value', iterNo + 4);
 
 end
 
 function displayBVPinfoLinear(handles, u, nrmRes, pref)
+
+% TODO:  Documentation.
 
 str = {'Linear equation detected. Converged in one step.'};
 
@@ -160,14 +172,12 @@ if ( strcmpi(func2str(pref.discretization), 'ultraS') )
 else
     discString = 'Collocation';
 end
-str = [str; sprintf('Discretization method used: %s. \n', discString)];
 
-str = [str; sprintf('Length of solution: %i.\n',length(chebfun(u)))];
-str = [str; sprintf('Norm of residual: %.2e.\n', nrmRes)];
+str = [str ; sprintf('Discretization method used: %s. \n',  discString)];
+str = [str ; sprintf('Length of solution: %i.\n', length(chebfun(u)))];
+str = [str ; sprintf('Norm of residual: %.2e.\n', nrmRes)];
 
-
-
-set(handles.iter_list,'String', str);
-set(handles.iter_list,'Value',1);
+set(handles.iter_list, 'String',  str);
+set(handles.iter_list, 'Value', 1);
 
 end
