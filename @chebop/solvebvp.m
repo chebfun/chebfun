@@ -23,7 +23,6 @@ function [u, info] = solvebvp(N, rhs, pref, displayInfo)
 %   [U, INFO] = SOLVEBVP(N, RHS, PREF) is the same as above, but also returns
 %   the MATLAB struct INFO, which contains useful information about the solution
 %   process. The fields of INFO are as follows:
-%       ERROR:    The residual of the differential equation.
 %       ISLINEAR: A vector with four entries containing linearity information
 %           for N. More specifically, 
 %               ISLINEAR(1) = 1 if N.OP is linear
@@ -31,9 +30,14 @@ function [u, info] = solvebvp(N, rhs, pref, displayInfo)
 %               ISLINEAR(3) = 1 if N.RBC is linear
 %               ISLINEAR(4) = 1 if N.BC is linear
 %           Otherwise, the corresponding element of ISLINEAR is equal to 0.
+%   
+%   For linear problems, INFO further contains the field
+%       ERROR:    The residual of the differential equation.
 %
-%   TODO: INFO will have more fields once we move into nonlinear problems,
-%   update the list accordingly.
+%   For nonlinear problems, INFO further contains the fields
+%       NORMDELTA:  A vector of the norm of the Newton updates.
+%       ERROR:      An error estimate for the convergence of the Newton
+%                   iteration.
 %
 %   Note that CHEBOP allows the RHS of coupled system of ODEs to be a scalar,
 %   e.g., one can both call
