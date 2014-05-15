@@ -3,12 +3,31 @@ function displayTimer = displayInfoIter(u, delta, iterNo, normDelta, cFactor, ..
 %DISPLAYINFOITER   Utility routine for displaying nonlinear iteration progress.
 % This method prints and plots during the Newton iteration.
 %
-% See also: DISPLAYINFO.
+% Calling sequence:
+%   DISPLAYTIMER = DISPLAYINFO(U, DELTA, ITERNO, NORMDELTA, CFACTOR, ...
+%       LENDELTA, LAMBDA, LENU, DISPLAYFIG, DISPLAYTIMER, PREF)
+%
+% where
+%   U:              Current guess of the solution.
+%   DELTA:          Current Newton correction.
+%   ITERNO:         Current iteration number.
+%   NORMDELTA:      Norm of current Newton update.
+%   CFACTOR:        Current contraction factor of the Newton iteration.
+%   LENDELTA:       Length of current Newton correction.
+%   LAMBDA:         Current stepsize.
+%   LENU:           Length of the current solution.
+%   DISPLAYFIG:     Handle to a Matlab figure for plotting.
+%   DISPLAYTIMER:   A tic/toc timer for controlling pauses.
+%   PREF:           A CHEBOPPREF() object.
+%
+% and
+%   DISPLAYTIMER:   Handle to the Matlab timer used for pausing the desired time
+%                   between plots (cf. t = tic).
+%
+% See also: displayInfo.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
-
-% TODO: Document inputs / outputs.
 
 % Obtain preferences for what we want to show
 display  = pref.display;
