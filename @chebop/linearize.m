@@ -141,7 +141,7 @@ L.domain = chebfun.mergeDomains(L.domain, dom);
 [s1, s2] = size(L.blocks);
 numParams = s2 - s1;
 if ( all(isFun) && numParams > 0 )
-    % We've found a paramterised problem, but weren't informed by u0. 
+    % We've found a parameterised problem, but weren't informed by u0. 
     
     % TODO: Do we really want to throw a warning?
 %     % Throw a warning: 
@@ -261,11 +261,12 @@ end
 L.constraint = BC;
 
 % Cast the cell U back to a CHEBMATRIX, consisting of CHEBFUNs and scalars
-for k = 1:numVars
-    u{k} = u{k}.func;
+if ( nargout == 4)
+    for k = 1:numVars
+        u{k} = u{k}.func;
+    end
+    u = chebmatrix(u);
 end
-
-u = chebmatrix(u);
 
 end
 
