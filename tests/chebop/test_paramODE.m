@@ -24,7 +24,7 @@ N.rbc = @(u, a) u - 1;
 u = mldivide(N, chebfun(0), pref);
 res1 = N(x, u);
 
-% Forced setup using a system
+%% Linear, simple problem, forced setup using a system
 N = chebop(@(x, u, a) [x.*u + .001*diff(u,2) + a ; diff(a)]);
 % N = chebop(@(x, u, a) [x.*u + .001*diff(u,2) + a.*diff(u) ; diff(a)]);
 N.lbc = @(u, a) [u + a + 1 ; diff(u)];
@@ -55,13 +55,29 @@ N = chebop(@(x, u, a) (1-x.^2).*u + .1*diff(u,2) + a.*exp(u));
 % N = chebop(@(x, u, a) x.*u + .001*diff(u,2) + a.*diff(u));
 N.lbc = @(u, a) [u + a + 1 ; diff(u)];
 N.rbc = @(u, a) u - 1;
-% N.init = [chebfun(0) ; 0];
+
+pref.discretization = @colloc2;
 u = mldivide(N, chebfun(0), pref);
 res = N(x, u);
 Nlbc = N.lbc(u{1},u{2});
 Nrbc = N.rbc(u{1},u{2});
 err(3) = norm(res) + Nlbc{1}(-1) + Nlbc{2}(-1) + Nrbc(1);
 
+%% Test different discretizations
+pref.discretization = @colloc1;
+u = mldivide(N, chebfun(0), pref);
+res = N(x, u);
+Nlbc = N.lbc(u{1},u{2});
+Nrbc = N.rbc(u{1},u{2});
+err(4) = norm(res) + Nlbc{1}(-1) + Nlbc{2}(-1) + Nrbc(1);
+
+%% ultraS
+pref.discretization = @ultraS;
+u = mldivide(N, chebfun(0), pref);
+res = N(x, u);
+Nlbc = N.lbc(u{1},u{2});
+Nrbc = N.rbc(u{1},u{2});
+err(5) = norm(res) + Nlbc{1}(-1) + Nlbc{2}(-1) + Nrbc(1);
 %%
 
 pass = err < tol;

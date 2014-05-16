@@ -34,7 +34,7 @@ if ( ~f.isTransposed )
     % Reverse and translate the breakpoints.
     newDomain = -fliplr(f.domain) + sum(f.domain([1, end]));
     % Reverse the order of the corresponding pointValues:
-    f.pointValues = fliplr(f.pointValues);
+    f.pointValues = flipud(f.pointValues);
 
     % Reverse the order of FUNs:
     f.funs = f.funs(end:-1:1);

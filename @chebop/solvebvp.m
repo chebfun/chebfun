@@ -23,7 +23,6 @@ function [u, info] = solvebvp(N, rhs, pref, displayInfo)
 %   [U, INFO] = SOLVEBVP(N, RHS, PREF) is the same as above, but also returns
 %   the MATLAB struct INFO, which contains useful information about the solution
 %   process. The fields of INFO are as follows:
-%       ERROR:    The residual of the differential equation.
 %       ISLINEAR: A vector with four entries containing linearity information
 %           for N. More specifically, 
 %               ISLINEAR(1) = 1 if N.OP is linear
@@ -31,9 +30,14 @@ function [u, info] = solvebvp(N, rhs, pref, displayInfo)
 %               ISLINEAR(3) = 1 if N.RBC is linear
 %               ISLINEAR(4) = 1 if N.BC is linear
 %           Otherwise, the corresponding element of ISLINEAR is equal to 0.
+%   
+%   For linear problems, INFO further contains the field
+%       ERROR:    The residual of the differential equation.
 %
-%   TODO: INFO will have more fields once we move into nonlinear problems,
-%   update the list accordingly.
+%   For nonlinear problems, INFO further contains the fields
+%       NORMDELTA:  A vector of the norm of the Newton updates.
+%       ERROR:      An error estimate for the convergence of the Newton
+%                   iteration.
 %
 %   Note that CHEBOP allows the RHS of coupled system of ODEs to be a scalar,
 %   e.g., one can both call
@@ -87,19 +91,26 @@ if ( isempty(N.init) )
         u0{k} = zeroFun;
     end
     u0 = chebmatrix(u0);
+    
+    % Indicate that we did not get an initial guess passed
+    initPassed = 0;
 else
     u0 = N.init;
     % Ensure that N.init is a CHEBMATRIX, not a CHEBFUN:
     if ( isa(u0, 'chebfun') )
         u0 = chebmatrix(u0);
     end
+    
+    % Indicate that we get an inital guess passed.
+    initPassed = 1;
 end
 
 % Initialise the independent variable:
 x = chebfun(@(x) x, dom);
 
-% Linearize and attach preferences:
+% Linearize and attach preferences.
 [L, residual, isLinear] = linearize(N, u0, x);
+
 L.prefs = pref;
 
 % Check the size of the residual (the output the dimensions of the CHEBOP).
@@ -160,8 +171,12 @@ else
     % Create initial guess which satisfies the linearised boundary conditions:
     if ( isempty(N.init) )
         u0 = fitBCs(L);
-        % Linearize about the new initial guess:
-        [L, residual, isLinear] = linearize(N, u0, x);
+        % Linearize about the new initial guess. If we are working with
+        % parameter dependent problems, and did not get an initial condition
+        % passed, we might have to cast some components in the CHEBMATRIX U0
+        % from a CHEBFUN to a scalar. Hence, call LINEARIZE() with four outputs.
+        [L, residual, isLinear, u0] = linearize(N, u0, x);
+
     end
 
     % Call solver method for nonlinear problems.

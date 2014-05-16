@@ -16,11 +16,34 @@ f = [ 0*x ; 0*x ];
 
 %% COLLOC2
 
-A = chebop(@(x,u,v) [u - diff(v,2) + (1-x.^2).*u.^2; .3*diff(u,2) + sin(v)], d);
-A.lbc = @(u,v) [u-1; v+1];
-A.rbc = @(u,v) [v-1/2; diff(v)];
+A = chebop(@(x,u,v) [u - diff(v,2); diff(u,2) + cos(v)], d);
+A.lbc = @(u,v) [u-1/2; v+1/4];
+A.rbc = @(u,v) [v-1/4; u+1/2];
 
 pref.discretization = @colloc2;
+
+u12 = mldivide(A, f, pref);
+u1 = u12{1}; u2 = u12{2};
+
+% Want to check BCs as well.
+bcFunLeft = chebfun(A.lbc(u1,u2));
+bcFunRight = chebfun(A.rbc(u1,u2));
+
+% And check that we're continuous over breakpoint
+u1jump = jump(u1, 0);
+u2jump = jump(u2, 0);
+
+pass(1) = norm( chebfun(A(x, u1, u2))) < tol;
+pass(2) = norm(bcFunLeft(d(1))) < tol && norm(bcFunRight(d(end))) < tol;
+pass(3) = norm(u1jump) < tol && norm(u2jump) < tol;
+
+%% COLLOC1
+
+A = chebop(@(x,u,v) [u - diff(v,2); diff(u,2) + cos(v)], d);
+A.lbc = @(u,v) [u-1/2; v+1/4];
+A.rbc = @(u,v) [v-1/4; u+1/2];
+
+pref.discretization = @colloc1;
 
 u56 = mldivide(A, f, pref);
 u5 = u56{1}; u6 = u56{2};
@@ -33,9 +56,9 @@ bcFunRight = chebfun(A.rbc(u5,u6));
 u5jump = jump(u5, 0);
 u6jump = jump(u6, 0);
 
-pass(1) = norm( chebfun(A(x, u5, u6))) < tol;
-pass(2) = norm(bcFunLeft(d(1))) < tol && norm(bcFunRight(d(end))) < tol;
-pass(3) = norm(u5jump) < tol && norm(u6jump) < tol;
+pass(4) = norm( chebfun(A(x, u5, u6))) < tol;
+pass(5) = norm(bcFunLeft(d(1))) < tol && norm(bcFunRight(d(end))) < tol;
+pass(6) = norm(u5jump) < tol && norm(u6jump) < tol;
 
 %% ULTRAS:
 
@@ -51,8 +74,8 @@ bcFunRight = chebfun(A.rbc(u7,u8));
 u7jump = jump(u7, 0);
 u8jump = jump(u8, 0);
 
-pass(4) = norm( chebfun(A(x, u7, u8))) < tol;
-pass(5) = norm(bcFunLeft(d(1))) < tol && norm(bcFunRight(d(end))) < tol;
-pass(6) = norm(u7jump) < tol && norm(u8jump) < tol;
+pass(7) = norm( chebfun(A(x, u7, u8))) < tol;
+pass(8) = norm(bcFunLeft(d(1))) < tol && norm(bcFunRight(d(end))) < tol;
+pass(9) = norm(u7jump) < tol && norm(u8jump) < tol;
 
 end

@@ -413,7 +413,7 @@ classdef (InferiorClasses = {?double}) chebop
         varargout = eigs(N, varargin)
         
         % Linearize a CHEBOP around a CHEBFUN u.
-        [L, res, isLinear] = linearize(N, u, x, flag);  
+        [L, res, isLinear, u] = linearize(N, u, x, flag);  
         
         %\   Chebop backslash.
         u = mldivide(N, rhs, pref)
@@ -452,19 +452,11 @@ classdef (InferiorClasses = {?double}) chebop
         
         % Display special information for linear problems
         displayInfoLinear(u, normRes, pref)
-        
-    end
-        
-    
-    %% STATIC METHODS:
-        
-    methods ( Static = true ) 
-        % TODO: These should be private methods as well
-        
+
         % Solve a linear problem posed with CHEBOP.
         [u, info] = solvebvpLinear(L, rhs, residual, displayInfo, pref)
-
+        
     end
-    
+
 end
 

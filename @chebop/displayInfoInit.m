@@ -10,7 +10,7 @@ function [displayFig, displayTimer] = displayInfoInit(u0, pref)
 %   displayTimer:   A tic/toc timer, so that we can control the pause between
 %                   plots.
 %
-% See also: DISAPLYINFO.
+% See also: DISPLAYINFO.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

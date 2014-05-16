@@ -16,6 +16,10 @@ function u0 = fitBCs(L)
 %  obtained from the iszero information of the linearised BCs in the linop L.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Fix the discretization to @colloc2, so that we can be sure we always get the
+% same initial guesses for Newton iteration.
+L.prefs.discretization = @colloc2;
+
 % Store the total number of interior breakpoints
 dom = L.domain;
 numInts = length(dom) - 1;

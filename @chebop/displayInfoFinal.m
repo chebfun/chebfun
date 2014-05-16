@@ -5,12 +5,24 @@ function displayInfoFinal(u, delta, iterNo, errEstDE, errEstBC, displayFig, ...
 %  of the final solution obtain, if it is specified in the CHEBOPPREF argument
 %  passed to this method that the user wants to see the info/plot.
 %
+%  Calling sequence:
+%       DISPLAYINFOFINAL(U, DELTA, ITERNO, ERRESTDE, ERRESTBC, DISPLAYFIG, ...
+%           DISPLAYTIMER, PREF)
+%
+%  where:
+%   U:              Solution of the nonlinear BVP.
+%   DELTA:          Final Newton correction
+%   ITERNO:         Total number of iterations needed.
+%   ERRESTDE:       Estimate of the error of the solution of the differntial eq.
+%   ERRESTBC:       Estimate of the error of satisfying the boundary conditions.
+%   DISPLAYFIG:     Handle to a Matlab figure for plotting.
+%   DISPLAYTIMER:   A tic/toc timer for controlling pauses.
+%   PREF:           A CHEBOPPREF() object.
+%
 % See also: displayInfo
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
-
-% TODO: Document inputs.
 
 % Obtain preferences for what we want to show
 display  = pref.display;
