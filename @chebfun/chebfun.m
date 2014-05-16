@@ -486,7 +486,7 @@ classdef chebfun
         f = tidyImpulses(f)
         
         % Adjust nearby common break points in domains of CHEBFUN objects.
-        [f, g, newBreaksLocF, newBreaksLocG] = tweakDomain(f, g, tol)
+        [f, g, newBreaksLocF, newBreaksLocG] = tweakDomain(f, g, tol, pos)
         
     end
     
