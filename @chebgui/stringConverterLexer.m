@@ -1,18 +1,37 @@
-function [out varNames pdeVarNames eigVarNames indVarNames] = ...
-    lexer(guifile, str)
-% LEXER Lexer for string expression in the chebfun system
-% [OUT VARNAMES INDVARNAME] = LEXER(STR) performs a lexical analysis on the
-% string STR. OUT is a cell array with two columns, the left is a token and
-% the right is a label. VARNAMES is a cell string with name of variables in
-% the expression. INDVARNAME is a string which represents the independent
-% variable in the problem (i.e. x or t).
-
+function [out, varNames, pdeVarNames, eigVarNames, indVarNames] = ...
+    stringConverterLexer(guifile, str)
+%STRINGCONVERTERLEXER      Lexer for string expression in CHEBFUN
+%
+% [OUT, VARNAMES, INDVARNAME, PDEVARNAMES, EIGVARNAMES, INDVARNAMES] = 
+%   STRINGCONVERTERLEXER(STR) 
+% Performs a lexical analysis on the string STR. Here:
+%  STR:         A string of the mathematical expression we want to analyze.
+%  OUT:         A cell array with two columns, the left is a token and the
+%               right is a label. 
+%  VARNAMES:    A cell-string with the names of the variables in the expression.
+%  PDEVARNAMES: Contains variables that appear in PDE expressions (with a _t
+%               subscript).
+%  EIGVARNAMES: The variable used to denote the eigenvalue parameter, i.e. l,
+%               lam, or lambda.
+%  INDVARNAME: A string with the name of the variable that represents the
+%               independent variable in the problem (i.e. x or t).
+%
+% The output of this method is then passed to the LL(1) parser. For more details
+% of compiler theory, see e.g.
+%
+%   [1] Aho, Sethi, Ullman, Compilers: Principles, Techniques, and Tools,
+%       Addison-Wesley, 1986.
+%
+% See also: stringConverter, stringConverterParser.
+%
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/chebfun/ for Chebfun information.
 
+% Initialize an empty output.
 out = [];
-% A string array containing all functions which take one argument which 
-% we are interested in differentiating
+
+% A string array containing all functions which take one argument which we are
+% interested in differentiating
 strfun1 = char('sin', 'cos', 'tan', 'cot', 'sec', 'csc', ...
     'sinh', 'cosh', 'tanh', 'coth', 'sech', 'csch', ...
     'asin', 'acos', 'atan', 'acot', 'asec', 'acsc', ...
@@ -25,13 +44,13 @@ strfun1 = char('sin', 'cos', 'tan', 'cot', 'sec', 'csc', ...
     'abs','sign','var','std', ...
     'erf','erfc','erfcx','erfinv','erfcinv');
 
-% A string array containing all functions which take two arguments which 
+% String arrays containing all functions which take two or three arguments which
 % we are interested in differentiating
 strfun2 = char('airy','besselj','cumsum','diff','power','mean', ...
         'eq','ne','ge','gt','le','lt','jump');
-    
 strfun3 = char('feval','fred','volt','sum','integral');    
-    
+
+% Special flags to functions
 strarg = char('left','right','onevar','start','end');    
 
 % Remove all whitespace
@@ -80,13 +99,12 @@ str = vectorize(str);
 excludedNames = char(strfun1, strfun2, strfun3, strarg, 'true', 'false');
 
 % We temporarily replace parentheses with '-' as SYMVAR will not consider
-% u to be a vriable in u(1).
+% u to be a variable in u(1).
 strtmp = strrep(str, '(', '+');
 strtmp = strrep(strtmp, ')', '+');
 strtmp = strrep(strtmp, '''', '');
 varNames = symvar(strtmp);
 for k = numel(varNames):-1:1
-    %     if ismember(varNames{k},{excludedNames})
     if ( ismember(varNames(k), excludedNames) )
         varNames(k) = [];
     end
@@ -107,39 +125,34 @@ varNames(tLoc) = [];
 rLoc = strcmp('r', varNames);
 varNames(rLoc) = [];
 
+% Indicate what independent variables appear in the problems
 rExists = sum(rLoc) > 0;
 tExists = sum(tLoc) > 0;
 xExists = sum(xLoc) > 0;
   
-% TODO:  Delete this if it is no longer required.
-% Replace with lines below to return empty indVarName if no variable appear
-% in the problem.
-% elseif sum(xLoc)
-%     indVarName = 'x';
-% else
-%     indVarName = ''; % No independent variable detected.
-% end
+% Add $ to the end of the string to mark its end
+str(end+1) = '$';
 
-str(end+1) = '$';   % Add $ to the end of the string to mark its end
-
-% In order to spot unary operators we need to store the type of the
-% previous token.
+% In order to spot unary operators we need to store the type of the previous
+% token.
 prevtype = 'operator';
+
+% Loop through the input string
 while ( ~strcmp(str, '$') )
     char1 = str(1);
+    % Find the type of the current token
     type = myfindtype(char1, prevtype);
     expr_end = 1;
     switch ( type )
         case 'num'
-            % Obtain the numbers continously (with match), their start and
-            % end positions.
+            % Obtain the numbers continously (with match), their start and end
+            % positions.
             regex = '[\+\-]?(([0-9]+(\.[0-9]*)?|\.[0-9]+)([eE][\+\-]?[0-9]+)?[ij]?)';
-            [m s e] = regexp(str, regex, 'match', 'start', 'end');
+            [m, s, e] = regexp(str, regex, 'match', 'start', 'end');
             
-            % We can run into trouble with string such as 2*3 which will
-            % become 2.*3 as we vectorize. But the . here should be a part
-            % of the operator, not the number, so we have to do a little
-            % check here.
+            % We can run into trouble with string such as 2*3 which will become
+            % 2.*3 as we vectorize. But the . here should be a part of the
+            % operator, not the number, so we have to do a little check here.
             nextnum = char(m(1));
             expr_end = e(1);
             nextChar = str(e(1)+1);
@@ -153,15 +166,17 @@ while ( ~strcmp(str, '$') )
                 expr_end = e(1) - 1;
             end
             
-            % If we encounter xi or xj, where x is a number (i.e. we have
-            % 1i, 1.32i etc), we need to combine them into one token,
-            % rather than lexing 1 as a number and i as a variable.         
+            % If we encounter xi or xj, where x is a number (i.e. we have 1i,
+            % 1.32i etc), we need to combine them into one token, rather than
+            % lexing 1 as a number and i as a variable.
             if ( strcmp(nextChar, 'i') || strcmp(nextChar, 'j') )
                 nextnum = [nextnum, nextChar];
                 expr_end = e(1) + 1; % Increase number of chars. We throw away.
             end
             out = [out ; {nextnum, 'NUM'}];
+            
         case 'unary'
+            % Unary operators
             expr_end = 1;
             switch ( char1 )
                 case '+'
@@ -169,21 +184,22 @@ while ( ~strcmp(str, '$') )
                 case '-'
                     out = [out ; {char1, 'UN-'}];
             end
+            
         case 'point'
             % If we have point, we need to check next symbol to see if we 
             % have an operator (e.g. .*) or a double (e.g. .1):
             char2 = str(2);
             type2 = myfindtype(str(2), prevtype);
-            switch type2
-                
+            switch type2               
                 case 'num'      % We have a floating point number
                     regex = '[0-9]+([eE][\+\-]?[0-9]+)?[ij]?';
-                    [m s e] = regexp(str, regex, 'match', 'start', 'end');
+                    [m, s, e] = regexp(str, regex, 'match', 'start', 'end');
 
                     % Add a . and convert from cell to string
                     nextnum = ['.', char(m(1))];
                     expr_end = e(1);
                     out = [out; {nextnum, 'NUM'}];
+                    
                 case 'operator' % We have a pointwise operator
                     expr_end = 2;
                     switch char2
@@ -199,6 +215,7 @@ while ( ~strcmp(str, '$') )
                             out = [out ; {'.^', 'OP^'}];
                     end
             end
+            
         case 'operator'
             % We know that *,/ and ^ will never reach this far as we have
             % already vectorized the string. Thus, we don't have to treat
@@ -244,15 +261,18 @@ while ( ~strcmp(str, '$') )
                             'Unsupported operator ~.');
                     end
             end
+            
         case 'deriv'
-            [m s e] = regexp(str, '''+', 'match', 'start', 'end');
+            % The derivative symbol '
+            [m, s, e] = regexp(str, '''+', 'match', 'start', 'end');
             expr_end = e(1);
             order = e(1)-s(1)+1;
             out = [out; {m{1}, ['DER' num2str(order)]}];
             % Find the order of the derivative
+            
         case 'char'
             regex = '[a-zA-Z_][a-zA-Z_0-9]*';
-            [m s e] = regexp(str, regex, 'match', 'start', 'end');
+            [m, s, e] = regexp(str, regex, 'match', 'start', 'end');
             nextstring = char(m(1));   % Convert from cell to string
             expr_end = e(1);
             
@@ -265,7 +285,7 @@ while ( ~strcmp(str, '$') )
                     (strcmp(nextstring, 'l') || strcmp(nextstring, 'lam') || ...
                     strcmp(nextstring, 'lambda')) )
 
-                out = [out ; {nextstring, 'LAMBDA'}];
+                out = [out ; {nextstring, 'LAMBDA'}]; %#ok<*AGROW>
 
                 % Remove the lambda from the list of variables.
                 lamMatch = cellfun(@strcmp, varNames,...
@@ -311,10 +331,12 @@ while ( ~strcmp(str, '$') )
             else
                 out = [out ; {nextstring, 'INDVAR'}];
             end
+            
         case 'comma'
             out = [out ; {char1,'COMMA'}];
+            
         case 'error'
-            error('Chebgui:Lexer:UnknownType', ...
+            error('CHEBFUN:CHEBGUI:stringConverterLexer:UnknownType', ...
                 'Unrecognized type of lexer input.');
     end
     
@@ -358,8 +380,10 @@ end
 end
 
 function type = myfindtype(str, prevtype)
-
-% TODO:  Documentation.
+% TYPE = MYFINDTYPE(STR, PREVTYPE) returns what type the current token is,
+% looking at the start of the current string STR we are performing lexical
+% analysis on. Here, PREVTYPE is the type of the previous token, required to
+% catch unary operators.
 
 % Change to floating point format?
 % regex:  [+-]?(([0-9]+(.[0-9]*)?|.[0-9]+)([eE][+-]?[0-9]+)?)
