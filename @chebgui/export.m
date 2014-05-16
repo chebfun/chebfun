@@ -98,7 +98,7 @@ if ( strcmp(problemType, 'bvp') )
                 end
                 
                 try
-                    exportbvp2mfile(guifile, pathname, filename)
+                    exportBVP2mfile(guifile, pathname, filename)
                     % Open the new file in the editor
                     open([pathname, filename])
                 catch ME
@@ -203,7 +203,7 @@ elseif ( strcmp(problemType,'pde') )
                 'Save as', [problemType,'.m']);
             if ( filename )     % User did not press cancel.
                 try
-                    exportpde2mfile(guifile, pathname, filename)
+                    exportPDE2mfile(guifile, pathname, filename)
                     % Open the new file in the editor
                     open([pathname, filename])
                 catch ME
@@ -295,7 +295,7 @@ else
                 'Save as', 'bvpeig.m');
             if ( filename )     % User did not press cancel
                 try
-                    exporteig2mfile(guifile, pathname, filename, handles)
+                    exportEIG2mfile(guifile, pathname, filename, handles)
                     % Open the new file in the editor
                     open([pathname, filename])
                 catch ME

@@ -1,4 +1,7 @@
-function exportpde2mfile(guifile, pathname, filename)
+function exportPDE2mfile(guifile, pathname, filename)
+%EXPORTBVP2MFILE    Export a PDE from CHEBGUI to a .m file.
+%
+%   See also: chebgui/export.
 
 % TODO:  Documentation.
 

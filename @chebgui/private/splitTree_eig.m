@@ -1,4 +1,4 @@
-function [newTree lambdaTree lambdaSign] = splitTree_eig(guifile, treeIn)
+function [newTree, lambdaTree, lambdaSign] = splitTree_eig(guifile, treeIn)
 % SPLITTREE_BVP Split a syntax tree (replace = with -) for a EIG problem
 
 % TODO:  Documentation.
@@ -7,15 +7,14 @@ function [newTree lambdaTree lambdaSign] = splitTree_eig(guifile, treeIn)
 % See http://www.chebfun.org/chebfun/ for Chebfun information.
 
 % Begin by finding the subtree which contains lambda
-
-[newTree lambdaTree lambdaSign] = findLambda(treeIn, 1);
+[newTree, lambdaTree, lambdaSign] = findLambda(treeIn, 1);
 
 % Do the basic splitting (converting = into -) in newTree
 newTree = splitTree_commas_equalSigns(guifile, newTree);
 
 end
 
-function [newTree lambdaTree lambdaSign] = findLambda(treeIn, lambdaSign)
+function [newTree, lambdaTree, lambdaSign] = findLambda(treeIn, lambdaSign)
 
 newTree = treeIn;
 leftEmpty = 1;
@@ -26,13 +25,13 @@ lambdaTreeRight = [];
 treeCenter = treeIn.center;
 
 if ( isfield(treeIn, 'left') )
-    [newLeft lambdaTreeLeft lambdaSign] = findLambda(treeIn.left, lambdaSign);
+    [newLeft, lambdaTreeLeft, lambdaSign] = findLambda(treeIn.left, lambdaSign);
     newTree.left = newLeft;
     leftEmpty = 0;
 end
 
 if ( isfield(treeIn, 'right') )
-    [newRight lambdaTreeRight lambdaSign] = findLambda(treeIn.right, ...
+    [newRight, lambdaTreeRight, lambdaSign] = findLambda(treeIn.right, ...
         lambdaSign);
     newTree.right = newRight;
     rightEmpty = 0;

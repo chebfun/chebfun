@@ -1,7 +1,13 @@
-function exportbvp2mfile(guifile, pathname, filename)
+function exportBVP2mfile(guifile, pathname, filename)
+%EXPORTBVP2MFILE    Export a BVP from CHEBGUI to a .m file.
+%
+%   See also: chebgui/export.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/chebfun/ for Chebfun information.
+
+% TODO:  Documentation.
+
 
 fullFileName = [pathname, filename];
 fid = fopen(fullFileName, 'wt');
@@ -38,7 +44,7 @@ if ( isa(initInput, 'char') )
      initInput = cellstr(initInput);
 end
 
-[deString allVarString indVarNameDE ignored ignored ignored allVarNames] = ...
+[deString, allVarString, indVarNameDE, dummy, dummy, dummy, allVarNames] = ...
     setupFields(guifile, deInput, 'DE');
 
 % Do some error checking before we do further printing. Check that
@@ -46,7 +52,7 @@ end
 % Obtain the independent variable name appearing in the initial condition
 useLatest = strcmpi(initInput{1}, 'Using latest solution');
 if ( ~isempty(initInput{1}) && ~useLatest )
-    [initString ignored indVarNameInit] = ...
+    [initString, dummy, indVarNameInit] = ...
         setupFields(guifile, initInput, 'BC', allVarString);
 else
     indVarNameInit = {''};
@@ -172,7 +178,7 @@ elseif ( ~isempty(initInput{1}) )
             inits = [inits ; {currInit}];
         end
 
-        [ignored order] = sort(order);
+        [ignored, order] = sort(order);
         initText = '_init';
         for k = 1:numel(initInput)
             fprintf(fid, '%s%s = %s;\n', inits{order(k)}, initText, ...
@@ -184,13 +190,6 @@ elseif ( ~isempty(initInput{1}) )
         end
         fprintf(fid, ' %s%s];\n', inits{order(end)}, initText);
 
-        % TODO:  If the following is no longer needed, remove it.
-%         ws = '         ';
-%         fprintf(fid,'N.init = [%s, ...\n',vectorize(char(initInput{1})));
-%         for k = 2:numel(initInput)-1
-%             fprintf(fid,'%s %s, ...\n',ws,vectorize(char(initInput{k})));
-%         end
-%         fprintf(fid,'%s %s];\n',ws,vectorize(char(initInput{end})),ws)
     end
 end
 

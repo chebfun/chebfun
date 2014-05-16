@@ -198,4 +198,17 @@ classdef chebgui
         parseOut = strConvParser(lexIn)
     end
     
+    methods( Access = private )
+       
+        % Export a BVP to an .m file
+        exportBVP2mfile(guifile, pathname, filename)
+        
+        % Export an EIG problem to an .m file
+        exportEIG2mfile(guifile, pathname, filename, handles)
+        
+        % Export a PDE to an .m file
+        exportPDE2mfile(guifile, pathname, filename)
+        
+    end
+    
 end

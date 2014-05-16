@@ -1,4 +1,7 @@
-function exporteig2mfile(guifile, pathname, filename, handles)
+function exportEIG2mfile(guifile, pathname, filename, handles)
+%EXPORTBVP2MFILE    Export a EIG problem from CHEBGUI to a .m file.
+%
+%   See also: chebgui/export.
 
 % TODO:  Documentation.
 
