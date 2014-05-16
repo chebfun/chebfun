@@ -1,43 +1,55 @@
-function measure = measure(f, d)
-%MEASURE of a CHEBFUN F betweeen A and B.
-%   MEASURE(F, A, B) computes the number F^-1([a,b]) i.e. the measure of
+function measure = measure(f, a, b)
+%MEASURE    Measure of a CHEBFUN F on an interval.
+%   MEASURE(F, A, B) computes the number F^-1([a,b]) i.e., the measure of
 %   the set which is mapped to values between A and B under the mapping F.
+%   MEASURE(F, [A, B]) is an equivalent syntax.
 
-% Copyright 2011 by The University of Oxford and The Chebfun Developers. 
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
+
+% TODO: This method needs a test.
+
+if ( nargin == 2 )
+    d = a;
+    a = d(1);
+    b = d(2);
+else
+    d = [a, b];
+end
 
 % d must be a 2X1 or 1X2 vector
 if ( ~isvector(d) || length(d) > 2)
-    error('CHEBFUN:MEASURE', 'second argument must be a vector of lenght 2.');
+    error('CHEBFUN:MEASURE', ...
+        'Invalid second input argument.');
 end
-a = d(1); 
-b = d(2);
 
 % Function f must be real valued:
 if ( ~isreal(f) )
-    error('CHEBFUN:MEASURE', 'Complex valued functions can not be measured in Chebfun');
+    error('CHEBFUN:MEASURE', ...
+        'Complex valued functions can not be measured in Chebfun.');
 end
 
 % If f is not continuous, results may be wrong.
 if ( ~iscont(f) )
-    warning('CHEBFUN:MEASURE', 'The function is not continuous, results may be inaccurate');
+    warning('CHEBFUN:MEASURE', ...
+        'The function is not continuous, results may be inaccurate.');
 end
 
 % a should not be greater than b:
-if ( a > b || a == inf || b == -inf)
-    error('CHEBFUN:MEASURE', 'a should not be greater than b' );
+if ( (a > b) || (a == inf) || (b == -inf) )
+    error('CHEBFUN:MEASURE', 'a should not be greater than b.' );
 end
 
 % What to do if a == b
 % if ( a == b ) end
 
-if ( a == -inf && b == inf )
+if ( (a == -inf) && (b == inf) )
     measure = f.ends(end) - f.ends(1);
     return
 end
 
 % If a = -inf and b is bounded:
-if ( a == -inf || a < min(f) )
+if ( (a == -inf) || (a < min(f)) )
     % A continuous function can not hit a:
     ra = [];
 else
@@ -46,7 +58,7 @@ else
 end
 
 % If b == inf and a is bounded:
-if ( b == inf || b > max(f) )
+if ( (b == inf) || (b > max(f)) )
     % A continuous function can not hit b:
     rb = [];
 else
@@ -64,39 +76,38 @@ fp = diff(f);
 measure = 0;
 for i = 1:length(r)-1
     if ( t(i) == 'a' )
-        if( t(i+1) == 'b' )
+        if ( t(i+1) == 'b' )
             % Function hits a then b
             measure = measure + r(i+1) - r(i);
         else
             % Two consecutive roots hitting a, make sure the function is
             % inside a and b:
-            if ( feval(fp, r(i)) >= 0 && feval(fp, r(i+1)) <= 0 )
+            if ( (feval(fp, r(i)) >= 0) && (feval(fp, r(i+1)) <= 0) )
                 measure = measure + r(i+1) - r(i);
             end
         end
     else
-        if( t(i+1) == 'a' )
+        if ( t(i+1) == 'a' )
             % Function hits b then a
             measure = measure + r(i+1) - r(i);
         else
             % Two consecutive roots hitting b, make sure the function is
             % inside a and b:
-            if ( feval(fp, r(i)) <= 0 && feval(fp, r(i+1)) >= 0 )
+            if ( (feval(fp, r(i)) <= 0) && (feval(fp, r(i+1)) >= 0) )
                 measure = measure + r(i+1) - r(i);
             end
         end
     end
 end
 
-
 % Search for measure at the boundary points.
-ends = [f.ends(1), f.ends(end)];
+ends = [f.domain(1), f.domain(end)];
 fLeft = feval(f, ends(1));
 fRight = feval(f, ends(end));
 
 if ( ~isempty(r) )
     % Check if there is any measure from the left boundary to the first root.
-    if ( fLeft >= a && fLeft <= b )
+    if ( (fLeft >= a) && (fLeft <= b) )
         if ( t(1) == 'a' )
             % Function hits a, check derivative:
             if ( feval(fp, r(1)) <= 0 )
@@ -111,7 +122,7 @@ if ( ~isempty(r) )
     end
     
     % Check if there is any measure from the last root to the right boundary.
-    if ( fRight >= a && fRight <= b )
+    if ( (fRight >= a) && (fRight <= b) )
         if ( t(end) == 'a' )
             % Function hits a, check derivative:
             if ( feval(fp, r(end)) >= 0 )
@@ -126,17 +137,19 @@ if ( ~isempty(r) )
     end
 else
     % Function does not hit a or b.
-    if ( fLeft >= a && fLeft <= b )
+    if ( (fLeft >= a) && (fLeft <= b) )
         if ( fRight >= a && fRight <= b )
             % Measure is the length of the whole interval.
             measure = ends(end) - ends(1);
         else
             % This means the function did hit a or b and but not detected.
-            error( 'CHEBFUN:MEASURE', 'root not detected');
+            error('CHEBFUN:MEASURE', 'Root not detected');
         end
     end
 end
 end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [r, t] = sortAndMerge(ra, rb)
 %SORTANDMERGE constructs a single sorted array obtained from ra and rb.
@@ -153,7 +166,7 @@ lenB = length(rb);
 r = zeros(lenA + lenB, 1);
 t = zeros(lenA + lenB, 1);
 
-while ( m <= lenA || n <= lenB )
+while ( (m <= lenA) || (n <= lenB) )
     % If one of the arrays is exausted, copy the second one into output:
     if ( m > lenA )
         while ( n <= lenB )
@@ -162,7 +175,7 @@ while ( m <= lenA || n <= lenB )
             n = n + 1;
             i = i + 1;
         end
-        break;
+        break
     end
     
     if ( n > lenB )
@@ -172,7 +185,7 @@ while ( m <= lenA || n <= lenB )
             m = m + 1;
             i = i + 1;
         end
-        break;
+        break
     end
     
     % None of the arrays is exausted;
@@ -188,10 +201,70 @@ while ( m <= lenA || n <= lenB )
         n = n + 1;
     end
 end
+
 % Sanity check
 if ( length(r) ~= lenA + lenB )
     % Something has gone wrong.
-    error('CHEBFUN:HIST:SORTANDMERGE', 'Roots likely to have duplication');
+    error('CHEBFUN:HIST:SORTANDMERGE', 'Roots likely to have duplication.');
 end
+
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function isc = iscont(F)
+%ISCONT   Continuity test for chebfuns.
+%   ISCONT(F) Returns logical ture if the CHEBFUN F is continuous on the closed
+%   interval defined by the domain of F and logical 0 otherwise.
+
+for k = 1:numel(F)
+    isc = contCheck(F(k));
+    if ( ~isc )
+        return
+    end
+end
+
+end
+
+function isc = contCheck(f)
+% Check continuity of a CHEBFUN f.
+isc = true;
+
+% Delta functions.
+impTol = 1e-13;
+imps = getDeltaFunctions(f);
+if ( any(any(abs(imps(:)) > impTol)) )
+    % Function with non-trivial delta functions is never continuous.
+    isc = false;
+    return
+end
+
+% Exponents.
+if ( issing(f) )
+    % Function with negative exponents is never continuous.
+    isc = false;
+    return
+end
+
+% Smooth CHEBFUN.
+valTol = 1e-13;
+if ( numel(f.funs) == 1 )
+    % Function with a single fun is always continuous.
+    isc = true;    
+    return
+end
+
+% Function has more than one FUN:
+ends = f.domain;
+for i = 2:length(ends)-1        
+    fLeft = feval(f, ends(i), 'left');
+    fRight = feval(f, ends(i), 'right');
+    fMiddle = f.pointValues(i, 1);
+    if ( any(abs([fLeft-fRight, fLeft-fMiddle, fRight-fMiddle]) > valTol) )
+        isc = false;
+        return
+    end        
+end    
+
 
 end
