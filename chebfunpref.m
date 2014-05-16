@@ -469,7 +469,7 @@ classdef chebfunpref < chebpref
 
             % Format and print values of tech preferences.
             for field = fieldnames(prefList.techPrefs).'
-                field1 = field1{1};
+                field1 = field{1};
                 printStr = padString(['        ' field1 ':']);
 
                 if ( isempty(prefList.techPrefs.(field1)) )
@@ -538,15 +538,14 @@ classdef chebfunpref < chebpref
             pref1 = chebpref.mergePrefs(pref1, pref2, map);
         end
 
-        function pref = getFactoryDefaults(varargin)
+        function pref = getFactoryDefaults()
         %GETFACTORYDEFAULTS   Get factory default preferences.
         %   PREF = CHEBFUNPREF.GETFACTORYDEFAULTS() returns a CHEBFUNPREF
         %   object with the preferences set to their factory defaults,
         %   irrespective of the currently defined values of the default
         %   preferences.  This function is useful if the user wishes to
         %   construct a CHEBFUN using the factory defaults when other user-set
-        %   defaults are currently in
-        %   force.
+        %   defaults are currently in force.
         %
         % See also GETDEFAULTS, SETDEFAULTS.
 

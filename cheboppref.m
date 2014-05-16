@@ -143,7 +143,7 @@ classdef cheboppref < chebpref
     end
 
     methods ( Static = true )
-        function pref = getFactoryDefaults(varargin)
+        function pref = getFactoryDefaults()
         %GETFACTORYDEFAULTS   Get factory default preferences.
         %   PREF = CHEBOPPREF.GETFACTORYDEFAULTS() returns a CHEBOPPREF
         %   object with the preferences set to their factory defaults,
