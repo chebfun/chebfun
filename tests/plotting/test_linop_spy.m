@@ -34,7 +34,7 @@ shg
 %%
 
 close all
-spy(L, 'disc', 'ultraS', 'dim', 3)
+spy(L, 'disc', 'ultraS')
 open test_linop_spy2.fig
 shg
 
