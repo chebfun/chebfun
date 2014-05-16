@@ -49,7 +49,7 @@ syntaxTree = chebgui.strConvParser(lexOut);
 
 if ( strcmp(guifile.type, 'bvp') )
     % Convert a potential = at the top of the tree to a -.
-    syntaxTree = splitTree_bvp(guifile, syntaxTree);
+    syntaxTree = chebgui.splitTree_bvp(syntaxTree);
     % Obtain the prefix form.
     prefixOut = chebgui.strConvTree2prefix(syntaxTree);
     
@@ -67,7 +67,7 @@ elseif ( strcmp(guifile.type, 'pde') )
 elseif ( strcmp(guifile.type, 'eig') )
     anFunLambda = '';
     % Convert a potential at the top of the tree = to a -.
-    [syntaxTree, lambdaTree, lambdaSign] = splitTree_eig(guifile, syntaxTree);
+    [syntaxTree, lambdaTree, lambdaSign] = chebgui.splitTree_eig(syntaxTree);
     % Obtain the prefix form.
     prefixOut = chebgui.strConvTree2prefix(syntaxTree);
     

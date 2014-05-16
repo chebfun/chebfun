@@ -1,4 +1,4 @@
-function [treeOut] = splitTree_commas_equalSigns(guifile, treeIn)
+function treeOut = splitTree_commas_equalSigns(treeIn)
 % SPLITTREE_COMMAS_EQUALSIGNS This is the basic method for splitting syntax
 % trees. It looks for individual expressions separated by commas (e.g. u(1)
 % = 0, u'(3) = 4), and in each expression, converts the = into a - so that
@@ -25,8 +25,8 @@ for k = 1:numel(treeOut)
     treeCenter = treeIn(k).center;
     % Check for commas and =. Do nothing otherwise.
     if ( strcmp(treeCenter{2}, 'COMMA') )
-        treeOut(k).left = splitTree_commas_equalSigns(guifile, treeOut.left);
-        treeOut(k).right = splitTree_commas_equalSigns(guifile, treeOut.right);
+        treeOut(k).left = chebgui.splitTree_commas_equalSigns(treeOut.left);
+        treeOut(k).right = chebgui.splitTree_commas_equalSigns(treeOut.right);
     elseif ( strcmp(treeCenter{2}, 'OP=') )
         treeOut(k).center = {'-', 'OP-'};
     end

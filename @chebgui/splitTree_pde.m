@@ -1,4 +1,4 @@
-function [newTree pdeSign] = splitTree_pde(guifile, treeIn)
+function [newTree, pdeSign] = splitTree_pde(treeIn)
 % SPLITTREE_PDE Split a syntax tree (replace = with -) for a PDE
 
 % TODO:  Documentation.
@@ -8,14 +8,14 @@ function [newTree pdeSign] = splitTree_pde(guifile, treeIn)
 
 % Begin by replacing the subtree which contains the pde_variable with a 0
 
-[newTree pdeTree pdeSign] = findPDE(treeIn, 1);
+[newTree, pdeTree, pdeSign] = findPDE(treeIn, 1);
 
 % Do the basic splitting (converting = into -) in newTree
-newTree = splitTree_commas_equalSigns(guifile, newTree);
+newTree = chebgui.splitTree_commas_equalSigns(newTree);
 
 end
 
-function [newTree pdeTree pdeSign] = findPDE(treeIn, pdeSign)
+function [newTree, pdeTree, pdeSign] = findPDE(treeIn, pdeSign)
 
 newTree = treeIn;
 leftEmpty = 1;
@@ -26,13 +26,13 @@ pdeTreeRight = [];
 treeCenter = treeIn.center;
 
 if ( isfield(treeIn, 'left') )
-    [newLeft pdeTreeLeft pdeSign] = findPDE(treeIn.left, pdeSign);
+    [newLeft, pdeTreeLeft, pdeSign] = findPDE(treeIn.left, pdeSign);
     newTree.left = newLeft;
     leftEmpty = 0;
 end
 
 if ( isfield(treeIn, 'right') )
-    [newRight pdeTreeRight pdeSign] = findPDE(treeIn.right, pdeSign);
+    [newRight, pdeTreeRight, pdeSign] = findPDE(treeIn.right, pdeSign);
     newTree.right = newRight;
     rightEmpty = 0;
 end

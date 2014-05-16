@@ -219,6 +219,18 @@ classdef chebgui
         
         % Get rid of unecessary parenthesis in infix format strings
         strOut = strConvParSimp(strIn)
+        
+        % Split expressions separated by commas to individual syntax trees
+        treeOut = splitTree_commas_equalSigns(treeIn)
+        
+        % Split a BVP syntax tree
+        treeOut = splitTree_bvp(treeIn)
+        
+        % Split an EIG syntax tree
+        [newTree, lambdaTree, lambdaSign] = splitTree_eig(treeIn)
+        
+        % Split a PDE syntax tree
+        [newTree, pdeSign] = splitTree_pde(treeIn)
     end
     
 end
