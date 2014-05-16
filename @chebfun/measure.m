@@ -241,18 +241,13 @@ if ( any(any(abs(deltas(:)) > deltaTol)) )
 end
 
 % Exponents.
-% [TODO]: This is not the correct check. Sqrt(x) on [0, 1] is continuous and 
-% hence measureable but isssing() is true for that function. The correct check 
-% should be on the exponents being negative.
-if ( issing(f) )
-    % Function with negative exponents is never continuous.
+if ( ~isfinite(f) )
+    % Function with blowup is never continuous.
     isc = false;
     return
 end
 
 % Smooth CHEBFUN.
-% [TODO]: Should this tolrance be obtained from preferences?
-valTol = 1e-13;
 if ( numel(f.funs) == 1 )
     % Function with a single fun is always continuous.
     isc = true;    
@@ -260,16 +255,16 @@ if ( numel(f.funs) == 1 )
 end
 
 % Function has more than one FUN:
-ends = f.domain;
-for i = 2:length(ends)-1        
-    fLeft = feval(f, ends(i), 'left');
-    fRight = feval(f, ends(i), 'right');
+dom = f.domain;
+valTol = 100*max(vscale(f).*epslevel(f));
+for i = 2:length(dom)-1        
+    fLeft = feval(f, dom(i), 'left');
+    fRight = feval(f, dom(i), 'right');
     fMiddle = f.pointValues(i, 1);
     if ( any(abs([fLeft-fRight, fLeft-fMiddle, fRight-fMiddle]) > valTol) )
         isc = false;
         return
     end        
 end    
-
 
 end
