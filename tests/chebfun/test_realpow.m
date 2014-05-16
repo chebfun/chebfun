@@ -11,14 +11,14 @@ try
     realpow(x, 1/3);
     pass(1) = false;
 catch ME
-    pass(1) = strcmp(ME.message, 'Realpow produced complex result.');
+    pass(1) = strcmp(ME.identifier, 'CHEBFUN:realpow:complexRes');
 end
 
 try
     realpow(1i*abs(x), 3);
     pass(2) = false;
 catch ME
-    pass(2) = strcmp(ME.message, 'Realpow produced complex result.');
+    pass(2) = strcmp(ME.identifier, 'CHEBFUN:realpow:complexRes');
 end
 
 %% These should pass:
@@ -36,14 +36,14 @@ try
     realpow(1i*X, 3)
     pass(5) = false;
 catch ME
-    pass(5) = strcmp(ME.message, 'Realpow produced complex result.');
+    pass(5) = strcmp(ME.identifier, 'CHEBFUN:realpow:complexRes');
 end
 
 try
     realpow(X,.42);
     pass(6) = false;
 catch ME
-    pass(6) = strcmp(ME.message, 'Realpow produced complex result.');
+    pass(6) = strcmp(ME.identifier, 'CHEBFUN:realpow:complexRes');
 end
 
 end

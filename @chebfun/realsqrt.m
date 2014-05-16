@@ -10,7 +10,7 @@ function R = realsqrt(X)
 
 % Check for complex X:
 if ( ~isreal(X) )
-    error('CHEBFUN:realsqrt:complex', 'Realsqrt produced complex result.');
+    error('CHEBFUN:realsqrt:complexRes', 'REALSQRT produced complex result.');
 end
 
 % TODO: It's probably cheaper to just check the result?
@@ -25,7 +25,7 @@ R = sqrt(X);
         
 % Check for complex R:
 if ( ~isreal(R) )
-    error('CHEBFUN:realsqrt:complexR', 'Realsqrt produced complex result.');
+    error('CHEBFUN:realsqrt:complexRes', 'REALSQRT produced complex result.');
 end
 
 end

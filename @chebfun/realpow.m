@@ -1,9 +1,7 @@
 function Z = realpow(X, Y)
-%REALSQRT   Real power of a CHEBFUN.
-%   Z = REALPOW(X, Y) denotes element-by-element powers. X and Y must have the
-%   same dimensions unless one is a scalar. A scalar can operate into anything.
-%
-%   An error is produced if the result is complex.
+%REALPOW   Real power of a CHEBFUN.
+%   Z = REALPOW(X, Y) is the same as X.^Y.  An error is produced if the result
+%   is complex.
 %
 % See also CHEBFUN/POWER, REALPOW.
 
@@ -14,7 +12,7 @@ Z = power(X, Y);
         
 % Check for complex Z:
 if ( ~isreal(Z) )
-    error('CHEBFUN:realsqrt:complexR', 'Realpow produced complex result.');
+    error('CHEBFUN:realpow:complexRes', 'REALPOW produced complex result.');
 end
 
 end
