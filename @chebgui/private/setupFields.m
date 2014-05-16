@@ -217,7 +217,7 @@ if ( ~isempty(strfind(input, '@')) ) % User supplied anon. function
     trimmedInput = input(firstRPloc+1:end);
     
     [field indVarName varNames pdeVarNames eigVarNames commaSeparated] = ...
-        convertToAnon(guifile,trimmedInput,type);
+        strConv2anon(guifile,trimmedInput,type);
     
     return
 elseif ( any(strcmp(type,{'BC','BCnew'})) )  % More types of syntax for BCs
@@ -249,7 +249,7 @@ end
 if ( any(strcmp(type, {'DE', 'INIT', 'INITSCALAR'})) || convertBCtoAnon )
    % Convert to anon. function string
     [field indVarName varNames pdeVarNames eigVarNames commaSeparated] = ...
-        convertToAnon(guifile,input,type);
+        strConv2anon(guifile,input,type);
 end
 
 end

@@ -203,6 +203,8 @@ classdef chebgui
         % Export a PDE to an .m file
         exportPDE2mfile(guifile, pathname, filename)
         
+        % Convert a string to an anonymous function
+        varargout = strConv2anon(guifile, str, type)
     end
     
     methods( Access = private, Static = true )
@@ -234,6 +236,7 @@ classdef chebgui
         
         % Convert an expression on PREFIX form to INFIX form
         [infixOut, notaVAR] = strConvPref2inf(prefIn)
+        
     end
     
 end

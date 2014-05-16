@@ -1,8 +1,11 @@
-function varargout = convertToAnon(guifile, str, type)
-% CONVERTTOANON Converts a string on 'natural syntax form' to an anonymous
+function varargout = strConv2anon(guifile, str, type)
+% STRCONV2ANON Converts a string on 'natural syntax form' to an anonymous
 % function Matlab can work with.
 
 % TODO:  Documentation.
+
+% TODO: Should this method be made static? The only important information from
+% GUIFILE is the type of the problem.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/chebfun/ for Chebfun information.
@@ -40,7 +43,7 @@ end
 
 % Check whether we have something like u" = u_t+v_t which we don't allow
 if ( length(pdeVarNames) > 1 )
-    error('Chebgui:convertToAnon:pdeVariables', ...
+    error('CHEBFUN:CHEBGUI:strConv2anon:pdeVariables', ...
         'Only one time derivative per line is allowed');
 end
 
