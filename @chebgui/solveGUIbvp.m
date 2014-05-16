@@ -1,4 +1,4 @@
-function varargout = solveguibvp(guifile,handles)
+function varargout = solveGUIbvp(guifile,handles)
 % SOLVEGUIBVP
 
 % TODO:  Documentation.

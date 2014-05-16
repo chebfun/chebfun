@@ -205,6 +205,19 @@ classdef chebgui
         
         % Convert a string to an anonymous function
         varargout = strConv2anon(guifile, str, type)
+        
+        % Load the CHEBGUI demos
+        cg = loaddemos(guifile, guifilepath)
+        
+        % Populate the fields of the GUI
+        [field, allVarString, indVarName, pdeVarNames, pdeflag, eigVarNames, ...
+            allVarNames]  = setupFields(guifile, input, type, allVarString)
+        
+        % Solve a GUI BVP
+        varargout = solveGUIbvp(guifile,handles)
+        
+        % Solve a GUI EIG problem
+        varargout = solveGUIeig(guifile,handles)
     end
     
     methods( Access = private, Static = true )

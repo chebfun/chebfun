@@ -7,16 +7,16 @@ function varargout = solve(guifile)
 
 % Call different solver methods, depending on the type of the problem.
 if ( strcmpi(guifile.type, 'bvp') )
-    [varargout{1}, varargout{2}] = solveguibvp(guifile);
+    [varargout{1}, varargout{2}] = solveGUIbvp(guifile);
 elseif ( strcmpi(guifile.type, 'pde') )
-    [varargout{1}, varargout{2}] = solveguipde(guifile);
+    [varargout{1}, varargout{2}] = solveGUIpde(guifile);
     
     % If only one output, need to switch around output arguments:
     if ( nargout < 2 )
         varargout{1} = varargout{2};
     end
 else
-    [varargout{1}, varargout{2}] = solveguieig(guifile);
+    [varargout{1}, varargout{2}] = solveGUIeig(guifile);
 
     % If only one output, need to switch around output arguments:
     if ( nargout < 2 )

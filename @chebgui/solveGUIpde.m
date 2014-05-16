@@ -1,4 +1,4 @@
-function varargout = solveguipde(guifile, handles)
+function varargout = solveGUIpde(guifile, handles)
 
 % TODO:  Documentation.
 

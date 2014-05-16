@@ -83,14 +83,14 @@ if ( strcmp(get(handles.button_solve, 'string'), 'Solve') )   % In solve mode
     drawnow
     set(handles.menu_demos, 'Enable','off');
 
-    % Call the private method solveguibvp, pde, or eig which do the work
+    % Call the private method solveGUIbvp, pde, or eig which do the work
     try
         if ( strcmpi(handles.guifile.type, 'bvp') )
-            handles = solveguibvp(guifile, handles);
+            handles = solveGUIbvp(guifile, handles);
         elseif ( strcmpi(handles.guifile.type, 'pde') )
-            handles = solveguipde(guifile, handles);
+            handles = solveGUIpde(guifile, handles);
         else
-            handles = solveguieig(guifile, handles);            
+            handles = solveGUIeig(guifile, handles);            
         end
         handles.hasSolution = 1;
     catch ME

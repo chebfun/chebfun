@@ -1,4 +1,4 @@
-function varargout = solveguieig(guifile, handles)
+function varargout = solveGUIeig(guifile, handles)
 % SOLVEGUIEIG
 
 % TODO:  Documentation.
