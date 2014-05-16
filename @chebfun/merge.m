@@ -59,7 +59,12 @@ end
 
 % Deal with input arguments:
 if ( isempty(index) )
-    % No indices requested!
+    % No indices requested.  Convert back to a row CHEBFUN if we started with
+    % one and return.
+    if ( isTrans )
+        f.isTransposed = true;
+    end
+
     return
 
 elseif ( ischar(index) )
@@ -73,7 +78,12 @@ else
     index((index <= 1) | (index > numel(f.funs))) = [];
     
     if ( isempty(index) )
-        % All the requested indices were trivial:
+        % All the requested indices were trivial.  Convert back to a row
+        % CHEBFUN if we started with one and return.
+        if ( isTrans )
+            f.isTransposed = true;
+        end
+
         return
     end
 
@@ -179,7 +189,7 @@ f.pointValues = newPointValues;
 
 % Convert back to a row CHEBFUN if we started with one.
 if ( isTrans )
-    f = f.';
+    f.isTransposed = true;
 end
 
 end
