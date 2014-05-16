@@ -43,7 +43,9 @@ if any( exps(:) )
         data{j} = ['        ' '[' num2str(exps(j,1), '%2.2g') '      ' ...
             num2str(exps(j,2), '%2.2g') ']' '  '];
     end
-end  
+elseif ~isempty(infoJ)
+    name = infoJ{1}.name;
+end
 
 % More information for F can be appended to INFO:
 

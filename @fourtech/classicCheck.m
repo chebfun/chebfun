@@ -58,17 +58,10 @@ if isEven
     % In this case the negative cofficients have an additional term
     % corresponding to the cos(N/2*x) coefficient.
     f.coeffs = [absCoeffs(n,:);absCoeffs(n-1:-1:n/2+1,:)+absCoeffs(1:n/2-1,:);absCoeffs(n/2,:)];
-%     f.coeffs = [absCoeffs(n/2,:);absCoeffs(n/2+1:n-1,:)+absCoeffs(n/2-1:-1:1,:);absCoeffs(n,:)];
 else
     f.coeffs = [absCoeffs(n:-1:(n+1)/2+1,:)+absCoeffs(1:(n+1)/2-1,:);absCoeffs((n+1)/2,:)];
-%     f.coeffs = [absCoeffs((n+1)/2,:);absCoeffs((n+1)/2+1:n,:)+absCoeffs((n+1)/2-1:-1:1,:)];    
 end
 
-% c = abs(f.coeffs);
-% m = floor(n/2);
-% c2 = c(1:ceil(n/2),:);
-% c2(1:m,:) = c2(1:m,:) + flipud(c(end-m+1:end,:));
-% f.coeffs = c2;
 n = size(f.coeffs, 1);
 
 % Check for convergence and chop location --------------------------------------
@@ -137,8 +130,8 @@ n = size(coeffs, 1);
 minPrec = 1e-4; % Worst case precision!
 
 % Length of tail to test.
-% testLength = min(n, max(5, round((n-1)/8)));
-testLength = min(n, max(4, round((n-1)/8)));
+testLength = min(n, max(3, round((n-1)/8)));
+% testLength = min(n, max(4, round((n-1)/8)));
 
 % Look at length of tail to loosen tolerance:
 tailErr = eps*testLength^(2/3);
@@ -148,11 +141,11 @@ tailErr = min(tailErr, minPrec);
 %    ||f(x+eps(x)) - f(x)||_inf / ||f||_inf ~~ (eps(hscale)/vscale)*f'.
 dy = diff(values);
 dx = diff(x)*ones(1, size(values, 2));
-gradEst = norm(dy./dx, inf);          % Finite difference approx.
-condEst = eps(hscale)/vscale*gradEst; % Condition number estimate.
+gradEst = max(abs(dy./dx));            % Finite difference approx.
+condEst = eps(hscale)./vscale*gradEst; % Condition number estimate.
 condEst = min(condEst, minPrec);      
 
 % Choose maximum between prescribed tolerance and estimated rounding errors:
-epslevel = max([epslevel, tailErr, condEst]);
+epslevel = max(max(epslevel, condEst), tailErr);
 
 end
