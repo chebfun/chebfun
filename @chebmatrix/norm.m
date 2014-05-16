@@ -8,10 +8,10 @@ function normA = norm(A, n)
 %   NORM(A, INF) computes the infinity norm of the CHEBMATRIX A, defined as the
 %   maximum infinity norm of each of the blocks.
 %
-%   See also CHEBMATRIX, CHEBFUN/NORM.
+% See also CHEBMATRIX, CHEBFUN/NORM.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % [TODO]: Add support for norms of operators (inf x inf blocks).
 
@@ -25,29 +25,30 @@ if ( nargin == 1 )
     n = 'fro'; 	% Frobenius norm is the default.
 end
 
-% The norm of a chebmatrix with inf x inf block(s) is not supported.
+% The norm of a CHEBMATRIX with inf x inf block(s) is not supported.
 s = cellfun(@(b) min(size(b)), A.blocks);
 if ( ~all(isfinite(s(:))) )
     error('CHEBFUN:chebmatrix:norm', ...
     'Norm of a chebmatrix with inf x inf block(s) is not supported.')
 end
 
-% Initialise.
-normA = 0;
-
 % Deal with different cases.
 switch n
     
     case {'fro', 2}
-        for k = 1:numel(A.blocks)
-            normA = normA + norm(A.blocks{k}, 2).^2;
-        end
-        normA = sqrt(normA);
+        normA = cellfun(@(v) norm(v, 2), A.blocks);
+        normA = sqrt(sum(normA(:).^2));
         
     case {inf, 'inf'}
-        for k = 1:numel(A.blocks)
-            normA = max(normA, norm(A.blocks{k}, inf));
+        normA = cellfun(@(v) norm(v, inf), A.blocks);
+        normA = max(normA(:));
+        
+    otherwise
+        if ( ~ischar(n) )
+            n = num2str(n);
         end
+        error('CHEBFUN:chebmatrix:norm:uknown', ...
+            'unsupported norm type ''%s''', n)
         
 end
 
