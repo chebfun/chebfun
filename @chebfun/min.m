@@ -36,16 +36,21 @@ if ( isempty(f) )
     return
 end
 
-if ( (nargin == 3) && (dim ~= 1 + f(1).isTransposed) )
-    % TODO: This requires a test.
-    % Take min across discrete dimension of a quasimatix:
-    f = cheb2cell(f);
-    y = realmax;
-    for k = 1:numel(f)
-        y = minOfTwoChebfuns(y, f{k});
+if ( nargin == 3 )
+    if ( ~any(dim == [1 2]) )
+        error('CHEBFUN:min:badDim', 'DIM input to CHEBFUN MIN must be 1 or 2.');
     end
-    y = merge(y);
-    return
+
+    if ( dim ~= 1 + f(1).isTransposed )
+        % Take min across discrete dimension of a quasimatrix:
+        f = cheb2cell(f);
+        y = realmax;
+        for k = 1:numel(f)
+            y = minOfTwoChebfuns(y, f{k});
+        end
+        y = merge(y);
+        return
+    end
 end
 
 if ( (nargin > 2) && isempty(flag) )
