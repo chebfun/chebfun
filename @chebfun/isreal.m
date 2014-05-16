@@ -22,7 +22,8 @@ end
 function out = columnIsreal(f)
 
 % Check to see is the impulses are real:
-out = isreal(f.pointValues);
+out = any(max(abs(imag( f.pointValues(:) ))) < 2*max(f.epslevel.*f.vscale));
+% out = isreal(f.pointValues);
 if ( ~out )
     % Complex number found. Break:
     return

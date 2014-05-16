@@ -59,6 +59,9 @@ if ( ~isscalar(N) || isnan(N) )
     error('CHEBFUN:chebpoly:inputN', 'Input N must be a scalar.');
 end
 
+% Force N to be odd.
+N = N + 1 - mod(N,2);
+
 numFuns = numel(f.funs);
 
 if ( numFuns ~= 1 )
@@ -71,7 +74,7 @@ if ~f.funs{1}.onefun.ishappy
     warning('These results may not be accurate since f is not resolved. Consider reconstructing f with splitting on');
 end
 
-if isa(f.funs{1}.onefun,'fourtech')
+if isa(f.funs{1}.onefun,'fourtech') && numFuns == 1
     C = fourcoeffs(f.funs{1}.onefun,N).';
 % Compute the coefficients via inner products.
 else
@@ -81,7 +84,7 @@ else
     d = f.domain([1, end]);
     L = diff(d);
     omega = 2*pi/L;
-    x = chebfun('x', d);
+    x = chebfun('x', d, 'tech','chebtech');
     numCols = numColumns(f);
     C = zeros(numCols, N);
     f = mat2cell(f);
@@ -89,7 +92,8 @@ else
     if mod(N,2) == 1
         modes = (N-1)/2:-1:-(N-1)/2;
     else
-        modes = N/2-1:-1:-N/2;
+%         modes = N/2-1:-1:-N/2;
+        modes = N/2:-1:-N/2;
     end
     for j = 1:numCols
         count = 1;

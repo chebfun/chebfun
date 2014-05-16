@@ -80,7 +80,15 @@ classdef fourtech < smoothfun
             else
                 pref = chebtech.techPref(pref);
             end
-            
+
+            % Force nonadaptive construction if PREF.NUMPOINTS is numeric:
+            if ( ~isempty(pref.numPoints) && ~isnan(pref.numPoints) )
+                % Evaluate op on the Fourier grid of given size:
+                vals = feval(op, fourtech.fourpts(pref.numPoints));
+                vals(1,:) = 0.5*(vals(1,:)+feval(op,1));
+                op = vals;
+            end
+
             % Actual construction takes place here:
             obj = populate(obj, op, vscale, hscale, pref);
             

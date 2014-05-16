@@ -21,7 +21,7 @@ function [vals, pos] = minandmax(f)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Simply create a chebfun of the FOURTECH and call minandmax on it.
-g = chebfun(@(x) f.feval(x),[-1,1]);
+g = chebtech2(@(x) f.feval(x));
 [vals,pos] = minandmax(g);
 
 end

@@ -30,10 +30,19 @@ elseif ( (numel(s) == 2) && all(s == [-1, 1]) )
     return
 end
 
+% Grab sizes:
+m = size(f,2);
+numInts = numel(s) - 1;
+
 % Simply make a new fourtech object on the restricted domain.  This handled
 % by a linear scaling of the input arguments to f.
 % Grab sizes:
 op = @(x) feval(f,.5*[1 - x, 1 + x] * [s(1:end-1) ; s(2:end)]);
 f = f.make(op,f.vscale,f.hscale,f.techPref());
+
+if ( numInts > 1 )
+    % Convert to a cell-array:
+    f = mat2cell(f, repmat(m, 1, numInts));
+end
 
 end

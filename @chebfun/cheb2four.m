@@ -7,7 +7,7 @@ function f = cheb2four(f)
 
 if isempty(f)
     f = chebfun([],'tech','fourtech');
-elseif isa(f.funs{1}.onefun,'fourtech')
+elseif isa(f.funs{1}.onefun,'chebtech')
     f = chebfun(f,f.domain,'tech','fourtech');
 else
     error('CHEBFUN:cheb2four:TypeUnkown','Tech type unknown');

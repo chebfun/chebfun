@@ -77,6 +77,7 @@ end
 
 % Make FOURIETECH object:
 f = f.make(op, vscale, f.hscale, pref);
+f = simplify(f);
 
 % Throw a warning:
 if ( ~f.epslevel )

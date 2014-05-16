@@ -34,7 +34,7 @@ end
 % Use the default tolerance if none was supplied:
 if ( nargin < 2 )
     pref = fourtech.techPref();
-    tol = f.epslevel.*f.vscale/2;
+    tol = f.epslevel.*f.vscale/64;
     % TODO: Document this.
 %     vscale = f.vscale;
 %     vscale(vscale < f.epslevel) = 1;
@@ -86,7 +86,7 @@ if ( firstNonZeroRow > 0 )
 end
 
 % Now put the coefficients vector back together.
-f.coeffs = [cp(1:end,:);cn(end-1:-1:1)];
+f.coeffs = [cp(1:end,:);cn(end-1:-1:1,:)];
 
 % Update values and epslevel:
 f.values = f.coeffs2vals(f.coeffs);

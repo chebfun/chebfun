@@ -54,8 +54,8 @@ if ( isnumeric(op) || iscell(op) )
         f.coeffs = f.vals2coeffs(op);
     else                 
         % OP is a cell {values, coeffs}
-        f.values = op{1};
         f.coeffs = op{2};
+        f.values = f.coeffs2vals(f.coeffs);
     end
     
     % Update vscale:
@@ -135,6 +135,7 @@ f.coeffs = coeffs;
 f.vscale = vscale;
 f.ishappy = ishappy;
 f.epslevel = epslevel;
+f = simplify(f);
 
 % Force the values to be real if the imaginary part is numerically zero
 if isreal(f)

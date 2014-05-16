@@ -54,6 +54,12 @@ else
 end
 
 % Extract out the entries
-out = c(id,:);
+c = c(id,:);
+
+% if NisEven
+%     c = [conj(c(end,:));c];
+% end
+
+out = c;
 
 end
