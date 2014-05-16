@@ -18,6 +18,8 @@ function f = compose(f, op, g, pref)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% TODO: Accept vscale as an input? (Not related to vscales of f, or op, or g.)
+
 % Parse inputs:
 if ( nargin < 4 )
     pref = f.techPref();
@@ -32,36 +34,36 @@ else
 end
 
 % Set some preferences:
-vscale = f.vscale;
 pref.minPoints = max(pref.minPoints, length(f));
 pref.eps = max(pref.eps, f.epslevel);
 pref.sampleTest = false;
 
 if ( nfuns == 2 )
+    
     if ( size(f, 2) ~= size(g, 2) )
         error('CHEBFUN:CHEBTECH:compose:dim', ...
               'Matrix dimensions must agree.')
     end
 
     % Grab some data from G:
-    vscale = max(vscale, g.vscale);
     pref.minPoints = max(pref.minPoints, length(g));
     pref.eps = max(pref.eps, g.epslevel);
     
 elseif ( isa(op, 'chebtech') )
-    % If OP is a CHEBTECH, we grab some of its data:
+       
     if ( (size(op, 2) > 1) && (size(f, 2) > 1) )
         error('CHEBFUN:CHEBTECH:compose:arrval', ...
               'Cannot compose two array-valued CHEBTECH objects.')
     end
     
-    values = f.coeffs2vals(f.coeffs);
-    if ( norm(values(:), inf) > 1 )
-        error('CHEBFUN:CHEBTECH:compose:range', ...
-              'The range of f is not contained in the domain of g.')
-    end
-
-    vscale = max(vscale, op.vscale);
+    % TODO: Do we need this? Removed by NH Apr 2014.
+%     values = f.coeffs2vals(f.coeffs);
+%     if ( norm(values(:), inf) > 1 )
+%         error('CHEBFUN:CHEBTECH:compose:range', ...
+%               'The range of f is not contained in the domain of g.')
+%     end
+    
+    % If OP is a CHEBTECH, we grab some of its data:
     pref.minPoints = max(pref.minPoints, length(op));
     pref.eps = max(pref.eps, op.epslevel);
     
@@ -77,7 +79,7 @@ if ( ischar(pref.refinementFunction) )
 end
 
 % Make CHEBTECH object:
-f = f.make(op, vscale, f.hscale, pref);
+f = f.make(op, [], f.hscale, pref);
 
 % % Throw a warning: (Removed by NH Apr 2014. See #282)
 % if ( ~f.ishappy )

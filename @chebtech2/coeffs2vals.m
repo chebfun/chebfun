@@ -24,8 +24,8 @@ function values = coeffs2vals(coeffs)
 % Get the length of the input:
 n = size(coeffs, 1);
 
-% Trivial case (constant):
-if ( n == 1 )
+% Trivial case (constant or empty):
+if ( n <= 1 )
     values = coeffs; 
     return
 end

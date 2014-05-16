@@ -5,12 +5,13 @@ function [Y, X] = min2( f )
 %   [Y, X] = MIN2(F) returns the global minimum of F and its coordinates in X =
 %   (X(1), X(2)).
 %
-% For high accuracy results this command requires the Optimization Toolbox.
+% For certain problems this problem can be slow if the MATLAB Optimization
+% Toolbox is not available.
 %
 % See also MAX2, MINANDMAX2.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Call MINANDMAX2():
 [Y, X] = minandmax2(f);
