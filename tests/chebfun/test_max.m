@@ -131,10 +131,18 @@ catch ME
     pass(16) = strcmp(ME.identifier, 'CHEBFUN:max:flag');
 end
 
+f = chebfun({@(x) exp((1 + 1i)*x), @(x) sec(1i*(x - 0.5))}, [-1 0 1]);
+[y, x] = max(f);
+y_exact = 1;
+tol = 10*epslevel(f)*vscale(f);
+err1 = abs(y - y_exact);
+err2 = abs(feval(f, x) - y_exact);
+pass(17) = err1 < tol && err2 < tol;
+
 %% Check max of a CHEBFUN and a scalar:
 f = chebfun(@(x) [sin(x) cos(x)]);
 h = max(f, .75);
-pass(17) = norm(h([-.9 0 .8 .9].') - ...
+pass(18) = norm(h([-.9 0 .8 .9].') - ...
     [.75 .75 ;.75 1 ; .75 .75 ; sin(.9) .75]) < epslevel(h)*vscale(h);
 
 %% Test on function defined on unbounded domain:
@@ -151,6 +159,6 @@ yExact = exp(-1);
 xExact = 1;
 errY = y - yExact;
 errX = x - xExact;
-pass(18) = norm([errY errX], inf) < 100*epslevel(f).*vscale(f);
+pass(19) = norm([errY errX], inf) < 100*epslevel(f).*vscale(f);
 
 end
