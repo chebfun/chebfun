@@ -229,7 +229,10 @@ classdef chebfun
     
         % Static methods implemented by CHEBFUN class.
     methods ( Hidden = true, Static = true )
-        
+
+        %Convert a cell array of CHEBFUN objects to a quasimatrix.
+        G = cell2quasi(F)
+
         % Edge detector.
         [edge, vscale] = detectEdge(op, domain, hscale, vscale, derHandle);
         
@@ -238,7 +241,6 @@ classdef chebfun
         
         % Merge domains.
         newDom = mergeDomains(varargin)
-        
                 
         % Which interval is a point in?
         out = whichInterval(dom, x, direction);
