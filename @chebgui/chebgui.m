@@ -217,6 +217,8 @@ classdef chebgui
         % Convert a syntax tree to prefix format
         prefixOut = strConvTree2prefix(syntaxTree)
         
+        % Get rid of unecessary parenthesis in infix format strings
+        strOut = strConvParSimp(strIn)
     end
     
 end

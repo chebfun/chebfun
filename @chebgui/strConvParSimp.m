@@ -1,4 +1,4 @@
-function str = parSimp(guifile, str)
+function str = strConvParSimp(str)
 % PARSIMP  Remove unnecessary parentheses from string inputs.
 %  parSimp does some basic parsing of the input STR to attempt to remove
 %  unnecessary parenthesis, zeros, and consecutive +/- pairs.
@@ -113,43 +113,6 @@ rightParsLoc = pairsLoc(:,2);
             return
         end
 
-        % TODO:  Delete this unnecessary code.
-        % This shouldn't be necessary, as zeros are removed in prefix.
-%         % Remove +0, -0, 0+, 0-, etc
-%         zs = strfind(str,'0');
-%         for kk = 1:numel(zs)
-%             zsk = zs(kk); ls = length(str);
-%             if (zsk == 1 && ls > 2 && opVec(zsk+1) == 1) % 0+, 0-
-%                 shift = 1;
-%             elseif ls > 2 &&  zsk==ls && opVec(zsk-1) == 1 %-0, +0
-%                 shift = 2;
-%             elseif (zsk == 1 || zsk == ls) 
-%                 continue
-%             elseif any(zsk-1 == leftParsLoc) && opVec(zsk+1)==1 %(0+, (0-
-%                 shift = 1;
-%             elseif (any(zsk+1 == rightParsLoc) && opVec(zsk-1)==1) ... %+0), -0)
-%                 || (opVec(zsk-1)==1 && opVec(zsk+1)==1) % +/-0+/-
-%                 shift = 2;
-%             else
-%                 continue
-%             end
-%             if shift == 1 % One entry have been removed
-%                 str(zsk) = [];
-%                 opVec(zsk) = [];
-%             elseif shift == 2 % Two entries have been removed
-%                 str(zsk-1:zsk) = [];
-%                 % Need to update indices and operators
-%                 opVec(zsk-1:zsk) = [];
-%                 opLoc(opLoc == zsk-1) = [];
-%             end
-%             % Need to update indices and operators
-%             leftParsLoc(leftParsLoc > zsk) = leftParsLoc(leftParsLoc > zsk)-shift;
-%             rightParsLoc(rightParsLoc > zsk) = rightParsLoc(rightParsLoc > zsk)-shift;
-%             opLoc(opLoc > zsk) = opLoc(opLoc > zsk)-shift;
-%             charLoc(charLoc == zsk) = [];
-%             charLoc(charLoc > zsk) = charLoc(charLoc > zsk) - shift;
-%             zs = zs - shift;
-%         end
     end
 
 removeExtras()

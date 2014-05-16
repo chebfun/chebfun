@@ -92,7 +92,7 @@ elseif ( strcmp(guifile.type, 'eig') )
 
         % Change it to infix form and remove uneccessary parenthesis.
         infixOutLambda = prefix2infix(guifile, prefixOutLambda);
-        anFunLambda = parSimp(guifile, infixOutLambda);
+        anFunLambda = chebgui.strConvParSimp(infixOutLambda);
     end
     
 end
@@ -102,7 +102,7 @@ end
 commaSeparated = any(strcmp(prefixOut(:,2), 'COMMA'));
 
 [infixOut, notaVAR] = prefix2infix(guifile, prefixOut);
-anFun = parSimp(guifile, infixOut);
+anFun = chebgui.strConvParSimp(infixOut);
 
 % Remove misinterpreted VARs (from Fred, Volt, etc)
 for k = numel(varNames):-1:1
