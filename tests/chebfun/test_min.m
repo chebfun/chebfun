@@ -128,13 +128,17 @@ y_a = min(Q, [], 1);
 err_a = norm(y_a - [-1 -1], Inf);
 y_q = min(cheb2quasi(Q), [], 1);
 err_q = norm(y_q - [-1 -1], Inf);
-pass(15) = (err_a < tol) && (err_q < tol);
+y_row = min(Q.', [], 2);
+err_row = norm(y_row - [-1 -1], Inf);
+pass(15) = (err_a < tol) && (err_q < tol) && (err_row < tol);
 
 g_a = min(Q, [], 2);
 err_a = norm(g_a(xr) - -abs(xr), Inf);
 g_q = min(cheb2quasi(Q), [], 2);
 err_q = norm(g_q(xr) - -abs(xr), Inf);
-pass(16) = (err_a < tol) && (err_q < tol);
+g_row = min(Q.', [], 1);
+err_row = norm(g_row(xr) - -abs(xr).', Inf);
+pass(16) = (err_a < tol) && (err_q < tol) && (err_row < tol);
 
 try
     y = min(Q, [], 3)
