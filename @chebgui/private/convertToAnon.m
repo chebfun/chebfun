@@ -91,7 +91,7 @@ elseif ( strcmp(guifile.type, 'eig') )
         end
 
         % Change it to infix form and remove uneccessary parenthesis.
-        infixOutLambda = prefix2infix(guifile, prefixOutLambda);
+        infixOutLambda = chebgui.strConvPref2inf(prefixOutLambda);
         anFunLambda = chebgui.strConvParSimp(infixOutLambda);
     end
     
@@ -101,7 +101,7 @@ end
 % happened if we have any commas left in the prefix expression
 commaSeparated = any(strcmp(prefixOut(:,2), 'COMMA'));
 
-[infixOut, notaVAR] = prefix2infix(guifile, prefixOut);
+[infixOut, notaVAR] = chebgui.strConvPref2inf(prefixOut);
 anFun = chebgui.strConvParSimp(infixOut);
 
 % Remove misinterpreted VARs (from Fred, Volt, etc)

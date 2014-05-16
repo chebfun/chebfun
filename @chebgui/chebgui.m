@@ -231,6 +231,9 @@ classdef chebgui
         
         % Split a PDE syntax tree
         [newTree, pdeSign] = splitTree_pde(treeIn)
+        
+        % Convert an expression on PREFIX form to INFIX form
+        [infixOut, notaVAR] = strConvPref2inf(prefIn)
     end
     
 end

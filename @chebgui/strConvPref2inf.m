@@ -1,10 +1,11 @@
-function [infixOut notaVAR] = prefix2infix(guifile, prefIn)
+function [infixOut, notaVAR] = strConvPref2inf(prefixIn)
+% TODO: Document
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/chebfun/ for Chebfun information.
 
-prefixIn = prefIn;
-prefCounter = 1; %#ok<NASGU> Disable warning message
+prefixIn = prefixIn;
+prefCounter = 1;
 NOTAVAROUT = [];
 infixOut = getInfix();
 notaVAR = NOTAVAROUT;
@@ -86,7 +87,7 @@ elseif ( strcmp(next,'FUNC2') )
             strcmp(funcArg2, '1') )
         infixOut = [nextFun, '(', funcArg1, ')'];
     elseif ( any(strcmp(nextFun, {'fred', 'volt'})) )
-        [ignored yFredVar ignored ignored xFredVar] = ...
+        [ignored, yFredVar, ignored, ignored, xFredVar] = ...
             chebgui.strConvLexer(funcArg1, 'bvp');        
         anonStr = ['@(' xFredVar{1} ',' yFredVar{1} ')'];
         infixOut = [nextFun, '(', anonStr, funcArg1 , ',', funcArg2 ,  ')'];
@@ -167,18 +168,6 @@ while ( newlen ~= len )
     newlen = length(infixOut);
 
 end
-
-% TODO:  Delete this if it is no longer needed.
-% We often end up with an expression on the form +(...). Prevent that from
-% happening.
-% if infixOut(1) == '+'
-%     % Find all locations of ( and )
-%     leftParLoc = strfind(infixOut,'(')
-%     rightParLoc = strfind(infixOut,')')
-%     if ~isempty(leftParLoc)
-%         locDifference = rightParLoc - leftParLoc
-%     end
-% end
 
 % Clear global variables
 prefixIn = [];
