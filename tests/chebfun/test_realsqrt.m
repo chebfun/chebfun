@@ -48,4 +48,10 @@ catch ME
     pass(6) = strcmp(ME.identifier, 'CHEBFUN:realsqrt:complexRes');
 end
 
+realsqrt(X.^2);
+pass(7) = true;
+
+realsqrt(abs(X));
+pass(8) = true;
+
 end

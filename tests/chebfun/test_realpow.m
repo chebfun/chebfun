@@ -46,4 +46,10 @@ catch ME
     pass(6) = strcmp(ME.identifier, 'CHEBFUN:realpow:complexRes');
 end
 
+realpow(X, 1);
+pass(7) = true;
+
+realpow(1i*X, 0);
+pass(8) = true;
+
 end
