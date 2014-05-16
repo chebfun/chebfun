@@ -1,7 +1,7 @@
 function spy(A, varargin)
 %SPY    Visualize a CHEBMATRIX.
 %   SPY(A) creates a picture of the nonzero pattern of the default
-%   discretization of the chebmatrix A. Block boundaries are indicated by gray
+%   discretization of the CHEBMATRIX A. Block boundaries are indicated by gray
 %   lines.
 %
 %   SPY(A, S) allows modification of the SPY plot as with the built in method.
@@ -9,6 +9,9 @@ function spy(A, varargin)
 %   SPY(A, 'dimension', DIM, ...) uses the dimension vector DIM and SPY(A,
 %   'disc', DISCTYPE, ...) uses the discretization DISCTYPE for the
 %   visualization. All optional inputs can be used in tandem.
+%
+%   SPY(A, PREFS, ...), where PREFS is a CHEBOPPREF object, modifies the default
+%   discretization type and dimension.
 %
 % Example:
 %   f = chebmatrix({diag(x)*operatorBlock.diff cos(x) ; functionalBlock.sum 2})
