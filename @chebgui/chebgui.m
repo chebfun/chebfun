@@ -190,6 +190,10 @@ classdef chebgui
 	    box on
         end
         
+        % The CHEBGUI lexer
+        [out, varNames, pdeVarNames, eigVarNames, indVarNames] = ...
+            stringConverterLexer(str, type)
+        
         % The LL(1) parser
         parseOut = stringConverterParser(lexIn)
     end

@@ -86,9 +86,8 @@ elseif ( strcmp(next,'FUNC2') )
             strcmp(funcArg2, '1') )
         infixOut = [nextFun, '(', funcArg1, ')'];
     elseif ( any(strcmp(nextFun, {'fred', 'volt'})) )
-        guifiletmp = chebgui('type', 'bvp');
         [ignored yFredVar ignored ignored xFredVar] = ...
-            stringConverterLexer(guifiletmp, funcArg1);        
+            chebgui.stringConverterLexer(funcArg1, 'bvp');        
         anonStr = ['@(' xFredVar{1} ',' yFredVar{1} ')'];
         infixOut = [nextFun, '(', anonStr, funcArg1 , ',', funcArg2 ,  ')'];
         NOTAVAROUT = [NOTAVAROUT ;  yFredVar];
