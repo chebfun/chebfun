@@ -32,6 +32,13 @@ if ( numel(f) > 1 )
     error('CHEBFUN:merge:quasi', 'MERGE does not support quasimatrices.');
 end
 
+% Convert to a column CHEBFUN so that feval(f, x) returns a column instead of a
+% row.  (Needed to construct a CHEBFUN out of @(x) feval(f, x) later on.)
+isTrans = f.isTransposed;
+if ( isTrans )
+    f = f.';
+end
+
 % Parse the inputs:
 if ( nargin == 1 )
     % Choose all indices by default:
@@ -169,5 +176,10 @@ end
 f.domain = newDom;
 f.funs = newFuns;
 f.pointValues = newPointValues;
+
+% Convert back to a row CHEBFUN if we started with one.
+if ( isTrans )
+    f = f.';
+end
 
 end
