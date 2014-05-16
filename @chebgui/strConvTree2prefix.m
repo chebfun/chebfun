@@ -1,4 +1,4 @@
-function prefixOut = tree2prefix(guifiles, syntaxTree)
+function prefixOut = strConvTree2prefix(syntaxTree)
 % TREE2PREFIX function takes in output from the parser and returns a array of
 % strings containing the expression on prefix form. When we get into this
 % function we have put the output through the parser so we don't have to
@@ -13,7 +13,7 @@ function prefixOut = tree2prefix(guifiles, syntaxTree)
 prefixOut = {};
 if ( numel(syntaxTree) > 1 )
     for k = 1:numel(syntaxTree)
-        prefixOut{k} = pree2prefix(guifiles, syntaxTree{k});
+        prefixOut{k} = chebgui.strConvTree2prefix(syntaxTree{k});
     end
 end
 
@@ -32,15 +32,15 @@ switch ( nextType )
     % in the parser, so we know COMMA always has two arguments as well
     case {'OP+', 'OP-', 'OP*', 'OP/', 'OP^', 'OP=', 'OP>', 'OP>=', 'OP<', 'OP<=', 'COMMA'}
         prefixOut = [{nextSymbol, nextType};
-            tree2prefix(guifiles, syntaxTree.left);
-            tree2prefix(guifiles, syntaxTree.right)];
+            chebgui.strConvTree2prefix(syntaxTree.left);
+            chebgui.strConvTree2prefix(syntaxTree.right)];
     % Unary operators only have one argument which is stored to the right
     case 'UN+'
         prefixOut = [{'+', 'UN+'};
-            tree2prefix(guifiles, syntaxTree.right)];
+            chebgui.strConvTree2prefix(syntaxTree.right)];
     case 'UN-'
         prefixOut = [{'-', 'UN-'};
-            tree2prefix(guifiles, syntaxTree.right)];
+            chebgui.strConvTree2prefix(syntaxTree.right)];
     % If we get a number or a variable we simply return that. Those types
     % are leaves so the don't have any children.
     case {'NUM',  'VAR',  'INDVAR', 'PDEVAR', 'LAMBDA', 'STR'}
@@ -48,17 +48,17 @@ switch ( nextType )
     % A function only has one argument which is to the right
     case 'FUNC1'
         prefixOut = [{nextSymbol, 'FUNC1'};
-            tree2prefix(guifiles, syntaxTree.right)];
+            chebgui.strConvTree2prefix(syntaxTree.right)];
     case 'FUNC2'
         prefixOut = [{nextSymbol, 'FUNC2'};
-            tree2prefix(guifiles, syntaxTree.left);
-            tree2prefix(guifiles, syntaxTree.right)];
+            chebgui.strConvTree2prefix(syntaxTree.left);
+            chebgui.strConvTree2prefix(syntaxTree.right)];
     case 'FUNC3'
         prefixOut = [{nextSymbol, 'FUNC3'};
-            tree2prefix(guifiles, syntaxTree.left);
-            tree2prefix(guifiles, syntaxTree.right);
-            tree2prefix(guifiles, syntaxTree.arg)];        
+            chebgui.strConvTree2prefix(syntaxTree.left);
+            chebgui.strConvTree2prefix(syntaxTree.right);
+            chebgui.strConvTree2prefix(syntaxTree.arg)];        
     otherwise % Only possible token left is a derivative
         prefixOut = [{nextSymbol, nextType};
-            tree2prefix(guifiles, syntaxTree.right)];
+            chebgui.strConvTree2prefix(syntaxTree.right)];
 end

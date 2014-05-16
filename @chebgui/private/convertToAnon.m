@@ -51,13 +51,13 @@ if ( strcmp(guifile.type, 'bvp') )
     % Convert a potential = at the top of the tree to a -.
     syntaxTree = splitTree_bvp(guifile, syntaxTree);
     % Obtain the prefix form.
-    prefixOut = tree2prefix(guifile, syntaxTree);
+    prefixOut = chebgui.strConvTree2prefix(syntaxTree);
     
 elseif ( strcmp(guifile.type, 'pde') )
     % Convert a potential = at the top of the tree to a -.
     [syntaxTree, pdeSign] = splitTree_pde(guifile, syntaxTree);
     % Obtain the prefix form.
-    prefixOut = tree2prefix(guifile, syntaxTree);
+    prefixOut = chebgui.strConvTree2prefix(syntaxTree);
     % pdeSign tells us whether we need to flip the signs. Add a unitary -
     % at the beginning of the expression
     if ( pdeSign == 1 )
@@ -69,11 +69,11 @@ elseif ( strcmp(guifile.type, 'eig') )
     % Convert a potential at the top of the tree = to a -.
     [syntaxTree, lambdaTree, lambdaSign] = splitTree_eig(guifile, syntaxTree);
     % Obtain the prefix form.
-    prefixOut = tree2prefix(guifile, syntaxTree);
+    prefixOut = chebgui.strConvTree2prefix(syntaxTree);
     
     % If lambdaTree is not empty, convert that tree to prefix-form as well
     if ( ~isempty(lambdaTree) )
-        prefixOutLambda = tree2prefix(guifile, lambdaTree);
+        prefixOutLambda = chebgui.strConvTree2prefix(lambdaTree);
         
         % If the lambda part is on the LHS, we need to add a - in front of
         % the prefix expression.
@@ -96,12 +96,6 @@ elseif ( strcmp(guifile.type, 'eig') )
     end
     
 end
-
-% TODO:  Remove these if they are not needed.
-% Return the derivative on infix form
-% infixOut = prefix2infix(guifile,prefixOut);
-% Finally, remove unneeded parenthesis.
-% anFun = parSimp(guifile,infixOut);
 
 % Check whether we have equations divided by commas. This will only have
 % happened if we have any commas left in the prefix expression

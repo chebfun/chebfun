@@ -190,12 +190,6 @@ classdef chebgui
 	    box on
         end
         
-        % The CHEBGUI lexer
-        [out, varNames, pdeVarNames, eigVarNames, indVarNames] = ...
-            strConvLexer(str, type)
-        
-        % The LL(1) parser
-        parseOut = strConvParser(lexIn)
     end
     
     methods( Access = private )
@@ -208,6 +202,20 @@ classdef chebgui
         
         % Export a PDE to an .m file
         exportPDE2mfile(guifile, pathname, filename)
+        
+    end
+    
+    methods( Access = private, Static = true )
+        
+        % The CHEBGUI lexer
+        [out, varNames, pdeVarNames, eigVarNames, indVarNames] = ...
+            strConvLexer(str, type)
+        
+        % The LL(1) parser
+        parseOut = strConvParser(lexIn)
+        
+        % Convert a syntax tree to prefix format
+        prefixOut = strConvTree2prefix(syntaxTree)
         
     end
     
