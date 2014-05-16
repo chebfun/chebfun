@@ -17,7 +17,7 @@ else
     d = [a, b];
 end
 
-% d must be a 2X1 or 1X2 vector
+% d must be a 2X1 or 1X2 vector:
 if ( ~isvector(d) || length(d) > 2)
     error('CHEBFUN:MEASURE', ...
         'Invalid second input argument.');
@@ -138,8 +138,8 @@ if ( ~isempty(r) )
 else
     % Function does not hit a or b.
     if ( (fLeft >= a) && (fLeft <= b) )
-        if ( fRight >= a && fRight <= b )
-            % Measure is the length of the whole interval.
+        if ( (fRight >= a) && (fRight <= b) )
+            % In this case measure is the length of the whole interval.
             measure = ends(end) - ends(1);
         else
             % This means the function did hit a or b and but not detected.
@@ -155,7 +155,7 @@ function [r, t] = sortAndMerge(ra, rb)
 %SORTANDMERGE constructs a single sorted array obtained from ra and rb.
 %   SORTANDMERGE(RA, RB) merges RA and RB and sorts the merged list. Vector
 %   T is of the same length as the merged array such that T(i) is either
-%   'a' or 'b' indicating the original array from with the ith member of
+%   'a' or 'b' indicating the original array from which the ith member of
 %   the merged array is coming from. It is assumed that RA and RB have no
 %   elements in common.
 
@@ -202,7 +202,7 @@ while ( (m <= lenA) || (n <= lenB) )
     end
 end
 
-% Sanity check
+% Sanity check:
 if ( length(r) ~= lenA + lenB )
     % Something has gone wrong.
     error('CHEBFUN:HIST:SORTANDMERGE', 'Roots likely to have duplication.');
@@ -231,15 +231,19 @@ function isc = contCheck(f)
 isc = true;
 
 % Delta functions.
-impTol = 1e-13;
-imps = getDeltaFunctions(f);
-if ( any(any(abs(imps(:)) > impTol)) )
+pref = chebfunpref();
+deltaTol = pref.deltaPrefs.deltaTol;
+deltas = getDeltaFunctions(f);
+if ( any(any(abs(deltas(:)) > deltaTol)) )
     % Function with non-trivial delta functions is never continuous.
     isc = false;
     return
 end
 
 % Exponents.
+% [TODO]: This is not the correct check. Sqrt(x) on [0, 1] is continuous and 
+% hence measureable but isssing() is true for that function. The correct check 
+% should be on the exponents being negative.
 if ( issing(f) )
     % Function with negative exponents is never continuous.
     isc = false;
@@ -247,6 +251,7 @@ if ( issing(f) )
 end
 
 % Smooth CHEBFUN.
+% [TODO]: Should this tolrance be obtained from preferences?
 valTol = 1e-13;
 if ( numel(f.funs) == 1 )
     % Function with a single fun is always continuous.
