@@ -39,13 +39,11 @@ catch ME
     pass(5) = strcmp(ME.message, 'Realpow produced complex result.');
 end
 
-% TODO: This fails because of a bug in SINGFUN/SQRT(). See #463.
-% TODO: Reinstate once this bug is fixed.
-% try
-%     realpow(X,.42);
-%     pass(6) = false;
-% catch ME
-%     pass(6) = strcmp(ME.message, 'Realpow produced complex result.');
-% end
+try
+    realpow(X,.42);
+    pass(6) = false;
+catch ME
+    pass(6) = strcmp(ME.message, 'Realpow produced complex result.');
+end
 
 end
