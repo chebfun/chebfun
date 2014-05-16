@@ -39,7 +39,7 @@ switch ( mode )
     % During Newton iteration
     case 'iter'
         varargout{1} = chebop.displayInfoIter(varargin{:});
-    
+        varargout{2} = false;
     % Once iteration is over
     case 'final'
         chebop.displayInfoFinal(varargin{:});

@@ -8,7 +8,7 @@ switch mode
         varargout{1} = displayFig;
         varargout{2} = displayTimer;
     case 'iter'
-        varargout{1} = displayBVPinfoIter(handles, varargin{:});
+        [varargout{1}, varargout{2}] = displayBVPinfoIter(handles, varargin{:});
     case 'final'
         displayBVPInfoFinal(handles, varargin{:});
     case 'linear'
@@ -54,7 +54,7 @@ displayTimer = 5;
 end
 
 
-function displayTimer = displayBVPinfoIter(handles, u, delta, iterNo, normDelta, cFactor, lenDelta, lambda, lenu, displayFig, displayTimer, pref)
+function [displayTimer, stopReq] = displayBVPinfoIter(handles, u, delta, iterNo, normDelta, cFactor, lenDelta, lambda, lenu, displayFig, displayTimer, pref)
 
 % TODO:  Documentation.
 
@@ -108,8 +108,17 @@ drawnow
 
 % If the user has pressed the pause button on the GUI, we pause.
 if ( ~isempty(handles) ...
-	&& strcmpi(get(handles.button_clear, 'String'), 'Continue') )
+            && strcmpi(get(handles.button_clear, 'String'), 'Continue') )
     waitfor(handles.button_clear, 'String')
+end
+
+% If the user has pressed the stop button on the GUI, we stop the Newton
+% iteration.
+if ( ~isempty(handles) ...
+            && strcmpi(get(handles.button_solve, 'String'), 'Solve') )
+    stopReq = true;
+else
+    stopReq = false;
 end
 
 end

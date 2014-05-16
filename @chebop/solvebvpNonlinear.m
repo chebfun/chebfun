@@ -157,8 +157,8 @@ while ( 1 )
     len = max(cellfun(@length, u.blocks(:)));
     
     % Print info to command window, and/or show plot of progress
-    displayTimer = displayInfo('iter', u, delta, newtonCounter, normDelta, ...
-        cFactor, length(delta{1}), lambda, len, displayFig, ...
+    [displayTimer, stopReq] = displayInfo('iter', u, delta, newtonCounter, ...
+        normDelta, cFactor, length(delta{1}), lambda, len, displayFig, ...
         displayTimer, pref);
     
     if ( errEst < errTol )  
@@ -167,6 +167,11 @@ while ( 1 )
     elseif ( newtonCounter > maxIter )
         % Suck, we failed.
         maxIterExceeded = 1;
+    elseif ( stopReq )
+        % User requested to stop the iteration. Generally, this will only happen
+        % in GUI mode.
+        
+        % Do nothing.
     else
         % Linearize around current solution:
         [L, res] = linearize(N, u, x);
@@ -177,7 +182,7 @@ while ( 1 )
     end
     
     % Should we stop the Newton iteration?
-    if ( success || maxIterExceeded || giveUp )
+    if ( success || maxIterExceeded || giveUp || stopReq )
         break
     end
     
@@ -195,7 +200,7 @@ elseif ( maxIterExceeded )
     warning('CHEBOP:solvebvpNonlinear:maxIter',...
         ['Newton iteration failed. Maximum number of iterations exceeded.\n',...
         'See help cheboppref for how to increase the number of steps allowed.'])
-else
+elseif ( giveUp )
     warning('CHEBOP:solvebvpNonlinear:notConvergent',...
         ['Newton iteration failed.\n', ...
         'Please try supplying a better initial guess via the .init field \n' ...
