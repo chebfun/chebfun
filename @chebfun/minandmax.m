@@ -1,4 +1,4 @@
-function [y, x] = minandmax(f, flag)
+function [y, x] = minandmax(f, flag, dim)
 %MINANDMAX   Minimum and maximum values of a CHEBFUN.
 %   Y = MINANDMAX(F) returns the range of the CHEBFUN F such that Y(1,1) =
 %   min(F) and Y(2,1) = max(F).
@@ -17,6 +17,12 @@ function [y, x] = minandmax(f, flag)
 %   of F. NaNs are used to pad Y and X when the 'local' flag is used and the
 %   columns are not of the same length.
 %
+%   MINANDMAX(F, [], DIM) computes the minimum and maximum of the CHEBFUN F in
+%   the dimension DIM. If DIM = 1 and F is a column CHEBFUN or DIM = 2 and F is
+%   a row CHEBFUN, this is equivalent to MINANDMAX(F). Othewise, MINANDMAX(F,
+%   [], DIM) returns CHEBFUNs of the minimum and maximum across the discrete
+%   dimension of F.
+%
 % See also MAX, MIN.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
@@ -29,6 +35,13 @@ if ( isempty(f) )
     return
 end
 
+if ( (nargin == 3) && (dim ~= 1 + f(1).isTransposed) )
+    y = chebfun();
+    y(1) = min(f, [], dim);
+    y(2) = max(f, [], dim);    
+    return
+end
+    
 % Number of columns of an array-valued CHEBFUN:
 numCols = numColumns(f);
 
@@ -55,7 +68,7 @@ if ( ~isreal(f) )
     imagf = imag(f);
     g = realf.*realf + imagf.*imagf;
     g = simplify(g);
-    [ignored, x] = minandmax(g);
+    [~, x] = minandmax(g);
     y = feval(f, x);
     return
 end

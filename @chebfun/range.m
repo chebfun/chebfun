@@ -1,4 +1,4 @@
-function r = range(f, varargin)
+function r = range(f, dim)
 %RANGE   Range of CHEBFUN.
 %   R = RANGE(F) returns the range R = max(F) - min(F) of the CHEBFUN F.
 %
@@ -15,10 +15,31 @@ function r = range(f, varargin)
 
 % TODO: This method needs a test.
 
-% Compute the MIN and MAX:
-r = minandmax(f, varargin{:});
+if ( isempty(f) )
+    r = [];
+    return
+end
 
-if ( isnumeric(r) ) 
+if ( nargin < 2 )
+    if ( numel(f) > 1 )
+        % Dim 1 by default.
+        dim = 1;
+    else
+        % Along continuous dimension for scalar f.
+        dim = 1 + f(1).isTransposed;
+    end
+end
+
+if ( dim > 3 )
+    % Consistent with MATLAB?
+    r = 0*f;
+    return
+end
+
+% Compute the MIN and MAX:
+r = minandmax(f, [], dim);
+
+if ( isnumeric(r) )
     % Range along continuous dimension.
     
     if ( numel(f) == 1 )
