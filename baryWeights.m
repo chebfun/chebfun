@@ -3,6 +3,9 @@ function w = baryWeights(x)
 %   W = BARYWEIGHTS(X) returns scaled barycentric weights for the points in the
 %   columm vector X. The weights are scaled such that norm(W, inf) == 1.
 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
+
 % [TODO]: Should this live in the trunk?
 
 % Check inout dimension:
@@ -24,7 +27,7 @@ else
     C = 1; % Scaling by capacity doesn't apply for complex nodes.
 end
 
-% Cpmpute the weights:
+% Compute the weights:
 if ( (n < 2001) )              % For small n using matrices is faster.
    V = C*bsxfun(@minus, x, x.');
    V(1:n+1:end) = 1;

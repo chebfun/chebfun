@@ -1,4 +1,4 @@
-function [f, g, newBreaksLocF, newBreaksLocG] = tweakDomain(f, g, tol)
+function [f, g, newBreaksLocF, newBreaksLocG] = tweakDomain(f, g, tol, side)
 %TWEAKDOMAIN   Adjust nearby common break points in domains of CHEBFUN objects.
 %   [F, G] = TWEAKDOMAIN(F, G) adjusts the domains of definition of two CHEBFUN
 %   objects F and G if one or more of the entries in F.DOMAIN and G.DOMAIN are
@@ -12,13 +12,41 @@ function [f, g, newBreaksLocF, newBreaksLocG] = tweakDomain(f, g, tol)
 %   [F, G] = TWEAKDOMAIN(F, G, TOL) uses the specified tolerance TOL for
 %   determining nearby break points.
 %
-%   [F, G, J, K] = TWEAKDOMAIN(F, G) returns the indices of the modified
+%   [F, G] = TWEAKDOMAIN(F, G, TOL, SIDE) allows control over which of F.domain
+%   and G.domain should be given preference for the output.
+%       SIDE = 0 : No preference. Take average of F.domain & G.domain (default)
+%       SIDE = -1: Give preference to F.domain
+%       SIDE = +1: Give preference to G.domain
+%
+%   [F, G, J, K] = TWEAKDOMAIN(F, G, ...) returns the indices of the modified
 %   entries F.DOMAIN(J) and G.DOMAIN(K).
+%
+%   F = TWEAKDOMAIN(F), where F is a quasimatrix, tweaks the domain of each of
+%   columns of F.
 %
 % See also CHEBFUN/OVERLAP.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
+
+if ( nargin == 1 || isempty(g) )
+    % Deal with single input case, where F is typically an quasimatrix. Here we
+    % want to ensure that all the columns of F have compatable breaks.
+    if ( numel(f) == 1 )
+        return
+    end
+    if ( nargin < 3 )
+        tol = [];
+    end
+    dom = domain(f);
+    g = chebfun(0, dom);
+    newBreaksLocF = cell(1, numel(f));
+    newBreaksLocG = [];
+    for k = 1:numel(f)
+        [f(k), ~, newBreaksLocF{k}, ~] = tweakDomain(f(k), g, tol, 1);
+    end
+    return
+end
 
 % Return if either f or g are empty as there is nothing to do here:
 if ( isempty(f) || isempty(g) )
@@ -32,12 +60,16 @@ if ( numel(f) > 1 || numel(g) > 1 )
         'tweakDomain does not support quasimatrices.');
 end
 
-if ( nargin < 3 )
+if ( nargin < 3 || isempty(tol) )
     % Set a tolerance relative to the horizontal scale:
     hs = max(hscale(f), hscale(g));
     tol = 1e-15*hs;
 end
 
+if ( nargin < 4 || isempty(side) )
+    side = 0;
+end
+    
 %% Decide which breaks need adjusting:
 fDom = f.domain;
 gDom = g.domain;
@@ -57,7 +89,14 @@ newBreaksLocG = max(idx, [], 2).';
 %% Determine new breaks:
 
 % Take the average of the nearby break points to create a new one:
-newBreaks = (f.domain(newBreaksLocF) + g.domain(newBreaksLocG))/2;
+if ( side == 0 )      % Average
+    newBreaks = (f.domain(newBreaksLocF) + g.domain(newBreaksLocG))/2;
+elseif ( side < 0 )   % Take f
+    newBreaks = f.domain(newBreaksLocF);
+else                 % Take g
+    newBreaks = g.domain(newBreaksLocG);
+end
+
 % Move this to an integer if it is sufficiently close:
 rndIdx = abs(round(newBreaks) - newBreaks) < tol;
 newBreaks(rndIdx) = round(newBreaks(rndIdx));

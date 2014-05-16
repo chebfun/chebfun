@@ -22,6 +22,9 @@ function varargout = sphere( r )
 % 
 % See also CYLINDER, ELLIPSOID.
 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Sphere with radius r(th, phi).  
 dom = [0 pi 0 2*pi]; 
 th = chebfun2( @(th,phi) th, dom );
