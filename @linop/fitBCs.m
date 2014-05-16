@@ -3,6 +3,9 @@ function u0 = fitBCs(L)
 %   U0 = FITBCS(L) Returns a CHEBMATRIX which will satisfy the BCs
 %        and other conditions of the linop L.
 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Store the total number of interior breakpoints
 dom = L.domain;
 numInts = length(dom) - 1;

@@ -7,6 +7,9 @@ function [jumpStyle, varargin] = parseJumpStyle(varargin)
 %   JUMPSTYLE.  The remainder of VARARGIN after removing the 'jumpline' option
 %   and its value is returned in the VARARGIN output.
 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
+
 jumpStyle = {};
 for idx = 1:numel(varargin)
     if ( ~strcmpi(varargin{idx}, 'jumpline') )
