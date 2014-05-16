@@ -1,11 +1,13 @@
 function [out, varNames, pdeVarNames, eigVarNames, indVarNames] = ...
-    strConvLexer(str, type)
+    strConvLexer(str, problemType)
 %STRCONVLEXER      Lexer for string expression in CHEBFUN
 %
 % [OUT, VARNAMES, INDVARNAME, PDEVARNAMES, EIGVARNAMES, INDVARNAMES] = 
 %   STRCONVLEXER(STR) 
 % Performs a lexical analysis on the string STR. Here:
 %  STR:         A string of the mathematical expression we want to analyze.
+%  PROBLEMTYPE: A string denoting what kind of problem we are solving. Possible
+%               values are 'bvp', 'eig' and 'pde'.
 %  OUT:         A cell array with two columns, the left is a token and the
 %               right is a label. 
 %  VARNAMES:    A cell-string with the names of the variables in the expression.
@@ -281,7 +283,7 @@ while ( ~strcmp(str, '$') )
             if ( strcmp(nextstring, 'pi') )
                 out = [out ; {nextstring, 'NUM'}];
             % Treat l, lam and lambda specially for e-value problems
-            elseif ( strcmp(type, 'eig') && ...
+            elseif ( strcmp(problemType, 'eig') && ...
                     (strcmp(nextstring, 'l') || strcmp(nextstring, 'lam') || ...
                     strcmp(nextstring, 'lambda')) )
 
@@ -355,7 +357,7 @@ out = [out ; {'', '$'}];
 
 % Return the name of the independent variable. Use x if none is found.
 % Check whether we have too many independent variables.
-if ( strcmp(type, 'pde') && ((rExists + tExists + xExists) > 2) )
+if ( strcmp(problemType, 'pde') && ((rExists + tExists + xExists) > 2) )
         error('Chebgui:solve:Lexer:TooManyIndVars', ...
             'Too many independent variables in input.');
 elseif ( (rExists + tExists + xExists) > 1 ) % Must be in BVP or EIG mode
@@ -371,7 +373,7 @@ elseif ( xExists )
     indVarNames{1} = 'x';
 end
 
-if ( strcmp(type, 'pde') )
+if ( strcmp(problemType, 'pde') )
     indVarNames{2} = pdeSubScript;
 else
     indVarNames{2} = '';
