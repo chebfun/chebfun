@@ -1,10 +1,10 @@
-function parseOut = stringConverterParser(lexIn)
-%STRINGCONVERTERPARSER      LL(1) parser for mathematical expressions
+function parseOut = strConvParser(lexIn)
+%STRCONVPARSER      LL(1) parser for mathematical expressions
 %
-%  PARSEOUT = STRINGCONVERTERPARSER(LEXIN) returns a syntax tree of expressions
-%  so that it can be converted to a format Chebfun is able to work with. The
-%  input, LEXIN, is the output of the method STRINGCONVERTERLEXER(), and is a
-%  cell array of strings, containaining the tokens of strings.
+%  PARSEOUT = STRCONVPARSER(LEXIN) returns a syntax tree of expressions so that
+%  it can be converted to a format Chebfun is able to work with. The input,
+%  LEXIN, is the output of the method STRCONVLEXER(), and is a cell array of
+%  strings, containaining the tokens of strings.
 %
 %  This method implements a LL(1) parser, a technique from compiler theory. For
 %  more details, see e.g.
@@ -12,7 +12,7 @@ function parseOut = stringConverterParser(lexIn)
 %   [1] Aho, Sethi, Ullman, Compilers: Principles, Techniques, and Tools,
 %       Addison-Wesley, 1986.
 %
-%   See also: stringConverter, stringConverterLexer.
+%   See also: stringConverter, strConvLexer
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/chebfun/ for Chebfun information.

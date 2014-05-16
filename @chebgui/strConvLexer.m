@@ -1,9 +1,9 @@
 function [out, varNames, pdeVarNames, eigVarNames, indVarNames] = ...
-    stringConverterLexer(str, type)
-%STRINGCONVERTERLEXER      Lexer for string expression in CHEBFUN
+    strConvLexer(str, type)
+%STRCONVLEXER      Lexer for string expression in CHEBFUN
 %
 % [OUT, VARNAMES, INDVARNAME, PDEVARNAMES, EIGVARNAMES, INDVARNAMES] = 
-%   STRINGCONVERTERLEXER(STR) 
+%   STRCONVLEXER(STR) 
 % Performs a lexical analysis on the string STR. Here:
 %  STR:         A string of the mathematical expression we want to analyze.
 %  OUT:         A cell array with two columns, the left is a token and the
@@ -22,7 +22,7 @@ function [out, varNames, pdeVarNames, eigVarNames, indVarNames] = ...
 %   [1] Aho, Sethi, Ullman, Compilers: Principles, Techniques, and Tools,
 %       Addison-Wesley, 1986.
 %
-% See also: stringConverter, stringConverterParser.
+% See also: stringConverter, strConvParser.
 %
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/chebfun/ for Chebfun information.
@@ -336,7 +336,7 @@ while ( ~strcmp(str, '$') )
             out = [out ; {char1,'COMMA'}];
             
         case 'error'
-            error('CHEBFUN:CHEBGUI:stringConverterLexer:UnknownType', ...
+            error('CHEBFUN:CHEBGUI:strConvLexer:UnknownType', ...
                 'Unrecognized type of lexer input.');
     end
     

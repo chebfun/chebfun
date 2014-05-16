@@ -13,7 +13,7 @@ end
 
 % Put the original string through the lexer
 [lexOut, varNames, pdeVarNames, eigVarNames, indVarNames] = ...
-    chebgui.stringConverterLexer(str, guifile.type);
+    chebgui.strConvLexer(str, guifile.type);
 
 % Make sure we have enough variables! If parsing the initial guess, and we
 % have a scalar problem, we allow that the dependent variable doesn't
@@ -45,7 +45,7 @@ if ( length(pdeVarNames) > 1 )
 end
 
 % Parse the output from the lexer, looking for syntax errors.
-syntaxTree = chebgui.stringConverterParser(lexOut);
+syntaxTree = chebgui.strConvParser(lexOut);
 
 if ( strcmp(guifile.type, 'bvp') )
     % Convert a potential = at the top of the tree to a -.
