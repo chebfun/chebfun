@@ -189,6 +189,9 @@ classdef chebgui
             title('Updates')
 	    box on
         end
+        
+        % The LL(1) parser
+        parseOut = stringConverterParser(lexIn)
     end
     
 end

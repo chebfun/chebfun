@@ -1,14 +1,24 @@
-function parseOut = parse(guifile, LEXin)
-% PARSE - LL(1) parser for mathematical expressions, building up a syntax
-% tree of the expression so that it can be converted to a format Chebfun is
-% able to work with.
+function parseOut = stringConverterParser(lexIn)
+%STRINGCONVERTERPARSER      LL(1) parser for mathematical expressions
 %
-% This function parses the output from the lexer.
-
-% TODO:  Documentation.
+%  PARSEOUT = STRINGCONVERTERPARSER(LEXIN) returns a syntax tree of expressions
+%  so that it can be converted to a format Chebfun is able to work with. The
+%  input, LEXIN, is the output of the method STRINGCONVERTERLEXER(), and is a
+%  cell array of strings, containaining the tokens of strings.
+%
+%  This method implements a LL(1) parser, a technique from compiler theory. For
+%  more details, see e.g.
+%
+%   [1] Aho, Sethi, Ullman, Compilers: Principles, Techniques, and Tools,
+%       Addison-Wesley, 1986.
+%
+%   See also: stringConverter, stringConverterLexer.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/chebfun/ for Chebfun information.
+
+% Developers note: Usually, a parser relies on having access to pointers, which
+% is not possible in Matlab. We get around this issue using global variables.
 
 % Initialize all global variables
 global NEXT;
@@ -16,14 +26,8 @@ global COUNTER;
 global LEX;
 global STACK;
 
-COUNTER = 1;
-LEX = LEXin;
-NEXT = char(LEX(1,2));
-STACK = [];
-% OUT = [];
-
 % Enter the main routine
-parseSst();
+parseMain(lexIn);
 
 % Return the stored stack
 parseOut = STACK;
@@ -36,14 +40,18 @@ STACK = [];
 
 end
 
-function parseSst()
-
-% TODO:  This function needs a better name.
+function parseMain(lexIn)
+%PARSEMAIN  The main parsing routine, starts the recursive parsing.
 
 global NEXT;
 global STACK;
 global LEX;
 global COUNTER;
+
+COUNTER = 1;
+LEX = lexIn;
+NEXT = char(LEX(COUNTER, 2));
+STACK = [];
 
 % Our expression can only start with certain labels, make sure we are
 % starting with one of them.
@@ -150,7 +158,6 @@ end
 function parseExp4()
 
 parseExp5();
-% parseExp4pr(); % TODO:  Delete this if it is not needed.
 
 end
 
@@ -184,37 +191,28 @@ if ( strcmp(NEXT, 'VAR') )
     % If we then have a u(3) or u(3,left) situation (or u'(3) etc.), we
     % parse that as required
     parseExpList();
+    
 elseif ( any(strcmp(NEXT, {'NUM', 'INDVAR', 'LAMBDA', 'STR'})) )
     newLeaf = struct('center', {{char(LEX(COUNTER)), char(NEXT)}}, ...
         'pdeflag', 0);
     push(newLeaf);
     advance();
+    
 elseif ( strcmp(NEXT, 'PDEVAR') )
     newLeaf = struct('center', {{char(LEX(COUNTER)), char(NEXT)}}, ...
         'pdeflag', 1);
     push(newLeaf);
     advance();
+    
 elseif ( strcmp(NEXT, 'FUNC1') ) % Functions which take one argument
     parseFunction1();
+    
 elseif ( strcmp(NEXT, 'FUNC2') ) % Functions which take two arguments
     parseFunction2();
+    
 elseif ( strcmp(NEXT, 'FUNC3') ) % Functions which take three arguments
-        % TODO:  Delete the lines which are commented-out here if not needed.
-%     functionName = char(LEX(COUNTER));
-%     advance();
     parseFunction3();
-%     thirdArg =  pop();
-%     secondArg = pop();
-%     if any(strcmp(functionName,{'feval','fred','volt'})) && ~stackRows
-%         newTree = struct('left',secondArg,'center', {{functionName, 'FUNC2'}},...
-%         'right',thirdArg,'pdeflag',0);  
-%     else
-%         firstArg = pop();
-%         newTree = struct('left',firstArg,'center', {{functionName, 'FUNC3'}},...
-%         'right',secondArg,'arg',thirdArg,'pdeflag',0);
-%     end  
-%      % Can assume no pde if we reach here
-%     push(newTree);
+
 elseif ( strcmp(NEXT, 'LPAR') )
     advance();
     parseExp05();
@@ -225,6 +223,7 @@ elseif ( strcmp(NEXT, 'LPAR') )
     if ( ~m )
         reportError('Parse:parenths', 'Parenthesis imbalance in input fields.')
     end
+    
 elseif  ( strcmp(NEXT, 'UN-') || strcmp(NEXT, 'UN+') || ...
           strcmp(NEXT, 'OP-') || strcmp(NEXT,'OP+') )
     % If + or - reaches this far, we have an unary operator.
@@ -241,6 +240,7 @@ elseif  ( strcmp(NEXT, 'UN-') || strcmp(NEXT, 'UN+') || ...
         'pdeflag',pdeflag);
     push(newTree);
 else
+    
     reportError('Parse:terminal', ...
         ['Unrecognized character in input field:', NEXT]);
 end
@@ -249,7 +249,6 @@ end
 
 function parseFunction1()
 
-global NEXT;
 global COUNTER;
 global LEX
 
@@ -324,6 +323,7 @@ if ( strcmp(NEXT, 'LPAR') )
             'center', {{functionName, 'FUNC2'}}, ...
             'right', secondArg,'pdeflag',0);
         push(newTree);
+        
     elseif ( match('RPAR') )
         if ( any(strcmp(functionName, oneArgAllowed)) )
             % Have hit a function which allows one or two args.
@@ -338,9 +338,11 @@ if ( strcmp(NEXT, 'LPAR') )
             reportError('Parse:func2', ['Method ''', functionName, ...
                 ''' requires two input arguments.']);
         end
+        
     else
         reportError('Parse:parenths', 'Parenthesis imbalance in input fields.')
     end
+    
 else
     reportError('Parse:parenths', ...
         'Need parenthesis when using functions in input fields.')
@@ -353,7 +355,6 @@ function parseFunction3()
 global NEXT;
 global COUNTER;
 global LEX;
-global STACK
 
 % Function which allow one or two arguments
 oneArgAllowed = {'sum', 'integral'};
@@ -370,6 +371,7 @@ if ( strcmp(NEXT, 'LPAR') )
         error('Chebgui:Parse:PDE', ...
             'Cannot use time derivative as function arguments.')
     end
+    
     % Check whether we have a comma, if so, continue as normal
     if ( match('COMMA') )
         parseExp1();
@@ -402,6 +404,7 @@ if ( strcmp(NEXT, 'LPAR') )
                 'Parenthesis imbalance in input fields.')
         end
         push(newTree);
+        
     elseif ( match('RPAR') )
         if ( any(strcmp(functionName,oneArgAllowed)) )
             % Have hit a function which allows one or two args.
@@ -416,9 +419,11 @@ if ( strcmp(NEXT, 'LPAR') )
             reportError('Parse:func2', ['Method ''', functionName, ...
                 ''' requires two input arguments.']);
         end
+        
     else
         reportError('Parse:parenths', 'Parenthesis imbalance in input fields.')
     end
+    
 else
     reportError('Parse:parenths', 'Need parenthesis when using functions in input fields.')
 end
@@ -442,6 +447,7 @@ if ( strcmp(NEXT, 'OP+') )
         'right', rightArg, 'pdeflag', pdeflag);
     push(newTree);
     parseExp1pr();
+    
 elseif ( strcmp(NEXT, 'OP-') )
     advance();
     leftArg  = pop();
@@ -482,6 +488,7 @@ if ( strcmp(NEXT,'OP*') )
         'right', rightArg, 'pdeflag', 0);
     push(newTree);
     parseExp2pr();
+    
 elseif ( strcmp(NEXT,'OP/') )
     leftArg  = pop();   % Pop from the stack the left argument
     advance();          % Advance in the input
@@ -524,6 +531,7 @@ if ( strcmp(NEXT,'OP^') )
         'right', rightArg, 'pdeflag', 0);
     push(newTree);
     parseExp3pr();
+    
 elseif ( ~isempty(strfind(NEXT, 'DER')) )
     leftArg  = pop();
 
@@ -592,6 +600,7 @@ if ( match('LPAR') ) % We are in a u(3) or u(3,left) situation
         newTree = struct('left', firstArg, 'center', {{'feval', 'FUNC2'}}, ...
             'right', secondArg,'pdeflag', 0);
         push(newTree);
+        
     elseif ( match('COMMA') )
         % Here we only had two arguments in u(...), so we create a
         % feval of type FUNC3 (since the feval method has three input
@@ -626,6 +635,7 @@ if ( match('LPAR') ) % We are in a u(3) or u(3,left) situation
             reportError('Parse:secondArg', ...
                 'Invalid second argument to u(0,...) type of expression.')
         end
+        
     else % There must be a parenthesis imbalance.
         reportError('Parse:parenths', 'Parenthesis imbalance in input fields.')
     end
@@ -664,8 +674,6 @@ function parseExpApr()
 global NEXT;
 
 if ( strcmp(NEXT, 'COMMA') )
-    tempOpType = NEXT;
-    tempOpLabel = tempOpType(3:end);
     
     advance();
     leftArg  = pop();
@@ -708,7 +716,7 @@ end
 end
 
 function advance()
-
+%ADVANCE    Move to the next token in the output from the lexer.
 global NEXT;
 global COUNTER;
 global LEX;
@@ -735,14 +743,14 @@ end
 
 
 function push(new)
-
+%PUSH   Push a tree to the stack of syntax trees
 global STACK;
 
 if ( ~stackRows() )
     STACK = new;
 else
     % Ensure number of fields matches
-    [STACK new] = mergeFields(STACK, new);
+    [STACK, new] = mergeFields(STACK, new);
     % Update the Stack
     STACK = [STACK ; new];
 end
@@ -751,7 +759,7 @@ end
 
 
 function p = pop()
-
+%POP    Pop a tree from the stack.
 global STACK;
 
 % Throw a sensible error if we have an empty stack
@@ -767,7 +775,7 @@ end
 function m = stackRows()
 
 global STACK;
-[m n] = size(STACK);
+[m, n] = size(STACK); %#ok<NASGU>
 
 end
 
@@ -781,7 +789,7 @@ error(['CHEBFUN:', id], msg);
 end
 
 
-function [a b] = mergeFields(a, b)
+function [a, b] = mergeFields(a, b)
 
 aFields = fieldnames(a); 
 bFields = fieldnames(b);

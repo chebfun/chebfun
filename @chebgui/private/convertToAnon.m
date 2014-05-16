@@ -12,7 +12,7 @@ if ( nargin < 3 )
 end
 
 % Put the original string through the lexer
-[lexOut varNames pdeVarNames eigVarNames indVarNames] = lexer(guifile, str);
+[lexOut, varNames, pdeVarNames, eigVarNames, indVarNames] = lexer(guifile, str);
 
 % Make sure we have enough variables! If parsing the initial guess, and we
 % have a scalar problem, we allow that the dependent variable doesn't
@@ -44,7 +44,7 @@ if ( length(pdeVarNames) > 1 )
 end
 
 % Parse the output from the lexer, looking for syntax errors.
-syntaxTree = parse(guifile, lexOut);
+syntaxTree = chebgui.stringConverterParser(lexOut);
 
 if ( strcmp(guifile.type, 'bvp') )
     % Convert a potential = at the top of the tree to a -.
@@ -54,7 +54,7 @@ if ( strcmp(guifile.type, 'bvp') )
     
 elseif ( strcmp(guifile.type, 'pde') )
     % Convert a potential = at the top of the tree to a -.
-    [syntaxTree pdeSign] = splitTree_pde(guifile, syntaxTree);
+    [syntaxTree, pdeSign] = splitTree_pde(guifile, syntaxTree);
     % Obtain the prefix form.
     prefixOut = tree2prefix(guifile, syntaxTree);
     % pdeSign tells us whether we need to flip the signs. Add a unitary -
@@ -66,7 +66,7 @@ elseif ( strcmp(guifile.type, 'pde') )
 elseif ( strcmp(guifile.type, 'eig') )
     anFunLambda = '';
     % Convert a potential at the top of the tree = to a -.
-    [syntaxTree lambdaTree lambdaSign] = splitTree_eig(guifile, syntaxTree);
+    [syntaxTree, lambdaTree, lambdaSign] = splitTree_eig(guifile, syntaxTree);
     % Obtain the prefix form.
     prefixOut = tree2prefix(guifile, syntaxTree);
     
@@ -106,7 +106,7 @@ end
 % happened if we have any commas left in the prefix expression
 commaSeparated = any(strcmp(prefixOut(:,2), 'COMMA'));
 
-[infixOut notaVAR] = prefix2infix(guifile, prefixOut);
+[infixOut, notaVAR] = prefix2infix(guifile, prefixOut);
 anFun = parSimp(guifile, infixOut);
 
 % Remove misinterpreted VARs (from Fred, Volt, etc)
