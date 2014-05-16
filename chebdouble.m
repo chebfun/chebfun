@@ -497,7 +497,7 @@ classdef chebdouble
         end
         function u = sinc(u)
             u.values = sin(pi*u.values)./(pi*u.values);
-            u.values(isanan(u.values)) = 1;
+            u.values(isnan(u.values)) = 1;
         end
         function u = sind(u)
             u.values = sind(u.values);
