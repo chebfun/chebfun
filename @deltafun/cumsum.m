@@ -73,8 +73,8 @@ else
         % of the end points.
         dom = f.funPart.domain;
         
-        % If there is no delta function at the left end point, introduce a jump of
-        % size 0 at the beginning:
+        % If there is no delta function at the left end point, introduce a jump
+        % of size 0 at the beginning:
         if ( jumpLocs(1) > dom(1) )
             deltaLeft = 0;
             jumpVals = [0, jumpVals];
@@ -82,8 +82,8 @@ else
             deltaLeft = 1;
         end
         
-        % If there is no delta function at the right end point, introduce a jump of
-        % size 0 at the end:
+        % If there is no delta function at the right end point, introduce a jump
+        % of size 0 at the end:
         if ( jumpLocs(end) < dom(2) )
             deltaRight = 0;
             jumpVals = [jumpVals, 0];
@@ -101,7 +101,7 @@ else
         if ( p1 || p2 || p3)
             s = cumsum(f.funPart) + jumpVals(1);
             rJump = jumpVals(end);
-            if ( isempty(deltaLoc) || isempTy(deltaMag) )
+            if ( isempty(deltaLoc) || isempty(deltaMag) )
                 g = s;                
             else
                 g = deltafun(s, deltaMag, deltaLoc);
