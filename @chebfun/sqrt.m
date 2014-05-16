@@ -7,13 +7,13 @@ function f = sqrt(f, pref)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( nargin < 2 )
-    pref = chebfunpref();
-end
-
 % Trivial case: (f is empty)
 if ( isempty(f) )
     return
+end
+
+if ( nargin < 2 )
+    pref = chebfunpref();
 end
 
 % Simply call POWER()
