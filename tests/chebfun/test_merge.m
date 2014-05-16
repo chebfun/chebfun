@@ -37,6 +37,15 @@ f = chebfun(@(x) [x, x.^2], [-1 -.1 -.1+eps 0 1]);
 g = merge(f);
 pass(9) = numel(g.domain) == 2 && all(g.domain == [-1 1]);
 
+% Test row CHEBFUNs:
+f = chebfun(@(x) x, [-1 0 1]);
+g = merge(f.');
+pass(10) = isequal(g.domain, [-1 1]) && g.isTransposed;
+
+f = chebfun(@(x) abs(x), [-1 0 1]);
+g = merge(f.');
+pass(11) = isequal(g.domain, [-1 0 1]) && g.isTransposed;
+
 %% Test for singular function:
 % Set the domain:
 dom = [-2 7];
@@ -59,7 +68,7 @@ x = diff(domCheck) * rand(100, 1) + domCheck(1);
 vals_h = feval(h, x);
 vals_exact = feval(op, x);
 err = vals_h - vals_exact;
-pass(10) = (norm(err, inf) < 5e1*get(h, 'vscale')*get(h, 'epslevel'));
+pass(12) = (norm(err, inf) < 5e1*get(h, 'vscale')*get(h, 'epslevel'));
 
 %% Test for function defined on unbounded domain:
 
@@ -75,6 +84,6 @@ g = merge(f);
 gVals = feval(g, x);
 gExact = op(x);
 err = gVals - gExact;
-pass(11) = norm(err, inf) < 10*epslevel(f)*vscale(f);
+pass(13) = norm(err, inf) < 10*epslevel(f)*vscale(f);
 
 end
