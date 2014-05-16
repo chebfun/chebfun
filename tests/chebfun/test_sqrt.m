@@ -9,7 +9,7 @@ dom = [-2 7];
 
 % Generate a few random points to use as test values:
 seedRNG(6178);
-x = diff(dom) * rand(100, 1) + dom(1);
+x = sort(diff(dom) * rand(100, 1) + dom(1));
 
 %% A positive function (the Runge function):
 op = @(x) 1./(1+25*x.^2);
@@ -65,16 +65,16 @@ pass(4) = ( norm(err, inf) < 1e2*epslevel(f).*norm(vals_exact, inf) );
 
 %% An array-valued CHEBFUN: 
 
-% op = @(x) [sin(x), sin(x)-.5];
-% opExact = @(x) [sqrt(sin(x)), sqrt(sin(x)-.5)];
-% f = chebfun(op, 'splitting', 'on');
-% g = sqrt(f);
-% vals_g = feval(g, x); 
-% 
-% vals_exact = feval(opExact, x);
-% err = vals_g - vals_exact;
-% pass(5) = ( norm(err, inf) < 1e2*get(f,'epslevel')*norm(vals_exact, inf) );
-pass(5) = 1;
+op = @(x) [sin(x), sin(x)-.5];
+opExact = @(x) [sqrt(sin(x)), sqrt(sin(x)-.5)];
+f = chebfun(op, dom);
+g = sqrt(f);
+vals_g = feval(g, x); 
+
+vals_exact = feval(opExact, x);
+err = norm(vals_g - vals_exact, inf);
+tol = 1e2*get(f,'epslevel')*norm(vals_exact, inf);
+pass(5) = err < tol;
 
 %% A positive piece-wise example with singularities:
 
