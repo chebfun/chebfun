@@ -4,7 +4,8 @@ function c_leg = cheb2leg(c_cheb, M)
 %   to a vector C_CHEB of Legendre coefficients such that 
 %   C_CHEB(N)*T0 + ... + C_CHEB(1)*T{N-1} = C_LEG(N)*P0 + ... + C_LEG(1)*P{N-1}.
 
-% Copyright 2013 Nick Hale and Alex Townsend, University of Oxford.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
 
 % This algorithm requires O( N(log N)^2 / log log N) operations and is based on
 % rewritting an asymptotic formula for Legendre polynomials in a way that can be

@@ -5,6 +5,9 @@ function f = setPointValues(f, j, k, vals)
 %
 %   It may be possible to do something with subsasgn..
 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
+
 % TODO: Document this
 % TODO: Deal with array input for quasimatrices
 % TODO: Remove this once access to impulses is restricts (when we have deltfun).

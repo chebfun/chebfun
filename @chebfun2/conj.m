@@ -5,6 +5,9 @@ function f = conj(f)
 %
 % See also REAL, IMAG. 
 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Check for empty CHEBFUN2. 
 if ( isempty( f ) )  
    return
