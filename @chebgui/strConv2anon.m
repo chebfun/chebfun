@@ -16,7 +16,7 @@ end
 
 % Put the original string through the lexer
 [lexOut, varNames, pdeVarNames, eigVarNames, indVarNames] = ...
-    chebgui.strConvLexer(str, guifile.type);
+    stringParser.lexer(str, guifile.type);
 
 % Make sure we have enough variables! If parsing the initial guess, and we
 % have a scalar problem, we allow that the dependent variable doesn't

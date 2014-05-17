@@ -222,10 +222,6 @@ classdef chebgui
     
     methods( Access = private, Static = true )
         
-        % The CHEBGUI lexer
-        [out, varNames, pdeVarNames, eigVarNames, indVarNames] = ...
-            strConvLexer(str, type)
-        
         % The LL(1) parser
         parseOut = strConvParser(lexIn)
         

@@ -1,9 +1,9 @@
 function [out, varNames, pdeVarNames, eigVarNames, indVarNames] = ...
-    strConvLexer(str, problemType)
-%STRCONVLEXER      Lexer for string expression in CHEBFUN
+    lexer(str, problemType)
+%LEXER      Lexer for string expression in CHEBFUN
 %
 % [OUT, VARNAMES, INDVARNAME, PDEVARNAMES, EIGVARNAMES, INDVARNAMES] = 
-%   STRCONVLEXER(STR) 
+%   LEXER(STR) 
 % Performs a lexical analysis on the string STR. Here:
 %  STR:         A string of the mathematical expression we want to analyze.
 %  PROBLEMTYPE: A string denoting what kind of problem we are solving. Possible
