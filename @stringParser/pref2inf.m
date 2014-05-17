@@ -1,4 +1,4 @@
-function [infixOut, notaVAR] = strConvPref2inf(prefixIn)
+function [infixOut, notaVAR] = pref2inf(prefixIn)
 % TODO: Document
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 

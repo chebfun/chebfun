@@ -222,14 +222,8 @@ classdef chebgui
     
     methods( Access = private, Static = true )
         
-        % The LL(1) parser
-        parseOut = strConvParser(lexIn)
-        
         % Convert a syntax tree to prefix format
         prefixOut = strConvTree2prefix(syntaxTree)
-        
-        % Get rid of unecessary parenthesis in infix format strings
-        strOut = strConvParSimp(strIn)
         
         % Split expressions separated by commas to individual syntax trees
         treeOut = splitTree_commas_equalSigns(treeIn)
@@ -242,9 +236,6 @@ classdef chebgui
         
         % Split a PDE syntax tree
         [newTree, pdeSign] = splitTree_pde(treeIn)
-        
-        % Convert an expression on PREFIX form to INFIX form
-        [infixOut, notaVAR] = strConvPref2inf(prefIn)
         
     end
     

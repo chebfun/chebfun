@@ -22,5 +22,13 @@ classdef stringParser
         [out, varNames, pdeVarNames, eigVarNames, indVarNames] = ...
             lexer(str, type)
     
+        % The LL(1) parser
+        parseOut = parser(lexIn)
+        
+        % Get rid of unecessary parenthesis in infix format strings
+        strOut = parSimp(strIn)
+        
+        % Convert an expression on PREFIX form to INFIX form
+        [infixOut, notaVAR] = pref2inf(prefIn)
     end
 end

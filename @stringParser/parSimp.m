@@ -1,4 +1,4 @@
-function str = strConvParSimp(str)
+function str = parSimp(str)
 % PARSIMP  Remove unnecessary parentheses from string inputs.
 %  parSimp does some basic parsing of the input STR to attempt to remove
 %  unnecessary parenthesis, zeros, and consecutive +/- pairs.

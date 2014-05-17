@@ -48,7 +48,7 @@ if ( length(pdeVarNames) > 1 )
 end
 
 % Parse the output from the lexer, looking for syntax errors.
-syntaxTree = chebgui.strConvParser(lexOut);
+syntaxTree = stringParser.parser(lexOut);
 
 if ( strcmp(guifile.type, 'bvp') )
     % Convert a potential = at the top of the tree to a -.
@@ -94,8 +94,8 @@ elseif ( strcmp(guifile.type, 'eig') )
         end
 
         % Change it to infix form and remove uneccessary parenthesis.
-        infixOutLambda = chebgui.strConvPref2inf(prefixOutLambda);
-        anFunLambda = chebgui.strConvParSimp(infixOutLambda);
+        infixOutLambda = stringParser.pref2inf(prefixOutLambda);
+        anFunLambda = stringParser.parSimp(infixOutLambda);
     end
     
 end
@@ -104,8 +104,8 @@ end
 % happened if we have any commas left in the prefix expression
 commaSeparated = any(strcmp(prefixOut(:,2), 'COMMA'));
 
-[infixOut, notaVAR] = chebgui.strConvPref2inf(prefixOut);
-anFun = chebgui.strConvParSimp(infixOut);
+[infixOut, notaVAR] = stringParser.pref2inf(prefixOut);
+anFun = stringParser.parSimp(infixOut);
 
 % Remove misinterpreted VARs (from Fred, Volt, etc)
 for k = numel(varNames):-1:1

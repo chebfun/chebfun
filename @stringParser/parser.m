@@ -1,4 +1,4 @@
-function parseOut = strConvParser(lexIn)
+function parseOut = parser(lexIn)
 %STRCONVPARSER      LL(1) parser for mathematical expressions
 %
 %  PARSEOUT = STRCONVPARSER(LEXIN) returns a syntax tree of expressions so that
@@ -12,7 +12,7 @@ function parseOut = strConvParser(lexIn)
 %   [1] Aho, Sethi, Ullman, Compilers: Principles, Techniques, and Tools,
 %       Addison-Wesley, 1986.
 %
-%   See also: stringConverter, strConvLexer
+%   See also: stringParser, stringParser/str2anon, stringParser/lexer.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/chebfun/ for Chebfun information.
