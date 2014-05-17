@@ -118,7 +118,6 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
                     % if OP is a SMOOTHFUN, cast it to a SINGFUN:
                     obj.smoothPart = op;
                     obj.exponents = [0, 0];
-                    
                     return
                 else
                     % Make sure the exponents are empty.
