@@ -1,4 +1,4 @@
-function [newTree, lambdaTree, lambdaSign] = splitTree_eig(treeIn)
+function [newTree, lambdaTree, lambdaSign] = splitTreeEIG(treeIn)
 % SPLITTREE_EIG Split a syntax tree (replace = with -) for a EIG problem
 
 % TODO:  Documentation.
@@ -10,7 +10,7 @@ function [newTree, lambdaTree, lambdaSign] = splitTree_eig(treeIn)
 [newTree, lambdaTree, lambdaSign] = findLambda(treeIn, 1);
 
 % Do the basic splitting (converting = into -) in newTree
-newTree = chebgui.splitTree_commas_equalSigns(newTree);
+newTree = stringParser.splitTree_commas_equalSigns(newTree);
 
 end
 

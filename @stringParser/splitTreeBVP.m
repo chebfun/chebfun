@@ -1,4 +1,4 @@
-function treeOut = splitTree_bvp(treeIn)
+function treeOut = splitTreeBVP(treeIn)
 % SPLITTREE_BVP Split a syntax tree (replace = with -) for a BVP 
 
 % TODO:  Documentation.
@@ -7,4 +7,4 @@ function treeOut = splitTree_bvp(treeIn)
 % See http://www.chebfun.org/chebfun/ for Chebfun information.
 
 % Only need to do the basic splitting in case of BVPs
-treeOut = chebgui.splitTree_commas_equalSigns(treeIn);
+treeOut = stringParser.splitTree_commas_equalSigns(treeIn);

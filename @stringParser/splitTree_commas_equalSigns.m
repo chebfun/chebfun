@@ -25,8 +25,8 @@ for k = 1:numel(treeOut)
     treeCenter = treeIn(k).center;
     % Check for commas and =. Do nothing otherwise.
     if ( strcmp(treeCenter{2}, 'COMMA') )
-        treeOut(k).left = chebgui.splitTree_commas_equalSigns(treeOut.left);
-        treeOut(k).right = chebgui.splitTree_commas_equalSigns(treeOut.right);
+        treeOut(k).left = stringParser.splitTree_commas_equalSigns(treeOut.left);
+        treeOut(k).right = stringParser.splitTree_commas_equalSigns(treeOut.right);
     elseif ( strcmp(treeCenter{2}, 'OP=') )
         treeOut(k).center = {'-', 'OP-'};
     end

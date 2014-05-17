@@ -1,4 +1,4 @@
-function varargout = strConv2anon(guifile, str, type)
+function varargout = str2anon(guifile, str, type)
 % STRCONV2ANON Converts a string on 'natural syntax form' to an anonymous
 % function Matlab can work with.
 
@@ -52,15 +52,15 @@ syntaxTree = stringParser.parser(lexOut);
 
 if ( strcmp(guifile.type, 'bvp') )
     % Convert a potential = at the top of the tree to a -.
-    syntaxTree = chebgui.splitTree_bvp(syntaxTree);
+    syntaxTree = stringParser.splitTreeBVP(syntaxTree);
     % Obtain the prefix form.
-    prefixOut = chebgui.strConvTree2prefix(syntaxTree);
+    prefixOut = stringParser.tree2prefix(syntaxTree);
     
 elseif ( strcmp(guifile.type, 'pde') )
     % Convert a potential = at the top of the tree to a -.
-    [syntaxTree, pdeSign] = splitTree_pde(guifile, syntaxTree);
+    [syntaxTree, pdeSign] = stringParser.splitTreePDE(syntaxTree);
     % Obtain the prefix form.
-    prefixOut = chebgui.strConvTree2prefix(syntaxTree);
+    prefixOut = stringParser.tree2prefix(syntaxTree);
     % pdeSign tells us whether we need to flip the signs. Add a unitary -
     % at the beginning of the expression
     if ( pdeSign == 1 )
@@ -70,13 +70,13 @@ elseif ( strcmp(guifile.type, 'pde') )
 elseif ( strcmp(guifile.type, 'eig') )
     anFunLambda = '';
     % Convert a potential at the top of the tree = to a -.
-    [syntaxTree, lambdaTree, lambdaSign] = chebgui.splitTree_eig(syntaxTree);
+    [syntaxTree, lambdaTree, lambdaSign] = stringParser.splitTreeEIG(syntaxTree);
     % Obtain the prefix form.
-    prefixOut = chebgui.strConvTree2prefix(syntaxTree);
+    prefixOut = stringParser.tree2prefix(syntaxTree);
     
     % If lambdaTree is not empty, convert that tree to prefix-form as well
     if ( ~isempty(lambdaTree) )
-        prefixOutLambda = chebgui.strConvTree2prefix(lambdaTree);
+        prefixOutLambda = stringParser.tree2prefix(lambdaTree);
         
         % If the lambda part is on the LHS, we need to add a - in front of
         % the prefix expression.

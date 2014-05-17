@@ -203,9 +203,6 @@ classdef chebgui
         % Export a PDE to an .m file
         exportPDE2mfile(guifile, pathname, filename)
         
-        % Convert a string to an anonymous function
-        varargout = strConv2anon(guifile, str, type)
-        
         % Load the CHEBGUI demos
         cg = loaddemos(guifile, guifilepath)
         
@@ -222,20 +219,6 @@ classdef chebgui
     
     methods( Access = private, Static = true )
         
-        % Convert a syntax tree to prefix format
-        prefixOut = strConvTree2prefix(syntaxTree)
-        
-        % Split expressions separated by commas to individual syntax trees
-        treeOut = splitTree_commas_equalSigns(treeIn)
-        
-        % Split a BVP syntax tree
-        treeOut = splitTree_bvp(treeIn)
-        
-        % Split an EIG syntax tree
-        [newTree, lambdaTree, lambdaSign] = splitTree_eig(treeIn)
-        
-        % Split a PDE syntax tree
-        [newTree, pdeSign] = splitTree_pde(treeIn)
         
     end
     

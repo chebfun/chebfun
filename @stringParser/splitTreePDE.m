@@ -1,4 +1,4 @@
-function [newTree, pdeSign] = splitTree_pde(treeIn)
+function [newTree, pdeSign] = splitTreePDE(treeIn)
 % SPLITTREE_PDE Split a syntax tree (replace = with -) for a PDE
 
 % TODO:  Documentation.
@@ -11,7 +11,7 @@ function [newTree, pdeSign] = splitTree_pde(treeIn)
 [newTree, pdeTree, pdeSign] = findPDE(treeIn, 1);
 
 % Do the basic splitting (converting = into -) in newTree
-newTree = chebgui.splitTree_commas_equalSigns(newTree);
+newTree = stringParser.splitTree_commas_equalSigns(newTree);
 
 end
 

@@ -18,6 +18,9 @@ classdef stringParser
     
     methods( Access = public, Static = true )
         
+        % Convert a string to an anonymous function
+        varargout = str2anon(guifile, str, type)
+        
         % The STRINGPARSER lexer
         [out, varNames, pdeVarNames, eigVarNames, indVarNames] = ...
             lexer(str, type)
@@ -30,5 +33,20 @@ classdef stringParser
         
         % Convert an expression on PREFIX form to INFIX form
         [infixOut, notaVAR] = pref2inf(prefIn)
+        
+        % Convert a syntax tree to prefix format
+        prefixOut = tree2prefix(syntaxTree)
+        
+        % Split expressions separated by commas to individual syntax trees
+        treeOut = splitTree_commas_equalSigns(treeIn)
+        
+        % Split a BVP syntax tree
+        treeOut = splitTreeBVP(treeIn)
+        
+        % Split an EIG syntax tree
+        [newTree, lambdaTree, lambdaSign] = splitTreeEIG(treeIn)
+        
+        % Split a PDE syntax tree
+        [newTree, pdeSign] = splitTreePDE(treeIn)
     end
 end
