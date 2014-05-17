@@ -3,18 +3,24 @@ function pass = testUnary(funcList, tol)
 %   derivatives and lineary information. Used for most unary operators (e.g.
 %   sin, cos, exp, ...).
 
-% This method proceeds as follows:
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% DEVELOPER NOTE:
+%  This method proceeds as follows:
 %
-% 1. Loops through the list of functions to be tested, passed by test methods in
-%    the test/adchebfun folder.
-% 2. For each function handle:
+%  1. Loops through the list of functions to be tested, passed by test methods 
+%     in the test/adchebfun folder.
+%  2. For each function handle:
 %       a) Check that correct values for the function are computed, using the
 %          valueTesting() method. 
 %       b) Check that the correct derivative is computed, using the
 %          taylorTesting() method.
 %       c) Check that the correct linearity information was computed, from the
 %          LIN variable returned by the valueTesting() method.
-% 3. Return the pass vector with all results.
+%  3. Return the pass vector with all results.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Default tolerance
 if ( nargin < 2 )
@@ -42,6 +48,7 @@ for k = 1:numel(funcList)
     
     % Check that we received the correct linearity information
     pass(3, k) = ( lin == 0 );
+    
 end
 
 end

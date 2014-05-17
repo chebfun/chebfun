@@ -18,6 +18,12 @@ function F = restrict(F, newDomain)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Tweak the domain of a quasimatrix input:
+if ( numel(F) > 1 )   
+    F = tweakDomain(F);
+end
+
+% Loop over the columns:
 for k = 1:numel(F)
     F(k) = columnRestrict(F(k), newDomain);
 end
