@@ -1,11 +1,13 @@
 function [isDone, epsLevel] = testConvergence(disc, values, vscale, pref)
-%TESTCONVERGENCE Happiness check.
+%TESTCONVERGENCE   Happiness check.
 %   Given a discretization, and a cell array of discretized functions,
 %   check the equivalent Chebyshev polynomial representation for sufficient
 %   convergence.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
+
+% TODO: Document inputs.
 
 if ( nargin < 4 )
     pref = cheboppref;
@@ -14,49 +16,50 @@ if ( nargin < 4 )
     end
 end
 
-% We will test on an arbitrary linear combination of the individual
-% functions.
+% We will test on an arbitrary linear combination of the individual functions.
 s = 1 ./ (3*(1:numel(values))).';
 newValues = cell2mat(values(:).')*s;
 
-% Convert to a piecewise chebfun.
+% Convert to a piecewise CHEBFUN.
 u = toFunctionOut(disc, newValues);
 
 % Test convergence on each piece. Start by obtaining the Chebyshev coefficients
-% of all pieces, which we can then pass down to the testPiece method
+% of all pieces, which we can then pass down to the testPiece method:
 coeffs = get(u, 'coeffs');
 d = disc.domain;
 numInt = numel(d) - 1;
 isDone = false(1, numInt);
 epsLevel = 0;
 
-% If an external vscale was supplied, it can supplant the inherent scale of
-% the result.
-vscale = min(u.vscale,vscale);
+% If an external vscale was supplied, it can supplant the inherent scale of the
+% result.
+vscale = min(u.vscale, vscale);
 
 for i = 1:numInt
-    [isDone(i),neweps] = plateauCheck(coeffs{i}, vscale, pref);
-    epsLevel = max( epsLevel, neweps );
+    [isDone(i), neweps] = plateauCheck(coeffs{i}, vscale, pref);
+    epsLevel = max(epsLevel, neweps);
 end
 
 end
 
 function [ishappy, epslevel, cutoff] = plateauCheck(coeff, vscale, pref)
-%  Inputs: 
-%    coeff: vector of Cheb poly coefficients (high order to low)
+%PLATEAUCHECK   Seek a plateau in Chebyshev coefficients.
+%  Inputs:
+%    coeff:  vector of Chebyshev polynomial coefficients (high order to low)
 %    vscale: indication of the scale to resolve relative to (default=Inf,
-%           no effect)
-%    pref: cheboppref
+%            no effect)
+%    pref:   cheboppref
 %
 %  Outputs:
-%    ishappy: true if convergence was achieved
+%    ishappy:  true if convergence was achieved
 %    epslevel: the apparent epslevel of the truncation
-%    cutoff: where to truncate the coefficients
+%    cutoff:   where to truncate the coefficients
+%
+% This check is needed because of condition numbers in differential equations.
+% We can't be sure that a solution will ever be resolved to full precision, so
+% we have to be willing to stop if the convergence appears to have trailed off.
 
-% This check is needed because of condition numbers in differential
-% equations. We can't be sure that a solution will ever be resolved to full
-% precision, so we have to be willing to stop if the convergence appears to
-% have trailed off.
+% TODO: Unify and locate with the chebtech happiness checks.
 
 % NaNs are not allowed.
 if ( any(isnan(coeff)) )
@@ -64,15 +67,13 @@ if ( any(isnan(coeff)) )
         'Function returned NaN when evaluated.')
 end
 
-n = length(coeff);
-
 % We omit the last 12% because aliasing can pollute them significantly.
-n = ceil( 0.88*n );
-
-epslevel = pref.errTol;  % preferred tolerance
-
+n = length(coeff);
+n88 = ceil( 0.88*n );
+% Preferred tolerance
+epslevel = pref.errTol;  
 % Magnitude and rescale.
-absCoeff = abs( coeff(n:-1:1) ) / vscale;
+absCoeff = abs( coeff(n88:-1:1) ) / vscale;
 
 if ( vscale == 0 )
     % Trivially, the function is zero.
@@ -81,70 +82,70 @@ if ( vscale == 0 )
     return
 end
 
-%% Serious checking starts here.
+% %%%%%%%%%%%%%%%%%%%%%%%% Serious checking starts here. %%%%%%%%%%%%%%%%%%%%%%%
 % There are two ways to pass the test. Either the coefficients have
 % achieved the goal epslevel, or the convergence appears to have levelled
-% off for good (plateau). 
+% off for good (plateau).
 
-%TODO: Unify and locate with the chebtech happiness checks. 
+% Guilty until proven innocent.
+ishappy = false;
 
-% 1. Strict test.
+%% 1. Strict test.
 
 % Find the last place where the coeffs exceed the allowable level.
 % Then go out a bit further to be safe.
 cutoff = 4 + find( absCoeff >= epslevel, 1, 'last' );
 
-if ( cutoff < 0.95*n ) 
-    % Achieved the strict test. 
+if ( cutoff < 0.95*n88 )
+    % Achieved the strict test.
     ishappy = true;
     
-elseif ( n < 17 )
+elseif ( n88 < 17 )
     % If there aren't enough coefficients, give up checking.
-    ishappy = false;
-    epslevel = absCoeff(n);
-    cutoff = n;
+    epslevel = absCoeff(n88);
+    cutoff = n88;
     
-% 2. Plateau test.
+%% 2. Plateau test.
 else
-    ishappy = false;
     
     % Demand at least this much accuracy.
-    thresh = max(log(epslevel),log(1e-7));  
+    thresh = max(log(epslevel), log(1e-7));
     
     % Convergence is usually not far from linear in the log scale.
-    logabs = log(absCoeff);
+    logAbs = log(absCoeff);
     
-    % Even though some methods can compute really small coefficients relative to the
-    % norm, they ultimately contribute nothing. Also the occasional "zero"
+    % Even though some methods can compute really small coefficients relative to
+    % the norm, they ultimately contribute nothing. Also the occasional "zero"
     % coefficient causes troublesome infinities.
-    logabs = max( logabs, log(eps/1000) );
+    logAbs = max( logAbs, log(eps/1000) );
     
     % Look for a sustained leveling off in the decrease.
     
-    % Symmetries can cause one or more consecutive coefficients to be zero,
-    % and we only care about the nonzero ones. Use a windowed max to remove
-    % the small values.
     % TODO: Use the van Herk filter to do this more efficiently.
-    winsize = 6;
-    winmax = logabs;
-    for k = 1:winsize
-        winmax = max(winmax(1:end-1),logabs(k+1:end));
+    
+    % Symmetries can cause one or more consecutive coefficients to be zero, and
+    % we only care about the nonzero ones. Use a windowed max to remove the
+    % small values.
+    winSize = 6;
+    winMax = logAbs;
+    for k = 1:winSize
+        winMax = max( winMax(1:end-1), logAbs(k+1:end) );
     end
-    n = length(winmax);
-
+    n88 = length(winMax);
+    
     %%% Alternative windowed max: This avoids the for loop but might hog memory.
     %%index = bsxfun(@plus, (1:n)', 0:winsize-1);
     %%logabs = max(logabs(index),[],2);
     
     % Start with a low pass smoothing filter that introduces a lag.
     lag = 6;
-    LPA = [1, zeros(1,lag-1), -2, zeros(1, lag-1) 1]/(lag^2);
+    LPA = [1, zeros(1,lag-1), -2, zeros(1, lag-1), 1] / (lag^2);
     LPB = [1, -2, 1];
-    smoothLAC = filter( LPA, LPB, winmax );  % smoothed logabs coeffs
+    smoothLAC = filter(LPA, LPB, winMax);  % smoothed logabs coeffs
     
     % If too little accuracy has been achieved, do nothing.
     tOK = find(smoothLAC < thresh, 1) - lag;
-    if ( isempty(tOK) || n - tOK < 16 )
+    if ( isempty(tOK) || (n88 - tOK < 16) )
         return
     end
     
@@ -159,7 +160,7 @@ else
     
     % Find where the decrease has permanently slowed to 10% of the fastest.
     isSlow = smoothDiff(tstart:end) > 0.01*SDmin;
-    lastFast = find(~isSlow,1,'last');
+    lastFast = find(~isSlow, 1, 'last');
     if ( isempty(lastFast) )
         lastFast = 0;
     end
@@ -171,7 +172,7 @@ else
     cutoff = slow(first);  % may be empty, will give false next
     
     % If the cut location is within the coefficient sequence, we're done.
-    if ( cutoff < n )
+    if ( cutoff < n88 )
         ishappy = true;
     end
     
@@ -179,7 +180,7 @@ end
 
 if ( ishappy )
     % Use the information from the cut to deduce an eps level.
-    winEnd = min( n, cutoff + 4 );
+    winEnd = min( n88, cutoff + 4 );
     epslevel = max( absCoeff(cutoff:winEnd) );
 end
 
