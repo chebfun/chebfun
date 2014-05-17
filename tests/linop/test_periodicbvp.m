@@ -1,7 +1,7 @@
 function pass = test_periodicbvp
 % TAD, 10 Jan 2014
 
-tol = 1e-9; 
+tol = 4e-9; 
 
 %% Building blocks
 dom = [-pi pi];
@@ -22,6 +22,7 @@ L = addbc(L,'periodic');
 
 type = {@colloc2, @colloc1, @ultraS, @colloc2, @colloc1, @ultraS};
 prefs = cheboppref;
+prefs.errTol = 1e-14;
 % FIXME: necessary until issue #205 has been resolved
 [xtest,qtest] = chebtech2.chebpts(80);
 xtest = dom(1)+diff(dom)*(xtest+1)/2;

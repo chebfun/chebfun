@@ -1,7 +1,7 @@
 function pass = test_expm
 % TAD, 23 Jan 2014
 
-tol = 1e-10; 
+tol = 1e-9; 
 d = [-pi pi];
 x = chebfun('x',d);
 
