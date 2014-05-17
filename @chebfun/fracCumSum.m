@@ -28,7 +28,20 @@ numFuns = numel(funs);
 
 % Loop over each FUN by calling FRACCumSum@BNDFUN:
 for k = 1:numFuns
-    f.funs{k} = bndfun.fracCumSum(funs(1:k), fracM);
+    if all(isfinite(funs{k}.domain))
+        f.funs{k} = bndfun.fracCumSum(funs(1:k), fracM);
+    else
+        f.funs{k} = unbndfun.fracCumSum(funs(1:k), fracM);
+    end
 end
+
+% Simplify:
+f = simplify(f);
+
+% Grab new function values at the breakpoints:
+pointValues = chebfun.getValuesAtBreakpoints(f.funs);
+
+% Update the function value at the breakpoints:
+f.pointValues = pointValues;
 
 end

@@ -23,14 +23,18 @@ end
 % Grab the exponent of the last piece:
 exps = oneFuns{end}.exponents;
 
-% If there is only one piece, modify the exponents of F:
+% Exponents for the result:
+newExps = exps;
+
+% If there is only one piece, modify the exponents:
 if ( numOneFuns == 1 )
-    exps(1) = exps(1) + fracM;
+    newExps(1) = newExps(1) + fracM;
 end
 
 % Call the SINGFUN constructor to construct the Riemann–Liouville fractional 
 % integral:
-f = (1/gamma(fracM))*singfun(@(x) op(oneFuns, maps, x, fracM), exps);
+
+f = (1/gamma(fracM))*singfun(@(x) op(oneFuns, maps, x, fracM), newExps);
 
 end
 
@@ -79,7 +83,7 @@ for k = 1:l
         % Call SINGFUN constructor:
         rsp = restrict(sp, [-1 x(k)]);
         h = singfun(rsp, [exps(1) fracM-1]);
-        y(k) = I + ((x(k)+1)/2)^fracM*sum(h);
+        y(k) = I + ((x(k)+1)/2)^(fracM + exps(1))*sum(h);
     end
     
 end

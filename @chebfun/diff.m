@@ -39,7 +39,7 @@ if ( nargin < 3 )
     dim = 1;
 end
 
-if ( ~any(dim == [1, 2]) )
+if ( isnumeric(dim) && ~any(dim == [1, 2]) )
     error('CHEBFUN:diff:dim', 'Dimension must either be 1 or 2.');
 end
     

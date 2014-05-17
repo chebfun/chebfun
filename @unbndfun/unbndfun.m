@@ -138,15 +138,17 @@ classdef unbndfun < classicfun
     %% STATIC METHODS IMPLEMENTED BY UNBNDFUN CLASS.
     methods ( Static = true ) 
         
-        % Retrieve and modify preferences for this class.
-        prefs = pref(varargin);
-        
         % Noninear map from [-1, 1] to the domain of the UNBNDFUN.
         m = createMap(domain);
+        
+        % Indefinite integral of an UNBNDFUN for a fractional order.
+        varargout = fracCumSum(varargin)
         
         % Make a UNBNDFUN (constructor shortcut):
         f = make(varargin); 
         
+        % Retrieve and modify preferences for this class.
+        prefs = pref(varargin);
     end
        
     %% METHODS IMPLEMENTED BY THIS CLASS.
