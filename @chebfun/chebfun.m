@@ -359,9 +359,6 @@ classdef chebfun
         % True for zero CHEBFUN objects
         out = iszero(f)
         
-        % Kronecker product of a chebfun
-        out = kron(f, g)
-        
         % Length of a CHEBFUN.
         out = length(f);
         
