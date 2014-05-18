@@ -236,7 +236,6 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         % Data for plotting a FUN
         data = plotData(f, g);
 
-               
         % Addition of two DELTAFUN objects.
         f = plus(f, g)       
         
@@ -254,6 +253,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         
         % Size of a DELTAFUN.
         [siz1, siz2] = size(f, varargin)
+        
         % Same locations in two DELTAFUNS
         varargout = sameDeltaLocs(f, g);
         
@@ -298,6 +298,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         
         % Constructor shortcut
         f = make(varargin)
+        
         % Merge columns of a matrix based on duplicate values in v.
         [A, v] = mergeColumns(A, v, pref)
         
