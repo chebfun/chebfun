@@ -1,4 +1,4 @@
-function [newGUI, handles] = clearGUI(guifile, handles)
+function handles = clear(handles)
 %CLEARGUI   Reset CHEBGUI, clear all fields and reset options.
 
 % TODO:  Documentation.
@@ -43,6 +43,5 @@ set(handles.popupmenu_sigma, 'Value', 1)
 handles.hasSolution = 0;
 set(handles.button_exportsoln, 'Value', 0);
 
-% Clear information from the guifile as well
-newGUI = chebgui('type', guifile.type);
+end
 

@@ -168,8 +168,11 @@ end
 function button_clear_Callback(hObject, eventdata, handles)
 
 if ( strcmp(get(handles.button_clear, 'String'), 'Clear all') )
-    [newGUI handles] = clearGUI(handles.guifile,handles);
-    handles.guifile = newGUI;
+    handles = chebguiController.clear(handles);
+    
+    % Clear information from the guifile as well
+    handles.guifile = chebgui('type', handles.guifile.type);
+    
     guidata(hObject, handles);
 elseif strcmp(get(handles.button_clear, 'String'), 'Pause')
     set(handles.button_clear, 'String', 'Continue');
