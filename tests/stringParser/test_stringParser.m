@@ -79,7 +79,7 @@ n3 = numel(str);
 
 outPDE = cell(n3, 1);
 for k = 1:n3
-    outPDE{k} = stringParser.str2anon(str{k}, 'eig');
+    outPDE{k} = stringParser.str2anon(str{k}, 'pde');
 end
 
 correct = {'@(u) -x.*diff(u,2)+diff(u)'};

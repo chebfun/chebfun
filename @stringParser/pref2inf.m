@@ -4,7 +4,6 @@ function [infixOut, notaVAR] = pref2inf(prefixIn)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/chebfun/ for Chebfun information.
 
-prefixIn = prefixIn;
 prefCounter = 1;
 NOTAVAROUT = [];
 infixOut = getInfix();
