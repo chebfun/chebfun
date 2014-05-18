@@ -33,19 +33,6 @@ if ( strcmp(problemType, 'bvp') )
             numlines = 1;
             options.Resize ='on';
             options.WindowStyle ='modal';
-            
-              % TODO:  Remove this if it is really unused.
-
-%             if isempty(handles.latest)
-%                 % Export only the chebgui object
-%                 prompt = {'Chebgui object'};
-%                 defaultAnswer = {'chebg'};
-%                 answer = inputdlg(prompt,name,numlines,defaultAnswer,options);
-%                 if ~isempty(answer)
-%                     assignin('base',answer{1},handles.guifile);
-%                 end
-%                 return
-%             end
                 
             varnames = handles.varnames;
             nv = numel(varnames);
@@ -175,12 +162,6 @@ elseif ( strcmp(problemType,'pde') )
                 for k = 1:nv
                     assignin('base', answer{nv+1+k}, sol{k}(:,end));
                 end
-                % TODO:  Remove these lines if they are really unused.
-%                 msgbox(['Exported chebfun variables named ' answer{1},' and ',...
-%                     answer{2}, ' to workspace.'],...
-%                     'Chebgui export','modal')
-            else
-%                 msgbox('Exported variables named u and t to workspace.','Chebgui export','modal')
             end
         case 'WorkspaceJustVars'                
             varnames = handles.varnames;
@@ -259,12 +240,6 @@ else
             if ( ~isempty(answer) )
                 assignin('base', answer{1}, diag(handles.latest.solution));
                 assignin('base', answer{2}, handles.latest.solutionT);
-                % TODO:  Remove these lines if they are really unused.
-%                 msgbox(['Exported chebfun variables named ' answer{1},'and ',...
-%                     answer{2}, ' to workspace.'],...
-%                     'Chebgui export','modal')
-            else
-%                 msgbox('Exported variables named D and V to workspace.','Chebgui export','modal')
             end
         case 'WorkspaceJustVars'     
             varnames = handles.varnames;
@@ -283,7 +258,6 @@ else
 
             for k = 1:nv
                 assignin('base', varnames{k}, V{k});
-%                 evalin('base',varnames{k});
             end
             assignin('base', lambdaName, d);
             evalin('base', lambdaName);

@@ -71,11 +71,6 @@ if ( strcmp(newMode, 'bvp') ) % Going into BVP mode
     set(findall(handles.panel_discretization,  '-property',  'enable'),  ...
         'enable',  'on')
     
-    % TODO:  If this is no longer needed, it should be removed.
-    %     % Load a new random BVP example and change the demos popup menu
-    %     handles.guifile = loadexample(handles.guifile,-1,'bvp');
-    %     loadfields(handles.guifile,handles)
-    
 elseif ( strcmp(newMode, 'pde') ) % Going into PDE mode
     handles.guifile.type = 'pde';
     
@@ -130,9 +125,6 @@ elseif ( strcmp(newMode, 'pde') ) % Going into PDE mode
     set(findall(handles.panel_discretization, '-property', 'enable'),  ...
         'enable', 'off')
     
-    % TODO:  If this is no longer needed, it should be removed.
-    %     handles.guifile = loadexample(handles.guifile, -1, 'pde');
-    %     loadfields(handles.guifile, handles)
     
 else % Going into EIG mode
     handles.guifile.type = 'eig';
@@ -223,11 +215,6 @@ else % Going into EIG mode
     
     % Clear the figures
     initialisefigures(handles, callMode)
-    
-    % TODO:  Remove this if it is no longer needed.
-    %     % Load a new random BVP example and change the demos popup menu
-    %     handles.guifile = loadexample(handles.guifile,-1,'bvp');
-    %     loadfields(handles.guifile,handles)
     
 end
 
