@@ -259,6 +259,18 @@ while ( ~isempty(varargin) )
         deltaData = [deltaData, newData(k).xDeltas, newData(k).yDeltas];
     end
     
+    % If xLim(1) == xLim(2), set xLim [inf -inf] and let Matlab figure out a
+    % proper xLim:
+    if ( ~diff(xLim) )
+        xLim = [inf, -inf];
+    end
+    
+    % If yLim(1) == yLim(2), set yLim [inf -inf] and let Matlab figure out a
+    % proper yLim:
+    if ( ~diff(yLim) )
+        yLim = [inf, -inf];
+    end
+    
 end
 % Plot the lines:
 h1 = plot(lineData{:});
