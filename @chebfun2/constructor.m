@@ -134,7 +134,7 @@ maxRank = prefStruct.maxRank;
 maxLength = prefStruct.maxLength;
 pseudoLevel = prefStruct.eps;
 sampleTest = prefStruct.sampleTest;
-grid = 9;   % minsample
+minsample = 9;   % minsample
 
 % If the vectorize flag is off, do we need to give user a warning?
 if ( vectorize == 0 ) % another check
@@ -158,6 +158,8 @@ end
 
 isHappy = 0;
 while ( ~isHappy )
+    grid = minsample; 
+    
     % Sample function on a Chebyshev tensor grid:
     [xx, yy] = chebfun2.chebpts2(grid, grid, domain);
     vals = evaluate(op, xx, yy, vectorize);
@@ -303,7 +305,9 @@ while ( ~isHappy )
         r = (domain(2)+domain(1))/2 + r*(domain(2)-domain(1));
         s = (domain(4)+domain(3))/2 + s*(domain(4)-domain(3));
         if ( abs( op(r,s) - feval(g, r, s) ) > 1e5 * tol )
-            isHappy = 0;
+           % out of lives.
+           warning('CHEBFUN2:SAMPLETEST:FAILURE',...
+               'Function may not be resolved. Is the function discontinuous?');
         end
     end
     
