@@ -11,7 +11,7 @@ function [newTree, pdeSign] = splitTreePDE(treeIn)
 [newTree, pdeTree, pdeSign] = findPDE(treeIn, 1);
 
 % Do the basic splitting (converting = into -) in newTree
-newTree = stringParser.splitTree_commas_equalSigns(newTree);
+newTree = stringParser.splitTree(newTree);
 
 end
 

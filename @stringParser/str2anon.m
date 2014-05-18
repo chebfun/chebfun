@@ -49,7 +49,7 @@ syntaxTree = stringParser.parser(lexOut);
 
 if ( strcmp(problemType, 'bvp') )
     % Convert a potential = at the top of the tree to a -.
-    syntaxTree = stringParser.splitTreeBVP(syntaxTree);
+    syntaxTree = stringParser.splitTree(syntaxTree);
     % Obtain the prefix form.
     prefixOut = stringParser.tree2prefix(syntaxTree);
     

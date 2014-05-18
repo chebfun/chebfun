@@ -10,7 +10,7 @@ function [newTree, lambdaTree, lambdaSign] = splitTreeEIG(treeIn)
 [newTree, lambdaTree, lambdaSign] = findLambda(treeIn, 1);
 
 % Do the basic splitting (converting = into -) in newTree
-newTree = stringParser.splitTree_commas_equalSigns(newTree);
+newTree = stringParser.splitTree(newTree);
 
 end
 

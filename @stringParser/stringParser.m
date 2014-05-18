@@ -18,7 +18,7 @@ classdef stringParser
     
     methods ( Static = true )
         
-        % Convert a string to an anonymous function
+        % Convert a string to an anonymous function.
         varargout = str2anon(str, problemType, fieldType)
     
     end
@@ -39,10 +39,7 @@ classdef stringParser
         [infixOut, notaVAR] = pref2inf(prefIn)
         
         % Split expressions separated by commas to individual syntax trees
-        treeOut = splitTree_commas_equalSigns(treeIn)
-        
-        % Split a BVP syntax tree
-        treeOut = splitTreeBVP(treeIn)
+        treeOut = splitTree(treeIn)
         
         % Split an EIG syntax tree
         [newTree, lambdaTree, lambdaSign] = splitTreeEIG(treeIn)

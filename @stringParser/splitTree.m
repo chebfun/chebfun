@@ -1,8 +1,8 @@
-function treeOut = splitTree_commas_equalSigns(treeIn)
-% SPLITTREE_COMMAS_EQUALSIGNS This is the basic method for splitting syntax
-% trees. It looks for individual expressions separated by commas (e.g. u(1)
-% = 0, u'(3) = 4), and in each expression, converts the = into a - so that
-% we end up with expressions corresponding to u(1)-0, u'(3)-4
+function treeOut = splitTree(treeIn)
+% SPLITTREE This is the basic method for splitting syntax trees. It looks for
+% individual expressions separated by commas (e.g. u(1) = 0, u'(3) = 4), and in
+% each expression, converts the = into a - so that we end up with expressions
+% corresponding to u(1)-0, u'(3)-4
 
 % TODO:  Documentation.
 
@@ -25,8 +25,8 @@ for k = 1:numel(treeOut)
     treeCenter = treeIn(k).center;
     % Check for commas and =. Do nothing otherwise.
     if ( strcmp(treeCenter{2}, 'COMMA') )
-        treeOut(k).left = stringParser.splitTree_commas_equalSigns(treeOut.left);
-        treeOut(k).right = stringParser.splitTree_commas_equalSigns(treeOut.right);
+        treeOut(k).left = stringParser.splitTree(treeOut.left);
+        treeOut(k).right = stringParser.splitTree(treeOut.right);
     elseif ( strcmp(treeCenter{2}, 'OP=') )
         treeOut(k).center = {'-', 'OP-'};
     end
