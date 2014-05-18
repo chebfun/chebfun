@@ -171,7 +171,7 @@ while ( ~isHappy )
     end
     
     % Two-dimensional version of CHEBFUN's tolerance:
-    tol = grid.^(4/3) * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
+    tol = grid.^(2/3) * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
     
     %%% PHASE 1: %%%
     % Do GE with complete pivoting:
@@ -186,7 +186,7 @@ while ( ~isHappy )
         vals = evaluate(op, xx, yy, vectorize); % resample
         vscale = max(abs(vals(:)));
         % New tolerance:
-        tol = grid.^(4/3) * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
+        tol = grid.^(2/3) * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
         % New GE:
         [pivotValue, pivotPosition, rowValues, colValues, iFail] = CompleteACA(vals, tol);
         % If the function is 0+noise then stop after three strikes.
