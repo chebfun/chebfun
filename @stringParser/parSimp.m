@@ -1,17 +1,18 @@
 function str = parSimp(str)
-% PARSIMP  Remove unnecessary parentheses from string inputs.
-%  parSimp does some basic parsing of the input STR to attempt to remove
-%  unnecessary parenthesis, zeros, and consecutive +/- pairs.
-
-% TODO:  Documentation.
+%PARSIMP        Remove unnecessary parentheses from string inputs.
+%  STROUT = PARSIMP(STRIN) returns the string STROUT, obtained by doing some
+%  basic simplifications of the string STRIN, attempting to remove unnecessary
+%  parenthesis, zeros, and consecutive +/- pairs.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/chebfun/ for Chebfun information.
 
+% We can't really expect to simplify a one character string...
 if ( length(str) < 2 )
     return
 end
 
+% Simplify until we can't simplify more!
 oldlength = 0;
 while ( length(str) ~= oldlength )
     oldlength = length(str);
@@ -21,30 +22,33 @@ end
 end
 
 function str = parSimpMain(str)
+%PARSIMMAIN     Do the actual simplification
 
-% Find all locations of ( and )
+% Find all locations of ( and ):
 leftParLoc = strfind(str, '(');
 rightParLoc = strfind(str, ')');
 
-% Find weighted vector of operators
+% Find weighted vector of operators:
 opVec = (str == '-') + (str == '+') + 2*((str == '*') + (str == '/')) + ...
     3*(str == '^');
-% operator locations
+
+% Operator locations
 opLoc = find(opVec);
+
 % Location of characters and numbers
 charLoc = regexp(str, '[A-Za-z0-9@]');
 ltgtLoc = regexp(str, '[\<\>]');
 
 % Error if the number of ( and ) are not equal
 if ( length(leftParLoc) ~= length(rightParLoc) )
-    error('chebgui:parenth_simplify', 'Incorrect number of parenthesis.');
+    error('CHEBFUN:STRINGPARSER:strinchebgui:parenth_simplify', 'Incorrect number of parenthesis.');
 end
 
 % Store number of parenthesis
 numOfPars = length(leftParLoc);
 % Pair them together
-pairsLoc = zeros(numOfPars,2);
-pairsVec = zeros(1,length(str));
+pairsLoc = zeros(numOfPars, 2);
+pairsVec = zeros(1, length(str));
 parCounter = 1;
 leftStack = [];
 for strIndex = 1:length(str)
@@ -52,8 +56,8 @@ for strIndex = 1:length(str)
         leftStack = [leftStack strIndex];
     elseif ( str(strIndex) == ')' ) % Pop from the stack
         % Write information to pairs
-        pairsLoc(parCounter,1) = leftStack(end);
-        pairsLoc(parCounter,2) = strIndex;
+        pairsLoc(parCounter, 1) = leftStack(end);
+        pairsLoc(parCounter, 2) = strIndex;
         pairsVec([leftStack(end) strIndex]) = parCounter;
         % Update stack and counter
         leftStack(end) = [];
@@ -62,15 +66,15 @@ for strIndex = 1:length(str)
 end
 
 for k = 1:numel(ltgtLoc)
-    idx = find((pairsLoc(:,1) < ltgtLoc(k)) & (pairsLoc(:,2) > ltgtLoc(k)));
-    [ignored idx2] = max(pairsLoc(idx,1));
-    charLoc = sort([charLoc pairsLoc(idx(idx2),:)]);
+    idx = find((pairsLoc(:, 1) < ltgtLoc(k)) & (pairsLoc(:, 2) > ltgtLoc(k)));
+    [ignored idx2] = max(pairsLoc(idx, 1));
+    charLoc = sort([charLoc pairsLoc(idx(idx2), :)]);
     pairsLoc(idx(idx2),:) = [];
     numOfPars = numOfPars - 1;
 end
 
-leftParsLoc = pairsLoc(:,1);
-rightParsLoc = pairsLoc(:,2);
+leftParsLoc = pairsLoc(:, 1);
+rightParsLoc = pairsLoc(:, 2);
 
     function removeExtras(flag)
         % Remove things other than parentheses, like consecutive +/- pairs
@@ -78,7 +82,7 @@ rightParsLoc = pairsLoc(:,2);
         % attempt to remove zeros.
         
         % Remove leading + signs
-        if ( strcmp(str(1),'+') )
+        if ( strcmp(str(1), '+') )
             str(1) = []; 
             opVec(1) = [];
             leftParsLoc = leftParsLoc - 1;
@@ -88,16 +92,16 @@ rightParsLoc = pairsLoc(:,2);
         end
 
         % Remove consecutive +/- pairs
-        opVec1 = opVec == 1;
+        opVec1 = ( opVec == 1 );
         dOV = ~[abs(diff(opVec1)) 1] & opVec1; % Find adjacent opVec == 1's
-        pm = find(dOV,1); % Get the first
+        pm = find(dOV, 1); % Get the first
         if ( ~isempty(pm) ) % If +/- pair exists, remove the first occurence
             if ( str(pm) == str(pm+1) )
                 str(pm) = '+';
             else
                 str(pm) = '-';
             end
-            str(pm+1) = [];
+            str(pm + 1) = [];
             % Need to update indices and operators
             opVec(pm+1) = [];
             leftParsLoc(leftParsLoc > pm) = leftParsLoc(leftParsLoc > pm) - 1;
@@ -143,7 +147,7 @@ for pIndex = 1:numOfPars
     end
     
     % Just mask the interior of these parentheses
-    mask = zeros(1,length(str));
+    mask = zeros(1, length(str));
     mask(pLeft+1:pRight-1) = true;
     idx = find((leftParsLoc > pLeft) & (rightParsLoc < pRight));
     for k = 1:numel(idx)
@@ -158,7 +162,7 @@ for pIndex = 1:numOfPars
             (isempty(nextOpRight) || minOpInside >= opVec(nextOpRight)) )
         
         if ( (minOpInside == 1) && ~isempty(nextOpLeft) && ...
-                strcmp(str(pLeft-1), '-') )
+                strcmp(str(pLeft - 1), '-') )
             % Deal with the case of minus (switch interior pluses and minuses
 %             continue % uncomment if we don't want to simplify -(a+b) = -a-b
             interiorPM = interiorOpVec == 1;

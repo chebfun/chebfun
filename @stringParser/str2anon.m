@@ -1,8 +1,39 @@
 function varargout = str2anon(str, problemType, fieldType)
-% STRCONV2ANON Converts a string on 'natural syntax form' to an anonymous
+% STR2ANON Converts a string on 'natural syntax form' to an anonymous
 % function Matlab and CHEBGUI can work with.
-
-% TODO:  Documentation.
+%
+% Calling sequence:
+%       VARARGOUT = STR2ANON(STR, PROBLEMTYPE, FIELDTYPE)
+% where
+%   STR:            String on 'natural syntax form'.
+%   PROBLEMTYPE:    The type of problem we are solving in CHEBGUI, i.e., BVP,
+%                   EIG or PDE.
+%   FIELDTYPE:      What type of field of the CHEBGUI we are converting, i.e. a
+%                   field for the initial guess/condition, or other fields.
+%
+% If the method is called with one output argument, the output will be an
+% anonymous function on a form that is useful for Chebfun. The output will
+% start on the @(u) form of anonymous functions in Matlab
+%
+% If the method is called with six output arguments, the outputs are as
+% follows:
+%   anFun:          A cell array of strings, with entries corresponding to the
+%                   result of parsing the input to an anonymous function form.
+%                   Note that here, the strings will not start with in the @(u)
+%                   form.
+%   indVarNames:    A cell array of strings, with entries equal to the
+%                   independent variables that appear in the input string, i.e.
+%                   r, t or x.
+%   varNames:       A cell arry of strings, with entries equal to the names of
+%                   the dependent variables that appear in the problem, e.g. u,
+%                   v, w, ...
+%   pdeVarNames:    A cell array of strings, with entries equal to the names of
+%                   the variables that appear in PDE expression form, e.g. u_t.
+%   eigVarNames:    A cell array of strings, with entries equal to the names of
+%                   the eigenvalue parameters that appear in eigenvalue
+%                   problems, i.e. 'l', 'lam' or 'lambda'.
+%   commaSeparated: Equal to 1 if the input expression was comma-separated, e.g.
+%                   'u(-1) = 0, u(1) = 1'. Equal to 0 otherwise.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/chebfun/ for Chebfun information.
@@ -15,9 +46,8 @@ end
 [lexOut, varNames, pdeVarNames, eigVarNames, indVarNames] = ...
     stringParser.lexer(str, problemType);
 
-% Make sure we have enough variables! If parsing the initial guess, and we
-% have a scalar problem, we allow that the dependent variable doesn't
-% appear.
+% Make sure we have enough variables! If parsing the initial guess, and we have
+% a scalar problem, we allow that the dependent variable doesn't appear.
 if ( isempty(varNames) && ~strcmp(fieldType,'INITSCALAR') )
     if ( (numel(indVarNames) > 1) && ~isempty(indVarNames{2}) )
         str = sprintf('Variables ''%s'' and ''%s'' ', indVarNames{1:2});
@@ -25,8 +55,8 @@ if ( isempty(varNames) && ~strcmp(fieldType,'INITSCALAR') )
         str = sprintf('Variable ''%s'' ', indVarNames{1});
     end
 
-    % Throw an informative error message, depending on whether we're
-    % setting up a DE/BCs or an initial guess for a system.
+    % Throw an informative error message, depending on whether we're setting up
+    % a DE/BCs or an initial guess for a system.
     if ( ~strcmp(fieldType,'INIT') )
         error('Chebgui:chebgui:depvars', ...
             ['No dependent variables detected. ' str ...
@@ -47,17 +77,21 @@ end
 % Parse the output from the lexer, looking for syntax errors.
 syntaxTree = stringParser.parser(lexOut);
 
+% Convert a potential = at the top of the tree to a -. The type of the problem
+% determines what complications we need to take into account, hence three
+% different methods.
 if ( strcmp(problemType, 'bvp') )
-    % Convert a potential = at the top of the tree to a -.
     syntaxTree = stringParser.splitTree(syntaxTree);
+    
     % Obtain the prefix form.
     prefixOut = stringParser.tree2prefix(syntaxTree);
     
 elseif ( strcmp(problemType, 'pde') )
-    % Convert a potential = at the top of the tree to a -.
     [syntaxTree, pdeSign] = stringParser.splitTreePDE(syntaxTree);
+    
     % Obtain the prefix form.
     prefixOut = stringParser.tree2prefix(syntaxTree);
+    
     % pdeSign tells us whether we need to flip the signs. Add a unitary -
     % at the beginning of the expression
     if ( pdeSign == 1 )
@@ -101,7 +135,10 @@ end
 % happened if we have any commas left in the prefix expression
 commaSeparated = any(strcmp(prefixOut(:,2), 'COMMA'));
 
+% Convert the prefix form to infix form.
 [infixOut, notaVAR] = stringParser.pref2inf(prefixOut);
+
+% Get rid of unnecessary parenthesis.
 anFun = stringParser.parSimp(infixOut);
 
 % Remove misinterpreted VARs (from Fred, Volt, etc)
@@ -134,27 +171,28 @@ if ( strcmp(problemType, 'eig') && ~isempty(anFunLambda) )
     anFun = {anFun ; anFunLambda};
 end
 
+% The output depends on the number of output variables.
 switch ( nargout )
     case 1
         varargout{1} = anFunComplete;
-    case 2
-        varargout{1} = anFunComplete;
-        varargout{2} = indVarNames;
-    case 3
-        varargout{1} = anFun;
-        varargout{2} = indVarNames;
-        varargout{3} = varNames;
-    case 4
-        varargout{1} = anFun;
-        varargout{2} = indVarNames;
-        varargout{3} = varNames;
-        varargout{4} = pdeVarNames;
-    case 5
-        varargout{1} = anFun;
-        varargout{2} = indVarNames;
-        varargout{3} = varNames;
-        varargout{4} = pdeVarNames;
-        varargout{5} = eigVarNames;
+%     case 2
+%         varargout{1} = anFunComplete;
+%         varargout{2} = indVarNames;
+%     case 3
+%         varargout{1} = anFun;
+%         varargout{2} = indVarNames;
+%         varargout{3} = varNames;
+%     case 4
+%         varargout{1} = anFun;
+%         varargout{2} = indVarNames;
+%         varargout{3} = varNames;
+%         varargout{4} = pdeVarNames;
+%     case 5
+%         varargout{1} = anFun;
+%         varargout{2} = indVarNames;
+%         varargout{3} = varNames;
+%         varargout{4} = pdeVarNames;
+%         varargout{5} = eigVarNames;
     case 6
         varargout{1} = anFun;
         varargout{2} = indVarNames;
