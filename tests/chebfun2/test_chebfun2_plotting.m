@@ -13,11 +13,11 @@ try
     if j==0
         pass(1)=1;
     else
-        pass(1)=0; 
+        pass(1) = 0; 
     end
 catch
     close all 
-    pass(1)=0;
+    pass(1) = 0;
 end
 
 % rank-1 and off [-1 1 -1 1]. 
@@ -28,10 +28,25 @@ try
     contour(f)  
     waterfall(f)
     close all 
-    pass(2)=1; 
+    pass(2) = 1; 
 catch
     close all 
-    pass(2)=0;
+    pass(2) = 0;
+end
+
+try
+    % This test comes from PrettyFunctions.m 
+h = @(x,y) .75*exp(-((9*x-2).^2 + (9*y-2).^2)/4) + ...
+           .75*exp(-((9*x+1).^2)/49 - (9*y+1)/10) + ...
+           .5*exp(-((9*x-7).^2 + (9*y-3).^2)/4) - ...
+           .2*exp(-(9*x-4).^2 - (9*y-7).^2);
+       H = chebfun2(h);
+       waterfall(H,'-')
+       close all
+       pass(3) = 1; 
+catch 
+    close all
+    pass(3) = 0; 
 end
 end
 
