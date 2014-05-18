@@ -11,6 +11,15 @@ if ( isempty(f) || isempty(g) )
     return
 end
 
+% Make sure both arguments are DELTAFUNS:
+if ( ~isa(g, 'deltafun') )
+    g = deltafun(f, [], []);
+end
+
+if ( ~isa(f, 'deltafun') )
+    f = deltafun(f, [], []);
+end
+
 %%
 % The innerProduct has four contributions:
 % < (f + df) , (g + dg ) > = <f, g> + <df, g> + <dg, f> + <df, dg>
