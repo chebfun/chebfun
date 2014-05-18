@@ -26,8 +26,8 @@ end
 
 correctAnFun = {
     'feval(u,-1)-1'
-    'feval(u,0)-1,feval(u,2)+x-3'
-    'u-1,v,w-3'
+    'feval(u,0)-1;feval(u,2)+x-3'
+    'u-1;v;w-3'
     'x+diff(sin(v))'
     'sum(u,0,.5)'
     'fred(@(x,y)sin(x-y),u)-fred(@(x,z)cos(x-z),u)'};

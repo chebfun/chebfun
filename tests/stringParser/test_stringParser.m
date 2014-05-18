@@ -30,9 +30,9 @@ end
 
 correctBVP = {  '@(u) feval(u,0)-1'
                 '@(u) feval(u,-1)-1'
-                '@(u) feval(u,0)-1,feval(u,2)-3'
-                '@(u,v,w) [u-1,v,w-3]'
-                '@(u) feval(u,''end''),feval(u,1,''left'')'
+                '@(u) feval(u,0)-1;feval(u,2)-3'
+                '@(u,v,w) [u-1;v;w-3]'
+                '@(u) feval(u,''end'');feval(u,1,''left'')'
                 '@(u) diff(sin(u))'
                 '@(u) diff(sin(u),2)'
                 '@(u) feval(u,sqrt(2))'

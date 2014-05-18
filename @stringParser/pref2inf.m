@@ -165,7 +165,7 @@ elseif ( strmatch(next, 'COMMA') )
     prefCounter = prefCounter + 1;
     exp1 = getInfix();
     exp2 = getInfix();
-    infixOut = ['(', exp1, ',', exp2, ')'];
+    infixOut = ['(', exp1, ';', exp2, ')'];
 else
     % We have arrived at a terminal token. Return it and increase the counter.
     infixOut = char(prefixIn(prefCounter,1));

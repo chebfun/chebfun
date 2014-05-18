@@ -175,8 +175,8 @@ else % Have a system, go through each row
         allAnFun1 = [];
         allAnFun2 = [];
         for k = 1:numOfRows
-            allAnFun1 = [allAnFun1, anFun{indx(k)}{1}, ','];
-            allAnFun2 = [allAnFun2, anFun{indx(k)}{2}, ','];
+            allAnFun1 = [allAnFun1, anFun{indx(k)}{1}, ';'];
+            allAnFun2 = [allAnFun2, anFun{indx(k)}{2}, ';'];
         end
 
         % Remove the last comma
