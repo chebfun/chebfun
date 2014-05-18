@@ -27,6 +27,11 @@ switch prop
         % Get the function value at 1:
         out = feval(f, 1);
         
+    case {'values'}
+        % Get the Chebyshev coefficients:
+        coeffs = f.smoothPart.coeffs;
+        out = f.smoothPart.coeffs2vals(coeffs);
+        
     otherwise
         error('CHEBFUN:SINGFUN:GET:propname', ...
             'Unknown property name "%s" for object of type SINGFUN.', prop);
