@@ -165,7 +165,7 @@ while ( 1 )
         % Sweet, we have converged!      
         success = 1;
     elseif ( newtonCounter > maxIter )
-        % Suck, we failed.
+        % Damn, we failed.
         maxIterExceeded = 1;
     else
         % Linearize around current solution:

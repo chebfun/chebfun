@@ -108,7 +108,7 @@ Nu = feval(N, x, u{:}); % N.op(x, u{:});
 if ( size(Nu, 1) < size(Nu, 2) )
     warning('CHEBFUN:chebop:linearize:vertcatop', ...
         ['N.op should return a column vector.\n', ...
-        'Row vectors are depricated and may not be supported in future releases.'])
+        'Row vectors are deprecated and may not be supported in future releases.'])
 end
 
 % Construct a LINOP L by vertically concatenating the derivatives stored in NU.
@@ -164,7 +164,7 @@ end
 
 %% Add BCs
 
-% Initalise an empty LINOPCONSTRAINT.
+% Initialise an empty LINOPCONSTRAINT.
 BC = linopConstraint();
 
 % Evaluate and linearise left boundary condition(s):
