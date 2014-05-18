@@ -19,7 +19,7 @@ classdef stringParser
     methods ( Static = true )
         
         % Convert a string to an anonymous function
-        varargout = str2anon(guifile, str, type)
+        varargout = str2anon(str, problemType, fieldType)
     
     end
     
