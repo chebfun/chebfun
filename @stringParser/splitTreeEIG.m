@@ -1,12 +1,18 @@
 function [newTree, lambdaTree, lambdaSign] = splitTreeEIG(treeIn)
-% SPLITTREE_EIG Split a syntax tree (replace = with -) for a EIG problem
-
-% TODO:  Documentation.
+%SPLITTREEEIG       Split a syntax tree, specific to EIG problems.
+%
+% [NEWTREE, LAMBDATREE, LAMBDASIGN] = SPLITTREEEIG(TREEIN) splits the syntax
+% tree TREEIN into two trees, NEWTREE and LAMBDATREE. LAMBDATREE contains the
+% syntax tree that the eigenvalue parameter LAMBDA appears in, NEWTREE contains
+% the other part of TREEIN. The value of LAMBDASIGN corresponds to the sign in
+% front of LAMBDA in the original syntax tree TREEIN.
+%
+% See also: stringParser/splitTree.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/chebfun/ for Chebfun information.
 
-% Begin by finding the subtree which contains lambda
+% Begin by finding the subtree which contains the eigenvalue parameter LAMBDA.
 [newTree, lambdaTree, lambdaSign] = findLambda(treeIn, 1);
 
 % Do the basic splitting (converting = into -) in newTree
@@ -15,8 +21,12 @@ newTree = stringParser.splitTree(newTree);
 end
 
 function [newTree, lambdaTree, lambdaSign] = findLambda(treeIn, lambdaSign)
+%FINDLAMBDA     Find where the eigenvalue parameter LAMBDA appears in TREEIN.
 
+% Initialization.
 newTree = treeIn;
+
+% Start with empty trees.
 leftEmpty = 1;
 rightEmpty = 1;
 lambdaTree = [];
@@ -24,12 +34,16 @@ lambdaTreeLeft = [];
 lambdaTreeRight = [];
 treeCenter = treeIn.center;
 
+% Check whether we have a syntax tree to the left. If so, look recursively for
+% LAMBDA in the there.
 if ( isfield(treeIn, 'left') )
     [newLeft, lambdaTreeLeft, lambdaSign] = findLambda(treeIn.left, lambdaSign);
     newTree.left = newLeft;
     leftEmpty = 0;
 end
 
+% Check whether we have a syntax tree to the right. If so, look recursively for
+% LAMBDA in the there.
 if ( isfield(treeIn, 'right') )
     [newRight, lambdaTreeRight, lambdaSign] = findLambda(treeIn.right, ...
         lambdaSign);
@@ -41,6 +55,8 @@ end
 % we want to return the whole treeIn (e.g. when we see lambda*u). If not,
 % we return the latest lambdaTree (e.g. when we see lambda*u+1, and the +
 % is the operator of the current tree).
+%
+% Start with the left tree if it is nonempty:
 if ( ~isempty(lambdaTreeLeft) )
     if ( strcmp(treeCenter{2}, 'OP*') )
         lambdaTree = treeIn;
@@ -54,6 +70,7 @@ if ( ~isempty(lambdaTreeLeft) )
     end
 end
 
+% Then go through the right tree:
 if ( ~isempty(lambdaTreeRight) )
     if ( strcmp(treeCenter{2},'OP*') )
         lambdaTree = treeIn;
@@ -68,7 +85,8 @@ if ( ~isempty(lambdaTreeRight) )
     end
 end
 
-if ( leftEmpty && rightEmpty ) % Must be at a leaf
+% Both left and right trees are empty. We must be at a leaf!
+if ( leftEmpty && rightEmpty )
    % We encounter a lambda variable. Replace it by a zero.
    if ( strcmp(treeCenter{2}, 'LAMBDA') )
        lambdaTree = newTree;
