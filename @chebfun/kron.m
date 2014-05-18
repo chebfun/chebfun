@@ -1,4 +1,4 @@
-function h = kron(f, g, varargin)
+function h = kron(f, g)
 %KRON   Kronecker/outer product of two chebfuns.
 %
 % H = KRON(F,G) where F and G are array-valued chebfuns constructs a
