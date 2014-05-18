@@ -254,6 +254,8 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         
         % Size of a DELTAFUN.
         [siz1, siz2] = size(f, varargin)
+        % Same locations in two DELTAFUNS
+        varargout = sameDeltaLocs(f, g);
         
         % Simplify a DELTAFUN
         f = simplify(f, pref)
