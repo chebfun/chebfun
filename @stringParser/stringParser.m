@@ -3,7 +3,14 @@ classdef stringParser
 %   This class is not intended to be called directly by the end user.
 %
 %   See also CHEBGUI.
-    
+
+% Developers note:
+%   The STRINGPARSER class implements a number of methods, used to convert a
+%   string on a 'natural syntax' format in the fields of CHEBGUI to a format
+%   that Chebfun is capable of working with. In v4, this functionality used to
+%   live in the @chebgui folder, but to increase modularity, it has be spun off
+%   to its own class.
+
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
     
