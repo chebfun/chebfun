@@ -103,14 +103,14 @@ set(handles.menu_pdefixon, 'UserData', {''});
 % Populate the Demos menu, but only once (i.e. if user calls chebgui again,
 % don't reload the examples).
 if ( isempty(get(handles.menu_demos, 'UserData')) )
-    loaddemo_menu(handles.guifile, handles);
+    chebguiController.loadDemoMenu(handles);
     handles.demosLoaded = 1;
 end
 % Load the input fields
 loadfields(handles.guifile, handles);
 
 % Make sure the GUI starts in the correct mode
-switchmode(handles.guifile, handles, handles.guifile.type);
+chebguiController.switchMode(handles, handles.guifile.type);
 
 % Get the system font size and store in handles
 s = char(com.mathworks.services.FontPrefs.getCodeFont);
@@ -420,12 +420,12 @@ for k = 1:numel(str)
     strk = str{k};
     if ( any(strfind(strk, '_')) )
         if ( ~get(handles.button_pde,'value') )
-            handles = switchmode(handles.guifile, handles, 'pde');
+            handles = chebguiController.switchMode(handles, 'pde');
         end
         break
     elseif ( any(strfind(strk, 'lam') | strfind(strk, 'lambda')) )
         if ( ~get(handles.button_eig, 'value') )
-            handles = switchmode(handles.guifile, handles, 'eig');
+            handles = chebguiController.switchMode(handles, 'eig');
         end
         break
     end
@@ -800,7 +800,7 @@ end
 
 function button_ode_Callback(hObject, eventdata, handles)
 
-handles = switchmode(handles.guifile, handles, 'bvp');
+handles = chebguiController.switchMode(handles, 'bvp');
 guidata(hObject, handles);
 
 end
@@ -808,7 +808,7 @@ end
 % --- Executes on button press in button_pde.
 function button_pde_Callback(hObject, eventdata, handles)
 
-handles = switchmode(handles.guifile, handles, 'pde');
+handles = chebguiController.switchMode(handles, 'pde');
 guidata(hObject, handles);
 
 end
@@ -816,7 +816,7 @@ end
 % --- Executes on button press in button_pde.
 function button_eig_Callback(hObject, eventdata, handles)
 
-handles = switchmode(handles.guifile, handles, 'eig');
+handles = chebguiController.switchMode(handles, 'eig');
 guidata(hObject,  handles);
 
 end
@@ -1026,7 +1026,7 @@ cgTemp = chebgui(fullfile(pathname, filename));
 loadfields(cgTemp, handles);
 handles.guifile = cgTemp;
 if ( ~isempty(cgTemp.type) )
-    handles = switchmode(cgTemp, handles, cgTemp.type);
+    handles = chebguiController.switchMode(handles, cgTemp.type);
 end
 
 guidata(hObject, handles);
@@ -2094,7 +2094,7 @@ for k = 1:numel(folders)
         loadfields(cgTemp, handles);
         handles.guifile = cgTemp;
         if ( ~isempty(cgTemp.type) )
-            handles = switchmode(cgTemp, handles, cgTemp.type);
+            handles = chebguiController.switchMode(handles, cgTemp.type);
         end    
 
         handles.hasSolution = 0;

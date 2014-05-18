@@ -1,4 +1,4 @@
-function loaddemo_menu(guifile, handles)
+function loadDemoMenu(handles)
 
 % TODO:  Documentation.
 
@@ -160,7 +160,7 @@ else
 end
 
 % Switch the mode of the GUI according to the type of the problem.
-switchmode(handles.guifile, handles, handles.guifile.type, switchModeCM);
+chebguiController.switchMode(handles, handles.guifile.type, switchModeCM);
 
 % We no longer have a solution.
 handles.hasSolution = 0;

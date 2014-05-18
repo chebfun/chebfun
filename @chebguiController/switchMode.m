@@ -1,13 +1,13 @@
-function handles = switchmode(guiObject, handles, newMode, callMode)
+function handles = switchMode(handles, newMode, callMode)
 
 % TODO:  Documentation.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/chebfun/ for Chebfun information.
 
-% Only use callMode when calling from loaddemo_menu - for demos with an initial
+% Only use callMode when calling from loadDemoMenu() - for demos with an initial
 % guess / condition, we don't want to clear the figures.
-if ( nargin == 3 )
+if ( nargin == 2 )
     callMode = 'notDemo';
 end
 

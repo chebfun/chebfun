@@ -202,10 +202,7 @@ classdef chebgui
         
         % Export a PDE to an .m file
         exportPDE2mfile(guifile, pathname, filename)
-        
-        % Load the CHEBGUI demos
-        cg = loaddemos(guifile, guifilepath)
-        
+                
         % Populate the fields of the GUI
         [field, allVarString, indVarName, pdeVarNames, pdeflag, eigVarNames, ...
             allVarNames]  = setupFields(guifile, input, type, allVarString)
