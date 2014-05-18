@@ -76,6 +76,20 @@ classdef chebfun2
         F = outerProduct(f, g);   
         
     end
+    
+    methods ( Hidden = true )
+        % Check to see if domains are equal
+        out = domainCheck(f, g)
+        
+        % Scale rows and cols of a CHEBFUN2 so that all pivots are 1
+        F = normalizePivots( F )
+        
+        % Normalize the rows and columns of a CHEBFUN2.
+        F = normalizeRowsAndCols(F, p)
+        
+        % Is a chebfun2 all positive or negative? 
+        bol = singleSignTest( f ) 
+    end
 
     % Private methods implemented by CHEBFUN2 class.
     methods ( Access = private )
