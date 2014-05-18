@@ -28,9 +28,10 @@ switch prop
         out = feval(f, 1);
         
     case {'values'}
-        % Get the Chebyshev coefficients:
-        coeffs = f.smoothPart.coeffs;
-        out = f.smoothPart.coeffs2vals(coeffs);
+        
+        % Get the points:
+        pts = get(f.smoothPart, 'points');
+        out = feval(f, pts);
         
     otherwise
         error('CHEBFUN:SINGFUN:GET:propname', ...
