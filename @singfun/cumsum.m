@@ -46,14 +46,12 @@ if ( issmooth(f) ) % No exponents. Integrate the smooth part:
 elseif ( ~all(f.exponents) ) % One fractional pole or one pole, or one root:
     g = singIntegral(f);
 elseif ( all(f.exponents) ) % Singularities at both endpoints:
-    
     % Introduce a new break point at 0 using RESTRICT:
     f = restrict(f, [-1 0 1]);
     g{1} = singIntegral(f{1})/2;
-    rVal = get(g{1}, 'rval');
     g{2} = singIntegral(f{2})/2;
-    
     % Adjust the second piece:
+    rVal = get(g{1}, 'rval');
     g{2} = g{2} + rVal;
 else % Error message thrown for other cases:
     error('SINGFUN:cumsum:nosupport', ...
@@ -176,19 +174,19 @@ function g = singIntegral(f)
             g.smoothPart = f.smoothPart.make(@(x) CM + 0*x);
             g.exponents = [ra - a 0];
         elseif ( ~iszero(u) && abs(CM) < tol*f.smoothPart.vscale )
-            [u, rootsLeft, ignored] = extractBoundaryRoots(u);
+            [u, rootsLeft, ~] = extractBoundaryRoots(u);
             g.smoothPart = u;
             g.exponents = [exps(1)+rootsLeft 0];
         else % The general case that both terms are non-trivial
             g.smoothPart = u + CM*xa;
-            [g.smoothPart, rootsLeft, ignored] = ...
+            [g.smoothPart, rootsLeft, ~] = ...
                 extractBoundaryRoots(g.smoothPart);
             g.exponents = [exps(1)+rootsLeft 0];
         end
         
     elseif ( abs(Cm) < tol*f.smoothPart.vscale )
         % No log term: fractional poles with non-constant smooth part:
-        [u, rootsLeft, ignored] = extractBoundaryRoots(u);
+        [u, rootsLeft, ~] = extractBoundaryRoots(u);
         g.smoothPart = u;
         g.exponents = [exps(1)+rootsLeft 0];
     else
@@ -206,12 +204,10 @@ function g = singIntegral(f)
     
     % If G is not blowing up, ensure G(-1) == 0.
     if ( g.exponents(1) >= 0 )
-        
         % suppress the warning:
-        warning('off', 'CHEBFUN:SINGFUN:plus')
+        warnState = warning('off', 'CHEBFUN:SINGFUN:plus');
         g = g - get(g, 'lval');
-        warning('on', 'CHEBFUN:SINGFUN:plus')
-        
+        warning(warnState)        
     end
 
 end
