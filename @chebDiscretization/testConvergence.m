@@ -1,8 +1,18 @@
 function [isDone, epsLevel] = testConvergence(disc, values, vscale, pref)
 %TESTCONVERGENCE   Happiness check.
-%   Given a discretization, and a cell array of discretized functions,
-%   check the equivalent Chebyshev polynomial representation for sufficient
-%   convergence.
+%   Given: 
+%      DISC: chebDiscretization, 
+%      VALUES: a cell array of scalars/sampled function values (see the
+%           toFunction method),
+%      VSCALE: scalar value giving the desired scale by which to measure
+%           relative convergence against (defaults to 0, which means use
+%           the intrinsic scale of the result),
+%      PREF: A cheboppref() options structure.
+%
+%   Output:  
+%      ISDONE: True if the functions passed in are sufficiently resolved.
+%      EPSLEVEL: Apparent resolution accuracy (relative to VSCALE or the
+%      functions' intrinsic scale).
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
@@ -12,7 +22,7 @@ function [isDone, epsLevel] = testConvergence(disc, values, vscale, pref)
 if ( nargin < 4 )
     pref = cheboppref;
     if ( nargin < 3 )
-        vscale = Inf;   % will have no effect
+        vscale = 0;   % will have no effect
     end
 end
 
@@ -73,13 +83,8 @@ n88 = ceil( 0.88*n );
 % Preferred tolerance
 epslevel = pref.errTol;  
 % Magnitude and rescale.
-absCoeff = abs( coeff(n88:-1:1) ) / vscale;
-
-if ( vscale == 0 )
-    % Trivially, the function is zero.
-    ishappy = true;
-    cutoff = 1;
-    return
+if ( vscale > 0 )
+    absCoeff = abs( coeff(n:-1:1) ) / vscale;
 end
 
 % %%%%%%%%%%%%%%%%%%%%%%%% Serious checking starts here. %%%%%%%%%%%%%%%%%%%%%%%
