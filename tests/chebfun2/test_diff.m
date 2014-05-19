@@ -1,4 +1,4 @@
-function pass = test_chebfun2_diff( pref )
+function pass = test_diff( pref )
 % Check the diff command in Chebfun2
 
 if ( nargin < 1 ) 

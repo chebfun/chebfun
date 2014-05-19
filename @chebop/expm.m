@@ -28,8 +28,8 @@ function varargout = expm(N, t, u0, pref)
 %      plot(chebfun(u), 'linewidth', 2)
 %
 %   E = EXPM(T*L) is supported for backwards compatability, and returns a CHEBOP
-%   E which can be applied to U0, so that U = E*U0, or U = E(U0). However, this 
-%   syntax is depreicated and may be removed in future releases. EXPM(L, T, U0)
+%   E which can be applied to U0, so that U = E*U0, or U = E(U0). However, this
+%   syntax is deprecated and may be removed in future releases. EXPM(L, T, U0)
 %   as described above is the prefered syntax.
 %
 % See also LINOP/EXPM.
@@ -55,8 +55,8 @@ if ( nargin >= 3 )
 	[varargout{1:nargout}] = expm(L, t, u0, pref);
 else
     % For backwards compatability:
-    warning('CHEBFUN:chebop:expm:depricated', ...
-        ['The E = expm(L) syntax is depricated and may not behave as expected.\n', ...
+    warning('CHEBFUN:chebop:expm:deprecated', ...
+        ['The E = expm(L) syntax is deprecated and may not behave as expected.\n', ...
          'Please review EXPM documentation for details.'])
     varargout{1} = chebop(@(u) expm(L, 1, u), N.domain);
 end

@@ -19,7 +19,13 @@ for idx = 1:numel(varargin)
     tmp = varargin{idx+1};
     varargin(idx:(idx+1)) = [];
     if ( iscell(tmp) )
-        jumpStyle = tmp;
+        cc = regexp(tmp{1},'[bgrcmykw]', 'match');
+        if ( ~isempty(cc) )
+            % Forgive " 'jumpline', {'b', ...} " by inserting a 'color'.
+            jumpStyle = ['Color', cc, tmp{2:end}];
+        else
+            jumpStyle = tmp;
+        end
         return
     end
 

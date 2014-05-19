@@ -1,4 +1,4 @@
-function pass = test_chebfun2_complex( pref ) 
+function pass = test_complex( pref ) 
 % Test complex
 
 if ( nargin == 0) 

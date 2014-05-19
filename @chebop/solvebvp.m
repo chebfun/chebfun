@@ -101,7 +101,7 @@ else
         u0 = chebmatrix(u0);
     end
     
-    % Indicate that we get an inital guess passed.
+    % Indicate that we get an initial guess passed.
     initPassed = 1;
 end
 

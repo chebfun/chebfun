@@ -47,7 +47,7 @@ classdef cheboppref < chebpref
 %     finished. If 'iter', information is printed at every Newton step. If
 %     'off', no information is printed.
 %
-%   errTol                     - Error tolerance
+%   errTol                      - Error tolerance
 %     [1e-10]
 %
 %     The termination criteria for the Newton iteration. The Newton iteration is
@@ -61,7 +61,7 @@ classdef cheboppref < chebpref
 %     damped Newton iteration is allowed to take.
 %
 %   maxIter                     - Maximum number of Newton steps
-%     [1e-6]
+%     25
 %
 %   The maximum number of steps that the (damped) Newton iteration is allowed to
 %   take, before it is considered to be non-convergent.
