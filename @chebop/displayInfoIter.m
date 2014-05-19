@@ -33,7 +33,12 @@ function displayTimer = displayInfoIter(u, delta, iterNo, normDelta, cFactor, ..
 display  = pref.display;
 plotMode = pref.plotting;
 
-% Do we want to print to the command window?
+%Do we want to print to the command window?
+
+%TODO:  As described in a code review by Hrothgar, it is weird that the
+%       preferences govern whether this method carries out its task. We could
+%       get around this by splitting up the printing and plotting methods, this
+%       will be done on feature-chebgui-new, see #535.
 if ( strcmpi(display, 'iter') )
     
     % Create a string with information about the convergence. Want a slightly
