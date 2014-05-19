@@ -11,12 +11,10 @@ if ( isempty(f) || isempty(g) )
     return
 end
 
-% Make sure both arguments are DELTAFUNS:
+% Make sure both arguments are DELTAFUNS: (At least one must already be)
 if ( ~isa(g, 'deltafun') )
     g = deltafun(f, [], []);
-end
-
-if ( ~isa(f, 'deltafun') )
+elseif ( ~isa(f, 'deltafun') ) 
     f = deltafun(f, [], []);
 end
 

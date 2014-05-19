@@ -5,7 +5,7 @@ function pass = test_innerProduct(pref)
 if (nargin < 1)
     pref = chebfunpref();
 end
-%%
+
 % Get the tolerance:
 tol = pref.deltaPrefs.deltaTol;
 d = deltafun();
@@ -42,5 +42,8 @@ pass(6) = isinf(ip) && ip > 0;
 
 ip = innerProduct(d, -d);
 pass(7) = isinf(ip) && ip < 0;
+
+x = chebfun('x');
+pass(8) = innerProduct(dirac(x), x) == 0;
 
 end
