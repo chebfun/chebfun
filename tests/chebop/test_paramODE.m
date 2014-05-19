@@ -9,7 +9,7 @@ function pass = test_paramODE(pref)
 if ( nargin == 0 )
     pref = cheboppref();
 end
-tol = pref.errTol;
+tol = 10*pref.errTol;
 
 %% Simple problem
 
