@@ -22,28 +22,42 @@ function [f, g, newBreaksLocF, newBreaksLocG] = tweakDomain(f, g, tol, side)
 %   entries F.DOMAIN(J) and G.DOMAIN(K).
 %
 %   F = TWEAKDOMAIN(F), where F is a quasimatrix, tweaks the domain of each of
-%   columns of F.
+%   columns of F. F = TWEAKDOMAIN(F, DOM), where DOM is numeric or a DOMAIN
+%   object tweaks the columns of F against themselves and against DOM. In this
+%   case, preference is given to given the DOM (i.e., SIDE = 1).
 %
 % See also CHEBFUN/OVERLAP.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
-if ( nargin == 1 || isempty(g) )
+% Parse some inputs:
+if ( nargin == 1 )
+    % Single input is equivalent to TWEAKDOMAIN(F, []);
+    g = [];
+end
+if ( nargin < 3 )
+    tol = [];
+end
+    
+if ( isnumeric(g) || isa(g, 'domain' ) )
     % Deal with single input case, where F is typically an quasimatrix. Here we
     % want to ensure that all the columns of F have compatable breaks.
-    if ( numel(f) == 1 )
+    dom = g;
+    if ( numel(f) == 1 && isempty(dom) )
+        % Nothing to do in the scalar case if dom is empty.
         return
     end
-    if ( nargin < 3 )
-        tol = [];
+    dom = unique(dom);                  % Ensure dom is a valid domain.
+    if ( numel(dom) >= 2 )   
+        dom = g;
+    else
+        dom = domain(f);                % If not, then use the domain of f.
     end
-    dom = domain(f);
-    g = chebfun(0, dom);
-    newBreaksLocF = cell(1, numel(f));
-    newBreaksLocG = [];
-    for k = 1:numel(f)
-        [f(k), ~, newBreaksLocF{k}, ~] = tweakDomain(f(k), g, tol, 1);
+    dummy = chebfun(0, dom);            % A dummy CHEBFUN to tweak against.
+    newBreaksLocF = cell(1, numel(f));  % Initialise storage.
+    for k = 1:numel(f)                  % Loop over columns of f.
+        [f(k), ~, newBreaksLocF{k}, ~] = tweakDomain(f(k), dummy, tol, 1);
     end
     return
 end
@@ -57,7 +71,7 @@ end
 
 if ( numel(f) > 1 || numel(g) > 1 )
     error('CHEBFUN:tweakDomain:quasi', ...
-        'tweakDomain does not support quasimatrices.');
+        'tweakDomain does not support multiple quasimatrix inputs.');
 end
 
 if ( nargin < 3 || isempty(tol) )
