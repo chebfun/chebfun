@@ -1,4 +1,4 @@
-function pass = test_chebfun2_ctorsyntax( pref )
+function pass = test_ctorsyntax( pref )
 % This tests the Chebfun2 constructor for different syntax.
 % Alex Townsend, March 2013.
 

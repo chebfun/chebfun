@@ -1,4 +1,4 @@
-function pass = test_chebfun2_get( pref ) 
+function pass = test_get( pref ) 
 % Test GET.
 
 if ( nargin < 1 ) 

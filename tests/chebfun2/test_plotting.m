@@ -1,6 +1,6 @@
-function pass = test_chebfun2_plotting( pref )
-% Check that the very basic plotting commands do not crash.
-% Alex Townsend, March 2013.
+function pass = test_plotting( pref )
+% Check that the very basic plotting commands do not crash. 
+% Alex Townsend, March 2013. 
 
 f = chebfun2(@(x,y) exp(cos(10*x.*y)));
 hold off
@@ -36,6 +36,3 @@ close all
 pass(3) = 1;
 
 end
-
-
-

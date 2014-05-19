@@ -1,4 +1,4 @@
-function pass = test_chebfun2_restriction( pref )
+function pass = test_restriction( pref )
 % This script checks the restriction of a chebfun2 to a smaller domain. 
 
 if ( nargin < 1 ) 

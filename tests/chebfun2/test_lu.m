@@ -1,4 +1,4 @@
-function pass = test_chebfun2_lu( pref ) 
+function pass = test_lu( pref ) 
 % Test for LU decomposition of a chebfun2. 
 
 if ( nargin == 0 ) 

@@ -1,4 +1,4 @@
-function pass = test_chebfun2_contour( pref ) 
+function pass = test_contour( pref ) 
 % Test contour
 
 if ( nargin == 0) 

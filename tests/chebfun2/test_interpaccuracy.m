@@ -1,4 +1,4 @@
-function pass = test_chebfun2_interpaccuracy( pref ) 
+function pass = test_interpaccuracy( pref ) 
 % Test the Chebfun2 constructor with a few functions.
 % Alex Townsend, March 2013. 
 

@@ -1,4 +1,4 @@
-function pass = test_chebfun2_cdr( pref ) 
+function pass = test_cdr( pref ) 
 % Test CDR 
 
 if ( nargin == 0) 

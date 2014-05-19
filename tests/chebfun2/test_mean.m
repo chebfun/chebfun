@@ -1,4 +1,4 @@
-function pass = test_chebfun2_mean( pref )
+function pass = test_mean( pref )
 % Check the commands mean
 
 if ( nargin < 1 ) 

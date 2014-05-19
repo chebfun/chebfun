@@ -1,4 +1,4 @@
-function pass = test_chebfun2_sum( pref ) 
+function pass = test_sum( pref ) 
 % Test for integration of a fun2 object. 
 
 if ( nargin < 1 ) 
