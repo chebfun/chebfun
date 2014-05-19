@@ -1,4 +1,4 @@
-function p = jacpoly(n, a, b, dom, normalize)
+function p = jacpoly(n, a, b, dom)
 %JACPOLY   Jacobi polynomials.
 %   P = JACPOLY(N, ALPHA, BETA) computes a CHEBFUN of the Jacobi polynomial of
 %   degree N with parameters ALPHA and BETA, where the Jacobi weight function is
@@ -7,10 +7,6 @@ function p = jacpoly(n, a, b, dom, normalize)
 %   P = JACPOLY(N, ALPHA, BETA, DOM) computes the Jacobi polynomials as above,
 %   but on the interval given by the domain DOM, which must be bounded.
 %
-%   P = JACPOLY(N, ALPHA, BETA, DOM, 'norm') or P = JACPOLY(N, ALPHA, BETA,
-%   'norm') will normalise so that P(1) or P(DOM(2)) = 1. Note that this
-%   normalization is different to that in the LEGPOLY(N, 'norm') method.
-%
 %   P is computed via the standard recurrence relation for Jacobi polynomials.
 %
 % See also LEGPOLY, CHEBPOLY.
@@ -18,8 +14,6 @@ function p = jacpoly(n, a, b, dom, normalize)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TODO: This code needs a test.
-% TODO: Should the normalization be the same as LEGPOLY()?
 % TODO: Use QR to compute the values, as we do in LEGPOLY()?
 
 %% Parse inputs:
@@ -28,18 +22,6 @@ if ( nargin < 3 )
 end
 if ( nargin < 4 )
     dom = [-1, 1]; 
-end
-if ( nargin < 5 )
-    normalize = 0; 
-end
-if ( isa(dom, 'char') )
-    normalize = dom; 
-    dom = [-1, 1]; 
-end
-if ( strncmp(normalize, 'norm', 4) )
-    normalize = 1;
-elseif ( ischar(normalize) )
-    normalize = 0; 
 end
 % Unbounded domains aren't supported/defined.
 if ( any(isinf(dom)) )
@@ -80,9 +62,11 @@ for k = 2:nMax
 end
 
 %% Assemble output:
-[aa, bb, cc] = unique(n);           % Extract required column indices.
+
+[~, ~, cc] = unique(n);             % Extract required column indices.
 cc = nMax1 + 1 - cc;                % P is ordered low to high.
 C = chebtech2.vals2coeffs(P(:,cc)); % Convert to coefficients
+C = fliplr(C);                      % C is ordered low to high.
 
 % Construct CHEBFUN from coeffs:
 p = chebfun(C, dom, pref, 'coeffs');   

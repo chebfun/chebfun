@@ -22,8 +22,6 @@ function p = legpoly(n, dom, normalize, method)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TODO: This code needs a test.
-
 % Parse input:
 if ( isempty(n) )
     p = chebfun; 
