@@ -1,31 +1,31 @@
+
 function [out, varNames, pdeVarNames, eigVarNames, indVarNames] = ...
     lexer(str, problemType)
-%LEXER      Lexer for string expression in CHEBFUN
-%
-% [OUT, VARNAMES, INDVARNAME, PDEVARNAMES, EIGVARNAMES, INDVARNAMES] = 
+%LEXER   Lexer for string expression in CHEBFUN
+%   [OUT, VARNAMES, INDVARNAME, PDEVARNAMES, EIGVARNAMES, INDVARNAMES] = 
 %   LEXER(STR) 
-% Performs a lexical analysis on the string STR. Here:
-%  STR:         A string of the mathematical expression we want to analyze.
-%  PROBLEMTYPE: A string denoting what kind of problem we are solving. Possible
-%               values are 'bvp', 'eig' and 'pde'.
-%  OUT:         A cell array with two columns, the left is a token and the
-%               right is a label. 
-%  VARNAMES:    A cell-string with the names of the variables in the expression.
-%  PDEVARNAMES: Contains variables that appear in PDE expressions (with a _t
-%               subscript).
-%  EIGVARNAMES: The variable used to denote the eigenvalue parameter, i.e. l,
-%               lam, or lambda.
-%  INDVARNAME: A string with the name of the variable that represents the
-%               independent variable in the problem (i.e. x or t).
+%   Performs a lexical analysis on the string STR. 
+%   Here:
+%    STR:         A string of the mathematical expression we want to analyze.
+%    PROBLEMTYPE: A string denoting what kind of problem we are solving. 
+%                 Possible values are 'bvp', 'eig', and 'pde'.
+%    OUT:         A cell array with two columns, the left is a token and the
+%                 right is a label. 
+%    VARNAMES:    A cell-string with names of the variables in the expression.
+%    PDEVARNAMES: Contains variables that appear in PDE expressions (with a _t
+%                 subscript).
+%    EIGVARNAMES: The variable used to denote the eigenvalue parameter, i.e., l,
+%                 lam, or lambda.
+%    INDVARNAME:  A string with the name of the variable that represents the
+%                 independent variable in the problem (i.e., x or t).
 %
-% The output of this method is then passed to the LL(1) parser. For more details
-% of compiler theory, see e.g.
+%   The output of this method is then passed to the LL(1) parser. For more 
+%   details of compiler theory, see e.g.,
+%    [1] Aho, Sethi, Ullman, Compilers: Principles, Techniques, and Tools,
+%        Addison-Wesley, 1986.
 %
-%   [1] Aho, Sethi, Ullman, Compilers: Principles, Techniques, and Tools,
-%       Addison-Wesley, 1986.
-%
-% See also: stringConverter, strConvParser.
-%
+% See also STRINGPARSER/PARSER.
+
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/chebfun/ for Chebfun information.
 
@@ -34,26 +34,26 @@ out = [];
 
 % A string array containing all functions which take one argument which we are
 % interested in differentiating
-strfun1 = char('sin', 'cos', 'tan', 'cot', 'sec', 'csc', ...
+strFun1 = char('sin', 'cos', 'tan', 'cot', 'sec', 'csc', ...
     'sinh', 'cosh', 'tanh', 'coth', 'sech', 'csch', ...
     'asin', 'acos', 'atan', 'acot', 'asec', 'acsc', ...
     'asinh', 'acosh', 'atanh', 'acoth', 'asech', 'acsch', ...
     'hypot', ...
     'asind', 'acosd', 'atand', 'acotd', 'asecd', 'acscd', 'sind', 'cosd', ...
     'tand', 'cotd', 'secd', 'cscd', ...
-    'sqrt', 'exp', 'expm1', 'heaviside', 'log','log10','log2','log1p', ...
-    'realsqrt','reallog', ...
-    'abs','sign','var','std', ...
-    'erf','erfc','erfcx','erfinv','erfcinv');
+    'sqrt', 'exp', 'expm1', 'heaviside', 'log', 'log10', 'log2', 'log1p', ...
+    'realsqrt', 'reallog', ...
+    'abs', 'sign', 'var', 'std', ...
+    'erf', 'erfc', 'erfcx', 'erfinv', 'erfcinv');
 
 % String arrays containing all functions which take two or three arguments which
 % we are interested in differentiating
-strfun2 = char('airy','besselj','cumsum','diff','power','mean', ...
-        'eq','ne','ge','gt','le','lt','jump');
-strfun3 = char('feval','fred','volt','sum','integral');    
+strFun2 = char('airy', 'besselj', 'cumsum', 'diff', 'power', 'mean', ...
+        'eq', 'ne', 'ge', 'gt', 'le', 'lt', 'jump');
+strFun3 = char('feval', 'fred', 'volt', 'sum', 'integral');    
 
 % Special flags to functions
-strarg = char('left','right','onevar','start','end');    
+strArg = char('left', 'right', 'onevar', 'start', 'end');    
 
 % Remove all whitespace
 str = strrep(str,' ','');
@@ -98,7 +98,7 @@ str = vectorize(str);
 % Obtain the name of possible variables:
 
 % List of excluded variable names
-excludedNames = char(strfun1, strfun2, strfun3, strarg, 'true', 'false');
+excludedNames = char(strFun1, strFun2, strFun3, strArg, 'true', 'false');
 
 % We temporarily replace parentheses with '-' as SYMVAR will not consider
 % u to be a variable in u(1).
@@ -137,26 +137,26 @@ str(end+1) = '$';
 
 % In order to spot unary operators we need to store the type of the previous
 % token.
-prevtype = 'operator';
+prevType = 'operator';
 
 % Loop through the input string
 while ( ~strcmp(str, '$') )
     char1 = str(1);
     % Find the type of the current token
-    type = myfindtype(char1, prevtype);
-    expr_end = 1;
+    type = myFindType(char1, prevType);
+    exprEnd = 1;
     switch ( type )
         case 'num'
             % Obtain the numbers continously (with match), their start and end
             % positions.
             regex = '[\+\-]?(([0-9]+(\.[0-9]*)?|\.[0-9]+)([eE][\+\-]?[0-9]+)?[ij]?)';
-            [m, s, e] = regexp(str, regex, 'match', 'start', 'end');
+            [m, ~, e] = regexp(str, regex, 'match', 'start', 'end');
             
             % We can run into trouble with string such as 2*3 which will become
             % 2.*3 as we vectorize. But the . here should be a part of the
             % operator, not the number, so we have to do a little check here.
             nextnum = char(m(1));
-            expr_end = e(1);
+            exprEnd = e(1);
             nextChar = str(e(1)+1);
             if ( (nextnum(end) == '.') && ...
                 ~isempty(regexp(nextChar,'[\+\-\*\/\^]', 'once')) )
@@ -165,7 +165,7 @@ while ( ~strcmp(str, '$') )
                 nextnum(end) = [];
 
                 % Lower the number of which we clear the string before
-                expr_end = e(1) - 1;
+                exprEnd = e(1) - 1;
             end
             
             % If we encounter xi or xj, where x is a number (i.e. we have 1i,
@@ -173,13 +173,13 @@ while ( ~strcmp(str, '$') )
             % lexing 1 as a number and i as a variable.
             if ( strcmp(nextChar, 'i') || strcmp(nextChar, 'j') )
                 nextnum = [nextnum, nextChar];
-                expr_end = e(1) + 1; % Increase number of chars. We throw away.
+                exprEnd = e(1) + 1; % Increase number of chars. We throw away.
             end
             out = [out ; {nextnum, 'NUM'}];
             
         case 'unary'
             % Unary operators
-            expr_end = 1;
+            exprEnd = 1;
             switch ( char1 )
                 case '+'
                     out = [out ; {char1, 'UN+'}];
@@ -191,19 +191,19 @@ while ( ~strcmp(str, '$') )
             % If we have point, we need to check next symbol to see if we 
             % have an operator (e.g. .*) or a double (e.g. .1):
             char2 = str(2);
-            type2 = myfindtype(str(2), prevtype);
+            type2 = myFindType(str(2), prevType);
             switch type2               
                 case 'num'      % We have a floating point number
                     regex = '[0-9]+([eE][\+\-]?[0-9]+)?[ij]?';
-                    [m, s, e] = regexp(str, regex, 'match', 'start', 'end');
+                    [m, ~, e] = regexp(str, regex, 'match', 'start', 'end');
 
                     % Add a . and convert from cell to string
                     nextnum = ['.', char(m(1))];
-                    expr_end = e(1);
+                    exprEnd = e(1);
                     out = [out; {nextnum, 'NUM'}];
                     
                 case 'operator' % We have a pointwise operator
-                    expr_end = 2;
+                    exprEnd = 2;
                     switch char2
                         case '+'
                             out = [out ; {'.+', 'OP+'}];
@@ -222,7 +222,7 @@ while ( ~strcmp(str, '$') )
             % We know that *,/ and ^ will never reach this far as we have
             % already vectorized the string. Thus, we don't have to treat
             % those operators here.
-            expr_end = 1;
+            exprEnd = 1;
             char2 = str(2);
             switch ( char1 )
                 case '+'
@@ -235,28 +235,28 @@ while ( ~strcmp(str, '$') )
                     out = [out ; {char1, 'RPAR'}];
                 case '='
                     if ( char2 == '=' )
-                        expr_end = 2;
+                        exprEnd = 2;
                         out = [out ; {'==', 'OP=='}];
                     else
                         out = [out ; {'=', 'OP='}];                      
                     end
                 case '>'
                     if ( char2 == '=' )
-                        expr_end = 2;
+                        exprEnd = 2;
                         out = [out ; {'>=', 'OP>='}];
                     else
                         out = [out ; {'>', 'OP>'}];                     
                     end
                 case '<'
                     if ( char2 == '=' )
-                        expr_end = 2;
+                        exprEnd = 2;
                         out = [out ; {'<=', 'OP<='}];
                     else
                         out = [out ; {'<', 'OP<'}];                      
                     end
                 case '~'
                     if ( char2 == '=' )
-                        expr_end = 2;
+                        exprEnd = 2;
                         out = [out ; {'~=', 'OP~='}];
                     else
                         error('Chebgui:Lexer:UnsupportedOperator', ...
@@ -267,71 +267,70 @@ while ( ~strcmp(str, '$') )
         case 'deriv'
             % The derivative symbol '
             [m, s, e] = regexp(str, '''+', 'match', 'start', 'end');
-            expr_end = e(1);
-            order = e(1)-s(1)+1;
+            exprEnd = e(1);
+            order = e(1) - s(1) + 1;
             out = [out; {m{1}, ['DER' num2str(order)]}];
             % Find the order of the derivative
             
         case 'char'
             regex = '[a-zA-Z_][a-zA-Z_0-9]*';
-            [m, s, e] = regexp(str, regex, 'match', 'start', 'end');
-            nextstring = char(m(1));   % Convert from cell to string
-            expr_end = e(1);
-            
+            [m, ~, e] = regexp(str, regex, 'match', 'start', 'end');
+            nextString = char(m(1));   % Convert from cell to string
+            exprEnd = e(1);
+
             % First check if we are getting pi (which should obviously be
             % treated as a number
-            if ( strcmp(nextstring, 'pi') )
-                out = [out ; {nextstring, 'NUM'}];
+            if ( strcmp(nextString, 'pi') )
+                out = [out ; {nextString, 'NUM'}];
             % Treat l, lam and lambda specially for e-value problems
             elseif ( strcmp(problemType, 'eig') && ...
-                    (strcmp(nextstring, 'l') || strcmp(nextstring, 'lam') || ...
-                    strcmp(nextstring, 'lambda')) )
+                    (strcmp(nextString, 'l') || strcmp(nextString, 'lam') || ...
+                    strcmp(nextString, 'lambda')) )
 
-                out = [out ; {nextstring, 'LAMBDA'}]; %#ok<*AGROW>
+                out = [out ; {nextString, 'LAMBDA'}]; %#ok<*AGROW>
 
                 % Remove the lambda from the list of variables.
                 lamMatch = cellfun(@strcmp, varNames,...
-                    cellstr(repmat(nextstring, length(varNames), 1)));
-                lamLoc = find(lamMatch);
-                varNames(lamLoc) = [];
-                eigVarNames = [eigVarNames ; nextstring];
+                    cellstr(repmat(nextString, length(varNames), 1)));
+                varNames(lamMatch) = [];
+                eigVarNames = [eigVarNames ; nextString];
             % Check if we are getting the variable we are interested in
             % differentiating w.r.t.
-            elseif ( any(strcmp(nextstring, varNames)) )
+            elseif ( any(strcmp(nextString, varNames)) )
                 % Need to treat variables which have a time derivative
                 % attached on them separately.
-                if ( isempty(strfind(nextstring, '_')) )
-                    out = [out ; {nextstring, 'VAR'}];
+                if ( isempty(strfind(nextString, '_')) )
+                    out = [out ; {nextString, 'VAR'}];
                 else
-                    out = [out ; {nextstring, 'PDEVAR'}];
+                    out = [out ; {nextString, 'PDEVAR'}];
                     % Remove varNames array, store in pdeVarNames instead.
-                    pdeVarLoc = strcmp(nextstring, varNames);
+                    pdeVarLoc = strcmp(nextString, varNames);
                     varNames(pdeVarLoc) = [];
-                    pdeVarNames = [pdeVarNames ; nextstring];
-                    undersLoc = strfind(nextstring, '_');
-                    pdeSubScript = nextstring(undersLoc+1:end);
+                    pdeVarNames = [pdeVarNames ; nextString];
+                    undersLoc = strfind(nextString, '_');
+                    pdeSubScript = nextString(undersLoc+1:end);
                 end
             % Check if this string is one of the function defined in
             % strfun1 (functions with one argument)
-            elseif ( strmatch(nextstring, strfun1,  'exact') )
-                out = [out ; {nextstring, 'FUNC1'}];     
+            elseif ( strmatch(nextString, strFun1,  'exact') )
+                out = [out ; {nextString, 'FUNC1'}];     
             % Check if string is 'left' or 'right', which are args for FEVAL.
-            elseif ( strmatch(nextstring, strarg, 'exact') )
-                out = [out; {['''' nextstring ''''], 'STR'}];
+            elseif ( strmatch(nextString, strArg, 'exact') )
+                out = [out; {['''' nextString ''''], 'STR'}];
             % Check if this string is one of the function defined in
             % strfun2 (functions with two arguments)
-            elseif ( strmatch(nextstring, strfun2, 'exact') )
-                out = [out ; {nextstring, 'FUNC2'}];
+            elseif ( strmatch(nextString, strFun2, 'exact') )
+                out = [out ; {nextString, 'FUNC2'}];
             % Check if this string is one of the function defined in
             % strfun2 (functions with two arguments)
-            elseif ( strmatch(nextstring, strfun3, 'exact') )
-                out = [out ; {nextstring, 'FUNC3'}];                
+            elseif ( strmatch(nextString, strFun3, 'exact') )
+                out = [out ; {nextString, 'FUNC3'}];                
             % If not a function nor the variable we are interested in
             % differentiating with respect to, we treat this variable just
             % as number (this enables us e.g. to be able to differentiate w.r.t.
             % x and y seperately)
             else
-                out = [out ; {nextstring, 'INDVAR'}];
+                out = [out ; {nextString, 'INDVAR'}];
             end
             
         case 'comma'
@@ -342,15 +341,15 @@ while ( ~strcmp(str, '$') )
                 'Unrecognized type of lexer input.');
     end
     
-    prevtype = type;
+    prevType = type;
 
     % Special case if we have have ) as we DON'T want unary operators then
     if ( char1 == ')' )
-        prevtype = 'char';
+        prevType = 'char';
     end
 
     %  Throw away from string what we have already scanned
-    str(1:expr_end) = '';
+    str(1:exprEnd) = '';
 end
 
 out = [out ; {'', '$'}];
@@ -381,7 +380,7 @@ end
 
 end
 
-function type = myfindtype(str, prevtype)
+function type = myFindType(str, prevtype)
 % TYPE = MYFINDTYPE(STR, PREVTYPE) returns what type the current token is,
 % looking at the start of the current string STR we are performing lexical
 % analysis on. Here, PREVTYPE is the type of the previous token, required to

@@ -1,13 +1,12 @@
 function [newTree, lambdaTree, lambdaSign] = splitTreeEIG(treeIn)
-%SPLITTREEEIG       Split a syntax tree, specific to EIG problems.
+%SPLITTREEEIG    Split a syntax tree, specific to EIG problems.
+%   [NEWTREE, LAMBDATREE, LAMBDASIGN] = SPLITTREEEIG(TREEIN) splits the syntax
+%   tree TREEIN into two trees, NEWTREE and LAMBDATREE. LAMBDATREE contains the
+%   syntax tree that the eigenvalue parameter LAMBDA appears in, NEWTREE contains
+%   the other part of TREEIN. The value of LAMBDASIGN corresponds to the sign in
+%   front of LAMBDA in the original syntax tree TREEIN.
 %
-% [NEWTREE, LAMBDATREE, LAMBDASIGN] = SPLITTREEEIG(TREEIN) splits the syntax
-% tree TREEIN into two trees, NEWTREE and LAMBDATREE. LAMBDATREE contains the
-% syntax tree that the eigenvalue parameter LAMBDA appears in, NEWTREE contains
-% the other part of TREEIN. The value of LAMBDASIGN corresponds to the sign in
-% front of LAMBDA in the original syntax tree TREEIN.
-%
-% See also: stringParser/splitTree.
+% See also: STRONGPARSER/SPLITTREE.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/chebfun/ for Chebfun information.
@@ -21,7 +20,7 @@ newTree = stringParser.splitTree(newTree);
 end
 
 function [newTree, lambdaTree, lambdaSign] = findLambda(treeIn, lambdaSign)
-%FINDLAMBDA     Find where the eigenvalue parameter LAMBDA appears in TREEIN.
+%FINDLAMBDA   Find where the eigenvalue parameter LAMBDA appears in TREEIN.
 
 % Initialization.
 newTree = treeIn;
@@ -51,11 +50,11 @@ if ( isfield(treeIn, 'right') )
     rightEmpty = 0;
 end
 
-% Return a new lambdaTree. If the operator in the center of treeIn is a *,
-% we want to return the whole treeIn (e.g. when we see lambda*u). If not,
-% we return the latest lambdaTree (e.g. when we see lambda*u+1, and the +
-% is the operator of the current tree).
-%
+% Return a new lambdaTree. If the operator in the center of treeIn is a *, we
+% want to return the whole treeIn (e.g. when we see lambda*u). If not, we return
+% the latest lambdaTree (e.g. when we see lambda*u+1, and the + is the operator
+% of the current tree).
+
 % Start with the left tree if it is nonempty:
 if ( ~isempty(lambdaTreeLeft) )
     if ( strcmp(treeCenter{2}, 'OP*') )

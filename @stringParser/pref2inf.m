@@ -1,6 +1,5 @@
 function [infixOut, notaVAR] = pref2inf(prefixIn)
-%PREF2INF       Convert an expression on prefix form to infix form
-%
+%PREF2INF   Convert an expression on prefix form to infix form
 %   [INFIXOUT, NOTAVAR] = PREF2INF(PREFIXIN) goes recursively through the
 %   expression PREFIXIN, which is on prefix form. The output, INFIXOUT, is a
 %   string, representing the expression on infix form. NOTAVAR is a string, that
@@ -8,7 +7,7 @@ function [infixOut, notaVAR] = pref2inf(prefixIn)
 %   operators.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 prefCounter = 1;
 NOTAVAROUT = [];
@@ -18,6 +17,7 @@ NOTAVAROUT = [];
 
 function infixOut = getInfix()
 %GETINFIX   Return the infix form.
+
 next = char(prefixIn(prefCounter,2));
 
 % Steep through the prefix expression, dealing with each different type of
@@ -102,7 +102,7 @@ elseif ( strcmp(next, 'FUNC1') )
     funcArg = getInfix();
     infixOut = [nextFun, '(', funcArg , ')'];
     
-elseif ( strcmp(next,'FUNC2') )
+elseif ( strcmp(next, 'FUNC2') )
     % A function with two arguments.
     nextFun = char(prefixIn(prefCounter, 1));
     prefCounter = prefCounter + 1;
@@ -118,8 +118,7 @@ elseif ( strcmp(next,'FUNC2') )
     elseif ( any(strcmp(nextFun, {'fred', 'volt'})) )
         % For fred() and volt(), we need to find what arguments denote the
         % kernel variable.
-        [ignored, yFredVar, ignored, ignored, xFredVar] = ...
-            stringParser.lexer(funcArg1, 'bvp');        
+        [~, yFredVar, ~, ~, xFredVar] = stringParser.lexer(funcArg1, 'bvp');        
         anonStr = ['@(' xFredVar{1} ',' yFredVar{1} ')'];
         infixOut = [nextFun, '(', anonStr, funcArg1 , ',', funcArg2 ,  ')'];
         NOTAVAROUT = [NOTAVAROUT ;  yFredVar];
@@ -128,7 +127,7 @@ elseif ( strcmp(next,'FUNC2') )
         infixOut = [nextFun, '(', funcArg1 , ',', funcArg2 ,  ')'];
     end
     
-elseif ( strcmp(next,'FUNC3') )
+elseif ( strcmp(next, 'FUNC3') )
     % Methods with three arguments.
     nextFun = char(prefixIn(prefCounter,1));
     prefCounter = prefCounter + 1;

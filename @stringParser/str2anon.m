@@ -1,39 +1,39 @@
 function varargout = str2anon(str, problemType, fieldType)
-% STR2ANON Converts a string on 'natural syntax form' to an anonymous
-% function Matlab and CHEBGUI can work with.
+%STR2ANON Converts a string on 'natural syntax form' to an anonymous function 
+%         MATLAB and CHEBGUI can work with.
 %
-% Calling sequence:
+%   Calling sequence:
 %       VARARGOUT = STR2ANON(STR, PROBLEMTYPE, FIELDTYPE)
-% where
-%   STR:            String on 'natural syntax form'.
-%   PROBLEMTYPE:    The type of problem we are solving in CHEBGUI, i.e., BVP,
+%   where
+%    STR:            String on 'natural syntax form'.
+%    PROBLEMTYPE:    The type of problem we are solving in CHEBGUI, i.e., BVP,
 %                   EIG or PDE.
-%   FIELDTYPE:      What type of field of the CHEBGUI we are converting, i.e. a
+%    FIELDTYPE:      What type of field of the CHEBGUI we are converting, i.e. a
 %                   field for the initial guess/condition, or other fields.
 %
-% If the method is called with one output argument, the output will be an
-% anonymous function on a form that is useful for Chebfun. The output will
-% start on the @(u) form of anonymous functions in Matlab
+%   If the method is called with one output argument, the output will be an
+%   anonymous function on a form that is useful for Chebfun. The output will
+%   start on the @(u) form of anonymous functions in Matlab
 %
-% If the method is called with six output arguments, the outputs are as
-% follows:
-%   anFun:          A cell array of strings, with entries corresponding to the
-%                   result of parsing the input to an anonymous function form.
-%                   Note that here, the strings will not start with in the @(u)
-%                   form.
-%   indVarNames:    A cell array of strings, with entries equal to the
-%                   independent variables that appear in the input string, i.e.
-%                   r, t or x.
-%   varNames:       A cell arry of strings, with entries equal to the names of
-%                   the dependent variables that appear in the problem, e.g. u,
-%                   v, w, ...
-%   pdeVarNames:    A cell array of strings, with entries equal to the names of
-%                   the variables that appear in PDE expression form, e.g. u_t.
-%   eigVarNames:    A cell array of strings, with entries equal to the names of
-%                   the eigenvalue parameters that appear in eigenvalue
-%                   problems, i.e. 'l', 'lam' or 'lambda'.
-%   commaSeparated: Equal to 1 if the input expression was comma-separated, e.g.
-%                   'u(-1) = 0, u(1) = 1'. Equal to 0 otherwise.
+%   If the method is called with six output arguments, the outputs are as
+%   follows:
+%    anFun:          A cell array of strings, with entries corresponding to the
+%                    result of parsing the input to an anonymous function form.
+%                    Note that here, the strings will not start with in the @(u)
+%                    form.
+%    indVarNames:    A cell array of strings, with entries equal to the
+%                    independent variables that appear in the input string,
+%                    i.e., r, t or x.
+%    varNames:       A cell arry of strings, with entries equal to the names of
+%                    the dependent variables that appear in the problem, e.g., 
+%                    u, v, w, ...
+%    pdeVarNames:    A cell array of strings, with entries equal to the names of
+%                    the variables that appear in PDE expression form, e.g. u_t.
+%    eigVarNames:    A cell array of strings, with entries equal to the names of
+%                    the eigenvalue parameters that appear in eigenvalue
+%                    problems, i.e., 'l', 'lam' or 'lambda'.
+%    commaSeparated: Equal to 1 if the input expression was comma-separated, 
+%                    e.g., 'u(-1) = 0, u(1) = 1'. Equal to 0 otherwise.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/chebfun/ for Chebfun information.
@@ -154,7 +154,7 @@ end
 if ( ~isempty(varNames) && ~strcmp(fieldType, 'INITSCALAR') )
     varString = varNames{1};
     for varCounter = 2:length(varNames)
-        varString = [varString, ',', varNames{varCounter}];
+        varString = [varString, ',', varNames{varCounter}]; %#ok<AGROW>
     end
 
     if ( length(varNames) == 1 )
@@ -172,34 +172,12 @@ if ( strcmp(problemType, 'eig') && ~isempty(anFunLambda) )
 end
 
 % The output depends on the number of output variables.
-switch ( nargout )
-    case 1
-        varargout{1} = anFunComplete;
-%     case 2
-%         varargout{1} = anFunComplete;
-%         varargout{2} = indVarNames;
-%     case 3
-%         varargout{1} = anFun;
-%         varargout{2} = indVarNames;
-%         varargout{3} = varNames;
-%     case 4
-%         varargout{1} = anFun;
-%         varargout{2} = indVarNames;
-%         varargout{3} = varNames;
-%         varargout{4} = pdeVarNames;
-%     case 5
-%         varargout{1} = anFun;
-%         varargout{2} = indVarNames;
-%         varargout{3} = varNames;
-%         varargout{4} = pdeVarNames;
-%         varargout{5} = eigVarNames;
-    case 6
-        varargout{1} = anFun;
-        varargout{2} = indVarNames;
-        varargout{3} = varNames;
-        varargout{4} = pdeVarNames;
-        varargout{5} = eigVarNames;
-        varargout{6} = commaSeparated;
+if ( nargout == 1 )
+    varargout{1} = anFunComplete;
+else
+    varargout = {anFun, indVarNames, varNames, ...
+                 pdeVarNames, eigVarNames, commaSeparated};
 end
+                 
 
 end

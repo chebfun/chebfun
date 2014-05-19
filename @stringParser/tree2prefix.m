@@ -1,15 +1,17 @@
 function prefixOut = tree2prefix(syntaxTree)
-%TREE2PREFIX       Convert a syntax tree to prefixForm
-%
-%  PREFIXOUT = TREE2PREFIX(SYNTAXTREE) returns the cell-array of strings
-%  PREFIXOUT that corresponds to the prefix form of SYNTAXTREE. Generally,
-%  SYNTAXTREE will be the output of the STRINGPARSER/PARSER method.
-%
-%  When this method is called, the input has already been through the parser, so
-%  we don't have to worry about syntax errors.
+%TREE2PREFIX   Convert a syntax tree to prefixForm
+%   PREFIXOUT = TREE2PREFIX(SYNTAXTREE) returns the cell-array of strings
+%   PREFIXOUT that corresponds to the prefix form of SYNTAXTREE. Generally,
+%   SYNTAXTREE will be the output of the STRINGPARSER/PARSER method.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/chebfun/ for Chebfun information.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% DEVELOPER NOTE:
+%   When this method is called, the input has already been through the parser,
+%   so we don't have to worry about syntax errors.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Deal with multi-tree case
 prefixOut = {};
@@ -29,6 +31,7 @@ nextSymbol = char(nextCenter(1));
 % Go recursively through the SYNTAXTREE tree, and return the prefix form. We
 % make a switch on nextType and determine the action
 switch ( nextType )
+    
     % The operators +-*/^= take in two arguments, one to the left and one to
     % the right. Furthermore, COMMA will only appear here as a divider of
     % equations (since we get rid of them as arguments in feval, i.e. u(1, left)
@@ -64,4 +67,7 @@ switch ( nextType )
     otherwise % Only possible token left is a derivative
         prefixOut = [{nextSymbol, nextType};
             stringParser.tree2prefix(syntaxTree.right)];
+        
+end
+
 end

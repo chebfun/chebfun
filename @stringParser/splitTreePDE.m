@@ -1,19 +1,20 @@
 function [newTree, pdeSign] = splitTreePDE(treeIn)
-% SPLITTREEPDE      Split a syntax tree, specific to PDE problems.
+%SPLITTREEPDE   Split a syntax tree, specific to PDE problems.
+%   [NEWTREE, PDESIGN] = SPLITTREPDE(TREEIN) goes through the syntax tree
+%   TREEIN, and isolates the part where the PDE variable, e.g. u_t, appears.
+%   splits the syntax tree TREEIN into two trees, NEWTREE and LAMBDATREE.
+%   LAMBDATREE contains the syntax tree that the eigenvalue parameter LAMBDA
+%   appears in, NEWTREE contains the other part of TREEIN. The value of
+%   LAMBDASIGN corresponds to the sign in front of LAMBDA in the original syntax
+%   tree TREEIN.
 %
-% [NEWTREE, PDESIGN] = SPLITTREPDE(TREEIN) goes through the syntax tree TREEIN,
-% and isolates the part where the PDE variable, e.g. u_t, appears. splits the syntax tree TREEIN into two trees, NEWTREE and LAMBDATREE.
-% LAMBDATREE contains the syntax tree that the eigenvalue parameter LAMBDA
-% appears in, NEWTREE contains the other part of TREEIN. The value of LAMBDASIGN
-% corresponds to the sign in front of LAMBDA in the original syntax tree TREEIN.
-%
-% See also: stringParser/splitTree.
+% See also: STRINGPARSER/SPLITTREE.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/chebfun/ for Chebfun information.
 
 % Begin by replacing the subtree which contains the pde_variable with a 0
-[newTree, pdeTree, pdeSign] = findPDE(treeIn, 1);
+[newTree, ~, pdeSign] = findPDE(treeIn, 1);
 
 % Do the basic splitting (converting = into -) in newTree
 newTree = stringParser.splitTree(newTree);
@@ -21,7 +22,7 @@ newTree = stringParser.splitTree(newTree);
 end
 
 function [newTree, pdeTree, pdeSign] = findPDE(treeIn, pdeSign)
-%FINDPDE        Find where the PDE variable (e.g. u_t) appears in TREEIN.
+%FINDPDE    Find where the PDE variable (e.g. u_t) appears in TREEIN.
 
 % Initialization.
 newTree = treeIn;

@@ -2,23 +2,25 @@ classdef stringParser
 %STRINGPARSER   Parse strings for CHEBGUI.
 %   This class is not intended to be called directly by the end user.
 %
-%   See also CHEBGUI.
+% See also CHEBGUI.
 
-% Developers note:
-%   The STRINGPARSER class implements a number of methods, used to convert a
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Developer note:
+%   The @STRINGPARSER class implements a number of methods, used to convert a
 %   string on a 'natural syntax' format in the fields of CHEBGUI to a format
 %   that Chebfun is capable of working with. In v4, this functionality used to
 %   live in the @chebgui folder, but to increase modularity, it has be spun off
 %   to its own class.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
     
-    methods (Access = public)
+    methods ( Access = public )
         
         function A = stringParser(varargin)
-            % We never construct objects of this type, so the constructor is
-            % trivial
+            % We never construct objects of this type, so the constructor is 
+            % trivial.
         end
         
     end
@@ -27,15 +29,15 @@ classdef stringParser
         
         % Convert a string to an anonymous function.
         varargout = str2anon(str, problemType, fieldType)
-    
+        
     end
     
     methods( Access = private, Static = true )
-            
+        
         % The STRINGPARSER lexer
         [out, varNames, pdeVarNames, eigVarNames, indVarNames] = ...
             lexer(str, type)
-    
+        
         % The LL(1) parser
         parseOut = parser(lexIn)
         
@@ -56,5 +58,14 @@ classdef stringParser
         
         % Convert a syntax tree to prefix format
         prefixOut = tree2prefix(syntaxTree)
+        
     end
+    
+    methods( Access = public, Static = true, Hidden = true )
+        
+        % Test the parenthesis simplification routine:
+        pass = test_parSimp(pref);
+        
+    end
+    
 end

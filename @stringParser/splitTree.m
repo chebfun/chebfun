@@ -1,16 +1,15 @@
 function treeOut = splitTree(treeIn)
-%SPLITTREE      Split a syntax tree.
+%SPLITTREE   Split a syntax tree.
+%   TREEOUT = SPLITTREE(TREEIN) returns a new syntax TREEOUT, obtained by
+%   replacing a potential comma or an equal sign at the top of TREEIN. This
+%   method looks for individual expressions separated by commas (e.g. u(1) = 0,
+%   u'(3) = 4), and in each expression, converts the = into a - so that we end
+%   up with expressions corresponding to u(1)-0, u'(3)-4.
 %
-%  TREEOUT = SPLITTREE(TREEIN) returns a new syntax TREEOUT, obtained by
-%  replacing a potential comma or an equal sign at the top of TREEIN. This
-%  method looks for individual expressions separated by commas (e.g. u(1) = 0,
-%  u'(3) = 4), and in each expression, converts the = into a - so that we end up
-%  with expressions corresponding to u(1)-0, u'(3)-4.
-%
-% See also: stringParser/splitTreeEIG, stringParser/splitTreePDE.
+% See also: STRINGPARSER/SPLITTREEEIG, STRINGPARSER/SPLITTREEPDE.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Initialize.
 treeOut = treeIn;
@@ -24,6 +23,7 @@ treeOut = treeIn;
 % got a match for a comma, so that we're in the separate expression case. Since
 % = has the second lowest operator precedence after commas, they can as well
 % only appear at the top of each individual expression syntax trees.
+
 for k = 1:numel(treeOut)
     % The center node.
     treeCenter = treeIn(k).center;
@@ -40,4 +40,6 @@ for k = 1:numel(treeOut)
         % as 'u(3) = 4' gets converted to 'u(3) - 4'.
         treeOut(k).center = {'-', 'OP-'};
     end
+end
+
 end

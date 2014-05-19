@@ -1,30 +1,32 @@
 function parseOut = parser(lexIn)
-%STRCONVPARSER      LL(1) parser for mathematical expressions
-%
+%STRCONVPARSER    LL(1) parser for mathematical expressions
 %  PARSEOUT = STRCONVPARSER(LEXIN) returns a syntax tree of expressions so that
 %  it can be converted to a format Chebfun is able to work with. The input,
 %  LEXIN, is the output of the method STRCONVLEXER(), and is a cell array of
 %  strings, containaining the tokens of strings.
 %
 %  This method implements a LL(1) parser, a technique from compiler theory. For
-%  more details, see e.g.
-%
+%  more details, see e.g.,
 %   [1] Aho, Sethi, Ullman, Compilers: Principles, Techniques, and Tools,
 %       Addison-Wesley, 1986.
 %
-%   See also: stringParser, stringParser/str2anon, stringParser/lexer.
+% See also: STRINGPARSER, STRINGPARSER/STR2ANON, STRINGPARSER/LEXER.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Developers note: Usually, a parser relies on having access to pointers, which
-% is not possible in Matlab. We get around this issue using global variables.
+% is not possible in MATLAB. We get around this issue using global variables.
+%
+% TODO: Can we now get around this? See #515.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Initialize all global variables
-global NEXT;
-global COUNTER;
-global LEX;
-global STACK;
+global NEXT
+global COUNTER
+global LEX
+global STACK
 
 % Enter the main routine
 parseMain(lexIn);
@@ -43,10 +45,10 @@ end
 function parseMain(lexIn)
 %PARSEMAIN  The main parsing routine, starts the recursive parsing.
 
-global NEXT;
-global STACK;
-global LEX;
-global COUNTER;
+global NEXT
+global STACK
+global LEX
+global COUNTER
 
 COUNTER = 1;
 LEX = lexIn;
@@ -59,6 +61,7 @@ validTypes = {'NUM', 'VAR', 'INDVAR', 'PDEVAR', 'LAMBDA',...
             'FUNC1', 'FUNC2', 'FUNC3', 'UN-', 'UN+', 'LPAR'};
 
 if ( any(strcmp(NEXT, validTypes)) )
+    
     % Enter the recursion and check for successful termination.
     parseExpA();
     
@@ -68,10 +71,14 @@ if ( any(strcmp(NEXT, validTypes)) )
     success = match('$');
     
     if ( ~success )
-        reportError('Parse:end', 'Input expression ended in unexpected manner');
+        reportError('Parse:end', ...
+            'Input expression ended in unexpected manner.');
     end
+    
 else
+    
     reportError('Parse:start', 'Input field started with unaccepted symbol.');
+    
 end
 
 end
@@ -163,9 +170,9 @@ end
 
 function parseExp5()
 
-global NEXT;
-global COUNTER;
-global LEX;
+global NEXT
+global COUNTER
+global LEX
 
 % We begin by checking whether we have hit a terminal case. In that case,
 % we push that into the stack. We need to treat variables with _ in the
@@ -249,7 +256,7 @@ end
 
 function parseFunction1()
 
-global COUNTER;
+global COUNTER
 global LEX
 
 functionName = char(LEX(COUNTER));
@@ -283,8 +290,8 @@ end
 
 function parseFunction2()
 
-global NEXT;
-global COUNTER;
+global NEXT
+global COUNTER
 global LEX
 
 % Function which allow one or two arguments
@@ -352,9 +359,9 @@ end
 
 function parseFunction3()
 
-global NEXT;
-global COUNTER;
-global LEX;
+global NEXT
+global COUNTER
+global LEX
 
 % Function which allow one or two arguments
 oneArgAllowed = {'sum', 'integral'};
@@ -432,7 +439,7 @@ end
 
 function parseExp1pr()
 
-global NEXT;
+global NEXT
 
 if ( strcmp(NEXT, 'OP+') )
 
@@ -470,7 +477,7 @@ end
 
 function parseExp2pr()
 
-global NEXT;
+global NEXT
 
 if ( strcmp(NEXT,'OP*') )
     leftArg  = pop();   % Pop from the stack the left argument
@@ -513,7 +520,7 @@ end
 
 function parseExp3pr()
 
-global NEXT;
+global NEXT
 
 if ( strcmp(NEXT,'OP^') )
     leftArg  = pop();
@@ -554,7 +561,7 @@ function parseExpDer()
 % parseExpDer deals with ' denoting derivatives on the dependent variables
 % in the problem.
 
-global NEXT;
+global NEXT
 
 if ( ~isempty(strfind(NEXT, 'DER')) )
     leftArg  = pop();
@@ -577,9 +584,9 @@ function parseExpList()
 % parseExpList deals with potential arguments to the dependent variables in
 % the problem, e.g. u(3,left).
 
-global NEXT;
-global COUNTER;
-global LEX;
+global NEXT
+global COUNTER
+global LEX
 
 if ( match('LPAR') ) % We are in a u(3) or u(3,left) situation
     % The first argument expression can only be of type EXP05 or higher
@@ -648,7 +655,7 @@ end
 
 function parseExp0pr()
 
-global NEXT;
+global NEXT
 
 if ( strcmp(NEXT, 'OP=') )
     
@@ -671,7 +678,7 @@ end
 
 function parseExpApr()
 
-global NEXT;
+global NEXT
 
 if ( strcmp(NEXT, 'COMMA') )
     
@@ -693,7 +700,7 @@ end
 
 function parseExp05pr()
 
-global NEXT;
+global NEXT
 
 if ( any(strcmp(NEXT, {'OP>', 'OP>=', 'OP<', 'OP<='})) )
     tempOpType = NEXT;
@@ -717,9 +724,9 @@ end
 
 function advance()
 %ADVANCE    Move to the next token in the output from the lexer.
-global NEXT;
-global COUNTER;
-global LEX;
+global NEXT
+global COUNTER
+global LEX
 
 COUNTER = COUNTER + 1;
 NEXT = char(LEX(COUNTER,2));
@@ -730,7 +737,7 @@ end
 
 function m = match(label)
 
-global NEXT;
+global NEXT
 m = strcmp(label, NEXT);
 
 % If we found a match and are not at the end of output, we want to advance
@@ -744,7 +751,7 @@ end
 
 function push(new)
 %PUSH   Push a tree to the stack of syntax trees
-global STACK;
+global STACK
 
 if ( ~stackRows() )
     STACK = new;
@@ -760,7 +767,7 @@ end
 
 function p = pop()
 %POP    Pop a tree from the stack.
-global STACK;
+global STACK
 
 % Throw a sensible error if we have an empty stack
 if ( isempty(STACK) )
@@ -774,7 +781,7 @@ end
 
 function m = stackRows()
 
-global STACK;
+global STACK
 [m, n] = size(STACK); %#ok<NASGU>
 
 end

@@ -1,11 +1,11 @@
 function str = parSimp(str)
-%PARSIMP        Remove unnecessary parentheses from string inputs.
-%  STROUT = PARSIMP(STRIN) returns the string STROUT, obtained by doing some
-%  basic simplifications of the string STRIN, attempting to remove unnecessary
-%  parenthesis, zeros, and consecutive +/- pairs.
+%PARSIMP   Remove unnecessary parentheses from string inputs.
+%   STROUT = PARSIMP(STRIN) returns the string STROUT, obtained by doing some
+%   basic simplifications of the string STRIN, attempting to remove unnecessary
+%   parenthesis, zeros, and consecutive +/- pairs.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % We can't really expect to simplify a one character string...
 if ( length(str) < 2 )
@@ -22,7 +22,7 @@ end
 end
 
 function str = parSimpMain(str)
-%PARSIMMAIN     Do the actual simplification
+%PARSIMMAIN   Do the actual simplification
 
 % Find all locations of ( and ):
 leftParLoc = strfind(str, '(');
@@ -41,7 +41,8 @@ ltgtLoc = regexp(str, '[\<\>]');
 
 % Error if the number of ( and ) are not equal
 if ( length(leftParLoc) ~= length(rightParLoc) )
-    error('CHEBFUN:STRINGPARSER:strinchebgui:parenth_simplify', 'Incorrect number of parenthesis.');
+    error('CHEBFUN:STRINGPARSER:strinchebgui:parenth_simplify', ...
+        'Incorrect number of parenthesis.');
 end
 
 % Store number of parenthesis
@@ -53,7 +54,7 @@ parCounter = 1;
 leftStack = [];
 for strIndex = 1:length(str)
     if ( str(strIndex) == '(' ) % Push to the stack
-        leftStack = [leftStack strIndex];
+        leftStack = [leftStack, strIndex]; %#ok<AGROW>
     elseif ( str(strIndex) == ')' ) % Pop from the stack
         % Write information to pairs
         pairsLoc(parCounter, 1) = leftStack(end);
@@ -67,7 +68,7 @@ end
 
 for k = 1:numel(ltgtLoc)
     idx = find((pairsLoc(:, 1) < ltgtLoc(k)) & (pairsLoc(:, 2) > ltgtLoc(k)));
-    [ignored idx2] = max(pairsLoc(idx, 1));
+    [~, idx2] = max(pairsLoc(idx, 1));
     charLoc = sort([charLoc pairsLoc(idx(idx2), :)]);
     pairsLoc(idx(idx2),:) = [];
     numOfPars = numOfPars - 1;
@@ -76,7 +77,7 @@ end
 leftParsLoc = pairsLoc(:, 1);
 rightParsLoc = pairsLoc(:, 2);
 
-    function removeExtras(flag)
+    function removeExtras(varargin)
         % Remove things other than parentheses, like consecutive +/- pairs
         % and hanging zeros. If there's an input argument, then we don't
         % attempt to remove zeros.
@@ -198,7 +199,5 @@ end
 end
 
 function out = updateLoc(in, pLeft, pRight)
-
 out = in - (in > pLeft) - (in > pRight);
-
 end
