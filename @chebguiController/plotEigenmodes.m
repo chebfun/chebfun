@@ -1,4 +1,4 @@
-function ploteigenmodes(guifile, handles, selection, h1, h2)
+function plotEigenmodes(handles, selection, h1, h2)
 % Plot the eigenmodes in the GUI
 
 % TODO:  Documentation.
@@ -7,15 +7,15 @@ function ploteigenmodes(guifile, handles, selection, h1, h2)
 % See http://www.chebfun.org/chebfun/ for Chebfun information.
 
 % selection == 0 corresponds to no selection being made, i.e. plot everything
-if ( nargin < 3 )
+if ( nargin < 2 )
     selection = 0;
 end
 
-if ( nargin < 4 )
+if ( nargin < 3 )
     h1 = handles.fig_sol;
 end
 
-if ( nargin < 5 )
+if ( nargin < 4 )
     h2 = handles.fig_norm;
 end
 
@@ -76,7 +76,7 @@ if ( ~isempty(h1) )
     end
     hold off
 
-    if ( guifile.options.grid )
+    if ( handles.guifile.options.grid )
         grid on
     end
 
@@ -155,7 +155,7 @@ if ( ~isSystem )
         hold off
     end
 
-    if ( guifile.options.grid )
+    if ( handles.guifile.options.grid )
         grid on
     end
 

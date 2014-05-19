@@ -242,7 +242,7 @@ if ( guiMode )
     handles.eigVarName = eigVarName;
     handles.indVarName = indVarName{1};
     
-    ploteigenmodes(handles.guifile, handles, 0, handles.fig_sol, ...
+    chebguiController.plotEigenmodes(handles, 0, handles.fig_sol, ...
         handles.fig_norm);
     
     set(handles.iter_text, 'Visible', 'on');

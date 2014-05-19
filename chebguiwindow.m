@@ -695,7 +695,7 @@ else % eigs
     
     if ( strcmp(handles.latest.type, 'eig') )
         selection = get(handles.iter_list, 'Value');
-        ploteigenmodes(handles.guifile, handles, selection, [], h1);
+        chebguiController.plotEigenmodes(handles, selection, [], h1);
     end
     
 end
@@ -766,7 +766,7 @@ else
     h1 = gca;
     if ( strcmp(handles.latest.type, 'eig') )
         selection = get(handles.iter_list, 'Value');
-        ploteigenmodes(handles.guifile, handles, selection, h1, []);
+        chebguiController.plotEigenmodes(handles, selection, h1, []);
     end
 end
 
@@ -835,7 +835,7 @@ function iter_list_Callback(hObject, eventdata, handles)
 
 if ( strcmp(handles.latest.type, 'eig') )
     selection = get(handles.iter_list, 'Value');
-    ploteigenmodes(handles.guifile, handles, selection);
+    chebguiController.plotEigenmodes(handles, selection);
 end
 
 % xlim(handles.fig_norm,xlim_norm); ylim(handles.fig_norm,ylim_norm);
@@ -1505,7 +1505,7 @@ set(handles.button_realplot, 'Value', 1)
 set(handles.button_imagplot, 'Value', 0)
 set(handles.button_envelope, 'Value', 0)
 selection = get(handles.iter_list, 'Value');
-ploteigenmodes(handles.guifile, handles, selection)
+chebguiController.plotEigenmodes(handles, selection)
 
 end
 
@@ -1516,7 +1516,7 @@ set(handles.button_realplot, 'Value', 0)
 set(handles.button_imagplot, 'Value', 1)
 set(handles.button_envelope, 'Value', 0)
 selection = get(handles.iter_list, 'Value');
-ploteigenmodes(handles.guifile, handles, selection)
+chebguiController.plotEigenmodes(handles, selection)
 
 end
 
@@ -1527,7 +1527,7 @@ set(handles.button_realplot, 'Value', 0)
 set(handles.button_imagplot, 'Value', 0)
 set(handles.button_envelope, 'Value', 1)
 selection = get(handles.iter_list, 'Value');
-ploteigenmodes(handles.guifile, handles, selection)
+chebguiController.plotEigenmodes(handles, selection)
 
 end
 

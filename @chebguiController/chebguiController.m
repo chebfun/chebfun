@@ -31,6 +31,10 @@ classdef chebguiController
         
         % Switch between different modes in CHEBGUI (BVP, EIG or PDE).
         handles = switchMode(handles, newMode, callMode)
+        
+        % Plot eigenmodes in the GUI
+        plotEigenmodes(handles, selection, h1, h2)
+        
     end
     
 end
