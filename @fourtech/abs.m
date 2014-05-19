@@ -8,10 +8,10 @@ function f = abs(f, varargin)
 %  See http://www.chebfun.org for Chebfun information.
 
 if ( isreal(f) || isreal(1i*f) )    
-    % Convert to values and then compute ABS(). 
-    values = f.coeffs2vals(f.coeffs); 
-    values = abs(values);
-    f.coeffs = f.vals2coeffs(values);
+    % Convert values and then compute ABS(). 
+    f.values = abs(f.values);
+    f.coeffs = f.vals2coeffs(f.values);
+    f.isReal = true(1,size(f.coeffs,2));
 else
     f = compose(f, @abs, [], varargin{:});
 end

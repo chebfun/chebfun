@@ -35,6 +35,8 @@ elseif ( isa(g, 'double') ) % FOURTECH + double
         const_index = N/2;
     end
     f.coeffs(const_index,:) = f.coeffs(const_index,:) + g;
+    % Update isReal:
+    f.isReal = f.isReal & isreal(g);
     % Update scale:
     vscaleNew = max(abs(f.values), [], 1);
     % See FOURTECH CLASSDEF file for documentation on this:
@@ -64,6 +66,12 @@ else % FOURTECH + FOURTECH
     % Update values and coefficients:
     f.values = f.values + g.values;
     f.coeffs = f.vals2coeffs(f.values);
+
+    % Update isReal:
+    f.isReal = f.isReal & g.isReal;
+    
+    % Force the values to be real where f is real.
+    f.values(:,f.isReal) = real(f.values(:,f.isReal));
     
     % Look for a zero output:
     if ( ~any(f.values(:)) || ~any(f.coeffs(:)) )

@@ -1,7 +1,7 @@
 function varargout = chebpolyplot(f, varargin)
-%CHEBPOLYPLOT   Display Fourier coefficients graphically.
+%CHEBPOLYPLOT  Not implemented for fourtech objects
 %
-% See also COEFPLOT, PLOT.
+% See also COEFFSPLOT, FOURCOEFFSPLOT, PLOT
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -9,12 +9,6 @@ function varargout = chebpolyplot(f, varargin)
 % This is just a wrapper to make things work with chebfun.  Simply call
 % coefplot to produce the desired result.
 
-% Give an output if one was requested:
-varargout = [];
-if ( nargout > 0 )
-    varargout{1} = coefplot(f,varargin{:});
-else
-    coefplot(f,varargin{:});
-end
+error('CHEBFUN:FOURTECH:chebypolyplot:na','Function not available for Fourier-based chebfuns');
 
 end

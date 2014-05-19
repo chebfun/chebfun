@@ -42,7 +42,7 @@ elseif ( nargin == 2)
 end
 
 if ( ~isscalar(M) || (M ~= 1) )
-    error('FOURTECH:FOURTECH:mat2cell:size', ...
+    error('CHEBFUN:FOURTECH:mat2cell:size', ...
         ['Input arguments M and N must sum to each dimension of the', ...
         ' input matrix size, [1,%d].'], size(f.values, 2));
 end
@@ -52,6 +52,7 @@ values = mat2cell(f.values, n, N);
 coeffs = mat2cell(f.coeffs, n, N);
 vscale = mat2cell(f.vscale, 1, N);
 epslevel = mat2cell(f.epslevel, 1, N);
+isReal = mat2cell(f.isReal, 1, N);
 
 % Create a cell for storing the FOURTECH objects
 g = cell(1, numel(N));
@@ -67,6 +68,7 @@ for k = 1:numel(N)
     gk.coeffs = coeffs{k};
     gk.vscale = vscale{k};
     gk.epslevel = epslevel{k};
+    gk.isReal = isReal{k};
     
     % Store the FOURTECH in the cell-array returned.
     g{k} = gk;

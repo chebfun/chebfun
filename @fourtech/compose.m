@@ -1,19 +1,19 @@
 function f = compose(f, op, g, pref)
-%COMPOSE   Composition of FOURIETECH objects.
-%   COMPOSE(F, OP) returns a FOURIETECH representing OP(F) where F is also a
-%   FOURIETECH object, and OP is a function handle.
+%COMPOSE   Composition of FOURTECH objects.
+%   COMPOSE(F, OP) returns a FOURTECH representing OP(F) where F is also a
+%   FOURTECH object, and OP is a function handle.
 %
-%   COMPOSE(F, OP, G) returns a FOURIETECH representing OP(F, G) where F and G
-%   are FOURIETECH objects, and OP is a function handle.
+%   COMPOSE(F, OP, G) returns a FOURTECH representing OP(F, G) where F and G
+%   are FOURTECH objects, and OP is a function handle.
 %
-%   FOURIETECH(F, G) returns a FOURIETECH representing G(F), where both F and G are
-%   also FOURIETECH objects. If the range of F is not in [-1, 1] then an error is
+%   FOURTECH(F, G) returns a FOURTECH representing G(F), where both F and G are
+%   also FOURTECH objects. If the range of F is not in [-1, 1] then an error is
 %   thrown.
 %
 %   COMPOSE(F, OP, G, PREF) or COMPOSE(F, OP, [], PREF) uses the options passed
-%   by the preferences structure PREF to build the returned FOURIETECH.  In
+%   by the preferences structure PREF to build the returned FOURTECH.  In
 %   particular, one can set PREF.REFINEMENTFUNCTION to be a function which takes
-%   advantage of F and possibly OP or G being FOURIETECH objects.
+%   advantage of F and possibly OP or G being FOURTECH objects.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -49,7 +49,7 @@ if ( nfuns == 2 )
     pref.eps = max(pref.eps, g.epslevel);
     
 elseif ( isa(op, 'fourtech') )
-    % If OP is a FOURIETECH, we grab some of its data:
+    % If OP is a FOURTECH, we grab some of its data:
     if ( (size(op, 2) > 1) && (size(f, 2) > 1) )
         error('CHEBFUN:FOURTECH:compose:arrval', ...
               'Cannot compose two array-valued FOURTECH objects.')
@@ -75,7 +75,7 @@ if ( ischar(pref.refinementFunction) )
     end
 end
 
-% Make FOURIETECH object:
+% Make FOURTECH object:
 f = f.make(op, vscale, f.hscale, pref);
 f = simplify(f);
 

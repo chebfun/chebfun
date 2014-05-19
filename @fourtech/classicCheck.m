@@ -24,6 +24,11 @@ else
     epslevel = pref.eps;
 end
 
+% Convert scalar epslevel/tolerance inputs into vectors.
+if ( isscalar(epslevel) )
+    epslevel = repmat(epslevel, size(f.vscale));
+end
+
 % Deal with the trivial case:
 if ( n < 2 ) % (Can't be simpler than a constant!)
     cutoff = n;
@@ -81,8 +86,9 @@ if ( max(ac(1:testLength)) < epslevel )    % We have converged! Now chop tail:
     % We must be happy.
     ishappy = true;
 
-    % Find first entry above epslevel:
-    Tloc = find(ac >= epslevel, 1, 'first') - 1;
+    % Find first row of coeffs with entry above epslevel:
+    rowsWithLargeCoeffs = any(bsxfun(@ge, ac, epslevel), 2);
+    Tloc = find(rowsWithLargeCoeffs, 1, 'first') - 1;
 
     % Check for the zero function!
     if ( isempty(Tloc) )
@@ -91,20 +97,26 @@ if ( max(ac(1:testLength)) < epslevel )    % We have converged! Now chop tail:
     end
 
     % Compute the cumulative max of eps/4 and the tail entries:
-    t = .25*eps;
-    ac = ac(1:Tloc);               % Restrict to coefficients of interest.
-    for k = 1:length(ac)           % Cumulative maximum.
-        if ( ac(k) < t )
-            ac(k) = t;
-        else
-            t = ac(k);
-        end
+    t = .25*eps*ones(1, size(ac, 2));
+    ac = ac(1:Tloc, :);             % Restrict to coefficients of interest.
+    for k = 1:size(ac, 1)           % Cumulative maximum.
+        ind = ac(k, :) < t;
+        ac(k, ind) = t(ind);
+
+        ind = ac(k, :) >= t;
+        t(ind) = ac(k, ind);
     end
 
     % Obtain an estimate for much accuracy we'd gain compared to reducing
     % length ("bang for buck"):
-    Tbpb = log(1e3*epslevel./ac) ./ (n - (1:Tloc)');
-    [~, Tchop] = max(Tbpb(3:Tloc));  % Position at which to chop.
+    bang = log(1e3*bsxfun(@rdivide, epslevel, ac));
+    buck = n - (1:Tloc).';
+    Tbpb = bsxfun(@rdivide, bang, buck);
+
+    % Compute position at which to chop.  Keep greatest number of coefficients
+    % demanded by any of the columns.
+    [ignored, perColTchop] = max(Tbpb(3:Tloc, :));
+    Tchop = min(perColTchop);
 
     % We want to keep [c(0), c(1), ..., c(cutoff)]:
     cutoff = n - Tchop - 2;

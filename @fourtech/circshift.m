@@ -39,5 +39,10 @@ else
 end
 f.coeffs = bsxfun(@times,f.coeffs,even_odd_fix.');
 f.values = f.coeffs2vals(f.coeffs);
+if ~isreal(a)
+    f.isReal = false(1,size(f.coeffs,2));
+end
+
+f.values(:,f.isReal) = real(f.values(:,f.isReal));
 
 end

@@ -96,6 +96,7 @@ function f = diffContinuousDim(f, k)
     c = bsxfun(@times,c,(1i*pi*waveNumber).^k);
     
     v = f.coeffs2vals(c);
+    v(:,f.isReal) = real(v(:,f.isReal));
 
     % [FIXME] Should the epslevel be updated?  This is done in chebfun
     % f.epslevel = n*log(n)*(f.epslevel.*f.vscale);

@@ -41,15 +41,10 @@ classdef fourtech < smoothfun
         % details).
         epslevel % (double >= 0)
         
-%         % Boolean value designating whether the FOURTECH represents a
-%         % real-valued function. This allows us to always return a real
-%         % result for things like evaluating a fourierfun.
-%         isReal = false;
-
         % Boolean value designating whether the FOURTECH represents a
-        % purely imaginary function. This allows us to always return an
-        % imaginary result for things like evaluating a fourierfun.
-        % isImag = false;
+        % real-valued function. This allows us to always return a real
+        % result for things like evaluating a fourtech.
+        isReal % (logical)
     end
 
     %% METHODS IMPLEMENTED BY THIS M-FILE:

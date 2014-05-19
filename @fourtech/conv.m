@@ -29,20 +29,6 @@ if ( size(f,2) > 1 || size(g,2) > 1 )
     error('FOURTECH:conv:array', 'No support for array-valued FOURTECH objects.');
 end
 
-% % Check transpose state:
-% if ( xor(f(1).isTransposed, g(1).isTransposed) )
-%     error('FOURTECH:conv:transposed', 'FOURTECH dimensions do not agree.');
-% end
-% transState = f(1).isTransposed;
-
-% % Extract the domain:
-% [a, b] = domain(f);
-% [c, d] = domain(g);
-% if ( any(isinf([a b c d])) )
-%     error('FOURTECH:conv:bounded', ...
-%         'CONV only supports FOURTECH objects on bounded domains.');
-% end
-
 % Get the sizes of the FOURTECH objects
 nf = size(f.coeffs, 1);
 ng = size(g.coeffs, 1);
@@ -71,9 +57,14 @@ vscale(vscale <= f.epslevel) = 1;
 f.epslevel = f.epslevel./vscale;
 
 f = simplify(f);
-if isreal(f)
-    f.values = real(f.values);
-end
+
 f.ishappy = f.ishappy && g.ishappy;
+f.isReal = f.isReal && g.isReal;  % Are you real happy though?
+
+f.values(:,f.isReal) = real(f.values(:,f.isReal));
+
+if f.ishappy
+    f = simplify(f,f.epslevel);
+end
 
 end

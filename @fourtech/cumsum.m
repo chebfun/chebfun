@@ -112,10 +112,12 @@ function f = cumsumContinuousDim(f, m)
     % the integration code slicker.
     if fIsEven 
         c = c(2:end,:);
-    end    
+    end
             
     % Recover values and attach to output:
     f.values = f.coeffs2vals(c);
+    f.values(:,f.isReal) = real(f.values(:,f.isReal));
+    
     f.coeffs = c;
 
     % Update vscale: [TODO]: Update epslevel?

@@ -33,6 +33,8 @@ elseif ( isa(c, 'double') )         % FOURTECH * double
     
     f.values = f.values*c;
     f.coeffs = f.coeffs*c;
+    f.isReal = f.isReal & isreal(c);
+    
     if ( numel(c) == 1 )
         % See FOURTECH CLASSDEF file for documentation on this.
         f.vscale = f.vscale*abs(c);
@@ -56,10 +58,10 @@ elseif ( isa(c, 'double') )         % FOURTECH * double
     end
     
 elseif ( isa(c, 'chebtech') )       % FOURTECH * FOURTECH  
-    error('CHEBFUN:FOURTECH:mtimes:chebtechMtimesChebtech', ...
+    error('CHEBFUN:FOURTECH:mtimes:fourtechMtimesFourtech', ...
         'Use .* to multiply FOURTECH objects.');
 else                                % FOURTECH * ???
-    error('CHEBFUN:FOURTECH:mtimes:chebtechMtimesUnknown',...
+    error('CHEBFUN:FOURTECH:mtimes:fourtechMtimesUnknown',...
         'mtimes does not know how to multiply a FOURTECH and a %s.', class(c));
 end
 

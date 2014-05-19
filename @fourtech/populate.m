@@ -70,6 +70,10 @@ if ( isnumeric(op) || iscell(op) )
     vscale(vscale <= f.epslevel) = 1;
     f.epslevel = f.epslevel./vscale;
 
+    % Threshold to determine if f is real or not.
+    f.isReal = max(abs(imag( f.values ))) < 2*(f.epslevel.*f.vscale);
+    f.values(:,f.isReal) = real(f.values(:,f.isReal));
+
     return
 end
 
@@ -77,6 +81,12 @@ end
 
 % Initialise empty values to pass to refine:
 f.values = [];
+% Check a random value of op in (-1,1) to see if the result is complex.
+rndval = feval(op,(2*rand-1));
+f.isReal = false(size(rndval));
+for k=1:numel(rndval)
+    f.isReal(k) = isreal(rndval(k));
+end
 
 % Loop until ISHAPPY or GIVEUP:
 while ( 1 )
@@ -92,7 +102,7 @@ while ( 1 )
     % Update vertical scale: (Only include sampled finite values)
     valuesTemp = f.values;
     valuesTemp(~isfinite(f.values)) = 0;
-    vscale = max(vscale, max(abs(valuesTemp(:))));
+    vscale = max(vscale, max(abs(valuesTemp)));
     
     % Compute the Fourier coefficients:
     coeffs = f.vals2coeffs(f.values);
@@ -127,26 +137,31 @@ vscale = vscaleOut;
 %     % Deal with zero vscale:
 %     epslevel = epslevel./(1+vscaleOut);
 % end
-vscaleOut(vscaleOut < epslevel) = 1;
-epslevel = epslevel*vscaleGlobal./vscaleOut;
+% vscaleOut(vscaleOut < epslevel) = 1;
+% epslevel = epslevel.*vscaleGlobal./vscaleOut;
+% Adjust the epslevel appropriately:
+ind = vscaleOut < epslevel;
+vscaleOut(ind) = epslevel(ind);
+ind = vscaleGlobal < epslevel;
+vscaleGlobal(ind) = epslevel(ind);
+epslevel = epslevel.*vscaleGlobal./vscaleOut;
     
 %%%%%%%%%%%%%%%%%%%%%%%%%% Assign to FOURTECH object. %%%%%%%%%%%%%%%%%%%%%%%%%%
 f.coeffs = coeffs;
 f.vscale = vscale;
 f.ishappy = ishappy;
 f.epslevel = epslevel;
-f = simplify(f);
 
-% Force the values to be real if the imaginary part is numerically zero
-if isreal(f)
-    f.values = real(f.values);
-end
+% Force the values to be real if the imaginary part is zero
+f.values(:,f.isReal) = real(f.values(:,f.isReal));
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Ouput. %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Ouput. %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if ( ishappy )
     % We're done, and can return.
-    return
+    f = simplify(f, f.epslevel);
 end
 
 end

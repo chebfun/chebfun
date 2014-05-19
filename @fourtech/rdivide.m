@@ -30,7 +30,7 @@ if ( isa(c, 'double') )
         % Scalar
         f.values = f.values/c;      % Divide values
         f.coeffs = f.coeffs/c;      % Divide coeffs
-        f.vscale = f.vscale/abs(c); % Divide vscale
+        f.vscale = f.vscale/abs(c); % Divide vscale        
     else
         % Array-valued FOURTECH
         n = size(f.values, 1);   
@@ -42,6 +42,7 @@ if ( isa(c, 'double') )
         f.coeffs(:, c == 0) = NaN;
         f.vscale(:, c == 0) = NaN;
     end
+    f.isReal = f.isReal & isreal(c);
 else
     % Dividing by another fourtech is harder. Call COMPOSE.
     

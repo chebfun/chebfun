@@ -1,5 +1,5 @@
 function pass = domainCheck(f, g)
-%DOMAINCHECK   True if the domains of two FOURFUN objects are the same.
+%DOMAINCHECK   True if the domains of two FOURTECH objects are the same.
 %   DOMAINCHECK(F, G) returns TRUE if the endpoints of the domains of the two
 %   CHEBFUN objects F and G coincide up to a tolerance depending on their
 %   horizontal scales or if both F and G are empty CHEBFUN objects.

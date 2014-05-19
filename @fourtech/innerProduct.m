@@ -17,7 +17,7 @@ if ( isempty(f) || isempty(g) )
 end
 
 if ( ~isa(f, 'fourtech') || ~isa(g, 'fourtech') )
-    error('FOURTECH:FOURTECH:innerProduct:input', ...
+    error('CHEBFUN:FOURTECH:innerProduct:input', ...
         'innerProduct() only operates on two FOURTECH objects.');
 end
 
@@ -32,10 +32,8 @@ w = f.quadwts(n);
 % Compute the inner product via a weighted discrete inner product:
 out = bsxfun(@times, w.', f.values)' * g.values;
 
-% Force real output if the inputs are equal:
-% TODO: Also ABS()?
-if ( isequal(f, g) )
-    out = real(out);
-end
+% Force real output if the inputs are real:
+id = f.isReal & g.isReal;
+out(:,id) = real(out(:,id));
 
 end

@@ -9,17 +9,18 @@ function f = conj(f)
 % See http://www.chebfun.org for Chebfun information.
 
 % No need to conjugate a real function
-if isreal(f)
-    return;
-end
+id = f.isReal;
+% if isreal(f)
+%     return;
+% end
 
 % Conjugate the values:
-f.values = conj(f.values);
+f.values(:,id) = conj(f.values(:,id));
 
 % Could just recompute the coefficients for the conjugated values.
 % f.coeffs = f.vals2coeffs(f.values);
 % But this exploits the properties of the interpolant in complex exponential
 % form:
-f.coeffs = flipud(conj(f.coeffs));
+f.coeffs(:,id) = flipud(conj(f.coeffs(:,id)));
 
 end

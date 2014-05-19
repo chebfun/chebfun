@@ -7,6 +7,11 @@ function f = real(f)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org for Chebfun information.
 
+% If f is real then there is nothing to do
+if isreal(f)
+    return;
+end
+
 % Compute the real part of the values:
 f.values = real(f.values);
 f.vscale = max(abs(f.values), [], 1);
@@ -16,8 +21,10 @@ if ( ~any(f.values(:)) )
     f = f.make(zeros(1, size(f.values, 2)), f.vscale, f.hscale);
     f.ishappy = 1;
 else
-    % Compute real part of the coefficients:
+    % Compute the coefficients.
     f.coeffs = f.vals2coeffs(f.values);
 end
+
+f.isReal = true(1,size(f,2));
 
 end

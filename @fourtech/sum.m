@@ -37,11 +37,10 @@ if ( isempty(f) )
     out = []; 
 else
     % Trapezium rule:
-    out = sum(f.values, 1)*(2/length(f));
+    out = sum(f.values, 1)*(2/n);
 end
 
-if ( isreal( f ) ) 
-    out = real( out ) ; 
-end
+% Return a real result if f is real;
+out(:,f.isReal) = real(out(:,f.isReal));
 
 end

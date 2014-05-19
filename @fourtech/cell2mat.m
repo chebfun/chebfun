@@ -45,5 +45,6 @@ g.ishappy = min([f.ishappy]);
 g.epslevel = [f.epslevel];
 g.values = cell2mat(values);
 g.coeffs = [f.coeffs];
+g.isReal = [f.isReal];
 
 end

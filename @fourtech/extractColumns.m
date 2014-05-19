@@ -15,5 +15,6 @@ f.values = f.values(:, colIdx);
 f.coeffs = f.coeffs(:, colIdx);
 f.vscale = f.vscale(colIdx);
 f.epslevel = f.epslevel(colIdx);
+f.isReal = f.isReal(colIdx);
 
 end

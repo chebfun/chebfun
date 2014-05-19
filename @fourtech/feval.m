@@ -69,8 +69,7 @@ end
         end
     end
 
-if ( isreal( f ) ) 
-    y = real( y ); 
-end
+% Return a real result wherever f is real.
+y(:,f.isReal) = real( y(:,f.isReal) );
 
 end
