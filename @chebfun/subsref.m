@@ -111,7 +111,6 @@ switch index(1).type
             out = compose(x, f);
             
         elseif ( isequal(x, ':') )
-            keyboard
             % Return f:
             if ( (numel(columnIndex) == size(f, 2)) && ...
                  all(columnIndex == 1:size(f, 2)) )
