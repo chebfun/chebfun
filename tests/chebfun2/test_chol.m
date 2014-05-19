@@ -1,4 +1,4 @@
-function pass = test_chebfun2_chol( pref ) 
+function pass = test_chol( pref ) 
 % Test for Cholesky decomposition of a chebfun2. 
 
 if ( nargin == 0 ) 

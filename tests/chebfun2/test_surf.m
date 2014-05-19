@@ -1,4 +1,4 @@
-function pass = test_chebfun2_surf( pref ) 
+function pass = test_surf( pref ) 
 % Test surf
 
 if ( nargin == 0) 

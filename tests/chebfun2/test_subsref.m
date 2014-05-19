@@ -1,4 +1,4 @@
-function pass = test_chebfun2_subsref( pref )
+function pass = test_subsref( pref )
 
 if ( nargin < 1 ) 
     pref = chebfunpref; 

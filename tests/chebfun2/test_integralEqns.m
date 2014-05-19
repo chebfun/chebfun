@@ -1,4 +1,4 @@
-function pass = test_chebfun2_integralEqns( pref ) 
+function pass = test_integralEqns( pref ) 
 % Test fred and volt
 
 if ( nargin == 0) 
