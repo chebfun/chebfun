@@ -1,4 +1,4 @@
-function pass = test_chebfun2_diag( pref ) 
+function pass = test_diag( pref ) 
 % Test diag
 
 if ( nargin == 0) 

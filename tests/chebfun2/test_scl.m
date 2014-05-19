@@ -1,4 +1,4 @@
-function pass = test_chebfun2_scl( pref )
+function pass = test_scl( pref )
 % Check correct vertical scaling. 
 
 

@@ -1,4 +1,4 @@
-function pass = test_chebfun2_divide( pref ) 
+function pass = test_divide( pref ) 
 % Test contour
 
 if ( nargin == 0) 

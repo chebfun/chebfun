@@ -1,4 +1,4 @@
-function pass = test_chebfun2_plotting( pref )
+function pass = test_plotting( pref )
 % Check that the very basic plotting commands do not crash. 
 % Alex Townsend, March 2013. 
 

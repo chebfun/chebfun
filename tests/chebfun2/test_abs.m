@@ -1,4 +1,4 @@
-function pass = test_chebfun2_abs( pref ) 
+function pass = test_abs( pref ) 
 % Test abs. 
 
 if ( nargin == 0) 

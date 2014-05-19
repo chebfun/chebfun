@@ -1,4 +1,4 @@
-function pass = test_chebfun2_transpose( pref ) 
+function pass = test_transpose( pref ) 
 % Test transpose
 
 if ( nargin == 0) 
