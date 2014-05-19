@@ -27,6 +27,12 @@ switch prop
         % Get the function value at 1:
         out = feval(f, 1);
         
+    case {'values'}
+        
+        % Get the points:
+        pts = get(f.smoothPart, 'points');
+        out = feval(f, pts);
+        
     otherwise
         error('CHEBFUN:SINGFUN:GET:propname', ...
             'Unknown property name "%s" for object of type SINGFUN.', prop);

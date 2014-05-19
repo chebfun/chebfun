@@ -1,4 +1,4 @@
-function pass = test_chebfun2_feval( pref ) 
+function pass = test_feval( pref ) 
 % Test feval
 
 if ( nargin == 0) 

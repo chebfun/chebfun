@@ -198,10 +198,11 @@ gVals = feval(g, x);
 
 opg = @(x) 5*x.^2/2 - 5/2 + get(g, 'lval');
 gExact = opg(x);
-err = gVals - gExact;
-pass(12) = norm(err, inf) < 10*get(g,'epslevel').*get(g,'vscale');
+err = norm(gVals - gExact, inf);
+tol = 20*get(g,'epslevel').*get(g,'vscale');
+pass(12) = err < tol;
 
-%% piecewise function on [-inf b]:
+%% Piecewise function on [-inf b]:
 
 % Set the domain:
 dom = [-Inf -1 3*pi];
