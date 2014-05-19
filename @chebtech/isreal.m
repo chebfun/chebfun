@@ -3,12 +3,17 @@ function out = isreal(f)
 %   ISREAL(F) returns TRUE if F does not have an imaginary part and FALSE
 %   otherwise.
 %
-%   See also REAL, IMAG.
+% See also REAL, IMAG.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Check if all the coefficients are real:
 out = isreal(f.coeffs);
+
+% % Check if all the coefficients are real: (Using a tolerance)
+% tol = f.epslevel.*f.vscale;
+% absImagCoeffs = max(abs(imag(f.coeffs)), [], 1);
+% out = all(absImagCoeffs <= tol);
 
 end
