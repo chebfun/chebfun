@@ -1,4 +1,4 @@
-function initSuccess = loadfields(guifile, handles)
+function initSuccess = populate(handles, chebg)
 
 % TODO:  Documentation.
 
@@ -6,17 +6,17 @@ function initSuccess = loadfields(guifile, handles)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Fill the String fields of the handles
-set(handles.input_domain, 'String', guifile.domain);
-set(handles.input_DE, 'String', guifile.DE);
-set(handles.input_LBC, 'String', guifile.LBC);
-set(handles.input_RBC, 'String', guifile.RBC);
-set(handles.input_BC, 'String', guifile.BC);
-set(handles.input_GUESS, 'String', guifile.init);
+set(handles.input_domain, 'String', chebg.domain);
+set(handles.input_DE, 'String', chebg.DE);
+set(handles.input_LBC, 'String', chebg.LBC);
+set(handles.input_RBC, 'String', chebg.RBC);
+set(handles.input_BC, 'String', chebg.BC);
+set(handles.input_GUESS, 'String', chebg.init);
 
-if ( strcmpi(guifile.type, 'pde') )
-    set(handles.input_timedomain, 'String', guifile.timedomain);
-elseif ( strcmpi(guifile.type, 'eig') )
-    sigma = guifile.sigma;
+if ( strcmpi(chebg.type, 'pde') )
+    set(handles.input_timedomain, 'String', chebg.timedomain);
+elseif ( strcmpi(chebg.type, 'eig') )
+    sigma = chebg.sigma;
     switch sigma
         case ''
             set(handles.popupmenu_sigma, 'Value', 1);
@@ -33,7 +33,7 @@ elseif ( strcmpi(guifile.type, 'eig') )
         case 'si'
             set(handles.popupmenu_sigma, 'Value', 7);
     end
-    numeigs = guifile.options.numeigs;
+    numeigs = chebg.options.numeigs;
     if ( isempty(numeigs) )
         numeigs = 6;
     end
@@ -41,13 +41,13 @@ end
 
 
 % Store the tolerance in the UserData of the tolerance menu object
-set(handles.menu_tolerance, 'UserData', guifile.tol);
+set(handles.menu_tolerance, 'UserData', chebg.tol);
 
 % Change the checking of menu options
-if ( strcmpi(guifile.type, 'pde') )
-    set(handles.input_timedomain, 'String', guifile.timedomain);
+if ( strcmpi(chebg.type, 'pde') )
+    set(handles.input_timedomain, 'String', chebg.timedomain);
     
-    if ( ~strcmp(guifile.options.plotting, 'off') )
+    if ( ~strcmp(chebg.options.plotting, 'off') )
         set(handles.menu_pdeplottingon, 'Checked', 'On');
         set(handles.menu_pdeplottingoff, 'Checked', 'Off');
     else
@@ -55,7 +55,7 @@ if ( strcmpi(guifile.type, 'pde') )
         set(handles.menu_pdeplottingoff, 'Checked', 'On');
     end
     
-    if ( guifile.options.pdeholdplot )
+    if ( chebg.options.pdeholdplot )
         set(handles.menu_pdeholdploton, 'Checked', 'On');
         set(handles.menu_pdeholdplotoff, 'Checked', 'Off');
     else
@@ -63,7 +63,7 @@ if ( strcmpi(guifile.type, 'pde') )
         set(handles.menu_pdeholdplotoff, 'Checked', 'On');
     end  
     
-    if ( ~isempty(guifile.options.fixYaxisLower) )
+    if ( ~isempty(chebg.options.fixYaxisLower) )
         set(handles.menu_pdefixon, 'Checked', 'On');
         set(handles.menu_pdefixoff, 'Checked', 'Off');
     else
@@ -71,7 +71,7 @@ if ( strcmpi(guifile.type, 'pde') )
         set(handles.menu_pdefixoff, 'Checked', 'On');
     end
 
-    if ( ~isempty(guifile.options.fixN) )
+    if ( ~isempty(chebg.options.fixN) )
         set(handles.menu_fixNon, 'Checked', 'On');
         set(handles.menu_fixNoff, 'Checked', 'Off');
     else
@@ -79,8 +79,8 @@ if ( strcmpi(guifile.type, 'pde') )
         set(handles.menu_fixNoff, 'Checked', 'On');
     end
     
-elseif ( strcmpi(guifile.type, 'bvp') )
-    if ( strcmp(guifile.options.damping, '1') )
+elseif ( strcmpi(chebg.type, 'bvp') )
+    if ( strcmp(chebg.options.damping, '1') )
         set(handles.menu_odedampednewtonon, 'Checked', 'On');
         set(handles.menu_odedampednewtonoff, 'Checked', 'Off');
     else
@@ -88,11 +88,11 @@ elseif ( strcmpi(guifile.type, 'bvp') )
         set(handles.menu_odedampednewtonoff, 'Checked', 'On');
     end
     
-    if ( ~strcmp(guifile.options.plotting, 'off') )
+    if ( ~strcmp(chebg.options.plotting, 'off') )
         set(handles.menu_odeplottingon, 'Checked', 'On');
         set(handles.menu_odeplottingoff, 'Checked', 'Off');
         set(handles.menu_odeplottingpause, 'UserData', ...
-            guifile.options.plotting);
+            chebg.options.plotting);
     else
         set(handles.menu_odeplottingon, 'Checked', 'Off');
         set(handles.menu_odeplottingoff, 'Checked', 'On');
@@ -105,11 +105,11 @@ set(handles.input_RBC, 'Enable', 'on');
 
 % Try to plot the initial guess/condition if one exist in the chebgui
 % object. If an error is returned, we keep calm and carry on.
-if ( ~isempty(guifile.init) )
+if ( ~isempty(chebg.init) )
     try
-        initString = guifile.init;
-        % Obtain the name of the independend variable from the init field.
-        % Need to do concatination if it's a cellstring
+        initString = chebg.init;
+        % Obtain the name of the independent variable from the init field.
+        % Need to do concatenation if it's a cellstring
         if ( iscellstr(initString) )
             allString = [];
             for initCounter = 1:length(initString)
@@ -131,7 +131,7 @@ if ( ~isempty(guifile.init) )
         indVar = symvar(allString);
         
         % Create a domain and a temporary independent variable
-        dom = [str2num(guifile.domain)];
+        dom = [str2num(chebg.domain)];
         xTemp = chebfun('x', dom);
         % Only support one independent variable for initial
         % guesses/condition.
@@ -166,28 +166,30 @@ if ( ~isempty(guifile.init) )
         axes(handles.fig_sol);
         plot(initChebfun, 'LineWidth', 2)
         
-        if ( ~isempty(guifile.options.fixYaxisLower) ) % Fix y-axis
-            ylim([str2num(guifile.options.fixYaxisLower), ...
-                str2num(guifile.options.fixYaxisUpper)]);
+        if ( ~isempty(chebg.options.fixYaxisLower) ) % Fix y-axis
+            ylim([str2num(chebg.options.fixYaxisLower), ...
+                str2num(chebg.options.fixYaxisUpper)]);
         end
 
-        if ( guifile.options.grid )
+        if ( chebg.options.grid )
             grid on
         end
         
         initSuccess = 1;
+        
     catch ME
         initSuccess = 0;
     end
+    
 else
     initSuccess = 0;
 end
 
-if ( strcmpi(guifile.LBC, 'periodic') )
+if ( strcmpi(chebg.LBC, 'periodic') )
         set(handles.input_RBC, 'String', 'periodic');
         handles.guifile.RBC = '';
         set(handles.input_RBC, 'Enable', 'off');
-elseif ( strcmpi(guifile.RBC, 'periodic') )
+elseif ( strcmpi(chebg.RBC, 'periodic') )
         set(handles.input_LBC, 'String', 'periodic');
         handles.guifile.LBC = 'periodic';
         handles.guifile.RBC = '';

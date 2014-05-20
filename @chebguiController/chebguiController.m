@@ -23,6 +23,9 @@ classdef chebguiController
     
     methods ( Static = true )
         
+        % Deal with what happens when BCs get changed.
+        handles = callbackBCs(handles, inputString, type)
+        
         % Clear everything in the CHEBGUI window
         handles = clear(handles)
         
@@ -34,7 +37,9 @@ classdef chebguiController
         
         % Plot eigenmodes in the GUI
         plotEigenmodes(handles, selection, h1, h2)
-        
+       
+        % Populate the fields of the CHEBGUI figure.
+        initSuccess = populate(handles, guifile)
     end
     
 end

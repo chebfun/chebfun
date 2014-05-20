@@ -151,7 +151,7 @@ function hOpenMenuitemCallback(hObject, eventdata, handles, demoPath)
 
 % Callback function run when the Open menu item is selected
 handles.guifile = loaddemos(handles.guifile, demoPath);
-initSuccess = loadfields(handles.guifile, handles);
+initSuccess = chebguiController.populate(handles, handles.guifile);
 
 if ( initSuccess )
     switchModeCM = 'demo';

@@ -1,4 +1,4 @@
-function cg = loaddemos(guifile, guifilepath) %#ok<INUSL>
+function cg = loaddemos(guifile, demoPath) %#ok<INUSL>
 % Load a demo from a .guifile to a chebgui object
 
 % TODO:  Documentation.
@@ -7,11 +7,11 @@ function cg = loaddemos(guifile, guifilepath) %#ok<INUSL>
 % See http://www.chebfun.org/chebfun/ for Chebfun information.
 
 % Import from the given file and evaluate to fill the workspace
-fid = fopen(guifilepath);
+fid = fopen(demoPath);
 
 % Make sure the file exists
 if ( fid == -1 )
-  error('CHEBGUI:noload', 'Unable to open demo file: %s.', guifilepath)
+  error('CHEBGUI:noload', 'Unable to open demo file: %s.', demoPath)
 end
 
 % Load the data to the workspace

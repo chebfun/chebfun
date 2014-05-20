@@ -1,4 +1,4 @@
-function handles = callbackBCs(guifile, handles, inputString, type)
+function handles = callbackBCs(handles, inputString, type)
 
 % TODO:  Documentation.
 

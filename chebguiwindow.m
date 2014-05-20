@@ -107,7 +107,7 @@ if ( isempty(get(handles.menu_demos, 'UserData')) )
     handles.demosLoaded = 1;
 end
 % Load the input fields
-loadfields(handles.guifile, handles);
+chebguiController.populate(handles, handles.guifile);
 
 % Make sure the GUI starts in the correct mode
 chebguiController.switchMode(handles, handles.guifile.type);
@@ -208,7 +208,7 @@ function input_LBC_Callback(hObject, eventdata, handles)
 newString = cellstr(get(hObject,'String'));
 newString = removeTabs(newString); % Remove tabs
 set(hObject,'String',newString);
-handles = callbackBCs(handles.guifile,handles,newString,'lbc');
+handles = chebguiController.callbackBCs(handles, newString, 'lbc');
 handles.guifile.LBC = newString;
 guidata(hObject, handles);
 
@@ -220,7 +220,7 @@ function input_RBC_Callback(hObject, eventdata, handles)
 newString = cellstr(get(hObject,'String'));
 newString = removeTabs(newString); % Remove tabs
 set(hObject,'String',newString);
-handles = callbackBCs(handles.guifile,handles,newString,'rbc');
+handles = chebguiController.callbackBCs(handles, newString, 'rbc');
 handles.guifile.RBC = newString;
 guidata(hObject, handles);
 
@@ -1023,7 +1023,7 @@ if ( ~filterindex )
 end
 
 cgTemp = chebgui(fullfile(pathname, filename));
-loadfields(cgTemp, handles);
+chebguiController.populate(handles, cgTemp)
 handles.guifile = cgTemp;
 if ( ~isempty(cgTemp.type) )
     handles = chebguiController.switchMode(handles, cgTemp.type);
@@ -1907,7 +1907,7 @@ function input_BC_Callback(hObject, eventdata, handles)
 newString = cellstr(get(hObject, 'String'));
 newString = removeTabs(newString); % Remove tabs
 set(hObject, 'String', newString);
-handles = callbackBCs(handles.guifile, handles, newString, 'bc');
+handles = chebguiController.callbackBCs(handles, newString, 'bc');
 handles.guifile.BC = newString;
 guidata(hObject, handles);
 
@@ -2066,7 +2066,7 @@ function keypress(hObject, eventdata, handles)
 newString = cellstr(get(hObject, 'String'));
 newString = removeTabs(newString); % Remove tabs
 set(hObject, 'String', newString);
-handles = callbackBCs(handles.guifile, handles, newString, 'rbc');
+handles = chebguiController.callbackBCs(handles,  newString, 'rbc');
 handles.guifile.RBC = newString;
 guidata(hObject, handles);
 
@@ -2091,7 +2091,7 @@ for k = 1:numel(folders)
 
         file = fullfile(subdir, subdirnames{j});
         cgTemp = chebgui(file);
-        loadfields(cgTemp, handles);
+        chebguiController.populate(handles, cgTemp)
         handles.guifile = cgTemp;
         if ( ~isempty(cgTemp.type) )
             handles = chebguiController.switchMode(handles, cgTemp.type);
