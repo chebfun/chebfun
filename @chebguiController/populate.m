@@ -33,10 +33,6 @@ elseif ( strcmpi(chebg.type, 'eig') )
         case 'si'
             set(handles.popupmenu_sigma, 'Value', 7);
     end
-    numeigs = chebg.options.numeigs;
-    if ( isempty(numeigs) )
-        numeigs = 6;
-    end
 end
 
 

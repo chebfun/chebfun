@@ -2,13 +2,12 @@ function handles = callbackBCs(handles, inputString, type)
 
 % TODO:  Documentation.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % For systems we check a row at a time.
 
-flag = false;  % Dirichlet/Neumann flag
-flag2 = false; % Periodic flag
+periodicFlag = false; % Periodic flag
 
 if ( ~iscell(inputString) )
     for stringCounter = 1:size(inputString, 1)
@@ -20,20 +19,18 @@ end
 
 for k = 1:numel(newString)
     if ( ~isempty(strfind(newString{k}, '@')) ...
-	    || strcmpi(newString{k}, 'dirichlet') ...
+            || strcmpi(newString{k}, 'dirichlet') ...
             || strcmpi(newString{k}, 'neumann') ...
-	    || ~isempty(str2num(newString{k})) )
-        flag = true;
-	break
+            || ~isempty(str2num(newString{k})) )
+        break
     elseif ( strcmpi(newString{k}, 'periodic') )
-        flag = true;
-	flag2 = true;
-	break
+        periodicFlag = true;
+        break
     end
 end
 
 if ( strcmp(type, 'lbc') )
-    if ( flag2 )
+    if ( periodicFlag )
         set(handles.input_RBC, 'String', 'periodic');
         handles.guifile.RBC = 'periodic';
         set(handles.input_RBC, 'Enable', 'off');
@@ -47,7 +44,7 @@ if ( strcmp(type, 'lbc') )
         end
     end
 elseif ( strcmp(type, 'rbc') )
-    if ( flag2 )
+    if ( periodicFlag )
         set(handles.input_LBC, 'String', 'periodic');
         handles.guifile.LBC = 'periodic';
         set(handles.input_LBC, 'Enable', 'off');
@@ -61,7 +58,7 @@ elseif ( strcmp(type, 'rbc') )
         end
     end
 elseif ( strcmp(type, 'bc') )
-    if ( flag2 )
+    if ( periodicFlag )
         set(handles.input_LBC, 'String', 'periodic');
         handles.guifile.LBC = 'periodic';
         set(handles.input_LBC, 'Enable', 'off');
@@ -81,4 +78,4 @@ elseif ( strcmp(type, 'bc') )
         set(handles.input_RBC, 'Enable', 'on');
     end
 end
-    
+

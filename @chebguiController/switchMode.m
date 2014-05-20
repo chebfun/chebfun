@@ -43,9 +43,7 @@ if ( strcmp(newMode, 'bvp') ) % Going into BVP mode
     set(handles.iter_text, 'String', '')
     
     set(handles.panel_eigopts, 'Visible', 'Off')
-    
-    pdeplotopts(handles, 0)
-    
+        
     % Switch from LBC and RBC fields to BC
     set(handles.input_LBC, 'Visible', 'Off')
     set(handles.text_LBCs, 'Visible', 'Off')
@@ -83,8 +81,6 @@ elseif ( strcmp(newMode, 'pde') ) % Going into PDE mode
     set(handles.text_initial, 'String', 'Initial condition')
     set(handles.text_DEs, 'String', 'Differential equation(s)')
     
-    pdeplotopts(handles, 1)
-    
     set(handles.input_GUESS, 'Visible', 'On')
     set(handles.input_GUESS, 'Enable', 'On')
     set(handles.toggle_useLatest, 'Value', 0)
@@ -119,7 +115,7 @@ elseif ( strcmp(newMode, 'pde') ) % Going into PDE mode
     set(handles.menu_fixN, 'Enable', 'On')
     
     % Clear the figures
-    initialisefigures(handles, callMode)
+    initialisefigures(handles, ls)
     
     % Disable all childrens of discretisation panel
     set(findall(handles.panel_discretization, '-property', 'enable'),  ...
@@ -186,8 +182,6 @@ else % Going into EIG mode
     set(handles.iter_text, 'Visible', 'off')
     set(handles.iter_text, 'String', '')
     
-    pdeplotopts(handles, 0)
-    
     % Switch from LBC and RBC fields to BC
     set(handles.input_LBC, 'Visible', 'Off')
     set(handles.text_LBCs, 'Visible', 'Off')
@@ -219,18 +213,6 @@ else % Going into EIG mode
 end
 
 end
-
-
-function pdeplotopts(handles, onoff)
-
-if ( onoff == 1 )
-    onoff = 'on';
-elseif ( onoff == 0 )
-    onoff = 'off';
-end
-
-end
-
 
 function initialisefigures(handles, callMode)
 
