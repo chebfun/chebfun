@@ -1,12 +1,11 @@
 function p = legpoly(n, dom, normalize, method)
 %LEGPOLY   Legendre polynomials.
-%   P = LEGPOLY(N) computes a chebfun of the Legendre polynomial of degree N on
+%   P = LEGPOLY(N) computes a CHEBFUN of the Legendre polynomial of degree N on
 %   the interval [-1,1]. N can be a vector of integers, in which case the output
 %   is an array-valued CHEBFUN.
 %
 %   P = LEGPOLY(N, D) computes the Legendre polynomials as above, but on the
-%   interval given by the domain D, which must be bounded. Note that interior
-%   breakpoints in D are ignored.
+%   interval given by the domain D, which must be bounded.
 %
 %   P = LEGPOLY(N, D, 'norm') or P = LEGPOLY(N, 'norm') normalises so that
 %   integrate(P(:,j).*P(:,k)) = delta_{j,k}.
@@ -18,15 +17,10 @@ function p = legpoly(n, dom, normalize, method)
 %   fourth input LEGPOLY(N, D, NORM, METHOD), where METHOD is 1, 2, or 3
 %   respectively.
 %
-%   NOTE, LEGPOLY() will always return a CHEBFUN whose underlying 'tech' is a
-%   CHEBTECH2 object.
-%
 % See also CHEBPOLY, LEGPTS, and LEG2CHEB.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
-
-% TODO: This code needs a test.
 
 % Parse input:
 if ( isempty(n) )
@@ -63,7 +57,8 @@ pref.tech = 'chebtech';
 % Useful values:
 nMax = max(n);
 nMax1 = nMax + 1;
-dom = dom([1 end]); % [TODO]: Add support for breakpoints?
+domIn = dom;
+dom = dom([1 end]);
 
 % Determine which method
 if ( nargin == 4 )
@@ -142,7 +137,9 @@ p = chebfun(C, dom, pref, 'coeffs');
 
 if ( ~strcmp(defaultPref.tech, 'chebtech') )
     % Construct a CHEBFUN of the approprate form by evaluating p:
-    p = chebfun(@(x) feval(p, x), dom);
+    p = chebfun(@(x) feval(p, x), domIn);
+elseif ( numel(domIn) > 2 )
+    p = restrict(p, domIn);
 end
     
 % Adjust orientation:

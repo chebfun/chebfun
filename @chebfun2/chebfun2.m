@@ -67,11 +67,28 @@ classdef chebfun2
         
         X = vals2coeffs( U ); 
         
+        % Padua points to tensor grid:
+        [C, V, X, Y] = paduaVals2coeffs( F, dom ); 
+        
         [xx, yy] = chebpts2(nx, ny, domain);
         
         % Outer-product of two chebfuns.
         F = outerProduct(f, g);   
         
+    end
+    
+    methods ( Hidden = true )
+        % Check to see if domains are equal
+        out = domainCheck(f, g)
+        
+        % Scale rows and cols of a CHEBFUN2 so that all pivots are 1
+        F = normalizePivots( F )
+        
+        % Normalize the rows and columns of a CHEBFUN2.
+        F = normalizeRowsAndCols(F, p)
+        
+        % Is a chebfun2 all positive or negative? 
+        bol = singleSignTest( f ) 
     end
 
     % Private methods implemented by CHEBFUN2 class.
