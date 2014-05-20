@@ -4,7 +4,7 @@ if ( nargin == 0 )
     pref = cheboppref();
 end
 
-tol = 1e-10;
+tol = pref.errTol;
 
 %%
 % Test against a V4 computation:

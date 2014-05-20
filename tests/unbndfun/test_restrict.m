@@ -108,7 +108,7 @@ err2 = g2Vals - fExact2;
 err3 = g3Vals - fExact3;
 pass(4) = ( norm(err1, inf) < 2*get(g{1},'epslevel')*get(g{1},'vscale') ...
     && norm(err2, inf) < get(g{2},'epslevel')*get(g{2},'vscale') ...
-    && norm(err3, inf) < 5*get(g{3},'epslevel')*get(g{3},'vscale') );
+    && norm(err3, inf) < 20*get(g{3},'epslevel')*get(g{3},'vscale') );
 
 %% Functions on [-inf b]:
 
