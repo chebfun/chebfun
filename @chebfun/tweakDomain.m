@@ -22,9 +22,11 @@ function [f, g, newBreaksLocF, newBreaksLocG] = tweakDomain(f, g, tol, side)
 %   entries F.DOMAIN(J) and G.DOMAIN(K).
 %
 %   F = TWEAKDOMAIN(F), where F is a quasimatrix, tweaks the domain of each of
-%   columns of F. F = TWEAKDOMAIN(F, DOM), where DOM is numeric or a DOMAIN
-%   object tweaks the columns of F against themselves and against DOM. In this
-%   case, preference is given to given the DOM (i.e., SIDE = 1).
+%   the columns of F.
+%
+%   F = TWEAKDOMAIN(F, DOM), where DOM is numeric or a DOMAIN object tweaks the
+%   columns of F against themselves and against DOM. In this case, preference
+%   is given to the DOM (i.e., SIDE = 1).
 %
 % See also CHEBFUN/OVERLAP.
 
