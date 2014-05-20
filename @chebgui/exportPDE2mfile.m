@@ -106,7 +106,7 @@ if ( strcmp(indVarName{1}, indVarName{2}) )
 end
 
 % Create a string with the variables used in the problem
-variableString = [',', indVarName{2}, ',', indVarName{1}, ','];
+variableString = [indVarName{2}, ',', indVarName{1}, ','];
 
 xName = indVarName{1};
 tName = indVarName{2};
@@ -133,8 +133,7 @@ else
     periodic = false;
 end
 
-deString = [deString(1:idx(1)-1), variableString, 'diff', sops{:}, ...
-    deString(idx(1):end)];
+deString = ['@(' variableString, deString(3:end)];
 
 % Print the PDE
 fprintf(fid, '%% Solving\n');
@@ -197,7 +196,7 @@ fprintf(fid, 'dom = %s;\n',dom);
 fprintf(fid, '%% and a discretisation of the time domain.\n');
 fprintf(fid, '%s = %s;\n',tName,tt);
 
-fprintf(fid, '\n%% Make the rhs of the PDE.\n');
+fprintf(fid, '\n%% Make the right-hand side of the PDE.\n');
 fprintf(fid, 'pdefun = %s;\n',deString);
 if ( ~all(pdeflag) )
     fprintf(fid, ['pdeflag = [', num2str(pdeflag), ...
@@ -374,7 +373,7 @@ else
 end
 
 fprintf(fid, ['\n%% Solve the problem using pde15s.\n']);
-fprintf(fid, '[%s %s] = pde15s(pdefun,%s,%s,bc,opts);\n', indVarName{2}, ...
+fprintf(fid, '[%s, %s] = pde15s(pdefun, %s, %s, bc, opts);\n', indVarName{2}, ...
     sol, indVarName{2}, sol0);
 
 % Conver sol to variable names
