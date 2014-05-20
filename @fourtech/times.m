@@ -98,8 +98,15 @@ f.coeffs = f.vals2coeffs(values);
 
 % Update vscale, epslevel, and ishappy:
 vscale = max(abs(f.values), [], 1);
+
+% Avoid NaNs:
+tmpVscale = vscale;
+tmpVscale(vscale == 0) = 1;
+f.vscale(f.vscale == 0) = 1;
+g.vscale(g.vscale == 0) = 1;
+ 
 % See CHEBTECH CLASSDEF file for documentation on this:
-f.epslevel = (f.epslevel + g.epslevel) .* (f.vscale.*g.vscale./vscale);
+f.epslevel = (f.epslevel + g.epslevel) .* (f.vscale.*g.vscale./tmpVscale);
 f.vscale  = vscale;
 f.ishappy = f.ishappy && g.ishappy;
 
