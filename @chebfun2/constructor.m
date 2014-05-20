@@ -128,6 +128,13 @@ pseudoLevel = prefStruct.eps;
 sampleTest = prefStruct.sampleTest;
 grid = 9;   % minsample
 
+% Go find out what tech I'm based on:
+tech = chebfun2pref().tech();
+
+if ( isa(tech, 'fourtech') ) 
+    grid = 8; 
+end
+
 % If the vectorize flag is off, do we need to give user a warning?
 if ( vectorize == 0 ) % another check
     % Check for cases: @(x,y) x*y, and @(x,y) x*y'
@@ -151,7 +158,7 @@ end
 isHappy = 0;
 while ( ~isHappy )
     % Sample function on a Chebyshev tensor grid:
-    [xx, yy] = chebfun2.chebpts2(grid, grid, domain);
+    [xx, yy] = points2D(grid, grid, domain);
     vals = evaluate(op, xx, yy, vectorize);
     
     % Does the function blow up or evaluate to NaN?:
@@ -174,7 +181,7 @@ while ( ~isHappy )
     while ( iFail && grid <= 4*(maxRank-1)+1 && strike < 3)
         % Double sampling on tensor grid:
         grid = 2^( floor( log2( grid ) ) + 1) + 1;
-        [xx, yy] = chebfun2.chebpts2(grid, grid, domain);
+        [xx, yy] = points2D(grid, grid, domain);
         vals = evaluate(op, xx, yy, vectorize); % resample
         vscale = max(abs(vals(:)));
         % New tolerance:
@@ -193,10 +200,10 @@ while ( ~isHappy )
     end
     
     % Check if the column and row slices are resolved.
-    colChebtech = chebtech2(sum(colValues,2), domain(3:4) );
-    resolvedCols = happinessCheck(colChebtech,[],sum(colValues,2));
-    rowChebtech = chebtech2(sum(rowValues.',2), domain(1:2) );
-    resolvedRows = happinessCheck(rowChebtech,[],sum(rowValues.',2));
+    colChebtech = tech.make(sum(colValues,2), domain(3:4) );
+    resolvedCols = happinessCheck(colChebtech);
+    rowChebtech = tech.make(sum(rowValues.',2), domain(1:2) );
+    resolvedRows = happinessCheck(rowChebtech,[],sum(rowValues.',2));    
     isHappy = resolvedRows & resolvedCols;
     
     % If the function is zero, set midpoint of domain as pivot location.
@@ -215,25 +222,25 @@ while ( ~isHappy )
         if ( ~resolvedCols )
             % Double sampling along columns
             n = 2^( floor( log2( n ) ) + 1) + 1;
-            [xx, yy] = meshgrid(PivPos(:, 1), chebpts(n, domain(3:4)));
+            [xx, yy] = meshgrid(PivPos(:, 1), mypoints(n, domain(3:4)));
             colValues = evaluate(op, xx, yy, vectorize);
             % Find location of pivots on new grid (using nesting property).
             oddn = 1:2:n;
             PP(:, 1) = oddn(PP(:, 1));
         else
-            [xx, yy] = meshgrid(PivPos(:, 1), chebpts(n, domain(3:4)));
+            [xx, yy] = meshgrid(PivPos(:, 1), mypoints(n, domain(3:4)));
             colValues = evaluate(op, xx, yy, vectorize);
         end
         if ( ~resolvedRows )
             % Double sampling along rows
             m = 2^( floor( log2( m ) ) + 1 ) + 1;
-            [xx, yy] = meshgrid(chebpts(m, domain(1:2)), PivPos(:, 2));
+            [xx, yy] = meshgrid(mypoints(m, domain(1:2)), PivPos(:, 2));
             rowValues = evaluate(op, xx, yy, vectorize);
             % find location of pivots on new grid  (using nesting property).
             oddm = 1:2:m;
             PP(:, 2) = oddm(PP(:, 2));
         else
-            [xx, yy] = meshgrid(chebpts(m, domain(1:2)), PivPos(:, 2));
+            [xx, yy] = meshgrid(mypoints(m, domain(1:2)), PivPos(:, 2));
             rowValues = evaluate(op, xx, yy, vectorize);
         end
         
@@ -253,11 +260,11 @@ while ( ~isHappy )
         
         % Are the columns and rows resolved now?
         if ( ~resolvedCols )
-            colChebtech = chebtech2(sum(colValues,2));
-            resolvedCols = happinessCheck(colChebtech,[],sum(colValues,2));
+            colChebtech = tech.make(sum(colValues,2));
+            resolvedCols = happinessCheck(colChebtech);
         end
         if ( ~resolvedRows )
-            rowChebtech = chebtech2(sum(rowValues.',2));
+            rowChebtech = tech.make(sum(rowValues.',2));
             resolvedRows = happinessCheck(rowChebtech,[],sum(rowValues.',2));
         end
         isHappy = resolvedRows & resolvedCols;
@@ -452,3 +459,70 @@ end
 
 end
 
+function [xx, yy] = points2D(m, n, dom)
+% Get the sample points that correspond to the right grid for a particular
+% technology.
+
+% What tech am I based on?:
+tech = chebfun2pref().tech();
+
+if ( isa(tech, 'chebtech2') )
+    x = chebpts( m, dom, 2 );   % x grid.
+    y = chebpts( n, dom, 2 ); 
+    [xx, yy] = meshgrid( x, y ); 
+elseif ( isa(tech, 'chebtech1') )
+    x = chebpts( m, dom, 1 );   % x grid.
+    y = chebpts( n, dom, 1 ); 
+    [xx, yy] = meshgrid( x, y ); 
+elseif ( isa(tech, 'fourtech') )
+    x = fourierpts( m, dom );   % x grid.
+    y = fourierpts( n, dom );
+    [xx, yy] = meshgrid( x, y );
+else
+    error('CHEBFUN2:POINTS2D', 'Unrecognized technology');
+end
+
+end
+
+function x = mypoints(n, dom)
+% Get the sample points that correspond to the right grid for a particular
+% technology.
+
+% What tech am I based on?:
+tech = chebfun2pref().tech();
+
+if ( isa(tech, 'chebtech2') )
+    x = chebpts( n, dom, 2 );   % x grid.
+elseif ( isa(tech, 'chebtech1') )
+    x = chebpts( n, dom, 1 );   % x grid.
+elseif ( isa(tech, 'fourtech') )
+    x = fourierpts( n, dom );   % x grid.
+else
+    error('CHEBFUN2:PTS', 'Unrecognized technology');
+end
+
+end
+
+
+function [grid, nesting] = gridRefine( grid )
+% Hard code grid refinement strategy for tech. 
+
+% What tech am I based on?:
+tech = chebfun2pref().tech();
+
+% What is the next grid size?
+if ( isa(tech, 'chebtech2') )
+    % Double sampling on tensor grid:
+    grid = 2^( floor( log2( grid ) ) + 1) + 1;
+    nesting = 1:2:grid; 
+elseif ( isa(tech, 'fourtech') )
+    % Double sampling on tensor grid:
+    grid = 2^( floor( log2( grid ) + 1 ));
+    nesting = 1:2:grid;
+elseif ( isa(tech, 'chebtech1' ) )
+    grid = 3^( floor( log2( grid )/log2(3) ) + 1);
+    nesting = 2:3:grid; 
+else
+    error('CHEBFUN2:TECHTYPE','Technology is unrecognized.');
+end
+end
