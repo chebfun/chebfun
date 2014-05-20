@@ -41,14 +41,17 @@ if ( isnumeric(r) )
     % Range along continuous dimension.
     r = diff(r);
 
-    % Handel row inputs:
+    % Handle row inputs:
     if ( f(1).isTransposed )
         r = r.';
     end
-    
 else
     % Range across discrete dimension.
-    r = r(2) - r(1);
+    if ( f(1).isTransposed )
+        r = diff(extractColumns(r, 1:2), 1, 1);
+    else
+        r = diff(extractColumns(r, 1:2), 1, 2);
+    end
 end
 
 end
