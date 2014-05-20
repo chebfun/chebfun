@@ -83,8 +83,7 @@ handles.importedVar = struct;
 if ( ~isempty(varargin) )
     handles.guifile = varargin{1};
 else
-    cgTemp = chebgui('type', 'bvp');
-    handles.guifile = loadexample(cgTemp, -1); % Load a random example
+    handles.guifile = chebgui.demo(); % Load a random demo
 end
 
 % Create a new structure which contains information about the latest

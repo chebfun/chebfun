@@ -150,7 +150,7 @@ function hOpenMenuitemCallback(hObject, eventdata, handles, demoPath)
 % TODO:  Documentation.
 
 % Callback function run when the Open menu item is selected
-handles.guifile = loaddemos(handles.guifile, demoPath);
+handles.guifile = chebgui.demo2chebgui(demoPath);
 initSuccess = chebguiController.populate(handles, handles.guifile);
 
 if ( initSuccess )

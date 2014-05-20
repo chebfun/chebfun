@@ -1,5 +1,5 @@
-function cg = loaddemos(guifile, demoPath) %#ok<INUSL>
-% Load a demo from a .guifile to a chebgui object
+function cg = demo2chebgui(demoPath)
+%DEMO2CHEBGUI   Load a demo stored in a .guifile to a CHEBGUI object
 
 % TODO:  Documentation.
 
@@ -46,7 +46,7 @@ clear inputEnded fid tline ans
 vars = who;
 cg = chebgui('type', 'bvp');
 for k = 1:numel(vars)
-    if ( any(strcmp(vars{k}, {'guifile', 'guifilepath'})) )
+    if ( strcmp(vars{k}, 'demoPath') )
         continue
     end
 

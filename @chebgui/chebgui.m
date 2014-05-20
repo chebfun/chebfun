@@ -133,7 +133,7 @@ classdef chebgui
             
             % No input --> load random example to the GUI window
             if ( isempty(varargin) )
-                c = loadexample(chebgui('type', 'bvp'), -1);
+                c = chebgui.demo();
                 show(c); % Open the GUI
                 return
             end
@@ -153,7 +153,7 @@ classdef chebgui
                               'Unable to find file: %s', v1);
                     end
                     % Load the existing demp
-                    c = loaddemos(chebgui('type', 'bvp'), v1);
+                    c = chebgui.demo2chebgui(v1);
                 end
                 if ( nargout == 0 )
                     show(c); % Open the GUI
@@ -175,6 +175,11 @@ classdef chebgui
         
         [dummy, displayTimer] = displayBVPinfo(handles, mode, varargin);
         
+        % Return a random BVP CHEBGUI demo.
+        cg = demo()
+
+        % Load a demo stored in a .guifile to a CHEBGUI object
+        cg = demo2chebgui(demoPath)
         
         function initialiseFigures(handles)
             %INITIALISEFIGURES      Reset figures in the CHEBGUI window.
