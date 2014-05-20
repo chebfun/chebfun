@@ -179,8 +179,8 @@ while ( ~isHappy )
     strike = 1;
     % grid <= 4*(maxRank-1)+1, see Chebfun2 paper. 
     while ( iFail && grid <= 4*(maxRank-1)+1 && strike < 3)
-        % Double sampling on tensor grid:
-        grid = 2^( floor( log2( grid ) ) + 1) + 1;
+        % Refine sampling on tensor grid:
+        grid = gridRefine( grid );
         [xx, yy] = points2D(grid, grid, domain);
         vals = evaluate(op, xx, yy, vectorize); % resample
         vscale = max(abs(vals(:)));
@@ -203,7 +203,7 @@ while ( ~isHappy )
     colChebtech = tech.make(sum(colValues,2), domain(3:4) );
     resolvedCols = happinessCheck(colChebtech);
     rowChebtech = tech.make(sum(rowValues.',2), domain(1:2) );
-    resolvedRows = happinessCheck(rowChebtech,[],sum(rowValues.',2));    
+    resolvedRows = happinessCheck(rowChebtech);    
     isHappy = resolvedRows & resolvedCols;
     
     % If the function is zero, set midpoint of domain as pivot location.
@@ -221,24 +221,21 @@ while ( ~isHappy )
     while ( ~isHappy )
         if ( ~resolvedCols )
             % Double sampling along columns
-            n = 2^( floor( log2( n ) ) + 1) + 1;
+            [n, nesting] = gridRefine( n );
             [xx, yy] = meshgrid(PivPos(:, 1), mypoints(n, domain(3:4)));
             colValues = evaluate(op, xx, yy, vectorize);
             % Find location of pivots on new grid (using nesting property).
-            oddn = 1:2:n;
-            PP(:, 1) = oddn(PP(:, 1));
+            PP(:, 1) = nesting(PP(:, 1));
         else
             [xx, yy] = meshgrid(PivPos(:, 1), mypoints(n, domain(3:4)));
             colValues = evaluate(op, xx, yy, vectorize);
         end
         if ( ~resolvedRows )
-            % Double sampling along rows
-            m = 2^( floor( log2( m ) ) + 1 ) + 1;
+            [m, nesting] = gridRefine( m );
             [xx, yy] = meshgrid(mypoints(m, domain(1:2)), PivPos(:, 2));
             rowValues = evaluate(op, xx, yy, vectorize);
             % find location of pivots on new grid  (using nesting property).
-            oddm = 1:2:m;
-            PP(:, 2) = oddm(PP(:, 2));
+            PP(:, 2) = nesting(PP(:, 2));
         else
             [xx, yy] = meshgrid(mypoints(m, domain(1:2)), PivPos(:, 2));
             rowValues = evaluate(op, xx, yy, vectorize);
@@ -265,7 +262,7 @@ while ( ~isHappy )
         end
         if ( ~resolvedRows )
             rowChebtech = tech.make(sum(rowValues.',2));
-            resolvedRows = happinessCheck(rowChebtech,[],sum(rowValues.',2));
+            resolvedRows = happinessCheck(rowChebtech);
         end
         isHappy = resolvedRows & resolvedCols;
         
