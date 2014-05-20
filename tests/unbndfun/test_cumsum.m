@@ -71,9 +71,8 @@ gVals = feval(g, x);
 
 opg = @(x) 5*x.^2/2 - 5/2 + get(g, 'lval');
 gExact = opg(x);
-err = norm(gVals - gExact, inf);
-tol = 20*get(g,'epslevel').*get(g,'vscale');
-pass(4) = err < tol;
+err = gVals - gExact;
+pass(4) = norm(err, inf) < 1e2*get(g,'epslevel').*get(g,'vscale');
 
 %% Functions on [-inf b]:
 

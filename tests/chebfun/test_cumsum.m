@@ -201,7 +201,7 @@ gExact = opg(x);
 err = gVals - gExact;
 pass(12) = norm(err, inf) < 100*get(g,'epslevel').*get(g,'vscale');
 
-%% piecewise function on [-inf b]:
+%% Piecewise function on [-inf b]:
 
 % Set the domain:
 dom = [-Inf -1 3*pi];

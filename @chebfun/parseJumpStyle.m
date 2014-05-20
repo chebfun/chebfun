@@ -7,6 +7,9 @@ function [jumpStyle, varargin] = parseJumpStyle(varargin)
 %   JUMPSTYLE.  The remainder of VARARGIN after removing the 'jumpline' option
 %   and its value is returned in the VARARGIN output.
 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
+
 jumpStyle = {};
 for idx = 1:numel(varargin)
     if ( ~strcmpi(varargin{idx}, 'jumpline') )
@@ -16,7 +19,13 @@ for idx = 1:numel(varargin)
     tmp = varargin{idx+1};
     varargin(idx:(idx+1)) = [];
     if ( iscell(tmp) )
-        jumpStyle = tmp;
+        cc = regexp(tmp{1},'[bgrcmykw]', 'match');
+        if ( ~isempty(cc) )
+            % Forgive " 'jumpline', {'b', ...} " by inserting a 'color'.
+            jumpStyle = ['Color', cc, tmp{2:end}];
+        else
+            jumpStyle = tmp;
+        end
         return
     end
 
