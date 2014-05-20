@@ -3,6 +3,7 @@ function pass = test_linearsystems
 
 tol = 1e-8; 
 
+
 %% Building blocks
 dom = [-1 1];
 I = operatorBlock.eye(dom);
@@ -42,6 +43,7 @@ L = addbc(L,B3,0);
 
 type = {@colloc2, @ultraS, @colloc1, @colloc2, @ultraS, @colloc1};
 prefs = cheboppref;
+prefs.errTol = 1e-13;
 w = [];
 
 % FIXME: necessary until issue #205 has been resolved
@@ -89,5 +91,4 @@ for k = 1:6
     end
 end
 
-err;
 pass = err < tol;
