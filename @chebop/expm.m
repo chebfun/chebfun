@@ -37,6 +37,11 @@ function varargout = expm(N, t, u0, pref)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Grab a preference if not given one:
+if ( nargin < 4 )
+    pref = cheboppref();
+end
+
 % Linearize and check whether the CHEBOP is linear:
 [L, ~, fail] = linop(N);
 

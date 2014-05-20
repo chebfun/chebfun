@@ -1,4 +1,4 @@
-function g = power(f, b)
+function g = power(f, b, pref)
 %.^   CHEBFUN power.
 %   F.^G returns a CHEBFUN F to the scalar power G, a scalar F to the CHEBFUN
 %   power G, or a CHEBFUN F to the CHEBFUN power G. F and or G may be complex.
@@ -10,9 +10,11 @@ function g = power(f, b)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Initialise an empty CHEBFUN g:
+g = chebfun();
+
 % Empty case.
 if ( isempty(f) || isempty(b) )
-    g = chebfun();
     return
 end
 
@@ -62,8 +64,14 @@ elseif ( isa(f, 'chebfun') )
         end
     elseif ( numelB == 1 )
         % e.g., [x sin(x)].^2
-        for k = numelF:-1:1
-            g(k) = columnPower(f(k), b, pref);
+        if ( numel(f) == 1 )
+            % If F is array-valued, we might kick back a quasimatrix (to handle
+            % singularites). Hence, we must assign to g, rather than g(1).
+            g = columnPower(f, b, pref);
+        else
+            for k = numelF:-1:1
+                g(k) = columnPower(f(k), b, pref);
+            end
         end
     elseif ( numelB == numColsF )
         % e.g., [x sin(x) exp(x)].^[1 2 3]
@@ -162,6 +170,17 @@ elseif ( isa(f, 'chebfun') )
         end
         
     else                                % General case (SQRT is included)
+        
+        if ( numColumns(f) > 1 )
+            % TODO: SINGFUN cannot handle array-valued CHEBFUNs, so we must
+            % convert to a quasimatrix.
+            f = cheb2cell(f);
+            for k = numel(f):-1:1
+                f{k} = columnPower(f{k}, b, pref);
+            end
+            g = quasimatrix(f);
+            return
+        end
         
         % Add breaks at the appropriate roots of f:
         if ( isreal(f) )
