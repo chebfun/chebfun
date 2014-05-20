@@ -8,6 +8,7 @@ dom = [0 pi];
 if ( nargin == 0 )
     pref = cheboppref;
 end
+pref.errTol = 1e-11;
 
 %% Simple scalar problem
 N = chebop(@(x,u) diff(u,2) + x.*u, dom);
@@ -33,7 +34,7 @@ u3 = solvebvp(N, rhs, pref);
 %% Did we pass? 
 % To pass, both residuals have to be small, but we should not expect u1 and u2
 % to be identical!
-tol = pref.errTol;
+tol = 100*pref.errTol;
 pass(1) = norm(N(u1)-rhs) < tol && ( u1(0) - 2 < tol) && ( u1(pi) - 3 < tol);
 pass(2) = norm(N(u2)-rhs) < tol && ( u2(0) - 2 < tol) && ( u2(pi) - 3 < tol);
 pass(3) = norm(N(u3)-rhs) < tol && ( u3(0) - 2 < tol) && ( u3(pi) - 3 < tol);
@@ -66,7 +67,7 @@ u6 = solvebvp(N, rhs, pref);
 %% Did we pass? 
 % To pass, both residuals have to be small, but we should not expect u3 and u4
 % to be identical!
-tol = 10*pref.errTol;
+tol = 100*pref.errTol;
 pass(5) = norm(N(u4)-rhs) < tol && ( u4(-1) - 2 < tol) && ( u4(pi) + 1 < tol);
 pass(6) = norm(N(u5)-rhs) < tol && ( u5(-1) - 2 < tol) && ( u5(pi) + 1 < tol);
 pass(7) = norm(N(u6)-rhs) < tol && ( u6(-1) - 2 < tol) && ( u6(pi) + 1 < tol);

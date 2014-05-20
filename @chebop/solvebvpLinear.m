@@ -36,8 +36,13 @@ end
 % values of L.constraint:
 L.constraint = flipSigns(L.constraint);
 
+% Solutions to the linearized problems need to be more accurate than the
+% nonlinear iteration tolerance.
+linpref = pref;
+linpref.errTol = max( eps, pref.errTol/100 );
+
 % Solve the linear problem:
-u = linsolve(L, rhs, pref);
+u = linsolve(L, rhs, linpref);
 
 % Norm of residual:
 normRes = norm(L*u - rhs, 'fro');

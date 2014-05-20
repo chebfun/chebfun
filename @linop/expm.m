@@ -112,9 +112,11 @@ for i = 1:length(t)
         
         % Convert the different components into cells
         u = partition(disc, v);
+        uFun = u(isFun);
+        scale = max( cellfun(@max,uFun) );
         
         % Test the happieness of the function pieces:
-        [isDone, epsLevel] = testConvergence(disc, u(isFun));
+        [isDone, epsLevel] = testConvergence(disc, uFun, scale, prefs);
         
         if ( all(isDone) )
             break
