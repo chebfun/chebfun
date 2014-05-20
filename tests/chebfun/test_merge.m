@@ -13,7 +13,7 @@ f = chebfun(@(x) x.^2, [-1 0 1], pref2);
 g = merge(f);
 pass(1) = all(size(g.funs) == 1);
 xx = linspace(-1, 1, 100);
-pass(2) = norm(feval(f, xx) - feval(g, xx), 'inf') < epslevel(f);
+pass(2) = norm(feval(f, xx) - feval(g, xx), 'inf') < 2*epslevel(f);
 
 % Test selective merge on many points:
 pref2 = pref;

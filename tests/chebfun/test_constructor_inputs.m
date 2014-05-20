@@ -80,7 +80,7 @@ pass(14) = numel(f.funs) == 1  && norm(feval(f, x) - x) < get(f, 'epslevel');
 
 % Test 'minsamples' flag.
 f_op = @(x) -x - x.^2 + exp(-(30*(x - .5)).^4);
-f1 = chebfun(f_op);
+f1 = chebfun(f_op, 'minsamples', 9);
 err1 = norm(feval(f1, xx) - f_op(xx), inf);
 f2 = chebfun(f_op, 'minsamples', 17);
 err2 = norm(feval(f2, xx) - f_op(xx), inf);
