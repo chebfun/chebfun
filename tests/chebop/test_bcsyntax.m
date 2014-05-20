@@ -5,6 +5,8 @@ function pass = test_bcsyntax
 
 % TAD, 12 May 2014
 
+warning off
+
 N = chebop(@(u) diff(u,2) - exp(u));
 N.lbc = 1;
 N.rbc = @(u) diff(u)-2;
@@ -18,6 +20,8 @@ N.rbc = {1,'neumann'};
 N.bc = @(u) u(0)-1;
 
 pass = true;
+
+warning on
 
 end
 
