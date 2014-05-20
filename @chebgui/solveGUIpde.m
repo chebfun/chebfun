@@ -138,10 +138,13 @@ else
 end
 
 % Create a string with the variables used in the problem
-variableString = [',', indVarName{2}, ',', indVarName{1}];
+variableString = [indVarName{2}, ',', indVarName{1}, ','];
 
-deString = [deString(1:idx(1)-1), variableString, sops{:}, ...
-    deString(idx(1):end)];
+deString = ['@(' variableString, deString(3:end)];
+
+%TODO: Remove?
+% deString = [deString(1:idx(1)-1), variableString, sops{:}, ...
+%     deString(idx(1):end)];
 %     deString = strrep(deString,'diff','D');
 
 % Convert the string to proper anon. function using eval

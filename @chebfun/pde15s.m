@@ -484,42 +484,43 @@ for nt = 1:length(tt)-1
         %         drawnow
     end
     
-    % TODO: Restore once CHEBGUI is operating.
-    %     if ( guiFlag )
-    %         % Interupt comutation if stop or pause  button is pressed in the GUI.
-    %         if ( strcmp(get(solveButton, 'String'), 'Solve') )
-    %             tt = tt(1:nt+1);
-    %             if SYSSIZE == 1,
-    %                 uOut = uOut(1:nt+1);
-    %             else
-    %                 for k = 1:SYSSIZE
-    %                     uOut{k} = uOut{k}(1:nt+1);
-    %                 end
-    %             end
-    %             break
-    %         elseif ( strcmp(get(clearButton, 'String'), 'Continue') )
-    %             defaultlinewidth = 2;
-    %             axes(axesNorm)
-    %             if ( ~iscell(uOut) )
-    %                 waterfall(uOut(1:nt+1), tt(1:nt+1), 'simple', 'linewidth', defaultlinewidth)
-    %                 xlabel(xLabel), ylabel(tlabel), zlabel(varnames)
-    %             else
-    %                 cols = get(0, 'DefaultAxesColorOrder');
-    %                 for k = 1:numel(uOut)
-    %                     plot(0, NaN, 'linewidth', defaultlinewidth, 'color', cols(k, :)), hold on
-    %                 end
-    %                 legend(varnames);
-    %                 for k = 1:numel(uOut)
-    %                     waterfall(uOut{k}, tt(1:nt+1), 'simple', 'linewidth', ...
-    %                           defaultlinewidth, 'edgecolor', cols(k, :)), hold on
-    %                     xlabel(xLabel), ylabel(tlabel)
-    %                 end
-    %                 view([322.5 30]), box off, grid on, hold off
-    %             end
-    %             axes(axesSol)
-    %             waitfor(clearButton, 'String');
-    %         end
-    %     end
+    if ( guiFlag )
+        % Interupt comutation if stop or pause  button is pressed in the GUI.
+        if ( strcmp(get(solveButton, 'String'), 'Solve') )
+            tt = tt(1:nt+1);
+            if SYSSIZE == 1,
+                uOut = uOut(1:nt+1);
+            else
+                for k = 1:SYSSIZE
+                    uOut{k} = uOut{k}(1:nt+1);
+                end
+            end
+            break
+        elseif ( strcmp(get(clearButton, 'String'), 'Continue') )
+            % TODO: This does not currently work, due to error with plotting.
+            defaultlinewidth = 2;
+            axes(axesNorm)
+            if ( ~iscell(uOut) )
+                waterfall(uOut(1:nt+1), tt(1:nt+1), 'simple', 'linewidth', defaultlinewidth)
+                xlabel(xLabel), ylabel(tlabel), zlabel(varnames)
+            else
+                cols = get(0, 'DefaultAxesColorOrder');
+                % The following for loop causes an error.
+                for k = 1:numel(uOut)
+                    plot(0, NaN, 'linewidth', defaultlinewidth, 'color', cols(k, :)), hold on
+                end
+                legend(varnames);
+                for k = 1:numel(uOut)
+                    waterfall(uOut{k}, tt(1:nt+1), 'simple', 'linewidth', ...
+                        defaultlinewidth, 'edgecolor', cols(k, :)), hold on
+                    xlabel(xLabel), ylabel(tlabel)
+                end
+                view([322.5 30]), box off, grid on, hold off
+            end
+            axes(axesSol)
+            waitfor(clearButton, 'String');
+        end
+    end
 end
 
 if ( doPlot && ~ish )
