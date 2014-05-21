@@ -17,7 +17,6 @@ a = 0.64;
 b = -0.64;
 c = 1.28;
 d = -1.28;
-e = -2.56;
 
 %%
 % Tests with exact solution:
@@ -35,10 +34,10 @@ pass(1) = (norm(err, inf) < get(f,'epslevel')*norm(vals_exact, inf));
 f = singfun(@(x) (1-x).^d, [0 d], {'none', 'sing'}, [], [], pref);
 g = cumsum(f);
 vals_g = feval(g, x);
-g_exact = @(x)-(1-x).^(d+1)./(d+1);
+g_exact = @(x)-(1-x).^(d+1)./(d+1) + 2^(d+1)/(d+1);
 vals_exact = feval(g_exact, x);
 err = vals_g - vals_exact;
-pass(2) = (norm(err, inf) < get(f,'epslevel')*norm(vals_exact, inf));
+pass(2) = (norm(err, inf) < 1e1*get(f,'epslevel')*norm(vals_exact, inf));
 
 % fractional root at the left endpoint:
 f = singfun(@(x) (1+x).^a, [a 0], {'root', 'none'}, [], [], pref);
@@ -53,7 +52,7 @@ pass(3) = (norm(err, inf) < get(f,'epslevel')*norm(vals_exact, inf));
 f = singfun(@(x) (1-x).^(-4), [0 -4], {'none', 'pole'}, [], [], pref);
 g = cumsum(f);
 vals_g = feval(g, x);
-g_exact = @(x)(1-x).^(-3)/3;
+g_exact = @(x)(1-x).^(-3)/3 - 2^(-3)/3;
 vals_exact = feval(g_exact, x);
 err = vals_g - vals_exact;
 pass(4) = (norm(err, inf) < get(f,'epslevel')*norm(vals_exact, inf));

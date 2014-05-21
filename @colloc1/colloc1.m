@@ -61,7 +61,7 @@ classdef colloc1 < colloc
                 
                 % higher orders
                 for m = 3:k
-                    D = m*Dxi .* (Dw.*repmat(D(ii),1,N) - D);
+                    D = m*Dxi .* (Dw.*repmat(D(ii),1,n) - D);
                     D(ii) = 0; D(ii) = - sum(D,2);          % negative sum trick
                 end
             end
