@@ -65,6 +65,8 @@ elseif ( isa(f, 'chebfun') )
     elseif ( numelB == 1 )
         % e.g., [x sin(x)].^2
         if ( numel(f) == 1 )
+            % If F is array-valued, we might kick back a quasimatrix (to handle
+            % singularites). Hence, we must assign to g, rather than g(1).
             g = columnPower(f, b, pref);
         else
             for k = numelF:-1:1

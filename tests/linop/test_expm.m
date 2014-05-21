@@ -1,7 +1,7 @@
 function pass = test_expm
 % TAD, 23 Jan 2014
 
-tol = 1e-10; 
+tol = 1e-9; 
 d = [-pi pi];
 x = chebfun('x',d);
 
@@ -60,6 +60,15 @@ err(4,1) = abs( u(.1) - exact);
 err(4,2) = abs( u(-pi) );
 err(4,3) = abs( u(pi) );
 
+%%
+
+u0 = exp(-55*x.^2);
+A = linop( D^2 );
+A = addConstraint(A, E(-pi), 0);
+A = addConstraint(A, E(pi), 0);
+v = expm(A, 0, u0);
+err(5, 1) = norm(u0 - v, inf);
+err(5, 2) = length(u0) ~= length(v);
 
 %%
 pass = ( err < tol );

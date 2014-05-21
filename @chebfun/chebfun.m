@@ -359,6 +359,9 @@ classdef chebfun
         % True for zero CHEBFUN objects
         out = iszero(f)
         
+        % Kronecker product of two CHEBFUN object.
+        out = kron(f, g)
+        
         % Length of a CHEBFUN.
         out = length(f);
         
@@ -387,7 +390,7 @@ classdef chebfun
         varargout = plot3(f, g, h, varargin)
         
         % Power of a CHEBFUN
-        f = power(f, b);
+        f = power(f, b, pref);
         
         % Real part of a CHEBFUN.
         f = real(f)
@@ -415,6 +418,9 @@ classdef chebfun
 
         % Size of a CHEBFUN object.
         [s1, s2] = size(f, dim);
+
+        % Square root of a CHEBFUN.
+        f = sqrt(f, pref)
         
         % Retrieve and modify preferences for this class.
         varargout = subsref(f, index);

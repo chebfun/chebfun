@@ -11,7 +11,7 @@ function G = quasimatrix(F, varargin)
 
 % TODO: Document this file.
 
-if ( iscell(F) && isa(F{1}, 'chebfun') )
+if ( iscell(F) && any(cellfun(@(f) isa(f, 'chebfun'), F)) )
     % Construct from a cell of CHEBFUNs.
     G = chebfun.cell2quasi(F);
     return
