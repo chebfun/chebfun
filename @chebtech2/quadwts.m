@@ -8,15 +8,32 @@ function w = quadwts(n)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% References:
-%   [1] Joerg Waldvogel, "Fast construction of the Fejer and Clenshaw-Curtis
-%        quadrature rules", BIT Numerical Mathematics 46 (2006), pp 195-202.
-%   [2] Joerg Waldvogel, www.chebfun.org/and_beyond/programme/slides/wald.pdf
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % DEVELOPER NOTE:
-%  We use a varient of Waldvogel's algorithm, due to Nick Hale. (See his SIAM
-%  2013 talk.)
+% We use a variant of Waldvogel's algorithm [1], due to Nick Hale. (See below)
+% We note this is similar to Greg Von Winkel's approach, which can be found on
+% the MathWorks File Exchange.
+%
+% Let $f(x) = \sum_{k=0}^nc_kT_k(x)$, then\vspace*{-3pt} }
+%   I(f) = v.'*c
+% where
+%   v = \int_{-1}^1T_k(x)dx = { 2/(1-k^2) : k even
+%                             { 0         : k odd
+%     = v'*inv(TT)*f(x) where TT_{j,k} = T_k(x_j)
+%     = (inv(TT)'*v)'*f(x)
+% Therefore
+%   I(f) = w.'f(x) => w = inv(T).'*v;
+% Here inv(TT).' = inv(TT) is an inverse discrete cosine transform.
+% Furthermore, since odd entries in v are zero, can compute via FFT without
+% doubling up.
+%
+% TODO: implement this approach for CHEBTECH1.
+%
+% References:
+%   [1] Joerg Waldvogel, "Fast construction of the Fejer and Clenshaw-Curtis
+%       quadrature rules", BIT Numerical Mathematics 46 (2006), pp 195-202.
+%   [2] Greg von Winckel, "Fast Clenshaw-Curtis Quadrature", 
+%       http://www.mathworks.com/matlabcentral/fileexchange/6911, (2005)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if ( n == 0 )                      % Special case (no points!)
@@ -31,3 +48,6 @@ else                               % General case
 end
 
 end
+
+
+
