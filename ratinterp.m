@@ -454,7 +454,7 @@ x = chebpts(mu + 1);
 for k = mu:-1:1
     px = a(k) + x .* px;
 end
-p = chebfun(px, dom);
+p = chebfun(px, dom, 'gridType', 2);
 
 % Build the denominator polynomial and form the function handle.
 if ( nu > 0 )
@@ -463,12 +463,12 @@ if ( nu > 0 )
     for k = nu:-1:1
         qx = b(k) + x .* qx;
     end
-    q = chebfun(qx, dom);
+    q = chebfun(qx, dom, 'gridType', 2);
 
     r = @(x) polyval(a((mu+1):-1:1) , ihd*(x - md)) ...
         ./ polyval(b((nu+1):-1:1), ihd*(x - md));
 else
-    q = chebfun(b, dom);
+    q = chebfun(b, dom, 'gridType', 2);
     r = @(x) polyval(a(mu+1:-1:1) , ihd*(x - md)) / b;
 end
 
@@ -534,7 +534,7 @@ if ( nu > 0 )
     r = @(x) ratbary(ihd*(x - md), px, qx, ...
         chebpts(mu + 1, 2), chebpts(nu + 1, 2), wp, wq);
 else
-    q = chebfun(b, dom);
+    q = chebfun(b, dom, 'gridType', 2);
     r = @(x) p(x)/b;
 end
 
@@ -551,7 +551,7 @@ for k = 3:(mu + 1)
     Cf(:,k) = 2 * Cf(:,2) .* Cf(:,k-1) - Cf(:,k-2);
 end
 Cf = Cf / R(1:(mu+1), 1:(mu+1));
-p = chebfun(Cf(:,1:(mu+1)) * a, dom);
+p = chebfun(Cf(:,1:(mu+1)) * a, dom, 'gridType', 2);
 
 % Build the denominator polynomial and form the function handle.
 if ( nu > 0 )
@@ -561,11 +561,11 @@ if ( nu > 0 )
         Cf(:,k) = 2 * Cf(:,2) .* Cf(:,k-1) - Cf(:,k-2);
     end
     Cf = Cf / R(1:(nu+1), 1:(nu+1));
-    q = chebfun(Cf(:,1:nu+1) * b, dom);
+    q = chebfun(Cf(:,1:nu+1) * b, dom, 'gridType', 2);
 
     r = @(x) p(x) ./ q(x);
 else
-    q = chebfun(b, dom);
+    q = chebfun(b, dom, 'gridType', 2);
     r = @(x) p(x)/b;
 end
 
