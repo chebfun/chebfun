@@ -111,8 +111,6 @@ x = chebfun(@(x) x, dom);
 % Linearize and attach preferences.
 [L, residual, isLinear] = linearize(N, u0, x);
 
-L.prefs = pref;
-
 % Check the size of the residual (the output the dimensions of the CHEBOP).
 [numRow, numCol] = size(residual);
 
@@ -170,13 +168,14 @@ else
     
     % Create initial guess which satisfies the linearised boundary conditions:
     if ( isempty(N.init) )
-        u0 = fitBCs(L);
+        % Find a new initial guess that satisfies the BCs of L
+        u0 = fitBCs(L, pref);
+        
         % Linearize about the new initial guess. If we are working with
         % parameter dependent problems, and did not get an initial condition
         % passed, we might have to cast some components in the CHEBMATRIX U0
         % from a CHEBFUN to a scalar. Hence, call LINEARIZE() with four outputs.
         [L, residual, isLinear, u0] = linearize(N, u0, x);
-
     end
 
     % Call solver method for nonlinear problems.

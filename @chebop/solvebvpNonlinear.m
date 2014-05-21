@@ -51,6 +51,7 @@ newtonCounter = 0;
 success = 0;
 giveUp = 0;
 maxIterExceeded = 0;
+terminate = 0;
 
 % Store a vector with information about the norm of the Newton updates:
 normDeltaVec = zeros(maxIter, 1);
@@ -75,7 +76,7 @@ dampingInfo.damped =        damped;
 dampingInfo.x =             x;
 
 % Start the Newton iteration!
-while ( 1 )
+while ( ~terminate )
     
     % Compute a Newton update:
     [delta, disc] = linsolve(L, res, pref);
@@ -172,13 +173,11 @@ while ( 1 )
         [L, res] = linearize(N, u, x);
         % Need to subtract the original RHS from the residual:
         res = res - rhs;
-        % Assign the preferences to the linop.
-        L.prefs = pref;
     end
     
     % Should we stop the Newton iteration?
     if ( success || maxIterExceeded || giveUp )
-        break
+        terminate = 1;
     end
     
 end

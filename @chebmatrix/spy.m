@@ -1,4 +1,4 @@
-function spy(A, dim, discType)
+function spy(A, dim, prefs)
 %SPY    Visualize a chebmatrix.
 %   If A is a chebmatrix, SPY(A) creates a picture of the nonzero pattern of the
 %   default discretization of A. Block boundaries are indicated by gray
@@ -20,7 +20,6 @@ dom = A.domain;
 % Set defaults as needed.
 if ( nargin < 3 )
     prefs = cheboppref;
-    discType = prefs.discretization;
     if ( nargin < 2 )
         if ( length(A.domain) == 2 )
             dim = 10;
@@ -29,6 +28,8 @@ if ( nargin < 3 )
         end
     end
 end
+
+discType = prefs.discretization;
 
 % Discretize and do a regular spy plot.
 data = matrix(A, dim, dom, discType);

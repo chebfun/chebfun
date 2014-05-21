@@ -1,4 +1,4 @@
-function u0 = fitBCs(L)
+function u0 = fitBCs(L, prefs)
 %FITBCS    Find a low-order polynomial which satisfies the BCs of a LINOP.
 %   U0 = FITBCS(L) Returns a CHEBMATRIX which will satisfy the BCs
 %        and other conditions of the linop L.
@@ -18,7 +18,7 @@ function u0 = fitBCs(L)
 
 % Fix the discretization to @colloc2, so that we can be sure we always get the
 % same initial guesses for Newton iteration.
-L.prefs.discretization = @colloc2;
+prefs.discretization = @colloc2;
 
 % Store the total number of interior breakpoints
 dom = L.domain;
@@ -52,7 +52,7 @@ polyDegree(~isFun) = 1;
 polyDegree = max(polyDegree, 1);
 
 % Create a discretization of the linear BCs:
-discType = L.prefs.discretization;
+discType = prefs.discretization;
 
 % Set a size zero discretization. Actual size is controlled by dimAdjust.
 dim = zeros(1, numInts);
