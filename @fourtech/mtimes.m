@@ -33,7 +33,7 @@ elseif ( isa(c, 'double') )         % FOURTECH * double
     
     f.values = f.values*c;
     f.coeffs = f.coeffs*c;
-    f.isReal = f.isReal & isreal(c);
+    f.isReal = repmat(any(f.isReal) & isreal(c),1,size(c,2));
     
     if ( numel(c) == 1 )
         % See FOURTECH CLASSDEF file for documentation on this.
@@ -57,7 +57,7 @@ elseif ( isa(c, 'double') )         % FOURTECH * double
         f.coeffs = zeros(1, size(f.values, 2));
     end
     
-elseif ( isa(c, 'chebtech') )       % FOURTECH * FOURTECH  
+elseif ( isa(c, 'fourtech') )       % FOURTECH * FOURTECH  
     error('CHEBFUN:FOURTECH:mtimes:fourtechMtimesFourtech', ...
         'Use .* to multiply FOURTECH objects.');
 else                                % FOURTECH * ???

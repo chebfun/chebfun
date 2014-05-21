@@ -41,7 +41,7 @@ else
     f.hscale = hscale;
 end
 if ( nargin < 5 )
-    pref = chebtech.techPref();
+    pref = fourtech.techPref();
 end
 
 

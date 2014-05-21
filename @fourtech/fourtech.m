@@ -71,9 +71,9 @@ classdef fourtech < smoothfun
             % TODO: Preferences
             % Determine preferences if not given, merge if some are given:
             if ( (nargin < 4) || isempty(pref) )
-                pref = chebtech.techPref();
+                pref = fourtech.techPref();
             else
-                pref = chebtech.techPref(pref);
+                pref = fourtech.techPref(pref);
             end
 
             % Force nonadaptive construction if PREF.NUMPOINTS is numeric:

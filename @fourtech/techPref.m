@@ -1,10 +1,10 @@
 function outPref = techPref(inPref)
-%TECHPREF   Preference settings for FOURIETECH.
-%   P = FOURIETECH.TECHPREF() returns a structure P with fields which contain the
-%   default FOURIETECH preferences as field/value pairs.  This structure may be
-%   passed to the FOURIETECH constructor.
+%TECHPREF   Preference settings for FOURTECH.
+%   P = FOURTECH.TECHPREF() returns a structure P with fields which contain the
+%   default FOURTECH preferences as field/value pairs.  This structure may be
+%   passed to the FOURTECH constructor.
 %
-%   P = FOURIETECH.TECHPREF(Q) does the same but replaces the default FOURIETECH
+%   P = FOURTECH.TECHPREF(Q) does the same but replaces the default FOURTECH
 %   preferences with the values specified by the field/value pairs in the input
 %   structure Q.
 %
@@ -14,7 +14,7 @@ function outPref = techPref(inPref)
 %   ABSTRACT PREFERENCES REQUIRED OF ALL TECHS
 %
 %     eps          - Relative tolerance used in construction and subsequent
-%      [2^-52]       operations.  See FOURIETECH.HAPPINESSCHECK for more details.
+%      [2^-52]       operations.  See FOURTECH.HAPPINESSCHECK for more details.
 %
 %     maxLength    - This preference is mapped to maxPoints (see below).
 %
@@ -31,14 +31,14 @@ function outPref = techPref(inPref)
 %                    points.
 %       false      - Do not test.
 %
-%   FOURIETECH-SPECIFIC PREFERENCES
+%   FOURTECH-SPECIFIC PREFERENCES
 %
 %     gridType     - Type of Fourier grid on which the function is sampled.
-%       [1]        - Equally spaced grid starting at pi
-%        2         - Equally spaced grid starting at pi+h/2
+%         1        - Equally spaced grid starting at -1+h/2
+%        [2]        - Equally spaced grid starting at -1
 %
 %     minPoints    - Minimum number of points used by the constructor.  Should
-%      [9]           be of the form 2^n + 1.  If not, it is rounded as such.
+%      [17]          be of the form 2^n + 1.  If not, it is rounded as such.
 %
 %     maxPoints    - Maximum number of points used by the constructor.
 %      [2^16+1]
@@ -47,8 +47,8 @@ function outPref = techPref(inPref)
 %      [NaN]         adaptive construction.
 %
 %     refinementFunction - Define function for refining sample values.
-%      ['nested']        - Use the default process (nested evaluation).
-%       'resampling'     - Every function value is computed afresh as the
+%       'nested'         - Nest the evaluations to reduce the number of function evaluations.
+%      ['resampling']    - Every function value is computed afresh as the
 %                          constructor tries grids of size 9, 17, 33, etc.
 %       function_handle  - A user-defined refinement function.  See REFINE.m
 %
@@ -58,14 +58,14 @@ function outPref = techPref(inPref)
 %       'loose'          - A looser tolerance for coefficients.
 %       function_handle  - A user defined happiness. See HAPPINESSCHECK.m
 %
-% See also CHEBTECH, CHEBTECH1, CHEBTECH2
+% See also FOURTECH, CHEBTECH, CHEBTECH1, CHEBTECH2
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
 outPref.eps                = 2^-52;
-outPref.gridType           = 1;
-outPref.minPoints          = 9;
+outPref.gridType           = 2;
+outPref.minPoints          = 17;
 outPref.maxPoints          = 2^16 + 1;
 outPref.numPoints          = NaN;
 outPref.extrapolate        = false;
