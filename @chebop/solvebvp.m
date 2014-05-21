@@ -100,7 +100,6 @@ x = chebfun(@(x) x, dom);
 
 % Linearize and attach preferences:
 [L, residual, isLinear] = linearize(N, u0, x);
-L.prefs = pref;
 
 % Check the size of the residual (the output the dimensions of the CHEBOP).
 [numRow, numCol] = size(residual);
@@ -159,7 +158,7 @@ else
     
     % Create initial guess which satisfies the linearised boundary conditions:
     if ( isempty(N.init) )
-        u0 = fitBCs(L);
+        u0 = fitBCs(L,pref);
         % Linearize about the new initial guess:
         [L, residual, isLinear] = linearize(N, u0, x);
     end
