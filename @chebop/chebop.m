@@ -17,7 +17,7 @@ classdef (InferiorClasses = {?double}) chebop
 %
 % The number of elements in the output CHEBMATRIX should typically equal the
 % number of dependent variables, whether specified as names or CHEBMATRIX
-% elements (see section on parameter-dependent problems below). 
+% elements (see section on parameter-dependent problems below).
 %
 % By default, the operator acts on CHEBFUN objects defined on the domain [-1,1].
 % CHEBOP(OP, D), for a vector D, gives a different domain, with breakpoints (if
@@ -32,7 +32,7 @@ classdef (InferiorClasses = {?double}) chebop
 %   scalar      : All variables equal the given value.
 %   'dirichlet' : All variables equal zero.
 %   'neumann'   : All variables have derivative zero.
-%   function    : A function handle that must accept all dependent variables as 
+%   function    : A function handle that must accept all dependent variables as
 %                 given in OP and return a CHEBFUN or CHEBMATRIX. All elements
 %                 of the result are evaluated at the endpoint, and for the
 %                 solution of the BVP, they are made to equal zero.
@@ -66,13 +66,13 @@ classdef (InferiorClasses = {?double}) chebop
 % If BC is given a function handle, then each condition must give points
 % explicitly or otherwise evaluate to a scalar. The function handle must return
 % a column vector, not a row vector. Example:
-%   @(x, u) [ u(1) - u(0) ; sum(x.*u) ] % set u(1) = u(0), and definite integral
+%   @(x, u) [ u(1) - u(0) ; sum(x.*u) ] % set u(1) = u(0), and integral
 %                                       % of x.*u over the whole interval = 0.
 %
-% Boundary condition can also be assigned to the CHEBOP N after it has been
+% Boundary conditions may also be assigned to the CHEBOP N after it has been
 % constructed, by N.lbc = ..., N.rbc = ..., and N.bc = ... . This will overwrite
 % the conditions currently stored in the field being assigned to, but not the
-% other fields).
+% other fields, with an exception of keywords as noted below).
 %
 % CHEBOP(OP, ..., 'init', U) provides a CHEBFUN/CHEBMATRIX as a starting point
 % for nonlinear iterations or a PDE solution. See CHEBOP/SOLVEBVP and
@@ -81,7 +81,7 @@ classdef (InferiorClasses = {?double}) chebop
 % Note that many fields can be set after the CHEBOP object N is created: N.op,
 % N.lbc, N.rbc, N.bc, N.init can all be assigned new values. Setting N.bc to any
 % of 'dirichlet', 'neumann', or 'periodic', removes pre-existing entries in
-% N.lbc and N.rbc (and N.bc).
+% N.lbc, N.rbc, and N.bc.
 %
 % Example:
 %
@@ -94,7 +94,7 @@ classdef (InferiorClasses = {?double}) chebop
 %
 % CHEBOP supports solving systems of equations containing unknown parameters
 % without the need to introduce extra equations into the system. Simply add the
-% unknown parameters as the final variables. 
+% unknown parameters as the final variables.
 %
 % Example:
 %
@@ -105,7 +105,7 @@ classdef (InferiorClasses = {?double}) chebop
 %   plot(N\0)
 %
 % Parameters can be positioned at different locations if a double is passed in
-% the CHEBMATRIX input to N.init. 
+% the CHEBMATRIX input to N.init.
 %
 % Example:
 %
@@ -115,11 +115,11 @@ classdef (InferiorClasses = {?double}) chebop
 %   N.init = [1 ; chebfun(1)];
 %   plot(N\0)
 %
-% See also CHEBOP/MTIMES, CHEBOP/MLDIVIDE, CHEBOPPREF.   
+% See also CHEBOP/MTIMES, CHEBOP/MLDIVIDE, CHEBOPPREF.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.
-
+    
     properties ( GetAccess = 'public', SetAccess = 'public' )
         domain = [];    % Domain of the operator
         op = [];        % The operator
@@ -133,8 +133,8 @@ classdef (InferiorClasses = {?double}) chebop
     methods
         
         function N = chebop(op, dom, lbcIn, rbcIn, init)
-        % CHEBOP constructor
-        
+            % CHEBOP constructor
+            
             if ( nargin == 0 )
                 return
             end
@@ -148,7 +148,7 @@ classdef (InferiorClasses = {?double}) chebop
                 else
                     % DOM was passed, but no OP.
                     dom = op;
-                    op = [];                    
+                    op = [];
                 end
             elseif ( nargin == 2 && isnumeric(op) )
                 dom = [op, dom];
@@ -189,205 +189,96 @@ classdef (InferiorClasses = {?double}) chebop
     methods
         
         function N = set.lbc(N, val)
-        %CHEBOP.SET.LBC   Set left boundary condition of a CHEBOP.
-        %   CHEBOP.SET.LBC offers more control of setting left boundary
-        %   conditions than simply accessing the .lbc field, or using standard
-        %   subsref.
-        
-            % Need to know the nargin of the CHEBOP:
-            nIn = nargin(N);
+            %CHEBOP.SET.LBC   Set left boundary condition of a CHEBOP.
+            %   CHEBOP.SET.LBC offers more control of setting left boundary
+            %   conditions than simply accessing the .lbc field, or using standard
+            %   subsref.
             
-            if ( isempty(val) )
-                N.lbc = [];
-                
-            elseif ( isnumeric(val) )
-                if ( nIn > 2 )
-                    % Only allow scalar numerical values to be passed if we are
-                    % dealing with a scalar problem.
-                    error('CHEBFUN:CHEBOP:SETLBC', ...
-                        'Can only assign scalar BCs to scalar problems');
-                else
-                    N.lbc = @(u) u - val;
-                end
-            
-            elseif ( isa(val, 'function_handle') )
-                % If we are dealing with a scalar problem where the independent
-                % variable is not specified in the function handle arguments,
-                % allow also passing an input function handle that takes one
-                % argument. Otherwise, we request that the number of input to
-                % the LBC function handle is one less than the number of
-                % arguments to the OP part.
-                if ( ( (nIn <= 1) && (nargin(val) == 1) ) || ...
-                        (nargin(val) == (nIn - 1)) )
-                    N.lbc = val;
-                else
-                    error('CHEBFUN:CHEBOP:SETLBC', ...
-                        ['Number of inputs to N.LBC must match the number ', ... 
-                         'of inputs to N.OP (or be one less if N.OP = @(x, ...))']);     
-                end
-                
-            elseif ( strcmpi(val, 'neumann') )
-                if ( nIn <= 2 )
-                    N.lbc = @(u) diff(u);
-                else
-                    error('CHEBFUN:CHEBOP:SETLBC', ...
-                    'Can only assign scalar BCs to scalar problems.');
-                end
-                
-            elseif ( strcmpi(val, 'dirichlet') )
-                if ( nIn <= 2 )
-                    N.lbc = @(u) u;
-                else
-                    error('CHEBFUN:CHEBOP:SETLBC', ...
-                    'Can only assign scalar BCs to scalar problems.');
-                end    
-                
-            else
-                error('CHEBFUN:CHEBOP:SETLBC', 'Unsupported format of BCs.')
-            end
-            
+            N.lbc = parseBC(N, val, 'lrbc');            
         end
         
         function N = set.rbc(N, val)
-        %CHEBOP.SET.RBC   Set rigt boundary condition of a CHEBOP.
-        %   CHEBOP.SET.RBC offers more control of setting left boundary
-        %   conditions than simply accessing the .rbc field, or using standard
-        %   subsref.
-
-            % Need to know the nargin of the CHEBOP:
-            nIn = nargin(N);
+            %CHEBOP.SET.RBC   Set right boundary condition of a CHEBOP.
+            %   CHEBOP.SET.RBC offers more control of setting right boundary
+            %   conditions than simply accessing the .rbc field, or using standard
+            %   subsref.
             
-            if ( isempty(val) )
-                N.rbc = [];
-                
-            elseif ( isnumeric(val) )
-                if ( nIn > 2 )
-                    % Only allow scalar numerical values to be passed if we are
-                    % dealing with a scalar problem.
-                    error('CHEBFUN:CHEBOP:SETRBC', ...
-                        'Can only assign scalar BCs to scalar problems');
-                else
-                    N.rbc = @(u) u - val;
-                end
-            
-            elseif ( isa(val, 'function_handle') )
-                % If we are dealing with a scalar problem where the independent
-                % variable is not specified in the function handle arguments,
-                % allow also passing an input function handle that takes one
-                % argument. Otherwise, we request that the number of input to
-                % the LBC function handle is one less than the number of
-                % arguments to the OP part.
-                if ( ( (nIn <= 1) && (nargin(val) == 1) ) || ...
-                        (nargin(val) == (nIn - 1)) )
-                    N.rbc = val;
-                else
-                    error('CHEBFUN:CHEBOP:SETRBC', ...
-                        ['Number of inputs to N.RBC must match the number ', ... 
-                         'of inputs to N.OP (or be one less if N.OP = @(x, ...))']);      
-                end
-                
-            elseif ( strcmpi(val, 'neumann') )
-                if ( nIn <= 2 )
-                    N.rbc = @(u) diff(u);
-                else
-                    error('CHEBFUN:CHEBOP:SETRBC', ...
-                    'Can only assign scalar BCs to scalar problems.');
-                end
-                
-            elseif ( strcmpi(val, 'dirichlet') )
-                if ( nIn <= 2 )
-                    N.rbc = @(u) u;
-                else
-                    error('CHEBFUN:CHEBOP:SETRBC', ...
-                    'Can only assign scalar BCs to scalar problems.');
-                end    
-                
-            else
-                error('CHEBFUN:CHEBOP:SETRBC', 'Unsupported format of BCs.')
-            end
+            N.rbc = parseBC(N, val, 'lrbc');
         end
         
         function N = set.bc(N, val)
-        %CHEBOP.SET.BC   Set constraints of a CHEBOP.
-        %   CHEBOP.SET.BC offers more control of setting constraints than simply
-        %   accessing the .bc field, or using standard subsref. In particular,
-        %   note that setting SET.BC(N, VAL) where VAL is numeric will actually
-        %   set N.BC = [] and N.LBC = N.RBC = VAL. SET.BC(N, STR) works
-        %   similarly when STR is one of 'dirichlet', 'neuman', or 'periodic'.
-        
-            if ( isempty(val) )
-                N.bc = [];
-%                 N.lbc = []; %#ok<MCSUP>
-%                 N.rbc = []; %#ok<MCSUP>                
+            %CHEBOP.SET.BC   Set constraints of a CHEBOP.
+            %   CHEBOP.SET.BC offers more control of setting constraints than
+            %   simply accessing the .bc field, or using standard subsref. In
+            %   particular, note that setting SET.BC(N, VAL) where VAL is
+            %   numeric will actually set N.BC = [] and N.LBC = N.RBC = VAL.
+            %   SET.BC(N, STR) works similarly when STR is one of 'dirichlet',
+            %   'neuman', or 'periodic'.
             
-            elseif ( isnumeric(val) )
-            % Allow passing numerical values to the .BC field, which will impose
-            % the conditions at both the left and right end of the domain. This
-            % is for backwards compatability.
-                N.bc = [];
-                N.lbc = val; %#ok<MCSUP>
-                N.rbc = val; %#ok<MCSUP>
-            
-           elseif ( isa(val, 'function_handle') )
-                if ( nargin(N) ~= nargin(val) )
-                    % When assigning to the BC field, we request that the number
-                    % of input arguments of the function handle is the same as
-                    % the number of inputs to the OP field.
-                    error('CHEBFUN:CHEBOP:SETBC', ...
-                        ['Number of inputs to N.BC must match the number ', ... 
-                         'of inputs to N.OP.']);                    
-                else
-                    N.bc = val;
-%                     N.lbc = []; %#ok<MCSUP>
-%                     N.rbc = []; %#ok<MCSUP>  
+            % Do this in a separate method for clarity.
+            if ( isstruct(val) )
+                if ( isfield(val,'left') )
+                    N.lbc = parseBC(N, val.left, 'lrbc'); %#ok<MCSUP>
+                end
+                if ( isfield(val, 'right') )
+                    N.rbc = parseBC(N, val.right, 'lrbc'); %#ok<MCSUP>
+                end
+                if ( isfield(val, 'other') )
+                    N.bc = parseBC(N, val.other, 'bc');
                 end
                 
             elseif ( strcmpi(val, 'periodic') )
-                N.bc = 'periodic'; 
-                N.lbc = []; %#ok<MCSUP>
-                N.rbc = []; %#ok<MCSUP>
+                N.bc = 'periodic';
                 
-            elseif ( strcmpi(val, 'dirichlet') || strcmpi(val, 'neumann') )
+                
+            elseif ( ischar(val) || isstruct(val) || isnumeric(val) )
+                % V4 style keywords and numeric settings are understood to
+                % apply to both ends.
                 N.bc = [];
-                N.lbc = val; %#ok<MCSUP>
-                N.rbc = val; %#ok<MCSUP>
+                result = parseBC(N, val, 'bc');
+                N.lbc = result; %#ok<MCSUP>
+                N.rbc = result; %#ok<MCSUP>
                 
             else
-                error('CHEBFUN:CHEBOP:SETRBC', ...
-                    'Unsupported format of BCs.')
+                % A proper function was supplied.
+                N.bc = parseBC(N, val, 'bc');
+                
             end
-        end   
+            
+            
+        end
         
         function N = set.op(N, val)
-        %CHEBOP.SET.OP   Set the differential equation part of a CHEBOP.
-        %   CHEBOP.SET.OP offers more control of setting the DE left boundary
-        %   conditions than simply accessing the .op field, or using standard
-        %   subsref.
-        
+            %CHEBOP.SET.OP   Set the differential equation part of a CHEBOP.
+            %   CHEBOP.SET.OP offers more control of setting the DE left
+            %   boundary conditions than simply accessing the .op field, or
+            %   using standard subsref.
+            
             % We're happy with function handles
             if ( isa(val, 'function_handle') || isempty(val) )
                 N.op = val;
             elseif ( iscell(val) )
                 error('CHEBFUN:CHEBOP:setOp:type', ...
                     ['Specifying differential equation as a cell of ', ...
-                     'anonymous \nfunctions is no longer supported. Please '...
-                     'use the syntax \n   N.op = @(x,u,v) [diff(u,2) + v; ' ...
-                     '...]\ninstead of \n   N.op = {@(x,u,v) diff(u) + v; ' ...
-                     '@{x,u,v) ...}']);
+                    'anonymous \nfunctions is no longer supported. Please '...
+                    'use the syntax \n   N.op = @(x,u,v) [diff(u,2) + v; ' ...
+                    '...]\ninstead of \n   N.op = {@(x,u,v) diff(u) + v; ' ...
+                    '@{x,u,v) ...}']);
             else
                 error('CHEBFUN:CHEBOP:setOp:type', ...
                     'Unknown type of argument for .op field of a chebop.');
             end
-        end   
+        end
         
         function N = set.init(N, val)
-        %CHEBOP.SET.INIT   Set the initial guess for a nonlinear CHEBOP.
-        %   CHEBOP.SET.INIT offers more control of setting the initial guess for
-        %   the Newton solves used for nonlinar ODES than simply accessing the
-        %   .init field, or using standard subsref. In particular, it checks
-        %   that the guess is of an appropriate form (i.e., CHEBMATRIX rather
-        %   than quasimatrix.). See CHEBOP documentation for further details.
-        
+            %CHEBOP.SET.INIT   Set the initial guess for a nonlinear CHEBOP.
+            %   CHEBOP.SET.INIT offers more control of setting the initial guess
+            %   for the Newton solves used for nonlinar ODES than simply
+            %   accessing the .init field, or using standard subsref. In
+            %   particular, it checks that the guess is of an appropriate form
+            %   (i.e., CHEBMATRIX rather than quasimatrix.). See CHEBOP
+            %   documentation for further details.
+            
             % Did we get a horizontally concatenated initial guess?
             if ( isa(val, 'chebfun') && size(val, 2) > 1 )
                 val = chebmatrix(mat2cell(val).');
@@ -399,9 +290,9 @@ classdef (InferiorClasses = {?double}) chebop
             end
             
             N.init = val;
-                
-        end   
-
+            
+        end
+        
         
     end
     
@@ -421,6 +312,9 @@ classdef (InferiorClasses = {?double}) chebop
         % The number of input arguments to a CHEBOP .OP field.
         nIn = nargin(N)
         
+        % Alternate & syntax for BC's.
+        N = and(N,BC)
+        
     end
     
     %% HIDDEN METHODS IMPLEMENTED IN OTHER FILES:
@@ -430,10 +324,12 @@ classdef (InferiorClasses = {?double}) chebop
         % Find selected eigenvalues and eigenfunctions of a linear CHEBOP.
         varargout = eig(varargin);
         
+        % Parse the input for setting a BC.
+        result = parseBC(N, bc, type)
+        
     end
     
-    %% STATIC HIDDEN METHODS:
-        
+    %% STATIC HIDDEN METHODS:       
     methods ( Static = true, Access = private )
 
         % Controls information displayed for Newton iterations
@@ -443,7 +339,7 @@ classdef (InferiorClasses = {?double}) chebop
         displayInfoFinal(u, delta, iterNo, errEstDE, errEstBC, displayFig, ...
             displayTimer, pref)
         
-        % Display at the start of Newton iteration.        
+        % Display at the start of Newton iteration.
         [displayFig, displayTimer] = displayInfoInit(u,pref);
         
         % Display during Newton iteration.        
