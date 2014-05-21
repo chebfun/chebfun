@@ -124,8 +124,15 @@ function [funs, ends] = constructorNoSplit(op, domain, pref, vscale, hscale, ...
 numIntervals = numel(domain) - 1;
 ends = domain;
 
+% We extrapolate when the given function is singular, otherwise rounding error
+% introduced by maps may cause wrong sign for function values at the endpoints:
+if ( any(exps) || ~isempty(singTypes))
+    pref.techPrefs.extrapolate = true;
+end
+
 % Initialise the FUN array:
 funs{numIntervals} = fun.constructor();
+
 % We only want to throw this warning once:
 warningThrown = false;
 
@@ -175,6 +182,7 @@ ends = domain;
 
 % Set the maximum length (i.e., number of sample points for CHEBTECH):
 pref.techPrefs.maxLength = pref.breakpointPrefs.splitMaxLength;
+
 % We extrapolate when splitting so that we can construct functions like
 % chebfun(@sign,[-1 1]), which otherwise would not be happy at x = 0.
 pref.techPrefs.extrapolate = true;
