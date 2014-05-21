@@ -11,9 +11,4 @@ function out = isreal(f)
 % Check if all the coefficients are real:
 out = isreal(f.coeffs);
 
-% % Check if all the coefficients are real: (Using a tolerance)
-% tol = f.epslevel.*f.vscale;
-% absImagCoeffs = max(abs(imag(f.coeffs)), [], 1);
-% out = all(absImagCoeffs <= tol);
-
 end
