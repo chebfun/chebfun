@@ -304,10 +304,10 @@ while ( ~isHappy )
         s = 0.237283579771521;
         r = (domain(2)+domain(1))/2 + r*(domain(2)-domain(1));
         s = (domain(4)+domain(3))/2 + s*(domain(4)-domain(3));
-        if ( abs( op(r,s) - feval(g, r, s) ) > 1e5 * tol )
-           % out of lives.
-           warning('CHEBFUN2:SAMPLETEST:FAILURE',...
-               'Function may not be resolved. Is the function discontinuous?');
+        if ( abs( op(r,s) - feval(g, r, s) ) > 100* tol )
+            % Increase minsamples and try again.
+            minsample = 2^( floor( log2( minsample ) ) + 1) + 1;
+            isHappy = 0;
         end
     end
     
