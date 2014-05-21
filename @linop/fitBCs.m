@@ -1,4 +1,4 @@
-function u0 = fitBCs(L,prefs)
+function u0 = fitBCs(L, prefs)
 %FITBCS    Find a low-order polynomial which satisfies the BCs of a LINOP.
 %   U0 = FITBCS(L) Returns a CHEBMATRIX which will satisfy the BCs
 %        and other conditions of the linop L.
