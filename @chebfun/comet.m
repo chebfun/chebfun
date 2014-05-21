@@ -11,34 +11,16 @@ function comet(f, g, ignored)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% DEVELOPER NOTE:
-%  For simplictiy, we simply extract the X and Y data from the standard PLOT()
-%  method and then call the built-in COMET() method.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Create a new figure
-dummy = figure();
-if ( nargin == 1 )
-    % COMET(F)
-    h = plot(f);
-else
+if ( nargin == 1 ) % COMET(F)
+    data = plotData(f);
+else               % COMET(F, G)
     if ( nargin > 2 )
         warning('CHEBFUN:comet:nargin', ...
             'Third input to @CHEBFUN/COMET() is ignored.');
     end
-    % COMET(F, G)
-    h = plot(f, g);
+    data = plotData(f, g);
 end
 
-% Extract the data:
-x = get(h, 'XData');
-y = get(h, 'YData');
-
-% Close the dummy figure:
-close(dummy)
-
-% Call the built-in COMET() method:
-comet(x, y, 0);
+comet(data.xLine, data.yLine, 0);
 
 end

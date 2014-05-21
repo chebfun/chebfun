@@ -10,12 +10,6 @@ function comet3(f, g, h, ignored)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% DEVELOPER NOTE:
-%  For simplictiy, we simply extract the X, Y, and Z data from the standard
-%  PLOT() method and then call the built ini COMET3() method.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 if ( (nargin == 1) && (numColumns(f) == 3) )
     % Case of a single quasimatrix input:
     f1 = extractColumns(f, 1);
@@ -25,24 +19,13 @@ if ( (nargin == 1) && (numColumns(f) == 3) )
     return
 end
 
-% Create a new figure
-dummy = figure();
 if ( nargin > 3 )
     warning('CHEBFUN:comet3:nargin', ...
         'Fourth input to @CHEBFUN/COMET() is ignored.');
 end
-% COMET(F, G)
-hand = plot3(f, g, h);
 
-% Extract the data:
-x = get(hand, 'XData');
-y = get(hand, 'YData');
-z = get(hand, 'ZData');
+data = plotData(f, g, h);
 
-% Close the dummy figure:
-close(dummy)
-
-% Call the built-in COMET() method:
-comet3(x, y, z, 0);
+comet3(data.xLine, data.yLine, data.zLine, 0);
 
 end
