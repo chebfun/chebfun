@@ -83,8 +83,13 @@ elseif ( ~isa(u0, 'chebmatrix') )
 end
 
 %% Loop over different times.
-allu = chebmatrix({});
+allU = chebmatrix({});
 for i = 1:length(t)
+    
+    if ( t == 0 )
+        allU = [ allU, u0 ]; %#ok<AGROW>
+        continue
+    end
     
     %% Loop over a finer and finer grid until happy:
     for dim = dimVals
@@ -133,10 +138,10 @@ for i = 1:length(t)
     ucell = mat2fun(disc, u);
     doSimplify = @(f) simplify( f, max(eps, epsLevel) );
     ucell = cellfun( doSimplify, ucell, 'uniform', false );
-    allu = [ allu, chebmatrix(ucell) ];
+    allU = [ allU, chebmatrix(ucell) ]; %#ok<AGROW>
 end
 
-u = allu;
+u = allU;
 
 % Return a CHEBFUN rather than a CHEBMATRIX for scalar problems:
 if ( all(size(u) == [1 1]) )
