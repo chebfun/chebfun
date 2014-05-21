@@ -11,6 +11,9 @@ function varargout = plot(A, varargin)
 %   SPY(A, DIM, DISCTYPE) uses the dimension vector DIM and the discretization
 %   DISCTYPE for the visualization. See CHEBMATRIX/SPY() for further details.
 %
+%   H = PLOT(...) will return the figure handle handle from the plot in the case
+%   when CHEBFUN/PLOT() is called, but throw an error for CHEBMATRIX/SPY().
+%
 % See also CHEBFUN/PLOT, CHEMATRIX/SPY.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
