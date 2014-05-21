@@ -31,7 +31,7 @@ f = @(x,y) 1./(1+25*x.^2.*y.^2);
 ffch = chebfun2(@(x,y) f(x,y), [-2 2 -2 2]);
 xx = linspace(-2,2); 
 [XX,YY] = meshgrid(xx,xx);
-pass(6) = ( norm( f(XX,YY) - ffch(XX,YY), inf) < 1e2*tol );
+pass(6) = ( max(max( abs(f(XX,YY) - ffch(XX,YY) ))) < 2e3*tol );
 
 %%
 % Constructing from matrix of values 
