@@ -5,7 +5,7 @@ function pass = test_bcsyntax
 
 % TAD, 12 May 2014
 
-warning off
+warnState = warning('off', 'CHEBFUN:chebop:parsebc:keywordbc');
 
 N = chebop(@(u) diff(u,2) - exp(u));
 N.lbc = 1;
@@ -21,7 +21,7 @@ N.bc = @(u) u(0)-1;
 
 pass = true;
 
-warning on
+warning(warnState)
 
 end
 
