@@ -22,4 +22,8 @@ end
 % Call SUM:
 out = sum(conj(f).*g);
 
+% TODO: This is necessary as SINGFUN/SUM() is returning in correct dimensions in
+% some cases.
+out = reshape(out, size(f,2), size(g,2));
+
 end
