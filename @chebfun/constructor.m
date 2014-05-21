@@ -126,7 +126,7 @@ ends = domain;
 
 % We extrapolate when the given function is singular, otherwise rounding error
 % introduced by maps may cause wrong sign for function values at the endpoints:
-if ( any(exps) || ~isempty(singTypes))
+if ( any(exps) || ~isempty(singTypes) )
     pref.techPrefs.extrapolate = true;
 end
 
