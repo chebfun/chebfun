@@ -194,7 +194,7 @@ classdef (InferiorClasses = {?double}) chebop
             %   conditions than simply accessing the .lbc field, or using standard
             %   subsref.
             
-            N.lbc = parseBC(N, val);            
+            N.lbc = parseBC(N, val, 'lrbc');            
         end
         
         function N = set.rbc(N, val)
@@ -203,7 +203,7 @@ classdef (InferiorClasses = {?double}) chebop
             %   conditions than simply accessing the .rbc field, or using standard
             %   subsref.
             
-            N.rbc = parseBC(N, val);
+            N.rbc = parseBC(N, val, 'lrbc');
         end
         
         function N = set.bc(N, val)
@@ -218,13 +218,13 @@ classdef (InferiorClasses = {?double}) chebop
             % Do this in a separate method for clarity.
             if ( isstruct(val) )
                 if ( isfield(val,'left') )
-                    N.lbc = parseBC(N, val.left); %#ok<MCSUP>
+                    N.lbc = parseBC(N, val.left, 'lrbc'); %#ok<MCSUP>
                 end
                 if ( isfield(val, 'right') )
-                    N.rbc = parseBC(N, val.right); %#ok<MCSUP>
+                    N.rbc = parseBC(N, val.right, 'lrbc'); %#ok<MCSUP>
                 end
                 if ( isfield(val, 'other') )
-                    N.bc = parseBC(N, val.other);
+                    N.bc = parseBC(N, val.other, 'bc');
                 end
                 
             elseif ( strcmpi(val, 'periodic') )
@@ -235,13 +235,13 @@ classdef (InferiorClasses = {?double}) chebop
                 % V4 style keywords and numeric settings are understood to
                 % apply to both ends.
                 N.bc = [];
-                result = parseBC(N, val);
+                result = parseBC(N, val, 'bc');
                 N.lbc = result; %#ok<MCSUP>
                 N.rbc = result; %#ok<MCSUP>
                 
             else
                 % A proper function was supplied.
-                N.bc = parseBC(N, val);
+                N.bc = parseBC(N, val, 'bc');
                 
             end
             
@@ -325,7 +325,7 @@ classdef (InferiorClasses = {?double}) chebop
         varargout = eig(varargin);
         
         % Parse the input for setting a BC.
-        result = parseBC(N, BC)
+        result = parseBC(N, bc, type)
         
     end
     
