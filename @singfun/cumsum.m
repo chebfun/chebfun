@@ -49,10 +49,10 @@ elseif ( all(f.exponents) ) % Singularities at both endpoints:
     % Introduce a new break point at 0 using RESTRICT:
     f = restrict(f, [-1 0 1]);
     g{1} = singIntegral(f{1})/2;
-    rVal = get(g{1}, 'rval');
     g{2} = singIntegral(f{2})/2;
     % Adjust the second piece:
-    g{2} = g{2} + (rVal - get(g{2}, 'lval'));
+    rVal = get(g{1}, 'rval');
+    g{2} = g{2} + rVal;
 else % Error message thrown for other cases:
     error('SINGFUN:cumsum:nosupport', ...
         'CUMSUM() does not support the given case.')
@@ -174,19 +174,19 @@ function g = singIntegral(f)
             g.smoothPart = f.smoothPart.make(@(x) CM + 0*x);
             g.exponents = [ra - a 0];
         elseif ( ~iszero(u) && abs(CM) < tol*f.smoothPart.vscale )
-            [u, rootsLeft, ignored] = extractBoundaryRoots(u);
+            [u, rootsLeft, ~] = extractBoundaryRoots(u);
             g.smoothPart = u;
             g.exponents = [exps(1)+rootsLeft 0];
         else % The general case that both terms are non-trivial
             g.smoothPart = u + CM*xa;
-            [g.smoothPart, rootsLeft, ignored] = ...
+            [g.smoothPart, rootsLeft, ~] = ...
                 extractBoundaryRoots(g.smoothPart);
             g.exponents = [exps(1)+rootsLeft 0];
         end
         
     elseif ( abs(Cm) < tol*f.smoothPart.vscale )
         % No log term: fractional poles with non-constant smooth part:
-        [u, rootsLeft, ignored] = extractBoundaryRoots(u);
+        [u, rootsLeft, ~] = extractBoundaryRoots(u);
         g.smoothPart = u;
         g.exponents = [exps(1)+rootsLeft 0];
     else
@@ -194,13 +194,20 @@ function g = singIntegral(f)
         % [TODO]: Construct a representation of log.
         error('SINGFUN:cumsum:nolog',['cumsum does not support the case ', ...
             'in which the indefinite integral has a logarithmic term.'])
-        
     end
     
     % Flip back so singularity is on the right for the case with singularity at
     % the right end of the domain.
     if ( flip )
         g = -flipud(g);
+    end
+    
+    % If G is not blowing up, ensure G(-1) == 0.
+    if ( g.exponents(1) >= 0 )
+        % suppress the warning:
+        warnState = warning('off', 'CHEBFUN:SINGFUN:plus');
+        g = g - get(g, 'lval');
+        warning(warnState)        
     end
 
 end

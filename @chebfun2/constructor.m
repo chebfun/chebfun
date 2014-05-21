@@ -56,10 +56,18 @@ if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
         op = chebfun2.coeffs2vals( op );
         g = chebfun2( op, varargin{:} );
         return
+    elseif ( any(strcmpi(domain, 'padua')) )
+        [ignored, op] = chebfun2.paduaVals2coeffs( op );
+        g = chebfun2( op );
+        return        
     elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, 'coeffs'))) )
         op = chebfun2.coeffs2vals( op );
         g = chebfun2( op, domain );
         return
+    elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, 'padua'))) )
+        [ignored, op] = chebfun2.paduaVals2coeffs( op, domain );
+        g = chebfun2( op, domain );
+        return        
     else
         % If CHEBFUN2(f, rk), then nonadaptive call:
         if ( numel(domain) == 1 )
@@ -122,12 +130,22 @@ elseif ( numel(domain) ~= 4 )
     error('CHEBFUN2:CONSTRUCTOR:DOMAIN', 'Domain not fully determined.');
 end
 
+<<<<<<< HEAD
 % Get default preferences from chebPref:
 maxRank = pref.maxRank;
 maxLength = pref.maxLength;
 pseudoLevel = pref.eps;
 sampleTest = pref.sampleTest;
 grid = 9;   % minsample
+=======
+% Get default preferences from chebfunpref:
+prefStruct = pref.cheb2Prefs;
+maxRank = prefStruct.maxRank;
+maxLength = prefStruct.maxLength;
+pseudoLevel = prefStruct.eps;
+sampleTest = prefStruct.sampleTest;
+minsample = 9;   % minsample
+>>>>>>> origin/development
 
 % Go find out what tech I'm based on:
 tech = chebfun2pref().tech();
@@ -162,6 +180,8 @@ end
 
 isHappy = 0;
 while ( ~isHappy )
+    grid = minsample; 
+    
     % Sample function on a Chebyshev tensor grid:
     [xx, yy] = chebfun2.chebpts2(grid, grid, domain);
     vals = evaluate(op, xx, yy, vectorize);
@@ -175,7 +195,7 @@ while ( ~isHappy )
     end
     
     % Two-dimensional version of CHEBFUN's tolerance:
-    tol = grid.^(4/3) * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
+    tol = grid.^(2/3) * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
     
     %%% PHASE 1: %%%
     % Do GE with complete pivoting:
@@ -189,7 +209,7 @@ while ( ~isHappy )
         vals = evaluate(op, xx, yy, vectorize); % resample
         vscale = max(abs(vals(:)));
         % New tolerance:
-        tol = grid.^(4/3) * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
+        tol = grid.^(2/3) * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
         % New GE:
         [pivotValue, pivotPosition, rowValues, colValues, iFail] = CompleteACA(vals, tol);
         % If the function is 0+noise then stop after three strikes.
@@ -302,7 +322,9 @@ while ( ~isHappy )
         r = (domain(2)+domain(1))/2 + r*(domain(2)-domain(1));
         s = (domain(4)+domain(3))/2 + s*(domain(4)-domain(3));
         if ( abs( op(r,s) - feval(g, r, s) ) > 1e5 * tol )
-            isHappy = 0;
+           % out of lives.
+           warning('CHEBFUN2:SAMPLETEST:FAILURE',...
+               'Function may not be resolved. Is the function discontinuous?');
         end
     end
     

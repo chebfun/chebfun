@@ -123,18 +123,54 @@ f = chebfun(@(x) -(x - 0.1).^2 + 1, [-1 -0.5 0 0.5 1], pref);
 pass(15) = (abs(y - 1) < 10*epslevel(f)*vscale(f)) && ...
     (abs(feval(f, x) - 1) < 10*epslevel(f)*vscale(f));
 
+% Check max(f, [], dim).
+f = chebfun(@(x) x);
+Q = [f -f];
+tol = vscale(Q)*epslevel(Q);
+
+y_a = max(Q, [], 1);
+err_a = norm(y_a - [1 1], Inf);
+y_q = max(cheb2quasi(Q), [], 1);
+err_q = norm(y_q - [1 1], Inf);
+y_row = max(Q.', [], 2);
+err_row = norm(y_row - [1 1], Inf);
+pass(16) = (err_a < tol) && (err_q < tol) && (err_row < tol);
+
+g_a = max(Q, [], 2);
+err_a = norm(g_a(xr) - abs(xr), Inf);
+g_q = max(cheb2quasi(Q), [], 2);
+err_q = norm(g_q(xr) - abs(xr), Inf);
+g_row = max(Q.', [], 1);
+err_row = norm(g_row(xr) - abs(xr).', Inf);
+pass(17) = (err_a < tol) && (err_q < tol) && (err_row < tol);
+
+try
+    y = max(Q, [], 3)
+    pass(18) = false;
+catch ME
+    pass(18) = strcmp(ME.identifier, 'CHEBFUN:max:badDim');
+end
+
 % Check error condition.
 try
     y = max(f, 'bad');
-    pass(16) = false;
+    pass(19) = false;
 catch ME
-    pass(16) = strcmp(ME.identifier, 'CHEBFUN:max:flag');
+    pass(19) = strcmp(ME.identifier, 'CHEBFUN:max:flag');
 end
+
+f = chebfun({@(x) exp((1 + 1i)*x), @(x) sec(1i*(x - 0.5))}, [-1 0 1]);
+[y, x] = max(f);
+y_exact = 1;
+tol = 10*epslevel(f)*vscale(f);
+err1 = abs(y - y_exact);
+err2 = abs(feval(f, x) - y_exact);
+pass(20) = err1 < tol && err2 < tol;
 
 %% Check max of a CHEBFUN and a scalar:
 f = chebfun(@(x) [sin(x) cos(x)]);
 h = max(f, .75);
-pass(17) = norm(h([-.9 0 .8 .9].') - ...
+pass(21) = norm(h([-.9 0 .8 .9].') - ...
     [.75 .75 ;.75 1 ; .75 .75 ; sin(.9) .75]) < epslevel(h)*vscale(h);
 
 %% Test on function defined on unbounded domain:
@@ -151,6 +187,6 @@ yExact = exp(-1);
 xExact = 1;
 errY = y - yExact;
 errX = x - xExact;
-pass(18) = norm([errY errX], inf) < 100*epslevel(f).*vscale(f);
+pass(22) = norm([errY errX], inf) < 100*epslevel(f).*vscale(f);
 
 end

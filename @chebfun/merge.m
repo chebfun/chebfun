@@ -29,7 +29,15 @@ function [f, mergedPts] = merge(f, index, pref)
 % See http://www.chebfun.org for Chebfun information.
 
 if ( numel(f) > 1 )
+    % TODO:  Implement this.
     error('CHEBFUN:merge:quasi', 'MERGE does not support quasimatrices.');
+end
+
+% Convert to a column CHEBFUN so that feval(f, x) returns a column instead of a
+% row.  (Needed to construct a CHEBFUN out of @(x) feval(f, x) later on.)
+isTrans = f.isTransposed;
+if ( isTrans )
+    f = f.';
 end
 
 % Parse the inputs:
@@ -50,9 +58,21 @@ elseif ( nargin == 2 )
     end
 end
 
+[f, mergedPts] = mergeColumn(f, index, pref);
+
+% Convert back to a row CHEBFUN if we started with one.
+if ( isTrans )
+    f.isTransposed = true;
+end
+
+end
+
+function [f, mergedPts] = mergeColumn(f, index, pref)
+
 % Deal with input arguments:
 if ( isempty(index) )
-    % No indices requested!
+    % No indices requested.
+    mergedPts = [];
     return
 
 elseif ( ischar(index) )
@@ -66,7 +86,8 @@ else
     index((index <= 1) | (index > numel(f.funs))) = [];
     
     if ( isempty(index) )
-        % All the requested indices were trivial:
+        % All the requested indices were trivial.
+        mergedPts = [];
         return
     end
 

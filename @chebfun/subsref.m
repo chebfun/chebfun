@@ -72,7 +72,10 @@ switch index(1).type
                 if ( size(columnIndex, 1) > 1 )
                     error('CHEBFUN:subsref:colidx', ...
                         'Column index must be a vector of integers.')
-                end                
+                end               
+            elseif ( max(idx{2}) > columnIndex(end) )
+                error('CHEBFUN:subsref:badsubscript', ...
+                    'Index exceeds CHEBFUN dimensions.');
             end
 
         elseif ( length(idx) == 2 && strcmp(idx{2}, ':') )

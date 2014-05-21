@@ -43,6 +43,26 @@ C(1, 3) = .25;
 C(2, 4) = .375;
 pass(5) = norm(X - C, inf) < 10*epslevel(L);
 
+%% Test a bug from #437
+
+x = chebfun('x'); 
+A = [];
+for j = 0:6
+   xj = -1 + j/4;
+   A = [ A , max(0, 1-4*abs(x-xj)) ];
+end
+u = A\x;
+expected = [...
+  -0.999851249504164
+  -0.750297500991670
+  -0.498958746529156
+  -0.253867512891710
+   0.014428798095994
+   0.196152320507735
+   0.700961919873066];
+err = norm(u - expected, inf);
+pass(6) = err < 10*epslevel(A);
+
 %% Test on SINGFUN:
 
 % scalar * [1 x INF] = [1 x INF] => scalar\row SINGFUN:
@@ -53,14 +73,14 @@ op = @(x) sin(20*x)./(3*(x+1));
 g_vals = feval(g, xr);
 g_exact = op(xr).';
 err = g_vals - g_exact;
-pass(6) = norm(err, inf) < 1e4*vscale(g)*epslevel(g);
+pass(7) = norm(err, inf) < 1e4*vscale(g)*epslevel(g);
 
 % [1 x INF] * [INF x 1] = scalar => row SINGFUN\scalar:
 f = chebfun(@(x)(sin(100*x).^2+1)./((x+1).^0.25), 'exps', [-0.25 0], 'splitting', 'on');
 f = f.';
 g = f\3;
 err = f*g - 3;
-pass(7) = abs(err) < vscale(g)*epslevel(g);
+pass(8) = abs(err) < vscale(g)*epslevel(g);
 
 % [INF x 1] * SCALAR = [INF x 1] => column SINGFUN\column SINGFUN:
 
@@ -68,7 +88,9 @@ f = chebfun(@(x)3*(x.^2+3)./(x+1).^0.4, 'exps', [-0.4 0], 'splitting', 'on');
 g = chebfun(@(x)(x.^2+3)./(x+1).^0.4, 'exps', [-0.4 0], 'splitting', 'on');
 h = f\g;
 err = h - 1/3;
-pass(8) = norm(err, inf) < vscale(f)*epslevel(f);
+pass(9) = norm(err, inf) < vscale(f)*epslevel(f);
+
+
 
 % [TODO]: Revive the following test.
 
@@ -90,7 +112,7 @@ pass(8) = norm(err, inf) < vscale(f)*epslevel(f);
 % X = A\B;
 % res = A*X - B;
 % err = feval(res, x);
-% pass(9) = norm(err(:), inf) < max([get(A,'epslevel').*get(A,'vscale') ...
+% pass(10) = norm(err(:), inf) < max([get(A,'epslevel').*get(A,'vscale') ...
 %     get(B,'epslevel').*get(B,'vscale')]);
 
 end
