@@ -1,4 +1,4 @@
-function [y, x] = max(f, flag)
+function [y, x] = max(f, flag, dim)
 %MAX   Maximum value of a CHEBFUN.
 %   MAX(F) and MAX(F, 'global') return the maximum value of the CHEBFUN F.
 %
@@ -18,6 +18,12 @@ function [y, x] = max(f, flag)
 %   returns a CHEBFUN H such that H(x) = max(F(x), G(x)) for all x in the
 %   domain of F and G. Alternatively, either F or G may be a scalar.
 %
+%   MAX(F, [], DIM) computes the maximum of the CHEBFUN F in the dimension DIM.
+%   If DIM = 1 and F is a column CHEBFUN or DIM = 2 and F is a row CHEBFUN, this
+%   is equivalent to MAX(F). Othewise, MAX(F, [], DIM) returns a CHEBFUN which
+%   is the maximum across the discrete dimension of F. For example, if F is a
+%   quasimatrix with two columns, MAX(F, [], 2) = MAX(F(:,1), F(:,2)).
+%
 % See also MIN, MINANDMAX, ROOTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
@@ -30,14 +36,43 @@ if ( isempty(f) )
     return
 end
 
+if ( nargin == 3 )
+    if ( ~any(dim == [1 2]) )
+        error('CHEBFUN:max:badDim', 'DIM input to CHEBFUN MAX must be 1 or 2.');
+    end
+
+    if ( dim ~= 1 + f(1).isTransposed )
+        % Take max across discrete dimension of a quasimatrix:
+        f = cheb2cell(f);
+        y = -realmax;
+        for k = 1:numel(f)
+            y = maxOfTwoChebfuns(y, f{k});
+        end
+        y = merge(y);
+        return
+    end
+end
+
+if ( (nargin > 2) && isempty(flag) )
+    % MAX(F, [], 1).
+    flag = 'global';
+end
+
 if ( (nargin == 1) || strcmp(flag, 'global') ) 
+    % MAX(F) or MAX(F, 'global')
     [y, x] = globalMax(f);    
+    
 elseif ( isa(flag, 'chebfun') || isnumeric(flag) )
+    % MAX(F, G)
     y = maxOfTwoChebfuns(f, flag);
+    
 elseif ( strcmp(flag, 'local') )
+    % MAX(F, 'local')
     [y, x] = localMax(f);
+    
 else
     error('CHEBFUN:max:flag', 'Unrecognized flag.');
+    
 end
 
 end

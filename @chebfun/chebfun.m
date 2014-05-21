@@ -229,7 +229,10 @@ classdef chebfun
     
         % Static methods implemented by CHEBFUN class.
     methods ( Hidden = true, Static = true )
-        
+
+        %Convert a cell array of CHEBFUN objects to a quasimatrix.
+        G = cell2quasi(F)
+
         % Edge detector.
         [edge, vscale] = detectEdge(op, domain, hscale, vscale, derHandle);
         
@@ -238,7 +241,6 @@ classdef chebfun
         
         % Merge domains.
         newDom = mergeDomains(varargin)
-        
                 
         % Which interval is a point in?
         out = whichInterval(dom, x, direction);
@@ -357,6 +359,9 @@ classdef chebfun
         % True for zero CHEBFUN objects
         out = iszero(f)
         
+        % Kronecker product of two CHEBFUN object.
+        out = kron(f, g)
+        
         % Length of a CHEBFUN.
         out = length(f);
         
@@ -385,7 +390,7 @@ classdef chebfun
         varargout = plot3(f, g, h, varargin)
         
         % Power of a CHEBFUN
-        f = power(f, b);
+        f = power(f, b, pref);
         
         % Real part of a CHEBFUN.
         f = real(f)
@@ -413,6 +418,9 @@ classdef chebfun
 
         % Size of a CHEBFUN object.
         [s1, s2] = size(f, dim);
+
+        % Square root of a CHEBFUN.
+        f = sqrt(f, pref)
         
         % Retrieve and modify preferences for this class.
         varargout = subsref(f, index);
@@ -455,6 +463,9 @@ classdef chebfun
         % Supply new definition for a CHEBFUN at a point or set of points.
         f = definePoint(f, s, v)
         
+        % Multiplication operator.
+        M = diag(f)
+
         % Useful information for DISPLAY.
         [name, data] = dispData(f)
         
@@ -483,7 +494,7 @@ classdef chebfun
         f = tidyImpulses(f)
         
         % Adjust nearby common break points in domains of CHEBFUN objects.
-        [f, g, newBreaksLocF, newBreaksLocG] = tweakDomain(f, g, tol)
+        [f, g, newBreaksLocF, newBreaksLocG] = tweakDomain(f, g, tol, pos)
         
     end
     

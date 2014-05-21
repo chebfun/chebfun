@@ -6,6 +6,11 @@ function fx = toValues(disc, f)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+if ( isnumeric(f) )
+    fx = f;
+    return
+end
+
 dom = disc.domain;
 numInts = disc.numIntervals();
 dim = disc.dimension;

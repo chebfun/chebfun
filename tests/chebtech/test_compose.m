@@ -116,14 +116,15 @@ for n = 1:4
         pass(n, 11) = strcmp(ME.identifier, 'CHEBFUN:CHEBTECH:compose:dim');
     end
     
-    try
-        f = testclass.make(@(x) sin(x));
-        g = testclass.make(@(x) 100*cos(x));
-        compose(g,f);
-        pass(n, 12) = false;
-    catch ME
-        pass(n, 12) = strcmp(ME.identifier, 'CHEBFUN:CHEBTECH:compose:range');
-    end
+    % Removed by NH Apr 2014. This should be checked at a hgiher level.
+%     try
+%         f = testclass.make(@(x) sin(x));
+%         g = testclass.make(@(x) 100*cos(x));
+%         compose(g,f);
+%         pass(n, 12) = false;
+%     catch ME
+%         pass(n, 12) = strcmp(ME.identifier, 'CHEBFUN:CHEBTECH:compose:range');
+%     end
 end
 
 end

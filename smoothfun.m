@@ -155,20 +155,29 @@ else
         end
     end
     % Find the index of the smallest error:
-    [ignored, minInd] = min(errs); 
+    [~, minInd] = min(errs); 
     dOpt = min(minInd) - 1;
 end
 
 % Compute FH weights:
 if ( dOpt <= (n + 1)/2 ) 
     wl = abs(fhBaryWts(x, dOpt, dOpt + 1));
-    w = [wl; wl(end)*ones(n - 1 - 2*dOpt, 1); flipud(wl)];
+    wm = repmat(wl(end), n - 1 - 2*dOpt, 1);
+    w = [ wl ; wm ];
+    w = w(1:ceil((n+1)/2));
+    if ( mod(n, 2) )
+        w = [ w ; flipud(w) ];
+    else
+        w = [ w(1:end-1) ; flipud(w) ];
+    end
     w(1:2:end) = -w(1:2:end);
 else
     w = fhBaryWts(x, dOpt);
 end
+
 % Create a function handle for the computed rational interpolant to the data:
 f = @(zz) chebtech.bary(zz, vals, x, w);
+
 end
 
 function w = fhBaryWts(x, d, maxind) 

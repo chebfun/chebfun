@@ -37,12 +37,15 @@ function [u, disc] = linsolve(L, f, varargin)
 % Parse input
 prefs = [];    % no prefs given
 disc = [];     % no discretization given
+vscale = Inf;
 for j = 1:nargin-2
     item = varargin{j};
     if ( isa(item, 'cheboppref') )
         prefs = item;
     elseif ( isa(item,'chebDiscretization') )
         disc = item;
+    elseif ( isnumeric(item) )
+        vscale = item;
     else
         error('Could not parse argument number %i.',j+2)
     end
@@ -125,7 +128,7 @@ for dim = [dimVals inf]
     u = partition(disc, v);
 
     % Test the happiness of the function pieces:
-    [isDone, epsLevel] = testConvergence(disc, u(isFun));
+    [isDone, epsLevel] = testConvergence(disc, u(isFun), vscale, prefs);
 
     if ( all(isDone) || isinf(dim) )
         break
@@ -146,7 +149,7 @@ end
 % Because each function component may be piecewise defined, we will loop through
 % one by one.
 for k = find( isFun )
-    u{k} = disc.toFunction(u{k});
+    u{k} = disc.toFunctionOut(u{k});
     u{k} = simplify( u{k}, max(eps,epsLevel) );
 end
 
