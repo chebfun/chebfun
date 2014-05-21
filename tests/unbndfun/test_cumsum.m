@@ -71,7 +71,6 @@ gVals = feval(g, x);
 
 opg = @(x) 5*x.^2/2 - 5/2 + get(g, 'lval');
 gExact = opg(x);
-<<<<<<< HEAD
 err = norm(gVals - gExact, inf);
 tol = 100*get(g,'epslevel').*get(g,'vscale');
 pass(4) = err < tol;
