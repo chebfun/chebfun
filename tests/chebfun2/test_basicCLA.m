@@ -7,7 +7,6 @@ if ( nargin < 1 )
 end
 tol = 100*pref.cheb2Prefs.eps; 
 
-
 rng(0)
 gam = 10;
 % Add some Gaussians:
@@ -25,12 +24,10 @@ F = chebfun2(f);
 % Check QR of a chebfun2
 
 % Test QR of the columns:
-cols = F.cols;
 [Q, R] = qr(F.cols);
 pass(1) = ( norm(Q*R - F.cols) < tol );
 
 % Test QR of the rows:
-rows = F.rows;
 [Q, R] = qr(F.rows);
 pass(2) = ( norm(Q*R - F.rows) < tol );
 
@@ -55,3 +52,5 @@ pass(6) = ( norm(F - G2) < tol );
 G3 = (C*sqrt(D))*(sqrt(D)*R.');
 pass(7) = ( norm(G3 - F) < tol );
 pass(8) = ( norm(F - G3) < tol );
+
+end

@@ -18,7 +18,7 @@ function [Q, R, E] = qr(f, outputFlag, methodFlag)
 %   to use in computing the QR factorisation. METHOD = 'built-in' will form a
 %   weighted Legendre-Vandermonde matrix and orthogonalise this with the
 %   standard Matlab QR algorithm. METHOD = 'householder' uses the technique
-%   described in [1]. METHOD = 'householder' is the default option.
+%   described in [1]. METHOD = 'built-in' is the default option.
 %
 %   [1] L.N. Trefethen, "Householder triangularization of a quasimatrix", IMA J
 %   Numer Anal (2010) 30 (4): 887-897.
