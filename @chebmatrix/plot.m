@@ -3,11 +3,11 @@ function varargout = plot(A, varargin)
 %   PLOT(A) plots the CHEBMATRIX object A.
 %
 %   If A contains only CHEBFUN and DOUBLE objects, A is converted to a
-%   QUASIMATRIX, and CHEBFUN/PLOT is called. In this case PLOT(A, S) allows
+%   QUASIMATRIX, and CHEBFUN/PLOT() is called. In this case PLOT(A, S) allows
 %   various line types, plot symbols, and colors to be used, where S is a
 %   character string. See CHEBFUN/PLOT() for further details.
 %
-%   If A contains inf x inf blocks, CHEBMATRIX/SPY is called. In this case%
+%   If A contains inf x inf blocks, CHEBMATRIX/SPY() is called. In this case
 %   SPY(A, DIM, DISCTYPE) uses the dimension vector DIM and the discretization
 %   DISCTYPE for the visualization. See CHEBMATRIX/SPY() for further details.
 %
@@ -18,9 +18,7 @@ function varargout = plot(A, varargin)
 
 % Deal with an empty input:
 if ( isempty(A) )
-    if ( nargout == 1 )
-        varargout{1} = plot([]);
-    end
+    [varargout{1:nargout}] = plot([]);
     return
 end
 
@@ -29,18 +27,14 @@ isQuasi = all(isfinite(s(:)));
 
 if ( ~isQuasi )
     % If A contains inf x inf blocks, call SPY():
-    h = spy(A, varargin{:});
+    [varargout{1:nargout}] = spy(A, varargin{:});
     
 else
     % If A contains only CHEBFUN or DOUBLE, convert it to a quasimatrix and
     % call CHEBFUN/PLOT():
     A = quasimatrix(A.blocks);
-    h = plot(A, varargin{:});
+    [varargout{1:nargout}] = plot(A, varargin{:});
     
-end
-
-if ( nargout > 0 )
-    varargout = {h};
 end
 
 end
