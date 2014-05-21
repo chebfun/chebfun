@@ -88,7 +88,7 @@ classdef chebfun2
         F = normalizeRowsAndCols(F, p)
         
         % Is a chebfun2 all positive or negative? 
-        bol = singleSignTest( f ) 
+        [bol, wzero] = singleSignTest( f ) 
     end
 
     % Private methods implemented by CHEBFUN2 class.
