@@ -9,6 +9,6 @@ function f = not(f)
 
 % TODO:  Should we use a tolerance here instead of any()?
 f.coeffs = ~any(f.coeffs, 1);
-f.vscale = abs(values);
+f.vscale = abs(f.coeffs);
 
 end
