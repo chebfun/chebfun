@@ -47,10 +47,13 @@ for k = 1:numInt
     
     % The points and weights returned by the CHEBTECH methods above live on
     % [-1, 1]. Transform the points to the interval we're working on.
-    dif = (d(k + 1) - d(k))/2;
-    x{k} = x0*dif + (d(k +1) + d(k))/2;
+
+    x{k} = d(k+1)*(x0 + 1)/2 + d(k)*(1 - x0)/2;
+%     dif = (d(k + 1) - d(k))/2;
+%     x{k} = x0*dif + (d(k +1) + d(k))/2;
     
     if ( nargout > 1 )
+        dif = (d(k+1) - d(k))/2;
         w{k} = varargout{2}*dif;
         if ( nargout > 2 )
             v{k} = varargout{3};
