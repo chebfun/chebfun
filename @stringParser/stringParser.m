@@ -25,11 +25,11 @@ classdef stringParser
         
     end
     
-    methods ( Static = true )
+    methods ( Access = public, Static = true )
         
         % Convert a string to an anonymous function.
         varargout = str2anon(str, problemType, fieldType)
-        
+             
     end
     
     methods( Access = private, Static = true )
@@ -40,9 +40,6 @@ classdef stringParser
         
         % The LL(1) parser
         parseOut = parser(lexIn)
-        
-        % Get rid of unecessary parenthesis in infix format strings
-        strOut = parSimp(strIn)
         
         % Convert an expression on PREFIX form to INFIX form
         [infixOut, notaVAR] = pref2inf(prefIn)
@@ -63,8 +60,8 @@ classdef stringParser
     
     methods( Access = public, Static = true, Hidden = true )
         
-        % Test the parenthesis simplification routine:
-        pass = test_parSimp(pref);
+        % Get rid of unecessary parenthesis in infix format strings
+        strOut = parSimp(strIn)
         
     end
     
