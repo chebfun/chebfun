@@ -47,7 +47,8 @@ elseif ( isnumeric( x ) && isnumeric( y ) )  % f(x, y)
     
     % TODO: Document this chunk!
     if ( min(size(x)) > 1 && all(size(x) == size(y)) )
-        if ( rank(x) == 1 && rank(y) == 1 )
+        if ( ~all(all(x - repmat(x(1,:),size(x,1),1))) &&...
+                ~all(all(y - repmat(y(:,1),1,size(y,2)))))
             x = x(1,:);
             y = y(:,1);
         end
