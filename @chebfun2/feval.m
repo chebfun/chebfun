@@ -47,6 +47,7 @@ elseif ( isnumeric( x ) && isnumeric( y ) )  % f(x, y)
     
     % TODO: Document this chunk!
     if ( min(size(x)) > 1 && all(size(x) == size(y)) )
+        % Check to see if the input is a meshgrid:
         if ( ~all(all(x - repmat(x(1,:),size(x,1),1))) &&...
                 ~all(all(y - repmat(y(:,1),1,size(y,2)))))
             x = x(1,:);
