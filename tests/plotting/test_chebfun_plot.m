@@ -17,15 +17,4 @@ catch ME
     rethrow(ME)
 end
 
-try 
-    x = chebfun(@(x) x, pref);
-    A = [abs(x) x]; 
-    plot(A, 'linewidth', 2)
-    pass(2) = true;
-catch ME
-    close(h)
-    rethrow(ME)
-end
-
-
 end
