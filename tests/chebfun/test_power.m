@@ -274,6 +274,7 @@ err = norm(vals_g - vals_exact, inf);
 tol = 1e2*epslevel(f).*norm(vals_exact, inf);
 pass(32) = ( err < tol );
 
+
 %% General power - A smooth function with varying sign and positive power:
 
 b = 0.69;
@@ -286,8 +287,9 @@ g = f.^b;
 vals_g = feval(g, x); 
 
 vals_exact = feval(opExact, x);
-err = vals_g - vals_exact;
-pass(33) = ( norm(err, inf) < 1e1*epslevel(f).*norm(vals_exact, inf) );
+err = norm(vals_g - vals_exact, inf);
+tol = 5e1*epslevel(f).*norm(vals_exact, inf);
+pass(33) = ( err < tol );
 
 %%%%%%%%%%%%%%%%%%%%%%% function on unbounded domain: %%%%%%%%%%%%%%%%%%%%%%%%%%
 

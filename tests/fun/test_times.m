@@ -191,7 +191,7 @@ hVals = feval(h, x);
 hExact = oph(x);
 err = norm(hVals - hExact, inf);
 tol = get(f,'epslevel')*get(f,'vscale');
-pass(26) = err < tol;
+pass(26) = err < 2*tol;
 
 end
 
