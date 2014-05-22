@@ -33,10 +33,17 @@ xx = linspace(-2,2);
 [XX,YY] = meshgrid(xx,xx);
 pass(6) = ( max(max( abs(f(XX,YY) - ffch(XX,YY) ))) < 2e3*tol );
 
-%%
-% Constructing from matrix of values 
-% A = randn( 100 ); 
-% f = chebfun2( A ); 
-% pass(j) = 
+% Grady's function that failed: 
+g = @(x,y) exp(-1./max(1 - ((x-0.02).^2 + (y-0.033).^2),0));
+f = chebfun2(g,[-pi,pi,-pi,pi]);
+[xx,yy] = meshgrid(linspace(-pi,pi,101));
+err = g(xx,yy)-f(xx,yy);
+pass(7) = ( norm(err(:),inf ) < 2e3*tol );
 
+% Another variant on Grady's function: 
+g = @(x,y) exp(-((x-0.2).^2+(y-0.33).^2)./max(1 - ((x-0.2).^2 + (y-0.33).^2),0));
+f = chebfun2(g,[-pi,pi,-pi,pi]);
+[xx,yy] = meshgrid(linspace(-pi,pi,101));
+err = g(xx,yy)-f(xx,yy);
+pass(7) = ( norm(err(:),inf ) < 2e3*tol );
 end

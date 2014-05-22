@@ -13,7 +13,7 @@ function pass = sampleTest(f, op, tol)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 domain = f.domain; 
-[xeval, yeval] = halton( 20, domain );
+[xeval, yeval] = halton( 50, domain );
 
 % Evaluate the CHEBFUN2:
 vFun = feval(f, xeval, yeval);
