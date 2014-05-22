@@ -140,7 +140,7 @@ minsample = 9;   % minsample
 tech = chebfun2pref().tech();
 
 if ( isa(tech, 'fourtech') ) 
-    grid = 8; 
+    minsample = 8; 
 end
 
 % If the vectorize flag is off, do we need to give user a warning?
@@ -212,9 +212,9 @@ while ( ~isHappy && ~Failure )
     end
     
     % Check if the column and row slices are resolved.
-    colChebtech = tech.make(sum(colValues,2), domain(3:4) );
+    colChebtech = tech.make(sum(colValues,2) );
     resolvedCols = happinessCheck(colChebtech);
-    rowChebtech = tech.make(sum(rowValues.',2), domain(1:2) );
+    rowChebtech = tech.make(sum(rowValues.',2) );
     resolvedRows = happinessCheck(rowChebtech);    
     isHappy = resolvedRows & resolvedCols;
     
