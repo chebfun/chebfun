@@ -1,4 +1,4 @@
-function pass = test_chebfun2v_ctor( pref ) 
+function pass = test_constructor( pref ) 
 % Test the Chebfun2v constructor when performing simple arithmetic
 % operations. 
 
