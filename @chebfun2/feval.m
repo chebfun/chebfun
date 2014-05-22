@@ -53,13 +53,23 @@ elseif ( isnumeric( x ) && isnumeric( y ) )  % f(x, y)
         % Check to see if the input is a meshgrid:
         if ( norm( bsxfun(@minus,x,x(1,:)) ) == 0  &&... 
                 norm(bsxfun(@minus,y,y(:,1))) == 0 )
+            % This allows someone to do: 
+            % [xx,yy] = meshgrid(linspace(-1,1));
+            % f(xx,yy)
+            
             x = x(1,:);
             y = y(:,1);
+            
         elseif ( norm( bsxfun(@minus,y,y(1,:)) ) == 0  &&... 
                 norm(bsxfun(@minus,x,x(:,1))) == 0 )
+            % This allows someone to do: 
+            % [yy,xx] = meshgrid(linspace(-1,1));
+            % f(xx,yy)
+            
             x = x(:,1); 
             y = y(1,:);
             takeTranspose = 1;
+            
         end
         takeDiag = 0;
     else 
