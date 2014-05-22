@@ -106,7 +106,9 @@ for j = 1: NumInts
     absy(absy < 1) = 1;
     
     % check the error
-    result(j) = all( abs(y_exact - y_approx) < 5e4*absy*get(f, 'epslevel') );
+    err = norm(abs(y_exact - y_approx), inf);
+    tol = norm(5e4*absy*get(f, 'epslevel'), inf);
+    result(j) = err < tol;
 end
 
 result = all(result);
