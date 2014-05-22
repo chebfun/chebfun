@@ -12,13 +12,13 @@ function r = roots( f, g, varargin )
 %
 %   R = ROOTS(F, G) returns the isolated points of F and G.
 %
-%   R = ROOTS(F, G, METHOD) allows the user to supply the method to solve 
-%   the bivariate rootfinding problem. If METHOD = 'ms' or METHOD =
-%   'marchingsquares', then the Marching Squares algorithm is employed. The Marching 
+%   R = ROOTS(F, G, METHOD) the underlying rootfinding algorithm can be 
+%   supplied. If METHOD = 'ms' or METHOD = 'marchingsquares', then the 
+%   Marching Squares algorithm is employed. The Marching 
 %   Squares algorithm is fast but not particularly robust. 
-%   If METHOD = 'resultant', then the hidden variable resultant method 
-%   based on Bezout resulants is employed. The Resultant method is slow but
-%   quite robust.
+%   If METHOD = 'resultant', then a hidden variable resultant method 
+%   based on Bezout resultants is employed. The Resultant method is slower but
+%   far more robust.
 %  
 % See also CHEBFUN2V/ROOTS.
 
