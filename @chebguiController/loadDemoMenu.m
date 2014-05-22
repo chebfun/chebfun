@@ -1,5 +1,5 @@
 function loadDemoMenu(handles)
-%LOADDEMOMENU       Popupulate the 'Demos' menu on the CHEBGUI figure.
+%LOADDEMOMENU    Popupulate the 'Demos' menu on the CHEBGUI figure.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -116,8 +116,8 @@ end
 D = dir(eigpath);
 for demoCounter = 1:length(D) % First two entries are . and ..
     demoPath = fullfile(eigpath,D(demoCounter,:).name);
-    if isempty(strfind(demoPath,'.guifile')) % Only want to load files ending in .guifile
-        continue
+    if isempty(strfind(demoPath,'.guifile')) 
+        continue % Only want to load files ending in .guifile
     end
     % Need to obtain the name and type of the demo as well
     fid = fopen(demoPath);
