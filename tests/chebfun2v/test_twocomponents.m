@@ -1,4 +1,4 @@
-function pass = test_chebfun2v_twocomponents( pref ) 
+function pass = test_twocomponents( pref ) 
 % A chebfun2v test for checking that chebfun2v objects with two
 % components is working correctly. 
 
