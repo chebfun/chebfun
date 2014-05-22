@@ -324,9 +324,6 @@ classdef (InferiorClasses = {?double}) chebop
         % Find selected eigenvalues and eigenfunctions of a linear CHEBOP.
         varargout = eig(varargin);
         
-        % Parse the input for setting a BC.
-        result = parseBC(N, bc, type)
-        
     end
     
     %% STATIC HIDDEN METHODS:       
@@ -361,7 +358,7 @@ classdef (InferiorClasses = {?double}) chebop
             disc, dampingInfo)
         
         % Parse boundary conditions for CHEBOP object.
-        result = parsebc(N, BC, type)
+        result = parseBC(N, BC, type)
         
         % Solve a nonlinear problem posed with CHEBOP
         [u, info] = solvebvpNonlinear(N, rhs, L, u0, res, pref, displayInfo)
