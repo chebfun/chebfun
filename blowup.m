@@ -43,15 +43,12 @@ function varargout = blowup(on_off)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TODO: This requires a test.
-% TODO: Are there still three states? Should there be?
-
-% This is default behavior for "blowup on"
+% This is default behavior for "blowup on":
 default = 1;
 
 % Parse the inputs if they are a string:
 if ( nargin > 0 && ischar(on_off) )
-    check = strcmpi(on_off, {'on','off','0', '1', '2'});
+    check = strcmpi(on_off, {'on', 'off', '0', '1', '2'});
     if ( check(1) )
         on_off = default;
     elseif ( check(2) )
@@ -65,11 +62,11 @@ end
 
 if ( nargout > 0 && nargin == 0 )
     % Simply return the state:
-    blowupState = chebfunpref().enableSingularityDetection;
+    blowupState = getBlowupState();
     
 elseif ( nargin == 0 )
     % Display the information:
-    switch ( chebfunpref().enableSingularityDetection )
+    switch ( getBlowupState() )
         case 0
             disp('BLOWUP = 0: Bounded functions only')
         case 1 
@@ -91,7 +88,7 @@ else
     
     % Return previous state:
     if ( nargout > 0 )
-        blowupState = chebfunpref().enableSingularityDetection;
+        blowupState = getBlowupState();
     end
     
     if ( on_off == 0 )
@@ -99,9 +96,11 @@ else
         
     elseif ( on_off == 1 )
         chebfunpref.setDefaults('enableSingularityDetection', true);
+        chebfunpref.setDefaults({'singPrefs', 'defaultSingType'}, 'pole')
         
-    elseif ( on_off == 2)
+    elseif ( on_off == 2 )
         chebfunpref.setDefaults('enableSingularityDetection', true);
+        chebfunpref.setDefaults({'singPrefs', 'defaultSingType'}, 'sing')
         
     else
         error('CHEBFUN:blowup:UnknownOption',...
@@ -116,3 +115,14 @@ if ( nargout > 0 )
 end
 
 end
+
+function state = getBlowupState()
+    state = chebfunpref().enableSingularityDetection;
+    if ( state )
+        type = chebfunpref().singPrefs.defaultSingType;
+        if ( any(strcmpi(type, 'sing')) )
+            state = 2;
+        end
+    end
+end
+

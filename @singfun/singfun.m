@@ -140,16 +140,18 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
             if ( nargin >= 3 && isempty(exponents) )
                 if ( isempty(singType) )
                     % Singularity types and exponents not given. Assume
-                    % fractional poles or generic singularities at each
-                    % end.
-                    singType = {'sing', 'sing'};
+                    % default singularity types.
+                    singType = pref.singPrefs.defaultSingType;
+                    singType = {singType, singType};
                 else
                     % Singularity types given, make sure the strings are OK.
                     checkSingTypes(singType);
                 end
             else
-                if ( isempty(exponents) )
-                    singType = {'sing', 'sing'};
+                singType = pref.singPrefs.singType;
+                if ( isempty(singType) )
+                    singType = pref.singPrefs.defaultSingType;
+                    singType = {singType, singType};
                 end
             end
             
@@ -406,9 +408,6 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         
         % Make a SINGFUN (constructor shortcut):
         f = make(varargin);
-        
-        % Retrieve and modify preferences for this class.
-        prefs = pref(varargin)
       
         % Convert a SMOOTHFUN to a SINGFUN.
         f = smoothFun2SingFun(f) 

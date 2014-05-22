@@ -179,6 +179,11 @@ classdef chebfunpref < chebpref
 %         most of the cases due to the unsatisfactory performance of the
 %         current singularity detector.
 %
+%      defaultSingType         - Type of singularities.
+%         
+%         The default singularity type to be used when singularity detection is
+%         enabled and no singType is provided.
+%
 %   scale                      - The vertical scale the constructor should use.
 %    [0]
 %
@@ -450,6 +455,21 @@ classdef chebfunpref < chebpref
                 prefList.singPrefs.exponentTol');
             fprintf([padString('        maxPoleOrder:') '%d\n'], ...
                 prefList.singPrefs.maxPoleOrder');
+            fprintf([padString('        defaultSingType:') '''%s''\n'], ...
+                prefList.singPrefs.defaultSingType');            
+            singType = prefList.singPrefs.singType;
+            if ( ~isempty(singType) )
+                s = ['{''' singType{1},''''];
+                for k = 2:numel(singType)-1
+                    s = [s, ', ''', singType{k}, ''''];
+                end
+                s = [s, ', ''', singType{end}, '''}'];
+                fprintf([padString('        singType:') '%s\n'], s);  
+            end
+            exps = prefList.singPrefs.exponents;
+            if ( ~isempty(exps) )
+                fprintf([padString('        exponents:') '%s\n'], num2str(exps))
+            end
             fprintf('    cheb2Prefs\n');
             fprintf([padString('        maxRank:') '%d\n'], ...
                 prefList.cheb2Prefs.maxRank');
@@ -657,7 +677,10 @@ classdef chebfunpref < chebpref
                     while ( ~isempty(varargin) )
                         prefName = varargin{1};
                         prefValue = varargin{2};
-                        if ( isfield(defaultPrefs, prefName) )
+                        if ( iscell(prefName) && ...
+                                isfield(defaultPrefs.(prefName{1}), prefName{2}) )
+                            defaultPrefs.(prefName{1}).(prefName{2}) = prefValue;
+                        elseif ( isfield(defaultPrefs, prefName) )
                             defaultPrefs.(prefName) = prefValue;
                         else
                             defaultPrefs.techPrefs.(prefName) = prefValue;
@@ -684,6 +707,7 @@ classdef chebfunpref < chebpref
                 factoryPrefs.singPrefs.maxPoleOrder = 20;
                 factoryPrefs.singPrefs.exponents = [];
                 factoryPrefs.singPrefs.singType = {};
+                factoryPrefs.singPrefs.defaultSingType = 'sing';                
             factoryPrefs.enableDeltaFunctions = false;
                 factoryPrefs.deltaPrefs.deltaTol = 1e-9;
                 factoryPrefs.deltaPrefs.proximityTol = 1e-11;
