@@ -37,7 +37,7 @@ end
 vscale = pref.scale;
 
 % Sort out exponent and singularity information.
-[exps, singTypes] = parseSingPrefs(pref, domain);
+pref = parseSingPrefs(pref, domain);
 
 % Sanity check:
 if ( iscell(op) && (numel(op) ~= numIntervals) )
@@ -48,76 +48,16 @@ end
 
 % Construct the FUNs.
 if ( pref.enableBreakpointDetection )
-    [funs, ends] = constructorSplit(op, domain, pref, vscale, hscale, ...
-        exps, singTypes);
+    [funs, ends] = constructorSplit(op, domain, pref, vscale, hscale);
 else
-    [funs, ends] = constructorNoSplit(op, domain, pref, vscale, hscale, ...
-        exps, singTypes);
-end
-
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function [exps, singTypes] = parseSingPrefs(pref, domain)
-% TODO:  Move this to the main input parsing routine.
-
-% Initial setup:
-numIntervals = numel(domain) - 1;
-
-% Sort out the exponents:
-exps = [];
-if ( ~isempty(pref.singPrefs.exponents) )
-    exps = pref.singPrefs.exponents;
-    nExps = numel(pref.singPrefs.exponents);
-   
-    if ( nExps == 1 )
-        
-        % If only one exponent is supplied, assume the exponent at other
-        % breakpoints are exactly same.
-        exps = exps*ones(1,2*numIntervals);
-        
-    elseif ( nExps == 2 )
-        
-        % If the exponents are only supplied at endpoints of the entire
-        % domain, then pad zeros at the interior breakpoints.
-        exps = [exps(1) zeros(1, 2*(numIntervals-1)) exps(2)];
-        
-    elseif ( nExps == numIntervals + 1 )
-        
-        % If only one exponent is supplied for each interior breakpoint,
-        % then we assume that the singularity take the same order on each
-        % side.
-        exps = exps(ceil(1:0.5:nExps - 0.5));
-        
-    elseif( nExps ~= 2*numIntervals )
-        
-        % The number of exponents supplied by user makes no sense.
-        error('CHEBFUN:constructor', 'Invalid length for vector of exponents.');
-    end
-end
-
-% Sort out the singularity types:
-singTypes = [];
-if ( ~isempty(pref.singPrefs.singType) )
-    singTypes = pref.singPrefs.singType;
-    nType = numel(pref.singPrefs.singType);
-    
-    if ( nType ~= 2*numIntervals )
-        
-        % If the number of exponents supplied by user isn't equal to twice the
-        % the number of the FUNs, throw an error message:
-        error('CHEBFUN:constructor', ['the number of the exponents is ' ...
-            'inappropriate.']);
-    end
+    [funs, ends] = constructorNoSplit(op, domain, pref, vscale, hscale);
 end
 
 end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%  SPLITTING OFF %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [funs, ends] = constructorNoSplit(op, domain, pref, vscale, hscale, ...
-    exps, singTypes)
+function [funs, ends] = constructorNoSplit(op, domain, pref, vscale, hscale)
 % In 'OFF' mode, seek only one piece with length < maxLength.
 
 % Initial setup:
@@ -125,10 +65,14 @@ numIntervals = numel(domain) - 1;
 ends = domain;
 
 % Initialise the FUN array:
-funs{numIntervals} = fun.constructor();
+funs = cell(1, numIntervals);
 
-% We only want to throw this warning once:
+% We only want to throw the warning 'CHEBFUN:constructor:notResolved'once:
 warningThrown = false;
+
+singDetect = pref.enableSingularityDetection;
+exps = pref.singPrefs.exponents;
+singTypes = pref.singPrefs.singType;
 
 % Loop over the intervals:
 for k = 1:numIntervals
@@ -140,14 +84,15 @@ for k = 1:numIntervals
         opk = op;
     end
 
-    % Extract the exponents for this interval:
-    if ( ~isempty(exps) )
-        pref.singPrefs.exponents = exps(2*k-1:2*k);
-    end
-
-    % Replace the information for the singularity type in the preference:
-    if ( ~isempty(singTypes) )
-        pref.singPrefs.singType = singTypes(2*k-1:2*k);
+    if ( singDetect )
+        % Extract the exponents for this interval:
+        if ( ~isempty(exps) )
+            pref.singPrefs.exponents = exps(2*k-1:2*k);
+        end
+        % Replace the information for the singularity type in the preference:
+        if ( ~isempty(singTypes) && ~ischar(singTypes) )
+            pref.singPrefs.singType = singTypes(2*k-1:2*k);
+        end
     end
 
     % Call GETFUN() (which calls FUN.CONSTRUCTOR()):
@@ -155,7 +100,7 @@ for k = 1:numIntervals
 
     % Warn if unhappy (as we're unable to split the domain to improve):
     if ( ~ishappy && ~warningThrown )
-        warning('CHEBFUN:constructor', ...
+        warning('CHEBFUN:constructor:notResolved', ...
             ['Function not resolved using %d pts.', ...
             ' Have you tried ''splitting on''?'], pref.techPrefs.maxLength);
         warningThrown = true;
@@ -166,8 +111,7 @@ end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%  SPLITTING ON %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [funs, ends] = constructorSplit(op, domain, pref, vscale, hscale, ...
-    exps, singTypes)
+function [funs, ends] = constructorSplit(op, domain, pref, vscale, hscale)
 % In 'ON' mode, seek only many pieces with total length < maxlength.
 
 % Initial setup:
@@ -182,9 +126,13 @@ pref.techPrefs.maxLength = pref.breakpointPrefs.splitMaxLength;
 pref.techPrefs.extrapolate = true;
 
 % Initialise the FUN array:
-funs{numIntervals} = fun.constructor();
+funs = cell(1, numIntervals);
 % Initialise happiness:
 ishappy = ones(1, numel(ends) - 1);
+
+singDetect = pref.enableSingularityDetection;
+exps = pref.singPrefs.exponents;
+singTypes = pref.singPrefs.singType;
 
 % Try to get one smooth piece for the entire domain before splitting:
 for k = 1:numIntervals
@@ -195,14 +143,9 @@ for k = 1:numIntervals
         opk = op;
     end
     
-    % Extract the exponents for this interval:
-    if ( ~isempty(exps) )
-        pref.singPrefs.exponents = exps(2*k-1:2*k);
-    end
-    
-    % Replace the information for the singularity type in the preference:
-    if ( ~isempty(singTypes) )
-        pref.singPrefs.singType = singTypes(2*k-1:2*k);
+    if ( singDetect )
+        % Extract the singularity information for this interval:
+        pref = getSingInfo(exps, singTypes, 2*k-1:2*k, pref);
     end
 
     [funs{k}, ishappy(k), vscale] = ...
@@ -226,13 +169,13 @@ while ( any(sad) )
     
     % Choose a subinterval to improve:
     
-    %     % Old choice = the first sad interval:
-    %     k = find(sad, 1, 'first');
+%     % Old choice = the first sad interval:
+%     k = find(sad, 1, 'first');
     
     % New choice = the largest sad interval:
     diffEnds = diff(ends);
     diffEnds(~sad) = 0;
-    [ignored, k] = max(diffEnds);
+    [~, k] = max(diffEnds);
     
     % Ends of this subinterval:
     a = ends(k);
@@ -273,15 +216,21 @@ while ( any(sad) )
             edge = forHandle(edge);
         end
     end
-
-    if ( ~isempty(exps) )
-        % Before constructing the left FUN, sort out the exponents:
-        pref.singPrefs.exponents = [exps(2*k-1) 0];
+    
+    if ( singDetect )
+        % Update singularity info:
+        if ( ~isempty(exps) )
+            exps = [exps(1:2*k-1), zeros(1,2), exps(2*k:end)];
+        end
+        if ( ~isempty(singTypes) )
+            singTypes = [singTypes(1:2*k-1), singTypes(2*k-1), ...
+                singTypes(2*k) singTypes(2*k:end)];
+        end
     end
     
-    if ( ~isempty(singTypes) )
-        % Before constructing the left FUN, sort out the singType:
-        pref.singPrefs.singType = [singTypes(2*k-1) singTypes(2*k-1)];
+    if ( singDetect )
+        % Extract the singularity information for this interval:
+        pref = getSingInfo(exps, singTypes, 2*k-1:2*k, pref);
     end
     
     % Try to obtain happy child FUN objects on each new subinterval:
@@ -296,14 +245,9 @@ while ( any(sad) )
         vscale = 0;
     end
     
-    if ( ~isempty(exps) )
-        % Before constructing the right FUN, sort out the exponents:
-        pref.singPrefs.exponents = [0 exps(2*k)];
-    end
-    
-    if ( ~isempty(singTypes) )
-        % Before constructing the right FUN, sort out the singType:
-        pref.singPrefs.singType = [singTypes(2*k) singTypes(2*k)];
+    if ( singDetect )
+        % Extract the singularity information for this interval:
+        pref = getSingInfo(exps, singTypes, 2*k+1:2*k+2, pref);
     end
     
     [childRight, happyRight, vscale] = ...
@@ -324,14 +268,7 @@ while ( any(sad) )
     funs = [funs(1:k-1), {childLeft, childRight}, funs(k+1:end)];
     ends = [ends(1:k), edge, ends(k+1:end)];
     
-    if ( ~isempty(exps) )
-        exps = [exps(1:2*k-1), zeros(1,2), exps(2*k:end)];
-    end
-    
-    if ( ~isempty(singTypes) )
-        singTypes = [singTypes(1:2*k-1), singTypes(2*k-1), ...
-            singTypes(2*k) singTypes(2*k:end)];
-    end
+
     
     % If a cell was given, we must store pieces on new intervals:
     if ( iscell(op) )
@@ -367,4 +304,72 @@ ishappy = get(g, 'ishappy');
 % Update the vertical scale:
 vscale = max([vscale, get(g, 'vscale')]);
 
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% PARSESINGPREFS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function pref = parseSingPrefs(pref, domain)
+% TODO:  Move this to the main input parsing routine.
+
+% Initial setup:
+numIntervals = numel(domain) - 1;
+exps = pref.singPrefs.exponents;
+singTypes = pref.singPrefs.singType;
+
+if ( any(exps) || ~isempty(singTypes) )
+    pref.enableSingularityDetection = true;
+end
+
+% Sort out the exponents:
+if ( ~isempty(exps) )
+    nExps = numel(exps);
+   
+    if ( nExps == 1 )
+        
+        % If only one exponent is supplied, assume the exponent at other
+        % breakpoints are exactly same.
+        exps = exps*ones(1, 2*numIntervals);
+        
+    elseif ( nExps == 2 )
+        
+        % If the exponents are only supplied at endpoints of the entire
+        % domain, then pad zeros at the interior breakpoints.
+        exps = [exps(1) zeros(1, 2*(numIntervals-1)) exps(2)];
+        
+    elseif ( nExps == numIntervals + 1 )
+        
+        % If only one exponent is supplied for each interior breakpoint,
+        % then we assume that the singularity take the same order on each
+        % side.
+        exps = exps(ceil(1:0.5:nExps - 0.5));
+        
+    elseif( nExps ~= 2*numIntervals )
+        
+        % The number of exponents supplied by user makes no sense.
+        error('CHEBFUN:constructor', 'Invalid length for vector of exponents.');
+    end
+    
+    pref.singPrefs.exponents = exps;
+end
+
+% Sort out the singularity types:
+if ( ~isempty(singTypes) && (numel(singTypes) ~= 2*numIntervals) )
+    % If the number of exponents supplied by user isn't equal to twice the
+    % the number of the FUNs, throw an error message:
+    error('CHEBFUN:constructor', ['The number of the exponents is ' ...
+        'inappropriate.']);
+end
+
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% GETSINGINFO %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function pref = getSingInfo(exps, singTypes, kk, pref)
+    if ( ~isempty(exps) )
+        pref.singPrefs.exponents = exps(kk);
+    end
+    % Replace the information for the singularity type in the preference:
+    if ( ~isempty(singTypes) )
+        pref.singPrefs.singType = singTypes(kk);
+    end
 end
