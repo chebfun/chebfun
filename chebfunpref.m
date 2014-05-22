@@ -598,6 +598,11 @@ classdef chebfunpref < chebpref
         %   subsequently constructed CHEBFUNPREF objects will use these values
         %   as the defaults.
         %
+        %   To set defaults for second tier preferences, such as
+        %   breakpointPrefs.splitMaxLength, one can use the syntax
+        %   CHEBFUNPREF.SETDEFAULT({'breakpointPrefs', 'splitMaxLength'}, 257).
+        %   However, this syntax is still experimental.
+        %
         %   CHEBFUNPREF.SETDEFAULTS(PREF) sets the default values to the
         %   preferences stored in the CHEBFUNPREF object PREF.  PREF can also
         %   be a MATLAB structure, in which case it is converted to a
@@ -613,7 +618,7 @@ classdef chebfunpref < chebpref
         % singfun.exponentTol?  Aside from preferences in techPrefs whose names
         % don't collide with other "top-level" preferences, these can't be set
         % using the first syntax listed above (though they still can be set
-        % with the second).
+        % with the second).  
 
             % The reason we don't just use manageDefaults as the second
             % argument to chebpref.setDefaults and wrap it in an additional
@@ -679,6 +684,8 @@ classdef chebfunpref < chebpref
                         prefValue = varargin{2};
                         if ( iscell(prefName) && ...
                                 isfield(defaultPrefs.(prefName{1}), prefName{2}) )
+                            % TODO: Revisit the syntax for assigning to second
+                            % tier preferences.
                             defaultPrefs.(prefName{1}).(prefName{2}) = prefValue;
                         elseif ( isfield(defaultPrefs, prefName) )
                             defaultPrefs.(prefName) = prefValue;
