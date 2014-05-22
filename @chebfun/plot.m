@@ -115,8 +115,9 @@ pointData = {};
 jumpData = {};
 deltaData = {};
 
-% Deal with 'jumpLine' input.
-[jumpStyle, varargin] = chebfun.parseJumpStyle(varargin{:});
+% Remove global plotting options from input arguments.
+[lineStyle, pointStyle, jumpStyle, varargin] = ...
+    chebfun.parsePlotStyle(varargin{:});
 
 %%
 % Get the data for plotting from PLOTDATA():
@@ -274,7 +275,7 @@ while ( ~isempty(varargin) )
 end
 % Plot the lines:
 h1 = plot(lineData{:});
-set(h1, 'Marker', 'none')
+set(h1, 'Marker', 'none', lineStyle{:})
 
 % Ensure the plot is held:
 hold on
@@ -282,7 +283,7 @@ hold on
 % Plot the points:
 h2 = plot(pointData{:});
 % Change the style accordingly:
-set(h2, 'LineStyle', 'none')
+set(h2, 'LineStyle', 'none', pointStyle{:})
 
 % Plot the jumps:
 if ( isempty(jumpData) || ischar(jumpData{1}) )
@@ -352,3 +353,4 @@ if ( nargout > 0 )
 end
 
 end
+
