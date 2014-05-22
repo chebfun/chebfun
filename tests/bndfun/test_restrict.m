@@ -56,8 +56,6 @@ pass(9) = test_spotcheck_restrict(@(x) cos(1e3*x), dom, [0.1 0.5], pref);
 pass(10) = test_spotcheck_restrict(@(t) sinh(t*exp(2*pi*1i/6)), dom, ...
     [-0.4 1], pref);
 
-
-
 %%
 % Check multiple subinterval restriction.
 f = bndfun(@(x) sin(x) + sin(x.^2), dom, [], [], pref);
@@ -65,8 +63,8 @@ g = restrict(f, [-1.7 2.3 6.8]);
 h1 = restrict(f, [-1.7 2.3]);
 h2 = restrict(f, [2.3 6.8]);
 x = linspace(-1, 1, 100).';
-err1 = feval(g{1} - h1, x);
-err2 = feval(g{2} - h2, x);
+err1 = feval(g{1} - h1, x) < 10*get(f, 'epslevel');
+err2 = feval(g{2} - h2, x+3) < 10*get(f, 'epslevel');
 pass(11) = all(err1(:) == 0) && all(err2(:) == 0);
 
 %%
