@@ -19,11 +19,19 @@ if ( ~isa(f, 'onefun') || ~isa(g, 'onefun') )
         'innerProduct() only operates on two ONEFUN objects.');
 end
 
-% Call SUM:
-out = sum(conj(f).*g);
+m = size(f, 2);
+n = size(g, 2);
+cf = conj(f);
 
-% TODO: This is necessary as SINGFUN/SUM() is returning in correct dimensions in
-% some cases.
-out = reshape(out, size(f,2), size(g,2));
+% Loop over columns of f and g:
+out = zeros(m, n);
+for j = 1:m
+    fj = extractColumns(cf, j);    % jth column of f.
+    for k = 1:n
+        gk = extractColumns(g, k); % kth column of g.
+        % Call SUM:
+        out(j,k) = sum(fj.*gk);
+    end
+end
 
 end
