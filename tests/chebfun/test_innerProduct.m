@@ -16,12 +16,13 @@ pow1 = -0.3;
 pow2 = -0.5;
 op1 = @(x) (x - dom(2)).^pow1.*sin(100*x);
 op2 = @(x) (x - dom(2)).^pow2.*cos(300*x);
-pref.singPrefs.exponents = [0 pow1];
-pref.enableBreakpointDetection = 1;
-f = chebfun(op1, dom, pref);
-pref.singPrefs.exponents = [0 pow2];
-pref.enableBreakpointDetection = 1;
-g = chebfun(op2, dom, pref);
+p = pref;
+p.singPrefs.exponents = [0 pow1];
+p.enableBreakpointDetection = 1;
+f = chebfun(op1, dom, p);
+p.singPrefs.exponents = [0 pow2];
+p.enableBreakpointDetection = 1;
+g = chebfun(op2, dom, p);
 I = innerProduct(f,g);
 I_exact = 0.35838148154346034 - 0.26037938759089226i;
 pass(1) = ( abs(I-I_exact) < 2e1*max(get(f, 'epslevel'), get(g, 'epslevel'))*...
@@ -52,9 +53,9 @@ dom = [1 Inf];
 
 opf = @(x) x;
 opg = @(x) exp(-x);
-pref = chebfunpref();
-pref.singPrefs.exponents = [0 1];
-f = chebfun(opf, dom, pref);
+p = pref;
+p.singPrefs.exponents = [0 1];
+f = chebfun(opf, dom, p);
 g = chebfun(opg, dom);
 I = innerProduct(f, g);
 IExact = 2*exp(-1);
@@ -75,5 +76,19 @@ I = innerProduct(f, g);
 IExact = 2/(3*pi);
 err = abs(I - IExact);
 pass(4) = err < 1e5*get(f,'epslevel')*get(f,'vscale');
+
+%% From #559
+x = chebfun('x', [-1 1], pref);
+X = [x x];
+S = sqrt(abs(x));
+I = innerProduct(X, S);
+err = norm(I, inf);
+tol = get(x,'epslevel')*get(x,'vscale');
+pass(5) = err < tol;
+E = exp(X);
+I = innerProduct(E, S);
+err = norm(I - 1.634574774192848, inf);
+tol = max(get(E,'epslevel').*get(E,'vscale'));
+pass(6) = err < tol;
 
 end

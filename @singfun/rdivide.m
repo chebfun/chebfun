@@ -68,7 +68,7 @@ if ( isa(f, 'singfun') && isa(g, 'singfun') )
     % Set a tolerance:
     tol = 1e2*get(g, 'vscale')*eps;
     
-    if ( all(boundaryValues > tol) )
+    if ( all(abs(boundaryValues) > tol) )
         % No vanishing boundary values, then take advantage of the information
         % we know about the exponents:
         
