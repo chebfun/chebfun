@@ -39,8 +39,7 @@ plot(chebfun(u), '.-')
 title('Initial guess of solution')
 
 % Do different things for the axes depending on if the solution is real.
-% TODO: This should be calling isreal of chebmatrices.
-if ( isreal(u.blocks{1}) )
+if ( isreal(chebfun(u)) )
     xlim(handles.xLim)
 else
     axis equal
@@ -80,8 +79,7 @@ plot(chebfun(u), '.-')
 title('Current solution')
 
 % Do different things for the axes depending on if the solution is real.
-% TODO: This should be calling isreal of chebmatrices.
-if isreal(u.blocks{1})
+if ( isreal(chebfun(u)) )
     xlim(handles.xLim)
 else
     axis equal
@@ -97,8 +95,7 @@ plot(chebfun(delta), '.-')
 title('Current correction step')
 
 % Do different things for the axes depending on if the solution is real.
-% TODO: This should be calling isreal of chebmatrices.
-if ( isreal(u.blocks{1}) )
+if ( isreal(chebfun(u)) )
     xlim(handles.xLim)
 else
     axis equal

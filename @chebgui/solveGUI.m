@@ -1,5 +1,5 @@
 function handles = solveGUI(guifile, handles)
-% SOLVEGUI Called when a user hits the solve button of the chebfun GUI
+% SOLVEGUI Called when a user hits the solve button of the Chebfun GUI
 
 % TODO:  Documentation.
 
@@ -73,7 +73,6 @@ if ( strcmp(get(handles.button_solve, 'string'), 'Solve') )   % In solve mode
     % STOP and PAUSE don't work in EIGS mode.
     if ( ~get(handles.button_eig, 'Value') )
         % Pause button
-    %     set(handles.button_clear,'Enable','off');
         set(handles.button_clear, 'String','Pause');
         set(handles.button_clear, 'BackgroundColor',[255 179 0]/256);
         % Stop button
@@ -83,7 +82,7 @@ if ( strcmp(get(handles.button_solve, 'string'), 'Solve') )   % In solve mode
     drawnow
     set(handles.menu_demos, 'Enable','off');
 
-    % Call the private method solveGUIbvp, pde, or eig which do the work
+    % Call the private method solveGUIbvp, pde, or eig, which do the work.
     try
         if ( strcmpi(handles.guifile.type, 'bvp') )
             handles = solveGUIbvp(guifile, handles);

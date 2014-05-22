@@ -1,5 +1,5 @@
 function varargout = solve(guifile)
-% SOLVE Called when a user hits calls the solve method for a chebgui object
+% SOLVE Called when a user hits calls the solve method for a CHEBGUI object
 % outside the GUI (i.e. SOLVE(CG), where CG is a CHEBGUI object).
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
