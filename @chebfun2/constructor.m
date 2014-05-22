@@ -476,16 +476,16 @@ function [xx, yy] = points2D(m, n, dom)
 tech = chebfun2pref().tech();
 
 if ( isa(tech, 'chebtech2') )
-    x = chebpts( m, dom, 2 );   % x grid.
-    y = chebpts( n, dom, 2 ); 
+    x = chebpts( m, dom(1:2), 2 );   % x grid.
+    y = chebpts( n, dom(3:4), 2 ); 
     [xx, yy] = meshgrid( x, y ); 
 elseif ( isa(tech, 'chebtech1') )
-    x = chebpts( m, dom, 1 );   % x grid.
-    y = chebpts( n, dom, 1 ); 
+    x = chebpts( m, dom(1:2), 1 );   % x grid.
+    y = chebpts( n, dom(3:4), 1 ); 
     [xx, yy] = meshgrid( x, y ); 
 elseif ( isa(tech, 'fourtech') )
-    x = fourierpts( m, dom );   % x grid.
-    y = fourierpts( n, dom );
+    x = fourierpts( m, dom(1:2) );   % x grid.
+    y = fourierpts( n, dom(3:4) );
     [xx, yy] = meshgrid( x, y );
 else
     error('CHEBFUN2:POINTS2D', 'Unrecognized technology');
