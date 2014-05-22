@@ -1,4 +1,4 @@
-function [y, x] = min(f, flag)
+function [y, x] = min(f, flag, dim)
 %MIN   Minimum values of a CHEBFUN.
 %   MIN(F) and MIN(F, 'global') return the minimum value of the CHEBFUN F.
 %
@@ -18,6 +18,12 @@ function [y, x] = min(f, flag)
 %   returns a CHEBFUN H such that H(x) = min(F(x), G(x)) for all x in the
 %   domain of F and G. Alternatively, either F or G may be a scalar.
 %
+%   MAX(F, [], DIM) computes the maximum of the CHEBFUN F in the dimension DIM.
+%   If DIM = 1 and F is a column CHEBFUN or DIM = 2 and F is a row CHEBFUN, this
+%   is equivalent to MAX(F). Othewise, MAX(F, [], DIM) returns a CHEBFUN which
+%   is the maximum across the discrete dimension of F. For example, if F is a
+%   quasimatrix with two columns, MAX(F, [], 2) = MAX(F(:,1), F(:,2)).
+%
 % See also MAX, MINANDMAX, ROOTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
@@ -30,14 +36,43 @@ if ( isempty(f) )
     return
 end
 
-if ( (nargin == 1) || strcmp(flag, 'global') )
-    [y, x] = globalMin(f);
+if ( nargin == 3 )
+    if ( ~any(dim == [1 2]) )
+        error('CHEBFUN:min:badDim', 'DIM input to CHEBFUN MIN must be 1 or 2.');
+    end
+
+    if ( dim ~= 1 + f(1).isTransposed )
+        % Take min across discrete dimension of a quasimatrix:
+        f = cheb2cell(f);
+        y = realmax;
+        for k = 1:numel(f)
+            y = minOfTwoChebfuns(y, f{k});
+        end
+        y = merge(y);
+        return
+    end
+end
+
+if ( (nargin > 2) && isempty(flag) )
+    % MAX(F, [], 1).
+    flag = 'global';
+end
+
+if ( (nargin == 1) || strcmp(flag, 'global') ) 
+    % MIN(F) or MIN(F, 'global')
+    [y, x] = globalMin(f);    
+    
 elseif ( isa(flag, 'chebfun') || isnumeric(flag) )
+    % MIN(F, G)
     y = minOfTwoChebfuns(f, flag);
+    
 elseif ( strcmp(flag, 'local') )
+    % MIN(F, 'local')
     [y, x] = localMin(f);
+    
 else
     error('CHEBFUN:min:flag', 'Unrecognized flag.');
+    
 end
 
 end

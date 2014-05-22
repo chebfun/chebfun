@@ -261,8 +261,8 @@ classdef chebfun
         % Parse the inputs to the CHEBFUN constructor.
         [op, domain, pref] = parseInputs(op, domain, varargin);
 
-        % Parse the 'jumpline' style for CHEBFUN plot functions.
-        [jumpStyle, varargin] = parseJumpStyle(varargin);
+        % Parse inputs to PLOT. Extract 'lineWidth', etc.
+        [lineStyle, pointStyle, jumpStyle, out] = parsePlotStyle(varargin)
         
         % Convert a string input to a function_handle.
         op = str2op(op);
@@ -358,6 +358,9 @@ classdef chebfun
         
         % True for zero CHEBFUN objects
         out = iszero(f)
+        
+        % Kronecker product of two CHEBFUN object.
+        out = kron(f, g)
         
         % Length of a CHEBFUN.
         out = length(f);

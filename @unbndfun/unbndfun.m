@@ -96,9 +96,13 @@ classdef unbndfun < classicfun
             if ( isa(op, 'function_handle') )
                 op = @(x) op(unbndmap.for(x));
             elseif ( isnumeric(op) )
-                %[TODO]: Implement this.
-                error('CHEBFUN:UNBNDFUN:inputValues',...
-                    'UNBNDFUN does not support construction from values.');
+                if ( ~any(op(:)) )
+                    op = @(x) zeros(length(x), size(op,2));
+                else
+                    %[TODO]: Implement this.
+                    error('CHEBFUN:UNBNDFUN:inputValues',...
+                        'UNBNDFUN does not support non-zero construction from values.');
+                end
             end
             
             % Try to determine if the function is singular:

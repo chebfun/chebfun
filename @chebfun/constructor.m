@@ -120,6 +120,7 @@ ends = domain;
 
 % Set the maximum length (i.e., number of sample points for CHEBTECH):
 pref.techPrefs.maxLength = pref.breakpointPrefs.splitMaxLength;
+
 % We extrapolate when splitting so that we can construct functions like
 % chebfun(@sign,[-1 1]), which otherwise would not be happy at x = 0.
 pref.techPrefs.extrapolate = true;

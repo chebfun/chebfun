@@ -26,7 +26,7 @@ for m = 1:2
     pass(m, 6) = isempty(testTech.quadwts(0));
     pass(m, 7) = testTech.quadwts(1) == 2;
     pass(m, 8) = all(testTech.quadwts(2) == 1);
-    pass(m, 9) = mod(n,2) || norm(w(1:n/2) - w(n:-1:n/2+1), inf);
+    pass(m, 9) = mod(n,2) || norm(w(1:n/2) - w(n:-1:n/2+1), inf) < eps(n);
     
 end
 

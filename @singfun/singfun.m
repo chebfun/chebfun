@@ -194,6 +194,11 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
                 obj.exponents = singfun.findSingExponents(op, singType);
             end
             
+            % We extrapolate when the given function blows up:
+            if ( any(obj.exponents < 0) )
+                pref.techPrefs.extrapolate = true;
+            end
+            
             % If a smoothfun has been passed as the op, store it directly:
             if ( isa(op, 'smoothfun') )
                 obj.smoothPart = op;
@@ -243,11 +248,14 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         % Extract roots at the boundary points -1 and 1.
         [f, rootsLeft, rootsRight] = extractBoundaryRoots(f, numRoots)
         
+        % Extract columns (or rows) of SINGFUN.
+        f = extractColumns(f, colIdx)
+        
         % Evaluate a SINGFUN.
         y = feval(f, x)
         
         % SINGFUN does not support FIX.
-        g = fix(f);
+        g = fix(f)
         
         % Flip columns of an array-valued SINGFUN object.
         f = fliplr(f)
@@ -256,10 +264,10 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         f = flipud(f)
         
         % SINGFUN does not support FLOOR.
-        g = floor(f);
+        g = floor(f)
         
         % Get method:
-        val = get(f, prop);
+        val = get(f, prop)
         
         % Imaginary part of a SINGFUN.
         f = imag(f)
