@@ -46,8 +46,8 @@ end
 [L, ~, fail] = linop(N);
 
 if ( fail )
-    error('CHEBFUN:chebop:expm:nonlin', ['Chebop appears to be nonlinear.\n', ...
-        'Currently, EXPM() only supports linear CHEBOP objects.']);
+    error('CHEBFUN:chebop:expm:nonlin', ['The operator appears to be nonlinear.\n', ...
+        'EXPM() supports only linear CHEBOP instances.']);
 end
 
 if ( nargin >= 3 )

@@ -48,6 +48,6 @@ switch index(1).type
     otherwise
         
         error('CHEBOP:subsref:indexType',...
-            ['Unexpected index.type of ' index(1).type]);
+            ['Unexpected index type encountered: ' index(1).type]);
         
 end

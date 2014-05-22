@@ -27,7 +27,7 @@ FAIL = ~all(isLinear);
 % Throw an error is the CHEBOP is nonlinear:
 if ( FAIL && (nargout < 3) )
     error('CHEBFUN:CHEBOP:linop:nonlinear',...
-        'Chebop does not appear to be a linear operator.')
+        'This does not appear to be a linear operator.')
 end
 
 % All values of the LINOPCONSTRAINT stored in L will be of incorrect sign when

@@ -71,7 +71,7 @@ while ( ~accept )
     % Check whether we want to predict a value for LAMBDA. In other words, this
     % is the predictor step. We can only predict LAMBA once we have taken one
     % Newton step, as it is based on information obtained from the previous step
-    if newtonCounter > 0 && initPrediction
+    if ( (newtonCounter > 0) && initPrediction )
         % Compute a prediction value
         mu = (normDeltaOld*normDeltaBar) / ...
             (norm(deltaBar - delta, 'fro')*normDelta)*lambda;
@@ -82,7 +82,7 @@ while ( ~accept )
 
     % Below, we apply the correction strategy.
     
-    if lambda < lambdaMin
+    if ( lambda < lambdaMin )
         % If LAMBDA falls below LAMBDAMIN, we try to take a full Newton step in
         % the hope that will put us in a different point in solution space that
         % we have a chance of converging from. If we don't observe convergence

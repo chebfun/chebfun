@@ -53,7 +53,7 @@ function [u, info] = solvebvp(N, rhs, pref, displayInfo)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Developers note:
+% Developer note:
 %   U = SOLVEBVP(N, RHS, PREF, DISPLAYINFO) allows passing in a function handle
 %   to a displaying method that is called during the damped Newton iteration.
 %   This allows separating the displaying process for regular CHEBOP use and
@@ -92,8 +92,6 @@ if ( isempty(N.init) )
     end
     u0 = chebmatrix(u0);
     
-    % Indicate that we did not get an initial guess passed
-    initPassed = 0;
 else
     u0 = N.init;
     % Ensure that N.init is a CHEBMATRIX, not a CHEBFUN:
@@ -101,8 +99,6 @@ else
         u0 = chebmatrix(u0);
     end
     
-    % Indicate that we get an initial guess passed.
-    initPassed = 1;
 end
 
 % Initialise the independent variable:
@@ -121,11 +117,11 @@ if ( isnumeric(rhs) )
     if ( ~(all(size(rhs) == [numRow, numCol])) &&  (max(size(rhs)) > 1) )
         if ( all(size(rhs) == [numCol, numRow]) )
             warning('CHEBFUN:CHEBOP:solvebvp', ...
-                'Please concatenate RHS of the BVP vertically. Transposing.')
+                'Please concatenate the right-hand side of the BVP vertically. Transposing.')
             rhs = rhs.';
         else
             error('CHEBFUN:CHEBOP:solvebvp:rhs', ...
-               'RHS does not match output dimensions of operator.');
+               'The right-hand side does not match the output dimensions of the operator.');
         end
     end
     
@@ -136,7 +132,7 @@ if ( isnumeric(rhs) )
 elseif ( isa(rhs, 'chebfun') && size(rhs, 2) > 1 )
     rhs = chebmatrix(mat2cell(rhs).');
     warning('CHEBFUN:CHEBOP:solvebvp:vertcat', ...
-        'Please use vertical concatenation for RHS ')
+        'Please use vertical concatenation for the right-side data.')
 end
 
 % Do the same for the initial guess:
