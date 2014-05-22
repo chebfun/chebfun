@@ -299,12 +299,9 @@ while ( ~isHappy )
     
     % Sample Test:
     if ( sampleTest )
-        % Evaluate at arbitrary point in domain:
-        r = 0.029220277562146;
-        s = 0.237283579771521;
-        r = (domain(2)+domain(1))/2 + r*(domain(2)-domain(1));
-        s = (domain(4)+domain(3))/2 + s*(domain(4)-domain(3));
-        if ( abs( op(r,s) - feval(g, r, s) ) > 100 * tol )
+        % Evaluate at points in the domain:
+        pass = g.sampleTest(op, tol);
+        if ( ~pass )
             % Increase minsamples and try again.
             minsample = 2^( floor( log2( minsample ) ) + 1) + 1;
             isHappy = 0;
