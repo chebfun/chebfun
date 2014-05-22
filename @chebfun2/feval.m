@@ -45,13 +45,21 @@ elseif ( isnumeric( x ) && strcmpi(y, ':') ) % f(x, :)
     
 elseif ( isnumeric( x ) && isnumeric( y ) )  % f(x, y)
     
-    % TODO: Document this chunk!
+    takeTranspose = 0;
+    
+    % If the evaluation points are derived from meshgrid, then there is a
+    % fast way to evaluate a chebfun2. Check for this property. 
     if ( min(size(x)) > 1 && all(size(x) == size(y)) )
         % Check to see if the input is a meshgrid:
-        if ( ~all(all(x - repmat(x(1,:),size(x,1),1))) &&...
-                ~all(all(y - repmat(y(:,1),1,size(y,2)))))
+        if ( norm( bsxfun(@minus,x,x(1,:)) ) == 0  &&... 
+                norm(bsxfun(@minus,y,y(:,1))) == 0 )
             x = x(1,:);
             y = y(:,1);
+        elseif ( norm( bsxfun(@minus,y,y(1,:)) ) == 0  &&... 
+                norm(bsxfun(@minus,x,x(:,1))) == 0 )
+            x = x(:,1); 
+            y = y(1,:);
+            takeTranspose = 1;
         end
         takeDiag = 0;
     else 
@@ -60,6 +68,11 @@ elseif ( isnumeric( x ) && isnumeric( y ) )  % f(x, y)
     
     % Evaluate:
     out = feval( cols, y(:) ) * D * feval( rows, x(:)) .';
+    
+    % Take transpose: 
+    if ( takeTranspose ) 
+        out = transpose( out ); 
+    end 
     
     % Take diagonal:
     if ( takeDiag ) 
