@@ -18,7 +18,7 @@ try
     pass(3) = strcmp(splitting(), 'on');
     
     F = @(x) cos(pi*x).*sign(x);
-    f = chebfun(@(x) F(x), [-1 1], pref);
+    f = chebfun(@(x) F(x), [-1 1]);
     x = linspace(-1, 1, 20);
     err = norm(f(x) - F(x), inf);
     pass(4) = numel(f.domain > 1) && err < epslevel(f);
