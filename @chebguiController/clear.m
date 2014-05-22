@@ -1,6 +1,11 @@
 function handles = clear(handles)
 %CLEAR   Reset CHEBGUI, clear all fields and reset options.
 %
+%  Calling sequence:
+%       HANDLES = CLEAR(HANDLES)
+%  where
+%       HANDLES:    A Matlab handle of the CHEBGUI figure.
+%
 %  This method is called when the user presses the 'Clear' button on the chebgui
 %  figure.
 

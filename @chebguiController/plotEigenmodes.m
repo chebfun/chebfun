@@ -1,7 +1,15 @@
 function plotEigenmodes(handles, selection, h1, h2)
-% Plot the eigenmodes in the GUI
-
-% TODO:  Documentation.
+%PLOTEIGENMODE      Plot the eigenmodes in the GUI
+%
+% Calling sequence
+%   PLOTEIGENMODES(HANDLES, SELECTION, H1, H2)
+% where
+%   HANDLES:    Matlab handle object of the CHEBGUI figure.
+%   SELECTION:  The user choice of a desired eigenvalue to be plotted, i.e. if 
+%               a user selects an eigenvalue from the list shown after the
+%               problem is solved.
+%   H1:         A handle to the top plot of the CHEBGUI figure.
+%   H2:         A handle to the bottom plot of the CHEBGUI figure.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/chebfun/ for Chebfun information.
@@ -11,6 +19,7 @@ if ( nargin < 2 )
     selection = 0;
 end
 
+% Default figures to be plotted at.
 if ( nargin < 3 )
     h1 = handles.fig_sol;
 end
@@ -76,6 +85,7 @@ if ( ~isempty(h1) )
     end
     hold off
 
+    % Show grid?
     if ( handles.guifile.options.grid )
         grid on
     end
@@ -96,10 +106,13 @@ if ( isempty(h2) )
     return
 end
 
+% Do we have a coupled system?
 isSystem = numVar > 1;
 
+% Number of unknown variables.
 nV = numel(V);
 
+% Do we want to plot the real or the imaginary parts of the eigenvalues?
 realplot = get(handles.button_realplot, 'Value');
 W = V;
 if ( realplot )
@@ -112,10 +125,6 @@ else
         V(k) = imag(V{k});
     end
     s = 'Imaginary part of eigenmodes';
-% TODO:  If this is really no longer necessary, remove this.
-% else
-%     V = V.*conj(V);
-%     s = 'Absolute value of eigenmodes';
 end
 
 % TODO: This used to be a chebfunpref('plot_numpts'), do we still want to allow
@@ -130,7 +139,11 @@ if ( any(selection) && (nargin < 4) )
     ylim_norm = ylim(h2);
 end
 
+% Do the plotting for the bottom figure. Coupled systems are more tricky than
+% scalar problems.
 if ( ~isSystem )
+    % Deal with different kinds of plotting required depending on whether we
+    % have real+imaginary parts or not.
     if ( (numCol == 1) && ~isreal(chebfun(W)) && ~isreal(1i*chebfun(W)) )
         xx = union(linspace(V.ends(1), V.ends(end), maxPlotPoints), V.ends);
         
@@ -155,14 +168,20 @@ if ( ~isSystem )
         hold off
     end
 
+    % Show grid?
     if ( handles.guifile.options.grid )
         grid on
     end
 
     ylabel(handles.varnames);
 else
+    % Linestyles for the eigenmodes.
     LS = repmat({'-', '--', ':', '-.'}, 1, ceil(numVar/4));
+    % Label for the y-axis.
     ylab = [];
+    
+    % Deal with different kinds of plotting required depending on whether we
+    % have real+imaginary parts or not.
     if ( (numCol == 1) && ~isreal(W{1}) && ~isreal(1i*W{1}) )
         V1 = V{1};
         xx = union(linspace(V1.ends(1), V1.ends(end), maxPlotPoints), V1.ends);

@@ -1,6 +1,14 @@
 function initSuccess = populate(handles, chebg)
-
-% TODO:  Documentation.
+%POPULATE  Fill in the CHEBGUI figure, using the information of a CHEBGUI object
+%
+% Calling sequence:
+%   INITSUCCESS = POPULATE(HANDLES, CHEBG)
+% where
+%   INITSUCCESS:    Has value 1 if we managed to populate the figures without
+%                   any troubles, 0 otherwise.
+%   HANDLES:        A Matlab handle of the CHEBGUI figure.
+%   CHEBG:          A CHEBGUI object, containing the information we want to fill
+%                   the figure with.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -14,8 +22,10 @@ set(handles.input_BC, 'String', chebg.BC);
 set(handles.input_GUESS, 'String', chebg.init);
 
 if ( strcmpi(chebg.type, 'pde') )
+    % Deal with the time field if we have a PDE
     set(handles.input_timedomain, 'String', chebg.timedomain);
 elseif ( strcmpi(chebg.type, 'eig') )
+    % Show the type of eigenmodes we seek.
     sigma = chebg.sigma;
     switch sigma
         case ''
@@ -159,6 +169,7 @@ if ( ~isempty(chebg.init) )
 
             initChebfun = [initChebfun, chebfun(currInit, dom)];
         end
+        
         axes(handles.fig_sol);
         plot(initChebfun, 'LineWidth', 2)
         
@@ -167,20 +178,23 @@ if ( ~isempty(chebg.init) )
                 str2num(chebg.options.fixYaxisUpper)]);
         end
 
+        % Show grid?
         if ( chebg.options.grid )
             grid on
         end
         
+        % Hurray, managed to do everything we wanted.
         initSuccess = 1;
         
     catch ME
+        % Something went wrong.
         initSuccess = 0;
     end
-    
 else
     initSuccess = 0;
 end
 
+% If we have periodic BCs, we want to disable some fields.
 if ( strcmpi(chebg.LBC, 'periodic') )
         set(handles.input_RBC, 'String', 'periodic');
         handles.guifile.RBC = '';

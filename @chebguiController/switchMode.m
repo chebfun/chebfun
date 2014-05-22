@@ -1,6 +1,14 @@
 function handles = switchMode(handles, newMode, callMode)
-
-% TODO:  Documentation.
+%SWITCHMODE     Go from one mode of CHEBGUI to another.
+%
+% Calling sequence:
+%   HANDLES = SWITCHMODE(HANDLES, NEWMODE, CALLMODE)
+% where
+%   HANDLES:    A Matlab handle object for the CHEBGUI figure.
+%   NEWMODE:    Mode we want to switch to.
+%   CALLMODE:   Indicates whether we are switching from a demo or not (in which
+%               case, we migth want to show a plot of the initial guess of the
+%               solution/initial condition).
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/chebfun/ for Chebfun information.
@@ -11,6 +19,9 @@ if ( nargin == 2 )
     callMode = 'notDemo';
 end
 
+
+% Do a lot of disabling/enabling and hiding/showing objects on the CHEBGUI
+% figure.
 if ( strcmp(newMode, 'bvp') ) % Going into BVP mode
     handles.guifile.type = 'bvp';
     

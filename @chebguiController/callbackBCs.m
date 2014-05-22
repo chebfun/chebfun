@@ -1,14 +1,20 @@
 function handles = callbackBCs(handles, inputString, type)
-
-% TODO:  Documentation.
+%CALLBACKBCS    Govern the behaviour of BC input fields on CHEBGUI
+%
+% Calling sequence:
+%   HANDLES = CALLBACKBCS(HANDLES, INPUTSTRING, TYPE)
+% where
+%   HANDLES:        A Matlab handle object corresponding to the CHEBGUI figure.
+%   INPUTRSTRING:   The input from the user to the BC field
+%   TYPE:           Whether the input was passed to the BC field (used in BVP
+%                   and EIG modes) or the LBC and RBC fields (used in PDE mode). 
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+
+
 % For systems we check a row at a time.
-
-periodicFlag = false; % Periodic flag
-
 if ( ~iscell(inputString) )
     for stringCounter = 1:size(inputString, 1)
         newString{stringCounter,:} = inputString(stringCounter,:);
@@ -17,6 +23,8 @@ else
     newString = inputString;
 end
 
+% See whether we got passed 'periodic' -- if so, disable the other field.
+periodicFlag = false; % Periodic flag
 for k = 1:numel(newString)
     if ( ~isempty(strfind(newString{k}, '@')) ...
             || strcmpi(newString{k}, 'dirichlet') ...
@@ -30,6 +38,7 @@ for k = 1:numel(newString)
 end
 
 if ( strcmp(type, 'lbc') )
+    % Deal with the LBC input.
     if ( periodicFlag )
         set(handles.input_RBC, 'String', 'periodic');
         handles.guifile.RBC = 'periodic';
@@ -43,7 +52,9 @@ if ( strcmp(type, 'lbc') )
             set(handles.input_RBC, 'String', '');
         end
     end
+    
 elseif ( strcmp(type, 'rbc') )
+    % Deal with the RBC input.
     if ( periodicFlag )
         set(handles.input_LBC, 'String', 'periodic');
         handles.guifile.LBC = 'periodic';
@@ -57,7 +68,9 @@ elseif ( strcmp(type, 'rbc') )
             set(handles.input_LBC, 'String', '');
         end
     end
+    
 elseif ( strcmp(type, 'bc') )
+    % Deal with the BC input.
     if ( periodicFlag )
         set(handles.input_LBC, 'String', 'periodic');
         handles.guifile.LBC = 'periodic';

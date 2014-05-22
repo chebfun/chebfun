@@ -1,6 +1,5 @@
 function loadDemoMenu(handles)
-
-% TODO:  Documentation.
+%LOADDEMOMENU       Popupulate the 'Demos' menu on the CHEBGUI figure.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -39,11 +38,20 @@ for demoCounter = 1:length(D)
     demoType = fgetl(fid);
     demoType = demoType(2:end-1);
 
+    % Close the file
     fclose(fid);
 
+    % When a user selects a demo in the menu, the callback method of the
+    % associated menu item gets called. The lines below create a new function
+    % that gets assigned as the callback method of the items -- i.e., when the
+    % name of the demo is clicked, demoFun() of the corresponding demo gets
+    % called.
+    
     demoFun = @(hObject, eventdata) ...
         hOpenMenuitemCallback(hObject, eventdata, handles, demoPath);
     switch demoType
+        % Have three categories of ODE demos. The call to UIMENU() below
+        % populuates the menus.
         case 'bvp'
             hDemoitem  =  uimenu('Parent', handles.menu_bvps, ...
                 'Label', demoName, ...
@@ -146,13 +154,19 @@ set(handles.menu_demos, 'UserData', 1);
 end
 
 function hOpenMenuitemCallback(hObject, eventdata, handles, demoPath)
-
-% TODO:  Documentation.
+%HOPENMENUITEMCALLBACK  The callback method of the 'Demos' menu items.
+%
+% When a demo is selected, this method is called. It then populates the CHEBGUI
+% figure with the demo.
 
 % Callback function run when the Open menu item is selected
 handles.guifile = chebgui.demo2chebgui(demoPath);
+
+% Populate the CHEBGUI figure.
 initSuccess = chebguiController.populate(handles, handles.guifile);
 
+% We switch modes differently depending on whether we were successful in
+% populating the figure window.
 if ( initSuccess )
     switchModeCM = 'demo';
 else
