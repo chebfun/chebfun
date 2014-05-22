@@ -268,7 +268,6 @@ if ( ~isempty(N.bc) )
     bcNorm = bcNorm + norm(bcU, 2).^2;
 end
 
-% Return the square-root
 bcNorm = sqrt(bcNorm);
 
 end
