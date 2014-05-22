@@ -1,5 +1,5 @@
 function [u, info] = solvebvpNonlinear(N, rhs, L, u0, res, pref, displayInfo)
-%SOLVEBVPNONLINAR   Solve a nonlinear BVP, using damped Newton iteration.
+%SOLVEBVPNONLINEAR      Solve a nonlinear BVP, using damped Newton iteration.
 % The inputs to the method are:
 %   N:      Nonlinear CHEBOP
 %   rhs:    A CHEBMATRIX, right hand side of ODE

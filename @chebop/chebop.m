@@ -331,7 +331,7 @@ classdef (InferiorClasses = {?double}) chebop
     
     %% STATIC HIDDEN METHODS:       
     methods ( Static = true, Access = private )
-
+        
         % Controls information displayed for Newton iterations
         [displayFig, displayTimer] = displayInfo(mode, varargin);
         
@@ -346,13 +346,26 @@ classdef (InferiorClasses = {?double}) chebop
         displayTimer = displayInfoIter(u, delta, iterNo, normdu, cFactor, ...
             errEst, lendu, lambda, lenu, displayFig, displayTimer, pref);
         
-        % Display special information for linear problems
+        % Display special information for linear problems.
         displayInfoLinear(u, normRes, pref)
 
         % Solve a linear problem posed with CHEBOP.
         [u, info] = solvebvpLinear(L, rhs, residual, displayInfo, pref)
         
     end
+    
+    methods ( Access = private )
 
+        % Find damped Newton step.
+        [u, dampingInfo] = dampingErrorBased(N, u, rhs, delta, L, ...
+            disc, dampingInfo)
+        
+        % Parse boundary conditions for CHEBOP object.
+        result = parsebc(N, BC, type)
+        
+        % Solve a nonlinear problem posed with CHEBOP
+        [u, info] = solvebvpNonlinear(N, rhs, L, u0, res, pref, displayInfo)
+        
+    end
 end
 

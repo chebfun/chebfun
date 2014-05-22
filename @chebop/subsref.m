@@ -31,8 +31,8 @@ switch index(1).type
             return
         end
         
-        % Call the GET method:
-        varargout = { get(N, idx) };
+        % Allow access to any of the properties of F:
+        varargout = { N.(idx) };
         
         % Recurse on SUBSREF:
         if ( length(index) > 1 )
