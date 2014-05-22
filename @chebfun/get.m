@@ -63,6 +63,20 @@ switch prop
             out = out.';
         end
         
+    case {'exps', 'exponents'}
+        out = cell(1, numColumns(f));
+        for k = 1:numel(f)
+            for j = 1:numel(f(k).funs)
+                out{j,k} = get(f(k).funs{end}, 'exponents');
+            end
+        end
+        if ( min(size(out)) == 1 )
+            out = cell2mat(out);
+        end
+        if ( f(1).isTransposed )
+            out = out.';
+        end        
+        
     case {'lval-local', 'rval-local'}
         if ( isempty(f) )
             out = [];
