@@ -1,5 +1,5 @@
 function loadDemoMenu(handles)
-%LOADDEMOMENU    Popupulate the 'Demos' menu on the CHEBGUI figure.
+%LOADDEMOMENU    Populate the 'Demos' menu on the CHEBGUI figure.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
