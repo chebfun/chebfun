@@ -124,12 +124,6 @@ function [funs, ends] = constructorNoSplit(op, domain, pref, vscale, hscale, ...
 numIntervals = numel(domain) - 1;
 ends = domain;
 
-% We extrapolate when the given function is singular, otherwise rounding error
-% introduced by maps may cause wrong sign for function values at the endpoints:
-if ( any(exps) || ~isempty(singTypes) )
-    pref.techPrefs.extrapolate = true;
-end
-
 % Initialise the FUN array:
 funs{numIntervals} = fun.constructor();
 

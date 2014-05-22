@@ -193,6 +193,11 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
                 obj.exponents = singfun.findSingExponents(op, singType);
             end
             
+            % We extrapolate when the given function blows up:
+            if ( any(obj.exponents < 0) )
+                pref.techPrefs.extrapolate = true;
+            end
+            
             % If a smoothfun has been passed as the op, store it directly:
             if ( isa(op, 'smoothfun') )
                 obj.smoothPart = op;
