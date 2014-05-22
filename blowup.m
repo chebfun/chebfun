@@ -10,8 +10,8 @@ function varargout = blowup(on_off)
 %   STATE = BLOWUP(...) will return the current state of the blowup option (as a
 %   double), before any changes are applied.
 %
-%   BLOWUP by itself, displays a string detailing the current splitting
-%   state. By default, this is 0.
+%   BLOWUP by itself, displays a string detailing the current blowup state. By
+%   default, this is 0.
 %
 %   If the singular behaviour of the function is known in advance, it is usually
 %   beneficial to specify this manually. This is achieved by defining 'exps'
@@ -20,7 +20,7 @@ function varargout = blowup(on_off)
 %       f = chebfun('sin(10*pi*x) + 1./x', [-2 0 4], 'exps', [0 -1 0]);
 %
 %   Functions with noninteger blow up can also be represented to some extent,
-%   (but warned that this functionality is still experimental and fragile).
+%   but be warned that this functionality is still experimental and fragile.
 %   For example:
 %       f = chebfun('exp(x)./sqrt(1-x.^2)', 'exps', [-.5 -.5])
 %   Nor is it required that the singular behavior result in a pole:
@@ -56,7 +56,7 @@ if ( nargin > 0 && ischar(on_off) )
     elseif ( any(check(3:end)) )        
         on_off = eval(on_off);
     else
-        error('CHEBFUN:blowup:charin', 'Unkown string input to BLOWUP().');
+        error('CHEBFUN:blowup:charIn', 'Unknown string input to BLOWUP().');
     end
 end
 

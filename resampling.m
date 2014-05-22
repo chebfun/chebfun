@@ -1,6 +1,6 @@
 function varargout = resampling(varargin) %#ok<STOUT>
 %RESAMPLING   CHEBFUN 'resampling' option.
-%   RESAMPLING ON and RESMAPLING OFF is deprecated syntax. See the section on
+%   RESAMPLING ON and RESMAPLING OFF are no longer supported. See the section on
 %   refinementFunction in CHEBTECH.TECHPREF documentation for further details.
 %
 % See also CHEBTECH.TECHPREF.
