@@ -1,4 +1,4 @@
-function r = roots( f, g )
+function r = roots( f, g, varargin )
 %ROOTS   Zero contours of a CHEBFUN2.
 %   R = ROOTS(F), returns the zero contours of F as a quasimatrix of chebfuns.
 %   Each column of R is one zero contour. This command only finds contours when
@@ -12,6 +12,14 @@ function r = roots( f, g )
 %
 %   R = ROOTS(F, G) returns the isolated points of F and G.
 %
+%   R = ROOTS(F, G, METHOD) allows the user to supply the method to solve 
+%   the bivariate rootfinding problem. If METHOD = 'ms' or METHOD =
+%   'marchingsquares', then the Marching Squares algorithm is employed. The Marching 
+%   Squares algorithm is fast but not particularly robust. 
+%   If METHOD = 'resultant', then the hidden variable resultant method 
+%   based on Bezout resulants is employed. The Resultant method is slow but
+%   quite robust.
+%  
 % See also CHEBFUN2V/ROOTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
@@ -67,8 +75,14 @@ if ( nargin == 1 )
     
 elseif ( isa(g, 'chebfun2') )
     
-    % Bivariate rootfinding:
-    r = roots( chebfun2v( f, g ) );
+    if ( nargin == 2) 
+        % Bivariate rootfinding:
+        r = roots( chebfun2v( f, g ) );
+    elseif ( nargin == 3 ) 
+        r = roots( chebfun2v( f, g ), varargin{1} );  
+    else
+        error('CHEBFUN2:ROOTS:ARGIN','Too many inputs arguments.')
+    end
     
 end
 
