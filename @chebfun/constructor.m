@@ -65,9 +65,9 @@ numIntervals = numel(domain) - 1;
 ends = domain;
 
 % Initialise the FUN array:
-funs{numIntervals} = fun.constructor();
+funs = cell(1, numIntervals);
 
-% We only want to throw the warning 'CHEBFUN:constructor:resolved'once:
+% We only want to throw the warning 'CHEBFUN:constructor:notResolved'once:
 warningThrown = false;
 
 singDetect = pref.enableSingularityDetection;
@@ -100,7 +100,7 @@ for k = 1:numIntervals
 
     % Warn if unhappy (as we're unable to split the domain to improve):
     if ( ~ishappy && ~warningThrown )
-        warning('CHEBFUN:constructor:resolved', ...
+        warning('CHEBFUN:constructor:notResolved', ...
             ['Function not resolved using %d pts.', ...
             ' Have you tried ''splitting on''?'], pref.techPrefs.maxLength);
         warningThrown = true;
@@ -126,7 +126,7 @@ pref.techPrefs.maxLength = pref.breakpointPrefs.splitMaxLength;
 pref.techPrefs.extrapolate = true;
 
 % Initialise the FUN array:
-funs{numIntervals} = fun.constructor();
+funs = cell(1, numIntervals);
 % Initialise happiness:
 ishappy = ones(1, numel(ends) - 1);
 
@@ -287,16 +287,6 @@ end
 
 end
 
-function pref = getSingInfo(exps, singTypes, kk, pref)
-    if ( ~isempty(exps) )
-        pref.singPrefs.exponents = exps(kk);
-    end
-    % Replace the information for the singularity type in the preference:
-    if ( ~isempty(singTypes) )
-        pref.singPrefs.singType = singTypes(kk);
-    end
-end
-
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% GETFUN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [g, ishappy, vscale] = getFun(op, domain, vscale, hscale, pref)
@@ -316,7 +306,7 @@ vscale = max([vscale, get(g, 'vscale')]);
 
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% PARSESINGPREFS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function pref = parseSingPrefs(pref, domain)
 % TODO:  Move this to the main input parsing routine.
@@ -372,4 +362,14 @@ end
 
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% GETSINGINFO %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function pref = getSingInfo(exps, singTypes, kk, pref)
+    if ( ~isempty(exps) )
+        pref.singPrefs.exponents = exps(kk);
+    end
+    % Replace the information for the singularity type in the preference:
+    if ( ~isempty(singTypes) )
+        pref.singPrefs.singType = singTypes(kk);
+    end
+end
