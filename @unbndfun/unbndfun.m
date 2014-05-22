@@ -128,9 +128,7 @@ classdef unbndfun < classicfun
                 % using the forward map, i.e., UNBNDMAP.FOR().
                 ind = isinf(domain);
                 pref.singPrefs.exponents(ind) = -pref.singPrefs.exponents(ind);
-                if ( any(pref.singPrefs.exponents) )
-                    pref.enableSingularityDetection = true;
-                end
+
             end
             
             % Call the ONEFUN constructor:
