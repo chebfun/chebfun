@@ -25,7 +25,7 @@ elseif ( n == 1 ) % Special case (single point)
     
 else              % General case
     % Chebyshev points using sine function to preserve symmetry:
-    x = sin((-n+1:2:n-1)*pi/(2*n)).';
+    x = sin(pi*((-n+1:2:n-1)/(2*n))).';
     
     % Quadrature weights:            
     if ( nargout > 1 ) 

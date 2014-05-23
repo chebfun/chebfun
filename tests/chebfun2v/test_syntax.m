@@ -1,4 +1,4 @@
-function pass = chebfun2v_syntax( pref )
+function pass = test_syntax( pref )
 % Check the Chebfun2v constructor for different syntax.
 % Alex Townsend, March 2013.
 

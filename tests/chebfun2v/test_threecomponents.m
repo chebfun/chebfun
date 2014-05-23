@@ -1,4 +1,4 @@
-function pass = test_chebfun2v_threecomponents( pref ) 
+function pass = test_threecomponents( pref ) 
 % A chebfun2v test for checking that chebfun2v objects with three 
 % components is working correctly. 
 

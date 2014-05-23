@@ -56,7 +56,7 @@ classdef unbndfun < classicfun
             if ( (nargin == 0) || isempty(op) )
                 return
             end
-            
+
             % Obtain preferences if none given:
             if ( (nargin < 5) || isempty(pref))
                 pref = chebfunpref();
@@ -114,7 +114,8 @@ classdef unbndfun < classicfun
                 lVal = feval(op, -1);
                 rVal = feval(op, 1);
                 if ( any(isinf([lVal rVal])) )
-                    pref.singPrefs.singType = {'pole', 'pole'};
+                    singType = pref.singPrefs.defaultSingType;
+                    pref.singPrefs.singType = {singType, singType};
                 end
             
             else
@@ -126,6 +127,7 @@ classdef unbndfun < classicfun
                 % using the forward map, i.e., UNBNDMAP.FOR().
                 ind = isinf(domain);
                 pref.singPrefs.exponents(ind) = -pref.singPrefs.exponents(ind);
+
             end
             
             % Call the ONEFUN constructor:
@@ -208,4 +210,3 @@ classdef unbndfun < classicfun
         out = sum(f, dim)
     end    
 end
-   

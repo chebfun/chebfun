@@ -37,7 +37,6 @@ end
 
 function out = legpolyPiecewise(f, n)
 %LEGPOLYPIECEWISE    Compute Legendre coefficients of a piecewise smooth CHEBFUN
-%
 % If F is 'simple' (i.e., is a piecewise smooth Chebyshev representation), then
 % each of the required inner-products are computed so that c_k = int P_k f(x)dx.
 %
@@ -83,7 +82,12 @@ if ( isSimple )
             P = (2-1/(kk+1))*Pm1.*z - (1-1/(kk+1))*Pm2;
             Pm2 = Pm1; Pm1 = P;
             % Add contribution from subinterval to (k+1)st coefficient:
-            out(kk+2,:) = out(kk+2,:) + sum(diag(w.*P.')*(vals));
+            if ( size(vals, 2) > 1 )
+                out(kk+2,:) = out(kk+2,:) + ...
+                    sum(bsxfun(@(u,v) u*v, w.*P.', vals.').');
+            else
+                out(kk+2,:) = out(kk+2,:) + (w.*P.')*vals;
+            end
         end
         
     end
@@ -102,3 +106,4 @@ end
 out = flipud(bsxfun(@rdivide, out, scl)).';    
     
 end
+                

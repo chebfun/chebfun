@@ -228,6 +228,8 @@ classdef (InferiorClasses = {?double}) chebop
                 end
                 
             elseif ( strcmpi(val, 'periodic') )
+                N.lbc = [];
+                N.rbc = [];
                 N.bc = 'periodic';
                 
                 

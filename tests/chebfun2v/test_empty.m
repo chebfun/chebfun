@@ -1,4 +1,4 @@
-function pass = test_chebfun2v_empty
+function pass = test_empty( pref ) 
 % For empty chebfun2v objects, does each command deal with them
 % appropriately?
 % Alex Townsend, March 2013. 
