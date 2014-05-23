@@ -42,7 +42,4 @@ err(3) = norm(FF(0,0) - G(0,0));
 
 pass = err < tol;
 
-if ( ~isa( tech, 'chebtech2' ) )
-    pass = 1; 
-end
 end
