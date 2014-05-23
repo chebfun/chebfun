@@ -46,7 +46,7 @@ pass(1,5) = normest(f - f1) < tol;
 % The absolute value of all points on the unit circle should be 1:
 f = chebfun(@(x) exp(1i*x), pref);
 g = abs(f);
-pass(1,6) = normest(g-1) == 0;
+pass(1,6) = normest(g-1) < eps ;
 
 % Real, imaginary and complex CHEBFUN objects:
 fHandle = {@(x) sin(pi*x), @(x) -sin(pi*x), @(x) sin(pi*x), @(x) -sin(pi*x)};

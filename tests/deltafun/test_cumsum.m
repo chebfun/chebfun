@@ -25,9 +25,8 @@ pass(2) = iscell(F);
 f = fun.constructor(@(x) sin(pi*x));
 d = deltafun( f, [-1, 1], [-1, 1]);
 [F, rJump] = cumsum(d);
-
-pass(3) = ~isa(F, 'deltafun') && feval(F, -1) == -1 ...
-    && rJump == 1 && feval(F, 1) == -1; 
+pass(3) = ~isa(F, 'deltafun') && abs(feval(F, -1) - -1) < tol ...
+    && rJump == 1 && abs(feval(F, 1) - -1) < tol; 
 
 %% A test case based on an example by LNT:
 n = 6;
