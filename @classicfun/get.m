@@ -49,6 +49,10 @@ switch prop
     case 'coeffs'
         % Get values. 
         out = get(f.onefun, prop); 
+        
+    case 'exponents'
+        % Get values. 
+        out = [0 0];
 
     otherwise
         
