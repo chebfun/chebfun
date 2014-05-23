@@ -848,7 +848,7 @@ if exist('n','var')==0,
     n = 300;
 end
 
-x = chebpts(n,ends(1:2)); y = chebpts(n,ends(3:4));
+x = mypoints(n,ends(1:2)); y = mypoints(n,ends(3:4));
 [xx, yy]=meshgrid(x,y); F = f(xx,yy);
 
 % vertical scale for machine precision
@@ -1311,4 +1311,24 @@ end
 
 % Plot the results (useful for debugging).
 % plot(x1,y1,x2,y2,x0,y0,'ok');
+end
+
+
+function x = mypoints(n, dom)
+% Get the sample points that correspond to the right grid for a particular
+% technology.
+
+% What tech am I based on?:
+tech = chebfun2pref().tech();
+
+if ( isa(tech, 'chebtech2') )
+    x = chebpts( n, dom, 2 );   % x grid.
+elseif ( isa(tech, 'chebtech1') )
+    x = chebpts( n, dom, 1 );   % x grid.
+elseif ( isa(tech, 'fourtech') )
+    x = fourierpts( n, dom );   % x grid.
+else
+    error('CHEBFUN2:PTS', 'Unrecognized technology');
+end
+
 end
