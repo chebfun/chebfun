@@ -139,8 +139,12 @@ minsample = 9;   % minsample
 % Go find out what tech I'm based on:
 tech = chebfun2pref().tech();
 
+factor = 4;  % grid to rank ratio.
 if ( isa(tech, 'fourtech') ) 
     minsample = 8; 
+end
+if ( isa(tech, 'chebtech1') )
+    factor = 5; 
 end
 
 % If the vectorize flag is off, do we need to give user a warning?
@@ -189,7 +193,7 @@ while ( ~isHappy && ~Failure )
     
     strike = 1;
     % grid <= 4*(maxRank-1)+1, see Chebfun2 paper. 
-    while ( iFail && grid <= 4*(maxRank-1)+1 && strike < 3)
+    while ( iFail && grid <= factor*(maxRank-1)+1 && strike < 3)
         % Refine sampling on tensor grid:
         grid = gridRefine( grid );
         [xx, yy] = points2D(grid, grid, domain);
@@ -206,7 +210,7 @@ while ( ~isHappy && ~Failure )
     end
     
     % If the rank of the function is above maxRank then stop.
-    if ( grid > 4*(maxRank-1)+1 )
+    if ( grid > factor*(maxRank-1)+1 )
         warning('CHEBFUN2:CTOR', 'Not a low-rank function.');
         Failure = 1; 
     end
