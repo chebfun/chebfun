@@ -160,7 +160,7 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
             %% Find EXPONENTS:
             
             % If exponents were passed, make sure they are in correct shape.
-            if ( ~isempty(exponents) || ~all(isnan(exponents)) )
+            if ( ~isempty(exponents) )
                 if ( any(size(exponents) ~= [1, 2]) || ...
                         ~isa(exponents, 'double') )
                     error( 'CHEBFUN:SINGFUN:constructor', ...
@@ -171,10 +171,8 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
                 maskNaN = isnan(exponents);
                 
                 if ( any(maskNaN) )
-                    idx = [1 2];
-                    idx = idx(maskNaN);
-                    tmpExps = singfun.findSingExponents(op, singType, idx);
-                    obj.exponents(idx) = tmpExps;
+                    tmpExps = singfun.findSingExponents(op, singType);
+                    obj.exponents(maskNaN) = tmpExps(maskNaN);
                 end
                 
             else
@@ -421,7 +419,7 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         s = constructSmoothPart( op, vscale, hscale, pref )
         
         % Method for finding the order of singularities
-        exponents = findSingExponents( op, singType, lr )
+        exponents = findSingExponents( op, singType )
         
         % Find integer order singularities, i.e. poles
         poleOrder = findPoleOrder( op, SingEnd )

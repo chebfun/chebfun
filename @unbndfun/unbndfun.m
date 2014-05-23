@@ -115,7 +115,8 @@ classdef unbndfun < classicfun
                 rVal = feval(op, 1);
                 if ( any(isinf([lVal rVal])) )
                     % TODO: Why a pole and not a 'sing'?
-                    pref.singPrefs.singType = {'sing', 'sing'};
+                    pref.singPrefs.singType = {'pole', 'pole'};
+                    pref.enableSingularityDetection = true;
                 end
             
             else
