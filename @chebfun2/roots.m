@@ -12,18 +12,18 @@ function r = roots( f, g, varargin )
 %
 %   R = ROOTS(F, G) returns the isolated points of F and G.
 %
-%   R = ROOTS(F, G, METHOD) the underlying rootfinding algorithm can be 
-%   supplied. If METHOD = 'ms' or METHOD = 'marchingsquares', then the 
-%   Marching Squares algorithm is employed. The Marching 
-%   Squares algorithm is fast but not particularly robust. 
-%   If METHOD = 'resultant', then a hidden variable resultant method 
-%   based on Bezout resultants is employed. The Resultant method is slower but
-%   far more robust.
+%   R = ROOTS(F, G, METHOD) the underlying rootfinding algorithm can be
+%   supplied. If METHOD = 'ms' or METHOD = 'marchingsquares', then the Marching
+%   Squares algorithm is employed. The Marching Squares algorithm is fast but
+%   not particularly robust. If METHOD = 'resultant', then a hidden variable
+%   resultant method based on Bezout resultants is employed. The Resultant
+%   method is slower but far more robust. See the CHEBFUN2V/ROOTS()
+%   documentation to see which algorithm is used when no METHOD is passed.
 %  
 % See also CHEBFUN2V/ROOTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 tol = 1e-5; % Go for five digits.
 dom = f.domain;
@@ -75,14 +75,7 @@ if ( nargin == 1 )
     
 elseif ( isa(g, 'chebfun2') )
     
-    if ( nargin == 2) 
-        % Bivariate rootfinding:
-        r = roots( chebfun2v( f, g ) );
-    elseif ( nargin == 3 ) 
-        r = roots( chebfun2v( f, g ), varargin{1} );  
-    else
-        error('CHEBFUN2:ROOTS:ARGIN','Too many inputs arguments.')
-    end
+    r = roots( chebfun2v( f, g ), varargin{:} );
     
 end
 
