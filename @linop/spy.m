@@ -78,7 +78,6 @@ disc.source = L;
 
 % Spy the matrix, with a useful label.
 data = matrix(disc);
-size(data)
 spy(data, varargin{:}), hold on
 s =  sprintf('%i,', dim);    % list of sizes
 s = [ 'discretization = [', s(1:end-1), ']' ];

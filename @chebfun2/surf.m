@@ -105,7 +105,7 @@ if ( isa(f,'chebfun2') )
             end
             
             h = surf(x, y, vals, C, defaultOpts{:}, argin{3:end});
-            xlabel('x'), ylabel('y'), xlim(dom(1:2)), ylim(dom(3:4))
+            xlabel('x'), ylabel('y')
             
             % There is a bug in matlab surf plot when vals are very nearly a
             % constant. Fix this manually by resetting axis scaling.
