@@ -269,8 +269,8 @@ while ( ~isHappy && ~Failure )
         
         % Are the columns and rows resolved now?
         if ( ~resolvedCols )
-            colChebtech = tech.make(sum(colValues,2),[],sum(colValues,2));
-            resolvedCols = happinessCheck(colChebtech);
+            colChebtech = tech.make(sum(colValues,2));
+            resolvedCols = happinessCheck(colChebtech,[],sum(colValues,2));
         end
         if ( ~resolvedRows )
             rowChebtech = tech.make(sum(rowValues.',2));
@@ -310,7 +310,7 @@ while ( ~isHappy && ~Failure )
         pass = g.sampleTest(op, tol);
         if ( ~pass )
             % Increase minsamples and try again.
-            minsample = 2^( floor( log2( minsample ) ) + 1) + 1;
+            minsample = gridRefine( minsample );
             isHappy = 0;
         end
     end
