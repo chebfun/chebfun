@@ -11,8 +11,28 @@ pivots = f.pivotValues;
 cols = f.cols;
 rows = f.rows;
 
-rk = length( pivots );
+% If all the pivots are zero, then the chebfun2 is zero: 
 out_pivots = ( norm(pivots, inf) == 0 );
+if ( out_pivots ) 
+    out = 1; 
+    return 
+end
+
+% Quick check: Evaluate on a meshgrid. If the matrix is nonzero then 
+% the chebfun2 is nonzero. 
+dom = f.domain; 
+x = linspace(dom(1),dom(2),10); 
+y = linspace(dom(3),dom(4),10);
+[xx, yy] = meshgrid(x, y);
+vals = feval(f, xx, yy); 
+if ( norm( vals, inf ) > 0 ) 
+   out = 0; 
+   return
+end
+
+% Slower check: A pivot may be positive, but the columns or rows may be 
+% zero: 
+rk = length( pivots );
 out_cols = zeros( length( pivots ), 1 );
 out_rows = zeros( length( pivots ), 1 );
 for j = 1:rk
@@ -22,6 +42,6 @@ end
 
 bolslices = ( all(out_cols) || all(out_rows) );
 
-out = bolslices || out_pivots;
+out = bolslices;
 
 end
