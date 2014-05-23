@@ -7,9 +7,6 @@ end
 
 tol = 100*pref.eps; 
 
-pass = false;
-return
-
 % Rank 1 chebfun2 
 f = chebfun(@(x) x.^2, pref);
 g = chebfun(@(y) sin(y), pref);
