@@ -55,6 +55,12 @@ if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
         g = chebfun2( op, varargin{:} );
         return
     elseif ( any(strcmpi(domain, 'padua')) )
+        tech = chebfun2pref().tech(); 
+        if ( ~isa(tech, 'chebtech1') ) 
+            error('CHEBFUN2:PADUA', ['PADUA only works with 2nd kind',...
+                'Chebyshev grids.\n To change preferences, type:\n',...
+                '>> chebfun2pref.setDefaults(''tech'',chebtech2)']);
+        end
         [ignored, op] = chebfun2.paduaVals2coeffs( op );
         g = chebfun2( op );
         return        
