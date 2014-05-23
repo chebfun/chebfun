@@ -114,9 +114,8 @@ classdef unbndfun < classicfun
                 lVal = feval(op, -1);
                 rVal = feval(op, 1);
                 if ( any(isinf([lVal rVal])) )
-                    % TODO: Why a pole and not a 'sing'?
-                    pref.singPrefs.singType = {'pole', 'pole'};
-                    pref.enableSingularityDetection = true;
+                    singType = pref.singPrefs.defaultSingType;
+                    pref.singPrefs.singType = {singType, singType};
                 end
             
             else
@@ -211,4 +210,3 @@ classdef unbndfun < classicfun
         out = sum(f, dim)
     end    
 end
-   
