@@ -31,8 +31,10 @@ pass(2) = abs(innerProduct(f, g)) < ...
 
 f = bndfun(@(x) exp(x), dom, [], [], pref);
 g = bndfun(@(x) exp(-x), dom, [], [], pref);
-pass(3) = abs(innerProduct(f, g) - 9) < max(get(f, 'vscale'), ...
-    get(g, 'vscale'))*max(get(f, 'epslevel'), get(g, 'epslevel'));
+err = abs(innerProduct(f, g) - 9);
+tol = 2 * max(get(f, 'vscale'), get(g, 'vscale')) * ...
+    max(get(f, 'epslevel'), get(g, 'epslevel'))
+pass(3) = err < tol;
 
 g = bndfun(@(x) sin(x), dom, [], [], pref);
 exact = exp(7)*(sin(7) - cos(7))/2 - exp(-2)*(sin(-2) - cos(-2))/2;
