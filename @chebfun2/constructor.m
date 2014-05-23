@@ -213,9 +213,9 @@ while ( ~isHappy && ~Failure )
     
     % Check if the column and row slices are resolved.
     colChebtech = tech.make(sum(colValues,2) );
-    resolvedCols = happinessCheck(colChebtech);
+    resolvedCols = happinessCheck(colChebtech,[],sum(colValues,2));
     rowChebtech = tech.make(sum(rowValues.',2) );
-    resolvedRows = happinessCheck(rowChebtech);    
+    resolvedRows = happinessCheck(rowChebtech,[],sum(rowValues.',2));    
     isHappy = resolvedRows & resolvedCols;
     
     % If the function is zero, set midpoint of domain as pivot location.
@@ -269,12 +269,12 @@ while ( ~isHappy && ~Failure )
         
         % Are the columns and rows resolved now?
         if ( ~resolvedCols )
-            colChebtech = tech.make(sum(colValues,2));
+            colChebtech = tech.make(sum(colValues,2),[],sum(colValues,2));
             resolvedCols = happinessCheck(colChebtech);
         end
         if ( ~resolvedRows )
             rowChebtech = tech.make(sum(rowValues.',2));
-            resolvedRows = happinessCheck(rowChebtech);
+            resolvedRows = happinessCheck(rowChebtech,[],sum(rowValues.',2));
         end
         isHappy = resolvedRows & resolvedCols;
         
