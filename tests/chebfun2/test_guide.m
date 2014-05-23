@@ -12,6 +12,12 @@ f = chebfun2(@(x,y) cos(x.*y));
 
 pass(1) = abs( sum2(f) - 3.784332281468732 ) < tol; 
 
+
+store1 = chebfunpref.getDefaults;
+store2 = chebfun2pref.getDefaults;
+chebfunpref.setDefaults('tech','chebtech','gridType',2)
+chebfun2pref.setDefaults('tech',@chebtech2)
+
 x = chebfun2(@(x,y) x, [-2 3 -4 4]); 
 y = chebfun2(@(x,y) y, [-2 3 -4 4]);   
 
@@ -23,6 +29,9 @@ x = linspace(-2,3);
 y = linspace(-4,4); 
 [xx,yy] = meshgrid(x,y); 
 pass(2) = ( norm( f(xx,yy) - op(xx,yy), inf) ) < 200*tol; 
+
+chebfunpref.setDefaults(store1);
+chebfun2pref.setDefaults(store2);
 
 f = chebfun2(@(z) sin(z));   
 pass(3) = ( abs( f(1+1i) -  sin(1+1i) ) ) < tol;

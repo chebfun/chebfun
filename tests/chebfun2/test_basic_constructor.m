@@ -31,9 +31,14 @@ f = @(x,y) 1./(1+25*x.^2.*y.^2);
 ffch = chebfun2(@(x,y) f(x,y), [-2 2 -2 2]);
 xx = linspace(-2,2); 
 [XX,YY] = meshgrid(xx,xx);
-pass(6) = ( max(max( abs(f(XX,YY) - ffch(XX,YY) ))) < 2e3*tol );
+pass(6) = ( max(max( abs(f(XX,YY) - ffch(XX,YY) ))) < 2e4*tol );
 
 % Grady's function that failed: 
+store1 = chebfunpref.getDefaults;
+store2 = chebfun2pref.getDefaults;
+chebfunpref.setDefaults('tech','chebtech','gridType',2)
+chebfun2pref.setDefaults('tech',@chebtech2)
+
 g = @(x,y) exp(-1./max(1 - ((x-0.02).^2 + (y-0.033).^2),0));
 f = chebfun2(g,[-pi,pi,-pi,pi]);
 [xx,yy] = meshgrid(linspace(-pi,pi,101));
@@ -46,4 +51,7 @@ f = chebfun2(g,[-pi,pi,-pi,pi]);
 [xx,yy] = meshgrid(linspace(-pi,pi,101));
 err = g(xx,yy)-f(xx,yy);
 pass(8) = ( norm(err(:),inf ) < 2e3*tol );
+
+chebfunpref.setDefaults(store1);
+chebfun2pref.setDefaults(store2);
 end
