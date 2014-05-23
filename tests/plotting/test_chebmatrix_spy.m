@@ -11,6 +11,7 @@ dom = [-1 0 1];
 I = operatorBlock.eye(dom);
 D = operatorBlock.diff(dom);
 x = chebfun('x', dom);
+c = sin(x.^2);
 C = operatorBlock.mult(c);   
 E = functionalBlock.eval(dom);
 El = E(dom(1));
