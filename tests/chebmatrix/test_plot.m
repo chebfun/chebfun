@@ -1,9 +1,10 @@
-function pass = test_plot
+function pass = test_plot(pref)
 % HM, 30 Apr 2014
 
+pass = true;
+
 %% 
-% A has entries of all types: OPERATORBLOCK, FUNCTIONBLOCK,
-% CHEBFUN and DOUBLE.
+% A has entries of all types: OPERATORBLOCK, FUNCTIONBLOCK, CHEBFUN and DOUBLE.
 
 d = [-2 2];                   % function domain
 I = operatorBlock.eye(d);     % identity operator

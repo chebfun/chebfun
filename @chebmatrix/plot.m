@@ -35,6 +35,7 @@ if ( ~isQuasi )
 else
     % If A contains only CHEBFUN or DOUBLE, convert it to a quasimatrix and
     % call CHEBFUN/PLOT():
+    A.blocks = reshape(A.blocks, 1, numel(A.blocks));
     A = quasimatrix(A.blocks);
     [varargout{1:nargout}] = plot(A, varargin{:});
     
