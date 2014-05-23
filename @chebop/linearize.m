@@ -1,4 +1,4 @@
-function [L, res, isLinear] = linearize(N, u, x, flag)
+function [L, res, isLinear, u] = linearize(N, u, x, flag)
 %LINEARIZE   Linearize a CHEBOP.
 %   L = LINEARIZE(N) returns a LINOP that corresponds to linearising the CHEBOP
 %   N around the zero function on N.DOMAIN. The linop L will both include the
@@ -30,6 +30,12 @@ function [L, res, isLinear] = linearize(N, u, x, flag)
 %       ISLINEAR(2) = 1 if N.LBC is linear, 0 otherwise.
 %       ISLINEAR(3) = 1 if N.RBC is linear, 0 otherwise.
 %       ISLINEAR(4) = 1 if N.BC is linear, 0 otherwise.
+%
+%   [L, RES, ISLINEAR, U] = LINEARIZE(N, ...) also returns CHEBMATRIX U that N
+%   was linearized around. This is useful for parameter dependent problem, as
+%   LINEARIZE() is where it is discovered that problems are parameter dependent,
+%   so the CHEBMATRIX can be made to have to correct collection of CHEBFUN
+%   objects and doubles, rather than just CHEBFUNs.
 %
 % See also LINOP.
 
@@ -99,6 +105,11 @@ end
 % Evaluate N.op. The output will be the ADCHEBFUN NU. In case of systems, NU
 % will be an array-valued ADCHEBFUN.
 Nu = feval(N, x, u{:}); % N.op(x, u{:});
+if ( size(Nu, 1) < size(Nu, 2) )
+    warning('CHEBFUN:chebop:linearize:vertcatop', ...
+        ['N.op should return a column vector.\n', ...
+        'Row vectors are deprecated and may not be supported in future releases.'])
+end
 
 % Construct a LINOP L by vertically concatenating the derivatives stored in NU.
 L = linop(vertcat(get(Nu, 'jacobian')));
@@ -130,7 +141,7 @@ L.domain = chebfun.mergeDomains(L.domain, dom);
 [s1, s2] = size(L.blocks);
 numParams = s2 - s1;
 if ( all(isFun) && numParams > 0 )
-    % We've found a paramterised problem, but weren't informed by u0. 
+    % We've found a parameterised problem, but weren't informed by u0. 
     
     % TODO: Do we really want to throw a warning?
 %     % Throw a warning: 
@@ -146,73 +157,35 @@ if ( all(isFun) && numParams > 0 )
     for k = 0:numParams-1
         u{end-k} = feval(u{end-k}, L.domain(1)); % Convert to a scalar.
     end
-    [L, res, isLinear] = linearize(N, u, x, flag);
+    [L, res, isLinear, u] = linearize(N, u, x, flag);
+
     return
 end
 
 %% Add BCs
 
-% Initalise an empty LINOPCONSTRAINT.
+% Initialise an empty LINOPCONSTRAINT.
 BC = linopConstraint();
 
-% Evaluate and linearise left boundary condition(s):
+% Linearize left boundary condition
 if ( ~isempty(N.lbc) )
-    % Evaluate. The output, LBCU, will be an ADCHEBFUN.
-    lbcU = N.lbc(u{:});
-    
-    % Ensure conditions were concatenated vertically, not horizontally
-    lbcU = checkConcat(lbcU);
-    
-    % Loop through the components of LBCU.
-    for k = 1:numel(lbcU)
-        % Obtain the kth element of the ADCHEBFUN array.
-        lbcUk = getElement(lbcU, k);
-        % Evaluate the function at the left endpoint
-        lbcUk = feval(lbcUk, dom(1));
-        % Add the new condition to the LINOPCONSTRAINT BC.
-        BC = append(BC, lbcUk.jacobian, lbcUk.func);
-    end
-    % Update linearity information.
-    isLinear(2) = all(all(get(lbcU, 'linearity')));
+    % Linearize left boundary condition
+    [BC, isLinLeft] = linearizeLRbc(N.lbc, u, dom(1), BC);
+    isLinear(2) = isLinLeft;
 end
 
-% If N is nonlinear, and we were looking to only test linearity, return
-if ( flag && ~all(isLinear) )
-    L = linop();
-    return
-end
-
-% Evaluate and linearise right boundary condition(s):
+% Linearize right boundary condition
 if ( ~isempty(N.rbc) )
-    % Evaluate. The output, RBCU, will be an ADCHEBFUN.
-    rbcU = N.rbc(u{:});
-    
-    % Ensure conditions were concatenated vertically, not horizontally
-    rbcU = checkConcat(rbcU);
-    
-    % Loop through the components of RBCU.
-    for k = 1:numel(rbcU)
-        % Obtain the kth element of the ADCHEBFUN array.
-        rbcUk = getElement(rbcU, k);
-        % Evaluate the function at the right endpoint
-        rbcUk = feval(rbcUk, dom(end));
-        % Add the new condition to the LINOPCONSTRAINT BC.
-        BC = append(BC, rbcUk.jacobian, rbcUk.func);
-    end
-    % Update linearity information.
-    isLinear(3) = all(all(get(rbcU, 'linearity')));
+    % Linearize left boundary condition
+    [BC, isLinRight] = linearizeLRbc(N.rbc, u, dom(end), BC);
+    isLinear(3) = isLinRight;
 end
 
-% If N is nonlinear, and we were looking to only test linearity, return
-if ( flag && ~all(isLinear) )
-    L = linop();
-    return
-end
-
-% Evaluate and linearise the remaining constraints:
+% Evaluate and linearise the remaining constraints. We need to treat the N.BC
+% quite differently from N.LBC and N.RBC
 if ( ~isempty(N.bc) )
     if ( strcmp(N.bc, 'periodic') )
-        % Apply periodic boundary conditions:
+       % Apply periodic boundary conditions:
        contConds = deriveContinuity(L, dom, true);
        contConds = contConds.continuity;
        BC = append(BC, contConds.functional, contConds.values);
@@ -247,6 +220,37 @@ end
 
 % Append all constraints to the LINOP returned.
 L.constraint = BC;
+
+% Cast the cell U back to a CHEBMATRIX, consisting of CHEBFUNs and scalars
+if ( nargout == 4)
+    for k = 1:numVars
+        u{k} = u{k}.func;
+    end
+    u = chebmatrix(u);
+end
+
+end
+
+function [BC, isLinLR] = linearizeLRbc(op, u, evalPoint, BC)
+%LINEARIZELRBC  Linearize left and right boundary conditions
+
+lrBC = op(u{:});
+
+% Ensure conditions were concatenated vertically, not horizontally
+lrBC = checkConcat(lrBC);
+
+% Loop through the components of LRBC.
+for k = 1:numel(lrBC)
+    % Obtain the kth element of the ADCHEBFUN array.
+    lrBCk = getElement(lrBC, k);
+    % Evaluate the function at the left endpoint
+    lrBCk = feval(lrBCk, evalPoint);
+    % Add the new condition to the LINOPCONSTRAINT BC.
+    BC = append(BC, lrBCk.jacobian, lrBCk.func);
+end
+
+% Return linearity information
+isLinLR = all(all(get(lrBC, 'linearity')));
 
 end
 

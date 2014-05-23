@@ -65,8 +65,8 @@ classdef linopConstraint
             C.values = [ C.values ; value ];
         end
         
-        function C = flipSigns(C)
-        %FLIPSIGNS  Flip the signs of the VALUES property of a LINOPCONSTRAINT.
+        function C = uminus(C)
+        %-      Negate the VALUES property of a LINOPCONSTRAINT.
         %
         %   This is useful at the CHEBOP level, where we need different signs
         %   for the boundary conditions of a LINOP when we call LINOP(N) where N
