@@ -63,9 +63,10 @@ g = restrict(f, [-1.7 2.3 6.8]);
 h1 = restrict(f, [-1.7 2.3]);
 h2 = restrict(f, [2.3 6.8]);
 x = linspace(-1, 1, 100).';
-err1 = feval(g{1} - h1, x) < 10*get(f, 'epslevel');
-err2 = feval(g{2} - h2, x+3) < 10*get(f, 'epslevel');
-pass(11) = all(err1(:) == 0) && all(err2(:) == 0);
+err1 = norm(feval(g{1} - h1, x), inf);
+err2 = norm(feval(g{2} - h2, x+4), inf);
+tol = 10*get(f, 'epslevel');
+pass(11) = err1 < tol && err2 < tol;
 
 %%
 % Check whether restriction actually results in a BNDFUN on the correct domain.
@@ -81,10 +82,11 @@ f = bndfun(@(x) [sin(x) cos(x)], dom, [], [], pref);
 g = restrict(f, [-0.6 0.1 1]);
 h1 = restrict(f, [-0.6 0.1]);
 h2 = restrict(f, [0.1 1]);
-x = linspace(-1, 1, 100).';
-err1 = feval(g{1} - h1, x);
-err2 = feval(g{2} - h2, x);
-pass(14) = all(err1(:) == 0) && all(err2(:) == 0);
+x = linspace(-.5, 0, 100).';
+err1 = norm(feval(g{1} - h1, x), inf);
+err2 = norm(feval(g{2} - h2, x+.7), inf);
+tol = 10*max(get(f, 'epslevel'));
+pass(14) = err1 < tol && err2 < tol;
 
 %% Test on singular function:
 
