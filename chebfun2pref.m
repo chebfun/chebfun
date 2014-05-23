@@ -210,7 +210,7 @@ classdef chebfun2pref < chebpref
         %   preferences.
 
             factoryPrefs.domain = [-1 1 -1 1];
-            factoryPrefs.tech = @chebtech2;
+            factoryPrefs.tech = @chebtech1;
             factoryPrefs.maxRank = 513;
             factoryPrefs.maxLength = 65537;
             factoryPrefs.eps = eps;
