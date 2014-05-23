@@ -8,6 +8,11 @@ function fx = toValues(disc, f)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
+if ( isnumeric(f) )
+    fx = f;
+    return
+end
+
 x = functionPoints(disc);
 fx = f(x);
 

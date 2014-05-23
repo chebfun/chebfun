@@ -97,8 +97,9 @@ pref.singPrefs.exponents = [0 1];
 f = unbndfun(op, dom, [], [], pref); 
 gVals = feval(f, x);
 gExact = op(x);
-err = gVals - gExact;
-pass(9) = norm(err, inf) < get(f,'epslevel')*get(f,'vscale');
+err = norm(gVals - gExact, inf);
+tol = 10*get(f,'epslevel')*get(f,'vscale');
+pass(9) = err < tol;
 
 %% Functions on [-inf b]:
 

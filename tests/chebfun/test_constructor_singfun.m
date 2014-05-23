@@ -338,4 +338,13 @@ err2 = fval2 - vals_exact2;
 pass(14) = norm([err1; err2], inf) < 2e1*epslevel(f)* ...
     norm([vals_exact1; vals_exact2], inf);
 
+% Exponents is set to NaN:
+op = @(x) exp(x).*sqrt(1+x)./(1-x).^2;
+f = chebfun(op, 'exps', [.5 NaN]);
+x = 2 * rand(100, 1) - 1;
+fx = feval(f, x);
+f_exact = op(x);
+err = fx - f_exact;
+pass(15) = norm(err, inf) < epslevel(f)*norm(f_exact, inf);
+
 end

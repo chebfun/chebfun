@@ -85,20 +85,21 @@ pass(28) = doesNotCrash(@() plot(fsr2, [-0.5 0.5]));
 pass(29) = doesNotCrash(@() plot(fdc, 'jumpline', 'r-'));
 pass(30) = doesNotCrash(@() plot(fdc, 'jumpline', 'none'));
 pass(31) = doesNotCrash(@() plot3(fdc, fsr1, fsr2, 'jumpline', 'r-'));
+pass(32) = doesNotCrash(@() plot(fqr1, 'linewidth', 2));
 
 % Check plotting discrete data alongside CHEBFUN objects
 x = linspace(-1,1,10).';
-pass(32) = doesNotCrash(@() plot(far1, 'b', far2, 'r', x, far1(x), 'om', x, far3(x), '-ok'));
+pass(33) = doesNotCrash(@() plot(far1, 'b', far2, 'r', x, far1(x), 'om', x, far3(x), '-ok'));
 
 % Check SURF, SURFACE, SURFC, and MESH.
-pass(33) = doesNotCrash(@() surf(far1));
-pass(34) = doesNotCrash(@() surf(fqr1));
+pass(34) = doesNotCrash(@() surf(far1));
+pass(35) = doesNotCrash(@() surf(fqr1));
 % (SURFACE is a wrapper for SURF, so we don't need to be so thorough.)
-pass(35) = doesNotCrash(@() surface(fqr1));
-pass(36) = doesNotCrash(@() surfc(far1));
-pass(37) = doesNotCrash(@() surfc(fqr1));
-pass(38) = doesNotCrash(@() mesh(far1));
-pass(39) = doesNotCrash(@() mesh(fqr1));
+pass(36) = doesNotCrash(@() surface(fqr1));
+pass(37) = doesNotCrash(@() surfc(far1));
+pass(38) = doesNotCrash(@() surfc(fqr1));
+pass(39) = doesNotCrash(@() mesh(far1));
+pass(40) = doesNotCrash(@() mesh(fqr1));
 
 close(hfig);
 
