@@ -109,6 +109,15 @@ else
     end
 end
 
+% The only way we can continue to support 'interval' is via restrict. See #602.
+if ( intervalIsSet )
+    for k = 1:numel(varargin)
+        if ( isa(varargin{k}, 'chebfun') )
+            varargin{k} = restrict(varargin{k}, interval);
+        end
+    end
+end
+
 % Initialise storage:
 lineData = {};
 pointData = {};
@@ -223,28 +232,6 @@ while ( ~isempty(varargin) )
     
     % Loop over the columns:
     for k = 1:numel(newData)
-        
-        % Handle the 'interval' flag:
-        if ( ~isComplex && intervalIsSet && (size(newData(k).xLine, 2) == 1) )
-            ind = newData(k).xLine < interval(1) | ...
-                newData(k).xLine > interval(end);
-            newData(k).xLine(ind) = [];
-            newData(k).yLine(ind,:) = [];
-            ind = newData(k).xPoints < interval(1) | ...
-                newData(k).xPoints > interval(end);
-            newData(k).xPoints(ind) = [];
-            newData(k).yPoints(ind,:) = [];
-            ind = newData(k).xJumps < interval(1) | ...
-                newData(k).xJumps > interval(end);
-            newData(k).xJumps(ind) = [];
-            newData(k).yJumps(ind,:) = [];            
-            ind = newData(k).xDeltas < interval(1) | ...
-                newData(k).xDeltas > interval(end);
-            newData(k).xDeltas(ind) = [];
-            newData(k).yDeltas(ind,:) = [];
-            
-            newData(k).xLim = interval;            
-        end
         
         % Update axis limits:
         xLim = [min(newData(k).xLim(1), xLim(1)), ...
