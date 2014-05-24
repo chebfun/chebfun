@@ -71,7 +71,7 @@ cn(idn) = 0;
 [ignored, firstNonZeroRowN] = find(cn.' ~= 0, 1);
 
 % If the whole thing's now zero, leave just one coefficient:
-if ( isempty(firstNonZeroRowP) || isempty(firstNonZeroRowN))
+if ( isempty(firstNonZeroRowP) && isempty(firstNonZeroRowN))
     firstNonZeroRow = length(cp);
 % The negative and positive cofficient vectors need to be the same length
 % So, we remove the smaller of the tails from both.

@@ -139,15 +139,14 @@ end
 % If the evaluation point corresponds to a breakpoint, we get the value from
 % pointValues. 
 
-% FIXME
-% % Loop over the FUNs:
-% for k = 1:numFuns + 1
-%     index = x == dom(k);
-%     if ( any(index) )
-%         pointValues = repmat(f.pointValues(k,:), sum(index), 1);
-%         out(index,:) = pointValues;
-%     end
-% end
+% Loop over the FUNs:
+for k = 1:numFuns + 1
+    index = x == dom(k);
+    if ( any(index) )
+        pointValues = repmat(f.pointValues(k,:), sum(index), 1);
+        out(index,:) = pointValues;
+    end
+end
     
 
 %% RESHAPE FOR OUTPUT:

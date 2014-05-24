@@ -99,7 +99,7 @@ function f = diffContinuousDim(f, k)
     v(:,f.isReal) = real(v(:,f.isReal));
 
     % [FIXME] Should the epslevel be updated?  This is done in chebfun
-    % f.epslevel = n*log(n)*(f.epslevel.*f.vscale);
+    f.epslevel = N*log(N)*(f.epslevel.*f.vscale);
 
     % Update the vertical scale
     f.vscale = max(abs(v), [], 1);

@@ -11,13 +11,13 @@ if ( isreal(f) )
     % Input was real, so output a zero FOURTECH:
     f = f.make(zeros(1, size(f.values, 2)), f.vscale, f.hscale);
     f.ishappy = 1;
-    f.isReal = false(1,size(f.values, 2));
 else
     % Compute the imaginary part of the values:
     f.values = imag(f.values);
     % Compute imaginary part of the coefficients:
     f.coeffs = f.vals2coeffs(f.values);
     f.vscale = max(abs(f.values), [], 1);
+    f.isReal = true(1,size(f.values,2));
 end
 
 end
