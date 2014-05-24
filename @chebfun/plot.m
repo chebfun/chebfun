@@ -109,11 +109,14 @@ else
     end
 end
 
-% The only way we can continue to support 'interval' is via restrict. See #602.
+% Support 'interval' by evaluating on a fixed grid size (2000 points). See #602.
 if ( intervalIsSet )
     for k = 1:numel(varargin)
         if ( isa(varargin{k}, 'chebfun') )
-            varargin{k} = restrict(varargin{k}, interval);
+            dom = union(domain(varargin{k}), interval);
+            dom(dom < interval(1) | dom > interval(end)) = [];
+            varargin{k} = chebfun(@(x) feval(varargin{k}, x), dom, 2000);
+%             varargin{k} = restrict(varargin{k}, interval);
         end
     end
 end
