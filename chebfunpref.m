@@ -707,7 +707,7 @@ classdef chebfunpref < chebpref
 
             factoryPrefs.domain = [-1 1];
             factoryPrefs.enableBreakpointDetection = false;
-                factoryPrefs.breakpointPrefs.splitMaxLength = 129;
+                factoryPrefs.breakpointPrefs.splitMaxLength = 250;
                 factoryPrefs.breakpointPrefs.splitMaxTotalLength = 6000;
             factoryPrefs.enableSingularityDetection = false;
                 factoryPrefs.singPrefs.exponentTol = 1.1*1e-11;

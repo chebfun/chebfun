@@ -65,7 +65,7 @@ function outPref = techPref(inPref)
 
 outPref.eps                = 2^-52;
 outPref.gridType           = 2;
-outPref.minPoints          = 9;
+outPref.minPoints          = 17;
 outPref.maxPoints          = 2^16 + 1;
 outPref.numPoints          = NaN;
 outPref.extrapolate        = false;
