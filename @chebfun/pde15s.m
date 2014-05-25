@@ -168,14 +168,14 @@ end
             % Reshape solution:
             Uk = reshape(U(:,kk), currentLength, SYSSIZE);
 
-%             Uk2 = sum(Uk, 2)/SYSSIZE;
-%             f = chebtech2(Uk2, pref2);
-%             [ishappy, epslevel, cutoff] = classicCheck(f, Uk2, pref2);
+            Uk2 = sum(Uk, 2)/SYSSIZE;
+            f = chebtech2(Uk2, pref2);
+            [ishappy, epslevel, cutoff] = classicCheck(f, Uk2, pref2);
 
-            C = chebtech2.coeffs2vals(U);
-            C = max(abs(C), [], 2);
-            vscale = norm(U(:), inf);
-            [ishappy, epslevel, cutoff] = plateauCheck(C, vscale, pref2);
+%             C = chebtech2.coeffs2vals(U);
+%             C = max(abs(C), [], 2);
+%             vscale = norm(U(:), inf);
+%             [ishappy, epslevel, cutoff] = plateauCheck(C, vscale, pref2);
 
             if ( ishappy )  
 
