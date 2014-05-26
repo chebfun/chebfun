@@ -33,7 +33,7 @@ f = bndfun(@(x) exp(x), dom, [], [], pref);
 g = bndfun(@(x) exp(-x), dom, [], [], pref);
 err = abs(innerProduct(f, g) - 9);
 tol = 2 * max(get(f, 'vscale'), get(g, 'vscale')) * ...
-    max(get(f, 'epslevel'), get(g, 'epslevel'))
+    max(get(f, 'epslevel'), get(g, 'epslevel'));
 pass(3) = err < tol;
 
 g = bndfun(@(x) sin(x), dom, [], [], pref);
