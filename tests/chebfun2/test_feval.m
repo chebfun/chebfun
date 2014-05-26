@@ -75,4 +75,14 @@ pass(22) = ( all( size( feval(f, [1 1;1 1], [1 1; 1 1]) ) == [2 2] ) );
 pass(23) = ( all( size( feval(f, x, x) ) == [n 1] ) );
 pass(24) = ( all( size( feval(f, xx, yy)  ) == [n n] ) );
 
+% Test chebfun2( chebfun2v ) composition.
+f = chebfun2(@(x,y) cos(x.*y));
+F = chebfun2v(@(x,y) x,@(x,y) y);
+pass(25) = ( norm( f( F ) - f ) < tol ); 
+
+f = chebfun2(@(x,y) cos(x.*y),[-3,4,-2,6]);
+g = chebfun2(@(x,y) cos(x.*y),[-2,2,-2,2]);
+F = chebfun2v(@(x,y) x,@(x,y) y,[-2,2,-2,2]);
+pass(26) = ( norm( f( F ) - g ) < tol ); 
+
 end
