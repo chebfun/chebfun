@@ -202,19 +202,21 @@ end
             Uk = reshape(U(:,kk), currentLength, SYSSIZE);
 
             % Happiness check:
-            Uk2 = sum(Uk, 2)/SYSSIZE;
+            c = (1+sin(1:SYSSIZE)).'; % Arbitrarily linear combination.
+            Uk2 = (Uk*c/sum(c));
             uk2 = chebtech2(Uk2, pref2);
-            ishappy = classicCheck(uk2, Uk2, pref2);
+            [ishappy, epslevel] = classicCheck(uk2, Uk2, pref2);
 
 %             C = chebtech2.coeffs2vals(U);
 %             C = max(abs(C), [], 2);
 %             vscale = norm(U(:), inf);
-%             [ishappy, epslevel, cutoff] = plateauCheck(C, vscale, pref2);
+%             [ishappy, epslevel] = plateauCheck(C, vscale, pref2);
 
             if ( ishappy )  
 
                 % Store these values:
                 uCurrent = chebfun(Uk, DOMAIN);
+                uCurrent = simplify(uCurrent, epslevel);
                 tCurrent = t(kk);
                 % Store for output:
                 ctr = ctr + 1;
