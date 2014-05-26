@@ -125,16 +125,17 @@ hVals3 = feval(h, x3);
 hExact1 = op1(x1);
 hExact2 = op2(x2);
 hExact3 = op3(x3);
-err1 = hVals1 - hExact1;
-err2 = hVals2 - hExact2;
-err3 = hVals3 - hExact3;
+err1 = norm(hVals1 - hExact1, inf);
+err2 = norm(hVals2 - hExact2, inf);
+err3 = norm(hVals3 - hExact3, inf);
+tol = 2e1*epslevel(h)*vscale(h);
 
 % check values:
 check = zeros(1,4);
 check(1) = all(h.domain == [-2 -1 1 Inf]);
-check(2) = ( norm(err1, inf) < 1e1*epslevel(h)*vscale(h) );
-check(3) = ( norm(err2, inf) < 1e1*epslevel(h)*vscale(h) );
-check(4) = ( norm(err3, inf) < 1e1*epslevel(h)*vscale(h) );
+check(2) = ( err1 < tol );
+check(3) = ( err2 < tol );
+check(4) = ( err3 < tol );
 
 pass(17) = all( check );
 end
