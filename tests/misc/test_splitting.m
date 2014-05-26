@@ -21,7 +21,7 @@ try
     f = chebfun(@(x) F(x), [-1 1]);
     x = linspace(-1, 1, 20);
     err = norm(f(x) - F(x), inf);
-    pass(4) = numel(f.domain > 1) && err < epslevel(f);
+    pass(4) = numel(f.domain > 1) && err < 2*epslevel(f);
     
     pass(5) = strcmp(splitting('off'), 'on');
     
