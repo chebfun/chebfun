@@ -70,8 +70,11 @@ c = b;
 % Recover coeffs:
 f.coeffs = c;
 
-% Update vscale: [TODO]: Update epslevel?
+% Update vscale: 
 f.vscale = getvscl(f);
+
+% Update epslevel: (CUMSUM is a smoothing operation.)
+f.epslevel = f.epslevel./2;
 
 % Simplify (as suggested in Chebfun ticket #128)
 f = simplify(f);

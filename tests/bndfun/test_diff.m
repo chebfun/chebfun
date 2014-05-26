@@ -88,8 +88,9 @@ pass(9) = (norm(err, inf) < 1500*get(df2, 'vscale')^2*get(df2, 'epslevel'));
 f = bndfun(@(x) sin(x), dom, [], [], pref);
 df4 = diff(f, 4);
 df4_exact = @(x) sin(x);
-err = df4_exact(x) - feval(df4, x);
-pass(10) = (norm(err, inf) < 4000*get(df4, 'vscale')^4*get(df4, 'epslevel'));
+err = norm(df4_exact(x) - feval(df4, x), inf);
+tol = 10*get(df4, 'vscale')*get(df4, 'epslevel');
+pass(10) = err < 2*tol;
 
 f = bndfun(@(x) x.^5 + 3*x.^3 - 2*x.^2 + 4, dom, [], [], pref);
 df6 = diff(f, 6);
