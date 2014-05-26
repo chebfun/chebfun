@@ -67,7 +67,7 @@ function varargout = pde15s(pdeFun, tt, u0, bc, varargin)
 %       bc.right = 0;
 %       opts = pdeset('Ylim', [0 2], 'PlotStyle', {'LineWidth', 2});
 %       uu = pde15s(f, 0:.1:2, u, bc, opts);
-%       waterfall(u);
+%       waterfall(uu);
 %   with the input format being the same as PDEFUN described above.
 %
 % See also PDESET, ODE15S.

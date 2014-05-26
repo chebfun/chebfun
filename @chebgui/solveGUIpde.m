@@ -162,22 +162,19 @@ end
 
 if ( ~isempty(lbcInput{1}) )
     lbcString = setupFields(guifile, lbcInput, 'BC', allVarString);
+    
     idx = strfind(lbcString, ')');
     if ( ~isempty(idx) )
         
-        % Support for sum and cumsum
-        if ( ~isempty(strfind(lbcString(idx(1):end), 'cumsum(')) )
-            sops = {',sum,cumsum'};
-        elseif ( ~isempty(strfind(lbcString(idx(1):end),'sum(')) )
-            sops = {',sum'};
-        else
-            sops = {''};
-        end
+        % Inject the t and x variables into the anonymous function:
+        lbcString = [lbcString(1:2), variableString, lbcString(3:end)];
         
-        lbcString = [lbcString(1:idx(1)-1), variableString, 'diff', ...
-            sops{:}, lbcString(idx(1):end)];
-        %             lbcString = strrep(lbcString,'diff','D');
+        % TODO: Temporary fix. Replace ; with , in lbcString, as pde15 concatenates
+        % differently to CHEBOP
+        lbcString = strrep(lbcString, ';', ',');
     end
+    
+
     LBC = eval(lbcString);
 else
     LBC = [];
@@ -185,21 +182,16 @@ end
 
 if ( ~isempty(rbcInput{1}) )
     rbcString = setupFields(guifile, rbcInput, 'BC', allVarString);
-    idx = strfind(rbcString, ')');
 
+    idx = strfind(rbcString, ')');
     if ( ~isempty(idx) )
-        % Support for sum and cumsum
-        if ( ~isempty(strfind(rbcString(idx(1):end), 'cumsum(')) )
-            sops = {',sum,cumsum'};
-        elseif ( ~isempty(strfind(rbcString(idx(1):end), 'sum(')) )
-            sops = {',sum'};
-        else
-            sops = {''};
-        end
         
-        rbcString = [rbcString(1:idx(1)-1), variableString, 'diff', ...
-            sops{:}, rbcString(idx(1):end)];
-        %             rbcString = strrep(rbcString,'diff','D');
+        % Inject the t and x variables into the anonymous function:
+        rbcString = [rbcString(1:2), variableString, rbcString(3:end)];
+        
+        % TODO: Temporary fix. Replace ; with , in rbcString, as pde15 concatenates
+        % differently to CHEBOP
+        rbcString = strrep(rbcString, ';', ',');
     end
     RBC = eval(rbcString);
 else
