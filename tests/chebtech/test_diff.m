@@ -90,8 +90,9 @@ for n = 1:2
     f = testclass.make(@(x) sin(x), [], [], pref);
     df4 = diff(f, 4);
     df4_exact = @(x) sin(x);
-    err = df4_exact(x) - feval(df4, x);
-    pass(n, 10) = (norm(err, inf) < 10*df4.vscale.*df4.epslevel);
+    err = norm(df4_exact(x) - feval(df4, x), inf);
+    tol = 20*df4.vscale.*df4.epslevel;
+    pass(n, 10) = err < tol;
 
     f = testclass.make(@(x) x.^5 + 3*x.^3 - 2*x.^2 + 4, [], [], pref);
     df6 = diff(f, 6);
