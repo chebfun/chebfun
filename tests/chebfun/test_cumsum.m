@@ -179,7 +179,7 @@ gVals = feval(g, x);
 opg = @(x) sqrt(pi)*erf(x)/2 + sqrt(pi)/2;
 gExact = opg(x);
 errg = norm(gVals - gExact, inf);
-tol = 2e3*get(g,'epslevel').*get(g,'vscale');
+tol = 4e3*get(g,'epslevel').*get(g,'vscale');
 pass(13) = errg < tol;
 
 %% Function on [a inf]:
