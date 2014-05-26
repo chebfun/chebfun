@@ -120,42 +120,67 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
                     obj.exponents = [0, 0];
                     return
                 else
-                    % Make sure the exponents are empty.
+                    % Set EXPONENTS and SINGTYPE empty.
                     exponents = [];
+                    singType = [];
                 end
             end
             
             % Case 2: Two input arguments.
             if ( (nargin == 2) || ~isempty(exponents) )
-                % Exponents passed, store them.
+                % EXPONENTS passed, store them.
                 obj.exponents = exponents;
+                
+                % Set SINGTYPE empty:
+                singType = [];
             end
                         
             % Case 3: Three or more input arguments.
-            % The user can choose a singularity detection algorithm by passing
-            % appropriate strings in the argument "singType", which is a cell
-            % array. If, however, the user doesn't provide any preferences
-            % regarding the algorithm, the most generic algorithm, which tries
-            % to find fractional order singularities is used.
-            if ( nargin >= 3 && isempty(exponents) )
-                if ( isempty(singType) )
-                    % Singularity types and exponents not given. Assume
-                    % default singularity types.
-                    singType = pref.singPrefs.defaultSingType;
-                    singType = {singType, singType};
-                else
-                    % Singularity types given, make sure the strings are OK.
+            
+            % If EXPONENTS is empty or any entry of EXPONENTS is NaN, we need to
+            % determine them.
+            
+            if ( ( isempty(exponents) ) || ( any(isnan(exponents)) ) )
+                
+                if ( ~isempty(singType) )
+                    % If SINGTYPE is given directly as argument, check them.
                     checkSingTypes(singType);
-                end
-            else
-                singType = pref.singPrefs.singType;
-                if ( isempty(singType) )
+                elseif ( ~isempty(pref.singPrefs.singType) )
+                    % If SINGTYPE is given via the preference, store them and
+                    % then check.
+                    singType = pref.singPrefs.singType;
+                    checkSingTypes(singType);
+                else
+                    % If they are not given, set SINGTYPE as the default.
                     singType = pref.singPrefs.defaultSingType;
                     singType = {singType, singType};
                 end
             end
             
-            %% Misc Checks on the Inputs
+            %% Find EXPONENTS:
+            
+            % If exponents were passed, make sure they are in correct shape.
+            if ( ~isempty(exponents) )
+                if ( any(size(exponents) ~= [1, 2]) || ...
+                        ~isa(exponents, 'double') )
+                    error( 'CHEBFUN:SINGFUN:constructor', ...
+                        'Exponents must be a 1X2 vector of doubles.' );
+                end
+                
+                % If any of EXPONENTS is NaN, try to determine: 
+                maskNaN = isnan(exponents);
+                
+                if ( any(maskNaN) )
+                    tmpExps = singfun.findSingExponents(op, singType);
+                    obj.exponents(maskNaN) = tmpExps(maskNaN);
+                end
+                
+            else
+                % Exponents not given, determine them.
+                obj.exponents = singfun.findSingExponents(op, singType);
+            end
+            
+            %% Misc Checks on the Inputs:
             
             % Make sure that op is a function handle or a smoothfun:
             if ( ~isa(op, 'function_handle') && ~isa(op, 'smoothfun') )
@@ -180,21 +205,8 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
             if ( nargin == 4 )
                 % vscale passed, but hscale missing, set it to empty:
                 hscale = [];
-            end                   
-            
-            %% Find Exponents
-            % If exponents were passed, make sure they are in correct shape.
-            if ( ~isempty(exponents) )
-                if ( any(size(exponents) ~= [1, 2]) || ...
-                        ~isa(exponents, 'double') )
-                    error( 'CHEBFUN:SINGFUN:constructor', ...
-                        'Exponents must be a 1X2 vector of doubles.' );
-                end
-            else
-                % Exponents not given, determine them.
-                obj.exponents = singfun.findSingExponents(op, singType);
-            end
-            
+            end       
+
             % We extrapolate when the given function blows up:
             if ( any(obj.exponents < 0) )
                 pref.techPrefs.extrapolate = true;
@@ -219,6 +231,7 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
                 obj.smoothPart = singfun.constructSmoothPart(smoothOp, ...
                     vscale, hscale, pref);
             end
+
         end
     end
     

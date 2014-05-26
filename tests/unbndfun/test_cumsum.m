@@ -92,7 +92,7 @@ gVals = feval(g, x);
 opg = @(x) exp(x);
 gExact = opg(x);
 err = gVals - gExact;
-pass(5) = norm(err, inf) < 1e3*get(g,'epslevel').*get(g,'vscale');
+pass(5) = norm(err, inf) < 2e3*get(g,'epslevel').*get(g,'vscale');
 
 %% Array-valued function:
 op = @(x) [exp(x) x.*exp(x)];

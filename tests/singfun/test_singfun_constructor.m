@@ -80,7 +80,7 @@ fh = @(x) exp(sin(x.^2))./((1+x).^a.*(1-x).^b);
 f = singfun(fh);
 pass(17) = norm(f.exponents + [a,b], inf) < pref.singPrefs.exponentTol;
 xx = x(20:80);
-pass(18) = norm(feval(fh,xx) - feval(f,xx), inf) < 1e1*get(f, 'epslevel');
+pass(18) = norm(feval(fh,xx) - feval(f,xx), inf) < 5e1*get(f, 'epslevel');
 
 %%
 % Construction with smoothfuns:

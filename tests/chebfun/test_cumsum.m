@@ -156,8 +156,9 @@ g_check = cumsum(f_check);
 
 vals_check = feval(g_check, x);
 err = gval - vals_check;
-pass(12) = norm(err-mean(err), inf) < 5e4*get(f,'epslevel')*...
-    norm(vals_check, inf);
+err = norm(err-mean(err), inf);
+tol = 5e5*get(f,'epslevel')*norm(vals_check, inf);
+pass(12) = err < tol;
 
 %% Tests for functions defined on unbounded domain:
 
@@ -177,8 +178,9 @@ g = cumsum(f);
 gVals = feval(g, x);
 opg = @(x) sqrt(pi)*erf(x)/2 + sqrt(pi)/2;
 gExact = opg(x);
-errg = gVals - gExact;
-pass(11) = norm(errg, inf) < 1e4*get(g,'epslevel').*get(g,'vscale');
+errg = norm(gVals - gExact, inf);
+tol = 1e4*get(g,'epslevel').*get(g,'vscale');
+pass(13) = errg < tol;
 
 %% Function on [a inf]:
 
@@ -200,7 +202,7 @@ opg = @(x) 5*x.^2/2 - 5/2 + get(g, 'lval');
 gExact = opg(x);
 err = norm(gVals - gExact, inf);
 tol = 100*get(g,'epslevel').*get(g,'vscale');
-pass(12) = err < tol;
+pass(14) = err < tol;
 
 %% Piecewise function on [-inf b]:
 
@@ -225,7 +227,7 @@ g1Exact = opg1(x1);
 g2Exact = opg2(x2);
 err1 = g1Vals - g1Exact;
 err2 = g2Vals - g2Exact;
-pass(13) = norm([err1 ; err2], inf) < 5e4*get(g,'epslevel').*get(g,'vscale');
+pass(15) = norm([err1 ; err2], inf) < 5e4*get(g,'epslevel').*get(g,'vscale');
 
 % [TODO]:  Check fractional antiderivatives once implemented.
 
