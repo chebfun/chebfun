@@ -8,6 +8,8 @@ end
 p = chebfunpref();
 chebfunpref.setDefaults('factory')
 
+warnState = warning('off', 'CHEBFUN:splitting:deprecated');
+
 try
     % Testing takes place inside this TRY CATCH.
    
@@ -28,11 +30,16 @@ try
     pass(6) = strcmp(splitting(), 'off');
     
 catch ME
+    % Reset preferences and warning state
     chebfunpref.setDefaults(p);
+    warning(warnState);
+    
+    % Rethrow error:
     rethrow(ME)
 end
 
 % Return to default settings:
-chebfunpref.setDefaults(p)
+chebfunpref.setDefaults(p);
+warning(warnState);
 
 end
