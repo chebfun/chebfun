@@ -1,4 +1,4 @@
-function pass = test_chebfun2v_roots1( pref )
+function pass = test_roots1( pref )
 % Check that the marching squares and Bezoutian agree with each other. 
 % Uncomment tests if harder tests should be executed.
 

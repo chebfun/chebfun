@@ -1,4 +1,4 @@
-function pass = test_chebfun2v_roots3( pref ) 
+function pass = test_roots3( pref ) 
 % Check that the marching squares and Bezoutian agree with each other. 
 
 if ( nargin < 1 ) 

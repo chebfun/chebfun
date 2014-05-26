@@ -1,4 +1,4 @@
-function result = parsebc(N, BC, type)
+function result = parseBC(N, BC, type)
 %PARSEBC  Parse boundary conditions for CHEBOP object.
 %   This method is not intended for end users. For information about boundary
 %   conditions in chebops, see CHEBOP.

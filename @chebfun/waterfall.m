@@ -50,19 +50,23 @@ while k <= numel(varargin)
         varargin(k) = [];
         warning('CHEBFUN:waterfall:deprecatedSimple', ...
                 '''simple'' input to WATERFALL is deprecated.');
+        warning('off', 'CHEBFUN:waterfall:deprecatedSimple');
     elseif ( strcmpi(varargin{k}, 'fill') )
         varargin(k) = [];
         warning('CHEBFUN:waterfall:deprecatedFill', ...
                 '''fill'' input to WATERFALL is deprecated.');
+            warning('off', 'CHEBFUN:waterfall:deprecatedFill');
     elseif ( strcmpi(varargin{k}, 'numpts') )
         varargin(k:k+1) = [];
         warning('CHEBFUN:waterfall:deprecatedNumpts', ...
                 '''numpts'' input to WATERFALL is deprecated.');
+        warning('off', 'CHEBFUN:waterfall:deprecatednumpts');
     elseif ( strcmpi(varargin{k}, 'edgecolor') )
         varargin{k} = 'color';        
         warning('CHEBFUN:waterfall:deprecatedColor', ...
                 ['''edgecolor'' input to WATERFALL is deprecated. ' ...
                  'Use ''color'' instead.']);
+        warning('off', 'CHEBFUN:waterfall:deprecatedColor');
     else
         k = k + 1;
     end

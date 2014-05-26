@@ -128,9 +128,18 @@ else
     pdeFlag = true;
 end
 
+%% %%%%%%%%%%%%%%%%%%%%%%%%%  EVENT & PLOTTING  SETUP  %%%%%%%%%%%%%%%%%%%%%%%%%
+
+done = false;
+ctr = 1;
+if ( ~isnan(optN) )
+    opt.OutputFcn = @nonAdaptiveEvent;
+else
+    opt.OutputFcn = @adaptiveEvent;
+end
+
 % Determine which figure to plot to (for CHEBGUI) and set default display values
 % for variables.
-% TODO: Ensure this still works when CHEBGUI gets merged into development.
 YLim = opt.YLim;
 gridOn = 0;
 guiFlag = false;
@@ -152,6 +161,167 @@ else
     xLabel = 'x';
     tlabel = 't';
 end
+
+    function status = nonAdaptiveEvent(t, U, flag)
+        % This event is called at the end of each chunk in non-adaptive mode.
+        status = false;
+        if ( ~isempty(flag) )
+            return
+        end
+        
+        % Sometimes we get given more than one tmie slice (not sure why..)
+        for kk = 1:numel(t)
+            % Reshape solution:
+            Uk = reshape(U(:,kk), n, SYSSIZE);
+            uCurrent = chebfun(Uk, DOMAIN);
+            tCurrent = t(kk);
+            % Store for output:
+            ctr = ctr + 1;
+            uOut{ctr} = uCurrent;
+
+            % Plot current solution:
+            plotFun(uCurrent, t(kk));
+        end
+        
+        if ( guiFlag )
+            status = guiEvent(status);
+        end
+
+    end
+
+    function status = adaptiveEvent(t, U, flag)
+        % This event is called at the end of each chunk in adaptive mode.
+        status = false;
+        if ( ~isempty(flag) )
+            return
+        end
+        
+        % Sometimes we get given more than one tmie slice (not sure why..)
+        for kk = 1:numel(t)
+            % Reshape solution:
+            Uk = reshape(U(:,kk), currentLength, SYSSIZE);
+
+            % Happiness check:
+            Uk2 = sum(Uk, 2)/SYSSIZE;
+            uk2 = chebtech2(Uk2, pref2);
+            ishappy = classicCheck(uk2, Uk2, pref2);
+
+%             C = chebtech2.coeffs2vals(U);
+%             C = max(abs(C), [], 2);
+%             vscale = norm(U(:), inf);
+%             [ishappy, epslevel, cutoff] = plateauCheck(C, vscale, pref2);
+
+            if ( ishappy )  
+
+                % Store these values:
+                uCurrent = chebfun(Uk, DOMAIN);
+                tCurrent = t(kk);
+                % Store for output:
+                ctr = ctr + 1;
+                uOut{ctr} = uCurrent;
+
+                % Plot current solution:
+                plotFun(uCurrent, t(kk));
+
+                % TODO: reduce length if cutoff is large and bail out.
+
+            else 
+
+                % Increase length and bail out:
+                currentLength = 2*currentLength-1;
+                status = true;
+                
+            end        
+            
+            if ( guiFlag )
+                status = guiEvent(status);
+            end
+            
+        end
+
+    end
+
+    function status = guiEvent(status)
+        %GUIEVENT   Deal with GUI events ('stop', 'pause', etc). 
+        % OUTPUTS:
+        %   status = true exits the current time chunk.
+        %   done = true exits PDE15S.
+        
+        % Interupt computation if stop or pause button is pressed in the GUI.
+        if ( strcmp(get(solveButton, 'String'), 'Solve') )
+            % Stop.
+            tt = tt( tt <= tCurrent );
+            status = true;
+            done = true;
+        elseif ( strcmp(get(clearButton, 'String'), 'Continue') )
+            % Wait, pause.
+            
+            % Plot a waterfall plot to the bottom figure window:
+            axes(axesNorm)
+            uuTmp = prepare4output(uOut);
+            waterfall(uuTmp, tt(tt<=tCurrent), 'simple', 'linewidth', 2);
+            xlabel(xLabel), ylabel(tlabel), zlabel(varNames)
+            if ( gridOn )
+                grid on
+            end
+            view([322.5 30]), box off, hold off
+            axes(axesSol)
+            % hang around until 'continue' or 'stop' is presed.
+            waitfor(clearButton, 'String');
+            % Call again to see if 'STOP' was pressed.
+            status = guiEvent(status);
+        end
+    end
+
+
+    function varargout = plotFun(U, t)
+        if ( ~doPlot )
+            return
+        end
+        if ( ~guiFlag )
+            cla, shg
+        end
+        set(gcf, 'doublebuf', 'on');
+
+        % Plot:
+        h = plot(U, plotOpts{:});
+
+        % Hold?
+        ish = ishold();
+        if ( doHold )
+            hold on
+        end
+
+        % Fix Y limits?
+        if ( ~isempty(YLim) )
+            ylim(YLim);
+        end
+
+        % Axis labels and legends:
+        xlabel(xLabel);
+        if ( numel(varNames) > 1 )
+            legend(varNames);
+        else
+            ylabel(varNames);
+        end
+
+        % Grid?
+        if ( gridOn )
+            grid on
+        end
+        
+        if ( nargin > 1 )
+            title(sprintf('%s = %.3f,  len = %i', tlabel, t, length(U)))
+        end
+        drawnow
+        
+        if ( nargout > 0 )
+            varargout{1} = h;
+        end
+
+    end
+
+%%%%%%%%%%%%%%%%%%%%% SETUP TOLERANCES AND INITIAL CONDITION %%%%%%%%%%%%%%%%%%%
 
 % ODE tolerances: (AbsTol and RelTol must be <= Tol/10)
 aTol = odeget(opt, 'AbsTol', tol/10);
@@ -187,7 +357,7 @@ else
     end
 end
 
-% Get the domain and the independent variable 'x':
+% Get the domain:
 DOMAIN = domain(u0, 'ends');
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%  PARSE INPUTS TO PDEFUN  %%%%%%%%%%%%%%%%%%%%%%%%%
@@ -283,8 +453,8 @@ else
     elseif ( numel(bc.left) == 1 && isa(bc.left, 'function_handle') )
         %% %%%%%%%%%%%%%%%%%%%%%%%%%  GENERAL BCS (LEFT)  %%%%%%%%%%%%%%%%%%%%%%%%%%
         op = parseFun(bc.left);
-        tmp = chebdouble(ones(1, SYSSIZE));
-        sizeOp = size(op(0, mean(DOMAIN), tmp));
+        uTmp = chebdouble(ones(1, SYSSIZE));
+        sizeOp = size(op(0, mean(DOMAIN), uTmp));
         leftNonlinBCLocs = 1:max(sizeOp);
         bc.left = [];
         bc.left.op = {@(n) zeros(max(sizeOp), SYSSIZE*n)}; % Dummy entries.
@@ -297,8 +467,8 @@ else
     if ( isfield(bc, 'middle') && isa(bc.middle, 'function_handle') )
         %% %%%%%%%%%%%%%%%%%%%%%  GENERAL BCS (MIDDLE)  %%%%%%%%%%%%%%%%%%%%%%%%
         op = parseFun(bc.middle);
-        tmp = chebdouble(ones(1, SYSSIZE));
-        sizeOp = size(op(0, mean(DOMAIN), tmp));
+        uTmp = chebdouble(ones(1, SYSSIZE));
+        sizeOp = size(op(0, mean(DOMAIN), uTmp));
         middleNonlinBCLocs = 1:max(sizeOp);
         bc.middle = [];
         bc.middle.op = {@(n) zeros(max(sizeOp), SYSSIZE*n)}; % Dummy entries.
@@ -338,8 +508,8 @@ else
     elseif ( numel(bc.right) == 1 && isa(bc.right, 'function_handle') )
         %% %%%%%%%%%%%%%%%%%%%%%%%%  GENERAL BCS (RIGHT)  %%%%%%%%%%%%%%%%%%%%%%%%%%
         op = parseFun(bc.right);
-        tmp = chebdouble(ones(1, SYSSIZE));
-        sizeOp = size(op(0, mean(DOMAIN), tmp));
+        uTmp = chebdouble(ones(1, SYSSIZE));
+        sizeOp = size(op(0, mean(DOMAIN), uTmp));
         rightNonlinBCLocs = 1:max(sizeOp);
         bc.right = [];
         bc.right.op = {@(n) zeros(max(sizeOp), SYSSIZE*n)};
@@ -373,43 +543,6 @@ else
     userMassSet = false;
 end
 
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%  PLOTTING SETUP  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-if ( doPlot )
-    
-    if ( ~guiFlag )
-        cla, shg
-    end
-    set(gcf, 'doublebuf', 'on');
-    
-    % Plot:
-    plot(u0, plotOpts{:});
-    
-    % Hold?
-    ish = ishold(); % Store to be able to return to previous state once finished
-    if ( doHold )
-        hold on
-    end
-    
-    % Fix Y limits?
-    if ( ~isempty(YLim) )
-        ylim(YLim);
-    end
-    
-    % Axis labels and legends:
-    xlabel(xLabel);
-    if ( numel(varNames) > 1 )
-        legend(varNames);
-    else
-        ylabel(varNames);
-    end
-    
-    % Grid?
-    if ( gridOn )
-        grid on
-    end
-    drawnow
-end
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% MISC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % The vertical scale of the intial condition:
@@ -425,120 +558,44 @@ uOut{1} = uCurrent;
 B = []; q = []; rows = []; M = []; n = [];
 
 % Set the preferences:
+% TODO: These are no longer used?
 pref = chebfunpref;
 pref.techPrefs.eps = tol;
 pref.refinementFunction = 'resampling';
 pref.enableBreakpointDetection = 0;
 pref.techPrefs.sampleTest = 0;
 pref.enableSingularityDetection = 0;
+pref2 = chebtech.techPref(pref);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%% TIME CHUNKS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Begin time chunks
-for nt = 1:length(tt)-1
+
+% Plot initial condition:
+plotFun(u0, tt(1));
+
+done = false;
+if ( ~isnan(optN) )
+    % Non-adaptive in space:
+    oneStep(chebpts(optN, DOMAIN), tt); % Do all chunks at once!
     
-    % Solve one chunk:
-    if ( isnan(optN) )
-        % Size of current length:
-        currentVscale = vscale(uCurrent);
-        tmp = max(currentVscale, vscl) - currentVscale;
-        currentLength = length(simplify(uCurrent + tmp, tol));
-        pref.techPrefs.minPoints = max(2*currentLength, 9);
-        vscl = max([vscl, currentVscale]);
-        chebfun( @(x) vscl + oneStep(x), DOMAIN, pref);
-    else
-        % Non-adaptive in space:
-        currentLength = optN;
-        oneStep(chebpts(optN, DOMAIN));
+else
+    
+    currentLength = max(length(u0), 9);
+    tCurrent = tt(1);
+    tspan = tt;
+    while ( tCurrent < tt(end) && ~done )
+        tspan(tspan < tCurrent) = [];
+        oneStep(chebpts(currentLength, DOMAIN), tspan);
     end
-    
-    % Get chebfun of solution from this time chunk:
-    uCurrent = chebfun(unew, DOMAIN);
-    
-    % Store in uOut:
-    uOut{nt + 1} = uCurrent;
-    
-    % Plotting:
-    if ( doPlot )
-        plot(uCurrent, plotOpts{:});
-        if ( ~isempty(YLim) )
-            ylim(YLim);
-        end
-        if ( ~doHold )
-            hold off
-        end
-        % Axis labels
-        xlabel(xLabel);
-        if ( numel(varNames) > 1 )
-            legend(varNames);
-        else
-            ylabel(varNames);
-        end
-        % Determines whether grid is on
-        if ( gridOn )
-            grid on
-        end
-        title(sprintf('%s = %.3f,  len = %i', tlabel, tt(nt+1), currentLength)), drawnow
-        %     elseif ( guiFlag )
-        %         drawnow
-    end
-    
-    if ( guiFlag )
-        % Interupt comutation if stop or pause  button is pressed in the GUI.
-        if ( strcmp(get(solveButton, 'String'), 'Solve') )
-            tt = tt(1:nt+1);
-            if SYSSIZE == 1,
-                uOut = uOut(1:nt+1);
-            else
-                for k = 1:SYSSIZE
-                    uOut{k} = uOut{k}(1:nt+1);
-                end
-            end
-            break
-        elseif ( strcmp(get(clearButton, 'String'), 'Continue') )
-            % TODO: This does not currently work, due to error with plotting.
-            defaultlinewidth = 2;
-            axes(axesNorm)
-            if ( ~iscell(uOut) )
-                waterfall(uOut(1:nt+1), tt(1:nt+1), 'simple', 'linewidth', defaultlinewidth)
-                xlabel(xLabel), ylabel(tlabel), zlabel(varnames)
-            else
-                cols = get(0, 'DefaultAxesColorOrder');
-                % The following for loop causes an error.
-                for k = 1:numel(uOut)
-                    plot(0, NaN, 'linewidth', defaultlinewidth, 'color', cols(k, :)), hold on
-                end
-                legend(varnames);
-                for k = 1:numel(uOut)
-                    waterfall(uOut{k}, tt(1:nt+1), 'simple', 'linewidth', ...
-                        defaultlinewidth, 'edgecolor', cols(k, :)), hold on
-                    xlabel(xLabel), ylabel(tlabel)
-                end
-                view([322.5 30]), box off, grid on, hold off
-            end
-            axes(axesSol)
-            waitfor(clearButton, 'String');
-        end
-    end
+
 end
 
 if ( doPlot && ~ish )
     hold off
 end
 
-% If we only had one dependent variable, return an array valued CHEBFUN instead
-% of a QUASIMATRIX.
-if ( SYSSIZE == 1 )
-    uOut = horzcat(uOut{:});
-else
-    % TODO: Determine what output we want for systems of equations. CHEBMATRIX?
-    blocks = cell(SYSSIZE, numel(uOut));
-    for k = 1:SYSSIZE
-        blocks(k,:) = cellfun(@(u) extractColumns(u, k), uOut, 'UniformOutput', false);
-    end
-    uOut = chebmatrix(blocks); % CHEBMATRIX
-end
+uOut = prepare4output(uOut);
 
 switch nargout
     case 0
@@ -558,11 +615,25 @@ end
 clear global DIFFORDER
 clear global SYSSIZE
 
+    function uOut = prepare4output(uIn)
+        % If we only had one dependent variable, return an array valued CHEBFUN instead
+        % of a QUASIMATRIX.
+        if ( SYSSIZE == 1 )
+            uOut = horzcat(uIn{:});
+        else
+            % TODO: Determine what output we want for systems of equations. CHEBMATRIX?
+            blocks = cell(SYSSIZE, numel(uIn));
+            for kk = 1:SYSSIZE
+                blocks(kk,:) = cellfun(@(u) extractColumns(u, kk), uIn, 'UniformOutput', false);
+            end
+            uOut = chebmatrix(blocks); % CHEBMATRIX
+        end
+    end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  ONESTEP  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    function U = oneStep(x)
+    function U = oneStep(x, tspan)
         % Constructs the result of one time chunk at fixed discretization.
         
         if ( length(x) == 2 )
@@ -601,16 +672,17 @@ clear global SYSSIZE
         
         % ODE options: (mass matrix)
         opt2 = odeset(opt, 'Mass', M, 'MassSingular', 'yes', ...
-            'InitialSlope', odeFun(tt(nt), U0), 'MStateDependence', 'none');
+            'InitialSlope', odeFun(tspan(1), U0), 'MStateDependence', 'none');
         
         % Solve ODE over time chunk with ode15s:
-        [ignored, U] = ode15s(@odeFun, tt(nt:nt+1), U0, opt2);
+        [~, U] = ode15s(@odeFun, tspan, U0, opt2);
+        
+        if ( length(tspan) > 2 )
+            return
+        end
         
         % Reshape solution:
         U = reshape(U(end, :).', n, SYSSIZE);
-        
-        % The solution we'll take out and store:
-        unew = U;
         
         % Collapse systems to single chebfun for constructor (is addition right?)
         U = sum(U, 2);
@@ -645,12 +717,12 @@ clear global SYSSIZE
             % Replacements for the nonlinear BC conditions:
             if ( ~isempty(leftNonlinBCLocs) )
                 indx = 1:length(leftNonlinBCLocs);
-                tmp = leftNonlinBCFuns(t, x, Utmp);
-                tmp = double(tmp);
-                if ( size(tmp, 1) ~= n )
-                    tmp = reshape(tmp, n, numel(tmp)/n);
+                uTmp = leftNonlinBCFuns(t, x, Utmp);
+                uTmp = double(uTmp);
+                if ( size(uTmp, 1) ~= n )
+                    uTmp = reshape(uTmp, n, numel(uTmp)/n);
                 end
-                F(rows(indx)) = tmp(1, :);
+                F(rows(indx)) = uTmp(1, :);
             end
             if ( ~isempty(middleNonlinBCLocs) )
                 % TODO: This won't work if there are also left nonlin BCs
@@ -659,16 +731,17 @@ clear global SYSSIZE
             end            
             if ( ~isempty(rightNonlinBCLocs) )
                 indx = numel(BCRHS) + 1 - rightNonlinBCLocs;
-                tmp = rightNonlinBCFuns(t, x, Utmp);
-                tmp = double(tmp);
-                if ( size(tmp, 1) ~= n )
-                    tmp = reshape(tmp, n, numel(tmp)/n);
+                uTmp = rightNonlinBCFuns(t, x, Utmp);
+                uTmp = double(uTmp);
+                if ( size(uTmp, 1) ~= n )
+                    uTmp = reshape(uTmp, n, numel(uTmp)/n);
                 end
-                F(rows(indx)) = fliplr(tmp(end, :));
+                F(rows(indx)) = fliplr(uTmp(end, :));
             end
             
             % Reshape to back to a single column:
             F = F(:);
+            
         end
     end
 
@@ -812,5 +885,146 @@ newStr = [newStr, ')'];
 
 % Make the new function handle:
 outFun = eval(newStr);
+
+end
+
+%%
+
+function [ishappy, epslevel, cutoff] = plateauCheck(coeff, vscale, pref)
+%PLATEAUCHECK   Seek a plateau in Chebyshev coefficients.
+%  Inputs:
+%    coeff:  vector of Chebyshev polynomial coefficients (high order to low)
+%    vscale: indication of the scale to resolve relative to (default=Inf,
+%            no effect)
+%    pref:   cheboppref
+%
+%  Outputs:
+%    ishappy:  true if convergence was achieved
+%    epslevel: the apparent epslevel of the truncation
+%    cutoff:   where to truncate the coefficients
+%
+% This check is needed because of condition numbers in differential equations.
+% We can't be sure that a solution will ever be resolved to full precision, so
+% we have to be willing to stop if the convergence appears to have trailed off.
+
+% TODO: Unify and locate with the chebtech happiness checks.
+
+% NaNs are not allowed.
+if ( any(isnan(coeff)) )
+    error('CHEBFUN:FUN:plateauCheck:NaNeval', ...
+        'Function returned NaN when evaluated.')
+end
+
+% We omit the last 12% because aliasing can pollute them significantly.
+n = length(coeff);
+n88 = ceil( 0.88*n );
+% Preferred tolerance
+epslevel = pref.eps;  
+% Magnitude and rescale.
+if ( vscale > 0 )
+    absCoeff = abs( coeff(n:-1:1) ) / vscale;
+end
+
+% %%%%%%%%%%%%%%%%%%%%%%%% Serious checking starts here. %%%%%%%%%%%%%%%%%%%%%%%
+% There are two ways to pass the test. Either the coefficients have
+% achieved the goal epslevel, or the convergence appears to have levelled
+% off for good (plateau).
+
+% Guilty until proven innocent.
+ishappy = false;
+
+%% 1. Strict test.
+
+% Find the last place where the coeffs exceed the allowable level.
+% Then go out a bit further to be safe.
+cutoff = 4 + find( absCoeff >= epslevel, 1, 'last' );
+
+if ( cutoff < 0.95*n88 )
+    % Achieved the strict test.
+    ishappy = true;
+    
+elseif ( n88 < 17 )
+    % If there aren't enough coefficients, give up checking.
+    epslevel = absCoeff(n88);
+    cutoff = n88;
+    
+%% 2. Plateau test.
+else
+    
+    % Demand at least this much accuracy.
+    thresh = max(log(epslevel), log(1e-7));
+    
+    % Convergence is usually not far from linear in the log scale.
+    logAbs = log(absCoeff);
+    
+    % Even though some methods can compute really small coefficients relative to
+    % the norm, they ultimately contribute nothing. Also the occasional "zero"
+    % coefficient causes troublesome infinities.
+    logAbs = max( logAbs, log(eps/1000) );
+    
+    % Look for a sustained leveling off in the decrease.
+    
+    % TODO: Use the van Herk filter to do this more efficiently.
+    
+    % Symmetries can cause one or more consecutive coefficients to be zero, and
+    % we only care about the nonzero ones. Use a windowed max to remove the
+    % small values.
+    winSize = 6;
+    winMax = logAbs;
+    for k = 1:winSize
+        winMax = max( winMax(1:end-1), logAbs(k+1:end) );
+    end
+    n88 = length(winMax);
+    
+    %%% Alternative windowed max: This avoids the for loop but might hog memory.
+    %%index = bsxfun(@plus, (1:n)', 0:winsize-1);
+    %%logabs = max(logabs(index),[],2);
+    
+    % Start with a low pass smoothing filter that introduces a lag.
+    lag = 6;
+    LPA = [1, zeros(1,lag-1), -2, zeros(1, lag-1), 1] / (lag^2);
+    LPB = [1, -2, 1];
+    smoothLAC = filter(LPA, LPB, winMax);  % smoothed logabs coeffs
+    
+    % If too little accuracy has been achieved, do nothing.
+    tOK = find(smoothLAC < thresh, 1) - lag;
+    if ( isempty(tOK) || (n88 - tOK < 16) )
+        return
+    end
+    
+    % Smooth the first difference of the smoothed coefficent sequence.
+    smoothDiff = filter( LPA, LPB, diff(smoothLAC) );
+    
+    % Where is the decrease most rapid?
+    SDmin = min(smoothDiff);
+    
+    % Don't look at anything until all substantial decrease has ended.
+    tstart = find( smoothDiff < 0.25*SDmin, 1, 'last' );
+    
+    % Find where the decrease has permanently slowed to 10% of the fastest.
+    isSlow = smoothDiff(tstart:end) > 0.01*SDmin;
+    lastFast = find(~isSlow, 1, 'last');
+    if ( isempty(lastFast) )
+        lastFast = 0;
+    end
+    slow = tstart + lastFast - 1 + find( isSlow(lastFast+1:end) );
+    slow = slow - floor(lag/2);  % compensate for the filter lag
+    
+    % Find the first run of 5 consecutive slow hits.
+    first = find( slow(5:end) - slow(1:end-4) == 4, 1 );  % may be empty
+    cutoff = slow(first);  % may be empty, will give false next
+    
+    % If the cut location is within the coefficient sequence, we're done.
+    if ( cutoff < n88 )
+        ishappy = true;
+    end
+    
+end
+
+if ( ishappy )
+    % Use the information from the cut to deduce an eps level.
+    winEnd = min( n88, cutoff + 4 );
+    epslevel = max( absCoeff(cutoff:winEnd) );
+end
 
 end

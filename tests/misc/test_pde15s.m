@@ -136,7 +136,7 @@ u = [ chebfun(1, d)  chebfun(1, d) ];
 f = @(t, x, u, v) [ -u + (x + 1).*v + 0.1*diff(u, 2) , ...
                      u - (x + 1).*v + 0.2*diff(v, 2) ];
 bc.left = @(u, v) [diff(u), diff(v)];  bc.right = bc.left;   % New way
-opts = pdeset('plot', 1, 'N', 32);
+opts = pdeset('plot', 1);
 uu = pde15s(f, 0:.05:3, u, bc, opts);
 
 

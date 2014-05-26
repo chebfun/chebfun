@@ -34,7 +34,7 @@ end
 % problem is the output itself, while in a Newton iteration, we have to add the
 % output of the LINOP solution to the current guess. Thus, flip the signs of the
 % values of L.constraint:
-L.constraint = flipSigns(L.constraint);
+L.constraint = -L.constraint;
 
 % Solutions to the linearized problems need to be more accurate than the
 % nonlinear iteration tolerance.

@@ -31,8 +31,8 @@ switch index(1).type
             return
         end
         
-        % Call the GET method:
-        varargout = { get(N, idx) };
+        % Allow access to any of the properties of F:
+        varargout = { N.(idx) };
         
         % Recurse on SUBSREF:
         if ( length(index) > 1 )
@@ -48,6 +48,6 @@ switch index(1).type
     otherwise
         
         error('CHEBOP:subsref:indexType',...
-            ['Unexpected index.type of ' index(1).type]);
+            ['Unexpected index type encountered: ' index(1).type]);
         
 end

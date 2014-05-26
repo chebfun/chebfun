@@ -343,12 +343,14 @@ end
 % handles.indVarName = {indVarName{1},timeVarName};
 % indVarName{2} = timeVarName;
 
-try
+% TODO: Reinsert this try-catch statement.
+% try
     [t u] = pde15s(DE, tt, u0, bc, opts);
-catch ME
-    errordlg('Error in solution process.', 'chebopbvp error', 'modal');
-    return
-end
+% catch ME
+%     errordlg('Error in solution process.', 'chebopbvp error', 'modal');
+%     varargout{1} = handles;
+%     return
+% end
 
 if ( ~guiMode )
     varargout{1} = t;

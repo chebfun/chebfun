@@ -92,10 +92,15 @@ classdef colloc2 < colloc
             
             N = N-1;
             
-            persistent CACHE  % Stores computed values for fast return
-            if isempty(CACHE), CACHE = {}; end    % first call
+            if ( N == 0 )
+                Q = [];
+                return
+            end
             
-            if length(CACHE) >= N && ~isempty(CACHE{N})
+            persistent CACHE  % Stores computed values for fast return
+            if ( isempty(CACHE) ), CACHE = {}; end    % first call
+
+            if ( length(CACHE) >= N ) && ( ~isempty(CACHE{N}) )
                 Q = CACHE{N};
                 return
             else

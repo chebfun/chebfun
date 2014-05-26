@@ -19,7 +19,7 @@ function F = restrict(F, newDomain)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Tweak the domain of a quasimatrix input:
-F = tweakDomain(F, newDomain);
+[F, newDomain] = tweakDomain(F, newDomain);
 
 % Loop over the columns:
 for k = 1:numel(F)

@@ -1,5 +1,5 @@
 function [u, info] = solvebvpNonlinear(N, rhs, L, u0, res, pref, displayInfo)
-%SOLVEBVPNONLINAR   Solve a nonlinear BVP, using damped Newton iteration.
+%SOLVEBVPNONLINEAR      Solve a nonlinear BVP, using damped Newton iteration.
 % The inputs to the method are:
 %   N:      Nonlinear CHEBOP
 %   rhs:    A CHEBMATRIX, right hand side of ODE
@@ -51,6 +51,7 @@ newtonCounter = 0;
 success = 0;
 giveUp = 0;
 maxIterExceeded = 0;
+terminate = 0;
 
 % Store a vector with information about the norm of the Newton updates:
 normDeltaVec = zeros(maxIter, 1);
@@ -75,7 +76,7 @@ dampingInfo.damped =        damped;
 dampingInfo.x =             x;
 
 % Start the Newton iteration!
-while ( 1 )
+while ( ~terminate )
     
     % Compute a Newton update:
     [delta, disc] = linsolve(L, res, pref);
@@ -177,8 +178,6 @@ while ( 1 )
         [L, res] = linearize(N, u, x);
         % Need to subtract the original RHS from the residual:
         res = res - rhs;
-        % Assign the preferences to the linop.
-        L.prefs = pref;
     end
     
     % Should we stop the Newton iteration?
@@ -274,7 +273,6 @@ if ( ~isempty(N.bc) )
     bcNorm = bcNorm + norm(bcU, 2).^2;
 end
 
-% Return the square-root
 bcNorm = sqrt(bcNorm);
 
 end

@@ -156,8 +156,9 @@ if ( vectorize == 0 ) % another check
     end
 end
 
-isHappy = 0;
-while ( ~isHappy )
+isHappy = 0; % If we are currently unresolved. 
+Failure = 0; % Reached max discretization size without being happy. 
+while ( ~isHappy && ~Failure )
     grid = minsample; 
     
     % Sample function on a Chebyshev tensor grid:
@@ -199,7 +200,8 @@ while ( ~isHappy )
     
     % If the rank of the function is above maxRank then stop.
     if ( grid > 4*(maxRank-1)+1 )
-        error('CHEBFUN2:CTOR', 'Not a low-rank function.');
+        warning('CHEBFUN2:CTOR', 'Not a low-rank function.');
+        Failure = 1; 
     end
     
     % Check if the column and row slices are resolved.
@@ -274,7 +276,8 @@ while ( ~isHappy )
         
         % STOP if degree is over maxLength:
         if ( max(m, n) >= maxLength )
-            error('CHEBFUN2:CTOR', 'Unresolved with maximum CHEBFUN length: %u.', maxLength);
+            warning('CHEBFUN2:CTOR', 'Unresolved with maximum CHEBFUN length: %u.', maxLength);
+            Failure = 1;
         end
         
     end
@@ -299,12 +302,9 @@ while ( ~isHappy )
     
     % Sample Test:
     if ( sampleTest )
-        % Evaluate at arbitrary point in domain:
-        r = 0.029220277562146;
-        s = 0.237283579771521;
-        r = (domain(2)+domain(1))/2 + r*(domain(2)-domain(1));
-        s = (domain(4)+domain(3))/2 + s*(domain(4)-domain(3));
-        if ( abs( op(r,s) - feval(g, r, s) ) > 100 * tol )
+        % Evaluate at points in the domain:
+        pass = g.sampleTest(op, tol);
+        if ( ~pass )
             % Increase minsamples and try again.
             minsample = 2^( floor( log2( minsample ) ) + 1) + 1;
             isHappy = 0;
