@@ -40,8 +40,8 @@ if ( nargin > 1 && ischar(varargin{1}) && numel(varargin{1}) < 4 )
             'Error in color/linetype argument.');
     elseif ( ~isempty(col) )
         col = col{:};
+        varargin(1) = [];
     end
-    varargin(1) = [];
 end
 if ( isempty(col) )
     colIdx = find(cellfun(@(arg) all(ischar(arg)) && any(strfind(arg, 'color')), varargin));
