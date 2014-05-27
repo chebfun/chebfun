@@ -136,7 +136,8 @@ maxRank = prefStruct.maxRank;
 maxLength = prefStruct.maxLength;
 pseudoLevel = prefStruct.eps;
 sampleTest = prefStruct.sampleTest;
-minsample = 9;   % minsample
+% TODO: This should probably be taken from the techPref prefences?
+minsample = 17;   % minsample
 
 % Go find out what tech I'm based on:
 tech = chebfunpref().tech();
