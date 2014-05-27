@@ -34,10 +34,13 @@ if ( strcmp(name, 'ans') )
     assignin('base', name, L);
 end
 
+ml = max(cellfun(@length, c));
 for j = 1:m
+    fprintf('    ');
     for k = 1:n
-        fprintf('      ''<a href="matlab: display(%s{%d,%d})">%s</a>''', ...
-            name, j, k, c{j,k});
+        ws = repmat(' ', 1, ml(k) - length(c{j,k}) + 4);
+        fprintf('''<a href="matlab: display(%s{%d,%d})">%s</a>''%s', ...
+            name, j, k, c{j,k}, ws);
     end
     fprintf('\n');
 end
