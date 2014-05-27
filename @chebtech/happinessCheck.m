@@ -54,8 +54,6 @@ if ( nargin < 3 )
     values = f.coeffs2vals(f.coeffs);
 end
 
-pref.happinessCheck = 'loose';
-
 % What does happiness mean to you?
 if ( strcmpi(pref.happinessCheck, 'classic') )
     % Use the default happiness check procedure from Chebfun V4.
