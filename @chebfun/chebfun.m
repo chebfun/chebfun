@@ -643,6 +643,10 @@ function [op, dom, pref] = parseInputs(op, dom, varargin)
                 error('CHEBFUN:constructor:parseInputs', ...
                     'Invalid value for ''chebkind''/''kind'' option.');
             end
+			if ( strcmpi(args{1}, 'chebkind') )
+				% 'chebkind' implies use chebtech.
+				pref.tech = 'chebtech';
+			end
             args(1:2) = [];
         else
             % Update these preferences:

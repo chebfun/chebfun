@@ -153,7 +153,7 @@ end
 
 % Construct a CHEBFUN from the discrete values:
 pref = chebfunpref();
-pref.gridType = chebType;
+pref.tech = ['chebtech' int2str(chebType)];
 Q = mat2cell(Q, sizes, numCols);
 Q = chebfun(Q, dom, pref);
 

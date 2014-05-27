@@ -52,6 +52,7 @@ classdef smoothfun < onefun % (Abstract)
                 pref = chebfunpref(pref);
             end
             
+            % Deal with FUNQUI:
             if ( strcmp(pref.tech, 'funqui') )
                 op = funqui(op);
                 if ( isfield(pref.techPrefs, 'funquiTech') )
@@ -62,9 +63,29 @@ classdef smoothfun < onefun % (Abstract)
                 end
             end
 
-            % Call the CHEBTECH constructor
-            obj = chebtech.constructor(op, vscale, hscale, pref.techPrefs);
-            
+            % Call the TECH constructor.
+            tech = pref.tech;
+            if ( isa(tech, 'function_handle') )
+                % Function handle is easy:
+                obj = feval(tech, op, vscale, hscale, pref.techPrefs);
+            elseif ( ischar(tech) )
+                try
+                    % Call concrete constructor:
+                    obj = feval(tech, op, vscale, hscale, pref.techPrefs);
+                catch ME
+                    if ( strcmp(ME.identifier, 'MATLAB:class:abstract') )
+                        % Call abstract factory method:
+                        obj = feval([tech '.constructor'], ...
+                            op, vscale, hscale, pref.techPrefs);
+                    else
+                        rethrow(ME)
+                    end
+                end
+            else
+                error('CHEBFUN:smoothfun:techType', ...
+                    'Unkown tech of type %s.', class(tech));
+            end
+
         end
         
     end
