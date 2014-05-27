@@ -125,7 +125,7 @@ switch method
     case 3 % LEG2CHEB
 
         c_leg = [1 ; zeros(n, 1)];                % Legendre coefficients
-        C = chebtech.leg2cheb(c_leg);             % Chebyshev coefficients
+        C = leg2cheb(c_leg);                      % Chebyshev coefficients
         if ( normalize )
             C = C*sqrt((n+.5));
         end

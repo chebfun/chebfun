@@ -29,6 +29,8 @@ function [x, w, v] = jacpts(n, a, b, int, meth)
 %   Gauss-Chebyshev nodes and quadrature, and are treated specially (as a closed
 %   form of the nodes and weights is available). ALPHA = BETA = 0 calls LEGPTS,
 %   which is a more efficient code.
+% 
+%   When MAX(ALPHA, BETA) > 5 the results may not be accurate. 
 %
 % See also LEGPTS and CHEBPTS.
 
@@ -72,6 +74,9 @@ end
 
 if ( a <= -1 || b <= -1 )
     error('CHEBFUN:jacpts:SizeAB', 'Alpha and beta must be greater than -1')
+elseif ( max(a, b) > 5 )
+    warning('CHEBFUN:jacpts:largeAB',...
+        'MAX(ALPHA, BETA) > 5. Results may not be accurate')
 end
 
 

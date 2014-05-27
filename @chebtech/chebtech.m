@@ -467,15 +467,9 @@ classdef chebtech < smoothfun % (Abstract)
 
         % Evaluation using the barycentric interpolation formula.
         fx = bary(x, gvals, xk, vk)
-        
-        % Convert Chebshev coefficients to Legendre coefficients.
-        c_leg = cheb2leg(c_cheb, M);
 
         % Clenshaw's algorithm for evaluating a Chebyshev polynomial.
         out = clenshaw(x, coeffs)
-        
-        % Convert Legendre coefficients to Chebshev coefficients.
-        c_cheb = leg2cheb(c_leg, M);
 
         % Retrieve and modify preferences for this class.
         p = techPref(q)
