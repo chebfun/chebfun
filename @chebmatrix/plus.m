@@ -1,8 +1,8 @@
 function C = plus(A, B)
-%+     Sum of CHEBMATRIX objects or a CHEBMATRIX and another compatible object.
+%+    Sum of CHEBMATRIX objects or a CHEBMATRIX and another compatible object.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Ensure the first argument is a CHEBMATRIX:
 if ( ~isa(A, 'chebmatrix') )
@@ -30,7 +30,9 @@ if ( isnumeric(B) )
     else
         error('CHEBFUN:CHEBMATRIX:plus', 'Operands must have the same size.')
     end
+    
     return
+    
 end
 
 % If we get here, we know B is not a DOUBLE. If B is also not a CHEBMATRIX, need

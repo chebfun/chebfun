@@ -1,24 +1,28 @@
 function C = mtimes(A, B)
-%*         Composition of chebmatrices.
+%*   Composition of chebmatrices.
+%
+% See also MPOWER.
 
-%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Scalar operand is scalar*identity. But it's faster to interpret it as a
 % special case. 
 if ( isnumeric(A) && (numel(A)==1) )  
     C = scalartimes(B, A);
+    
 elseif ( isnumeric(B) && (numel(B)==1) )
     C = scalartimes(A, B);
+    
 else
-    % Ensure both A and B are chebmatrices so that we can compare blocks.
+    % Ensure both A and B are CHEBMATRICES so that we can compare blocks:
     if ( ~isa(A, 'chebmatrix') )
         A = chebmatrix({A});
     elseif ( ~isa(B, 'chebmatrix') )
         B = chebmatrix({B});
     end
     
-    % Setup before we can start composition
+    % Setup before we can start composition:
     [m, n] = size(A);
     Adata = A.blocks;   % needed to avoid subsref call later
     Bdata = B.blocks;
@@ -42,12 +46,13 @@ else
     end
     % Convert the resulting cell C to a chebmatrix to be returned.
     C = chebmatrix(C);
+    
 end
 
 end
 
 function C = scalartimes(A, z)
-% SCALARTIMES   Multiplying blocks in a CHEBMATRIX with a scalar.
+%SCALARTIMES   Multiplying blocks in a CHEBMATRIX with a scalar.
 [m, n] = size(A);
 C = cell(m, n);
 for i = 1:m
