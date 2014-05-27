@@ -15,8 +15,6 @@ function c_cheb = leg2cheb(c_leg, M)
 
 % [TODO]: This needs a test.
 
-error 
-
 c_leg = c_leg(:);                               % Make column vector.
 c_leg = flipud(c_leg);                          % Lowest order coeffs first.
 
