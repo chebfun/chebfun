@@ -85,6 +85,11 @@ epslevel = pref.errTol;
 % Magnitude and rescale.
 if ( vscale > 0 )
     absCoeff = abs( coeff(n:-1:1) ) / vscale;
+else
+    % Zero function is trivially happy:
+    ishappy = 1;
+    cutoff = n - 1;
+    return
 end
 
 % %%%%%%%%%%%%%%%%%%%%%%%% Serious checking starts here. %%%%%%%%%%%%%%%%%%%%%%%

@@ -345,6 +345,6 @@ x = 2 * rand(100, 1) - 1;
 fx = feval(f, x);
 f_exact = op(x);
 err = fx - f_exact;
-pass(15) = norm(err, inf) < 2*epslevel(f)*norm(f_exact, inf);
+pass(15) = norm(err, inf) < 1e1*epslevel(f)*norm(f_exact, inf);
 
 end

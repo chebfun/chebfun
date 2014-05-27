@@ -18,7 +18,7 @@ function b = legpoly(f, n)
 c_cheb = f.coeffs;
 b = zeros(size(c_cheb));
 for k = 1:size(c_cheb, 2)
-    b(:,k) = chebtech2.cheb2leg(c_cheb(:,k));
+    b(:,k) = cheb2leg(c_cheb(:,k));
 end
 
 if ( nargin > 1 )

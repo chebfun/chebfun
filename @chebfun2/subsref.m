@@ -32,6 +32,12 @@ switch index(1).type
         x = idx{1}; 
         if ( length(idx) == 2) 
             y = idx{2};
+        elseif ( isa(x, 'chebfun2v') ) 
+            % f(F), where f is a chebfun2 and F is a chebfun2v. 
+ 
+            out = feval(f, x); 
+            varargout = { out }; 
+            return
         elseif ( ( length(idx) == 1 ) && ( ~isreal(x) ) && ~isa(x, 'chebfun'))
             x = real( idx{1} );
             y = imag( idx{1} ); 
