@@ -1,7 +1,7 @@
 function c_leg = cheb2leg(c_cheb, M)
 %LEG2CHEB convert Legendre coefficients to Chebyshev coefficients. 
-%   C_LEG = CHEB2LEG(C_CHEB) converts the vector C_CHEB of Cebyshev coefficients
-%   to a vector C_CHEB of Legendre coefficients such that 
+%   C_LEG = CHEB2LEG(C_CHEB) converts the vector C_CHEB of Chebyshev
+%   coefficients to a vector C_CHEB of Legendre coefficients such that
 %   C_CHEB(N)*T0 + ... + C_CHEB(1)*T{N-1} = C_LEG(N)*P0 + ... + C_LEG(1)*P{N-1}.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
@@ -12,8 +12,6 @@ function c_leg = cheb2leg(c_cheb, M)
 % evaluated using discrete cosine transforms. For more details see:
 %   N. Hale and A. Townsend, A fast, simple, and stable Chebyshev-Legendre
 %   transform using an asymptotic formula, SISC (accepted) 2013.
-
-% [TODO]: This needs a test.
 
 c_cheb = c_cheb(:);                           % Make column vector.
 c_cheb = flipud(c_cheb);                      % Lowest order coeffs first.

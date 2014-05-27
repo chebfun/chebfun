@@ -29,7 +29,7 @@ tol = 10*epslevel(f);
 pass(7) = all(f.domain == [dom(1), 1:10, dom(2)]);
 pass(8) = err < tol;
 pass(9) = numel(f.funs) == 11;
-pass(10) = length(f) == 22;
+pass(10) = length(f) == 21;
 
 %% Polynomial interpolation:
 % Test an scalar-valued function:

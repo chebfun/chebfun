@@ -197,7 +197,7 @@ dom = [-Inf -1];
 op = @(x) [exp(x) x.*exp(x) (1-exp(x))./(x.^2)];
 
 f = chebfun(op, dom);
-p = norm(f{-1e3,-1}, 1);
+p = norm(f{-1000,-1}, 1);
 pExact = 0.851504493224078;  % This is obtained using Matlab symbolic toolbox.
 err = p - pExact;
 % The tolerance below is loosen to allow certain spurious roots:

@@ -40,9 +40,10 @@ if ( nargin > 1 && ischar(varargin{1}) && numel(varargin{1}) < 4 )
             'Error in color/linetype argument.');
     elseif ( ~isempty(col) )
         col = col{:};
+        varargin(1) = [];
     end
-    varargin(1) = [];
 end
+
 if ( isempty(col) )
     colIdx = find(cellfun(@(arg) all(ischar(arg)) && any(strfind(arg, 'color')), varargin));
     if ( colIdx )
@@ -72,7 +73,6 @@ for k = 1:numel(f)
         col(1:numColsFk, :) = [];
     end
     
-
     % Call the column version:
     [h1{k}, h2{k}] = columnChebpolyplot(fk, colk, varargin{:});
     hold on
@@ -144,7 +144,11 @@ for j = 1:numCols
     % at index 1, the second fun in the first column is at 1 + numCols, the
     % third fun in the first column is at 1 + 2*numCols, etc.
     for k = j:numCols:(numFuns*numCols)
-        set(h1(k), 'color', col(j,:));
+        if ( ischar(col) )
+            set(h1(k), 'color', col);
+        else
+            set(h1(k), 'color', col(j,:));
+        end
     end
 end
 hold on

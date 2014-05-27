@@ -99,9 +99,11 @@ rExact = [0.33529141416564289113;
       
 vals_g = feval(g, x);
 vals_check = feval(op, x);
-err = vals_g - vals_check;
-pass(6) = ( norm(err, inf) < epslevel(f)*vscale(f) ) && ...
-    ( norm( rExact - g.domain(2:end-1).', inf) < 2*epslevel(f)*vscale(f) );
+err1 = norm(vals_g - vals_check, inf);
+tol1 = 2*epslevel(f)*vscale(f);
+err2 = norm( rExact - g.domain(2:end-1).', inf);
+tol2 = 2*epslevel(f)*vscale(f);
+pass(6) = ( err1 < tol1 ) && ( err2 < tol2 );
 
 % TODO: Add more tests.
 
