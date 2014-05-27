@@ -135,7 +135,7 @@ end
 % Construct CHEBFUN from coeffs:
 p = chebfun(C, dom, pref, 'coeffs');              
 
-if ( ~strcmp(defaultPref.tech, 'chebtech') )
+if ( ~strncmp(defaultPref.tech, 'chebtech', 7) )
     % Construct a CHEBFUN of the approprate form by evaluating p:
     p = chebfun(@(x) feval(p, x), domIn);
 elseif ( numel(domIn) > 2 )

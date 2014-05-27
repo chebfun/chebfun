@@ -193,7 +193,7 @@ classdef chebfunpref < chebpref
 %      scale. This can be set using this preference.
 %
 %   tech                       - Representation technology.
-%    ['chebtech']
+%    ['chebtech2']
 %
 %      Sets the underlying representation technology used to construct the FUNs.
 %
@@ -719,7 +719,7 @@ classdef chebfunpref < chebpref
                 factoryPrefs.deltaPrefs.deltaTol = 1e-9;
                 factoryPrefs.deltaPrefs.proximityTol = 1e-11;
             factoryPrefs.scale = 0;
-            factoryPrefs.tech = 'chebtech';
+            factoryPrefs.tech = 'chebtech2';
             factoryPrefs.techPrefs = struct();
                 factoryPrefs.techPrefs.eps = 2^(-52);
                 factoryPrefs.techPrefs.maxLength = 65537;
