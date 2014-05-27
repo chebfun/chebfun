@@ -13,8 +13,6 @@ function c_leg = cheb2leg(c_cheb, M)
 %   N. Hale and A. Townsend, A fast, simple, and stable Chebyshev-Legendre
 %   transform using an asymptotic formula, SISC (accepted) 2013.
 
-% [TODO]: This needs a test.
-
 c_cheb = c_cheb(:);                           % Make column vector.
 c_cheb = flipud(c_cheb);                      % Lowest order coeffs first.
 
