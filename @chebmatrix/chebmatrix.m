@@ -18,7 +18,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
 %   If a CHEBMATRIX contains only CHEBFUNs and doubles, then the CHEBFUN/PLOT
 %   method converts it to an array-valued chebfun so that plotting. Some methods
 %   can be applied directly to the blocks of A and return a CHEBMATRIX. See the
-%   documentation of APPLY2BLOCKS().
+%   documentation of CHEBMATRIX/CELLFUN().
 %
 %   Examples:
 %     d = [-2, 2];                  % function domain
@@ -93,8 +93,11 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
                 A.domain = A.mergeDomains(data{:});
                 
             elseif ( isa(data, 'chebmatrix') )
-                % Simply return the same matrix:
-                A = data;
+                % Simply return the same CHEBMATRIX:
+                A.blocks = data.blocks;
+                A.domain = data.domain;
+                % NOTE: We can't set A = data because this breaks subclass
+                % overloads of the constructor.
                 
             else
                 % E.g., CHEBMATRIX(f), CHEBMATRIX(a), or CHEBMATRIX(L).
@@ -191,13 +194,13 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         end
     end
     
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%% BLOCK METHODS  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%% CELLFUN METHODS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     methods 
         
-        function A = apply2blocks(A, op)
-        %APPLY2BLOCKS   Apply an operation to each block of a CHEBMATRIX.
-        %   APPLY2BLOCK(A, OP) applies the operator OP to each of the blocks of
+        function A = cellfun(A, op)
+        %CELLFUN   Apply an operation to each block of a CHEBMATRIX.
+        %   CELLFUN(A, OP) applies the operator OP to each of the blocks of
         %   A. If OP is not defined for one of the block entry types, then an
         %   error is thrown.
         %
@@ -217,187 +220,187 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         end
                 
         function A = abs(A)
-            A = apply2blocks(A, @abs);
+            A = cellfun(A, @abs);
         end
         function A = acos(A)
-            A = apply2blocks(A, @acos);
+            A = cellfun(A, @acos);
         end
         function A = acosd(A)
-            A = apply2blocks(A, @acosd);
+            A = cellfun(A, @acosd);
         end
         function A = acosh(A)
-            A = apply2blocks(A, @acosh);
+            A = cellfun(A, @acosh);
         end
         function A = acot(A)
-            A = apply2blocks(A, @acot);
+            A = cellfun(A, @acot);
         end
         function A = acotd(A)
-            A = apply2blocks(A, @acotd);
+            A = cellfun(A, @acotd);
         end
         function A = acoth(A)
-            A = apply2blocks(A, @acoth);
+            A = cellfun(A, @acoth);
         end 
         function A = acsc(A)
-            A = apply2blocks(A, @acsc);
+            A = cellfun(A, @acsc);
         end
         function A = acscd(A)
-            A = apply2blocks(A, @acscd);
+            A = cellfun(A, @acscd);
         end
         function A = acsch(A)
-            A = apply2blocks(A, @acsch);
+            A = cellfun(A, @acsch);
         end
         function A = asec(A)
-            A = apply2blocks(A, @asec);
+            A = cellfun(A, @asec);
         end
         function A = asecd(A)
-            A = apply2blocks(A, @asecd);
+            A = cellfun(A, @asecd);
         end
         function A = asech(A)
-            A = apply2blocks(A, @asech);
+            A = cellfun(A, @asech);
         end
         function A = asin(A)
-            A = apply2blocks(A, @asin);
+            A = cellfun(A, @asin);
         end
         function A = asind(A)
-            A = apply2blocks(A, @asind);
+            A = cellfun(A, @asind);
         end
         function A = asinh(A)
-            A = apply2blocks(A, @asinh);
+            A = cellfun(A, @asinh);
         end
         function A = atan(A)
-            A = apply2blocks(A, @atan);
+            A = cellfun(A, @atan);
         end
         function A = atand(A)
-            A = apply2blocks(A, @atand);
+            A = cellfun(A, @atand);
         end
         function A = atanh(A)
-            A = apply2blocks(A, @atanh);
+            A = cellfun(A, @atanh);
         end    
         function A = cos(A)
-            A = apply2blocks(A, @cos);
+            A = cellfun(A, @cos);
         end    
         function A = cosd(A)
-            A = apply2blocks(A, @cosd);
+            A = cellfun(A, @cosd);
         end
         function A = cosh(A)
-            A = apply2blocks(A, @cosh);
+            A = cellfun(A, @cosh);
         end  
         function A = cot(A)
-            A = apply2blocks(A, @cot);
+            A = cellfun(A, @cot);
         end    
         function A = cotd(A)
-            A = apply2blocks(A, @cotd);
+            A = cellfun(A, @cotd);
         end
         function A = coth(A)
-            A = apply2blocks(A, @coth);
+            A = cellfun(A, @coth);
         end  
         function A = csc(A)
-            A = apply2blocks(A, @csc);
+            A = cellfun(A, @csc);
         end    
         function A = cscd(A)
-            A = apply2blocks(A, @cscd);
+            A = cellfun(A, @cscd);
         end
         function A = csch(A)
-            A = apply2blocks(A, @csch);
+            A = cellfun(A, @csch);
         end        
         function A = diff(A, varargin)
-            A = apply2blocks(A, @(A) diff(A, varargin{:}));
+            A = cellfun(A, @(A) diff(A, varargin{:}));
         end  
         function A = erf(A)
-            A = apply2blocks(A, @erf);
+            A = cellfun(A, @erf);
         end    
         function A = erfc(A)
-            A = apply2blocks(A, @erfc);
+            A = cellfun(A, @erfc);
         end
         function A = erfcinv(A)
-            A = apply2blocks(A, @erfcinv);
+            A = cellfun(A, @erfcinv);
         end 
         function A = erfcx(A)
-            A = apply2blocks(A, @erfcx);
+            A = cellfun(A, @erfcx);
         end
         function A = erfinv(A)
-            A = apply2blocks(A, @erfinv);
+            A = cellfun(A, @erfinv);
         end 
         function A = exp(A)
-            A = apply2blocks(A, @exp);
+            A = cellfun(A, @exp);
         end
         function A = expm1(A)
-            A = apply2blocks(A, @expm1);
+            A = cellfun(A, @expm1);
         end 
         function A = fix(A)
-            A = apply2blocks(A, @fix);
+            A = cellfun(A, @fix);
         end    
         function A = floor(A)
-            A = apply2blocks(A, @floor);
+            A = cellfun(A, @floor);
         end         
         function A = heaviside(A)
-            A = apply2blocks(A, @heaviside);
+            A = cellfun(A, @heaviside);
         end  
         function A = imag(A)
-            A = apply2blocks(A, @imag);
+            A = cellfun(A, @imag);
         end
         function A = log(A)
-            A = apply2blocks(A, @log);
+            A = cellfun(A, @log);
         end         
         function A = log10(A)
-            A = apply2blocks(A, @log10);
+            A = cellfun(A, @log10);
         end     
         function A = log1p(A)
-            A = apply2blocks(A, @log1p);
+            A = cellfun(A, @log1p);
         end     
         function A = log2(A)
-            A = apply2blocks(A, @log2);
+            A = cellfun(A, @log2);
         end      
         function A = real(A)
-            A = apply2blocks(A, @real);
+            A = cellfun(A, @real);
         end
         function A = reallog(A)
-            A = apply2blocks(A, @reallog);
+            A = cellfun(A, @reallog);
         end        
         function A = round(A)
-            A = apply2blocks(A, @round);
+            A = cellfun(A, @round);
         end
         function A = sec(A)
-            A = apply2blocks(A, @sec);
+            A = cellfun(A, @sec);
         end
         function A = secd(A)
-            A = apply2blocks(A, @secd);
+            A = cellfun(A, @secd);
         end
         function A = sech(A)
-            A = apply2blocks(A, @sech);
+            A = cellfun(A, @sech);
         end
         function A = sign(A)
-            A = apply2blocks(A, @sign);
+            A = cellfun(A, @sign);
         end   
         function A = sin(A)
-            A = apply2blocks(A, @sin);
+            A = cellfun(A, @sin);
         end
         function A = sinc(A)
-            A = apply2blocks(A, @sinc);
+            A = cellfun(A, @sinc);
         end
         function A = sind(A)
-            A = apply2blocks(A, @sind);
+            A = cellfun(A, @sind);
         end
         function A = sinh(A)
-            A = apply2blocks(A, @sinh);
+            A = cellfun(A, @sinh);
         end
         function A = sqrt(A)
-            A = apply2blocks(A, @sqrt);
+            A = cellfun(A, @sqrt);
         end        
         function A = sum(A)
-            A = apply2blocks(A, @sum);
+            A = cellfun(A, @sum);
         end        
         function A = tan(A)
-            A = apply2blocks(A, @tan);
+            A = cellfun(A, @tan);
         end
         function A = tand(A)
-            A = apply2blocks(A, @tand);
+            A = cellfun(A, @tand);
         end
         function A = tanh(A)
-            A = apply2blocks(A, @tanh);
+            A = cellfun(A, @tanh);
         end
         function A = uminus(A)
-            A = apply2blocks(A, @uminus);
+            A = cellfun(A, @uminus);
         end       
         function A = uplus(A)
         end
