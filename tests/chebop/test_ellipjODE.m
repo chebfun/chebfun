@@ -1,4 +1,4 @@
-function pass = test_diff(pref)
+function pass = test_ellipjODE(pref)
 % Test to check that the chebfun command for Jacobi elliptic functions
 % ELLIPJ produces a similar result to the solution of the nonlinear
 % differential equation that generates it.
@@ -45,7 +45,7 @@ u = mldivide(N, 0, pref);
 err(3) = norm(u - dn, inf);
 
 %%
-pass = err < [tol, tol, 5e5*tol];
+pass = err < [tol, tol, 2e6*tol];
 
 end
 
