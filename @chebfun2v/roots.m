@@ -1319,7 +1319,10 @@ function x = mypoints(n, dom)
 % technology.
 
 % What tech am I based on?:
-tech = chebfun2pref().tech();
+tech = chebfunpref().tech();
+if ( ischar(tech) )
+    tech = eval(tech);
+end
 
 if ( isa(tech, 'chebtech2') )
     x = chebpts( n, dom, 2 );   % x grid.

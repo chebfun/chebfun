@@ -13,7 +13,10 @@ function varargout = vals2coeffs( U, S, V )
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-tech = chebfun2pref().tech();
+tech = chebfunpref().tech();
+if ( ischar(tech) )
+    tech = eval(tech);
+end
 
 if ( nargin == 1 )
     U = tech.vals2coeffs( U ); 

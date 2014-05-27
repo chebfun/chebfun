@@ -33,7 +33,10 @@ end
 % Get the low rank representation for f. 
 [cols, d, rows] = cdr(f);
 
-tech = chebfun2pref().tech(); 
+tech = chebfunpref().tech(); 
+if ( ischar(tech) )
+    tech = eval(tech);
+end
 
 C = tech.coeffs2vals(chebpoly( cols, m ).'); 
 R = tech.coeffs2vals(chebpoly( rows, n ).'); 

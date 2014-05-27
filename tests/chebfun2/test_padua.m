@@ -4,8 +4,6 @@ if ( nargin == 0 )
     pref = chebfunpref();
 end
 
-tech = chebfun2pref().tech(); 
-
 tol = 1e-13;
 seedRNG(0)
 

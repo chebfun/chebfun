@@ -139,7 +139,10 @@ sampleTest = prefStruct.sampleTest;
 minsample = 9;   % minsample
 
 % Go find out what tech I'm based on:
-tech = chebfun2pref().tech();
+tech = chebfunpref().tech();
+if ( ischar(tech) )
+    tech = eval(tech);
+end
 
 factor = 4;  % grid to rank ratio.
 if ( isa(tech, 'fourtech') ) 
@@ -479,7 +482,10 @@ function [xx, yy] = points2D(m, n, dom)
 % technology.
 
 % What tech am I based on?:
-tech = chebfun2pref().tech();
+tech = chebfunpref().tech();
+if ( ischar(tech) )
+    tech = eval(tech);
+end
 
 if ( isa(tech, 'chebtech2') )
     x = chebpts( m, dom(1:2), 2 );   % x grid.
@@ -504,7 +510,10 @@ function x = mypoints(n, dom)
 % technology.
 
 % What tech am I based on?:
-tech = chebfun2pref().tech();
+tech = chebfunpref().tech();
+if ( ischar(tech) )
+    tech = eval(tech);
+end
 
 if ( isa(tech, 'chebtech2') )
     x = chebpts( n, dom, 2 );   % x grid.
@@ -523,7 +532,10 @@ function [grid, nesting] = gridRefine( grid )
 % Hard code grid refinement strategy for tech. 
 
 % What tech am I based on?:
-tech = chebfun2pref().tech();
+tech = chebfunpref().tech();
+if ( ischar(tech) )
+    tech = eval(tech);
+end
 
 % What is the next grid size?
 if ( isa(tech, 'chebtech2') )

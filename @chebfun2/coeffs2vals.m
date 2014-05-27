@@ -12,7 +12,10 @@ function varargout = coeffs2vals( U, varargin )
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-tech = chebfun2pref().tech(); 
+tech = chebfunpref().tech(); 
+if ( ischar(tech) )
+    tech = eval(tech);
+end
 
 if ( nargin == 1 )
     U = tech.coeffs2vals( U ); 
