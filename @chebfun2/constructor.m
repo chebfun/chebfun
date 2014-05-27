@@ -134,6 +134,7 @@ maxRank = prefStruct.maxRank;
 maxLength = prefStruct.maxLength;
 pseudoLevel = prefStruct.eps;
 sampleTest = prefStruct.sampleTest;
+% TODO: This should probably be taken from the techPref prefences?
 minsample = 17;   % minsample
 
 % If the vectorize flag is off, do we need to give user a warning?
