@@ -78,7 +78,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
     methods
         
         % Constructor.
-        function A = chebmatrix(data)
+        function A = chebmatrix(data, dom)
             if ( isempty(data) )
                 return
             elseif ( iscell(data) )
@@ -91,6 +91,10 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
                 A.blocks = {data};
                 A.domain = data.domain;
             end
+            if ( nargin > 1 )
+                A.domain = A.mergeDomains(A, dom);
+            end
+            
         end
             
         function A = set.domain(A, d)
