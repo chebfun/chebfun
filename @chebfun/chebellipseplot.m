@@ -85,7 +85,8 @@ end
 holdState = ishold();
 
 % Plot the ellipses.
-h = plot(UK{:}); hold on
+h = plot(UK{:}); 
+hold on
 
 % Add the legend.
 if ( legends ) && ( j > 1 )
