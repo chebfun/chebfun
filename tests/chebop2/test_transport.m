@@ -43,7 +43,7 @@ N = chebop2(@(u) diffy(u,1) + 5*diffx(u,1), d);
 N.dbc = @(x) exp(x);
 N.lbc = @(t) exp(-pi).*exp(-5*t);
 u = N \ 0;
-pass(4) = ( abs(norm(u - exact) < tol));  
+pass(4) = ( norm(u - exact) < 10*tol );  
 
 %% Transport equation with different transport parameter, and large time
 % length
@@ -53,7 +53,7 @@ N = chebop2(@(u) diffy(u,1) + .1*diffx(u,1), d);
 N.dbc = @(x) exp(x);
 N.lbc = @(t) exp(-pi).*exp(-t/10);
 u = N \ 0;
-pass(5) = ( abs(norm(u - exact) < tol));
+pass(5) = ( norm(u - exact) < 50*tol);
 
 
 % %% Here's another one. 

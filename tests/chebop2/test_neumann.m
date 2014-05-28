@@ -18,7 +18,7 @@ u = N \ 0;
 
 x = chebfun('x', d(1:2)).';
 uy = diff(u,1,1);
-pass(1) = ( norm(u(:,d(4)) - N.ubc) < tol ); 
+pass(1) = ( norm(u(:,d(4)) - N.ubc.') < tol ); 
 pass(2) = ( norm(u(d(2),:) - N.rbc) < tol ); 
 pass(3) = ( norm(uy(:,d(3))-((x-d(1))/(d(2)-d(1))+1)) < 2*tol );
 pass(4) = ( norm(u(d(1),:) - N.lbc) < tol );
