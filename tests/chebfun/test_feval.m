@@ -43,17 +43,23 @@ end
 % Test evaluation with and without left/right limit values.
 pref.enableBreakpointDetection = 1;
 f = chebfun(@(x) sign(x), [-1 1], pref);
+tol = 10*f.epslevel*f.vscale;
 
 x = [-0.5 ; 0 ; 0.5];
-pass(5) = isequal(feval(f, x), [-1 ; 0 ; 1]);
+err = norm(feval(f,x) - [-1; 0; 1], inf);
+pass(5) = err < tol;
 
 leftlim1 = feval(f, x, 'left');
 leftlim2 = feval(f, x, '-');
-pass(6) = isequal(leftlim1, [-1 ; -1 ; 1]) && isequal(leftlim1, leftlim2);
+err1 = norm(leftlim1 - [-1; -1; 1], inf);
+err2 = norm(leftlim1 - leftlim2, inf);
+pass(6) = err1 < tol && err2 < tol;
 
 rightlim1 = feval(f, x, 'right');
 rightlim2 = feval(f, x, '+');
-pass(7) = isequal(rightlim1, [-1 ; 1 ; 1]) && isequal(rightlim1, rightlim2);
+err1 = norm(rightlim1 - [-1; 1; 1], inf);
+err2 = norm(rightlim1 - rightlim2, inf);
+pass(7) = err1 < tol && err2 < tol;
 
 % Test bogus input for limit specification string.
 try
