@@ -483,31 +483,37 @@ classdef chebfunpref < chebpref
                 prefList.cheb2Prefs.sampleTest');            
             fprintf([padString('    scale:') '%d\n'], ...
                 prefList.scale);
-            fprintf([padString('    tech:') '''%s''\n'], ...
-                prefList.tech)
+            if ( ischar(prefList.tech) )
+                tech = ['''' prefList.tech ''''];
+            else
+                tech = ['@' func2str(prefList.tech)];
+            end
+            fprintf([padString('    tech:') '%s\n'], tech)
             fprintf('    techPrefs\n');
 
-            % Format and print values of tech preferences.
-            for field = fieldnames(prefList.techPrefs).'
-                field1 = field{1};
-                printStr = padString(['        ' field1 ':']);
-
-                if ( isempty(prefList.techPrefs.(field1)) )
-                    fprintf([printStr 'empty\n']);
-                elseif ( ischar(prefList.techPrefs.(field1)) && ...
-                         isrow(prefList.techPrefs.(field1)) )
-                    fprintf([printStr '''%s''\n'], prefList.techPrefs.(field1))
-                elseif ( numel(prefList.techPrefs.(field1)) > 1 )
-                    fprintf([printStr class(prefList.techPrefs.(field1)) ...
-                        ' array\n']);
-                elseif ( isfloat(prefList.techPrefs.(field1)) )
-                    fprintf([printStr '%0.16g\n'], prefList.techPrefs.(field1))
-                elseif ( islogical(prefList.techPrefs.(field1)) )
-                    fprintf([printStr '%d\n'], prefList.techPrefs.(field1))
-                else
-                    fprintf([printStr class(prefList.techPrefs.(field1)) '\n']);
-                end
-            end
+            tech = feval(prefList.tech);
+            disp(tech.techPref(prefList.techPrefs))
+%             % Format and print values of tech preferences.
+%             for field = fieldnames(prefList.techPrefs).'
+%                 field1 = field{1};
+%                 printStr = padString(['        ' field1 ':']);
+% 
+%                 if ( isempty(prefList.techPrefs.(field1)) )
+%                     fprintf([printStr 'empty\n']);
+%                 elseif ( ischar(prefList.techPrefs.(field1)) && ...
+%                          isrow(prefList.techPrefs.(field1)) )
+%                     fprintf([printStr '''%s''\n'], prefList.techPrefs.(field1))
+%                 elseif ( numel(prefList.techPrefs.(field1)) > 1 )
+%                     fprintf([printStr class(prefList.techPrefs.(field1)) ...
+%                         ' array\n']);
+%                 elseif ( isfloat(prefList.techPrefs.(field1)) )
+%                     fprintf([printStr '%0.16g\n'], prefList.techPrefs.(field1))
+%                 elseif ( islogical(prefList.techPrefs.(field1)) )
+%                     fprintf([printStr '%d\n'], prefList.techPrefs.(field1))
+%                 else
+%                     fprintf([printStr class(prefList.techPrefs.(field1)) '\n']);
+%                 end
+%             end
         end
 
     end
@@ -719,7 +725,7 @@ classdef chebfunpref < chebpref
                 factoryPrefs.deltaPrefs.deltaTol = 1e-9;
                 factoryPrefs.deltaPrefs.proximityTol = 1e-11;
             factoryPrefs.scale = 0;
-            factoryPrefs.tech = 'chebtech2';
+            factoryPrefs.tech = @chebtech2;
             factoryPrefs.techPrefs = struct();
                 factoryPrefs.techPrefs.eps = 2^(-52);
                 factoryPrefs.techPrefs.maxLength = 65537;
