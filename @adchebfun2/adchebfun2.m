@@ -1,4 +1,4 @@
-classdef(InferiorClasses = {?chebfun2}) ADchebfun2
+classdef(InferiorClasses = {?chebfun2}) adchebfun2
     %ADCHEBFUN2 Summary of this class goes here
     %   Detailed explanation goes here
     
@@ -9,7 +9,7 @@ classdef(InferiorClasses = {?chebfun2}) ADchebfun2
     
     methods
         % Main constructor. Convert a chebfun2 to ADchebfun2
-        function g = ADchebfun2 ( varargin )
+        function g = adchebfun2 ( varargin )
             if( nargin == 0 )
                 % return an empty chebfun2 object. 
             elseif isa(varargin{1},'chebfun2')

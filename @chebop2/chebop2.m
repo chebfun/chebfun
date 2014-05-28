@@ -52,7 +52,8 @@ function N = ctor(N, varargin)
 % Constructing the chebop2 object.
 
 % Get chebfun2 preferences
-tol = chebfun2pref('eps');
+prefs = chebfunpref(); 
+tol = prefs.cheb2Prefs.eps;
 
 % maximum differential order in the PDE.
 % maxorder = 2;
@@ -81,7 +82,8 @@ if ( numel(varargin) > 1 )
 else
     if isa(varargin{1},'function_handle') 
         % pick the default domain
-        rect1 = chebfun2pref('xdom'); rect2 = chebfun2pref('ydom');
+        rect1 = [-1,1]; 
+        rect2 = [-1,1];
         domain = [rect1 rect2];
     elseif isa(varargin{1},'double')
         N = chebop2(@(u) u, varargin{1});  % set up identity operator on the domain. 
@@ -130,7 +132,7 @@ if ( isa(varargin{1},'function_handle') )
       catch 
           % Trust that the user has formed the chebfun2 objects outside of
           % chebop2. 
-          u = ADchebfun2(chebfun2(@(x,y) x.*y, domain)); 
+          u = adchebfun2(chebfun2(@(x,y) x.*y, domain)); 
           v = op(u); 
           A = v.der.derCell;
       end
@@ -139,7 +141,7 @@ if ( isa(varargin{1},'function_handle') )
     elseif ( nargin(op) == 3 ) % The coefficients of the PDE are now variable coefficient.
         
         % setup a chebfun2 on the right domain 
-        u = ADchebfun2(chebfun2(@(x,y) x.*y, domain)); 
+        u = adchebfun2(chebfun2(@(x,y) x.*y, domain)); 
         x = chebfun2(@(x,y) x, domain); 
         y = chebfun2(@(x,y) y, domain);
         % apply it to the operator 
