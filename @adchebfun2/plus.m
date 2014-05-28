@@ -12,13 +12,13 @@ if isempty(f) || isempty(g)  % check for empty ADchebfun2
    return; 
 end
 
-if ( ~isa(f,'ADchebfun2') ) % First argument was not an ADchebfun2
+if ( ~isa(f,'adchebfun2') ) % First argument was not an ADchebfun2
     % Swap arguments.
     h = plus(g, f);
     return
 end
 
-if isa(g,'ADchebfun2')     % ADCHEBFUN2 + ADCHEBFUN2
+if isa(g,'adchebfun2')     % ADCHEBFUN2 + ADCHEBFUN2
     h = f;
     
     % Add the chebfun2s
