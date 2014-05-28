@@ -48,10 +48,10 @@ elseif ( isa(bcArg,'function_handle') )
             cc(jj) = abs(diff(scl)/2).^(length(v.deriv)-1);
         end
         for jj = 1:size(f,2)
-            g = f(:,jj);
+            g = f{jj};
             bcvalue(:,jj) = -resize(cc(jj)*flipud(g.coeffs{:}),een);
         end
-        L = linop( chebop( bcArg, dom ) );
+        L = linearize( chebop( bcArg, dom ) );
         p = recoverCoeffs( L );
         
         if ( iscell( p ) )
@@ -156,17 +156,17 @@ for hh = 1:s(2)                 % Loop over each of the dependant variables
     p1 = L*[x0l 1+0*x x0r];     % Evaluate all equations for [0 ... 1 ...0]
     p1 = p1 - p0;               % Subtract non-autonomous compnent
     for ll = 1:s(1)             % Loop over equations and assign
-        p{ll,hh} = p1(:,ll);
+        p{ll,hh} = p1{ll};
     end
     xk = x;                            % Update indep var to x
     for kk = 1:max(m(:,hh))            % Loop over each x^k
         tmp = L*[x0l xk(:,kk) x0r]-p0; % Evaluate for u = [0 ... x^k ... 0]
         for ll = 1:s(1)                % Loop over each equation
             if kk > m(ll,hh), continue, end % No coeffs of this order here
-            p{ll,hh}(:,kk+1) = tmp(:,ll);   % Assign the ll-th equation
+            p{ll,hh}(:,kk+1) = tmp{ll};   % Assign the ll-th equation
             for jj = 1:kk              % Extract the lower-order terms
-                p{ll,hh}(:,kk+1) = p{ll,hh}(:,kk+1) - chebfun(p{ll,hh}(:,kk+1-jj)).*xk(:,jj);
-                p{ll,hh}(:,kk+1) = simplify(chebfun(p{ll,hh}(:,kk+1))); % Simplify
+                p{ll,hh}(:,kk+1) = p{ll,hh}(:,kk+1) - p{ll,hh}(:,kk+1-jj).*xk(:,jj);
+                p{ll,hh}(:,kk+1) = simplify(p{ll,hh}(:,kk+1)); % Simplify
             end
         end
         xk = [xk x.*xk(:,end)/(kk+1)]; % Update indep var to x^k/k!
