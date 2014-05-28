@@ -27,19 +27,26 @@ elseif ( isa(bcArg,'function_handle') )
         %         % @(x,u) a*u +b*diff(u) + c*diff(u,2) + d*diff(u,3) + f(x), where a and b are constants.
         x = chebfun(@(x) x,dom);
         f = bcArg(x,0*x);
-        bcvalue = zeros(een,size(f,2));
+        if ( isa( f, 'chebmatrix' ) ) 
+            nf = size(f,1); 
+        elseif ( isa(f, 'chebfun') ) 
+            nf = size(f,2); 
+            f = chebmatrix( mat2cell( f ) ); 
+        end 
+        
+        bcvalue = zeros(een , nf);
         %         % Do we have bcs with derivatives in them.
         try
             fcell = bcArg(chebfun2(0,[dom,dom]),chebfun2(@(x,y) x.*y,[dom,dom]));
         catch
             gg = chebfun2(@(x,y) cos(x.*y),[dom,dom]);
-            for jj = 1:size(f,2)
+            for jj = 1:nf
                 fcell{jj} = diff(gg,jj-1);
             end
         end
 %         fcell = bcArg(chebfun(0,dom),chebfun(dom,dom));
-        cc = ones(1,size(f,2));
-        for jj = 1:size(f,2)
+        cc = ones(1,nf);
+        for jj = 1:nf
             if isa(fcell,'cell')
                 v = fcell{jj};
             else
@@ -47,7 +54,7 @@ elseif ( isa(bcArg,'function_handle') )
             end
             cc(jj) = abs(diff(scl)/2).^(length(v.deriv)-1);
         end
-        for jj = 1:size(f,2)
+        for jj = 1:nf
             g = f{jj};
             bcvalue(:,jj) = -resize(cc(jj)*flipud(g.coeffs{:}),een);
         end
