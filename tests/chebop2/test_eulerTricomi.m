@@ -10,8 +10,6 @@ if ( nargin < 1 )
 end 
 tol = 100*prefs.cheb2Prefs.eps; 
 
-error 
-
 exact = chebfun2(@(x,y) 1+0*x);
 N = chebop2(@(x,y,u) diff(u,2,2) - x.*diff(u,2,1)); 
 N.lbc = exact(-1,:); N.rbc = exact(1,:); 

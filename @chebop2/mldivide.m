@@ -170,7 +170,7 @@ if ( size(CC,1) == 1 )  % rank-1 PDE operator.
     Y = A \ RHS ;
     X = ( B \ Y.').';
     
-    X = chebop2.ImposeBoundaryConditions(X,bb,gg,Px,Py,m,n);
+    X = ImposeBoundaryConditions(X,bb,gg,Px,Py,m,n);
     
 elseif ( size(CC,1) == 2 )% rank-2 PDE operator.
     

@@ -10,6 +10,7 @@ end
 tol = 100*prefs.cheb2Prefs.eps; 
 
 error 
+
 %%  Standard wave equation on a non-square domain. 
 
 d = [-pi pi 0 1]; 
