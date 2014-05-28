@@ -44,7 +44,7 @@ if ( numel( k ) == 2 && nargin < 3)
    F.rows = diff( F.rows, k(1) );
    F.deriv = [derivOld; zeros(k(1),n)];
    m = size( F.deriv, 1 );
-   F.deriv = [F.deriv; zeros(m,k(2))];
+   F.deriv = [F.deriv, zeros(m,k(2))];
 elseif ( dim == 1 )
     F.cols = diff( F.cols, k );
     % Shift derivative information to the left. This amounts to adding zero

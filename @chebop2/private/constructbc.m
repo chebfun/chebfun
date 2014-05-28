@@ -25,7 +25,7 @@ elseif ( isa(bcArg,'function_handle') )
     if ( nargin(bcArg) == 2 )
         %         % Assume we have a boundary condition is of the form
         %         % @(x,u) a*u +b*diff(u) + c*diff(u,2) + d*diff(u,3) + f(x), where a and b are constants.
-        x = chebfun(dom,dom);
+        x = chebfun(@(x) x,dom);
         f = bcArg(x,0*x);
         bcvalue = zeros(een,size(f,2));
         %         % Do we have bcs with derivatives in them.
@@ -49,7 +49,7 @@ elseif ( isa(bcArg,'function_handle') )
         end
         for jj = 1:size(f,2)
             g = f(:,jj);
-            bcvalue(:,jj) = -resize(cc(jj)*flipud(g.coeffs),een);
+            bcvalue(:,jj) = -resize(cc(jj)*flipud(g.coeffs{:}),een);
         end
         L = linop( chebop( bcArg, dom ) );
         p = recoverCoeffs( L );
@@ -59,7 +59,7 @@ elseif ( isa(bcArg,'function_handle') )
             for jj = 1 : length(p)
                 pp = p{jj};
                 for kk = 1 : size(pp, 2)
-                    c = feval(pp(:,kk), bcpos);
+                    c = feval(chebfun(pp(:,kk)), bcpos);
                     if ( abs(c) > 0 )
                         val = chebValues(kk-1, bcn, bcpos);
                         bcrow(:, jj) = bcrow(:, jj) + c * val;
@@ -142,10 +142,10 @@ function p = recoverCoeffs( L )
 if isa(L,'chebop'), L2 = linop(L); else L2 = L; end
 
 % Initialise
-s = L2.blocksize;                % Determine the size of the system
-m = L2.difforder;                %  and the difforder
-x = chebfun('x',L2.fundomain,2); % Construct linear function on the domain
-x0 = chebfun(0,L2.fundomain);    %  and the zero function
+s = size( L2 );                  % Determine the size of the system
+m = L2.diffOrder;                %  and the difforder
+x = chebfun('x',L2.domain,2);    % Construct linear function on the domain
+x0 = chebfun(0,L2.domain);       %  and the zero function
 p = cell(s);                     % Initialise output
 p0 = L*repmat(x0,1,s(2));        % Compute non-autonomous component
 
@@ -165,8 +165,8 @@ for hh = 1:s(2)                 % Loop over each of the dependant variables
             if kk > m(ll,hh), continue, end % No coeffs of this order here
             p{ll,hh}(:,kk+1) = tmp(:,ll);   % Assign the ll-th equation
             for jj = 1:kk              % Extract the lower-order terms
-                p{ll,hh}(:,kk+1) = p{ll,hh}(:,kk+1) - p{ll,hh}(:,kk+1-jj).*xk(:,jj);
-                p{ll,hh}(:,kk+1) = simplify(p{ll,hh}(:,kk+1)); % Simplify
+                p{ll,hh}(:,kk+1) = p{ll,hh}(:,kk+1) - chebfun(p{ll,hh}(:,kk+1-jj)).*xk(:,jj);
+                p{ll,hh}(:,kk+1) = simplify(chebfun(p{ll,hh}(:,kk+1))); % Simplify
             end
         end
         xk = [xk x.*xk(:,end)/(kk+1)]; % Update indep var to x^k/k!

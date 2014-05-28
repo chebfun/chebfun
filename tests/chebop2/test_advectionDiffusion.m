@@ -1,9 +1,10 @@
-function pass = chebop2_advectionDiffusion
+function pass = test_advectionDiffusion( prefs ) 
 % Check advection diffusion equations. 
-% Alex Townsend, August 2013. 
 
-j = 1; 
-tol = 1e10*chebfun2pref('eps');
+if ( nargin < 1 ) 
+    prefs = chebfunpref(); 
+end 
+tol = 1e10*prefs.cheb2Prefs.eps; 
 
 % Advection-diffusion 1
 N = chebop2(@(u) diff(u,1,1) - .1*diff(u,2,2) - diff(u,1,2), [-2.5 3 0 6]); 
@@ -21,7 +22,8 @@ bc.right = struct('op',{I},'val',{0});
 opts = pdeset('plot','off');
 uu = pde15s(@(u,t,x,diff) .1*diff(u,2) + diff(u),0:.1:6,f,bc,opts);
 
-k=1;
+k = 1; 
+j = 1; 
 for t = 0:.1:6
    pass(j) = ( norm(u(:,t) - uu(:,k)) < tol ); j = j + 1; 
    k = k + 1; 

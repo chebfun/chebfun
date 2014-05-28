@@ -1,33 +1,36 @@
-function pass = chebop2_construction
+function pass = test_construction( prefs ) 
 % Check that the chebop2 constructor is working correctly. 
 
-tol = chebfun2pref('eps'); j = 1; 
+if ( nargin < 1 ) 
+    prefs = chebfunpref(); 
+end 
+tol = prefs.cheb2Prefs.eps;
 
 % form laplacian: 
 N = chebop2(@(u) laplacian(u)); 
 N.lbc = 1; N.rbc = 1; N.ubc = 1; N.dbc = 1; 
 u = N \ 0; 
-pass(j) = ( norm(u - 1) < tol ); j = j + 1;  
+pass(1) = ( norm(u - 1) < tol );   
 
 % second way to form laplacian:
 N = chebop2(@(u) diff(u,2,1) + diff(u,2,2)); 
 N.lbc = 1; N.rbc = 1; N.ubc = 1; N.dbc = 1; 
 u = N \ 0; 
-pass(j) = ( norm(u - 1) < tol ); j = j + 1; 
+pass(2) = ( norm(u - 1) < tol );  
 
 % on domains other than default 
 N = chebop2(@(u) laplacian(u),[0 1 0 1]); 
 N.lbc = 1; N.rbc = 1; N.ubc = 1; N.dbc = 1; 
 u = N \ 0; 
 myone = chebfun2(@(x,y) 1+0*x,[0 1 0 1]);   % check u is on correct domain.
-pass(j) = ( norm(u - myone) < tol ); j = j + 1;  
+pass(3) = ( norm(u - myone) < tol ); 
 
 % different boundary syntax 
 N = chebop2(@(u) laplacian(u)); 
 N.lbc = @(x) 1+0*x; N.rbc = chebfun(@(x) 1+0*x); 
 N.ubc = 1; N.dbc = 1; 
 u = N \ 0; 
-pass(j) = ( norm(u - 1) < tol ); j = j + 1;
+pass(4) = ( norm(u - 1) < tol ); 
 
 % more boundary syntax, just check it works. 
 N = chebop2(@(u) laplacian(u));
