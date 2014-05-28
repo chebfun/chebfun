@@ -31,8 +31,8 @@ function varargout = pde15s(pdeFun, tt, u0, bc, varargin)
 % Example 2: Kuramoto-Sivashinsky
 %     x = chebfun('x');
 %     u = 1 + 0.5*exp(-40*x.^2);
-%     bc.left = @(u) [u - 1, diff(u)];
-%     bc.right = @(u) [u - 1, diff(u)];
+%     bc.left = @(u) [u - 1 ; diff(u)];
+%     bc.right = @(u) [u - 1 ; diff(u)];
 %     f = @(u) u.*diff(u) - diff(u, 2) - 0.006*diff(u, 4);
 %     opts = pdeset('Ylim', [-30 30], 'PlotStyle', {'LineWidth', 2});
 %     uu = pde15s(f, 0:.01:.5, u, bc, opts);
@@ -40,9 +40,9 @@ function varargout = pde15s(pdeFun, tt, u0, bc, varargin)
 %
 % Example 3: Chemical reaction (system)
 %      x = chebfun('x');
-%      u = [ 1 - erf(10*(x+0.7)) , 1 + erf(10*(x-0.7)) , 0 ];
-%      f = @(u, v, w)  [ .1*diff(u, 2) - 100*u.*v , ...
-%                        .2*diff(v, 2) - 100*u.*v , ...
+%      u = [ 1 - erf(10*(x+0.7)) ; 1 + erf(10*(x-0.7)) ; 0 ];
+%      f = @(u, v, w)  [ .1*diff(u, 2) - 100*u.*v ; ...
+%                        .2*diff(v, 2) - 100*u.*v ; ...
 %                        .001*diff(w, 2) + 2*100*u.*v ];
 %      opts = pdeset('Ylim', [0 2], 'PlotStyle', {'LineWidth', 2});
 %      uu = pde15s(f, 0:.1:3, u, 'neumann', opts);
