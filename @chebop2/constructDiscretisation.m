@@ -48,7 +48,7 @@ if (  isempty(N.V) || isempty(N.U) )
             for kk = 1:size(A,2)
                 a = A{jj,kk};
                 if isa(a,'chebfun2')
-                    if abs(a.pivotValues(1)) > tol
+                    if abs(vscale(a)) > tol
                         [C,D,R] = cdr(a);
                         for col = 1:size(C,2)
                             U{jj,counter} = C(:,col)*D(col,col);

@@ -23,8 +23,8 @@ elseif ( isa(bcArg,'function_handle') )
         bcArg = @(x,u) u - bcArg(x); 
     end
     if ( nargin(bcArg) == 2 )
-        %         % Assume we have a boundary condition is of the form
-        %         % @(x,u) a*u +b*diff(u) + c*diff(u,2) + d*diff(u,3) + f(x), where a and b are constants.
+        % Assume we have a boundary condition is of the form
+        % @(x,u) a*u +b*diff(u) + c*diff(u,2) + d*diff(u,3) + f(x), where a and b are constants.
         x = chebfun(@(x) x,dom);
         f = bcArg(x,0*x);
         if ( isa( f, 'chebmatrix' ) ) 
@@ -35,7 +35,7 @@ elseif ( isa(bcArg,'function_handle') )
         end 
         
         bcvalue = zeros(een , nf);
-        %         % Do we have bcs with derivatives in them.
+        % Do we have bcs with derivatives in them.
         try
             fcell = bcArg(chebfun2(0,[dom,dom]),chebfun2(@(x,y) x.*y,[dom,dom]));
         catch
@@ -44,7 +44,7 @@ elseif ( isa(bcArg,'function_handle') )
                 fcell{jj} = diff(gg,jj-1);
             end
         end
-%         fcell = bcArg(chebfun(0,dom),chebfun(dom,dom));
+ %         fcell = bcArg(chebfun(0,dom),chebfun(dom,dom));
         cc = ones(1,nf);
         for jj = 1:nf
             if isa(fcell,'cell')

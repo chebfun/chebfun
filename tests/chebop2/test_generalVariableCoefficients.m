@@ -7,6 +7,8 @@ if ( nargin < 1 )
 end 
 tol = prefs.cheb2Prefs.eps; 
 
+error
+
 x = chebfun2(@(x,y) x); y = chebfun2(@(x,y) y); 
 m = cos(x.*y);
 exact = chebfun2(@(x,y) sin(5*x.*y)); 

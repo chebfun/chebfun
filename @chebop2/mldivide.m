@@ -163,14 +163,14 @@ function X = denseSolve(N,f,m,n)
 %  DENSESOLVE(N,F,M,N), returns a solution matrix of values on a M by N
 %  Chebyshev grid.
 
-[CC,RHS,bb,gg,Px,Py,xsplit,ysplit] = constructDiscretisation(N,f,m,n); % Construct discretisation.
+[CC,RHS,bb,gg,Px,Py,xsplit,ysplit] = chebop2.constructDiscretisation(N,f,m,n); % Construct discretisation.
 
 if ( size(CC,1) == 1 )  % rank-1 PDE operator.
     A = CC{1,1}; B = CC{1,2};
     Y = A \ RHS ;
     X = ( B \ Y.').';
     
-    X = ImposeBoundaryConditions(X,bb,gg,Px,Py,m,n);
+    X = chebop2.ImposeBoundaryConditions(X,bb,gg,Px,Py,m,n);
     
 elseif ( size(CC,1) == 2 )% rank-2 PDE operator.
     

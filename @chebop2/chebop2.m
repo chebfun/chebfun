@@ -56,6 +56,7 @@ classdef chebop2
         [bcrow,bcvalue]=constructbc(bcArg,bcpos,een,bcn,dom,scl,order);
         deriv= chebfun2deriv( op );
         a = truncate(a,tol);
+        [CC,rhs,bb,gg,Px,Py,xsplit,ysplit]=constructDiscretisation(N,f,m,n,flag)
     end
 end
 

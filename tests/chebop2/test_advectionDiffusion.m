@@ -6,6 +6,8 @@ if ( nargin < 1 )
 end 
 tol = 1e10*prefs.cheb2Prefs.eps; 
 
+error
+
 % Advection-diffusion 1
 N = chebop2(@(u) diff(u,1,1) - .1*diff(u,2,2) - diff(u,1,2), [-2.5 3 0 6]); 
 N.dbc = chebfun(@(x) sin(pi*x), [-2.5 3]); 

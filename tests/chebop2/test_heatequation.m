@@ -7,6 +7,8 @@ if ( nargin < 1 )
 end 
 tol = 1e10*prefs.cheb2Prefs.eps; 
 
+error
+
 % Solution to heat equation should not depend on the time interval. 
 d = [-1 1 0 1]; k = 1; 
 N = chebop2(@(u) diff(u,1,1) - k*diff(u,2,2), d);

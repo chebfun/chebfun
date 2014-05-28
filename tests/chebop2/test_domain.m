@@ -17,8 +17,8 @@ N.lbc = 0;
 
 u = N \ 0; 
 
-pass(1) = ( norm( u(:,d(3)) - N.dbc ) < tol); 
-pass(2) = ( norm( u(:,d(4)) - N.ubc ) < tol); 
+pass(1) = ( norm( u(:,d(3)) - N.dbc.' ) < tol); 
+pass(2) = ( norm( u(:,d(4)) - N.ubc.' ) < tol); 
 pass(3) = ( norm( u(d(1),:) - N.lbc ) < tol); 
 pass(4) = ( norm( u(d(2),:) - N.rbc ) < tol); 
 
@@ -33,8 +33,8 @@ N.lbc = 0;
 
 u = N \ 0; 
 
-pass(5) = ( norm( u(:,d(3)) - N.dbc ) < tol);  
-pass(6) = ( norm( u(:,d(4)) - N.ubc ) < tol); 
+pass(5) = ( norm( u(:,d(3)) - N.dbc.' ) < tol);  
+pass(6) = ( norm( u(:,d(4)) - N.ubc.' ) < tol); 
 pass(7) = ( norm( u(d(1),:) - N.lbc ) < tol); 
 pass(8) = ( norm( u(d(2),:) - N.rbc ) < tol);
 
@@ -45,6 +45,6 @@ bdy = @(x,y) real(exp(x+1i*y));
 N.lbc = @(y) bdy(d(1),y); N.rbc = @(y) bdy(d(2),y); 
 N.dbc = @(x) bdy(x,d(3)); N.ubc = @(x) bdy(x,d(4)); 
 u = N \ 0; exact = chebfun2(bdy, d);
-pass(9) = ( norm( exact - u ) < tol );
+pass(9) = ( norm( exact - u ) < 100*tol );
 
 end

@@ -6,6 +6,8 @@ if ( nargin < 1 )
 end 
 tol = prefs.cheb2Prefs.eps; 
 
+error 
+
 % w > V
 V = 1;  %potential function 
 w = 2;  % frequency

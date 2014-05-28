@@ -105,11 +105,11 @@ end
 % Evaluate N.op. The output will be the ADCHEBFUN NU. In case of systems, NU
 % will be an array-valued ADCHEBFUN.
 Nu = feval(N, x, u{:}); % N.op(x, u{:});
-if ( size(Nu, 1) < size(Nu, 2) )
-    warning('CHEBFUN:chebop:linearize:vertcatop', ...
-        ['N.op should return a column vector.\n', ...
-        'Row vectors are deprecated and may not be supported in future releases.'])
-end
+% if ( size(Nu, 1) < size(Nu, 2) )
+%     warning('CHEBFUN:chebop:linearize:vertcatop', ...
+%         ['N.op should return a column vector.\n', ...
+%         'Row vectors are deprecated and may not be supported in future releases.'])
+% end
 
 % Construct a LINOP L by vertically concatenating the derivatives stored in NU.
 L = linop(vertcat(get(Nu, 'jacobian')));

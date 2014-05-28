@@ -7,6 +7,8 @@ if ( nargin < 1 )
 end 
 tol = 100*prefs.cheb2Prefs.eps; 
 
+error 
+
 %%
 % First example. 
 d = [0 10 0 10]; 
