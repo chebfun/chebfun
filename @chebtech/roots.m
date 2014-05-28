@@ -157,6 +157,43 @@ c = flipud(f.coeffs)/f.vscale;
 % Call the recursive rootsunit function:
 r = rootsunit_coeffs(c, 100*eps*max(f.hscale, 1));
 
+% Try to filter out spurious roots that may arise near +/- 1 if the function
+% decays to zero there.
+numRoots = length(r);
+mask = false(length(r), 1);
+
+if ( abs(feval(f, -1)) < f.vscale*f.epslevel )
+    for n = 1:1:numRoots
+        if ( abs(r(n) + 1) < length(f)*eps )
+            continue;
+        end
+
+        testGrid = linspace(-1, r(n), length(f));
+        if ( norm(feval(f, testGrid), Inf) < f.vscale*f.epslevel )
+            mask(n) = true;
+        else
+            break;
+        end
+    end
+end
+
+if ( abs(feval(f, 1)) < f.vscale*f.epslevel )
+    for n = numRoots:-1:1
+        if ( abs(r(n) - 1) < length(f)*eps )
+            continue;
+        end
+
+        testGrid = linspace(r(n), 1, length(f));
+        if ( norm(feval(f, testGrid), Inf) < f.vscale*f.epslevel )
+            mask(n) = true;
+        else
+            break;
+        end
+    end
+end
+
+r(mask) = [];
+
 % Prune the roots, if required:
 if ( rootsPref.prune && ~rootsPref.recurse )
     rho = sqrt(eps)^(-1/length(f));
