@@ -9,15 +9,15 @@ tol = prefs.cheb2Prefs.eps;
 
 % simple case. 
 N = chebop2(@(u) diffx(u,2) + diffy(u,2));
-pass(1) = ( norm( cell2mat(N.coeffs) - [0 0 1; 0 0 0; 1 0 0]) < tol );
+pass(1) = ( norm( N.coeffs - [0 0 1; 0 0 0; 1 0 0]) < tol );
 
 % Helmoltz 
 N = chebop2(@(u) diffx(u,2) + diffy(u,2) + pi*u);
-pass(2) = ( norm( cell2mat(N.coeffs) - [pi 0 1; 0 0 0; 1 0 0]) < tol );
+pass(2) = ( norm( N.coeffs - [pi 0 1; 0 0 0; 1 0 0]) < tol );
 
 % Higher order 
 N = chebop2(@(u) diffx(u,3) + diffx(diffy(u,1),2) + diffy(u,2) + pi*u);
-pass(3) = ( norm( cell2mat(N.coeffs) - [pi 0 0 1; 0 0 1 0; 1 0 0 0]) < tol );
+pass(3) = ( norm( N.coeffs - [pi 0 1; 0 0 0; 0 1 0; 1 0 0]) < tol );
 
 % Variable coefficients on zero derivatives.
 x = chebfun2(@(x,y) x); 
