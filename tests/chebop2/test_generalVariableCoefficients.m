@@ -1,9 +1,11 @@
-function pass = chebop2_generalVariableCoefficients
+function pass = test_generalVariableCoefficients( prefs )
 % Check that we are solving general variable coefficient PDEs correctly. 
 % Alex Townsend, August 2013. 
 
-j = 1; 
-tol = chebfun2pref('eps');
+if ( nargin < 1 ) 
+    prefs = chebfunpref(); 
+end 
+tol = prefs.cheb2Prefs.eps; 
 
 x = chebfun2(@(x,y) x); y = chebfun2(@(x,y) y); 
 m = cos(x.*y);
@@ -12,7 +14,7 @@ N = chebop2(@(x,y,u) diff(u,2,2) - m.*diff(u,2,1));
 N.lbc = exact(-1,:); N.rbc = exact(1,:); 
 N.dbc = exact(:,-1); N.ubc = exact(:,1); 
 u = N \ (diff(exact,2,2) - m.*diff(exact,2,1));
-pass(j) = ( norm(u - exact) < tol ); j = j + 1; 
+pass(1) = ( norm(u - exact) < tol );
 
 
 m = exp(-x).*y + y.^2;
@@ -21,7 +23,7 @@ N = chebop2(@(x,y,u) diff(u,2,2) - m.*diff(u,2,1));
 N.lbc = exact(-1,:); N.rbc = exact(1,:); 
 N.dbc = exact(:,-1); N.ubc = exact(:,1); 
 u = N \ (diff(exact,2,2) - m.*diff(exact,2,1));
-pass(j) = ( norm(u - exact) < tol ); j = j + 1; 
+pass(2) = ( norm(u - exact) < tol ); 
 
 
 m1 = exp(-x).*y + y.^2; m2 = cos(x) + sin(y) + x.*y;
@@ -30,7 +32,7 @@ N = chebop2(@(x,y,u) m1.*diff(u,2,2) - m2.*diff(u,2,1));
 N.lbc = exact(-1,:); N.rbc = exact(1,:); 
 N.dbc = exact(:,-1); N.ubc = exact(:,1); 
 u = N \ (m1.*diff(exact,2,2) - m2.*diff(exact,2,1));
-pass(j) = ( norm(u - exact) < tol ); j = j + 1; 
+pass(3) = ( norm(u - exact) < tol ); 
 
 
 m1 = exp(-x).*y + y.^2; m2 = cos(x) + sin(y) + x.*y;
@@ -39,7 +41,7 @@ N = chebop2(@(x,y,u) m1.*diff(u,2,2) - m2.*diff(u,2,1));
 N.lbc = exact(-1,:); N.rbc = exact(1,:); 
 N.dbc = exact(:,-1); N.ubc = exact(:,1); 
 u = N \ (m1.*diff(exact,2,2) - m2.*diff(exact,2,1));
-pass(j) = ( norm(u - exact) < tol ); j = j + 1; 
+pass(4) = ( norm(u - exact) < tol ); 
 
 d = [-2 2 -2 2];
 x = chebfun2(@(x,y) x, d); y = chebfun2(@(x,y) y, d); 
@@ -49,7 +51,7 @@ N = chebop2(@(x,y,u) diff(u,2,2) - m.*diff(u,2,1), d);
 N.lbc = exact(d(1),:); N.rbc = exact(d(2),:); 
 N.dbc = exact(:,d(3)); N.ubc = exact(:,d(4)); 
 u = N \ (diff(exact,2,2) - m.*diff(exact,2,1));
-pass(j) = ( norm(u - exact) < tol ); j = j + 1; 
+pass(5) = ( norm(u - exact) < tol ); 
 
 d = [-2 0 -4.1 pi];
 x = chebfun2(@(x,y) x, d); y = chebfun2(@(x,y) y, d); 
@@ -59,7 +61,7 @@ N = chebop2(@(x,y,u) diff(u,2,2) - m.*diff(u,2,1), d);
 N.lbc = exact(d(1),:); N.rbc = exact(d(2),:); 
 N.dbc = exact(:,d(3)); N.ubc = exact(:,d(4)); 
 u = N \ (diff(exact,2,2) - m.*diff(exact,2,1));
-pass(j) = ( norm(u - exact) < tol ); j = j + 1; 
+pass(6) = ( norm(u - exact) < tol ); 
 
 
 end

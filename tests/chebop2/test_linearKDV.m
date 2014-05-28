@@ -1,9 +1,11 @@
-function pass = chebop2_linearKDV
+function pass = test_linearKDV( prefs )
 % Check that we can solve linear KDV equations. 
 % Alex Townsend, April 2013. 
 
-tol = 100*(chebfun2pref('eps'));
-j = 1; 
+if ( nargin < 1 ) 
+    prefs = chebfunpref(); 
+end 
+tol = 100*prefs.cheb2Prefs.eps; 
 
 % Simple example. 
 d = [-1 1 0 1];
@@ -15,7 +17,7 @@ N.rbc = @(t,u) [u - exp(-t).*exp(1) diff(u)-exp(-t).*exp(1)];
 N.lbc = @(t) exp(-t).*exp(-1);
 u = N \ 0;
  
-pass(j) = ( norm(u-exact) < tol); j = j + 1; 
+pass(1) = ( norm(u-exact) < tol); 
 
 
 % Another simple example. 
@@ -28,7 +30,7 @@ N.rbc = @(t,u) [u - exp(-t).*exp(1) diff(u)-exp(-t).*exp(1)];
 N.lbc = @(t,u) diff(u) - exp(-t).*exp(-1);
 u = N \ 0;
  
-pass(j) = ( norm(u-exact) < tol); j = j + 1; 
+pass(2) = ( norm(u-exact) < tol); 
 
 % Different boundary conditions. 
 d = [-1 1 0 1];
@@ -40,7 +42,7 @@ N.rbc = @(t,u) [u - exp(-t).*exp(1) diff(u,2)-exp(-t).*exp(1)];
 N.lbc = @(t,u) diff(u) - exp(-t).*exp(-1);
 u = N \ 0;
  
-pass(j) = ( norm(u-exact) < tol); j = j + 1; 
+pass(3) = ( norm(u-exact) < tol);
 
 % Different boundary conditions. 
 d = [-1 1 0 1];
@@ -52,5 +54,5 @@ N.rbc = @(t,u) [u - exp(-t).*exp(1) diff(u,2)-exp(-t).*exp(1)];
 N.lbc = @(t,u) u - exp(-t).*exp(-1);
 u = N \ 0;
  
-pass(j) = ( norm(u-exact) < tol); j = j + 1; 
+pass(4) = ( norm(u-exact) < tol); 
 

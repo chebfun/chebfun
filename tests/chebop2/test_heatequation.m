@@ -1,8 +1,11 @@
-function pass = chebop2_heatequation
+function pass = test_heatequation( prefs ) 
 % Check that the solver can do heat equation. 
 % Alex Townsend, March 2013. 
 
-tol = 1e10*chebfun2pref('eps'); j = 1; 
+if ( nargin < 1 ) 
+    prefs = chebfunpref(); 
+end 
+tol = 1e10*prefs.cheb2Prefs.eps; 
 
 % Solution to heat equation should not depend on the time interval. 
 d = [-1 1 0 1]; k = 1; 
@@ -21,7 +24,7 @@ y = chebpts(100,d(3:4));
 [xx, yy] = meshgrid(x,y); 
 
 % res = v{d(1),d(2),d(3),d(4)}; 
-pass(j) = ( norm( u(xx,yy) - v(xx,yy), inf) < 100*tol ); j = j + 1;
+pass(1) = ( norm( u(xx,yy) - v(xx,yy), inf) < 100*tol ); 
 
 
 % Do we agree with pde15s on a simple example? 
@@ -44,7 +47,7 @@ N.dbc = f(:,0); N.lbc = 0; N.rbc = 0;
 u = N \ 0;
 
 
-pass(j) = ( norm(uu(:,end) - u(:,1)) < tol ); j = j + 1; 
+pass(2) = ( norm(uu(:,end) - u(:,1)) < tol ); 
 
 
 % Do we agree with pde15s on another simple example? 
@@ -65,7 +68,7 @@ N = chebop2(@(u) diff(u,1,1) - k*diff(u,2,2), d);
 N.dbc = f(:,0); N.lbc = 0; N.rbc = 0; 
 u = N \ 0;
 
-pass(j) = ( norm(uu(:,end) - u(:,1)) < tol ); j = j + 1; 
+pass(3) = ( norm(uu(:,end) - u(:,1)) < tol ); 
 
 
 
@@ -87,6 +90,6 @@ N = chebop2(@(u) diff(u,1,1) - k*diff(u,2,2), d);
 N.dbc = f(:,0); N.lbc = 0; N.rbc = 0; 
 u = N \ 0;
 
-pass(j) = ( norm(uu(:,end) - u(:,1)) < tol ); j = j + 1; 
+pass(4) = ( norm(uu(:,end) - u(:,1)) < tol );
 
 end

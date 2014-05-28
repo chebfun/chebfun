@@ -1,9 +1,11 @@
-function pass = chebop2_helmholtz
+function pass = test_helmholtz( prefs )
 % Check that the solver works for Helmholtz equation
 % Alex Townsend, March 2013. 
 
-tol = chebfun2pref('eps');
-j = 1; 
+if ( nargin < 1 ) 
+    prefs = chebfunpref(); 
+end 
+tol = prefs.cheb2Prefs.eps; 
 
 % on [-1,1]x[-1,1]: 
 mu1 = 3/pi; mu2 = pi/6; lam = mu1^2 + mu2^2; 
@@ -19,7 +21,7 @@ N.dbc = @(x) xbc(x).*ybc(-1);
 u = N \ 0; 
 exact = chebfun2(@(x,y) xbc(x).*ybc(y)); 
 
-pass(j) = ( norm(u - exact) < 100*tol ); j = j + 1;
+pass(1) = ( norm(u - exact) < 100*tol );
 
 % on rectangular domain 
 mu1 = 1; mu2 = 2; lam = mu1^2 + mu2^2; 
@@ -36,7 +38,7 @@ N.ubc = @(x) xbc(x).*ybc(d(4));
 u = N \ 0; 
 exact = chebfun2(@(x,y) xbc(x).*ybc(y), d); 
 
-pass(j) = ( norm(u - exact) < 100*tol ); j = j + 1;
+pass(2) = ( norm(u - exact) < 300*tol );
 
 
 % High frequency on rectangular domain 
@@ -56,8 +58,8 @@ exact = chebfun2(@(x,y) xbc(x).*ybc(y), d);
 
 x = chebpts(100,d(1:2));
 y = chebpts(100,d(3:4)); 
-[xx yy]=meshgrid(x,y); 
-pass(j) = ( norm(u(xx,yy) - exact(xx,yy),inf) < 1e9*tol ); j = j + 1;
+[xx, yy]=meshgrid(x,y); 
+pass(3) = ( norm(u(xx,yy) - exact(xx,yy),inf) < 1e9*tol );
 
 
 % Higher frequency on rectangular domain 
@@ -77,8 +79,8 @@ exact = chebfun2(@(x,y) xbc(x).*ybc(y), d);
 
 x = chebpts(100,d(1:2));
 y = chebpts(100,d(3:4)); 
-[xx,yy]=meshgrid(x,y); 
-pass(j) = ( norm(u(xx,yy) - exact(xx,yy),inf) < 1e9*tol ); j = j + 1;
+[xx, yy]=meshgrid(x,y); 
+pass(4) = ( norm(u(xx,yy) - exact(xx,yy),inf) < 1e9*tol );
 
 % %%
 % a = .5; k = 1; d = [a 1 0 2*pi];

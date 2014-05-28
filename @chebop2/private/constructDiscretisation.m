@@ -48,7 +48,7 @@ if (  isempty(N.V) || isempty(N.U) )
             for kk = 1:size(A,2)
                 a = A{jj,kk};
                 if isa(a,'chebfun2')
-                    if abs(a.scl) > tol
+                    if abs(a.pivotValues(1)) > tol
                         [C,D,R] = cdr(a);
                         for col = 1:size(C,2)
                             U{jj,counter} = C(:,col)*D(col,col);
@@ -237,7 +237,7 @@ function B = UnconstrainedMatrixEquation(ODE, jj, n, order, dom)
 B = spalloc(n,n,3*n);
 for kk = 1:size(ODE,1)
     if iscell(ODE(kk,jj)) && isa(ODE{kk,jj},'chebfun')
-        c = ODE{kk,jj}.coeffs; c = c(end:-1:1);
+        c = ODE{kk,jj}.coeffs{:}; c = c(end:-1:1);
         A = spconvermat(n, kk-1, order-kk+1) * MultMat(c, n, kk-1) * spdiffmat(n, kk-1, dom);
     elseif iscell(ODE(kk,jj)) && ~isempty(ODE{kk,jj})
         A = ODE{kk,jj}.*spconvermat(n, kk-1, order-kk+1) * spdiffmat(n, kk-1, dom);
