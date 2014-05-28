@@ -44,6 +44,35 @@ else                            % CHEBFUN2 + CHEBFUN2
         h = compression_plus(f, g);
         %h = chebfun2(@(x, y) feval(f, x, y) + feval(g, x, y), f.domain); 
     end 
+    
+    
+    % Add the derivatives. Need to make sure they have the correct dimensions.
+    fderiv = f.deriv;
+    gderiv = g.deriv;
+    
+    % Obtain the dimensions of the derivatives of the inputs.
+    [mf, nf] = size(fderiv);
+    [mg, ng] = size(gderiv);
+    
+    % The final derivative will have the dimensions corresponding to the maximum
+    % dimensions of the input derivatives. We create an all zero matrix of that
+    % dimensions, then add the old derivative information to the bottom right of
+    % that matrix
+    newDeriv = zeros(max(mf,mg),max(nf,ng));
+    fderivNew = newDeriv;
+    gderivNew = newDeriv;
+    
+    % Replace entries of the matrices of the correct size with information from
+    % the input variables.
+    fderivNew(end-mf+1:end,end-nf+1:end) = fderiv;
+    gderivNew(end-mg+1:end,end-ng+1:end) = gderiv;
+    
+    % Add the two derivative matrices together, and assign to the deriv field of
+    % the output variable.
+    h.deriv = fderivNew + gderivNew;
+    
+    
+    
 end
 
 end
