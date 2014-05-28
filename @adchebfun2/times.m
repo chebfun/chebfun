@@ -1,4 +1,4 @@
-function f=times(f,g)
+function f = times(f,g)
 % .*   Chebfun2 multiplication.
 % 
 % F.*G multiplies chebfun2 objects F and G.  Alternatively F or G could be
@@ -20,13 +20,13 @@ if ( isa(f,'double') || isa(g,'double') )
 % ADCHEBFUN2*CHEBFUN2 or CHEBFUN2*ADCHEBFUN2 does not need complicated
 % derivative computation, as a CHEBFUN2 does not have any derivative
 % information, and can just be treated like a constant
-elseif ( isa(f,'ADchebfun2') && isa(g,'chebfun2') ) 
+elseif ( isa(f,'adchebfun2') && isa(g,'chebfun2') ) 
 
     f.chebfun2 = f.chebfun2.*g;
     
     f.der = f.der*g;
 
-elseif ( isa(f,'chebfun2') && isa(g,'ADchebfun2') )
+elseif ( isa(f,'chebfun2') && isa(g,'adchebfun2') )
     
     g.chebfun2 = f.*g.chebfun2;
     
