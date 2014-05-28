@@ -9,8 +9,6 @@ if ( nargin < 1 )
 end 
 tol = 100*prefs.cheb2Prefs.eps; 
 
-error 
-
 %%  Standard wave equation on a non-square domain. 
 
 d = [-pi pi 0 1]; 
@@ -20,7 +18,7 @@ N.lbc = @(t) sin(-pi+t);
 N.rbc = @(t) sin(pi+t);
 N.dbc = @(x,u) [u - sin(x) diff(u) - cos(x)];
 u = N \ 0;
-pass(1) = (abs( norm(u - exact)) < tol); 
+pass(1) = ( norm(u - exact) < tol); 
 
 %% Another standard example on a non-square domain. 
 
@@ -53,8 +51,7 @@ N.lbc = @(t) sin(-2*pi+c*t);
 N.rbc = @(t) sin(2*pi+c*t);
 N.dbc = @(x,u) [u - sin(x) diff(u) - c*cos(x)];
 u = N \ 0;
-[xx,yy] = meshgrid(linspace(d(1),d(2)),linspace(d(3),d(4)));
-pass(4) = ( norm(u(xx,yy) - exact(xx,yy), inf) < 1e5*tol);
+pass(4) = ( norm(u - exact) < 5e3*tol);
 
 %% Working for non-zero starting time. 
 d = [-2*pi 2*pi 1 2]; c = 3; 
@@ -64,6 +61,6 @@ N.lbc = @(t) sin(-2*pi+c*t);
 N.rbc = @(t) sin(2*pi+c*t);
 N.dbc = @(x,u) [u - sin(c+x) diff(u) - c*cos(x+c)];
 u = N \ 0;
-pass(5) = ( norm(u - exact) < tol);
+pass(5) = ( norm(u - exact) < 20*tol);
 
 end

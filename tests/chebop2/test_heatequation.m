@@ -7,8 +7,6 @@ if ( nargin < 1 )
 end 
 tol = 1e10*prefs.cheb2Prefs.eps; 
 
-error
-
 % Solution to heat equation should not depend on the time interval. 
 d = [-1 1 0 1]; k = 1; 
 N = chebop2(@(u) diff(u,1,1) - k*diff(u,2,2), d);
@@ -26,20 +24,18 @@ y = chebpts(100,d(3:4));
 [xx, yy] = meshgrid(x,y); 
 
 % res = v{d(1),d(2),d(3),d(4)}; 
-pass(1) = ( norm( u(xx,yy) - v(xx,yy), inf) < 100*tol ); 
+pass(1) = ( norm( u(xx,yy) - v(xx,yy), inf) < 200*tol ); 
 
 
 % Do we agree with pde15s on a simple example? 
-d = domain(-1,1);
 k = 2;  
 f = chebfun2(@(x,t) exp(-40*x.^2),[-1 1 0 1]);
 
 % chebfun/pde15s
-I = eye(d);
-bc.left = struct('op',{I},'val',{0});
-bc.right = struct('op',{I},'val',{0});
+bc.left = 0;
+bc.right = 0;
 opts = pdeset('plot','off');
-uu = pde15s(@(u,t,x,diff) k*diff(u,2),0:.1:1,f(:,0),bc,opts);
+uu = pde15s(@(x,t,u) k*diff(u,2),0:.1:1,f(:,0),bc,opts);
 
 
 % chebop2 
@@ -49,7 +45,7 @@ N.dbc = f(:,0); N.lbc = 0; N.rbc = 0;
 u = N \ 0;
 
 
-pass(2) = ( norm(uu(:,end) - u(:,1)) < tol ); 
+pass(2) = ( norm(uu(:,end) - u(:,1).') < tol ); 
 
 
 % Do we agree with pde15s on another simple example? 
@@ -59,18 +55,17 @@ k = pi;
 f = chebfun2(@(x,t) exp(-40*x.^2),d);
 
 % chebfun/pde15s
-I = eye(domain(d(1),d(2)));
-bc.left = struct('op',{I},'val',{0});
-bc.right = struct('op',{I},'val',{0});
+bc.left = 0;
+bc.right = 0;
 opts = pdeset('plot','off');
-uu = pde15s(@(u,t,x,diff) k*diff(u,2),0:.1:1,f(:,0),bc,opts);
+uu = pde15s(@(x,t,u) k*diff(u,2),0:.1:1,f(:,0),bc,opts);
 
 % chebop2 
 N = chebop2(@(u) diff(u,1,1) - k*diff(u,2,2), d);
 N.dbc = f(:,0); N.lbc = 0; N.rbc = 0; 
 u = N \ 0;
 
-pass(3) = ( norm(uu(:,end) - u(:,1)) < tol ); 
+pass(3) = ( norm(uu(:,end) - u(:,1).') < tol ); 
 
 
 
@@ -81,17 +76,16 @@ k = 1;
 f = chebfun2(@(x,t) exp(-40*x.^2),d);
 
 % chebfun/pde15s
-I = eye(domain(d(1),d(2)));
-bc.left = struct('op',{I},'val',{0});
-bc.right = struct('op',{I},'val',{0});
+bc.left = 0;
+bc.right = 0;
 opts = pdeset('plot','off');
-uu = pde15s(@(u,t,x,diff) k*diff(u,2),0:.1:1,f(:,0),bc,opts);
+uu = pde15s(@(x,t,u) k*diff(u,2),0:.1:1,f(:,0),bc,opts);
 
 % chebop2 
 N = chebop2(@(u) diff(u,1,1) - k*diff(u,2,2), d);
 N.dbc = f(:,0); N.lbc = 0; N.rbc = 0; 
 u = N \ 0;
 
-pass(4) = ( norm(uu(:,end) - u(:,1)) < tol );
+pass(4) = ( norm(uu(:,end) - u(:,1).') < tol );
 
 end

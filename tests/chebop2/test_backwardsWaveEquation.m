@@ -2,13 +2,10 @@ function pass = test_backwardsWaveEquation( prefs )
 % Check that the backwards wave equation is working. 
 % Alex Townsend, August 2013. 
 
-
 if ( nargin < 1 ) 
     prefs = chebfunpref(); 
 end 
-tol = prefs.cheb2Prefs.eps; 
-
-error
+tol = 100*prefs.cheb2Prefs.eps; 
 
 %%
 

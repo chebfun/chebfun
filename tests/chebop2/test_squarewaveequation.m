@@ -7,8 +7,6 @@ if ( nargin < 1 )
 end 
 tol = 100*prefs.cheb2Prefs.eps; 
 
-error 
-
 %%
 % First example. 
 d = [0 10 0 10]; 
@@ -19,7 +17,7 @@ N.rbc = @(t) sin(10+t) + sin(10-t);
 N.dbc = @(x,u) [u - 2*sin(x) diff(u)];
 u = N \ 0;
 
-pass(1) = ( norm(u - exact) < tol ); 
+pass(1) = ( norm(u - exact) < 50*tol ); 
 
 %%
 d = [0 1 0 1]; 
