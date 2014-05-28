@@ -15,7 +15,7 @@ rect = N.domain; f = chebfun2(f, rect);
 
 prefs = chebfunpref(); 
 tol = max(prefs.cheb2Prefs.eps,1e-14); 
-maxDiscretise = prefs.cheb2Prefs.maxRank;
+maxDiscretise = 4*prefs.cheb2Prefs.maxRank;
 minsample = 9; 
 
 if ( nargin == 3 && isa(varargin{1},'double') )
@@ -48,7 +48,7 @@ elseif ( nargin == 4 && isa(varargin{1},'double') && ~isinf(varargin{1})...
         
         if ( ~Resolved )                       % Resolved in vertical direction?
             clcfs = max(abs(X(:,end:-1:end-8)));
-            Resolved = all( ( clcfs < 10*n*tol ) );
+            Resolved = all( ( clcfs < 20*n*tol ) );
             n = 2^(floor(log2(n))+1)+1;
         end
         if ( min(m,n) > 250 ), tol = max(tol,1e-10); end % Increase tolerance on large grids.
@@ -83,7 +83,7 @@ elseif ( nargin == 4 && isa(varargin{2},'double') && ~isinf(varargin{2})...
         
         if ( ~Resolved )                             % Resolved in x-direction
             rwcfs = max(abs(X(end:-1:end-8,:)));
-            Resolved = all( ( rwcfs < 10*m*tol ) );
+            Resolved = all( ( rwcfs < 20*m*tol ) );
             m = 2^(floor(log2(m))+1)+1;
         end
         if ( min(m,n) > 250 ), tol = max(tol,1e-10); end % Increase tolerance on large grids.
@@ -115,12 +115,12 @@ elseif ( nargin == 2 || (nargin == 4 && isinf(varargin{2}) && isinf(varargin{1})
         
         if ( ~Resolved_y )                             % Resolved in y-direction
             clcfs = max(abs(X(:,end:-1:end-8)));
-            Resolved_y = all( ( clcfs < 10*m*tol ) );
+            Resolved_y = all( ( clcfs < 20*m*tol ) );
             m = 2^(floor(log2(m))+1)+1;
         end
         if ( ~Resolved_x )                             % Resolved in x-direction
             rwcfs = max(abs(X(end:-1:end-8,:)));
-            Resolved_x = all( ( rwcfs < 10*n*tol ) );
+            Resolved_x = all( ( rwcfs < 20*n*tol ) );
             n = 2^(floor(log2(n))+1)+1;
         end
         if ( min(m,n) > 250 ), tol = max(tol,1e-10); end % Increase tolerance on large grids.
