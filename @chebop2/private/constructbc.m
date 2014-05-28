@@ -16,7 +16,7 @@ if ( isa(bcArg,'chebfun') )
         % boundary of the domain.
         bcrow = cos((0:bcn-1)*acos(bcpos));
     end
-    bcvalue = resize(flipud(bcArg.coeffs),een);
+    bcvalue = resize(flipud(bcArg.coeffs{:}),een);
 elseif ( isa(bcArg,'function_handle') )
     
     if (nargin(bcArg) == 1)

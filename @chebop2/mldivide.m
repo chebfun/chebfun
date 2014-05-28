@@ -277,9 +277,9 @@ function c = polyval(c)
 % Convert bivariate chebyshev coeffs to values on a Chebyshev grid.
 [sy, sx] = size(c);
 for j = 1:sx
-    c(:,j) = chebpolyval(c(:,j));
+    c(:,j) = chebtech2.coeffs2vals(c(:,j));
 end
 for k = 1:sy
-    c(k,:) = chebpolyval(c(k,:).').';
+    c(k,:) = chebtech2.coeffs2vals(c(k,:).').';
 end
 end

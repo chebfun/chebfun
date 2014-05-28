@@ -30,7 +30,8 @@ end
 % Get information of PDE and prefs
 A = N.coeffs;
 rect = N.domain;
-tol = chebfun2pref('eps');
+prefs = chebfunpref(); 
+tol = prefs.cheb2Prefs.eps; 
 xorder = N.xorder;
 yorder = N.yorder;
 
