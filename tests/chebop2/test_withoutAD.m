@@ -1,9 +1,11 @@
-function pass = chebop2_withoutAD
+function pass = test_withoutAD( prefs )
 % Try the solvers when the user supplies the AD information and low rank
 % representation. 
 
-j = 1; 
-tol = 100*chebfun2pref('eps'); 
+if ( nargin < 1 ) 
+    prefs = chebfunpref(); 
+end 
+tol = 100*prefs.cheb2Prefs.eps; 
 
 % Try Helmoltz:
 N = chebop2;
@@ -23,7 +25,7 @@ exact = N \ 0;
 x = linspace(-1,1,1000); 
 [xx,yy] = meshgrid(x); 
 A = abs(u(xx,yy) - exact(xx,yy));
-pass(j) = ( max(max( A ) ) < 10000*tol ); j = j+1; 
+pass(1) = ( max(max( A ) ) < 10000*tol );
 
 % Try variable coefficients:
 x = chebfun(@(x) x);
@@ -42,7 +44,7 @@ u = N \ 0;
 x = linspace(-1,1,1000); 
 [xx,yy] = meshgrid(x); 
 A = abs(u(xx,yy) - exact(xx,yy));
-pass(j) = ( max(max( A ) ) < tol ); j = j+1; 
+pass(2) = ( max(max( A ) ) < tol ); 
 
 
 end

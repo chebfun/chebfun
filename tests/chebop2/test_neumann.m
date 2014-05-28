@@ -1,9 +1,11 @@
-function pass = chebop2_Neumann
+function pass = test_neumann( prefs )
 % Check that we can impose Neumann boundary conditions. 
 % Alex Townsend, March 2013. 
 
-tol = 100*chebfun2pref('eps');
-j = 1;
+if ( nargin < 1 ) 
+    prefs = chebfunpref(); 
+end 
+tol = 100*prefs.cheb2Prefs.eps; 
 
 d = [-2 3 -1 1];
 N = chebop2(@(u) lap(u), d); 
@@ -16,11 +18,11 @@ u = N \ 0;
 
 x = chebfun('x', d(1:2));
 uy = diff(u,1,1);
-pass(j) = ( norm(u(:,d(4)) - N.ubc) < tol ); j = j + 1;
-pass(j) = ( norm(u(d(2),:) - N.rbc) < tol ); j = j + 1;
-pass(j) = ( norm(uy(:,d(3))-((x-d(1))/(d(2)-d(1))+1)) < tol ); j = j + 1;
-pass(j) = ( norm(u(d(1),:) - N.lbc) < tol ); j = j + 1;
-pass(j) = ( norm(lap(u)) < 10*tol ); j = j + 1;
+pass(1) = ( norm(u(:,d(4)) - N.ubc) < tol ); 
+pass(2) = ( norm(u(d(2),:) - N.rbc) < tol ); 
+pass(3) = ( norm(uy(:,d(3))-((x-d(1))/(d(2)-d(1))+1)) < tol );
+pass(4) = ( norm(u(d(1),:) - N.lbc) < tol );
+pass(5) = ( norm(lap(u)) < 10*tol );
 
 
 %%

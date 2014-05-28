@@ -1,4 +1,4 @@
-function pass = chebop2_linearSchrodinger
+function pass = test_linearSchrodinger( prefs )
 % Check that we can do simple linear Schrodinger equation. 
 % Alex Townsend, April 2013. 
 % 

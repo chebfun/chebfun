@@ -1,8 +1,10 @@
-function pass = chebop2_schrodinger
+function pass = test_schrodinger( prefs )
 % Check constant coefficient schrodinger equation. 
 
-j = 1; 
-tol = chebfun2pref('eps');
+if ( nargin < 1 ) 
+    prefs = chebfunpref(); 
+end 
+tol = prefs.cheb2Prefs.eps; 
 
 % w > V
 V = 1;  %potential function 
@@ -16,7 +18,7 @@ N.lbc = exact(d(1),:); N.rbc = exact(d(2),:);
 N.dbc = exact(:,d(3));
 u = N \ 0; 
 
-pass(j) = ( norm(u - exact) <tol ); j = j + 1; 
+pass(1) = ( norm(u - exact) <tol ); 
 
 % Superposition
 % w > V
@@ -31,7 +33,7 @@ N.lbc = exact(d(1),:); N.rbc = exact(d(2),:);
 N.dbc = exact(:,d(3));
 u = N \ 0; 
 
-pass(j) = ( norm(u - exact) <tol ); j = j + 1; 
+pass(2) = ( norm(u - exact) <tol ); 
 
 
 % w < V
@@ -47,6 +49,6 @@ N.lbc = exact(d(1),:); N.rbc = exact(d(2),:);
 N.dbc = exact(:,d(3));
 u = N \ 0; 
 
-pass(j) = ( norm(u - exact) <tol ); j = j + 1; 
+pass(3) = ( norm(u - exact) <tol );
 
 end 

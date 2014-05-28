@@ -1,11 +1,13 @@
-function pass = chebop2_waveequation
+function pass = test_waveequation( prefs )
 % Testing the wave equation on a non-square domain.  This tests if the domain is
 % being treated properly and if Neumann boundary conditions are being dealt with
 % correctly. 
 % Alex Townsend, April 2013. 
 
-tol = 100*chebfun2pref('eps');
-j = 1; 
+if ( nargin < 1 ) 
+    prefs = chebfunpref(); 
+end 
+tol = 100*prefs.cheb2Prefs.eps; 
 
 %%  Standard wave equation on a non-square domain. 
 
@@ -16,7 +18,7 @@ N.lbc = @(t) sin(-pi+t);
 N.rbc = @(t) sin(pi+t);
 N.dbc = @(x,u) [u - sin(x) diff(u) - cos(x)];
 u = N \ 0;
-pass(j) = (abs( norm(u - exact)) < tol); j = j + 1; 
+pass(1) = (abs( norm(u - exact)) < tol); 
 
 %% Another standard example on a non-square domain. 
 
@@ -27,7 +29,7 @@ N.lbc = @(t) sin(-pi+t) + sin(-pi -t);
 N.rbc = @(t) sin(pi+t) + sin(pi -t);
 N.dbc = @(x,u) [u - 2*sin(x) diff(u)];
 u = N \ 0;
-pass(j) = (abs( norm(u - exact)) < tol); j = j + 1;
+pass(2) = (abs( norm(u - exact)) < tol); 
 
 %% An example with a different wave speed. 
 
@@ -38,7 +40,7 @@ N.lbc = @(t) sin(-2*pi+c*t) + sin(-2*pi - c*t);
 N.rbc = @(t) sin(2*pi+c*t) + sin(2*pi - c*t);
 N.dbc = @(x,u) [u - 2*sin(x) diff(u)];
 u = N \ 0;
-pass(j) = (abs( norm(u - exact)) < tol); j = j + 1;
+pass(3) = (abs( norm(u - exact)) < tol); 
 
 %% Higher wave speed. 
 
@@ -50,7 +52,7 @@ N.rbc = @(t) sin(2*pi+c*t);
 N.dbc = @(x,u) [u - sin(x) diff(u) - c*cos(x)];
 u = N \ 0;
 [xx,yy] = meshgrid(linspace(d(1),d(2)),linspace(d(3),d(4)));
-pass(j) = ( norm(u(xx,yy) - exact(xx,yy), inf) < 1e5*tol); j = j + 1;
+pass(4) = ( norm(u(xx,yy) - exact(xx,yy), inf) < 1e5*tol);
 
 %% Working for non-zero starting time. 
 d = [-2*pi 2*pi 1 2]; c = 3; 
@@ -60,6 +62,6 @@ N.lbc = @(t) sin(-2*pi+c*t);
 N.rbc = @(t) sin(2*pi+c*t);
 N.dbc = @(x,u) [u - sin(c+x) diff(u) - c*cos(x+c)];
 u = N \ 0;
-pass(j) = (abs( norm(u - exact)) < tol); j = j + 1;
+pass(5) = (abs( norm(u - exact)) < tol);
 
 end

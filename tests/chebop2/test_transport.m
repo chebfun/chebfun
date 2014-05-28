@@ -1,9 +1,11 @@
-function pass = chebop2_transport
+function pass = test_transport( prefs )
 % Testing the transport equation on rectangular domains.
 % Alex Townsend, April 2013. 
 
-tol = 100*chebfun2pref('eps'); 
-j = 1; 
+if ( nargin < 1 ) 
+    prefs = chebfunpref(); 
+end 
+tol = 100*prefs.cheb2Prefs.eps; 
 
 %% Simple example of a transport equation. 
 
@@ -13,7 +15,7 @@ N = chebop2(@(u) diffy(u,1) + diffx(u,1), d);
 N.dbc = @(x) exp(-x);
 N.lbc = @(t) exp(1).*exp(t);
 u = N \ 0;
-pass(j) = ( abs(norm(u - exact) < tol)); j = j + 1; 
+pass(1) = ( abs(norm(u - exact) < tol)); 
 
 %% Simple example on square domain. 
 d = [0,1,0,1];
@@ -22,7 +24,7 @@ N = chebop2(@(u) diffy(u,1) + diffx(u,1), d);
 N.dbc = @(x) exp(-x);
 N.lbc = @(t) exp(t);
 u = N \ 0;
-pass(j) = ( abs(norm(u - exact) < tol)); j = j + 1; 
+pass(2) = ( abs(norm(u - exact) < tol)); 
 
 %% Simple example on square domain. 
 d = [-1,1,0,1];
@@ -31,7 +33,7 @@ N = chebop2(@(u) diffy(u,1) + diffx(u,1), d);
 N.dbc = @(x) exp(-x) + exp(-.5*x);
 N.lbc = @(t) exp(1).*exp(t) + exp(.5).*exp(.5*t);
 u = N \ 0;
-pass(j) = ( abs(norm(u - exact) < tol)); j = j + 1; 
+pass(3) = ( abs(norm(u - exact) < tol)); 
 
 
 %% Transport equation with different transport parameter. 
@@ -41,7 +43,7 @@ N = chebop2(@(u) diffy(u,1) + 5*diffx(u,1), d);
 N.dbc = @(x) exp(x);
 N.lbc = @(t) exp(-pi).*exp(-5*t);
 u = N \ 0;
-pass(j) = ( abs(norm(u - exact) < tol)); j = j + 1; 
+pass(4) = ( abs(norm(u - exact) < tol));  
 
 %% Transport equation with different transport parameter, and large time
 % length
@@ -51,7 +53,7 @@ N = chebop2(@(u) diffy(u,1) + .1*diffx(u,1), d);
 N.dbc = @(x) exp(x);
 N.lbc = @(t) exp(-pi).*exp(-t/10);
 u = N \ 0;
-pass(j) = ( abs(norm(u - exact) < tol)); j = j + 1; 
+pass(5) = ( abs(norm(u - exact) < tol));
 
 
 % %% Here's another one. 
