@@ -20,7 +20,7 @@ function M = MultMat(a,bn,varargin)
     a = a(:); 
     an = length(a);
     %remove trailing zeros
-    atrun = truncate(a,eps);
+    atrun = chebop2.truncate(a,eps);
     at = length(atrun); 
     
     if at == 1 

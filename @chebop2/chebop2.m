@@ -54,7 +54,8 @@ classdef chebop2
         M = MultMat(a,bn,varargin);
         diffMat = spdiffmat(n,k,varargin);
         [bcrow,bcvalue]=constructbc(bcArg,bcpos,een,bcn,dom,scl,order);
-        deriv= chebfun2deriv( op )
+        deriv= chebfun2deriv( op );
+        a = truncate(a,tol);
     end
 end
 
