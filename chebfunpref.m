@@ -483,16 +483,14 @@ classdef chebfunpref < chebpref
                 prefList.cheb2Prefs.sampleTest');            
             fprintf([padString('    scale:') '%d\n'], ...
                 prefList.scale);
-            if ( ischar(prefList.tech) )
-                tech = ['''' prefList.tech ''''];
-            else
-                tech = ['@' func2str(prefList.tech)];
-            end
-            fprintf([padString('    tech:') '%s\n'], tech)
-            fprintf('    techPrefs\n');
-
-            tech = feval(prefList.tech);
-            disp(tech.techPref(prefList.techPrefs))
+            
+            tech = prefList.tech;
+            techStr = func2str(tech);
+            fprintf([padString('    tech:') '@%s\n'], techStr)
+            fprintf('    <a href="matlab: help %s/techPref">techPrefs</a>\n', techStr)
+            techObj = feval(tech);
+            disp(techObj.techPref(prefList.techPrefs))
+            
 %             % Format and print values of tech preferences.
 %             for field = fieldnames(prefList.techPrefs).'
 %                 field1 = field{1};
