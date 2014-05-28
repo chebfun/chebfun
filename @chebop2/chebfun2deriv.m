@@ -1,4 +1,4 @@
-function deriv= chebfun2deriv( op )
+function deriv = chebfun2deriv( op )
 %CHEBFUN2DDERIV Summary of this function goes here
 %   Detailed explanation goes here
 

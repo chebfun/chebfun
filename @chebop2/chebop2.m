@@ -48,11 +48,13 @@ classdef chebop2
     end
 
     methods ( Static = true )
+        X = BartelsStewart(A,B,C,D,E,xsplit,ysplit);
         bc = createbc(bcArg, ends);
         T = spconvermat(n,lam,k);
         M = MultMat(a,bn,varargin);
         diffMat = spdiffmat(n,k,varargin);
         [bcrow,bcvalue]=constructbc(bcArg,bcpos,een,bcn,dom,scl,order);
+        deriv= chebfun2deriv( op )
     end
 end
 
@@ -135,7 +137,7 @@ if ( isa(varargin{1},'function_handle') )
         
       try 
         %  NEW way! % 
-        A = chebfun2deriv(op); 
+        A = chebop2.chebfun2deriv(op); 
         A = rot90(A,2);
       catch 
           % Trust that the user has formed the chebfun2 objects outside of

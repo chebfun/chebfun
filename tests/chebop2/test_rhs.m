@@ -9,7 +9,7 @@ end
 tol = 100*prefs.cheb2Prefs.eps; 
 
 d = [0 pi 0 pi]; 
-N = chebop2(@(u) lap(u), d); 
+N = chebop2(@(u) laplacian(u), d); 
 N.lbc = 0; 
 N.rbc = @(y) pi*y.^3./6; 
 N.dbc = 0; 

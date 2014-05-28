@@ -183,14 +183,14 @@ elseif ( size(CC,1) == 2 )% rank-2 PDE operator.
     try
         if xsplit || ysplit
             % solve subproblems.
-            X = BartelsStewart(A,B,C,D,RHS,xsplit,ysplit);
+            X = chebop2.BartelsStewart(A,B,C,D,RHS,xsplit,ysplit);
         else
             X = lyap(C\A,(B\D).',-(B\(C\RHS).').');
             %X = BartelsStewart(A,B,C,D,RHS,xsplit,ysplit);
             %norm(A * X * B' + C * X * D' - RHS,inf)
         end
     catch
-        X = BartelsStewart(A,B,C,D,RHS,xsplit,ysplit);% Solve with Sylvester Solver\
+        X = chebop2.BartelsStewart(A,B,C,D,RHS,xsplit,ysplit);% Solve with Sylvester Solver\
     end
     % QZ in BartelsStewart solver can return complex so take real part
     if norm(imag(X),inf) < sqrt(eps)
