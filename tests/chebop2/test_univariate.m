@@ -21,7 +21,7 @@ N = chebop2(@(u) diff(u,2,2) + u); N.lbc = 1; N.rbc = 1; u = N \ 0;
 L = chebop(@(u) diff(u,2) + u); L.lbc = 1; L.rbc = 1; v = L \ 0; 
 
 pass(3) = (length(u) == 1);  
-pass(4) = (norm(u(:,0) - v) < tol);  
+pass(4) = (norm(u(:,0) - v.') < tol);  
 
 
 % 
