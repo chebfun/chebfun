@@ -1,6 +1,5 @@
 classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
-%DELTAFUN   Class for distributions based on Dirac-delta functions on arbitrary
-%   intervals.
+%DELTAFUN   Class for distributions based on Dirac-deltas on arbitrary intervals
 %
 %   Class for approximating generalized functions on the interval [a, b].
 %   The smooth or classical part of the function is approximated by a
@@ -13,7 +12,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
 %   the location of a column in the DELTAMAG matrix.
 %
 % Constructor inputs:
-%   DELTAFUN(DELTAMAG, LOCATION) creates a DELTAFUN object with an empty
+%   DELTAFUN([], DELTAMAG, LOCATION) creates a DELTAFUN object with an empty
 %   FUNPART, while the delta functions and their locations are specified by
 %   DELTAMAG and LOCATION.
 % 
@@ -24,6 +23,13 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
 %   DELTAFUN(FUNPART, DELTAMAG, LOCATION, PREF) is the same as above but
 %   uses PREF to pass any preferences.
 %
+%   DELTAFUN(OP, DELTAMAG, LOCATION, VARARGIN) will call the CLASSICFUN
+%   constructor to create a FUNPART out of the operator OP. THe additional
+%   inputs in VARARGIN are also passed to the CLASSICFUN constructor.
+%
+%   DELTAFUN(F, ...) where F is a DELTAFUN simlpy returns F. I.e., other inputs
+%   are ignored.
+%
 % See also CLASSICFUN, ONEFUN, FUN
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
@@ -31,6 +37,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
 
     %% Properties of DELTAFUN objects
     properties ( Access = public )
+        
         % Smooth part of the representation.
         funPart     % (classical function which is a CLASSICFUN object)
         
@@ -41,69 +48,55 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         deltaMag % double matrix [M X N]
         
         % Location of the delta functions.
-        deltaLoc % double vector [1 X N]            
+        deltaLoc % double vector [1 X N]     
+        
     end
     
     %% DELTAFUN CLASS CONSTRUCTOR:
     methods ( Static = true )
-        function obj = deltafun(funPart, deltaMag, deltaLoc, pref)
+        function obj = deltafun(op, deltaMag, deltaLoc, varargin)
             
-            %%
-            % Check for preferences in the very beginning.
-            if ( (nargin < 4) || isempty(pref) )
-                % Determine preferences if not given.
-                pref = chebfunpref();
-            else
+            isPref = find(cellfun(@(p) isa(p, 'chebfunpref'), varargin));
+            if ( any(isPref) )
                 % Merge if some preferences are given.
-                pref = chebfunpref(pref);
+                pref = chebfunpref(varargin{isPref(1)});
+            else
+                % Obtain preferences if none given:
+                pref = chebfunpref();
             end
-                        
-            %% Cases based on the number of arguments
+
             % Case 0: No input arguments, return an empty object.
             if ( nargin == 0 )
                 return
             end
             
-            %%
-            % Case 1: One input argument.
-            % This input should be a FUN.
+            % Case 1: We at least have an OP:
+            if ( isa(op, 'deltafun') )
+                obj = op;
+                return
+            elseif ( ~isa(op, 'classicfun') )
+                op = classicfun.constructor(op, varargin);
+            end
+            obj.funPart = op;
+            
             if ( nargin == 1 )
-                if ( ~isa(funPart, 'fun') )
-                    error('DELTAFUN:ctor', 'funPart must be a FUN.');
-                elseif isa(funPart, 'deltafun')
-                    obj = funPart;
-                else
-                    obj.funPart = funPart;
-                end
                 return
             end
-            %%
-            % Case 2: Two input arguments.
-            % This is not allowed!
+            
+            % Case 2: Two input arguments -  This is not allowed!
             if ( nargin == 2 )
                 error( 'DELTAFUN:ctor', 'Not enough input arguments.' );
             end
             
-            %%
-            % Case 3: Three input arguments.
-            if ( nargin >= 3 )                            
-                if ( ~isa(funPart, 'fun') )
-                    error( 'DELTAFUN:ctor', 'funPart must be a FUN.' );
-                elseif isa(funPart, 'deltafun')
-                    obj = funPart;
-                else
-                    obj.funPart = funPart;
-                end
-                % Do no checks here, they are all done below.
-            end
-               
-            %% Check all the arguments:            
+            % Case 3: Three or more input arguments:        
             
             % If one of deltaMag or deltaLoc is empty, make both empty:
             if ( xor(isempty(deltaMag), isempty(deltaLoc)) )
                 warning('Inconsistent deltaLoc and deltaMag.')
                 deltaMag = [];
-                deltaLoc = [];    
+                deltaLoc = [];  
+                % Nothing else to do:
+                return
             end            
             
             % Make sure location is a row vector:
@@ -139,6 +132,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
             if ( ~isa(obj, 'deltafun') )
                 obj = deltafun(obj);
             end
+            
         end
     end
     

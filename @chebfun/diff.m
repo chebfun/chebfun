@@ -97,8 +97,7 @@ funs = f.funs;
 numFuns = numel(funs);
 numCols = size(f.funs{1}, 2);
 
-% Set a tolerance: (
-tol = epslevel(f)*hscale(f);
+% Grb a preference:
 pref = chebfunpref();
 
 if ( ~pref.enableDeltaFunctions )
@@ -157,7 +156,7 @@ f.pointValues = pointValues;
                 deltaMag = [0 ; 0];
             end
             % New delta functions are only possible at the ends of the domain:
-            f = fun.constructor(f, f.domain, deltaMag.'/2, f.domain, pref);
+            f = deltafun(f, deltaMag.'/2, f.domain, f.domain, [], [], pref);
         end
     end
 
