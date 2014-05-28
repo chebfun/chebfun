@@ -40,7 +40,9 @@ classdef chebfun2
         % PIVOTLOCATIONS: pivot locations used in GE
         pivotLocations
         % DOMAIN: rectangle of CHEBFUN2, default is [-1,1] x [-1,1]
-        domain = [-1 1 -1 1];
+        domain = [-1 1 -1 1]; 
+        % This will be a matrix for obtaining derivative information
+        deriv = 1; 
     end
     
     methods

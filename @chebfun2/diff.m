@@ -34,17 +34,27 @@ elseif ( numel(dim) ~= 1 )
     error('CHEBFUN2:DIFF:DIM', 'Dim should be either 1 or 2.');
 end
 
+% This computes the derivative information. First store the old AD info:
+derivOld = F.deriv;
+[m, n] = size(derivOld);
+
 % Diff the individual column and row slices.:
 if ( numel( k ) == 2 && nargin < 3)
    F.cols =  diff( F.cols, k(2) );
    F.rows = diff( F.rows, k(1) );
-   
+   F.deriv = [derivOld; zeros(k(1),n)];
+   m = size( F.deriv, 1 );
+   F.deriv = [F.deriv; zeros(m,k(2))];
 elseif ( dim == 1 )
     F.cols = diff( F.cols, k );
-    
+    % Shift derivative information to the left. This amounts to adding zero
+    % columns(s) to the right end side of the matrix
+    F.deriv = [derivOld, zeros(m,k)];
 elseif ( dim == 2 )
     F.rows = diff( F.rows, k );
-    
+    % Shift derivative information upwards. This amounts to adding zero
+    % row(s) to the bottom of the matrix.
+    F.deriv = [derivOld; zeros(k,n)];
 else 
     error('CHEBFUN2:DIFF:dim', 'Can compute derivative in x or y only.');
     
