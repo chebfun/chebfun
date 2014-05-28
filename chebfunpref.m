@@ -470,6 +470,13 @@ classdef chebfunpref < chebpref
             if ( ~isempty(exps) )
                 fprintf([padString('        exponents:') '%s\n'], num2str(exps))
             end
+            fprintf([padString('    enableDeltaFunctions:') '%d\n'], ...
+                prefList.enableDeltaFunctions);
+            fprintf('    deltaPrefs\n');
+            fprintf([padString('        deltaTol:') '%d\n'], ...
+                prefList.deltaPrefs.deltaTol');
+            fprintf([padString('        proximityTol:') '%d\n'], ...
+                prefList.deltaPrefs.proximityTol');                      
             fprintf('    cheb2Prefs\n');
             fprintf([padString('        maxRank:') '%d\n'], ...
                 prefList.cheb2Prefs.maxRank');
