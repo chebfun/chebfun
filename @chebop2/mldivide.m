@@ -13,8 +13,10 @@ if isa(f,'double')
 end
 rect = N.domain; f = chebfun2(f, rect);
 
-tol = max(chebfun2pref('eps'),1e-14);
-maxDiscretise = chebfun2pref('maxrank');
+prefs = chebfunpref(); 
+tol = max(prefs.cheb2Prefs.eps,1e-14); 
+maxDiscretise = prefs.cheb2Prefs.maxRank;
+minsample = 9; 
 
 if ( nargin == 3 && isa(varargin{1},'double') )
     % Nonadaptive solve with an m-by-m discretization
@@ -38,7 +40,7 @@ elseif ( nargin == 4 && isa(varargin{1},'double') && ~isinf(varargin{1})...
     % Adaptive solve in the horizontal variable, nonadaptive in the other.
     % (An m-by-inf discretization.)
     m = varargin{1};
-    n = chebfun2pref('minsample');
+    n = minsample;
     
     Resolved = 0;
     while ( ( ~Resolved ) && ( max(n) < maxDiscretise ))
@@ -73,7 +75,7 @@ elseif ( nargin == 4 && isa(varargin{2},'double') && ~isinf(varargin{2})...
     % Adaptive solve in the vertical variable, nonadaptive in the other.
     % (An inf-by-n discretization.)
     n = varargin{2};
-    m = chebfun2pref('minsample');
+    m = minsample;
     
     Resolved = 0;
     while ( ( ~Resolved ) && ( max(m) < maxDiscretise ))
@@ -104,8 +106,8 @@ elseif ( nargin == 4 && isa(varargin{2},'double') && ~isinf(varargin{2})...
 %     end
     
 elseif ( nargin == 2 || (nargin == 4 && isinf(varargin{2}) && isinf(varargin{1})))
-    n = chebfun2pref('minsample');
-    m = n;
+    n = minsample;
+    m = minsample;
     
     Resolved_x = 0; Resolved_y = 0; Resolved = Resolved_x & Resolved_y;
     while ( ( ~Resolved ) && ( max(m, n) < maxDiscretise ))
