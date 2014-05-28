@@ -24,17 +24,17 @@ x = chebfun2(@(x,y) x);
 y = chebfun2(@(x,y) y);
 N = chebop2(@(x,y,u) diff(u,1,2) + diff(u,2,1)  + x.*u);
 CC = N.coeffs;
-pass(5) = ( norm( CC{1,1} - x) < tol ); 
-pass(6) = ( norm( CC{1,2} - 0*x - 1 ) < tol ); 
-pass(7) = ( norm( CC{3,1} - 0*x - 1 ) < tol ); 
+pass(4) = ( norm( CC{1,1} - x) < 2*tol ); 
+pass(5) = ( norm( CC{1,2} - 0*x - 1 ) < 10*tol ); 
+pass(6) = ( norm( CC{3,1} - 0*x - 1 ) < 10*tol ); 
 
 % % Variable coefficients on derivatives
 x = chebfun2(@(x,y) x); 
 y = chebfun2(@(x,y) y);
 N = chebop2(@(x,y,u) diff(u,1,2) + x.*diff(u,2,1));
 CC = N.coeffs;
-pass(8) = ( norm( CC{3,1} - x) < tol ); 
-pass(9) = ( norm( CC{1,2} - 0*x - 1 ) < tol ); 
-pass(10) = ( norm( CC{1,1} - 0*x ) < tol ); 
+pass(7) = ( norm( CC{3,1} - x) < 2*tol ); 
+pass(8) = ( norm( CC{1,2} - 0*x - 1 ) < 10*tol ); 
+pass(9) = ( norm( CC{1,1} - 0*x ) < 2*tol ); 
 
 end
