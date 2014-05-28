@@ -97,38 +97,46 @@ funs = f.funs;
 numFuns = numel(funs);
 numCols = size(f.funs{1}, 2);
 
-% Set a tolerance: (used for introducing Dirac deltas at jumps)
+% Set a tolerance: (
 tol = epslevel(f)*hscale(f);
+pref = chebfunpref();
 
-p.enableDeltaFunctions = true;
-pref = chebfunpref(p);
-deltaTol = pref.deltaPrefs.deltaTol; % TODO: Which tol is correct?
-
-% Loop n times for nth derivative:
-for j = 1:n
-    vs = get(f, 'vscale-local'); 
-    vs = vs(:);
-
-    % Detect jumps in the original function and create new deltas.
-    deltaMag = getDeltaMag();
-
+if ( ~pref.enableDeltaFunctions )
+    % No delta functions:
+    
     % Differentiate each FUN in turn:
     for k = 1:numFuns
-        funs{k} = diff(funs{k});
-        
-        % If there is a delta function at the join, recreate the FUN using the
-        % DELTAFUN constructor:
-        funs{k} = addDeltas(funs{k}, deltaMag(k:k+1,:));
+        funs{k} = diff(funs{k}, n);
     end
+  
+else
+    % Enable delta functions:
     
-    % Compute new function values at breaks:
-    pointValues = chebfun.getValuesAtBreakpoints(funs);
+    % Used for introducing Dirac deltas at jumps)
+    deltaTol = pref.deltaPrefs.deltaTol;
     
-    % Reassign data to f:
-    f.funs = funs;
-    f.pointValues = pointValues;
+    % Loop n times for nth derivative:
+    for j = 1:n    
+        % Detect jumps in the original function and create new deltas.
+        deltaMag = getDeltaMag();
+        % Differentiate each FUN in turn:
+        for k = 1:numFuns
+            funs{k} = diff(funs{k});
+            % If there is a delta function at the join, recreate the FUN using the
+            % DELTAFUN constructor:
+            funs{k} = addDeltas(funs{k}, deltaMag(k:k+1,:));
+        end
 
+    end         
+    
 end
+
+% Compute new function values at breaks:
+pointValues = chebfun.getValuesAtBreakpoints(funs);
+
+% Reassign data to f:
+f.funs = funs;
+f.pointValues = pointValues;
 
     function deltaMag = getDeltaMag()
         deltaMag = zeros(numFuns + 1, numCols);
