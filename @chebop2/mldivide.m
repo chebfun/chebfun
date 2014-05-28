@@ -15,7 +15,7 @@ rect = N.domain; f = chebfun2(f, rect);
 
 prefs = chebfunpref(); 
 tol = max(prefs.cheb2Prefs.eps,1e-14); 
-maxDiscretise = 4*prefs.cheb2Prefs.maxRank;
+maxDiscretise = 2*prefs.cheb2Prefs.maxRank;
 minsample = 9; 
 
 if ( nargin == 3 && isa(varargin{1},'double') )

@@ -156,7 +156,7 @@ Bx = Bx.'; Gx = Gx.';            % Now transpose so that X*B = g;
 
 %% Construct the RHS of the sylvester matrix equation.
 E = zeros(m, n);
-[n1, n2] = length(f);
+[n2, n1] = length(f);
 F = rot90(chebpoly2(f), 2);  % chebfun's ordering is the other way around.
 
 % Map the RHS to the right ultraspherical space.
@@ -279,7 +279,7 @@ while rank(B(:,k:K+k-1)) < K
     end
 end
 
-P = eye(size(B,2));
+P = speye(size(B,2));
 
 P = P(:,[k:K+k-1,1:k-1,K+k:end]);
 end
