@@ -26,7 +26,6 @@ y = chebpts(100,d(3:4));
 % res = v{d(1),d(2),d(3),d(4)}; 
 pass(1) = ( norm( u(xx,yy) - v(xx,yy), inf) < 200*tol ); 
 
-
 % Do we agree with pde15s on a simple example? 
 k = 2;  
 f = chebfun2(@(x,t) exp(-40*x.^2),[-1 1 0 1]);
@@ -37,16 +36,13 @@ bc.right = 0;
 opts = pdeset('plot','off');
 uu = pde15s(@(x,t,u) k*diff(u,2),0:.1:1,f(:,0),bc,opts);
 
-
 % chebop2 
 d = [-1 1 0 1];
 N = chebop2(@(u) diff(u,1,1) - k*diff(u,2,2), d);
 N.dbc = f(:,0); N.lbc = 0; N.rbc = 0; 
 u = N \ 0;
 
-
 pass(2) = ( norm(uu(:,end) - u(:,1).') < tol ); 
-
 
 % Do we agree with pde15s on another simple example? 
 % Different heat coefficient.
@@ -66,8 +62,6 @@ N.dbc = f(:,0); N.lbc = 0; N.rbc = 0;
 u = N \ 0;
 
 pass(3) = ( norm(uu(:,end) - u(:,1).') < tol ); 
-
-
 
 % Do we agree with pde15s on another simple example? 
 % Different domain in space.

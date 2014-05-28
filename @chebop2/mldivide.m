@@ -198,6 +198,10 @@ elseif ( size(CC,1) == 2 )% rank-2 PDE operator.
     end
     
     X = ImposeBoundaryConditions(X,bb,gg,Px,Py,m,n);
+
+    if (  any( isnan(X(:)) | isinf(X(:)) )  )
+        error('CHEBOP2:MLDIVIDE', 'Solution is not unique.')
+    end
     %surf(log10(abs(X)))
 else  % rank-k>2 PDE operator.
     % do full n^2 by n^2 matrix kronecker product.
@@ -242,14 +246,14 @@ rs = size(bb{1},2) + size(bb{2},2);
 
 By = [bb{3}.' ; bb{4}.'].'; Gy = [gg{3}.' ; gg{4}.'].';
 if ( ~isempty(By) )
-    By = Py * By; %Gy = Py.' * Gy;
+    By = Py.' * By; Gy = Gy * Py;
     X12 = By(1:cs,:).' \ (Gy(rs+1:size(X,2)+rs,:).' - By(cs+1:size(X,1)+cs,:).'*X);
     X = [ X12; X ];
 end
 
 Bx = [bb{1}.' ; bb{2}.'].'; Gx = [gg{1}.' ; gg{2}.'].';
 if ( ~isempty(Bx) )
-    Bx = Px * Bx; %Gx = Px.' * Gx;
+    Bx = Px.' * Bx; %Gx = Px.' * Gx;
     X2 = ( Bx(1:rs,:).' \ ( Gx(1:size(X,1),:).' - Bx(rs+1:size(X,2)+rs,:).'*X.') ).' ;
     X = [X2 X];
 end
