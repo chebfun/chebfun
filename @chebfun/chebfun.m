@@ -368,7 +368,7 @@ classdef chebfun
         out = kron(f, g)
         
         % Length of a CHEBFUN.
-        out = length(f);
+        [out, out2] = length(f);
         
         % Return Legendre coefficients of a CHEBFUN.
         c_leg = legpoly(f, n)
