@@ -1,10 +1,12 @@
-function pass = chebop2_backwardsWaveEquation
+function pass = test_backwardsWaveEquation( prefs )
 % Check that the backwards wave equation is working. 
 % Alex Townsend, August 2013. 
 
-j = 1; 
-tol = chebfun2pref('eps');
 
+if ( nargin < 1 ) 
+    prefs = chebfunpref(); 
+end 
+tol = prefs.cheb2Prefs.eps; 
 %%
 
 d = [-pi pi 0 1]; 
@@ -14,7 +16,7 @@ N.lbc = @(t) sin(-pi+t);
 N.rbc = @(t) sin(pi+t);
 N.ubc = @(x,u) [u - sin(x+1) diff(u) - cos(x+1)];
 u = N \ 0;
-pass(j) = ( norm(u - exact) < tol ) ; j = j + 1; 
+pass(1) = ( norm(u - exact) < tol ) ;
 
 
 %%
