@@ -4,9 +4,7 @@ function pass = test_schrodinger( prefs )
 if ( nargin < 1 ) 
     prefs = chebfunpref(); 
 end 
-tol = prefs.cheb2Prefs.eps; 
-
-error 
+tol = 1000*prefs.cheb2Prefs.eps;  
 
 % w > V
 V = 1;  %potential function 
