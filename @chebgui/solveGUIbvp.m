@@ -25,11 +25,6 @@ deInput = guifile.DE;
 bcInput = guifile.BC;
 initInput = guifile.init;
 
-% TODO:  Delete this if no longer needed.
-% if isempty(bcInput)
-%     error('Chebgui:bvpgui','No boundary conditions specified');
-% end
-
 % Wrap all input strings in a cell (if they're not a cell already)
 if ( isa(deInput, 'char') )
     deInput = cellstr(deInput);

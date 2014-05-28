@@ -58,8 +58,6 @@ if ( strcmp(problemType, 'bvp') )
                 end
                 assignin('base', answer{nv+2}, handles.latest.norms);
                 assignin('base', answer{nv+3}, handles.latest.options);
-                % TODO:  Remove this if it is really unused.
-%                 assignin('base',answer{nv+4},handles.guifile);
             end
         case 'WorkspaceJustVars'                
             varnames = handles.varnames;
@@ -211,7 +209,7 @@ elseif ( strcmp(problemType,'pde') )
             return;
     end
 
-% TODO:  Exporting?  (Eigenvalues?)
+% Exporting an EIG problem.
 else
     switch exportType
         case 'GUI'

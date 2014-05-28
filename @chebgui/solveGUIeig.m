@@ -181,12 +181,6 @@ options.grid = guifile.options.grid;
 
 % Change various GUI components (only need to bother with in GUI mode).
 if ( guiMode )
-
-    % TODO:  Delete if no longer necessary.
-%     set(handles.iter_list,'String','');
-%     set(handles.iter_text,'Visible','On');
-%     set(handles.iter_list,'Visible','On');
-
     set(handles.fig_sol, 'Visible', 'On');
     set(handles.fig_norm, 'Visible', 'On');
 end
