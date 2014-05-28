@@ -130,16 +130,16 @@ bcUp = []; upVal = [];
 bcDown = []; downVal = [];
 
 if ( ~isempty(N.lbc) )                          % left boundary conditions
-    [bcLeft, leftVal] = constructbc(N.lbc, -1, m, n, rect(3:4), rect(1:2), xorder);
+    [bcLeft, leftVal] = chebop2.constructbc(N.lbc, -1, m, n, rect(3:4), rect(1:2), xorder);
 end
 if ( ~isempty(N.rbc) )                          % right boundary conditions
-    [bcRight, rightVal] = constructbc(N.rbc, 1, m, n, rect(3:4), rect(1:2), xorder);
+    [bcRight, rightVal] = chebop2.constructbc(N.rbc, 1, m, n, rect(3:4), rect(1:2), xorder);
 end
 if ( ~isempty(N.ubc) )                          % top boundary conditions
-    [bcUp, upVal] = constructbc(N.ubc, 1, n, m, rect(1:2), rect(3:4), yorder);
+    [bcUp, upVal] = chebop2.constructbc(N.ubc, 1, n, m, rect(1:2), rect(3:4), yorder);
 end
 if ( ~isempty(N.dbc) )                          % bottom boundary conditions
-    [bcDown, downVal] = constructbc(N.dbc, -1, n, m, rect(1:2), rect(3:4), yorder);
+    [bcDown, downVal] = chebop2.constructbc(N.dbc, -1, n, m, rect(1:2), rect(3:4), yorder);
 end
 
 %%
@@ -160,8 +160,8 @@ E = zeros(m, n);
 F = rot90(chebpoly2(f), 2);  % chebfun's ordering is the other way around.
 
 % Map the RHS to the right ultraspherical space.
-lmap = spconvermat(n1, 0, yorder);
-rmap = spconvermat(n2, 0, xorder);
+lmap = chebop2.spconvermat(n1, 0, yorder);
+rmap = chebop2.spconvermat(n2, 0, xorder);
 F = lmap * F * rmap.';
 
 % Place those coefficients of the forcing function onto the RHS.
@@ -238,11 +238,11 @@ B = spalloc(n,n,3*n);
 for kk = 1:size(ODE,1)
     if iscell(ODE(kk,jj)) && isa(ODE{kk,jj},'chebfun')
         c = ODE{kk,jj}.coeffs{:}; c = c(end:-1:1);
-        A = spconvermat(n, kk-1, order-kk+1) * MultMat(c, n, kk-1) * spdiffmat(n, kk-1, dom);
+        A = chebop2.spconvermat(n, kk-1, order-kk+1) * chebop2.MultMat(c, n, kk-1) * chebop2.spdiffmat(n, kk-1, dom);
     elseif iscell(ODE(kk,jj)) && ~isempty(ODE{kk,jj})
-        A = ODE{kk,jj}.*spconvermat(n, kk-1, order-kk+1) * spdiffmat(n, kk-1, dom);
+        A = ODE{kk,jj}.*chebop2.spconvermat(n, kk-1, order-kk+1) * chebop2.spdiffmat(n, kk-1, dom);
     elseif isa(ODE(kk,jj),'double')
-        A = ODE(kk,jj).*spconvermat(n, kk-1, order-kk+1) * spdiffmat(n, kk-1, dom);
+        A = ODE(kk,jj).*chebop2.spconvermat(n, kk-1, order-kk+1) * chebop2.spdiffmat(n, kk-1, dom);
     else
         A = zeros(n);
     end

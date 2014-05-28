@@ -46,6 +46,14 @@ classdef chebop2
         end
         
     end
+
+    methods ( Static = true )
+        bc = createbc(bcArg, ends);
+        T = spconvermat(n,lam,k);
+        M = MultMat(a,bn,varargin);
+        diffMat = spdiffmat(n,k,varargin);
+        [bcrow,bcvalue]=constructbc(bcArg,bcpos,een,bcn,dom,scl,order);
+    end
 end
 
 function N = ctor(N, varargin)
