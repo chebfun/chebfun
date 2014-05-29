@@ -494,7 +494,14 @@ classdef chebfunpref < chebpref
             tech = prefList.tech;
             techStr = func2str(tech);
             fprintf([padString('    tech:') '@%s\n'], techStr)
-            fprintf('    <a href="matlab: help %s/techPref">techPrefs</a>\n', techStr)
+
+            if ( usejava('jvm') && usejava('desktop') )
+                link = '    <a href="matlab: help %s/techPref">techPrefs</a>\n';
+                fprintf(link, techStr)
+            else
+                fprintf('    techPrefs\n', techStr)
+            end
+
             techObj = feval(tech);
             disp(techObj.techPref(prefList.techPrefs))
             
