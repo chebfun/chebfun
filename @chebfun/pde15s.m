@@ -168,7 +168,7 @@ end
             % Reshape solution:
             Uk = reshape(U(:,kk), currentLength, SYSSIZE);
 
-            Uk2 = sum(Uk, 2)/SYSSIZE;
+            Uk2 = Uk*(1:SYSSIZE)'/SYSSIZE;
              f = chebtech2(Uk2, pref2);
 %             [ishappy, epslevel, cutoff] = classicCheck(f, Uk2, pref2);
 
@@ -181,7 +181,10 @@ end
 
                 % Store these values:
                 uCurrent = chebfun(Uk, DOMAIN);
-                uCurrent = simplify(uCurrent,epslevel);
+                
+                %uCoeff = chebpoly(uCurrent);
+                %uCurrent = chebfun(uCoeff(:,end-(cutoff-1:-1:0)).',DOMAIN,'coeffs');                
+                %uCurrent = simplify(uCurrent,epslevel);
                 
                 ctr = ctr + 1;
                 uOut{ctr} = uCurrent;
@@ -635,7 +638,7 @@ clear global SYSSIZE
         unew = U;
         
         % Collapse systems to single chebfun for constructor (is addition right?)
-        U = sum(U, 2);
+        U = U*(1:SYSSIZE)'/SYSSIZE;
         
         % Zero out irrelevant coefficients, to prevent resolving noise. 
         

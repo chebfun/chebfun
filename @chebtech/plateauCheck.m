@@ -110,26 +110,26 @@ else
         return
     end
     
-    % Smooth the first difference of the smoothed coefficent sequence.
-    smoothDiff = filter( LPA, LPB, diff(smoothLAC) );
-    
+    % Fit a least-squares line to windowed data.
+    LSWindow = 24;
+    A = [ ones(LSWindow,1), (1:LSWindow)'/LSWindow ];  % [1,x] quasimatrix
+    % Create coefficients of all the windows: [ (1:LSW)', (2:LSW+1)', ... ]
+    index = bsxfun(@plus, (0:LSWindow-1)', 1:length(smoothLAC)-LSWindow);
+    LSLines = A \ smoothLAC(index);  % second row has all of the slopes
+    slopes = LSLines(2,:);
+        
     % Where is the decrease most rapid?
-    SDmin = min(smoothDiff);
+    slopeMin = min(slopes);
     
     % Don't look at anything until all substantial decrease has ended.
-    tstart = find( smoothDiff < 0.25*SDmin, 1, 'last' );
+    tstart = find( slopes < 0.25*slopeMin, 1, 'last' );
     
     % Find where the decrease has permanently slowed to 1% of the fastest.
-    isSlow = smoothDiff(tstart:end) > 0.01*SDmin;
-    lastFast = find(~isSlow, 1, 'last');
-    if ( isempty(lastFast) )
-        lastFast = 0;
-    end
-    slow = tstart + lastFast - 1 + find( isSlow(lastFast+1:end) );
-    slow = slow - floor(lag/2);  % compensate for the filter lag
+    isSlow = slopes(tstart:end) > 0.01*slopeMin;
+    slow = tstart - 1 + find( isSlow );
     
-    % Find the first run of 5 consecutive slow hits.
-    first = find( slow(5:end) - slow(1:end-4) == 4, 1 );  % may be empty
+    % Find the first run of 8 consecutive slow hits.
+    first = find( slow(8:end) - slow(1:end-7) == 7, 1 );  % may be empty
     cutoff = slow(first);  % may be empty, will give false next
     
     % If the cut location is within the coefficient sequence, we're done.
