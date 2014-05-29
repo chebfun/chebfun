@@ -220,6 +220,7 @@ end
                 % Plot current solution:
                 plotFun(uCurrent, t(kk));
 
+                % TODO: Enable this?
 %                 % Reduce length if it's much larger than necessary:
 %                 len = length(uCurrent);
 %                 if ( len < currentLength/4 )
@@ -314,7 +315,8 @@ end
         end
         
         if ( nargin > 1 )
-            title(sprintf('%s = %.3f,  len = [%i, %i]', tlabel, t, length(U), currentLength))
+            title(sprintf('%s = %.3f,  len = [%i, %i]', tlabel, t, ...
+                length(U), currentLength))
         end
         drawnow
         
@@ -429,7 +431,7 @@ else
     if ( isempty(bc.left) )
         bc.left.op = [];
     elseif ( ischar(bc.left) || (iscell(bc.left) && ischar(bc.left{1})) )
-        %% %%%%%%%%%%%%%%%%%%%%% DIRICHLET AND NEUMANN BCS (LEFT) %%%%%%%%%%%%%%%%%%
+        %% %%%%%%%%%%%%%%%%%%%%% DIRICHLET AND NEUMANN BCS (LEFT) %%%%%%%%%%%%%%
         if ( iscell(bc.left) )
             v = bc.left{2};
             bc.left = bc.left{1};
@@ -454,7 +456,7 @@ else
         end
         BCRHS = num2cell(repmat(v, SYSSIZE, 1));
     elseif ( numel(bc.left) == 1 && isa(bc.left, 'function_handle') )
-        %% %%%%%%%%%%%%%%%%%%%%%%%%%  GENERAL BCS (LEFT)  %%%%%%%%%%%%%%%%%%%%%%%%%%
+        %% %%%%%%%%%%%%%%%%%%%%%%%%%  GENERAL BCS (LEFT)  %%%%%%%%%%%%%%%%%%%%%%
         op = parseFun(bc.left, 'lbc');
         uTmp = chebdouble(ones(1, SYSSIZE));
         sizeOp = size(op(0, mean(DOMAIN), uTmp));
@@ -482,7 +484,7 @@ else
     if ( isempty(bc.right) )
         bc.right.op = [];
     elseif ( ischar(bc.right) || (iscell(bc.right) && ischar(bc.right{1})) )
-        %% %%%%%%%%%%%%%%%%%%%%% DIRICHLET AND NEUMANN BCS (RIGHT) %%%%%%%%%%%%%%%%%
+        %% %%%%%%%%%%%%%%%%%%%%% DIRICHLET AND NEUMANN BCS (RIGHT) %%%%%%%%%%%%%
         if ( iscell(bc.right) )
             v = bc.right{2};
             bc.right = bc.right{1};
@@ -509,7 +511,7 @@ else
         BCRHS = [BCRHS num2cell(repmat(v, SYSSIZE, 1))];
         
     elseif ( numel(bc.right) == 1 && isa(bc.right, 'function_handle') )
-        %% %%%%%%%%%%%%%%%%%%%%%%%%  GENERAL BCS (RIGHT)  %%%%%%%%%%%%%%%%%%%%%%%%%%
+        %% %%%%%%%%%%%%%%%%%%%%%%%%  GENERAL BCS (RIGHT)  %%%%%%%%%%%%%%%%%%%%%%
         op = parseFun(bc.right, 'rbc');
         uTmp = chebdouble(ones(1, SYSSIZE));
         sizeOp = size(op(0, mean(DOMAIN), uTmp));
@@ -528,28 +530,14 @@ if ( ~isfield(bc, 'middle') )
     bc.middle.op = [];
 end
 
-%% %%%%%%%%%%%%%%%%%%%%%%%% Support for coupled BVP-PDEs! %%%%%%%%%%%%%%%%%%%%%%
-% TODO: Test this!
-if ( ~all(pdeFlag) )
-    userMassSet = true;
-    userMass = @(n) [];
-    for k = 1:numel(pdeFlag)
-        if ( pdeFlag(k) )
-            A = @(n) eye(n);
-        else
-            A = @(n) zeros(n);
-        end
-        userMass = @(n) [userMass(n) ; ...
-            zeros(n,(k-1)*n), A(n), zeros(n,(SYSSIZE-k)*n)];
-    end
-else
-    userMassSet = false;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%% Support for coupled BVP-PDEs! %%%%%%%%%%%%%%%%%%%%%%%
+if ( numel(pdeFlag) == 1 )
+    pdeFlag = repmat(pdeflag, 1, SYSSIZE);
 end
+userMassSet = false;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% MISC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% The vertical scale of the intial condition:
-vscl = get(u0, 'vscale');
 
 % Initial condition:
 uCurrent = u0;
@@ -630,7 +618,6 @@ clear global SYSSIZE
         else
             % TODO: Determine what output we want for systems of equations. CHEBMATRIX?
             blocks = cell(SYSSIZE, numel(uIn));
-            uIn
             for kk = 1:SYSSIZE
                 blocks(kk,:) = cellfun(@(u) extractColumns(u, kk), uIn, 'UniformOutput', false);
             end
@@ -663,11 +650,14 @@ clear global SYSSIZE
             B = cell2mat(cellfun(@(f) feval(f, n), bcop, 'UniformOutput', false));
             
             % Project / mass matrix.
-            M = {};
+            P = cell(1, SYSSIZE);
+            M = cell(1, SYSSIZE);
             for kk = 1:SYSSIZE
                 xk = chebpts(n-DIFFORDER(kk), DOMAIN, 1);
-                M{kk} = barymat(xk, x);
+                P{kk} = barymat(xk, x);
+                M{kk} = pdeFlag(kk)*P{kk};
             end
+            P = [ 0*B ; blkdiag(P{:})];
             M = [ 0*B ; blkdiag(M{:})];
             rows = 1:size(B, 1);
             
@@ -680,7 +670,7 @@ clear global SYSSIZE
         
         % ODE options: (mass matrix)
         opt2 = odeset(opt, 'Mass', M, 'MassSingular', 'yes', ...
-            'InitialSlope', odeFun(tSpan(1), U0), 'MStateDependence', 'none');
+            'MStateDependence', 'none');
         
         % Solve ODE over time chunk with ode15s:
         try
@@ -716,7 +706,7 @@ clear global SYSSIZE
             Utmp = chebdouble(U, DOMAIN);
             F = pdeFun(t, x, Utmp);
             F = double(F);
-            F = M*F(:);
+            F = P*F(:);
             
             % Get the algebraic right-hand sides: (may be time-dependent)
             for l = 1:numel(BCRHS)
