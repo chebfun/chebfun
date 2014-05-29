@@ -84,11 +84,10 @@ if ( strcmp(problemType, 'bvp') )
                 
                 try
                     e = chebguiExporterBVP();
-                    chebgui2mfile(e, guifile, pathname, filename)
+                    toFile(e, guifile, pathname, filename)
 
-                    % Open the new file in the editor
-                    open([pathname, filename])
                 catch ME
+                    rethrow(ME)
                     error('Chebgui:Export', ...
                           ['Error in exporting to .m file. Please make ' ...
                           'sure there are no syntax errors.']);
@@ -186,10 +185,7 @@ elseif ( strcmp(problemType,'pde') )
                 try
                     
                     e = chebguiExporterPDE();
-                    chebgui2mfile(e, guifile, pathname, filename)
-
-                    % Open the new file in the editor
-                    open([pathname, filename])
+                    toFile(e, guifile, pathname, filename)
                 catch ME
                     error('Chebgui:Export', ...
                           ['Error in exporting to .m file. Please make ' ...
@@ -274,10 +270,8 @@ else
                 try
                     
                     e = chebguiExporterEIG();
-                    chebgui2mfile(e, guifile, pathname, filename)
+                    toFile(e, guifile, pathname, filename)
                     
-                    % Open the new file in the editor
-                    open([pathname, filename])
                 catch ME
                     rethrow(ME)
                     error('Chebgui:Export', ...

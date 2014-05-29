@@ -1,4 +1,4 @@
-classdef chebguiExporterPDE
+classdef chebguiExporterPDE < chebguiExporter
 %CHEBGUIEXPORTERPDE   Export a PDE from CHEBGUI.
 %   This is a an concrete implementation of the class CHEBGUIEXPORTER, which
 %   exports PDEs from CHEBGUI to .m-files, to the workspace, or to a .chebgui

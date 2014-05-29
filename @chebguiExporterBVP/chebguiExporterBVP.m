@@ -1,4 +1,4 @@
-classdef chebguiExporterBVP
+classdef chebguiExporterBVP < chebguiExporter
 %CHEBGUIEXPORTERBVP   Export a BVP from CHEBGUI.
 %   This is a an concrete implementation of the class CHEBGUIEXPORTER, which
 %   exports BVPs from CHEBGUI to .m-files, to the workspace, or to a .chebgui

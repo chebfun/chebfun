@@ -1,4 +1,4 @@
-classdef chebguiExporterEIG
+classdef chebguiExporterEIG < chebguiExporter
 %CHEBGUIEXPORTEREIG   Export an EIG problem from CHEBGUI.
 %   This is a an concrete implementation of the class CHEBGUIEXPORTER, which
 %   exports EIG problems from CHEBGUI to .m-files, to the workspace, or to a

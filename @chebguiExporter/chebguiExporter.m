@@ -29,4 +29,9 @@ classdef chebguiExporter
         e = make(varargin);
         
     end
+    
+    methods
+        % Export to an .m-file.
+        toFile(e, guifile, pathname, filename)
+    end
 end
