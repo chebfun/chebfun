@@ -1502,7 +1502,15 @@ function button_export_Callback(hObject, eventdata, handles)
     e = chebguiExporter.constructor(handles.guifile.type);
     
     % Call the export method of the E object:
-    toFile(e, handles.guifile)
+    try
+        toFile(e, handles.guifile)
+    
+    catch ME
+        rethrow(ME)
+        error('Chebgui:Export', ...
+            ['Error in exporting to .m file. Please make ' ...
+            'sure there are no syntax errors.']);
+    end
 end
 
 

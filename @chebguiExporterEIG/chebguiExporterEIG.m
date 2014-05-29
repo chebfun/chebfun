@@ -20,6 +20,9 @@ classdef chebguiExporterEIG < chebguiExporter
         function A = chebguiExporterEIG(varargin)
             % Set default file name:
             A.defaultFileName = 'bvpeig.m';
+            
+            % Description for printing to .m files:
+            A.description = 'an eigenvalue problem';
         end
         
     end

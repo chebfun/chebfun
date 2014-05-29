@@ -20,6 +20,9 @@ classdef chebguiExporterBVP < chebguiExporter
         function A = chebguiExporterBVP(varargin)
             % Set default file name:
             A.defaultFileName = 'bvp.m';
+            
+            % Description for printing to .m files:
+            A.description = 'a boundary-value problem';
         end
         
     end

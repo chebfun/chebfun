@@ -1,30 +1,11 @@
-function chebgui2mfile(exporter, guifile, pathname, filename)
-% Export to .m file
-%EXPORTBVP2MFILE    Export a BVP from CHEBGUI to a .m file.
-%
-%   See also: chebgui/export.
+function chebgui2mfile(exporter, guifile, fid)
+%CHEBGUI2MFILE      Export a BVP an .m-file
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % TODO:  Documentation.
 
-
-fullFileName = [pathname, filename];
-fid = fopen(fullFileName, 'wt');
-
-if ( ispc )
-    userName = getenv('UserName');
-else
-    userName = getenv('USER');
-end
-
-fprintf(fid, ['%% %s - an executable M-file for solving a boundary value ' ...
-    'problem.\n'], filename);
-fprintf(fid, '%% Automatically created from chebfun/chebgui by user %s\n', ...
-    userName);
-fprintf(fid, '%% at %s on %s.\n\n', datestr(rem(now, 1), 13), ...
-    datestr(floor(now)));
 
 % Extract information from the GUI fields
 dom = guifile.domain;
@@ -76,7 +57,7 @@ end
 
 % Replace the 'DUMMYSPACE' variable in the DE field
 deString = strrep(deString, 'DUMMYSPACE', indVarNameSpace);
-deString = prettyprintfevalstring(deString, allVarNames);
+deString = exporter.prettyPrintFevalString(deString, allVarNames);
 
 % Support for periodic boundary conditions
 if ( ~isempty(bcInput{1}) && strcmpi(bcInput{1}, 'periodic') )
@@ -135,7 +116,7 @@ fprintf(fid, '\n%% Assign boundary conditions to the chebop.\n');
 if ( ~isempty(bcInput{1}) )
     bcString = setupFields(guifile, bcInput, 'BCnew', allVarString );
     bcString = strrep(bcString, 'DUMMYSPACE', indVarNameSpace);
-    bcString = prettyprintfevalstring(bcString, allVarNames);
+    bcString = exporter.prettyPrintFevalString(bcString, allVarNames);
     fprintf(fid, 'N.bc = %s;\n', bcString);
 end
 if ( periodic )
@@ -240,7 +221,7 @@ fprintf(fid, ['\n%% Solve the problem using solvebvp (a routine which ' ...
     'offers the same\n%% functionality as nonlinear backslash, but with '...
     'more customizability).\n']);
 % fprintf(fid,'[u normVec] = solvebvp(N,rhs,''options'',options);\n');
-fprintf(fid, 'u = solvebvp(N,rhs,options);\n');
+fprintf(fid, 'u = solvebvp(N, rhs, options);\n');
 
 fprintf(fid, '\n%% Create a plot of the solution.\n');
 
@@ -257,29 +238,5 @@ else
     fprintf(fid, ', legend(%s)\n', leg);
 end
 
-fclose(fid);
-
-end
-
-
-function str = prettyprintfevalstring(str, varnames)
-
-for k = 1:numel(varnames)
-    oldstr = ['feval(' varnames{k} ','];
-    newstr = [varnames{k} '('];
-    str = strrep(str, oldstr, newstr);
-    oldstr = [varnames{k} '(''end'''];
-    newstr = [varnames{k} '(end'];
-    str = strrep(str, oldstr, newstr);
-    oldstr = [varnames{k} '(''right'''];
-    newstr = [varnames{k} '(end'];
-    str = strrep(str, oldstr, newstr);
-    oldstr = [varnames{k} '(''start'''];
-    newstr = [varnames{k} '(' varnames{k} '.ends(1)'];
-    str = strrep(str, oldstr, newstr);
-    oldstr = [varnames{k} '(''left'''];
-    newstr = [varnames{k} '(' varnames{k} '.ends(1)'];
-    str = strrep(str, oldstr, newstr);
-end
 
 end

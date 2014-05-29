@@ -1,4 +1,4 @@
-function chebgui2mfile(exporter, guifile, pathname, filename)
+function chebgui2mfile(exporter, guifile, fid)
 %EXPORTBVP2MFILE    Export a EIG problem from CHEBGUI to a .m file.
 %
 %   See also: chebgui/export.
@@ -6,23 +6,6 @@ function chebgui2mfile(exporter, guifile, pathname, filename)
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/chebfun/ for Chebfun information.
-
-% Print to the file
-fullFileName = [pathname, filename];
-fid = fopen(fullFileName, 'wt');
-
-if ( ispc )
-    userName = getenv('UserName');
-else
-    userName = getenv('USER');
-end
-
-fprintf(fid, ['%% %s - An executable M-file for solving an eigenvalue ' ...
-    'problem.\n'], filename);
-fprintf(fid, '%% Automatically created from chebfun/chebgui by user %s\n', ...
-    userName);
-fprintf(fid, '%% at %s on %s.\n\n', datestr(rem(now,1),13), ...
-    datestr(floor(now)));
 
 % Extract information from the GUI fields
 dom = guifile.domain;
@@ -62,7 +45,7 @@ end
 % Replace 'DUMMYSPACE' by the correct independent variable name
 allStrings = strrep(allStrings, 'DUMMYSPACE', indVarName{1});
 % Pretty print feval statements
-allStrings = prettyprintfevalstring(allStrings, allVarNames);
+allStrings = exporter.prettyPrintFevalString(allStrings, allVarNames);
 
 % If allStrings return a cell, we have both a LHS and a RHS string. Else,
 % we only have a LHS string, so we need to create the LHS linop manually.
@@ -227,7 +210,7 @@ end
 % Make assignments for BCs.
 fprintf(fid, '\n%% Assign boundary conditions to the chebop.\n');
 if ( ~isempty(bcInput{1}) )
-    bcString = prettyprintfevalstring(bcString, allVarNames);
+    bcString = exporter.prettyPrintFevalString(bcString, allVarNames);
     fprintf(fid, 'N.bc = %s;\n', bcString);
 end
 if ( periodic )
@@ -266,30 +249,6 @@ if ( ischar(allVarNames) || (numel(allVarNames) == 1) )
     fprintf(fid, 'plot(real(V), ''linewidth'', 2);\n');
     fprintf(fid, 'title(''Eigenmodes''); xlabel(''%s''); ylabel(''%s'');\n', ...
         indVarName{1}, allVarString);
-end
-
-fclose(fid);
-
-end
-
-function str = prettyprintfevalstring(str,varnames)
-
-for k = 1:numel(varnames)
-    oldstr = ['feval(' varnames{k} ','];
-    newstr = [varnames{k} '('];
-    str = strrep(str, oldstr, newstr);
-    oldstr = [varnames{k} '(''end'''];
-    newstr = [varnames{k} '(end'];
-    str = strrep(str, oldstr, newstr);
-    oldstr = [varnames{k} '(''right'''];
-    newstr = [varnames{k} '(end'];
-    str = strrep(str, oldstr, newstr);
-    oldstr = [varnames{k} '(''start'''];
-    newstr = [varnames{k} '(' varnames{k} '.ends(1)'];
-    str = strrep(str, oldstr, newstr);
-    oldstr = [varnames{k} '(''left'''];
-    newstr = [varnames{k} '(' varnames{k} '.ends(1)'];
-    str = strrep(str, oldstr, newstr);
 end
 
 end

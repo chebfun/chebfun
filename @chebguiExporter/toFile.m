@@ -1,25 +1,24 @@
 function toFile(e, guifile)
 
 [filename, pathname] = uiputfile( ...
-    {'*.m', 'M-files (*.m)'; ...
-    '*.*',  'All Files (*.*)'}, ...
+    {'*.m', 'M-files (*.m)'; '*.*',  'All Files (*.*)'}, ...
     'Save as', e.defaultFileName);
 
+fullFileName = [pathname, filename];
+
+fid = fopen(fullFileName, 'wt');
+
+exportInfo(e, fid, filename)
+
 if ( filename ~= 0 )     % User did not press cancel
-    try
-        chebgui2mfile(e, guifile, pathname, filename)
-        
-    catch ME
-        rethrow(ME)
-        error('Chebgui:Export', ...
-            ['Error in exporting to .m file. Please make ' ...
-            'sure there are no syntax errors.']);
-    end
-    
+    chebgui2mfile(e, guifile, fid)
+            
     % Open the new file in the editor
-    open([pathname, filename])
+    open(fullFileName)
 end
 
+
+fclose(fid);
 
 
 end

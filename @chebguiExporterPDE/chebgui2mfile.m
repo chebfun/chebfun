@@ -1,4 +1,4 @@
-function chebgui2mfile(exporter, guifile, pathname, filename)
+function chebgui2mfile(exporter, guifile, fid)
 %EXPORTBVP2MFILE    Export a PDE from CHEBGUI to a .m file.
 %
 %   See also: chebgui/export.
@@ -6,21 +6,6 @@ function chebgui2mfile(exporter, guifile, pathname, filename)
 % TODO:  Documentation.
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/chebfun/ for Chebfun information.
-
-fullFileName = [pathname, filename];
-fid = fopen(fullFileName, 'wt');
-
-if ( ispc )
-    userName = getenv('UserName');
-else
-    userName = getenv('USER');
-end
-
-fprintf(fid, '%% %s - an executable M-file for solving a PDE.\n', filename);
-fprintf(fid, '%% Automatically created from chebfun/chebgui by user %s\n', ...
-    userName);
-fprintf(fid, '%% %s, %s.\n\n', datestr(rem(now, 1), 13), ...
-    datestr(floor(now)));
 
 % Extract information from the GUI fields
 dom = guifile.domain;
@@ -184,15 +169,9 @@ else
     fprintf(fid, '.\n');
 end
 
-% TODO:  If this is no longer needed, remove it.
-% fprintf(fid, '%% Create a domain and the linear function on it.\n');
-% fprintf(fid,'[d,%s] = domain(%s,%s);\n',indVarName,a,b);
-% fprintf(fid,['\n%% Construct a discretisation of the time domain to solve on.\n']);
-% fprintf(fid,'t = %s;\n',tt);
-
-fprintf(fid, '%% Create an interval of the space domain,\n');
+fprintf(fid, '%% Create an interval of the space domain...\n');
 fprintf(fid, 'dom = %s;\n',dom);
-fprintf(fid, '%% and a discretisation of the time domain.\n');
+fprintf(fid, '%%...and a discretisation of the time domain:\n');
 fprintf(fid, '%s = %s;\n',tName,tt);
 
 fprintf(fid, '\n%% Make the right-hand side of the PDE.\n');
@@ -218,7 +197,6 @@ if ( ~isempty(lbcInput{1}) )
         end
         lbcString = [lbcString(1:idx(1)-1), variableString, 'diff', ...
             sops{:}, lbcString(idx(1):end)];
-%             lbcString = strrep(lbcString,'diff','D');
     end
     fprintf(fid, 'bc.left = %s;\n', lbcString);
 end
@@ -237,7 +215,6 @@ if ( ~isempty(rbcInput{1}) )
         end
         rbcString = [rbcString(1:idx(1)-1), variableString, 'diff', ...
             sops{:}, rbcString(idx(1):end)];
-%             rbcString = strrep(rbcString,'diff','D');
     end
     fprintf(fid, 'bc.right = %s;\n', rbcString);
 end
@@ -349,11 +326,6 @@ else
     if ( ~isempty(ylim1) && ~isempty(ylim2) )
         opts = [opts, ',''Ylim'',[', ylim1, ',', ylim2,']'];
     end
-    % TODO:  If this is not needed, remove it.
-%     plotstyle = get(handles.input_plotstyle,'String');
-%     if ~isempty(plotstyle)
-%         opts = [opts,',''PlotStyle'',''',plotstyle,''''];
-%     end
 end
 
 % Options for fixed N
@@ -391,11 +363,6 @@ if ( numel(deInput) == 1 )
         indVarName{2});
 else
     fprintf(fid, '\n%% Create plots of the solutions.\n');
-    % TODO:  If this is not needed, delete it.
-%     fprintf(fid,'for k = 1:numel(%s)\n',sol);
-%     fprintf(fid,'   subplot(1,numel(%s),k)\n',sol);
-%      fprintf(fid,'   surf(sol{k},t,''facecolor'',''interp'')\n');
-%     fprintf(fid,'end\n');
     M = numel(deInput);
     for k = 1:numel(deInput)
         fprintf(fid, 'subplot(1,%d,%d)\n', M, k);
@@ -404,7 +371,5 @@ else
             indVarName{1},indVarName{2},s{k});
     end
 end
-
-fclose(fid);
 
 end
