@@ -214,13 +214,12 @@ end
                 % Plot current solution:
                 plotFun(uCurrent, t(kk));
 
-                % TODO: Enable this?
-%                 % Reduce length if it's much larger than necessary:
-%                 len = length(uCurrent);
-%                 if ( len < currentLength/4 )
-%                     currentLength = len;
-%                     status = true;
-%                 end
+                % Reduce length if it's much larger than necessary:
+                len = length(uCurrent);
+                if ( len < currentLength/4 )
+                    currentLength = len;
+                    status = true;
+                end
 
             else 
 
@@ -361,7 +360,7 @@ DOMAIN = domain(u0, 'ends');
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%  PARSE INPUTS TO PDEFUN  %%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Determine the size of the system, i.e. number of dependent variables.
+% Determine the size of the system, i.e., number of dependent variables.
 SYSSIZE = min(size(u0));
 pdeFun = parseFun(pdeFun);
 if ( isfield(opt, 'difforder') )
@@ -629,19 +628,14 @@ clear global SYSSIZE
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  ONESTEP  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    function U = oneStep(tSpan)
+    function oneStep(tSpan)
         % Constructs the result of one time chunk at fixed discretization.
-        
-        if ( length(x) == 2 )
-            U = [0 ; 0];
-            return
-        end
-        
+
         % Evaluate the chebfun at discrete points:
         U0 = feval(uCurrent, x);
         
         % This depends only on the size of n. If this is the same, reuse!
-        if ( isempty(n) || n ~= length(x) )
+        if ( isempty(n) || (n ~= length(x)) )
             
             % The new discretisation length
             n = length(x);
@@ -675,7 +669,7 @@ clear global SYSSIZE
         
         % Solve ODE over time chunk with ode15s:
         try
-            [~, U] = ode15s(@odeFun, tSpan, U0, opt2);
+            [~, ~] = ode15s(@odeFun, tSpan, U0, opt2);
         catch ME
             if ( strcmp(ME.identifier, 'MATLAB:odearguments:SizeIC') )
                 error('Dimension mismatch. Check boundary conditions.');
@@ -683,16 +677,6 @@ clear global SYSSIZE
                 rethrow(ME)
             end
         end 
-        
-        if ( length(tSpan) > 2 )
-            return
-        end
-        
-        % Reshape solution:
-        U = reshape(U(end, :).', n, SYSSIZE);
-        
-        % Collapse systems to single chebfun for constructor (is addition right?)
-        U = sum(U, 2);
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %% %%%%%%%%%%%%%%%%%%%%%%%%%%%  ODEFUN  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
