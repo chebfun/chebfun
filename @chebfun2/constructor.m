@@ -49,8 +49,9 @@ if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
     if ( numel( op ) == 1 )
         % LNT wants this:
         g = constructor(g, @(x,y) op + 0*x, domain);
-        % Look for coeffs flag:
+        
     elseif ( any(strcmpi(domain, 'coeffs')) )
+        % Look for coeffs flag:
         op = chebfun2.coeffs2vals( op );
         g = chebfun2( op, varargin{:} );
         return
@@ -289,7 +290,7 @@ while ( ~isHappy && ~Failure )
     if ( norm(colValues) == 0 || norm(rowValues) == 0)
         colValues = 0;
         rowValues = 0;
-        pivotValue = 0;
+        pivotValue = Inf;
         PivPos = [0, 0];
         isHappy = 1;
     end
