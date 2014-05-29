@@ -180,6 +180,7 @@ elseif ( size(CC,1) == 2 )% rank-2 PDE operator.
         xsplit = 0; ysplit = 0;
     end
     
+    xsplit = 0; ysplit = 0; 
     try
         if xsplit || ysplit
             % solve subproblems.
@@ -246,7 +247,7 @@ rs = size(bb{1},2) + size(bb{2},2);
 
 By = [bb{3}.' ; bb{4}.'].'; Gy = [gg{3}.' ; gg{4}.'].';
 if ( ~isempty(By) )
-    By = Py.' * By; Gy = Gy * Py;
+    By = Py.' * By; % Gy = Gy * Py;
     X12 = By(1:cs,:).' \ (Gy(rs+1:size(X,2)+rs,:).' - By(cs+1:size(X,1)+cs,:).'*X);
     X = [ X12; X ];
 end
