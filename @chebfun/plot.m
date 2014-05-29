@@ -41,7 +41,8 @@ function varargout = plot(varargin)
 %   can be useful when the domain of F is infinite, or for 'zooming in' on, say,
 %   oscillatory CHEBFUN objects. If plotting an array-valued CHEBFUN or more
 %   than one CHEBFUN in a call like PLOT(F, 'b', G, '--r', 'interval', [A, B])
-%   this property is applied globally.
+%   this property is applied globally. Markers, such as 'o', or '.', are ignored
+%   if the interval flag is used.
 %
 %   Besides the usual parameters that control the specifications of lines (see
 %   linespec), the parameter JumpLines determines the linestyle for
@@ -116,7 +117,6 @@ if ( intervalIsSet )
             dom = union(domain(varargin{k}), interval);
             dom(dom < interval(1) | dom > interval(end)) = [];
             varargin{k} = chebfun(@(x) feval(varargin{k}, x), dom, 2000);
-%             varargin{k} = restrict(varargin{k}, interval);
         end
     end
 end
@@ -274,7 +274,10 @@ hold on
 h2 = plot(pointData{:});
 % Change the style accordingly:
 set(h2, 'LineStyle', 'none', pointStyle{:})
-
+if ( intervalIsSet )
+    % Markers are meaningless if the 'interval' flag is used.
+    set(h2, 'Marker', 'none', pointStyle{:})
+end
 % Plot the jumps:
 if ( isempty(jumpData) || ischar(jumpData{1}) )
     jumpData = {[]};
