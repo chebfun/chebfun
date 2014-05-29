@@ -536,7 +536,7 @@ elseif ( isa(tech, 'fourtech') )
     grid = 2^( floor( log2( grid ) + 1 ));
     nesting = 1:2:grid;
 elseif ( isa(tech, 'chebtech1' ) )
-    grid = 3^( floor( log2( grid )/log2(3) ) + 1);
+    grid = 3 * grid; 
     nesting = 2:3:grid; 
 else
     error('CHEBFUN2:TECHTYPE','Technology is unrecognized.');
