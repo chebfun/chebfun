@@ -419,9 +419,16 @@ classdef chebfunpref < chebpref
         %   DISPLAY(PREF) prints out a list of the preferences stored in the
         %   CHEBFUNPREF object PREF.
 
+            prefList = pref.prefList;
+
+            % Get a list of the merged tech preferences.
+            tech = prefList.tech;
+            techObj = feval(tech);
+            techPrefs = techObj.techPref(prefList.techPrefs);
+
             % Compute the screen column in which pref values start.
             valueCol = 34; % length('    enableSingularityDetection:   ');
-            for field = fieldnames(pref.prefList.techPrefs).'
+            for field = fieldnames(techPrefs).'
                 field1 = field{1};
                 col = length(['        ' field1 '  ']);
                 if ( col > valueCol )
@@ -436,8 +443,6 @@ classdef chebfunpref < chebpref
             end
 
             % Print values of "known" preferences.
-            prefList = pref.prefList;
-
             fprintf('chebfunpref object with the following preferences:\n');
             fprintf([padString('    domain:') '[%g, %g]\n'], ...
                 prefList.domain(1), prefList.domain(end));
@@ -470,6 +475,13 @@ classdef chebfunpref < chebpref
             if ( ~isempty(exps) )
                 fprintf([padString('        exponents:') '%s\n'], num2str(exps))
             end
+            fprintf([padString('    enableDeltaFunctions:') '%d\n'], ...
+                prefList.enableDeltaFunctions);
+            fprintf('    deltaPrefs\n');
+            fprintf([padString('        deltaTol:') '%d\n'], ...
+                prefList.deltaPrefs.deltaTol');
+            fprintf([padString('        proximityTol:') '%d\n'], ...
+                prefList.deltaPrefs.proximityTol');                      
             fprintf('    cheb2Prefs\n');
             fprintf([padString('        maxRank:') '%d\n'], ...
                 prefList.cheb2Prefs.maxRank');
@@ -483,29 +495,36 @@ classdef chebfunpref < chebpref
                 prefList.cheb2Prefs.sampleTest');            
             fprintf([padString('    scale:') '%d\n'], ...
                 prefList.scale);
-            fprintf([padString('    tech:') '''%s''\n'], ...
-                prefList.tech)
-            fprintf('    techPrefs\n');
+            
+            techStr = func2str(tech);
+            fprintf([padString('    tech:') '@%s\n'], techStr)
+
+            if ( usejava('jvm') && usejava('desktop') )
+                link = '    <a href="matlab: help %s/techPref">techPrefs</a>\n';
+                fprintf(link, techStr)
+            else
+                fprintf('    techPrefs\n', techStr)
+            end
 
             % Format and print values of tech preferences.
-            for field = fieldnames(prefList.techPrefs).'
+            for field = fieldnames(techPrefs).'
                 field1 = field{1};
                 printStr = padString(['        ' field1 ':']);
 
-                if ( isempty(prefList.techPrefs.(field1)) )
+                if ( isempty(techPrefs.(field1)) )
                     fprintf([printStr 'empty\n']);
-                elseif ( ischar(prefList.techPrefs.(field1)) && ...
-                         isrow(prefList.techPrefs.(field1)) )
-                    fprintf([printStr '''%s''\n'], prefList.techPrefs.(field1))
-                elseif ( numel(prefList.techPrefs.(field1)) > 1 )
-                    fprintf([printStr class(prefList.techPrefs.(field1)) ...
+                elseif ( ischar(techPrefs.(field1)) && ...
+                         isrow(techPrefs.(field1)) )
+                    fprintf([printStr '''%s''\n'], techPrefs.(field1))
+                elseif ( numel(techPrefs.(field1)) > 1 )
+                    fprintf([printStr class(techPrefs.(field1)) ...
                         ' array\n']);
-                elseif ( isfloat(prefList.techPrefs.(field1)) )
-                    fprintf([printStr '%0.16g\n'], prefList.techPrefs.(field1))
-                elseif ( islogical(prefList.techPrefs.(field1)) )
-                    fprintf([printStr '%d\n'], prefList.techPrefs.(field1))
+                elseif ( isfloat(techPrefs.(field1)) )
+                    fprintf([printStr '%0.16g\n'], techPrefs.(field1))
+                elseif ( islogical(techPrefs.(field1)) )
+                    fprintf([printStr '%d\n'], techPrefs.(field1))
                 else
-                    fprintf([printStr class(prefList.techPrefs.(field1)) '\n']);
+                    fprintf([printStr class(techPrefs.(field1)) '\n']);
                 end
             end
         end
@@ -719,7 +738,7 @@ classdef chebfunpref < chebpref
                 factoryPrefs.deltaPrefs.deltaTol = 1e-9;
                 factoryPrefs.deltaPrefs.proximityTol = 1e-11;
             factoryPrefs.scale = 0;
-            factoryPrefs.tech = 'chebtech2';
+            factoryPrefs.tech = @chebtech1;
             factoryPrefs.techPrefs = struct();
                 factoryPrefs.techPrefs.eps = 2^(-52);
                 factoryPrefs.techPrefs.maxLength = 65537;

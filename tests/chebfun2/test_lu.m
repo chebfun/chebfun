@@ -6,7 +6,6 @@ if ( nargin == 0 )
 end 
 
 tol = 100*pref.cheb2Prefs.eps; 
-j = 1; 
 
 % Decomposition on [-1,1,-1,1]: 
 x = chebpts(100);
@@ -16,10 +15,10 @@ g = L * U;
 pivPos = f.pivotLocations; 
 
 % Accurate decomposition: 
-pass(j) = norm( fevalm(f, x, x) - fevalm(g, x, x) ) < tol; j = j + 1; 
-pass(j) = norm( diag( L( pivPos( :, 2 ) , :) ) - ones( length(f), 1) ) < tol; j = j + 1; 
+pass(1) = norm( fevalm(f, x, x) - fevalm(g, x, x) ) < tol; 
+pass(2) = norm( diag( L( pivPos( :, 2 ) , :) ) - ones( length(f), 1) ) < tol;
 % pass(j) = norm( triu( L( pivPos( :, 2 ) , :) , 1) ) < sqrt(tol); j = j + 1; 
-pass(j) = norm( tril( U( :, pivPos( :, 1 ) ) , -1) ) < sqrt(tol); j = j + 1; 
+pass(3) = norm( tril( U( :, pivPos( :, 1 ) ) , -1) ) < sqrt(tol);
 
 
 
@@ -33,10 +32,10 @@ g = L * U;
 pivPos = f.pivotLocations; 
 
 % Accurate decomposition: 
-pass(j) = norm( fevalm(f, x, y) - fevalm(g, x, y) ) < tol; j = j + 1; 
-pass(j) = norm( diag( L( pivPos( :, 2 ) , :) ) - ones( length(f), 1) ) < tol; j = j + 1; 
+pass(4) = norm( fevalm(f, x, y) - fevalm(g, x, y) ) < 2*tol; 
+pass(5) = norm( diag( L( pivPos( :, 2 ) , :) ) - ones( length(f), 1) ) < tol; 
 % pass(j) = norm( triu( L( pivPos( :, 2 ) , :) , 1) ) < sqrt(tol); j = j + 1; 
-pass(j) = norm( tril( U( :, pivPos( :, 1 ) ) , -1) ) < sqrt(tol); j = j + 1; 
+pass(6) = norm( tril( U( :, pivPos( :, 1 ) ) , -1) ) < sqrt(tol); 
 
 
 end

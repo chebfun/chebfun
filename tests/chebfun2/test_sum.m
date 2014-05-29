@@ -14,7 +14,7 @@ f = chebfun2(f, [11 14 7 10]);
 
 exact = 1719;
 
-pass(j)  = (abs(integral2(f)-exact)<20*tol); j=j+1;
+pass(j)  = (abs(integral2(f)-exact)<30*tol); j=j+1;
 
 % check syntax as well. 
 f = chebfun2(@(x,y) x); 

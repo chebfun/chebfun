@@ -18,6 +18,6 @@ chebvar x y z [0 1]
 f = sin(x);
 g = cos(y);
 h = chebfun(@(x) sin(x) + cos(x), [0 1], pref);
-pass(3) = norm((f + g) - h, inf) < epslevel(h);
+pass(3) = norm((f + g) - h, inf) < 10*epslevel(h);
 
 end
