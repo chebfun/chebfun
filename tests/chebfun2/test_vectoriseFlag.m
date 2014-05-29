@@ -2,10 +2,10 @@ function pass = test_vectoriseFlag( prefs )
 % Test the vectorise flag in the constructor. 
 
 if ( nargin < 1 ) 
-    prefs = chebfunprefs(); 
+    prefs = chebfunpref(); 
 end 
 
-tol = prefs.cheb2Prefs.eps; 
+tol = 10*prefs.cheb2Prefs.eps; 
 
 % All these calls to the constructor should be the same: 
 f1 = chebfun2(@(x,y) x); 
@@ -21,4 +21,11 @@ f1 = chebfun2(@(x,y) x.*y);
 f2 = chebfun2(@(x,y) x*y, 'vectorize'); 
 pass(4) = ( norm( f1 - f2 ) < tol ); 
 
+% Check the following complex example: 
 g = chebfun2(@(z) sum(z.^(0:9)),[-1 1 -1 1]*pi/2,'vectorise');
+% Are the zeros of the roots of unity? 
+r = roots( g ); 
+pass(5) = all( abs( abs( r ) - 1 ) < 10*tol );
+pass(6) = ( abs(sum( r ) + 1) < 100*tol );
+
+end
