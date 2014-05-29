@@ -28,11 +28,18 @@ else
     tol = max(pref.techPrefs.eps, tol);
 end
 
+    function x = fudge(x, tol)
+        % M must lie in [0, 1]. Fudge values outside this range during compose.
+        x(x < 0 & x > -tol,:) = 0;
+        x(x > 1 & x < 1 + tol,:) = 0;
+    end
+
 % Loop over the columns:
 for j = numel(m):-1:1
+    mTol = max(epslevel(m(j)).*vscale(m(j)), tol);
     try
         % Call COMPOSE():
-        k(j) = compose(m(j), @(m) ellipke(m, .1*tol), pref);
+        k(j) = compose(m(j), @(m) ellipke(fudge(m, mTol), .1*tol), pref);
     catch ME
         if ( strcmp(ME.identifier, 'MATLAB:ellipke:MOutOfRange') )
             error('CHEBFUN:ellipke:MOutOfRange', ...
@@ -46,9 +53,10 @@ end
 % Compute the second complete elliptic integral if required:
 if ( nargout == 2 )
     e(numel(m)) = chebfun();
-    for j = numel(m):-1:1   
+    for j = numel(m):-1:1
+        mTol = max(epslevel(m(j)).*vscale(m(j)), tol);
         % Call COMPOSE():
-        e(j) = compose(m(j), @(m) eFun(m, tol), pref);
+        e(j) = compose(m(j), @(m) eFun(fudge(m, mTol), tol), pref);
     end
 end
 

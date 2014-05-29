@@ -17,7 +17,7 @@ pass(1) = all(size(x) == [n, 1]);
 pass(2) = all(size(x) == [n, 1]) && all(size(w) == [1, n]) && ...
     all(size(v) == [n, 1]);
 pass(3) = abs(w*x) < tol && abs(w*x.^2 - sqrt(pi)/2) < tol;
-pass(4) = abs(x(37) - 5.660357581283058) < tol;
+pass(4) = abs(x(37) - 5.660357581283058) < 10*tol;
 pass(5) = abs(w(17) - 0.032202101288908) < tol;
 pass(6) = abs(v(17) - 0.311886101735772) < tol;
 

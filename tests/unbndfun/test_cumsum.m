@@ -60,7 +60,7 @@ gVals = feval(g, x);
 opg = @(x) -exp(-x).*(x + 1) + 2*exp(-1);
 gExact = opg(x);
 err = gVals - gExact;
-pass(3) = norm(err, inf) < 1e5*get(g,'epslevel').*get(g,'vscale');
+pass(3) = norm(err, inf) < 1e6*get(g,'epslevel').*get(g,'vscale');
 
 % Blow-up function:
 op = @(x) 5*x;
@@ -102,7 +102,7 @@ gVals = feval(g, x);
 opg = @(x) [exp(x) exp(x).*(x - 1)];
 gExact = opg(x);
 err = gVals - gExact;
-pass(6) = norm(err, inf) < 1e4*max(get(g,'epslevel').*get(g,'vscale'));
+pass(6) = norm(err, inf) < 2e4*max(get(g,'epslevel').*get(g,'vscale'));
 
 %% Test on cumulative sum over the columns
 h = cumsum(f, 2);
