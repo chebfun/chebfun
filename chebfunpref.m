@@ -29,7 +29,7 @@ classdef chebfunpref < chebpref
 %   breakpointPrefs            - Preferences for breakpoint detection.
 %
 %      splitMaxLength          - Maximum FUN length.
-%       [129]
+%       [160]
 %
 %         This is the maximum length of a single FUN (e.g., the number of
 %         Chebyshev points used for FUNs based on Chebyshev polynomial
@@ -726,7 +726,7 @@ classdef chebfunpref < chebpref
 
             factoryPrefs.domain = [-1 1];
             factoryPrefs.enableBreakpointDetection = false;
-                factoryPrefs.breakpointPrefs.splitMaxLength = 129;
+                factoryPrefs.breakpointPrefs.splitMaxLength = 160;
                 factoryPrefs.breakpointPrefs.splitMaxTotalLength = 6000;
             factoryPrefs.enableSingularityDetection = false;
                 factoryPrefs.singPrefs.exponentTol = 1.1*1e-11;

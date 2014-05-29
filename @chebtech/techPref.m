@@ -34,7 +34,7 @@ function outPref = techPref(inPref)
 %   CHEBTECH-SPECIFIC PREFERENCES
 %
 %     minPoints    - Minimum number of points used by the constructor.  Should
-%      [9]           be of the form 2^n + 1.  If not, it is rounded as such.
+%      [17]          be of the form 2^n + 1.  If not, it is rounded as such.
 %
 %     maxPoints    - Maximum number of points used by the constructor.
 %      [2^16+1]
@@ -60,7 +60,7 @@ function outPref = techPref(inPref)
 % See http://www.chebfun.org for Chebfun information.
 
 outPref.eps                = 2^-52;
-outPref.minPoints          = 9;
+outPref.minPoints          = 17;
 outPref.maxPoints          = 2^16 + 1;
 outPref.numPoints          = NaN;
 outPref.extrapolate        = false;
