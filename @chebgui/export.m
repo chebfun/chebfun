@@ -16,19 +16,6 @@ end
 % Exporting a BVP
 if ( strcmp(problemType, 'bvp') )
     switch exportType
-        case 'GUI'
-            prompt = 'Enter the name of the chebgui variable:';
-            name = 'Export GUI';
-            numlines = 1;
-            defaultAnswer ='chebg';
-            options.Resize ='on';
-            options.WindowStyle ='modal';
-            
-            answer = inputdlg(prompt, name, numlines, {defaultAnswer}, options);
-            
-            if ( ~isempty(answer) )
-                assignin('base', answer{1}, handles.guifile);
-            end
         case 'Workspace'
             numlines = 1;
             options.Resize ='on';
@@ -85,19 +72,6 @@ if ( strcmp(problemType, 'bvp') )
 % Exporting a PDE
 elseif ( strcmp(problemType,'pde') )
     switch exportType
-        case 'GUI'
-            prompt = 'Enter the name of the chebgui variable:';
-            name = 'Export GUI';
-            numlines = 1;
-            defaultAnswer ='chebg';
-            options.Resize ='on';
-            options.WindowStyle ='modal';
-            
-            answer = inputdlg(prompt, name, numlines, {defaultAnswer}, options);
-            
-            if ( ~isempty(answer) )
-                assignin('base', answer{1}, handles.guifile);
-            end
         case 'Workspace'           
             varnames = handles.varnames;
             nv = numel(varnames);
@@ -173,19 +147,6 @@ elseif ( strcmp(problemType,'pde') )
 % Exporting an EIG problem.
 else
     switch exportType
-        case 'GUI'
-            prompt = 'Enter the name of the chebgui variable:';
-            name = 'Export GUI';
-            numlines = 1;
-            defaultAnswer ='chebg';
-            options.Resize ='on';
-            options.WindowStyle ='modal';
-            
-            answer = inputdlg(prompt, name, numlines, {defaultAnswer}, options);
-            
-            if ( ~isempty(answer) )
-                assignin('base', answer{1}, handles.guifile);
-            end
         case 'Workspace'           
             prompt = {'Eigenvalues', 'Eigenmodes'};
             name = 'Export to workspace';

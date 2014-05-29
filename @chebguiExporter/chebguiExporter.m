@@ -58,12 +58,35 @@ classdef chebguiExporter
             end
             
         end
+        
+        function toChebgui(guifile)
+            % Export the CHEBGUI shown in the figure to a CHEBGUI variable in
+            % the workspace
+            
+            % Setup for input dialog
+            prompt = 'Enter the name of the chebgui variable:';
+            name = 'Export GUI';
+            numlines = 1;
+            defaultAnswer ='chebg';
+            options.Resize ='on';
+            options.WindowStyle ='modal';
+            
+            % Get user input
+            answer = inputdlg(prompt, name, numlines, {defaultAnswer}, options);
+            
+            % If user did not press cancel, assign to a variable in the base
+            % workspace.
+            if ( ~isempty(answer) )
+                assignin('base', answer{1}, guifile);
+            end
+        end
     end
     
-    methods
+    methods ( Access = public )
         
         % Export to an .m-file.
         toFile(e, guifile)
         
     end
+    
 end

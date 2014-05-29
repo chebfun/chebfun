@@ -1178,14 +1178,15 @@ end
 % --------------------------------------------------------------------
 function menu_exportmfile_Callback(hObject, eventdata, handles)
 
-% Call the button_export callback method.
+% Call the button_export callback method to ensure they both do the same.
 button_export_Callback(hObject, eventdata, handles)
 
 end
 
 function menu_exportchebgui_Callback(hObject, eventdata, handles)
 
-export(handles.guifile, handles, 'GUI')
+% Call the export method of the CHEBGUIEXPORTER class:
+chebguiExporter.toChebgui(handles.guifile)
 
 end
 
