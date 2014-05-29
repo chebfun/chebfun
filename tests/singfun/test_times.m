@@ -43,7 +43,7 @@ vals_h = feval(h, x);
 h_exact = @(x) 1./sqrt(1+x);
 vals_exact = feval(h_exact, x);
 err = vals_h - vals_exact;
-pass(4) = all( abs(err) < max(get(f, 'epslevel'), get(g, 'epslevel'))* ...
+pass(4) = all( abs(err) < 10*max(get(f, 'epslevel'), get(g, 'epslevel'))* ...
     abs(vals_exact) );
 
 % root at the left endpoint

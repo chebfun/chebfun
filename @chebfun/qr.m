@@ -153,7 +153,11 @@ end
 
 % Construct a CHEBFUN from the discrete values:
 pref = chebfunpref();
-pref.tech = ['chebtech' int2str(chebType)];
+if ( chebType == 1 )
+    pref.tech = @chebtech1;
+else
+    pref.tech = @chebtech2;
+end
 Q = mat2cell(Q, sizes, numCols);
 Q = chebfun(Q, dom, pref);
 

@@ -46,7 +46,7 @@ pass(2,2) = normest(f - g1) < tol;
 pref.enableBreakpointDetection = 1;
 h1 = chebfun(@(x) sign(gHandle1(x)), -3:3, pref);
 pass(2,3) = length(h1.funs) == 6;
-pass(2,4) = normest(f - h1) < tol;
+pass(2,4) = normest(f - h1) < 100*tol;
 
 %% Array-valued CHEBFUN
 f1 = chebfun(@(x) feval(f, [x, x]) , -3:3, pref);

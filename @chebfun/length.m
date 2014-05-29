@@ -1,8 +1,12 @@
-function out = length(F)
+function [out, lengthFuns] = length(F)
 %LENGTH   Length of a Chebfun.
 %   LENGTH(F) returns the length of a scalar-valued CHEBFUN object F, which is
 %   defined as the sum of the length of F.funs. If F is an quasimatrix, then
 %   LENGTH(F) returns the maximum length of the columns.
+%
+%   [LEN, LENFUNS] = LENGTH(F) also returns the length of each of the piecewise
+%   components of the scalar-valued CHEBFUN object F. If F is array-valued
+%   LENFUNS = NaN.
 %
 % See also SIZE.
 
@@ -17,6 +21,15 @@ else
         out(k) = sum(cellfun(@length, F(k).funs));
     end
     out = max(out);
+end
+
+if ( nargout > 1 && (numColumns(F) == 1) )
+    lengthFuns = cellfun(@length, F(1).funs).';
+    if ( F(1).isTransposed )
+        lengthFuns = lengthFuns.';
+    end
+else
+    lengthFuns = NaN;
 end
 
 end
