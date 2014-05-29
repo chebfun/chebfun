@@ -95,7 +95,7 @@ else
     h.rows = Qrows * V;
     % [TODO]: PivotValues have very little meaning after this compression step.
     % For now we assign the singular values as the pivot values. 
-    h.pivotValues = s;
+    h.pivotValues = 1./s;
 end
 
 end
