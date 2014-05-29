@@ -1,9 +1,13 @@
 function pass = sampleTest(f, op, tol, flag)
 %SAMPLETEST   Test an evaluation of input OP against a CHEBFUN2 approximation.
-%   SAMPLETEST(OP, F, TOL) evaluates both the function OP and its
+%
+%   SAMPLETEST(F, OP, TOL) evaluates both the function OP and its
 %   CHEBFUN2 representation F at several points in it's domain. The difference of
 %   these values is computed, and if this is sufficiently small the test 
 %   passes and returns TRUE. If the difference is large, it returns FALSE.
+% 
+%   SAMPLETEST(F, OP, TOL, FLAG) is the same as above if FLAG = 0. If FLAG
+%   = 1 then the OP is assumed to be unvectorized. 
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -12,11 +16,18 @@ function pass = sampleTest(f, op, tol, flag)
 % [TODO]: Describe where we evaluate? (at low discrepancy points...)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+if ( nargin < 3 ) 
+    % Assume op is vectorized:
+    flag = 0; 
+end
+
 domain = f.domain; 
 
 if ( flag )
+    % Sample at lots of points if the op is vectorized. 
     [xeval, yeval] = halton( 50, domain );
 else
+    % sample on less points if the op is unvectorized. 
     [xeval, yeval] = halton( 10, domain );
 end
 

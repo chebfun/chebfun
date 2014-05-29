@@ -307,7 +307,7 @@ while ( ~isHappy && ~Failure )
         op = @(x,y) evaluate( op, x, y, vectorize);
         
         % Evaluate at points in the domain:
-        pass = g.sampleTest(op, tol);
+        pass = g.sampleTest(op, tol, vectorize);
         if ( ~pass )
             % Increase minsamples and try again.
             minsample = 2^( floor( log2( minsample ) ) + 1) + 1;
