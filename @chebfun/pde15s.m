@@ -120,13 +120,7 @@ if ( ~isempty(opt.PlotStyle) )
     plotOpts = opt.PlotStyle;
 end
 
-% Experimental feature for coupled ode/pde systems: (An entry equal to 1 denotes
-% that the corresponding variable appears with a time derivative. 0 otherwise.)
-if ( isfield(opt, 'PDEflag') )
-    pdeFlag = opt.PDEflag;
-else
-    pdeFlag = true;
-end
+userMassSet = false;
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%  EVENT & PLOTTING  SETUP  %%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -207,11 +201,6 @@ end
             uk2 = chebtech2(Uk2, pref2);
             [ishappy, epslevel] = classicCheck(uk2, Uk2, pref2);
 
-%             C = chebtech2.coeffs2vals(U);
-%             C = max(abs(C), [], 2);
-%             vscale = norm(U(:), inf);
-%             [ishappy, epslevel] = plateauCheck(C, vscale, pref2);
-
             if ( ishappy )  
 
                 % Store these values:
@@ -225,7 +214,12 @@ end
                 % Plot current solution:
                 plotFun(uCurrent, t(kk));
 
-                % TODO: reduce length if cutoff is large and bail out.
+                % Reduce length if it's much larger than necessary:
+                len = length(uCurrent);
+                if ( len < currentLength/4 )
+                    currentLength = len;
+                    status = true;
+                end
 
             else 
 
@@ -253,6 +247,7 @@ end
         if ( strcmp(get(solveButton, 'String'), 'Solve') )
             % Stop.
             tt = tt( tt <= tCurrent );
+            uOut(ctr+1:end) = [];
             status = true;
             done = true;
         elseif ( strcmp(get(clearButton, 'String'), 'Continue') )
@@ -313,7 +308,8 @@ end
         end
         
         if ( nargin > 1 )
-            title(sprintf('%s = %.3f,  len = %i', tlabel, t, length(U)))
+            title(sprintf('%s = %.3f,  len = [%i, %i]', tlabel, t, ...
+                length(U), currentLength))
         end
         drawnow
         
@@ -364,7 +360,7 @@ DOMAIN = domain(u0, 'ends');
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%  PARSE INPUTS TO PDEFUN  %%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Determine the size of the system, i.e. number of dependent variables.
+% Determine the size of the system, i.e., number of dependent variables.
 SYSSIZE = min(size(u0));
 pdeFun = parseFun(pdeFun);
 if ( isfield(opt, 'difforder') )
@@ -428,7 +424,7 @@ else
     if ( isempty(bc.left) )
         bc.left.op = [];
     elseif ( ischar(bc.left) || (iscell(bc.left) && ischar(bc.left{1})) )
-        %% %%%%%%%%%%%%%%%%%%%%% DIRICHLET AND NEUMANN BCS (LEFT) %%%%%%%%%%%%%%%%%%
+        %% %%%%%%%%%%%%%%%%%%%%% DIRICHLET AND NEUMANN BCS (LEFT) %%%%%%%%%%%%%%
         if ( iscell(bc.left) )
             v = bc.left{2};
             bc.left = bc.left{1};
@@ -453,7 +449,7 @@ else
         end
         BCRHS = num2cell(repmat(v, SYSSIZE, 1));
     elseif ( numel(bc.left) == 1 && isa(bc.left, 'function_handle') )
-        %% %%%%%%%%%%%%%%%%%%%%%%%%%  GENERAL BCS (LEFT)  %%%%%%%%%%%%%%%%%%%%%%%%%%
+        %% %%%%%%%%%%%%%%%%%%%%%%%%%  GENERAL BCS (LEFT)  %%%%%%%%%%%%%%%%%%%%%%
         op = parseFun(bc.left, 'lbc');
         uTmp = chebdouble(ones(1, SYSSIZE));
         sizeOp = size(op(0, mean(DOMAIN), uTmp));
@@ -481,7 +477,7 @@ else
     if ( isempty(bc.right) )
         bc.right.op = [];
     elseif ( ischar(bc.right) || (iscell(bc.right) && ischar(bc.right{1})) )
-        %% %%%%%%%%%%%%%%%%%%%%% DIRICHLET AND NEUMANN BCS (RIGHT) %%%%%%%%%%%%%%%%%
+        %% %%%%%%%%%%%%%%%%%%%%% DIRICHLET AND NEUMANN BCS (RIGHT) %%%%%%%%%%%%%
         if ( iscell(bc.right) )
             v = bc.right{2};
             bc.right = bc.right{1};
@@ -508,7 +504,7 @@ else
         BCRHS = [BCRHS num2cell(repmat(v, SYSSIZE, 1))];
         
     elseif ( numel(bc.right) == 1 && isa(bc.right, 'function_handle') )
-        %% %%%%%%%%%%%%%%%%%%%%%%%%  GENERAL BCS (RIGHT)  %%%%%%%%%%%%%%%%%%%%%%%%%%
+        %% %%%%%%%%%%%%%%%%%%%%%%%%  GENERAL BCS (RIGHT)  %%%%%%%%%%%%%%%%%%%%%%
         op = parseFun(bc.right, 'rbc');
         uTmp = chebdouble(ones(1, SYSSIZE));
         sizeOp = size(op(0, mean(DOMAIN), uTmp));
@@ -527,28 +523,21 @@ if ( ~isfield(bc, 'middle') )
     bc.middle.op = [];
 end
 
-%% %%%%%%%%%%%%%%%%%%%%%%%% Support for coupled BVP-PDEs! %%%%%%%%%%%%%%%%%%%%%%
-% TODO: Test this!
-if ( ~all(pdeFlag) )
-    userMassSet = true;
-    userMass = @(n) [];
-    for k = 1:numel(pdeFlag)
-        if ( pdeFlag(k) )
-            A = @(n) eye(n);
-        else
-            A = @(n) zeros(n);
-        end
-        userMass = @(n) [userMass(n) ; ...
-            zeros(n,(k-1)*n), A(n), zeros(n,(SYSSIZE-k)*n)];
-    end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%% Support for coupled BVP-PDEs! %%%%%%%%%%%%%%%%%%%%%%%
+% Experimental feature for coupled ode/pde systems: (An entry equal to 1 denotes
+% that the corresponding variable appears with a time derivative. 0 otherwise.)
+if ( isfield(opt, 'PDEflag') && ~isempty(opt.PDEflag) )
+    pdeFlag = opt.PDEflag;
 else
-    userMassSet = false;
+    pdeFlag = true;
+end
+if ( numel(pdeFlag) == 1 )
+    pdeFlag = repmat(pdeFlag, 1, SYSSIZE);
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% MISC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% The vertical scale of the intial condition:
-vscl = get(u0, 'vscale');
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% MISC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Initial condition:
 uCurrent = u0;
@@ -557,7 +546,7 @@ uOut = cell(1, numel(tt));
 uOut{1} = uCurrent;
 
 % Initialise variables for ONESTEP():
-B = []; q = []; rows = []; M = []; n = [];
+B = []; q = []; rows = []; M = []; P = []; n = [];
 
 % Set the preferences:
 % TODO: These are no longer used?
@@ -574,6 +563,7 @@ pref2 = chebtech.techPref(pref);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Plot initial condition:
+currentLength = length(u0);
 plotFun(u0, tt(1));
 
 done = false;
@@ -585,7 +575,7 @@ if ( ~isnan(optN) )
     
 else
     
-    currentLength = max(length(u0), 9);
+    currentLength = max(currentLength, 9);
     tCurrent = tt(1);
     tSpan = tt;
     while ( tCurrent < tt(end) && ~done )
@@ -638,19 +628,14 @@ clear global SYSSIZE
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  ONESTEP  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    function U = oneStep(tSpan)
+    function oneStep(tSpan)
         % Constructs the result of one time chunk at fixed discretization.
-        
-        if ( length(x) == 2 )
-            U = [0 ; 0];
-            return
-        end
-        
+
         % Evaluate the chebfun at discrete points:
         U0 = feval(uCurrent, x);
         
         % This depends only on the size of n. If this is the same, reuse!
-        if ( isempty(n) || n ~= length(x) )
+        if ( isempty(n) || (n ~= length(x)) )
             
             % The new discretisation length
             n = length(x);
@@ -660,11 +645,14 @@ clear global SYSSIZE
             B = cell2mat(cellfun(@(f) feval(f, n), bcop, 'UniformOutput', false));
             
             % Project / mass matrix.
-            M = {};
+            P = cell(1, SYSSIZE);
+            M = cell(1, SYSSIZE);
             for kk = 1:SYSSIZE
                 xk = chebpts(n-DIFFORDER(kk), DOMAIN, 1);
-                M{kk} = barymat(xk, x);
+                P{kk} = barymat(xk, x);
+                M{kk} = pdeFlag(kk)*P{kk};
             end
+            P = [ 0*B ; blkdiag(P{:})];
             M = [ 0*B ; blkdiag(M{:})];
             rows = 1:size(B, 1);
             
@@ -677,28 +665,18 @@ clear global SYSSIZE
         
         % ODE options: (mass matrix)
         opt2 = odeset(opt, 'Mass', M, 'MassSingular', 'yes', ...
-            'InitialSlope', odeFun(tSpan(1), U0), 'MStateDependence', 'none');
+            'MStateDependence', 'none');
         
         % Solve ODE over time chunk with ode15s:
         try
-            [~, U] = ode15s(@odeFun, tSpan, U0, opt2);
+            [~, ~] = ode15s(@odeFun, tSpan, U0, opt2);
         catch ME
             if ( strcmp(ME.identifier, 'MATLAB:odearguments:SizeIC') )
                 error('Dimension mismatch. Check boundary conditions.');
             else
-                rethrown ME
+                rethrow(ME)
             end
         end 
-        
-        if ( length(tSpan) > 2 )
-            return
-        end
-        
-        % Reshape solution:
-        U = reshape(U(end, :).', n, SYSSIZE);
-        
-        % Collapse systems to single chebfun for constructor (is addition right?)
-        U = sum(U, 2);
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %% %%%%%%%%%%%%%%%%%%%%%%%%%%%  ODEFUN  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -713,7 +691,7 @@ clear global SYSSIZE
             Utmp = chebdouble(U, DOMAIN);
             F = pdeFun(t, x, Utmp);
             F = double(F);
-            F = M*F(:);
+            F = P*F(:);
             
             % Get the algebraic right-hand sides: (may be time-dependent)
             for l = 1:numel(BCRHS)
@@ -917,143 +895,3 @@ outFun = eval(newStr);
 
 end
 
-%%
-
-function [ishappy, epslevel, cutoff] = plateauCheck(coeff, vscale, pref)
-%PLATEAUCHECK   Seek a plateau in Chebyshev coefficients.
-%  Inputs:
-%    coeff:  vector of Chebyshev polynomial coefficients (high order to low)
-%    vscale: indication of the scale to resolve relative to (default=Inf,
-%            no effect)
-%    pref:   cheboppref
-%
-%  Outputs:
-%    ishappy:  true if convergence was achieved
-%    epslevel: the apparent epslevel of the truncation
-%    cutoff:   where to truncate the coefficients
-%
-% This check is needed because of condition numbers in differential equations.
-% We can't be sure that a solution will ever be resolved to full precision, so
-% we have to be willing to stop if the convergence appears to have trailed off.
-
-% TODO: Unify and locate with the chebtech happiness checks.
-
-% NaNs are not allowed.
-if ( any(isnan(coeff)) )
-    error('CHEBFUN:FUN:plateauCheck:NaNeval', ...
-        'Function returned NaN when evaluated.')
-end
-
-% We omit the last 12% because aliasing can pollute them significantly.
-n = length(coeff);
-n88 = ceil( 0.88*n );
-% Preferred tolerance
-epslevel = pref.eps;  
-% Magnitude and rescale.
-if ( vscale > 0 )
-    absCoeff = abs( coeff(n:-1:1) ) / vscale;
-end
-
-% %%%%%%%%%%%%%%%%%%%%%%%% Serious checking starts here. %%%%%%%%%%%%%%%%%%%%%%%
-% There are two ways to pass the test. Either the coefficients have
-% achieved the goal epslevel, or the convergence appears to have levelled
-% off for good (plateau).
-
-% Guilty until proven innocent.
-ishappy = false;
-
-%% 1. Strict test.
-
-% Find the last place where the coeffs exceed the allowable level.
-% Then go out a bit further to be safe.
-cutoff = 4 + find( absCoeff >= epslevel, 1, 'last' );
-
-if ( cutoff < 0.95*n88 )
-    % Achieved the strict test.
-    ishappy = true;
-    
-elseif ( n88 < 17 )
-    % If there aren't enough coefficients, give up checking.
-    epslevel = absCoeff(n88);
-    cutoff = n88;
-    
-%% 2. Plateau test.
-else
-    
-    % Demand at least this much accuracy.
-    thresh = max(log(epslevel), log(1e-7));
-    
-    % Convergence is usually not far from linear in the log scale.
-    logAbs = log(absCoeff);
-    
-    % Even though some methods can compute really small coefficients relative to
-    % the norm, they ultimately contribute nothing. Also the occasional "zero"
-    % coefficient causes troublesome infinities.
-    logAbs = max( logAbs, log(eps/1000) );
-    
-    % Look for a sustained leveling off in the decrease.
-    
-    % TODO: Use the van Herk filter to do this more efficiently.
-    
-    % Symmetries can cause one or more consecutive coefficients to be zero, and
-    % we only care about the nonzero ones. Use a windowed max to remove the
-    % small values.
-    winSize = 6;
-    winMax = logAbs;
-    for k = 1:winSize
-        winMax = max( winMax(1:end-1), logAbs(k+1:end) );
-    end
-    n88 = length(winMax);
-    
-    %%% Alternative windowed max: This avoids the for loop but might hog memory.
-    %%index = bsxfun(@plus, (1:n)', 0:winsize-1);
-    %%logabs = max(logabs(index),[],2);
-    
-    % Start with a low pass smoothing filter that introduces a lag.
-    lag = 6;
-    LPA = [1, zeros(1,lag-1), -2, zeros(1, lag-1), 1] / (lag^2);
-    LPB = [1, -2, 1];
-    smoothLAC = filter(LPA, LPB, winMax);  % smoothed logabs coeffs
-    
-    % If too little accuracy has been achieved, do nothing.
-    tOK = find(smoothLAC < thresh, 1) - lag;
-    if ( isempty(tOK) || (n88 - tOK < 16) )
-        return
-    end
-    
-    % Smooth the first difference of the smoothed coefficent sequence.
-    smoothDiff = filter( LPA, LPB, diff(smoothLAC) );
-    
-    % Where is the decrease most rapid?
-    SDmin = min(smoothDiff);
-    
-    % Don't look at anything until all substantial decrease has ended.
-    tstart = find( smoothDiff < 0.25*SDmin, 1, 'last' );
-    
-    % Find where the decrease has permanently slowed to 10% of the fastest.
-    isSlow = smoothDiff(tstart:end) > 0.01*SDmin;
-    lastFast = find(~isSlow, 1, 'last');
-    if ( isempty(lastFast) )
-        lastFast = 0;
-    end
-    slow = tstart + lastFast - 1 + find( isSlow(lastFast+1:end) );
-    slow = slow - floor(lag/2);  % compensate for the filter lag
-    
-    % Find the first run of 5 consecutive slow hits.
-    first = find( slow(5:end) - slow(1:end-4) == 4, 1 );  % may be empty
-    cutoff = slow(first);  % may be empty, will give false next
-    
-    % If the cut location is within the coefficient sequence, we're done.
-    if ( cutoff < n88 )
-        ishappy = true;
-    end
-    
-end
-
-if ( ishappy )
-    % Use the information from the cut to deduce an eps level.
-    winEnd = min( n88, cutoff + 4 );
-    epslevel = max( absCoeff(cutoff:winEnd) );
-end
-
-end
