@@ -104,6 +104,8 @@ classdef chebguiExporterBVP < chebguiExporter
             
         end
         
+        printDescription(fid, expInfo)
+        
         printSetup(fid, expInfo, guifile)
         
         printOptions(fid, expInfo, guifile)
