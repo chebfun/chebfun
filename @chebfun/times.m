@@ -75,7 +75,6 @@ else                           % CHEBFUN .* CHEBFUN
             'Matrix dimensions must agree. (One input is transposed).');
     end
     
-    
     if ( numColumns(f) ~= numColumns(g) )
         error('CHEBFUN:times:matdim', 'Matrix dimensions must agree.');
     end
