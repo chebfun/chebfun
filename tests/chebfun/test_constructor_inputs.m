@@ -55,10 +55,9 @@ pass(9) = isequal(f.funs{1}.onefun.coeffs, [1 ; 2 ; 3]);
 
 % Test 'chebkind' and 'kind' flags.
 f1 = chebfun(@(x) x, 'chebkind', '1st');
-f2 = chebfun(@(x) x, 'kind', '2nd');
 f3 = chebfun(@(x) x, 'chebkind', 1);
 pass(10) = isa(f1.funs{1}.onefun, 'chebtech1') && ...
-    isa(f2.funs{1}.onefun, 'chebtech2') && isa(f3.funs{1}.onefun, 'chebtech1');
+    isa(f3.funs{1}.onefun, 'chebtech1');
 
 % Test construction from numeric string.
 f = chebfun('1');
