@@ -74,14 +74,7 @@ if ( strcmp(problemType, 'bvp') )
                 {'*.m', 'M-files (*.m)'; ...
                 '*.*',  'All Files (*.*)'}, ...
                 'Save as', [problemType, '.m']);
-            if ( filename )     % User did not press cancel
-                % TODO: Should be dealt with earlier
-                if get(handles.button_Collocation, 'Value')
-                    guifile.options.discretization = @colloc2;
-                else
-                    guifile.options.discretization = @ultraS;
-                end
-                
+            if ( filename )     % User did not press cancel                
                 try
                     e = chebguiExporterBVP();
                     toFile(e, guifile, pathname, filename)
