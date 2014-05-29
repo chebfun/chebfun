@@ -40,6 +40,6 @@ op = @(x) cos(sqrt(x+1));
 hVals = feval(h, x);
 hExact = op(x);
 err = hVals - hExact;
-pass(3) = norm(err, inf) < 1e3*get(h, 'epslevel')*get(h, 'vscale');
+pass(3) = norm(err, inf) < 2e3*get(h, 'epslevel')*get(h, 'vscale');
 
 end

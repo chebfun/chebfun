@@ -7,7 +7,7 @@ if ( nargin == 0 )
 end
 
 f = chebfun(@(x) x, [-1 0 .5 1]);
-tol = eps(norm(f.domain, inf));
+tol = epslevel(f);
 vals = chebfun.getValuesAtBreakpoints(f.funs, f.domain);
 err = abs(vals - f.domain.');
 pass(1) = all(err < tol);

@@ -192,7 +192,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = norm(vals_g - vals_exact, inf);
-tol = 1e1*epslevel(f).*norm(vals_exact, inf);
+tol = 2e1*epslevel(f).*norm(vals_exact, inf);
 pass(27) = ( err < tol );
 
 %% General power - A smooth function - a real function with varying sign and 

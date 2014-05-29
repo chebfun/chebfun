@@ -49,8 +49,9 @@ if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
     if ( numel( op ) == 1 )
         % LNT wants this:
         g = constructor(g, @(x,y) op + 0*x, domain);
-        % Look for coeffs flag:
+        
     elseif ( any(strcmpi(domain, 'coeffs')) )
+        % Look for coeffs flag:
         op = chebfun2.coeffs2vals( op );
         g = chebfun2( op, varargin{:} );
         return
@@ -77,13 +78,24 @@ if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
             % Otherwise its an adaptive call:
             fixedRank = 0;
         end
+        % Calculate a tolerance and find numerical rank to this tolerance: 
+        % The tolerance assumes the samples are from a function. It depends
+        % on the size of the sample matrix, hscale of domain, vscale of
+        % the samples, and the accuracy target in chebfun2 preferences. 
+        pseudoLevel = pref.cheb2Prefs.eps;
+        grid = max( size( op ) ); 
+        vscale = max( op(:) ); 
+        tol = grid.^(2/3) * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
+        
         % Perform GE with complete pivoting:
-        [pivotValue, ignored, rowValues, colValues] = CompleteACA(op, 0);
+        [pivotValue, ignored, rowValues, colValues] = CompleteACA(op, tol);
+        
         % Construct a CHEBFUN2:
         g.pivotValues = pivotValue;
         g.cols = chebfun(colValues, domain(3:4) );
         g.rows = chebfun(rowValues.', domain(1:2) );
         g.domain = domain;
+        
         % Did we have a nonadaptive construction?:
         g = fixTheRank(g, fixedRank);
     end
@@ -299,7 +311,7 @@ while ( ~isHappy && ~Failure )
     if ( norm(colValues) == 0 || norm(rowValues) == 0)
         colValues = 0;
         rowValues = 0;
-        pivotValue = 0;
+        pivotValue = Inf;
         PivPos = [0, 0];
         isHappy = 1;
     end

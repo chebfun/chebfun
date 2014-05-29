@@ -19,7 +19,7 @@ f = unbndfun(op, dom);
 I = sum(f);
 IExact = sqrt(pi);
 err = abs(I - IExact);
-tol = 8e3*get(f,'epslevel')*get(f,'vscale');
+tol = 1e4*get(f,'epslevel')*get(f,'vscale');
 pass(1) = err < tol;
 
 op = @(x) x.^2.*exp(-x.^2);
