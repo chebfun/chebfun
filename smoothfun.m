@@ -59,7 +59,7 @@ classdef smoothfun < onefun % (Abstract)
                     pref.tech = pref.techPrefs.funquiTech;
                     pref.techPrefs = rmfield(pref.techPrefs, 'funquiTech');
                 else
-                    pref.tech = @chebtech2
+                    pref.tech = @chebtech2;
                 end
             end
 
