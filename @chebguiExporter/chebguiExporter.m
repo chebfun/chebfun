@@ -38,7 +38,9 @@ classdef chebguiExporter
     end
     
     methods
+        
         % Export to an .m-file.
-        toFile(e, guifile, pathname, filename)
+        toFile(e, guifile)
+        
     end
 end

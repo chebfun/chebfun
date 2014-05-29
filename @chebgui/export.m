@@ -69,23 +69,8 @@ if ( strcmp(problemType, 'bvp') )
                 evalin('base', varnames{k});
             end
          
-        case '.m'            
-            [filename, pathname, filterindex] = uiputfile( ...
-                {'*.m', 'M-files (*.m)'; ...
-                '*.*',  'All Files (*.*)'}, ...
-                'Save as', [problemType, '.m']);
-            if ( filename )     % User did not press cancel                
-                try
-                    e = chebguiExporterBVP();
-                    toFile(e, guifile, pathname, filename)
-
-                catch ME
-                    rethrow(ME)
-                    error('Chebgui:Export', ...
-                          ['Error in exporting to .m file. Please make ' ...
-                          'sure there are no syntax errors.']);
-                end
-            end
+        case '.m'
+            toFile(chebguiExporterBVP(), guifile);
         case '.mat'
             varnames = handles.varnames;
             for k = 1:numel(varnames);
@@ -170,21 +155,7 @@ elseif ( strcmp(problemType,'pde') )
             end
 
         case '.m'           
-            [filename, pathname, filterindex] = uiputfile( ...
-                {'*.m','M-files (*.m)'; ...
-                '*.*',  'All Files (*.*)'}, ...
-                'Save as', [problemType,'.m']);
-            if ( filename )     % User did not press cancel.
-                try
-                    
-                    e = chebguiExporterPDE();
-                    toFile(e, guifile, pathname, filename)
-                catch ME
-                    error('Chebgui:Export', ...
-                          ['Error in exporting to .m file. Please make ' ...
-                          'sure there are no syntax errors.']);
-                end
-            end
+            toFile(chebguiExporterPDE(), guifile);
         case '.mat'
             varnames = handles.varnames;
 
@@ -255,25 +226,7 @@ else
             evalin('base', lambdaName);
             
         case '.m'           
-            [filename, pathname, filterindex] = uiputfile( ...
-                {'*.m', 'M-files (*.m)'; ...
-                '*.*',  'All Files (*.*)'}, ...
-                'Save as', 'bvpeig.m');
-            if ( filename )     % User did not press cancel
-                try
-                    
-                    e = chebguiExporterEIG();
-                    toFile(e, guifile, pathname, filename)
-                    
-                catch ME
-                    rethrow(ME)
-                    error('Chebgui:Export', ...
-                        ['Error in exporting to .m file. Please make sure ' ...
-                        'there are no syntax errors.']);
-                    
-
-                end
-            end
+            toFile(chebguiExporterEIG(), guifile);
         case '.mat'
             D = diag(handles.latest.solution); %#ok<NASGU>
             V = handles.latest.solutionT;  %#ok<NASGU>
