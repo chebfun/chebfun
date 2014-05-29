@@ -197,7 +197,7 @@ classdef chebgui
         
     end
     
-    methods( Access = private )
+    methods( Access = public )
        
         % Export a BVP to an .m file
         exportBVP2mfile(guifile, pathname, filename)
