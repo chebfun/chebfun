@@ -593,15 +593,23 @@ classdef chebfunpref < chebpref
             pref.prefList.techPrefs = fd.techPrefs;
         end
 
-        function pref = getDefaults()
+        function pref = getDefaults(prop)
         %GETDEFAULTS   Get default preferences.
         %   PREF = CHEBFUNPREF.GETDEFAULTS() returns a CHEBFUNPREF object with
         %   the preferences set to the currently stored default values.  It is
         %   equivalent to PREF = CHEBFUNPREF().
         %
+        %   VAL = CHEBFUNPREF.GETDEFAULTS(PREF) returns the default value VAL of
+        %   the preference PREF. Second tier-preferences may be referenced via
+        %   either 'tier1.tier2pref' or {'tier1', 'tier2pref'}.
+        %
         % See also GETFACTORYDEFAULTS, SETDEFAULTS.
 
-            pref = chebfunpref();
+            if ( nargin == 0 )
+                pref = chebfunpref();
+            else
+                pref = chebfunpref.manageDefaultPrefs('get', prop);
+            end
         end
 
         function setDefaults(varargin)
@@ -686,6 +694,28 @@ classdef chebfunpref < chebpref
 
             if ( strcmp(varargin{1}, 'get') )
                 varargout{1} = defaultPrefs;
+                if ( nargin > 1 )
+                    prefName = varargin{2};
+                    if ( ischar(prefName) )
+                        idx = strfind(prefName, '.');
+                        % Convert 'tier1.tier2pref' to {'tier1', 'tier2pref'}:
+                        if ( ~isempty(idx) )
+                            idx = idx(1);
+                            prefName = {prefName(1:idx-1), prefName(idx+1:end)};
+                        end
+                    end
+                    if ( iscell(prefName) && ...
+                            isfield(defaultPrefs.(prefName{1}), prefName{2}) )
+                        varargout{1} = defaultPrefs.(prefName{1}).(prefName{2});
+                    elseif ( isfield(defaultPrefs, prefName) )
+                        varargout{1} = defaultPrefs.(prefName);
+                    elseif ( isfield(defaultPrefs.techPrefs, prefName) )
+                        varargout{1} = defaultPrefs.techPrefs.(prefName);
+                    else
+                        error('CHEBFUN:chebfunpref:unknownpref', ...
+                         'Unknown or unassigned property ''%s''.', varargin{2});
+                    end
+                end
             elseif ( strcmp(varargin{1}, 'set-factory') )
                 defaultPrefs = chebfunpref.factoryDefaultPrefs();
             elseif ( strcmp(varargin{1}, 'set') )
