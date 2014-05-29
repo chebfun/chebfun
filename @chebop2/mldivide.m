@@ -138,8 +138,8 @@ elseif ( nargin == 2 || (nargin == 4 && isinf(varargin{2}) && isinf(varargin{1})
      
     %TODO:
 %     % cut trailing coefficients
-%     idy = find( max(abs(X))/max(abs(X(:))) > tol, 1, 'last');
-%     idx = find( max(abs(X),[],2)/max(abs(X(:))) > tol, 1, 'last');
+%     idy = find( max(abs(X))/max(abs(X(:))) > eps, 1, 'last');
+%     idx = find( max(abs(X),[],2)/max(abs(X(:))) > eps, 1, 'last');
 %     if isempty(idx) && ~isempty(idy)
 %         X = X(1:idy,:);
 %     elseif ~isempty(idx) && isempty(idy)
@@ -153,7 +153,7 @@ else
 end
 
 % Form a chebfun2 object.
-u = chebfun2(polyval(rot90(X,2)), rect);
+u = chebfun2( polyval( rot90( X, 2 ) ), rect);
 end
 
 function X = denseSolve(N,f,m,n)
@@ -163,7 +163,8 @@ function X = denseSolve(N,f,m,n)
 %  DENSESOLVE(N,F,M,N), returns a solution matrix of values on a M by N
 %  Chebyshev grid.
 
-[CC,RHS,bb,gg,Px,Py,xsplit,ysplit] = chebop2.constructDiscretisation(N,f,m,n); % Construct discretisation.
+[CC,RHS,bb,gg,Px,Py,xsplit,ysplit] =...
+    chebop2.constructDiscretisation(N,f,m,n); % Construct discretisation.
 
 if ( size(CC,1) == 1 )  % rank-1 PDE operator.
     A = CC{1,1}; B = CC{1,2};
@@ -176,7 +177,8 @@ elseif ( size(CC,1) == 2 )% rank-2 PDE operator.
     
     A = CC{1,1}; B = CC{1,2}; C = CC{2,1}; D = CC{2,2};
     
-    if min(size(bb{1})) > 1 || min(size(bb{2}))>1 || min(size(bb{3}))>1 || min(size(bb{4}))>1
+    if min(size(bb{1})) > 1 || min(size(bb{2}))>1 ||...
+            min(size(bb{3}))>1 || min(size(bb{4}))>1
         xsplit = 0; ysplit = 0;
     end
     
@@ -185,10 +187,12 @@ elseif ( size(CC,1) == 2 )% rank-2 PDE operator.
         if xsplit || ysplit
             % solve subproblems.
             X = chebop2.BartelsStewart(A,B,C,D,RHS,xsplit,ysplit);
+            
+%             debug:
+            norm(A * X * B' + C * X * D' - RHS,inf)
         else
             X = lyap(C\A,(B\D).',-(B\(C\RHS).').');
-            %X = BartelsStewart(A,B,C,D,RHS,xsplit,ysplit);
-            %norm(A * X * B' + C * X * D' - RHS,inf)
+            
         end
     catch
         X = chebop2.BartelsStewart(A,B,C,D,RHS,xsplit,ysplit);% Solve with Sylvester Solver\

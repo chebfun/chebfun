@@ -75,8 +75,14 @@ if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
             % Otherwise its an adaptive call:
             fixedRank = 0;
         end
+        % calculate a tolerance: 
+        pseudoLevel = pref.cheb2Prefs.eps;
+        grid = max( size( op ) ); 
+        vscale = max( op(:) ); 
+        tol = grid.^(2/3) * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
+        
         % Perform GE with complete pivoting:
-        [pivotValue, ignored, rowValues, colValues] = CompleteACA(op, 0);
+        [pivotValue, ignored, rowValues, colValues] = CompleteACA(op, tol);
         % Construct a CHEBFUN2:
         g.pivotValues = pivotValue;
         g.cols = chebfun(colValues, domain(3:4) );
