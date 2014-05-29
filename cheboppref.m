@@ -104,12 +104,26 @@ classdef cheboppref < chebpref
 
     methods
 
-        function outPref = cheboppref(inPref)
+        function outPref = cheboppref(inPref, varargin)
             if ( (nargin == 1) && isa(inPref, 'cheboppref') )
                 outPref = inPref;
                 return
             elseif ( nargin < 1 )
                 inPref = struct();
+            elseif ( ischar(inPref) )
+                if ( nargin == 1 )
+                    error('CHEBFUN:cheboppref:deprecated', ...
+                        ['cheboppref() no longer supports queries of ', ...
+                         'the form cheboppref(''prop'').\n', ...
+                         'Please use cheboppref.getDefaults(''prop'').']);
+                else
+                    error('CHEBFUN:cheboppref:deprecated', ...
+                        ['chebfoppref() no longer assignment ', ...
+                         'via cheboppref(''prop'', val).\n', ...
+                         'Please use cheboppref.setDefaults(''prop'', val).']);
+                end
+            elseif ( nargin > 1 )
+                error('CHEBFUN:cheboppref:inputs', 'Too many input arguments.')
             end
 
             % Initialize default preference values.
@@ -189,15 +203,22 @@ classdef cheboppref < chebpref
             pref = cheboppref(fd);
         end
 
-        function pref = getDefaults()
+        function pref = getDefaults(prop)
         %GETDEFAULTS   Get default preferences.
         %   PREF = CHEBOPPREF.GETDEFAULTS() returns a CHEBOPPREF object with
         %   the preferences set to the currently stored default values.  It is
         %   equivalent to PREF = CHEBOPPREF().
         %
+        %   VAL = CHEBFUNPREF.GETDEFAULTS(PREF) returns the default value VAL of
+        %   the preference PREF.
+        %
         % See also GETFACTORYDEFAULTS, SETDEFAULTS.
 
-            pref = cheboppref();
+            if ( nargin == 0 )
+                pref = cheboppref();
+            else
+                pref = cheboppref.manageDefaultPrefs('get', prop);
+            end
         end
 
         function setDefaults(varargin)
@@ -271,6 +292,15 @@ classdef cheboppref < chebpref
 
             if ( strcmp(varargin{1}, 'get') )
                 varargout{1} = defaultPrefs;
+                if ( nargin > 1 )
+                    prefName = varargin{2};
+                    if ( isfield(defaultPrefs, prefName) )
+                        varargout{1} = defaultPrefs.(prefName);
+                    else
+                        error('CHEBFUN:chebfunpref:unknownpref', ...
+                         'Unknown or unassigned property ''%s''.', varargin{2});
+                    end
+                end
             elseif ( strcmp(varargin{1}, 'set-factory') )
                 defaultPrefs = cheboppref.factoryDefaultPrefs();
             elseif ( strcmp(varargin{1}, 'set') )
