@@ -109,7 +109,7 @@ bc.right = @(u) [u-1 ; diff(u)];
 f = @(u) u.*diff(u)-diff(u, 2)-0.006*diff(u, 4);
 u = pde15s(f, 0:.01:.5, u, bc);
 
-%% Cahn-Hilliard - not working!
+%% Cahn-Hilliard
 close all
 E = 1e-1;
 d = [-1, 1]; x = chebfun('x', d);
@@ -132,8 +132,8 @@ uu = pde15s(f, tt, u, bc, opts);
 
 close all
 d = [-1, 1]; x = chebfun('x', d);
-u = [ chebfun(1, d)  chebfun(1, d) ];
-f = @(t, x, u, v) [ -u + (x + 1).*v + 0.1*diff(u, 2) , ...
+u = [ chebfun(1, d) ; chebfun(1, d) ];
+f = @(t, x, u, v) [ -u + (x + 1).*v + 0.1*diff(u, 2) ; ...
                      u - (x + 1).*v + 0.2*diff(v, 2) ];
 bc.left = @(u, v) [diff(u), diff(v)];  bc.right = bc.left;   % New way
 opts = pdeset('plot', 1);
@@ -144,9 +144,9 @@ uu = pde15s(f, 0:.05:3, u, bc, opts);
 
 close all
 d = [-1, 1]; x = chebfun('x', d);
-u = [ 1-erf(10*(x+0.7)) , 1 + erf(10*(x-0.7)) , chebfun(0, d) ];
-f = @(u, v, w)      [ 0.1*diff(u, 2) - 100*u.*v , ...
-                      0.2*diff(v, 2) - 100*u.*v , ...
+u = [ 1-erf(10*(x+0.7)) ; 1 + erf(10*(x-0.7)) ; chebfun(0, d) ];
+f = @(u, v, w)      [ 0.1*diff(u, 2) - 100*u.*v ; ...
+                      0.2*diff(v, 2) - 100*u.*v ; ...
                      .001*diff(w, 2) + 2*100*u.*v ];                  
 bc = 'neumann';     
 uu = pde15s(f, 0:.1:3, u, bc);
@@ -156,12 +156,12 @@ uu = pde15s(f, 0:.1:3, u, bc);
 close all
 % Crazy nonlinear boundary conditions
 d = [-1, 1]; x = chebfun('x', d);
-u = [ chebfun(1, d)  chebfun(1, d) ];
-f = @(t, x, u, v) [ -u + (x + 1).*v + 0.1*diff(u, 2) , ...
+u = [ chebfun(1, d) ; chebfun(1, d) ];
+f = @(t, x, u, v) [ -u + (x + 1).*v + 0.1*diff(u, 2) ; ...
                      u - (x + 1).*v + 0.2*diff(v, 2) ];
 bc = struct;
-bc.left =  @(t, x, u, v) [diff(u)+t*sin(u)./v,  diff(v)];
-bc.right = @(t, x, u, v) [diff(u),              diff(v).*v+sin(5*pi*t)];
+bc.left =  @(t, x, u, v) [diff(u)+t*sin(u)./v ;  diff(v)];
+bc.right = @(t, x, u, v) [diff(u) ;              diff(v).*v+sin(5*pi*t)];
 uu = pde15s(f, 0:.05:1, u, bc);
 
 %%
@@ -169,7 +169,7 @@ uu = pde15s(f, 0:.05:1, u, bc);
 close all
 % Maxwell's Equations
 d = [-1, 1]; x = chebfun('x', d);
-u = exp(-20*x.^2) .* sin(14*x);  u = [u -u];
+u = exp(-20*x.^2) .* sin(14*x);  u = [u ; -u];
 f = @(u, v) [diff(v) ; diff(u)];
 bc.left = @(u, v) u; bc.right = @(u, v) v;        % New way
 opt = pdeset('eps', 1e-6, 'Ylim', pi/2*[-1 1], 'AbsTol', 1e-6, 'RelTol', 1e-6);
@@ -189,6 +189,8 @@ uu = pde15s(f, 0:.025:.5, u, bcc, opts);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% V4 syntax
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% TODO: These seem to have stopped working..
 
 %% Example 1: Nonuniform advection
   x = chebfun('x',[-1 1]);
