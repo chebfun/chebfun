@@ -61,7 +61,7 @@ b = rand();
 fh = @(x) exp(sin(x))./((1+x).^a.*(1-x).^b);
 f = singfun(fh);
 pass(13) = norm(f.exponents + [a,b], inf) < pref.singPrefs.exponentTol;
-pass(14) = norm(feval(fh,x) - feval(f,x), inf) < 1e2*get(f, 'epslevel');
+pass(14) = norm(feval(fh,x) - feval(f,x), inf) < 1e3*get(f, 'epslevel');
 
 %%
 % Positive fractional exponents
