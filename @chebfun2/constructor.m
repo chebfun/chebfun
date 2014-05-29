@@ -303,6 +303,9 @@ while ( ~isHappy && ~Failure )
     
     % Sample Test:
     if ( sampleTest )
+        % wrap the op with evaluate in case the 'vectorize' flag is on: 
+        op = @(x,y) evaluate( op, x, y, vectorize);
+        
         % Evaluate at points in the domain:
         pass = g.sampleTest(op, tol);
         if ( ~pass )

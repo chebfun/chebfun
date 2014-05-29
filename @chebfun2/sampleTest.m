@@ -1,4 +1,4 @@
-function pass = sampleTest(f, op, tol)
+function pass = sampleTest(f, op, tol, flag)
 %SAMPLETEST   Test an evaluation of input OP against a CHEBFUN2 approximation.
 %   SAMPLETEST(OP, F, TOL) evaluates both the function OP and its
 %   CHEBFUN2 representation F at several points in it's domain. The difference of
