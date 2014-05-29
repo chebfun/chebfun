@@ -80,7 +80,7 @@ I = sum(f);
 IExact = 0.851504493224078; 
 err = abs(I - IExact);
 tol = 1e4*get(f,'epslevel')*get(f,'vscale');
-pass(8) = err < 2*tol;
+pass(8) = err < 10*tol;
 
 op = @(x) 1./x.^2;
 f = unbndfun(op, dom);
@@ -107,7 +107,7 @@ f = unbndfun(op, dom);
 I = sum(f);
 IExact = exp(-3*pi);
 err = abs(I - IExact);
-tol = 1e4*get(f,'epslevel')*get(f,'vscale');
+tol = 5e4*get(f,'epslevel')*get(f,'vscale');
 pass(11) = err < tol;
 
 op = @(x) x.*exp(x);
@@ -132,7 +132,7 @@ f = unbndfun(op, dom);
 I = sum(f);
 IExact = 1/(3*pi);
 err = abs(I - IExact);
-tol = 1e4*get(f,'epslevel')*get(f,'vscale');
+tol = 2e4*get(f,'epslevel')*get(f,'vscale');
 pass(14) = err < tol;
 
 op = @(x) 1./x.^2;

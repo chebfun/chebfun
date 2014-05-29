@@ -91,8 +91,9 @@ gVals = feval(g, x);
 
 opg = @(x) exp(x);
 gExact = opg(x);
-err = gVals - gExact;
-pass(5) = norm(err, inf) < 4e3*get(g,'epslevel').*get(g,'vscale');
+err = norm(gVals - gExact, inf);
+tol = 2e4*get(g,'epslevel').*get(g,'vscale');
+pass(5) = err < tol;
 
 %% Array-valued function:
 op = @(x) [exp(x) x.*exp(x)];

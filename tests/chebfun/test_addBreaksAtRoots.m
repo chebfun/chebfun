@@ -27,6 +27,9 @@ pow1 = -0.5;
 pow2 = -1.2;
 op = @(x) cos(30*x).*((x-dom(1)).^pow1).*((x-dom(2)).^pow2);
 f = chebfun(op, dom, 'exps', [pow1 pow2], 'splitting', 'off');
+if ( length(f) > 1e4 )
+    error('function not resolved');
+end
 g = addBreaksAtRoots(f);
 
 % check values:
