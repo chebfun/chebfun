@@ -112,7 +112,12 @@ elseif ( isa(x, 'chebfun') )
                 'Cannot evaluate along complex-valued CHEBFUN.');
         end
     end
-    
+elseif ( isa(x, 'chebfun2v') ) 
+    components = x.components; 
+    % [TODO]: Check domain and range are compatible? 
+    domain = components{1}.domain;
+    out = chebfun2( @(s,t) feval(f, feval(components{1},s,t),...
+                                        feval(components{2},s,t)), domain);
 else
     error('CHEBFUN2:FEVAL:INPUTS', 'Unrecognized arguments for evaluation.');
     
