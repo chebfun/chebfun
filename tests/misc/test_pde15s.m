@@ -36,7 +36,7 @@ uu = pde15s(f, 0:.05:2, u, 'periodic', opts);
 close all
 d = [-1, 1]; x = chebfun('x', d);
 u = exp(3*sin(pi*x));
-f = @(t, x, u) -(1+0.3*sin(pi*x)).*diff(u) + 1e-6*diff(u, 2);
+f = @(t, x, u) -(1+0.3*sin(pi*x)).*diff(u);
 opts = pdeset('eps', 1e-4, 'abstol', 1e-4, 'reltol', 1e-4, 'plot', 1);
 uu = pde15s(f, 0:.05:2, u, 'periodic', opts);
 
@@ -45,7 +45,7 @@ close all
 d = [-1, 1]; x = chebfun('x', d);
 u = (1-x.^2).*exp(-30*(x+.5).^2);
 f = @(t, x, u) -diff(u)+.002*diff(u, 2);
-opts = pdeset('eps', 1e-4, 'abstol', 1e-4, 'reltol', 1e-4, 'plot', 1);
+opts = pdeset('plot', 1);
 uu = pde15s(f, 0:.05:2, u, 'dirichlet', opts);
 waterfall(uu), shg
 
@@ -128,13 +128,25 @@ E = 1e-1;
 d = [-1, 1]; x = chebfun('x', d);
 u = cos(pi*x)-exp(-6*pi*x.^2);
 plot(u)
-opts = pdeset('eps', 1e-4, 'abstol', 1e-4, 'reltol', 1e-4, 'plot', 1);
+opts = pdeset('plot', 1);
 bc = struct;
 bc.left = @(u) [u+1 ; diff(u)];
 bc.right = @(u) [u+1 ; diff(u)];
 f = @(t, x, u) -diff(u, 4) + diff(u.^3, 2)-diff(u, 2);
-tt = linspace(0, .001, 101);
+tt = linspace(0, .01, 51);
 uu = pde15s(f, tt, u, bc, opts);
+
+%% integral operator:
+
+dom = [-1 1];
+t = 0:.1:4;
+pdefun = @(t,x,u) .02.*diff(u,2)+cumsum(u).*sum(u);
+bc.left = 'dirichlet';
+bc.right = 'dirichlet';
+x = chebfun(@(x) x, dom);
+u0 = (1-x.^2).*exp(-30.*(x+.5).^2);
+opts = pdeset('Eps',1e-6,'Ylim',[0,1.4]);
+[t, u] = pde15s(pdefun, t, u0, bc, opts);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -206,12 +218,15 @@ uu = pde15s(f, 0:.025:.5, u, bcc, opts);
 % TODO: These seem to have stopped working..
 
 %% Example 1: Nonuniform advection
-  x = chebfun('x',[-1 1]);
-  u = exp(3*sin(pi*x));
-  f = @(u,t,x,diff) -(1+0.6*sin(pi*x)).*diff(u);
-  uu = pde15s(f,0:.05:.5,u,'periodic');
+    close all
+    d = [-1, 1]; x = chebfun('x', d);
+    u = exp(3*sin(pi*x));
+    f = @(u,t,x,diff) -(1+0.3*sin(pi*x)).*diff(u);
+    opts = pdeset('eps', 1e-4, 'abstol', 1e-4, 'reltol', 1e-4, 'plot', 1);
+    uu = pde15s(f, 0:.05:2, u, 'periodic', opts);
 
 %% Example 2: Kuramoto-Sivashinsky
+  close all
   d = domain(-1,1);
   x = chebfun('x');
   I = eye(d); D = diff(d);
