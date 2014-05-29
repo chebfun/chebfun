@@ -18,8 +18,8 @@ classdef chebguiExporterBVP < chebguiExporter
     methods (Access = public)
         
         function A = chebguiExporterBVP(varargin)
-            % These objects don't have any properties, so the constructor is
-            % trivial.
+            % Set default file name:
+            A.defaultFileName = 'bvp.m';
         end
         
     end

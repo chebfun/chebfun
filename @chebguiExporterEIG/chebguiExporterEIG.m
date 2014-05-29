@@ -18,8 +18,8 @@ classdef chebguiExporterEIG < chebguiExporter
     methods (Access = public)
         
         function A = chebguiExporterEIG(varargin)
-            % These objects don't have any properties, so the constructor is
-            % trivial.
+            % Set default file name:
+            A.defaultFileName = 'bvpeig.m';
         end
         
     end

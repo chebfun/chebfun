@@ -15,7 +15,14 @@ classdef chebguiExporter
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
+    
+    properties ( Access = public )
+       
+        % Default file name to be saved to
+        defaultFileName
         
+    end
+
     methods ( Abstract = true)
         
         % Export to .m file
