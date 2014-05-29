@@ -91,11 +91,11 @@ else
     V = V(:,1:idx);
     s = s(1:idx);
     h = f;
-    h.cols = Qcols * U * diag(sqrt(s));
-    h.rows = Qrows * V * diag(sqrt(s));
+    h.cols = Qcols * U;
+    h.rows = Qrows * V;
     % [TODO]: PivotValues have very little meaning after this compression step.
-    % What should we do about this?
-    h.pivotValues = ones(length(s),1);
+    % For now we assign the singular values as the pivot values. 
+    h.pivotValues = s;
 end
 
 end
