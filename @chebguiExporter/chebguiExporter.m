@@ -28,7 +28,7 @@ classdef chebguiExporter
     methods ( Abstract = true )
         
         % Export to .m file
-        chebgui2mfile(exporter, guifile, fid)
+        chebgui2mfile(exporter, guifile, fid, expInfo)
         
     end
     
@@ -111,7 +111,7 @@ classdef chebguiExporter
         % Export to an .m-file.
         toFile(e, guifile)
         
-        function exportInfo(e, fid, filename)
+        function writeHeader(e, fid, filename)
             % The first few lines of exported .m-files.
             
             % Access usernames in different ways, depending on whether are
