@@ -35,38 +35,6 @@ classdef chebguiExporterBVP < chebguiExporter
             e = chebguiExporterBVP(varargin{:});
         end
         
-        function printDescription(fid, expInfo)
-            
-            % Extract info from the expInfo struct:
-            deInput = expInfo.deInput;
-            indVarNameSpace = expInfo.indVarNameSpace;
-            dom = expInfo.dom;
-            bcInput = expInfo.bcInput;
-            periodic = expInfo.periodic;
-            
-            % Print a description of the BVP:
-            fprintf(fid, '%% Solving\n');
-            for k = 1:numel(deInput)
-                fprintf(fid, '%%   %s,\n', deInput{k});
-            end
-            fprintf(fid, '%% for %s in %s', indVarNameSpace, dom);
-            if ( ~isempty(bcInput{1}) )
-                fprintf(fid, ', subject to\n%%');
-                for k = 1:numel(bcInput)
-                    fprintf(fid, '   %s', bcInput{k});
-                    if ( (k ~= numel(bcInput)) && (numel(bcInput) > 1) )
-                        fprintf(fid, ',\n%%');
-                    end
-                end
-                fprintf(fid, '.\n');
-            elseif periodic
-                fprintf(fid, ', subject to periodic boundary conditions.\n\n');
-            else
-                fprintf(fid, '.\n');
-            end
-            
-        end
-        
         function printSolver(fid)
             %PRINTSOLVER    Print the solution step when exporting
             fprintf(fid,'\n%%%% Solve the problem!');

@@ -61,11 +61,6 @@ else
     periodic = false;
 end
 
-%% Information related to options set-up:
-% Option for tolerance
-tolInput = guifile.tol;
-
-
 %% Fill up the expInfo struct
 expInfo.dom = dom;
 expInfo.deInput = deInput;

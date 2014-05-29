@@ -35,5 +35,6 @@ classdef chebguiExporterEIG < chebguiExporter
             e = chebguiExporterEIG(varargin{:}); 
         end
         
+        
     end
 end
