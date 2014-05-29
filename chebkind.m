@@ -1,12 +1,17 @@
 function varargout = chebkind(kind)
 %CHEBKIND   Set the default Chebyshev grid type.
+%   CHEBKIND 1 or CHEBKIND 2 globally sets the default grid used by the CHERBFUN
+%   constructor to be Chebyshev points of the first or second kind,
+%   respectively, and is equivalent to setting the default 'tech' preference in
+%   CHEBFUNPREF to be either @chebtech1 or @chebtech2.
 %
-% See also CHEBTECH1, CHEBTECH2, CHEBFUNPREF.
+%   CHEBKIND by itself returns the current default Chebyshev grid type. If the
+%   default technology is not Chebyshev, then zero is returned.
+%
+% See also CHEBTECH1, CHEBTECH2, CHEBFUNPREF, CHEBFUNPREF.SETDEFAULTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
-
-% TODO: Document.
 
 if ( nargin == 0 )
     tech = feval(chebfunpref().tech);
