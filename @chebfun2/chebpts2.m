@@ -30,9 +30,6 @@ if ( nargin == 1 )
 end
 
 tech = chebfunpref().tech(); 
-if ( ischar(tech) )
-    tech = eval(tech);
-end
 
 x = tech.chebpts(nx); 
 y = tech.chebpts(ny); 

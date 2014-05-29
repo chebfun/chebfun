@@ -14,9 +14,6 @@ function varargout = vals2coeffs( U, S, V )
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 tech = chebfunpref().tech();
-if ( ischar(tech) )
-    tech = eval(tech);
-end
 
 if ( nargin == 1 )
     U = tech.vals2coeffs( U ); 
