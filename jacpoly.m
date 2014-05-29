@@ -34,13 +34,9 @@ end
 % Force a CHEBTECH basis.
 defaultPref = chebfunpref();
 pref = defaultPref;
-
-if ( isa(pref.tech, 'function_handle') )
-    pref.tech = func2str(pref.tech);
-end
-
-if ( ~strncmp(pref.tech, 'chebtech', 8) )
-    pref.tech = 'chebtech2';
+tech = feval(pref.tech);
+if ( ~isa(tech, 'chebtech') )
+    pref.tech = @chebtech2;
 end
 
 % Useful values:
@@ -48,7 +44,7 @@ nMax = max(n);
 nMax1 = nMax + 1;
 domIn = dom;
 dom = dom([1, end]);
-x = chebpts(nMax1);
+x = chebpts(nMax1, 2);
 
 %% Recurrence relation:
 

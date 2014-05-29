@@ -52,13 +52,9 @@ end
 % Force a CHEBTECH basis.
 defaultPref = chebfunpref();
 pref = defaultPref;
-
-if ( isa(pref.tech, 'function_handle') )
-    pref.tech = func2str(pref.tech);
-end
-
-if ( ~strncmp(pref.tech, 'chebtech', 8) )
-    pref.tech = 'chebtech2';
+tech = feval(pref.tech);
+if ( ~isa(tech, 'chebtech') )
+    pref.tech = @chebtech2;
 end
 
 % Useful values:
@@ -142,7 +138,7 @@ end
 % Construct CHEBFUN from coeffs:
 p = chebfun(C, dom, pref, 'coeffs');              
 
-if ( numel(domIn) > 2)
+if ( numel(domIn) > 2 )
     p = restrict(p, domIn);
 end
 
