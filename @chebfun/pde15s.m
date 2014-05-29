@@ -120,13 +120,7 @@ if ( ~isempty(opt.PlotStyle) )
     plotOpts = opt.PlotStyle;
 end
 
-% Experimental feature for coupled ode/pde systems: (An entry equal to 1 denotes
-% that the corresponding variable appears with a time derivative. 0 otherwise.)
-if ( isfield(opt, 'PDEflag') )
-    pdeFlag = opt.PDEflag;
-else
-    pdeFlag = true;
-end
+userMassSet = false;
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%  EVENT & PLOTTING  SETUP  %%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -532,10 +526,17 @@ end
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% Support for coupled BVP-PDEs! %%%%%%%%%%%%%%%%%%%%%%%
-if ( numel(pdeFlag) == 1 )
-    pdeFlag = repmat(pdeflag, 1, SYSSIZE);
+% Experimental feature for coupled ode/pde systems: (An entry equal to 1 denotes
+% that the corresponding variable appears with a time derivative. 0 otherwise.)
+if ( isfield(opt, 'PDEflag') && ~isempty(opt.PDEflag) )
+    pdeFlag = opt.PDEflag;
+else
+    pdeFlag = true;
 end
-userMassSet = false;
+if ( numel(pdeFlag) == 1 )
+    pdeFlag = repmat(pdeFlag, 1, SYSSIZE);
+end
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% MISC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -546,7 +547,7 @@ uOut = cell(1, numel(tt));
 uOut{1} = uCurrent;
 
 % Initialise variables for ONESTEP():
-B = []; q = []; rows = []; M = []; n = [];
+B = []; q = []; rows = []; M = []; P = []; n = [];
 
 % Set the preferences:
 % TODO: These are no longer used?
