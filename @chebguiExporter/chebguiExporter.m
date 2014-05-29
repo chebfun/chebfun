@@ -23,7 +23,7 @@ classdef chebguiExporter
         
     end
 
-    methods ( Abstract = true)
+    methods ( Abstract = true )
         
         % Export to .m file
         chebgui2mfile(exporter, guifile, pathname, filename)
@@ -35,6 +35,29 @@ classdef chebguiExporter
         % Make a CHEBGUIEXPORTER. (Constructor shortcut)
         e = make(varargin);
         
+    end
+    
+    methods ( Static = true )
+        function obj = constructor(type)
+            % Constructor for the CHEBGUIEXPORTER class.
+            
+            % Return the desired type of CHEBGUIEXPORTER
+            switch type
+                case 'bvp'
+                    obj = chebguiExporterBVP;
+                
+                case 'eig'
+                    obj = chebguiExporterEIG;
+                    
+                case 'pde'
+                    obj = chebguiExporterPDE;
+                    
+                otherwise
+                    error('CHEBFUN:CHEBGUIEXPORTER:constructor', ...
+                        'Unknown type for CHEBGUIEXPORTER constructor.')
+            end
+            
+        end
     end
     
     methods

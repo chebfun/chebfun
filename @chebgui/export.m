@@ -69,8 +69,6 @@ if ( strcmp(problemType, 'bvp') )
                 evalin('base', varnames{k});
             end
          
-        case '.m'
-            toFile(chebguiExporterBVP(), guifile);
         case '.mat'
             varnames = handles.varnames;
             for k = 1:numel(varnames);
@@ -154,8 +152,6 @@ elseif ( strcmp(problemType,'pde') )
                 evalin('base', varnames{k});
             end
 
-        case '.m'           
-            toFile(chebguiExporterPDE(), guifile);
         case '.mat'
             varnames = handles.varnames;
 
@@ -225,8 +221,6 @@ else
             assignin('base', lambdaName, d);
             evalin('base', lambdaName);
             
-        case '.m'           
-            toFile(chebguiExporterEIG(), guifile);
         case '.mat'
             D = diag(handles.latest.solution); %#ok<NASGU>
             V = handles.latest.solutionT;  %#ok<NASGU>

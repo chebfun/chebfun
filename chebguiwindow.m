@@ -1178,7 +1178,8 @@ end
 % --------------------------------------------------------------------
 function menu_exportmfile_Callback(hObject, eventdata, handles)
 
-export(handles.guifile, handles, '.m')
+% Call the button_export callback method.
+button_export_Callback(hObject, eventdata, handles)
 
 end
 
@@ -1496,7 +1497,11 @@ end
 
 % --- Executes on button press in button_export.
 function button_export_Callback(hObject, eventdata, handles)
-    export(handles.guifile,handles, '.m');
+    % Create a CHEBGUIEXPORTER object of the correct type:
+    e = chebguiExporter.constructor(handles.guifile.type);
+    
+    % Call the export method of the E object:
+    toFile(e, handles.guifile)
 end
 
 
