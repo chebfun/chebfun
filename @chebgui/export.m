@@ -184,7 +184,10 @@ elseif ( strcmp(problemType,'pde') )
                 'Save as', [problemType,'.m']);
             if ( filename )     % User did not press cancel.
                 try
-                    exportPDE2mfile(guifile, pathname, filename)
+                    
+                    e = chebguiExporterPDE();
+                    chebgui2mfile(e, guifile, pathname, filename)
+
                     % Open the new file in the editor
                     open([pathname, filename])
                 catch ME
@@ -269,13 +272,19 @@ else
                 'Save as', 'bvpeig.m');
             if ( filename )     % User did not press cancel
                 try
-                    exportEIG2mfile(guifile, pathname, filename, handles)
+                    
+                    e = chebguiExporterEIG();
+                    chebgui2mfile(e, guifile, pathname, filename)
+                    
                     % Open the new file in the editor
                     open([pathname, filename])
                 catch ME
+                    rethrow(ME)
                     error('Chebgui:Export', ...
                         ['Error in exporting to .m file. Please make sure ' ...
                         'there are no syntax errors.']);
+                    
+
                 end
             end
         case '.mat'

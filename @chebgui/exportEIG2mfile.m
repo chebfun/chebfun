@@ -155,16 +155,20 @@ if ( ~isempty(rhsString) )
     Idisc = blkdiag(Idisc{:});
     
     % Compare the discretizations to see whether they are the same
-    opDifference = Bdisc-Idisc;
-    opSum = Bdisc + Idisc;
-    
-    if ( isempty(nonzeros(opDifference)) )
-        generalized = 0;
-    end
+    if ( size(Bdisc, 1) ~= size(Bdisc, 2) )
+        generalized = 1;
+    else
 
-    if ( isempty(nonzeros(opSum)) )
-        generalized = 0;
-        A = -A;
+        opDifference = Bdisc - Idisc;
+        opSum = Bdisc + Idisc;
+        if ( isempty(nonzeros(opDifference)) )
+            generalized = 0;
+        end
+
+        if ( isempty(nonzeros(opSum)) )
+            generalized = 0;
+            A = -A;
+        end
     end
 else
     generalized = 0;
