@@ -34,7 +34,14 @@ end
 % Force a CHEBTECH basis.
 defaultPref = chebfunpref();
 pref = defaultPref;
-pref.tech = 'chebtech';    
+
+if ( isa(pref.tech, 'function_handle') )
+    pref.tech = func2str(pref.tech);
+end
+
+if ( ~strncmp(pref.tech, 'chebtech', 8) )
+    pref.tech = 'chebtech2';
+end
 
 % Useful values:
 nMax = max(n);
@@ -71,13 +78,10 @@ C = fliplr(C);                      % C is ordered low to high.
 % Construct CHEBFUN from coeffs:
 p = chebfun(C, dom, pref, 'coeffs');   
 
-if ( ~strcmp(defaultPref.tech, 'chebtech') )
-    % Construct a CHEBFUN of the approprate form by evaluating p:
-    p = chebfun(@(x) feval(p, x), domIn);
-elseif ( numel(domIn) > 2 )
+if ( numel(domIn) > 2)
     p = restrict(p, domIn);
 end
-    
+
 % Adjust orientation:
 if ( size(n, 1) > 1 )
    p = p.'; 
