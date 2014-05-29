@@ -85,6 +85,8 @@ switch ( lower(propName) )
         cg.options.fixYaxisUpper = val;
     case 'numeigs'
         cg.options.numeigs = val;
+    case 'discretization'
+        cg.options.discretization = val;
     otherwise
         error('CHEBGUI:set:propname',...
             [propName,' is not a valid chebgui property.'])

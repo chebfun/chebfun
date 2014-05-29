@@ -129,6 +129,9 @@ set(handles.button_solve,'BackgroundColor',[43 129 86]/256);
 % Ensure that we have a light-grey color in background
 set(handles.mainWindow,'BackgroundColor', 0.9*[1 1 1]);
 
+% Default discretization is colloc2
+handles.guifile.options.discretization = @colloc2;
+
 % Update handles structure
 guidata(hObject, handles);
 
@@ -1175,13 +1178,15 @@ end
 % --------------------------------------------------------------------
 function menu_exportmfile_Callback(hObject, eventdata, handles)
 
-export(handles.guifile, handles, '.m')
+% Call the button_export callback method to ensure they both do the same.
+button_export_Callback(hObject, eventdata, handles)
 
 end
 
 function menu_exportchebgui_Callback(hObject, eventdata, handles)
 
-export(handles.guifile, handles, 'GUI')
+% Call the export method of the CHEBGUIEXPORTER class:
+chebguiExporter.toChebgui(handles.guifile)
 
 end
 
@@ -1493,7 +1498,11 @@ end
 
 % --- Executes on button press in button_export.
 function button_export_Callback(hObject, eventdata, handles)
-    export(handles.guifile,handles, '.m');
+    % Create a CHEBGUIEXPORTER object of the correct type:
+    e = chebguiExporter.constructor(handles.guifile.type);
+    
+    % Call the export method of the E object:
+    toFile(e, handles.guifile)
 end
 
 
@@ -2226,4 +2235,29 @@ if ( ispc && bgColorIsDefault )
     set(hObject, 'BackgroundColor', 'white');
 end
 
+end
+
+
+% --- Executes when selected object is changed in panel_discretization.
+function panel_discretization_SelectionChangeFcn(hObject, eventdata, handles)
+% hObject    handle to the selected object in panel_discretization 
+% eventdata  structure with the following fields (see UIBUTTONGROUP)
+%	EventName: string 'SelectionChanged' (read only)
+%	OldValue: handle of the previously selected object or empty if none was selected
+%	NewValue: handle of the currently selected object
+% handles    structure with handles and user data (see GUIDATA)
+
+% Change the discretization stored in handles.guifile.options based on the new
+% selection
+newDisc = get(eventdata.NewValue,'String');
+
+if ( strcmp(newDisc, get(handles.button_Collocation, 'String')) )
+    handles.guifile.options.discretization = @colloc2;
+else
+    handles.guifile.options.discretization = @ultraS;
+end
+
+
+% Update the hObject
+guidata(hObject, handles);
 end

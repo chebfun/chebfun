@@ -16,19 +16,6 @@ end
 % Exporting a BVP
 if ( strcmp(problemType, 'bvp') )
     switch exportType
-        case 'GUI'
-            prompt = 'Enter the name of the chebgui variable:';
-            name = 'Export GUI';
-            numlines = 1;
-            defaultAnswer ='chebg';
-            options.Resize ='on';
-            options.WindowStyle ='modal';
-            
-            answer = inputdlg(prompt, name, numlines, {defaultAnswer}, options);
-            
-            if ( ~isempty(answer) )
-                assignin('base', answer{1}, handles.guifile);
-            end
         case 'Workspace'
             numlines = 1;
             options.Resize ='on';
@@ -69,31 +56,6 @@ if ( strcmp(problemType, 'bvp') )
                 evalin('base', varnames{k});
             end
          
-        case '.m'            
-            [filename, pathname, filterindex] = uiputfile( ...
-                {'*.m', 'M-files (*.m)'; ...
-                '*.*',  'All Files (*.*)'}, ...
-                'Save as', [problemType, '.m']);
-            if ( filename )     % User did not press cancel
-                % TODO: Should be dealt with earlier
-                if get(handles.button_Collocation, 'Value')
-                    guifile.options.discretization = @colloc2;
-                else
-                    guifile.options.discretization = @ultraS;
-                end
-                
-                try
-                    e = chebguiBVPexporter();
-                    chebgui2mfile(e, guifile, pathname, filename)
-
-                    % Open the new file in the editor
-                    open([pathname, filename])
-                catch ME
-                    error('Chebgui:Export', ...
-                          ['Error in exporting to .m file. Please make ' ...
-                          'sure there are no syntax errors.']);
-                end
-            end
         case '.mat'
             varnames = handles.varnames;
             for k = 1:numel(varnames);
@@ -110,19 +72,6 @@ if ( strcmp(problemType, 'bvp') )
 % Exporting a PDE
 elseif ( strcmp(problemType,'pde') )
     switch exportType
-        case 'GUI'
-            prompt = 'Enter the name of the chebgui variable:';
-            name = 'Export GUI';
-            numlines = 1;
-            defaultAnswer ='chebg';
-            options.Resize ='on';
-            options.WindowStyle ='modal';
-            
-            answer = inputdlg(prompt, name, numlines, {defaultAnswer}, options);
-            
-            if ( ~isempty(answer) )
-                assignin('base', answer{1}, handles.guifile);
-            end
         case 'Workspace'           
             varnames = handles.varnames;
             nv = numel(varnames);
@@ -177,22 +126,6 @@ elseif ( strcmp(problemType,'pde') )
                 evalin('base', varnames{k});
             end
 
-        case '.m'           
-            [filename, pathname, filterindex] = uiputfile( ...
-                {'*.m','M-files (*.m)'; ...
-                '*.*',  'All Files (*.*)'}, ...
-                'Save as', [problemType,'.m']);
-            if ( filename )     % User did not press cancel.
-                try
-                    exportPDE2mfile(guifile, pathname, filename)
-                    % Open the new file in the editor
-                    open([pathname, filename])
-                catch ME
-                    error('Chebgui:Export', ...
-                          ['Error in exporting to .m file. Please make ' ...
-                          'sure there are no syntax errors.']);
-                end
-            end
         case '.mat'
             varnames = handles.varnames;
 
@@ -214,19 +147,6 @@ elseif ( strcmp(problemType,'pde') )
 % Exporting an EIG problem.
 else
     switch exportType
-        case 'GUI'
-            prompt = 'Enter the name of the chebgui variable:';
-            name = 'Export GUI';
-            numlines = 1;
-            defaultAnswer ='chebg';
-            options.Resize ='on';
-            options.WindowStyle ='modal';
-            
-            answer = inputdlg(prompt, name, numlines, {defaultAnswer}, options);
-            
-            if ( ~isempty(answer) )
-                assignin('base', answer{1}, handles.guifile);
-            end
         case 'Workspace'           
             prompt = {'Eigenvalues', 'Eigenmodes'};
             name = 'Export to workspace';
@@ -262,22 +182,6 @@ else
             assignin('base', lambdaName, d);
             evalin('base', lambdaName);
             
-        case '.m'           
-            [filename, pathname, filterindex] = uiputfile( ...
-                {'*.m', 'M-files (*.m)'; ...
-                '*.*',  'All Files (*.*)'}, ...
-                'Save as', 'bvpeig.m');
-            if ( filename )     % User did not press cancel
-                try
-                    exportEIG2mfile(guifile, pathname, filename, handles)
-                    % Open the new file in the editor
-                    open([pathname, filename])
-                catch ME
-                    error('Chebgui:Export', ...
-                        ['Error in exporting to .m file. Please make sure ' ...
-                        'there are no syntax errors.']);
-                end
-            end
         case '.mat'
             D = diag(handles.latest.solution); %#ok<NASGU>
             V = handles.latest.solutionT;  %#ok<NASGU>

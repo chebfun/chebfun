@@ -1,5 +1,5 @@
-classdef chebguiBVPexporter
-%CHEBGUIBVPEXPORTER   Export a BVP from CHEBGUI.
+classdef chebguiExporterBVP < chebguiExporter
+%CHEBGUIEXPORTERBVP   Export a BVP from CHEBGUI.
 %   This is a an concrete implementation of the class CHEBGUIEXPORTER, which
 %   exports BVPs from CHEBGUI to .m-files, to the workspace, or to a .chebgui
 %   file. It is not intended to be called directly by the end user.
@@ -17,9 +17,9 @@ classdef chebguiBVPexporter
         
     methods (Access = public)
         
-        function A = chebguiBVPexporter(varargin)
-            % These objects don't have any properties, so the constructor is
-            % trivial.
+        function A = chebguiExporterBVP(varargin)
+            % Set default file name:
+            A.defaultFileName = 'bvp.m';
         end
         
     end
@@ -29,7 +29,7 @@ classdef chebguiBVPexporter
         
         function e = make(varargin)
             % Factory method.
-            e = chebguiBVPexporter(varargin{:}); 
+            e = chebguiExporterBVP(varargin{:}); 
         end
         
     end
