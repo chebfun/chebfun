@@ -34,7 +34,7 @@ end
 % problem is the output itself, while in a Newton iteration, we have to add the
 % output of the LINOP solution to the current guess. Thus, flip the signs of the
 % values of L.constraint:
-L.constraint = flipSigns(L.constraint);
+L.constraint = -L.constraint;
 
 % Solutions to the linearized problems need to be more accurate than the
 % nonlinear iteration tolerance.
@@ -47,7 +47,7 @@ u = linsolve(L, rhs, linpref);
 % Norm of residual:
 normRes = norm(L*u - rhs, 'fro');
 
-if ( nargin > 4 )
+if ( nargin > 3 )
     % Print information after linear problem has been solved:
     displayInfo('linear', u, normRes, pref)
 end

@@ -34,6 +34,27 @@ classdef chebfun
 % Floater-Hormann scheme [Numer. Math. 107, 315-331 (2007)].). CHEBFUN(F, N) or
 % CHEBFUN(F, N, 'chebkind', 2) is equivalent to CHEBFUN(feval(F, chebpts(N)).
 %
+% CHEBFUN(C, 'coeffs'), where C is an Nx1 matrix, constructs a CHEBFUN object
+% representing the polynomial C(1) T_N(x) + ... + C(N) T_1(x) + C(N+1) T_0(x),
+% where T_K(x) denotes the K-th Chebyshev polynomial. This is equivalent to
+% CHEBFUN({{[], C}}). C may also be an NxM matrix, as described below.
+%
+% CHEBFUN(F, ...), where F is an NxM matrix or an array-valued function handle,
+% returns an "array-valued" CHEBFUN. For example,
+%   CHEBFUN(rand(14, 2))
+% or
+%   CHEBFUN(@(x) [sin(x), cos(x)])
+% Note that each column in an array-valued CHEBFUN object is discretized in the
+% same way (i.e., the same breakpoint locations and the same underlying
+% representation). For more details see ">> help quasimatrix". Note the
+% difference between
+%   CHEBFUN(@(x) [sin(x), cos(x)], [-1, 0, 1])
+% and
+%   CHEBFUN({@(x) sin(x), @(x) cos(x)}, [-1, 0, 1]).
+% The former constructs an array-valued CHEBFUN with both columns defined on the
+% domain [-1, 0, 1]. The latter defines a single column CHEBFUN which represents
+% sin(x) in the interval [-1, 0) and cos(x) on the interval (0, 1]. 
+%
 % CHEBFUN({F1,...,Fk}, ENDS) constructs a piecewise smooth CHEBFUN which
 % represents Fj on the interval [ENDS(j), END(j+1)]. Each entry Fj may be a
 % string, function handle, or vector of doubles. For example
@@ -55,26 +76,10 @@ classdef chebfun
 % computing the first N Chebyshev coefficients from their integral form, rather
 % than by interpolation at Chebyshev points.
 %
-% CHEBFUN(F, ...), where F is an NxM matrix or an array-valued function handle,
-% returns an "array-valued" CHEBFUN. For example,
-%   CHEBFUN(rand(14, 2))
-% or
-%   CHEBFUN(@(x) [sin(x), cos(x)])
-% Note that each column in an array-valued CHEBFUN object is discretized in the
-% same way (i.e., the same breakpoint locations and the same underlying
-% representation). For more details see ">> help quasimatrix". Note the
-% difference between
-%   CHEBFUN(@(x) [sin(x), cos(x)], [-1, 0, 1])
-% and
-%   CHEBFUN({@(x) sin(x), @(x) cos(x)}, [-1, 0, 1]).
-% The former constructs an array-valued CHEBFUN with both columns defined on the
-% domain [-1, 0, 1]. The latter defines a single column CHEBFUN which represents
-% sin(x) in the interval [-1, 0) and cos(x) on the interval (0, 1]. 
-%
 % See also CHEBFUNPREF, CHEBPTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % CHEBFUN Class Description:
@@ -363,7 +368,7 @@ classdef chebfun
         out = kron(f, g)
         
         % Length of a CHEBFUN.
-        out = length(f);
+        [out, out2] = length(f);
         
         % Return Legendre coefficients of a CHEBFUN.
         c_leg = legpoly(f, n)

@@ -114,9 +114,8 @@ classdef unbndfun < classicfun
                 lVal = feval(op, -1);
                 rVal = feval(op, 1);
                 if ( any(isinf([lVal rVal])) )
-                    % TODO: Why a pole and not a 'sing'?
-                    pref.singPrefs.singType = {'pole', 'pole'};
-                    pref.enableSingularityDetection = true;
+                    singType = pref.singPrefs.defaultSingType;
+                    pref.singPrefs.singType = {singType, singType};
                 end
             
             else
@@ -128,9 +127,7 @@ classdef unbndfun < classicfun
                 % using the forward map, i.e., UNBNDMAP.FOR().
                 ind = isinf(domain);
                 pref.singPrefs.exponents(ind) = -pref.singPrefs.exponents(ind);
-                if ( any(pref.singPrefs.exponents) )
-                    pref.enableSingularityDetection = true;
-                end
+
             end
             
             % Call the ONEFUN constructor:
@@ -213,4 +210,3 @@ classdef unbndfun < classicfun
         out = sum(f, dim)
     end    
 end
-   

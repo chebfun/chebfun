@@ -8,9 +8,10 @@ end
 p = chebfunpref();
 chebfunpref.setDefaults('factory')
 
+warnState = warning('off', 'CHEBFUN:blowup:deprecated');
 try
     % Testing takes place inside this TRY CATCH.
-   
+    
     pass(1) = blowup() == 0;
     
     pass(2) = blowup('on') == 0;
@@ -37,17 +38,22 @@ try
     err = norm(f(x) - F(x), inf);
     tol = 1e2*epslevel(f).*vscale(f);
     pass(8) = err < tol;
-    
+
     pass(9) = blowup('off') == 2;
     
     pass(10) = blowup() == 0;
-    
+        
 catch ME
+    % Reset preferences and warning state
     chebfunpref.setDefaults(p);
+    warning(warnState);
+    
+    % Rethrow error:
     rethrow(ME)
 end
 
 % Return to default settings:
-chebfunpref.setDefaults(p)
+chebfunpref.setDefaults(p);
+warning(warnState);
 
 end

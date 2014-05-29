@@ -127,8 +127,6 @@ classdef (InferiorClasses = {?double}) chebop
         rbc = [];       % Right boundary condition(s)
         bc = [];        % Other/internal/mixed boundary conditions
         init = [];      % Initial guess of a solution
-        % Default discretization for linear(ized) problems:
-        discretizationType = @colloc2;
     end
     
     %% CONSTRUCTOR:
@@ -196,7 +194,7 @@ classdef (InferiorClasses = {?double}) chebop
             %   conditions than simply accessing the .lbc field, or using standard
             %   subsref.
             
-            N.lbc = parseBC(N, val);            
+            N.lbc = parseBC(N, val, 'lrbc');            
         end
         
         function N = set.rbc(N, val)
@@ -205,7 +203,7 @@ classdef (InferiorClasses = {?double}) chebop
             %   conditions than simply accessing the .rbc field, or using standard
             %   subsref.
             
-            N.rbc = parseBC(N, val);
+            N.rbc = parseBC(N, val, 'lrbc');
         end
         
         function N = set.bc(N, val)
@@ -220,13 +218,13 @@ classdef (InferiorClasses = {?double}) chebop
             % Do this in a separate method for clarity.
             if ( isstruct(val) )
                 if ( isfield(val,'left') )
-                    N.lbc = parseBC(N, val.left); %#ok<MCSUP>
+                    N.lbc = parseBC(N, val.left, 'lrbc'); %#ok<MCSUP>
                 end
                 if ( isfield(val, 'right') )
-                    N.rbc = parseBC(N, val.right); %#ok<MCSUP>
+                    N.rbc = parseBC(N, val.right, 'lrbc'); %#ok<MCSUP>
                 end
                 if ( isfield(val, 'other') )
-                    N.bc = parseBC(N, val.other);
+                    N.bc = parseBC(N, val.other, 'bc');
                 end
                 
             elseif ( strcmpi(val, 'periodic') )
@@ -239,13 +237,13 @@ classdef (InferiorClasses = {?double}) chebop
                 % V4 style keywords and numeric settings are understood to
                 % apply to both ends.
                 N.bc = [];
-                result = parseBC(N, val);
+                result = parseBC(N, val, 'bc');
                 N.lbc = result; %#ok<MCSUP>
                 N.rbc = result; %#ok<MCSUP>
                 
             else
                 % A proper function was supplied.
-                N.bc = parseBC(N, val);
+                N.bc = parseBC(N, val, 'bc');
                 
             end
             
@@ -308,7 +306,7 @@ classdef (InferiorClasses = {?double}) chebop
         varargout = eigs(N, varargin)
         
         % Linearize a CHEBOP around a CHEBFUN u.
-        [L, res, isLinear] = linearize(N, u, x, flag);
+        [L, res, isLinear, u] = linearize(N, u, x, flag);  
         
         %\   Chebop backslash.
         u = mldivide(N, rhs, pref)
@@ -328,15 +326,10 @@ classdef (InferiorClasses = {?double}) chebop
         % Find selected eigenvalues and eigenfunctions of a linear CHEBOP.
         varargout = eig(varargin);
         
-        % Parse the input for setting a BC.
-        result = parseBC(N, BC)
-        
     end
     
-    %% STATIC HIDDEN METHODS:
-    
-    methods ( Static = true, Hidden = true )
-        % TODO: These should be private methods as well
+    %% STATIC HIDDEN METHODS:       
+    methods ( Static = true, Access = private )
         
         % Controls information displayed for Newton iterations
         [displayFig, displayTimer] = displayInfo(mode, varargin);
@@ -348,25 +341,30 @@ classdef (InferiorClasses = {?double}) chebop
         % Display at the start of Newton iteration.
         [displayFig, displayTimer] = displayInfoInit(u,pref);
         
-        % Display during Newton iteration.
-        displayInfoIter(u, delta, iterNo, normdu, cFactor, errEst, lendu, ...
-            lambda, lenu, displayFig, displayTimer, pref);
+        % Display during Newton iteration.        
+        displayTimer = displayInfoIter(u, delta, iterNo, normdu, cFactor, ...
+            errEst, lendu, lambda, lenu, displayFig, displayTimer, pref);
         
-        % Display special information for linear problems
+        % Display special information for linear problems.
         displayInfoLinear(u, normRes, pref)
-        
-    end
-    
-    
-    %% STATIC METHODS:
-    
-    methods ( Static = true )
-        % TODO: These should be private methods as well
-        
+
         % Solve a linear problem posed with CHEBOP.
         [u, info] = solvebvpLinear(L, rhs, residual, displayInfo, pref)
         
     end
     
+    methods ( Access = private )
+
+        % Find damped Newton step.
+        [u, dampingInfo] = dampingErrorBased(N, u, rhs, delta, L, ...
+            disc, dampingInfo)
+        
+        % Parse boundary conditions for CHEBOP object.
+        result = parseBC(N, BC, type)
+        
+        % Solve a nonlinear problem posed with CHEBOP
+        [u, info] = solvebvpNonlinear(N, rhs, L, u0, res, pref, displayInfo)
+        
+    end
 end
 

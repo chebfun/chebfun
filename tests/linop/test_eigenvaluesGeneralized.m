@@ -4,7 +4,7 @@ if ( nargin == 0 )
     pref = cheboppref();
 end
 
-tol = 2e-9;
+tol = 6e-9;
 
 dom = [-1, 1];
 D = operatorBlock.diff(dom);
