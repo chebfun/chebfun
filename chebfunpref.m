@@ -327,12 +327,26 @@ classdef chebfunpref < chebpref
 
     methods
 
-        function outPref = chebfunpref(inPref)
+        function outPref = chebfunpref(inPref, varargin)
             if ( (nargin == 1) && isa(inPref, 'chebfunpref') )
                 outPref = inPref;
                 return
             elseif ( nargin < 1 )
                 inPref = struct();
+            elseif ( ischar(inPref) )
+                if ( nargin == 1 )
+                    error('CHEBFUN:chebfunpref:deprecated', ...
+                        ['chebfunpref() no longer supports queries of ', ...
+                         'the form chebfunpref(''prop'').\n', ...
+                         'Please use chebfunpref.getDefaults(''prop'').']);
+                else
+                    error('CHEBFUN:chebfunpref:deprecated', ...
+                        ['chebfunpref() no longer assignment ', ...
+                         'via chebfunpref(''prop'', val).\n', ...
+                         'Please use chebfunpref.setDefaults(''prop'', val).']);
+                end
+            elseif ( nargin > 1 )
+                error('CHEBFUN:chebfunpref:inputs', 'Too many input arguments.')
             end
 
             % Initialize default preference values.
