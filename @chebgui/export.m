@@ -83,7 +83,7 @@ if ( strcmp(problemType, 'bvp') )
                 end
                 
                 try
-                    e = chebguiBVPexporter();
+                    e = chebguiExporterBVP();
                     chebgui2mfile(e, guifile, pathname, filename)
 
                     % Open the new file in the editor
