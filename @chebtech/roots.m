@@ -159,40 +159,7 @@ r = rootsunit_coeffs(c, 100*eps*max(f.hscale, 1));
 
 % Try to filter out spurious roots that may arise near +/- 1 if the function
 % decays to zero there.
-numRoots = length(r);
-mask = false(length(r), 1);
-
-if ( abs(feval(f, -1)) < f.vscale*f.epslevel )
-    for n = 1:1:numRoots
-        if ( abs(r(n) + 1) < length(f)*eps )
-            continue;
-        end
-
-        testGrid = linspace(-1, r(n), length(f));
-        if ( norm(feval(f, testGrid), Inf) < f.vscale*f.epslevel )
-            mask(n) = true;
-        else
-            break;
-        end
-    end
-end
-
-if ( abs(feval(f, 1)) < f.vscale*f.epslevel )
-    for n = numRoots:-1:1
-        if ( abs(r(n) - 1) < length(f)*eps )
-            continue;
-        end
-
-        testGrid = linspace(r(n), 1, length(f));
-        if ( norm(feval(f, testGrid), Inf) < f.vscale*f.epslevel )
-            mask(n) = true;
-        else
-            break;
-        end
-    end
-end
-
-r(mask) = [];
+r = filterEndpointRoots(r, f);
 
 % Prune the roots, if required:
 if ( rootsPref.prune && ~rootsPref.recurse )
@@ -387,4 +354,42 @@ function y = chebptsAB(n, ab)
     x = chebtech2.chebpts(n);          % [-1,1] grid
     y = b*(x + 1)/2 + a*(1 - x)/2;     % new grid
 
+end
+
+function r = filterEndpointRoots(r, f)
+
+numRoots = length(r);
+mask = false(numRoots, 1);
+tol = f.vscale*f.epslevel;
+n = length(f);
+
+if ( abs(feval(f, -1)) < tol )
+    for k = 1:1:numRoots
+        if ( abs(r(k) + 1) < n*eps )
+            continue
+        end
+        testGrid = linspace(-1, r(k), n);
+        if ( norm(feval(f, testGrid), Inf) < tol )
+            mask(k) = true;
+        else
+            break
+        end
+    end
+end
+
+if ( abs(feval(f, 1)) < tol )
+    for k = numRoots:-1:1
+        if ( abs(r(k) - 1) < n*eps )
+            continue;
+        end
+        testGrid = linspace(r(k), 1, n);
+        if ( norm(feval(f, testGrid), Inf) < tol )
+            mask(k) = true;
+        else
+            break
+        end
+    end
+end
+
+r(mask) = [];
 end
