@@ -102,6 +102,10 @@ pass(18) = strcmp(chebfunpref().testPref, 'testq') && ...
 
 chebfunpref.setDefaults(savedPrefs);
 
+% Test getDefaults('prop'):
+pass(19) = isnumeric(chebfunpref.getDefaults('eps'));
+pass(20) = ischar(chebfunpref.getDefaults('singPrefs.defaultSingType'));
+
 end
 
 function out = isequalNaN(a, b)
