@@ -61,7 +61,12 @@ else
     periodic = false;
 end
 
-% Fill up the expInfo struct
+%% Information related to options set-up:
+% Option for tolerance
+tolInput = guifile.tol;
+
+
+%% Fill up the expInfo struct
 expInfo.dom = dom;
 expInfo.deInput = deInput;
 expInfo.bcInput = bcInput;
@@ -72,4 +77,10 @@ expInfo.allVarNames = allVarNames;
 expInfo.indVarNameSpace = indVarNameSpace;
 expInfo.periodic = periodic;
 expInfo.useLatest = useLatest;
+
+% Information related to options set-up
+expInfo.tol = guifile.tol;
+expInfo.dampedOn = guifile.options.damping;
+expInfo.discretization = guifile.options.discretization;
+expInfo.plotting = guifile.options.plotting;
 end

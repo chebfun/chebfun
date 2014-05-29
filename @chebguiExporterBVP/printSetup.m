@@ -11,6 +11,7 @@ indVarNameSpace = expInfo.indVarNameSpace;
 periodic = expInfo.periodic;
 useLatest = expInfo.useLatest;
 
+fprintf(fid, '\n%%%% Problem set-up');
 fprintf(fid, '\n%% Define the domain.\n');
 fprintf(fid, 'dom = %s;\n', dom);
 fprintf(fid, ['\n%% Assign the differential equation to a chebop on that ' ...
