@@ -636,8 +636,8 @@ function [op, dom, pref] = parseInputs(op, dom, varargin)
             % Translate "exps" --> "singPrefs.exponents".
             pref.singPrefs.exponents = args{2};
             args(1:2) = [];
-        elseif ( any(strcmpi(args{1}, {'chebkind', 'kind'})) )
-            % Translate "chebkind" and "kind" --> "techPrefs.gridType".
+        elseif ( any(strcmpi(args{1}, 'chebkind')) )
+            % Translate "chebkind" and "kind" --> "tech.@chebtech".
             if ( (isnumeric(args{2}) && (args{2} == 1)) || ...
                      (ischar(args{2}) && strncmpi(args{2}, '1st', 1)) )
                 pref.tech = @chebtech1;
@@ -646,7 +646,7 @@ function [op, dom, pref] = parseInputs(op, dom, varargin)
                 pref.tech = @chebtech2;
             else
                 error('CHEBFUN:constructor:parseInputs', ...
-                    'Invalid value for ''chebkind''/''kind'' option.');
+                    'Invalid value for ''chebkind'' option.');
             end
             args(1:2) = [];
         else

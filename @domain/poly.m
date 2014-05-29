@@ -57,6 +57,6 @@ for k = 1:N
 end
 
 % Contruct the CHEBFUN:
-f = chebfun(p, d, 'gridType', 2);
+f = chebfun(p, d, 'tech', @chebfun2);
 
 end
