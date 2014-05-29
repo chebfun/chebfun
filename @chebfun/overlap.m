@@ -4,13 +4,14 @@ function [f, g] = overlap(f, g)
 %   GOUT.DOMAIN and F(x) = FOUT(x), G(x) = GOUT(x) for all x in the domain of
 %   F. 
 %
-%   If F and G are array-valued, they must have the same numer of columns/rows,
-%   else an error is thrown.
+%   If F and G are array-valued, they must either have the same number of
+%   columns/rows, or one must be a scalar-valued CHEBFUN. Otherwise, an error
+%   is thrown.
+%
+% See also RESTRICT.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
-
-% TODO: Should we allow scalar expansion?
 
 % Check that the domains are valid:
 if ( ~domainCheck(f, g) )
