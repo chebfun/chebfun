@@ -454,7 +454,7 @@ else
         BCRHS = num2cell(repmat(v, SYSSIZE, 1));
     elseif ( numel(bc.left) == 1 && isa(bc.left, 'function_handle') )
         %% %%%%%%%%%%%%%%%%%%%%%%%%%  GENERAL BCS (LEFT)  %%%%%%%%%%%%%%%%%%%%%%%%%%
-        op = parseFun(bc.left);
+        op = parseFun(bc.left, 'lbc');
         uTmp = chebdouble(ones(1, SYSSIZE));
         sizeOp = size(op(0, mean(DOMAIN), uTmp));
         leftNonlinBCLocs = 1:max(sizeOp);
@@ -468,7 +468,7 @@ else
     
     if ( isfield(bc, 'middle') && isa(bc.middle, 'function_handle') )
         %% %%%%%%%%%%%%%%%%%%%%%  GENERAL BCS (MIDDLE)  %%%%%%%%%%%%%%%%%%%%%%%%
-        op = parseFun(bc.middle);
+        op = parseFun(bc.middle, 'bc');
         uTmp = chebdouble(ones(1, SYSSIZE));
         sizeOp = size(op(0, mean(DOMAIN), uTmp));
         middleNonlinBCLocs = 1:max(sizeOp);
@@ -509,7 +509,7 @@ else
         
     elseif ( numel(bc.right) == 1 && isa(bc.right, 'function_handle') )
         %% %%%%%%%%%%%%%%%%%%%%%%%%  GENERAL BCS (RIGHT)  %%%%%%%%%%%%%%%%%%%%%%%%%%
-        op = parseFun(bc.right);
+        op = parseFun(bc.right, 'rbc');
         uTmp = chebdouble(ones(1, SYSSIZE));
         sizeOp = size(op(0, mean(DOMAIN), uTmp));
         rightNonlinBCLocs = 1:max(sizeOp);
@@ -579,16 +579,19 @@ plotFun(u0, tt(1));
 done = false;
 if ( ~isnan(optN) )
     % Non-adaptive in space:
-    oneStep(chebpts(optN, DOMAIN), tt); % Do all chunks at once!
+    tSpan = tt;
+    x = chebpts(optN, DOMAIN);
+    oneStep(tSpan); % Do all chunks at once!
     
 else
     
     currentLength = max(length(u0), 9);
     tCurrent = tt(1);
-    tspan = tt;
+    tSpan = tt;
     while ( tCurrent < tt(end) && ~done )
-        tspan(tspan < tCurrent) = [];
-        oneStep(chebpts(currentLength, DOMAIN), tspan);
+        tSpan(tSpan < tCurrent) = [];
+        x = chebpts(currentLength, DOMAIN);
+        oneStep(tSpan);
     end
 
 end
@@ -635,7 +638,7 @@ clear global SYSSIZE
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  ONESTEP  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    function U = oneStep(x, tspan)
+    function U = oneStep(tSpan)
         % Constructs the result of one time chunk at fixed discretization.
         
         if ( length(x) == 2 )
@@ -674,12 +677,20 @@ clear global SYSSIZE
         
         % ODE options: (mass matrix)
         opt2 = odeset(opt, 'Mass', M, 'MassSingular', 'yes', ...
-            'InitialSlope', odeFun(tspan(1), U0), 'MStateDependence', 'none');
+            'InitialSlope', odeFun(tSpan(1), U0), 'MStateDependence', 'none');
         
         % Solve ODE over time chunk with ode15s:
-        [~, U] = ode15s(@odeFun, tspan, U0, opt2);
+        try
+            [~, U] = ode15s(@odeFun, tSpan, U0, opt2);
+        catch ME
+            if ( strcmp(ME.identifier, 'MATLAB:odearguments:SizeIC') )
+                error('Dimension mismatch. Check boundary conditions.');
+            else
+                rethrown ME
+            end
+        end 
         
-        if ( length(tspan) > 2 )
+        if ( length(tSpan) > 2 )
             return
         end
         
@@ -751,9 +762,14 @@ end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%  MISC  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function outFun = parseFun(inFun)
+function outFun = parseFun(inFun, bcFlag)
 % Rewrites the input function handle to call the right DIFF, SUM, methods, etc,
 % and convert the input @(t, x, u, v, w, ...) to @(t, x, U).
+%
+% For PARSEFUN(INFUN), if the INFUN has only one independent variable as an
+% input, we assume this is x. PARSEFUN(INFUN, 'lbc') or PARSEFUN(INFUN, 'rbc')
+% will assume the variable is t. PARSEFUN(INFUN, 'bc') will assume space, but
+% throw a warning.
 
 global SYSSIZE
 
@@ -766,7 +782,18 @@ Nind = nargin(inFun) - SYSSIZE;
 if ( Nind == 0 )
     outFun = @(t, x, u) conv2cell(inFun, u);
 elseif ( Nind == 1 )
-    outFun = @(t, x, u) conv2cell(inFun, u, x);
+    if ( nargin > 1 )
+        if ( strcmp(bcFlag, 'bc') )
+            warning('CHEBFUN:pde15s:bcinput', ...
+                ['Please input both time and space independent variable to ' ...
+                 '.BC function handle inputs.\nAssuming given variable is time.']);
+             outFun = @(t, x, u) conv2cell(inFun, u, x);
+        else
+            outFun = @(t, x, u) conv2cell(inFun, u, t);
+        end
+    else
+        outFun = @(t, x, u) conv2cell(inFun, u, x);
+    end
 elseif ( Nind == 2 )
     outFun = @(t, x, u) conv2cell(inFun, u, t, x);
 else

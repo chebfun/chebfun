@@ -69,8 +69,21 @@ d = [-3*pi/4, pi]; x = chebfun('x', d);
 u = sin(2*x);
 f = @(t, x, u) E*diff(u, 2)+diff(u);
 lbc = 'neumann';
-rbc = @(t, x, u) u - .1*sin(t);
+rbc = @(t, u) u - .1*sin(t);
 bc = struct; bc.left = lbc; bc.right = rbc;
+opts = pdeset('holdPlot', 'on');
+tt = linspace(0, 3, 51);
+uu = pde15s(f, tt, u, bc, opts);
+
+%% Advection-diffusion4 (Time depended rhs bc)
+close all
+E = 1e-1;
+d = [-3*pi/4, pi]; x = chebfun('x', d);
+u = sin(2*x);
+f = @(t, x, u) E*diff(u, 2)+diff(u);
+rbc = @(t, u) u - .1*sin(t);
+mid = @(x, u) feval(u, d(1)) - 1;
+bc = struct; bc.left = []; bc.right = rbc; bc.middle = mid;
 opts = pdeset('holdPlot', 'on');
 tt = linspace(0, 3, 51);
 uu = pde15s(f, tt, u, bc, opts);
@@ -97,7 +110,7 @@ close all
 d = [-1, 1]; x = chebfun('x', d);
 u = (1-x.^2).*exp(-30*(x+.5).^2);
 f = @(u) -diff(u.^2)+.01*diff(u, 2);
-pde15s(f, 0:.05:3, u, 'dirichlet');
+pde15s(f, 0:.1:3, u, 'dirichlet');
 
 %% KS
 close all
@@ -173,7 +186,7 @@ u = exp(-20*x.^2) .* sin(14*x);  u = [u ; -u];
 f = @(u, v) [diff(v) ; diff(u)];
 bc.left = @(u, v) u; bc.right = @(u, v) v;        % New way
 opt = pdeset('eps', 1e-6, 'Ylim', pi/2*[-1 1], 'AbsTol', 1e-6, 'RelTol', 1e-6);
-uu = pde15s(f, 0:.05:2, u, bc, opt, 64);
+uu = pde15s(f, 0:.05:.5, u, bc, opt, 64);
 
 %% 
 %chebop-style synatx
