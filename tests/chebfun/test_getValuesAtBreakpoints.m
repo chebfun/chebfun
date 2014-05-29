@@ -7,10 +7,11 @@ if ( nargin == 0 )
 end
 
 f = chebfun(@(x) x, [-1 0 .5 1]);
-pass(1) = all(chebfun.getValuesAtBreakpoints(f.funs, f.domain) == f.domain.');
+pass(1) = all(abs(chebfun.getValuesAtBreakpoints(f.funs, f.domain) ...
+    - f.domain.') < epslevel(f));
 
-pass(2) = all(chebfun.getValuesAtBreakpoints(f.funs, f.domain, ...
-    {@(x) x, @(x) x, 1}) == f.domain.');
+pass(2) = all(abs(chebfun.getValuesAtBreakpoints(f.funs, f.domain, ...
+    {@(x) x, @(x) x, 1}) - f.domain.') < epslevel(f));
 
 pass(3) = all(chebfun.getValuesAtBreakpoints(f.funs, f.domain, ...
     @(x) x + 100*(x==0)) == [-1 100 .5 1].');
