@@ -2005,7 +2005,11 @@ end
 % --- Executes on button press in button_exportsoln.
 function button_exportsoln_Callback(hObject, eventdata, handles)
 
-export(handles.guifile, handles, 'WorkspaceJustVars')
+% Create a CHEBGUIEXPORTER object of the correct type:
+exporter = chebguiExporter.constructor(handles.guifile.type);
+
+% Export the solution to the workspace
+exporter.toWorkspaceSolutionOnly(handles);
 
 end
 

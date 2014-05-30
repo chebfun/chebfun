@@ -1,5 +1,21 @@
 function toFile(exporter, guifile, fileName, pathName)
 %TOFILE     Export a CHEBGUI to an .m-file
+%
+% Calling sequence:
+%
+%   TOFILE(EXPORTER, GUIFILE, FILENAME, PATHNAME)
+%
+% where
+%
+%   EXPORTER:   A CHEBGUIEXPORTER object (of BVP, EIG or PDE kind).
+%   GUIFILE:    A CHEBGUI object.
+%   FILENAME:   The name of the file we want to write to.
+%   PATHNAME:   The path to the file we want to write to.
+%
+% This method will export the problem to the file 'PATHNAME/FILENAME'.
+
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Concatenate the pathName and the fileName to get the full path:
 fullFileName = [pathName, fileName];

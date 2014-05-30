@@ -46,16 +46,8 @@ if ( strcmp(problemType, 'bvp') )
                 assignin('base', answer{nv+2}, handles.latest.norms);
                 assignin('base', answer{nv+3}, handles.latest.options);
             end
-        case 'WorkspaceJustVars'                
-            varnames = handles.varnames;
-            nv = numel(varnames);
             
-            sol = handles.latest.solution;
-            for k = 1:nv
-                assignin('base', varnames{k}, sol(:,k));
-                evalin('base', varnames{k});
-            end
-         
+
         case '.mat'
             varnames = handles.varnames;
             for k = 1:numel(varnames);
@@ -112,19 +104,6 @@ elseif ( strcmp(problemType,'pde') )
                     assignin('base', answer{nv+1+k}, sol{k}(:,end));
                 end
             end
-        case 'WorkspaceJustVars'                
-            varnames = handles.varnames;
-            nv = numel(varnames);
-
-            sol = handles.latest.solution;
-            if ( ~iscell(sol) )
-            	sol = {sol};
-            end
-
-            for k = 1:nv
-                assignin('base', varnames{k}, sol{k});
-                evalin('base', varnames{k});
-            end
 
         case '.mat'
             varnames = handles.varnames;
@@ -161,27 +140,7 @@ else
                 assignin('base', answer{1}, diag(handles.latest.solution));
                 assignin('base', answer{2}, handles.latest.solutionT);
             end
-        case 'WorkspaceJustVars'     
-            varnames = handles.varnames;
-            lambdaName = handles.eigVarName;
 
-            if ( iscell(lambdaName) )
-                lambdaName = lambdaName{:};
-            end
-
-            nv = numel(varnames);
-            d = handles.latest.solution;
-            V = handles.latest.solutionT;
-            if ( ~iscell(V) )
-                V = {V};
-            end
-
-            for k = 1:nv
-                assignin('base', varnames{k}, V{k});
-            end
-            assignin('base', lambdaName, d);
-            evalin('base', lambdaName);
-            
         case '.mat'
             D = diag(handles.latest.solution); %#ok<NASGU>
             V = handles.latest.solutionT;  %#ok<NASGU>

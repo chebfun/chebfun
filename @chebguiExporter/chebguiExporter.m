@@ -52,7 +52,12 @@ classdef chebguiExporter
         function obj = constructor(type)
             %CONSTRUCTOR    Constructor for the CHEBGUIEXPORTER class.
             %
-            % This method allows us to construct concrete subclasses of the
+            % OBJ = CONSTRUCTOR(TYPE), where TYPE = 'bvp', 'eig' or 'pde'
+            % returns an object that is a concrete implementation of
+            % CHEBGUIEXPORTER object OBJ. The type of OBJ is determined by the
+            % TYPE input argument.
+            %
+            % This method allows one to construct concrete subclasses of the
             % CHEBGUIEXPORTER class.
             
             % Return the desired type of CHEBGUIEXPORTER
@@ -97,7 +102,7 @@ classdef chebguiExporter
             end
         end
         
-        function str = prettyPrintFevalString(str,varnames)
+        function str = prettyPrintFevalString(str, varnames)
             %PRETTYPRINTFEVALSTRING     Tidy up strings printed to .m files
             
             % Do various string manipulations to make the output look nicer.

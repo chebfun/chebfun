@@ -10,13 +10,13 @@ classdef chebguiExporterPDE < chebguiExporter
     % See http://www.chebfun.org/ for Chebfun information.
     
     properties
-    
+        
         % The default file name when exporting to an .m-file:
         defaultFileName = 'pde.m';
         
         % Description for printing to .m files:
         description = 'a partial differential equation.';
-    
+        
     end
     
     methods (Access = public)
@@ -47,6 +47,21 @@ classdef chebguiExporterPDE < chebguiExporter
         
         % Print steps taken after the solver finishes:
         printPostSolver(fid, expInfo)
+        
+        function toWorkspaceSolutionOnly(handles)
+            varnames = handles.varnames;
+            nv = numel(varnames);
+            
+            sol = handles.latest.solution;
+            if ( ~iscell(sol) )
+                sol = {sol};
+            end
+            
+            for k = 1:nv
+                assignin('base', varnames{k}, sol{k});
+                evalin('base', varnames{k});
+            end
+        end
         
     end
 end

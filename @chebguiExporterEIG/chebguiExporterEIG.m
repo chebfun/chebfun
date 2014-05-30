@@ -48,5 +48,27 @@ classdef chebguiExporterEIG < chebguiExporter
         % Print steps taken after the solver finishes:
         printPostSolver(fid, expInfo)
         
+        function toWorkspaceSolutionOnly(handles)
+            varnames = handles.varnames;
+            lambdaName = handles.eigVarName;
+            
+            if ( iscell(lambdaName) )
+                lambdaName = lambdaName{:};
+            end
+            
+            nv = numel(varnames);
+            d = handles.latest.solution;
+            V = handles.latest.solutionT;
+            if ( ~iscell(V) )
+                V = {V};
+            end
+            
+            for k = 1:nv
+                assignin('base', varnames{k}, V{k});
+            end
+            assignin('base', lambdaName, d);
+            evalin('base', lambdaName);
+        end
+        
     end
 end

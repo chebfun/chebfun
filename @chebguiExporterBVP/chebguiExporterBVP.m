@@ -48,5 +48,16 @@ classdef chebguiExporterBVP < chebguiExporter
         % Print steps taken after the solver finishes:
         printPostSolver(fid, expInfo)
         
+        function toWorkspaceSolutionOnly(handles)
+            varnames = handles.varnames;
+            nv = numel(varnames);
+            
+            sol = handles.latest.solution;
+            for k = 1:nv
+                assignin('base', varnames{k}, sol(:,k));
+                evalin('base', varnames{k});
+            end 
+        end
+        
     end
 end
