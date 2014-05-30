@@ -6,30 +6,30 @@ classdef chebguiExporterEIG < chebguiExporter
     %
     %   See also CHEBGUI, CHEBGUIEXPORTER.
     
-    % Developers note:
-    %   The CHEBGUICONTROLLER class defines a number of abstract methods, used to
-    %   export problems from CHEBGUI. In v4, this functionality used to live in the
-    %   @chebgui folder, but to increase modularity, it has been spun off to its own
-    %   class.
-    
     % Copyright 2014 by The University of Oxford and The Chebfun Developers.
     % See http://www.chebfun.org/ for Chebfun information.
+    
+    properties
+        
+        % The default file name when exporting to an .m-file:
+        defaultFileName = 'bvpeig.m';
+        
+        % Description for printing to .m files:
+        description = 'an eigenvalue problem';
+        
+    end
     
     methods (Access = public)
         
         function A = chebguiExporterEIG(varargin)
-            % Set default file name:
-            A.defaultFileName = 'bvpeig.m';
-            
-            % Description for printing to .m files:
-            A.description = 'an eigenvalue problem';
+            % Do nothing!
         end
         
     end
     
     
     methods ( Static = true )
-
+        
         % Print problem description:
         printDescription(fid, expInfo)
         
@@ -44,6 +44,6 @@ classdef chebguiExporterEIG < chebguiExporter
         
         % Print steps taken after the solver finishes:
         printPostSolver(fid, expInfo)
-
+        
     end
 end

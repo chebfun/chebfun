@@ -6,23 +6,23 @@ classdef chebguiExporterBVP < chebguiExporter
     %
     %   See also CHEBGUI, CHEBGUIEXPORTER.
     
-    % Developers note:
-    %   The CHEBGUICONTROLLER class defines a number of abstract methods, used to
-    %   export problems from CHEBGUI. In v4, this functionality used to live in the
-    %   @chebgui folder, but to increase modularity, it has been spun off to its own
-    %   class.
-    
     % Copyright 2014 by The University of Oxford and The Chebfun Developers.
     % See http://www.chebfun.org/ for Chebfun information.
+    
+    properties
+        
+        % The default file name when exporting to an .m-file:
+        defaultFileName = 'bvp.m';
+        
+        % Description for printing to .m files:
+        description = 'a boundary-value problem';
+
+    end
     
     methods (Access = public)
         
         function A = chebguiExporterBVP(varargin)
-            % Set default file name:
-            A.defaultFileName = 'bvp.m';
-            
-            % Description for printing to .m files:
-            A.description = 'a boundary-value problem';
+            % Do nothing!
         end
         
     end
@@ -44,6 +44,6 @@ classdef chebguiExporterBVP < chebguiExporter
         
         % Print steps taken after the solver finishes:
         printPostSolver(fid, expInfo)
-
+        
     end
 end
