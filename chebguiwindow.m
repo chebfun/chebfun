@@ -726,6 +726,22 @@ if ( get(handles.button_ode, 'Value') )
     if ( numel(handles.varnames) > 1 )
         legend(handles.varnames)
     end
+    
+        latestNorms = handles.latest.norms;
+
+    figure
+    semilogy(latestNorms, '-*', 'Linewidth', 2)
+    title('Norm of updates')
+    xlabel('Number of iteration')
+
+    if ( length(latestNorms) > 1 )
+        XTickVec = 1:max(floor(length(latestNorms) / 5), 1):length(latestNorms);
+        set(gca, 'XTick',  XTickVec)
+        xlim([1 length(latestNorms)])
+        grid on
+    else % Don't display fractions on iteration plots
+        set(gca, 'XTick',  1)
+    end
 elseif ( get(handles.button_pde, 'Value') )
     u = handles.latest.solution;
     tt = handles.latest.solutionT;
@@ -763,6 +779,44 @@ elseif ( get(handles.button_pde, 'Value') )
         ylim([str2num(handles.guifile.options.fixYaxisLower) ...
             str2num(handles.guifile.options.fixYaxisUpper)]);
     end
+      
+    if ( ~iscell(u) )
+        figure
+        waterfall(u, tt, 'simple', 'linewidth', 2)
+        xlabel(xLab);
+        ylabel(tLab);
+        zlabel(varnames{1});
+    else
+        figure
+        for k = 1:numel(u)
+            subplot(1, numel(u), k);
+            waterfall(u{k}, tt, 'simple', 'linewidth', 2)
+            xlabel(xLab)
+            ylabel(tLab)
+            zlabel(varnames{k})
+            title(varnames{k})
+        end
+        
+        tmp = u{k}(:,1);
+        u1 = tmp.vals(1);
+        tmp = get(tmp, 'vals');
+        x1 = tmp(1);
+        
+        figure
+        cols = get(0, 'DefaultAxesColorOrder');
+        for k = 1:numel(u)
+            plot3(x1, tt(1), u1, 'linewidth', 2, 'color', cols(k,:));
+            hold on
+        end
+        legend(varnames{:})
+        for k = 1:numel(u)
+            waterfall(u{k}, tt, 'simple', 'linewidth', 2, 'edgecolor', ...
+                cols(k,:))
+        end
+        xlabel(xLab)
+        ylabel(tLab)
+        grid on
+    end
 else
     figure
     h1 = gca;
@@ -770,6 +824,7 @@ else
         selection = get(handles.iter_list, 'Value');
         chebguiController.plotEigenmodes(handles, selection, h1, []);
     end
+    
 end
 
 end
