@@ -581,7 +581,7 @@ classdef chebfunpref < chebpref
         %   construct a CHEBFUN using the factory defaults when other user-set
         %   defaults are currently in force.
         %
-        % See also GETDEFAULTS, SETDEFAULTS.
+        % See also SETDEFAULTS.
 
             fd = chebfunpref.factoryDefaultPrefs();
             pref = chebfunpref(fd);
@@ -591,18 +591,6 @@ classdef chebfunpref < chebpref
             % the current defaults have techPrefs stored that are not among the
             % factory defaults.
             pref.prefList.techPrefs = fd.techPrefs;
-        end
-
-        function pref = getDefaults()
-        %GETDEFAULTS   Get default preferences.
-        %   PREF = CHEBFUNPREF.GETDEFAULTS() returns a CHEBFUNPREF object with
-        %   the preferences set to the currently stored default values.  It is
-        %   equivalent to PREF = CHEBFUNPREF().
-        %
-        % See also GETFACTORYDEFAULTS, SETDEFAULTS.
-
-        pref = chebfunpref();
-            
         end
 
         function setDefaults(varargin)
@@ -627,7 +615,7 @@ classdef chebfunpref < chebpref
         %   CHEBFUNPREF.SETDEFAULTS('factory') resets the default preferences to
         %   their factory values.
         %
-        % See also GETDEFAULTS, GETFACTORYDEFAULTS.
+        % See also GETFACTORYDEFAULTS.
 
         % TODO:  What to do about preferences stored in substructures, like
         % singfun.exponentTol?  Aside from preferences in techPrefs whose names
