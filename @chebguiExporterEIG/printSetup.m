@@ -16,6 +16,7 @@ bcInput = expInfo.bcInput;
 lname = expInfo.lname;
 generalized = expInfo.generalized;
 lhsString = expInfo.lhsString;
+rhsString = expInfo.rhsString;
 bcString = expInfo.bcString;
 allVarNames = expInfo.allVarNames;
 periodic = expInfo.periodic;

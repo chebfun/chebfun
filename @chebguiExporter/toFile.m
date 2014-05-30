@@ -18,7 +18,7 @@ function toFile(exporter, guifile, fileName, pathName)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Concatenate the pathName and the fileName to get the full path:
-fullFileName = [pathName, fileName];
+fullFileName = fullfile(pathName, fileName);
 
 try
     % Open a stream to write to a file:

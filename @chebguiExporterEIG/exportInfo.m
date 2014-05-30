@@ -83,6 +83,7 @@ if ( ~isempty(bcInput{1}) )
         bcInput{1} = [];
         periodic = true;
         BC = 'periodic';
+        bcString = [];
     else
         bcString = setupFields(guifile, bcInput, 'BCnew', allVarString);
         bcString = strrep(bcString, 'DUMMYSPACE', indVarName{1});
@@ -197,6 +198,7 @@ expInfo.lname = lname;
 
 % And then some...
 expInfo.lhsString = lhsString;
+expInfo.rhsString = rhsString;
 expInfo.allStrings = allStrings;
 expInfo.allVarString = allVarString;
 expInfo.allVarNames = allVarNames;
