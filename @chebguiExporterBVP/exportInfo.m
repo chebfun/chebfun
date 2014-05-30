@@ -1,4 +1,15 @@
 function expInfo = exportInfo(guifile)
+%EXPORTINFO     Extract useful info from a CHEBGUI object for exporting
+%
+% Calling sequence
+%
+%   EXPINFO = EXPORTINFO(GUIFILE)
+%
+% where
+%
+%   GUIFILE:    A CHEBGUI object
+%   EXPINFO:    A struct, containing fields with information for exporting to an
+%               .m-file.
 
 % Extract information from the GUI fields
 dom = guifile.domain;
@@ -23,9 +34,10 @@ end
 [deString, allVarString, indVarNameDE, dummy, dummy, dummy, allVarNames] = ...
     setupFields(guifile, deInput, 'DE');
 
-% Do some error checking before we do further printing. Check that
-% independent variable name match.
-% Obtain the independent variable name appearing in the initial condition
+% Do some error checking before we do further printing. Check that independent
+% variable name match.
+
+%Obtain the independent variable name appearing in the initial condition:
 useLatest = strcmpi(initInput{1}, 'Using latest solution');
 if ( ~isempty(initInput{1}) && ~useLatest )
     [dummy, dummy, indVarNameInit] = ...

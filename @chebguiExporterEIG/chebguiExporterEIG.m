@@ -49,21 +49,22 @@ classdef chebguiExporterEIG < chebguiExporter
         printPostSolver(fid, expInfo)
         
         function toWorkspaceSolutionOnly(handles)
+            %TOWORKSPACESOLUTIONONLY    Export the solution to the workspace
+            
+            % Get the variable names involved in the problem:
             varnames = handles.varnames;
             lambdaName = handles.eigVarName;
             
             if ( iscell(lambdaName) )
                 lambdaName = lambdaName{:};
             end
-            
-            nv = numel(varnames);
+                        
+            % Extract the latest solution
             d = handles.latest.solution;
             V = handles.latest.solutionT;
-            if ( ~iscell(V) )
-                V = {V};
-            end
             
-            for k = 1:nv
+            % Export to workspace
+            for k = 1:numel(varnames)
                 assignin('base', varnames{k}, V{k});
             end
             assignin('base', lambdaName, d);
@@ -71,12 +72,20 @@ classdef chebguiExporterEIG < chebguiExporter
         end
         
         function toMat(handles)
+            %TOMAT  Export from the CHEBGUI figure to a .mat-file.
+            
+            % Obtain the variables involved in the problem.
             D = diag(handles.latest.solution); %#ok<NASGU>
             V = handles.latest.solutionT;  %#ok<NASGU>
+            
+            % Ask user where to save:
             uisave({'D', 'V'}, 'bvpeig');
         end
         
         function toWorkspace(handles)
+            %TOWORKSPACE    Export from the CHEBGUI figure to the workspace.
+            
+            % Setup dialog for asking the user for variable names to be used.
             prompt = {'Eigenvalues', 'Eigenmodes'};
             name = 'Export to workspace';
             defaultAnswer ={'D', 'V'};
@@ -84,8 +93,10 @@ classdef chebguiExporterEIG < chebguiExporter
             options.Resize ='on';
             options.WindowStyle ='modal';
             
+            % Ask user what variable names to use:
             answer = inputdlg(prompt, name, numlines, defaultAnswer, options);
             
+            % Assign to workspace:
             if ( ~isempty(answer) )
                 assignin('base', answer{1}, diag(handles.latest.solution));
                 assignin('base', answer{2}, handles.latest.solutionT);

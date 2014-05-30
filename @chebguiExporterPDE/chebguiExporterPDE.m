@@ -49,14 +49,22 @@ classdef chebguiExporterPDE < chebguiExporter
         printPostSolver(fid, expInfo)
         
         function toWorkspaceSolutionOnly(handles)
+            %TOWORKSPACESOLUTIONONLY    Export the solution to the workspace
+            %
+            % Note: this method exports fewer objects to the workspace than the
+            % toWorkspace() method.
+            
+            % Obtain the names of the variables involved:
             varnames = handles.varnames;
             nv = numel(varnames);
             
+            % Obtain the latest solution:
             sol = handles.latest.solution;
             if ( ~iscell(sol) )
                 sol = {sol};
             end
             
+            % Assign to workspace:
             for k = 1:nv
                 assignin('base', varnames{k}, sol{k});
                 evalin('base', varnames{k});
@@ -64,21 +72,31 @@ classdef chebguiExporterPDE < chebguiExporter
         end
         
         function toMat(handles)
+            %TOMAT  Export from the CHEBGUI figure to a .mat-file.
+            
+            % Obtain the variable names involved in the problem.
             varnames = handles.varnames;
             
+            % Obtain the latest solution:
             sol = handles.latest.solution;
             if ( ~iscell(sol) )
                 sol = {sol};
             end
             
+            % Assign variables before exporting:
             for k = 1:numel(varnames);
                 eval([varnames{k} ' = sol{k};']);
             end
             t = handles.latest.solutionT;  %#ok<NASGU>
+            
+            % Ask user where to save the .mat file:
             uisave([varnames', 't'], 'pde');
         end
         
         function toWorkspace(handles)
+            %TOWORKSPACE    Export from the CHEBGUI figure to the workspace.
+            
+            % Setup dialog for asking the user for variable names to be used.
             varnames = handles.varnames;
             nv = numel(varnames);
             if ( nv == 1 )
@@ -89,6 +107,7 @@ classdef chebguiExporterPDE < chebguiExporter
                 solfinal = {};
                 finalsol = {};
                 for k = 1:nv
+                    % Show the expected names in the dialog:
                     sol = [sol ['Solution ' varnames{k}]];
                     finalsol = [finalsol ['Final ' varnames{k}]];
                     solfinal = [solfinal [varnames{k} '_final']];
@@ -102,13 +121,16 @@ classdef chebguiExporterPDE < chebguiExporter
             options.Resize ='on';
             options.WindowStyle ='modal';
             
+            % Ask user what variable names he/she wants to use:
             answer = inputdlg(prompt, name, numlines, defaultAnswer, options);
             
+            % Obtain the latest solution:
             sol = handles.latest.solution;
             if ( ~iscell(sol) )
                 sol = {sol};
             end
             
+            % Assign to the workspace!
             if ( ~isempty(answer) )
                 for k = 1:nv
                     assignin('base', answer{k}, sol{k});

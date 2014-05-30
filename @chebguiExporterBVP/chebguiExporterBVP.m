@@ -49,10 +49,19 @@ classdef chebguiExporterBVP < chebguiExporter
         printPostSolver(fid, expInfo)
         
         function toWorkspaceSolutionOnly(handles)
+            %TOWORKSPACESOLUTIONONLY    Export the solution to the workspace
+            %
+            % Note: this method exports fewer objects to the workspace than the
+            % toWorkspace() method.
+            
+            % Obtain the variable names:
             varnames = handles.varnames;
             nv = numel(varnames);
             
+            % Obtain the latest solution:
             sol = handles.latest.solution;
+            
+            % Export to the workspace!
             for k = 1:nv
                 assignin('base', varnames{k}, sol(:,k));
                 evalin('base', varnames{k});
@@ -60,21 +69,33 @@ classdef chebguiExporterBVP < chebguiExporter
         end
         
         function toMat(handles)
+            %TOMAT  Export from the CHEBGUI figure to a .mat-file.
+            
+            % Obtain the variable names involved in the problem.
             varnames = handles.varnames;
             for k = 1:numel(varnames);
-                eval([varnames{k} ' = handles.latest.solution(:,k);']); %#ok<NASGU>
+                eval([varnames{k} ' = handles.latest.solution(:,k);']);
             end
+            
+            % Extract the norm of the updates, the CHEBOP and all options.
             normVec = handles.latest.norms;  %#ok<NASGU>
             N = handles.latest.chebop;  %#ok<NASGU>
             options = handles.latest.options;  %#ok<NASGU>
+            
+            % Show the user a figure for selecting where to save.
             uisave([varnames', 'normVec', 'N', 'options'], 'bvp');
         end
         
         function toWorkspace(handles)
+            %TOWORKSPACE    Export from the CHEBGUI figure to the workspace.
+            
+            % Setup dialog for asking the user for variable names to be used.
             numlines = 1;
             options.Resize ='on';
             options.WindowStyle ='modal';
             
+            % Need slightly different dialogs depending on whether we were
+            % solving scalar problem or a coupled system.
             varnames = handles.varnames;
             nv = numel(varnames);
             if ( nv == 1 )
@@ -89,9 +110,13 @@ classdef chebguiExporterBVP < chebguiExporter
             
             defaultAnswer = ['N', varnames', 'normVec', 'options'];
             
+            % Show the user a dialog.
             answer = inputdlg(prompt, name, numlines, defaultAnswer, options);
             
+            % Obtain the latest solution:
             sol = handles.latest.solution;
+            
+            % Export to the workspace!
             if ( ~isempty(answer) )
                 assignin('base', answer{1}, handles.latest.chebop);
                 for k = 1:nv

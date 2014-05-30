@@ -1,8 +1,8 @@
 classdef chebguiExporter
     %CHEBGUIEXPORTER   Export a problem from CHEBGUI.
-    %   This is a an abstract class that defines interfaces for export problems from
-    %   CHEBGUI to .m-files, to the workspace, or to a .chebgui file. It is not
-    %   intended to be called directly by the end user.
+    %   This is a an abstract class that defines interfaces for export problems
+    %   from CHEBGUI to .m-files, to the workspace, or to a .chebgui file. It is
+    %   not intended to be called directly by the end user.
     %
     %   See also CHEBGUI, CHEBGUIBVPEXPORTER, CHEBGUIEIGEXPORTER,
     %   CHEBGUIPDEEXPOERTER.
@@ -88,10 +88,7 @@ classdef chebguiExporter
         end
         
         function toChebgui(guifile)
-            %TOCHEBGUI
-            %
-            % Export the CHEBGUI shown in the figure to a CHEBGUI variable in
-            % the workspace
+            %TOCHEBGUI      Export CHEBGUI to a CHEBGUI object in the workspace
             
             % Setup for input dialog
             prompt = 'Enter the name of the chebgui variable:';
@@ -145,6 +142,7 @@ classdef chebguiExporter
     end
     
     methods ( Access = protected )
+        
         function writeHeader(e, fid, filename)
             %WRITEHEADER        The first few lines of exported .m-files.
             
