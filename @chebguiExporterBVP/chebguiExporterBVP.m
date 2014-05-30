@@ -1,28 +1,28 @@
 classdef chebguiExporterBVP < chebguiExporter
     %CHEBGUIEXPORTERBVP   Export a BVP from CHEBGUI.
     %   This is a an concrete implementation of the class CHEBGUIEXPORTER, which
-    %   exports BVPs from CHEBGUI to .m-files, to the workspace, or to a .chebgui
-    %   file. It is not intended to be called directly by the end user.
+    %   exports BVPs from CHEBGUI to .m-files, to the workspace, or to a
+    %   .chebgui file. It is not intended to be called directly by the end user.
     %
     %   See also CHEBGUI, CHEBGUIEXPORTER.
-    
-    % Developers note:
-    %   The CHEBGUICONTROLLER class defines a number of abstract methods, used to
-    %   export problems from CHEBGUI. In v4, this functionality used to live in the
-    %   @chebgui folder, but to increase modularity, it has been spun off to its own
-    %   class.
     
     % Copyright 2014 by The University of Oxford and The Chebfun Developers.
     % See http://www.chebfun.org/ for Chebfun information.
     
+    properties
+        
+        % The default file name when exporting to an .m-file:
+        defaultFileName = 'bvp.m';
+        
+        % Description for printing to .m files:
+        description = 'a boundary-value problem';
+        
+    end
+    
     methods (Access = public)
         
         function A = chebguiExporterBVP(varargin)
-            % Set default file name:
-            A.defaultFileName = 'bvp.m';
-            
-            % Description for printing to .m files:
-            A.description = 'a boundary-value problem';
+            % Do nothing!
         end
         
     end
@@ -30,52 +30,77 @@ classdef chebguiExporterBVP < chebguiExporter
     
     methods ( Static = true )
         
-        function e = make(varargin)
-            % Factory method.
-            e = chebguiExporterBVP(varargin{:});
-        end
+        % Extract information from the CHEBGUI object to a struct
+        expInfo = exportInfo(guifile)
         
-        function printSolver(fid, expInfo)
-            %PRINTSOLVER    Print the solution step when exporting
-            fprintf(fid,'\n%%%% Solve the problem!');
-            fprintf(fid, ['\n%% Here, we call the solvebvp() method ' ...
-                '(which offers the same functionality \n%% as nonlinear '...
-                'backslash, but with more customizability).\n']);
-            fprintf(fid, 'u = solvebvp(N, rhs, options);\n');
-        end
-        
-        function printPostSolver(fid, expInfo)
-            %PRINTPOSTSOLVER    Print commands after solution has been found
-            
-            % Extract information from the EXPINFO struct
-            allVarNames = expInfo.allVarNames;
-            indVarNameSpace = expInfo.indVarNameSpace;
-            
-            % Print commands that will create a plot of the solution obtained:
-            fprintf(fid, '\n%%%% Create a plot of the solution.\n');
-            
-            fprintf(fid, ['figure\nplot(u,''LineWidth'',2)\n', ...
-                'title(''Final solution''), xlabel(''%s'')'], indVarNameSpace);
-            if ( numel(allVarNames) == 1 )
-                % Scalar problem:
-                fprintf(fid, ', ylabel(''%s'')', allVarNames{:});
-            else
-                % Coupled system. Create a legend.
-                leg = '';
-                for k = 1:numel(allVarNames)-1
-                    leg = [leg '''' allVarNames{k} '''' ','];
-                end
-                leg = [leg '''' allVarNames{k+1} ''''];
-                fprintf(fid, ', legend(%s)\n', leg);
-            end
-            
-            
-        end
-        
+        % Print problem description:
         printDescription(fid, expInfo)
         
+        % Print options for solving the problem:
+        printOptions(fid, expInfo)
+        
+        % Print lines for setting up the problem:
         printSetup(fid, expInfo, guifile)
         
-        printOptions(fid, expInfo, guifile)
+        % Print the actual lines for calling the solver method:
+        printSolver(fid, expInfo)
+        
+        % Print steps taken after the solver finishes:
+        printPostSolver(fid, expInfo)
+        
+        function toWorkspaceSolutionOnly(handles)
+            varnames = handles.varnames;
+            nv = numel(varnames);
+            
+            sol = handles.latest.solution;
+            for k = 1:nv
+                assignin('base', varnames{k}, sol(:,k));
+                evalin('base', varnames{k});
+            end
+        end
+        
+        function toMat(handles)
+            varnames = handles.varnames;
+            for k = 1:numel(varnames);
+                eval([varnames{k} ' = handles.latest.solution(:,k);']); %#ok<NASGU>
+            end
+            normVec = handles.latest.norms;  %#ok<NASGU>
+            N = handles.latest.chebop;  %#ok<NASGU>
+            options = handles.latest.options;  %#ok<NASGU>
+            uisave([varnames', 'normVec', 'N', 'options'], 'bvp');
+        end
+        
+        function toWorkspace(handles)
+            numlines = 1;
+            options.Resize ='on';
+            options.WindowStyle ='modal';
+            
+            varnames = handles.varnames;
+            nv = numel(varnames);
+            if ( nv == 1 )
+                prompt = {'Differential operator', 'Solution:',...
+                    'Vector with norm of updates', 'Options'};
+            else
+                prompt = ['Differential operator', varnames.',...
+                    'Vector with norm of updates', 'Options'];
+            end
+            
+            name = 'Export to workspace';
+            
+            defaultAnswer = ['N', varnames', 'normVec', 'options'];
+            
+            answer = inputdlg(prompt, name, numlines, defaultAnswer, options);
+            
+            sol = handles.latest.solution;
+            if ( ~isempty(answer) )
+                assignin('base', answer{1}, handles.latest.chebop);
+                for k = 1:nv
+                    assignin('base', answer{k+1}, sol(:,k));
+                end
+                assignin('base', answer{nv+2}, handles.latest.norms);
+                assignin('base', answer{nv+3}, handles.latest.options);
+            end
+        end
+        
     end
 end

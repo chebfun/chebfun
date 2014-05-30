@@ -1242,14 +1242,21 @@ end
 
 function menu_exportworkspace_Callback(hObject, eventdata, handles)
 
-export(handles.guifile, handles, 'Workspace')
+% Create a CHEBGUIEXPORTER object of the correct type:
+exporter = chebguiExporter.constructor(handles.guifile.type);
 
+% Export the solution to the workspace
+exporter.toWorkspace(handles);
 end
 
 
 function menu_exportmatfile_Callback(hObject, eventdata, handles)
 
-export(handles.guifile, handles, '.mat')
+% Create a CHEBGUIEXPORTER object of the correct type:
+exporter = chebguiExporter.constructor(handles.guifile.type);
+
+% Export the solution to the workspace
+exporter.toMat(handles);
 
 end
 
@@ -1549,12 +1556,20 @@ end
 % --- Executes on button press in button_export.
 function button_export_Callback(hObject, eventdata, handles)
     % Create a CHEBGUIEXPORTER object of the correct type:
-    e = chebguiExporter.constructor(handles.guifile.type);
+    exporter = chebguiExporter.constructor(handles.guifile.type);
     
     % Call the export method of the E object:
     try
-        toFile(e, handles.guifile)
-    
+        [fileName, pathName] = uiputfile( ...
+            {'*.m', 'M-files (*.m)'; '*.*',  'All Files (*.*)'}, ...
+            'Save as', exporter.defaultFileName);
+        if ( fileName ~= 0 )     % User did not press cancel
+            toFile(exporter, handles.guifile, fileName, pathName)
+        end
+        
+        % Open the new file in the editor
+        open([pathName, fileName])
+
     catch ME
         rethrow(ME)
         error('Chebgui:Export', ...
@@ -1992,7 +2007,11 @@ end
 % --- Executes on button press in button_exportsoln.
 function button_exportsoln_Callback(hObject, eventdata, handles)
 
-export(handles.guifile, handles, 'WorkspaceJustVars')
+% Create a CHEBGUIEXPORTER object of the correct type:
+exporter = chebguiExporter.constructor(handles.guifile.type);
+
+% Export the solution to the workspace
+exporter.toWorkspaceSolutionOnly(handles);
 
 end
 

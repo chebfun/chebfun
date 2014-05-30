@@ -6,23 +6,23 @@ classdef chebguiExporterEIG < chebguiExporter
     %
     %   See also CHEBGUI, CHEBGUIEXPORTER.
     
-    % Developers note:
-    %   The CHEBGUICONTROLLER class defines a number of abstract methods, used to
-    %   export problems from CHEBGUI. In v4, this functionality used to live in the
-    %   @chebgui folder, but to increase modularity, it has been spun off to its own
-    %   class.
-    
     % Copyright 2014 by The University of Oxford and The Chebfun Developers.
     % See http://www.chebfun.org/ for Chebfun information.
+    
+    properties
+        
+        % The default file name when exporting to an .m-file:
+        defaultFileName = 'bvpeig.m';
+        
+        % Description for printing to .m files:
+        description = 'an eigenvalue problem';
+        
+    end
     
     methods (Access = public)
         
         function A = chebguiExporterEIG(varargin)
-            % Set default file name:
-            A.defaultFileName = 'bvpeig.m';
-            
-            % Description for printing to .m files:
-            A.description = 'an eigenvalue problem';
+            % Do nothing!
         end
         
     end
@@ -30,67 +30,66 @@ classdef chebguiExporterEIG < chebguiExporter
     
     methods ( Static = true )
         
-        function e = make(varargin)
-            % Factory method.
-            e = chebguiExporterEIG(varargin{:});
-        end
+        % Extract information from the CHEBGUI object to a struct
+        expInfo = exportInfo(guifile)
         
-        function printOptions(fid, expInfo)
-            K = expInfo.K;
-            
-            fprintf(fid, '\n%% Number of eigenvalue and eigenmodes to compute.\n');
-            fprintf(fid, 'k = %s;\n', K);
-            
-            fprintf(fid, '\n%% Number of eigenvalue and eigenmodes to compute.\n');
-            fprintf(fid, 'k = %s;\n', K);
-            
-        end
-        
-        function printSolver(fid, expInfo)
-            sigma = expInfo.sigma;
-            generalized = expInfo.generalized;
-            
-            fprintf(fid, '\n%%%% Solve the eigenvalue problem.\n');
-            if ( ~generalized )
-                if ( ~isempty(sigma) )
-                    fprintf(fid, '[V, D] = eigs(N, k, %s);\n', sigma);
-                else
-                    fprintf(fid, '[V, D] = eigs(N, k);\n');
-                end
-            else
-                if ( ~isempty(sigma) )
-                    fprintf(fid, '[V, D] = eigs(N, B, k, %s);\n', sigma);
-                else
-                    fprintf(fid, '[V, D] = eigs(N, B, k);\n');
-                end
-            end
-        end
-        
-        function printPostSolver(fid, expInfo)
-            
-            allVarNames = expInfo.allVarNames;
-            indVarName = expInfo.indVarName;
-            allVarString = expInfo.allVarString;
-            
-            fprintf(fid, '\n%%%% Plot the eigenvalues.\n');
-            fprintf(fid, 'D = diag(D);\n');
-            fprintf(fid, 'figure\n');
-            fprintf(fid, 'plot(real(D), imag(D), ''.'', ''markersize'', 25)\n');
-            fprintf(fid, 'title(''Eigenvalues''); xlabel(''real''); ylabel(''imag'');\n');
-            
-            if ( ischar(allVarNames) || (numel(allVarNames) == 1) )
-                fprintf(fid, '\n%% Plot the eigenmodes.\n');
-                fprintf(fid, 'figure\n');
-                fprintf(fid, 'plot(real(V), ''linewidth'', 2);\n');
-                fprintf(fid, 'title(''Eigenmodes''); xlabel(''%s''); ylabel(''%s'');', ...
-                    indVarName{1}, allVarString);
-            end
-        end
-        
+        % Print problem description:
         printDescription(fid, expInfo)
         
+        % Print options for solving the problem:
+        printOptions(fid, expInfo)
+        
+        % Print lines for setting up the problem:
         printSetup(fid, expInfo, guifile)
         
-
+        % Print the actual lines for calling the solver method:
+        printSolver(fid, expInfo)
+        
+        % Print steps taken after the solver finishes:
+        printPostSolver(fid, expInfo)
+        
+        function toWorkspaceSolutionOnly(handles)
+            varnames = handles.varnames;
+            lambdaName = handles.eigVarName;
+            
+            if ( iscell(lambdaName) )
+                lambdaName = lambdaName{:};
+            end
+            
+            nv = numel(varnames);
+            d = handles.latest.solution;
+            V = handles.latest.solutionT;
+            if ( ~iscell(V) )
+                V = {V};
+            end
+            
+            for k = 1:nv
+                assignin('base', varnames{k}, V{k});
+            end
+            assignin('base', lambdaName, d);
+            evalin('base', lambdaName);
+        end
+        
+        function toMat(handles)
+            D = diag(handles.latest.solution); %#ok<NASGU>
+            V = handles.latest.solutionT;  %#ok<NASGU>
+            uisave({'D', 'V'}, 'bvpeig');
+        end
+        
+        function toWorkspace(handles)
+            prompt = {'Eigenvalues', 'Eigenmodes'};
+            name = 'Export to workspace';
+            defaultAnswer ={'D', 'V'};
+            numlines = 1;
+            options.Resize ='on';
+            options.WindowStyle ='modal';
+            
+            answer = inputdlg(prompt, name, numlines, defaultAnswer, options);
+            
+            if ( ~isempty(answer) )
+                assignin('base', answer{1}, diag(handles.latest.solution));
+                assignin('base', answer{2}, handles.latest.solutionT);
+            end
+        end
     end
 end

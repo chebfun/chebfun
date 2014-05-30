@@ -1,4 +1,4 @@
-function expInfo = exportInfo(e, guifile)
+function expInfo = exportInfo(guifile)
 
 % Extract information from the CHEBGUI fields
 dom = guifile.domain;
@@ -40,7 +40,7 @@ end
 % Replace 'DUMMYSPACE' by the correct independent variable name
 allStrings = strrep(allStrings, 'DUMMYSPACE', indVarName{1});
 % Pretty print feval statements
-allStrings = e.prettyPrintFevalString(allStrings, allVarNames);
+allStrings = chebguiExporter.prettyPrintFevalString(allStrings, allVarNames);
 
 % If allStrings return a cell, we have both a LHS and a RHS string. Else,
 % we only have a LHS string, so we need to create the LHS linop manually.
