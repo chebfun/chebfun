@@ -17,7 +17,8 @@ end
 nF = F.nComponents; 
 v = 0; 
 for jj = 1:nF 
-    v = v + sum2( power( F.components{jj}, 2 ) );
+    v = v + sum( svd( F.components{jj} ).^2 );
+%     v = v + sum2( power( F.components{jj}, 2 ) );
 end
 v = sqrt(v); 
 

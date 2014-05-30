@@ -20,5 +20,14 @@ for r = 1 : size(D,1)
     pass(j) = ( norm( f+g - FplusG ) < tolr ); j = j + 1;
 end
 
+% Check if chebfun2/plus compresses the rank: 
+f = chebfun2(@(x,y) x); 
+g = f + f; 
+pass(j) = ( length(g) == length(f) ); 
+
+% Check if chebfun2/plus compresses the rank: 
+f = chebfun2(@(x,y) cos(x.*y)); 
+g = f + f; 
+pass(j) = ( length(g) == length(f) ); 
 
 end

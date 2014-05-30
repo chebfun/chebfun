@@ -34,14 +34,17 @@ end
 % Force a CHEBTECH basis.
 defaultPref = chebfunpref();
 pref = defaultPref;
-pref.tech = 'chebtech';    
+tech = feval(pref.tech);
+if ( ~isa(tech, 'chebtech') )
+    pref.tech = @chebtech2;
+end
 
 % Useful values:
 nMax = max(n);
 nMax1 = nMax + 1;
 domIn = dom;
 dom = dom([1, end]);
-x = chebpts(nMax1);
+x = chebpts(nMax1, 2);
 
 %% Recurrence relation:
 
@@ -71,13 +74,10 @@ C = fliplr(C);                      % C is ordered low to high.
 % Construct CHEBFUN from coeffs:
 p = chebfun(C, dom, pref, 'coeffs');   
 
-if ( ~strcmp(defaultPref.tech, 'chebtech') )
-    % Construct a CHEBFUN of the approprate form by evaluating p:
-    p = chebfun(@(x) feval(p, x), domIn);
-elseif ( numel(domIn) > 2 )
+if ( numel(domIn) > 2)
     p = restrict(p, domIn);
 end
-    
+
 % Adjust orientation:
 if ( size(n, 1) > 1 )
    p = p.'; 
