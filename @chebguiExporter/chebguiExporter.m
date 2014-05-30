@@ -46,6 +46,15 @@ classdef chebguiExporter
         % Print steps taken after the solver finishes:
         printPostSolver(fid, expInfo)
         
+        % Export to a .mat-file
+        toMat(handles)
+        
+        % Export to workspace
+        toWorkspace(handles)
+        
+        % Export to workspace, solution only
+        toWorkspaceSolutionOnly(handles)
+
     end
     
     methods ( Static = true )
