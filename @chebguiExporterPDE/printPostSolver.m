@@ -1,16 +1,31 @@
 function printPostSolver(fid, expInfo)
+%PRINTPOSTSOLVER    Print commands after solution has been found
+%
+% Calling sequence:
+%   PRINTPOSTSOLVER(FID, EXPINFO)
+% where
+%   FID:        ID of a file-writing stream.
+%   EXPINFO:    Struct containing information for printing the problem.
+
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+% Extract info from the EXPINFO struct:
 sol = expInfo.sol;
 indVarName = expInfo.indVarName;
 deInput = expInfo.deInput;
 s = expInfo.s;
 
-% plotting
+% Plotting. Deal with scalar and system problems separately.
 if ( numel(deInput) == 1 )
+    % Scalar problems.
     fprintf(fid, '\n%% Create plot of the solution.\n');
     %     fprintf(fid,'surf(%s,t,''facecolor'',''interp'')\n',sol);
     fprintf(fid, 'waterfall(%s,%s,''simple'',''linewidth'',2)\n', sol, ...
         indVarName{2});
+    
 else
+    % Coupled systems.
     fprintf(fid, '\n%% Create plots of the solutions.\n');
     M = numel(deInput);
     for k = 1:numel(deInput)

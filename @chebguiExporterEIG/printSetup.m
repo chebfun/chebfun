@@ -1,5 +1,16 @@
 function printSetup(fid, expInfo, guifile)
+%PRINTSETUP     Print commands for setting up problems
+%
+% Calling sequence:
+%   PRINTPOSTSOLVER(FID, EXPINFO)
+% where
+%   FID:        ID of a file-writing stream.
+%   EXPINFO:    Struct containing information for printing the problem.
 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+% Extract info from the EXPINFO struct:
 dom = expInfo.dom;
 bcInput = expInfo.bcInput;
 lname = expInfo.lname;
@@ -9,6 +20,7 @@ bcString = expInfo.bcString;
 allVarNames = expInfo.allVarNames;
 periodic = expInfo.periodic;
 
+% Print commands for setting up problem:
 fprintf(fid, '\n%%%% Define the domain we''re working on.\n');
 fprintf(fid, 'dom = %s;\n', dom);
 if ( ~generalized )

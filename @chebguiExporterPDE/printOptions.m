@@ -1,4 +1,16 @@
 function printOptions(fid, expInfo)
+%PRINTOPTIONS   Print problem options when they are exported.
+%
+% Calling sequence:
+%   PRINTOPTIONS(FID, EXPINFO)
+% where
+%   FID:        ID of a file-writing stream.
+%   EXPINFO:    Struct containing information for printing the problem.
+
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+% Extract info from the expInfo struct:
 tol = expInfo.tol;
 pdeflag = expInfo.pdeflag;
 doplot = expInfo.doplot;
@@ -6,10 +18,14 @@ dohold = expInfo.dohold;
 ylim1 = expInfo.ylim1;
 ylim2 = expInfo.ylim2;
 fixN = expInfo.fixN;
-% Option for tolerance
+
+% Start with an empty struct for opts
 opts = [];
+
+% Option for tolerance
 opts = [opts, '''Eps'',', tol];
 
+% Is PDEFLAG set?
 if ( ~all(pdeflag) )
     opts = [opts, ',''PDEflag'',', 'pdeflag'];
 end

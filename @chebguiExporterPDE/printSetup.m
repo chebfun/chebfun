@@ -1,27 +1,32 @@
 function printSetup(fid, expInfo, guifile)
+%PRINTSETUP     Print commands for setting up problems
+%
+% Calling sequence:
+%   PRINTPOSTSOLVER(FID, EXPINFO)
+% where
+%   FID:        ID of a file-writing stream.
+%   EXPINFO:    Struct containing information for printing the problem.
 
-% Extract info from the expInfo struct
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+% Extract info from the EXPINFO struct:
 dom = expInfo.dom;
 deInput = expInfo.deInput;
-
-% PDE specific information
 xName = expInfo.xName;
 tName = expInfo.tName;
 tt = expInfo.tt;
 pdeflag = expInfo.pdeflag;
 initInput = expInfo.initInput;
-
 deString = expInfo.deString;
 lbcInput = expInfo.lbcInput;
 rbcInput = expInfo.rbcInput;
-
-sol = expInfo.sol;
 sol0 = expInfo.sol0;
-
 allVarString = expInfo.allVarString;
 allVarNames = expInfo.allVarNames;
 periodic = expInfo.periodic;
 
+% Print commands for setting up the problem:
 fprintf(fid, '%% Create an interval of the space domain...\n');
 fprintf(fid, 'dom = %s;\n',dom);
 fprintf(fid, '%%...and a discretisation of the time domain:\n');
@@ -47,6 +52,7 @@ if ( ~isempty(rbcInput{1}) )
 end
 
 if ( periodic )
+    % Periodic conditions.
     fprintf(fid, 'bc = ''periodic'';\n');
 end
 
@@ -73,15 +79,12 @@ if ( (numel(deInput) == 1) && ~ischar(deInput) )
         fprintf(fid, '%s = %s;\n', sol0, vectorize(initInput));
     end
 else
-    % Get the strings of the dependant variables. Just use allVarNames
-    s = allVarNames;
-    
     % To deal with 'u = ...' etc in intial guesses
     order = [];
     guesses = [];
     inits = [];
     
-    % Match LHS of = with variables in allVarNa
+    % Match LHS of = with variables in allVarNames
     for initCounter = 1:length(initInput)
         currStr = initInput{initCounter};
         equalSign = find(currStr == '=', 1, 'first');
@@ -93,10 +96,13 @@ else
         guesses = [guesses ; {currGuess}];
         inits = [inits ; {currInit}];
     end
+    
+    % Sort the variables to ensure they get assigned the appropriate initial
+    % conditions:
     [ignored, order] = sort(order);
     
     % If the initial guesses are all constants, we need to wrap them in a
-    % chebfun call.
+    % CHEBFUN call.
     for k = 1:numel(initInput)
         findx = strfind(initInput{k}, 'x');
         if ( ~isempty(findx) )
@@ -109,9 +115,11 @@ else
         end
     end
     
-    % These can be changed
+    % These can be changed. This is the post-fix added to variables, i.e. u
+    % becomes u0 etc.
     initText = '0';
     
+    % Loop through the input variables:
     for k = 1:numel(initInput)
         fprintf(fid, '%s%s = %s;\n', inits{order(k)}, initText, ...
             guesses{order(k)});

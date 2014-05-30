@@ -1,5 +1,16 @@
 function printSetup(fid, expInfo, guifile)
-% Extract info from the expInfo struct:
+%PRINTSETUP     Print commands for setting up problems
+%
+% Calling sequence:
+%   PRINTPOSTSOLVER(FID, EXPINFO)
+% where
+%   FID:        ID of a file-writing stream.
+%   EXPINFO:    Struct containing information for printing the problem.
+
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+% Extract info from the EXPINFO struct:
 dom = expInfo.dom;
 deString = expInfo.deString;
 deInput = expInfo.deInput;
@@ -11,6 +22,7 @@ indVarNameSpace = expInfo.indVarNameSpace;
 periodic = expInfo.periodic;
 useLatest = expInfo.useLatest;
 
+% Print commands for problem set-up
 fprintf(fid, '\n%%%% Problem set-up');
 fprintf(fid, '\n%% Define the domain.\n');
 fprintf(fid, 'dom = %s;\n', dom);
@@ -18,7 +30,7 @@ fprintf(fid, ['\n%% Assign the differential equation to a chebop on that ' ...
     'domain.\n']);
 fprintf(fid, 'N = chebop(%s,dom);\n', deString);
 
-% Setup for the rhs
+% Setup for the RHS
 fprintf(fid, ['\n%% Set up the rhs of the differential equation so that ' ...
     'N(%s) = rhs.\n'], allVarString);
 
@@ -56,9 +68,9 @@ elseif ( ~isempty(initInput{1}) )
     fprintf(fid, '%s = chebfun(@(%s) %s, dom);\n', ...
         indVarNameSpace, indVarNameSpace, indVarNameSpace);
     fprintf(fid, '%% and assign an initial guess to the chebop.\n');
-    %     fprintf(fid,'N.init = %s;\n',vectorize(char(initInput)));
     initInput = cellstr(initInput);
     if ( numel(initInput) == 1 )
+        % Only one input passed (scalar problem).
         guessInput = vectorize(strtrim(char(initInput{1})));
         equalSign = find(guessInput == '=', 1, 'last');
         if ( ~isempty(equalSign) )
@@ -84,6 +96,7 @@ elseif ( ~isempty(initInput{1}) )
             inits = [inits ; {currInit}];
         end
         
+        % Sort the variables to ensure they get assigned the correct guesses.
         [ignored, order] = sort(order);
         initText = '_init';
         for k = 1:numel(initInput)
