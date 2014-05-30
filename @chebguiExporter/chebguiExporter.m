@@ -27,16 +27,23 @@ classdef chebguiExporter
     
     methods ( Abstract = true )
         
-        % Export to .m file
-        chebgui2mfile(exporter, guifile, fid, expInfo)
+        % Extract information from the CHEBGUI object to a struct
+        expInfo = exportInfo(e, guifile)
         
     end
     
-    
-    methods( Abstract = true, Static = true )
-        % Make a CHEBGUIEXPORTER. (Constructor shortcut)
-        e = make(varargin);
+    methods ( Abstract = true, Static = true )
         
+        printDescription(fid, expInfo)
+        
+        printOptions(fid, expInfo)
+        
+        printSetup(fid, expInfo, guifile)
+        
+        printSolver(fid, expInfo)
+        
+        printPostSolver(fid, expInfo)
+
     end
     
     methods ( Static = true )

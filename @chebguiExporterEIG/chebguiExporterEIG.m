@@ -29,68 +29,16 @@ classdef chebguiExporterEIG < chebguiExporter
     
     
     methods ( Static = true )
-        
-        function e = make(varargin)
-            % Factory method.
-            e = chebguiExporterEIG(varargin{:});
-        end
-        
-        function printOptions(fid, expInfo)
-            K = expInfo.K;
-            
-            fprintf(fid, '\n%% Number of eigenvalue and eigenmodes to compute.\n');
-            fprintf(fid, 'k = %s;\n', K);
-            
-            fprintf(fid, '\n%% Number of eigenvalue and eigenmodes to compute.\n');
-            fprintf(fid, 'k = %s;\n', K);
-            
-        end
-        
-        function printSolver(fid, expInfo)
-            sigma = expInfo.sigma;
-            generalized = expInfo.generalized;
-            
-            fprintf(fid, '\n%%%% Solve the eigenvalue problem.\n');
-            if ( ~generalized )
-                if ( ~isempty(sigma) )
-                    fprintf(fid, '[V, D] = eigs(N, k, %s);\n', sigma);
-                else
-                    fprintf(fid, '[V, D] = eigs(N, k);\n');
-                end
-            else
-                if ( ~isempty(sigma) )
-                    fprintf(fid, '[V, D] = eigs(N, B, k, %s);\n', sigma);
-                else
-                    fprintf(fid, '[V, D] = eigs(N, B, k);\n');
-                end
-            end
-        end
-        
-        function printPostSolver(fid, expInfo)
-            
-            allVarNames = expInfo.allVarNames;
-            indVarName = expInfo.indVarName;
-            allVarString = expInfo.allVarString;
-            
-            fprintf(fid, '\n%%%% Plot the eigenvalues.\n');
-            fprintf(fid, 'D = diag(D);\n');
-            fprintf(fid, 'figure\n');
-            fprintf(fid, 'plot(real(D), imag(D), ''.'', ''markersize'', 25)\n');
-            fprintf(fid, 'title(''Eigenvalues''); xlabel(''real''); ylabel(''imag'');\n');
-            
-            if ( ischar(allVarNames) || (numel(allVarNames) == 1) )
-                fprintf(fid, '\n%% Plot the eigenmodes.\n');
-                fprintf(fid, 'figure\n');
-                fprintf(fid, 'plot(real(V), ''linewidth'', 2);\n');
-                fprintf(fid, 'title(''Eigenmodes''); xlabel(''%s''); ylabel(''%s'');', ...
-                    indVarName{1}, allVarString);
-            end
-        end
-        
+
         printDescription(fid, expInfo)
+        
+        printOptions(fid, expInfo)
         
         printSetup(fid, expInfo, guifile)
         
+        printSolver(fid, expInfo)
+        
+        printPostSolver(fid, expInfo)
 
     end
 end
