@@ -70,5 +70,37 @@ classdef chebguiExporterBVP < chebguiExporter
             uisave([varnames', 'normVec', 'N', 'options'], 'bvp');
         end
         
+        function toWorkspace(handles)
+            numlines = 1;
+            options.Resize ='on';
+            options.WindowStyle ='modal';
+            
+            varnames = handles.varnames;
+            nv = numel(varnames);
+            if ( nv == 1 )
+                prompt = {'Differential operator', 'Solution:',...
+                    'Vector with norm of updates', 'Options'};
+            else
+                prompt = ['Differential operator', varnames.',...
+                    'Vector with norm of updates', 'Options'];
+            end
+            
+            name = 'Export to workspace';
+            
+            defaultAnswer = ['N', varnames', 'normVec', 'options'];
+            
+            answer = inputdlg(prompt, name, numlines, defaultAnswer, options);
+            
+            sol = handles.latest.solution;
+            if ( ~isempty(answer) )
+                assignin('base', answer{1}, handles.latest.chebop);
+                for k = 1:nv
+                    assignin('base', answer{k+1}, sol(:,k));
+                end
+                assignin('base', answer{nv+2}, handles.latest.norms);
+                assignin('base', answer{nv+3}, handles.latest.options);
+            end
+        end
+        
     end
 end

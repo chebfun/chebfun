@@ -75,5 +75,21 @@ classdef chebguiExporterEIG < chebguiExporter
             V = handles.latest.solutionT;  %#ok<NASGU>
             uisave({'D', 'V'}, 'bvpeig');
         end
+        
+        function toWorkspace(handles)
+            prompt = {'Eigenvalues', 'Eigenmodes'};
+            name = 'Export to workspace';
+            defaultAnswer ={'D', 'V'};
+            numlines = 1;
+            options.Resize ='on';
+            options.WindowStyle ='modal';
+            
+            answer = inputdlg(prompt, name, numlines, defaultAnswer, options);
+            
+            if ( ~isempty(answer) )
+                assignin('base', answer{1}, diag(handles.latest.solution));
+                assignin('base', answer{2}, handles.latest.solutionT);
+            end
+        end
     end
 end

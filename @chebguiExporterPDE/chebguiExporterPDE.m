@@ -78,5 +78,47 @@ classdef chebguiExporterPDE < chebguiExporter
             uisave([varnames', 't'], 'pde');
         end
         
+        function toWorkspace(handles)
+            varnames = handles.varnames;
+            nv = numel(varnames);
+            if ( nv == 1 )
+                prompt = {'Solution', 'Time domain', 'Final solution'};
+                defaultAnswer=  [varnames,'t', [varnames{1} '_final']];
+            else
+                sol = {};
+                solfinal = {};
+                finalsol = {};
+                for k = 1:nv
+                    sol = [sol ['Solution ' varnames{k}]];
+                    finalsol = [finalsol ['Final ' varnames{k}]];
+                    solfinal = [solfinal [varnames{k} '_final']];
+                end
+                prompt = [sol, 'Time domain', finalsol];
+                defaultAnswer = [varnames', 't', solfinal];
+            end
+            
+            name = 'Export to workspace';
+            numlines = 1;
+            options.Resize ='on';
+            options.WindowStyle ='modal';
+            
+            answer = inputdlg(prompt, name, numlines, defaultAnswer, options);
+            
+            sol = handles.latest.solution;
+            if ( ~iscell(sol) )
+                sol = {sol};
+            end
+            
+            if ( ~isempty(answer) )
+                for k = 1:nv
+                    assignin('base', answer{k}, sol{k});
+                end
+                assignin('base', answer{nv+1}, handles.latest.solutionT);
+                for k = 1:nv
+                    assignin('base', answer{nv+1+k}, sol{k}(:,end));
+                end
+            end
+        end
+        
     end
 end

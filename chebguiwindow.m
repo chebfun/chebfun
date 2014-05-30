@@ -1247,8 +1247,11 @@ end
 
 function menu_exportworkspace_Callback(hObject, eventdata, handles)
 
-export(handles.guifile, handles, 'Workspace')
+% Create a CHEBGUIEXPORTER object of the correct type:
+exporter = chebguiExporter.constructor(handles.guifile.type);
 
+% Export the solution to the workspace
+exporter.toWorkspace(handles);
 end
 
 
