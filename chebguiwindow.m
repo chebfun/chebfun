@@ -1254,7 +1254,11 @@ end
 
 function menu_exportmatfile_Callback(hObject, eventdata, handles)
 
-export(handles.guifile, handles, '.mat')
+% Create a CHEBGUIEXPORTER object of the correct type:
+exporter = chebguiExporter.constructor(handles.guifile.type);
+
+% Export the solution to the workspace
+exporter.toMat(handles);
 
 end
 

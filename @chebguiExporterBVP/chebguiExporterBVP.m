@@ -16,7 +16,7 @@ classdef chebguiExporterBVP < chebguiExporter
         
         % Description for printing to .m files:
         description = 'a boundary-value problem';
-
+        
     end
     
     methods (Access = public)
@@ -56,7 +56,18 @@ classdef chebguiExporterBVP < chebguiExporter
             for k = 1:nv
                 assignin('base', varnames{k}, sol(:,k));
                 evalin('base', varnames{k});
-            end 
+            end
+        end
+        
+        function toMat(handles)
+            varnames = handles.varnames;
+            for k = 1:numel(varnames);
+                eval([varnames{k} ' = handles.latest.solution(:,k);']); %#ok<NASGU>
+            end
+            normVec = handles.latest.norms;  %#ok<NASGU>
+            N = handles.latest.chebop;  %#ok<NASGU>
+            options = handles.latest.options;  %#ok<NASGU>
+            uisave([varnames', 'normVec', 'N', 'options'], 'bvp');
         end
         
     end

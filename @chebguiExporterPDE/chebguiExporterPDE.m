@@ -63,5 +63,20 @@ classdef chebguiExporterPDE < chebguiExporter
             end
         end
         
+        function toMat(handles)
+            varnames = handles.varnames;
+            
+            sol = handles.latest.solution;
+            if ( ~iscell(sol) )
+                sol = {sol};
+            end
+            
+            for k = 1:numel(varnames);
+                eval([varnames{k} ' = sol{k};']);
+            end
+            t = handles.latest.solutionT;  %#ok<NASGU>
+            uisave([varnames', 't'], 'pde');
+        end
+        
     end
 end

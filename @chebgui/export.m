@@ -47,16 +47,6 @@ if ( strcmp(problemType, 'bvp') )
                 assignin('base', answer{nv+3}, handles.latest.options);
             end
             
-
-        case '.mat'
-            varnames = handles.varnames;
-            for k = 1:numel(varnames);
-                eval([varnames{k} ' = handles.latest.solution(:,k);']); %#ok<NASGU>
-            end
-            normVec = handles.latest.norms;  %#ok<NASGU>
-            N = handles.latest.chebop;  %#ok<NASGU>
-            options = handles.latest.options;  %#ok<NASGU>
-            uisave([varnames', 'normVec', 'N', 'options'], 'bvp');
         case 'Cancel'
             return;
     end
@@ -104,21 +94,7 @@ elseif ( strcmp(problemType,'pde') )
                     assignin('base', answer{nv+1+k}, sol{k}(:,end));
                 end
             end
-
-        case '.mat'
-            varnames = handles.varnames;
-
-            sol = handles.latest.solution;
-            if ( ~iscell(sol) )
-            	sol = {sol};
-            end
-
-            for k = 1:numel(varnames);
-                eval([varnames{k} ' = sol{k};']); %#ok<NASGU>
-            end
-%             u = handles.latest.solution; %#ok<NASGU>
-            t = handles.latest.solutionT;  %#ok<NASGU>
-            uisave([varnames', 't'], 'pde');
+            
         case 'Cancel'
             return;
     end
@@ -141,10 +117,6 @@ else
                 assignin('base', answer{2}, handles.latest.solutionT);
             end
 
-        case '.mat'
-            D = diag(handles.latest.solution); %#ok<NASGU>
-            V = handles.latest.solutionT;  %#ok<NASGU>
-            uisave({'D', 'V'}, 'bvpeig');
         case 'Cancel'
             return;
     end

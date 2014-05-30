@@ -70,5 +70,10 @@ classdef chebguiExporterEIG < chebguiExporter
             evalin('base', lambdaName);
         end
         
+        function toMat(handles)
+            D = diag(handles.latest.solution); %#ok<NASGU>
+            V = handles.latest.solutionT;  %#ok<NASGU>
+            uisave({'D', 'V'}, 'bvpeig');
+        end
     end
 end
