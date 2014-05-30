@@ -194,16 +194,19 @@ end
                 % Plot solution:
                 plotFun(uCurrent, t(kk));
 
+                % If we have 2.5 times as many coeffcients as we need, shorten
+                % the representation and cause the integrator to stop. 
                 if ( cutoff < 0.4*n )
-                    currentLength = round(1.25*cutoff)';
-                    currentLength = currentLength + 1 - rem(currentLength,2)
+                    %currentLength = round(1.25*cutoff)';
+                    currentLength = floor( currentLength / 1.5  );
+                    currentLength = currentLength + 1 - rem(currentLength,2);
                     status = true;
                 end
 
             else 
 
                 % Increase length and bail out:
-                currentLength = 2*currentLength-1
+                currentLength = 2*currentLength-1;
                 status = true;
             end
         end
@@ -548,7 +551,7 @@ else
     currentLength = max(length(u0), 9);
     currentT = tt(1);
     while ( currentT < tt(end) )
-        tt(tt < currentT) = [];
+        tt = [ currentT, tt(tt > currentT) ];
         oneStep(chebpts(currentLength, DOMAIN), tt);
     end
 end
