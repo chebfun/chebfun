@@ -255,13 +255,19 @@ end
             
             % Plot a waterfall plot to the bottom figure window:
             axes(axesNorm)
-            uuTmp = prepare4output(uOut);
-            waterfall(uuTmp, tt(tt<=tCurrent), 'simple', 'linewidth', 2);
+            uuTmp = prepare4output(uOut(1:ctr));
+            if ( SYSSIZE == 1 )
+                waterfall(uuTmp, tt(tt<=tCurrent), 'linewidth', 2);
+            else
+                cols = get(0, 'DefaultAxesColorOrder');
+                waterfall(uuTmp, tt(tt<=tCurrent), 'linewidth', 2, 'EdgeColors', cols);
+            end
             xlabel(xLabel), ylabel(tlabel), zlabel(varNames)
             if ( gridOn )
                 grid on
             end
-            view([322.5 30]), box off, hold off
+            view([322.5 30])
+            box off
             axes(axesSol)
             % hang around until 'continue' or 'stop' is presed.
             waitfor(clearButton, 'String');

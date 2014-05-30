@@ -746,9 +746,9 @@ elseif ( get(handles.button_pde, 'Value') )
     u = handles.latest.solution;
     tt = handles.latest.solutionT;
     
-    varnames = handles.varnames;  
+    varnames = handles.varnames;
     xLab = handles.indVarName{1};
-    tLab = handles.indVarName{2};    
+    tLab = handles.indVarName{2};
     
     titleStr = sprintf('Solution at final time, %s = %f', tLab, tt(end));
     figure
@@ -768,19 +768,19 @@ elseif ( get(handles.button_pde, 'Value') )
         legend(varnames);
         title(titleStr)
     end
-
+    
     % Turn on grid
     if ( handles.guifile.options.grid )
         grid on
     end
-
+    
     % Turn on fixed y-limits
     if ( ~isempty(handles.guifile.options.fixYaxisLower) )
         ylim([str2num(handles.guifile.options.fixYaxisLower) ...
             str2num(handles.guifile.options.fixYaxisUpper)]);
     end
-      
-    if ( ~iscell(u) )
+    
+    if ( ~isa(u, 'chebmatrix') )
         figure
         waterfall(u, tt, 'simple', 'linewidth', 2)
         xlabel(xLab);
@@ -788,33 +788,28 @@ elseif ( get(handles.button_pde, 'Value') )
         zlabel(varnames{1});
     else
         figure
-        for k = 1:numel(u)
-            subplot(1, numel(u), k);
-            waterfall(u{k}, tt, 'simple', 'linewidth', 2)
+        for k = 1:size(u,1)
+            subplot(1, size(u,1), k);
+            waterfall(u(k,:), tt, 'linewidth', 2)
             xlabel(xLab)
             ylabel(tLab)
             zlabel(varnames{k})
             title(varnames{k})
         end
         
-        tmp = u{k}(:,1);
-        u1 = tmp.vals(1);
-        tmp = get(tmp, 'vals');
-        x1 = tmp(1);
-        
         figure
         cols = get(0, 'DefaultAxesColorOrder');
-        for k = 1:numel(u)
-            plot3(x1, tt(1), u1, 'linewidth', 2, 'color', cols(k,:));
+        % Dummy plot to get legends right:
+        for k = 1:size(u,1)
+            plot(0, NaN, 'linewidth', 2, 'color', cols(k, :))
             hold on
         end
-        legend(varnames{:})
-        for k = 1:numel(u)
-            waterfall(u{k}, tt, 'simple', 'linewidth', 2, 'edgecolor', ...
-                cols(k,:))
-        end
-        xlabel(xLab)
-        ylabel(tLab)
+        legend(varnames{:});
+        % CHEBMATRIX/WATERFALL()
+        waterfall(u, tt, 'linewidth', 2, 'edgecolors', cols)
+        % Much pretty. Wow.
+        view([322.5 30])
+        box off
         grid on
     end
 else

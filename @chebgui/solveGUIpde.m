@@ -337,7 +337,7 @@ end
 
 % TODO: Reinsert this try-catch statement.
 % try
-    [t u] = pde15s(DE, tt, u0, bc, opts);
+    [t, u] = pde15s(DE, tt, u0, bc, opts);
 % catch ME
 %     errordlg('Error in solution process.', 'chebopbvp error', 'modal');
 %     varargout{1} = handles;
@@ -363,33 +363,34 @@ else
     figure();
 end
 
-if ( ~iscell(u) )
-    %     surf(u,t,'facecolor','interp')
+if ( ~isa(u, 'chebmatrix') )
     waterfall(u, t, 'simple', 'linewidth', defaultLineWidth)
-    xlabel(indVarName{1}), ylabel(indVarName{2}), zlabel(allVarNames)
 else
     cols = get(0, 'DefaultAxesColorOrder');
-
-    for k = 1:numel(u)
-        plot(0, NaN, 'linewidth', defaultLineWidth, 'color', cols(k, :))
-        hold on
-    end
-
-    legend(allVarNames);
-
-    for k = 1:numel(u)
-        waterfall(u{k}, t, 'simple', 'linewidth', defaultLineWidth, ...
-            'edgecolor', cols(k, :))
-        hold on
-        xlabel(indVarName{1})
-        ylabel(indVarName{2})
-    end
-
-    view([322.5 30])
-    box off
-    grid on
     
-    hold off
+    % TODO: Do we want legends here anyway?
+%     % Dummy plot to get legends right:
+%     for k = 1:size(u,1)
+%         plot(0, NaN, 'linewidth', defaultLineWidth, 'color', cols(k, :))
+%         hold on
+%     end
+%     legend(allVarNames);
+
+    % CHEBMATRIX/WATERFALL()
+    waterfall(u, t, 'linewidth', defaultLineWidth, 'edgecolors', cols)
 end
 
+% Axis labels:
+xlabel(indVarName{1})
+ylabel(indVarName{2})
+zlabel(allVarNames)
+
+% Much pretty. Wow.
+view([322.5 30])
+box off
+grid on    
+
+% Output Handles:
 varargout{1} = handles;
+
+end
