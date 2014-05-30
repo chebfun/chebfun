@@ -15,7 +15,7 @@ periodic = expInfo.periodic;
 % Print to EIG problem
 fprintf(fid, '%% Solving\n');
 if ( (numel(deInput) == 1) && ~any(deInput{1} == '=') )
-            fprintf(fid, '%%   %s = %s*%s\n', deInput{1}, lname, allVarString);
+    fprintf(fid, '%%   %s = %s*%s\n', deInput{1}, lname, allVarString);
 else
     for k = 1:numel(deInput)
         fprintf(fid, '%%   %s,\n', deInput{k});
@@ -27,7 +27,7 @@ if ( ~isempty(bcInput{1}) )
     for k = 1:numel(bcInput)
         fprintf(fid, '   %s', bcInput{k});
         if ( (k ~= numel(bcInput)) && (numel(bcInput) > 1) )
-             fprintf(fid, ',\n%%');
+            fprintf(fid, ',\n%%');
         end
     end
     fprintf(fid, '.\n');
