@@ -182,9 +182,10 @@ end
                 % Store these values:
                 uCurrent = chebfun(Uk, DOMAIN);
                 
-                %uCoeff = chebpoly(uCurrent);
-                %uCurrent = chebfun(uCoeff(:,end-(cutoff-1:-1:0)).',DOMAIN,'coeffs');                
-                %uCurrent = simplify(uCurrent,epslevel);
+                uCoeff = chebpoly(uCurrent);
+                first = max(1,size(uCoeff,2)-cutoff);
+                uCurrent = chebfun(uCoeff(:,first:end).',DOMAIN,'coeffs');
+                uCurrent = simplify(uCurrent,epslevel);
                 
                 ctr = ctr + 1;
                 uOut{ctr} = uCurrent;
@@ -193,12 +194,16 @@ end
                 % Plot solution:
                 plotFun(uCurrent, t(kk));
 
-                % TODO: reduce length if cutoff is large and bail out.
+                if ( cutoff < 0.4*n )
+                    currentLength = round(1.25*cutoff)';
+                    currentLength = currentLength + 1 - rem(currentLength,2)
+                    status = true;
+                end
 
             else 
 
                 % Increase length and bail out:
-                currentLength = 2*currentLength-1;
+                currentLength = 2*currentLength-1
                 status = true;
             end
         end
@@ -280,11 +285,11 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % ODE tolerances: (AbsTol and RelTol must be <= Tol/10)
-aTol = odeget(opt, 'AbsTol', tol/10);
-rTol = odeget(opt, 'RelTol', tol/10);
+aTol = odeget(opt, 'AbsTol', tol);
+rTol = odeget(opt, 'RelTol', tol);
 if ( isnan(optN) )
-    aTol = min(aTol, tol/10);
-    rTol = min(rTol, tol/10);
+    aTol = min(aTol, tol);
+    rTol = min(rTol, tol);
 end
 opt.AbsTol = aTol;
 opt.RelTol = rTol;
@@ -416,6 +421,7 @@ else
         bc.left.op = {@(n) zeros(max(sizeOp), SYSSIZE*n)}; % Dummy entries.
         BCRHS = num2cell(zeros(1, max(sizeOp)));
         leftNonlinBCFuns = op;
+        leftNonlinBCVals = zeros(1,max(sizeOp));  % nominally zero
     else
         error('Unknown BC syntax');
     end
@@ -430,6 +436,7 @@ else
         bc.middle.op = {@(n) zeros(max(sizeOp), SYSSIZE*n)}; % Dummy entries.
         BCRHS = num2cell(zeros(1, max(sizeOp)));
         middleNonlinBCFuns = op;
+        middleNonlinBCVals = zeros(1,max(sizeOp));  % nominally zero
     end
     
     if ( isempty(bc.right) )
@@ -471,6 +478,7 @@ else
         bc.right.op = {@(n) zeros(max(sizeOp), SYSSIZE*n)};
         BCRHS = [BCRHS num2cell(zeros(1, max(sizeOp)))];
         rightNonlinBCFuns = op;
+        rightNonlinBCVals = zeros(1,max(sizeOp));  % nominally zero
     else
         error('Unknown BC syntax');
     end
@@ -522,6 +530,7 @@ pref.enableBreakpointDetection = 0;
 pref.techPrefs.sampleTest = 0;
 pref.enableSingularityDetection = 0;
 pref2 = chebtech.techPref(pref);
+pref2.eps = tol;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%% TIME CHUNKS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -604,7 +613,7 @@ clear global SYSSIZE
             bcop = [bc.left.op ; bc.middle.op ; bc.right.op];
             B = cell2mat(cellfun(@(f) feval(f, n), bcop, 'UniformOutput', false));
             
-            % Project / mass matrix.
+            % Projection / mass matrix.
             M = {};
             for kk = 1:SYSSIZE
                 xk = chebpts(n-DIFFORDER(kk), DOMAIN, 1);
@@ -620,13 +629,40 @@ clear global SYSSIZE
             
         end
         
+        % We have to ensure the starting condition satisfies the boundary
+        % conditions, or else we will get a singularity in time. We do this by
+        % tweaking the BC values to match the reality. Changing the IC itself is
+        % much trickier.
+        linearBCVals = B*U0(:);
+        Utmp = chebdouble(U0, DOMAIN);
+        if ( ~isempty(leftNonlinBCLocs) )
+            tmp = leftNonlinBCFuns(tspan(1), x, Utmp);
+            tmp = double(tmp);
+            if ( size(tmp, 1) ~= n )
+                tmp = reshape(tmp, n, numel(tmp)/n);
+            end
+            leftNonlinBCVals = tmp(1, :);
+        end
+        if ( ~isempty(middleNonlinBCLocs) )
+            % TODO: This won't work if there are also left nonlin BCs
+            middleNonlinBCVals = double(middleNonlinBCFuns(tspan(1), x, Utmp));
+        end
+        if ( ~isempty(rightNonlinBCLocs) )
+            tmp = rightNonlinBCFuns(tspan(1), x, Utmp);
+            tmp = double(tmp);
+            if ( size(tmp, 1) ~= n )
+                tmp = reshape(tmp, n, numel(tmp)/n);
+            end
+            rightNonlinBCVals = fliplr(tmp(end, :));
+        end       
+        
         % ODE options: (mass matrix)
         opt2 = odeset(opt, 'Mass', M, 'MassSingular', 'yes', ...
             'InitialSlope', odeFun(tspan(1), U0), 'MStateDependence', 'none');
         
         % Solve ODE over time chunk with ode15s:
         [ignored, U] = ode15s(@odeFun, tspan, U0, opt2);
-        
+
         if ( length(tspan) > 2 )
             return
         end
@@ -637,7 +673,8 @@ clear global SYSSIZE
         % The solution we'll take out and store:
         unew = U;
         
-        % Collapse systems to single chebfun for constructor (is addition right?)
+        % Collapse systems to single chebfun for constructor. Choose a
+        % combination unlikely to lead to cancellation. 
         U = U*(1:SYSSIZE)'/SYSSIZE;
         
         % Zero out irrelevant coefficients, to prevent resolving noise. 
@@ -647,6 +684,7 @@ clear global SYSSIZE
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         function F = odeFun(t, U)
             % This is what ODE15S() calls.
+            %fprintf('  t = %.5f\n',t)
             
             % Reshape to n by SYSSIZE:
             U = reshape(U, n, SYSSIZE);
@@ -660,9 +698,9 @@ clear global SYSSIZE
             % Get the algebraic right-hand sides: (may be time-dependent)
             for l = 1:numel(BCRHS)
                 if ( isa(BCRHS{l}, 'function_handle') )
-                    q(l, 1) = feval(BCRHS{l}, t);
+                    q(l, 1) = feval(BCRHS{l}, t) - linearBCVals(l);
                 else
-                    q(l, 1) = BCRHS{l};
+                    q(l, 1) = BCRHS{l} - linearBCVals(l);
                 end
             end
             
@@ -677,12 +715,13 @@ clear global SYSSIZE
                 if ( size(tmp, 1) ~= n )
                     tmp = reshape(tmp, n, numel(tmp)/n);
                 end
-                F(rows(indx)) = tmp(1, :);
+                F(rows(indx)) = tmp(1, :) - leftNonlinBCVals;
             end
             if ( ~isempty(middleNonlinBCLocs) )
                 % TODO: This won't work if there are also left nonlin BCs
                 indx = 1:length(middleNonlinBCLocs);
-                F(rows(indx)) = double(middleNonlinBCFuns(t, x, Utmp));
+                F(rows(indx)) = double(middleNonlinBCFuns(t, x, Utmp)) - ...
+                    middleNonlinBCVals;
             end            
             if ( ~isempty(rightNonlinBCLocs) )
                 indx = numel(BCRHS) + 1 - rightNonlinBCLocs;
@@ -691,7 +730,7 @@ clear global SYSSIZE
                 if ( size(tmp, 1) ~= n )
                     tmp = reshape(tmp, n, numel(tmp)/n);
                 end
-                F(rows(indx)) = fliplr(tmp(end, :));
+                F(rows(indx)) = fliplr(tmp(end, :)) - rightNonlinBCVals;
             end
             
             % Reshape to back to a single column:
