@@ -1,8 +1,8 @@
 classdef chebguiExporterPDE < chebguiExporter
     %CHEBGUIEXPORTERPDE   Export a PDE from CHEBGUI.
     %   This is a an concrete implementation of the class CHEBGUIEXPORTER, which
-    %   exports PDEs from CHEBGUI to .m-files, to the workspace, or to a .chebgui
-    %   file. It is not intended to be called directly by the end user.
+    %   exports PDEs from CHEBGUI to .m-files, to the workspace, or to a
+    %   .chebgui file. It is not intended to be called directly by the end user.
     %
     %   See also CHEBGUI, CHEBGUIEXPORTER.
     
@@ -29,6 +29,9 @@ classdef chebguiExporterPDE < chebguiExporter
     
     
     methods ( Static = true )
+        
+        % Extract information from the CHEBGUI object to a struct
+        expInfo = exportInfo(guifile)
         
         % Print problem description:
         printDescription(fid, expInfo)

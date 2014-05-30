@@ -10,7 +10,7 @@ try
     
     % Extract the necessary info for export to an .m file from the GUIFILE
     % object:
-    expInfo = exportInfo(exporter, guifile);
+    expInfo = exporter.exportInfo(guifile);
     
     % Write the header information:
     writeHeader(exporter, fid, fileName)

@@ -1,4 +1,4 @@
-function expInfo = exportInfo(e, guifile)
+function expInfo = exportInfo(guifile)
 
 % Extract information from the GUI fields
 dom = guifile.domain;

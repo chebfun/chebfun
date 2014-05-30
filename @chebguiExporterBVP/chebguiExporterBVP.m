@@ -1,8 +1,8 @@
 classdef chebguiExporterBVP < chebguiExporter
     %CHEBGUIEXPORTERBVP   Export a BVP from CHEBGUI.
     %   This is a an concrete implementation of the class CHEBGUIEXPORTER, which
-    %   exports BVPs from CHEBGUI to .m-files, to the workspace, or to a .chebgui
-    %   file. It is not intended to be called directly by the end user.
+    %   exports BVPs from CHEBGUI to .m-files, to the workspace, or to a
+    %   .chebgui file. It is not intended to be called directly by the end user.
     %
     %   See also CHEBGUI, CHEBGUIEXPORTER.
     
@@ -29,6 +29,9 @@ classdef chebguiExporterBVP < chebguiExporter
     
     
     methods ( Static = true )
+        
+        % Extract information from the CHEBGUI object to a struct
+        expInfo = exportInfo(guifile)
         
         % Print problem description:
         printDescription(fid, expInfo)

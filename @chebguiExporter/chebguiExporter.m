@@ -26,14 +26,10 @@ classdef chebguiExporter
         
     end
     
-    methods ( Abstract = true )
+    methods ( Abstract = true, Static = true )
         
         % Extract information from the CHEBGUI object to a struct
-        expInfo = exportInfo(e, guifile)
-        
-    end
-    
-    methods ( Abstract = true, Static = true )
+        expInfo = exportInfo(guifile)
         
         % Print problem description:
         printDescription(fid, expInfo)
