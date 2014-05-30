@@ -388,7 +388,24 @@ classdef chebfunpref < chebpref
                     if ( isfield(pref.prefList, ind(1).subs) )
                         out = pref.prefList.(ind(1).subs);
                     else
-                        out = pref.prefList.techPrefs.(ind(1).subs);
+                        techObj = feval(pref.prefList.tech);
+                        fullTechPrefs = ...
+                            techObj.techPref(pref.prefList.techPrefs);
+                        if ( isfield(fullTechPrefs, ind(1).subs) )
+                            % Try to find the tech preference name after
+                            % merginging with the full list of tech preferences
+                            % obtained via the tech's techPref() function of the
+                            % current tech.
+                            out = fullTechPrefs.(ind(1).subs);
+                        else
+                            % If we couldn't find the tech preference name
+                            % above, it may be because it was an abstractly
+                            % named preference that got mapped to something the
+                            % tech's techPref() deemed more sensible.  So, we
+                            % also try looking in the list of tech preferences
+                            % we have prior to forming the full list.
+                            out = pref.prefList.techPrefs.(ind(1).subs);
+                        end
                     end
 
                     if ( numel(ind) > 1 )
