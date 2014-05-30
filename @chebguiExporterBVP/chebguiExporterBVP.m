@@ -35,7 +35,7 @@ classdef chebguiExporterBVP < chebguiExporter
             e = chebguiExporterBVP(varargin{:});
         end
         
-        function printSolver(fid)
+        function printSolver(fid, expInfo)
             %PRINTSOLVER    Print the solution step when exporting
             fprintf(fid,'\n%%%% Solve the problem!');
             fprintf(fid, ['\n%% Here, we call the solvebvp() method ' ...

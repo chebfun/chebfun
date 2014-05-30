@@ -16,7 +16,7 @@ exporter.printSetup(fid, expInfo, guifile)
 exporter.printOptions(fid, expInfo)
 
 % Print the solution step:
-exporter.printSolver(fid)
+exporter.printSolver(fid, expInfo)
 
 % Print the post-solution process:
 exporter.printPostSolver(fid, expInfo)
