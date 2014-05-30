@@ -37,6 +37,7 @@ lbcRHSInput = cellstr(repmat('0', numel(lbcInput), 1));
 rbcRHSInput = cellstr(repmat('0', numel(rbcInput), 1));
 initRHSInput = cellstr(repmat('0', numel(initInput), 1));
 
+% Obtain strings for setting up the problem:
 [deString, allVarString, indVarNameDE, pdeVarName, pdeflag, ignored, allVarNames] ...
     = setupFields(guifile, deInput, 'DE');
 if ( ~any(pdeflag) )
@@ -75,6 +76,7 @@ else
     indVarName{2} = 't'; % Default value
 end
 
+% Check that we're not using the same variable for space and time!
 if ( strcmp(indVarName{1}, indVarName{2}) )
      error('Chebgui:SolveGUIpde', ...
         'The same variable appears to be used as space and time variable');
@@ -83,10 +85,9 @@ end
 % Create a string with the variables used in the problem
 variableString = [indVarName{2}, ',', indVarName{1}, ','];
 
+% The names of the variables used for space and time:
 xName = indVarName{1};
 tName = indVarName{2};
-
-idx = strfind(deString, ')');
 
 % Support for periodic boundary conditions
 if ( (~isempty(lbcInput{1}) && strcmpi(lbcInput{1}, 'periodic')) ...
@@ -98,11 +99,13 @@ else
     periodic = false;
 end
 
+% Glue the DESTRING together
 deString = ['@(' variableString, deString(3:end)];
 
+% Find what the dependent variables are:
 s = allVarNames;
 if ( (numel(deInput) == 1) && ~ischar(deInput) )
-    % Get the strings of the dependant variable. Just use allVarNames.
+    % Get the strings of the dependent variable. Just use allVarNames.
     sol = s{1};
     sol0 = [sol '0'];
 else
@@ -133,12 +136,12 @@ expInfo.s = s;
 expInfo.sol = sol;
 expInfo.sol0 = sol0;
 
+% And then some...
 expInfo.deString = deString;
 expInfo.pdeVarName = pdeVarName;
 expInfo.initString = initString;
 expInfo.lbcInput = lbcInput;
 expInfo.rbcInput = rbcInput;
-
 expInfo.allVarString = allVarString;
 expInfo.allVarNames = allVarNames;
 expInfo.indVarName = indVarName;
@@ -150,6 +153,6 @@ expInfo.doplot = guifile.options.plotting;
 expInfo.dohold = guifile.options.pdeholdplot;
 expInfo.ylim1 = guifile.options.fixYaxisLower;
 expInfo.ylim2 = guifile.options.fixYaxisUpper;
-expInfo.fixN = guifile.options.fixN
+expInfo.fixN = guifile.options.fixN;
 
 end

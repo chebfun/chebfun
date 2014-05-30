@@ -1,10 +1,23 @@
 function expInfo = exportInfo(guifile)
+%EXPORTINFO     Extract useful info from a CHEBGUI object for exporting
+%
+% Calling sequence
+%
+%   EXPINFO = EXPORTINFO(GUIFILE)
+%
+% where
+%
+%   GUIFILE:    A CHEBGUI object
+%   EXPINFO:    A struct, containing fields with information for exporting to an
+%               .m-file.
+
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Extract information from the CHEBGUI fields
 dom = guifile.domain;
 deInput = guifile.DE;
 bcInput = guifile.BC;
-
 
 % Wrap all input strings in a cell (if they're not a cell already)
 if ( isa(deInput,'char') )
@@ -29,6 +42,7 @@ if ( isempty(K) )
     K = '6';
 end
 
+% Obtain strings for setting up the problem:
 [allStrings, allVarString, indVarName, dummy, dummy, dummy, allVarNames] ...
     = setupFields(guifile, deInput, 'DE');
 
@@ -52,7 +66,8 @@ else
     rhsString = '';
 end
 
-% Assign x or t as the linear function on the domain
+% Assign x or t as the linear function on the domain. This is required so that
+% we can check whether the problem is a generalized eigenvalue problem or not:
 d = str2num(dom);
 xt = chebfun('x', d);
 eval([indVarName{1}, '=xt;']);
@@ -85,6 +100,9 @@ generalized = 1;
 % know we have a non-generalised problem.
 N_LHS = chebop(LHS, d, BC);
 
+% Check whether we actually have a linear problem.
+% TODO: Do we care when exporting? This would cause an error when a user tries
+% to run the .m file later anyway...
 try
     A = linop(N_LHS);
 catch ME
@@ -97,6 +115,7 @@ catch ME
     varargout{1} = handles;
     return
 end
+
 % Check for a generalised problem.
 % TODO: This should be a joint method with solveGUIeig
 if ( ~isempty(rhsString) )
@@ -132,7 +151,8 @@ if ( ~isempty(rhsString) )
     % Expand to a block diagonal matrix
     Idisc = blkdiag(Idisc{:});
     
-    % Compare the discretizations to see whether they are the same
+    % Compare the discretizations to see whether they are the same. If Bdisc is
+    % not square, B is certainly not the identity operator!
     if ( size(Bdisc, 1) ~= size(Bdisc, 2) )
         generalized = 1;
     else
@@ -175,7 +195,7 @@ expInfo.sigma = sigma;
 expInfo.generalized = generalized;
 expInfo.lname = lname;
 
-
+% And then some...
 expInfo.lhsString = lhsString;
 expInfo.allStrings = allStrings;
 expInfo.allVarString = allVarString;

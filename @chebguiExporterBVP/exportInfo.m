@@ -11,6 +11,9 @@ function expInfo = exportInfo(guifile)
 %   EXPINFO:    A struct, containing fields with information for exporting to an
 %               .m-file.
 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Extract information from the GUI fields
 dom = guifile.domain;
 deInput = guifile.DE;

@@ -1,5 +1,14 @@
 function printDescription(fid, expInfo)
 %PRINTDESCRIPTION   Print problem description when problems are exported.
+%
+% Calling sequence:
+%   PRINTDESCRIPTION(FID, EXPINFO)
+% where
+%   FID:        ID of a file-writing stream.
+%   EXPINFO:    Struct containing information for printing the problem.
+
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Extract info from the expInfo struct:
 deInput = expInfo.deInput;
@@ -8,9 +17,9 @@ dom = expInfo.dom;
 bcInput = expInfo.bcInput;
 periodic = expInfo.periodic;
 
-%% Print a description of the BVP:
+% Print a description of the problem.
 
-% Print the differential equation:
+% Begin by printing the differential equation:
 fprintf(fid, '%% Solving\n');
 for k = 1:numel(deInput)
     fprintf(fid, '%%   %s,\n', deInput{k});
