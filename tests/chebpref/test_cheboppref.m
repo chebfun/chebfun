@@ -46,9 +46,8 @@ pass(7) = (~cheboppref().damped) && strcmp(cheboppref().plotting, 'on');
 
 cheboppref.setDefaults(savedPrefs);
 
-% Test getDefaults('prop'):
-pass(8) = isnumeric(cheboppref.getDefaults('errTol'));
-
+% Test getting defaults:
+pass(8) = isnumeric(cheboppref().errTol);
 
 end
 

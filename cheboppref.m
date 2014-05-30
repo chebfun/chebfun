@@ -115,7 +115,7 @@ classdef cheboppref < chebpref
                     error('CHEBFUN:cheboppref:deprecated', ...
                         ['cheboppref() no longer supports queries of ', ...
                          'the form cheboppref(''prop'').\n', ...
-                         'Please use cheboppref.getDefaults(''prop'').']);
+                         'Please use cheboppref().prop.']);
                 else
                     error('CHEBFUN:cheboppref:deprecated', ...
                         ['chebfoppref() no longer assignment ', ...
@@ -203,22 +203,16 @@ classdef cheboppref < chebpref
             pref = cheboppref(fd);
         end
 
-        function pref = getDefaults(prop)
+        function pref = getDefaults()
         %GETDEFAULTS   Get default preferences.
         %   PREF = CHEBOPPREF.GETDEFAULTS() returns a CHEBOPPREF object with
         %   the preferences set to the currently stored default values.  It is
         %   equivalent to PREF = CHEBOPPREF().
         %
-        %   VAL = CHEBFUNPREF.GETDEFAULTS(PREF) returns the default value VAL of
-        %   the preference PREF.
-        %
         % See also GETFACTORYDEFAULTS, SETDEFAULTS.
-
-            if ( nargin == 0 )
-                pref = cheboppref();
-            else
-                pref = cheboppref.manageDefaultPrefs('get', prop);
-            end
+        
+            pref = cheboppref();
+            
         end
 
         function setDefaults(varargin)
@@ -292,15 +286,6 @@ classdef cheboppref < chebpref
 
             if ( strcmp(varargin{1}, 'get') )
                 varargout{1} = defaultPrefs;
-                if ( nargin > 1 )
-                    prefName = varargin{2};
-                    if ( isfield(defaultPrefs, prefName) )
-                        varargout{1} = defaultPrefs.(prefName);
-                    else
-                        error('CHEBFUN:chebfunpref:unknownpref', ...
-                         'Unknown or unassigned property ''%s''.', varargin{2});
-                    end
-                end
             elseif ( strcmp(varargin{1}, 'set-factory') )
                 defaultPrefs = cheboppref.factoryDefaultPrefs();
             elseif ( strcmp(varargin{1}, 'set') )
