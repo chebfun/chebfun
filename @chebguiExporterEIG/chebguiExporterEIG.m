@@ -30,14 +30,19 @@ classdef chebguiExporterEIG < chebguiExporter
     
     methods ( Static = true )
 
+        % Print problem description:
         printDescription(fid, expInfo)
         
+        % Print options for solving the problem:
         printOptions(fid, expInfo)
         
+        % Print lines for setting up the problem:
         printSetup(fid, expInfo, guifile)
         
+        % Print the actual lines for calling the solver method:
         printSolver(fid, expInfo)
         
+        % Print steps taken after the solver finishes:
         printPostSolver(fid, expInfo)
 
     end

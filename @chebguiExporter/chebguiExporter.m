@@ -8,10 +8,10 @@ classdef chebguiExporter
     %   CHEBGUIPDEEXPOERTER.
     
     % Developers note:
-    %   The CHEBGUICONTROLLER class defines a number of abstract methods, used to
-    %   export problems from CHEBGUI. In v4, this functionality used to live in the
-    %   @chebgui folder, but to increase modularity, it has been spun off to its own
-    %   class.
+    %   The CHEBGUIEXPORTER class defines a number of abstract methods, used to
+    %   export problems from CHEBGUI. In v4, this functionality used to live in
+    %   the @chebgui folder, but to increase modularity, it has been spun off to
+    %   its own class and subclasses.
     
     % Copyright 2014 by The University of Oxford and The Chebfun Developers.
     % See http://www.chebfun.org/ for Chebfun information.
@@ -23,6 +23,7 @@ classdef chebguiExporter
         
         % Description of exported .m files
         description
+        
     end
     
     methods ( Abstract = true )
@@ -34,21 +35,29 @@ classdef chebguiExporter
     
     methods ( Abstract = true, Static = true )
         
+        % Print problem description:
         printDescription(fid, expInfo)
         
+        % Print options for solving the problem:
         printOptions(fid, expInfo)
         
+        % Print lines for setting up the problem:
         printSetup(fid, expInfo, guifile)
         
+        % Print the actual lines for calling the solver method:
         printSolver(fid, expInfo)
         
+        % Print steps taken after the solver finishes:
         printPostSolver(fid, expInfo)
-
+        
     end
     
     methods ( Static = true )
         function obj = constructor(type)
-            % Constructor for the CHEBGUIEXPORTER class.
+            %CONSTRUCTOR    Constructor for the CHEBGUIEXPORTER class.
+            %
+            % This method allows us to construct concrete subclasses of the
+            % CHEBGUIEXPORTER class.
             
             % Return the desired type of CHEBGUIEXPORTER
             switch type
@@ -69,6 +78,8 @@ classdef chebguiExporter
         end
         
         function toChebgui(guifile)
+            %TOCHEBGUI
+            %
             % Export the CHEBGUI shown in the figure to a CHEBGUI variable in
             % the workspace
             
@@ -91,7 +102,9 @@ classdef chebguiExporter
         end
         
         function str = prettyPrintFevalString(str,varnames)
+            %PRETTYPRINTFEVALSTRING     Tidy up strings printed to .m files
             
+            % Do various string manipulations to make the output look nicer.
             for k = 1:numel(varnames)
                 oldstr = ['feval(' varnames{k} ','];
                 newstr = [varnames{k} '('];
@@ -111,25 +124,29 @@ classdef chebguiExporter
             end
             
         end
+        
     end
     
     methods ( Access = public )
         
         % Export to an .m-file.
-        toFile(e, guifile)
+        toFile(e, guifile, fileName, pathName)
         
+    end
+    
+    methods ( Access = protected )
         function writeHeader(e, fid, filename)
-            % The first few lines of exported .m-files.
+            %WRITEHEADER        The first few lines of exported .m-files.
             
             % Access usernames in different ways, depending on whether are
-            % running on PCs or not,
+            % running on PCs or not:
             if ( ispc )
                 userName = getenv('UserName');
             else
                 userName = getenv('USER');
             end
             
-            % Print first few lines
+            % Print first few lines of the .m-file:
             fprintf(fid, ['%% %s -- an executable .m-file for solving ', ...
                 '%s.\n'], filename, e.description);
             fprintf(fid, ['%% Automatically created from chebfun/chebgui ', ...
@@ -138,7 +155,5 @@ classdef chebguiExporter
                 datestr(floor(now)));
             
         end
-        
     end
-    
 end

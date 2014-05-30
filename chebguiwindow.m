@@ -1554,12 +1554,20 @@ end
 % --- Executes on button press in button_export.
 function button_export_Callback(hObject, eventdata, handles)
     % Create a CHEBGUIEXPORTER object of the correct type:
-    e = chebguiExporter.constructor(handles.guifile.type);
+    exporter = chebguiExporter.constructor(handles.guifile.type);
     
     % Call the export method of the E object:
     try
-        toFile(e, handles.guifile)
-    
+        [fileName, pathName] = uiputfile( ...
+            {'*.m', 'M-files (*.m)'; '*.*',  'All Files (*.*)'}, ...
+            'Save as', exporter.defaultFileName);
+        if ( fileName ~= 0 )     % User did not press cancel
+            toFile(exporter, handles.guifile, fileName, pathName)
+        end
+        
+        % Open the new file in the editor
+        open([pathName, fileName])
+
     catch ME
         rethrow(ME)
         error('Chebgui:Export', ...

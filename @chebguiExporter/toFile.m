@@ -1,19 +1,20 @@
-function toFile(exporter, guifile)
+function toFile(exporter, guifile, fileName, pathName)
+%TOFILE     Export a CHEBGUI to an .m-file
 
-[filename, pathname] = uiputfile( ...
-    {'*.m', 'M-files (*.m)'; '*.*',  'All Files (*.*)'}, ...
-    'Save as', exporter.defaultFileName);
+% Concatenate the pathName and the fileName to get the full path:
+fullFileName = [pathName, fileName];
 
-fullFileName = [pathname, filename];
-
-fid = fopen(fullFileName, 'wt');
-
-% Extract the necessary info for export to an .m file from the GUIFILE object:
-expInfo = exportInfo(exporter, guifile);
-
-writeHeader(exporter, fid, filename)
-
-if ( filename ~= 0 )     % User did not press cancel
+try
+    % Open a stream to write to a file:
+    fid = fopen(fullFileName, 'wt');
+    
+    % Extract the necessary info for export to an .m file from the GUIFILE
+    % object:
+    expInfo = exportInfo(exporter, guifile);
+    
+    % Write the header information:
+    writeHeader(exporter, fid, fileName)
+    
     % Print description of the problem:
     exporter.printDescription(fid, expInfo)
     
@@ -29,12 +30,14 @@ if ( filename ~= 0 )     % User did not press cancel
     % Print the post-solution process:
     exporter.printPostSolver(fid, expInfo)
     
-    % Open the new file in the editor
-    open(fullFileName)
+    % Close the file writing stream:
+    fclose(fid);
+catch ME
+    % Make sure to tidy up first
+    fclose(fid);
+    
+    % Rethrow the error:
+    rethrow(ME)
 end
-
-
-fclose(fid);
-
 
 end
