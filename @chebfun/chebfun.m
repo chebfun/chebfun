@@ -368,7 +368,7 @@ classdef chebfun
         out = kron(f, g)
         
         % Length of a CHEBFUN.
-        out = length(f);
+        [out, out2] = length(f);
         
         % Return Legendre coefficients of a CHEBFUN.
         c_leg = legpoly(f, n)
@@ -635,12 +635,12 @@ function [op, dom, pref] = parseInputs(op, dom, varargin)
             args(1:2) = [];
         elseif ( any(strcmpi(args{1}, {'chebkind', 'kind'})) )
             % Translate "chebkind" and "kind" --> "techPrefs.gridType".
-            if ( isnumeric(args{2}) && ((args{2} == 1) || (args{2} == 2)) )
-                pref.techPrefs.gridType = args{2};
-            elseif ( strncmpi(args{2}, '1st', 1) )
-                pref.techPrefs.gridType = 1;
-            elseif ( strncmpi(args{2}, '2nd', 1) )
-                pref.techPrefs.gridType = 2;
+            if ( (isnumeric(args{2}) && (args{2} == 1)) || ...
+                     (ischar(args{2}) && strncmpi(args{2}, '1st', 1)) )
+                pref.tech = @chebtech1;
+            elseif ( (isnumeric(args{2}) && (args{2} == 2)) || ...
+                     (ischar(args{2}) && strncmpi(args{2}, '2nd', 1)) )
+                pref.tech = @chebtech2;
             else
                 error('CHEBFUN:constructor:parseInputs', ...
                     'Invalid value for ''chebkind''/''kind'' option.');
