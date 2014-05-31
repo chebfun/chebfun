@@ -1,7 +1,8 @@
 function cg = demo2chebgui(demoPath)
 %DEMO2CHEBGUI   Load a demo stored in a .guifile to a CHEBGUI object
-
-% TODO:  Documentation.
+%
+% CG = CHEBGUI.DEMO2CHEBGUI(DEMOPATH) convert the .guifile stored on DEMOPATH to
+% a CHEBGUI object.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/chebfun/ for Chebfun information.
@@ -31,6 +32,8 @@ while ( ~inputEnded )
     eval(tline);
     inputEnded = feof(fid);
 end
+
+% Close the file stream:
 fclose(fid);
 
 % timedomain is entered as 't' in .guifiles. Sort this out:
@@ -39,7 +42,7 @@ if ( exist('t', 'var') )
     clear t
 end
 
-% Clear these variables that we're finished with
+% Clear these variables, that we're finished with
 clear inputEnded fid tline ans
 
 % Load all the current workspace vars into the chebgui object using SET
@@ -57,4 +60,3 @@ for k = 1:numel(vars)
             [vars{k} ' is an unknown CHEBGUI property. Ignoring.']);
     end
 end
-

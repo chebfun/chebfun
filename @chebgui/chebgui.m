@@ -114,30 +114,52 @@ classdef chebgui
         init = '';          % Initial guess/condition for nonlin BVPs/PDEs
         tol = 1e-10;        % Solution tolerance
 
-	% TODO:  Documentation.
+        % This initalises the OPTIONS struct for CHEBGUI. It containts a list of
+        % miscellaneous options for when solving problems with CHEBGUI, namely:
+        %   damping:        Whether the Newton iteration is to be damped or not.
+        %   grid:           Show grids on plots in CHEBGUI.
+        %   discretization: Discretization for ODEs (@colloc1, @colloc2 or
+        %                   @ultraS)
+        %   pdeholdplot:    Hold plot during solving PDEs.
+        %   fixYaxisLower:  Fix lower y axis while solving PDEs.
+        %   fixYaxisUpper:  Fix upper y axis while solving PDEs.
+        %   fixN:           Fix discretization for when solving PDEs.
+        %   numeigs:        Number of eigenvalues sought when EIG problems are
+        %                   solved.
         options = struct('damping', '1', ...
-	    'plotting', '0.5', ...
-	    'grid', 1, ...
+            'plotting', '0.5', ...
+            'grid', 1, ...
             'discretization', @colloc2, ...
             'pdeholdplot', 0, ...
-	    'fixYaxisLower', '',  ...
+            'fixYaxisLower', '',  ...
             'fixYaxisUpper', '', ...
-	    'fixN', '', ...
-	    'numeigs', '');
+            'fixN', '', ...
+            'numeigs', '');
     end
     
     methods
         function c = chebgui(varargin)
-
-	% TODO:  Document inputs to this more carefully.
+            %CHEBGUI    The CHEBGUI constructor
+            %
+            % The command CHEBGUI in the command window opens the CHEBGUI
+            % figure window, with a random BVP example shown.
+            %
+            % One can also pass arguments to the CHEBGUI constructor to create
+            % CHEBGUI objects. Here, the call will be of the form
+            %
+            %   CG = CHEBGUI('field', value)
+            %
+            % To see the possible fields of the CHEBGUI objects, call
+            %   DISP(CHEBGUI)
             
             % No input --> load random example to the GUI window
             if ( isempty(varargin) )
                 c = chebgui.demo();
-                show(c); % Open the GUI
-                return
+                show(c);    % Open the GUI
+                return      % No further action needed
             end
             
+            % Look at the first input:
             v1 = varargin{1};
             
             % Single input --> load existing chebgui object/file
@@ -173,6 +195,7 @@ classdef chebgui
     
     methods (Static = true)
         
+        % Information shown during BVP solving.
         [dummy, displayTimer] = displayBVPinfo(handles, mode, varargin);
         
         % Return a random BVP CHEBGUI demo.
@@ -187,7 +210,7 @@ classdef chebgui
             % Reset the top figures
             cla(handles.fig_sol, 'reset');
             title('Solutions')
-	    box on
+            box on
 
             % Reset the bottom figure
             cla(handles.fig_norm, 'reset');
@@ -217,11 +240,6 @@ classdef chebgui
         
         % Solve a GUI EIG problem
         varargout = solveGUIeig(guifile,handles)
-    end
-    
-    methods( Access = private, Static = true )
-        
-        
     end
     
 end

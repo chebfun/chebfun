@@ -1,6 +1,8 @@
 function cg = demo()
 %DEMO       Return a random BVP CHEBGUI demo.
-% TODO:  Documentation.
+%
+% CG = CHEBGUI.DEMO() returns a random BVP CHEBGUI demo, on a CHEBGUI object
+% format.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org for Chebfun information.
@@ -23,5 +25,8 @@ numberOfDemos = length(D)-2; % First two entries are . and ..
 randnum = floor(numberOfDemos*rand) + 1;
 selected = randnum + 2; % Need to shift the random integer by 2
 
+% The full path to the demo file
 demoPath = fullfile(bvppath, D(selected).name);
+
+% Convert the .guifile to a CHEBGUI object.
 cg = chebgui.demo2chebgui(demoPath);
