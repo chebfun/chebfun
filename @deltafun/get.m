@@ -7,10 +7,9 @@ function out = get(f, prop)
 %       'DELTAMAG'     - Magnitude of the delta functions
 %       'FUNPART'      - The smooth function contained in DELTAFUN.
 %       'LVAL', 'RVAL' - Evaluate a DELTAFUN at an end point of its domain.
-%                        If there is no delta function at the left or the right 
-%                        end point, this is equivalent to evaluating the funPart 
-%                        at the left or right end, otherwise, an appropriately 
-%                        signed infinity or a NaN is returned. 
+%                        Whether there is a delta function at the left or the 
+%                        right end point, this is equivalent to just evaluating
+%                        the funPart at the left or right end. 
 %                        See DELTAFUN/FEVAL for further details.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
