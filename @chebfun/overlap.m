@@ -4,9 +4,10 @@ function [f, g] = overlap(f, g)
 %   GOUT.DOMAIN and F(x) = FOUT(x), G(x) = GOUT(x) for all x in the domain of
 %   F. 
 %
-%   If F and G are array-valued, they must either have the same number of
-%   columns/rows, or one must be a scalar-valued CHEBFUN. Otherwise, an error
-%   is thrown.
+%   If both F and/or G are have more than one column/row then either both must
+%   have the same number of columns/rows or one must have only a single column,
+%   otherwise an error is thrown. In the case where, say, G has a single column
+%   and F has many, the breakpoints in all columns of F will be unified.
 %
 % See also RESTRICT.
 
@@ -18,11 +19,15 @@ if ( ~domainCheck(f, g) )
     error('CHEBFUN:overlap:domains', ...
         'Inconsistent domains; domain(f) ~= domain(g).')
 end
+% Check the columns are valid:
+if ( numColumns(f) ~= numColumns(g) &&  ...
+    numColumns(f) ~= 1 && numColumns(g) ~= 1 )
+    error('CHEBFUN:overlap:dim', 'Matrix dimensions must agree.');
+end
 
 if ( numel(f) == 1 && numel(g) == 1)
     % CHEBFUN - CHEBFUN
     [f, g] = columnOverlap(f, g);
-    
 elseif ( numel(f) > 1 && numel(g) > 1)
     % QUASIMATRIX - QUASIMATRIX
     for k = 1:numel(f)
@@ -31,24 +36,32 @@ elseif ( numel(f) > 1 && numel(g) > 1)
     
 elseif ( numel(f) > 1 )
     % QUASIMATRIX - CHEBFUN
-    gCell = mat2cell(g);
-    if ( numel(gCell) ~= numel(f) )
-        error('CHEBFUN:overlap:dim', 'Matrix dimensions must agree.')
+    
+    if ( numColumns(g) == 1)
+        % Scalar expansion in g:
+        [f(1), g] = columnOverlap(f(1), g); % Make breaks in f(1) the same as g.
+        f = restrict(f, domain(f));         % Make breaks in f the same as f(1).
+        [f(1), g] = columnOverlap(f(1), g); % Make breaks in g the same as in f.
     else
+        gCell = mat2cell(g);
         g = 0*f;
         for k = 1:numel(f)
             [f(k), g(k)] = columnOverlap(f(k), gCell{k});
         end
     end
-       
+    
 else % if ( numel(g) > 1 )    
     % CHEBFUN - QUASIMATRIX
-    fCell = mat2cell(f);
-    if ( numel(fCell) ~= numel(g) )
-        error('CHEBFUN:overlap:dim', 'Matrix dimensions must agree.')
+
+    if ( numColumns(f) == 1)
+        % Scalar expansion in f (see above):
+        [f, g(1)] = columnOverlap(f, g(1));
+        g = restrict(g, domain(g));
+        [f, g(1)] = columnOverlap(f, g(1));
     else
+        fCell = mat2cell(f);
         f = 0*g;
-        for k = 1:numel(g)
+        for k = 1:numel(f)
             [f(k), g(k)] = columnOverlap(fCell{k}, g(k));
         end
     end
