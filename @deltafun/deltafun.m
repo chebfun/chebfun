@@ -27,8 +27,8 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
 %   constructor to create a FUNPART out of the operator OP. THe additional
 %   inputs in VARARGIN are also passed to the CLASSICFUN constructor.
 %
-%   DELTAFUN(F, ...) where F is a DELTAFUN simlpy returns F. I.e., other inputs
-%   are ignored.
+%   DELTAFUN(F, ...) where F is a DELTAFUN simlpy returns F, i.e., other 
+%   inputs are ignored.
 %
 % See also CLASSICFUN, ONEFUN, FUN
 

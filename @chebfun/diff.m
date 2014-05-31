@@ -109,9 +109,9 @@ if ( ~pref.enableDeltaFunctions )
     end
   
 else
-    % Enable delta functions:
+    % Delta functions are enabled:
     
-    % Used for introducing Dirac deltas at jumps)
+    % Tolderance used for introducing Dirac deltas at jumps:
     deltaTol = pref.deltaPrefs.deltaTol;
     
     % Loop n times for nth derivative:
@@ -123,7 +123,7 @@ else
             funs{k} = diff(funs{k});
             % If there is a delta function at the join, recreate the FUN using the
             % DELTAFUN constructor:
-            funs{k} = addDeltas(funs{k}, deltaMag(k:k+1,:));
+            funs{k} = makeDeltaFun(funs{k}, deltaMag(k:k+1,:));
         end
 
     end         
@@ -139,15 +139,18 @@ f.pointValues = pointValues;
 
     function deltaMag = getDeltaMag()
         deltaMag = zeros(numFuns + 1, numCols);
+        % Loop through the funs:
         for l = 1:(numFuns - 1)
+            % Extract the jump vlaues between two funs:
             jmp = get(funs{l+1}, 'lval') - get(funs{l}, 'rval');
+            % Assign these jumps to the deltaMag matrix:
             if ( any(abs(jmp) > deltaTol ) )
                 deltaMag(l+1, :) = jmp;
             end
         end
     end
 
-    function f = addDeltas(f, deltaMag)
+    function f = makeDeltaFun(f, deltaMag)
         if ( any(abs(deltaMag(:)) > deltaTol) )
             % [TODO]: This does not handle array-valuedness at the moment.
             if ( size(deltaMag, 2) > 1 )
