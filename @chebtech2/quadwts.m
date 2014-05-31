@@ -22,12 +22,11 @@ function w = quadwts(n)
 %     = v'*inv(TT)*f(x) where TT_{j,k} = T_k(x_j)
 %     = (inv(TT)'*v)'*f(x)
 % Therefore
-%   I(f) = w.'f(x) => w = inv(T).'*v;
-% Here inv(TT).' = inv(TT) is an inverse discrete cosine transform.
+%   I(f) = w.'f(x) => w = inv(TT).'*v;
+% Here inv(TT).' = inv(TT) is an inverse discrete cosine transform of Type I.
 % Furthermore, since odd entries in v are zero, can compute via FFT without
-% doubling up.
-%
-% TODO: implement this approach for CHEBTECH1.
+% doubling up from N to 2N (though we still need to double up from N/2 to N to 
+% facilitate the use of ifft).
 %
 % References:
 %   [1] Joerg Waldvogel, "Fast construction of the Fejer and Clenshaw-Curtis
@@ -48,6 +47,3 @@ else                               % General case
 end
 
 end
-
-
-
