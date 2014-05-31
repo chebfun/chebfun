@@ -2,9 +2,8 @@ function [ishappy, epslevel, cutoff] = plateauCheck(f, values, pref)
 %PLATEAUCHECK   Seek a plateau in Chebyshev coefficients.
 %  Inputs:
 %    f:      chebtech
-%    vscale: indication of the scale to resolve relative to (default=Inf,
-%            no effect)
-%    pref:   cheboppref
+%    values: function values on the grid f.points().
+%    pref:   chebfunpref
 %
 %  Outputs:
 %    ishappy:  true if convergence was achieved
@@ -15,16 +14,33 @@ function [ishappy, epslevel, cutoff] = plateauCheck(f, values, pref)
 % We can't be sure that a solution will ever be resolved to full precision, so
 % we have to be willing to stop if the convergence appears to have trailed off.
 
-coeff = f.coeffs;
-vscale = 0;
-if ( nargin > 1 ) 
-    if isnumeric(values)
-        vscale = norm(values(:),inf);
-    else
-        pref = values;
-    end
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+% TODO: Bring documentation in line with CLASSICCHECK and STRICTCHECK and add a
+% better description of the process.
+
+% Grab some preferences:
+if ( nargin == 1 )
+    pref = f.techPref();
+    epslevel = pref.eps;
+elseif ( isnumeric(pref) )
+    epslevel = pref;
+    pref = f.techPref();
 else
-    pref = f.techpref();
+    epslevel = pref.eps;
+end
+
+% Grab the coefficients:
+coeff = f.coeffs;
+n = length(coeff);
+
+% Grab the vscale:
+vscale = f.vscale;
+if ( nargin > 1 )
+    vscale = max(vscale, max(abs(values), [], 1));
+else
+    values = [];
 end
 
 % NaNs are not allowed.
@@ -33,21 +49,50 @@ if ( any(isnan(coeff)) )
         'Function returned NaN when evaluated.')
 end
 
+% Check the vertical scale:
+if ( max(vscale) == 0 )
+    % This is the zero function, so we must be happy!
+    ishappy = true;
+    cutoff = 1;
+    return
+elseif ( any(isinf(vscale)) )
+    % Inf located. No cutoff.
+    cutoff = n;
+    return
+end
+
+%% Deal with array-valued functions.
+
+% plateauCheck does not properly support array-valued construction. To deal with
+% this, we take an arbitrary linear combination of the columns and fix things up
+% afterwards.
+m = size(coeff, 2);
+if ( m > 1 )
+    b = sin(1:m);
+    f.coeffs = coeff*b.';
+    values = values*b.';
+    f.vscale = max(f.vscale);
+    [ishappy, epslevel, cutoff] = plateauCheck(f, values, pref);
+    epslevel = epslevel*b; % TODO: This is totally not the right thing to do.
+    epslevel = max(epslevel, eps); % Can't be better than eps.
+    return
+end
+
+% TODO: Properly implement array-valued support?
+
+%%
 % We omit the last 12% because aliasing can pollute them significantly.
-n = length(coeff);
 n88 = ceil( 0.88*n );
 % Preferred tolerance
 epslevel = pref.eps;  
 absCoeff = abs( coeff(n:-1:1) );
 % Magnitude and rescale.
-if ( vscale > 0 )
-    absCoeff = absCoeff / vscale;
-end
+absCoeff = absCoeff / vscale;
 
-% %%%%%%%%%%%%%%%%%%%%%%%% Serious checking starts here. %%%%%%%%%%%%%%%%%%%%%%%
-% There are two ways to pass the test. Either the coefficients have
-% achieved the goal epslevel, or the convergence appears to have levelled
-% off for good (plateau).
+%% %%%%%%%%%%%%%%%%%%%%%%% Serious checking starts here. %%%%%%%%%%%%%%%%%%%%%%%
+% There are two ways to pass the test. Either the coefficients have achieved the
+% goal epslevel or the convergence appears to have levelled off for good
+% (plateau).
 
 % Guilty until proven innocent.
 ishappy = false;
@@ -144,6 +189,8 @@ if ( ishappy )
     % Use the information from the cut to deduce an eps level.
     winEnd = min( n88, cutoff + 4 );
     epslevel = max( absCoeff(cutoff:winEnd) );
+    % Epslevel can't be better than eps:
+    epslevel = max(epslevel, eps);
 end
 
 end
