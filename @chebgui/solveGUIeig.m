@@ -9,8 +9,6 @@ function varargout = solveGUIeig(guifile, handles)
 % Create a domain and the linear function on that domain. We use xt for the
 % linear function, later in the code we will be able to determine whether x
 % or t is used for the linear function.
-defaultTol = 1e-10; % TODO: This should be read from cheboppref
-% defaultTol = max(cheboppref('restol'),cheboppref('deltol'));
 
 % Handles will be an empty variable if we are solving without using the GUI
 if ( nargin < 2 )
@@ -160,6 +158,13 @@ else
     generalized = 0;
 end
 
+% Obtain a CHEBOPPREF object
+options = cheboppref;
+
+% Check whether the tolerance is too tight.
+%TODO: How does this affect LINOP/EIGS()?
+defaultTol = options.errTol;
+
 tolInput = guifile.tol;
 if ( isempty(tolInput) )
     tolNum = defaultTol;
@@ -175,7 +180,7 @@ if ( tolNum < chebfunp.techPrefs.eps )
     uiwait(gcf)
 end
 
-options = cheboppref;
+
 % Do we want to show grid?
 options.grid = guifile.options.grid;
 

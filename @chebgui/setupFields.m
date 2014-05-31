@@ -4,7 +4,7 @@ function [field, allVarString, indVarName, pdeVarNames, pdeflag, eigVarNames, ..
 % TODO:  Documentation.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 
 % For BCs, we need to check whether varNames contains anything not found in

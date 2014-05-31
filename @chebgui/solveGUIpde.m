@@ -128,24 +128,10 @@ end
 handles.indVarName = indVarName;
 opts.handles = handles;
 
-% Support for sum and cumsum
-if ( ~isempty(strfind(deString(idx(1):end), 'cumsum(')) )
-    sops = {',sum,cumsum'};
-elseif ( ~isempty(strfind(deString(idx(1):end), 'sum(')) )
-    sops = {',sum'};
-else
-    sops = {''};
-end
-
 % Create a string with the variables used in the problem
 variableString = [indVarName{2}, ',', indVarName{1}, ','];
 
 deString = ['@(' variableString, deString(3:end)];
-
-%TODO: Remove?
-% deString = [deString(1:idx(1)-1), variableString, sops{:}, ...
-%     deString(idx(1):end)];
-%     deString = strrep(deString,'diff','D');
 
 % Convert the string to proper anon. function using eval
 DE = eval(deString);
@@ -168,12 +154,8 @@ if ( ~isempty(lbcInput{1}) )
         
         % Inject the t and x variables into the anonymous function:
         lbcString = [lbcString(1:2), variableString, lbcString(3:end)];
-        
-        % TODO: Temporary fix. Replace ; with , in lbcString, as pde15 concatenates
-        % differently to CHEBOP
-        lbcString = strrep(lbcString, ';', ',');
+
     end
-    
 
     LBC = eval(lbcString);
 else
@@ -189,10 +171,8 @@ if ( ~isempty(rbcInput{1}) )
         % Inject the t and x variables into the anonymous function:
         rbcString = [rbcString(1:2), variableString, rbcString(3:end)];
         
-        % TODO: Temporary fix. Replace ; with , in rbcString, as pde15 concatenates
-        % differently to CHEBOP
-        rbcString = strrep(rbcString, ';', ',');
     end
+    
     RBC = eval(rbcString);
 else
     RBC = [];
@@ -272,25 +252,7 @@ else
     lenu0 = length(u0);
 end
 
-% TODO:  Delete if no longer needed.
-% if ischar(initInput)
-%     initInput = vectorize(initInput);
-%     u0 =  chebfun(initInput,[a b]);
-%     u0 = simplify(u0,tol);
-%     lenu0 = length(u0);
-% else
-%     u0 = chebfun;
-%     lenu0 = 0;
-%     for k = 1:numel(initInput)
-%         guess_k = vectorize(initInput{k});
-%         u0k = chebfun(guess_k,[a b]);
-%         u0k = simplify(u0k,tol);
-%         u0(:,k) =  u0k;
-%         lenu0 = max(lenu0,length(u0k));
-%     end
-% end
-
-% gather options
+% Gather options:
 opts.HoldPlot = false;
 opts.Eps = tolNum;
 if ( ~all(pdeflag) )
@@ -310,39 +272,19 @@ if ( ~isempty(ylim1) && ~isempty(ylim2) )
     opts.YLim = [str2num(ylim1) str2num(ylim2)];
 end
 opts.PlotStyle = {'LineWidth', defaultLineWidth};
-% TODO:  Delete if no longer needed.
-% plotstyle = get(handles.input_plotstyle,'String');
-% if ~isempty(plotstyle)
-%     opts.PlotStyle = [opts.PlotStyle ',' plotstyle] ;
-% end
 
 % Options for fixed N
 if ( ~isempty(guifile.options.fixN) )
     opts.N = str2num(guifile.options.fixN);
 end
 
-% TODO:  Delete if no longer needed.
-% if ~iscell(pdeVarName)
-%     pdeVarName = {pdeVarName};
-% end
-% k = 0;
-% idx = [];
-% while isempty(idx)
-%     k = k+1;
-%     idx = strfind(pdeVarName{k},'_');
-% end
-% timeVarName = pdeVarName{k}((idx+1):end);
-% handles.indVarName = {indVarName{1},timeVarName};
-% indVarName{2} = timeVarName;
-
-% TODO: Reinsert this try-catch statement.
-% try
+try
     [t, u] = pde15s(DE, tt, u0, bc, opts);
-% catch ME
-%     errordlg('Error in solution process.', 'chebopbvp error', 'modal');
-%     varargout{1} = handles;
-%     return
-% end
+catch ME
+    errordlg('Error in solution process.', 'chebopbvp error', 'modal');
+    varargout{1} = handles;
+    return
+end
 
 if ( ~guiMode )
     varargout{1} = t;
@@ -368,7 +310,7 @@ if ( ~isa(u, 'chebmatrix') )
 else
     cols = get(0, 'DefaultAxesColorOrder');
     
-    % TODO: Do we want legends here anyway?
+    % NOTE: Uncomment if we to show legends on the waterfall plot.
 %     % Dummy plot to get legends right:
 %     for k = 1:size(u,1)
 %         plot(0, NaN, 'linewidth', defaultLineWidth, 'color', cols(k, :))
@@ -390,7 +332,7 @@ view([322.5 30])
 box off
 grid on    
 
-% Output Handles:
+% Output handles:
 varargout{1} = handles;
 
 end

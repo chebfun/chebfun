@@ -1,7 +1,27 @@
 function varargout = displayBVPinfo(handles, mode, varargin)
+%DISPLAYBVPINFO     Show information on the CHEBGUI figure when solving BVPs
+%
+% Calling sequence:
+%   VARARGOUT = DISPLAYBVPINFO(HANDLES, MODE, VARARGIN)
+% where
+%   VARARGOUT when MODE = 'INIT':
+%       VARARGOUT{1}:   Dummy output, required for consistency with the
+%                       chebop/displayInfoInit method.
+%       VARARGOUT{2}:   A tic/toc timer.
+%   VARARGOUT when MODE = 'ITER':
+%       VARARGOUT{1}:   A tic/toc timer.
+%       VARARGOUT{2}:   Boolean variable, equal to 1 if the user pressed the
+%                       'Stop' button on the GUI. 
+%   HANDLES:            The MATLAB handle to the CHEBGUI figure.
+%   VARARGIN:           Useful input arguments for showing information, further
+%                       described in 'help chebop/displayInfo)
+%
+%   See also: chebop/displayInfo
 
-% TODO:  Documentation.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
 
+% Go into different modes, depending on where in the Newton iteration we are.
 switch mode
     case 'init'
         [displayFig, displayTimer] = displayBVPinfoInit(handles, varargin{:});
@@ -18,11 +38,13 @@ end
 end
 
 function [displayFig, displayTimer] = displayBVPinfoInit(handles, u, pref)
-
-% TODO:  Documentation.
+%DISPLAYBVPINFOINIT     Show information at the start of Newton iteration
+%
+% See also: chebop/displayInfoInit
 
 % Update the iteration information header on the GUI
-initString = ' Iter.       || du ||        Contra.fact.     stepsize        len(du)          len(u)';
+initString = [' Iter.       || du ||        Contra.fact.     stepsize     ',...
+    '   len(du)          len(u)'];
 set(handles.iter_text,'String', initString);
 
 % Clear the update plot
@@ -47,15 +69,21 @@ end
 
 drawnow
 
-displayFig = 4;
-displayTimer = 5;
+% This only needs to be a dummy output, since the HANDLES variable contains
+% pointers to the plots we want to draw on:
+displayFig = 42;
+
+% Start a timer, used to control pausing between plotting:
+displayTimer = tic;
 
 end
 
 
-function [displayTimer, stopReq] = displayBVPinfoIter(handles, u, delta, iterNo, normDelta, cFactor, lenDelta, lambda, lenu, displayFig, displayTimer, pref)
-
-% TODO:  Documentation.
+function [displayTimer, stopReq] = displayBVPinfoIter(handles, u, delta, ...
+    iterNo, normDelta, cFactor, lenDelta, lambda, lenu, displayFig, displayTimer, pref)
+%DISPLAYBVPINFOITER     Show information and plot during Newton iteration.
+%
+% See also: chebop/displayInfoIter
 
 % Create a string for displaying information about the iteration.
 if ( lambda == 1 )
@@ -118,20 +146,19 @@ else
     stopReq = false;
 end
 
+% Restart the timer:
+displayTimer = tic;
+
 end
 
 function displayBVPInfoFinal(handles, u, delta, iterNo, errEstDE, errEstBC, ...
 	displayFig, displayTimer, pref) %#ok<INUSL>
-%DISPLAYINFOFINAL   Utility routine for displaying nonlinear solve progress.
+%DISPLAYBVPINFOFINAL   Utility routine for displaying nonlinear solve progress.
+%
 %  This method prints out information after Newton iteration finishes when
 %  problems are solved using CHEBGUI.
 %
-% See also: displayInfo
-
-% TODO:  Documentation.
-
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org/ for Chebfun information.
+% See also: displayBVPInfo, chebop/displayInfoFinal
 
 % How many steps did we need
 if ( iterNo == 1 )
@@ -167,22 +194,24 @@ set(handles.iter_list, 'Value', iterNo + 4);
 end
 
 function displayBVPinfoLinear(handles, u, nrmRes, pref)
+%DISPLAYBVPINFOLINEAR   Display methods tailored to linear BVPs.
 
-% TODO:  Documentation.
-
+% Show that we detetected a linear equation:
 str = {'Linear equation detected. Converged in one step.'};
 
-% Show what discretization was used
+% Show what discretization was used:
 if ( strcmpi(func2str(pref.discretization), 'ultraS') )
     discString = 'Ultraspherical';
 else
     discString = 'Collocation';
 end
 
+% Concatenate strings:
 str = [str ; sprintf('Discretization method used: %s. \n',  discString)];
 str = [str ; sprintf('Length of solution: %i.\n', length(chebfun(u)))];
 str = [str ; sprintf('Norm of residual: %.2e.\n', nrmRes)];
 
+% Update the informtion on the GUI:
 set(handles.iter_list, 'String',  str);
 set(handles.iter_list, 'Value', 1);
 
