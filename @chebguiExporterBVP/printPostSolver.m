@@ -16,7 +16,7 @@ indVarNameSpace = expInfo.indVarNameSpace;
 
 % Print commands that will create a plot of the solution obtained:
 fprintf(fid, '\n%%%% Create a plot of the solution.\n');
-fprintf(fid, ['figure\nplot(u,''LineWidth'',2)\n', ...
+fprintf(fid, ['figure\nplot(u, ''LineWidth'', 2)\n', ...
     'title(''Final solution''), xlabel(''%s'')'], indVarNameSpace);
 
 % Deal with ylabel (scalar problem) or legend (systems):

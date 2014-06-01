@@ -28,7 +28,7 @@ fprintf(fid, '\n%% Define the domain.\n');
 fprintf(fid, 'dom = %s;\n', dom);
 fprintf(fid, ['\n%% Assign the differential equation to a chebop on that ' ...
     'domain.\n']);
-fprintf(fid, 'N = chebop(%s,dom);\n', deString);
+fprintf(fid, 'N = chebop(%s, dom);\n', deString);
 
 % Setup for the RHS
 fprintf(fid, ['\n%% Set up the rhs of the differential equation so that ' ...
