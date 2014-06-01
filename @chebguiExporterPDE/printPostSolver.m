@@ -19,18 +19,22 @@ s = expInfo.s;
 % Plotting. Deal with scalar and system problems separately.
 if ( numel(deInput) == 1 )
     % Scalar problems.
-    fprintf(fid, '\n%% Create plot of the solution.\n');
-    %     fprintf(fid,'surf(%s,t,''facecolor'',''interp'')\n',sol);
-    fprintf(fid, 'waterfall(%s,%s,''simple'',''linewidth'',2)\n', sol, ...
+    fprintf(fid, '\n%%%% Create plot of the solution.\n');
+    fprintf(fid, 'waterfall(%s, %s, ''simple'', ''LineWidth'', 2)\n', sol, ...
         indVarName{2});
     
 else
     % Coupled systems.
-    fprintf(fid, '\n%% Create plots of the solutions.\n');
-    M = numel(deInput);
+    fprintf(fid, '\n%%%% Create plots of the solutions.\n');
+    fprintf(fid, 'figure\n');
+    fprintf(fid, 'waterfall(sol, %s, ''LineWidth'', 2)\n', indVarName{2});
+    fprintf(fid, 'xlabel(''%s''), ylabel(''%s''), title(''Solution'')\n', ...
+        indVarName{1},indVarName{2});
+%     M = numel(deInput);
     for k = 1:numel(deInput)
-        fprintf(fid, 'subplot(1,%d,%d)\n', M, k);
-        fprintf(fid, 'waterfall(%s,%s,''linewidth'',2)\n', s{k}, indVarName{2});
+%         fprintf(fid, 'subplot(1,%d,%d)\n', M, k);
+        fprintf(fid, 'figure\n');
+        fprintf(fid, 'waterfall(%s, %s, ''LineWidth'', 2)\n', s{k}, indVarName{2});
         fprintf(fid, 'xlabel(''%s''), ylabel(''%s''), title(''%s'')\n', ...
             indVarName{1},indVarName{2},s{k});
     end

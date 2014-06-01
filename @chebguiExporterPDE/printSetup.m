@@ -27,6 +27,7 @@ allVarNames = expInfo.allVarNames;
 periodic = expInfo.periodic;
 
 % Print commands for setting up the problem:
+fprintf(fid, '%%%% Problem set-up\n');
 fprintf(fid, '%% Create an interval of the space domain...\n');
 fprintf(fid, 'dom = %s;\n',dom);
 fprintf(fid, '%%...and a discretisation of the time domain:\n');
