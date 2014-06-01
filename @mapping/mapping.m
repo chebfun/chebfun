@@ -49,7 +49,7 @@ classdef mapping
                 end
             end
             
-            if ( isempty(obj.OtherData) )
+            if ( ~isempty(obj.OtherData) )
                 obj.OtherData = mapStruct;
             end
             
@@ -67,14 +67,39 @@ classdef mapping
             out.OutDom = map.InDom;
         end
         
+                
 %         function out = compose(map1, map2)
 %             % Compose two mappings.
 %         end
+
         
-        %         function out = subsref(map, s);
-%         . allows prop access
-%         () will evaluate unless input is a mapping, then it will compose.
-%         end
+        function out = subsref(map, index) 
+            
+            % TODO: Allow ".for", ect, in the place of ".For"?
+            
+            idx = index(1).subs;
+            switch index(1).type
+                case '()'
+                    if ( isa(idx{1}, 'mapping') )
+                        out = compose(map, idx{1});
+                    else
+                        out = feval(map.For, idx{:});
+                    end
+                case '.'
+                    if ( isprop(map, idx) )
+                        out = map.(idx);
+                    elseif ( isfield(map.OtherData, idx) )
+                        out = map.OtherData.(idx);
+                    else
+                        error('unknown property %s', idx);
+                    end
+                    
+            end
+            
+            if ( numel(index) > 1 )
+                out = subsref(out, index(2:end));
+            end
+        end
         
     end
     
@@ -111,7 +136,7 @@ classdef mapping
             b = ends(2);
             
             % Initialise the map structure:
-            map = struct('for', [], 'inv', [], 'forDer', [], 'forDerExps', []);
+            map = struct('for', [], 'inv', [], 'der', [], 'forDerExps', []);
             
             % Fixed map parameters:
             s = 1;
@@ -144,6 +169,8 @@ classdef mapping
                 error('CHEBFUN:unbounded:input', 'Error: Check input')
                 
             end
+            
+        map = mapping(map);
             
         end
         

@@ -94,7 +94,7 @@ classdef unbndfun < classicfun
             unbndmap = unbndfun.createMap(domain);
             % Include nonlinear mapping from [-1,1] to [a,b] in the op:
             if ( isa(op, 'function_handle') )
-                op = @(x) op(unbndmap.for(x));
+                op = @(x) op(unbndmap.For(x));
             elseif ( isnumeric(op) )
                 if ( ~any(op(:)) )
                     op = @(x) zeros(length(x), size(op,2));

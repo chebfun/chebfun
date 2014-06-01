@@ -54,7 +54,7 @@ end
 % therefore the maps of f and g are identical.)
 pref = chebfunpref();
 pref.singPrefs.exponents = f.mapping.forDerExps;
-forDer = onefun.constructor(f.mapping.forDer, [], [], pref);
+forDer = onefun.constructor(f.mapping.Der, [], [], pref);
 
 % Assign the output to be the inner product of the onefuns of the input,
 % but multiplied by the derivative of the map.

@@ -11,6 +11,10 @@ function m = createMap(ends)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org for Chebfun information.
 
+m = mapping.unbounded(ends);
+
+return
+
 % The domain:
 a = ends(1); b = ends(2);
 

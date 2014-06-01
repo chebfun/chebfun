@@ -101,7 +101,7 @@ classdef bndfun < classicfun
             % Include linear mapping from [-1,1] to [a,b] in the op:
             if ( isa(op, 'function_handle') && ~all(domain == [-1, 1]) && ...
                     ~isnumeric(op) )
-                op = @(x) op(linmap.for(x));
+                op = @(x) op(linmap.For(x));
             end
             
             % Call the ONEFUN constructor:

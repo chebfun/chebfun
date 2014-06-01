@@ -22,6 +22,6 @@ function [vals, pos] = minandmax(f)
 [vals, onefunPos] = minandmax(f.onefun);
 
 % Map the position results obtained on [-1,1] to [a,b]:
-pos = f.mapping.for(onefunPos);
+pos = f.mapping.For(onefunPos);
 
 end

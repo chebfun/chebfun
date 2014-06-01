@@ -200,17 +200,17 @@ while ( any(sad) )
         end
     else % unbounded domain
         if ( isempty(exps) || ~any(exps(2*k-1:2*k)) )  % no exponents
-            forHandle = funs{k}.mapping.for;
+            forHandle = funs{k}.mapping.For;
             opkDetectEdge = @(x) opk(forHandle(x));
-            forDer = funs{k}.mapping.forDer;
+            forDer = funs{k}.mapping.Der;
             edge = chebfun.detectEdge(opkDetectEdge, [-1+eps, 1-eps], ...
                 vscale, hscale, forDer);
             edge = forHandle(edge);
         elseif ( ~isempty(exps) && any( exps(2*k-1:2*k) ) )  % nonzero exponents
-            forHandle = funs{k}.mapping.for;
+            forHandle = funs{k}.mapping.For;
             opkDetectEdge = @(x) opk(forHandle(x)).* ...
                 ((x + 1).^exps(2*k - 1) .* (1 - x).^exps(2*k));
-            forDer = funs{k}.mapping.forDer;
+            forDer = funs{k}.mapping.Der;
             edge = chebfun.detectEdge(opkDetectEdge, [-1+eps, 1-eps], ...
                 vscale, hscale, forDer);
             edge = forHandle(edge);
