@@ -1,5 +1,5 @@
 function expInfo = exportInfo(guifile)
-%EXPORTINFO     Extract useful info from a CHEBGUI object for exporting
+%EXPORTINFO     Extract useful info from a CHEBGUI object for exporting.
 %
 % Calling sequence
 %
@@ -40,7 +40,7 @@ end
 % Do some error checking before we do further printing. Check that independent
 % variable name match.
 
-%Obtain the independent variable name appearing in the initial condition:
+% Obtain the independent variable name appearing in the initial condition:
 useLatest = strcmpi(initInput{1}, 'Using latest solution');
 if ( ~isempty(initInput{1}) && ~useLatest )
     [dummy, dummy, indVarNameInit] = ...
@@ -93,4 +93,5 @@ expInfo.tol = guifile.tol;
 expInfo.dampedOn = guifile.options.damping;
 expInfo.discretization = guifile.options.discretization;
 expInfo.plotting = guifile.options.plotting;
+
 end

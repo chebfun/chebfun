@@ -1,5 +1,5 @@
 function printDescription(fid, expInfo)
-%PRINTDESCRIPTION   Print problem description when problems are exported.
+%PRINTDESCRIPTION    Print problem description when problems are exported.
 %
 % Calling sequence:
 %   PRINTDESCRIPTION(FID, EXPINFO)
@@ -21,7 +21,6 @@ lbcInput = expInfo.lbcInput;
 rbcInput = expInfo.rbcInput;
 allVarString = expInfo.allVarString;
 periodic = expInfo.periodic;
-
 
 % Print the PDE
 fprintf(fid, '%% Solving\n');
@@ -86,11 +85,14 @@ if ( ~isempty(lbcInput{1}) || ~isempty(rbcInput{1}) )
     end
     
     fprintf(fid, '\n');
+    
 elseif ( periodic )
     % Periodic conditions.
     fprintf(fid, ', subject to periodic boundary conditions.\n\n');
+    
 else
     fprintf(fid, '.\n');
+    
 end
 
 end

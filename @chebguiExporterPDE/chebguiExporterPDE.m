@@ -1,13 +1,13 @@
 classdef chebguiExporterPDE < chebguiExporter
-    %CHEBGUIEXPORTERPDE   Export a PDE from CHEBGUI.
-    %   This is a an concrete implementation of the class CHEBGUIEXPORTER, which
-    %   exports PDEs from CHEBGUI to .m-files, to the workspace, or to a
-    %   .chebgui file. It is not intended to be called directly by the end user.
-    %
-    %   See also CHEBGUI, CHEBGUIEXPORTER.
-    
-    % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-    % See http://www.chebfun.org/ for Chebfun information.
+%CHEBGUIEXPORTERPDE   Export a PDE from CHEBGUI.
+%   This is a an concrete implementation of the class CHEBGUIEXPORTER, which
+%   exports PDEs from CHEBGUI to .m-files, to the workspace, or to a .chebgui
+%   file. It is not intended to be called directly by the end user.
+%
+% See also CHEBGUI, CHEBGUIEXPORTER.
+
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
     
     properties
         
@@ -19,7 +19,9 @@ classdef chebguiExporterPDE < chebguiExporter
         
     end
     
-    methods (Access = public)
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CONSTRUCTOR %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    methods ( Access = public )
         
         function A = chebguiExporterPDE(varargin)
             % Do nothing!
@@ -27,6 +29,7 @@ classdef chebguiExporterPDE < chebguiExporter
         
     end
     
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% STATIC METHODS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
     
     methods ( Static = true )
         
@@ -49,7 +52,7 @@ classdef chebguiExporterPDE < chebguiExporter
         printPostSolver(fid, expInfo)
         
         function toWorkspaceSolutionOnly(handles)
-            %TOWORKSPACESOLUTIONONLY    Export the solution to the workspace
+            %TOWORKSPACESOLUTIONONLY   Export the solution to the workspace.
             %
             % Note: this method exports fewer objects to the workspace than the
             % toWorkspace() method.
@@ -72,7 +75,7 @@ classdef chebguiExporterPDE < chebguiExporter
         end
         
         function toMat(handles)
-            %TOMAT  Export from the CHEBGUI figure to a .mat-file.
+            %TOMAT   Export from the CHEBGUI figure to a .mat-file.
             
             % Obtain the variable names involved in the problem.
             varnames = handles.varnames;
@@ -94,7 +97,7 @@ classdef chebguiExporterPDE < chebguiExporter
         end
         
         function toWorkspace(handles)
-            %TOWORKSPACE    Export from the CHEBGUI figure to the workspace.
+            %TOWORKSPACE   Export from the CHEBGUI figure to the workspace.
             
             % Setup dialog for asking the user for variable names to be used.
             varnames = handles.varnames;
@@ -140,7 +143,9 @@ classdef chebguiExporterPDE < chebguiExporter
                     assignin('base', answer{nv+1+k}, sol{k}(:,end));
                 end
             end
+            
         end
         
     end
+    
 end

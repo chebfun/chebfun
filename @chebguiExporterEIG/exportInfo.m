@@ -1,5 +1,5 @@
 function expInfo = exportInfo(guifile)
-%EXPORTINFO     Extract useful info from a CHEBGUI object for exporting
+%EXPORTINFO   Extract useful info from a CHEBGUI object for exporting
 %
 % Calling sequence
 %
@@ -91,7 +91,6 @@ if ( ~isempty(bcInput{1}) )
     end
 end
 
-
 % Variable which determines whether it's a generalized problem. If
 % rhsString is empty, we can be sure it's not a generalized problem.
 generalized = 1;
@@ -113,7 +112,7 @@ catch ME
     else
         rethrow(ME)
     end
-    varargout{1} = handles;
+    expInfo = [];
     return
 end
 
@@ -132,7 +131,7 @@ if ( ~isempty(rhsString) )
         else
             rethrow(ME)
         end
-        varargout{1} = handles;
+        expInfo = [];
         return
     end
     
@@ -208,4 +207,5 @@ expInfo.bcString = bcString;
 
 % Information related to options set-up
 expInfo.discretization = guifile.options.discretization;
+
 end

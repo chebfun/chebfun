@@ -1,5 +1,5 @@
 function printPostSolver(fid, expInfo)
-%PRINTPOSTSOLVER    Print commands after solution has been found
+%PRINTPOSTSOLVER   Print commands after solution has been found.
 %
 % Calling sequence:
 %   PRINTPOSTSOLVER(FID, EXPINFO)

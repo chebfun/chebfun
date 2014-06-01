@@ -1,5 +1,5 @@
 function printSolver(fid, expInfo)
-%PRINTSOLVER     Print commands for solving problems
+%PRINTSOLVER   Print commands for solving problems.
 %
 % Calling sequence:
 %   PRINTPOSTSOLVER(FID, EXPINFO)
@@ -31,4 +31,5 @@ else
         fprintf(fid, '[V, D] = eigs(N, B, k);\n');
     end
 end
+
 end

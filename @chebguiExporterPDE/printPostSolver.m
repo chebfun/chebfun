@@ -1,5 +1,5 @@
 function printPostSolver(fid, expInfo)
-%PRINTPOSTSOLVER    Print commands after solution has been found
+%PRINTPOSTSOLVER   Print commands after solution has been found
 %
 % Calling sequence:
 %   PRINTPOSTSOLVER(FID, EXPINFO)
@@ -34,6 +34,7 @@ else
         fprintf(fid, 'xlabel(''%s''), ylabel(''%s''), title(''%s'')\n', ...
             indVarName{1},indVarName{2},s{k});
     end
+    
 end
 
 end

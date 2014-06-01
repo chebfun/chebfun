@@ -1,5 +1,5 @@
 function printSolver(fid, expInfo)
-%PRINTSOLVER     Print commands for solving problems
+%PRINTSOLVER   Print commands for solving problems.
 %
 % Calling sequence:
 %   PRINTPOSTSOLVER(FID, EXPINFO)
@@ -29,4 +29,5 @@ if ( numel(deInput) > 1 )
         fprintf(fid, '%s = %s{%d};\n', s{k}, sol, k);
     end
 end
+
 end

@@ -1,4 +1,18 @@
 function expInfo = exportInfo(guifile)
+%EXPORTINFO    Extract useful info from a CHEBGUI object for exporting.
+%
+% Calling sequence
+%
+%   EXPINFO = EXPORTINFO(GUIFILE)
+%
+% where
+%
+%   GUIFILE:    A CHEBGUI object
+%   EXPINFO:    A struct, containing fields with information for exporting to an
+%               .m-file.
+
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Extract information from the GUI fields
 dom = guifile.domain;
@@ -105,9 +119,11 @@ deString = ['@(' variableString, deString(3:end)];
 % Find what the dependent variables are:
 s = allVarNames;
 if ( (numel(deInput) == 1) && ~ischar(deInput) )
+    
     % Get the strings of the dependent variable. Just use allVarNames.
     sol = s{1};
     sol0 = [sol '0'];
+    
 else
     
     % These can be changed

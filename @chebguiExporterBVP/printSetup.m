@@ -1,5 +1,5 @@
 function printSetup(fid, expInfo, guifile)
-%PRINTSETUP     Print commands for setting up problems
+%PRINTSETUP   Print commands for setting up problem.
 %
 % Calling sequence:
 %   PRINTPOSTSOLVER(FID, EXPINFO)
@@ -22,7 +22,7 @@ indVarNameSpace = expInfo.indVarNameSpace;
 periodic = expInfo.periodic;
 useLatest = expInfo.useLatest;
 
-% Print commands for problem set-up
+% Print commands for problem set-up:
 fprintf(fid, '\n%%%% Problem set-up');
 fprintf(fid, '\n%% Define the domain.\n');
 fprintf(fid, 'dom = %s;\n', dom);
@@ -34,7 +34,7 @@ fprintf(fid, 'N = chebop(%s,dom);\n', deString);
 fprintf(fid, ['\n%% Set up the rhs of the differential equation so that ' ...
     'N(%s) = rhs.\n'], allVarString);
 
-% If we have a coupled system, we need create a array of the inputs
+% If we have a coupled system, we need create a array of the inputs:
 if ( size(deInput, 1) > 1 )
     deRHSprint = '[';
     for counter = 1:size(deInput,1)
@@ -42,8 +42,10 @@ if ( size(deInput, 1) > 1 )
     end
     deRHSprint(end) = []; % Remove the last comma
     deRHSprint = [deRHSprint, ']'];
+    
 else
     deRHSprint = num2str(0);
+    
 end
 fprintf(fid, 'rhs = %s;\n', deRHSprint);
 
@@ -63,12 +65,14 @@ end
 if ( useLatest )
     fprintf(fid, ['\n%% Note that it is not possible to use the "Use ' ...
         'latest" option \n%% when exporting to .m files. \n']);
+    
 elseif ( ~isempty(initInput{1}) )
     fprintf(fid, '\n%% Construct a linear chebfun on the domain, \n');
     fprintf(fid, '%s = chebfun(@(%s) %s, dom);\n', ...
         indVarNameSpace, indVarNameSpace, indVarNameSpace);
     fprintf(fid, '%% and assign an initial guess to the chebop.\n');
     initInput = cellstr(initInput);
+    
     if ( numel(initInput) == 1 )
         % Only one input passed (scalar problem).
         guessInput = vectorize(strtrim(char(initInput{1})));
@@ -77,6 +81,7 @@ elseif ( ~isempty(initInput{1}) )
             guessInput = guessInput(equalSign+1:end);
         end
         fprintf(fid, 'N.init = %s;\n', guessInput);
+        
     else
         % To deal with 'u = ...' etc in intial guesses
         order = [];
@@ -108,6 +113,6 @@ elseif ( ~isempty(initInput{1}) )
             fprintf(fid, ' %s%s,', inits{order(k)}, initText);
         end
         fprintf(fid, ' %s%s];\n', inits{order(end)}, initText);
-        
     end
+    
 end

@@ -56,4 +56,5 @@ if ( isempty(opts) )
 else
     fprintf(fid, '(%s);\n', opts);
 end
+
 end

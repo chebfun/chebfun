@@ -1,5 +1,5 @@
 function printPostSolver(fid, expInfo)
-%PRINTPOSTSOLVER    Print commands after solution has been found
+%PRINTPOSTSOLVER   Print commands after solution has been found
 %
 % Calling sequence:
 %   PRINTPOSTSOLVER(FID, EXPINFO)
@@ -32,6 +32,5 @@ else
     leg = [leg '''' allVarNames{k+1} ''''];
     fprintf(fid, ', legend(%s)\n', leg);
 end
-
 
 end

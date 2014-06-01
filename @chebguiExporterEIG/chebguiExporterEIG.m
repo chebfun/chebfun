@@ -1,13 +1,13 @@
 classdef chebguiExporterEIG < chebguiExporter
-    %CHEBGUIEXPORTEREIG   Export an EIG problem from CHEBGUI.
-    %   This is a an concrete implementation of the class CHEBGUIEXPORTER, which
-    %   exports EIG problems from CHEBGUI to .m-files, to the workspace, or to a
-    %   .chebgui file. It is not intended to be called directly by the end user.
-    %
-    %   See also CHEBGUI, CHEBGUIEXPORTER.
-    
-    % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-    % See http://www.chebfun.org/ for Chebfun information.
+%CHEBGUIEXPORTEREIG   Export an EIG problem from CHEBGUI.
+%   This is a an concrete implementation of the class CHEBGUIEXPORTER, which
+%   exports EIG problems from CHEBGUI to .m-files, to the workspace, or to a
+%   .chebgui file. It is not intended to be called directly by the end user.
+%
+% See also CHEBGUI, CHEBGUIEXPORTER.
+
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
     
     properties
         
@@ -19,7 +19,9 @@ classdef chebguiExporterEIG < chebguiExporter
         
     end
     
-    methods (Access = public)
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CONSTRUCTOR %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    methods ( Access = public )
         
         function A = chebguiExporterEIG(varargin)
             % Do nothing!
@@ -27,6 +29,7 @@ classdef chebguiExporterEIG < chebguiExporter
         
     end
     
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% STATIC METHODS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     methods ( Static = true )
         
@@ -102,5 +105,7 @@ classdef chebguiExporterEIG < chebguiExporter
                 assignin('base', answer{2}, handles.latest.solutionT);
             end
         end
+        
     end
+    
 end

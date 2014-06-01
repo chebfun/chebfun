@@ -1,5 +1,5 @@
 function printSetup(fid, expInfo, guifile)
-%PRINTSETUP     Print commands for setting up problems
+%PRINTSETUP   Print commands for setting up problems.
 %
 % Calling sequence:
 %   PRINTPOSTSOLVER(FID, EXPINFO)
@@ -78,6 +78,7 @@ if ( (numel(deInput) == 1) && ~ischar(deInput) )
     else
         fprintf(fid, '%s = %s;\n', sol0, vectorize(initInput));
     end
+    
 else
     % To deal with 'u = ...' etc in intial guesses
     order = [];
