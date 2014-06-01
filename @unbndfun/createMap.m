@@ -6,7 +6,6 @@ function m = createMap(ends)
 %   M.FOR is a function that maps [-1,1] to [ENDS(1) ENDS(2)].
 %   M.INV is the inverse map.
 %   M.FORDER is the derivative of the map defined in MAP.FOR.
-%   M.INVDER is the derivative of the map defined in MAP.INV.
 %   M.NAME is a string that identifies the map.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
@@ -28,7 +27,6 @@ if ( a == -inf && b == inf )
     m.for = @(y) 5*s*y./(1 - min(y.^2, 1)) + c;
     m.inv = @(x) 2*x./(5*s + sqrt(25*s^2 + 4*x.^2));
     m.forDer = @(y) 5*s*(1 + y.^2)./(1 - y.^2).^2;
-    m.invDer = @(x) ((1 - x.^2).^2)./(5*s*(1 + x.^2));
     m.forDerExps = [-2 -2];
     
 elseif ( a == -inf )
@@ -36,7 +34,6 @@ elseif ( a == -inf )
     m.for = @(y) 15*s*(y - 1)./(y + 1) + b;
     m.inv = @(x) (15*s + x - b)./(15*s - x + b);
     m.forDer = @(y) 15*s*2./(y + 1).^2;
-    m.invDer = @(x) ((x + 1).^2)./(15*s*2);
     m.forDerExps = [-2 0];
     
 elseif ( b == inf )
@@ -44,11 +41,12 @@ elseif ( b == inf )
     m.for = @(y) 15*s*(y + 1)./(1 - y) + a;
     m.inv = @(x) (-15*s + x - a)./(15*s + x - a);
     m.forDer = @(y) 15*s*2./(y - 1).^2;
-    m.invDer = @(x) ((x - 1).^2)./(15*s*2);
     m.forDerExps = [0 -2];
     
 else
     
     error('CHEBFUN:unbounded:input', 'Error: Check input')
     
+end
+
 end
