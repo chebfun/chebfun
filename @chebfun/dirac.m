@@ -101,7 +101,6 @@ else
     end
 end
 
-
 % Initialize a zero CHEBFUN:
 d = chebfun(0, [a, b]);
 
@@ -132,11 +131,7 @@ if ( rootB )
     deltaMag(end) = deltaMag(end)/2;
 end
 
-% Enable DELTAFUNs:
-pref = chebfunpref();
-pref.enableDeltaFunctions = true;
-
 % Call the DELTAFUN constructor directly:
-d.funs{1} = fun.constructor(d.funs{1}, f.domain, deltaMag.', r.', pref);
+d.funs{1} = deltafun(d.funs{1}, deltaMag.', r.');
         
 end

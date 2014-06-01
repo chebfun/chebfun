@@ -104,12 +104,26 @@ classdef cheboppref < chebpref
 
     methods
 
-        function outPref = cheboppref(inPref)
+        function outPref = cheboppref(inPref, varargin)
             if ( (nargin == 1) && isa(inPref, 'cheboppref') )
                 outPref = inPref;
                 return
             elseif ( nargin < 1 )
                 inPref = struct();
+            elseif ( ischar(inPref) )
+                if ( nargin == 1 )
+                    error('CHEBFUN:cheboppref:deprecated', ...
+                        ['cheboppref() no longer supports queries of ', ...
+                         'the form cheboppref(''prop'').\n', ...
+                         'Please use cheboppref().prop.']);
+                else
+                    error('CHEBFUN:cheboppref:deprecated', ...
+                        ['chebfoppref() no longer assignment ', ...
+                         'via cheboppref(''prop'', val).\n', ...
+                         'Please use cheboppref.setDefaults(''prop'', val).']);
+                end
+            elseif ( nargin > 1 )
+                error('CHEBFUN:cheboppref:inputs', 'Too many input arguments.')
             end
 
             % Initialize default preference values.
@@ -183,21 +197,10 @@ classdef cheboppref < chebpref
         %   solve ODEs with CHEBOP using the factory defaults when other
         %   user-set defaults are currently in force.
         %
-        % See also GETDEFAULTS, SETDEFAULTS.
+        % See also SETDEFAULTS.
 
             fd = cheboppref.factoryDefaultPrefs();
             pref = cheboppref(fd);
-        end
-
-        function pref = getDefaults()
-        %GETDEFAULTS   Get default preferences.
-        %   PREF = CHEBOPPREF.GETDEFAULTS() returns a CHEBOPPREF object with
-        %   the preferences set to the currently stored default values.  It is
-        %   equivalent to PREF = CHEBOPPREF().
-        %
-        % See also GETFACTORYDEFAULTS, SETDEFAULTS.
-
-            pref = cheboppref();
         end
 
         function setDefaults(varargin)
@@ -217,7 +220,7 @@ classdef cheboppref < chebpref
         %   CHEBOPPREF.SETDEFAULTS('factory') resets the default preferences to
         %   their factory values.
         %
-        % See also GETDEFAULTS, GETFACTORYDEFAULTS.
+        % See also GETFACTORYDEFAULTS.
 
             % The reason we don't just use manageDefaults as the second
             % argument to chebpref.setDefaults and wrap it in an additional
