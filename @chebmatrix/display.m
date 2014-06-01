@@ -30,7 +30,7 @@ if ( ~usejava('jvm') || ~usejava('desktop') )
 end
 
 if ( strcmp(name, 'ans') )
-    name = ['chabmatrix_' num2str(1e6*rand(1), 6)];
+    name = ['chabmatrix_' num2str(ceil(1e6*rand(1)), 6)];
     assignin('base', name, L);
 end
 

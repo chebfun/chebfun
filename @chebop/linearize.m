@@ -209,7 +209,11 @@ if ( ~isempty(N.bc) )
         end
         % Update linearity information.
         isLinear(4) = all(all(get(bcU, 'linearity')));
+        
+        % Update domain:
+        L.domain = chebfun.mergeDomains(L.domain, BC.functional.domain);
     end
+    
 end
 
 % If N is nonlinear, and we were looking to only test linearity, return
