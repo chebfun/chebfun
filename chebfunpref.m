@@ -327,12 +327,26 @@ classdef chebfunpref < chebpref
 
     methods
 
-        function outPref = chebfunpref(inPref)
+        function outPref = chebfunpref(inPref, varargin)
             if ( (nargin == 1) && isa(inPref, 'chebfunpref') )
                 outPref = inPref;
                 return
             elseif ( nargin < 1 )
                 inPref = struct();
+            elseif ( ischar(inPref) )
+                if ( nargin == 1 )
+                    error('CHEBFUN:chebfunpref:deprecated', ...
+                        ['chebfunpref() no longer supports queries of ', ...
+                         'the form chebfunpref(''prop'').\n', ...
+                         'Please use chebfunpref().prop.']);
+                else
+                    error('CHEBFUN:chebfunpref:deprecated', ...
+                        ['chebfunpref() no longer assignment ', ...
+                         'via chebfunpref(''prop'', val).\n', ...
+                         'Please use chebfunpref.setDefaults(''prop'', val).']);
+                end
+            elseif ( nargin > 1 )
+                error('CHEBFUN:chebfunpref:inputs', 'Too many input arguments.')
             end
 
             % Initialize default preference values.
@@ -374,7 +388,24 @@ classdef chebfunpref < chebpref
                     if ( isfield(pref.prefList, ind(1).subs) )
                         out = pref.prefList.(ind(1).subs);
                     else
-                        out = pref.prefList.techPrefs.(ind(1).subs);
+                        techObj = feval(pref.prefList.tech);
+                        fullTechPrefs = ...
+                            techObj.techPref(pref.prefList.techPrefs);
+                        if ( isfield(fullTechPrefs, ind(1).subs) )
+                            % Try to find the tech preference name after
+                            % merginging with the full list of tech preferences
+                            % obtained via the tech's techPref() function of the
+                            % current tech.
+                            out = fullTechPrefs.(ind(1).subs);
+                        else
+                            % If we couldn't find the tech preference name
+                            % above, it may be because it was an abstractly
+                            % named preference that got mapped to something the
+                            % tech's techPref() deemed more sensible.  So, we
+                            % also try looking in the list of tech preferences
+                            % we have prior to forming the full list.
+                            out = pref.prefList.techPrefs.(ind(1).subs);
+                        end
                     end
 
                     if ( numel(ind) > 1 )
@@ -586,7 +617,7 @@ classdef chebfunpref < chebpref
         %   construct a CHEBFUN using the factory defaults when other user-set
         %   defaults are currently in force.
         %
-        % See also GETDEFAULTS, SETDEFAULTS.
+        % See also SETDEFAULTS.
 
             fd = chebfunpref.factoryDefaultPrefs();
             pref = chebfunpref(fd);
@@ -596,17 +627,6 @@ classdef chebfunpref < chebpref
             % the current defaults have techPrefs stored that are not among the
             % factory defaults.
             pref.prefList.techPrefs = fd.techPrefs;
-        end
-
-        function pref = getDefaults()
-        %GETDEFAULTS   Get default preferences.
-        %   PREF = CHEBFUNPREF.GETDEFAULTS() returns a CHEBFUNPREF object with
-        %   the preferences set to the currently stored default values.  It is
-        %   equivalent to PREF = CHEBFUNPREF().
-        %
-        % See also GETFACTORYDEFAULTS, SETDEFAULTS.
-
-            pref = chebfunpref();
         end
 
         function setDefaults(varargin)
@@ -631,7 +651,7 @@ classdef chebfunpref < chebpref
         %   CHEBFUNPREF.SETDEFAULTS('factory') resets the default preferences to
         %   their factory values.
         %
-        % See also GETDEFAULTS, GETFACTORYDEFAULTS.
+        % See also GETFACTORYDEFAULTS.
 
         % TODO:  What to do about preferences stored in substructures, like
         % singfun.exponentTol?  Aside from preferences in techPrefs whose names
@@ -734,7 +754,7 @@ classdef chebfunpref < chebpref
                 factoryPrefs.singPrefs.exponents = [];
                 factoryPrefs.singPrefs.singType = {};
                 factoryPrefs.singPrefs.defaultSingType = 'sing';                
-            factoryPrefs.enableDeltaFunctions = false;
+            factoryPrefs.enableDeltaFunctions = true;
                 factoryPrefs.deltaPrefs.deltaTol = 1e-9;
                 factoryPrefs.deltaPrefs.proximityTol = 1e-11;
             factoryPrefs.scale = 0;
