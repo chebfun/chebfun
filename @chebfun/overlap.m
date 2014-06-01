@@ -5,9 +5,6 @@ function [f, g] = overlap(f, g)
 %   x in the domain of F and G. If F and/or G are have more than one column/row
 %   then all columns of FOUT and GOUT will have the same domain.
 %
-%   For near-by breakpoints that appear in both F and G, preference is given to
-%   those in F.
-%
 % See also RESTRICT.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
@@ -19,10 +16,15 @@ if ( ~domainCheck(f, g) )
         'Inconsistent domains; domain(f) ~= domain(g).')
 end
 
+% Obtain the domain for the output:
 fDom = domain(f);
 g = tweakDomain(g, fDom);
 gDom = domain(g);
+f = tweakDomain(f, gDom);
+fDom = domain(f);
 newDom = union(fDom, gDom);
+
+% Restrict f and g:
 f = restrict(f, newDom);
 g = restrict(g, newDom);
 
