@@ -61,11 +61,6 @@ classdef smoothfun < onefun % (Abstract)
                 else
                     pref.tech = @chebtech2;
                 end
-            elseif ( strcmp(pref.tech, 'fourtech') ) 
-                obj = fourtech(op, vscale, hscale, pref.techPrefs);
-            else
-                % Call the CHEBTECH constructor
-                obj = chebtech.constructor(op, vscale, hscale, pref.techPrefs);
             end
             
             % Call the TECH constructor.

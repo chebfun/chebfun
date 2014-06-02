@@ -765,6 +765,12 @@ classdef chebfunpref < chebpref
                 factoryPrefs.techPrefs.exactLength = NaN;
                 factoryPrefs.techPrefs.extrapolate = false;
                 factoryPrefs.techPrefs.sampleTest = true;
+            factoryPrefs.cheb2Prefs = struct(); 
+                factoryPrefs.cheb2Prefs.maxRank = 513;   
+                factoryPrefs.cheb2Prefs.maxLength = 65537;   
+                factoryPrefs.cheb2Prefs.eps = 2^(-52);   
+                factoryPrefs.cheb2Prefs.exactLength = 0; 
+                factoryPrefs.cheb2Prefs.sampleTest = 1;                
         end
 
     end
