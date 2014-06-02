@@ -15,7 +15,7 @@ function varargout = roots( F, varargin )
 %   ROOTS(F, 'ms') or ROOTS(F, 'marchingsquares') always employs the marching
 %   squares algorithm.
 %
-%   ROOTS(F,'resultant') always employs the algorithm based on the hidden
+%   ROOTS(F, 'resultant') always employs the algorithm based on the hidden
 %   variable resultant method.
 %
 %   [1] Y. Nakatsukasa, V. Noferini, and A. Townsend, Computing the common zeros
@@ -24,13 +24,13 @@ function varargout = roots( F, varargin )
 % See also CHEBFUN2/ROOTS, CHEBFUN/ROOTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Maximum degree for resultant method:
 max_degree = 200;  
 
 % Empty check:
-if isempty(F)  
+if ( isempty(F) )
     varargout = {[]};
     return
 end
@@ -40,30 +40,27 @@ g = F.components{2};
 [nf, mf] = length(f);
 [ng, mg] = length(g);
 % Maximum degree:
-dd = max([mf nf mg ng]);  
+dd = max([mf, nf, mg, ng]); 
 
-if ( isempty(varargin) && dd <= max_degree )
-    [xroots, yroots] = roots_resultant(F);
-    xroots = xroots.'; 
-    yroots = yroots.';
-elseif ( isempty(varargin) )
-    [xroots, yroots] = roots_marchingSquares(F);
-else
-    if strcmpi(varargin{1}, 'ms') || strcmpi(varargin{1}, 'marchingsquares')
-        [xroots,yroots] = roots_marchingSquares(F);
-    elseif strcmpi(varargin{1},'resultant')
-        [xroots,yroots] = roots_resultant(F);
-        xroots = xroots.'; 
-        yroots = yroots.';
-    else
-        error('CHEBFUN2V:ROOTS', 'Unrecognised optional argument.');
-    end
+validArgs = {'ms', 'marchingsquares', 'resultant'};
+if ( (nargin > 1) && ~any(strcmpi(varargin{1}, validArgs)) )
+    error('CHEBFUN2V:ROOTS', 'Unrecognised optional argument.');
 end
 
-if nargout <= 1
-    varargout = {[xroots.'; yroots.'].'};
+if ( (isempty(varargin) && dd <= max_degree) || ...
+        strcmpi(varargin{1}, 'resultant') )
+    [xroots, yroots] = roots_resultant(F);
+elseif ( isempty(varargin) || ...
+        any(strcmpi(varargin{1}, {'ms', 'marchingsquares'})) )
+    [xroots, yroots] = roots_marchingSquares(F);
+    xroots = xroots.'; 
+    yroots = yroots.';
+end
+
+if ( nargout <= 1 )
+    varargout{1} = [xroots ; yroots].';
 else
-    varargout = {xroots.',yroots.'};
+    varargout = {xroots, yroots};
 end
 
 end

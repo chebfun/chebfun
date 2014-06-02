@@ -30,6 +30,7 @@ pass(5) = ~any(A(:));
 x = chebfun('x',[0 5]);
 f = 0.5*sin(x);
 A = randn(4, 1);
+chebfunpref.setDefaults('enableDeltaFunctions', true);
 for j = 1:4
   f = f + A(j)*dirac(x-j);
 end

@@ -49,15 +49,24 @@ if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
     if ( numel( op ) == 1 )
         % LNT wants this:
         g = constructor(g, @(x,y) op + 0*x, domain);
-        % Look for coeffs flag:
+        
     elseif ( any(strcmpi(domain, 'coeffs')) )
+        % Look for coeffs flag:
         op = chebfun2.coeffs2vals( op );
         g = chebfun2( op, varargin{:} );
         return
+    elseif ( any(strcmpi(domain, 'padua')) )
+        [ignored, op] = chebfun2.paduaVals2coeffs( op );
+        g = chebfun2( op );
+        return        
     elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, 'coeffs'))) )
         op = chebfun2.coeffs2vals( op );
         g = chebfun2( op, domain );
         return
+    elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, 'padua'))) )
+        [ignored, op] = chebfun2.paduaVals2coeffs( op, domain );
+        g = chebfun2( op, domain );
+        return        
     else
         % If CHEBFUN2(f, rk), then nonadaptive call:
         if ( numel(domain) == 1 )
@@ -67,13 +76,24 @@ if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
             % Otherwise its an adaptive call:
             fixedRank = 0;
         end
+        % Calculate a tolerance and find numerical rank to this tolerance: 
+        % The tolerance assumes the samples are from a function. It depends
+        % on the size of the sample matrix, hscale of domain, vscale of
+        % the samples, and the accuracy target in chebfun2 preferences. 
+        pseudoLevel = pref.cheb2Prefs.eps;
+        grid = max( size( op ) ); 
+        vscale = max( op(:) ); 
+        tol = grid.^(2/3) * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
+        
         % Perform GE with complete pivoting:
-        [pivotValue, ignored, rowValues, colValues] = CompleteACA(op, 0);
+        [pivotValue, ignored, rowValues, colValues] = CompleteACA(op, tol);
+        
         % Construct a CHEBFUN2:
         g.pivotValues = pivotValue;
         g.cols = chebfun(colValues, domain(3:4) );
         g.rows = chebfun(rowValues.', domain(1:2) );
         g.domain = domain;
+        
         % Did we have a nonadaptive construction?:
         g = fixTheRank(g, fixedRank);
     end
@@ -126,7 +146,8 @@ maxRank = prefStruct.maxRank;
 maxLength = prefStruct.maxLength;
 pseudoLevel = prefStruct.eps;
 sampleTest = prefStruct.sampleTest;
-grid = 9;   % minsample
+% TODO: This should probably be taken from the techPref prefences?
+minsample = 17;   % minsample
 
 % If the vectorize flag is off, do we need to give user a warning?
 if ( vectorize == 0 ) % another check
@@ -148,8 +169,11 @@ if ( vectorize == 0 ) % another check
     end
 end
 
-isHappy = 0;
-while ( ~isHappy )
+isHappy = 0; % If we are currently unresolved. 
+Failure = 0; % Reached max discretization size without being happy. 
+while ( ~isHappy && ~Failure )
+    grid = minsample; 
+    
     % Sample function on a Chebyshev tensor grid:
     [xx, yy] = chebfun2.chebpts2(grid, grid, domain);
     vals = evaluate(op, xx, yy, vectorize);
@@ -163,7 +187,7 @@ while ( ~isHappy )
     end
     
     % Two-dimensional version of CHEBFUN's tolerance:
-    tol = grid.^(4/3) * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
+    tol = grid.^(2/3) * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
     
     %%% PHASE 1: %%%
     % Do GE with complete pivoting:
@@ -178,7 +202,7 @@ while ( ~isHappy )
         vals = evaluate(op, xx, yy, vectorize); % resample
         vscale = max(abs(vals(:)));
         % New tolerance:
-        tol = grid.^(4/3) * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
+        tol = grid.^(2/3) * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
         % New GE:
         [pivotValue, pivotPosition, rowValues, colValues, iFail] = CompleteACA(vals, tol);
         % If the function is 0+noise then stop after three strikes.
@@ -189,7 +213,8 @@ while ( ~isHappy )
     
     % If the rank of the function is above maxRank then stop.
     if ( grid > 4*(maxRank-1)+1 )
-        error('CHEBFUN2:CTOR', 'Not a low-rank function.');
+        warning('CHEBFUN2:CTOR', 'Not a low-rank function.');
+        Failure = 1; 
     end
     
     % Check if the column and row slices are resolved.
@@ -264,7 +289,8 @@ while ( ~isHappy )
         
         % STOP if degree is over maxLength:
         if ( max(m, n) >= maxLength )
-            error('CHEBFUN2:CTOR', 'Unresolved with maximum CHEBFUN length: %u.', maxLength);
+            warning('CHEBFUN2:CTOR', 'Unresolved with maximum CHEBFUN length: %u.', maxLength);
+            Failure = 1;
         end
         
     end
@@ -275,7 +301,7 @@ while ( ~isHappy )
     if ( norm(colValues) == 0 || norm(rowValues) == 0)
         colValues = 0;
         rowValues = 0;
-        pivotValue = 0;
+        pivotValue = Inf;
         PivPos = [0, 0];
         isHappy = 1;
     end
@@ -289,12 +315,14 @@ while ( ~isHappy )
     
     % Sample Test:
     if ( sampleTest )
-        % Evaluate at arbitrary point in domain:
-        r = 0.029220277562146;
-        s = 0.237283579771521;
-        r = (domain(2)+domain(1))/2 + r*(domain(2)-domain(1));
-        s = (domain(4)+domain(3))/2 + s*(domain(4)-domain(3));
-        if ( abs( op(r,s) - feval(g, r, s) ) > 1e5 * tol )
+        % wrap the op with evaluate in case the 'vectorize' flag is on: 
+        sampleOP = @(x,y) evaluate( op, x, y, vectorize);
+        
+        % Evaluate at points in the domain:
+        pass = g.sampleTest( sampleOP, tol, vectorize);
+        if ( ~pass )
+            % Increase minsamples and try again.
+            minsample = 2^( floor( log2( minsample ) ) + 1) + 1;
             isHappy = 0;
         end
     end

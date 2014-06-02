@@ -11,13 +11,18 @@ function F = restrict(F, newDomain)
 %   F.domain(end), then an error is returned. If S is empty or a scalar, then an
 %   empty CHEBFUN G is returned.
 %
-%   G = F{S} is an equivalent syntax.
+%   Note that G will not be 'simplified'. If this is required, call G =
+%   SIMPLIFY(RESTRICT(F)), or G = F{S}.
 %
-% See also OVERLAP, SUBSREF, DEFINE.
+% See also OVERLAP, SUBSREF, DEFINE, SIMPLIFY.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% Tweak the domain of a quasimatrix input:
+[F, newDomain] = tweakDomain(F, newDomain);
+
+% Loop over the columns:
 for k = 1:numel(F)
     F(k) = columnRestrict(F(k), newDomain);
 end
@@ -78,7 +83,6 @@ numFuns = numel(funs);
 
 % Initialise storage for new FUN objects and pointValues:
 newFuns = cell(1, numel(newDomain)-1);
-newPointValues = zeros(numel(newDomain), size(pointValues, 2), size(pointValues, 3));
 
 % Loop through each fun and restrict as required:
 l = 0;

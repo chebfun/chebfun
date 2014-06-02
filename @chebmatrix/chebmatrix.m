@@ -56,7 +56,6 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
 % CHEBMATRIX is the class that enables concatenating various classes of objects
 % of Chebfun into a single object. It has four fields:
 %   * blocks: A Matlab cell used to store the components.
-%   * prefs: A CHEBOPPREF is attached to the object.
 %   * domain: The domain of the componenents, including the union of all
 %             breakpoints.
 %   * diffOrder: A dependent property. diffOrder is matrix valued, with values
@@ -68,7 +67,6 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
     properties
         % A cell used to store the components of a CHEBMATRIX internally.
         blocks = {}
-        prefs = cheboppref 
         domain
     end
     
@@ -80,7 +78,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
     methods
         
         % Constructor.
-        function A = chebmatrix(data)
+        function A = chebmatrix(data, dom)
             if ( isempty(data) )
                 return
             elseif ( iscell(data) )
@@ -94,6 +92,10 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
                 A.blocks = {data};
                 A.domain = data.domain;
             end
+            if ( nargin > 1 )
+                A.domain = A.mergeDomains(A, dom);
+            end
+            
         end
             
         function A = set.domain(A, d)

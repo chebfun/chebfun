@@ -112,7 +112,6 @@ A = simplify(A);
 % Get some useful values
 numCols = numColumns(A);
 tol = epslevel(A)*vscale(A);
-tol = eps * vscale(A); 
 dom = A.domain;
 a = dom(1);
 b = dom(end);
@@ -154,7 +153,11 @@ end
 
 % Construct a CHEBFUN from the discrete values:
 pref = chebfunpref();
-pref.gridType = chebType;
+if ( chebType == 1 )
+    pref.tech = @chebtech1;
+else
+    pref.tech = @chebtech2;
+end
 Q = mat2cell(Q, sizes, numCols);
 Q = chebfun(Q, dom, pref);
 

@@ -289,8 +289,10 @@ end
 
 % f must be a real-valued function:
 if ( ~isreal(f) )
-    error('CHEBFUN:compose:complex', 'F must be real valued to construct G(F).')
-    % warning('CHEBFUN:compose:complex', 'F SHOULD be real valued to construct G(F).');
+%     error('CHEBFUN:compose:complex', 'F must be real valued to construct G(F).')
+    warning('CHEBFUN:compose:complex', ...
+        ['F should be real valued to construct G(F).\n', ...
+         'Results may be inaccurate if G is not a polynomial.']);
 end
 
 % [TODO]: Requires MINANDMAX().
@@ -320,9 +322,8 @@ newDom = f.domain;
 if ( numel(g.domain) > 2 )
     gDom = g.domain(2:end-1);
     for k = 1:length(gDom)
-        % [TODO]: This requires @CHEBFUN/MINUS.
-        % r = roots(f - gDom(k));
-        % newDom = [newDom, r(:).']; %#ok<AGROW>
+        r = roots(f - gDom(k));
+        newDom = [newDom, r(:).'];
     end
 end
 newDom = unique(sort(newDom));

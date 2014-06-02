@@ -115,8 +115,9 @@ pointData = {};
 jumpData = {};
 deltaData = {};
 
-% Deal with 'jumpLine' input.
-[jumpStyle, varargin] = chebfun.parseJumpStyle(varargin{:});
+% Remove global plotting options from input arguments.
+[lineStyle, pointStyle, jumpStyle, varargin] = ...
+    chebfun.parsePlotStyle(varargin{:});
 
 %%
 % Get the data for plotting from PLOTDATA():
@@ -259,10 +260,22 @@ while ( ~isempty(varargin) )
         deltaData = [deltaData, newData(k).xDeltas, newData(k).yDeltas];
     end
     
+    % If xLim(1) == xLim(2), set xLim [inf -inf] and let Matlab figure out a
+    % proper xLim:
+    if ( ~diff(xLim) )
+        xLim = [inf, -inf];
+    end
+    
+    % If yLim(1) == yLim(2), set yLim [inf -inf] and let Matlab figure out a
+    % proper yLim:
+    if ( ~diff(yLim) )
+        yLim = [inf, -inf];
+    end
+    
 end
 % Plot the lines:
 h1 = plot(lineData{:});
-set(h1, 'Marker', 'none')
+set(h1, 'Marker', 'none', lineStyle{:})
 
 % Ensure the plot is held:
 hold on
@@ -270,7 +283,7 @@ hold on
 % Plot the points:
 h2 = plot(pointData{:});
 % Change the style accordingly:
-set(h2, 'LineStyle', 'none')
+set(h2, 'LineStyle', 'none', pointStyle{:})
 
 % Plot the jumps:
 if ( isempty(jumpData) || ischar(jumpData{1}) )
@@ -340,3 +353,4 @@ if ( nargout > 0 )
 end
 
 end
+

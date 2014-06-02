@@ -13,6 +13,9 @@ function varargout = cylinder( r )
 %
 % See also CHEBFUN2/SURF, CYLINDER, CHEBFUN2/SPHERE.
 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
+
 d = [r.domain 0 2*pi];   % surface of revolution domain
 
 f = chebfun2( @(x,y) feval(r, x), d );  

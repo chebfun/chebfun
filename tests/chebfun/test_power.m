@@ -192,7 +192,7 @@ vals_g = feval(g, x);
 
 vals_exact = feval(opExact, x);
 err = norm(vals_g - vals_exact, inf);
-tol = 1e1*epslevel(f).*norm(vals_exact, inf);
+tol = 2e1*epslevel(f).*norm(vals_exact, inf);
 pass(27) = ( err < tol );
 
 %% General power - A smooth function - a real function with varying sign and 
@@ -364,6 +364,19 @@ gVals = feval(g, x);
 gExact = opg(x);
 err = gVals - gExact;
 pass(38) = norm(err, inf) < 2e1*epslevel(g)*vscale(g);
+
+%% Test an array-valued CHEBFUN --> quasimatrix.
+
+x = chebfun('x', [-1 1.5]);
+xx = sort(2*rand(100)-1);
+op = @(x) [x, x+.5];
+pow = [-.1, .3];
+opExact = @(x) [x.^pow(1), (x+.5).^pow(2)];
+f = [x, x+.5];
+g = power(f, pow);
+err = norm(feval(g, xx) - opExact(xx), inf);
+tol = 100*max(epslevel(g).*vscale(g));
+pass(39) = err < tol;
 
 end
 

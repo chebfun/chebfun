@@ -108,7 +108,6 @@ if ( isa(discType, 'function_handle') )
 
     % Update the discretiztion dimension on unhappy pieces:
     discA.dimension = repmat(dimVals(1), 1, numel(discA.domain)-1);
-    dimVals(1) = [];
 else
     % A discretization is given:
     discA = discType;
@@ -231,7 +230,8 @@ for dim = dimVals
     u = partition(discA, P*v);
 
     % Test the happieness of the function pieces:
-    [isDone, epsLevel] = testConvergence(discA, u(isFun));
+    scale = 1;
+    [isDone, epsLevel] = testConvergence(discA, u(isFun), scale, prefs);
 
     if ( all(isDone) )
         break

@@ -24,10 +24,6 @@ for k = numel(doms):-1:1
     end
 end
 
-% Sort each of the domains:
-% doms = cellfun(@sort, doms, 'UniformOutput', false);
-
-
 % Choose a tolerance:
 if ( isscalar(varargin{end}) )
     % One is given:
@@ -35,7 +31,7 @@ if ( isscalar(varargin{end}) )
     doms(end) = [];
 else
     % 10*eps*hscale:
-    tol = 10*eps*max(cellfun(@(d) norm(d, inf), doms));
+    tol = 100*eps*max(cellfun(@(d) norm(d, inf), doms));
 end
 
 % Check to see if the domains are compatible:
