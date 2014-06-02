@@ -1,50 +1,69 @@
-function [bcrow,bcvalue]=constructbc(bcArg,bcpos,een,bcn,dom,scl,order)
-% construct boundary row for use in discretisation. bcpos tells us the
-% value of the other independent variable.
+function [bcrow, bcvalue] = constructbc( bcArg, bcpos, een, bcn, dom, scl, order)
+% CONSTRUCTBC  discretizes the boundary conditions. 
+% 
+% bcArg = linear constraint.
+% bcpos = position of constraint in the other variable
+% een = discretization size for bcvalue.
+% bcn = discretization size for bcrow
+% dom = domain of functions that bcArg acts on
+% scl = length of domain in other variable
+% order = for periodic constraints only. 
 
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-if ( isa(bcArg,'chebfun') )
-    % Dirichlet conditions with bcvalue = chebfun.
-    if ( bcpos == -1 )
+if ( isa(bcArg, 'chebfun') )
+    % Dirichlet conditions are sorted out here: 
+    if ( bcpos == -1 )    
+        % Dirichlet conditions at x = -1 (or y = -1): 
         bcrow = (-1).^(0:bcn-1).';
     elseif ( bcpos == 1 )
+        % Dirichlet conditions at x = 1 (or y = 1): 
         bcrow = ones(bcn, 1);
     else
-        % Later we may want to do boundary condition that are not at the
-        % boundary of the domain.
-        bcrow = cos((0:bcn-1)*acos(bcpos));
+        % Dirichlet conditions at x = bcpos (or y = bcpos):
+        bcrow = cos( ( 0:bcn-1 ) * acos( bcpos ) );
     end
-    bcvalue = resize(flipud(bcArg.coeffs{:}),een);
-elseif ( isa(bcArg,'function_handle') )
-    
-    if (nargin(bcArg) == 1)
+    bcvalue = resize( flipud(bcArg.coeffs{:}), een );
+elseif ( isa( bcArg, 'function_handle' ) )
+    % More general conditions are sorted out here: 
+    if ( nargin(bcArg) == 1 )
+        % This allows the user to do N.lbc = @(u) u - 1, for example.
         bcArg = @(x,u) u - bcArg(x); 
     end
     if ( nargin(bcArg) == 2 )
         % Assume we have a boundary condition is of the form
-        % @(x,u) a*u +b*diff(u) + c*diff(u,2) + d*diff(u,3) + f(x), where a and b are constants.
-        x = chebfun(@(x) x,dom);
-        f = bcArg(x,0*x);
+        % @(x,u) a*u +b*diff(u) + c*diff(u,2) + ...  + f(x), 
+        % where a, b, c, ... are constants.
+        
+        % Evaluate at a chebfun:
+        x = chebfun( @(x) x, dom );
+        f = bcArg( x, 0*x );
+        
+        % Get sizes, depending how the user creates the bc: 
         if ( isa( f, 'chebmatrix' ) ) 
-            nf = size(f,1); 
+            nf = size(f, 1); 
         elseif ( isa(f, 'chebfun') ) 
-            nf = size(f,2); 
+            nf = size(f, 2); 
             f = chebmatrix( mat2cell( f ) ); 
         end 
         
         bcvalue = zeros(een , nf);
         % Do we have bcs with derivatives in them.
         try
-            fcell = bcArg(chebfun2(0,[dom,dom]),chebfun2(@(x,y) x.*y,[dom,dom]));
+            % Evaluate at xy for AD information: 
+            fcell = bcArg( chebfun2(0, [dom, dom]),...
+                                   chebfun2( @(x,y) x.*y, [dom,dom] ) );
         catch
-            gg = chebfun2(@(x,y) cos(x.*y),[dom,dom]);
+            % Cannot do it all at once, so do it term by term: 
+            gg = chebfun2(@(x,y) cos(x.*y), [dom, dom]);
+            fcell = cell(1, nf); 
             for jj = 1:nf
-                fcell{jj} = diff(gg,jj-1);
+                fcell{jj} = diff(gg, jj-1);
             end
         end
- %         fcell = bcArg(chebfun(0,dom),chebfun(dom,dom));
+        
+        % Find constants: 
         cc = ones(1,nf);
         for jj = 1:nf
             if isa(fcell,'cell')
@@ -52,15 +71,21 @@ elseif ( isa(bcArg,'function_handle') )
             else
                 v = fcell;
             end
-            cc(jj) = abs(diff(scl)/2).^(length(v.deriv)-1);
+            cc(jj) = abs( diff(scl)/2 ).^( length(v.deriv) - 1);
         end
+        
+        % Find f(x):  
         for jj = 1:nf
             g = f{jj};
-            bcvalue(:,jj) = -resize(cc(jj)*flipud(g.coeffs{:}),een);
+            % bcvalue = -f as it's going in the RHS: 
+            bcvalue(:,jj) = -resize(cc(jj)*flipud(g.coeffs{:}), een);
         end
+        
+        % Now go find the constants in the boundary conditions: 
         L = linearize( chebop( bcArg, dom ) );
         p = recoverCoeffs( L );
         
+        % and set up the boundary rows that will impose them: 
         if ( iscell( p ) )
             bcrow = zeros(bcn, length(p));
             for jj = 1 : length(p)
@@ -74,6 +99,7 @@ elseif ( isa(bcArg,'function_handle') )
                 end
             end
         else
+            % If it's simple like Dirichlet, quickly set things up: 
             bcrow = zeros(bcn, 1);
             c = feval(p, bcpos);
             if ( abs(c) > 0 )
@@ -83,6 +109,8 @@ elseif ( isa(bcArg,'function_handle') )
         end
     end
 elseif ( isa(bcArg,'char') )
+    % If the boundary conditions are 'periodic' then try and setup the
+    % right bcrows. 
     if ( strcmpi(bcArg, 'periodic') )
         bcrow = zeros(bcn, order);
         bcvalue = zeros(een, order);
@@ -95,9 +123,7 @@ elseif ( isa(bcArg,'char') )
 else
     error('CHEBOP2:constructbc:bctype','Unrecognised boundary syntax.');
 end
-
 end
-
 
 function v = resize(v,n)
 % Make v of length exact n, by either adding trailing zeros or truncating
@@ -109,7 +135,6 @@ else
 end
 v = v(:);
 end
-
 
 function p = recoverCoeffs( L )
 %RECOVERCOEFFS  Recover coefficient functions of a linear operator
@@ -182,8 +207,9 @@ end
 end
 
 function val = chebValues(k, bcn, pos)
-if k == 0
-    val = (pos).^((0:bcn-1).');
+% CHEBBALUES. Return the values, of ChebT. 
+if ( k == 0 )
+    val = pos.^((0:bcn-1).');
 else
     [ll, kk] = meshgrid((0:bcn-1),(0:k-1));
     val = (pos).^((1:bcn).').*prod( (ll.^2 - kk.^2)./(2*kk+1), 1 ).';

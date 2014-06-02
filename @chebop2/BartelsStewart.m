@@ -21,9 +21,8 @@ tol = prefs.cheb2Prefs.eps;
 % uniqueness).
 if ( norm(E) < 10*tol )
     X = zeros(size(E));
-    return;
+    return
 end
-
 
 % If the equation is even/odd in the x-direction then we can split the problem
 % into two subproblems. We enforce P and S as upper triangular because they
@@ -31,17 +30,23 @@ end
 % them.
 if ( ysplit )
     % This is equivalent to qz(full(A),full(C)), but faster.
-    [P,S,Q1,Z1] = qzsplit(A, C); P = triu(P); S = triu(S);
+    [P, S, Q1, Z1] = qzsplit(A, C); 
+    P = triu( P ); 
+    S = triu( S );
 else
-    [P,S,Q1,Z1] = qz(full(A), full(C));  P=triu(P); S=triu(S);
+    [P, S, Q1, Z1] = qz(full(A), full(C));  
+    P = triu( P ); 
+    S = triu( S );
 end
 
 % If the PDE is even/odd in the y-direction then we can split (further)
 % into double as many subproblems.
 if ( xsplit )
-    [T,R,Q2,Z2] = qzsplit(D, B);
+    % Faster QZ when even/odd modes decouple in x-direction: 
+    [T, R, Q2, Z2] = qzsplit(D, B);
 else
-    [T,R,Q2,Z2] = qz(full(D),full(B));
+    % QZ does not take matrices in sparse format:
+    [T, R, Q2, Z2] = qz(full(D), full(B));
 end
 
 % Now use the generalised Bartels--Stewart solver found in Gardiner et al.
@@ -112,9 +117,9 @@ while k > 1
         SM(down, down) = R(k, k) * P + T(k, k) * S;
         
 %         % Permute the columns and rows: 
-%         Spermuted = zeros(2*n);
-%         Spermuted(1:2:2*n,1:2:2*n) = SM(1:n,1:n); 
-%         Spermuted(2:2:2*n,2:2:2*n) = SM(n+1:2*n,n+1:2*n); 
+        Spermuted = zeros(2*n);
+        Spermuted(1:2:2*n,1:2:2*n) = SM(1:n,1:n); 
+        Spermuted(2:2:2*n,2:2:2*n) = SM(n+1:2*n,n+1:2*n); 
 
         % Solve 
         UM = Spermuted \ [rhs1;rhs2];
@@ -131,7 +136,6 @@ while k > 1
     end
     
 end
-
 
 if ( k == 1 )
     % Now we have just the first column to compute.
@@ -151,10 +155,8 @@ X = Z1 * Y * Z2.';
 
 end
 
-
-
-function [P S Q1 Z1]=qzsplit(A, C)
-%QZSPLIT a faster qz factorisation
+function [P, S, Q1, Z1]=qzsplit(A, C)
+%QZSPLIT A faster qz factorisation for problems that decouple.
 %
 % This is equivalent to standard qz, except we take account of symmetry to
 % reduce the computational requirements of the QZ factorisation.
@@ -163,15 +165,14 @@ function [P S Q1 Z1]=qzsplit(A, C)
 
 A = full(A); A1 = A(1:2:end, 1:2:end); 
 C = full(C); C1 = C(1:2:end, 1:2:end);
-[P1 S1 Q1 Z1]=qz(A1, C1);
+[P1, S1, Q1, Z1]=qz(A1, C1);
 A2 = A(2:2:end, 2:2:end); C2 = C(2:2:end, 2:2:end);
-[P2 S2 Q2 Z2]=qz(A2, C2);
-[P S Q1 Z1] = reform(P1, P2, S1, S2, Q1, Q2, Z1, Z2);
+[P2, S2, Q2, Z2]=qz(A2, C2);
+[P, S, Q1, Z1] = reform(P1, P2, S1, S2, Q1, Q2, Z1, Z2);
 
 end
 
-
-function [P S Q Z]=reform(P1,P2,S1,S2,Q1,Q2,Z1,Z2)
+function [P, S, Q, Z]=reform(P1, P2, S1, S2, Q1, Q2, Z1, Z2)
 % Recombine subproblems to form the QZ factorization. 
 
 % initialise all the variables. 
@@ -179,9 +180,8 @@ hf1 = size(P1,1);
 n = 2*hf1-1;
 P = zeros(n);
 S = zeros(n);
-Q =zeros(n);
-Z =zeros(n);
-
+Q = zeros(n);
+Z = zeros(n);
 
 % push the subproblem back together
 P(1:hf1, 1:hf1) = P1; 
