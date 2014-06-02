@@ -63,7 +63,7 @@ if ( isa(initInput,'char') )
 end
 
 % Convert the input to the an. func. format, get information about the
-% linear function in the problem.
+% independent variable in the problem.
 [deString, allVarString, indVarNameDE, dummy, pdeflag, dummy, allVarNames] ...
     = setupFields(guifile, deInput, 'DE');
 handles.varnames = allVarNames;
@@ -122,6 +122,7 @@ else
         'No time variable specified, please do so via using subscript.');
 end
 
+% Did we use the same variable name for both space and time?
 if ( strcmp(indVarName{1}, indVarName{2}) )
      error('Chebgui:SolveGUIpde', ...
         'The same variable appears to be used as space and time variable');
@@ -131,6 +132,7 @@ handles.indVarName = indVarName;
 % Create a string with the variables used in the problem
 variableString = [indVarName{2}, ',', indVarName{1}, ','];
 
+% String that will be converted to an anonymous function:
 deString = ['@(' variableString, deString(3:end)];
 
 % Convert the string to proper anon. function using eval
@@ -146,6 +148,7 @@ else
     periodic = false;
 end
 
+% Do we have a left BC specified?
 if ( ~isempty(lbcInput{1}) )
     lbcString = setupFields(guifile, lbcInput, 'BC', allVarString);
     
@@ -162,6 +165,7 @@ else
     LBC = [];
 end
 
+% Do we have a right BC specified?
 if ( ~isempty(rbcInput{1}) )
     rbcString = setupFields(guifile, rbcInput, 'BC', allVarString);
 
@@ -178,6 +182,7 @@ else
     RBC = [];
 end
 
+% No boundary conditions are a no-go:
 if ( isempty(lbcInput) && isempty(rbcInput) )
     error('chebfun:bvpgui','No boundary conditions specified');
 end
@@ -214,6 +219,7 @@ tol = tolNum;
 
 % Set up the initial condition
 if ( iscellstr(initInput) )
+    % We have multiple lines specifying the initial condition:
     order = [];
     inits = [];
 
@@ -229,12 +235,10 @@ if ( iscellstr(initInput) )
     end
     
     u0 = chebfun;
-    lenu0 = 0;
     
     if ( isempty(order) && scalarProblem )
         u0 = chebfun(vectorize(initInput{1}), dom);
         u0 = simplify(u0, tol);
-        lenu0 = length(u0);
     else
         for k = 1:length(inits)
             initLoc = find(order == k);
@@ -242,11 +246,13 @@ if ( iscellstr(initInput) )
             u0k = chebfun(init_k, dom);
             u0k = simplify(u0k, tol);
             u0 = [u0, u0k];
-            lenu0 = max(lenu0, length(u0k));
         end
     end
 else
+    % Only one line specifiying the initial condition (for a scalar problem):
     initInput = vectorize(initInput);
+    
+    % Is the input of the form '3' or 'u=3'?
     equalSign = find(initInput == '=');
     if ( isempty(equalSign) )
         equalSign = 0;
@@ -254,9 +260,7 @@ else
     initInput = initInput(equalSign+1:end);
     u0 =  chebfun(initInput, dom);
     u0 = simplify(u0, tol);
-    lenu0 = length(u0);
 end
-
 
 
 % Get the GUI ready for plotting.
@@ -314,6 +318,7 @@ catch
 end
 
 if ( ~guiMode )
+    % If we're not running in GUI mode, we can stop here.
     varargout{1} = t;
     varargout{2} = u;
     return

@@ -35,6 +35,7 @@ dom = str2num(guifile.domain);
 deInput = guifile.DE;
 bcInput = guifile.BC;
 
+% What kind of eigenfunctions are we seeking?
 sigma = [];
 if ( ~isempty(guifile.sigma) )
     sigma = guifile.sigma;
@@ -43,6 +44,8 @@ if ( ~isempty(guifile.sigma) )
         sigma = numSigma;
     end
 end
+
+% How many eigenfunctions do we want?
 K = 6;
 if ( isfield(guifile.options, 'numeigs') && ~isempty(guifile.options.numeigs) )
     K = str2double(guifile.options.numeigs);
@@ -58,7 +61,7 @@ if ( isa(bcInput,'char') )
 end
 
 % Obtain information for setting up the differential equation:
-[allStrings allVarString indVarName ignored ignored eigVarName allVarNames] ...
+[allStrings, allVarString, indVarName, dummy, dummy, eigVarName, allVarNames] ...
     = setupFields(guifile, deInput, 'DE');
 handles.varnames = allVarNames;
 
@@ -66,8 +69,10 @@ handles.varnames = allVarNames;
 if ( isempty(indVarName{1}) )
     indVarName{1} = 'x';
 end
+
 % Replace 'DUMMYSPACE' by the correct independent variable name
 allStrings = strrep(allStrings, 'DUMMYSPACE', indVarName{1});
+
 % Pretty print feval statements
 allStrings = prettyprintfevalstring(allStrings, allVarNames);
 
@@ -80,6 +85,7 @@ else
     lhsString = allStrings;
     rhsString = '';
 end
+
 % Convert the strings to proper anon. function using eval
 LHS = eval(lhsString);
 
@@ -194,7 +200,6 @@ if ( tolNum < chebfunp.techPrefs.eps )
         'Warning','modal');
     uiwait(gcf)
 end
-
 
 % Do we want to show grid?
 options.grid = guifile.options.grid;

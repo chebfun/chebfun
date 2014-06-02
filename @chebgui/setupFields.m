@@ -8,22 +8,27 @@ function [field, allVarString, indVarName, pdeVarNames, pdeflag, ...
 
 
 % For BCs, we need to check whether varNames contains anything not found in
-% varNames of the DE. Should we make the varNames of the DE as parameters?
-% Setja DE varNames sem parametra? Also check for indVarName in deRHS.
+% varNames of the DE. Should we make the varNames of the DE as parameters? Put
+% the varNames of the differential equations as parameters? Also check for
+% indVarName in deRHS.
 
-numOfRows = max(size(input)); %numel(input,1);
-pdeflag = zeros(1,numOfRows); % Binary flag for PDE detection.
-allVarNames = [];
+% Number of rows in the input.
+numOfRows = max(size(input));
+% Binary flag for PDE detection. The kth element is going to be equal to 1 of
+% the kth row of the input has PDE input in it, e.g. u_t.
+pdeflag = zeros(1,numOfRows);
+% What variables appear with the PDE subscript _ on them?
 pdeVarNames = '';
+% A temporary string for the space variable, as we don't know yet whether it is
+% going to be r, t or x. This will then get replaced later.
 dummys = 'DUMMYSPACE';
-dummyt = 'DUMMYTIME';
 
-if ( numOfRows == 1 ) % Not a system; can call convert2anon w/ two output args.
-
-    [anFun indVarName allVarNames pdeVarNames eigVarNames commaSeparated] = ...
+if ( numOfRows == 1 )
+    % In this case, we only have to deal with a single line of input.
+    [anFun, indVarName, allVarNames, pdeVarNames, eigVarNames, commaSeparated] = ...
         setupLine(guifile, input{1}, type);
 
-    % Check whether we have too many variables (this is a singl
+    % Check whether we have too many variables involved in a PDE.
     if ( ~isempty(pdeVarNames) ) % Not a PDE (or we can't do this type yet!)
         pdeflag = true;
 
@@ -34,6 +39,7 @@ if ( numOfRows == 1 ) % Not a system; can call convert2anon w/ two output args.
                 'Too many variables.');
         end
 
+        % Find where the PDE variable appears:
         underScoreLocation = strfind(pdeVarNames{1},'_');
         if ( ~strcmp(allVarNames{1}, pdeVarNames{1}(1:underScoreLocation-1)) )
             error('Chebgui:setupFields:VariableNames', ...
@@ -41,18 +47,19 @@ if ( numOfRows == 1 ) % Not a system; can call convert2anon w/ two output args.
         end
     end
     
-    % Only need to convert the cell to a string for DE -- information has
-    % been passed for BCs
+    % Only need to convert the cell to a string for DE -- information has been
+    % passed for BCs
     if ( strcmp(type, 'DE') )
         allVarString = allVarNames{1};
     end
     
-    % Create the string which will become the anonymous function.
-    % Put x (or t) as the first argument of the anonymous function if we
-    % have a BVP or EIG.
+    % Create the string which will become the anonymous function. Put x (or t)
+    % as the first argument of the anonymous function if we have a BVP or EIG.
     
-    % !!! Check for a cell, make field a cell if we are in eigMode and
-    % anFun is a cell.
+    % If we are working with an eigenvalue problem, the differential equation
+    % will have important information on both sides of the = sign if we are
+    % solving a generalized problem. In this case, we want to keep the input in
+    % two separate strings in a cell-array.
     if ( strcmp(guifile.type, 'eig') && iscell(anFun) )
         field1 = ['@(', dummys, ',', allVarString, ') ', anFun{1}];
         field2 = ['@(', dummys, ',', allVarString, ') ', anFun{2}];
@@ -60,9 +67,9 @@ if ( numOfRows == 1 ) % Not a system; can call convert2anon w/ two output args.
     elseif ( ~strcmp(guifile.type, 'pde') && strcmp(type, 'DE') )
         field = ['@(', dummys, ',', allVarString, ') ', anFun];
 
-    % Otherwise, add variables in front of what will be anonymous
-    % functions. This is not needed for 'dirichlet','neumann',etc... This
-    % can only happen in BCs, and in that case, allVarNames will be empty
+    % Otherwise, add variables in front of what will be anonymous functions.
+    % This is not needed for 'dirichlet', 'neumann', etc... This can only happen
+    % in BCs, and in that case, allVarNames will be empty
     elseif ( ~isempty(allVarNames) )
         if ( commaSeparated )
             anFun = ['[', anFun, ']'];
@@ -82,8 +89,8 @@ else % Have a system, go through each row
     allPdeVarNames = {};
     indVarName = [];
     for k = 1:numOfRows
-        [anFun{k} indVarNameTemp varNames pdeVarNames eigVarNames ...
-            commaSeparated] = setupLine(guifile, input{k}, type);
+        [anFun{k}, indVarNameTemp, varNames, pdeVarNames, eigVarNames, dummy] = ...
+            setupLine(guifile, input{k}, type);
         if ( strcmp(anFun{k}([1 end]), '[]') )
             anFun{k}([1 end]) = [];
         end
@@ -104,8 +111,8 @@ else % Have a system, go through each row
         
         if ( isempty(indVarName) )
             indVarName = indVarNameTemp;
-        elseif ( ~mystrcmp(indVarName{1}, indVarNameTemp{1}) || ...
-                ~mystrcmp(indVarName{2}, indVarNameTemp{2}) )
+        elseif ( ~myStringCompare(indVarName{1}, indVarNameTemp{1}) || ...
+                ~myStringCompare(indVarName{2}, indVarNameTemp{2}) )
             error('Chebgui:Lexer:setupFields', ...
                 'Different names for independent variables detected')
         end
@@ -119,7 +126,7 @@ else % Have a system, go through each row
     % Construct the handle part. For the DE field, we need to collect all
     % the variable names in one string. If we are working with BCs, we have
     % already passed that string in (as the parameter allVarString).
-    if ( strcmp(type,'DE') )
+    if ( strcmp(type, 'DE') )
         allVarString = allVarNames{1};
         for varCounter = 2:length(allVarNames)
             allVarString = [allVarString, ',', allVarNames{varCounter}];
@@ -151,16 +158,16 @@ else % Have a system, go through each row
             indx(k) = idx3;
         end
 
-        [ignored indx] = sort(indx); % Invert the index
+        [dummy, indx] = sort(indx); % Invert the index
         pdeflag = pdeflag(indx);     % Update the pdeflags
         allPdeVarNames(strcmp(allPdeVarNames, '|')) = []; % Delete the junk
         pdeVarNames = allPdeVarNames;
     end
     
-    % If we are solving a BVP or EIG, we now need x as the first argument
-    % as well. However, we don't want that variable in allVarString as we
-    % use that information when setting up BCs. Create the string that goes
-    % at the start of the final string.
+    % If we are solving a BVP or EIG, we now need x as the first argument as
+    % well. However, we don't want that variable in allVarString as we use that
+    % information when setting up BCs. Create the string that goes at the start
+    % of the final string.
     if ( (~strcmp(guifile.type, 'pde') && strcmp(type, 'DE')) || ...
             strcmp(type, 'BCnew') )
         fieldStart = ['@(', dummys, ',', allVarString, ') '];
@@ -168,8 +175,8 @@ else % Have a system, go through each row
         fieldStart = ['@(', allVarString, ') '];
     end
         
-    % Construct the function. Need to treat eig. problems separately as
-    % there we can have nontrivial LHS and RHS at the same time.
+    % Construct the function. Need to treat eig. problems separately as there we
+    % can have nontrivial LHS and RHS at the same time.
     allAnFun = [];
     if ( strcmp(guifile.type, 'eig') && iscell(anFun{1}) )
         allAnFun1 = [];
@@ -200,15 +207,13 @@ end
 
 end
 
-function [field indVarName varNames pdeVarNames eigVarNames commaSeparated] ...
+function [field, indVarName, varNames, pdeVarNames, eigVarNames, commaSeparated] ...
     = setupLine(guifile, input, type)
 
 convertBCtoAnon = 0;
 
 commaSeparated = 0; % Default value
-% Create the variables x and t (corresponding to the linear function on the
-% domain).
-% x = xt; t = xt;
+
 if ( ~isempty(strfind(input, '@')) ) % User supplied anon. function
     % Find the name of the independent variable (which we assume to be
     % either r, x or t)
@@ -216,7 +221,7 @@ if ( ~isempty(strfind(input, '@')) ) % User supplied anon. function
     firstRPloc = strfind(input, ')');
     trimmedInput = input(firstRPloc+1:end);
     
-    [field indVarName varNames pdeVarNames eigVarNames commaSeparated] = ...
+    [field, indVarName, varNames, pdeVarNames, eigVarNames, commaSeparated] = ...
         stringParser.str2anon(trimmedInput, guifile.type, type);
     
     return
@@ -248,16 +253,14 @@ end
 
 if ( any(strcmp(type, {'DE', 'INIT', 'INITSCALAR'})) || convertBCtoAnon )
    % Convert to anon. function string
-    [field indVarName varNames pdeVarNames eigVarNames commaSeparated] = ...
+    [field, indVarName, varNames, pdeVarNames, eigVarNames, commaSeparated] = ...
         stringParser.str2anon(input, guifile.type, type);
 end
 
 end
     
-% TODO:  Rename this function to something more sensible.
+function res =  myStringCompare(str1, str2)
 % Modified strcmp, if we compare with an empty string, give a match
-function res =  mystrcmp(str1, str2)
-
 if ( isempty(str1) || isempty(str2) )
     res = 1;
 else
