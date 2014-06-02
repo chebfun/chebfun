@@ -1,7 +1,7 @@
 function coeffs = vals2coeffs(values)
 %VALS2COEFFS   Convert values at Chebyshev points to Chebyshev coefficients.
-%   C = VALS2COEFFS(V) returns the (N+1)x1 vector of coefficients such that F(x) =
-%   C(1)*T_N(x) + ... + C(N)*T_1(x) + C(N+1)*T_0(x) (where T_k(x) denotes the
+%   C = VALS2COEFFS(V) returns the (N+1)x1 vector of coefficients such that F(x)
+%   = C(1)*T_N(x) + ... + C(N)*T_1(x) + C(N+1)*T_0(x) (where T_k(x) denotes the
 %   k-th 1st-kind Chebyshev polynomial) interpolates the data [V(1) ; ... ;
 %   V(N+1)] at Chebyshev points of the 2nd kind.
 %
@@ -12,12 +12,13 @@ function coeffs = vals2coeffs(values)
 %
 % See also COEFFS2VALS, CHEBPTS.
 
-% Developer Note: This is equivalent to the Inverse Discrete Cosine Transform of Type I.
-
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% [Developer Note]: This is equivalent to the Inverse Discrete Cosine Transform
+% of Type I.
+%
 % [Mathematical reference]: Section 4.7 Mason & Handscomb, "Chebyshev
 % Polynomials". Chapman & Hall/CRC (2003).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -12,63 +12,45 @@ function coeffs = vals2coeffs(values)
 %
 % See also COEFFS2VALS, CHEBPTS.
 
-% Developer Note: This is euqivalent to Discrete Cosine Transform of Type II.
-
-% [Mathematical reference] [TODO!]
-
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org for Chebfun information.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% [Developer Note]: This is equivalent to Discrete Cosine Transform of Type II.
+%
+% [Mathematical reference]: Section 4.7 Mason & Handscomb, "Chebyshev
+% Polynomials". Chapman & Hall/CRC (2003).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 % Get the length of the input:
-n = size(values, 1);
+[n, m] = size(values);
 
 % Trivial case (constant):
 if ( n <= 1 )
-    coeffs = values; 
+    coeffs = values;
     return
 end
 
-% Flip the input data up to down. The first row of the resulting data should
-% correspond to the rightmost Chebyshev point of the 1st kind in [-1 1].
-values = values(end:-1:1,:);
+% Pre-compute the weight vector:
+w = repmat(2*exp(1i*(n-1:-1:0)*pi/(2*n)).',1,m);
 
-if ( isreal(values) )
-    coeffs = vals2coeffsReal(values);
-elseif ( isreal(1i*values) )
-    coeffs = 1i*vals2coeffsReal(imag(values));
-else
-    coeffs = vals2coeffsReal(real(values)) + 1i*vals2coeffsReal(imag(values));
+% Mirror the values for FFT:
+tmp = [values(n:-1:1, :) ; values];
+coeffs = ifft(tmp);
+
+% Truncate, flip the order, and multiply the weight vector:
+coeffs = w.*coeffs(n:-1:1, :);
+
+% Scale the last coefficient, i.e. the coefficient for the constant term:
+coeffs(n,:) = coeffs(n,:)/2;
+
+% Post-process:
+if ( isreal(values) )  
+    % Real-valued case:
+    coeffs = real(coeffs);
+elseif ( isreal(1i*values) )  
+    % Imaginary-valued case:
+    coeffs = 1i*imag(coeffs);
 end
-
-end
-
-function c = vals2coeffsReal(v)
-%VALS2COEFFSREAL   Convert values at Chebyshev points to Chebyshev coefficients
-%when values are real.
-
-n = size(v,1);
-m = size(v,2);
-w = repmat((2/n)*exp(-1i*(0:n-1)*pi/(2*n)).',1,m);
-
-% [TODO KX]: Confirm whether the difference between the two cases suggested
-% by the remark below about "no need" is genuine.
-%
-% Form the vector whose data are periodic. Note that in contrast to the
-% situation with 2nd kind Chebyshev points, here there is no need to mirror the
-% data in order to achieve the effect of a DCT with an FFT. Even and odd cases
-% are treated differently.
-
-if ( rem(n, 2) == 0 ) % Even n case
-    vv = [ v(1:2:n-1,:); v(n:-2:2,:) ];
-else                  % Odd n case
-    vv = [ v(1:2:n,:); v(n-1:-2:2,:) ];
-end
-c = real(w.*fft(vv));
-
-% Flip back so that the trailing coefficients show up at the top rows:
-c = c(end:-1:1,:);
-
-% Halve C(N+1), i.e., the constant term in the Chebyshev series:
-c(end,:) = c(end,:)/2;
 
 end
