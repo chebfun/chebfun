@@ -248,7 +248,9 @@ for kk = 1:size(ODE,1)
         
         c = c(end:-1:1);
         
-        A = S * chebop2.MultMat(c, n, kk-1) * D;
+        M = ultraS.multmat(c, n, kk-1); 
+        
+        A = S * M * D;
         
     elseif ( iscell(ODE(kk,jj)) && ~isempty(ODE{kk,jj}) )
         
