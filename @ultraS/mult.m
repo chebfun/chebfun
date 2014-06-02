@@ -24,7 +24,7 @@ numIntervals = length(d) - 1;
 % Find the diagonal blocks;
 blocks = cell(numIntervals);
 for k = 1:numIntervals
-    blocks{k} = multmat(n(k), f.funs{k}, lambda);
+    blocks{k} = ultraS.multmat(n(k), f.funs{k}, lambda);
 end
 
 % Assemble:
