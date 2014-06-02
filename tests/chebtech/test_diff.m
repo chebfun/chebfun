@@ -32,7 +32,7 @@ for n = 1:2
     df = diff(f);
     df_exact = @(x) 1./(1 + x.^2);
     err = norm(df_exact(x) - feval(df, x), inf);
-    tol = 200*df.vscale.*df.epslevel;
+    tol = 500*df.vscale.*df.epslevel;
     pass(n, 2) = err < tol;
     
     f = testclass.make(@(x) sin(x), [], [], pref);

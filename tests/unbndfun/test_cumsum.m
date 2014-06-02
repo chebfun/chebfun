@@ -26,7 +26,7 @@ gVals = feval(g, x);
 opg = @(x) sqrt(pi)*erf(x)/2 + sqrt(pi)/2;
 gExact = opg(x);
 errg = norm(gVals - gExact, inf);
-tol = 1e4*get(g,'epslevel').*get(g,'vscale');
+tol = 5e4*get(g,'epslevel').*get(g,'vscale');
 pass(1) = errg < tol;
 
 % [TODO]: Revive when log is ready.
@@ -102,8 +102,9 @@ gVals = feval(g, x);
 
 opg = @(x) [exp(x) exp(x).*(x - 1)];
 gExact = opg(x);
-err = gVals - gExact;
-pass(6) = norm(err, inf) < 5e4*max(get(g,'epslevel').*get(g,'vscale'));
+err = norm(gVals - gExact, inf)
+tol = 5e5*max(get(g,'epslevel').*get(g,'vscale'))
+pass(6) = err < tol;
 
 %% Test on cumulative sum over the columns
 h = cumsum(f, 2);
