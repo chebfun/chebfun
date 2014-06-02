@@ -1,38 +1,24 @@
-% Test file for chebtech/flipud.m
+% Test file for fourtech/flipud.m
 
 function pass = test_flipud(pref)
 
+% Get preferences.
 if ( nargin < 1 )
-    pref = chebtech.techPref();
+    pref = fourtech.techPref();
 end
+    
+testclass = fourtech();
 
-for n = 1:2
-    if ( n == 1 )
-        testclass = chebtech1();
-    else 
-        testclass = chebtech2();
-    end
-    
-    % Try some standard calls to flipud 
-    f = testclass.make(@(x) sin(x+.5), [], [], pref);
-    g = testclass.make(@(x) sin(-x+.5), [], [], pref);
-    h = flipud(f);
-    pass(n, 1) = norm(g.coeffs - h.coeffs, inf) < 10*h.vscale.*h.epslevel;
-    
-    f = testclass.make(@(x) [sin(x+.5), exp(x)], [], [], pref);
-    g = testclass.make(@(x) [sin(-x+.5), exp(-x)], [], [], pref);
-    h = flipud(f);
-    pass(n, 2) = norm(g.coeffs - h.coeffs, inf) < 10*max(h.vscale.*h.epslevel);
-    
-    f = testclass.make(@(x) sin(1i*x+.5), [], [], pref);
-    g = testclass.make(@(x) sin(-1i*x+.5), [], [], pref);
-    h = flipud(f);
-    pass(n, 3) = norm(g.coeffs - h.coeffs, inf) < 10*h.vscale.*h.epslevel;
-    
-    f = testclass.make(@(x) [sin(x+.5), exp(1i*x)], [], [], pref);
-    g = testclass.make(@(x) [sin(-x+.5), exp(-1i*x)], [], [], pref);
-    h = flipud(f);
-    pass(n, 4) = norm(g.coeffs - h.coeffs, inf) < 10*max(h.vscale.*h.epslevel);
-end
+%%
+% Conduct a few very straightforward tests.
+f = testclass.make(@(x) sin(pi*x), [], [], pref);
+g = testclass.make(@(x) -sin(pi*x), [], [], pref);
+h = flipud(f);
+pass(1) = norm(g.coeffs - h.coeffs, inf) < 10*h.vscale.*h.epslevel;
+
+f = testclass.make(@(x) [sin(sin(pi*x)), exp(1i*pi*x)], [], [], pref);
+g = testclass.make(@(x) [-sin(sin(pi*x)), exp(-1i*pi*x)], [], [], pref);
+h = flipud(f);
+pass(2) = norm(g.coeffs - h.coeffs, inf) < 100*max(h.vscale.*h.epslevel);
 
 end
