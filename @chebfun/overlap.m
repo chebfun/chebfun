@@ -16,12 +16,26 @@ if ( ~domainCheck(f, g) )
         'Inconsistent domains; domain(f) ~= domain(g).')
 end
 
-% Obtain the domain for the output:
+% Grab the domains:
 fDom = domain(f);
-g = tweakDomain(g, fDom);
 gDom = domain(g);
-f = tweakDomain(f, gDom);
-fDom = domain(f);
+
+if ( (numel(f) == 1) && (numel(g) == 1) )
+    if ( (numel(fDom) == numel(gDom)) && all(fDom == gDom) )
+        % Trivial case: Nothing to do!
+        return
+    end
+    [f, g] = tweakDomain(f, g);
+    fDom = domain(f);
+    gDom = domain(g);
+else
+    g = tweakDomain(g, fDom);
+    gDom = domain(g);
+    f = tweakDomain(f, gDom);
+    fDom = domain(f);
+end
+
+% Obtain the domain for the output:
 newDom = union(fDom, gDom);
 
 % Restrict f and g:
