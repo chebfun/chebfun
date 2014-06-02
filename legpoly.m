@@ -52,7 +52,10 @@ end
 % Force a CHEBTECH basis.
 defaultPref = chebfunpref();
 pref = defaultPref;
-pref.tech = 'chebtech';    
+tech = feval(pref.tech);
+if ( ~isa(tech, 'chebtech') )
+    pref.tech = @chebtech2;
+end
 
 % Useful values:
 nMax = max(n);
@@ -125,7 +128,7 @@ switch method
     case 3 % LEG2CHEB
 
         c_leg = [1 ; zeros(n, 1)];                % Legendre coefficients
-        C = chebtech.leg2cheb(c_leg);             % Chebyshev coefficients
+        C = leg2cheb(c_leg);                      % Chebyshev coefficients
         if ( normalize )
             C = C*sqrt((n+.5));
         end
@@ -135,13 +138,10 @@ end
 % Construct CHEBFUN from coeffs:
 p = chebfun(C, dom, pref, 'coeffs');              
 
-if ( ~strcmp(defaultPref.tech, 'chebtech') )
-    % Construct a CHEBFUN of the approprate form by evaluating p:
-    p = chebfun(@(x) feval(p, x), domIn);
-elseif ( numel(domIn) > 2 )
+if ( numel(domIn) > 2 )
     p = restrict(p, domIn);
 end
-    
+
 % Adjust orientation:
 if ( size(n, 1) > 1 )
    p = p.'; 

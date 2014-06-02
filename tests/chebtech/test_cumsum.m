@@ -31,9 +31,9 @@ for n = 1:2
   f = testclass.make(@(x) exp(x) - 1, [], [],  pref);
   F = cumsum(f);
   F_ex = @(x) exp(x) - x;
-  err = feval(F, x) - F_ex(x);
-  tol = 10*F.vscale.*F.epslevel;
-  pass(n, 1) = (std(err) < tol) && (abs(feval(F, -1)) < tol);
+  err = std(feval(F, x) - F_ex(x));
+  tol = 20*F.vscale.*F.epslevel;
+  pass(n, 1) = (err < tol) && (abs(feval(F, -1)) < tol);
   
   f = testclass.make(@(x) 1./(1 + x.^2), [], [], pref);
   F = cumsum(f);
@@ -46,7 +46,7 @@ for n = 1:2
   F = cumsum(f);
   F_ex = @(x) sin(1e4*x)/1e4;
   err = feval(F, x) - F_ex(x);
-  tol = 1e4*F.vscale.*F.epslevel;
+  tol = 5e4*F.vscale.*F.epslevel;
   pass(n, 3) = (std(err) < tol) && (abs(feval(F, -1)) < tol);
   
   z = exp(2*pi*1i/6);

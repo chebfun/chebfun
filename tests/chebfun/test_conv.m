@@ -104,7 +104,7 @@ g = conv(f, diff(dirac(x)));
 g = restrict(g, [-1, 1] );
 g.pointValues(1) = 2*g.pointValues(1);
 g.pointValues(end) = 2*g.pointValues(end);
-pass(10) = norm(g - cos(x), inf ) < tol;
+pass(10) = norm(g - cos(x), inf ) < 5*tol;
 
 % Second order ODE via delta functions and convolutions:
 % g = f'' + f
