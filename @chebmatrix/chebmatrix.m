@@ -156,7 +156,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         %CTRANSPOSE   Transpose a CHEBMATRIX.
         %   CTRANSPOSE(A) transposes A.BLOCKS and each of the entries in
         %   A.BLOCKS. Note the block entries are transposed, not conjugate
-        %   tranposed.
+        %   tranposed (which is consist with the built in CELL class).
         
             for k = 1:numel(A.blocks)
                 % TODO: TRANSPOSE() or CTRANSPOSE()?
