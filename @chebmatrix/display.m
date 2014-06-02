@@ -11,6 +11,7 @@ function display(L)
 
 name = inputname(1);
 [m, n] = size(L);
+
 c = blockClasses(L);
 
 loose = strcmp(get(0, 'FormatSpacing'), 'loose');
@@ -30,7 +31,7 @@ if ( ~usejava('jvm') || ~usejava('desktop') )
 end
 
 if ( strcmp(name, 'ans') )
-    name = ['chabmatrix_' num2str(1e6*rand(1), 6)];
+    name = ['chebmatrix_' num2str(1e6*rand(1), 6)];
     assignin('base', name, L);
 end
 
