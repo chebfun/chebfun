@@ -1,4 +1,4 @@
-function result = parseBC(N, BC)
+function result = parseBC(N, BC, type)
 %PARSEBC  Parse boundary conditions for CHEBOP object.
 %   This method is not intended for end users. For information about boundary
 %   conditions in chebops, see CHEBOP.
@@ -32,7 +32,9 @@ elseif ( isa(BC, 'function_handle') )
     % input function handle that takes one argument. Otherwise, we request that
     % the number of input to the BC function handle is one less than the number
     % of arguments to the OP part.
-    if ( ( (numIn <= 1) && (nargin(BC) == 1) ) || (nargin(BC) == (numIn - 1)) )
+    if ( ( (numIn <= 1) && (nargin(BC) == 1) ) || ...
+            ( strcmp(type,'lrbc') && (nargin(BC) == (numIn - 1)) ) || ...
+            ( strcmp(type,'bc') && (nargin(BC) == numIn) ) )
         result = BC;
     else
         error('CHEBFUN:chebop:parsebc:inputs', ...

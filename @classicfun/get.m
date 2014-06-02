@@ -22,15 +22,15 @@ switch prop
         % Allow access to any of the properties of F.onefun via GET:
         out = get(f.onefun, prop);
         
-    case {'vscale'}
+    case 'vscale'
         % Access the vscale of F.onefun when F.onefun is a singfun:
         out = get(f.onefun, prop);
         
-    case {'epslevel'}
+    case 'epslevel'
         % Access the epslevel of F.onefun when F.onefun is a singfun:
         out = get(f.onefun, prop);
         
-    case {'ishappy'}
+    case 'ishappy'
         % Access the ishappy of F.onefun when F.onefun is a singfun:
         out = get(f.onefun, prop);
         
@@ -38,17 +38,27 @@ switch prop
         % Get the values at a or b (where f.domain = [a, b]):
         out = get(f.onefun, prop);
         
-    case {'points'}
+    case 'points'
         % Get the underlying grid:
         out = get(f.onefun, prop);
         
-    case {'values'}
+    case 'values'
         % Get values. 
         out = get(f.onefun, prop); 
+        
+    case 'coeffs'
+        % Get values. 
+        out = get(f.onefun, prop); 
+        
+    case 'exponents'
+        % Get values. 
+        out = [0 0];
 
     otherwise
+        
         error('CHEBFUN:ONEFUN:GET:propname', ...
             'Unknown property name ''%s'' for object of type ONEFUN.', prop);
+        
 end
 
 end

@@ -45,21 +45,25 @@ end
 if ( isnumeric(g) || isa(g, 'domain' ) )
     % Deal with single input case, where F is typically an quasimatrix. Here we
     % want to ensure that all the columns of F have compatable breaks.
-    dom = g;
+    dom = unique(g);
     if ( numel(f) == 1 && isempty(dom) )
         % Nothing to do in the scalar case if dom is empty.
         return
     end
-    dom = unique(dom);                  % Ensure dom is a valid domain.
     if ( numel(dom) >= 2 )   
+        domGiven = true;
         dom = g;
     else
+        domGiven = false;
         dom = domain(f);                % If not, then use the domain of f.
     end
     dummy = chebfun(0, dom);            % A dummy CHEBFUN to tweak against.
     newBreaksLocF = cell(1, numel(f));  % Initialise storage.
     for k = 1:numel(f)                  % Loop over columns of f.
-        [f(k), ~, newBreaksLocF{k}, ~] = tweakDomain(f(k), dummy, tol, 1);
+        [f(k), dummy, newBreaksLocF{k}, ~] = tweakDomain(f(k), dummy, tol, 1);
+    end
+    if ( domGiven )
+        g = domain(dummy);
     end
     return
 end

@@ -175,7 +175,7 @@ classdef functionalBlock < linBlock
             direction = p.Results.direction;
 
             % Sanity check.
-            if ( location < domain(1) ) || ( location > domain(end) )
+            if ( location < domain(1) ) | ( location > domain(end) )
                 error('Evaluation location is not in the domain.')
             end
 
