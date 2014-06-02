@@ -1565,10 +1565,10 @@ function button_export_Callback(hObject, eventdata, handles)
             'Save as', exporter.defaultFileName);
         if ( fileName ~= 0 )     % User did not press cancel
             toFile(exporter, handles.guifile, fileName, pathName)
+            
+            % Open the new file in the editor
+            open([pathName, fileName])
         end
-        
-        % Open the new file in the editor
-        open([pathName, fileName])
 
     catch ME
         rethrow(ME)
