@@ -76,7 +76,6 @@ if ( strcmp(get(handles.button_solve, 'string'), 'Solve') )   % In solve mode
     set(handles.toggle_useLatest, 'Enable','off');
     set(handles.button_exportsoln, 'Enable','off');
     set(handles.button_figsol, 'Enable','off');
-    set(handles.button_fignorm, 'Enable','off');
 
     % STOP and PAUSE don't work in EIGS mode.
     if ( ~get(handles.button_eig, 'Value') )
@@ -160,7 +159,6 @@ set(handles.button_clear, 'String', 'Clear all');
 set(handles.button_clear, 'BackgroundColor', ...
     get(handles.button_export, 'BackgroundColor'));
 set(handles.button_figsol, 'Enable', 'on');
-set(handles.button_fignorm, 'Enable', 'on');
 set(handles.button_exportsoln, 'Enable', 'off');
 set(handles.menu_demos, 'Enable', 'on');
 

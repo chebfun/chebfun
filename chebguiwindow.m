@@ -127,7 +127,7 @@ set(handles.button_solve,'String','Solve');
 set(handles.button_solve,'BackgroundColor',[43 129 86]/256);
 
 % Ensure that we have a light-grey color in background
-set(handles.mainWindow,'BackgroundColor', 0.9*[1 1 1]);
+set(handles.mainWindow,'BackgroundColor', [.702 .78 1]);
 
 % Default discretization is colloc2
 handles.guifile.options.discretization = @colloc2;
@@ -181,11 +181,9 @@ elseif strcmp(get(handles.button_clear, 'String'), 'Pause')
     set(handles.button_clear, 'BackgroundColor', [43 129 86]/256);
     % Re-enable figure buttons
     set(handles.button_figsol, 'Enable', 'on');
-    set(handles.button_fignorm, 'Enable', 'on');
 else
     % Disable figure buttons
     set(handles.button_figsol, 'Enable', 'off');
-    set(handles.button_fignorm, 'Enable', 'off');
     set(handles.button_clear, 'String', 'Pause');
     set(handles.button_clear, 'BackgroundColor', [255 179 0]/256);
 end
@@ -194,12 +192,6 @@ end
 
 function button_solve_Callback(hObject, eventdata, handles)
 
-% TODO:  Remove this if it is no longer needed.
-% uicontrol(handles.panel_input)
-% figure(handles.chebguimainwindow)
-% set(hObject, 'Enable', 'off');
-% drawnow;
-% set(hObject, 'Enable', 'on');
 handles = solveGUI(handles.guifile,handles);
 guidata(hObject, handles);
 
@@ -625,84 +617,6 @@ end
 % -------------------------------------------------------------------------
 % -------------------- Unsorted functions  --------------------------------
 % -------------------------------------------------------------------------
-
-function button_fignorm_Callback(hObject, eventdata, handles)
-
-% Check the type of the problem
-if ( get(handles.button_ode, 'Value') )
-    latestNorms = handles.latest.norms;
-
-    figure
-    semilogy(latestNorms, '-*', 'Linewidth', 2)
-    title('Norm of updates')
-    xlabel('Number of iteration')
-
-    if ( length(latestNorms) > 1 )
-        XTickVec = 1:max(floor(length(latestNorms) / 5), 1):length(latestNorms);
-        set(gca, 'XTick',  XTickVec)
-        xlim([1 length(latestNorms)])
-        grid on
-    else % Don't display fractions on iteration plots
-        set(gca, 'XTick',  1)
-    end
-elseif ( get(handles.button_pde, 'Value') )
-    u = handles.latest.solution;
-    tt = handles.latest.solutionT;
-    varnames = handles.varnames;
-    
-    xLab = handles.indVarName{1};
-    tLab = handles.indVarName{2};
-    
-    if ( ~iscell(u) )
-        figure
-        waterfall(u, tt, 'simple', 'linewidth', 2)
-        xlabel(xLab);
-        ylabel(tLab);
-        zlabel(varnames{1});
-    else
-        figure
-        for k = 1:numel(u)
-            subplot(1, numel(u), k);
-            waterfall(u{k}, tt, 'simple', 'linewidth', 2)
-            xlabel(xLab)
-            ylabel(tLab)
-            zlabel(varnames{k})
-            title(varnames{k})
-        end
-        
-        tmp = u{k}(:,1);
-        u1 = tmp.vals(1);
-        tmp = get(tmp, 'vals');
-        x1 = tmp(1);
-        
-        figure
-        cols = get(0, 'DefaultAxesColorOrder');
-        for k = 1:numel(u)
-            plot3(x1, tt(1), u1, 'linewidth', 2, 'color', cols(k,:));
-            hold on
-        end
-        legend(varnames{:})
-        for k = 1:numel(u)
-            waterfall(u{k}, tt, 'simple', 'linewidth', 2, 'edgecolor', ...
-                cols(k,:))
-        end
-        xlabel(xLab)
-        ylabel(tLab)
-        grid on
-    end
-else % eigs
-    
-    figure
-    h1 = gca;
-    
-    if ( strcmp(handles.latest.type, 'eig') )
-        selection = get(handles.iter_list, 'Value');
-        chebguiController.plotEigenmodes(handles, selection, [], h1);
-    end
-    
-end
-
-end
 
 function button_figsol_Callback(hObject, eventdata, handles)
 
@@ -2238,7 +2152,6 @@ set(handles.button_clear, 'String', 'Clear all');
 set(handles.button_clear, 'BackgroundColor', ...
     get(handles.button_export, 'BackgroundColor'));
 set(handles.button_figsol, 'Enable', 'on');
-set(handles.button_fignorm, 'Enable', 'on');
 set(handles.button_exportsoln, 'Enable', 'off');
 set(handles.menu_demos,'Enable','on');
 
