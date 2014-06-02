@@ -71,10 +71,10 @@ f.vscale(f.vscale == 0) = 1;
 g.vscale(g.vscale == 0) = 1;
 
 % See CHEBTECH CLASSDEF file for documentation on this:
-f.epslevel = (f.epslevel + g.epslevel) .* (f.vscale.*g.vscale./tmpVscale);
+epslevelBound = (f.epslevel + g.epslevel) .* (f.vscale.*g.vscale./tmpVscale);
+f.epslevel = updateEpslevel(f, epslevelBound);
 f.vscale  = vscale;
 f.ishappy = f.ishappy && g.ishappy;
-
 
 % Simplify!
 f = simplify(f);
@@ -88,7 +88,6 @@ if ( pos )
 end
 
 end
-
 
 function [coeffs, pos] = coeff_times_main(f, g)
 
