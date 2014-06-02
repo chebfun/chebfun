@@ -1,10 +1,17 @@
 function handles = solveGUI(guifile, handles)
-% SOLVEGUI Called when a user hits the solve button of the Chebfun GUI
-
-% TODO:  Documentation.
+%SOLVEGUI       Called when a user hits the solve button of the Chebfun GUI.
+%
+% Calling sequence:
+%
+%   HANDLES = SOLVEGUI(GUIFILE, HANDLES)
+%
+% where
+%   
+%   HANDLES:    A MATLAB handle object to the CHEBGUIWINDOW figure.
+%   GUIFILE:    A CHEBGUI object.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Check whether some input is missing
 if ( isempty(guifile.domain) )
@@ -26,9 +33,11 @@ if ( strcmp(get(handles.button_solve, 'string'), 'Solve') )   % In solve mode
     a = dom(1);
     b = dom(end);
     if ( b <= a )
-        error('Chebgui:IncorrectDomain','Error in constructing domain. %s is not valid.',dom);
+        error('CHEBFUN:CHEBGUI:solveeGUI:IncorrectDomain', ...
+            'Error in constructing domain. %s is not valid.',dom);
     end
 
+    % Check that we have tolerance information:
     tol = guifile.tol;
     if ( ~isempty(tol) )
         tolnum = str2num(tol);
@@ -39,6 +48,7 @@ if ( strcmp(get(handles.button_solve, 'string'), 'Solve') )   % In solve mode
     end   
 
     if ( strcmpi(guifile.type,'pde') )
+        % If we're in PDE mode, need to have time information.
         tt = str2num(guifile.timedomain);
         if ( isempty(tt) )
             error('Chebgui:IncorrectTimeInterval', ...
@@ -60,8 +70,6 @@ if ( strcmp(get(handles.button_solve, 'string'), 'Solve') )   % In solve mode
                 return
             end
         end
-    elseif ( get(handles.button_eig, 'Value') )
-        newString = handles.guifile.sigma;
     end
     
     % Disable buttons, figures, etc.
@@ -79,6 +87,8 @@ if ( strcmp(get(handles.button_solve, 'string'), 'Solve') )   % In solve mode
         set(handles.button_solve, 'String','Stop');
         set(handles.button_solve, 'BackgroundColor',[214 80 80]/256);
     end
+    
+    % Update the figure:
     drawnow
     set(handles.menu_demos, 'Enable','off');
 
@@ -122,17 +132,18 @@ if ( strcmp(get(handles.button_solve, 'string'), 'Solve') )   % In solve mode
         error(Mstruct)
     end
 
+    % Once we have finished solving, update parts of the GUI to reflect it.
     resetComponents(handles);
-    set(handles.toggle_useLatest, 'Enable','on');
-    set(handles.button_exportsoln, 'Enable','on');
+    set(handles.toggle_useLatest, 'Enable', 'on');
+    set(handles.button_exportsoln, 'Enable', 'on');
 else   % In stop mode
-    set(handles.button_clear, 'String','Clear all');
+    set(handles.button_clear, 'String', 'Clear all');
     set(handles.button_clear, 'BackgroundColor', ...
         get(handles.button_export,'BackgroundColor'));
     set(handles.button_solve, 'String','Solve');
     set(handles.button_solve, 'BackgroundColor', [43 129 86]/256);
     set(handles.menu_demos, 'Enable','on');
-    set(handles.button_exportsoln, 'Enable','off');
+    set(handles.button_exportsoln, 'Enable', 'off');
     handles.hasSolution = 1;
     drawnow
 end
@@ -140,6 +151,7 @@ end
 end
 
 function resetComponents(handles)
+%RESETCOMPONENTS    Update GUI to reflect that we have solved a problem
 
 % Enable buttons, figures, etc. Set button to 'solve' again
 set(handles.button_solve, 'String', 'Solve');
@@ -151,20 +163,5 @@ set(handles.button_figsol, 'Enable', 'on');
 set(handles.button_fignorm, 'Enable', 'on');
 set(handles.button_exportsoln, 'Enable', 'off');
 set(handles.menu_demos, 'Enable', 'on');
-
-end
-
-function msg = cleanErrorMsg(msg)
-
-errUsingLoc = strfind(msg, sprintf('Error using'));
-
-if ( errUsingLoc )
-    % Trim everything before this
-    msg = msg(errUsingLoc:end);
-    % Look for first two line breaks (char(10))
-    idx = find(msg == char(10), 1);
-    % Take only what's after the 2nd
-    msg = msg(idx+1:end);
-end
 
 end
