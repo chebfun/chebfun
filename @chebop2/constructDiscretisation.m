@@ -239,11 +239,12 @@ function B = UnconstrainedMatrixEquation(ODE, jj, n, order, dom)
 B = spalloc(n,n,3*n);
 for kk = 1:size(ODE,1)
     
+    % Get conversion and differentiation matrices: 
     S = ultraS.convertmat( n, kk-1, order-1 );
     D = ((2./diff(dom))^(kk-1)) * ultraS.diffmat(n, kk-1);
     
     if ( iscell(ODE(kk,jj)) && isa(ODE{kk,jj},'chebfun') )
-        
+        % Variable coefficient term: 
         c = ODE{kk,jj}.coeffs{:}; 
         
         c = c(end:-1:1);
@@ -254,17 +255,21 @@ for kk = 1:size(ODE,1)
         
     elseif ( iscell(ODE(kk,jj)) && ~isempty(ODE{kk,jj}) )
         
+        % Constant coefficient term in a variable coefficient ODE:
         A = ODE{kk,jj}.* S * D;
         
     elseif ( isa(ODE(kk,jj),'double') )
         
+        % Constant coefficient term in a constant coefficient ODE:
         A = ODE(kk,jj).* S * D;
         
     else
         
+        % Empty cell in array, so no term: 
         A = zeros( n );
         
     end
+    % Form the ODE operator: 
     B = B + A;
 end
 end
