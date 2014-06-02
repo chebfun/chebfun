@@ -26,7 +26,7 @@ end
 
 % No support for array-valued fourtech objects:
 if ( size(f,2) > 1 || size(g,2) > 1 )
-    error('FOURTECH:conv:array', 'No support for array-valued FOURTECH objects.');
+    error('CHEBFUN:FOURTECH:conv:array', 'No support for array-valued FOURTECH objects.');
 end
 
 % Get the sizes of the FOURTECH objects

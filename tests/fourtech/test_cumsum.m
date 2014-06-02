@@ -49,40 +49,31 @@ tol = 10*F.vscale.*F.epslevel;
 pass(3) = (std(err) < tol) && (abs(feval(F, -1)) < tol);
 
 %%
-% Check that applying cumsum() and direct construction of the antiderivative
-% give the same results (up to a constant).
-
-f = testclass.make(@(x) sin(4*x).^2, [], [], pref);
-F = testclass.make(@(x) 0.5*x - 0.0625*sin(8*x), [], [], pref);
-G = cumsum(f);
-err = G - F;
-tol = 10*G.vscale.*G.epslevel;
-values = err.coeffs2vals(err.coeffs); 
-pass(5) = (std(values) < tol) && (abs(feval(G, -1)) < tol);
-
-%%
 % Check that diff(cumsum(f)) == f and that cumsum(diff(f)) == f up to a 
 % constant.
 
-f = testclass.make(@(x) x.*(x - 1).*sin(x) + 1, [], [], pref);
+f = testclass.make(@(x) sin(4*pi*cos(pi*x)), [], [], pref);
 g = diff(cumsum(f));
 err = feval(f, x) - feval(g, x);
 tol = 10*g.vscale.*g.epslevel;
-pass(6) = (norm(err, inf) < 100*tol);
+pass(4) = (norm(err, inf) < 100*tol);
 h = cumsum(diff(f));
 err = feval(f, x) - feval(h, x);
 tol = 10*h.vscale.*h.epslevel;
-pass(7) = (std(err) < tol)  && (abs(feval(h, -1)) < tol);
+pass(5) = (std(err) < tol)  && (abs(feval(h, -1)) < tol);
 
 %%
 % Check operation for array-valued chebtech objects.
 
-f = testclass.make(@(x) [sin(x) x.^2 exp(1i*x)], [], [], pref);
-F_exact = testclass.make(@(x) [(-cos(x)) (x.^3/3) (exp(1i*x)/1i)], [], [], pref);
-F = cumsum(f);
-err = std(feval(F, x) - feval(F_exact, x));
-tol = 10*max(F.vscale.*F.epslevel);
-pass(8) = (norm(err, inf) < tol)  && all(abs(feval(F, -1)) < tol);
+f = testclass.make(@(x) [sin(4*pi*cos(2*pi*x)) sin(3*pi*x)], [], [], pref);
+g = diff(cumsum(f));
+err = feval(f, x) - feval(g, x);
+tol = 10*g.vscale.*g.epslevel;
+pass(6) = all(max(abs(err)) < 100*tol);
+h = cumsum(diff(f));
+err = feval(f, x) - feval(h, x);
+tol = 10*h.vscale.*h.epslevel;
+pass(7) = all((std(err) < tol))  && all(abs(feval(h, -1)) < tol);
   
 
 end

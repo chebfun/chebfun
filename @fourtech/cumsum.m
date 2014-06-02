@@ -2,9 +2,8 @@ function f = cumsum(f, m, dim)
 %CUMSUM   Indefinite integral of a FOURTECH.
 %   CUMSUM(F) is the indefinite integral of the FOURTECH F, whose mean
 %   is zero, with the constant of integration chosen so that F(-1) = 0.
-%   If the mean of F is not zero, then this function subtracts off the
-%   mean before computing the indefinite integral.  In this way the result
-%   is guaranteed to be a periodic function on [-1,1).
+%   If the mean of F is not zero then an error is thrown since the indefinite
+%   integral would no longer be periodic.
 %
 %   CUMSUM(F, M) will compute the Mth definite integral with the constant of
 %   integration chosen so that each intermediary integral evaluates to 0 at
@@ -77,8 +76,14 @@ function f = cumsumContinuousDim(f, m)
     numCoeffs = size(c,1);
     
     fIsEven = mod(numCoeffs,2) == 0;
+
+    % Check that the mean of the fourtech is zero.  If it is not, then
+    % throw an error.
+    if abs(c((numCoeffs+1-fIsEven)/2,:)) > f.vscale.*f.epslevel
+        error('CHEBFUN:FOURTECH:cumsum:mean', 'Indefinite integrals are only possible for FOURTECH objects with zero mean.');
+    end
     
-    % Force the mean of the fourtech to be zero.
+    % Force the mean to be exactly zero.
     if fIsEven
         c(numCoeffs/2,:) = 0;
         % Expand the coefficients to be symmetric (see above discussion).
