@@ -46,7 +46,7 @@ for n = 1:2
   F = cumsum(f);
   F_ex = @(x) sin(1e4*x)/1e4;
   err = feval(F, x) - F_ex(x);
-  tol = 1e4*F.vscale.*F.epslevel;
+  tol = 5e4*F.vscale.*F.epslevel;
   pass(n, 3) = (std(err) < tol) && (abs(feval(F, -1)) < tol);
   
   z = exp(2*pi*1i/6);
