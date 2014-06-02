@@ -160,8 +160,8 @@ E = zeros(m, n);
 F = rot90(chebpoly2(f), 2);  % chebfun's ordering is the other way around.
 
 % Map the RHS to the right ultraspherical space.
-lmap = chebop2.spconvermat(n1, 0, yorder);
-rmap = chebop2.spconvermat(n2, 0, xorder);
+lmap = ultraS.convertmat(n1, 0, yorder-1);
+rmap = ultraS.convertmat(n2, 0, xorder-1);
 F = lmap * F * rmap.';
 
 % Place those coefficients of the forcing function onto the RHS.
@@ -238,18 +238,30 @@ function B = UnconstrainedMatrixEquation(ODE, jj, n, order, dom)
 
 B = spalloc(n,n,3*n);
 for kk = 1:size(ODE,1)
-    if iscell(ODE(kk,jj)) && isa(ODE{kk,jj},'chebfun')
-        c = ODE{kk,jj}.coeffs{:}; c = c(end:-1:1);
-        A = chebop2.spconvermat(n, kk-1, order-kk+1) *...
-            chebop2.MultMat(c, n, kk-1) * chebop2.spdiffmat(n, kk-1, dom);
-    elseif iscell(ODE(kk,jj)) && ~isempty(ODE{kk,jj})
-        A = ODE{kk,jj}.*chebop2.spconvermat(n, kk-1, order-kk+1) *...
-            chebop2.spdiffmat(n, kk-1, dom);
-    elseif isa(ODE(kk,jj),'double')
-        A = ODE(kk,jj).*chebop2.spconvermat(n, kk-1, order-kk+1) *...
-            chebop2.spdiffmat(n, kk-1, dom);
+    
+    S = ultraS.convertmat( n, kk-1, order-1 );
+    D = ((2./diff(dom))^(kk-1)) * ultraS.diffmat(n, kk-1);
+    
+    if ( iscell(ODE(kk,jj)) && isa(ODE{kk,jj},'chebfun') )
+        
+        c = ODE{kk,jj}.coeffs{:}; 
+        
+        c = c(end:-1:1);
+        
+        A = S * chebop2.MultMat(c, n, kk-1) * D;
+        
+    elseif ( iscell(ODE(kk,jj)) && ~isempty(ODE{kk,jj}) )
+        
+        A = ODE{kk,jj}.* S * D;
+        
+    elseif ( isa(ODE(kk,jj),'double') )
+        
+        A = ODE(kk,jj).* S * D;
+        
     else
-        A = zeros(n);
+        
+        A = zeros( n );
+        
     end
     B = B + A;
 end

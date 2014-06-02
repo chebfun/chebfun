@@ -1,5 +1,10 @@
-function N = mtimes(N,u)
-%MTIMES 
+function N = mtimes( N, u )
+%MTIMES  Forward application of a CHEBOP2 object.
+% 
+% N = mtimes(N, u) is the same as N * u
+
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if isa(u,'chebfun2')
     op = N.op;
