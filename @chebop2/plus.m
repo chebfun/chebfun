@@ -1,6 +1,10 @@
 function N1 = plus(N1, N2) 
-%PLUS plus for chebop2 objects
+%PLUS plus for CHEBOP2
+%
+% N = PLUS(N1, N2) is the same as N = N1 + N2. 
 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
  
 % check domains are the same. 
 if all(N1.domain ~= N1.domain)

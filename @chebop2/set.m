@@ -13,8 +13,6 @@ rect = N.domain;
 propertyArgIn = varargin;
 
 
-
-
 while length(propertyArgIn) >= 2,
     prop = propertyArgIn{1};
     val = propertyArgIn{2};
@@ -28,9 +26,6 @@ while length(propertyArgIn) >= 2,
             N.lbc = chebop2.createbc(val, rect(3:4));
             N.rbc = N.lbc;
             N.ubc = chebop2.createbc(val, rect(1:2));
-%             if ( isa(N.ubc, 'chebfun') )
-%                N.ubc = transpose(N.ubc);
-%             end
             N.dbc = N.ubc;
         case 'lbc'
              N.lbc = chebop2.createbc(val, rect(3:4));
@@ -40,15 +35,9 @@ while length(propertyArgIn) >= 2,
              N.rbcshow = val;
         case 'ubc'
              N.ubc = chebop2.createbc(val, rect(1:2));
-%              if ( isa(N.ubc, 'chebfun') )
-%                 N.ubc = transpose(N.ubc);
-%              end
              N.ubcshow = val;
         case 'dbc'
              N.dbc = chebop2.createbc(val, rect(1:2));
-%              if ( isa(N.dbc, 'chebfun') )
-%                 N.dbc = transpose(N.dbc);
-%              end
              N.dbcshow = val;
         case 'op'
             if isa(val,'function_handle')

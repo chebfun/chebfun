@@ -1,7 +1,6 @@
 function pass = test_subsref( pref ) 
 % Test CHEBOP2 SUBSREF 
 
-
 N = chebop2(@(u) diff(u,2,1) + diff(u,2,2)); 
 
 pass(1) = ( size( N(10,10), 1) - 100 ) == 0; 
