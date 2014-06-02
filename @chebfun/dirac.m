@@ -134,6 +134,9 @@ if ( rootB )
 end
 
 % Call the DELTAFUN constructor directly:
-d.funs{1} = deltafun(d.funs{1}, deltaMag.', r.');
-d.pointValues = pointValues;        
+data.deltaMag = deltaMag.';
+data.deltaLoc = r.';
+d.funs{1} = deltafun(d.funs{1}, data);
+d.pointValues = pointValues;
+
 end

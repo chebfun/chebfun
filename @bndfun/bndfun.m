@@ -53,25 +53,28 @@ classdef bndfun < classicfun
     %% CLASS CONSTRUCTOR:
     methods
         
-        function obj = bndfun(op, domain, vscale, hscale, pref)
+        function obj = bndfun(op, data, pref)
             
             % Construct an empty bndfun:
             if ( (nargin == 0) || isempty(op) )
                 return
             end
-            
-            % Obtain preferences if none given:
-            if ( (nargin < 5) || isempty(pref))
+
+            % Parse inputs.
+            if ( (nargin < 2) || isempty(data) )
+                    data = struct();
+            end
+
+            if ( (nargin < 3) || isempty(pref) )
                 pref = chebfunpref();
             else
                 pref = chebfunpref(pref);
             end
-            
-            % Use default domain if none given. Otherwise, check whether the
-            % domain input has correct dimensions
-            if ( (nargin < 2) || isempty(domain) )
-                domain = pref.domain;
-            elseif ( ~all(size(domain) == [1, 2]) ) || diff(domain) <= 0
+
+            domain = parseDataInputs(data, pref);
+
+            % Check whether the domain input has correct dimensions.
+            if ( ~all(size(domain) == [1, 2]) ) || diff(domain) <= 0
                 error('CHEBFUN:BNDFUN:domain',...
                     ['Domain argument should be a row vector with two ', ...
                     'entries in increasing order.']);
@@ -86,16 +89,12 @@ classdef bndfun < classicfun
                     'Domain should be a 1x2 vector.');
             end
             
-            % Define scales if none given:
-            if ( (nargin < 3) || isempty(vscale) )
-                vscale = 0;
+            if ( ~isfield(data, 'hscale') || isempty(data.hscale) )
+                % [TODO]: Or should this be 1? What does chebfun pass down?
+                data.hscale = norm(domain, inf);
             end
 
-            if ( (nargin < 4) || isempty(hscale) )
-                % [TODO]: Or should this be 1? What does the chebfun level pass
-                % down?
-                hscale = norm(domain, inf); 
-            end
+            data.hscale = data.hscale / diff(domain);
 
             linmap = bndfun.createMap(domain);
             % Include linear mapping from [-1,1] to [a,b] in the op:
@@ -105,7 +104,7 @@ classdef bndfun < classicfun
             end
             
             % Call the ONEFUN constructor:
-            obj.onefun = onefun.constructor(op, vscale, hscale/diff(domain), pref);
+            obj.onefun = onefun.constructor(op, data, pref);
             
             % Add the domain and mapping:
             obj.domain = domain;
@@ -177,4 +176,20 @@ classdef bndfun < classicfun
         % Definite integral of a BNDFUN on the interval [a, b].
         out = sum(f, dim)
     end
+end
+
+function domain = parseDataInputs(data, pref)
+
+domain = getDataInput(data, 'domain',  pref.domain);
+
+end
+
+function val = getDataInput(data, field, defaultVal)
+
+if ( isfield(data, field) && ~isempty(data.(field)) )
+    val = data.(field);
+else
+    val = defaultVal;
+end
+
 end

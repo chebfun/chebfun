@@ -50,45 +50,33 @@ classdef unbndfun < classicfun
     %% CLASS CONSTRUCTOR:   
     methods
         
-        function obj = unbndfun(op, domain, vscale, hscale, pref)
+        function obj = unbndfun(op, data, pref)
             
             % Construct an empty unbndfun
             if ( (nargin == 0) || isempty(op) )
                 return
             end
 
-            % Obtain preferences if none given:
-            if ( (nargin < 5) || isempty(pref))
+            % Parse inputs.
+            if ( (nargin < 2) || isempty(data) )
+                    data = struct();
+            end
+
+            if ( (nargin < 3) || isempty(pref) )
                 pref = chebfunpref();
             else
                 pref = chebfunpref(pref);
             end
-            
-            % Use default domain if none given:
-            if ( (nargin < 2) || isempty(domain) )
-                domain = pref.unbndfun.domain;
-            end
-            
+
+            [domain, hscale, exponents, singType] = parseDataInputs(data, pref);
+
             % Check domain
-            if ( (nargin < 2) || isempty(domain) )
-                domain = pref.unbndfun.domain;
-            elseif ( ~any(isinf(domain)) )
+            if ( ~any(isinf(domain)) )
                 error('CHEBFUN:UNBNDFUN:BoundedDomain',...
                     'Domain argument should be unbounded.');
             elseif ( ~all(size(domain) == [1, 2]) )
                 error('CHEBFUN:UNBNDFUN:domain',...
                     'Domain argument should be a row vector with two entries.');
-            end
-            
-            % Define scales if none given.
-            if ( (nargin < 3) || isempty(vscale) )
-                vscale = 0;
-            end
-            
-            if ( (nargin < 4) || isempty(hscale) )
-                % The hscale of an unbounded domain is always 1.
-                % [TODO]: Why?
-                hscale = 1;
             end
 
             unbndmap = unbndfun.createMap(domain);
@@ -106,7 +94,7 @@ classdef unbndfun < classicfun
             end
             
             % Try to determine if the function is singular:
-            if ( isempty(pref.singPrefs.exponents) )
+            if ( isempty(exponents) )
                 
                 % Test if the function has infinite values at the far field. If
                 % so turn the default 'blowup' mode by assuming the
@@ -114,8 +102,9 @@ classdef unbndfun < classicfun
                 lVal = feval(op, -1);
                 rVal = feval(op, 1);
                 if ( any(isinf([lVal rVal])) )
+                    pref.enableSingularityDetection = true;
                     singType = pref.singPrefs.defaultSingType;
-                    pref.singPrefs.singType = {singType, singType};
+                    data.singType = {singType, singType};
                 end
             
             else
@@ -126,12 +115,13 @@ classdef unbndfun < classicfun
                 % the original operator/function handle is mapped to [-1 1]
                 % using the forward map, i.e., UNBNDMAP.FOR().
                 ind = isinf(domain);
-                pref.singPrefs.exponents(ind) = -pref.singPrefs.exponents(ind);
+                pref.enableSingularityDetection = true;
+                data.exponents(ind) = -data.exponents(ind);
 
             end
             
             % Call the ONEFUN constructor:
-            obj.onefun = onefun.constructor(op, vscale, hscale, pref);
+            obj.onefun = onefun.constructor(op, data, pref);
             
             % Add the domain and mapping:
             obj.domain = domain;
@@ -209,4 +199,24 @@ classdef unbndfun < classicfun
         % Definite integral of an UNBNDFUN on the its domain.
         out = sum(f, dim)
     end    
+end
+
+function [domain, hscale, exponents, singType] = parseDataInputs(data, pref)
+
+domain = getDataInput(data, 'domain',  pref.domain);
+% TODO:  Why is the hscale of an unbounded domain always 1?
+hscale = getDataInput(data, 'hscale', 1);
+exponents = getDataInput(data, 'exponents', []);
+singType = getDataInput(data, 'singType', []);
+
+end
+
+function val = getDataInput(data, field, defaultVal)
+
+if ( isfield(data, field) && ~isempty(data.(field)) )
+    val = data.(field);
+else
+    val = defaultVal;
+end
+
 end

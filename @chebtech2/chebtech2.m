@@ -62,30 +62,26 @@ classdef chebtech2 < chebtech
     %% METHODS IMPLEMENTED BY THIS M-FILE:
     methods
         
-        function obj = chebtech2(op, vscale, hscale, pref)
+        function obj = chebtech2(op, data, pref)
             %Constructor for the CHEBTECH2 class.
             
             % Return an empty CHEBTECH2 on null input:
             if ( (nargin == 0) || isempty(op) )
                 return
             end
-            
-            % Define vscale if none given:
-            if ( (nargin < 2) || isempty(vscale) )
-                vscale = 0;
+
+            % Parse inputs.
+            if ( (nargin < 2) || isempty(data) )
+                    data = struct();
             end
 
-            % Define hscale if none given:
-            if ( (nargin < 3) || isempty(hscale) )
-                hscale = 1;
-            end
-
-            % Determine preferences if not given, merge if some are given:
-            if ( (nargin < 4) || isempty(pref) )
+            if ( (nargin < 3) || isempty(pref) )
                 pref = chebtech.techPref();
             else
                 pref = chebtech.techPref(pref);
             end
+
+            [vscale, hscale] = parseDataInputs(data, pref);
 
             % Force nonadaptive construction if PREF.NUMPOINTS is numeric:
             if ( ~isempty(pref.numPoints) && ~isnan(pref.numPoints) )
@@ -166,4 +162,21 @@ classdef chebtech2 < chebtech
         
     end
     
+end
+
+function [vscale, hscale] = parseDataInputs(data, pref)
+
+vscale = getDataInput(data, 'vscale', 0);
+hscale = getDataInput(data, 'hscale', 1);
+
+end
+
+function val = getDataInput(data, field, defaultVal)
+
+if ( isfield(data, field) && ~isempty(data.(field)) )
+    val = data.(field);
+else
+    val = defaultVal;
+end
+
 end

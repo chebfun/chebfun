@@ -60,7 +60,7 @@ if ( ~issing(g) )
     
     % Construct the ONEFUN presentation of the derivative of the forward map.
     pref.singPrefs.exponents = g.mapping.forDerExps;
-    forDer = onefun.constructor(@(x) g.mapping.forDer(x), [], [], pref);
+    forDer = onefun.constructor(@(x) g.mapping.forDer(x), [], pref);
     
     % Peel off the boundary roots to cancel the negative exponents of forDer:
     h = extractBoundaryRoots(g.onefun, -g.mapping.forDerExps.');
@@ -75,7 +75,7 @@ elseif ( issing(g) ) % Cases for ONEFUN has singularities at the end points.
     
     % Construct the ONEFUN presentation of the derivative of the forward map.
     pref.singPrefs.exponents = g.mapping.forDerExps;
-    forDer = onefun.constructor(@(x) g.mapping.forDer(x), [], [], pref);
+    forDer = onefun.constructor(@(x) g.mapping.forDer(x), [], pref);
     
     % Form the new integrand:
     integrand = g.onefun.*forDer;

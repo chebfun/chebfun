@@ -27,7 +27,7 @@ newExps(ind) = exps(ind) - floor(exps(ind));
 pow = exps - newExps;
 
 % Compute the factor from function roots: 
-mult = singfun.constructSmoothPart(@(x) (x+1).^pow(1).*(1-x).^pow(2), [], [], []);
+mult = singfun.constructSmoothPart(@(x) (x+1).^pow(1).*(1-x).^pow(2), [], []);
 f.smoothPart = f.smoothPart.*mult;
 
 % Update the exponents:

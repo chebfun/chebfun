@@ -73,48 +73,39 @@ classdef classicfun < fun % (Abstract)
     
     %% CLASS CONSTRUCTOR:
     methods (Static = true)
-        function obj = constructor(op, domain, vscale, hscale, pref)
+        function obj = constructor(op, data, pref)
             
             % We can't return an empty CLASSICFUN, so pass an empty OP down.
             if ( nargin == 0  )
                 op = [];
             end
-            
-            % Obtain preferences if none given:
-            if ( nargin < 5 )
+
+            % Parse inputs.
+            if ( (nargin < 2) || isempty(data) )
+                    data = struct();
+            end
+
+            if ( (nargin < 3) || isempty(pref) )
                 pref = chebfunpref();
             else
                 pref = chebfunpref(pref);
             end
-            
-            % Get domain if none given:
-            if ( nargin < 2 || isempty(domain) )
-                domain = pref.domain;
-            end
-            
-            % Get vscale if none given:
-            if ( nargin < 3 || isstruct(vscale) )
-                vscale = 0;
-            end
-            
-            % Get hscale if none given:
-            if ( nargin < 4 || isempty(vscale) )
-                hscale = norm(domain, inf);
-            end
+
+            [domain, hscale] = parseDataInputs(data, pref);
 
             % [TODO]: Explain this. Only becomes relevant with UNBNDFUN
             if ( isinf(hscale) )
-                hscale = 1;
+                data.hscale = 1;
             end
 
             % Call constructor depending on domain:
             if ( ~any(isinf(domain)) )
                 % Construct a BNDFUN object:
-                obj = bndfun(op, domain, vscale, hscale, pref);
+                obj = bndfun(op, data, pref);
                 
             else
                 % Construct an UNBNDFUN object:
-                obj = unbndfun(op, domain, vscale, hscale, pref);
+                obj = unbndfun(op, data, pref);
                 
             end
             
@@ -292,4 +283,21 @@ classdef classicfun < fun % (Abstract)
         f = uplus(f)
 
     end
+end
+
+function [domain, hscale] = parseDataInputs(data, pref)
+
+domain = getDataInput(data, 'domain',  pref.domain);
+hscale = getDataInput(data, 'hscale',  norm(domain, inf));
+
+end
+
+function val = getDataInput(data, field, defaultVal)
+
+if ( isfield(data, field) && ~isempty(data.(field)) )
+    val = data.(field);
+else
+    val = defaultVal;
+end
+
 end

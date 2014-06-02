@@ -7,12 +7,15 @@ if ( nargin < 1 )
     pref = chebfunpref();
 end
 
+singPref = pref;
+singPref.enableSingularityDetection = true;
+
 % Set a domain for BNDFUN.
-dom = [-2 7];
+data.domain = [-2 7];
 
 % Generate a few random points to use as test values.
 seedRNG(6178);
-x = diff(dom) * rand(100, 1) + dom(1);
+x = diff(data.domain) * rand(100, 1) + data.domain(1);
 
 % A random number to use as an arbitrary additive constant.
 alpha = -0.194758928283640 + 0.075474485412665i;
@@ -20,54 +23,54 @@ alpha = -0.194758928283640 + 0.075474485412665i;
 %%
 % Check operation in the face of empty arguments.
 f = bndfun();
-g = bndfun(@(x) x, dom, [], [], pref);
+g = bndfun(@(x) x, data, pref);
 pass(1) = (isempty(f + f) && isempty(f + g) && isempty(g + f));
 
 %% 
 % Check addition with scalars.
 f_op = @(x) sin(x);
-f = bndfun(f_op, dom, [], [], pref);
+f = bndfun(f_op, data, pref);
 pass(2:3) = test_add_function_to_scalar(f, f_op, alpha, x);
 
 %% 
 % Check addition of two BNDFUN objects.
 f_op = @(x) zeros(size(x));
-f = bndfun(f_op, dom, [], [], pref);
+f = bndfun(f_op, data, pref);
 pass(4:5) = test_add_function_to_function(f, f_op, f, f_op, x);
 
 f_op = @(x) exp(x) - 1;
-f = bndfun(f_op, dom, [], [], pref);
+f = bndfun(f_op, data, pref);
 
 g_op = @(x) 1./(1 + x.^2);
-g = bndfun(g_op, dom, [], [], pref);
+g = bndfun(g_op, data, pref);
 pass(6:7) = test_add_function_to_function(f, f_op, g, g_op, x);
 
 g_op = @(x) cos(1e4*x);
-g = bndfun(g_op, dom, [], [], pref);
+g = bndfun(g_op, data, pref);
 pass(8:9) = test_add_function_to_function(f, f_op, g, g_op, x);
 
 g_op = @(t) sinh(t*exp(2*pi*1i/6));
-g = bndfun(g_op, dom, [], [], pref);
+g = bndfun(g_op, data, pref);
 pass(10:11) = test_add_function_to_function(f, f_op, g, g_op, x);
 
 %% 
 % Check operation for array-valued BNDFUN objects.
 f_op = @(x) [zeros(size(x)) zeros(size(x)) zeros(size(x))];
-f = bndfun(f_op, dom, [], [], pref);
+f = bndfun(f_op, data, pref);
 pass(12:13) = test_add_function_to_function(f, f_op, f, f_op, x);
 
 f_op = @(x) [sin(x) cos(x) exp(x)];
-f = bndfun(f_op, dom, [], [], pref);
+f = bndfun(f_op, data, pref);
 pass(14:15) = test_add_function_to_scalar(f, f_op, alpha, x);
 
 g_op = @(x) [cosh(x) airy(1i*x) sinh(x)];
-g = bndfun(g_op, dom, [], [], pref);
+g = bndfun(g_op, data, pref);
 pass(16:17) = test_add_function_to_function(f, f_op, g, g_op, x);
 
 %% 
 % This should fail with a dimension mismatch error.
 g_op = @(x) sin(x);
-g = bndfun(g_op, dom, [], [], pref);
+g = bndfun(g_op, data, pref);
 try
     h = f + g; %#ok<NASGU>
     pass(18) = false;
@@ -78,17 +81,17 @@ end
 %% 
 % Check that direct construction and PLUS give comparable results.
 tol = 10*eps;
-f = bndfun(@(x) x, dom, [], [], pref);
-g = bndfun(@(x) cos(x) - 1, dom, [], [], pref);
+f = bndfun(@(x) x, data, pref);
+g = bndfun(@(x) cos(x) - 1, data, pref);
 h1 = f + g;
-h2 = bndfun(@(x) x + cos(x) - 1, dom, [], [], pref);
+h2 = bndfun(@(x) x + cos(x) - 1, data, pref);
 pass(19) = norm(feval(h1, x) - feval(h2, x), inf) < 2*tol;
 
 %% 
 % Check that adding a BNDFUN to an unhappy BNDFUN gives an unhappy
 % result.
-f = bndfun(@(x) cos(x + 1), dom);    % Happy
-g = bndfun(@(x) sqrt(x + 1), dom);   % Unhappy
+f = bndfun(@(x) cos(x + 1), data);    % Happy
+g = bndfun(@(x) sqrt(x + 1), data);   % Unhappy
 h = f + g;  % Add unhappy to happy.
 pass(20) = (~get(g, 'ishappy')) && (~get(h, 'ishappy'));
 h = g + f;  % Add happy to unhappy.
@@ -97,14 +100,15 @@ pass(21) = (~get(g, 'ishappy')) && (~get(h, 'ishappy'));
 %% 
 % Test on singular BNDFUN.
 pow = -1;
-op1 = @(x) (x - dom(2)).^pow.*sin(x);
-op2 = @(x) (x - dom(2)).^pow.*cos(3*x);
-pref.singPrefs.exponents = [0 pow];
-f = bndfun(op1, dom, [], [], pref);
-g = bndfun(op2, dom, [], [], pref);
+op1 = @(x) (x - data.domain(2)).^pow.*sin(x);
+op2 = @(x) (x - data.domain(2)).^pow.*cos(3*x);
+singData = data;
+singData.exponents = [0 pow];
+f = bndfun(op1, singData, singPref);
+g = bndfun(op2, singData, singPref);
 h = f + g;
 vals_h = feval(h, x);
-op = @(x)  (x - dom(2)).^pow.*(sin(x)+cos(3*x));
+op = @(x)  (x - data.domain(2)).^pow.*(sin(x)+cos(3*x));
 h_exact = op(x);
 pass(22) = ( norm(vals_h-h_exact, inf) < 1e1*max(get(f, 'epslevel'), ...
     get(g, 'epslevel'))*norm(h_exact, inf) );
@@ -114,7 +118,7 @@ pass(22) = ( norm(vals_h-h_exact, inf) < 1e1*max(get(f, 'epslevel'), ...
 % Functions on [-inf inf]:
 
 % Set the domain:
-dom = [-Inf Inf];
+data.domain = [-Inf Inf];
 domCheck = [-1e2 1e2];
 
 % Generate a few random points to use as test values:
@@ -123,8 +127,8 @@ x = diff(domCheck) * rand(100, 1) + domCheck(1);
 opf = @(x) exp(-x.^2);
 opg = @(x) x.^2.*exp(-x.^2);
 oph = @(x) exp(-x.^2) + x.^2.*exp(-x.^2);
-f = unbndfun(opf, dom);
-g = unbndfun(opg, dom);
+f = unbndfun(opf, data);
+g = unbndfun(opg, data);
 h = f + g;
 hVals = feval(h, x);
 hExact = oph(x);

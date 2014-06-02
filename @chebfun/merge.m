@@ -168,8 +168,10 @@ for k = index
     end
     
     % Attempt to form a merged FUN:
-    mergedFun = fun.constructor(@(x) feval(g, x),  ...
-        [newDom(j-1), newDom(j+1)], vs, hs, pref);
+    data.domain = [newDom(j-1), newDom(j+1)];
+    data.vscale = vs;
+    data.hscale = hs;
+    mergedFun = fun.constructor(@(x) feval(g, x), data, pref);
 
     % Prevent merge if the result is not happy:
     if ( ~get(mergedFun, 'ishappy') )

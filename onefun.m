@@ -36,28 +36,24 @@ classdef onefun % (Abstract)
 % See http://www.chebfun.org/ for Chebfun information.
 
     methods (Static)
-        function obj = constructor(op, vscale, hscale, pref)
+        function obj = constructor(op, data, pref)
             
             % We can't return an empty ONEFUN, so pass an empty OP down.
             if ( nargin == 0 )
                 op = [];
             end
-            
-            % Define vscale if none given:
-            if ( nargin < 2 || isempty(vscale) )
-                vscale = 0;
+
+            % Parse inputs.
+            if ( (nargin < 2) || isempty(data) )
+                    data = struct();
             end
-            % Define hscale if none given:
-            if ( nargin < 3 || isempty(hscale) )
-                hscale = 1;
-            end
-            % Determine preferences if not given, merge if some are given:
-            if ( nargin < 4 || isempty(pref) )
+
+            if ( (nargin < 3) || isempty(pref) )
                 pref = chebfunpref();
             else
                 pref = chebfunpref(pref);
             end
-       
+
             % Call the relevent constructor:
             if ( isa(op, 'onefun') )
                 % OP is already a ONEFUN!
@@ -70,7 +66,7 @@ classdef onefun % (Abstract)
                 % BLOWUP mode; call SINGFUN constructor:
                 singType = pref.singPrefs.singType;
                 exponents = pref.singPrefs.exponents;
-                obj = singfun(op, exponents, singType, vscale, hscale, pref);
+                obj = singfun(op, data, pref);
 
                 % Return just a SMOOTHFUN if no singularities found:
                 if ( issmooth(obj) )
@@ -79,7 +75,7 @@ classdef onefun % (Abstract)
                 
             else
                 % STANDARD mode; call SMOOTHFUN constructor:
-                obj = smoothfun.constructor(op, vscale, hscale, pref);
+                obj = smoothfun.constructor(op, data, pref);
 
             end
         
@@ -229,19 +225,4 @@ classdef onefun % (Abstract)
 
     end
 
-    %% ABSTRACT STATIC METHODS REQUIRED BY ONEFUN CLASS.
-    methods ( Abstract = true, Static = true )
-
-    end
-    
-    %% Methods implemented by ONEFUN class.
-    methods 
-        
-    end
-    
-    %% Static methods implemented by ONEFUN class.
-    methods ( Static = true ) 
-        
-    end
-    
 end

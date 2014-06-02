@@ -144,7 +144,9 @@ else
                     deltaMag(:, lastIdx) = deltaMag(:, lastIdx)/2;
                 end
                 mk = deltaMag(:, idx);               
-                g{k} = deltafun(fk, mk, lk);
+                data.deltaMag = mk;
+                data.deltaLoc = lk;
+                g{k} = deltafun(fk, data);
             else
                 g{k} = fk;
             end

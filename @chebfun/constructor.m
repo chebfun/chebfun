@@ -295,8 +295,29 @@ if ( diff(domain) < 4*1e-14*hscale && ~isnumeric(op) )
     op = op(mean(domain));
 end
 
+% Assemble data for the lower layers into a structure.
+data.domain = domain;
+data.vscale = vscale;
+data.hscale = hscale;
+
+if ( isfield(pref.singPrefs, 'exponents') )
+    data.exponents = pref.singPrefs.exponents;
+end
+
+if ( isfield(pref.singPrefs, 'singType') )
+    data.singType = pref.singPrefs.singType;
+end
+
+if ( isfield(pref.deltaPrefs, 'deltaMag') )
+    data.deltaMag = pref.deltaPrefs.deltaMag;
+end
+
+if ( isfield(pref.deltaPrefs, 'deltaLoc') )
+    data.deltaLoc = pref.deltaPrefs.deltaLoc;
+end
+
 % Call the FUN constructor:
-g = fun.constructor(op, domain, vscale, hscale, pref);
+g = fun.constructor(op, data, pref);
 % See if the construction was happy:
 ishappy = get(g, 'ishappy');
 % Update the vertical scale:

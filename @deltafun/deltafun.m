@@ -54,38 +54,39 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
     
     %% DELTAFUN CLASS CONSTRUCTOR:
     methods ( Static = true )
-        function obj = deltafun(op, deltaMag, deltaLoc, varargin)
-            
-            isPref = find(cellfun(@(p) isa(p, 'chebfunpref'), varargin));
-            if ( any(isPref) )
-                % Merge if some preferences are given.
-                pref = chebfunpref(varargin{isPref(1)});
-            else
-                % Obtain preferences if none given:
-                pref = chebfunpref();
-            end
-
-            % Case 0: No input arguments, return an empty object.
+        function obj = deltafun(op, data, pref)
+            % No input arguments; return an empty DELTAFUN.
             if ( nargin == 0 )
+                obj.funPart = [];
+                obj.deltaMag = [];
+                obj.deltaLoc = [];
                 return
             end
-            
-            % Case 1: We at least have an OP:
+
+            % Parse inputs.
+            if ( (nargin < 2) || isempty(data) )
+                    data = struct();
+            end
+
+            if ( (nargin < 3) || isempty(pref) )
+                pref = chebfunpref();
+            else
+                pref = chebfunpref(pref);
+            end
+
+            [deltaMag, deltaLoc] = parseDataInputs(data, pref);
+
+            % Given a DELTAFUN, return it; otherwise construct the funPart.
             if ( isa(op, 'deltafun') )
                 obj = op;
                 return
             elseif ( ~isa(op, 'classicfun') )
-                op = classicfun.constructor(op, varargin);
+                op = classicfun.constructor(op, data, pref);
             end
             obj.funPart = op;
             
             if ( nargin == 1 )
                 return
-            end
-            
-            % Case 2: Two input arguments -  This is not allowed!
-            if ( nargin == 2 )
-                error( 'DELTAFUN:ctor', 'Not enough input arguments.' );
             end
             
             % Case 3: Three or more input arguments:        
@@ -307,4 +308,21 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         
     end
     
+end
+
+function [deltaMag, deltaLoc] = parseDataInputs(data, pref)
+
+deltaMag = getDataInput(data, 'deltaMag',  []);
+deltaLoc = getDataInput(data, 'deltaLoc', []);
+
+end
+
+function val = getDataInput(data, field, defaultVal)
+
+if ( isfield(data, field) && ~isempty(data.(field)) )
+    val = data.(field);
+else
+    val = defaultVal;
+end
+
 end

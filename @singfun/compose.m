@@ -57,7 +57,7 @@ else % OP(F, G)
 end
 
 % Call SINGFUN constructor:
-f = singfun(op, [], [], [], [], pref);
+f = singfun(op, [], pref);
 
 % Simplify:
 f = simplify(f);

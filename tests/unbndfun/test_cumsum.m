@@ -2,9 +2,12 @@
 
 function pass = test_cumsum(pref)
 
-if ( nargin == 1 )
+if ( nargin < 1 )
     pref = chebfunpref();
 end
+
+singPref = pref;
+singPref.enableSingularityDetection = true;
 
 % Seed for random number:
 seedRNG(6178);
@@ -19,7 +22,7 @@ domCheck = [-1e2 1e2];
 x = diff(domCheck) * rand(100, 1) + domCheck(1);
 
 op = @(x) exp(-x.^2);
-f = unbndfun(op, dom);
+f = unbndfun(op, struct('domain', dom));
 g = cumsum(f);
 
 gVals = feval(g, x);
@@ -53,7 +56,7 @@ domCheck = [1 1e2];
 x = diff(domCheck) * rand(100, 1) + domCheck(1);
 
 op = @(x) x.*exp(-x);
-f = unbndfun(op, dom);
+f = unbndfun(op, struct('domain', dom));
 g = cumsum(f);
 gVals = feval(g, x);
 
@@ -64,8 +67,7 @@ pass(3) = norm(err, inf) < 1e6*get(g,'epslevel').*get(g,'vscale');
 
 % Blow-up function:
 op = @(x) 5*x;
-pref.singPrefs.exponents = [0 1];
-f = unbndfun(op, dom, [], [], pref);
+f = unbndfun(op, struct('domain', dom, 'exponents', [0 1]), singPref);
 g = cumsum(f);
 gVals = feval(g, x);
 
@@ -84,7 +86,7 @@ domCheck = [-1e6 -3*pi];
 x = diff(domCheck) * rand(100, 1) + domCheck(1);
 
 op = @(x) exp(x);
-f = unbndfun(op, dom);
+f = unbndfun(op, struct('domain', dom));
 g = cumsum(f);
 gVals = feval(g, x);
 
@@ -96,7 +98,7 @@ pass(5) = err < tol;
 
 %% Array-valued function:
 op = @(x) [exp(x) x.*exp(x)];
-f = unbndfun(op, dom);
+f = unbndfun(op, struct('domain', dom));
 g = cumsum(f);
 gVals = feval(g, x);
 

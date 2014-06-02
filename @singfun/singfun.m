@@ -89,26 +89,33 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
     
     %% CLASS CONSTRUCTOR (IMPLEMENTED BY THIS M-FILE):
     methods
-        function obj = singfun(op, exponents, singType, vscale, hscale, pref)   
-            
-            %% Get Preferences
-            % Check for preferences in the very beginning.
-            if ( (nargin < 6) || isempty(pref) )
-                % Determine preferences if not given.
-                pref = chebfunpref();
-            else
-                % Merge if some preferences are given.
-                pref = chebfunpref(pref);
-            end           
-            
-            %% Cases based on the number of arguments
-            % Case 0: No input arguments, return an empty object.
+        function obj = singfun(op, data, pref)
+            % No input arguments; return an empty SINGFUN.
             if ( nargin == 0 )
                 obj.smoothPart = [];
                 obj.exponents = [];
                 return
             end
-            
+
+            % Parse inputs.
+            if ( (nargin < 2) || isempty(data) )
+                    data = struct();
+            end
+
+            if ( (nargin < 3) || isempty(pref) )
+                pref = chebfunpref();
+            else
+                pref = chebfunpref(pref);
+            end
+
+            [exponents, singType] = parseDataInputs(data, pref);
+
+            % Store the EXPONENTS, if supplied.
+            if ( ~isempty(exponents) )
+                obj.exponents = exponents;
+            end
+
+            %% Cases based on the number of arguments
             % Case 1: One input argument.
             if ( nargin == 1 )
                 if ( isa(op, 'singfun') )
@@ -119,28 +126,12 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
                     obj.smoothPart = op;
                     obj.exponents = [0, 0];
                     return
-                else
-                    % Set EXPONENTS and SINGTYPE empty.
-                    exponents = [];
-                    singType = [];
                 end
             end
             
-            % Case 2: Two input arguments.
-            if ( (nargin == 2) || ~isempty(exponents) )
-                % EXPONENTS passed, store them.
-                obj.exponents = exponents;
-                
-                % Set SINGTYPE empty:
-                singType = [];
-            end
-                        
-            % Case 3: Three or more input arguments.
-            
             % If EXPONENTS is empty or any entry of EXPONENTS is NaN, we need to
             % determine them.
-            
-            if ( ( isempty(exponents) ) || ( any(isnan(exponents)) ) )
+            if ( isempty(exponents) || any(isnan(exponents)) )
                 
                 if ( ~isempty(singType) )
                     % If SINGTYPE is given directly as argument, check them.
@@ -194,18 +185,6 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
                     'SINGFUN class does not support array-valued objects.' );
             end
             
-            % Handle cases for vscale and hscale.
-            if ( nargin <= 3 )
-                % If both are not passed as argument, set them to empty.
-                vscale = [];
-                hscale = [];
-            end
-            
-            if ( nargin == 4 )
-                % vscale passed, but hscale missing, set it to empty:
-                hscale = [];
-            end       
-
             % We extrapolate when the given function blows up:
             if ( any(obj.exponents < 0) )
                 pref.techPrefs.extrapolate = true;
@@ -221,8 +200,8 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
                 smoothOp = singOp2SmoothOp(op, obj.exponents);
                 
                 % Construct the smooth part.
-                obj.smoothPart = singfun.constructSmoothPart(smoothOp, ...
-                    vscale, hscale, pref);
+                obj.smoothPart = singfun.constructSmoothPart(smoothOp, data, ...
+                    pref);
             end
 
         end
@@ -488,6 +467,23 @@ elseif ( exponents(2) )
     % (1-x) factor at the right end point:
     op = @(x) op(x)./(1 - x).^(exponents(2));
     
+end
+
+end
+
+function [exponents, singType] = parseDataInputs(data, pref)
+
+exponents = getDataInput(data, 'exponents',  []);
+singType = getDataInput(data, 'singType', []);
+
+end
+
+function val = getDataInput(data, field, defaultVal)
+
+if ( isfield(data, field) && ~isempty(data.(field)) )
+    val = data.(field);
+else
+    val = defaultVal;
 end
 
 end

@@ -15,8 +15,8 @@ f = fun.constructor(@(x) exp(x));
 mag = rand(5,5);
 loc = rand(1,5);
 
-d1 = deltafun(f, mag, loc);
-d2 = deltafun(f, mag, loc);
+d1 = deltafun(f, struct('deltaMag', mag, 'deltaLoc', loc));
+d2 = deltafun(f, struct('deltaMag', mag, 'deltaLoc', loc));
 
 pass(2) = isequal(d1, d2);
 
@@ -31,12 +31,12 @@ d1.deltaLoc = d1.deltaLoc(1:end-1);
 pass(5) = ~isequal(d1, d2);
 
 f = bndfun(@sin);
-d1 = deltafun( f, 1, 0);
-d2 = deltafun( f, [1; 0], 0 );
+d1 = deltafun(f, struct('deltaMag', 1, 'deltaLoc', 0));
+d2 = deltafun(f, struct('deltaMag', [1; 0], 'deltaLoc', 0));
 pass(6) = isequal(d1, d2);
 
-d1 = deltafun(f, [], [] );
-d2 = deltafun(bndfun([]), [], []);
+d1 = deltafun(f, []);
+d2 = deltafun(bndfun([]), []);
 
 pass(7) = ~isequal(d1, d2);
 

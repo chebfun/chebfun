@@ -194,7 +194,7 @@ x = diff(domCheck) * rand(100, 1) + domCheck(1);
 % Blow-up function:
 op = @(x) 5*x;
 pref.singPrefs.exponents = [0 1];
-f = unbndfun(op, dom, [], [], pref);
+f = chebfun(op, dom, pref);
 g = cumsum(f);
 gVals = feval(g, x);
 

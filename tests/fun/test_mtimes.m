@@ -8,24 +8,24 @@ if ( nargin < 1 )
 end
 
 % Set a domain for BNDFUN.
-dom = [-2 7];
+data.domain = [-2 7];
 
 % Generate a few random points to use as test values.
 seedRNG(6178);
-x = diff(dom) * rand(1000, 1) + dom(1);
+x = diff(data.domain) * rand(1000, 1) + data.domain(1);
 
 % A random number to use as an arbitrary scalar multiplier.
 alpha = randn() + 1i*randn();
 
 %%
 % Check operation in the face of empty BNDFUN.
-f = bndfun(@(x) sin(x), dom, [], [], pref);
+f = bndfun(@(x) sin(x), data, pref);
 g = bndfun();
 pass(1) = isempty(f*[]) && isempty([]*f) && isempty(2*g) && isempty(g*2);
     
 %%
 % Check operation for scalar BNDFUN objects.    
-f = bndfun(@(x) sin(x), dom, [], [], pref);
+f = bndfun(@(x) sin(x), data, pref);
 g1 = alpha*f;
 g2 = f*alpha;
 pass(2) = isequal(g1, g2);
@@ -38,7 +38,7 @@ pass(4) = all(feval(g, x) == 0);
     
 %%
 % Check operation for array-valued BNDFUN objects.
-f = bndfun(@(x) [sin(x) cos(x) exp(x)], dom, [], [], pref);
+f = bndfun(@(x) [sin(x) cos(x) exp(x)], data, pref);
 g1 = alpha*f;
 g2 = f*alpha;
 pass(5) = isequal(g1, g2);
@@ -60,7 +60,7 @@ pass(8) = max(err(:)) < 2*max(get(g, 'vscale').*get(g, 'epslevel'));
 
 % Multiply non-scalar double and fun.
 try
-    f = bndfun(@(x) exp(x), dom);
+    f = bndfun(@(x) exp(x), data);
     disp([1 2 3]*f)
 catch ME
     pass(9) = strcmp(ME.identifier, 'CHEBFUN:CLASSICFUN:mtimes:size') ...
@@ -69,7 +69,7 @@ end
     
 % Multiply fun and non-scalar double with mismatching dimensions.
 try
-    f = bndfun(@(x) [sin(x) cos(x)], dom);        
+    f = bndfun(@(x) [sin(x) cos(x)], data);
     disp(f*[1 ; 2 ; 3]);
     pass(10) = false;
 catch ME
@@ -79,7 +79,7 @@ end
     
 % Using * for multiplication of two fun objects.
 try
-    g = bndfun(@(x) x, dom);
+    g = bndfun(@(x) x, data);
     disp(f*g);
     pass(11) = false;
 catch ME
@@ -100,7 +100,7 @@ end
 % Functions on [-inf b]:
 
 % Set the domain:
-dom = [-Inf -3*pi];
+data.domain = [-Inf -3*pi];
 domCheck = [-1e6 -3*pi];
 
 % Generate a few random points to use as test values:
@@ -108,7 +108,7 @@ x = diff(domCheck) * rand(100, 1) + domCheck(1);
 
 % Array-valued function:
 op = @(x) [exp(x) x.*exp(x) (1-exp(x))./x];
-f = unbndfun(op, dom);
+f = unbndfun(op, data);
 g = f*A;
 gVals = feval(g, x);
 
