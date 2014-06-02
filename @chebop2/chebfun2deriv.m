@@ -5,6 +5,9 @@ function deriv = chebfun2deriv( op )
 % This allows us to pull out the coefficients to a partial differential
 % operator. 
 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 % For now, only work with linear operators. Hence, we can take any function on
 % [-1,1] to evaluate the function handle to get the derivative information
 

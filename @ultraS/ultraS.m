@@ -63,7 +63,7 @@ classdef ultraS < chebDiscretization
 
     end
         
-    methods ( Access = private, Static = true)
+    methods ( Access = public, Static = true)
         
         % Conversion matrix used in the ultraspherical spectral method.
         S = convertmat(n, K1, K2)
