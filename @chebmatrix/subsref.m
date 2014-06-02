@@ -17,7 +17,7 @@ sr1 = sr(1);
 switch ( sr1.type )
     
     case '()'
-        varargout{1} = chebmatrix( subsref(A.blocks, sr1) );
+        varargout{1} = chebmatrix(subsref(A.blocks, sr1));
         
     case '{}'
         [varargout{1:nargout}] = subsref(A.blocks, sr1);

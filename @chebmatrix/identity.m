@@ -14,7 +14,7 @@ if ( size(A, 1) ~= size(A, 2) )
     error('Chebmatrix must be square.')
 end
 
-% Start with a chebmatrix of correct dimensions
+% Start with a chebmatrix of correct dimensions.
 I = chebmatrix(A.blocks);
 isFun = isFunVariable(A);
 n = size(A, 1);
@@ -33,18 +33,18 @@ for i = 1:n
     for j = [1:i-1 i+1:n]
         if ( isFun(i) )
             if ( isFun(j) )
-                % fun -> fun
+                % Fun -> fun.
                 I.blocks{i,j} = operatorBlock.zeros(d);
             else
-                % scalar -> fun
+                % Scalar -> fun.
                 I.blocks{i,j} = chebfun(0, d);
             end
         else
             if ( isFun(j) )
-                % fun -> scalar
+                % Fun -> scalar.
                 I.blocks{i,j} = functionalBlock.zero(d);
             else
-                % scalar -> scalar
+                % Scalar -> scalar.
                 I.blocks{i,j} = 0;
             end
         end

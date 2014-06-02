@@ -1,5 +1,5 @@
 function B = mpower(A, pow)
-%^    Repeated composition of a CHEBMATRIX.
+%^   Repeated composition of a CHEBMATRIX.
 %
 % See also MTIMES.
 

@@ -11,7 +11,7 @@ function isz = iszero(f)
 fBlocks = f.blocks;
 isz = zeros(size(fBlocks));
 
-% Loop through all elements
+% Loop through all elements.
 for j = 1:numel(fBlocks);
     if ( isa(fBlocks{j}, 'linBlock') )
         isz(j) = fBlocks{j}.iszero;

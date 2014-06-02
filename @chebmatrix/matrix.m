@@ -1,5 +1,5 @@
 function varargout = matrix(A, varargin)
-%MATRIX  Discretize a CHEBMATRIX as an ordinary matrix.
+%MATRIX   Discretize a CHEBMATRIX as an ordinary matrix.
 %   M = MATRIX(A, DIM) discretizes each block in the chebmatrix A using the
 %   dimension vector DIM for all functions. In case the domain of A has
 %   breakpoints, the vector DIM must specify the desired discretization
@@ -27,7 +27,7 @@ discType = [];
 numericargs = cellfun(@isnumeric, varargin);
 for k = find( ~numericargs(:)' )
     discType = varargin{k};
-    varargin(k) = [];  % delete from list
+    varargin(k) = [];  % Delete from list.
 end
 
 % Apply the default if needed.

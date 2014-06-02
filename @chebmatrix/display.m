@@ -1,5 +1,5 @@
 function display(L)
-%DISPLAY  Print summary of CHEBMATRIX contents.
+%DISPLAY   Print summary of CHEBMATRIX contents.
 %
 % See also CHEBMATRIX.SPY.
 
@@ -8,6 +8,6 @@ function display(L)
 
 [m, n] = size(L);
 fprintf('\n  %i x %i chebmatrix of block types:\n\n', m, n)
-disp( blockClasses(L) )
+disp(blockClasses(L))
 
 end

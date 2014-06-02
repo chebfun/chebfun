@@ -17,14 +17,14 @@ switch(sa(1).type)
             data = { B };
         end
 
-        A.blocks = subsasgn( A.blocks, sa, data);
+        A.blocks = subsasgn(A.blocks, sa, data);
     
-    otherwise  % dot reference (property)
+    otherwise  % Dot reference (property).
         
         if ( length(sa) > 1 )
             % Nested ref. This occurs when setting a pref, most notably.
             p = A.(sa(1).subs);
-            A.(sa(1).subs) = subsasgn( p, sa(2:end), B);
+            A.(sa(1).subs) = subsasgn(p, sa(2:end), B);
         else
             A.(sa(1).subs) = B;
         end

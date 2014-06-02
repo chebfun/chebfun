@@ -1,5 +1,5 @@
 function C = mtimes(A, B)
-%*   Composition of chebmatrices.
+%*   Composition of CHEBMATRICES.
 %
 % See also MPOWER.
 
@@ -24,7 +24,7 @@ else
     
     % Setup before we can start composition:
     [m, n] = size(A);
-    Adata = A.blocks;   % needed to avoid subsref call later
+    Adata = A.blocks;   % Needed to avoid subsref call later.
     Bdata = B.blocks;
     [nB, p] = size(B);
     if ( n ~= nB )
@@ -32,14 +32,14 @@ else
     end
     
     C = cell(m, p);    
-    % Do the composition
+    % Do the composition:
     for i = 1:m
         for j = 1:p
             % It's tricky to just start a sum with "zero", because we don't know
             % if it's added to an operator or a functional.
-            u = Adata{i, 1}*Bdata{1, j};
+            u = Adata{i,1} * Bdata{1,j};
             for k = 2:n
-                u = u + Adata{i, k}*Bdata{k, j};
+                u = u + Adata{i,k} * Bdata{k,j};
             end
             C{i, j} = u;
         end
@@ -57,9 +57,8 @@ function C = scalartimes(A, z)
 C = cell(m, n);
 for i = 1:m
     for j = 1:n
-        C{i, j} = z*A.blocks{i, j};
+        C{i,j} = z * A.blocks{i,j};
     end
 end
 C = chebmatrix(C);
 end
-

@@ -1,5 +1,5 @@
 classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebmatrix
-%CHEBMATRIX Compound matrix for operators, CHEBFUNs, and scalars.
+%CHEBMATRIX   Compound matrix for operators, CHEBFUNs, and scalars.
 %   A CHEBMATRIX contains blocks that are linear operators, functionals,
 %   CHEBFUNs, or scalars. They are used to tie together multiple functions, or
 %   functions and scalars, as unknowns in a system, and to express linear
@@ -68,12 +68,12 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
     properties
         % A cell used to store the components of a CHEBMATRIX internally.
         blocks = {}   % ( Cell Array )
-        % Domain of the CHEBMATRIX
+        % Domain of the CHEBMATRIX.
         domain = []   % ( Kx1 double )
     end
     
     properties ( Dependent )
-        % DIFFORDER is a dependent property
+        % DIFFORDER is a dependent property.
         diffOrder
     end
     
@@ -119,8 +119,8 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
     methods
             
         function A = set.domain(A, d)
-        %SET.DOMAIN   Insert breakpoints in the domain of the CHEBMATRIX:
-            % We don't allow removing breakpoints, or changing endpoints.
+        %SET.DOMAIN   Insert breakpoints in the domain of the CHEBMATRIX.
+        %   We don't allow removing breakpoints, or changing endpoints.
             A.domain = A.mergeDomains(d, A.domain);
         end
         
@@ -134,7 +134,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         %GETDIFFORDER    Differential order of each CHEBMATRIX block. 
         %   Also accessible via property: A.diffOrder;
             d = zeros(size(A));
-            % Loop through all elements
+            % Loop through all elements.
             for j = 1:numel(A.blocks);
                 if ( isa(A.blocks{j}, 'operatorBlock') )
                     d(j) = A.blocks{j}.diffOrder;
@@ -409,10 +409,11 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
     
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%% STATIC METHODS  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
     
-    methods (Static = true, Access = protected)
+    methods ( Static = true, Access = protected )
         
-        % Merges domains (union of breakpoints, while checking endpoints)
+        % Merges domains (union of breakpoints, while checking endpoints).
         d = mergeDomains(varargin)
         
     end
+    
 end

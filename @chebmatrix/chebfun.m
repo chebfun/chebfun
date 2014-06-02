@@ -1,5 +1,5 @@
 function f = chebfun(A)
-%CHEBFUN Convert a CHEBMATRIX to an array-valued CHEBFUN, if possible. 
+%CHEBFUN   Convert a CHEBMATRIX to an array-valued CHEBFUN, if possible. 
 %   F = CHEBFUN(A) converts a CHEBMATRIX A to an array-valued CHEBFUN F, if A is
 %   a row or column chebmatrix whose entries are all chebfuns or scalars.
 %
