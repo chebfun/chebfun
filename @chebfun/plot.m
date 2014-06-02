@@ -306,20 +306,22 @@ end
 if ( isempty(deltaData) )
     deltaData = {[]};
 end
+
 h4 = stem(deltaData{:}, 'd', 'fill');
 
+h4 = plot(posDeltaData{:});
+h5 = plot(negDeltaData{:});
+
+if ( isempty(deltaStyle) )
+    set(h4, deltaStyle{:});
+    set(h5, deltaStyle{:});    
+else
+    set(h4, 'LineStyle', 'none', 'Marker', '^')
+    set(h5, 'LineStyle', 'none', 'Marker', 'v')
+end
+    
+
 %% 
-% Do we want a style for delta functions?
-% if ( isempty(jumpStyle) )
-%     if ( isComplex )
-%         %[TODO]: The following statement can not be reached:
-%         set(h3, 'LineStyle', 'none', 'Marker', 'none')
-%     else
-%         set(h3, 'LineStyle', ':', 'Marker', 'none')
-%     end
-% else
-%     set(h3, jumpStyle{:});
-% end
 % Set the X-limits if appropriate values have been suggested:
 if ( all(isfinite(xLim)) )
 
