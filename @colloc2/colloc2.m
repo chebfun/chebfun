@@ -106,7 +106,7 @@ classdef colloc2 < colloc
             T = chebtech2.coeffs2vals(eye(N+1));
             
             % Matrix mapping values -> coeffs.
-            Tinv = chebtech2.vals2coeffs(eye(Ngit che+1));
+            Tinv = chebtech2.vals2coeffs(eye(N+1));
             
             % Matrix mapping coeffs -> integral coeffs. Note that the highest order
             % term is truncated.
