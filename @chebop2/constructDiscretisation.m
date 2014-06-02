@@ -1,4 +1,4 @@
-function [CC,rhs,bb,gg,Px,Py,xsplit,ysplit]=constructDiscretisation(N,f,m,n,flag)
+function [CC, rhs, bb, gg, Px, Py, xsplit, ysplit] = constructDiscretisation(N, f, m, n, flag)
 % Given a chebop2, this function converts the problem to one of the form
 %
 %  sum_i  kron(A_i,B_i)
@@ -234,15 +234,20 @@ end
 end
 
 function B = UnconstrainedMatrixEquation(ODE, jj, n, order, dom)
+% Construct the unconstrained Matix Equation. Adding in constraints later.
+
 B = spalloc(n,n,3*n);
 for kk = 1:size(ODE,1)
     if iscell(ODE(kk,jj)) && isa(ODE{kk,jj},'chebfun')
         c = ODE{kk,jj}.coeffs{:}; c = c(end:-1:1);
-        A = chebop2.spconvermat(n, kk-1, order-kk+1) * chebop2.MultMat(c, n, kk-1) * chebop2.spdiffmat(n, kk-1, dom);
+        A = chebop2.spconvermat(n, kk-1, order-kk+1) *...
+            chebop2.MultMat(c, n, kk-1) * chebop2.spdiffmat(n, kk-1, dom);
     elseif iscell(ODE(kk,jj)) && ~isempty(ODE{kk,jj})
-        A = ODE{kk,jj}.*chebop2.spconvermat(n, kk-1, order-kk+1) * chebop2.spdiffmat(n, kk-1, dom);
+        A = ODE{kk,jj}.*chebop2.spconvermat(n, kk-1, order-kk+1) *...
+            chebop2.spdiffmat(n, kk-1, dom);
     elseif isa(ODE(kk,jj),'double')
-        A = ODE(kk,jj).*chebop2.spconvermat(n, kk-1, order-kk+1) * chebop2.spdiffmat(n, kk-1, dom);
+        A = ODE(kk,jj).*chebop2.spconvermat(n, kk-1, order-kk+1) *...
+            chebop2.spdiffmat(n, kk-1, dom);
     else
         A = zeros(n);
     end
@@ -251,8 +256,11 @@ end
 end
 
 function [ B, G, P ] = canonicalBC( B, G )
+% Form a linear combintation of the bcs so that they can be used for
+% imposing on the PDE. 
+
 P = nonsingularPermute( B );
-B = B * P; %G = G * P;
+B = B * P;
 
 [L, B] = lu( B ); G = L \ G ;
 % scale so that By is unit upper triangular.
@@ -267,11 +275,14 @@ B = D * B; G = D * G;
 
 end
 
-function P = nonsingularPermute(B)
-K = size(B,1);
+function P = nonsingularPermute( B )
+% Figure the first invertible submatrix: 
 
+K = size(B,1);
 k = 1;
 
+% TODO: improve this check.
+% Try each KxK block in a linear fashion: 
 while rank(B(:,k:K+k-1)) < K
     k = k+1;
     if ( K+k > size(B,2) )
@@ -285,6 +296,7 @@ P = P(:,[k:K+k-1,1:k-1,K+k:end]);
 end
 
 function [C1, E] = ZeroDOF( C1, C2, E, B, G )
+% Eliminate so degrees of freedom in the matrix equation can be removed:
 
 for ii = 1:size(B,1)  % for each boundary condition zero a column.
     for kk = 1:size(C1,1)
