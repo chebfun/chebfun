@@ -70,6 +70,9 @@ classdef ultraS < chebDiscretization
         
         % Differentiation matrices for ultraspherical spectral method.
         D = diffmat(n, m)
+        
+        % Multiplication matrices for ultraspherical spectral method.
+        D = multmat(n, f, lambda)
 
     end
         
