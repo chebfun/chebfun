@@ -1,28 +1,22 @@
-% Test file for chebtech/fliplr.m
+% Test file for fourtech/fliplr.m
 
 function pass = test_fliplr(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = chebtech.techPref();
+    pref = fourtech.techPref();
 end
 
-for n = 1:2
-    if ( n == 1 )
-        testclass = chebtech1();
-    else 
-        testclass = chebtech2();
-    end
+testclass = fourtech();
 
-    %%
-    % Conduct a few very straightforward tests.
-    
-    f = testclass.make(@(x) sin(x), [], [], pref);
-    pass(n, 1) = isequal(f, fliplr(f));
-    
-    f = testclass.make(@(x) [sin(x) cos(x)], [], [], pref);
-    g = testclass.make(@(x) [cos(x) sin(x)], [], [], pref);
-    pass(n, 2) = isequal(fliplr(f), g);
-end
+%%
+% Conduct a few very straightforward tests.
+
+f = testclass.make(@(x) cos(pi*x), [], [], pref);
+pass(1) = isequal(f, fliplr(f));
+
+f = testclass.make(@(x) [sin(pi*x) cos(pi*x)], [], [], pref);
+g = testclass.make(@(x) [cos(pi*x) sin(pi*x)], [], [], pref);
+pass(2) = isequal(fliplr(f), g);
 
 end
