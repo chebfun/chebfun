@@ -267,7 +267,8 @@ classdef chebfun
         [op, domain, pref] = parseInputs(op, domain, varargin);
 
         % Parse inputs to PLOT. Extract 'lineWidth', etc.
-        [lineStyle, pointStyle, jumpStyle, out] = parsePlotStyle(varargin)
+        [lineStyle, pointStyle, jumpStyle, deltaStyle, out] = ...
+            parsePlotStyle(varargin)
         
         % Convert a string input to a function_handle.
         op = str2op(op);

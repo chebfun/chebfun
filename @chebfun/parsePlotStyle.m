@@ -68,17 +68,22 @@ function [jumpStyle, deltaStyle, varargin] = parseJumpStyle(varargin)
 
 jumpStyle = {};
 deltaStyle = {};
-for k = 1:numel(varargin)
+N = numel(varargin);
+k = 1;
+while k <= N 
     % Loop and look for 'jumpline' or 'deltaline':
     if ( strcmpi(varargin{k}, 'jumpline') )
         % Parse the style string:
         jumpStyle = parseStyle(varargin{k+1});
         varargin(k:(k+1)) = [];
+        N = N - 2;
     elseif ( strcmpi(varargin{k}, 'deltaline') )
         % Parse the style string:
         deltaStyle = parseStyle(varargin{k+1});
         varargin(k:(k+1)) = [];
+        N = N - 2;
     end
+    k = k + 1;
 end
 end
 
@@ -88,34 +93,35 @@ function style = parseStyle(styleString)
 %   converts into a cell array containing a sequence of name-value pairs 
 %   suitable for passing to MATLAB's built-in plotting functions.
 
-    if ( iscell(styleString) )
-        cc = regexp(styleString{1},'[bgrcmykw]', 'match');
-        if ( ~isempty(cc) )
-            % Forgive " 'jumpline', {'b', ...} " by inserting a 'color'.
-            style = ['Color', cc, styleString{2:end}];
-        else
-            style = styleString;
-        end
-        return
-    end
-
-    ll = regexp(styleString, '[-:.]+','match');           % style
-    if ( ~isempty(ll) )
-        style = [style, 'LineStyle', ll];
-    end
-
-    cc = regexp(styleString,'[bgrcmykw]', 'match');       % color
+style = {};
+if ( iscell(styleString) )
+    cc = regexp(styleString{1},'[bgrcmykw]', 'match');
     if ( ~isempty(cc) )
-        style = [style, 'Color', cc];
+        % Forgive " 'jumpline', {'b', ...} " by inserting a 'color'.
+        style = ['Color', cc, styleString{2:end}];
+    else
+        style = styleString;
     end
+    return
+end
 
-    mm = regexp(styleString,'[.ox+*sdv^<>ph]', 'match');  % marker
-    if ( ~isempty(mm) )
-        style = [style, 'Marker', mm];
-    end
+ll = regexp(styleString, '[-:.]+','match');           % style
+if ( ~isempty(ll) )
+    style = [style, 'LineStyle', ll];
+end
 
-    if ( any(strcmpi(styleString, {'none', 'off', ''})) ) % off
-        style = {'LineStyle', 'none'};
-    end
+cc = regexp(styleString,'[bgrcmykw]', 'match');       % color
+if ( ~isempty(cc) )
+    style = [style, 'Color', cc];
+end
+
+mm = regexp(styleString,'[.ox+*sdv^<>ph]', 'match');  % marker
+if ( ~isempty(mm) )
+    style = [style, 'Marker', mm];
+end
+
+if ( any(strcmpi(styleString, {'none', 'off', ''})) ) % off
+    style = {'LineStyle', 'none'};
+end
 
 end

@@ -116,7 +116,7 @@ jumpData = {};
 deltaData = {};
 
 % Remove global plotting options from input arguments.
-[lineStyle, pointStyle, jumpStyle, varargin] = ...
+[lineStyle, pointStyle, jumpStyle, deltaStyle, varargin] = ...
     chebfun.parsePlotStyle(varargin{:});
 
 %%
@@ -307,18 +307,18 @@ if ( isempty(deltaData) )
     deltaData = {[]};
 end
 
-h4 = stem(deltaData{:}, 'd', 'fill');
-
-h4 = plot(posDeltaData{:});
-h5 = plot(negDeltaData{:});
-
-if ( isempty(deltaStyle) )
-    set(h4, deltaStyle{:});
-    set(h5, deltaStyle{:});    
-else
-    set(h4, 'LineStyle', 'none', 'Marker', '^')
-    set(h5, 'LineStyle', 'none', 'Marker', 'v')
-end
+% h4 = stem(deltaData{:}, 'd', 'fill');
+% 
+% h4 = plot(posDeltaData{:});
+% h5 = plot(negDeltaData{:});
+% 
+% if ( isempty(deltaStyle) )
+%     set(h4, deltaStyle{:});
+%     set(h5, deltaStyle{:});    
+% else
+%     set(h4, 'LineStyle', 'none', 'Marker', '^')
+%     set(h5, 'LineStyle', 'none', 'Marker', 'v')
+% end
     
 
 %% 
