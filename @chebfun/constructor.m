@@ -268,8 +268,6 @@ while ( any(sad) )
     funs = [funs(1:k-1), {childLeft, childRight}, funs(k+1:end)];
     ends = [ends(1:k), edge, ends(k+1:end)];
     
-
-    
     % If a cell was given, we must store pieces on new intervals:
     if ( iscell(op) )
         op = [op(1:k), {opk}, op(k+1:end)];

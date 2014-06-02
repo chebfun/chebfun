@@ -315,8 +315,11 @@ while ( ~isHappy && ~Failure )
     
     % Sample Test:
     if ( sampleTest )
+        % wrap the op with evaluate in case the 'vectorize' flag is on: 
+        sampleOP = @(x,y) evaluate( op, x, y, vectorize);
+        
         % Evaluate at points in the domain:
-        pass = g.sampleTest(op, tol);
+        pass = g.sampleTest( sampleOP, tol, vectorize);
         if ( ~pass )
             % Increase minsamples and try again.
             minsample = 2^( floor( log2( minsample ) ) + 1) + 1;

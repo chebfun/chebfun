@@ -15,7 +15,7 @@ zf = fun.constructor( @(x) 0.*x );
 mag = rand(1,5);
 loc = rand(1,5);
 
-g = deltafun(f, mag, loc);
+g = deltafun(f.funPart, mag, loc);
 
 pass(1) = isempty(innerProduct(d, d)) && isempty(innerProduct(d, g)) && ...
           isempty(innerProduct(g, d));
