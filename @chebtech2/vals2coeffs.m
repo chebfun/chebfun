@@ -12,13 +12,13 @@ function coeffs = vals2coeffs(values)
 %
 % See also COEFFS2VALS, CHEBPTS.
 
-% Developer Note: This is equivalent to the Inverse Discrete Cosine Transform of 
-% Type I.
-
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% [Developer Note]: This is equivalent to the Inverse Discrete Cosine Transform
+% of Type I.
+%
 % [Mathematical reference]: Section 4.7 Mason & Handscomb, "Chebyshev
 % Polynomials". Chapman & Hall/CRC (2003).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

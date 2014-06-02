@@ -12,21 +12,21 @@ function coeffs = vals2coeffs(values)
 %
 % See also COEFFS2VALS, CHEBPTS.
 
-% Developer Note: This is euqivalent to Discrete Cosine Transform of Type II.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% [Developer Note]: This is equivalent to Discrete Cosine Transform of Type II.
+%
 % [Mathematical reference]: Section 4.7 Mason & Handscomb, "Chebyshev
 % Polynomials". Chapman & Hall/CRC (2003).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org for Chebfun information.
 
 % Get the length of the input:
 [n, m] = size(values);
 
 % Trivial case (constant):
-if ( n == 1 )
+if ( n <= 1 )
     coeffs = values;
     return
 end
@@ -42,12 +42,14 @@ coeffs = ifft(tmp);
 coeffs = w.*coeffs(n:-1:1, :);
 
 % Scale the last coefficient, i.e. the coefficient for the constant term:
-coeffs(n, :) = coeffs(n, :)/2;
+coeffs(n,:) = coeffs(n,:)/2;
 
 % Post-process:
-if ( isreal(values) )  % Real-valued case
+if ( isreal(values) )  
+    % Real-valued case:
     coeffs = real(coeffs);
-elseif ( isreal(1i*values) )  % Imaginary-valued case
+elseif ( isreal(1i*values) )  
+    % Imaginary-valued case:
     coeffs = 1i*imag(coeffs);
 end
 

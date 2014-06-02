@@ -11,33 +11,33 @@ function values = coeffs2vals(coeffs)
 %
 % See also VALS2COEFFS, CHEBPTS.
 
-% Developer Note: This is euqivalent to Discrete Cosine Transform of Type III.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% [Developer Note]: This is equivalent to Discrete Cosine Transform of Type III.
+%
 % [Mathematical reference]: Section 4.7 Mason & Handscomb, "Chebyshev
 % Polynomials". Chapman & Hall/CRC (2003).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org for Chebfun information.
 
 % Get the length of the input:
 [n, m] = size(coeffs);
 
 % Trivial case (constant):
-if ( n == 1 )
+if ( n <= 1 )
     values = coeffs;
     return
 end
 
 % Pre-compute the weight vector:
-w = repmat((exp(-1i*(0:2*n-1)*pi/(2*n))/2).',1,m);
-w(1, :) = 2*w(1, :);
-w(n+1, :) = 0;
-w(n+2:end, :) = -w(n+2:end, :);
+w = repmat((exp(-1i*(0:2*n-1)*pi/(2*n))/2).', 1, m);
+w(1,:) = 2*w(1, :);
+w(n+1,:) = 0;
+w(n+2:end,:) = -w(n+2:end, :);
 
 % Mirror the values for FFT:
-tmp = [coeffs(end:-1:1,:) ; ones(1, m); coeffs(1:end-1,:)];
+tmp = [coeffs(end:-1:1,:) ; ones(1, m) ; coeffs(1:end-1,:)];
 
 % Apply the weight vector:
 tmp = tmp.*w;
@@ -47,9 +47,11 @@ values = fft(tmp);
 values = values(n:-1:1, :);
 
 % Post-process:
-if ( isreal(coeffs) )  % Real-valued case:
+if ( isreal(coeffs) )           
+    % Real-valued case:
     values = real(values);
-elseif ( isreal(1i*coeffs) )  % Imaginary-valued case:
+elseif ( isreal(1i*coeffs) )    
+    % Imaginary-valued case:
     values = 1i*imag(values);
 end
 
