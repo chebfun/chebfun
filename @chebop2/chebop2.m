@@ -22,7 +22,7 @@ classdef chebop2
 %    N.lbc = 0; N.rbc = 0; N.ubc = 0; N.dbc = 0; 
 %    u = N \ 1; 
 
-% Copyright 2013 by The University of Oxford and The Chebfun2 Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun2 Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 

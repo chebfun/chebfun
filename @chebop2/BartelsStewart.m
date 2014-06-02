@@ -1,15 +1,17 @@
-function X = BartelsStewart(A,B,C,D,E,xsplit,ysplit)
-% Computes the matrix solution to the Sylvester equation
+function X = BartelsStewart(A, B, C, D, E, xsplit, ysplit)
+% BARTELSSTEWART   Solution to generalized Sylvester matrix equation. 
+% 
+% Computes the solution to the Sylvester equation
 %
-%  AXB^T + CXD^T = E
+%         AXB^T + CXD^T = E
 %
 % by using the Bartels--Stewart algorithm, see Solution of the Sylvester
 % matrix equation by Gardiner et al. (1992).
 %
 % This Bartels--Stewart solver also takes information xsplit, ysplit so
-% that if possible it reduces the problem to small subproblems.
+% that if possible it decouples the even and odd modes.
 
-% Copyright 2013 by The University of Oxford and The Chebfun2 Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun2 Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 prefs = chebfunpref(); 
