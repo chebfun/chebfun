@@ -248,7 +248,7 @@ for kk = 1:size(ODE,1)
         
         c = c(end:-1:1);
         
-        M = ultraS.multmat(c, n, kk-1); 
+        M = ultraS.multmat(n, c, kk-1); 
         
         A = S * M * D;
         
