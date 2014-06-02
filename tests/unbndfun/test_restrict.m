@@ -108,7 +108,7 @@ err2 = g2Vals - fExact2;
 err3 = g3Vals - fExact3;
 pass(4) = ( norm(err1, inf) < 2*get(g{1},'epslevel')*get(g{1},'vscale') ...
     && norm(err2, inf) < get(g{2},'epslevel')*get(g{2},'vscale') ...
-    && norm(err3, inf) < 5*get(g{3},'epslevel')*get(g{3},'vscale') );
+    && norm(err3, inf) < 20*get(g{3},'epslevel')*get(g{3},'vscale') );
 
 %% Functions on [-inf b]:
 
@@ -139,7 +139,7 @@ err1 = g1Vals - fExact1;
 err2 = g2Vals - fExact2;
 err3 = g3Vals - fExact3;
 pass(5) = ( norm(err1, inf) < 2*get(g{1},'vscale') ...
-    && norm(err2, inf) < 2*get(g{2},'vscale') ...
+    && norm(err2, inf) < eps ...
     && norm(err3, inf) < 1e1*get(g{3},'epslevel')*get(g{3},'vscale') );
 
 % Blow-up function:

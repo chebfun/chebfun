@@ -76,6 +76,9 @@ for j = 1:nargin-1
     end
 end
 
+%#ok<*ASGLU> % Prevent MLINT warnings for unused variables, which are used in 
+             % many places in this code to avoid the [~, arg2] = ... syntax.
+
 % Grab defaults if needed.
 if ( isempty(prefs) )
     prefs = cheboppref;
@@ -95,7 +98,7 @@ if ( m ~= size(L, 1) )
     error('LINOP:eigs:notsquare','Block size must be square.')
 end
 
-%% Set up the discretization:
+% Set up the discretization:
 if ( isa(discType, 'function_handle') )
     % Create a discretization object
     discA = discType(L);
@@ -105,7 +108,6 @@ if ( isa(discType, 'function_handle') )
 
     % Update the discretiztion dimension on unhappy pieces:
     discA.dimension = repmat(dimVals(1), 1, numel(discA.domain)-1);
-    dimVals(1) = [];
 else
     % A discretization is given:
     discA = discType;
@@ -195,7 +197,7 @@ if ( isempty(sigma) )
         end
 
         % Convert the discrete Z values to CHEBFUN
-        z = toFunction(discA, Z);
+        z = toFunctionOut(discA, Z);
 
         % Obtain all coefficients to use below
         coeffs = get(z, 'coeffs');
@@ -228,7 +230,8 @@ for dim = dimVals
     u = partition(discA, P*v);
 
     % Test the happieness of the function pieces:
-    [isDone, epsLevel] = testConvergence(discA, u(isFun));
+    scale = 1;
+    [isDone, epsLevel] = testConvergence(discA, u(isFun), scale, prefs);
 
     if ( all(isDone) )
         break
@@ -282,14 +285,14 @@ end
 end
 % END OF MAIN FUNCTION
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 function [V, D, P] = getEigenvalues(discA, discB, k, sigma)
 % Formulate the discrete problem and solve for the eigenvalues
 
     % Discretize the LHS operator (incl. constraints/continuity):
-    [PA, P, C, ignored, PS] = matrix(discA); %#ok<ASGLU>
-
+    [PA, P, C, ignored, PS] = matrix(discA);
+    
     % Discretize the RHS operator, or use identity.
     if ( ~isempty(discB) )
         % TODO: This is untidy. Can we make a method to do this? NH Apr 2014.
@@ -304,42 +307,57 @@ function [V, D, P] = getEigenvalues(discA, discB, k, sigma)
     % Compute eigenvalues.
     if ( length(PA) <= 2000 )
         [V, D] = eig(full(PA), full(PB));
+        lam = diag(D);
+        
         % Find the ones we're looking for.
-        N = discA.dimension;
-        idx = nearest(diag(D), P*V, sigma, min(k, N), N, discA);
+        lam = deflate(lam, size(C,1));
+        idx = nearest(lam, sigma);
+        idx = filter(idx, P*V, k, discA);
+        
+        % Extract them:
         V = V(:,idx);
         D = D(idx,idx);
+        
     else
-        % FIXME: Experimental.
+        % TODO: Experimental.
         [V, D] = eigs(PA, PB, k, sigma);
     end
 
 end
 
+function lam = deflate(lam, m)
+% DEFLATE(LAM, M) forces that the M largest eigenvalues are deflated to INF.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+[junk, idx] = sort(abs(lam), 'descend');
+lam(idx(1:m)) = inf;
+
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function idx = nearest(lam, sigma)
 % Returns index vector that sorts eigenvalues by the given criterion.
-function idx = nearest(lam, V, sigma, k, N, disc)
 
 if ( isnumeric(sigma) )
     if ( isinf(sigma) )
         [junk, idx] = sort(abs(lam), 'descend');
     else
-        [junk, idx] = sort(abs(lam-sigma));
+        [junk, idx] = sort(abs(lam-sigma), 'ascend');
     end
 else
     switch upper(sigma)
         case 'LR'
             [junk, idx] = sort(real(lam), 'descend');
         case 'SR'
-            [junk, idx] = sort(real(lam));
+            [junk, idx] = sort(real(lam), 'ascend');
         case 'LI'
             [junk, idx] = sort(imag(lam), 'descend');
         case 'SI'
-            [junk, idx] = sort(imag(lam));
+            [junk, idx] = sort(imag(lam), 'ascend');
         case 'LM'
             [junk, idx] = sort(abs(lam), 'descend');
-            % case 'SM' already converted to sigma = 0
+        case 'SM'
+            [junk, idx] = sort(abs(lam), 'ascend');
         otherwise
             error('CHEBFUN:linop:eigs:sigma', 'Unidentified input ''sigma''.');
     end
@@ -349,15 +367,24 @@ end
 % RHS matrix of the generalized eigenproblem.
 idx( ~isfinite(lam(idx)) ) = [];
 
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function idx = filter(idx, V, k, disc)
+% Screen out spurious modes. These are dominated by high frequency for all
+% values of N. (Known to arise for some formulations in generalized
+% eigenproblems, specifically Orr-Sommerfeld.)
+
+% TODO: Explain this in more detail.
+
+N = disc.dimension;
+k = min(k, N);
+
 % Propose to keep these modes.
 queue = 1:min(k, length(idx));
 keeper = false(size(idx));
 keeper(queue) = true;
-
-%%
-% Screen out spurious modes. These are dominated by high frequency for all
-% values of N. (Known to arise for some formulations in generalized
-% eigenproblems, specifically Orr-Sommerfeld.)
 
 % Grab some indices
 tenPercent = ceil(N/10); % We are the 10%
@@ -381,12 +408,12 @@ while ( ~isempty(queue) )
             lvcs = length(vcoeffsq);
             if ( lnc2 > lvcs )
                 % Pad with leading zeros
-                vcoeffsq = [ zeros(lnc2 - lvcs,1) ; vcoeffsq ];
+                vcoeffsq = [ zeros(lnc2 - lvcs,1) ; vcoeffsq ]; %#ok<AGROW>
                 lvcs = length(vcoeffsq);
             end
             % Only the most significant rows affected
             rows = (lvcs - lnc2 + 1):lvcs;
-            vcoeffsq(rows) = vcoeffsq(rows) + newcoeff2;
+            vcoeffsq(rows) = vcoeffsq(rows) + newcoeff2; %#ok<AGROW>
         end
     end
     vcoeff = sqrt( flipud( sum(vcoeffsq, 2) ) );
@@ -406,12 +433,11 @@ while ( ~isempty(queue) )
         end
     end
     queue(1) = [];
-
+    
 end
-
-%%
 
 % Return the keepers.
 idx = idx( keeper );
 
 end
+

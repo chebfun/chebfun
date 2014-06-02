@@ -34,6 +34,27 @@ classdef chebfun
 % Floater-Hormann scheme [Numer. Math. 107, 315-331 (2007)].). CHEBFUN(F, N) or
 % CHEBFUN(F, N, 'chebkind', 2) is equivalent to CHEBFUN(feval(F, chebpts(N)).
 %
+% CHEBFUN(C, 'coeffs'), where C is an Nx1 matrix, constructs a CHEBFUN object
+% representing the polynomial C(1) T_N(x) + ... + C(N) T_1(x) + C(N+1) T_0(x),
+% where T_K(x) denotes the K-th Chebyshev polynomial. This is equivalent to
+% CHEBFUN({{[], C}}). C may also be an NxM matrix, as described below.
+%
+% CHEBFUN(F, ...), where F is an NxM matrix or an array-valued function handle,
+% returns an "array-valued" CHEBFUN. For example,
+%   CHEBFUN(rand(14, 2))
+% or
+%   CHEBFUN(@(x) [sin(x), cos(x)])
+% Note that each column in an array-valued CHEBFUN object is discretized in the
+% same way (i.e., the same breakpoint locations and the same underlying
+% representation). For more details see ">> help quasimatrix". Note the
+% difference between
+%   CHEBFUN(@(x) [sin(x), cos(x)], [-1, 0, 1])
+% and
+%   CHEBFUN({@(x) sin(x), @(x) cos(x)}, [-1, 0, 1]).
+% The former constructs an array-valued CHEBFUN with both columns defined on the
+% domain [-1, 0, 1]. The latter defines a single column CHEBFUN which represents
+% sin(x) in the interval [-1, 0) and cos(x) on the interval (0, 1]. 
+%
 % CHEBFUN({F1,...,Fk}, ENDS) constructs a piecewise smooth CHEBFUN which
 % represents Fj on the interval [ENDS(j), END(j+1)]. Each entry Fj may be a
 % string, function handle, or vector of doubles. For example
@@ -55,26 +76,10 @@ classdef chebfun
 % computing the first N Chebyshev coefficients from their integral form, rather
 % than by interpolation at Chebyshev points.
 %
-% CHEBFUN(F, ...), where F is an NxM matrix or an array-valued function handle,
-% returns an "array-valued" CHEBFUN. For example,
-%   CHEBFUN(rand(14, 2))
-% or
-%   CHEBFUN(@(x) [sin(x), cos(x)])
-% Note that each column in an array-valued CHEBFUN object is discretized in the
-% same way (i.e., the same breakpoint locations and the same underlying
-% representation). For more details see ">> help quasimatrix". Note the
-% difference between
-%   CHEBFUN(@(x) [sin(x), cos(x)], [-1, 0, 1])
-% and
-%   CHEBFUN({@(x) sin(x), @(x) cos(x)}, [-1, 0, 1]).
-% The former constructs an array-valued CHEBFUN with both columns defined on the
-% domain [-1, 0, 1]. The latter defines a single column CHEBFUN which represents
-% sin(x) in the interval [-1, 0) and cos(x) on the interval (0, 1]. 
-%
 % See also CHEBFUNPREF, CHEBPTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % CHEBFUN Class Description:
@@ -229,7 +234,10 @@ classdef chebfun
     
         % Static methods implemented by CHEBFUN class.
     methods ( Hidden = true, Static = true )
-        
+
+        %Convert a cell array of CHEBFUN objects to a quasimatrix.
+        G = cell2quasi(F)
+
         % Edge detector.
         [edge, vscale] = detectEdge(op, domain, hscale, vscale, derHandle);
         
@@ -238,7 +246,6 @@ classdef chebfun
         
         % Merge domains.
         newDom = mergeDomains(varargin)
-        
                 
         % Which interval is a point in?
         out = whichInterval(dom, x, direction);
@@ -259,8 +266,8 @@ classdef chebfun
         % Parse the inputs to the CHEBFUN constructor.
         [op, domain, pref] = parseInputs(op, domain, varargin);
 
-        % Parse the 'jumpline' style for CHEBFUN plot functions.
-        [jumpStyle, varargin] = parseJumpStyle(varargin);
+        % Parse inputs to PLOT. Extract 'lineWidth', etc.
+        [lineStyle, pointStyle, jumpStyle, out] = parsePlotStyle(varargin)
         
         % Convert a string input to a function_handle.
         op = str2op(op);
@@ -357,8 +364,11 @@ classdef chebfun
         % True for zero CHEBFUN objects
         out = iszero(f)
         
+        % Kronecker product of two CHEBFUN object.
+        out = kron(f, g)
+        
         % Length of a CHEBFUN.
-        out = length(f);
+        [out, out2] = length(f);
         
         % Return Legendre coefficients of a CHEBFUN.
         c_leg = legpoly(f, n)
@@ -385,7 +395,7 @@ classdef chebfun
         varargout = plot3(f, g, h, varargin)
         
         % Power of a CHEBFUN
-        f = power(f, b);
+        f = power(f, b, pref);
         
         % Real part of a CHEBFUN.
         f = real(f)
@@ -413,6 +423,9 @@ classdef chebfun
 
         % Size of a CHEBFUN object.
         [s1, s2] = size(f, dim);
+
+        % Square root of a CHEBFUN.
+        f = sqrt(f, pref)
         
         % Retrieve and modify preferences for this class.
         varargout = subsref(f, index);
@@ -455,6 +468,9 @@ classdef chebfun
         % Supply new definition for a CHEBFUN at a point or set of points.
         f = definePoint(f, s, v)
         
+        % Multiplication operator.
+        M = diag(f)
+
         % Useful information for DISPLAY.
         [name, data] = dispData(f)
         
@@ -483,7 +499,7 @@ classdef chebfun
         f = tidyImpulses(f)
         
         % Adjust nearby common break points in domains of CHEBFUN objects.
-        [f, g, newBreaksLocF, newBreaksLocG] = tweakDomain(f, g, tol)
+        [f, g, newBreaksLocF, newBreaksLocG] = tweakDomain(f, g, tol, pos)
         
     end
     
@@ -619,12 +635,12 @@ function [op, dom, pref] = parseInputs(op, dom, varargin)
             args(1:2) = [];
         elseif ( any(strcmpi(args{1}, {'chebkind', 'kind'})) )
             % Translate "chebkind" and "kind" --> "techPrefs.gridType".
-            if ( isnumeric(args{2}) && ((args{2} == 1) || (args{2} == 2)) )
-                pref.techPrefs.gridType = args{2};
-            elseif ( strncmpi(args{2}, '1st', 1) )
-                pref.techPrefs.gridType = 1;
-            elseif ( strncmpi(args{2}, '2nd', 1) )
-                pref.techPrefs.gridType = 2;
+            if ( (isnumeric(args{2}) && (args{2} == 1)) || ...
+                     (ischar(args{2}) && strncmpi(args{2}, '1st', 1)) )
+                pref.tech = @chebtech1;
+            elseif ( (isnumeric(args{2}) && (args{2} == 2)) || ...
+                     (ischar(args{2}) && strncmpi(args{2}, '2nd', 1)) )
+                pref.tech = @chebtech2;
             else
                 error('CHEBFUN:constructor:parseInputs', ...
                     'Invalid value for ''chebkind''/''kind'' option.');

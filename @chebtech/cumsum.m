@@ -64,14 +64,14 @@ v = ones(1, n);
 v(end-1:-2:1) = -1;
 b(n+1,:) = v*b;                   % Compute b_0 (satisfies f(-1) = 0)
 
-% Copy coefficients back into c:
-c = b;
-
 % Recover coeffs:
-f.coeffs = c;
+f.coeffs = b;
 
-% Update vscale: [TODO]: Update epslevel?
+% Update vscale: 
 f.vscale = getvscl(f);
+
+% Update epslevel:
+f.epslevel = updateEpslevel(f);
 
 % Simplify (as suggested in Chebfun ticket #128)
 f = simplify(f);
@@ -86,8 +86,9 @@ function f = cumsumFiniteDim(f)
 % CUMSUM over the finite dimension.
 
 f.coeffs = cumsum(f.coeffs, 2);
-vscale = getvscl(f);
-f.epslevel = sum(f.epslevel.*f.vscale, 2)/sum(vscale, 2); % TODO: Is this right?
-f.vscale = vscale;
+newVscale = getvscl(f);
+epslevelApprox = sum(f.epslevel.*f.vscale, 2)/sum(newVscale, 2); % TODO: Is this right?
+f.epslevel = updateEpslevel(f, epslevelApprox);
+f.vscale = newVscale;
 
 end

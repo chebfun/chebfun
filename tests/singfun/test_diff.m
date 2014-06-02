@@ -46,7 +46,7 @@ vals_df = feval(df, x);
 df_exact = @(x) (1+x).^(d-1).*(d*sin(x)+(1+x).*cos(x));
 vals_exact = feval(df_exact, x);
 err = vals_df - vals_exact;
-pass(4) = (norm(err, inf) < get(f,'epslevel')*norm(vals_exact, inf));
+pass(4) = (norm(err, inf) < 1e1*get(f,'epslevel')*norm(vals_exact, inf));
 
 % fractional root at the right endpoint
 f = singfun(@(x) (1-x).^c.*cos(x), [0 c], {'none', 'root'}, [], [], pref);
@@ -89,7 +89,7 @@ df_exact = singfun(@(x) -2*(1 - x).^(b-1).*(x + 1).^(b-1)...
     {'sing', 'sing'}, [], [], pref);
 vals_exact = feval(df_exact, x);
 err = vals_df - vals_exact;
-pass(8) = (norm(err, inf) < 2*get(f,'epslevel')*norm(vals_exact, inf));
+pass(8) = (norm(err, inf) < 10*get(f,'epslevel')*norm(vals_exact, inf));
 
 %%
 % Check higher-order derivatives.

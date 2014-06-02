@@ -47,6 +47,37 @@ classdef cheboppref < chebpref
 %     finished. If 'iter', information is printed at every Newton step. If
 %     'off', no information is printed.
 %
+%   errTol                      - Error tolerance
+%     [1e-10]
+%
+%     The termination criteria for the Newton iteration. The Newton iteration is
+%     considered to have converged if the error estimate it computes is less
+%     than the value of errTol.
+%
+%   lambdaMin                   - Minimum allowed step-size
+%     [1e-6]
+%
+%     The value of lambdaMin determines the minimum allowed step-size that the
+%     damped Newton iteration is allowed to take.
+%
+%   maxIter                     - Maximum number of Newton steps
+%     25
+%
+%   The maximum number of steps that the (damped) Newton iteration is allowed to
+%   take, before it is considered to be non-convergent.
+%
+%   plotting                    - Plotting of intermediate Newton steps
+%     DELAY
+%     'on'
+%     ['off']
+%     'pause'
+%
+%   If plotting = 'on', the current iterate in the Newton solution is plotted at
+%   every step, as well as the current Newton correction. If plotting = DELAY,
+%   where DELAY has a numerical value, the iteration is paused and the plots are
+%   shown for the time DELAY seconds. If plotting = 'pause', the iteration is
+%   paused and the plots are shown until the user presses a button. If plotting
+%   = 'off', no plots are shown during the Newton iteration.
 %
 % The default values for any of these preferences may be globally overridden
 % using CHEBOPPREF.SETDEFAULTS(); see the documentation for that function for
@@ -73,12 +104,26 @@ classdef cheboppref < chebpref
 
     methods
 
-        function outPref = cheboppref(inPref)
+        function outPref = cheboppref(inPref, varargin)
             if ( (nargin == 1) && isa(inPref, 'cheboppref') )
                 outPref = inPref;
                 return
             elseif ( nargin < 1 )
                 inPref = struct();
+            elseif ( ischar(inPref) )
+                if ( nargin == 1 )
+                    error('CHEBFUN:cheboppref:deprecated', ...
+                        ['cheboppref() no longer supports queries of ', ...
+                         'the form cheboppref(''prop'').\n', ...
+                         'Please use cheboppref().prop.']);
+                else
+                    error('CHEBFUN:cheboppref:deprecated', ...
+                        ['chebfoppref() no longer assignment ', ...
+                         'via cheboppref(''prop'', val).\n', ...
+                         'Please use cheboppref.setDefaults(''prop'', val).']);
+                end
+            elseif ( nargin > 1 )
+                error('CHEBFUN:cheboppref:inputs', 'Too many input arguments.')
             end
 
             % Initialize default preference values.
@@ -86,13 +131,14 @@ classdef cheboppref < chebpref
 
             % Copy fields from q, merging incomplete substructures.
             for field = fieldnames(inPref).'
-                if ( isfield(outPref.prefList, field{1}) )
-                    if ( isstruct(outPref.prefList.(field{1})) )
-                        outPref.prefList.(field{1}) = ...
-                            chebpref.mergePrefs(outPref.prefList.(field{1}), ...
-                            inPref.(field{1}));
+                field1 = field{1};
+                if ( isfield(outPref.prefList, field1) )
+                    if ( isstruct(outPref.prefList.(field1)) )
+                        outPref.prefList.(field1) = ...
+                            chebpref.mergePrefs(outPref.prefList.(field1), ...
+                            inPref.(field1));
                     else
-                        outPref.prefList.(field{1}) = inPref.(field{1});
+                        outPref.prefList.(field1) = inPref.(field1);
                     end
                 else
                     error('CHEBOPPREF:cheboppref:badPref', ...
@@ -142,7 +188,7 @@ classdef cheboppref < chebpref
     end
 
     methods ( Static = true )
-        function pref = getFactoryDefaults(getFactory)
+        function pref = getFactoryDefaults()
         %GETFACTORYDEFAULTS   Get factory default preferences.
         %   PREF = CHEBOPPREF.GETFACTORYDEFAULTS() returns a CHEBOPPREF
         %   object with the preferences set to their factory defaults,
@@ -151,21 +197,10 @@ classdef cheboppref < chebpref
         %   solve ODEs with CHEBOP using the factory defaults when other
         %   user-set defaults are currently in force.
         %
-        % See also GETDEFAULTS, SETDEFAULTS.
+        % See also SETDEFAULTS.
 
             fd = cheboppref.factoryDefaultPrefs();
             pref = cheboppref(fd);
-        end
-
-        function pref = getDefaults()
-        %GETDEFAULTS   Get default preferences.
-        %   PREF = CHEBOPPREF.GETDEFAULTS() returns a CHEBOPPREF object with
-        %   the preferences set to the currently stored default values.  It is
-        %   equivalent to PREF = CHEBOPPREF().
-        %
-        % See also GETFACTORYDEFAULTS, SETDEFAULTS.
-
-            pref = cheboppref();
         end
 
         function setDefaults(varargin)
@@ -185,7 +220,7 @@ classdef cheboppref < chebpref
         %   CHEBOPPREF.SETDEFAULTS('factory') resets the default preferences to
         %   their factory values.
         %
-        % See also GETDEFAULTS, GETFACTORYDEFAULTS.
+        % See also GETFACTORYDEFAULTS.
 
             % The reason we don't just use manageDefaults as the second
             % argument to chebpref.setDefaults and wrap it in an additional

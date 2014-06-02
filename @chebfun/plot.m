@@ -115,8 +115,9 @@ pointData = {};
 jumpData = {};
 deltaData = {};
 
-% Deal with 'jumpLine' input.
-[jumpStyle, varargin] = chebfun.parseJumpStyle(varargin{:});
+% Remove global plotting options from input arguments.
+[lineStyle, pointStyle, jumpStyle, varargin] = ...
+    chebfun.parsePlotStyle(varargin{:});
 
 %%
 % Get the data for plotting from PLOTDATA():
@@ -256,13 +257,25 @@ while ( ~isempty(varargin) )
         pointData = [pointData, newData(k).xPoints, newData(k).yPoints, ...
             styleData];
         jumpData = [jumpData, newData(k).xJumps, newData(k).yJumps, styleData];
-        deltaData = [deltaData, newData(k).xDeltas, newData(k).yDeltas, styleData];
+        deltaData = [deltaData, newData(k).xDeltas, newData(k).yDeltas];
+    end
+    
+    % If xLim(1) == xLim(2), set xLim [inf -inf] and let Matlab figure out a
+    % proper xLim:
+    if ( ~diff(xLim) )
+        xLim = [inf, -inf];
+    end
+    
+    % If yLim(1) == yLim(2), set yLim [inf -inf] and let Matlab figure out a
+    % proper yLim:
+    if ( ~diff(yLim) )
+        yLim = [inf, -inf];
     end
     
 end
 % Plot the lines:
 h1 = plot(lineData{:});
-set(h1, 'Marker', 'none')
+set(h1, 'Marker', 'none', lineStyle{:})
 
 % Ensure the plot is held:
 hold on
@@ -270,7 +283,7 @@ hold on
 % Plot the points:
 h2 = plot(pointData{:});
 % Change the style accordingly:
-set(h2, 'LineStyle', 'none')
+set(h2, 'LineStyle', 'none', pointStyle{:})
 
 % Plot the jumps:
 if ( isempty(jumpData) || ischar(jumpData{1}) )
@@ -293,10 +306,7 @@ end
 if ( isempty(deltaData) )
     deltaData = {[]};
 end
-h4 = plotDeltaData(deltaData);
-%dx = cell2mat(deltaData(1:2:end));
-%dy = cell2mat(deltaData(2:2:end));    
-%h4 = stem(dx, dy, 'd', 'fill');
+h4 = stem(deltaData{:}, 'd', 'fill');
 
 %% 
 % Do we want a style for delta functions?
@@ -342,54 +352,5 @@ if ( nargout > 0 )
     varargout = {h1 ; h2 ; h3 ; h4};
 end
 
-end
-
-function [h1, h2, h3] = plotDeltaData(deltaData)
-if ( isempty(deltaData) )
-    h1 = [];
-    h2 = [];
-    h3 = [];
-    return;
-end
-k = 1;
-deltaMarkers = [];
-while ( k <= numel(deltaData) )
-    if ( isnumeric(deltaData{k}) && ~isempty(deltaData{k}) )
-        xDelta = deltaData{k};       
-        yDelta = deltaData{k+1};               
-        deltaMarkers = [deltaMarkers, {xDelta}, {yDelta}];
-        
-        m = size(xDelta, 1);
-        n = size(xDelta, 2);        
-        newxDelta = zeros(3*m + 1, n);        
-        newyDelta = zeros(3*m + 1, n);        
-                
-        newxDelta(1:3:end, :) = NaN;
-        newxDelta(2:3:end, :) = xDelta;
-        newxDelta(3:3:end, :) = xDelta;
-        
-        newyDelta(1:3:end, :) = NaN;
-        newyDelta(2:3:end, :) = 0;
-        newyDelta(3:3:end, :) = yDelta;       
-        
-        deltaData(k) = {newxDelta};        
-        deltaData(k+1) = {newyDelta};
-        k = k + 2;
-    else
-        deltaMarkers = [deltaMarkers, deltaData(k)];
-        k = k + 1;        
-    end
-end
-if ( ~isnumeric(deltaData{1}) )
-    deltaData = {[]};
-end
-
-if ( ~isnumeric(deltaMarkers{1}) )
-    deltaMarkers = {[]};
-end
-
-h1 = plot(deltaData{:});
-h2 = plot(deltaMarkers{:});
-h3 = [];
 end
 

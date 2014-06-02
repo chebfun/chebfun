@@ -16,14 +16,19 @@ if ( isempty( f ) )
     error('CHEBFUN2:MIN:INPUT','CHEBFUN2 is empty');
 end
 
-% Do not allow min(F, G).
-if ( nargin > 1 && ~empty(g) )   
-    error('CHEBFUN2:MIN', 'Unable to minimise two CHEBFUN2 objects.');
+% Default to max of one chebfun2:
+if ( nargin < 2 )
+    g = []; 
 end
 
-% Default to maximum along the y direction:
-if ( nargin < 3 )   
+% Default to maximum along the y direction: 
+if ( nargin < 3 )
     dim = 1;
+end
+
+% Do not allow min(F, G).
+if ( nargin > 1 && ~isempty(g) )   
+    error('CHEBFUN2:MIN', 'Unable to minimise two CHEBFUN2 objects.');
 end
 
 % min(f) = - max ( -f )  
