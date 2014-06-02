@@ -17,7 +17,7 @@ El = E(dom(1));
 Er = E(dom(end));
 
 %% Solve a linear system 
-L = [ D^2, -I, sin(x); C, D, chebfun(0,dom); functionalBlock.zero(dom), El, 4 ] ;
+L = [ D^2, -I, sin(x); C, D, chebfun(0,dom); functionalBlock.zero(dom), El, 4 ];
 f = [(x-1); chebfun(0,dom); 1 ];
 B1 = [El, -Er, 0];
 B2 = [functionalBlock.sum(dom), El, 0];
@@ -51,16 +51,10 @@ for k = 1:6
     w = linsolve(L, f, prefs);
 
     %%
-%     subplot(1, 2, k)
-%     plot(w{1},'b'); hold on
-%     plot(w{2},'r'); hold off, shg
-%     w3 = w{3};
-
-    %%
     % check the ODEs
     w1 = w{1};  w2 = w{2};  w3 = w{3};
     f1 = f{1};  f2 = f{2}; f3 = f{3};
-    residual1 = diff(w1,2)-w2+sin(x).*w3 - f1;
+    residual1 = diff(w1, 2) - w2 + sin(x).*w3 - f1;
     err(k,1) = norm( residual1 );
     residual2 = c.*w1 + diff(w2) + 0 - f2;
     err(k,2) = norm( residual2 );
@@ -69,9 +63,9 @@ for k = 1:6
     %%
     % check the BCs
     v = w{2};  u = w{1};
-    err(k,4) = abs( u(dom(1))-v(dom(2)) );
-    err(k,5) = abs( sum(u)+v(dom(1)) - 1);
-    err(k,6) = abs( feval(diff(u),dom(end)) );
+    err(k,4) = abs( u(dom(1)) - v(dom(2)) );
+    err(k,5) = abs( sum(u) + v(dom(1)) - 1);
+    err(k,6) = abs( feval(diff(u), dom(end)) );
     
     %%
     % check continuity
