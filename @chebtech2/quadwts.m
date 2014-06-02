@@ -1,7 +1,7 @@
 function w = quadwts(n)
 %QUADWTS   Quadrature weights for Chebyshev points of 2nd kind.
 %   QUADWTS(N) returns the N weights for Clenshaw-Curtis quadrature on 2nd-kind
-%   Chebyshev points using the algorithm of Waldvogel.
+%   Chebyshev points.
 %
 % See also CHEBPTS, BARYWTS.
 
@@ -24,6 +24,7 @@ function w = quadwts(n)
 % Therefore
 %   I(f) = w.'f(x) => w = inv(TT).'*v;
 % Here inv(TT).' = inv(TT) is an inverse discrete cosine transform of Type I.
+%
 % Furthermore, since odd entries in v are zero, can compute via FFT without
 % doubling up from N to 2N (though we still need to double up from N/2 to N to 
 % facilitate the use of ifft).

@@ -23,9 +23,9 @@ function w = quadwts(n)
 % Therefore
 %   I(f) = w.'f(x) => w = inv(TT).'*m;
 % Here inv(TT).' is the discrete cosine transform of type III.
+%
 % Furthermore, since odd entries in m are zero, can compute via FFT without
-% doubling up from N to 2N (though we still need to double up from N/2 to N to 
-% facilitate the use of ifft).
+% doubling up from N to 2N.
 %
 % References:
 %   [1] Joerg Waldvogel, "Fast construction of the Fejer and Clenshaw-Curtis
@@ -43,7 +43,7 @@ else                               % General case
     m = 2./[1, 1-(2:2:(n-1)).^2];  % Moments - Exact integrals of T_k (even)
     
     % Mirror the vector for the use of ifft: 
-    if mod(n, 2)
+    if ( mod(n, 2) )
         c = [m, -m((n+1)/2:-1:2)]; % n is odd
     else
         c = [m, 0, -m(n/2:-1:2)];  % n is even
