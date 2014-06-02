@@ -3,7 +3,7 @@ function epslevel = updateEpslevel(f, pref)
 %   UPDATEPSLEVEL(F) calls HAPPINESSCHECK to obtain a new epslevel.
 %
 %   UPDATEEPSLEVEL(F, EPSBND) assumes that EPSBND is an upper bound for the
-%   epslevel of F and passes EPSBND/10 to HAPPINESSCHECK(F, [], [], PREF) as a
+%   epslevel of F and passes EPSBND/100 to HAPPINESSCHECK(F, [], [], PREF) as a
 %   target epslevel in PREF.EPS.
 %
 % See also HAPPINESSCHECK.
