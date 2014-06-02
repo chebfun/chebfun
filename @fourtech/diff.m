@@ -65,6 +65,7 @@ function f = diffFiniteDim(f, k)
             f.epslevel(end) = [];
             f.epslevel = f.epslevel./vscale;
             f.vscale = vscale;
+            f.isReal = ~logical(diff(~f.isReal));
         end
     end
 end

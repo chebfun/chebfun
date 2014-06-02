@@ -79,8 +79,8 @@ function f = cumsumContinuousDim(f, m)
 
     % Check that the mean of the fourtech is zero.  If it is not, then
     % throw an error.
-    if abs(c((numCoeffs+1-fIsEven)/2,:)) > f.vscale.*f.epslevel
-        error('CHEBFUN:FOURTECH:cumsum:mean', 'Indefinite integrals are only possible for FOURTECH objects with zero mean.');
+    if any(abs(c((numCoeffs+1-fIsEven)/2,:)) > f.vscale.*f.epslevel)
+        error('CHEBFUN:FOURTECH:cumsum:meanNotZero', 'Indefinite integrals are only possible for FOURTECH objects with zero mean.');
     end
     
     % Force the mean to be exactly zero.

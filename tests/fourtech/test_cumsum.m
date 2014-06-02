@@ -75,5 +75,26 @@ err = feval(f, x) - feval(h, x);
 tol = 10*h.vscale.*h.epslevel;
 pass(7) = all((std(err) < tol))  && all(abs(feval(h, -1)) < tol);
   
+%%
+% Check that an error is thrown when the mean of the fourtech is not zero.
+
+f = testclass.make(@(x) exp(cos(pi*x)), [], [], pref);
+try
+    g = cumsum(f);
+    pass(8) = false;
+catch ME
+    pass(8) = strcmp(ME.identifier, 'CHEBFUN:FOURTECH:cumsum:meanNotZero');
+end
+
+%%
+% Check that an error is thrown when the mean just one of the means of 
+% an array-valued fourtech is not zero.
+f = testclass.make(@(x) [sin(4*pi*cos(pi*x)) exp(cos(pi*x))], [], [], pref);
+try
+    g = cumsum(f);
+    pass(9) = false;
+catch ME
+    pass(9) = strcmp(ME.identifier, 'CHEBFUN:FOURTECH:cumsum:meanNotZero');
+end
 
 end
