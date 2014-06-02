@@ -25,7 +25,7 @@ if ( nargin == 1 )
 elseif ( isnumeric(pref) )
     epslevelBnd = pref;
     pref = f.techPref();
-    pref.eps = max(epslevelBnd/10, pref.eps);
+    pref.eps = max(epslevelBnd/100, pref.eps);
 else
     epslevelBnd = pref.eps;
 end

@@ -90,7 +90,7 @@ df4 = diff(f, 4);
 df4_exact = @(x) sin(x);
 err = norm(df4_exact(x) - feval(df4, x), inf);
 tol = 10*get(df4, 'vscale')*get(df4, 'epslevel');
-pass(10) = err < 20*tol;
+pass(10) = err < 100*tol;
 
 f = bndfun(@(x) x.^5 + 3*x.^3 - 2*x.^2 + 4, dom, [], [], pref);
 df6 = diff(f, 6);
