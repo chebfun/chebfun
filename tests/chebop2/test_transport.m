@@ -15,7 +15,7 @@ N = chebop2(@(u) diffy(u,1) + diffx(u,1), d);
 N.dbc = @(x) exp(-x);
 N.lbc = @(t) exp(1).*exp(t);
 u = N \ 0;
-pass(1) = ( abs(norm(u - exact) < tol)); 
+pass(1) = ( abs(norm(u - exact) < 2*tol)); 
 
 %% Simple example on square domain. 
 d = [0,1,0,1];

@@ -71,8 +71,7 @@ else                            % CHEBFUN2 + CHEBFUN2
     % the output variable.
     h.deriv = fderivNew + gderivNew;
     
-    
-    
+        %h = chebfun2(@(x, y) feval(f, x, y) + feval(g, x, y), f.domain);
 end
 
 end
@@ -106,11 +105,26 @@ rows = [f.rows, g.rows];
 Z = zeros( length(fScl), length(gScl) );
 D = [fScl Z ; Z.' gScl];
 [U, S, V] = svd( Rcols * D * Rrows.' );
+s = diag( S );
 
-h = f;
-h.cols = Qcols * U;
-h.rows = Qrows * V;
-h.pivotValues = 1./diag( S );
+% compress the format if possible.
+% [TODO]: What should EPS be in the tolerance check below? Can we base it on
+% EPSLEVELS?
+idx = find( s > eps, 1, 'last');
+if ( isempty( idx ) )
+    % return 0 chebfun2
+    h = chebfun2( 0, f.domain );
+else
+    U = U(:,1:idx);
+    V = V(:,1:idx);
+    s = s(1:idx);
+    h = f;
+    h.cols = Qcols * U;
+    h.rows = Qrows * V;
+    % [TODO]: PivotValues have very little meaning after this compression step.
+    % For now we assign the singular values as the pivot values. 
+    h.pivotValues = 1./s;
+end
 
 end
 

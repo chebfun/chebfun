@@ -100,6 +100,11 @@ chebfunpref.setDefaults('domain', [-2 7], 'testPref', 'testq');
 pass(18) = strcmp(chebfunpref().testPref, 'testq') && ...
     isequal(chebfunpref().domain, [-2 7]);
 
+% Test getting defaults:
+pass(19) = isnumeric(chebfunpref().eps);
+pass(20) = ischar(chebfunpref().singPrefs.defaultSingType);
+pass(21) = ischar(chebfunpref().refinementFunction);
+
 chebfunpref.setDefaults(savedPrefs);
 
 end

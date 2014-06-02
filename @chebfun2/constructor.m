@@ -49,8 +49,9 @@ if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
     if ( numel( op ) == 1 )
         % LNT wants this:
         g = constructor(g, @(x,y) op + 0*x, domain);
-        % Look for coeffs flag:
+        
     elseif ( any(strcmpi(domain, 'coeffs')) )
+        % Look for coeffs flag:
         op = chebfun2.coeffs2vals( op );
         g = chebfun2( op, varargin{:} );
         return
@@ -75,7 +76,11 @@ if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
             % Otherwise its an adaptive call:
             fixedRank = 0;
         end
-        % calculate a tolerance: 
+
+        % Calculate a tolerance and find numerical rank to this tolerance: 
+        % The tolerance assumes the samples are from a function. It depends
+        % on the size of the sample matrix, hscale of domain, vscale of
+        % the samples, and the accuracy target in chebfun2 preferences. 
         pseudoLevel = pref.cheb2Prefs.eps;
         grid = max( size( op ) ); 
         vscale = max( op(:) ); 
@@ -83,11 +88,13 @@ if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
         
         % Perform GE with complete pivoting:
         [pivotValue, ignored, rowValues, colValues] = CompleteACA(op, tol);
+        
         % Construct a CHEBFUN2:
         g.pivotValues = pivotValue;
         g.cols = chebfun(colValues, domain(3:4) );
         g.rows = chebfun(rowValues.', domain(1:2) );
         g.domain = domain;
+        
         % Did we have a nonadaptive construction?:
         g = fixTheRank(g, fixedRank);
     end
@@ -295,7 +302,7 @@ while ( ~isHappy && ~Failure )
     if ( norm(colValues) == 0 || norm(rowValues) == 0)
         colValues = 0;
         rowValues = 0;
-        pivotValue = 0;
+        pivotValue = Inf;
         PivPos = [0, 0];
         isHappy = 1;
     end
@@ -309,8 +316,11 @@ while ( ~isHappy && ~Failure )
     
     % Sample Test:
     if ( sampleTest )
+        % wrap the op with evaluate in case the 'vectorize' flag is on: 
+        sampleOP = @(x,y) evaluate( op, x, y, vectorize);
+        
         % Evaluate at points in the domain:
-        pass = g.sampleTest(op, tol);
+        pass = g.sampleTest( sampleOP, tol, vectorize);
         if ( ~pass )
             % Increase minsamples and try again.
             minsample = 2^( floor( log2( minsample ) ) + 1) + 1;

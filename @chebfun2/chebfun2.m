@@ -90,7 +90,7 @@ classdef chebfun2
         F = normalizeRowsAndCols(F, p)
         
         % Sample Test in constructor 
-        pass = sampleTest(f, op, tol)
+        pass = sampleTest(f, op, tol, flag)
         
         % Is a chebfun2 all positive or negative? 
         [bol, wzero] = singleSignTest( f ) 
