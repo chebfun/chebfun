@@ -566,6 +566,7 @@ function [op, dom, pref] = parseInputs(op, dom, varargin)
         dom = pref.domain;
     end
 
+    isPeriodic = false;
     vectorize = false;
     % Obtain additional preferences:
     while ( ~isempty(args) )
@@ -650,10 +651,24 @@ function [op, dom, pref] = parseInputs(op, dom, varargin)
                     'Invalid value for ''chebkind''/''kind'' option.');
             end
             args(1:2) = [];
+        elseif ( strcmpi(args{1}, 'periodic') )
+            isPeriodic = true;
+            args(1) = [];
         else
             % Update these preferences:
             pref.(args{1}) = args{2};
             args(1:2) = [];
+        end
+    end
+    
+    % Deal with the 'periodic' flag:
+    if ( isPeriodic )
+        % Translate "periodic".
+        pref.tech = @fourtech;
+        pref.enableBreakpointDetection = false;
+        if ( numel(dom) > 2 )
+            error('CHEBFUN:parseInputs:periodic', ...
+                '''periodic'' option is only supported for smooth domains.');
         end
     end
     
