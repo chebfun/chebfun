@@ -24,27 +24,31 @@ for n = 1:2
     f = testclass.make(@(x) exp(x) - x, [], [], pref);
     df = diff(f);
     df_exact = @(x) exp(x) - 1;
-    err = df_exact(x) - feval(df, x);
-    pass(n, 1) = (norm(err, inf) < 10*df.vscale.*df.epslevel);
+    err = norm(df_exact(x) - feval(df, x), inf);
+    tol = 10*df.vscale.*df.epslevel;
+    pass(n, 1) = err < tol;
     
     f = testclass.make(@(x) atan(x), [], [], pref);
     df = diff(f);
     df_exact = @(x) 1./(1 + x.^2);
-    err = df_exact(x) - feval(df, x);
-    pass(n, 2) = (norm(err, inf) < 10*df.vscale.*df.epslevel);
+    err = norm(df_exact(x) - feval(df, x), inf);
+    tol = 100*df.vscale.*df.epslevel;
+    pass(n, 2) = err < tol;
     
     f = testclass.make(@(x) sin(x), [], [], pref);
     df = diff(f);
     df_exact = @(x) cos(x);
-    err = df_exact(x) - feval(df, x);
-    pass(n, 3) = (norm(err, inf) < 10*df.vscale.*df.epslevel);
+    err = norm(df_exact(x) - feval(df, x), inf);
+    tol = 100*df.vscale.*df.epslevel;
+    pass(n, 3) = err < tol;
     
     z = exp(2*pi*1i/3);
     f = testclass.make(@(t) airy(z*t), [], [], pref);
     df = diff(f);
     df_exact = @(t) z*airy(1, z*t);
-    err = df_exact(x) - feval(df, x);
-    pass(n, 4) = (norm(err, inf) < 10*df.vscale.*df.epslevel);
+    err = norm(df_exact(x) - feval(df, x), inf);
+    tol = 10*df.vscale.*df.epslevel;
+    pass(n, 4) = err < tol;
     
     %%
     % Verify that calling diff() gives the same answer as direct construction.
@@ -85,13 +89,13 @@ for n = 1:2
     df2 = diff(f, 2);
     df2_exact = @(x) 1./(1 + x.^2);
     err = df2_exact(x) - feval(df2, x);
-    pass(n, 9) = (norm(err, inf) < 10*df2.vscale.*df2.epslevel);
+    pass(n, 9) = (norm(err, inf) < 100*df2.vscale.*df2.epslevel);
     
     f = testclass.make(@(x) sin(x), [], [], pref);
     df4 = diff(f, 4);
     df4_exact = @(x) sin(x);
     err = norm(df4_exact(x) - feval(df4, x), inf);
-    tol = 20*df4.vscale.*df4.epslevel;
+    tol = 100*df4.vscale.*df4.epslevel;
     pass(n, 10) = err < tol;
 
     f = testclass.make(@(x) x.^5 + 3*x.^3 - 2*x.^2 + 4, [], [], pref);

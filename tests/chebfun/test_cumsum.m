@@ -138,7 +138,7 @@ domCheck = [dom(1)+0.1 dom(2)-0.1];
 
 op = @(x) sin(100*x)./((x-dom(1)).^0.5.*(x-dom(2)).^0.5);
 f = chebfun(op, dom, 'exps', [-0.5 -0.5]);
-% We temporarily disable this warning: 
+% We temporarily disable this warning: 1
 warning('off', 'CHEBFUN:SINGFUN:plus');
 g = cumsum(f);
 warning('on', 'CHEBFUN:SINGFUN:plus');
@@ -179,7 +179,7 @@ gVals = feval(g, x);
 opg = @(x) sqrt(pi)*erf(x)/2 + sqrt(pi)/2;
 gExact = opg(x);
 errg = norm(gVals - gExact, inf);
-tol = 4e3*get(g,'epslevel').*get(g,'vscale');
+tol = 1e4*get(g,'epslevel').*get(g,'vscale');
 pass(13) = errg < tol;
 
 %% Function on [a inf]:

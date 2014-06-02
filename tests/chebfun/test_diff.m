@@ -44,7 +44,7 @@ pass(5) = norm(feval(d2f1, xr) - d2f1_exact(xr), inf) < ...
 d2f3 = diff(f3, 2);
 d2f3_exact = @(x) [-sin(x) -cos(x) exp(x)];
 pass(6) = max(max(abs(feval(d2f3, xr) - d2f3_exact(xr)))) < ...
-    10*vscale(d2f3)*epslevel(d2f3);
+    100*vscale(d2f3)*epslevel(d2f3);
 
 % Check dim argument.
 df3_col = diff(f3, 1, 2);
