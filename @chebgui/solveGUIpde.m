@@ -1,33 +1,33 @@
 function varargout = solveGUIpde(guifile, handles)
-
-% TODO:  Documentation.
+% SOLVEGUIPDE   Solve a PDE, specified by a CHEBGUI object.
+%
+% Calling sequence:
+%
+%   VARARGOUT = SOLVEGUIBVP(GUIFILE, HANDLES)
+%
+% where
+%   
+%   GUIFILE:    A CHEBGUI object, describing the problem.
+%   HANDLES:    A MATLAB handle to the chebguiwindow figure.
+%
+% If the method is called by pressing the 'Solve' button on the GUI,
+%   VARARGOUT{1}:   Will be a MATLAB handle to the chebguiwindow figure, which
+%                   has been updated to contain the solution and other useful
+%                   results for the problem solved.
+%
+% If the method is called by calling the command explicitly with a CHEBGUI
+% object (e.g. [U, INFO] = SOLVEGUIBVP(GUIFILE) from the command line),
+%   VARARGOUT{1}:   The time range of the problem specified by GUIFILE.
+%   VARARGOUT{2}:   The a CHEBMATRIX containing the solution returned by pde15s.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/chebfun/ for Chebfun information.
-
-% Create a domain and the linear function on that domain. We use xt for the
-% linear function, later in the code we will be able to determine whether x
-% or t is used for the linear function.
 
 % Handles will be an empty variable if we are solving without using the GUI
 if ( nargin < 2 )
     guiMode = 0;
 else
     guiMode = 1;
-end
-
-opts = pdeset;
-defaultTol = opts.Eps;
-defaultLineWidth = 2;
-
-if ( guiMode )
-    set(handles.fig_sol, 'Visible', 'On');
-    set(handles.fig_norm, 'Visible', 'On');
-    cla(handles.fig_sol, 'reset')
-    cla(handles.fig_norm, 'reset')
-    handles.gui = 1;
-else
-    handles.gui = 0;
 end
 
 % Extract information from the guifile
@@ -64,7 +64,7 @@ end
 
 % Convert the input to the an. func. format, get information about the
 % linear function in the problem.
-[deString allVarString indVarNameDE pdeVarName pdeflag ignored allVarNames] ...
+[deString, allVarString, indVarNameDE, dummy, pdeflag, dummy, allVarNames] ...
     = setupFields(guifile, deInput, 'DE');
 handles.varnames = allVarNames;
 if ( ~any(pdeflag) )
@@ -72,8 +72,8 @@ if ( ~any(pdeflag) )
          'supported type. Perhaps you need to switch to ''ODE'' mode?'];
     error('Chebgui:SolveGUIpde', s);
 end
-idx = strfind(deString, ')');
 
+% Are we solving a scalar problem?
 scalarProblem = length(allVarNames) == 1;
 
 % Obtain the independent variable name appearing in the initial condition
@@ -81,7 +81,7 @@ if ( ~isempty(initInput{1}) )
     % If we have a scalar problem, we're OK with no dependent variables
     % appearing in the initial guess
     if ( scalarProblem ) 
-        [initString ignored indVarNameInit] = ...
+        [dummy, dummy, indVarNameInit] = ...
             setupFields(guifile, initInput, 'INITSCALAR', allVarString);
         % If the initial guess was just passed a constant, indVarNameInit will
         % be empty. For consistency (allowing us to do the if-statement below),
@@ -90,16 +90,16 @@ if ( ~isempty(initInput{1}) )
             indVarNameInit = {''};
         end       
     else
-        [initString ignored indVarNameInit] = ...
+        [dummy, dummy, indVarNameInit] = ...
             setupFields(guifile, initInput, 'INIT', allVarString);        
     end
 else
     indVarNameInit = {''};
 end
 
-% Make sure we don't have a disrepency in indVarNames. Create a new
-% variable indVarName which contains both independent variable, the first
-% entry corresponds to space, the second to time.
+% Make sure we don't have a disrepency in indVarNames. Create a new variable
+% indVarName which contains both independent variable, the first entry
+% corresponds to space, the second to time.
 if ( ~isempty(indVarNameInit{1}) && ~isempty(indVarNameDE{1}) )
     if ( strcmp(indVarNameDE{1}, indVarNameInit{1}) )
         indVarName{1} = indVarNameDE{1};
@@ -115,10 +115,11 @@ else
 end
 
 if ( ~isempty(indVarNameDE{2}) )
-    % TODO:  If never empty for a PDE, why not raise an error?
-    indVarName{2} = indVarNameDE{2}; % Should never be empty for a PDE though.
+    % Find what the name of the time variable specified is:
+    indVarName{2} = indVarNameDE{2};
 else
-    indVarName{2} = 't'; % Default value
+    error('Chebgui:SolveGUIpde', ...
+        'No time variable specified, please do so via using subscript.');
 end
 
 if ( strcmp(indVarName{1}, indVarName{2}) )
@@ -126,7 +127,6 @@ if ( strcmp(indVarName{1}, indVarName{2}) )
         'The same variable appears to be used as space and time variable');
 end
 handles.indVarName = indVarName;
-opts.handles = handles;
 
 % Create a string with the variables used in the problem
 variableString = [indVarName{2}, ',', indVarName{1}, ','];
@@ -182,19 +182,6 @@ if ( isempty(lbcInput) && isempty(rbcInput) )
     error('chebfun:bvpgui','No boundary conditions specified');
 end
 
-if ( isempty(tolInput) )
-    tolNum = defaultTol;
-else
-    tolNum = str2num(tolInput);
-end
-
-cpref = chebfunpref();
-if ( tolNum < cpref.eps )
-    warndlg('Tolerance specified is less than current chebfun epsilon', ...
-        'Warning','modal');
-    uiwait(gcf)
-end
-
 % Boundary condition
 if ( periodic )
     bc = 'periodic';
@@ -204,10 +191,28 @@ else
     bc.right = RBC;
 end
 
+% Start gathering options. Start by obtaining a PDE options struct.
+opts = pdeset;
+defaultTol = opts.Eps;
+defaultLineWidth = 2;
+
+% Check that we're not imposing too strict tolerance:
+if ( isempty(tolInput) )
+    tolNum = defaultTol;
+else
+    tolNum = str2num(tolInput);
+end
+% Find out what the current CHEBFUN eps is set at.
+cpref = chebfunpref();
+if ( tolNum < cpref.eps )
+    warndlg('Tolerance specified is less than current chebfun epsilon', ...
+        'Warning','modal');
+    uiwait(gcf)
+end
+
 tol = tolNum;
 
 % Set up the initial condition
-
 if ( iscellstr(initInput) )
     order = [];
     inits = [];
@@ -252,7 +257,26 @@ else
     lenu0 = length(u0);
 end
 
-% Gather options:
+
+
+% Get the GUI ready for plotting.
+if ( guiMode )
+    set(handles.fig_sol, 'Visible', 'On');
+    set(handles.fig_norm, 'Visible', 'On');
+    cla(handles.fig_sol, 'reset')
+    cla(handles.fig_norm, 'reset')
+    handles.gui = 1;
+else
+    handles.gui = 0;
+end
+
+% Continue setting up options.
+
+% Give the OPTS structure the handle to the chebguiwindow figure, so that pde15s
+% can plot to it:
+opts.handles = handles;
+
+% Be default, don't do a hold on plot.
 opts.HoldPlot = false;
 opts.Eps = tolNum;
 if ( ~all(pdeflag) )
@@ -266,10 +290,12 @@ if ( guifile.options.pdeholdplot )
 else
     opts.HoldPlot = 'off';
 end
+
+% Do we want to fix the y-limits while solving the PDE?
 ylim1 = guifile.options.fixYaxisLower;
 ylim2 = guifile.options.fixYaxisUpper;
 if ( ~isempty(ylim1) && ~isempty(ylim2) )
-    opts.YLim = [str2num(ylim1) str2num(ylim2)];
+    opts.YLim = [str2double(ylim1), str2double(ylim2)];
 end
 opts.PlotStyle = {'LineWidth', defaultLineWidth};
 
@@ -278,9 +304,10 @@ if ( ~isempty(guifile.options.fixN) )
     opts.N = str2num(guifile.options.fixN);
 end
 
+% Try solving the PDE!
 try
     [t, u] = pde15s(DE, tt, u0, bc, opts);
-catch ME
+catch
     errordlg('Error in solution process.', 'chebopbvp error', 'modal');
     varargout{1} = handles;
     return
@@ -289,17 +316,22 @@ end
 if ( ~guiMode )
     varargout{1} = t;
     varargout{2} = u;
+    return
 end
 
-% Store in handles latest chebop, solution, vector of norm of updates etc.
-% (enables exporting later on)
+%% Post solving steps.
+
+% Store in handles latest solution and time-range (enables exporting later on):
 handles.latest.type = 'pde';
 handles.latest.solution = u;
 handles.latest.solutionT = t;
+
 % Notify the GUI we have a solution available
 handles.hasSolution = 1;
 
+
 if ( guiMode )
+    % Switch focus to bottom figure.
     axes(handles.fig_norm)
 else
     figure();

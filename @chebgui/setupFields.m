@@ -1,5 +1,5 @@
-function [field, allVarString, indVarName, pdeVarNames, pdeflag, eigVarNames, ...
-    allVarNames]  = setupFields(guifile, input, type, allVarString)
+function [field, allVarString, indVarName, pdeVarNames, pdeflag, ...
+    eigVarNames, allVarNames]  = setupFields(guifile, input, type, allVarString)
 
 % TODO:  Documentation.
 

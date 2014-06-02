@@ -1,14 +1,27 @@
 function varargout = solveGUIeig(guifile, handles)
-% SOLVEGUIEIG
+% SOLVEGUIEIG   Solve a eigenvalue problem, specified by a CHEBGUI object.
+%
+% Calling sequence:
+%
+%   VARARGOUT = SOLVEGUIEIG(GUIFILE, HANDLES)
+%
+% where
+%   
+%   GUIFILE:    A CHEBGUI object, describing the problem.
+%   HANDLES:    A MATLAB handle to the chebguiwindow figure.
+%
+% If the method is called by pressing the 'Solve' button on the GUI,
+%   VARARGOUT{1}:   Will be a MATLAB handle to the chebguiwindow figure, which
+%                   has been updated to contain the solution and other useful
+%                   results for the problem solved.
+%
+% If the method is called by calling the command explicitly with a CHEBGUI
+% object (e.g. [V, D] = SOLVEGUIEIG(GUIFILE) from the command line),
+%   VARARGOUT{1}:   A diagonal matrix containing the eigenvalues.
+%   VARARGOUT{2}:   A CHEBMATRIX of the eigenfunctions.
 
-% TODO:  Documentation.
-
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org/chebfun/ for Chebfun information.
-
-% Create a domain and the linear function on that domain. We use xt for the
-% linear function, later in the code we will be able to determine whether x
-% or t is used for the linear function.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Handles will be an empty variable if we are solving without using the GUI
 if ( nargin < 2 )
@@ -16,10 +29,9 @@ if ( nargin < 2 )
 else
     guiMode = 1;
 end
-dom = str2num(guifile.domain);
-x = chebfun(@(x) x, dom);
 
 % Extract information from the GUI fields
+dom = str2num(guifile.domain);
 deInput = guifile.DE;
 bcInput = guifile.BC;
 
@@ -45,6 +57,7 @@ if ( isa(bcInput,'char') )
     bcInput = cellstr(bcInput);
 end
 
+% Obtain information for setting up the differential equation:
 [allStrings allVarString indVarName ignored ignored eigVarName allVarNames] ...
     = setupFields(guifile, deInput, 'DE');
 handles.varnames = allVarNames;
@@ -83,13 +96,13 @@ if ( ~isempty(bcInput{1}) )
     end
 end
 
-% Variable which determines whether it's a generalized problem. If
-% rhsString is empty, we can be sure it's not a generalized problem.
+% Variable which determines whether it's a generalized problem. If rhsString is
+% empty, we can be sure it's not a generalized problem.
 generalized = 1;
 
-% Create the chebops, and try to linearise them.
-% We will always have a string for the LHS, if the one for RHS is empty, we
-% know we have a non-generalised problem.
+% Create the chebops, and try to linearise them. We will always have a string
+% for the LHS, if the one for RHS is empty, we know we have a non-generalised
+% problem.
 N_LHS = chebop(LHS, dom, BC);
 
 try
@@ -138,11 +151,11 @@ if ( ~isempty(rhsString) )
     % Expand to a block diagonal matrix
     Idisc = blkdiag(Idisc{:});
     
-    % Compare the discretizations to see whether they are the same
+    % Compare the discretizations to see whether they are the same. If Bdisc is
+    % not square, B was certainly not the identity operator!
     if ( size(Bdisc, 1) ~= size(Bdisc, 2) )
         generalized = 1;
     else
-
         opDifference = Bdisc - Idisc;
         opSum = Bdisc + Idisc;
         if ( isempty(nonzeros(opDifference)) )
@@ -162,7 +175,7 @@ end
 options = cheboppref;
 
 % Check whether the tolerance is too tight.
-%TODO: How does this affect LINOP/EIGS()?
+%TODO: How does this actually affect LINOP/EIGS()?
 defaultTol = options.errTol;
 
 tolInput = guifile.tol;
@@ -172,6 +185,8 @@ else
     tolNum = str2double(tolInput);
 end
 
+% Need to obtain a CHEBFUNPREF object to check what the current tolerance is set
+% at.
 chebfunp = chebfunpref;
 
 if ( tolNum < chebfunp.techPrefs.eps )
@@ -204,10 +219,8 @@ else
         [V, D] = eigs(A, K, sigma);
     end
 end
+% Sort the eigenvalues.
 [D, idx] = sort(diag(D));
-
-% TODO: What happens in case of coupled systems.
-% For now, assume scalar problems
 
 % We expect V to be a CHEBMATRIX. Sort the columns so they correspond to the now
 % sorted eigenvalues in D.
@@ -228,19 +241,21 @@ end
 
 % Now do some more stuff specific to GUI
 if ( guiMode )
-    % Store in handles latest chebop, solution, vector of norm of updates etc.
-    % (enables exporting later on)
+    % Store in handles latest CHEBOP, eigenfunctions, eigenmodes etc. (enables
+    % exporting later on):
     handles.latest.type = 'eig';
     handles.latest.solution = D;
     handles.latest.solutionT = V;
     handles.latest.chebop = A;
     handles.latest.options = options;
+    
     % Notify the GUI we have a solution available
     handles.hasSolution = 1;
     handles.varnames = allVarNames;
     handles.eigVarName = eigVarName;
     handles.indVarName = indVarName{1};
     
+    % Plot the eigenmodes.
     chebguiController.plotEigenmodes(handles, 0, handles.fig_sol, ...
         handles.fig_norm);
     
@@ -259,7 +274,7 @@ end
 end
 
 function str = prettyprintfevalstring(str, varnames)
-
+%PRETTYPRINTFEVALSTRING     String tidying when setting up problems.
 for k = 1:numel(varnames)
     oldstr = ['feval(' varnames{k} ','];
     newstr = [varnames{k} '('];
