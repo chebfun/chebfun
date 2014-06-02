@@ -215,12 +215,14 @@ classdef chebguiExporter
             end
             
             % Print first few lines of the .m-file:
-            fprintf(fid, ['%% %s -- an executable .m-file for solving ', ...
+            fprintf(fid, ['%%%% %s -- an executable .m-file for solving ', ...
                 '%s.\n'], filename, e.description);
-            fprintf(fid, ['%% Automatically created from chebfun/chebgui ', ...
-                'by user %s\n'], userName);
-            fprintf(fid, '%% at %s on %s.\n\n', datestr(rem(now, 1), 13), ...
-                datestr(floor(now)));
+            fprintf(fid, ['%% Automatically created in CHEBGUI ', ...
+                'by user %s.\n'], userName);
+            fprintf(fid, '%% Date created: %s. Time created: %s.\n\n', ...
+                datestr(floor(now)), datestr(rem(now, 1), 13));
+            
+            fprintf(fid, '%%%% Problem description.\n');
             
         end
     end
