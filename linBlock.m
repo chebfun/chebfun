@@ -87,6 +87,12 @@ classdef (InferiorClasses = {?chebfun}) linBlock
             C = chebmatrix( varargin(~kill) );
         end
         
+        function spy(A, varargin)
+           % The CHEBMATRIX class implements a SPY method, which is precisely
+           % what we want:
+           spy(chebmatrix({A}), varargin{:});
+        end
+        
         function C = vertcat(varargin)
             kill = cellfun(@isempty, varargin);   % skip empties         
             C = chebmatrix( varargin(~kill)' );
