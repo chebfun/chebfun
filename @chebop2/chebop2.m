@@ -163,7 +163,14 @@ if ( isa(varargin{1},'function_handle') )
         % chebop2.
         u = adchebfun2( chebfun2(@(x,y) x.*y, domain) );
         v = op( u );
-        A = cell2mat(v.der.derCell).';
+        % If the PDO has constant coefficients then convert to double:
+        try 
+            A = cell2mat(v.der.derCell).';
+        catch
+            % PDO has variable coefficients, keep them in a cell array:
+            A = v.der.derCell;
+        end
+               
     elseif ( nargin(op) == 2 )
         error('Did you intend to have @(x,y,u)?')
     elseif ( nargin(op) == 3 )
