@@ -307,7 +307,7 @@ if ( isempty(deltaData) )
     deltaData = {[]};
 end
 
-h4 = stem(deltaData{:}, 'fill');
+h4 = plot(deltaData{:});
 
 if ( ~isempty(deltaStyle) )
     set(h4, deltaStyle{:}, 'ShowBaseLine', 'off');
