@@ -30,35 +30,23 @@ else
     guiMode = 1;
 end
 
-% Create a domain and the linear function on that domain. We use xt for the
-% linear function, later in the code, we will be able to determine whether x or
-% t is used for the linear function.
-dom = str2num(guifile.domain); %#ok<ST2NM>
+% Call the exportInfo method of the chebguiExporterBVP class, which takes care
+% of extracting most information we need from GUIFILE.
+expInfo = chebguiExporterBVP.exportInfo(guifile);
+
+dom = str2num(expInfo.dom);
+deString = expInfo.deString;
+allVarString = expInfo.allVarString;
+allVarNames = expInfo.allVarNames;
+indVarNameSpace = expInfo.indVarNameSpace;
+bcInput = expInfo.bcInput;
+initInput = expInfo.initInput;
+% Create the independent variable on DOM.
 xt = chebfun('x', dom);
 
-% Extract information from the GUI fields
-deInput = guifile.DE;
-bcInput = guifile.BC;
-initInput = guifile.init;
-
-% Wrap all input strings in a cell (if they're not a cell already)
-if ( isa(deInput, 'char') )
-    deInput = cellstr(deInput);
-end
-
-if ( isa(bcInput, 'char') )
-    bcInput = cellstr(bcInput);
-end
-
-if ( isa(initInput, 'char') )
-    initInput = cellstr(initInput);
-end
-
-% Convert the input to the an. func. format, get information about the
-% linear function in the problem.
-[deString, allVarString, indVarNameDE, dummy, dummy, dummy, allVarNames] = ...
-    setupFields(guifile, deInput, 'DE');
+% Assign the variables names to HANDLES.
 handles.varnames = allVarNames;
+handles.indVarName = {indVarNameSpace};
 
 % If we only have one variable appearing in allVarNames, the problem is a
 % scalar problem.
@@ -85,52 +73,9 @@ if ( guiMode )
     end
 end
 
-% Obtain the independent variable name appearing in the initial condition
-if ( ~isempty(initInput{1}) && isempty(guess) )
-    % If we have a scalar problem, we're OK with no dependent variables
-    % appearing in the initial guess
-    if ( scalarProblem )
-        [initString, ignored, indVarNameInit] = ...
-            setupFields(guifile, initInput, 'INITSCALAR', allVarString);
-
-        % If the initial guess was just passed a constant, indVarNameInit will
-        % be empty. For consistency (allowing us to do the if-statement below),
-        % convert to an empty cell.
-        if ( isempty(indVarNameInit) )
-            indVarNameInit = {''};
-        end       
-    else
-        [initString, ignored, indVarNameInit] = ...
-            setupFields(guifile, initInput, 'INIT', allVarString);        
-    end
-else
-    % No initial guess passed.
-    indVarNameInit = {''};
-end
-
-
-% Make sure we don't have a disrepency in indVarNames
-if ( ~isempty(indVarNameInit{1}) && ~isempty(indVarNameDE{1}) )
-    if ( strcmp(indVarNameDE{1}, indVarNameInit{1}) )
-        indVarNameSpace = indVarNameDE{1};
-    else
-        error('Chebgui:SolveGUIbvp', 'Independent variable names do not agree')
-    end
-elseif ( ~isempty(indVarNameInit{1}) && isempty(indVarNameDE{1}) )
-    indVarNameSpace = indVarNameInit{1};
-elseif ( isempty(indVarNameInit{1}) && ~isempty(indVarNameDE{1}) )
-    indVarNameSpace = indVarNameDE{1};
-else
-    indVarNameSpace = 'x'; % Default value
-end
-handles.indVarName = {indVarNameSpace};
-
 % Assign r, x or t as the linear function on the domain if indVarName is
 % not empty
 eval([indVarNameSpace, '=xt;']);
-
-% Replace the 'DUMMYSPACE' variable in the DE field
-deString = strrep(deString, 'DUMMYSPACE', indVarNameSpace);
 
 % Convert the string to proper anon. function using eval
 DE = eval(deString);
@@ -260,12 +205,7 @@ end
 options.grid = guifile.options.grid;
 
 % What discretization do we want?
-collocDisc = get(handles.button_Collocation, 'value');
-if ( collocDisc )
-    options.discretization = @colloc2;
-else
-    options.discretization = @ultraS;
-end
+options.discretization = expInfo.discretization;
 
 % Various things we only need to think about when in the GUI, changes GUI compenents.
 if ( guiMode )
