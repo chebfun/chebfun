@@ -206,22 +206,22 @@ gg = {leftVal rightVal upVal downVal};
 %check bc at corners:
 allbc = 0;
 if ~isempty(bcUp) && ~isempty(upVal) && ~isempty(bcRight) && ~isempty(rightVal)
-    if ( norm(rightVal(end-5:end),inf)<sqrt(tol) && norm(upVal(end-5:end),inf)<sqrt(tol) )
+    if ( norm(rightVal(end-4:end),inf)<sqrt(tol) && norm(upVal(end-4:end),inf)<sqrt(tol) )
         allbc = allbc + norm(upVal.'*bcRight - bcUp.'*rightVal);
     end
 end
 if ~isempty(bcUp) && ~isempty(upVal) && ~isempty(bcLeft) && ~isempty(leftVal)
-    if ( norm(leftVal(end-5:end),inf)<sqrt(tol) && norm(upVal(end-5:end),inf)<sqrt(tol) )
+    if ( norm(leftVal(end-4:end),inf)<sqrt(tol) && norm(upVal(end-4:end),inf)<sqrt(tol) )
         allbc = allbc + norm(upVal.'*bcLeft - bcUp.'*leftVal);
     end
 end
 if ~isempty(bcDown) && ~isempty(downVal) && ~isempty(bcRight) && ~isempty(rightVal)
-    if ( norm(rightVal(end-5:end),inf)<sqrt(tol) && norm(downVal(end-5:end),inf)<sqrt(tol) )
+    if ( norm(rightVal(end-4:end),inf)<sqrt(tol) && norm(downVal(end-4:end),inf)<sqrt(tol) )
         allbc = allbc + norm(downVal.'*bcRight - bcDown.'*rightVal);
     end
 end
 if ~isempty(bcDown) && ~isempty(downVal) && ~isempty(bcLeft) && ~isempty(leftVal)
-    if ( norm(leftVal(end-5:end),inf)<sqrt(tol) && norm(downVal(end-5:end),inf)<sqrt(tol) )
+    if ( norm(leftVal(end-4:end),inf)<sqrt(tol) && norm(downVal(end-4:end),inf)<sqrt(tol) )
         allbc = allbc + norm(downVal.'*bcLeft - bcDown.'*leftVal);
     end
 end

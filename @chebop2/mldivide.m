@@ -31,7 +31,7 @@ elseif ( nargin == 4 && isa(varargin{1},'double') && ~isinf(varargin{1}) ...
     % Nonadaptive solve with an m-by-n discretization
     m = varargin{1};
     n = varargin{2};
-    if ( abs( round(n) - n ) > 0 && abs( round(m) - m ) > 0)
+    if ( abs( round(n) - n ) > 0 || abs( round(m) - m ) > 0)
         error('CHEBOP2:MLDIVIDE:DISC','Discretization size should be an integer');
     end
     X = denseSolve(N,f,m,n);

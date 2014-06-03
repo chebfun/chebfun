@@ -16,17 +16,36 @@ u1 = mldivide(N, 0, 200, inf);
 [m, n] = length( u1 ); 
 pass(1) = ( n == 200 ); 
 
-N = chebop2(@(u) diffy(u) + diffx(u,3),d);
-N.dbc = @(x) exp(-10*x.^2);
-N.rbc = @(t,u) [u diff(u)];
-N.lbc = 0;
 u2 = mldivide(N, 0, 200, 200);
 [m, n] = length( u2 ); 
 pass(2) = ( m == 200 ); 
 pass(3) = ( n == 200 ); 
 
+u3 = mldivide(N, 0, inf, 200);
+[m, n] = length( u2 ); 
+pass(4) = ( m == 200 ); 
+
+% check small values of n: 
+u4 = mldivide(N, 0, 10, 10);
+[m, n] = length( u4 ); 
+pass(5) = ( m == 10 ); 
+pass(6) = ( n == 10 );  
+
+% check small values of n: 
+u4 = mldivide(N, 0, 6, 10);
+[m, n] = length( u4 ); 
+pass(7) = ( m == 10 ); 
+pass(8) = ( n == 6 );
+
+% check small values of n: 
+u4 = mldivide(N, 0, inf, 5);
+[m, n] = length( u4 ); 
+pass(7) = ( m == 6 ); 
+pass(8) = ( n == 6 ); 
+
 % check solutions are about the same (PDE is not very numerically stable 
 % because bcs do not match): 
-pass(4) = norm( u1 - u2 ) < 20*sqrt(tol); 
+pass(5) = norm( u1 - u2 ) < 20*sqrt(tol); 
+pass(6) = norm( u2 - u3 ) < 20*sqrt(tol); 
 
 end
