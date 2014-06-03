@@ -25,7 +25,7 @@ exact = N \ 0;
 x = linspace(-1,1,1000); 
 [xx,yy] = meshgrid(x); 
 A = abs(u(xx,yy) - exact(xx,yy));
-pass(1) = ( max( A(:) ) < 10000*tol );
+pass(1) = ( max( A(:) ) < 20000*tol );
 
 % Try variable coefficients:
 x = chebfun(@(x) x);
