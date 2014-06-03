@@ -1,11 +1,41 @@
 function [field, allVarString, indVarName, pdeVarNames, pdeflag, ...
     eigVarNames, allVarNames]  = setupFields(guifile, input, type, allVarString)
-
-% TODO:  Documentation.
-
+%SETUPFIELDS    Convert input from GUI window to format useful for Chebfun.
+%
+% Calling sequence:
+%
+%   [FIELD, ALLVARSTRING, INDVARNAME, PDEVARNAMES, PDEFLAG,  EIGVARNAMES, ...
+%       ALLVARNAMES] = SETUPFIELDS(GUIFILE, INPUT, TYPE, ALLVARSTRING)
+%
+% Here, the inputs are:
+%
+%   GUIFILE:        A CHEBGUI object, describing the problem shown in the GUI.
+%   INPUT:          The 'String' property of a particular input field of the GUI.
+%   TYPE:           The type of the field (differential equation, boundary
+%                   conditions or initial guess/condition).
+%   ALLVARSTRING:   A strings, containing the name of all variables that appear
+%                   in a problem.
+%
+% The outputs are:
+%   FIELD:          A string that can be converted to anonymous function, 
+%                   describing the INPUT variable.
+%   ALLVARSTRING:   A strings, containing the name of all variables that appear
+%                   in a problem.
+%   INDVARNAME:     A cell-array of strings that contains the name of the
+%                   independent variables that appear in the problem. The first
+%                   entry corresponds to the time variable, the second to the
+%                   potential time variable.
+%   PDEVARNAMES:    A cell array of strings that appear on PDE format in INPUT, 
+%                   i.e. u_t.
+%   PDEFLAG:        A vector, whose kth element is equal to 1 of the kth line of
+%                   INPUT is of PDE format, e.g. u_t = u'', 0 otherwise.
+%   EIGVARNAMES:    A string that indicates how the eigenvalue parameter appears
+%                   in the problem, that is, either l, lam or lambda.
+%   ALLVARNAMES:    A cell array of string, containing the name of all variables
+%                   that appear in a problem.
+    
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
-
 
 % For BCs, we need to check whether varNames contains anything not found in
 % varNames of the DE. Should we make the varNames of the DE as parameters? Put
@@ -14,11 +44,14 @@ function [field, allVarString, indVarName, pdeVarNames, pdeflag, ...
 
 % Number of rows in the input.
 numOfRows = max(size(input));
+
 % Binary flag for PDE detection. The kth element is going to be equal to 1 of
 % the kth row of the input has PDE input in it, e.g. u_t.
 pdeflag = zeros(1,numOfRows);
+
 % What variables appear with the PDE subscript _ on them?
 pdeVarNames = '';
+
 % A temporary string for the space variable, as we don't know yet whether it is
 % going to be r, t or x. This will then get replaced later.
 dummys = 'DUMMYSPACE';
@@ -209,6 +242,36 @@ end
 
 function [field, indVarName, varNames, pdeVarNames, eigVarNames, commaSeparated] ...
     = setupLine(guifile, input, type)
+%SETUPLINE      Convert an individual input line to format useful for Chebfun.
+%
+% Calling sequence:
+%
+%   [FIELD, INDVARNAME, VARNAMES, PDEVARNAMES, EIGVARNAMES, COMMASEPARATED] =
+%       SETUPLINE(GUIFILE, INPUT, TYPE)
+%
+% Here, the inputs are:
+%
+%   GUIFILE:        A CHEBGUI object, describing the problem shown in the GUI.
+%   INPUT:          A single line of the 'String' property of a particular
+%                   input field of the GUI.
+%   TYPE:           The type of the field (differential equation, boundary
+%                   conditions or initial guess/condition).
+%
+% The outputs are:
+%   FIELD:          A string that can be converted to anonymous function, 
+%                   describing the INPUT variable.
+%   INDVARNAME:     A cell-array of strings that contains the name of the
+%                   independent variables that appear in the problem. The first
+%                   entry corresponds to the time variable, the second to the
+%                   potential time variable.
+%   VARNAMES:       A cell array of string, containing the name of all variables
+%                   that appear in the line INPUT.
+%   PDEVARNAMES:    A cell array of strings that appear on PDE format in the 
+%                   line INPUT, i.e. u_t.
+%   EIGVARNAMES:    A string that indicates how the eigenvalue parameter appears
+%                   in the problem, that is, either l, lam or lambda.
+%   COMMASEPARATED: Equal to 1 if the line INPUT is comma separated, for 
+%                   example, "u=1, v=2+x".
 
 convertBCtoAnon = 0;
 
@@ -256,6 +319,9 @@ if ( any(strcmp(type, {'DE', 'INIT', 'INITSCALAR'})) || convertBCtoAnon )
     [field, indVarName, varNames, pdeVarNames, eigVarNames, commaSeparated] = ...
         stringParser.str2anon(input, guifile.type, type);
 end
+
+varNames
+pdeVarNames
 
 end
     
