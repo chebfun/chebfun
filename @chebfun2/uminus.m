@@ -6,7 +6,4 @@ function F = uminus( F )
 
 F.pivotValues = -F.pivotValues;
 
-% Also update derivative information. 
-F.deriv = -F.deriv;
-
 end
