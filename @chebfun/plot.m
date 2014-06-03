@@ -257,7 +257,7 @@ while ( ~isempty(varargin) )
         pointData = [pointData, newData(k).xPoints, newData(k).yPoints, ...
             styleData];
         jumpData = [jumpData, newData(k).xJumps, newData(k).yJumps, styleData];
-        deltaData = [deltaData, newData(k).xDeltas, newData(k).yDeltas];
+        deltaData = [deltaData, newData(k).xDeltas, newData(k).yDeltas, styleData];
     end
     
     % If xLim(1) == xLim(2), set xLim [inf -inf] and let Matlab figure out a
@@ -304,22 +304,12 @@ end
 
 % Plot the Delta functions:
 if ( isempty(deltaData) )
-    deltaData = {[]};
+    h4 = stem([]);
+else
+    h4 = mystem(deltaData{:});
+    
 end
-h4 = stem(deltaData{:}, 'd', 'fill');
 
-%% 
-% Do we want a style for delta functions?
-% if ( isempty(jumpStyle) )
-%     if ( isComplex )
-%         %[TODO]: The following statement can not be reached:
-%         set(h3, 'LineStyle', 'none', 'Marker', 'none')
-%     else
-%         set(h3, 'LineStyle', ':', 'Marker', 'none')
-%     end
-% else
-%     set(h3, jumpStyle{:});
-% end
 % Set the X-limits if appropriate values have been suggested:
 if ( all(isfinite(xLim)) )
 
@@ -350,6 +340,34 @@ end
 % Give an output to the plot handles if requested:
 if ( nargout > 0 )
     varargout = {h1 ; h2 ; h3 ; h4};
+end
+
+end
+
+function h = mystem(varargin)
+%MYSTEM   Plot multiple STEM plots in one call.
+% We need this because stem doesn't supoprt multiple inputs in the same way
+% PLOT does. An alternative option would be to write our own version of STEM.
+
+% Separate out each individual plot by looking for two consecutive doubles.
+isDouble = cellfun(@isnumeric, varargin);
+startLoc = [1 find([0 diff(isDouble)] ==1 & [diff(isDouble) 0] == 0) nargin+1];
+for k = 1:numel(startLoc)-1
+    data = varargin(startLoc(k):startLoc(k+1)-1);
+    h(k) = stem(data{:});
+end
+
+% The marker is always a diamond:
+set(h, 'marker', 'd', 'markerfacecolor', 'auto');
+
+% Remove the 'baseline':
+hbase = get(h, 'Baseline');
+for j = 1:numel(hbase)
+    hj = hbase(j);
+    if ( iscell(hj) )
+        hj = hj{1};
+    end
+    set(hj, 'lineStyle', 'none');
 end
 
 end
