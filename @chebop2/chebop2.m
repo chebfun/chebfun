@@ -163,7 +163,7 @@ if ( isa(varargin{1},'function_handle') )
         % chebop2.
         u = adchebfun2( chebfun2(@(x,y) x.*y, domain) );
         v = op( u );
-        A = cell2mat(v.der.derCell);
+        A = cell2mat(v.der.derCell).';
     elseif ( nargin(op) == 2 )
         error('Did you intend to have @(x,y,u)?')
     elseif ( nargin(op) == 3 )
