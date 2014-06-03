@@ -1,36 +1,15 @@
 function varargout = chebguiedit(varargin)
-% CHEBGUIEDIT MATLAB code for chebguiedit.fig
-%      CHEBGUIEDIT, by itself, creates a new CHEBGUIEDIT or raises the existing
-%      singleton*.
-%
-%      H = CHEBGUIEDIT returns the handle to a new CHEBGUIEDIT or the handle to
-%      the existing singleton*.
-%
-%      CHEBGUIEDIT('CALLBACK',hObject,eventData,handles,...) calls the local
-%      function named CALLBACK in CHEBGUIEDIT.M with the given input arguments.
-%
-%      CHEBGUIEDIT('Property','Value',...) creates a new CHEBGUIEDIT or raises the
-%      existing singleton*.  Starting from the left, property value pairs are
-%      applied to the GUI before chebguiedit_OpeningFcn gets called.  An
-%      unrecognized property name or invalid value makes property application
-%      stop.  All inputs are passed to chebguiedit_OpeningFcn via varargin.
-%
-%      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
-%      instance to run (singleton)".
-%
-% See also: GUIDE, GUIDATA, GUIHANDLES
+%CHEBGUIEDIT   CHEBGUI edittor.
+%   A CHEBGUIEDIT figure gets created when a user right-clicks the input fields
+%   of the CHEBGUI figure. It is not intended for use in any other context.
 
-% Developers note:
-%   A chebguiedit figure gets created when a user right-clicks the input fields
-%   of the CHEBGUI figure.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
 
-% Edit the above text to modify the response to help chebguiedit
+% Suppress irritating MLINT warnings: 
+%#ok<*INUSL,*DEFNU,*INUSD>
 
-% Last Modified by GUIDE v2.5 31-Jan-2011 09:40:10
-
-%  Copyright 2011 by The University of Oxford and The Chebfun Developers. 
-%  See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
@@ -39,17 +18,20 @@ gui_State = struct('gui_Name',       mfilename, ...
                    'gui_OutputFcn',  @chebguiedit_OutputFcn, ...
                    'gui_LayoutFcn',  [] , ...
                    'gui_Callback',   []);
-if nargin && ischar(varargin{1})
+               
+if ( nargin && ischar(varargin{1}) )
     gui_State.gui_Callback = str2func(varargin{1});
 end
 
-if nargout
+if ( nargout )
     [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
 else
     gui_mainfcn(gui_State, varargin{:});
 end
 % End initialization code - DO NOT EDIT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+end
 
 % --- Executes just before chebguiedit is made visible.
 function chebguiedit_OpeningFcn(hObject, eventdata, handles, varargin)
@@ -57,14 +39,15 @@ function chebguiedit_OpeningFcn(hObject, eventdata, handles, varargin)
 
 handles.output = hObject;
 mainGuiInput = find(strcmp(varargin, 'chebguiwindow'));
-if (isempty(mainGuiInput)) ...
-    || (length(varargin) <= mainGuiInput) ...
-    || (~ishandle(varargin{mainGuiInput+1}))
+if ( isempty(mainGuiInput) ...
+     || (length(varargin) <= mainGuiInput) ...
+     || ~ishandle(varargin{mainGuiInput+1}) )
     disp('-----------------------------------------------------');
     disp('Improper input arguments. ') 
     disp('chebguiedit should only be called from chebgui.')
     disp('-----------------------------------------------------');
 end
+% TODO: Why not throw an error here?
 
 % Remember the handle, and adjust our position
 handles.chebguiwindow = varargin{mainGuiInput+1};
@@ -77,7 +60,7 @@ set(handles.edit1, 'String', ...
     get(mainHandles.(varargin{3}), 'String'));
 
 % Get the default font size.
-set(handles.edit1, 'FontSize', get(mainHandles.tempedit,'FontSize'));
+set(handles.edit1, 'FontSize', get(mainHandles.tempedit, 'FontSize'));
 
 % Update handles structure
 guidata(hObject, handles);
@@ -85,18 +68,24 @@ guidata(hObject, handles);
 % UIWAIT makes chebguiedit wait for user response (see UIRESUME)
 uiwait(hObject);
 
+end
+
 % --- Outputs from this function are returned to the command line.
-function varargout = chebguiedit_OutputFcn(hObject, eventdata, handles) 
+function varargout = chebguiedit_OutputFcn(hObject, eventdata, handles)  
 % Get default command line output from handles structure
 varargout{1} =[];
+end
 
 % --- Executes during object creation, after setting all properties.
 function edit1_CreateFcn(hObject, eventdata, handles)
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
+if ( ispc && isequal(get(hObject, 'BackgroundColor'), ...
+        get(0, 'defaultUicontrolBackgroundColor')) )
+    set(hObject, 'BackgroundColor', 'white');
+end
 end
 
 function edit1_Callback(hObject, eventdata, handles)
+end
 
 % --- Executes on button press in buttonOK.
 function buttonOK_Callback(hObject, eventdata, handles)
@@ -110,6 +99,7 @@ updateEditFontSize(hObject, eventdata, handles)
 % Resume and close
 uiresume(handles.figure1);
 delete(handles.figure1)
+end
 
 % --- Executes on button press in buttonCancel.
 function buttonCancel_Callback(hObject, eventdata, handles)
@@ -118,31 +108,38 @@ updateEditFontSize(hObject, eventdata, handles);
 % Resume and close
 uiresume(handles.figure1);
 delete(handles.figure1)
+end
 
 % --- Executes on button press in buttonClear.
-function buttonClear_Callback(hObject, eventdata, handles)
-set(handles.edit1,'String','');
+function buttonClear_Callback(hObject, eventdata, handles) 
+set(handles.edit1, 'String', '');
+end
 
 function figure_CloseRequestFcn(hObject, eventdata, handles)
 % Store the used fontsize
 updateEditFontSize(hObject, eventdata, handles);
 % Resume and close
 uiresume(hObject);
+end
 
 function fontplusbutton_Callback(hObject, eventdata, handles)
 % Increase font size.
-fs = get(handles.edit1,'FontSize') + 1;
-set(handles.edit1,'FontSize',fs);
+fs = get(handles.edit1, 'FontSize') + 1;
+set(handles.edit1, 'FontSize', fs);
+end
 
 function fontmbutton_Callback(hObject, eventdata, handles)
 % Decrease font size.
-fs = get(handles.edit1,'FontSize') - 1;
-set(handles.edit1,'FontSize',fs);
+fs = get(handles.edit1, 'FontSize') - 1;
+set(handles.edit1, 'FontSize', fs);
+end
 
 function edit1_ButtonDownFcn(hObject, eventdata, handles)
 % Is the same as buttonCancel
 buttonCancel_Callback(hObject, eventdata, handles)
+end
 
 function updateEditFontSize(hObject, eventdata, handles)
 mainHandles = guidata(handles.chebguiwindow);
-set(mainHandles.tempedit,'FontSize',get(handles.edit1,'FontSize'));
+set(mainHandles.tempedit, 'FontSize', get(handles.edit1, 'FontSize'));
+end
