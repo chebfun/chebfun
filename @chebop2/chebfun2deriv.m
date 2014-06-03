@@ -14,6 +14,7 @@ function deriv = chebfun2deriv( op )
 % Evaluate the operator at a chebfun2 and use the AD information to 
 % determine the coefficients of the partial differential operator: 
 
+error 
 u = chebfun2(@(x,y) x.*y);
 opu = op(u);
 deriv = opu.deriv;

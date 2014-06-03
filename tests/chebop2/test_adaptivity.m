@@ -6,7 +6,6 @@ if ( nargin < 1 )
 end 
 tol = 100*prefs.cheb2Prefs.eps; 
 
-
 d = [-5 1 0 .1];
 N = chebop2(@(u) diffy(u) + diffx(u,3),d);
 N.dbc = @(x) exp(-10*x.^2);
@@ -37,15 +36,9 @@ u4 = mldivide(N, 0, 6, 10);
 pass(7) = ( m == 10 ); 
 pass(8) = ( n == 6 );
 
-% check small values of n: 
-u4 = mldivide(N, 0, inf, 5);
-[m, n] = length( u4 ); 
-pass(7) = ( m == 6 ); 
-pass(8) = ( n == 6 ); 
-
 % check solutions are about the same (PDE is not very numerically stable 
 % because bcs do not match): 
-pass(5) = norm( u1 - u2 ) < 20*sqrt(tol); 
-pass(6) = norm( u2 - u3 ) < 20*sqrt(tol); 
+pass(9) = norm( u1 - u2 ) < 20*sqrt(tol); 
+pass(10) = norm( u2 - u3 ) < 20*sqrt(tol); 
 
 end
