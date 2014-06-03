@@ -1,4 +1,4 @@
-function varargout = chebguiedit(varargin)
+function varargout = chebguiEdit(varargin)
 %CHEBGUIEDIT   CHEBGUI edittor.
 %   A CHEBGUIEDIT figure gets created when a user right-clicks the input fields
 %   of the CHEBGUI figure. It is not intended for use in any other context.
@@ -14,8 +14,8 @@ function varargout = chebguiedit(varargin)
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @chebguiedit_OpeningFcn, ...
-                   'gui_OutputFcn',  @chebguiedit_OutputFcn, ...
+                   'gui_OpeningFcn', @chebguiEdit_OpeningFcn, ...
+                   'gui_OutputFcn',  @chebguiEdit_OutputFcn, ...
                    'gui_LayoutFcn',  [] , ...
                    'gui_Callback',   []);
                
@@ -33,9 +33,9 @@ end
 
 end
 
-% --- Executes just before chebguiedit is made visible.
-function chebguiedit_OpeningFcn(hObject, eventdata, handles, varargin)
-% Choose default command line output for chebguiedit
+% --- Executes just before chebguiEdit is made visible.
+function chebguiEdit_OpeningFcn(hObject, eventdata, handles, varargin)
+% Choose default command line output for chebguiEdit
 
 handles.output = hObject;
 mainGuiInput = find(strcmp(varargin, 'chebguiWindow'));
@@ -44,7 +44,7 @@ if ( isempty(mainGuiInput) ...
      || ~ishandle(varargin{mainGuiInput+1}) )
     disp('-----------------------------------------------------');
     disp('Improper input arguments. ') 
-    disp('chebguiedit should only be called from chebgui.')
+    disp('chebguiEdit should only be called from chebgui.')
     disp('-----------------------------------------------------');
 end
 % TODO: Why not throw an error here?
@@ -65,13 +65,13 @@ set(handles.edit1, 'FontSize', get(mainHandles.tempedit, 'FontSize'));
 % Update handles structure
 guidata(hObject, handles);
 
-% UIWAIT makes chebguiedit wait for user response (see UIRESUME)
+% UIWAIT makes chebguiEdit wait for user response (see UIRESUME)
 uiwait(hObject);
 
 end
 
 % --- Outputs from this function are returned to the command line.
-function varargout = chebguiedit_OutputFcn(hObject, eventdata, handles)  
+function varargout = chebguiEdit_OutputFcn(hObject, eventdata, handles)  
 % Get default command line output from handles structure
 varargout{1} =[];
 end

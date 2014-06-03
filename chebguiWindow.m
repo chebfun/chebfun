@@ -941,35 +941,35 @@ end
 
 function input_DE_ButtonDownFcn(hObject, eventdata, handles)
 
-chebguiedit('chebguiWindow', handles.chebguimainwindow, 'input_DE');
+chebguiEdit('chebguiWindow', handles.chebguimainwindow, 'input_DE');
 input_DE_Callback(hObject, eventdata, handles);
 
 end
 
 function input_LBC_ButtonDownFcn(hObject, eventdata, handles)
 
-chebguiedit('chebguiWindow', handles.chebguimainwindow, 'input_LBC');
+chebguiEdit('chebguiWindow', handles.chebguimainwindow, 'input_LBC');
 input_LBC_Callback(hObject, eventdata, handles);
 
 end
 
 function input_RBC_ButtonDownFcn(hObject, eventdata, handles)
 
-chebguiedit('chebguiWindow', handles.chebguimainwindow, 'input_RBC');
+chebguiEdit('chebguiWindow', handles.chebguimainwindow, 'input_RBC');
 input_RBC_Callback(hObject, eventdata, handles);
 
 end
 
 function input_BC_ButtonDownFcn(hObject, eventdata, handles)
 
-chebguiedit('chebguiWindow', handles.chebguimainwindow, 'input_BC');
+chebguiEdit('chebguiWindow', handles.chebguimainwindow, 'input_BC');
 input_BC_Callback(hObject, eventdata, handles);
 
 end
 
 function input_GUESS_ButtonDownFcn(hObject, eventdata, handles)
 
-chebguiedit('chebguiWindow', handles.chebguimainwindow, 'input_GUESS');
+chebguiEdit('chebguiWindow', handles.chebguimainwindow, 'input_GUESS');
 input_GUESS_Callback(hObject, eventdata, handles);
 
 end
