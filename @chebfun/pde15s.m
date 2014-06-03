@@ -472,7 +472,6 @@ else
         bc.left.op = {@(n) zeros(max(sizeOp), SYSSIZE*n)}; % Dummy entries.
         BCRHS = num2cell(zeros(1, max(sizeOp)));
         leftNonlinBCFuns = op;
-        leftNonlinBCVals = zeros(1,max(sizeOp));  % nominally zero
     else
         error('Unknown BC syntax');
     end
@@ -487,7 +486,6 @@ else
         bc.middle.op = {@(n) zeros(max(sizeOp), SYSSIZE*n)}; % Dummy entries.
         BCRHS = num2cell(zeros(1, max(sizeOp)));
         middleNonlinBCFuns = op;
-        middleNonlinBCVals = zeros(1,max(sizeOp));  % nominally zero
     end
     
     if ( isempty(bc.right) )
@@ -529,7 +527,6 @@ else
         bc.right.op = {@(n) zeros(max(sizeOp), SYSSIZE*n)};
         BCRHS = [BCRHS num2cell(zeros(1, max(sizeOp)))];
         rightNonlinBCFuns = op;
-        rightNonlinBCVals = zeros(1,max(sizeOp));  % nominally zero
     else
         error('Unknown BC syntax');
     end
@@ -679,28 +676,13 @@ clear global SYSSIZE
         % conditions, or else we will get a singularity in time. We do this by
         % tweaking the BC values to match the reality. Changing the IC itself is
         % much trickier.
-        linearBCVals = B*U0(:);
-        Utmp = chebdouble(U0, DOMAIN);
-        if ( ~isempty(leftNonlinBCLocs) )
-            tmp = leftNonlinBCFuns(tSpan(1), x, Utmp);
-            tmp = double(tmp);
-            if ( size(tmp, 1) ~= n )
-                tmp = reshape(tmp, n, numel(tmp)/n);
-            end
-            leftNonlinBCVals = tmp(1, :);
-        end
-        if ( ~isempty(middleNonlinBCLocs) )
-            % TODO: This won't work if there are also left nonlin BCs
-            middleNonlinBCVals = double(middleNonlinBCFuns(tSpan(1), x, Utmp));
-        end
-        if ( ~isempty(rightNonlinBCLocs) )
-            tmp = rightNonlinBCFuns(tSpan(1), x, Utmp);
-            tmp = double(tmp);
-            if ( size(tmp, 1) ~= n )
-                tmp = reshape(tmp, n, numel(tmp)/n);
-            end
-            rightNonlinBCVals = fliplr(tmp(end, :));
-        end       
+        
+        % Find out what the BC deviance from nominal really is. 
+        BCVALOFFSET = 0;      % recover nominal value in next call
+        F = odeFun(tSpan(1),U0(:));   % also assigns to "rows" and "q"
+        numRows = length(rows);
+        nominal = [ q; zeros(numRows-length(q),1) ];
+        BCVALOFFSET = F(rows);
         
         % ODE options: (mass matrix)
         opt2 = odeset(opt, 'Mass', M, 'MassSingular', 'yes', ...
@@ -737,9 +719,9 @@ clear global SYSSIZE
             % Get the algebraic right-hand sides: (may be time-dependent)
             for l = 1:numel(BCRHS)
                 if ( isa(BCRHS{l}, 'function_handle') )
-                    q(l, 1) = feval(BCRHS{l}, t) - linearBCVals(l);
+                    q(l, 1) = feval(BCRHS{l}, t);
                 else
-                    q(l, 1) = BCRHS{l} - linearBCVals(l);
+                    q(l, 1) = BCRHS{l};
                 end
             end
             
@@ -754,13 +736,12 @@ clear global SYSSIZE
                 if ( size(uTmp, 1) ~= n )
                     uTmp = reshape(uTmp, n, numel(uTmp)/n);
                 end
-                F(rows(indx)) = uTmp(1, :) - leftNonlinBCVals;
+                F(rows(indx)) = uTmp(1, :);
             end
             if ( ~isempty(middleNonlinBCLocs) )
                 % TODO: This won't work if there are also left nonlin BCs
                 indx = 1:length(middleNonlinBCLocs);
-                F(rows(indx)) = double(middleNonlinBCFuns(t, x, Utmp)) - ...
-                    middleNonlinBCVals;
+                F(rows(indx)) = double(middleNonlinBCFuns(t, x, Utmp));
             end            
             if ( ~isempty(rightNonlinBCLocs) )
                 indx = numel(BCRHS) + 1 - rightNonlinBCLocs;
@@ -769,8 +750,11 @@ clear global SYSSIZE
                 if ( size(uTmp, 1) ~= n )
                     uTmp = reshape(uTmp, n, numel(uTmp)/n);
                 end
-                F(rows(indx)) = fliplr(uTmp(end, :)) - rightNonlinBCVals;
+                F(rows(indx)) = fliplr(uTmp(end, :));
             end
+            
+            % Adjust BC rows by the needed offset from original time:
+            F(rows) = F(rows) + BCVALOFFSET;
             
             % Reshape to back to a single column:
             F = F(:);
