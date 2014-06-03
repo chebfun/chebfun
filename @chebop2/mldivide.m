@@ -133,7 +133,7 @@ elseif ( nargin == 2 || (nargin == 4 && isinf(varargin{2}) && isinf(varargin{1})
     end
     
     if max(m,n) >= maxDiscretise
-        warning('Maximum discretization size reached. Solution may not be resolved.')
+        warning('Maximum discretization size reached. Solution may not accurate.')
     end
      
     %TODO:
