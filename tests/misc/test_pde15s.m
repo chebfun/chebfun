@@ -38,7 +38,7 @@ d = [-1, 1]; x = chebfun('x', d);
 u = exp(3*sin(pi*x));
 f = @(t, x, u) -(1+0.3*sin(pi*x)).*diff(u);
 opts = pdeset('eps', 1e-4, 'abstol', 1e-4, 'reltol', 1e-4, 'plot', 1);
-uu = pde15s(f, 0:.05:2, u, 'periodic', opts);
+uu = pde15s(f, 0:.05:1.5, u, 'periodic', opts);
 
 %% Advection-diffusion
 close all
@@ -82,7 +82,7 @@ d = [-3*pi/4, pi]; x = chebfun('x', d);
 u = sin(2*x);
 f = @(t, x, u) E*diff(u, 2)+diff(u);
 rbc = @(t, u) u - .1*sin(t);
-mid = @(x, u) feval(u, d(1)) - 1;
+mid = @(t, x, u) feval(u, d(1)) - 1;
 bc = struct; bc.left = []; bc.right = rbc; bc.middle = mid;
 opts = pdeset('holdPlot', 'on');
 tt = linspace(0, 3, 51);
@@ -100,8 +100,10 @@ close all
 d = [-1, 1]; x = chebfun('x', d);
 u = .53*x-.47*sin(1.5*pi*x);
 f = @(u) u.*(1-u.^2) + 5e-4*diff(u, 2);
-bc.left = struct('op', 'dirichlet', 'val', -1);
-bc.right = struct('op', 'dirichlet', 'val', 1);
+% bc.left = struct('op', 'dirichlet', 'val', -1);
+% bc.right = struct('op', 'dirichlet', 'val', 1);
+bc.left = @(u) u + 1;
+bc.right = @(u) u - 1;
 opts = pdeset('Ylim', [-1.1 1.1]);
 pde15s(f, 0:0.1:3, u, bc, opts);
 
