@@ -26,7 +26,7 @@ pass(1) = ( norm(u - exact) < 10*tol );
 
 
 d = [0 pi 0 pi]; 
-N = chebop2(@(u) lap(u), d); 
+N = chebop2(@(u) laplacian(u), d); 
 N.lbc = 0; 
 N.rbc = @(y) pi^4*y./12 + sinh(pi)*(cos(y) + sin(y)); 
 N.dbc = @(x) sinh(x); 
@@ -45,7 +45,7 @@ pass(2) = ( norm(u - exact) < 10*tol );
 % real part of analytic plus forcing term
 d = [0 pi 0 1];
 exact = chebfun2(@(x,y) real(exp(x+1i*y)) + x.^3.*y.^3, d);
-N = chebop2(@(u) lap(u), d); 
+N = chebop2(@(u) laplacian(u), d); 
 N.lbc = exact(d(1),:); 
 N.rbc = exact(d(2),:); 
 N.dbc = exact(:,d(3)); 

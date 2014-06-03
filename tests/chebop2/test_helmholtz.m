@@ -9,7 +9,7 @@ tol = prefs.cheb2Prefs.eps;
 
 % on [-1,1]x[-1,1]: 
 mu1 = 3/pi; mu2 = pi/6; lam = mu1^2 + mu2^2; 
-N = chebop2(@(u) lap(u) + lam * u); 
+N = chebop2(@(u) laplacian(u) + lam * u); 
 xbc = @(x) cos(mu1*x) + sin(mu1*x); 
 ybc = @(y) cos(mu2*y) + sin(mu2*y); 
 
@@ -26,7 +26,7 @@ pass(1) = ( norm(u - exact) < 100*tol );
 % on rectangular domain 
 mu1 = 1; mu2 = 2; lam = mu1^2 + mu2^2; 
 d = [-2 3 -1/10 3]; 
-N = chebop2(@(u) lap(u) + lam * u, d); 
+N = chebop2(@(u) laplacian(u) + lam * u, d); 
 xbc = @(x) cos(mu1*x) + sin(mu1*x); 
 ybc = @(y) cos(mu2*y) + sin(mu2*y); 
 
@@ -44,7 +44,7 @@ pass(2) = ( norm(u - exact) < 300*tol );
 % High frequency on rectangular domain 
 mu1 = 12; mu2 = 10; lam = mu1^2 + mu2^2; 
 d = [-2 3 -1/10 3]; 
-N = chebop2(@(u) lap(u) + lam * u, d); 
+N = chebop2(@(u) laplacian(u) + lam * u, d); 
 xbc = @(x) cos(mu1*x) + sin(mu1*x); 
 ybc = @(y) cos(mu2*y) + sin(mu2*y); 
 
@@ -65,7 +65,7 @@ pass(3) = ( norm(u(xx,yy) - exact(xx,yy),inf) < 1e9*tol );
 % Higher frequency on rectangular domain 
 mu1 = 12; mu2 = 50; lam = mu1^2 + mu2^2; 
 d = [-2 3 -1/10 3]; 
-N = chebop2(@(u) lap(u) + lam * u, d); 
+N = chebop2(@(u) laplacian(u) + lam * u, d); 
 xbc = @(x) cos(mu1*x) + sin(mu1*x); 
 ybc = @(y) cos(mu2*y) + sin(mu2*y); 
 
