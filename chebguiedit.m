@@ -38,7 +38,7 @@ function chebguiedit_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for chebguiedit
 
 handles.output = hObject;
-mainGuiInput = find(strcmp(varargin, 'chebguiwindow'));
+mainGuiInput = find(strcmp(varargin, 'chebguiWindow'));
 if ( isempty(mainGuiInput) ...
      || (length(varargin) <= mainGuiInput) ...
      || ~ishandle(varargin{mainGuiInput+1}) )

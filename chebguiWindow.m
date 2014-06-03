@@ -1,4 +1,4 @@
-function varargout = chebguiwindow(varargin)
+function varargout = chebguiWindow(varargin)
 %CHEBGUIWINDOW   Driver file for Chebfun's CHEBGUI
 %   This m-file populates and controls Chebfun's CHEBGUI.
 %
@@ -33,8 +33,8 @@ function varargout = chebguiwindow(varargin)
 gui_Singleton = 1;
 gui_State = struct('gui_Name', mfilename, ...
     'gui_Singleton',  gui_Singleton, ...
-    'gui_OpeningFcn', @chebguiwindow_OpeningFcn, ...
-    'gui_OutputFcn',  @chebguiwindow_OutputFcn, ...
+    'gui_OpeningFcn', @chebguiWindow_OpeningFcn, ...
+    'gui_OutputFcn',  @chebguiWindow_OutputFcn, ...
     'gui_LayoutFcn',  [] , ...
     'gui_Callback',   []);
 
@@ -77,15 +77,15 @@ end
 
 end
 
-% --- Executes just before chebguiwindow is made visible.
-function chebguiwindow_OpeningFcn(hObject, eventdata, handles, varargin)
+% --- Executes just before chebguiWindow is made visible.
+function chebguiWindow_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see Output(1-x^2)*exp(-30*(x+.5)^2)Fcn.
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to chebguiwindow (see VARARGIN)
+% varargin   command line arguments to chebguiWindow (see VARARGIN)
 
-% Choose default command line output for chebguiwindow
+% Choose default command line output for chebguiWindow
 handles.output = hObject;
 
 chebgui.initialiseFigures(handles)
@@ -154,13 +154,13 @@ handles.guifile.options.discretization = @colloc2;
 % Update handles structure
 guidata(hObject, handles);
 
-% UIWAIT makes chebguiwindow wait for user response (see UIRESUME)
+% UIWAIT makes chebguiWindow wait for user response (see UIRESUME)
 % uiwait(handles.chebguimainwindow);
 
 end
 
 % --- Outputs from this function are returned to the command line.
-function varargout = chebguiwindow_OutputFcn(hObject, eventdata, handles)
+function varargout = chebguiWindow_OutputFcn(hObject, eventdata, handles)
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -941,28 +941,35 @@ end
 
 function input_DE_ButtonDownFcn(hObject, eventdata, handles)
 
-chebguiedit('chebguiwindow', handles.chebguimainwindow, 'input_DE');
+chebguiedit('chebguiWindow', handles.chebguimainwindow, 'input_DE');
 input_DE_Callback(hObject, eventdata, handles);
 
 end
 
 function input_LBC_ButtonDownFcn(hObject, eventdata, handles)
 
-chebguiedit('chebguiwindow', handles.chebguimainwindow, 'input_LBC');
+chebguiedit('chebguiWindow', handles.chebguimainwindow, 'input_LBC');
 input_LBC_Callback(hObject, eventdata, handles);
 
 end
 
 function input_RBC_ButtonDownFcn(hObject, eventdata, handles)
 
-chebguiedit('chebguiwindow', handles.chebguimainwindow, 'input_RBC');
+chebguiedit('chebguiWindow', handles.chebguimainwindow, 'input_RBC');
 input_RBC_Callback(hObject, eventdata, handles);
+
+end
+
+function input_BC_ButtonDownFcn(hObject, eventdata, handles)
+
+chebguiedit('chebguiWindow', handles.chebguimainwindow, 'input_BC');
+input_BC_Callback(hObject, eventdata, handles);
 
 end
 
 function input_GUESS_ButtonDownFcn(hObject, eventdata, handles)
 
-chebguiedit('chebguiwindow', handles.chebguimainwindow, 'input_GUESS');
+chebguiedit('chebguiWindow', handles.chebguimainwindow, 'input_GUESS');
 input_GUESS_Callback(hObject, eventdata, handles);
 
 end
@@ -2054,4 +2061,3 @@ guidata(hObject, handles);
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% FIN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
