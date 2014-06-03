@@ -352,6 +352,11 @@ function h = mystem(varargin)
 % Separate out each individual plot by looking for two consecutive doubles.
 isDouble = cellfun(@isnumeric, varargin);
 startLoc = [1 find([0 diff(isDouble)] ==1 & [diff(isDouble) 0] == 0) nargin+1];
+if ( numel(startLoc) == 2 )
+    % Nothing to plot!
+    h = stem([]);
+    return
+end
 for k = 1:numel(startLoc)-1
     data = varargin(startLoc(k):startLoc(k+1)-1);
     h(k) = stem(data{:});
