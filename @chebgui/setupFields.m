@@ -17,7 +17,7 @@ function [field, allVarString, indVarName, pdeVarNames, pdeflag, ...
 %                   in a problem.
 %
 % The outputs are:
-%   FIELD:          A string that can be converted to anonymous function, 
+%   FIELD:          A string that can be converted to anonymous function,
 %                   describing the INPUT variable.
 %   ALLVARSTRING:   A strings, containing the name of all variables that appear
 %                   in a problem.
@@ -25,7 +25,7 @@ function [field, allVarString, indVarName, pdeVarNames, pdeflag, ...
 %                   independent variables that appear in the problem. The first
 %                   entry corresponds to the time variable, the second to the
 %                   potential time variable.
-%   PDEVARNAMES:    A cell array of strings that appear on PDE format in INPUT, 
+%   PDEVARNAMES:    A cell array of strings that appear on PDE format in INPUT,
 %                   i.e. u_t.
 %   PDEFLAG:        A vector, whose kth element is equal to 1 of the kth line of
 %                   INPUT is of PDE format, e.g. u_t = u'', 0 otherwise.
@@ -33,14 +33,13 @@ function [field, allVarString, indVarName, pdeVarNames, pdeflag, ...
 %                   in the problem, that is, either l, lam or lambda.
 %   ALLVARNAMES:    A cell array of string, containing the name of all variables
 %                   that appear in a problem.
-    
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % For BCs, we need to check whether varNames contains anything not found in
-% varNames of the DE. Should we make the varNames of the DE as parameters? Put
-% the varNames of the differential equations as parameters? Also check for
-% indVarName in deRHS.
+% varNames of the DE. Should we make the varNames of the DE as parameters? Also
+% check for indVarName in deRHS.
 
 % Number of rows in the input.
 numOfRows = max(size(input));
@@ -60,18 +59,18 @@ if ( numOfRows == 1 )
     % In this case, we only have to deal with a single line of input.
     [anFun, indVarName, allVarNames, pdeVarNames, eigVarNames, commaSeparated] = ...
         setupLine(guifile, input{1}, type);
-
+    
     % Check whether we have too many variables involved in a PDE.
     if ( ~isempty(pdeVarNames) ) % Not a PDE (or we can't do this type yet!)
         pdeflag = true;
-
+        
         % Check whether we have a match of variable names, i.e. we want u
         % and u_t, not u and v_t:
         if ( (length(allVarNames) > 1) || (length(pdeVarNames) > 1) )
             error('Chebgui:setupFields:NumberOfVariables', ...
                 'Too many variables.');
         end
-
+        
         % Find where the PDE variable appears:
         underScoreLocation = strfind(pdeVarNames{1},'_');
         if ( ~strcmp(allVarNames{1}, pdeVarNames{1}(1:underScoreLocation-1)) )
@@ -99,7 +98,7 @@ if ( numOfRows == 1 )
         field = {field1 ; field2};
     elseif ( ~strcmp(guifile.type, 'pde') && strcmp(type, 'DE') )
         field = ['@(', dummys, ',', allVarString, ') ', anFun];
-
+        
     % Otherwise, add variables in front of what will be anonymous functions.
     % This is not needed for 'dirichlet', 'neumann', etc... This can only happen
     % in BCs, and in that case, allVarNames will be empty
@@ -107,7 +106,7 @@ if ( numOfRows == 1 )
         if ( commaSeparated )
             anFun = ['[', anFun, ']'];
         end
-
+        
         if ( strcmp(type, 'BCnew') )
             field = ['@(', dummys, ',', allVarString, ') ', anFun];
         else
@@ -121,24 +120,29 @@ else % Have a system, go through each row
     allVarNames = {};
     allPdeVarNames = {};
     indVarName = [];
+    anFun = cell(1, numOfRows);
+    % Loop through the rows
     for k = 1:numOfRows
         [anFun{k}, indVarNameTemp, varNames, pdeVarNames, eigVarNames, dummy] = ...
             setupLine(guifile, input{k}, type);
         if ( strcmp(anFun{k}([1 end]), '[]') )
             anFun{k}([1 end]) = [];
         end
-
+        
+        % Update what variables appear in the problem.
         allVarNames = [allVarNames ; varNames];
-
+        
         % Only allow one time derivative in each line
         if ( length(pdeVarNames) > 1 )
             error('Chebgui:setupField:TooManyTimeDerivatives', ...
                 'Only one time derivative per line allowed')
         end
-
+        
         if ( isempty(pdeVarNames) )
+            % Indicate that no PDE variable was found in this line.
             pdeVarNames = '|';
         else
+            % Indicate that this line was of PDE format.
             pdeflag(k) = 1;
         end
         
@@ -150,12 +154,13 @@ else % Have a system, go through each row
                 'Different names for independent variables detected')
         end
         
+        % Update what variables appear on PDE format.
         allPdeVarNames = [allPdeVarNames ; pdeVarNames];
     end
-
+    
     % Remove duplicate variable names
-    allVarNames = unique(allVarNames); 
-
+    allVarNames = unique(allVarNames);
+    
     % Construct the handle part. For the DE field, we need to collect all
     % the variable names in one string. If we are working with BCs, we have
     % already passed that string in (as the parameter allVarString).
@@ -173,26 +178,26 @@ else % Have a system, go through each row
         for k = 1:numel(allPdeVarNames)
             if ( ~pdeflag(k) )
                 continue % Not a PDE variable, do nothing
-            end 
-
+            end
+            
             vark = allPdeVarNames{k};
             if ( strcmp(vark, '|') )
                 continue  % Skip dummy pdevarname
             end
-
+            
             % Get the kth pdevarname
             vark = vark(1:find(vark == '_', 1, 'first')-1);
-
+            
             % Find which varname this matches
             idx3 = find(strcmp(vark,allVarNames));
-
+            
             % Update the index list
             indx(find(indx == idx3)) = indx(k);
             indx(k) = idx3;
         end
-
-        [dummy, indx] = sort(indx); % Invert the index
-        pdeflag = pdeflag(indx);     % Update the pdeflags
+        
+        [dummy, indx] = sort(indx);     % Invert the index
+        pdeflag = pdeflag(indx);        % Update the pdeflags
         allPdeVarNames(strcmp(allPdeVarNames, '|')) = []; % Delete the junk
         pdeVarNames = allPdeVarNames;
     end
@@ -207,7 +212,7 @@ else % Have a system, go through each row
     else
         fieldStart = ['@(', allVarString, ') '];
     end
-        
+    
     % Construct the function. Need to treat eig. problems separately as there we
     % can have nontrivial LHS and RHS at the same time.
     allAnFun = [];
@@ -218,7 +223,7 @@ else % Have a system, go through each row
             allAnFun1 = [allAnFun1, anFun{indx(k)}{1}, ';'];
             allAnFun2 = [allAnFun2, anFun{indx(k)}{2}, ';'];
         end
-
+        
         % Remove the last comma
         allAnFun1(end) = [];
         allAnFun2(end) = [];
@@ -228,11 +233,13 @@ else % Have a system, go through each row
         field2 = [fieldStart, '[', allAnFun2, ']'];
         field = {field1 ; field2};
     else
+        % Concatenate each anonymous functions vertically.
         for k = 1:numOfRows
             allAnFun = [allAnFun, anFun{indx(k)},  '; '];
         end
         allAnFun(end-1:end) = []; % Remove the last semicolon and space.
         
+        % Wrap the concatenated field with []-s.
         field = [fieldStart, '[', allAnFun, ']'];
     end
     
@@ -258,7 +265,7 @@ function [field, indVarName, varNames, pdeVarNames, eigVarNames, commaSeparated]
 %                   conditions or initial guess/condition).
 %
 % The outputs are:
-%   FIELD:          A string that can be converted to anonymous function, 
+%   FIELD:          A string that can be converted to anonymous function,
 %                   describing the INPUT variable.
 %   INDVARNAME:     A cell-array of strings that contains the name of the
 %                   independent variables that appear in the problem. The first
@@ -266,31 +273,33 @@ function [field, indVarName, varNames, pdeVarNames, eigVarNames, commaSeparated]
 %                   potential time variable.
 %   VARNAMES:       A cell array of string, containing the name of all variables
 %                   that appear in the line INPUT.
-%   PDEVARNAMES:    A cell array of strings that appear on PDE format in the 
+%   PDEVARNAMES:    A cell array of strings that appear on PDE format in the
 %                   line INPUT, i.e. u_t.
 %   EIGVARNAMES:    A string that indicates how the eigenvalue parameter appears
 %                   in the problem, that is, either l, lam or lambda.
-%   COMMASEPARATED: Equal to 1 if the line INPUT is comma separated, for 
+%   COMMASEPARATED: Equal to 1 if the line INPUT is comma separated, for
 %                   example, "u=1, v=2+x".
 
+% Do we need to convert a BC to an anonymous function?
 convertBCtoAnon = 0;
 
-commaSeparated = 0; % Default value
+% Usually, input lines are not comma separated.
+commaSeparated = 0;
 
-if ( ~isempty(strfind(input, '@')) ) % User supplied anon. function
-    % Find the name of the independent variable (which we assume to be
-    % either r, x or t)
-    
+if ( ~isempty(strfind(input, '@')) ) % User supplied anon. function    
+    % Look at the part of the string that starts after the @(x,u,...) part.
     firstRPloc = strfind(input, ')');
     trimmedInput = input(firstRPloc+1:end);
     
+    % Inspect the string, which will give us the name of the independent
+    % variable (which we assume to be either r, x or t).
     [field, indVarName, varNames, pdeVarNames, eigVarNames, commaSeparated] = ...
         stringParser.str2anon(trimmedInput, guifile.type, type);
     
     return
 elseif ( any(strcmp(type,{'BC','BCnew'})) )  % More types of syntax for BCs
     bcNum = str2num(input);
-
+    
     % Check whether we have a number (OK), allowed strings (OK) or whether
     % we will have to convert the string to anon. function (i.e. the input
     % is on the form u' +1 = 0).
@@ -315,16 +324,13 @@ elseif ( any(strcmp(type,{'BC','BCnew'})) )  % More types of syntax for BCs
 end
 
 if ( any(strcmp(type, {'DE', 'INIT', 'INITSCALAR'})) || convertBCtoAnon )
-   % Convert to anon. function string
+    % Convert to anonymous function string
     [field, indVarName, varNames, pdeVarNames, eigVarNames, commaSeparated] = ...
         stringParser.str2anon(input, guifile.type, type);
 end
 
-varNames
-pdeVarNames
-
 end
-    
+
 function res =  myStringCompare(str1, str2)
 % Modified strcmp, if we compare with an empty string, give a match
 if ( isempty(str1) || isempty(str2) )
