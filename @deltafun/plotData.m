@@ -37,15 +37,11 @@ if ( ~isempty(f.deltaLoc) )
         deltaLoc = f.deltaLoc;
         deltaMag = f.deltaMag;
         
-        data.xDeltas = zeros(3*length(deltaLoc) + 1, 1);
-        data.xDeltas(1:3:end) = NaN;
-        data.xDeltas(2:3:end) = deltaLoc.';
-        data.xDeltas(3:3:end) = deltaLoc.';
+        data.xDeltas = zeros(length(deltaLoc), 1);
+        data.xDeltas = deltaLoc.';
         
-        data.yDeltas = zeros(3*length(deltaLoc) + 1, 1);
-        data.yDeltas(1:3:end) = NaN;
-        data.yDeltas(2:3:end) = 0;
-        data.yDeltas(3:3:end) = deltaMag(1, :).';              
+        data.yDeltas = zeros(length(deltaLoc), 1);
+        data.yDeltas = deltaMag(1, :).';
     end
 end
     
