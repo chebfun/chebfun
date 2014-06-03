@@ -407,9 +407,9 @@ if ( ischar(bc) && strcmpi(bc, 'periodic') )
     r = cell(sum(DIFFORDER), 1);
     count = 1;
     for j = 1:SYSSIZE
-        for k = 1:DIFFORDER(j)
+        for k = 0:DIFFORDER(j)-1
             c = (diff(DOMAIN)/2)^k;
-            A = @(n) [1 zeros(1, n-2) -1]*colloc2.diffmat(n, k-1)*c;
+            A = @(n) [1 zeros(1, n-2) -1]*colloc2.diffmat(n, k)*c;
             r{count} = @(n) [zeros(1, (j-1)*n) A(n) zeros(1,(SYSSIZE-j)*n)];
             count = count + 1;
         end
