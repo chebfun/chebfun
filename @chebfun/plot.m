@@ -304,10 +304,10 @@ end
 
 % Plot the Delta functions:
 if ( isempty(deltaData) )
-    deltaData = {[]};
+    h4 = stem([]);
+else
+    h4 = mystem(deltaData{:});
 end
-
-h4 = stem(deltaData{:}, 'fill');
 
 if ( ~isempty(deltaStyle) )
     set(h4, deltaStyle{:}, 'ShowBaseLine', 'off');
@@ -350,4 +350,21 @@ if ( nargout > 0 )
 end
 
 end
+
+
+function h = mystem(varargin)
+%MYSTEM   Plot multiple STEM plots in one call.
+% We need this because stem doesn't supoprt multiple inputs in the same way
+% PLOT does. An alternative option would be to write our own version of STEM.
+
+% Separate out each individual plot by looking for two consecutive doubles.
+isDouble = cellfun(@isnumeric, varargin);
+startLoc = [1 find([0 diff(isDouble)] == 1 & [diff(isDouble) 0] == 0) nargin+1];
+for k = 1:numel(startLoc)-1
+    data = varargin(startLoc(k):startLoc(k+1)-1);
+    h(k) = stem(data{:}, 'fill');
+end
+
+end
+
 
