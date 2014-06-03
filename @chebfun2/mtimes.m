@@ -16,9 +16,6 @@ if ( isa(f, 'chebfun2') )           % CHEBFUN2 * ???
         if ( numel(g) == 1 )
             h = f;
             h.pivotValues = h.pivotValues ./ g;
-            % This updates the derivative information of the output variable,
-            % multiplying the derivative matrix with the scalar.
-            h.deriv = g*(f.deriv);
         else
             error('CHEBFUN2:MTIMES', 'Sizes are inconsistent.');
         end
