@@ -150,8 +150,8 @@ while ( ~isempty(varargin) )
             newData.yPoints = g;
             newData.xJumps = NaN;
             newData.yJumps = NaN;  
-            newData.xDeltas = [];
-            newData.yDeltas = [];
+            newData.xDeltas = NaN;
+            newData.yDeltas = NaN;
             % Do nothing
         elseif ( numel(f) == 1 && numel(g) == 1 )
             % Array-valued CHEBFUN case:
@@ -257,7 +257,7 @@ while ( ~isempty(varargin) )
         pointData = [pointData, newData(k).xPoints, newData(k).yPoints, ...
             styleData];
         jumpData = [jumpData, newData(k).xJumps, newData(k).yJumps, styleData];
-        deltaData = [deltaData, newData(k).xDeltas, newData(k).yDeltas];
+        deltaData = [deltaData, newData(k).xDeltas, newData(k).yDeltas, styleData];
     end
     
     % If xLim(1) == xLim(2), set xLim [inf -inf] and let Matlab figure out a
@@ -307,18 +307,13 @@ if ( isempty(deltaData) )
     deltaData = {[]};
 end
 
-% h4 = stem(deltaData{:}, 'd', 'fill');
-% 
-% h4 = plot(posDeltaData{:});
-% h5 = plot(negDeltaData{:});
-% 
-% if ( isempty(deltaStyle) )
-%     set(h4, deltaStyle{:});
-%     set(h5, deltaStyle{:});    
-% else
-%     set(h4, 'LineStyle', 'none', 'Marker', '^')
-%     set(h5, 'LineStyle', 'none', 'Marker', 'v')
-% end
+h4 = stem(deltaData{:}, 'fill');
+
+if ( ~isempty(deltaStyle) )
+    set(h4, deltaStyle{:}, 'ShowBaseLine', 'off');
+else
+    set(h4, 'ShowBaseLine', 'off')
+end
     
 
 %% 
