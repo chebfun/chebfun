@@ -17,7 +17,7 @@ N.rbc = @(t) sin(10+t) + sin(10-t);
 N.dbc = @(x,u) [u - 2*sin(x) diff(u)];
 u = N \ 0;
 
-pass(1) = ( norm(u - exact) < 50*tol ); 
+pass(1) = ( norm(u - exact) < 60*tol ); 
 
 %%
 d = [0 1 0 1]; 
