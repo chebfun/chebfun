@@ -23,12 +23,12 @@ switch prop
     case 'lval'        
         % Evaluate at the lefthand end of the domain:
         dom = f.domain;
-        out = feval(f.funPart, dom(1));
+        out = feval(f, dom(1));
         
     case 'rval'
         % Evaluate at the righthand end of the domain:
         dom = f.domain;
-        out = feval(f.funPart, dom(end));
+        out = feval(f, dom(end));
         
     otherwise
         % Delegate to the get method of funPart. All error handling will also be
