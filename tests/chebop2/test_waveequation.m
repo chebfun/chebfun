@@ -40,7 +40,7 @@ N.lbc = @(t) sin(-2*pi+c*t) + sin(-2*pi - c*t);
 N.rbc = @(t) sin(2*pi+c*t) + sin(2*pi - c*t);
 N.dbc = @(x,u) [u - 2*sin(x) diff(u)];
 u = N \ 0;
-pass(3) = ( norm(u - exact) < tol); 
+pass(3) = ( norm(u - exact) < 4*tol); 
 
 %% Higher wave speed. 
 
@@ -61,6 +61,6 @@ N.lbc = @(t) sin(-2*pi+c*t);
 N.rbc = @(t) sin(2*pi+c*t);
 N.dbc = @(x,u) [u - sin(c+x) diff(u) - c*cos(x+c)];
 u = N \ 0;
-pass(5) = ( norm(u - exact) < 20*tol);
+pass(5) = ( norm(u - exact) < 40*tol);
 
 end

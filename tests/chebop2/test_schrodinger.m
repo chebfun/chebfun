@@ -18,7 +18,7 @@ N.lbc = exact(d(1),:); N.rbc = exact(d(2),:);
 N.dbc = exact(:,d(3));
 u = N \ 0; 
 
-pass(1) = ( norm(u - exact) <tol ); 
+pass(1) = ( norm(u - exact) < 10*tol ); 
 
 % Superposition
 % w > V
@@ -33,7 +33,7 @@ N.lbc = exact(d(1),:); N.rbc = exact(d(2),:);
 N.dbc = exact(:,d(3));
 u = N \ 0; 
 
-pass(2) = ( norm(u - exact) <tol ); 
+pass(2) = ( norm(u - exact) < 10*tol ); 
 
 
 % w < V

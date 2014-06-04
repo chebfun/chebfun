@@ -17,7 +17,7 @@ N.rbc = @(t) sin(10+t) + sin(10-t);
 N.dbc = @(x,u) [u - 2*sin(x) diff(u)];
 u = N \ 0;
 
-pass(1) = ( norm(u - exact) < 60*tol ); 
+pass(1) = ( norm(u - exact) < 150*tol ); 
 
 %%
 d = [0 1 0 1]; 
@@ -39,7 +39,7 @@ N.rbc = @(t) sin(pi+t);
 N.dbc = @(x,u) [u - sin(x) diff(u) - cos(x)];
 u = N \ 0;
 
-pass(3) = ( norm(u - exact) < tol ); 
+pass(3) = ( norm(u - exact) < 4*tol ); 
 
 
 %% different wave number. 
