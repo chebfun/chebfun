@@ -20,31 +20,31 @@ alpha = randn() + 1i*randn();
 % Check operation in the face of empty arguments.
 
 f = testclass.make();
-g = testclass.make(@(x) x, [], [], pref);
+g = testclass.make(@(x) cos(pi*x), [], [], pref);
 pass(1) = (isempty(f - f) && isempty(f - g) && isempty(g - f));
 
 %%
 % Check subtraction with scalars.
 
-f_op = @(x) sin(x);
+f_op = @(x) exp(sin(pi*x));
 f = testclass.make(f_op, [], [], pref);
 pass(2:3) = test_sub_function_and_scalar(f, f_op, alpha, x);
 
 %%
-% Check subtraction of two chebtech objects.
+% Check subtraction of two FOURTECH objects.
 
 f_op = @(x) zeros(size(x));
 f = testclass.make(f_op, [], [], pref);
 pass(4:5) = test_sub_function_and_function(f, f_op, f, f_op, x);
 
-f_op = @(x) exp(x) - 1;
+f_op = @(x) exp(cos(pi*x)) - 1;
 f = testclass.make(f_op, [], [], pref);
 
-g_op = @(x) 1./(1 + x.^2);
+g_op = @(x) sin(100*pi*x);
 g = testclass.make(g_op, [], [], pref);
 pass(6:7) = test_sub_function_and_function(f, f_op, g, g_op, x);
 
-g_op = @(x) cos(1e4*x);
+g_op = @(x) cos(1e4*pi*x);
 g = testclass.make(g_op, [], [], pref);
 pass(8:9) = test_sub_function_and_function(f, f_op, g, g_op, x);
 
@@ -103,7 +103,7 @@ end
 % Test the subtraction of a CHEBTECH F, specified by F_OP, to and from a scalar
 % ALPHA using a grid of points X in [-1  1] for testing samples.
 function result = test_sub_function_and_scalar(f, f_op, alpha, x)
-    g1 = f - alpha;
+    g1 = f - alpha
     g2 = alpha - f;
     result(1) = isequal(g1, -g2);
     g_exact = @(x) f_op(x) - alpha;

@@ -26,7 +26,6 @@ try
     f = testclass.make(@(x) cos(pi*x) + NaN);
     pass(4) = isnan(f);
 catch ME
-    disp(ME.message)
     pass(4) = strcmpi(ME.message, 'Cannot handle functions that evaluate to NaN.');
 end
 
