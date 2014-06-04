@@ -74,13 +74,12 @@ classdef classicfun < fun % (Abstract)
     %% CLASS CONSTRUCTOR:
     methods (Static = true)
         function obj = constructor(op, data, pref)
-            
-            % We can't return an empty CLASSICFUN, so pass an empty OP down.
-            if ( nargin == 0  )
+            % Parse inputs.
+            if ( nargin < 1  )
+                % We can't return an empty CLASSICFUN, so pass an empty OP down.
                 op = [];
             end
 
-            % Parse inputs.
             if ( (nargin < 2) || isempty(data) )
                     data = struct();
             end
@@ -91,26 +90,17 @@ classdef classicfun < fun % (Abstract)
                 pref = chebfunpref(pref);
             end
 
-            [domain, hscale] = parseDataInputs(data, pref);
-
-            % [TODO]: Explain this. Only becomes relevant with UNBNDFUN
-            if ( isinf(hscale) )
-                data.hscale = 1;
-            end
+            data = parseDataInputs(data, pref);
 
             % Call constructor depending on domain:
-            if ( ~any(isinf(domain)) )
+            if ( ~any(isinf(data.domain)) )
                 % Construct a BNDFUN object:
                 obj = bndfun(op, data, pref);
-                
             else
                 % Construct an UNBNDFUN object:
                 obj = unbndfun(op, data, pref);
-                
             end
-            
         end
-
     end
     
     %% STATIC METHODS IMPLEMENTED BY THIS CLASS.
@@ -285,19 +275,10 @@ classdef classicfun < fun % (Abstract)
     end
 end
 
-function [domain, hscale] = parseDataInputs(data, pref)
+function data = parseDataInputs(data, pref)
 
-domain = getDataInput(data, 'domain',  pref.domain);
-hscale = getDataInput(data, 'hscale',  norm(domain, inf));
-
-end
-
-function val = getDataInput(data, field, defaultVal)
-
-if ( isfield(data, field) && ~isempty(data.(field)) )
-    val = data.(field);
-else
-    val = defaultVal;
+if ( ~isfield(data, 'domain') || isempty(data.domain) )
+    data.domain = pref.domain;
 end
 
 end

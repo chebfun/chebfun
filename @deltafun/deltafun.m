@@ -55,15 +55,14 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
     %% DELTAFUN CLASS CONSTRUCTOR:
     methods ( Static = true )
         function obj = deltafun(op, data, pref)
-            % No input arguments; return an empty DELTAFUN.
-            if ( nargin == 0 )
+            % Parse inputs.
+            if ( (nargin <= 0) || isempty(op) )
                 obj.funPart = [];
                 obj.deltaMag = [];
                 obj.deltaLoc = [];
                 return
             end
 
-            % Parse inputs.
             if ( (nargin < 2) || isempty(data) )
                     data = struct();
             end
@@ -74,66 +73,68 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
                 pref = chebfunpref(pref);
             end
 
-            [deltaMag, deltaLoc] = parseDataInputs(data, pref);
+            data = parseDataInputs(data, pref);
 
-            % Given a DELTAFUN, return it; otherwise construct the funPart.
+            % Given a DELTAFUN, return it.
             if ( isa(op, 'deltafun') )
                 obj = op;
                 return
-            elseif ( ~isa(op, 'classicfun') )
+            end
+
+            % Assemble the funPart.
+            if ( ~isa(op, 'classicfun') )
                 op = classicfun.constructor(op, data, pref);
             end
             obj.funPart = op;
-            
-            if ( nargin == 1 )
-                return
-            end
-            
-            % Case 3: Three or more input arguments:        
-            
-            % If one of deltaMag or deltaLoc is empty, make both empty:
-            if ( xor(isempty(deltaMag), isempty(deltaLoc)) )
-                warning('Inconsistent deltaLoc and deltaMag.')
-                deltaMag = [];
-                deltaLoc = [];  
-                % Nothing else to do:
-                return
-            end            
-            
-            % Make sure location is a row vector:
-            if ( ~isempty(deltaLoc) )
-                if ( min(size(deltaLoc)) > 1 )
-                    error('DELTAFUN:dim', 'deltaLoc should be a vector.');
+
+            % If there is no delta function information, we're done.
+            if ( isempty(data.deltaMag) || isempty(data.deltaLoc) )
+                if ( xor(isempty(data.deltaMag), isempty(data.deltaLoc)) )
+                    warning('CHEBFUN:DELTAFUN:inconsistentData', ...
+                        'Inconsistent deltaLoc and deltaMag.')
                 end
-                deltaLoc = deltaLoc(:).';
+
+                obj.deltaMag = [];
+                obj.deltaLoc = [];
+                return
             end
-            
+
+            % Make sure location is a row vector.
+            if ( ~isempty(data.deltaLoc) )
+                if ( min(size(data.deltaLoc)) > 1 )
+                    error('CHEBFUN:DELTAFUN:dim', ...
+                        'deltaLoc should be a vector.');
+                end
+                data.deltaLoc = data.deltaLoc(:).';
+            end
+
             % Check sizes:
-            if ( ~isempty(deltaMag) && ( size(deltaMag, 2) ~= length(deltaLoc) ) )
-                error('CHEBFUN:deltafun:dim', ...
+            if ( ~isempty(data.deltaMag) && ...
+                    (size(data.deltaMag, 2) ~= length(data.deltaLoc)) )
+                error('CHEBFUN:DELTAFUN:dim', ...
                     ['Impulse matrix (deltaMag) should have the same number' ...
                      ' of columns as locations (deltaLoc).']);
-            end                         
-      
+            end
+
             % Locations of delta functions should be within the domain:
-            if ( ~isempty(deltaLoc) && ~isempty(obj.funPart) )
+            if ( ~isempty(data.deltaLoc) && ~isempty(obj.funPart) )
                 dom = obj.funPart.domain;
-                if ( (max(deltaLoc) > dom(2)) || (min(deltaLoc) < dom(1)) )
+                if ( (max(data.deltaLoc) > dom(2)) || ...
+                     (min(data.deltaLoc) < dom(1)) )
                     error('CHEBFUN:deltafun:domain', ...
                         'Location of a delta fun is outside the domain.');
                 end
             end
-            
+
             % All checks done, assign inputs to the current object:
-            obj.deltaMag = deltaMag;
-            obj.deltaLoc = deltaLoc;
-                                
+            obj.deltaMag = data.deltaMag;
+            obj.deltaLoc = data.deltaLoc;
+
             % Simplify to merge redundant delta functions:
             obj = simplifyDeltas(obj, pref);
             if ( ~isa(obj, 'deltafun') )
                 obj = deltafun(obj);
             end
-            
         end
     end
     
@@ -310,19 +311,14 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
     
 end
 
-function [deltaMag, deltaLoc] = parseDataInputs(data, pref)
+function data = parseDataInputs(data, pref)
 
-deltaMag = getDataInput(data, 'deltaMag',  []);
-deltaLoc = getDataInput(data, 'deltaLoc', []);
-
+if ( ~isfield(data, 'deltaMag') || isempty(data.deltaMag) )
+    data.deltaMag = [];
 end
 
-function val = getDataInput(data, field, defaultVal)
-
-if ( isfield(data, field) && ~isempty(data.(field)) )
-    val = data.(field);
-else
-    val = defaultVal;
+if ( ~isfield(data, 'deltaLoc') || isempty(data.deltaLoc) )
+    data.deltaLoc = [];
 end
 
 end

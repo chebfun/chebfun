@@ -61,16 +61,13 @@ classdef chebtech2 < chebtech
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% METHODS IMPLEMENTED BY THIS M-FILE:
     methods
-        
         function obj = chebtech2(op, data, pref)
-            %Constructor for the CHEBTECH2 class.
-            
-            % Return an empty CHEBTECH2 on null input:
+            % Parse inputs.
             if ( (nargin == 0) || isempty(op) )
+                % Return an empty CHEBTECH2 on null input:
                 return
             end
 
-            % Parse inputs.
             if ( (nargin < 2) || isempty(data) )
                     data = struct();
             end
@@ -81,22 +78,22 @@ classdef chebtech2 < chebtech
                 pref = chebtech.techPref(pref);
             end
 
-            [vscale, hscale] = parseDataInputs(data, pref);
+            data = parseDataInputs(data, pref);
 
             % Force nonadaptive construction if PREF.NUMPOINTS is numeric:
             if ( ~isempty(pref.numPoints) && ~isnan(pref.numPoints) )
                 % Evaluate op on the Chebyshev grid of given size:
                 op = feval(op, chebtech2.chebpts(pref.numPoints));
             end
-            
+
             % Actual construction takes place here:
-            [obj, values] = populate(obj, op, vscale, hscale, pref);
-            
+            [obj, values] = populate(obj, op, data.vscale, data.hscale, pref);
+
             if ( obj.ishappy || isnumeric(op) || iscell(op) )
                 % No need to error check if we are happy:
                 return
             end
-            
+
             % Check for NaNs (if not happy):
             if ( pref.extrapolate )
                 % Check for NaNs in interior only (because extrapolate was on):
@@ -113,9 +110,7 @@ classdef chebtech2 < chebtech
                 error('CHEBFUN:CHEBTECH2:constructor:naneval2', ...
                     'Function returned NaN when evaluated.')
             end
-            
         end
-        
     end
     
     %% STATIC METHODS IMPLEMENTED BY THIS CLASS:
@@ -164,19 +159,14 @@ classdef chebtech2 < chebtech
     
 end
 
-function [vscale, hscale] = parseDataInputs(data, pref)
+function data = parseDataInputs(data, pref)
 
-vscale = getDataInput(data, 'vscale', 0);
-hscale = getDataInput(data, 'hscale', 1);
-
+if ( ~isfield(data, 'vscale') || isempty(data.vscale) )
+    data.vscale = 0;
 end
 
-function val = getDataInput(data, field, defaultVal)
-
-if ( isfield(data, field) && ~isempty(data.(field)) )
-    val = data.(field);
-else
-    val = defaultVal;
+if ( ~isfield(data, 'hscale') || isempty(data.hscale) )
+    data.hscale = 1;
 end
 
 end

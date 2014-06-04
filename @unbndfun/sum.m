@@ -59,6 +59,7 @@ if ( ~issing(g) )
     % If we reach here, the function decays sufficiently fast.
     
     % Construct the ONEFUN presentation of the derivative of the forward map.
+    pref.enableSingularityDetection = true;
     pref.singPrefs.exponents = g.mapping.forDerExps;
     forDer = onefun.constructor(@(x) g.mapping.forDer(x), [], pref);
     
@@ -74,6 +75,7 @@ if ( ~issing(g) )
 elseif ( issing(g) ) % Cases for ONEFUN has singularities at the end points.
     
     % Construct the ONEFUN presentation of the derivative of the forward map.
+    pref.enableSingularityDetection = true;
     pref.singPrefs.exponents = g.mapping.forDerExps;
     forDer = onefun.constructor(@(x) g.mapping.forDer(x), [], pref);
     

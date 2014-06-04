@@ -51,13 +51,14 @@ classdef unbndfun < classicfun
     methods
         
         function obj = unbndfun(op, data, pref)
-            
-            % Construct an empty unbndfun
-            if ( (nargin == 0) || isempty(op) )
+            % Parse inputs.
+            if ( (nargin < 1) || isempty(op) )
+                obj.domain = [];
+                obj.mapping = [];
+                obj.onefun = [];
                 return
             end
 
-            % Parse inputs.
             if ( (nargin < 2) || isempty(data) )
                     data = struct();
             end
@@ -68,37 +69,39 @@ classdef unbndfun < classicfun
                 pref = chebfunpref(pref);
             end
 
-            [domain, hscale, exponents, singType] = parseDataInputs(data, pref);
+            data = parseDataInputs(data, pref);
 
             % Check domain
-            if ( ~any(isinf(domain)) )
-                error('CHEBFUN:UNBNDFUN:BoundedDomain',...
-                    'Domain argument should be unbounded.');
-            elseif ( ~all(size(domain) == [1, 2]) )
+            if ( ~all(size(data.domain) == [1, 2]) || (diff(data.domain) <= 0) )
                 error('CHEBFUN:UNBNDFUN:domain',...
-                    'Domain argument should be a row vector with two entries.');
+                    ['Domain argument should be a row vector with two ', ...
+                    'entries in increasing order.']);
+            elseif ( ~any(isinf(data.domain)) )
+                error('CHEBFUN:UNBNDFUN:boundedDomain',...
+                    'Domain argument should be unbounded.');
             end
 
-            unbndmap = unbndfun.createMap(domain);
-            % Include nonlinear mapping from [-1,1] to [a,b] in the op:
+            % Remap the OP to be a function on [-1, 1].
+            unbndmap = unbndfun.createMap(data.domain);
             if ( isa(op, 'function_handle') )
                 op = @(x) op(unbndmap.for(x));
             elseif ( isnumeric(op) )
                 if ( ~any(op(:)) )
-                    op = @(x) zeros(length(x), size(op,2));
+                    op = @(x) zeros(length(x), size(op, 2));
                 else
                     %[TODO]: Implement this.
                     error('CHEBFUN:UNBNDFUN:inputValues',...
-                        'UNBNDFUN does not support non-zero construction from values.');
+                        ['UNBNDFUN does not support non-zero construction ' ...
+                         'from values.']);
                 end
             end
-            
-            % Try to determine if the function is singular:
-            if ( isempty(exponents) )
-                
-                % Test if the function has infinite values at the far field. If
-                % so turn the default 'blowup' mode by assuming the
-                % singularities are poles:
+
+            % Deal with exponents for singular functions.
+            if ( isempty(data.exponents) )
+                % The user hasn't supplied exponents, but functions on
+                % unbounded domains are often singular once remapped to [-1,
+                % 1].  Try to detect this by seeing if the function is infinite
+                % at either endpoint and, if so, enable singularity detection.
                 lVal = feval(op, -1);
                 rVal = feval(op, 1);
                 if ( any(isinf([lVal rVal])) )
@@ -106,29 +109,21 @@ classdef unbndfun < classicfun
                     singType = pref.singPrefs.defaultSingType;
                     data.singType = {singType, singType};
                 end
-            
             else
-                % Preprocess the exponents supplied by the user:
-                
-                % Since the exponents provided by the user are in the sense of
-                % unbounded domain, we need to negate them when the domain of
-                % the original operator/function handle is mapped to [-1 1]
-                % using the forward map, i.e., UNBNDMAP.FOR().
-                ind = isinf(domain);
+                % Remapping to [-1, 1] negates exponents, which are given with
+                % respect to the function on the infinite domain.
+                ind = isinf(data.domain);
                 pref.enableSingularityDetection = true;
                 data.exponents(ind) = -data.exponents(ind);
-
             end
-            
+
             % Call the ONEFUN constructor:
             obj.onefun = onefun.constructor(op, data, pref);
-            
-            % Add the domain and mapping:
-            obj.domain = domain;
-            obj.mapping = unbndmap;
-            
-        end
 
+            % Add the domain and mapping:
+            obj.domain = data.domain;
+            obj.mapping = unbndmap;
+        end
     end
     
     %% STATIC METHODS IMPLEMENTED BY UNBNDFUN CLASS.
@@ -201,22 +196,23 @@ classdef unbndfun < classicfun
     end    
 end
 
-function [domain, hscale, exponents, singType] = parseDataInputs(data, pref)
+function data = parseDataInputs(data, pref)
 
-domain = getDataInput(data, 'domain',  pref.domain);
-% TODO:  Why is the hscale of an unbounded domain always 1?
-hscale = getDataInput(data, 'hscale', 1);
-exponents = getDataInput(data, 'exponents', []);
-singType = getDataInput(data, 'singType', []);
-
+if ( ~isfield(data, 'domain') || isempty(data.domain) )
+    data.domain = pref.domain;
 end
 
-function val = getDataInput(data, field, defaultVal)
+if ( ~isfield(data, 'hscale') || isempty(data.hscale) )
+    % TODO:  Why is the hscale of an unbounded domain always 1?
+    data.hscale = 1;
+end
 
-if ( isfield(data, field) && ~isempty(data.(field)) )
-    val = data.(field);
-else
-    val = defaultVal;
+if ( ~isfield(data, 'exponents') || isempty(data.exponents) )
+    data.exponents = [];
+end
+
+if ( ~isfield(data, 'singType') || isempty(data.singType) )
+    data.singType = [];
 end
 
 end

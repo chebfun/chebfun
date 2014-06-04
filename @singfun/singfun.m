@@ -90,14 +90,14 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
     %% CLASS CONSTRUCTOR (IMPLEMENTED BY THIS M-FILE):
     methods
         function obj = singfun(op, data, pref)
-            % No input arguments; return an empty SINGFUN.
-            if ( nargin == 0 )
+            % Parse inputs.
+            if ( nargin < 1 )
+                % No input arguments; return an empty SINGFUN.
                 obj.smoothPart = [];
                 obj.exponents = [];
                 return
             end
 
-            % Parse inputs.
             if ( (nargin < 2) || isempty(data) )
                     data = struct();
             end
@@ -108,102 +108,70 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
                 pref = chebfunpref(pref);
             end
 
-            [exponents, singType] = parseDataInputs(data, pref);
+            data = parseDataInputs(data, pref);
 
-            % Store the EXPONENTS, if supplied.
-            if ( ~isempty(exponents) )
-                obj.exponents = exponents;
-            end
-
-            %% Cases based on the number of arguments
-            % Case 1: One input argument.
+            % Leave SINGFUN OPs alone, and upgrade SMOOTHFUN OPs to SINGFUNs.
             if ( nargin == 1 )
                 if ( isa(op, 'singfun') )
                     obj = op;
                     return
                 elseif ( isa(op, 'smoothfun') )
-                    % if OP is a SMOOTHFUN, cast it to a SINGFUN:
                     obj.smoothPart = op;
                     obj.exponents = [0, 0];
                     return
                 end
             end
-            
-            % If EXPONENTS is empty or any entry of EXPONENTS is NaN, we need to
-            % determine them.
-            if ( isempty(exponents) || any(isnan(exponents)) )
-                
-                if ( ~isempty(singType) )
-                    % If SINGTYPE is given directly as argument, check them.
-                    checkSingTypes(singType);
-                elseif ( ~isempty(pref.singPrefs.singType) )
-                    % If SINGTYPE is given via the preference, store them and
-                    % then check.
-                    singType = pref.singPrefs.singType;
-                    checkSingTypes(singType);
-                else
-                    % If they are not given, set SINGTYPE as the default.
-                    singType = pref.singPrefs.defaultSingType;
-                    singType = {singType, singType};
+
+            % Find exponents.
+            if ( ~isempty(data.exponents) )
+                % Check values of supplied exponents.
+                if ( any(size(data.exponents) ~= [1, 2]) || ...
+                        ~isa(data.exponents, 'double') )
+                    error('CHEBFUN:SINGFUN:constructor', ...
+                        'Exponents must be a 1x2 vector of doubles.');
                 end
-            end
-            
-            %% Find EXPONENTS:
-            
-            % If exponents were passed, make sure they are in correct shape.
-            if ( ~isempty(exponents) )
-                if ( any(size(exponents) ~= [1, 2]) || ...
-                        ~isa(exponents, 'double') )
-                    error( 'CHEBFUN:SINGFUN:constructor', ...
-                        'Exponents must be a 1X2 vector of doubles.' );
-                end
-                
-                % If any of EXPONENTS is NaN, try to determine: 
-                maskNaN = isnan(exponents);
-                
+
+                % If any of EXPONENTS is NaN, try to determine:
+                maskNaN = isnan(data.exponents);
                 if ( any(maskNaN) )
-                    tmpExps = singfun.findSingExponents(op, singType);
-                    obj.exponents(maskNaN) = tmpExps(maskNaN);
+                    tmpExps = singfun.findSingExponents(op, data.singType);
+                    data.exponents(maskNaN) = tmpExps(maskNaN);
                 end
-                
+
+                obj.exponents = data.exponents;
             else
-                % Exponents not given, determine them.
-                obj.exponents = singfun.findSingExponents(op, singType);
+                % Exponents not given.  Determine them.
+                obj.exponents = singfun.findSingExponents(op, data.singType);
             end
-            
-            %% Misc Checks on the Inputs:
-            
-            % Make sure that op is a function handle or a smoothfun:
+
+            % Make sure that op is a function handle or a smoothfun.
             if ( ~isa(op, 'function_handle') && ~isa(op, 'smoothfun') )
-                error( 'CHEBFUN:SINGFUN:constructor', ...
+                error('CHEBFUN:SINGFUN:constructor', ...
                     'First argument must be a function handle or a smoothfun.');
             end
-            
-            % Check to avoid array-valued operators:
+
+            % Check to avoid array-valued operators.
             if ( size(feval(op, 0), 2) > 1 )
-                error( 'CHEBFUN:SINGFUN:constructor', ...
-                    'SINGFUN class does not support array-valued objects.' );
+                error('CHEBFUN:SINGFUN:constructor', ...
+                    'SINGFUN does not support array-valued construction.');
             end
-            
-            % We extrapolate when the given function blows up:
+
+            % Extrapolate when the given function blows up.
             if ( any(obj.exponents < 0) )
                 pref.techPrefs.extrapolate = true;
             end
-            
-            % If a smoothfun has been passed as the op, store it directly:
+
+            % Construct the smoothPart.
             if ( isa(op, 'smoothfun') )
+                % smoothPart was handed to us.
                 obj.smoothPart = op;
             else
-                %% Construct New Function Handle
-                % Factor out singular terms from the operator based on the values
-                % in exponents.
+                % Build the smoothPart from function handle with the exponents
+                % factored out.
                 smoothOp = singOp2SmoothOp(op, obj.exponents);
-                
-                % Construct the smooth part.
                 obj.smoothPart = singfun.constructSmoothPart(smoothOp, data, ...
                     pref);
             end
-
         end
     end
     
@@ -420,7 +388,7 @@ end
 
 %% OTHER FUNCTIONS IMPLEMENTED IN THIS M-FILE:
 
-function out = checkSingTypes(singType)
+function checkSingTypes(singType)
 %CHECKSINGTYPES   Function to check types of exponents in a SINGFUN object.
 %   The valid types can be 'sing', 'pole', 'root' or 'none'. If the type is
 %   different than these four strings (ignoring case), an error message is
@@ -431,10 +399,10 @@ if ( ~isa(singType, 'cell') )
         'singType must be a 1x2 cell with two strings');
 end
 
-out(1) = any(strcmpi(singType{1}, {'pole', 'sing', 'root', 'none'}));
-out(2) = any(strcmpi(singType{2}, {'pole', 'sing', 'root', 'none'}));
+check(1) = any(strcmpi(singType{1}, {'pole', 'sing', 'root', 'none'}));
+check(2) = any(strcmpi(singType{2}, {'pole', 'sing', 'root', 'none'}));
 
-if ( ~all(out) )
+if ( ~all(check) )
     error('CHEBFUN:SINGFUN:checkSingTypes', 'Unknown singularity type.');
 end
 
@@ -471,19 +439,15 @@ end
 
 end
 
-function [exponents, singType] = parseDataInputs(data, pref)
+function data = parseDataInputs(data, pref)
 
-exponents = getDataInput(data, 'exponents',  []);
-singType = getDataInput(data, 'singType', []);
-
+if ( ~isfield(data, 'exponents') || isempty(data.exponents) )
+    data.exponents = [];
 end
 
-function val = getDataInput(data, field, defaultVal)
-
-if ( isfield(data, field) && ~isempty(data.(field)) )
-    val = data.(field);
-else
-    val = defaultVal;
+if ( ~isfield(data, 'singType') || isempty(data.singType) )
+    defaultSingType = pref.singPrefs.defaultSingType;
+    data.singType = {defaultSingType, defaultSingType};
 end
 
 end

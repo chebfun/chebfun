@@ -52,15 +52,15 @@ classdef bndfun < classicfun
     
     %% CLASS CONSTRUCTOR:
     methods
-        
         function obj = bndfun(op, data, pref)
-            
-            % Construct an empty bndfun:
-            if ( (nargin == 0) || isempty(op) )
+            % Parse inputs.
+            if ( (nargin < 1) || isempty(op) )
+                obj.domain = [];
+                obj.mapping = [];
+                obj.onefun = [];
                 return
             end
 
-            % Parse inputs.
             if ( (nargin < 2) || isempty(data) )
                     data = struct();
             end
@@ -71,47 +71,35 @@ classdef bndfun < classicfun
                 pref = chebfunpref(pref);
             end
 
-            domain = parseDataInputs(data, pref);
+            data = parseDataInputs(data, pref);
 
-            % Check whether the domain input has correct dimensions.
-            if ( ~all(size(domain) == [1, 2]) ) || diff(domain) <= 0
-                error('CHEBFUN:BNDFUN:domain',...
+            % Check the domain input.
+            if ( ~all(size(data.domain) == [1, 2]) || (diff(data.domain) <= 0) )
+                error('CHEBFUN:BNDFUN:badDomain', ...
                     ['Domain argument should be a row vector with two ', ...
                     'entries in increasing order.']);
-            end
-            
-            % Check domain:
-            if ( any(isinf(domain)) )
-                error('CHEBFUN:BNDFUN:UNBND',...
+            elseif ( any(isinf(data.domain)) )
+                error('CHEBFUN:BNDFUN:unboundedDomain', ...
                     'Should not encounter unbounded domain in bndfun class.');
-            elseif ( ~all(size(domain) == [1 2]) )
-                error('CHEBFUN:BNDFUN:UNBND',...
-                    'Domain should be a 1x2 vector.');
-            end
-            
-            if ( ~isfield(data, 'hscale') || isempty(data.hscale) )
-                % [TODO]: Or should this be 1? What does chebfun pass down?
-                data.hscale = norm(domain, inf);
             end
 
-            data.hscale = data.hscale / diff(domain);
+            % TODO:  Why do we rescale the hscale like this?
+            data.hscale = data.hscale / diff(data.domain);
 
-            linmap = bndfun.createMap(domain);
-            % Include linear mapping from [-1,1] to [a,b] in the op:
-            if ( isa(op, 'function_handle') && ~all(domain == [-1, 1]) && ...
-                    ~isnumeric(op) )
+            % Remap the OP to be a function on [-1, 1].
+            linmap = bndfun.createMap(data.domain);
+            if ( isa(op, 'function_handle') && ~all(data.domain == [-1, 1]) ...
+                    && ~isnumeric(op) )
                 op = @(x) op(linmap.for(x));
             end
-            
+
             % Call the ONEFUN constructor:
             obj.onefun = onefun.constructor(op, data, pref);
-            
-            % Add the domain and mapping:
-            obj.domain = domain;
-            obj.mapping = linmap;
-            
-        end
 
+            % Add the domain and mapping:
+            obj.domain = data.domain;
+            obj.mapping = linmap;
+        end
     end
     
     %% STATIC METHODS IMPLEMENTED BY BNDFUN CLASS.
@@ -178,18 +166,15 @@ classdef bndfun < classicfun
     end
 end
 
-function domain = parseDataInputs(data, pref)
+function data = parseDataInputs(data, pref)
 
-domain = getDataInput(data, 'domain',  pref.domain);
-
+if ( ~isfield(data, 'domain') || isempty(data.domain) )
+    data.domain = pref.domain;
 end
 
-function val = getDataInput(data, field, defaultVal)
-
-if ( isfield(data, field) && ~isempty(data.(field)) )
-    val = data.(field);
-else
-    val = defaultVal;
+if ( ~isfield(data, 'hscale') || isempty(data.hscale) )
+    % TODO:  Or should this be 1?  What does chebfun pass down?
+    data.hscale = norm(data.domain, inf);
 end
 
 end

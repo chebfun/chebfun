@@ -21,13 +21,12 @@ classdef fun % (Abstract)
 
     methods (Static)
         function obj = constructor(op, data, pref)
-            
-            % We can't return an empty FUN, so pass an empty OP down.
-            if ( nargin == 0  )
+            % Parse inputs.
+            if ( nargin < 1 )
+                % We can't return an empty FUN, so pass an empty OP down.
                 op = [];
             end
 
-            % Parse inputs.
             if ( (nargin < 2) || isempty(data) )
                     data = struct();
             end
@@ -38,31 +37,14 @@ classdef fun % (Abstract)
                 pref = chebfunpref(pref);
             end
 
-            [domain, hscale] = parseDataInputs(data, pref);
-
-            % [TODO]: Explain this. Only becomes relevant with UNBNDFUN
-            if ( isinf(hscale) )
-                data.hscale = 1;
-            end
-            
-            % Check if delta functions are required:
-            if ( pref.enableDeltaFunctions && isfield(data, 'deltaLoc') )
-                % Generalized function mode; call DELTAFUN constructor:                
-                obj = deltafun(op, data, pref);
-            elseif ( isa(op, 'fun') )             
-                % OP is already a ONEFUN!
-                obj = op;               
+            % TODO:  Allow construction of DELTAFUNs as well?
+            if ( isa(op, 'fun') )
+                % OP is already a FUN!
+                obj = op;
             else
-                % STANDARD mode; call SMOOTHFUN constructor:
                 obj = classicfun.constructor(op, data, pref);
             end
         end
-        
-    end
-    
-    %% ABSTRACT (NON-STATIC) METHODS REQUIRED BY FUN CLASS.
-    methods ( Abstract = true )
-
     end
 
     %% ABSTRACT STATIC METHODS REQUIRED BY THIS CLASS.
@@ -79,21 +61,4 @@ classdef fun % (Abstract)
         
     end
     
-end
-
-function [domain, hscale] = parseDataInputs(data, pref)
-
-domain = getDataInput(data, 'domain',  pref.domain);
-hscale = getDataInput(data, 'hscale',  norm(domain, inf));
-
-end
-
-function val = getDataInput(data, field, defaultVal)
-
-if ( isfield(data, field) && ~isempty(data.(field)) )
-    val = data.(field);
-else
-    val = defaultVal;
-end
-
 end

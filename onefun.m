@@ -37,13 +37,12 @@ classdef onefun % (Abstract)
 
     methods (Static)
         function obj = constructor(op, data, pref)
-            
-            % We can't return an empty ONEFUN, so pass an empty OP down.
+            % Parse inputs.
             if ( nargin == 0 )
+                % We can't return an empty ONEFUN, so pass an empty OP down.
                 op = [];
             end
 
-            % Parse inputs.
             if ( (nargin < 2) || isempty(data) )
                     data = struct();
             end
@@ -54,33 +53,21 @@ classdef onefun % (Abstract)
                 pref = chebfunpref(pref);
             end
 
-            % Call the relevent constructor:
+            % Call the relevant constructor:
             if ( isa(op, 'onefun') )
                 % OP is already a ONEFUN!
                 obj = op;
-                
-            elseif ( pref.enableSingularityDetection || ...
-                    any(pref.singPrefs.exponents) || ...
-                    ~isempty(pref.singPrefs.singType) )
-                
-                % BLOWUP mode; call SINGFUN constructor:
-                singType = pref.singPrefs.singType;
-                exponents = pref.singPrefs.exponents;
+            elseif ( pref.enableSingularityDetection )
                 obj = singfun(op, data, pref);
 
                 % Return just a SMOOTHFUN if no singularities found:
                 if ( issmooth(obj) )
-                    obj = obj.smoothPart; 
-                end 
-                
+                    obj = obj.smoothPart;
+                end
             else
-                % STANDARD mode; call SMOOTHFUN constructor:
                 obj = smoothfun.constructor(op, data, pref);
-
             end
-        
         end
-        
     end
     
     %% ABSTRACT (NON-STATIC) METHODS REQUIRED BY ONEFUN CLASS.
