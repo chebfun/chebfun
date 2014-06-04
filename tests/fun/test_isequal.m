@@ -37,10 +37,8 @@ pow1 = -0.5;
 pow2 = -0.6;
 op1 = @(x) (x - data.domain(2)).^pow1.*sin(x);
 op2 = @(x) (x - data.domain(2)).^pow2.*(cos(x).^2+1);
-pref.singPrefs.exponents = [0 pow1];
-f = bndfun(op1, data, pref);
-pref.singPrefs.exponents = [0 pow2];
-g = bndfun(op2, data, pref);
+f = bndfun(op1, struct('domain', data.domain, 'exponents', [0 pow1]), pref);
+g = bndfun(op2, struct('domain', data.domain, 'exponents', [0 pow2]), pref);
 pass(6) = ~isequal(f, g);
     
 %% Tests for UNBNDFUN:

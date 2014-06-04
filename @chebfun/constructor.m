@@ -1,4 +1,4 @@
-function [funs, ends] = constructor(op, domain, pref)
+function [funs, ends] = constructor(op, domain, data, pref)
 %CONSTRUCTOR   CHEBFUN constructor.
 %   FUNS = CONSTRUCTOR(OP, DOMAIN) constructs the piecewise components (known as
 %   "FUNS") used by a CHEBFUN object to represent the function OP on the
@@ -37,7 +37,7 @@ end
 vscale = pref.scale;
 
 % Sort out exponent and singularity information.
-pref = parseSingPrefs(pref, domain);
+[data, pref] = parseSingPrefs(data, pref, domain);
 
 % Sanity check:
 if ( iscell(op) && (numel(op) ~= numIntervals) )
@@ -48,16 +48,17 @@ end
 
 % Construct the FUNs.
 if ( pref.enableBreakpointDetection )
-    [funs, ends] = constructorSplit(op, domain, pref, vscale, hscale);
+    [funs, ends] = constructorSplit(op, domain, data, pref, vscale, hscale);
 else
-    [funs, ends] = constructorNoSplit(op, domain, pref, vscale, hscale);
+    [funs, ends] = constructorNoSplit(op, domain, data, pref, vscale, hscale);
 end
 
 end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%  SPLITTING OFF %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [funs, ends] = constructorNoSplit(op, domain, pref, vscale, hscale)
+function [funs, ends] = ...
+    constructorNoSplit(op, domain, data, pref, vscale, hscale)
 % In 'OFF' mode, seek only one piece with length < maxLength.
 
 % Initial setup:
@@ -71,8 +72,8 @@ funs = cell(1, numIntervals);
 warningThrown = false;
 
 singDetect = pref.enableSingularityDetection;
-exps = pref.singPrefs.exponents;
-singTypes = pref.singPrefs.singType;
+exps = data.exponents;
+singTypes = data.singType;
 
 % Loop over the intervals:
 for k = 1:numIntervals
@@ -87,16 +88,16 @@ for k = 1:numIntervals
     if ( singDetect )
         % Extract the exponents for this interval:
         if ( ~isempty(exps) )
-            pref.singPrefs.exponents = exps(2*k-1:2*k);
+            data.exponents = exps(2*k-1:2*k);
         end
         % Replace the information for the singularity type in the preference:
         if ( ~isempty(singTypes) && ~ischar(singTypes) )
-            pref.singPrefs.singType = singTypes(2*k-1:2*k);
+            data.singType = singTypes(2*k-1:2*k);
         end
     end
 
     % Call GETFUN() (which calls FUN.CONSTRUCTOR()):
-    [funs{k}, ishappy, vscale] = getFun(opk, endsk, vscale, hscale, pref);
+    [funs{k}, ishappy, vscale] = getFun(opk, endsk, vscale, hscale, data, pref);
 
     % Warn if unhappy (as we're unable to split the domain to improve):
     if ( ~ishappy && ~warningThrown )
@@ -111,7 +112,7 @@ end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%  SPLITTING ON %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [funs, ends] = constructorSplit(op, domain, pref, vscale, hscale)
+function [funs, ends] = constructorSplit(op, domain, data, pref, vscale, hscale)
 % In 'ON' mode, seek only many pieces with total length < maxlength.
 
 % Initial setup:
@@ -131,8 +132,8 @@ funs = cell(1, numIntervals);
 ishappy = ones(1, numel(ends) - 1);
 
 singDetect = pref.enableSingularityDetection;
-exps = pref.singPrefs.exponents;
-singTypes = pref.singPrefs.singType;
+exps = data.exponents;
+singTypes = data.singType;
 
 % Try to get one smooth piece for the entire domain before splitting:
 for k = 1:numIntervals
@@ -145,11 +146,11 @@ for k = 1:numIntervals
     
     if ( singDetect )
         % Extract the singularity information for this interval:
-        pref = getSingInfo(exps, singTypes, 2*k-1:2*k, pref);
+        data = getSingInfo(exps, singTypes, 2*k-1:2*k, data);
     end
 
     [funs{k}, ishappy(k), vscale] = ...
-        getFun(opk, ends(k:k+1), vscale, hscale, pref);
+        getFun(opk, ends(k:k+1), vscale, hscale, data, pref);
     
     % For the case where vscale is Inf due to blowup in the interior of the
     % domain:
@@ -230,12 +231,12 @@ while ( any(sad) )
     
     if ( singDetect )
         % Extract the singularity information for this interval:
-        pref = getSingInfo(exps, singTypes, 2*k-1:2*k, pref);
+        data = getSingInfo(exps, singTypes, 2*k-1:2*k, data);
     end
     
     % Try to obtain happy child FUN objects on each new subinterval:
     [childLeft, happyLeft, vscale] = ...
-        getFun(opk, [a, edge], vscale, hscale, pref);
+        getFun(opk, [a, edge], vscale, hscale, data, pref);
     
     % For the case where vscale is Inf due to blowup in the interior of the
     % domain:
@@ -247,11 +248,11 @@ while ( any(sad) )
     
     if ( singDetect )
         % Extract the singularity information for this interval:
-        pref = getSingInfo(exps, singTypes, 2*k+1:2*k+2, pref);
+        data = getSingInfo(exps, singTypes, 2*k+1:2*k+2, data);
     end
     
     [childRight, happyRight, vscale] = ...
-        getFun(opk, [edge, b], vscale, hscale, pref);
+        getFun(opk, [edge, b], vscale, hscale, data, pref);
     
     % For the case where vscale is Inf due to blowup in the interior of the
     % domain:
@@ -287,7 +288,7 @@ end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% GETFUN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [g, ishappy, vscale] = getFun(op, domain, vscale, hscale, pref)
+function [g, ishappy, vscale] = getFun(op, domain, vscale, hscale, data, pref)
 %GETFUN    Call the FUN constructor.
 
 % If the interval is very small then skip adaptation and treat OP as a constant:
@@ -300,22 +301,6 @@ data.domain = domain;
 data.vscale = vscale;
 data.hscale = hscale;
 
-if ( isfield(pref.singPrefs, 'exponents') )
-    data.exponents = pref.singPrefs.exponents;
-end
-
-if ( isfield(pref.singPrefs, 'singType') )
-    data.singType = pref.singPrefs.singType;
-end
-
-if ( isfield(pref.deltaPrefs, 'deltaMag') )
-    data.deltaMag = pref.deltaPrefs.deltaMag;
-end
-
-if ( isfield(pref.deltaPrefs, 'deltaLoc') )
-    data.deltaLoc = pref.deltaPrefs.deltaLoc;
-end
-
 % Call the FUN constructor:
 g = fun.constructor(op, data, pref);
 % See if the construction was happy:
@@ -327,13 +312,13 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% PARSESINGPREFS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function pref = parseSingPrefs(pref, domain)
+function [data, pref] = parseSingPrefs(data, pref, domain)
 % TODO:  Move this to the main input parsing routine.
 
 % Initial setup:
 numIntervals = numel(domain) - 1;
-exps = pref.singPrefs.exponents;
-singTypes = pref.singPrefs.singType;
+exps = data.exponents;
+singTypes = data.singType;
 
 if ( any(exps) || ~isempty(singTypes) )
     pref.enableSingularityDetection = true;
@@ -368,7 +353,7 @@ if ( ~isempty(exps) )
         error('CHEBFUN:constructor', 'Invalid length for vector of exponents.');
     end
     
-    pref.singPrefs.exponents = exps;
+    data.exponents = exps;
 end
 
 % Sort out the singularity types:
@@ -383,12 +368,12 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% GETSINGINFO %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function pref = getSingInfo(exps, singTypes, kk, pref)
+function data = getSingInfo(exps, singTypes, kk, data)
     if ( ~isempty(exps) )
-        pref.singPrefs.exponents = exps(kk);
+        data.exponents = exps(kk);
     end
     % Replace the information for the singularity type in the preference:
     if ( ~isempty(singTypes) )
-        pref.singPrefs.singType = singTypes(kk);
+        data.singType = singTypes(kk);
     end
 end

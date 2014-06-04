@@ -145,7 +145,6 @@ pass(5) = ( norm(err1, inf) < 2*get(g{1},'vscale') ...
 
 % Blow-up function:
 op = @(x) x.*(5+exp(x.^3))./(dom(2)-x);
-pref.singPrefs.exponents = [0 -1];
 f = unbndfun(op, struct('domain', dom, 'exponents', [0 -1]), singPref);
 g = restrict(f, domRestrict);
 

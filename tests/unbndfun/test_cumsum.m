@@ -35,8 +35,8 @@ pass(1) = errg < tol;
 % [TODO]: Revive when log is ready.
 % Blow-up function:
 % op = @(x) x.^2.*(1-exp(-x.^2));
-% pref.singPrefs.exponents = [2 2];
-% f = unbndfun(op, dom, [], [], pref);
+% data.exponents = [2 2];
+% f = unbndfun(op, dom, data, pref);
 % g = cumsum(f);
 % 
 % opg = @(x) x.*exp(-x.^2)/2 + x.^3/3 - sqrt(pi)*erf(x)/4;

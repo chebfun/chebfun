@@ -493,19 +493,6 @@ classdef chebfunpref < chebpref
                 prefList.singPrefs.maxPoleOrder');
             fprintf([padString('        defaultSingType:') '''%s''\n'], ...
                 prefList.singPrefs.defaultSingType');            
-            singType = prefList.singPrefs.singType;
-            if ( ~isempty(singType) )
-                s = ['{''' singType{1},''''];
-                for k = 2:numel(singType)-1
-                    s = [s, ', ''', singType{k}, ''''];
-                end
-                s = [s, ', ''', singType{end}, '''}'];
-                fprintf([padString('        singType:') '%s\n'], s);  
-            end
-            exps = prefList.singPrefs.exponents;
-            if ( ~isempty(exps) )
-                fprintf([padString('        exponents:') '%s\n'], num2str(exps))
-            end
             fprintf([padString('    enableDeltaFunctions:') '%d\n'], ...
                 prefList.enableDeltaFunctions);
             fprintf('    deltaPrefs\n');
@@ -751,8 +738,6 @@ classdef chebfunpref < chebpref
             factoryPrefs.enableSingularityDetection = false;
                 factoryPrefs.singPrefs.exponentTol = 1.1*1e-11;
                 factoryPrefs.singPrefs.maxPoleOrder = 20;
-                factoryPrefs.singPrefs.exponents = [];
-                factoryPrefs.singPrefs.singType = {};
                 factoryPrefs.singPrefs.defaultSingType = 'sing';                
             factoryPrefs.enableDeltaFunctions = true;
                 factoryPrefs.deltaPrefs.deltaTol = 1e-9;

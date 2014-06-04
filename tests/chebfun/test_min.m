@@ -170,8 +170,7 @@ dom = [-Inf -3*pi];
 
 % A blow-up function:
 op = @(x) x.*(5+exp(x.^3))./(dom(2)-x);
-pref.singPrefs.exponents = [0 -1];
-f = chebfun(op, dom, pref); 
+f = chebfun(op, dom, 'exps', [0 -1]);
 [y, x] = min(f);
 yExact = -Inf;
 xExact = dom(2);

@@ -140,7 +140,6 @@ err = gVals - gExact;
 pass(13) = norm(err, inf) < get(f,'epslevel')*get(f,'vscale');
 
 op = @(x) x.*(5+exp(x.^3))./(dom(2)-x);
-pref.singPrefs.exponents = [0 -1];
 f = unbndfun(op, struct('domain', dom, 'exponents', [0 -1]), pref);
 gVals = feval(f, x);
 gExact = op(x);

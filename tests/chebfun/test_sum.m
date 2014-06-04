@@ -139,9 +139,7 @@ dom = [-2 7];
 
 pow = -0.5;
 op = @(x) (x - dom(1)).^pow.*sin(100*x);
-pref.singPrefs.exponents = [pow 0];
-pref.enableBreakpointDetection = 1;
-f = chebfun(op, dom, pref);
+f = chebfun(op, dom, 'exps', [pow 0], 'splitting', 'on');
 I = sum(f);
 I_exact = 0.17330750941063138;
 pass(26) = ( abs(I-I_exact) < 2*get(f, 'epslevel')*abs(I_exact) );
