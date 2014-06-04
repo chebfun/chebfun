@@ -15,7 +15,6 @@ N.dbc = @(x) bdy(x,-1); N.ubc = @(x) bdy(x,1);
 u = N \ 0; exact = chebfun2(bdy);
 pass(1) = ( norm( exact - u ) < tol ); 
 
-
 % Harmonic solution to the Laplace equation
 N = chebop2(@(u) diff(u,2,1) + diff(u,2,2)); 
 bdy = @(x,y) real(exp(2*(x+1i*y))); 
@@ -73,7 +72,6 @@ u = N \ 0;
 A = feval(u,xx,yy); 
 B = feval(u1,xx,yy) + feval(u2,xx,yy) + feval(u3,xx,yy) + feval(u4,xx,yy); 
 pass(5) = ( norm( A - B ) < 1e10*tol);
-
 
 % Check we can use the notation lap(u) = div(grad(u))
 N = chebop2(@(u) -divergence(gradient(u)) );

@@ -14,14 +14,15 @@ if ( isempty(f) || isempty(g) )  % just return an empty chebfun2
 end
 
 if ( isa(f,'double') )
-    %% double * chebfun2
-    h = g;
     
-    % Multiply the chebfun2
-    h.chebfun2 = f*(g.chebfun2);
+        % double * chebfun2
+        h = g;
+    
+        % Multiply the chebfun2
+        h.chebfun2 = f * ( vertcat( g.chebfun2  ));
        
-    % Multiply the derivative
-    h.der = (g.der)*f;
+        % Multiply the derivative
+        h.der = ( g.der ) * f;
     
 elseif ( isa(g,'double') )
     %% chebfun2 * double

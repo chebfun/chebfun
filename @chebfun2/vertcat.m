@@ -10,8 +10,11 @@ function F = vertcat( varargin )
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+   
 
-if ( nargin > 1 )
+if ( nargin == 1 ) 
+   F = varargin{1};  
+elseif ( nargin > 1 )
     if ( isa( varargin{ 2 } , 'chebfun2v') )
         f = varargin{1}; 
         F = varargin{2}; 
