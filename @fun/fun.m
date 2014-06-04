@@ -33,45 +33,40 @@ classdef fun % (Abstract)
                 pref = chebfunpref(pref);
             end
             
+            % Get domain if none given:
+            if ( nargin < 2 || isempty(domain) )
+                domain = pref.domain;
+            end
+
+            % Get vscale if none given:
+            if ( nargin < 3 || isstruct(vscale) )
+                vscale = 0;
+            end
+
+            % Get hscale if none given:
+            if ( nargin < 4 || isempty(vscale) )
+                hscale = norm(domain, inf);
+            end
+
+            % [TODO]: Explain this. Only becomes relevant with UNBNDFUN
+            if ( isinf(hscale) )
+                hscale = 1;
+            end
+            
             % Check if delta functions are required:
-            if ( pref.enableDeltaFunctions )                
+            if ( pref.enableDeltaFunctions && isfield('pref.deltaPrefs', 'deltaLoc') )
                 % Generalized function mode; call DELTAFUN constructor:                
                 % Then op is a classicfun, vscale and hscale are magnitude 
                 % and location of delta functions. domain is a spurious argument.
-                deltaMag = vscale;
-                deltaLoc = hscale;
-                %[TODO]: pass preferences as well.
-                obj = deltafun(op, deltaMag, deltaLoc);
-            else             
-                % Get domain if none given:
-                if ( nargin < 2 || isempty(domain) )
-                    domain = pref.domain;
-                end
-
-                % Get vscale if none given:
-                if ( nargin < 3 || isstruct(vscale) )
-                    vscale = 0;
-                end
-
-                % Get hscale if none given:
-                if ( nargin < 4 || isempty(vscale) )
-                    hscale = norm(domain, inf);
-                end
-
-                % [TODO]: Explain this. Only becomes relevant with UNBNDFUN
-                if ( isinf(hscale) )
-                    hscale = 1;
-                end
-
-                % Call the relevent constructor:
-                if ( isa(op, 'fun') )
-                    % OP is already a ONEFUN!
-                    obj = op;               
-                else
-                    % STANDARD mode; call SMOOTHFUN constructor:
-                    obj = classicfun.constructor(op, domain, vscale, hscale, pref);
-
-                end
+                deltaMag = pref.deltaPrefs.deltaMag;
+                deltaLoc = pref.deltaPrefs.deltaLoc;
+                obj = deltafun(op, deltaMag, deltaLoc, vscale, hscale, pref);
+            elseif ( isa(op, 'fun') )             
+                % OP is already a ONEFUN!
+                obj = op;               
+            else
+                % STANDARD mode; call SMOOTHFUN constructor:
+                obj = classicfun.constructor(op, domain, vscale, hscale, pref);
             end
         end
         

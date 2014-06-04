@@ -1,9 +1,13 @@
-function pass = sampleTest(f, op, tol)
+function pass = sampleTest(f, sampleOP, tol, flag)
 %SAMPLETEST   Test an evaluation of input OP against a CHEBFUN2 approximation.
-%   SAMPLETEST(OP, F, TOL) evaluates both the function OP and its
+%
+%   SAMPLETEST(F, SAMPLEOP, TOL) evaluates both the function OP and its
 %   CHEBFUN2 representation F at several points in it's domain. The difference of
 %   these values is computed, and if this is sufficiently small the test 
 %   passes and returns TRUE. If the difference is large, it returns FALSE.
+% 
+%   SAMPLETEST(F, SAMPLEOP, TOL, FLAG) is the same as above if FLAG = 0. 
+%   If FLAG = 1 then the OP is assumed to be unvectorized. 
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -12,14 +16,35 @@ function pass = sampleTest(f, op, tol)
 % [TODO]: Describe where we evaluate? (at low discrepancy points...)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+if ( nargin < 3 ) 
+    % Assume op is vectorized:
+    flag = 0; 
+end
+
 domain = f.domain; 
-[xeval, yeval] = halton( 50, domain );
+
+if ( ~flag )
+    % Sample at lots of points if the op is vectorized. 
+    n = 50; 
+    [xeval, yeval] = halton( n, domain );
+    
+    % Evaluate the op:
+    vOp = feval(sampleOP, xeval, yeval);
+else
+    % sample on less points if the op is unvectorized. 
+    n = 20;
+    [xeval, yeval] = halton( n, domain );    
+    
+    % Evaluate the op:
+    vOp = zeros(n , 1 );
+    for jj = 1:numel(xeval)
+        vOp(jj) = feval(sampleOP, xeval(jj), yeval(jj));
+    end
+end
 
 % Evaluate the CHEBFUN2:
 vFun = feval(f, xeval, yeval);
 
-% Evaluate the op:
-vOp = feval(op, xeval, yeval);
 
 % If the CHEBTECH evaluation differs from the op evaluation, SAMPLETEST failed:
 if ( all(max(abs(vOp - vFun)) > 100*tol) )

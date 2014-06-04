@@ -110,9 +110,10 @@ function f = diffContinuousDim(f, k)
     
     % Update epslevel and the vertical scale: (See CHEBTECH CLASSDEF file
     % for documentation)
-    f.epslevel = (n*log(n)).^k*(f.epslevel.*f.vscale);
-    f.vscale = getvscl(f);
-    f.epslevel = f.epslevel./f.vscale;
+    newVscale = getvscl(f);
+    epslevelBnd = (n*log(n)).^k*(f.epslevel.*f.vscale)./newVscale;
+    f.epslevel = updateEpslevel(f, epslevelBnd);
+    f.vscale = newVscale;
     
 end
       
