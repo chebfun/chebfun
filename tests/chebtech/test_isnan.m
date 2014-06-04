@@ -36,8 +36,8 @@ for n = 1:2
 
     % Test a NaN array-valued function:
     try
-        f = testclass.make(@(x) [x, x + NaN]);
-        pass(n, 5) = isnan(f);
+        g = testclass.make(@(x) [x, x + NaN]);
+        pass(n, 5) = isnan(g);
     catch ME
         pass(n, 5) = strcmpi(ME.message, 'Too many NaNs/Infs to handle.');
     end

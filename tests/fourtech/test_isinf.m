@@ -1,39 +1,32 @@
-% Test file for chebtech/isinf.m
+% Test file for fourtech/isinf.m
 
 function pass = test_isinf(pref)
 
+% Get preferences.
 if ( nargin < 1 )
-    pref = chebtech.techPref();
+    pref = fourtech.techPref();
 end
-p = pref;
 
-for n = 1:2
-    if ( n == 1 )
-        testclass = chebtech1();
-    else 
-        testclass = chebtech2();
-    end
+testclass = fourtech();
 
-    % Test a scalar-valued function:
-    y = ones(11,1); 
-    y(4) = inf; 
-    f = testclass.make({[],y}, [], []);
-    pass(n, 1) = isinf(f);
-    
-    % Test an array-valued function:
-    y = ones(11,1); 
-    y(4) = inf;
-    f = testclass.make({[],y}, [], []);
-    pass(n, 2) = isinf(f);
-    
-    % Test a finite scalar-valued function:
-    p = pref;
-    f = testclass.make(@(x) x, [], [], p);
-    pass(n, 3) = ~isinf(f);
-    
-    % Test a finite array-valued function:
-    f = testclass.make(@(x) [x, x], [], [], p);
-    pass(n, 4) = ~isinf(f);
-end
+% Test a scalar-valued function.
+y = ones(11,1);
+y(4) = inf;
+f = testclass.make({[],y}, [], []);
+pass(1) = isinf(f);
+
+% Test an array-valued function.
+y = ones(11,1);
+y(4) = inf;
+f = testclass.make({[],y}, [], []);
+pass(2) = isinf(f);
+
+% Test a finite scalar-valued function.
+f = testclass.make(@(x) cos(pi*x), [], [], pref);
+pass(3) = ~isinf(f);
+
+% Test a finite array-valued function.
+f = testclass.make(@(x) [cos(pi*x), cos(pi*x)], [], [], pref);
+pass(4) = ~isinf(f);
 
 end

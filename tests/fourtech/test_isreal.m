@@ -1,37 +1,32 @@
-% Test file for chebtech/isreal.m
+% Test file for fourtech/isreal.m
 
 function pass = test_isreal(pref)
 
+% Get preferences.
 if ( nargin < 1 )
-    pref = chebtech.techPref();
+    pref = fourtech.techPref();
 end
 
-for n = 1:2
-    if ( n == 1 )
-        testclass = chebtech1();
-    else 
-        testclass = chebtech2();
-    end
+testclass = fourtech();
 
-    % Test a scalar-valued function:
-    f = testclass.make(@(x) sin(x) + 1i*cos(x), [], [], pref);
-    pass(n, 1) = ~isreal(f);
-    
-    f = testclass.make(@(x) 1i*cos(x), [], [], pref);
-    pass(n, 2) = ~isreal(f);
-    
-    f = testclass.make(@(x) sin(x), [], [], pref);
-    pass(n, 3) = isreal(f);
-    
-    % Test an array-valued function:
-    f = testclass.make(@(x) [sin(x) + 1i*cos(x), exp(x)], [], [], pref);
-    pass(n, 4) = ~isreal(f);
-    
-    f = testclass.make(@(x) [1i*cos(x), exp(x)], [], [], pref);
-    pass(n, 5) = ~isreal(f);
-    
-    f = testclass.make(@(x) [sin(x), exp(x)], [], [], pref);
-    pass(n, 6) = isreal(f);
-end
+% Test a scalar-valued function.
+f = testclass.make(@(x) sin(100*pi*x) + 1i*sin(cos(10*pi*x)), [], [], pref);
+pass(1) = ~isreal(f);
+
+f = testclass.make(@(x) 1i*cos(pi*x), [], [], pref);
+pass(2) = ~isreal(f);
+
+f = testclass.make(@(x) sin(pi*x), [], [], pref);
+pass(3) = isreal(f);
+
+% Test an array-valued function.
+f = testclass.make(@(x) [sin(100*pi*x) + 1i*sin(cos(10*pi*x)), cos(10*pi*x)], [], [], pref);
+pass(4) = ~isreal(f);
+
+f = testclass.make(@(x) [1i*cos(pi*x), cos(sin(pi*x))], [], [], pref);
+pass(5) = ~isreal(f);
+
+f = testclass.make(@(x) [sin(20*pi*x), cos(sin(pi*x))], [], [], pref);
+pass(6) = isreal(f);
 
 end
