@@ -1,4 +1,4 @@
-% Test file for bndfun/plus.m
+% Test file for @classicfun/plus.m
 
 function pass = test_plus(pref)
 

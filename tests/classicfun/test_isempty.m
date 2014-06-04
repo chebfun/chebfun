@@ -1,4 +1,4 @@
-% Test file for fun/isempty.m
+% Test file for @classicfun/isempty.m
 
 function pass = test_isempty(pref)
 

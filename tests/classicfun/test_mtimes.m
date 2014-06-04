@@ -1,4 +1,4 @@
-% Test file for fun/mtimes.m
+% Test file for @classicfun/mtimes.m
 
 function pass = test_mtimes(pref)
 

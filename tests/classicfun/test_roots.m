@@ -1,4 +1,4 @@
-% Test file for fun/roots.m
+% Test file for @classicfun/roots.m
 
 function pass = test_roots(pref)
 

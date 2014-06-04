@@ -1,4 +1,4 @@
-% Test file for fun/minus.m
+% Test file for @classicfun/minus.m
 
 function pass = test_minus(pref)
 

@@ -1,4 +1,4 @@
-% Test file for fun/mat2cell.m
+% Test file for @classicfun/mat2cell.m
 
 function pass = test_mat2cell(pref)
 

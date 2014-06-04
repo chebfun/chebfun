@@ -1,4 +1,4 @@
-% Test file for fun/isequal.m
+% Test file for @classicfun/isequal.m
 
 function pass = test_isequal(pref)
 

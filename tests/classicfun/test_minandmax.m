@@ -1,4 +1,4 @@
-% Test file for fun/minandmax.m
+% Test file for @classicfun/minandmax.m
 
 function pass = test_minandmax(pref)
 

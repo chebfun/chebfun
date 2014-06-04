@@ -1,4 +1,4 @@
-% Test file for fun/max.m
+% Test file for @classicfun/max.m
 
 function pass = test_max(pref)
 

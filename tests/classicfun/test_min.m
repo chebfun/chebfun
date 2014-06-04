@@ -1,4 +1,4 @@
-% Test file for fun/min.m
+% Test file for @classicfun/min.m
 
 function pass = test_min(pref)
 

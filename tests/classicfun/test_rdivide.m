@@ -1,4 +1,4 @@
-% Test file for fun/rdivide.m
+% Test file for @classicfun/rdivide.m
 
 function pass = test_rdivide(pref)
 
