@@ -1,24 +1,29 @@
 function [ishappy, epslevel, cutoff] = plateauCheck(f, values, pref)
-%PLATEAUCHECK   Seek a plateau in Chebyshev coefficients.
-%  Inputs:
-%    f:      chebtech
-%    values: function values on the grid f.points().
-%    pref:   chebfunpref
+%PLATEAUCHECK   Attempt to trim trailing Chebyshev coefficients in a CHEBTECH.
+%   [ISHAPPY, EPSLEVEL, CUTOFF] = PLATEAUCHECK(F, VALUES) returns an estimated
+%   location, the CUTOFF, at which the CHEBTECH F could be truncated. One of two
+%   criteria must be met: Either:
 %
-%  Outputs:
-%    ishappy:  true if convergence was achieved
-%    epslevel: the apparent epslevel of the truncation
-%    cutoff:   where to truncate the coefficients
+%     (1) The coefficients are sufficiently small (as specified by the default
+%     EPS property of CHEBTECH) relative to F.VSCALE (or using absolute size if
+%     F.VSCALE=0); or
 %
-% This check is needed because of condition numbers in differential equations.
-% We can't be sure that a solution will ever be resolved to full precision, so
-% we have to be willing to stop if the convergence appears to have trailed off.
+%     (2) The coefficients are somewhat small and apparently unlikely to
+%     continue decreasing in a meaningful amount (i.e., have reached a "plateau"
+%     in convergence).
+%
+%   The reason for criterion (2) is that the problem may have a large condition
+%   number that prevents convergence to the full requested accuracy, as often
+%   happens in the collocation of differential equations.
+%
+%   [ISHAPPY, EPSLEVEL, CUTOFF] = PLATEAUCHECK(F, PREF) allows additional
+%   preferences to be passed. In particular, one can adjust the target accuracy
+%   with PREF.EPS.
+%
+% See also STRICTCHECK, CLASSICCHECK.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
-
-% TODO: Bring documentation in line with CLASSICCHECK and STRICTCHECK and add a
-% better description of the process.
 
 % Grab some preferences:
 if ( nargin == 1 )
