@@ -105,7 +105,6 @@ X = cutTrailingCoefficients( X );
 
 % Form a chebfun2 object to represent the solution:
 u = chebfun2( rot90( X, 2 ), 'coeffs', rect);
-
 end
 
 function [Resolved, newDisc] = ResolveCheck( coeffs, oldDisc, tol )
@@ -131,7 +130,6 @@ if ( max(m, n) > 250 )
     tol = max(tol, 1e-10);
 end
 end
-
 
 function X = cutTrailingCoefficients( X )
 %TODO:
