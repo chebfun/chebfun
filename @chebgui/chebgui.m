@@ -81,6 +81,11 @@ classdef chebgui
 %   u" = lambda*v
 %   v" = lambda*(u+u')
 %
+% It is possible to right-click on an input box, which brings up a larger input
+% box to make it easier to input more complicated problem. Observe that on Apple
+% computers, CTRL+Click is equivalent to right-clicking.
+%
+%
 % Finally, the most valuable Chebgui capability of all is the "Export to m-file"
 % button.  With this feature, you can turn an ODE or PDE solution from the GUI
 % into an M-file in standard Chebfun syntax.  This is a great starting point for

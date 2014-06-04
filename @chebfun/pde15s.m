@@ -163,7 +163,7 @@ end
             return
         end
         
-        % Sometimes we get given more than one tmie slice (not sure why..)
+        % Sometimes we get given more than one time slice.
         for kk = 1:numel(t)
             % Reshape solution:
             Uk = reshape(U(:,kk), n, SYSSIZE);
@@ -190,7 +190,7 @@ end
             return
         end
         
-        % Sometimes we get given more than one tmie slice (not sure why..)
+        % Sometimes we get given more than one time slice.
         for kk = 1:numel(t)
             % Reshape solution:
             Uk = reshape(U(:,kk), currentLength, SYSSIZE);
@@ -200,6 +200,7 @@ end
             Uk2 = (Uk*c/sum(c));
             uk2 = chebtech2(Uk2, pref);
             [ishappy, epslevel] = classicCheck(uk2, Uk2, pref);
+            %TODO: Remove if no longer needed.
 %             [ishappy, epslevel, cutoff] = plateauCheck(uk2, Uk2, pref2);
 
             if ( ishappy )  
@@ -209,11 +210,6 @@ end
                 uCurrent = chebfun(Uk, DOMAIN);
                 uCurrent = simplify(uCurrent, epslevel);    
                 
-%                 uCoeff = chebpoly(uCurrent);
-%                 first = max(1,size(uCoeff,2)-cutoff);
-%                 uCurrent = chebfun(uCoeff(:,first:end).',DOMAIN,'coeffs');
-%                 uCurrent = simplify(uCurrent,epslevel);
-
                 ctr = ctr + 1;
                 uOut{ctr} = uCurrent;
 
@@ -228,7 +224,7 @@ end
 %                     currentLength = currentLength + 1 - rem(currentLength,2);
 %                     status = true;
 %                 end
-
+                 %TODO: Remove if no longer needed.
             else 
 
                 % Increase length and bail out:
@@ -251,6 +247,9 @@ end
         %   status = true exits the current time chunk.
         %   done = true exits PDE15S.
         
+        % TODO: This method only seems to have one output argument, but two are
+        % listed above?
+        
         % Interupt computation if stop or pause button is pressed in the GUI.
         if ( strcmp(get(solveButton, 'String'), 'Solve') )
             % Stop.
@@ -268,7 +267,8 @@ end
                 waterfall(uuTmp, tt(tt<=tCurrent), 'linewidth', 2);
             else
                 cols = get(0, 'DefaultAxesColorOrder');
-                waterfall(uuTmp, tt(tt<=tCurrent), 'linewidth', 2, 'EdgeColors', cols);
+                waterfall(uuTmp, tt(tt<=tCurrent), 'linewidth', 2, ...
+                    'EdgeColors', cols);
             end
             xlabel(xLabel), ylabel(tlabel), zlabel(varNames)
             if ( gridOn )
@@ -277,7 +277,7 @@ end
             view([322.5 30])
             box off
             axes(axesSol)
-            % hang around until 'continue' or 'stop' is presed.
+            % Hang around until 'CONTINUE' or 'STOP' is presed.
             waitfor(clearButton, 'String');
             % Call again to see if 'STOP' was pressed.
             status = guiEvent(status);
@@ -286,9 +286,13 @@ end
 
 
     function varargout = plotFun(U, t)
+        %PLOTFUN    Plot current solution U at a time t.
+        
+        % Do we actually want to plot?
         if ( ~doPlot )
             return
         end
+        % If we're not in GUI mode, ensure that figure receives focus.
         if ( ~guiFlag )
             cla, shg
         end
