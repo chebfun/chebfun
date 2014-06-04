@@ -22,7 +22,9 @@ f = chebfun(@(x) sin(10*pi*x), [-1:.5:2], pref2);
 [g, mergedPts] = merge(f, [2 4:6]);
 pass(3) = all(size(g.funs) == [1,2]);
 xx = linspace(-1, 2, 100);
-pass(4) = norm(feval(f, xx) - feval(g, xx), 'inf') < 10*epslevel(f);
+err = norm(feval(f, xx) - feval(g, xx), 'inf');
+tol = 10*epslevel(f);
+pass(4) = err < tol;
 pass(5) = all(mergedPts == [2 4:6]);
 
 % Test a non-smooth function:
@@ -83,7 +85,8 @@ f = chebfun(op, dom, 'splitting', 'on');
 g = merge(f);
 gVals = feval(g, x);
 gExact = op(x);
-err = gVals - gExact;
-pass(13) = norm(err, inf) < 10*epslevel(f)*vscale(f);
+err = norm(gVals - gExact, inf);
+tol = 50*epslevel(f)*vscale(f);
+pass(13) = err < tol;
 
 end
