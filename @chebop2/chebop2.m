@@ -77,7 +77,7 @@ classdef chebop2
         bc = createbc(bcArg, ends);
         
         % Method for deciding how to solve the matrix equation:
-        X = denseSolve(N, f, m, n)
+        X = denseSolve(N, f, m, n);
         
         % Remove trailing coefficients.
         a = truncate(a, tol);

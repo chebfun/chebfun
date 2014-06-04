@@ -83,3 +83,41 @@ end
 % surf(xx,yy,X,'edgealpha',.5,'facecolor','interp');
 %surf(log10(abs(X)))
 end
+
+function X = ImposeBoundaryConditions(X, bb, gg, Px, Py, m, n)
+
+% Recombine in the boundary conditions.
+cs = size(bb{3},2) + size(bb{4},2);
+rs = size(bb{1},2) + size(bb{2},2);
+
+By = [bb{3}.' ; bb{4}.'].'; Gy = [gg{3}.' ; gg{4}.'].';
+if ( ~isempty(By) )
+    By = Py.' * By; % Gy = Gy * Py;
+    X12 = By(1:cs,:).' \ (Gy(rs+1:size(X,2)+rs,:).' - By(cs+1:size(X,1)+cs,:).'*X);
+    X = [ X12; X ];
+end
+
+Bx = [bb{1}.' ; bb{2}.'].'; Gx = [gg{1}.' ; gg{2}.'].';
+if ( ~isempty(Bx) )
+    Bx = Px.' * Bx; %Gx = Px.' * Gx;
+    X2 = ( Bx(1:rs,:).' \ ( Gx(1:size(X,1),:).' - Bx(rs+1:size(X,2)+rs,:).'*X.') ).' ;
+    X = [X2 X];
+end
+
+if ( size(X,1) < m )
+    X(size(X,1)+1:m, :) = 0;
+end
+
+if ( size(X,2) < n )
+    X(:, size(X,2)+1:n) = 0;
+end
+
+if ( ~isempty(Px) )
+    X = X * Px.';
+end
+
+if ( ~isempty(Py) )
+    X = Py * X;
+end
+
+end

@@ -25,7 +25,7 @@ if ( nargin == 3 && isa(varargin{1},'double') )
     if ( abs( round(n) - n ) > 0 )
         error('CHEBOP2:MLDIVIDE:DISC','Discretization size should be an integer');
     end
-    X = denseSolve(N,f,m,n);
+    X = chebop2.denseSolve(N, f, m, n);
 elseif ( nargin == 4 && isa(varargin{1},'double') && ~isinf(varargin{1}) ...
         && isa(varargin{2},'double') && ~isinf(varargin{2}) )
     % Nonadaptive solve with an m-by-n discretization
@@ -34,7 +34,7 @@ elseif ( nargin == 4 && isa(varargin{1},'double') && ~isinf(varargin{1}) ...
     if ( abs( round(n) - n ) > 0 || abs( round(m) - m ) > 0)
         error('CHEBOP2:MLDIVIDE:DISC','Discretization size should be an integer');
     end
-    X = denseSolve(N,f,m,n);
+    X = chebop2.denseSolve(N, f, m, n);
 elseif ( nargin == 4 && isa(varargin{1},'double') && ~isinf(varargin{1})...
         && isinf(varargin{2}) )
     % Adaptive solve in the horizontal variable, nonadaptive in the other.
@@ -44,7 +44,7 @@ elseif ( nargin == 4 && isa(varargin{1},'double') && ~isinf(varargin{1})...
     
     Resolved = 0;
     while ( ( ~Resolved ) && ( max(n) < maxDiscretise ))
-        X = denseSolve(N, f, m, n);               % Solve PDE on a m x n grid
+        X = chebop2.denseSolve(N, f, m, n);               % Solve PDE on a m x n grid
         
         if ( ~Resolved )                       % Resolved in vertical direction?
             clcfs = max(abs(X(:,end:-1:end-8)));
@@ -79,7 +79,7 @@ elseif ( nargin == 4 && isa(varargin{2},'double') && ~isinf(varargin{2})...
     
     Resolved = 0;
     while ( ( ~Resolved ) && ( max(m) < maxDiscretise ))
-        X = denseSolve(N, f, m, n);               % Solve PDE on a m x n grid
+        X = chebop2.denseSolve(N, f, m, n);               % Solve PDE on a m x n grid
         
         if ( ~Resolved )                             % Resolved in x-direction
             rwcfs = max(abs(X(end:-1:end-8,:)));
@@ -111,7 +111,7 @@ elseif ( nargin == 2 || (nargin == 4 && isinf(varargin{2}) && isinf(varargin{1})
     
     Resolved_x = 0; Resolved_y = 0; Resolved = Resolved_x & Resolved_y;
     while ( ( ~Resolved ) && ( max(m, n) < maxDiscretise ))
-        X = denseSolve(N, f, m, n);               % Solve PDE on a m x n grid
+        X = chebop2.denseSolve(N, f, m, n);               % Solve PDE on a m x n grid
         
         if ( ~Resolved_y )                             % Resolved in y-direction
             clcfs = max(abs(X(:,end:-1:end-8)));
@@ -154,92 +154,6 @@ end
 
 % Form a chebfun2 object.
 u = chebfun2( polyval( rot90( X, 2 ) ), rect);
-end
-
-function X = denseSolve(N,f,m,n)
-% Given a fixed discretisation size, solve the differential equation using
-% a dense solver.
-%
-%  DENSESOLVE(N,F,M,N), returns a solution matrix of values on a M by N
-%  Chebyshev grid.
-
-[CC,RHS,bb,gg,Px,Py,xsplit,ysplit] =...
-    chebop2.constructDiscretisation(N,f,m,n); % Construct discretisation.
-
-if ( size(CC,1) == 1 )  % rank-1 PDE operator.
-    A = CC{1,1}; B = CC{1,2};
-    Y = A \ RHS ;
-    X = ( B \ Y.').';
-    
-    X = ImposeBoundaryConditions(X,bb,gg,Px,Py,m,n);
-    
-elseif ( size(CC,1) == 2 )% rank-2 PDE operator.
-    
-    A = CC{1,1}; B = CC{1,2}; C = CC{2,1}; D = CC{2,2};
-    
-    if min(size(bb{1})) > 1 || min(size(bb{2}))>1 ||...
-            min(size(bb{3}))>1 || min(size(bb{4}))>1
-        xsplit = 0; ysplit = 0;
-    end
-    
-    %xsplit = 0; ysplit = 0; 
-    try
-        if xsplit || ysplit
-            % solve subproblems.
-            X = chebop2.BartelsStewart(A,B,C,D,RHS,xsplit,ysplit);
-            
-%             debug:
-%            norm(A * X * B' + C * X * D' - RHS,inf)
-        else
-            X = lyap(C\A,(B\D).',-(B\(C\RHS).').');
-            
-        end
-    catch
-        X = chebop2.BartelsStewart(A,B,C,D,RHS,xsplit,ysplit);% Solve with Sylvester Solver\
-    end
-    % QZ in BartelsStewart solver can return complex so take real part
-    if norm(imag(X),inf) < sqrt(eps)
-        X = real(X);
-    end
-    
-    X = ImposeBoundaryConditions(X,bb,gg,Px,Py,m,n);
-
-    if (  any( isnan(X(:)) | isinf(X(:)) )  )
-        error('CHEBOP2:MLDIVIDE', 'Solution is not unique.')
-    end
-    %surf(log10(abs(X)))
-else  % rank-k>2 PDE operator.
-    % do full n^2 by n^2 matrix kronecker product.
-    
-    % make massive n^2 by n^2 matrix.
-    sz = size(CC{1,1},1)*size(CC{2,1},2);
-    if sz > 60^2
-        error('CHEBOP2:MLDIVIDE','Solution was unresolved on a 60 by 60 grid.');
-    end
-    A = spalloc(sz, sz, m*sz + sz);
-    for jj = 1:size(CC,1)
-        A = A + kron(CC{jj,2},CC{jj,1});
-    end
-    % vec the rhs.
-    b = RHS(:);
-    
-    X = A \ b;
-    if max(size(X)) > 4000
-        error('Unresolved for n > 4000.');
-    end
-    
-    X = reshape(X,size(CC{1,1},1),size(CC{2,1},2));
-    
-    X = ImposeBoundaryConditions(X,bb,gg,Px,Py,m,n);
-end
-
-% Debug:
-% X = polyval(rot90(X,2));
-% x = chebpts(size(X,1));
-% y = chebpts(size(X,2));
-% [xx,yy]=meshgrid(y,x);
-% surf(xx,yy,X,'edgealpha',.5,'facecolor','interp');
-%surf(log10(abs(X)))
 end
 
 
@@ -291,4 +205,13 @@ end
 for k = 1:sy
     c(k,:) = chebtech2.coeffs2vals(c(k,:).').';
 end
+end
+
+
+function [Resolved, newDisc] = ResolveCheck( coeffs, oldDisc, tol )
+% Basic Resolution check: 
+
+Resolved = all( ( coeffs < 20*oldDisc*tol ) );
+newDisc = 2^(floor(log2(oldDisc))+1)+1;
+
 end
