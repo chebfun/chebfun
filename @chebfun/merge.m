@@ -110,7 +110,7 @@ end
 vs = vscale(f);
 hs = hscale(f);
 tol = epslevel(f);
-pref.epslevel = tol;
+pref.eps = tol;
 mergedPts = [];
 
 % Store data from input CHEBFUN:
