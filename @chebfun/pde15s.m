@@ -75,8 +75,6 @@ function varargout = pde15s(pdeFun, tt, u0, bc, varargin)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.
 
-% TODO: Syncronise with CHEBOP syntax. (In particular, .lbc, .rbc, and .bc).
-
 global DIFFORDER SYSSIZE
 DIFFORDER = 0;
 SYSSIZE = 0;
@@ -199,9 +197,7 @@ end
             c = (1+sin(1:SYSSIZE)).'; % Arbitrarily linear combination.
             Uk2 = (Uk*c/sum(c));
             uk2 = chebtech2(Uk2, pref);
-            [ishappy, epslevel] = classicCheck(uk2, Uk2, pref);
-            %TODO: Remove if no longer needed.
-%             [ishappy, epslevel, cutoff] = plateauCheck(uk2, Uk2, pref2);
+            [ishappy, epslevel, cutoff] = classicCheck(uk2, Uk2, pref);
 
             if ( ishappy )  
 
@@ -216,15 +212,14 @@ end
                 % Plot current solution:
                 plotFun(uCurrent, tCurrent);
 
-%                 % If we have 2.5 times as many coeffcients as we need, shorten
-%                 % the representation and cause the integrator to stop. 
-%                 if ( cutoff < 0.4*n )
-%                     %currentLength = round(1.25*cutoff)';
-%                     currentLength = floor( currentLength / 1.5  );
-%                     currentLength = currentLength + 1 - rem(currentLength,2);
-%                     status = true;
-%                 end
-                 %TODO: Remove if no longer needed.
+                % If we have 2.5 times as many coeffcients as we need, shorten
+                % the representation and cause the integrator to stop. 
+                if ( cutoff < 0.4*n )
+                    %currentLength = round(1.25*cutoff)';
+                    currentLength = floor( currentLength / 1.5  );
+                    currentLength = currentLength + 1 - rem(currentLength,2);
+                    status = true;
+                end
             else 
 
                 % Increase length and bail out:
@@ -245,11 +240,8 @@ end
         %GUIEVENT   Deal with GUI events ('stop', 'pause', etc). 
         % OUTPUTS:
         %   status = true exits the current time chunk.
-        %   done = true exits PDE15S.
-        
-        % TODO: This method only seems to have one output argument, but two are
-        % listed above?
-        
+        %   done = true exits PDE15S. (Note done is a GLOBAL variable).
+
         % Interupt computation if stop or pause button is pressed in the GUI.
         if ( strcmp(get(solveButton, 'String'), 'Solve') )
             % Stop.
@@ -339,8 +331,7 @@ end
 
 %%%%%%%%%%%%%%%%%%%%% SETUP TOLERANCES AND INITIAL CONDITION %%%%%%%%%%%%%%%%%%%
 
-% ODE tolerances: (AbsTol and RelTol must be <= Tol/10)
-% TODO: Tol/10 no longer seems to be the case?
+% ODE tolerances:
 aTol = odeget(opt, 'AbsTol', tol);
 rTol = odeget(opt, 'RelTol', tol);
 if ( isnan(optN) )
@@ -432,9 +423,6 @@ else
         bc.left = [];
     elseif ( ~isfield(bc, 'left') && ~isfield(bc, 'right') )
         bc = struct('left', [], 'right', [], 'middle', bc);
-%         bc.left = bc;
-%         bc.right = bc.left;
-    % TODO: Remove if no longer needed.
     end
     
     % Deal with struct and numeric input:
@@ -585,9 +573,7 @@ if ( ~isnan(optN) )
     % Non-adaptive in space:
     tSpan = tt;
     x = chebpts(optN, DOMAIN);
-    oneStep(tSpan); % Do all chunks at once!
-    % TODO: Why do we get away with doing all chunks at once? (I can guess, but
-    % the name oneStep is confusing).
+    solvePDE(tSpan); % Do all chunks at once!
 else
     % Adaptive in space
     
@@ -598,7 +584,7 @@ else
     while ( tCurrent < tt(end) && ~done )
         tSpan(tSpan < tCurrent) = [];
         x = chebpts(currentLength, DOMAIN);
-        oneStep(tSpan);
+        solvePDE(tSpan);
     end
 
 end
@@ -633,11 +619,10 @@ clear global SYSSIZE
         if ( SYSSIZE == 1 )
             uOut = horzcat(uIn{:});
         else
-            % TODO: Determine what output we want for systems of equations.
-            % CHEBMATRIX?
             blocks = cell(SYSSIZE, numel(uIn));
             for kk = 1:SYSSIZE
-                blocks(kk,:) = cellfun(@(u) extractColumns(u, kk), uIn, 'UniformOutput', false);
+                blocks(kk,:) = cellfun(@(u) extractColumns(u, kk), uIn, ...
+                    'UniformOutput', false);
             end
             uOut = chebmatrix(blocks); % CHEBMATRIX
         end
@@ -646,7 +631,7 @@ clear global SYSSIZE
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  ONESTEP  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    function oneStep(tSpan)
+    function solvePDE(tSpan)
         % Constructs the result of one time chunk at fixed discretization.
 
         % Evaluate the chebfun at discrete points:
@@ -710,8 +695,6 @@ clear global SYSSIZE
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         function F = odeFun(t, U)
             % This is what ODE15S() calls.
-            %fprintf('  t = %.5f\n',t)
-            %TODO: Remove if no longer needed.
             
             % Reshape to n by SYSSIZE:
             U = reshape(U, n, SYSSIZE);
@@ -814,15 +797,19 @@ end
 end
 
 function newFun = conv2cell(oldFun, u, varargin)
-% This function allows the use of different variables in the anonymous
-% function, rather than using the clunky quasi-matrix notation.
-%TODO: Describe inputs and outputs?
+% This function allows the use of different variables in the anonymous function,
+% rather than using the clunky quasi-matrix notation.
+%
+% Inputs: 
+%   oldFun in the original function handle
+%   u will be the solution we evaluate at
+%   varargin possibly contains the time and space variables
+% Output
+%   newFun the modified function handle
 
 global SYSSIZE
-
 % Note. This is faster than mat2cell!
 tmpCell = cell(1, SYSSIZE);
-
 for qk = 1:SYSSIZE
     tmpCell{qk} = extractColumns(u, qk);
 end
@@ -832,16 +819,15 @@ end
 function getDIFFORDER(pdeFun)
 % Extract the DIFFORDER by evaluating the operator at some NaN values.
 global DIFFORDER SYSSIZE
-
 % Find the order of each of the variables:
 tmp = chebdouble(zeros(SYSSIZE));
 v = pdeFun(0, 0, tmp);
 DIFFORDER = get(v, 'diffOrder');
-
 end
 
 function out = dealWithStructInput(in)
-%TODO: What does this method do? Describe inputs and outputs?
+% Parse the inputs for BCs.
+% Throw a warning or an error for a struct. Convert numeric value to 'dirichet'.
 if ( isstruct(in) )
     if ( numel(in) == 1)
         warning('CHEBFUN:pde15s:bcstruct', ...
