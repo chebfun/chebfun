@@ -1,5 +1,5 @@
 function varargout = displayBVPinfo(handles, mode, varargin)
-%DISPLAYBVPINFO     Show information on the CHEBGUI figure when solving BVPs
+%DISPLAYBVPINFO    Show information on the CHEBGUI figure when solving BVPs
 %
 % Calling sequence:
 %   VARARGOUT = DISPLAYBVPINFO(HANDLES, MODE, VARARGIN)

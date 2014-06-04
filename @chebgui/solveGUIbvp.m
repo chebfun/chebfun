@@ -1,5 +1,5 @@
 function varargout = solveGUIbvp(guifile, handles)
-% SOLVEGUIBVP   Solve a BVP, specified by a CHEBGUI object.
+%SOLVEGUIBVP   Solve a BVP, specified by a CHEBGUI object.
 %
 % Calling sequence:
 %

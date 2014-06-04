@@ -1,18 +1,17 @@
 function cg = demo2chebgui(demoPath)
 %DEMO2CHEBGUI   Load a demo stored in a .guifile to a CHEBGUI object
-%
-% CG = CHEBGUI.DEMO2CHEBGUI(DEMOPATH) convert the .guifile stored on DEMOPATH to
-% a CHEBGUI object.
+%   CG = CHEBGUI.DEMO2CHEBGUI(DEMOPATH) convert the .guifile stored on DEMOPATH
+%   to a CHEBGUI object.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Import from the given file and evaluate to fill the workspace
 fid = fopen(demoPath);
 
-% Make sure the file exists
+% Make sure the file exists:
 if ( fid == -1 )
-  error('CHEBGUI:noload', 'Unable to open demo file: %s.', demoPath)
+    error('CHEBGUI:noload', 'Unable to open demo file: %s.', demoPath)
 end
 
 % Load the data to the workspace
@@ -45,18 +44,19 @@ end
 % Clear these variables, that we're finished with
 clear inputEnded fid tline ans
 
-% Load all the current workspace vars into the chebgui object using SET
+% Load all the current workspace vars into the chebgui object using SET:
 vars = who;
 cg = chebgui('type', 'bvp');
 for k = 1:numel(vars)
     if ( strcmp(vars{k}, 'demoPath') )
         continue
     end
-
     try
         cg = set(cg, vars{k}, eval(vars{k}));
     catch ME %#ok<NASGU>
         warning('CHEBGUI:loaddemos:unknown',...
             [vars{k} ' is an unknown CHEBGUI property. Ignoring.']);
     end
+end
+
 end

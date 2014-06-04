@@ -1,5 +1,5 @@
 function varargout = solveGUIpde(guifile, handles)
-% SOLVEGUIPDE   Solve a PDE, specified by a CHEBGUI object.
+%SOLVEGUIPDE   Solve a PDE, specified by a CHEBGUI object.
 %
 % Calling sequence:
 %
@@ -21,7 +21,7 @@ function varargout = solveGUIpde(guifile, handles)
 %   VARARGOUT{2}:   The a CHEBMATRIX containing the solution returned by pde15s.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Handles will be an empty variable if we are solving without using the GUI
 if ( nargin < 2 )
