@@ -114,6 +114,7 @@ lineData = {};
 pointData = {};
 jumpData = {};
 deltaData = {};
+jumpLineSet = any(cellfun(@(v) strcmpi(v, 'JumpLine'), varargin));
 
 % Remove global plotting options from input arguments.
 [lineStyle, pointStyle, jumpStyle, varargin] = ...
@@ -291,15 +292,14 @@ if ( isempty(jumpData) || ischar(jumpData{1}) )
 end
 h3 = plot(jumpData{:});
 % Change the style accordingly:
-if ( isempty(jumpStyle) )
+set(h3, jumpStyle{:});
+if ( ~jumpLineSet )
     if ( isComplex )
-        %[TODO]: The following statement can not be reached:
-        set(h3, 'LineStyle', 'none', 'Marker', 'none')
+        set(h3, 'LineStyle', 'none') 
     else
-        set(h3, 'LineStyle', ':', 'Marker', 'none')
+        set(h3, 'LineStyle', ':')
     end
-else
-    set(h3, jumpStyle{:});
+    set(h3, 'Marker', 'none') 
 end
 
 % Plot the Delta functions:
@@ -307,7 +307,6 @@ if ( isempty(deltaData) )
     h4 = stem([]);
 else
     h4 = mystem(deltaData{:});
-    
 end
 
 % Set the X-limits if appropriate values have been suggested:
