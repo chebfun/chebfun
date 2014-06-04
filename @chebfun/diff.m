@@ -111,7 +111,7 @@ if ( ~pref.enableDeltaFunctions )
 else
     % Delta functions are enabled:
     
-    % Tolderance used for introducing Dirac deltas at jumps:
+    % Tolerance used for introducing Dirac deltas at jumps:
     deltaTol = pref.deltaPrefs.deltaTol;
     
     % Loop n times for nth derivative:
