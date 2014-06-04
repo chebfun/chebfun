@@ -30,7 +30,7 @@ else
     guiMode = 1;
 end
 
-% Call the exportInfo method of the chebguiExporterBVP class, which takes care
+% Call the exportInfo method of the chebguiExporterEIG class, which takes care
 % of extracting most information we need from GUIFILE.
 expInfo = chebguiExporterEIG.exportInfo(guifile);
 

@@ -30,43 +30,32 @@ else
     guiMode = 1;
 end
 
-% Extract information from the guifile
-deInput = guifile.DE;
-lbcInput = guifile.LBC;
-rbcInput = guifile.RBC;
-initInput = guifile.init;
-dom = str2num(guifile.domain);
+% Call the exportInfo method of the chebguiExporterEIG class, which takes care
+% of extracting most information we need from GUIFILE.
+expInfo = chebguiExporterPDE.exportInfo(guifile);
+
+% Extract information from the EXPINFO struct.
+dom = str2num(expInfo.dom);
+tt = str2num(expInfo.tt);
+deString = expInfo.deString;
+allVarNames = expInfo.allVarNames;
+initInput = expInfo.initInput;
+indVarName = expInfo.indVarName;
+pdeflag = expInfo.pdeflag;
+periodic = expInfo.periodic;
+lbcString = expInfo.lbcString;
+rbcString = expInfo.rbcString;
+
+% Check that we don't have any breakpoints.
 if ( length(dom) > 2 )
     warning('Chebgui:SolveGUIpde', ...
         ['PDE solver does not accept domains with breakpoints. ' ...
          'Breakpoints are being ignored.']);
     dom = dom([1 end]);
 end
-tolInput = guifile.tol;
-tt = str2num(guifile.timedomain);
 
-% Wrap all input strings in a cell (if they're not a cell already)
-if ( isa(deInput,'char') )
-    deInput = cellstr(deInput);
-end
 
-if ( isa(lbcInput,'char') )
-    lbcInput = cellstr(lbcInput);
-end
-
-if ( isa(rbcInput,'char') )
-    rbcInput = cellstr(rbcInput);
-end
-
-if ( isa(initInput,'char') )
-    initInput = cellstr(initInput);
-end
-
-% Convert the input to the an. func. format, get information about the
-% independent variable in the problem.
-[deString, allVarString, indVarNameDE, dummy, pdeflag, dummy, allVarNames] ...
-    = setupFields(guifile, deInput, 'DE');
-handles.varnames = allVarNames;
+% Are we actually trying to solve a PDE?
 if ( ~any(pdeflag) )
     s = ['Input does not appear to be a PDE, or at least is not a ' ...
          'supported type. Perhaps you need to switch to ''ODE'' mode?'];
@@ -76,122 +65,36 @@ end
 % Are we solving a scalar problem?
 scalarProblem = length(allVarNames) == 1;
 
-% Obtain the independent variable name appearing in the initial condition
-if ( ~isempty(initInput{1}) )
-    % If we have a scalar problem, we're OK with no dependent variables
-    % appearing in the initial guess
-    if ( scalarProblem ) 
-        [dummy, dummy, indVarNameInit] = ...
-            setupFields(guifile, initInput, 'INITSCALAR', allVarString);
-        % If the initial guess was just passed a constant, indVarNameInit will
-        % be empty. For consistency (allowing us to do the if-statement below),
-        % convert to an empty cell.
-        if ( isempty(indVarNameInit) )
-            indVarNameInit = {''};
-        end       
-    else
-        [dummy, dummy, indVarNameInit] = ...
-            setupFields(guifile, initInput, 'INIT', allVarString);        
-    end
-else
-    indVarNameInit = {''};
-end
-
-% Make sure we don't have a disrepency in indVarNames. Create a new variable
-% indVarName which contains both independent variable, the first entry
-% corresponds to space, the second to time.
-if ( ~isempty(indVarNameInit{1}) && ~isempty(indVarNameDE{1}) )
-    if ( strcmp(indVarNameDE{1}, indVarNameInit{1}) )
-        indVarName{1} = indVarNameDE{1};
-    else
-        error('Chebgui:SolveGUIpde', 'Independent variable names do not agree')
-    end
-elseif ( ~isempty(indVarNameInit{1}) && isempty(indVarNameDE{1}) )
-    indVarName{1} = indVarNameInit{1};
-elseif ( isempty(indVarNameInit{1}) && ~isempty(indVarNameDE{1}) )
-    indVarName{1} = indVarNameDE{1};
-else
-    indVarName{1} = 'x'; % Default value
-end
-
-if ( ~isempty(indVarNameDE{2}) )
-    % Find what the name of the time variable specified is:
-    indVarName{2} = indVarNameDE{2};
-else
-    error('Chebgui:SolveGUIpde', ...
-        'No time variable specified, please do so via using subscript.');
-end
-
-% Did we use the same variable name for both space and time?
-if ( strcmp(indVarName{1}, indVarName{2}) )
-     error('Chebgui:SolveGUIpde', ...
-        'The same variable appears to be used as space and time variable');
-end
+% Store useful variable names in HANDLES:
 handles.indVarName = indVarName;
+handles.varnames = allVarNames;
 
-% Create a string with the variables used in the problem
-variableString = [indVarName{2}, ',', indVarName{1}, ','];
-
-% String that will be converted to an anonymous function:
-deString = ['@(' variableString, deString(3:end)];
-
-% Convert the string to proper anon. function using eval
+% Convert the DE string to a proper anonymous function using eval:
 DE = eval(deString);
 
-% Support for periodic boundary conditions
-if ( (~isempty(lbcInput{1}) && strcmpi(lbcInput{1}, 'periodic')) || ...
-        (~isempty(rbcInput{1}) && strcmpi(rbcInput{1}, 'periodic')) )
-    lbcInput{1} = [];
-    rbcInput{1} = [];
-    periodic = true;
-else
-    periodic = false;
-end
-
 % Do we have a left BC specified?
-if ( ~isempty(lbcInput{1}) )
-    lbcString = setupFields(guifile, lbcInput, 'BC', allVarString);
-    
-    idx = strfind(lbcString, ')');
-    if ( ~isempty(idx) )
-        
-        % Inject the t and x variables into the anonymous function:
-        lbcString = [lbcString(1:2), variableString, lbcString(3:end)];
-
-    end
-
+if ( ~isempty(lbcString) )
     LBC = eval(lbcString);
 else
     LBC = [];
 end
 
 % Do we have a right BC specified?
-if ( ~isempty(rbcInput{1}) )
-    rbcString = setupFields(guifile, rbcInput, 'BC', allVarString);
-
-    idx = strfind(rbcString, ')');
-    if ( ~isempty(idx) )
-        
-        % Inject the t and x variables into the anonymous function:
-        rbcString = [rbcString(1:2), variableString, rbcString(3:end)];
-        
-    end
-    
+if ( ~isempty(rbcString) )    
     RBC = eval(rbcString);
 else
     RBC = [];
 end
 
 % No boundary conditions are a no-go:
-if ( isempty(lbcInput) && isempty(rbcInput) )
+if ( isempty(lbcString) && isempty(rbcString) )
     error('chebfun:bvpgui','No boundary conditions specified');
 end
 
-% Boundary condition
+% Setup up boundary condition to be passed to the pde15s() method:
 if ( periodic )
     bc = 'periodic';
 else
-    bc = [];
     bc.left = LBC;
     bc.right = RBC;
 end
@@ -202,20 +105,20 @@ defaultTol = opts.Eps;
 defaultLineWidth = 2;
 
 % Check that we're not imposing too strict tolerance:
+tolInput = guifile.tol;
 if ( isempty(tolInput) )
-    tolNum = defaultTol;
+    tol = defaultTol;
 else
-    tolNum = str2num(tolInput);
+    tol = str2double(tolInput);
 end
+
 % Find out what the current CHEBFUN eps is set at.
 cpref = chebfunpref();
-if ( tolNum < cpref.eps )
+if ( tol < cpref.eps )
     warndlg('Tolerance specified is less than current chebfun epsilon', ...
         'Warning','modal');
     uiwait(gcf)
 end
-
-tol = tolNum;
 
 % Set up the initial condition
 if ( iscellstr(initInput) )
@@ -262,7 +165,6 @@ else
     u0 = simplify(u0, tol);
 end
 
-
 % Get the GUI ready for plotting.
 if ( guiMode )
     set(handles.fig_sol, 'Visible', 'On');
@@ -280,32 +182,26 @@ end
 % can plot to it:
 opts.handles = handles;
 
-% Be default, don't do a hold on plot.
-opts.HoldPlot = false;
-opts.Eps = tolNum;
+opts.Eps = tol;
 if ( ~all(pdeflag) )
     opts.PDEflag = pdeflag;
 end
 
-opts.Plot = guifile.options.plotting;
-
-if ( guifile.options.pdeholdplot )
-    opts.HoldPlot = 'on';
-else
-    opts.HoldPlot = 'off';
-end
+% Plot during PDE solving?
+opts.Plot = expInfo.doplot;
+opts.HoldPlot = expInfo.dohold;
 
 % Do we want to fix the y-limits while solving the PDE?
-ylim1 = guifile.options.fixYaxisLower;
-ylim2 = guifile.options.fixYaxisUpper;
-if ( ~isempty(ylim1) && ~isempty(ylim2) )
-    opts.YLim = [str2double(ylim1), str2double(ylim2)];
+if ( ~isempty(expInfo.ylim1) && ~isempty(expInfo.ylim2) )
+    opts.YLim = [str2double(expInfo.ylim1), str2double(expInfo.ylim2)];
 end
+
+% We want thicker lines on the plot:
 opts.PlotStyle = {'LineWidth', defaultLineWidth};
 
-% Options for fixed N
-if ( ~isempty(guifile.options.fixN) )
-    opts.N = str2num(guifile.options.fixN);
+% Options for fixed N:
+if ( ~isempty(expInfo.fixN) )
+    opts.N = str2double(expInfo.fixN);
 end
 
 % Try solving the PDE!
@@ -333,7 +229,6 @@ handles.latest.solutionT = t;
 
 % Notify the GUI we have a solution available
 handles.hasSolution = 1;
-
 
 if ( guiMode )
     % Switch focus to bottom figure.
