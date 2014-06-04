@@ -51,7 +51,7 @@ elseif ( nargin == 4 && isa(varargin{1},'double') && ~isinf(varargin{1})...
             Resolved = all( ( clcfs < 20*n*tol ) );
             n = 2^(floor(log2(n))+1)+1;
         end
-        if ( min(m,n) > 250 ), tol = max(tol,1e-10); end % Increase tolerance on large grids.
+        if ( max(m,n) > 250 ), tol = max(tol,1e-10); end % Increase tolerance on large grids.
         
         if any(isnan(X))
             error('Nonunique solution to PDE');
@@ -86,7 +86,7 @@ elseif ( nargin == 4 && isa(varargin{2},'double') && ~isinf(varargin{2})...
             Resolved = all( ( rwcfs < 20*m*tol ) );
             m = 2^(floor(log2(m))+1)+1;
         end
-        if ( min(m,n) > 250 ), tol = max(tol,1e-10); end % Increase tolerance on large grids.
+        if ( max(m,n) > 250 ), tol = max(tol,1e-10); end % Increase tolerance on large grids.
         
         if any(isnan(X))
             error('Nonunique solution to PDE');
@@ -123,7 +123,7 @@ elseif ( nargin == 2 || (nargin == 4 && isinf(varargin{2}) && isinf(varargin{1})
             Resolved_x = all( ( rwcfs < 20*n*tol ) );
             n = 2^(floor(log2(n))+1)+1;
         end
-        if ( min(m,n) > 250 ), tol = max(tol,1e-10); end % Increase tolerance on large grids.
+        if ( max(m,n) > 250 ), tol = max(tol,1e-10); end % Increase tolerance on large grids.
         Resolved = Resolved_x & Resolved_y;
         
         if any(isnan(X))

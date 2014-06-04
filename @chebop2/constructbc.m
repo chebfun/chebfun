@@ -51,12 +51,13 @@ elseif ( isa( bcArg, 'function_handle' ) )
         bcvalue = zeros(een , nf);
         % Do we have bcs with derivatives in them.
         try
+            % This works if the BC operators are vectorized. 
             % Evaluate at xy for AD information: 
-            fcell = bcArg( chebfun2(0, [dom, dom]),...
-                                   chebfun2( @(x,y) x.*y, [dom,dom] ) );
+            fcell = bcArg( adchebfun2(chebfun2(0, [dom, dom])),...
+                           abchebfun2(chebfun2( @(x,y) x.*y, [dom, dom] )) );
         catch
             % Cannot do it all at once, so do it term by term: 
-            gg = chebfun2(@(x,y) cos(x.*y), [dom, dom]);
+            gg = adchebfun2(chebfun2(@(x,y) cos(x.*y), [dom, dom]));
             fcell = cell(1, nf); 
             for jj = 1:nf
                 fcell{jj} = diff(gg, jj-1);
@@ -71,7 +72,7 @@ elseif ( isa( bcArg, 'function_handle' ) )
             else
                 v = fcell;
             end
-            cc(jj) = abs( diff(scl)/2 ).^( length(v.deriv) - 1);
+            cc(jj) = abs( diff(scl)/2 ).^( length(v.der.derCell) - 1);
         end
         
         % Find f(x):  
@@ -85,7 +86,7 @@ elseif ( isa( bcArg, 'function_handle' ) )
         L = linearize( chebop( bcArg, dom ) );
         p = recoverCoeffs( L );
         
-        % and set up the boundary rows that will impose them: 
+        % Set up the boundary rows that will impose the linear constraints: 
         if ( iscell( p ) )
             bcrow = zeros(bcn, length(p));
             for jj = 1 : length(p)
