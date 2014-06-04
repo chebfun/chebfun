@@ -65,7 +65,7 @@ classdef  (InferiorClasses = {?chebfun2}) chebfun2der
             % information to the right and to the bottom, which amounts to
             % putting the input cell at the bottom right end side of the output
             % cell.
-            newCell(end-nA+1,end-mA+1:end) = A.derCell;
+            newCell(end-mA+1:end,end-nA+1:end) = A.derCell;
             
             % Assign newCell to the output
             A.derCell = newCell;
