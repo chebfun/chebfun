@@ -340,6 +340,7 @@ end
 %%%%%%%%%%%%%%%%%%%%% SETUP TOLERANCES AND INITIAL CONDITION %%%%%%%%%%%%%%%%%%%
 
 % ODE tolerances: (AbsTol and RelTol must be <= Tol/10)
+% TODO: Tol/10 no longer seems to be the case?
 aTol = odeget(opt, 'AbsTol', tol);
 rTol = odeget(opt, 'RelTol', tol);
 if ( isnan(optN) )
@@ -424,7 +425,7 @@ if ( ischar(bc) && strcmpi(bc, 'periodic') )
     BCRHS = num2cell(zeros(1, numel(r)));
     
 else
-    
+    %% %%%%%%%%%%%%%%%%%%%%%%%%% NONPERIODIC BCS  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     if ( isfield(bc, 'left') && ~isfield(bc, 'right') )
         bc.right = [];
     elseif ( isfield(bc, 'right') && ~isfield(bc, 'left') )
@@ -433,6 +434,7 @@ else
         bc = struct('left', [], 'right', [], 'middle', bc);
 %         bc.left = bc;
 %         bc.right = bc.left;
+    % TODO: Remove if no longer needed.
     end
     
     % Deal with struct and numeric input:
@@ -542,7 +544,7 @@ if ( ~isfield(bc, 'middle') )
 end
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%% Support for coupled BVP-PDEs! %%%%%%%%%%%%%%%%%%%%%%%
+%% %%%%%%%%%%%%%%%%%%%%%%% SUPPORT FOR COUPLED BVP-PDES! %%%%%%%%%%%%%%%%%%%%%%%
 % Experimental feature for coupled ode/pde systems: (An entry equal to 1 denotes
 % that the corresponding variable appears with a time derivative. 0 otherwise.)
 if ( isfield(opt, 'PDEflag') && ~isempty(opt.PDEflag) )
@@ -555,7 +557,7 @@ if ( numel(pdeFlag) == 1 )
 end
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% MISC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% MISC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Initial condition:
 uCurrent = u0;
@@ -584,9 +586,12 @@ if ( ~isnan(optN) )
     tSpan = tt;
     x = chebpts(optN, DOMAIN);
     oneStep(tSpan); % Do all chunks at once!
-    
+    % TODO: Why do we get away with doing all chunks at once? (I can guess, but
+    % the name oneStep is confusing).
 else
+    % Adaptive in space
     
+    % Min-length is 9
     currentLength = max(currentLength, 9);
     tCurrent = tt(1);
     tSpan = tt;
@@ -623,12 +628,13 @@ clear global DIFFORDER
 clear global SYSSIZE
 
     function uOut = prepare4output(uIn)
-        % If we only had one dependent variable, return an array valued CHEBFUN instead
-        % of a QUASIMATRIX.
+        % If we only had one dependent variable, return an array valued CHEBFUN
+        % instead of a QUASIMATRIX.
         if ( SYSSIZE == 1 )
             uOut = horzcat(uIn{:});
         else
-            % TODO: Determine what output we want for systems of equations. CHEBMATRIX?
+            % TODO: Determine what output we want for systems of equations.
+            % CHEBMATRIX?
             blocks = cell(SYSSIZE, numel(uIn));
             for kk = 1:SYSSIZE
                 blocks(kk,:) = cellfun(@(u) extractColumns(u, kk), uIn, 'UniformOutput', false);
@@ -705,6 +711,7 @@ clear global SYSSIZE
         function F = odeFun(t, U)
             % This is what ODE15S() calls.
             %fprintf('  t = %.5f\n',t)
+            %TODO: Remove if no longer needed.
             
             % Reshape to n by SYSSIZE:
             U = reshape(U, n, SYSSIZE);
@@ -809,6 +816,7 @@ end
 function newFun = conv2cell(oldFun, u, varargin)
 % This function allows the use of different variables in the anonymous
 % function, rather than using the clunky quasi-matrix notation.
+%TODO: Describe inputs and outputs?
 
 global SYSSIZE
 
@@ -833,6 +841,7 @@ DIFFORDER = get(v, 'diffOrder');
 end
 
 function out = dealWithStructInput(in)
+%TODO: What does this method do? Describe inputs and outputs?
 if ( isstruct(in) )
     if ( numel(in) == 1)
         warning('CHEBFUN:pde15s:bcstruct', ...
