@@ -1,5 +1,5 @@
 function handles = solveGUI(guifile, handles)
-%SOLVEGUI       Called when a user hits the solve button of the Chebfun GUI.
+%SOLVEGUI    Called when a user hits the solve button of the Chebfun GUI.
 %
 % Calling sequence:
 %

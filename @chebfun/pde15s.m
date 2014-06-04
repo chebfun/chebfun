@@ -674,27 +674,23 @@ clear global SYSSIZE
                 M = feval(userMass, n)*M;
             end
             
+            % ODE options: (mass matrix)
+            opt = odeset(opt, 'Mass', M, 'MassSingular', 'yes', ...
+                'MStateDependence', 'none');
+            
         end
         
         % We have to ensure the starting condition satisfies the boundary
         % conditions, or else we will get a singularity in time. We do this by
         % tweaking the BC values to match the reality. Changing the IC itself is
-        % much trickier.
-        
-        % Find out what the BC deviance from nominal really is. 
-        BCVALOFFSET = 0;      % recover nominal value in next call
-        F = odeFun(tSpan(1),U0(:));   % also assigns to "rows" and "q"
-        numRows = length(rows);
-        nominal = [ q; zeros(numRows-length(q),1) ];
+        % much trickier. Find out what the BC deviance from nominal really is:
+        BCVALOFFSET = 0;            % recover nominal value in next call
+        F = odeFun(tSpan(1),U0(:)); % also assigns to "rows" and "q"
         BCVALOFFSET = F(rows);
-        
-        % ODE options: (mass matrix)
-        opt2 = odeset(opt, 'Mass', M, 'MassSingular', 'yes', ...
-            'MStateDependence', 'none');
         
         % Solve ODE over time chunk with ode15s:
         try
-            [~, ~] = ode15s(@odeFun, tSpan, U0, opt2);
+            [~, ~] = ode15s(@odeFun, tSpan, U0, opt);
         catch ME
             if ( strcmp(ME.identifier, 'MATLAB:odearguments:SizeIC') )
                 error('Dimension mismatch. Check boundary conditions.');
@@ -703,7 +699,6 @@ clear global SYSSIZE
             end
         end 
 
-        
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %% %%%%%%%%%%%%%%%%%%%%%%%%%%%  ODEFUN  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

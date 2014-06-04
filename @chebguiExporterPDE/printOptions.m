@@ -23,22 +23,22 @@ fixN = expInfo.fixN;
 opts = [];
 
 % Option for tolerance
-opts = [opts, '''Eps'',', tol];
+opts = [opts, '''Eps'', ', tol];
 
 % Is PDEFLAG set?
 if ( ~all(pdeflag) )
-    opts = [opts, ',''PDEflag'',', 'pdeflag'];
+    opts = [opts, ', ''PDEflag'', ', 'pdeflag'];
 end
 
 % Options for plotting
 if ( strcmpi(doplot, 'off') )
-    opts = [opts, ',''Plot'',', '''off'''];
+    opts = [opts, ', ''Plot'', ', '''off'''];
 else
     if ( dohold )
-        opts = [opts, ',''HoldPlot'',', '''on'''];
+        opts = [opts, ', ''HoldPlot'', ', '''on'''];
     end
     if ( ~isempty(ylim1) && ~isempty(ylim2) )
-        opts = [opts, ',''Ylim'',[', ylim1, ',', ylim2,']'];
+        opts = [opts, ', ''Ylim'', [', ylim1, ',', ylim2,']'];
     end
 end
 
@@ -49,7 +49,8 @@ if ( ~isempty(fixN) )
 end
 
 % Set up preferences
-fprintf(fid, '\n%% Setup preferences for solving the problem.\n');
+
+fprintf(fid, '\n%%%% Setup preferences for solving the problem.\n');
 fprintf(fid, 'opts = pdeset');
 if ( isempty(opts) )
     fprintf(fid, ';\n', opts);

@@ -143,19 +143,20 @@ classdef chebgui
     end
     
     methods
+        
         function c = chebgui(varargin)
-            %CHEBGUI    The CHEBGUI constructor
-            %
-            % The command CHEBGUI in the command window opens the CHEBGUI
-            % figure window, with a random BVP example shown.
-            %
-            % One can also pass arguments to the CHEBGUI constructor to create
-            % CHEBGUI objects. Here, the call will be of the form
-            %
-            %   CG = CHEBGUI('field', value)
-            %
-            % To see the possible fields of the CHEBGUI objects, call
-            %   DISP(CHEBGUI)
+        %CHEBGUI    The CHEBGUI constructor
+        %
+        % The command CHEBGUI in the command window opens the CHEBGUI
+        % figure window, with a random BVP example shown.
+        %
+        % One can also pass arguments to the CHEBGUI constructor to create
+        % CHEBGUI objects. Here, the call will be of the form
+        %
+        %   CG = CHEBGUI('field', value)
+        %
+        % To see the possible fields of the CHEBGUI objects, call
+        %   DISP(CHEBGUI)
             
             % No input --> load random example to the GUI window
             if ( isempty(varargin) )
@@ -198,7 +199,7 @@ classdef chebgui
         end
     end
     
-    methods (Static = true)
+    methods ( Static = true )
         
         % Information shown during BVP solving.
         [dummy, displayTimer] = displayBVPinfo(handles, mode, varargin);
@@ -210,7 +211,7 @@ classdef chebgui
         cg = demo2chebgui(demoPath)
         
         function initialiseFigures(handles)
-            %INITIALISEFIGURES      Reset figures in the CHEBGUI window.
+            %INITIALISEFIGURES    Reset figures in the CHEBGUI window.
 
             % Reset the top figures
             cla(handles.fig_sol, 'reset');
@@ -245,6 +246,7 @@ classdef chebgui
         
         % Solve a GUI EIG problem
         varargout = solveGUIeig(guifile,handles)
+        
     end
     
 end

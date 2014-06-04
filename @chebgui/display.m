@@ -1,5 +1,5 @@
 function display(varargin)
-%DISP Display information of a chebgui object.
+%DISP   Display information of a chebgui object.
 %  Chebgui objects do not return information to the command window, so this
 %  .m-file does nothing. It is however necessary to surpress output from when a
 %  user types 'chebgui' in the command window to start chebgui. The information

@@ -18,7 +18,7 @@ deInput = expInfo.deInput;
 s = expInfo.s;
 
 % Print commands for solving the problem:
-fprintf(fid, ['\n%% Solve the problem using pde15s.\n']);
+fprintf(fid, '\n%%%% Solve the problem using pde15s.\n');
 fprintf(fid, '[%s, %s] = pde15s(pdefun, %s, %s, bc, opts);\n', indVarName{2}, ...
     sol, indVarName{2}, sol0);
 
@@ -26,7 +26,7 @@ fprintf(fid, '[%s, %s] = pde15s(pdefun, %s, %s, bc, opts);\n', indVarName{2}, ..
 if ( numel(deInput) > 1 )
     fprintf(fid, '\n%% Recover variable names.\n');
     for k = 1:numel(s)
-        fprintf(fid, '%s = %s{%d};\n', s{k}, sol, k);
+        fprintf(fid, '%s = %s(%d,:);\n', s{k}, sol, k);
     end
 end
 

@@ -1,5 +1,5 @@
 function cg = set(cg, propName, val)
-% SET   Set CHEBGUI properties.
+%SET   Set CHEBGUI properties.
 %
 %   'type' - 'bvp','pde','eig'
 %   'domain' - spatial domain of BVP/PDE
@@ -24,7 +24,7 @@ function cg = set(cg, propName, val)
 %                           ODEs
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Avoid storing {''} in fields, rather store ''
 if ( iscell(val) && isempty(val{1}) )
@@ -93,3 +93,6 @@ switch ( lower(propName) )
         error('CHEBGUI:set:propname',...
             [propName,' is not a valid chebgui property.'])
 end
+
+end
+

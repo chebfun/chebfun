@@ -1,5 +1,5 @@
 function varargout = solveGUIeig(guifile, handles)
-% SOLVEGUIEIG   Solve a eigenvalue problem, specified by a CHEBGUI object.
+%SOLVEGUIEIG   Solve a eigenvalue problem, specified by a CHEBGUI object.
 %
 % Calling sequence:
 %
