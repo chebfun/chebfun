@@ -99,7 +99,7 @@ if ( any(isnan(f.coeffs(:))) )
 end
 
 % Compute some values if none were given:
-if ( nargin < 2 )
+if ( nargin < 2 || isempty(values) )
     values = f.coeffs2vals(f.coeffs);
 end
 

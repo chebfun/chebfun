@@ -42,7 +42,7 @@ g = f.^2;
 h = chebfun(@(x) [sin(x).^2, cos(x).^2, -exp(2*x)]);
 pass(9) = min(size(g)) == 3 && normest(g - h) < 10*vscale(h)*epslevel(h);
 gq = fq.^2;
-pass(10) = normest(gq - g) < epslevel(g);
+pass(10) = normest(gq - g) < 10*epslevel(g);
 
 g = f.^3;
 h = chebfun(@(x) [sin(x).^3, cos(x).^3, -1i*exp(3*x)]);

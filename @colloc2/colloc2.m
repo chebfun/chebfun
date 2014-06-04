@@ -21,7 +21,8 @@ classdef colloc2 < colloc
         end
     end
     
-    methods (Static)
+    methods ( Static = true )
+        
         function D = diffmat(N,k)
             %DIFFMAT  Chebyshev differentiation matrix
             %   D = DIFFMAT(N) is the matrix that maps function values at N Chebyshev points
@@ -32,7 +33,6 @@ classdef colloc2 < colloc
             %   The matrices are computed using the 'hybrid' formula of Schneider & Werner
             %   [1] and Welfert [2] proposed by Tee [3].
             
-            % TODO: Duplicated?
             % TODO: Cache this?
             
             % Copyright 2014 by The University of Oxford and The Chebfun Developers.
@@ -48,6 +48,10 @@ classdef colloc2 < colloc
             
             if ( nargin < 2 ), k = 1; end
             if ( N == 0 ), D = []; return, end
+            if ( k == 0 )
+                D = eye(N);
+                return
+            end
             if ( N == 1 ), D = 0; return, end
             
             % construct Chebyshev grid and weights

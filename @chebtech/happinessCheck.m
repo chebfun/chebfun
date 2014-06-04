@@ -51,7 +51,8 @@ elseif ( nargin == 3 )
 end
 
 if ( nargin < 3 )
-    values = f.coeffs2vals(f.coeffs);
+    values = [];
+%     values = f.coeffs2vals(f.coeffs);
 end
 
 % What does happiness mean to you?
@@ -68,6 +69,10 @@ elseif ( strcmpi(pref.happinessCheck, 'strict') )
 elseif ( strcmpi(pref.happinessCheck, 'loose') )
     % Use the 'loose' happiness check:
     [ishappy, epslevel, cutoff] = looseCheck(f, values, pref);
+    
+elseif ( strcmpi(pref.happinessCheck, 'plateau') )
+    % Use the 'plateau' happiness check:
+    [ishappy, epslevel, cutoff] = plateauCheck(f, values, pref);    
     
 else
     % Call a user-defined happiness check:

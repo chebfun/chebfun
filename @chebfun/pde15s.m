@@ -198,28 +198,36 @@ end
             % Happiness check:
             c = (1+sin(1:SYSSIZE)).'; % Arbitrarily linear combination.
             Uk2 = (Uk*c/sum(c));
-            uk2 = chebtech2(Uk2, pref2);
-            [ishappy, epslevel] = classicCheck(uk2, Uk2, pref2);
+            uk2 = chebtech2(Uk2, pref);
+            [ishappy, epslevel] = classicCheck(uk2, Uk2, pref);
+%             [ishappy, epslevel, cutoff] = plateauCheck(uk2, Uk2, pref2);
 
             if ( ishappy )  
 
                 % Store these values:
-                uCurrent = chebfun(Uk, DOMAIN);
-                uCurrent = simplify(uCurrent, epslevel);
                 tCurrent = t(kk);
-                % Store for output:
+                uCurrent = chebfun(Uk, DOMAIN);
+                uCurrent = simplify(uCurrent, epslevel);    
+                
+%                 uCoeff = chebpoly(uCurrent);
+%                 first = max(1,size(uCoeff,2)-cutoff);
+%                 uCurrent = chebfun(uCoeff(:,first:end).',DOMAIN,'coeffs');
+%                 uCurrent = simplify(uCurrent,epslevel);
+
                 ctr = ctr + 1;
                 uOut{ctr} = uCurrent;
 
                 % Plot current solution:
-                plotFun(uCurrent, t(kk));
+                plotFun(uCurrent, tCurrent);
 
-                % Reduce length if it's much larger than necessary:
-                len = length(uCurrent);
-                if ( len < currentLength/4 )
-                    currentLength = len;
-                    status = true;
-                end
+%                 % If we have 2.5 times as many coeffcients as we need, shorten
+%                 % the representation and cause the integrator to stop. 
+%                 if ( cutoff < 0.4*n )
+%                     %currentLength = round(1.25*cutoff)';
+%                     currentLength = floor( currentLength / 1.5  );
+%                     currentLength = currentLength + 1 - rem(currentLength,2);
+%                     status = true;
+%                 end
 
             else 
 
@@ -328,11 +336,11 @@ end
 %%%%%%%%%%%%%%%%%%%%% SETUP TOLERANCES AND INITIAL CONDITION %%%%%%%%%%%%%%%%%%%
 
 % ODE tolerances: (AbsTol and RelTol must be <= Tol/10)
-aTol = odeget(opt, 'AbsTol', tol/10);
-rTol = odeget(opt, 'RelTol', tol/10);
+aTol = odeget(opt, 'AbsTol', tol);
+rTol = odeget(opt, 'RelTol', tol);
 if ( isnan(optN) )
-    aTol = min(aTol, tol/10);
-    rTol = min(rTol, tol/10);
+    aTol = min(aTol, tol);
+    rTol = min(rTol, tol);
 end
 opt.AbsTol = aTol;
 opt.RelTol = rTol;
@@ -399,7 +407,7 @@ if ( ischar(bc) && strcmpi(bc, 'periodic') )
     r = cell(sum(DIFFORDER), 1);
     count = 1;
     for j = 1:SYSSIZE
-        for k = 1:DIFFORDER(j)
+        for k = 0:DIFFORDER(j)-1
             c = (diff(DOMAIN)/2)^k;
             A = @(n) [1 zeros(1, n-2) -1]*colloc2.diffmat(n, k)*c;
             r{count} = @(n) [zeros(1, (j-1)*n) A(n) zeros(1,(SYSSIZE-j)*n)];
@@ -555,14 +563,8 @@ uOut{1} = uCurrent;
 B = []; q = []; rows = []; M = []; P = []; n = [];
 
 % Set the preferences:
-% TODO: These are no longer used?
-pref = chebfunpref;
-pref.techPrefs.eps = tol;
-pref.refinementFunction = 'resampling';
-pref.enableBreakpointDetection = 0;
-pref.techPrefs.sampleTest = 0;
-pref.enableSingularityDetection = 0;
-pref2 = chebtech.techPref(pref);
+pref = chebtech.techPref();
+pref.eps = tol;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%% TIME CHUNKS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -653,6 +655,7 @@ clear global SYSSIZE
             % Project / mass matrix.
             P = cell(1, SYSSIZE);
             M = cell(1, SYSSIZE);
+            
             for kk = 1:SYSSIZE
                 xk = chebpts(n-DIFFORDER(kk), DOMAIN, 1);
                 P{kk} = barymat(xk, x);
@@ -669,6 +672,18 @@ clear global SYSSIZE
             
         end
         
+        % We have to ensure the starting condition satisfies the boundary
+        % conditions, or else we will get a singularity in time. We do this by
+        % tweaking the BC values to match the reality. Changing the IC itself is
+        % much trickier.
+        
+        % Find out what the BC deviance from nominal really is. 
+        BCVALOFFSET = 0;      % recover nominal value in next call
+        F = odeFun(tSpan(1),U0(:));   % also assigns to "rows" and "q"
+        numRows = length(rows);
+        nominal = [ q; zeros(numRows-length(q),1) ];
+        BCVALOFFSET = F(rows);
+        
         % ODE options: (mass matrix)
         opt2 = odeset(opt, 'Mass', M, 'MassSingular', 'yes', ...
             'MStateDependence', 'none');
@@ -683,12 +698,14 @@ clear global SYSSIZE
                 rethrow(ME)
             end
         end 
+
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %% %%%%%%%%%%%%%%%%%%%%%%%%%%%  ODEFUN  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         function F = odeFun(t, U)
             % This is what ODE15S() calls.
+            %fprintf('  t = %.5f\n',t)
             
             % Reshape to n by SYSSIZE:
             U = reshape(U, n, SYSSIZE);
@@ -735,6 +752,9 @@ clear global SYSSIZE
                 end
                 F(rows(indx)) = fliplr(uTmp(end, :));
             end
+            
+            % Adjust BC rows by the needed offset from original time:
+            F(rows) = F(rows) + BCVALOFFSET;
             
             % Reshape to back to a single column:
             F = F(:);
@@ -900,4 +920,3 @@ newStr = [newStr, ')'];
 outFun = eval(newStr);
 
 end
-

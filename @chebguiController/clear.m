@@ -32,7 +32,6 @@ set(handles.iter_list, 'Visible', 'Off');
 
 % Disable export figures buttons:
 set(handles.button_figsol, 'Enable', 'off');
-set(handles.button_fignorm, 'Enable', 'off');
 set(handles.button_solve, 'Enable', 'on');
 set(handles.button_solve, 'String', 'Solve');
 

@@ -62,8 +62,8 @@ classdef ultraS < chebDiscretization
         S = convert(A, K1, K2)
 
     end
-        
-    methods ( Access = private, Static = true)
+    
+    methods ( Static = true)
         
         % Conversion matrix used in the ultraspherical spectral method.
         S = convertmat(n, K1, K2)
@@ -71,6 +71,13 @@ classdef ultraS < chebDiscretization
         % Differentiation matrices for ultraspherical spectral method.
         D = diffmat(n, m)
         
+        % Multiplication matrices for ultraspherical spectral method.
+        D = multmat(n, f, lambda)
+
+    end
+        
+    methods ( Access = private, Static = true)
+
         % Get coefficient representation of the source.
         c = getCoeffs( source )
         
@@ -87,4 +94,5 @@ classdef ultraS < chebDiscretization
         T = sptoeplitz(col, row)
 
     end
+    
 end

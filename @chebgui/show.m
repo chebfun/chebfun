@@ -4,7 +4,7 @@ function varargout = show(c)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/chebfun/ for Chebfun information.
 
-[h1 h2] = chebguiwindow(c);
+[h1, h2] = chebguiWindow(c);
 
 if ( nargout > 0 )
     varargout{1} = h1;

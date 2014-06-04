@@ -14,52 +14,45 @@ function values = coeffs2vals(coeffs)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org for Chebfun information.
 
-% Developer Note: This is euqivalent to Discrete Cosine Transform of Type III.
-% TODO: Mathematical reference
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% [Developer Note]: This is equivalent to Discrete Cosine Transform of Type III.
+%
+% [Mathematical reference]: Section 4.7 Mason & Handscomb, "Chebyshev
+% Polynomials". Chapman & Hall/CRC (2003).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Get the length of the input
-n = size(coeffs, 1);
+% Get the length of the input:
+[n, m] = size(coeffs);
 
-% Trivial case (constant of empty)
+% Trivial case (constant):
 if ( n <= 1 )
-    values = coeffs; 
+    values = coeffs;
     return
 end
 
-% Flip the input data up to down. The first row of the resulting data 
-% should correspond to rightmost Chebyshev point of the 1st kind in [-1 1]. 
+% Pre-compute the weight vector:
+w = repmat((exp(-1i*(0:2*n-1)*pi/(2*n))/2).', 1, m);
+w(1,:) = 2*w(1, :);
+w(n+1,:) = 0;
+w(n+2:end,:) = -w(n+2:end, :);
 
-if ( isreal(coeffs) )
-    values = coeffs2valsReal(coeffs);
-elseif ( isreal(1i*coeffs) )
-    values = 1i*coeffs2valsReal(imag(coeffs));
-else
-    values = coeffs2valsReal(real(coeffs)) + 1i*coeffs2valsReal(imag(coeffs));
+% Mirror the values for FFT:
+tmp = [coeffs(end:-1:1,:) ; ones(1, m) ; coeffs(1:end-1,:)];
+
+% Apply the weight vector:
+tmp = tmp.*w;
+values = fft(tmp);
+
+% Truncate, flip the order, and multiply the weight vector:
+values = values(n:-1:1, :);
+
+% Post-process:
+if ( isreal(coeffs) )           
+    % Real-valued case:
+    values = real(values);
+elseif ( isreal(1i*coeffs) )    
+    % Imaginary-valued case:
+    values = 1i*imag(values);
 end
-
-end
-
-function v = coeffs2valsReal(c)
-%COEFFS2VALSREAL   Convert Chebyshev coefficients to values at Chebyshev points
-%of the first kind when the coefficients are real.
-
-n = size(c, 1);
-m = size(c, 2);
-
-coeffs = flipud(c); 
-w = exp(1i*(0:n-1)*pi/(2*n)).';
-w = repmat(w, 1, m);
-coeffs = w.*coeffs;
-vv = n*real(ifft(coeffs));
-
-if ( rem(n, 2) == 0 ) % Even case
-    v(1:2:n-1,:) = vv(1:n/2,:);
-    v(n:-2:2,:) = vv(n/2+1:n,:);
-else                  % Odd case
-    v(1:2:n,:) = vv(1:(n+1)/2,:);
-    v(n-1:-2:2,:) = vv((n+1)/2+1:n,:);
-end
-
-v = flipud(v);
 
 end

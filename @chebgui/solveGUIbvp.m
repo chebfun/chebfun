@@ -1,14 +1,27 @@
-function varargout = solveGUIbvp(guifile,handles)
-% SOLVEGUIBVP
-
-% TODO:  Documentation.
+function varargout = solveGUIbvp(guifile, handles)
+% SOLVEGUIBVP   Solve a BVP, specified by a CHEBGUI object.
+%
+% Calling sequence:
+%
+%   VARARGOUT = SOLVEGUIBVP(GUIFILE, HANDLES)
+%
+% where
+%   
+%   GUIFILE:    A CHEBGUI object, describing the problem.
+%   HANDLES:    A MATLAB handle to the chebguiwindow figure.
+%
+% If the method is called by pressing the 'Solve' button on the GUI,
+%   VARARGOUT{1}:   Will be a MATLAB handle to the chebguiwindow figure, which
+%                   has been updated to contain the solution and other useful
+%                   results for the problem solved.
+%
+% If the method is called by calling the command explicitly with a CHEBGUI
+% object (e.g. [U, INFO] = SOLVEGUIBVP(GUIFILE) from the command line),
+%   VARARGOUT{1}:   The solution to the problem specified by GUIFILE.
+%   VARARGOUT{2}:   The INFO struct returned by the chebop/solvebvp() method.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org/chebfun/ for Chebfun information.
-
-% Create a domain and the linear function on that domain. We use xt for the
-% linear function, later in the code wewill be able to determine whether x
-% or t is used for the linear function.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Handles will be an empty variable if we are solving without using the GUI
 if ( nargin < 2 )
@@ -17,40 +30,31 @@ else
     guiMode = 1;
 end
 
-dom = str2num(guifile.domain);
+% Call the exportInfo method of the chebguiExporterBVP class, which takes care
+% of extracting most information we need from GUIFILE.
+expInfo = chebguiExporterBVP.exportInfo(guifile);
+
+dom = str2num(expInfo.dom);
+deString = expInfo.deString;
+allVarString = expInfo.allVarString;
+allVarNames = expInfo.allVarNames;
+indVarNameSpace = expInfo.indVarNameSpace;
+bcInput = expInfo.bcInput;
+initInput = expInfo.initInput;
+% Create the independent variable on DOM.
 xt = chebfun('x', dom);
 
-% Extract information from the GUI fields
-deInput = guifile.DE;
-bcInput = guifile.BC;
-initInput = guifile.init;
-
-% Wrap all input strings in a cell (if they're not a cell already)
-if ( isa(deInput, 'char') )
-    deInput = cellstr(deInput);
-end
-
-if ( isa(bcInput, 'char') )
-    bcInput = cellstr(bcInput);
-end
-
-if ( isa(initInput, 'char') )
-    initInput = cellstr(initInput);
-end
-
-% Convert the input to the an. func. format, get information about the
-% linear function in the problem.
-[deString allVarString indVarNameDE ignored ignored ignored allVarNames] = ...
-    setupFields(guifile, deInput, 'DE');
+% Assign the variables names to HANDLES.
 handles.varnames = allVarNames;
+handles.indVarName = {indVarNameSpace};
 
 % If we only have one variable appearing in allVarNames, the problem is a
 % scalar problem.
 scalarProblem = length(allVarNames) == 1;
 
+% Obtain the boundary conditions to be imposed.
 if ( ~isempty(bcInput{1}) )
     bcString = setupFields(guifile, bcInput, 'BCnew', allVarString);
-    %     BC = eval(bcString);
 else
     bcString = '';
     BC = [];
@@ -69,50 +73,9 @@ if ( guiMode )
     end
 end
 
-% Obtain the independent variable name appearing in the initial condition
-if ( ~isempty(initInput{1}) && isempty(guess) )
-    % If we have a scalar problem, we're OK with no dependent variables
-    % appearing in the initial guess
-    if ( scalarProblem )
-        [initString ignored indVarNameInit] = ...
-            setupFields(guifile, initInput, 'INITSCALAR', allVarString);
-
-        % If the initial guess was just passed a constant, indVarNameInit will
-        % be empty. For consistency (allowing us to do the if-statement below),
-        % convert to an empty cell.
-        if ( isempty(indVarNameInit) )
-            indVarNameInit = {''};
-        end       
-    else
-        [initString ignored indVarNameInit] = ...
-            setupFields(guifile, initInput, 'INIT', allVarString);        
-    end
-else
-    indVarNameInit = {''};
-end
-
 % Assign r, x or t as the linear function on the domain if indVarName is
 % not empty
-
-% Make sure we don't have a disrepency in indVarNames
-if ( ~isempty(indVarNameInit{1}) && ~isempty(indVarNameDE{1}) )
-    if ( strcmp(indVarNameDE{1}, indVarNameInit{1}) )
-        indVarNameSpace = indVarNameDE{1};
-    else
-        error('Chebgui:SolveGUIbvp', 'Independent variable names do not agree')
-    end
-elseif ( ~isempty(indVarNameInit{1}) && isempty(indVarNameDE{1}) )
-    indVarNameSpace = indVarNameInit{1};
-elseif ( isempty(indVarNameInit{1}) && ~isempty(indVarNameDE{1}) )
-    indVarNameSpace = indVarNameDE{1};
-else
-    indVarNameSpace = 'x'; % Default value
-end
-handles.indVarName = {indVarNameSpace};
 eval([indVarNameSpace, '=xt;']);
-
-% Replace the 'DUMMYSPACE' variable in the DE field
-deString = strrep(deString, 'DUMMYSPACE', indVarNameSpace);
 
 % Convert the string to proper anon. function using eval
 DE = eval(deString);
@@ -123,6 +86,7 @@ if ( ~isempty(bcString) )
     BC = eval(bcString);
 end
 
+% Convert the initial condition passed to a CHEBFUN.
 if ( ~isempty(initInput{1}) && isempty(guess) )
     if ( iscellstr(initInput) )
         order = [];
@@ -168,6 +132,7 @@ if ( ~isempty(initInput{1}) && isempty(guess) )
                  'guesses are of the form u = 2*x, v = sin(x), ...']);
         end
     else
+        % initInput is not a cell string, must have only received one line.
         guessInput = vectorize(initInput);
         equalSign = find(guessInput == '=');
         if ( isempty(equalSign) )
@@ -179,21 +144,21 @@ if ( ~isempty(initInput{1}) && isempty(guess) )
 end
 
 % Before continuing, clear any previous information about the norm of the Newton
-% updates in the handles struct
+% updates in the handles struct:
 handles.normDelta = [];
 
-% Create the chebop
+% Create the CHEBOP:
 if ( ~isempty(guess) )
     N = chebop(DE, dom, BC, guess);
 else
     N = chebop(DE, dom, BC);
 end
 
-% Construct a cheboppref object
+% Construct a CHEBOPPREF object
 options = cheboppref();
 
+% Default tolerance:
 defaultTol = options.errTol;
-
 tolInput = guifile.tol;
 if ( isempty(tolInput) )
     tolNum = defaultTol;
@@ -204,7 +169,6 @@ end
 % We need a CHEBFUNPREF as well to ensure the tolerance requested is not
 % stricter than current CHEBFUN epsilon
 chebfunp = chebfunpref;
-
 if ( tolNum < chebfunp.techPrefs.eps )
     warndlg('Tolerance specified is less than current chebfun epsilon', ...
         'Warning','modal');
@@ -212,8 +176,7 @@ if ( tolNum < chebfunp.techPrefs.eps )
 end
 
 % Set the tolerance for the solution process
-options.deltol = tolNum;
-options.restol = tolNum;
+options.errTol = tolNum;
 
 % Always display iter. information
 options.display = 'iter';
@@ -242,12 +205,7 @@ end
 options.grid = guifile.options.grid;
 
 % What discretization do we want?
-collocDisc = get(handles.button_Collocation, 'value');
-if ( collocDisc )
-    options.discretization = @colloc2;
-else
-    options.discretization = @ultraS;
-end
+options.discretization = expInfo.discretization;
 
 % Various things we only need to think about when in the GUI, changes GUI compenents.
 if ( guiMode )
@@ -276,15 +234,15 @@ else
     varargout{2} = vec;
 end
 
-% isLinear is returned as a vector in the INFO structure (with elements
+% ISLINEAR is returned as a vector in the INFO structure (with elements
 % corresponding to DE and BCs. Convert to a binary, 1 if everything in the
 % problem is linear, 0 otherwise
 isLinear = all(info.isLinear);
 
-% Now do some more stuff specific to GUI
+% Now do some post solving processing, specific to running in GUI mode.
 if ( guiMode )
     % Convert u from a CHEBMATRIX to an array valued CHEBFUN to make plotting
-    % easier
+    % easier.
     if ( isa(u, 'chebmatrix') )
         u = chebfun(u);
     end
@@ -296,10 +254,11 @@ if ( guiMode )
     handles.latest.norms = info.error;
     handles.latest.chebop = N;
     handles.latest.options = options;
-    handles.latest.type = 'bvp';
+    
     % Notify the GUI we have a solution available
     handles.hasSolution = 1;
     
+    % Plot
     axes(handles.fig_sol)
     plot(u, 'Linewidth',2)
     % Do different things depending on whether the solution is real or not
@@ -309,20 +268,26 @@ if ( guiMode )
         axis equal
     end
 
+    % Only show legend if we were solving a coupled system:
     if ( length(allVarNames) > 1 )
         legend(allVarNames)
     end
 
+    % Show grid?
     if ( guifile.options.grid )
         grid on
     end
 
+    % Different titles of top plot if we had a linear problem:
     if ( ~isLinear )
         title('Solution at end of iteration');
     else
         title('Solution');
     end
 
+    % If we were solving a nonlinear problem, we show a plot of the norm of the
+    % Newton updates after solution has been found. For a linear problem, we
+    % show a chebpolyplot.
     if ( ~isLinear )
         % Store the norm of the Newton updates
         handles.normDelta = info.normDelta;

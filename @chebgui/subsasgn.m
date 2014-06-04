@@ -1,5 +1,5 @@
 function varargout = subsasgn(cg, index,varargin)
-% SUBSASGN   Modify a chebgui
+% SUBSASGN   Modify a CHEBGUI
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/chebfun/ for Chebfun information.
