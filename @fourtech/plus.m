@@ -48,7 +48,7 @@ elseif ( isa(f, 'double') ) % double + FOURTECH
     % Switch argument order and call FOURTECH/PLUS again:
     f = plus(g, f);
     
-else % FOURTECH + FOURTECH
+elseif ( isa(f, 'fourtech') && isa(g, 'fourtech') )  % FOURTECH + FOURTECH
     
     % We will simply add the values together then compute the coefficients
     % of the result.  This is probably not the most efficient means of
@@ -90,6 +90,10 @@ else % FOURTECH + FOURTECH
         f.vscale = vscaleNew;
         f.ishappy = f.ishappy && g.ishappy;
     end
+    
+else    % Don't know how to do the addition of the objects
+    
+    error('CHEBFUN:FOURTECH:plus:typeMismatch','Incompatible operation between objects. Make sure functions are of the same type.');
     
 end
 

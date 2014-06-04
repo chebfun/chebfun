@@ -35,6 +35,10 @@ elseif ( isa(g, 'double') )     % FOURTECH .* double
     f.epslevel = f.epslevel + eps(g);
     f.isReal = f.isReal & isreal(g);
     return
+
+elseif ( ~isa(f, 'fourtech') || ~isa(g, 'fourtech') ) % Don't know how to do the operation
+    
+    error('CHEBFUN:FOURTECH:times:typeMismatch','Incompatible operation between objects. Make sure functions are of the same type.');
     
 elseif ( size(f.values, 1) == 1 )
     % If we have (constant FOURTECH).*FOURTECH, reverse the order and call TIMES

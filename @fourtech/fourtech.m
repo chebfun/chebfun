@@ -143,13 +143,13 @@ classdef fourtech < smoothfun
     
     methods        
         function c = legpoly(f)
-            error('CHEBFUN:FOURTECH:legpoly:NotAvailable',...
-                'Cannot convert a Fourier based chebfun to a Legendre Series. Try first converting the f to a Chebyshev based chebfun');
+            error('CHEBFUN:FOURTECH:legpoly:notAvailable',...
+                'Cannot convert a Fourier based chebfun to a Legendre Series. Try first converting f to a Chebyshev based chebfun');
         end
         
-        function X = mldivide(A, B)
-            error('CHEBFUN:FOURTECH:mldivide:NotAvaliable',...
-                'Cannot perform mldivide on a fourtech');
+        function [f, rootsLeft, rootsRight] = extractBoundaryRoots(f, numRoots)
+            error('CHEBFUN:FOURTECH:extractBoundaryRoots:notAvailable',...
+                'Function not implemented. Try first converting f to a Chebyshev based chebfun');
         end
     end
     

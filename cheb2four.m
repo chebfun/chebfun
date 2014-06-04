@@ -6,9 +6,11 @@ function f = cheb2four(f)
 % See also FOUR2CHEB.
 
 if isempty(f)
-    f = chebfun([],'tech','fourtech');
+    f = chebfun([],'periodic');
+elseif isa(f.funs{1}.onefun,'fourtech')
+    return;
 elseif isa(f.funs{1}.onefun,'chebtech')
-    f = chebfun(f,f.domain,'tech','fourtech');
+    f = chebfun(f,f.domain,'periodic');
 else
     error('CHEBFUN:cheb2four:TypeUnkown','Tech type unknown');
 end

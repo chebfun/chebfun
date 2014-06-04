@@ -16,7 +16,7 @@ function out = chebpoly(f, varargin)
 %   There is also a CHEBPOLY command in the Chebfun trunk directory, which
 %   computes the CHEBFUN corresponding to the Chebyshev polynomial T_M(x).
 %
-% See also LEGPOLY.
+% See also LEGPOLY CHEBCOEFFS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.

@@ -50,10 +50,15 @@ else
     if ( nargin < 3 )
         pref = fourtech.techPref(); % c is a fourtech.
     end
-
+    
     % Call COMPOSE.
-    if ( isa(f, 'fourtech') )   % FOURTECH / FOURTECH
-        f = compose(f, @rdivide, c, pref);
+    if ( isa(f, 'fourtech') )   % Possibly FOURTECH / FOURTECH
+        if ( isa(c, 'fourtech') )
+            f = compose(f, @rdivide, c, pref);
+        else
+            error('CHEBFUN:FOURTECH:rdivide:fourtechRdivideUnknown',...
+                'rdivide does not know how to divide a FOURTECH and a %s.', class(c));
+        end
     else                       % DOUBLE / FOURTECH
         op = @(x) f./x;
         f = compose(c, op, [], pref);

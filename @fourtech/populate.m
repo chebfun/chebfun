@@ -71,7 +71,7 @@ if ( isnumeric(op) || iscell(op) )
     f.epslevel = f.epslevel./vscale;
 
     % Threshold to determine if f is real or not.
-    f.isReal = max(abs(imag( f.values ))) < 2*(f.epslevel.*f.vscale);
+    f.isReal = max(abs(imag( f.values ))) <= 2*(f.epslevel.*f.vscale);
     f.values(:,f.isReal) = real(f.values(:,f.isReal));
 
     return

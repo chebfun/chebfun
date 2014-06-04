@@ -29,18 +29,16 @@ elseif ( isa(B, 'double') )  % FOURTECH / double
         X.coeffs = A.coeffs/B;              % Divide coeffs
         X.vscale = A.vscale/abs(B);         % Divide vscale
     else
-%         % For matrix case, we do least squares via QR:
-%         [Q, R] = qr(A, 0);
-%         X = Q*(R/B);
-        error('CHEBFUN:FOURTECH:mrdivide','This option requires the QR which is not implemented for FOURTECH objects yet');
+        % For matrix case, we do least squares via QR:
+        [Q, R] = qr(A, 0);
+        X = Q*(R/B);
     end
 elseif ( isa(A, 'double') )  % double / FOURTECH
-    error('CHEBFUN:FOURTECH:mrdivide','This option requires the QR which is not implemented for FOURTECH objects yet');
-%     % Here A is a double and B is a FOURTECH. Do least squares via QR:
-%     [Q, R] = qr(B, 0);
-%     
-%     % Return the transpose for the output.
-%     X = Q*(A/R).';
+    % Here A is a double and B is a FOURTECH. Do least squares via QR:
+    [Q, R] = qr(B, 0);
+    
+    % Return the transpose for the output.
+    X = Q*(A/R).';
 elseif ( isa(B, 'fourtech') && isa(A, 'fourtech') )
     error('CHEBFUN:FOURTECH:mrdivide:fourtechDivChebtech', ...
         'Use ./ to divide by a FOURTECH.');

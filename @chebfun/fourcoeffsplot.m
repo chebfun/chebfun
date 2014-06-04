@@ -15,7 +15,7 @@ function varargout = fourcoeffsplot(f, varargin)
 %   objects. The final entry is that of the EPSLEVEL plot.
 %
 %
-% See also CHEBFUN/PLOT CHEBCOEFFSPLOT.
+% See also CHEBFUN/PLOT CHEBFUN/CHEBCOEFFSPLOT.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.

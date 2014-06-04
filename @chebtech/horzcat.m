@@ -16,7 +16,13 @@ if ( all(empties) )
 else
     varargin(empties) = [];
 end
-  
+
+% Check that all objects are indeed chebtechs.  If not then we should not
+% concatenate.
+if ~all( cell2mat(cellfun(@(f) isa(f,'chebtech'), varargin, 'UniformOutput', false)) )
+    error('CHEBFUN:CHEBTECH:horzcat:typeMismatch','Incompatible operation between objects. Make sure functions are of the same type.');
+end
+
 % Prolong each Chebtech to the same length:
 n = max(cellfun(@length, varargin));
 F = cellfun(@(f) prolong(f, n), varargin, 'UniformOutput', false);
