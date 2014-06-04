@@ -17,7 +17,7 @@ if ( ~isnumeric(f) )
     endVals = [get(f, 'lval'); get(f, 'rval')];
     tol = 1e1*get(f, 'vscale').*get(f, 'epslevel');
     
-    if ( any(any(endVals < repmat(tol, 2, 1))) )
+    if ( any(any(abs(endVals) < repmat(tol, 2, 1))) )
         
         if ( issmooth(f) ) 
             
