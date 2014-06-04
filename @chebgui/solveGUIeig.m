@@ -30,87 +30,37 @@ else
     guiMode = 1;
 end
 
+% Call the exportInfo method of the chebguiExporterBVP class, which takes care
+% of extracting most information we need from GUIFILE.
+expInfo = chebguiExporterEIG.exportInfo(guifile);
+
+% Extract the needed fields from the EXPINFO struct.
+dom = str2num(expInfo.dom);
+allVarNames = expInfo.allVarNames;
+indVarName = expInfo.indVarName;
+eigVarName = expInfo.lname;
+sigma = expInfo.sigma;
+K = str2double(expInfo.K);
 % Extract information from the GUI fields
-dom = str2num(guifile.domain);
-deInput = guifile.DE;
-bcInput = guifile.BC;
+rhsString = expInfo.rhsString;
 
-% What kind of eigenfunctions are we seeking?
-sigma = [];
-if ( ~isempty(guifile.sigma) )
-    sigma = guifile.sigma;
-    numSigma = str2num(sigma); 
-    if ( ~isempty(numSigma) )
-        sigma = numSigma;
-    end
-end
+% Are we working with a generalized eigenvalue problem?
+generalized = expInfo.generalized;
 
-% How many eigenfunctions do we want?
-K = 6;
-if ( isfield(guifile.options, 'numeigs') && ~isempty(guifile.options.numeigs) )
-    K = str2double(guifile.options.numeigs);
-end
-
-% Wrap all input strings in a cell (if they're not a cell already)
-if ( isa(deInput,'char') )
-    deInput = cellstr(deInput);
-end
-
-if ( isa(bcInput,'char') )
-    bcInput = cellstr(bcInput);
-end
-
-% Obtain information for setting up the differential equation:
-[allStrings, allVarString, indVarName, dummy, dummy, eigVarName, allVarNames] ...
-    = setupFields(guifile, deInput, 'DE');
-handles.varnames = allVarNames;
-
-% If indVarName is empty, use the default value
-if ( isempty(indVarName{1}) )
-    indVarName{1} = 'x';
-end
-
-% Replace 'DUMMYSPACE' by the correct independent variable name
-allStrings = strrep(allStrings, 'DUMMYSPACE', indVarName{1});
-
-% Pretty print feval statements
-allStrings = prettyprintfevalstring(allStrings, allVarNames);
-
-% If allStrings return a cell, we have both a LHS and a RHS string. Else,
-% we only have a LHS string, so we need to create the LHS linop manually.
-if ( iscell(allStrings) )
-    lhsString = allStrings{1};
-    rhsString = allStrings{2};
-else
-    lhsString = allStrings;
-    rhsString = '';
-end
-
-% Convert the strings to proper anon. function using eval
-LHS = eval(lhsString);
+% Convert the LHS string to proper anonymous function using eval
+LHS = eval(expInfo.lhsString);
 
 % Support for periodic boundary conditions
-BC = [];
-if ( ~isempty(bcInput{1}) )
-    if ( strcmpi(bcInput{1}, 'periodic') )
-        bcInput{1} = [];
-        BC = 'periodic';
-    else
-        bcString = setupFields(guifile, bcInput, 'BCnew', allVarString);
-        bcString = strrep(bcString, 'DUMMYSPACE', indVarName{1});
-        BC = eval(bcString);
-    end
+if ( expInfo.periodic )
+    BC = 'periodic';
+else
+    BC = eval(expInfo.bcString);
 end
 
-% Variable which determines whether it's a generalized problem. If rhsString is
-% empty, we can be sure it's not a generalized problem.
-generalized = 1;
 
-% Create the chebops, and try to linearise them. We will always have a string
-% for the LHS, if the one for RHS is empty, we know we have a non-generalised
-% problem.
+% Create the LHS chebop, and try to linearize it (if that gives an error, the
+% operator is probably linear).
 N_LHS = chebop(LHS, dom, BC);
-
 try
     A = linop(N_LHS);
 catch ME
@@ -124,6 +74,8 @@ catch ME
     return
 end
 
+% Create the RHS chebop if the RHSSTRING is not empty, and try to linearize it
+% (if that gives an error, the operator is probably linear).
 if ( ~isempty(rhsString) )
     RHS = eval(rhsString);
     N_RHS = chebop(RHS, dom);
@@ -141,40 +93,11 @@ if ( ~isempty(rhsString) )
         return
     end
     
-    % Check whether we are working with generalized
-    % problems or not by comparing B with the identity operator on the domain.
-    I = operatorBlock.eye(dom);
-    % Set a discretization size for comparing operators
-    discDim = 10;    
-    % Obtain a discretisation of the operator B
-    Bdisc = matrix(B, discDim);
-    % Obtain a discretization of the identity operator on the domain
-    Idisc = matrix(linop(I), discDim);
-    % In case of systems, B will have a block structure. Need to get the
-    % corresponding block identity operator by tiling the identity operator.
-    % Start by wrapping in a cell and call repmat
-    Idisc = repmat({Idisc}, [1, size(B, 1)]);
-    % Expand to a block diagonal matrix
-    Idisc = blkdiag(Idisc{:});
-    
-    % Compare the discretizations to see whether they are the same. If Bdisc is
-    % not square, B was certainly not the identity operator!
-    if ( size(Bdisc, 1) ~= size(Bdisc, 2) )
-        generalized = 1;
-    else
-        opDifference = Bdisc - Idisc;
-        opSum = Bdisc + Idisc;
-        if ( isempty(nonzeros(opDifference)) )
-            generalized = 0;
-        end
-
-        if ( isempty(nonzeros(opSum)) )
-            generalized = 0;
-            A = -A;
-        end
+    % Did we determine that we had to negate the LHS operator?
+    if ( expInfo.flipSigns )
+        A = -A;
     end
-else
-    generalized = 0;
+    
 end
 
 % Obtain a CHEBOPPREF object
@@ -183,7 +106,6 @@ options = cheboppref;
 % Check whether the tolerance is too tight.
 %TODO: How does this actually affect LINOP/EIGS()?
 defaultTol = options.errTol;
-
 tolInput = guifile.tol;
 if ( isempty(tolInput) )
     tolNum = defaultTol;
@@ -194,7 +116,6 @@ end
 % Need to obtain a CHEBFUNPREF object to check what the current tolerance is set
 % at.
 chebfunp = chebfunpref;
-
 if ( tolNum < chebfunp.techPrefs.eps )
     warndlg('Tolerance specified is less than current chebfun epsilon', ...
         'Warning','modal');
@@ -210,7 +131,7 @@ if ( guiMode )
     set(handles.fig_norm, 'Visible', 'On');
 end
 
-% Compute the eigenvalues.
+% Compute the eigenvalues!
 if ( generalized )
     if ( isempty(sigma) )
         [V, D] = eigs(A, B, K);
@@ -224,6 +145,7 @@ else
         [V, D] = eigs(A, K, sigma);
     end
 end
+
 % Sort the eigenvalues.
 [D, idx] = sort(diag(D));
 
@@ -233,19 +155,17 @@ for k = 1:size(V, 1)
     V(k) = extractColumns(V{k}, idx);
 end
 
-% If we're not in GUI mode, we can finish here.
 if ( ~guiMode )
+    % If we're not in GUI mode, we can finish here.
     if ( nargout == 1 )
         varargout = diag(D);
     else
         varargout{1} = D;
         varargout{2} = V;
     end
-    return
-end
-
-% Now do some more stuff specific to GUI
-if ( guiMode )
+else
+    % Now do some more stuff specific to GUI
+    
     % Store in handles latest CHEBOP, eigenfunctions, eigenmodes etc. (enables
     % exporting later on):
     handles.latest.type = 'eig';
@@ -267,6 +187,7 @@ if ( guiMode )
     set(handles.iter_text, 'Visible', 'on');
     set(handles.iter_text, 'String', 'Eigenvalues');
     set(handles.iter_list, 'Visible', 'on');
+    
     % Display eigenvalues to level of tolerance
     s = num2str(ceil(-log10(tolNum)));
     set(handles.iter_list, 'String', num2str(D, ['%' s '.' s 'f']));
@@ -274,28 +195,6 @@ if ( guiMode )
     
     % Return the handles as varargout.
     varargout{1} = handles;
-end
-
-end
-
-function str = prettyprintfevalstring(str, varnames)
-%PRETTYPRINTFEVALSTRING     String tidying when setting up problems.
-for k = 1:numel(varnames)
-    oldstr = ['feval(' varnames{k} ','];
-    newstr = [varnames{k} '('];
-    str = strrep(str, oldstr, newstr);
-    oldstr = [varnames{k} '(''end'''];
-    newstr = [varnames{k} '(end'];
-    str = strrep(str, oldstr, newstr);
-    oldstr = [varnames{k} '(''right'''];
-    newstr = [varnames{k} '(end'];
-    str = strrep(str, oldstr, newstr);
-    oldstr = [varnames{k} '(''start'''];
-    newstr = [varnames{k} '(' varnames{k} '.ends(1)'];
-    str = strrep(str, oldstr, newstr);
-    oldstr = [varnames{k} '(''left'''];
-    newstr = [varnames{k} '(' varnames{k} '.ends(1)'];
-    str = strrep(str, oldstr, newstr);
 end
 
 end
