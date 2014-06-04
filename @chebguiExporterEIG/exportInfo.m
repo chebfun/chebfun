@@ -94,7 +94,9 @@ end
 % Variable which determines whether it's a generalized problem. If
 % rhsString is empty, we can be sure it's not a generalized problem.
 generalized = 1;
-
+% For some generalized problems, we sometimes want to negate the LHS operator.
+% This is indicated by the FLIPSIGNS variable.
+flipSigns = 0;
 % Create the chebops, and try to linearise them.
 % We will always have a string for the LHS, if the one for RHS is empty, we
 % know we have a non-generalised problem.
@@ -165,6 +167,7 @@ if ( ~isempty(rhsString) )
 
         if ( isempty(nonzeros(opSum)) )
             generalized = 0;
+            flipSigns = 1;
         end
     end
 else
@@ -193,6 +196,7 @@ expInfo.bcInput = bcInput;
 expInfo.K = K;
 expInfo.sigma = sigma;
 expInfo.generalized = generalized;
+expInfo.flipSigns = flipSigns;
 expInfo.lname = lname;
 
 % And then some...

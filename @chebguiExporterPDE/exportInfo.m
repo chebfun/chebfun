@@ -96,6 +96,15 @@ if ( strcmp(indVarName{1}, indVarName{2}) )
         'The same variable appears to be used as space and time variable');
 end
 
+% Ensure that we have a PDE subscript:
+if ( ~isempty(indVarNameDE{2}) )
+    % Find what the name of the time variable specified is:
+    indVarName{2} = indVarNameDE{2};
+else
+    error('Chebgui:SolveGUIpde', ...
+        'No time variable specified, please do so via using subscript.');
+end
+
 % Create a string with the variables used in the problem
 variableString = [indVarName{2}, ',', indVarName{1}, ','];
 
@@ -111,6 +120,38 @@ if ( (~isempty(lbcInput{1}) && strcmpi(lbcInput{1}, 'periodic')) ...
     periodic = true;
 else
     periodic = false;
+end
+
+% Do we have a left BC specified?
+if ( ~isempty(lbcInput{1}) )
+    lbcString = setupFields(guifile, lbcInput, 'BC', allVarString);
+    
+    idx = strfind(lbcString, ')');
+    if ( ~isempty(idx) )
+        
+        % Inject the t and x variables into the anonymous function:
+        lbcString = [lbcString(1:2), variableString, lbcString(3:end)];
+
+    end
+
+else
+    lbcString = [];
+end
+
+% Do we have a right BC specified?
+if ( ~isempty(rbcInput{1}) )
+    rbcString = setupFields(guifile, rbcInput, 'BC', allVarString);
+
+    idx = strfind(rbcString, ')');
+    if ( ~isempty(idx) )
+        
+        % Inject the t and x variables into the anonymous function:
+        rbcString = [rbcString(1:2), variableString, rbcString(3:end)];
+        
+    end
+
+else
+    rbcString = [];
 end
 
 % Glue the DESTRING together
@@ -162,7 +203,8 @@ expInfo.allVarString = allVarString;
 expInfo.allVarNames = allVarNames;
 expInfo.indVarName = indVarName;
 expInfo.periodic = periodic;
-
+expInfo.lbcString = lbcString;
+expInfo.rbcString = rbcString;
 % Input related to options
 expInfo.tol = guifile.tol;
 expInfo.doplot = guifile.options.plotting;

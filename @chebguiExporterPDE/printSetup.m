@@ -19,10 +19,9 @@ tt = expInfo.tt;
 pdeflag = expInfo.pdeflag;
 initInput = expInfo.initInput;
 deString = expInfo.deString;
-lbcInput = expInfo.lbcInput;
-rbcInput = expInfo.rbcInput;
+lbcString = expInfo.lbcString;
+rbcString = expInfo.rbcString;
 sol0 = expInfo.sol0;
-allVarString = expInfo.allVarString;
 allVarNames = expInfo.allVarNames;
 periodic = expInfo.periodic;
 
@@ -42,13 +41,11 @@ end
 
 % Make assignments for left and right BCs.
 fprintf(fid, '\n%% Assign boundary conditions.\n');
-if ( ~isempty(lbcInput{1}) )
-    lbcString = setupFields(guifile, lbcInput, 'BC', allVarString);
+if ( ~isempty(lbcString) )
     fprintf(fid, 'bc.left = %s;\n', lbcString);
 end
 
-if ( ~isempty(rbcInput{1}) )
-    rbcString = setupFields(guifile, rbcInput, 'BC', allVarString);
+if ( ~isempty(rbcString) )
     fprintf(fid, 'bc.right = %s;\n', rbcString);
 end
 
