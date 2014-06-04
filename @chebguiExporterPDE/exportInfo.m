@@ -128,9 +128,8 @@ if ( ~isempty(lbcInput{1}) )
     
     idx = strfind(lbcString, ')');
     if ( ~isempty(idx) )
-        
         % Inject the t and x variables into the anonymous function:
-        lbcString = [lbcString(1:2), variableString, lbcString(3:end)];
+        lbcString = [lbcString(1:2), tName, ',', lbcString(3:end)];
 
     end
 
@@ -146,7 +145,7 @@ if ( ~isempty(rbcInput{1}) )
     if ( ~isempty(idx) )
         
         % Inject the t and x variables into the anonymous function:
-        rbcString = [rbcString(1:2), variableString, rbcString(3:end)];
+        rbcString = [rbcString(1:2), tName,',', rbcString(3:end)];
         
     end
 
