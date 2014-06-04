@@ -76,11 +76,8 @@ classdef chebop2
         % Convert all the different user inputs for bc into uniform format:
         bc = createbc(bcArg, ends);
         
-        T = spconvermat(n,lam,k);
-        
-        M = MultMat(a,bn,varargin);
-        
-        diffMat = spdiffmat(n,k,varargin);
+        % Method for deciding how to solve the matrix equation:
+        X = denseSolve(N, f, m, n)
         
         % Remove trailing coefficients.
         a = truncate(a, tol);
