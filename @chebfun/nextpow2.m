@@ -36,8 +36,7 @@ end
 r = unique(r);
 r(isnan(r)) = [];
 
-% Restrict f to these points:
-f = restrict(f, r.');
+f = addBreaks(f, r.');
 
 % We need to extrapolate:
 pref.extrapolate = true;

@@ -11,6 +11,7 @@ function display(L)
 
 name = inputname(1);
 [m, n] = size(L);
+
 c = blockClasses(L);
 
 loose = strcmp(get(0, 'FormatSpacing'), 'loose');
@@ -34,7 +35,6 @@ end
 % clickable:
 if ( strcmp(name, 'ans') )
     name = ['chebmatrix_' num2str(ceil(1e6*rand(1)), 6)];
-    assignin('base', name, L);
 end
 
 % Print information about each block>
