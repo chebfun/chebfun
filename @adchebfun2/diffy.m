@@ -1,9 +1,21 @@
-function f = diffy(f,k)
+function f = diffy(f, k)
+%DIFFY   Differentiate an ADCHEBFUN2 with respect to its second argument.
+%
+%   G = DIFFY(F) returns an ADCHEBFUN2 representing the derivative of F in its 
+%   second argument. This is the same as DIFF(F,1,1).
+%
+%   G = DIFFY(F,N) returns an ADCHEBFUN2 representing the Nth derivative of F in
+%   its second argument. This is the same as DIFF(F,N,1).
+% 
+% See also DIFFX, DIFF. 
 
-if nargin < 2 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+
+if ( nargin < 2 )
     k = 1; 
 end
 
-f = diff(f,k,1);
+f = diff(f, k, 1);
 
 end

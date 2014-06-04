@@ -44,8 +44,8 @@ classdef (InferiorClasses = {?chebfun2}) adchebfun2
         end
         
         function varargout = plot(f)
-            % Plot a chebfun2 
-            if nargout
+            % Plot an adchebfun2 
+            if ( nargout )
                 varargout = plot(f.chebfun2);
             else
                 plot(f.chebfun2);

@@ -1,5 +1,5 @@
-function f = diff(f, varargin) %diff(f,order,dim,varargin)
-%DIFF Derivative of a ADchebfun2.
+function f = diff(f, varargin)
+%DIFF Derivative of a ADCHEBFUN2.
 %
 % DIFF(F) is the derivative of F along the y direction.
 %
@@ -18,12 +18,10 @@ function f = diff(f, varargin) %diff(f,order,dim,varargin)
 % Copyright 2013 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-
 % Start by differentiating the chebfun2 of the ADchebfun
-f.chebfun2 = diff(f.chebfun2,varargin{:});
+f.chebfun2 = diff(f.chebfun2, varargin{:});
 
 % Find out how many derivatives are required in each direction
-
 if ( nargin == 1 ) % defaults.
     nx = 0;
     ny = 1;
@@ -46,7 +44,7 @@ else
     order = varargin{1};
     dim = varargin{2};
     
-    if dim == 1
+    if ( dim == 1 )
         nx = 0;
         ny = order;
     else
