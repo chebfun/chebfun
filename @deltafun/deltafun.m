@@ -203,6 +203,9 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         % Length of a DELTAFUN.
         len = length(f)
         
+        % Wrap a cell around a single DELTAFUN.
+        g = mat2cell(f, varargin)
+
         % Global maximum of a DELTAFUN on [-1,1].
         [maxVal, maxPos] = max(f)
         

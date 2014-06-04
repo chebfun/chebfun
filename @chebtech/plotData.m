@@ -75,9 +75,13 @@ elseif ( isa(g, 'chebtech') )
     data.xPoints = get(prolong(f, len), 'values');
     data.yPoints = get(prolong(g, len), 'values');
     
+    % xLim:
+    xdata = [get(f, 'lval'); data.xLine; get(f, 'rval')];
+    data.xLim = [min(xdata(:)) max(xdata(:))];
+    
     % yLim:
-    values = get(g, 'values');
-    data.yLim = [min(values(:)) max(values(:))];
+    ydata = [get(g, 'lval'); data.yLine; get(g, 'rval')];
+    data.yLim = [min(ydata(:)) max(ydata(:))];
     
     if ( isa(h, 'chebtech') )
         % PLOT3(F, G, H)
