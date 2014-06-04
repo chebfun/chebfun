@@ -109,7 +109,6 @@ if ( cutoff < 0.95*n88 )
     
 elseif ( n88 < 17 )
     % If there aren't enough coefficients, give up checking.
-    epslevel = absCoeff(n88);
     cutoff = n88;
     
 %% 2. Plateau test.
@@ -189,8 +188,12 @@ if ( ishappy )
     % Use the information from the cut to deduce an eps level.
     winEnd = min( n88, cutoff + 4 );
     epslevel = max( absCoeff(cutoff:winEnd) );
-    % Epslevel can't be better than eps:
-    epslevel = max(epslevel, eps);
+else
+    % Estimate the accuracy:
+    epslevel = absCoeff(n88);
 end
+    
+% Epslevel can't be better than eps:
+epslevel = max(epslevel, eps);
 
 end
