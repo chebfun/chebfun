@@ -22,8 +22,8 @@ pointOpts = {'Marker', 'MarkerSize', 'MarkerFaceColor', 'MarkerEdgeColor'};
 lineStyle = {};
 pointStyle = {};
 
-% Do JumpLine and deltaLine first.
-[jumpStyle, deltaStyle, varargin] = parseJumpStyle(varargin{:});
+% Do JumpLine and DeltaLine first.
+[jumpStyle, deltaStyle, varargin] = parseLineStyle(varargin{:});
 
 k = 1; % Look at all remaining arguments.
 while ( k < numel(varargin) )
@@ -56,7 +56,7 @@ out = varargin;
 
 end
 
-function [jumpStyle, deltaStyle, varargin] = parseJumpStyle(varargin)
+function [jumpStyle, deltaStyle, varargin] = parseLineStyle(varargin)
 %PARSEJUMPSTYLE   Parse 'jumpline' and 'deltaLine' style for CHEBFUN plot functions.
 %   [JUMPSTYLE, DELTASTYLE, VARARGIN] = PARSEJUMPSTYLE(VARARGIN) takes the 
 %   VARARGIN input for a CHEBFUN plotting command and parses out the 
