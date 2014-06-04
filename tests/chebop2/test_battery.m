@@ -75,4 +75,12 @@ B = feval(u1,xx,yy) + feval(u2,xx,yy) + feval(u3,xx,yy) + feval(u4,xx,yy);
 pass(5) = ( norm( A - B ) < 1e10*tol);
 
 
+% Check we can use the notation lap(u) = div(grad(u))
+N = chebop2(@(u) -divergence(gradient(u)) );
+N.lbc = 0; N.rbc = 0; N.dbc = 0; N.ubc = 0; 
+u = N \ 1;
+N = chebop2(@(u) -laplacian(u) );
+N.lbc = 0; N.rbc = 0; N.dbc = 0; N.ubc = 0; 
+exact = N \ 1;
+pass(6) = ( norm( u - exact ) < tol);
 end
