@@ -25,12 +25,10 @@ if ( strcmpi(pref.happinessCheck, 'classic') )
     [ishappy, epslevel, cutoff] = classicCheck(f, pref);
 
 elseif ( strcmpi(pref.happinessCheck, 'strict') )
-    % Use the 'strict' happiness check:
-    [ishappy, epslevel, cutoff] = strictCheck(f, pref);
+    error('CHEBFUN:FOURTECH:happinessCheck:strictCheck','Strict check not implemented for FOURTECH.  Please use classic check.');
     
 elseif ( strcmpi(pref.happinessCheck, 'loose') )
-    % Use the 'loose' happiness check:
-    [ishappy, epslevel, cutoff] = looseCheck(f, pref);
+    error('CHEBFUN:FOURTECH:happinessCheck:looseCheck','Loose check not implemented for FOURTECH.  Please use classic check.');
     
 else
     % Call a user-defined happiness check:

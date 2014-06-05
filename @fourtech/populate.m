@@ -163,11 +163,9 @@ f.values(:,f.isReal) = real(f.values(:,f.isReal));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Ouput. %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Ouput. %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 if ( ishappy )
     % We're done, and can return.
-    f = simplify(f, f.epslevel);
+    f = simplify(f, f.epslevel/10);
 end
 
 end

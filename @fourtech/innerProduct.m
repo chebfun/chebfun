@@ -36,4 +36,11 @@ out = bsxfun(@times, w.', f.values)' * g.values;
 id = f.isReal & g.isReal;
 out(:,id) = real(out(:,id));
 
+% Force non-negative output if the inputs are equal:
+if ( isequal(f, g) )
+    dout = diag(diag(out));
+    out = out - dout + abs(dout);
+end
+
+
 end

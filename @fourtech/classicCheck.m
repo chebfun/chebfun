@@ -47,6 +47,13 @@ elseif ( any(isinf(f.vscale)) )
     return
 end
 
+% If one column of f is the zero function, we will get into trouble further
+% down when we take the absolute value of the coefficients relative to vscale
+% and compute the relative condition number estimate in happinessCheck.  We
+% replace zero vscales by eps to avoid division by zero.
+ind = f.vscale == 0;
+f.vscale(ind) = eps;
+
 % NaNs are not allowed.
 if ( any(isnan(f.coeffs(:))) )
     error('CHEBFUN:FUN:classicCheck:NaNeval', ...
@@ -72,17 +79,13 @@ n = size(f.coeffs, 1);
 % Check for convergence and chop location --------------------------------------
 
 % Absolute value of coefficients, relative to vscale: (max across columns)
-ac = max(bsxfun(@rdivide, abs(f.coeffs), f.vscale), [], 2);
-
-% Take the maximum of the vscales:
-vscale = max(f.vscale);
+ac = bsxfun(@rdivide, abs(f.coeffs), f.vscale);
 
 % Happiness requirements:
 [testLength, epslevel] = ...
-    happinessRequirements(f.values, f.coeffs, f.points(), vscale, f.hscale, epslevel);
+    happinessRequirements(f.values, f.coeffs, f.points(), f.vscale, f.hscale, epslevel);
 
-if ( max(ac(1:testLength)) < epslevel )    % We have converged! Now chop tail:
-
+if ( all(max(ac(1:testLength, :)) < epslevel) ) % We have converged! Chop tail:
     % We must be happy.
     ishappy = true;
 
@@ -118,9 +121,13 @@ if ( max(ac(1:testLength)) < epslevel )    % We have converged! Now chop tail:
     [ignored, perColTchop] = max(Tbpb(3:Tloc, :));
     Tchop = min(perColTchop);
 
-    % We want to keep [c(0), c(1), ..., c(cutoff)]:
+    % Cutoff value.
     cutoff = n - Tchop - 2;
-
+    % We want to keep [c(-cutoff), ...,c(-1), c(0), c(1), ..., c(cutoff)]:
+    %
+    % So the number of coefficients that will be thrown away is actually 2*cutoff-1.
+    %
+    
 else
 
     % We're unhappy. :(
@@ -143,7 +150,6 @@ minPrec = 1e-4; % Worst case precision!
 
 % Length of tail to test.
 testLength = min(n, max(3, round((n-1)/8)));
-% testLength = min(n, max(4, round((n-1)/8)));
 
 % Look at length of tail to loosen tolerance:
 tailErr = eps*testLength^(2/3);
@@ -154,7 +160,7 @@ tailErr = min(tailErr, minPrec);
 dy = diff(values);
 dx = diff(x)*ones(1, size(values, 2));
 gradEst = max(abs(dy./dx));            % Finite difference approx.
-condEst = eps(hscale)./vscale*gradEst; % Condition number estimate.
+condEst = eps(hscale)./vscale.*gradEst; % Condition number estimate.
 condEst = min(condEst, minPrec);      
 
 % Choose maximum between prescribed tolerance and estimated rounding errors:
