@@ -61,16 +61,21 @@ classdef chebfun
 %   CHEBFUN({@(x) sin(x), @(x) cos(x)}, [-1, 0, 1])
 %
 % CHEBFUN(F, PREF) or CHEBFUN(F, [A, B], PREF) constructs a CHEBFUN object from
-% F with the options determined by the CHEBFUNPREF object PREF. Construction time
-% options may also be passed directly to the constructor in the form CHEBFUN(F,
-% [A, B], PROP1, VAL1, PROP2, VAL2, ...). (See CHEBFUNPREF for details of the
-% various preference options and their defaults.). In particular, CHEBFUN(F,
-% 'splitting', 'on') allows the constructor to adaptively determine breakpoints
-% to better represent piecewise smooth functions F. For example,
+% F with the options determined by the CHEBFUNPREF object PREF. Construction
+% time options may also be passed directly to the constructor in the form
+% CHEBFUN(F, [A, B], PROP1, VAL1, PROP2, VAL2, ...). (See CHEBFUNPREF for
+% details of the various preference options and their defaults.). In
+% particular, CHEBFUN(F, 'splitting', 'on') allows the constructor to
+% adaptively determine breakpoints to better represent piecewise smooth
+% functions F. For example,
 %   CHEBFUN(@(x) sign(x - .3), [-1, 1], 'splitting', 'on')
 % CHEBFUN(F, 'extrapolate', 'on') prevents the constructor from evaluating the
-% function F at the endpoints of the domain. Note that it is not possible to mix
-% PROP/VAL and PREF inputs in a single constructor call.
+% function F at the endpoints of the domain.
+%
+% If PROP/VAL and PREF inputs are mixed in a single constructor call, the
+% preferences determined by the PROP/VAL inputs take priority over those
+% determined by PREF.  At most one PREF input may be supplied to the
+% constructor at any time.
 %
 % CHEBFUN(F, 'trunc', N) returns a smooth N-point CHEBFUN constructed by
 % computing the first N Chebyshev coefficients from their integral form, rather
@@ -526,52 +531,53 @@ function op = str2op(op)
     end
 end
 
-function [op, dom, data, pref] = parseInputs(op, dom, varargin)
+function [op, dom, data, pref] = parseInputs(op, varargin)
     % Initialize data output.
     data.exponents = [];
     data.singType = [];
-
-    % Parse inputs.
     args = varargin;
+
+    % An op-only constructor call.
     if ( nargin == 1 )
-        % chebfun(op)
-        pref = chebfunpref();
-        dom = pref.domain;
-    elseif ( isa(dom, 'domain') )
-        dom = double(dom);
-        pref = chebfunpref();
-    elseif ( isstruct(dom) || isa(dom, 'chebfunpref') )
-        % chebfun(op, pref)
-        pref = chebfunpref(dom);
-        dom = pref.domain;
-    elseif ( ~isnumeric(dom) || (length(dom) == 1) )
-        % chebfun(op, prop1, val1, ...)
-        pref = chebfunpref();
-        args = [dom, args];
-        dom = pref.domain;
-    elseif ( nargin < 3 )
-        % chebfun(op, domain)
-        pref = chebfunpref();
-    elseif ( isstruct(varargin{1}) || isa(varargin{1}, 'chebfunpref') )
-        % chebfun(op, domain, pref)
-        pref = chebfunpref(args{1});
-        args(1) = [];
-    else
-        % chebfun(op, domain, prop1, val1, ...)
         pref = chebfunpref();
     end
 
-    % Take the default domain if an empty one was given:
-    if ( isempty(dom) )
-        dom = pref.domain;
+    % Try to parse out the domain which, if passed, is the second argument.
+    domainWasPassed = false;
+    if ( ~isempty(args) )
+        if ( isnumeric(args{1}) && ...
+                ((length(args{1}) >= 2) || isempty(args{1})) )
+            dom = args{1};
+            args(1) = [];
+            domainWasPassed = true;
+        elseif ( isa(args{1}, 'domain') )
+            dom = double(args{1});
+            args(1) = [];
+            domainWasPassed = true;
+        end
     end
 
+    % A struct to hold any preferences supplied by keyword (name-value pair).
+    keywordPrefs = struct();
+
+    % Parse the remaining arguments.
+    prefWasPassed = false;
     vectorize = false;
-    % Obtain additional preferences:
     while ( ~isempty(args) )
-        if ( strcmpi(args{1}, 'equi') )
+        if ( isstruct(args{1}) || isa(args{1}, 'chebfunpref') )
+            % Preference object input.  (Struct inputs not tied to a keyword
+            % are interpreted as preference objects.)
+            if ( ~prefWasPassed )
+                pref = chebfunpref(args{1});
+                prefWasPassed = true;
+                args(1) = [];
+            else
+                error('CHEBFUN:parseInputs:twoPrefs', ...
+                    'Multiple preference inputs are not allowed.');
+            end
+        elseif ( strcmpi(args{1}, 'equi') )
             % Enable FUNQUI when dealing with equispaced data.
-            pref.tech = 'funqui';
+            keywordPrefs.tech = 'funqui';
             args(1) = [];
         elseif ( strcmpi(args{1}, 'vectorize') || ...
                  strcmpi(args{1}, 'vectorise') )
@@ -584,52 +590,49 @@ function [op, dom, data, pref] = parseInputs(op, dom, varargin)
             args(1) = [];
         elseif ( strcmpi(args{1}, 'trunc') )
             % Pull out this preference, which is checked for later.
-            args(1:2) = [];     
-            pref.enableBreakpointDetection = true;
+            keywordPrefs.enableBreakpointDetection = true;
+            args(1:2) = [];
         elseif ( isnumeric(args{1}) )
             % g = chebfun(@(x) f(x), N)
-            pref.techPrefs.exactLength = args{1};
+            keywordPrefs.techPrefs.exactLength = args{1};
             args(1) = [];
         elseif ( strcmpi(args{1}, 'splitting') )
             % Translate "splitting" --> "enableBreakpointDetection".
-            pref.enableBreakpointDetection = strcmpi(args{2}, 'on');
+            keywordPrefs.enableBreakpointDetection = strcmpi(args{2}, 'on');
             args(1:2) = [];
         elseif ( strcmpi(args{1}, 'minsamples') )
             % Translate "minsamples" --> "techPrefs.minPoints".
-            pref.techPrefs.minPoints = args{2};
+            keywordPrefs.techPrefs.minPoints = args{2};
             args(1:2) = [];
         elseif ( strcmpi(args{1}, 'blowup') )
             if ( strcmpi(args{2}, 'off') )
                 % If 'blowup' is 'off'.
-                pref.enableSingularityDetection = 0;
+                keywordPrefs.enableSingularityDetection = 0;
             else
-                % If 'blowup' is not 'off'.
+                % If 'blowup' is not 'off', set the singTypes.  (NB:  These
+                % cells really need to store a left and right singType for each
+                % domain subinterval, but we may not know the domain yet, so we
+                % store just one cell for now and replicate it later, after
+                % we've figured out the domain.)
                 if ( (isnumeric(args{2}) && args{2} == 1 ) || ...
                         strcmpi(args{2}, 'on') )
                     % Translate "blowup" and flag "1" -->
                     % "enableSingularityDetection" and "poles only".
-                    pref.enableSingularityDetection = 1;
-                    singTypes = cell(1, 2*(numel(dom)-1));
-                    for j = 1:2*(numel(dom)-1)
-                        singTypes{j} = 'pole';
-                    end
-                    data.singType = singTypes;
+                    keywordPrefs.enableSingularityDetection = 1;
+                    data.singType = {'pole'};
                 elseif ( args{2} == 2 )
                     % Translate "blowup" and flag "2" -->
                     % "enableSingularityDetection" and "fractional singularity".
-                    pref.enableSingularityDetection = 1;
-                    singTypes = cell(1, 2*(numel(dom)-1));
-                    for j = 1:2*(numel(dom)-1)
-                        singTypes{j} = 'sing';
-                    end
-                    data.singType = singTypes;
+                    keywordPrefs.enableSingularityDetection = 1;
+                    data.singType = {'sing'};
                 else
-                    error('CHEBFUN:constructor:parseInputs', ...
+                    error('CHEBFUN:parseInputs:badBlowupOption', ...
                         'Invalid value for ''blowup'' option.');
                 end
             end
             args(1:2) = [];
         elseif ( strcmpi(args{1}, 'singType') )
+            % Store singularity types.
             data.singType = args{2};
             args(1:2) = [];
         elseif ( strcmpi(args{1}, 'exps') )
@@ -640,10 +643,10 @@ function [op, dom, data, pref] = parseInputs(op, dom, varargin)
             % Translate "chebkind" and "kind" --> "techPrefs.gridType".
             if ( (isnumeric(args{2}) && (args{2} == 1)) || ...
                      (ischar(args{2}) && strncmpi(args{2}, '1st', 1)) )
-                pref.tech = @chebtech1;
+                keywordPrefs.tech = @chebtech1;
             elseif ( (isnumeric(args{2}) && (args{2} == 2)) || ...
                      (ischar(args{2}) && strncmpi(args{2}, '2nd', 1)) )
-                pref.tech = @chebtech2;
+                keywordPrefs.tech = @chebtech2;
             else
                 error('CHEBFUN:constructor:parseInputs', ...
                     'Invalid value for ''chebkind''/''kind'' option.');
@@ -651,11 +654,37 @@ function [op, dom, data, pref] = parseInputs(op, dom, varargin)
             args(1:2) = [];
         else
             % Update these preferences:
-            pref.(args{1}) = args{2};
+            keywordPrefs.(args{1}) = args{2};
             args(1:2) = [];
         end
     end
-    
+
+    % Override preferences supplied via a preference object with those supplied
+    % via keyword.
+    if ( prefWasPassed )
+        pref = chebfunpref(pref, keywordPrefs);
+    else
+        pref = chebfunpref(keywordPrefs);
+    end
+
+    % Use the default domain if none was supplied.
+    if ( ~domainWasPassed || isempty(dom) )
+        dom = pref.domain;
+    end
+
+    % Now that we know the domain, sort out singType, if we had to infer it
+    % from a supplied 'blowup' flag.
+    %
+    % TODO:  Is there a better place to put this?
+    if ( numel(data.singType) == 1 )
+        singType = data.singType{1};
+        data.singType = cell(1, 2*(numel(dom)-1));
+        for j = 1:2*(numel(dom)-1)
+            data.singType{j} = singType;
+        end
+    end
+
+    % Parse the OP (handle the vectorize flag, etc.).
     if ( iscell(op) )
         for k = 1:numel(op)
             op{k} = parseOp(op{k});
@@ -663,9 +692,8 @@ function [op, dom, data, pref] = parseInputs(op, dom, varargin)
     else
         op = parseOp(op);
     end
-    
+
     function op = parseOp(op)
-        
         % Convert string input to function_handle:
         if ( ischar(op) )
             op = str2op(op);
@@ -686,9 +714,7 @@ function [op, dom, data, pref] = parseInputs(op, dom, varargin)
                 pref.techPrefs.exactLength = NaN;
             end
         end
-        
     end
-        
 end
 
 function g = vec(f)
