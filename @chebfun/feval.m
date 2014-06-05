@@ -135,7 +135,7 @@ end
 for k = 1:numFuns + 1
     index = x == dom(k);
     if ( any(index) )
-        % If a left or righ flag has been passed, we reassign pointValues 
+        % If a left or right flag has been passed, we reassign pointValues 
         % to be left/right values.
         if ( lrFlag(1) || lrFlag(3) ) % left
             for j = 1:numFuns
@@ -150,7 +150,6 @@ for k = 1:numFuns + 1
         out(index,:) = pointValues;
     end
 end
-    
 
 %% RESHAPE FOR OUTPUT:
 % Reshape fx, which is a column vector or horizontal concatenation of column
