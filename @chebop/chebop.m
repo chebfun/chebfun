@@ -342,8 +342,9 @@ classdef (InferiorClasses = {?double}) chebop
         [displayFig, displayTimer] = displayInfoInit(u,pref);
         
         % Display during Newton iteration.        
-        displayTimer = displayInfoIter(u, delta, iterNo, normdu, cFactor, ...
-            errEst, lendu, lambda, lenu, displayFig, displayTimer, pref);
+        [displayTimer, stopReq] = displayInfoIter(u, delta, iterNo, normdu, ...
+            cFactor, errEst, lendu, lambda, lenu, displayFig, displayTimer, ...
+            pref);
         
         % Display special information for linear problems.
         displayInfoLinear(u, normRes, pref)
