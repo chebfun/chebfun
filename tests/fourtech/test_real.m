@@ -1,39 +1,35 @@
-% Test file for chebtech/real.m
+% Test file for fourtech/real.m
 
 function pass = test_real(pref)
 
+% Get preferences.
 if ( nargin < 1 )
-    pref = chebtech.techPref();
+    pref = fourtech.techPref();
 end
 
-for n = 1:2
-    if ( n == 1 )
-        testclass = chebtech1();
-    else 
-        testclass = chebtech2();
-    end
+testclass = fourtech();
 
-    % Test a scalar-valued function:
-    f = testclass.make(@(x) exp(1i*x) + 1i*sin(x), [], [], pref);
-    g = testclass.make(@(x) cos(x), [], [], pref);
-    h = real(f);
-    pass(n, 1) = norm(h.coeffs - g.coeffs, inf) < 10*h.vscale.*h.epslevel;
+% Test a scalar-valued function.
+f = testclass.make(@(x) exp(20i*pi*x) + 1i*sin(100*pi*x), [], [], pref);
+g = testclass.make(@(x) cos(20*pi*x), [], [], pref);
+h = real(f);
+g = prolong(g, length(h));
+pass(1) = norm(h.coeffs - g.coeffs, inf) < 10*h.vscale.*h.epslevel;
+
+% Test an array-valued function.
+f = testclass.make(@(x) [exp(20i*pi*x) + 1i*sin(100*pi*x), -exp(10i*pi*x)], [], [], pref);
+g = testclass.make(@(x) [cos(20*pi*x), -real(exp(10i*pi*x))], [], [], pref);
+h = real(f);
+pass(2) = norm(h.coeffs - g.coeffs, inf) < 10*max(h.vscale.*h.epslevel);
+
+% Test a real function.
+f = 1i*testclass.make(@(x) cos(30*pi*x), [], [], pref);
+g = real(f);
+pass(3) = numel(g.coeffs) == 1 && g.coeffs == 0;
+
+% Test an array-valued real function.
+f = 1i*testclass.make(@(x) [cos(99*pi*x), sin(99*pi*x), exp(cos(pi*x))], [], [], pref);
+g = real(f);
+pass(4) = all(size(g.coeffs) == [1, 3]) && all(g.coeffs == 0);
     
-    % Test an array-valued function:
-    f = testclass.make(@(x) [exp(1i*x) + 1i*sin(x), -exp(1i*x)], [], [], pref);
-    g = testclass.make(@(x) [cos(x), -real(exp(1i*x))], [], [], pref);
-    h = real(f);
-    pass(n, 2) = norm(h.coeffs - g.coeffs, inf) < 10*max(h.vscale.*h.epslevel);
-    
-    % Test a real function:
-    f = testclass.make(@(x) 1i*cos(x), [], [], pref);
-    g = real(f);
-    pass(n, 3) = numel(g.coeffs) == 1 && g.coeffs == 0;
-
-    % Test an array-valued real function:
-    f = testclass.make(@(x) 1i*[cos(x), sin(x), exp(x)], [], [], pref);
-    g = real(f);
-    pass(n, 4) = all(size(g.coeffs) == [1, 3]) && all(g.coeffs == 0);
-end
-
 end
