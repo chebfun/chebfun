@@ -79,7 +79,7 @@ dampingInfo.x =             x;
 while ( ~terminate )
     
     % Compute a Newton update:
-    [delta, disc] = linsolve(L, res, pref);
+    [delta, disc] = linsolve(L, res, pref, vscale(u));
     
     % We had two output arguments above, need to negate DELTA.
     delta = -delta;
