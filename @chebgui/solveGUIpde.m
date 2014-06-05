@@ -86,14 +86,13 @@ else
     RBC = [];
 end
 
-% No boundary conditions are a no-go:
-if ( isempty(lbcString) && isempty(rbcString) )
-    error('chebfun:bvpgui','No boundary conditions specified');
-end
 
 % Setup up boundary condition to be passed to the pde15s() method:
 if ( periodic )
     bc = 'periodic';
+elseif ( isempty(lbcString) && isempty(rbcString) )
+    % No boundary conditions are a no-go:
+    error('chebfun:bvpgui','No boundary conditions specified');    
 else
     bc.left = LBC;
     bc.right = RBC;
