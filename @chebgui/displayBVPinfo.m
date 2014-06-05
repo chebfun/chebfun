@@ -1,5 +1,5 @@
 function varargout = displayBVPinfo(handles, mode, varargin)
-%DISPLAYBVPINFO    Show information on the CHEBGUI figure when solving BVPs
+%DISPLAYBVPINFO   Show information on the CHEBGUI figure when solving BVPs.
 %
 % Calling sequence:
 %   VARARGOUT = DISPLAYBVPINFO(HANDLES, MODE, VARARGIN)
@@ -16,7 +16,7 @@ function varargout = displayBVPinfo(handles, mode, varargin)
 %   VARARGIN:           Useful input arguments for showing information, further
 %                       described in 'help chebop/displayInfo)
 %
-%   See also: chebop/displayInfo
+% See also: chebop/displayInfo
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -38,7 +38,7 @@ end
 end
 
 function [displayFig, displayTimer] = displayBVPinfoInit(handles, u, pref)
-%DISPLAYBVPINFOINIT     Show information at the start of Newton iteration
+%DISPLAYBVPINFOINIT   Show information at the start of Newton iteration
 %
 % See also: chebop/displayInfoInit
 
@@ -78,10 +78,10 @@ displayTimer = tic;
 
 end
 
-
 function [displayTimer, stopReq] = displayBVPinfoIter(handles, u, delta, ...
-    iterNo, normDelta, cFactor, lenDelta, lambda, lenu, displayFig, displayTimer, pref)
-%DISPLAYBVPINFOITER     Show information and plot during Newton iteration.
+    iterNo, normDelta, cFactor, lenDelta, lambda, lenu, displayFig, ...
+    displayTimer, pref) %#ok<INUSD>
+%DISPLAYBVPINFOITER   Show information and plot during Newton iteration.
 %
 % See also: chebop/displayInfoIter
 

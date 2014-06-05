@@ -57,7 +57,6 @@ else
     BC = eval(expInfo.bcString);
 end
 
-
 % Create the LHS chebop, and try to linearize it (if that gives an error, the
 % operator is probably linear).
 N_LHS = chebop(LHS, dom, BC);
@@ -104,7 +103,6 @@ end
 options = cheboppref;
 
 % Check whether the tolerance is too tight.
-%TODO: How does this actually affect LINOP/EIGS()?
 defaultTol = options.errTol;
 tolInput = guifile.tol;
 if ( isempty(tolInput) )
@@ -163,6 +161,7 @@ if ( ~guiMode )
         varargout{1} = D;
         varargout{2} = V;
     end
+    
 else
     % Now do some more stuff specific to GUI
     
@@ -195,6 +194,7 @@ else
     
     % Return the handles as varargout.
     varargout{1} = handles;
+    
 end
 
 end
