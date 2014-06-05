@@ -17,7 +17,7 @@ xinf = chebfun(@(x) x,[0 inf]);
 L = chebfun(@(x) 1+0*x,[0 inf]);
 L = [L chebfun(@(x) 1-x, [0 inf] )];
 for k = 2:max(n) % Recurrence relation
-    Lk = (2*k-1-xinf).*L(:,k) - (k-1)*L(:,k-1)/k;
+    Lk = ((2*k-1-xinf).*L(:,k) - (k-1)*L(:,k-1))/k;
     L = [L Lk]; 
 end
 
