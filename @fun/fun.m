@@ -78,7 +78,7 @@ classdef fun % (Abstract)
     end
 
     %% ABSTRACT STATIC METHODS REQUIRED BY THIS CLASS.
-    methods (Abstract = true, Static = true)
+    methods ( Abstract = true, Static = true )
 
         % Map from [-1, 1] to the domain of the FUN.
         m = createMap(domain);  
@@ -87,123 +87,8 @@ classdef fun % (Abstract)
         f = make(varargin);
     end
     
-    %% METHODS IMPLEMENTED BY THIS CLASS.
-    methods
+    methods ( Abstract = true, Static = false )
         
-        % Absolute value of a FUN. (f should have no zeros in its domain)
-        f = abs(f, pref)
-
-        % FUN logical AND.
-        h = and(f, g)
-
-        % True if any element of a FUN is a nonzero number, ignoring NaN.
-        a = any(f, dim)
-
-        % Plot (semilogy) the Chebyshev coefficients of a FUN object, if it is
-        % based on Chebyshev technology.
-        h = chebpolyplot(f, varargin)
-
-        % Complex conjugate of a FUN.
-        f = conj(f)
-        
-        % FUN objects are not transposable.
-        f = ctranspose(f)
-        
-        % Extract information for DISPLAY.
-        info = dispData(f)
-        
-        % Extract boundary roots and represent them by an appropriate ONEFUN.
-        f = extractBoundaryRoots(f)
-
-        % Extract columns of an array-valued FUN object.
-        f = extractColumns(f, columnIndex);
-
-        % Round a FUN towards zero.
-        g = fix(f);
-        
-        % Round a FUN towards minus infinity.
-        g = floor(f);
-
-        % Flip columns of an array-valued FUN object.
-        f = fliplr(f)
-        
-        % Get properties of a FUN.
-        out = get(f, prop);
-        
-        % Imaginary part of a FUN.
-        f = imag(f)
-
-        % Test if a FUN object manages delta functions.
-        out = isdelta(f)
-
-        % True for an empty FUN.
-        out = isempty(f)
-
-        % Test if FUN objects are equal.
-        out = isequal(f, g)
-
-        % Test if a FUN is bounded.
-        out = isfinite(f)
-
-        % Test if a FUN is unbounded.
-        out = isinf(f)
-
-        % Test if a FUN has any NaN values.
-        out = isnan(f)
-
-        % True for real FUN.
-        out = isreal(f)
-        
-        % Test if a FUN object is built upon SINGFUN.
-        out = issing(f)
-        
-        % Test if a FUN object is built upon SMOOTHFUN.
-        out = issmooth(f)
-        
-        % Test if a FUN object is defined on an unbounded domain.
-        out = isunbnd(f)
-
-        % True for zero FUN objects.
-        out = iszero(f)
-        
-        % Return Legendre coefficients of a FUN object.
-        c_leg = legpoly(f, n)
-        
-        % Length of a FUN.
-        len = length(f)
-
-        % FUN logical.
-        f = logical(f)
-
-        % Convert an array-valued FUN into a cell array of FUN objects.
-        g = mat2cell(f, M, N)
-
-        % Global maximum of a FUN on [a,b].
-        [maxVal, maxPos] = max(f)
-
-        % Global minimum of a FUN on [a,b].
-        [minVal, minPos] = min(f)
-
-        % Global minimum and maximum on [a,b].
-        [vals, pos] = minandmax(f)
-
-        % Subtraction of two FUN objects.
-        f = minus(f, g)
-
-        % Multiplication of FUN objects.
-        f = mtimes(f, c)
-        
-        % Estimate the Inf-norm of a FUN object.
-        out = normest(f);
-        
-        % FUN logical NOT.
-        f = not(f)
-
-        % FUN logical OR.
-        h = or(f, g)
-
-        % Basic linear plot for FUN objects.
-        varargout = plot(f, varargin)
     end
     
 end
