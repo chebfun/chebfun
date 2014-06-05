@@ -306,7 +306,7 @@ if ( ~jumpLineSet )
 end
 
 % Plot the Delta functions:
-if ( isempty(deltaData) )
+if ( isempty(deltaData) || ~isnumeric(deltaData{1}) )
     h4 = stem([]);
 else
     h4 = mystem(deltaData{:});
