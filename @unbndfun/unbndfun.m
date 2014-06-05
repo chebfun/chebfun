@@ -171,7 +171,7 @@ classdef unbndfun < classicfun
         f = changeMap(f,newdom)
         
         % Evaluate an UNBNDFUN.
-        y = feval(f, x)
+        y = feval(f, x, varargin)
         
         % Flip/reverse an UNBNDFUN object.
         f = flipud(f)

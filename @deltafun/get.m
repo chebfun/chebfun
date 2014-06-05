@@ -18,18 +18,7 @@ function out = get(f, prop)
 switch prop
     case fieldnames(f)
         % Allow access to any of the properties of F via GET:
-        out = f.(prop);
-        
-    case 'lval'        
-        % Evaluate at the lefthand end of the domain:
-        dom = f.domain;
-        out = feval(f.funPart, dom(1));
-        
-    case 'rval'
-        % Evaluate at the righthand end of the domain:
-        dom = f.domain;
-        out = feval(f.funPart, dom(end));
-        
+        out = f.(prop);                
     otherwise
         % Delegate to the get method of funPart. All error handling will also be
         % done here:
