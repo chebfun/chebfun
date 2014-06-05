@@ -8,8 +8,8 @@ function result = parseBC(N, BC, type)
 %   CHEBOP. The result is either empty or a function handle that represents the
 %   given condition as needed internally.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. See
-% http://www.chebfun.org/ for Chebfun information.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
 
 numIn = nargin(N);
 
@@ -34,7 +34,8 @@ elseif ( isa(BC, 'function_handle') )
     % of arguments to the OP part.
     if ( ( (numIn <= 1) && (nargin(BC) == 1) ) || ...
             ( strcmp(type,'lrbc') && (nargin(BC) == (numIn - 1)) ) || ...
-            ( strcmp(type,'bc') && (nargin(BC) == numIn) ) )
+            ( strcmp(type,'bc') && (nargin(BC) == numIn) ) || ...
+            ( strcmp(type,'bc') && (nargin(BC) == numIn + 1) ) )
         result = BC;
     else
         error('CHEBFUN:chebop:parsebc:inputs', ...
