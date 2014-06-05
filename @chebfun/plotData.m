@@ -38,8 +38,8 @@ if ( nargin == 1 )
         dataNew = plotData(f.funs{k});
 
         if ( ~any(ismember(fields(dataNew), 'xDeltas' )) )
-            dataNew.xDeltas = [];
-            dataNew.yDeltas = [];
+            dataNew.xDeltas = NaN;
+            dataNew.yDeltas = NaN;
         end
 
         xLim = [min(dataNew.xLim(1), xLim(1)), max(dataNew.xLim(2), xLim(2))];

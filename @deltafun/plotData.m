@@ -13,7 +13,7 @@ if ( nargin == 1 )
     g = [];
 end
 
-% Get plot data from the funParth
+% Get plot data from the funPart
 if ( isempty(g) )
     data = plotData(f.funPart);
 else
