@@ -204,7 +204,13 @@ end
                 % Store these values:
                 tCurrent = t(kk);
                 uCurrent = chebfun(Uk, DOMAIN);
-                uCurrent = simplify(uCurrent, epslevel);    
+                
+                % Shorten the representation. The happiness cutoff seems to
+                % be safer than the epslevel simplification.
+                %uCurrent = simplify(uCurrent, epslevel);
+                uPoly = chebpoly(uCurrent);
+                firstKept = size(uPoly,2) - max(17,cutoff-1);
+                uCurrent = chebfun(uPoly(:,firstKept:end).',DOMAIN,'coeffs');
                 
                 ctr = ctr + 1;
                 uOut{ctr} = uCurrent;
@@ -215,8 +221,8 @@ end
                 % If we have 2.5 times as many coeffcients as we need, shorten
                 % the representation and cause the integrator to stop. 
                 if ( cutoff < 0.4*n )
-                    %currentLength = round(1.25*cutoff)';
-                    currentLength = floor( currentLength / 1.5  );
+                    currentLength = round(1.25*cutoff)';
+                    %currentLength = floor( currentLength / 1.5  );
                     currentLength = currentLength + 1 - rem(currentLength,2);
                     status = true;
                 end
@@ -743,7 +749,7 @@ clear global SYSSIZE
             end
             
             % Adjust BC rows by the needed offset from original time:
-            F(rows) = F(rows) + BCVALOFFSET;
+            F(rows) = F(rows) - BCVALOFFSET;
             
             % Reshape to back to a single column:
             F = F(:);
