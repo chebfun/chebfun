@@ -138,11 +138,11 @@ for i = 1:length(t)
     ucell = mat2fun(disc, u);
     if ( numInt > 1 )
         % The solution will always be smooth for any t > 0.
-        doMerge = @(f) merge( f );
-        ucell = cellfun( doMerge, ucell, 'uniform', false );
+        doMerge = @(f) merge(f);
+        ucell = cellfun(doMerge, ucell, 'uniform', false);
     end
-    doSimplify = @(f) simplify( f, max(eps, epsLevel) );
-    ucell = cellfun( doSimplify, ucell, 'uniform', false );
+    doSimplify = @(f) simplify(f, max(eps, epsLevel));
+    ucell = cellfun(doSimplify, ucell, 'uniform', false);
     allU = [ allU, chebmatrix(ucell) ]; %#ok<AGROW>
 end
 
