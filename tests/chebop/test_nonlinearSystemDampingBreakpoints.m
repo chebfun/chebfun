@@ -33,7 +33,7 @@ bcFunRight = chebfun(A.rbc(u1,u2));
 u1jump = jump(u1, 0);
 u2jump = jump(u2, 0);
 
-pass(1) = norm( chebfun(A(x, u1, u2))) < tol;
+pass(1) = norm( chebfun(A(x, u1, u2))) < 8*tol;
 pass(2) = norm(bcFunLeft(d(1))) < tol && norm(bcFunRight(d(end))) < tol;
 pass(3) = norm(u1jump) < tol && norm(u2jump) < tol;
 

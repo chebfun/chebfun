@@ -21,7 +21,7 @@ rhs = 0;
 
 %% Start with colloc2
 pref.discretization = @colloc2;
-pref.errTol = 1e-9;
+pref.errTol = 1e-13;
 [u1, info1] = solvebvp(N, rhs, pref);
 
 %% Change to colloc1
@@ -30,7 +30,7 @@ pref.errTol = 1e-13;
 [u2, info2] = solvebvp(N, rhs, pref);
 
 %% Change to ultraS
-pref.discretization = @ultrS;
+pref.discretization = @ultraS;
 pref.errTol = 1e-13;
 [u3, info3] = solvebvp(N, rhs, pref);
 
