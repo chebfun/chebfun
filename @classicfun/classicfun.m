@@ -4,28 +4,23 @@ classdef classicfun < fun % (Abstract)
 %   Abstract (interface) class for representing global functions on an interval
 %   [a, b], which can either be bounded or unbounded. Functions are
 %   approximated via a ONEFUN object, which lives on the interval [-1, 1],
-%   stored in the CLASSICFUN.  Forward and inverse maps stored in the CLASSICFUN object map
-%   the interval [-1, 1] to [a, b], and vice versa.
+%   stored in the CLASSICFUN.  Forward and inverse maps stored in the
+%   CLASSICFUN object map the interval [-1, 1] to [a, b], and vice versa.
 %
 % Constructor inputs:
-%   CLASSICFUN.CONSTRUCTOR(OP, DOMAIN) constructs a CLASSICFUN object from the function handle
-%   OP by mapping the DOMAIN to [-1, 1], and constructing an ONEFUN object to
-%   represent the function prescribed by OP. DOMAIN should be a row vector with
-%   two elements in increasing order. OP should be vectorised (i.e., accept a
-%   vector input) and output a vector of the same length as its input.
+%   CLASSICFUN.CONSTRUCTOR(OP) constructs a CLASSICFUN object from the function
+%   handle OP on the domain determined by the default stored in CHEBFUNPREF by
+%   mapping the domain to [-1, 1], and constructing an ONEFUN object to
+%   represent the function prescribed by OP.
 %
-%   CLASSICFUN.CONSTRUCTOR(OP, DOMAIN, VSCALE, HSCALE) allows the constructor of the
-%   ONEFUN of the CLASSICFUN to use information about vertical and horizontal scales.
-%   If not given (or given as empty), the VSCALE defaults to 0 initially, and
-%   HSCALE defaults to 1.
+%   CLASSICFUN.CONSTRUCTOR(OP, DATA) does the same but uses the domain
+%   specified by DATA.DOMAIN.  If DATA or DATA.DOMAIN is empty or if DATA has
+%   no DOMAIN field, the the default domain from CHEBFUNPREF is used.  The DATA
+%   structure is passed as-is to the appropriate concrete subclass constructor.
 %
-%   CLASSICFUN.CONSTRUCTOR(OP, DOMAIN, VSCALE, HSCALE, PREF) overrides the default
-%   behavior with that given by the CHEBFUNPREF object PREF. See CHEBFUNPREF for
-%   details.
-%
-%   CLASSICFUN.CONSTRUCTOR(VALUES, DOMAIN, VSCALE, HSCALE, PREF) returns a CLASSICFUN object
-%   with a ONEFUN constructed by the data in the columns of VALUES (if supported
-%   by ONEFUN class constructor).
+%   CLASSICFUN.CONSTRUCTOR(OP, DATA, PREF) overrides the default behavior with
+%   that given by the preferences in the structure or CHEBFUNPREF object PREF.
+%   See CHEBFUNPREF for details.
 %
 % See ONEFUN for further documentation of the ONEFUN class.
 %
@@ -37,18 +32,18 @@ classdef classicfun < fun % (Abstract)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % CLASSICFUN Class Description:
 %
-% The CLASSICFUN class is an abstract class for representations of functions on the
-% interval [a, b]. It achieves this by taking a ONEFUN on [-1, 1] and applying
-% a mapping.
+% The CLASSICFUN class is an abstract class for representations of functions on
+% the interval [a, b]. It achieves this by taking a ONEFUN on [-1, 1] and
+% applying a mapping.
 %
-% The current instances of CLASSICFUNs are BNDFUNs and UNBNDFUNs. The former are used
-% to represent functions on bounded domains, whereas the latter are able to
-% represent some functions on unbounded domains.
+% The current instances of CLASSICFUNs are BNDFUNs and UNBNDFUNs. The former
+% are used to represent functions on bounded domains, whereas the latter are
+% able to represent some functions on unbounded domains.
 %
-% Note that all binary CLASSICFUN operators (methods which can take two CLASSICFUN arguments)
-% assume that the domains of the CLASSICFUN objects agree. The methods will not throw
-% warnings in case the domains don't agree, but their output will not be
-% meaningful.
+% Note that all binary CLASSICFUN operators (methods which can take two
+% CLASSICFUN arguments) assume that the domains of the CLASSICFUN objects
+% agree. The methods will not throw warnings in case the domains don't agree,
+% but their output will not be meaningful.
 %
 % Class diagram: [CHEBFUN]<>---[<<FUN>>]------[<<CLASSICFUN>>] <>-- [<<onefun>>]
 %                                  |            /   ^     ^
@@ -64,10 +59,11 @@ classdef classicfun < fun % (Abstract)
         % The mapping which maps [-1, 1] to [a, b], and vice versa.
         mapping
 
-        % The ONEFUN of the CLASSICFUN object, which does the actual approximation of
-        % the function the CLASSICFUN object represents. The ONEFUN object lives on the
-        % interval [-1, 1], the mapping of the CLASSICFUN object takes care of mapping
-        % between [-1, 1] and vice versa.
+        % The ONEFUN of the CLASSICFUN object, which does the actual
+        % approximation of the function the CLASSICFUN object represents. The
+        % ONEFUN object lives on the interval [-1, 1], the mapping of the
+        % CLASSICFUN object takes care of mapping between [-1, 1] and vice
+        % versa.
         onefun
     end
     
@@ -276,6 +272,7 @@ classdef classicfun < fun % (Abstract)
 end
 
 function data = parseDataInputs(data, pref)
+%PARSEDATAINPUTS   Parse inputs from the DATA structure and assign defaults.
 
 if ( ~isfield(data, 'domain') || isempty(data.domain) )
     data.domain = pref.domain;

@@ -13,17 +13,19 @@ classdef chebtech1 < chebtech
 %   of length N and return a matrix of size NxM, where M is number of columns
 %   of the multi -valued function.
 %
-%   CHEBTECH1(OP, VSCALE) constructs a CHEBTECH1 with 'happiness' (see
-%   CHEBTECH.HAPPINESSCHECK) relative to the maximum of the given vertical
-%   scale (VSCALE) and the (column-wise) infinity norm of the sampled function
-%   values of OP. If not given, the VSCALE defaults to 0 initially.
+%   CHEBTECH1(OP, DATA) constructs a CHEBTECH2 using the additional data
+%   supplied in the DATA structure.  Fields currently recognized are:
+%     DATA.VSCALE    (Default:  0)
+%     DATA.HSCALE    (Default:  1)
+%         The constructor builds a CHEBTECH1 with 'happiness' (see
+%         HAPPINESSCHECK.m) relative to the maximum of the given vertical scale
+%         DATA.VSCALE and the (column-wise) infinity norm of the sampled
+%         function values of OP, and the fixed horizontal scale DATA.HSCALE.
+%   If any fields in DATA are empty or not supplied, or if DATA itself is empty
+%   or not supplied, appropriate default values are set.
 %
-%   CHEBTECH1(OP, VSCALE, HSCALE) uses a 'happiness' to both the vertical scale
-%   VSCALE (as above) and the horizontal scale HSCALE. If not given (or given
-%   as empty), this defaults to 1.
-%
-%   CHEBTECH1(OP, VSCALE, HSCALE, PREF) overrides the default behavior with
-%   that given by the preference structure PREF.
+%   CHEBTECH1(OP, DATA, PREF) overrides the default behavior with that given by
+%   the preference structure PREF.
 %
 %   CHEBTECH1(VALUES, ...) returns a CHEBTECH1 object which interpolates the
 %   values in the columns of VALUES at 1st-kind Chebyshev points and
@@ -152,6 +154,7 @@ classdef chebtech1 < chebtech
 end
 
 function data = parseDataInputs(data, pref)
+%PARSEDATAINPUTS   Parse inputs from the DATA structure and assign defaults.
 
 if ( ~isfield(data, 'vscale') || isempty(data.vscale) )
     data.vscale = 0;

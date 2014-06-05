@@ -3,6 +3,10 @@ classdef fun % (Abstract)
 %   Abstract (interface) class for approximating functions on the arbitrary 
 %   intervals.
 %
+% Constructor inputs:
+%   FUN.CONSTRUCTOR(OP, DATA, PREF) is essentially a wrapper for
+%   CLASSICFUN.CONSTRUCTOR(OP, DATA, PREF).
+%
 % See also DELTAFUN, CLASSICFUN.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.

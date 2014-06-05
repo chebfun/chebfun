@@ -41,32 +41,25 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
 %   singularities along with the SMOOTHFUN representation of the smooth part are
 %   stored in corresponding member fields of the instantiation.
 %
-%   SINGFUN(OP, [], SINGTYPE) constructs a SINGFUN object as above. SINGTYPE 
-%   is 1x2 cell array of strings and type of the singularities specified by 
-%   these strings may help the singularity detector to determine the order 
-%   of the singularities more efficiently and save some computing time. Valid
-%   strings for SINGTYPE are 'none', 'pole', 'sing' or 'root'. Note that a 
-%   place holder must be given next to OP for the constructor to work 
-%   properly.
+%   SINGFUN(OP, DATA) constructs a SINGFUN object using the data in the MATLAB
+%   structure DATA.  DATA fields recognized by SINGFUN are.
+%     DATA.SINGTYPE    (Default:  Determined by CHEBFUNPREF)
+%         A 1x2 cell array of strings and type of the singularities specified
+%         by these strings may help the singularity detector to determine the
+%         order of the singularities more efficiently and save some computing
+%         time.  Valid strings for SINGTYPE are 'none', 'pole', 'sing' or
+%         'root'.
+%     DATA.EXPONENTS   (Default:  Empty)
+%         If DATA.EXPONENTS is nonempty, then instead of determining the
+%         singularity types and orders by sampling the function values at -1
+%         and 1, the constructor takes the values saved in the 1x2 vector
+%         EXPONENTS as the orders of the singularities.
+%   If any fields in DATA are empty or not supplied, or if DATA itself is empty
+%   or not supplied, appropriate default values are set.  Any fields in DATA
+%   which are not recognized will be passed as-is to the SMOOTHFUN constructor.
 %
-%   SINGFUN(OP, EXPONENTS) constructs a SINGFUN object. Instead of determining
-%   the singularity types and orders by sampling the function values at -1 and
-%   1, the constructor takes the values saved in the 1x2 vector EXPONENTS as the
-%   orders of the singularities.
-%
-%   SINGFUN(OP, EXPONENTS, SINGTYPE) and SINGFUN(OP, EXPONENTS, {}) are
-%   equivalent to SINFGUN(OP, EXPONENTS).
-%
-%   SINGFUN(OP, EXPONENTS, SINGTYPE, VSCALE, HSCALE) constructs a SINGFUN 
-%   object. When the smooth part s(x) is approximated, the vertical scale VSCALE
-%   and the horizontal scale HSCALE are passed to the SMOOTHFUN constructor to
-%   facilitate the construction. Note that any of or both of VSCALE and HSCALE 
-%   can be omitted or empty.
-%
-%   SINGFUN(OP, EXPONENTS, SINGTYPE, VSCALE, HSCALE, PREF) constructs a SINGFUN 
-%   using the preferences given by PREF. Note that any of or all of EXPONENTS, 
-%   SINGTYPE, VSCALE, and HSCALE can be omitted or empty in this calling
-%   sequence in the presence of PREF.
+%   SINGFUN(OP, DATA, PREF) constructs a SINGFUN using the preferences given by
+%   PREF.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -440,6 +433,7 @@ end
 end
 
 function data = parseDataInputs(data, pref)
+%PARSEDATAINPUTS   Parse inputs from the DATA structure and assign defaults.
 
 if ( ~isfield(data, 'exponents') || isempty(data.exponents) )
     data.exponents = [];

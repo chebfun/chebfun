@@ -12,23 +12,28 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
 %   the location of a column in the DELTAMAG matrix.
 %
 % Constructor inputs:
-%   DELTAFUN([], DELTAMAG, LOCATION) creates a DELTAFUN object with an empty
-%   FUNPART, while the delta functions and their locations are specified by
-%   DELTAMAG and LOCATION.
-% 
-%   DELTAFUN(FUNPART, DELTAMAG, LOCATION) creates a DELTAFUN object with
-%   FUNPART as its smooth function, while DELTAMAG and LOCATION specify the
-%   delta functions in this object.
+%   DELTAFUN([], DATA) creates a DELTAFUN object with an empty FUNPART, with
+%   the delta functions and their locations specified by the following fields in
+%   the DATA structure:
+%     DATA.DELTAMAG    (Default:  Empty)
+%         Delta function magnitude matrix.  (See description above.)
+%     DATA.DELTALOC    (Default:  Empty)
+%         Row vector of locations of delta functions.
 %
-%   DELTAFUN(FUNPART, DELTAMAG, LOCATION, PREF) is the same as above but
-%   uses PREF to pass any preferences.
+%   DELTAFUN(FUNPART, DATA) creates a DELTAFUN object with FUNPART as its
+%   smooth function, while the locations and magnitudes of the delta functions
+%   are specified by the DATA structure as above.
 %
-%   DELTAFUN(OP, DELTAMAG, LOCATION, VARARGIN) will call the CLASSICFUN
-%   constructor to create a FUNPART out of the operator OP. THe additional
-%   inputs in VARARGIN are also passed to the CLASSICFUN constructor.
+%   DELTAFUN(FUNPART, DATA, PREF) is the same as above but uses PREF to pass
+%   any preferences.
 %
-%   DELTAFUN(F, ...) where F is a DELTAFUN simlpy returns F, i.e., other 
-%   inputs are ignored.
+%   DELTAFUN(OP, DATA, PREF) will call the CLASSICFUN constructor to create a
+%   FUNPART out of the operator OP.  Fields in DATA which are not among those
+%   listed above as recognized by DELTAFUN will be passed to the CLASSICFUN
+%   constructor as-is.
+%
+%   DELTAFUN(F, ...) where F is a DELTAFUN simply returns F, i.e., other inputs
+%   are ignored.
 %
 % See also CLASSICFUN, ONEFUN, FUN
 
@@ -312,6 +317,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
 end
 
 function data = parseDataInputs(data, pref)
+%PARSEDATAINPUTS   Parse inputs from the DATA structure and assign defaults.
 
 if ( ~isfield(data, 'deltaMag') || isempty(data.deltaMag) )
     data.deltaMag = [];

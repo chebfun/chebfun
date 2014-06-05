@@ -11,15 +11,27 @@ function [funs, ends] = constructor(op, domain, data, pref)
 %   accepts a column vector of length N and return a matrix of size N x M. If M
 %   ~= 1, we say the resulting CHEBFUN is "array-valued".
 %
-%   CONSTRUCTOR(OP, DOMAIN, PREF), where PREF is a CHEBFUNPREF object, allows
-%   alternative construction preferences to be passed to the constructor. See
-%   >> help chebfunpref for more details on preferences.
+%   CONSTRUCTOR(OP, DOMAIN, DATA, PREF), where DATA is a MATLAB structure and
+%   PREF is a CHEBFUNPREF object, allows construction data and alternative
+%   construction preferences to be passed to the constructor.  See CHEBFUNPREF
+%   for more details on preferences.
 %
 %   In particular, if PREF.ENABLEBREAKPOINTDETECTION = TRUE and OP is a
 %   function_handle or a string, then the constructor adaptively introduces
 %   additional breakpoints into the domain so as to better represent the
 %   function. These are returned as the second output argument in [FUNS, END] =
 %   CONSTRUCTOR(OP, DOMAIN).
+%
+%   The DATA structure input contains information which needs to be passed to
+%   the lower layers about parameters which may affect the construction
+%   process.  Presently, the only fields CONSTRUCTOR expects DATA to have on
+%   input are DATA.EXPONENTS and DATA.SINGTYPE, which convey information about
+%   endpoint singularities.  These fields are populated by CHEBFUN.PARSEINPUTS
+%   as need be.  CONSTRUCTOR performs further processing on these fields to
+%   make them suitable for use as a DATA argument to the FUN constructor.
+%   Before calling the FUN constructor, DATA will be augmented to include
+%   information about the construction domain as well as the horizontal and
+%   vertical scales involved in the construction procedure.
 %
 % See also CHEBFUN, CHEBFUNPREF.
 %
@@ -296,7 +308,7 @@ if ( diff(domain) < 4*1e-14*hscale && ~isnumeric(op) )
     op = op(mean(domain));
 end
 
-% Assemble data for the lower layers into a structure.
+% Bolt domain and scale information onto the data structure.
 data.domain = domain;
 data.vscale = vscale;
 data.hscale = hscale;

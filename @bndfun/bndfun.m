@@ -7,25 +7,28 @@ classdef bndfun < classicfun
 %   BNDFUN object map the interval [-1, 1] to [a, b], and vice versa.
 %
 % Constructor inputs:
-%   BNDFUN(OP, DOMAIN) constructs a BNDFUN object from the function handle OP by
-%   mapping the DOMAIN to [-1, 1], and constructing an ONEFUN object to
-%   represent the function prescribed by OP. DOMAIN should be a row vector with
-%   two elements in increasing order. OP should be vectorised (i.e., accept a
-%   vector input) and output a vector of the same length as its input.
+%   BNDFUN(OP) constructs a BNDFUN object from the function handle OP on the
+%   domain determined by the default in CHEBFUNPREF by mapping the domain to
+%   [-1, 1] and constructing a ONEFUN object to represent the function
+%   prescribed by OP.  OP should be vectorised (i.e., accept a vector input)
+%   and output a vector of the same length as its input.
 %
-%   BNDFUN(OP, DOMAIN, VSCALE, HSCALE) allows the constructor of the ONEFUN of
-%   the BNDFUN to use information about vertical and horizontal scales. If not
-%   given (or given as empty), the VSCALE defaults to 0 initially, and HSCALE
-%   defaults to 1.
+%   BNDFUN(OP, DATA) constructs a BNDFUN object using the data supplied in the
+%   DATA structure.  DATA fields used by BNDFUN are:
+%     DATA.DOMAIN    (Default:  Determined by CHEBFUNPREF)
+%         A row vector with two elements in increasing order defining the
+%         construction domain.  Both elements must be finite.
+%   In addition, BNDFUN may modify the following DATA fields before passing
+%   them on to the ONEFUN constructor:
+%     DATA.HSCALE    (Default:  Determined by DATA.DOMAIN)
+%         Horizontal construction scale.
+%   If any fields in DATA are empty or not supplied, or if DATA itself is empty
+%   or not supplied, appropriate default values are set.  Any fields in DATA
+%   which are not recognized will be passed as-is to the ONEFUN constructor.
 %
-%   BNDFUN(OP, DOMAIN, VSCALE, HSCALE, PREF) overrides the default behavior with
-%   that given by the preference structure PREF. See CHEBFUNPREF for details.
-%
-%   BNDFUN(VALUES, DOMAIN, VSCALE, HSCALE, PREF) returns a BNDFUN object with a
-%   ONEFUN constructed by the data in the columns of VALUES (if supported by
-%   ONEFUN class constructor).
-%
-% See ONEFUN for further documentation of the ONEFUN class.
+%   BNDFUN(OP, DATA, PREF) overrides the default behavior with that given by
+%   the preferences in the structure or CHEBFUNPREF object PREF. See
+%   CHEBFUNPREF for details.
 %
 % See also CLASSICFUN, CHEBFUNPREF, ONEFUN.
 
@@ -167,6 +170,7 @@ classdef bndfun < classicfun
 end
 
 function data = parseDataInputs(data, pref)
+%PARSEDATAINPUTS   Parse inputs from the DATA structure and assign defaults.
 
 if ( ~isfield(data, 'domain') || isempty(data.domain) )
     data.domain = pref.domain;

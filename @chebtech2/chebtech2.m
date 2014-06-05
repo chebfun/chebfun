@@ -12,15 +12,21 @@ classdef chebtech2 < chebtech
 %   (i.e., of an array-valued function), in which case OP should accept a column
 %   vector of length N and return a matrix of size NxM.
 %
-%   CHEBTECH2(OP, VSCALE) constructs a CHEBTECH2 with 'happiness' (see
-%   HAPPINESSCHECK.m) relative to the maximum of the given vertical scale
-%   VSCALE and the (column-wise) infinity norm of the sampled function values
-%   of OP, and the fixed horizontal scale HSCALE. If not given (or given as
-%   empty), the VSCALE defaults to 0 initially, and HSCALE defaults to 1.
+%   CHEBTECH2(OP, DATA) constructs a CHEBTECH2 using the additional data
+%   supplied in the DATA structure.  Fields currently recognized are:
+%     DATA.VSCALE    (Default:  0)
+%     DATA.HSCALE    (Default:  1)
+%         The constructor builds a CHEBTECH2 with 'happiness' (see
+%         HAPPINESSCHECK.m) relative to the maximum of the given vertical scale
+%         DATA.VSCALE and the (column-wise) infinity norm of the sampled
+%         function values of OP, and the fixed horizontal scale DATA.HSCALE. If
+%         not given (or given as empty), the VSCALE defaults to 0 initially,
+%         and HSCALE defaults to 1.
+%   If any fields in DATA are empty or not supplied, or if DATA itself is empty
+%   or not supplied, appropriate default values are set.
 %
-%   CHEBTECH2(OP, VSCALE, HSCALE, PREF) overrides the default behavior with
-%   that given by the preference structure PREF. See CHEBTECH.TECHPREF for
-%   details.
+%   CHEBTECH2(OP, DATA, PREF) overrides the default behavior with that given by
+%   the preference structure PREF. See CHEBTECH.TECHPREF for details.
 %
 %   CHEBTECH2(VALUES, ...) returns a CHEBTECH2 object which interpolates the
 %   values in the columns of VALUES at 2nd-kind Chebyshev points and
@@ -160,6 +166,7 @@ classdef chebtech2 < chebtech
 end
 
 function data = parseDataInputs(data, pref)
+%PARSEDATAINPUTS   Parse inputs from the DATA structure and assign defaults.
 
 if ( ~isfield(data, 'vscale') || isempty(data.vscale) )
     data.vscale = 0;

@@ -4,10 +4,9 @@ classdef smoothfun < onefun % (Abstract)
 %   interval [-1,1].
 %
 % Constructor inputs:
-%   SMOOTHFUN.CONSTRUCTOR(OP, VSCALE, HSCALE, PREF) constructs a SMOOTHFUN
-%   object on the interval [-1,1] from the function handle OP. Currently the
-%   only subclass of SMOOTHFUN is CHEBTECH, so SMOOTHFUN will call
-%   CHEBTECH.CONSTRUCTOR(OP, VSCALE, HSCALE, PREF.TECHPREFS).
+%   SMOOTHFUN.CONSTRUCTOR(OP, DATA, PREF) constructs a SMOOTHFUN object on the
+%   interval [-1,1] from the function handle OP using the data given in the
+%   DATA structure and the preferences in PREF.
 %
 % See also CHEBTECH.
 

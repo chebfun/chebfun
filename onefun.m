@@ -4,14 +4,11 @@ classdef onefun % (Abstract)
 %   [-1,1].
 %
 % Constructor inputs:
-%   ONEFUN.CONSTRUCTOR(OP, VSCALE, HSCALE, PREF) creates a representation of
-%   the operator OP defined on the interval [-1,1]. If
-%   PREF.ENABLESINGULARITYDETECTION = 0 (which is the default) then the ONEFUN
-%   constructor calls SMOOTHFUN.CONSTRUCTOR(OP, VSCALE, HSCALE, PREF), else it
-%   calls SINGFUN.CONSTRUCTOR(OP, VSCALE, HSCALE, PREF) if
-%   PREF.ENABLESINGULARITYDETECTION = 1.
-%
-%   See SMOOTHFUN and SINGFUN for further documentation.
+%   ONEFUN.CONSTRUCTOR(OP, DATA, PREF) creates a representation of the operator
+%   OP defined on the interval [-1,1]. If PREF.ENABLESINGULARITYDETECTION = 0
+%   (which is the default) then the ONEFUN constructor calls
+%   SMOOTHFUN.CONSTRUCTOR(OP, DATA, PREF), else it calls
+%   SINGFUN.CONSTRUCTOR(OP, DATA, PREF) if PREF.ENABLESINGULARITYDETECTION = 1.
 %
 % See also SINGFUN, SMOOTHFUN.
 
