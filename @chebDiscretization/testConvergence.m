@@ -1,4 +1,4 @@
-function [isDone, epsLevel] = testConvergence(disc, values, vscale, pref)
+function [isDone, epsLevel, vscale] = testConvergence(disc, values, vscale, pref)
 %TESTCONVERGENCE   Happiness check.
 %   Given: 
 %      DISC: chebDiscretization, 
@@ -43,12 +43,13 @@ epsLevel = 0;
 
 % If an external vscale was supplied, it can supplant the inherent scale of the
 % result.
-vscale = min(u.vscale, vscale);
+vscale = max(u.vscale, vscale);
 prefTech = chebtech.techPref();
 prefTech.eps = pref.errTol;
 
 for i = 1:numInt
-    f = chebtech2( {[],coeffs{i}}, vscale );
+    f = chebtech2( {[],coeffs{i}} );
+    f.vscale = vscale;
     [isDone(i), neweps] = plateauCheck(f, newValues, prefTech);
     epsLevel = max(epsLevel, neweps);
 end
