@@ -7,5 +7,6 @@ function B = mpower(A,pow)
 %  See http://www.chebfun.org for Chebfun information.
 
 B = linop( mpower@chebmatrix(A,pow) );
+B.hasGivenJumpsAt = A.hasGivenJumpsAt;
 
 end
