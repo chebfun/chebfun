@@ -100,6 +100,10 @@ numCols = size(f.funs{1}, 2);
 % Grb a preference:
 pref = chebfunpref();
 
+% Array for keeping track of point values in case there is a delta function at
+% a break point.
+infVals = [];
+
 if ( ~pref.enableDeltaFunctions )
     % No delta functions:
     
@@ -118,6 +122,7 @@ else
     for j = 1:n    
         % Detect jumps in the original function and create new deltas.
         deltaMag = getDeltaMag();
+        infVals = inf * deltaMag;
         % Differentiate each FUN in turn:
         for k = 1:numFuns
             funs{k} = diff(funs{k});
@@ -132,6 +137,8 @@ end
 
 % Compute new function values at breaks:
 pointValues = chebfun.getValuesAtBreakpoints(funs);
+I = isinf(infVals);
+pointValues(I) = infVals(I); 
 
 % Reassign data to f:
 f.funs = funs;

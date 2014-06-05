@@ -25,4 +25,22 @@ x = rand(1,4);
 d = deltafun(f, rand(1,4), x);
 pass(3) = all(isinf(feval(d, x)));
 
+%%
+x = chebfun('x');
+d = dirac(x-1);
+pass(4) = isinf(feval(d, 1));
+val = feval(-d, 1);
+pass(5) = isinf(val) && val < 0;
+pass(6) = isinf(feval(d, 'right'));
+pass(7) = feval(d, 'left') == 0;
+pass(8) = feval(d, 1, 'left' ) == 0;
+pass(9) = feval(d, 0, 'left' ) == 0;
+pass(10) = feval(d, 0, 'right' ) == 0;
+d = diff(heaviside(x));
+pass(11) = isinf(feval(d, 0));
+pass(12) = feval(d, 'right') == 0;
+pass(13) = feval(d, 'left') == 0;
+pass(14) = feval(d, 0, 'left' ) == 0;
+pass(15) = feval(d, 0, 'right' ) == 0;
+
 end
