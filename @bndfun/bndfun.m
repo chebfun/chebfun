@@ -145,7 +145,7 @@ classdef bndfun < classicfun
         f = changeMap(f,newdom)
         
         % Evaluate a BNDFUN.
-        y = feval(f, x)
+        y = feval(f, x, varargin)
         
         % Flip/reverse a BNDFUN object.
         f = flipud(f)

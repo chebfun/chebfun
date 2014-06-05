@@ -1,0 +1,8 @@
+'Orr-Sommerfeld operator'
+'scalar'
+domain = '[-1 1]';
+DE = '(u""-2*u"+u)/5772-2i*u-1i*(1-x^2)*(u"-u)=lambda*(u"-u)';
+BC = {'u(-1) = 0';'u''(-1) = 0';'u(1) = 0';'u''(1) = 0'}; 
+tol = '1e-10';
+type = 'eig';
+numeigs = '50';

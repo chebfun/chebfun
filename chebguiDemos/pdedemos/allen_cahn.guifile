@@ -1,0 +1,11 @@
+'Allen-Cahn equation'
+'scalar'
+domain = '[-3 3]';
+t = '0:0.2:10';
+DE = 'u_t = .03*u'''' + u - u^3';
+LBC = 'periodic';
+RBC = 'periodic';
+init = 'u = -1+2*(exp(-35*(x+2)^2)+exp(-11*x^2)+exp(-7*(x-2)^2))';
+tol = '1e-6'; plotting = 'on';
+fixYaxisLower = '-1'; fixYaxisUpper = '1.1';
+type  = 'pde';
