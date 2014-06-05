@@ -294,8 +294,12 @@ if ( isempty(jumpData) || ischar(jumpData{1}) )
     jumpData = {[]};
 end
 h3 = plot(jumpData{:});
+
 % Change the style accordingly:
-set(h3, jumpStyle{:});
+if ( ~isempty(jumpStyle) )
+    set(h3, jumpStyle{:});
+end
+
 if ( ~jumpLineSet )
     if ( isComplex )
         set(h3, 'LineStyle', 'none') 
