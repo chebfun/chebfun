@@ -260,6 +260,18 @@ classdef chebfunpref < chebpref
 %
 %   P = CHEBFUNPREF(Q), where Q is a CHEBFUNPREF, sets P to be a copy of Q.
 %
+%   R = CHEBFUNPREF(P, Q), where P is a CHEBFUNPREF and Q is a MATLAB
+%   structure, is similar to CHEBFUNPREF(Q) except that the preferences in P
+%   are used as the base set of preferences instead of the currently stored
+%   defaults.  The output R will be a CHEBFUNPREF with the preferences of P
+%   overridden by the field/value pairs in the structure Q.
+%
+%   R = CHEBFUNPREF(P, Q), where P and Q are both CHEBFUNPREF objects is
+%   similar to the previous syntax.  The output R is a CHEBFUNPREF with the
+%   preferences of P overridden by those in Q.  This is equivalent to setting R
+%   to be a copy of Q plus any additional TECHPREFS stored in P that were not
+%   stored in Q.
+%
 % Notes:
 %   When building a CHEBFUNPREF from a structure using the second calling
 %   syntax above, one should take care to ensure that preferences for the
@@ -327,13 +339,10 @@ classdef chebfunpref < chebpref
 
     methods
 
-        function outPref = chebfunpref(inPref, varargin)
-            if ( (nargin == 1) && isa(inPref, 'chebfunpref') )
-                outPref = inPref;
-                return
-            elseif ( nargin < 1 )
-                inPref = struct();
-            elseif ( ischar(inPref) )
+        function outPref = chebfunpref(varargin)
+            if ( nargin < 1 )
+                inPrefList = struct();
+            elseif ( ischar(varargin{1}) )
                 if ( nargin == 1 )
                     error('CHEBFUN:chebfunpref:deprecated', ...
                         ['chebfunpref() no longer supports queries of ', ...
@@ -341,30 +350,57 @@ classdef chebfunpref < chebpref
                          'Please use chebfunpref().prop.']);
                 else
                     error('CHEBFUN:chebfunpref:deprecated', ...
-                        ['chebfunpref() no longer assignment ', ...
+                        ['chebfunpref() no longer supports assignment ', ...
                          'via chebfunpref(''prop'', val).\n', ...
                          'Please use chebfunpref.setDefaults(''prop'', val).']);
                 end
-            elseif ( nargin > 1 )
-                error('CHEBFUN:chebfunpref:inputs', 'Too many input arguments.')
+            elseif ( nargin == 1 )
+                if ( isa(varargin{1}, 'chebfunpref') )
+                    outPref = varargin{1};
+                    return
+                else
+                    inPrefList = varargin{1};
+                end
+            elseif ( nargin == 2 )
+                if ( ~isa(varargin{1}, 'chebfunpref') || ...
+                     (~isa(varargin{2}, 'chebfunpref') && ...
+                      ~isstruct(varargin{2})) )
+                      error('CHEBFUN:chebfunpref:badTwoArgCall', ...
+                        ['When calling CHEBFUNPREF with two arguments, ' ...
+                        'the first must be a CHEBFUNPREF, and the ' ...
+                        'second must be a CHEBFUNPREF or a struct.']);
+                elseif ( isa(varargin{2}, 'chebfunpref') )
+                    inPrefList = varargin{2}.prefList;
+                else
+                    inPrefList = varargin{2};
+                end
+            elseif ( nargin > 2 )
+                error('CHEBFUN:chebfunpref:tooManyInputs', ...
+                    'Too many input arguments.')
             end
 
-            % Initialize default preference values.
-            outPref.prefList = chebfunpref.manageDefaultPrefs('get');
+            % If the user supplied a base set of preferences to be overridden,
+            % use it; otherwise, use the stored defaults.
+            if ( nargin <= 1 )
+                outPref.prefList = chebfunpref.manageDefaultPrefs('get');
+            else
+                outPref.prefList = varargin{1}.prefList;
+            end
 
-            % Copy fields from q, placing unknown ones in techPrefs and merging
-            % incomplete substructures.
-            for field = fieldnames(inPref).'
+            % Copy fields from inPrefList, placing unknown ones in techPrefs
+            % and merging incomplete substructures.
+            for field = fieldnames(inPrefList).'
                 if ( isfield(outPref.prefList, field{1}) )
                     if ( isstruct(outPref.prefList.(field{1})) )
                         outPref.prefList.(field{1}) = ...
                             chebfunpref.mergePrefs(outPref.prefList.(field{1}), ...
-                            inPref.(field{1}));
+                            inPrefList.(field{1}));
                     else
-                        outPref.prefList.(field{1}) = inPref.(field{1});
+                        outPref.prefList.(field{1}) = inPrefList.(field{1});
                     end
                 else
-                    outPref.prefList.techPrefs.(field{1}) = inPref.(field{1});
+                    outPref.prefList.techPrefs.(field{1}) = ...
+                        inPrefList.(field{1});
                 end
             end
         end
