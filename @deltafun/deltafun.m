@@ -162,7 +162,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         f = diff(f, k)
                 
         % Evaluate a DELTAFUN.
-        y = feval(f, x)
+        y = feval(f, x, varargin)
         
         % Flip columns of an array-valued DELTAFUN object.
         f = fliplr(f)
