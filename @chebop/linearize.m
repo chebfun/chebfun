@@ -114,24 +114,22 @@ end
 
 %% Evaluate N.op to get a linearisation of the differential equation:
 
-% Evaluate N.op. The output will be the ADCHEBFUN NU. In case of systems, NU
-% <<<<<<< HEAD
-% % will be an array-valued ADCHEBFUN. Need different calling sequences depending
+% Evaluate N.op. The output will be the ADCHEBFUN NU. In case of systems, NU 
+% will be an array-valued ADCHEBFUN. We need different calling sequences depending
 % % on whether N has a cell-argument or not
-% if ( cellArg )
-%     % No need to expand the cell U
-%     Nu = feval(N, x, u);
-% else
-%     % Need to expand the cell U
-%     Nu = feval(N, x, u{:});
-% =======
-% will be an array-valued ADCHEBFUN.
-Nu = feval(N, x, u{:}); % N.op(x, u{:});
+if ( cellArg )
+    % No need to expand the cell U
+    Nu = feval(N, x, u);
+else
+    % Need to expand the cell U
+    Nu = feval(N, x, u{:});
+end
+
+% Did the user specify the problem using old-school concatenation?
 if ( size(Nu, 1) < size(Nu, 2) )
     warning('CHEBFUN:chebop:linearize:vertcatop', ...
         ['N.op should return a column vector.\n', ...
         'Row vectors are deprecated and may not be supported in future releases.'])
-% >>>>>>> development
 end
 
 % Construct a LINOP L by vertically concatenating the derivatives stored in NU.
@@ -190,66 +188,16 @@ end
 % Initialise an empty LINOPCONSTRAINT.
 BC = linopConstraint();
 
-% Linearize left boundary condition
+% Linearize left boundary condition:
 if ( ~isempty(N.lbc) )
-% <<<<<<< HEAD
-%     % Evaluate. The output, LBCU, will be an ADCHEBFUN.
-%     if ( cellArg )
-%         lbcU = N.lbc(u);
-%     else
-%         lbcU = N.lbc(u{:});
-%     end
-%     
-%     % Ensure conditions were concatenated vertically, not horizontally
-%     lbcU = checkConcat(lbcU);
-%     
-%     % Loop through the components of LBCU.
-%     for k = 1:numel(lbcU)
-%         % Obtain the kth element of the ADCHEBFUN array.
-%         lbcUk = getElement(lbcU, k);
-%         % Evaluate the function at the left endpoint
-%         lbcUk = feval(lbcUk, dom(1));
-%         % Add the new condition to the LINOPCONSTRAINT BC.
-%         BC = append(BC, lbcUk.jacobian, lbcUk.func);
-%     end
-%     % Update linearity information.
-%     isLinear(2) = all(all(get(lbcU, 'linearity')));
-% =======
-    % Linearize left boundary condition
-    [BC, isLinLeft] = linearizeLRbc(N.lbc, u, dom(1), BC);
+    [BC, isLinLeft] = linearizeLRbc(N.lbc, u, dom(1), BC, cellArg);
     isLinear(2) = isLinLeft;
-% >>>>>>> development
 end
 
-% Linearize right boundary condition
+% Linearize right boundary condition:
 if ( ~isempty(N.rbc) )
-% <<<<<<< HEAD
-%     % Evaluate. The output, RBCU, will be an ADCHEBFUN.
-%     if ( cellArg )
-%         rbcU = N.rbc(u);    
-%     else
-%         rbcU = N.rbc(u{:});
-%     end
-%     
-%     % Ensure conditions were concatenated vertically, not horizontally
-%     rbcU = checkConcat(rbcU);
-%     
-%     % Loop through the components of RBCU.
-%     for k = 1:numel(rbcU)
-%         % Obtain the kth element of the ADCHEBFUN array.
-%         rbcUk = getElement(rbcU, k);
-%         % Evaluate the function at the right endpoint
-%         rbcUk = feval(rbcUk, dom(end));
-%         % Add the new condition to the LINOPCONSTRAINT BC.
-%         BC = append(BC, rbcUk.jacobian, rbcUk.func);
-%     end
-%     % Update linearity information.
-%     isLinear(3) = all(all(get(rbcU, 'linearity')));
-% =======
-    % Linearize left boundary condition
-    [BC, isLinRight] = linearizeLRbc(N.rbc, u, dom(end), BC);
+    [BC, isLinRight] = linearizeLRbc(N.rbc, u, dom(end), BC, cellArg);
     isLinear(3) = isLinRight;
-% >>>>>>> development
 end
 
 % Evaluate and linearise the remaining constraints. We need to treat the N.BC
@@ -308,10 +256,19 @@ end
 
 end
 
-function [BC, isLinLR] = linearizeLRbc(op, u, evalPoint, BC)
+function [BC, isLinLR] = linearizeLRbc(op, u, evalPoint, BC, cellArg)
 %LINEARIZELRBC  Linearize left and right boundary conditions
 
-lrBC = op(u{:});
+% Evaluate N.lbc or N.rbc. The output will be the ADCHEBFUN LRBC. In case of
+% systems, LRBC will be an array-valued ADCHEBFUN. We need different calling
+% sequences depending % on whether N has a cell-argument or not
+if ( cellArg )
+    % No need to expand the cell U
+    lrBC = feval(op, u);
+else
+    % Need to expand the cell U
+    lrBC = feval(op, u{:});
+end
 
 % Ensure conditions were concatenated vertically, not horizontally
 lrBC = checkConcat(lrBC);
