@@ -33,8 +33,8 @@ w = f.quadwts(n);
 out = bsxfun(@times, w.', f.values)' * g.values;
 
 % Force real output if the inputs are real:
-id = f.isReal & g.isReal;
-out(:,id) = real(out(:,id));
+id = logical(double(f.isReal)' * double(g.isReal));
+out(id) = real(out(id));
 
 % Force non-negative output if the inputs are equal:
 if ( isequal(f, g) )

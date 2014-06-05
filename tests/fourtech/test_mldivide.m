@@ -27,7 +27,7 @@ tol_g = 10*max(f.vscale.*f.epslevel);
 x = f \ g;
 err = g - f*x;
 pass(3) = max(abs(x - [1/sqrt(2) ; 1/sqrt(2)])) < max(tol_f, tol_g);
-pass(4) = max(abs(err.coeffs(:))) < max(tol_f, tol_g);
+pass(4) = max(abs(err.values(:))) < max(tol_f, tol_g);
 
 % A known least-squares solution.
 f = testclass.make(@(x) [ones(size(x)) x x.^2 x.^3], [], [], pref);
@@ -47,7 +47,7 @@ try
     pass(6) = 0;
 catch ME
     pass(6) = strcmp(ME.identifier, ...
-        'CHEBFUN:CHEBTECH:mldivide:chebtechMldivideUnknown');
+        'CHEBFUN:FOURTECH:mldivide:chebtechMldivideUnknown');
 end
 
 end
