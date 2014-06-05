@@ -298,7 +298,7 @@ if ( ~isempty(strfind(input, '@')) ) % User supplied anon. function
     
     return
 elseif ( any(strcmp(type,{'BC','BCnew'})) )  % More types of syntax for BCs
-    bcNum = str2num(input);
+    bcNum = str2double(input);
     
     % Check whether we have a number (OK), allowed strings (OK) or whether
     % we will have to convert the string to anon. function (i.e. the input
