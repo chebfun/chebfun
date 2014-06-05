@@ -73,6 +73,8 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         
         % DOMAIN: Domain of the ADchebfun.
         domain
+        
+        jumpLocations = [];
     end
     
     %% CLASS CONSTRUCTOR:
@@ -697,6 +699,9 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             %       'LINEARITY'  -   Whether F has a constant derivative w.r.t.
             %                        the seeding variable (useful for linearity
             %                        detection).
+            %       'JUMPLOCATIONS'  - Points where explicit jump
+            %                          conditions were given.
+            %                          
             %
             %   In case F is an ADCHEBFUN array, use the call
             %       P = GET(F, PROP, POS)
@@ -707,7 +712,11 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             
             % Allow access to any of F's properties via GET.
             if ( nargin == 2 )
-                out = vertcat(f.(prop));
+                if ( strcmp(prop,'jumpLocations') )
+                    error('Must specify position.')
+                else
+                    out = vertcat(f.(prop));
+                end
             else
                 out = f(pos).(prop);
             end
@@ -783,7 +792,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             u.jacobian = linop(functionalBlock.jump(x, u.domain, 0))*u.jacobian;
             % Signal that an explicit jump condition has been given, so
             % that automatic continuity won't be applied.
-            u.jacobian = addGivenJumpAt(u.jacobian,x);
+            u.jumpLocations = union(u.jumpLocations,x);
         end 
         
         function f = log(f)
@@ -978,7 +987,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                         return
                     elseif ( b == 0 )
                         f.func = power(f.func, 0);
-                        f.jacobian = 0*f.jacobian;
+                        f.jacobian = linop( 0*f.jacobian );
                         f.linearity = true;
                         return
                     end
