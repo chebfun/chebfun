@@ -22,32 +22,43 @@ demos = {'interior_layers_nonlinear.guifile'; 'system_coupled_bcs.guifile'; ...
     'allen_cahn.guifile'; 'diffusion_three_chem.guifile'};
 types = {'bvp'; 'bvp'; 'eig'; 'eig'; 'pde'; 'pde'};
 
-% Loop through the problems we want to export:
-for demoCounter = 1:numel(demos)
-    
-    % Create an exporter object of the correct type:
-    exporter = chebguiExporter.constructor(types{demoCounter});
-    
-    % Full path to demo
-    if demoCounter <=2 
-        demoPath = fullfile(bvppath, demos{demoCounter});
-    elseif demoCounter <= 4
-        demoPath = fullfile(eigpath, demos{demoCounter});
-    else
-        demoPath = fullfile(pdepath, demos{demoCounter});
+try
+    % We wrap this whole test in a try-catch so that we don't leave files
+    % hanging around in the test folder.
+
+    % Loop through the problems we want to export:
+    for demoCounter = 1:numel(demos)
+
+        % Create an exporter object of the correct type:
+        exporter = chebguiExporter.constructor(types{demoCounter});
+
+        % Full path to demo
+        if demoCounter <=2 
+            demoPath = fullfile(bvppath, demos{demoCounter});
+        elseif demoCounter <= 4
+            demoPath = fullfile(eigpath, demos{demoCounter});
+        else
+            demoPath = fullfile(pdepath, demos{demoCounter});
+        end
+        % Load demo
+        cg = chebgui.demo2chebgui(demoPath);
+
+        % Export the demo!
+        toFile(exporter, cg, tempFileName, tempPath)
+
     end
-    % Load demo
-    cg = chebgui.demo2chebgui(demoPath);
     
-    % Export the demo!
-    toFile(exporter, cg, tempFileName, tempPath)
+    % Got here without crashing == success!
+    pass = 1;
+    
+catch
+    
+    % Something went wrong == fail.
+    pass = false;
     
 end
 
 % Delete the temporary file we wrote to:
 delete(fullfile(tempPath, tempFileName))
-
-% Got here without crashing == success!
-pass = 1;
 
 end
