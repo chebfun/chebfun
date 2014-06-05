@@ -14,7 +14,7 @@ pdepath = fullfile(trunkPath, 'chebguiDemos', 'pdedemos');
 
 
 % Set up file to exporting to
-tempPath = fullfile(trunkPath, 'tests', 'chebguiExporter');
+tempPath = fullfile(trunkPath, 'tests', 'chebgui');
 tempFileName = 'tempExporterTest.m';
 
 demos = {'interior_layers_nonlinear.guifile'; 'system_coupled_bcs.guifile'; ...
