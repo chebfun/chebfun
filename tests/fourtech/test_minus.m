@@ -44,74 +44,66 @@ g_op = @(x) sin(100*pi*x);
 g = testclass.make(g_op, [], [], pref);
 pass(6:7) = test_sub_function_and_function(f, f_op, g, g_op, x);
 
-g_op = @(x) cos(1e4*pi*x);
+g_op = @(x) sin(cos(10*pi*x));
 g = testclass.make(g_op, [], [], pref);
 pass(8:9) = test_sub_function_and_function(f, f_op, g, g_op, x);
-
-g_op = @(t) sinh(t*exp(2*pi*1i/6));
-g = testclass.make(g_op, [], [], pref);
-pass(10:11) = test_sub_function_and_function(f, f_op, g, g_op, x);
     
 %%
-% Check operation for array-valued chebtech objects.
+% Check operation for array-valued FOURTECH objects.
 
 f_op = @(x) [zeros(size(x)) zeros(size(x)) zeros(size(x))];
 f = testclass.make(f_op, [], [], pref);
-pass(12:13) = test_sub_function_and_function(f, f_op, f, f_op, x);
+pass(10:11) = test_sub_function_and_function(f, f_op, f, f_op, x);
 
-f_op = @(x) [sin(x) cos(x) exp(x)];
+f_op = @(x) [sin(10*pi*x) sin(cos(pi*x)) exp(cos(pi*x))];
 f = testclass.make(f_op, [], [], pref);
-pass(14:15) = test_sub_function_and_scalar(f, f_op, alpha, x);
-
-g_op = @(x) [cosh(x) airy(1i*x) sinh(x)];
-g = testclass.make(g_op, [], [], pref);
-pass(16:17) = test_sub_function_and_function(f, f_op, g, g_op, x);
+pass(12:13) = test_sub_function_and_scalar(f, f_op, alpha, x);
 
 % This should fail with a dimension mismatch error.
-g_op = @(x) sin(x);
+g_op = @(x) sin(10*pi*x);
 g = testclass.make(g_op, [], [], pref);
 try
     h = f - g; %#ok<NASGU>
-    pass(18) = false;
+    pass(14) = false;
 catch ME
-    pass(18) = strcmp(ME.message, 'Matrix dimensions must agree.');
+    pass(14) = strcmp(ME.message, 'Matrix dimensions must agree.');
 end
 
 %%
 % Check that direct construction and MINUS give comparable results.
 
 tol = 10*eps;
-f = testclass.make(@(x) x, [], [], pref);
-g = testclass.make(@(x) cos(x) - 1, [], [], pref);
+f = testclass.make(@(x) sin(pi*x), [], [], pref);
+g = testclass.make(@(x) cos(10*pi*x) - 1, [], [], pref);
 h1 = f - g;
-h2 = testclass.make(@(x) x - (cos(x) - 1), [], [], pref);
-pass(19) = norm(h1.coeffs - h2.coeffs, inf) < tol;
+h2 = testclass.make(@(x) sin(pi*x) - (cos(10*pi*x) - 1), [], [], pref);
+pass(15) = norm(h1.coeffs - h2.coeffs, inf) < tol;
 
 %%
-% Check that subtracting a CHEBTECH and an unhappy CHEBTECH gives an
+% Check that subtracting a FOURTECH and an unhappy FOURTECH gives an
 % unhappy result.
 
-f = testclass.make(@(x) cos(x+1));    % Happy
-g = testclass.make(@(x) sqrt(x+1));   % Unhappy
+f = testclass.make(@(x) cos(pi*x));    % Happy
+g = testclass.make(@(x) cos(x));   % Unhappy
 h = f - g;  % Subtract unhappy from happy.
-pass(20) = (~g.ishappy) && (~h.ishappy);
+pass(16) = (~g.ishappy) && (~h.ishappy);
 h = g - f;  % Subtract happy from unhappy.
-pass(21) = (~g.ishappy) && (~h.ishappy);
+pass(17) = (~g.ishappy) && (~h.ishappy);
 
 end
 
-% Test the subtraction of a CHEBTECH F, specified by F_OP, to and from a scalar
+% Test the subtraction of a FOURTECH F, specified by F_OP, to and from a scalar
 % ALPHA using a grid of points X in [-1  1] for testing samples.
 function result = test_sub_function_and_scalar(f, f_op, alpha, x)
-    g1 = f - alpha
+    g1 = f - alpha;
     g2 = alpha - f;
     result(1) = isequal(g1, -g2);
     g_exact = @(x) f_op(x) - alpha;
     result(2) = norm(feval(g1, x) - g_exact(x), inf) <= ...
-        10*max(g1.vscale.*g1.epslevel);
+        100*max(g1.vscale.*g1.epslevel);
 end
 
-% Test the subraction of two CHEBTECH objects F and G, specified by F_OP and
+% Test the subraction of two FOURTECH objects F and G, specified by F_OP and
 % G_OP, using a grid of points X in [-1  1] for testing samples.
 function result = test_sub_function_and_function(f, f_op, g, g_op, x)
     h1 = f - g;
@@ -120,5 +112,5 @@ function result = test_sub_function_and_function(f, f_op, g, g_op, x)
     h_exact = @(x) f_op(x) - g_op(x);
     norm(feval(h1, x) - h_exact(x), inf);
     result(2) = norm(feval(h1, x) - h_exact(x), inf) <= ...
-        10*max(h1.vscale.*h1.epslevel);
+        100*max(h1.vscale.*h1.epslevel);
 end

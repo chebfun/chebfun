@@ -10,23 +10,23 @@ end
 testclass = fourtech();
 
 f = testclass.make(0, pref);
-f.coeffs = [0 1 0 ; 0 0 NaN];
+f.values = [0 1 0 ; 0 0 NaN];
 
 % iszero([0;0]) = 1, iszero([1;0]) = 0, iszero([0;NaN]) = 0.
 pass(1) = all(iszero(f) == [1 0 0]);
 
 % iszero(0) = 1, iszero(NaN) = 0, iszero(1) = 0.
-f.coeffs = [0 NaN 1];
+f.values = [0 NaN 1];
 pass(2) = all(iszero(f) == [1 0 0]);
-f.coeffs = [0 NaN 1]';
+f.values = [0 NaN 1]';
 pass(3) = all(iszero(f) == 0);
 
 % iszero(0) = 1.
-f.coeffs = zeros(3, 1);
+f.values = zeros(3, 1);
 pass(4) = all(iszero(f) == 1);
 
 % iszero(NaN) = 0.
-f.coeffs = NaN;
+f.values = NaN;
 pass(5) = all(iszero(f) == 0);
 
 end
