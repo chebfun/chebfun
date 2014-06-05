@@ -44,13 +44,16 @@ function varargout = plot(varargin)
 %   this property is applied globally.
 %
 %   Besides the usual parameters that control the specifications of lines (see
-%   linespec), the parameter JumpLines determines the linestyle for
-%   discontinuities of the CHEBFUN F. For example, PLOT(F, 'JumpLine', '-r')
-%   will plot discontinuities as solid red lines. By default the plotting style
-%   is ':', and colours are chosen to match the lines they correspond to. It is
-%   possible to modify other properties of JumpLines syntax like PLOT(F,
-%   'JumpLine', {'color', 'r', 'LineWidth', 5}). JumpLines can be suppressed
-%   with the argument 'JumpLine','none'.
+%   linespec), the parameter JumpLine and DeltaLine determines the linestyle 
+%   for the discontinuities and the delta functions of the CHEBFUN F, 
+%   respetively. For example, PLOT(F, 'JumpLine', '-r') will plot 
+%   discontinuities as solid red lines and PLOT(F, 'deltaline', '-r') will 
+%   plot the delta functions as solid red lines. By default the plotting style
+%   for JumpLine is ':', and '-' for delta functions and colours are chosen 
+%   to match the lines they correspond to. It is possible to modify other 
+%   properties of JumpLines syntax like 
+%   PLOT(F, 'JumpLine', {'color', 'r', 'LineWidth', 5}). 
+%   JumpLines and deltaLines can be suppresse with the argument 'none'.
 %
 %   Note that the PLOT(F, 'numpts', N) option for V4 is deprecated, and this
 %   call now has no effect.
@@ -114,9 +117,10 @@ lineData = {};
 pointData = {};
 jumpData = {};
 deltaData = {};
+jumpLineSet = any(cellfun(@(v) strcmpi(v, 'JumpLine'), varargin));
 
 % Remove global plotting options from input arguments.
-[lineStyle, pointStyle, jumpStyle, varargin] = ...
+[lineStyle, pointStyle, jumpStyle, deltaStyle, varargin] = ...
     chebfun.parsePlotStyle(varargin{:});
 
 %%
@@ -150,8 +154,8 @@ while ( ~isempty(varargin) )
             newData.yPoints = g;
             newData.xJumps = NaN;
             newData.yJumps = NaN;  
-            newData.xDeltas = [];
-            newData.yDeltas = [];
+            newData.xDeltas = NaN;
+            newData.yDeltas = NaN;
             % Do nothing
         elseif ( numel(f) == 1 && numel(g) == 1 )
             % Array-valued CHEBFUN case:
@@ -290,26 +294,36 @@ if ( isempty(jumpData) || ischar(jumpData{1}) )
     jumpData = {[]};
 end
 h3 = plot(jumpData{:});
+
 % Change the style accordingly:
-if ( isempty(jumpStyle) )
-    if ( isComplex )
-        %[TODO]: The following statement can not be reached:
-        set(h3, 'LineStyle', 'none', 'Marker', 'none')
-    else
-        set(h3, 'LineStyle', ':', 'Marker', 'none')
-    end
-else
+if ( ~isempty(jumpStyle) )
     set(h3, jumpStyle{:});
 end
 
+if ( ~jumpLineSet )
+    if ( isComplex )
+        set(h3, 'LineStyle', 'none') 
+    else
+        set(h3, 'LineStyle', ':')
+    end
+    set(h3, 'Marker', 'none') 
+end
+
 % Plot the Delta functions:
-if ( isempty(deltaData) )
+if ( isempty(deltaData) || ~isnumeric(deltaData{1}) )
     h4 = stem([]);
 else
     h4 = mystem(deltaData{:});
-    
 end
 
+if ( ~isempty(deltaStyle) )
+    set(h4, deltaStyle{:}, 'ShowBaseLine', 'off');
+else
+    set(h4, 'ShowBaseLine', 'off')
+end
+    
+
+%% 
 % Set the X-limits if appropriate values have been suggested:
 if ( all(isfinite(xLim)) )
 
@@ -344,36 +358,25 @@ end
 
 end
 
+
 function h = mystem(varargin)
 %MYSTEM   Plot multiple STEM plots in one call.
 % We need this because stem doesn't supoprt multiple inputs in the same way
 % PLOT does. An alternative option would be to write our own version of STEM.
 
+h = [];
 % Separate out each individual plot by looking for two consecutive doubles.
 isDouble = cellfun(@isnumeric, varargin);
-startLoc = [1 find([0 diff(isDouble)] ==1 & [diff(isDouble) 0] == 0) nargin+1];
-if ( numel(startLoc) == 2 )
-    % Nothing to plot!
-    h = stem([]);
-    return
-end
+startLoc = [1 find([0 diff(isDouble)] == 1 & [diff(isDouble) 0] == 0) nargin+1];
 for k = 1:numel(startLoc)-1
     data = varargin(startLoc(k):startLoc(k+1)-1);
-    h(k) = stem(data{:});
-end
-
-% The marker is always a diamond:
-set(h, 'marker', 'd', 'markerfacecolor', 'auto');
-
-% Remove the 'baseline':
-hbase = get(h, 'Baseline');
-for j = 1:numel(hbase)
-    hj = hbase(j);
-    if ( iscell(hj) )
-        hj = hj{1};
+    % Ignore NaN data
+    if ( all(isnan(data{1})) )
+        continue
     end
-    set(hj, 'lineStyle', 'none');
+    h(k) = stem(data{:}, 'fill');    
 end
 
 end
+
 

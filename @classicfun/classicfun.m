@@ -138,7 +138,7 @@ classdef classicfun < fun % (Abstract)
     end
     
     %% ABSTRACT METHODS REQUIRED BY THIS CLASS.
-    methods(Abstract = true)
+    methods ( Abstract = true )
         % [TODO]: Once UNBNDFUN and CHEBFUN advance, we should revisit this
         % list, and add/throw away abstract methods as appropriate.
         

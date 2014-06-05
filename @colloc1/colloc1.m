@@ -36,6 +36,10 @@ classdef colloc1 < colloc
             
             if ( nargin < 2 ), k = 1; end
             if ( n == 0 ), D = []; return, end
+            if ( k == 0 )
+                D = eye(n);
+                return
+            end
             if ( n == 1 ), D = 0; return, end
             
             % 1st-kind Chebyshev grid:
