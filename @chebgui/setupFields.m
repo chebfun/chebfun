@@ -1,6 +1,6 @@
 function [field, allVarString, indVarName, pdeVarNames, pdeflag, ...
     eigVarNames, allVarNames]  = setupFields(guifile, input, type, allVarString)
-%SETUPFIELDS    Convert input from GUI window to format useful for Chebfun.
+%SETUPFIELDS   Convert input from GUI window to format useful for Chebfun.
 %
 % Calling sequence:
 %
@@ -115,6 +115,7 @@ if ( numOfRows == 1 )
     else
         field = anFun;
     end
+    
 else % Have a system, go through each row
     % Keep track of every variable encountered in the problem
     allVarNames = {};
@@ -297,6 +298,7 @@ if ( ~isempty(strfind(input, '@')) ) % User supplied anon. function
         stringParser.str2anon(trimmedInput, guifile.type, type);
     
     return
+    
 elseif ( any(strcmp(type,{'BC','BCnew'})) )  % More types of syntax for BCs
     bcNum = str2double(input);
     
