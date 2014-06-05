@@ -1,4 +1,4 @@
-function f = compose(f, op, g, pref)
+function f = compose(f, op, g, data, pref)
 %COMPOSE   Composition of CHEBTECH2 objects.
 %   COMPOSE(F, OP) returns a CHEBTECH2 representing OP(F), where F is also a
 %   CHEBTECH2 object, and OP is a function handle.
@@ -10,10 +10,11 @@ function f = compose(f, op, g, pref)
 %   also CHEBTECH objects. If the range of F is not in [-1, 1] then an error is
 %   thrown.
 %
-%   COMPOSE(F, OP, G, PREF) or COMPOSE(F, OP, [], PREF) uses the options passed
-%   by the preferences structure PREF to build the returned CHEBTECH2.  In
-%   particular, one can set PREF.REFINEMENTFUNCTION to be a function which takes
-%   advantage of F and possibly OP or G being CHEBTECH objects.
+%   COMPOSE(F, OP, G, DATA, PREF) or COMPOSE(F, OP, [], DATA, PREF) uses the
+%   constructor data in the structure DATA and the options passed by the
+%   preferences structure PREF to build the returned CHEBTECH2.  In particular,
+%   one can set PREF.REFINEMENTFUNCTION to be a function which takes advantage
+%   of F and possibly OP or G being CHEBTECH objects.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -27,10 +28,14 @@ function f = compose(f, op, g, pref)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Parse inputs:
-if ( nargin < 4 )
+if ( nargin < 5 )
     pref = f.techPref();
 else
     pref = f.techPref(pref);
+end
+
+if ( nargin < 4 )
+    data = struct();
 end
 
 if ( (nargin < 3) || isempty(g) )
@@ -62,7 +67,7 @@ end
 pref.refinementFunction = refFunc;
 
 % Call parent COMPOSE:
-f = compose@chebtech(f, op, g, pref);
+f = compose@chebtech(f, op, g, data, pref);
 
 end
 

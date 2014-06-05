@@ -156,7 +156,7 @@ classdef chebtech2 < chebtech
     methods
         
         % Compose two CHEBTECH2 objects or a CHEBTECH2 with a function handle:
-        h = compose(f, op, g, pref)
+        h = compose(f, op, g, data, pref)
         
         % Get method:
         val = get(f, prop);

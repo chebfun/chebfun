@@ -25,7 +25,7 @@ else
         pref = chebtech.techPref();
     end
     pref.extrapolate = 1;
-    f = compose(f, @(x) x./abs(x), [], pref);
+    f = compose(f, @(x) x./abs(x), [], [], pref);
 end
 
 end

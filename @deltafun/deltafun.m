@@ -151,7 +151,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         out = anyDelta(f)
 
         % Compose a DELTAFUN with an affine operator or another DELTAFUN
-        f = compose(f, op, g, pref)
+        f = compose(f, op, g, data, pref)
         
         % Complex conjugate of a DELTAFUN.
         f = conj(f)

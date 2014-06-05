@@ -120,7 +120,7 @@ classdef classicfun < fun % (Abstract)
         % list, and add/throw away abstract methods as appropriate.
         
         % Compose a CLASSICFUN with an operator or another CLASSICFUN
-        f = compose(f, op, g, pref)
+        f = compose(f, op, g, data, pref)
         
         % Indefinite integral of a CLASSICFUN.
         f = cumsum(f, m, pref)

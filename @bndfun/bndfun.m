@@ -123,7 +123,7 @@ classdef bndfun < classicfun
         h = conv(f, g)
 
         % Compose a BNDFUN with an operator or another BNDFUN.
-        f = compose(f, op, g, pref)
+        f = compose(f, op, g, data, pref)
         
         % Indefinite integral of a BNDFUN.
         [f, rVal] = cumsum(f, dim)

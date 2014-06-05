@@ -151,7 +151,7 @@ classdef unbndfun < classicfun
     methods
         
         % Compose an UNBNDFUN with an operator or another FUN.
-        f = compose(f, op, g, pref)
+        f = compose(f, op, g, data, pref)
         
         % Indefinite integral of an UNBNDFUN.
         [f, rVal] = cumsum(f, dim)

@@ -181,9 +181,9 @@ for k = 1:numInts
     
     % Attempt to generate FUN objects using FUN/COMPOSE().
     if ( isempty(g) )
-        newFun = compose(f.funs{k}, op, [], pref);
+        newFun = compose(f.funs{k}, op, [], [], pref);
     else
-        newFun = compose(f.funs{k}, op, g.funs{k}, pref);
+        newFun = compose(f.funs{k}, op, g.funs{k}, [], pref);
     end
     isHappy = get(newFun, 'ishappy');
 
