@@ -13,9 +13,9 @@ for n = 1:2
         testclass = chebtech2();
     end
 
-    f = testclass.make(@(x) [sin(x) cos(x) exp(x)], [], [], pref);
-    g = testclass.make(@(x) sin(x), [], [], pref);
-    h = testclass.make(@(x) [cos(x) exp(x)], [], [], pref);
+    f = testclass.make(@(x) [sin(x) cos(x) exp(x)], [], pref);
+    g = testclass.make(@(x) sin(x), [], pref);
+    h = testclass.make(@(x) [cos(x) exp(x)], [], pref);
     
     F = mat2cell(f, 1, [1 2]);
     pass(n, 1) = sum(F{1} - g) < 10*g.vscale.*g.epslevel;

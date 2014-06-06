@@ -79,7 +79,9 @@ for k = 1:numFuns
     if ( isempty(deltaLoc) )
         g{k} = funPart;
     else
-        g{k} = deltafun(funPart, deltaMag, deltaLoc);
+        data.deltaMag = deltaMag;
+        data.deltaLoc = deltaLoc;
+        g{k} = deltafun(funPart, data);
     end
 end
 

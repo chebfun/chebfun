@@ -42,6 +42,15 @@ function f = compose(f, op, g, pref)
 
 % [TODO]: vscale and tolerance?
 
+% [TODO]: 
+%  The lower level constructors and compose() methods all accept a 'data'
+%  structure input. In the long term it might be useful to allow the chebfun
+%  compose() methods also to accept this (note that chebfun.constructor())
+%  already does). However, this is a nontrivial amount of work, and currently
+%  there's nothing that would make use of this feature 9for example, a
+%  composition whereby you know the form of the exponents in the solution). If
+%  that changes, we should revisit this issue.
+
 % Parse inputs:
 opIsBinary = false;
 if ( (nargin == 4) && ~isempty(g) )           % compose(f, op, g, pref)
@@ -181,9 +190,9 @@ for k = 1:numInts
     
     % Attempt to generate FUN objects using FUN/COMPOSE().
     if ( isempty(g) )
-        newFun = compose(f.funs{k}, op, [], pref);
+        newFun = compose(f.funs{k}, op, [], [], pref);
     else
-        newFun = compose(f.funs{k}, op, g.funs{k}, pref);
+        newFun = compose(f.funs{k}, op, g.funs{k}, [], pref);
     end
     isHappy = get(newFun, 'ishappy');
 

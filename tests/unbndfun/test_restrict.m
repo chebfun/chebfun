@@ -2,9 +2,12 @@
 
 function pass = test_restrict(pref)
 
-if ( nargin == 1 )
+if ( nargin < 1 )
     pref = chebfunpref();
 end
+
+singPref = pref;
+singPref.enableSingularityDetection = true;
 
 % Seed for random number:
 seedRNG(6178);
@@ -25,7 +28,7 @@ x3 = diff(dom3) * rand(100, 1) + dom3(1);
 
 % Exponentially-decaying function:
 op = @(x) x.^2.*exp(-x.^2);
-f = unbndfun(op, dom);
+f = unbndfun(op, struct('domain', dom));
 g = restrict(f, domRestrict);
 g1Vals = feval(g{1}, x1);
 g2Vals = feval(g{2}, x2);
@@ -42,8 +45,7 @@ pass(1) = ( norm(err1, inf) < get(g{1},'epslevel')*get(g{1},'vscale') ...
 
 % Blow-up function:
 op = @(x) x.^2.*(1-exp(-x.^2));
-pref.singPrefs.exponents = [2 2];
-f = unbndfun(op, dom, [], [], pref); 
+f = unbndfun(op, struct('domain', dom, 'exponents', [2 2]), singPref);
 g = restrict(f, domRestrict);
 
 g1Vals = feval(g{1}, x1);
@@ -75,7 +77,7 @@ x3 = diff(dom3) * rand(100, 1) + dom3(1);
 
 % Exponentially-decaying function:
 op = @(x) (1-exp(-x))./x;
-f = unbndfun(op, dom);
+f = unbndfun(op, struct('domain', dom));
 g = restrict(f, domRestrict);
 
 g1Vals = feval(g{1}, x1);
@@ -93,8 +95,7 @@ pass(3) = ( norm(err1, inf) < 2*get(g{1},'epslevel')*get(g{1},'vscale') ...
 
 % Blow-up function:
 op = @(x) x.*(5+exp(-x.^3));
-pref.singPrefs.exponents = [0 1];
-f = unbndfun(op, dom, [], [], pref); 
+f = unbndfun(op, struct('domain', dom, 'exponents', [0 1]), singPref);
 g = restrict(f, domRestrict);
 
 g1Vals = feval(g{1}, x1);
@@ -126,7 +127,7 @@ x3 = diff(dom3) * rand(100, 1) + dom3(1);
 
 % Exponentially-decaying function:
 op = @(x) x.*exp(x);
-f = unbndfun(op, dom);
+f = unbndfun(op, struct('domain', dom));
 g = restrict(f, domRestrict);
 
 g1Vals = feval(g{1}, x1);
@@ -144,8 +145,7 @@ pass(5) = ( norm(err1, inf) < 2*get(g{1},'vscale') ...
 
 % Blow-up function:
 op = @(x) x.*(5+exp(x.^3))./(dom(2)-x);
-pref.singPrefs.exponents = [0 -1];
-f = unbndfun(op, dom, [], [], pref); 
+f = unbndfun(op, struct('domain', dom, 'exponents', [0 -1]), singPref);
 g = restrict(f, domRestrict);
 
 g1Vals = feval(g{1}, x1);
@@ -163,7 +163,7 @@ pass(6) = ( norm(err1, inf) < 1e1*get(g{1},'epslevel')*get(g{1},'vscale') ...
 
 % Array-valued function:
 op = @(x) [exp(x) x.*exp(x) (1-exp(x))./x];
-f = unbndfun(op, dom);
+f = unbndfun(op, struct('domain', dom));
 g = restrict(f, domRestrict);
 
 g1Vals = feval(g{1}, x1);

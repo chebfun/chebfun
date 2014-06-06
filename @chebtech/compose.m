@@ -1,4 +1,4 @@
-function f = compose(f, op, g, pref)
+function f = compose(f, op, g, data, pref)
 %COMPOSE   Composition of CHEBTECH objects.
 %   COMPOSE(F, OP) returns a CHEBTECH representing OP(F) where F is also a
 %   CHEBTECH object, and OP is a function handle.
@@ -10,21 +10,24 @@ function f = compose(f, op, g, pref)
 %   also CHEBTECH objects. If the range of F is not in [-1, 1] then an error is
 %   thrown.
 %
-%   COMPOSE(F, OP, G, PREF) or COMPOSE(F, OP, [], PREF) uses the options passed
-%   by the preferences structure PREF to build the returned CHEBTECH.  In
-%   particular, one can set PREF.REFINEMENTFUNCTION to be a function which takes
-%   advantage of F and possibly OP or G being CHEBTECH objects.
+%   COMPOSE(F, OP, G, DATA, PREF) or COMPOSE(F, OP, [], DATA, PREF) uses the
+%   constructor data in the structure DATA and the options passed by the
+%   preferences structure PREF to build the returned CHEBTECH.  In particular,
+%   one can set PREF.REFINEMENTFUNCTION to be a function which takes advantage
+%   of F and possibly OP or G being CHEBTECH objects.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TODO: Accept vscale as an input? (Not related to vscales of f, or op, or g.)
-
 % Parse inputs:
-if ( nargin < 4 )
+if ( nargin < 5 )
     pref = f.techPref();
 else
     pref = f.techPref(pref);
+end
+
+if ( nargin < 4 )
+    data = struct();
 end
 
 if ( (nargin < 3) || isempty(g) )
@@ -79,7 +82,10 @@ if ( ischar(pref.refinementFunction) )
 end
 
 % Make CHEBTECH object:
-f = f.make(op, [], f.hscale, pref);
+if ( ~isfield(data, 'hscale') || isempty(data.hscale) )
+    data.hscale = f.hscale;
+end
+f = f.make(op, data, pref);
 
 % % Throw a warning: (Removed by NH Apr 2014. See #282)
 % if ( ~f.ishappy )

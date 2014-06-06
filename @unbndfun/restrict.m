@@ -58,14 +58,16 @@ vscale = get(f, 'vscale');
 for k = 1:numSubDom
     pref = chebfunpref();
     if ( ~isempty(exps) && any(exps(k:k+1)) )
-        pref.singPrefs.exponents = exps(k:k+1);
+        data.exponents = exps(k:k+1);
         
         if ( k == 1 ) || ( k == numSubDom)
             pref.techPrefs.extrapolate = 1;
         end
     end
     
-    g{k} = fun.constructor(@(x) feval(f, x), s(k:k+1), vscale, [], pref);
+    data.domain = s(k:k+1);
+    data.vscale = vscale;
+    g{k} = classicfun.constructor(@(x) feval(f, x), data, pref);
 end
 
 % When there is only one cell, return the UNBNDFUN instead:

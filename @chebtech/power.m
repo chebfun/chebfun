@@ -33,13 +33,13 @@ end
 % Simply call the compose function:
 if ( isa(f, 'chebtech') && isa(b, 'chebtech') )
     % Both F and G are CHEBTECHs:
-	g = compose(f, @power, b, pref);
+	g = compose(f, @power, b, [], [], pref);
 elseif ( isa(f, 'chebtech') )
     % F is CHEBTECH and G is constant: 
-	g = compose(f, @(f) power(f, b), [], pref);
+	g = compose(f, @(f) power(f, b), [], [], pref);
 else
     % F is constant and G is CHEBTECH: 
-	g = compose(b, @(b) power(f, b), [], pref);
+	g = compose(b, @(b) power(f, b), [], [], pref);
 end
 
 end

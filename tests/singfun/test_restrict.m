@@ -18,7 +18,9 @@ d = -1.28;
 % singularities or roots.
 
 op  = @(x) (1+x).^a.*exp(x);
-f = singfun(op, [a 0], {'sing', 'none'}, [], [], pref);
+data.exponents = [a 0];
+data.singType = {'sing', 'none'};
+f = singfun(op, data, pref);
 pass(1) = test_spotcheck_restrict(f, op, [-0.2 0.1], [0, 0], pref);
 
 % fractional pole at the left endpoint and note that the left endpoint is not a
@@ -26,34 +28,44 @@ pass(1) = test_spotcheck_restrict(f, op, [-0.2 0.1], [0, 0], pref);
 % subinterval which includes the pole at the left endpoint.
 
 op = @(x) (1+x).^d.*sin(50*pi*x);
-f = singfun(op, [d+1 0], {'sing', 'none'}, [], [], pref);
+data.exponents = [d+1 0];
+data.singType = {'sing', 'none'};
+f = singfun(op, data, pref);
 pass(2) = test_spotcheck_restrict(f, op, [-1 0.3], [1, 0], pref);
 
 % fractional root at the right endpoint and the smooth part has no roots in 
 % [-1 1]. We restrict f to multiple subintervals.
 
 op  =@(x) (1-x).^c.*cos(x);
-f = singfun(op, [0 c], {'none', 'root'}, [], [], pref);
+data.exponents = [0 c];
+data.singType = {'none', 'root'};
+f = singfun(op, data, pref);
 pass(3) = test_spotcheck_restrict(f, op, [-1 -0.7 1], [0, 0], pref);
 
 % fractional pole at the right endpoint. We restrict f to multiple
 % subintervals.
 
 op = @(x) (1-x).^b;
-f = singfun(op, [0 b], {'none', 'sing'}, [], [], pref);
+data.exponents = [0 b];
+data.singType = {'none', 'sing'};
+f = singfun(op, data, pref);
 pass(4) = test_spotcheck_restrict(f, op, [-0.9 -0.3 0.7 1], [0, 1], pref);
 
 % Two fractional poles at both endpoints. We restrict f to multiple
 % subintervals.
 
 op = @(x) (1+x).^b.*sin(x).*(1-x).^d;
-f = singfun(op, [b d], {'sing', 'sing'}, [], [], pref);
+data.exponents = [b d];
+data.singType = {'sing', 'sing'};
+f = singfun(op, data, pref);
 pass(5) = test_spotcheck_restrict(f, op, [-1 -0.9 0.5 0.7 1], [1, 1], pref);
 
 % Check the case with roots close to endpoints.
 p = 1e-4;
 op = @(x) (1+x).^b.*sin(x).*(1-x).^(3*c);
-f = singfun(op, [b b], {'sing', 'root'}, [], [], pref);
+data.exponents = [b b];
+data.singType = {'sing', 'root'};
+f = singfun(op, data, pref);
 pass(6) = test_spotcheck_restrict(f, op, [-1+p 1-p], [0, 0], pref);
 
 end

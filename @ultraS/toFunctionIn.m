@@ -14,7 +14,7 @@ for k = 1:numel(c)
     % Construct CHEBTECH2 objects from each piece:
     ct = chebtech2({[], flipud(c{k})});
     % Assign each piece to a subinterval with a BNDFUN:
-    funs{k} = bndfun(ct, dom(k: k + 1));
+    funs{k} = bndfun(ct, struct('domain', dom(k: k + 1)));
 end
 % Conver the FUNS cell-array to a CHEBFUN.
 f = chebfun(funs);

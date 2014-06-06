@@ -125,7 +125,7 @@ classdef chebtech < smoothfun % (Abstract)
     methods ( Abstract = true )
 
         % Compose method. (Not implemented here as refinement is defined also).
-        h = compose(f, op, g, pref)
+        h = compose(f, op, g, data, pref)
 
         % Get method.
         val = get(f, prop);
