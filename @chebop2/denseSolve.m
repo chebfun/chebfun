@@ -30,7 +30,7 @@ elseif ( size(CC,1) == 2 )% rank-2 PDE operator.
             % solve subproblems.
             X = chebop2.BartelsStewart(A,B,C,D,RHS,xsplit,ysplit);
             
-%             debug:
+%            debug:
 %            norm(A * X * B' + C * X * D' - RHS,inf)
         else
             X = lyap(C\A,(B\D).',-(B\(C\RHS).').');

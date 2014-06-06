@@ -16,8 +16,9 @@ end
 rect = N.domain; 
 f = chebfun2(f, rect);
 prefs = chebfunpref();
-tol = max( prefs.cheb2Prefs.eps, 1e-14 );      % Be gentle!    
-maxDiscretise = 2*prefs.cheb2Prefs.maxRank;    % Use maxRank to get max disc. 
+tol = max( prefs.cheb2Prefs.eps, 1e-14 );     % Be gentle!    
+maxDiscretise_x = 2*prefs.cheb2Prefs.maxRank; % Use maxRank to get max disc 
+maxDiscretise_y = maxDiscretise_x;
 minsample = 9;
 
 %%% Find out what grid to start on and which directions to do adaptivity. %%%
@@ -27,6 +28,8 @@ if ( nargin == 3 && isa(varargin{1}, 'double') )
     n = m;
     adaptive_x = 0;
     adaptive_y = 0;
+    maxDiscretise_x = n + 1; 
+    maxDiscretise_y = m + 1; 
 elseif ( nargin == 4 && isa(varargin{1},'double') && ~isinf(varargin{1}) ...
         && isa(varargin{2},'double') && ~isinf(varargin{2}) )
     % Nonadaptive solve with an m-by-n discretization
@@ -34,6 +37,8 @@ elseif ( nargin == 4 && isa(varargin{1},'double') && ~isinf(varargin{1}) ...
     n = varargin{2};
     adaptive_x = 0;
     adaptive_y = 0;
+    maxDiscretise_x = n + 1; 
+    maxDiscretise_y = m + 1; 
 elseif ( nargin == 4 && isa(varargin{1},'double') && ~isinf(varargin{1})...
         && isinf(varargin{2}) )
     % Adaptive solve in the horizontal variable, nonadaptive in the other.
@@ -42,6 +47,7 @@ elseif ( nargin == 4 && isa(varargin{1},'double') && ~isinf(varargin{1})...
     n = minsample;
     adaptive_x = 1;
     adaptive_y = 0;
+    maxDiscretise_y = m + 1;
 elseif ( nargin == 4 && isa(varargin{2},'double') && ~isinf(varargin{2})...
         && isinf(varargin{1}) )
     % Adaptive solve in the vertical variable, nonadaptive in the other.
@@ -50,6 +56,7 @@ elseif ( nargin == 4 && isa(varargin{2},'double') && ~isinf(varargin{2})...
     m = minsample;
     adaptive_x = 0;
     adaptive_y = 1;
+    maxDiscretise_x = n + 1;
 elseif ( nargin == 2 || (nargin == 4 && isinf(varargin{2}) && isinf(varargin{1})))
     % This code does the solver with adaptive calls in both the x- and
     % y-direction.
@@ -68,18 +75,24 @@ end
 
 %%% Adaptive solver %%%
 Resolved_x = 0; Resolved_y = 0; Resolved = Resolved_x & Resolved_y;
-while ( ( ~Resolved ) && ( max(m, n) < maxDiscretise ))
+while ( ( ~Resolved ) && ( m < maxDiscretise_y ) &&...
+                         ( n < maxDiscretise_x ) )
+                     
     % Solve PDE, return an m x n matrix of coefficients:
     X = chebop2.denseSolve(N, f, m, n);
     
     if ( adaptive_y ) 
         % Resolved in y-direction?
         [Resolved_y, m] = ResolveCheck( X, m, tol );
+    else
+        Resolved_y = 1; 
     end
     
     if ( adaptive_x ) 
         % Resolved in x-direction?
         [Resolved_x, n] = ResolveCheck( X.', n, tol );
+    else 
+        Resolved_x = 1; 
     end
     
     % update tolerances:
@@ -95,7 +108,7 @@ while ( ( ~Resolved ) && ( max(m, n) < maxDiscretise ))
 end
 
 % Did we stop without resolving:
-if ( max(m,n) >= maxDiscretise )
+if ( ( m >= maxDiscretise_y ) || ( n >= maxDiscretise_x ) )
     warning('CHEBOP2:MAXDISC',...
         'Maximum discretization reached. Solution may not accurate.')
 end
@@ -104,7 +117,7 @@ end
 X = cutTrailingCoefficients( X );
 
 % Form a chebfun2 object to represent the solution:
-u = chebfun2( rot90( X, 2 ), 'coeffs', rect);
+u = chebfun2( rot90( X, 2 ), 'coeffs', rect); 
 end
 
 function [Resolved, newDisc] = ResolveCheck( coeffs, oldDisc, tol )
