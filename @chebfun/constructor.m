@@ -1,11 +1,11 @@
-function [funs, ends] = constructor(op, domain, data, pref)
+function [funs, ends] = constructor(op, dom, data, pref)
 %CONSTRUCTOR   CHEBFUN constructor.
-%   FUNS = CONSTRUCTOR(OP, DOMAIN) constructs the piecewise components (known as
+%   FUNS = CONSTRUCTOR(OP, DOM) constructs the piecewise components (known as
 %   "FUNS") used by a CHEBFUN object to represent the function OP on the
-%   interval DOMAIN. OP must be a function_handle, string, numerical vector, or
-%   a cell array containing a combination of these first three data types. In
-%   the later case, the number of elements in the array must be one less than
-%   the length of the DOMAIN vector.
+%   interval DOM. OP must be a function_handle, string, numerical vector, or a
+%   cell array containing a combination of these first three data types. In the
+%   later case, the number of elements in the array must be one less than the
+%   length of the DOM vector.
 %
 %   It is not expected that CHEBFUN.CONSTRUCTOR() be called directly, 
 %
@@ -13,8 +13,8 @@ function [funs, ends] = constructor(op, domain, data, pref)
 %   accepts a column vector of length N and return a matrix of size N x M. If M
 %   ~= 1, we say the resulting CHEBFUN is "array-valued".
 %
-%   CONSTRUCTOR(OP, DOMAIN, DATA, PREF), where DATA is a MATLAB structure and
-%   PREF is a CHEBFUNPREF object, allows construction data and alternative
+%   CONSTRUCTOR(OP, DOM, DATA, PREF), where DATA is a MATLAB structure and PREF
+%   is a CHEBFUNPREF object, allows construction data and alternative
 %   construction preferences to be passed to the constructor.  See CHEBFUNPREF
 %   for more details on preferences.
 %
@@ -22,14 +22,14 @@ function [funs, ends] = constructor(op, domain, data, pref)
 %   function_handle or a string, then the constructor adaptively introduces
 %   additional breakpoints into the domain so as to better represent the
 %   function. These are returned as the second output argument in [FUNS, END] =
-%   CONSTRUCTOR(OP, DOMAIN).
+%   CONSTRUCTOR(OP, DOM).
 %
 %   The DATA structure input contains information which needs to be passed to
 %   the lower layers about parameters which may affect the construction process.
 %   Presently, the only fields CONSTRUCTOR expects DATA to have on input are
 %   DATA.EXPONENTS and DATA.SINGTYPE, which convey information about endpoint
-%   singularities.  These fields are populated by CHEBFUN.PARSEINPUTS as need
-%   be. Before calling the FUN constructor, DATA will be augmented to include
+%   singularities. These fields are populated by CHEBFUN.PARSEINPUTS as need be.
+%   Before calling the FUN constructor, DATA will be augmented to include
 %   information about the construction domain as well as the horizontal and
 %   vertical scales involved in the construction procedure.
 %
@@ -39,10 +39,10 @@ function [funs, ends] = constructor(op, domain, data, pref)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Initial setup:
-numIntervals = numel(domain) - 1;
+numIntervals = numel(dom) - 1;
 
 % Initialise hscale and vscale:
-hscale = norm(domain, inf);
+hscale = norm(dom, inf);
 if ( isinf(hscale) )
     hscale = 1;
 end
@@ -57,9 +57,9 @@ end
 
 % Construct the FUNs.
 if ( pref.enableBreakpointDetection )
-    [funs, ends] = constructorSplit(op, domain, data, pref, vscale, hscale);
+    [funs, ends] = constructorSplit(op, dom, data, pref, vscale, hscale);
 else
-    [funs, ends] = constructorNoSplit(op, domain, data, pref, vscale, hscale);
+    [funs, ends] = constructorNoSplit(op, dom, data, pref, vscale, hscale);
 end
 
 end
