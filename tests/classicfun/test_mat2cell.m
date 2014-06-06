@@ -1,4 +1,4 @@
-% Test file for fun/mat2cell.m
+% Test file for @classicfun/mat2cell.m
 
 function pass = test_mat2cell(pref)
 
@@ -8,19 +8,19 @@ if ( nargin < 2 )
 end
 
 % Set a domain for BNDFUN.
-dom = [-2 7];
+data.domain = [-2 7];
 
 % Generate a few random points to use as test values.
 seedRNG(6178);
-x = diff(dom) * rand(1000, 1) + dom(1);
+x = diff(data.domain) * rand(1000, 1) + data.domain(1);
 
 %% 
 % Run a few tests for BNDFUN.
 
-f = bndfun(@(x) [sin(x) cos(x) exp(x) x], dom, [], [], pref);
-g = bndfun(@(x) sin(x), dom, [], [], pref);
-h = bndfun(@(x) [cos(x) exp(x)], dom, [], [], pref);
-l = bndfun(@(x) x, dom, [], [], pref);
+f = bndfun(@(x) [sin(x) cos(x) exp(x) x], data, pref);
+g = bndfun(@(x) sin(x), data, pref);
+h = bndfun(@(x) [cos(x) exp(x)], data, pref);
+l = bndfun(@(x) x, data, pref);
 
 g_vals = feval(g, x);
 h_vals = feval(h, x);
@@ -69,7 +69,7 @@ pass(6) = ~isempty(F{3}) && (err6 < tol6);
 % Functions on [-inf b]:
 
 % Set the domain:
-dom = [-Inf -3*pi];
+data.domain = [-Inf -3*pi];
 domCheck = [-1e6 -3*pi];
 
 % Generate a few random points to use as test values:
@@ -80,7 +80,7 @@ op = @(x) [exp(x) x.*exp(x) (1-exp(x))./x];
 opg = @(x) exp(x);
 oph = @(x) [x.*exp(x) (1-exp(x))./x];
 
-f = unbndfun(op, dom);
+f = unbndfun(op, data);
 F = mat2cell(f, 1, [1 2]);
 F1Vals = feval(F{1}, x);
 F2Vals = feval(F{2}, x);

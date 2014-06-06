@@ -132,8 +132,7 @@ x = diff(dom) * rand(100, 1) + dom(1);
 
 pow = -1.64;
 op = @(x) (x-dom(1)).^pow;
-pref.singPrefs.exponents = [pow 0];
-f = chebfun(op, dom, pref);
+f = chebfun(op, dom, 'exps', [pow 0]);
 g = abs(f);
 vals_g = feval(g, x); 
 vals_exact = abs(feval(op, x));
@@ -185,8 +184,7 @@ pass(9,:) = norm(err, inf) < 1e1*epslevel(g)*vscale(g);
 
 % Blow-up function:
 op = @(x) -x.^2.*(1+exp(-x.^2));
-pref.singPrefs.exponents = [2 2];
-f = chebfun(op, dom, pref);
+f = chebfun(op, dom, 'exps', [2 2]);
 g = abs(f);
 gVals = feval(g, x);
 opAbs = @(x) abs(-x.^2.*(1+exp(-x.^2)));

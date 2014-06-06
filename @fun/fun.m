@@ -3,6 +3,10 @@ classdef fun % (Abstract)
 %   Abstract (interface) class for approximating functions on the arbitrary 
 %   intervals.
 %
+% Constructor inputs:
+%   FUN.CONSTRUCTOR(OP, DATA, PREF) is essentially a wrapper for
+%   CLASSICFUN.CONSTRUCTOR(OP, DATA, PREF).
+%
 % See also DELTAFUN, CLASSICFUN.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
@@ -20,61 +24,35 @@ classdef fun % (Abstract)
 % See http://www.chebfun.org/ for Chebfun information.
 
     methods (Static)
-        function obj = constructor(op, domain, vscale, hscale, pref)            
+        
+        function obj = constructor(op, data, pref)
             
-            if ( nargin == 0  )
+            % Parse inputs.
+            if ( nargin < 1 )
+                % We can't return an empty FUN, so pass an empty OP down.
                 op = [];
             end
-            
-            % Obtain preferences if none given:
-            if ( nargin < 5 )
+
+            if ( (nargin < 2) || isempty(data) )
+                data = struct();
+            end
+
+            if ( (nargin < 3) || isempty(pref) )
                 pref = chebfunpref();
             else
                 pref = chebfunpref(pref);
             end
-            
-            % Get domain if none given:
-            if ( nargin < 2 || isempty(domain) )
-                domain = pref.domain;
-            end
 
-            % Get vscale if none given:
-            if ( nargin < 3 || isstruct(vscale) )
-                vscale = 0;
-            end
-
-            % Get hscale if none given:
-            if ( nargin < 4 || isempty(vscale) )
-                hscale = norm(domain, inf);
-            end
-
-            % [TODO]: Explain this. Only becomes relevant with UNBNDFUN
-            if ( isinf(hscale) )
-                hscale = 1;
-            end
-            
-            % Check if delta functions are required:
-            if ( pref.enableDeltaFunctions && isfield('pref.deltaPrefs', 'deltaLoc') )
-                % Generalized function mode; call DELTAFUN constructor:                
-                % Then op is a classicfun, vscale and hscale are magnitude 
-                % and location of delta functions. domain is a spurious argument.
-                deltaMag = pref.deltaPrefs.deltaMag;
-                deltaLoc = pref.deltaPrefs.deltaLoc;
-                obj = deltafun(op, deltaMag, deltaLoc, vscale, hscale, pref);
-            elseif ( isa(op, 'fun') )             
-                % OP is already a ONEFUN!
-                obj = op;               
+            % TODO:  Allow construction of DELTAFUNs as well?
+            if ( isa(op, 'fun') )
+                % OP is already a FUN!
+                obj = op;
             else
-                % STANDARD mode; call SMOOTHFUN constructor:
-                obj = classicfun.constructor(op, domain, vscale, hscale, pref);
+                obj = classicfun.constructor(op, data, pref);
             end
+            
         end
         
-    end
-    
-    %% ABSTRACT (NON-STATIC) METHODS REQUIRED BY FUN CLASS.
-    methods ( Abstract = true )
-
     end
 
     %% ABSTRACT STATIC METHODS REQUIRED BY THIS CLASS.

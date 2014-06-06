@@ -218,9 +218,11 @@ while ( ~isHappy && ~Failure )
     end
     
     % Check if the column and row slices are resolved.
-    colChebtech = chebtech2(sum(colValues,2), domain(3:4) );
+    colData.vscale = domain(3:4);
+    colChebtech = chebtech2(sum(colValues,2), colData);
     resolvedCols = happinessCheck(colChebtech,[],sum(colValues,2));
-    rowChebtech = chebtech2(sum(rowValues.',2), domain(1:2) );
+    rowData.vscale = domain(1:2);
+    rowChebtech = chebtech2(sum(rowValues.',2), rowData);
     resolvedRows = happinessCheck(rowChebtech,[],sum(rowValues.',2));
     isHappy = resolvedRows & resolvedCols;
     

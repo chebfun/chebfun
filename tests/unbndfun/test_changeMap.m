@@ -7,6 +7,9 @@ if ( nargin < 1 )
     pref = chebfunpref();
 end
 
+singPref = pref;
+singPref.enableSingularityDetection = true;
+
 % Seed for random number:
 seedRNG(6178);
 
@@ -25,7 +28,7 @@ xNew = domNew(1) + x - dom(1);
 
 % Exponentially decaying function:
 op = @(x) (1-exp(-x))./x;
-f = unbndfun(op, dom);
+f = unbndfun(op, struct('domain', dom));
 g = changeMap(f, domNew);
 fVals = feval(f, x);
 gVals = feval(g, xNew);
@@ -34,8 +37,7 @@ pass(1) = norm(err, inf) < get(f,'epslevel')*get(f,'vscale');
 
 % Blow-up function:
 op = @(x) x.*(5+exp(-x.^3));
-pref.singPrefs.exponents = [0 1];
-f = unbndfun(op, dom, [], [], pref);
+f = unbndfun(op, struct('domain', dom, 'exponents', [0 1]), singPref);
 g = changeMap(f, domNew);
 fVals = feval(f, x);
 gVals = feval(g, xNew);
@@ -56,7 +58,7 @@ domNew = [-Inf 200];
 xNew = domNew(2) + x - dom(2);
 
 op = @(x) x.*exp(x);
-f = unbndfun(op, dom);
+f = unbndfun(op, struct('domain', dom));
 fVals = feval(f, x);
 g = changeMap(f, domNew);
 gVals = feval(g, xNew);
@@ -65,8 +67,7 @@ pass(3) = norm(err, inf) < get(f,'epslevel')*get(f,'vscale');
 
 % Blow-up function:
 op = @(x) x.*(5+exp(x.^3))./(dom(2)-x);
-pref.singPrefs.exponents = [0 -1];
-f = unbndfun(op, dom, [], [], pref); 
+f = unbndfun(op, struct('domain', dom, 'exponents', [0 -1]), singPref);
 fVals = feval(f, x);
 g = changeMap(f, domNew);
 gVals = feval(g, xNew);

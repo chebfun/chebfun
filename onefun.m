@@ -4,14 +4,11 @@ classdef onefun % (Abstract)
 %   [-1,1].
 %
 % Constructor inputs:
-%   ONEFUN.CONSTRUCTOR(OP, VSCALE, HSCALE, PREF) creates a representation of
-%   the operator OP defined on the interval [-1,1]. If
-%   PREF.ENABLESINGULARITYDETECTION = 0 (which is the default) then the ONEFUN
-%   constructor calls SMOOTHFUN.CONSTRUCTOR(OP, VSCALE, HSCALE, PREF), else it
-%   calls SINGFUN.CONSTRUCTOR(OP, VSCALE, HSCALE, PREF) if
-%   PREF.ENABLESINGULARITYDETECTION = 1.
-%
-%   See SMOOTHFUN and SINGFUN for further documentation.
+%   ONEFUN.CONSTRUCTOR(OP, DATA, PREF) creates a representation of the operator
+%   OP defined on the interval [-1,1]. If PREF.ENABLESINGULARITYDETECTION = 0
+%   (which is the default) then the ONEFUN constructor calls
+%   SMOOTHFUN.CONSTRUCTOR(OP, DATA, PREF), else it calls
+%   SINGFUN.CONSTRUCTOR(OP, DATA, PREF) if PREF.ENABLESINGULARITYDETECTION = 1.
 %
 % See also SINGFUN, SMOOTHFUN.
 
@@ -36,53 +33,39 @@ classdef onefun % (Abstract)
 % See http://www.chebfun.org/ for Chebfun information.
 
     methods (Static)
-        function obj = constructor(op, vscale, hscale, pref)
+        
+        function obj = constructor(op, data, pref)
             
-            % We can't return an empty ONEFUN, so pass an empty OP down.
+            % Parse inputs.
             if ( nargin == 0 )
+                % We can't return an empty ONEFUN, so pass an empty OP down.
                 op = [];
             end
-            
-            % Define vscale if none given:
-            if ( nargin < 2 || isempty(vscale) )
-                vscale = 0;
+
+            if ( (nargin < 2) || isempty(data) )
+                data = struct();
             end
-            % Define hscale if none given:
-            if ( nargin < 3 || isempty(hscale) )
-                hscale = 1;
-            end
-            % Determine preferences if not given, merge if some are given:
-            if ( nargin < 4 || isempty(pref) )
+
+            if ( (nargin < 3) || isempty(pref) )
                 pref = chebfunpref();
             else
                 pref = chebfunpref(pref);
             end
-       
-            % Call the relevent constructor:
+
+            % Call the relevant constructor:
             if ( isa(op, 'onefun') )
                 % OP is already a ONEFUN!
                 obj = op;
-                
-            elseif ( pref.enableSingularityDetection || ...
-                    any(pref.singPrefs.exponents) || ...
-                    ~isempty(pref.singPrefs.singType) )
-                
-                % BLOWUP mode; call SINGFUN constructor:
-                singType = pref.singPrefs.singType;
-                exponents = pref.singPrefs.exponents;
-                obj = singfun(op, exponents, singType, vscale, hscale, pref);
+            elseif ( pref.enableSingularityDetection )
+                obj = singfun(op, data, pref);
 
                 % Return just a SMOOTHFUN if no singularities found:
                 if ( issmooth(obj) )
-                    obj = obj.smoothPart; 
-                end 
-                
+                    obj = obj.smoothPart;
+                end
             else
-                % STANDARD mode; call SMOOTHFUN constructor:
-                obj = smoothfun.constructor(op, vscale, hscale, pref);
-
+                obj = smoothfun.constructor(op, data, pref);
             end
-        
         end
         
     end
@@ -229,19 +212,4 @@ classdef onefun % (Abstract)
 
     end
 
-    %% ABSTRACT STATIC METHODS REQUIRED BY ONEFUN CLASS.
-    methods ( Abstract = true, Static = true )
-
-    end
-    
-    %% Methods implemented by ONEFUN class.
-    methods 
-        
-    end
-    
-    %% Static methods implemented by ONEFUN class.
-    methods ( Static = true ) 
-        
-    end
-    
 end
