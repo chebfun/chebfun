@@ -18,6 +18,6 @@ F = chebfun2v(@(x,y) x, @(x,y) y,d);
 pass(2) = norm( vertcat(f, g) - F ) < tol; 
 pass(3) = norm( vertcat(f, g) - [ f ; g ] ) < tol; 
 
-pass(4) = norm( vercat(f) - f ) < tol; 
+pass(4) = norm( vertcat(f) - f ) < tol; 
 
 end
