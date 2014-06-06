@@ -94,8 +94,10 @@ switch prop
         if ( min(size(out)) == 1 )
             out = cell2mat(out);
             % Make sure to merge delta functions at same locations.
-            [mag, loc] = deltafun.mergeColumns(out(2:end, :), out(1, :));
-            out = [loc; mag];
+            if ( ~isempty(out) )
+                [mag, loc] = deltafun.mergeColumns(out(2:end, :), out(1, :));
+                out = [loc; mag];
+            end
         end
         if ( f(1).isTransposed )
             out = out.';
