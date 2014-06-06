@@ -9,8 +9,7 @@ function out = get(f, prop)
 %       'EPSLEVEL' - Happiness level of F.
 %       'LVAL' - Value of F at a (where F.domain = [a,b]).
 %       'RVAL' - Value of F at b (where F.domain = [a,b]).
-%       'EXPONENTS' - CLASSICFUNS have no exponents. Return a two vector of
-%                     zeros.
+%       'EXPONENTS' - Get the exponents of the onefun:
 %       'DELTAS'    - CLASSICFUNS have no delta functions. Return an empty
 %                     matrix.
 
@@ -51,12 +50,16 @@ switch prop
         out = get(f.onefun, prop); 
         
     case 'coeffs'
-        % Get values. 
+        % Get coeffs. 
         out = get(f.onefun, prop); 
         
     case 'exponents'
-        % Get values. 
-        out = [0 0];
+        % Get Exponents.
+        if ( issing(f) )
+            out = get(f.onefun, prop); 
+        else
+            out = [0 0];
+        end
         
     case {'deltas', 'deltafunctions', 'deltafuns'}
         % CLASSICFUNS have no delta functions.
