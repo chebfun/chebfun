@@ -261,13 +261,13 @@ function [BC, isLinLR] = linearizeLRbc(op, u, evalPoint, BC, cellArg)
 
 % Evaluate N.lbc or N.rbc. The output will be the ADCHEBFUN LRBC. In case of
 % systems, LRBC will be an array-valued ADCHEBFUN. We need different calling
-% sequences depending % on whether N has a cell-argument or not
+% sequences depending on whether N has a cell-argument or not
 if ( cellArg )
     % No need to expand the cell U
     lrBC = feval(op, u);
 else
     % Need to expand the cell U
-    lrBC = feval(op, u{:});
+    lrBC = op(u{:});
 end
 
 % Ensure conditions were concatenated vertically, not horizontally
