@@ -676,18 +676,7 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
     if ( ~domainWasPassed || isempty(dom) )
         dom = pref.domain;
     end
-
-    % Now that we know the domain, sort out singType, if we had to infer it
-    % from a supplied 'blowup' flag.
-    %
-    % TODO:  Is there a better place to put this?
-    if ( numel(data.singType) == 1 )
-        singType = data.singType{1};
-        data.singType = cell(1, 2*(numel(dom)-1));
-        for j = 1:2*(numel(dom)-1)
-            data.singType{j} = singType;
-        end
-    end
+    numIntervals = numel(dom) - 1;
 
     % Parse the OP (handle the vectorize flag, etc.).
     if ( iscell(op) )
@@ -721,13 +710,56 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
         end
     end
 
+    % Enable singularity detection if we have exponents or singTypes:
+    if ( any(data.exponents) || ~isempty(data.singType) )
+        pref.enableSingularityDetection = true;
+    end
+    % Sort out the singularity types:
+    if ( numel(data.singType) == 1 )
+        singType = data.singType{1};
+        data.singType = cell(1, 2*numIntervals);
+        for j = 1:2*numIntervals
+            data.singType{j} = singType;
+        end
+    elseif ( ~isempty(data.singType) && ...
+            (numel(data.singType) ~= 2*numIntervals) )
+        % If the number of exponents supplied by user isn't equal to twice the
+        % the number of the FUNs, throw an error message:
+        error('CHEBFUN:constructor', ['The number of the exponents is ' ...
+            'inappropriate.']);
+    end
+    % Sort out the exponents:
+    if ( ~isempty(data.exponents) )
+        exps = data.exponents;
+        nExps = numel(exps);
+        if ( nExps == 1 )
+            % If only one exponent is supplied, assume the exponent at other
+            % breakpoints are exactly same.
+            exps = exps*ones(1, 2*numIntervals);
+        elseif ( nExps == 2 )
+            % If the exponents are only supplied at endpoints of the entire
+            % domain, then pad zeros at the interior breakpoints.
+            exps = [exps(1) zeros(1, 2*(numIntervals-1)) exps(2)];
+        elseif ( nExps == numIntervals + 1 )
+            % If only one exponent is supplied for each interior breakpoint,
+            % then we assume that the singularity take the same order on each
+            % side.
+            exps = exps(ceil(1:0.5:nExps - 0.5));
+        elseif( nExps ~= 2*numIntervals )
+            % The number of exponents supplied by user makes no sense.
+            error('CHEBFUN:constructor', ...
+                'Invalid length for vector of exponents.');
+        end
+        data.exponents = exps;
+    end
+
 end
 
 function g = vec(f)
 %VEC  Vectorize a function or string expression.
 %   VEC(F), if F is a function handle or anonymous function, returns a function
 %   that returns vector outputs for vector inputs by wrapping F inside a loop.
-g = @loopwrapper;
+    g = @loopwrapper;
     % Nested function:
     function v = loopwrapper(x)
         v = zeros(size(x));

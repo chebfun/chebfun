@@ -7,6 +7,8 @@ function [funs, ends] = constructor(op, domain, data, pref)
 %   the later case, the number of elements in the array must be one less than
 %   the length of the DOMAIN vector.
 %
+%   It is not expected that CHEBFUN.CONSTRUCTOR() be called directly, 
+%
 %   If OP is a function_handle or a string, it should be vectorised in that it
 %   accepts a column vector of length N and return a matrix of size N x M. If M
 %   ~= 1, we say the resulting CHEBFUN is "array-valued".
@@ -23,13 +25,11 @@ function [funs, ends] = constructor(op, domain, data, pref)
 %   CONSTRUCTOR(OP, DOMAIN).
 %
 %   The DATA structure input contains information which needs to be passed to
-%   the lower layers about parameters which may affect the construction
-%   process.  Presently, the only fields CONSTRUCTOR expects DATA to have on
-%   input are DATA.EXPONENTS and DATA.SINGTYPE, which convey information about
-%   endpoint singularities.  These fields are populated by CHEBFUN.PARSEINPUTS
-%   as need be.  CONSTRUCTOR performs further processing on these fields to
-%   make them suitable for use as a DATA argument to the FUN constructor.
-%   Before calling the FUN constructor, DATA will be augmented to include
+%   the lower layers about parameters which may affect the construction process.
+%   Presently, the only fields CONSTRUCTOR expects DATA to have on input are
+%   DATA.EXPONENTS and DATA.SINGTYPE, which convey information about endpoint
+%   singularities.  These fields are populated by CHEBFUN.PARSEINPUTS as need
+%   be. Before calling the FUN constructor, DATA will be augmented to include
 %   information about the construction domain as well as the horizontal and
 %   vertical scales involved in the construction procedure.
 %
@@ -47,9 +47,6 @@ if ( isinf(hscale) )
     hscale = 1;
 end
 vscale = pref.scale;
-
-% Sort out exponent and singularity information.
-[data, pref] = parseSingPrefs(data, pref, domain);
 
 % Sanity check:
 if ( iscell(op) && (numel(op) ~= numIntervals) )
@@ -319,62 +316,6 @@ g = fun.constructor(op, data, pref);
 ishappy = get(g, 'ishappy');
 % Update the vertical scale:
 vscale = max([vscale, get(g, 'vscale')]);
-
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%% PARSESINGPREFS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function [data, pref] = parseSingPrefs(data, pref, domain)
-% TODO:  Move this to the main input parsing routine.
-
-% Initial setup:
-numIntervals = numel(domain) - 1;
-exps = data.exponents;
-singTypes = data.singType;
-
-if ( any(exps) || ~isempty(singTypes) )
-    pref.enableSingularityDetection = true;
-end
-
-% Sort out the exponents:
-if ( ~isempty(exps) )
-    nExps = numel(exps);
-   
-    if ( nExps == 1 )
-        
-        % If only one exponent is supplied, assume the exponent at other
-        % breakpoints are exactly same.
-        exps = exps*ones(1, 2*numIntervals);
-        
-    elseif ( nExps == 2 )
-        
-        % If the exponents are only supplied at endpoints of the entire
-        % domain, then pad zeros at the interior breakpoints.
-        exps = [exps(1) zeros(1, 2*(numIntervals-1)) exps(2)];
-        
-    elseif ( nExps == numIntervals + 1 )
-        
-        % If only one exponent is supplied for each interior breakpoint,
-        % then we assume that the singularity take the same order on each
-        % side.
-        exps = exps(ceil(1:0.5:nExps - 0.5));
-        
-    elseif( nExps ~= 2*numIntervals )
-        
-        % The number of exponents supplied by user makes no sense.
-        error('CHEBFUN:constructor', 'Invalid length for vector of exponents.');
-    end
-    
-    data.exponents = exps;
-end
-
-% Sort out the singularity types:
-if ( ~isempty(singTypes) && (numel(singTypes) ~= 2*numIntervals) )
-    % If the number of exponents supplied by user isn't equal to twice the
-    % the number of the FUNs, throw an error message:
-    error('CHEBFUN:constructor', ['The number of the exponents is ' ...
-        'inappropriate.']);
-end
 
 end
 
