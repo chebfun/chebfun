@@ -24,38 +24,36 @@ A.init = [0*x; 0*x];
 f = [ exp(x) ; chebfun(1,d) ];
 u = mldivide(A, f, pref);
 
-u1 = u{1}; u2 = u{2};
-pass(1) = norm( diff(u1)+u1+2*u2-exp(x)) < tol;
-pass(2) = norm( diff(u1)-u1+diff(u2)-1 ) < tol;
+% Residual of differential equation:
+err1 = norm(A(u) - f);
 
 % Want to check BCs as well.
-% TODO: Shouldn't need to extract the blocks first!
-bcFunLeft = A.lbc(u.blocks);
-bcFunRight = A.rbc(u.blocks);
-pass(3) = norm(bcFunLeft(d(1))) < tol && norm(bcFunRight(d(end))) < tol;
+bcFunLeft = A.lbc(u);
+bcFunRight = A.rbc(u);
+err2 = [norm(bcFunLeft(d(1))), norm(bcFunRight(d(end)))];
 
+% Happy?
+pass(1) = norm( err1 ) < tol;
+pass(2) = all(err2 < tol);
 %% Piecewise:
 A.domain = [-1 0 1];
 u = mldivide(A, f, pref);
-u1 = u{1}; u2 = u{2};
 
-err1 = diff(u1) + u1 + 2*u2 - exp(x);
-err2 = diff(u1) - u1 + diff(u2) - 1;
+% Norm of the residual:
+err3 = norm( A(u) - f );
 
-% Want to check BCs as well.
-% TODO: Shouldn't need to extract the blocks!
-bcFunLeft = A.lbc(u.blocks);
-bcFunRight = A.rbc(u.blocks);
-bcValLeft = bcFunLeft(d(1));
-bcValRight = bcFunRight(d(2));
+% Want to check BCs as well:
+bcFunLeft = A.lbc(u);
+bcFunRight = A.rbc(u);
+err4 = [norm(bcFunLeft(d(1))), norm(bcFunRight(d(end)))];
 
-% And check that we're continuous over breakpoint
-u1jump = jump(u1, 0);
-u2jump = jump(u2, 0);
+% And check that we're continuous over the breakpoint:
+u1jump = jump(u{1}, 0);
+u2jump = jump(u{2}, 0);
+err5 = [norm(u1jump), norm(u2jump)];
 
-pass(4) = norm( err1 ) < tol;
-pass(5) = norm( err2 ) < tol;
-pass(6) = norm(bcValLeft) < tol && norm(bcValRight) < tol;
-pass(7) = norm(u1jump) < tol && norm(u2jump) < tol;
-
+% Happy?
+pass(3) = err3 < tol;
+pass(4) = all(err4 < tol);
+pass(5) = all(err5 < tol);
 end
