@@ -11,6 +11,10 @@ function out = get(f, prop)
 %                        right end point, this is equivalent to just evaluating
 %                        the funPart at the left or right end. 
 %                        See DELTAFUN/FEVAL for further details.
+%       'DELTAS'       - Return the locations and magnitude of delta functions
+%       'DELTAFUNS'      as a single matrix with the first row corresponding to
+%       'DELTAFUNCTIONS' the locations of the delta functions, and the
+%                        magnitudes appended below the first row.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -18,7 +22,10 @@ function out = get(f, prop)
 switch prop
     case fieldnames(f)
         % Allow access to any of the properties of F via GET:
-        out = f.(prop);                
+        out = f.(prop);              
+    case {'deltas', 'deltafunctions', 'deltafuns'}        
+        out = [f.deltaLoc; f.deltaMag];
+
     otherwise
         % Delegate to the get method of funPart. All error handling will also be
         % done here:

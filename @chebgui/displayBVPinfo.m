@@ -43,7 +43,7 @@ function [displayFig, displayTimer] = displayBVPinfoInit(handles, u, pref)
 % See also: chebop/displayInfoInit
 
 % Update the iteration information header on the GUI
-initString = [' Iter.       || du ||        Contra.fact.     stepsize     ',...
+initString = [' Iter.       || du ||        Contraction      stepsize     ',...
     '   len(du)          len(u)'];
 set(handles.iter_text,'String', initString);
 
