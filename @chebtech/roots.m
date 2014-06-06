@@ -128,9 +128,10 @@ while ( j <= length(varargin) )
     if ( any(strcmp(lower(varargin{j}), fieldnames(rootsPref))) ) %#ok<STCI>
         rootsPref.(varargin{j}) = varargin{j+1};
         j = j + 2;
-    elseif ( strcmpi(varargin{j}, 'complex') ||...
-             strcmpi(varargin{j}, 'all')  )
+    elseif ( strcmpi(varargin{j}, 'complex') )
         rootsPref.all = varargin{j+1};
+        rootsPref.prune = varargin{j+1};
+        rootsPref.recurse = ~varargin{j+1};
         j = j + 2;
     elseif ( strcmpi(varargin{j}, 'qz') )
         rootsPref.qz = varargin{j+1}; 
