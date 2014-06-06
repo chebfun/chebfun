@@ -15,7 +15,13 @@ function out = get(f, prop)
 %       'RVAL'           - Value(s) of F at righthand side of domain.
 %       'LVAL-LOCAL      - Value(s) of F's FUNs at left sides of their domains.
 %       'RVAL-LOCAL'     - Value(s) of F's FUNs at right sides of their domains.
-%
+%       'EXPS'           - Exponents in a CHEBFUN, a two vector.
+%       'EXPONENTS'
+%       'DELTAS'         - Return the locations and magnitude of delta functions
+%       'DELTAFUNS'        as a single matrix with the first row corresponding to
+%       'DELTAFUNCTIONS'   the locations of the delta functions, and the
+%                          magnitudes appended below the first row.
+%       'IMPS'           - Same as DELTAS, supported for backward compatability.
 %   The following are also supported for backward compatabiilty, and really only
 %   make sense when the CHEBFUN is represented by a CHEBTECH-type object. Note
 %   that in these cases a cell is always returned, even if the Chebfun has only
@@ -81,12 +87,15 @@ switch prop
         out = cell(1, numColumns(f));
         for k = 1:numel(f)
             for j = 1:numel(f(k).funs)
-                out{j,k} = get(f(k).funs{j}, 'deltas');
+                out{k, j} = get(f(k).funs{j}, 'deltas');
             end
         end
         
         if ( min(size(out)) == 1 )
             out = cell2mat(out);
+            % Make sure to merge delta functions at same locations.
+            [mag, loc] = deltafun.mergeColumns(out(2:end, :), out(1, :));
+            out = [loc; mag];
         end
         if ( f(1).isTransposed )
             out = out.';

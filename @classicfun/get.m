@@ -12,7 +12,7 @@ function out = get(f, prop)
 %       'EXPONENTS' - CLASSICFUNS have no exponents. Return a two vector of
 %                     zeros.
 %       'DELTAS'    - CLASSICFUNS have no delta functions. Return an empty
-%                     matrix
+%                     matrix.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -60,7 +60,7 @@ switch prop
         
     case {'deltas', 'deltafunctions', 'deltafuns'}
         % CLASSICFUNS have no delta functions.
-        out = {};
+        out = [];
 
     otherwise
         
