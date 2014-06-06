@@ -34,7 +34,7 @@ function [funs, ends] = constructor(op, dom, data, pref)
 %   vertical scales involved in the construction procedure.
 %
 % See also CHEBFUN, CHEBFUNPREF.
-%
+
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
@@ -42,11 +42,11 @@ function [funs, ends] = constructor(op, dom, data, pref)
 numIntervals = numel(dom) - 1;
 
 % Initialise hscale and vscale:
-hscale = norm(dom, inf);
-if ( isinf(hscale) )
-    hscale = 1;
+data.hscale = norm(dom, inf);
+if ( isinf(data.hscale) )
+    data.hscale = 1;
 end
-vscale = pref.scale;
+data.vscale = pref.scale;
 
 % Sanity check:
 if ( iscell(op) && (numel(op) ~= numIntervals) )
@@ -57,9 +57,9 @@ end
 
 % Construct the FUNs.
 if ( pref.enableBreakpointDetection )
-    [funs, ends] = constructorSplit(op, dom, data, pref, vscale, hscale);
+    [funs, ends] = constructorSplit(op, dom, data, pref);
 else
-    [funs, ends] = constructorNoSplit(op, dom, data, pref, vscale, hscale);
+    [funs, ends] = constructorNoSplit(op, dom, data, pref);
 end
 
 end
@@ -67,7 +67,7 @@ end
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%  SPLITTING OFF %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [funs, ends] = ...
-    constructorNoSplit(op, domain, data, pref, vscale, hscale)
+    constructorNoSplit(op, domain, data, pref)
 % In 'OFF' mode, seek only one piece with length < maxLength.
 
 % Initial setup:
@@ -106,7 +106,7 @@ for k = 1:numIntervals
     end
 
     % Call GETFUN() (which calls FUN.CONSTRUCTOR()):
-    [funs{k}, ishappy, vscale] = getFun(opk, endsk, vscale, hscale, data, pref);
+    [funs{k}, ishappy, data.vscale] = getFun(opk, endsk, data, pref);
 
     % Warn if unhappy (as we're unable to split the domain to improve):
     if ( ~ishappy && ~warningThrown )
@@ -121,12 +121,12 @@ end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%  SPLITTING ON %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [funs, ends] = constructorSplit(op, domain, data, pref, vscale, hscale)
+function [funs, ends] = constructorSplit(op, dom, data, pref)
 % In 'ON' mode, seek only many pieces with total length < maxlength.
 
 % Initial setup:
-numIntervals = numel(domain) - 1;
-ends = domain;
+numIntervals = numel(dom) - 1;
+ends = dom;
 
 % Set the maximum length (i.e., number of sample points for CHEBTECH):
 pref.techPrefs.maxLength = pref.breakpointPrefs.splitMaxLength;
@@ -158,15 +158,15 @@ for k = 1:numIntervals
         data = getSingInfo(exps, singTypes, 2*k-1:2*k, data);
     end
 
-    [funs{k}, ishappy(k), vscale] = ...
-        getFun(opk, ends(k:k+1), vscale, hscale, data, pref);
+    [funs{k}, ishappy(k), data.vscale] = ...
+        getFun(opk, ends(k:k+1), data, pref);
     
     % For the case where vscale is Inf due to blowup in the interior of the
     % domain:
-    if ( isinf(vscale) )
+    if ( isinf(data.vscale) )
         % An infinite vscale doesn't help us at all, but ruin the consequential
         % constructions at the lower levels:
-        vscale = 0; 
+        data.vscale = 0; 
     end
     
 end
@@ -201,12 +201,13 @@ while ( any(sad) )
     % Locate the edges/splitting locations:
     if ( all( isfinite( ends(k:k+1) ) ) )  % bounded domain
         if ( isempty(exps) || ~any(exps(2*k-1:2*k)) )  % no exponents
-            edge = chebfun.detectEdge(opk, [a, b], vscale, hscale);
+            edge = chebfun.detectEdge(opk, [a, b], data.vscale, data.hscale);
         elseif ( ~isempty(exps) && any( exps(2*k-1:2*k) ) )  % nonzero exponents
             % Compensating for exponents:
             opkDetectEdge = @(x) opk(x)./((x - a).^exps(2*k - 1) .* ...
                 (b - x).^exps(2*k));
-            edge = chebfun.detectEdge(opkDetectEdge, [a, b], vscale, hscale);
+            edge = chebfun.detectEdge(opkDetectEdge, [a, b], data.vscale, ...
+                data.hscale);
         end
     else % unbounded domain
         if ( isempty(exps) || ~any(exps(2*k-1:2*k)) )  % no exponents
@@ -214,7 +215,7 @@ while ( any(sad) )
             opkDetectEdge = @(x) opk(forHandle(x));
             forDer = funs{k}.mapping.forDer;
             edge = chebfun.detectEdge(opkDetectEdge, [-1+eps, 1-eps], ...
-                vscale, hscale, forDer);
+                data.vscale, data.hscale, forDer);
             edge = forHandle(edge);
         elseif ( ~isempty(exps) && any( exps(2*k-1:2*k) ) )  % nonzero exponents
             forHandle = funs{k}.mapping.for;
@@ -222,7 +223,7 @@ while ( any(sad) )
                 ((x + 1).^exps(2*k - 1) .* (1 - x).^exps(2*k));
             forDer = funs{k}.mapping.forDer;
             edge = chebfun.detectEdge(opkDetectEdge, [-1+eps, 1-eps], ...
-                vscale, hscale, forDer);
+                data.vscale, data.hscale, forDer);
             edge = forHandle(edge);
         end
     end
@@ -244,15 +245,15 @@ while ( any(sad) )
     end
     
     % Try to obtain happy child FUN objects on each new subinterval:
-    [childLeft, happyLeft, vscale] = ...
-        getFun(opk, [a, edge], vscale, hscale, data, pref);
+    [childLeft, happyLeft, data.vscale] = ...
+        getFun(opk, [a, edge], data, pref);
     
     % For the case where vscale is Inf due to blowup in the interior of the
     % domain:
-    if ( isinf(vscale) )
+    if ( isinf(data.vscale) )
         % An infinite vscale doesn't help us at all, but ruin the consequential
         % constructions at the lower levels:
-        vscale = 0;
+        data.vscale = 0;
     end
     
     if ( singDetect )
@@ -260,15 +261,14 @@ while ( any(sad) )
         data = getSingInfo(exps, singTypes, 2*k+1:2*k+2, data);
     end
     
-    [childRight, happyRight, vscale] = ...
-        getFun(opk, [edge, b], vscale, hscale, data, pref);
+    [childRight, happyRight, data.vscale] = getFun(opk, [edge, b], data, pref);
     
     % For the case where vscale is Inf due to blowup in the interior of the
     % domain:
-    if ( isinf(vscale) )
+    if ( isinf(data.vscale) )
         % An infinite vscale doesn't help us at all, but ruin the consequential
         % constructions at the lower levels:
-        vscale = 0;
+        data.vscale = 0;
     end
     
     % Check for happiness/sadness:
@@ -297,36 +297,36 @@ end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% GETFUN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [g, ishappy, vscale] = getFun(op, domain, vscale, hscale, data, pref)
-%GETFUN    Call the FUN constructor.
+function [g, ishappy, vscale] = getFun(op, dom, data, pref)
+%GETFUN   Call the FUN constructor.
 
 % If the interval is very small then skip adaptation and treat OP as a constant:
-if ( diff(domain) < 4*1e-14*hscale && ~isnumeric(op) )
-    op = op(mean(domain));
+if ( diff(dom) < 4*1e-14*data.hscale && ~isnumeric(op) )
+    op = op(mean(dom));
 end
 
-% Bolt domain and scale information onto the data structure.
-data.domain = domain;
-data.vscale = vscale;
-data.hscale = hscale;
+% Bolt domain information onto the data structure.
+data.domain = dom;
 
 % Call the FUN constructor:
 g = fun.constructor(op, data, pref);
+
 % See if the construction was happy:
 ishappy = get(g, 'ishappy');
+
 % Update the vertical scale:
-vscale = max([vscale, get(g, 'vscale')]);
+vscale = max([data.vscale, get(g, 'vscale')]);
 
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% GETSINGINFO %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function data = getSingInfo(exps, singTypes, kk, data)
-    if ( ~isempty(exps) )
-        data.exponents = exps(kk);
-    end
-    % Replace the information for the singularity type in the preference:
-    if ( ~isempty(singTypes) )
-        data.singType = singTypes(kk);
-    end
+% Place information about the singularity type in the data structure.
+if ( ~isempty(exps) )
+    data.exponents = exps(kk);
+end
+if ( ~isempty(singTypes) )
+    data.singType = singTypes(kk);
+end
 end
