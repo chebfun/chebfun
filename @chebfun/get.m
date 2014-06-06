@@ -105,7 +105,7 @@ switch prop
         
     case 'imps'
         out = get(f, 'deltas');
-        warning('CHEBFUN:get:imps', 'IMPS field is depricated, use DELTAS')        
+        warning('CHEBFUN:get:imps', 'IMPS field is deprecated, use DELTAS')        
         
     case {'lval-local', 'rval-local'}
         if ( isempty(f) )
