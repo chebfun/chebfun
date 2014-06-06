@@ -2,13 +2,17 @@ function out = get(f, prop)
 %GET   GET method for the CLASSICFUN class.
 %   P = GET(F, PROP) returns the property P specified in the string PROP from
 %   the CLASSICFUN object F. Valid entries for the string PROP are:
-%       'DOMAIN' - The domain of F.
-%       'MAPPING' - The map used by F.
+%       'DOMAIN'     - The domain of F.
+%       'MAPPING'    - The map used by F.
 %       'ONEFUN' - The unmapped representation of F on [-1, 1].
 %       'VSCALE' - Vertical scale of F.
 %       'EPSLEVEL' - Happiness level of F.
 %       'LVAL' - Value of F at a (where F.domain = [a,b]).
 %       'RVAL' - Value of F at b (where F.domain = [a,b]).
+%       'EXPONENTS' - CLASSICFUNS have no exponents. Return a two vector of
+%                     zeros.
+%       'DELTAS'    - CLASSICFUNS have no delta functions. Return an empty
+%                     matrix
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -53,6 +57,10 @@ switch prop
     case 'exponents'
         % Get values. 
         out = [0 0];
+        
+    case {'deltas', 'deltafunctions', 'deltafuns'}
+        % CLASSICFUNS have no delta functions.
+        out = {};
 
     otherwise
         

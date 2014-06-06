@@ -77,6 +77,25 @@ switch prop
             out = out.';
         end        
         
+    case {'deltas', 'deltafunctions', 'deltafuns'}
+        out = cell(1, numColumns(f));
+        for k = 1:numel(f)
+            for j = 1:numel(f(k).funs)
+                out{j,k} = get(f(k).funs{j}, 'deltas');
+            end
+        end
+        
+        if ( min(size(out)) == 1 )
+            out = cell2mat(out);
+        end
+        if ( f(1).isTransposed )
+            out = out.';
+        end        
+        
+    case 'imps'
+        out = get(f, 'deltas');
+        warning('CHEBFUN:get:imps', 'IMPS field is depricated, use DELTAS')        
+        
     case {'lval-local', 'rval-local'}
         if ( isempty(f) )
             out = [];
