@@ -35,28 +35,51 @@ g = cell(1, numSubDom);
 
 % Any exponents?
 exps = [];
+
 if ( issing(f) )
-    exps = get(f, 'exponents');
     
+    % Grab the exponents:
+    exps = get(f, 'exponents');
+        
+    % If there is non-trivial exponents:
     if ( any(exps) )
         
-        exps = [exps(1) zeros(1, numSubDom-1) exps(2)];
-        ind = isinf(s);
+        % Interior exponents:
+        interiorExps = zeros(1, numSubDom-1);  
+        
+        % Insert the interior exponents:
+        exps = [exps(1) interiorExps exps(2)];
         
         % Negate the exponents for infinite endpoint, since the exponents stored
         % in SINGFUN are the negated value of those supplied to the UNBNDFUN
         % constructor:
-        exps(ind) = -exps(ind);
         
+        if ( s(1) == -Inf )
+            exps(1) = -exps(1);
+        elseif ( f.domain(1) == -Inf )
+            exps(1) = 0;
+        end
+        
+        if ( s(end) == Inf )
+            exps(end) = -exps(end);
+        elseif ( f.domain(end) == Inf )
+            exps(end) = 0;
+        end
+
     end
     
 end
 
+% Grab the vscale:
 vscale = get(f, 'vscale');
 
 % Loop over each subdomain:
 for k = 1:numSubDom
+    
+    % Initialize the preference:
     pref = chebfunpref();
+    
+    % Pass the information about the exponents by preference:
     if ( ~isempty(exps) && any(exps(k:k+1)) )
         pref.singPrefs.exponents = exps(k:k+1);
         
