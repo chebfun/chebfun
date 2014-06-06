@@ -24,13 +24,13 @@ function [u, info] = solvebvp(N, rhs, pref, displayInfo)
 %   the MATLAB struct INFO, which contains useful information about the solution
 %   process. The fields of INFO are as follows:
 %       ISLINEAR: A vector with four entries containing linearity information
-%           for N. More specifically, 
+%           for N. More specifically,
 %               ISLINEAR(1) = 1 if N.OP is linear
 %               ISLINEAR(2) = 1 if N.LBC is linear
 %               ISLINEAR(3) = 1 if N.RBC is linear
 %               ISLINEAR(4) = 1 if N.BC is linear
 %           Otherwise, the corresponding element of ISLINEAR is equal to 0.
-%   
+%
 %   For linear problems, INFO further contains the field
 %       ERROR:    The residual of the differential equation.
 %
@@ -47,7 +47,7 @@ function [u, info] = solvebvp(N, rhs, pref, displayInfo)
 %   and
 %       uv = solvebvp(N, [0; 0]);
 %
-% See also: CHEBOP, CHEBOP/MLDIVIDE, CHEBOPPREF, CHEBOP/SOLVEBVPLINEAR, 
+% See also: CHEBOP, CHEBOP/MLDIVIDE, CHEBOPPREF, CHEBOP/SOLVEBVPLINEAR,
 %   CHEBOP/SOLVEBVPNONLINEAR, LINOP/MLDIVIDE.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
@@ -75,8 +75,87 @@ if ( nargin(N) == 1 )
     N.op = @(x, u) N.op(u);
 end
 
-% NUMVARS indicate how many unknown function we seek.
-numVars = max(nargin(N) - 1, 1);
+% NUMVARS indicate how many unknown function we seek. This can be tricky of the
+% operator is specified on CHEBMATRIX syntax, e.g. via
+%   N.op = @(x, u) [diff(u{1}) + u{2}; u{1} + diff(u{2})];
+% is in this case, nargin(N.op) does not match the number of variables we need.
+% If nargin(N.op) is greater than two, we can however safely assume that N.op is
+% specified on the form
+%   N.op = @(x, u, v) [diff(u) + v; u + diff(v)];
+% So we begin by looking at whether we have the easy case!
+narginN = nargin(N);
+if ( narginN > 2 )
+    % Need to subtract 1 since x is the first argument:
+    numVars = narginN - 1;
+else
+    % Now we know we're dealing with
+    %   N.op = @(x, u) ...
+    % But we don't know yet whether this is a system or not. In an ideal world,
+    % the user has passed this information through the numVars property of the
+    % CHEBOP.
+    if ( ~isempty(N.numVars) )
+        % Lucky us!
+        numVars = N.numVars;
+        
+    else
+        % If that field is empty, we try to inspect the string representation of
+        % N.op, and look for the highest index appearing inside {} -- this will
+        % only work if N.op is specified as an anonymous function, not if it is
+        % a handle to another function.
+        
+        % Obtain the function string:
+        NopString = func2str(N.op);
+        
+        % Try to find out what the unknown function is. But first, we must check
+        % whether we actually have the argument list available to us...
+        firstRightPar = min(strfind(NopString, ')'));
+        if ( isempty(firstRightPar) )
+            % Don't have a list of arguments available. Take numVars == 1, and
+            % hope for the best...
+            warning(['Unable to determine the number of variable that a ', ...
+                'chebop operates on. Results might be unreliable. Please ', ...
+                'specify the number of variables that the operator ', ...
+                'operates on via N.numVars'])
+            numVars = 1;
+        else
+            % If nargin(N) == 2, the first variable appearing will be the
+            % independent space variable, but if nargin(N) == 1, we only have
+            % the unknown function in the argument list.
+            if ( narginN == 1 )
+                % The unknown variable appears between @( and the first ).
+                firstLeftPar = min(strfind(NopString, '('));
+                variableName = NopString(firstLeftPar+1 : firstRightPar - 1);
+                
+            else
+                % The unknown variable appears between the first , and the first
+                % ), e.g. @(x, ___ ).
+                firstLeftComma = min(strfind(NopString, ','));
+                variableName = NopString(firstLeftComma+1 : firstRightPar - 1);
+            end
+            
+            % The regular expression we seek must include the variable name:
+            expression = [variableName, '{[1-9]+}'];
+            
+            % Obtain all matches:
+            match = regexp(NopString, expression, 'match');
+            
+            % Throw away the variable name and the { }, e.g. convert 'u{1}' to
+            % '1':
+            match = strrep(match, [variableName, '{'], '');
+            match = strrep(match, '}', '');
+            
+            % We are now left with cell-array of strings that only contain
+            % numbers. So convert to doubles!
+            indx = str2double(match);
+            
+            % The number of variables that the CHEBOP operates on is the greatex
+            % index that appears:
+            numVars = max(indx);
+            
+            % Phew...
+        end
+    end
+end
 
 % Store the domain we're working with.
 dom = N.domain;
@@ -121,7 +200,7 @@ if ( isnumeric(rhs) )
             rhs = rhs.';
         else
             error('CHEBFUN:CHEBOP:solvebvp:rhs', ...
-               'The right-hand side does not match the output dimensions of the operator.');
+                'The right-hand side does not match the output dimensions of the operator.');
         end
     end
     
@@ -173,7 +252,7 @@ else
         % from a CHEBFUN to a scalar. Hence, call LINEARIZE() with four outputs.
         [L, residual, isLinear, u0] = linearize(N, u0, x);
     end
-
+    
     % Call solver method for nonlinear problems.
     [u, info] = solvebvpNonlinear(N, rhs, L, u0, residual, pref, displayInfo);
     
