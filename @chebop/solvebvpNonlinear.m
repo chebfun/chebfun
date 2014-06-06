@@ -80,7 +80,7 @@ while ( ~terminate )
     
     % Compute a Newton update:
     [delta, disc] = linsolve(L, res, pref, vscale(u));
-    
+
     % We had two output arguments above, need to negate DELTA.
     delta = -delta;
 
@@ -225,13 +225,26 @@ function bcNorm = normBCres(N, u, x)
 % Initialize:
 bcNorm = 0;
 
+% If nargin(N) <= 2, but the dimension of the solution guess passed is greater
+% than 1, we are working with the @(x,u) [diff(u{1}) + u{2}; ...] syntax. Need
+% to make the code aware of this.
+if ( nargin(N) <= 2 && max(size(u)) > 1 )
+    cellArg = 1;
+else
+    cellArg = 0;
+end
+
 % Extract the blocks from the CHEBMATRIX U.
 uBlocks = u.blocks;
 
 % Evaluate left boundary condition(s):
 if ( ~isempty(N.lbc) )
     % Evaluate.
-    lbcU = N.lbc(uBlocks{:});
+    if ( cellArg )
+        lbcU = N.lbc(u);
+    else
+        lbcU = N.lbc(uBlocks{:});
+    end
     
     % The output might be a CHEBFUN, or a CHEBMATRIX
     if ( isa(lbcU, 'chebfun') )
@@ -250,7 +263,12 @@ end
 % Evaluate right boundary condition(s):
 if ( ~isempty(N.rbc) )
     % Evaluate.
-    rbcU = N.rbc(uBlocks{:});
+    if ( cellArg )
+        rbcU = N.rbc(u);
+    else
+        rbcU = N.rbc(uBlocks{:});
+    end
+%     rbcU = N.rbc(uBlocks{:});
     
     % The output might be a CHEBFUN, or a CHEBMATRIX
     if ( isa(rbcU, 'chebfun') )
