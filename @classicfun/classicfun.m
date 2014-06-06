@@ -69,7 +69,9 @@ classdef classicfun < fun % (Abstract)
     
     %% CLASS CONSTRUCTOR:
     methods (Static = true)
+        
         function obj = constructor(op, data, pref)
+            
             % Parse inputs.
             if ( nargin < 1  )
                 % We can't return an empty CLASSICFUN, so pass an empty OP down.
@@ -77,7 +79,7 @@ classdef classicfun < fun % (Abstract)
             end
 
             if ( (nargin < 2) || isempty(data) )
-                    data = struct();
+                data = struct();
             end
 
             if ( (nargin < 3) || isempty(pref) )
@@ -96,7 +98,9 @@ classdef classicfun < fun % (Abstract)
                 % Construct an UNBNDFUN object:
                 obj = unbndfun(op, data, pref);
             end
+            
         end
+        
     end
     
     %% STATIC METHODS IMPLEMENTED BY THIS CLASS.

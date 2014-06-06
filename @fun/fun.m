@@ -24,7 +24,9 @@ classdef fun % (Abstract)
 % See http://www.chebfun.org/ for Chebfun information.
 
     methods (Static)
+        
         function obj = constructor(op, data, pref)
+            
             % Parse inputs.
             if ( nargin < 1 )
                 % We can't return an empty FUN, so pass an empty OP down.
@@ -32,7 +34,7 @@ classdef fun % (Abstract)
             end
 
             if ( (nargin < 2) || isempty(data) )
-                    data = struct();
+                data = struct();
             end
 
             if ( (nargin < 3) || isempty(pref) )
@@ -48,7 +50,9 @@ classdef fun % (Abstract)
             else
                 obj = classicfun.constructor(op, data, pref);
             end
+            
         end
+        
     end
 
     %% ABSTRACT STATIC METHODS REQUIRED BY THIS CLASS.

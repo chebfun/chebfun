@@ -33,7 +33,9 @@ classdef onefun % (Abstract)
 % See http://www.chebfun.org/ for Chebfun information.
 
     methods (Static)
+        
         function obj = constructor(op, data, pref)
+            
             % Parse inputs.
             if ( nargin == 0 )
                 % We can't return an empty ONEFUN, so pass an empty OP down.
@@ -41,7 +43,7 @@ classdef onefun % (Abstract)
             end
 
             if ( (nargin < 2) || isempty(data) )
-                    data = struct();
+                data = struct();
             end
 
             if ( (nargin < 3) || isempty(pref) )
@@ -65,6 +67,7 @@ classdef onefun % (Abstract)
                 obj = smoothfun.constructor(op, data, pref);
             end
         end
+        
     end
     
     %% ABSTRACT (NON-STATIC) METHODS REQUIRED BY ONEFUN CLASS.

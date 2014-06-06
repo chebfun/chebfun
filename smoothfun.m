@@ -27,7 +27,9 @@ classdef smoothfun < onefun % (Abstract)
     
     %% Constructor for the SMOOTHFUN class.
     methods (Static)
+        
         function obj = constructor(op, data, pref)
+            
             % Parse inputs.
             if ( nargin == 0 )
                 % We can't return an empty SMOOTHFUN, so pass an empty OP down.
@@ -35,7 +37,7 @@ classdef smoothfun < onefun % (Abstract)
             end
 
             if ( (nargin < 2) || isempty(data) )
-                    data = struct();
+                data = struct();
             end
 
             if ( (nargin < 3) || isempty(pref) )
@@ -58,6 +60,7 @@ classdef smoothfun < onefun % (Abstract)
             % Call the TECH constructor.
             obj = feval(pref.tech, op, data, pref.techPrefs);
         end
+        
     end
 
     %% Static methods implemented by SMOOTHFUN class.

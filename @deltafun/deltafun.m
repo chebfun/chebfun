@@ -59,7 +59,9 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
     
     %% DELTAFUN CLASS CONSTRUCTOR:
     methods ( Static = true )
+        
         function obj = deltafun(op, data, pref)
+            
             % Parse inputs.
             if ( (nargin <= 0) || isempty(op) )
                 obj.funPart = [];
@@ -69,7 +71,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
             end
 
             if ( (nargin < 2) || isempty(data) )
-                    data = struct();
+                data = struct();
             end
 
             if ( (nargin < 3) || isempty(pref) )
@@ -140,7 +142,9 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
             if ( ~isa(obj, 'deltafun') )
                 obj = deltafun(obj);
             end
+            
         end
+        
     end
     
     

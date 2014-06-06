@@ -715,6 +715,7 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
             end
         end
     end
+
 end
 
 function g = vec(f)

@@ -63,6 +63,7 @@ classdef chebtech1 < chebtech
 %
 % Class diagram: [<<CHEBTECH>>] <-- [CHEBTECH1]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
     %% METHODS IMPLEMENTED BY THIS M-FILE:
     methods
         function obj = chebtech1(op, data, pref)
