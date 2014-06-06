@@ -251,7 +251,7 @@ if ( ~isempty(N.lbc) )
         bcNorm = bcNorm + sum(feval(lbcU, N.domain(1)).^2);
     elseif ( isa(lbcU, 'chebmatrix') ) 
         % Loop through the components of LBCU.
-        for k = 1:numel(lbcU)
+        for k = 1:max(size(lbcU))
             % Obtain the kth element of the CHEBMATRIX
             lbcUk = lbcU{k};
             % Evaluate the function at the left endpoint
@@ -275,7 +275,7 @@ if ( ~isempty(N.rbc) )
         bcNorm = bcNorm + sum(feval(rbcU, N.domain(end)).^2);
     elseif ( isa(rbcU, 'chebmatrix') ) 
         % Loop through the components of RBCU.
-        for k = 1:numel(rbcU)
+        for k = 1:max(size(rbcU))
             % Obtain the kth element of the CHEBMATRIX
             rbcUk = rbcU{k};
             % Evaluate the function at the left endpoint
