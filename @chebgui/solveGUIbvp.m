@@ -163,7 +163,7 @@ tolInput = guifile.tol;
 if ( isempty(tolInput) )
     tolNum = defaultTol;
 else
-    tolNum = str2num(tolInput);
+    tolNum = str2double(tolInput);
 end
 
 % We need a CHEBFUNPREF as well to ensure the tolerance requested is not

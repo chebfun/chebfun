@@ -40,7 +40,7 @@ if ( strcmp(get(handles.button_solve, 'string'), 'Solve') )   % In solve mode
     % Check that we have tolerance information:
     tol = guifile.tol;
     if ( ~isempty(tol) )
-        tolnum = str2num(tol);
+        tolnum = str2double(tol);
         if ( isnan(tolnum) || isinf(tolnum) || isempty(tolnum) )
             error('Chebgui:InvalidTolerance', ...
                 'Invalid tolerance, ''%s''.', tol);
@@ -58,7 +58,7 @@ if ( strcmp(get(handles.button_solve, 'string'), 'Solve') )   % In solve mode
             error('Chebgui:EmptyInitialCondition', ...
                 'Initial condition is empty.');
         end
-        if ( str2num(tol) < 1e-6 )
+        if ( str2double(tol) < 1e-6 )
             tolchk = questdlg(['WARNING: PDE solves in chebgui are limited ' ...
                 'to a tolerance of 1e-6'], ...
                 'WARNING','Continue', 'Cancel','Continue');

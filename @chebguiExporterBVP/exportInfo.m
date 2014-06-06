@@ -44,7 +44,7 @@ end
 useLatest = strcmpi(initInput{1}, 'Using latest solution');
 if ( ~isempty(initInput{1}) && ~useLatest )
     [dummy, dummy, indVarNameInit] = ...
-        setupFields(guifile, initInput, 'BC', allVarString);
+        setupFields(guifile, initInput, 'INIT', allVarString);
 else
     indVarNameInit = {''};
 end
