@@ -532,6 +532,11 @@ function op = str2op(op)
 end
 
 function [op, dom, data, pref] = parseInputs(op, varargin)
+    
+    % TODO: Should we 'data' structure to be passed to the constructor?
+    % Currently, like in CHEBFUN/COMPOSE(), we don't have a use for this, but it
+    % might be useful in the future.
+
     % Initialize data output.
     data.exponents = [];
     data.singType = [];
