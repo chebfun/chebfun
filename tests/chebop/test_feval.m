@@ -36,6 +36,27 @@ err(12) = norm(N(x, u, v) - Nuv);
 err(13) = norm(N(uv) - Nuv);
 err(14) = norm(N*uv - Nuv);
 
+
+%% Quasimatrix notation, part I:
+N = chebop(@(x, u) [diff(u{1}, 2) + cos(u{2}) ; diff(u{2}, 2) - sin(u{1})]);
+x = chebfun(@(x) x, [0 pi], pref);
+u = [sin(x) ; exp(x)];
+Nu = [diff(u{1}, 2) + cos(u{2}) ; diff(u{2}, 2) - sin(u{1})];
+err(15) = norm(feval(N, u) - Nu);
+err(16) = norm(feval(N, x, u) - Nu);
+err(17) = norm(N(u) - Nu);
+err(18) = norm(N(x, u) - Nu);
+err(19) = norm(N*u - Nu);
+
+%% Quasimatrix notation, part II:
+N = chebop(@(u) [diff(u{1}, 2) + cos(u{2}) ; diff(u{2}, 2) - sin(u{1})]);
+x = chebfun(@(x) x, [0 pi], pref);
+u = [sin(x) ; exp(x)];
+Nu = [diff(u{1}, 2) + cos(u{2}) ; diff(u{2}, 2) - sin(u{1})];
+err(20) = norm(feval(N, u) - Nu);
+err(21) = norm(N(u) - Nu);
+err(22) = norm(N*u - Nu);
+
 %%
 
 tol = 1e-14;

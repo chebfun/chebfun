@@ -26,34 +26,60 @@ function out = feval(N, varargin)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% We must expand CHEBMATRIX entries out to a cell for {:} to work below.
-isChebMat = cellfun(@(u) isa(u, 'chebmatrix'), varargin);
-if ( any(isChebMat) )
-    args = {};
-    for k = 1:numel(varargin)
-        % Append variables from the kth input:
-        if ( isChebMat(k) )
-            args = [args , varargin{k}.blocks.']; %#ok<AGROW>
-        else
-            args = [args , varargin(k)];          %#ok<AGROW>
-        end
-    end
-else
-    args = varargin;
-end
-
+% How many input arguments are there to N.op?
 numberOfInputs = nargin(N);
-if ( numel(args) == numberOfInputs - 1 )
-    % Check if we need to include an x (independent variable):
-    x = chebfun(@(x) x, N.domain);
-    args = [ {x} , args ];
-elseif ( numberOfInputs == 0 )
-    % Return empty:
+
+% If no arguments, return empty:
+if ( numberOfInputs == 0 )
     out = [];
     return
 end
 
-% Evaluate the operator:
-out = N.op(args{:});
+% If N has one or two input arguments, either we have a scalar problem, or the
+% problem is specified on chebmatrix format, e.g.
+%   N.op = @(x, u) [ diff(u{1},2) + u{2}; u{1} + diff(u{2}];
+if ( numberOfInputs <= 2)
+    
+    % Did we not get the x variable passed in as argument?
+    if ( numel(varargin) == numberOfInputs - 1 )
+        % Check if we need to include an x (independent variable):
+        x = chebfun(@(x) x, N.domain);
+        out = N.op(x, varargin{1});
+    elseif ( numel(varargin) == numberOfInputs )
+        out = N.op(varargin{:});
+    else
+        error('CHEBFUN:CHEBOP:feval:numInputs', ...
+            'Unexpected number of input arguments.')
+    end
+    
+else
+    % The operator is specified on the form
+    %   N.op = @(x, u, v) = [diff(u,2) + v; u + diff(v)]
+    
+    % We must expand CHEBMATRIX entries out to a cell for {:} to work below.
+    isChebMat = cellfun(@(u) isa(u, 'chebmatrix'), varargin);
+    if ( any(isChebMat) )
+        args = {};
+        for k = 1:numel(varargin)
+            % Append variables from the kth input:
+            if ( isChebMat(k) )
+                args = [args , varargin{k}.blocks.']; %#ok<AGROW>
+            else
+                args = [args , varargin(k)];          %#ok<AGROW>
+            end
+        end
+    else
+        args = varargin;
+    end
+    
+    if ( numel(args) == numberOfInputs - 1 )
+        % Check if we need to include an x (independent variable):
+        x = chebfun(@(x) x, N.domain);
+        args = [ {x} , args ];
+    end
+    
+    % Evaluate the operator:
+    out = N.op(args{:});
+end
 
 end
