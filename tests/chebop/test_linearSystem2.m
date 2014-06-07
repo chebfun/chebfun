@@ -18,9 +18,6 @@ A.lbc = @(u) u{1}+diff(u{1});
 A.rbc = @(u) diff(u{2});
 x = chebfun('x',d);
 
-% TODO: Shouldn't need to pass an initial guess, but necessary to get the
-% correct dimension information!
-A.init = [0*x; 0*x];
 f = [ exp(x) ; chebfun(1,d) ];
 u = mldivide(A, f, pref);
 
