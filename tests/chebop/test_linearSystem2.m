@@ -4,13 +4,14 @@ function pass = test_linearSystem2(pref)
 
 % Note: This test is taken from chebop_systemsolve1 in V4.
 
+%% Setup:
 if ( nargin == 0 )
     pref = cheboppref;
 end
-%%
+
 tol = 1e-10;
 
-% Smooth domain:
+%% Smooth domain:
 d = [-1 1];
 A = chebop(@(x, u) [diff(u{1}) + u{1} + 2*u{2} ; ...
     diff(u{1}) - u{1} + diff(u{2})], d);
@@ -53,4 +54,59 @@ err5 = [norm(u1jump), norm(u2jump)];
 pass(3) = err3 < tol;
 pass(4) = all(err4 < tol);
 pass(5) = all(err5 < tol);
+
+%% Now use a function handle, rathen than anonymous function.
+
+% Let's change the discretization as well, just because we can:
+pref.discretization = @ultraS;
+A = chebop(@myop, d);
+A.lbc = @(u) u{1}+diff(u{1});
+A.rbc = @(u) diff(u{2});
+
+% Here we need to pass information about the number of variables that A
+% operates on:
+A.numVars = 2;
+u = mldivide(A, f, pref);
+
+% Residual of differential equation:
+err6 = norm(A(u) - f);
+
+% Want to check BCs as well.
+bcFunLeft = A.lbc(u);
+bcFunRight = A.rbc(u);
+err7 = [norm(bcFunLeft(d(1))), norm(bcFunRight(d(end)))];
+
+% Happy?
+pass(6) = norm( err6 ) < tol;
+pass(7) = all(err7 < tol);
+
+%% Now try piecewise again!
+A.domain = [-1 0 1];
+u = mldivide(A, f, pref);
+
+% Norm of the residual:
+err8 = norm( A(u) - f );
+
+% Want to check BCs as well:
+bcFunLeft = A.lbc(u);
+bcFunRight = A.rbc(u);
+err9 = [norm(bcFunLeft(d(1))), norm(bcFunRight(d(end)))];
+
+% And check that we're continuous over the breakpoint:
+u1jump = jump(u{1}, 0);
+u2jump = jump(u{2}, 0);
+err10 = [norm(u1jump), norm(u2jump)];
+
+% Happy?
+pass(8)  = err8 < tol;
+pass(9)  = all(err9 < tol);
+pass(10) = all(err10 < tol);
+
+end
+
+function out = myop(x,u)
+
+out = [diff(u{1}) + u{1} + 2*u{2} ; ...
+    diff(u{1}) - u{1} + diff(u{2})];
+
 end
