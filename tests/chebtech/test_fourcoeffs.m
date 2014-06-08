@@ -4,7 +4,7 @@ function pass = test_fourcoeffs(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = fourtech.techPref();
+    pref = chebtech.techPref();
 end
 
 for n = 1:2
@@ -17,15 +17,15 @@ for n = 1:2
     %%
     % Check a few simple examples.
 
-    f = testclass.make(@(x) zeros(size(x)), [], [], pref);
+    f = testclass.make(@(x) zeros(size(x)), [], pref);
     p = fourcoeffs(f);
     pass(n,1) = (norm(p, inf) <= 10*f.vscale.*f.epslevel);
 
-    f = testclass.make(@(x) 3*ones(size(x)), [], [], pref);
+    f = testclass.make(@(x) 3*ones(size(x)), [], pref);
     p = fourcoeffs(f);
     pass(n,2) = (norm(p - 3, inf) < 10*f.vscale.*f.epslevel);
 
-    f = testclass.make(@(x) 1+cos(pi*x), [], [], pref);
+    f = testclass.make(@(x) 1+cos(pi*x), [], pref);
     p = fourcoeffs(f,3);
     pass(n,3) = (norm(p - [0.5 1 0.5]', inf) < 10*f.vscale.*f.epslevel);
     p = fourcoeffs(f,5);
@@ -33,7 +33,7 @@ for n = 1:2
     p = fourcoeffs(f,1);
     pass(n,5) = (norm(p - 1, inf) < 10*f.vscale.*f.epslevel);
 
-    f = testclass.make(@(x) 1 + exp(2*1i*pi*x) + exp(-1i*pi*x), [], [], pref);
+    f = testclass.make(@(x) 1 + exp(2*1i*pi*x) + exp(-1i*pi*x), [], pref);
     p = fourcoeffs(f,5);
     pass(n,6) = (norm(p - [1 0 1 1 0]', inf) ...
         < 10*f.vscale.*f.epslevel);
@@ -48,7 +48,7 @@ for n = 1:2
     % Verify operation for array-valued chebtech objects.
 
     f = testclass.make(@(x) [3*ones(size(x)), 1+cos(pi*x), ... 
-        1 + exp(2*1i*pi*x) + exp(-1i*pi*x)], [], [], pref);
+        1 + exp(2*1i*pi*x) + exp(-1i*pi*x)], [], pref);
     p = fourcoeffs(f,5);
     p_exact = [0 0   1;...
                0 0.5 0;...   

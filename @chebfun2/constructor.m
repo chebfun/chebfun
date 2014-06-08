@@ -40,13 +40,19 @@ if ( nargin < 3 || isempty(domain) )
     domain = [-1 1 -1 1];
 end
 
-if ( nargin > 3 && isa(varargin{1}, 'chebpref') )
-    defaults = chebfun2pref();
-    pref = chebfun2pref.mergePrefs(defaults, varargin{1});
+% if ( nargin > 3 && isa(varargin{1}, 'chebpref') )
+%     defaults = chebfun2pref();
+%     pref = chebfun2pref.mergePrefs(defaults, varargin{1});
+% else
+%     pref = chebfun2pref();
+% end
+if ( nargin > 3 && isa(varargin{1}, 'chebfunpref') )
+    defaults = chebfunpref();
+    pref = chebfunpref.mergePrefs(defaults, varargin{1});
 else
-    pref = chebfun2pref();
+    pref = chebfunpref();
 end
-
+ 
 if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
     if ( numel( op ) == 1 )
         % LNT wants this:
@@ -143,6 +149,7 @@ elseif ( numel(domain) ~= 4 )
 end
 
 % Get default preferences from chebfunpref:
+tech = pref.tech();
 prefStruct = pref.cheb2Prefs;
 maxRank = prefStruct.maxRank;
 maxLength = prefStruct.maxLength;
