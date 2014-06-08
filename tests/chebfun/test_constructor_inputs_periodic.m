@@ -1,4 +1,4 @@
-function pass = test_constructor_inputs(pref)
+function pass = test_constructor_inputs_periodic(pref)
 
 if ( nargin == 0 )
     pref = chebfunpref();
