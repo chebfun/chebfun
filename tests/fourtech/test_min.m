@@ -23,7 +23,7 @@ pass(5) = test_spotcheck_min(testclass, @(x) -4/pi*(sin(pi*x) + ...
 %%
 % Check operation for array-valued inputs.
 fun_op = @(x) -[exp(-cos(2*pi*x)) sin(10*pi*x) exp(-sin(pi*(x-0.32)).^100)];
-f = testclass.make(fun_op, [], [], pref);
+f = testclass.make(fun_op, [], pref);
 [y, x] = min(f);
 exact_min = -[exp(1) 1 1];
 fx = -[exp(-cos(2*pi*x(1))) sin(10*pi*x(2)) exp(-sin(pi*(x(3)-0.32)).^100)];
@@ -41,7 +41,7 @@ end
 % Spot-check the results for a given function.
 function result = test_spotcheck_min(testclass, fun_op, exact_min, pref)
 
-f = testclass.make(fun_op, [], [], pref);
+f = testclass.make(fun_op, [], pref);
 [y, x] = min(f);
 fx = fun_op(x);
 result = ((abs(y - exact_min) < 10*f.vscale.*f.epslevel) && ... 

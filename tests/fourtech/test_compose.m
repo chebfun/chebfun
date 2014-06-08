@@ -10,20 +10,20 @@ testclass = fourtech();
 
 % Compose a scalar-valued FOURTECH object with sin(x):
 f = testclass.make(@(x) pi*cos(pi*(x-0.1)));
-g = compose(f, @sin, [], pref);
+g = compose(f, @sin, [], [], pref);
 h = testclass.make(@(x) sin(pi*cos(pi*(x-0.1))));
 pass(1) = norm(h.coeffs - g.coeffs, inf) < 10*h.vscale.*h.epslevel;
 
 % Compose an array-valued FOURTECH object with sin(x):
 f = testclass.make(@(x) [pi*cos(pi*x) pi*cos(2*pi*x)]);
-g = compose(f, @sin, [], pref);
+g = compose(f, @sin, [], [], pref);
 h = testclass.make(@(x) [sin(pi*cos(pi*x)) sin(pi*cos(2*pi*x))]);
 pass(2) = norm(h.coeffs - g.coeffs, inf) < ...
     10*max(h.vscale.*h.epslevel);
 
 % Compose an array-valued FOURTECH object with sin(x):
 f = testclass.make(@(x) [pi*cos(pi*x) pi*cos(2*pi*x)]);
-g = compose(f, @sin, [], pref);
+g = compose(f, @sin, [], [], pref);
 x = g.points();
 values = g.values;
 pass(3) = norm(sin([pi*cos(pi*x) pi*cos(2*pi*x)]) - values, inf) < ...
@@ -31,7 +31,7 @@ pass(3) = norm(sin([pi*cos(pi*x) pi*cos(2*pi*x)]) - values, inf) < ...
 
 % Compose an array-valued FOURTECH object with sin(x):
 f = testclass.make(@(x) [pi*cos(pi*x) pi*cos(2*pi*x) pi*cos(3*pi*x)]);
-g = compose(f, @sin, [], pref);
+g = compose(f, @sin, [], [], pref);
 x = g.points();
 values = g.values;
 pass(4) = norm(sin([pi*cos(pi*x) pi*cos(2*pi*x) pi*cos(3*pi*x)]) - values, inf) < ...
@@ -40,7 +40,7 @@ pass(4) = norm(sin([pi*cos(pi*x) pi*cos(2*pi*x) pi*cos(3*pi*x)]) - values, inf) 
 % Compose 2 FOURTECH objects with a binary function:
 f1 = testclass.make(@(x) exp(sin(pi*x)));
 f2 = testclass.make(@(x) exp(cos(pi*x)));
-g = compose(f1, @plus, f2, pref);
+g = compose(f1, @plus, f2, [], pref);
 x = g.points;
 h = testclass.make(exp(sin(pi*x)) + exp(cos(pi*x)));
 hvalues = h.coeffs2vals(h.coeffs);
@@ -50,7 +50,7 @@ pass(5) = norm(hvalues - gvalues, inf) < 10*h.vscale.*h.epslevel;
 % Compose 2 array-valued FOURTECH objects with a binary function:
 f1 = testclass.make(@(x) exp([sin(pi*x) cos(pi*x)]));
 f2 = testclass.make(@(x) exp([cos(pi*x) sin(pi*cos(pi*x))]));
-g = compose(f1, @times, f2, pref);
+g = compose(f1, @times, f2, [], pref);
 x = g.points;
 h = testclass.make([exp(sin(pi*x)+cos(pi*x)) exp(cos(pi*x)+sin(pi*cos(pi*x)))]);
 hvalues = h.coeffs2vals(h.coeffs);

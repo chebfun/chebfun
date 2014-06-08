@@ -22,11 +22,11 @@ f = testclass.make({[],y}, [], []);
 pass(2) = isinf(f);
 
 % Test a finite scalar-valued function.
-f = testclass.make(@(x) cos(pi*x), [], [], pref);
+f = testclass.make(@(x) cos(pi*x), [], pref);
 pass(3) = ~isinf(f);
 
 % Test a finite array-valued function.
-f = testclass.make(@(x) [cos(pi*x), cos(pi*x)], [], [], pref);
+f = testclass.make(@(x) [cos(pi*x), cos(pi*x)], [], pref);
 pass(4) = ~isinf(f);
 
 end

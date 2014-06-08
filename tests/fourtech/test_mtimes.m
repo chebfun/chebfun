@@ -19,14 +19,14 @@ alpha = randn() + 1i*randn();
 %%
 % Check operation in the face of empty arguments.
 
-f = testclass.make(@(x) sin(10*pi*x), [], [], pref);
+f = testclass.make(@(x) sin(10*pi*x), [], pref);
 g = testclass.make();
 pass(1) = isempty(f*[]) && isempty([]*f) && isempty(2*g) && isempty(g*2);
 
 %%
 % Check operation for scalar FOURTECH objects.
 
-f = testclass.make(@(x) sin(10*pi*x), [], [], pref);
+f = testclass.make(@(x) sin(10*pi*x), [], pref);
 g1 = alpha*f;
 g2 = f*alpha;
 pass(2) = isequal(g1, g2);
@@ -40,7 +40,7 @@ pass(4) = all(g.coeffs == 0);
 %%
 % Check operation for array-valued FOURTECH objects.
 
-f = testclass.make(@(x) [sin(10*pi*x) cos(20*pi*x) cos(sin(pi*x))], [], [], pref);
+f = testclass.make(@(x) [sin(10*pi*x) cos(20*pi*x) cos(sin(pi*x))], [], pref);
 g1 = alpha*f;
 g2 = f*alpha;
 pass(5) = isequal(g1, g2);
@@ -57,13 +57,13 @@ g_exact = @(x) [sin(10*pi*x) cos(20*pi*x) cos(sin(pi*x))]*A;
 err = abs(feval(g, x) - g_exact(x));
 pass(8) = max(err(:)) < 10*max(g.vscale.*g.epslevel);
 
-f = testclass.make(@(x) [exp(1i*11*pi*x) cos(20*pi*x) cos(sin(pi*x))], [], [], pref);
+f = testclass.make(@(x) [exp(1i*11*pi*x) cos(20*pi*x) cos(sin(pi*x))], [], pref);
 g = f*A;
 g_exact = @(x) [exp(1i*11*pi*x) cos(20*pi*x) cos(sin(pi*x))]*A;
 err = abs(feval(g, x) - g_exact(x));
 pass(9) = max(err(:)) < 10*max(g.vscale.*g.epslevel);
 
-f = testclass.make(@(x) [exp(1i*11*pi*x) cos(20*pi*x) cos(sin(pi*x))], [], [], pref);
+f = testclass.make(@(x) [exp(1i*11*pi*x) cos(20*pi*x) cos(sin(pi*x))], [], pref);
 A = randn(3, 3) + 1i*randn(3, 3);
 g = f*A;
 g_exact = @(x) [exp(1i*11*pi*x) cos(20*pi*x) cos(sin(pi*x))]*A;

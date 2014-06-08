@@ -21,7 +21,7 @@ alpha = -0.194758928283640 + 0.075474485412665i;
 % Check division of a FOURTECH object by a numeric array.
 
 f_op = @(x) [exp(sin(pi*x)) 3./(4-cos(pi*x))];
-f = testclass.make(f_op, [], [], pref);
+f = testclass.make(f_op, [], pref);
 pass(1) = isnan(f / 0);
 
 g = f / alpha;

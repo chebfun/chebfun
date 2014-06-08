@@ -20,52 +20,52 @@ alpha = -0.194758928283640 + 0.075474485412665i;
 % Check operation in the face of empty arguments.
 
 f = testclass.make();
-g = testclass.make(@(x) x, [], [], pref);
+g = testclass.make(@(x) x, [], pref);
 pass(1) = (isempty(f + f) && isempty(f + g) && isempty(g + f));
 
 %%
 % Check addition with scalars.
 
 f_op = @(x) exp(sin(pi*x));
-f = testclass.make(f_op, [], [], pref);
+f = testclass.make(f_op, [], pref);
 pass(2:3) = test_add_function_to_scalar(f, f_op, alpha, x);
 
 %%
 % Check addition of two FOURTECH objects.
 
 f_op = @(x) zeros(size(x));
-f = testclass.make(f_op, [], [], pref);
+f = testclass.make(f_op, [], pref);
 pass(4:5) = test_add_function_to_function(f, f_op, f, f_op, x);
 
 f_op = @(x) exp(cos(pi*x)) - 1;
-f = testclass.make(f_op, [], [], pref);
+f = testclass.make(f_op, [], pref);
 
 g_op = @(x) sin(100*pi*x);
-g = testclass.make(g_op, [], [], pref);
+g = testclass.make(g_op, [], pref);
 pass(6:7) = test_add_function_to_function(f, f_op, g, g_op, x);
 
 g_op = @(x) sin(cos(10*pi*x));
-g = testclass.make(g_op, [], [], pref);
+g = testclass.make(g_op, [], pref);
 pass(8:9) = test_add_function_to_function(f, f_op, g, g_op, x);
 
 %%
 % Check operation for array-valued FOURTECH objects.
 
 f_op = @(x) [zeros(size(x)) zeros(size(x)) zeros(size(x))];
-f = testclass.make(f_op, [], [], pref);
+f = testclass.make(f_op, [], pref);
 pass(10:11) = test_add_function_to_function(f, f_op, f, f_op, x);
 
 f_op = @(x) [sin(10*pi*x) sin(cos(pi*x)) exp(cos(pi*x))];
-f = testclass.make(f_op, [], [], pref);
+f = testclass.make(f_op, [], pref);
 pass(12:13) = test_add_function_to_scalar(f, f_op, alpha, x);
 
 g_op = @(x) [sin(pi*x) exp(1i*pi*x).*exp(1i*pi*x) cos(pi*x)];
-g = testclass.make(g_op, [], [], pref);
+g = testclass.make(g_op, [], pref);
 pass(14:15) = test_add_function_to_function(f, f_op, g, g_op, x);
 
 % This should fail with a dimension mismatch error.
 g_op = @(x) sin(10*x);
-g = testclass.make(g_op, [], [], pref);
+g = testclass.make(g_op, [], pref);
 try
     h = f + g; %#ok<NASGU>
     pass(16) = false;
@@ -77,10 +77,10 @@ end
 % Check that direct construction and PLUS give comparable results.
 
 tol = 10*eps;
-f = testclass.make(@(x) sin(pi*cos(3*pi*x)), [], [], pref);
-g = testclass.make(@(x) cos(pi*sin(10*pi*x)) - 1, [], [], pref);
+f = testclass.make(@(x) sin(pi*cos(3*pi*x)), [], pref);
+g = testclass.make(@(x) cos(pi*sin(10*pi*x)) - 1, [], pref);
 h1 = f + g;
-h2 = testclass.make(@(x) sin(pi*cos(3*pi*x)) + (cos(pi*sin(10*pi*x)) - 1), [], [], pref);
+h2 = testclass.make(@(x) sin(pi*cos(3*pi*x)) + (cos(pi*sin(10*pi*x)) - 1), [], pref);
 
 pass(17) = norm(h1.coeffs - h2.coeffs, inf) < tol;
 

@@ -50,31 +50,27 @@ classdef fourtech < smoothfun
     %% METHODS IMPLEMENTED BY THIS M-FILE:
     methods
         
-        function obj = fourtech(op, vscale, hscale, pref)
+        function obj = fourtech(op, data, pref)
             %Constructor for the FOURTECH class.
-            
-            % Return an empty FOURTECH on null input:
+
+            % Parse inputs.
             if ( (nargin == 0) || isempty(op) )
+                % Return an empty CHEBTECH2 on null input:
                 return
             end
-            
-            % Define vscale if none given:
-            if ( (nargin < 2) || isempty(vscale) )
-                vscale = 0;
+
+            if ( (nargin < 2) || isempty(data) )
+                    data = struct();
             end
 
-            % Define hscale if none given:
-            if ( (nargin < 3) || isempty(hscale) )
-                hscale = 1;
-            end
-            
-            % TODO: Preferences
-            % Determine preferences if not given, merge if some are given:
-            if ( (nargin < 4) || isempty(pref) )
+            % TODO:  Preferences.
+            if ( (nargin < 3) || isempty(pref) )
                 pref = fourtech.techPref();
             else
                 pref = fourtech.techPref(pref);
             end
+
+            data = parseDataInputs(data, pref);
 
             % Force nonadaptive construction if PREF.NUMPOINTS is numeric:
             if ( ~isempty(pref.numPoints) && ~isnan(pref.numPoints) )
@@ -85,7 +81,7 @@ classdef fourtech < smoothfun
             end
 
             % Actual construction takes place here:
-            obj = populate(obj, op, vscale, hscale, pref);
+            obj = populate(obj, op, data.vscale, data.hscale, pref);
             
         end
         
@@ -131,7 +127,7 @@ classdef fourtech < smoothfun
     methods
         
         % Compose two FOURTECH objects or a FOURTECH with a function handle:
-        h = compose(f, op, g, pref)
+        h = compose(f, op, g, data, pref)
         
         % Plot (semilogy) the Chebyshev coefficients of a FOURTECH object.
         h = coeffsplot(f, varargin)
@@ -153,4 +149,17 @@ classdef fourtech < smoothfun
         end
     end
     
+end
+
+function data = parseDataInputs(data, pref)
+%PARSEDATAINPUTS   Parse inputs from the DATA structure and assign defaults.
+
+if ( ~isfield(data, 'vscale') || isempty(data.vscale) )
+    data.vscale = 0;
+end
+
+if ( ~isfield(data, 'hscale') || isempty(data.hscale) )
+    data.hscale = 1;
+end
+
 end

@@ -18,22 +18,22 @@ testclass = fourtech();
 % accuracy on the order of the truncation level, so we use this as our 
 % criterion.
 
-f = testclass.make(@(x) sin(pi*x), [], [], pref);
+f = testclass.make(@(x) sin(pi*x), [], pref);
 f_exact = @(x) sin(pi*x);
 pass(1) = (norm(feval(f, x) - f_exact(x), inf) < ...
     10*f.vscale.*f.epslevel);
 
-f = testclass.make(@(x) exp(cos(pi*x)) - 1, [], [], pref);
+f = testclass.make(@(x) exp(cos(pi*x)) - 1, [], pref);
 f_exact = @(x) exp(cos(pi*x)) - 1;
 pass(2) = (norm(feval(f, x) - f_exact(x), inf) < ...
     10*f.vscale.*f.epslevel);
 
-f = testclass.make(@(x) cos(100*sin(pi*x)), [], [], pref);
+f = testclass.make(@(x) cos(100*sin(pi*x)), [], pref);
 f_exact = @(x) cos(100*sin(pi*x));
 pass(3) = (norm(feval(f, x) - f_exact(x), inf) < ...
     10*f.vscale.*f.epslevel);
 
-f = testclass.make(@(x) exp(1i*pi*x), [], [], pref);
+f = testclass.make(@(x) exp(1i*pi*x), [], pref);
 f_exact = @(x) exp(1i*pi*x);
 pass(4) = (norm(feval(f, x) - f_exact(x), inf) < ...
     10*f.vscale.*f.epslevel);
@@ -58,7 +58,7 @@ pass(7) = (all(size(err) == [10 10 10])) && (norm(err(:), inf) < ...
 %%
 % Check operation for array-valued chebtech objects.
 
-f = testclass.make(@(x) [(2+sin(pi*x)).*exp(1i*pi*x), -(2+sin(pi*x)).*exp(1i*pi*x), 2+sin(pi*x)], [], [], pref);
+f = testclass.make(@(x) [(2+sin(pi*x)).*exp(1i*pi*x), -(2+sin(pi*x)).*exp(1i*pi*x), 2+sin(pi*x)], [], pref);
 f_exact = @(x) [(2+sin(pi*x)).*exp(1i*pi*x), -(2+sin(pi*x)).*exp(1i*pi*x), 2+sin(pi*x)];
 err = feval(f, x) - f_exact(x);
 pass(8) = all(max(abs(err)) < 10*max(f.vscale.*f.epslevel));
@@ -67,7 +67,7 @@ pass(8) = all(max(abs(err)) < 10*max(f.vscale.*f.epslevel));
 % Test for evaluating array-valued chebtech objects at matrix arguments if
 % the operation makes sense.
 
-f = testclass.make(@(x) [sin(pi*x) cos(pi*x) exp(1i*pi*x)], [], [], pref);
+f = testclass.make(@(x) [sin(pi*x) cos(pi*x) exp(1i*pi*x)], [], pref);
 x2 = [-1 0 1 ; .25 .5 .75];
 fx = feval(f, x2);
 f_exact = [0 0 0 -1 1 -1 exp(-1i*pi) 1 exp(1i*pi)

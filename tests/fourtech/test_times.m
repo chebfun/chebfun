@@ -21,34 +21,34 @@ beta = -0.526634844879922 - 0.685484380523668i;
 % Check operation in the face of empty arguments.
 
 f = testclass.make();
-g = testclass.make(@(x) sin(pi*x), [], [], pref);
+g = testclass.make(@(x) sin(pi*x), [], pref);
 pass(1) = (isempty(f .* f) && isempty(f .* g) && isempty(g .* f));
 
 %%
 % Check multiplication by scalars.
 
 f_op = @(x) sin(cos(pi*x));
-f = testclass.make(f_op, [], [], pref);
+f = testclass.make(f_op, [], pref);
 pass(2:3) = test_mult_function_by_scalar(f, f_op, alpha, x);
 
 f_op = @(x) exp([sin(pi*x) -cos(pi*x)]);
-f = testclass.make(f_op, [], [], pref);
+f = testclass.make(f_op, [], pref);
 pass(4:5) = test_mult_function_by_scalar(f, f_op, alpha, x);
 
 %%
 % Check multiplication by constant functions.
 
 f_op = @(x) 3./(4-cos(pi*x));
-f = testclass.make(f_op, [], [], pref);
+f = testclass.make(f_op, [], pref);
 g_op = @(x) alpha*ones(size(x));
-g = testclass.make(g_op, [], [], pref);
+g = testclass.make(g_op, [], pref);
 pass(6) = test_mult_function_by_function(f, f_op, g, g_op, x, false);
 
 % This should fail with a dimension mismatch error from fourtech.mtimes().
 f_op = @(x) [sin(pi*x) cos(pi*x)];
-f = testclass.make(f_op, [], [], pref);
+f = testclass.make(f_op, [], pref);
 g_op = @(x) repmat([alpha, beta], size(x, 1), 1);
-g = testclass.make(g_op, [], [], pref);
+g = testclass.make(g_op, [], pref);
 pass(7) = test_mult_function_by_function(f, f_op, g, g_op, x, false);
 
 %%
@@ -56,30 +56,30 @@ pass(7) = test_mult_function_by_function(f, f_op, g, g_op, x, false);
 % functions.
 
 f_op = @(x) ones(size(x));
-f = testclass.make(f_op, [], [], pref);
+f = testclass.make(f_op, [], pref);
 pass(8) = test_mult_function_by_function(f, f_op, f, f_op, x, false);
 
 f_op = @(x) exp(cos(pi*x)) - 1;
-f = testclass.make(f_op, [], [], pref);
+f = testclass.make(f_op, [], pref);
 
 g_op = @(x) 3./(4-cos(pi*x));
-g = testclass.make(g_op, [], [], pref);
+g = testclass.make(g_op, [], pref);
 pass(9) = test_mult_function_by_function(f, f_op, g, g_op, x, false);
 
 g_op = @(x) cos(1e4*pi*x);
-g = testclass.make(g_op, [], [], pref);
+g = testclass.make(g_op, [], pref);
 pass(10) = test_mult_function_by_function(f, f_op, g, g_op, x, false);
 
 g_op = @(x) exp(1i*1e2*pi*x);
-g = testclass.make(g_op, [], [], pref);
+g = testclass.make(g_op, [], pref);
 pass(11) = test_mult_function_by_function(f, f_op, g, g_op, x, false);
 
 %%
 % Check operation for array-valued fourtech objects.
 f_op = @(x) [sin(pi*x) cos(30*pi*x) 3./(4-cos(pi*x))];
-f = testclass.make(f_op, [], [], pref);
+f = testclass.make(f_op, [], pref);
 g_op = @(x) tanh(sin(pi*x)+cos(pi*x));
-g = testclass.make(g_op, [], [], pref);
+g = testclass.make(g_op, [], pref);
 h1 = f .* g;
 h2 = g .* f;
 pass(12) = (norm(h1.coeffs-h2.coeffs) < 10*max(h1.epslevel));
@@ -88,7 +88,7 @@ err = feval(h1, x) - h_exact(x);
 pass(13) = max(abs(err(:))) < 10*max(h1.epslevel);
 
 g_op = @(x) [tanh(sin(pi*x)+cos(pi*x)) sin(pi*x) exp(sin(pi*x))];
-g = testclass.make(g_op, [], [], pref);
+g = testclass.make(g_op, [], pref);
 h = f .* g;
 h_exact = @(x) g_op(x).*f_op(x);
 err = feval(h, x) - h_exact(x);
@@ -96,7 +96,7 @@ pass(14) = max(abs(err(:))) < 10*max(h.epslevel);
 
 % This should fail with a dimension mismatch error.
 try
-    g = testclass.make(@(x) [sin(pi*x) cos(pi*x)], [], [], pref);
+    g = testclass.make(@(x) [sin(pi*x) cos(pi*x)], [], pref);
     disp(f .* g);
     pass(15) = false;
 catch ME
@@ -108,7 +108,7 @@ end
 % positivity is performed.
 
 f_op = @(x) exp(cos(pi*x)) + exp(1i*2*pi*x);
-f = testclass.make(f_op, [], [], pref);
+f = testclass.make(f_op, [], pref);
 pass(16) = test_mult_function_by_function(f, f_op, f, f_op, x, false);
 
 g_op = @(t) conj(exp(cos(pi*x)) + exp(1i*2*pi*x));
@@ -116,7 +116,7 @@ g = conj(f);
 pass(17:18) = test_mult_function_by_function(f, f_op, g, g_op, x, true);
 
 f_op = @(x) 1+cos(pi*x);
-f = testclass.make(f_op, [], [], pref);
+f = testclass.make(f_op, [], pref);
 pass(19:20) = test_mult_function_by_function(f, f_op, f, f_op, x, true);
 
 %%
@@ -124,9 +124,9 @@ pass(19:20) = test_mult_function_by_function(f, f_op, f, f_op, x, true);
 
 tol = 50*eps;
 g_op = @(x) 3./(4 - cos(2*pi*x));
-g = testclass.make(g_op, [], [], pref);
+g = testclass.make(g_op, [], pref);
 h1 = f .* g;
-h2 = testclass.make(@(x) f_op(x) .* g_op(x), [], [], pref);
+h2 = testclass.make(@(x) f_op(x) .* g_op(x), [], pref);
 h2 = prolong(h2, length(h1));
 pass(21) = norm(h1.coeffs - h2.coeffs, inf) < tol;
 

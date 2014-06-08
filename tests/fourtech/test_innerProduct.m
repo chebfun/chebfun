@@ -17,27 +17,27 @@ testclass = fourtech();
 % Spot-check a few known results.
 
 % Orthogonality test
-f = testclass.make(@(x) sin(2*pi*x), [], [], pref);
-g = testclass.make(@(x) cos(2*pi*x), [], [], pref);
+f = testclass.make(@(x) sin(2*pi*x), [], pref);
+g = testclass.make(@(x) cos(2*pi*x), [], pref);
 tol_f = 10*f.epslevel.*f.vscale;
 tol_g = 10*g.epslevel.*g.vscale;
 pass(1) = abs(innerProduct(f, g)) < max(tol_f, tol_g);
 
 % Orthogonality test
-g = testclass.make(@(x) cos(4*pi*x), [], [], pref);
+g = testclass.make(@(x) cos(4*pi*x), [], pref);
 tol_g = 10*g.epslevel.*g.vscale;
 pass(2) = abs(innerProduct(f, g)) < max(tol_f, tol_g);
 
 % Easy known result
-f = testclass.make(@(x) exp(cos(pi*x)), [], [], pref);
-g = testclass.make(@(x) exp(-cos(pi*x)), [], [], pref);
+f = testclass.make(@(x) exp(cos(pi*x)), [], pref);
+g = testclass.make(@(x) exp(-cos(pi*x)), [], pref);
 tol_f = 10*f.epslevel.*f.vscale;
 tol_g = 10*g.epslevel.*g.vscale;
 pass(3) = abs(innerProduct(f, g) - 2) < max(tol_f, tol_g);
 
 % Harder known result
-f = testclass.make(@(x) 1 + 0*x, [], [], pref);
-g = testclass.make(@(x) sin(pi*x).^4, [], [], pref);
+f = testclass.make(@(x) 1 + 0*x, [], pref);
+g = testclass.make(@(x) sin(pi*x).^4, [], pref);
 tol_g = 10*g.epslevel.*g.vscale;
 exact = 3/4;
 pass(4) = abs(innerProduct(f, g) - exact) < max(tol_f, tol_g);

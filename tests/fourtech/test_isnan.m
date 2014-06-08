@@ -10,11 +10,11 @@ end
 testclass = fourtech();
 
 % Test a scalar-valued function.
-f = testclass.make(@(x) cos(pi*x), [], [], pref);
+f = testclass.make(@(x) cos(pi*x), [], pref);
 pass(1) = ~isnan(f);
 
 % Test an array-valued function.
-f = testclass.make(@(x) [cos(pi*x), cos(pi*x).^2], [], [], pref);
+f = testclass.make(@(x) [cos(pi*x), cos(pi*x).^2], [], pref);
 pass(2) = ~isnan(f);
 
 % Artificially construct and test a NaN-valued function.

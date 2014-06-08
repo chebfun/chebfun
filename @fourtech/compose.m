@@ -1,4 +1,4 @@
-function f = compose(f, op, g, pref)
+function f = compose(f, op, g, data, pref)
 %COMPOSE   Composition of FOURTECH objects.
 %   COMPOSE(F, OP) returns a FOURTECH representing OP(F) where F is also a
 %   FOURTECH object, and OP is a function handle.
@@ -19,10 +19,14 @@ function f = compose(f, op, g, pref)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Parse inputs:
-if ( nargin < 4 )
+if ( nargin < 5 )
     pref = f.techPref();
 else
     pref = f.techPref(pref);
+end
+
+if ( nargin < 4 )
+    data = struct();
 end
 
 if ( (nargin < 3) || isempty(g) )
@@ -76,7 +80,15 @@ if ( ischar(pref.refinementFunction) )
 end
 
 % Make FOURTECH object:
-f = f.make(op, vscale, f.hscale, pref);
+if ( ~isfield(data, 'vscale') || isempty(data.vscale) )
+    data.vscale = vscale;
+end
+
+if ( ~isfield(data, 'hscale') || isempty(data.hscale) )
+    data.hscale = f.hscale;
+end
+
+f = f.make(op, data, pref);
 f = simplify(f);
 
 % Throw a warning:

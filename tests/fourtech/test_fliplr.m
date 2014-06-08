@@ -12,11 +12,11 @@ testclass = fourtech();
 %%
 % Conduct a few very straightforward tests.
 
-f = testclass.make(@(x) cos(pi*x), [], [], pref);
+f = testclass.make(@(x) cos(pi*x), [], pref);
 pass(1) = isequal(f, fliplr(f));
 
-f = testclass.make(@(x) [sin(pi*x) cos(pi*x)], [], [], pref);
-g = testclass.make(@(x) [cos(pi*x) sin(pi*x)], [], [], pref);
+f = testclass.make(@(x) [sin(pi*x) cos(pi*x)], [], pref);
+g = testclass.make(@(x) [cos(pi*x) sin(pi*x)], [], pref);
 pass(2) = isequal(fliplr(f), g);
 
 end

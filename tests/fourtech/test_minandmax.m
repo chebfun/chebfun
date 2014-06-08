@@ -26,7 +26,7 @@ pass(5) = test_spotcheck_minmax(testclass, @(x) 4/pi*(sin(pi*x) + ...
 % Check operation for array-valued inputs.
 
 fun_op = @(x) [exp(-cos(2*pi*x)) sin(10*pi*x) exp(-sin(pi*(x-0.32)).^100)];
-f = testclass.make(fun_op, [], [], pref);
+f = testclass.make(fun_op, [], pref);
 [y, x] = minandmax(f);
 y_exact = [exp(-1) -1 exp(-1);
            exp(1)   1 1];
@@ -59,7 +59,7 @@ end
 function result = test_spotcheck_minmax(testclass, fun_op, exact_min, ...
     exact_max, pref)
 
-f = testclass.make(fun_op, [], [], pref);
+f = testclass.make(fun_op, [], pref);
 [y, x] = minandmax(f);
 y_exact = [exact_min ; exact_max];
 fx = fun_op(x);

@@ -16,21 +16,21 @@ testclass = fourtech();
 %%
 % Do a few spot-checks.
 
-f = testclass.make(@(x) exp(sin(pi*x)), [], [], pref);
+f = testclass.make(@(x) exp(sin(pi*x)), [], pref);
 pass(1:2) = test_one_qr(f, x);
 pass(3:4) = test_one_qr_with_perm(f, x);
 
-f = testclass.make(@(x) [exp(sin(pi*x)) 3./(4-cos(pi*x))], [], [], pref);
+f = testclass.make(@(x) [exp(sin(pi*x)) 3./(4-cos(pi*x))], [], pref);
 pass(5:6) = test_one_qr(f, x);
 pass(7:8) = test_one_qr_with_perm(f, x);
 
 f = testclass.make(@(x) [ones(size(x)) sin(pi*x) cos(pi*x) sin(2*pi*x) ...
-                         cos(2*pi*x) sin(2*pi*x)], [], [], pref);
+                         cos(2*pi*x) sin(2*pi*x)], [], pref);
 pass(9:10) = test_one_qr(f, x);
 pass(11:12) = test_one_qr_with_perm(f, x);
 
 f = testclass.make(@(x) [3./(4-exp(1i*pi*x)) exp(sin(pi*x)) cos(3*pi*x)], ...
-[], [], pref);
+[], pref);
 pass(13:14) = test_one_qr(f, x);
 pass(15:16) = test_one_qr_with_perm(f, x);
 
@@ -45,7 +45,7 @@ pass(17) = all(err(:) == 0);
 %%
 % Check a rank-deficient problem:
 % [TODO]: Is this correct?
-f = testclass.make(@(x) [cos(pi*x) cos(pi*x) cos(pi*x)], [], [], pref);
+f = testclass.make(@(x) [cos(pi*x) cos(pi*x) cos(pi*x)], [], pref);
 [Q, R] = qr(f, []);
 Q = simplify(Q);
 pass(18) = all(size(Q) == 3) && all(size(R) == 3);
@@ -56,7 +56,7 @@ pass(19) = norm(innerProduct(Q, Q) - I, inf) < ...
 %%
 % Check that the vscale and epslevel come out with the correct size for
 % QR of an array-valued chebtech.
-f = testclass.make(@(x) [sin(pi*x) cos(pi*x) cos(2*pi*x)], [], [], pref);
+f = testclass.make(@(x) [sin(pi*x) cos(pi*x) cos(2*pi*x)], [], pref);
 [Q, R] = qr(f, []);
 pass(20) = isequal(size(Q.vscale), [1 3]) && ...
 isequal(size(Q.epslevel), [1 3]);

@@ -9,7 +9,7 @@ end
 testclass = fourtech();
 
 F = @(x) exp(sin(pi*x));
-f = testclass.make(F, [], [], pref);
+f = testclass.make(F, [], pref);
 
 % Odd prolongation.
 k = 101;
@@ -53,7 +53,7 @@ pass(7) = size(g,1) == 1;
 
 % Array-valued tests.
 F = @(x) exp(sin(pi*x));
-f = testclass.make(@(x) [F(x), -F(x)], [], [], pref);
+f = testclass.make(@(x) [F(x), -F(x)], [], pref);
 k = 101;
 g = prolong(f, k);
 x = testclass.fourpts(k);
@@ -72,7 +72,7 @@ pass(10) = all(fvalues(:) == gvalues(:));
 
 % Values test.
 v = [1 2 3];
-f = testclass.make(v, [], [], pref);
+f = testclass.make(v, [], pref);
 g = prolong(f, 5);
 values = g.coeffs2vals(g.coeffs);
 pass(11) = norm(values - repmat([1 2 3], 5, 1), inf) < ...

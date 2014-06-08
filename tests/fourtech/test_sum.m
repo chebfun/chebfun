@@ -11,17 +11,17 @@ testclass = fourtech();
 
 %%
 % Spot-check integrals for a couple of functions.
-f = testclass.make(@(x) exp(sin(pi*x)) - 1, [], [], pref);
+f = testclass.make(@(x) exp(sin(pi*x)) - 1, [], pref);
 pass(1) = (abs(sum(f) - 0.532131755504017) < 10*f.vscale.*f.epslevel);
 
-f = testclass.make(@(x) 3./(4 - cos(pi*x)), [], [], pref);
+f = testclass.make(@(x) 3./(4 - cos(pi*x)), [], pref);
 pass(2) = (abs(sum(f) - 1.549193338482967) < 10*f.vscale.*f.epslevel);
 
-f = testclass.make(@(x) 1+cos(1e4*pi*x), [], [], pref);
+f = testclass.make(@(x) 1+cos(1e4*pi*x), [], pref);
 exact = 2;
 pass(3) = (abs(sum(f) - exact)/exact < 100*f.vscale.*f.epslevel);
 
-f = testclass.make(@(x) 1 + 1i*cos(40*pi*x), [], [], pref);
+f = testclass.make(@(x) 1 + 1i*cos(40*pi*x), [], pref);
 exact = 2;
 pass(4) = (abs(sum(f) - exact)/exact < 10*f.vscale.*f.epslevel);
 
@@ -29,9 +29,9 @@ pass(4) = (abs(sum(f) - exact)/exact < 10*f.vscale.*f.epslevel);
 % Check a few basic properties.
 a = 2;
 b = -1i;
-f = testclass.make(@(x) exp(cos(pi*x)) - 1, [], [], pref);
+f = testclass.make(@(x) exp(cos(pi*x)) - 1, [], pref);
 df = diff(f);
-g = testclass.make(@(x) cos(4*sin(10*pi*x)), [], [], pref);
+g = testclass.make(@(x) cos(4*sin(10*pi*x)), [], pref);
 dg = diff(g);
 fg = f.*g;
 gdf = g.*df;
@@ -61,7 +61,7 @@ pass(8) = (abs(sum(dg) - (feval(g, 1) - feval(g, -1))) < ...
 
 %%
 % Check operation for array-valued FOURTECH objects.
-f = testclass.make(@(x) [sin(pi*x) 1-cos(1e2*pi*x) sin(cos(pi*x))], [], [], pref);
+f = testclass.make(@(x) [sin(pi*x) 1-cos(1e2*pi*x) sin(cos(pi*x))], [], pref);
 I = sum(f);
 I_exact = [0 2 0];
 pass(9) = (max(abs(I - I_exact)) < 10*max(f.vscale.*f.epslevel));

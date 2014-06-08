@@ -9,7 +9,9 @@ function f = imag(f)
 
 if ( isreal(f) )
     % Input was real, so output a zero FOURTECH:
-    f = f.make(zeros(1, size(f.values, 2)), f.vscale, f.hscale);
+    data.vscale = f.vscale;
+    data.hscale = f.hscale;
+    f = f.make(zeros(1, size(f.values, 2)), data);
     f.ishappy = 1;
 else
     % Compute the imaginary part of the values:

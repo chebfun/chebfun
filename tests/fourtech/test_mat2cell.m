@@ -8,9 +8,9 @@ end
 
 testclass = fourtech();
 
-f = testclass.make(@(x) [sin(pi*x) cos(pi*x) exp(cos(pi*x))], [], [], pref);
-g = testclass.make(@(x) sin(pi*x), [], [], pref);
-h = testclass.make(@(x) [cos(pi*x) exp(cos(pi*x))], [], [], pref);
+f = testclass.make(@(x) [sin(pi*x) cos(pi*x) exp(cos(pi*x))], [], pref);
+g = testclass.make(@(x) sin(pi*x), [], pref);
+h = testclass.make(@(x) [cos(pi*x) exp(cos(pi*x))], [], pref);
 
 F = mat2cell(f, 1, [1 2]);
 pass(1) = sum(F{1} - g) < 10*g.vscale.*g.epslevel;

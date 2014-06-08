@@ -21,14 +21,14 @@ beta = -0.526634844879922 - 0.685484380523668i;
 % Check division by single scalars.
 
 f_op = @(x) sin(10*pi*x);
-f = testclass.make(f_op, [], [], pref);
+f = testclass.make(f_op, [], pref);
 pass(1) = test_div_function_by_scalar(f, f_op, alpha, x);
 
 g = f ./ 0;
 pass(2) = isnan(g);
 
 f_op = @(x) [sin(10*pi*x) sin(20*pi*x)];
-f = testclass.make(f_op, [], [], pref);
+f = testclass.make(f_op, [], pref);
 pass(3) = test_div_function_by_scalar(f, f_op, alpha, x);
 
 g = f ./ 0;
@@ -50,21 +50,21 @@ pass(6) = isnan(g) && ~any(isnan(g.coeffs(:, 1))) ...
 % Check division of a scalar by a FOURTECH object.
 
 f_op = @(x) exp(cos(pi*x));
-f = testclass.make(@(x) exp(cos(pi*x)), [], [], pref);
+f = testclass.make(@(x) exp(cos(pi*x)), [], pref);
 pass(7) = test_div_scalar_by_function(alpha, f, f_op, x);
 
 %%
 % Check division of two FOURTECH objects.
 
 g_op = @(x) exp(cos(20*pi*x));
-g = testclass.make(g_op, [], [], pref);
+g = testclass.make(g_op, [], pref);
 
 f_op = @(x) exp(cos(20*pi*x)) - 1;
-f = testclass.make(f_op, [], [], pref);
+f = testclass.make(f_op, [], pref);
 pass(8) = test_div_function_by_function(f, f_op, g, g_op, x);
 
 f_op = @(x) cos(1e3*pi*x);
-f = testclass.make(f_op, [], [], pref);
+f = testclass.make(f_op, [], pref);
 pass(9) = test_div_function_by_function(f, f_op, g, g_op, x);
 
 %%
@@ -72,7 +72,7 @@ pass(9) = test_div_function_by_function(f, f_op, g, g_op, x);
 
 % Can't divide by a scalar matrix with multiple rows.
 try
-    f = testclass.make(@(x) sin(x), [], [], pref);
+    f = testclass.make(@(x) sin(x), [], pref);
     disp(f ./ [1 ; 2]);
     pass(10) = false;
 catch ME
@@ -81,7 +81,7 @@ end
 
 % Can't divide by a scalar row matrix if the column counts don't match.
 try
-    f = testclass.make(@(x) [sin(x) cos(x)], [], [], pref);
+    f = testclass.make(@(x) [sin(x) cos(x)], [], pref);
     disp(f ./ [1 2 3]);
     pass(11) = false;
 catch ME
@@ -93,14 +93,14 @@ end
 
 tol = 100*eps;
 
-f = testclass.make(@(x) sin(10*pi*x), [], [], pref);
+f = testclass.make(@(x) sin(10*pi*x), [], pref);
 h1 = f ./ alpha;
-h2 = testclass.make(@(x) sin(10*pi*x) ./ alpha, [], [], pref);
+h2 = testclass.make(@(x) sin(10*pi*x) ./ alpha, [], pref);
 pass(12) = norm(h1.coeffs - h2.coeffs, inf) < tol;
 
-g = testclass.make(@(x) exp(cos(pi*x)), [], [], pref);
+g = testclass.make(@(x) exp(cos(pi*x)), [], pref);
 h1 = f ./ g;
-h2 = testclass.make(@(x) sin(10*pi*x) ./ exp(cos(pi*x)), [], [], pref);
+h2 = testclass.make(@(x) sin(10*pi*x) ./ exp(cos(pi*x)), [], pref);
 pass(13) = norm(h1.coeffs - h2.coeffs, inf) < tol;
 end
 

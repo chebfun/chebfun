@@ -43,7 +43,9 @@ numInts = numel(s) - 1;
 F = cell(numInts,1);
 for j=1:numInts
     op = @(x) feval(f,.5*[1 - x, 1 + x] * [s(j) ; s(j+1)]);
-    F{j} = f.make(op,f.vscale,f.hscale,f.techPref());
+    data.vscale = f.vscale;
+    data.hscale = f.hscale;
+    F{j} = f.make(op, data, f.techPref());
 end
 
 if ( numInts == 1 )
