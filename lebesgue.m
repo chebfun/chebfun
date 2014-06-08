@@ -44,7 +44,7 @@ w = baryWeights(x);
 % Set preferences.
 pref = chebfunpref();
 pref.techPrefs.sampleTest = false;
-if ( strcmp(pref.tech, 'chebtech') )
+if ( isa(pref.tech(), 'chebtech') )
     % In between the interpolation nodes, the Lebesgue function is guaranteed
     % by definition to be a polynomial of degree at most length(x) - 1.
     pref.techPrefs.exactLength = length(x);
