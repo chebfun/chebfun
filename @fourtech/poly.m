@@ -27,7 +27,7 @@ if ( isempty(f) )
     return
 end
 
-% Simply return the coefficients:
-out = f.coeffs;
+% Simply return the transpose of the coefficients:
+out = f.coeffs.';
     
 end

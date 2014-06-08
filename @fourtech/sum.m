@@ -24,6 +24,7 @@ if ( nargin > 1 && dim == 2 )
     vscale = max(abs(f.values), [], 1);
     f.epslevel = sum(f.epslevel.*f.vscale, 2)./vscale;
     f.vscale = vscale;
+    f.isReal = all(f.isReal);
     out = f;
     return
 end

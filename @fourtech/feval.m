@@ -51,6 +51,9 @@ else
     end
 end    
 
+% Return a real result wherever f is real.
+y(:,f.isReal) = real( y(:,f.isReal) );
+
 % Reshape the output if possible:
 if ( (m == 1) && ( (ndimsx > 2) || (sizex(2) > 1) ) )
     y = reshape(y, sizex);
@@ -65,11 +68,8 @@ end
         degreePoly = size(c,1);
         q = ones(nValsX,1)*c(1,:);
         for j = 2:degreePoly
-            q = bsxfun(@minus,bsxfun(@times,x,q),-c(j,:));
+            q = bsxfun(@plus,bsxfun(@times,x,q),c(j,:));
         end
     end
-
-% Return a real result wherever f is real.
-y(:,f.isReal) = real( y(:,f.isReal) );
 
 end

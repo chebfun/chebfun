@@ -39,7 +39,7 @@ pass(4) = isnan(g);
 % FOURTECH object.
 
 g = f ./ [alpha beta];
-g_exact = @(x) [sin(10*pi*x)./alpha cos(20*pi*x)./beta];
+g_exact = @(x) [sin(10*pi*x)./alpha sin(20*pi*x)./beta];
 pass(5) = norm(feval(g, x) - g_exact(x), inf) < 100*max(g.epslevel);
 
 g = f ./ [alpha 0];
@@ -63,7 +63,7 @@ f_op = @(x) exp(cos(20*pi*x)) - 1;
 f = testclass.make(f_op, [], [], pref);
 pass(8) = test_div_function_by_function(f, f_op, g, g_op, x);
 
-f_op = @(x) cos(1e4*pi*x);
+f_op = @(x) cos(1e3*pi*x);
 f = testclass.make(f_op, [], [], pref);
 pass(9) = test_div_function_by_function(f, f_op, g, g_op, x);
 
@@ -117,7 +117,8 @@ end
 function result = test_div_scalar_by_function(alpha, f, f_op, x)
     g = alpha ./ f;
     g_exact = @(x) alpha ./ f_op(x);
-    result = norm(feval(g, x) - g_exact(x), inf) < 100*max(g.vscale.*g.epslevel);
+    err = norm(feval(g, x) - g_exact(x), inf);
+    result = err < 100*max(g.vscale.*g.epslevel);
 end
 
 % Test the division of two FOURTECH objects F and G, specified by F_OP and
@@ -125,6 +126,6 @@ end
 function result = test_div_function_by_function(f, f_op, g, g_op, x)
     h = f ./ g;
     h_exact = @(x) f_op(x) ./ g_op(x);
-    norm(feval(h, x) - h_exact(x), inf);
-    result = norm(feval(h, x) - h_exact(x), inf) < 100*max(h.vscale.*h.epslevel);
+    err = norm(feval(h, x) - h_exact(x), inf);
+    result = err < 100*max(h.vscale.*h.epslevel);
 end

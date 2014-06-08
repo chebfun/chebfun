@@ -20,8 +20,10 @@ function [vals, pos] = minandmax(f)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Simply create a chebfun of the FOURTECH and call minandmax on it.
-g = chebtech2(@(x) f.feval(x));
+% Simply create a chebtech of the FOURTECH and call minandmax on it.
+% We know f will be smooth since it is periodic, thus chebtech should be
+% able to beautifully compute the roots.
+g = chebtech1(@(x) f.feval(x));
 [vals,pos] = minandmax(g);
 
 end

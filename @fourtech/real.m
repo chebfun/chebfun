@@ -27,4 +27,8 @@ end
 
 f.isReal = true(1,size(f,2));
 
+% Simplify the result in case the imaginary part was contributing more to
+% the length.
+f = simplify(f);
+
 end

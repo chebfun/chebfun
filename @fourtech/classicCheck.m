@@ -127,6 +127,7 @@ if ( all(max(ac(1:testLength, :)) < epslevel) ) % We have converged! Chop tail:
     %
     % So the number of coefficients that will be thrown away is actually 2*cutoff-1.
     %
+    cutoff = 2*cutoff-1;
     
 else
 

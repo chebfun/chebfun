@@ -30,24 +30,24 @@ pass(3) = max(abs(x - [1/sqrt(2) ; 1/sqrt(2)])) < max(tol_f, tol_g);
 pass(4) = max(abs(err.values(:))) < max(tol_f, tol_g);
 
 % A known least-squares solution.
-f = testclass.make(@(x) [ones(size(x)) x x.^2 x.^3], [], [], pref);
-g = testclass.make(@(x) x.^4 + x.^3 + x + 1, [], [], pref);
+f = testclass.make(@(x) [ones(size(x)) cos(pi*x) sin(pi*x)], [], [], pref);
+g = testclass.make(@(x) cos(pi*x), [], [], pref);
 tol_f = 10*max(f.vscale.*f.epslevel);
 tol_g = 10*max(f.vscale.*f.epslevel);
 x = f \ g;
-pass(5) = max(abs(x - [32/35 ; 1 ; 6/7 ; 1])) < max(tol_f, tol_g);
+pass(5) = max(abs(x - [0 ; 1 ; 0])) < max(tol_f, tol_g);
 
 %%
 % Check error conditions.
 
 % MLDIVIDE doesn't work between a FOURTECH and a non-FOURTECH.
 try
-    f = testclass.make(@(x) [sin(x) cos(x) exp(x)], [], [], pref);
+    f = testclass.make(@(x) [sin(pi*x) cos(pi*x) exp(1i*pi*x)], [], [], pref);
     f \ 2; %#ok<VUNUS>
     pass(6) = 0;
 catch ME
     pass(6) = strcmp(ME.identifier, ...
-        'CHEBFUN:FOURTECH:mldivide:chebtechMldivideUnknown');
+        'CHEBFUN:FOURTECH:mldivide:fourtechMldivideUnknown');
 end
 
 end

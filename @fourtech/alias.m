@@ -45,10 +45,18 @@ if ( m > n )
     return
 end
 
-% TODO: We're just going to truncate, rather than alias.
+% For now we just chop off the unwanted coefficients.
+% TODO: Use the aliasing formula for Fourier coefficients
+
+%
+% This code simply chops off the unwanted coefficients.
 n = size(coeffs, 1);
 n2 = floor(n/2);
-coeffs(end-n2+1+m:end, :) = [];
-coeffs(1:n2-m, :) = [];
+% Negative modes to remove:
+negModeIndex = (n + 1 - n2 + floor(m/2)):n;
+% Positive modes to remove
+posModeIndex = 1:(n2-ceil(m/2)+mod(n,2));
+coeffs(negModeIndex, :) = [];
+coeffs(posModeIndex, :) = [];
 
 end

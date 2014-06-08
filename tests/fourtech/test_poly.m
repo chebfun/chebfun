@@ -1,49 +1,45 @@
-% Test file for chebtech/poly.m
+% Test file for fourtech/poly.m
 
 function pass = test_poly(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = chebtech.techPref();
+    pref = fourtech.techPref();
 end
 
-for n = 1:2
-    if ( n == 1 )
-        testclass = chebtech1();
-    else 
-        testclass = chebtech2();
-    end
+testclass = fourtech();
 
-    %%
-    % Check a few simple examples.
-    
-    f = testclass.make(@(x) zeros(size(x)), [], [], pref);
-    p = poly(f);
-    pass(n, 1) = (norm(p, inf) <= 10*f.vscale.*f.epslevel);
+%%
+% Check a few simple examples.
 
-    f = testclass.make(@(x) 3*ones(size(x)), [], [], pref);
-    p = poly(f);
-    pass(n, 2) = (norm(p - 3, inf) < 10*f.vscale.*f.epslevel);
-    
-    f = testclass.make(@(x) 6.4*x - 3i, [], [], pref);
-    p = poly(f);
-    pass(n, 3) = (norm(p - [6.4 (-3i)], inf) < 10*f.vscale.*f.epslevel);
-    
-    f = testclass.make(@(x) 2i*x.^5 - 3.2*x.^4 + 2*x.^2 - (1.2 + 3i), [], [], pref);
-    p = poly(f);
-    pass(n, 4) = (norm(p - [2i (-3.2) 0 2 0 -(1.2 + 3i)], inf) ...
-        < 10*f.vscale.*f.epslevel);
-    
-    %%
-    % Verify operation for array-valued chebtech objects.
-    
-    f = testclass.make(@(x) [3*ones(size(x)), (6.4*x - 3i), ... 
-        (4*x.^2 - 2i*x + 3.7)], [], [], pref);
-    p = poly(f);
-    p_exact = [0 0     3;
-               0 6.4   (-3i);
-    	   4 (-2i) 3.7];
-    pass(n, 5) = (norm(p(:) - p_exact(:), inf) < 10*max(f.vscale.*f.epslevel));
-end
+f = testclass.make(@(x) zeros(size(x)), [], [], pref);
+p = poly(f);
+pass(1) = (norm(p, inf) <= 10*f.vscale.*f.epslevel);
+
+f = testclass.make(@(x) 3*ones(size(x)), [], [], pref);
+p = poly(f);
+pass(2) = (norm(p - 3, inf) < 10*f.vscale.*f.epslevel);
+
+f = testclass.make(@(x) 1+cos(pi*x), [], [], pref);
+p = poly(f);
+pass(3) = (norm(p - [0.5 1 0.5], inf) < 10*f.vscale.*f.epslevel);
+
+f = testclass.make(@(x) 1 + exp(2*1i*pi*x) + exp(-1i*pi*x), [], [], pref);
+p = poly(f);
+pass(4) = (norm(p - [1 0 1 1 0], inf) ...
+    < 10*f.vscale.*f.epslevel);
+
+%%
+% Verify operation for array-valued chebtech objects.
+
+f = testclass.make(@(x) [3*ones(size(x)), 1+cos(pi*x), ... 
+    1 + exp(2*1i*pi*x) + exp(-1i*pi*x)], [], [], pref);
+p = poly(f);
+p_exact = [0 0   1;...
+           0 0.5 0;...   
+           3 1   1;...
+           0 0.5 1;...
+           0 0   0].';
+pass(5) = (norm(p(:) - p_exact(:), inf) < 10*max(f.vscale.*f.epslevel));
 
 end

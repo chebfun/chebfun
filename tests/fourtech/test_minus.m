@@ -14,7 +14,7 @@ seedRNG(6178);
 x = 2 * rand(100, 1) - 1;
 
 % A random number to use as an arbitrary additive constant.
-alpha = randn() + 1i*randn();
+alpha = -0.194758928283640 + 0.075474485412665i;
 
 %%
 % Check operation in the face of empty arguments.
@@ -59,25 +59,29 @@ f_op = @(x) [sin(10*pi*x) sin(cos(pi*x)) exp(cos(pi*x))];
 f = testclass.make(f_op, [], [], pref);
 pass(12:13) = test_sub_function_and_scalar(f, f_op, alpha, x);
 
+g_op = @(x) [sin(pi*x) exp(1i*pi*x).*exp(1i*pi*x) cos(pi*x)];
+g = testclass.make(g_op, [], [], pref);
+pass(14:15) = test_sub_function_and_function(f, f_op, g, g_op, x);
+
 % This should fail with a dimension mismatch error.
 g_op = @(x) sin(10*pi*x);
 g = testclass.make(g_op, [], [], pref);
 try
     h = f - g; %#ok<NASGU>
-    pass(14) = false;
+    pass(16) = false;
 catch ME
-    pass(14) = strcmp(ME.message, 'Matrix dimensions must agree.');
+    pass(16) = strcmp(ME.message, 'Matrix dimensions must agree.');
 end
 
 %%
 % Check that direct construction and MINUS give comparable results.
 
 tol = 10*eps;
-f = testclass.make(@(x) sin(pi*x), [], [], pref);
-g = testclass.make(@(x) cos(10*pi*x) - 1, [], [], pref);
+f = testclass.make(@(x) sin(pi*cos(3*pi*x)), [], [], pref);
+g = testclass.make(@(x) cos(pi*sin(10*pi*x)) - 1, [], [], pref);
 h1 = f - g;
-h2 = testclass.make(@(x) sin(pi*x) - (cos(10*pi*x) - 1), [], [], pref);
-pass(15) = norm(h1.coeffs - h2.coeffs, inf) < tol;
+h2 = testclass.make(@(x) sin(pi*cos(3*pi*x)) - (cos(pi*sin(10*pi*x)) - 1), [], [], pref);
+pass(17) = norm(h1.coeffs - h2.coeffs, inf) < tol;
 
 %%
 % Check that subtracting a FOURTECH and an unhappy FOURTECH gives an
@@ -86,9 +90,28 @@ pass(15) = norm(h1.coeffs - h2.coeffs, inf) < tol;
 f = testclass.make(@(x) cos(pi*x));    % Happy
 g = testclass.make(@(x) cos(x));   % Unhappy
 h = f - g;  % Subtract unhappy from happy.
-pass(16) = (~g.ishappy) && (~h.ishappy);
+pass(18) = (~g.ishappy) && (~h.ishappy);
 h = g - f;  % Subtract happy from unhappy.
-pass(17) = (~g.ishappy) && (~h.ishappy);
+pass(19) = (~g.ishappy) && (~h.ishappy);
+
+%%
+% Test subtraction of array-valued scalar to array-valued FOURTECH.
+
+f = testclass.make(@(x) exp([sin(pi*x) cos(pi*x) -sin(pi*x).^2]));
+g = f - [1 2 3];
+g_exact = @(x) [exp(sin(pi*x))-1 exp(cos(pi*x))-2 exp(-sin(pi*x).^2)-3];
+err = feval(g, x) - g_exact(x);
+pass(20) = norm(err(:), inf) < 10*max(g.vscale.*g.epslevel);
+
+%%
+% Test scalar expansion in FOURTECH argument.
+
+f = testclass.make(@(x) sin(pi*x));
+g = f - [1 2 3];
+g_exact = @(x) [(-1 + sin(pi*x)) (-2 + sin(pi*x)) (-3 + sin(pi*x))];
+err = feval(g, x) - g_exact(x);
+pass(21) = isequal(size(g.coeffs, 2), 3) && norm(err(:), inf) < ...
+    10*max(g.vscale.*g.epslevel);
 
 end
 

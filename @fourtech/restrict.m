@@ -1,4 +1,4 @@
-function f = restrict(f, s)
+function F = restrict(f, s)
 %RESTRICT   Restrict a FOURTECH to a subinterval.
 %   RESTRICT(F, S) returns a FOURTECH that is restricted to the subinterval
 %   [S(1),S(2)] of [-1,1]. Note that that since FOURTECH objects only live on
@@ -13,12 +13,16 @@ function f = restrict(f, s)
 %   restrict(F2, S)}.
 %
 %   Note that restrict does not 'simplify' its output.
+%
+%   Warning: If f is not also smooth and periodic on f, then the resulting
+%   FOURTECH will not be happy.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with empty case:
 if ( isempty(f) )
+    F = f;
     return
 end
 
@@ -27,22 +31,24 @@ if ( (s(1) < -1) || (s(end) > 1) || (any(diff(s) <= 0)) )
     error('FOURTECH:restrict:badinterval', 'Not a valid interval.')
 elseif ( (numel(s) == 2) && all(s == [-1, 1]) )
     % Nothing to do here!
+    F = f;
     return
 end
 
-% Grab sizes:
-m = size(f,2);
+% Determine number of intervals.
 numInts = numel(s) - 1;
 
-% Simply make a new fourtech object on the restricted domain.  This handled
-% by a linear scaling of the input arguments to f.
-% Grab sizes:
-op = @(x) feval(f,.5*[1 - x, 1 + x] * [s(1:end-1) ; s(2:end)]);
-f = f.make(op,f.vscale,f.hscale,f.techPref());
+% Simply make a new fourtech object on the restricted domains.  
+% This handled by the linear scaling of the input arguments to f.
+F = cell(numInts,1);
+for j=1:numInts
+    op = @(x) feval(f,.5*[1 - x, 1 + x] * [s(j) ; s(j+1)]);
+    F{j} = f.make(op,f.vscale,f.hscale,f.techPref());
+end
 
-if ( numInts > 1 )
-    % Convert to a cell-array:
-    f = mat2cell(f, repmat(m, 1, numInts));
+if ( numInts == 1 )
+    % Remove f from the cell.
+    F = F{1};
 end
 
 end

@@ -197,10 +197,10 @@ classdef chebfun
 
             if ( doTrunc )
                 % Truncate the CHEBFUN to the required length:
-                if strcmpi(pref.tech,'fourtech')
+                if strcmpi(func2str(pref.tech),'fourtech')
                     c = fourcoeffs(f, truncLength);
                 else
-                    c = chebpoly(f, truncLength);
+                    c = chebcoeffs(f, truncLength);
                 end
                 f = chebfun(c.', f.domain([1, end]), 'coeffs','tech',pref.tech);
             end

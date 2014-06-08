@@ -33,7 +33,7 @@ elseif ( isa(c, 'double') )         % FOURTECH * double
     
     f.values = f.values*c;
     f.coeffs = f.coeffs*c;
-    f.isReal = repmat(any(f.isReal) & isreal(c),1,size(c,2));
+    f.isReal = repmat(all(f.isReal) & isreal(c),1,size(c,2));
     
     if ( numel(c) == 1 )
         % See FOURTECH CLASSDEF file for documentation on this.

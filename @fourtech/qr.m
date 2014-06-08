@@ -73,23 +73,30 @@ newN = 2*max(n, numCols);
 A = get(prolong(f, newN), 'values');
 
 % Create the Fourier nodes and quadrature weights:
-x = linspace(-pi, pi, newN+1); x(end) = [];
-w = ones(newN,1)'*(2*pi)/newN;
+x = f.fourpts(newN);
+w = f.quadwts(newN);
+% x = linspace(-1, 1, newN+1); x(end) = [];
+% w = ones(newN,1)'*2/newN;
 
 % Define the inner product as an anonymous function:
 ip = @(f, g) w * (conj(f) .* g) ;
 
 % Work with sines and cosines instead of complex exponentials.
-E1 = cos(x'*(0:floor(numCols/2)))/sqrt(pi); E1(:,1) = E1(:,1)/sqrt(2); 
-E2 = sin(x'*(1:ceil(numCols/2)-1))/sqrt(pi);
+E1 = cos(pi*x*(0:floor(numCols/2))); E1(:,1) = E1(:,1)/sqrt(2); 
+E2 = sin(pi*x*(1:ceil(numCols/2)-1));
 E = zeros(size(A));
 E(:,[1 2:2:end]) = E1; 
 E(:,3:2:end) = E2; 
+
 % Call the abstract QR method:
 [Q, R] = abstractQR(A, E, ip, @(v) norm(v, inf), tol);
 
 f.values = Q; 
 f.coeffs = f.vals2coeffs(Q); 
+
+% If any columns of f where not real, we cannot guarantee that the colummns
+% of Q should remain real.
+f.isReal(:) = all(f.isReal);
 
 % Update the vscale:
 f.vscale = max(abs(f.values), [], 1);

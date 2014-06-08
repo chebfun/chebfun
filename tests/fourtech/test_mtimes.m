@@ -57,15 +57,29 @@ g_exact = @(x) [sin(10*pi*x) cos(20*pi*x) cos(sin(pi*x))]*A;
 err = abs(feval(g, x) - g_exact(x));
 pass(8) = max(err(:)) < 10*max(g.vscale.*g.epslevel);
 
+f = testclass.make(@(x) [exp(1i*11*pi*x) cos(20*pi*x) cos(sin(pi*x))], [], [], pref);
+g = f*A;
+g_exact = @(x) [exp(1i*11*pi*x) cos(20*pi*x) cos(sin(pi*x))]*A;
+err = abs(feval(g, x) - g_exact(x));
+pass(9) = max(err(:)) < 10*max(g.vscale.*g.epslevel);
+
+f = testclass.make(@(x) [exp(1i*11*pi*x) cos(20*pi*x) cos(sin(pi*x))], [], [], pref);
+A = randn(3, 3) + 1i*randn(3, 3);
+g = f*A;
+g_exact = @(x) [exp(1i*11*pi*x) cos(20*pi*x) cos(sin(pi*x))]*A;
+err = abs(feval(g, x) - g_exact(x));
+pass(10) = max(err(:)) < 10*max(g.vscale.*g.epslevel);
+
 %%
 % Verify error handling and corner cases.
 
 % Multiply non-scalar double and FOURTECH.
 try
     f = testclass.make(@(x) exp(cos(pi*x)));
-    disp([1 2 3]*f)
+    disp([1 2 3]*f);
+    pass(11) = false;
 catch ME
-    pass(9) = strcmp(ME.identifier, 'CHEBFUN:FOURTECH:mtimes:size') ...
+    pass(11) = strcmp(ME.identifier, 'CHEBFUN:FOURTECH:mtimes:size') ...
         && strcmp(ME.message, 'Inner matrix dimensions must agree.');
 end
 
@@ -73,9 +87,9 @@ end
 try
     f = testclass.make(@(x) [sin(10*pi*x) cos(20*pi*x)]);
     disp(f*[1 ; 2 ; 3]);
-    pass(10) = false;
+    pass(12) = false;
 catch ME
-    pass(10) = strcmp(ME.identifier, 'CHEBFUN:FOURTECH:mtimes:size2') ...
+    pass(12) = strcmp(ME.identifier, 'CHEBFUN:FOURTECH:mtimes:size2') ...
         && strcmp(ME.message, 'Inner matrix dimensions must agree.');
 end
 
@@ -83,17 +97,17 @@ end
 try
     g = testclass.make(@(x) cos(20*pi*x));
     disp(f*g);
-    pass(11) = false;
+    pass(13) = false;
 catch ME
-    pass(11) = strcmp(ME.message, 'Use .* to multiply FOURTECH objects.');
+    pass(13) = strcmp(ME.message, 'Use .* to multiply FOURTECH objects.');
 end
 
 % Using * to multiply a FOURTECH and something else.
 try
     disp(f*uint8(128));
-    pass(12) = false;
+    pass(14) = false;
 catch ME
-    pass(12) = strcmp(ME.message, ...
+    pass(14) = strcmp(ME.message, ...
         'mtimes does not know how to multiply a FOURTECH and a uint8.');
 end
 

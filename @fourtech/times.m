@@ -73,7 +73,7 @@ if ( fm ~= gm )
         g.values = repmat(g.values, 1, fm);
         g.coeffs = repmat(g.coeffs, 1, fm);
     else
-        error('FOURTECH:times:dim2', ...
+        error('CHEBFUN:FOURTECH:times:dim2', ...
             'Inner matrix dimensions must agree.');
     end
 end

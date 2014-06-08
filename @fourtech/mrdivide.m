@@ -28,6 +28,7 @@ elseif ( isa(B, 'double') )  % FOURTECH / double
         X.values = A.values/B;              % Divide values
         X.coeffs = A.coeffs/B;              % Divide coeffs
         X.vscale = A.vscale/abs(B);         % Divide vscale
+        X.isReal = A.isReal & isreal(B);
     else
         % For matrix case, we do least squares via QR:
         [Q, R] = qr(A, 0);
@@ -40,7 +41,7 @@ elseif ( isa(A, 'double') )  % double / FOURTECH
     % Return the transpose for the output.
     X = Q*(A/R).';
 elseif ( isa(B, 'fourtech') && isa(A, 'fourtech') )
-    error('CHEBFUN:FOURTECH:mrdivide:fourtechDivChebtech', ...
+    error('CHEBFUN:FOURTECH:mrdivide:fourtechDivFourtech', ...
         'Use ./ to divide by a FOURTECH.');
 else
     error('CHEBFUN:FOURTECH:mrdivide:badArg', '%s/%s is not well-defined.', ...

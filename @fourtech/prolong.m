@@ -28,7 +28,7 @@ end
 if ( nIn == 1 )
     m = size(f.values, 2);
     f.values = repmat(f.values, nOut, 1);
-    f.coeffs = [zeros(nDiff, m) ; f.coeffs(1,:)];
+    f.coeffs = f.vals2coeffs(f.values);
     return
 end
 
