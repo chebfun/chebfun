@@ -268,7 +268,6 @@ if ( ~isempty(N.rbc) )
     else
         rbcU = N.rbc(uBlocks{:});
     end
-%     rbcU = N.rbc(uBlocks{:});
     
     % The output might be a CHEBFUN, or a CHEBMATRIX
     if ( isa(rbcU, 'chebfun') )
