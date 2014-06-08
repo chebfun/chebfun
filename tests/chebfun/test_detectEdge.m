@@ -16,35 +16,42 @@ x0 = rand(M,1);
 % Initialise edge vector:
 edge = zeros(M,1);
 
+f = classicfun.constructor(0,struct('domain', [0 1]));
+
 % Jump:
 for j = 1:M
-    edge(j) = chebfun.detectEdge(@(x) exp(x)+cos(7*x)+0.1*sign(x-x0(j)), [0, 1], 1, 1);
+    edge(j) = detectEdge(f, @(x) exp(x)+cos(7*x)+0.1*sign(x-x0(j)), 1, 1);
 end
-pass(1) = norm(edge - x0, inf) < 5e-14;
+err = norm(edge - x0, inf);
+pass(1) = err < 5e-14;
 
 % C1:
 for j = 1:M
-    edge(j) = chebfun.detectEdge(@(x) exp(x)+cos(7*x)+0.1*abs(x-x0(j)), [0, 1], 1, 1);
+    edge(j) = detectEdge(f, @(x) exp(x)+cos(7*x)+0.1*abs(x-x0(j)), 1, 1);
 end
-pass(2) = norm(edge - x0, inf) < 5e-14;
+err = norm(edge - x0, inf);
+pass(2) = err < 5e-14;
 
 % C2:
 for j = 1:M
-    edge(j) = chebfun.detectEdge(@(x) sign(x-x0(j)).*(x-x0(j)), [0, 1], 1, 1);
+    edge(j) = detectEdge(f, @(x) sign(x-x0(j)).*(x-x0(j)), 1, 1);
 end
-pass(3) = norm(edge - x0, inf) < 5e-14;
+err = norm(edge - x0, inf);
+pass(3) = err < 5e-14;
 
 % C3:
 for j = 1:M
-    edge(j) = chebfun.detectEdge(@(x) abs(x-x0(j)).^3, [0, 1], 1, 1);
+    edge(j) = detectEdge(f, @(x) abs(x-x0(j)).^3, 1, 1);
 end
-pass(4) = norm(edge - x0, inf) < 5e-14;
+err = norm(edge - x0, inf);
+pass(4) = err < 5e-14;
 
 % C4:
 for j = 1:M
-    edge(j) = chebfun.detectEdge(@(x) sign(x-x0(j)).*(x-x0(j)).^3, [0, 1], 1, 1);
+    edge(j) = detectEdge(f, @(x) sign(x-x0(j)).*(x-x0(j)).^3, 1, 1);
 end
-pass(5) = norm(edge - x0, inf) < 5e-14;
+err = norm(edge - x0, inf);
+pass(5) = err < 5e-14;
 
 end
 

@@ -1,19 +1,16 @@
-function edge = detectEdge(op, domain, vscale, hscale, derHandle)
+function edge = detectEdge(f, op, vscale, hscale)
 %DETECTEDGE   Edge detection.
-%   EDGE = DETECTEDGE(F, DOMAIN, HSCALE, VSCALE) detects a blowup in the first,
-%   second, third, or fourth derivatives of F in [A,B]. HSCALE is the horizontal
-%   scale and VSCALE is the vertical scale (note that both are required). If no
-%   edge is detected, EDGE is set to the midpoint of DOMAIN.
+%   EDGE = DETECTEDGE(F, OP, HSCALE, VSCALE) detects a blowup in the first,
+%   second, third, or fourth derivatives of OP in the domain of the FUN F.
+%   HSCALE is the horizontal scale and VSCALE is the vertical scale (note that
+%   both are required). If no edge is detected, EDGE is set to the midpoint of
+%   DOMAIN.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
 %[TODO]: This code will need to be revisited once unbounded domains and blowup
 %        are supported again.
-
-%   DERHANDLE is optional and is the derivative of a map (a function handle). It
-%   is used in the unbounded domain case. If it is not provided, the identity
-%   map is assumed.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % PSEUDOCODE. Taken from Pachon, Platte and Trefethen, "Piecewise smooth
@@ -42,33 +39,64 @@ function edge = detectEdge(op, domain, vscale, hscale, derHandle)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-if ( nargin < 5 )
-    derHandle = @(x) 0*x + 1;
+dom = f.domain;
+exps = get(f, 'exponents');
+
+% Locate the edges/splitting locations:
+if ( all( isfinite( dom ) ) )  
+    % bounded domain
+    forDerHandle = @(x) 0*x + 1;
+    forHandle = @(x) x;
+    if ( any(exps) )
+        % Compensating for exponents:
+        op = @(x) op(x) ./ ((x - dom(1)).^exps(1) .* (dom(2) - x).^exps(2));
+    end
+    
+else
+    % unbounded domain
+    forHandle = f.mapping.for;
+    forDerHandle = f.mapping.forDer;
+    dom = [-1+eps, 1-eps];
+    op = @(x) op(forHandle(x));
+    if ( any(exps) )
+        % nonzero exponents
+        op = @(x) op(x) .* ((x + 1).^exps(1) .* (1 - x).^exps(2));
+    end
+    
 end
 
 % Take the maximum of the vscales if a vector is given:
 vscale = max(vscale); % [TODO]: Is this right?
 
 % Call the main routine:
-edge = detectedgeMain(op, domain, vscale, hscale, derHandle);
+edge = detectedgeMain(op, dom, vscale, hscale, forDerHandle);
 
 % Tidy the results:
 % If we didn't detect an edge, then bisect:
 if ( isempty(edge) )
-    edge = mean(domain);
+    edge = mean(dom);
 end
 
 htol = 1e-14*hscale;
 % If the edge is at the end of the domain, move it in by 1%:
-if ( abs(domain(1) - edge) <= htol )
-    edge = domain(1) + diff(domain)/100;
-elseif ( abs(domain(2) - edge) <= htol )
-    edge = domain(2) - diff(domain)/100;
+if ( abs(dom(1) - edge) <= htol )
+    edge = dom(1) + diff(dom)/100;
+elseif ( abs(dom(2) - edge) <= htol )
+    edge = dom(2) - diff(dom)/100;
 end
+
+edge = forHandle(edge);
 
 end
 
 function edge = detectedgeMain(op, domain, vscale, hscale, derHandle)
+%   DERHANDLE is optional and is the derivative of a map (a function handle). It
+%   is used in the unbounded domain case. If it is not provided, the identity
+%   map is assumed.
+
+if ( nargin < 5 )
+    derHandle = @(x) 0*x + 1;
+end
 
 % checkblowup = false;
 
