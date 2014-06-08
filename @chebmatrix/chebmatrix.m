@@ -196,6 +196,30 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         %   TRANSPOSE(A) transposes A.BLOCKS, but _not_ its entries.
             A.blocks = ctranspose(A.blocks);
         end
+        
+        function out = vscale(A)
+        %VSCALE   Vertical scale of components in a CHEBMATRIX.
+        %   VSCALE(A) returns a matrix containing the 'vertical scales' of the
+        %   entries of a CHEBMATRIX as defined below:
+        %       CHEBFUN: CHEBFUN/VSCALE()
+        %       DOUBLE:  ABS()
+        %       OPERATOR: NAN
+            isDoub = cellfun(@(v) isfinite(max(size(v))), A.blocks);
+            isCheb = cellfun(@(v) isfinite(min(size(v))), A.blocks) & ~isDoub;
+            
+            % TODO: Throw an error instead?
+%             if ( ~all(isCheb | isDoub) )
+%                 error('CHEBFUN:chebmatrix:vscale:op', ...
+%                     ['VSCALE is not defined for CHEBMATRIX objects ', ...
+%                      'containing operators.']);
+%             end
+            
+            out = NaN(size(A.blocks));
+            out(isDoub) = cellfun(@(v) abs(v), A.blocks(isDoub));
+            out(isCheb) = cellfun(@(v) vscale(v), A.blocks(isCheb));
+        
+        end
+        
     end
     
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%% CELLFUN METHODS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

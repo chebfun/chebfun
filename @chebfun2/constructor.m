@@ -219,10 +219,12 @@ while ( ~isHappy && ~Failure )
     end
     
     % Check if the column and row slices are resolved.
-    colChebtech = tech.make(sum(colValues,2), domain(3:4) );
-    resolvedCols = happinessCheck(colChebtech);
-    rowChebtech = tech.make(sum(rowValues.',2), domain(1:2) );
-    resolvedRows = happinessCheck(rowChebtech);
+    colData.vscale = domain(3:4);
+    colChebtech = tech.make(sum(colValues,2), colData);
+    resolvedCols = happinessCheck(colChebtech,[],sum(colValues,2));
+    rowData.vscale = domain(1:2);
+    rowChebtech = tech.make(sum(rowValues.',2), rowData);
+    resolvedRows = happinessCheck(rowChebtech,[],sum(rowValues.',2));
     isHappy = resolvedRows & resolvedCols;
     
     % If the function is zero, set midpoint of domain as pivot location.

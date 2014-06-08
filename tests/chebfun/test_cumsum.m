@@ -83,8 +83,7 @@ x = diff(dom) * rand(100, 1) + dom(1);
 
 pow = -1.64;
 op = @(x) (x-dom(1)).^pow;
-pref.singPrefs.exponents = [pow 0];
-f = chebfun(op, dom, pref);
+f = chebfun(op, dom, 'exps', [pow 0]);
 g = cumsum(f);
 vals_g = feval(g, x); 
 g_exact = @(x) (x-dom(1)).^(pow+1)./(pow+1);
@@ -193,8 +192,7 @@ x = diff(domCheck) * rand(100, 1) + domCheck(1);
 
 % Blow-up function:
 op = @(x) 5*x;
-pref.singPrefs.exponents = [0 1];
-f = unbndfun(op, dom, [], [], pref);
+f = chebfun(op, dom, 'exps', [0 1]);
 g = cumsum(f);
 gVals = feval(g, x);
 

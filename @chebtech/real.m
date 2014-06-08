@@ -12,7 +12,9 @@ f.coeffs = real(f.coeffs);
 
 if ( ~any(f.coeffs(:)) )
     % Input was imaginary, so output a zero CHEBTECH:
-    f = f.make(zeros(1, size(f.coeffs, 2)), f.vscale, f.hscale);
+    data.vscale = f.vscale;
+    data.hscale = f.hscale;
+    f = f.make(zeros(1, size(f.coeffs, 2)), data);
     f.ishappy = 1;
 end
 

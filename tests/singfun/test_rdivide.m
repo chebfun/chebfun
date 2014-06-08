@@ -15,7 +15,8 @@ x = sort(x);
 %%
 % Check operation in the case of empty arguments.
 f = singfun();
-g = singfun(@(x) 1./(1+x), [-1, 0]);
+data.exponents = [-1 0];
+g = singfun(@(x) 1./(1+x), data);
 pass(1) = (isempty(f./g) && isempty(g./f) && isempty(f./f));
 
 %%
@@ -31,7 +32,8 @@ pass(3) = ~isa(f./g, 'singfun');
 %%
 % Check division with a double.
 fh = @(x) 1./((1+x).*(1-x));
-f = singfun(fh, [-1, -1]);
+data.exponents = [-1 -1];
+f = singfun(fh, data);
 % A random double:
 g = rand();
 pass(4) = test_division_by_scalar(f, fh, g, x);
@@ -39,37 +41,43 @@ pass(4) = test_division_by_scalar(f, fh, g, x);
 %%
 % Check reciprocal of a singfun.
 fh = @(x) 0*x + 1;
-f = singfun(fh, [], {'none', 'none'}, [], [], pref);
+data.exponents = [];
+data.singType = {'none', 'none'};
+f = singfun(fh, data, pref);
 gh = @(x) cos(x);
-g = singfun(gh, [], {'none', 'none'}, [], [], pref);
+data.exponents = [];
+data.singType = {'none', 'none'};
+g = singfun(gh, data, pref);
 pass(5) = test_divide_function_by_function(f, fh, g, gh, x);
 
 %% 
 % Check division of two singfun objects.
 fh = @(x) cos(x);
-f = singfun(fh, [], {'none', 'none'}, [], [], pref);
+data.exponents = [];
+data.singType = {'none', 'none'};
+f = singfun(fh, data, pref);
 pass(6) = test_divide_function_by_function(f, fh, f, fh, x);
 
 fh = @(x) sin(x);
-f = singfun(fh, [], [], [], [], pref);
+f = singfun(fh, [], pref);
 
 gh = @(x) (1+x).*(1-x);  %
-g = singfun(gh, [], [], [], [], pref);
+g = singfun(gh, [], pref);
 % Remove points really close to the end points.
 pass(7) = test_divide_function_by_function(f, fh, g, gh, x(5:end-4));
 
 fh = @(x) sin(1e2*x);
-f = singfun(fh, [], [], [], [], pref);
+f = singfun(fh, [], pref);
 % Remove points really close to the end points.
 pass(8) = test_divide_function_by_function(f, fh, g, gh, x(5:end-4));
 
 %%
 % Check that direct construction and RDIVIDE give comparable results.
 
-f = singfun(@(x) sin(x), [], [], [], [], pref);
-g = singfun(@(x) (1+x).*(1-x), [], [], [], [], pref);
+f = singfun(@(x) sin(x), [], pref);
+g = singfun(@(x) (1+x).*(1-x), [], pref);
 h1 = f./g;
-h2 = singfun(@(x) sin(x)./((1+x).*(1-x)), [], [], [], [], pref);
+h2 = singfun(@(x) sin(x)./((1+x).*(1-x)), [], pref);
 x = x(5:end-4); % Remove some points close to the end points.
 tol = 1e2*max(get(h1, 'vscale')*get(h1, 'epslevel'), ...
     get(h2, 'vscale')*get(h2, 'epslevel'));

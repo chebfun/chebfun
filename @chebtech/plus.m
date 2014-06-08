@@ -57,7 +57,10 @@ elseif ( isa(f, 'chebtech') && isa(g, 'chebtech') )  % CHEBTECH + CHEBTECH
         epslevel = max(f.epslevel, g.epslevel);
         ishappy = f.ishappy && g.ishappy;
         z = zeros(1, size(f.coeffs, 2));
-        f = f.make(z, z, f.hscale);
+
+        data.vscale = z;
+        data.hscale = f.hscale;
+        f = f.make(z, data);
         f.epslevel = epslevel;
         f.ishappy = ishappy;
     else

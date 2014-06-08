@@ -50,14 +50,14 @@ else
     % Call COMPOSE.
     if ( isa(f, 'chebtech') )   % Possibly CHEBTECH / CHEBTECH
         if ( isa(c, 'chebtech') )
-            f = compose(f, @rdivide, c, pref);
+            f = compose(f, @rdivide, c, [], pref);
         else
             error('CHEBFUN:CHEBTECH:rdivide:chebtechRdivideUnknown',...
                 'rdivide does not know how to divide a CHEBTECH and a %s.', class(c));
         end        
     else                       % DOUBLE / CHEBTECH
         op = @(x) f./x;
-        f = compose(c, op, [], pref);
+        f = compose(c, op, [], [], pref);
     end
 end
 

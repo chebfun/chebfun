@@ -98,6 +98,14 @@ for n = 1:2
     ishappy2 = happinessCheck(g2, f, values2, pref);
 
     pass(n, 8) = ~ishappy1 && ishappy2;
+    
+    % Test plateauCheck with an array-valued input:
+    p = pref;
+    p.techPrefs.happinessCheck = @classicCheck;
+    f1 = testclass.make(@(x) [sin(x) cos(x)], [], p);
+    p.techPrefs.happinessCheck = @plateauCheck;
+    f2 = testclass.make(@(x) [sin(x) cos(x)], [], p);
+    pass(n, 9) = normest(f1 - f2) < 10*max(f2.epslevel);
 
 end
 
