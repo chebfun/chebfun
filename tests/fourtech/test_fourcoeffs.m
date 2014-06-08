@@ -40,7 +40,7 @@ pass(8) = (norm(p - [0 1 1]', inf) ...
     < 10*f.vscale.*f.epslevel);
 
 %%
-% Verify operation for array-valued chebtech objects.
+% Verify operation for array-valued fourtech objects.
 
 f = testclass.make(@(x) [3*ones(size(x)), 1+cos(pi*x), ... 
     1 + exp(2*1i*pi*x) + exp(-1i*pi*x)], [], pref);

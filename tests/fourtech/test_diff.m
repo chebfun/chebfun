@@ -1,10 +1,10 @@
-% Test file for chebtech/diff.m
+% Test file for fourtech/diff.m
 
 function pass = test_diff(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = chebtech.techPref();
+    pref = fourtech.techPref();
 end
 
 % Generate a few random points to use as test values.
@@ -116,7 +116,7 @@ err = feval(dim2df2, x) - g(x);
 pass(14) = isequal(size(dim2df2.vscale), [1 1]) && ...
     (norm(err(:), inf) < 100*max(dim2df2.vscale.*dim2df2.epslevel));
 
-% DIM option should return an empty chebtech for non-array-valued input.
+% DIM option should return an empty fourtech for non-array-valued input.
 f = testclass.make(@(x) sin(pi*x));
 dim2df = diff(f, 1, 2);
 pass(15) = (isempty(dim2df.coeffs));

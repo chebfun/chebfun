@@ -1,10 +1,10 @@
-% Test file for chebtech/innerProduct.m
+% Test file for fourtech/innerProduct.m
 
 function pass = test_innerProduct(pref)
 
 % Get preferences.
 if ( nargin < 1 )
-    pref = chebtech.techPref();
+    pref = fourtech.techPref();
 end
 
 % Fixed arbitrary numbers to use as multiplicative constants.
@@ -75,7 +75,7 @@ n2vals = [nf2 ; ng2 ; nh2];
 pass(9) = isreal(n2vals) && all(n2vals >= 0);
 
 %% 
-% Check operation for array-valued chebtech objects.
+% Check operation for array-valued fourtech objects.
 
 f = testclass.make(@(x) [cos(pi*sin(2*pi*x)) exp(sin(2*pi*x)) sin(pi*sin(pi*x))]);
 g = testclass.make(@(x) [exp(cos(pi*x)) exp(-sin(2*pi*x)) cos(pi*x)]);

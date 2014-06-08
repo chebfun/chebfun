@@ -63,7 +63,7 @@ tol = 10*h.vscale.*h.epslevel;
 pass(5) = (std(err) < tol)  && (abs(feval(h, -1)) < tol);
 
 %%
-% Check operation for array-valued chebtech objects.
+% Check operation for array-valued fourtech objects.
 
 f = testclass.make(@(x) [sin(4*pi*cos(2*pi*x)) sin(3*pi*x)], [], pref);
 g = diff(cumsum(f));

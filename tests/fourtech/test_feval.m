@@ -56,7 +56,7 @@ pass(7) = (all(size(err) == [10 10 10])) && (norm(err(:), inf) < ...
     10*f.vscale.*f.epslevel);
 
 %%
-% Check operation for array-valued chebtech objects.
+% Check operation for array-valued fourtech objects.
 
 f = testclass.make(@(x) [(2+sin(pi*x)).*exp(1i*pi*x), -(2+sin(pi*x)).*exp(1i*pi*x), 2+sin(pi*x)], [], pref);
 f_exact = @(x) [(2+sin(pi*x)).*exp(1i*pi*x), -(2+sin(pi*x)).*exp(1i*pi*x), 2+sin(pi*x)];
@@ -64,7 +64,7 @@ err = feval(f, x) - f_exact(x);
 pass(8) = all(max(abs(err)) < 10*max(f.vscale.*f.epslevel));
 
 %%
-% Test for evaluating array-valued chebtech objects at matrix arguments if
+% Test for evaluating array-valued fourtech objects at matrix arguments if
 % the operation makes sense.
 
 f = testclass.make(@(x) [sin(pi*x) cos(pi*x) exp(1i*pi*x)], [], pref);
