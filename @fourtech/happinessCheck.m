@@ -1,4 +1,4 @@
-function  [ishappy, epslevel, cutoff] = happinessCheck(f, op, pref)
+function  [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, pref)
 %HAPPINESSCHECK   Happiness test for a FOURTECH
 %
 % See also CLASSICCHECK, LOOSECHECK, STRICTCHECK, SAMPLETEST.
@@ -13,8 +13,10 @@ if ( nargin == 1 )
 elseif ( (nargin == 2) && isstruct(op) )
     pref = op;
     op = [];
-elseif ( nargin < 3 )
+elseif ( nargin < 4 )
     pref = f.techPref();
+elseif ( nargin == 3 ) 
+    pref = f.techPref(); 
 end
 
 % What does happiness mean to you?
