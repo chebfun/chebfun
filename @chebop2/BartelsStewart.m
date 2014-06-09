@@ -5,9 +5,12 @@ function X = BartelsStewart(A, B, C, D, E, xsplit, ysplit)
 %
 %         AXB^T + CXD^T = E
 %
-% by using the Bartels--Stewart algorithm, see Solution of the Sylvester
-% matrix equation by Gardiner et al. (1992).
+% by using the Bartels--Stewart algorithm, see 
 %
+% J. D. Gardiner, A. J. Laub, J. J. Amato, & C. B. Moler, Solution of 
+% the Sylvester matrix equation AXB^T+ CXD^T= E, ACM Transactions on 
+% Mathematical Software (TOMS), 18(2), 223-231.
+% 
 % This Bartels--Stewart solver also takes information xsplit, ysplit so
 % that if possible it decouples the even and odd modes.
 
