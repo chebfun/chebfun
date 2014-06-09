@@ -37,22 +37,25 @@ if ( abs(domF(2) - domG(1)) > hscale*tol )
     error('CHEBFUN:fun:merge:domains', ...
         'F and G must be on consecutive domains.');
 end
+
+% Assign new domain, vscale, and hscale to a data struct to pass to constructor:
+data = struct('domain', newDom, 'vscale', vscale, 'hscale', hscale);
    
 % Grab the correct exponents:
 if ( issing(f) && issing(g) )
     expsF = get(f, 'exponents');
     expsG = get(g, 'exponents');
-    pref.singPrefs.exponents = [expsF(1), expsG(2)];
+    data.exponents = [expsF(1), expsG(2)];
 elseif ( issing(f) )
     expsF = get(f, 'exponents');
-    pref.singPrefs.exponents = [expsF(1), 0];
+    data.exponents = [expsF(1), 0];
 elseif ( issing(g) )
     expsG = get(g, 'exponents');
-    pref.singPrefs.exponents = [0, expsG(2)];
+    data.exponents = [0, expsG(2)];
 end
     
 % Attempt to form a merged FUN:
-h = fun.constructor(@(x) myFun(x, f, g, dom), newDom, vscale, hscale, pref);
+h = fun.constructor(@(x) myFun(x, f, g, dom), data, pref);
 
 ishappy = get(h, 'ishappy');
 if ( ~ishappy && (nargout < 2) )

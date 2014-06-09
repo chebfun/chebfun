@@ -48,6 +48,10 @@ classdef colloc2 < colloc
             
             if ( nargin < 2 ), k = 1; end
             if ( N == 0 ), D = []; return, end
+            if ( k == 0 )
+                D = eye(N);
+                return
+            end
             if ( N == 1 ), D = 0; return, end
             
             % construct Chebyshev grid and weights
@@ -92,10 +96,15 @@ classdef colloc2 < colloc
             
             N = N-1;
             
-            persistent CACHE  % Stores computed values for fast return
-            if isempty(CACHE), CACHE = {}; end    % first call
+            if ( N == 0 )
+                Q = [];
+                return
+            end
             
-            if length(CACHE) >= N && ~isempty(CACHE{N})
+            persistent CACHE  % Stores computed values for fast return
+            if ( isempty(CACHE) ), CACHE = {}; end    % first call
+
+            if ( length(CACHE) >= N ) && ( ~isempty(CACHE{N}) )
                 Q = CACHE{N};
                 return
             else

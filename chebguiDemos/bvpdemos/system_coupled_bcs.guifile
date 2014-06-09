@@ -1,0 +1,8 @@
+'A system with coupled non-separable BCs'
+'system'
+domain = '[-1,1]';
+DE = {'u" - v = x';'x*u + v" = 0'};
+BC = {'u(-1) = v''(1)';'v''(-1) = 2*u(1)';'u''(1) = 0';'v(1) = 0'};
+init = ''; tol = '1e-10';
+damping = '0'; plotting = '0.4';
+type = 'bvp';

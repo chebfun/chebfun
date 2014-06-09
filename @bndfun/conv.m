@@ -129,7 +129,8 @@ for k = 1:numPatches
     ind = (dk_left <= x) & (x < dk_mid); % Locate the grid values in [dkl, dkr]:
     if ( k == 1 ) % First piece:
         hLegL = leg2cheb(flipud(hLegL));  % Cheb. coeffs of left tri.
-        h_left = bndfun({[], hLegL}, [dk_left, dk_mid]); % Make BNDFUN from coeffs
+        data.domain = [dk_left, dk_mid];
+        h_left = bndfun({[], hLegL}, data); % Make BNDFUN from coeffs
     else          % Subsequent left pieces
         z = map(x(ind), dk_left, dk_mid);          % Map grid points to [-1, 1]
         tmp = clenshawLegendre(z, hLegL);          % Evaluate via recurrence
@@ -149,7 +150,8 @@ end
 if ( abs((b-a)-(d-c)) < 10*eps(norm([a b c d], inf)) )
     % If there's only one patch, then we already have all the information reqd.
     hLegR = leg2cheb(flipud(hLegR));       % Cheb coeffs of right tri.
-    h_right = bndfun({[], hLegR}, d + [a, b]); % Make BNDFUN from coeffs
+    data.domain = d + [a b];
+    h_right = bndfun({[], hLegR}, data);   % Make BNDFUN from coeffs
     h_mid = bndfun();
     
 else  
@@ -167,7 +169,8 @@ else
     gk_leg = cheb2leg(get(gk, 'coeffs'));  % Legendre coeffs
     [hLegL, hLegR] = easyConv(f_leg, gk_leg);       % Conv on A and B
     hLegR = leg2cheb(flipud(hLegR));       % Cheb coeffs on A
-    h_right = bndfun({[], hLegR}, [d+a, d+b]);      % Make BNDFUN from coeffs
+    data.domain = [d+a, d+b];
+    h_right = bndfun({[], hLegR}, data);      % Make BNDFUN from coeffs
     
     % Remainder piece: (between fl and a+d)
     remainderWidth = d + a - finishLocation; % b+d-fl-(b-a)
@@ -195,7 +198,8 @@ else
     % Convert values to coeffs (we don't want to construct a chebtech1)
     y = chebtech1.vals2coeffs(y);
     % Construct BNDFUN of the interior (rectangle) using coefficients:
-    h_mid = bndfun({[], y}, [b+c, a+d]);
+    data.domain = [b+c, a+d];
+    h_mid = bndfun({[], y}, data);
     
 end
 

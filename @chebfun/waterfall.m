@@ -15,11 +15,11 @@ function varargout = waterfall(varargin)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% First input might be a figure handle:
-[cax, varargin] = axescheck(varargin{:});
-if ( ~isempty(cax) )
-    axes(cax);
-end
+% % First input might be a figure handle:
+% [cax, varargin] = axescheck(varargin{:});
+% if ( ~isempty(cax) )
+%     axes(cax);
+% end
 
 % First input is now the CHEBFUN:
 u = varargin{1};
@@ -126,7 +126,7 @@ uu = reshape([uu                      ;
               uu                      ; 
               NaN*uu                  ; 
               [uu(:,2:end) uu(:,end)]], size(xx));
-          
+
 % Plot the edges:
 h2 = mesh(xx.', tt.', uu.', varargin{:});
 

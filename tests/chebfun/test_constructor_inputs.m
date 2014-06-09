@@ -55,10 +55,9 @@ pass(9) = isequal(f.funs{1}.onefun.coeffs, [1 ; 2 ; 3]);
 
 % Test 'chebkind' and 'kind' flags.
 f1 = chebfun(@(x) x, 'chebkind', '1st');
-f2 = chebfun(@(x) x, 'kind', '2nd');
 f3 = chebfun(@(x) x, 'chebkind', 1);
 pass(10) = isa(f1.funs{1}.onefun, 'chebtech1') && ...
-    isa(f2.funs{1}.onefun, 'chebtech2') && isa(f3.funs{1}.onefun, 'chebtech1');
+    isa(f3.funs{1}.onefun, 'chebtech1');
 
 % Test construction from numeric string.
 f = chebfun('1');
@@ -85,5 +84,20 @@ err1 = norm(feval(f1, xx) - f_op(xx), inf);
 f2 = chebfun(f_op, 'minsamples', 17);
 err2 = norm(feval(f2, xx) - f_op(xx), inf);
 pass(15) = (err1 > 1e-3) && (err2 < 10*vscale(f2)*epslevel(f2));
+
+% Test construction with a mixture of preference object and keyword inputs.
+p = pref;
+p.tech = @chebtech1;
+f = chebfun(@(x) 1./x, [0 1], 'exps', [-1 0], p);
+pass(16) = get(f, 'ishappy') && isa(f.funs{1}.onefun.smoothPart, 'chebtech1');
+f = chebfun(@(x) 1./x, [0 1], p, 'exps', [-1 0]);
+pass(17) = get(f, 'ishappy') && isa(f.funs{1}.onefun.smoothPart, 'chebtech1');
+
+p = struct();
+p.tech = @chebtech1;
+f = chebfun(@(x) 1./x, [0 1], 'exps', [-1 0], p);
+pass(18) = get(f, 'ishappy') && isa(f.funs{1}.onefun.smoothPart, 'chebtech1');
+f = chebfun(@(x) 1./x, [0 1], p, 'exps', [-1 0]);
+pass(19) = get(f, 'ishappy') && isa(f.funs{1}.onefun.smoothPart, 'chebtech1');
 
 end
