@@ -1,4 +1,4 @@
-% Test file for fun/roots.m
+% Test file for @classicfun/roots.m
 
 function pass = test_roots(pref)
 
@@ -6,13 +6,16 @@ if ( nargin < 1 )
     pref = chebfunpref();
 end
 
+singPref = pref;
+singPref.enableSingularityDetection = true;
+
 % Set a domain for BNDFUN.
-dom = [-2 7];
+data.domain = [-2 7];
 
 %% 
 % Test roots of a bessel BNDFUN:
 map = @(x) (x+2)*100/9;
-f = bndfun(@(x) besselj(0, map(x)), dom, [], [], pref);
+f = bndfun(@(x) besselj(0, map(x)), data, pref);
 r = map(roots(f));
 exact = [ 2.40482555769577276862163; 5.52007811028631064959660
           8.65372791291101221695437; 11.7915344390142816137431
@@ -35,44 +38,47 @@ pass(1) = norm(r-exact,Inf) < length(f)*get(f, 'epslevel');
 %% 
 % Test roots of an oscillatory BNDFUN:
 k = 100;
-f = bndfun(@(x) sin(pi*k*x), dom, [], [], pref);
+f = bndfun(@(x) sin(pi*k*x), data, pref);
 r = roots(f);
 pass(2) = norm(r-(-2*k:7*k)'/k, inf) < get(f, 'epslevel').*get(f, 'vscale');
 
 %%
 % Test a perturbed polynomial BNDFUN:
-f = bndfun( @(x) (x-.1).*(x+.9).*x.*(x-.9) + 1e-14*x.^5, dom, [], [], pref);
+f = bndfun( @(x) (x-.1).*(x+.9).*x.*(x-.9) + 1e-14*x.^5, data, pref);
 r = roots(f);
 pass(3) = length(r) == 4 && norm(feval(f, r), inf) < 10*get(f, 'epslevel').*get(f, 'vscale');
 
 %%
 %  Test a some simple polynomials BNDFUN:
-f = bndfun([-2 ; 7], dom, [], [], pref);
+f = bndfun([-2 ; 7], data, pref);
 r = roots(f);
-pass(4) = r < get(f, 'epslevel').*get(f, 'vscale');
+tol = get(f, 'epslevel').*get(f, 'vscale');
+pass(4) = abs(r) < tol;
 
 f = bndfun([20.25 ; 0 ; 20.25]);
 r = roots(f);
-pass(5) = numel(r) == 2 && (norm(r, inf) < get(f, 'epslevel').*get(f, 'vscale'));
+err = norm(r, inf);
+tol = get(f, 'epslevel').*get(f, 'vscale');
+pass(5) = numel(r) == 2 && ( err < tol );
 
 %%
 % Test some complex roots of BNDFUN:
-f = bndfun(@(x) 1 + x.^2, dom, [], [], pref);
+f = bndfun(@(x) 1 + x.^2, data, pref);
 r = roots(f, 'complex', 1);
 pass(6) = norm( r - [1i ; -1i], inf) < get(f, 'epslevel').*get(f, 'vscale');
 
-f = bndfun(@(x) (1 + 25*x.^2).*exp(x), [-1 1], [], [], pref);
+f = bndfun(@(x) (1 + 25*x.^2).*exp(x), struct('domain', [-1 1]), pref);
 r = roots(f, 'complex', 1, 'prune', 1);
 pass(7) = norm( r - [1i ; -1i]/5, inf) < get(f, 'epslevel').*get(f, 'vscale');
 
-f = bndfun(@(x) sin(10*pi*x), dom);
+f = bndfun(@(x) sin(10*pi*x), data, pref);
 r1 = roots(f, 'complex', 1, 'recurse', 0);
 r2 = roots(f, 'complex', 1);
-pass(8) = numel(r1) == 195 & numel(r2) >= 195;
+pass(8) = numel(r2) >= numel(r1);
 
 %%
 % Test an array-valued BNDFUN:
-f = bndfun(@(x) [sin(pi*x), cos(pi*x), x.^2+1], dom, [], [], pref);
+f = bndfun(@(x) [sin(pi*x), cos(pi*x), x.^2+1], data, pref);
 r = roots(f);
 r2 = [-2:7 -1.5:6.5 NaN(1,11)].';
 pass(9) = all( r(:) - r2 < max(get(f, 'epslevel').*get(f, 'vscale')) | isnan(r2) );
@@ -80,9 +86,10 @@ pass(9) = all( r(:) - r2 < max(get(f, 'epslevel').*get(f, 'vscale')) | isnan(r2)
 %% 
 % Test on singular BNDFUN.
 pow = -0.5;
-op = @(x) (x-dom(1)).^pow.*cos(x);
-pref.singPrefs.exponents = [pow 0];
-f = bndfun(op, dom, [], [], pref);
+op = @(x) (x - data.domain(1)).^pow.*cos(x);
+singData = data;
+singData.exponents = [pow 0];
+f = bndfun(op, singData, singPref);
 r = roots(f);
 r_exact = [-1/2; 1/2; 3/2]*pi;
 err = r - r_exact;
@@ -93,12 +100,13 @@ pass(10) = (norm(err, inf) < 1e2*get(f, 'vscale').*get(f, 'epslevel'));
 % Functions on [-inf inf]:
 
 % Set the domain:
-dom = [-Inf Inf];
+data.domain = [-Inf Inf];
 
 % Blow-up function:
 op = @(x) x.^2.*(1-exp(-x.^2))-2;
-pref.singPrefs.exponents = [2 2];
-f = unbndfun(op, dom, [], [], pref); 
+singData = data;
+singData.exponents = [2 2];
+f = unbndfun(op, singData, singPref);
 r = roots(f);
 rExact = [-1.4962104914103104707 ; 1.4962104914103104707];
 err = r - rExact;

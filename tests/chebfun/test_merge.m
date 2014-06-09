@@ -13,7 +13,7 @@ f = chebfun(@(x) x.^2, [-1 0 1], pref2);
 g = merge(f);
 pass(1) = all(size(g.funs) == 1);
 xx = linspace(-1, 1, 100);
-pass(2) = norm(feval(f, xx) - feval(g, xx), 'inf') < 2*epslevel(f);
+pass(2) = norm(feval(f, xx) - feval(g, xx), 'inf') < 10*epslevel(f);
 
 % Test selective merge on many points:
 pref2 = pref;
@@ -54,8 +54,7 @@ pow1 = -1;
 pow2 = -1;
 op = @(x) (x - dom(1)).^pow1.*sin(10*x).*(x - dom(2)).^pow2;
 pref = chebfunpref();
-pref.singPrefs.exponents = [-1 -1];
-f = chebfun(op, dom, pref);
+f = chebfun(op, dom, 'exps', [-1 -1]);
 g = addBreaksAtRoots(f);
 h = merge(g);
 

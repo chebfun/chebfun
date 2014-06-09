@@ -49,10 +49,10 @@ else
 
     % Call COMPOSE.
     if ( isa(f, 'chebtech') )   % CHEBTECH / CHEBTECH
-        f = compose(f, @rdivide, c, pref);
+        f = compose(f, @rdivide, c, [], pref);
     else                       % DOUBLE / CHEBTECH
         op = @(x) f./x;
-        f = compose(c, op, [], pref);
+        f = compose(c, op, [], [], pref);
     end
 end
 

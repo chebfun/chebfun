@@ -13,7 +13,7 @@ for n = 1:2
         testclass = chebtech2();
     end
 
-    f = testclass.make(0, pref);
+    f = testclass.make(0, [], pref);
     f.coeffs = [0 1 0 ; 0 0 NaN];
 
     % iszero([0;0]) = 1, iszero([1;0]) = 0, iszero([0;NaN]) = 0.

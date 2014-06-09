@@ -24,24 +24,33 @@ pass(2) = isequal(f,g);
 
 %%
 % create a non-zero SINGFUN
-f = singfun(@(x) 1./(1+x), [-1, 0] );
-g = singfun(@(x) 1./(1+x), [-1, 0] );
+data.exponents = [-1 0];
+f = singfun(@(x) 1./(1+x), data);
+g = singfun(@(x) 1./(1+x), data);
 
 % Test
 pass(3) = isequal(f,g);
 
 %%
 % create two different non-zero SINGFUN
-f = singfun(@(x) 1./(1+x), [-1, 0], {'pole', 'none'} );
-g = singfun(@(x) 1./(1+x), [-1.8, 0], {'sing', 'none'} );
+data.exponents = [-1, 0];
+data.singType = {'pole', 'none'};
+f = singfun(@(x) 1./(1+x), data, pref);
+data.exponents = [-1.8, 0];
+data.singType = {'sing', 'none'};
+g = singfun(@(x) 1./(1+x), data, pref);
 
 % Test
 pass(4) = ~isequal(f,g);
 
 %%
 % create two different non-zero SINGFUN
-f = singfun(@(x) cos(x)./(1+x), [-1, 0], {'pole', 'none'} );
-g = singfun(@(x) sin(x)./(1+x), [-1, 0], {'pole', 'none'} );
+data.exponents = [-1, 0];
+data.singType = {'pole', 'none'};
+f = singfun(@(x) cos(x)./(1+x), data, pref);
+data.exponents = [-1, 0];
+data.singType = {'pole', 'none'};
+g = singfun(@(x) sin(x)./(1+x), data, pref);
 
 % Test
 pass(5) = ~isequal(f,g);

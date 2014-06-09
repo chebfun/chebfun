@@ -23,7 +23,9 @@ if ( ~isnumeric(f) )
             
             % If F is a SMOOTHFUN, call EXTRACTBOUNDARYROOTS@SMOOTHFUN:            
             [f.onefun, rootsLeft, rootsRight] = extractBoundaryRoots(f.onefun);
-            h = singfun(f.onefun, [rootsLeft rootsRight], [], [], [], []);
+
+            data.exponents = [rootsLeft rootsRight];
+            h = singfun(f.onefun, data);
             f.onefun = h;
             
         elseif ( issing(f) ) 

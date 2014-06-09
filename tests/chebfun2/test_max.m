@@ -29,5 +29,5 @@ h4 = max( f, [], 3 );
 
 pass(5) = ( norm( h1 - chebfun(@(x) x,[-2,3]).' ) < tol );
 pass(6) = ( norm( h2 - chebfun(@(x) x,[-2,3]).' ) < tol );
-pass(7) = ( norm( h3 - chebfun(@(x) 3+0*x,[-4,10]) ) < tol );
+pass(7) = ( norm( h3 - chebfun(@(x) 3+0*x,[-4,10]) ) < 1e12*tol );
 pass(8) = ( norm( h4 - f ) < tol );

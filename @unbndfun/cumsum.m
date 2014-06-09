@@ -65,9 +65,9 @@ function g = cumsumCtsDim(f, pref)
 g = f;
 
 % Rescaling factor is the derivative of the forward map:
-pref.singPrefs.exponents = g.mapping.forDerExps;
-rescaleFactor = onefun.constructor(@(x) g.mapping.forDer(x), [], [], pref);
-numRoots = -repmat(pref.singPrefs.exponents.', 1, size(g, 2));
+pref.enableSingularityDetection = true;
+rescaleFactor = onefun.constructor(@(x) g.mapping.forDer(x), [], pref);
+numRoots = -repmat(g.mapping.forDerExps.', 1, size(g, 2));
 
 % Try to see if we can extract boundary roots:
 [h, rootsLeft, rootsRight] = extractBoundaryRoots(g.onefun, numRoots);

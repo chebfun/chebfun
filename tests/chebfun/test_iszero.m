@@ -48,8 +48,7 @@ dom = [-Inf Inf];
 
 % Blow-up function:
 op = @(x) x.^2.*(1-exp(-x.^2));
-pref.singPrefs.exponents = [2 2];
-f = chebfun(op, dom, pref); 
+f = chebfun(op, dom, 'exps', [2 2]);
 pass(11) = ~iszero(f);
 
 % Function defined on [0 Inf]:

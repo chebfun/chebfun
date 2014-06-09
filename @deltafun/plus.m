@@ -36,7 +36,7 @@ funPart = f.funPart + g.funPart;
     g.deltaMag, g.deltaLoc);    
 
 % Assemble the output DELTAFUN:
-s = deltafun(funPart, deltaMag, deltaLoc);
+s = deltafun(funPart, struct('deltaMag', deltaMag, 'deltaLoc', deltaLoc));
 
 % Simplify:
 s = simplifyDeltas(s);
