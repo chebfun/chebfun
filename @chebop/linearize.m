@@ -45,11 +45,6 @@ function [L, res, isLinear, u] = linearize(N, u, x, flag)
 % Start by assuming that N is linear.
 isLinear = true(1, 4);
 
-% Support single input argument for autonomous scalar problems:
-if ( nargin(N) == 1 )
-    N.op = @(x, u) N.op(u);
-end
-
 % The domain that the problem is specified on
 dom = N.domain;
 
@@ -91,6 +86,11 @@ if ( isnumeric(u) )
 end
 if ( ~iscell(u) )
     u = {u};
+end
+
+% Support single input argument for autonomous scalar problems:
+if ( nargin(N) == 1 )
+    N.op = @(x, u) N.op(u);
 end
 
 % If nargin(N) == 2, but the dimension of the initial guess passed is greater

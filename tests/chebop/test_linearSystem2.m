@@ -102,9 +102,32 @@ pass(8)  = err8 < tol;
 pass(9)  = all(err9 < tol);
 pass(10) = all(err10 < tol);
 
+%% Finally, let's include x in the anonmoys function argument list:
+d = [-1 1];
+A = chebop(@(u) [diff(u{1}) + u{1} + 2*u{2} ; ...
+    diff(u{1}) - u{1} + diff(u{2})], d);
+A.lbc = @(u) u{1}+diff(u{1});
+A.rbc = @(u) diff(u{2});
+
+% And for fun, let's try another discretization
+pref.discretization = @ultraS;
+u = mldivide(A, f, pref);
+
+% Residual of differential equation:
+err11 = norm(A(u) - f);
+
+% Want to check BCs as well.
+bcFunLeft = A.lbc(u);
+bcFunRight = A.rbc(u);
+err12 = [norm(bcFunLeft(d(1))), norm(bcFunRight(d(end)))];
+
+% Happy?
+pass(11) = norm( err11 ) < tol;
+pass(12) = all(err12 < tol);
+
 end
 
-function out = myop(x,u)
+function out = myop(x, u)
 
 out = [diff(u{1}) + u{1} + 2*u{2} ; ...
     diff(u{1}) - u{1} + diff(u{2})];
