@@ -38,6 +38,7 @@ function edge = detectEdge(f, op, vscale, hscale)
 
 dom = f.domain;
 exps = get(f, 'exponents');
+allowEdgeAtBdy = isfinite(dom);
 
 % Locate the edges/splitting locations:
 if ( all( isfinite( dom ) ) )  
@@ -47,7 +48,7 @@ if ( all( isfinite( dom ) ) )
     if ( any(exps) )
         % Compensating for exponents:
         op = @(x) op(x) ./ ((x - dom(1)).^exps(1) .* (dom(2) - x).^exps(2));
-    end
+    end  
     
 else
     % unbounded domain
@@ -63,25 +64,35 @@ else
 end
 
 % Take the maximum of the vscales if a vector is given:
-vscale = max(vscale); % [TODO]: Is this right?
+vscale = max(vscale);
 
 % Call the main routine:
 edge = detectedgeMain(op, dom, vscale, hscale, forDerHandle);
 
-% Tidy the results:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Tidy the results  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+htol = 1e-14*hscale;
+% If the edge is at the end of the domain, move it in by 1% (unless at +/- inf):
+if ( abs(dom(1) - edge) <= htol )
+    if ( allowEdgeAtBdy(1) )
+        edge = dom(1) + diff(dom)/100;
+    else
+        edge = []; % Bisect if at infinity.
+    end
+elseif ( abs(dom(2) - edge) <= htol )
+    if ( allowEdgeAtBdy(2) )
+        edge = dom(2) - diff(dom)/100;
+    else
+    	edge = []; % Bisect if at infinity.
+    end
+end
+
 % If we didn't detect an edge, then bisect:
 if ( isempty(edge) )
     edge = mean(dom);
 end
 
-htol = 1e-14*hscale;
-% If the edge is at the end of the domain, move it in by 1%:
-if ( abs(dom(1) - edge) <= htol )
-    edge = dom(1) + diff(dom)/100;
-elseif ( abs(dom(2) - edge) <= htol )
-    edge = dom(2) - diff(dom)/100;
-end
-
+% Map the edge back to the physical domain:
 edge = forHandle(edge);
 
 end
@@ -94,8 +105,6 @@ function edge = detectedgeMain(op, domain, vscale, hscale, derHandle)
 if ( nargin < 5 )
     derHandle = @(x) 0*x + 1;
 end
-
-% checkblowup = false;
 
 a = domain(1);
 b = domain(2);
