@@ -76,9 +76,7 @@ x = diff(domCheck) * rand(100, 1) + domCheck(1);
 
 pow = -0.5;
 op = @(x) (x - dom(1)).^pow.*sin(200*x);
-pref.singPrefs.exponents = [pow 0];
-pref.enableBreakpointDetection = 1;
-f = chebfun(op, dom, pref);
+f = chebfun(op, dom, 'exps', [pow 0], 'splitting', 'on');
 
 df = diff(f);
 vals_df = feval(df, x);

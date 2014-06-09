@@ -1,0 +1,8 @@
+'Sawtooth problem'
+'bvp'
+domain = '[-1 1]';
+DE = '0.05*u" + (u'')^2 = 1';
+BC = {'u(-1) = 0.8'; 'u(1) = 1.2'};
+init = ''; tol = '1e-8';
+damping = '1'; plotting = '0.03';
+type = 'bvp';

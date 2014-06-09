@@ -122,15 +122,21 @@ else
 end
 
 % Use half of the strength if there is a root at the end point of the
-% domain of the input CHEBFUN:
+% domain of the input CHEBFUN and update the pointValues:
+pointValues = [0; 0];
 if ( rootA )
     deltaMag(1) = deltaMag(1)/2;
+    pointValues(1) = sign(deltaMag(1))*inf;
 end
 if ( rootB )
     deltaMag(end) = deltaMag(end)/2;
+    pointValues(2) = sign(deltaMag(end))*inf;
 end
 
 % Call the DELTAFUN constructor directly:
-d.funs{1} = deltafun(d.funs{1}, deltaMag.', r.');
-        
+data.deltaMag = deltaMag.';
+data.deltaLoc = r.';
+d.funs{1} = deltafun(d.funs{1}, data);
+d.pointValues = pointValues;
+
 end

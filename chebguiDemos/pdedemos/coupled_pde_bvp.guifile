@@ -1,0 +1,11 @@
+'Coupled PDE-BVP'
+'system'
+domain = '[-1 1]';
+t = '0:.1:2';
+DE = {'u_t = u" - v' ; 'v" - u = 0'};
+LBC = {'u = 1'; 'v = 1'};
+RBC = {'u = 1'; 'v = 1'};
+init = {'u = 1' ; 'v =1-.5*cos(.5*pi*x)'};
+tol = '1e-6'; plotting = 'on';
+fixYaxisLower = '0.5'; fixYaxisUpper = '1';
+type  = 'pde';

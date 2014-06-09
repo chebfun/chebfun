@@ -17,15 +17,15 @@ for (n = 1:2)
         testclass = chebtech2();
     end
 
-    f = testclass.make(@(x) [sin(x) cos(x) exp(x)], [], [], pref);
+    f = testclass.make(@(x) [sin(x) cos(x) exp(x)], [], pref);
 
-    g = testclass.make(@(x) [x x.^2], [], [], pref);
+    g = testclass.make(@(x) [x x.^2], [], pref);
     h = assignColumns(f, [1 3], g);
     h_exact = @(x) [x cos(x) x.^2];
     err = feval(h, x) - h_exact(x);
     pass(1) = h.ishappy && (norm(err(:), inf) < 10*max(h.vscale.*h.epslevel));
 
-    g = testclass.make(@(x) sqrt(x), [], [], pref);
+    g = testclass.make(@(x) sqrt(x), [], pref);
     h = assignColumns(f, 1, g);
     pass(2) = ~h.ishappy;
 end

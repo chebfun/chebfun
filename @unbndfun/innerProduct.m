@@ -53,8 +53,9 @@ end
 % Compute the derivative of the map: (Here we assume that the domains and
 % therefore the maps of f and g are identical.)
 pref = chebfunpref();
-pref.singPrefs.exponents = f.mapping.forDerExps;
-forDer = onefun.constructor(f.mapping.forDer, [], [], pref);
+pref.enableSingularityDetection = true;
+data.exponents = f.mapping.forDerExps;
+forDer = onefun.constructor(f.mapping.forDer, data, pref);
 
 % Assign the output to be the inner product of the onefuns of the input,
 % but multiplied by the derivative of the map.

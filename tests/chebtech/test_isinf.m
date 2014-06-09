@@ -28,11 +28,11 @@ for n = 1:2
     
     % Test a finite scalar-valued function:
     p = pref;
-    f = testclass.make(@(x) x, [], [], p);
+    f = testclass.make(@(x) x, [], p);
     pass(n, 3) = ~isinf(f);
     
     % Test a finite array-valued function:
-    f = testclass.make(@(x) [x, x], [], [], p);
+    f = testclass.make(@(x) [x, x], [], p);
     pass(n, 4) = ~isinf(f);
 end
 

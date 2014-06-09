@@ -14,23 +14,23 @@ for n = 1:2
     end
     
     % Try some standard calls to flipud 
-    f = testclass.make(@(x) sin(x+.5), [], [], pref);
-    g = testclass.make(@(x) sin(-x+.5), [], [], pref);
+    f = testclass.make(@(x) sin(x+.5), [], pref);
+    g = testclass.make(@(x) sin(-x+.5), [], pref);
     h = flipud(f);
     pass(n, 1) = norm(g.coeffs - h.coeffs, inf) < 10*h.vscale.*h.epslevel;
     
-    f = testclass.make(@(x) [sin(x+.5), exp(x)], [], [], pref);
-    g = testclass.make(@(x) [sin(-x+.5), exp(-x)], [], [], pref);
+    f = testclass.make(@(x) [sin(x+.5), exp(x)], [], pref);
+    g = testclass.make(@(x) [sin(-x+.5), exp(-x)], [], pref);
     h = flipud(f);
     pass(n, 2) = norm(g.coeffs - h.coeffs, inf) < 10*max(h.vscale.*h.epslevel);
     
-    f = testclass.make(@(x) sin(1i*x+.5), [], [], pref);
-    g = testclass.make(@(x) sin(-1i*x+.5), [], [], pref);
+    f = testclass.make(@(x) sin(1i*x+.5), [], pref);
+    g = testclass.make(@(x) sin(-1i*x+.5), [], pref);
     h = flipud(f);
     pass(n, 3) = norm(g.coeffs - h.coeffs, inf) < 10*h.vscale.*h.epslevel;
     
-    f = testclass.make(@(x) [sin(x+.5), exp(1i*x)], [], [], pref);
-    g = testclass.make(@(x) [sin(-x+.5), exp(-1i*x)], [], [], pref);
+    f = testclass.make(@(x) [sin(x+.5), exp(1i*x)], [], pref);
+    g = testclass.make(@(x) [sin(-x+.5), exp(-1i*x)], [], pref);
     h = flipud(f);
     pass(n, 4) = norm(g.coeffs - h.coeffs, inf) < 10*max(h.vscale.*h.epslevel);
 end

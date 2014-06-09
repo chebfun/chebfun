@@ -16,20 +16,7 @@ if ( nargin < 3 )
     c = 0; 
 end
 
-% We don't care about delta functions in jumps:
-f = removeDeltas(f);
-
 % JUMP() is just a wrapper for FEVAL() and MINUS():
 j = feval(f, x, 'right') - feval(f, x, 'left') - c;
 
 end
-
-function f = removeDeltas(f)
-% TODO: This breaks encapsulation.
-for k = 1:numel(f.funs)
-    if ( isa(f.funs{k}, 'deltafun') )
-        f.funs{k} = f.funs{k}.funPart;
-    end
-end
-end
-

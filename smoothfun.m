@@ -4,10 +4,9 @@ classdef smoothfun < onefun % (Abstract)
 %   interval [-1,1].
 %
 % Constructor inputs:
-%   SMOOTHFUN.CONSTRUCTOR(OP, VSCALE, HSCALE, PREF) constructs a SMOOTHFUN
-%   object on the interval [-1,1] from the function handle OP. Currently the
-%   only subclass of SMOOTHFUN is CHEBTECH, so SMOOTHFUN will call
-%   CHEBTECH.CONSTRUCTOR(OP, VSCALE, HSCALE, PREF.TECHPREFS).
+%   SMOOTHFUN.CONSTRUCTOR(OP, DATA, PREF) constructs a SMOOTHFUN object on the
+%   interval [-1,1] from the function handle OP using the data given in the
+%   DATA structure and the preferences in PREF.
 %
 % See also CHEBTECH.
 
@@ -28,30 +27,25 @@ classdef smoothfun < onefun % (Abstract)
     
     %% Constructor for the SMOOTHFUN class.
     methods (Static)
-        function obj = constructor(op, vscale, hscale, pref)
+        
+        function obj = constructor(op, data, pref)
             
-            % We can't return an empty SMOOTHFUN, so pass an empty OP down.
+            % Parse inputs.
             if ( nargin == 0 )
+                % We can't return an empty SMOOTHFUN, so pass an empty OP down.
                 op = [];
             end
-           
-            % Define vscale if none given:
-            if ( nargin < 2 || isempty(vscale) )
-                vscale = 0;
+
+            if ( (nargin < 2) || isempty(data) )
+                data = struct();
             end
 
-            % Define hscale if none given:
-            if ( nargin < 3 || isempty(hscale) )
-                hscale = 1;
-            end
-
-            % Determine preferences if not given, merge if some are given:
-            if ( nargin < 4 || isempty(pref) )
+            if ( (nargin < 3) || isempty(pref) )
                 pref = chebfunpref();
             else
                 pref = chebfunpref(pref);
             end
-            
+
             % Deal with FUNQUI:
             if ( strcmp(pref.tech, 'funqui') )
                 op = funqui(op);
@@ -64,27 +58,11 @@ classdef smoothfun < onefun % (Abstract)
             end
 
             % Call the TECH constructor.
-            obj = feval(pref.tech, op, vscale, hscale, pref.techPrefs);
-
+            obj = feval(pref.tech, op, data, pref.techPrefs);
         end
         
     end
-    
-    %% ABSTRACT (NON-STATIC) METHODS REQUIRED BY SMOOTHFUN CLASS.
-    methods ( Abstract = true )
 
-    end
-
-    %% ABSTRACT STATIC METHODS REQUIRED BY SMOOTHFUN CLASS.
-    methods ( Abstract = true, Static = true )
-        
-    end
-    
-    %% Methods implemented by SMOOTHFUN class.
-    methods 
-        
-    end
-    
     %% Static methods implemented by SMOOTHFUN class.
     methods ( Static = true ) 
         

@@ -8,11 +8,11 @@ end
 
 a = -4; b = 4;
 
-f = fun.constructor(@(x) sin(x), [a, b]);
+f = fun.constructor(@(x) sin(x), struct('domain', [a, b]));
 mag = .9*(a + (b-a)*rand(3,3));
 loc = .9*(a + (b-a)*rand(1,3));
 
-df = deltafun(f, mag, loc);
+df = deltafun(f, struct('deltaMag', mag, 'deltaLoc', loc));
 
 pass(1) = all( chebpoly(f) == chebpoly(df) );
 
