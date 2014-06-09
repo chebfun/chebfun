@@ -107,7 +107,8 @@ data.exponents = [0 pow2];
 g = bndfun(op2, data, pref);
 I = innerProduct(f,g);
 I_exact = -0.65182492763883119+0.47357853074362785i;
-pass(12) = abs(I - I_exact) < 1e2*max(get(f, 'epslevel'), ...
-    get(g, 'epslevel'))*abs(I_exact);
+err = abs(I - I_exact);
+tol = 5e2*max(get(f, 'epslevel'), get(g, 'epslevel'))*abs(I_exact);
+pass(12) = err < tol;
 
 end

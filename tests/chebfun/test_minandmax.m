@@ -135,7 +135,7 @@ pExact = [-1.120906422778534 ; 1.120906422778534];
 errV = vals - vExact;
 errP = pos - pExact;
 pass(13) = ( norm(errV, inf) < epslevel(f)*vscale(f) ) && ...
-    ( norm(errP, inf) < 4*epslevel(f)*vscale(f) );
+    ( norm(errP, inf) < 5*epslevel(f)*vscale(f) );
       
 
 end

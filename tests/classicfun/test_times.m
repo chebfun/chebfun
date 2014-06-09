@@ -153,7 +153,8 @@ g = c.*f;
 g_exact = bndfun(op_exact, singData, singPref);
 
 err = norm(feval(g, x) - feval(g_exact, x), inf);
-pass(24) = ( err < 5*get(f, 'epslevel')*norm(feval(g_exact, x), inf) );
+tol = 10*get(f, 'epslevel')*norm(feval(g_exact, x), inf);
+pass(24) = ( err < tol );
 
 % Case of two functions:
 pow1 = -0.3;
@@ -171,8 +172,8 @@ singData.exponents = [0 pow1+pow2];
 h_exact = bndfun(op_exact, singData, singPref);
 
 err = norm(feval(h, x) - feval(h_exact, x), inf);
-pass(25) = ( err < 1e1*max(get(f, 'epslevel'), get(g, 'epslevel'))*...
-    norm(feval(h_exact, x), inf) );
+tol = 1e2*max(get(f, 'epslevel'), get(g, 'epslevel'))*norm(feval(h_exact, x), inf);
+pass(25) = ( err < tol );
 
 %% Tests for UNBNDFUN:
 
@@ -193,8 +194,9 @@ g = unbndfun(opg, data);
 h = f.*g;
 hVals = feval(h, x);
 hExact = oph(x);
-err = hVals - hExact;
-pass(26) = norm(err, inf) < get(f,'epslevel')*get(f,'vscale');
+err = norm(hVals - hExact, inf);
+tol = get(f,'epslevel')*get(f,'vscale');
+pass(26) = err < 2*tol;
 
 end
 

@@ -28,3 +28,5 @@ f = sin(x);
 g = cos(4*x);
 err = norm(D*g -f.*g);
 pass(3) = ( err < 10*tol );
+
+end
