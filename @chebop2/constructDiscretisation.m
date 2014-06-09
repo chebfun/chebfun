@@ -226,11 +226,13 @@ if ~isempty(bcDown) && ~isempty(downVal) && ~isempty(bcLeft) && ~isempty(leftVal
     end
 end
 
-% error if not close to zero.
-if allbc >= 100*sqrt(tol)
-    s = sprintf('Boundary conditions differ by %1.4f', allbc');
-    warning('CONSTRUCTDISCRETISATION:BCS', s)
-end
+% TODO: Should there be an error if the compatibility conditions do not 
+% match?
+%
+% if allbc >= 100*sqrt(tol)
+%     s = sprintf('Boundary conditions differ by %1.4f', allbc');
+%     warning('CONSTRUCTDISCRETISATION:BCS', s)
+% end
 end
 
 function B = UnconstrainedMatrixEquation(ODE, jj, n, order, dom)
