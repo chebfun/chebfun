@@ -53,10 +53,6 @@ end
 % The domain that the problem is specified on
 dom = N.domain;
 
-% Number of unknown variables N acts on. Subtract 1 from nargin(N.op), since the
-% first argument is the independent variable x.
-numVars = nargin(N.op) - 1;
-
 %% Construct a suitable function to linearize about:
 
 % Construct the zero function on N.DOMAIN to linearize around if no U was
@@ -64,8 +60,12 @@ numVars = nargin(N.op) - 1;
 if ( nargin < 2 || isempty(u) )
     % Initialise a zero CHEBFUN:
     zeroFun = chebfun(0, dom);
+    % Find out how many unknown variables N acts on.
+    nVars = numVars(N);
     % Wrap in a cell and call repmat() to get correct dimensions
-    u = repmat({zeroFun}, numVars, 1);
+    u = repmat({zeroFun}, nVars, 1);
+else
+    nVars = size(u, 1);
 end
 
 % Construct the independent variable X if needed.
@@ -78,7 +78,7 @@ if ( nargin < 4 || isempty(flag) )
     flag = 0;
 end
 
-% Convert the linerization variable to cell-array form:
+% Convert the linearization variable to cell-array form:
 if ( isa(u, 'chebmatrix') )
     u = u.blocks;
 end
@@ -93,11 +93,11 @@ if ( ~iscell(u) )
     u = {u};
 end
 
-% If numVars == 2, but the dimension of the initial guess passed is greater than
-% 1, we are working with the @(x,u) [diff(u{1}) + u{2}; ...] syntax. Need to
-% make the code aware of this.
-if ( numVars == 1 && numel(u) > 1 )
-    numVars = numel(u);
+% If nargin(N) == 2, but the dimension of the initial guess passed is greater
+% than 1, we are working with the @(x,u) [diff(u{1}) + u{2}; ...] syntax. Need
+% to make the code aware of this.
+if ( nargin(N) == 2 && numel(u) > 1 )
+    nVars = numel(u);
     cellArg = 1;
 else
     cellArg = 0;
@@ -108,7 +108,7 @@ end
 % Blocks corresponding to functions (i.e., CHEBFUNs) will be square, wheres the
 % derivative blocks of scalars will by 1xINF.
 isFun = ~cellfun(@isnumeric, u);
-for k = 1:numVars
+for k = 1:nVars
     u{k} = seed(adchebfun(u{k}, N.domain), k, isFun);
 end
 
@@ -248,7 +248,7 @@ L.constraint = BC;
 
 % Cast the cell U back to a CHEBMATRIX, consisting of CHEBFUNs and scalars
 if ( nargout == 4)
-    for k = 1:numVars
+    for k = 1:nVars
         u{k} = u{k}.func;
     end
     u = chebmatrix(u);
