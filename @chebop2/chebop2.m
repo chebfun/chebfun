@@ -1,30 +1,32 @@
 classdef chebop2
-    %CHEBOP2  CHEBOP2 class for representing partial differential equations
-    %
-    % Class used to solve PDEs defined on rectangular domains that have
-    % unique and globally smooth solutions.
-    %
-    % N = CHEBOP2(@(u) op(u)) constructs an operator N representing the
-    % operator given in @(u)op(u) acting on functions of two variables on
-    % [-1,1] by [-1,1].
-    %
-    % N = CHEBOP2(@(u) op(u), [a b c d]) constructs an operator N acting on
-    % functions of two variables defined on [a,b] by [c,d].
-    %
-    % N = CHEBOP2(@(x,y,u) op(x,y,u),...) constructs a variable coefficient PDE
-    % operator.
-    %
-    % Boundary conditions are imposed via the syntax N.lbc, N.rbc, N.ubc, and
-    % N.dbc. For example to solve Poisson with Dirichlet conditions try:
-    %
-    % Example:
-    %    N = chebop2(@(u) diff(u,2,1) + diff(u,2,2));
-    %    N.lbc = 0; N.rbc = 0; N.ubc = 0; N.dbc = 0;
-    %    u = N \ 1;
-    
-    % Copyright 2014 by The University of Oxford and The Chebfun2 Developers.
-    % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
-    
+%CHEBOP2  CHEBOP2 class for representing partial differential equations
+%
+% Class used to solve PDEs defined on rectangular domains that have
+% unique and globally smooth solutions.
+%
+% N = CHEBOP2(@(u) op(u)) constructs an operator N representing the
+% operator given in @(u)op(u) acting on functions of two variables on
+% [-1,1] by [-1,1].
+%
+% N = CHEBOP2(@(u) op(u), [a b c d]) constructs an operator N acting on
+% functions of two variables defined on [a,b] by [c,d].
+%
+% N = CHEBOP2(@(x,y,u) op(x,y,u),...) constructs a variable coefficient PDE
+% operator.
+%
+% Boundary conditions are imposed via the syntax N.lbc, N.rbc, N.ubc, and
+% N.dbc. For example to solve Poisson with Dirichlet conditions try:
+%
+% Example:
+%    N = chebop2(@(u) diff(u,2,1) + diff(u,2,2));
+%    N.lbc = 0; N.rbc = 0; N.ubc = 0; N.dbc = 0;
+%    u = N \ 1;
+% 
+% Warning: This PDE solver is an experimental new feature. It has not been
+% publicly advertised.  
+        
+% Copyright 2014 by The University of Oxford and The Chebfun2 Developers.
+% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
     
     properties ( GetAccess = 'public', SetAccess = 'public' )
         domain = [];    % Domain of the operator
@@ -161,13 +163,13 @@ if ( isa(varargin{1},'function_handle') )
         u = adchebfun2( chebfun2(@(x,y) x.*y, domain) );
         v = op( u );
         % If the PDO has constant coefficients then convert to double:
-        try 
+        try
             A = cell2mat(v.der.derCell).';
         catch
             % PDO has variable coefficients, keep them in a cell array:
             A = v.der.derCell;
         end
-               
+        
     elseif ( nargin(op) == 2 )
         error('Did you intend to have @(x,y,u)?')
     elseif ( nargin(op) == 3 )
