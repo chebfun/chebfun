@@ -41,14 +41,14 @@ yorder = N.yorder;
 % then use the optimal low rank expansion of the operator as a way to
 % discretise the PDE.
 if (  isempty(N.V) || isempty(N.U) )
-    if iscell(A)
+    if ( iscell(A) )
         counter = 1;
         U = cell(size(A,1),1); V = cell(size(A,2),1);
         for jj = 1:size(A,1)
             for kk = 1:size(A,2)
                 a = A{jj,kk};
-                if isa(a,'chebfun2')
-                    if abs( vscale( a ) ) > tol
+                if ( isa(a,'chebfun2') )
+                    if ( abs( vscale( a ) ) > tol )
                         [C, D, R] = cdr(a);
                         for col = 1:size(C,2)
                             U{jj,counter} = C(:,col)*D(col,col);
@@ -56,7 +56,7 @@ if (  isempty(N.V) || isempty(N.U) )
                             counter = counter +1;
                         end
                     end
-                elseif isa(a,'double') && abs(a)>tol
+                elseif ( isa(a,'double') && ( isempty(a) || abs(a)>tol ) )
                     U{jj,counter} = a; V{kk,counter}=1;
                     counter = counter + 1;
                 end

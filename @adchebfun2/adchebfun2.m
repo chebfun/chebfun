@@ -216,7 +216,7 @@ classdef (InferiorClasses = {?chebfun2}) adchebfun2
             elseif ( isa(g, 'chebfun2') || isa(g, 'double') ) % ADCHEBFUN2 + DOUBLE/SCALAR
                 f.chebfun2 = f.chebfun2 + g;
             else
-                error('ADCHEBFUN2:plus:type',..
+                error('ADCHEBFUN2:plus:type',...
                 'Cannot add these two objects together');
             end
             
