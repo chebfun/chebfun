@@ -13,7 +13,7 @@ N = chebop2(@(u) diff(u,1,1) - k*diff(u,2,2), d);
 N.dbc = @(x) -(x+1).*(x-1); N.lbc = 0; N.rbc = 0; 
 u = N \ 0;
 
-d = [-1 1 0 2]; k = 1;  
+d = [-1 1 0 1.5]; k = 1;  
 N = chebop2(@(u) diff(u,1,1) - k*diff(u,2,2), d);
 N.dbc = @(x) -(x+1).*(x-1); N.lbc = 0; N.rbc = 0; 
 v = N \ 0;
@@ -24,7 +24,7 @@ y = chebpts(100,d(3:4));
 [xx, yy] = meshgrid(x,y); 
 
 % res = v{d(1),d(2),d(3),d(4)}; 
-pass(1) = ( norm( u(xx,yy) - v(xx,yy), inf) < 200*tol ); 
+pass(1) = ( norm( u(xx,yy) - v(xx,yy), inf) < 500*tol ); 
 
 % Do we agree with pde15s on a simple example? 
 k = 2;  

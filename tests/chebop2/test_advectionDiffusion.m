@@ -23,7 +23,7 @@ uu = pde15s(@(t,x,u) .1*diff(u,2) + diff(u), 0:.1:6, f, bc, opts);
 k = 1; 
 j = 1; 
 for t = 0:.1:6
-   pass(j) = ( norm(u(:,t) - uu(:,k).') < 3*tol ); j = j + 1; 
+   pass(j) = ( norm(u(:,t) - uu(:,k).') < 10*tol ); j = j + 1; 
    k = k + 1; 
 end
 
@@ -44,7 +44,7 @@ uu = pde15s(@(t,x,u) .3*diff(u,2) + 10*diff(u), 0:.005:.25, f, bc, opts);
 
 k=1;
 for t = 0:.005:.25
-   pass(j) = ( norm(u(:,t) - uu(:,k).') < tol ); j = j + 1;
+   pass(j) = ( norm(u(:,t) - uu(:,k).') < 2*tol ); j = j + 1;
    k = k + 1; 
 end
 

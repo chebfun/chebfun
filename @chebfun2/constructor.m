@@ -85,7 +85,7 @@ if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
         % the samples, and the accuracy target in chebfun2 preferences. 
         pseudoLevel = pref.cheb2Prefs.eps;
         grid = max( size( op ) ); 
-        vscale = max( op(:) ); 
+        vscale = max( abs(op(:)) ); 
         tol = grid.^(2/3) * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
         
         % Perform GE with complete pivoting:
