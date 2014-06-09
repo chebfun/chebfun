@@ -20,38 +20,37 @@ f = classicfun.constructor(0,struct('domain', [0 1]));
 
 % Jump:
 for j = 1:M
-    edge(j) = detectEdge(f, @(x) exp(x)+cos(7*x)+0.1*sign(x-x0(j)), 1, 1);
+    edge(j) = fun.detectEdge(f, @(x) exp(x)+cos(7*x)+0.1*sign(x-x0(j)), 1, 1);
 end
 err = norm(edge - x0, inf);
 pass(1) = err < 5e-14;
 
 % C1:
 for j = 1:M
-    edge(j) = detectEdge(f, @(x) exp(x)+cos(7*x)+0.1*abs(x-x0(j)), 1, 1);
+    edge(j) = fun.detectEdge(f, @(x) exp(x)+cos(7*x)+0.1*abs(x-x0(j)), 1, 1);
 end
 err = norm(edge - x0, inf);
 pass(2) = err < 5e-14;
 
 % C2:
 for j = 1:M
-    edge(j) = detectEdge(f, @(x) sign(x-x0(j)).*(x-x0(j)), 1, 1);
+    edge(j) = fun.detectEdge(f, @(x) sign(x-x0(j)).*(x-x0(j)), 1, 1);
 end
 err = norm(edge - x0, inf);
 pass(3) = err < 5e-14;
 
 % C3:
 for j = 1:M
-    edge(j) = detectEdge(f, @(x) abs(x-x0(j)).^3, 1, 1);
+    edge(j) = fun.detectEdge(f, @(x) abs(x-x0(j)).^3, 1, 1);
 end
 err = norm(edge - x0, inf);
 pass(4) = err < 5e-14;
 
 % C4:
 for j = 1:M
-    edge(j) = detectEdge(f, @(x) sign(x-x0(j)).*(x-x0(j)).^3, 1, 1);
+    edge(j) = fun.detectEdge(f, @(x) sign(x-x0(j)).*(x-x0(j)).^3, 1, 1);
 end
 err = norm(edge - x0, inf);
 pass(5) = err < 5e-14;
 
 end
-
