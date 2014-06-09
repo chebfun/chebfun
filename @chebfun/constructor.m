@@ -198,7 +198,7 @@ while ( any(sad) )
         opk = op;
     end
     
-    edge = detectEdge(funs{k}, op,  data.hscale, data.vscale);
+    edge = fun.detectEdge(funs{k}, op,  data.hscale, data.vscale);
         
     if ( singDetect )
         % Update singularity info:

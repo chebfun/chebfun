@@ -64,6 +64,25 @@ fExact = op(x);
 err = fVals - fExact;
 pass(6) = norm(err, inf) < 1e1*epslevel(f)*vscale(f);
 
+%% Test SPLITTING ON with BLOWUP == 1:
+op = @(x)tan(x);
+f = chebfun(op, [-4 4], 'splitting', 'on', 'blowup', 1);
+
+% Specify the domain: 
+dom = [-4 -pi/2 pi/2 4];
+
+% Generate random points to use as test values:
+x1 = diff(dom(1:2)) * rand(100, 1) + dom(1);
+x2 = diff(dom(2:3)) * rand(100, 1) + dom(2);
+x3 = diff(dom(3:4)) * rand(100, 1) + dom(3);
+
+err1 = op(x1)-f(x1);
+err2 = op(x2)-f(x2);
+err3 = op(x3)-f(x3);
+
+err = [err1; err2; err3];
+pass(7) = ( norm(err, inf) < 1e4*epslevel(f)*vscale(f) );
+
 % % Test X*LOG(X) on [0 1]:
 % F4 = @(x) x.*log(x);
 % f4 = chebfun(F4, [0, 1], pref, 'splitting', 'on', 'blowup', 'off');
