@@ -25,7 +25,7 @@ domain = f.domain;
 
 if ( ~flag )
     % Sample at lots of points if the op is vectorized. 
-    n = 50; 
+    n = 100; 
     [xeval, yeval] = halton( n, domain );
     
     % Evaluate the op:
