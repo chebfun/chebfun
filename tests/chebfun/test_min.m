@@ -141,7 +141,7 @@ err_row = norm(g_row(xr) - -abs(xr).', Inf);
 pass(16) = (err_a < tol) && (err_q < tol) && (err_row < tol);
 
 try
-    y = min(Q, [], 3)
+    y = min(Q, [], 3);
     pass(17) = false;
 catch ME
     pass(17) = strcmp(ME.identifier, 'CHEBFUN:min:badDim');
@@ -159,7 +159,7 @@ end
 f = chebfun(@(x) [sin(x) cos(x)]);
 h = min(f, .75);
 pass(19) = norm(h([-.9 0 .9].') - [sin(-.9) cos(-.9) ; 0 .75 ; .75 cos(.9)]) ...
-    < epslevel(h)*vscale(h);
+    < 3*epslevel(h)*vscale(h);
 
 %% test on function defined on unbounded domain:
 
