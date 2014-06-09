@@ -4,6 +4,16 @@ function X = denseSolve(N, f, m, n)
 %
 %  DENSESOLVE(N,F,M,N), returns a solution matrix of values on a M by N
 %  Chebyshev grid.
+%
+% For further details about the PDE solver, see: 
+% A. Townsend and S. Olver, The automatic solution of partial differential
+% equations using a global spectral method, in preparation, 2014.
+% 
+% Warning: This PDE solver is an experimental new feature. It has not been
+% publicly advertised. 
+
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 [CC, RHS, bb, gg, Px, Py, xsplit, ysplit] =...
     chebop2.constructDiscretisation(N,f,m,n); % Construct discretisation.

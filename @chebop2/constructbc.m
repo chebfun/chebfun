@@ -9,7 +9,7 @@ function [bcrow, bcvalue] = constructbc( bcArg, bcpos, een, bcn, dom, scl, order
 % scl = length of domain in other variable
 % order = for periodic constraints only. 
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 if ( isa(bcArg, 'chebfun') )

@@ -2,6 +2,9 @@ function varargout = subsasgn(f,index,varargin)
 % Subsasgn for a chebop2.  Designed so boundary conditions of an operator
 % can be converted to chebfuns before a call to mldivide.
 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
 idx = index(1).subs;
 vin = varargin{:};
 

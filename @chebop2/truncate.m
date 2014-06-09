@@ -1,6 +1,9 @@
-function a = truncate(a,tol)
+function a = truncate(a, tol)
 % TRUNCATE(A), truncates off all elements in A which are below absolute
 % value tol.
+
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 %fast binary search.
 factor = 2;

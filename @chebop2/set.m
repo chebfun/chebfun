@@ -1,10 +1,21 @@
-function N = set(N,varargin)
+function N = set( N, varargin )
 %SET   Set chebop properties.
+% 
+%  N.lbc = F sets left boundary conditions. If is a DOUBLE or a CHEBFUN, 
+%  then left Dirichlet conditions with boundary data F are set. 
+%  If F = @(x,u) f(x,u), then the conditions f(x,u) = 0 are set along the 
+%  left edge.  
+% 
+%  N.rbc = F, N.ubc = F, N.dbc = F are the same as N.lbc = F but for the
+%  right, top, and bottom boundary conditions, respectively.
+% 
+%  N.domain = F sets the domain of the CHEBOP2. F is expected to be a
+%  vector of length 4. 
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers. 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-if ( isempty(N) )   % empty check  
+if ( isempty( N ) )   % empty check  
     N = []; return; 
 end
 

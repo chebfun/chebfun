@@ -19,7 +19,7 @@ function [CC, rhs, bb, gg, Px, Py, xsplit, ysplit] = constructDiscretisation(N, 
 % Returns RHS with degrees of freedom removed and bb which stores
 % elminated boundary conditions, gg eliminated boundary rows.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 if nargin < 5
