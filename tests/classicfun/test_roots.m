@@ -50,7 +50,7 @@ pass(3) = length(r) == 4 && norm(feval(f, r), inf) < 10*get(f, 'epslevel').*get(
 
 %%
 %  Test a some simple polynomials BNDFUN:
-f = bndfun([-2 ; 7], data, pref);
+f = bndfun(@(x) x, data, pref);
 r = roots(f);
 tol = get(f, 'epslevel').*get(f, 'vscale');
 pass(4) = abs(r) < tol;
