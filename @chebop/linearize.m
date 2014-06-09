@@ -60,7 +60,11 @@ if ( nargin < 2 || isempty(u) )
     % Wrap in a cell and call repmat() to get correct dimensions
     u = repmat({zeroFun}, nVars, 1);
 else
-    nVars = size(u, 1);
+    if ( isa(u, 'chebmatrix') )
+        nVars = size(u, 1);
+    else
+        nVars = numel(u);
+    end
 end
 
 % Construct the independent variable X if needed.
