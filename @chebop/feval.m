@@ -37,7 +37,7 @@ end
 
 if ( numberOfInputs == 1)
     % If N has one input arguments, either we have a scalar problem, or the
-    % problem is specified on chebmatrix format, e.g.
+    % problem is specified on chebmatrix format, e.g.,
     %   N.op = @(u) [ diff(u{1},2) + u{2}; u{1} + diff(u{2}];
     % Here, importantly, x does not appear in the argument list for N.op.
     u = varargin{1};
@@ -54,9 +54,9 @@ if ( numberOfInputs == 1)
     
     out = N.op(u);
     
-elseif ( numberOfInputs <= 2)
+elseif ( numberOfInputs <= 2 )
     % If N has two input arguments, either we have a scalar problem, or the
-    % problem is specified on chebmatrix format, e.g.
+    % problem is specified on chebmatrix format, e.g.,
     %   N.op = @(x, u) [ diff(u{1},2) + u{2}; u{1} + diff(u{2}];
     % Here, importantly, x must appear in the argument list for N.op.
     
@@ -76,7 +76,7 @@ elseif ( numberOfInputs <= 2)
         % hand, U has more than one block, but NUMBEROFINPUTS is still less than
         % or equal to 2 (which got us here in the first place), we must be
         % dealing with a CHEBOP N, whose OP is specified on CHEBMATRIX format,
-        % e.g.
+        % e.g.,
         %   N.op = @(x,u) [diff(u{1}) + u{2}; u{1} + diff(u{2})];
         if ( isa(u, 'chebmatrix') && max(size(u)) == 1 )
             u = u.blocks{1};
