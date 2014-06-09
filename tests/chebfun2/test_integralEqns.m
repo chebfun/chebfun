@@ -2,10 +2,10 @@ function pass = test_integralEqns( pref )
 % Test fred and volt
 
 if ( nargin == 0) 
-    pref = chebfun2pref; 
+    pref = chebfunpref; 
 end
 
-tol = 1000*pref.eps; 
+tol = 1000*pref.cheb2Prefs.eps; 
 j = 1; 
 
 % Fred on [-1 1 -1 1]

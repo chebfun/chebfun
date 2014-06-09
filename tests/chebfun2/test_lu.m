@@ -2,7 +2,7 @@ function pass = test_lu( pref )
 % Test for LU decomposition of a chebfun2. 
 
 if ( nargin == 0 ) 
-    pref = chebfun2pref; 
+    pref = chebfunpref; 
 end 
 
 tol = 100*pref.cheb2Prefs.eps; 
@@ -21,6 +21,7 @@ pass(2) = norm( diag( L( pivPos( :, 2 ) , :) ) - ones( length(f), 1) ) < tol;
 pass(3) = norm( tril( U( :, pivPos( :, 1 ) ) , -1) ) < sqrt(tol);
 
 
+
 % Try the same thing on different domain: 
 x = chebpts(100, [-2.1, 4.3]);
 y = chebpts(100, [-1, 2.7]);
@@ -35,5 +36,6 @@ pass(4) = norm( fevalm(f, x, y) - fevalm(g, x, y) ) < 2*tol;
 pass(5) = norm( diag( L( pivPos( :, 2 ) , :) ) - ones( length(f), 1) ) < tol; 
 % pass(j) = norm( triu( L( pivPos( :, 2 ) , :) , 1) ) < sqrt(tol); j = j + 1; 
 pass(6) = norm( tril( U( :, pivPos( :, 1 ) ) , -1) ) < sqrt(tol); 
+
 
 end

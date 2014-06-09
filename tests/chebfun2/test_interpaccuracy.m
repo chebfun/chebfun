@@ -3,10 +3,10 @@ function pass = test_interpaccuracy( pref )
 % Alex Townsend, March 2013. 
 
 if ( nargin < 1 ) 
-    pref = chebfun2pref; 
+    pref = chebfunpref; 
 end 
 
-tol = 100*pref.eps; 
+tol = 100*pref.cheb2Prefs.eps; 
 j = 1; 
 
 % Mohsin's bugs. 

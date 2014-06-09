@@ -2,10 +2,10 @@ function pass = test_sum( pref )
 % Test for integration of a fun2 object. 
 
 if ( nargin < 1 ) 
-    pref = chebfun2pref; 
+    pref = chebfunpref; 
 end 
 
-tol = 100*pref.eps; 
+tol = 100*pref.cheb2Prefs.eps; 
 j = 1; 
 
 % Example from wiki: http://en.wikipedia.org/wiki/Multiple_integral#Double_integral

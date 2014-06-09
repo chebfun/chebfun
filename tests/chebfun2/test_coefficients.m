@@ -3,9 +3,9 @@ function pass = test_coefficients( pref )
 % coefficients correctly.
 
 if ( nargin < 1 ) 
-    pref = chebfun2pref; 
+    pref = chebfunpref; 
 end 
-tol = 100 * pref.eps; 
+tol = 100 * pref.cheb2Prefs.eps; 
 
 n = 10; 
 f = chebpoly(n); 

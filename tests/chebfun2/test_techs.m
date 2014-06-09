@@ -21,12 +21,12 @@ catch
     pass(2) = 0; 
 end
 
-try 
-    chebfunpref.setDefaults('tech',@fourtech)
-    f = chebfun2(@(x,y) cos(pi*y).*sin(pi*x));
-    pass(3) = 1;
-catch
-    pass(3) = 0; 
-end
+% try 
+%     chebfunpref.setDefaults('tech',@fourtech)
+%     f = chebfun2(@(x,y) cos(pi*y).*sin(pi*x));
+%     pass(3) = 1;
+% catch
+%     pass(3) = 0; 
+% end
 
 end

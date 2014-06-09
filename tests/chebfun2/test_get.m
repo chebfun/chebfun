@@ -2,9 +2,9 @@ function pass = test_get( pref )
 % Test GET.
 
 if ( nargin < 1 ) 
-    pref = chebfun2pref; 
+    pref = chebfunpref; 
 end 
-tol = 1e2 * pref.eps; 
+tol = 1e2 * pref.cheb2Prefs.eps; 
 j = 1; 
 
 f = chebfun2(@(x,y) cos(x.*y)); 

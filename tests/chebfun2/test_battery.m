@@ -2,9 +2,9 @@ function pass = test_battery( pref )
 % A large battery of functions. 
 
 if ( nargin < 1 ) 
-    pref = chebfun2pref; 
+    pref = chebfunpref; 
 end 
-tol = 1e8 * pref.eps; 
+tol = 1e8 * pref.cheb2Prefs.eps; 
 
 Battery = {@(x,y) cos(pi*x.*y),...                                        % 1
     @(x,y) cos(2*pi*x.*y), ...                                            % 2

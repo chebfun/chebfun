@@ -2,9 +2,9 @@ function pass = test_restriction( pref )
 % This script checks the restriction of a chebfun2 to a smaller domain. 
 
 if ( nargin < 1 ) 
-    pref = chebfun2pref; 
+    pref = chebfunpref; 
 end 
-tol = 1e5 * pref.eps; 
+tol = 1e5 * pref.cheb2Prefs.eps; 
 j = 1; 
 
 % Restricting a chebfun2 to a point. 

@@ -1,4 +1,4 @@
-function pass = test_CLA( pref )
+function pass = test_basicCLA( pref )
 % Try out some basic continuous linear algebra. Mainly checking
 % epslevels...
 

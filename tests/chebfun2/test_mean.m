@@ -2,10 +2,10 @@ function pass = test_mean( pref )
 % Check the commands mean
 
 if ( nargin < 1 ) 
-    pref = chebfun2pref; 
+    pref = chebfunpref; 
 end 
 
-tol = pref.eps; 
+tol = pref.cheb2Prefs.eps; 
 j = 1; 
 
 f = chebfun2(@(x,y) sin((x-.1).*y)); 

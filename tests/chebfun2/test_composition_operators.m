@@ -2,10 +2,10 @@ function pass = test_composition_operators( pref )
 % Check that composition operations are working. 
 
 if ( nargin == 0 )
-    pref = chebfun2pref; 
+    pref = chebfunpref; 
 end
 
-tol = 1000*pref.eps;
+tol = 1000*pref.cheb2Prefs.eps;
 j = 1; 
 
 f = chebfun2(@(x,y) cos(x.*y) + sin(x.*y) + y -.1); 

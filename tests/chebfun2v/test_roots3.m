@@ -2,9 +2,9 @@ function pass = test_roots3( pref )
 % Check that the marching squares and Bezoutian agree with each other. 
 
 if ( nargin < 1 ) 
-    pref = chebfun2pref; 
+    pref = chebfunpref; 
 end 
-tol = 1e3 * pref.eps; 
+tol = 1e3 * pref.cheb2Prefs.eps; 
 j = 1;
 
 %%
