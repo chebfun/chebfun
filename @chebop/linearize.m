@@ -114,9 +114,9 @@ end
 
 %% Evaluate N.op to get a linearisation of the differential equation:
 
-% Evaluate N.op. The output will be the ADCHEBFUN NU. In case of systems, NU 
-% will be an array-valued ADCHEBFUN. We need different calling sequences depending
-% % on whether N has a cell-argument or not
+% Evaluate N.op. The output will be the ADCHEBFUN NU. In case of systems, NU
+% will be an array-valued ADCHEBFUN. We need different calling sequences
+% depending on whether N has a cell-argument or not
 if ( cellArg )
     % No need to expand the cell U
     Nu = feval(N, x, u);

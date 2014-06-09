@@ -25,9 +25,10 @@ classdef (InferiorClasses = {?double}) chebop
 % Note that when N.OP has two or more input arguments, the first one _MUST_ be
 % the independent variable. When N.OP is specified as a function handle to a
 % method specified in an .m-file, like in the last example above, and that
-% function uses the CHEBMATRIX notation, e.g. diff(u{1}) + u{2}, it is necessary
-% to either pass an initial guess to the operator via N.INIT (see below), or
-% specify the number of variables that the operator operates on via N.NUMVARS.
+% function uses the CHEBMATRIX notation, e.g. diff(u{1}) + u{2}), it is
+% necessary to either pass an initial guess to the operator via N.INIT (see
+% below), or specify the number of variables that the operator operates on via
+% N.NUMVARS.
 %
 % The number of elements in the output CHEBMATRIX should typically equal the
 % number of dependent variables, whether specified as names or CHEBMATRIX
