@@ -73,19 +73,26 @@ else
             % Obtain all matches:
             match = regexp(NopString, expression, 'match');
             
-            % Throw away the variable name and the { }, e.g. convert 'u{1}' to
-            % '1':
-            match = strrep(match, [variableName, '{'], '');
-            match = strrep(match, '}', '');
-            
-            % We are now left with cell-array of strings that only contain
-            % numbers. So convert to doubles!
-            indx = str2double(match);
-            
-            % The number of variables that the CHEBOP operates on is the
-            % greatest index that appears:
-            nVars = max(indx);
-            
+            % If we don't have any matches, problem can't have been specified
+            % using CHEBMATRIX syntax. But nargin(N) == 2, and we did indeed
+            % have the argument list to the anonymous function passed, so we
+            % must be dealing with a scalar problem!
+            if ( isempty(match) )
+                nVars = 1;
+            else
+                % Throw away the variable name and the { }, e.g. convert 'u{1}'
+                % to '1':
+                match = strrep(match, [variableName, '{'], '');
+                match = strrep(match, '}', '');
+                
+                % We are now left with cell-array of strings that only contain
+                % numbers. So convert to doubles!
+                indx = str2double(match);
+                
+                % The number of variables that the CHEBOP operates on is the
+                % greatest index that appears:
+                nVars = max(indx);
+            end
             % Phew...
         end
     end
