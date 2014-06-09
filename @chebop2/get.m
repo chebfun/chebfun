@@ -1,4 +1,4 @@
-function val = get(f,propName)
+function out = get(f,propName)
 % GET   GET method for the CHEBOP2 class
 %
 %   P = GET(N, PROP) returns the property P specified in the string PROP from
@@ -17,35 +17,18 @@ function val = get(f,propName)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if numel(f) > 1
-    val = cell(numel(f));
+if ( numel(f) > 1 )
+    out = cell(numel(f));
     for k = 1:numel(f)
-        val{k} = get(f(k), propName);
+        out{k} = get(f(k), propName);
     end
     return
 end
 
 switch propName
-    case 'lbc'
-        val = f.lbc;
-    case 'rbc'
-        val = f.rbc;
-    case 'ubc'
-        val = f.ubc;
-    case 'dbc'
-        val = f.dbc;
-    case 'domain'
-        val = f.domain;
-    case 'op'
-        val = f.op;
-    case 'coeffs'
-        val = f.coeffs;
-    case 'U'
-        val = f.U; 
-    case 'S' 
-        val = f.S; 
-    case 'V'
-        val = f.V;
+    case fieldnames(f)
+        % Allow access to any of the properties of F via GET:
+        out = f.(propName);
     otherwise
         error('CHEBFUN2:get:propnam',[propName,' is not a valid chebfun2 property.'])
 end

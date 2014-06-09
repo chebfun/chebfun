@@ -212,8 +212,8 @@ N.coeffs = A;
 % Calculate xorder and yorder of PDE.
 % Find the differential order of the PDE operator.
 if ( iscell( A ) )
-    xorder = size(A, 1)-1;
-    yorder = size(A, 2)-1;
+    xorder = size(A, 2) - 1;
+    yorder = size(A, 1) - 1;
 elseif ( min( size( A ) ) > 1 )
     xorder = find( sum( abs( A ), 2 ) > 100*tol, 1, 'last') - 1;
     yorder = find( sum( abs( A ) ) > 100*tol, 1, 'last' ) - 1;
