@@ -169,10 +169,10 @@ if ( isa(varargin{1},'function_handle') )
         v = op( u );
         % If the PDO has constant coefficients then convert to double:
         try
-            A = cell2mat(v.der.derCell).';
+            A = cell2mat(v.jacobian).';
         catch
             % PDO has variable coefficients, keep them in a cell array:
-            A = v.der.derCell;
+            A = v.jacobian;
         end
         
     elseif ( nargin(op) == 2 )
@@ -186,7 +186,7 @@ if ( isa(varargin{1},'function_handle') )
         y = chebfun2( @(x,y) y, domain );
         % apply it to the operator
         v = op( x, y, u );
-        A = v.der.derCell;  % cell array of variable coefficients.
+        A = v.jacobian;  % cell array of variable coefficients.
     else
         error('CHEBOP2:CONSTRUCTOR:INPUT',...
             'Operator should be @(u) or @(x,y,u).')

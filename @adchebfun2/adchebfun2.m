@@ -25,8 +25,18 @@ classdef (InferiorClasses = {?chebfun2}) adchebfun2
     % See http://www.chebfun.org/ for Chebfun information.
     
     properties
-        chebfun2   % An adchebfun2 has a chebfun2
-        der        % Derivative information stored here
+        % FUNC: A CHEBFUN2 which corresponds to the function the
+        % ADCHEBFUN2  represents.
+        func
+        
+        % JACOBIAN: The Frechet derivative of the function the ADCHEBFUN2
+        % represents, with respect to a selected basis variable. The basis
+        % variable is selected at the start of computation with ADCHEBFUN2
+        % objects, and has the identity operators as its Frechet derivative.
+        jacobian
+        
+        % DOMAIN: Domain of the ADCHEBFUN2.
+        domain
     end
     
     %% CLASS CONSTRUCTOR:
@@ -36,11 +46,11 @@ classdef (InferiorClasses = {?chebfun2}) adchebfun2
             if( nargin == 0 )
                 % return an empty chebfun2 object.
             elseif isa(varargin{1},'chebfun2')
-                g.chebfun2 = varargin{:};  % Assign to the chebfun2 field of g.
-                g.der = chebfun2der(1,g.chebfun2.domain);
+                g.func = varargin{:};  % Assign to the chebfun2 field of g.
+                g.jacobian = { 1 };
             else
-                cheb2temp = chebfun2(varargin{:});
-                g = adchebfun2(cheb2temp);
+                tempfunc = chebfun2(varargin{:});
+                g = adchebfun2( tempfunc );
             end
         end
     end
@@ -50,15 +60,15 @@ classdef (InferiorClasses = {?chebfun2}) adchebfun2
         function fout = cos(fin)
             %COS Cosine of ADCHEBFUN2.
             fout = fin;
-            fout.chebfun2 = cos(fin.chebfun2);
-            fout.der = (-sin(fin.chebfun2))*fin.der;
+            fout.func = cos(fin.func);
+            fout.jacobian = (-sin(fin.func))*fin.jacobian;
         end
         
         function f = diff(f, varargin)
             % DIFF for ADCHEBFUN2. See chebfun2/diff for syntax.
             
             % Start by differentiating the chebfun2 of the ADchebfun
-            f.chebfun2 = diff(f.chebfun2, varargin{:});
+            f.func = diff(f.func, varargin{:});
             
             % Find out how many derivatives are required in each direction
             if ( nargin == 1 ) % defaults.
@@ -94,7 +104,19 @@ classdef (InferiorClasses = {?chebfun2}) adchebfun2
             end
             
             % Update the derivative information
-            f.der = diff(f.der, nx, ny);
+            [mA, nA] = size( f.jacobian );
+            
+            % The output cell will have size (mA+yOrder)x(nA+xOrder)
+            newCell = num2cell(zeros(mA + ny, nA + nx));
+            
+            % Differentiation in the x and y direction. This shifts derivative
+            % information to the right and to the bottom, which amounts to
+            % putting the input cell at the bottom right end side of the output
+            % cell.
+            newCell(end-mA+1:end,end-nA+1:end) = f.jacobian;
+            
+            % Assign newCell to the output
+            f.jacobian = newCell;
         end
         
         function f = diffx(f, k)
@@ -164,29 +186,23 @@ classdef (InferiorClasses = {?chebfun2}) adchebfun2
                 h = g;
                 
                 % Multiply the chebfun2
-                h.chebfun2 = f * ( vertcat( g.chebfun2  ));
-                
-                % Multiply the derivative
-                h.der = ( g.der ) * f;
+                h.func = f * ( vertcat( g.func  ));
+                               
+                h.jacobian = cellfun(@mtimes, g.jacobian, ...
+                    repmat({f},size(g.jacobian)), 'UniformOutput', false);
                 
             elseif ( isa(g,'double') )
                 % chebfun2 * double
-                h = f;
-                
-                % Multiply the chebfun2
-                h.chebfun2 = g*(f.chebfun2);
-                
-                % Multiply the derivative
-                h.der = (f.der)*g;
+                h = mtimes(g, f);
             end
         end
         
         function varargout = plot(f)
             % Plot an adchebfun2
             if ( nargout )
-                varargout = plot(f.chebfun2);
+                varargout = plot(f.func);
             else
-                plot(f.chebfun2);
+                plot(f.func);
             end
         end
         
@@ -208,16 +224,34 @@ classdef (InferiorClasses = {?chebfun2}) adchebfun2
                 h = f;
                 
                 % Add the chebfun2s
-                h.chebfun2 = f.chebfun2 + g.chebfun2;
+                h.func = f.func + g.func;
                 
-                % Add the der fields
-                h.der = f.der + g.der;
+                % Obtain the dimensions of the derivatives of the inputs.
+                [mA, nA] = size(f.jacobian);
+                [mB, nB] = size(g.jacobian);
+                
+                % The final derivative will have the dimensions corresponding to the
+                % maximum dimensions of the input derivatives. We create a cell with
+                % all zero entries of that dimensions, then add the input derivative
+                % information to the top left of that matrix
+                newA = num2cell(zeros(max(mA,mB),max(nA,nB)));
+                newB = newA;
+                
+                % Replace entries of the cells of the correct size with information
+                % from the inputs.
+                newA(1:mA,1:nA) = f.jacobian;
+                newB(1:mB,1:nB) = g.jacobian;
+                
+                % Add the two derivative cells together, and return
+                h = f;
+                h.jacobian = cellfun(@plus, newA,newB,'UniformOutput',false);
                 
             elseif ( isa(g, 'chebfun2') || isa(g, 'double') ) % ADCHEBFUN2 + DOUBLE/SCALAR
-                f.chebfun2 = f.chebfun2 + g;
+                h = f;
+                h.func = f.func + g;
             else
                 error('ADCHEBFUN2:plus:type',...
-                'Cannot add these two objects together');
+                    'Cannot add these two objects together');
             end
             
         end
@@ -225,8 +259,8 @@ classdef (InferiorClasses = {?chebfun2}) adchebfun2
         function f = sin( f )
             % SIN   Sine of an ADCHEBFUN2.
             fout = fin;
-            fout.chebfun2 = sin(fin.chebfun2);
-            fout.der = (cos(fin.chebfun2))*fin.der;
+            fout.func = sin(fin.func);
+            fout.jacobian = (cos(fin.func))*fin.jacobian;
         end
         
         function f = times(f, g)
@@ -245,11 +279,11 @@ classdef (InferiorClasses = {?chebfun2}) adchebfun2
                 % derivative computation, as a CHEBFUN2 does not have any derivative
                 % information, and can just be treated like a constant
             elseif ( isa(f, 'adchebfun2') && isa(g, 'chebfun2') )
-                f.chebfun2 = f.chebfun2.*g;
-                f.der = f.der*g;
+                f = mtime(g, f);
             elseif ( isa(f, 'chebfun2') && isa(g, 'adchebfun2') )
-                g.chebfun2 = f .* g.chebfun2;
-                g.der = ( g.der ) * f;
+                g.func = f .* g.func;
+                g.jacobian = cellfun(@mtimes,g.jacobian, ...
+                    repmat({f},size(g.jacobian)), 'UniformOutput', false);
                 f = g;
             elseif ( isa(f,'chebfun2') && isa(g,'chebfun2v') )
                 %% chebfun2 * chebfun2v
@@ -268,14 +302,14 @@ classdef (InferiorClasses = {?chebfun2}) adchebfun2
             end
         end
         
-        function f = uplus( f ) 
+        function f = uplus( f )
             % +  Unary plus for ADCHEBFUN2.
         end
         
         function f = uminus( f )
             % -	  Unary minus for ADCHEBFUN2.
-            f.chebfun2 = uminus( f.chebfun2 );
-            f.der = -f.der;
+            f.func = uminus( f.func );
+            f.jacobian = cellfun(@uminus,f.jacobian,'UniformOutput',false);
         end
     end
 end

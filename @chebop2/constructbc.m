@@ -72,7 +72,7 @@ elseif ( isa( bcArg, 'function_handle' ) )
             else
                 v = fcell;
             end
-            cc(jj) = abs( diff(scl)/2 ).^( length(v.der.derCell) - 1);
+            cc(jj) = abs( diff(scl)/2 ).^( length(v.jacobian) - 1);
         end
         
         % Find f(x):  
