@@ -4,9 +4,9 @@ function pass = test_feval_lr
 % TAD, 3 Feb 2014
 
 % A tolerance to check to
-tol = 1e-13;
+tol = 1e-12;
 
-d = [-1,1];
+d = [-1,0,1];
 x = chebfun(@(x) x, d);
 s = cos(x+pi/4).*sign(x)+.5;
 
@@ -24,9 +24,9 @@ c = (cl+cr)/2;
 
 %%
 % Check the forward operators
-pass(1) = abs(L*s-c)<tol;
-pass(2) = abs(Ll*s-cl)<tol;
-pass(3) = abs(Lr*s-cr)<tol;
+err(1) = abs(L*s - c);
+err(2) = abs(Ll*s - cl);
+err(3) = abs(Lr*s - cr);
 
 %%
 % Check when discretized.
@@ -50,6 +50,11 @@ Al = Ll*D;
 Ar = Lr*D;
 cpl = -sqrt(2)/2;
 cpr = sqrt(2)/2;
-pass(4) = abs(Al*s-cpl) < 1e3*tol;
-pass(5) = abs(Ar*s-cpr) < 1e3*tol;
+err(4) = abs(Al*s - cpl);
+err(5) = abs(Ar*s - cpr);
 
+%%
+
+pass = err < tol;
+
+end

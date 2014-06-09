@@ -41,7 +41,7 @@ vals_g = feval(g, x);
 g_exact = @(x)-(1-x).^(d+1)./(d+1) + 2^(d+1)/(d+1);
 vals_exact = feval(g_exact, x);
 err = vals_g - vals_exact;
-pass(2) = (norm(err, inf) < 1e1*get(f,'epslevel')*norm(vals_exact, inf));
+pass(2) = (norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf));
 
 % fractional root at the left endpoint:
 data.exponents = [a 0];

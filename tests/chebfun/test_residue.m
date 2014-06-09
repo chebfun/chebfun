@@ -15,11 +15,11 @@ tol = 100*epslevel(k);
 pexact = [10i ; 1.1 ; -1i ; 1i];
 
 pass(1) = norm(sort(real(p)) - sort(real(pexact))) + ...
-          norm(sort(imag(p)) - sort(imag(pexact))) < tol;
+          norm(sort(imag(p)) - sort(imag(pexact))) < 10*tol;
 
 pass(2) = normest(g.*F - G.*f)./vscale(g.*F) < 10*tol*vscale(k);
 
-pass(3) = normest(k - chebfun(@(x) x + 10i + 1.1)) < tol;
+pass(3) = normest(k - chebfun(@(x) x + 10i + 1.1)) < 10*tol;
 
 % Check syntax which substitutes 0 for empty third argument.
 [B, A] = residue([1 1], [1 -1], chebfun());

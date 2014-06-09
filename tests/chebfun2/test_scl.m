@@ -18,7 +18,7 @@ pass(j) = ( err  <  tol ); j = j + 1;
 f = chebfun2( @(x,y) cos(x.*y) );
 g = chebfun2( @(x,y) cos(x/eps.*y/eps), eps*[-1 1 -1 1] );
 err = abs( f(1,1) - g(eps,eps) );
-pass(j) = ( err  < eps* tol ); j = j + 1; 
+pass(j) = ( err  < tol ); j = j + 1; 
 err = abs( f(pi/6,1) - g(eps*pi/6,eps) );
-pass(j) = ( err  < eps* tol ); j = j + 1; 
+pass(j) = ( err  < tol ); j = j + 1; 
 end

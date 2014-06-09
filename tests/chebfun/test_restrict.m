@@ -125,7 +125,7 @@ g1Exact = op1(x1);
 g2Exact = op2(x2);
 err1 = g1Vals - g1Exact;
 err2 = g2Vals - g2Exact;
-pass(24) = norm([err1 ; err2], inf) < 2*get(g,'epslevel').*get(g,'vscale');
+pass(24) = norm([err1 ; err2], inf) < 5*get(g,'epslevel').*get(g,'vscale');
 
 %% Test a bug from issue #528
 f = chebfun(@(x) abs(x + 0.04), [-1 0.04 1], 'splitting', 'on');

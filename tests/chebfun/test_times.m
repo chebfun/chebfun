@@ -102,7 +102,7 @@ g = c.*f;
 g_exact = chebfun(op_exact, dom, 'exps', [0 pow], 'splitting', 'on');
 
 err = norm(feval(g, x) - feval(g_exact, x), inf);
-pass(24) = ( err < 5*get(f, 'epslevel')*norm(feval(g_exact, x), inf) );
+pass(24) = ( err < 50*get(f, 'epslevel')*norm(feval(g_exact, x), inf) );
 
 %% Case of two functions: piecewise smooth chebfun - splitting on.
 pow1 = -0.3;
