@@ -102,7 +102,8 @@ if ( lightMode )
             'Running in --light mode ignores additional directory information.');
     end
     % Folders to test in '--light' mode.
-    args = {'chebtech', 'chebtech1', 'chebtech2', 'fun', 'bndfun', 'chebfun'};
+    args = {'chebtech', 'chebtech1', 'chebtech2', 'classicfun', 'bndfun', ...
+        'chebfun'};
 end
 
 if ( ~isempty(args) ) 

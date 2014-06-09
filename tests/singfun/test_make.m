@@ -23,8 +23,10 @@ pass(1) = isequal(f, g);
 a = rand();
 b = rand();
 fh = @(x) sin(x).*(1+x).^a.*(1-x).^b;
-f = singfun(fh, [a, b]);
-g = f.make(fh, [a, b]);
+data.exponents = [a, b];
+f = singfun(fh, data);
+data.exponents = [a, b];
+g = f.make(fh, data);
 pass(2) = isequal(f, g);
 
 %%
@@ -32,8 +34,12 @@ pass(2) = isequal(f, g);
 a = ceil(10*rand);
 b = ceil(10*rand);
 fh = @(x) exp(x)./((1+x).^a.*(1-x).^b);
-f = singfun(fh, [], {'pole', 'pole'});
-g = f.make(fh, [], {'pole', 'pole'});
+data.exponents = [];
+data.singType = {'pole', 'pole'};
+f = singfun(fh, data, pref);
+data.exponents = [];
+data.singType = {'pole', 'pole'};
+g = f.make(fh, data, pref);
 pass(3) = isequal(f, g);
 
 %%
@@ -41,8 +47,11 @@ pass(3) = isequal(f, g);
 a = rand();
 b = rand();
 fh = @(x) exp(sin(x))./((1+x).^a.*(1-x).^b);
-f = singfun(fh, [-a -b], [], [], [], pref);
-g = f.make(fh, [-a -b], [], [], [], pref);
+data = struct();
+data.exponents = [-a -b];
+f = singfun(fh, data, pref);
+data.exponents = [-a -b];
+g = f.make(fh, data, pref);
 pass(4) = isequal(f, g);
 
 %%
@@ -50,8 +59,12 @@ pass(4) = isequal(f, g);
 a = rand();
 b = rand();
 fh = @(x) sin(exp(cos(x))).*(1+x).^a.*(1-x).^b;
-f = singfun(fh, [], {'root', 'root'}, [], [], pref);
-g = f.make(fh, [], {'root', 'root'}, [], [], pref);
+data.exponents = [];
+data.singType = {'root', 'root'};
+f = singfun(fh, data, pref);
+data.exponents = [];
+data.singType = {'root', 'root'};
+g = f.make(fh, data, pref);
 pass(5) = isequal(f, g);
 
 %%
@@ -59,6 +72,10 @@ pass(5) = isequal(f, g);
 a = ceil(5*rand);
 b = ceil(5*rand);
 fh = @(x) exp(sin(x.^2))./((1+x).^a.*(1-x).^b);
-f = singfun(fh, [-a -b], {'pole', 'pole'}, [], [], pref);
-g = f.make(fh, [-a -b], {'pole', 'pole'}, [], [], pref);
+data.exponents = [-a -b];
+data.singType = {'pole', 'pole'};
+f = singfun(fh, data, pref);
+data.exponents = [-a -b];
+data.singType = {'pole', 'pole'};
+g = f.make(fh, data, pref);
 pass(6) = isequal(f, g);

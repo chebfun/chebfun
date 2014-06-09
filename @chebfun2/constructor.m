@@ -231,10 +231,12 @@ while ( ~isHappy && ~Failure )
     end
     
     % Check if the column and row slices are resolved.
-    colChebtech = tech.make(sum(colValues,2) );
+    colData.vscale = domain(3:4);
+    colChebtech = chebtech2(sum(colValues,2), colData);
     resolvedCols = happinessCheck(colChebtech,[],sum(colValues,2));
-    rowChebtech = tech.make(sum(rowValues.',2) );
-    resolvedRows = happinessCheck(rowChebtech,[],sum(rowValues.',2));    
+    rowData.vscale = domain(1:2);
+    rowChebtech = chebtech2(sum(rowValues.',2), rowData);
+    resolvedRows = happinessCheck(rowChebtech,[],sum(rowValues.',2));
     isHappy = resolvedRows & resolvedCols;
     
     % If the function is zero, set midpoint of domain as pivot location.
@@ -325,8 +327,11 @@ while ( ~isHappy && ~Failure )
     
     % Sample Test:
     if ( sampleTest )
+        % wrap the op with evaluate in case the 'vectorize' flag is on: 
+        sampleOP = @(x,y) evaluate( op, x, y, vectorize);
+        
         % Evaluate at points in the domain:
-        pass = g.sampleTest(op, tol);
+        pass = g.sampleTest( sampleOP, tol, vectorize);
         if ( ~pass )
             % Increase minsamples and try again.
             minsample = gridRefine( minsample );

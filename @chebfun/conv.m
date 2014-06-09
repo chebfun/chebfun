@@ -139,7 +139,10 @@ p.techPrefs.sampletest = false;
 % Construct FUNS:
 funs = cell(1, length(dom)-1);
 for k = 1:length(dom)-1  
-    newFun = bndfun(@(x) convIntegral(x, f, g), dom(k:k+1), vs, hs, p);
+    data.domain = dom(k:k+1);
+    data.vscale = vs;
+    data.hscale = hs;
+    newFun = bndfun(@(x) convIntegral(x, f, g), data, p);
     vs = max(get(newFun, 'vscale'), vs); 
     funs{k} = newFun;
 end

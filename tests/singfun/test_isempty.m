@@ -11,7 +11,8 @@ f = singfun;
 g = singfun.zeroSingFun();
 
 % create a non-zero SINGFUN
-h = singfun(@(x)1./(1+x), [-1, 0] );
+data.exponents = [-1, 0];
+h = singfun(@(x)1./(1+x), data);
 
 % Test
 pass(1) = isempty(f);

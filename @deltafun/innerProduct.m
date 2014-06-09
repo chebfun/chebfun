@@ -13,7 +13,7 @@ end
 
 % Make sure both arguments are DELTAFUNS: (At least one must already be)
 if ( ~isa(g, 'deltafun') )
-    g = deltafun(f, [], []);
+    g = deltafun(g, [], []);
 elseif ( ~isa(f, 'deltafun') ) 
     f = deltafun(f, [], []);
 end

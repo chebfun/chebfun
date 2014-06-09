@@ -1,4 +1,4 @@
-function f = compose(f, op, g, pref)
+function f = compose(f, op, g, data, pref)
 %COMPOSE   Composition of BNDFUN objects.
 %   H = COMPOSE(F, OP) returns a BNDFUN representing OP(F) where F is also a
 %   BNDFUN object, and OP is a function handle.
@@ -14,13 +14,14 @@ function f = compose(f, op, g, pref)
 %   an error is thrown. Notice that the domain of H will be the same as the
 %   domain of F.
 %
-%   H = COMPOSE(F, OP, G, PREF) or H = COMPOSE(F, OP, [], PREF), where F (and
-%   G) are BNDFUN objects, and OP is a function handle, uses the options passed
-%   by the preferences structure PREF to build the returned BNDFUN. In
+%   H = COMPOSE(F, OP, G, DATA, PREF) or H = COMPOSE(F, OP, [], DATA, PREF),
+%   where F (and G) are BNDFUN objects, and OP is a function handle, uses the
+%   constructor data in the structure DATA and the options passed by the
+%   CHEBFUNPREF or preference structure PREF to build the returned BNDFUN. In
 %   particular, if the underlying tech class supports it, one can use PREF to
 %   alter the constructor's behavior to take advantage of the fact that F (and
 %   possibly OP or G) has additional structure beyond just being an object.
-%
+
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
@@ -55,13 +56,19 @@ elseif ( nargin == 3 )          % out = OP(F,G). No preferences passed.
     % with the onefun of g:
     f.onefun = compose(f.onefun, op, g.onefun);
     
-else                            % out = OP(F,G). Preferences passed.
-    
+else                            % out = OP(F,G). Data (and maybe prefs) passed.
+    % Get preferences.
+    if ( nargin < 5 )
+        pref = chebfunpref();
+    else
+        pref = chebfunpref(pref);
+    end
+
     % Call compose:
     if ( isempty(g) )
-        f.onefun = compose(f.onefun, op, g, pref);
+        f.onefun = compose(f.onefun, op, g, data, pref);
     else
-        f.onefun = compose(f.onefun, op, g.onefun, pref);
+        f.onefun = compose(f.onefun, op, g.onefun, data, pref);
     end
 end
 

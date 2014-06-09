@@ -13,17 +13,19 @@ classdef chebtech1 < chebtech
 %   of length N and return a matrix of size NxM, where M is number of columns
 %   of the multi -valued function.
 %
-%   CHEBTECH1(OP, VSCALE) constructs a CHEBTECH1 with 'happiness' (see
-%   CHEBTECH.HAPPINESSCHECK) relative to the maximum of the given vertical
-%   scale (VSCALE) and the (column-wise) infinity norm of the sampled function
-%   values of OP. If not given, the VSCALE defaults to 0 initially.
+%   CHEBTECH1(OP, DATA) constructs a CHEBTECH2 using the additional data
+%   supplied in the DATA structure.  Fields currently recognized are:
+%     DATA.VSCALE    (Default:  0)
+%     DATA.HSCALE    (Default:  1)
+%         The constructor builds a CHEBTECH1 with 'happiness' (see
+%         HAPPINESSCHECK.m) relative to the maximum of the given vertical scale
+%         DATA.VSCALE and the (column-wise) infinity norm of the sampled
+%         function values of OP, and the fixed horizontal scale DATA.HSCALE.
+%   If any fields in DATA are empty or not supplied, or if DATA itself is empty
+%   or not supplied, appropriate default values are set.
 %
-%   CHEBTECH1(OP, VSCALE, HSCALE) uses a 'happiness' to both the vertical scale
-%   VSCALE (as above) and the horizontal scale HSCALE. If not given (or given
-%   as empty), this defaults to 1.
-%
-%   CHEBTECH1(OP, VSCALE, HSCALE, PREF) overrides the default behavior with
-%   that given by the preference structure PREF.
+%   CHEBTECH1(OP, DATA, PREF) overrides the default behavior with that given by
+%   the preference structure PREF.
 %
 %   CHEBTECH1(VALUES, ...) returns a CHEBTECH1 object which interpolates the
 %   values in the columns of VALUES at 1st-kind Chebyshev points and
@@ -61,57 +63,49 @@ classdef chebtech1 < chebtech
 %
 % Class diagram: [<<CHEBTECH>>] <-- [CHEBTECH1]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
     %% METHODS IMPLEMENTED BY THIS M-FILE:
     methods
-        
-        function obj = chebtech1(op, vscale, hscale, pref)
-            % Constructor for the CHEBTECH1 class.
-            
-            % Return an empty CHEBTECH1 on null input:
+        function obj = chebtech1(op, data, pref)
+            % Parse inputs.
             if ( (nargin == 0) || isempty(op) )
+                % Return an empty CHEBTECH1 on null input:
                 return
             end
-           
-            % Define vscale if none given:
-            if ( (nargin < 2) || isempty(vscale) )
-                vscale = 0;
+
+            if ( (nargin < 2) || isempty(data) )
+                    data = struct();
             end
 
-            % Define hscale if none given:
-            if ( (nargin < 3) || isempty(hscale) )
-                hscale = 1;
-            end
-
-            % Determine preferences if not given, merge if some are given:
-            if ( (nargin < 4) || isempty(pref) )
+            if ( (nargin < 3) || isempty(pref) )
                 pref = chebtech.techPref();
             else
                 pref = chebtech.techPref(pref);
             end
+
+            data = parseDataInputs(data, pref);
 
             % Force nonadaptive construction if PREF.NUMPOINTS is numeric:
             if ( ~isempty(pref.numPoints) && ~isnan(pref.numPoints) )
                 % Evaluate op on the Chebyshev grid of given size:
                 op = feval(op, chebtech1.chebpts(pref.numPoints));
             end
-            
+
             % Actual construction takes place here:
-            obj = populate(obj, op, vscale, hscale, pref);
-            
+            obj = populate(obj, op, data.vscale, data.hscale, pref);
+
             if ( obj.ishappy || isnumeric(op) || iscell(op) )
                 % No need to error check if we are happy:
                 return
             end
-            
+
             % Check for NaNs (if not happy):
             if ( any(isnan(obj.coeffs(:))) )
                 % Here we throw an error if NaNs were encountered anywhere.
                 error('CHEBFUN:CHEBTECH1:constructor:naneval', ...
                     'Function returned NaN when evaluated.')
             end
-            
         end
-        
     end
     
     %% STATIC METHODS IMPLEMENTED BY THIS CLASS:
@@ -151,11 +145,24 @@ classdef chebtech1 < chebtech
     methods
         
         % Compose two CHEBTECH1 objects or a CHEBTECH1 with a function handle:
-        h = compose(f, op, g, pref)
+        h = compose(f, op, g, data, pref)
         
         % Get method:
         val = get(f, prop);
 
     end
     
+end
+
+function data = parseDataInputs(data, pref)
+%PARSEDATAINPUTS   Parse inputs from the DATA structure and assign defaults.
+
+if ( ~isfield(data, 'vscale') || isempty(data.vscale) )
+    data.vscale = 0;
+end
+
+if ( ~isfield(data, 'hscale') || isempty(data.hscale) )
+    data.hscale = 1;
+end
+
 end

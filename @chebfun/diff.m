@@ -97,50 +97,67 @@ funs = f.funs;
 numFuns = numel(funs);
 numCols = size(f.funs{1}, 2);
 
-% Set a tolerance: (used for introducing Dirac deltas at jumps)
-tol = epslevel(f)*hscale(f);
+% Grb a preference:
+pref = chebfunpref();
 
-p.enableDeltaFunctions = true;
-pref = chebfunpref(p);
-deltaTol = pref.deltaPrefs.deltaTol; % TODO: Which tol is correct?
+% Array for keeping track of point values in case there is a delta function at
+% a break point.
+infVals = [];
 
-% Loop n times for nth derivative:
-for j = 1:n
-    vs = get(f, 'vscale-local'); 
-    vs = vs(:);
-
-    % Detect jumps in the original function and create new deltas.
-    deltaMag = getDeltaMag();
-
+if ( ~pref.enableDeltaFunctions )
+    % No delta functions:
+    
     % Differentiate each FUN in turn:
     for k = 1:numFuns
-        funs{k} = diff(funs{k});
-        
-        % If there is a delta function at the join, recreate the FUN using the
-        % DELTAFUN constructor:
-        funs{k} = addDeltas(funs{k}, deltaMag(k:k+1,:));
+        funs{k} = diff(funs{k}, n);
     end
+  
+else
+    % Delta functions are enabled:
     
-    % Compute new function values at breaks:
-    pointValues = chebfun.getValuesAtBreakpoints(funs);
+    % Tolerance used for introducing Dirac deltas at jumps:
+    deltaTol = pref.deltaPrefs.deltaTol;
     
-    % Reassign data to f:
-    f.funs = funs;
-    f.pointValues = pointValues;
+    % Loop n times for nth derivative:
+    for j = 1:n    
+        % Detect jumps in the original function and create new deltas.
+        deltaMag = getDeltaMag();
+        infVals = inf * deltaMag;
+        % Differentiate each FUN in turn:
+        for k = 1:numFuns
+            funs{k} = diff(funs{k});
+            % If there is a delta function at the join, recreate the FUN using the
+            % DELTAFUN constructor:
+            funs{k} = makeDeltaFun(funs{k}, deltaMag(k:k+1,:));
+        end
 
+    end         
+    
 end
+
+% Compute new function values at breaks:
+pointValues = chebfun.getValuesAtBreakpoints(funs);
+I = isinf(infVals);
+pointValues(I) = infVals(I); 
+
+% Reassign data to f:
+f.funs = funs;
+f.pointValues = pointValues;
 
     function deltaMag = getDeltaMag()
         deltaMag = zeros(numFuns + 1, numCols);
+        % Loop through the funs:
         for l = 1:(numFuns - 1)
+            % Extract the jump vlaues between two funs:
             jmp = get(funs{l+1}, 'lval') - get(funs{l}, 'rval');
+            % Assign these jumps to the deltaMag matrix:
             if ( any(abs(jmp) > deltaTol ) )
                 deltaMag(l+1, :) = jmp;
             end
         end
     end
 
-    function f = addDeltas(f, deltaMag)
+    function f = makeDeltaFun(f, deltaMag)
         if ( any(abs(deltaMag(:)) > deltaTol) )
             % [TODO]: This does not handle array-valuedness at the moment.
             if ( size(deltaMag, 2) > 1 )
@@ -149,7 +166,10 @@ end
                 deltaMag = [0 ; 0];
             end
             % New delta functions are only possible at the ends of the domain:
-            f = fun.constructor(f, f.domain, deltaMag.'/2, f.domain, pref);
+            data.domain = f.domain;
+            data.deltaMag = deltaMag.'/2;
+            data.deltaLoc = f.domain;
+            f = deltafun(f, data, pref);
         end
     end
 

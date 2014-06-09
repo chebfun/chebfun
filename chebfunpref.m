@@ -59,6 +59,7 @@ classdef chebfunpref < chebpref
 %       
 %      If true, the deltafun class will be invoked to manage any delta 
 %      functions present in the object.
+%
 %   deltaPrefs                 - Preferences for delta functions.
 %
 %      deltaTol                - Tolerance for magnitude of delta functions.
@@ -68,6 +69,7 @@ classdef chebfunpref < chebpref
 %
 %      proximityTol            - Minimum distance between delta functions.
 %       [1e-11]
+%
 %         If two delta functions are located closer than this tolerance, they 
 %         will be merged.
 %
@@ -91,93 +93,6 @@ classdef chebfunpref < chebpref
 %       [20]
 %
 %         Maximum order of the pole that the singularity detector can find.
-%
-%      exponents               - Exponents at the end points.
-%       [[ ]]
-%
-%         If exponents are supplied by the user from CHEBFUN or FUN levels, the
-%         default value (empty) is replaced and passed to singfun constructor.
-%         If no information about the singularity is specified by the user, then
-%         the singularity detection is triggered to find the exact pole order
-%         (which is integer) or singularity order (which is fractional) when
-%         enableSingularityDetection is set TRUE. When exponents are given by
-%         the user, there is no need to specify the 'singType' field, as any
-%         information in singType will be ignored by the SINGFUN constructor.
-%         For a piecewise smooth CHEBFUN, the number of exponents should be
-%         given in pair with each pair corresponds to the ends of a piece. For
-%         example,
-%
-%         dom = [-2 -1 0 1];
-%         op1 = @(x) sin(x);
-%         op2 = @(x) 1./(1+x);
-%         op3 = @(x) x+1;
-%         op = {op1, op2, op3};
-%         pref = chebfunpref();
-%         pref.singPrefs.exponents = [0 0 -1 0 0 0];
-%         f = chebfun(op, dom, pref);
-%
-%         Note that syntax in Chebfun v4 is still supported. So the example
-%         above can be exercised as below:
-%
-%         dom = [-2 -1 0 1];
-%         op1 = @(x) sin(x);
-%         op2 = @(x) 1./(1+x);
-%         op3 = @(x) x+1;
-%         op = {op1, op2, op3};
-%         f = chebfun(op, dom, 'exps', [0 0 -1 0 0 0]);
-%
-%         For the cases where the CHEBFUN has more than one piece, if the size
-%         of the given exponents is 1x2, then the CHEBFUN constructor will take
-%         them as the exponent for the left endpoint of the first piece and the
-%         and that for the right endpoint of the last piece. The exponents for
-%         all other interior endpoints are simply assumed zeros. For example,
-%
-%         pref = chebfunpref();
-%         pref.singPrefs.exponents = [-1 0];
-%         pref.enableBreakpointDetection = 1;
-%         f = chebfun(@(x) sin(100*x)./(x+2), [-2 7], pref)
-%
-%         The equivalent syntax in Chebfun v4 fashion is still valid:
-%
-%         f = chebfun(@(x) sin(100*x)./(x+2), [-2 7], 'splitting', 'on', ...
-%             'exps', [-1 0])
-%
-%      singType                - Type of singularities.
-%       [{ }]
-%
-%         The information provided in singType helps the singularity detector to
-%         determine the order of the singularities more efficiently and save
-%         some construction time. If the default, i.e. an empty cell, is
-%         replaced by a user-supplied 2*N cell with entries being any of 'none',
-%         'pole', 'sing', and 'root' where N is the number of smooth pieces,
-%         i.e. FUNS, then this cell is passed to the SINGFUN constructor to
-%         speed up the singularity detection. Here, 'none', 'pole', 'sing', and
-%         'root' correspond to free of any kind of singularities, integer pole,
-%         fractional singularity, and root at the end point with order less than
-%         1, respectively. With the default empty cell, the SINGFUN constructor
-%         will assume fractional singularities. For instance, setting singType
-%         to {'pole', 'sing'} tells the singularity detector to search for poles
-%         at the left endpoint of an interval and arbitrary singularities at the
-%         right endpoint. For example,
-%
-%         dom = [-1 1];
-%         op = @(x) (x - dom(1)).^-0.5.*sin(x);
-%         pref = chebfunpref();
-%         pref.singPrefs.singType = {'sing', 'none'};
-%         f = chebfun(op, dom, pref);
-%
-%         Syntactically, chebfun constructor supports automatic singularity
-%         detection for piecewise smooth CHEBFUN. That is, the users can specify
-%         a series of the strings described above in pairs with each pair
-%         corresponds to the endpoints of a subinterval. For example, if one
-%         want to construct a CHEBFUN definied in [-1 0 1] with poles at -1 and
-%         1 and fractional singularity on each side of 0, then the series of
-%         string passed to the CHEBFUN constructor should be {'pole', 'sing',
-%         'sing', 'pole'}. With these information, the CHEBFUN constructor and
-%         consequently the SINGFUN will try to find the exact order of the
-%         singularities. However, the SINGFUN constructor may not succeed for
-%         most of the cases due to the unsatisfactory performance of the
-%         current singularity detector.
 %
 %      defaultSingType         - Type of singularities.
 %         
@@ -260,6 +175,18 @@ classdef chebfunpref < chebpref
 %
 %   P = CHEBFUNPREF(Q), where Q is a CHEBFUNPREF, sets P to be a copy of Q.
 %
+%   R = CHEBFUNPREF(P, Q), where P is a CHEBFUNPREF and Q is a MATLAB
+%   structure, is similar to CHEBFUNPREF(Q) except that the preferences in P
+%   are used as the base set of preferences instead of the currently stored
+%   defaults.  The output R will be a CHEBFUNPREF with the preferences of P
+%   overridden by the field/value pairs in the structure Q.
+%
+%   R = CHEBFUNPREF(P, Q), where P and Q are both CHEBFUNPREF objects is
+%   similar to the previous syntax.  The output R is a CHEBFUNPREF with the
+%   preferences of P overridden by those in Q.  This is equivalent to setting R
+%   to be a copy of Q plus any additional TECHPREFS stored in P that were not
+%   stored in Q.
+%
 % Notes:
 %   When building a CHEBFUNPREF from a structure using the second calling
 %   syntax above, one should take care to ensure that preferences for the
@@ -327,30 +254,68 @@ classdef chebfunpref < chebpref
 
     methods
 
-        function outPref = chebfunpref(inPref)
-            if ( (nargin == 1) && isa(inPref, 'chebfunpref') )
-                outPref = inPref;
-                return
-            elseif ( nargin < 1 )
-                inPref = struct();
+        function outPref = chebfunpref(varargin)
+            if ( nargin < 1 )
+                inPrefList = struct();
+            elseif ( ischar(varargin{1}) )
+                if ( nargin == 1 )
+                    error('CHEBFUN:chebfunpref:deprecated', ...
+                        ['chebfunpref() no longer supports queries of ', ...
+                         'the form chebfunpref(''prop'').\n', ...
+                         'Please use chebfunpref().prop.']);
+                else
+                    error('CHEBFUN:chebfunpref:deprecated', ...
+                        ['chebfunpref() no longer supports assignment ', ...
+                         'via chebfunpref(''prop'', val).\n', ...
+                         'Please use chebfunpref.setDefaults(''prop'', val).']);
+                end
+            elseif ( nargin == 1 )
+                if ( isa(varargin{1}, 'chebfunpref') )
+                    outPref = varargin{1};
+                    return
+                else
+                    inPrefList = varargin{1};
+                end
+            elseif ( nargin == 2 )
+                if ( ~isa(varargin{1}, 'chebfunpref') || ...
+                     (~isa(varargin{2}, 'chebfunpref') && ...
+                      ~isstruct(varargin{2})) )
+                      error('CHEBFUN:chebfunpref:badTwoArgCall', ...
+                        ['When calling CHEBFUNPREF with two arguments, ' ...
+                        'the first must be a CHEBFUNPREF, and the ' ...
+                        'second must be a CHEBFUNPREF or a struct.']);
+                elseif ( isa(varargin{2}, 'chebfunpref') )
+                    inPrefList = varargin{2}.prefList;
+                else
+                    inPrefList = varargin{2};
+                end
+            elseif ( nargin > 2 )
+                error('CHEBFUN:chebfunpref:tooManyInputs', ...
+                    'Too many input arguments.')
             end
 
-            % Initialize default preference values.
-            outPref.prefList = chebfunpref.manageDefaultPrefs('get');
+            % If the user supplied a base set of preferences to be overridden,
+            % use it; otherwise, use the stored defaults.
+            if ( nargin <= 1 )
+                outPref.prefList = chebfunpref.manageDefaultPrefs('get');
+            else
+                outPref.prefList = varargin{1}.prefList;
+            end
 
-            % Copy fields from q, placing unknown ones in techPrefs and merging
-            % incomplete substructures.
-            for field = fieldnames(inPref).'
+            % Copy fields from inPrefList, placing unknown ones in techPrefs
+            % and merging incomplete substructures.
+            for field = fieldnames(inPrefList).'
                 if ( isfield(outPref.prefList, field{1}) )
                     if ( isstruct(outPref.prefList.(field{1})) )
                         outPref.prefList.(field{1}) = ...
                             chebfunpref.mergePrefs(outPref.prefList.(field{1}), ...
-                            inPref.(field{1}));
+                            inPrefList.(field{1}));
                     else
-                        outPref.prefList.(field{1}) = inPref.(field{1});
+                        outPref.prefList.(field{1}) = inPrefList.(field{1});
                     end
                 else
-                    outPref.prefList.techPrefs.(field{1}) = inPref.(field{1});
+                    outPref.prefList.techPrefs.(field{1}) = ...
+                        inPrefList.(field{1});
                 end
             end
         end
@@ -374,7 +339,24 @@ classdef chebfunpref < chebpref
                     if ( isfield(pref.prefList, ind(1).subs) )
                         out = pref.prefList.(ind(1).subs);
                     else
-                        out = pref.prefList.techPrefs.(ind(1).subs);
+                        techObj = feval(pref.prefList.tech);
+                        fullTechPrefs = ...
+                            techObj.techPref(pref.prefList.techPrefs);
+                        if ( isfield(fullTechPrefs, ind(1).subs) )
+                            % Try to find the tech preference name after
+                            % merginging with the full list of tech preferences
+                            % obtained via the tech's techPref() function of the
+                            % current tech.
+                            out = fullTechPrefs.(ind(1).subs);
+                        else
+                            % If we couldn't find the tech preference name
+                            % above, it may be because it was an abstractly
+                            % named preference that got mapped to something the
+                            % tech's techPref() deemed more sensible.  So, we
+                            % also try looking in the list of tech preferences
+                            % we have prior to forming the full list.
+                            out = pref.prefList.techPrefs.(ind(1).subs);
+                        end
                     end
 
                     if ( numel(ind) > 1 )
@@ -462,19 +444,6 @@ classdef chebfunpref < chebpref
                 prefList.singPrefs.maxPoleOrder');
             fprintf([padString('        defaultSingType:') '''%s''\n'], ...
                 prefList.singPrefs.defaultSingType');            
-            singType = prefList.singPrefs.singType;
-            if ( ~isempty(singType) )
-                s = ['{''' singType{1},''''];
-                for k = 2:numel(singType)-1
-                    s = [s, ', ''', singType{k}, ''''];
-                end
-                s = [s, ', ''', singType{end}, '''}'];
-                fprintf([padString('        singType:') '%s\n'], s);  
-            end
-            exps = prefList.singPrefs.exponents;
-            if ( ~isempty(exps) )
-                fprintf([padString('        exponents:') '%s\n'], num2str(exps))
-            end
             fprintf([padString('    enableDeltaFunctions:') '%d\n'], ...
                 prefList.enableDeltaFunctions);
             fprintf('    deltaPrefs\n');
@@ -586,7 +555,7 @@ classdef chebfunpref < chebpref
         %   construct a CHEBFUN using the factory defaults when other user-set
         %   defaults are currently in force.
         %
-        % See also GETDEFAULTS, SETDEFAULTS.
+        % See also SETDEFAULTS.
 
             fd = chebfunpref.factoryDefaultPrefs();
             pref = chebfunpref(fd);
@@ -596,17 +565,6 @@ classdef chebfunpref < chebpref
             % the current defaults have techPrefs stored that are not among the
             % factory defaults.
             pref.prefList.techPrefs = fd.techPrefs;
-        end
-
-        function pref = getDefaults()
-        %GETDEFAULTS   Get default preferences.
-        %   PREF = CHEBFUNPREF.GETDEFAULTS() returns a CHEBFUNPREF object with
-        %   the preferences set to the currently stored default values.  It is
-        %   equivalent to PREF = CHEBFUNPREF().
-        %
-        % See also GETFACTORYDEFAULTS, SETDEFAULTS.
-
-            pref = chebfunpref();
         end
 
         function setDefaults(varargin)
@@ -631,7 +589,7 @@ classdef chebfunpref < chebpref
         %   CHEBFUNPREF.SETDEFAULTS('factory') resets the default preferences to
         %   their factory values.
         %
-        % See also GETDEFAULTS, GETFACTORYDEFAULTS.
+        % See also GETFACTORYDEFAULTS.
 
         % TODO:  What to do about preferences stored in substructures, like
         % singfun.exponentTol?  Aside from preferences in techPrefs whose names
@@ -731,10 +689,8 @@ classdef chebfunpref < chebpref
             factoryPrefs.enableSingularityDetection = false;
                 factoryPrefs.singPrefs.exponentTol = 1.1*1e-11;
                 factoryPrefs.singPrefs.maxPoleOrder = 20;
-                factoryPrefs.singPrefs.exponents = [];
-                factoryPrefs.singPrefs.singType = {};
                 factoryPrefs.singPrefs.defaultSingType = 'sing';                
-            factoryPrefs.enableDeltaFunctions = false;
+            factoryPrefs.enableDeltaFunctions = true;
                 factoryPrefs.deltaPrefs.deltaTol = 1e-9;
                 factoryPrefs.deltaPrefs.proximityTol = 1e-11;
             factoryPrefs.scale = 0;

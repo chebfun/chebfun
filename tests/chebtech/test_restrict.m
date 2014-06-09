@@ -22,7 +22,7 @@ for n = 1:2
 
     %%
     % Check behvaior for non-subinterval inputs.
-    f = testclass.make(@(x) sin(x), [], [], pref);
+    f = testclass.make(@(x) sin(x), [], pref);
     g = restrict(f, [-1 1]);
     pass(n, 2) = isequal(f, g);
 
@@ -60,7 +60,7 @@ for n = 1:2
 
     %%
     % Check multiple subinterval restriction.
-    f = testclass.make(@(x) sin(x) + sin(x.^2), [], [], pref);
+    f = testclass.make(@(x) sin(x) + sin(x.^2), [], pref);
     g = restrict(f, [-0.7 0.3 0.8]);
     h1 = restrict(f, [-0.7 0.3]);
     h2 = restrict(f, [0.3 0.8]);
@@ -75,7 +75,7 @@ for n = 1:2
     pass(n, 11) = test_spotcheck_restrict(testclass, ...
         @(x) [sin(x) cos(x) exp(x)], [-1 -0.7], pref);
 
-    f = testclass.make(@(x) [sin(x) cos(x)], [], [], pref);
+    f = testclass.make(@(x) [sin(x) cos(x)], [], pref);
     g = restrict(f, [-0.6 0.1 1]);
     h1 = restrict(f, [-0.6 0.1]);
     h2 = restrict(f, [0.1 1]);
@@ -91,7 +91,7 @@ end
 % Spot-check restriction of a given function to a given subinterval.
 function result = test_spotcheck_restrict(testclass, fun_op, subint, pref)
     % Perform restriction.
-    f = testclass.make(fun_op, [], [], pref);
+    f = testclass.make(fun_op, [], pref);
     g = restrict(f, subint);
 
     % Construct mapping from restricted subinterval to [-1, 1].

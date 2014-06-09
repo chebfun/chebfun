@@ -42,7 +42,7 @@ g = f.^2;
 h = chebfun(@(x) [sin(x).^2, cos(x).^2, -exp(2*x)]);
 pass(9) = min(size(g)) == 3 && normest(g - h) < 10*vscale(h)*epslevel(h);
 gq = fq.^2;
-pass(10) = normest(gq - g) < epslevel(g);
+pass(10) = normest(gq - g) < 10*epslevel(g);
 
 g = f.^3;
 h = chebfun(@(x) [sin(x).^3, cos(x).^3, -1i*exp(3*x)]);
@@ -103,8 +103,7 @@ b = 2;
 op = @(x) (x-dom(1)).^pow;
 opExact = @(x) (x-dom(1)).^(b*pow);
 
-pref.singPrefs.exponents = [pow 0];
-f = chebfun(op, dom, pref);
+f = chebfun(op, dom, 'exps', [pow 0]);
 g = f.^b;
 vals_g = feval(g, x); 
 
@@ -119,9 +118,7 @@ b = 3;
 op = @(x) sin(100*x).*(x-dom(1)).^pow;
 opExact = @(x) sin(100*x).^b.*(x-dom(1)).^(b*pow);
 
-pref.singPrefs.exponents = [pow 0];
-pref.enableBreakpointDetection = 1;
-f = chebfun(op, dom, pref);
+f = chebfun(op, dom, 'exps', [pow 0], 'splitting', 'on');
 g = f.^b;
 vals_g = feval(g, x); 
 
@@ -135,9 +132,7 @@ pow = -1.5;
 op = @(x) (sin(100*x).^2+1).*(x-dom(1)).^pow;
 opExact = @(x) sqrt(sin(100*x).^2+1).*(x-dom(1)).^(pow/2);
 
-pref.singPrefs.exponents = [pow 0];
-pref.enableBreakpointDetection = 1;
-f = chebfun(op, dom, pref);
+f = chebfun(op, dom, 'exps', [pow 0], 'splitting', 'on');
 g = f.^(1/2);
 vals_g = feval(g, x); 
 
@@ -317,8 +312,7 @@ pass(34) = norm(err, inf) < epslevel(g)*vscale(g);
 op = @(x) x.^2.*(1-exp(-x.^2))+2;
 pow = 1.5;
 opg = @(x) (x.^2.*(1-exp(-x.^2))+2).^pow;
-pref.singPrefs.exponents = [2 2];
-f = chebfun(op, dom, pref);
+f = chebfun(op, dom, 'exps', [2 2]);
 g = power(f, pow);
 gVals = feval(g, x);
 gExact = opg(x);

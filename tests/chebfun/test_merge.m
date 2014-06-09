@@ -54,8 +54,7 @@ pow1 = -1;
 pow2 = -1;
 op = @(x) (x - dom(1)).^pow1.*sin(10*x).*(x - dom(2)).^pow2;
 pref = chebfunpref();
-pref.singPrefs.exponents = [-1 -1];
-f = chebfun(op, dom, pref);
+f = chebfun(op, dom, 'exps', [-1 -1]);
 g = addBreaksAtRoots(f);
 h = merge(g);
 

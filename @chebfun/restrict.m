@@ -1,4 +1,4 @@
-function F = restrict(F, newDomain, noSimplify)
+function F = restrict(F, newDomain)
 %RESTRICT   Restrict a CHEBFUN object to a subinterval.
 %   G = RESTRICT(F, [S1, S2]) returns a CHEBFUN G defined on the interval [S1,
 %   S2] which agrees with F on that interval. Any interior breakpoints in
@@ -11,10 +11,8 @@ function F = restrict(F, newDomain, noSimplify)
 %   F.domain(end), then an error is returned. If S is empty or a scalar, then an
 %   empty CHEBFUN G is returned.
 %
-%   G = F{S} is an equivalent syntax.
-%
-%   Not that the result will be simplified unless a third argument F =
-%   RESTRICT(F, S, 'NoSimplify') is given.
+%   Note that G will not be 'simplified'. If this is required, call G =
+%   SIMPLIFY(RESTRICT(F)), or G = F{S}.
 %
 % See also OVERLAP, SUBSREF, DEFINE, SIMPLIFY.
 
@@ -116,10 +114,5 @@ newPointValues(locB,:) = pointValues(mask,:);
 f.domain = newDomain;
 f.funs = newFuns;
 f.pointValues = newPointValues;
-
-if ( (nargin < 3) || ~strcmpi(noSimplify, 'NoSimplify') )
-    % Simplify:
-    f = simplify(f);
-end
 
 end

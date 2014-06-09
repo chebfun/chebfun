@@ -7,11 +7,14 @@ function out = get(f, prop)
 %       'DELTAMAG'     - Magnitude of the delta functions
 %       'FUNPART'      - The smooth function contained in DELTAFUN.
 %       'LVAL', 'RVAL' - Evaluate a DELTAFUN at an end point of its domain.
-%                        If there is no delta function at the left or the right 
-%                        end point, this is equivalent to evaluating the funPart 
-%                        at the left or right end, otherwise, an appropriately 
-%                        signed infinity or a NaN is returned. 
+%                        Whether there is a delta function at the left or the 
+%                        right end point, this is equivalent to just evaluating
+%                        the funPart at the left or right end. 
 %                        See DELTAFUN/FEVAL for further details.
+%       'DELTAS'       - Return the locations and magnitude of delta functions
+%       'DELTAFUNS'      as a single matrix with the first row corresponding to
+%       'DELTAFUNCTIONS' the locations of the delta functions, and the
+%                        magnitudes appended below the first row.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -19,18 +22,10 @@ function out = get(f, prop)
 switch prop
     case fieldnames(f)
         % Allow access to any of the properties of F via GET:
-        out = f.(prop);
-        
-    case 'lval'        
-        % Evaluate at the lefthand end of the domain:
-        dom = f.domain;
-        out = feval(f, dom(1));
-        
-    case 'rval'
-        % Evaluate at the righthand end of the domain:
-        dom = f.domain;
-        out = feval(f, dom(end));
-        
+        out = f.(prop);              
+    case {'deltas', 'deltafunctions', 'deltafuns'}        
+        out = [f.deltaLoc; f.deltaMag];
+
     otherwise
         % Delegate to the get method of funPart. All error handling will also be
         % done here:

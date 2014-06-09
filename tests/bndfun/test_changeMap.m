@@ -20,7 +20,7 @@ seedRNG(6178);
 x = diff(dom1) * rand(100, 1) + dom1(1);
 y = c*(b - x)/(b - a) + d*(x - a)/(b - a);
 
-f = bndfun(@(x) 1./(1 + x.^2), dom1, [], [], pref);
+f = bndfun(@(x) 1./(1 + x.^2), struct('domain', dom1), pref);
 
 % Change from dom1 to dom2.
 g = changeMap(f, dom2);
@@ -38,7 +38,7 @@ pass(2) = norm(fv - gv, inf) < 10*get(f, 'vscale')*get(f, 'epslevel');
 
 pref.enableSingularityDetection = 1;
 op = @(x) 1./((x - a).*(x - b));
-f = bndfun(op, dom1, [], [], pref);
+f = bndfun(op, struct('domain', dom1), pref);
 
 % Change from dom1 to dom2.
 g = changeMap(f, dom2);

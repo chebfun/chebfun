@@ -46,6 +46,9 @@ pass(7) = (~cheboppref().damped) && strcmp(cheboppref().plotting, 'on');
 
 cheboppref.setDefaults(savedPrefs);
 
+% Test getting defaults:
+pass(8) = isnumeric(cheboppref().errTol);
+
 end
 
 function out = isequalNaN(a, b)

@@ -46,6 +46,8 @@ domIn = dom;
 dom = dom([1, end]);
 x = chebpts(nMax1, 2);
 
+% TODO: This could also be done using a weighed QR and JACPTS (see LEGPOLY).
+
 %% Recurrence relation:
 
 apb = a + b;

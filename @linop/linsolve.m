@@ -37,7 +37,7 @@ function [u, disc] = linsolve(L, f, varargin)
 % Parse input
 prefs = [];    % no prefs given
 disc = [];     % no discretization given
-vscale = Inf;
+vscale = 0;
 for j = 1:nargin-2
     item = varargin{j};
     if ( isa(item, 'cheboppref') )
@@ -128,7 +128,8 @@ for dim = [dimVals inf]
     u = partition(disc, v);
 
     % Test the happiness of the function pieces:
-    [isDone, epsLevel] = testConvergence(disc, u(isFun), vscale, prefs);
+    [isDone, epsLevel, vscale] = ...
+        testConvergence(disc, u(isFun), vscale, prefs);
 
     if ( all(isDone) || isinf(dim) )
         break

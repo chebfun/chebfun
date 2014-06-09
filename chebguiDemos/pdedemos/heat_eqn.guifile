@@ -1,0 +1,10 @@
+'Heat equation'
+'scalar'
+domain = '[-4 4]';
+t = '0:.1:6';
+DE = 'u_t = 0.1*u''''';
+LBC = 'dirichlet'; RBC = 'dirichlet';
+init = 'u = sin(pi*x/4) + sin(pi*3*x/4) + sin(pi*12*x/4)';
+tol = '1e-6'; plotting = 'on';
+fixYaxisLower = '-3'; fixYaxisUpper = '3';
+type  = 'pde';
