@@ -25,7 +25,7 @@ pass(4) = ( norm( f1 - f2 ) < tol );
 g = chebfun2(@(z) sum(z.^(0:9)),[-1 1 -1 1]*pi/2,'vectorise');
 % Are the zeros of the roots of unity? 
 r = roots( g ); 
-pass(5) = all( abs( abs( r ) - 1 ) < 10*tol );
+pass(5) = all( abs( abs( r ) - 1 ) < 50*tol );
 pass(6) = ( abs(sum( r ) + 1) < 100*tol );
 
 end

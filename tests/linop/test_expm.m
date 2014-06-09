@@ -24,7 +24,7 @@ err(1,3) = abs( u(pi) );
 
 %%
 % piecewise IC
-u0 = chebfun({[0;1] [1;0]},[-pi 0 pi]);
+u0 = chebfun(@(x) -abs(x)/pi+1, [-pi 0 pi]);
 u = expm(A,0.01,u0);
 
 exact = 0.95545945604534127;  % mathematica
@@ -47,12 +47,10 @@ err(3,1) = abs( u(pi/2) - exact);
 err(3,2) = abs( u(-pi) );
 err(3,3) = abs( u(pi) );
 
-
 %%
 % piecewise IC
 prefs.discretization = @colloc1;
-x = chebfun(@(x) x,d,'chebkind',1);
-u0 = min( 1-x/pi, 1+x/pi );
+u0 = chebfun(@(x) -abs(x)/pi+1, [-pi 0 pi], 'chebkind', 1);
 u = expm(A,0.01,u0,prefs);
 
 exact = 0.95545945604534127;  % mathematica
@@ -71,6 +69,7 @@ err(5, 1) = norm(u0 - v, inf);
 err(5, 2) = length(u0) ~= length(v);
 
 %%
+
 pass = ( err < tol );
 
 end

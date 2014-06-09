@@ -468,7 +468,7 @@ if ( nu > 0 )
     r = @(x) polyval(a((mu+1):-1:1) , ihd*(x - md)) ...
         ./ polyval(b((nu+1):-1:1), ihd*(x - md));
 else
-    q = chebfun(b, dom);
+    q = chebfun(b, dom, 'tech', @chebtech2);
     r = @(x) polyval(a(mu+1:-1:1) , ihd*(x - md)) / b;
 end
 
@@ -562,7 +562,6 @@ if ( nu > 0 )
     end
     Cf = Cf / R(1:(nu+1), 1:(nu+1));
     q = chebfun(Cf(:,1:nu+1) * b, dom, 'tech', @chebtech2);
-
     r = @(x) p(x) ./ q(x);
 else
     q = chebfun(b, dom, 'tech', @chebtech2);

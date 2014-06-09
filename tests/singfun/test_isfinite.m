@@ -17,11 +17,15 @@ d = -1.28;
 % Check a few cases.
 
 % fractional root at the left endpoint
-f = singfun(@(x) (1 + x).^a.*exp(x), [a 0], {'root', 'none'}, [], [], pref);
+data.exponents = [a 0];
+data.singType = {'root', 'none'};
+f = singfun(@(x) (1 + x).^a.*exp(x), data, pref);
 pass(1) = isfinite(f);
 
 % fractional pole at the left endpoint
-f = singfun(@(x) (1 + x).^d.*sin(x), [d 0], {'sing', 'none'}, [], [], pref);
+data.exponents = [d 0];
+data.singType = {'sing', 'none'};
+f = singfun(@(x) (1 + x).^d.*sin(x), data, pref);
 pass(2) = ~isfinite(f);
 
 end

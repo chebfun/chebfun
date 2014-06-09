@@ -233,11 +233,14 @@ isc = true;
 % Delta functions.
 pref = chebfunpref();
 deltaTol = pref.deltaPrefs.deltaTol;
-deltas = getDeltaFunctions(f);
-if ( any(any(abs(deltas(:)) > deltaTol)) )
-    % Function with non-trivial delta functions is never continuous.
-    isc = false;
-    return
+out = get(f, 'deltas');
+if ( ~isempty(out) )
+    deltas = out(2:end, :);
+    if ( any(any(abs(deltas(:)) > deltaTol)) )
+        % Function with non-trivial delta functions is never continuous.
+        isc = false;
+        return
+    end
 end
 
 % Exponents.

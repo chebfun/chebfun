@@ -9,13 +9,22 @@ function out = roots(f, varargin)
 %       [0] - Return only real-valued roots in [-1,1].
 %        1  - Return roots outside of [-1,1] (including complex roots).
 %
+%   COMPLEX:
+%       [0]
+%        1  - Return real and complex roots inside a Bernstein ellipse. 
+%
 %   RECURSE:
 %        0  - Compute roots without interval subdivision (slower).
-%       [1] - Subdivide until length(F) < 50. (causes additional complex roots).
+%       [1] - Subdivide until length(F) < 50. (can cause additional complex roots).
 %
 %   PRUNE:
 %       [0]
 %        1  - Prune 'spurious' complex roots if ALL == 1 and RECURSE == 0.
+%
+%   QZ: 
+%       [0] - Use the colleague matrix linearization and the QR algorithm.
+%        1  - Use the colleague matrix pencil linearization and the QZ 
+%             algorithm for potentially extra numerical stability. 
 %
 %   If F is an array-valued CHEBTECH then there is no reason to expect each
 %   column to have the same number of roots. In order to return a useful output,

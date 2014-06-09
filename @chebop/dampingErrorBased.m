@@ -113,7 +113,7 @@ while ( ~accept )
     
     % Compute a simplified Newton step using the current derivative of the
     % operator, but with a new right-hand side.
-    [deltaBar, disc] = linsolve(L, deResFunTrial, disc);
+    [deltaBar, disc] = linsolve(L, deResFunTrial, disc, vscale(u));
     
     % We had two output arguments above, need to negate deltaBar:
     deltaBar = -deltaBar;    

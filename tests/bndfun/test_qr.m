@@ -19,21 +19,21 @@ x = diff(dom) * rand(100, 1) + dom(1);
 %%
 % Do a few spot-checks.
 
-f = bndfun(@(x) sin(x), dom, [], [], pref);
+f = bndfun(@(x) sin(x), struct('domain', dom), pref);
 pass(1:2) = test_one_qr(f, x);
 pass(3:4) = test_one_qr_with_perm(f, x);
 
-f = bndfun(@(x) [cos(x) exp(x)], dom, [], [], pref);
+f = bndfun(@(x) [cos(x) exp(x)], struct('domain', dom), pref);
 pass(5:6) = test_one_qr(f, x);
 pass(7:8) = test_one_qr_with_perm(f, x);
 
 f = bndfun(@(x) [ones(size(x)) x x.^2 x.^3 x.^4 x.^5 x.^6 x.^7], ...
-    dom, [], [], pref);
+    struct('domain', dom), pref);
 pass(9:10) = test_one_qr(f, x);
 pass(11:12) = test_one_qr_with_perm(f, x);
 
 f = bndfun(@(x) [1./(1+1i*x.^2) sinh((1-1i)*x) (exp(x) - x.^3)], ...
-    dom, [], [], pref);
+    struct('domain', dom), pref);
 pass(13:14) = test_one_qr(f, x);
 pass(15:16) = test_one_qr_with_perm(f, x);
 
@@ -47,7 +47,7 @@ pass(17) = all(err(:) == 0);
 
 %%
 % Check a rank-deficient problem:
-f = bndfun(@(x) [x x x], dom, [], [], pref);
+f = bndfun(@(x) [x x x], struct('domain', dom), pref);
 [Q, R] = qr(f);
 pass(18) = all(size(Q) == 3) && all(size(R) == 3);
 I = eye(3);

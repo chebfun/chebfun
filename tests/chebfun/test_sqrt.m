@@ -86,9 +86,7 @@ pow = -1.5;
 op = @(x) (sin(50*x).^2+1).*(x-dom(1)).^pow;
 opExact = @(x) sqrt(sin(50*x).^2+1).*(x-dom(1)).^(pow/2);
 
-pref.singPrefs.exponents = [pow 0];
-pref.enableBreakpointDetection = 1;
-f = chebfun(op, dom, pref);
+f = chebfun(op, dom, 'exps', [pow 0], 'splitting', 'on');
 g = sqrt(f);
 vals_g = feval(g, x); 
 
@@ -120,8 +118,7 @@ pass(7) = norm(err, inf) < epslevel(g)*vscale(g);
 % Blow-up function:
 op = @(x) x.^2.*(1-exp(-x.^2))+2;
 opg = @(x) sqrt(x.^2.*(1-exp(-x.^2))+2);
-pref.singPrefs.exponents = [2 2];
-f = chebfun(op, dom, pref);
+f = chebfun(op, dom, 'exps', [2 2]);
 g = sqrt(f);
 gVals = feval(g, x);
 gExact = opg(x);

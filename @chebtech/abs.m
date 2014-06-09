@@ -13,7 +13,7 @@ if ( isreal(f) || isreal(1i*f) )
     values = abs(values);
     f.coeffs = f.vals2coeffs(values);
 else
-    f = compose(f, @abs, [], varargin{:});
+    f = compose(f, @abs, [], [], varargin{:});
 end
 
 end

@@ -21,5 +21,6 @@ meanfx = mean(fx, 1);
 % Compute the fix:
 f.coeffs = fix(meanfx);
 f.vscale = abs(f.coeffs);
+f.epslevel = 0*f.vscale + eps;
 
 end

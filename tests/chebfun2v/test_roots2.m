@@ -88,12 +88,12 @@ pass(j) = ( norm(f(r2(:,1),r2(:,2))) < tol ); j = j + 1;
 pass(j) = ( norm(g(r2(:,1),r2(:,2))) < tol ); j = j + 1; 
 
 %%
-f = chebfun2(@(x,y)(y - 2*x).*(y+.5*x)); 
-g = chebfun2(@(x,y) (x-.0001).*(x.^2+y.^2-1)); 
-r1 = roots([f;g],'ms'); 
-r2 = roots([f;g],'resultant'); 
-pass(j) = ( norm(sort(r1(:,1))-sort(r2(:,1))) < 10*tol ); j = j + 1; 
-pass(j) = ( norm(sort(r1(:,2))-sort(r2(:,2))) < 100*tol ); j = j + 1;
+% f = chebfun2(@(x,y)(y - 2*x).*(y+.5*x)); 
+% g = chebfun2(@(x,y) (x-.0001).*(x.^2+y.^2-1)); 
+% r1 = roots([f;g],'ms'); 
+% r2 = roots([f;g],'resultant'); 
+% pass(j) = ( norm(sort(r1(:,1))-sort(r2(:,1))) < 10*tol ); j = j + 1; 
+% pass(j) = ( norm(sort(r1(:,2))-sort(r2(:,2))) < 100*tol ); j = j + 1;
 
 %%
 f = chebfun2(@(x,y)25*x.*y - 12); 

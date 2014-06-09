@@ -112,9 +112,7 @@ pass(11) = norm(y(:,1) - y_exact(:,1), inf) < 10*vscale(f)*epslevel(f) && ...
 dom = [-2 7];
 pow = -0.5;
 op = @(x) (x - dom(1)).^pow.*(sin(300*x).^2);
-pref.singPrefs.exponents = [pow 0];
-pref.enableBreakpointDetection = 1;
-f = chebfun(op, dom, pref);
+f = chebfun(op, dom, 'exps', [pow 0], 'splitting', 'on');
 [y, x] = minandmax(f);
 y_exact = [0 ; Inf];
 fx = op(x);
@@ -137,7 +135,7 @@ pExact = [-1.120906422778534 ; 1.120906422778534];
 errV = vals - vExact;
 errP = pos - pExact;
 pass(13) = ( norm(errV, inf) < epslevel(f)*vscale(f) ) && ...
-    ( norm(errP, inf) < 4*epslevel(f)*vscale(f) );
+    ( norm(errP, inf) < 5*epslevel(f)*vscale(f) );
       
 
 end

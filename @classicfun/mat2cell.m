@@ -53,7 +53,8 @@ g = cell(1, numel(N));
 % Append the data to the new entries in the cell:
 for k = 1:numel(N)
     % Create a new CLASSICFUN from the ONEFUN and the domain:
-    g{k} = f.make(oneFuns{k}, f.domain);
+    data.domain = f.domain;
+    g{k} = f.make(oneFuns{k}, data);
 end
 
 end

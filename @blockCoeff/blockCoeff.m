@@ -1,5 +1,5 @@
 classdef blockCoeff
-%BLOCKCOEFF   Convert linear operator to derivative coefficents.
+%BLOCKCOEFF   Class to convert linear operator to derivative coefficents.
 %   This class is not intended to be called directly by the end user.
 %
 %   See also LINOP, CHEBOP, CHEBOPPREF.

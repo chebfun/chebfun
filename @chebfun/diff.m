@@ -166,7 +166,10 @@ f.pointValues = pointValues;
                 deltaMag = [0 ; 0];
             end
             % New delta functions are only possible at the ends of the domain:
-            f = deltafun(f, deltaMag.'/2, f.domain, f.domain, [], [], pref);
+            data.domain = f.domain;
+            data.deltaMag = deltaMag.'/2;
+            data.deltaLoc = f.domain;
+            f = deltafun(f, data, pref);
         end
     end
 
