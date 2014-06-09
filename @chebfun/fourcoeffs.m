@@ -129,12 +129,12 @@ else  % Return the sign and cosine coefficients for the Fourier series
     fisOdd = mod(N,2);
     if fisOdd
         zeroMode = (N+1)/2;
-        A = [( C(:,1:zeroMode-1)-conj(C(:,N:-1:zeroMode+1)) ), C(:,zeroMode)];
-        B = 1i*( C(:,1:zeroMode-1)+conj(C(:,N:-1:zeroMode+1)) );
+        A = [( C(:,1:zeroMode-1) + C(:,N:-1:zeroMode+1) ), C(:,zeroMode)];
+        B = 1i*( C(:,1:zeroMode-1) - C(:,N:-1:zeroMode+1) );
     else  % Non-symmetric case
         zeroMode = N/2;
-        A = [C(:,N), ( C(:,1:zeroMode-1)-conj(C(:,N-1:-1:zeroMode+1)) ), C(:,zeroMode)];
-        B = 1i*( C(:,1:zeroMode-1)+conj(C(:,N-1:-1:zeroMode+1)) );
+        A = [C(:,N), ( C(:,1:zeroMode-1) + C(:,N-1:-1:zeroMode+1) ), C(:,zeroMode)];
+        B = 1i*( C(:,1:zeroMode-1) - C(:,N-1:-1:zeroMode+1) );
     end
     if isreal(f)
         A = real(A);
