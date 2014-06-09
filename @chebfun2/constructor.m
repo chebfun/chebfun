@@ -39,8 +39,10 @@ if ( nargin < 3 || isempty(domain) )
 end
 
 if ( nargin > 3 && isa(varargin{1}, 'chebfunpref') )
-    defaults = chebfunpref();
-    pref = chebfunpref.mergePrefs(defaults, varargin{1});
+    % TODO: Fix this.
+%     defaults = chebfunpref();
+%     pref = chebfunpref.mergePrefs(defaults, varargin{1});
+    pref = varargin{1};
 else
     pref = chebfunpref();
 end
