@@ -62,7 +62,7 @@ classdef chebop2
             
             % Issue a warning to the user for the first chebop2: 
             warning('CHEBOP2:EXPERIMENTAL',...
-                         'Chebop2 is new and experimental feature.');
+                  'Chebop2 is a new experimental feature. It has not been tested to the some extent as other parts of the software.');
             % Turn it off:
             warning('off', 'CHEBOP2:EXPERIMENTAL'); 
         end
