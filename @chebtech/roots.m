@@ -130,7 +130,6 @@ while ( j <= length(varargin) )
         j = j + 2;
     elseif ( strcmpi(varargin{j}, 'complex') )
         rootsPref.all = varargin{j+1};
-        rootsPref.prune = varargin{j+1};
         j = j + 2;
     elseif ( strcmpi(varargin{j}, 'qz') )
         rootsPref.qz = varargin{j+1}; 
