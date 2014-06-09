@@ -4,7 +4,6 @@ function pass = test_expm
 tol = 1e-9; 
 d = [-pi pi];
 x = chebfun('x',d);
-
 %%
 [Z, I, D, C] = linop.primitiveOperators(d);
 [z, E, s] = linop.primitiveFunctionals(d);
