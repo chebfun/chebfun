@@ -106,37 +106,49 @@ pass(16) = isequalNaN(chebfunpref.mergePrefs(p, q), ...
 % Test functions for managing default preferences.
 savedPrefs = chebfunpref();
 
-chebfunpref.setDefaults('factory');
-factoryPrefs = chebfunpref.getFactoryDefaults();
-p = chebfunpref();
-pass(17) = isequalNaN(p, factoryPrefs);
+try 
+    chebfunpref.setDefaults('factory');
+    factoryPrefs = chebfunpref.getFactoryDefaults();
+    p = chebfunpref();
+    pass(17) = isequalNaN(p, factoryPrefs);
 
-chebfunpref.setDefaults('factory');
-p = chebfunpref();
-p.domain = [-2 7];
-p.testPref = 'testq';
-chebfunpref.setDefaults(p);
-pass(18) = strcmp(chebfunpref().testPref, 'testq') && ...
-    isequal(chebfunpref().domain, [-2 7]);
+    chebfunpref.setDefaults('factory');
+    p = chebfunpref();
+    p.domain = [-2 7];
+    p.testPref = 'testq';
+    chebfunpref.setDefaults(p);
+    pass(18) = strcmp(chebfunpref().testPref, 'testq') && ...
+        isequal(chebfunpref().domain, [-2 7]);
 
-chebfunpref.setDefaults('factory');
-p = struct();
-p.domain = [-2 7];
-p.testPref = 'testq';
-chebfunpref.setDefaults(p);
-pass(19) = strcmp(chebfunpref().testPref, 'testq') && ...
-    isequal(chebfunpref().domain, [-2 7]);
+    chebfunpref.setDefaults('factory');
+    p = struct();
+    p.domain = [-2 7];
+    p.testPref = 'testq';
+    chebfunpref.setDefaults(p);
+    pass(19) = strcmp(chebfunpref().testPref, 'testq') && ...
+        isequal(chebfunpref().domain, [-2 7]);
 
-chebfunpref.setDefaults('factory');
-chebfunpref.setDefaults('domain', [-2 7], 'testPref', 'testq');
-pass(20) = strcmp(chebfunpref().testPref, 'testq') && ...
-    isequal(chebfunpref().domain, [-2 7]);
+    chebfunpref.setDefaults('factory');
+    chebfunpref.setDefaults('domain', [-2 7], 'testPref', 'testq');
+    pass(20) = strcmp(chebfunpref().testPref, 'testq') && ...
+        isequal(chebfunpref().domain, [-2 7]);
 
-% Test getting defaults:
-pass(21) = isnumeric(chebfunpref().eps);
-pass(22) = ischar(chebfunpref().singPrefs.defaultSingType);
-pass(23) = ischar(chebfunpref().refinementFunction);
+    % Test getting defaults:
+    pass(21) = isnumeric(chebfunpref().eps);
+    pass(22) = ischar(chebfunpref().singPrefs.defaultSingType);
+    pass(23) = ischar(chebfunpref().refinementFunction);
+    
+catch ME
+    
+    % Reset the preferences:
+    chebfunpref.setDefaults(savedPrefs);
+    
+    % Rethrow the error:
+    rethrow(ME)
+    
+end
 
+% Reset the preferences:
 chebfunpref.setDefaults(savedPrefs);
 
 end
