@@ -1,5 +1,5 @@
 classdef chebguiExporter
-%CHEBGUIEXPORTER   Export a problem from CHEBGUI.
+%CHEBGUIEXPORTER   Class to export a problem from CHEBGUI.
 %   This is a an abstract class that defines interfaces for export problems from
 %   CHEBGUI to .m-files, to the workspace, or to a .chebgui file. It is not
 %   intended to be called directly by the end user.
