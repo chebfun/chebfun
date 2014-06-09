@@ -12,6 +12,17 @@ function printOptions(fid, expInfo)
 
 % Extract info from the expInfo struct:
 K = expInfo.K;
+discretization = expInfo.discretization;
+
+% Set up preferences
+fprintf(fid, '\n%%%% Setup preferences for solving the problem.');
+fprintf(fid, '\n%% Create a CHEBOPPREF object for passing preferences: \n');
+fprintf(fid, 'options = cheboppref();\n');
+
+% Option for discretization:
+fprintf(fid, '\n%% Option for discretization (either @colloc2 or @ultraS).\n');
+fprintf(fid, 'options.discretization = @%s;\n', ...
+    func2str(discretization));
 
 fprintf(fid, '\n%% Number of eigenvalue and eigenmodes to compute.\n');
 fprintf(fid, 'k = %s;\n', K);
