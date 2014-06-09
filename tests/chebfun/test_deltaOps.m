@@ -35,19 +35,23 @@ pass(3) = err < tol;
 % A test for diff() based on an example from LNT.
 savedPrefs = chebfunpref();
 chebfunpref.setDefaults('enableDeltaFunctions', true);
-
-x = chebfun('x', [0 5]);
-f = 0.5*sin(x);
-A = randn(4, 1);
-for j = 1:4
-  f = f + A(j)*dirac(x-j);
+try
+    x = chebfun('x', [0 5]);
+    f = 0.5*sin(x);
+    A = randn(4, 1);
+    for j = 1:4
+      f = f + A(j)*dirac(x-j);
+    end
+    F = cumsum(.5*sin(x));
+    for j = 1:4
+      F = F + A(j)*heaviside(x-j);
+    end
+    err = norm(diff(F) - (f - f(0)));
+    pass(4) = err < tol;
+catch ME
+    chebfunpref.setDefaults(savedPrefs);
+    rethrow(ME)
 end
-F = cumsum(.5*sin(x));
-for j = 1:4
-  F = F + A(j)*heaviside(x-j);
-end
-err = norm(diff(F) - (f - f(0)));
-pass(4) = err < tol;
 
 chebfunpref.setDefaults(savedPrefs);
 
