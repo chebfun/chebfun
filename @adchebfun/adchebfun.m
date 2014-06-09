@@ -74,6 +74,9 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         % DOMAIN: Domain of the ADchebfun.
         domain
         
+        % These track where explicit jumps have been given, so that
+        % automatic continuity conditions are deactivated. Only the JUMP
+        % method changes this property. 
         jumpLocations = [];
     end
     
