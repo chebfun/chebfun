@@ -82,21 +82,10 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
     
     %% CLASS CONSTRUCTOR (IMPLEMENTED BY THIS M-FILE):
     methods
-        function obj = singfun(op, exponents, singType, vscale, hscale, pref)   
-            
-            %% Get Preferences
-            % Check for preferences in the very beginning.
-            if ( (nargin < 6) || isempty(pref) )
-                % Determine preferences if not given.
-                pref = chebfunpref();
-            else
-                % Merge if some preferences are given.
-                pref = chebfunpref(pref);
-            end         
-            
-            %% Cases based on the number of arguments
-            % Case 0: No input arguments, return an empty object.
-            if ( nargin == 0 )
+        function obj = singfun(op, data, pref)
+            % Parse inputs.
+            if ( nargin < 1 )
+                % No input arguments; return an empty SINGFUN.
                 obj.smoothPart = [];
                 obj.exponents = [];
                 return
