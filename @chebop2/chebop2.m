@@ -59,6 +59,12 @@ classdef chebop2
         
         function N = chebop2( varargin )
             N = constructor( N, varargin{:} );
+            
+            % Issue a warning to the user for the first chebop2: 
+            warning('CHEBOP2:EXPERIMENTAL',...
+                         'Chebop2 is new and experimental feature.');
+            % Turn it off:
+            warning('off', 'CHEBOP2:EXPERIMENTAL'); 
         end
         
     end

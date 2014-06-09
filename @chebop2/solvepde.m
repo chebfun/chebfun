@@ -101,7 +101,7 @@ while ( ( ~Resolved ) && ( m < maxDiscretise_y ) &&...
                          ( n < maxDiscretise_x ) )
                      
     % Solve PDE, return an m x n matrix of coefficients:
-    X = chebop2.denseSolve(N, f, m, n);
+    X = chebop2.denseSolve(N, f, n, m);
     
     if ( adaptive_y ) 
         % Resolved in y-direction?
