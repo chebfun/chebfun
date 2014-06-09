@@ -22,7 +22,11 @@ end
 
 % X is real positive, so call SQRT.
 R = sqrt(X);
-        
+
+if ( normest(imag(R)) < 100*max(epslevel(R).*vscale(R)) )
+    R = real(R);
+end
+
 % Check for complex R:
 if ( ~isreal(R) )
     error('CHEBFUN:realsqrt:complexRes', 'REALSQRT produced complex result.');

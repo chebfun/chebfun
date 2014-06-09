@@ -53,6 +53,6 @@ chebfunpref.setDefaults(savedPrefs);
 
 % A test involving innerProduct:
 x = chebfun('x');
-pass(5) = innerProduct(dirac(x), x) == 0;
+pass(5) = innerProduct(dirac(x), x) < epslevel(f);
 
 end
