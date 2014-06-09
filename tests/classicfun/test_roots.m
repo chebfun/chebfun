@@ -104,16 +104,9 @@ data.domain = [-Inf Inf];
 
 % Blow-up function:
 op = @(x) x.^2.*(1-exp(-x.^2))-2;
-<<<<<<< HEAD:tests/fun/test_roots.m
-pref.singPrefs.exponents = [2 2];
-p = pref;
-p.eps = max(pref.eps, 1e-14);
-f = unbndfun(op, dom, [], [], p);
-=======
 singData = data;
 singData.exponents = [2 2];
 f = unbndfun(op, singData, singPref);
->>>>>>> development:tests/classicfun/test_roots.m
 r = roots(f);
 rExact = [-1.4962104914103104707 ; 1.4962104914103104707];
 err = r - rExact;
