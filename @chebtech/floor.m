@@ -21,5 +21,6 @@ meanfx = mean(fx, 1);
 % Compute the floor:
 f.coeffs = floor(meanfx);
 f.vscale = abs(f.coeffs);
+f.epslevel = 0*f.vscale + eps;
 
 end
