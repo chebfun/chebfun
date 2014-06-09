@@ -29,6 +29,8 @@ classdef chebfun2
 % Copyright 2014 by The University of Oxford and The Chebfun2 Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun2 information.
 
+% TODO: Improve documentation of input options.
+
     
     properties ( Access = public )
         % COLS: column slices used in low rank representation
