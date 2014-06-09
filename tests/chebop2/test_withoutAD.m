@@ -7,6 +7,10 @@ if ( nargin < 1 )
 end 
 tol = 100*prefs.cheb2Prefs.eps; 
 
+
+state = warning;
+warning('off','all')
+
 % Try Helmoltz:
 N = chebop2;
 N.domain = [-1 1 -1 1];
@@ -34,7 +38,7 @@ N = chebop2;
 N.domain = [-1 1 -1 1];
 N.U = {0 1;0 0;1 0};
 N.S = [1 0; 0 1]; 
-N.V = {-x 0; 0 0;0 01};
+N.V = {-x 0; 0 0; 0 01};
 N.lbc = exact(-1,:); N.rbc = exact(1,:); 
 N.ubc = exact(:,1); N.dbc = exact(:,-1); 
 N.xorder = 2; 
@@ -46,5 +50,5 @@ x = linspace(-1,1,1000);
 A = abs(u(xx,yy) - exact(xx,yy));
 pass(2) = ( max( A(:) ) < tol ); 
 
-
+warning(state);
 end
