@@ -1,4 +1,4 @@
-function pass = test_basic_constructor( pref ) 
+function pass = test_constructor( pref ) 
 % This tests the chebfun2 constructor.  
 
 if ( nargin < 1 ) 
@@ -47,5 +47,14 @@ f = chebfun2(g,[-pi,pi,-pi,pi]);
 [xx,yy] = meshgrid(linspace(-pi,pi,101));
 err = g(xx,yy)-f(xx,yy);
 pass(8) = ( norm(err(:),inf ) < 2e3*tol );
+
+% Test building Chebfun2 objects from sample data: 
+rng(0);
+r = rand(3);
+pass(9) = norm( r - chebpoly2(chebfun2(r, 'coeffs')) ) < 10*tol; 
+r = rand(4);
+pass(10) = norm( r - chebpoly2(chebfun2(r, 'coeffs')) ) < 10*tol;
+r = rand(4);
+pass(11) = norm( r - chebpolyval2(chebfun2(r)) ) < 10*tol;
 
 end
