@@ -4,7 +4,7 @@ function pass = test_pchip(pref)
 x = 0:10;  
 y = sin(x);
 f = chebfun.pchip(x, y);
-tol = epslevel(f);
+tol = 10*epslevel(f);
 pass(1) = norm(feval(f, x) - y) < tol;
 pass(2) = numel(f.funs) == 10;
 pass(3) = length(f) == 40;
@@ -13,7 +13,7 @@ pass(3) = length(f) == 40;
 x = (0:10)';  
 y = [sin(x), cos(x)];
 f = chebfun.pchip(x, y);
-tol = epslevel(f);
+tol = 10*epslevel(f);
 pass(4) = norm(feval(f, x) - y) < tol;
 pass(5) = numel(f.funs) == 10;
 pass(6) = length(f) == 40;
@@ -33,7 +33,7 @@ pass(10) = length(f) == 44;
 x = -3:3;
 y = [-1 -1 -1 0 1 1 1];
 f = chebfun.pchip(x, y);
-tol = epslevel(f);
+tol = 10*epslevel(f);
 pass(11) = norm(feval(f, x) - y) < tol;
 pass(12) = numel(f.funs) == 6;
 

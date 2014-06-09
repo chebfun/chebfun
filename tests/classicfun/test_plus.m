@@ -78,6 +78,7 @@ catch ME
     pass(18) = strcmp(ME.message, 'Matrix dimensions must agree.');
 end
 
+
 %% 
 % Check that direct construction and PLUS give comparable results.
 tol = 10*eps;

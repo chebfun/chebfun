@@ -68,7 +68,7 @@ pass(6) = err < 1e-14;
     
 %% 7. Test the example from ATAP
 a = 0.2885554757; b = 0.3549060246;
-g = chebfun(@(x) sin(1./x).*sin(1./sin(1./x)), [a,b], 80);
+g = chebfun(@(x) sin(1./x).*sin(1./sin(1./x)), [a,b], 80, 'chebkind', 2);
 t = 1e-7;
 f = chebfun(@(x) exp(-x.^2/(4*t))/sqrt(4*pi*t),.003*[-1 1]);
 h = conv(f, g);
@@ -104,7 +104,7 @@ g = conv(f, diff(dirac(x)));
 g = restrict(g, [-1, 1] );
 g.pointValues(1) = 2*g.pointValues(1);
 g.pointValues(end) = 2*g.pointValues(end);
-pass(10) = norm(g - cos(x), inf ) < 5*tol;
+pass(10) = norm(g - cos(x), inf ) < 10*tol;
 
 % Second order ODE via delta functions and convolutions:
 % g = f'' + f

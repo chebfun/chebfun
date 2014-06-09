@@ -152,7 +152,7 @@ function result = test_div_scalar_by_function(alpha, f, f_op, x)
     g = alpha ./ f;
     g_exact = @(x) alpha ./ f_op(x);
     err = norm(feval(g, x) - g_exact(x), inf);
-    tol = 200*max(get(g, 'vscale').*get(g, 'epslevel'));
+    tol = 300*max(get(g, 'vscale').*get(g, 'epslevel'));
     result = err < tol;
 end
 
@@ -163,6 +163,6 @@ function result = test_div_function_by_function(f, f_op, g, g_op, x)
     h = f ./ g;
     h_exact = @(x) f_op(x) ./ g_op(x);
     err = norm(feval(h, x) - h_exact(x), inf);
-    tol = 400*max(get(h, 'vscale').*get(h, 'epslevel'));
+    tol = 300*max(get(h, 'vscale').*get(h, 'epslevel'));
     result = err < tol;
 end

@@ -32,8 +32,7 @@ if ( nargin == 1 )
     ny = nx; 
 end
 
-% What tech am I based on?: 
-tech = chebfun2pref().tech();
+tech = chebfunpref().tech(); 
 
 if ( isa(tech, 'chebtech2') )
     x = chebpts( nx, D(1:2), 2 );   % x grid.
