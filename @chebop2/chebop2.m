@@ -21,6 +21,11 @@ classdef chebop2
 %    N = chebop2(@(u) diff(u,2,1) + diff(u,2,2));
 %    N.lbc = 0; N.rbc = 0; N.ubc = 0; N.dbc = 0;
 %    u = N \ 1;
+%
+% For further details about the PDE solver, see: 
+% 
+% A. Townsend and S. Olver, The automatic solution of partial differential
+% equations using a global spectral method, in preparation, 2014.
 % 
 % Warning: This PDE solver is an experimental new feature. It has not been
 % publicly advertised.  
