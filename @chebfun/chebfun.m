@@ -598,15 +598,12 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
             % Hack to support construction from coefficients.
             op = {{[], op}};
             args(1) = [];
-<<<<<<< HEAD
         elseif ( strcmpi(args{1}, 'periodic') )
             isPeriodic = true;
             args(1) = [];
-=======
         elseif ( strcmpi(args{1}, 'coeffs') && iscell(op) )
             error('CHEBFUN:parseInputs:coeffcell', ...
-                'Cannot construct CHEBFUN from a cell array of coefficidnts.');
->>>>>>> development
+                'Cannot construct CHEBFUN from a cell array of coefficients.');
         elseif ( strcmpi(args{1}, 'trunc') )
             % Pull out this preference, which is checked for later.
             keywordPrefs.enableBreakpointDetection = true;
