@@ -24,6 +24,7 @@ if ( nargin == 1 )
     
 elseif ( nargin == 2 )
     % PLOT(F, G)
+    
     % Make sure f has no delta functions.
     if ( isa(f, 'deltafun') )  
         if ( ~isempty(f.deltaMag) )
@@ -35,12 +36,12 @@ elseif ( nargin == 2 )
     
     if ( isa(g, 'deltafun') )
         data = plotData(f, g.funPart);
+        [xDelta, yDelta] = getDeltaData(g);    
+        xDelta = feval(f, xDelta);
     else
         data = plotData(f, g);        
     end
     
-    [xDelta, yDelta] = getDeltaData(g);    
-    xDelta = feval(f, xDelta);
 elseif ( nargin == 3 )
     % PLOT(F, G, H)
     
@@ -48,15 +49,15 @@ elseif ( nargin == 3 )
     if ( isa(f, 'deltafun') )
         f = f.funPart;
     end
-    
     if ( isa(g, 'deltafun') )
         g = g.funPart;
     end
-    
     if ( isa(h, 'deltafun') )
         h = h.funPart;
     end
+    
     data = plotData(f, g, h);
+    
 end
 
 % Update data struct with delta functions:
@@ -72,11 +73,6 @@ function [xData, yData] = getDeltaData(f)
 xData = [];
 yData = [];
 
-% Trivial case:
-if ( ~isa(f, 'deltafun') )
-    return;
-end
-
 % Handle delta functions (Derivatives of Delta-functions are not plotted):
 if ( ~isempty(f.deltaLoc) )
     % Remove higher derivatives of delta-functions from f:
@@ -84,7 +80,7 @@ if ( ~isempty(f.deltaLoc) )
     f = simplifyDeltas(f);
     if ( ~isa(f ,'deltafun') ) 
         % No zeroth order delta functions, return:
-        return;
+        return
     else
         % There are delta functions, prepare data for plotting:                
         xData = f.deltaLoc.';
