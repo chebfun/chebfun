@@ -68,15 +68,15 @@ function varargout = plot(varargin)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-% TODO: Figure out the y axis limit for functions which blow up.
-
-% Deal with an empty input:
+%% Deal with an empty input:
 if ( isempty(varargin{1}) )
     if ( nargout == 1 )
         varargout{1} = plot([]);
     end
     return
 end
+
+%% Initialization:
 
 % Store the hold state of the current axis:
 holdState = ishold;
@@ -90,8 +90,10 @@ end
 % Initialize flags:
 isComplex = false;
 intervalIsSet = false;
-xLim = [inf, -inf];
-yLim = [inf, -inf];
+xLim = [-inf, inf];
+yLim = [-inf, inf];
+defaultXLim = 1;
+defaultYLim = 1;
 
 % Suppress inevitable warning for growing these arrays:
 %#ok<*AGROW>
@@ -139,7 +141,8 @@ jumpLineSet = any(cellfun(@(v) strcmpi(v, 'JumpLine'), varargin));
 [lineStyle, pointStyle, jumpStyle, deltaStyle, varargin] = ...
     chebfun.parsePlotStyle(varargin{:});
 
-%%
+%% Preparation of the data:
+
 % Get the data for plotting from PLOTDATA():
 while ( ~isempty(varargin) )
 
@@ -199,7 +202,7 @@ while ( ~isempty(varargin) )
             end
         end
 
-    else                                                       % PLOT(f).
+    else  % PLOT(f).
         
         % Remove CHEBFUN from array input:
         f = varargin{1};
@@ -256,21 +259,25 @@ while ( ~isempty(varargin) )
             styleData];
         jumpData = [jumpData, newData(k).xJumps, newData(k).yJumps, styleData];
         deltaData = [deltaData, newData(k).xDeltas, newData(k).yDeltas, styleData];
+        
+        defaultXLim = defaultXLim & newData(k).defaultXLim;
+        defaultYLim = defaultYLim & newData(k).defaultYLim;
     end
     
-    % If xLim(1) == xLim(2), set xLim [inf -inf] and let Matlab figure out a
-    % proper xLim:
+    % If xLim(1) == xLim(2), let Matlab figure out a proper xLim:
     if ( ~diff(xLim) )
-        xLim = [inf, -inf];
+        defaultXLim = 1;
     end
     
-    % If yLim(1) == yLim(2), set yLim [inf -inf] and let Matlab figure out a
-    % proper yLim:
+    % If yLim(1) == yLim(2), let Matlab figure out a proper yLim:
     if ( ~diff(yLim) )
-        yLim = [inf, -inf];
+        defaultYLim = 1;
     end
     
 end
+
+%% Plotting starts here:
+
 % Plot the lines:
 h1 = plot(lineData{:});
 set(h1, 'Marker', 'none', lineStyle{:})
@@ -317,34 +324,37 @@ if ( ~isempty(deltaStyle) )
     set(h4, deltaStyle{:});
 end    
 
-%% 
+%% Setting xLim and yLim:
+
 % Set the X-limits if appropriate values have been suggested:
-if ( all(isfinite(xLim)) )
+if ( ~defaultXLim )
 
     % If holding, then make sure not to shrink the X-limits.
     if ( holdState )
         xLim = [min(xLimCurrent(1), xLim(1)), max(xLimCurrent(2), xLim(2))];
-    end
+    end    
     
-    set(gca, 'xlim', sort(xLim))
 end
 
+set(gca, 'xlim', xLim)
+
 % Set the Y-limits if appropriate values have been suggested:
-if ( all(isfinite(yLim)) )
+if ( ~defaultXLim )
 
     % If holding, then make sure not to shrink the Y-limits.
     if ( holdState )
         yLim = [min(yLimCurrent(1), yLim(1)), max(yLimCurrent(2), yLim(2))];
     end
     
-    yLim = sort(yLim);
-    
     % Give some extra space at the top and the bottom:
     spaceHeight = diff(yLim)/10;
     yLim = [yLim(1)-spaceHeight yLim(2)+spaceHeight];
     
-    set(gca, 'ylim', yLim)
 end
+
+set(gca, 'ylim', yLim)
+
+%% Misc:
 
 % Return hold state to what it was before:
 if ( ~holdState )
@@ -357,7 +367,6 @@ if ( nargout > 0 )
 end
 
 end
-
 
 function h = mystem(varargin)
 %MYSTEM   Plot multiple STEM plots in one call.
