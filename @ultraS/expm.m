@@ -23,9 +23,20 @@ else
     % Reduced and original degrees of freedom.
     [mRed, mOrig] = size(P);  
     
+    % Construct conversion operator: 
+    dims = disc.dimension; 
+    S = zeros(mRed);
+    olddim = 0; 
+    for jj = 1:numel(dims)
+       newdim = olddim + dims(jj); 
+       convert = ultraS.convertmat(dims(jj), 0, disc.outputSpace );
+       S(olddim+1:newdim, olddim+1:newdim) = convert;
+       olddim = newdim; 
+    end
+    
+    
     % This step implicitly uses the side conditions in order to lift a reduced
     % discretization to full size.
-    S = ultraS.convertmat(mRed, 0, disc.outputSpace );
     Q = [B ; P] \ [zeros(mOrig - mRed, mRed) ; eye(mRed)];
 
     % Propagator of the "reduced" variables: Lift to full size, apply original
