@@ -321,11 +321,8 @@ else
 end
 
 if ( ~isempty(deltaStyle) )
-    set(h4, deltaStyle{:}, 'ShowBaseLine', 'off');
-else
-    set(h4, 'ShowBaseLine', 'off')
-end
-    
+    set(h4, deltaStyle{:});
+end    
 
 %% 
 % Set the X-limits if appropriate values have been suggested:
@@ -369,6 +366,7 @@ function h = mystem(varargin)
 % PLOT does. An alternative option would be to write our own version of STEM.
 
 h = [];
+j = 1;
 % Separate out each individual plot by looking for two consecutive doubles.
 isDouble = cellfun(@isnumeric, varargin);
 startLoc = [1 find([0 diff(isDouble)] == 1 & [diff(isDouble) 0] == 0) nargin+1];
@@ -378,7 +376,9 @@ for k = 1:numel(startLoc)-1
     if ( all(isnan(data{1})) )
         continue
     end
-    h(k) = stem(data{:}, 'fill');    
+    h(j) = stem(data{:}, 'fill');
+    set(h(j), 'ShowBaseLine', 'off')
+    j = j + 1;
 end
 
 end

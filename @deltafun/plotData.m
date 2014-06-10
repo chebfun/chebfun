@@ -1,9 +1,11 @@
-function data = plotData(f, g, varargin)
+function data = plotData(f, g, h)
 %PLOTDATA   Useful data values for plotting a DELTAFUN object.
 %   DATA = PLOTDATA(F) extracts PLOTDATA of the funPart of F
 %   and then appends to it by the data used for delta function plotting.
 %
 %   DATA = PLOTDATA(F, G) is similar.
+% 
+%   DATA = PLOTDATA(F, G, H) ignores all delta functions in F, G and H.
 %
 % See also FUN/PLOTDATA.
 
@@ -12,6 +14,10 @@ function data = plotData(f, g, varargin)
 
 
 %%
+% Initialize arrays:
+xDelta = [];
+yDelta = [];
+
 if ( nargin == 1 )
     data = plotData(f.funPart);
     [xDelta, yDelta] = getDeltaData(f); 
@@ -37,7 +43,6 @@ elseif ( nargin == 2 )
     xDelta = feval(f, xDelta);
 elseif ( nargin == 3 )
     % PLOT(F, G, H)
-    h = varargin{1};
     
     % Ignore all delta functions in this case.
     if ( isa(f, 'deltafun') )
