@@ -63,7 +63,7 @@ else
     if ( isa(u, 'chebmatrix') )
         nVars = size(u, 1);
     else
-        nVars = numel(u);
+        nVars = numColumns(u);
     end
 end
 
