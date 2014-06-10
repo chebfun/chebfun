@@ -1,4 +1,4 @@
-function data = plotData(f, g)
+function data = plotData(f, g, varargin)
 %PLOTDATA   Useful data values for plotting a DELTAFUN object.
 %   DATA = PLOTDATA(F) extracts PLOTDATA of the funPart of F
 %   and then appends to it by the data used for delta function plotting.
@@ -10,14 +10,13 @@ function data = plotData(f, g)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TODO: Support PLOT3(f, g, h).
 
 %%
 if ( nargin == 1 )
     data = plotData(f.funPart);
     [xDelta, yDelta] = getDeltaData(f); 
     
-else
+elseif ( nargin == 2 )
     % PLOT(F, G)
     % Make sure f has no delta functions.
     if ( isa(f, 'deltafun') )  
@@ -36,7 +35,23 @@ else
     
     [xDelta, yDelta] = getDeltaData(g);    
     xDelta = feval(f, xDelta);
+elseif ( nargin == 3 )
+    % PLOT(F, G, H)
+    h = varargin{1};
     
+    % Ignore all delta functions in this case.
+    if ( isa(f, 'deltafun') )
+        f = f.funPart;
+    end
+    
+    if ( isa(g, 'deltafun') )
+        g = g.funPart;
+    end
+    
+    if ( isa(h, 'deltafun') )
+        h = h.funPart;
+    end
+    data = plotData(f, g, h);
 end
 
 % Update data struct with delta functions:
