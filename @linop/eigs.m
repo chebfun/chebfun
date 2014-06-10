@@ -263,12 +263,27 @@ else            % Unwrap the eigenvectors for output
 
     u = mat2fun(discA, P*V);
 
+    % For normalizing eigenfunctions, so that they always have the same sign:
+    signMat = [];
+    
     % Find the norm in each eigenfunction (aggregated over variables).
     nrmsq = zeros(1,k);
     for j = 1:length(u)
         if ( isFun(j) )
             % Compress the representation.
             u{j} = simplify(u{j}, max(eps,epsLevel));
+            if (isempty(signMat))
+                % Find what domain we are working on:
+                dom = domain(u{j});
+                % Arbitrary point just to the right of the middle of the domain:
+                fevalPoint = diff([dom(1) dom(end)])*.500023981;
+                % Find out what sign the real part of the function have there:
+                fevalSigns = sign(real(feval(u{j}, fevalPoint)));
+                % Diagonal matrix with elements equal to the sign at our
+                % arbitrary point. Add 0.1 and take signs again to ensure we
+                % don't end up with any zeros (in case we were very unlucky).
+                signMat = diag(sign(fevalSigns + 0.1));
+            end
         end
         nrmsq = nrmsq + sum(u{j}.*conj(u{j}), 1);
     end
@@ -276,7 +291,7 @@ else            % Unwrap the eigenvectors for output
     % Normalize each eigenfunction.
     scale = diag( 1./sqrt(nrmsq') );
     for j = 1:length(u)
-        u{j} = u{j}*scale;
+        u{j} = u{j}*scale*signMat;
     end
 
      varargout = {chebmatrix(u), D};
