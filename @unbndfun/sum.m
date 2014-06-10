@@ -58,8 +58,9 @@ end
 % exhibit sharp transitions to zero when sampled on a Chebyshev grid of the
 % usual sizes, causing the constructor to fail.  Until we can solve this
 % problem, there doesn't seem to be much else we can do here.
-pref.techPrefs.exactLength = length(g);
-integrand = g.onefun.make(@(x) unbndfunIntegrand(x, g), [], pref);
+techPrefs.exactLength = length(g);
+techConstructor = get(g.onefun, 'techConstructor');
+integrand = techConstructor(@(x) unbndfunIntegrand(x, g), [], techPrefs);
 out = sum(integrand);
 
 end

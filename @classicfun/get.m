@@ -12,6 +12,7 @@ function out = get(f, prop)
 %       'EXPONENTS' - Get the exponents of the onefun:
 %       'DELTAS'    - CLASSICFUNS have no delta functions. Return an empty
 %                     matrix.
+%       'TECHCONSTRUCTOR' - Handle to the constructor of the tech underlying F.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -50,6 +51,10 @@ switch prop
         out = get(f.onefun, prop); 
         
     case 'coeffs'
+        % Get coeffs. 
+        out = get(f.onefun, prop); 
+
+    case 'techConstructor'
         % Get coeffs. 
         out = get(f.onefun, prop); 
         
