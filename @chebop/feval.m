@@ -21,10 +21,26 @@ function out = feval(N, varargin)
 %   Again, OUT = FEVAL(N, U) will also work in this situation, but this is not
 %   the prefered syntax.
 %
-% See also CHEBOP/SUBSREF, LINOP/MTIMES.
+%   OUT = FEVAL(N, DIM) returns an DIM-point discretization of the linear
+%   operator N. If N is not linear an error is thrown. See LINOP/MATRIX for
+%   further details.
+%
+% See also CHEBOP/SUBSREF, LINOP/MTIMES, LINOP/MATRIX.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
+
+if ( (nargin == 2) && isnumeric(varargin{1}) )
+    [L, ~, fail] = linop(N);
+    if ( fail )
+        error('CHEBFUN:chebop:feval:nonlinear',...
+            'Matrix expansion is only allowed for linear CHEBOP objects.')
+    end
+    % TODO: Throw a deprecation warning?
+    % TODO: Should we have a CHEBOP/MATRIX() method?
+    out = matrix(L, varargin{1});
+    return
+end
 
 % We must expand CHEBMATRIX entries out to a cell for {:} to work below.
 isChebMat = cellfun(@(u) isa(u, 'chebmatrix'), varargin);
