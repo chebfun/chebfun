@@ -1,7 +1,7 @@
 function result = parseBC(N, BC, type)
 %PARSEBC  Parse boundary conditions for CHEBOP object.
 %   This method is not intended for end users. For information about boundary
-%   conditions in chebops, see CHEBOP.
+%   conditions in CHEBOPs, see CHEBOP.
 %
 %   This method is invoked by the set methods for LBC, RBC, and BC. The types
 %   and meanings of the allowed input are described in the documentation for
@@ -65,7 +65,7 @@ elseif ( iscell(BC) ) && ( length(BC) == 2 ) && ( ischar(BC{2}) ) && ...
     % A cell may have a numerical value followed by a keyword of 'dirichlet' or
     % 'neumann'.
     
-    % This behavior is retained only for backward compatability and only for
+    % This behavior is retained only for backward compatibility and only for
     % problems with one variable. 
     warning('CHEBFUN:chebop:parsebc:keywordbc',...
         ['Keyword/value specifications of boundary conditions are ', ...

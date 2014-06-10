@@ -61,12 +61,12 @@ pass(j) = ( norm(sort(r1(:,1))-sort(r2(:,1))) < tol ); j = j + 1;
 pass(j) = ( norm(sort(r1(:,2))-sort(r2(:,2))) < tol ); j = j + 1;
 
 %% (slow one)
-% f = chebfun2(@(x,y)exp(x-2*x.^2-y.^2).*sin(10*(x+y+x.*y.^2))); 
-% g = chebfun2(@(x,y)exp(-x+2*y.^2+x.*y.^2).*sin(10*(x-y-2*x.*y.^2))); 
-% r1 = roots([f;g]); 
-% r2 = roots([f;g]); 
-% pass(j) = ( norm(sort(r1(:,1))-sort(r2(:,1))) < tol ); j = j + 1; 
-% pass(j) = ( norm(sort(r1(:,2))-sort(r2(:,2))) < tol ); j = j + 1;
+f = chebfun2(@(x,y)exp(x-2*x.^2-y.^2).*sin(10*(x+y+x.*y.^2))); 
+g = chebfun2(@(x,y)exp(-x+2*y.^2+x.*y.^2).*sin(10*(x-y-2*x.*y.^2))); 
+r1 = roots([f;g],'ms'); 
+r2 = roots([f;g],'resultant'); 
+pass(j) = ( norm(sort(r1(:,1))-sort(r2(:,1))) < tol ); j = j + 1; 
+pass(j) = ( norm(sort(r1(:,2))-sort(r2(:,2))) < tol ); j = j + 1;
 
 %%
 rect = 2*[-1 1 -1 1];
@@ -88,12 +88,20 @@ pass(j) = ( norm(f(r2(:,1),r2(:,2))) < tol ); j = j + 1;
 pass(j) = ( norm(g(r2(:,1),r2(:,2))) < tol ); j = j + 1; 
 
 %%
-% f = chebfun2(@(x,y)(y - 2*x).*(y+.5*x)); 
-% g = chebfun2(@(x,y) (x-.0001).*(x.^2+y.^2-1)); 
-% r1 = roots([f;g],'ms'); 
-% r2 = roots([f;g],'resultant'); 
-% pass(j) = ( norm(sort(r1(:,1))-sort(r2(:,1))) < 10*tol ); j = j + 1; 
-% pass(j) = ( norm(sort(r1(:,2))-sort(r2(:,2))) < 100*tol ); j = j + 1;
+f = chebfun2(@(x,y)(y - 2*x).*(y+.5*x)); 
+g = chebfun2(@(x,y) (x-.0001).*(x.^2+y.^2-1)); 
+r1 = roots([f;g],'ms'); 
+r2 = roots([f;g],'resultant'); 
+exact = [1/10000 -1/20000; 
+              1/10000 1/5000 
+              -2/sqrt(5) 1/sqrt(5) 
+             -1/sqrt(5)  -2/sqrt(5)
+              1/sqrt(5)    2/sqrt(5) 
+               2/sqrt(5)  -1/sqrt(5)]; 
+pass(j) = ( norm(sort(r1(:,1))-sort(exact(:,1))) < 10*tol ); j = j + 1; 
+pass(j) = ( norm(sort(r1(:,2))-sort(exact(:,2))) < 10*tol ); j = j + 1; 
+pass(j) = ( norm(sort(r2(:,1))-sort(exact(:,1))) < 100*tol ); j = j + 1;
+pass(j) = ( norm(sort(r2(:,2))-sort(exact(:,2))) < 100*tol ); j = j + 1;
 
 %%
 f = chebfun2(@(x,y)25*x.*y - 12); 

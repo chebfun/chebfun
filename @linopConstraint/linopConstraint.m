@@ -1,5 +1,6 @@
 classdef linopConstraint
-%LINOPCONSTRAINT Constraint class for linops.
+%LINOPCONSTRAINT Class for linop constraints.
+%
 %   A linop operates on a set of chebfuns and scalars (the "variables" of the
 %   linop). An instance of this class may be assigned to the 'constraint'
 %   property of a linop in order to impose a constraint on that variable (for

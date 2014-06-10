@@ -1,5 +1,5 @@
 function M = feval(L, n, flag)
-%FEVAL     Deprecated function, provided for limited backward compatability.
+%FEVAL    Deprecated function, provided for limited backward compatability.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.

@@ -41,8 +41,8 @@ indVarName = expInfo.indVarName;
 eigVarName = expInfo.lname;
 sigma = expInfo.sigma;
 K = str2double(expInfo.K);
-% Extract information from the GUI fields
 rhsString = expInfo.rhsString;
+discretization = expInfo.discretization;
 
 % Are we working with a generalized eigenvalue problem?
 generalized = expInfo.generalized;
@@ -123,6 +123,9 @@ end
 % Do we want to show grid?
 options.grid = guifile.options.grid;
 
+% What discretization do we want?
+options.discretization = expInfo.discretization;
+
 % Change various GUI components (only need to bother with in GUI mode).
 if ( guiMode )
     set(handles.fig_sol, 'Visible', 'On');
@@ -132,15 +135,15 @@ end
 % Compute the eigenvalues!
 if ( generalized )
     if ( isempty(sigma) )
-        [V, D] = eigs(A, B, K);
+        [V, D] = eigs(A, B, K, options);
     else
-        [V, D] = eigs(A, B, K, sigma);
+        [V, D] = eigs(A, B, K, sigma, options);
     end
 else
     if ( isempty(sigma) )
-        [V, D] = eigs(A, K);
+        [V, D] = eigs(A, K, options);
     else
-        [V, D] = eigs(A, K, sigma);
+        [V, D] = eigs(A, K, sigma, options);
     end
 end
 

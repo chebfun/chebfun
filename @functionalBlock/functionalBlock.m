@@ -1,5 +1,5 @@
 classdef functionalBlock < linBlock
-%FUNCTIONALBLOCK  Linear map of function to scalar.
+%FUNCTIONALBLOCK  Class to convert linear map of function to scalar.
 %   This class is not intended to be called directly by the end user.
 %
 %   See also LINBLOCK, LINOP, CHEBOP, CHEBOPPREF.
@@ -50,15 +50,15 @@ classdef functionalBlock < linBlock
         %*   Functional composition, multiplication or application.
         %
         %   C = A*B, where A is a FUNCTIONALBLOCK and B is an OPERATORBLOCK,
-        %   returns the FUNCTIONALBLOCK C which is the the result of composing
+        %   returns the FUNCTIONALBLOCK C which is the result of composing
         %   the operators A and B.
         %
         %   C = A*B, or C = B*A,  where A is a FUNCTIONALBLOCK and B is a
-        %   scalar, returns the FUNCTIONALBLOCK C which is the the result of
+        %   scalar, returns the FUNCTIONALBLOCK C which is the result of
         %   multiplying A with B.
         %
         %   C = A*F, where A is a FUNCTIONALBLOCK and F is a CHEBFUN, returns
-        %   the CHEBFUN C which is the the result of applying A to F.
+        %   the CHEBFUN C which is the result of applying A to F.
 
 
             % Allow functional * scalar, but put the scalar first.
