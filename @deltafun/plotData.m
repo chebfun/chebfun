@@ -10,19 +10,39 @@ function data = plotData(f, g)
 
 %%
 if ( nargin == 1 )
-    g = [];
-end
-
-% Get plot data from the funPart
-if ( isempty(g) )
     data = plotData(f.funPart);
+    [xDelta, yDelta] = getDeltaData(f);    
 else
-    data = plotData(f.funPart, g.funPart);
+    % PLOT(F, G)
+    % Make sure f has no delta functions.
+    if ( isa(f, 'deltafun') )        
+        f = f.funPart;
+    end    
+    
+    if ( isa(g, 'deltafun') )
+        data = plotData(f, g.funPart);
+    else
+        data = plotData(f, g);        
+    end
+    [xDelta, yDelta] = getDeltaData(g);        
 end
 
-% Initialise fields for holding data:
-data.xDeltas = [];
-data.yDeltas = [];
+% Update data with delta functions:
+data.xDeltas = xDelta;
+data.yDeltas = yDelta;
+end
+
+function [xData, yData] = getDeltaData(f)
+% GETDELTADATA   Extract data for delta function plotting.
+
+% Initialize empty data:
+xData = [];
+yData = [];
+
+% Trivial case:
+if ( ~isa(f, 'deltafun') )
+    return;
+end
 
 % Handle delta functions (Derivatives of Delta-functions are not plotted):
 if ( ~isempty(f.deltaLoc) )
@@ -33,15 +53,10 @@ if ( ~isempty(f.deltaLoc) )
         % No zeroth order delta functions, return:
         return;
     else
-        % There are delta functions, prepare data for plotting:
-        deltaLoc = f.deltaLoc;
-        deltaMag = f.deltaMag;
-        
-        data.xDeltas = zeros(length(deltaLoc), 1);
-        data.xDeltas = deltaLoc.';
-        
-        data.yDeltas = zeros(length(deltaLoc), 1);
-        data.yDeltas = deltaMag(1, :).';
+        % There are delta functions, prepare data for plotting:                
+        xData = f.deltaLoc.';
+        % f.deltaMag is necessarily a row vector by now.
+        yData = f.deltaMag.';
     end
 end
     
