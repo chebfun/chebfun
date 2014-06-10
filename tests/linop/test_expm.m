@@ -1,6 +1,6 @@
 function pass = test_expm
 % TAD, 23 Jan 2014
-cheboppref.setDefaults('discretization',@colloc2);
+cheboppref.setDefaults('discretization',@ultraS);
 tol = 1e-9; 
 d = [-pi pi];
 x = chebfun('x',d);

@@ -25,13 +25,16 @@ else
     
     % This step implicitly uses the side conditions in order to lift a reduced
     % discretization to full size.
+    S = ultraS.convertmat(mRed, 0, 2 );
+    Strunc = ultraS.convertmat(mOrig, 0, 2); 
+    Strunc(end-1:end,:)=[];
     Q = [B ; P] \ [zeros(mOrig - mRed, mRed) ; eye(mRed)];
 
     % Propagator of the "reduced" variables: Lift to full size, apply original
     % operator, project down to reduced size, then exponentiate. 
     PA(1:size(B, 1),:) = [];
-    E = expm(t*PA*Q);
+    E =  expm( t * (S \ PA) * Q );
     
     % Propagator for the original variables: Reduce, propagate, lift. 
-    E = Q*E*P;
+    E = Q * E * P;
 end
