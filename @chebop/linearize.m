@@ -62,8 +62,10 @@ if ( nargin < 2 || isempty(u) )
 else
     if ( isa(u, 'chebmatrix') )
         nVars = size(u, 1);
-    else
+    elseif ( isa(u, 'chebfun') )
         nVars = numColumns(u);
+    else
+        nVars = numel(u);
     end
 end
 
