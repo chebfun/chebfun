@@ -241,8 +241,8 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
         % Basic linear plot for DELTAFUN objects.
         varargout = plot(f, varargin)
         
-        % Data for plotting a FUN
-        data = plotData(f, g);
+        % Data for plotting a DELTAFUN
+        data = plotData(f, g, h);
 
         % Addition of two DELTAFUN objects.
         f = plus(f, g)       
