@@ -52,10 +52,11 @@ normDelta =     dampingInfo.normDelta;
 normDeltaBar =  dampingInfo.normDeltaBar;
 normDeltaOld =  dampingInfo.normDeltaOld;
 deltaBar =      dampingInfo.deltaBar;
+x =             dampingInfo.x;
 
-% Hard code x into N.op so that we don't have to keep recomputing it:
-x = dampingInfo.x;
-N.op = @(varargin) N.op(x, varargin{:});
+% Determine how many arguments N.op expects, so that we know whether we need to
+% pass x or not:
+numberOfInputs = nargin(N);
 
 % Monitors whether we want to accept the current steplength:
 accept = 0;
@@ -99,8 +100,13 @@ while ( ~accept )
     
     % Take a trial step
     uTrial = u + lambda*delta;
+    
     % Evaluate the operator:
-    NopTrial = feval(N, uTrial);
+    if ( numberOfInputs < 2 )
+        NopTrial = feval(N, uTrial);
+    else
+        NopTrial = feval(N, x, uTrial);
+    end
     
     % If N.op was stacked horizontally (i.e., V4 syntax), then we need to
     % convert NopTrial to a CHEBMATRIX:

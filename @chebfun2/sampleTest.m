@@ -47,7 +47,7 @@ vFun = feval(f, xeval, yeval);
 
 
 % If the CHEBTECH evaluation differs from the op evaluation, SAMPLETEST failed:
-if ( all(max(abs(vOp - vFun)) > 100*tol) )
+if ( any(max(abs(vOp - vFun)) > 100*tol) )
     pass = false; % :(
 else
     pass = true;  % :)

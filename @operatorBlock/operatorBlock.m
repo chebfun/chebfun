@@ -69,7 +69,7 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
         function C = mrdivide(A, B)
         %*   Operator division by scalar.
         %   C = A/B,  where A is a OPERATORBLOCK and B is a scalar, returns the
-        %   OPERATORBLOCK C that is the the result of dividing A by B. If A and
+        %   OPERATORBLOCK C that is the result of dividing A by B. If A and
         %   B are anything other than an OPERATORBLOCK and a scalar, and error
         %   is thrown.
         %
@@ -88,15 +88,15 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
         function C = mtimes(A, B)
         %*   Operator composition, multiplication or application.
         %   C = A*B, where A is a OPERATORBLOCK and B is an OPERATORBLOCK, returns
-        %   the OPERATORBLOCK C that is the the result of composing the operators
+        %   the OPERATORBLOCK C that is the result of composing the operators
         %   A and B.
         %
         %   C = A*B, or C = B*A,  where A is a OPERATORBLOCK and B is a scalar,
-        %   returns the OPERATORBLOCK C that is the the result of multiplying A
+        %   returns the OPERATORBLOCK C that is the result of multiplying A
         %   with B.
         %
         %   C = A*F, where A is a OPERATORBLOCK and F is a CHEBFUN, returns the
-        %   CHEBFUN C which is the the result of applying A to F.
+        %   CHEBFUN C which is the result of applying A to F.
         %
         % See also MRDIVIDE.
         

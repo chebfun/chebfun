@@ -80,7 +80,7 @@ while ( ~terminate )
     
     % Compute a Newton update:
     [delta, disc] = linsolve(L, res, pref, vscale(u));
-    
+
     % We had two output arguments above, need to negate DELTA.
     delta = -delta;
 
@@ -225,20 +225,33 @@ function bcNorm = normBCres(N, u, x)
 % Initialize:
 bcNorm = 0;
 
+% If nargin(N) <= 2, but the dimension of the solution guess passed is greater
+% than 1, we are working with the @(x,u) [diff(u{1}) + u{2}; ...] syntax. Need
+% to make the code aware of this.
+if ( nargin(N) <= 2 && max(size(u)) > 1 )
+    cellArg = 1;
+else
+    cellArg = 0;
+end
+
 % Extract the blocks from the CHEBMATRIX U.
 uBlocks = u.blocks;
 
 % Evaluate left boundary condition(s):
 if ( ~isempty(N.lbc) )
     % Evaluate.
-    lbcU = N.lbc(uBlocks{:});
+    if ( cellArg )
+        lbcU = N.lbc(u);
+    else
+        lbcU = N.lbc(uBlocks{:});
+    end
     
     % The output might be a CHEBFUN, or a CHEBMATRIX
     if ( isa(lbcU, 'chebfun') )
         bcNorm = bcNorm + sum(feval(lbcU, N.domain(1)).^2);
     elseif ( isa(lbcU, 'chebmatrix') ) 
         % Loop through the components of LBCU.
-        for k = 1:numel(lbcU)
+        for k = 1:max(size(lbcU))
             % Obtain the kth element of the CHEBMATRIX
             lbcUk = lbcU{k};
             % Evaluate the function at the left endpoint
@@ -250,14 +263,18 @@ end
 % Evaluate right boundary condition(s):
 if ( ~isempty(N.rbc) )
     % Evaluate.
-    rbcU = N.rbc(uBlocks{:});
+    if ( cellArg )
+        rbcU = N.rbc(u);
+    else
+        rbcU = N.rbc(uBlocks{:});
+    end
     
     % The output might be a CHEBFUN, or a CHEBMATRIX
     if ( isa(rbcU, 'chebfun') )
         bcNorm = bcNorm + sum(feval(rbcU, N.domain(end)).^2);
     elseif ( isa(rbcU, 'chebmatrix') ) 
         % Loop through the components of RBCU.
-        for k = 1:numel(rbcU)
+        for k = 1:max(size(rbcU))
             % Obtain the kth element of the CHEBMATRIX
             rbcUk = rbcU{k};
             % Evaluate the function at the left endpoint

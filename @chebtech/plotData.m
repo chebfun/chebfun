@@ -39,7 +39,7 @@ len = max([length(f), length(g), length(h)]);
 npts = min(max(501, round(4*pi*len)), chebtech.techPref().maxPoints);
 
 % Initialise the output structure:
-data = struct('xLine', [], 'yLine', [], 'xPoints', [], 'yPoints', [], 'yLim', [inf -inf]);
+data = struct('xLine', [], 'yLine', [], 'xPoints', [], 'yPoints', [], 'yLim', []);
 if ( isempty(g) )       
     % PLOT(F):
     
@@ -50,6 +50,9 @@ if ( isempty(g) )
     % Values on the Cheyshev grid tied to the CHEBTECH F:
     data.xPoints = f.points();
     data.yPoints = f.coeffs2vals(f.coeffs);
+    
+    % yLim:
+    data.yLim = [min(data.yLine) max(data.yLine)];
 
 elseif ( isa(g, 'chebtech') )   
     % PLOT(F, G)

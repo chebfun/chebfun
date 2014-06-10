@@ -57,4 +57,4 @@ pass(13) = norm( feval(h5,x) - (x.^5-10*x.^3+15*x) ) < tol;
 
 h6 = hermpoly(6, 'prob'); 
 x = linspace(-1,1);
-pass(14) = norm( feval(h6,x) - (x.^6-15*x.^4+45*x.^2-15) ) < tol;
+pass(14) = norm( feval(h6,x) - (x.^6-15*x.^4+45*x.^2-15) ) < 10*tol;
