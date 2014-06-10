@@ -36,16 +36,36 @@ err(12) = norm(N(x, u, v) - Nuv);
 err(13) = norm(N(uv) - Nuv);
 err(14) = norm(N*uv - Nuv);
 
+%% Quasimatrix notation, part I:
+N = chebop(@(x, u) [diff(u{1}, 2) + cos(u{2}) ; diff(u{2}, 2) - sin(u{1})]);
+x = chebfun(@(x) x, [0 pi], pref);
+u = [sin(x) ; exp(x)];
+Nu = [diff(u{1}, 2) + cos(u{2}) ; diff(u{2}, 2) - sin(u{1})];
+err(15) = norm(feval(N, u) - Nu);
+err(16) = norm(feval(N, x, u) - Nu);
+err(17) = norm(N(u) - Nu);
+err(18) = norm(N(x, u) - Nu);
+err(19) = norm(N*u - Nu);
+
+%% Quasimatrix notation, part II:
+N = chebop(@(u) [diff(u{1}, 2) + cos(u{2}) ; diff(u{2}, 2) - sin(u{1})]);
+x = chebfun(@(x) x, [0 pi], pref);
+u = [sin(x) ; exp(x)];
+Nu = [diff(u{1}, 2) + cos(u{2}) ; diff(u{2}, 2) - sin(u{1})];
+err(20) = norm(feval(N, u) - Nu);
+err(21) = norm(N(u) - Nu);
+err(22) = norm(N*u - Nu);
+
 %% Feval with numerical input:
 % Primitive operator blocks
 [Z, I, D, C, M] = linop.primitiveOperators(dom);
 N = chebop(@(u) diff(u) + x.*u, dom);
 L = linop(D + M(x));
-err(15) = norm(N(6) - matrix(L, 6));
+err(23) = norm(N(6) - matrix(L, 6));
 
 N = chebop(@(x, u, v) [diff(u) + v ; diff(v) - sin(x).*u], dom);
 L = linop([D, I; -M(sin(x)), D]);
-err(16) = norm(N(6) - matrix(L, 6));
+err(24) = norm(N(6) - matrix(L, 6));
 %% Happy?
 
 tol = 1e-14;
