@@ -115,7 +115,7 @@ for i = 1:length(t)
         % Convert the different components into cells
         u = partition(disc, v);
         uFun = u(isFun);
-        scale = discu.scale( uFun ); % (max( cellfun(@max, uFun) );
+        scale = discu.scale( uFun );
         
         % Test the happieness of the function pieces:
         [isDone, epsLevel] = testConvergence(disc, uFun, scale, prefs);
