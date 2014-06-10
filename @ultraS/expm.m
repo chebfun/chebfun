@@ -25,9 +25,7 @@ else
     
     % This step implicitly uses the side conditions in order to lift a reduced
     % discretization to full size.
-    S = ultraS.convertmat(mRed, 0, 2 );
-    Strunc = ultraS.convertmat(mOrig, 0, 2); 
-    Strunc(end-1:end,:)=[];
+    S = ultraS.convertmat(mRed, 0, disc.outputSpace );
     Q = [B ; P] \ [zeros(mOrig - mRed, mRed) ; eye(mRed)];
 
     % Propagator of the "reduced" variables: Lift to full size, apply original

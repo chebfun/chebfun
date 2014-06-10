@@ -105,7 +105,7 @@ for i = 1:length(t)
         do = max(do, [], 1);
         for k = 1:numel(u0.blocks)
             discu.dimension = disc.dimension + do(k);
-            f.blocks{k} = discu.toValues(u0.blocks{k});
+            f.blocks{k} = discu.toValues(u0.blocks{k},1);
         end
         v0 = cell2mat(f.blocks);  
         
@@ -115,7 +115,7 @@ for i = 1:length(t)
         % Convert the different components into cells
         u = partition(disc, v);
         uFun = u(isFun);
-        scale = max( cellfun(@max, uFun) );
+        scale = discu.scale( uFun ); % (max( cellfun(@max, uFun) );
         
         % Test the happieness of the function pieces:
         [isDone, epsLevel] = testConvergence(disc, uFun, scale, prefs);
