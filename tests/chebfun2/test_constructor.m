@@ -57,4 +57,10 @@ pass(10) = norm( r - chebpoly2(chebfun2(r, 'coeffs')) ) < 10*tol;
 r = rand(4);
 pass(11) = norm( r - chebpolyval2(chebfun2(r)) ) < 10*tol;
 
+g = @(x,y) exp(-((x+pi).^2+y.^2)./max(1 - ((x+pi).^2 + y.^2),0));
+f = chebfun2(g,[-pi,pi,-pi,pi]);
+[xx,yy] = meshgrid(linspace(-pi,pi,1001));
+err = g(xx,yy)-f(xx,yy);
+pass(12) = ( norm(err(:),inf ) < 2e7*tol );
+
 end
