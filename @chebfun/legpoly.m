@@ -42,7 +42,7 @@ function out = legpolyPiecewise(f, n)
 %
 % If F is non-trivial (e.g., contains exponents or a non-linear map), then the
 % coefficients are computed by creating a LEGPOLY quasimatrix and computing the
-% inner-products using CHEBFUN/MTIMES(). This can be significatnly slower than
+% inner-products using CHEBFUN/MTIMES(). This can be significantly slower than
 % the above.
 
 % Domain:
@@ -76,7 +76,7 @@ if ( isSimple )
         % Compute the first two inner-products by hand:
         out(1,:) = out(1,:) + sum(diag(w)*vals);
         out(2,:) = out(2,:) + sum(diag(w.*z.')*vals);
-        % Evaluate Legendre-Vandermonde matrix by recureence relation:
+        % Evaluate Legendre-Vandermonde matrix by recurrence relation:
         Pm2 = 1; Pm1 = z;
         for kk = 1:n-2
             P = (2-1/(kk+1))*Pm1.*z - (1-1/(kk+1))*Pm2;

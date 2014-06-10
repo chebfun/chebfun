@@ -34,7 +34,7 @@ lambdaTreeRight = [];
 treeCenter = treeIn.center;
 
 % Check whether we have a syntax tree to the left. If so, look recursively for
-% LAMBDA in the there.
+% LAMBDA in there.
 if ( isfield(treeIn, 'left') )
     [newLeft, lambdaTreeLeft, lambdaSign] = findLambda(treeIn.left, lambdaSign);
     newTree.left = newLeft;
@@ -42,7 +42,7 @@ if ( isfield(treeIn, 'left') )
 end
 
 % Check whether we have a syntax tree to the right. If so, look recursively for
-% LAMBDA in the there.
+% LAMBDA in there.
 if ( isfield(treeIn, 'right') )
     [newRight, lambdaTreeRight, lambdaSign] = findLambda(treeIn.right, ...
         lambdaSign);
