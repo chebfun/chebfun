@@ -331,7 +331,7 @@ if ( all(isfinite(xLim)) )
     if ( holdState )
         xLim = [min(xLimCurrent(1), xLim(1)), max(xLimCurrent(2), xLim(2))];
     end
-
+    
     set(gca, 'xlim', sort(xLim))
 end
 
@@ -342,8 +342,9 @@ if ( all(isfinite(yLim)) )
     if ( holdState )
         yLim = [min(yLimCurrent(1), yLim(1)), max(yLimCurrent(2), yLim(2))];
     end
-
-    set(gca, 'ylim', sort(yLim))
+    
+    % TODO: Fix this. urgently.
+%     set(gca, 'ylim', sort(yLim))
 end
 
 % Return hold state to what it was before:
