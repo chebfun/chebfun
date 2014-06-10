@@ -337,7 +337,13 @@ if ( all(isfinite(yLim)) )
         yLim = [min(yLimCurrent(1), yLim(1)), max(yLimCurrent(2), yLim(2))];
     end
     
-    set(gca, 'ylim', sort(yLim))
+    yLim = sort(yLim);
+    
+    % Give some extra space at the top and the bottom:
+    spaceHeight = diff(yLim)/10;
+    yLim = [yLim(1)-spaceHeight yLim(2)+spaceHeight];
+    
+    set(gca, 'ylim', yLim)
 end
 
 % Return hold state to what it was before:
@@ -375,5 +381,3 @@ for k = 1:numel(startLoc)-1
 end
 
 end
-
-
