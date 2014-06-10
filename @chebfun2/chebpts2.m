@@ -29,8 +29,14 @@ if ( nargin == 1 )
     ny = nx; 
 end
 
-x = chebpts( nx, D(1:2) );   % x grid.
-y = chebpts( ny, D(3:4) );   % y grid
+tech = chebfunpref().tech(); 
+
+x = tech.chebpts(nx); 
+y = tech.chebpts(ny); 
+
+% scale to domain: 
+x = (D(2) - D(1))/2*(x+1) + D(1); 
+y = (D(4) - D(3))/2*(y+1) + D(3); 
 [xx, yy] = meshgrid(x, y);   % Tensor product. 
 
 end 

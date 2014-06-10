@@ -1,4 +1,4 @@
-function pass = test_padua(pref)
+function pass = test_padua( pref )
 
 if ( nargin == 0 )
     pref = chebfunpref();

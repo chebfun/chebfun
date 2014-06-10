@@ -1,6 +1,10 @@
 function varargout = plot(varargin)
 %PLOT   Basic linear plot for CHEBFUN objects.
-%   PLOT(F) plots the CHEBFUN object F.
+%   PLOT(F) plots the CHEBFUN object F in the interval where it is defined. If F
+%   is complex valued, PLOT(F) is equivalent to PLOT(real(F), imag(F)).
+%
+%   PLOT(F, G) plots the CHEBFUN G versus the CHEBFUN F. Quasimatrices and
+%   array-valued CHEBUFUN objects are also supported in the natural way.
 %
 %   PLOT(F, S) allows various line types, plot symbols, and colors to be used
 %   when S is a character string made from one element from any or all the
@@ -317,11 +321,8 @@ else
 end
 
 if ( ~isempty(deltaStyle) )
-    set(h4, deltaStyle{:}, 'ShowBaseLine', 'off');
-else
-    set(h4, 'ShowBaseLine', 'off')
-end
-    
+    set(h4, deltaStyle{:});
+end    
 
 %% 
 % Set the X-limits if appropriate values have been suggested:
@@ -331,7 +332,7 @@ if ( all(isfinite(xLim)) )
     if ( holdState )
         xLim = [min(xLimCurrent(1), xLim(1)), max(xLimCurrent(2), xLim(2))];
     end
-
+    
     set(gca, 'xlim', sort(xLim))
 end
 
@@ -342,8 +343,9 @@ if ( all(isfinite(yLim)) )
     if ( holdState )
         yLim = [min(yLimCurrent(1), yLim(1)), max(yLimCurrent(2), yLim(2))];
     end
-
-    set(gca, 'ylim', sort(yLim))
+    
+    % TODO: Fix this. urgently.
+%     set(gca, 'ylim', sort(yLim))
 end
 
 % Return hold state to what it was before:
@@ -365,6 +367,7 @@ function h = mystem(varargin)
 % PLOT does. An alternative option would be to write our own version of STEM.
 
 h = [];
+j = 1;
 % Separate out each individual plot by looking for two consecutive doubles.
 isDouble = cellfun(@isnumeric, varargin);
 startLoc = [1 find([0 diff(isDouble)] == 1 & [diff(isDouble) 0] == 0) nargin+1];
@@ -374,7 +377,9 @@ for k = 1:numel(startLoc)-1
     if ( all(isnan(data{1})) )
         continue
     end
-    h(k) = stem(data{:}, 'fill');    
+    h(j) = stem(data{:}, 'fill');
+    set(h(j), 'ShowBaseLine', 'off')
+    j = j + 1;
 end
 
 end

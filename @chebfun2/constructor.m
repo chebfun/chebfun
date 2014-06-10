@@ -39,8 +39,7 @@ if ( nargin < 3 || isempty(domain) )
 end
 
 if ( nargin > 3 && isa(varargin{1}, 'chebfunpref') )
-    defaults = chebfunpref();
-    pref = chebfunpref.mergePrefs(defaults, varargin{1});
+    pref = chebfunpref(varargin{1});
 else
     pref = chebfunpref();
 end
@@ -56,15 +55,17 @@ if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
         g = chebfun2( op, varargin{:} );
         return
     elseif ( any(strcmpi(domain, 'padua')) )
-        [ignored, op] = chebfun2.paduaVals2coeffs( op );
-        g = chebfun2( op );
+        op = chebfun2.paduaVals2coeffs( op );
+        op = chebfun2.coeffs2vals( op );
+        g = chebfun2( op, 'coeffs' );
         return        
     elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, 'coeffs'))) )
         op = chebfun2.coeffs2vals( op );
         g = chebfun2( op, domain );
         return
     elseif ( (nargin > 3) && (any(strcmpi(varargin{1}, 'padua'))) )
-        [ignored, op] = chebfun2.paduaVals2coeffs( op, domain );
+        op = chebfun2.paduaVals2coeffs( op, domain );
+        op = chebfun2.coeffs2vals( op );
         g = chebfun2( op, domain );
         return        
     else
@@ -86,7 +87,7 @@ if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
         tol = grid.^(2/3) * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
         
         % Perform GE with complete pivoting:
-        [pivotValue, ignored, rowValues, colValues] = CompleteACA(op, tol);
+        [pivotValue, ignored, rowValues, colValues] = CompleteACA(op, tol, 0);
         
         % Construct a CHEBFUN2:
         g.pivotValues = pivotValue;
@@ -149,6 +150,17 @@ sampleTest = prefStruct.sampleTest;
 % TODO: This should probably be taken from the techPref prefences?
 minsample = 17;   % minsample
 
+% Go find out what tech I'm based on:
+tech = chebfunpref().tech();
+
+factor = 4;  % grid to rank ratio.
+if ( isa(tech, 'fourtech') ) 
+    minsample = 8; 
+end
+if ( isa(tech, 'chebtech1') )
+    factor = 5; 
+end
+
 % If the vectorize flag is off, do we need to give user a warning?
 if ( vectorize == 0 ) % another check
     % Check for cases: @(x,y) x*y, and @(x,y) x*y'
@@ -169,13 +181,14 @@ if ( vectorize == 0 ) % another check
     end
 end
 
+factor = 4;  % ratio between size of matrix and no. pivots. 
 isHappy = 0; % If we are currently unresolved. 
 Failure = 0; % Reached max discretization size without being happy. 
 while ( ~isHappy && ~Failure )
     grid = minsample; 
     
     % Sample function on a Chebyshev tensor grid:
-    [xx, yy] = chebfun2.chebpts2(grid, grid, domain);
+    [xx, yy] = points2D(grid, grid, domain);
     vals = evaluate(op, xx, yy, vectorize);
     
     % Does the function blow up or evaluate to NaN?:
@@ -191,20 +204,20 @@ while ( ~isHappy && ~Failure )
     
     %%% PHASE 1: %%%
     % Do GE with complete pivoting:
-    [pivotValue, pivotPosition, rowValues, colValues, iFail] = CompleteACA(vals, tol);
+    [pivotValue, pivotPosition, rowValues, colValues, iFail] = CompleteACA(vals, tol, factor);
     
     strike = 1;
     % grid <= 4*(maxRank-1)+1, see Chebfun2 paper. 
-    while ( iFail && grid <= 4*(maxRank-1)+1 && strike < 3)
-        % Double sampling on tensor grid:
-        grid = 2^( floor( log2( grid ) ) + 1) + 1;
-        [xx, yy] = chebfun2.chebpts2(grid, grid, domain);
+    while ( iFail && grid <= factor*(maxRank-1)+1 && strike < 3)
+        % Refine sampling on tensor grid:
+        grid = gridRefine( grid );
+        [xx, yy] = points2D(grid, grid, domain);
         vals = evaluate(op, xx, yy, vectorize); % resample
         vscale = max(abs(vals(:)));
         % New tolerance:
         tol = grid.^(2/3) * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
         % New GE:
-        [pivotValue, pivotPosition, rowValues, colValues, iFail] = CompleteACA(vals, tol);
+        [pivotValue, pivotPosition, rowValues, colValues, iFail] = CompleteACA(vals, tol, factor);
         % If the function is 0+noise then stop after three strikes.
         if ( abs(pivotValue(1))<1e4*vscale*tol )
             strike = strike + 1;
@@ -212,7 +225,7 @@ while ( ~isHappy && ~Failure )
     end
     
     % If the rank of the function is above maxRank then stop.
-    if ( grid > 4*(maxRank-1)+1 )
+    if ( grid > factor*(maxRank-1)+1 )
         warning('CHEBFUN2:CTOR', 'Not a low-rank function.');
         Failure = 1; 
     end
@@ -241,26 +254,23 @@ while ( ~isHappy && ~Failure )
     while ( ~isHappy )
         if ( ~resolvedCols )
             % Double sampling along columns
-            n = 2^( floor( log2( n ) ) + 1) + 1;
-            [xx, yy] = meshgrid(PivPos(:, 1), chebpts(n, domain(3:4)));
+            [n, nesting] = gridRefine( n );
+            [xx, yy] = meshgrid(PivPos(:, 1), mypoints(n, domain(3:4)));
             colValues = evaluate(op, xx, yy, vectorize);
             % Find location of pivots on new grid (using nesting property).
-            oddn = 1:2:n;
-            PP(:, 1) = oddn(PP(:, 1));
+            PP(:, 1) = nesting(PP(:, 1));
         else
-            [xx, yy] = meshgrid(PivPos(:, 1), chebpts(n, domain(3:4)));
+            [xx, yy] = meshgrid(PivPos(:, 1), mypoints(n, domain(3:4)));
             colValues = evaluate(op, xx, yy, vectorize);
         end
         if ( ~resolvedRows )
-            % Double sampling along rows
-            m = 2^( floor( log2( m ) ) + 1 ) + 1;
-            [xx, yy] = meshgrid(chebpts(m, domain(1:2)), PivPos(:, 2));
+            [m, nesting] = gridRefine( m );
+            [xx, yy] = meshgrid(mypoints(m, domain(1:2)), PivPos(:, 2));
             rowValues = evaluate(op, xx, yy, vectorize);
             % find location of pivots on new grid  (using nesting property).
-            oddm = 1:2:m;
-            PP(:, 2) = oddm(PP(:, 2));
+            PP(:, 2) = nesting(PP(:, 2));
         else
-            [xx, yy] = meshgrid(chebpts(m, domain(1:2)), PivPos(:, 2));
+            [xx, yy] = meshgrid(mypoints(m, domain(1:2)), PivPos(:, 2));
             rowValues = evaluate(op, xx, yy, vectorize);
         end
         
@@ -280,11 +290,11 @@ while ( ~isHappy && ~Failure )
         
         % Are the columns and rows resolved now?
         if ( ~resolvedCols )
-            colChebtech = chebtech2(sum(colValues,2));
+            colChebtech = tech.make(sum(colValues,2));
             resolvedCols = happinessCheck(colChebtech,[],sum(colValues,2));
         end
         if ( ~resolvedRows )
-            rowChebtech = chebtech2(sum(rowValues.',2));
+            rowChebtech = tech.make(sum(rowValues.',2));
             resolvedRows = happinessCheck(rowChebtech,[],sum(rowValues.',2));
         end
         isHappy = resolvedRows & resolvedCols;
@@ -324,7 +334,7 @@ while ( ~isHappy && ~Failure )
         pass = g.sampleTest( sampleOP, tol, vectorize);
         if ( ~pass )
             % Increase minsamples and try again.
-            minsample = 2^( floor( log2( minsample ) ) + 1) + 1;
+            minsample = gridRefine( minsample );
             isHappy = 0;
         end
     end
@@ -336,7 +346,7 @@ g = fixTheRank( g , fixedRank );
 
 end
 
-function [pivotValue, pivotElement, rows, cols, ifail] = CompleteACA(A, tol)
+function [pivotValue, pivotElement, rows, cols, ifail] = CompleteACA(A, tol, factor)
 % Adaptive Cross Approximation with complete pivoting. This command is
 % the continuous analogue of Gaussian elimination with complete pivoting.
 % Here, we attempt to adaptively find the numerical rank of the function.
@@ -347,7 +357,6 @@ width = min(nx, ny);        % Use to tell us how many pivots we can take.
 pivotValue = zeros(1);      % Store an unknown number of Pivot values.
 pivotElement = zeros(1, 2); % Store (j,k) entries of pivot location.
 ifail = 1;                  % Assume we fail.
-factor = 4*(tol > 0);       % ratio between size of matrix and no. pivots. If tol = 0, then do full no. of steps.
 
 % Main algorithm
 zRows = 0;                  % count number of zero cols/rows.
@@ -482,3 +491,70 @@ end
 
 end
 
+function [xx, yy] = points2D(m, n, dom)
+% Get the sample points that correspond to the right grid for a particular
+% technology.
+
+% What tech am I based on?:
+tech = chebfunpref().tech();
+
+if ( isa(tech, 'chebtech2') )
+    x = chebpts( m, dom(1:2), 2 );   % x grid.
+    y = chebpts( n, dom(3:4), 2 ); 
+    [xx, yy] = meshgrid( x, y ); 
+elseif ( isa(tech, 'chebtech1') )
+    x = chebpts( m, dom(1:2), 1 );   % x grid.
+    y = chebpts( n, dom(3:4), 1 ); 
+    [xx, yy] = meshgrid( x, y ); 
+elseif ( isa(tech, 'fourtech') )
+    x = fourierpts( m, dom(1:2) );   % x grid.
+    y = fourierpts( n, dom(3:4) );
+    [xx, yy] = meshgrid( x, y );
+else
+    error('CHEBFUN2:POINTS2D', 'Unrecognized technology');
+end
+
+end
+
+function x = mypoints(n, dom)
+% Get the sample points that correspond to the right grid for a particular
+% technology.
+
+% What tech am I based on?:
+tech = chebfunpref().tech();
+
+if ( isa(tech, 'chebtech2') )
+    x = chebpts( n, dom, 2 );   % x grid.
+elseif ( isa(tech, 'chebtech1') )
+    x = chebpts( n, dom, 1 );   % x grid.
+elseif ( isa(tech, 'fourtech') )
+    x = fourierpts( n, dom );   % x grid.
+else
+    error('CHEBFUN2:PTS', 'Unrecognized technology');
+end
+
+end
+
+
+function [grid, nesting] = gridRefine( grid )
+% Hard code grid refinement strategy for tech. 
+
+% What tech am I based on?:
+tech = chebfunpref().tech();
+
+% What is the next grid size?
+if ( isa(tech, 'chebtech2') )
+    % Double sampling on tensor grid:
+    grid = 2^( floor( log2( grid ) ) + 1) + 1;
+    nesting = 1:2:grid; 
+elseif ( isa(tech, 'fourtech') )
+    % Double sampling on tensor grid:
+    grid = 2^( floor( log2( grid ) + 1 ));
+    nesting = 1:2:grid;
+elseif ( isa(tech, 'chebtech1' ) )
+    grid = 3 * grid; 
+    nesting = 2:3:grid; 
+else
+    error('CHEBFUN2:TECHTYPE','Technology is unrecognized.');
+end
+end

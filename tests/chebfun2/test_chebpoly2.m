@@ -16,12 +16,6 @@ X = chebpoly2( f );
 Exact = zeros(11); Exact(1,1) = 1; Exact(3,1) = 1; 
 pass(j) = norm( X - Exact ) < tol; j = j + 1; 
 
-% check vals2coeffs
-[xx, yy] = chebfun2.chebpts2( 11 ); 
-vals = feval(f, xx, yy);
-Y = chebfun2.vals2coeffs( vals );
-pass(j) = norm( Y - Exact ) < tol; j = j + 1; 
-
 % check inverses
 Z = chebfun2.vals2coeffs( chebpolyval2( f ) );
 pass(j) = norm( Z - Exact ) < tol; j = j + 1; 

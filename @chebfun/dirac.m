@@ -8,7 +8,7 @@ function d = dirac(f, varargin)
 % DIRAC(F) is not defined if F has a zero of order greater than one within the
 % domain of F.
 %
-% If F has break-points, they should not coinicde with the roots of F. However,
+% If F has break-points, they should not coincide with the roots of F. However,
 % F can have simple roots at either end points of its domain.
 %
 % See also HEAVISIDE.

@@ -43,6 +43,7 @@ data.exponents = [0 c];
 data.singType = {'none', 'root'};
 f = singfun(@(x) (1-x).^c.*cos(x), data, pref);
 [y, x] = minandmax(f);
+
 % The exact maximum value and its location is found using Mathematica.
 y_exact = [0; 1.511345730595468];
 x_exact = [1; -0.6575681557708653];
@@ -51,11 +52,14 @@ x_err = x - x_exact;
 pass(3) = (norm(y_err, inf) < 1e2*get(f, 'epslevel')*f.smoothPart.vscale &&...
     norm(x_err, inf) < 1e2*get(f, 'epslevel')*f.smoothPart.vscale);
 
+p = pref;
+p.eps = max(pref.eps, 1e-14);
 % no fractional pole but a root at the left endpoint.
 data.exponents = [0 1+b];
 data.singType = {'none', 'root'};
 f = singfun(@(x) (1-x).^b.*(exp(x)-exp(1)), data, pref);
 [y, x] = minandmax(f);
+
 % The following exact answers are obtained using Mathematica.
 y_exact = [-1.727141310139675; 0];
 x_exact = [0.1651705232378299; 1];
@@ -69,6 +73,7 @@ data.exponents = [b c];
 data.singType = {'sing', 'root'};
 f = singfun(@(x) (1+x).^b.*sin(x).*(1-x).^c, data, pref);
 [y, x] = minandmax(f);
+
 % The exact maximum value and its location is found using Mathematica.
 y_exact = [-Inf; 0.1636938399751735];
 x_exact = [-1; 0.3776091222310658];

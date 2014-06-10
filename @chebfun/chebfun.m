@@ -120,7 +120,7 @@ classdef chebfun
         domain              % (1x(K+1) double)
 
         % FUNS is a cell array containing the FUN objects that comprise a
-        % piecewise CHEBFUN. The the kth entry in this cell is the FUN defining
+        % piecewise CHEBFUN. The kth entry in this cell is the FUN defining
         % the representation used by the CHEBFUN object on the open interval
         % (F.DOMAIN(k), F.DOMAIN(k+1)). If M = size(f.funs, 2) is greater than
         % 1, then the CHEBFUN object is referred to as "array valued".
@@ -590,6 +590,9 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
             % Hack to support construction from coefficients.
             op = {{[], op}};
             args(1) = [];
+        elseif ( strcmpi(args{1}, 'coeffs') && iscell(op) )
+            error('CHEBFUN:parseInputs:coeffcell', ...
+                'Cannot construct CHEBFUN from a cell array of coefficidnts.');
         elseif ( strcmpi(args{1}, 'trunc') )
             % Pull out this preference, which is checked for later.
             keywordPrefs.enableBreakpointDetection = true;
@@ -641,8 +644,8 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
             % Store exponents.
             data.exponents = args{2};
             args(1:2) = [];
-        elseif ( any(strcmpi(args{1}, {'chebkind', 'kind'})) )
-            % Translate "chebkind" and "kind" --> "techPrefs.gridType".
+        elseif ( any(strcmpi(args{1}, 'chebkind')) )
+            % Translate "chebkind" and "kind" --> "tech.@chebtech".
             if ( (isnumeric(args{2}) && (args{2} == 1)) || ...
                      (ischar(args{2}) && strncmpi(args{2}, '1st', 1)) )
                 keywordPrefs.tech = @chebtech1;
@@ -651,7 +654,7 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
                 keywordPrefs.tech = @chebtech2;
             else
                 error('CHEBFUN:constructor:parseInputs', ...
-                    'Invalid value for ''chebkind''/''kind'' option.');
+                    'Invalid value for ''chebkind'' option.');
             end
             args(1:2) = [];
         else

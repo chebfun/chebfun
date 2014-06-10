@@ -199,7 +199,7 @@ gVals = feval(g, x);
 opg = @(x) 5*x.^2/2 - 5/2 + get(g, 'lval');
 gExact = opg(x);
 err = norm(gVals - gExact, inf);
-tol = 20*get(g,'epslevel').*get(g,'vscale');
+tol = 100*get(g,'epslevel').*get(g,'vscale');
 pass(14) = err < tol;
 
 %% Piecewise function on [-inf b]:
@@ -225,7 +225,7 @@ g1Exact = opg1(x1);
 g2Exact = opg2(x2);
 err1 = g1Vals - g1Exact;
 err2 = g2Vals - g2Exact;
-pass(15) = norm([err1 ; err2], inf) < 5e3*get(g,'epslevel').*get(g,'vscale');
+pass(15) = norm([err1 ; err2], inf) < 5e4*get(g,'epslevel').*get(g,'vscale');
 
 % [TODO]:  Check fractional antiderivatives once implemented.
 

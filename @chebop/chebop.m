@@ -11,9 +11,24 @@ classdef (InferiorClasses = {?double}) chebop
 %
 % Examples of N.OP:
 %
-%   @(x, u) x.*diff(u) + u;                             % one dependent variable
-%   @(x, u, v, w) [ u.*diff(v) ; diff(u,2)+w; diff(w)-v ];    % 3 dependent vars
-%   @(u) diff(u,2) - exp(u);                  % no explicit independent variable
+%   One dependent variable:
+%       @(x, u) x.*diff(u) + u;
+%   No explicit independent variable:
+%       @(u) diff(u,2) - exp(u);
+%   Three dependent variables:
+%       @(x, u, v, w) [ u.*diff(v) ; diff(u, 2) + w; diff(w) - v ];
+%   Three dependent variables, chebmatrix syntax:
+%       @(x, u) [ u{1}.*diff(u{2}) ; diff(u{1}, 2) + u{3}; diff(u{3}) - u{2} ];
+%   Function handle to a function defined in an .m-file:
+%       @myOperator
+%
+% Note that when N.OP has two or more input arguments, the first one _MUST_ be
+% the independent variable. When N.OP is specified as a function handle to a
+% method specified in an .m-file, like in the last example above, and that
+% function uses the CHEBMATRIX notation, e.g. diff(u{1}) + u{2}), it is
+% necessary to either pass an initial guess to the operator via N.INIT (see
+% below), or specify the number of variables that the operator operates on via
+% N.NUMVARS.
 %
 % The number of elements in the output CHEBMATRIX should typically equal the
 % number of dependent variables, whether specified as names or CHEBMATRIX
@@ -46,7 +61,8 @@ classdef (InferiorClasses = {?double}) chebop
 %
 %   @(u) diff(u) - 2;               % set u' = 2 at the appropriate endpoint
 %   @(u, v, w) [ u - 1 ; w ];       % set u = 1 and w = 0 at the endpoint
-%   @(u, v, w) u.*v - diff(w)       % set u*v = w' at the endpoint
+%   @(u) [u{1} - 1; u{3}];          % Same as above, using CHEBMATRIX syntax.
+%   @(u, v, w) u.*v - diff(w);      % set u*v = w' at the endpoint
 %
 % CHEBOP(OP, D, BC) gives boundary or other side conditions in an alternate
 % form. Choices for BC are:
@@ -127,6 +143,7 @@ classdef (InferiorClasses = {?double}) chebop
         rbc = [];       % Right boundary condition(s)
         bc = [];        % Other/internal/mixed boundary conditions
         init = [];      % Initial guess of a solution
+        numVars = [];   % Number of variables the the CHEBOP operates on.
     end
     
     %% CONSTRUCTOR:
