@@ -88,7 +88,7 @@ if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
         tol = grid.^(2/3) * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
         
         % Perform GE with complete pivoting:
-        [pivotValue, ignored, rowValues, colValues] = CompleteACA(op, tol);
+        [pivotValue, ignored, rowValues, colValues] = CompleteACA(op, tol, 0);
         
         % Construct a CHEBFUN2:
         g.pivotValues = pivotValue;
@@ -182,6 +182,7 @@ if ( vectorize == 0 ) % another check
     end
 end
 
+factor = 4;  % ratio between size of matrix and no. pivots. 
 isHappy = 0; % If we are currently unresolved. 
 Failure = 0; % Reached max discretization size without being happy. 
 while ( ~isHappy && ~Failure )
@@ -204,7 +205,7 @@ while ( ~isHappy && ~Failure )
     
     %%% PHASE 1: %%%
     % Do GE with complete pivoting:
-    [pivotValue, pivotPosition, rowValues, colValues, iFail] = CompleteACA(vals, tol);
+    [pivotValue, pivotPosition, rowValues, colValues, iFail] = CompleteACA(vals, tol, factor);
     
     strike = 1;
     % grid <= 4*(maxRank-1)+1, see Chebfun2 paper. 
@@ -217,7 +218,7 @@ while ( ~isHappy && ~Failure )
         % New tolerance:
         tol = grid.^(2/3) * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
         % New GE:
-        [pivotValue, pivotPosition, rowValues, colValues, iFail] = CompleteACA(vals, tol);
+        [pivotValue, pivotPosition, rowValues, colValues, iFail] = CompleteACA(vals, tol, factor);
         % If the function is 0+noise then stop after three strikes.
         if ( abs(pivotValue(1))<1e4*vscale*tol )
             strike = strike + 1;
@@ -346,7 +347,7 @@ g = fixTheRank( g , fixedRank );
 
 end
 
-function [pivotValue, pivotElement, rows, cols, ifail] = CompleteACA(A, tol)
+function [pivotValue, pivotElement, rows, cols, ifail] = CompleteACA(A, tol, factor)
 % Adaptive Cross Approximation with complete pivoting. This command is
 % the continuous analogue of Gaussian elimination with complete pivoting.
 % Here, we attempt to adaptively find the numerical rank of the function.
@@ -357,7 +358,6 @@ width = min(nx, ny);        % Use to tell us how many pivots we can take.
 pivotValue = zeros(1);      % Store an unknown number of Pivot values.
 pivotElement = zeros(1, 2); % Store (j,k) entries of pivot location.
 ifail = 1;                  % Assume we fail.
-factor = 4*(tol > 0);       % ratio between size of matrix and no. pivots. If tol = 0, then do full no. of steps.
 
 % Main algorithm
 zRows = 0;                  % count number of zero cols/rows.

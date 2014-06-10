@@ -18,7 +18,7 @@ x = chebfun('x',d);
 f = [ 0*x ; 0*x ];
 
 pref.discretization = @colloc2;
-u12 = mldivide(A, f, pref);
+[u12, info] = solvebvp(A, f, pref);
 
 u1 = u12{1}; u2 = u12{2};
 
@@ -26,7 +26,7 @@ u1 = u12{1}; u2 = u12{2};
 bcFunLeft = chebfun(A.lbc(u1,u2));
 bcFunRight = chebfun(A.rbc(u1,u2));
 
-pass(1) = norm( chebfun(A(x, u1, u2))) < tol;
+pass(1) = info.error < tol;
 pass(2) = norm(bcFunLeft(d(1))) < tol && norm(bcFunRight(d(end))) < tol;
 
 %% Try with ultraS

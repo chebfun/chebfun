@@ -124,6 +124,8 @@ elseif ( nargin == 2 )
         data.yPoints = [data.yPoints ; yNaN ; dataNew.yPoints];
         data.xJumps = [data.xJumps ; dataNew.xJumps];
         data.yJumps = [data.yJumps ; dataNew.yJumps];
+        data.xDeltas = [data.xDeltas; dataNew.xDeltas];
+        data.yDeltas = [data.yDeltas; dataNew.yDeltas];
     end
     
 else
