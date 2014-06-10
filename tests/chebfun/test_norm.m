@@ -201,5 +201,13 @@ pExact = 0.851504493224078;  % This is obtained using Matlab symbolic toolbox.
 err = p - pExact;
 % The tolerance below is loosen to allow certain spurious roots:
 pass(32) = abs(err) < 1e-2;
-    
+
+%% #578
+f = chebfun(@(x) cos(x)./(1e5+(x-30).^6),[0 inf]);
+I = norm(f);
+% The following result is obtained using Mathematica:
+Iexact = 2.4419616835794597e-5;
+err = abs(I - Iexact);
+pass(33) = ( err < 1e2*vscale(f)*epslevel(f) );
+
 end
