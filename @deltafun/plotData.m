@@ -3,19 +3,28 @@ function data = plotData(f, g)
 %   DATA = PLOTDATA(F) extracts PLOTDATA of the funPart of F
 %   and then appends to it by the data used for delta function plotting.
 %
+%   DATA = PLOTDATA(F, G) is similar.
+%
 % See also FUN/PLOTDATA.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% TODO: Support PLOT3(f, g, h).
+
 %%
 if ( nargin == 1 )
     data = plotData(f.funPart);
-    [xDelta, yDelta] = getDeltaData(f);    
+    [xDelta, yDelta] = getDeltaData(f); 
+    
 else
     % PLOT(F, G)
     % Make sure f has no delta functions.
-    if ( isa(f, 'deltafun') )        
+    if ( isa(f, 'deltafun') )  
+        if ( ~isempty(f.deltaMag) )
+            warning('CHEBFUN:deltafun:plot', ...
+                'Deltas in plot(f, g) are ignored.')
+        end
         f = f.funPart;
     end    
     
@@ -24,16 +33,20 @@ else
     else
         data = plotData(f, g);        
     end
-    [xDelta, yDelta] = getDeltaData(g);        
+    
+    [xDelta, yDelta] = getDeltaData(g);    
+    xDelta = feval(f, xDelta);
+    
 end
 
-% Update data with delta functions:
+% Update data struct with delta functions:
 data.xDeltas = xDelta;
 data.yDeltas = yDelta;
+
 end
 
 function [xData, yData] = getDeltaData(f)
-% GETDELTADATA   Extract data for delta function plotting.
+%GETDELTADATA   Extract data for delta function plotting.
 
 % Initialize empty data:
 xData = [];

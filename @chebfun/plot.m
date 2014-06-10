@@ -1,6 +1,10 @@
 function varargout = plot(varargin)
 %PLOT   Basic linear plot for CHEBFUN objects.
-%   PLOT(F) plots the CHEBFUN object F.
+%   PLOT(F) plots the CHEBFUN object F in the interval where it is defined. If F
+%   is complex valued, PLOT(F) is equivalent to PLOT(real(F), imag(F)).
+%
+%   PLOT(F, G) plots the CHEBFUN G versus the CHEBFUN F. Quasimatrices and
+%   array-valued CHEBUFUN objects are also supported in the natural way.
 %
 %   PLOT(F, S) allows various line types, plot symbols, and colors to be used
 %   when S is a character string made from one element from any or all the
