@@ -29,12 +29,9 @@ else
 
     % Propagator of the "reduced" variables: Lift to full size, apply original
     % operator, project down to reduced size, then exponentiate. 
-    PA(1:size(B,1 ),:) = [];
+    PA(1:size(B, 1),:) = [];
     E = expm(t*PA*Q);
     
     % Propagator for the original variables: Reduce, propagate, lift. 
     E = Q*E*P;
-
-end
-
 end
