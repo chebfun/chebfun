@@ -32,8 +32,6 @@ switch ( propName )
         val = f.pivotValues;
     case 'pivotLocations'
         val = f.pivotLocations;
-    case 'deriv'
-        val = f.deriv;
     otherwise
         error('CHEBFUN2:get:propnam', ...
             [propName,' is not a valid CHEBFUN2 property.'])
