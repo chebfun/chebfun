@@ -337,8 +337,7 @@ if ( all(isfinite(yLim)) )
         yLim = [min(yLimCurrent(1), yLim(1)), max(yLimCurrent(2), yLim(2))];
     end
     
-    % TODO: Fix this. urgently.
-%     set(gca, 'ylim', sort(yLim))
+    set(gca, 'ylim', sort(yLim))
 end
 
 % Return hold state to what it was before:

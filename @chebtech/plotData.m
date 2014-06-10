@@ -52,7 +52,7 @@ if ( isempty(g) )
     data.yPoints = f.coeffs2vals(f.coeffs);
     
     % yLim:
-    data.yLim = [min(data.yLine) max(data.yLine)];
+    data.yLim = [min(data.yLine(:)) max(data.yLine(:))];
 
 elseif ( isa(g, 'chebtech') )   
     % PLOT(F, G)
