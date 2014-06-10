@@ -47,13 +47,20 @@ pref.techPrefs.sampleTest = false;
 if ( isa(pref.tech(), 'chebtech') )
     % In between the interpolation nodes, the Lebesgue function is guaranteed
     % by definition to be a polynomial of degree at most length(x) - 1.
-    pref.techPrefs.exactLength = length(x);
+%     pref.techPrefs.exactLength = length(x);
+    pref.techPrefs.maxPoints = length(x);
+    warnState = warning('off', 'CHEBFUN:constructor:notResolved');
+else
+    warnState = warning();
 end
 
-% Set breakpoints at the interpolation nodes.  (NB:  unique() returns the
-% points in sorted order.)
+% Set breakpoints at the interpolation nodes. (NB: unique() returns the points
+% in sorted order.)
 dom = unique([x(:) ; d.']).';
 L = chebfun(@(t) lebesgueFun(t, x(:), w), dom, pref);
+
+% Reset the warning state:
+warning(warnState);
 
 % Return the Lebesgue constant if asked.
 if ( nargout == 2 )

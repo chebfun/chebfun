@@ -68,23 +68,22 @@ classdef chebtech2 < chebtech
 
     %% METHODS IMPLEMENTED BY THIS M-FILE:
     methods
+        
         function obj = chebtech2(op, data, pref)
+            
             % Parse inputs.
             if ( (nargin == 0) || isempty(op) )
                 % Return an empty CHEBTECH2 on null input:
                 return
             end
-
             if ( (nargin < 2) || isempty(data) )
                     data = struct();
             end
-
             if ( (nargin < 3) || isempty(pref) )
                 pref = chebtech.techPref();
             else
                 pref = chebtech.techPref(pref);
             end
-
             data = parseDataInputs(data, pref);
 
             % Force nonadaptive construction if PREF.NUMPOINTS is numeric:
@@ -112,12 +111,16 @@ classdef chebtech2 < chebtech
                 valuesTemp = extrapolate(obj, values);
                 valuesTemp([1 end], :) = valuesTemp([1,end],:);
                 obj.coeffs = obj.vals2coeffs(valuesTemp);
+                
             elseif ( any(isnan(obj.coeffs(:))) )
                 % Here we throw an error if NaNs were encountered anywhere.
                 error('CHEBFUN:CHEBTECH2:constructor:naneval2', ...
                     'Function returned NaN when evaluated.')
+                
             end
+            
         end
+        
     end
     
     %% STATIC METHODS IMPLEMENTED BY THIS CLASS:

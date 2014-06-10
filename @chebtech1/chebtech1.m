@@ -66,33 +66,40 @@ classdef chebtech1 < chebtech
 
     %% METHODS IMPLEMENTED BY THIS M-FILE:
     methods
+        
         function obj = chebtech1(op, data, pref)
+            
             % Parse inputs.
             if ( (nargin == 0) || isempty(op) )
                 % Return an empty CHEBTECH1 on null input:
                 return
             end
-
             if ( (nargin < 2) || isempty(data) )
                     data = struct();
             end
-
             if ( (nargin < 3) || isempty(pref) )
                 pref = chebtech.techPref();
             else
                 pref = chebtech.techPref(pref);
             end
-
             data = parseDataInputs(data, pref);
 
             % Force nonadaptive construction if PREF.NUMPOINTS is numeric:
             if ( ~isempty(pref.numPoints) && ~isnan(pref.numPoints) )
                 % Evaluate op on the Chebyshev grid of given size:
                 op = feval(op, chebtech1.chebpts(pref.numPoints));
+                fixedLength = true;
+            else
+                fixedLength = false;
             end
 
             % Actual construction takes place here:
             obj = populate(obj, op, data.vscale, data.hscale, pref);
+            
+            if ( fixedLength )
+                % We still compute an epslevel for fixed-length construction.
+                [~, obj.epslevel] = happinessCheck(obj, [], op, pref);
+            end
 
             if ( obj.ishappy || isnumeric(op) || iscell(op) )
                 % No need to error check if we are happy:
@@ -105,7 +112,9 @@ classdef chebtech1 < chebtech
                 error('CHEBFUN:CHEBTECH1:constructor:naneval', ...
                     'Function returned NaN when evaluated.')
             end
+            
         end
+        
     end
     
     %% STATIC METHODS IMPLEMENTED BY THIS CLASS:
