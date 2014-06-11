@@ -1,24 +1,24 @@
 classdef ultraS < chebDiscretization
-    %ULTRAS   ULTRASPHERICAL class for discretizating differential operators
-    %         on bounded domain.
-    %
-    %    This class uses the ultraspherical spectral to discretize and ultimately
-    %    solve 1D boundary value problem defined on a bounded interval.
-    %
-    % ULTRAS(SOURCE, DIMENSION, DOMAIN) constructs a ultraspherical spectral
-    % discretization of SOURCE of size DIMENSION-by-DIMENSION for BVPs on the
-    % interval DOMAIN.
-    %
-    % ULTRAS(SOURCE, DIMESION) takes the DOMAIN from SOURCE.
-    %
-    % ULTRAS(SOURCE) takes the dimension from SOURCE.
-    
-    % For more details about the ultrapsherical spectral methods, see:
-    % S. Olver and A. Townsend, A fast and well-conditioned spectral method, SIAM
-    % Review, 55 (2013), pp. 462-489.
-    
-    % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-    % See http://www.chebfun.org/ for Chebfun information.
+%ULTRAS   ULTRASPHERICAL class for discretizating differential operators
+%         on bounded domain.
+%
+%    This class uses the ultraspherical spectral to discretize and ultimately
+%    solve 1D boundary value problem defined on a bounded interval.
+%
+% ULTRAS(SOURCE, DIMENSION, DOMAIN) constructs a ultraspherical spectral
+% discretization of SOURCE of size DIMENSION-by-DIMENSION for BVPs on the
+% interval DOMAIN.
+%
+% ULTRAS(SOURCE, DIMESION) takes the DOMAIN from SOURCE.
+%
+% ULTRAS(SOURCE) takes the dimension from SOURCE.
+
+% For more details about the ultrapsherical spectral methods, see:
+% S. Olver and A. Townsend, A fast and well-conditioned spectral method, SIAM
+% Review, 55 (2013), pp. 462-489.
+
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
     
     properties
         coeffs        % Coefficients of the operator
@@ -75,16 +75,14 @@ classdef ultraS < chebDiscretization
         D = multmat(n, f, lambda)
         
         function dimVals = dimensionValues(pref)
-            %DIMENSIONVALUES    Return a vector of desired discretization sizes.
-            %
+            %DIMENSIONVALUES   Return a vector of desired discretization sizes.
             %  DIMVALS = DIMENSIONVALUES(PREF) returns a vector containing
             %  elements that prescribe what values should be used as dimension
             %  values for discretizating linear operators. DIMVALS is affected
             %  by the minimum and maximum discretizations specified in the
             %  CHEBOPPREF object PREF.
             
-            % We want to go up in powers of 2 up to a point, after which, we go
-            % up in half powers of two.
+            % We simply go up in powers of 2.
             
             minPow = log2(pref.minDimension);
             maxPow = log2(pref.maxDimension);

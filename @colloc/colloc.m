@@ -1,14 +1,14 @@
 classdef colloc < chebDiscretization
-    %COLLOC   Abstract class for collocation discretization of operators.
-    %   COLLOC is a partial implementation of CHEBDISCRETIZATION that creates
-    %   scaffolding common to first-kind and second-kind points. COLLOC cannot
-    %   be used directly as a discretization for linops. Both COLLOC1 and
-    %   COLLOC2 are full implementations.
-    %
-    %   See also COLLOC1, COLLOC2, CHEBDISCRETIZATION.
-    
-    %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
-    %  See http://www.chebfun.org/ for Chebfun information.
+%COLLOC   Abstract class for collocation discretization of operators.
+%   COLLOC is a partial implementation of CHEBDISCRETIZATION that creates
+%   scaffolding common to first-kind and second-kind points. COLLOC cannot be
+%   used directly as a discretization for linops. Both COLLOC1 and COLLOC2 are
+%   full implementations.
+%
+%   See also COLLOC1, COLLOC2, CHEBDISCRETIZATION.
+
+%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
+%  See http://www.chebfun.org/ for Chebfun information.
     
     properties ( Access = private )
         % Stores LU factors of a matrix, for repeated solves at fixed size:
@@ -67,8 +67,7 @@ classdef colloc < chebDiscretization
         [x, w, v] = points(varargin);
         
         function dimVals = dimensionValues(pref)
-            %DIMENSIONVALUES    Return a vector of desired discretization sizes.
-            %
+            %DIMENSIONVALUES   Return a vector of desired discretization sizes.
             %  DIMVALS = DIMENSIONVALUES(PREF) returns a vector containing
             %  elements that prescribe what values should be used as dimension
             %  values for discretizating linear operators. DIMVALS is affected
@@ -84,7 +83,7 @@ classdef colloc < chebDiscretization
             if ( minPow > maxPow )
                 error('CHEBFUN:COLLOC:dimensionValues', ...
                     ['Minimum discretiation specified is greater than ' ...
-                    'maximum discretization specified']);
+                     'maximum discretization specified.']);
             end
             
             if ( maxPow <= 9 )
@@ -95,7 +94,9 @@ classdef colloc < chebDiscretization
             else
                 powVec = [minPow:9, 9.5:.5:maxPow];
             end
+            
             dimVals = round(2.^powVec);
+            
         end
         
     end
