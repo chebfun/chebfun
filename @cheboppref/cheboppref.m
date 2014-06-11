@@ -20,15 +20,6 @@ classdef cheboppref < chebpref
 %
 %     This options determines whether linear operators are discretized using
 %     rectangular collocation methods or the ultraspherical method.
-%
-%   dimensionValues             - Increments in discretization sizes
-%     [ 32    64   128   256   512   724  1024  1448]
-%
-%     This vector determines the number of gridpoints/coefficients used as
-%     linear operators are discretized at finer and finer grids to resolve the
-%     solution. For example, using the default value, a linear operator would
-%     first be discretized at a 32 point grid, then a 64 point grid, up until a
-%     1448 point grid.
 %  
 %   damped                      - Should Newton's method be damped?
 %     [true]
