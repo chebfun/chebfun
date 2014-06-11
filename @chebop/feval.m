@@ -22,24 +22,23 @@ function out = feval(N, varargin)
 %   the prefered syntax.
 %
 %   OUT = FEVAL(N, DIM) returns an DIM-point discretization of the linear
-%   operator N. If N is not linear an error is thrown. See LINOP/MATRIX for
-%   further details.
+%   operator N. If N is not linear an error is thrown. OUT = FEVAL(N, DIM,
+%   'oldschool') forces the returned differentiation matrices to be square,
+%   rather than rectangular. See CHEBOP/MATRIX for further details (which is the
+%   prefered syntax for this functionality)
 %
-% See also CHEBOP/SUBSREF, LINOP/MTIMES, LINOP/MATRIX.
+% See also CHEBOP/SUBSREF, LINOP/MTIMES, CHEBOP/MATRIX.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Support for calling a CHEBOP with a numerical input to get its discretization.
-if ( (nargin == 2) && isnumeric(varargin{1}) )
-    [L, ~, fail] = linop(N);
-    if ( fail )
-        error('CHEBFUN:chebop:feval:nonlinear',...
-            'Matrix expansion is only allowed for linear CHEBOP objects.')
-    end
-    % TODO: Throw a deprecation warning?
-    % TODO: Should we have a CHEBOP/MATRIX() method?
-    out = matrix(L, varargin{1});
+% Support for calling a linear CHEBOP with a numerical input to get its
+% discretization. Here we simply call the MATRIX() method.
+
+if ( ((nargin == 2) && isnumeric(varargin{1})) || ...
+   ((nargin == 3) && ischar(varargin{2}) && strcmpi(varargin{2}, 'oldschool')) )
+    % TODO: Throw a deprecated warning?
+    out = matrix(N, varargin{:});    
     return
 end
 
