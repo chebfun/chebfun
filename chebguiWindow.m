@@ -678,6 +678,7 @@ if ( get(handles.button_ode, 'Value') )
     else % Show chebpolyplot
         chebpolyplot(latestSolution, 'linewidth', 2)
         title('Chebpolyplot of solution')
+        grid on
         set(handles.popupmenu_bottomFig, 'Value', 2);
     end
     
@@ -1990,6 +1991,8 @@ newVal = get(hObject, 'Value');
 axes(handles.fig_norm)            
 switch ( newVal )
     case 1
+        % User wants to see a plot showing the convergence of the Newton
+        % iteration.
         normDelta = handles.normDelta;
 
         % If normDelta is empty, we actually had a linear problem! So don't
@@ -2016,8 +2019,9 @@ switch ( newVal )
         end
         
     case 2
+        % User wants to see a chebpolyplot.
         chebpolyplot(handles.latest.solution, 'linewidth', 2);
-        
+        grid on
 end
 
 end

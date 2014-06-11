@@ -311,6 +311,7 @@ if ( guiMode )
         chebpolyplot(u, 'linewidth', 2)
         title('Chebpolyplot of solution')
         set(handles.popupmenu_bottomFig, 'Value', 2);
+        grid on
     end
     
     % Return the handles as varargout.
