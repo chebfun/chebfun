@@ -46,17 +46,17 @@ elseif ( size(CC,1) == 2 )% rank-2 PDE operator.
     try
         if ( xsplit || ysplit )
             % Solve AXB^T + CXD^T = RHS, by doing subproblems: 
-            X = chebop2.BartelsStewart(A, B, C, D, RHS, xsplit, ysplit);       
+            X = chebop2.bartelsStewart(A, B, C, D, RHS, xsplit, ysplit);       
         else
             % Solve AXB^T + CXD^T = RHS:
             X = lyap(C\A,(B\D).',-(B\(C\RHS).').');
         end
     catch
         % Solve AXB^T + CXD^T = RHS:
-        X = chebop2.BartelsStewart(A, B, C, D, RHS, xsplit, ysplit);
+        X = chebop2.bartelsStewart(A, B, C, D, RHS, xsplit, ysplit);
     end
     
-    % QZ in BartelsStewart solver can return small complex part. Make it 
+    % QZ in bartelsStewart solver can return small complex part. Make it 
     % real.
     if ( norm(imag(X),inf) < sqrt(eps) )
         X = real(X);

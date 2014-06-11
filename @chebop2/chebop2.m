@@ -67,14 +67,14 @@ classdef chebop2
     methods ( Static = true, Hidden = true )
         % Matrix equation solver: AXB^T + CXD^T = E. xsplit, ysplit = 1 if
         % the even and odd modes (coefficients) decouple.
-        X = BartelsStewart(A, B, C, D, E, xsplit, ysplit);
+        X = bartelsStewart(A, B, C, D, E, xsplit, ysplit);
         
         % Use automatic differentiation to pull out the coeffs of the
         % operator:
         deriv = chebfun2deriv( op );
         
         % This is used to discretize the linear constrains:
-        [bcrow, bcvalue] = constructbc(bcArg, bcpos,...
+        [bcrow, bcvalue] = constructBC(bcArg, bcpos,...
             een, bcn, dom, scl, order);
         
         % This is used to discretize the PDE:
@@ -82,7 +82,7 @@ classdef chebop2
             constructDiscretisation(N, f, m, n, flag);
         
         % Convert all the different user inputs for bc into uniform format:
-        bc = createbc(bcArg, ends);
+        bc = createBC(bcArg, ends);
         
         % Method for deciding how to solve the matrix equation:
         X = denseSolve(N, f, m, n);

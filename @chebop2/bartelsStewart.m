@@ -1,4 +1,4 @@
-function X = BartelsStewart(A, B, C, D, E, xsplit, ysplit)
+function X = bartelsStewart(A, B, C, D, E, xsplit, ysplit)
 % BARTELSSTEWART   Solution to generalized Sylvester matrix equation. 
 % 
 % Computes the solution to the Sylvester equation

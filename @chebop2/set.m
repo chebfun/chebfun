@@ -34,18 +34,18 @@ while length(propertyArgIn) >= 2,
                 N.domain = val;
             end
         case 'bc'
-            N.lbc = chebop2.createbc(val, rect(3:4));
+            N.lbc = chebop2.createBC(val, rect(3:4));
             N.rbc = N.lbc;
-            N.ubc = chebop2.createbc(val, rect(1:2));
+            N.ubc = chebop2.createBC(val, rect(1:2));
             N.dbc = N.ubc;
         case 'lbc'
-             N.lbc = chebop2.createbc(val, rect(3:4));
+             N.lbc = chebop2.createBC(val, rect(3:4));
         case 'rbc'
-             N.rbc = chebop2.createbc(val, rect(3:4));
+             N.rbc = chebop2.createBC(val, rect(3:4));
         case 'ubc'
-             N.ubc = chebop2.createbc(val, rect(1:2));
+             N.ubc = chebop2.createBC(val, rect(1:2));
         case 'dbc'
-             N.dbc = chebop2.createbc(val, rect(1:2));
+             N.dbc = chebop2.createBC(val, rect(1:2));
         case 'op'
             if isa(val,'function_handle')
                 % Do nothing

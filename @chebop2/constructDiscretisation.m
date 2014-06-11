@@ -130,16 +130,16 @@ bcUp = []; upVal = [];
 bcDown = []; downVal = [];
 
 if ( ~isempty(N.lbc) )                          % left boundary conditions
-    [bcLeft, leftVal] = chebop2.constructbc(N.lbc, -1, m, n, rect(3:4), rect(1:2), xorder);
+    [bcLeft, leftVal] = chebop2.constructBC(N.lbc, -1, m, n, rect(3:4), rect(1:2), xorder);
 end
 if ( ~isempty(N.rbc) )                          % right boundary conditions
-    [bcRight, rightVal] = chebop2.constructbc(N.rbc, 1, m, n, rect(3:4), rect(1:2), xorder);
+    [bcRight, rightVal] = chebop2.constructBC(N.rbc, 1, m, n, rect(3:4), rect(1:2), xorder);
 end
 if ( ~isempty(N.ubc) )                          % top boundary conditions
-    [bcUp, upVal] = chebop2.constructbc(N.ubc, 1, n, m, rect(1:2), rect(3:4), yorder);
+    [bcUp, upVal] = chebop2.constructBC(N.ubc, 1, n, m, rect(1:2), rect(3:4), yorder);
 end
 if ( ~isempty(N.dbc) )                          % bottom boundary conditions
-    [bcDown, downVal] = chebop2.constructbc(N.dbc, -1, n, m, rect(1:2), rect(3:4), yorder);
+    [bcDown, downVal] = chebop2.constructBC(N.dbc, -1, n, m, rect(1:2), rect(3:4), yorder);
 end
 
 %%

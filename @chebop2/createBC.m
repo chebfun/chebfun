@@ -1,5 +1,5 @@
-function bc = createbc(bcArg, ends)
-%CREATEBC converts boundary condition syntax to chebfuns so constructbc.m
+function bc = createBC(bcArg, ends)
+%CREATEBC converts boundary condition syntax to chebfuns so constructBC.m
 % can deal with them.
 % 
 % This command attempts to convert the "boundary" data into chebfuns. 

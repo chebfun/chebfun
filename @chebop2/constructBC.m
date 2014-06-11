@@ -1,4 +1,4 @@
-function [bcrow, bcvalue] = constructbc( bcArg, bcpos, een, bcn, dom, scl, order)
+function [bcrow, bcvalue] = constructBC( bcArg, bcpos, een, bcn, dom, scl, order)
 % CONSTRUCTBC  discretizes the boundary conditions. 
 % 
 % bcArg = linear constraint.
@@ -119,10 +119,10 @@ elseif ( isa(bcArg,'char') )
            bcrow(:,jj) = chebValues(jj-1, bcn, 1) - chebValues(jj-1, bcn, -1) ;
         end
     else
-        error('Chebop2:constructbc:word','Unrecognised bc string');
+        error('Chebop2:constructBC:word','Unrecognised bc string');
     end
 else
-    error('CHEBOP2:constructbc:bctype','Unrecognised boundary syntax.');
+    error('CHEBOP2:constructBC:bctype','Unrecognised boundary syntax.');
 end
 end
 

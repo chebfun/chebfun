@@ -1,4 +1,4 @@
-function pass = test_BartelsStewart( prefs )
+function pass = test_bartelsStewart( prefs )
 % Test generalized Sylvester matrix equation solver
 
 if ( nargin < 1 )
@@ -16,7 +16,7 @@ X = rand(n);
 
 E = A * X * B.' + C * X * D.';
 
-Y = chebop2.BartelsStewart(A, B, C, D, E, 0, 0); 
+Y = chebop2.bartelsStewart(A, B, C, D, E, 0, 0); 
 pass(1) = norm( Y - X ) < tol; 
 
 
@@ -28,7 +28,7 @@ X = rand(n) + 1i*rand(n);
 
 E = A * X * B.' + C * X * D.';
 
-Y = chebop2.BartelsStewart(A, B, C, D, E, 0, 0); 
+Y = chebop2.bartelsStewart(A, B, C, D, E, 0, 0); 
 pass(2) = norm( Y - X ) < 10*tol; 
 
 
@@ -43,7 +43,7 @@ X = rand(n);
 
 E = A * X * B.' + C * X * D.';
 
-Y = chebop2.BartelsStewart(A, B, C, D, E, 0, 0); 
+Y = chebop2.bartelsStewart(A, B, C, D, E, 0, 0); 
 pass(3) = norm( Y - X ) < 10*tol; 
 
 
@@ -55,7 +55,7 @@ X = rand(n) + 1i*rand(n);
 
 E = A * X * B.' + C * X * D.';
 
-Y = chebop2.BartelsStewart(A, B, C, D, E, 0, 0); 
+Y = chebop2.bartelsStewart(A, B, C, D, E, 0, 0); 
 pass(4) = norm( Y - X ) < 10*tol; 
 
 end
