@@ -82,8 +82,8 @@ end
 
 % Derive automatic continuity conditions if none were given.
 if ( isempty(L.continuity) )
-     L = deriveContinuity(L, disc.domain);
-     disc.source = L;
+    L = deriveContinuity(L, disc.domain);
+    disc.source = L;
 end
 
 % Initialise happiness:
@@ -97,7 +97,7 @@ isFun = isFunVariable(L);
 for dim = [dimVals inf]
     
     % TODO: It's weird that the current value of dim is the _next_ disc size.
-
+    
     % Discretize the operator (incl. constraints/continuity), unless there is a
     % currently valid factorization at hand.
     if ( isFactored(disc) )
@@ -123,21 +123,21 @@ for dim = [dimVals inf]
     % each would be different and we would nopt be able to use the trick of
     % taking a linear combination. Instead we project and test convergence
     % at the size of the output dimension.
-
+    
     % Convert the different components into cells
     u = partition(disc, v);
-
+    
     % Test the happiness of the function pieces:
-    [isDone, epsLevel, vscale] = ...
+    [isDone, epsLevel, vscale, cutoff] = ...
         testConvergence(disc, u(isFun), vscale, prefs);
-
+    
     if ( all(isDone) || isinf(dim) )
         break
     else
         % Update the discretiztion dimension on unhappy pieces:
         disc.dimension(~isDone) = dim;
     end
-
+    
 end
 
 if ( ~all(isDone) )
@@ -149,12 +149,20 @@ end
 % The variable u is a cell array with the different components of the solution.
 % Because each function component may be piecewise defined, we will loop through
 % one by one.
-for k = find( isFun )
-    u{k} = disc.toFunctionOut(u{k});
-    u{k} = simplify( u{k}, max(eps,epsLevel) );
+values = cat(2,u{isFun});
+for k = 1:size(values,2)
+    v = disc.toFunctionOut(values(:,k));
+    coeffs = get(v,'coeffs');  % one cell entry per interval
+    for i = 1:numInt
+        f = chebfun( coeffs{i}(end+1-cutoff(i,k):end), disc.domain(i:i+1), 'coeffs' );
+        v.funs{i} = f.funs{1};
+    end
+    uOut{k} = v;
 end
+
+u(isFun) = uOut;
 
 % Convert to chebmatrix
 u = chebmatrix(u);
-
+    
 end
