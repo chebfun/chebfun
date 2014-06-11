@@ -40,16 +40,12 @@ while length(propertyArgIn) >= 2,
             N.dbc = N.ubc;
         case 'lbc'
              N.lbc = chebop2.createbc(val, rect(3:4));
-             N.lbcshow = val;
         case 'rbc'
              N.rbc = chebop2.createbc(val, rect(3:4));
-             N.rbcshow = val;
         case 'ubc'
              N.ubc = chebop2.createbc(val, rect(1:2));
-             N.ubcshow = val;
         case 'dbc'
              N.dbc = chebop2.createbc(val, rect(1:2));
-             N.dbcshow = val;
         case 'op'
             if isa(val,'function_handle')
                 % Do nothing
@@ -57,11 +53,6 @@ while length(propertyArgIn) >= 2,
                 error('CHEBOP:set:opType','Operator must by a function handle.')
             end
             N.op = val;
-            if ~iscell(val)
-                N.opshow = {char(val)};
-            else
-                N.opshow = cellfun(@char,val,'uniform',false);
-            end
         case 'xorder'
             N.xorder = val; 
         case 'yorder'

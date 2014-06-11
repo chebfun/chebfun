@@ -10,23 +10,13 @@ vin = varargin{:};
 
 switch index(1).type
     case '.'
-        if strcmp(idx,'bc')
-            f.lbcshow = vin;
-            f.rbcshow = vin;
-            f.ubcshow = vin;
-            f.dbcshow = vin;
-            varargout = {set(f,'bc',vin)};
-        elseif strcmp(idx,'lbc')
-            f.lbcshow = vin;
+        if strcmp(idx,'lbc')
             varargout = {set(f,'lbc',vin)};
         elseif strcmp(idx,'rbc')
-            f.rbcshow = vin;
             varargout = {set(f,'rbc',vin)};
         elseif strcmp(idx,'ubc')
-            f.ubcshow = vin;
             varargout = {set(f,'ubc',vin)};
         elseif strcmp(idx,'dbc')
-            f.dbcshow = vin;
             varargout = {set(f,'dbc',vin)};
         elseif strcmp(idx,'op')
             varargout = {set(f,'op',vin)};

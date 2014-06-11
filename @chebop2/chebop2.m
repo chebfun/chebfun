@@ -34,25 +34,20 @@ classdef chebop2
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
     
     properties ( GetAccess = 'public', SetAccess = 'public' )
-        domain = [];    % Domain of the operator
-        op = [];        % The operator
-        opshow = [];
-        ubc = [];       % Up boundary condition(s)
-        ubcshow=[];
-        lbc = [];       % Left boundary condition(s)
-        lbcshow=[];
-        rbc = [];       % Right boundary condition(s)
-        rbcshow=[];
-        dbc = [];       % Down boundary condition(s)
-        dbcshow=[];
-        dim = [];       % Size of the system (number of eqns)
-        scale = [];     % Relative solution scale
-        coeffs=[];      % matrix storing constant coefficients
-        xorder = 0;
-        yorder = 0;
-        U
-        S               %explict low rank form.
-        V
+        domain = [];  % Domain of the operator
+        op = [];      % The operator
+        ubc = [];     % Up boundary condition(s)
+        lbc = [];     % Left boundary condition(s)
+        rbc = [];     % Right boundary condition(s)
+        dbc = [];     % Down boundary condition(s)
+        dim = [];     % Size of the system (number of eqns)
+        scale = [];   % Relative solution scale
+        coeffs = [];  % matrix storing constant coefficients
+        xorder = 0;   % diff order in the x-variable
+        yorder = 0;   % diff order in the y-variable
+        U             %
+        S             % Low rank form of the partial differential operator.
+        V             %
     end
     
     methods
