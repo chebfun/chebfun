@@ -76,7 +76,7 @@ end
 data.yLim = getYLimits(data.yLine, f.exponents);
 
 % If F is blowing up, do not use the yLim chosen by Matlab built-in plot:
-if ( any(f.exponents) < 0 )
+if ( any(f.exponents < 0) )
     data.defaultYLim = 0;
 end
 

@@ -90,8 +90,8 @@ end
 % Initialize flags:
 isComplex = false;
 intervalIsSet = false;
-xLim = [-inf, inf];
-yLim = [-inf, inf];
+xLim = [inf, -inf];
+yLim = [inf, -inf];
 defaultXLim = 1;
 defaultYLim = 1;
 
@@ -334,9 +334,9 @@ if ( ~defaultXLim )
         xLim = [min(xLimCurrent(1), xLim(1)), max(xLimCurrent(2), xLim(2))];
     end    
     
+    set(gca, 'xlim', xLim)
+    
 end
-
-set(gca, 'xlim', xLim)
 
 % Set the Y-limits if appropriate values have been suggested:
 if ( ~defaultYLim )
