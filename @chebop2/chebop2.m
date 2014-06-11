@@ -53,13 +53,140 @@ classdef chebop2
     methods
         
         function N = chebop2( varargin )
-            N = constructor( N, varargin{:} );
+            % Constructing the chebop2 object.
             
-            % Issue a warning to the user for the first chebop2: 
+            % Get chebfun2 preferences
+            prefs = chebfunpref();
+            tol = prefs.cheb2Prefs.eps;
+            
+            % If empty input arguments then return an empty chebop2 object.
+            if ( isempty( varargin ) )
+                return
+            end
+            
+            % What domain is the operator defined on?
+            if ( numel( varargin ) > 1 )
+                ends = varargin{2};      % second argument should be a domain.
+                if ( length( ends ) == 4 )
+                    % valid domain?
+                    if ( (diff(ends(1:2)) > 0 )&& (diff(ends(3:4)) > 0 ) )  
+                        dom = ends;
+                    else
+                        error('CHEBOP2:CONSTRUCTOR:DOMAIN','Empty domain');
+                    end
+                else
+                    error('CHEBOP2:CONSTRUCTOR:INPUT',...
+                        'Argument should be a domain given by four doubles')
+                end
+            else
+                if ( isa( varargin{1}, 'function_handle' ) )
+                    % pick the default domain
+                    rect1 = [-1,1];
+                    rect2 = [-1,1];
+                    dom = [rect1 rect2];
+                elseif ( isa( varargin{1},'double' ) )
+                    % set up identity operator on the domain.
+                    N = chebop2(@(u) u, varargin{1});  
+                    return
+                else
+                    error('CHEBOP2:INPUTS',...
+                        'First argument is not an operator or domain.')
+                end
+            end
+
+            % First argument in the constructor is the operator.  If the 
+            % operator is univariate then it's a constant coefficient PDE, 
+            % otherwise assume it is a variable coefficient.
+            
+            if ( isa(varargin{1},'function_handle') )
+                fh = varargin{1};
+                
+                if ( nargin(fh) == 1 )  % The PDE has constant coefficients.
+                    
+                    % Trust that the user has formed the chebfun2 objects 
+                    % outside of chebop2.
+                    u = adchebfun2( chebfun2(@(x,y) x.*y, dom) );
+                    v = fh( u );
+                    % If the PDO has constant coefficients then convert to 
+                    % double:
+                    try
+                        A = cell2mat(v.jacobian).';
+                    catch
+                        % PDO has variable coefficients, keep them in a 
+                        % cell array:
+                        A = v.jacobian;
+                    end
+                    
+                elseif ( nargin(fh) == 2 )
+                    error('Did you intend to have @(x,y,u)?')
+                elseif ( nargin(fh) == 3 )
+                    % The coefficients of the PDE are now variable 
+                    % coefficient.
+                    
+                    % Setup a chebfun2 on the right domain
+                    u = adchebfun2( chebfun2(@(x,y) x.*y, dom) );
+                    x = chebfun2( @(x,y) x, dom );
+                    y = chebfun2( @(x,y) y, dom );
+                    % apply it to the operator
+                    v = fh( x, y, u );
+                    A = v.jacobian;  % cell array of variable coefficients.
+                else
+                    error('CHEBOP2:CONSTRUCTOR:INPUT',...
+                        'Operator should be @(u) or @(x,y,u).')
+                end
+            else
+                error('CHEBOP2:CONSTRUCTOR:INPUT',...
+                    'First argument should be an operator')
+            end
+            
+            % Often the coefficients are obtained with small rounding errors
+            % and it is important to remove the very small non-zero ones to
+            % have rank(A) correct.
+            if iscell(A)
+                for jj = size(A,1)
+                    for kk = size(A,2)
+                        if isa(A{jj,kk},'double') && abs(A{jj,kk})<10*tol
+                            A{jj,kk} = 0;
+                        end
+                    end
+                end
+            else
+                A( abs(A) < 10*tol ) = 0;
+            end
+            
+            % Construct chebop2 object. The boundary conditions will be 
+            % given later.
+            N.domain = dom;
+            N.op = fh;
+            N.coeffs = A;
+            
+            % Calculate xorder and yorder of PDE.
+            % Find the differential order of the PDE operator.
+            if ( iscell( A ) )
+                xdifforder = size(A, 2) - 1;
+                ydifforder = size(A, 1) - 1;
+            elseif ( min( size( A ) ) > 1 )
+                xdifforder = find( sum( abs( A ), 2 ) > 100*tol, 1, 'last') - 1;
+                ydifforder = find( sum( abs( A ) ) > 100*tol, 1, 'last' ) - 1;
+            else
+                if ( size(A, 1) == 1 )
+                    ydifforder = length(A) - 1;
+                    xdifforder = 0;
+                else
+                    xdifforder = length(A) - 1;
+                    ydifforder = 0;
+                end
+            end
+            N.xorder = xdifforder;
+            N.yorder = ydifforder;
+            
+            % Issue a warning to the user for the first chebop2:
             warning('CHEBOP2:EXPERIMENTAL',...
-                  'Chebop2 is a new experimental feature. It has not been tested to the some extent as other parts of the software.');
+                ['Chebop2 is a new experimental feature.'...
+                'It has not been tested to the some extent as other'...
+                'parts of the software.']);
             % Turn it off:
-            warning('off', 'CHEBOP2:EXPERIMENTAL'); 
+            warning('off', 'CHEBOP2:EXPERIMENTAL');
         end
         
     end
@@ -91,150 +218,4 @@ classdef chebop2
         a = truncate(a, tol);
         
     end
-end
-
-function N = constructor( N, varargin )
-% Constructing the chebop2 object.
-
-% Get chebfun2 preferences
-prefs = chebfunpref();
-tol = prefs.cheb2Prefs.eps;
-
-% If empty input arguments then return an empty chebop2 object.
-if ( isempty( varargin ) )
-    return
-end
-
-% What domain is the operator defined on?
-if ( numel( varargin ) > 1 )
-    ends = varargin{2};      % second argument should be a domain.
-    if ( length( ends ) == 4 )
-        if ( (diff(ends(1:2)) > 0 )&& (diff(ends(3:4)) > 0 ) )  % valid domain?
-            domain = ends;
-        else
-            error('CHEBOP2:CONSTRUCTOR:DOMAIN','Empty domain');
-        end
-    else
-        error('CHEBOP2:CONSTRUCTOR:INPUT','Argument should be a domain given by four doubles')
-    end
-else
-    if ( isa( varargin{1}, 'function_handle' ) )
-        % pick the default domain
-        rect1 = [-1,1];
-        rect2 = [-1,1];
-        domain = [rect1 rect2];
-    elseif ( isa( varargin{1},'double' ) )
-        N = chebop2(@(u) u, varargin{1});  % set up identity operator on the domain.
-        return
-    else
-        error('CHEBOP2:INPUTS','First argument is not an operator or domain.')
-    end
-end
-
-
-% First argument in the constructor is the operator.  If the operator is
-% univariate then it's a constant coefficient PDE, otherwise assume it is a
-% variable coefficient.
-
-if ( isa(varargin{1},'function_handle') )
-    op = varargin{1};
-    
-    if ( nargin(op) == 1 )     % The PDE has constant coefficients.
-        
-        %   OLD way! ( Use elimination )
-        % Use an elimination procedure to extract out the constant
-        % coefficients of the PDE.
-        %         for jj = 0:maxorder
-        %
-        %             for kk = 0:maxorder
-        %
-        %                 % Test with the functions x^j*y^k because they are
-        %                 % eliminated by terms containing j+1 and k+1 derivatives or
-        %                 % higher.
-        %                 const = factorial(jj) .* factorial(kk);
-        %                 test = chebfun2(@(x,y) (x.^jj.*y.^kk)/const, domain);
-        %
-        %                 % By evaluating the result of op(f) at (0,0) we remove
-        %                 % all the terms that contain j-1 and k-1 derivatives or
-        %                 % less.
-        %                 A(jj+1,kk+1) = feval(op(test),0,0);
-        %
-        %             end
-        %
-        %         end
-        
-        
-        % Trust that the user has formed the chebfun2 objects outside of
-        % chebop2.
-        u = adchebfun2( chebfun2(@(x,y) x.*y, domain) );
-        v = op( u );
-        % If the PDO has constant coefficients then convert to double:
-        try
-            A = cell2mat(v.jacobian).';
-        catch
-            % PDO has variable coefficients, keep them in a cell array:
-            A = v.jacobian;
-        end
-        
-    elseif ( nargin(op) == 2 )
-        error('Did you intend to have @(x,y,u)?')
-    elseif ( nargin(op) == 3 )
-        % The coefficients of the PDE are now variable coefficient.
-        
-        % Setup a chebfun2 on the right domain
-        u = adchebfun2( chebfun2(@(x,y) x.*y, domain) );
-        x = chebfun2( @(x,y) x, domain );
-        y = chebfun2( @(x,y) y, domain );
-        % apply it to the operator
-        v = op( x, y, u );
-        A = v.jacobian;  % cell array of variable coefficients.
-    else
-        error('CHEBOP2:CONSTRUCTOR:INPUT',...
-            'Operator should be @(u) or @(x,y,u).')
-    end
-else
-    error('CHEBOP2:CONSTRUCTOR:INPUT',...
-        'First argument should be an operator')
-end
-
-% Often the coefficients are obtained with small rounding errors
-% and it is important to remove the very small non-zero ones to
-% have rank(A) correct.
-if iscell(A)
-    for jj = size(A,1)
-        for kk = size(A,2)
-            if isa(A{jj,kk},'double') && abs(A{jj,kk})<10*tol
-                A{jj,kk} = 0;
-            end
-        end
-    end
-else
-    A( abs(A) < 10*tol ) = 0;
-end
-
-% Construct chebop2 object. The boundary conditions will be given later.
-N.domain = domain;
-N.op = op;
-N.coeffs = A;
-
-% Calculate xorder and yorder of PDE.
-% Find the differential order of the PDE operator.
-if ( iscell( A ) )
-    xorder = size(A, 2) - 1;
-    yorder = size(A, 1) - 1;
-elseif ( min( size( A ) ) > 1 )
-    xorder = find( sum( abs( A ), 2 ) > 100*tol, 1, 'last') - 1;
-    yorder = find( sum( abs( A ) ) > 100*tol, 1, 'last' ) - 1;
-else
-    if ( size(A, 1) == 1 )
-        yorder = length(A) - 1;
-        xorder = 0;
-    else
-        xorder = length(A) - 1;
-        yorder = 0;
-    end
-end
-N.xorder = xorder;
-N.yorder = yorder;
-
 end
