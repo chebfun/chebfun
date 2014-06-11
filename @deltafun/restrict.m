@@ -48,7 +48,6 @@ numFuns = numel(s) - 1;
 for k = 1:numFuns
     funPart = restrictedFunParts{k};
           
-    %idx = (f.deltaLoc >= s(k) - pTol) & (f.deltaLoc <= s(k+1) + pTol);
     idx = (f.deltaLoc >= s(k)) & (f.deltaLoc <= s(k+1));
     deltaLoc = f.deltaLoc(idx);
     deltaMag = f.deltaMag(:,idx);
@@ -82,8 +81,7 @@ for k = 1:numFuns
     if ( isempty(deltaLoc) )
         g{k} = funPart;
     else
-        data.deltaMag = deltaMag;
-        %deltaLoc = tweakLocations(deltaLoc, funPart.domain, pTol);
+        data.deltaMag = deltaMag;        
         data.deltaLoc = deltaLoc;
         g{k} = deltafun(funPart, data);
     end
@@ -94,31 +92,5 @@ if ( numel(s) == 2 )
     g = g{1};
 end
 
-
-end
-
-function deltaLoc = tweakLocations(deltaLoc, dom, pTol)
-%TWEAKLOCATIONS   Force delta functions close to end points on end points.
-
-if ( nargin == 2 )
-    % Get preferences:
-    pref = chebfunpref();
-    pTol = pref.deltaPrefs.proximityTol;
-end
-
-a = dom(1);
-b = dom(end);
-
-if ( isempty(deltaLoc) )
-    return
-end
-
-if ( abs(deltaLoc(1) - a) < pTol )
-    deltaLoc(1) = a;
-end
-
-if ( abs(deltaLoc(end) - b) < pTol )
-    deltaLoc(end) = b;
-end
 
 end
