@@ -96,4 +96,9 @@ classdef chebDiscretization
         
     end
     
+    methods ( Abstract = true, Static = true )
+        % Return a vector of desired discretization sizes.
+        dimVals = dimensionValues(pref)
+    end
+    
 end

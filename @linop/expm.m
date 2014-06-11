@@ -52,7 +52,7 @@ if ( isa(discType, 'function_handle') )
     disc.domain = chebfun.mergeDomains(disc.domain, u0.domain); 
     
     % Set the allowed discretisation lengths: 
-    dimVals = prefs.dimensionValues;
+    dimVals = disc.dimensionValues(prefs);
     
     dimVals( dimVals < length(u0) ) = [];
     
