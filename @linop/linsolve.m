@@ -65,10 +65,12 @@ elseif ( isnumeric(f) )
 end
 
 % Use a given discretization, or create one?
-dimVals = prefs.dimensionValues;
 if ( isempty(disc) )
+    % Construct the current globally set discretization:
     disc = prefs.discretization(L);
-    % Update the domain if new breakpoints are needed
+    % What values for the discretization do we want to consider?
+    dimVals = disc.dimensionValues(prefs);
+    % Update the domain if new breakpoints are needed:
     disc.domain = chebfun.mergeDomains(disc.domain, f.domain);
     % Update the dimensions to work with the correct number of breakpoints
     disc.dimension = repmat(dimVals(1), 1, numel(disc.domain) - 1);
@@ -76,6 +78,7 @@ if ( isempty(disc) )
 else
     % We have to assume that the given L matches the discretization. Caller
     % beware!
+    dimVals = disc.dimensionValues(prefs);
     dim1 = max(disc.dimension);
     dimVals = [ dim1, dimVals(dimVals > dim1) ];
 end
