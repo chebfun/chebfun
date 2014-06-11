@@ -5,7 +5,7 @@ if ( nargin == 0 )
 end
 
 f = singfun(@(x) sqrt(1-x));
-c = chebpoly(f, 10);
+c = chebcoeffs(f, 10);
 
 exact = [-2*sqrt(2)/35, sqrt(2)];
 pass(1) = length(c) == 10;
