@@ -39,10 +39,6 @@ end
 % Create a cell to be returned.
 g = cell(1, numel(s)-1);
 
-% Get preferences:
-pref = chebfunpref();
-pTol = pref.deltaPrefs.proximityTol;
-
 % Loop over each of the new subintervals, make a DELTAFUN and store in a cell:
 numFuns = numel(s) - 1;
 for k = 1:numFuns
@@ -56,15 +52,13 @@ for k = 1:numFuns
     % by two. Each adjacent fun will get half the contribution. The first 
     % break point of the first fun and the last break point of the last 
     % fun do not get divided by half.
-    if ( ~isempty(deltaLoc) )
-        %if ( abs(deltaLoc(1) - s(k)) < pTol )
+    if ( ~isempty(deltaLoc) )       
         if ( deltaLoc(1) == s(k) )
             if ( k ~= 1 )
                 deltaMag(:, 1) = deltaMag(:, 1)/2;
             end
         end
-        
-        %if ( abs(deltaLoc(end) - s(k+1)) < pTol )
+                
         if ( deltaLoc(end) == s(k+1) )
             if ( k ~= numFuns )
                 deltaMag(:, end) = deltaMag(:, end)/2;
