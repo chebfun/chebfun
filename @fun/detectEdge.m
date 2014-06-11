@@ -36,9 +36,18 @@ function edge = detectEdge(f, op, vscale, hscale)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Get the domain:
 dom = f.domain;
-exps = get(f, 'exponents');
+
+% We do not allow an edge at the edge of unbounded domains:
 allowEdgeAtBdy = isfinite(dom);
+
+% TODO: Adjusting the operator to include exponents as is done below is a clear
+% violation of encapsulation. We could get around this by having a
+% 'modifyOperator()' method (better ideas for a name are welcome) which does
+% this adjustment (including the inclusion of the map in the unbounded case) at
+% the lower levels. Ideally this code should live at the SMOOTHFUN level?
+exps = get(f, 'exponents');
 
 % Locate the edges/splitting locations:
 if ( all( isfinite( dom ) ) )  
@@ -97,7 +106,7 @@ edge = forHandle(edge);
 
 end
 
-function edge = detectedgeMain(op, domain, vscale, hscale, derHandle)
+function edge = detectedgeMain(op, dom, vscale, hscale, derHandle)
 %   DERHANDLE is optional and is the derivative of a map (a function handle). It
 %   is used in the unbounded domain case. If it is not provided, the identity
 %   map is assumed.
@@ -105,9 +114,6 @@ function edge = detectedgeMain(op, domain, vscale, hscale, derHandle)
 if ( nargin < 5 )
     derHandle = @(x) 0*x + 1;
 end
-
-a = domain(1);
-b = domain(2);
 
 % Assume no edge is found:
 edge = [];
@@ -117,7 +123,7 @@ gridSize1 = 50;   % Grid size for 1st finite difference computations.
 gridSize234 = 15; % Grid size for higher derivative computations in loop.
 
 % Compute norm_inf of first numTestDers derivatives.
-[new_a, new_b, maxDer] = findMaxDer(op, a, b, numTestDers, gridSize1, ...
+[new_a, new_b, maxDer] = findMaxDer(op, dom, numTestDers, gridSize1, ...
     derHandle);
 
 % Keep track of endpoints:
@@ -132,7 +138,7 @@ while ( (maxDer(numTestDers) ~= inf) && ~isnan(maxDer(numTestDers)) ...
 
     % Compute maximum derivatives on interval:
     [new_a, new_b, maxDer] = ...
-        findMaxDer(op, ends(1), ends(2), numTestDers, gridSize234, derHandle);
+        findMaxDer(op, ends, numTestDers, gridSize234, derHandle);
     % Choose how many derivatives to test in this iteration:
     numTestDers = find((maxDer > (5.5 - (1:numTestDers)').*maxDerPrev ) & ...
         (maxDer > 10*vscale./hscale.^(1:numTestDers)'), 1, 'first');
@@ -142,7 +148,7 @@ while ( (maxDer(numTestDers) ~= inf) && ~isnan(maxDer(numTestDers)) ...
         return
     elseif ( (numTestDers == 1) && (diff(ends) < 1e-3*hscale) )
         % Blow up in first derivative; use findjump().
-        edge = findJump(op, ends(1) ,ends(2), vscale, hscale, derHandle);
+        edge = findJump(op, ends, vscale, hscale, derHandle);
         return
     end
 
@@ -152,7 +158,7 @@ while ( (maxDer(numTestDers) ~= inf) && ~isnan(maxDer(numTestDers)) ...
     % If the function value turns out to be very large between ENDS, then there 
     % might be a blowing up point. 
     if ( abs(op(mean(ends))) > 1e2*vscale )
-        blowUpPoint = findBlowup(op, ends(1), ends(2), gridSize1, gridSize234, ...
+        blowUpPoint = findBlowup(op, ends, gridSize1, gridSize234, ...
             vscale, hscale);
         if ( ~isempty(blowUpPoint) )
             edge = blowUpPoint;
@@ -167,8 +173,11 @@ edge = mean(ends);
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function edge = findJump(op, a, b, vscale, hscale, derHandle)
+function edge = findJump(op, dom, vscale, hscale, derHandle)
 % Detect blowup in first the derivative and use bisection to locate the edge.
+
+a = dom(1);
+b = dom(2);
 
 % Assume no edge has been found:
 edge = [];
@@ -248,9 +257,11 @@ end
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [na, nb, maxDer] = findMaxDer(op, a, b, numTestDers, gridSize, ...
-    derHandle)
+function [na, nb, maxDer] = findMaxDer(op, dom, numTestDers, gridSize, derHandle)
 % Compute the norm_inf of derivatives 1:nder of f.
+
+a = dom(1);
+b = dom(2);
 
 % Initial setup:
 maxDer = zeros(numTestDers, 1);
@@ -289,8 +300,11 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function blowUpPoint = findBlowup(op, a, b, gridSize1, gridSize234, vscale, hscale)
+function blowUpPoint = findBlowup(op, dom, gridSize1, gridSize234, vscale, hscale)
 % Detects blowup location in function values.
+
+a = dom(1);
+b = dom(2);
 
 % Evaluate OP at the ends of [a, b]:
 x = [a ; b];
