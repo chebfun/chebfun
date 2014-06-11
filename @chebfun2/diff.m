@@ -18,7 +18,7 @@ function F = diff(F, k, dim)
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 % Empty check:
-if ( isempty( F ) )
+if ( isempty(F) )
     return
 end
 
@@ -34,17 +34,16 @@ elseif ( numel(dim) ~= 1 )
     error('CHEBFUN2:DIFF:DIM', 'Dim should be either 1 or 2.');
 end
 
-% Diff the individual column and row slices.:
-if ( numel( k ) == 2 && nargin < 3)
-   F.cols =  diff( F.cols, k(2) );
-   F.rows = diff( F.rows, k(1) );
+% Diff the individual column and row slices:
+if ( numel(k) == 2 && nargin < 3 )
+   F.cols =  diff(F.cols, k(2));
+   F.rows = diff(F.rows, k(1));
 elseif ( dim == 1 )
-    F.cols = diff( F.cols, k );
+    F.cols = diff(F.cols, k);
 elseif ( dim == 2 )
-    F.rows = diff( F.rows, k );
+    F.rows = diff(F.rows, k);
 else 
     error('CHEBFUN2:DIFF:dim', 'Can compute derivative in x or y only.');
-    
 end
 
 end

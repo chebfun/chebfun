@@ -1,5 +1,5 @@
 classdef chebfun2
-% CHEBFUN2 CHEBFUN2 class for constructing functions on [a,b]x[c,d].
+%CHEBFUN2   CHEBFUN2 class for constructing functions on [a,b]x[c,d].
 % 
 %   Class for approximating functions defined on finite rectangles. The 
 %   functions should be smooth.
@@ -65,12 +65,12 @@ classdef chebfun2
     % Static methods implemented by CHEBFUN class.
     methods ( Static = true )
         
-        X = coeffs2vals( U ); 
+        X = coeffs2vals(U); 
         
-        X = vals2coeffs( U ); 
+        X = vals2coeffs(U); 
         
         % Padua points to tensor grid:
-        [C, V, X, Y] = paduaVals2coeffs( F, dom ); 
+        [C, V, X, Y] = paduaVals2coeffs(F, dom); 
         
         [xx, yy] = chebpts2(nx, ny, domain);
         
@@ -84,7 +84,7 @@ classdef chebfun2
         out = domainCheck(f, g)
         
         % Scale rows and cols of a CHEBFUN2 so that all pivots are 1
-        F = normalizePivots( F )
+        F = normalizePivots(F)
         
         % Normalize the rows and columns of a CHEBFUN2.
         F = normalizeRowsAndCols(F, p)
@@ -93,7 +93,7 @@ classdef chebfun2
         pass = sampleTest(f, op, tol, flag)
         
         % Is a chebfun2 all positive or negative? 
-        [bol, wzero] = singleSignTest( f ) 
+        [bol, wzero] = singleSignTest(f) 
     end
 
     % Private methods implemented by CHEBFUN2 class.
@@ -112,4 +112,3 @@ classdef chebfun2
     end
     
 end
-
