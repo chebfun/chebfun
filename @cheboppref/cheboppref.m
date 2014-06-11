@@ -60,11 +60,29 @@ classdef cheboppref < chebpref
 %     The value of lambdaMin determines the minimum allowed step-size that the
 %     damped Newton iteration is allowed to take.
 %
+%   maxDimension
+%     [4096]
+%
+%     The maximum number of gridpoints/coefficients used as linear operators are
+%     discretized at finer and finer grids to resolve the solution. The
+%     intermediate values for the discretization between cheboppref.minDimension
+%     and cheboppref.maxDimension depend on the discretization used for the
+%     operator.
+%
 %   maxIter                     - Maximum number of Newton steps
 %     25
 %
 %   The maximum number of steps that the (damped) Newton iteration is allowed to
 %   take, before it is considered to be non-convergent.
+%
+%   minDimension
+%     [32]
+%
+%     The minimum number of gridpoints/coefficients used as linear operators are
+%     discretized at finer and finer grids to resolve the solution. The
+%     intermediate values for the discretization between cheboppref.minDimension
+%     and cheboppref.maxDimension depend on the discretization used for the
+%     operator.
 %
 %   plotting                    - Plotting of intermediate Newton steps
 %     DELAY
@@ -312,7 +330,7 @@ classdef cheboppref < chebpref
             factoryPrefs.display = 'off';
             factoryPrefs.errTol = 1e-10;
             factoryPrefs.lambdaMin = 1e-6;
-            factoryPrefs.maxDimension = 2048;
+            factoryPrefs.maxDimension = 4096;
             factoryPrefs.maxIter = 25;
             factoryPrefs.minDimension = 32;
             factoryPrefs.plotting = 'off';
