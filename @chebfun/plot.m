@@ -339,7 +339,7 @@ end
 set(gca, 'xlim', xLim)
 
 % Set the Y-limits if appropriate values have been suggested:
-if ( ~defaultXLim )
+if ( ~defaultYLim )
 
     % If holding, then make sure not to shrink the Y-limits.
     if ( holdState )
@@ -349,10 +349,9 @@ if ( ~defaultXLim )
     % Give some extra space at the top and the bottom:
     spaceHeight = diff(yLim)/10;
     yLim = [yLim(1)-spaceHeight yLim(2)+spaceHeight];
-    
+   
+    set(gca, 'ylim', yLim)
 end
-
-set(gca, 'ylim', yLim)
 
 %% Misc:
 
