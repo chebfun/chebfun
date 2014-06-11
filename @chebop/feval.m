@@ -86,7 +86,7 @@ if ( numberOfInputs == 1)
     
     out = N.op(u);
     
-elseif ( numberOfInputs <= 2 )
+elseif ( numberOfInputs == 2 )
     % If N has two input arguments, either we have a scalar problem, or the
     % problem is specified on chebmatrix format, e.g.,
     %   N.op = @(x, u) [ diff(u{1},2) + u{2}; u{1} + diff(u{2}];
@@ -102,21 +102,21 @@ elseif ( numberOfInputs <= 2 )
         % Got passed both x and u.
         x = varargin{1};
         u = varargin{2};
-        
-        % If we have a scalar problem, but U is still a CHEBMATRIX, we need to
-        % extract the BLOCK of U in order to be evaluate N. If on the other
-        % hand, U has more than one block, but NUMBEROFINPUTS is still less than
-        % or equal to 2 (which got us here in the first place), we must be
-        % dealing with a CHEBOP N, whose OP is specified on CHEBMATRIX format,
-        % e.g.,
-        %   N.op = @(x,u) [diff(u{1}) + u{2}; u{1} + diff(u{2})];
-        if ( isa(u, 'chebmatrix') && max(size(u)) == 1 )
-            u = u.blocks{1};
-        end
 
     else
         error('CHEBFUN:CHEBOP:feval:numInputs', ...
             'Unexpected number of input arguments.')
+    end
+    
+    % If we have a scalar problem, but U is still a CHEBMATRIX, we need to
+    % extract the BLOCK of U in order to be evaluate N. If on the other
+    % hand, U has more than one block, but NUMBEROFINPUTS is still less than
+    % or equal to 2 (which got us here in the first place), we must be
+    % dealing with a CHEBOP N, whose OP is specified on CHEBMATRIX format,
+    % e.g.,
+    %   N.op = @(x,u) [diff(u{1}) + u{2}; u{1} + diff(u{2})];
+    if ( isa(u, 'chebmatrix') && max(size(u)) == 1 )
+        u = u.blocks{1};
     end
     
     % Evaluate the operator!
