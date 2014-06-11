@@ -1,49 +1,49 @@
-function out = legpoly(f, varargin)
-%LEGPOLY    Legendre polynomial coefficients of a CHEBFUN.
-%   A = LEGPOLY(F, N) returns the first N+1 coefficients in the Legendre series
-%   expansion of the CHEBFUN F, so that such that F approximately equals A(1)
-%   P_N(x) + ... + A(N) P_1(x) + A(N+1) P_0(x) where P_N(x) denotes the N-th
-%   Legendre polynomial. A is a row vector.
+function out = legcoeffs(f, varargin)
+%LEGCOEFFS    Legendre polynomial coefficients of a CHEBFUN.
+%   A = LEGCOEFFS(F, N) returns the first N+1 coefficients in the Legendre
+%   series expansion of the CHEBFUN F, so that such that F approximately equals
+%   A(1) P_N(x) + ... + A(N) P_1(x) + A(N+1) P_0(x) where P_N(x) denotes the
+%   N-th Legendre polynomial. A is a row vector.
 %
-%   If F is smooth (i.e., numel(f.funs) == 1), then A = LEGPOLY(F) will assume
+%   If F is smooth (i.e., numel(f.funs) == 1), then A = LEGCOEFFS(F) will assume
 %   that N = length(F) - 1;
 %
-%   There is also a LEGPOLY command in the Chebfun trunk directory which
+%   There is also a LEGCOEFFS command in the Chebfun trunk directory which
 %   computes the CHEBFUN corresponding to the Legendre polynomial P_n(x).
 %
-%   LEGPOLY does not support quasimatrices.
+%   LEGCOEFFS does not support quasimatrices.
 %
-% See also CHEBPOLY.
+% See also CHEBCOEFFS, JACCOEFFS, FOURCOEFFS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( numel(f) > 1 )
-    error('CHEBFUN:legpoly:quasi', 'LEGPOLY does not support quasimatrices.');
+    error('CHEBFUN:legcoeffs:quasi', 'LEGCOEFFS does not support quasimatrices.');
 end
 
-% Call FUN/LEGPOLY():
+% Call FUN/LEGCOEFFS():
 if ( numel( f.funs ) == 1 )
-    out = legpoly(f.funs{1}, varargin{:}).';
+    out = legcoeffs(f.funs{1}, varargin{:}).';
 else
     if ( nargin < 2 )
-        error('CHEBFUN:legpoly:n', ...
-            'Input is piecewise, so LEGPOLY() expects a second input argument.')
+        error('CHEBFUN:legcoeffs:n', ...
+            'Input is piecewise, so LEGCOEFFS() expects a second input argument.')
     end
-    out = legpolyPiecewise(f, varargin{:});
+    out = legcoeffsPiecewise(f, varargin{:});
 end
 
 end
 
-function out = legpolyPiecewise(f, n)
-%LEGPOLYPIECEWISE    Compute Legendre coefficients of a piecewise smooth CHEBFUN
+function out = legcoeffsPiecewise(f, n)
+%LEGCOEFFSPIECEWISE  Compute Legendre coefficients of a piecewise smooth CHEBFUN
 % If F is 'simple' (i.e., is a piecewise smooth Chebyshev representation), then
 % each of the required inner-products are computed so that c_k = int P_k f(x)dx.
 %
 % If F is non-trivial (e.g., contains exponents or a non-linear map), then the
-% coefficients are computed by creating a LEGPOLY quasimatrix and computing the
-% inner-products using CHEBFUN/MTIMES(). This can be significatnly slower than
-% the above.
+% coefficients are computed by creating a LEGCOEFFS quasimatrix and computing
+% the inner-products using CHEBFUN/MTIMES(). This can be significatnly slower
+% than the above.
 
 % Domain:
 a = f.domain(1);
@@ -93,7 +93,7 @@ if ( isSimple )
     end
     
 else
-    % Compute using LEGPOLY(): (This will be much slower!)
+    % Compute using LEGCOEFFS(): (This will be much slower!)
     
     % Legendre-Vandermonde matrix:
     Enorm = legpoly(0:n-1, [a, b]);

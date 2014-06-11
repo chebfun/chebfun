@@ -12,7 +12,7 @@ j = 1;
 T10 = chebpoly(10);
 T8 = chebpoly(8);
 f = T10 * T10' + T8 * T10'; 
-X = chebpoly2( f );
+X = chebcoeffs2( f );
 Exact = zeros(11); Exact(1,1) = 1; Exact(3,1) = 1; 
 pass(j) = norm( X - Exact ) < tol; j = j + 1; 
 

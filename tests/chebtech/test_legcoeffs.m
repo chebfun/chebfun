@@ -1,6 +1,6 @@
-% Test file for chebtech/legpoly.m
+% Test file for chebtech/legcoeffs.m
 
-function pass = test_legpoly(pref)
+function pass = test_legcoeffs(pref)
 
 if ( nargin < 1 )
     pref = chebtech.techPref();
@@ -19,11 +19,11 @@ for n = 1:2
     % Test a scalar function (with P_3)
     x = testclass.chebpts(3);
     f = testclass.make(.5*(3*x.^2 - 1), [], pref);
-    pass(n, 1) = norm(legpoly(f) - [1 0 0]', inf) < tol;
+    pass(n, 1) = norm(legcoeffs(f) - [1 0 0]', inf) < tol;
     
     % Test a vector function (with [P_1, P_2, P_3])
     x = testclass.chebpts(3);
     f = testclass.make([.5*(3*x.^2 - 1), x, (1 + 0*x)], [], pref);
-    pass(n, 2) = norm(legpoly(f) - eye(3), inf) < tol;
+    pass(n, 2) = norm(legcoeffs(f) - eye(3), inf) < tol;
     
 end

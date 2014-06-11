@@ -1,16 +1,16 @@
-function b = legpoly(f, n)
-%LEGPOLY   Compute Legendre series coefficients of a CHEBTECH object.
-%   B = LEGPOLY(F) returns the Legendre series coefficients of CHEBTECH F, so
+function b = legcoeffs(f, n)
+%LEGCOEFFS   Compute Legendre series coefficients of a CHEBTECH object.
+%   B = LEGCOEFFS(F) returns the Legendre series coefficients of CHEBTECH F, so
 %   that F = B(N+1)*P_N + ... + B(1)*P_0, where P_k is the kth Legendre
 %   polynomial.
 %
-%   B = LEGPOLY(F, N) returns the first N+1 coefficients. If length(F) < N + 1
+%   B = LEGCOEFFS(F, N) returns the first N+1 coefficients. If length(F) < N + 1
 %   then the additional entries of B are padded with zeros.
 %
 %   If F is an array-valued CHEBTECH, then a matrix of coefficients is returned
 %   so that F(:,k) = B(N+1,k)*P_N + ... + B(1,k)*P_0.
 %
-% See also CHEBPOLY.
+% See also CHEBCOEFFS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

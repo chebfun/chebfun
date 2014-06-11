@@ -4,8 +4,8 @@ function out = chebcoeffs(f, varargin)
 %   the row vector such that F = ... + A(1) T_N(x) + ... + A(N) T_1(x) +
 %   A(N+1) T_0(x), where T_M(x) denotes the M-th Chebyshev polynomial.
 %
-%   If F is a smooth CHEBFUN (i.e., with no breakpoints), then CHEBPOLY(F) is
-%   equivalent to CHEBPOLY(F, LENGTH(F)).
+%   If F is a smooth CHEBFUN (i.e., with no breakpoints), then CHEBCOEFFS(F) is
+%   equivalent to CHEBCOEFFS(F, LENGTH(F)).
 %
 %   If F is array-valued with M columns, then A is an MxN matrix.
 %
@@ -13,7 +13,7 @@ function out = chebcoeffs(f, varargin)
 %   Chebyshev expansion of F in 2nd-kind Chebyshev polynomials F = ... + C(1)
 %   U_N(x) + ... + C(N) U_1(x) + C(N+1) U_0(x).
 %
-% See also LEGPOLY FOURCOEFFS.
+% See also LEGCOEFFS, FOURCOEFFS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -26,7 +26,8 @@ end
 
 if ( numel(f) > 1 )
     % TODO: Why not?
-    error('CHEBFUN:chebpoly:quasia', 'CHEBPOLY does not support quasimatrices.');
+    error('CHEBFUN:chebcoeffs:quasia', ...
+        'CHEBCOEFFS does not support quasimatrices.');
 end
 
 %% Initialise:
@@ -54,15 +55,15 @@ if ( isempty(N) && numFuns == 1 )
     N = length(f);
 end
 if ( isempty(N) )
-    error('CHEBFUN:chebpoly:inputN', ...
+    error('CHEBFUN:chebcoeffs:inputN', ...
         'Input N is required for piecewise CHEBFUN objects.');
 end
 if ( ~isscalar(N) || isnan(N) )
-    error('CHEBFUN:chebpoly:inputN', 'Input N must be a scalar.');
+    error('CHEBFUN:chebcoeffs:inputN', 'Input N must be a scalar.');
 end
 if ( any(isinf(f.domain)) )
 % Chebyshev coefficients are not defined on an unbounded domain.
-    error('CHEBFUN:chebpoly:infint', ...
+    error('CHEBFUN:chebcoeffs:infint', ...
         'Infinite intervals are not supported here.');
 end
 
@@ -74,11 +75,11 @@ end
 %% Compute the coefficients:
 if ( numFuns == 1 )
     
-    % CHEBPOLY() of a smooth piece:
+    % CHEBCOEFFS() of a smooth piece:
     out = chebcoeffs(f.funs{1}, N).';    
     
 else
-    % CHEBPOLY() of a piecewise smooth CHEBFUN:
+    % CHEBCOEFFS() of a piecewise smooth CHEBFUN:
 
     % Compute coefficients via inner products.
     d = f.domain([1, end]);

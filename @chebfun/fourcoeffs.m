@@ -36,7 +36,7 @@ function varargout = fourcoeffs(f, N)
 %   rows with each row corresponding to the Fourier coefficients for
 %   chebfun.
 %
-% See also CHEBCOEFFS.
+% See also CHEBCOEFFS, LEGCOEFFS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.

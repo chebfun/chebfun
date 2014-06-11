@@ -1,6 +1,6 @@
-% Tests for @chebfun/chebpolyplot.m.
+% Tests for @chebfun/chebcoeffsplot.m.
 
-function pass = test_chebpolyplot(pref)
+function pass = test_chebcoeffsplot(pref)
 
 if ( nargin < 1 )
     pref = chebfunpref();
@@ -18,16 +18,16 @@ Q = cheb2quasi(F);
 
 hfig = figure('Visible', 'off');
 
-pass(1) = doesNotCrash(@() chebpolyplot(f));
-pass(2) = doesNotCrash(@() chebpolyplot(g));
-pass(3) = doesNotCrash(@() chebpolyplot(F));
-pass(4) = doesNotCrash(@() chebpolyplot(G));
-pass(5) = doesNotCrash(@() chebpolyplot(Q));
+pass(1) = doesNotCrash(@() chebcoeffsplot(f));
+pass(2) = doesNotCrash(@() chebcoeffsplot(g));
+pass(3) = doesNotCrash(@() chebcoeffsplot(F));
+pass(4) = doesNotCrash(@() chebcoeffsplot(G));
+pass(5) = doesNotCrash(@() chebcoeffsplot(Q));
 
 % Check plot flags and other options.
-pass(6) = doesNotCrash(@() chebpolyplot(g, 'noepslevel'));
-pass(7) = doesNotCrash(@() chebpolyplot(g, 'loglog'));
-pass(8) = doesNotCrash(@() chebpolyplot(g, '.--'));
+pass(6) = doesNotCrash(@() chebcoeffsplot(g, 'noepslevel'));
+pass(7) = doesNotCrash(@() chebcoeffsplot(g, 'loglog'));
+pass(8) = doesNotCrash(@() chebcoeffsplot(g, '.--'));
 
 close(hfig);
 
@@ -40,6 +40,7 @@ try
     pass = true;
 catch ME;
     pass = false;
+    rethrow(ME)
 end
 
 end

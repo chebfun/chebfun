@@ -226,7 +226,7 @@ if ( (numel(f.funs) > 1) || (length(f) > 128) )
 end
 
 % Compute the Chebyshev coefficients.
-c = chebpoly(f, length(f));
+c = chebcoeffs(f, length(f));
 c(end) = 2*c(end);
 
 % Check for symmetries and reduce degrees accordingly.

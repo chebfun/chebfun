@@ -13,7 +13,7 @@ function varargout = chebcoeffsplot(f, varargin)
 %   H = CHEBCOEFFSPLOT(F) returns a column vector of handles to lineseries
 %   objects. The final entry is that of the epslevel plot.
 %
-% See also CHEBFUN/PLOT CHEBFUN/FOURCOEFFSPLOT
+% See also CHEBFUN/PLOT, FOURCOEFFSPLOT
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -26,10 +26,6 @@ if ( isempty(f) )
     return
 end
 
-if ~isa(f.funs{1}.onefun,'chebtech')
-    error('CHEBFUN:chebcoeffsplot:NotAvailable','Can only plot Chebyshev coefficients of Chebyshev-based chebfuns.  Consider using four2cheb and then calling this function.');
-end
-
 % Store the hold state of the current axis:
 holdState = ishold;
 
@@ -40,7 +36,7 @@ if ( nargin > 1 && ischar(varargin{1}) && numel(varargin{1}) < 4 )
     % parameters have more than characters.)
     col = regexp(varargin{1}, '[bgrcmykw]', 'match');
     if ( numel(col) > 1 )
-        error('CHEBFUN:chebpolyplot:color', ...
+        error('CHEBFUN:chebcoeffsplot:color', ...
             'Error in color/linetype argument.');
     elseif ( ~isempty(col) )
         col = col{:};
@@ -100,13 +96,10 @@ function [h1, h2] = columnChebcoeffsplot(f, col, varargin)
 % Get the coeff data:
 numFuns = numel(f.funs);
 n = cell(numFuns, 1);
-c = get(f, 'coeffs');
-% [TODO]: GET('coeffs') should not be used. We proably need chebpolyplotData()
-% methods, similar to those used by the PLOT() funtion.
-if ( ~iscell(c) )
-    c = {c};
+c = cell(numFuns, 1);
+for k = 1:numFuns
+    c{k} = abs(chebcoeffs(f.funs{k}));
 end
-c = cellfun(@abs, c, 'UniformOutput', false);
 for k = 1:numFuns
     n{k} = (size(c{k}, 1)-1:-1:0).';
 end

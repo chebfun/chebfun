@@ -28,7 +28,7 @@ f = chebfun(@(x) polyval(a, x)./polyval(b, x));
 [p, q, r] = chebpade(f, 7, 2);
 pass(3) = norm(f - p./q, inf) < 2e-15;
 
-cp = chebpoly(p, length(p));
+cp = chebcoeffs(p, length(p));
 pass(4) = abs(cp(end) - 17/46) < 1e-13;
 
 % Try non-rational and complex-valued functions.

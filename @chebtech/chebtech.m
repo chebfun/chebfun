@@ -178,7 +178,7 @@ classdef chebtech < smoothfun % (Abstract)
         f = cell2mat(f)
 
         % Plot (semilogy) the Chebyshev coefficients of a CHEBTECH object.
-        h = chebpolyplot(f, varargin)
+        h = chebcoeffsplot(f, varargin)
 
         % Check the happiness of a CHEBTECH. (Classic definition).
         [ishappy, epslevel, cutoff] = classicCheck(f, values, pref)
@@ -256,7 +256,7 @@ classdef chebtech < smoothfun % (Abstract)
         out = iszero(f)
         
         % Return Legendre coefficients of a CHEBTECH.
-        c_leg = legpoly(f, n)
+        c_leg = legcoeffs(f, n)
         
         % Length of a CHEBTECH.
         len = length(f)

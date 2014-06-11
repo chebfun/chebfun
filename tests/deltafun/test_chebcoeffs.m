@@ -1,6 +1,6 @@
-% Test file for @deltafun/chebpoly.m.
+% Test file for @deltafun/chebcoeffs.m.
 
-function pass = test_chebpoly(pref)
+function pass = test_chebcoeffs(pref)
 
 if (nargin < 1)
     pref = chebfunpref();
@@ -14,6 +14,6 @@ loc = .9*(a + (b-a)*rand(1,3));
 
 df = deltafun(f, struct('deltaMag', mag, 'deltaLoc', loc));
 
-pass(1) = all( chebpoly(f) == chebpoly(df) );
+pass(1) = all( chebcoeffs(f) == chebcoeffs(df) );
 
 end

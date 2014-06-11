@@ -4,7 +4,7 @@ function out = chebcoeffs(f, N)
 %   of F such that F = ... + A(1) T_{N-1}(x) + ... + A(N-1) T_1(x) + A(N) T_0(x)
 %   where T_k(x) denotes the k-th Chebyshev polynomial.
 %
-% See also LEGPOLY FOURCOEFFS.
+% See also LEGPOLY.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.

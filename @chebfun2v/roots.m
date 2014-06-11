@@ -111,7 +111,8 @@ g = g/abs(g.pivotValues(1));
 
 %%%%% subdivision for accuracy when dynamical range is an issue %%%%%%%%
 % find region in which roots might have been missed
-F = chebpoly2(f); G = chebpoly2(g);
+F = chebcoeffs2(f); 
+G = chebcoeffs2(g);
 
 xpts = linspace(xmin,xmax,2*max(size(F,2),size(G,2)));
 ypts = linspace(ymin,ymax,2*max(size(F,1),size(G,1)));

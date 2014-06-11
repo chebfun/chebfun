@@ -1,6 +1,5 @@
 function varargout = fourcoeffsplot(f, varargin)
-%FOURCOEFFSPLOT Display Fourier coefficients graphically.
-%
+%FOURCOEFFSPLOT   Display Fourier coefficients graphically.
 %   FOURCOEFFSPLOT(F) plots the coefficients of a Fourier-based CHEBFUN on a
 %   semilogy scale. A horizontal line at the EPSLEVEL of F is also plotted. If F
 %   is an array-valued CHEBFUN then a curve is plotted for each component
@@ -14,11 +13,12 @@ function varargout = fourcoeffsplot(f, varargin)
 %   H = FOURCOEFFSPLOT(F) returns a column vector of handles to lineseries
 %   objects. The final entry is that of the EPSLEVEL plot.
 %
-%
 % See also CHEBFUN/PLOT CHEBFUN/CHEBCOEFFSPLOT.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
+
+% TODO: There is a *lot* of duplication here with the chebcoeffsplot() code.
 
 % Deal with an empty input:
 if ( isempty(f) )
@@ -28,8 +28,12 @@ if ( isempty(f) )
     return
 end
 
-if ~isa(f.funs{1}.onefun,'fourtech')
-    error('CHEBFUN:fourcoeffsplot:NotAvailable','Can only plot Fourier coefficients of a Fourier-based chebfuns.  Consider using cheb2four and then calling this function.');
+% TODO: This breaks encapsulation. 
+%  Why don't we just call FOURCOEFFS on each of the FUNS?
+if ( ~isa(f.funs{1}.onefun, 'fourtech') )
+    error('CHEBFUN:fourcoeffsplot:NotAvailable', ...
+        ['Can only plot Fourier coefficients of a Fourier-based CHEBFUNS.\n', ...
+         'Consider using CHEB2FOUR and then calling this function.']);
 end
 
 % Set defaults:
@@ -99,7 +103,7 @@ if ( ~loglogPlot )
         h = semilogy(coeffIndex, absCoeffs, args{:});
     end
 else
-    if isEven
+    if ( isEven 0
         % In this case the positive cofficients have an additional term
         % corresponding to the cos(N/2*x) coefficient. 
         cNeg = absCoeffs(n/2+1:n,:);

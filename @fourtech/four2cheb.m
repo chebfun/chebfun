@@ -4,13 +4,14 @@ function f = four2cheb(f)
 %
 % See also CHEB2FOUR.
 
-%
-% Simply construct a new chebtech object directly from the fourtech.
-%
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
 
 % TODO: Is there a fast transfrom from Fourier to Chebyshev?
+% TODO: Is it possible to use a fixed-length construction here?
 
-% On a coin flip, it was decided to always use chebtech2.
+% Simply construct a new chebtech object directly from the FOURTECH. (On a coin
+% flip, it was decided to always use CHEBTECH2.)
 f = chebtech2(@(x) f.feval(x));
 
 end

@@ -318,7 +318,7 @@ classdef chebfun
         g = ceil(f)
         
         % Plot information regarding the representation of a CHEBFUN object:
-        h = chebpolyplot(f, varargin);
+        h = chebcoeffsplot(f, varargin);
 
         % Construct complex CHEBFUN from real and imaginary parts.
         C = complex(A, B)

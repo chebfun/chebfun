@@ -1,5 +1,5 @@
-function pass = test_chebpolyplot(pref)
-% This test just ensures that chebmatrix chebpolyplot() does not crash.
+function pass = test_chebcoeffsplot(pref)
+% This test just ensures that chebmatrix chebcoeffsplot() does not crash.
 
 % Create an invisible figure to plot on:
 hfig = figure('Visible', 'off');
@@ -9,7 +9,7 @@ hfig = figure('Visible', 'off');
 d = [-2 2];                   % function domain
 x = chebfun(@(x) x, d);         
 
-%% Create a couple of chebmatrices and try to call chebpolyplot on them
+%% Create a couple of chebmatrices and try to call chebcoeffsplot on them
 
 % Only CHEBFUNS
 cm1 = [sin(x-.32); cos(100*(x+.3)); 3*tanh(50*sin(x-.2))];
@@ -21,10 +21,10 @@ cm3 = [sin(x-.32); cos(100*(x+.3)); 3];
 cm4 = [sin(x-.32), 100; ...
     3 4*sin((x+.25))];
 
-pass(1) = doesNotCrash(@() chebpolyplot(cm1));
-pass(2) = doesNotCrash(@() chebpolyplot(cm2));
-pass(3) = doesNotCrash(@() chebpolyplot(cm3));
-pass(4) = doesNotCrash(@() chebpolyplot(cm4));
+pass(1) = doesNotCrash(@() chebcoeffsplot(cm1));
+pass(2) = doesNotCrash(@() chebcoeffsplot(cm2));
+pass(3) = doesNotCrash(@() chebcoeffsplot(cm3));
+pass(4) = doesNotCrash(@() chebcoeffsplot(cm4));
 
 
 %%
@@ -38,7 +38,8 @@ function pass = doesNotCrash(fn)
 try
     fn();
     pass = true;
-catch
+catch ME
+    rethrow(ME)
     pass = false;
 end
 

@@ -1,23 +1,23 @@
-function varargout = chebpolyplot(f, varargin)
-%CHEBPOLYPLOT   Display Chebyshev coefficients graphically.
-%   CHEBPOLYPLOT(F) plots the Chebyshev coefficients of a CHEBTECH F on a
+function varargout = coeffsplot(f, varargin)
+%COEFFSPLOT   Display Chebyshev coefficients graphically.
+%   COEFFSPLOT(F) plots the Chebyshev coefficients of a CHEBTECH F on a
 %   semilogy scale. A horizontal line at the EPSLEVEL of F is also plotted. If F
 %   is an array-valued CHEBTECH then a curve is plotted for each component
 %   (column) of F.
 %
-%   CHEBPOLYPLOT(F, S) allows further plotting options, such as linestyle,
+%   COEFFSPLOT(F, S) allows further plotting options, such as linestyle,
 %   linecolor, etc, in the standard MATLAB manner. If S contains a string
 %   'LOGLOG', the coefficients will be displayed on a log-log scale. If S
 %   contains a string 'NOEPSLEVEL', the EPSLEVEL is not plotted.
 %
-%   H = CHEBPOLYPLOT(F) returns a column vector of handles to lineseries
+%   H = COEFFSPLOT(F) returns a column vector of handles to lineseries
 %   objects. The final entry is that of the EPSLEVEL plot.
 %
-%   Note: to make the CHEBPOLYPLOT easier to read, zero coefficients have a
+%   Note: to make the COEFFSPLOT easier to read, zero coefficients have a
 %   small value added to them (typically F.EPSLEVEL) so that the curve displayed
 %   is continuous.
 %
-% See also CHEBPOLY, PLOT.
+% See also CHEBCOEFFS, PLOT.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
