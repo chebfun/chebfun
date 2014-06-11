@@ -147,10 +147,10 @@ classdef (InferiorClasses = {?chebfun2}) adchebfun2
             
         end
         
-        function f = divergence(f)
+        function f = divergence( F )
             %DIVERGENCE   Divergence of an ADCHEBFUN2.
             
-            f = diff(f, 1, 2) + diff(f, 1, 1);
+            f = diff(F(1), 1, 2) + diff(F(2), 1, 1);
             
         end
         
