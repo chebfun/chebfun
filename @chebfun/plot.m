@@ -90,6 +90,11 @@ end
 % Initialize flags:
 isComplex = false;
 intervalIsSet = false;
+
+% Initialize XLIM and YLIM. Note that the first entries are initialized to be
+% UPPER limits on the LOWER parts of the axes, while the second entries
+% correspond to LOWER bounds on the UPPER parts of the axes. Hence, this
+% somewhat strange convention.
 xLim = [inf, -inf];
 yLim = [inf, -inf];
 defaultXLim = 1;
@@ -326,20 +331,18 @@ end
 
 %% Setting xLim and yLim:
 
-% Set the X-limits if appropriate values have been suggested:
-if ( ~defaultXLim )
-
-    % If holding, then make sure not to shrink the X-limits.
-    if ( holdState )
-        xLim = [min(xLimCurrent(1), xLim(1)), max(xLimCurrent(2), xLim(2))];
-    end    
-    
-    set(gca, 'xlim', xLim)
-    
+% If holding, then make sure not to shrink the X-limits.
+if ( holdState )
+    xLim = [min(xLimCurrent(1), xLim(1)), max(xLimCurrent(2), xLim(2))];
 end
 
+% We always want to set the x-limits. Otherwise, plots like
+%   plot(chebfun(@(x) sin(x), [0 pi])
+% will have extra white space around the ends of the domain, and look ugly.
+set(gca, 'xlim', xLim)
+
 % Set the Y-limits if appropriate values have been suggested:
-if ( ~defaultYLim )
+if ( ~defaultYLim || holdState )
 
     % If holding, then make sure not to shrink the Y-limits.
     if ( holdState )
