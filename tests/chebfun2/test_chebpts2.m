@@ -1,7 +1,7 @@
 function pass = test_chebpts2( pref ) 
 % Test CHEBPTS2 
 
-if ( nargin == 0) 
+if ( nargin == 0 ) 
     pref = chebfunpref; 
 end
 
