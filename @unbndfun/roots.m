@@ -10,7 +10,12 @@ function r = roots(f, varargin)
 
 % Call ROOTS@FUN.  Roots of an UNBNDFUN should always be pruned to try and
 % remove spurious roots caused by fast decay of f near infinite endpoints.
-r = roots@classicfun(f, varargin{:}, 'prune', true);
+if ( (nargin > 1) && isstruct(varargin{1}) )
+    varargin{1}.filterEndpointRoots = true;
+    r = roots@classicfun(f, varargin{:});
+else
+    r = roots@classicfun(f, varargin{:}, 'filterEndpointRoots', true);
+end
 
 % Do further filtering in case something was missed by the pruning filter in
 % ROOTS@FUN():

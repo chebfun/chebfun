@@ -20,13 +20,16 @@ function out = roots(f, varargin)
 %   PRUNE:
 %       [0]
 %        1  - Prune 'spurious' complex roots if ALL == 1 and RECURSE == 0.
-%             Also, attempt to prune spurious roots near the interval endpoints
-%             that may emerge if the function decays to zero there.
 %
 %   QZ: 
 %       [0] - Use the colleague matrix linearization and the QR algorithm.
 %        1  - Use the colleague matrix pencil linearization and the QZ 
 %             algorithm for potentially extra numerical stability. 
+%
+%   FILTERENDPOINTROOTS:
+%       [0]
+%        1  - Attempt to prune spurious roots near the interval endpoints
+%             that may emerge if the function decays to zero there.
 %
 %   If F is an array-valued CHEBTECH then there is no reason to expect each
 %   column to have the same number of roots. In order to return a useful output,
@@ -115,7 +118,8 @@ end
 function out = roots_scalar(f, varargin)
 
 % Default preferences:
-rootsPref = struct('all', 0, 'recurse', 1, 'prune', 0, 'zeroFun', 1, 'qz', 0);
+rootsPref = struct('all', 0, 'recurse', 1, 'prune', 0, 'zeroFun', 1, ...
+    'qz', 0, 'filterEndpointRoots', 0);
 % Subdivision maps [-1,1] into [-1, splitPoint] and [splitPoint, 1].
 splitPoint = -0.004849834917525; % This is an arbitrary number.
 
@@ -159,22 +163,18 @@ c = flipud(f.coeffs)/f.vscale;
 % Call the recursive rootsunit function:
 r = rootsunit_coeffs(c, 100*eps*max(f.hscale, 1));
 
+% Try to filter out spurious roots that may arise near +/- 1 if the function
+% decays to zero there.
+if ( rootsPref.filterEndpointRoots )
+    r = filterEndpointRoots(r, f);
+end
 
 % Prune the roots, if required:
-if ( rootsPref.prune )
-    % Try to filter out spurious roots that may arise near +/- 1 if the function
-    % decays to zero there.
-    r = filterEndpointRoots(r, f);
-
-    % Filter spurious complex roots.
-    if ( ~rootsPref.recurse )
-        rho = sqrt(eps)^(-1/length(f));
-        rho_roots = abs(r + sqrt(r.^2 - 1));
-        rho_roots(rho_roots < 1) = 1./rho_roots(rho_roots < 1);
-        out = r(rho_roots <= rho);
-    else
-        out = r;
-    end
+if ( rootsPref.prune && ~rootsPref.recurse )
+    rho = sqrt(eps)^(-1/length(f));
+    rho_roots = abs(r + sqrt(r.^2 - 1));
+    rho_roots(rho_roots < 1) = 1./rho_roots(rho_roots < 1);
+    out = r(rho_roots <= rho);
 else
     out = r;
 end
@@ -385,14 +385,6 @@ n = length(f);
 % Filter the roots at the left endpoint.
 if ( abs(feval(f, -1)) < tol )
     for k = 1:1:numRoots
-        % If the root is really close to the endpoint, we can't reject it:
-        % functions _can_ have roots near the endpoint, and it is inevitable
-        % that the function will be near-zero for all values between such a
-        % root and the endpoint, so our test is meaningless.
-        if ( abs(r(k) + 1) < n*eps )
-            continue
-        end
-
         testGrid = linspace(-1, r(k), n);
         if ( norm(feval(f, testGrid), Inf) < tol )
             mask(k) = true;
@@ -405,10 +397,6 @@ end
 % Filter the roots at the right endpoint.
 if ( abs(feval(f, 1)) < tol )
     for k = numRoots:-1:1
-        if ( abs(r(k) - 1) < n*eps )
-            continue;
-        end
-
         testGrid = linspace(r(k), 1, n);
         if ( norm(feval(f, testGrid), Inf) < tol )
             mask(k) = true;
