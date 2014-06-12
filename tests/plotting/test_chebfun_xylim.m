@@ -112,12 +112,12 @@ pass3(length(pass3) + 1) =  strcmp(get(gca,'ylimmode'), 'manual');
 xl = get(gca, 'xlim');
 yl = get(gca, 'ylim');
 % Check that we obtain reasonable ylimits
-pass3(length(pass3) + 1)  = ( yl(1) < 1/xl(1) && ( yl(2) < 10 ) );
+pass3(length(pass3) + 1)  = ( norm(yl(1) - 1/xl(2)) < tol && ( yl(2) < 10 ) );
 hold on
 plot(f1,'r')
 % Check that we obtain reasonable ylimits
 yl = get(gca, 'ylim');
-pass3(length(pass3) + 1)  = ( yl(1) < 1/xl(1) && ( yl(2) > 10 ) );
+pass3(length(pass3) + 1)  = ( norm(yl(1)) < tol && ( yl(2) > 10 ) );
 hold off
 
 % Do the plotting in reverse order
@@ -127,7 +127,7 @@ plot(f1,'g')
 hold on
 plot(f2)
 % Check that we obtain reasonable ylimits
-pass3(length(pass3) + 1)  = ( yl(1) < 1/xl(1) && ( yl(2) > 10 ) );
+pass3(length(pass3) + 1)  = ( norm(yl(1) - 1/xl(2)) && ( yl(2) > 10 ) );
 hold off
 %%
 pass = [pass1, pass2, pass3];
