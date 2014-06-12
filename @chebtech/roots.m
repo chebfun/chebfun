@@ -380,15 +380,27 @@ function r = filterEndpointRoots(r, f)
 numRoots = length(r);
 mask = false(numRoots, 1);
 tol = f.vscale*f.epslevel;
-n = length(f);
+
+% We sample at an arbitrary number of points between the located root and
+% the nearest enpoint. We take max(20, numRoots), with the reasoning being that
+% if there are many roots, then the function has some complex oscillatory
+% behaviour that we might need to capture.
+n = max(numRoots, 20);
 
 % Filter the roots at the left endpoint.
 if ( abs(feval(f, -1)) < tol )
     for k = 1:1:numRoots
+        if ( r(k) > 0 )
+            % This roots is far from -1.
+            continue
+        end
+        % Equispaced grid:
         testGrid = linspace(-1, r(k), n);
         if ( norm(feval(f, testGrid), Inf) < tol )
+            % Remove this root.
             mask(k) = true;
         else
+            % We needn't check subsequent roots.
             break
         end
     end
@@ -397,14 +409,22 @@ end
 % Filter the roots at the right endpoint.
 if ( abs(feval(f, 1)) < tol )
     for k = numRoots:-1:1
+        if ( r(k) < 0 )
+            % This roots is far from +1.
+            continue
+        end
+        % Equispaced grid:
         testGrid = linspace(r(k), 1, n);
         if ( norm(feval(f, testGrid), Inf) < tol )
+            % Remove this root.
             mask(k) = true;
         else
+            % We needn't check subsequent roots.
             break
         end
     end
 end
 
 r(mask) = [];
+
 end
