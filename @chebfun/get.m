@@ -1,4 +1,4 @@
-function out = get(f, prop)
+function out = get(f, prop, simpLevel)
 %GET   GET method for the CHEBFUN class.
 %   P = GET(F, PROP) returns the property P specified in the string PROP from
 %   the CHEBFUN F. Valid entries for the string PROP are:
@@ -22,17 +22,77 @@ function out = get(f, prop)
 %                          as a single matrix with the first row corresponding
 %                          to the locations of the delta functions, and the
 %                          magnitudes appended below the first row.
-%       'imps'           - Same as DELTAS, supported for backward compatibility.
+%       'deltas-local'   - Delta function information for each FUN of each
+%                          column of F.
 %   The following are also supported for backward compatibility, and really only
 %   make sense when the CHEBFUN is represented by a CHEBTECH-type object. Note
-%   that in these cases a cell is always returned, even if the Chebfun has only
+%   that in these cases a cell is always returned, even if the CHEBFUN has only
 %   a single FUN.
 %       'points'         - The Chebyshev grid used to represent F.
 %       'values'         - The values of the CHEBFUN on the grid above.
 %       'coeffs'         - The corresponding Chebyshev coefficients.
+%
+%   When requesting properties like 'vscale-local' that vary with each FUN of
+%   each column of F, P = GET(F, PROP, SIMPLEVEL) can be used to control the
+%   extent to which the form of the returned data is "simplified."  Valid
+%   values for SIMPLEVEL are:
+%
+%     0 - No simplification.  The output is always stored in a cell array of
+%         cell arrays.  P is a cell array with length equal to the number of
+%         columns of F.  P{J} is a cell array of length equal to the number of
+%         FUNs in column J of F which stores the properties for the FUNs in
+%         that column.  P{J}{K} is the value of the property for FUN K in column
+%         J of F.
+%
+%     1 - Simplify output to 2D cell array, if possible.  If F has the same
+%         number of FUNs in each column, then instead of returning a cell array
+%         of cell arrays, return a 2D cell array instead.  P{K, J} is the
+%         value of the property for FUN K in column J of F.  If F does not
+%         have the same number of FUNs in each column, then a cell array of
+%         cell arrays is returned, as described above.
+%
+%     2 - Maximum simplification.  If F has only one column and only one FUN, P
+%         is the value of the requested property.  If F has multiple columns
+%         and multiple FUNs, with the same number of FUNs in each column,
+%         then this first simplifies to a 2D cell array as in SIMPLEVEL = 1
+%         and then tries to convert the result to a numeric matrix if possible.
+%         For this conversion to succeed, the following must be true:
+%
+%           1.  The property must have a numeric value.
+%
+%           2.  The property must be such that one of the following two
+%               conditions holds:
+%
+%                 A.  If F has N columns, then the property also has N columns,
+%                     and the values in column K of the property are associated
+%                     with column K of F.
+%
+%                 B.  The property consists of a single column, the values of
+%                     which are associated with _all_ columns of F.
+%
+%           3.  If each column has multiple FUNs, the property values for each
+%               FUN must all have only one.  If each column has only one FUN,
+%               the property values must all have the same number of rows.
+%
+%         If the result cannot be converted to a numeric matrix, the 2D cell
+%         array is returned.  If F does not have the same number of funs in
+%         each column, then the result is as in SIMPLEVEL = 0.
+%
+%   SIMPLEVEL = 0 and SIMPLEVEL = 1 are intended as a convenience to
+%   programmers calling GET from their code, as the more uniform output of GET
+%   makes it easier to handle without requiring additional program logic.
+%   SIMPLEVEL = 2 is generally easier to use when working interactively, as the
+%   output does not need to be unwrapped in many common cases.
+%
+%   The default value of SIMPLEVEL is 2.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
+
+% Try to simplify the output as much as possible by default.
+if ( nargin < 3 )
+    simpLevel = 2;
+end
 
 switch prop
     case {'domain', 'ends'}
@@ -60,24 +120,24 @@ switch prop
         dom = domain(f);
         out = feval(f, dom(end));
     case 'lval-local'
-        out = getSimpleNumericLocalProp(f, 'lval', true);
+        out = getSimpleNumericLocalProp(f, 'lval', simpLevel);
     case 'rval-local'
-        out = getSimpleNumericLocalProp(f, 'rval', true);
+        out = getSimpleNumericLocalProp(f, 'rval', simpLevel);
     case 'vscale-local'
-        out = getSimpleNumericLocalProp(f, 'vscale', true);
+        out = getSimpleNumericLocalProp(f, 'vscale', simpLevel);
     case 'hscale-local'
-        out = getSimpleNumericLocalProp(f, 'hscale', true);
+        out = getSimpleNumericLocalProp(f, 'hscale', simpLevel);
     case 'epslevel-local'
-        out = getSimpleNumericLocalProp(f, 'epslevel', true);
+        out = getSimpleNumericLocalProp(f, 'epslevel', simpLevel);
     case {'values', 'coeffs', 'points'}
-        out = getSimpleNumericLocalProp(f, prop, true);
+        out = getSimpleNumericLocalProp(f, prop, simpLevel);
     case {'exps', 'exponents'}
-        out = getArbitraryLocalProp(f, 'exponents', true);
+        out = getArbitraryLocalProp(f, 'exponents', simpLevel);
         if ( isvector(out) )
             out = cell2mat(out);
         end
     case 'deltas'
-        out = getArbitraryLocalProp(f, 'deltas', false);
+        out = getArbitraryLocalProp(f, 'deltas', 0);
         for k = 1:numColumns(f)
             colDeltaData = out{k}.';
             colDeltaData = horzcat(colDeltaData{:});
@@ -93,7 +153,7 @@ switch prop
             out = out{1};
         end
     case 'deltas-local'
-        out = getArbitraryLocalProp(f, 'deltas', true);
+        out = getArbitraryLocalProp(f, 'deltas', simpLevel);
     case 'imps'
         warning('CHEBFUN:get:imps', ...
             '''imps'' property is deprecated.  Use ''deltas'' instead.');
@@ -107,9 +167,9 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function out = getSimpleNumericLocalProp(f, prop, doSimplify)
+function out = getSimpleNumericLocalProp(f, prop, simpLevel)
 %GETSIMPLENUMERICLOCALPROP   Get simple numeric FUN properties.
-%   OUT = GETSIMPLENUMERICLOCALPROP(F, PROP, DOSIMPLIFY) retrieves the values
+%   OUT = GETSIMPLENUMERICLOCALPROP(F, PROP, SIMPLEVEL) retrieves the values
 %   of the "simple numeric local" property PROP from each of the FUNs of F and
 %   assembles them in some sensible way.  A property is a "simple numeric
 %   local" property if (1) it is numeric, (2) it is a FUN property, and (3)
@@ -121,20 +181,20 @@ function out = getSimpleNumericLocalProp(f, prop, doSimplify)
 %     B.  The property consists of a single column, the values of which are
 %     associated with _all_ columns of F.
 %
-%   If DOSIMPLIFY is TRUE, the function will try to represent the property in a
-%   simpler form.  The hierarchy of "simplicity", from least simplest to
-%   simplest, is as follows:
+%   SIMPLEVEL controls the extent to which the function will try to represent
+%   the property in a simpler form:
 %
-%     1.  Cell array of cell arrays.  out{j}{k} gives the value of the property
-%     for FUN j of column k.
+%     SIMPLEVEL = 0.  Cell array of cell arrays.  out{j}{k} gives the value of
+%     the property for FUN j of column k.
 %
-%     2.  2D cell array.  The output can be simplified to this if all columns
-%     of F have the same number of FUNs.  out{j, k} gives the value of the
-%     property for FUN j of column k.
+%     SIMPLEVEL = 1.  2D cell array.  The output can be simplified to this if
+%     all columns of F have the same number of FUNs.  out{j, k} gives the value
+%     of the property for FUN j of column k.
 %
-%     3.  Numeric matrix.  If the output can be simplified to a 2D cell array,
-%     we can sometimes convert it further into a numeric matrix if the result
-%     can be unambiguously interpreted.  See CANCONVERT2DCELLARRAYTONUMERIC.
+%     SIMPLEVEL = 2.  Numeric matrix.  If the output can be simplified to a 2D
+%     cell array, we can sometimes convert it further into a numeric matrix if
+%     the result can be unambiguously interpreted.  See
+%     CANCONVERT2DCELLARRAYTONUMERIC.
 %
 %   The reason this funciton exists is that simple numeric local properties can
 %   be extracted from array-valued CHEBFUNs without needing to convert them to
@@ -149,10 +209,10 @@ else                  % Quasimatrix / array of CHEBFUNs.
 end
 
 % Try to convert from a cell array of cell arrays to a 2D cell array.
-if ( doSimplify && canConvertCellOfCellsTo2DCellArray(out) )
+if ( (simpLevel > 0) && canConvertCellOfCellsTo2DCellArray(out) )
     out = horzcat(out{:});
     % Try to go one step further and convert to a numeric matrix.
-    if ( canConvert2DCellArrayToNumeric(out) )
+    if ( (simpLevel > 1) && canConvert2DCellArrayToNumeric(out) )
         out = cell2mat(out);
     end
 end
@@ -163,25 +223,25 @@ end
 
 end
 
-function out = getArbitraryLocalProp(f, prop, doSimplify)
+function out = getArbitraryLocalProp(f, prop, simpLevel)
 %GETSIMPLENUMERICLOCALPROP   Get simple numeric FUN properties.
 %   OUT = GETSIMPLENUMERICLOCALPROP(F, PROP, DOSIMPLIFY) retrieves the values
 %   of the property PROP from each of the FUNs of F and %   assembles them in
 %   some sensible way.
 %
-%   If DOSIMPLIFY is TRUE, the function will try to represent the property in a
-%   simpler form.  The hierarchy of "simplicity", from least simplest to
-%   simplest, is as follows:
+%   SIMPLEVEL controls the extent to which the function will try to represent
+%   the property in a simpler form:
 %
-%     1.  Cell array of cell arrays.  out{j}{k} gives the value of the property
-%     for FUN j of column k.
+%     SIMPLEVEL = 0.  Cell array of cell arrays.  out{j}{k} gives the value of
+%     the property for FUN j of column k.
 %
-%     2.  2D cell array.  The output can be simplified to this if all columns
-%     of F have the same number of FUNs.  out{j, k} gives the value of the
-%     property for FUN j of column k.
+%     SIMPLEVEL = 1.  2D cell array.  The output can be simplified to this if
+%     all columns of F have the same number of FUNs.  out{j, k} gives the value
+%     of the property for FUN j of column k.
 %
-%     3.  Single cell contents.  If the output can be simplified to a 2D cell
-%     array, with only one cell, we just return the contents of that cell.
+%     SIMPLEVEL = 2.  Single cell contents.  If the output can be simplified to
+%     a 2D cell array, with only one cell, we just return the contents of that
+%     cell.
 
 % The only way to correctly support access to general properties of
 % array-valued CHEBFUNs is to convert them to quasimatrices first.  (Example:
@@ -198,12 +258,12 @@ end
 out = getArbitraryLocalPropQuasimatrix(f, prop);
 
 % Try to convert from a cell array of cell arrays to a 2D cell array.
-if ( doSimplify && canConvertCellOfCellsTo2DCellArray(out) )
+if ( (simpLevel > 0) && canConvertCellOfCellsTo2DCellArray(out) )
     out = horzcat(out{:});
 
     % If our 2D cell array has only one cell (i.e., if f has only one column,
     % and that column has only fun), return the contents of that cell.
-    if ( numel(out) == 1 )
+    if ( (simpLevel > 1) && (numel(out) == 1) )
         out = out{1};
     end
 end
