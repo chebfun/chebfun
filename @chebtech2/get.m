@@ -30,7 +30,7 @@ switch prop
         out = @chebtech2;
     otherwise
         error('CHEBFUN:CHEBTECH2:GET:proname', ...
-            'Unknown property name ''%s'' for object of type chebtech2.', prop);
+            'Unknown property name ''%s'' for object of type CHEBTECH2.', prop);
 end
 
 end
