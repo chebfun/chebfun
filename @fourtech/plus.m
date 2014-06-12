@@ -10,21 +10,23 @@ function f = plus(f, g)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( isempty(f) || isempty(g) ) % FOURTECH + [] = []
+if ( isempty(f) || isempty(g) ) % FOURTECH + [] = [].
     
     f = [];
     
-elseif ( isa(g, 'double') ) % FOURTECH + double
+elseif ( isa(g, 'double') ) % FOURTECH + double.
     
     % Update values (use bsxfun() to handle the case in which g is a vector
     % and f is an array-valued FOURTECH):
     f.values = bsxfun(@plus, f.values, g);
+    
     % Update coeffs:
     if ( (size(g, 2) > 1) && (size(f.coeffs, 2) == 1) )
         % Perform singleton expansion of f:
         f.coeffs = repmat(f.coeffs, 1, size(g, 2));
     end
     N = size(f.coeffs,1);
+    
     % Determine the index in the coefficient vector where the constant term
     % is stored. The way we have arranged the coefficients means it should
     % be in the middle of the array, but that depends on whether the number
@@ -35,23 +37,26 @@ elseif ( isa(g, 'double') ) % FOURTECH + double
         const_index = N/2;
     end
     f.coeffs(const_index,:) = f.coeffs(const_index,:) + g;
+    
     % Update isReal:
     f.isReal = f.isReal & isreal(g);
+    
     % Update scale:
     vscaleNew = max(abs(f.values), [], 1);
+    
     % See FOURTECH CLASSDEF file for documentation on this:
     f.epslevel = (f.epslevel.*f.vscale + abs(g)*eps)./vscaleNew;
     f.vscale = vscaleNew;
     
-elseif ( isa(f, 'double') ) % double + FOURTECH
+elseif ( isa(f, 'double') ) % double + FOURTECH.
     
     % Switch argument order and call FOURTECH/PLUS again:
     f = plus(g, f);
     
-elseif ( isa(f, 'fourtech') && isa(g, 'fourtech') )  % FOURTECH + FOURTECH
+elseif ( isa(f, 'fourtech') && isa(g, 'fourtech') )  % FOURTECH + FOURTECH.
     
     % We will simply add the values together then compute the coefficients
-    % of the result.  This is probably not the most efficient means of
+    % of the result. This is probably not the most efficient means of
     % determing the sum.
     nf = size(f.values, 1);
     ng = size(g.values, 1);
@@ -93,7 +98,7 @@ elseif ( isa(f, 'fourtech') && isa(g, 'fourtech') )  % FOURTECH + FOURTECH
         f.ishappy = f.ishappy && g.ishappy;
     end
     
-else    % Don't know how to do the addition of the objects
+else    % Don't know how to do the addition of the objects.
     
     error('CHEBFUN:FOURTECH:plus:typeMismatch','Incompatible operation between objects. Make sure functions are of the same type.');
     

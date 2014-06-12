@@ -42,5 +42,4 @@ if ( isequal(f, g) )
     out = out - dout + abs(dout);
 end
 
-
 end

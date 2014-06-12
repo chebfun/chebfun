@@ -8,9 +8,6 @@ function out = isreal(f)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org for Chebfun information.
 
-% Check if all the values are real:
-% out = max(abs(imag( f.values(:) ))) < 2*max(f.epslevel.*f.vscale);
-
 out = all(f.isReal);
 
 end

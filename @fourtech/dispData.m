@@ -6,7 +6,7 @@ function data = dispData(f)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-data{1}.name = '  periodic';
+data{1}.name = 'periodic';
 data{1}.data = [];
 
 end

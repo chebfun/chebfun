@@ -59,10 +59,10 @@ g = cell(1, numel(N));
 
 % Append the data to the new entries in the cell:
 for k = 1:numel(N)
-    % Create a FOURTECH
+    % Create a FOURTECH:
     gk = f.make();
     
-    % Assign values to the fields of the FOURTECH
+    % Assign values to the fields of the FOURTECH:
     gk.ishappy = f.ishappy;
     gk.values = values{k};
     gk.coeffs = coeffs{k};
@@ -73,6 +73,5 @@ for k = 1:numel(N)
     % Store the FOURTECH in the cell-array returned.
     g{k} = gk;
 end
-
 
 end

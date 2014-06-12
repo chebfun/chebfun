@@ -11,7 +11,7 @@ function f = compose(f, op, g, data, pref)
 %   thrown.
 %
 %   COMPOSE(F, OP, G, PREF) or COMPOSE(F, OP, [], PREF) uses the options passed
-%   by the preferences structure PREF to build the returned FOURTECH.  In
+%   by the preferences structure PREF to build the returned FOURTECH. In
 %   particular, one can set PREF.REFINEMENTFUNCTION to be a function which takes
 %   advantage of F and possibly OP or G being FOURTECH objects.
 

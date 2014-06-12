@@ -7,7 +7,7 @@ function f = minus(f, g)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% f - g = f + (-g)
+% f - g = f + (-g):
 f = plus(f, uminus(g)); 
 
 end
