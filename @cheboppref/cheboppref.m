@@ -20,15 +20,6 @@ classdef cheboppref < chebpref
 %
 %     This options determines whether linear operators are discretized using
 %     rectangular collocation methods or the ultraspherical method.
-%
-%   dimensionValues             - Increments in discretization sizes
-%     [ 32    64   128   256   512   724  1024  1448]
-%
-%     This vector determines the number of gridpoints/coefficients used as
-%     linear operators are discretized at finer and finer grids to resolve the
-%     solution. For example, using the default value, a linear operator would
-%     first be discretized at a 32 point grid, then a 64 point grid, up until a
-%     1448 point grid.
 %  
 %   damped                      - Should Newton's method be damped?
 %     [true]
@@ -60,11 +51,29 @@ classdef cheboppref < chebpref
 %     The value of lambdaMin determines the minimum allowed step-size that the
 %     damped Newton iteration is allowed to take.
 %
+%   maxDimension
+%     [4096]
+%
+%     The maximum number of gridpoints/coefficients used as linear operators are
+%     discretized at finer and finer grids to resolve the solution. The
+%     intermediate values for the discretization between cheboppref.minDimension
+%     and cheboppref.maxDimension depend on the discretization used for the
+%     operator.
+%
 %   maxIter                     - Maximum number of Newton steps
 %     25
 %
 %   The maximum number of steps that the (damped) Newton iteration is allowed to
 %   take, before it is considered to be non-convergent.
+%
+%   minDimension
+%     [32]
+%
+%     The minimum number of gridpoints/coefficients used as linear operators are
+%     discretized at finer and finer grids to resolve the solution. The
+%     intermediate values for the discretization between cheboppref.minDimension
+%     and cheboppref.maxDimension depend on the discretization used for the
+%     operator.
 %
 %   plotting                    - Plotting of intermediate Newton steps
 %     DELAY
@@ -169,8 +178,6 @@ classdef cheboppref < chebpref
                 prefList.domain(1), prefList.domain(end));
             fprintf([padString('    discretization:') '%s\n'], ...
                 func2str(prefList.discretization));
-            fprintf([padString('    dimensionValues:') '%s\n'], ...
-                num2str(prefList.dimensionValues));
             fprintf([padString('    damped:') '%d\n'], ...
                 prefList.damped);
             fprintf([padString('    display:') '%s\n'], ...
@@ -179,8 +186,12 @@ classdef cheboppref < chebpref
                 prefList.errTol);
             fprintf([padString('    lambdaMin:') '%g\n'], ...
                 prefList.lambdaMin);
+            fprintf([padString('    maxDimension:') '%d\n'], ...
+                prefList.maxDimension);
             fprintf([padString('    maxIter:') '%d\n'], ...
                 prefList.maxIter);
+            fprintf([padString('    minDimension:') '%d\n'], ...
+                prefList.minDimension);
             fprintf([padString('    plotting:') '%s\n'], ...
                 prefList.plotting);
         end
@@ -306,12 +317,13 @@ classdef cheboppref < chebpref
             factoryPrefs.domain = [-1 1];
             factoryPrefs.discretization = @colloc2;
             factoryPrefs.scale = NaN;
-            factoryPrefs.dimensionValues = [32 64 128 256 512 724 1024 1448 2048];
             factoryPrefs.damped = 1;
             factoryPrefs.display = 'off';
             factoryPrefs.errTol = 1e-10;
             factoryPrefs.lambdaMin = 1e-6;
+            factoryPrefs.maxDimension = 4096;
             factoryPrefs.maxIter = 25;
+            factoryPrefs.minDimension = 32;
             factoryPrefs.plotting = 'off';
         end
 

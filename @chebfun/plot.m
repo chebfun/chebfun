@@ -45,7 +45,8 @@ function varargout = plot(varargin)
 %   can be useful when the domain of F is infinite, or for 'zooming in' on, say,
 %   oscillatory CHEBFUN objects. If plotting an array-valued CHEBFUN or more
 %   than one CHEBFUN in a call like PLOT(F, 'b', G, '--r', 'interval', [A, B])
-%   this property is applied globally.
+%   this property is applied globally. Markers, such as 'o', or '.', are ignored
+%   if the interval flag is used.
 %
 %   Besides the usual parameters that control the specifications of lines (see
 %   linespec), the parameter JumpLine and DeltaLine determines the linestyle 
@@ -112,6 +113,17 @@ else
             varargin(loc(k)+1) = [];
             intervalIsSet = true;
             break
+        end
+    end
+end
+
+% Support 'interval' by evaluating on a fixed grid size (2000 points). See #602.
+if ( intervalIsSet )
+    for k = 1:numel(varargin)
+        if ( isa(varargin{k}, 'chebfun') )
+            dom = union(domain(varargin{k}), interval);
+            dom(dom < interval(1) | dom > interval(end)) = [];
+            varargin{k} = chebfun(@(x) feval(varargin{k}, x), dom, 2000);
         end
     end
 end
@@ -232,28 +244,6 @@ while ( ~isempty(varargin) )
     % Loop over the columns:
     for k = 1:numel(newData)
         
-        % Handle the 'interval' flag:
-        if ( ~isComplex && intervalIsSet && (size(newData(k).xLine, 2) == 1) )
-            ind = newData(k).xLine < interval(1) | ...
-                newData(k).xLine > interval(end);
-            newData(k).xLine(ind) = [];
-            newData(k).yLine(ind,:) = [];
-            ind = newData(k).xPoints < interval(1) | ...
-                newData(k).xPoints > interval(end);
-            newData(k).xPoints(ind) = [];
-            newData(k).yPoints(ind,:) = [];
-            ind = newData(k).xJumps < interval(1) | ...
-                newData(k).xJumps > interval(end);
-            newData(k).xJumps(ind) = [];
-            newData(k).yJumps(ind,:) = [];            
-            ind = newData(k).xDeltas < interval(1) | ...
-                newData(k).xDeltas > interval(end);
-            newData(k).xDeltas(ind) = [];
-            newData(k).yDeltas(ind,:) = [];
-            
-            newData(k).xLim = interval;            
-        end
-        
         % Update axis limits:
         xLim = [min(newData(k).xLim(1), xLim(1)), ...
             max(newData(k).xLim(2), xLim(2))];
@@ -292,7 +282,10 @@ hold on
 h2 = plot(pointData{:});
 % Change the style accordingly:
 set(h2, 'LineStyle', 'none', pointStyle{:})
-
+if ( intervalIsSet )
+    % Markers are meaningless if the 'interval' flag is used.
+    set(h2, 'Marker', 'none', pointStyle{:})
+end
 % Plot the jumps:
 if ( isempty(jumpData) || ischar(jumpData{1}) )
     jumpData = {[]};
