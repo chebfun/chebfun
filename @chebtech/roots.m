@@ -365,17 +365,34 @@ function y = chebptsAB(n, ab)
 end
 
 function r = filterEndpointRoots(r, f)
+%FILTERENDPOINTROOTS   Try to detect and remove spurious roots near +/-1.
+%   This function exists primarily to help with filtering of spurious roots for
+%   functions represented using UNBNDFUN which decay at +/-Inf.  This filtering
+%   procedure is implemented here in CHEBTECH instead of there because it can
+%   be done far more efficiently at this level.  Moreover, it may actually be
+%   more generally applicable.
+%
+%   The idea is that if a function is near zero for all values between a root
+%   and the nearest interval endpoint, its more likely that the root which
+%   emerged was spurious, showing up only due to rounding error in a function
+%   which decays towards +/-1.
 
 numRoots = length(r);
 mask = false(numRoots, 1);
 tol = f.vscale*f.epslevel;
 n = length(f);
 
+% Filter the roots at the left endpoint.
 if ( abs(feval(f, -1)) < tol )
     for k = 1:1:numRoots
+        % If the root is really close to the endpoint, we can't reject it:
+        % functions _can_ have roots near the endpoint, and it is inevitable
+        % that the function will be near-zero for all values between such a
+        % root and the endpoint, so our test is meaningless.
         if ( abs(r(k) + 1) < n*eps )
             continue
         end
+
         testGrid = linspace(-1, r(k), n);
         if ( norm(feval(f, testGrid), Inf) < tol )
             mask(k) = true;
@@ -385,11 +402,13 @@ if ( abs(feval(f, -1)) < tol )
     end
 end
 
+% Filter the roots at the right endpoint.
 if ( abs(feval(f, 1)) < tol )
     for k = numRoots:-1:1
         if ( abs(r(k) - 1) < n*eps )
             continue;
         end
+
         testGrid = linspace(r(k), 1, n);
         if ( norm(feval(f, testGrid), Inf) < tol )
             mask(k) = true;
