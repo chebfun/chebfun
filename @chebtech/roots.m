@@ -20,6 +20,8 @@ function out = roots(f, varargin)
 %   PRUNE:
 %       [0]
 %        1  - Prune 'spurious' complex roots if ALL == 1 and RECURSE == 0.
+%             Also, attempt to prune spurious roots near the interval endpoints
+%             that may emerge if the function decays to zero there.
 %
 %   QZ: 
 %       [0] - Use the colleague matrix linearization and the QR algorithm.
@@ -157,16 +159,22 @@ c = flipud(f.coeffs)/f.vscale;
 % Call the recursive rootsunit function:
 r = rootsunit_coeffs(c, 100*eps*max(f.hscale, 1));
 
-% Try to filter out spurious roots that may arise near +/- 1 if the function
-% decays to zero there.
-r = filterEndpointRoots(r, f);
 
 % Prune the roots, if required:
-if ( rootsPref.prune && ~rootsPref.recurse )
-    rho = sqrt(eps)^(-1/length(f));
-    rho_roots = abs(r + sqrt(r.^2 - 1));
-    rho_roots(rho_roots < 1) = 1./rho_roots(rho_roots < 1);
-    out = r(rho_roots <= rho);
+if ( rootsPref.prune )
+    % Try to filter out spurious roots that may arise near +/- 1 if the function
+    % decays to zero there.
+    r = filterEndpointRoots(r, f);
+
+    % Filter spurious complex roots.
+    if ( ~rootsPref.recurse )
+        rho = sqrt(eps)^(-1/length(f));
+        rho_roots = abs(r + sqrt(r.^2 - 1));
+        rho_roots(rho_roots < 1) = 1./rho_roots(rho_roots < 1);
+        out = r(rho_roots <= rho);
+    else
+        out = r;
+    end
 else
     out = r;
 end

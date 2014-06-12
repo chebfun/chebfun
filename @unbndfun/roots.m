@@ -8,11 +8,12 @@ function r = roots(f, varargin)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Call ROOTS@FUN:
-r = roots@classicfun(f, varargin{:});
+% Call ROOTS@FUN.  Roots of an UNBNDFUN should always be pruned to try and
+% remove spurious roots caused by fast decay of f near infinite endpoints.
+r = roots@classicfun(f, varargin{:}, 'prune', true);
 
-% Get rid of spurious roots which are caused by fast decay of function defined
-% in an unbounded domain:
+% Do further filtering in case something was missed by the pruning filter in
+% ROOTS@FUN():
 
 % Set a threshold for the 'farfield':
 farfield = 1e-1/eps;
