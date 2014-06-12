@@ -155,7 +155,7 @@ end
 values = cat(2,u{isFun});
 for k = 1:size(values,2)
     v = disc.toFunctionOut(values(:,k));
-    coeffs = get(v,'coeffs');  % one cell entry per interval
+    coeffs = get(v,'coeffs', 1);  % one cell entry per interval
     for i = 1:numInt
         f = chebfun( coeffs{i}(end+1-cutoff(i,k):end), disc.domain(i:i+1), 'coeffs' );
         v.funs{i} = f.funs{1};
