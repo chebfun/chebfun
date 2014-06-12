@@ -85,6 +85,7 @@ holdState = ishold;
 if ( holdState )
     xLimCurrent = get(gca, 'xlim');
     yLimCurrent = get(gca, 'ylim');
+    yLimModeCurrent = get(gca, 'ylimmode');
 end
 
 % Initialize flags:
@@ -334,6 +335,7 @@ end
 % If holding, then make sure not to shrink the X-limits.
 if ( holdState )
     xLim = [min(xLimCurrent(1), xLim(1)), max(xLimCurrent(2), xLim(2))];
+    yLim = [min(yLimCurrent(1), yLim(1)), max(yLimCurrent(2), yLim(2))];
 end
 
 % We always want to set the x-limits. Otherwise, plots like
@@ -341,18 +343,9 @@ end
 % will have extra white space around the ends of the domain, and look ugly.
 set(gca, 'xlim', xLim)
 
-% Set the Y-limits if appropriate values have been suggested:
-if ( ~defaultYLim || holdState )
-
-    % If holding, then make sure not to shrink the Y-limits.
-    if ( holdState )
-        yLim = [min(yLimCurrent(1), yLim(1)), max(yLimCurrent(2), yLim(2))];
-    end
-    
-    % Give some extra space at the top and the bottom:
-    spaceHeight = diff(yLim)/10;
-    yLim = [yLim(1)-spaceHeight yLim(2)+spaceHeight];
-   
+% Set the Y-limits if appropriate values have been suggested, or if we were
+% holding on when we entered this method:
+if ( ~defaultYLim || (holdState && strcmp(yLimModeCurrent, 'manual')) )
     set(gca, 'ylim', yLim)
 end
 

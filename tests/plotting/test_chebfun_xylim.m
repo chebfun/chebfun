@@ -2,90 +2,132 @@
 function pass = test_chebfun_ylim(pref)
 
 tol = 1e-10;
-
+% Create a figure, and make it invisible. Need to do this a number of time
+% throughout the test.
+hfig = figure;
+set(hfig,'visible','off')
 %% Finite functions on unbounded domains
-dom = [0 pi];
-x = chebfun(@(x) x, dom);
+
+dom1 = [0 pi];
+pass1 = [];
+x = chebfun(@(x) x, dom1);
 plot(x)
-pass(1) = ( norm(dom - get(gca,'xlim')) < tol);
+pass1(length(pass1) + 1) = ( norm(dom1 - get(gca,'xlim')) < tol);
 
 plot(0.62*sin(x))
 yl = get(gca, 'ylim');
-pass(2) = ( norm(0.62 - yl(2)) > 0.05);
+pass1(length(pass1) + 1) = ( norm(0.62 - yl(2)) > 0.05);
 
 plot(0.62*[sin(x) 0*x -sin(x)])
 yl = get(gca, 'ylim');
-pass(3) = ( norm(0.62*[-1 1] - yl) > 0.05);
-pass(4) = strcmp(get(gca,'ylimmode'), 'auto');
+pass1(length(pass1) + 1) = ( norm(0.62*[-1 1] - yl) > 0.05);
+pass1(length(pass1) + 1) = strcmp(get(gca,'ylimmode'), 'auto');
 
 plot(sin(x))
 hold on
 plot(-sin(x))
 yl = get(gca,'ylim');
-pass(5) = ( norm(yl - [-1 1]) < tol );
-pass(6) = strcmp(get(gca,'ylimmode'), 'auto');
+pass1(length(pass1) + 1) = ( norm(yl - [-1 1]) < tol );
+pass1(length(pass1) + 1) = strcmp(get(gca,'ylimmode'), 'auto');
+hold off
+
+plot(.62*sin(x))
+hold on
+plot(-.62*sin(x))
+yl = get(gca,'ylim');
+pass1(length(pass1) + 1) = (norm(0.62*[-1 1] - yl) > 0.05 );
+pass1(length(pass1) + 1) = strcmp(get(gca,'ylimmode'), 'auto');
 hold off
 
 %% Unbounded functions
+hfig = figure;
+set(hfig,'visible','off')
 dom2 = [-inf 0];
+pass2 = [];
 f = chebfun(@(x) exp(x), dom2);
 plot(f)
-pass(7) =  strcmp(get(gca,'xlimmode'), 'manual');
-pass(8) =  strcmp(get(gca,'ylimmode'), 'auto');
+pass2(length(pass2) + 1) =  strcmp(get(gca,'xlimmode'), 'manual');
+pass2(length(pass2) + 1) =  strcmp(get(gca,'ylimmode'), 'auto');
 xl = get(gca,'xlim');
 yl = get(gca,'ylim');
-pass(9)  = ( norm(xl - [-10 0]) < tol );
-pass(10) = ( norm(yl - [0 1]) < tol );
+pass2(length(pass2) + 1)  = ( norm(xl - [-10 0]) < tol );
+pass2(length(pass2) + 1) = ( norm(yl - [0 1]) < tol );
 
+hfig = figure;
+set(hfig,'visible','off')
 g = chebfun(@(x) -0.62*exp(x), dom2);
 plot(g)
-pass(11) =  strcmp(get(gca,'ylimmode'), 'auto');
+pass2(length(pass2) + 1) =  strcmp(get(gca,'ylimmode'), 'auto');
 yl = get(gca,'ylim');
-pass(12)  = ( norm(yl(1) - 0.62) > 0.05 );
-shg
+pass2(length(pass2) + 1)  = ( norm(yl(1) - 0.62) > 0.05 );
 
+hfig = figure;
+set(hfig,'visible','off')
 dom3 = [-20 20];
 h = chebfun(@(x) cos(x), dom3);
 hold on
 plot(h,'r')
 xl = get(gca,'xlim');
-pass(13)  = ( norm(xl - dom3) < tol );
+pass2(length(pass2) + 1) = ( norm(xl - dom3) < tol );
 hold off
 
+hfig = figure;
+set(hfig,'visible','off')
 plot(h,'g')
 hold on
 plot(g)
 xl = get(gca,'xlim');
-pass(14)  = ( norm(xl - dom3) < tol );
+pass2(length(pass2) + 1)  = ( norm(xl - dom3) < tol );
 hold off
 
+hfig = figure;
+set(hfig,'visible','off')
 dom4 = [-2 2];
 h = chebfun(@(x) cos(x), dom4);
 plot(g)
 hold on
 plot(h,'r')
 xl = get(gca,'xlim');
-pass(15)  = ( norm(xl - [-10 2]) < tol );
+pass2(length(pass2) + 1) = ( norm(xl - [-10 2]) < tol );
 hold off
 
+hfig = figure;
+set(hfig,'visible','off')
 plot(h,'g')
 hold on
 plot(g)
 xl = get(gca,'xlim');
-pass(16)  = ( norm(xl - [-10 2]) < tol );
+pass2(length(pass2) + 1)  = ( norm(xl - [-10 2]) < tol );
 hold off
-
 %% Functions that blow-up
-
+pass3 = [];
 f1 = 11.3*sin(x);
 f2 = 1./x;
 
+hfig = figure;
+set(hfig,'visible','off')
 plot(f2)
-pass(17) =  strcmp(get(gca,'xlimmode'), 'manual');
-pass(18) =  strcmp(get(gca,'ylimmode'), 'manual');
+pass3(length(pass3) + 1) =  strcmp(get(gca,'xlimmode'), 'manual');
+pass3(length(pass3) + 1) =  strcmp(get(gca,'ylimmode'), 'manual');
 xl = get(gca, 'xlim');
 yl = get(gca, 'ylim');
-pass(19)  = ( yl(1) < 1/xl(1) && ( yl(2) < 10 ) );
-% pass(10) = ( norm(yl - [0 1]) < tol );
+% Check that we obtain reasonable ylimits
+pass3(length(pass3) + 1)  = ( yl(1) < 1/xl(1) && ( yl(2) < 10 ) );
+hold on
+plot(f1,'r')
+% Check that we obtain reasonable ylimits
+yl = get(gca, 'ylim');
+pass3(length(pass3) + 1)  = ( yl(1) < 1/xl(1) && ( yl(2) > 10 ) );
+hold off
 
-pass
+% Do the plotting in reverse order
+hfig = figure;
+set(hfig,'visible','off')
+plot(f1,'g')
+hold on
+plot(f2)
+% Check that we obtain reasonable ylimits
+pass3(length(pass3) + 1)  = ( yl(1) < 1/xl(1) && ( yl(2) > 10 ) );
+hold off
+%%
+pass = [pass1, pass2, pass3];
