@@ -26,10 +26,10 @@ function out = roots(f, varargin)
 %        1  - Use the colleague matrix pencil linearization and the QZ 
 %             algorithm for potentially extra numerical stability. 
 %
-%   FILTERENDPOINTROOTS:
-%       [0]
-%        1  - Attempt to prune spurious roots near the interval endpoints
-%             that may emerge if the function decays to zero there.
+%   FILTER:
+%       [ ]
+%   @filter(R,F) - A function handle which accepts the sorted computed roots, R, 
+%                  and the CHEBTECH, F, and filters the roots as it see fit.
 %
 %   If F is an array-valued CHEBTECH then there is no reason to expect each
 %   column to have the same number of roots. In order to return a useful output,
@@ -119,7 +119,7 @@ function out = roots_scalar(f, varargin)
 
 % Default preferences:
 rootsPref = struct('all', 0, 'recurse', 1, 'prune', 0, 'zeroFun', 1, ...
-    'qz', 0, 'filterEndpointRoots', 0);
+    'qz', 0, 'filter', []);
 % Subdivision maps [-1,1] into [-1, splitPoint] and [splitPoint, 1].
 splitPoint = -0.004849834917525; % This is an arbitrary number.
 
@@ -163,10 +163,10 @@ c = flipud(f.coeffs)/f.vscale;
 % Call the recursive rootsunit function:
 r = rootsunit_coeffs(c, 100*eps*max(f.hscale, 1));
 
-% Try to filter out spurious roots that may arise near +/- 1 if the function
-% decays to zero there.
-if ( rootsPref.filterEndpointRoots )
-    r = filterEndpointRoots(r, f);
+% Try to filter out spurious roots:
+if ( ~isempty(rootsPref.filter) )
+    r = sort(r, 'ascend');
+    r = rootsPref.filter(r, f);
 end
 
 % Prune the roots, if required:
@@ -361,70 +361,5 @@ function y = chebptsAB(n, ab)
     b = ab(2);
     x = chebtech2.chebpts(n);          % [-1,1] grid
     y = b*(x + 1)/2 + a*(1 - x)/2;     % new grid
-
-end
-
-function r = filterEndpointRoots(r, f)
-%FILTERENDPOINTROOTS   Try to detect and remove spurious roots near +/-1.
-%   This function exists primarily to help with filtering of spurious roots for
-%   functions represented using UNBNDFUN which decay at +/-Inf.  This filtering
-%   procedure is implemented here in CHEBTECH instead of there because it can
-%   be done far more efficiently at this level.  Moreover, it may actually be
-%   more generally applicable.
-%
-%   The idea is that if a function is near zero for all values between a root
-%   and the nearest interval endpoint, its more likely that the root which
-%   emerged was spurious, showing up only due to rounding error in a function
-%   which decays towards +/-1.
-
-numRoots = length(r);
-mask = false(numRoots, 1);
-tol = f.vscale*f.epslevel;
-
-% We sample at an arbitrary number of points between the located root and
-% the nearest enpoint. We take max(20, numRoots), with the reasoning being that
-% if there are many roots, then the function has some complex oscillatory
-% behaviour that we might need to capture.
-n = max(numRoots, 20);
-
-% Filter the roots at the left endpoint.
-if ( abs(feval(f, -1)) < tol )
-    for k = 1:1:numRoots
-        if ( r(k) > 0 )
-            % This roots is far from -1.
-            continue
-        end
-        % Equispaced grid:
-        testGrid = linspace(-1, r(k), n);
-        if ( norm(feval(f, testGrid), Inf) < tol )
-            % Remove this root.
-            mask(k) = true;
-        else
-            % We needn't check subsequent roots.
-            break
-        end
-    end
-end
-
-% Filter the roots at the right endpoint.
-if ( abs(feval(f, 1)) < tol )
-    for k = numRoots:-1:1
-        if ( r(k) < 0 )
-            % This roots is far from +1.
-            continue
-        end
-        % Equispaced grid:
-        testGrid = linspace(r(k), 1, n);
-        if ( norm(feval(f, testGrid), Inf) < tol )
-            % Remove this root.
-            mask(k) = true;
-        else
-            % We needn't check subsequent roots.
-            break
-        end
-    end
-end
-
-r(mask) = [];
 
 end
