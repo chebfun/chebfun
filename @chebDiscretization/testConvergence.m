@@ -1,4 +1,4 @@
-function [isDone, epsLevel, vscale] = testConvergence(disc, values, vscale, pref)
+function [isDone, epsLevel, vscale, cutoff] = testConvergence(disc, values, vscale, pref)
 %TESTCONVERGENCE   Happiness check.
 %   Given: 
 %      DISC: chebDiscretization, 
@@ -17,8 +17,6 @@ function [isDone, epsLevel, vscale] = testConvergence(disc, values, vscale, pref
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-% TODO: Document inputs.
-
 if ( nargin < 4 )
     pref = cheboppref;
     if ( nargin < 3 )
@@ -26,19 +24,17 @@ if ( nargin < 4 )
     end
 end
 
-% We will test on an arbitrary linear combination of the individual functions.
-s = 1 ./ (3*(1:numel(values))).';
-newValues = cell2mat(values(:).')*s;
+% Convert to a piecewise array-valued CHEBFUN.
+u = toFunctionOut( disc, cat(2,values{:}) );
+numCol = size(u,2);
 
-% Convert to a piecewise CHEBFUN.
-u = toFunctionOut(disc, newValues);
-
-% Test convergence on each piece. Start by obtaining the Chebyshev coefficients
-% of all pieces, which we can then pass down to the testPiece method:
+% This is a cell array of coefficients (one for each piece).
 coeffs = get(u, 'coeffs', 1);
+
 d = disc.domain;
 numInt = numel(d) - 1;
-isDone = false(1, numInt);
+isDone = false(numInt,1);
+cutoff = zeros(numInt,numCol);
 epsLevel = 0;
 
 % If an external vscale was supplied, it can supplant the inherent scale of the
@@ -47,11 +43,14 @@ vscale = max(u.vscale, vscale);
 prefTech = chebtech.techPref();
 prefTech.eps = pref.errTol;
 
+% Test convergence on each piece.
 for i = 1:numInt
     f = chebtech2( {[],coeffs{i}} );
     f.vscale = vscale;
-    [isDone(i), neweps] = plateauCheck(f, newValues, prefTech);
+    [isDone(i), neweps, cutoff(i,:)] = plateauCheck(f, get(f,'values'), prefTech);
     epsLevel = max(epsLevel, neweps);
 end
+
+isDone = all(isDone,2);
 
 end

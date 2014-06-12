@@ -68,9 +68,7 @@ function varargout = plot(varargin)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-% TODO: Figure out the y axis limit for functions which blow up.
-
-% Deal with an empty input:
+%% Deal with an empty input:
 if ( isempty(varargin{1}) )
     if ( nargout == 1 )
         varargout{1} = plot([]);
@@ -78,20 +76,30 @@ if ( isempty(varargin{1}) )
     return
 end
 
+%% Initialization:
+
 % Store the hold state of the current axis:
 holdState = ishold;
 
-% Store the current X and Y-limits:
+% Store the current X and Y-limits, and whether ylim is in manual or auto mode.
 if ( holdState )
     xLimCurrent = get(gca, 'xlim');
     yLimCurrent = get(gca, 'ylim');
+    yLimModeCurrent = get(gca, 'ylimmode');
 end
 
 % Initialize flags:
 isComplex = false;
 intervalIsSet = false;
+
+% Initialize XLIM and YLIM. Note that the first entries are initialized to be
+% UPPER limits on the LOWER parts of the axes, while the second entries
+% correspond to LOWER bounds on the UPPER parts of the axes. Hence, this
+% somewhat strange convention.
 xLim = [inf, -inf];
 yLim = [inf, -inf];
+defaultXLim = 1;
+defaultYLim = 1;
 
 % Suppress inevitable warning for growing these arrays:
 %#ok<*AGROW>
@@ -139,7 +147,8 @@ jumpLineSet = any(cellfun(@(v) strcmpi(v, 'JumpLine'), varargin));
 [lineStyle, pointStyle, jumpStyle, deltaStyle, varargin] = ...
     chebfun.parsePlotStyle(varargin{:});
 
-%%
+%% Preparation of the data:
+
 % Get the data for plotting from PLOTDATA():
 while ( ~isempty(varargin) )
 
@@ -199,7 +208,7 @@ while ( ~isempty(varargin) )
             end
         end
 
-    else                                                       % PLOT(f).
+    else  % PLOT(f).
         
         % Remove CHEBFUN from array input:
         f = varargin{1};
@@ -256,21 +265,25 @@ while ( ~isempty(varargin) )
             styleData];
         jumpData = [jumpData, newData(k).xJumps, newData(k).yJumps, styleData];
         deltaData = [deltaData, newData(k).xDeltas, newData(k).yDeltas, styleData];
+        
+        defaultXLim = defaultXLim & newData(k).defaultXLim;
+        defaultYLim = defaultYLim & newData(k).defaultYLim;
     end
     
-    % If xLim(1) == xLim(2), set xLim [inf -inf] and let Matlab figure out a
-    % proper xLim:
+    % If xLim(1) == xLim(2), let Matlab figure out a proper xLim:
     if ( ~diff(xLim) )
-        xLim = [inf, -inf];
+        defaultXLim = 1;
     end
     
-    % If yLim(1) == yLim(2), set yLim [inf -inf] and let Matlab figure out a
-    % proper yLim:
+    % If yLim(1) == yLim(2), let Matlab figure out a proper yLim:
     if ( ~diff(yLim) )
-        yLim = [inf, -inf];
+        defaultYLim = 1;
     end
     
 end
+
+%% Plotting starts here:
+
 % Plot the lines:
 h1 = plot(lineData{:});
 set(h1, 'Marker', 'none', lineStyle{:})
@@ -317,29 +330,26 @@ if ( ~isempty(deltaStyle) )
     set(h4, deltaStyle{:});
 end    
 
-%% 
-% Set the X-limits if appropriate values have been suggested:
-if ( all(isfinite(xLim)) )
+%% Setting xLim and yLim:
 
-    % If holding, then make sure not to shrink the X-limits.
-    if ( holdState )
-        xLim = [min(xLimCurrent(1), xLim(1)), max(xLimCurrent(2), xLim(2))];
-    end
-    
-    set(gca, 'xlim', sort(xLim))
+% If holding, then make sure not to shrink the X-limits.
+if ( holdState )
+    xLim = [min(xLimCurrent(1), xLim(1)), max(xLimCurrent(2), xLim(2))];
+    yLim = [min(yLimCurrent(1), yLim(1)), max(yLimCurrent(2), yLim(2))];
 end
 
-% Set the Y-limits if appropriate values have been suggested:
-if ( all(isfinite(yLim)) )
+% We always want to set the x-limits. Otherwise, plots like
+%   plot(chebfun(@(x) sin(x), [0 pi])
+% will have extra white space around the ends of the domain, and look ugly.
+set(gca, 'xlim', xLim)
 
-    % If holding, then make sure not to shrink the Y-limits.
-    if ( holdState )
-        yLim = [min(yLimCurrent(1), yLim(1)), max(yLimCurrent(2), yLim(2))];
-    end
-    
-    % TODO: Fix this. urgently.
-%     set(gca, 'ylim', sort(yLim))
+% Set the Y-limits if appropriate values have been suggested, or if we were
+% holding on when we entered this method:
+if ( ~defaultYLim || (holdState && strcmp(yLimModeCurrent, 'manual')) )
+    set(gca, 'ylim', yLim)
 end
+
+%% Misc:
 
 % Return hold state to what it was before:
 if ( ~holdState )
@@ -352,7 +362,6 @@ if ( nargout > 0 )
 end
 
 end
-
 
 function h = mystem(varargin)
 %MYSTEM   Plot multiple STEM plots in one call.
@@ -376,5 +385,3 @@ for k = 1:numel(startLoc)-1
 end
 
 end
-
-
