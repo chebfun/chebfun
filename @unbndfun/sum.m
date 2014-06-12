@@ -69,7 +69,7 @@ function y = unbndfunIntegrand(x, g)
 %UNBNDFUNINTEGRAND   Compute the integrand in the integral of an UNBNDFUN.
 %   Y = UNBNDFUNINTEGRAND(X, G) evaluates at X the mapped integrand with the
 %   chain rule applied when one goes to compute the integral of G, i.e., it
-%   computes G(X).*G.MAPPING.FORDER(X).  Values of G less than a tolerance are
+%   computes G(X).*G.MAPPING.DER(X).  Values of G less than a tolerance are
 %   set to zero.  This filtering is applied to avoid problems with round-off
 %   error in G near infinite endpoints being amplified by the derivative of the
 %   map, which is large there.
@@ -80,6 +80,6 @@ function y = unbndfunIntegrand(x, g)
 tol = 10*get(g, 'epslevel')*get(g, 'vscale');
 y = feval(g, g.mapping.for(x));
 y(abs(y) < tol) = 0;
-y = y.*g.mapping.forDer(x);
+y = y.*g.mapping.der(x);
 
 end
