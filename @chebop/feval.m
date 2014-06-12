@@ -35,10 +35,40 @@ function out = feval(N, varargin)
 % Support for calling a linear CHEBOP with a numerical input to get its
 % discretization. Here we simply call the MATRIX() method.
 
-if ( ((nargin == 2) && isnumeric(varargin{1})) || ...
-   ((nargin == 3) && ischar(varargin{2}) && strcmpi(varargin{2}, 'oldschool')) )
+if ( (nargin == 2) && isnumeric(varargin{1}) ) 
     % TODO: Throw a deprecated warning?
-    out = matrix(N, varargin{:});    
+    
+    % Because the native V5 matrix is rectangular, we have to do some
+    % resizing to recapture V4 behavior.
+
+    % Note: this may break for systems, piecewise cases. 
+    
+    n = varargin{1};
+    L = linop(N);
+    pref = cheboppref;  pref.discretization = @colloc2;
+    A = matrix(L,n,pref);  % has n rows but maybe more columns
+    
+    % We want an n by n result. We have that A is (n-d) x n where
+    % d=L.diffOrder. Also, the output of A is at 1st kind points. We need
+    % to do: 
+    %  (map from n 1st kind to n 2nd kind) * A * (map from n 2nd kind to
+    %  n+d 2nd kind). 
+    
+    % Note that we don't have to translate/scale to the domain for barymat
+    % matrices that go between grids.
+    d = L.diffOrder;
+    [x1,~,w1] = chebtech1.chebpts( n );
+    x2 = chebtech2.chebpts( n );
+    x3 = chebtech2.chebpts( n+d );
+
+    out = barymat(x2,x1,w1) * A * barymat(x3,x2);
+    return
+    
+elseif ((nargin == 3) && ischar(varargin{2}) ...
+        && strcmpi(varargin{2}, 'oldschool'))
+
+    % TODO: Is this still correct? 
+    out = matrix(N,varargin{:});
     return
 end
 
