@@ -14,14 +14,14 @@ function c_leg = cheb2leg(c_cheb, M)
 % rewritting an asymptotic formula for Legendre polynomials in a way that can be
 % evaluated using discrete cosine transforms. For more details see:
 %   N. Hale and A. Townsend, A fast, simple, and stable Chebyshev-Legendre
-%   transform using an asymptotic formula, SISC (accepted) 2013.
+%   transform using an asymptotic formula, SISC, 36 (2014), pp. A148-A167.
 
 [N, n] = size(c_cheb);                  % Number of columns. 
-c_cheb = flipud(c_cheb);                      % Lowest order coeffs first.
+c_cheb = flipud(c_cheb);                % Lowest order coeffs first.
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%% Initialise  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if (nargin == 1), M = 10; end                 % No. of terms in expansion.
-N = N - 1; NN = (0:N).';         % Degree of polynomial.
+N = N - 1; NN = (0:N).';                      % Degree of polynomial.
 nM0 = min(floor(.5*(.25*eps*pi^1.5*gamma(M+1)/gamma(M+.5)^2)^(-1/(M+.5))), N);
 aM = min(1/log(N/nM0), .5);                   % Block reduction factor (alpha_M)
 K = ceil(log(N/nM0)/log(1/aM));               % Number of block partitions

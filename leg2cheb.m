@@ -14,7 +14,7 @@ function c_cheb = leg2cheb(c_leg, M)
 % rewritting an asymptotic formula for Legendre polynomials in a way that can be
 % evaluated using discrete cosine transforms. For more details see:
 %   N. Hale and A. Townsend, A fast, simple, and stable Chebyshev-Legendre
-%   transform using an asymptotic formula, SISC (accepted) 2013.
+%   transform using an asymptotic formula, SISC, 36 (2014), pp. A148-A167.
 
 % c_leg = c_leg(:);                             % Make column vector.
 [N, n] = size(c_leg);                     % Number of columns.
