@@ -182,7 +182,7 @@ if ( isempty(sigma) )
 
     if ( all(bigDel) )
         % All values changed somewhat-- choose the one changing the least.
-        [~, idx] = min(delta);
+        [ignored, idx] = min(delta);
         sigma = lam1(idx);
     else
         % One by one, convert the eigenvectors to functions and check their cheb
@@ -209,7 +209,7 @@ if ( isempty(sigma) )
             onenorm = onenorm + sum(abs(coeffs{j}), 1 ).';
         end
         
-        [~, index] = min(onenorm);
+        [ignored, index] = min(onenorm);
         sigma = lam2(index);
     end
 end

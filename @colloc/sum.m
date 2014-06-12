@@ -4,6 +4,6 @@ function S = sum(disc)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-[~, S] = functionPoints(disc);
+[ignored, S] = functionPoints(disc);
 
 end

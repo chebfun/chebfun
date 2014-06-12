@@ -150,7 +150,7 @@ while ( ~strcmp(str, '$') )
             % Obtain the numbers continously (with match), their start and end
             % positions.
             regex = '[\+\-]?(([0-9]+(\.[0-9]*)?|\.[0-9]+)([eE][\+\-]?[0-9]+)?[ij]?)';
-            [m, ~, e] = regexp(str, regex, 'match', 'start', 'end');
+            [m, ignored, e] = regexp(str, regex, 'match', 'start', 'end');
             
             % We can run into trouble with string such as 2*3 which will become
             % 2.*3 as we vectorize. But the . here should be a part of the
@@ -195,7 +195,8 @@ while ( ~strcmp(str, '$') )
             switch type2               
                 case 'num'      % We have a floating point number
                     regex = '[0-9]+([eE][\+\-]?[0-9]+)?[ij]?';
-                    [m, ~, e] = regexp(str, regex, 'match', 'start', 'end');
+                    [m, ignored, e] = ...
+                        regexp(str, regex, 'match', 'start', 'end');
 
                     % Add a . and convert from cell to string
                     nextnum = ['.', char(m(1))];
@@ -274,7 +275,7 @@ while ( ~strcmp(str, '$') )
             
         case 'char'
             regex = '[a-zA-Z_][a-zA-Z_0-9]*';
-            [m, ~, e] = regexp(str, regex, 'match', 'start', 'end');
+            [m, ignored, e] = regexp(str, regex, 'match', 'start', 'end');
             nextString = char(m(1));   % Convert from cell to string
             exprEnd = e(1);
 

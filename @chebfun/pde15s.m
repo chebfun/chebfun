@@ -705,7 +705,7 @@ clear global SYSSIZE
         
         % Solve ODE over time chunk with ode15s:
         try
-            [~, ~] = ode15s(@odeFun, tSpan, U0, opt);
+            [ignored1, ignored2] = ode15s(@odeFun, tSpan, U0, opt);
         catch ME
             if ( strcmp(ME.identifier, 'MATLAB:odearguments:SizeIC') )
                 error('Dimension mismatch. Check boundary conditions.');

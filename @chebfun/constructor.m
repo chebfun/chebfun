@@ -185,7 +185,7 @@ while ( any(sad) )
     % New choice = the largest sad interval:
     diffEnds = diff(ends);
     diffEnds(~sad) = 0;
-    [~, k] = max(diffEnds);
+    [ignored, k] = max(diffEnds);
     
     % Ends of this subinterval:
     a = ends(k);
