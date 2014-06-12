@@ -152,7 +152,7 @@ end
 
 function c_cheb = leg2cheb_direct(c_leg)
 %LEG2CHEB_DIRECT   Convert Leg to Cheb coeffs using the 3-term recurrence.
-N = length(c_leg) - 1;              % Degree of polynomial.
+N = size(c_leg,1) - 1;              % Degree of polynomial.
 if ( N <= 0 ), c_cheb = c_leg; return, end % Trivial case.
 x = cos(pi*(0:N)'/N);               % Chebyshev grid (reversed order).
 % Make the Legendre-Chebyshev Vandemonde matrix:

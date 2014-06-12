@@ -134,7 +134,7 @@ function c = dst1Transpose(v, flag) %#ok<INUSD>
 persistent Smat sint                % The same for each partition.    
 
 if ( nargin == 2 ), Smat = []; return, end % Clear persistent variables.
-N = length(v) - 1;              % Degree of polynomial.
+N = size(v,1) - 1;              % Degree of polynomial.
 if ( isempty(Smat) ) % Construct conversion matrix:
     dg = .5*ones(N-1, 1);           % Conversion matrix:
     Smat = spdiags([1 ; .5 ; dg], 0, N+1, N+1) + spdiags([0 ; 0 ; -dg], 2, N+1, N+1);
@@ -152,11 +152,11 @@ end
 
 function c_leg = cheb2leg_direct(c_cheb)
 %CHEB2LEG_DIRECT   Convert Cheb to Leg coeffs using the 3-term recurrence.
-N = size(c_cheb,1) - 1;             % Degree of polynomial.
-m = size(c_cheb,2);
+[N, n] = size(c_cheb);              % Number of columns.
+N = N - 1;                          % Degree of polynomial.
 if ( N <= 0 ), c_leg = c_cheb; return, end % Trivial case.
 x = cos(.5*pi*(0:2*N)'/N);          % 2*N+1 Chebyshev grid (reversed order).
-f = dct1([c_cheb ; zeros(N,m)]);    % Values on 2*N+1 Chebyshev grid.
+f = dct1([c_cheb ; zeros(N,n)]);    % Values on 2*N+1 Chebyshev grid.
 w = cheb2_quadwts(2*N+1).';         % Clenshaw-Curtis quadrature weights.
 Pm2 = 1; Pm1 = x;                   % Initialise.
 L = zeros(2*N+1, N+1);              % Vandermonde matrix.
