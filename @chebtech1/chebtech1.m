@@ -88,18 +88,10 @@ classdef chebtech1 < chebtech
             if ( ~isempty(pref.numPoints) && ~isnan(pref.numPoints) )
                 % Evaluate op on the Chebyshev grid of given size:
                 op = feval(op, chebtech1.chebpts(pref.numPoints));
-                fixedLength = true;
-            else
-                fixedLength = false;
             end
 
             % Actual construction takes place here:
             obj = populate(obj, op, data.vscale, data.hscale, pref);
-            
-            if ( fixedLength )
-                % We still compute an epslevel for fixed-length construction.
-                [~, obj.epslevel] = happinessCheck(obj, [], op, pref);
-            end
 
             if ( obj.ishappy || isnumeric(op) || iscell(op) )
                 % No need to error check if we are happy:
