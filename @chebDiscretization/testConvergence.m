@@ -35,7 +35,7 @@ u = toFunctionOut(disc, newValues);
 
 % Test convergence on each piece. Start by obtaining the Chebyshev coefficients
 % of all pieces, which we can then pass down to the testPiece method:
-coeffs = get(u, 'coeffs');
+coeffs = get(u, 'coeffs', 1);
 d = disc.domain;
 numInt = numel(d) - 1;
 isDone = false(1, numInt);

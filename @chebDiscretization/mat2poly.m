@@ -43,7 +43,7 @@ f = mat2fun(disc,values);
 c = cell(numVar,1);
 for i = 1:numVar
     if ( isFun(i) )
-        c{i} = get(f{i}, 'coeffs').';
+        c{i} = get(f{i}, 'coeffs', 1).';
     else
         c{i} = f{i};
     end
