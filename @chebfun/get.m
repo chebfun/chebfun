@@ -1,5 +1,5 @@
 function out = get(f, prop)
-%GET   GET method for the CHEBFUN class
+%GET   GET method for the CHEBFUN class.
 %   P = GET(F, PROP) returns the property P specified in the string PROP from
 %   the CHEBFUN F. Valid entries for the string PROP are:
 %       'domain'         - The domain of definition of F.
@@ -50,7 +50,6 @@ switch prop
         for k = 1:1:numel(f)
             out{k} = f(k).(prop);
         end
-
         if ( numel(out) == 1 )
             out = out{1};
         end
@@ -90,7 +89,6 @@ switch prop
                 out{k} = [];
             end
         end
-
         if ( numel(out) == 1 )
             out = out{1};
         end
@@ -143,17 +141,16 @@ function out = getSimpleNumericLocalProp(f, prop, doSimplify)
 %   quasimatrices first, which can potentially save a lot in computational
 %   overhead costs.
 
-% Get properties for each fun and assemble into cell arrays.
-if (numel(f) == 1)  % Single column or array-valued CHEBFUN.
+% Get properties for each FUN and assemble into cell arrays.
+if ( numel(f) == 1 )  % Single column or array-valued CHEBFUN.
     out = getSimpleNumericLocalPropArrayValued(f, prop);
-else                % Quasimatrix / array of CHEBFUNs.
+else                  % Quasimatrix / array of CHEBFUNs.
     out = getArbitraryLocalPropQuasimatrix(f, prop);
 end
 
 % Try to convert from a cell array of cell arrays to a 2D cell array.
 if ( doSimplify && canConvertCellOfCellsTo2DCellArray(out) )
     out = horzcat(out{:});
-
     % Try to go one step further and convert to a numeric matrix.
     if ( canConvert2DCellArrayToNumeric(out) )
         out = cell2mat(out);
@@ -274,7 +271,6 @@ function canConvert = canConvertCellOfCellsTo2DCellArray(out)
 %   of the cell array of cell arrays OUT can be converted to a 2D cell array
 %   (i.e., if OUT{J} has the same number of columns for each J) and FALSE
 %   otherwise.
-
     canConvert = ~any(diff(cellfun(@(C) size(C, 1), out)));
 end
 
@@ -285,8 +281,8 @@ function canConvert = canConvert2DCellArrayToNumeric(out)
 
 [nFuns, nCols] = size(out);
 
-% If each column has multiple funs, the property values for each fun must
-% all have only one row.  If each column has only one fun, the property
+% If each column has multiple FUNS, the property values for each FUN must
+% all have only one row.  If each column has only one FUN, the property
 % values must all have the same number of rows.
 if ( nFuns > 1 )
     nRowsNeeded = 1;
