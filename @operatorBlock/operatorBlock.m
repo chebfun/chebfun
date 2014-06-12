@@ -87,9 +87,9 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
         
         function C = mtimes(A, B)
         %*   Operator composition, multiplication or application.
-        %   C = A*B, where A is a OPERATORBLOCK and B is an OPERATORBLOCK, returns
-        %   the OPERATORBLOCK C that is the result of composing the operators
-        %   A and B.
+        %   C = A*B, where A is a OPERATORBLOCK and B is an OPERATORBLOCK,
+        %   returns the OPERATORBLOCK C that is the result of composing the
+        %   operators A and B.
         %
         %   C = A*B, or C = B*A,  where A is a OPERATORBLOCK and B is a scalar,
         %   returns the OPERATORBLOCK C that is the result of multiplying A
@@ -107,20 +107,34 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
                 % And apply it to the CHEBFUN
                 C = C(B);
                 
-            else
-                % A scalar is converted into a constant CHEBFUN, which can then
-                % be used to create a multiplication OPERATORBLOCK.
-                if ( isnumeric(A) )
-                    % Need to store whether we got passed in a zero scalar.
-                    isz = ( A == 0 );
-                    A = operatorBlock.mult( chebfun(A, B.domain) );
-                    A.iszero = isz;
-                elseif ( isnumeric(B) )
-                    isz = ( B == 0);
-                    B = operatorBlock.mult( chebfun(B, A.domain) );
-                    B.iszero = isz;
-                end
+            elseif ( isnumeric(A) )     % SCALAR * OPERATORBLOCK
 
+                % Need to store whether we got passed in a zero scalar.
+                isz = ( A == 0 );
+                
+                % Create an OPERATOR block to be returned.
+                C = operatorBlock(B.domain);
+                
+                % Update the stack.
+                C.stack = @(z) A * B.stack(z);
+                
+                % Output is a zero operator if eithar A or B were zero.
+                C.iszero = isz || B.iszero;
+                
+                % Difforder of the returned OPERATORBLOCK.
+                if ( C.iszero )
+                    C.diffOrder = 0;
+                else
+                    C.diffOrder = B.diffOrder;
+                end
+                
+            elseif ( isnumeric(B) )
+                % Swap arguments.
+                C = mtimes(B, A);
+            
+            else
+                % Here, we are dealing with an OPERATORBLOCK * OPERATORBLOCK.
+                
                 % Create an OPERATORBLOCK to be returned.
                 C = operatorBlock(A.domain);
 
