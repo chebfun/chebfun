@@ -3,6 +3,9 @@ function c_cheb = leg2cheb(c_leg, M)
 %   C_CHEB = LEG2CHEB(C_LEG) converts the vector C_LEG of Legendre coefficients
 %   to a vector C_CHEB of Chebyshev coefficients such that
 %   C_CHEB(N)*T0 + ... + C_CHEB(1)*T{N-1} = C_LEG(N)*P0 + ... + C_LEG(1)*P{N-1}.
+%
+%   If C_LEG is a matrix, then the LEG2CHEB operation is applied to each 
+%   column. 
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
