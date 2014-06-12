@@ -81,7 +81,7 @@ end
 % Store the hold state of the current axis:
 holdState = ishold;
 
-% Store the current X and Y-limits:
+% Store the current X and Y-limits, and whether ylim is in manual or auto mode.
 if ( holdState )
     xLimCurrent = get(gca, 'xlim');
     yLimCurrent = get(gca, 'ylim');

@@ -129,7 +129,8 @@ hold on
 plot(f2)
 % Check that we obtain reasonable ylimits
 ylNew = get(gca, 'ylim');
-pass3(length(pass3) + 1)  = ( (norm(ylOld(1)-ylNew(1)) < tol) && (yl(2) > 10) );
+pass3(length(pass3) + 1)  = ( (norm(ylOld(1) - ylNew(1)) < tol) && ...
+    (ylNew(2) > 10) );
 hold off
 %%
 pass = [pass1, pass2, pass3];
