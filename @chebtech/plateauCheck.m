@@ -1,4 +1,4 @@
-function [ishappy, epslevel, cutoff] = plateauCheck(f, values, pref)
+function [ishappy, epsLevel, cutoff] = plateauCheck(f, values, pref)
 %PLATEAUCHECK   Attempt to trim trailing Chebyshev coefficients in a CHEBTECH.
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = PLATEAUCHECK(F, VALUES) returns an estimated
 %   location, the CUTOFF, at which the CHEBTECH F could be truncated. One of two
@@ -16,7 +16,7 @@ function [ishappy, epslevel, cutoff] = plateauCheck(f, values, pref)
 %   number that prevents convergence to the full requested accuracy, as often
 %   happens in the collocation of differential equations.
 %
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = PLATEAUCHECK(F, PREF) allows additional
+%   [ISHAPPY, EPSLEVEL, CUTOFF] = PLATEAUCHECK(F, VALUES, PREF) allows additional
 %   preferences to be passed. In particular, one can adjust the target accuracy
 %   with PREF.EPS.
 %
@@ -40,67 +40,64 @@ end
 coeff = f.coeffs;
 n = length(coeff);
 
-% Grab the vscale:
-vscale = f.vscale;
-if ( nargin > 1 )
-    vscale = max(vscale, max(abs(values), [], 1));
-else
-    values = [];
-end
-
 % NaNs are not allowed.
 if ( any(isnan(coeff)) )
     error('CHEBFUN:FUN:plateauCheck:NaNeval', ...
         'Function returned NaN when evaluated.')
 end
 
+% Set the function scaling for each vector of values.
+maxvals = max(abs(values), [], 1);
+
 % Check the vertical scale:
-if ( max(vscale) == 0 )
+if ( max(maxvals) == 0 )
     % This is the zero function, so we must be happy!
     ishappy = true;
     cutoff = 1;
     return
-elseif ( any(isinf(vscale)) )
+elseif ( any(isinf(maxvals)) )
     % Inf located. No cutoff.
     cutoff = n;
     return
 end
 
+%%
+% We omit the last 10% because aliasing can pollute them significantly.
+n90 = ceil( 0.90*n );
+absCoeff = abs( coeff(end:-1:end+1-n90,:) );  % switch to low->high ordering
+vscale = max(absCoeff,[],1);          % scaling in each column
+absCoeff = absCoeff * diag(1./vscale);
+
+
 %% Deal with array-valued functions.
 
-% plateauCheck does not properly support array-valued construction. To deal with
-% this, we take an arbitrary linear combination of the columns and fix things up
-% afterwards.
-m = size(coeff, 2);
-if ( m > 1 )
-    b = sin(1:m);
-    f.coeffs = coeff*b.';
-    values = values*b.';
-    f.vscale = max(f.vscale);
-    [ishappy, epslevel, cutoff] = plateauCheck(f, values, pref);
-    epslevel = epslevel*b; % TODO: This is totally not the right thing to do.
-    epslevel = max(epslevel, eps); % Can't be better than eps.
-    return
+numCol = size(coeff, 2);
+ishappy = false(1,numCol);
+epsLevel = zeros(1,numCol);
+cutoff = zeros(1,numCol);
+for m = 1:numCol
+    [ishappy(m), epsLevel(m), cutoff(m)] = checkColumn(absCoeff(:,m),pref.eps);
+    if ( ~ishappy(m) )
+        % No need to continue if it fails on any column.
+        break
+    end
 end
 
-% TODO: Properly implement array-valued support?
+epsLevel = max(epsLevel);
+ishappy = all(ishappy); 
 
-%%
-% We omit the last 12% because aliasing can pollute them significantly.
-n88 = ceil( 0.88*n );
-% Preferred tolerance
-epslevel = pref.eps;  
-absCoeff = abs( coeff(n:-1:1) );
-% Magnitude and rescale.
-absCoeff = absCoeff / vscale;
+end
 
 %% %%%%%%%%%%%%%%%%%%%%%%% Serious checking starts here. %%%%%%%%%%%%%%%%%%%%%%%
+function [ishappy, epslevel, cutoff] = checkColumn(absCoeff,epslevel)
+
 % There are two ways to pass the test. Either the coefficients have achieved the
 % goal epslevel or the convergence appears to have levelled off for good
 % (plateau).
 
 % Guilty until proven innocent.
 ishappy = false;
+n = length(absCoeff);
 
 %% 1. Strict test.
 
@@ -108,13 +105,13 @@ ishappy = false;
 % Then go out a bit further to be safe.
 cutoff = 4 + find( absCoeff >= epslevel, 1, 'last' );
 
-if ( cutoff < 0.95*n88 )
+if ( cutoff < 0.95*n )
     % Achieved the strict test.
     ishappy = true;
     
-elseif ( n88 < 17 )
+elseif ( n < 17 )
     % If there aren't enough coefficients, give up checking.
-    cutoff = n88;
+    cutoff = n;
     
 %% 2. Plateau test.
 else
@@ -132,7 +129,7 @@ else
     
     % Look for a sustained leveling off in the decrease.
     
-    % TODO: Use the van Herk filter to do this more efficiently.
+    % TODO: Use the van Herk filter to do this more efficiently. (Low priority.)
     
     % Symmetries can cause one or more consecutive coefficients to be zero, and
     % we only care about the nonzero ones. Use a windowed max to remove the
@@ -142,7 +139,7 @@ else
     for k = 1:winSize
         winMax = max( winMax(1:end-1), logAbs(k+1:end) );
     end
-    n88 = length(winMax);
+    n = length(winMax);
     
     %%% Alternative windowed max: This avoids the for loop but might hog memory.
     %%index = bsxfun(@plus, (1:n)', 0:winsize-1);
@@ -156,7 +153,7 @@ else
     
     % If too little accuracy has been achieved, do nothing.
     tOK = find(smoothLAC < thresh, 1) - lag;
-    if ( isempty(tOK) || (n88 - tOK < 16) )
+    if ( isempty(tOK) || (n - tOK < 16) )
         return
     end
     
@@ -180,22 +177,24 @@ else
     
     % Find the first run of 8 consecutive slow hits.
     first = find( slow(8:end) - slow(1:end-7) == 7, 1 );  % may be empty
-    cutoff = slow(first);  % may be empty, will give false next
+    cutoff = slow(first);  % may be empty
+    if ( isempty(cutoff) )
+        cutoff = n;
+    end
     
     % If the cut location is within the coefficient sequence, we're done.
-    if ( cutoff < n88 )
+    if ( cutoff < n )
         ishappy = true;
     end
     
 end
 
+% Deduce an epslevel. 
 if ( ishappy )
-    % Use the information from the cut to deduce an eps level.
-    winEnd = min( n88, cutoff + 4 );
+    winEnd = min( n, cutoff + 4 );
     epslevel = max( absCoeff(cutoff:winEnd) );
 else
-    % Estimate the accuracy:
-    epslevel = absCoeff(n88);
+    epslevel = absCoeff(n);
 end
     
 % Epslevel can't be better than eps:
