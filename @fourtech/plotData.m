@@ -44,7 +44,7 @@ if ( isempty(g) )
     % PLOT(F):
     
     % Values on oversampled Fourier grid (equally spaced).
-    data.xLine = fourierpts(npts);
+    data.xLine = fourpts(npts);
     tmp = prolong(f, npts);
     data.yLine = tmp.values;
 
@@ -68,10 +68,10 @@ elseif ( isa(g, 'fourtech') )
     data.fGrid.xPoints = fourtech.fourpts(len);
     
     % Grid data for g:
-    data.gGrid.xLine = fourierpts(npts);
+    data.gGrid.xLine = fourpts(npts);
     % Use the maximum of the lenghts of f, g and h to match the number of
     % values returned:    
-    data.gGrid.xPoints = fourierpts(len);
+    data.gGrid.xPoints = fourpts(len);
     
     % Values on oversampled Fourier grid (equally spaced)
     data.xLine = get(prolong(f, npts), 'values');
@@ -95,10 +95,10 @@ elseif ( isa(g, 'fourtech') )
         % PLOT3(F, G, H)
         
         % Grid data for h:
-        data.hGrid.xLine = fourierpts(npts);
+        data.hGrid.xLine = fourpts(npts);
         % Use the maximum of the lenghts of f, g and h to match the number of
         % values returned:    
-        data.hGrid.xPoints = fourierpts(len);
+        data.hGrid.xPoints = fourpts(len);
         
          % Values on oversampled uniform grid:
         data.zLine = get(prolong(h, npts), 'values');

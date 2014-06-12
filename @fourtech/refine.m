@@ -16,7 +16,7 @@ end
 
 % Grab the refinement function from the preferences:
 % refFunc = pref.refinementFunction;
-% TODO: Implement other options.
+% [TODO]: Implement other options.
 refFunc = 'resampling';
 
 % Decide which refinement to use:
@@ -60,10 +60,10 @@ function [values, giveUp] = refineResampling(op, values, pref)
         giveUp = false;
     end
    
-    % TODO: Allow "first-kind" fourier points.
-    x = fourierpts(n);    
+    % [TODO]: Allow "first-kind" fourier points.
+    x = fourpts(n);    
 
-    % TODO: What if preferences is set to extrapolate?
+    % [TODO]: What if preferences is set to extrapolate?
     % Evaluate the operator:
     values = feval(op, x);
     
@@ -75,7 +75,7 @@ function [values, giveUp] = refineResampling(op, values, pref)
 end
 
 function [values, giveUp] = refineNested(op, values, pref)
-%REFINENESTED  Default refinement function for single ('nested') sampling.
+%REFINENESTED   Default refinement function for single ('nested') sampling.
 
     if ( isempty(values) )
         % The first time we are called, there are no values
@@ -95,8 +95,8 @@ function [values, giveUp] = refineNested(op, values, pref)
             giveUp = false;
         end
         
-        % 2nd-kind Fourier points:
-        x = fourierpts(n);
+        % "2nd-kind" Fourier points:
+        x = fourpts(n);
         % Take every 2nd entry:
         x = x(2:2:end);
 
@@ -106,4 +106,5 @@ function [values, giveUp] = refineNested(op, values, pref)
         values(2:2:end,:) = feval(op, x);
 
     end
+    
 end

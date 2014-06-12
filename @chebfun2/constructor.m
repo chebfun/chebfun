@@ -517,8 +517,8 @@ elseif ( isa(tech, 'chebtech1') )
     y = chebpts( n, dom(3:4), 1 ); 
     [xx, yy] = meshgrid( x, y ); 
 elseif ( isa(tech, 'fourtech') )
-    x = fourierpts( m, dom(1:2) );   % x grid.
-    y = fourierpts( n, dom(3:4) );
+    x = fourpts( m, dom(1:2) );   % x grid.
+    y = fourpts( n, dom(3:4) );
     [xx, yy] = meshgrid( x, y );
 else
     error('CHEBFUN2:POINTS2D', 'Unrecognized technology');
@@ -539,7 +539,7 @@ if ( isa(tech, 'chebtech2') )
 elseif ( isa(tech, 'chebtech1') )
     x = chebpts( n, dom, 1 );   % x grid.
 elseif ( isa(tech, 'fourtech') )
-    x = fourierpts( n, dom );   % x grid.
+    x = fourpts( n, dom );   % x grid.
 else
     error('CHEBFUN2:PTS', 'Unrecognized technology');
 end

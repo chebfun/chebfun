@@ -1330,7 +1330,7 @@ if ( isa(tech, 'chebtech2') )
 elseif ( isa(tech, 'chebtech1') )
     x = chebpts( n, dom, 1 );   % x grid.
 elseif ( isa(tech, 'fourtech') )
-    x = fourierpts( n, dom );   % x grid.
+    x = fourpts( n, dom );   % x grid.
 else
     error('CHEBFUN2:PTS', 'Unrecognized technology');
 end

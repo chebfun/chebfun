@@ -43,8 +43,8 @@ elseif ( isa(tech, 'chebtech1') )
     y = chebpts( ny, D(3:4), 1 );   % y grid
     [xx, yy] = meshgrid(x, y);   % Tensor product
 elseif ( isa(tech, 'fourtech') ) 
-    x = fourierpts( nx, D(1:2) );   % x grid.
-    y = fourierpts( ny, D(3:4) );   % y grid
+    x = fourpts( nx, D(1:2) );   % x grid.
+    y = fourpts( ny, D(3:4) );   % y grid
     [xx, yy] = meshgrid(x, y);   % Tensor product
 else
     error('CHEBFUN2:PTS', 'Unrecognized technology');
