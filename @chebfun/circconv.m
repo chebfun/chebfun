@@ -24,7 +24,7 @@ if ( xor(f(1).isTransposed, g(1).isTransposed) )
 end
 
 if ~isa(f.funs{1}.onefun,'fourtech') && ~isa(g.funs{1}.onefun,'fourtech')
-    error('CHEBFUN:circconv:NotAvailable','Circular convolutions only possible for Fourier-based chebfuns');
+    error('CHEBFUN:circconv:NotAvailable','Circular convolutions only possible for Fourier-based chebfuns.');
 end
 
 % Extract the domain:
@@ -35,7 +35,7 @@ if a ~=c &&  b ~= d
     error('CHEBFUN:circconv:domain','Domains of f and g must match');
 end
 
-% Call BNDFUN circular convolution
+% Call BNDFUN circular convolution.
 h = chebfun(circconv(f.funs{1}, g.funs{1}),domain(f));
 
 end

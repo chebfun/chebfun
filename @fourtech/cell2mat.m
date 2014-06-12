@@ -14,7 +14,7 @@ function g = cell2mat(f)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TODO: This function is probably not needed anymore.
+% [TODO]: This function is probably not needed anymore.
 
 % Return an empty result:
 if ( isempty(f) || numel(f) == 1 )
@@ -40,11 +40,11 @@ end
 
 % Append new data to an empty FOURTECH:
 g = f.make(); % Make an empty FOURTECH.
-g.vscale = [f.vscale];
+g.vscale = [ f.vscale ];
 g.ishappy = min([f.ishappy]);
-g.epslevel = [f.epslevel];
+g.epslevel = [ f.epslevel ];
 g.values = cell2mat(values);
-g.coeffs = [f.coeffs];
-g.isReal = [f.isReal];
+g.coeffs = [ f.coeffs ];
+g.isReal = [ f.isReal ];
 
 end

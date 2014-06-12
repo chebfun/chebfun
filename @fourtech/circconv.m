@@ -6,7 +6,7 @@ function f = circconv(f, g)
 %           H(x) =   |    F(t) G(x-t) dt,  x in [-pi, pi]
 %                    /
 %                   -
-%   Note that CIRCCONV only supports smooth periodic functions on [-pi,pi]
+%   Note that CIRCCONV only supports smooth periodic functions on [-pi,pi].
 %
 %   Example:
 %     f = fourtech(@(x) exp(cos(40*pi*x))); 
@@ -48,8 +48,10 @@ n = size(f.coeffs,1);
 g = circshift(g,-1);
 f.values = 2/n*ifft(fft(f.values).*fft(g.values));
 f.coeffs = f.vals2coeffs(f.values);
-% Update the vscale
+
+% Update the vscale.
 f.vscale = max(abs(f.values), [], 1);
+
 % Scale the epslevel relative to the largest column:
 vscale = f.vscale;
 f.epslevel = 10*eps(max(f.vscale));
@@ -64,7 +66,7 @@ f.isReal = f.isReal && g.isReal;  % Are you real happy though?
 f.values(:,f.isReal) = real(f.values(:,f.isReal));
 
 if f.ishappy
-    f = simplify(f,f.epslevel);
+    f = simplify(f, f.epslevel);
 end
 
 end

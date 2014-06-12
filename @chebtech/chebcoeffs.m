@@ -5,10 +5,12 @@ function out = chebcoeffs(f, N)
 %   k-th Chebyshev polynomial and LENGTH(F) = N. This is equivalent to GET(F,
 %   'COEFFS').
 %
-%   A = CHEBCOEFFS(F, N) truncates or pads the vector A so that M coefficients
+%   If F is array-valued with P columns, then A is an PxN matrix.
+%
+%   A = CHEBCOEFFS(F, M) truncates or pads the vector A so that M coefficients
 %   of the CHEBTECH F are returned.
 %
-%   If F is array-valued with M columns, then A is an MxN matrix.
+%   If F is array-valued with P columns, then A is an PxM matrix.
 %
 % See also LEGCOEFFS, FOURCOEFFS.
 

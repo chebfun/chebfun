@@ -5,8 +5,7 @@ function f = conv(f, g)
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
-%
 
-error('CHEBFUN:FOURTECH:conv:NotSupported','conv is not supported for fourtechs.  Use the function circonv');
+error('CHEBFUN:FOURTECH:conv:NotSupported','conv is not supported for fourtech objects. Use the function circonv.');
 
 end

@@ -14,7 +14,7 @@ function values = coeffs2vals(coeffs)
 %   (N+1)xM matrix of values V such that V(i,j) is the ith value of the
 %   trignometric polynomial corresponding to the jth column.
 %
-% See also VALS2COEFFS, FOURIERPTS.
+% See also VALS2COEFFS, FOURPTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org for Chebfun information.
@@ -22,24 +22,24 @@ function values = coeffs2vals(coeffs)
 % Get the length of the input:
 n = size(coeffs, 1);
 
-% Trivial case (constant):
-if ( n == 1 )
+% Trivial case (constant or empty):
+if ( n <= 1 )
     values = coeffs; 
     return
 end
 
 % The coefficients are for interpolation defined on [-pi,pi), but the FFT
-% works for values on [0,2*pi).  To fix the coefficients for this we just need to
-% assign c_k = (-1)^k c_k, for k=-(N-1)/2:(N-1)/2 for N odd and 
-% k = -N/2+1:N/2 for N even.
-if mod(n,2) 
+% works for values on [0,2*pi). To fix the coefficients for this we just need to
+% assign c_k = (-1)^k c_k, with k=-(N-1)/2:(N-1)/2 for N odd, and 
+% with k = -N/2+1:N/2 for N even.
+if ( mod(n, 2) ) 
     even_odd_fix = (-1).^((n-1)/2:-1:-(n-1)/2);
 else
     even_odd_fix = (-1).^((n/2-1):-1:(-n/2));
 end
-coeffs = bsxfun(@times,coeffs,even_odd_fix.');
+coeffs = bsxfun(@times, coeffs, even_odd_fix.');
 
-% Shift the coefficients properly
-values = ifft(ifftshift(flipud(n*coeffs),1),[],1);
+% Shift the coefficients properly.
+values = ifft(ifftshift(flipud(n*coeffs), 1), [], 1);
 
 end

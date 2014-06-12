@@ -1,7 +1,7 @@
 function coeffs = vals2coeffs(values)
-%VALS2COEFFS   Convert values at equally spaced points between [-1 1).
-%   C = VALS2COEFFS(V) returns the vector of N coefficients such that 
-%
+%VALS2COEFFS   Convert values at N equally spaced points between [-1 1) 
+%to N Fourier coefficients.
+%   C = VALS2COEFFS(V) returns the vector of N coefficients such that: 
 %   If N is odd
 %       F(x) = C(1)*z^((N-1)/2) + C(2)*z^((N-1)/2-1) + ... + C(N)*z^(-(N-1)/2)
 %   If N is even
@@ -16,7 +16,7 @@ function coeffs = vals2coeffs(values)
 %   [V(1,j) ; ... ; V(N+1,j)] for j=1:M using the same formula as above for
 %   each column.
 %
-% See also COEFFS2VALS, FOURIERPTS.
+% See also COEFFS2VALS, FOURPTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org for Chebfun information.
@@ -24,23 +24,24 @@ function coeffs = vals2coeffs(values)
 % Get the length of the input:
 n = size(values, 1);
 
-% Trivial case (constant):
+% Trivial case (constant or empty):
 if ( n <= 1 )
     coeffs = values; 
     return
 end
 
-coeffs = (1/n)*flipud(fftshift(fft(values,[],1),1));
+coeffs = (1/n)*flipud(fftshift(fft(values, [], 1), 1));
 
 % These coefficients are for interpolation defined on [0,2*pi), but we want
-% to work on [-pi,pi).  To fix the coefficients for this we just need to
+% to work on [-pi,pi). To fix the coefficients for this we just need to
 % assign c_k = (-1)^k c_k, for k=-(N-1)/2:(N-1)/2 for N odd and 
 % k = -N/2+1:N/2 for N even.
-if mod(n,2) 
+if ( mod(n, 2) ) 
     even_odd_fix = (-1).^((n-1)/2:-1:-(n-1)/2);
 else
     even_odd_fix = (-1).^((n/2-1):-1:(-n/2));
 end
-coeffs = bsxfun(@times,coeffs,even_odd_fix.');
+
+coeffs = bsxfun(@times, coeffs, even_odd_fix.');
 
 end
