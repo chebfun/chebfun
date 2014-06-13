@@ -53,7 +53,8 @@ else
             f = compose(f, @rdivide, c, [], pref);
         else
             error('CHEBFUN:CHEBTECH:rdivide:chebtechRdivideUnknown',...
-                'rdivide does not know how to divide a CHEBTECH and a %s.', class(c));
+                'rdivide does not know how to divide a CHEBTECH and a %s.', ...
+                class(c));
         end        
     else                       % DOUBLE / CHEBTECH
         op = @(x) f./x;

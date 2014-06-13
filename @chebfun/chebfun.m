@@ -81,14 +81,12 @@ classdef chebfun
 % computing the first N Chebyshev coefficients from their integral form, rather
 % than by interpolation at Chebyshev points.
 %
-% CHEBFUN(F, 'periodic') constructs a CHEBFUN object representing a smooth
-% and periodic function F on the interval [-1,1]. F may be a string, e.g., 'exp(sin(pi*x))', a function handle, e.g.,
-% @(x) 3./(4-cos(pi*x).^2), or a vector of numbers. In the first two instances, F
-% should be "vectorized" as described above. The resulting chebfun is
-% represented using a Fourier series.  All operation done of F should
-% preserve smoothness and periodicity or the results may be inaccurate.
-% Similar options as discussed above may be combined with the 'periodic'
-% flag, with exception to the 'chebkind' and 'splitting' flags.
+% CHEBFUN(F, 'periodic') constructs a CHEBFUN object representing a smooth and
+% periodic function F on the interval [-1,1]. The resulting CHEBFUN is
+% represented using a Fourier series. All operation done of F should preserve
+% smoothness and periodicity or the results may be inaccurate. Similar options
+% as discussed above may be combined with the 'periodic' flag, with exception to
+% the 'chebkind' and 'splitting' flags.
 %
 % See also CHEBFUNPREF, CHEBPTS.
 
@@ -211,13 +209,14 @@ classdef chebfun
 
             if ( doTrunc )
                 % Truncate the CHEBFUN to the required length:
-                if strcmpi(func2str(pref.tech),'fourtech')
-                    c = fourcoeffs(f, truncLength);
-                else
+                if ( isa( pref.tech(),'chebtech' ) ) 
                     c = chebcoeffs(f, truncLength);
+                else
+                    c = fourcoeffs(f, truncLength);
                 end
-                f = chebfun(c.', f.domain([1, end]), 'coeffs','tech',pref.tech);
+                f = chebfun(c.', f.domain([1,end]), 'coeffs', pref);
             end
+            
         end
     end
     

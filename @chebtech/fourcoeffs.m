@@ -11,7 +11,7 @@ function out = fourcoeffs(f, N)
 %   where z = exp(1i*pi*x).
 %
 %   A = FOURCOEFFS(F, N) truncates or pads the vector C so that N coefficients
-%   of the FOURTECH F are returned.
+%   of the CHEBTECH F are returned.
 %
 %   If F is array-valued with M columns, then C is an MxN matrix.
 %
@@ -19,6 +19,8 @@ function out = fourcoeffs(f, N)
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
+
+% TODO: Is there a fast transfrom from Fourier to Chebyshev?
 
 if ( nargin == 1 )
     N = length(f);
@@ -29,8 +31,6 @@ if ( isempty(N) || N <= 0)
     out = [];
     return
 end
-
-% TODO: Is there a fast transfrom from Fourier to Chebyshev?
 
 % Allocate storage:
 [~, numCols] = size(f);
@@ -46,7 +46,7 @@ end
 % Compute the coefficients via inner products:
 coeffsIndex = 1;
 for k = modes
-    % Construct kth Fourier mode using f's chebtech type.
+    % Construct kth Fourier mode using f's CHEBTECH type.
     F = f.make(@(x) exp(-1i*pi*k*x));  
     out(coeffsIndex,:) = 0.5*sum(F.*f);
     coeffsIndex = coeffsIndex + 1;

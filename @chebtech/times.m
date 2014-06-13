@@ -42,9 +42,12 @@ elseif ( isa(g, 'double') )     % CHEBTECH .* double
     
     return
 
-elseif ( ~isa(f, 'chebtech') || ~isa(g, 'chebtech') ) % Don't know how to do the operation
+elseif ( ~isa(f, 'chebtech') || ~isa(g, 'chebtech') ) 
+    % Don't know how to do the operation
     
-    error('CHEBFUN:CHEBTECH:times:typeMismatch','Incompatible operation between objects. Make sure functions are of the same type.');
+    error('CHEBFUN:CHEBTECH:times:typeMismatch', ...
+        ['Incompatible operation between objects.\n', ...
+         'Make sure functions are of the same type.']);
     
 elseif ( size(f.coeffs, 1) == 1 )
     % If we have (constant CHEBTECH).*CHEBTECH, reverse the order and call TIMES

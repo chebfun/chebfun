@@ -17,10 +17,10 @@ else
     varargin(empties) = [];
 end
 
-% Check that all objects are indeed chebtechs.  If not then we should not
-% concatenate.
-if ~all( cell2mat(cellfun(@(f) isa(f,'chebtech'), varargin, 'UniformOutput', false)) )
-    error('CHEBFUN:CHEBTECH:horzcat:typeMismatch','Incompatible operation between objects. Make sure functions are of the same type.');
+% Check that all objects are CHEBTECHs. If not we cannot concatenate.
+if ( ~all( cellfun(@(f) isa(f, 'chebtech'), varargin) ) )
+    error('CHEBFUN:CHEBTECH:horzcat:typeMismatch', ...
+    'Incompatible concatenation. Ensure discretizations are of the same type.');
 end
 
 % Prolong each Chebtech to the same length:

@@ -74,7 +74,9 @@ elseif ( isa(f, 'chebtech') && isa(g, 'chebtech') )  % CHEBTECH + CHEBTECH
 
 else    % Don't know how to do the addition of the objects
     
-    error('CHEBFUN:CHEBTECH:plus:typeMismatch','Incompatible operation between objects. Make sure functions are of the same type.');
+    error('CHEBFUN:CHEBTECH:plus:typeMismatch', ...
+        ['Incompatible operation between objects.\n', ...
+         'Make sure functions are of the same type.']);
     
 end
 

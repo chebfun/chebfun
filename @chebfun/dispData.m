@@ -37,13 +37,13 @@ name = ' ';
 data = cell(j,1);
     
 % So far, the only extra information is exponents:
-if any( exps(:) )
+if ( any( exps(:) ) )
     name = '  endpoint exponents';
     for j = 1:numFuns
         data{j} = ['        ' '[' num2str(exps(j,1), '%2.2g') '      ' ...
             num2str(exps(j,2), '%2.2g') ']' '  '];
     end
-elseif ~isempty(infoJ)
+elseif ( ~isempty(infoJ) )
     name = infoJ{1}.name;
 end
 

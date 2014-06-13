@@ -5,6 +5,8 @@ function f = four2cheb(f)
 %
 % See also CHEB2FOUR.
 
+% TODO: This should probably be removed.
+
 if isempty(f)
     f = chebfun([],f.domain,'tech','chebtech2');
 elseif isa(f.funs{1}.onefun,'chebtech')
