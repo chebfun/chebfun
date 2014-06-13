@@ -38,8 +38,11 @@ end
 len = max([length(f), length(g), length(h)]);
 npts = min(max(501, round(4*pi*len)), fourtech.techPref().maxPoints);
 
+
 % Initialise the output structure:
-data = struct('xLine', [], 'yLine', [], 'xPoints', [], 'yPoints', [], 'yLim', [inf -inf]);
+data = struct('xLine', [], 'yLine', [], 'xPoints', [], 'yPoints', [], ...
+    'yLim', [], 'defaultXLim', 1, 'defaultYLim', 1);
+
 if ( isempty(g) )       
     % PLOT(F):
     
@@ -111,8 +114,7 @@ elseif ( isa(g, 'fourtech') )
     end
     
 else
-    error('CHEBFUN:FOURTECH:plotData:DataType', ...
-        'Invalid data types.');
+    error('CHEBFUN:FOURTECH:plotData:DataType', 'Invalid data types.');
 end
 
 end

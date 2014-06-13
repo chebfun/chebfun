@@ -1,8 +1,8 @@
 function varargout = fourstripplot(u, varargin)
 %FOURSTRIPPLOT   Plot the strip of analyticity.
-%   FOURSTRIPPLOT(U) plots estimated strip of analyticity in the complex
-%   plane for U.  The width of the strip is 2*a(k)=1/N(k)/pi*log(4/EPS+1),
-%   where EPS is the EPSLEVEL of U and N(k) is the number of Fourier modes.
+%   FOURSTRIPPLOT(U) plots estimated strip of analyticity in the complex plane
+%   for U. The width of the strip is 2*a(k)=1/N(k)/pi*log(4/EPS+1), where EPS is
+%   the EPSLEVEL of U and N(k) is the number of Fourier modes.
 %
 %   FOURSTRIPPLOT(U, EPS) allows a user-specified EPS.
 %
@@ -13,16 +13,14 @@ function varargout = fourstripplot(u, varargin)
 %
 %   Example:
 %       u = fourtech(@(x) 1./(1 + sin(pi*x).^2));
-%       fourstripplot(u,'r--');
+%       fourstripplot(u, 'r--');
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-%%
-
-if ( size(u,2) > 1 )
-    error('CHEBFUN:FOURTECH:fourstripplot:quasi', ['FOURSTRIPPLOT does not ', ... 
-        'support array-valued FOURTECH objects or quasimatrices.']);
+if ( size(u, 2) > 1 )
+    error('CHEBFUN:FOURTECH:fourstripplot:quasi', ...
+        ['FOURSTRIPPLOT does not support array-valued FOURTECH objects.']);
 end
 
 if ( isempty(u) )
@@ -35,7 +33,7 @@ if ( isempty(u) )
 end
 
 % Parse the inputs.
-[ee,args] = parseInputs(varargin{:});
+[ee, args] = parseInputs(varargin{:});
 if ( isnan(ee) )
     ee = u.epslevel;
 end
@@ -49,14 +47,13 @@ else
 end
 a = 1i/N/pi*log(4/ee+1);
 
-UK = [-1+a; 1+a;nan;-1-a; 1-a];
+UK = [-1 + a ; 1 + a ; nan ; -1 - a ; 1 - a];
 
 holdState = ishold();
-hold on
 
 % Plot the ellipses.
-h = plot(UK,args{:});
-clr = get(h,'Color');
+h = plot(UK, args{:}); hold on
+clr = get(h, 'Color');
 
 % Plot the interval (with ticks).
 dom = [-1 1];
@@ -64,7 +61,7 @@ h2 = plot(dom, 0*dom, args{:});
 set(h2, 'color', [0 0 0], 'marker', '+');
 
 UK  = [-1+a; 1+a;1-a; -1-a;-1+a];
-h3 = fill(real(UK),imag(UK),clr,'EdgeColor','none','FaceAlpha',0.2);
+h3 = fill(real(UK), imag(UK), clr, 'EdgeColor', 'none', 'FaceAlpha', 0.2);
 
 h = [h; h2; h3];
 
