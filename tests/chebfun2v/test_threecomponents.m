@@ -72,10 +72,10 @@ end
 f = chebfun2(@(x,y) sin(x.*y)); 
 
 pass(j) = ( norm(curl( F1 + G ) - (curl(F1) + curl(G))) < 100*tol); j=j+1; 
-pass(j) = ( norm(div( f*G ) - (dot(G,[grad(f);0]) + f.*div(G))) <100*tol); j=j+1; 
-pass(j) = ( norm(div(curl(G))) < 10*tol); j = j + 1; 
-pass(j) = ( norm(div(grad(f)) - lap(f)) < 10*tol); j = j + 1; 
-pass(j) = ( norm(curl(curl(G)) - ([grad(div(G));0] - lap(G))) < 10*tol); j = j + 1; 
+pass(j) = ( norm(divergence( f*G ) - (dot(G,[grad(f);0]) + f.*divergence(G))) <100*tol); j=j+1; 
+pass(j) = ( norm(divergence(curl(G))) < 10*tol); j = j + 1; 
+pass(j) = ( norm(divergence(grad(f)) - laplacian(f)) < 10*tol); j = j + 1; 
+pass(j) = ( norm(curl(curl(G)) - ([grad(divergence(G));0] - laplacian(G))) < 10*tol); j = j + 1; 
 
 % Torus example:
 u = chebfun2(@(u,v) u, [0 2*pi 0 2*pi]); 
