@@ -36,7 +36,7 @@ g = f + f;
 pass(5) = ( length(g) == length(f) ); 
 pass(6) = ( abs( vscale( g ) - 2e-100 ) < tol ); 
 
-% Check adding a function with a small vscale works: 
+% Check adding a function with a large vscale works: 
 f = chebfun2(@(x,y) 1e100*x); 
 g = f + f; 
 pass(7) = ( length(g) == length(f) ); 
