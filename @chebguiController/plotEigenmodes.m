@@ -49,16 +49,7 @@ if ( selection )
     D = D(selection);
     
     % Go through the rows of the CHEBMATRIX V and pick out the selected entries
-    chebfunSelection = cell(numVar, 1);
-    
-    % Loop through the rows of the CHEBMATRIX V
-    for selCounter = 1:numVar
-        Vtemp = V{selCounter};
-        chebfunSelection{selCounter} = Vtemp(:,selection);
-    end
-    
-    % Convert the cell of selected CHEBFUNS to a CHEBMATRIX
-    V = chebmatrix(chebfunSelection);
+    V = V(:,selection);
 
     % Pick out the colour needed for plotting the selected eigenvalues.
     C = C(selection,:);
@@ -111,14 +102,10 @@ nV = max(size(V));
 realplot = get(handles.button_realplot, 'Value');
 W = V;
 if ( realplot )
-    for k = 1:numVar
-        V(k) = real(V{k});
-    end
+    V = real(V);
     s = 'Real part of eigenmodes';
 else
-    for k = 1:nV
-        V(k) = imag(V{k});
-    end
+    V = imag(V);
     s = 'Imaginary part of eigenmodes';
 end
 
@@ -142,15 +129,12 @@ if ( ~isSystem )
     if ( (length(selection) == 1) && (selection > 0) && ~isreal(W{1}) && ~isreal(1i*W{1}) )
         d = V.domain;
         xx = union(linspace(d(1), d(end), maxPlotPoints), d).';
-        WW = abs(feval(W{1}, xx));
-        
+        WW = abs(feval(W{1}, xx));       
         plot(V{1}, '-', 'LineWidth', 2, 'color', C(1,:)); hold on
         plot(xx, WW, '-', xx, -WW, '-', 'LineWidth', 1, 'color', 'k'); hold off
     else
-        % Convert to a CHEBFUN
-        V = chebfun(V);
         for k = 1:size(V,2)
-            plot(V(:,k), 'LineWidth', 2, 'color', C(k,:));
+            plot(V{k}, 'LineWidth', 2, 'color', C(k,:));
             hold on
         end
         hold off
@@ -188,13 +172,13 @@ else
             % If we are plotting selected e-funs, we need to pick out the colors
             if ( any(selection) )
                 for sCounter = 1:length(selection)
-                    plot(real(V{selCounter}(:,sCounter)), 'linewidth', 2, ...
+                    plot(real(V(selCounter,sCounter)), 'linewidth', 2, ...
                         'linestyle', LS{selCounter}, 'Color', C(sCounter,:));
                     hold on
                 end
-                xLims = V{selCounter}(:,sCounter).domain;
+                xLims = V(selCounter,sCounter).domain;
             else
-                plot(real(V{selCounter}), 'linewidth', 2, 'linestyle',  ...
+                plot(real(V(selCounter,:)), 'linewidth', 2, 'linestyle',  ...
                     LS{selCounter});
                 hold on
             end

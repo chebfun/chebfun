@@ -152,9 +152,7 @@ end
 
 % We expect V to be a CHEBMATRIX. Sort the columns so they correspond to the now
 % sorted eigenvalues in D.
-for k = 1:size(V, 1)
-    V(k) = extractColumns(V{k}, idx);
-end
+V = V(:,idx);
 
 if ( ~guiMode )
     % If we're not in GUI mode, we can finish here.
