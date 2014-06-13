@@ -252,6 +252,9 @@ if ( (e0 - e1) <= eps(e0) )
     else
         edge = a;
     end
+else
+    % We might as well take the average. It can't be a bad guess.
+    edge = (a + b)/2;
 end
 
 end
