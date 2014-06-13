@@ -144,7 +144,7 @@ function rootsPref = parseInputs(f, varargin)
 
 % Defaults:
 rootsPref = struct('all', 0, 'recurse', 1, 'prune', 0,  'zeroFun', 1, ...
-    'jumpRoot', 1, 'impRoot', 1, 'qz', 0);
+    'jumpRoot', 1, 'impRoot', 1, 'qz', 0, 'filter', []);
 
 if ( ~isreal(f) )
     % 'jumpRoots' only makes sense for real-valued functions, so disable it:

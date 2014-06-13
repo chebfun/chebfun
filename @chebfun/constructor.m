@@ -213,7 +213,7 @@ while ( any(sad) )
         if ( isempty(exps) || ~any(exps(2*k-1:2*k)) )  % no exponents
             forHandle = funs{k}.mapping.for;
             opkDetectEdge = @(x) opk(forHandle(x));
-            forDer = funs{k}.mapping.forDer;
+            forDer = funs{k}.mapping.der;
             edge = chebfun.detectEdge(opkDetectEdge, [-1+eps, 1-eps], ...
                 data.vscale, data.hscale, forDer);
             edge = forHandle(edge);
@@ -221,7 +221,7 @@ while ( any(sad) )
             forHandle = funs{k}.mapping.for;
             opkDetectEdge = @(x) opk(forHandle(x)).* ...
                 ((x + 1).^exps(2*k - 1) .* (1 - x).^exps(2*k));
-            forDer = funs{k}.mapping.forDer;
+            forDer = funs{k}.mapping.der;
             edge = chebfun.detectEdge(opkDetectEdge, [-1+eps, 1-eps], ...
                 data.vscale, data.hscale, forDer);
             edge = forHandle(edge);
