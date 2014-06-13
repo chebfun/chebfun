@@ -20,7 +20,7 @@ for jj = 1 : size(D, 1)
     gcheb = chebfun2(g, D(jj, :) );
     
     F1 = chebfun2v( f, g , D(jj, :));
-    F2 = chebfun2v( {f, g}, D(jj, :) );
+    F2 = chebfun2v( {f; g}, D(jj, :) );
     F3 = chebfun2v( fcheb, gcheb );
     F4 = chebfun2v( fcheb, gcheb, D(jj, :) );
     

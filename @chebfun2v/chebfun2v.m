@@ -31,12 +31,12 @@ classdef chebfun2v
         
         function F = chebfun2v( varargin )
             % The main CHEBFUN2V constructor!
-            
+                       
             % Return an empty CHEBFUN2V:
             if ( (nargin == 0) || isempty(varargin) )
                 return
             end
-            
+                       
             % This function calls the CHEBFUN2 constructor once for each 
             % non-zero component because a CHEBFUN2V is just vector of 
             % CHEBFUN2 objects.
@@ -52,7 +52,7 @@ classdef chebfun2v
             for jj = 1:numel(varargin)
                if ( isa( varargin{jj}, 'double') ) 
                    domain = varargin{jj}; 
-                   varargin{jj} = []; 
+                   varargin(jj) = []; 
                end
             end
             
@@ -61,23 +61,36 @@ classdef chebfun2v
             for jj = 1:numel(varargin) 
                 if ( strcmpi( varargin{jj}, 'vectorize' ) )
                     vectorize = 1;
-                    varargin{jj} = []; 
+                    varargin(jj) = []; 
                 end
             end
             
+            % Unwrap input arguments;
+            component = 1;
+            for jj = 1:numel( varargin )
+                if ( iscell( varargin{jj} ) ) 
+                    for kk = 1:numel( varargin{jj} )
+                        fh{component} = varargin{jj}{kk};
+                        component = component + 1; 
+                    end
+                else
+                    fh{component} = varargin{jj};
+                    component = component + 1;
+                end
+            end
+            varargin = fh; 
+            
             % Convert all function handles to chebfun2 objects: 
             for jj = 1:numel(varargin)
-                if ( isa( varargin{jj}, 'function_handle') ) 
+                if ( isa( varargin{jj}, 'function_handle') )
                     if ( ~vectorize )
                         newcheb = chebfun2( varargin{jj}, domain);
                     else
                         newcheb = chebfun2( varargin{jj}, domain, 'vectorize');
                     end
-                   fh{jj} = newcheb;
-                   varargin{jj} = []; 
+                    fh{jj} = newcheb;
                 elseif ( isa( varargin{jj}, 'chebfun2') )
-                   fh{jj} = varargin{jj}; 
-                   varargin{jj} = []; 
+                    fh{jj} = varargin{jj};
                 end
             end
             
