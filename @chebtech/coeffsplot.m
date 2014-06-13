@@ -75,19 +75,20 @@ if ( plotEpsLevel )
     h = semilogy(n-1:-1:0, absCoeffs, args{:});
     hold on
     h2 = semilogy([0 n-1], repmat(f.vscale.*f.epslevel, 2, 1), args{:});
-    h = [h ; h2];
     for k = 1:m
         c = get(h(k), 'color');
-        set(h(m+k), 'linestyle', ':', 'linewidth', 1, 'marker', 'none', 'color', c);
+        set(h2(k), 'linestyle', ':', 'linewidth', 1, 'marker', 'none', 'color', c);
     end
 else
     % Plot just the coefficients:
     h = semilogy(n:-1:1, absCoeffs, args{:});
+    h2 = plot([]);
 end
 
 % For constant functions, plot a dot:
 if ( n == 1 )
     set(h, 'marker', 'o');
+    set(h2, 'marker', 'o');
 end
 
 % Do a loglog plot:
@@ -103,6 +104,7 @@ end
 % Give an output if one was requested:
 if ( nargout > 0 )
     varargout{1} = h;
+    varargout{2} = h2;
 end
 
 end

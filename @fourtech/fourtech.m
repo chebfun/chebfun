@@ -131,7 +131,7 @@ classdef fourtech < smoothfun
         h = compose(f, op, g, data, pref)
         
         % Plot (semilogy) the Chebyshev coefficients of a FOURTECH object.
-        h = coeffsplot(f, varargin)
+        varargout = coeffsplot(f, varargin)
 
         % Get method:
         val = get(f, prop);

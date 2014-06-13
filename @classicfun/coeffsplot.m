@@ -25,17 +25,12 @@ function varargout = coeffsplot(f, varargin)
 % Deal with an empty input:
 if ( isempty(f) )
     if ( nargout == 1 )
-        varargout{1} = plot([]);
+        [varargout{1:nargout}] = plot([]);
     end
     return
 end
 
 % Call COEFFSPLOT() on the ONEFUN of F.
-h = coeffsplot(f.onefun, varargin{:});
-
-% Give an output if one was requested:
-if ( nargout > 0 )
-    varargout{1} = h;
-end
+[varargout{1:nargout}] = coeffsplot(f.onefun, varargin{:});
 
 end

@@ -178,7 +178,7 @@ classdef chebtech < smoothfun % (Abstract)
         f = cell2mat(f)
 
         % Plot (semilogy) the Chebyshev coefficients of a CHEBTECH object.
-        h = chebcoeffsplot(f, varargin)
+        [h1, h2] = coeffsplot(f, varargin)
 
         % Check the happiness of a CHEBTECH. (Classic definition).
         [ishappy, epslevel, cutoff] = classicCheck(f, values, pref)

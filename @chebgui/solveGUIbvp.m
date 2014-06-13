@@ -287,7 +287,7 @@ if ( guiMode )
 
     % If we were solving a nonlinear problem, we show a plot of the norm of the
     % Newton updates after solution has been found. For a linear problem, we
-    % show a chebcoeffsplot.
+    % show a coeffsplot.
     if ( ~isLinear )
         % Store the norm of the Newton updates
         handles.normDelta = info.normDelta;
@@ -308,7 +308,7 @@ if ( guiMode )
         end
     else
         axes(handles.fig_norm)
-        chebcoeffsplot(u, 'linewidth', 2)
+        coeffsplot(u, 'linewidth', 2)
         title('Chebcoeffsplot of solution')
         set(handles.popupmenu_bottomFig, 'Value', 2);
     end

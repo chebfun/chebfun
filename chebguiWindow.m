@@ -654,7 +654,7 @@ if ( get(handles.button_ode, 'Value') )
     latestNorms = handles.latest.norms;
 
     % Also open the bottom figure in now window. This is either going to be the
-    % chebcoeffsplot, or a plot showing the norm of the updates during the
+    % coeffsplot, or a plot showing the norm of the updates during the
     % Newton iteration:
     figure
     
@@ -675,8 +675,8 @@ if ( get(handles.button_ode, 'Value') )
             set(gca, 'XTick',  1)
         end
         
-    else % Show chebcoeffsplot
-        chebcoeffsplot(latestSolution, 'linewidth', 2)
+    else % Show coeffsplot
+        coeffsplot(latestSolution, 'linewidth', 2)
         title('Chebcoeffsplot of solution')
         set(handles.popupmenu_bottomFig, 'Value', 2);
     end
@@ -2016,7 +2016,7 @@ switch ( newVal )
         end
         
     case 2
-        chebcoeffsplot(handles.latest.solution, 'linewidth', 2);
+        coeffsplot(handles.latest.solution, 'linewidth', 2);
         
 end
 
