@@ -17,10 +17,12 @@ if ( isempty(f) || isempty(g) )
     return
 end
 
-if ( ~isa(f, 'fourtech') )      % Ensure F is a FOURTECH
+if ( ~isa(f, 'fourtech') )      % Ensure F is a FOURTECH.
+    
     f = times(g, f, varargin{:});
     return
-elseif ( isa(g, 'double') )     % FOURTECH .* double
+    
+elseif ( isa(g, 'double') )     % FOURTECH .* double.
     
     % Do the multiplication:
     if ( size(g, 2) > 1 )
@@ -36,7 +38,7 @@ elseif ( isa(g, 'double') )     % FOURTECH .* double
     f.isReal = f.isReal & isreal(g);
     return
 
-elseif ( ~isa(f, 'fourtech') || ~isa(g, 'fourtech') ) % Don't know how to do the operation
+elseif ( ~isa(f, 'fourtech') || ~isa(g, 'fourtech') ) % Don't know how to do the operation.
     
     error('CHEBFUN:FOURTECH:times:typeMismatch','Incompatible operation between objects. Make sure functions are of the same type.');
     
@@ -114,7 +116,7 @@ f.epslevel = (f.epslevel + g.epslevel) .* (f.vscale.*g.vscale./tmpVscale);
 f.vscale  = vscale;
 f.ishappy = f.ishappy && g.ishappy;
 
-% Simplify
+% Simplify.
 f = simplify(f);
 
 if ( pos )
@@ -122,7 +124,7 @@ if ( pos )
     % SIMPLIFY may have destroyed this property, so we enforce it.
     f.values = abs(f.values); 
     f.coeffs = f.vals2coeffs(f.values);
-    f.isReal = true(1,size(f.coeffs,2));
+    f.isReal = true(1, size(f.coeffs, 2));
 else
     f.isReal = f.isReal & g.isReal;
 end

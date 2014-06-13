@@ -1,7 +1,6 @@
 function out = poly(f)
 %POLY   Polynomial coefficients of a FOURTECH.
-%   C = POLY(F) returns the polynomial coefficients of F so that 
-%       
+%   C = POLY(F) returns the polynomial coefficients of F so that:
 %   If N is odd
 %       F(x) = C(1)*z^(N-1)/2 + C(2)*z^((N-1)/2-1) + ... + C(N)*z^(-(N-1)/2)
 %   If N is even
@@ -17,6 +16,8 @@ function out = poly(f)
 %        F2(x) = C(2,1)*z^(N-1)/2 + C(2,2)*z^((N-1)/2-1) + ... + C(2,N)*z^(-(N-1)/2)
 %   This strange behaviour is a result of MATLAB's decision to return a row
 %   vector from the POLY command, even for column vector input.
+%
+% See also CHEBCOEFFS, FOURCOEFFS, LEGCOEFFS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.

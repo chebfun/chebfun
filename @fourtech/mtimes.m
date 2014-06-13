@@ -10,10 +10,13 @@ function f = mtimes(f, c)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( isempty(f) || isempty(c) )     % FOURTECH * [] = []
+if ( isempty(f) || isempty(c) )     % FOURTECH * [] = [].
+    
     f = []; 
     return
-elseif ( ~isa(f, 'fourtech') )      % FOURTECH is not the first input
+    
+elseif ( ~isa(f, 'fourtech') )      % FOURTECH is not the first input.
+    
     % DOUBLE*FOURTECH requires that the double is scalar.
     if ( numel(f) > 1 )
         error('CHEBFUN:FOURTECH:mtimes:size', ...
@@ -24,7 +27,8 @@ elseif ( ~isa(f, 'fourtech') )      % FOURTECH is not the first input
     f = mtimes(c, f);
     return
     
-elseif ( isa(c, 'double') )         % FOURTECH * double  
+elseif ( isa(c, 'double') )         % FOURTECH * double.
+    
     % Check dimensions:
     if ( (size(f.values, 2) ~= size(c, 1)) && (numel(c) > 1) )
         error('CHEBFUN:FOURTECH:mtimes:size2', ...
@@ -57,10 +61,11 @@ elseif ( isa(c, 'double') )         % FOURTECH * double
         f.coeffs = zeros(1, size(f.values, 2));
     end
     
-elseif ( isa(c, 'fourtech') )       % FOURTECH * FOURTECH  
+elseif ( isa(c, 'fourtech') )       % FOURTECH * FOURTECH.
     error('CHEBFUN:FOURTECH:mtimes:fourtechMtimesFourtech', ...
         'Use .* to multiply FOURTECH objects.');
-else                                % FOURTECH * ???
+    
+else                                % FOURTECH * ???.
     error('CHEBFUN:FOURTECH:mtimes:fourtechMtimesUnknown',...
         'mtimes does not know how to multiply a FOURTECH and a %s.', class(c));
 end

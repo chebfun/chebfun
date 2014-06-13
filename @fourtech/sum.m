@@ -41,7 +41,7 @@ else
     out = sum(f.values, 1)*(2/n);
 end
 
-% Return a real result if f is real;
+% Return a real result if f is real:
 out(:,f.isReal) = real(out(:,f.isReal));
 
 end

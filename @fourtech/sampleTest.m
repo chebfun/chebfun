@@ -22,13 +22,14 @@ tol = max(f.epslevel, 1e3*eps) * n;
 
 % Choose a point to evaluate at:
 if ( n == 1 )
-    xeval = 0.61; % Pseudo-random test value
+    xeval = 0.61; % Pseudo-random test value.
 else
-    % TODO: implement this more robust test:
+% [TODO]: implement this more robust test:
 %     x = f.chebpts(n);
 %     % Test a point where the (finite difference) gradient of values is largest:
 %     [~, index] = max(bsxfun(@rdivide, abs(diff(f.values)), diff(x)));
 %     xeval = ( x(index + 1) + 1.41*x(index) ) / 2.41;
+
     % For now just pick a random value.
     xeval = (2*rand-1);
 end

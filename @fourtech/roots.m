@@ -28,7 +28,6 @@ if ( isempty(f) )
     return
 end
 
-%
 % Here is the present strategy:
 % 
 % 1. The default option is to simply create a chebtech of the FOURTECH and
@@ -37,8 +36,7 @@ end
 % 2. If the option is to find 'all' or 'complex' roots then we simply use
 %    matlab's built-in roots routine.
 %
-% TODO: Figure out a more elegant way to find roots of a FOURTECH.
-%
+% [TODO]: Figure out a more elegant way to find roots of a FOURTECH.
 
 useMatlabsRootsCommand = false;
 

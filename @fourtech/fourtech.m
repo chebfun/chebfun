@@ -45,6 +45,7 @@ classdef fourtech < smoothfun
         % real-valued function. This allows us to always return a real
         % result for things like evaluating a fourtech.
         isReal % (logical)
+        
     end
 
     %% METHODS IMPLEMENTED BY THIS M-FILE:
@@ -55,7 +56,7 @@ classdef fourtech < smoothfun
 
             % Parse inputs.
             if ( (nargin == 0) || isempty(op) )
-                % Return an empty CHEBTECH2 on null input:
+                % Return an empty FOURTECH on null input:
                 return
             end
 
@@ -63,7 +64,7 @@ classdef fourtech < smoothfun
                     data = struct();
             end
 
-            % TODO:  Preferences.
+            % [TODO]:  Preferences.
             if ( (nargin < 3) || isempty(pref) )
                 pref = fourtech.techPref();
             else
@@ -76,7 +77,7 @@ classdef fourtech < smoothfun
             if ( ~isempty(pref.numPoints) && ~isnan(pref.numPoints) )
                 % Evaluate op on the Fourier grid of given size:
                 vals = feval(op, fourtech.fourpts(pref.numPoints));
-                vals(1,:) = 0.5*(vals(1,:)+feval(op,1));
+                vals(1,:) = 0.5*(vals(1,:) + feval(op, 1));
                 op = vals;
             end
 
@@ -137,7 +138,8 @@ classdef fourtech < smoothfun
         
     end
     
-    methods        
+    methods       
+        
         function c = legpoly(f)
             error('CHEBFUN:FOURTECH:legpoly:notAvailable',...
                 'Cannot convert a Fourier based chebfun to a Legendre Series. Try first converting f to a Chebyshev based chebfun');
@@ -147,6 +149,7 @@ classdef fourtech < smoothfun
             error('CHEBFUN:FOURTECH:extractBoundaryRoots:notAvailable',...
                 'Function not implemented. Try first converting f to a Chebyshev based chebfun');
         end
+        
     end
     
 end
