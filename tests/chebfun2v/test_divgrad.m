@@ -1,5 +1,5 @@
 function pass = test_divgrad( pref ) 
-% Test CURL
+% Test DIVGRAD 
 if ( nargin == 0 ) 
     pref = chebfunpref; 
 end
