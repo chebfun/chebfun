@@ -30,8 +30,7 @@ K = ceil(log(N/nM0)/log(1/aM));               % Number of block partitions
 if ( M == 0 || N < 513 || K == 0 ), c_leg = cheb2leg_direct(c_cheb); return, end
 
 f = dct1([c_cheb ; zeros(N,n)]);              % Values on a 2*N+1 Cheb grid.
-Dwts = spdiags(cheb2_quadwts(2*N+1).',0,2*N+1,2*N+1);
-wf = Dwts*f;                                  % Scale f by C-C weights.
+wf = bsxfun(@times, f, cheb2_quadwts(2*N+1).');% Scale f by C-C weights.
 t = pi*(0:2*N)'/(2*N);                        % 2*N+1 theta grid.
 nM = ceil(aM.^(K-1:-1:0)*N);                  % n_M for each block.
 jK = zeros(K, 2);                             % Block locations in theta.
@@ -74,21 +73,20 @@ for k = 1:K-1 % Loop over the block partitions.
         denom = (2*sin(t_k)).*denom;                   % Update denominator.
         u = sin((m+.5)*(.5*pi-t_k))./denom;            % Trig terms:
         v = cos((m+.5)*(.5*pi-t_k))./denom;
-        Dv = spdiags(v,0,2*N+1,2*N+1);
-        Tv = dct1(Dv*wf_k);                            % Compute T'v.
-        Du = spdiags(u,0,2*N+1,2*N+1);
-        Uu = dst1Transpose(Du*wf_k);                   % Compute U'u*sin(t).
+        Dv = bsxfun(@times, wf_k, v);
+        Tv = dct1(Dv);                                 % Compute T'v.
+        Du = bsxfun(@times, wf_k, u);
+        Uu = dst1Transpose(Du);                        % Compute U'u*sin(t).
         c_k = c_k + hm.*([zeros(1,n);Uu(1:N,:)] + Tv(1:N+1,:));% Update LHS.
-        Dscl = spdiags(((m+0.5)^2./((m+1)*(NN+m+1.5))),0,N+1,N+1);
-        hm = Dscl*hm;                                  % Update h_m.
+        hm = bsxfun(@times, hm, ((m+0.5)^2./((m+1)*(NN+m+1.5))));                                  % Update h_m.
     end
-    c_leg = c_leg + spdiags(C,0,N+1,N+1)*c_k;       % Append to global LHS.
+    c_leg = c_leg + bsxfun(@times,c_k,C);             % Append to global LHS.
 end
 dst1Transpose([], 1);                               % Clear persistent storage.
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%% Combine for result %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 scale = (2*(0:N).'+1)/2;                           % Scaling in coeffs.
-c_leg = spdiags(scale,0,N+1,N+1)*(c_leg + c_rec);  % Legendre coefficients.
+c_leg = bsxfun(@times, c_leg + c_rec, scale);    % Legendre coefficients.
 c_leg = flipud(c_leg);
 end
 
@@ -143,7 +141,7 @@ if ( isempty(Smat) ) % Construct conversion matrix:
     Smat = spdiags([1 ; .5 ; dg], 0, N+1, N+1) + spdiags([0 ; 0 ; -dg], 2, N+1, N+1);
     sint = sin(pi*(0:N)'/N);        % Sin(theta).
 end
-c = (dct1(spdiags(sint,0,N+1,N+1)*v)'/Smat)'; % Scaled DCT.
+c = (dct1(bsxfun(@times,v,sint))'/Smat)'; % Scaled DCT.
 end
     
 function w = cheb2_quadwts(n)       % Nick Hale, 2013 (See also Waldvogel, 2005)
@@ -170,8 +168,6 @@ for k = 1:N-1 % Recurrence relation:
     L(:,2+k) = P;
 end
 scale = (2*(0:N).'+1)/2;            % Scaling in coefficients.
-Dw = spdiags(w,0,2*N+1,2*N+1);
-Dscl = spdiags(scale,0,N+1,N+1);
-c_leg = Dscl*(L'*(Dw*f));           % Legendre coefficients.
+c_leg = bsxfun(@times,L'*(bsxfun(@times,f,w)), scale); % Legendre coefficients.
 c_leg = full( flipud(c_leg) );
 end

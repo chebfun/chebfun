@@ -57,7 +57,7 @@ end
 
 %% %%%%%%%%%%%%%%%%% Asymptotics / interior region %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 C = constantOutTheFront(N);
-c_leg = spdiags(C,0,N+1,N+1)*c_leg;               % Scaling factor, eqn (3.3).
+c_leg = bsxfun(@times,c_leg,C);                   % Scaling factor, eqn (3.3).
 v_cheb = zeros(N+1, n);                           % Initialise output vector.
 dst1([], 1);                                      % Clear persistent storage.
 for k = 1:K-1 % Loop over the block partitions:
@@ -69,13 +69,11 @@ for k = 1:K-1 % Loop over the block partitions:
     for m = 0:M-1 % Terms in asymptotic formula:
         denom = (2*sin(t_k)).*denom;              % Update denominator.
         u = sin((m+.5)*(.5*pi-t_k))./denom;       % Trig terms:
-        Du = spdiags(u,0,N+1,N+1);
         v = cos((m+.5)*(.5*pi-t_k))./denom;
-        Dv = spdiags(v,0,N+1,N+1);
-        hmc = spdiags(hm,0,N+1,N+1)*c_leg;        % h_M*c_leg.
-        v_k = v_k + Du*dst1(hmc) + Dv*dct1(hmc);  % Update using DCT1 and DST1.
-        Dscl = spdiags(((m+0.5)^2./((m+1)*(NN+m+1.5))),0,N+1,N+1);
-        hm = Dscl*hm; % Update h_m.
+        hmc = bsxfun(@times,c_leg,hm);        % h_M*c_leg.
+        % Update using DCT1 and DST1:
+        v_k = v_k + bsxfun(@times,dst1(hmc),u) + bsxfun(@times,dct1(hmc),v); 
+        hm = bsxfun(@times,hm,((m+0.5)^2./((m+1)*(NN+m+1.5)))); % Update h_m.
     end
     v_cheb(j_k,:) = v_cheb(j_k,:) + v_k(j_k,:);   % Add terms to output vector.
 end
@@ -138,8 +136,8 @@ if ( isempty(Smat) ) % Construct conversion matrix:
     Smat = spdiags([1 ; .5 ; dg], 0, N, N) + spdiags([0 ; 0 ; -dg], 2, N, N);
     sint = sin(pi*(0:N).'/N);       % Sin(theta).
 end
-Dsint = spdiags(sint,0,N+1,N+1);
-v = Dsint*dct1([Smat\c(2:end,:) ; zeros(1,size(c,2))]);% Scaled DCT.
+v = dct1([Smat\c(2:end,:) ; zeros(1,size(c,2))]);% Scaled DCT.
+v = bsxfun(@times, sint, v);
 end
 
 function c = idct1(v)
