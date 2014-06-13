@@ -67,20 +67,17 @@ dom = dom([1 end]);
 if ( nargin == 4 )
     % Method has been passed as an input
 elseif ( nMax > 1000 )
-    if ( numel(n) == 1 )
-        % Use LEG2CHEB():
-        method = 3;
-    else
-        % Use three-term recurrence (possible loss of orthogonality)
-        method = 1;
-    end
+    % Use LEG2CHEB():
+    method = 3;
 else
     % Use QR orthogonalization of Chebyshev polynomials for moderate nmax
     method = 2;
 end
-if ( ~isscalar(n) && method == 3 )
-    % Can only use method 3 for scalar inputs.
-    method = 2;
+
+% If the user wants most of the Legendre polynomials then faster to use the
+% recurrence: 
+if ( nMax < 5000 && numel(n) > nMax / 5 ) 
+    method = 1; 
 end
 
 switch method
@@ -126,11 +123,12 @@ switch method
         C(1:nMax1,:) = [];                        % Trim coefficients > nMax+1
         
     case 3 % LEG2CHEB
-
-        c_leg = [1 ; zeros(n, 1)];                % Legendre coefficients
-        C = leg2cheb(c_leg);                      % Chebyshev coefficients
+        
+        c_leg = zeros(nMax+1, numel(n));
+        c_leg(n+1,:) = eye(numel(n));             % Legendre coefficients          
+        C = leg2cheb(flipud(c_leg));              % Chebyshev coefficients
         if ( normalize )
-            C = C*sqrt((n+.5));
+            C = bsxfun(@times,C,sqrt(n+.5));
         end
     
 end
