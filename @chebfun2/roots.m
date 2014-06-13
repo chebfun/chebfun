@@ -5,7 +5,7 @@ function r = roots( f, g, varargin )
 %   there is a change of sign and it can also group intersecting contours in a
 %   non-optimal way. Contours are computed to, roughly, four digits of
 %   precision. In particular, this command cannot reliably compute isolated real
-%   roots of F.
+%   roots of F or zero curves lying close to the boundary of the domain. 
 %
 %   In the special case when F is of length 1 then the zero contours are found
 %   to full precision.
