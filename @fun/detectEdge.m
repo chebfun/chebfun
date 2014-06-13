@@ -242,19 +242,15 @@ while ( ((cont < 2) || any(maxDer == inf)) && (e0 ~= e1) )
     
 end
 
-if ( (e0 - e1) <= eps(e0) )
+if ( (e0 - e1) <= 2*eps(e0) )
     % Look at the floating point at the right:
     yright = op(b + eps(b));
-
     % If there is a small jump, that is it!
     if ( abs(yright - yb) > eps*100*vscale )
         edge = b;
     else
         edge = a;
     end
-else
-    % We might as well take the average. It can't be a bad guess.
-    edge = (a + b)/2;
 end
 
 end

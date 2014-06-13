@@ -113,4 +113,14 @@ pass(7) = ( norm(err, inf) < 1e4*epslevel(f)*vscale(f) );
 % pass(7) = norm(feval(f7, xx7) - feval(F7, xx7), inf) < ...
 %     tol*max(f7.epslevel.*f7.vscale);
 
+%% Test detectEdge
+% This is a bug frmo issue #809
+
+f = classicfun.constructor(0, struct('domain', [0 1]));
+x0 = hex2num('3fe55ec001aabd80');  % 0.667816165214319
+op = @(x) exp(x) + cos(7*x) + 0.1*sign(x - x0);
+edge = fun.detectEdge(f, op, 1, 1);
+err = abs(edge - x0);
+pass(8) = err < 1e-4;
+
 end
