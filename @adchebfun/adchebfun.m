@@ -778,7 +778,11 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         
               
         function u = jump(u, x, c)
-            % U = JUMP(U)       JUMP of an ADCHEBFUN
+            %JUMP    JUMP of an ADCHEBFUN
+            %
+            %   V = JUMP(U, X, C), where U is an ADCHEBFUN, and X and C are
+            %   scalar returns the ADCHEBFUN V, so that
+            %        V =  U(X, 'right') - U(X, 'left') - C
             %
             % See also: chebfun/jump, functionalBlock.jump
             
@@ -795,7 +799,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             u.jacobian = functionalBlock.jump(x, u.domain, 0)*u.jacobian;
             % Signal that an explicit jump condition has been given, so
             % that automatic continuity won't be applied.
-            u.jumpLocations = union(u.jumpLocations,x);
+            u.jumpLocations = union(u.jumpLocations, x);
         end 
         
         function f = log(f)
