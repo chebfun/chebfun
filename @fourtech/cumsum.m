@@ -26,7 +26,7 @@ function f = cumsum(f, m, dim)
 % where b_0 is determined from the constant of integration as
 %       b_0 = \sum_{k=-(n-1)/2}^{(n-1)/2} (-1)^k/(i*pi*k) c_k;
 % with c_0 := 0. The other coefficients are given by
-%       b_k = c_k/(i*pi*k), 
+%       b_k = c_k/(i*pi*k). 
 %
 % If the FOURTECH G of length n is represented as
 %       \sum_{k=-n/2+1}^{n/2-1} c_k exp(i*pi*kx) + c(n/2)cos(n*pi/2x)
@@ -38,7 +38,7 @@ function f = cumsum(f, m, dim)
 % where b_0 is determined from the constant of integration as
 %       b_0 = \sum_{k=-n/2}^{n/2} (-1)^k/(i*pi*k) a_k;
 % with a_0 := 0. The other coefficients are given by
-%       b_k = a_k/(ik), 
+%       b_k = a_k/(ik).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Trivial case of an empty FOURTECH:
@@ -71,8 +71,9 @@ end
 
 function f = cumsumContinuousDim(f, m)
 % CUMSUM over the continuous dimension.
+
     % Initialize storage:
-    c = f.coeffs;                         % Obtain Fourier coefficients {c_k}
+    c = f.coeffs; % Obtain Fourier coefficients {c_k}
     numCoeffs = size(c,1);
     
     fIsEven = mod(numCoeffs,2) == 0;
@@ -94,6 +95,7 @@ function f = cumsumContinuousDim(f, m)
         c((numCoeffs+1)/2,:) = 0;
         highestDegree = (numCoeffs-1)/2;
     end
+    
     % Loop for integration factor for each coefficient:
     sumIndicies = (highestDegree:-1:-highestDegree).';
     integrationFactor = (-1i./sumIndicies/pi).^m;
@@ -135,6 +137,7 @@ function f = cumsumContinuousDim(f, m)
     lval = get(f, 'lval');
     f.coeffs(end,:) = f.coeffs(end,:) - lval;
     f.values = bsxfun(@minus, f.values, lval);
+    
 end
 
 function f = cumsumFiniteDim(f, m)
@@ -149,5 +152,3 @@ function f = cumsumFiniteDim(f, m)
     end
 
 end
-
-

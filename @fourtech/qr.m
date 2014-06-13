@@ -17,7 +17,7 @@ function [Q, R, E] = qr(f, outputFlag)
 %   [1] L.N. Trefethen, "Householder triangularization of a quasimatrix", IMA J
 %   Numer Anal (2010) 30 (4): 887-897.
 
-% Copyright 2013 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with empty case:
@@ -49,18 +49,16 @@ f = simplify(f);
 % Call Trefethen's Householder implementation:
 [Q, R, E] = qr_householder(f, outputFlag);
 
-%% Update epslevel
+% Update epslevel.
 % Since we don't know how to do this properly, we essentially assume that QR has
 % condition number one. Therefore we assume Q has the same global accuracy as f,
-% and simply factor out the new vscale. TODO: It may be sensible to include some
+% and simply factor out the new vscale. [TODO]: It may be sensible to include some
 % knowledge of R here?
 col_acc = f.epslevel.*f.vscale;  % Accuracy of each column in f.
 glob_acc = max(col_acc);         % The best of these.
 Q.epslevel = glob_acc./Q.vscale; % Scale out vscale of Q.
 
 end
-
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [f, R, Eperm] = qr_householder(f, flag)
 
@@ -75,11 +73,9 @@ A = get(prolong(f, newN), 'values');
 % Create the Fourier nodes and quadrature weights:
 x = f.fourpts(newN);
 w = f.quadwts(newN);
-% x = linspace(-1, 1, newN+1); x(end) = [];
-% w = ones(newN,1)'*2/newN;
 
 % Define the inner product as an anonymous function:
-ip = @(f, g) w * (conj(f) .* g) ;
+ip = @(f, g) w * (conj(f) .* g);
 
 % Work with sines and cosines instead of complex exponentials.
 E1 = cos(pi*x*(0:floor(numCols/2))); E1(:,1) = E1(:,1)/sqrt(2); 

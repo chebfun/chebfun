@@ -27,42 +27,44 @@ if ( isa(c, 'double') )
         % Division by zero produces a NaN FOURTECH:
         f = f.make(NaN(1, size(f, 2)));
     elseif ( numel(c) == 1 )
-        % Scalar
-        f.values = f.values/c;      % Divide values
-        f.coeffs = f.coeffs/c;      % Divide coeffs
-        f.vscale = f.vscale/abs(c); % Divide vscale        
+        % Scalar.
+        f.values = f.values/c;      % Divide values.
+        f.coeffs = f.coeffs/c;      % Divide coeffs.
+        f.vscale = f.vscale/abs(c); % Divide vscale.       
     else
-        % Array-valued FOURTECH
+        % Array-valued FOURTECH.
         n = size(f.values, 1);   
-        f.values = f.values./repmat(c, n, 1);   % Divide values
-        f.coeffs = f.coeffs./repmat(c, n, 1);   % Divide coeffs
-        f.vscale = f.vscale./abs(c);            % Divide vscale
+        f.values = f.values./repmat(c, n, 1);   % Divide values.
+        f.coeffs = f.coeffs./repmat(c, n, 1);   % Divide coeffs.
+        f.vscale = f.vscale./abs(c);            % Divide vscale.
         
         f.values(:, c == 0) = NaN;
         f.coeffs(:, c == 0) = NaN;
         f.vscale(:, c == 0) = NaN;
     end
     f.isReal = f.isReal & isreal(c);
+    
 else
     % Dividing by another fourtech is harder. Call COMPOSE.
     
     % Obtain preferences:
     if ( nargin < 3 )
-        pref = fourtech.techPref(); % c is a fourtech.
+        pref = fourtech.techPref(); % c is a FOURTECH.
     end
     
     % Call COMPOSE.
-    if ( isa(f, 'fourtech') )   % Possibly FOURTECH / FOURTECH
+    if ( isa(f, 'fourtech') )   % Possibly FOURTECH / FOURTECH.
         if ( isa(c, 'fourtech') )
             f = compose(f, @rdivide, c, pref);
         else
             error('CHEBFUN:FOURTECH:rdivide:fourtechRdivideUnknown',...
                 'rdivide does not know how to divide a FOURTECH and a %s.', class(c));
         end
-    else                       % DOUBLE / FOURTECH
+    else                       % DOUBLE / FOURTECH.
         op = @(x) f./x;
         f = compose(c, op, [], pref);
     end
+    
 end
 
 end

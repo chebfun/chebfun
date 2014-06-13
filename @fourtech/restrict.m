@@ -14,7 +14,7 @@ function F = restrict(f, s)
 %
 %   Note that restrict does not 'simplify' its output.
 %
-%   Warning: If f is not also smooth and periodic on f, then the resulting
+%   Warning: If F is not also smooth and periodic on S, then the resulting
 %   FOURTECH will not be happy.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.

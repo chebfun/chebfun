@@ -7,6 +7,6 @@ function w = quadwts(n)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-w = 2/n*ones(1,n);
+w = 2/n*ones(1, n);
 
 end

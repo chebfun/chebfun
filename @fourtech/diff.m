@@ -13,8 +13,6 @@ function f = diff(f, k, dim)
 % See http://www.chebfun.org for Chebfun information.
 
 
-%% Check the inputs:
-
 % Trivial case of an empty FOURTECH:
 if ( isempty(f) )
     return
@@ -46,7 +44,7 @@ end
 function f = diffFiniteDim(f, k)
 % Take difference across 2nd dimension.
 
-    % TODO: Tidy and document this.
+    % [TODO]: Tidy and document this.
     if ( k >= size(f, 2) )
         f = f.make();
         return
@@ -79,33 +77,33 @@ function f = diffContinuousDim(f, k)
     % Get the coefficients:
     c = f.coeffs;
 
-    % If N is odd things are easy
+    % If N is odd things are easy.
     if ( mod(N,2) == 1 )
         % Arrange the wavenumbers the way the coefficients are stored.
         % the way the coefficients are stored.
         waveNumber = ((N-1)/2:-1:-(N-1)/2).';
     else
         % If N is even then we need to zero out the sawtooth mode for odd
-        % order derivatives (see Trefethen SMM p. 23)
+        % order derivatives (see Trefethen SMM p. 23).
         if mod(k,2)
             waveNumber = ([(N/2-1):-1:(-N/2+1) 0]).';
         else
             waveNumber = ([(N/2-1):-1:(-N/2+1) -N/2]).';
         end
     end
+    
     % Derivative in Fourier space.
     c = bsxfun(@times,c,(1i*pi*waveNumber).^k);
-    
     v = f.coeffs2vals(c);
     v(:,f.isReal) = real(v(:,f.isReal));
 
-    % [FIXME] Should the epslevel be updated?  This is done in chebfun
+    % Update epslevel and the vertical scale: (See FOURTECH CLASSDEF file
+    % for documentation.)
     f.epslevel = N*log(N)*(f.epslevel.*f.vscale);
-
-    % Update the vertical scale
     f.vscale = max(abs(v), [], 1);
 
     % Store new coefficients and values:
     f.coeffs = c;
     f.values = v;
+    
 end

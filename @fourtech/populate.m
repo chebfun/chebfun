@@ -1,3 +1,4 @@
+function f = populate(f, op, vscale, hscale, pref)
 %POPULATE   Populate a FOURTECH class with values.
 %   F = F.POPULATE(OP) returns a FOURTECH representation populated with values
 %   F.VALUES of the function OP evaluated on an equally spaced grid. The fields
@@ -30,7 +31,6 @@
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
-function f = populate(f, op, vscale, hscale, pref)
 
 if ( (nargin < 3) || isempty(vscale) )
     vscale = 0;
@@ -86,7 +86,7 @@ f.values = [];
 rndval = feval(op,(2*rand-1));
 
 if any(isnan(rndval))
-    error('CHEBFUN:CHEBTECH:populate:isNan','Cannot handle functions that evaluate to NaN.');
+    error('CHEBFUN:FOURTECH:populate:isNan','Cannot handle functions that evaluate to NaN.');
 end
 
 f.isReal = false(size(rndval));
@@ -136,15 +136,6 @@ vscaleGlobal = max(vscale, vscaleOut);
 % Output the 'true' vscale (i.e., the max of the stored values):
 vscale = vscaleOut;
 
-% Adjust the epslevel appropriately:
-% if ( any(vscaleOut > 0) )
-%     epslevel = epslevel*vscaleGlobal./vscaleOut;
-% else 
-%     % Deal with zero vscale:
-%     epslevel = epslevel./(1+vscaleOut);
-% end
-% vscaleOut(vscaleOut < epslevel) = 1;
-% epslevel = epslevel.*vscaleGlobal./vscaleOut;
 % Adjust the epslevel appropriately:
 ind = vscaleOut < epslevel;
 vscaleOut(ind) = epslevel(ind);

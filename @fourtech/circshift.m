@@ -16,7 +16,8 @@ if numel(a) > 1
     error('CHEBFUN:FOURTECH:circshift', ...
           'Only scalar-valued shifts are allowed')
 end
-% Trivial case
+
+% Trivial case.
 if ( a == 0 )    
     return
 end
@@ -30,17 +31,19 @@ end
 %   where z = exp(1i*pi*x) and -1 <= x <= 1. 
 
 % So a shift by a only requires multiplying the kth coefficients by
-% (exp(-1i*pi*a))^k
+% (exp(-1i*pi*a))^k.
 
-if mod(n,2) 
+if ( mod(n, 2) ) 
     even_odd_fix = (exp(-1i*pi*a)).^((n-1)/2:-1:-(n-1)/2);
 else
     even_odd_fix = (exp(-1i*pi*a)).^((n/2-1):-1:(-n/2));
 end
-f.coeffs = bsxfun(@times,f.coeffs,even_odd_fix.');
+
+f.coeffs = bsxfun(@times, f.coeffs, even_odd_fix.');
 f.values = f.coeffs2vals(f.coeffs);
+
 if ~isreal(a)
-    f.isReal = false(1,size(f.coeffs,2));
+    f.isReal = false(1, size(f.coeffs, 2));
 end
 
 f.values(:,f.isReal) = real(f.values(:,f.isReal));
