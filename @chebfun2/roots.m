@@ -44,7 +44,9 @@ if ( nargin == 1 )
     elseif ( isreal( f ) )
         % Function is real-valued.
         
-        % Use Matlab's contourc function (Marching Squares).
+        % Use Matlab's contourc function (Marching Squares). Note n = 502 is
+        % chosen so that use a grid that does not involve the boundary of the
+        % domain.
         n = 502; % disc size.
         x = linspace( dom(1), dom(2), n );
         x(1) = []; x(end) = []; 
