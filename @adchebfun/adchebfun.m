@@ -792,7 +792,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % Compute the value of the jump
             u.func = jump(u.func, x, c);
             % Derivative part
-            u.jacobian = linop(functionalBlock.jump(x, u.domain, 0))*u.jacobian;
+            u.jacobian = functionalBlock.jump(x, u.domain, 0)*u.jacobian;
             % Signal that an explicit jump condition has been given, so
             % that automatic continuity won't be applied.
             u.jumpLocations = union(u.jumpLocations,x);
