@@ -3,6 +3,9 @@ function c_cheb = leg2cheb(c_leg, M)
 %   C_CHEB = LEG2CHEB(C_LEG) converts the vector C_LEG of Legendre coefficients
 %   to a vector C_CHEB of Chebyshev coefficients such that
 %   C_CHEB(N)*T0 + ... + C_CHEB(1)*T{N-1} = C_LEG(N)*P0 + ... + C_LEG(1)*P{N-1}.
+%
+%   If C_LEG is a matrix, then the LEG2CHEB operation is applied to each 
+%   column. 
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -11,14 +14,15 @@ function c_cheb = leg2cheb(c_leg, M)
 % rewritting an asymptotic formula for Legendre polynomials in a way that can be
 % evaluated using discrete cosine transforms. For more details see:
 %   N. Hale and A. Townsend, A fast, simple, and stable Chebyshev-Legendre
-%   transform using an asymptotic formula, SISC (accepted) 2013.
+%   transform using an asymptotic formula, SISC, 36 (2014), pp. A148-A167.
 
-c_leg = c_leg(:);                               % Make column vector.
+% c_leg = c_leg(:);                             % Make column vector.
+[N, n] = size(c_leg);                     % Number of columns.
 c_leg = flipud(c_leg);                          % Lowest order coeffs first.
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%% Initialise  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if ( nargin == 1 ), M = 10; end                 % No. of terms in expansion.
-N = length(c_leg) - 1; NN = (0:N)';             % Degree of polynomial.
+N = N - 1; NN = (0:N)';             % Degree of polynomial.
 nM0 = min(floor(.5*(.25*eps*pi^1.5*gamma(M+1)/gamma(M+.5)^2)^(-1/(M+.5))),N);
 aM = min(1/log(N/nM0), .5);                     % Block reduction factor (alpha)
 K = ceil(log(N/nM0)/log(1/aM));                 % Number of block partitionss.
@@ -35,40 +39,45 @@ for k = 1:K
 end
 
 %% %%%%%%%%%%%%%%%%%%% Recurrence / boundary region %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-v_rec = zeros(N+1, 1);
+v_rec = zeros(N+1, n);
 jK2 = [jK(1,2)+1, N+1 ; jK(1:K-1,:) ; 1, N+1];
 for k = 1:K % Loop over the partitions:
     j_bdy = [jK2(k+1,1):jK2(k,1)-1, jK2(k,2)+1:jK2(k+1,2)];
     x_bdy = cos(t(j_bdy));                      % Boundary indicies.
-    tmp = c_leg(1) + c_leg(2)*x_bdy;            % Entries of mat-vec result.       
+    vec = ones(numel(j_bdy),1);
+    tmp = vec*c_leg(1,:) + x_bdy*c_leg(2,:);    % Entries of mat-vec result.       
     Pm2 = 1; Pm1 = x_bdy;                       % Initialise recurrence.
-    for n = 1:nM(k)-1  % Recurrence:
-        P = (2-1/(n+1))*Pm1.*x_bdy-(1-1/(n+1))*Pm2;
+    for kk = 1:nM(k)-1  % Recurrence:
+        P = (2-1/(kk+1))*Pm1.*x_bdy-(1-1/(kk+1))*Pm2;
         Pm2 = Pm1; Pm1 = P;
-        tmp = tmp + c_leg(n+2)*P;               % Update local LHS.
+        tmp = tmp + P*c_leg(kk+2,:);               % Update local LHS.
     end
-    v_rec(j_bdy) = v_rec(j_bdy) + tmp;          % Global correction LHS.
+    v_rec(j_bdy,:) = v_rec(j_bdy,:) + tmp;          % Global correction LHS.
 end
 
 %% %%%%%%%%%%%%%%%%% Asymptotics / interior region %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-c_leg = constantOutTheFront(N).*c_leg;            % Scaling factor, eqn (3.3).
-v_cheb = zeros(N+1, 1);                           % Initialise output vector.
+C = constantOutTheFront(N);
+c_leg = spdiags(C,0,N+1,N+1)*c_leg;               % Scaling factor, eqn (3.3).
+v_cheb = zeros(N+1, n);                           % Initialise output vector.
 dst1([], 1);                                      % Clear persistent storage.
 for k = 1:K-1 % Loop over the block partitions:
-    v_k = zeros(N+1, 1);                          % Initialise local LHS.
-    hm = ones(N+1,1); hm([1:nM(k)+1,nM(k+1)+2:end]) = 0; % Initialise h_m.
+    v_k = zeros(N+1, n);                          % Initialise local LHS.
+    hm = ones(N+1,n); hm([1:nM(k)+1,nM(k+1)+2:end],:) = 0; % Initialise h_m.
     j_k = jK(k,1):jK(k,2);                        % t indicies of kth block.
     t_k = pi/2*ones(N+1,1); t_k(j_k) = t(j_k);    % Theta in kth block.
     denom = 1./sqrt(2*sin(t_k));                  % initialise denomenator.
     for m = 0:M-1 % Terms in asymptotic formula:
         denom = (2*sin(t_k)).*denom;              % Update denominator.
         u = sin((m+.5)*(.5*pi-t_k))./denom;       % Trig terms:
+        Du = spdiags(u,0,N+1,N+1);
         v = cos((m+.5)*(.5*pi-t_k))./denom;
-        hmc = hm.*c_leg;                          % h_M*c_leg.
-        v_k = v_k + u.*dst1(hmc) + v.*dct1(hmc);  % Update using DCT1 and DST1.
-        hm = ((m+0.5)^2./((m+1)*(NN+m+1.5))).*hm; % Update h_m.
+        Dv = spdiags(v,0,N+1,N+1);
+        hmc = spdiags(hm,0,N+1,N+1)*c_leg;        % h_M*c_leg.
+        v_k = v_k + Du*dst1(hmc) + Dv*dct1(hmc);  % Update using DCT1 and DST1.
+        Dscl = spdiags(((m+0.5)^2./((m+1)*(NN+m+1.5))),0,N+1,N+1);
+        hm = Dscl*hm; % Update h_m.
     end
-    v_cheb(j_k) = v_cheb(j_k) + v_k(j_k);         % Add terms to output vector.
+    v_cheb(j_k,:) = v_cheb(j_k,:) + v_k(j_k,:);   % Add terms to output vector.
 end
 dst1([], 1);                                      % Clear persistent storage.
 
@@ -110,9 +119,9 @@ function v = dct1(c)
 % T_1, ..., T_N](X) where T_k is the kth 1st-kind Chebyshev polynomial.
 N = size(c, 1);                     % Number of terms.
 ii = N-1:-1:2;                      % Indicies of interior coefficients.
-c(ii) = 0.5*c(ii);                  % Scale interior coefficients.
-v = ifft([c ; c(ii)]);              % Mirror coefficients and call FFT.
-v = (N-1)*[ 2*v(N) ; v(ii) + v(2*N-ii) ; 2*v(1) ]; % Re-order.
+c(ii,:) = 0.5*c(ii,:);                  % Scale interior coefficients.
+v = ifft([c ; c(ii,:)]);              % Mirror coefficients and call FFT.
+v = (N-1)*[ 2*v(N,:) ; v(ii,:) + v(2*N-ii,:) ; 2*v(1,:) ]; % Re-order.
 v = flipud(v);                      % Flip the order.
 end
 
@@ -122,14 +131,15 @@ function v = dst1(c, flag) %#ok<INUSD>
 % 1:N+1, X_N = cos(T_N) and U_N(X) = [U_0, U_1, ..., U_N](X) where U_k is the
 % kth 2nd-kind Chebyshev polynomial.
 persistent Smat sint                % The same for each partition.
-if ( nargin == 2 ), Smat = []; return, end % Clear persistent variables.
+if ( nargin == 2 ), Smat = []; return, end % Clear persistent variables.    
+N = size(c,1) - 1;              % Degree of polynomial.
 if ( isempty(Smat) ) % Construct conversion matrix:
-    N = length(c) - 1;              % Degree of polynomial.
     dg = .5*ones(N-2, 1);           % Conversion matrix:
     Smat = spdiags([1 ; .5 ; dg], 0, N, N) + spdiags([0 ; 0 ; -dg], 2, N, N);
     sint = sin(pi*(0:N).'/N);       % Sin(theta).
 end
-v = sint.*dct1([Smat\c(2:end) ; 0]);% Scaled DCT.
+Dsint = spdiags(sint,0,N+1,N+1);
+v = Dsint*dct1([Smat\c(2:end,:) ; zeros(1,size(c,2))]);% Scaled DCT.
 end
 
 function c = idct1(v)
@@ -137,15 +147,15 @@ function c = idct1(v)
 % IDCT1(V) returns T_N(X_N)\V, where X_N = cos(pi*(0:N))/N and T_N(X) = [T_0,
 % T_1, ..., T_N](X) where T_k is the kth 1st-kind Chebyshev polynomial.
 N = size(v, 1);                        % Number of terms.
-c = fft([v ; v(N-1:-1:2)])/(2*N-2);    % Laurent fold in columns and call FFT.
-c = c(1:N);                            % Extract the first N terms.
-if (N > 2), c(2:N-1) = 2*c(2:N-1); end % Scale interior coefficients.
+c = fft([v ; v(N-1:-1:2,:)])/(2*N-2);    % Laurent fold in columns and call FFT.
+c = c(1:N,:);                            % Extract the first N terms.
+if (N > 2), c(2:N-1,:) = 2*c(2:N-1,:); end % Scale interior coefficients.
 if isreal(v), c = real(c); end         % Ensure a real output.
 end
 
 function c_cheb = leg2cheb_direct(c_leg)
 %LEG2CHEB_DIRECT   Convert Leg to Cheb coeffs using the 3-term recurrence.
-N = length(c_leg) - 1;              % Degree of polynomial.
+N = size(c_leg,1) - 1;              % Degree of polynomial.
 if ( N <= 0 ), c_cheb = c_leg; return, end % Trivial case.
 x = cos(pi*(0:N)'/N);               % Chebyshev grid (reversed order).
 % Make the Legendre-Chebyshev Vandemonde matrix:

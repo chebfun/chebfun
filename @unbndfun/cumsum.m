@@ -66,8 +66,9 @@ g = f;
 
 % Rescaling factor is the derivative of the forward map:
 pref.enableSingularityDetection = true;
-rescaleFactor = onefun.constructor(@(x) g.mapping.forDer(x), [], pref);
-numRoots = -repmat(g.mapping.forDerExps.', 1, size(g, 2));
+rescaleFactor = onefun.constructor(@(x) g.mapping.der(x), [], pref);
+exps = get(rescaleFactor, 'exponents');
+numRoots = -repmat(exps.', 1, size(g, 2));
 
 % Try to see if we can extract boundary roots:
 [h, rootsLeft, rootsRight] = extractBoundaryRoots(g.onefun, numRoots);
@@ -84,8 +85,7 @@ else
     
     % The ONEFUN of the integral of F should be the integral of the ONEFUN of 
     % the F multiplied by the derivative of the forward map.
-    g.onefun = g.onefun.*rescaleFactor;
-    g.onefun = cumsum(g.onefun);
+    g.onefun = cumsum(g.onefun.*rescaleFactor);
     
 end
 

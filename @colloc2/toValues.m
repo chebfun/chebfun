@@ -1,4 +1,4 @@
-function fx = toValues(disc, f)
+function fx = toValues(disc, f, varargin)
 %TOVALUES   Convert CHEBFUN to a COLLOC2 discretization.
 %   TOVALUES(DISC,F) converts a chebfun F to values at 2nd kind points in the
 %   DISC.DOMAIN.

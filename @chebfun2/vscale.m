@@ -7,6 +7,12 @@ function vscl = vscale(f)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+% If f is an empty Chebfun2, VSCL = 0: 
+if ( isempty(f) ) 
+    vscl = 0; 
+    return
+end
+
 % Get the degree of the CHEBFUN2:
 [m, n] = length(f); 
 

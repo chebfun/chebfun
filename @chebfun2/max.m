@@ -7,8 +7,9 @@ function h = max( f, g, dim )
 %   DIM direction. If DIM = 1 is along the y-direction and DIM = 2 is along the
 %   x-direction.
 %
-%   This function is not considered highly accurate. Expect no more than five
-%   or six digits of precision. For the global maximum use MAX2.
+%   WARNING: This function is not always accurate to full machine precision. 
+% 
+%   For the global maximum use MAX2.
 %
 % See also MIN, MAX2, MIN2, MINANDMAX2.
 

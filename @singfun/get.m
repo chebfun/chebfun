@@ -4,6 +4,7 @@ function out = get(f, prop)
 %   the SINGFUN object F. Valid entries for the string PROP are:
 %       'EXPONENTS'  - The exponents of F at the end points -1 and 1.
 %       'SMOOTHPART' - The smooth part of F on [-1, 1], which is a CHEBTECH.
+%       'TECHCONSTRUCTOR' - Handle to the constructor of the tech underlying F.
 %   GET also allows access to the properties of the smoothPart.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
@@ -32,6 +33,10 @@ switch prop
         % Get the points:
         pts = get(f.smoothPart, 'points');
         out = feval(f, pts);
+
+    case 'techConstructor'
+        % Get coeffs. 
+        out = get(f.smoothPart, prop); 
         
     otherwise
         error('CHEBFUN:SINGFUN:GET:propname', ...

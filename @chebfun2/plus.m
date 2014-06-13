@@ -15,19 +15,19 @@ elseif ( isempty(g) || isempty(f) ) % CHEBFUN2 + []
     % Return empty CHEBFUN2.
     h = chebfun2();
     
-elseif ( isa(g, 'double') ) % CHEBFUN2 + DOUBLE
+elseif ( isa( g, 'double' ) )           % CHEBFUN2 + DOUBLE
     
     % Convert g to a CHEBFUN2.
     g = chebfun2( g, f.domain );
     h = plus( f, g );
     
-elseif ( ~isa(g, 'chebfun2') ) % CHEBFUN2 + ???
+elseif ( ~isa(g, 'chebfun2') )          % CHEBFUN2 + ???
     
     error('CHEBFUN2:plus:unknown', ...
         ['Undefined function ''plus'' for input arguments of type %s ' ...
         'and %s.'], class(f), class(g));
     
-else % CHEBFUN2 + CHEBFUN2
+else                                     % CHEBFUN2 + CHEBFUN2
     
     % Domain Check:
     if ( ~domainCheck(f, g) )
@@ -83,9 +83,13 @@ s = diag(S);
 % Compress the format if possible.
 % [TODO]: What should EPS be in the tolerance check below? Can we base it on
 % EPSLEVELS?
-idx = find(s > eps, 1, 'last');
+vf = vscale(f); 
+vg = vscale(g);
+vscl = max(vf, vg); 
+% Remove singular values that fall below eps*vscale: 
+idx = find( s > eps * vscl, 1, 'last');
 if ( isempty(idx) )
-    % Return 0 chebfun2.
+    % return 0 chebfun2
     h = chebfun2(0, f.domain);
 else
     U = U(:,1:idx);

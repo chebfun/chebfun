@@ -9,6 +9,7 @@ function out = get(f, prop)
 %       'POINTS' - 2nd-kind Chebyshev grid corresponding to F.
 %       'LVAL' - Value of F at -1.
 %       'RVAL' - Value of F at +1.
+%       'TECH' - Handle to the CHEBTECH2 constructor.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -28,6 +29,8 @@ switch prop
         out = feval(f,1);
     case 'values'
         out = f.coeffs2vals(f.coeffs);
+    case 'techConstructor'
+        out = @chebtech2;
     otherwise
         error('CHEBFUN:CHEBTECH2:GET:proname', ...
             'Unknown property name ''%s'' for object of type chebtech2.', prop);

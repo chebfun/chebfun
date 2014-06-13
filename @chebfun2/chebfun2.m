@@ -33,16 +33,16 @@ classdef chebfun2
 
     
     properties ( Access = public )
-        % COLS: column slices used in low rank representation
+        % COLS: column slices used in low rank representation.
         cols 
-        % ROWS: rows slices used in low rank representation
+        % ROWS: row slices used in low rank representation.
         rows
-        % PIVOTVALUES: pivot values used in low rank representation
+        % PIVOTVALUES: pivot values used in low rank representation.
         pivotValues
-        % PIVOTLOCATIONS: pivot locations used in GE
+        % PIVOTLOCATIONS: pivot locations used in GE.
         pivotLocations
-        % DOMAIN: rectangle of CHEBFUN2, default is [-1,1] x [-1,1]
-        domain = [-1 1 -1 1]; 
+        % DOMAIN: rectangle of CHEBFUN2, default is [-1,1] x [-1,1].
+        domain = [-1 1 -1 1];
     end
     
     methods
@@ -80,7 +80,7 @@ classdef chebfun2
     end
     
     methods ( Hidden = true )
-        % Check to see if domains are equal
+        % Check to see if domains are equal.
         out = domainCheck(f, g)
         
         % Scale rows and cols of a CHEBFUN2 so that all pivots are 1
@@ -89,11 +89,14 @@ classdef chebfun2
         % Normalize the rows and columns of a CHEBFUN2.
         F = normalizeRowsAndCols(F, p)
         
-        % Sample Test in constructor 
+        % Sample Test in constructor. 
         pass = sampleTest(f, op, tol, flag)
         
         % Is a chebfun2 all positive or negative? 
         [bol, wzero] = singleSignTest(f) 
+        
+        % Get the vertical scale of a Chebfun2.
+        vscl = vscale(f) 
     end
 
     % Private methods implemented by CHEBFUN2 class.
