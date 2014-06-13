@@ -5,7 +5,7 @@ function r = roots( f, g, varargin )
 %   there is a change of sign and it can also group intersecting contours in a
 %   non-optimal way. Contours are computed to, roughly, four digits of
 %   precision. In particular, this command cannot reliably compute isolated real
-%   roots of F.
+%   roots of F or zero curves lying close to the boundary of the domain. 
 %
 %   In the special case when F is of length 1 then the zero contours are found
 %   to full precision.
@@ -44,10 +44,14 @@ if ( nargin == 1 )
     elseif ( isreal( f ) )
         % Function is real-valued.
         
-        % Use Matlab's contourc function (Marching Squares).
-        n = 500; % disc size.
+        % Use Matlab's contourc function (Marching Squares). Note n = 502 is
+        % chosen so that use a grid that does not involve the boundary of the
+        % domain.
+        n = 502; % disc size.
         x = linspace( dom(1), dom(2), n );
+        x(1) = []; x(end) = []; 
         y = linspace( dom(3), dom(4), n );
+        y(1) = []; y(end) = []; 
         [xx, yy] = meshgrid( x, y );
         vals = feval( f, xx, yy );
         C = contourc( x, y, vals, 0*[1 1] );

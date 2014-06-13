@@ -47,8 +47,8 @@ end
 % If we reach here, the function decays sufficiently fast. Construct a ONEFUN
 % for the integrand and integrate it.
 
-techConstructor = get(g.onefun, 'techConstructor');
-if ( isa(techConstructor(), 'chebtech') )
+tech = get(g.onefun, 'tech');
+if ( isa(tech(), 'chebtech') )
     techPrefs.exactLength = length(g);
     % TODO: Using an exact-length construction here is a hack. It only works if
     % g.onefun is a CHEBTECH, and, even then, the idea that it "works" is merely
@@ -62,7 +62,7 @@ if ( isa(techConstructor(), 'chebtech') )
 else
     techPrefs = [];
 end
-integrand = techConstructor(@(x) unbndfunIntegrand(x, g), [], techPrefs);
+integrand = tech(@(x) unbndfunIntegrand(x, g), [], techPrefs);
 out = sum(integrand);
 
 end
