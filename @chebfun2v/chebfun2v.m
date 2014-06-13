@@ -41,30 +41,29 @@ classdef chebfun2v
             % non-zero component because a CHEBFUN2V is just vector of 
             % CHEBFUN2 objects.
             
-            op = varargin{1};
             % If argument is a CHEBFUN2V, nothing to do:
-            if ( isa(op,'chebfun2v') ) 
-                F = op;
+            if ( isa(varargin{1}, 'chebfun2v') ) 
+                F = varargin{1};
                 return
             end
             
             domain = [-1 1 -1 1];  % default domain
-            if ( nargin >= 3 )
+            if ( nargin >= 2 )
                 if ( isa(varargin{2}, 'double') )
                     % Grab domain.
                     domain = varargin{2};
-                elseif (isa( op, 'function_handle' ) &&...
+                elseif (isa( varargin{1}, 'function_handle' ) &&...
                                 (isa( varargin{2}, 'function_handle' ) ) )
                     % The constructor is given the components as function 
                     % handles.
-                    len = numel(varargin);
-                    j = 1;
+                    len = numel( varargin );
+                    j = 0;
                     while ( ( j < len) &&...
                                  isa( varargin{j+1}, 'function_handle' ) )
                         j = j + 1;
                     end
-                    op = {op, varargin{1:j}};
-                    if (j < len)
+                    op = varargin(1:j);
+                    if ( j < len )
                         domain = varargin{j+1};
                     end
                     if ( j + 1 < len )
@@ -72,21 +71,21 @@ classdef chebfun2v
                     else
                         varargin = [];
                     end
-                elseif ( isa( op, 'chebfun2' ) &&...
+                elseif ( isa( varargin{1}, 'chebfun2' ) &&...
                                         isa( varargin{2}, 'chebfun2' ) )
                     % The constructor is given the components as CHEBFUN2 
                     % objects.
-                    domain = op.domain;
+                    domain = varargin{1}.domain;
                     len = numel(varargin);
-                    j = 1;
+                    j = 0;
                     while ( ( j < len) && isa( varargin{j+1}, 'chebfun2' ) )
-                        if ( ~domainCheck(op, varargin{j+1}) )
+                        if ( ~domainCheck(varargin{1}, varargin{j+1}) )
                             error('CHEBFUN2V:CONSTRUCTOR',...
                                                    'Domain not the same.');
                         end
                         j = j + 1;
                     end
-                    op = {op, varargin{1:j}};
+                    op = varargin(1:j);
                     if (j < len)
                         varargin = varargin{j+1:len};
                     else
@@ -95,25 +94,27 @@ classdef chebfun2v
                 else
                     error('CHEBFUN2V:CONSTRUCTOR','Unrecognised syntax.');
                 end
+            else
+                op = varargin; 
             end
              
             % Pull out domain
-            for j = 1:numel( varargin )
-                if ( isa( varargin{j}, 'chebfun2' ) )
-                    domain = varargin{j}.domain;
+            for j = 1:numel( op )
+                if ( isa( op{j}, 'chebfun2' ) )
+                    domain = op{j}.domain;
                 end
             end
             
             % Loop through the cell array of components.
             F.components = [];
-            for j = 1:numel( varargin )
-                f = chebfun2(varargin{ j }, domain, varargin );
+            for j = 1:numel( op )
+                f = chebfun2(op{ j }, domain, varargin );
                 F.components{j} = f;
             end
-            F.nComponents = numel( varargin );
+            F.nComponents = numel( op );
             F.isTransposed = 0;
             
-            if ( numel(varargin) > 3)
+            if ( numel(nargin) > 4)
                 error('CHEBFUN2:CONSTRUCTOR:ARRAYVALUED',...
                           'More than three components is not supported.')
             end
