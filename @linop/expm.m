@@ -115,10 +115,10 @@ for i = 1:length(t)
         % Convert the different components into cells
         u = partition(disc, v);
         uFun = u(isFun);
-        scale = discu.scale( uFun );
+        vscale = discu.scale( uFun );
         
         % Test the happieness of the function pieces:
-        [isDone, epsLevel] = testConvergence(disc, uFun, scale, prefs);
+        [isDone, epsLevel] = testConvergence(disc, uFun, vscale, prefs);
         
         if ( all(isDone) )
             break

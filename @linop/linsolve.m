@@ -130,9 +130,14 @@ for dim = [dimVals inf]
     % Convert the different components into cells
     u = partition(disc, v);
     
+    % Need a vector of vscales.
+    if ( numel(vscale)==1 && vscale==0 )
+        vscale = zeros(numel(u),1);
+    end
+    
     % Test the happiness of the function pieces:
     [isDone, epsLevel, vscale, cutoff] = ...
-        testConvergence(disc, u(isFun), vscale, prefs);
+        testConvergence(disc, u(isFun), vscale(isFun), prefs);
     
     if ( all(isDone) || isinf(dim) )
         break

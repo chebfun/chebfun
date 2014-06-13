@@ -228,10 +228,13 @@ for dim = dimVals
 
     % Convert the different components into cells
     u = partition(discA, P*v);
+    
 
-    % Test the happieness of the function pieces:
-    scale = 1;
-    [isDone, epsLevel] = testConvergence(discA, u(isFun), scale, prefs);
+    % Test the happiness of the function pieces:
+    vscale = 1;
+    vscale = zeros(numel(u),1);
+
+    [isDone, epsLevel] = testConvergence(discA, u(isFun), vscale(isFun), prefs);
 
     if ( all(isDone) )
         break
@@ -274,9 +277,9 @@ else            % Unwrap the eigenvectors for output
     end
 
     % Normalize each eigenfunction.
-    scale = diag( 1./sqrt(nrmsq') );
+    vscale = diag( 1./sqrt(nrmsq') );
     for j = 1:length(u)
-        u{j} = u{j}*scale;
+        u{j} = u{j}*vscale;
     end
 
      varargout = {chebmatrix(u), D};
