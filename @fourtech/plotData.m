@@ -59,6 +59,9 @@ if ( isempty(g) )
         data.yLine = real( data.yLine ); 
         data.yPoints = real(data.yPoints); 
     end
+    
+    % yLim:
+    data.yLim = [min(data.yLine(:)) max(data.yLine(:))];
 
 elseif ( isa(g, 'fourtech') )   
     % PLOT(F, G)
@@ -93,6 +96,14 @@ elseif ( isa(g, 'fourtech') )
         data.yLine = real(data.yLine);
         data.yPoints = real(data.yPoints);
     end
+    
+    % xLim:
+    xdata = [get(f, 'lval'); data.xLine; get(f, 'rval')];
+    data.xLim = [min(xdata(:)) max(xdata(:))];
+    
+    % yLim:
+    ydata = [get(g, 'lval'); data.yLine; get(g, 'rval')];
+    data.yLim = [min(ydata(:)) max(ydata(:))];
     
     if ( isa(h, 'fourtech') )
         % PLOT3(F, G, H)
