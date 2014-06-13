@@ -17,19 +17,6 @@ else
     r = roots@classicfun(f, varargin{:}, 'filter', unbndFilter);
 end
 
-% TODO: This doesn't seem necessary any longer.
-% % Do further filtering in case something was missed by the filter:
-% % Set a threshold for the 'farfield':
-% farfield = 1e-1/eps;
-% if ( isinf(f.domain(1)) )
-%     mask = ( r < -farfield );
-%     r(mask) = [];
-% end
-% if ( isinf(f.domain(2)) )
-%     mask = ( r > farfield );
-%     r(mask) = [];
-% end
-
 end
 
 function r = unbndFilter(r, f)
