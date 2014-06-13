@@ -2,7 +2,9 @@ function [Y, X] = max2( f )
 %MAX2   Global maximum of a CHEBFUN2.
 %   Y = MAX2(F) returns the global maximum of F over its domain. 
 %   
-%   [Y, X] = MAX2(F) returns the global maximum in Y and its location X.  
+%   [Y, X] = MAX2(F) returns the global maximum in Y and its location X.
+%
+%  This command may be faster if the OPTIMIZATION TOOLBOX is installed.
 % 
 % See also MIN2, MINANDMAX2.
 

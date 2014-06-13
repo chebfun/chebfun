@@ -4,6 +4,8 @@ function [Y, X] = min2( f )
 %   
 %   [Y, X] = MIN2(F) returns the global minimum in Y and its location X.  
 %
+%  This command may be faster if the OPTIMIZATION TOOLBOX is installed.
+%
 % See also MIN2, MINANDMAX2.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
