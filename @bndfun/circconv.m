@@ -2,7 +2,7 @@ function out = circconv(f, g)
 %CIRCCONV   Circular convolution of a BNDFUN on its interval [a,b].
 %   S = CIRCCONV(F, G) is the circular convolution from a to b of F and G.
 %   
-%   NOTE: Only works when f and g consist of FOURTECH objects.
+%   NOTE: CIRCCONV only works when f and g consist of FOURTECH objects.
 %
 % See also CONV.
 

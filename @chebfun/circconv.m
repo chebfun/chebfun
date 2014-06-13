@@ -1,6 +1,8 @@
 function h = circconv(f, g)
 %CIRCCONV   Circular convolution of a Fourier-based CHEBFUNs.
 %   S = CIRCCONV(F, G) is the circular convolution from a to b of F and G.
+%
+%   NOTE: CIRCCONV only works when f and g consist of FOURTECH objects.
 %   
 % See also CONV.
 
@@ -30,19 +32,14 @@ if ( numel(f.funs) > 1 || numel(g.funs) > 1 )
         'No support for piecewise-smooth CHEBFUN objects.');
 end
 
-% TODO: Wave goodbye encapsulation.
-fTech = get(f, 'tech');  gTech = get(g, 'tech');
-if ( ~isa(fTech(), 'fourtech') || ~isa(gTech(), 'fourtech') )
-    error('CHEBFUN:circconv:NotAvailable', ...
-        'Circular convolutions only possible for Fourier-based CHEBFUNs.');
-end
-
 % Extract the domain:
 [a, b] = domain(f);
 [c, d] = domain(g);
-
-if ( (a ~=c) &&  (b ~= d) )
+if ( (a ~= c) &&  (b ~= d) )
     error('CHEBFUN:circconv:domain', 'Domains of f and g must match.');
+end
+if ( any( ~isfinite([a b c d]) ) )
+    error('CHEBFUN:circconv:unbnddomain', 'Domains of f and g must be finite.');
 end
 
 % Call BNDFUN circular convolution.
