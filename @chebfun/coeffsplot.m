@@ -62,10 +62,10 @@ end
 
 % Deal with 'LogLog' and 'noEpsLevel' input:
 doLoglog = cellfun(@(s) strcmpi(s, 'loglog'), varargin);
-varargin(doLoglog) = [];
+% varargin(doLoglog) = [];
 doLoglog = any(doLoglog);
 noEpsLevel = cellfun(@(s) strcmpi(s, 'noEpsLevel'), varargin);
-varargin(noEpsLevel) = [];
+varargin(noEpsLevel) = []; % Strip this out, as we don't want to pass it down.
 doEpsLevel = ~any(noEpsLevel);
 
 % Convert to a cell array for easy handling:
