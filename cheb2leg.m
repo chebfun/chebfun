@@ -149,6 +149,7 @@ if ( isempty(SMat) )                % Construct conversion matrix:
         spdiags([0 ; 0 ; -dg], 2, N+1, N+1);
     sinT = sin(pi*(0:N)'/N);        % Sin(theta).
 end
+<<<<<<< HEAD
 c = (dct1(bsxfun(@times, v, sinT))'/SMat)'; % Scaled DCT.
 end
 
@@ -166,6 +167,24 @@ while ( norm(ds(10:end)./s(10:end),inf) > eps/100 )
     j = j + 1;
     ds = -.5*(j-1)/(j+1)./NN.*ds;
     s = s + ds;
+=======
+
+function c_leg = cheb2leg_direct(c_cheb)
+%CHEB2LEG_DIRECT   Convert Cheb to Leg coeffs using the 3-term recurrence.
+[N, n] = size(c_cheb);              % Number of columns.
+N = N - 1;                          % Degree of polynomial.
+if ( N <= 0 ), c_leg = c_cheb; return, end % Trivial case.
+x = cos(.5*pi*(0:2*N)'/N);          % 2*N+1 Chebyshev grid (reversed order).
+f = dct1([c_cheb ; zeros(N,n)]);    % Values on 2*N+1 Chebyshev grid.
+w = chebtech2.quadwts(2*N+1)';      % Clenshaw-Curtis quadrature weights.
+Pm2 = 1; Pm1 = x;                   % Initialise.
+L = zeros(2*N+1, N+1);              % Vandermonde matrix.
+L(:,1:2) = [1+0*x, x];              % P_0 and P_1.
+for k = 1:N-1 % Recurrence relation:
+    P = ((2*k+1)/(k+1)*Pm1.*x-k/(k+1)*Pm2);           
+    Pm2 = Pm1; Pm1 = P; 
+    L(:,2+k) = P;
+>>>>>>> a02f7b795f7bf418d9edb5e6a7a37463d624618b
 end
 NN(1) = 0; % Reset the first value.
 p2 = exp(s).*sqrt(4./(NN+.5)/pi);
