@@ -14,7 +14,7 @@ if ( (nargin > 1) && isstruct(varargin{1}) )
     varargin{1}.filter = @unbndFilter;
     r = roots@classicfun(f, varargin{:});
 else
-    r = roots@classicfun(f, varargin{:}, 'filter', unbndFilter);
+    r = roots@classicfun(f, varargin{:}, 'filter', @unbndFilter);
 end
 
 end
