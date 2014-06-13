@@ -39,24 +39,24 @@ else
     end
 end
 
-k = 1;
+j = 1;
 % Parse out other inputs:
-while ( k < numel(varargin) )
-    if ( strncmpi(varargin{k}, 'dimension', 3) )
-        dim = varargin{k+1};
-        varargin(k:k+1) = [];
-    elseif ( strncmpi(varargin{k}, 'domain', 3) )
-        dom = L.mergeDomains(dom, varargin{k+1});
-        varargin(k:k+1) = [];
-    elseif ( strncmpi(varargin{k}, 'discretization', 4) )
-        discType = varargin{k+1};
+while ( j < numel(varargin) )
+    if ( strncmpi(varargin{j}, 'dimension', 3) )
+        dim = varargin{j+1};
+        varargin(j:j+1) = [];
+    elseif ( strncmpi(varargin{j}, 'domain', 3) )
+        dom = L.mergeDomains(dom, varargin{j+1});
+        varargin(j:j+1) = [];
+    elseif ( strncmpi(varargin{j}, 'discretization', 4) )
+        discType = varargin{j+1};
         if ( ischar(discType) )
             discType = eval(['@' discType]);
         end
         pref.discretization = discType;
-        varargin(k:k+1) = [];        
+        varargin(j:j+1) = [];        
     else
-        k = k + 1;
+        j = j + 1;
     end
 end        
 
@@ -104,7 +104,7 @@ csrow = cumsum( m(:, 1)');                          % remove down-sampling
 rowdiv = csrow(1:end - 1) + 1/2;                    % boundary after each block
 rowdiv = nbc + ncon + rowdiv;                       % offset from top rows
 colmax = size(data, 2);
-plot([0; colmax+1]*ones(size(rowdiv)), [rowdiv; rowdiv], 'color', [.6 .6 .6])
+% plot([0; colmax+1]*ones(size(rowdiv)), [rowdiv; rowdiv], 'color', [.6 .6 .6])
 
 % Draw horizontal BC and continuity boundaries.
 y = nbc + 1/2;
@@ -113,9 +113,45 @@ if ( ncon > 0 )
     plot([0; colmax + 1], [y + ncon; y + ncon], '--', 'color', [.6 .6 .6])
 end
 
+% Draw filled blocks:
+% TODO: Not fill empty BC blocks.
+% TODO: Not fill empty subblocks for piecewise domains
+cscol = [0 cscol];
+csrow = ncon + nbc + [0 csrow];
+a = .65;
+b = .35;
+for k = 1:(numel(cscol)-1)
+    fill([cscol(k)+a cscol(k)+a cscol(k+1)+b cscol(k+1)+b], ...
+        [a nbc+b nbc+b a], 'b', 'facealpha', .05, 'edgealpha', 0)
+    hold on
+end
+for k = 1:(numel(cscol)-1)
+    fill([cscol(k)+a cscol(k)+a cscol(k+1)+b cscol(k+1)+b], ...
+        nbc+[a ncon+b ncon+b a], 'b', 'facealpha', .05, 'edgealpha', 0)
+    hold on
+end
+for k = 1:(numel(cscol)-1)
+    for j = 1:(numel(csrow)-1)
+        if ( myiszero(L.blocks{j,k}) )
+            continue
+        end
+        fill([cscol(k)+a cscol(k)+a cscol(k+1)+b cscol(k+1)+b], ...
+            [csrow(j)+a csrow(j+1)+b csrow(j+1)+b csrow(j)+a], 'b', ...
+            'facealpha', .05, 'edgealpha', 0)
+    end
+end
+
 % Reset hold state.
 if ( ~holdState )
     hold off
 end
 
+end
+
+function out = myiszero(f)
+if ( isnumeric(f) )
+    out = any(f);
+else
+    out = iszero(f);
+end
 end
