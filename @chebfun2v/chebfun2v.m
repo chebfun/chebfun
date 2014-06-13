@@ -47,78 +47,68 @@ classdef chebfun2v
                 return
             end
             
-            domain = [-1 1 -1 1];  % default domain
-            if ( nargin >= 2 )
-                if ( isa(varargin{2}, 'double') )
-                    % Grab domain.
-                    domain = varargin{2};
-                elseif (isa( varargin{1}, 'function_handle' ) &&...
-                                (isa( varargin{2}, 'function_handle' ) ) )
-                    % The constructor is given the components as function 
-                    % handles.
-                    len = numel( varargin );
-                    j = 0;
-                    while ( ( j < len) &&...
-                                 isa( varargin{j+1}, 'function_handle' ) )
-                        j = j + 1;
-                    end
-                    op = varargin(1:j);
-                    if ( j < len )
-                        domain = varargin{j+1};
-                    end
-                    if ( j + 1 < len )
-                        varargin = varargin{j+2:len};
-                    else
-                        varargin = [];
-                    end
-                elseif ( isa( varargin{1}, 'chebfun2' ) &&...
-                                        isa( varargin{2}, 'chebfun2' ) )
-                    % The constructor is given the components as CHEBFUN2 
-                    % objects.
-                    domain = varargin{1}.domain;
-                    len = numel(varargin);
-                    j = 0;
-                    while ( ( j < len) && isa( varargin{j+1}, 'chebfun2' ) )
-                        if ( ~domainCheck(varargin{1}, varargin{j+1}) )
-                            error('CHEBFUN2V:CONSTRUCTOR',...
-                                                   'Domain not the same.');
-                        end
-                        j = j + 1;
-                    end
-                    op = varargin(1:j);
-                    if (j < len)
-                        varargin = varargin{j+1:len};
-                    else
-                        varargin = [];
-                    end
-                else
-                    error('CHEBFUN2V:CONSTRUCTOR','Unrecognised syntax.');
-                end
-            else
-                op = varargin; 
+            % Go and try find the domain: 
+            domain = [-1 1 -1 1]; 
+            for jj = 1:numel(varargin)
+               if ( isa( varargin{jj}, 'double') ) 
+                   domain = varargin{jj}; 
+                   varargin{jj} = []; 
+               end
             end
-             
-            % Pull out domain
-            for j = 1:numel( op )
-                if ( isa( op{j}, 'chebfun2' ) )
-                    domain = op{j}.domain;
+            
+            % Go pick up vectorize flag: 
+            vectorize = 0; 
+            for jj = 1:numel(varargin) 
+                if ( strcmpi( varargin{jj}, 'vectorize' ) )
+                    vectorize = 1;
+                    varargin{jj} = []; 
                 end
             end
             
-            % Loop through the cell array of components.
-            F.components = [];
-            for j = 1:numel( op )
-                f = chebfun2(op{ j }, domain, varargin );
-                F.components{j} = f;
+            % Convert all function handles to chebfun2 objects: 
+            for jj = 1:numel(varargin)
+                if ( isa( varargin{jj}, 'function_handle') ) 
+                    if ( ~vectorize )
+                        newcheb = chebfun2( varargin{jj}, domain);
+                    else
+                        newcheb = chebfun2( varargin{jj}, domain, 'vectorize');
+                    end
+                   fh{jj} = newcheb;
+                   varargin{jj} = []; 
+                elseif ( isa( varargin{jj}, 'chebfun2') )
+                   fh{jj} = varargin{jj}; 
+                   varargin{jj} = []; 
+                end
             end
-            F.nComponents = numel( op );
-            F.isTransposed = 0;
             
-            if ( numel(nargin) > 4)
+            % Stop now if there are too many components
+            if ( numel( fh ) > 3 ) 
                 error('CHEBFUN2:CONSTRUCTOR:ARRAYVALUED',...
                           'More than three components is not supported.')
+            end 
+            
+            % Stop now if there are no components: 
+            if ( numel( fh ) == 0 ) 
+                error('CHEBFUN2:CONSTRUCTOR:EMPTY',...
+                'The Chebfun2 constructor needs to be given function handles or chebfun2 objects.')
             end
             
+            % Check the domains of all the chebfun2s are the same:
+            pass = zeros(numel(fh)-1,1);
+            for jj = 2:numel(fh)
+               pass(jj-1) = domainCheck( fh{1}, fh{jj});   
+            end
+            
+            if ( ~all(pass) )
+                error('CHEBFUN2:DOMAINCHECK',... 
+                    'All chebfun2 objects need to have the same domain.');
+            end
+            
+            % Assign to the Chebfun2v object: 
+            F.components = fh;
+            F.nComponents = numel( fh );
+            F.isTransposed = 0;
+
         end
     end 
     
