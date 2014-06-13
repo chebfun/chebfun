@@ -208,10 +208,13 @@ end
                 
                 % Shorten the representation. The happiness cutoff seems to
                 % be safer than the epslevel simplification.
-                %uCurrent = simplify(uCurrent, epslevel);
+%                 uCurrent = simplify(uCurrent, epslevel);
                 uPoly = chebpoly(uCurrent);
-                firstKept = size(uPoly,2) - max(17,cutoff-1);
-                uCurrent = chebfun(uPoly(:,firstKept:end).',DOMAIN,'coeffs');
+                firstKept = size(uPoly, 2) - (cutoff-1);
+                if ( firstKept <= 0 )
+                    firstKept = 1;
+                end
+                uCurrent = chebfun(uPoly(:,firstKept:end).', DOMAIN, 'coeffs');
                 
                 ctr = ctr + 1;
                 uOut{ctr} = uCurrent;
@@ -221,10 +224,11 @@ end
 
                 % If we have 2.5 times as many coefficients as we need, shorten
                 % the representation and cause the integrator to stop. 
-                if ( cutoff < 0.4*n )
+                if ( cutoff < 0.4*n && n > 17)
                     currentLength = round(1.25*cutoff)';
                     %currentLength = floor( currentLength / 1.5  );
                     currentLength = currentLength + 1 - rem(currentLength,2);
+                    currentLength = max(currentLength, 17);
                     status = true;
                 end
             else 
