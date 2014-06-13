@@ -1,4 +1,4 @@
-function pass = test_roots2( pref )
+function pass = test_roots04( pref )
 % Check that the marching squares and Bezoutian agree with each other. 
 %%
 
@@ -7,24 +7,6 @@ if ( nargin < 1 )
 end 
 tol = 1e3 * pref.cheb2Prefs.eps; 
 j = 1;
-
-%% (Marching squares fails)
-f = chebfun2(@(x,y)((x-.3).^2+2*(y+0.3).^2-1)); 
-g = chebfun2(@(x,y)((x-.49).^2+(y+.5).^2-1).*((x+0.5).^2+(y+0.5).^2-1).*((x-1).^2+(y-0.5).^2-1)); 
-%r1 = roots([f;g]); 
-r2 = roots([f;g],'resultant'); 
-pass(j) = ~( length(r2) - 4 ); j = j+1;
-pass(j) = ( norm(f(r2(:,1),r2(:,2))) < tol ); j = j + 1; 
-pass(j) = ( norm(g(r2(:,1),r2(:,2))) < 1e2*tol ); j = j + 1; 
-
-%% (Marching Squares misses a root)
-f = chebfun2(@(x,y)((x-0.1).^2+2*(y-0.1).^2-1).*((x+0.3).^2+2*(y-0.2).^2-1).*((x-0.3).^2+2*(y+0.15).^2-1).*((x-0.13).^2+2*(y+0.15).^2-1)); 
-g = chebfun2(@(x,y)(2*(x+0.1).^2+(y+0.1).^2-1).*(2*(x+0.1).^2+(y-0.1).^2-1).*(2*(x-0.3).^2+(y-0.15).^2-1).*((x-0.21).^2+2*(y-0.15).^2-1)); 
-% r1 = roots([f;g]); 
-r2 = roots([f;g],'resultant'); 
-pass(j) = ~( length(r2) - 45 ); j = j+1;
-pass(j) = ( norm(f(r2(:,1),r2(:,2))) < 10*tol ); j = j + 1; 
-pass(j) = ( norm(g(r2(:,1),r2(:,2))) < 100*tol ); j = j + 1; 
 
 %%
 f = chebfun2(@(x,y)sin(3*(x+y))); 
@@ -59,49 +41,5 @@ r1 = roots([f;g],'ms');
 r2 = roots([f;g],'resultant'); 
 pass(j) = ( norm(sort(r1(:,1))-sort(r2(:,1))) < tol ); j = j + 1; 
 pass(j) = ( norm(sort(r1(:,2))-sort(r2(:,2))) < tol ); j = j + 1;
-
-%% (slow one)
-% f = chebfun2(@(x,y)exp(x-2*x.^2-y.^2).*sin(10*(x+y+x.*y.^2))); 
-% g = chebfun2(@(x,y)exp(-x+2*y.^2+x.*y.^2).*sin(10*(x-y-2*x.*y.^2))); 
-% r1 = roots([f;g]); 
-% r2 = roots([f;g]); 
-% pass(j) = ( norm(sort(r1(:,1))-sort(r2(:,1))) < tol ); j = j + 1; 
-% pass(j) = ( norm(sort(r1(:,2))-sort(r2(:,2))) < tol ); j = j + 1;
-
-%%
-rect = 2*[-1 1 -1 1];
-f = chebfun2(@(x,y)2*x.*y.*cos(y.^2).*cos(2*x)-cos(x.*y),rect); 
-g = chebfun2(@(x,y)2*sin(x.*y.^2).*sin(3*x.*y)-sin(x.*y),rect); 
-r1 = roots([f;g],'ms'); 
-r2 = roots([f;g],'resultant'); 
-pass(j) = ( norm(sort(r1(:,1))-sort(r2(:,1))) < tol ); j = j + 1; 
-pass(j) = ( norm(sort(r1(:,2))-sort(r2(:,2))) < tol ); j = j + 1;
-
-%% Marching squares double counts some solutions. 
-f = chebfun2(@(x,y)(y - 2*x).*(y+0.5*x)); 
-g = chebfun2(@(x,y) x.*(x.^2+y.^2-1)); 
-% r1 = roots([f;g],'ms'); 
-r2 = roots([f;g],'resultant'); 
-% pass(j) = ( norm(sort(r1(:,1))-sort(r2(:,1))) < 10*sqrt(tol) ); j = j + 1; 
-% pass(j) = ( norm(sort(r1(:,2))-sort(r2(:,2))) < 10*sqrt(tol) ); j = j + 1;
-pass(j) = ( norm(f(r2(:,1),r2(:,2))) < tol ); j = j + 1; 
-pass(j) = ( norm(g(r2(:,1),r2(:,2))) < tol ); j = j + 1; 
-
-%%
-% f = chebfun2(@(x,y)(y - 2*x).*(y+.5*x)); 
-% g = chebfun2(@(x,y) (x-.0001).*(x.^2+y.^2-1)); 
-% r1 = roots([f;g],'ms'); 
-% r2 = roots([f;g],'resultant'); 
-% pass(j) = ( norm(sort(r1(:,1))-sort(r2(:,1))) < 10*tol ); j = j + 1; 
-% pass(j) = ( norm(sort(r1(:,2))-sort(r2(:,2))) < 100*tol ); j = j + 1;
-
-%%
-f = chebfun2(@(x,y)25*x.*y - 12); 
-g = chebfun2(@(x,y)x.^2+y.^2-1); 
-r1 = roots([f;g],'ms'); 
-r2 = roots([f;g],'resultant'); 
-pass(j) = ( norm(sort(r1(:,1))-sort(r2(:,1))) < tol ); j = j + 1; 
-pass(j) = ( norm(sort(r1(:,2))-sort(r2(:,2))) < tol ); j = j + 1;
-
 
 end

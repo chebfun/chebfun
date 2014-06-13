@@ -311,6 +311,7 @@ if ( guiMode )
         coeffsplot(u, 'linewidth', 2)
         title('Chebcoeffsplot of solution')
         set(handles.popupmenu_bottomFig, 'Value', 2);
+        grid on
     end
     
     % Return the handles as varargout.

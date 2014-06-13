@@ -93,7 +93,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                     dom = varargin{1};
                 end
             else
-                obj.func = chebfun(varargin{:});
+                obj.func = chebfun(u, varargin{:});
                 dom = obj.func.domain;
             end
             
@@ -1265,8 +1265,11 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         %   .
         %     F.PROP returns the property PROP of F as defined by 
         %     GET(F, 'PROP').
-        %  
-        %   {}
+        % 
+        %   { }
+        %     F{IND}, where IND is an integer, returns the IND component of an
+        %     array of ADCHEBFUN objects.
+        %
         %     F{S1, S2} restricts F to the domain [S1, S2] < [F.ENDS(1),
         %     F.ENDS(end)].
         %
@@ -1275,6 +1278,8 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             switch index(1).type
                 case '()'
                     out = feval(f, index.subs{1});
+                case '{}'
+                    out = f(index.subs{1});
                 case '.'
 %                     out = vertcat(f.(index(1).subs));
                     out = f.(index(1).subs);
@@ -1418,7 +1423,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             
             % This method does nothing.
         end
-        
+                
         function f = volt(K, f, varargin)
             % VOLT   Volterra operator.
             

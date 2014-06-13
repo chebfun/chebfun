@@ -15,7 +15,7 @@ classdef classicfun < fun % (Abstract)
 %
 %   CLASSICFUN.CONSTRUCTOR(OP, DATA) does the same but uses the domain
 %   specified by DATA.DOMAIN.  If DATA or DATA.DOMAIN is empty or if DATA has
-%   no DOMAIN field, the the default domain from CHEBFUNPREF is used.  The DATA
+%   no DOMAIN field, the default domain from CHEBFUNPREF is used.  The DATA
 %   structure is passed as-is to the appropriate concrete subclass constructor.
 %
 %   CLASSICFUN.CONSTRUCTOR(OP, DATA, PREF) overrides the default behavior with

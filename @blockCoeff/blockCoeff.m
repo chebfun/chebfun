@@ -1,5 +1,5 @@
 classdef blockCoeff
-%BLOCKCOEFF   Convert linear operator to derivative coefficents.
+%BLOCKCOEFF   Class to convert linear operator to derivative coefficents.
 %   This class is not intended to be called directly by the end user.
 %
 %   See also LINOP, CHEBOP, CHEBOPPREF.
@@ -51,6 +51,21 @@ classdef blockCoeff
         
         
         function C = mtimes(A, B)
+            
+            if ( isnumeric(A) )
+                % Allow multiplying a BLOCKCOEFF with a scalar.
+                c = B.coeffs;
+                for k = 1:numel(B.coeffs)
+                    c{k} = A*c{k};
+                end
+                
+                % Create the result.
+                C = blockCoeff(c, B.domain);
+                return
+            elseif ( isnumeric(B) )
+                C = mtimes(B, A);
+                return
+            end
             
             if ( isempty(A.coeffs) || isempty(B.coeffs) )
                 C = blockCoeff([]);

@@ -38,7 +38,7 @@ if ( strcmp(name, 'ans') )
 end
 
 % Print information about each block>
-ml = max(cellfun(@length, c));
+ml = cellfun(@length, c);
 for j = 1:m
     fprintf('    ');
     for k = 1:n

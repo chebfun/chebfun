@@ -1,15 +1,16 @@
 function varargout = pde15s(pdeFun, tt, u0, bc, varargin)
-%PDE15S   Solve PDEs using the CHEBFUN system.
+%PDE15S   Solve PDEs using Chebfun.
+%
 %   UU = PDE15s(PDEFUN, TT, U0, BC) where PDEFUN is a handle to a function with
 %   arguments u, t, x, and D, TT is a vector, U0 is a CHEBFUN or a CHEBMATRIX,
-%   and BC is a chebop boundary condition structure will solve the PDE dUdt =
+%   and BC is a CHEBOP boundary condition structure will solve the PDE dUdt =
 %   PDEFUN(UU, t, x) with the initial condition U0 and boundary conditions BC
 %   over the time interval TT.
 %
 %   PDEFUN should take the form @(T, X, U1, U2, ..., UN), where U1, ..., UN are
 %   the unknown dependent variables to be solved for, T is time, and X is space.
 %
-%   For backwards compatability, the syntax @(U1, U2, ..., UN, T, X, D, S, C)
+%   For backwards compatibility, the syntax @(U1, U2, ..., UN, T, X, D, S, C)
 %   for PDEFUN, where U1, ..., UN are the unknown dependent variables to be
 %   solved for, T is time, X is space, D is the differential operator, S is the
 %   definite integral operator (i.e., 'sum'), and C the indefinite integral
@@ -218,7 +219,7 @@ end
                 % Plot current solution:
                 plotFun(uCurrent, tCurrent);
 
-                % If we have 2.5 times as many coeffcients as we need, shorten
+                % If we have 2.5 times as many coefficients as we need, shorten
                 % the representation and cause the integrator to stop. 
                 if ( cutoff < 0.4*n )
                     currentLength = round(1.25*cutoff)';
@@ -248,7 +249,7 @@ end
         %   status = true exits the current time chunk.
         %   done = true exits PDE15S. (Note done is a GLOBAL variable).
 
-        % Interupt computation if stop or pause button is pressed in the GUI.
+        % Interrupt computation if stop or pause button is pressed in the GUI.
         if ( strcmp(get(solveButton, 'String'), 'Solve') )
             % Stop.
             tt = tt( tt <= tCurrent );
@@ -772,11 +773,11 @@ function outFun = parseFun(inFun, bcFlag)
 
 global SYSSIZE
 
-% Ensure backwards compatability by procesing the input function.
+% Ensure backwards compatibility by processing the input function.
 inFun = backCompat(inFun);
 
 % V4: We don't accept only time or space as input args (i.e., both or nothing).
-% V5: Actually, we now accept @(u, x) diff(u, 2) + sin(x).*u (for chebops).
+% V5: Actually, we now accept @(u, x) diff(u, 2) + sin(x).*u (for CHEBOPs).
 Nind = nargin(inFun) - SYSSIZE;
 if ( Nind == 0 )
     outFun = @(t, x, u) conv2cell(inFun, u);
@@ -860,7 +861,7 @@ function outFun = backCompat(inFun)
 % In V4 PDE15S required the user to pass in dummy function handles for the
 % differential operators. For example, u'' + u' + sum(u) would have needed
 %  pdefun = @(u, t, x, diff, sum) diff(u, 2) + diff(u) + sum(u).
-% V5 deals with this in a different way (by using the chebdouble class), but we
+% V5 deals with this in a different way (by using the CHEBDOUBLE class), but we
 % would still like to support the old syntax (at least for now).
 %
 % To do this, we parse the input function for the strings 'diff', 'Diff', and
@@ -893,8 +894,8 @@ if ( isempty(idx) )
 end
 
 warning('CHEBFUN:pde15s:oldSyntax', ...
-    ['The syntax\n ' str '\nis depricated and may not be supported in future releases.\n', ...
-    'Please see the PDE15S documentation for details.'] )
+    ['The syntax\n ' str '\nis deprecated and may not be supported in ', ...
+     'future releases.\n Please see the PDE15S documentation for details.'] )
 
 % Switch the order for V5 syntax:
 varNamesNewOrder = varNames([(1+SYSSIZE):(idx-1), 1:SYSSIZE]);

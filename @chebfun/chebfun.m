@@ -129,7 +129,7 @@ classdef chebfun
         domain              % (1x(K+1) double)
 
         % FUNS is a cell array containing the FUN objects that comprise a
-        % piecewise CHEBFUN. The the kth entry in this cell is the FUN defining
+        % piecewise CHEBFUN. The kth entry in this cell is the FUN defining
         % the representation used by the CHEBFUN object on the open interval
         % (F.DOMAIN(k), F.DOMAIN(k+1)). If M = size(f.funs, 2) is greater than
         % 1, then the CHEBFUN object is referred to as "array valued".
@@ -348,7 +348,7 @@ classdef chebfun
         g = floor(f);
 
         % Get properties of a CHEBFUN object.
-        out = get(f, prop);
+        out = get(f, prop, simpLevel);
         
         % Horizontal scale of a CHEBFUN object.
         out = hscale(f);
