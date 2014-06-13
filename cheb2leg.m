@@ -30,7 +30,8 @@ K = ceil(log(N/nM0)/log(1/aM));               % Number of block partitions
 if ( M == 0 || N < 513 || K == 0 ), c_leg = cheb2leg_direct(c_cheb); return, end
 
 f = dct1([c_cheb ; zeros(N,n)]);              % Values on a 2*N+1 Cheb grid.
-wf = bsxfun(@times, f, cheb2_quadwts(2*N+1).');% Scale f by C-C weights.
+wts = chebtech2.quadwts(2*N+1); 
+wf = bsxfun(@times, f, wts');                 % Scale f by C-C weights.
 t = pi*(0:2*N)'/(2*N);                        % 2*N+1 theta grid.
 nM = ceil(aM.^(K-1:-1:0)*N);                  % n_M for each block.
 jK = zeros(K, 2);                             % Block locations in theta.
@@ -143,13 +144,6 @@ if ( isempty(Smat) ) % Construct conversion matrix:
 end
 c = (dct1(bsxfun(@times,v,sint))'/Smat)'; % Scaled DCT.
 end
-    
-function w = cheb2_quadwts(n)       % Nick Hale, 2013 (See also Waldvogel, 2005)
-c = 2./[1 , 1-(2:2:(n-1)).^2];      % Exact integrals of T_k (even)
-c = [c, c(floor(n/2):-1:2)];        % Mirror for DCT via FFT 
-w = ifft(c);                        % Interior weights
-w([1,n]) = w(1)/2;                  % Boundary weights
-end
 
 function c_leg = cheb2leg_direct(c_cheb)
 %CHEB2LEG_DIRECT   Convert Cheb to Leg coeffs using the 3-term recurrence.
@@ -158,7 +152,7 @@ N = N - 1;                          % Degree of polynomial.
 if ( N <= 0 ), c_leg = c_cheb; return, end % Trivial case.
 x = cos(.5*pi*(0:2*N)'/N);          % 2*N+1 Chebyshev grid (reversed order).
 f = dct1([c_cheb ; zeros(N,n)]);    % Values on 2*N+1 Chebyshev grid.
-w = cheb2_quadwts(2*N+1).';         % Clenshaw-Curtis quadrature weights.
+w = chebtech2.quadwts(2*N+1)';      % Clenshaw-Curtis quadrature weights.
 Pm2 = 1; Pm1 = x;                   % Initialise.
 L = zeros(2*N+1, N+1);              % Vandermonde matrix.
 L(:,1:2) = [1+0*x, x];              % P_0 and P_1.
