@@ -69,9 +69,8 @@ while ( k > 0 )
 end
 
 %% 
-% If f has negligible exponents, return the SMOOTHPART object instead of a
-% SINGFUN:
-if ( issmooth(f) )
+% If f has negligible exponents return just the SMOOTHPART:
+if ( isa(f, 'singfun') && issmooth(f) )
     f = f.smoothPart;
 end
 
