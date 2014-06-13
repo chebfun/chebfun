@@ -98,7 +98,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                     dom = varargin{1};
                 end
             else
-                obj.func = chebfun(varargin{:});
+                obj.func = chebfun(u, varargin{:});
                 dom = obj.func.domain;
             end
             
