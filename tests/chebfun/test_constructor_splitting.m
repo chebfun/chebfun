@@ -47,6 +47,12 @@ pass(5) = (norm(f5.domain - [-1 -0.2 0.1 1], inf) < 10*eps) && ...
     (norm(feval(f5, xx5) - feval(F5, xx5), inf) < ...
     tol*max(f5.epslevel.*f5.vscale));
 
+%% Test a logical function:
+f = chebfun(@(x) x > 0, [-1 1], 'splitting', 'on', pref);
+x = chebfun('x', [-1 1], pref);
+h = heaviside(x);
+pass(6) = norm(f - h) < f.epslevel;
+
 %% Test for function defined on unbounded domain:
 
 % Function defined on [0 Inf]:
@@ -63,7 +69,7 @@ f = chebfun(op, dom, 'splitting', 'on');
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
-pass(6) = norm(err, inf) < 1e1*epslevel(f)*vscale(f);
+pass(7) = norm(err, inf) < 1e1*epslevel(f)*vscale(f);
 
 %% Test SPLITTING ON with BLOWUP == 1:
 op = @(x)tan(x);

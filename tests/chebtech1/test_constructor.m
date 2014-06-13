@@ -69,3 +69,14 @@ try
 catch
     pass(7) = false;
 end
+
+% Test logical-valued functions:
+f = chebtech1(@(x) x > -2);
+g = chebtech1(1);
+pass(8) = normest(f - g) < f.epslevel;
+
+f = chebtech1(@(x) x < -2);
+g = chebtech1(0);
+pass(9) = normest(f - g) < f.epslevel;
+
+end

@@ -52,8 +52,8 @@ exps = get(f, 'exponents');
 % Locate the edges/splitting locations:
 if ( all( isfinite( dom ) ) )  
     % bounded domain
-    forDerHandle = @(x) 0*x + 1;
     forHandle = @(x) x;
+    derHandle = @(x) 0*x + 1;
     if ( any(exps) )
         % Compensating for exponents:
         op = @(x) op(x) ./ ((x - dom(1)).^exps(1) .* (dom(2) - x).^exps(2));
@@ -62,7 +62,7 @@ if ( all( isfinite( dom ) ) )
 else
     % unbounded domain
     forHandle = f.mapping.for;
-    forDerHandle = f.mapping.forDer;
+    derHandle = f.mapping.der;
     dom = [-1+eps, 1-eps];
     op = @(x) op(forHandle(x));
     if ( any(exps) )
@@ -76,7 +76,7 @@ end
 vscale = max(vscale);
 
 % Call the main routine:
-edge = detectedgeMain(op, dom, vscale, hscale, forDerHandle);
+edge = detectedgeMain(op, dom, vscale, hscale, derHandle);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Tidy the results  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
