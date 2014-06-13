@@ -2,7 +2,7 @@ function [Y, X] = min2( f )
 %MAX2   Global maximum of a CHEBFUN2.
 %   Y = MIN2(F) returns the global minimum of F over its domain. 
 %   
-%   [Y, X] = MIN2(F) returns the global minimum in Y and its location X.  
+%   [Y, X] = MIN2(F) returns the global minimum in Y and its location in X.  
 %
 %  This command may be faster if the OPTIMIZATION TOOLBOX is installed.
 %
