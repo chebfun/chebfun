@@ -82,7 +82,11 @@ s = diag( S );
 % compress the format if possible.
 % [TODO]: What should EPS be in the tolerance check below? Can we base it on
 % EPSLEVELS?
-idx = find( s > eps, 1, 'last');
+vf = vscale( f ); 
+vg = vscale( g );
+vscl = max( vf, vg); 
+% Remove singular values that fall below eps*vscale: 
+idx = find( s > eps * vscl, 1, 'last');
 if ( isempty( idx ) )
     % return 0 chebfun2
     h = chebfun2( 0, f.domain );
