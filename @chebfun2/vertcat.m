@@ -31,7 +31,7 @@ elseif ( nargin > 1 )
         end
     elseif ( isa(varargin{ 2 }, 'chebfun2' ) )
         % call the CHEBFUN2V constructor.
-        F = chebfun2v( varargin );
+        F = chebfun2v( varargin{:} );
     end
 else
     error('CHEBFUN2:VERTCAT',...
