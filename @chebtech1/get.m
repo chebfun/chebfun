@@ -8,12 +8,18 @@ function out = get(f, prop)
 %       'VALUES'          - Values of F at Chebyshev points.
 %       'LVAL'            - Value of F at -1.
 %       'RVAL'            - Value of F at +1.
-%       'TECHCONSTRUCTOR' - Handle to the CHEBTECH1 constructor.
+%       'TECH'            - Handle to the CHEBTECH1 constructor. *
 %
 % See also CHEBTECH, CHEBTECH1.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% DEVELOPER NOTE:
+%  * Currently get(f, 'tech') returns a function handle to the tech constructor.
+%    This may change in future to return instead an empty instance of the tech.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 switch prop
     case fieldnames(f)
@@ -26,7 +32,8 @@ switch prop
         out = feval(f, 1);
     case 'values'
         out = f.coeffs2vals(f.coeffs);
-    case 'techConstructor'
+    case 'tech'
+        % TODO: Return function handle, or empty instance of the tech?
         out = @chebtech1;
     otherwise
         error('CHEBFUN:CHEBTECH1:GET:proname', ...
