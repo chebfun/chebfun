@@ -76,7 +76,9 @@ end
 
 % If the user wants most of the Legendre polynomials then faster to use the
 % recurrence: 
-if ( nMax < 5000 && numel(n) > nMax / 5 ) 
+% TODO: "most" is most than 20% of the [0:nMax]. Should this percentage
+% vary with nMax? 
+if ( nMax < 5000 && numel(n) > nMax / 5 ) % Do not go above 5000 with recurrence.
     method = 1; 
 end
 
