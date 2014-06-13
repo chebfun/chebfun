@@ -4,7 +4,7 @@ function out = get(f, prop)
 %   the CHEBTECH2 F.  The string PROP may be the name of a CHEBTECH2 property
 %   (see the CHEBTECH and CHEBTECH2 classdef files for lists) or any of the
 %   following strings:
-%       'POINTS'          - 1st-kind Chebyshev grid corresponding to F.
+%       'POINTS'          - 2nd-kind Chebyshev grid corresponding to F.
 %       'VALUES'          - Values of F at Chebyshev points.
 %       'LVAL'            - Value of F at -1.
 %       'RVAL'            - Value of F at +1.

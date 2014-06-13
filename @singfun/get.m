@@ -18,7 +18,7 @@ switch prop
     case fieldnames(f)
         out = f.(prop);
     case 'values'
-        % TODO:  This breaks encapsulation:  not all techs have "points".
+        % TODO:  This breaks encapsulation: not all techs have "points".
         pts = get(f.smoothPart, 'points');
         out = feval(f, pts);
     case 'lval'
