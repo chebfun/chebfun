@@ -94,6 +94,9 @@ classdef chebfun2
         
         % Is a chebfun2 all positive or negative? 
         [bol, wzero] = singleSignTest( f ) 
+        
+        % Get the vertical scale of a Chebfun2
+        vscl = vscale( f ) 
     end
 
     % Private methods implemented by CHEBFUN2 class.
