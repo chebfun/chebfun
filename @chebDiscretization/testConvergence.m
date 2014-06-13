@@ -47,7 +47,7 @@ prefTech.eps = pref.errTol;
 for i = 1:numInt
     f = chebtech2( {[],coeffs{i}} );
     f.vscale = vscale;
-    [isDone(i), neweps, cutoff(i,:)] = plateauCheck(f, get(f,'values'), prefTech);
+    [isDone(i), neweps, cutoff(i,:)] = linopV4Check(f, get(f,'values'), prefTech);
     epsLevel = max(epsLevel, neweps);
 end
 
