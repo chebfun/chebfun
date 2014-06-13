@@ -1,9 +1,8 @@
 function out = circconv(f, g)
 %CIRCCONV   Circular convolution of a BNDFUN on its interval [a,b].
-%   S = CIRCCONV(F,G) is the circular convolution from a to b of F and G.
+%   S = CIRCCONV(F, G) is the circular convolution from a to b of F and G.
 %   
-%   NOTE: Only works when f and g consist of FOURTECH objects. if this is not
-%   the case, then this method will return garbage with no warning.
+%   NOTE: Only works when f and g consist of FOURTECH objects.
 %
 % See also CONV.
 
@@ -14,6 +13,6 @@ function out = circconv(f, g)
 rescaleFactor = 0.5*diff(f.domain);
 
 % Assign the output to be the sum of the onefun of the input, rescaled.
-out = conv(f.onefun, g.onefun)*rescaleFactor;
+out = circconv(f.onefun, g.onefun)*rescaleFactor;
 
 end

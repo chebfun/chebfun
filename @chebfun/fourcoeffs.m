@@ -15,7 +15,7 @@ function varargout = fourcoeffs(f, N)
 %
 %   If F is array-valued with M columns, then C is an MxN matrix.
 %
-%   [A,B] = FOURCOEFFS(F, N) returns the first N Fourier coefficients of F
+%   [A, B] = FOURCOEFFS(F, N) returns the first N Fourier coefficients of F
 %   using trignometric form.  Specifically:
 %   If N is odd
 %      F(x) = A(1)*cos((N-1)/2*omega*x) + B(1)*sin((N-1)/2*omega*x) +  
@@ -46,11 +46,11 @@ if ( isempty(f) )
     return
 end
 
-if ( numel(f) > 1 )
-    % TODO: Why not?
-    error('CHEBFUN:fourcoeffs:quasia', ...
-        'FOURCOEFFS does not support quasimatrices.');
-end
+% if ( numel(f) > 1 )
+%     % TODO: Why not?
+%     error('CHEBFUN:fourcoeffs:quasia', ...
+%         'FOURCOEFFS does not support quasimatrices.');
+% end
 
 %% Initialize and error checking
 numFuns = numel(f.funs);
@@ -84,12 +84,17 @@ N = N + 1 - mod(N,2);
 
 numFuns = numel(f.funs);
 if ( numFuns ~= 1 )
+    % Attmpet to merge:
     f = merge(f);
+    numFuns = numel(f.funs);
 end
+
 
 %% Compute the coefficients.
 
 if ( numFuns == 1 )
+    
+    % CHEBCOEFFS() of a smooth piece:
     C = fourcoeffs(f.funs{1}, N).';
 
 else
@@ -123,15 +128,16 @@ if ( nargout <= 1 )
     varargout{1} = C;
     
 else
-    % Return the sign and cosine coefficients for the Fourier series
-    fisOdd = mod(N,2);
+    % Return the sign and cosine coefficients for the Fourier series:
+    fisOdd = mod(N, 2);
     if ( fisOdd )
         zeroMode = (N+1)/2;
         A = [( C(:,1:zeroMode-1) + C(:,N:-1:zeroMode+1) ), C(:,zeroMode)];
         B = 1i*( C(:,1:zeroMode-1) - C(:,N:-1:zeroMode+1) );
     else  % Non-symmetric case
         zeroMode = N/2;
-        A = [C(:,N), ( C(:,1:zeroMode-1) + C(:,N-1:-1:zeroMode+1) ), C(:,zeroMode)];
+        A = [C(:,N), ( C(:,1:zeroMode-1) + C(:,N-1:-1:zeroMode+1) ), ...
+            C(:,zeroMode)];
         B = 1i*( C(:,1:zeroMode-1) - C(:,N-1:-1:zeroMode+1) );
     end
     if ( isreal(f) )

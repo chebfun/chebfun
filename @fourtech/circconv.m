@@ -25,8 +25,9 @@ if ( isempty(f) || isempty(g) )
 end
 
 % No support for array-valued fourtech objects:
-if ( size(f,2) > 1 || size(g,2) > 1 )
-    error('CHEBFUN:FOURTECH:conv:array', 'No support for array-valued FOURTECH objects.');
+if ( (size(f, 2) > 1) || (size(g, 2) > 1) )
+    error('CHEBFUN:FOURTECH:conv:array', ...
+        'No support for array-valued FOURTECH objects.');
 end
 
 % Get the sizes of the FOURTECH objects
@@ -65,7 +66,7 @@ f.isReal = f.isReal && g.isReal;  % Are you real happy though?
 
 f.values(:,f.isReal) = real(f.values(:,f.isReal));
 
-if f.ishappy
+if ( f.ishappy )
     f = simplify(f, f.epslevel);
 end
 
