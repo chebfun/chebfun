@@ -133,7 +133,13 @@ switch prop
         out = getSimpleNumericLocalProp(f, prop, simpLevel);
     case {'exps', 'exponents'}
         out = getArbitraryLocalProp(f, 'exponents', simpLevel);
-        if ( isvector(out) )
+
+        % If we want to simplify exponents to numeric matrix, we have to do it
+        % manually:  the fact that exponents are stored as a row vector instead
+        % of a column vector means that we have to use getArbitraryLocalProp
+        % instead of getSimpleNumericLocalProp, and the former doesn't know how
+        % to do this simplification.
+        if ( (simpLevel > 1) && iscell(out) && (size(out, 2) == 1) )
             out = cell2mat(out);
         end
     case 'deltas'

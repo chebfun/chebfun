@@ -112,4 +112,28 @@ c = get(fd3, 'deltas');
 pass(31) = iscell(c) && isequal(size(c), [1 2]) && ...
     isequal(c{1}, [0 ; 1]) && isequal(c{2}, [-0.5 0.5 ; 1 1]);
 
+% Check getting of exponents.
+fse1 = chebfun(@(x) 1./(x + 2), [-2 2], 'exps', [-1 0]);
+fse2 = chebfun(@(x) gamma(x), [-2 -1 0 2], 'exps', [-1 -1 -1 -1 -1 0]);
+fqe1 = [fse2 fse2];
+fqe2 = [fse1 fse2];
+
+exps = get(fse1, 'exponents');
+pass(32) = isequal(exps, [-1 0]);
+exps = get(fse1, 'exponents', 1);
+pass(33) = iscell(exps) && isequal(size(exps), [1 1]);
+exps = get(fse1, 'exponents', 0);
+pass(34) = iscell(exps) && isequal(size(exps), [1 1]) && ...
+    iscell(exps{1}) && isequal(size(exps{1}), [1 1]);
+exps = get(fse2, 'exponents');
+pass(35) = isequal(exps, [-1 -1 ; -1 -1 ; -1 0]);
+exps = get(fse2, 'exponents', 1);
+pass(36) = iscell(exps) && isequal(size(exps), [3 1]);
+exps = get(fqe1, 'exponents');
+pass(37) = iscell(exps) && isequal(size(exps), [3 2]);
+exps = get(fqe2, 'exponents');
+pass(38) = iscell(exps) && isequal(size(exps), [1 2]) && ...
+    iscell(exps{1}) && isequal(size(exps{1}), [1 1]) && ...
+    iscell(exps{2}) && isequal(size(exps{2}), [3 1]);
+
 end
