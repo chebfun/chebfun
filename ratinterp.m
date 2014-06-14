@@ -167,8 +167,14 @@ if ( isempty(dom) )
         dom = [-1 1];
     end
 end
+
 % Ensure dom is not a domain object (since we lazily call diff(dom) below).
-dom = double(dom);
+if ( isa(dom, 'domain') )
+    warning('CHEBFUN:ratinterp:domainDeprecated', ...
+        ['Using a DOMAIN object as an input to RATINTERP is deprecated.\n' ...
+         'Specify domains using a two-element row vector instead.']);
+    dom = double(dom);
+end
 
 % Determine the number of interpolation nodes.
 if ( isempty(NN) )
