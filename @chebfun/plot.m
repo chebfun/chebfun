@@ -96,6 +96,9 @@ end
 
 %% Initialization:
 
+% Suppress inevitable warning for growing these arrays:
+%#ok<*AGROW>
+
 % Store the hold state of the current axis:
 holdState = ishold;
 
@@ -118,9 +121,6 @@ xLim = [inf, -inf];
 yLim = [inf, -inf];
 defaultXLim = 1;
 defaultYLim = 1;
-
-% Suppress inevitable warning for growing these arrays:
-%#ok<*AGROW>
 
 % Check to see if the 'interval' flag has been set:
 interval = [];
