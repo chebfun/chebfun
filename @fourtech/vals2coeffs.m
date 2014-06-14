@@ -35,7 +35,7 @@ coeffs = (1/n)*flipud(fftshift(fft(values, [], 1), 1));
 % These coefficients are for interpolation defined on [0,2*pi), but we want
 % to work on [-pi,pi). To fix the coefficients for this we just need to
 % assign c_k = (-1)^k c_k, for k=-(N-1)/2:(N-1)/2 for N odd and 
-% k = -N/2+1:N/2 for N even.
+% k = -N/2:N/2-1 for N even.
 if ( mod(n, 2) ) 
     even_odd_fix = (-1).^((n-1)/2:-1:-(n-1)/2);
 else

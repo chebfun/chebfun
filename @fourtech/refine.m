@@ -30,7 +30,6 @@ else
     % User defined refinement function:
     error('CHEBFUN:FOURTECH:refine', ...
           'No user defined refinement options allowed')
-%     [values, giveUp] = refFunc(op, values, pref);
 end
     
 end
