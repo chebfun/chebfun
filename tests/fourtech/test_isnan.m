@@ -26,7 +26,7 @@ try
     f = testclass.make(@(x) cos(pi*x) + NaN);
     pass(4) = isnan(f);
 catch ME
-    pass(4) = strcmpi(ME.message, 'Cannot handle functions that evaluate to NaN.');
+    pass(4) = strcmpi(ME.message, 'Cannot handle functions that evaluate to Inf or NaN.');
 end
 
 % Test a NaN array-valued function.
@@ -34,7 +34,7 @@ try
     f = testclass.make(@(x) [cos(pi*x) + NaN, cos(pi*x)]);
     pass(5) = isnan(f);
 catch ME
-    pass(5) = strcmpi(ME.message, 'Cannot handle functions that evaluate to NaN.');
+    pass(5) = strcmpi(ME.message, 'Cannot handle functions that evaluate to Inf or NaN.');
 end
 
 end
