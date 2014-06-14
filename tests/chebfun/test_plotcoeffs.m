@@ -1,6 +1,6 @@
-% Tests for @chebfun/coeffsplot.m.
+% Tests for @chebfun/plotcoeffs.m.
 
-function pass = test_coeffsplot(pref)
+function pass = test_plotcoeffs(pref)
 
 if ( nargin < 1 )
     pref = chebfunpref();
@@ -18,16 +18,16 @@ Q = cheb2quasi(F);
 
 hfig = figure('Visible', 'off');
 
-pass(1) = doesNotCrash(@() coeffsplot(f));
-pass(2) = doesNotCrash(@() coeffsplot(g));
-pass(3) = doesNotCrash(@() coeffsplot(F));
-pass(4) = doesNotCrash(@() coeffsplot(G));
-pass(5) = doesNotCrash(@() coeffsplot(Q));
+pass(1) = doesNotCrash(@() plotcoeffs(f));
+pass(2) = doesNotCrash(@() plotcoeffs(g));
+pass(3) = doesNotCrash(@() plotcoeffs(F));
+pass(4) = doesNotCrash(@() plotcoeffs(G));
+pass(5) = doesNotCrash(@() plotcoeffs(Q));
 
 % Check plot flags and other options.
-pass(6) = doesNotCrash(@() coeffsplot(g, 'noepslevel'));
-pass(7) = doesNotCrash(@() coeffsplot(g, 'loglog'));
-pass(8) = doesNotCrash(@() coeffsplot(g, '.--'));
+pass(6) = doesNotCrash(@() plotcoeffs(g, 'noepslevel'));
+pass(7) = doesNotCrash(@() plotcoeffs(g, 'loglog'));
+pass(8) = doesNotCrash(@() plotcoeffs(g, '.--'));
 
 close(hfig);
 

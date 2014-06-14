@@ -130,8 +130,8 @@ classdef fourtech < smoothfun
         % Compose two FOURTECH objects or a FOURTECH with a function handle:
         h = compose(f, op, g, data, pref)
         
-        % Plot (semilogy) the Chebyshev coefficients of a FOURTECH object.
-        varargout = coeffsplot(f, varargin)
+        % Plot (semilogy) the Fourier coefficients of a FOURTECH object.
+        varargout = plotcoeffs(f, varargin)
 
         % Get method:
         val = get(f, prop);

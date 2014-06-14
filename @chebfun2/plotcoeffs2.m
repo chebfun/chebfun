@@ -1,11 +1,11 @@
-function varargout = coeffsplot2( f )
-%COEFFSPLOT2   Display bivariate Chebyshev coefficients graphically.
-%   COEFFSPLOT2(F) plots the bivariate Chebyshev coefficients in a stem3 plot
+function varargout = plotcoeffs2( f )
+%PLOTCOEFFS2   Display bivariate coefficients graphically.
+%   PLOTCOEFFS2(F) plots the bivariate coefficients in a stem3 plot
 %   with a semilogy scale.
 %
-%   H = COEFFSPLOT2(F) returns a handle H to the figure.
+%   H = PLOTCOEFFS2(F) returns a handle H to the figure.
 %
-% See also COEFFSPLOT, CHEBCOEFFS2.
+% See also PLOTCOEFFS, CHEBCOEFFS2.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.

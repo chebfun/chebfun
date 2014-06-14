@@ -7,7 +7,7 @@ function varargout = chebcoeffs2( f )
 %   [A, D, B] = CHEBCOEFFS2( f ) returns the same coefficients keeping them in low
 %   rank form, i.e., X = A * D * B'.
 %
-% See also CHEBCOEFFSPLOT2, CHEBCOEFFS.
+% See also PLOTCOEFFS2, CHEBCOEFFS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
