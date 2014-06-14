@@ -1,10 +1,10 @@
-function edge = detectEdge(f, op, vscale, hscale)
+function edge = detectEdge(f, op, vscale, hscale, pref)
 %DETECTEDGE   Edge detection.
-%   EDGE = DETECTEDGE(F, OP, HSCALE, VSCALE) detects a blowup in the first,
-%   second, third, or fourth derivatives of OP in the domain of the FUN F.
-%   HSCALE is the horizontal scale and VSCALE is the vertical scale (note that
-%   both are required). If no edge is detected, EDGE is set to the midpoint of
-%   DOMAIN.
+%   EDGE = DETECTEDGE(F, OP, HSCALE, VSCALE, BLOWUP) detects a blowup in the 
+%   first, second, third, or fourth derivatives of OP in the domain of the FUN 
+%   F. HSCALE is the horizontal scale and VSCALE is the vertical scale (note 
+%   that both are required). If no edge is detected, EDGE is set to the midpoint
+%   of DOMAIN.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
@@ -76,7 +76,7 @@ end
 vscale = max(vscale);
 
 % Call the main routine:
-edge = detectedgeMain(op, dom, vscale, hscale, derHandle);
+edge = detectedgeMain(op, dom, vscale, hscale, derHandle, pref);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  Tidy the results  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -106,7 +106,7 @@ edge = forHandle(edge);
 
 end
 
-function edge = detectedgeMain(op, dom, vscale, hscale, derHandle)
+function edge = detectedgeMain(op, dom, vscale, hscale, derHandle, pref)
 %   DERHANDLE is optional and is the derivative of a map (a function handle). It
 %   is used in the unbounded domain case. If it is not provided, the identity
 %   map is assumed.
@@ -130,6 +130,7 @@ gridSize234 = 15; % Grid size for higher derivative computations in loop.
 ends = [new_a(numTestDers), new_b(numTestDers)];
 
 % Main loop:
+checkBlowUp = pref.enableSingularityDetection;
 while ( (maxDer(numTestDers) ~= inf) && ~isnan(maxDer(numTestDers)) ...
     &&  (diff(ends) > eps*hscale) )
 
@@ -157,10 +158,11 @@ while ( (maxDer(numTestDers) ~= inf) && ~isnan(maxDer(numTestDers)) ...
 
     % If the function value turns out to be very large between ENDS, then there 
     % might be a blowing up point. 
-    if ( abs(op(mean(ends))) > 1e2*vscale )
-        blowUpPoint = findBlowup(op, ends, gridSize1, gridSize234, ...
-            vscale, hscale);
-        if ( ~isempty(blowUpPoint) )
+    if ( checkBlowUp && ( abs(op(mean(ends))) > 1e2*vscale ) )
+        blowUpPoint = findBlowup(op, ends, gridSize1, gridSize234, vscale);
+        if ( isempty(blowUpPoint) )
+            checkBlowUp = false;
+        else
             edge = blowUpPoint;
             return
         end
@@ -299,9 +301,9 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function blowUpPoint = findBlowup(op, dom, gridSize1, gridSize234, vscale, hscale)
+function blowUpPoint = findBlowup(op, dom, gridSize1, gridSize234, vscale)
 % Detects blowup location in function values.
-
+'APA'
 a = dom(1);
 b = dom(2);
 
@@ -312,65 +314,13 @@ ya = y(1);
 yb = y(2);
 
 % If the current interval is large:
-while ( (b - a) > 1e7*hscale )
-    
-    % Sampling points:
-    x = linspace(a, b, gridSize1).';
-    
-    % Get the function values at the sampling points: 
-    y = abs(op(x(2:end-1)));
-    y = [ya ; y(:) ; yb];
-    
-    % Locate the maximum point:
-    [maxy, ind] = max(abs(y));
-    
-    % Check where the maximum occurs:
-    if ( ind == 1 )
-        % If the maximum occurs at the left endpoint:
-        b = x(3);     
-        yb = y(3);
-    elseif ( ind == gridSize1 )
-        % If the maximum occurs at the right endpoint:
-        a = x(gridSize1-2);    
-        ya = y(gridSize1-2);
-    else
-        % If the maximum occurs at any interior points:
-        a = x(ind-1); 
-        ya = y(ind-1);
-        b = x(ind+1); 
-        yb = y(ind+1);
-    end
+while ( (b - a) > 1e7*eps(a) )
+    [a, b, ya, yb] = zoomIn(op, a, b, ya, yb, gridSize1);
 end
 
 % If the interval is now of medium size:
 while ( (b - a) > 50*eps(a) )
-    
-    % Sampling points:
-    x = linspace(a, b, gridSize234).';
-    
-    % Get the function values at the sampling points: 
-    y = abs(op(x(2:end-1)));
-    y = [ya; y(:); yb];
-    
-    % Locate the maximum point:
-    [maxy, ind] = max(abs(y));
-    
-    % Check where the maximum occurs:
-    if ( ind == 1 ) 
-        % If the maximum occurs at the left endpoint:
-        b = x(3);     
-        yb = y(3);
-    elseif (ind == gridSize234)
-        % If the maximum occurs at the right endpoint:
-        a = x(gridSize234-2);     
-        ya = y(gridSize234-2);
-    else
-        % If the maximum occurs at any interior points:
-        a = x(ind-1); 
-        ya = y(ind-1);
-        b = x(ind+1); 
-        yb = y(ind+1);
-    end
+    [a, b, ya, yb] = zoomIn(op, a, b, ya, yb, gridSize234);
 end
 
 % If the interval is small now:
@@ -401,6 +351,38 @@ blowUpPoint = x(ind);
 % blow-up point:
 if ( maxy < 1e5*vscale )
     blowUpPoint = [];
+end
+
+end
+
+function [a, b, ya, yb] = zoomIn(op, a, b, ya, yb, gridSize)
+% Narrow down the interval in which the blow-up point is located.
+
+% Sampling points:
+x = linspace(a, b, gridSize).';
+
+% Get the function values at the sampling points:
+y = abs(op(x(2:end-1)));
+y = [ya ; y(:) ; yb];
+
+% Locate the maximum point:
+[ignored, ind] = max(abs(y));
+
+% Check where the maximum occurs:
+if ( ind == 1 )
+    % If the maximum occurs at the left endpoint:
+    b = x(3);
+    yb = y(3);
+elseif ( ind == gridSize )
+    % If the maximum occurs at the right endpoint:
+    a = x(gridSize-2);
+    ya = y(gridSize-2);
+else
+    % If the maximum occurs at any interior points:
+    a = x(ind-1);
+    ya = y(ind-1);
+    b = x(ind+1);
+    yb = y(ind+1);
 end
 
 end

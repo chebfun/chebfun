@@ -68,7 +68,7 @@ classdef fun % (Abstract)
     %% PRIVATE STATIC METHODS REQUIRED BY THIS CLASS.
     methods ( Static = true )
         % Edge detector.
-        [edge, vscale] = detectEdge(op, domain, hscale, vscale);
+        [edge, vscale] = detectEdge(op, domain, hscale, vscale, pref);
     end
     
     methods ( Abstract = true, Static = false )

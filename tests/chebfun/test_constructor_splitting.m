@@ -90,6 +90,17 @@ err3 = op(x3)-f(x3);
 err = [err1; err2; err3];
 pass(7) = ( norm(err, inf) < 1e4*epslevel(f)*vscale(f) );
 
+%% Test for splitting on + unbndfun:
+
+op = @(x)(sin(100*x)./exp(x.^2)+1).*(x.^2);
+dom = [-inf inf];
+dom_test = [-200 200];
+x = diff(dom_test) * rand(100, 1) + dom_test(1);
+f = chebfun (op, dom, 'exps', [2 2], 'splitting', 'on');
+vals = f(x);
+exact = op(x);
+pass(8) = ( norm(vals-exact, inf) < 1e1*epslevel(f)*vscale(f) );
+
 % % Test X*LOG(X) on [0 1]:
 % F4 = @(x) x.*log(x);
 % f4 = chebfun(F4, [0, 1], pref, 'splitting', 'on', 'blowup', 'off');
@@ -118,15 +129,5 @@ pass(7) = ( norm(err, inf) < 1e4*epslevel(f)*vscale(f) );
 % xx7 = linspace(f7.domain(1)+eps, f7.domain(end)-eps, 100);
 % pass(7) = norm(feval(f7, xx7) - feval(F7, xx7), inf) < ...
 %     tol*max(f7.epslevel.*f7.vscale);
-
-%% Test detectEdge
-% This is a bug frmo issue #809
-
-f = classicfun.constructor(0, struct('domain', [0 1]));
-x0 = hex2num('3fe55ec001aabd80');  % 0.667816165214319
-op = @(x) exp(x) + cos(7*x) + 0.1*sign(x - x0);
-edge = fun.detectEdge(f, op, 1, 1);
-err = abs(edge - x0);
-pass(8) = err < 1e-4;
 
 end
