@@ -164,6 +164,12 @@ end
         
         % Sometimes we get given more than one time slice.
         for kk = 1:numel(t)
+            
+            if ( ~any(abs(tSpan - t(kk)) < 1e-6) )
+                % This is not a designated time slice!
+                continue
+            end
+                
             % Reshape solution:
             Uk = reshape(U(:,kk), n, SYSSIZE);
             uCurrent = chebfun(Uk, DOMAIN);
@@ -201,6 +207,11 @@ end
             [ishappy, epslevel, cutoff] = classicCheck(uk2, Uk2, pref);
 
             if ( ishappy )  
+                
+                if ( ~any(abs(tSpan - t(kk)) < 1e-6) )
+                    % This is not a designated time slice!
+                    continue
+                end
 
                 % Store these values:
                 tCurrent = t(kk);
@@ -230,7 +241,9 @@ end
                     currentLength = currentLength + 1 - rem(currentLength,2);
                     currentLength = max(currentLength, 17);
                     status = true;
+                    return
                 end
+                
             else 
 
                 % Increase length and bail out:
