@@ -15,9 +15,7 @@ if ( nargin < 2 )
 end
 
 % Grab the refinement function from the preferences:
-% refFunc = pref.refinementFunction;
-% [TODO]: Implement other options.
-refFunc = 'resampling';
+refFunc = pref.refinementFunction;
 
 % Decide which refinement to use:
 if ( strcmpi(refFunc, 'nested') )
@@ -62,7 +60,6 @@ function [values, giveUp] = refineResampling(op, values, pref)
     % [TODO]: Allow "first-kind" fourier points.
     x = fourpts(n);    
 
-    % [TODO]: What if preferences is set to extrapolate?
     % Evaluate the operator:
     values = feval(op, x);
     
@@ -97,12 +94,12 @@ function [values, giveUp] = refineNested(op, values, pref)
         % "2nd-kind" Fourier points:
         x = fourpts(n);
         % Take every 2nd entry:
-        x = x(2:2:end);
+        x = x(2:2:n);
 
         % Shift the stored values:
         values(1:2:n,:) = values;
         % Compute and insert new ones:
-        values(2:2:end,:) = feval(op, x);
+        values(2:2:n,:) = feval(op, x);
 
     end
     

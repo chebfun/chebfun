@@ -82,11 +82,11 @@ end
 % Initialise empty values to pass to refine:
 f.values = [];
 % Check a random value of op in (-1,1) to see if the result is complex and
-% if the value is a NaN.
+% if the value is a NaN or Inf.
 rndval = feval(op,(2*rand-1));
 
-if any(isnan(rndval))
-    error('CHEBFUN:FOURTECH:populate:isNan','Cannot handle functions that evaluate to NaN.');
+if any(isnan(rndval)) || any(isinf(rndval))
+    error('CHEBFUN:FOURTECH:populate:isNan','Cannot handle functions that evaluate to Inf or NaN.');
 end
 
 f.isReal = false(size(rndval));
