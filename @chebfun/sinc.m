@@ -1,14 +1,14 @@
 function F = sinc(F, pref)
 %SINC   Sinc function of a CHEBFUN.
 %   SINC(F) computes the sinc function of the CHEBFUN F, i.e., 
-%       sinc(x) = sin(F)/(F).
+%       sinc(F) := sin(F)/(F).
 %
 %   SINC(F, PREF) does the same but uses the CHEBFUNPREF object PREF when
 %   computing the composition.
 %
 %   Note that this definition of the SINC function differs from the MATLAB
 %   implementation in the Signal Processing toolbox, which uses
-%       sinc(x) = sin(pi*F)/(pi*F).
+%       sinc(F) := sin(pi*F)/(pi*F).
 %
 % See also SIN.
 
@@ -26,7 +26,7 @@ F = compose(F, @mysinc, pref);
 end
 
 function out = mysinc(x)
-% Deal with the removable singulrity at 0 explicitly.
+% Deal with the removable singularity at 0 explicitly.
 out = sin(x)./x;
 out(x == 0) = 1;
 end
