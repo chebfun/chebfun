@@ -167,6 +167,8 @@ if ( isempty(dom) )
         dom = [-1 1];
     end
 end
+% Ensure dom is not a domain object (since we lazily call diff(dom) below).
+dom = double(dom);
 
 % Determine the number of interpolation nodes.
 if ( isempty(NN) )
