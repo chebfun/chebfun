@@ -11,11 +11,11 @@ function p = legpoly(n, dom, normalize, method)
 %   integrate(P(:,j).*P(:,k)) = delta_{j,k}.
 %
 %   For N <= 1000 LEGPOLY uses a weighted QR factorisation of a 2*(N+1) x
-%   2*(N+1) Chebyshev Vandermonde matrix. For scalar N > 1000 it uses the
-%   LEG2CHEB method and for a vector of N with any entry > 1000 it uses the
-%   standard recurrence relation. This default can be overwritten by passing a
-%   fourth input LEGPOLY(N, D, NORM, METHOD), where METHOD is 1, 2, or 3
-%   respectively.
+%   2*(N+1) Chebyshev Vandermonde matrix. For scalar N > 1000 (or a short
+%   vector) it uses the LEG2CHEB method and for a vector of N with any entry >
+%   1000 it uses the standard recurrence relation. This default can be
+%   overwritten by passing a fourth input LEGPOLY(N, D, NORM, METHOD), where
+%   METHOD is 1, 2, or 3 respectively.
 %
 % See also CHEBPOLY, LEGPTS, and LEG2CHEB.
 
@@ -63,23 +63,24 @@ nMax1 = nMax + 1;
 domIn = dom;
 dom = dom([1 end]);
 
-% Determine which method
+% Determine which method:
+methodIsSet = false;
 if ( nargin == 4 )
-    % Method has been passed as an input
+    % Method has been passed as an input.
+    methodIsSet = true;
 elseif ( nMax > 1000 )
     % Use LEG2CHEB():
     method = 3;
 else
-    % Use QR orthogonalization of Chebyshev polynomials for moderate nmax
+    % Use QR orthogonalization of Chebyshev polynomials for moderate nmax.
     method = 2;
 end
 
-% If the user wants most of the Legendre polynomials then faster to use the
-% recurrence: 
-% TODO: "most" is most than 20% of the [0:nMax]. Should this percentage
-% vary with nMax? 
-if ( nMax < 5000 && numel(n) > nMax / 5 ) % Do not go above 5000 with recurrence.
-    method = 1; 
+% If the user wants most of the Legendre polynomials then it is faster to use
+% the recurrence: TODO: "most" is most than 20% of the [0:nMax]. Should this
+% percentage vary with nMax?
+if ( ~methodIsSet && (method == 3) && (nMax < 5000) && (numel(n) > nMax/5) ) 
+    method = 1; % Do not go above 5000 with the recurrence.
 end
 
 switch method
