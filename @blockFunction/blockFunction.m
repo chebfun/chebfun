@@ -107,10 +107,26 @@ classdef blockFunction
         end
 
         function F = mult(A, f)
-        %MULT 
-        %
-        % Returns a BLOCKFUNCTION corresponding to a call to chebfun/times.
-            F = blockFunction( @(z) times(f, z) );
+            %MULT
+            %
+            % Returns a BLOCKFUNCTION corresponding to a call to CHEBFUN/TIMES.
+            
+            % Note, we wrap this in a nested function to support scalar
+            % expansion.
+            F = blockFunction( @(z) mytimes(f, z) );
+            
+            function out = mytimes(f, z)
+                % Allow scalar expansion.
+                if ( size(f, 2) == 1 )
+                    for k = 1:size(z, 2)
+                        z(:,k) = times(f, z(:,k));
+                    end
+                    out = z;
+                else
+                    out = times(f, z);
+                end
+            end
+            
         end
                 
         function C = plus(A, B)

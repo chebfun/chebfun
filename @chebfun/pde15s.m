@@ -1,5 +1,6 @@
 function varargout = pde15s(pdeFun, tt, u0, bc, varargin)
-%PDE15S   Solve PDEs using the CHEBFUN system.
+%PDE15S   Solve PDEs using Chebfun.
+%
 %   UU = PDE15s(PDEFUN, TT, U0, BC) where PDEFUN is a handle to a function with
 %   arguments u, t, x, and D, TT is a vector, U0 is a CHEBFUN or a CHEBMATRIX,
 %   and BC is a CHEBOP boundary condition structure will solve the PDE dUdt =
@@ -163,6 +164,12 @@ end
         
         % Sometimes we get given more than one time slice.
         for kk = 1:numel(t)
+            
+            if ( ~any(abs(tSpan - t(kk)) < 1e-6) )
+                % This is not a designated time slice!
+                continue
+            end
+                
             % Reshape solution:
             Uk = reshape(U(:,kk), n, SYSSIZE);
             uCurrent = chebfun(Uk, DOMAIN);
@@ -200,6 +207,11 @@ end
             [ishappy, epslevel, cutoff] = classicCheck(uk2, Uk2, pref);
 
             if ( ishappy )  
+                
+                if ( ~any(abs(tSpan - t(kk)) < 1e-6) )
+                    % This is not a designated time slice!
+                    continue
+                end
 
                 % Store these values:
                 tCurrent = t(kk);
@@ -207,10 +219,13 @@ end
                 
                 % Shorten the representation. The happiness cutoff seems to
                 % be safer than the epslevel simplification.
-                %uCurrent = simplify(uCurrent, epslevel);
+%                 uCurrent = simplify(uCurrent, epslevel);
                 uPoly = chebpoly(uCurrent);
-                firstKept = size(uPoly,2) - max(17,cutoff-1);
-                uCurrent = chebfun(uPoly(:,firstKept:end).',DOMAIN,'coeffs');
+                firstKept = size(uPoly, 2) - (cutoff-1);
+                if ( firstKept <= 0 )
+                    firstKept = 1;
+                end
+                uCurrent = chebfun(uPoly(:,firstKept:end).', DOMAIN, 'coeffs');
                 
                 ctr = ctr + 1;
                 uOut{ctr} = uCurrent;
@@ -220,12 +235,15 @@ end
 
                 % If we have 2.5 times as many coefficients as we need, shorten
                 % the representation and cause the integrator to stop. 
-                if ( cutoff < 0.4*n )
+                if ( cutoff < 0.4*n && n > 17)
                     currentLength = round(1.25*cutoff)';
                     %currentLength = floor( currentLength / 1.5  );
                     currentLength = currentLength + 1 - rem(currentLength,2);
+                    currentLength = max(currentLength, 17);
                     status = true;
+                    return
                 end
+                
             else 
 
                 % Increase length and bail out:

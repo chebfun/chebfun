@@ -379,6 +379,16 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         function A = log2(A)
             A = cellfun(A, @log2);
         end      
+        function A = power(A, b)
+            if ( isnumeric(b) )
+                A = cellfun(A, @(A) power(A, b));
+            elseif ( isnumeric(A) )
+                A = cellfun(b, @(b) power(A, b));
+            else
+                A.blocks = cellfun(@power, A.blocks, b.blocks, ...
+                    'UniformOutput', false);
+            end
+        end      
         function A = real(A)
             A = cellfun(A, @real);
         end

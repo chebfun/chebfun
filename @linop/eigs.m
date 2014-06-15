@@ -200,7 +200,7 @@ if ( isempty(sigma) )
         z = toFunctionOut(discA, Z);
 
         % Obtain all coefficients to use below
-        coeffs = get(z, 'coeffs');
+        coeffs = get(z, 'coeffs', 1);
         
         % Compute the 1-norm of the polynomial expansions, summing over smooth
         % pieces, for all columns.
