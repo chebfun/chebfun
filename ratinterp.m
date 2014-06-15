@@ -173,6 +173,7 @@ if ( isa(dom, 'domain') )
     warning('CHEBFUN:ratinterp:domainDeprecated', ...
         ['Using a DOMAIN object as an input to RATINTERP is deprecated.\n' ...
          'Specify domains using a two-element row vector instead.']);
+    warning('off', 'CHEBFUN:ratinterp:domainDeprecated');
     dom = double(dom);
 end
 
