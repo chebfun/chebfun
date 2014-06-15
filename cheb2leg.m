@@ -24,14 +24,13 @@ function c_leg = cheb2leg(c_cheb, normalize, M)
 
 [N, n] = size(c_cheb);     % Number of columns. 
 c_cheb = flipud(c_cheb);   % Lowest order coeffs first.
-normalize = 0;             % By default work with max(|P{k}|) = 1.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Initialise  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-if ( nargin < 1 ), normalize = 0; end               % No. of terms in expansion.
+if ( nargin < 2 ), normalize = 0; end        % Default: Normalize so that max(|P{k}|) = 1.
 if ( nargin == 2 && strncmpi( normalize, 'norm', 4) )
     normalize = 1; 
 end
-if ( nargin < 3 ), M = 10; end 
+if ( nargin < 3 ), M = 10; end                % No. of terms in expansion.
 N = N - 1; NN = (0:N).';                      % Degree of polynomial.
 nM0 = min(floor(.5*(.25*eps*pi^1.5*gamma(M+1)/gamma(M+.5)^2)^(-1/(M+.5))), N);
 aM = min(1/log(N/nM0), .5);                   % Block reduction factor (alpha_M)
