@@ -152,39 +152,22 @@ else
     LS = repmat({'-', '--', ':', '-.'}, 1, ceil(numVar/4));
     % Label for the y-axis.
     ylab = [];
-    % Deal with different kinds of plotting required depending on whether we
-    % have real+imaginary parts or not.
-    
-    % TODO: Do we want to plot envelopes for systems? It lokos messy..
-%     if ( (length(selection) == 1) && (selection > 0) && ~isreal(W{1}) && ~isreal(1i*W{1}) )
-%         V1 = V{1};
-%         d = domain(V1);
-%         xx = union(linspace(d(1), d(end), maxPlotPoints), d).';
-%         for selCounter = 1:nV
-%             WW = abs(feval(W{selCounter}, xx));
-%             plot(real(V{selCounter}), '-', 'LineWidth', 2, 'lineStyle', ...
-%                 LS{selCounter}, 'Color', C(1,:));
-%             hold on
-%             plot(xx, WW, 'k', xx, -WW, 'k', 'lineStyle', LS{selCounter});
-%         end
-%     else
-        for selCounter = 1:numVar
-            % If we are plotting selected e-funs, we need to pick out the colors
-            if ( any(selection) )
-                for sCounter = 1:length(selection)
-                    plot(real(V(selCounter,sCounter)), 'linewidth', 2, ...
-                        'linestyle', LS{selCounter}, 'Color', C(sCounter,:));
-                    hold on
-                end
-                xLims = V(selCounter,sCounter).domain;
-            else
-                plot(real(V(selCounter,:)), 'linewidth', 2, 'linestyle',  ...
-                    LS{selCounter});
+%     V = real(V);
+    for varCounter = 1:numVar
+        % If we are plotting selected e-funs, we need to pick out the colors
+        if ( any(selection) )
+            for sCounter = 1:length(selection)
+                plot(V{varCounter,sCounter}, 'LineWidth', 1, ...
+                    'LineStyle', LS{varCounter}, 'Color', C(sCounter,:));
                 hold on
             end
-            ylab = [ylab handles.varnames{selCounter} ', ' ]; %#ok<AGROW>
+            xLims = V(varCounter,sCounter).domain;
+        else
+            plot(V(varCounter,:), 'LineWidth', 2, 'LineStyle', LS{varCounter});
+            hold on
         end
-%     end
+        ylab = [ylab handles.varnames{varCounter} ', ' ]; %#ok<AGROW>
+    end
     hold off
     
     % ylabel:
