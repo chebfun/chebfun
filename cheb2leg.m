@@ -1,10 +1,14 @@
-function c_leg = cheb2leg(c_cheb, M)
+function c_leg = cheb2leg(c_cheb, normalize, M)
 %LEG2CHEB convert Legendre coefficients to Chebyshev coefficients. 
 %   C_LEG = CHEB2LEG(C_CHEB) converts the vector C_CHEB of Chebyshev
 %   coefficients to a vector C_CHEB of Legendre coefficients such that
-%   C_CHEB(N)*T0 + ... + C_CHEB(1)*T{N-1} = C_LEG(N)*P0 + ... + C_LEG(1)*P{N-1}.
+%   C_CHEB(N)*T0 + ... + C_CHEB(1)*T{N-1} = C_LEG(N)*P0 + ... + C_LEG(1)*P{N-1},
+%   where P{k} is the degree k Legendre polynomial normalized so that   
+%
 %
 %   If C_CHEB is a matrix then the CHEB2LEG operation is applied to each column.
+% 
+%   C_LEG = CHEB2LEG(C_CHEB, 'normalized') is analogous to CHEB  
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
@@ -18,18 +22,27 @@ function c_leg = cheb2leg(c_cheb, M)
 %   transform using an asymptotic formula, SISC, 36 (2014), pp. A148-A167.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-[N, n] = size(c_cheb);                        % Number of columns. 
-c_cheb = flipud(c_cheb);                      % Lowest order coeffs first.
+[N, n] = size(c_cheb);     % Number of columns. 
+c_cheb = flipud(c_cheb);   % Lowest order coeffs first.
+normalize = 0;             % By default work with max(|P{k}|) = 1.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Initialise  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-if ( nargin == 1 ), M = 10; end               % No. of terms in expansion.
+if ( nargin < 1 ), normalize = 0; end               % No. of terms in expansion.
+if ( nargin == 2 && strncmpi( normalize, 'norm', 4) )
+    normalize = 1; 
+end
+if ( nargin < 3 ), M = 10; end 
 N = N - 1; NN = (0:N).';                      % Degree of polynomial.
 nM0 = min(floor(.5*(.25*eps*pi^1.5*gamma(M+1)/gamma(M+.5)^2)^(-1/(M+.5))), N);
 aM = min(1/log(N/nM0), .5);                   % Block reduction factor (alpha_M)
 K = ceil(log(N/nM0)/log(1/aM));               % Number of block partitions
 
 % Use direct approach if N is small:
-if ( M == 0 || N < 513 || K == 0 ), c_leg = cheb2leg_direct(c_cheb); return, end
+if ( M == 0 || N < 513 || K == 0 ) 
+    c_leg = cheb2leg_direct(c_cheb); 
+    if ( normalize ), c_leg  = bsxfun(@times, c_leg, 1./sqrt((N:-1:0)'+1/2) ); end
+    return 
+end
 
 f = dct1([c_cheb ; zeros(N,n)]);              % Values on a 2*N+1 Cheb grid.
 w = chebtech2.quadwts(2*N+1);                 % C-C quadrature weights.
@@ -91,7 +104,7 @@ dst1Transpose([], 1);                                % Clear persistent storage.
 scale = (2*(0:N).'+1)/2;                             % Scaling in coeffs.
 c_leg = bsxfun(@times, c_leg + c_rec, scale);        % Legendre coefficients.
 c_leg = flipud(c_leg);
-
+if ( normalize ), c_leg  = bsxfun(@times, c_leg, 1./sqrt((N:-1:0)'+1/2) ); end
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
