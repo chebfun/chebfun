@@ -74,7 +74,7 @@ A = rand(10, 2);
 B = cheb2leg( A ); 
 C = cheb2leg( A, 1); 
 D = cheb2leg( A, 'normalized'); 
-pass(9) = ( norm( diag(1./(sqrt((9:-1:0)' + 1/2)))*B - C ) < tol ); 
+pass(9) = ( norm( diag(1./(sqrt((9:-1:0)' + 1/2)))*B - C ) < 10*tol ); 
 pass(10) = ( norm( C - D ) < tol ); 
 
 % Test normalization: 

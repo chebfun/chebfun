@@ -102,8 +102,8 @@ dst1Transpose([], 1);                                % Clear persistent storage.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% Combine for result %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 scale = (2*(0:N).'+1)/2;                             % Scaling in coeffs.
 c_leg = bsxfun(@times, c_leg + c_rec, scale);        % Legendre coefficients.
+if ( normalize ), c_leg  = bsxfun(@times, c_leg, 1./sqrt((0:N)'+1/2) ); end
 c_leg = flipud(c_leg);
-if ( normalize ), c_leg  = bsxfun(@times, c_leg, 1./sqrt((N:-1:0)'+1/2) ); end
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

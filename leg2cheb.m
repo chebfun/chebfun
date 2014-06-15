@@ -1,4 +1,4 @@
-function c_cheb = leg2cheb(c_leg, M)
+function c_cheb = leg2cheb(c_leg, normalize, M)
 %LEG2CHEB   Convert Legendre coefficients to Chebyshev coefficients. 
 %   C_CHEB = LEG2CHEB(C_LEG) converts the vector C_LEG of Legendre coefficients
 %   to a vector C_CHEB of Chebyshev coefficients such that
@@ -22,7 +22,14 @@ function c_cheb = leg2cheb(c_leg, M)
 c_leg = flipud(c_leg);                          % Lowest order coeffs first.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Initialise  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-if ( nargin == 1 ), M = 10; end                 % No. of terms in expansion.
+if ( nargin < 2 ), normalize = 0; end           % Default: Normalize so that max(|P{k}|) = 1.
+if ( nargin == 2 && strncmpi( normalize, 'norm', 4) )
+    normalize = 1; 
+end
+if ( nargin < 3 ), M = 10; end                  % No. of terms in expansion.
+if ( normalize ) 
+    c_leg = bsxfun(@times, c_leg, sqrt((0:N-1)'+1/2) ); 
+end
 N = N - 1; NN = (0:N)';                         % Degree of polynomial.
 nM0 = min(floor(.5*(.25*eps*pi^1.5*gamma(M+1)/gamma(M+.5)^2)^(-1/(M+.5))), N);
 aM = min(1/log(N/nM0), .5);                     % Block reduction factor (alpha)
