@@ -276,7 +276,7 @@ else            % Unwrap the eigenvectors for output
                 % Find what domain we are working on:
                 dom = domain(u{j});
                 % Arbitrary point just to the right of the middle of the domain:
-                fevalPoint = diff([dom(1) dom(end)])*.500023981;
+                fevalPoint = dom(1) + diff([dom(1) dom(end)])*.500023981;
                 % Find out what sign the real part of the function have there:
                 fevalSigns = sign(real(feval(u{j}, fevalPoint)));
                 % Diagonal matrix with elements equal to the sign at our
@@ -287,7 +287,7 @@ else            % Unwrap the eigenvectors for output
         end
         nrmsq = nrmsq + sum(u{j}.*conj(u{j}), 1);
     end
-
+    
     % Normalize each eigenfunction.
     scale = diag( 1./sqrt(nrmsq') );
     for j = 1:length(u)
