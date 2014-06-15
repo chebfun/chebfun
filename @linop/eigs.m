@@ -104,7 +104,7 @@ if ( isa(discType, 'function_handle') )
     discA = discType(L);
 
     % Set the allowed discretisation lengths:
-    dimVals = prefs.dimensionValues;
+    dimVals = discA.dimensionValues(prefs);
 
     % Update the discretiztion dimension on unhappy pieces:
     discA.dimension = repmat(dimVals(1), 1, numel(discA.domain)-1);
@@ -200,7 +200,7 @@ if ( isempty(sigma) )
         z = toFunctionOut(discA, Z);
 
         % Obtain all coefficients to use below
-        coeffs = get(z, 'coeffs');
+        coeffs = get(z, 'coeffs', 1);
         
         % Compute the 1-norm of the polynomial expansions, summing over smooth
         % pieces, for all columns.

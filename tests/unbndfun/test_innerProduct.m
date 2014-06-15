@@ -1,8 +1,11 @@
 function pass = test_innerProduct(pref)
 
-if ( nargin == 1 )
+if ( nargin < 1 )
     pref = chebfunpref();
 end
+
+singPref = pref;
+singPref.enableSingularityDetection = true;
 
 % Seed for random number:
 seedRNG(6178);
@@ -14,8 +17,8 @@ dom = [-Inf Inf];
 
 opf = @(x) 2-exp(-x.^2);
 opg = @(x) exp(-x.^2);
-f = unbndfun(opf, dom);
-g = unbndfun(opg, dom);
+f = unbndfun(opf, struct('domain', dom));
+g = unbndfun(opg, struct('domain', dom));
 
 I = innerProduct(f, g);
 IExact = (sqrt(pi)*(4 - sqrt(2)))/2;
@@ -31,10 +34,11 @@ dom = [1 Inf];
 opf = @(x) x;
 opg = @(x) exp(-x);
 pref = chebfunpref();
-pref.singPrefs.exponents = [0 1];
-f = unbndfun(opf, dom, [], [], pref);
-g = unbndfun(opg, dom);
+f = unbndfun(opf, struct('domain', dom, 'exponents', [0 1]), pref);
+g = unbndfun(opg, struct('domain', dom));
+warning('off', 'CHEBFUN:UNBNDFUN:sum:slowdecay');
 I = innerProduct(f, g);
+warning('off', 'CHEBFUN:UNBNDFUN:sum:slowdecay');
 IExact = 2*exp(-1);
 err = abs(I - IExact);
 pass(2) = err < 2e8*max(get(f,'epslevel')*get(f,'vscale'), ...
@@ -47,8 +51,8 @@ dom = [-Inf -3*pi];
 
 opf = @(x) 1./x;
 opg = @(x) 2./x;
-f = unbndfun(opf, dom);
-g = unbndfun(opg, dom);
+f = unbndfun(opf, struct('domain', dom));
+g = unbndfun(opg, struct('domain', dom));
 I = innerProduct(f, g);
 IExact = 2/(3*pi);
 err = abs(I - IExact);

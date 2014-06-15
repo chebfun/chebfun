@@ -8,37 +8,23 @@ end
 
 tol = pref.deltaPrefs.deltaTol;
 %%
-a = -4; b = 4;
+a = -4;
+b = 4;
 d = deltafun();
 pass(1) = isempty(diff(d)) && isempty(diff(d, 4));
-f = bndfun(@sin, [a, b]);
-d = deltafun(f, 1, 0);
+f = bndfun(@sin, struct('domain', [a, b]));
+d = deltafun(f, struct('deltaMag', 1, 'deltaLoc', 0));
 pass(2) = isequal(d, diff(d,0));
 
-f = fun.constructor(@(x) exp(x), [a, b]);
+f = fun.constructor(@(x) exp(x), struct('domain', [a, b]));
 mag = rand(4,4);
 mag(4,4) = 1; % make sure this is not a trivial row.
 loc = sort(rand(1,4));
-d = deltafun(f, mag, loc);
+d = deltafun(f, struct('deltaMag', mag, 'deltaLoc', loc));
 dp4 = diff(d,4);
 pass(3) = iszero(diff(f,4) - dp4.funPart);
 pass(4) = norm(dp4.deltaLoc - loc, inf) == 0;
 A = [zeros(4,4); mag] - dp4.deltaMag;
 pass(5) = ~any(A(:));
-
-%% A test based on an example by LNT:
-x = chebfun('x',[0 5]);
-f = 0.5*sin(x);
-A = randn(4, 1);
-chebfunpref.setDefaults('enableDeltaFunctions', true);
-for j = 1:4
-  f = f + A(j)*dirac(x-j);
-end
-F = cumsum(.5*sin(x));
-for j = 1:4
-  F = F + A(j)*heaviside(x-j);
-end
-pass(6) = norm(diff(F) - (f - f(0))) < tol;
-
 
 end

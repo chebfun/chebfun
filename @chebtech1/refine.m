@@ -51,6 +51,9 @@ else
     % User defined refinement function:
     [values, giveUp] = refFunc(op, values, pref);
 end
+
+% Ensure that doubles are returned:
+values = double(values);
     
 end
 
@@ -102,33 +105,51 @@ function [values, giveUp] = refineNested(op, values, pref)
 
     else
     
-        % Compute new n by tripling (we must do this when not resampling).
-        n = 3*size(values, 1);
+        % Grab the number of the points used in last iteration:
+        n = size(values, 1);
         
-        % n is too large:
-        if ( n > pref.maxPoints )
+        if ( ( n < pref.maxPoints ) && ( 3*n > pref.maxPoints ) )
+            
+            % Set N as maxPoints to make best of the largest number of points 
+            % allowed:
+            n = pref.maxPoints;
+            
+            % 1st-kind Chebyshev grid:
+            x = chebtech1.chebpts(n);
+            
+            % Evaluate OP at X:
+            values = feval(op, x);
+            giveUp = false;
+
+        elseif ( n < pref.maxPoints )
+            
+            % triple the points:
+            n = 3*n;
+            
+            % 1st-kind Chebyshev grid:
+            x = chebtech1.chebpts(n);
+            
+            % Re-group the points:
+            x1 = x(1:3:end-2);
+            x3 = x(3:3:end);
+            
+            % Copy of the sampled function values:
+            oldValues = values;
+            
+            % Compute and insert new ones:
+            values(1:3:n,:) = feval(op, x1);
+            values(3:3:n,:) = feval(op, x3);
+            
+            % Re-distribute the stored values:
+            values(2:3:n,:) = oldValues;
+        
+            giveUp = false;
+        else
+            
+            % For any other cases, give up:
             giveUp = true;
             return
-        else
-            giveUp = false;
         end
-        
-        % 1st-kind Chebyshev grid:
-        x = chebtech1.chebpts(n);
-        
-        % Re-group the points:
-        x1 = x(1:3:end-2);
-        x3 = x(3:3:end);
-        
-        % Copy of the sampled function values:
-        oldValues = values;
-                
-        % Compute and insert new ones:
-        values(1:3:n,:) = feval(op, x1);
-        values(3:3:n,:) = feval(op, x3);
-        
-        % Re-distribute the stored values:
-        values(2:3:n,:) = oldValues;
         
     end
 end

@@ -16,16 +16,11 @@ pow1 = -0.3;
 pow2 = -0.5;
 op1 = @(x) (x - dom(2)).^pow1.*sin(100*x);
 op2 = @(x) (x - dom(2)).^pow2.*cos(300*x);
-p = pref;
-p.singPrefs.exponents = [0 pow1];
-p.enableBreakpointDetection = 1;
-f = chebfun(op1, dom, p);
-p.singPrefs.exponents = [0 pow2];
-p.enableBreakpointDetection = 1;
-g = chebfun(op2, dom, p);
+f = chebfun(op1, dom, 'exps', [0 pow1], 'splitting', 'on');
+g = chebfun(op2, dom, 'exps', [0 pow2], 'splitting', 'on');
 I = innerProduct(f,g);
 I_exact = 0.35838148154346034 - 0.26037938759089226i;
-pass(1) = ( abs(I-I_exact) < 2e1*max(get(f, 'epslevel'), get(g, 'epslevel'))*...
+pass(1) = ( abs(I-I_exact) < 1e2*max(get(f, 'epslevel'), get(g, 'epslevel'))*...
     abs(I_exact) );
 
 %% Test for functions defined on unbounded domains:
@@ -53,11 +48,11 @@ dom = [1 Inf];
 
 opf = @(x) x;
 opg = @(x) exp(-x);
-p = pref;
-p.singPrefs.exponents = [0 1];
-f = chebfun(opf, dom, p);
+f = chebfun(opf, dom, 'exps', [0 1]);
 g = chebfun(opg, dom);
+warning('off', 'CHEBFUN:UNBNDFUN:sum:slowdecay');
 I = innerProduct(f, g);
+warning('on', 'CHEBFUN:UNBNDFUN:sum:slowdecay');
 IExact = 2*exp(-1);
 err = abs(I - IExact);
 pass(3) = err < 1e9*max(get(f,'epslevel')*get(f,'vscale'), ...

@@ -20,11 +20,8 @@ x = diff(dom) * rand(100, 1) + dom(1);
 pow = -0.5;
 op = @(x) (x - dom(1)).^pow.*sin(x);
 
-% specify the singularity in preference:
-pref.singPrefs.exponents = [pow 0];
-
 % construction:
-f = chebfun(op, dom, pref);
+f = chebfun(op, dom, 'exps', [pow 0]);
 
 % check values:
 fval = feval(f, x);
@@ -69,12 +66,9 @@ x = diff(dom) * rand(100, 1) + dom(1);
 pow = -0.5;
 op = @(x) (x - dom(1)).^pow.*sin(x);
 
-% specify the singularity in preference:
-pref = chebfunpref();
-pref.singPrefs.singType = {'sing', 'none'};
-
 % construction:
-f = chebfun(op, dom, pref);
+f = chebfun(op, dom, 'enableSingularityDetection', true, ...
+    'singType', {'sing', 'none'});
 
 % check values:
 fval = feval(f, x);
@@ -126,12 +120,9 @@ x = diff(dom) * rand(100, 1) + dom(1);
 pow = -1;
 op = @(x) (x - dom(1)).^pow.*sin(x);
 
-% specify the singularity in preference:
-pref = chebfunpref();
-pref.singPrefs.singType = {'pole', 'none'};
-
 % construction:
-f = chebfun(op, dom, pref);
+f = chebfun(op, dom, 'enableSingularityDetection', true, ...
+    'singType', {'pole', 'none'});
 
 % check values:
 fval = feval(f, x);
@@ -182,12 +173,9 @@ x = diff(dom) * rand(100, 1) + dom(1);
 pow = -0.5;
 op = @(x) (x - dom(1)).^pow.*sin(x);
 
-% specify the singularity in preference:
-pref = chebfunpref();
-pref.singPrefs.singType = {'sing', 'none'};
-
 % construction:
-f = chebfun(op, pref);
+f = chebfun(op, 'enableSingularityDetection', true, ...
+    'singType', {'sing', 'none'});
 
 % check values:
 fval = feval(f, x);
@@ -232,12 +220,9 @@ x = diff(dom) * rand(100, 1) + dom(1);
 pow = -1;
 op = @(x) (x - dom(1)).^pow.*sin(x);
 
-% specify the singularity in preference:
-pref = chebfunpref();
-pref.singPrefs.singType = {'pole', 'none'};
-
 % construction:
-f = chebfun(op, pref);
+f = chebfun(op, 'enableSingularityDetection', true, ...
+    'singType', {'pole', 'none'});
 
 % check values:
 fval = feval(f, x);

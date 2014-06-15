@@ -27,6 +27,8 @@ else
     % Differentiate along columns.
     
     % Construct the UNBNDFUN object for the derivative of the inverse map:
+    % (Note that this is the reciprical of the forward derivative, by the
+    % inverse function theorem).
     invDer = f; 
     invDer.onefun = onefun.constructor(@(x) 1./f.mapping.Der(x));
 

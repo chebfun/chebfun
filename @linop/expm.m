@@ -52,7 +52,7 @@ if ( isa(discType, 'function_handle') )
     disc.domain = chebfun.mergeDomains(disc.domain, u0.domain); 
     
     % Set the allowed discretisation lengths: 
-    dimVals = prefs.dimensionValues;
+    dimVals = disc.dimensionValues(prefs);
     
     dimVals( dimVals < length(u0) ) = [];
     
@@ -104,11 +104,8 @@ for i = 1:length(t)
         do = max(getDiffOrder(disc.source), 0);
         do = max(do, [], 1);
         for k = 1:numel(u0.blocks)
-            discu.dimension = disc.dimension + +do(k);
-            xIn = functionPoints(discu);
-            if ( ~isnumeric(u0.blocks{k}) )
-                f.blocks{k} = feval(u0.blocks{k}, xIn);
-            end
+            discu.dimension = disc.dimension + do(k);
+            f.blocks{k} = discu.toValues(u0.blocks{k},1);
         end
         v0 = cell2mat(f.blocks);  
         
@@ -118,7 +115,7 @@ for i = 1:length(t)
         % Convert the different components into cells
         u = partition(disc, v);
         uFun = u(isFun);
-        scale = max( cellfun(@max,uFun) );
+        scale = discu.scale( uFun );
         
         % Test the happieness of the function pieces:
         [isDone, epsLevel] = testConvergence(disc, uFun, scale, prefs);
@@ -136,8 +133,13 @@ for i = 1:length(t)
     
     %% Tidy the solution for output:
     ucell = mat2fun(disc, u);
-    doSimplify = @(f) simplify( f, max(eps, epsLevel) );
-    ucell = cellfun( doSimplify, ucell, 'uniform', false );
+    if ( numInt > 1 )
+        % The solution will always be smooth for any t > 0.
+        doMerge = @(f) merge(f);
+        ucell = cellfun(doMerge, ucell, 'uniform', false);
+    end
+    doSimplify = @(f) simplify(f, max(eps, epsLevel));
+    ucell = cellfun(doSimplify, ucell, 'uniform', false);
     allU = [ allU, chebmatrix(ucell) ]; %#ok<AGROW>
 end
 

@@ -1,124 +1,155 @@
-function varargout = waterfall(f, varargin)
-%WATERFALL Waterfall plot for array-valued CHEBFUN objects and quasimatrices.
-%   WATERFALL(U), or WATERFALL(U, T) where LENGTH(T) = NUMCOLUMS(U), plots a
+function varargout = waterfall(varargin)
+%WATERFALL   Waterfall plot for CHEBFUN object.
+%   WATERFALL(U), or WATERFALL(U, T) where LENGTH(T) = MIN(SIZE(U)), plots a
 %   "waterfall" plot of an array-valued CHEBFUN or quasimatrix. Unlike the
-%   standard Matlab waterfall, chebfun/waterfall does not fill in the column
-%   planes with opaque whitespace or connect edges to zero.
+%   standard Matlab WATERFALL method, CHEBFUN/WATERFALL does not fill in the
+%   column planes with opaque whitespace or connect edges to zero. Instead,
+%   horizontal slices are connected by a semi-transparent egde.
 %
-%   Additional plotting options can also be passed, for example
-%       WATERFALL(U, T, 'linewidth', 2).
+%   Additional plotting options can also be passed, for example WATERFALL(U, T,
+%   'linewidth', 2). Additional options include 'EdgeColor', 'EdgeAlpha',
+%   'FaceAlpha', and 'FaceColor'. See the built-in WATERFALL method for details.
 %
-% See also PLOT, PLOT3, PLOTDATA.
+% See also PLOT, PLOT3.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
 
-% [TODO]: Implement plotting of delta functions.
+% % First input might be a figure handle:
+% [cax, varargin] = axescheck(varargin{:});
+% if ( ~isempty(cax) )
+%     axes(cax);
+% end
 
-%#ok<*AGROW> % Suppress MLINT warnings
+% First input is now the CHEBFUN:
+u = varargin{1};
+varargin(1) = [];
 
-% Deal with an empty input:
-if ( isempty(f) )
-    if ( nargout == 1 )
-        varargout{1} = plot3([]);
-    end
-    return
-end
+% Some defaults:
+faceAlpha = .75;
+faceColor = 'w';
 
-% Store the hold state of the current axis:
-holdState = ishold;
-
-% Check for 2nd input:
-if ( nargin > 1 && isnumeric(varargin{1}) )
-    t = varargin{1};
-    varargin(1) = [];
-else
-    t = 1:numColumns(f);
-end
-
-if ( ~isreal(f) || ~isreal(t) )
-     warning('CHEBFUN:waterfall:complex', ...
-                'Imaginary parts of complex X and/or Y arguments ignored.');
-    f = real(f);
-    t = real(t);
-end
-
-% Remove deprecated input flags:
+% Parse inputs:
 k = 1;
-while k <= numel(varargin)  
-    if ( strcmpi(varargin{k}, 'simple') )
+while ( k <= numel(varargin) )
+    if ( strcmpi(varargin{k}, 'numpts') )
+        % This no longer does anything.
+%         numpts = varargin{k+1};
+        varargin(k:k+1) = [];
+    elseif ( strcmpi(varargin{k}, 'simple') )
+        % Note, this no longer does any thing. Simple is always true.
         varargin(k) = [];
-        warning('CHEBFUN:waterfall:deprecatedSimple', ...
-                '''simple'' input to WATERFALL is deprecated.');
+    elseif ( strcmpi(varargin{k}, 'facealpha') )
+        faceAlpha = varargin{k+1};
+        varargin(k:k+1) = [];
+    elseif ( strcmpi(varargin{k}, 'facecolor') )
+        faceColor = varargin{k+1};        
+        varargin(k:k+1) = [];
     elseif ( strcmpi(varargin{k}, 'fill') )
         varargin(k) = [];
-        warning('CHEBFUN:waterfall:deprecatedFill', ...
-                '''fill'' input to WATERFALL is deprecated.');
-    elseif ( strcmpi(varargin{k}, 'numpts') )
-        varargin(k:k+1) = [];
-        warning('CHEBFUN:waterfall:deprecatedNumpts', ...
-                '''numpts'' input to WATERFALL is deprecated.');
-    elseif ( strcmpi(varargin{k}, 'edgecolor') )
-        varargin{k} = 'color';        
-        warning('CHEBFUN:waterfall:deprecatedColor', ...
-                ['''edgecolor'' input to WATERFALL is deprecated. ' ...
-                 'Use ''color'' instead.']);
+        warning('CHEBFUN:waterfall:fill', ...
+            'The ''fill'' option is no longer supported.');
+        warning('off', 'CHEBFUN:waterfall:fill');
     else
         k = k + 1;
     end
 end
+nargin = length(varargin) + 1;
 
-% Convert array-valued CHEBFUN to a quasimatrix:
-f = cheb2quasi(f);
+% Convert quasimatrix to an array-valued CHEBFUN.
+u = quasi2cheb(u);    
 
-% Style data:
-styleData = varargin;
+% Deal with column vectors:
+isTrans = u(1).isTransposed;
+if ( isTrans )
+    u = u.';
+end
+n = min(size(u, 2));
 
-% Loop over the columns:
-lineData = {}; pointData = {}; jumpData = {};
-for k = 1:numel(f)
-    % Get the data from PLOTDATA():
-    newData(k) = plotData(f(k)); 
-
-    % Get the y data:
-    ydl = repmat(t(k), size(newData(k).xLine, 1), 1);
-    ydp = repmat(t(k), size(newData(k).xPoints, 1), 1);
-    ydj = repmat(t(k), size(newData(k).xJumps, 1), 1);
-
-    % Append new data:
-    lineData = [lineData, newData(k).xLine, ydl, newData(k).yLine,]; 
-    pointData = [pointData, newData(k).xPoints, ydp, newData(k).yPoints];
-    jumpData = [jumpData, newData(k).xJumps, ydj, newData(k).yJumps];
+% Grab t if it is given, if not, default to linear:
+if ( (nargin > 1) && (isnumeric(varargin{1})) && ...
+        (length(varargin{1}) == size(u, 2)) )
+    t = varargin{1}; 
+    t = t(:).';
+    varargin(1) = [];
+else
+    t = 1:n;
 end
 
-% Plot the lines:
-h1 = plot3(lineData{:}, styleData{:});
-set(h1, 'Marker', 'none')
+% Some error checking:
+if ( length(t) ~= n )
+    error('CHEBFUN:waterfall:szet', ...
+        'Length of T should equal the number of quasimatrices in U');
+end
+if ( ~isreal(u) || ~all(isreal(t)) )
+    warning('CHEBFUN:waterfall:imaginary',...
+        'Imaginary parts of complex T and/or U arguments ignored');
+    u = real(u); 
+    t = real(t);
+end    
 
-% Ensure the plot is held:
+% Get the data:
+data = plotData(u);
+uu = data.yLine;
+% Repeat x and t for each column:
+xx = repmat(data.xLine, 1, n);
+tt = repmat(t, length(xx(:,1)), 1);
+% Mask the NaNs:
+mm = find(isnan(uu));
+uu(mm) = uu(mm + 1);
+uu(1) = uu(1) + eps;
+
+% If we're given a scalar, deal with it: 
+if ( min(size(uu)) == 1 )
+    xx = [xx, xx]; 
+    tt = [tt, tt];
+    uu = [uu, uu]; 
+    t =  [t, t+1];
+end
+
+% Store the state of HOLD:
+holdState = ishold;
+
+% Plot the whitespace:
+h1 = mesh(xx.', tt.', uu.', ...
+    'EdgeColor', 'none', 'Facealpha', faceAlpha, 'FaceColor', faceColor); 
 hold on
 
-% Plot the points:
-h2 = plot3(pointData{:}, styleData{:});
-% Change the style accordingly:
-set(h2, 'LineStyle', 'none')
+% Intersperse with data NaNs to prevent fill:
+xx = repmat(xx, 1, 4);
+mid = repmat((t(1:end-1) + t(2:end))/2, size(tt, 1), 1);
+tt = reshape([tt                              ; 
+              tt+eps                          ; 
+              [mid NaN*tt(:,end)]             ; 
+              [tt(:,2:end)-eps NaN*tt(:,end)]], size(xx));
+uu = reshape([uu                      ;    
+              uu                      ; 
+              NaN*uu                  ; 
+              [uu(:,2:end) uu(:,end)]], size(xx));
 
-% Plot the jumps:
-if ( isempty(jumpData) || ischar(jumpData{1}) )
-    jumpData = {[]};
-end
-h3 = plot3(jumpData{:});
-% Change the style accordingly:
-set(h3, 'LineStyle', ':', 'Marker', 'none')
+% Plot the edges:
+h2 = mesh(xx.', tt.', uu.', varargin{:});
 
-% Return hold state to what it was before:
+% Reset the HOLD state:
 if ( ~holdState )
     hold off
 end
 
-% Give an output to the plot handles if requested:
+% % TODO: Figure out what this does. (Legacy V4 code.)
+% u = reshape(uu, numel(uu), 1);
+% uMin = min(u); 
+% uMax = max(u);
+% if ( ((uMin - uMax) == 0) )
+%     zl = get(gca, 'zlim');
+%     if ( abs(diff(zl)) < 1e-6 )
+%         set(gca, 'zlim', uMin + 1e-2*[-1 1]);
+%     end
+% end
+
+% Output figure handles:
 if ( nargout > 0 )
-    varargout = {h1 ; h2 ; h3};
+    h = [h1 ; h2];
+    varargout{1} = h;
 end
 
 end

@@ -1,5 +1,5 @@
 function varargout = subsref(N, index)
-%SUBSREF   Evaluate a CHEBOP or reference its fields.
+%SUBSREF    Evaluate a CHEBOP or reference its fields.
 %     ( )
 %   N(X, U) and N(U) are equaivalent to FEVAL(N, X, U) and FEVAL(N, U),
 %   respectively.

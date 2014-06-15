@@ -139,12 +139,10 @@ dom = [-2 7];
 
 pow = -0.5;
 op = @(x) (x - dom(1)).^pow.*sin(100*x);
-pref.singPrefs.exponents = [pow 0];
-pref.enableBreakpointDetection = 1;
-f = chebfun(op, dom, pref);
+f = chebfun(op, dom, 'exps', [pow 0], 'splitting', 'on');
 I = sum(f);
 I_exact = 0.17330750941063138;
-pass(26) = ( abs(I-I_exact) < 2*get(f, 'epslevel')*abs(I_exact) );
+pass(26) = ( abs(I-I_exact) < 20*get(f, 'epslevel')*abs(I_exact) );
 
 %% Test for functions defined on unbounded domain:
 
@@ -177,9 +175,12 @@ pass(28) = err1 < 2e5*get(f,'epslevel')*get(f,'vscale');
 
 x = chebfun('x', dom);
 g = x.*exp(-x);
+warning('off', 'CHEBFUN:UNBNDFUN:sum:slowdecay');
 I2 = sum(g);
+warning('on', 'CHEBFUN:UNBNDFUN:sum:slowdecay');
 err2 = abs(I2 - IExact);
-pass(29) = err2 < 1e10*get(f,'epslevel')*get(f,'vscale');
+tol = 2e10*get(f,'epslevel')*get(f,'vscale');
+pass(29) = err2 < tol;
 
 % Function on [-Inf Inf]:
 f = chebfun('exp(-x.^2/16).*(1+.2*cos(10*x))',[-inf,inf]);
@@ -192,5 +193,15 @@ warning('on','CHEBFUN:UNBNDFUN:sum:slowdecay');
 IExact = 7.0898154036220641;
 err = abs(I - IExact);
 pass(30) = err < 1e9*get(f,'epslevel')*get(f,'vscale');
+
+% #496
+k = 3;
+op = @(t) exp(-t)./(1+k*t);
+f = chebfun(op, [0 inf]);
+I = sum(f);
+% The following exact result is obtained using Matlab symbolic toolbox:
+I_exact = 0.385602012136694;
+err = abs(I-I_exact);
+pass(31) = err < 1e1*get(f,'epslevel')*get(f,'vscale');
 
 end

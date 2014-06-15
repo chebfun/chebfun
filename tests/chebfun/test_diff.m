@@ -19,32 +19,32 @@ f1 = chebfun(@sin, [-1 -0.5 0.5 1], pref);
 df1 = diff(f1);
 df1_exact = @cos;
 pass(2) = norm(feval(df1, xr) - df1_exact(xr), inf) < ...
-    10*vscale(df1)*epslevel(df1);
+    100*vscale(df1)*epslevel(df1);
 
 % Check behavior for row chebfuns.
 f1t = f1.';
 df1t = diff(f1t, 1, 2);
 df1t_exact = @(x) cos(x).';
 pass(3) = norm(feval(df1t, xr) - df1t_exact(xr), inf) < ...
-    10*vscale(df1t)*epslevel(df1t);
+    100*vscale(df1t)*epslevel(df1t);
 %%
 % Check behavior for array-valued chebfuns.
 f3 = chebfun(@(x) [sin(x) cos(x) exp(x)], [-1 -0.5 0.5 1], pref);
 df3 = diff(f3);
 df3_exact = @(x) [cos(x) -sin(x) exp(x)];
 pass(4) = max(max(abs(feval(df3, xr) - df3_exact(xr)))) < ...
-    10*vscale(df3)*epslevel(df3);
+    100*vscale(df3)*epslevel(df3);
 %%
 % Check N argument.
 d2f1 = diff(f1, 2);
 d2f1_exact = @(x) -sin(x);
 pass(5) = norm(feval(d2f1, xr) - d2f1_exact(xr), inf) < ...
-    1e2*vscale(d2f1)*epslevel(d2f1);
+    1e4*vscale(d2f1)*epslevel(d2f1);
 %%
 d2f3 = diff(f3, 2);
 d2f3_exact = @(x) [-sin(x) -cos(x) exp(x)];
 pass(6) = max(max(abs(feval(d2f3, xr) - d2f3_exact(xr)))) < ...
-    10*vscale(d2f3)*epslevel(d2f3);
+    1e4*vscale(d2f3)*epslevel(d2f3);
 
 % Check dim argument.
 df3_col = diff(f3, 1, 2);
@@ -76,9 +76,7 @@ x = diff(domCheck) * rand(100, 1) + domCheck(1);
 
 pow = -0.5;
 op = @(x) (x - dom(1)).^pow.*sin(200*x);
-pref.singPrefs.exponents = [pow 0];
-pref.enableBreakpointDetection = 1;
-f = chebfun(op, dom, pref);
+f = chebfun(op, dom, 'exps', [pow 0], 'splitting', 'on');
 
 df = diff(f);
 vals_df = feval(df, x);

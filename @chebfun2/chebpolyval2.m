@@ -33,13 +33,10 @@ end
 % Get the low rank representation for f. 
 [cols, d, rows] = cdr(f);
 
-% Evaluate the columns / rows
-C = resize( chebpoly( cols ).', n );
-R = resize( chebpoly( rows ).', m );
+tech = chebfunpref().tech(); 
 
-% Convert these values to coefficients.
-C = chebtech2.coeffs2vals( C );
-R = chebtech2.coeffs2vals( R );
+C = tech.coeffs2vals(chebpoly( cols, m ).'); 
+R = tech.coeffs2vals(chebpoly( rows, n ).'); 
 
 % Evaluate: 
 if ( nargout <= 1 )
@@ -48,21 +45,4 @@ else
     varargout = {C , d, R}; 
 end
     
-
-end
-
-function X = resize( X, N )
-% Resize the matrix to have length N.
-    
-% Get size:
-[mX, nX] = size( X ); 
-
-if ( mX > N ) 
-    % Truncate:
-    X = X((end-N+1):end, :); 
-else
-    % Pad:
-    X = [zeros(N - mX, nX) ; X]; 
-end
-
 end

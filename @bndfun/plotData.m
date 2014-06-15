@@ -37,10 +37,6 @@ elseif ( nargin == 2 )
     data.xJumps = getJumps(f, data.xLine);
     data.yJumps = getJumps(g, data.yLine);
     
-    % Sort out the xLim: 
-    values = get(f, 'values');
-    data.xLim = [min(values(:)), max(values(:))];
-    
 else
     % PLOT(F, G, H):
     data = plotData(f.onefun, g.onefun, h.onefun);

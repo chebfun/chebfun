@@ -102,7 +102,8 @@ if ( lightMode )
             'Running in --light mode ignores additional directory information.');
     end
     % Folders to test in '--light' mode.
-    args = {'chebtech', 'chebtech1', 'chebtech2', 'fun', 'bndfun', 'chebfun'};
+    args = {'chebtech', 'chebtech1', 'chebtech2', 'classicfun', 'bndfun', ...
+        'chebfun'};
 end
 
 if ( ~isempty(args) ) 
@@ -358,6 +359,10 @@ function duration = runTest(testFile)
 %   If executing TESTFILE crashes, this is caught in a try-catch statement, and
 %   RUNTTEST returns DURATION = -2.
 
+% Store current default preference states:
+prefState1 = chebfunpref();
+prefState2 = cheboppref();
+
 % Attempt to run the test:
 try
     tstart = tic();
@@ -373,10 +378,14 @@ try
 catch ME %#ok<NASGU>
     % We crashed. This is bad. Return CRASHED flag.
     duration = -2;
-
+    
     % But we _don't_ want to throw an error.
     %rethrow(ME)
 end
+
+% Ensure global preferences aren't modified by tests.
+chebfunpref.setDefaults(prefState1);
+cheboppref.setDefaults(prefState2);
 
 end
 

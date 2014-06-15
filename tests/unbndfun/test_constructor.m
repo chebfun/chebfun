@@ -2,9 +2,12 @@
 
 function pass = test_constructor(pref)
 
-if ( nargin == 1 )
+if ( nargin < 1 )
     pref = chebfunpref();
 end
+
+singPref = pref;
+singPref.enableSingularityDetection = true;
 
 % Seed for random number:
 seedRNG(6178);
@@ -19,21 +22,21 @@ domCheck = [-1e2 1e2];
 x = diff(domCheck) * rand(100, 1) + domCheck(1);
 
 op = @(x) exp(-x.^2);
-f = unbndfun(op, dom);
+f = unbndfun(op, struct('domain', dom));
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
 pass(1) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
 
 op = @(x) x.^2.*exp(-x.^2);
-f = unbndfun(op, dom);
+f = unbndfun(op, struct('domain', dom));
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
 pass(2) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
 
 op = @(x) (1-exp(-x.^2))./x;
-f = unbndfun(op, dom);
+f = unbndfun(op, struct('domain', dom));
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
@@ -41,8 +44,7 @@ pass(3) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
 
 % Blow-up function:
 op = @(x) x.^2.*(1-exp(-x.^2));
-pref.singPrefs.exponents = [2 2];
-f = unbndfun(op, dom, [], [], pref); 
+f = unbndfun(op, struct('domain', dom, 'exponents', [2 2]), singPref);
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
@@ -58,28 +60,28 @@ domCheck = [1 1e2];
 x = diff(domCheck) * rand(100, 1) + domCheck(1);
 
 op = @(x) exp(-x);
-f = unbndfun(op, dom);
+f = unbndfun(op, struct('domain', dom));
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
 pass(5) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
 
 op = @(x) x.*exp(-x);
-f = unbndfun(op, dom);
+f = unbndfun(op, struct('domain', dom));
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
 pass(6) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
 
 op = @(x) (1-exp(-x))./x;
-f = unbndfun(op, dom);
+f = unbndfun(op, struct('domain', dom));
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
 pass(7) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
 
 op = @(x) 1./x;
-f = unbndfun(op, dom);
+f = unbndfun(op, struct('domain', dom));
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
@@ -87,8 +89,7 @@ pass(8) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
 
 % Blow-up function:
 op = @(x) x.*(5+exp(-x.^3));
-pref.singPrefs.exponents = [0 1];
-f = unbndfun(op, dom, [], [], pref); 
+f = unbndfun(op, struct('domain', dom, 'exponents', [0 1]), singPref);
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
@@ -104,28 +105,28 @@ domCheck = [-1e6 -3*pi];
 x = diff(domCheck) * rand(100, 1) + domCheck(1);
 
 op = @(x) exp(x);
-f = unbndfun(op, dom);
+f = unbndfun(op, struct('domain', dom));
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
 pass(10) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
 
 op = @(x) x.*exp(x);
-f = unbndfun(op, dom);
+f = unbndfun(op, struct('domain', dom));
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
 pass(11) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
 
 op = @(x) (1-exp(x))./x;
-f = unbndfun(op, dom);
+f = unbndfun(op, struct('domain', dom));
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
 pass(12) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
 
 op = @(x) 1./x;
-f = unbndfun(op, dom);
+f = unbndfun(op, struct('domain', dom));
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
@@ -133,8 +134,7 @@ pass(13) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
 
 % Blow-up function:
 op = @(x) x.*(5+exp(x.^3))./(dom(2)-x);
-pref.singPrefs.exponents = [0 -1];
-f = unbndfun(op, dom, [], [], pref); 
+f = unbndfun(op, struct('domain', dom, 'exponents', [0 -1]), singPref);
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
@@ -142,7 +142,7 @@ pass(14) = norm(err, inf) < 1e1*get(f,'epslevel')*get(f,'vscale');
 
 % Array-valued function:
 op = @(x) [exp(x) x.*exp(x) (1-exp(x))./x];
-f = unbndfun(op, dom);
+f = unbndfun(op, struct('domain', dom));
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;
@@ -151,10 +151,10 @@ pass(15) = norm(err, inf) < 1e1*max(get(f,'epslevel').*get(f,'vscale'));
 %% MISC:
 
 try
-    f = unbndfun(@(x) exp(-x.^2), [0 1]);
+    f = unbndfun(@(x) exp(-x.^2), struct('domain', [0 1]));
     pass(16) = fail;
 catch ME
-    pass(16) = strcmp(ME.identifier, 'CHEBFUN:UNBNDFUN:BoundedDomain');
+    pass(16) = strcmp(ME.identifier, 'CHEBFUN:UNBNDFUN:boundedDomain');
 end
     
 end

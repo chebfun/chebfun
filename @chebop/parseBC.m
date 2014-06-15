@@ -1,15 +1,15 @@
 function result = parseBC(N, BC, type)
 %PARSEBC  Parse boundary conditions for CHEBOP object.
 %   This method is not intended for end users. For information about boundary
-%   conditions in chebops, see CHEBOP.
+%   conditions in CHEBOPs, see CHEBOP.
 %
 %   This method is invoked by the set methods for LBC, RBC, and BC. The types
 %   and meanings of the allowed input are described in the documentation for
 %   CHEBOP. The result is either empty or a function handle that represents the
 %   given condition as needed internally.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers. See
-% http://www.chebfun.org/ for Chebfun information.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
 
 numIn = nargin(N);
 
@@ -34,7 +34,8 @@ elseif ( isa(BC, 'function_handle') )
     % of arguments to the OP part.
     if ( ( (numIn <= 1) && (nargin(BC) == 1) ) || ...
             ( strcmp(type,'lrbc') && (nargin(BC) == (numIn - 1)) ) || ...
-            ( strcmp(type,'bc') && (nargin(BC) == numIn) ) )
+            ( strcmp(type,'bc') && (nargin(BC) == numIn) ) || ...
+            ( strcmp(type,'bc') && (nargin(BC) == numIn + 1) ) )
         result = BC;
     else
         error('CHEBFUN:chebop:parsebc:inputs', ...
@@ -64,7 +65,7 @@ elseif ( iscell(BC) ) && ( length(BC) == 2 ) && ( ischar(BC{2}) ) && ...
     % A cell may have a numerical value followed by a keyword of 'dirichlet' or
     % 'neumann'.
     
-    % This behavior is retained only for backward compatability and only for
+    % This behavior is retained only for backward compatibility and only for
     % problems with one variable. 
     warning('CHEBFUN:chebop:parsebc:keywordbc',...
         ['Keyword/value specifications of boundary conditions are ', ...

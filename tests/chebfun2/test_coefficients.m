@@ -1,4 +1,4 @@
-function pass = test_Coefficients( pref )
+function pass = test_coefficients( pref )
 % Test to check that Chebfun2 can compute its bivariate tensor Chebyshev 
 % coefficients correctly.
 
@@ -21,7 +21,7 @@ pass(2) =  (norm(X) < tol );
 f=chebfun2( @(x,y) cos(x+y) ); 
 lenc = length(f.cols); 
 lenr = length(f.rows);
-[xx, yy] = meshgrid(chebpts(lenc),chebpts(lenr)); 
+[xx, yy] = chebfun2.chebpts2(lenc,lenr); 
 vals = f(xx, yy); 
 X = chebfun2.coeffs2vals( chebpoly2( f ) ); 
 pass(3) = ( (norm(X-vals)) < tol );

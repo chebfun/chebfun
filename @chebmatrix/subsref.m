@@ -1,5 +1,5 @@
 function varargout = subsref(A, sr)
-%SUBSREF   Extract part or property of a chebmatrix.
+%SUBSREF   Extract part or property of a CHEBMATRIX.
 %   A(I,J) returns the slice (submatrix) of A as with an ordinary matrix. The
 %   result is a CHEBMATRIX.
 %
@@ -10,13 +10,14 @@ function varargout = subsref(A, sr)
 %
 % See also CHEBMATRIX.SUBSASGN.
 
-% copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 sr1 = sr(1);
 switch ( sr1.type )
+    
     case '()'
-        varargout{1} = chebmatrix( subsref(A.blocks, sr1) );
+        varargout{1} = chebmatrix(subsref(A.blocks, sr1));
         
     case '{}'
         [varargout{1:nargout}] = subsref(A.blocks, sr1);

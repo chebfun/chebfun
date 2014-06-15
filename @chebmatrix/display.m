@@ -11,6 +11,7 @@ function display(L)
 
 name = inputname(1);
 [m, n] = size(L);
+
 c = blockClasses(L);
 
 loose = strcmp(get(0, 'FormatSpacing'), 'loose');
@@ -24,17 +25,20 @@ if ( loose )
     fprintf('\n');
 end
 
+% Lite mode, either no Java, or Matlab is not running in desktop mode.
 if ( ~usejava('jvm') || ~usejava('desktop') )
     disp(c);
     return
 end
 
+% We need to store the ANS variable in the workspace, so that it can be made
+% clickable:
 if ( strcmp(name, 'ans') )
-    name = ['chabmatrix_' num2str(1e6*rand(1), 6)];
-    assignin('base', name, L);
+    name = ['chebmatrix_' num2str(ceil(1e6*rand(1)), 6)];
 end
 
-ml = max(cellfun(@length, c));
+% Print information about each block>
+ml = cellfun(@length, c);
 for j = 1:m
     fprintf('    ');
     for k = 1:n

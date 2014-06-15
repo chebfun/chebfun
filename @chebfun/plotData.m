@@ -23,27 +23,28 @@ function data = plotData(f, g, h)
 
 % Initialise the output structure:
 data = struct('xLine', [], 'yLine', [], 'xPoints', [], 'yPoints', [], ...
-    'xJumps', [], 'yJumps', [], 'xDeltas', [], 'yDeltas', [], 'yLim', []);
-
-yLim = [inf, -inf];
-xLim = [inf, -inf];
+    'xJumps', [], 'yJumps', [], 'xDeltas', [], 'yDeltas', [], 'xLim', ...
+    [Inf -Inf], 'yLim', [Inf -Inf], 'defaultXLim', 1, 'defaultYLim', 1);
 
 if ( nargin == 1 )
     % PLOT(F)
 
     % Loop over each FUN for Line and Points data:
     nFuns = numel(f.funs);
+    
     for k = 1:nFuns
         % Get the data from the FUN:
         dataNew = plotData(f.funs{k});
 
         if ( ~any(ismember(fields(dataNew), 'xDeltas' )) )
-            dataNew.xDeltas = [];
-            dataNew.yDeltas = [];
+            dataNew.xDeltas = NaN;
+            dataNew.yDeltas = NaN;
         end
 
-        xLim = [min(dataNew.xLim(1), xLim(1)), max(dataNew.xLim(2), xLim(2))];
-        yLim = [min(dataNew.yLim(1), yLim(1)), max(dataNew.yLim(2), yLim(2))];
+        data.xLim = [min(dataNew.xLim(1), data.xLim(1)), ...
+            max(dataNew.xLim(2), data.xLim(2))];
+        data.yLim = [min(dataNew.yLim(1), data.yLim(1)), ...
+            max(dataNew.yLim(2), data.yLim(2))];
         
         if ( k == 1 )
             dataNew.xJumps(1) = [];
@@ -81,6 +82,10 @@ if ( nargin == 1 )
 
         data.xDeltas = [data.xDeltas ; dataNew.xDeltas];
         data.yDeltas = [data.yDeltas ; dataNew.yDeltas];
+        
+        data.defaultXLim = data.defaultXLim & dataNew.defaultXLim;
+        data.defaultYLim = data.defaultYLim & dataNew.defaultYLim;
+        
     end
 
 elseif ( nargin == 2 )
@@ -90,6 +95,7 @@ elseif ( nargin == 2 )
 
     % Loop over each FUN for Line and Points data:
     nFuns = numel(f.funs);
+    
     for k = 1:nFuns
         % Get the data from the FUN objects:
         dataNew = plotData(f.funs{k}, g.funs{k});
@@ -99,8 +105,10 @@ elseif ( nargin == 2 )
             dataNew.yDeltas = [];
         end
 
-        xLim = [min(dataNew.xLim(1), xLim(1)), max(dataNew.xLim(2), xLim(2))];
-        yLim = [min(dataNew.yLim(1), yLim(1)), max(dataNew.yLim(2), yLim(2))];
+        data.xLim = [min(dataNew.xLim(1), data.xLim(1)), ...
+            max(dataNew.xLim(2), data.xLim(2))];
+        data.yLim = [min(dataNew.yLim(1), data.yLim(1)), ...
+            max(dataNew.yLim(2), data.yLim(2))];
         
         % Discard the unnecessary jump data:
         if ( k == 1 )
@@ -124,6 +132,11 @@ elseif ( nargin == 2 )
         data.yPoints = [data.yPoints ; yNaN ; dataNew.yPoints];
         data.xJumps = [data.xJumps ; dataNew.xJumps];
         data.yJumps = [data.yJumps ; dataNew.yJumps];
+        data.xDeltas = [data.xDeltas; dataNew.xDeltas];
+        data.yDeltas = [data.yDeltas; dataNew.yDeltas];
+        
+        data.defaultXLim = data.defaultXLim & dataNew.defaultXLim;
+        data.defaultYLim = data.defaultYLim & dataNew.defaultYLim;
     end
     
 else
@@ -150,8 +163,10 @@ else
             dataNew.yDeltas = [];
         end
 
-        xLim = [min(dataNew.xLim(1), xLim(1)), max(dataNew.xLim(2), xLim(2))];
-        yLim = [min(dataNew.yLim(1), yLim(1)), max(dataNew.yLim(2), yLim(2))];
+        data.xLim = [min(dataNew.xLim(1), data.xLim(1)), ...
+            max(dataNew.xLim(2), data.xLim(2))];
+        data.yLim = [min(dataNew.yLim(1), data.yLim(1)), ...
+            max(dataNew.yLim(2), data.yLim(2))];
 
         myNaN = NaN(1, size(dataNew.yLine, 2)); % Array of NaNs.
         % Insert a NaN (or array of NaNs) and append new data to array:
@@ -161,6 +176,7 @@ else
         data.xPoints = [data.xPoints ; myNaN ; dataNew.xPoints];
         data.yPoints = [data.yPoints ; myNaN ; dataNew.yPoints];
         data.zPoints = [data.zPoints ; myNaN ; dataNew.zPoints];
+        
     end
     
     % Return NaNs if there are no jumps:
@@ -180,8 +196,5 @@ else
     end
     
 end
-
-data.xLim = xLim;
-data.yLim = yLim;
 
 end

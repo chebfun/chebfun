@@ -33,7 +33,7 @@ for n = 1:2
     % Check operation for array-valued inputs.
     
     fun_op = @(x) [sin(10*x) airy(x) (x - 0.25).^3.*cosh(x)];
-    f = testclass.make(fun_op, [], [], pref);
+    f = testclass.make(fun_op, [], pref);
     [y, x] = minandmax(f);
     y_exact = [-1 airy(1)  (-1.25)^3*cosh(-1);
                 1 airy(-1) 0.75^3*cosh(1)];
@@ -70,7 +70,7 @@ end
 function result = test_spotcheck_minmax(testclass, fun_op, exact_min, ...
     exact_max, pref)
 
-f = testclass.make(fun_op, [], [], pref);
+f = testclass.make(fun_op, [], pref);
 [y, x] = minandmax(f);
 y_exact = [exact_min ; exact_max];
 fx = fun_op(x);

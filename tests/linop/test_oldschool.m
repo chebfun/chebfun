@@ -30,7 +30,7 @@ A1 = matrix(A,10);   % first two rows hold BCs
 correct = cell2mat(A0); 
 correct([1 end],:) = A1(1:2,:);  % classic row replacement
 warnState = warning('off', 'chebfun:linop:fevalDeprecated');
-Aold = feval(A,10,'oldschool');
+Aold = feval(A,12,'oldschool');
 warning(warnState);
 pass(9) = norm( correct - Aold ) < 2e-14;
 

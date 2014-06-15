@@ -94,7 +94,10 @@ function f = diffContinuousDim(f, k)
     % If k >= n, we know the result will be the zero function:
     if ( k >= n ) 
         z = zeros(size(f, 2));
-        f = f.make(z, z, f.hscale);
+
+        data.vscale = z;
+        data.hscale = f.hscale;
+        f = f.make(z, data);
         return
     end
     
@@ -110,9 +113,10 @@ function f = diffContinuousDim(f, k)
     
     % Update epslevel and the vertical scale: (See CHEBTECH CLASSDEF file
     % for documentation)
-    f.epslevel = (n*log(n)).^k*(f.epslevel.*f.vscale);
-    f.vscale = getvscl(f);
-    f.epslevel = f.epslevel./f.vscale;
+    newVscale = getvscl(f);
+    epslevelBnd = (n*log(n)).^k*(f.epslevel.*f.vscale)./newVscale;
+    f.epslevel = updateEpslevel(f, epslevelBnd);
+    f.vscale = newVscale;
     
 end
       
