@@ -242,9 +242,6 @@ classdef chebfun
 
         %Convert a cell array of CHEBFUN objects to a quasimatrix.
         G = cell2quasi(F)
-
-        % Edge detector.
-        [edge, vscale] = detectEdge(op, domain, hscale, vscale, derHandle);
         
         % Determine values of CHEBFUN at breakpoints.
         vals = getValuesAtBreakpoints(funs, ends, op);
