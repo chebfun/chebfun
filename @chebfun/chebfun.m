@@ -333,6 +333,9 @@ classdef chebfun
         
         % Round a CHEBFUN towards minus infinity.
         g = floor(f);
+        
+        % Fractional indefinite integral of a CHEBFUN.
+        g = fracCumSum(f, m)
 
         % Get properties of a CHEBFUN object.
         out = get(f, prop, simpLevel);
