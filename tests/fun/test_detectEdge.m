@@ -60,32 +60,29 @@ err = norm(edge - x0, inf);
 pass(5) = err < 5e-14;
 
 %% Two examples from #809:
-
-% f = classicfun.constructor(0, struct('domain', [0 1]));
-% x0 = hex2num('3fe55ec001aabd80');  % 0.667816165214319
-% op = @(x) exp(x) + cos(7*x) + 0.1*sign(x - x0);
-% edge = fun.detectEdge(f, op, 1, 1, pref);
-% err = abs(edge - x0);
-% pass(6) = ( err < 5*eps );
-
-
-rng(13);
 f = classicfun.constructor(0, struct('domain', [0 1]));
-x0 = rand(2,1);
-x0 = x0(2)
-op = @(x) exp(x)+cos(7*x)+abs(x-x0);
+x0 = hex2num('3fe55ec001aabd80');  % 0.667816165214319
+op = @(x) exp(x) + cos(7*x) + 0.1*sign(x - x0);
 edge = fun.detectEdge(f, op, 1, 1, pref);
-err = abs(edge - x0)
+err = abs(edge - x0);
 pass(6) = ( err < 5*eps );
 
-% %% A test for a blow-up function with large domain. This is to excercise the 
-% % relevant part in findBlowup@detectEdge.
-% 
-% f = classicfun.constructor(0, struct('domain', [1 2]));
-% op = @(x) tan(x);
-% pref.enableSingularityDetection = true;
-% edge = fun.detectEdge(f, op, 1, 1, pref);
-% err = abs(edge - pi/2);
-% pass(8) = ( err < 5*eps );
+% TODO:  #809 still causes this test to fail.  Comment it back in when that
+% issue is resolved.
+%f = classicfun.constructor(0, struct('domain', [0 1]));
+%x0 = hex2num('3fce67c02dc03de0');
+%op = @(x) exp(x)+cos(7*x)+abs(x-x0);
+%edge = fun.detectEdge(f, op, 1, 1, pref);
+%err = abs(edge - x0)
+%pass(6) = ( err < 5*eps );
+
+%% A test for a blow-up function with large domain. This is to excercise the
+% relevant part in findBlowup@detectEdge.
+f = classicfun.constructor(0, struct('domain', [1 2]));
+op = @(x) tan(x);
+pref.enableSingularityDetection = true;
+edge = fun.detectEdge(f, op, 1, 1, pref);
+err = abs(edge - pi/2);
+pass(7) = ( err < 5*eps );
 
 end

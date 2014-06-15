@@ -303,7 +303,6 @@ end
 
 function blowUpPoint = findBlowup(op, dom, gridSize1, gridSize234, vscale)
 % Detects blowup location in function values.
-'APA'
 a = dom(1);
 b = dom(2);
 
