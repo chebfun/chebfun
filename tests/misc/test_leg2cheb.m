@@ -68,4 +68,28 @@ for jj = 1:size(A,2)
 end
 pass(8) = ( norm( B - E ) < tol ); 
 
+%% Test normalization, small N: 
+A = zeros(10, 1); A(1) = 1; 
+B = leg2cheb( A, 1 ); 
+f = chebfun( B , 'coeffs'); 
+pass(9) = ( norm( f ) - 1 ) < tol; 
+
+%% Test normalization, large N: 
+A = zeros(1000, 1); A(1) = 1; 
+B = leg2cheb( A, 'normalize' ); 
+f = chebfun( B , 'coeffs'); 
+pass(10) = ( norm( f ) - 1 ) < tol; 
+
+
+%% Test normalization and inverse, small N: 
+A = zeros(10,1); A(1) = 1; 
+B = leg2cheb( A, 1); 
+C = cheb2leg( B, 1); 
+pass(11) = ( norm( A - C ) ) < tol; 
+
+%% Test normalization and inverse, large N: 
+A = zeros(1000,1); A(1) = 1; 
+B = leg2cheb( A, 1); 
+C = cheb2leg( B, 1); 
+pass(11) = ( norm( A - C ) ) < 10*tol; 
 end
