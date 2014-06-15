@@ -4,40 +4,51 @@ if ( nargin == 0 )
     pref = cheboppref();
 end
 
-tol = 6e-9;
-
 dom = [-1, 1];
-D = operatorBlock.diff(dom);
+diffOp = operatorBlock.diff(dom);
 ev = functionalBlock.eval(dom);
 
 %%
 
 % D^2*u = 1i*lam*D*u, u(-1) = u(1) = 0.
-A = linop(D^2);
+A = linop(diffOp^2);
 A = addbc(A, ev(-1));
 A = addbc(A, ev(1));
-B = linop(1i*D);
+B = linop(1i*diffOp);
 
 % True eigenvalues:
 e_true = [-3 -2 -1 1 2 3].';
 
 % COLLOC1
 pref.discretization = @colloc1;
-e = eigs(A, B, 6, 0, pref)/pi;
+[V, D] = eigs(A, B, 6, 0, pref);
+e = diag(D)/pi;
 er = sort(real(e));
+AV = A*V;
+BV = B*V;
 err(1,1) = norm(er - e_true) + norm(imag(e));
+err(1,2) = norm(AV{1}-BV{1}*D);
 
 % COLLOC2
 pref.discretization = @colloc2;
-e = eigs(A, B, 6, 0, pref)/pi;
+[V, D] = eigs(A, B, 6, 0, pref);
+e = diag(D)/pi;
 er = sort(real(e));
-err(1,2) = norm(er - e_true) + norm(imag(e));
+AV = A*V;
+BV = B*V;
+err(1,3) = norm(er - e_true) + norm(imag(e));
+err(1,4) = norm(AV{1}-BV{1}*D);
 
 % ULTRAS
 pref.discretization = @ultraS;
-e = eigs(A, B, 6, 0, pref)/pi;
+[V, D] = eigs(A, B, 6, 0, pref);
+e = diag(D)/pi;
 er = sort(real(e));
-err(1,3) = norm(er - e_true) + norm(imag(e));
+AV = A*V;
+BV = B*V;
+err(1,5) = norm(er - e_true) + norm(imag(e));
+err(1,6) = norm(AV{1}-BV{1}*D);
+
 
 
 %%
@@ -45,8 +56,8 @@ err(1,3) = norm(er - e_true) + norm(imag(e));
 % Now try putting the highest derivative on the right:
 
 % 1i*D*u = (1/lam)*D*u, u(-1) = u(1) = 0.
-A = linop(D^2);
-B = linop(1i*D);
+A = linop(diffOp^2);
+B = linop(1i*diffOp);
 B = addbc(B, ev(-1));
 B = addbc(B, ev(1));
 
@@ -55,35 +66,47 @@ e_true = (1:6).';
 
 % COLLOC1
 pref.discretization = @colloc1;
-e = 1./eigs(B, A, 6, 1, pref)/pi;
+[V, D] = eigs(B, A, 6, 1, pref);
+e = 1./diag(D)/pi;
 er = sort(real(e));
+AV = A*V;
+BV = B*V;
 err(2,1) = norm(er - e_true) + norm(imag(e));
+err(2,2) = norm(BV{1}-AV{1}*D);
 
 % COLLOC2
 pref.discretization = @colloc2;
-e = 1./eigs(B, A, 6, 1, pref)/pi;
+[V, D] = eigs(B, A, 6, 1, pref);
+e = 1./diag(D)/pi;
 er = sort(real(e));
-err(2,2) = norm(er - e_true) + norm(imag(e));
+AV = A*V;
+BV = B*V;
+err(2,3) = norm(er - e_true) + norm(imag(e));
+err(2,4) = norm(BV{1}-AV{1}*D);
 
 % ULTRAS
 pref.discretization = @ultraS;
-e = 1./eigs(B, A, 6, 1, pref)/pi;
+[V, D] = eigs(B, A, 6, 1, pref);
+e = 1./diag(D)/pi;
 er = sort(real(e));
-err(2,3) = norm(er - e_true) + norm(imag(e));
+AV = A*V;
+BV = B*V;
+err(2,5) = norm(er - e_true) + norm(imag(e));
+err(2,6) = norm(BV{1}-AV{1}*D);
 
 %%
 
 % Now try a sytem:
 
 dom = [-1, 1];
-D = operatorBlock.diff(dom);
+diffOp = operatorBlock.diff(dom);
 I = operatorBlock.eye(dom);
 Z = operatorBlock.zeros(dom);
 ev = functionalBlock.eval(dom);
 z = functionalBlock.zero(dom);
 
-A = [D^2 D ; D D^2];
-B = [I D ; D I];
+A = [diffOp^2 diffOp ; diffOp diffOp^2];
+B = [I diffOp ; diffOp I];
 A = linop(A);
 A = addbc(A, [ev(-1) z]);
 A = addbc(A, [ev(1) z]);
@@ -94,20 +117,36 @@ e_true = -1 + 1i*pi*[-1 1 -1 1 -2 2 -2 2 -3 3 -3 3].';
 
 % COLLOC1
 pref.discretization = @colloc1;
-e = eigs(A, B, 12, 0, pref);
+[V, D] = eigs(A, B, 12, 0, pref);
+e = diag(D);
+AV = A*V;
+BV = B*V;
 err(3,1) = norm(e - e_true);
+err(3,2) = norm([AV{1}; AV{2}] - [BV{1}*D; BV{2}*D]);
 
 % COLLOC2
 pref.discretization = @colloc2;
-e = eigs(A, B, 12, 0, pref);
-err(3,2) = norm(e - e_true);
+[V, D] = eigs(A, B, 12, 0, pref);
+e = diag(D);
+AV = A*V;
+BV = B*V;
+err(3,3) = norm(e - e_true);
+err(3,4) = norm([AV{1}; AV{2}] - [BV{1}*D; BV{2}*D]);
 
 % ULTRAS
 pref.discretization = @ultraS;
-e = eigs(A, B, 12, 0, pref);
-err(3,3) = norm(e - e_true);
+[V, D] = eigs(A, B, 12, 0, pref);
+e = diag(D);
+AV = A*V;
+BV = B*V;
+err(3,5) = norm(e - e_true);
+err(3,6) = norm([AV{1}; AV{2}] - [BV{1}*D; BV{2}*D]);
 
 %%
+tolVals = repmat(6e-9, 3, 1);
+tolFuns = repmat(4e-8, 3, 1);
+
+tol = repmat([tolVals, tolFuns], 1, 3);
 
 pass = err < tol;
 
