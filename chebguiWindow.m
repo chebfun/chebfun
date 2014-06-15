@@ -124,7 +124,7 @@ end
 % Set the string for popup-menu for the choice of plots:
 set(handles.popupmenu_bottomFig,'String', ...
     {'Convergence of Newton iteration', ...
-    'Coefficients of Chebyshev series'});
+    'Chebyshev coefficients'});
 
 % Choose default command line output for chebguiWindow
 handles.output = hObject;
