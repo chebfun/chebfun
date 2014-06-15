@@ -20,7 +20,7 @@ classdef chebDiscretization
 % which yields solution to problems of ODEs.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    properties
+    properties ( Access = public )
         source = []       % linop or chebmatrix to be discretized
         domain = []       % may generalize that of the source
         dimension = []    % vector of lengths, one per subinterval
@@ -32,40 +32,9 @@ classdef chebDiscretization
         numIntervals      % number of intervals in the domain
     end
     
-    %% METHODS IMPLEMENTED IN THIS FILE:
-
-    methods
-        
-        function n = get.numIntervals(disc)
-        %NUMINTERVALS   Number of subintervals a CHEBDISCRETIZATION acts on.
-            n = length(disc.domain) - 1;
-        end    
-        
-        function t = isempty(disc)
-        %ISEMPTY   Check if source property of a CHEBDISCRETIZATION is empty.
-            t = isempty(disc.source);
-        end
-
-        function t = isFactored(disc) %#ok<MANU>
-        %ISFACTORED   Check if a factorization of the source already exists.
-        %   This method gives a discretization a chance to overload and store
-        %   matrix factors for the purpose of short-circuiting the linsolve
-        %   process. By default it never happens.
-            t = false;
-        end
-        
-        function [x, disc] = mldivide(disc, A, b)
-        %CHEBDISCRETIZATION.MLDIVIDE 
-        %   By default, the solution of a discrete Ax = b uses standard
-        %   backslash. But concrete implementations may overload it.
-            x = A\b;
-        end           
-        
-    end
-    
     %% STATIC METHODS:
     
-    methods ( Static )
+    methods ( Access = public, Static = true )
         
         % Get dimension adjustment:
         dimAdjust = getDimAdjust(L)
@@ -77,7 +46,9 @@ classdef chebDiscretization
     
     %% ABSTRACT METHODS:
             
-    methods ( Abstract )   
+    % Abstract non-static methods.
+    
+    methods ( Access = public, Abstract = true, Static = false )   
         
         % Converts a CHEBFUN into a vector of values (or coefficients,
         % depending on the implementation). 
@@ -98,11 +69,43 @@ classdef chebDiscretization
         
     end
     
-    methods ( Abstract = true, Static = true )
+    % Abstract static methods.
+    
+    methods ( Access = public, Abstract = true, Static = true )
         
         % Return a vector of desired discretization sizes.
         dimVals = dimensionValues(pref)
         
     end
+    
+    %% METHODS IMPLEMENTED IN THIS FILE:    
+    methods
+        
+        function n = get.numIntervals(disc)
+            %NUMINTERVALS   Number of subintervals a CHEBDISCRETIZATION acts on.
+            n = length(disc.domain) - 1;
+        end
+        
+        function t = isempty(disc)
+            %ISEMPTY   Check if source property of a CHEBDISCRETIZATION is empty.
+            t = isempty(disc.source);
+        end
+        
+        function t = isFactored(disc) %#ok<MANU>
+            %ISFACTORED   Check if a factorization of the source already exists.
+            %   This method gives a discretization a chance to overload and store
+            %   matrix factors for the purpose of short-circuiting the linsolve
+            %   process. By default it never happens.
+            t = false;
+        end
+        
+        function [x, disc] = mldivide(disc, A, b)
+            %CHEBDISCRETIZATION.MLDIVIDE
+            %   By default, the solution of a discrete Ax = b uses standard
+            %   backslash. But concrete implementations may overload it.
+            x = A\b;
+        end
+        
+    end        
     
 end

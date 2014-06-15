@@ -14,7 +14,7 @@ classdef blockFunction
 % for application to a CHEBFUN.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    properties ( Access=public )
+    properties ( Access = public )
         % This property is assigned the callable function that does the
         % correct operation when called on CHEBFUN objects.
         func = [];
@@ -22,7 +22,8 @@ classdef blockFunction
         domain;
     end
     
-    methods
+    %% Class Constructor.
+    methods ( Access = public, Static = false )
         
         function A = blockFunction(varargin)
         % BLOCKFUNCTION     Constructor of BLOCKFUNCTION objects.
@@ -54,6 +55,11 @@ classdef blockFunction
                 A.func = varargin{1};
             end
         end
+    end    
+                
+    %% Public Methods implemented by this class.
+
+    methods ( Access = public, Static = false )
         
         function C = cumsum(A, m)
         %CUMSUM   
@@ -98,7 +104,7 @@ classdef blockFunction
         end
                                
         function C = mtimes(A, B)
-%*      Composition of BLOCKFUNCTION objects.
+        %*      Composition of BLOCKFUNCTION objects.
             if ( isnumeric(A) )
                 C = blockFunction( @(z) A*B.func(z) );
             else

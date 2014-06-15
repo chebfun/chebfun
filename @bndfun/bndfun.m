@@ -54,7 +54,8 @@ classdef bndfun < classicfun
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     %% CLASS CONSTRUCTOR:
-    methods
+    methods ( Access = public, Static = false )
+        
         function obj = bndfun(op, data, pref)
             % Parse inputs.
             if ( (nargin < 1) || isempty(op) )
@@ -103,21 +104,10 @@ classdef bndfun < classicfun
             obj.domain = data.domain;
             obj.mapping = linmap;
         end
-    end
+    end       
     
-    %% STATIC METHODS IMPLEMENTED BY BNDFUN CLASS.
-    methods ( Static = true ) 
-
-        % Linear map from [-1, 1] to the domain of the BNDFUN.
-        m = createMap(domain);
-        
-        % Make a BNDFUN (constructor shortcut):
-        f = make(varargin);
-        
-    end
-    
-    %% METHODS IMPLEMENTED BY THIS CLASS.
-    methods
+    %% PUBLIC METHODS IMPLEMENTED BY THIS CLASS.
+    methods ( Access = public, Static = false )
         
         % Convolution of BNDFUN F with BNDFUN G.
         h = conv(f, g)
@@ -166,6 +156,17 @@ classdef bndfun < classicfun
         
         % Definite integral of a BNDFUN on the interval [a, b].
         out = sum(f, dim)
+    end
+    
+     %% STATIC METHODS IMPLEMENTED BY BNDFUN CLASS.
+    methods ( Access = public, Static = true ) 
+
+        % Linear map from [-1, 1] to the domain of the BNDFUN.
+        m = createMap(domain);
+        
+        % Make a BNDFUN (constructor shortcut):
+        f = make(varargin);
+        
     end
 end
 

@@ -104,7 +104,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
     end
     
     %% METHODS IMPLEMENTED BY THIS CLASS.
-    methods
+    methods ( Access = public, Static = false )
         
         function f = abs(f) %#ok<MANU>
             % ABS   ABS is not Frechet differentiable, so an error is thrown.
@@ -1466,7 +1466,8 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         [err, lin] = valueTestingBinary(f)
     end
     
-    methods ( Access = private )
+    %% Privat methods of the class.
+    methods ( Access = private, Static = false )
         
         function f = updateDomain(f)
             % UPDATEDOMAIN      Update the domain of an ADCHEBFUN
