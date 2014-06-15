@@ -85,9 +85,34 @@ function chebguiWindow_OpeningFcn(hObject, eventdata, handles, varargin)
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to chebguiWindow (see VARARGIN)
 
+% Set input boxes to command window font:
+try
+    % Obtain the font information:
+    s = char(com.mathworks.services.FontPrefs.getCodeFont);
+    idx = strfind(s, 'name=');
+    s1 = s(idx+5:end);
+    idx = strfind(s1, ',');
+    s1 = s1(1:idx(1)-1);
+    myFont = s1;
+    idx = strfind(s, 'size=');
+    s2 = s(idx+5:end-1);
+    mySize = str2double(s2);
+catch
+    % If this fails, fall back to this default:
+    myFont = 'Monospaced';
+    mySize = 14;
+end
+inputBoxes = {'input_DE', 'input_LBC', 'input_RBC', 'input_BC', ...
+    'input_GUESS', 'input_domain', 'input_timedomain', 'iter_list'};
+for k = 1:numel(inputBoxes)
+    set(handles.(inputBoxes{k}), 'FontName', myFont); 
+    set(handles.(inputBoxes{k}), 'FontSize', mySize); 
+end
+
 % Choose default command line output for chebguiWindow
 handles.output = hObject;
 
+% Initialise figures:
 chebgui.initialiseFigures(handles)
 
 % Variable that determines whether a solution is available
