@@ -102,11 +102,23 @@ catch
     myFont = 'Monospaced';
     mySize = 14;
 end
-inputBoxes = {'input_DE', 'input_LBC', 'input_RBC', 'input_BC', ...
-    'input_GUESS', 'input_domain', 'input_timedomain', 'iter_list'};
-for k = 1:numel(inputBoxes)
-    set(handles.(inputBoxes{k}), 'FontName', myFont); 
-    set(handles.(inputBoxes{k}), 'FontSize', mySize); 
+
+% Obtain a list of all GUI elements.
+names = fieldnames(handles);
+% Find what elements are input elements
+inputLocs = strfind(names, 'input_');
+% Also want the same font for the iter_list information box.
+iterListLoc = strfind(names, 'iter_list');
+% Combine all the locations of elements whose font we wish to change
+allLocs = strcat(inputLocs, iterListLoc);
+
+% Loop through the elements we want to specify the font of.
+for fieldCounter = 1:length(inputLocs)
+    if ( ~isempty(allLocs{fieldCounter}) )
+        % Access the field values dynamically using the .( ) call.
+        set(handles.(names{fieldCounter}), 'FontName', myFont);
+        set(handles.(names{fieldCounter}), 'FontSize', mySize);
+    end
 end
 
 % Choose default command line output for chebguiWindow
