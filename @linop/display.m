@@ -1,43 +1,21 @@
-function display(L)
-%DISPLAY   Pretty-print a linop summary.
+function display(X)
+%DISPLAY   Display information about a LINOP.
+%
+% See also DISP.
 
-% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Obtain size of the linop
-[m, n] = size(L);
-
-% Determine whether format is compact or loose:
-loose = ~isequal(get(0, 'FormatSpacing'), 'compact');
-
-if ( loose )
-    fprintf('\n');
+if ( isequal(get(0, 'FormatSpacing'), 'compact') )
+	disp([inputname(1), ' =']);
+	disp(X);
+else
+	disp(' ');
+	disp([inputname(1), ' =']);
+	disp(' ');
+    disp(X);
 end
 
-% Print input variable name:
-disp([inputname(1) ' = ']);
-
-if ( loose )
-    fprintf('\n');
 end
 
-fprintf('   %ix%i linear operator', m,n)
 
-if ( loose )
-    fprintf('\n');
-end
-
-nc = size(L.constraint.functional, 1);
-if ( nc == 1 )
-    fprintf('\n   with 1 constraint/boundary condition')
-elseif ( nc > 0 )
-    fprintf('\n   with %i constraints/boundary conditions',nc)
-end
-
-if ( loose )
-    fprintf('\n');
-end
-
-fprintf('\n');
-
-end
