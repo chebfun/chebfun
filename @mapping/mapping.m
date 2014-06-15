@@ -1,10 +1,32 @@
 classdef mapping
-%MAPPING
+%MAPPING   Class for mapping [-1, 1] to arbitrary domains.
 %
+%   The MAPPING class handles the (possibly nonlinear) mapping between
+%   CLASSICFUN objects and ONEFUN objects.
 %
+%   A MAPPING object, M, will contain:
+%       * M.For: The forward map from [-1, 1] to [a, b].
+%       * M.Der: The derivative of M.For.
+%       * M.Inv: The inverse mapping from [a, b] to [-1, 1].
+%   
+% See also CLASSICFUN, ONEFUN.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% DEVELOPER NOTE:
+%   Class diagram: [<<classicFun>>] <>-- [mapping]
+%                                   <>-- [oneFun]
+%   Note. Currently this class onlt maps from [-1, 1] to [a, b]. This may be
+%   changed in the future.
+%
+%   Note. We don't bother to store the target domain as this can be found by
+%   evaluating the map at [-1,1].
+%
+%   Note. Currently the only client is CLASSICFUN for mapping ONEFUNS. In the
+%   future we might allow singular maps for dealing with singular endpoints.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     properties ( GetAccess = 'public', SetAccess = 'public' )
 
@@ -18,12 +40,6 @@ classdef mapping
         
         % Inverse of the map:
         Inv
-        
-        % Input domain:
-        InDom = [-1, 1];
-        
-        % Output domain:
-        OutDom = [-1, 1];
         
         % Misc. data:
         OtherData = struct();
@@ -63,10 +79,7 @@ classdef mapping
             out.For = map.Inv;
             out.Der = @(x) 1./map.Der(x);
             out.Inv = map.For;
-            out.InDom = map.OutDom;
-            out.OutDom = map.InDom;
         end
-        
                 
 %         function out = compose(map1, map2)
 %             % Compose two mappings.
@@ -91,7 +104,8 @@ classdef mapping
                     elseif ( isfield(map.OtherData, idx) )
                         out = map.OtherData.(idx);
                     else
-                        error('unknown property %s', idx);
+                        error('CHEBFUN:MAPPING:subsref:unknown', ...
+                            'Unknown property %s.', idx);
                     end
                     
             end
@@ -107,17 +121,19 @@ classdef mapping
         
         function map = linear(ends)
         %LINEAR   Creates a linear map structure for BNDFUN objects.
-        %   MAP = LINEAR(ENDS), where ENDS is a two-vector, returns a structure that
-        %   defines a linear map. The structure MAP consists of three function handles:
+        %   MAP = LINEAR(ENDS), where ENDS is a two-vector, returns a structure
+        %   that defines a linear map. The structure MAP consists of three
+        %   function handles:
         %      MAP.FOR is a function that maps [-1,1] to [ENDS(1), ENDS(2)].
         %      MAP.INV is the inverse map.
         %      MAP.DER is the derivative of the map defined in MAP.FOR
         
             a = ends(1);
             b = ends(2);
-            mapStruct = struct('for', @(y) b*(y + 1)/2 + a*(1 - y)/2, ...
-                'inv', @(x) (x - a)/(b - a) - (b - x)/(b - a), ...
-                'der', @(y) (b - a)/2 + 0*y);
+            mapStruct = struct( ...
+                'For', @(y) b*(y + 1)/2 + a*(1 - y)/2, ...
+                'Inv', @(x) (x - a)/(b - a) - (b - x)/(b - a), ...
+                'Der', @(y) (b - a)/2 + 0*y);
             map = mapping(mapStruct);
             
         end
@@ -125,18 +141,17 @@ classdef mapping
         function map = unbounded(ends)
         %UNBOUNDED   Creates a map structure for UNBNDFUN objects.
         %   M = UNBOUNDED(ENDS) returns a structure that defines a nonlinear map
-        %   from [-1 1] to the unbounded domain [ENDS(1) ENDS(2)].
-        %   The structure MAP consists of three function handles, one string.
-        %   M.FOR is a function that maps [-1,1] to [ENDS(1) ENDS(2)].
-        %   M.INV is the inverse map.
-        %   M.DER is the derivative of the map defined in MAP.FOR.
+        %   from [-1 1] to the unbounded domain [ENDS(1) ENDS(2)]. The structure
+        %   MAP consists of three function handles, one string. M.FOR is a
+        %   function that maps [-1,1] to [ENDS(1) ENDS(2)]. M.INV is the inverse
+        %   map. M.DER is the derivative of the map defined in MAP.FOR.
             
             % The domain:
             a = ends(1); 
             b = ends(2);
             
             % Initialise the map structure:
-            map = struct('for', [], 'inv', [], 'der', [], 'forDerExps', []);
+            map = struct('For', [], 'Inv', [], 'Der', []);
             
             % Fixed map parameters:
             s = 1;
@@ -145,28 +160,25 @@ classdef mapping
             % Deal with the different cases:
             if ( a == -inf && b == inf )
                 
-                map.for = @(y) 5*s*y./(1 - min(y.^2, 1)) + c;
-                map.inv = @(x) 2*x./(5*s + sqrt(25*s^2 + 4*x.^2));
-                map.der = @(y) 5*s*(1 + y.^2)./(1 - y.^2).^2;
-                map.forDerExps = [-2 -2];
+                map.For = @(y) 5*s*y./(1 - min(y.^2, 1)) + c;
+                map.Inv = @(x) 2*x./(5*s + sqrt(25*s^2 + 4*x.^2));
+                map.Der = @(y) 5*s*(1 + y.^2)./(1 - y.^2).^2;
                 
             elseif ( a == -inf )
                 
-                map.for = @(y) 15*s*(y - 1)./(y + 1) + b;
-                map.inv = @(x) (15*s + x - b)./(15*s - x + b);
-                map.der = @(y) 15*s*2./(y + 1).^2;
-                map.forDerExps = [-2 0];
+                map.For = @(y) 15*s*(y - 1)./(y + 1) + b;
+                map.Inv = @(x) (15*s + x - b)./(15*s - x + b);
+                map.Der = @(y) 15*s*2./(y + 1).^2;
                 
             elseif ( b == inf )
                 
-                map.for = @(y) 15*s*(y + 1)./(1 - y) + a;
-                map.inv = @(x) (-15*s + x - a)./(15*s + x - a);
-                map.der = @(y) 15*s*2./(y - 1).^2;
-                map.forDerExps = [0 -2];
+                map.For = @(y) 15*s*(y + 1)./(1 - y) + a;
+                map.Inv = @(x) (-15*s + x - a)./(15*s + x - a);
+                map.Der = @(y) 15*s*2./(y - 1).^2;
                 
             else
                 
-                error('CHEBFUN:unbounded:input', 'Error: Check input')
+                error('CHEBFUN:unbounded:input', 'Error: Check input.')
                 
             end
             
