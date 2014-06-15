@@ -17,12 +17,18 @@ if ( F.nComponents == 3 )
     warning('CHEBFUN2V:INTEGRAL', 'Ignoring third component of chebfun2v.')
 end
 
-% Restrict to chebfun: 
-F1 = restrict( F.components{1}, c ); 
-F2 = restrict( F.components{2}, c ); 
- 
+% Get tolerance we think things can be resolved to: 
+pref = chebfunpref(); 
+pref.techPrefs.eps = get(c, 'epslevel').*get(c, 'vscale'); 
+% Restrict to the chebfun domains: 
+F1_handle = @(t) feval(F.components{1}, real(c(t)), imag(c(t)));
+F2_handle = @(t) feval(F.components{2}, real(c(t)), imag(c(t)));
+F1 = chebfun(F1_handle, c.domain, pref );
+F2 = chebfun(F2_handle, c.domain, pref );
+
 % Line integral: 
 dc = diff(c); 
+
 % By definition:
 v = sum(F1 .* real(dc) + F2 .* imag(dc) );  
 
