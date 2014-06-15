@@ -13,12 +13,12 @@ try
     cross(F,F);
     F.';
     curl(F);
-    div(F);
+    divergence(F);
     dot(F,F);
     F(1,1);
     imag(F); 
     isempty(F);
-    lap(F);
+    laplacian(F);
     F-F;
     F.*F;
     norm(F);

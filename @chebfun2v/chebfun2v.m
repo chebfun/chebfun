@@ -22,24 +22,106 @@
 classdef chebfun2v
     
     properties ( Access = public )
-        components   % Array of CHEBFUN2 objects. 
+        components   % Array of CHEBFUN2 objects.
         nComponents  % Number of components
         isTransposed % transposed?
     end
     
     methods
         
-        function f = chebfun2v(varargin)
+        function F = chebfun2v( varargin )
             % The main CHEBFUN2V constructor!
-            
+                       
             % Return an empty CHEBFUN2V:
-            if ( (nargin == 0) || isempty(varargin{1}) )
+            if ( (nargin == 0) || isempty(varargin) )
+                return
+            end
+                       
+            % This function calls the CHEBFUN2 constructor once for each 
+            % non-zero component because a CHEBFUN2V is just vector of 
+            % CHEBFUN2 objects.
+            
+            % If argument is a CHEBFUN2V, nothing to do:
+            if ( isa(varargin{1}, 'chebfun2v') ) 
+                F = varargin{1};
                 return
             end
             
-            % constructor.m does all the work: 
-            f = constructor(f, varargin{:});
+            % Go and try find the domain: 
+            domain = [-1 1 -1 1]; 
+            for jj = 1:numel(varargin)
+               if ( isa( varargin{jj}, 'double') ) 
+                   domain = varargin{jj}; 
+                   varargin(jj) = []; 
+               end
+            end
             
+            % Go pick up vectorize flag: 
+            vectorize = 0; 
+            for jj = 1:numel(varargin) 
+                if ( strcmpi( varargin{jj}, 'vectorize' ) )
+                    vectorize = 1;
+                    varargin(jj) = []; 
+                end
+            end
+            
+            % Unwrap input arguments;
+            component = 1;
+            for jj = 1:numel( varargin )
+                if ( iscell( varargin{jj} ) ) 
+                    for kk = 1:numel( varargin{jj} )
+                        fh{component} = varargin{jj}{kk};
+                        component = component + 1; 
+                    end
+                else
+                    fh{component} = varargin{jj};
+                    component = component + 1;
+                end
+            end
+            varargin = fh; 
+            
+            % Convert all function handles to chebfun2 objects: 
+            for jj = 1:numel(varargin)
+                if ( isa( varargin{jj}, 'function_handle') )
+                    if ( ~vectorize )
+                        newcheb = chebfun2( varargin{jj}, domain);
+                    else
+                        newcheb = chebfun2( varargin{jj}, domain, 'vectorize');
+                    end
+                    fh{jj} = newcheb;
+                elseif ( isa( varargin{jj}, 'chebfun2') )
+                    fh{jj} = varargin{jj};
+                end
+            end
+            
+            % Stop now if there are too many components
+            if ( numel( fh ) > 3 ) 
+                error('CHEBFUN2:CONSTRUCTOR:ARRAYVALUED',...
+                          'More than three components is not supported.')
+            end 
+            
+            % Stop now if there are no components: 
+            if ( numel( fh ) == 0 ) 
+                error('CHEBFUN2:CONSTRUCTOR:EMPTY',...
+                'The Chebfun2 constructor needs to be given function handles or chebfun2 objects.')
+            end
+            
+            % Check the domains of all the chebfun2s are the same:
+            pass = zeros(numel(fh)-1,1);
+            for jj = 2:numel(fh)
+               pass(jj-1) = domainCheck( fh{1}, fh{jj});   
+            end
+            
+            if ( ~all(pass) )
+                error('CHEBFUN2:DOMAINCHECK',... 
+                    'All chebfun2 objects need to have the same domain.');
+            end
+            
+            % Assign to the Chebfun2v object: 
+            F.components = fh;
+            F.nComponents = numel( fh );
+            F.isTransposed = 0;
+
         end
     end 
     
