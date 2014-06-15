@@ -1,14 +1,16 @@
 function c_leg = cheb2leg(c_cheb, normalize, M)
-%LEG2CHEB convert Legendre coefficients to Chebyshev coefficients. 
+%LEG2CHEB convert Chebyshev coefficients to Legendre coefficients. 
 %   C_LEG = CHEB2LEG(C_CHEB) converts the vector C_CHEB of Chebyshev
 %   coefficients to a vector C_CHEB of Legendre coefficients such that
 %   C_CHEB(N)*T0 + ... + C_CHEB(1)*T{N-1} = C_LEG(N)*P0 + ... + C_LEG(1)*P{N-1},
-%   where P{k} is the degree k Legendre polynomial normalized so that   
-%
-%
-%   If C_CHEB is a matrix then the CHEB2LEG operation is applied to each column.
+%   where P{k} is the degree k Legendre polynomial normalized so that 
+%   max(|P{k}| = 1. If C_CHEB is a matrix then the CHEB2LEG operation is applied 
+%   to each column.
 % 
-%   C_LEG = CHEB2LEG(C_CHEB, 'normalized') is analogous to CHEB  
+%   C_LEG = CHEB2LEG(C_CHEB, 'normalize') is analogous to CHEB2LEG for Legendre 
+%   polynomials normalized to be orthonormal.  
+%
+%   See also LEG2CHEB.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.

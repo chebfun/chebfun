@@ -83,5 +83,5 @@ B = cheb2leg( A );
 C = cheb2leg( A, 1); 
 D = cheb2leg( A, 'normalized'); 
 pass(11) = ( norm( diag(1./(sqrt((999:-1:0)' + 1/2)))*B - C ) < tol ); 
-pass(12) = ( norm( C - D ) < tol );
+pass(12) = ( norm( C - D ) < tol ); 
 end
