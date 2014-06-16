@@ -31,8 +31,9 @@ end
 % Computing the chebyshev coefficients via innner products requires working with
 % non-periodic, but smooth functions on [-1,1]. The right representation for f
 % is then a Chebyshev expansion. We therefore convert f to a (happy) Chebyshev
-% interpolant and return the coefficients.
-f = four2cheb(f);
+% interpolant and return the coefficients. As an arbitrary choice we will
+% convert f to a chebtech1 and then compute the resulting coefficients.
+f = chebtech1(@(x) f.feval(x));
 out = chebcoeffs(f, N);
     
 end
