@@ -6,6 +6,8 @@ if ( nargin == 0 )
     pref = chebfunpref();
 end
 
+seedRNG(6178);
+
 % Test something easy (the example from docs):
 pref2 = pref;
 pref2.enableBreakpointDetection = 1;
@@ -85,7 +87,7 @@ g = merge(f);
 gVals = feval(g, x);
 gExact = op(x);
 err = norm(gVals - gExact, inf);
-tol = 50*epslevel(f)*vscale(f);
+tol = 100*epslevel(f)*vscale(f);
 pass(13) = err < tol;
 
 end

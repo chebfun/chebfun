@@ -65,6 +65,12 @@ classdef fun % (Abstract)
         f = make(varargin);
     end
     
+    %% PRIVATE STATIC METHODS REQUIRED BY THIS CLASS.
+    methods ( Static = true )
+        % Edge detector.
+        [edge, vscale] = detectEdge(op, domain, hscale, vscale, pref);
+    end
+    
     methods ( Abstract = true, Static = false )
         
     end

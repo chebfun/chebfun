@@ -134,7 +134,7 @@ else
         end
     end
     % Find the index of the smallest error:
-    [~, minInd] = min(errs); 
+    [ignored, minInd] = min(errs); 
     dOpt = min(minInd) - 1;
 end
 

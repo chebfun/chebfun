@@ -69,16 +69,6 @@ err(length(err) + 1) = norm(feval(N, u) - Nu);
 err(length(err) + 1) = norm(N(u) - Nu);
 err(length(err) + 1) = norm(N*u - Nu);
 
-%% Feval with numerical input:
-% Primitive operator blocks
-[Z, I, D, C, M] = linop.primitiveOperators(dom);
-N = chebop(@(u) diff(u) + x.*u, dom);
-L = linop(D + M(x));
-err(length(err) + 1) = norm(N(6) - matrix(L, 6));
-
-N = chebop(@(x, u, v) [diff(u) + v ; diff(v) - sin(x).*u], dom);
-L = linop([D, I; -M(sin(x)), D]);
-err(length(err) + 1) = norm(N(6) - matrix(L, 6));
 %% Happy?
 
 tol = 1e-14;

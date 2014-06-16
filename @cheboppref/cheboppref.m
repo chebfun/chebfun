@@ -194,8 +194,25 @@ classdef cheboppref < chebpref
                 prefList.minDimension);
             fprintf([padString('    plotting:') '%s\n'], ...
                 prefList.plotting);
-        end
+       end
 
+        function pref = subsasgn(pref, ind, val)
+        %SUBSASGN   Subscripted assignment for CHEBOPPREF.
+        %   P.PROP = VAL, where P is a CHEBOPPREF object, assigns the value
+        %   VAL to the CHEBOPPREF property PROP stored in P.  If PROP is not a
+        %   CHEBOPPREF property, an error will be thrown.
+        %
+        %   CHEBOPPREF does not support any other subscripted assignment types,
+        %   including '()' and '{}'.
+            
+            % Support user-friendlier syntax for specifying discretization
+            % choice:
+            val = cheboppref.parseDiscretization(val);
+            
+            % Call the superclass method.
+            pref = subsasgn@chebpref(pref, ind, val);
+        end 
+       
     end
 
     methods ( Static = true )
@@ -295,6 +312,10 @@ classdef cheboppref < chebpref
                     while ( ~isempty(varargin) )
                         prefName = varargin{1};
                         prefValue = varargin{2};
+                        
+                        % Support user-friendlier syntax for specifying discretization
+                        % choice:
+                        prefValue = cheboppref.parseDiscretization(prefValue);
                         if ( isfield(defaultPrefs, prefName) )
                             defaultPrefs.(prefName) = prefValue;
                         else
@@ -325,6 +346,24 @@ classdef cheboppref < chebpref
             factoryPrefs.maxIter = 25;
             factoryPrefs.minDimension = 32;
             factoryPrefs.plotting = 'off';
+        end
+        
+        function val = parseDiscretization(val)
+        %PARSEDISCRETIZATION    Allow different syntax for specifying
+        %                       discretization.
+            
+            % We want to allow user-friendly syntax for specifying the
+            % discretization (#433). So check whether we have some of the
+            % strings we want to allow, and convert them to the correct function
+            % handle:
+            if ( any(strcmpi(val, {'ultraspherical', 'ultraS'})) )
+                val = @ultraS;
+            elseif ( any(strcmpi(val, {'collocation', 'colloc2'})) )
+                val = @colloc2;
+            elseif ( strcmpi(val, 'colloc1') )
+                val = @colloc1;
+            end
+                
         end
 
     end

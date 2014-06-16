@@ -77,6 +77,9 @@ rows = [f.rows, g.rows];
 Z = zeros( length(fScl), length(gScl) );
 D = [fScl Z ; Z.' gScl];
 [U, S, V] = svd(Rcols * D * Rrows.');
+% If V is complex-valued, then conjugate: 
+V = conj( V ); 
+% Take diagonal from SIGMA:
 s = diag(S);
 
 % compress the format if possible.
