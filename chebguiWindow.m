@@ -1931,8 +1931,7 @@ function menu_test_Callback(hObject, eventdata, handles)
 T = 0;
 folders = {'bvpdemos', 'pdedemos', 'eigdemos'};
 for k = 1:numel(folders)
-    subdir = fullfile(fileparts(which('chebtest')), '@chebgui', 'private', ...
-        folders{k});
+    subdir = fullfile(chebfunroot(), '@chebgui', 'private', folders{k});
     subdirlist = dir(subdir);
     subdirnames = { subdirlist.name };
     fprintf([folders{k}(1:3) , '\n']);
