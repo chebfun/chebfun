@@ -48,7 +48,7 @@ for j = 1:length(theta)
     B = r*A;
     H = (B + B')/2;
     [X, D] = eig(H);
-    [~, k] = max(diag(D));
+    [ignored, k] = max(diag(D));
     v = X(:,k);
     z(j) = v'*A*v/(v'*v);
 end

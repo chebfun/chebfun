@@ -375,9 +375,23 @@ isDouble = cellfun(@isnumeric, varargin);
 startLoc = [1 find([0 diff(isDouble)] == 1 & [diff(isDouble) 0] == 0) nargin+1];
 for k = 1:numel(startLoc)-1
     data = varargin(startLoc(k):startLoc(k+1)-1);
-    % Ignore NaN data
+    % Ignore complete NaN data:
     if ( all(isnan(data{1})) )
         continue
+    end
+    
+    if ( isnumeric(data{1}) )
+        % Remove mixed NaN data:
+        xData = data{1};
+        yData = data{2};
+        nanIdx = isnan(xData);
+        xData(nanIdx) = [];
+        yData(nanIdx) = [];
+        
+        % merge duplicate delta functions.
+        [yData, xData] = deltafun.mergeColumns(yData.', xData.');
+        data{1} = xData.';
+        data{2} = yData.';
     end
     h(j) = stem(data{:}, 'fill');
     set(h(j), 'ShowBaseLine', 'off')

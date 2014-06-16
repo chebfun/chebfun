@@ -49,7 +49,7 @@ err = g(xx,yy)-f(xx,yy);
 pass(8) = ( norm(err(:),inf ) < 2e3*tol );
 
 % Test building Chebfun2 objects from sample data: 
-rng(0);
+seedRNG(0);
 r = rand(3);
 pass(9) = norm( r - chebpoly2(chebfun2(r, 'coeffs')) ) < 10*tol; 
 r = rand(4);

@@ -49,6 +49,15 @@ cheboppref.setDefaults(savedPrefs);
 % Test getting defaults:
 pass(8) = isnumeric(cheboppref().errTol);
 
+% Test specifying discretization via strings
+cheboppref.setDefaults('factory');
+cheboppref.setDefaults('discretization', 'ultraspherical');
+pref = cheboppref;
+pass(9) = strcmp(func2str(pref.discretization), 'ultraS');
+pref.discretization = 'collocation';
+pass(10) = strcmp(func2str(pref.discretization), 'colloc2');
+
+
 end
 
 function out = isequalNaN(a, b)
