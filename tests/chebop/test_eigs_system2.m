@@ -29,17 +29,23 @@ A.rbc = @(u) u{1};
 lam = diag(D);
 lam = abs(lam);
 lamCorrect = abs(lamCorrect);
-AV = A(V);
+AV = [];
+for vCounter = 1:size(V, 2)
+    AV = [AV, A(V(:, vCounter))];
+end
 err(1) = norm( lam - lamCorrect, inf );
-err(2) = norm(AV - [V{1}*D; V{2}*D]);
+err(2) = norm(AV - V*D);
 %% Piecewise domain
 A.domain = [0, pi/2, pi];
 [V, D] = eigs(A, 5, pref);
 lam_pw = diag(D);
 lam_pw = abs(lam_pw);
-AV = A(V);
+AV = [];
+for vCounter = 1:size(V, 2)
+    AV = [AV, A(V(:, vCounter))];
+end
 err(3) = norm( lam_pw - lamCorrect, inf );
-err(4) = norm(AV - [V{1}*D; V{2}*D]);
+err(4) = norm(AV - V*D);
 %% Smooth domain again, but not including x in the argument list A.op.
 d = [0, pi];
 A = chebop(@(u) [-u{1} + diff(u{2}) ; diff(u{1})], d);
@@ -51,9 +57,12 @@ pref.discretization = @colloc1;
 lam = diag(D);
 lam = abs(lam);
 lamCorrect = abs(lamCorrect);
-AV = A(V);
+AV = [];
+for vCounter = 1:size(V, 2)
+    AV = [AV, A(V(:, vCounter))];
+end
 err(5) = norm( lam - lamCorrect, inf );
-err(6) = norm(AV - [V{1}*D; V{2}*D]);
+err(6) = norm(AV - V*D);
 
 %%
 
