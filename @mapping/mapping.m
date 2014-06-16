@@ -4,7 +4,7 @@ classdef mapping
 %   The MAPPING class handles the (possibly nonlinear) mapping between
 %   CLASSICFUN objects and ONEFUN objects.
 %
-%   A MAPPING object, M, will contain:
+%   A MAPPING object, M, _must_ contain:
 %       * M.For: The forward map from [-1, 1] to [a, b].
 %       * M.Der: The derivative of M.For.
 %       * M.Inv: The inverse mapping from [a, b] to [-1, 1].
@@ -22,7 +22,7 @@ classdef mapping
 %   changed in the future.
 %
 %   Note. We don't bother to store the target domain as this can be found by
-%   evaluating the map at [-1,1].
+%   evaluating the map at [-1, 1].
 %
 %   Note. Currently the only client is CLASSICFUN for mapping ONEFUNS. In the
 %   future we might allow singular maps for dealing with singular endpoints.
@@ -40,51 +40,50 @@ classdef mapping
         
         % Inverse of the map:
         Inv
-        
-        % Misc. data:
-        OtherData = struct();
-        
+
     end
     
     methods
         
         %% %%%%%%%%%%%%%%%%%%%%%%%%%%%  CONSTRUCTOR  %%%%%%%%%%%%%%%%%%%%%%%%%%%
         
-        function obj = mapping(mapStruct)
+        function obj = mapping(For, Der, Inv)
+            % MAPPING CLASS CONSTRUCTOR.
             
             if ( nargin == 0 )
+                % Return an empty MAPPING:
                 return
             end
             
-            for inProp = fieldnames(mapStruct).'
-                for prop = properties(mapping()).'
-                    if ( strcmpi(inProp, prop) )
-                        obj.(char(prop)) = mapStruct.(char(inProp));
-                        mapStruct = rmfield(mapStruct, inProp);
-                    end
-                end
+            if ( (nargin == 1) && isa(For, 'mapping') )
+                % A MAPPING was given:
+                obj = For;
+                return
             end
             
-            if ( ~isempty(obj.OtherData) )
-                obj.OtherData = mapStruct;
-            end
+            % Fill the MAPPING object. Note all fields must be given.
+            obj.For = For;
+            obj.Der = Der;
+            obj.Inv = Inv;
             
         end
         
         function out = feval(map, x)
+        %FEVAL   Evaluate the orward part of a map.
             out = feval(map.for, x);
         end
         
         function out = inv(map)
+        %INV   Invert a map.
             out.For = map.Inv;
             out.Der = @(x) 1./map.Der(x);
             out.Inv = map.For;
         end
                 
+        % TODO: Implement this.
 %         function out = compose(map1, map2)
 %             % Compose two mappings.
 %         end
-
 
         % TODO: Testing shows SUBSREF is expensive here. Since we don't need it,
         % (the default suffices for now) we comment it out.
@@ -123,16 +122,15 @@ classdef mapping
         %   that defines a linear map. The structure MAP consists of three
         %   function handles:
         %      MAP.FOR is a function that maps [-1,1] to [ENDS(1), ENDS(2)].
-        %      MAP.INV is the inverse map.
         %      MAP.DER is the derivative of the map defined in MAP.FOR
+        %      MAP.INV is the inverse map.
         
             a = ends(1);
             b = ends(2);
-            mapStruct = struct( ...
-                'For', @(y) b*(y + 1)/2 + a*(1 - y)/2, ...
-                'Inv', @(x) (x - a)/(b - a) - (b - x)/(b - a), ...
-                'Der', @(y) (b - a)/2 + 0*y);
-            map = mapping(mapStruct);
+            ForHandle = @(y) b*(y + 1)/2 + a*(1 - y)/2; 
+            DerHandle = @(y) (b - a)/2 + 0*y;
+            InvHandle = @(x) (x - a)/(b - a) - (b - x)/(b - a);
+            map = mapping(ForHandle, DerHandle, InvHandle);
             
         end
         
@@ -140,16 +138,15 @@ classdef mapping
         %UNBOUNDED   Creates a map structure for UNBNDFUN objects.
         %   M = UNBOUNDED(ENDS) returns a structure that defines a nonlinear map
         %   from [-1 1] to the unbounded domain [ENDS(1) ENDS(2)]. The structure
-        %   MAP consists of three function handles, one string. M.FOR is a
-        %   function that maps [-1,1] to [ENDS(1) ENDS(2)]. M.INV is the inverse
-        %   map. M.DER is the derivative of the map defined in MAP.FOR.
+        %   MAP consists of three function handles, one string. 
+        %    M.FOR is a function that maps [-1,1] to [ENDS(1) ENDS(2)]. 
+        %    M.DER is the derivative of the map defined in MAP.FOR.
+        %    M.INV is the inverse map of M.FOR. 
+        
             
             % The domain:
             a = ends(1); 
             b = ends(2);
-            
-            % Initialise the map structure:
-            map = struct('For', [], 'Inv', [], 'Der', []);
             
             % Fixed map parameters:
             s = 1;
@@ -158,21 +155,21 @@ classdef mapping
             % Deal with the different cases:
             if ( a == -inf && b == inf )
                 
-                map.For = @(y) 5*s*y./(1 - min(y.^2, 1)) + c;
-                map.Inv = @(x) 2*x./(5*s + sqrt(25*s^2 + 4*x.^2));
-                map.Der = @(y) 5*s*(1 + y.^2)./(1 - y.^2).^2;
+                ForHandle = @(y) 5*s*y./(1 - min(y.^2, 1)) + c;
+                InvHandle = @(x) 2*x./(5*s + sqrt(25*s^2 + 4*x.^2));
+                DerHandle = @(y) 5*s*(1 + y.^2)./(1 - y.^2).^2;
                 
             elseif ( a == -inf )
                 
-                map.For = @(y) 15*s*(y - 1)./(y + 1) + b;
-                map.Inv = @(x) (15*s + x - b)./(15*s - x + b);
-                map.Der = @(y) 15*s*2./(y + 1).^2;
+                ForHandle = @(y) 15*s*(y - 1)./(y + 1) + b;
+                InvHandle = @(x) (15*s + x - b)./(15*s - x + b);
+                DerHandle = @(y) 15*s*2./(y + 1).^2;
                 
             elseif ( b == inf )
                 
-                map.For = @(y) 15*s*(y + 1)./(1 - y) + a;
-                map.Inv = @(x) (-15*s + x - a)./(15*s + x - a);
-                map.Der = @(y) 15*s*2./(y - 1).^2;
+                ForHandle = @(y) 15*s*(y + 1)./(1 - y) + a;
+                InvHandle = @(x) (-15*s + x - a)./(15*s + x - a);
+                DerHandle = @(y) 15*s*2./(y - 1).^2;
                 
             else
                 
@@ -180,7 +177,7 @@ classdef mapping
                 
             end
             
-        map = mapping(map);
+            map = mapping(ForHandle, DerHandle, InvHandle);
             
         end
         
