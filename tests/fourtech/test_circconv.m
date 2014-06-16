@@ -1,4 +1,4 @@
-% Test file for fourtech/test_circconv.m
+% Test file for fourtech/circconv
 
 function pass = test_circconv(pref)
 

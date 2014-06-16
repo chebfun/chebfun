@@ -210,7 +210,7 @@ classdef fourtech < smoothfun
         values = coeffs2vals(coeffs);
         
         % Make a FOURTECH (constructor shortcut):
-        f = make( varargin );
+        f = make(varargin);
         
         % Compute Fourier quadrature weights (trapezoidal rule):
         w = quadwts(n)
@@ -419,14 +419,15 @@ classdef fourtech < smoothfun
         f = uminus(f)
 
         % Unary plus of a FOURTECH.
-        f = uplus(f)        
+        f = uplus(f)   
+        
     end
     
     methods       
         
         function c = legpoly(f)
             error('CHEBFUN:FOURTECH:legpoly:notAvailable',...
-                'Cannot convert a Fourier based chebfun to a Legendre Series. Try first converting f to a Chebyshev based chebfun');
+                'Cannot convert a Fourier based chebfun to a Legendre Series. Try first converting f to a Chebyshev-based chebfun');
         end
         
         function [f, rootsLeft, rootsRight] = extractBoundaryRoots(f, numRoots)

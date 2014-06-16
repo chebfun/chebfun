@@ -28,14 +28,20 @@ end
 
 % No support for piecewise-smooth CHEBFUNs:
 if ( numel(f.funs) > 1 || numel(g.funs) > 1 )
-    error('CHEBFUN:circconv:quasi', ...
+    error('CHEBFUN:circconv:pwsmooth', ...
         'No support for piecewise-smooth CHEBFUN objects.');
+end
+
+% No support for Chebyshev-based CHEBFUNs:
+if ( ~isa(f.funs{1}.onefun, 'fourtech') || ~isa(g.funs{1}.onefun, 'fourtech') )
+    error('CHEBFUN:circconv:chebyshev', ...
+        'No support for Chebyshev-based CHEBFUN objects.');
 end
 
 % Extract the domain:
 [a, b] = domain(f);
 [c, d] = domain(g);
-if ( (a ~= c) &&  (b ~= d) )
+if ( (a ~= c) ||  (b ~= d) )
     error('CHEBFUN:circconv:domain', 'Domains of f and g must match.');
 end
 if ( any( ~isfinite([a b c d]) ) )

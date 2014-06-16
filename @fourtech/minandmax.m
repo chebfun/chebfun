@@ -24,7 +24,7 @@ function [vals, pos] = minandmax(f)
 % We know f will be smooth since it is periodic, thus CHEBTECH should be
 % able to beautifully compute the roots.
 
-% An arbitrary decision was made to use chebtech1 in this computation.
+% An arbitrary decision was made to use CHEBTECH1 in this computation.
 g = chebtech1(@(x) f.feval(x));
 [vals,pos] = minandmax(g);
 
