@@ -47,5 +47,5 @@ nrmu = norm(u);
 % opt = {'resampling',false,'splitting',true,'scale',nrmu};
 int = @(x) sum( chebfun(@(y) feval(u,y).*kernel(x,y),d)); %, opt{:} );
 Fu = chebfun( int, d, 'sampletest', false, 'resampling', false, ...
-    'vectorize', 'scale', nrmu);
+    'vectorize', 'vscale', nrmu);
 end

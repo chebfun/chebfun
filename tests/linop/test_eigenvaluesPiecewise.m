@@ -41,18 +41,14 @@ prefs.discretization = @colloc1;
 e = diag(D);
 err(1) = norm(e - v4results, inf);
 % Check that we actually computed eigenfunctions
-V = V{1};
-LV = L*V;
-err(2) = norm(LV{1}-V*D);
+err(2) = norm(L*V-V*D);
 %% Solve with colloc2
 prefs.discretization = @colloc2;
 [V, D] = eigs(L, 6, prefs);
 e = diag(D);
 err(3) = norm(e - v4results, inf);
 % Check that we actually computed eigenfunctions
-V = V{1};
-LV = L*V;
-err(4) = norm(LV{1}-V*D);
+err(4) = norm(L*V-V*D);
 
 %% Solve with ultraS
 prefs.discretization = @ultraS;
@@ -60,9 +56,7 @@ prefs.discretization = @ultraS;
 e = diag(D);
 err(5) = norm(e - v4results, inf);
 % Check that we actually computed eigenfunctions
-V = V{1};
-LV = L*V;
-err(6) = norm(LV{1}-V*D);
+err(6) = norm(L*V-V*D);
 
 %%
 tol = [1e-10 5e-8 1e-10 5e-8 1e-10 5e-8];

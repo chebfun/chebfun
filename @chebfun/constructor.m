@@ -46,7 +46,9 @@ data.hscale = norm(dom, inf);
 if ( isinf(data.hscale) )
     data.hscale = 1;
 end
-data.vscale = pref.scale;
+if ( isempty(data.vscale) )
+    data.vscale = 0;
+end
 
 % Sanity check:
 if ( iscell(op) && (numel(op) ~= numIntervals) )

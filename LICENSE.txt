@@ -1,4 +1,4 @@
-Copyright (c) 2013, The Chancellor, Masters and Scholars of the University 
+Copyright (c) 2014, The Chancellor, Masters and Scholars of the University 
 of Oxford, and the Chebfun Developers. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

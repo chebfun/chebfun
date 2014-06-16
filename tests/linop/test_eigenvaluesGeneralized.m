@@ -27,7 +27,7 @@ er = sort(real(e));
 AV = A*V;
 BV = B*V;
 err(1,1) = norm(er - e_true) + norm(imag(e));
-err(1,2) = norm(AV{1}-BV{1}*D);
+err(1,2) = norm(AV-BV*D);
 
 % COLLOC2
 pref.discretization = @colloc2;
@@ -37,7 +37,7 @@ er = sort(real(e));
 AV = A*V;
 BV = B*V;
 err(1,3) = norm(er - e_true) + norm(imag(e));
-err(1,4) = norm(AV{1}-BV{1}*D);
+err(1,4) = norm(AV-BV*D);
 
 % ULTRAS
 pref.discretization = @ultraS;
@@ -47,7 +47,7 @@ er = sort(real(e));
 AV = A*V;
 BV = B*V;
 err(1,5) = norm(er - e_true) + norm(imag(e));
-err(1,6) = norm(AV{1}-BV{1}*D);
+err(1,6) = norm(AV-BV*D);
 
 
 
@@ -72,7 +72,7 @@ er = sort(real(e));
 AV = A*V;
 BV = B*V;
 err(2,1) = norm(er - e_true) + norm(imag(e));
-err(2,2) = norm(BV{1}-AV{1}*D);
+err(2,2) = norm(BV-AV*D);
 
 % COLLOC2
 pref.discretization = @colloc2;
@@ -82,7 +82,7 @@ er = sort(real(e));
 AV = A*V;
 BV = B*V;
 err(2,3) = norm(er - e_true) + norm(imag(e));
-err(2,4) = norm(BV{1}-AV{1}*D);
+err(2,4) = norm(BV-AV*D);
 
 % ULTRAS
 pref.discretization = @ultraS;
@@ -92,7 +92,7 @@ er = sort(real(e));
 AV = A*V;
 BV = B*V;
 err(2,5) = norm(er - e_true) + norm(imag(e));
-err(2,6) = norm(BV{1}-AV{1}*D);
+err(2,6) = norm(BV-AV*D);
 
 %%
 
@@ -122,7 +122,7 @@ e = diag(D);
 AV = A*V;
 BV = B*V;
 err(3,1) = norm(e - e_true);
-err(3,2) = norm([AV{1}; AV{2}] - [BV{1}*D; BV{2}*D]);
+err(3,2) = norm(AV - BV*D);
 
 % COLLOC2
 pref.discretization = @colloc2;
@@ -131,7 +131,7 @@ e = diag(D);
 AV = A*V;
 BV = B*V;
 err(3,3) = norm(e - e_true);
-err(3,4) = norm([AV{1}; AV{2}] - [BV{1}*D; BV{2}*D]);
+err(3,4) = norm(AV - BV*D);
 
 % ULTRAS
 pref.discretization = @ultraS;
@@ -140,7 +140,7 @@ e = diag(D);
 AV = A*V;
 BV = B*V;
 err(3,5) = norm(e - e_true);
-err(3,6) = norm([AV{1}; AV{2}] - [BV{1}*D; BV{2}*D]);
+err(3,6) = norm(AV - BV*D);
 
 %%
 tolVals = repmat(6e-9, 3, 1);

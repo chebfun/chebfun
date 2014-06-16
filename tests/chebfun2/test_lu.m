@@ -5,7 +5,7 @@ if ( nargin == 0 )
     pref = chebfunpref; 
 end 
 
-tol = 100*pref.cheb2Prefs.eps; 
+tol = 100*pref.eps; 
 
 % Decomposition on [-1,1,-1,1]: 
 x = chebpts(100);
