@@ -27,7 +27,8 @@ classdef chebfun2v
         isTransposed % transposed?
     end
     
-    methods
+    %% Constructor.
+    methods ( Access = public, Static = false )
         
         function F = chebfun2v( varargin )
             % The main CHEBFUN2V constructor!

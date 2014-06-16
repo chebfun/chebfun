@@ -107,7 +107,7 @@ classdef chebgui
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
     
-    properties
+    properties ( Access = public )
         type = '';          % Type of chebgui (bvp, pde, or eig)
         domain = '';        % Spacial domain (may contain breakpoints)
         DE = '';            % Differential equation, or rhs in u_t = ... for PDEs
@@ -142,7 +142,9 @@ classdef chebgui
             'numeigs', '');
     end
     
-    methods
+    %% The CHEBGUI Constructor.
+    
+    methods ( Access = public, Static = false )
         
         function c = chebgui(varargin)
         %CHEBGUI    The CHEBGUI constructor
@@ -199,7 +201,34 @@ classdef chebgui
         end
     end
     
-    methods ( Static = true )
+    %% Non-Static methdos implemented by the CHEBGUI class.
+    
+    methods ( Access = public, Static = false )
+       
+        % Export a BVP to an .m file
+        exportBVP2mfile(guifile, pathname, filename)
+        
+        % Export an EIG problem to an .m file
+        exportEIG2mfile(guifile, pathname, filename, handles)
+        
+        % Export a PDE to an .m file
+        exportPDE2mfile(guifile, pathname, filename)
+                
+        % Populate the fields of the GUI
+        [field, allVarString, indVarName, pdeVarNames, pdeflag, eigVarNames, ...
+            allVarNames]  = setupFields(guifile, input, type, allVarString)
+        
+        % Solve a GUI BVP
+        varargout = solveGUIbvp(guifile,handles)
+        
+        % Solve a GUI EIG problem
+        varargout = solveGUIeig(guifile,handles)
+        
+    end
+    
+    %% Static methdos implemented by the CHEBGUI class.
+
+    methods ( Access = public, Static = true )
         
         % Information shown during BVP solving.
         [dummy, displayTimer] = displayBVPinfo(handles, mode, varargin);
@@ -226,27 +255,5 @@ classdef chebgui
         
     end
     
-    methods( Access = public )
-       
-        % Export a BVP to an .m file
-        exportBVP2mfile(guifile, pathname, filename)
-        
-        % Export an EIG problem to an .m file
-        exportEIG2mfile(guifile, pathname, filename, handles)
-        
-        % Export a PDE to an .m file
-        exportPDE2mfile(guifile, pathname, filename)
-                
-        % Populate the fields of the GUI
-        [field, allVarString, indVarName, pdeVarNames, pdeflag, eigVarNames, ...
-            allVarNames]  = setupFields(guifile, input, type, allVarString)
-        
-        % Solve a GUI BVP
-        varargout = solveGUIbvp(guifile,handles)
-        
-        % Solve a GUI EIG problem
-        varargout = solveGUIeig(guifile,handles)
-        
-    end
-    
+     
 end

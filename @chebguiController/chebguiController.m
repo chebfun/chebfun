@@ -12,7 +12,8 @@ classdef chebguiController
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
     
-    methods (Access = public)
+    %% Non-Static methods:
+    methods ( Access = public, Static = false )
         
         function A = chebguiController(varargin)
             % We never construct objects of this type, so the constructor is
@@ -21,7 +22,8 @@ classdef chebguiController
         
     end
     
-    methods ( Static = true )
+    %% Static methods:
+    methods ( Access = public, Static = true )
         
         % Deal with what happens when BCs get changed.
         handles = callbackBCs(handles, inputString, type)

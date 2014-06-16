@@ -28,23 +28,11 @@ classdef chebDiscretization
         projOrder = []    % projection order for rectangularizing
     end
         
-    properties ( Dependent )
+    properties ( Dependent = true )
         numIntervals      % number of intervals in the domain
     end
     
-    %% STATIC METHODS:
-    
-    methods ( Access = public, Static = true )
-        
-        % Get dimension adjustment:
-        dimAdjust = getDimAdjust(L)
-        
-        % Get projection order:
-        projOrder = getProjOrder(L)
-        
-    end
-    
-    %% ABSTRACT METHODS:
+    %% Non-Static methods.
             
     % Abstract non-static methods.
     
@@ -69,6 +57,8 @@ classdef chebDiscretization
         
     end
     
+    %% STATIC METHODS:
+    
     % Abstract static methods.
     
     methods ( Access = public, Abstract = true, Static = true )
@@ -78,6 +68,18 @@ classdef chebDiscretization
         
     end
     
+    % Concrete static methods.
+    
+    methods ( Access = public, Static = true )
+        
+        % Get dimension adjustment:
+        dimAdjust = getDimAdjust(L)
+        
+        % Get projection order:
+        projOrder = getProjOrder(L)
+        
+    end
+        
     %% METHODS IMPLEMENTED IN THIS FILE:    
     methods
         

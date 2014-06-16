@@ -45,7 +45,8 @@ classdef chebfun2
         domain = [-1 1 -1 1];
     end
     
-    methods
+    %% Constructor
+    methods ( Access = public, Static = false )
         
         function f = chebfun2(varargin)
             % The main CHEBFUN2 constructor!
@@ -60,26 +61,15 @@ classdef chebfun2
             
         end
         
+    end        
+    
+    %% Public Non-Static methods implemented by CHEBFUN2 class.
+    methods
+         f = conj(f);
     end
     
-    % Static methods implemented by CHEBFUN class.
-    methods ( Static = true )
-        
-        X = coeffs2vals(U); 
-        
-        X = vals2coeffs(U); 
-        
-        % Padua points to tensor grid:
-        [C, V, X, Y] = paduaVals2coeffs( F, dom ); 
-        
-        [xx, yy] = chebpts2(nx, ny, domain);
-        
-        % Outer-product of two chebfuns.
-        F = outerProduct(f, g);   
-        
-    end
-    
-    methods ( Hidden = true )
+    %% Public Non-Static Hidden methods implemented by CHEBFUN2 class.
+    methods ( Access = public, Static = false, Hidden = true )
         % Check to see if domains are equal.
         out = domainCheck(f, g)
         
@@ -99,20 +89,34 @@ classdef chebfun2
         vscl = vscale(f) 
     end
 
-    % Private methods implemented by CHEBFUN2 class.
+    %% Private Non-Static methods implemented by CHEBFUN2 class.
     methods ( Access = private )
         
     end
+        
     
-    % Static private methods implemented by CHEBFUN2 class.
-    methods ( Static = true, Access = private )
+    %% Public Static methods implemented by CHEBFUN2 class.
+    methods ( Access = public, Static = true )
+        
+        X = coeffs2vals(U); 
+        
+        X = vals2coeffs(U); 
+        
+        % Padua points to tensor grid:
+        [C, V, X, Y] = paduaVals2coeffs( F, dom ); 
+        
+        [xx, yy] = chebpts2(nx, ny, domain);
+        
+        % Outer-product of two chebfuns.
+        F = outerProduct(f, g);   
         
     end
     
-    % Methods implemented by CHEBFUN2 class.
-    methods
-         f = conj(f);
+    %% Private Static methods implemented by CHEBFUN2 class.
+    methods ( Access = private, Static = true )
+        
     end
+    
     
 end
 
