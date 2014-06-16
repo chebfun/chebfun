@@ -74,7 +74,7 @@ if useMatlabsRootsCommand
     % Convert to an array for output:
     out = cell2mat(r);
 else
-    % An arbitrary decision was made to use chebtech1
+    % An arbitrary decision was made to use CHEBTECH1.
     g = chebtech1(@(x) f.feval(x));
     out = roots(g,varargin{:});
 end
