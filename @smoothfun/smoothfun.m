@@ -25,7 +25,9 @@ classdef smoothfun < onefun % (Abstract)
 % Class diagram: [<<onefun>>] <-- [<<SMOOTHFUN>>] <-- [<<chebtech>>]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Constructor for the SMOOTHFUN class.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
         
         function obj = constructor(op, data, pref)
@@ -63,7 +65,9 @@ classdef smoothfun < onefun % (Abstract)
         
     end
 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Static methods implemented by SMOOTHFUN class.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true ) 
         
         % Construct a rational interpolant to equispaced data.
@@ -76,7 +80,9 @@ classdef smoothfun < onefun % (Abstract)
     
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Methods implemented in this file:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function f = funqui(vals)
 %FUNQUI   Rational interpolant of equispaced data.
