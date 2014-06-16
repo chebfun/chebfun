@@ -177,9 +177,6 @@ classdef unbndfun < classicfun
         % Right matrix divide for an UNBNDFUN.
         X = mrdivide(B, A)
         
-        % Estimate the Inf-norm of an UNBNDFUN
-        out = normest(f);
-        
         % Data for plotting an UNBNDFUN
         data = plotData(f, g);
                 

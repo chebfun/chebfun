@@ -27,8 +27,10 @@ else
     % Differentiate along columns.
     
     % Construct the UNBNDFUN object for the derivative of the inverse map:
+    % (Note that this is the reciprical of the forward derivative, by the
+    % inverse function theorem).
     invDer = f; 
-    invDer.onefun = onefun.constructor(@(x) f.mapping.invDer(x));
+    invDer.onefun = onefun.constructor(@(x) 1./f.mapping.der(x));
 
     % Loop for higher derivatives:
     for j = 1:k

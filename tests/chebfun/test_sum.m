@@ -175,7 +175,9 @@ pass(28) = err1 < 2e5*get(f,'epslevel')*get(f,'vscale');
 
 x = chebfun('x', dom);
 g = x.*exp(-x);
+warning('off', 'CHEBFUN:UNBNDFUN:sum:slowdecay');
 I2 = sum(g);
+warning('on', 'CHEBFUN:UNBNDFUN:sum:slowdecay');
 err2 = abs(I2 - IExact);
 tol = 2e10*get(f,'epslevel')*get(f,'vscale');
 pass(29) = err2 < tol;
@@ -191,5 +193,15 @@ warning('on','CHEBFUN:UNBNDFUN:sum:slowdecay');
 IExact = 7.0898154036220641;
 err = abs(I - IExact);
 pass(30) = err < 1e9*get(f,'epslevel')*get(f,'vscale');
+
+% #496
+k = 3;
+op = @(t) exp(-t)./(1+k*t);
+f = chebfun(op, [0 inf]);
+I = sum(f);
+% The following exact result is obtained using Matlab symbolic toolbox:
+I_exact = 0.385602012136694;
+err = abs(I-I_exact);
+pass(31) = err < 1e1*get(f,'epslevel')*get(f,'vscale');
 
 end

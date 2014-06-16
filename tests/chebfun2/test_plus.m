@@ -1,4 +1,4 @@
-function pass = test_basic_plus( pref ) 
+function pass = test_plus( pref ) 
 % This tests the basic arithmetic operations on chebfun2 objects.
 
 if ( nargin < 1 ) 
@@ -23,11 +23,23 @@ end
 % Check if chebfun2/plus compresses the rank: 
 f = chebfun2(@(x,y) x); 
 g = f + f; 
-pass(j) = ( length(g) == length(f) ); 
+pass(4) = ( length(g) == length(f) ); 
 
 % Check if chebfun2/plus compresses the rank: 
 f = chebfun2(@(x,y) cos(x.*y)); 
 g = f + f; 
-pass(j) = ( length(g) == length(f) ); 
+pass(5) = ( length(g) == length(f) ); 
+
+% Check adding a function with a small vscale works: 
+f = chebfun2(@(x,y) 1e-100*x); 
+g = f + f; 
+pass(5) = ( length(g) == length(f) ); 
+pass(6) = ( abs( vscale( g ) - 2e-100 ) < tol ); 
+
+% Check adding a function with a large vscale works: 
+f = chebfun2(@(x,y) 1e100*x); 
+g = f + f; 
+pass(7) = ( length(g) == length(f) ); 
+pass(8) = ( abs( vscale( g ) - 2e100 )/2e100 < tol ); 
 
 end

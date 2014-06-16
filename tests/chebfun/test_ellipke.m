@@ -23,7 +23,9 @@ pass(2) = normest(K1 - K2) < 100*epslevel(K1)*vscale(K1);
 m = chebfun('m', [0 .99], pref);
 [K1, E1] = ellipke(m);
 E2 = chebfun(@(m) myellipke(m), [0 .99], pref);
-pass(3) = normest(E1 - E2) < epslevel(E1)*vscale(E1);
+err = normest(E1 - E2);
+tol = 10*epslevel(E1)*vscale(E1);
+pass(3) = err < tol;
 
 % Array-valued composition:
 f = chebfun(@(x) .05+abs(.9*[sin(pi*x), cos(pi*x)]), -1:.5:1);

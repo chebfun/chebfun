@@ -10,7 +10,7 @@ end
 
 % Test 1 confirms that the elements of the array-valued chebfun p 
 % are Legendre polynomials: 
-p = legpoly(900:1100, [-1 1]);
+p = legpoly(900:1100, [-1 1], 0, 1);
 xx = linspace(-1, 1, 10);
 P = legendre(900, xx); 
 err = norm(feval(p(:,1), xx) - P(1, :), inf);
@@ -24,7 +24,7 @@ tol = 5e1*epslevel(p)*vscale(p);
 pass(2) = err < tol;
 
 % Test 3 confirms othonormality:
-p = legpoly(900:1100, [-1 1], 'normalize');
+p = legpoly(900:1100, [-1 1], 'normalize',1);
 err = norm(p'*p - eye(201));
 tol = 5e3*epslevel(p)*vscale(p);
 pass(3) = err < tol;
@@ -33,7 +33,7 @@ pass(3) = err < tol;
 
 % Test 4 confirms that the elements of the array-valued chebfun p 
 % are Legendre polynomials: 
-p = legpoly(900:1100);
+p = legpoly(900:1100,[-1,1],0,1);
 xx = linspace(-1, 1, 10);
 P = legendre(900, xx); 
 err = norm(feval(p(:,1), xx) - P(1, :), inf);
@@ -46,7 +46,7 @@ tol = 5e1*epslevel(p)*vscale(p);
 pass(5) = err < tol;
 
 % Test 6 confirms othonormality:
-p = legpoly(900:1100, 'normalize');
+p = legpoly(900:1100, 'normalize',1);
 err = norm(p'*p - eye(201));
 tol = 5e3*epslevel(p)*vscale(p);
 pass(6) = err < tol;
@@ -54,13 +54,13 @@ pass(6) = err < tol;
 %% Test method 1 on [0 10000]:
 
 % Test 7 confirms orthogonality:
-p = legpoly(900:1100, [0 10000], 'normalize');
+p = legpoly(900:1100, [0 10000], 'normalize',1);
 err = norm(p'*p - diag(diag(p'*p)));
 tol = 1e5*epslevel(p)*vscale(p);
 pass(7) = err < tol;
 
 % Test 8 confirms othonormality:
-p = legpoly(900:1100, [0 10000], 'normalize');
+p = legpoly(900:1100, [0 10000], 'normalize',1);
 err = norm(p'*p - eye(201));
 tol = 1e5*epslevel(p)*vscale(p);
 pass(8) = err < tol;
@@ -152,22 +152,39 @@ err = norm(p'*p-1);
 tol = 1e4*epslevel(p)*vscale(p);
 pass(20) = err < tol;
 
+% Test 21 & 22 confirms vectorized version of METHOD 3:
+p = legpoly([1000 1500]);
+xx = linspace(-1, 1, 10);
+P1 = legendre(1000, xx);
+P2 = legendre(1500, xx);
+err1 = norm(feval(p(:,1), xx) - P1(1, :), inf);
+err2 = norm(feval(p(:,2), xx) - P2(1, :), inf);
+tol = 1e4*epslevel(p)*vscale(p);
+pass(21) = err1 < tol;
+pass(22) = err2 < tol;
+
+% Test 23 confirms normaliztion for vectorized version of METHOD 3:
+p = legpoly([1000 1500], 'normalize');
+err = norm(p'*p-eye(2));
+tol = 1e4*epslevel(p)*vscale(p);
+pass(23) = err < tol;
+
 %% Test method 2 on [-1 1] with a row input N:
 
-% Test 21 confirms orthogonality:
+% Test 24 confirms orthogonality:
 p = legpoly([1;2;3;4;5;6;7;8;9;10], [-1 0.2 1]);
 err = norm(p*p' - diag(diag(p*p')));
 tol = 5*epslevel(p)*vscale(p);
-pass(21) = err < tol;
+pass(24) = err < tol;
 
-% Test 22 confirms othonormality:
+% Test 25 confirms othonormality:
 p = legpoly([1;2;3;4;5;6;7;8;9;10], [-1 0.6 1], 'normalize');
 err = norm(p*p' - eye(10));
 tol = 10*epslevel(p)*vscale(p);
-pass(22) = err < tol;
+pass(25) = err < tol;
 
-% Test 23 checks empty case:
+% Test 26 checks empty case:
 p = legpoly([], [-1 0.66 1], 'normalize');
-pass(23) = isempty(p);
+pass(26) = isempty(p);
 
 end

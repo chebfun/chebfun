@@ -174,19 +174,19 @@ function g = singIntegral(f)
             g.smoothPart = f.smoothPart.make(@(x) CM + 0*x);
             g.exponents = [ra - a 0];
         elseif ( ~iszero(u) && abs(CM) < tol*f.smoothPart.vscale )
-            [u, rootsLeft, ~] = extractBoundaryRoots(u);
+            [u, rootsLeft, ignored] = extractBoundaryRoots(u);
             g.smoothPart = u;
             g.exponents = [exps(1)+rootsLeft 0];
         else % The general case that both terms are non-trivial
             g.smoothPart = u + CM*xa;
-            [g.smoothPart, rootsLeft, ~] = ...
+            [g.smoothPart, rootsLeft, ignored] = ...
                 extractBoundaryRoots(g.smoothPart);
             g.exponents = [exps(1)+rootsLeft 0];
         end
         
     elseif ( abs(Cm) < tol*f.smoothPart.vscale )
         % No log term: fractional poles with non-constant smooth part:
-        [u, rootsLeft, ~] = extractBoundaryRoots(u);
+        [u, rootsLeft, ignored] = extractBoundaryRoots(u);
         g.smoothPart = u;
         g.exponents = [exps(1)+rootsLeft 0];
     else
