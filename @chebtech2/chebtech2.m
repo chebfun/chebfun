@@ -66,8 +66,8 @@ classdef chebtech2 < chebtech
 % Class diagram: [<<CHEBTECH>>] <-- [CHEBTECH2]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    %% METHODS IMPLEMENTED BY THIS M-FILE:
-    methods
+    %% The Constructor:
+    methods ( Access = public, Static = false )
         function obj = chebtech2(op, data, pref)
             % Parse inputs.
             if ( (nargin == 0) || isempty(op) )
@@ -120,8 +120,19 @@ classdef chebtech2 < chebtech
         end
     end
     
+    %% NON-STATIC METHODS IMPLEMENTED BY THIS CLASS:
+    methods ( Access = public, Static = false )
+        
+        % Compose two CHEBTECH2 objects or a CHEBTECH2 with a function handle:
+        h = compose(f, op, g, data, pref)
+        
+        % Get method:
+        val = get(f, prop);
+        
+    end
+    
     %% STATIC METHODS IMPLEMENTED BY THIS CLASS:
-    methods ( Static = true )
+    methods ( Access = public, Static = true )
         
         % Aliasing:
         coeffs = alias(coeffs, m)
@@ -152,20 +163,10 @@ classdef chebtech2 < chebtech
         coeffs = vals2coeffs(values)
         
     end
-    
-    %% METHODS IMPLEMENTED BY THIS CLASS:
-    methods
-        
-        % Compose two CHEBTECH2 objects or a CHEBTECH2 with a function handle:
-        h = compose(f, op, g, data, pref)
-        
-        % Get method:
-        val = get(f, prop);
-        
-    end
-    
+            
 end
 
+%% METHODS IMPLEMENTED BY THIS M-FILE:
 function data = parseDataInputs(data, pref)
 %PARSEDATAINPUTS   Parse inputs from the DATA structure and assign defaults.
 
