@@ -1,7 +1,7 @@
 function disp(F)
-%DISPLAY   Display a CHEBFUN2V.
+%DISP   Display a CHEBFUN2V.
 %
-% See also DISP.
+% See also DISPLAY.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information. 
