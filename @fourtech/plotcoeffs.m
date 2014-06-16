@@ -83,7 +83,7 @@ if ( ~loglogPlot )
         % Plot the coeffs AND the epslevel:
         h = semilogy(coeffIndex, absCoeffs, args{:});
         hold on
-        h2 = semilogy([-coeffIndex(1) coeffIndex(1)], repmat(f.vscale, 2, 1)*f.epslevel, args{:});
+        h2 = semilogy([-coeffIndex(1) coeffIndex(1)], repmat(f.vscale.*f.epslevel, 2, 1), args{:});
         for k = 1:m
             c = get(h(k), 'color');
             set(h2(k), 'linestyle', ':', 'linewidth', 1, 'marker', 'none', 'color', c);
@@ -93,10 +93,7 @@ if ( ~loglogPlot )
         h = semilogy(coeffIndex, absCoeffs, args{:});
         h2 = plot([]);
     end
-    h3 = plot([]);
 else
-    % TODO: Fix the LOGLOG option when called from the CHEBFUN level.
-    
     if ( isEven )
         % In this case the positive cofficients have an additional term
         % corresponding to the cos(N/2*x) coefficient. 
@@ -111,24 +108,17 @@ else
     % Plot the coefficients for the positive and negative fourier modes
     % separately.
     if ( plotEpsLevel )
-        h = loglog(coeffIndexPos, cPos, args{:});
-        set(h,'linestyle','-');
+        h = loglog([coeffIndexPos nan coeffIndexNeg], [cPos;nan(1,m);cNeg], args{:});
         hold on
-        h2 = loglog([1 coeffIndexPos(end)], repmat(f.vscale, 2, 1)*f.epslevel, args{:});
+        h2 = loglog([1 coeffIndexPos(end)], repmat(f.vscale.*f.epslevel, 2, 1), args{:});
         for k = 1:m
             c = get(h(k), 'color');
             set(h2(k), 'linestyle', ':', 'linewidth', 1, 'marker', 'none', 'color', c);
         end        
-        h3 = loglog(coeffIndexNeg, cNeg, args{:});
-        set(h3,'linestyle','--');
     else
         % Plot just the coefficients:
-        h = loglog(coeffIndexPos, cPos, args{:});
-        set(h,'linestyle','-');
-        hold on;
+        h = loglog([coeffIndexPos;nan(1,m);coeffIndexNeg], [cPos;nan(1,m);cNeg], args{:});
         h2 = plot([]);
-        h3 = loglog(coeffIndexNeg, cNeg, args{:});
-        set(h3,'linestyle','--');
     end
 end
 
@@ -136,7 +126,6 @@ end
 if ( n == 1 )
     set(h, 'marker', 'o');
     set(h2, 'marker', 'o');
-    set(h3, 'marker', 'o');
 end
 
 % Return hold state to what it was before:
@@ -146,7 +135,8 @@ end
 
 % Give an output if one was requested:
 if ( nargout > 0 )
-    varargout = {h, h2, h3};
+    varargout{1} = h;
+    varargout{2} = h2;
 end
 
 end
