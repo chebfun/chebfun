@@ -274,12 +274,6 @@ classdef fourtech < smoothfun
         % Extract columns of an array-valued FOURTECH object.
         f = extractColumns(f, columnIndex)
 
-        % Extract roots at the boundary points -1 and 1.
-        [f, rootsLeft, rootsRight] = extractBoundaryRoots(f, numRoots)
-
-        % Extrapolate (for NaNs / Infs).
-        [values, maskNaN, maskInf] = extrapolate(f, values)
-
         % Evaluate a FOURTECH.
         y = feval(f, x)
         
@@ -288,6 +282,9 @@ classdef fourtech < smoothfun
         
         % Flip/reverse a FOURTECH object.
         f = flipud(f)
+
+        % Plot (semilogy) the Fourier coefficients of a FOURTECH object.
+        varargout = plotcoeffs(f, varargin)
 
         % Get method:
         val = get(f, prop);
@@ -363,9 +360,6 @@ classdef fourtech < smoothfun
         
         % Obtain data used for plotting a FOURTECH object:
         data = plotData(f, g, h)
-
-        % Plot the Fourier coefficients of a FOURTECH object.
-        varargout = plotcoeffs(f, varargin)
 
         % Addition of two FOURTECH objects.
         f = plus(f, g)

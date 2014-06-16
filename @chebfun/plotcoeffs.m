@@ -1,20 +1,20 @@
-function varargout = coeffsplot(f, varargin)
-%COEFFSPLOT   Display coefficients graphically.
-%   COEFFSPLOT(F) plots the coefficients underlying the representation of a
+function varargout = plotcoeffs(f, varargin)
+%PLOTCOEFFS   Display coefficients graphically.
+%   PLOTCOEFFS(F) plots the coefficients underlying the representation of a
 %   CHEBFUN F on a semilogy scale. A horizontal line at the epslevel of F is
 %   also plotted. If F is an array-valued CHEBFUN or has breakpoints, then a
 %   curve is plotted for each FUN of each component (column) of F.
 %
-%   COEFFSPLOT(F, S) allows further plotting options, such as linestyle,
+%   PLOTCOEFFS(F, S) allows further plotting options, such as linestyle,
 %   linecolor, etc, in the standard MATLAB manner. If S contains a string
 %   'LOGLOG', the coefficients will be displayed on a log-log scale. If S
 %   contains a string 'NOEPSLEVEL' the epslevel is not plotted.
 %
-%   H = COEFFSPLOT(F) returns a column vector of handles to lineseries objects.
+%   H = PLOTCOEFFS(F) returns a column vector of handles to lineseries objects.
 %   The final entry is that of the epslevel plot.
 %
 %   What 'coefficients' means in this context is dictated by the 'tech' is being
-%   used to represent F. See the COEFFSPLOT method at the relevent tech level
+%   used to represent F. See the PLOTCOEFFS method at the relevent tech level
 %   for more details. note that you can find what tech is being used by calling
 %   >> get(F, 'tech');.
 %
@@ -41,7 +41,7 @@ if ( nargin > 1 && ischar(varargin{1}) && numel(varargin{1}) < 4 )
     % parameters have more than characters.)
     col = regexp(varargin{1}, '[bgrcmykw]', 'match');
     if ( numel(col) > 1 )
-        error('CHEBFUN:coeffsplot:color', ...
+        error('CHEBFUN:plotcoeffs:color', ...
             'Error in color/linetype argument.');
     elseif ( ~isempty(col) )
         col = col{:};
@@ -84,7 +84,7 @@ for k = 1:numel(f)
         colk = col(k,:);
     end
     % Call the column version:
-    [h1{k}, h2{k}] = columnCoeffsplot(f{k}, colk, varargin{:});
+    [h1{k}, h2{k}] = columnPlotCoeffs(f{k}, colk, varargin{:});
 end
 
 % Return hold state to what it was before:
@@ -117,16 +117,16 @@ end
 
 end
 
-function [h1, h2] = columnCoeffsplot(f, col, varargin)
+function [h1, h2] = columnPlotCoeffs(f, col, varargin)
 numFuns = numel(f.funs);
 
 % Initialise handle storage:
 h1 = zeros(numFuns, 1);
 h2 = zeros(numFuns, 1);
 
-% Call coeffsplot at the tech level:
+% Call plotcoeffs at the tech level:
 for j = 1:numFuns
-    [h1(j), h2(j)] = coeffsplot(f.funs{j}, varargin{:}, 'color', col); hold on
+    [h1(j), h2(j)] = plotcoeffs(f.funs{j}, varargin{:}, 'color', col); hold on
 end
 
 end
