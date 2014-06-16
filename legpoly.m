@@ -110,12 +110,12 @@ switch method
     case 2 % QR
 
         pts = 2*nMax1;              % Expand on Chebyshev grid of twice the size
-        [~, w] = chebpts(pts, 2);   % Grab the Clenshaw-Curtis weights
+        [ignored, w] = chebpts(pts, 2);   % Grab the Clenshaw-Curtis weights
         theta = pi*(pts-1:-1:0)'/(pts-1);
         A = cos(theta*(0:nMax));                  % Vandemonde-type matrix
         D = spdiags(sqrt(w(:)), 0, pts, pts);     % C-C quad weights
         Dinv = spdiags(1./sqrt(w(:)), 0, pts, pts);
-        [Q, ~] = qr(D*A, 0);                      % Weighted QR
+        [Q, ignored] = qr(D*A, 0);                % Weighted QR
         P = Dinv*Q;
         if ( normalize )
             PP = P(:,n+1) * diag(sqrt(2/diff(dom)) * sign(P(end,n+1)));

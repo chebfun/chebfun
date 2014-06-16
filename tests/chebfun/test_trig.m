@@ -39,11 +39,8 @@ end
 end
 
 function y = mysinc(x, varargin)
-% MATLAB's sinc() exists only in a toolbox. Use it if it's there.
-    try
-        y = sinc(x, varargin{:});
-    catch
-        y = sin(pi*x)./(pi*x);
-    end
+% Chebfun SINC differs in definition from MATLAB's SINC, so define a special
+% function for it here.
+    y = sin(x)./x;
 end
 

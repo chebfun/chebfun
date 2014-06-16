@@ -39,7 +39,7 @@ else
         disc.dimAdjust = 0;
     end
     
-    [PA, ~, B, A] = matrix(disc);
+    [PA, ignored, B, A] = matrix(disc);
     
     % Depending on the flag, we will do different things about boundary
     % conditions.

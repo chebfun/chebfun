@@ -196,10 +196,11 @@ for j = 1:length(x)
     if ( length(temp) ~= 1 )
         fvals = feval(f, f.domain);
         err = abs(fvals - x(j));
-        [temp, k] = min(err);
+        [ignored, k] = min(err);
         if ( err(k) > 100*tol*abs(fvals(k)))
             error('CHEBFUN:inv:notmonotonic2', 'f must be monotonic.');
         end
+        temp = temp(k);
     end
     y(j, 1) = temp;
 end
