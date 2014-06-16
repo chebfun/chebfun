@@ -2,6 +2,8 @@ function pass = test_chap21(pref)
 
 % Here we test that everything in chapter 21 of ATAP runs OK.
 
+warnState = warning('off', 'CHEBFUN:CHEBOP:feval:deprecated');
+
 x = chebfun('x'); p = sin(x); length(p);
 pp = diff(p); x14 = chebpts(14); pp14 = pp(x14);
 D = chebop(@(u) diff(u)); D14 = D(14);
@@ -52,5 +54,7 @@ N.lbc = -pi/2; N.rbc = 5*pi/2; theta = N\0;
 % plot(-cos(theta)), grid on, ylim([-1 1])
 % title('Nonlinear pendulum (21.5), another solution',FS,9)
 % xlabel('t',FS,10), ylabel('height -cos(\theta)')
+
+warning(warnState);
 
 end

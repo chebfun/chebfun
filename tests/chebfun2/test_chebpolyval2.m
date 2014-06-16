@@ -4,7 +4,7 @@ function pass = test_chebpolyval2()
 if ( nargin < 1 ) 
     pref = chebfunpref; 
 end 
-tol = 100 * pref.cheb2Prefs.eps; 
+tol = 100 * pref.eps; 
 
 % check the trunk chebpolyval2 command.
 T = chebpoly(20); 
