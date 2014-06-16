@@ -242,9 +242,6 @@ classdef chebfun
 
         %Convert a cell array of CHEBFUN objects to a quasimatrix.
         G = cell2quasi(F)
-
-        % Edge detector.
-        [edge, vscale] = detectEdge(op, domain, hscale, vscale, derHandle);
         
         % Determine values of CHEBFUN at breakpoints.
         vals = getValuesAtBreakpoints(funs, ends, op);
@@ -335,7 +332,7 @@ classdef chebfun
         g = floor(f);
 
         % Get properties of a CHEBFUN object.
-        out = get(f, prop);
+        out = get(f, prop, simpLevel);
         
         % Horizontal scale of a CHEBFUN object.
         out = hscale(f);
@@ -600,7 +597,7 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
             % Pull out this preference, which is checked for later.
             keywordPrefs.enableBreakpointDetection = true;
             args(1:2) = [];
-        elseif ( isnumeric(args{1}) )
+        elseif ( isnumeric(args{1}) && isscalar(args{1}) )
             % g = chebfun(@(x) f(x), N)
             keywordPrefs.techPrefs.exactLength = args{1};
             args(1) = [];
@@ -660,10 +657,20 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
                     'Invalid value for ''chebkind'' option.');
             end
             args(1:2) = [];
-        else
+        elseif ( ischar(args{1}) )
             % Update these preferences:
             keywordPrefs.(args{1}) = args{2};
             args(1:2) = [];
+        else
+            if ( isnumeric(args{1}) )
+                error('CHEBFUN:parseInputs:badInputNumeric', ...
+                    ['Could not parse input argument sequence.\n' ...
+                     '(Perhaps the construction domain is not the second ' ...
+                     'argument?)']);
+            else
+                error('CHEBFUN:parseInputs:badInput', ...
+                    'Could not parse input argument sequence.');
+            end
         end
     end
 

@@ -29,7 +29,7 @@ u = toFunctionOut( disc, cat(2,values{:}) );
 numCol = size(u,2);
 
 % This is a cell array of coefficients (one for each piece).
-coeffs = u.coeffs;
+coeffs = get(u, 'coeffs', 1);
 
 d = disc.domain;
 numInt = numel(d) - 1;

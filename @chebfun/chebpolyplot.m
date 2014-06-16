@@ -101,6 +101,15 @@ c = get(f, 'coeffs');
 % methods, similar to those used by the PLOT() funtion.
 if ( ~iscell(c) )
     c = {c};
+elseif ( size(c, 2) > 1 )
+    % If this is an array-valued CHEBFUN with multiple funs, we get one cell
+    % per fun per column.  Convert this to having one cell per fun with the
+    % data for all columns of that fun stored in the cell as a numeric matrix.
+    c_new = cell(size(c, 1), 1);
+    for k = 1:size(c, 1)
+        c_new(k) = {cell2mat(c(k, :))};
+    end
+    c = c_new;
 end
 c = cellfun(@abs, c, 'UniformOutput', false);
 for k = 1:numFuns

@@ -1,11 +1,11 @@
 classdef chebfunpref < chebpref
 %CHEBFUNPREF   Class for managing Chebfun construction-time preferences.
 %   CHEBFUNPREF is a class for managing Chebfun construction-time preferences
-%   such as the construction tolerance, whether or not to perform breakpoint
-%   and singularity detection, and the various options that those features
-%   require.  These objects can be supplied to the CHEBFUN constructor (as well
-%   as the constructors of other classes in the Chebfun system), which will
-%   interpret them and adjust the construction process accordingly.
+%   such as the construction tolerance, whether or not to perform breakpoint and
+%   singularity detection, and the various options that those features require.
+%   These objects can be supplied to the CHEBFUN constructor (as well as the
+%   constructors of other classes in Chebfun), which will interpret them and
+%   adjust the construction process accordingly.
 %
 % Available Preferences:
 %
