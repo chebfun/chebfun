@@ -20,12 +20,14 @@ classdef ultraS < chebDiscretization
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
     
-    properties
+    properties ( Access = public )
         coeffs        % Coefficients of the operator
         outputSpace   % The range of the ultraspherical spectral operator
     end
     
-    methods
+    %% Constructor:
+    methods ( Access = public, Static = false )
+        
         function disc = ultraS(source, dimension, domain)
             %ULTRAS(SOURCE, DIMENSION, DOMAIN)   ULTRAS constructor.
             
@@ -56,14 +58,16 @@ classdef ultraS < chebDiscretization
         
     end
     
-    methods ( Access = private )
+    %% Private non-static methods of this class:
+    methods ( Access = private, Static = false )
         
         % Conversion (transformation) operator for Ultraspherical method.
         S = convert(A, K1, K2)
         
     end
     
-    methods ( Static = true)
+    %% Public static methods of this class:
+    methods ( Access = public, Static = true)
         
         % Conversion matrix used in the ultraspherical spectral method.
         S = convertmat(n, K1, K2)
@@ -101,6 +105,7 @@ classdef ultraS < chebDiscretization
         
     end
     
+    %% Private static methods of this class:
     methods ( Access = private, Static = true)
         
         % Get coefficient representation of the source.

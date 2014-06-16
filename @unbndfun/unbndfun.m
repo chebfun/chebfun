@@ -55,7 +55,7 @@ classdef unbndfun < classicfun
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     %% CLASS CONSTRUCTOR:   
-    methods
+    methods ( Access = public, Static = false )
         
         function obj = unbndfun(op, data, pref)
             % Parse inputs.
@@ -133,22 +133,8 @@ classdef unbndfun < classicfun
         end
     end
     
-    %% STATIC METHODS IMPLEMENTED BY UNBNDFUN CLASS.
-    methods ( Static = true ) 
-        
-        % Retrieve and modify preferences for this class.
-        prefs = pref(varargin);
-        
-        % Noninear map from [-1, 1] to the domain of the UNBNDFUN.
-        m = createMap(domain);
-        
-        % Make a UNBNDFUN (constructor shortcut):
-        f = make(varargin); 
-        
-    end
-       
-    %% METHODS IMPLEMENTED BY THIS CLASS.
-    methods
+    %% NON-STATIC METHODS IMPLEMENTED BY THIS CLASS.
+    methods ( Access = public, Static = false )
         
         % Compose an UNBNDFUN with an operator or another FUN.
         f = compose(f, op, g, data, pref)
@@ -197,8 +183,26 @@ classdef unbndfun < classicfun
         
         % Definite integral of an UNBNDFUN on the its domain.
         out = sum(f, dim)
-    end    
+    end
+    
+    %% STATIC METHODS IMPLEMENTED BY UNBNDFUN CLASS.
+    methods ( Access = public, Static = true ) 
+        
+        % Retrieve and modify preferences for this class.
+        prefs = pref(varargin);
+        
+        % Noninear map from [-1, 1] to the domain of the UNBNDFUN.
+        m = createMap(domain);
+        
+        % Make a UNBNDFUN (constructor shortcut):
+        f = make(varargin); 
+        
+    end
+    
 end
+
+
+%% Methods implemented in this file:
 
 function data = parseDataInputs(data, pref)
 %PARSEDATAINPUTS   Parse inputs from the DATA structure and assign defaults.

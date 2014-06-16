@@ -16,7 +16,8 @@ classdef stringParser
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
     
-    methods ( Access = public )
+    %% Constructor:
+    methods ( Access = public, Static = false )
         
         function A = stringParser(varargin)
             % We never construct objects of this type, so the constructor is 
@@ -25,6 +26,7 @@ classdef stringParser
         
     end
     
+    %% Public static methods of this class:
     methods ( Access = public, Static = true )
         
         % Convert a string to an anonymous function.
@@ -32,6 +34,7 @@ classdef stringParser
              
     end
     
+    %% Private static methods of this class:
     methods( Access = private, Static = true )
         
         % The STRINGPARSER lexer
@@ -58,6 +61,7 @@ classdef stringParser
         
     end
     
+    %% Public but hidden static methods of this class:
     methods( Access = public, Static = true, Hidden = true )
         
         % Get rid of unecessary parenthesis in infix format strings
