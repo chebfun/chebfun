@@ -9,7 +9,7 @@ end
 
 % Create preference structure with splitting enabled.
 pref_split = pref;
-pref_split.enableBreakpointDetection = 1;
+pref_split.splitting = 1;
 
 % Test empty input.
 f = chebfun();

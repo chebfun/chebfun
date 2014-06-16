@@ -130,7 +130,7 @@ vs = 2*max([vscale(f), vscale(g)]);
 
 % Avoid resampling for speed up:
 p = chebfunpref();
-p.enableBreakpointDetection = false;
+p.splitting = false;
 p.enableSingularityDetection = false;
 p.techPrefs.extrapolate = true;
 p.techPrefs.resampling = false;

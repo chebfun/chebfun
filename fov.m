@@ -14,7 +14,7 @@ function f = fov(A, pref)
 %   595-602.
 %
 %   F = FOV(A, PREF) allows the preferences in the CHEBFUNPREF structure PREF to
-%   be used in constructing F. Note that PREF.enableBreakpointDetection will
+%   be used in constructing F. Note that PREF.splitting will
 %   always be set to TRUE by FOV.
 %
 % Example:
@@ -33,7 +33,7 @@ if ( nargin < 2 )
 end
 
 % Set splitting to 'on' and the domain to [0, 2*pi].
-pref.enableBreakpointDetection = true;
+pref.splitting = true;
 pref.domain = [0, 2*pi];
 
 % Construct a CHEBFUN of the FOV curve:

@@ -7,7 +7,7 @@ if ( nargin <  1 )
 end
 
 % Enable breakpoint detection.
-pref.enableBreakpointDetection = 1;
+pref.splitting = 1;
 
 % Generate a few random points to use as test values.
 seedRNG(6178);

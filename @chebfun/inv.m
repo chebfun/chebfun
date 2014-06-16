@@ -54,7 +54,7 @@ if ( opts.monoCheck )
     % Compute the derivative:
     fp = diff(f);
     % Monotonicity check:
-    doMonoCheck(f, fp, tol, pref.enableBreakpointDetection);
+    doMonoCheck(f, fp, tol, pref.splitting);
 else
     fp = [];
 end
@@ -97,13 +97,13 @@ end
 
 % Enable breakpoint detection if F is piecewise:
 if ( length(f.domain) > 2 )
-    p.enableBreakpointDetection = true;
+    p.splitting = true;
 end
 
 % Parse name/value pairs.
 while ( numel(varargin) > 1 )
     if ( strcmpi(varargin{1}, 'splitting') )
-        pref.enableBreakpointDetection = checkOnOff(varargin{2});
+        pref.splitting = checkOnOff(varargin{2});
     elseif ( strcmpi(varargin{1}, 'eps') )
         tol = varargin{2};
     elseif ( strcmpi(varargin{1}, 'monocheck') )

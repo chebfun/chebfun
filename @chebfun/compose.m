@@ -177,7 +177,7 @@ newFuns = {};
 % Initialise new domain vector:
 newDom = f.domain(1);
 
-if ( pref.enableBreakpointDetection) % Is splitting on?
+if ( pref.splitting) % Is splitting on?
     % Set the maximum length (i.e., number of sample points for CHEBTECH):
     pref.techPrefs.maxLength = pref.breakpointPrefs.splitMaxLength;
 end
@@ -196,7 +196,7 @@ for k = 1:numInts
     end
     isHappy = get(newFun, 'ishappy');
 
-    if ( isHappy || ~pref.enableBreakpointDetection )
+    if ( isHappy || ~pref.splitting )
         % If we're happy or not allowed to split, this will do.
 
         if ( ~isHappy )
@@ -222,7 +222,7 @@ for k = 1:numInts
             newPointValues = [newPointValues ; pointValues(k+1,:)];
         end
 
-    elseif ( pref.enableBreakpointDetection )
+    elseif ( pref.splitting )
 
         % If not happy and splitting is on, get a CHEBFUN for that subinterval:
         domk = f.domain(k:k+1);

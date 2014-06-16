@@ -598,15 +598,14 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
                 'Cannot construct CHEBFUN from a cell array of coefficidnts.');
         elseif ( strcmpi(args{1}, 'trunc') )
             % Pull out this preference, which is checked for later.
-            keywordPrefs.enableBreakpointDetection = true;
+            keywordPrefs.splitting = true;
             args(1:2) = [];
         elseif ( isnumeric(args{1}) && isscalar(args{1}) )
             % g = chebfun(@(x) f(x), N)
             keywordPrefs.techPrefs.exactLength = args{1};
             args(1) = [];
         elseif ( strcmpi(args{1}, 'splitting') )
-            % Translate "splitting" --> "enableBreakpointDetection".
-            keywordPrefs.enableBreakpointDetection = strcmpi(args{2}, 'on');
+            keywordPrefs.splitting = strcmpi(args{2}, 'on');
             args(1:2) = [];
         elseif ( strcmpi(args{1}, 'minsamples') )
             % Translate "minsamples" --> "techPrefs.minPoints".

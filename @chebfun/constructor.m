@@ -18,11 +18,10 @@ function [funs, ends] = constructor(op, dom, data, pref)
 %   construction preferences to be passed to the constructor.  See CHEBFUNPREF
 %   for more details on preferences.
 %
-%   In particular, if PREF.ENABLEBREAKPOINTDETECTION = TRUE and OP is a
-%   function_handle or a string, then the constructor adaptively introduces
-%   additional breakpoints into the domain so as to better represent the
-%   function. These are returned as the second output argument in [FUNS, END] =
-%   CONSTRUCTOR(OP, DOM).
+%   In particular, if PREF.SPLITTING = TRUE and OP is a function_handle or a
+%   string, then the constructor adaptively introduces additional breakpoints
+%   into the domain so as to better represent the function. These are returned
+%   as the second output argument in [FUNS, END] = CONSTRUCTOR(OP, DOM).
 %
 %   The DATA structure input contains information which needs to be passed to
 %   the lower layers about parameters which may affect the construction process.
@@ -58,7 +57,7 @@ if ( iscell(op) && (numel(op) ~= numIntervals) )
 end
 
 % Construct the FUNs.
-if ( pref.enableBreakpointDetection )
+if ( pref.splitting )
     [funs, ends] = constructorSplit(op, dom, data, pref);
 else
     [funs, ends] = constructorNoSplit(op, dom, data, pref);

@@ -16,7 +16,7 @@ classdef chebfunpref < chebpref
 %      construction if no domain argument is explicitly passed to the
 %      constructor.
 %
-%   enableBreakpointDetection  - Enable/disable breakpoint detection.
+%   splitting                  - Enable/disable breakpoint detection.
 %     true
 %    [false]
 %
@@ -183,13 +183,13 @@ classdef chebfunpref < chebpref
 %   Create a CHEBFUNPREF for building a CHEBFUN based on CHEBTECH (default) with
 %   breakpoint detection, a splitting length of 257 (pieces of polynomial degree
 %   256, and a custom CHEBTECH refinement function:
-%      p.enableBreakpointDetection = true;
+%      p.splitting = true;
 %      p.breakpointPrefs.splitLength = 257;
 %      p.techPrefs.refinementFunction = @custom;
 %      pref = chebfunpref(p);
 %
 %   Same thing with a slightly shorter syntax:
-%      p.enableBreakpointDetection = true;
+%      p.splitting = true;
 %      p.breakpointPrefs.splitLength = 257;
 %      p.refinementFunction = @custom;
 %      pref = chebfunpref(p);
@@ -412,8 +412,8 @@ classdef chebfunpref < chebpref
             fprintf('chebfunpref object with the following preferences:\n');
             fprintf([padString('    domain:') '[%g, %g]\n'], ...
                 prefList.domain(1), prefList.domain(end));
-            fprintf([padString('    enableBreakpointDetection:') '%d\n'], ...
-                prefList.enableBreakpointDetection);
+            fprintf([padString('    splitting:') '%d\n'], ...
+                prefList.splitting);
             fprintf('    breakpointPrefs\n');
             fprintf([padString('        splitMaxLength:') '%d\n'], ...
                 prefList.breakpointPrefs.splitMaxLength');
@@ -659,7 +659,7 @@ classdef chebfunpref < chebpref
         %   construction-time preferences.
 
             factoryPrefs.domain = [-1 1];
-            factoryPrefs.enableBreakpointDetection = false;
+            factoryPrefs.splitting = false;
                 factoryPrefs.breakpointPrefs.splitMaxLength = 160;
                 factoryPrefs.breakpointPrefs.splitMaxTotalLength = 6000;
             factoryPrefs.enableSingularityDetection = false;
