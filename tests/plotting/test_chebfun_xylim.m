@@ -1,7 +1,7 @@
 % Tests for chebfun plotting functions.
 function pass = test_chebfun_xylim(pref)
 
-tol = 1e-10;
+tol = 1e-4;
 % Create a figure, and make it invisible. Need to do this a number of time
 % throughout the test.
 hfig = figure;
