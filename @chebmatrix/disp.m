@@ -11,7 +11,7 @@ c = blockClasses(L);
 
 loose = strcmp(get(0, 'FormatSpacing'), 'loose');
 
-fprintf('%i x %i chebmatrix of block types:\n', m, n)
+fprintf('   %i x %i chebmatrix of block types:\n', m, n)
 
 if ( loose )
     fprintf('\n');
@@ -23,7 +23,7 @@ if ( ~usejava('jvm') || ~usejava('desktop') )
     return
 end
 
-% We need to store the ANS variable in the workspace, so that it can be made
+% We need to store the ANS variable in the workspace so that it can be made
 % clickable:
 if ( nargin < 2 )
     name = 'ans';
@@ -33,7 +33,7 @@ if ( strcmp(name, 'ans') )
     assignin('base', name, L);
 end
 
-% Print information about each block>
+% Print information about each block:
 ml = cellfun(@length, c);
 for j = 1:m
     fprintf('    ');
