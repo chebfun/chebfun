@@ -1,62 +1,89 @@
 About
 =====
 
-Chebfun is a collection of algorithms and an open-source software system in
-object-oriented MATLAB which extends familiar powerful methods of numerical
-computation involving numbers to continuous or piecewise-continuous functions.
-It also implements continuous analogues of linear algebra notions like the QR
-decomposition and the SVD, and solves ordinary differential equations. The
-mathematical basis of the system combines tools of Chebyshev expansions, fast
-Fourier transform, barycentric interpolation, recursive zerofinding, and
-automatic differentiation.
+Chebfun is an open-source software system for numerical computing with
+functions. The mathematical basis of Chebfun is piecewise polynomial
+interpolation implemented with what we call “Chebyshev technology”. The
+foundations are described, with Chebfun examples, in the book _Approximation
+Theory and Approximation Practice_. Chebfun has extensive capabilities for
+dealing with linear and nonlinear differential and integral operators, and it
+also includes continuous analogues of linear algebra notions like QR and
+singular value decomposition. The Chebfun2 extension works with functions of
+two variables defined on a rectangle in the x-y plane. To get a sense of the
+breadth and power of Chebfun, a great place to start is by looking at our
+[Examples][1].
 
 
 Installation and requirements
 =============================
 
-Chebfun Version 5.0 is compatible with MATLAB 7.6 (2008a) and above.
+Chebfun Version 5.0 is compatible with MATLAB 7.8 (R2009a) and later.
 
-Installation instructions:
+To install, you can either clone the directory with Git or download a .zip
+file. Note that a call to `clear classes` is required if you had a previous
+version of Chebfun installed.
 
-1. Unzip the contents of the zip file to a directory. We suggest the name
-   "chebfun" for this directory. Make sure to maintain the existing
-   subdirectory structure of the zip package. (Please note: If you install
-   into the "toolbox" subdirectory of the MATLAB program hierarchy, you will
-   need to click the button "Update toolbox path cache" from the
-   File/Preferences... dialog in MATLAB.)
+## Option 1: Download .zip file
 
-2. In MATLAB, add the chebfun directory to your path. This can be done by
-   selecting *File/Set Path...* from the main or command window menus, or with
-   the command `pathtool`. We recommend that you select the *Save* button on
-   this dialog so that Chebfun is on the path automatically in future MATLAB
-   sessions. (Alternatively, you can put an `addpath` command in your
-   `startup.m` file, as described in the MATLAB documentation.)
+Download a .zip of Chebfun from
 
-3. A restart of MATLAB may be needed if you want to access the user guides via
-   the Help browser, or a call to `clear classes` if you had a previous
-   version of Chebfun installed.
+- https://github.com/chebfun/chebfun/archive/master.zip
 
-Point your web browser to the guide/html directory of the Chebfun installation
-in order to read the user guides.
+After unzipping, you will need to add Chebfun to the MATLAB path. You can do
+this either (a) by typing
+```
+addpath(genpath(PATH/TO/CHEBFUN))
+```
+where `PATH/TO/CHEBFUN` is the unzipped directory, (b) by selecting the
+`chebfun` directory with the `pathtool` command, or (c) though the File > Set
+Path... dialog from the MATLAB menubar.
 
-Please see the file LICENSE.txt for licensing information.
+## Option 2: Clone with Git
 
-Chebfun can be found on the web at http://www.chebfun.org/
+To clone the Chebfun repository, first navigate in a terminal to where you
+want the repository cloned, then type
+```
+git clone https://github.com/chebfun/chebfun.git
+```
+To use Chebfun in MATLAB, you will need to add the `chebfun` directory
+to the MATLAB path as above.
 
 
 Getting started
 ===============
 
-[todo]
+We recommend taking a look at the [Chebfun Guide][2] and the [Examples
+collection][1]. The Guide is an in-depth tour of Chebfun's mathematical
+capabilities. The Examples, which number well over one hundred, illustrate
+everything from rootfinding to optimization to nonlinear differential
+equations and vector calculus. Many users use the Examples as templates for
+their own problems.
 
-
-Contributing
-============
-
-[todo]
+To get a taste of what computing with Chebfun is like, type
+```
+x = chebfun('x');
+```
+and start playing. The variable `x` is a chebfun and can be manipulated in a
+way that feels symbolic, although everything Chebfun does is numeric. So try,
+for instance:
+```
+f = sin(12*x).*exp(-x);         % A function on [-1, 1]
+g = max(f, 1./(x+2));           % The max of f and 1./(x+2)
+plot(g)                         % A function with discontinuous derivative
+sum(g)                          % The integral of g
+plot(diff(g))                   % The derivative of g
+h = g + x - .8;                 % A function with several roots in [-1, 1]
+rr = roots(h);                  % Compute the roots of h
+plot(h, 'k', rr, h(rr), 'ro')   % Plot h and its roots
+```
 
 
 License
 =======
 
 See `LICENSE.txt` for Chebfun's licensing informtion.
+
+
+
+[1]: http://www.chebfun.org/examples/
+[2]: http://www.chebfun.org/docs/guide/
