@@ -44,6 +44,21 @@ else
     pref = chebfunpref();
 end
 
+% Get default preferences from chebfunpref:
+prefStruct = pref.cheb2Prefs;
+sampleTest = prefStruct.sampleTest;
+maxRank = prefStruct.maxRank;
+
+% Go find out what tech I'm based on:
+tech = pref.tech();
+
+% Get default preferences from the techPref:
+tpref = chebfunpref.mergePrefs(pref, tech.techPref);
+minSample = tpref.minPoints; 
+maxSample = tpref.maxPoints;
+pseudoLevel = tpref.eps;
+
+
 if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
     if ( numel( op ) == 1 )
         % LNT wants this:
@@ -81,7 +96,6 @@ if ( isa(op, 'double') )    % CHEBFUN2( DOUBLE )
         % The tolerance assumes the samples are from a function. It depends
         % on the size of the sample matrix, hscale of domain, vscale of
         % the samples, and the accuracy target in chebfun2 preferences. 
-        pseudoLevel = pref.cheb2Prefs.eps;
         grid = max( size( op ) ); 
         vscale = max( op(:) ); 
         tol = grid.^(2/3) * max( max( abs(domain(:))), 1) * vscale * pseudoLevel;
@@ -141,26 +155,6 @@ elseif ( numel(domain) ~= 4 )
     error('CHEBFUN2:CONSTRUCTOR:DOMAIN', 'Domain not fully determined.');
 end
 
-% Get default preferences from chebfunpref:
-prefStruct = pref.cheb2Prefs;
-maxRank = prefStruct.maxRank;
-maxLength = prefStruct.maxLength;
-pseudoLevel = prefStruct.eps;
-sampleTest = prefStruct.sampleTest;
-% TODO: This should probably be taken from the techPref prefences?
-minsample = 17;   % minsample
-
-% Go find out what tech I'm based on:
-tech = chebfunpref().tech();
-
-factor = 4;  % grid to rank ratio.
-if ( isa(tech, 'fourtech') ) 
-    minsample = 8; 
-end
-if ( isa(tech, 'chebtech1') )
-    factor = 5; 
-end
-
 % If the vectorize flag is off, do we need to give user a warning?
 if ( vectorize == 0 ) % another check
     % Check for cases: @(x,y) x*y, and @(x,y) x*y'
@@ -183,9 +177,9 @@ end
 
 factor = 4;  % ratio between size of matrix and no. pivots. 
 isHappy = 0; % If we are currently unresolved. 
-Failure = 0; % Reached max discretization size without being happy. 
-while ( ~isHappy && ~Failure )
-    grid = minsample; 
+failure = 0; % Reached max discretization size without being happy. 
+while ( ~isHappy && ~failure )
+    grid = minSample; 
     
     % Sample function on a Chebyshev tensor grid:
     [xx, yy] = points2D(grid, grid, domain);
@@ -227,7 +221,7 @@ while ( ~isHappy && ~Failure )
     % If the rank of the function is above maxRank then stop.
     if ( grid > factor*(maxRank-1)+1 )
         warning('CHEBFUN2:CTOR', 'Not a low-rank function.');
-        Failure = 1; 
+        failure = 1; 
     end
     
     % Check if the column and row slices are resolved.
@@ -300,9 +294,10 @@ while ( ~isHappy && ~Failure )
         isHappy = resolvedRows & resolvedCols;
         
         % STOP if degree is over maxLength:
-        if ( max(m, n) >= maxLength )
-            warning('CHEBFUN2:CTOR', 'Unresolved with maximum CHEBFUN length: %u.', maxLength);
-            Failure = 1;
+        if ( max(m, n) >= maxSample )
+            warning('CHEBFUN2:CTOR', ...
+                'Unresolved with maximum CHEBFUN length: %u.', maxSample);
+            failure = 1;
         end
         
     end
@@ -310,7 +305,7 @@ while ( ~isHappy && ~Failure )
     % For some reason, on some computers simplify is giving back a scalar zero.
     % In which case the function is numerically zero. Artifically set the
     % columns and rows to zero.
-    if ( norm(colValues) == 0 || norm(rowValues) == 0)
+    if ( (norm(colValues) == 0) || (norm(rowValues) == 0) )
         colValues = 0;
         rowValues = 0;
         pivotValue = Inf;
@@ -334,7 +329,7 @@ while ( ~isHappy && ~Failure )
         pass = g.sampleTest( sampleOP, tol, vectorize);
         if ( ~pass )
             % Increase minsamples and try again.
-            minsample = gridRefine( minsample );
+            minSample = gridRefine( minSample );
             isHappy = 0;
         end
     end
@@ -346,7 +341,8 @@ g = fixTheRank( g , fixedRank );
 
 end
 
-function [pivotValue, pivotElement, rows, cols, ifail] = CompleteACA(A, tol, factor)
+function [pivotValue, pivotElement, rows, cols, ifail] = ...
+    CompleteACA(A, tol, factor)
 % Adaptive Cross Approximation with complete pivoting. This command is
 % the continuous analogue of Gaussian elimination with complete pivoting.
 % Here, we attempt to adaptively find the numerical rank of the function.
@@ -383,7 +379,7 @@ else
     cols(:,1) = zeros(size(A, 1), 1);
 end
 
-while ( ( infNorm > tol ) && ( zRows < width / factor)...
+while ( ( infNorm > tol ) && ( zRows < width / factor) ...
         && ( zRows < min(nx, ny) ) )
     rows(zRows+1,:) = A(row,:);
     cols(:,zRows+1) = A(:,col);              % Extract the columns.
@@ -414,12 +410,11 @@ end
 if ( infNorm <= tol )
     ifail = 0;                               % We didn't fail.
 end
-if (zRows >= width / factor)
+if ( zRows >= (width/factor) )
     ifail = 1;                               % We did fail.
 end
 
 end
-
 
 
 function [row, col] = myind2sub(siz, ndx)
@@ -464,6 +459,7 @@ op = eval(['@(' depvar{1} ',' depvar{2} ')' op]);
 
 end
 
+
 function g = fixTheRank( g , fixedRank )
 % Fix the rank of a CHEBFUN2. Used for nonadaptive calls to the constructor.
 
@@ -491,6 +487,7 @@ end
 
 end
 
+
 function [xx, yy] = points2D(m, n, dom)
 % Get the sample points that correspond to the right grid for a particular
 % technology.
@@ -515,6 +512,7 @@ else
 end
 
 end
+
 
 function x = mypoints(n, dom)
 % Get the sample points that correspond to the right grid for a particular
@@ -557,4 +555,5 @@ elseif ( isa(tech, 'chebtech1' ) )
 else
     error('CHEBFUN2:TECHTYPE','Technology is unrecognized.');
 end
+
 end

@@ -5,7 +5,7 @@ if ( nargin == 0)
     pref = chebfunpref; 
 end
 
-tol = 100*pref.cheb2Prefs.eps;  
+tol = 100*pref.eps;  
 
 f = chebfun2(@(x,y) x); 
 pass(1) = (abs(f(pi/6,pi/12)-pi/6) < tol); 

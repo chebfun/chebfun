@@ -5,7 +5,7 @@ if ( nargin == 0 )
     pref = chebfunpref; 
 end
 
-tol = 10*pref.cheb2Prefs.eps; 
+tol = 10*pref.eps; 
 
 % One arguments: 
 n = 10; 
