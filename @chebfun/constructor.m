@@ -81,7 +81,7 @@ funs = cell(1, numIntervals);
 % We only want to throw the warning 'CHEBFUN:constructor:notResolved'once:
 warningThrown = false;
 
-singDetect = pref.enableSingularityDetection;
+singDetect = pref.blowup;
 exps = data.exponents;
 singTypes = data.singType;
 
@@ -141,7 +141,7 @@ funs = cell(1, numIntervals);
 % Initialise happiness:
 ishappy = ones(1, numel(ends) - 1);
 
-singDetect = pref.enableSingularityDetection;
+singDetect = pref.blowup;
 exps = data.exponents;
 singTypes = data.singType;
 

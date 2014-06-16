@@ -162,7 +162,7 @@ classdef cheboppref < chebpref
        %   CHEBOPPREF object PREF.
 
             % Compute the screen column in which pref values start.
-            valueCol = 24; % length('    enableSingularityDetection:   ');
+            valueCol = 24; % length('    blowup:   ');
 
             % A subfunction to pad strings for formatting.
             function s = padString(s)

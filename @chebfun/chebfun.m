@@ -614,7 +614,7 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
         elseif ( strcmpi(args{1}, 'blowup') )
             if ( strcmpi(args{2}, 'off') )
                 % If 'blowup' is 'off'.
-                keywordPrefs.enableSingularityDetection = 0;
+                keywordPrefs.blowup = 0;
             else
                 % If 'blowup' is not 'off', set the singTypes.  (NB:  These
                 % cells really need to store a left and right singType for each
@@ -624,13 +624,13 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
                 if ( (isnumeric(args{2}) && args{2} == 1 ) || ...
                         strcmpi(args{2}, 'on') )
                     % Translate "blowup" and flag "1" -->
-                    % "enableSingularityDetection" and "poles only".
-                    keywordPrefs.enableSingularityDetection = 1;
+                    % "blowup" and "poles only".
+                    keywordPrefs.blowup = 1;
                     data.singType = {'pole'};
                 elseif ( args{2} == 2 )
                     % Translate "blowup" and flag "2" -->
-                    % "enableSingularityDetection" and "fractional singularity".
-                    keywordPrefs.enableSingularityDetection = 1;
+                    % "blowup" and "fractional singularity".
+                    keywordPrefs.blowup = 1;
                     data.singType = {'sing'};
                 else
                     error('CHEBFUN:parseInputs:badBlowupOption', ...
@@ -732,7 +732,7 @@ function [op, dom, data, pref] = parseInputs(op, varargin)
 
     % Enable singularity detection if we have exponents or singTypes:
     if ( any(data.exponents) || ~isempty(data.singType) )
-        pref.enableSingularityDetection = true;
+        pref.blowup = true;
     end
     % Sort out the singularity types:
     if ( numel(data.singType) == 1 )

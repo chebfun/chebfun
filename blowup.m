@@ -92,14 +92,14 @@ else
     end
     
     if ( on_off == 0 )
-        chebfunpref.setDefaults('enableSingularityDetection', false);
+        chebfunpref.setDefaults('blowup', false);
         
     elseif ( on_off == 1 )
-        chebfunpref.setDefaults('enableSingularityDetection', true);
+        chebfunpref.setDefaults('blowup', true);
         chebfunpref.setDefaults({'singPrefs', 'defaultSingType'}, 'pole')
         
     elseif ( on_off == 2 )
-        chebfunpref.setDefaults('enableSingularityDetection', true);
+        chebfunpref.setDefaults('blowup', true);
         chebfunpref.setDefaults({'singPrefs', 'defaultSingType'}, 'sing')
         
     else
@@ -117,7 +117,7 @@ end
 end
 
 function state = getBlowupState()
-    state = chebfunpref().enableSingularityDetection;
+    state = chebfunpref().blowup;
     if ( state )
         type = chebfunpref().singPrefs.defaultSingType;
         if ( any(strcmpi(type, 'sing')) )

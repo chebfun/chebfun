@@ -88,7 +88,7 @@ pass(8) = (norm(diff(err), inf) < ...
     all(abs(feval(F, a)) < max(get(f, 'vscale').*get(f, 'epslevel')));
 
 %% Test on singular function:
-pref.enableSingularityDetection = true;
+pref.blowup = true;
 
 % Singularity at one endpoint:
 dom = [-2 7];

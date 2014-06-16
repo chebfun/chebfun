@@ -43,7 +43,7 @@ classdef chebfunpref < chebpref
 %         lengths of all the FUNs) allowed by the constructor when breakpoint
 %         detection is enabled.
 %
-%   enableSingularityDetection - Enable/disable singularity detection.
+%   blowup                     - Enable/disable singularity detection.
 %     true
 %    [false]
 %
@@ -393,7 +393,7 @@ classdef chebfunpref < chebpref
             techPrefs = techObj.techPref(prefList.techPrefs);
 
             % Compute the screen column in which pref values start.
-            valueCol = 34; % length('    enableSingularityDetection:   ');
+            valueCol = 34; % length('    blowup:   ');
             for field = fieldnames(techPrefs).'
                 field1 = field{1};
                 col = length(['        ' field1 '  ']);
@@ -419,8 +419,8 @@ classdef chebfunpref < chebpref
                 prefList.breakpointPrefs.splitMaxLength');
             fprintf([padString('        splitMaxTotalLength:') '%d\n'], ...
                 prefList.breakpointPrefs.splitMaxTotalLength');
-            fprintf([padString('    enableSingularityDetection:') '%d\n'], ...
-                prefList.enableSingularityDetection);
+            fprintf([padString('    blowup:') '%d\n'], ...
+                prefList.blowup);
             fprintf('    singPrefs\n');
             fprintf([padString('        exponentTol:') '%d\n'], ...
                 prefList.singPrefs.exponentTol');
@@ -662,7 +662,7 @@ classdef chebfunpref < chebpref
             factoryPrefs.splitting = false;
                 factoryPrefs.breakpointPrefs.splitMaxLength = 160;
                 factoryPrefs.breakpointPrefs.splitMaxTotalLength = 6000;
-            factoryPrefs.enableSingularityDetection = false;
+            factoryPrefs.blowup = false;
                 factoryPrefs.singPrefs.exponentTol = 1.1*1e-11;
                 factoryPrefs.singPrefs.maxPoleOrder = 20;
                 factoryPrefs.singPrefs.defaultSingType = 'sing';                
