@@ -20,7 +20,7 @@ else
     tString = 'Column vector';
 end
 
-disp(['   chebfun2v object ' '(' tString ')' ])
+disp(['   chebfun2v object ' '(' tString ') containing:' ])
 if ( loose )
     fprintf('\n');
 end
