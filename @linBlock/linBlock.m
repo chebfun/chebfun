@@ -30,7 +30,7 @@ classdef (InferiorClasses = {?chebfun}) linBlock
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     
-    properties
+    properties ( Access = public )
         % The domain of CHEBFUN objects that are operated upon.
         domain = [];
         
@@ -47,7 +47,9 @@ classdef (InferiorClasses = {?chebfun}) linBlock
         iszero = false;
     end
     
-    methods
+    %% Class constructor:    
+    methods ( Access = public, Static = false )
+        
         function A = linBlock(varargin)
             % A = LINBLOCK()        Use the default preference domain. 
             % A = LINBLOCK(B)       Self-return for the same type.
@@ -63,6 +65,11 @@ classdef (InferiorClasses = {?chebfun}) linBlock
                 A.domain = varargin{1};
             end
         end
+        
+    end
+        
+    %% NON-STATIC METHODS OF THIS CLASS
+    methods ( Access = public, Static = false )
         
         function f = toFunction(A)
             % Convert the LINBLOCK to a callable anonymous function that can be

@@ -51,12 +51,13 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) linop 
 % linop.constraint and linop.continuity are of the type LINOPCONSTRAINT.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    properties
+    properties ( Access = public )
         constraint = linopConstraint()
         continuity = linopConstraint()
     end
     
-    methods
+    %% CONSTRUCTOR:
+    methods ( Access = public, Static = false )
         function L = linop(M)
             if ( nargin == 0 )
                 M = 0;
@@ -66,7 +67,9 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) linop 
         end
     end
     
-    methods ( Static )
+    %% STATIC METHODS IMPLEMENTED BY THIS CLASS
+    methods ( Access = public, Static = true )
+        
         function [Z, I, D, C, M] = primitiveOperators(domain)
         %LINOP.PRIMITIVEOPERATORS   Frequently used operator blocks.
         %   [Z, I, D, C, M] = LINOP.PRIMITIVEOPERATORS(DOMAIN) returns shortcuts

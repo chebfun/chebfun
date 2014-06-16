@@ -21,12 +21,13 @@ classdef linopConstraint
 %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
 %  See http://www.chebfun.org for Chebfun information.
 
-    properties
+    properties ( Access = public )
         functional    % applied to the variable to get values
         values        % constraint on the result of the functional
     end
     
-    methods
+    %% Constructor:
+    methods ( Access = public, Static = false )
         % Input a functional and a value to create a constraint, or create
         % an empty constraint if no inputs.
         function C = linopConstraint(op, vals)
@@ -36,6 +37,10 @@ classdef linopConstraint
             C.functional = op;
             C.values = vals;
         end
+    end
+       
+    %% NON-STATIC METHODS OF THIS CLASS
+    methods ( Access = public, Static = false )
         
         function n = length(C)
         %LENGTH    Number of constraints in the object.            
@@ -51,7 +56,6 @@ classdef linopConstraint
         %APPEND    Insert an additional constraint.
         %   C = APPEND(C, FUNC, VAL) appends the constraint FUNC*u=VAL to the
         %   current list. If VAL is omitted, it defaults to zero.
-            n = length(C);
             
             % Check if func is of an allowed class.
             validateattributes(func, {'linBlock', 'chebmatrix'}, {})
