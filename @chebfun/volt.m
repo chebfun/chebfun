@@ -55,7 +55,8 @@ function F = volt_col(k, v, onevar)
 
     normv = norm(v);
     dom = domain(v);
-    opt1 = {'resampling', false, 'splitting', true, 'blowup', 'off', 'scale', normv};
+    opt1 = {'resampling', false, 'splitting', true, 'blowup', 'off', ...
+        'vscale', normv};
 
     function out = int(x)
         if ( x == dom(1) )
@@ -67,7 +68,7 @@ function F = volt_col(k, v, onevar)
         end
     end
 
-    opt2 = {'blowup', 'off', 'vectorize', 'scale', normv, 'extrapolate', 1};
+    opt2 = {'blowup', 'off', 'vectorize', 'vscale', normv, 'extrapolate', 1};
     F = chebfun(@int, dom, opt2{:});
 
 end
