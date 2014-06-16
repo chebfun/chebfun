@@ -111,7 +111,8 @@ classdef cheboppref < chebpref
 
 % TODO:  Further documentation of CHEBOPPREF preferences.
 
-    methods
+    %% Constructor.
+    methods ( Access = public, Static = false )
 
         function outPref = cheboppref(inPref, varargin)
             if ( (nargin == 1) && isa(inPref, 'cheboppref') )
@@ -214,8 +215,10 @@ classdef cheboppref < chebpref
         end 
        
     end
-
-    methods ( Static = true )
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%% STATIC METHODS %%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% Public Static methods of the class.
+    methods ( Access = public, Static = true )
         function pref = getFactoryDefaults()
         %GETFACTORYDEFAULTS   Get factory default preferences.
         %   PREF = CHEBOPPREF.GETFACTORYDEFAULTS() returns a CHEBOPPREF
@@ -260,6 +263,7 @@ classdef cheboppref < chebpref
         end
     end
 
+    %% Private static methods
     methods ( Static = true, Access = private )
 
         function varargout = manageDefaultPrefs(varargin)

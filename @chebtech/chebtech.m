@@ -122,7 +122,7 @@ classdef chebtech < smoothfun % (Abstract)
     end
 
     %% ABSTRACT (NON-STATIC) METHODS REQUIRED BY THIS CLASS.
-    methods ( Abstract = true )
+    methods ( Access = public, Static = false, Abstract = true )
 
         % Compose method. (Not implemented here as refinement is defined also).
         h = compose(f, op, g, data, pref)
@@ -133,7 +133,7 @@ classdef chebtech < smoothfun % (Abstract)
     end
 
     %% ABSTRACT STATIC METHODS REQUIRED BY THIS CLASS.
-    methods ( Abstract = true, Static = true )
+    methods ( Access = public, Static = true, Abstract = true )
         
         % Alias Chebyshev coefficients.
         coeffs = alias(coeffs, m)
@@ -162,8 +162,8 @@ classdef chebtech < smoothfun % (Abstract)
 
     end
 
-    %% METHODS IMPLEMENTED BY THIS CLASS.
-    methods
+    %% NON-STATIC METHODS IMPLEMENTED BY THIS CLASS.
+    methods ( Access = public, Static = false )
         
         % Absolute value of a CHEBTECH. (f should have no zeros in its domain)
         f = abs(f, pref)
@@ -375,7 +375,7 @@ classdef chebtech < smoothfun % (Abstract)
     end
 
     %% STATIC METHODS IMPLEMENTED BY THIS CLASS.
-    methods ( Static = true )
+    methods ( Access = public, Static = true )
 
         % Evaluation using the barycentric interpolation formula.
         fx = bary(x, gvals, xk, vk)

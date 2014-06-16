@@ -17,7 +17,8 @@ classdef chebpref
         prefList
     end
 
-    methods
+    %% Non-Static methods implemented by this class.
+    methods ( Access = public, Static = false )
 
         function out = subsref(pref, ind)
         %SUBSREF   Subscripted referencing for CHEBPREF.
@@ -65,13 +66,15 @@ classdef chebpref
         end
 
     end
-
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%% Abstract methods %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Abstract = true )
         % Display information about a CHEBPREF object.
         display(pref)
     end
-
-    methods ( Static = true )
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%% Static methods %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% Static methods.
+    methods ( Access = public, Static = true )
 
         function pref1 = mergePrefs(pref1, pref2, map)
         %MERGEPREFS   Merge preference structures.
@@ -102,7 +105,8 @@ classdef chebpref
 
     end
 
-    methods ( Static = true, Hidden = true  )
+    %% Hidden static methods.
+    methods ( Access = public, Static = true, Hidden = true  )
 
         function setDefaults(makeSC, manageSCDefaults, varargin)
         %SETDEFAULTS   Set default preferences.
