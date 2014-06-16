@@ -6,7 +6,7 @@ function c_leg = cheb2leg(c_cheb, normalize, M)
 %   where P{k} is the degree k Legendre polynomial normalized so that
 %   max(|P{k}|) = 1.
 % 
-%   C_LEG = CHEB2LEG(C_CHEB, 'normalize') is as above, but with the Legendre
+%   C_LEG = CHEB2LEG(C_CHEB, 'norm') is as above, but with the Legendre
 %   polynomials normalized to be orthonormal.
 %
 %   If C_CHEB is a matrix then the CHEB2LEG operation is applied to each column.
@@ -30,7 +30,7 @@ c_cheb = flipud(c_cheb);   % Lowest order coeffs first.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Initialise  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if ( nargin < 2 ), normalize = 0; end         % Normalize so max(|P{k}|) = 1.
-if ( nargin == 2 && strncmpi( normalize, 'norm', 4) )
+if ( (nargin == 2) && strncmpi(normalize, 'norm', 4) )
     normalize = 1;                            % Orthanormal Legendre Polys.
 end
 if ( nargin < 3 ), M = 10; end                % No. of terms in expansion.

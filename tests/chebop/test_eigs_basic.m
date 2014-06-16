@@ -17,8 +17,7 @@ L = addConstraint(L,chebmatrix(e(pi)));
 [V, D] = eigs(L, 10, pref);
 e1 = sqrt(-diag(D));
 errVals(1) = norm(e1 - 1i*(1:10).',inf);
-LV = L*V;
-errFuns(1) = norm(LV{1}-V{1}*D);
+errFuns(1) = norm(L*V-V*D);
 %% With chebops
 d = [0, pi];
 N = chebop(d);

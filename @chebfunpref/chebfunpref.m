@@ -73,14 +73,6 @@ classdef chebfunpref < chebpref
 %         If two delta functions are located closer than this tolerance, they 
 %         will be merged.
 %
-%   scale                      - The vertical scale constructor should use.
-%    [0]
-%
-%      Typically the CHEBFUN constructor will resolve relative to a vertical
-%      scale determined by it's own function evaluations. However, in some
-%      situations one would like to the resolve relative to a fixed vertical
-%      scale. This can be set using this preference.
-%
 %   singPrefs                  - Preferences for singularity detection.
 %
 %      exponentTol             - Tolerance for exponents.
@@ -98,14 +90,6 @@ classdef chebfunpref < chebpref
 %         
 %         The default singularity type to be used when singularity detection is
 %         enabled and no singType is provided.
-%
-%   scale                      - The vertical scale the constructor should use.
-%    [0]
-%
-%      Typically the CHEBFUN constructor will resolve relative to a vertical
-%      scale determined by it's own function evaluations. However, in some
-%      situations one would like to the resolve relative to a fixed vertical
-%      scale. This can be set using this preference.
 %
 %   tech                       - Representation technology.
 %    ['chebtech2']
@@ -454,16 +438,8 @@ classdef chebfunpref < chebpref
             fprintf('    cheb2Prefs\n');
             fprintf([padString('        maxRank:') '%d\n'], ...
                 prefList.cheb2Prefs.maxRank');
-            fprintf([padString('        maxLength:') '%d\n'], ...
-                prefList.cheb2Prefs.maxLength');            
-            fprintf([padString('        eps:') '%d\n'], ...
-                prefList.cheb2Prefs.eps');            
-            fprintf([padString('        exactLength:') '%d\n'], ...
-                prefList.cheb2Prefs.exactLength');            
             fprintf([padString('        sampleTest:') '%d\n'], ...
-                prefList.cheb2Prefs.sampleTest');            
-            fprintf([padString('    scale:') '%d\n'], ...
-                prefList.scale);
+                prefList.cheb2Prefs.sampleTest');
             
             techStr = func2str(tech);
             fprintf([padString('    tech:') '@%s\n'], techStr)
@@ -693,7 +669,6 @@ classdef chebfunpref < chebpref
             factoryPrefs.enableDeltaFunctions = true;
                 factoryPrefs.deltaPrefs.deltaTol = 1e-9;
                 factoryPrefs.deltaPrefs.proximityTol = 1e-11;
-            factoryPrefs.scale = 0;
             factoryPrefs.tech = @chebtech2;
             factoryPrefs.techPrefs = struct();
                 factoryPrefs.techPrefs.eps = 2^(-52);
@@ -703,9 +678,6 @@ classdef chebfunpref < chebpref
                 factoryPrefs.techPrefs.sampleTest = true;
             factoryPrefs.cheb2Prefs = struct(); 
                 factoryPrefs.cheb2Prefs.maxRank = 513;   
-                factoryPrefs.cheb2Prefs.maxLength = 65537;   
-                factoryPrefs.cheb2Prefs.eps = 2^(-52);   
-                factoryPrefs.cheb2Prefs.exactLength = 0; 
                 factoryPrefs.cheb2Prefs.sampleTest = 1;
         end
 

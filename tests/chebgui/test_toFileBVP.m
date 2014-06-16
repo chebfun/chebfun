@@ -6,7 +6,7 @@ function pass = test_toFileBVP(pref)
 
 % Find the folders which demos are stored in. The chebguiDemos folder lives in
 % the trunk folder, find the path of the Chebfun trunk.
-trunkPath = fileparts(which('chebguiWindow'));
+trunkPath = chebfunroot();
 
 % Append directory information
 bvppath = fullfile(trunkPath, 'chebguiDemos', 'bvpdemos');
@@ -27,6 +27,7 @@ try
     
     % Loop through the demos and export
     for demoCounter = 3:length(D)
+        
         % The path to the .guifile
         demoPath = fullfile(bvppath, D(demoCounter).name);
         
@@ -39,6 +40,7 @@ try
     
     % Got here without crashing == success!
     pass = 1;
+    
 catch
     % Something went wrong == fail :(
     pass = 0;

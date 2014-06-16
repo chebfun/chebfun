@@ -5,7 +5,7 @@ if ( nargin == 0)
     pref = chebfunpref; 
 end
 
-tol = pref.cheb2Prefs.eps; 
+tol = pref.eps; 
 j = 1;
 
 % Check accuracy on [-1,1]
