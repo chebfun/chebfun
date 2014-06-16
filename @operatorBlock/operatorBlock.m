@@ -14,8 +14,9 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
 % Operators can be composed using *, added, exponentiated, and applied to
 % CHEBFUN objects.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-    methods
+    
+    %% Constructor:
+    methods ( Access = public, Static = false )
         function A = operatorBlock(domain)
         % OPERATORBLOCK constructor
 
@@ -23,6 +24,11 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
             A = A@linBlock(domain);
             
         end
+        
+    end
+    
+    %% NON STATIC METHODS OF THIS CLASS:
+    methods ( Access = public, Static = false )
         
         function out = iszero(A)
         %ISZERO   Returns TRUE for a zero OPERATORBLOCK.
@@ -206,8 +212,9 @@ classdef (InferiorClasses = {?chebfun}) operatorBlock < linBlock
         end
 
     end
-
-    methods (Static = true)
+    
+    %% STATIC METHODS:
+    methods ( Access = public, Static = true )
 
         function C = cumsum(varargin)
         %OPERATORBLOCK.CUMSUM   Antiderivative operator.

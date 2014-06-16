@@ -80,8 +80,9 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
         exponents       % (1x2 double)
     end
     
-    %% CLASS CONSTRUCTOR (IMPLEMENTED BY THIS M-FILE):
-    methods
+    %% CLASS CONSTRUCTOR (IMPLEMENTED IN THIS M-FILE):
+    methods ( Access = public, Static = false )
+        
         function obj = singfun(op, data, pref)
             % Parse inputs.
             if ( nargin < 1 )
@@ -174,10 +175,11 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
                     pref);
             end
         end
+        
     end
     
     %% METHODS (NON-STATIC) IMPLEMENTED BY THIS CLASS.
-    methods
+    methods ( Access = public, Static = false )
         
         % SINGFUN logical AND.
         h = and(f, g)
@@ -362,7 +364,8 @@ classdef (InferiorClasses = {?chebtech2, ?chebtech1}) singfun < onefun %(See Not
     end
     
     %% STATIC METHODS IMPLEMENTED BY THIS CLASS.
-    methods ( Static = true )
+    methods ( Access = public, Static = true )
+        
         % SmoothPart constructor
         s = constructSmoothPart( op, vscale, hscale, pref )
         

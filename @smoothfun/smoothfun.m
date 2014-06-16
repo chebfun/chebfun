@@ -26,7 +26,7 @@ classdef smoothfun < onefun % (Abstract)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     %% Constructor for the SMOOTHFUN class.
-    methods (Static)
+    methods ( Access = public, Static = true )
         
         function obj = constructor(op, data, pref)
             
@@ -64,7 +64,7 @@ classdef smoothfun < onefun % (Abstract)
     end
 
     %% Static methods implemented by SMOOTHFUN class.
-    methods ( Static = true ) 
+    methods ( Access = public, Static = true ) 
         
         % Construct a rational interpolant to equispaced data.
         f = funqui(vals)
@@ -75,6 +75,8 @@ classdef smoothfun < onefun % (Abstract)
     end
     
 end
+
+%% Methods implemented in this file:
 
 function f = funqui(vals)
 %FUNQUI   Rational interpolant of equispaced data.
