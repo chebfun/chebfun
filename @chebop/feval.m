@@ -23,9 +23,12 @@ function out = feval(N, varargin)
 %
 %   OUT = FEVAL(N, DIM) returns an DIM-point discretization of the linear
 %   operator N. If N is not linear an error is thrown. OUT = FEVAL(N, DIM,
-%   'oldschool') forces the returned differentiation matrices to be square,
-%   rather than rectangular. See CHEBOP/MATRIX for further details (which is the
-%   prefered syntax for this functionality)
+%   'oldschool') uses boundary bordering to deal wiuth the boundary conditions,
+%   rather than the rectangular projection approach of hale and Driscoll. Note
+%   that this syntax exists only the support ATAP and doesn't necessarily give a
+%   clear picture of the discretizations now being used in the Chebfun release.
+%   CHEBOP/MATRIX, which is the prefered syntax for this functionality, provides
+%   further details
 %
 % See also CHEBOP/SUBSREF, LINOP/MTIMES, CHEBOP/MATRIX.
 
@@ -33,42 +36,64 @@ function out = feval(N, varargin)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Support for calling a linear CHEBOP with a numerical input to get its
-% discretization. Here we simply call the MATRIX() method.
-
-if ( (nargin == 2) && isnumeric(varargin{1}) ) 
-    % TODO: Throw a deprecated warning?
+% discretization. This is deprecated
+if ( (nargin == 2) && isnumeric(varargin{1}) )
+    warning('CHEBFUN:CHEBOP:feval:deprecated', ...
+        ['FEVAL(N, DIM) or N(DIM) exists only to provide backwards\n', ...
+        'compatibility with ATAP. The preferred method for visualizing a\n', ...
+        'discretization of a linear CHEBOP is MATRIX(N, DIM). Note, however,\n', ...
+        'that these may not give the same result due to changes in how\n', ...
+        'CHEBOP discretizes differential operators.'])
+    warning('off', 'CHEBFUN:CHEBOP:feval:deprecated');
     
-    % Because the native V5 matrix is rectangular, we have to do some
-    % resizing to recapture V4 behavior.
-
-    % Note: this may break for systems, piecewise cases. 
+    % We cannot support boundry conditions in this way.
+    throwBCwarning = false;
+    if ( ~isempty(N.lbc) )
+        N.lbc = [];
+        throwBCwarning = true;
+    end
+    if ( ~isempty(N.rbc) )
+        N.rbc = [];
+        throwBCwarning = true;
+    end
+    if ( ~isempty(N.bc) )
+        N.bc = [];
+        throwBCwarning = true;
+    end
+    if ( throwBCwarning )
+        warning('CHEBFUN:CHEBOP:feval:BCs', ...
+            'Boundary conditions are not supported in FEVAL(N, DIM).')
+    end
     
+    % Because the native V5 matrix is rectangular, we have to do some resizing
+    % to recapture V4 behavior. Note: this may break for systems, piecewise
+    % cases.
     n = varargin{1};
     L = linop(N);
     pref = cheboppref;  pref.discretization = @colloc2;
-    A = matrix(L,n,pref);  % has n rows but maybe more columns
+    A = matrix(L, n, pref); % has n rows but maybe more columns
     
     % We want an n by n result. We have that A is (n-d) x n where
     % d=L.diffOrder. Also, the output of A is at 1st kind points. We need
-    % to do: 
+    % to do:
     %  (map from n 1st kind to n 2nd kind) * A * (map from n 2nd kind to
-    %  n+d 2nd kind). 
+    %  n+d 2nd kind).
     
     % Note that we don't have to translate/scale to the domain for barymat
     % matrices that go between grids.
     d = L.diffOrder;
     [x1,~,w1] = chebtech1.chebpts( n );
     x2 = chebtech2.chebpts( n );
-    x3 = chebtech2.chebpts( n+d );
-
-    out = barymat(x2,x1,w1) * A * barymat(x3,x2);
+    x3 = chebtech2.chebpts( n + d );
+    
+    out = barymat(x2, x1, w1) * A * barymat(x3, x2);
     return
     
 elseif ((nargin == 3) && ischar(varargin{2}) ...
         && strcmpi(varargin{2}, 'oldschool'))
-
-    % TODO: Is this still correct? 
-    out = matrix(N,varargin{:});
+    
+    % TODO: Is this still correct?
+    out = matrix(N, varargin{:});
     return
 end
 
@@ -132,7 +157,7 @@ elseif ( numberOfInputs == 2 )
         % Got passed both x and u.
         x = varargin{1};
         u = varargin{2};
-
+        
     else
         error('CHEBFUN:CHEBOP:feval:numInputs', ...
             'Unexpected number of input arguments.')
