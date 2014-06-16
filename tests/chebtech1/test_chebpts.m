@@ -16,17 +16,17 @@ pass(2) = ( x == 0 && w == 2 && v == 1);
 % Test that when n = 2, x = v = [-1/sqrt(2) ; 1/sqrt(2)] and w = :
 x = chebtech1.chebpts(2);
 pass(3) = ( all(size(x) == [2, 1]) && norm( x - [-1/sqrt(2) ; 1/sqrt(2)], inf) < tol );
-[~, w] = chebtech1.chebpts(2);
+[ignored, w] = chebtech1.chebpts(2);
 pass(4) = ( all(size(w) == [1, 2]) && all( w == [1, 1]) );
-[~, ~, v] = chebtech1.chebpts(2);
+[ignored1, ignored2, v] = chebtech1.chebpts(2);
 pass(5) = ( all(size(v) == [2, 1]) && norm( v - [-1/sqrt(2) ; 1/sqrt(2)], inf) < tol );
 
 % Test that n = 3 returns [-1 ; 0 ; 1]:
 x = chebtech1.chebpts(3);
 pass(6) = ( all(size(x) == [3, 1]) && norm(x - [-sqrt(3)/2 ; 0 ; sqrt(3)/2], inf) < tol );
-[~, w] = chebtech1.chebpts(3);
+[ignored, w] = chebtech1.chebpts(3);
 pass(7) = ( all(size(w) == [1, 3]) && norm( w - ([4/9, 10/9, 4/9]), inf) < tol );
-[~, ~, v] = chebtech1.chebpts(3);
+[ignored1, ignored2, v] = chebtech1.chebpts(3);
 pass(8) = ( all(size(v) == [3, 1]) && norm( v - ([.5 ; -1 ; .5]) , inf) < tol );
 
 % Test that n = 129 returns vectors of the correct size:
