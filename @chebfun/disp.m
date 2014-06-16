@@ -21,7 +21,7 @@ if ( isempty(f) )
 end
 
 % Convert array-valued CHEBFUN to a quasimatrx for unified output.
-if ( (numColumns(f) > 1) || (numel(f) == 1) )
+if ( (numColumns(f) > 1) && (numel(f) == 1) )
     f = cheb2quasi(f);
 end
 
@@ -35,9 +35,7 @@ if ( numel(f) > 1 )
         end
         % Call the column display subfunction:
         fprintf(colDisp(f(k), columnString));
-        if ( k ~= numel(f) )
-            fprintf('\n');
-        end
+        fprintf('\n');
         % Final line break:
         if ( loose )
             fprintf('\n');
@@ -148,7 +146,6 @@ if ( ~isempty(out) )
     end
     s = [s, sprintf( 'Locations:\n')];
     s = [s, sprintf('%8.2g', deltaLoc)];
-    s = [s, sprintf('\n')];
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
