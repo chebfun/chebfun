@@ -18,8 +18,8 @@ classdef (InferiorClasses = {?chebfun}) domain < double
         
     end
     
-    %% METHODS IMPLEMENTED BY THIS M-FILE:
-    methods
+    %% Constructor:
+    methods ( Access = public, Static = false )
 
         function obj = domain(varargin)
             %Constructor for the DOMIAN class.
@@ -36,25 +36,10 @@ classdef (InferiorClasses = {?chebfun}) domain < double
             
         end
         
-    end
+    end     
     
-    %% STATIC METHODS IMPLEMENTED BY THIS CLASS:
-    methods ( Static = true )
-        
-        function varargin = toDouble(varargin)
-            % Cast DOMAIN to DOUBLE:
-            for k = 1:nargin
-                if ( isa(varargin{k}, 'domain') )
-                    varargin{k} = double(varargin{k});
-                end
-            end
-            
-        end
-        
-    end
-    
-    %% METHODS IMPLEMENTED BY THIS CLASS:
-    methods
+    %% NON-STATIC METHODS IMPLEMENTED BY THIS CLASS:
+    methods ( Access = public, Static = false )
         
         function out = validate(dom)
             out = true;
@@ -92,6 +77,21 @@ classdef (InferiorClasses = {?chebfun}) domain < double
             varargout{1:nargout} = sprintf(varargin{:});
         end
                    
+    end
+    
+    %% STATIC METHODS IMPLEMENTED BY THIS CLASS:
+    methods ( Access = public, Static = true )
+        
+        function varargin = toDouble(varargin)
+            % Cast DOMAIN to DOUBLE:
+            for k = 1:nargin
+                if ( isa(varargin{k}, 'domain') )
+                    varargin{k} = double(varargin{k});
+                end
+            end
+            
+        end
+        
     end
     
 end

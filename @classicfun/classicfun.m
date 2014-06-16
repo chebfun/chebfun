@@ -68,7 +68,7 @@ classdef classicfun < fun % (Abstract)
     end
     
     %% CLASS CONSTRUCTOR:
-    methods (Static = true)
+    methods ( Access = public, Static = true )
         
         function obj = constructor(op, data, pref)
             
@@ -102,24 +102,9 @@ classdef classicfun < fun % (Abstract)
         end
         
     end
-    
-    %% STATIC METHODS IMPLEMENTED BY THIS CLASS.
-    methods (Static = true)
-
-    end
-    
-    %% ABSTRACT STATIC METHODS REQUIRED BY THIS CLASS.
-    methods(Abstract = true, Static = true)
-                
-        % Map from [-1, 1] to the domain of the CLASSICFUN.
-        m = createMap(domain);  
-        
-        % Make a CLASSICFUN. (Constructor shortcut)
-        f = make(varargin);
-    end
-    
-    %% ABSTRACT METHODS REQUIRED BY THIS CLASS.
-    methods ( Abstract = true )
+           
+    %% NON-STATIC ABSTRACT METHODS REQUIRED BY THIS CLASS.
+    methods ( Access = public, Static = false, Abstract = true )
         % [TODO]: Once UNBNDFUN and CHEBFUN advance, we should revisit this
         % list, and add/throw away abstract methods as appropriate.
         
@@ -147,10 +132,21 @@ classdef classicfun < fun % (Abstract)
         % Definite integral of a CLASSICFUN on its domain of definition.
         out = sum(f, dim)
         
-    end           
+    end   
     
-    %% METHODS IMPLEMENTED BY THIS CLASS.
-    methods
+     %% STATIC ABSTRACT METHODS REQUIRED BY THIS CLASS.
+    methods ( Access = public, Static = true, Abstract = true )
+                
+        % Map from [-1, 1] to the domain of the CLASSICFUN.
+        m = createMap(domain);  
+        
+        % Make a CLASSICFUN. (Constructor shortcut)
+        f = make(varargin);
+    end
+   
+    
+    %% NON-STATIC METHODS IMPLEMENTED BY THIS CLASS.
+    methods ( Access = public, Static = false )
         
         % Extract information for DISPLAY.
         info = dispData(f)
@@ -274,6 +270,8 @@ classdef classicfun < fun % (Abstract)
 
     end
 end
+
+%% Methods implemented in this file:
 
 function data = parseDataInputs(data, pref)
 %PARSEDATAINPUTS   Parse inputs from the DATA structure and assign defaults.

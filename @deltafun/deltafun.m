@@ -58,7 +58,7 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
     end
     
     %% DELTAFUN CLASS CONSTRUCTOR:
-    methods ( Static = true )
+    methods ( Access = public, Static = true )
         
         function obj = deltafun(op, data, pref)
             
@@ -148,8 +148,8 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
     end
     
     
-    %% METHODS IMPLEMENTED BY THIS CLASS.
-    methods
+    %% NON-STATIC METHODS IMPLEMENTED BY THIS CLASS.
+    methods ( Access = public, Static = false )
         
         % True if the DELTAFUN object has no delta functions       
         out = anyDelta(f)
@@ -288,7 +288,8 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
     end
     
     %% STATIC METHODS IMPLEMENTED BY THIS CLASS.
-    methods ( Static = true )
+    methods ( Access = public, Static = true )
+        
         % smooth fun constructor
         s = constructFunPart( op, pref)
         
@@ -319,6 +320,8 @@ classdef (InferiorClasses = {?bndfun, ?unbndfun}) deltafun < fun
     end
     
 end
+
+%% Methods implemented in this class.
 
 function data = parseDataInputs(data, pref)
 %PARSEDATAINPUTS   Parse inputs from the DATA structure and assign defaults.

@@ -15,13 +15,17 @@ classdef colloc1 < colloc
     
     % No subclass-specific properties needed, and no special constructor either.
     
-    methods
+    %% Constructor.
+    methods ( Access = public, Static = false )
+        
         function disc = colloc1(varargin)
             disc = disc@colloc(varargin{:});
         end
+        
     end
     
-    methods (Static)
+    %% Static methods implemented by this class.    
+    methods ( Access = public, Static = true )
         
         function D = diffmat(n, k)
             %DIFFMAT   Chebyshev differentiation matrix

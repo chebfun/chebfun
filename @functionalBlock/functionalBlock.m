@@ -15,13 +15,19 @@ classdef functionalBlock < linBlock
 % objects.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    methods
+    %% CLASS CONSTRUCTOR:
+    methods ( Access = public, Static = false )
+        
         function A = functionalBlock(domain)
         % FUNCTIONALBLOCK constructor, simply calls the LINBLOCK
         % constructor.
             A = A@linBlock(domain);
         end
-
+        
+    end
+    
+    %% NON-STATIC METHODS OF THIS CLASS:
+    methods ( Access = public, Static = false )
         function varargout = size(A, dim) %#ok<INUSL>
         %SIZE   Size of a FUNCTIONALBLOCK.
         %   The commands
@@ -106,7 +112,8 @@ classdef functionalBlock < linBlock
 
     end
 
-    methods (Static = true)
+    %% STATIC METHODS OF THIS CLASS:
+    methods ( Access = public, Static = true )
 
         function F = dot(f)   % synonym for inner()
         %FUNCTIONALBLOCK.DOT   Synonym for FUNCTIONALBLOCK.INNER.

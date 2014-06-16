@@ -15,7 +15,9 @@ classdef colloc < chebDiscretization
         mldivideData = [];
     end
     
-    methods
+    %% Constructor.
+    methods ( Access = public, Static = false )
+        
         function disc = colloc(source, dimension, domain)
             %COLLOC    Collocation discretization constructor.
             %   (Called by subclasses for parts in common.)
@@ -44,8 +46,8 @@ classdef colloc < chebDiscretization
         
     end
     
-    % These must be implemented by a subclass.
-    methods ( Abstract )
+    %% Abstract methods that must be implemented by a subclass.
+    methods ( Access = public, Static = false, Abstract = true )
         
         % Indefinite integration:
         C = cumsum(disc)
@@ -61,7 +63,8 @@ classdef colloc < chebDiscretization
         
     end
     
-    methods ( Static )
+    %% Non-Static methods implemented by this class.
+    methods ( Access = public, Static = true )
         
         % Discretization points: (used by both colloc1 and colloc2)
         [x, w, v] = points(varargin);

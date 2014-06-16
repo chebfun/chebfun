@@ -22,8 +22,9 @@ classdef fun % (Abstract)
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
 % See http://www.chebfun.org/ for Chebfun information.
-
-    methods (Static)
+    
+    %% Constructor.
+    methods ( Access = public, Static = true ) 
         
         function obj = constructor(op, data, pref)
             
@@ -54,9 +55,14 @@ classdef fun % (Abstract)
         end
         
     end
+    
+    %% ABSTRACT NON-STATIC METHODS REQUIRED BY THIS CLASS.
+    methods ( Access = public, Abstract = true, Static = false )
+        
+    end
 
     %% ABSTRACT STATIC METHODS REQUIRED BY THIS CLASS.
-    methods ( Abstract = true, Static = true )
+    methods ( Access = public, Abstract = true, Static = false )
 
         % Map from [-1, 1] to the domain of the FUN.
         m = createMap(domain);  
@@ -64,9 +70,5 @@ classdef fun % (Abstract)
         % Make a FUN. (Constructor shortcut)
         f = make(varargin);
     end
-    
-    methods ( Abstract = true, Static = false )
         
-    end
-    
 end
