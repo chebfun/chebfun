@@ -15,7 +15,7 @@ function [M, S] = instantiate(disc)
 % See also: MATRIX
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 data = disc.source;
 if ( isa(data, 'chebmatrix') )

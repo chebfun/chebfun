@@ -8,7 +8,7 @@ function f = flipdim( f, dim )
 % See also FLIPLR, FLIPUD.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( numel( dim ) ~= 1 ) 
     error('CHEBFUN:CHEBFUN2:flipdim:badDim1', 'DIM should be either 1 or 2.')

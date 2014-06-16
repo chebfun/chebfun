@@ -12,7 +12,7 @@ function a = any(f, dim)
 %   ANY(X) is shorthand for ANY(X, 1).
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information
+% See http://www.chebfun.org/ for Chebfun information
 
 if ( nargin < 2 )
     dim = 1;

@@ -7,7 +7,7 @@ function edge = detectEdge(f, op, vscale, hscale, pref)
 %   of DOMAIN.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % PSEUDOCODE. Taken from Pachon, Platte and Trefethen, "Piecewise smooth

@@ -14,7 +14,7 @@ function g = cumsum(f, dim)
 % See also SUM.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % [TODO]: Improvement on the algorithm to handle the case with singularities at
 % both the end points. Improvement on the whole SINGFUN class to handle

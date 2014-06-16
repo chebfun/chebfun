@@ -11,7 +11,7 @@ function F = vertcat( varargin )
 % See also CHEBFUN2V.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin == 1 ) 
     % VERTCAT of one argument just returns the same thing back to the user:

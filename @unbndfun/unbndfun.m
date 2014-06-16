@@ -34,7 +34,7 @@ classdef unbndfun < classicfun
 % See also CLASSICFUN, CHEBFUNPREF, ONEFUN.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % UNBNDFUN Class Description:

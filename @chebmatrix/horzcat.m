@@ -7,7 +7,7 @@ function C = horzcat(varargin)
 %   See also CHEBMATRIX.CAT, CHEBMATRIX.VERTCAT.
 
 %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
+%  See http://www.chebfun.org/ for Chebfun information.
 
 % Remove empty arguments.
 isemp = cellfun(@isempty,varargin);

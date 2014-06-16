@@ -24,7 +24,7 @@ function F = besselh(nu, k, F, scale, pref)
 % See also AIRY, BESSELI, BESSELJ, BESSELK, BESSELY.
 %
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Parse inputs:
 if ( nargin < 5 )

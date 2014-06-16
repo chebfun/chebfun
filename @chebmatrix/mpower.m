@@ -4,7 +4,7 @@ function B = mpower(A, pow)
 % See also MTIMES.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( (pow ~= round(pow)) || (pow < 0) )
     error('CHEBFUN:CHEBMATRIX:power:badPower', ...

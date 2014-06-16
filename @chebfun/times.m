@@ -6,7 +6,7 @@ function f = times(f, g)
 % See also MTIMES.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with the special cases:
 if ( ~isa(f, 'chebfun') )      % ??? * CHEBFUN

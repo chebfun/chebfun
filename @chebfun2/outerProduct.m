@@ -7,7 +7,7 @@ function h = outerProduct(f, g)
 %   f*g.'
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % TODO: This command could use a compression-like algorithm, but instead we will
 % just concatenate the rows and columns.

@@ -11,7 +11,7 @@ function F = simplify(F, tol)
 %  default simplification tolerances as the relative threshold level.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin == 1 )
     tol = [];

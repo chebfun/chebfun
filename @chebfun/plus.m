@@ -9,7 +9,7 @@ function f = plus(f, g)
 %   _not_ supported if both F and G are CHEBFUN objects.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( ~isa(f, 'chebfun') )   % ??? + CHEBFUN
     

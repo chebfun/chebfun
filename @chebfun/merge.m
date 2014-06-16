@@ -26,7 +26,7 @@ function [f, mergedPts] = merge(f, index, pref)
 % See also CHEBFUNPREF.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( numel(f) > 1 )
     % TODO:  Implement this.

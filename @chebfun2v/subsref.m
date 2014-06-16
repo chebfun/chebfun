@@ -13,7 +13,7 @@ function varargout = subsref( F, ref )
 %    Throws an error.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % check for empty CHEBFUN2V object. 
 if ( isempty( F ) )

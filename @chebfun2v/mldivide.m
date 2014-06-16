@@ -8,7 +8,7 @@ function H = mldivide( f, G )
 % See also MRDIVIDE.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( ( isempty(f) ) || ( isempty(G) ) )
     H = chebfun2v;

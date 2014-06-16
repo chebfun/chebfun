@@ -9,7 +9,7 @@ function F = vertcat( F , G )
 %   the second and third are the first and second components of F.
 
 % Copyright 2014 by The University of Oxford and The Chebfun2 Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun2 information.
+% See http://www.chebfun.org/ for Chebfun2 information.
 
 if ( isempty( F ) || isempty( G ) )
     F = chebfun2v;

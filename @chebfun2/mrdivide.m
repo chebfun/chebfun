@@ -3,7 +3,7 @@ function f = mrdivide( f, g )
 %   F/C divides the CHEBFUN2 F by a scalar C.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( isa(g, 'double') )
     f.pivotValues = f.pivotValues * g;

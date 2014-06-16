@@ -6,7 +6,7 @@ function f = restrict(f, dom)
 % of the corners. 
 
 % Copyright 2014 by The University of Oxford and The Chebfun2 Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun2 information.
+% See http://www.chebfun.org/ for Chebfun2 information.
 
 if ( isa( dom, 'double' ) )    
     if ( numel( dom ) == 4 )                   % Restrict to DOM. 

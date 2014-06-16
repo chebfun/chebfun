@@ -6,7 +6,7 @@ function h = and(f, g)
 %   a non-zero value at that point, otherwise it is set to 0.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Deal with the empty case:
 if ( isempty(f) || isempty(g) )

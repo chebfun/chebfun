@@ -7,7 +7,7 @@ function f = diag( f, varargin )
 % See also TRACE.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Check for empty:
 if ( isempty( f ) ) 

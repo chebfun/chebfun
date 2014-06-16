@@ -5,7 +5,7 @@ function f = thresholdBreakpointValues(f)
 %   set to zero.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 for k = 1:numel(f)    
     breakVals = f(k).pointValues;

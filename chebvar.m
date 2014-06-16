@@ -20,7 +20,7 @@ function chebvar(varargin)
 % See also CHEBFUN, CHEBFUNPREF.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Trivial case:
 if ( nargin == 0 )

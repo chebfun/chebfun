@@ -8,7 +8,7 @@ function val = get( f, propName )
 %    'isTransposed' - Is the CHEBFUN2V a column or row vector?
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 
 if ( numel(f) > 1 )

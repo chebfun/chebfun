@@ -5,7 +5,7 @@ function intNum = whichInterval(disc, location, direction)
 %   indicates approach from the right or left (zero means don't care).
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % [TODO]: How does this differ from chebfun.whichInterval?
 

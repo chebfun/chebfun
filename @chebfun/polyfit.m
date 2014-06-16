@@ -17,7 +17,7 @@ function f = polyfit(y, n)
 % See also INTERP1.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( ~isscalar(n) || round(n) ~= n )
     error('CHEBFUN:CHEBFUN:polyfit:input2', 'N must be scalar integer.')

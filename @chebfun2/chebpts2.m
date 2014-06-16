@@ -12,7 +12,7 @@ function [xx, yy] = chebpts2(nx, ny, D)
 % See also CHEBPTS.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin > 2 )  
    % Third argument should be a domain. 

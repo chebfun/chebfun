@@ -10,7 +10,7 @@ function f = definePoint(f, s, v)
 % See also SUBSASGN, RESTRICT, DEFINEINTERVAL.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Trival empty case:
 if ( isempty(s) )

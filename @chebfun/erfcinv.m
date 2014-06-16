@@ -6,7 +6,7 @@ function F = erfcinv(F, varargin)
 % See also ERF, ERFC, ERFCX, ERFINV.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Input must be real:
 if ( ~isreal(F) )

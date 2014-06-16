@@ -14,7 +14,7 @@ function g = min( f, g, dim )
 % See also MAX, MAX2, MIN2, MINANDMAX2.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Empty check: 
 if ( isempty( f ) ) 

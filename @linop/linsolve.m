@@ -25,7 +25,7 @@ function [u, disc] = linsolve(L, f, varargin)
 %   See also CHEBOPPREF, CHEBOP.MLDIVIDE.
 
 %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
+%  See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Developer note: The second output is a discretization that contains the

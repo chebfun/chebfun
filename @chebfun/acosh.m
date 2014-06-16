@@ -8,7 +8,7 @@ function F = acosh(F, varargin)
 % See also COSH.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. See
-% http://www.chebfun.org for Chebfun information.
+% http://www.chebfun.org/ for Chebfun information.
 
 % Call the compose method:
 F = compose(F, @acosh, varargin{:});

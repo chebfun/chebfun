@@ -22,7 +22,7 @@ function varargout = quiver3( Z, F, varargin )
 % See also CHEBFUN2V/QUIVER3.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 numpts = 20; 
 

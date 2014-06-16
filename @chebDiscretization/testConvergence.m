@@ -15,7 +15,7 @@ function [isDone, epsLevel, vscale, cutoff] = testConvergence(disc, values, vsca
 %      functions' intrinsic scale).
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 if ( nargin < 4 )
     pref = cheboppref;

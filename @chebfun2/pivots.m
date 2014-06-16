@@ -7,7 +7,7 @@ function p = pivots(f, str)
 %   are scaled so that the columns and rows have unit 2-norm.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Get the pivot values:
 p = f.pivotValues;  

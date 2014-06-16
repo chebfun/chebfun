@@ -22,7 +22,7 @@ function L = addConstraint(L, varargin)
 %   See also LINOP.ADDCONTINUITY, LINOPCONSTRAINT. 
 
 %  Copyright 2014 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
+%  See http://www.chebfun.org/ for Chebfun information.
 
 if ( isequal(varargin{1}, 'periodic') )
     if ( ~isempty(L.constraint) )
