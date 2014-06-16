@@ -196,7 +196,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         %   SIMPLIFY(A) simplifies the CHEBFUN elements in a CHEBMATRIX, as
         %   defined by CHEBFUN/SIMPLIFY(). Other entries in A are not affected.
         %
-        % See also CHEBFUN/SIMPLIFYU().
+        % See also CHEBFUN/SIMPLIFY().
             isCheb = cellfun(@(v) isa(v, 'chebfun'), A.blocks);
             A.blocks(isCheb) = cellfun(@(v) simplify(v, varargin{:}), ...
                 A.blocks(isCheb), 'UniformOutput', false);
