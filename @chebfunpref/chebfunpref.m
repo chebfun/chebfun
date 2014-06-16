@@ -439,9 +439,7 @@ classdef chebfunpref < chebpref
             fprintf([padString('        maxRank:') '%d\n'], ...
                 prefList.cheb2Prefs.maxRank');
             fprintf([padString('        sampleTest:') '%d\n'], ...
-                prefList.cheb2Prefs.sampleTest');            
-            fprintf([padString('    scale:') '%d\n'], ...
-                prefList.scale);
+                prefList.cheb2Prefs.sampleTest');
             
             techStr = func2str(tech);
             fprintf([padString('    tech:') '@%s\n'], techStr)
