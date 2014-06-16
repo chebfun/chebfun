@@ -37,7 +37,7 @@ function [u, disc] = linsolve(L, f, varargin)
 % Parse input
 prefs = [];    % no prefs given
 disc = [];     % no discretization given
-vscale = 0;
+vscale = zeros(size(L,2),1);
 for j = 1:nargin-2
     item = varargin{j};
     if ( isa(item, 'cheboppref') )

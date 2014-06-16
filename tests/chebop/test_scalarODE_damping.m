@@ -38,7 +38,7 @@ pref.discretization = @ultraS;
 pref.errTol = 1e-12;
 [u3, info3] = solvebvp(N, rhs, pref);
 err(3) = norm(N(u3));
-tol(3) = pref.errTol;
+tol(3) = 5*pref.errTol;
 
 %% Did we pass? 
 % To pass, both residuals have to be small, but we should not expect u1 and u2
