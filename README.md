@@ -32,9 +32,9 @@ Download a .zip of Chebfun from
 After unzipping, you will need to add Chebfun to the MATLAB path. You can do
 this either (a) by typing
 ```
-addpath(genpath(PATH/TO/CHEBFUN))
+addpath(chebfunroot), savepath
 ```
-where `PATH/TO/CHEBFUN` is the unzipped directory, (b) by selecting the
+where `chebfunroot` is the path to the unzipped directory, (b) by selecting the
 `chebfun` directory with the `pathtool` command, or (c) though the File > Set
 Path... dialog from the MATLAB menubar.
 
