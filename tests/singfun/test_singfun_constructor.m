@@ -14,11 +14,16 @@ seedRNG(7890)
 x = -1 + 2*rand(1, 100);
 x = sort(x);
 
+% Some arbitrary values to use for exponents.
+a = 0.338745372057174;
+b = 0.561224728136042;
+a_int = 2;
+b_int = 5;
+
+
 %% Test calling syntax when the user provides exponents
 
 % Negative fractional exponents
-a = rand();
-b = rand();
 fh = @(x) sin(x)./((1+x).^a.*(1-x).^b);
 data = struct();
 data.exponents = [-a, -b];
@@ -33,8 +38,6 @@ pass(4) = norm(feval(fh,x) - feval(f,x), inf) < 1e2*get(f, 'epslevel');
 
 %%
 % Positive fractional exponents
-a = rand();
-b = rand();
 fh = @(x) sin(x).*(1+x).^a.*(1-x).^b;
 data = struct();
 data.exponents = [a, b];
@@ -49,18 +52,16 @@ pass(8) = norm(feval(fh,x) - feval(f,x), inf) < 1e1*get(f, 'epslevel');
 
 %%
 % Negative integer exponents
-a = ceil(10*rand);
-b = ceil(10*rand);
-fh = @(x) exp(x)./((1+x).^a.*(1-x).^b);
+fh = @(x) exp(x)./((1+x).^a_int.*(1-x).^b_int);
 data = struct();
-data.exponents = [-a, -b];
+data.exponents = [-a_int, -b_int];
 f = singfun(fh, data, pref);
-data.exponents = [-a, -b];
+data.exponents = [-a_int, -b_int];
 data.singType = {'pole', 'pole'};
 g = singfun(fh, data, pref);
 pass(9) = isequal(f,g);
-pass(10) = ~any(f.exponents + [a,b]);
-pass(11) = ~any(g.exponents + [a,b]);
+pass(10) = ~any(f.exponents + [a_int, b_int]);
+pass(11) = ~any(g.exponents + [a_int, b_int]);
 % don't check near end-points
 xx = x(20:80);
 pass(12) = norm(feval(fh,xx) - feval(f,xx), inf) < 1e2*get(f, 'epslevel');
@@ -68,8 +69,6 @@ pass(12) = norm(feval(fh,xx) - feval(f,xx), inf) < 1e2*get(f, 'epslevel');
 %% Test Syntax and construction when the user doesn't provide exponents
 %
 % Negative fractional exponents
-a = rand();
-b = rand();
 fh = @(x) exp(sin(x))./((1+x).^a.*(1-x).^b);
 f = singfun(fh);
 pass(13) = norm(f.exponents + [a,b], inf) < pref.singPrefs.exponentTol;
@@ -77,8 +76,6 @@ pass(14) = norm(feval(fh,x) - feval(f,x), inf) < 1e3*get(f, 'epslevel');
 
 %%
 % Positive fractional exponents
-a = rand();
-b = rand();
 fh = @(x) sin(exp(cos(x))).*(1+x).^a.*(1-x).^b;
 f = singfun(fh);
 pass(15) = norm(f.exponents - [a,b], inf) < pref.singPrefs.exponentTol;
@@ -86,11 +83,9 @@ pass(16) = norm(feval(fh,x) - feval(f,x), inf) < 1e1*get(f, 'epslevel');
 
 %%
 % Negative integer exponents
-a = ceil(5*rand);
-b = ceil(5*rand);
-fh = @(x) exp(sin(x.^2))./((1+x).^a.*(1-x).^b);
+fh = @(x) exp(sin(x.^2))./((1+x).^a_int.*(1-x).^b_int);
 f = singfun(fh);
-pass(17) = norm(f.exponents + [a,b], inf) < pref.singPrefs.exponentTol;
+pass(17) = norm(f.exponents + [a_int, b_int], inf) < pref.singPrefs.exponentTol;
 xx = x(20:80);
 pass(18) = norm(feval(fh,xx) - feval(f,xx), inf) < 5e1*get(f, 'epslevel');
 

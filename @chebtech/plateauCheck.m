@@ -16,9 +16,9 @@ function [ishappy, epsLevel, cutoff] = plateauCheck(f, values, pref)
 %   number that prevents convergence to the full requested accuracy, as often
 %   happens in the collocation of differential equations.
 %
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = PLATEAUCHECK(F, VALUES, PREF) allows additional
-%   preferences to be passed. In particular, one can adjust the target accuracy
-%   with PREF.EPS.
+%   [ISHAPPY, EPSLEVEL, CUTOFF] = PLATEAUCHECK(F, VALUES, PREF) allows
+%   additional preferences to be passed. In particular, one can adjust the
+%   target accuracy with PREF.EPS.
 %
 % See also STRICTCHECK, CLASSICCHECK.
 
@@ -28,12 +28,12 @@ function [ishappy, epsLevel, cutoff] = plateauCheck(f, values, pref)
 % Grab some preferences:
 if ( nargin == 1 )
     pref = f.techPref();
-    epslevel = pref.eps;
+    epsLevel = pref.eps;
 elseif ( isnumeric(pref) )
-    epslevel = pref;
+    epsLevel = pref;
     pref = f.techPref();
 else
-    epslevel = pref.eps;
+    epsLevel = pref.eps;
 end
 
 % Grab the coefficients:
@@ -57,6 +57,7 @@ if ( max(maxvals) == 0 )
     return
 elseif ( any(isinf(maxvals)) )
     % Inf located. No cutoff.
+    ishappy = false;
     cutoff = n;
     return
 end
@@ -68,7 +69,6 @@ absCoeff = abs( coeff(end:-1:end+1-n90,:) );  % switch to low->high ordering
 vscale = max(absCoeff,[],1)          % scaling in each column
 vscale = max( vscale(:), f.vscale(:) )
 absCoeff = absCoeff * diag(1./vscale);
-
 
 %% Deal with array-valued functions.
 

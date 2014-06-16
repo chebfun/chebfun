@@ -4,7 +4,8 @@ function H = cross( F, G )
 %   and G both have two components, then it returns the CHEBFUN2 representing
 %       CROSS(F,G) = F(1) * G(2) - F(2) * G(1)
 %   where F = (F(1); F(2)) and G = (G(1); G(2)). If F and G have three
-%   components then it returns the CHEBFUN2V representing the 3D cross product.
+%   components then it returns the CHEBFUN2V representing the 3D cross 
+%   product.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information. 
