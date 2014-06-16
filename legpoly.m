@@ -23,6 +23,7 @@ function p = legpoly(n, dom, normalize, method)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Parse input:
+methodIsSet = false;
 if ( isempty(n) )
     p = chebfun; 
     return
@@ -34,6 +35,12 @@ if ( nargin < 3 || isempty(normalize) )
     normalize = 0; 
 end
 if ( ischar(dom) )
+    if ( nargin == 3 )
+        method = normalize;
+        if ( ~isempty(method) )
+            methodIsSet = true;
+        end
+    end
     normalize = dom;
     dom = [-1,1]; 
 end
@@ -41,6 +48,9 @@ if ( strncmp(normalize, 'norm', 4) )
     normalize = 1;
 elseif ( ischar(normalize) )
     normalize = 0; 
+end
+if ( (nargin == 4) && ~isempty(method) )
+    methodIsSet = true;
 end
     
 % Unbounded domains aren't supported/defined.
@@ -64,14 +74,10 @@ domIn = dom;
 dom = dom([1 end]);
 
 % Determine which method:
-methodIsSet = false;
-if ( nargin == 4 )
-    % Method has been passed as an input.
-    methodIsSet = true;
-elseif ( nMax > 1000 )
+if ( ~methodIsSet && nMax > 1000 )
     % Use LEG2CHEB():
     method = 3;
-else
+elseif ( ~methodIsSet )
     % Use QR orthogonalization of Chebyshev polynomials for moderate nmax.
     method = 2;
 end
@@ -129,9 +135,10 @@ switch method
         
         c_leg = zeros(nMax+1, numel(n));
         c_leg(n+1,:) = eye(numel(n));             % Legendre coefficients          
-        C = leg2cheb(flipud(c_leg));              % Chebyshev coefficients
         if ( normalize )
-            C = bsxfun(@times,C,sqrt(n+.5));
+            C = leg2cheb(flipud(c_leg), 'norm');  % Chebyshev coefficients
+        else
+            C = leg2cheb(flipud(c_leg));          % Chebyshev coefficients
         end
     
 end
