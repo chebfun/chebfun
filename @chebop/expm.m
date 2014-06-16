@@ -43,7 +43,7 @@ if ( nargin < 4 )
 end
 
 % Linearize and check whether the CHEBOP is linear:
-[L, ~, fail] = linop(N);
+[L, ignored, fail] = linop(N);
 
 if ( fail )
     error('CHEBFUN:chebop:expm:nonlin', ['The operator appears to be nonlinear.\n', ...

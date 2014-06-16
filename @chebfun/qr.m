@@ -134,7 +134,7 @@ ip = @(f, g) w * (conj(f) .* g);
 % Make the discrete analog of A:
 A = get(A, 'values');
 if ( iscell(A) )
-    A = cat(1, A{:});
+    A = cell2mat(A);
 end
 
 % Generate a discrete E (Legendre-Chebyshev-Vandermonde matrix) directly:

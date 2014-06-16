@@ -1238,7 +1238,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % Linearity information
             f.linearity = iszero(f.jacobian);
             % Update derivative part
-            Jop = @(u) (pi*u.*cos(pi*u) - sin(pi*u))./(pi*u.^2);
+            Jop = @(u) (u.*cos(u) - sin(u))./(u.^2);
             f.jacobian = operatorBlock.mult(compose(f.func, Jop), ...
                 f.domain)*f.jacobian;
             % Update CHEBFUN part
