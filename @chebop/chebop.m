@@ -146,7 +146,9 @@ classdef (InferiorClasses = {?double}) chebop
         numVars = [];   % Number of variables the the CHEBOP operates on.
     end
     
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% CONSTRUCTOR:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
         
         function N = chebop(op, dom, lbcIn, rbcIn, init)
@@ -201,8 +203,9 @@ classdef (InferiorClasses = {?double}) chebop
         end
     end
     
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Public Non-Static methods implemented by this class.
-    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
         
         % Find selected eigenvalues and eigenfunctions of a linear CHEBOP.
@@ -222,8 +225,9 @@ classdef (InferiorClasses = {?double}) chebop
         
     end
     
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Private Non-Static methods implemented by this class.
-    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = private, Static = false )
 
         % Find damped Newton step.
@@ -237,8 +241,10 @@ classdef (InferiorClasses = {?double}) chebop
         [u, info] = solvebvpNonlinear(N, rhs, L, u0, res, pref, displayInfo)
         
     end
-    %% HIDDEN NON-STATIC METHODS IMPLEMENTED IN OTHER FILES:
     
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% HIDDEN NON-STATIC METHODS IMPLEMENTED IN OTHER FILES:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false, Hidden = true )
         
         % Find selected eigenvalues and eigenfunctions of a linear CHEBOP.
@@ -246,7 +252,9 @@ classdef (InferiorClasses = {?double}) chebop
         
     end
     
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% STATIC HIDDEN METHODS:       
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = private, Static = true )
         
         % Controls information displayed for Newton iterations
@@ -272,9 +280,9 @@ classdef (InferiorClasses = {?double}) chebop
         
     end
     
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
     %% METHODS IMPLEMENTED IN THIS FILE:
-    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
     methods
         
         function N = set.lbc(N, val)
@@ -382,8 +390,7 @@ classdef (InferiorClasses = {?double}) chebop
             
             N.init = val;
             
-        end
-        
+        end        
         
     end   
     

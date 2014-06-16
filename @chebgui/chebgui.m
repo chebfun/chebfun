@@ -142,8 +142,9 @@ classdef chebgui
             'numeigs', '');
     end
     
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% The CHEBGUI Constructor.
-    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
         
         function c = chebgui(varargin)
@@ -201,8 +202,9 @@ classdef chebgui
         end
     end
     
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Non-Static methdos implemented by the CHEBGUI class.
-    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   
     methods ( Access = public, Static = false )
        
         % Export a BVP to an .m file
@@ -226,8 +228,9 @@ classdef chebgui
         
     end
     
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Static methdos implemented by the CHEBGUI class.
-
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
         
         % Information shown during BVP solving.
@@ -254,6 +257,5 @@ classdef chebgui
         end
         
     end
-    
-     
+         
 end

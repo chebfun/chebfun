@@ -27,8 +27,9 @@ classdef chebguiExporter
         
     end
     
-%% %%%%%%%%%%%%%%%%%%%%%%% ABSTRACT STATIC DECLARATIONS %%%%%%%%%%%%%%%%%%%%%%%%
-    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% ABSTRACT STATIC DECLARATIONS
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Abstract = true, Static = true )
         
         % Extract information from the CHEBGUI object to a struct:
@@ -60,9 +61,9 @@ classdef chebguiExporter
 
     end
     
-    
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CONCRETE METHODS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CONCRETE METHODS
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
     methods ( Access = public, Static = false )
         
         function toFile(exporter, guifile, fileName, pathName)
@@ -114,8 +115,9 @@ classdef chebguiExporter
         
     end    
     
-%% %%%%%%%%%%%%%%%%%%%%%%%%% CONCRETE STATIC METHODS %%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CONCRETE STATIC METHODS
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
         function obj = constructor(type)
         %CONSTRUCTOR   Constructor for the CHEBGUIEXPORTER class.
@@ -194,8 +196,9 @@ classdef chebguiExporter
     end
     
     
-%% %%%%%%%%%%%%%%%%%%%%%%%%% CONCRETE PROTECTED METHODS %%%%%%%%%%%%%%%%%%%%%%%%
-    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CONCRETE PROTECTED METHODS
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = protected )
         
         function writeHeader(e, fid, filename)

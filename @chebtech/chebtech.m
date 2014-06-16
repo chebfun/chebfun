@@ -120,8 +120,10 @@ classdef chebtech < smoothfun % (Abstract)
         % details).
         epslevel % (double >= 0)
     end
-
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% ABSTRACT (NON-STATIC) METHODS REQUIRED BY THIS CLASS.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false, Abstract = true )
 
         % Compose method. (Not implemented here as refinement is defined also).
@@ -132,7 +134,9 @@ classdef chebtech < smoothfun % (Abstract)
 
     end
 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% ABSTRACT STATIC METHODS REQUIRED BY THIS CLASS.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true, Abstract = true )
         
         % Alias Chebyshev coefficients.
@@ -161,8 +165,10 @@ classdef chebtech < smoothfun % (Abstract)
         coeffs = vals2coeffs(values)
 
     end
-
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% NON-STATIC METHODS IMPLEMENTED BY THIS CLASS.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
         
         % Absolute value of a CHEBTECH. (f should have no zeros in its domain)
@@ -373,8 +379,10 @@ classdef chebtech < smoothfun % (Abstract)
         f = uplus(f)
 
     end
-
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% STATIC METHODS IMPLEMENTED BY THIS CLASS.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
 
         % Evaluation using the barycentric interpolation formula.

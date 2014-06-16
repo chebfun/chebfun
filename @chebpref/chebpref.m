@@ -16,8 +16,10 @@ classdef chebpref
         % MATLAB struct to hold a list of preferences for a given subsystem.
         prefList
     end
-
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Non-Static methods implemented by this class.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
 
         function out = subsref(pref, ind)
@@ -67,13 +69,17 @@ classdef chebpref
 
     end
     
-    %%%%%%%%%%%%%%%%%%%%%%%%%% Abstract methods %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% Abstract methods
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Abstract = true )
         % Display information about a CHEBPREF object.
         display(pref)
     end
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%% Static methods %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% Static methods.
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% Static methods
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
 
         function pref1 = mergePrefs(pref1, pref2, map)
@@ -104,8 +110,10 @@ classdef chebpref
         end
 
     end
-
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Hidden static methods.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true, Hidden = true  )
 
         function setDefaults(makeSC, manageSCDefaults, varargin)

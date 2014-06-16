@@ -52,7 +52,7 @@ classdef classicfun < fun % (Abstract)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     %% Properties of CLASSICFUN objects.
-    properties (Access = public)
+    properties ( Access = public )
         % The domain of the CLASSICFUN object, [a, b].
         domain
 
@@ -67,7 +67,9 @@ classdef classicfun < fun % (Abstract)
         onefun
     end
     
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% CLASS CONSTRUCTOR:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true )
         
         function obj = constructor(op, data, pref)
@@ -103,7 +105,9 @@ classdef classicfun < fun % (Abstract)
         
     end
            
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% NON-STATIC ABSTRACT METHODS REQUIRED BY THIS CLASS.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false, Abstract = true )
         % [TODO]: Once UNBNDFUN and CHEBFUN advance, we should revisit this
         % list, and add/throw away abstract methods as appropriate.
@@ -132,9 +136,11 @@ classdef classicfun < fun % (Abstract)
         % Definite integral of a CLASSICFUN on its domain of definition.
         out = sum(f, dim)
         
-    end   
+    end
     
-     %% STATIC ABSTRACT METHODS REQUIRED BY THIS CLASS.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% STATIC ABSTRACT METHODS REQUIRED BY THIS CLASS.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true, Abstract = true )
                 
         % Map from [-1, 1] to the domain of the CLASSICFUN.
@@ -143,9 +149,10 @@ classdef classicfun < fun % (Abstract)
         % Make a CLASSICFUN. (Constructor shortcut)
         f = make(varargin);
     end
-   
     
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       
     %% NON-STATIC METHODS IMPLEMENTED BY THIS CLASS.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
         
         % Extract information for DISPLAY.
@@ -271,7 +278,9 @@ classdef classicfun < fun % (Abstract)
     end
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Methods implemented in this file:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function data = parseDataInputs(data, pref)
 %PARSEDATAINPUTS   Parse inputs from the DATA structure and assign defaults.

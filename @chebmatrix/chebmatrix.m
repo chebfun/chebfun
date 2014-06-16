@@ -77,8 +77,9 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         diffOrder
     end
     
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CONSTRUCTOR % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CONSTRUCTOR
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
         
         % Constructor.
@@ -118,8 +119,9 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         
     end
     
-%% %%%%%%%%%%%%%%%%%%%%% METHODS IMPLEMENTED IN THIS FILE %%%%%%%%%%%%%%%%%%%%%%
-
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% METHODS IMPLEMENTED IN THIS FILE 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods
             
         function A = set.domain(A, d)
@@ -222,8 +224,9 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         
     end
     
-%% %%%%%%%%%%%%%% CELLFUN METHODS IMPLEMENTED IN THIS FILE %%%%%%%%%%%%%%%%%
-    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% CELLFUN METHODS IMPLEMENTED IN THIS FILE
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods 
         
         function A = cellfun(A, op)
@@ -507,8 +510,9 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         
     end
     
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%% STATIC METHODS  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
-    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% STATIC METHODS  
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = protected, Static = true )
         
         % Merges domains (union of breakpoints, while checking endpoints).

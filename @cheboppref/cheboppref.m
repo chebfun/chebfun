@@ -111,7 +111,9 @@ classdef cheboppref < chebpref
 
 % TODO:  Further documentation of CHEBOPPREF preferences.
 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Constructor.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
 
         function outPref = cheboppref(inPref, varargin)
@@ -216,9 +218,11 @@ classdef cheboppref < chebpref
        
     end
     
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%% STATIC METHODS %%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% Public Static methods of the class.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% PUBLIC STATIC METHODS
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
     methods ( Access = public, Static = true )
+        
         function pref = getFactoryDefaults()
         %GETFACTORYDEFAULTS   Get factory default preferences.
         %   PREF = CHEBOPPREF.GETFACTORYDEFAULTS() returns a CHEBOPPREF
@@ -263,7 +267,9 @@ classdef cheboppref < chebpref
         end
     end
 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Private static methods
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Static = true, Access = private )
 
         function varargout = manageDefaultPrefs(varargin)
