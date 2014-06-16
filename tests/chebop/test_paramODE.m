@@ -4,8 +4,6 @@ function pass = test_paramODE(pref)
 
 % NOTE: Taken from V4 test chebop_paramODE.
 
-% TODO: add tests for nonlinear problems.
-
 if ( nargin == 0 )
     pref = cheboppref();
 end
@@ -25,16 +23,17 @@ u = mldivide(N, chebfun(0), pref);
 res1 = N(x, u);
 
 %% Linear, simple problem, forced setup using a system
+
 N = chebop(@(x, u, a) [x.*u + .001*diff(u,2) + a ; diff(a)]);
 % N = chebop(@(x, u, a) [x.*u + .001*diff(u,2) + a.*diff(u) ; diff(a)]);
 N.lbc = @(u, a) [u + a + 1 ; diff(u)];
 N.rbc = @(u, a) u - 1;
 v = mldivide(N, [chebfun(0) ; chebfun(0)], pref);
 res2 = N(x, v);
-
 err(1) = norm(res1) + norm(res2{1}) + norm(u{1}-v{1}) + norm(u{2}-v{2});
 
 %% Linear: More complicated (piecewise system + 2 params)
+
 x = chebfun('x');
 N = chebop(@(x,u,v,a,b) [x.*v + .001*diff(u,2) + a + 2*b ; a + diff(v) - u], [-1 1]);
 N.lbc = @(u, v, a, b) [u + a ; diff(u)];
@@ -48,41 +47,8 @@ res1 = res{1};
 res2 = res{2};
 err(2) = norm(res1, inf) + norm(res2, inf);
 
-%% Nonlinear parameter dependent problem
-
-% Natural setup
-N = chebop(@(x, u, a) (1-x.^2).*u + .1*diff(u,2) + a.*exp(u));
-% N = chebop(@(x, u, a) x.*u + .001*diff(u,2) + a.*diff(u));
-N.lbc = @(u, a) [u + a + 1 ; diff(u)];
-N.rbc = @(u, a) u - 1;
-
-pref.discretization = @colloc2;
-u = mldivide(N, chebfun(0), pref);
-res = N(x, u);
-Nlbc = N.lbc(u{1},u{2});
-Nrbc = N.rbc(u{1},u{2});
-err(3) = norm(res) + Nlbc{1}(-1) + Nlbc{2}(-1) + Nrbc(1);
-
-%% Test different discretizations
-pref.discretization = @colloc1;
-u = mldivide(N, chebfun(0), pref);
-res = N(x, u);
-Nlbc = N.lbc(u{1},u{2});
-Nrbc = N.rbc(u{1},u{2});
-err(4) = norm(res) + Nlbc{1}(-1) + Nlbc{2}(-1) + Nrbc(1);
-
-%% ultraS
-pref.discretization = @ultraS;
-u = mldivide(N, chebfun(0), pref);
-res = N(x, u);
-Nlbc = N.lbc(u{1},u{2});
-Nrbc = N.rbc(u{1},u{2});
-err(5) = norm(res) + Nlbc{1}(-1) + Nlbc{2}(-1) + Nrbc(1);
 %%
 
 pass = err < tol;
 
-
-
 end
-
