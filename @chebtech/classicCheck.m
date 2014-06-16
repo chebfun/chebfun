@@ -56,7 +56,6 @@ if ( nargin == 1 )
     epslevel = pref.eps;
 elseif ( isnumeric(pref) )
     epslevel = pref;
-    pref = f.techPref();
 else
     epslevel = pref.eps;
 end
