@@ -9,7 +9,7 @@ f = chebfun(@sin, pref);        % A simple chebfun.
 F = volt(K, f);                 % Call volt().
 
 % Test against some V4 results:
-pass(1) = abs(F(.5) - (-0.013808570536509)) < vscale(F)*epslevel(F);
+pass(1) = abs(F(.5) - (-0.013808570536509)) < 10*vscale(F)*epslevel(F);
 pass(2) = abs(norm(F) - 0.334612395278957) < vscale(F)*epslevel(F);
 
 % Test 3rd input argument. (Simply make sure we don't crash!)

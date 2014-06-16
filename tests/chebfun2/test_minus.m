@@ -4,7 +4,7 @@ function pass = test_basic_minus( pref )
 if ( nargin < 1 ) 
     pref = chebfunpref; 
 end 
-tol = 1e5 * pref.cheb2Prefs.eps; 
+tol = 1e5 * pref.eps; 
 j = 1;
 
 D = [-1 1 -1 1; -2 2 -2 2; -1 pi 0 2*pi];

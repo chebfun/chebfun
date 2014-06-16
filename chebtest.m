@@ -62,7 +62,7 @@ function varargout = chebtest(varargin)
 % [TODO]: Preferences.
 
 % Find directory in which Chebfun was installed:
-installDir = fileparts(which('chebtest'));
+installDir = chebfunroot();
 
 % Set path to the tests/ subdirectory:
 testsDir = fullfile(installDir, 'tests');

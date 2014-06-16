@@ -83,6 +83,9 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         
         % Constructor.
         function A = chebmatrix(data, dom)
+            
+            data = parseData(data);
+            
             if ( isempty(data) )
                 % Return an empty CHEBMATRIX:
                 return
@@ -121,7 +124,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
 %% %%%%%%%%%%%%%%%%%%%%% METHODS IMPLEMENTED IN THIS FILE %%%%%%%%%%%%%%%%%%%%%%
 
     methods
-            
+           
         function A = set.domain(A, d)
         %SET.DOMAIN   Insert breakpoints in the domain of the CHEBMATRIX.
         %   We don't allow removing breakpoints, or changing endpoints.
@@ -454,4 +457,26 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         
     end
     
+end
+
+function data = parseData(data)
+    if ( isa(data, 'chebmatrix') )
+        % Do nothing.
+    elseif ( ~iscell(data) )
+        if ( isnumeric(data) || isa(data, 'chebfun') )
+            data = num2cell(data);
+        else
+            % You're on your own, Chuck.
+        end
+    elseif ( ~all(cellfun(@numel, data) == 1) )
+        error('CHEBFUN:CHEBMATRIX:input:nonscalarcell', ...
+            'Entries in cell input to CHEBMATRIX constructor must be scalar.')
+    else
+        isCheb = cellfun(@(f) isa(f, 'chebfun'), data);
+        if ( any( cellfun(@numColumns, data(isCheb)) > 1) )
+            error('CHEBFUN:CHEBMATRIX:input:arraychebfun', ...
+                ['CHEBFUN entries in cell input to CHEBMATRIX constructor ', ...
+                 'must be scalar.'])
+        end
+    end
 end

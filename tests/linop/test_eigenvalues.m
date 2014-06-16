@@ -21,22 +21,19 @@ prefs.discretization = @colloc2;
 e = diag(D);
 err(1) = norm(e - e_true, inf);
 % Check that we actually computed eigenfunctions
-LV = L*V;
-err(2) = norm(LV{1}-V{1}*D);
+err(2) = norm(L*V-V*D);
 %%
 prefs.discretization = @ultraS;
 [V, D] = eigs(L, 6, 0, prefs);
 e = diag(D);
 err(3) = norm(e - e_true, inf);
-LV = L*V;
-err(4) = norm(LV{1}-V{1}*D);
+err(4) = norm(L*V-V*D);
 %%
 prefs.discretization = @colloc1;
 [V, D] = eigs(L, 6, prefs);
 e = diag(D);
 err(5) = norm(e - e_true, inf);
-LV = L*V;
-err(6) = norm(LV{1}-V{1}*D);
+err(6) = norm(L*V-V*D);
 %%
 pass = err < tol;
 
