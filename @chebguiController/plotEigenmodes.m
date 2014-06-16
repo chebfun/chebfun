@@ -84,7 +84,6 @@ if ( ~isempty(h1) )
         xlim(h1, xlim_sol);
         ylim(h1, ylim_sol);
     end
-%     axis equal
     
 end
 
@@ -94,9 +93,6 @@ end
 
 % Do we have a coupled system?
 isSystem = numVar > 1;
-
-% Number of unknown variables.
-nV = max(size(V));
 
 % Do we want to plot the real or the imaginary parts of the eigenvalues?
 realplot = get(handles.button_realplot, 'Value');
@@ -109,16 +105,13 @@ else
     s = 'Imaginary part of eigenmodes';
 end
 
-% TODO: This used to be a chebfunpref('plot_numpts'), do we still want to allow
-% that?
+% The number of points we use for plotting:
 maxPlotPoints = 2001;
 
 axes(h2)
-% set(h2,'NextPlot','add')
 set(h2, 'ColorOrder', C)
 if ( any(selection) && (nargin < 4) )
     xlim_norm = xlim(h2);
-    ylim_norm = ylim(h2);
 end
 
 % Do the plotting for the bottom figure. Coupled systems are more tricky than
@@ -144,6 +137,7 @@ if ( ~isSystem )
     if ( handles.guifile.options.grid )
         grid on
     end
+    
     % ylabel:
     ylabel(handles.varnames);
     
@@ -157,11 +151,10 @@ else
         % If we are plotting selected e-funs, we need to pick out the colors
         if ( any(selection) )
             for sCounter = 1:length(selection)
-                plot(V{varCounter,sCounter}, 'LineWidth', 1, ...
+                plot(V{varCounter,sCounter}, 'LineWidth', 2, ...
                     'LineStyle', LS{varCounter}, 'Color', C(sCounter,:));
                 hold on
             end
-            xLims = V(varCounter,sCounter).domain;
         else
             plot(V(varCounter,:), 'LineWidth', 2, 'LineStyle', LS{varCounter});
             hold on
@@ -175,7 +168,7 @@ else
     
 end
 
-% Set limits:
+% Set the xlim:
 if ( any(selection) && (nargin < 4) )
     xlim(xlim_norm);
 else
@@ -184,7 +177,7 @@ else
 end
 set(h2, 'NextPlot', 'replace')
 
-% Set the xlim according to the domain of the function
+% Set x-label and title of the plot.
 xlabel(handles.indVarName);
 title(s);
 
