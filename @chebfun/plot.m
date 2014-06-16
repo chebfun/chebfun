@@ -57,7 +57,7 @@ function varargout = plot(varargin)
 %   for delta functions and colours are chosen to match the lines they
 %   correspond to. It is possible to modify other properties of JumpLines syntax
 %   like PLOT(F, 'JumpLine', {'color', 'r', 'LineWidth', 5}). JumpLines and
-%   deltaLines can be suppresse with the argument 'none'.
+%   deltaLines can be suppressed with the argument 'none'.
 %
 %   Note that the PLOT(F, 'numpts', N) option for V4 is deprecated, and this
 %   call now has no effect.
