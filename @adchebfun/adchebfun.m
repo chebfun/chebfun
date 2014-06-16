@@ -75,8 +75,9 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         domain
     end
     
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% CLASS CONSTRUCTOR:
-    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods
         
         function obj = adchebfun(u, varargin)
@@ -103,7 +104,9 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         
     end
     
-    %% METHODS IMPLEMENTED BY THIS CLASS.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% NON-STATIC METHODS IMPLEMENTED BY THIS CLASS.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
         
         function f = abs(f) %#ok<MANU>
@@ -1466,7 +1469,9 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         [err, lin] = valueTestingBinary(f)
     end
     
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Privat methods of the class.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = private, Static = false )
         
         function f = updateDomain(f)

@@ -139,7 +139,9 @@ classdef chebfun
         isTransposed = 0;   % (logical)
     end
     
-    %% The Constructor.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% The Constructor:
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
         
         function f = chebfun(varargin)
@@ -209,7 +211,9 @@ classdef chebfun
         end
     end
         
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Public Non-Static Methods implemented by CHEBFUN class.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = false )
 
         % Absolute value of a CHEBFUN.
@@ -384,7 +388,9 @@ classdef chebfun
         out = vscale(f);
     end
     
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Hidden non-static methods implemented by CHEBFUN class.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     methods ( Access = public, Static = false, Hidden = true )
         
@@ -438,7 +444,9 @@ classdef chebfun
         
     end
     
-    %% Static methods implemented by CHEBFUN class.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% Static methods implemented by the CHEBFUN class.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     % Public static methods
     methods ( Access = public, Static = true )
@@ -469,7 +477,9 @@ classdef chebfun
         
     end
     
-    %% Hidden public static methods implemented by CHEBFUN class.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% Hidden public static methods implemented by the CHEBFUN class.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = public, Static = true, Hidden = true )
 
         %Convert a cell array of CHEBFUN objects to a quasimatrix.
@@ -489,7 +499,9 @@ classdef chebfun
         
     end
     
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Private static methods implemented by CHEBFUN class.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     methods ( Access = private, Static = true )
         
         % Convert ODE solutions into CHEBFUN objects:
