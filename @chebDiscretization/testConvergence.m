@@ -45,7 +45,8 @@ prefTech.eps = pref.errTol;
 
 % Test convergence on each piece.
 for i = 1:numInt
-    f = chebtech2( {[],coeffs{i}} );
+    c = cat(2,coeffs{i,:});
+    f = chebtech2( {[],c} );
     f.vscale = vscale;
     [isDone(i), neweps, cutoff(i,:)] = linopV4Check(f, get(f,'values'), prefTech);
     epsLevel = max(epsLevel, neweps);

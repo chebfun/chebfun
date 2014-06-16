@@ -231,10 +231,8 @@ for dim = dimVals
     
 
     % Test the happiness of the function pieces:
-    vscale = 1;
-    vscale = zeros(numel(u),1);
-
-    [isDone, epsLevel] = testConvergence(discA, u(isFun), vscale(isFun), prefs);
+    vscale = zeros(sum(isFun),1);   % intrinsic scaling only
+    [isDone, epsLevel] = testConvergence(discA, u(isFun), vscale, prefs);
 
     if ( all(isDone) )
         break
@@ -292,7 +290,7 @@ else            % Unwrap the eigenvectors for output
     end
     
     % Normalize each eigenfunction.
-    vscale = diag( 1./sqrt(nrmsq') );
+    scale = diag( 1./sqrt(nrmsq') );
     for j = 1:length(u)
         u{j} = u{j}*scale*signMat;
     end

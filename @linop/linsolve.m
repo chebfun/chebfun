@@ -131,8 +131,8 @@ for dim = [dimVals inf]
     u = partition(disc, v);
     
     % Need a vector of vscales.
-    if ( numel(vscale)==1 && vscale==0 )
-        vscale = zeros(numel(u),1);
+    if ( numel(vscale)==1 ) 
+        vscale = repmat(vscale,sum(isFun),1);
     end
     
     % Test the happiness of the function pieces:
