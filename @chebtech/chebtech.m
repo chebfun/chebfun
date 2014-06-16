@@ -1,54 +1,11 @@
 classdef chebtech < smoothfun % (Abstract)
 %CHEBTECH   Approximate smooth functions on [-1,1] with Chebyshev interpolants.
 %
-%   Class for approximating smooth functions on the interval [-1,1] using
-%   function values at Chebyshev points and coefficients of the corresponding
-%   1st-kind Chebyshev series expansion.
+%   Abstract class for approximating smooth functions on the interval [-1,1]
+%   using function values at Chebyshev points and coefficients of the
+%   corresponding 1st-kind Chebyshev series expansion.
 %
-% Constructor inputs:
-%   CHEBTECH.CONSTRUCTOR(OP) constructs a CHEBTECH object from the function
-%   handle OP by evaluating it on an increasingly fine set of Chebyshev points
-%   (see below). OP should be vectorised (i.e., accept a vector input) and
-%   output a vector of the same length. CHEBTECH objects allow for array-valued
-%   functions, in which case OP should accept a column vector of length N and
-%   return a matrix of size NxM.
-%
-%   CHEBTECH.CONSTRUCTOR(OP, VSCALE, HSCALE) constructs a CHEBTECH with
-%   'happiness' relative to the maximum of the given vertical scale VSCALE
-%   (which is updated by the infinity norm of the sampled function values of OP
-%   during construction), and the fixed horizontal scale HSCALE. If not given
-%   (or given as empty), the VSCALE defaults to 0 initially, and HSCALE defaults
-%   to 1.
-%
-%   CHEBTECH.CONSTRUCTOR(OP, VSCALE, HSCALE, PREF) overrides the default
-%   behavior with that given by the preference structure PREF. See
-%   CHEBTECH.TECHPREF for details. The CHEBTECH class supports construction via
-%   interpolation at first- and second-kind Chebyshev points with the classes
-%   CHEBTECH1 and CHEBTECH2 respectively. The default procedure is to use
-%   2nd-kind points, but this can be overwritten with the preferences
-%   PREF.GRIDTYPE = 1.
-%
-%   CHEBTECH.CONSTRUCTOR(VALUES, VSCALE, HSCALE, PREF) returns a CHEBTECH object
-%   that interpolates the data in the columns of VALUES on a Chebyshev grid.
-%   Whether this grid is of first- or second-kind points is determined by
-%   PREF.GRIDTYPE, as above. CHEBTECH.CONSTRUCTOR({VALUES, COEFFS}, ...)
-%   allows for the corresponding Chebyshev coefficients to be passed also, and
-%   if VALUES is empty the CHEBTECH is constructed directly from the COEFFS. 
-%   In any type of VALUES/COEFFS call, no adaptivity takes place, and happiness 
-%   is not checked.
-%
-% Examples:
-%   % Basic construction:
-%   f = chebtech.constructor(@(x) sin(x))
-%
-%   % Construction with preferences:
-%   p.gridType = 2;  % See CHEBTECH.TECHPREF.
-%   f = chebtech.constructor(@(x) cos(x), [], [], p)
-%
-%   % Array-valued construction:
-%   f = chebtech.constructor(@(x) [sin(x), cos(x), exp(x)])
-%
-% See also CHEBTECH.TECHPREF, HAPPINESSCHECK, CHEBTECH1, CHEBTECH2.
+% See also CHEBTECH1, CHEBTECH2, CHEBTECH.TECHPREF.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
@@ -57,9 +14,9 @@ classdef chebtech < smoothfun % (Abstract)
 % CHEBTECH Class Description:
 %
 % The CHEBTECH class is an abstract class for representations of smooth
-% functions on the interval [-1,1] via interpolated function values at
-% Chebyshev points and coefficients of the corresponding first-kind Chebyshev
-% series expansion.
+% functions on the interval [-1,1] via interpolated function values at Chebyshev
+% points and coefficients of the corresponding first-kind Chebyshev series
+% expansion.
 %
 % There are two concrete realizations of the CHEBTECH class--CHEBTECH1 and
 % CHEBTECH2--which interpolate on Chebyshev grids of the 1st and 2nd kind,
@@ -67,16 +24,12 @@ classdef chebtech < smoothfun % (Abstract)
 % 'value' space, their coefficients are always from an expansion in first-kind
 % Chebyshev polynomials (i.e., those usually denoted by $T_k(x)$).
 %
-% The decision to use CHEBTECH1 or CHEBTECH2 is decided by the
-% CHEBTECH.TECHPREF().GRIDTYPE property, which should be set to either 1 or 2.
-%
 % The vertical scale VSCALE is used to enforce scale invariance in CHEBTECH
 % construction and subsequent operations. For example, that
+%   chebtech1(@(x) 2^300*f(x)) = 2^300*chebtech1(@(x) f(x)).
 %
-% chebtech.constructor(@(x) 2^300*f(x)) = 2^300*chebtech.constructor(@(x) f(x)).
-%
-% VSCALE may be optionally passed to the constructor (if not, it defaults to
-% 0), and during construction it is updated to be the maximum magnitude of the
+% VSCALE may be optionally passed to the constructor (if not, it defaults to 0),
+% and during construction it is updated to be the maximum magnitude of the
 % sampled function values. Similarly the horizontal scale HSCALE is used to
 % enforce scale invariance when the input OP has been implicitly mapped from a
 % domain other than [-1 1] before being passed to a CHEBTECH constructor.
@@ -91,7 +44,7 @@ classdef chebtech < smoothfun % (Abstract)
 % subsequent operations after construction:
 %   h = f + c:
 %     h.vscale = getvscl(h);
-%     h.epslevel = (f.epslevel*f.vscale + eps(c))/h.vscale;
+%     h.epslevel = (f.epslevel*f.vscale + eps(c)) / h.vscale;
 %
 %   h = f * c:
 %     h.vscale = getvscl(h) = abs(c)*f.vscale;
@@ -99,7 +52,7 @@ classdef chebtech < smoothfun % (Abstract)
 %
 %   h = f + g:
 %     h.vscale = getvscl(h);
-%     h.epslevel = (f.epslevel*f.vscale + g.epslevel*g.vscale)/h.vscale
+%     h.epslevel = (f.epslevel*f.vscale + g.epslevel*g.vscale) / h.vscale
 %
 %   h = f .* g:
 %     h.vscale = getvscl(h);
@@ -108,31 +61,31 @@ classdef chebtech < smoothfun % (Abstract)
 %   h = diff(f):
 %     h.vscale = getvscl(h);
 %     % [TODO]: Figure this out rigourously.
-%     h.epslevel = n*log(n)f.epslevel*f.vscale; % *(h.vscale/h.vscale)
-%     % We don't divide by h.vscale here as we must also multiply by it.
+%     h.epslevel = n*log(n)*f.epslevel*f.vscale; % *(h.vscale/h.vscale)
+%     % Note we don't divide by h.vscale here as we must also multiply by it.
 %
 %   h = cumsum(f):
 %     h.vscale = getvscl(h);
-%     [TODO]: h.epslevel = ???
+%     h.epslevel = happinessCheck(h);
 %
-% If the input operator OP evaluates to NaN or Inf at any of the sample points
-% used by the constructor, then a suitable replacement is found by
-% extrapolating (globally) from the numeric values (see EXTRAPOLATE.M). If the
-% EXTRAPOLATE preference is set to TRUE (See CHEBTECH.TECHPREF), then the
-% endpoint values -1 and +1 are always extrapolated (i.e., regardless of
-% whether they evaluate to NaN).
+% If the input operator OP in a call to a concrete CHEBTECH constructor, say,
+% CHEBTECH1(OP), evaluates to NaN or Inf at any of the sample points used by the
+% constructor, then a suitable replacement is found by extrapolating (globally)
+% from the numeric values (see EXTRAPOLATE.M). If the EXTRAPOLATE preference is
+% set to TRUE (See CHEBTECH.TECHPREF), then the endpoint values -1 and +1 are
+% always extrapolated (i.e., regardless of whether they evaluate to NaN).
 %
 % The CHEBTECH classes support the representation of array-valued functions (for
-% example, f = chebtech.constructor(@(x) [sin(x), cos(x)])). In such cases, the
-% values and coefficients are stored in a matrix (column-wise), and as such each
-% component of the array-valued function is truncated to the same length, even
-% if the demands of 'happiness' imply that one of the components could be
-% truncated to a shorter length than the others. All CHEBTECH methods should
-% accept such array-valued forms. Note that this representation is distinct from
-% an array of CHEBTECH objects, for which there is little to no support.
+% example, f = chebtech1(@(x) [sin(x), cos(x)])). In such cases, the values and
+% coefficients are stored in a matrix (column-wise), and as such each component
+% of the array-valued function is truncated to the same length, even if the
+% demands of 'happiness' imply that one of the components could be truncated to
+% a shorter length than the others. All CHEBTECH methods should accept such
+% array-valued forms. Note that this representation is distinct from an array of
+% CHEBTECH objects, for which there is little to no support.
 %
 % Class diagram: [<<smoothfun>>] <-- [<<CHEBTECH>>] <-- [chebtech1]
-%                                                  <-- [chebtech2]
+%                                                   <-- [chebtech2]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     %% Properties of CHEBTECH objects.
@@ -168,52 +121,11 @@ classdef chebtech < smoothfun % (Abstract)
         epslevel % (double >= 0)
     end
 
-    %% CLASS CONSTRUCTOR:
-    methods ( Static = true )
-
-        function obj = constructor(op, vscale, hscale, pref)
-            % Constructor for the CHEBTECH class.
-
-            % We can't return an empty CHEBTECH, so pass an empty OP down.
-            if ( nargin == 0  )
-                op = [];
-            end
-
-            % Define vscale if none given:
-            if ( nargin < 2 || isempty(vscale) )
-                vscale = 0;
-            end
-
-            % Define hscale if none given:
-            if ( nargin < 3 || isempty(hscale) )
-                hscale = 1;
-            end
-
-            % Determine preferences if not given, merge if some are given:
-            if ( nargin < 4 || isempty(pref) )
-                pref = chebtech.techPref();
-            else
-                pref = chebtech.techPref(pref);
-            end
-
-            % Call the relevant constructor:
-            if ( pref.gridType == 1 )
-                % Construct:
-                obj = chebtech1(op, vscale, hscale, pref);
-            else
-                % Construct:
-                obj = chebtech2(op, vscale, hscale, pref);
-            end
-        end
-
-    end
-
-
     %% ABSTRACT (NON-STATIC) METHODS REQUIRED BY THIS CLASS.
     methods ( Abstract = true )
 
         % Compose method. (Not implemented here as refinement is defined also).
-        h = compose(f, op, g, pref)
+        h = compose(f, op, g, data, pref)
 
         % Get method.
         val = get(f, prop);
@@ -467,15 +379,9 @@ classdef chebtech < smoothfun % (Abstract)
 
         % Evaluation using the barycentric interpolation formula.
         fx = bary(x, gvals, xk, vk)
-        
-        % Convert Chebshev coefficients to Legendre coefficients.
-        c_leg = cheb2leg(c_cheb, M);
 
         % Clenshaw's algorithm for evaluating a Chebyshev polynomial.
         out = clenshaw(x, coeffs)
-        
-        % Convert Legendre coefficients to Chebshev coefficients.
-        c_cheb = leg2cheb(c_leg, M);
 
         % Retrieve and modify preferences for this class.
         p = techPref(q)

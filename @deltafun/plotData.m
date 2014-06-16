@@ -1,28 +1,77 @@
-function data = plotData(f, g)
+function data = plotData(f, g, h)
 %PLOTDATA   Useful data values for plotting a DELTAFUN object.
 %   DATA = PLOTDATA(F) extracts PLOTDATA of the funPart of F
 %   and then appends to it by the data used for delta function plotting.
+%
+%   DATA = PLOTDATA(F, G) is similar.
+% 
+%   DATA = PLOTDATA(F, G, H) ignores all delta functions in F, G and H.
 %
 % See also FUN/PLOTDATA.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
+
 %%
+% Initialize arrays:
+xDelta = [];
+yDelta = [];
+
 if ( nargin == 1 )
-    g = [];
-end
-
-% Get plot data from the funParth
-if ( isempty(g) )
     data = plotData(f.funPart);
-else
-    data = plotData(f.funPart, g.funPart);
+    [xDelta, yDelta] = getDeltaData(f); 
+    
+elseif ( nargin == 2 )
+    % PLOT(F, G)
+    
+    % Make sure f has no delta functions.
+    if ( isa(f, 'deltafun') )  
+        if ( ~isempty(f.deltaMag) )
+            warning('CHEBFUN:deltafun:plot', ...
+                'Deltas in plot(f, g) are ignored.')
+        end
+        f = f.funPart;
+    end    
+    
+    if ( isa(g, 'deltafun') )
+        data = plotData(f, g.funPart);
+        [xDelta, yDelta] = getDeltaData(g);    
+        xDelta = feval(f, xDelta);
+    else
+        data = plotData(f, g);        
+    end
+    
+elseif ( nargin == 3 )
+    % PLOT(F, G, H)
+    
+    % Ignore all delta functions in this case.
+    if ( isa(f, 'deltafun') )
+        f = f.funPart;
+    end
+    if ( isa(g, 'deltafun') )
+        g = g.funPart;
+    end
+    if ( isa(h, 'deltafun') )
+        h = h.funPart;
+    end
+    
+    data = plotData(f, g, h);
+    
 end
 
-% Initialise fields for holding data:
-data.xDeltas = [];
-data.yDeltas = [];
+% Update data struct with delta functions:
+data.xDeltas = xDelta;
+data.yDeltas = yDelta;
+
+end
+
+function [xData, yData] = getDeltaData(f)
+%GETDELTADATA   Extract data for delta function plotting.
+
+% Initialize empty data:
+xData = [];
+yData = [];
 
 % Handle delta functions (Derivatives of Delta-functions are not plotted):
 if ( ~isempty(f.deltaLoc) )
@@ -31,17 +80,12 @@ if ( ~isempty(f.deltaLoc) )
     f = simplifyDeltas(f);
     if ( ~isa(f ,'deltafun') ) 
         % No zeroth order delta functions, return:
-        return;
+        return
     else
-        % There are delta functions, prepare data for plotting:
-        deltaLoc = f.deltaLoc;
-        deltaMag = f.deltaMag;
-        
-        data.xDeltas = zeros(length(deltaLoc), 1);
-        data.xDeltas = deltaLoc.';
-        
-        data.yDeltas = zeros(length(deltaLoc), 1);
-        data.yDeltas = deltaMag(1, :).';
+        % There are delta functions, prepare data for plotting:                
+        xData = f.deltaLoc.';
+        % f.deltaMag is necessarily a row vector by now.
+        yData = f.deltaMag.';
     end
 end
     

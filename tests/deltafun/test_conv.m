@@ -11,8 +11,8 @@ tol = pref.deltaPrefs.deltaTol;
 
 d = deltafun();
 f = fun.constructor(@(x) x);
-d1 = deltafun(f, [], []);
-d2 = deltafun(bndfun(0), 1, 0);
+d1 = deltafun(f, []);
+d2 = deltafun(bndfun(0), struct('deltaMag', 1, 'deltaLoc', 0));
 
 pass(1) = isempty(conv(d, d)) && isempty(conv(d, d1)) && isempty(conv(d1, d));
 

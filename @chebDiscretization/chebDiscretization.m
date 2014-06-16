@@ -72,17 +72,22 @@ classdef chebDiscretization
         
         % Get projection order:
         projOrder = getProjOrder(L)
+        
     end
     
     %% ABSTRACT METHODS:
             
-    methods ( Abstract )        
-        % Converts a chebfun into a vector of values (or coefficients,
+    methods ( Abstract )   
+        
+        % Converts a CHEBFUN into a vector of values (or coefficients,
         % depending on the implementation). 
         values = toValues(disc, f)
         
-        % Converts a vector of values (or coefficients) to a chebfun.
-        f = toFunction(disc, values, inOut)
+        % Converts a vector of values (or coefficients) to a CHEBFUN.
+        f = toFunctionIn(disc, values)
+        
+        % Converts a vector of values (or coefficients) to a CHEBFUN.
+        f = toFunctionOut(disc, values)
         
         % Returns a linear system RHS using the designated discretization
         % parameters.
@@ -90,6 +95,13 @@ classdef chebDiscretization
         
         % Reduces (projects) block rows to make space for the constraints.
         [PA, P, PS] = reduce(disc, blocks)
+        
+    end
+    
+    methods ( Abstract = true, Static = true )
+        
+        % Return a vector of desired discretization sizes.
+        dimVals = dimensionValues(pref)
         
     end
     

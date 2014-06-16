@@ -1,4 +1,4 @@
-function f = compose(f, op, g, pref)
+function f = compose(f, op, g, data, pref)
 %COMPOSE   Composition of SINGFUN objects.
 %   COMPOSE(F, OP) returns a ONEFUN representing OP(F) where F is a SINGFUN 
 %   object, and OP is a function handle.
@@ -9,17 +9,22 @@ function f = compose(f, op, g, pref)
 %   COMPOSE(F, G) returns a ONEFUN representing G(F), where at least of F and G 
 %   are SINGFUN. If the range of F is not in [-1, 1] then an error is thrown.
 %
-%   COMPOSE(F, OP, G, PREF) or COMPOSE(F, OP, [], PREF) uses the options passed
-%   by the preferences structure PREF to build the returned ONEFUN.  In
-%   particular, one can set PREF.REFINEMENTFUNCTION to be a function which takes
-%   advantage of F and possibly OP or G being SINGFUN objects.
+%   COMPOSE(F, OP, G, DATA, PREF) or COMPOSE(F, OP, [], DATA, PREF) uses the
+%   constructor data in the structure DATA and the options passed by the
+%   CHEBFUNPREF or preference structure PREF to build the returned ONEFUN.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Parse inputs:
-if ( nargin < 4 )
+if ( nargin < 5 )
     pref = chebfunpref();
+else
+    pref = chebfunpref(pref);
+end
+
+if ( nargin < 4 )
+    data = struct();
 end
 
 if ( (nargin < 3) || isempty(g) )
@@ -57,7 +62,7 @@ else % OP(F, G)
 end
 
 % Call SINGFUN constructor:
-f = singfun(op, [], [], [], [], pref);
+f = singfun(op, data, pref);
 
 % Simplify:
 f = simplify(f);

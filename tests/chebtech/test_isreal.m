@@ -14,23 +14,23 @@ for n = 1:2
     end
 
     % Test a scalar-valued function:
-    f = testclass.make(@(x) sin(x) + 1i*cos(x), [], [], pref);
+    f = testclass.make(@(x) sin(x) + 1i*cos(x), [], pref);
     pass(n, 1) = ~isreal(f);
     
-    f = testclass.make(@(x) 1i*cos(x), [], [], pref);
+    f = testclass.make(@(x) 1i*cos(x), [], pref);
     pass(n, 2) = ~isreal(f);
     
-    f = testclass.make(@(x) sin(x), [], [], pref);
+    f = testclass.make(@(x) sin(x), [], pref);
     pass(n, 3) = isreal(f);
     
     % Test an array-valued function:
-    f = testclass.make(@(x) [sin(x) + 1i*cos(x), exp(x)], [], [], pref);
+    f = testclass.make(@(x) [sin(x) + 1i*cos(x), exp(x)], [], pref);
     pass(n, 4) = ~isreal(f);
     
-    f = testclass.make(@(x) [1i*cos(x), exp(x)], [], [], pref);
+    f = testclass.make(@(x) [1i*cos(x), exp(x)], [], pref);
     pass(n, 5) = ~isreal(f);
     
-    f = testclass.make(@(x) [sin(x), exp(x)], [], [], pref);
+    f = testclass.make(@(x) [sin(x), exp(x)], [], pref);
     pass(n, 6) = isreal(f);
 end
 

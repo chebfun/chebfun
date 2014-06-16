@@ -20,21 +20,21 @@ beta = -0.526634844879922 - 0.685484380523668i;
 %%
 % Spot-check a few known results.
 
-f = bndfun(@(x) sin(2*pi*x), dom, [], [], pref);
-g = bndfun(@(x) cos(2*pi*x), dom, [], [], pref);
+f = bndfun(@(x) sin(2*pi*x), struct('domain', dom), pref);
+g = bndfun(@(x) cos(2*pi*x), struct('domain', dom), pref);
 pass(1) = abs(innerProduct(f, g)) < ...
     10*max(get(f, 'epslevel'), get(g, 'epslevel'));
 
-g = bndfun(@(x) cos(4*pi*x), dom, [], [], pref);
+g = bndfun(@(x) cos(4*pi*x), struct('domain', dom), pref);
 pass(2) = abs(innerProduct(f, g)) < ...
     10*max(get(f, 'epslevel'), get(g, 'epslevel'));
 
-f = bndfun(@(x) exp(x), dom, [], [], pref);
-g = bndfun(@(x) exp(-x), dom, [], [], pref);
-pass(3) = abs(innerProduct(f, g) - 9) < max(get(f, 'vscale'), ...
+f = bndfun(@(x) exp(x), struct('domain', dom), pref);
+g = bndfun(@(x) exp(-x), struct('domain', dom), pref);
+pass(3) = abs(innerProduct(f, g) - 9) < 2*max(get(f, 'vscale'), ...
     get(g, 'vscale'))*max(get(f, 'epslevel'), get(g, 'epslevel'));
 
-g = bndfun(@(x) sin(x), dom, [], [], pref);
+g = bndfun(@(x) sin(x), struct('domain', dom), pref);
 exact = exp(7)*(sin(7) - cos(7))/2 - exp(-2)*(sin(-2) - cos(-2))/2;
 pass(4) = abs(innerProduct(f, g) - exact) < max(get(f, 'vscale'), ...
     get(g, 'vscale'))*max(get(f, 'epslevel'), get(g, 'epslevel'));
@@ -42,9 +42,9 @@ pass(4) = abs(innerProduct(f, g) - exact) < max(get(f, 'vscale'), ...
 %%
 % Check a few known properties.
 
-f = bndfun(@(x) exp(1i*x) - 1, dom);
-g = bndfun(@(x) 1./(1 + 1i*x.^2), dom);
-h = bndfun(@(x) sinh(x*exp(pi*1i/6)), dom);
+f = bndfun(@(x) exp(1i*x) - 1, struct('domain', dom), pref);
+g = bndfun(@(x) 1./(1 + 1i*x.^2), struct('domain', dom), pref);
+h = bndfun(@(x) sinh(x*exp(pi*1i/6)), struct('domain', dom), pref);
 
 ip1 = innerProduct(alpha*f, beta*g);
 ip2 = conj(alpha)*beta*innerProduct(f, g);
@@ -73,8 +73,8 @@ pass(9) = isreal(n2vals) && all(n2vals >= 0);
 %%
 % Check operation for array-valued bndfun objects.
 
-f = bndfun(@(x) [sin(x) cos(x)], dom);
-g = bndfun(@(x) [exp(x) 1./(1 + x.^2) airy(x)], dom);
+f = bndfun(@(x) [sin(x) cos(x)], struct('domain', dom), pref);
+g = bndfun(@(x) [exp(x) 1./(1 + x.^2) airy(x)], struct('domain', dom), pref);
 ip = innerProduct(f, g);
 exact = [-53.1070904269318222 0.0025548835039100  -0.4683303433821355;
          773.70343924989359096771 1.3148120368924471 0.6450791915572742];
@@ -98,13 +98,17 @@ pow1 = -0.3;
 pow2 = -0.5;
 op1 = @(x) (x - dom(2)).^pow1.*sin(x);
 op2 = @(x) (x - dom(2)).^pow2.*cos(3*x);
-pref.singPrefs.exponents = [0 pow1];
-f = bndfun(op1, dom, [], [], pref);
-pref.singPrefs.exponents = [0 pow2];
-g = bndfun(op2, dom, [], [], pref);
+pref.enableSingularityDetection = true;
+data.domain = dom;
+data.exponents = [0 pow1];
+f = bndfun(op1, data, pref);
+data.domain = dom;
+data.exponents = [0 pow2];
+g = bndfun(op2, data, pref);
 I = innerProduct(f,g);
 I_exact = -0.65182492763883119+0.47357853074362785i;
-pass(12) = abs(I - I_exact) < 1e2*max(get(f, 'epslevel'), ...
-    get(g, 'epslevel'))*abs(I_exact);
+err = abs(I - I_exact);
+tol = 5e2*max(get(f, 'epslevel'), get(g, 'epslevel'))*abs(I_exact);
+pass(12) = err < tol;
 
 end

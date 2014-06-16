@@ -18,7 +18,7 @@ g = populate(chebtech2, f, [], [], pref);
 x = chebtech2.chebpts(length(g.coeffs));
 values = g.coeffs2vals(g.coeffs);
 pass(1) = norm(f(x) - values, inf) < tol;
-pass(2) = g.vscale == sin(1) && g.ishappy && g.epslevel < tol;
+pass(2) = abs(g.vscale - sin(1)) < g.epslevel && g.ishappy && g.epslevel < tol;
 
 pref.extrapolate = 1;
 pref.refinementFunction = 'nested';
@@ -34,7 +34,7 @@ g = populate(chebtech2, f, [], [], pref);
 x = chebtech2.chebpts(length(g.coeffs));
 values = g.coeffs2vals(g.coeffs);
 pass(5) = norm(f(x) - values, inf) < tol;
-pass(6) = g.vscale == sin(1) && logical(g.epslevel);
+pass(6) = abs(g.vscale - sin(1)) < g.epslevel && logical(g.epslevel);
 
 pref.extrapolate = 1;
 pref.refinementFunction = 'resampling';
@@ -122,5 +122,15 @@ try
 catch
     pass(16) = false;
 end
+
+%%
+% Test logical-valued functions:
+f = chebtech2(@(x) x > -2);
+g = chebtech2(1);
+pass(17) = normest(f - g) < f.epslevel;
+
+f = chebtech2(@(x) x < -2);
+g = chebtech2(0);
+pass(18) = normest(f - g) < f.epslevel;
 
 end

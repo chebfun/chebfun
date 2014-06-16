@@ -15,11 +15,11 @@ function values = coeffs2vals(coeffs)
 % See http://www.chebfun.org for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% [Developer Note]: This is equivalent to Discrete Cosine Transform of Type I.
+%
 % [Mathematical reference]: Sections 4.7 and 6.3 Mason & Handscomb, "Chebyshev
 % Polynomials". Chapman & Hall/CRC (2003).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% TODO: note this is euqivalent to a ??-kind DCT.
 
 % Get the length of the input:
 n = size(coeffs, 1);
@@ -30,29 +30,24 @@ if ( n <= 1 )
     return
 end
 
-% Compute an index for the interior coefficients:
-ii = 2:n-1;
 % Scale them by 1/2:
-coeffs(ii,:) = 0.5*coeffs(ii,:);
+coeffs(2:n-1,:) = coeffs(2:n-1,:)/2;
 
 % Mirror the coefficients (to fake a DCT using an FFT):
-tmp = [ coeffs(end:-1:1,:) ; coeffs(ii,:) ];
+tmp = [ coeffs(n:-1:1,:) ; coeffs(2:n-1,:) ];
 
 if ( isreal(coeffs) )
     % Real-valued case:
-    values = real(ifft(tmp));
+    values = real(fft(tmp));
 elseif ( isreal(1i*coeffs) )
     % Imaginary-valued case:
-    values = 1i*real(ifft(imag(tmp)));
+    values = 1i*real(fft(imag(tmp)));
 else
     % General case:
-    values = ifft(tmp);
+    values = fft(tmp);
 end
 
-% Scaling:
-values = (n-1)*[ 2*values(1,:) ; values(ii,:) + values(2*n-ii,:) ; 2*values(n,:) ];
-
-% Flip the order:
-values = values(end:-1:1,:);
+% Truncate and flip the order:
+values = values(n:-1:1,:);
 
 end

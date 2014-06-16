@@ -40,9 +40,10 @@ if ( nargin > 1 && ischar(varargin{1}) && numel(varargin{1}) < 4 )
             'Error in color/linetype argument.');
     elseif ( ~isempty(col) )
         col = col{:};
+        varargin(1) = [];
     end
-    varargin(1) = [];
 end
+
 if ( isempty(col) )
     colIdx = find(cellfun(@(arg) all(ischar(arg)) && any(strfind(arg, 'color')), varargin));
     if ( colIdx )
@@ -72,7 +73,6 @@ for k = 1:numel(f)
         col(1:numColsFk, :) = [];
     end
     
-
     % Call the column version:
     [h1{k}, h2{k}] = columnChebpolyplot(fk, colk, varargin{:});
     hold on
@@ -101,6 +101,15 @@ c = get(f, 'coeffs');
 % methods, similar to those used by the PLOT() funtion.
 if ( ~iscell(c) )
     c = {c};
+elseif ( size(c, 2) > 1 )
+    % If this is an array-valued CHEBFUN with multiple funs, we get one cell
+    % per fun per column.  Convert this to having one cell per fun with the
+    % data for all columns of that fun stored in the cell as a numeric matrix.
+    c_new = cell(size(c, 1), 1);
+    for k = 1:size(c, 1)
+        c_new(k) = {cell2mat(c(k, :))};
+    end
+    c = c_new;
 end
 c = cellfun(@abs, c, 'UniformOutput', false);
 for k = 1:numFuns
@@ -144,7 +153,11 @@ for j = 1:numCols
     % at index 1, the second fun in the first column is at 1 + numCols, the
     % third fun in the first column is at 1 + 2*numCols, etc.
     for k = j:numCols:(numFuns*numCols)
-        set(h1(k), 'color', col(j,:));
+        if ( ischar(col) )
+            set(h1(k), 'color', col);
+        else
+            set(h1(k), 'color', col(j,:));
+        end
     end
 end
 hold on

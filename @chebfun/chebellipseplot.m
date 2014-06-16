@@ -35,7 +35,6 @@ if ( numColumns(u) > 1 )
         'support array-valued CHEBFUN objects or quasimatries.']);
 end
 
-
 if ( isempty(u) )
     h = plot([]);
     % Output the axis handle.
@@ -44,6 +43,9 @@ if ( isempty(u) )
     end
     return
 end
+
+% Simplify first, to make sure length matches the epslevel:
+u = simplify(u);
 
 % Parse the inputs.
 [k, ee, numpts, legends, args] = parseInputs(varargin{:});
@@ -81,10 +83,10 @@ for j = k
 end
 
 holdState = ishold();
-hold on
 
 % Plot the ellipses.
-h = plot(UK{:});
+h = plot(UK{:}); 
+hold on
 
 % Add the legend.
 if ( legends ) && ( j > 1 )

@@ -1,4 +1,4 @@
-function f = compose(f, op, g, pref)
+function f = compose(f, op, g, data, pref)
 %COMPOSE   Composition of UNBNDFUN objects.
 %   H = COMPOSE(F, OP) returns a UNBNDFUN representing OP(F) where F is also a
 %   UNBNDFUN object, and OP is a function handle.
@@ -13,14 +13,15 @@ function f = compose(f, op, g, pref)
 %   of G, an error is thrown. Note that the domain of H will be the same as the
 %   domain of F.
 %
-%   H = COMPOSE(F, OP, G, PREF) or H = COMPOSE(F, OP, [], PREF), where F (and G)
-%   are UNBNDFUN objects, and OP is a function handle, uses the options passed
-%   by the preferences structure PREF to build the returned UNBNDFUN. In
-%   particular, if the underlying tech class supports it, one can use PREF to
-%   alter the constructor's behavior to take advantage of the fact that F (and
-%   possibly OP or G) has additional structure beyond just being an UNBNDFUN
-%   object.
-%
+%   H = COMPOSE(F, OP, G, DATA, PREF) or H = COMPOSE(F, OP, [], DATA, PREF),
+%   where F (and G) are UNBNDFUN objects, and OP is a function handle, uses the
+%   constructor data in the structure DATA and the options passed by the
+%   CHEBFUNPREF or preferences structure PREF to build the returned UNBNDFUN.
+%   In particular, if the underlying tech class supports it, one can use PREF
+%   to alter the constructor's behavior to take advantage of the fact that F
+%   (and possibly OP or G) has additional structure beyond just being an
+%   UNBNDFUN object.
+
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
@@ -58,15 +59,21 @@ if ( nargin == 2 )
 else
     % out = OP(F,G).
     
-    if ( nargin == 3 )       
+    if ( nargin < 5 )
         pref = chebfunpref();
+    else
+        pref = chebfunpref(pref);
+    end
+
+    if ( nargin < 4 )
+        data = struct();
     end
     
     % Call ONEFUN/COMPOSE():
     if ( isempty(g) )
-        f.onefun = compose(f.onefun, op, g, pref);
+        f.onefun = compose(f.onefun, op, g, data, pref);
     else
-        f.onefun = compose(f.onefun, op, g.onefun, pref);
+        f.onefun = compose(f.onefun, op, g.onefun, data, pref);
     end
     
 end

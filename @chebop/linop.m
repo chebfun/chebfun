@@ -1,9 +1,9 @@
 function [L, f, FAIL] = linop(N)
-%LINOP Converts a chebop to a linop
+%LINOP   Convert a CHEBOP to a LINOP.
 %   L = LINOP(N) converts a CHEBOP N to a linop L if N is a linear operator. If
 %   N is not linear, an error message is returned.
 %
-%   [L, F] = LINOP(N) returns also the affine part F of the linear chebop N such
+%   [L, F] = LINOP(N) returns also the affine part F of the linear CHEBOP N such
 %   that L*u + F(x) = N.op(x,u).
 %
 %   [L, F, FAIL] = LINOP(N) will prevent an error from being thrown if N is not
@@ -27,7 +27,7 @@ FAIL = ~all(isLinear);
 % Throw an error is the CHEBOP is nonlinear:
 if ( FAIL && (nargout < 3) )
     error('CHEBFUN:CHEBOP:linop:nonlinear',...
-        'Chebop does not appear to be a linear operator.')
+        'This does not appear to be a linear operator.')
 end
 
 % All values of the LINOPCONSTRAINT stored in L will be of incorrect sign when
@@ -36,6 +36,6 @@ end
 % problem is the output itself, while in a Newton iteration, we have to add the
 % output of the LINOP solution to the current guess. Thus, flip the signs of the
 % values of L.constraint.
-L.constraint = flipSigns(L.constraint);
+L.constraint = -L.constraint;
 
 end

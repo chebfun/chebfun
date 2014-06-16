@@ -93,9 +93,7 @@ dom = [-2 7];
 
 pow = -0.5;
 op = @(x) (x-dom(1)).^pow.*cos(30*x);
-pref.singPrefs.exponents = [pow 0];
-pref.enableBreakpointDetection = 1;
-f = chebfun(op, dom, pref);
+f = chebfun(op, dom, 'exps', [pow 0], 'splitting', 'on');
 r = roots(f);
 r_exact = (((-19:66)+1/2)*pi/30).';
 err = r - r_exact;
@@ -118,8 +116,7 @@ pass(9) = norm(err, inf) < 1e1*epslevel(f)*vscale(f);
 
 % Blow-up function:
 op = @(x) x.^2.*(1-exp(-x.^2))-2;
-pref.singPrefs.exponents = [2 2];
-f = chebfun(op, dom, pref); 
+f = chebfun(op, dom, 'exps', [2 2]);
 r = roots(f);
 rExact = [-1.4962104914103104707 ; 1.4962104914103104707];
 err = r - rExact;

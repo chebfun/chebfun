@@ -16,27 +16,27 @@ for n = 1:2
 
     %%
     % Spot-check integrals for a couple of functions.
-    f = testclass.make(@(x) exp(x) - 1, [], [], pref);
+    f = testclass.make(@(x) exp(x) - 1, [], pref);
     pass(n, 1) = (abs(sum(f) - 0.350402387287603) < 10*f.vscale.*f.epslevel);
 
-    f = testclass.make(@(x) 1./(1 + x.^2), [], [], pref);
+    f = testclass.make(@(x) 1./(1 + x.^2), [], pref);
     pass(n, 2) = (abs(sum(f) - pi/2) < 10*f.vscale.*f.epslevel);
 
-    f = testclass.make(@(x) cos(1e4*x), [], [], pref);
+    f = testclass.make(@(x) cos(1e4*x), [], pref);
     exact = -6.112287777765043e-05;
     pass(n, 3) = (abs(sum(f) - exact)/abs(exact) < 100*f.vscale.*f.epslevel);
 
     z = exp(2*pi*1i/6);
-    f = testclass.make(@(t) sinh(t*z), [], [], pref);
+    f = testclass.make(@(t) sinh(t*z), [], pref);
     pass(n, 4) = (abs(sum(f)) < 10*f.vscale.*f.epslevel);
 
     %%
     % Check a few basic properties.
     a = 2;
     b = -1i;
-    f = testclass.make(@(x) x.*sin(x.^2) - 1, [], [], pref);
+    f = testclass.make(@(x) x.*sin(x.^2) - 1, [], pref);
     df = diff(f);
-    g = testclass.make(@(x) exp(-x.^2), [], [], pref);
+    g = testclass.make(@(x) exp(-x.^2), [], pref);
     dg = diff(g);
     fg = f.*g;
     gdf = g.*df;
@@ -66,7 +66,7 @@ for n = 1:2
 
     %%
     % Check operation for array-valued chebtech objects.
-    f = testclass.make(@(x) [sin(x) x.^2 exp(1i*x)], [], [], pref);
+    f = testclass.make(@(x) [sin(x) x.^2 exp(1i*x)], [], pref);
     I = sum(f);
     I_exact = [0 2/3 2*sin(1)];
     pass(n, 9) = (max(abs(I - I_exact)) < 10*max(f.vscale.*f.epslevel));

@@ -1,14 +1,13 @@
 function  [ishappy, epslevel, cutoff] = happinessCheck(f, op, values, pref)
 %HAPPINESSCHECK   Happiness test for a CHEBTECH
-%   [ISHAPPY, EPSLEVEL, CUTOFF] = HAPPINESSCHECK(F, OP, VALUES) tests if the 
+%   [ISHAPPY, EPSLEVEL, CUTOFF] = HAPPINESSCHECK(F, OP, VALUES) tests if the
 %   CHEBTECH with values VALUES and coefficients F.COEFFS would be a 'happy'
 %   approximation (in the sense defined below and relative to F.VSCALE and
 %   F.HSCALE) to the function handle OP. If the approximation is happy, the
-%   output ISHAPPY is TRUE, the happiness level is returned in EPSLEVEL,
-%   and CUTOFF indicates the point to which the coefficients COEFFS may be
-%   truncated. Even if ISHAPPY is FALSE, the attempted happiness level is still
-%   returned in EPSLEVEL (i.e., we attempted to be happy at EPSLEVEL but failed)
-%   and CUTOFF is returned as size(F.COEFFS, 1).
+%   output ISHAPPY is TRUE, the happiness level is returned in EPSLEVEL, and
+%   CUTOFF indicates the point to which the coefficients COEFFS may be
+%   truncated. If ISHAPPY is false, EPSLEVEL returns an estimate of the accuracy
+%   achieved.
 %
 %   HAPPINESSCHECK(F) computes VALUES used above from F.COEFFS2VALS(F.COEFFS).
 %
@@ -51,7 +50,8 @@ elseif ( nargin == 3 )
 end
 
 if ( nargin < 3 )
-    values = f.coeffs2vals(f.coeffs);
+    values = [];
+%     values = f.coeffs2vals(f.coeffs);
 end
 
 % What does happiness mean to you?
@@ -68,6 +68,10 @@ elseif ( strcmpi(pref.happinessCheck, 'strict') )
 elseif ( strcmpi(pref.happinessCheck, 'loose') )
     % Use the 'loose' happiness check:
     [ishappy, epslevel, cutoff] = looseCheck(f, values, pref);
+    
+elseif ( strcmpi(pref.happinessCheck, 'plateau') )
+    % Use the 'plateau' happiness check:
+    [ishappy, epslevel, cutoff] = plateauCheck(f, values, pref);    
     
 else
     % Call a user-defined happiness check:

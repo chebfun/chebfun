@@ -1,13 +1,26 @@
-function display(L)
-%DISPLAY  Print summary of chebmatrix contents.
+function display(X)
+%DISPLAY   Display information about a CHEBMATRIX.
+%   DISPLAY(L) prints the size of the CHEBMATRIX L and a list of the block class
+%   types. If java is enabled, the class types for each block are hyperlinked,
+%   and clicking them will call the display method for the item in that block.
 %
-%   See also CHEBMATRIX.SPY.
+% See also DISP.
 
-%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
 
-[m, n] = size(L);
-fprintf('\n  %i x %i chebmatrix of block types:\n\n', m, n)
-disp( blockClasses(L) )
+name = inputname(1);
+
+if ( isequal(get(0, 'FormatSpacing'), 'compact') )
+	disp([name, ' =']);
+	disp(X, name);
+else
+	disp(' ');
+	disp([name, ' =']);
+	disp(' ');
+    disp(X, name);
+end
 
 end
+
+

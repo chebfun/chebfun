@@ -46,7 +46,7 @@ pass(2,2) = normest(f - g1) < tol;
 pref.enableBreakpointDetection = 1;
 h1 = chebfun(@(x) sign(gHandle1(x)), -3:3, pref);
 pass(2,3) = length(h1.funs) == 6;
-pass(2,4) = normest(f - h1) < tol;
+pass(2,4) = normest(f - h1) < 100*tol;
 
 %% Array-valued CHEBFUN
 f1 = chebfun(@(x) feval(f, [x, x]) , -3:3, pref);
@@ -82,9 +82,7 @@ x = diff(dom) * rand(100, 1) + dom(1);
 
 pow = -0.5;
 op = @(x) (dom(2)-x).^pow.*( sin(10*x).^2 );
-pref.singPrefs.exponents = [0 pow];
-pref.enableBreakpointDetection = 1;
-f = chebfun(op, dom, pref);
+f = chebfun(op, dom, 'exps', [0 pow], 'splitting', 'on');
 s = sign(f);
 pass(6,:) = ( norm(feval(s-1, x), inf) < eps );
 
@@ -98,9 +96,7 @@ x = diff(dom) * rand(100, 1) + dom(1);
 
 pow = -0.5;
 op = @(x) (dom(2)-x).^pow.*exp(2*pi*1i*x);
-pref.singPrefs.exponents = [0 pow];
-pref.enableBreakpointDetection = 1;
-f = chebfun(op, dom, pref);
+f = chebfun(op, dom, 'exps', [0 pow], 'splitting', 'on');
 s = sign(f);
 s_exact = @(x) exp(2*pi*1i*x);
 vals_s = feval(s, x);

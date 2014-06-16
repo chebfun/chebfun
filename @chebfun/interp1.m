@@ -48,6 +48,7 @@ if ( nargin == 3 )
         method = [];
     end
 end
+dom = double(dom);
 
 if ( isempty(method) )
     % Default to poly:
@@ -89,8 +90,6 @@ end
 function p = interp1Poly(x, y, dom)
 % Polynomial interpolation
 
-dom = double(dom);
-
 % Compute barycentric weights for these points:
 w = baryWeights(x);
 % Define the interpolant using CHEBTECH.BARY():
@@ -103,8 +102,6 @@ end
 function p = interp1Linear(x, y, dom)
 % Linear interpolation
 
-dom = double(dom);
-
 % Include breaks defined in the domain
 breaks = unique([dom(:) ; x(:)].');
 
@@ -112,14 +109,14 @@ breaks = unique([dom(:) ; x(:)].');
 numInts = numel(breaks) - 1;
 
 % Piecewise Chebyshev grid:
-xx = chebpts(repmat(2, numInts, 1), breaks).';
+xx = chebpts(repmat(2, numInts, 1), breaks, 2).';
 
 % Evaluate on the Chebyshev grid using built-in INTERP1:
 yy = interp1(x, y, xx.', 'linear');
 
 % Construct the CHEBFUN:
 data = mat2cell(yy, repmat(2, numInts, 1), size(yy, 2));
-p = chebfun(data, breaks);
+p = chebfun(data, breaks, 'chebkind', 2);
 
 % Restrict if needed:
 if ( (dom(1) > x(1)) || (dom(end) < x(end)) )

@@ -18,7 +18,7 @@ x = diff(domCheck) * rand(100, 1) + domCheck(1);
 %         ==> X = A/B, i.e. UNBNDFUN / double
 
 op = @(x) [exp(x) x.*exp(x) (1-exp(x))./x];
-A = unbndfun(op, dom);
+A = unbndfun(op, struct('domain', dom));
 B = 3;
 X = A/B; 
 opExact = @(x) [exp(x)/3 x.*exp(x)/3 (1-exp(x))./(3*x)];
@@ -31,7 +31,7 @@ pass(1) = norm(err, inf) < 2*max(get(X,'epslevel').*get(X,'vscale'));
 %         UNBNDFUN ==> X = A/B, i.e. UNBNDFUN / numerical matrix
 
 op = @(x) [exp(x) x.*exp(x) (1-exp(x))./x];
-A = unbndfun(op, dom);
+A = unbndfun(op, struct('domain', dom));
 B = rand(3,3);
 X = A/B; 
 res = X*B - A;

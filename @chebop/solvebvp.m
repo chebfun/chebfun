@@ -23,17 +23,21 @@ function [u, info] = solvebvp(N, rhs, pref, displayInfo)
 %   [U, INFO] = SOLVEBVP(N, RHS, PREF) is the same as above, but also returns
 %   the MATLAB struct INFO, which contains useful information about the solution
 %   process. The fields of INFO are as follows:
-%       ERROR:    The residual of the differential equation.
 %       ISLINEAR: A vector with four entries containing linearity information
-%           for N. More specifically, 
+%           for N. More specifically,
 %               ISLINEAR(1) = 1 if N.OP is linear
 %               ISLINEAR(2) = 1 if N.LBC is linear
 %               ISLINEAR(3) = 1 if N.RBC is linear
 %               ISLINEAR(4) = 1 if N.BC is linear
 %           Otherwise, the corresponding element of ISLINEAR is equal to 0.
 %
-%   TODO: INFO will have more fields once we move into nonlinear problems,
-%   update the list accordingly.
+%   For linear problems, INFO further contains the field
+%       ERROR:    The residual of the differential equation.
+%
+%   For nonlinear problems, INFO further contains the fields
+%       NORMDELTA:  A vector of the norm of the Newton updates.
+%       ERROR:      An error estimate for the convergence of the Newton
+%                   iteration.
 %
 %   Note that CHEBOP allows the RHS of coupled system of ODEs to be a scalar,
 %   e.g., one can both call
@@ -43,13 +47,13 @@ function [u, info] = solvebvp(N, rhs, pref, displayInfo)
 %   and
 %       uv = solvebvp(N, [0; 0]);
 %
-% See also: CHEBOP, CHEBOP/MLDIVIDE, CHEBOPPREF, CHEBOP/SOLVEBVPLINEAR, 
+% See also: CHEBOP, CHEBOP/MLDIVIDE, CHEBOPPREF, CHEBOP/SOLVEBVPLINEAR,
 %   CHEBOP/SOLVEBVPNONLINEAR, LINOP/MLDIVIDE.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Developers note:
+% Developer note:
 %   U = SOLVEBVP(N, RHS, PREF, DISPLAYINFO) allows passing in a function handle
 %   to a displaying method that is called during the damped Newton iteration.
 %   This allows separating the displaying process for regular CHEBOP use and
@@ -66,13 +70,13 @@ if ( nargin < 4 )
     displayInfo = @N.displayInfo;
 end
 
+% Find out how many variables N operates on:
+nVars = numVars(N);
+
 % Support single input argument for autonomous scalar problems:
 if ( nargin(N) == 1 )
     N.op = @(x, u) N.op(u);
 end
-
-% NUMVARS indicate how many unknown function we seek.
-numVars = max(nargin(N) - 1, 1);
 
 % Store the domain we're working with.
 dom = N.domain;
@@ -82,25 +86,26 @@ if ( isempty(N.init) )
     % Initialise a zero CHEBFUN:
     zeroFun = chebfun(0, dom);
     % Convert to a chebmatrix of correct dimensions:
-    u0 = cell(numVars, 1);
-    for k = 1:numVars
+    u0 = cell(nVars, 1);
+    for k = 1:nVars
         u0{k} = zeroFun;
     end
     u0 = chebmatrix(u0);
+    
 else
     u0 = N.init;
     % Ensure that N.init is a CHEBMATRIX, not a CHEBFUN:
     if ( isa(u0, 'chebfun') )
         u0 = chebmatrix(u0);
     end
+    
 end
 
 % Initialise the independent variable:
 x = chebfun(@(x) x, dom);
 
-% Linearize and attach preferences:
+% Linearize and attach preferences.
 [L, residual, isLinear] = linearize(N, u0, x);
-L.prefs = pref;
 
 % Check the size of the residual (the output the dimensions of the CHEBOP).
 [numRow, numCol] = size(residual);
@@ -112,11 +117,11 @@ if ( isnumeric(rhs) )
     if ( ~(all(size(rhs) == [numRow, numCol])) &&  (max(size(rhs)) > 1) )
         if ( all(size(rhs) == [numCol, numRow]) )
             warning('CHEBFUN:CHEBOP:solvebvp', ...
-                'Please concatenate RHS of the BVP vertically. Transposing.')
+                'Please concatenate the right-hand side of the BVP vertically. Transposing.')
             rhs = rhs.';
         else
             error('CHEBFUN:CHEBOP:solvebvp:rhs', ...
-               'RHS does not match output dimensions of operator.');
+                'The right-hand side does not match the output dimensions of the operator.');
         end
     end
     
@@ -127,7 +132,7 @@ if ( isnumeric(rhs) )
 elseif ( isa(rhs, 'chebfun') && size(rhs, 2) > 1 )
     rhs = chebmatrix(mat2cell(rhs).');
     warning('CHEBFUN:CHEBOP:solvebvp:vertcat', ...
-        'Please use vertical concatenation for RHS ')
+        'Please use vertical concatenation for the right-side data.')
 end
 
 % Do the same for the initial guess:
@@ -159,11 +164,16 @@ else
     
     % Create initial guess which satisfies the linearised boundary conditions:
     if ( isempty(N.init) )
-        u0 = fitBCs(L);
-        % Linearize about the new initial guess:
-        [L, residual, isLinear] = linearize(N, u0, x);
+        % Find a new initial guess that satisfies the BCs of L
+        u0 = fitBCs(L, pref);
+        
+        % Linearize about the new initial guess. If we are working with
+        % parameter dependent problems, and did not get an initial condition
+        % passed, we might have to cast some components in the CHEBMATRIX U0
+        % from a CHEBFUN to a scalar. Hence, call LINEARIZE() with four outputs.
+        [L, residual, isLinear, u0] = linearize(N, u0, x);
     end
-
+    
     % Call solver method for nonlinear problems.
     [u, info] = solvebvpNonlinear(N, rhs, L, u0, residual, pref, displayInfo);
     

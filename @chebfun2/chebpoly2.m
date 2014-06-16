@@ -21,12 +21,12 @@ end
 [cols, d, rows] = cdr(f);
 
 % Get the coeffs of the rows and the columns:
-cols_coeffs = chebpoly( cols )';
-rows_coeffs = chebpoly( rows )';
+cols_coeffs = chebpoly( cols ).';
+rows_coeffs = chebpoly( rows ).';
 
 if ( nargout <= 1 )
     % Return the matrix of coefficients
-    varargout = { cols_coeffs * d * rows_coeffs' }; 
+    varargout = { cols_coeffs * d * rows_coeffs.' }; 
 elseif ( nargout <= 3 )
     varargout = {cols_coeffs, d, rows_coeffs};
 else

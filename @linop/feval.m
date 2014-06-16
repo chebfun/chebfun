@@ -1,29 +1,45 @@
 function M = feval(L, n, flag)
-%FEVAL     Deprecated function, provided for limited backward compatability.
+%FEVAL    Deprecated function, provided for limited backward compatability.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
-warning('chebfun:linop:fevalDeprecated',...
+warning('CHEBFUN:linop:fevalDeprecated',...
     ['This function is provided only for limited backward compatibility.',...
     ' Use MATRIX instead.'] );
-warning('off', 'chebfun:linop:fevalDeprecated')
+warning('off', 'CHEBFUN:linop:fevalDeprecated')
 
-if ( prod(size(L)) > 1 )
+if ( prod(size(L)) > 1 ) %#ok<PSIZE>
     error('This syntax is not available for multivariable systems.')
 end
 
 if ( nargin < 3 )
     flag = 'bc';
 end
+% TODO: Should we always use a colloc2 representation here?
+% if ( nargin < 4 )
+%     pref = cheboppref();
+%     discType = pref.discretization;
+% elseif ( isa(discType, 'cheboppref') )
+%     discType = discType.discretization;
+% elseif ( ischar(discType) )
+%     discType = str2func(discType);
+% end
+discType = @colloc2;
 
 if ( isa(n, 'chebfun') )
     M = L*n;   % application to a function
+    
 else
-    % Use a colloc2 discretization.
-    disc = colloc2(L);
+
+    disc = discType(L);
     disc.dimension = n;
-    [PA, P, B, A] = matrix(disc);
+    
+    if ( strcmp(flag, 'oldschool') )
+        disc.dimAdjust = 0;
+    end
+    
+    [PA, ignored, B, A] = matrix(disc);
     
     % Depending on the flag, we will do different things about boundary
     % conditions.
@@ -39,12 +55,14 @@ else
             try 
                 A = cell2mat(A);
             catch
-                error('oldschool does not support this problem');
+                error('CHEBFUN:linop:feval:oldschool', ...
+                    'oldschool does not support this problem');
             end
-
-            A(1:k2,:) = B(1:k2,:);
-            krem = k - k2;          % number remaining
-            A(end-krem+1:end, :) = B(k2+1:end, :);
+            if ( k2 > 0 )
+                A(1:k2,:) = B(1:k2,:);
+                krem = k - k2;     % number remaining
+                A(end-krem+1:end, :) = B(k2+1:end, :);
+            end
             M = A;
     end
 end

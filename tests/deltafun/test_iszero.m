@@ -7,14 +7,14 @@ if (nargin < 1)
 end
 %%
 d1 = deltafun();
-d2 = deltafun( fun.constructor(0), [], []);
+d2 = deltafun(fun.constructor(0), []);
 
 pass(1) = iszero(d1) && iszero(d2);
 
 f = fun.constructor(@(x) exp(x));
 mag = rand(5,5);
 loc = rand(1,5);
-d = deltafun(f, mag, loc);
+d = deltafun(f, struct('deltaMag', mag, 'deltaLoc', loc));
 pass(2) = ~iszero(d);
 
 

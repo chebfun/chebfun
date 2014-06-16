@@ -5,38 +5,71 @@ if ( nargin == 0 )
 end
 
 %% Scalar equation:
-
-x = chebfun(@(x) x, [0 pi], pref);
+dom = [0 pi];
+x = chebfun(@(x) x, dom, pref);
 u = sin(x);
 Nu = diff(u, 2) + cos(u);
-N = chebop(@(u) diff(u, 2) + cos(u));
+N = chebop(@(u) diff(u, 2) + cos(u), dom);
 err(1) = norm(feval(N, u) - Nu);
-err(2) = norm(N(u) - Nu);
+err(length(err) + 1) = norm(N(u) - Nu);
 
-N = chebop(@(x, u) diff(u, 2) + cos(u));
-err(3) = norm(feval(N, u) - Nu);
-err(4) = norm(N(u) - Nu);
-err(5) = norm(N*u - Nu);
-err(6) = norm(feval(N, x, u) - Nu);
-err(7) = norm(N(x, u) - Nu);
+N = chebop(@(x, u) diff(u, 2) + cos(u), dom);
+err(length(err) + 1) = norm(feval(N, u) - Nu);
+err(length(err) + 1) = norm(N(u) - Nu);
+err(length(err) + 1) = norm(N*u - Nu);
+err(length(err) + 1) = norm(feval(N, x, u) - Nu);
+err(length(err) + 1) = norm(N(x, u) - Nu);
 
+%% Scalar equation, chebmatrix input:
+N = chebop(@(u) diff(u, 2) + cos(u), dom);
+u = chebmatrix({u});
+
+err(length(err) + 1) = norm(feval(N, u) - Nu);
+err(length(err) + 1) = norm(N(u) - Nu);
+
+N = chebop(@(x, u) diff(u, 2) + cos(u), dom);
+err(length(err) + 1) = norm(feval(N, u) - Nu);
+err(length(err) + 1) = norm(N(u) - Nu);
+err(length(err) + 1) = norm(N*u - Nu);
+err(length(err) + 1) = norm(feval(N, x, u) - Nu);
+err(length(err) + 1) = norm(N(x, u) - Nu);
 %% System of equations:
 
-N = chebop(@(x, u, v) [diff(u, 2) + cos(v) ; diff(v, 2) - sin(u)]);
-x = chebfun(@(x) x, [0 pi], pref);
+N = chebop(@(x, u, v) [diff(u, 2) + cos(v) ; diff(v, 2) - sin(u)], dom);
+x = chebfun(@(x) x, dom, pref);
 u = sin(x);
 v = exp(x);
 uv = [u ; v];
 Nuv = [diff(u, 2) + cos(v) ; diff(v, 2) - sin(u)];
-err(8) = norm(feval(N, u, v) - Nuv);
-err(9) = norm(feval(N, x, u, v) - Nuv);
-err(10) = norm(feval(N, uv) - Nuv);
-err(11) = norm(N(u, v) - Nuv);
-err(12) = norm(N(x, u, v) - Nuv);
-err(13) = norm(N(uv) - Nuv);
-err(14) = norm(N*uv - Nuv);
+err(length(err) + 1) = norm(feval(N, u, v) - Nuv);
+err(length(err) + 1) = norm(feval(N, x, u, v) - Nuv);
+err(length(err) + 1) = norm(feval(N, uv) - Nuv);
+err(length(err) + 1) = norm(N(u, v) - Nuv);
+err(length(err) + 1) = norm(N(x, u, v) - Nuv);
+err(length(err) + 1) = norm(N(uv) - Nuv);
+err(length(err) + 1) = norm(N*uv - Nuv);
 
-%%
+%% Quasimatrix notation, part I:
+N = chebop(@(x, u) [diff(u{1}, 2) + cos(u{2}) ; diff(u{2}, 2) - sin(u{1})]);
+x = chebfun(@(x) x, [0 pi], pref);
+u = [sin(x) ; exp(x)];
+Nu = [diff(u{1}, 2) + cos(u{2}) ; diff(u{2}, 2) - sin(u{1})];
+err(length(err) + 1) = norm(feval(N, u) - Nu);
+err(length(err) + 1) = norm(feval(N, x, u) - Nu);
+err(length(err) + 1) = norm(N(u) - Nu);
+err(length(err) + 1) = norm(N(x, u) - Nu);
+err(length(err) + 1) = norm(N*u - Nu);
+
+%% Quasimatrix notation, part II:
+N = chebop(@(u) [diff(u{1}, 2) + cos(u{2}) ; diff(u{2}, 2) - sin(u{1})]);
+x = chebfun(@(x) x, [0 pi], pref);
+u = [sin(x) ; exp(x)];
+Nu = [diff(u{1}, 2) + cos(u{2}) ; diff(u{2}, 2) - sin(u{1})];
+err(length(err) + 1) = norm(feval(N, u) - Nu);
+err(length(err) + 1) = norm(N(u) - Nu);
+err(length(err) + 1) = norm(N*u - Nu);
+
+%% Happy?
 
 tol = 1e-14;
 pass = err < tol;

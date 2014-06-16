@@ -1,0 +1,10 @@
+'Fisher-KPP equation'
+'scalar'
+domain = '[-0 50]';
+t = '0:0.5:20';
+DE = 'u_t = u''''+u-u^2';
+LBC = 'u = 1'; RBC = 'u = 0';
+init = 'u = exp(-x)';
+tol = '1e-6'; plotting = 'on';
+fixYaxisLower = '-1'; fixYaxisUpper = '2';
+type  = 'pde';

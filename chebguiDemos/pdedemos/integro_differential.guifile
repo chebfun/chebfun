@@ -1,0 +1,11 @@
+'Integro-differential equation'
+'scalar'
+domain = '[-1 1]';
+t = '0:.1:4';
+DE = {'u_t = .02*u" + cumsum(u)*sum(u)'};
+LBC = {'dirichlet'};
+RBC = {'dirichlet'};
+init = 'u = (1-x^2)*exp(-30*(x+.5)^2)';
+tol = '1e-6'; plotting = 'on';
+fixYaxisLower = '0'; fixYaxisUpper = '1.4';
+type  = 'pde';

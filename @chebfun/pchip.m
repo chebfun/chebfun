@@ -37,7 +37,7 @@ breaks = unique([d(:) ; x(:)].');
 numInts = numel(breaks) - 1;
 
 % Piecewise Chebyshev grid:
-xx = chebpts(repmat(4, numInts, 1), breaks);
+xx = chebpts(repmat(4, numInts, 1), breaks, 2);
 
 % Forgive some transpose issues:
 if ( ~any(size(y) == size(x))  )
@@ -53,7 +53,7 @@ end
 
 % Construct the CHEBFUN:
 data = mat2cell(yy, repmat(4, numInts, 1), size(yy, 2));
-f = chebfun(data, breaks);
+f = chebfun(data, breaks, 'chebkind', 2);
 
 % Restrict if needed:
 if ( (d(1) > x(1)) || (d(end) < x(end)) )

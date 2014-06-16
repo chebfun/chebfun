@@ -78,7 +78,7 @@ end
 
 if ( numel(f) == 1 && numel(g) == 1)
     % Array-valued CHEBFUN case:
-    
+
     % Make sure f and g have the same breakpoints:
     [f, g] = overlap(f, g);
     % Assign the columns of the FUNs:

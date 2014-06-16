@@ -20,19 +20,25 @@ function data = plotData(f, g, h)
 
 % Make the appropriate call to plotData for the SMOOTHPARTs:
 if ( nargin == 1 )
+    
     g = [];
     h = [];
     data = plotData(f.smoothPart);
+    
 elseif (nargin == 2)
+    
     h = [];
     f = singfun(f);
     g = singfun(g);
     data = plotData(f.smoothPart, g.smoothPart);
+    
 elseif (nargin == 3)
+    
     f = singfun(f);
     g = singfun(g);
     h = singfun(h);
     data = plotData(f.smoothPart, g.smoothPart, h.smoothPart);
+    
 end
 
 scaleData = @(x, y, exps) y .* (1+x).^exps(1) .* (1-x).^exps(2);
@@ -68,6 +74,11 @@ end
 
 % Set the y-limits to something sensible:
 data.yLim = getYLimits(data.yLine, f.exponents);
+
+% If F is blowing up, do not use the yLim chosen by Matlab built-in plot:
+if ( any(f.exponents < 0) )
+    data.defaultYLim = 0;
+end
 
 end
 

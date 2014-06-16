@@ -15,11 +15,7 @@ function b = legpoly(f, n)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-c_cheb = f.coeffs;
-b = zeros(size(c_cheb));
-for k = 1:size(c_cheb, 2)
-    b(:,k) = chebtech2.cheb2leg(c_cheb(:,k));
-end
+b = cheb2leg(f.coeffs);
 
 if ( nargin > 1 )
     s = size(b);

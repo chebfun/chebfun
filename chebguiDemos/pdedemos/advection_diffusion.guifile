@@ -1,0 +1,10 @@
+'Advection-diffusion equation 1'
+'scalar'
+domain = '[-3 3]';
+t = '0:.1:6';
+DE = 'u_t = 0.1*u" + u''';
+LBC = 'neumann'; RBC = 'dirichlet';
+init = 'u = sin(2*x)';
+tol = '1e-6'; plotting = 'on';
+fixYaxisLower = '-1'; fixYaxisUpper = '1';
+type = 'pde';

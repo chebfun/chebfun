@@ -24,14 +24,14 @@ for n = 1:2
     %%
     % Check operation in the face of empty arguments.
     
-    f = testclass.make(@(x) sin(x), [], [], pref);
+    f = testclass.make(@(x) sin(x), [], pref);
     g = testclass.make();
     pass(n, 1) = isempty(f*[]) && isempty([]*f) && isempty(2*g) && isempty(g*2);
     
     %%
     % Check operation for scalar chebtech objects.
     
-    f = testclass.make(@(x) sin(x), [], [], pref);
+    f = testclass.make(@(x) sin(x), [], pref);
     g1 = alpha*f;
     g2 = f*alpha;
     pass(n, 2) = isequal(g1, g2);
@@ -45,7 +45,7 @@ for n = 1:2
     %%
     % Check operation for array-valued chebtech objects.
     
-    f = testclass.make(@(x) [sin(x) cos(x) exp(x)], [], [], pref);
+    f = testclass.make(@(x) [sin(x) cos(x) exp(x)], [], pref);
     g1 = alpha*f;
     g2 = f*alpha;
     pass(n, 5) = isequal(g1, g2);

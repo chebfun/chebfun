@@ -26,11 +26,11 @@ if ( n <= length(f) )
     % Extract Chebyshev coeficients of y:
     c_cheb = f.coeffs;
     % Convert to Legendre coefficients:
-    c_leg = chebtech.cheb2leg(c_cheb);
+    c_leg = cheb2leg(c_cheb);
     % Truncate to degree N:s
     c_leg = c_leg((end-n+1):end);
     % Convert to Chebyshev coefficients:
-    c_cheb = chebtech.leg2cheb(c_leg);
+    c_cheb = leg2cheb(c_leg);
     f.coeffs = c_cheb;
     % Update vscale of the CHEBTECH:
     f.vscale = getvscl(f);

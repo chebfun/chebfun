@@ -1,19 +1,17 @@
 function [Y, X] = min2( f )
-%MIN2   Global minimum of a CHEBFUN2. 
-%   Y = MIN2(F) returns the global minium of F.
-% 
-%   [Y, X] = MIN2(F) returns the global minimum of F and its coordinates in X =
-%   (X(1), X(2)).
+%MAX2   Global maximum of a CHEBFUN2.
+%   Y = MIN2(F) returns the global minimum of F over its domain. 
+%   
+%   [Y, X] = MIN2(F) returns the global minimum in Y and its location in X.  
 %
-% For certain problems this problem can be slow if the MATLAB Optimization
-% Toolbox is not available.
+%  This command may be faster if the OPTIMIZATION TOOLBOX is installed.
 %
-% See also MAX2, MINANDMAX2.
+% See also MIN2, MINANDMAX2.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% Call MINANDMAX2():
+% Call MINANDMAX2:
 [Y, X] = minandmax2(f);
 
 % Extract out minimum:

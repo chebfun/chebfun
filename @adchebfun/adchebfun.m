@@ -93,7 +93,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
                     dom = varargin{1};
                 end
             else
-                obj.func = chebfun(varargin{:});
+                obj.func = chebfun(u, varargin{:});
                 dom = obj.func.domain;
             end
             
@@ -911,7 +911,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         end
         
         function f = plus(f, g)
-            % +     Addition of ADCHEBFUN objects
+            %+     Addition of ADCHEBFUN objects
             
             % If F is not an ADCHEBFUN, we know G is, so add to the CHEBFUN part
             % of G.
@@ -1054,45 +1054,97 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             
         end
         
-        function u = seed(u, k, m)
+        function u = seed(u, k, v)
             %SEED   Seed the derivative of an ADCHEBFUN
             %
-            %   U = SEED(U, K, M) reseeds the derivative of the ADCHEBFUN U, so
-            %   that it consist of M blocks. All blocks in the derivative of U,
-            %   except the Kth one, will be the zero operator on the domain of
-            %   U. The Kth block will be the identity operator on the domain of
-            %   U.
+            %   U = SEED(U, K, V) reseeds the derivative of the ADCHEBFUN U, so
+            %   that it consist of numel(V) blocks. See below for further
+            %   discussion on what form the resulting derivative will be.
+            %
+            %   The most common use of this method is within CHEBOP/LINEARIZE().
+            %   Parameter dependent problems require special consideration in
+            %   Chebfun. The Frechet derivative of a function with respect to a
+            %   parameter is a CHEBFUN, not an OPERATORBLOCK. To see why, think
+            %   of differentiating the function
+            %       f = lambda*exp(u)
+            %   with respect to first the Inf x 1 CHEBFUN u, then the 1 x 1
+            %   parameter lambda. 
+            %
+            %   In the first case, the derivative is an Inf x Inf operator (the
+            %   multiplication operator v |-> exp(u)v). Thus, the derivative
+            %   will be represented as an OPERATORBLOCK.
+            %
+            %   In the second case, the derivative is the Inf x 1 function u.
+            %   Thus, the derivative will be represented as a CHEBFUN.
+            %
+            %   By calling U = SEED(U, K, V), all blocks in the derivative of U,
+            %   except the Kth one, will be either the zero operator or zero
+            %   function on the interval U is defined on.
+            %
+            %   The vector variable V determines whether the blocks are CHEBFUN
+            %   or OPERATORBLOCK objects. If V(j) = TRUE, then U.JACOBIAN{j} is
+            %   an OPERATORBLOCK, representing the identity operator if j = k,
+            %   and the zero operator if j != k. If V(j) = FALSE, then
+            %   U.JACOBIAN{j} is a CHEBFUN, representing the identity function
+            %   if j = k, and the zero function if j != k.
+            %
+            %   The convention of V having values of either TRUE or FALSE stems
+            %   from CHEBOP/LINEARIZE(), where the method checks which
+            %   components of a solution are functions, and which components are
+            %   scalars.
+            %
+            %   U = SEED(U, K, M) where M is a positive integer is shorthand for
+            %   U = SEED(U, K, true(1, M));
 
-            % Extract domain information, and construct the identity operator on
-            % the domain.
+            % Domain information
             dom = u.domain;
-            I = operatorBlock.eye(dom);
             
-            % Things are easy if we only have one variable involved.
-            if ( m == 1 )
-                u.jacobian = I;
+            % Do we just want one block?
+            if ( (numel(v) == 1) && (v < 2) )
+                if ( v )
+                    % Initialize as an OPERATORBLOCK
+                    u.jacobian = operatorBlock.eye(dom);
+                else
+                    % Initalize as a CHEBFUN
+                    u.jacobian = chebfun(1, dom);
+                end
+
                 % Reset linearity information
                 u.linearity = 1;
-            else
-                % Working in the system case.
+            
+            else        % Multiple blocks involved
                 
-                % Now we also need the zero operator:
-                Z = operatorBlock.zeros(dom);
-                
-                % Populate a cell with the operators.
-                blocks = cell(1, m);
-                for j = [1:(k - 1), (k + 1):m] 
-                    blocks{1,j} = Z;
+                % Check whether the shortcut was being used
+                if ( numel(v) == 1 )
+                    m = v;
+                    v = true(1,m);
+                else
+                    % If not, we will be needing numel(v) blocks
+                    m = numel(v);
                 end
-                % The Kth block is the identity operator
-                blocks{1,k} = I;
+
+                % Populate a cell operators / functions as required.
+                blocks = cell(1, m);
+                blocks(1,v) = { operatorBlock.zeros(dom) };
+                blocks(1,~v) = { chebfun(0, dom) };
+                
+                % The Kth block is the identity operator / function.
+                if ( v(k) )
+                    blocks{1,k} = operatorBlock.eye(dom);
+                else
+                    blocks{1,k} = chebfun(1, dom);
+                end
+
                 % Convert the cell-array to a CHEBMATRIX and assign to the
                 % derivative field of U:
                 u.jacobian = chebmatrix(blocks);
+                
                 % Initalise linearity information. The output is linear in all
                 % variables.
                 u.linearity = ones(1, m);
+                
             end
+            
         end
    
         function g = sec(f)
@@ -1167,7 +1219,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             % Linearity information
             f.linearity = iszero(f.jacobian);
             % Update derivative part
-            Jop = @(u) (pi*u.*cos(pi*u) - sin(pi*u))./(pi*u.^2);
+            Jop = @(u) (u.*cos(u) - sin(u))./(u.^2);
             f.jacobian = operatorBlock.mult(compose(f.func, Jop), ...
                 f.domain)*f.jacobian;
             % Update CHEBFUN part
@@ -1213,8 +1265,11 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
         %   .
         %     F.PROP returns the property PROP of F as defined by 
         %     GET(F, 'PROP').
-        %  
-        %   {}
+        % 
+        %   { }
+        %     F{IND}, where IND is an integer, returns the IND component of an
+        %     array of ADCHEBFUN objects.
+        %
         %     F{S1, S2} restricts F to the domain [S1, S2] < [F.ENDS(1),
         %     F.ENDS(end)].
         %
@@ -1223,6 +1278,8 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             switch index(1).type
                 case '()'
                     out = feval(f, index.subs{1});
+                case '{}'
+                    out = f(index.subs{1});
                 case '.'
 %                     out = vertcat(f.(index(1).subs));
                     out = f.(index(1).subs);
@@ -1366,7 +1423,7 @@ classdef (InferiorClasses = {?chebfun}) adchebfun
             
             % This method does nothing.
         end
-        
+                
         function f = volt(K, f, varargin)
             % VOLT   Volterra operator.
             

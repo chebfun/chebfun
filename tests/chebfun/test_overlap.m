@@ -64,12 +64,8 @@ pow1 = -0.3;
 pow2 = -0.5;
 op1 = @(x) (x - dom(2)).^pow1.*sin(100*x);
 op2 = @(x) (x - dom(2)).^pow2.*cos(300*x);
-pref.singPrefs.exponents = [0 pow1];
-pref.enableBreakpointDetection = 1;
-f = chebfun(op1, dom, pref);
-pref.singPrefs.exponents = [0 pow2];
-pref.enableBreakpointDetection = 1;
-g = chebfun(op2, dom, pref);
+f = chebfun(op1, dom, 'exps', [0 pow1], 'splitting', 'on');
+g = chebfun(op2, dom, 'exps', [0 pow2], 'splitting', 'on');
 [fout, gout] = overlap(f,g);
 vals_fout = feval(fout, x);
 vals_gout = feval(gout, x);
@@ -116,9 +112,9 @@ check = zeros(1,4);
 check(1) = all( fout.domain == gout.domain );
 check(2) = all( fout.domain == unique([f.domain, g.domain]) );
 check(3) = ( norm(vals_fout - vals_f, inf) < ...
-    2e1*epslevel(fout)*norm(vals_fout, inf) );
+    5e1*epslevel(fout)*norm(vals_fout, inf) );
 check(4) = ( norm(vals_gout - vals_g, inf) < ...
-    1e1*epslevel(gout)*norm(vals_gout, inf) );
+    5e1*epslevel(gout)*norm(vals_gout, inf) );
 
 pass(7) = all( check );
 

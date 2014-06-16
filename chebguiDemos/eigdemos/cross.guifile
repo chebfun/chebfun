@@ -1,0 +1,8 @@
+'A cross of eigenvalues'
+'scalar'
+domain = '[0 2*pi]';
+DE = '-u" = lambda*(u+u'')';
+BC = {'u(0) = 0'; 'u(2*pi) = 0'};
+tol = '1e-10';
+type = 'eig';
+numeigs = '12';

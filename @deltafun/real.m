@@ -9,5 +9,7 @@ function f = real(f)
 
 % Compute the real part of the classical part of F.
 f.funPart = real(f.funPart);
+f.deltaMag = real(f.deltaMag);
+f = simplifyDeltas(f);
 
 end

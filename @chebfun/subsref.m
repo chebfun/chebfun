@@ -19,11 +19,12 @@ function varargout = subsref(f, index)
 %   F.PROP returns the property PROP of F as defined by GET(F, 'PROP').
 %
 % {}
-%   F{S1, S2} restricts F to the domain [S1, S2] < [F.ENDS(1), F.ENDS(end)]. See
-%   CHEBFUN/RESTRICT for further details. Note that F{[S1, S2]} is not supported
-%   due to the behaviour of the MATLAB subsref() command.
+%   F{S1, S2} restricts F to the domain [S1, S2] < [F.ENDS(1), F.ENDS(end)] and
+%   simplifies the result. See RESTRICT  and SIMPLIFY for further details. Note
+%   that F{[S1, S2]} is not supported due to the behaviour of the MATLAB
+%   subsref() command.
 %
-% See also FEVAL, COMPOSE, GET, RESTRICT.
+% See also FEVAL, COMPOSE, GET, RESTRICT, SIMPLIFY.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
@@ -72,7 +73,10 @@ switch index(1).type
                 if ( size(columnIndex, 1) > 1 )
                     error('CHEBFUN:subsref:colidx', ...
                         'Column index must be a vector of integers.')
-                end                
+                end               
+            elseif ( max(idx{2}) > columnIndex(end) )
+                error('CHEBFUN:subsref:badsubscript', ...
+                    'Index exceeds CHEBFUN dimensions.');
             end
 
         elseif ( length(idx) == 2 && strcmp(idx{2}, ':') )
@@ -159,6 +163,7 @@ switch index(1).type
             % F{s1,s2,...,sk} returns RESTRICT(F, [s1,s2,...,sk]):
             x = cat(2, idx{:});
             out = restrict(f, x);
+            out = simplify(out);
             
         else
             error('CHEBFUN:subsref:dimensions', ...

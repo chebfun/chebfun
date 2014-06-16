@@ -112,7 +112,7 @@ elseif ( all(abs(round(fExps - gExps) - (fExps - gExps)) < tolExps) )
     
     % Construct the new smooth fun:
     s = singfun.zeroSingFun();
-    s.smoothPart = singfun.constructSmoothPart(smoothOp, [], [], []);
+    s.smoothPart = singfun.constructSmoothPart(smoothOp, [], []);
     
     % Assign new exponents:
     s.exponents = newExps;
@@ -137,7 +137,10 @@ else
     exps = min(exps);
     
     % Construct a new SINGFUN for the sum:
-    s = singfun(op, exps, [], vScale, hScale);
+    data.exponents = exps;
+    data.vscale = vScale;
+    data.hscale = hScale;
+    s = singfun(op, data, []);
 end
 
 %%

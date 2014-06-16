@@ -17,11 +17,11 @@ for n = 1:2
     %%
     % Conduct a few very straightforward tests.
     
-    f = testclass.make(@(x) sin(x), [], [], pref);
+    f = testclass.make(@(x) sin(x), [], pref);
     pass(n, 1) = isequal(f, fliplr(f));
     
-    f = testclass.make(@(x) [sin(x) cos(x)], [], [], pref);
-    g = testclass.make(@(x) [cos(x) sin(x)], [], [], pref);
+    f = testclass.make(@(x) [sin(x) cos(x)], [], pref);
+    g = testclass.make(@(x) [cos(x) sin(x)], [], pref);
     pass(n, 2) = isequal(fliplr(f), g);
 end
 

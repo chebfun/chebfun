@@ -5,7 +5,7 @@ function pass = test_linjump
 
 tol = 1e-8;
 
-solver = { @colloc2, @colloc1, @ultraS }; % FIXME
+solver = { @colloc2, @colloc1, @ultraS };
 kind = [2 1 2];
 
 for k = 1:length(solver)

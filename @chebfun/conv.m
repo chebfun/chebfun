@@ -139,7 +139,10 @@ p.techPrefs.sampletest = false;
 % Construct FUNS:
 funs = cell(1, length(dom)-1);
 for k = 1:length(dom)-1  
-    newFun = bndfun(@(x) convIntegral(x, f, g), dom(k:k+1), vs, hs, p);
+    data.domain = dom(k:k+1);
+    data.vscale = vs;
+    data.hscale = hs;
+    newFun = bndfun(@(x) convIntegral(x, f, g), data, p);
     vs = max(get(newFun, 'vscale'), vs); 
     funs{k} = newFun;
 end
@@ -169,8 +172,16 @@ for k = 1:length(x)
         ends = union(x(k) - g.domain, f.domain);
         dom = [A, ends((A < ends) & (ends < B)), B];
         for j = 1:length(dom)-1
-            out(k) = out(k) + integral(@(t) feval(f, t).*feval(g, x(k) - t), ...
-                dom(j), dom(j+1), 'AbsTol', 1e-15, 'RelTol', 1e-15);
+            % INTEGRAL is not available in versions of MATLAB prior to R2012a,
+            % so if we're running on an older version, fall back to QUADGK.
+            integrand = @(t) feval(f, t).*feval(g, x(k) - t);
+            if ( verLessThan('matlab', '7.14') )
+                out(k) = out(k) + quadgk(integrand, dom(j), dom(j+1), ...
+                    'AbsTol', 1e-15, 'RelTol', 100*eps);
+            else
+                out(k) = out(k) + integral(integrand, dom(j), dom(j+1), ...
+                    'AbsTol', 1e-15, 'RelTol', 1e-15);
+            end
         end
     end
 end

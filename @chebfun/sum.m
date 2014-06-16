@@ -53,7 +53,7 @@ elseif ( (nargin == 2) && (numel(a) == 1) )
 end
 
 if ( isempty(F) )
-    % Empty chebfun has sum 0. (v4 compatability).
+    % Empty chebfun has sum 0. (v4 compatibility).
     if ( xor(F(1).isTransposed, dim == 2) )
         out = F;
     else

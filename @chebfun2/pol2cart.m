@@ -13,6 +13,9 @@ function [x, y, z] = pol2cart(th, r, z)
 % 
 % See also SPH2CART.
 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Polar coordinates:
 x = r .* cos( th );
 y = r .* sin( th );

@@ -2,9 +2,9 @@ function [ishappy, epslevel, cutoff] = classicCheck(f, values, pref)
 %CLASSICCHECK   Attempt to trim trailing Chebyshev coefficients in a CHEBTECH.
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F, VALUES) returns an estimated
 %   location, the CUTOFF, at which the CHEBTECH F could be truncated to maintain
-%   an accuracy of EPSLEVEL relative to F.VSCALE and F.HSCALE. ISHAPPY is
-%   TRUE if CUTOFF < MIN(LENGTH(VALUES),2) or F.VSCALE = 0, and FALSE
-%   otherwise.
+%   an accuracy of EPSLEVEL relative to F.VSCALE and F.HSCALE. ISHAPPY is TRUE
+%   if CUTOFF < MIN(LENGTH(VALUES),2) or F.VSCALE = 0, and FALSE otherwise.
+%   If ISHAPPY is false, EPSLEVEL returns an estimate of the accuracy achieved.
 %
 %   [ISHAPPY, EPSLEVEL, CUTOFF] = CLASSICCHECK(F, PREF) allows additional
 %   preferences to be passed. In particular, one can adjust the target accuracy
@@ -34,9 +34,8 @@ function [ishappy, epslevel, cutoff] = classicCheck(f, values, pref)
 %                      gradient of the function from F.VALUES.).
 %   However, the final two estimated values can be no larger than 1e-4.
 %
-%
-%   Note that the accuracy check implemented in this function is the same as
-%   that employed in Chebfun v4.x.
+%   Note that the accuracy check implemented in this function is the (roughly)
+%   same as that employed in Chebfun v4.x.
 %
 % See also STRICTCHECK, LOOSECHECK.
 
@@ -99,7 +98,7 @@ if ( any(isnan(f.coeffs(:))) )
 end
 
 % Compute some values if none were given:
-if ( nargin < 2 )
+if ( nargin < 2 || isempty(values) )
     values = f.coeffs2vals(f.coeffs);
 end
 
@@ -156,6 +155,9 @@ else
 
     % We're unhappy. :(
     cutoff = n;
+    
+    % Estimate the epslevel:
+    epslevel = mean(ac(1:testLength, :));
 
 end
 

@@ -30,11 +30,16 @@ B.op = @(r,u) r.*u;
 % valudate the results.
 [V, D] = eigs(A, B, pref);
 omega = sort(sqrt(-diag(D)));
-err = norm(omega - roots( besselj(0, chebfun('r',[0 20]))));
-
+err(1) = norm(omega - roots( besselj(0, chebfun('r',[0 20]))));
+err(2) = 0;
+for vCounter = 1:size(V, 2)
+    err(2) = err(2) + norm(A(V(:,vCounter)) - ...
+        B(V(:,vCounter))*D(vCounter, vCounter)).^2;
+end
+err(2) = sqrt(err(2));
 %%
 
-tol = 1e-9;
+tol = [1e-9 1e-7];
 pass = err < tol;
 
 end

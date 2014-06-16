@@ -83,8 +83,7 @@ x = diff(dom) * rand(100, 1) + dom(1);
 
 pow = -1.64;
 op = @(x) (x-dom(1)).^pow;
-pref.singPrefs.exponents = [pow 0];
-f = chebfun(op, dom, pref);
+f = chebfun(op, dom, 'exps', [pow 0]);
 g = cumsum(f);
 vals_g = feval(g, x); 
 g_exact = @(x) (x-dom(1)).^(pow+1)./(pow+1);
@@ -138,7 +137,7 @@ domCheck = [dom(1)+0.1 dom(2)-0.1];
 
 op = @(x) sin(100*x)./((x-dom(1)).^0.5.*(x-dom(2)).^0.5);
 f = chebfun(op, dom, 'exps', [-0.5 -0.5]);
-% We temporarily disable this warning: 
+% We temporarily disable this warning: 1
 warning('off', 'CHEBFUN:SINGFUN:plus');
 g = cumsum(f);
 warning('on', 'CHEBFUN:SINGFUN:plus');
@@ -156,8 +155,9 @@ g_check = cumsum(f_check);
 
 vals_check = feval(g_check, x);
 err = gval - vals_check;
-pass(12) = norm(err-mean(err), inf) < 5e4*get(f,'epslevel')*...
-    norm(vals_check, inf);
+err = norm(err-mean(err), inf);
+tol = 5e5*get(f,'epslevel')*norm(vals_check, inf);
+pass(12) = err < tol;
 
 %% Tests for functions defined on unbounded domain:
 
@@ -177,8 +177,9 @@ g = cumsum(f);
 gVals = feval(g, x);
 opg = @(x) sqrt(pi)*erf(x)/2 + sqrt(pi)/2;
 gExact = opg(x);
-errg = gVals - gExact;
-pass(11) = norm(errg, inf) < 1e3*get(g,'epslevel').*get(g,'vscale');
+errg = norm(gVals - gExact, inf);
+tol = 5e4*get(g,'epslevel').*get(g,'vscale');
+pass(13) = errg < tol;
 
 %% Function on [a inf]:
 
@@ -191,17 +192,17 @@ x = diff(domCheck) * rand(100, 1) + domCheck(1);
 
 % Blow-up function:
 op = @(x) 5*x;
-pref.singPrefs.exponents = [0 1];
-f = unbndfun(op, dom, [], [], pref);
+f = chebfun(op, dom, 'exps', [0 1]);
 g = cumsum(f);
 gVals = feval(g, x);
 
 opg = @(x) 5*x.^2/2 - 5/2 + get(g, 'lval');
 gExact = opg(x);
-err = gVals - gExact;
-pass(12) = norm(err, inf) < 10*get(g,'epslevel').*get(g,'vscale');
+err = norm(gVals - gExact, inf);
+tol = 100*get(g,'epslevel').*get(g,'vscale');
+pass(14) = err < tol;
 
-%% piecewise function on [-inf b]:
+%% Piecewise function on [-inf b]:
 
 % Set the domain:
 dom = [-Inf -1 3*pi];
@@ -224,7 +225,7 @@ g1Exact = opg1(x1);
 g2Exact = opg2(x2);
 err1 = g1Vals - g1Exact;
 err2 = g2Vals - g2Exact;
-pass(13) = norm([err1 ; err2], inf) < 5e3*get(g,'epslevel').*get(g,'vscale');
+pass(15) = norm([err1 ; err2], inf) < 5e4*get(g,'epslevel').*get(g,'vscale');
 
 % [TODO]:  Check fractional antiderivatives once implemented.
 

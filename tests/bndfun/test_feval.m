@@ -19,22 +19,22 @@ x = diff(dom) * rand(1000, 1) + dom(1);
 % accuracy on the order of the truncation level, so we use this as our
 % criterion.
 
-f = bndfun(@(x) exp(x) - 1, dom, [], [], pref);
+f = bndfun(@(x) exp(x) - 1, struct('domain', dom), pref);
 f_exact = @(x) exp(x) - 1;
 pass(1) = (norm(feval(f, x) - f_exact(x), inf) < ...
     2*get(f, 'vscale')*get(f, 'epslevel'));
 
-f = bndfun(@(x) 1./(1 + x.^2), dom, [], [], pref);
+f = bndfun(@(x) 1./(1 + x.^2), struct('domain', dom), pref);
 f_exact = @(x) 1./(1 + x.^2);
 pass(2) = (norm(feval(f, x) - f_exact(x), inf) < ...
     get(f, 'vscale')*get(f, 'epslevel'));
 
-f = bndfun(@(x) cos(1e4*x), dom, [], [], pref);
+f = bndfun(@(x) cos(1e4*x), struct('domain', dom), pref);
 f_exact = @(x) cos(1e4*x);
 pass(3) = (norm(feval(f, x) - f_exact(x), inf) < 1e4*get(f, 'epslevel'));
 
 z = exp(2*pi*1i/6);
-f = bndfun(@(t) sinh(t*z), dom, [], [], pref);
+f = bndfun(@(t) sinh(t*z), struct('domain', dom), pref);
 f_exact = @(t) sinh(t*z);
 pass(4) = (norm(feval(f, x) - f_exact(x), inf) < ...
     10*get(f, 'vscale')*get(f, 'epslevel'));
@@ -59,7 +59,7 @@ pass(7) = (all(size(err) == [10 10 10])) && (norm(err(:), inf) < ...
 %%
 % Check operation for array-valued bndfun objects.
 
-f = bndfun(@(x) [sin(x) x.^2 exp(1i*x)], dom, [], [], pref);
+f = bndfun(@(x) [sin(x) x.^2 exp(1i*x)], struct('domain', dom), pref);
 f_exact = @(x) [sin(x) x.^2 exp(1i*x)];
 err = feval(f, x) - f_exact(x);
 pass(8) = all(max(abs(err)) < 10*get(f, 'vscale').*get(f, 'epslevel'));
@@ -68,7 +68,7 @@ pass(8) = all(max(abs(err)) < 10*get(f, 'vscale').*get(f, 'epslevel'));
 % Test for evaluating array-valued bndfun objects at matrix arguments if
 % the operation makes sense.
 
-f = bndfun(@(x) [sin(pi*x) cos(pi*x)], dom, [], [], pref);
+f = bndfun(@(x) [sin(pi*x) cos(pi*x)], struct('domain', dom), pref);
 x2 = [-1 0 5 ; -1.75 .5 4.75];
 fx = feval(f, x2);
 f_exact = [0 0 0 -1 1 -1
@@ -80,8 +80,10 @@ pass(9) = all(all(abs(fx - f_exact) < ...
 
 pow = -0.5;
 op = @(x) (x - dom(1)).^pow.*sin(x);
-pref.singPrefs.exponents = [pow 0];
-f = bndfun(op, dom, [], [], pref);
+pref.enableSingularityDetection = true;
+data.domain = dom;
+data.exponents = [pow 0];
+f = bndfun(op, data, pref);
 fval = feval(f, x);
 vals_exact = feval(op, x);
 err = fval - vals_exact;

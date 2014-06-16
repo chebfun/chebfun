@@ -20,8 +20,8 @@ function f = fred(A, kernel, oneVar)
 %
 % See also blockFunction/volt, linop/fred, chebop/fred.
 
-% Copyright 2011 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Default oneVar to false
 if ( nargin == 2 )

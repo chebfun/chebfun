@@ -99,10 +99,6 @@ else
     h = surf(F.components{1}, F.components{2}, F.components{3}, varargin{:});
 end
 
-%xlim([min2( F.components{1} ), max2( F.components{1} )] )
-%ylim([min2( F.components{2} ), max2( F.components{2} )] )
-%zlim([min2( F.components{3} ), max2( F.components{3} )] )
-
 if ( ~ish )
     hold off
 end

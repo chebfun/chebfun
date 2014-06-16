@@ -61,8 +61,9 @@ else
 end
 
 
-% Deal with 'jumpLine' input.
-[jumpStyle, varargin] = chebfun.parseJumpStyle(varargin{:});
+% Remove global plotting options from input arguments.
+[lineStyle, pointStyle, jumpStyle, varargin] = ...
+    chebfun.parsePlotStyle(varargin{:});
 
 % Style data.
 pos = 0; styleData = [];
@@ -94,7 +95,7 @@ end
 
 % Plot the curve
 h1 = plot3(lineData{:});
-set(h1, 'Marker', 'none')
+set(h1, 'Marker', 'none', lineStyle{:})
 
 % Ensure the plot is held:
 hold on
@@ -102,7 +103,7 @@ hold on
 % Plot the points:
 h2 = plot3(pointData{:});
 % Change the style accordingly:
-set(h2, 'LineStyle', 'none')
+set(h2, 'LineStyle', 'none', pointStyle{:})
 
 % Plot the jumps:;
 if ( isempty(jumpData) || ischar(jumpData{1}) )

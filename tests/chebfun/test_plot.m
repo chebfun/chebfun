@@ -32,6 +32,10 @@ fsing = chebfun(@(x) 1./x, [-1 0 1], 'exps', [0 -1 -1 0]);
 % Function with a discontinuity.
 fdc = chebfun({@sin, @exp}, [-1 0 1], pref);
 
+% Funnction with delta functions.
+x = chebfun(@(x) x);
+fdel =  dirac(x) - dirac(x-.5) + dirac(x+.5);
+
 % Obviously, we can't check if the plots are correct without human
 % intervention, so all these tests are meant to do is make sure none of the
 % plotting functions crash.
@@ -85,20 +89,23 @@ pass(28) = doesNotCrash(@() plot(fsr2, [-0.5 0.5]));
 pass(29) = doesNotCrash(@() plot(fdc, 'jumpline', 'r-'));
 pass(30) = doesNotCrash(@() plot(fdc, 'jumpline', 'none'));
 pass(31) = doesNotCrash(@() plot3(fdc, fsr1, fsr2, 'jumpline', 'r-'));
+pass(32) = doesNotCrash(@() plot(fdel, 'deltaline', '--ro'));
+pass(33) = doesNotCrash(@() plot(x, fdel)); 
+pass(34) = doesNotCrash(@() plot(fqr1, 'linewidth', 2));
 
 % Check plotting discrete data alongside CHEBFUN objects
 x = linspace(-1,1,10).';
-pass(32) = doesNotCrash(@() plot(far1, 'b', far2, 'r', x, far1(x), 'om', x, far3(x), '-ok'));
+pass(35) = doesNotCrash(@() plot(far1, 'b', far2, 'r', x, far1(x), 'om', x, far3(x), '-ok'));
 
 % Check SURF, SURFACE, SURFC, and MESH.
-pass(33) = doesNotCrash(@() surf(far1));
-pass(34) = doesNotCrash(@() surf(fqr1));
+pass(36) = doesNotCrash(@() surf(far1));
+pass(37) = doesNotCrash(@() surf(fqr1));
 % (SURFACE is a wrapper for SURF, so we don't need to be so thorough.)
-pass(35) = doesNotCrash(@() surface(fqr1));
-pass(36) = doesNotCrash(@() surfc(far1));
-pass(37) = doesNotCrash(@() surfc(fqr1));
-pass(38) = doesNotCrash(@() mesh(far1));
-pass(39) = doesNotCrash(@() mesh(fqr1));
+pass(38) = doesNotCrash(@() surface(fqr1));
+pass(39) = doesNotCrash(@() surfc(far1));
+pass(40) = doesNotCrash(@() surfc(fqr1));
+pass(41) = doesNotCrash(@() mesh(far1));
+pass(42) = doesNotCrash(@() mesh(fqr1));
 
 close(hfig);
 

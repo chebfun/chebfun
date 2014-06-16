@@ -15,7 +15,7 @@ if ( nargin < 1 )
 end
 
 % Create a zero fun on the domain:
-f = fun.constructor(0, domain);
+f = fun.constructor(0, struct('domain', domain));
 
 % Create a zero DELTAFUN object:
 s = deltafun(f, [], []);

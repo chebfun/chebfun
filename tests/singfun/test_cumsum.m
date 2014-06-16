@@ -17,13 +17,14 @@ a = 0.64;
 b = -0.64;
 c = 1.28;
 d = -1.28;
-e = -2.56;
 
 %%
 % Tests with exact solution:
 
 % fractional pole with order > -1 at the left endpoint:
-f = singfun(@(x) (1+x).^b, [b 0], {'sing', 'none'}, [], [], pref);
+data.exponents = [b 0];
+data.singType = {'sing', 'none'};
+f = singfun(@(x) (1+x).^b, data, pref);
 g = cumsum(f);
 vals_g = feval(g, x); 
 g_exact = @(x) (1+x).^(b+1)./(b+1);
@@ -32,16 +33,20 @@ err = vals_g - vals_exact;
 pass(1) = (norm(err, inf) < get(f,'epslevel')*norm(vals_exact, inf));
 
 % fractional pole with order < -1 at the right endpoint:
-f = singfun(@(x) (1-x).^d, [0 d], {'none', 'sing'}, [], [], pref);
+data.exponents = [0 d];
+data.singType = {'none', 'sing'};
+f = singfun(@(x) (1-x).^d, data, pref);
 g = cumsum(f);
 vals_g = feval(g, x);
-g_exact = @(x)-(1-x).^(d+1)./(d+1);
+g_exact = @(x)-(1-x).^(d+1)./(d+1) + 2^(d+1)/(d+1);
 vals_exact = feval(g_exact, x);
 err = vals_g - vals_exact;
-pass(2) = (norm(err, inf) < get(f,'epslevel')*norm(vals_exact, inf));
+pass(2) = (norm(err, inf) < 1e3*get(f,'epslevel')*norm(vals_exact, inf));
 
 % fractional root at the left endpoint:
-f = singfun(@(x) (1+x).^a, [a 0], {'root', 'none'}, [], [], pref);
+data.exponents = [a 0];
+data.singType = {'root', 'none'};
+f = singfun(@(x) (1+x).^a, data, pref);
 g = cumsum(f);
 vals_g = feval(g, x); 
 g_exact = @(x) (1+x).^(a+1)./(a+1);
@@ -50,10 +55,12 @@ err = vals_g - vals_exact;
 pass(3) = (norm(err, inf) < get(f,'epslevel')*norm(vals_exact, inf));
 
 % Integer pole:
-f = singfun(@(x) (1-x).^(-4), [0 -4], {'none', 'pole'}, [], [], pref);
+data.exponents = [0 -4];
+data.singType = {'none', 'pole'};
+f = singfun(@(x) (1-x).^(-4), data, pref);
 g = cumsum(f);
 vals_g = feval(g, x);
-g_exact = @(x)(1-x).^(-3)/3;
+g_exact = @(x)(1-x).^(-3)/3 - 2^(-3)/3;
 vals_exact = feval(g_exact, x);
 err = vals_g - vals_exact;
 pass(4) = (norm(err, inf) < get(f,'epslevel')*norm(vals_exact, inf));
@@ -66,8 +73,9 @@ scl = (dom(2)-dom(1))/2;
 
 % Fractional pole at the left endpoint:
 % Integrate first, then restrict:
-f = singfun(@(x) cos(x.^2+3).*((1+x).^b), [b 0], {'sing', 'none'}, [], [], ...
-    pref);
+data.exponents = [b 0];
+data.singType = {'sing', 'none'};
+f = singfun(@(x) cos(x.^2+3).*((1+x).^b), data, pref);
 u = cumsum(f);
 g = restrict(u, dom);
 
@@ -88,7 +96,9 @@ dom = [-1+10^(-D) 1];
 scl = (dom(2)-dom(1))/2;
 
 % Integrate first, then restrict:
-f = singfun(@(x) cos(sin(x)).*(1+x).^c, [c 0], {'root', 'none'}, [], [], pref);
+data.exponents = [c 0];
+data.singType = {'root', 'none'};
+f = singfun(@(x) cos(sin(x)).*(1+x).^c, data, pref);
 u = cumsum(f);
 g = restrict(u, dom);
 

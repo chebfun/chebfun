@@ -12,15 +12,23 @@ function f = sign(f, pref)
 % See http://www.chebfun.org for Chebfun information.
 
 if ( isreal(f) )
+    % Evaluate at the two end points, and an arbitrary interior point:
     arbitraryPoint = 0.1273881594;
-    f.coeffs = sign(feval(f, arbitraryPoint));
+    fx = feval(f, [-1 ; arbitraryPoint ; 1]);
+    % Take the mean:
+    meanfx = mean(fx, 1);
+    % Compute the floor:
+    f.coeffs = sign(meanfx);
     f.vscale = abs(f.coeffs);
+    f.epslevel = 0*f.vscale + eps;
+    
 else
     if ( nargin == 1 )
         pref = chebtech.techPref();
     end
     pref.extrapolate = 1;
-    f = compose(f, @(x) x./abs(x), [], pref);
+    f = compose(f, @(x) x./abs(x), [], [], pref);
+    
 end
 
 end

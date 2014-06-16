@@ -5,17 +5,19 @@ function f = imag(f)
 % See also REAL, ISREAL, CONJ.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
+
+% Compute imaginary part of the coefficients:
+f.coeffs = imag(f.coeffs);
 
 if ( ~any(f.coeffs(:)) )
     % Input was real, so output a zero CHEBTECH:
-    f = f.make(zeros(1, size(f.coeffs, 2)), 0, f.hscale);
+    data.vscale = 0;
+    data.hscale = f.hscale;
+    f = f.make(zeros(1, size(f.coeffs, 2)), data);
     f.ishappy = 1;
-else
-    % Compute imaginary part of the coefficients:
-    f.coeffs = imag(f.coeffs);
 end
-f = simplify(f); 
+
 f.vscale = getvscl(f); 
 
 end

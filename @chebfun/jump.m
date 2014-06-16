@@ -20,4 +20,3 @@ end
 j = feval(f, x, 'right') - feval(f, x, 'left') - c;
 
 end
-

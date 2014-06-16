@@ -1,6 +1,6 @@
 function varargout = mesh(u, varargin)
 %MESH   Surface mesh plot for array-valued CHEBFUN objects.
-%   MESH(U) or MESH(U, T) where LENGTH(T) = MIN(SIZE(U)) plots a suface mesh
+%   MESH(U) or MESH(U, T) where LENGTH(T) = MIN(SIZE(U)) plots a surface mesh
 %   plot of the CHEBFUN object U.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
@@ -22,7 +22,7 @@ end
 if ( (numel(varargin) > 1) && strcmpi(varargin{1}, 'numpts') )
     numpts = varargin{2};
     varargin(1:2) = [];
-    warning('CHEBFUN:surf:numpts', 'NUMPTS option is depricated.');
+    warning('CHEBFUN:surf:numpts', 'NUMPTS option is deprecated.');
 end
 
 if ( length(t) ~= n )

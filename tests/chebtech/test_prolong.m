@@ -14,7 +14,7 @@ for n = 1:2
     end
 
     F = @sin;
-    f = testclass.make(@(x) F(x), [], [], pref);
+    f = testclass.make(@(x) F(x), [], pref);
 
     k = 11;
     g = prolong(f, k);
@@ -33,7 +33,7 @@ for n = 1:2
         10*g.vscale.*g.epslevel;
 
     F = @sin;
-    f = testclass.make(@(x) [F(x), -F(x)], [], [], pref);
+    f = testclass.make(@(x) [F(x), -F(x)], [], pref);
     k = 11;
     g = prolong(f, k);
     x = testclass.chebpts(k);
@@ -72,7 +72,7 @@ for n = 1:2
         10*max(g.vscale.*g.epslevel);
 
     F = @(x) sin(1000*x);
-    f = testclass.make(@(x) [F(x), -F(x)], [], [], pref);
+    f = testclass.make(@(x) [F(x), -F(x)], [], pref);
     k = 32;
     g = prolong(f, k);
     x = testclass.chebpts(k);
@@ -99,7 +99,7 @@ for n = 1:2
         norm(values - exact_values, inf) < 10*max(g.vscale.*g.epslevel);
 
     F = @(x) cos(1000*x);
-    f = testclass.make(@(x) [F(x), -F(x)], [], [], pref);
+    f = testclass.make(@(x) [F(x), -F(x)], [], pref);
 
     g = prolong(f, 1);
     values = g.coeffs2vals(g.coeffs);
@@ -114,7 +114,7 @@ for n = 1:2
         norm(values - exact_values, inf) < 10*max(g.vscale.*g.epslevel);
 
     v = [1 2 3];
-    f = testclass.make(v, [], [], pref);
+    f = testclass.make(v, [], pref);
     g = prolong(f, 5);
     values = g.coeffs2vals(g.coeffs);
     pass(n, 16) = norm(values - repmat([1 2 3], 5, 1), inf) < ...

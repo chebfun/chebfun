@@ -1,4 +1,4 @@
-% Test file for @deltafun/times.m.
+% Test file for @deltafun/zeroDeltaFun.m.
 
 function pass = test_zeroDeltaFun(pref)
 

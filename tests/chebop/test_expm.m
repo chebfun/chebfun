@@ -4,7 +4,10 @@ if ( nargin == 0 )
     pref = cheboppref();
 end
 
-tol = 1e-10;
+tol = pref.errTol;
+
+%%
+% Test against a V4 computation:
 
 A = chebop(@(u) diff(u, 2), [-1, 1], 0);
 x = chebfun('x');
@@ -29,7 +32,19 @@ V4 = [   ...
     0.001142160800217
     0.000000000000000];
 
-err = norm(V4 - feval(u{6}, chebpts(15)));
+err(1) = norm(V4 - feval(u{6}, chebpts(15)));
+
+%%
+% Test backward compatibility:
+A = chebop(@(u) diff(u, 2), [-1, 1], 0);
+warnState = warning('off', 'CHEBFUN:chebop:expm:deprecated');
+E = expm(A, t);
+warning(warnState);
+u6 = E*u0;
+
+err(2) = norm(V4 - feval(u6, chebpts(15)));
+
+%%
 
 pass = err < tol;
 

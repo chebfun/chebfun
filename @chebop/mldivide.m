@@ -6,6 +6,9 @@ function varargout = mldivide(varargin)
 %
 % See also CHEBOP/SOLVEBVP.
 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Call CHEBOP/MLDIVIDE:
 [varargout{1:nargout}] = solvebvp(varargin{:});
 

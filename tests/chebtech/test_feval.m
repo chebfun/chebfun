@@ -23,23 +23,23 @@ for n = 1:2
     % accuracy on % the order of the truncation level, so we use this as our 
     % criterion.
     
-    f = testclass.make(@(x) exp(x) - 1, [], [], pref);
+    f = testclass.make(@(x) exp(x) - 1, [], pref);
     f_exact = @(x) exp(x) - 1;
     pass(n, 1) = (norm(feval(f, x) - f_exact(x), inf) < ...
         10*f.vscale.*f.epslevel);
     
-    f = testclass.make(@(x) 1./(1 + x.^2), [], [], pref);
+    f = testclass.make(@(x) 1./(1 + x.^2), [], pref);
     f_exact = @(x) 1./(1 + x.^2);
     pass(n, 2) = (norm(feval(f, x) - f_exact(x), inf) < ...
         10*f.vscale.*f.epslevel);
     
-    f = testclass.make(@(x) cos(1e4*x), [], [], pref);
+    f = testclass.make(@(x) cos(1e4*x), [], pref);
     f_exact = @(x) cos(1e4*x);
     pass(n, 3) = (norm(feval(f, x) - f_exact(x), inf) < ...
         10*f.vscale.*f.epslevel);
     
     z = exp(2*pi*1i/6);
-    f = testclass.make(@(t) sinh(t*z), [], [], pref);
+    f = testclass.make(@(t) sinh(t*z), [], pref);
     f_exact = @(t) sinh(t*z);
     pass(n, 4) = (norm(feval(f, x) - f_exact(x), inf) < ...
         10*f.vscale.*f.epslevel);
@@ -64,7 +64,7 @@ for n = 1:2
     %%
     % Check operation for array-valued chebtech objects.
     
-    f = testclass.make(@(x) [sin(x) x.^2 exp(1i*x)], [], [], pref);
+    f = testclass.make(@(x) [sin(x) x.^2 exp(1i*x)], [], pref);
     f_exact = @(x) [sin(x) x.^2 exp(1i*x)];
     err = feval(f, x) - f_exact(x);
     pass(n, 8) = all(max(abs(err)) < 10*max(f.vscale.*f.epslevel));
@@ -72,7 +72,7 @@ for n = 1:2
     %%
     % Test for evaluating array-valued chebtech objects at matrix arguments if 
     % the operation makes sense.
-    f = testclass.make(@(x) [sin(pi*x) cos(pi*x) exp(pi*x)], [], [], pref);
+    f = testclass.make(@(x) [sin(pi*x) cos(pi*x) exp(pi*x)], [], pref);
     x2 = [-1 0 1 ; .25 .5 .75];
     fx = feval(f, x2);
     f_exact = [0 0 0 -1 1 -1 exp(-pi) 1 exp(pi)

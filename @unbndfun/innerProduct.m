@@ -50,22 +50,11 @@ if ( ~isa(f, 'unbndfun') || ~isa(g, 'unbndfun') )
         'innerProduct() only operates on two UNBNDFUN objects.');
 end
 
-% Compute the derivative of the map: (Here we assume that the domains and
-% therefore the maps of f and g are identical.)
-pref = chebfunpref();
-pref.singPrefs.exponents = f.mapping.forDerExps;
-forDer = onefun.constructor(f.mapping.forDer, [], [], pref);
-
 % Assign the output to be the inner product of the onefuns of the input,
 % but multiplied by the derivative of the map.
 
-integrand = conj(f.onefun).*g.onefun.*forDer;
-
-if ( isa(integrand, 'singfun') && all( integrand.exponents <= 0 ) )
-    exps = integrand.exponents;
-    % Try to see if we can extract boundary roots:
-    integrand = extractBoundaryRoots(integrand, -exps.');
-end
+% integrand = conj(f.onefun).*g.onefun.*forDer;
+integrand = conj(f).*g;
 
 out = sum(integrand);
 

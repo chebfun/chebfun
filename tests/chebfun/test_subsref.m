@@ -60,7 +60,9 @@ pass(16) = isequal(feval(f, xr), f(xr)) && isequal(feval(f, x_4mtx), f(x_4mtx));
 % Test {} syntaxes.
 f = chebfun(@(x) sin(x - 0.1));
 pass(17) = isequal(f, f{:});
-pass(18) = isequal(f{-1, -0.1, 0.2, 1}, restrict(f, [-1 -0.1 0.2 1]));
+err = norm(f{-1, -0.1, 0.2, 1} - restrict(f, [-1 -0.1 0.2 1]));
+tol = epslevel(f);
+pass(18) = err < tol;
 
 try
     y = f{'X'};
@@ -89,6 +91,8 @@ end
 
 % Test {} syntaxes with an array-valued chebfun.
 f = chebfun(@(x) [sin(x - 0.1) cos(x - 0.2)]);
-pass(22) = isequal(f{-1, -0.1, 0.2, 1}, restrict(f, [-1 -0.1 0.2 1]));
+err = norm(f{-1, -0.1, 0.2, 1} - restrict(f, [-1 -0.1 0.2 1]), inf);
+tol = epslevel(f);
+pass(22) = err < tol;
 
 end

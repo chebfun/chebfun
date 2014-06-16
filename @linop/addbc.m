@@ -1,7 +1,10 @@
 function L = addbc(L, varargin)
-% Synonym for ADDCONSTRAINT.
+%ADDBC   Synonym for ADDCONSTRAINT.
 %
-% See also: linop.addConstraint
+% See also LINOP.ADDCONSTRAINT.
+
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
 
 L = L.addConstraint(varargin{:});
 
