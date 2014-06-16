@@ -31,8 +31,9 @@ function varargout = chebellipseplot(u, varargin)
 %%
 
 if ( numColumns(u) > 1 )
-    error('CHEBFUN:chebellipseplot:quasi', ['CHEBELLPISEPLOT does not ', ... 
-        'support array-valued CHEBFUN objects or quasimatries.']);
+    error('CHEBFUN:CHEBFUN:chebellipseplot:quasi', ...
+        ['CHEBELLPISEPLOT does not support array-valued CHEBFUN objects ' ...
+         'or quasimatries.']);
 end
 
 if ( isempty(u) )
@@ -65,7 +66,7 @@ end
 
 % Error if index exceeds dimensions.
 if ( any(k > length(u.funs)) )
-    error( 'CHEBFUN:chebellipseplot:outOfBounds', ...
+    error( 'CHEBFUN:CHEBFUN:chebellipseplot:outOfBounds', ...
         'Input chebfun has only %d pieces', length(u.funs) );
 end
 

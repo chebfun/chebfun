@@ -5,7 +5,7 @@ function ctranspose(f) %#ok<*INUSD>
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-error('CHEBFUN:CHEBTECH:ctranspose:notpossible', ...
+error('CHEBFUN:CHEBTECH:ctranspose:notPossible', ...
     'CHEBTECH objects are not transposable.')
     
 end

@@ -65,7 +65,7 @@ function op = str2op(op)
 % in the scope.
 depVar = symvar(op);
 if ( numel(depVar) ~= 1 )
-    error('CHEBFUN:STR2OP:indepvars', ...
+    error('CHEBFUN:chebvar:indepVars', ...
         'Incorrect number of independent variables in string input.');
 end
 op = eval(['@(' depVar{:} ')', op]);

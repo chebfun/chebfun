@@ -130,7 +130,7 @@ function out = sumSubDom(f, a, b)
 
         % Validate the subdomain:
         if ( (a < d1) || (b > d2) )
-            error('CHEBFUN:sum:ab', 'Not a valid subdomain.');
+            error('CHEBFUN:CHEBFUN:sum:sumSubDom:ab', 'Not a valid subdomain.');
             
         elseif ( (a == d1) && (b == d2) )
             % Subdomain == original domain.
@@ -168,7 +168,7 @@ function out = sumSubDom(f, a, b)
 
         % Validate the subdomain:
         if ( a < d1 )
-            error('CHEBFUN:sum:a', 'Not a valid subdomain.');
+            error('CHEBFUN:CHEBFUN:sum:sumSubDom:a', 'Not a valid subdomain.');
         end
 
         % Compute the indefinite integral:
@@ -180,7 +180,7 @@ function out = sumSubDom(f, a, b)
 
         % Validate the subdomain:
         if ( b > d2 )
-            error('CHEBFUN:sum:b', 'Not a valid subdomain.');
+            error('CHEBFUN:CHEBFUN:sum:sumSubDom:b', 'Not a valid subdomain.');
         end
 
         % Compute the indefinite integral:

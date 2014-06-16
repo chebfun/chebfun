@@ -181,7 +181,7 @@ while ( ~isempty(varargin) )
         % We can only plot real against real:
         isComplex = false;
         if ( ~isreal(f) || ~isreal(g) )
-            warning('CHEBFUN:plot:complex', ...
+            warning('CHEBFUN:CHEBFUN:plot:complex', ...
                 'Imaginary parts of complex X and/or Y arguments ignored.');
             f = real(f);
             g = real(g);
@@ -209,7 +209,7 @@ while ( ~isempty(varargin) )
             g = num2cell(g);
             if ( numel(f) > 1 && numel(g) > 1 )
                 if ( numel(f) ~= numel(g) )
-                    error('CHEBFUN:plot:dim', ...
+                    error('CHEBFUN:CHEBFUN:plot:dim', ...
                     'CHEBFUN objects must have the same number of columns.');
                 end
                 for k = 1:numel(f)

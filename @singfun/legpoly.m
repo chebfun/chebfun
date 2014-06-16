@@ -4,7 +4,7 @@ function varargout = legpoly(varargin) %#ok<STOUT>
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-error('CHEBFUN:SINGFUN:legpoly:nosupport', ...
+error('CHEBFUN:SINGFUN:legpoly:noSupport', ...
       'LEGPOLY does not support SINGFUN objects.')
     
 end

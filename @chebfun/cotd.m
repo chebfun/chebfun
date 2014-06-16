@@ -13,7 +13,7 @@ function F = cotd(F, varargin)
 % [TODO]:  Restore or change this once we have decided the proper behavior or
 % isfinite() and defined that function.
 % if ( ~isfinite(f) )
-%     error('CHEBFUN:cotd:inf',...
+%     error('CHEBFUN:CHEBFUN:cotd:inf',...
 %         'COTD is not defined for functions which diverge to infinity');
 % end
 

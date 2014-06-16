@@ -27,8 +27,8 @@ switch propName
     case 'isTransposed'
         val = f.isTransposed;
     otherwise
-        error('CHEBFUN2V:get:propnam', ...
-            [propName, ' is not a valid chebfun2v property.'])
+        error('CHEBFUN:CHEBFUN2V:get:propName', ...
+            [propName, ' is not a valid CHEBFUN2V property.'])
 end
 
 end

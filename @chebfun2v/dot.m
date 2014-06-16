@@ -16,7 +16,7 @@ end
 nF = F.nComponents; 
 nG = G.nComponents; 
 if ( nG ~= nF ) 
-    error('CHEBFUN2:DOT:COMPONENTS', ...
+    error('CHEBFUN:CHEBFUN2V:dot:components', ...
         'CHEBFUN2V object should have the same number of components.');
 end
 

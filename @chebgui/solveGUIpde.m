@@ -48,7 +48,7 @@ rbcString = expInfo.rbcString;
 
 % Check that we don't have any breakpoints.
 if ( length(dom) > 2 )
-    warning('Chebgui:SolveGUIpde', ...
+    warning('CHEBFUN:CHEBGUI:solveGUIpde', ...
         ['PDE solver does not accept domains with breakpoints. ' ...
          'Breakpoints are being ignored.']);
     dom = dom([1 end]);
@@ -59,7 +59,7 @@ end
 if ( ~any(pdeflag) )
     s = ['Input does not appear to be a PDE, or at least is not a ' ...
          'supported type. Perhaps you need to switch to ''ODE'' mode?'];
-    error('Chebgui:SolveGUIpde', s);
+    error('CHEBFUN:CHEBGUI:solveGUIpde:solveGUIpde', s);
 end
 
 % Are we solving a scalar problem?
@@ -92,7 +92,8 @@ if ( periodic )
     bc = 'periodic';
 elseif ( isempty(lbcString) && isempty(rbcString) )
     % No boundary conditions are a no-go:
-    error('chebfun:bvpgui','No boundary conditions specified');    
+    error('CHEBFUN:CHEBGUI:solveGUIpde:bvpgui', ...
+        'No boundary conditions specified');
 else
     bc.left = LBC;
     bc.right = RBC;

@@ -27,7 +27,8 @@ ish = ishold;
 nF = F.nComponents;
 
 if ( nF == 2 )
-    error('CHEBFUN2V:SURF','CHEBFUN2V does not represent a surface as it has only two components');
+    error('CHEBFUN:CHEBFUN2V:surf:notEnoughComponents', ...
+        'CHEBFUN2V does not represent a surface as it has only two components');
 end
 
 % Making varargin non-empty

@@ -21,7 +21,7 @@ elseif ( isa( n, 'double' ) )          % CHEBFUN2.^double
        % Positive/negative test.
        [bol, wzero] = singleSignTest(f);
        if ( bol == 0 || wzero == 1 )
-           error('CHEBFUN2:POWER:FRACTIONAL',...
+           error('CHEBFUN:CHEBFUN2:power:fractional', ...
                'A change of sign/zero has been detected, unable to represent the result.');
        end
    end
@@ -31,7 +31,7 @@ elseif ( isa( n, 'double' ) )          % CHEBFUN2.^double
 else                                   % CHEBFUN2.^CHEBFUN2
     
     if ( ~domainCheck(f, n) ) % check they're on the same domain.
-        error('CHEBFUN2:power:domain','Domains must be the same');
+        error('CHEBFUN:CHEBFUN2:power:domain','Domains must be the same');
     end
     op = @(x,y) feval( f, x, y ) .^ ( feval( n, x, y ) );
     f = chebfun2( op, f.domain );      % Resample and call constructor.

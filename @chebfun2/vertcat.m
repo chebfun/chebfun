@@ -21,7 +21,7 @@ elseif ( nargin > 1 )
         f = varargin{1}; 
         F = varargin{2}; 
         if ( F.nComponents > 2 ) 
-            error('CHEBFUN2:VERTCAT',...
+            error('CHEBFUN:CHEBFUN2:vertcat:tooManyComponents', ...
                 'Only CHEBFUN2V objects with 2 or 3 components are valid.');
         else
             Fc = F.components; 
@@ -34,7 +34,7 @@ elseif ( nargin > 1 )
         F = chebfun2v( varargin{:} );
     end
 else
-    error('CHEBFUN2:VERTCAT',...
+    error('CHEBFUN:CHEBFUN2:vertcat:tooManyInputs', ...
         'Cannot vertically concatenate more than three CHEBFUN2 objects.');
 end
     

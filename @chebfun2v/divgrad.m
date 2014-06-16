@@ -12,8 +12,8 @@ function G = divgrad(F)
 
 nComponents = F.nComponents; 
 if ( nComponents > 2 ) 
-    error('CHEBFUN2V:DIVGRAD',...
-        'Command is not defined for chebfun2v objects with >2 components.')
+    error('CHEBFUN:CHEBFUN2V:divgrad:components',...
+        'Command is not defined for CHEBFUN2V objects with >2 components.')
 end
      
 Fc = F.components; 

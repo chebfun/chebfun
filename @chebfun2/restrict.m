@@ -35,7 +35,7 @@ if ( isa( dom, 'double' ) )
             f.domain = dom;
         end
     else
-        error('CHEBFUN2:RESTRICT', 'Domain not determined.');
+        error('CHEBFUN:CHEBFUN2:restrict:domain', 'Domain not determined.');
     end
     
 elseif (isa( dom, 'chebfun' ))

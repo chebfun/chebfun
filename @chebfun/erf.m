@@ -12,7 +12,7 @@ function F = erf(F, varargin)
 
 % Input must be real:
 if ( ~isreal(F) )
-    error('CHEBFUN:erf:notreal', 'Input must be real.');
+    error('CHEBFUN:CHEBFUN:erf:notreal', 'Input must be real.');
 end
 
 % Call the compose method:

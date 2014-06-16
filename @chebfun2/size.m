@@ -19,7 +19,7 @@ elseif ( ( nargout == 2 ) && ( nargout <=1 ) )
 elseif ( ( nargin == 2 ) && ( ( dim == 1 ) || ( dim == 2 ) ) )
     varargout = { Inf };
 else
-    error('CHEBFUN2:SIZE:OUTPUTS', 'Too many output arguments.');
+    error('CHEBFUN:CHEBFUN2:size:outputs', 'Too many output arguments.');
 end
 
 end

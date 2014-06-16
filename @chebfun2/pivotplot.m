@@ -14,7 +14,8 @@ function varargout = pivotplot( f, varargin )
 
 % Empty check:
 if ( isempty( f ) ) 
-    error('CHEBFUN2:PIVOTPLOT', 'Empty chebfun2 has no pivots to plot');
+    error('CHEBFUN:CHEBFUN2:pivotplot:empty', ...
+        'Empty chebfun2 has no pivots to plot');
 end 
 
 % Parse input arguments:

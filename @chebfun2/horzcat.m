@@ -6,7 +6,7 @@ function varargout = horzcat( varargin ) %#ok<STOUT>
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-error('CHEBFUN2:HORZCAT', ...
+error('CHEBFUN:CHEBFUN2:horzcat:notSupported', ...
     'Horizontal concatenation of CHEBFUN2 objects is not supported.')
 
 end

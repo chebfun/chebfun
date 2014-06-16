@@ -34,7 +34,8 @@ end
 if ( all(m==m(1)) )
     B = cell( m(1), sum(n) );
 else
-    error('Incompatible row sizes.')
+    error('CHEBFUN:CHEBMATRIX:horzcat:sizeMismatch', ...
+        'Incompatible row sizes.')
 end
 
 % Now we need to flatten out all the inner nested cell divisons, leaving
@@ -50,7 +51,8 @@ C = chebmatrix( B );
 % Finally, check block size compatibility.
 [row, col] = blockSizes(C);
 if ( any( any( bsxfun(@ne, row(:,1), row) ) ) )
-    error('Block row sizes must be the same.')
+    error('CHEBFUN:CHEBMATRIX:horzcat:blockSizeMismatch', ...
+        'Block row sizes must be the same.')
 end
 
 end

@@ -11,7 +11,7 @@ function f = flipdim( f, dim )
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 if ( numel( dim ) ~= 1 ) 
-    error('CHEBFUN2:FLIPDIM', 'DIM should be either 1 or 2.')
+    error('CHEBFUN:CHEBFUN2:flipdim:badDim1', 'DIM should be either 1 or 2.')
 end
 
 % Use the code in flipud and fliplr. 
@@ -20,7 +20,7 @@ if ( dim == 1 )
 elseif ( dim == 2 )
     f = fliplr( f ); 
 else
-    error('CHEBFUN2:FLIPDIM:DIM', 'Dimension not recognised.');
+    error('CHEBFUN:CHEBFUN2:flipdim:badDim2', 'Dimension not recognised.');
 end
 
 end

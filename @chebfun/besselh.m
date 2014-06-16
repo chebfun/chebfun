@@ -54,7 +54,7 @@ function g = columnBesselh(nu, k, f, scale, pref)
 % Check for roots:
 r = roots(f, 'nojump', 'nozerofun');
 if ( numel(r) > 0 )
-    error('CHEBFUN:besselh:zero', 'F has roots in its domain.');
+    error('CHEBFUN:CHEBFUN:besselh:zero', 'F has roots in its domain.');
 end
 
 % Compose:

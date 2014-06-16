@@ -29,7 +29,8 @@ end
 
 if ( numel(f) > 1 )
     % TODO: Why not?
-    error('CHEBFUN:chebpoly:quasia', 'CHEBPOLY does not support quasimatrices.');
+    error('CHEBFUN:CHEBFUN:chebpoly:quasia', ...
+        'CHEBPOLY does not support quasimatrices.');
 end
 
 %% Initialise:
@@ -57,15 +58,15 @@ if ( isempty(N) && numFuns == 1 )
     N = length(f);
 end
 if ( isempty(N) )
-    error('CHEBFUN:chebpoly:inputN', ...
+    error('CHEBFUN:CHEBFUN:chebpoly:inputN', ...
         'Input N is required for piecewise CHEBFUN objects.');
 end
 if ( ~isscalar(N) || isnan(N) )
-    error('CHEBFUN:chebpoly:inputN', 'Input N must be a scalar.');
+    error('CHEBFUN:CHEBFUN:chebpoly:inputN', 'Input N must be a scalar.');
 end
 if ( any(isinf(f.domain)) )
 % Chebyshev coefficients are not defined on an unbounded domain.
-    error('CHEBFUN:chebpoly:infint', ...
+    error('CHEBFUN:CHEBFUN:chebpoly:infint', ...
         'Infinite intervals are not supported here.');
 end
 

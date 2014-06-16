@@ -50,7 +50,7 @@ switch index(1).type
         f = defineInterval(f, [idx{:}], val);
 
     otherwise
-        error('CHEBFUN:UnexpectedType',...
+        error('CHEBFUN:CHEBFUN:subsasgn:UnexpectedType',...
             ['??? Unexpected index.type of ' index(1).type]);
 end
 

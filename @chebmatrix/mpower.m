@@ -7,7 +7,8 @@ function B = mpower(A, pow)
 % See http://www.chebfun.org for Chebfun information.
 
 if ( (pow ~= round(pow)) || (pow < 0) )
-    error('Power must be a positive integer.')
+    error('CHEBFUN:CHEBMATRIX:power:badPower', ...
+        'Power must be a positive integer.')
 end
 
 % Create an "identity" CHEBMATRIX for the given variable types so we can start

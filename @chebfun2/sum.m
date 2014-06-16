@@ -43,7 +43,7 @@ elseif ( dim == 2 )
         f = chebfun( f, dom(3:4) ); 
     end
 else 
-    error('CHEBFUN2:SUM:unknown', ...
+    error('CHEBFUN:CHEBFUN2:sum:unknown', ...
           'Undefined function ''sum'' for that dimension');
 end
 

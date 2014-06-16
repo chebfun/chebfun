@@ -47,7 +47,8 @@ for j = 1:nargin-2
     elseif ( isnumeric(item) )
         vscale = item;
     else
-        error('Could not parse argument number %i.',j+2)
+        error('CHEBFUN:LINOP:linsolve:badInput', ...
+            'Could not parse argument number %i.',j+2)
     end
 end
 
@@ -109,7 +110,8 @@ for dim = [dimVals inf]
         [A, P] = matrix(disc);
         if ( size(A, 1) ~= size(A, 2) )
             % TODO: Improve this warning.
-            warning('Matrix is not square!');
+            warning('CHEBFUN:LINOP:linsolve:notSquare', ...
+                'Matrix is not square!');
         end
     end
     
@@ -144,7 +146,7 @@ for dim = [dimVals inf]
 end
 
 if ( ~all(isDone) )
-    warning('LINOP:linsolve:NoConverge', ...
+    warning('CHEBFUN:LINOP:linsolve:noConverge', ...
         'Linear system solution may not have converged.')
 end
 

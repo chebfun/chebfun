@@ -12,7 +12,7 @@ if ( nargin > 1 )
             dom = varargin{1}; 
             f = restrict( f, dom );
         else
-            error('CHEBFUN2:SURFACEAREA:domain', 'Bad domain.');
+            error('CHEBFUN:CHEBFUN2:surfacearea:domain', 'Bad domain.');
         end
     elseif ( isa(varargin{1}, 'chebfun') )
         f = restrict( f, varargin{1} );
@@ -20,7 +20,7 @@ if ( nargin > 1 )
         I = sum( sqrt( 1 + diff( f ).^2 ) ); 
         return
     else
-        error('CHEBFUN2:SURFACEAREA:domain','Bad restricting domain.');
+        error('CHEBFUN:CHEBFUN2:surfacearea:domain','Bad restricting domain.');
     end
 end
 

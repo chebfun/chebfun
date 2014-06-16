@@ -83,7 +83,8 @@ end
 
 t = chebfun(tspan([1 end]), tspan);
 if ( any(any(isnan(sol.y))) )
-    error('CHEBFUN2V:ODE45:NaN', 'IVP returned NaN, try shorter time domain.')
+    error('CHEBFUN:CHEBFUN2V:ode45:nan', ...
+        'IVP returned NaN, try shorter time domain.')
 else
     ys = sol.y;
 end

@@ -24,7 +24,7 @@ elseif ( dim == 2 )
     a = f;
     a.onefun = any(a.onefun, 2);
 else
-    error('CHEBFUN:FUN:CLASSICFUN:any:dim', 'DIM input must be 1 or 2.');
+    error('CHEBFUN:CLASSICFUN:any:dim', 'DIM input must be 1 or 2.');
 end
 
 end

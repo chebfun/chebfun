@@ -88,7 +88,7 @@ elseif ( nargin >= 3 )                 % quiver(x,y,F,...)
             axis(1.1*dom);
         end
     else
-        error('CHEBFUN2V:QUIVER:INPUTS', ...
+        error('CHEBFUN:CHEBFUN2V:quiver:inputs', ...
             'Third argument should be a chebfun2v.');
     end
     

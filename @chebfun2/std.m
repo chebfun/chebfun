@@ -30,7 +30,7 @@ if ( nargin < 3 )
 elseif ( nargin == 3 )
     dim = varargin{ 2 }; 
 else 
-   error( 'CHEBFUN2:STD:NARGIN', 'Too many input arguments.' ); 
+    error( 'CHEBFUN:CHEBFUN2:std:nargin', 'Too many input arguments.' ); 
 end
 
 if ( dim == 1 )          % y-variable.
@@ -40,7 +40,8 @@ elseif ( dim == 2 )      %  x-variable.
     my = chebfun2( @(x,y) feval( mean(f, 1), y), dom );
     g = sqrt( 1/( diff( rect(1:2) ) ) * sum( ( f - my ).^2, 2 ) );
 else
-   error('CHEBFUN2:STD:DIM', 'Third argument should have value 1 or 2.'); 
+    error('CHEBFUN:CHEBFUN2:std:dim', ...
+        'Third argument should have value 1 or 2.');
 end
 
 end

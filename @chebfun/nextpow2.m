@@ -14,7 +14,8 @@ if ( isempty(f) )
     g = f;
     return
 elseif ( ~isreal(f) )
-    error('CHEBFUN:nextpow2:complex', 'Input to NEXTPOW() must be real.'); 
+    error('CHEBFUN:CHEBFUN:nextpow2:complex', ...
+        'Input to NEXTPOW() must be real.');
 end
 
 % Grab preferences:

@@ -47,7 +47,7 @@ if ( isa(item, 'operatorBlock') )
         % Coefficients of the block are available, convert to a diffmat.
         [M, S] = quasi2USdiffmat(disc);
     else
-        error('CHEBFUN:ultraS:fail', ...
+        error('CHEBFUN:ULTRAS:instantiate:fail', ...
             'ultraS cannot represent this operator. Suggest you use colloc2.')
     end
     
@@ -95,7 +95,7 @@ elseif ( isnumeric(item) )
     
 else
     
-    error('CHEBFUN:ultraS:instantiate:inputType', ...
+    error('CHEBFUN:ULTRAS:instantiate:inputType', ...
         'Unrecognized item type.')
     
 end

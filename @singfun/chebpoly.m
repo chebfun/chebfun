@@ -12,12 +12,12 @@ function out = chebpoly(f, N)
 % TODO: This requires a test.
 
 if ( any(f.exponents <= -.5 ) )
-    error('CHEBFUN:singfun:chebpoly:notintegrable', ...
+    error('CHEBFUN:SINGFUN:chebpoly:notIntegrable', ...
         'F does not have a well-defined Chebyshev expansion.');
 end
 
 if ( (nargin == 1) || isempty(N) )
-    error('CHEBFUN:singfun:chebpoly:input', ...
+    error('CHEBFUN:SINGFUN:chebpoly:input', ...
         'F does not have a finite Chebyshev series. Please input N.');
 end
 

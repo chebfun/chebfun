@@ -18,7 +18,7 @@ function g = min( f, g, dim )
 
 % Empty check: 
 if ( isempty( f ) ) 
-    error('CHEBFUN2:MIN:INPUT','CHEBFUN2 is empty');
+    error('CHEBFUN:CHEBFUN2:min:input','CHEBFUN2 is empty');
 end
 
 % Default to max of one chebfun2:
@@ -33,7 +33,8 @@ end
 
 % Do not allow min(F, G).
 if ( nargin > 1 && ~isempty(g) )   
-    error('CHEBFUN2:MIN', 'Unable to minimise two CHEBFUN2 objects.');
+    error('CHEBFUN:CHEBFUN2:min:twoChebfun2Inputs', ...
+        'Unable to minimise two CHEBFUN2 objects.');
 end
 
 % min(f) = - max ( -f )  

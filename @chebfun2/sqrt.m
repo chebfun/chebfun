@@ -15,7 +15,7 @@ end
 [bol, wzero] = singleSignTest( f );
 
 if ( ( bol == 0 ) || ( wzero == 1 ) )
-    error('CHEBFUN2:SQRT', ...
+    error('CHEBFUN:CHEBFUN2:sqrt:notSmooth', ...
         'A change of sign/zero has been detected, unable to represent the result.');
 end
 

@@ -5,7 +5,7 @@ function varargout = poly(varargin) %#ok<STOUT>
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
-error('CHEBFUN:unbndfun:poly:nosupport', ...
+error('CHEBFUN:UNBNDFUN:poly:noSupport', ...
     'POLY does not support UNBNDFUN objects.');
 
 end

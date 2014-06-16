@@ -31,7 +31,7 @@ if ( isempty(p) || (numel(p.funs) == 1) )
 end
 
 if ( size(p.funs{1}, 2) > 1 )
-    error('CHEBFUN:unwrap:array', ...
+    error('CHEBFUN:CHEBFUN:unwrap:array', ...
         'UNWRAP() does not support array-valued CHEBFUN objects.');
 end
 

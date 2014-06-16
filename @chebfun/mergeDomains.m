@@ -38,7 +38,7 @@ end
 ends = cellfun(@(dom) dom([1 end]), doms, 'UniformOutput', false);
 diffEnds = cell2mat(ends.') - repmat(ends{1}, numel(doms), 1);
 if ( any(diffEnds(:) > tol) )
-    error('CHEBFUN:mergeDomains:incompat', 'Incompatible domains.');
+    error('CHEBFUN:CHEBFUN:mergeDomains:incompat', 'Incompatible domains.');
 end
 
 j = 1;

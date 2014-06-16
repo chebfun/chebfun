@@ -16,7 +16,7 @@ else
 end
 
 if ( numel( dim ) ~= 1 )
-    error('CHEBFUN2:PROD:DIM', 'DIM should be either 1 or 2.');
+    error('CHEBFUN:CHEBFUN2:prod:dim', 'DIM should be either 1 or 2.');
 end
 
 v = exp( sum( log(f), dim ) );

@@ -53,7 +53,7 @@ elseif ( nargin == 4 )  % Bordered Hessian
     H = -gx.*(gx.*fyy - gy.*fxy) + gy.*(gx.*fxy - gy.*fxx);
     
 else
-    error('CHEBFUN2:DISCRIMINANT', 'Invalid input arguments.');
+    error('CHEBFUN:CHEBFUN2:discriminant:badInput', 'Invalid input arguments.');
 end
 
 end

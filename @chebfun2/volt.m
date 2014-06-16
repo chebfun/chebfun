@@ -18,7 +18,7 @@ function f = volt( K, v )
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun2 information.
 
 if ( ~isa( K, 'chebfun2' ) )
-    error('CHEBFUN2:VOLT:input', 'First argument must be a CHEBFUN2.');
+    error('CHEBFUN:CHEBFUN2:volt:input', 'First argument must be a CHEBFUN2.');
 end
 
 % Get the low rank representation for f.
@@ -32,7 +32,7 @@ end
 
 % Domain compatibility:
 if ( ~domainCheck(cols, v) )
-    error('CHEBFUN2:VOLT:CHEBDOMAIN', ...
+    error('CHEBFUN:CHEBFUN2:volt:domainMismatch', ...
         'Domain of CHEBFUN and CHEBFUN2 kernel do not match.');
 end
 

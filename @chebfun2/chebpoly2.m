@@ -31,7 +31,7 @@ elseif ( nargout <= 3 )
     varargout = {cols_coeffs, d, rows_coeffs};
 else
     % Two output variables are not allowed.
-    error('CHEBFUN2:CHEBPOLY2:outputs', 'Incorrect number of outputs.'); 
+    error('CHEBFUN:CHEBFUN2:chebpoly2:outputs', 'Incorrect number of outputs.');
 end
 
 end

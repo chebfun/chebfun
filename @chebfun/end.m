@@ -13,7 +13,7 @@ function e = end(f, k, n)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( n > 2 )
-    error('CHEBFUN:end:ngt2', 'Index exceeds CHEBFUN dimensions.');
+    error('CHEBFUN:CHEBFUN:end:ngt2', 'Index exceeds CHEBFUN dimensions.');
 end
 
 if ( ((k == 2) && ~f(1).isTransposed) || ...

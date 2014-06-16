@@ -21,7 +21,8 @@ if ( nargin == 1 )
 else 
     c = varargin{1};
     if ( ~isa(c, 'double') )
-        error('CHEBFUN2:DIAG', 'Second argument to diag should be a double.');
+        error('CHEBFUN:CHEBFUN2:diag:DIAG', ...
+            'Second argument to diag should be a double.');
     end
 end
 

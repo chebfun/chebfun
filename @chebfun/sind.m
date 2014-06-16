@@ -13,7 +13,7 @@ function F = sind(F, varargin)
 % [TODO]:  Restore or change this once we have decided the proper behavior or
 % isfinite() and defined that function.
 % if ( ~isfinite(f) )
-%     error('CHEBFUN:sin:inf',...
+%     error('CHEBFUN:CHEBFUN:sind:inf',...
 %         'SIN is not defined for functions which diverge to infinity');
 % end
 

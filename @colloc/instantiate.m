@@ -49,7 +49,7 @@ elseif ( isa(item, 'chebfun') )
 elseif ( isnumeric(item) )
     A = item;
 else   
-    error('CHEBFUN:COLLOC2:instantiate:instantiateOne', 'Unrecognized item.')
+    error('CHEBFUN:COLLOC:instantiate:instantiateOne', 'Unrecognized item.')
 end
 
 end

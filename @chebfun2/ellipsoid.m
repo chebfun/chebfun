@@ -28,7 +28,7 @@ function varargout = ellipsoid( a, b, c )
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 if ( nargin < 3 )
-    error('CHEBFUN2:ELLIPSOID:INPUTS','Incorrect input arguments.');
+    error('CHEBFUN:CHEBFUN2:ellipsoid:inputs', 'Incorrect input arguments.');
 end
 
 % ELLIPSOID with axis lengths a(th,phi), b(th,phi), c(th,phi).  

@@ -26,7 +26,8 @@ function L = addConstraint(L, varargin)
 
 if ( isequal(varargin{1}, 'periodic') )
     if ( ~isempty(L.constraint) )
-        warning('Clearing existing constraints to replace with periodicity.')
+        warning('CHEBFUN:LINOP:addConstraint:overwrite', ...
+            'Clearing existing constraints to replace with periodicity.')
     end
     
     L = deriveContinuity(L, L.domain, true);  % modifies continuity property

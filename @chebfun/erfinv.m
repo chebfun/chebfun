@@ -10,7 +10,7 @@ function F = erfinv(F, varargin)
 
 % Input must be real:
 if ( ~isreal(F) )
-    error('CHEBFUN:erfcinv:notreal', 'Input must be real.');
+    error('CHEBFUN:CHEBFUN:erfinv:notreal', 'Input must be real.');
 end
 
 % Call the compose method:

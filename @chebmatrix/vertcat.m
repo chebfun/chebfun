@@ -34,7 +34,8 @@ end
 if ( all(n==n(1)) )
     B = cell( sum(m), n(1) );
 else
-    error('Incompatible column sizes.')
+    error('CHEBFUN:CHEBMATRIX:vertcat:sizeMismatch', ...
+        'Incompatible column sizes.')
 end
 
 % Now we need to flatten out all the inner nested cell divisons, leaving
@@ -50,7 +51,8 @@ C = chebmatrix( B );
 % Finally, check block size compatibility.
 [row, col] = blockSizes(C);
 if ( any( any( bsxfun(@ne, col(1,:), col) ) ) )
-         error('Block column sizes must be the same.')
+         error('CHEBFUN:CHEBMATRIX:vertcat:blockSizeMismatch', ...
+            'Block column sizes must be the same.')
 end
 
 end

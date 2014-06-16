@@ -182,7 +182,7 @@ end
 
 % Check for Infs: (if not happy)
 % if ( any(isinf(vscale)) )                       
-%     error('CHEBFUN:CHEBTECH:constructor:inf_blowup', ...
+%     error('CHEBFUN:CHEBTECH:populate:infBlowup', ...
 %      'Function returned Inf when evaluated.')
 % end
 

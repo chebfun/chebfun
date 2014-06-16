@@ -24,7 +24,7 @@ if ( nargin == 1 )
     % Get degrees:
     [m, n] = length( f );  
 elseif ( nargin == 2 ) 
-    error('CHEBFUN2:CHEBPOLYVAL2:INPUTS', 'Dimension not specified.'); 
+    error('CHEBFUN:CHEBFUN2:chebpolyval2:inputs', 'Dimension not specified.'); 
 else
     m = varargin{ 1 }; 
     n = varargin{ 2 }; 

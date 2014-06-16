@@ -14,7 +14,8 @@ function v = integral( F, c )
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information. 
 
 if ( F.nComponents == 3 )
-    warning('CHEBFUN2V:INTEGRAL', 'Ignoring third component of chebfun2v.')
+    warning('CHEBFUN:CHEBFUN2V:integral:thirdComponent', ...
+        'Ignoring third component of chebfun2v.')
 end
 
 % Get tolerance we think things can be resolved to: 

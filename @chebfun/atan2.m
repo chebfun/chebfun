@@ -23,13 +23,13 @@ if ( nargin < 3)
 end
 
 if ( ~isreal(y) || ~isreal(x) )
-    error('CHEBFUN:atan2:real', 'Inputs ust be real.');
+    error('CHEBFUN:CHEBFUN:atan2:real', 'Inputs ust be real.');
 end
 
 numColsY = numColumns(y);
 numColsX = numColumns(x);
 if ( numColsY ~= numColsX )
-    error('CHEBFUN:atan2:dim', 'Chebfun quasimatrix dimensions must agree.');
+    error('CHEBFUN:CHEBFUN:atan2:dim', 'Quasimatrix dimensions must agree.');
 end
 
 % Convert columns to a cell array:

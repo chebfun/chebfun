@@ -110,7 +110,7 @@ if ( dimCounter == dimCounterMax )
     end
     u0 = chebmatrix(u0);
    
-    warning('CHEBFUN:linop:fitBCs:failure', ...
+    warning('CHEBFUN:LINOP:fitBCs:failure', ...
         'Unable to construct a suitable initial guess. Using a zero guess.')
     return
     

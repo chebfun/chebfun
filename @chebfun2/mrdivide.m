@@ -8,7 +8,8 @@ function f = mrdivide( f, g )
 if ( isa(g, 'double') )
     f.pivotValues = f.pivotValues * g;
 else
-    error('CHEBFUN2:mrdivide', 'Not supported. Did you mean ./ ?');
+    error('CHEBFUN:CHEBFUN2:mrdivide:mrdivide', ...
+        'Not supported. Did you mean ./ ?');
 end
 
 end

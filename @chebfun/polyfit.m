@@ -20,11 +20,12 @@ function f = polyfit(y, n)
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
 if ( ~isscalar(n) || round(n) ~= n )
-    error('CHEBFUN:polyfit:input2', 'N must be scalar integer.')
+    error('CHEBFUN:CHEBFUN:polyfit:input2', 'N must be scalar integer.')
 end
     
 if ( any(isinf(y.domain)) )
-    error('CHEBFUN:polyfit:unbounded', 'Unbounded domains are not supported.');
+    error('CHEBFUN:CHEBFUN:polyfit:unbounded', ...
+        'Unbounded domains are not supported.');
 end
 
 if ( n > length(y) && numel(y.funs) == 1 && isa(y.funs{1}.onefun, 'chebtech') )

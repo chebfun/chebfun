@@ -83,10 +83,10 @@ if ( isa(op, 'chebfun') )
     g = op;
     
 %     if ( numColumns(f) ~= numColumns(g) )
-%             error('CHEBFUN:compose:dims', 'Matrix dimensions must agree.')
+%             error('CHEBFUN:CHEBFUN:compose:dims', 'Matrix dimensions must agree.')
 %     end
     if ( numColumns(f) > 1 && numColumns(g) > 1 )
-        error('CHEBFUN:composeChebfuns:trans', ...
+        error('CHEBFUN:CHEBFUN:compose:trans', ...
             'Cannot compose two array-valued CHEBFUN objects.');
     end
     
@@ -113,7 +113,8 @@ elseif ( opIsBinary )
     % Binary composition:
     
     if ( numColumns(f) ~= numColumns(g) )
-            error('CHEBFUN:compose:dims', 'Matrix dimensions must agree.')
+            error('CHEBFUN:CHEBFUN:compose:dims', ...
+                'Matrix dimensions must agree.')
     end
     
     if ( numel(f) == 1 && numel(g) == 1 )
@@ -206,7 +207,7 @@ for k = 1:numInts
             catch ME %#ok<NASGU>
                 str = '';
             end
-            warning('CHEBFUN:compose:resolve', ['Composition ', str, ...
+            warning('CHEBFUN:CHEBFUN:compose:resolve', ['Composition ', str, ...
                 ' not resolved using ', int2str(length(newFun)), ...
                 ' points. Have you tried ''splitting on''?']);
         end
@@ -239,7 +240,7 @@ for k = 1:numInts
             catch ME %#ok<NASGU>
                 str = '';
             end
-            warning('CHEBFUN:compose:resolve', ['Composition ', str, ...
+            warning('CHEBFUN:CHEBFUN:compose:resolve', ['Composition ', str, ...
                 ' not resolved using ', int2str(length(newChebfun)), ...
                 ', points.']);
         end
@@ -285,7 +286,7 @@ end
 %% ERROR CHECKING:
 
 if ( xor(f.isTransposed, g.isTransposed) )
-    error('CHEBFUN:composeChebfuns:trans', ...
+    error('CHEBFUN:CHEBFUN:compose:composeTwoChebfuns:trans', ...
         'Cannot compose a row CHEBFUN with a column CHEBFUN.');
 end
 
@@ -298,8 +299,8 @@ end
 
 % f must be a real-valued function:
 if ( ~isreal(f) )
-%     error('CHEBFUN:compose:complex', 'F must be real valued to construct G(F).')
-    warning('CHEBFUN:compose:complex', ...
+%     error('CHEBFUN:CHEBFUN:compose:complex', 'F must be real valued to construct G(F).')
+    warning('CHEBFUN:CHEBFUN:compose:composeTwoChebfuns:complex', ...
         ['F should be real valued to construct G(F).\n', ...
          'Results may be inaccurate if G is not a polynomial.']);
 end
@@ -314,13 +315,13 @@ end
 % maxF = max(mmF(:));
 % % Range of f must be in the domain of g:
 % if ( g.domain(1) > minF + tol*hsf || g.domain(end) < maxF - tol*hsf )
-%     error('CHEBFUN:compose:domain', ...
+%     error('CHEBFUN:CHEBFUN:compose:domain', ...
 %         'Range of F, [%g, %g], must be in the domain of G, [%g, %g].', ...
 %         minF, maxF, g.domain(1), g.domain(end))
 % end
 
 if ( isdelta(f) || isdelta(g) )
-    warning('CHEBFUN:COMPOSE:DELTACOMPOSE', ...
+    warning('CHEBFUN:CHEBFUN:compose:composeTwoChebfuns:deltas', ...
         'Composition ignores delta functions. Results may not make any sense.');
 end
 

@@ -17,7 +17,7 @@ function f = diff(f, k, dim)
 
 % Check the dimension, i.e. the third argument:
 if ( (nargin == 3) && (dim ~= 1) )
-    warning('SINGFUN:cumsum:nosupport', ...
+    warning('CHEBFUN:SINGFUN:diff:noSupport', ...
         'SINGFUN does not support array-valued objects.')
 end
 

@@ -16,9 +16,9 @@ end
 
 % Make sure dimensions and domains are the same:
 if ( ~isequal(size(f), size(g)) )
-    error('CHEBFUN:and:dims', 'Dimensions of f and g must agree.');
+    error('CHEBFUN:CHEBFUN:and:dims', 'Dimensions of f and g must agree.');
 elseif ( ~domainCheck(f, g) )
-    error('CHEBFUN:and:doms', 'Domains of f and g must agree.');
+    error('CHEBFUN:CHEBFUN:and:doms', 'Domains of f and g must agree.');
 end
 
 % Split up f and g at their roots, and ensure breakpoints are the same:

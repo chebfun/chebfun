@@ -20,14 +20,14 @@ d = d([1, end]);
 % Align dimensions:
 if ( size(x, 2) > 1 )
     if ( size(x, 1) > 1 )
-        error('DOMAIN:polyfit:xIn', ...
+        error('CHEBFUN:DOMAIN:polyfit:xIn', ...
             'X should be a real-valued column vector');
     end
     x = x.';
 end
 if ( size(y, 1) ~= size(x, 1) )
     if ( size(y, 2) ~= size(x, 1) )
-        error('DOMAIN:polyfit:xIn', ...
+        error('CHEBFUN:DOMAIN:polyfit:xIn', ...
             'X and Y vectors must be the same size.');
     end
     y = y.';

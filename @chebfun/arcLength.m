@@ -28,7 +28,7 @@ end
 
 % Check the first input for its type:
 if ( ~isa(f, 'chebfun') )
-    error('CHEBFUN:arclength:Input', ...
+    error('CHEBFUN:CHEBFUN:arcLength:Input', ...
         'The first argument must be a chebfun object.')
 end
 
@@ -40,7 +40,7 @@ if ( nargin == 3 )
 elseif ( nargin == 2 )
     % Two arguments: the second argument is a vector:
     if ( max( size(a) ) ~= 2 )
-        error('CHEBFUN:arclength:Input', ...
+        error('CHEBFUN:CHEBFUN:arcLength:Input', ...
             'The second argument must be a 1x2 vector.')
     end
     dom = a;

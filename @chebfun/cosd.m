@@ -13,7 +13,7 @@ function F = cosd(F, varargin)
 % [TODO]:  Restore or change this once we have decided the proper behavior or
 % isfinite() and defined that function.
 % if ( ~isfinite(f) )
-%     error('CHEBFUN:cosd:inf',...
+%     error('CHEBFUN:CHEBFUN:cosd:inf',...
 %         'COSD is not defined for functions which diverge to infinity');
 % end
 

@@ -30,7 +30,8 @@ if ( isa( v, 'function_handle' ) )
 else
     % Check that the domain of CHEBFUN2 and chebfun are correct.
     if ( ~domainCheck( v, cols ) )
-        error('CHEBFUN2:FRED:CHEBDOMAIN','Domain of CHEBFUN and CHEBFUN2 kernel do not match');
+        error('CHEBFUN:CHEBFUN2:fred:domainMismatch', ...
+            'Domain of CHEBFUN and CHEBFUN2 kernel do not match');
     end
 end
 

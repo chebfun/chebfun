@@ -30,7 +30,8 @@ function [f, mergedPts] = merge(f, index, pref)
 
 if ( numel(f) > 1 )
     % TODO:  Implement this.
-    error('CHEBFUN:merge:quasi', 'MERGE does not support quasimatrices.');
+    error('CHEBFUN:CHEBFUN:merge:quasi', ...
+        'MERGE does not support quasimatrices.');
 end
 
 % Convert to a column CHEBFUN so that feval(f, x) returns a column instead of a

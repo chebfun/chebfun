@@ -39,10 +39,10 @@ end
 switch ( lower(propName) )
     case 'type'
         if ( ~any(strcmpi(val, {'bvp', 'ivp', 'pde', 'eig'})) )
-            error('CHEBGUI:set:type',...
+            error('CHEBFUN:CHEBGUI:set:type',...
                 [val,' is not a valid type of problem.'])
         elseif ( strcmpi(val, 'ivp') )
-            warning('CHEBGUI:set:type',...
+            warning('CHEBFUN:CHEBGUI:set:type',...
                 'Type of problem changed from IVP to BVP');
             cg.type = 'bvp';
         else
@@ -90,7 +90,7 @@ switch ( lower(propName) )
     case 'discretization'
         cg.options.discretization = val;
     otherwise
-        error('CHEBGUI:set:propname',...
+        error('CHEBFUN:CHEBGUI:set:propName',...
             [propName,' is not a valid chebgui property.'])
 end
 

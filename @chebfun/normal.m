@@ -17,12 +17,13 @@ if ( nargin > 1 )
     if ( strcmpi(unit, 'unit') )
         nrmn = norm(n);
         if ( nrmn == 0 )
-            error('CHEBFUN:normal:zero', 'Normal vector is zero.'); 
+            error('CHEBFUN:CHEBFUN:normal:zero', 'Normal vector is zero.'); 
         else
             n = n./nrmn;
         end
     else
-        error('CHEBFUN:normal:args', 'Second argument is not recognised.');
+        error('CHEBFUN:CHEBFUN:normal:args', ...
+            'Second argument is not recognised.');
     end
 end
 

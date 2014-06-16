@@ -60,13 +60,15 @@ switch ( ref(1).type )
                 elseif ( ( all(indx{1} == 3) ) && ( ~isempty(F.components(3)) ) )
                     varargout = F.components(3);
                 else
-                    error('CHEBFUN2V:subsref:index', 'CHEBFUN2V only contains two/three components');
+                    error('CHEBFUN:CHEBFUN2V:subsref:index', ...
+                        'CHEBFUN2V only contains two/three components');
                 end
             end
         end
         
     otherwise
-        error('CHEBFUN2V:UnexpectedType', ['??? Unexpected index.type of ' index(1).type]);
+        error('CHEBFUN:CHEBFUN2V:subsref:unexpectedType', ...
+            ['??? Unexpected index.type of ' index(1).type]);
         
 end
 

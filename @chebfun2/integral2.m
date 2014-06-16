@@ -56,7 +56,7 @@ elseif ( nargin == 2 )
             I = integral(F, c);
             
         else
-            error('CHEBFUN2:integral2:input', ...
+            error('CHEBFUN:CHEBFUN2:integral2:input', ...
                 'Integration path must be complex-valued');
         end
         
@@ -73,12 +73,12 @@ elseif ( nargin == 2 )
                 I = sum( restrict ( f,restriction ) );
             end
         else
-            error('CHEBFUN2:integral2:baddomain', ...
+            error('CHEBFUN:CHEBFUN2:integral2:baddomain', ...
             'Domain should have four corners.');
         end
         
     else
-        error('CHEBFUN2:integral2:nargin', 'Too many input arguments.');
+        error('CHEBFUN:CHEBFUN2:integral2:nargin', 'Too many input arguments.');
     end
     
 end

@@ -18,7 +18,8 @@ if ( isempty(F) )
 end
 
 if ( F.nComponents == 3 )
-    error('CHEBFUN2V:JACOBIAN', 'Jacobian matrix is not square.')
+    error('CHEBFUN:CHEBFUN2V:jacobian:notSquare', ...
+        'Jacobian matrix is not square.')
 end
 
 % Determinant formula: 

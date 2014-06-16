@@ -26,11 +26,11 @@ elseif ( isa(F, 'double') )
     F = chebfun2( F, Gc{1}.domain ); 
 elseif ( isa(G, 'chebfun2') )
     if ( ~domainCheck(F.components{1}, G) ) 
-        error('CHEBFUN2V:VERTCAT:DOMAIN', 'Inconsistent domains.')
+        error('CHEBFUN:CHEBFUN2V:vertcat:domain', 'Inconsistent domains.')
     end
     dom = G.domain; 
 else
-    error('CHEBFUN2V:VERTCAT', ...
+    error('CHEBFUN:CHEBFUN2V:vertcat:notSupported', ...
         'Vertical concatenation of these objects is not supported.')
 end
 

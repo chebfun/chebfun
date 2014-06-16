@@ -29,7 +29,7 @@ else                                     % CHEBFUN2V .\ CHEBFUN2V
     nF = F.nComponents;
     nG = G.nComponents;
     if ( nF ~= nG )
-        error('CHEBFUN2V:LDIVIDE', ...
+        error('CHEBFUN:CHEBFUN2V:ldivide:dimensionMismatch', ...
             'CHEBFUN2V do not have the same number of components.')
     end
     H = F;

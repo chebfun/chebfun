@@ -24,7 +24,7 @@ end
 
 % Check that input is a column vector:
 if ( (ndimsx > 2) || (sizex(2) > 1) ) 
-    warning('CHEBFUN:chebtech:bary:colvec', 'Input should be a column vector.');
+    warning('CHEBFUN:CHEBTECH:bary:colvec', 'Input should be a column vector.');
     x = x(:);
 end
 

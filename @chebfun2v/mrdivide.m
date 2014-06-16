@@ -16,7 +16,8 @@ if ( ( isempty(F) ) || ( isempty(g) ) )
 end
 
 if ( ~isa(g,'double') && ~isa(g,'chebfun2') )
-   error('CHEBFUN2:MRDIVIDE:NONSCALAR','Division must be scalar valued.'); 
+    error('CHEBFUN:CHEBFUN2V:mrdivide:nonScalar', ...
+        'Division must be scalar valued.');
 end
 
 

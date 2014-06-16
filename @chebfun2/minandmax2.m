@@ -160,7 +160,7 @@ elseif ( length(f) <= maxsize )
     
 elseif ( length(f) >= maxsize )
     
-    error('CHEBFUN2:max:length', 'Rank is too large.');
+    error('CHEBFUN:CHEBFUN2:minandmax2:length', 'Rank is too large.');
     
 end
 

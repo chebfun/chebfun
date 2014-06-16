@@ -13,7 +13,7 @@ function F = cos(F, varargin)
 % [TODO]:  Restore or change this once we have decided the proper behavior or
 % isfinite() and defined that function.
 %if ( ~isfinite(f) )
-%    error('CHEBFUN:cos:inf',...
+%    error('CHEBFUN:CHEBFUN:cos:inf',...
 %        'COS is not defined for functions which diverge to infinity');
 %end
 

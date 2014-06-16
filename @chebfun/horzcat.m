@@ -75,7 +75,7 @@ allDomainsCell = cellfun(@(f) f.domain, varargin, 'UniformOutput', false);
 % Ensure that the domains match:
 domainEnds = allDomainsCell{1}([1 end]);
 if ( any(cellfun(@(d) any(d([1 end]) ~= domainEnds), allDomainsCell)) )
-    error('CHEBFUN:horzcat:domains', 'Inconsistent domains.');
+    error('CHEBFUN:CHEBFUN:horzcat:domains', 'Inconsistent domains.');
 end
 % [TODO]: checkDomains?
 

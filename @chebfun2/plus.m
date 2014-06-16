@@ -23,7 +23,7 @@ elseif ( isa( g, 'double' ) )           % CHEBFUN2 + DOUBLE
     
 elseif ( ~isa(g, 'chebfun2') )          % CHEBFUN2 + ???
     
-    error( 'CHEBFUN2:plus:unknown', ...
+    error( 'CHEBFUN:CHEBFUN2:plus:unknown', ...
         ['Undefined function ''plus'' for input arguments of type %s ' ...
         'and %s.'], class(f), class(g) );
     
@@ -31,7 +31,7 @@ else                                    % CHEBFUN2 + CHEBFUN2
     
     % Domain Check:
     if ( ~domainCheck(f, g) )
-        error('CHEBFUN2:PLUS:DOMAIN', 'Inconsistent domains.');
+        error('CHEBFUN:CHEBFUN2:plus:domain', 'Inconsistent domains.');
     end
     
     % Check for zero CHEBFUN2 objects:

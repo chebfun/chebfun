@@ -53,7 +53,7 @@ elseif ( ( dim == 0 ) && ( nargin == 1 ) )
         varargout = { K, M, N }; 
     end
 else
-    error('CHEBFUN2V:SIZE:DIM', 'Unrecognised dimension.');
+    error('CHEBFUN:CHEBFUN2V:size:dim', 'Unrecognised dimension.');
 end
 
 end

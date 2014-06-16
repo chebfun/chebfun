@@ -20,7 +20,7 @@ deltaTol = pref.deltaPrefs.deltaTol;
 % Check sizes:
 m = size(A, 2);
 if ( length(v) ~= m || size(v, 1) > 1 )
-    error( 'DELTAFUN:cleanColumns', ...
+    error( 'CHEBFUN:DELTAFUN:cleanColumns:cleanColumns', ...
         'Number of columns of A should equal the length of the vector v.' );
 end
 

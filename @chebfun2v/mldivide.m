@@ -16,7 +16,8 @@ if ( ( isempty(f) ) || ( isempty(G) ) )
 end
 
 if ( ~isa(f, 'double') )
-    error('CHEBFUN2:MRDIVIDE:NONSCALAR','Division must be by a scalar.');
+    error('CHEBFUN:CHEBFUN2V:mldivide:nonScalar', ...
+        'Division must be by a scalar.');
 end
 
 % Left divide.

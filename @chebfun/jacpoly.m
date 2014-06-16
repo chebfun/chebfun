@@ -21,7 +21,8 @@ function out = jacpoly(f, n, a, b)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( numel(f) > 1 )
-    error('CHEBFUN:jacpoly:quasi', 'JACPOLY does not support quasimatrices.');
+    error('CHEBFUN:CHEBFUN:jacpoly:quasi', ...
+        'JACPOLY does not support quasimatrices.');
 end
 
 if ( (numel(f.funs) == 1) && (nargin < 4) )

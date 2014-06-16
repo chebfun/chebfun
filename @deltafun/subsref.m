@@ -34,7 +34,7 @@ switch index(1).type
         if ( length(idx) == 2 )
             varin = {idx(2)};
         elseif ( length(idx) > 2 )
-            error('DELTAFUN:subsref:dimensions', ...
+            error('CHEBFUN:DELTAFUN:subsref:dimensions', ...
                 'Index exceeds chebfun dimensions.')            
         end
 
@@ -48,7 +48,7 @@ switch index(1).type
             % TODO: write compose and check for linearity of f?
             out = compose(x, f);                                            
         else
-            error('DELTAFUN:subsref:nonnumeric', ...
+            error('CHEBFUN:DELTAFUN:subsref:nonnumeric', ...
               'Cannot evaluate chebfun for non-numeric type.')          
         end            
        
@@ -70,7 +70,7 @@ switch index(1).type
                 % F{:} returns F:
                 out = f;
             else
-                error('DELTAFUN:subsref:baddomain', 'Invalid domain syntax.')
+                error('CHEBFUN:DELTAFUN:subsref:badDomain', 'Invalid domain syntax.')
             end
             
         elseif ( size(idx, 1) == 1 )
@@ -78,13 +78,13 @@ switch index(1).type
             x = cat(2, idx{:});
             out = restrict(f, x);            
         else
-            error('DELTAFUN:subsref:dimensions', ...
+            error('CHEBFUN:DELTAFUN:subsref:dimensions', ...
                 'Index exceeds chebfun dimensions.')            
         end
         
     otherwise
         
-        error('DELTAFUN:subsref:unexpectedType',...
+        error('CHEBFUN:DELTAFUN:subsref:unexpectedType',...
             ['??? Unexpected index.type of ', index(1).type]);
 end
 

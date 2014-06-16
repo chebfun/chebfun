@@ -21,7 +21,7 @@ if ( nargin < 2 )
 end
 
 if ( (dim ~= 1) && (dim ~= 2) )
-    error('CHEBFUN:any:dim', 'DIM input must be 1 or 2.');
+    error('CHEBFUN:CHEBFUN:any:dim', 'DIM input must be 1 or 2.');
 end
 
 % Deal with row CHEBFUNs by transposing first:

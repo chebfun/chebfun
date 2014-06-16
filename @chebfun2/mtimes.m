@@ -17,7 +17,7 @@ if ( isa(f, 'chebfun2') )           % CHEBFUN2 * ???
             h = f;
             h.pivotValues = h.pivotValues ./ g;
         else
-            error('CHEBFUN2:MTIMES', 'Sizes are inconsistent.');
+            error('CHEBFUN:CHEBFUN2:mtimes:size', 'Sizes are inconsistent.');
         end
         
     elseif ( isa(g, 'chebfun') )    % CHEBFUN2 * CHEBFUN
@@ -58,7 +58,7 @@ if ( isa(f, 'chebfun2') )           % CHEBFUN2 * ???
         end
         
     else
-        error('CHEBFUN2:MTIMES:unknown', ...
+        error('CHEBFUN:CHEBFUN2:mtimes:unknown', ...
             ['Undefined function ''mtimes'' for input arguments of type %s ' ...
             'and %s.'], class(f), class(g));
         

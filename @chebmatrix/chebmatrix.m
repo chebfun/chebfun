@@ -156,7 +156,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
         %   For example, the expression A(end-1,:) calls A's end method with
         %   END(A, 1, 2). Note that N must be less than or equal to two.
             if ( n > 2 )
-                error('CHEBFUN:end:ngt2', ...
+                error('CHEBFUN:CHEBMATRIX:end:ngt2', ...
                     'Index exceeds CHEBMATRIX dimensions.');
             end
             s = size(A.blocks);
@@ -212,7 +212,7 @@ classdef (InferiorClasses = {?chebfun, ?operatorBlock, ?functionalBlock}) chebma
             
             % TODO: Throw an error instead?
 %             if ( ~all(isCheb | isDoub) )
-%                 error('CHEBFUN:chebmatrix:vscale:op', ...
+%                 error('CHEBFUN:CHEBMATRIX:vscale:op', ...
 %                     ['VSCALE is not defined for CHEBMATRIX objects ', ...
 %                      'containing operators.']);
 %             end

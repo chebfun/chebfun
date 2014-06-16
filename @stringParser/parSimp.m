@@ -41,7 +41,7 @@ ltgtLoc = regexp(str, '[\<\>]');
 
 % Error if the number of ( and ) are not equal
 if ( length(leftParLoc) ~= length(rightParLoc) )
-    error('CHEBFUN:STRINGPARSER:strinchebgui:parenth_simplify', ...
+    error('CHEBFUN:STRINGPARSER:parSimp:parenthSimplify', ...
         'Incorrect number of parenthesis.');
 end
 

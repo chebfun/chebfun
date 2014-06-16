@@ -21,7 +21,7 @@ if ( nargin < 3 )
 end
 
 if ( any(size(nu) > 1) || ~isreal(nu) )
-    error('CHEBFUN:besselj:nu', ...
+    error('CHEBFUN:CHEBFUN:besselj:nu', ...
         'The first argument of besselj must be a real-valued scalar.');
 end
 

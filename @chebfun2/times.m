@@ -15,10 +15,10 @@ if ( isa(f, 'chebfun2') )    % CHEBFUN2 .* ???
         if ( bol )
             h = chebfun2(@(x, y) feval(f, x, y).*feval(g, x, y), f.domain);
         else
-            error('CHEBFUN2:TIMES:DOMAIN', 'Inconsistent domains');
+            error('CHEBFUN:CHEBFUN2:times:domain', 'Inconsistent domains');
         end
     else
-        error('CHEBFUN:MTIMES:unknown', ...
+        error('CHEBFUN:CHEBFUN2:times:unknown', ...
             ['Undefined function ''mtimes'' for input arguments of type %s ' ...
             'and %s.'], class(f), class(g));
     end

@@ -30,7 +30,8 @@ elseif ( dim == 2 )
     % CUMSUM along the rows.
     f.rows = cumsum( f.rows );
 else
-    error('CHEBFUN2:CUMSUM:DIM', 'Integration direction must be x or y.');
+    error('CHEBFUN:CHEBFUN2:cumsum:dim', ...
+        'Integration direction must be x or y.');
 end
 
 end
