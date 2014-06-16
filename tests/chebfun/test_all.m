@@ -32,8 +32,7 @@ pass(5) = ~all(f);
 dom = [-Inf Inf];
 
 op = @(x) x.^2.*(1-exp(-x.^2))+3;
-pref.singPrefs.exponents = [2 2];
-f = chebfun(op, dom, pref); 
+f = chebfun(op, dom, 'exps', [2 2]);
 pass(6) = all(f);
 
 end

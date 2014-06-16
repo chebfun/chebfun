@@ -57,6 +57,6 @@ for k = 1:N
 end
 
 % Contruct the CHEBFUN:
-f = chebfun(p, d);
+f = chebfun(p, d, 'tech', @chebtech2);
 
 end

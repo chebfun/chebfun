@@ -1,0 +1,9 @@
+'Carrier equation (another solution)'
+'bvp'
+domain = '[-1 1]';
+DE = '0.01*u" + 2*(1-x^2)*u + u^2 = 1';
+BC = {'u(-1) = 0','u(1) = 0'};
+init = 'u = 2*x*(x^2-1)*(1-2/(1+20*x^2))';
+tol = '1e-10';
+damping = '0'; plotting = '0.1';
+type = 'bvp';

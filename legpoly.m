@@ -1,6 +1,6 @@
 function p = legpoly(n, dom, normalize, method)
 %LEGPOLY   Legendre polynomials.
-%   P = LEGPOLY(N) computes a chebfun of the Legendre polynomial of degree N on
+%   P = LEGPOLY(N) computes a CHEBFUN of the Legendre polynomial of degree N on
 %   the interval [-1,1]. N can be a vector of integers, in which case the output
 %   is an array-valued CHEBFUN.
 %
@@ -17,15 +17,10 @@ function p = legpoly(n, dom, normalize, method)
 %   fourth input LEGPOLY(N, D, NORM, METHOD), where METHOD is 1, 2, or 3
 %   respectively.
 %
-%   NOTE, LEGPOLY() will always return a CHEBFUN whose underlying 'tech' is a
-%   CHEBTECH2 object.
-%
 % See also CHEBPOLY, LEGPTS, and LEG2CHEB.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
-
-% TODO: This code needs a test.
 
 % Parse input:
 if ( isempty(n) )
@@ -54,10 +49,19 @@ if ( any(isinf(dom)) )
         'Legendre polynomials are not defined over an unbounded domain.');
 end
 
+% Force a CHEBTECH basis.
+defaultPref = chebfunpref();
+pref = defaultPref;
+tech = feval(pref.tech);
+if ( ~isa(tech, 'chebtech') )
+    pref.tech = @chebtech2;
+end
+
 % Useful values:
 nMax = max(n);
 nMax1 = nMax + 1;
-dom = dom([1 end]); % [TODO]: Add support for breakpoints?
+domIn = dom;
+dom = dom([1 end]);
 
 % Determine which method
 if ( nargin == 4 )
@@ -84,7 +88,7 @@ switch method
         
         [aa, bb, cc] = unique(n);      %#ok<ASGLU>
         P = zeros(nMax1, length(n));   % Initialise storage
-        x = chebpts(nMax1);            % Chebyshev points
+        x = chebpts(nMax1, 2);         % Chebyshev points
         L0 = ones(nMax1, 1); L1 = x;   % P_0 and P_1
         ind = 1;                       % Initialise counter
         for k = 2:nMax+2,              % The recurrence relation (k = degree)
@@ -101,41 +105,41 @@ switch method
             L1 = (2-1/k)*x.*L1 - (1-1/k)*L0;
             L0 = tmp;
         end
-        % Convert the discrete values to a CHEBFUN.
-        p = chebfun(P(:,cc), dom); 
+        C = chebtech2.vals2coeffs(P(:,cc));       % Convert to coefficients
     
     case 2 % QR
 
         pts = 2*nMax1;              % Expand on Chebyshev grid of twice the size
-        [x, w] = chebtech2.chebpts(pts);      % Grab the Clenshaw-Curtis weights
+        [ignored, w] = chebpts(pts, 2);   % Grab the Clenshaw-Curtis weights
         theta = pi*(pts-1:-1:0)'/(pts-1);
-        A = cos(theta*(0:nMax));              % Vandemonde-type matrix
-        D = spdiags(sqrt(w(:)), 0, pts, pts); % C-C quad weights
+        A = cos(theta*(0:nMax));                  % Vandemonde-type matrix
+        D = spdiags(sqrt(w(:)), 0, pts, pts);     % C-C quad weights
         Dinv = spdiags(1./sqrt(w(:)), 0, pts, pts);
-        [Q, R] = qr(D*A, 0);                  % Weighted QR
+        [Q, ignored] = qr(D*A, 0);                % Weighted QR
         P = Dinv*Q;
         if ( normalize )
             PP = P(:,n+1) * diag(sqrt(2/diff(dom)) * sign(P(end,n+1)));
         else
             PP = P(:,n+1) * diag(1./P(end,n+1));
         end
-        % Convert discrete values to a CHEBFUN:
-        p_chebtech = chebtech2(PP);              % Make a CHEBTECH.
-        p_chebtech = prolong(p_chebtech, nMax1); % Force the correct length.
-        p_bndfun = bndfun(p_chebtech, dom);      % Make a BNDFUN.
-        p = chebfun({p_bndfun});                 % Make a CHEBFUN.
-            
+        C = chebtech2.vals2coeffs(PP);            % Convert to coefficients
+        C(1:nMax1,:) = [];                        % Trim coefficients > nMax+1
+        
     case 3 % LEG2CHEB
 
-        c_leg = [1 ; zeros(n, 1)];              % Legendre coefficients.
-        c_cheb = chebtech.leg2cheb(c_leg);      % Chebyshev coefficients.
+        c_leg = [1 ; zeros(n, 1)];                % Legendre coefficients
+        C = leg2cheb(c_leg);                      % Chebyshev coefficients
         if ( normalize )
-            c_cheb = c_cheb*sqrt((n+.5));
+            C = C*sqrt((n+.5));
         end
-        p_chebtech = chebtech2({[], c_cheb});   % Make a CHEBTECH.
-        p_bndfun = bndfun(p_chebtech, dom);     % Make a BNDFUN.
-        p = chebfun({p_bndfun});                % Make a CHEBFUN.
+    
+end
 
+% Construct CHEBFUN from coeffs:
+p = chebfun(C, dom, pref, 'coeffs');              
+
+if ( numel(domIn) > 2 )
+    p = restrict(p, domIn);
 end
 
 % Adjust orientation:
@@ -143,3 +147,4 @@ if ( size(n, 1) > 1 )
    p = p.'; 
 end
 
+end

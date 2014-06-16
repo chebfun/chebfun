@@ -1,4 +1,4 @@
-function out = feval(f, x)
+function out = feval(f, x, varargin)
 %FEVAL   Evaluate the specified function
 %   Y = FEVAL(G, X) Evaluation of a BNDFUN G at points X. 
 

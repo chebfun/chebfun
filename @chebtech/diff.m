@@ -10,7 +10,7 @@ function f = diff(f, k, dim)
 % See also SUM, CUMSUM.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. 
-% See http://www.chebfun.org for Chebfun information.
+% See http://www.chebfun.org/ for Chebfun information.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % If the CHEBTECH G of length n is represented as
@@ -34,7 +34,7 @@ if ( isempty(f) )
     return
 end
 
-if ( nargin < 2 || isempty(k) )
+if ( (nargin < 2) || isempty(k) )
     % Order of derivative not passed in. Assume 1st derivative by default:
     k = 1; 
 elseif ( k == 0 )
@@ -58,22 +58,23 @@ end
 end
 
 function f = diffFiniteDim(f, k)
-% Take difference across 2nd dimension.
+% Take kth difference across 2nd dimension (i.e., across columns).
 
-    % TODO: Tidy and document this.
     if ( k >= size(f, 2) )
+        % The output will be an empty CHEBTECH:
         f = f.make();
-        return
     else 
         for j = 1:k
-            % Differentiate coefficients across dim:
+            % Differentiate coefficients across columns:
             f.coeffs = diff(f.coeffs, 1, 2);
-            % Update vscale and epslevel as in PLUS()
+            % Update vscale and epslevel as in PLUS():
             ev = f.epslevel.*f.vscale;
-            for l = 1:size(f,2)-1
-                f.epslevel(l) = ev(l)+ev(l+1);
+            for l = 1:(size(f, 2)-1)
+                f.epslevel(l) = ev(l) + ev(l+1);
             end
+            % We've lost a column, so we lose an epslevel:
             f.epslevel(end) = [];
+            % New vscale and epslevel:
             vscale = getvscl(f);
             f.epslevel = f.epslevel./vscale;
             f.vscale = vscale;
@@ -83,45 +84,40 @@ end
 
 function f = diffContinuousDim(f, k)
 % Differentiate in the first dimension (i.e., df/dx).
-
-    % Get the length:
-    n = size(f.coeffs,1);
-
+    
     % Get the coefficients:
     c = f.coeffs;
+
+    % Get their length:
+    n = size(c, 1);
 
     % If k >= n, we know the result will be the zero function:
     if ( k >= n ) 
         z = zeros(size(f, 2));
-        f = f.make(z, z, f.hscale);
+
+        data.vscale = z;
+        data.hscale = f.hscale;
+        f = f.make(z, data);
         return
     end
     
     % Loop for higher derivatives:
-    while ( k > 0 ) % Note that n > k.
-        % Decrease k:
-        k = k - 1;
-
+    for m = 1:k
         % Compute new coefficients using recurrence:
         c = computeDerCoeffs(c);
-        
-         % [TODO]: This can ruin diff(chebtech2(@exp), 10), so was removed.
-%         c(abs(c) < f.epslevel) = 0;
-
-        % Length of polynomial has decreased by 1:
         n = n - 1;
-
-        % Update:
-        v = f.coeffs2vals(c);
-
-        % Update epslevel and the vertical scale: (See CHEBTECH CLASSDEF file for
-        % documentation)
-        f.epslevel = n*log(n)*(f.epslevel.*f.vscale);
-        f.vscale = max(abs(v), [], 1);
     end
-
-    % Store new coefficients and values:
+    
+    % Store new coefficients:
     f.coeffs = c;
+    
+    % Update epslevel and the vertical scale: (See CHEBTECH CLASSDEF file
+    % for documentation)
+    newVscale = getvscl(f);
+    epslevelBnd = (n*log(n)).^k*(f.epslevel.*f.vscale)./newVscale;
+    f.epslevel = updateEpslevel(f, epslevelBnd);
+    f.vscale = newVscale;
+    
 end
       
 function cout = computeDerCoeffs(c)

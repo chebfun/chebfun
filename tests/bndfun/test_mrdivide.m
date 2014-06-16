@@ -21,7 +21,7 @@ alpha = -0.194758928283640 + 0.075474485412665i;
 % Check division of a BNDFUN object by a numeric array.
 
 f_op = @(x) [sin(x) cos(x)];
-f = bndfun(f_op, dom, [], [], pref);
+f = bndfun(f_op, struct('domain', dom), pref);
 pass(1) = isnan(f / 0);
 
 g = f / alpha;
@@ -46,12 +46,12 @@ pass(4) = norm(feval(g, x) - g_exact(x), inf) < ...
 %%
 % Check division of a numeric array by a BNDFUN object.
 
-f = bndfun(@(x) sin(x), dom);
+f = bndfun(@(x) sin(x), struct('domain', dom), pref);
 g = alpha / f;
 pass(5) = abs(innerProduct(f, g) - alpha) < ...
     10*get(g, 'vscale')*get(g, 'epslevel');
 
-f = bndfun(@(x) [sin(2*pi*x) cos(2*pi*x)], dom);
+f = bndfun(@(x) [sin(2*pi*x) cos(2*pi*x)], struct('domain', dom), pref);
 g = [1 1]/f;
 g_exact = @(x) (2/9)*(sin(2*pi*x) + cos(2*pi*x));
 pass(6) = norm(feval(g, x) - g_exact(x), inf) < ...
@@ -70,8 +70,8 @@ end
 
 % Can't do f/g if both f and g are BNDFUN objects.
 try
-    f = bndfun(@(x) sin(x), dom);
-    g = bndfun(@(x) cos(x), dom);
+    f = bndfun(@(x) sin(x), struct('domain', dom), pref);
+    g = bndfun(@(x) cos(x), struct('domain', dom), pref);
     h = f / g; %#ok<NASGU>
     pass(8) = false;
 catch ME
@@ -82,13 +82,11 @@ end
 % Can't call mrdivide on a bndfund and a non-BNDFUN or non-double
 % object.
 try
-    f = bndfun(@(x) sin(x), dom);
+    f = bndfun(@(x) sin(x), struct('domain', dom), pref);
     g = f / true; %#ok<NASGU>
     pass(9) = false;
 catch ME
     pass(9) = strcmp(ME.identifier, 'CHEBFUN:BNDFUN:mrdivide:badArg');
 end
 
-
 end
-

@@ -8,8 +8,6 @@ function discjk = extractBlock(disc, j, k)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-% TODO; Push part of this up to chebDiscretization?
-
 discjk = extractBlock@chebDiscretization(disc, j, k);
 
 % Extract the coefficients and output space:

@@ -76,7 +76,7 @@ f = thresholdBreakpointValues(f);
 
 % Split up f at its roots and call ANY() for the individual FUNs:
 a = addBreaksAtRoots(f);
-for (k = 1:1:numel(a.funs))
+for k = 1:1:numel(a.funs)
     a.funs{k} = any(a.funs{k}, 2);
 end
 

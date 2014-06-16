@@ -15,19 +15,19 @@ elseif ( isempty( g ) || isempty( f ))  % CHEBFUN2 + []
     % Return empty CHEBFUN2.
     h = chebfun2();
     
-elseif ( isa( g, 'double' ) )   % CHEBFUN2 + DOUBLE
+elseif ( isa( g, 'double' ) )           % CHEBFUN2 + DOUBLE
     
-    % Convert g to a CHEBFUN2
+    % Convert g to a CHEBFUN2.
     g = chebfun2( g, f.domain );
     h = plus( f, g );
     
-elseif ( ~isa(g, 'chebfun2') )  % CHEBFUN2 + ???
+elseif ( ~isa(g, 'chebfun2') )          % CHEBFUN2 + ???
     
     error( 'CHEBFUN2:plus:unknown', ...
         ['Undefined function ''plus'' for input arguments of type %s ' ...
         'and %s.'], class(f), class(g) );
     
-else                            % CHEBFUN2 + CHEBFUN2
+else                                    % CHEBFUN2 + CHEBFUN2
     
     % Domain Check:
     if ( ~domainCheck(f, g) )
@@ -35,15 +35,15 @@ else                            % CHEBFUN2 + CHEBFUN2
     end
     
     % Check for zero CHEBFUN2 objects:
-    if ( iszero( f ) )
+    if ( iszero(f) )
         h = g;
-    elseif ( iszero( g ) )
+    elseif ( iszero(g) )
         h = f;
     else
         % Add together two nonzero CHEBFUN2 objects
         h = compression_plus(f, g);
-        %h = chebfun2(@(x, y) feval(f, x, y) + feval(g, x, y), f.domain); 
-    end 
+        %h = chebfun2(@(x, y) feval(f, x, y) + feval(g, x, y), f.domain);
+    end
 end
 
 end
@@ -66,22 +66,43 @@ if ( norm(f.pivotValues, -inf) < norm(g.pivotValues, -inf) )
     return
 end
 
-fScl = diag( 1./f.pivotValues );
-gScl = diag( 1./g.pivotValues );
+fScl = diag(1./f.pivotValues);
+gScl = diag(1./g.pivotValues);
 cols = [f.cols, g.cols];
 rows = [f.rows, g.rows];
 
-[Qcols, Rcols] = qr( cols );
-[Qrows, Rrows] = qr( rows );
+[Qcols, Rcols] = qr(cols);
+[Qrows, Rrows] = qr(rows);
 
 Z = zeros( length(fScl), length(gScl) );
 D = [fScl Z ; Z.' gScl];
-[U, S, V] = svd( Rcols * D * Rrows.' );
+[U, S, V] = svd(Rcols * D * Rrows.');
+% If V is complex-valued, then conjugate: 
+V = conj( V ); 
+% Take diagonal from SIGMA:
+s = diag(S);
 
-h = f;
-h.cols = Qcols * U;
-h.rows = Qrows * V;
-h.pivotValues = 1./diag( S );
-
+% compress the format if possible.
+% [TODO]: What should EPS be in the tolerance check below? Can we base it on
+% EPSLEVELS?
+vf = vscale(f); 
+vg = vscale(g);
+vscl = max(vf, vg); 
+% Remove singular values that fall below eps*vscale: 
+idx = find( s > eps * vscl, 1, 'last');
+if ( isempty(idx) )
+    % return 0 chebfun2
+    h = chebfun2(0, f.domain);
+else
+    U = U(:,1:idx);
+    V = V(:,1:idx);
+    s = s(1:idx);
+    h = f;
+    h.cols = Qcols * U;
+    h.rows = Qrows * V;
+    % [TODO]: PivotValues have very little meaning after this compression step.
+    % For now we assign the singular values as the pivot values. 
+    h.pivotValues = 1./s;
 end
 
+end

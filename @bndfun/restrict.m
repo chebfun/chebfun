@@ -17,7 +17,7 @@ if ( isempty(f) )
 end
 
 % Check if s is actually a subinterval:
-hs = diff(f.domain)*max(get(f, 'epslevel')); % Some wiggle room.
+hs = diff(f.domain)*max(max(get(f, 'epslevel')), eps); % Some wiggle room.
 if ( s(1) < f.domain(1) )
     if ( abs(s(1) - f.domain(1)) < hs )
         s(1) = f.domain(1);

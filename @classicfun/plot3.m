@@ -17,6 +17,9 @@ function varargout = plot3(f, g, h, varargin)
 %
 % See also PLOT, PLOTDATA.
 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
+
 % Deal with an empty input:
 if ( isempty(f) )
     if ( nargout == 1 )

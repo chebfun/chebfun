@@ -122,7 +122,7 @@ while ( 1 )
     % Update vertical scale: (Only include sampled finite values)
     valuesTemp = values;
     valuesTemp(~isfinite(values)) = 0;
-    vscale = max(vscale, max(abs(valuesTemp(:))));
+    vscale = max(vscale, max(abs(valuesTemp)));
     
     % Extrapolate out NaNs:
     [values, maskNaN, maskInf] = extrapolate(f, values);
@@ -157,9 +157,11 @@ vscaleGlobal = max(vscale, vscaleOut);
 vscale = vscaleOut;
 
 % Adjust the epslevel appropriately:
-vscaleOut(vscaleOut < epslevel) = epslevel;
-vscaleGlobal(vscaleGlobal < epslevel) = epslevel;
-epslevel = epslevel*vscaleGlobal./vscaleOut;
+ind = vscaleOut < epslevel;
+vscaleOut(ind) = epslevel(ind);
+ind = vscaleGlobal < epslevel;
+vscaleGlobal(ind) = epslevel(ind);
+epslevel = epslevel.*vscaleGlobal./vscaleOut;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% Assign to CHEBTECH object. %%%%%%%%%%%%%%%%%%%%%%%%%%
 f.coeffs = coeffs;

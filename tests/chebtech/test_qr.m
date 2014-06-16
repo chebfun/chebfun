@@ -30,21 +30,21 @@ for n = 1:4
     %%
     % Do a few spot-checks.
     
-    f = testclass.make(@(x) sin(x), [], [], pref);
+    f = testclass.make(@(x) sin(x), [], pref);
     pass(n, 1:2) = test_one_qr(f, x, method);
     pass(n, 3:4) = test_one_qr_with_perm(f, x, method);
     
-    f = testclass.make(@(x) [cos(x) exp(x)], [], [], pref);
+    f = testclass.make(@(x) [cos(x) exp(x)], [], pref);
     pass(n, 5:6) = test_one_qr(f, x, method);
     pass(n, 7:8) = test_one_qr_with_perm(f, x, method);
     
     f = testclass.make(@(x) [ones(size(x)) x x.^2 x.^3 x.^4 x.^5 x.^6 x.^7], ...
-        [], [], pref);
+        [], pref);
     pass(n, 9:10) = test_one_qr(f, x, method);
     pass(n, 11:12) = test_one_qr_with_perm(f, x, method);
     
     f = testclass.make(@(x) [1./(1+1i*x.^2) sinh((1-1i)*x) (exp(x) - x.^3)], ...
-        [], [], pref);
+        [], pref);
     pass(n, 13:14) = test_one_qr(f, x, method);
     pass(n, 15:16) = test_one_qr_with_perm(f, x, method);
     
@@ -59,7 +59,7 @@ for n = 1:4
     %%
     % Check a rank-deficient problem:
     % [TODO]: Is this correct?
-    f = testclass.make(@(x) [x x x], [], [], pref);
+    f = testclass.make(@(x) [x x x], [], pref);
     [Q, R] = qr(f, [], method);
     pass(n, 18) = all(size(Q) == 3) && all(size(R) == 3);
     I = eye(3);
@@ -69,7 +69,7 @@ for n = 1:4
     %%
     % Check that the vscale and epslevel come out with the correct size for
     % QR of an array-valued chebtech.
-    f = testclass.make(@(x) [x x.^2 x.^3], [], [], pref);
+    f = testclass.make(@(x) [x x.^2 x.^3], [], pref);
     [Q, R] = qr(f, [], method);
     pass(n, 20) = isequal(size(Q.vscale), [1 3]) && ...
         isequal(size(Q.epslevel), [1 3]);

@@ -12,6 +12,9 @@ function out = chebpoly(f, N)
 %
 % See also LEGPOLY.
 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
+
 if ( nargin == 1 )
     N = length(f);
 end

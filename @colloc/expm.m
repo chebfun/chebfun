@@ -12,7 +12,8 @@ function [E, P] = expm(disc, t)
 if ( t == 0 )
     
     % Trivial case at t = 0
-    E = eye(sum(disc.dimension));
+    [ignored, P, ignored] = matrix( disc );
+    E = eye(size(P, 2));
     
 else
     

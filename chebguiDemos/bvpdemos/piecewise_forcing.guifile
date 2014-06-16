@@ -1,0 +1,8 @@
+'Piecewise forcing term'
+'bvp'
+domain = '[-5 5]';
+DE = 'u'''' - 0.1*u^3 = -(x>=0.9)*(x<=1.1)';
+BC = {'u''(-5) = 0';'u(5) = 1'};
+init = ''; tol = '1e-10';
+damping = '0'; plotting = '0.1';
+type = 'bvp';

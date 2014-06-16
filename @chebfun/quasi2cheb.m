@@ -9,7 +9,7 @@ function F = quasi2cheb(F)
 % See http://www.chebfun.org/ for Chebfun information.
 
 if ( numel(F) < 2 )
-    % F must already be a quasimatrix!
+    % F is already be a quasimatrix!
     return
 end
 

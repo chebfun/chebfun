@@ -5,7 +5,7 @@ function out = isdecay(f)
 %   returned if F has a boundary root with multiplicity larger than one, FALSE
 %   otherwise. 
 %
-%   Note that ISDECAY is designed and expected to be called only by UNBNDFUN
+%   Note that ISDECAY is designed for and expected to be called only by UNBNDFUN
 %   class for handling functions defined on unbounded domains.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.

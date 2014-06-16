@@ -25,56 +25,56 @@ for n = 1:2
     % Check operation in the face of empty arguments.
     
     f = testclass.make();
-    g = testclass.make(@(x) x, [], [], pref);
+    g = testclass.make(@(x) x, [], pref);
     pass(n, 1) = (isempty(f - f) && isempty(f - g) && isempty(g - f));
     
     %%
     % Check subtraction with scalars.
     
     f_op = @(x) sin(x);
-    f = testclass.make(f_op, [], [], pref);
+    f = testclass.make(f_op, [], pref);
     pass(n, 2:3) = test_sub_function_and_scalar(f, f_op, alpha, x);
     
     %%
     % Check subtraction of two chebtech objects.
     
     f_op = @(x) zeros(size(x));
-    f = testclass.make(f_op, [], [], pref);
+    f = testclass.make(f_op, [], pref);
     pass(n, 4:5) = test_sub_function_and_function(f, f_op, f, f_op, x);
     
     f_op = @(x) exp(x) - 1;
-    f = testclass.make(f_op, [], [], pref);
+    f = testclass.make(f_op, [], pref);
     
     g_op = @(x) 1./(1 + x.^2);
-    g = testclass.make(g_op, [], [], pref);
+    g = testclass.make(g_op, [], pref);
     pass(n, 6:7) = test_sub_function_and_function(f, f_op, g, g_op, x);
     
     g_op = @(x) cos(1e4*x);
-    g = testclass.make(g_op, [], [], pref);
+    g = testclass.make(g_op, [], pref);
     pass(n, 8:9) = test_sub_function_and_function(f, f_op, g, g_op, x);
     
     g_op = @(t) sinh(t*exp(2*pi*1i/6));
-    g = testclass.make(g_op, [], [], pref);
+    g = testclass.make(g_op, [], pref);
     pass(n, 10:11) = test_sub_function_and_function(f, f_op, g, g_op, x);
     
     %%
     % Check operation for array-valued chebtech objects.
     
     f_op = @(x) [zeros(size(x)) zeros(size(x)) zeros(size(x))];
-    f = testclass.make(f_op, [], [], pref);
+    f = testclass.make(f_op, [], pref);
     pass(n, 12:13) = test_sub_function_and_function(f, f_op, f, f_op, x);
     
     f_op = @(x) [sin(x) cos(x) exp(x)];
-    f = testclass.make(f_op, [], [], pref);
+    f = testclass.make(f_op, [], pref);
     pass(n, 14:15) = test_sub_function_and_scalar(f, f_op, alpha, x);
     
     g_op = @(x) [cosh(x) airy(1i*x) sinh(x)];
-    g = testclass.make(g_op, [], [], pref);
+    g = testclass.make(g_op, [], pref);
     pass(n, 16:17) = test_sub_function_and_function(f, f_op, g, g_op, x);
     
     % This should fail with a dimension mismatch error.
     g_op = @(x) sin(x);
-    g = testclass.make(g_op, [], [], pref);
+    g = testclass.make(g_op, [], pref);
     try
         h = f - g; %#ok<NASGU>
         pass(n, 18) = false;
@@ -86,10 +86,10 @@ for n = 1:2
     % Check that direct construction and MINUS give comparable results.
     
     tol = 10*eps;
-    f = testclass.make(@(x) x, [], [], pref);
-    g = testclass.make(@(x) cos(x) - 1, [], [], pref);
+    f = testclass.make(@(x) x, [], pref);
+    g = testclass.make(@(x) cos(x) - 1, [], pref);
     h1 = f - g;
-    h2 = testclass.make(@(x) x - (cos(x) - 1), [], [], pref);
+    h2 = testclass.make(@(x) x - (cos(x) - 1), [], pref);
     pass(n, 19) = norm(h1.coeffs - h2.coeffs, inf) < tol;
 
     %%

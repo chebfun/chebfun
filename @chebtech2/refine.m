@@ -10,8 +10,8 @@ function [values, giveUp] = refine(op, values, pref)
 %
 %   The two built-in refinement strategies are 'NESTED' and 'RESAMPLING'. The
 %   former makes use of the nested property of the 2nd-kind grid by taking N
-%   (the interpolation degree) to be 2^(3:16)+1 and doesn't resample previously
-%   evaluated values. The latter uses grids of the form 2^(3:6 6:.5:16)+1 and
+%   (the number of points) to be 2^(3:16) + 1 and doesn't resample previously
+%   evaluated values. The latter uses grids of the form 2^(3:6 6:.5:16) + 1 and
 %   resamples all of the values each time N is increased. The 'RESAMPLING'
 %   option should be used for functions which are not sampleable, for example,
 %   anything that depends on the length of the input to OP.
@@ -51,6 +51,9 @@ else
     % User defined refinement function:
     [values, giveUp] = refFunc(op, values, pref);
 end
+
+% Ensure that doubles are returned:
+values = double(values);
     
 end
 

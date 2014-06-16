@@ -77,8 +77,7 @@ x = diff(domCheck) * rand(100, 1) + domCheck(1);
 
 % Blow-up function:
 op = @(x) x.^2.*(1-exp(-x.^2));
-pref.singPrefs.exponents = [2 2];
-f = chebfun(op, dom, pref); 
+f = chebfun(op, dom, 'exps', [2 2]);
 g = ( f ~= f );
 gVals = feval(g, x);
 pass(10) = ~any(gVals);

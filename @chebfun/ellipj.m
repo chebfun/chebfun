@@ -34,6 +34,12 @@ else
     tol = pref.techPrefs.eps;
 end
 
+    function x = fudge(x, tol)
+        % M must lie in [0, 1]. Fudge values outside this range during compose.
+        x(x < 0 & x > -tol,:) = 0;
+        x(x > 1 & x < 1 + tol,:) = 0;
+    end
+
 if ( isreal(u) )
     % Real case: Call ELLIPJ().
 
@@ -49,26 +55,28 @@ if ( isreal(u) )
             dn = compose(u, @(u) dnFun(u, m, tol), pref);
         end
     elseif ( isnumeric(u) )  % U = double, M = CHEBFUN
+        mTol = max(epslevel(m).*vscale(m), tol);
         % SN
-        sn = compose(m, @(m) ellipj(u, m, tol), pref);
+        sn = compose(m, @(m) ellipj(u, fudge(m, mTol), tol), pref);
         % CN
         if ( nargout >= 2 )
-            cn = compose(m, @(m) cnFun(u, m, tol), pref);
+            cn = compose(m, @(m) cnFun(u, fudge(m, mTol), tol), pref);
         end
         % DN
         if ( nargout == 3 )
-            dn = compose(m, @(m) dnFun(u, m, tol), pref);
+            dn = compose(m, @(m) dnFun(u, fudge(m, mTol), tol), pref);
         end
     else                     % U = CHEBFUN, M = CHEBFUN
+        mTol = max(epslevel(m).*vscale(m), tol);
         % SN
-        sn = compose(u, @(u, m) ellipj(u, m, tol), m, pref);
+        sn = compose(u, @(u, m) ellipj(u, fudge(m, mTol), tol), m, pref);
         % CN
         if ( nargout >= 2 )
-            cn = compose(u, @(u, m) cnFun(u, m, tol), m, pref);
+            cn = compose(u, @(u, m) cnFun(u, fudge(m, mTol), tol), m, pref);
         end
         % DN
         if ( nargout == 3 )
-            dn = compose(u, @(u, m) dnFun(u, m, tol), m, pref);
+            dn = compose(u, @(u, m) dnFun(u, fudge(m, mTol), tol), m, pref);
         end
     end
     
@@ -105,3 +113,5 @@ function dnOut = dnFun(u, varargin)
 %DNFUN  Jacobi elliptic function dn.
     [ignored, ignored, dnOut] = ellipj(u, varargin{:});
 end
+
+

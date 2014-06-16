@@ -32,7 +32,7 @@ elseif ( isnumeric(A) )
     
     if ( ~isscalar(A) )
         error('CHEBFUN:chebop:mtimes:nonscalar', ...
-            'CHEBOP * DOUBLE multiplication is only defined for scalars.');
+            'CHEBOP * DOUBLE multiplication is defined only for scalars.');
     end
     
     % Initialize C as a CHEBOP
@@ -50,7 +50,7 @@ elseif ( isa(A,'chebop') && isa(B,'chebop') )
     % we start getting systems involved, as the inputs need to be shuffled
     % correctly. A remedy might be through a nested function in this file.
     error('CHEBFUN:CHEBOP:MTIMES:COMPOSITIONS',...
-        'Chebop composition is currently not supported.');   
+        'CHEBOP composition is not supported.');   
     
 else 
     error('%s * %s multiplication is not supported.', class(A), class(B));

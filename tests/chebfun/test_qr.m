@@ -64,8 +64,7 @@ pass(12) = normest(Q - Q2) + norm(R - R2) < 1e-13*(tol/eps);
 
 % Check QR of a CHEBFUN based on CHEBTECH1.
 p = pref;
-p.tech = 'chebtech1';
-p.techPrefs.gridType = 1;
+p.tech = @chebtech1;
 f = chebfun(@(x) [sin(x) cos(x) exp(x)], [-1 0 1], p);
 [Q, R] = qr(f);
 pass(13) = isa(f.funs{1}.onefun, 'chebtech1') && ...

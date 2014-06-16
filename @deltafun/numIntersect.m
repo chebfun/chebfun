@@ -2,6 +2,9 @@ function [x, idxV, idxW] = numIntersect(V, W, tol)
 %NUMINTERSECT   Find the intersection of V and W with a relative tolerance.
 %   The code does not always return unique elements.
 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
+
 if ( nargin < 3 || isempty(tol) )
     pref = chebfunpref();
     tol = pref.deltaPrefs.proximityTol;

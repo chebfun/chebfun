@@ -1,4 +1,4 @@
-function [y, x] = minandmax(f, flag)
+function [y, x] = minandmax(f, flag, dim)
 %MINANDMAX   Minimum and maximum values of a CHEBFUN.
 %   Y = MINANDMAX(F) returns the range of the CHEBFUN F such that Y(1,1) =
 %   min(F) and Y(2,1) = max(F).
@@ -17,6 +17,12 @@ function [y, x] = minandmax(f, flag)
 %   of F. NaNs are used to pad Y and X when the 'local' flag is used and the
 %   columns are not of the same length.
 %
+%   MINANDMAX(F, [], DIM) computes the minimum and maximum of the CHEBFUN F in
+%   the dimension DIM. If DIM = 1 and F is a column CHEBFUN or DIM = 2 and F is
+%   a row CHEBFUN, this is equivalent to MINANDMAX(F). Othewise, MINANDMAX(F,
+%   [], DIM) returns CHEBFUNs of the minimum and maximum across the discrete
+%   dimension of F.
+%
 % See also MAX, MIN.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
@@ -29,6 +35,13 @@ if ( isempty(f) )
     return
 end
 
+if ( (nargin == 3) && (dim ~= 1 + f(1).isTransposed) )
+    y = chebfun();
+    y(1) = min(f, [], dim);
+    y(2) = max(f, [], dim);    
+    return
+end
+    
 % Number of columns of an array-valued CHEBFUN:
 numCols = numColumns(f);
 
@@ -49,18 +62,49 @@ if ( numCols > 1 )
     return
 end
 
+% NOTE: From here onwards, f will only be a scalar-valued CHEBFUN.
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Deal with complex case:
 if ( ~isreal(f) )
     realf = real(f);
     imagf = imag(f);
     g = realf.*realf + imagf.*imagf;
     g = simplify(g);
-    [ignored, x] = minandmax(g);
+    [z, x] = minandmax(g);
+    z = sqrt(z);
     y = feval(f, x);
+    
+    % We should now have that abs(y) = z, however this can go wrong if the max
+    % or min happens to occur at a breakpoint. If this is the case, we fix
+    % things up by evaluating to the left of the break. If we still don't have
+    % abs(y) = z, we evaluate to the right of the break. See #161.
+    tol = 100*eps(z);
+    idx = abs(abs(y) - z) < tol;
+    if ( ~all(idx(:)) )
+        yl = feval(f, x, 'left');         % Evaluate to the left:
+        idxl = ~idx & abs(abs(yl) - z) < tol; % Take these values from the left.
+        y(idxl) = yl(idxl);               % Take the value of y from the left.
+        x(idxl) = x(idxl) - eps(x(idxl)); % Shift x left by a tiny amount.
+        idx = idx | idxl;                 % Merge index.
+        if ( ~all(idx(:)) )               % Still not OK!
+            yr = feval(f, x, 'right');    % Evaluate to the right:
+            idxr = ~idx & abs(abs(yr) - z) < tol; % Take these vals from right.
+            y(idxr) = yr(idxr);                % Take value of y from the right.
+            x(idxr) = x(idxr) + eps(x(idxr));  % Shift x right by a tiny amount.
+            idx = idx | idxr;                  % Merge index.
+            if ( ~all(idx) )                   % Throw warning if still not OK.
+                warning('CHEBFUN:minandmax:complexfail', ...
+                    'Something has gone wrong in locating complex-valued min/max.');
+            end
+        end
+    end 
+    
     return
+    
 end
 
-% NOTE: From here onwards, f will only be a scalar-valued CHEBFUN.
+% NOTE: From here onwards, f will only be a real-scalar-valued CHEBFUN.
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% SMOOTH PART %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 dom = f.domain;

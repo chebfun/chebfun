@@ -1,0 +1,10 @@
+'Frank-Kamenetskii blowup equation'
+'scalar'
+domain = '[-1 1]';
+t = '0:.01772:3.544';
+DE = 'u_t = u'''' + exp(u)';
+LBC = 'u = 0'; RBC = 'u = 0';
+init = 'u = 0';
+tol = '1e-6'; plotting = 'on';
+fixYaxisLower = '0'; fixYaxisUpper = '8';
+type  = 'pde';

@@ -1,0 +1,10 @@
+'Burgers equation'
+'scalar'
+domain = '[-1 1]';
+t = '0:.04:6';
+DE = 'u_t = -(u^2)'' + .02*u"';
+LBC = 'periodic'; RBC = 'periodic';
+init = 'u = (1-x^2)*exp(-30*(x+.5)^2)';
+tol = '1e-4'; plotting = 'on';
+fixYaxisLower = '0'; fixYaxisUpper = '0.8';
+type  = 'pde';

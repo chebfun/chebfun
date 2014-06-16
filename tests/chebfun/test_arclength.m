@@ -38,7 +38,7 @@ f = chebfun(@(x) exp(2*pi*1i*x), [0 1]);
 l = arcLength(f);
 lExact = 2*pi;
 err = abs(l - lExact);
-pass(4) = ( err < lExact*vscale(f).*epslevel(f) );
+pass(4) = ( err < 10*lExact*vscale(f).*epslevel(f) );
 
 % Array-valued CHEBFUN:
 f = chebfun(@(x)[sin(x) cos(2*x)]);

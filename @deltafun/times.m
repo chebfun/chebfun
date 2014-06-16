@@ -62,7 +62,7 @@ if ( isa(g, 'deltafun') )
         deltafun.mergeDeltas(deltaMag1, f.deltaLoc, deltaMag2, g.deltaLoc);
     
     % Assumble the DELTAFUN:
-    h = deltafun(funPart, deltaMag, deltaLoc);
+    h = deltafun(funPart, struct('deltaMag', deltaMag, 'deltaLoc', deltaLoc));
 else
     % Class of g unknown, throw an error:
     error( 'DELTAFUN:times', 'unknown argument type' );

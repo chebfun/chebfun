@@ -13,15 +13,15 @@ for n = 1:2
         testclass = chebtech2();
     end
 
-    f = testclass.make(@(x) sin(x), [], [], pref);
+    f = testclass.make(@(x) sin(x), [], pref);
     pass(n, 1) = length(f) == size(f.coeffs, 1);
     
-    f = testclass.make(@(x) [sin(x), cos(x), 1i*exp(x)], [], [], pref);
+    f = testclass.make(@(x) [sin(x), cos(x), 1i*exp(x)], [], pref);
     pass(n, 2) = length(f) == size(f.coeffs, 1);
     
     p = pref;
     p.numPoints = 101;
-    f = testclass.make(@(x) [sin(x), cos(x), 1i*exp(x)], [], [], p);
+    f = testclass.make(@(x) [sin(x), cos(x), 1i*exp(x)], [], p);
     pass(n, 3) = length(f) == 101;
 end
 

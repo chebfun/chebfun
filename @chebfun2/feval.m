@@ -45,19 +45,53 @@ elseif ( isnumeric( x ) && strcmpi(y, ':') ) % f(x, :)
     
 elseif ( isnumeric( x ) && isnumeric( y ) )  % f(x, y)
     
-    % TODO: Document this chunk!
+    takeTranspose = 0;
+    
+    % If the evaluation points are derived from meshgrid, then there is a
+    % fast way to evaluate a chebfun2. Check for this property. 
     if ( min(size(x)) > 1 && all(size(x) == size(y)) )
-        if ( rank(x) == 1 && rank(y) == 1 )
+        % Check to see if the input is a meshgrid:
+        if ( max(max(abs(bsxfun(@minus, x, x(1,:))))) == 0  && ... 
+                max(max(abs(bsxfun(@minus, y, y(:,1)))) == 0 ))
+            % This allows someone to do: 
+            % [xx,yy] = meshgrid(linspace(-1,1));
+            % f(xx,yy)
+            
             x = x(1,:);
             y = y(:,1);
+            takeDiag = 0;
+            
+        elseif ( max(max(abs(bsxfun(@minus, y, y(1,:))))) == 0 && ... 
+                max(max(abs(bsxfun(@minus, x, x(:,1)))) == 0 ) )
+            % This allows someone to do: 
+            % [yy,xx] = meshgrid(linspace(-1,1));
+            % f(xx,yy)
+            
+            x = x(:,1); 
+            y = y(1,:);
+            takeTranspose = 1;
+            takeDiag = 0;
+        else
+            % Evaluate at matrices, but they're not from meshgrid: 
+            out = zeros( size( x ) ); 
+            for jj = 1:size(out,1)
+                for kk = 1: size(out,2)
+                    out(jj, kk) = feval( f, x(jj,kk), y(jj,kk) ); 
+                end
+            end
+            return
         end
-        takeDiag = 0;
     else 
         takeDiag = 1; 
     end
     
     % Evaluate:
-    out = feval( cols, y(:) ) * D * feval( rows, x(:)) .';
+    out = feval(cols, y(:)) * D * feval(rows, x(:)).';
+    
+    % Take transpose: 
+    if ( takeTranspose ) 
+        out = transpose( out ); 
+    end 
     
     % Take diagonal:
     if ( takeDiag ) 
@@ -87,7 +121,12 @@ elseif ( isa(x, 'chebfun') )
                 'Cannot evaluate along complex-valued CHEBFUN.');
         end
     end
-    
+elseif ( isa(x, 'chebfun2v') ) 
+    components = x.components; 
+    % [TODO]: Check domain and range are compatible? 
+    domain = components{1}.domain;
+    out = chebfun2(@(s,t) feval(f, feval(components{1},s,t),...
+                                        feval(components{2},s,t)), domain);
 else
     error('CHEBFUN2:FEVAL:INPUTS', 'Unrecognized arguments for evaluation.');
     

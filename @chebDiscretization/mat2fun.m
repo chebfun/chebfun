@@ -48,7 +48,7 @@ values = mat2cell( values, componentLength, size(values,2) );
 f = cell(numVar, 1);
 for j = 1:numVar
     if ( isFun(j) )
-        f{j} = toFunction(disc, values{j});
+        f{j} = toFunctionOut(disc, values{j});
     else
         f{j} = values{j};
     end

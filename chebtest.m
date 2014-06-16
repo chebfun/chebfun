@@ -54,20 +54,12 @@ function varargout = chebtest(varargin)
 %   CHEBTEST(..., '--quiet') performs a quieter version of the test, whereby
 %   information is only displayed for those tests which do not pass.
 %
-%   CHEBTEST(..., '--light') will only perform tests in the following
-%   directories: chebtech/, chebtech1/, chebtech2/, fun/, bndfun/, chebfun/.
-%   This list is maintained at the top of the CHEBTEST.M code block, and can be
-%   readily modified to suit your needs.
-%
-%   Any of the above '--' input arguments can be used in tandem.
+%   Any of the '--' input arguments can be used in tandem.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
 % [TODO]: Preferences.
-
-% Folders to test in '--light' mode.
-lightDirs = {'chebtech', 'chebtech1', 'chebtech2', 'fun', 'bndfun', 'chebfun'};
 
 % Find directory in which Chebfun was installed:
 installDir = fileparts(which('chebtest'));
@@ -102,11 +94,16 @@ end
 
 % In '--light' mode, only test certain directories.
 if ( lightMode )
+    % Note, this mode is undocumented and not usage is not encouraged. In
+    % particular, the --verbose version of CHEBTEST _must_ be run before
+    % committing anything to the Chebfun Git repo.
     if ( ~isempty(args) )
         warning('CHEBFUN:chebtest:light', ...
             'Running in --light mode ignores additional directory information.');
     end
-    args = lightDirs;
+    % Folders to test in '--light' mode.
+    args = {'chebtech', 'chebtech1', 'chebtech2', 'classicfun', 'bndfun', ...
+        'chebfun'};
 end
 
 if ( ~isempty(args) ) 
@@ -362,6 +359,10 @@ function duration = runTest(testFile)
 %   If executing TESTFILE crashes, this is caught in a try-catch statement, and
 %   RUNTTEST returns DURATION = -2.
 
+% Store current default preference states:
+prefState1 = chebfunpref();
+prefState2 = cheboppref();
+
 % Attempt to run the test:
 try
     tstart = tic();
@@ -377,10 +378,14 @@ try
 catch ME %#ok<NASGU>
     % We crashed. This is bad. Return CRASHED flag.
     duration = -2;
-
+    
     % But we _don't_ want to throw an error.
     %rethrow(ME)
 end
+
+% Ensure global preferences aren't modified by tests.
+chebfunpref.setDefaults(prefState1);
+cheboppref.setDefaults(prefState2);
 
 end
 

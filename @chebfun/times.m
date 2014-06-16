@@ -74,6 +74,10 @@ else                           % CHEBFUN .* CHEBFUN
         error('CHEBFUN:times:matdim', ...
             'Matrix dimensions must agree. (One input is transposed).');
     end
+    
+    if ( numColumns(f) ~= numColumns(g) )
+        error('CHEBFUN:times:matdim', 'Matrix dimensions must agree.');
+    end
 
     if ( numel(f) == 1 && numel(g) == 1 )
         % Array-valued CHEBFUN case:
@@ -85,18 +89,16 @@ else                           % CHEBFUN .* CHEBFUN
         for k = 1:numel(f.funs)
             f.funs{k} = times(f.funs{k}, g.funs{k});
         end
-        f.pointValues = f.pointValues .* g.pointValues;        
+        f.pointValues = f.pointValues .* g.pointValues;
+        
     else
         % QUASIMATRIX case:
-        if ( numColumns(f) ~= numColumns(g) )
-            error('CHEBFUN:times:matdim', 'Matrix dimensions must agree.');
-        else
-            % Loop over the columns:
-            f = cheb2quasi(f);
-            g = cheb2quasi(g);
-            for k = 1:numel(f)
-                f(k) = f(k).*g(k);
-            end
+
+        % Loop over the columns:
+        f = cheb2quasi(f);
+        g = cheb2quasi(g);
+        for k = 1:numel(f)
+            f(k) = f(k).*g(k);
         end
 
     end

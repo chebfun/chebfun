@@ -15,7 +15,7 @@ function data = plotData(f, g, h)
 % See http://www.chebfun.org/ for Chebfun information.
 
 % Get the data from the ONEFUN:
-if ( nargin == 1 || isempty(g) )
+if ( (nargin == 1) || isempty(g) )
     % PLOT(F):
     data = plotData(f.onefun);
     % Map the 'x' data using f.mapping.for:
@@ -37,9 +37,6 @@ elseif ( nargin == 2 )
     data.xJumps = getJumps(f, data.xLine);
     data.yJumps = getJumps(g, data.yLine);
     
-    % Sort out the xLim: 
-    data.xLim = [min(get(f, 'values')) max(get(f, 'values'))];
-    
 else
     % PLOT(F, G, H):
     data = plotData(f.onefun, g.onefun, h.onefun);
@@ -50,7 +47,9 @@ else
     data.zJumps = getJumps(h, data.zLine);
     
     % Sort out the xLim:
-    data.xLim = [min(get(f, 'values')) max(get(f, 'values'))];
+    values = get(f, 'values');
+    data.xLim = [min(values(:)), max(values(:))];
+    
 end
 
 end

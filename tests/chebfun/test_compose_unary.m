@@ -78,7 +78,7 @@ x = diff(domCheck) * rand(100, 1) + domCheck(1);
 
 opf = @(x) exp(-x);
 opg = @(x) sin(exp(-x));
-f = unbndfun(opf, dom);
+f = chebfun(opf, dom);
 g = compose(f, @sin);
 gVals = feval(g, x);
 gExact = opg(x);

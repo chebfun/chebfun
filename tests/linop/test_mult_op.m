@@ -13,11 +13,22 @@ g = x.^3-cos(x);
 
 % no breaks
 F = operatorBlock.mult(f);
-pass(1) = norm( F*g - f.*g ) < tol;
+err(1) = norm( F*g - f.*g );
 
 % breakpoint
 f = abs(f);
 F = operatorBlock.mult(f);
-pass(2) = norm( F*g - f.*g ) < tol;
+err(2) = norm( F*g - f.*g );
+
+%% Expansion
+% Try to let an multiplication operator operate on an array-valued CHEBFUN:
+h = cos(x);
+M = operatorBlock.mult(h);
+V = chebpoly(1:4, d);
+err(3) = norm( M*V - repmat(h, 1, 4).*V);
+
+%%
+pass = err < tol;
+
 
 end

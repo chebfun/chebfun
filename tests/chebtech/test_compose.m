@@ -23,20 +23,20 @@ for n = 1:4
 
     % Compose a scalar-valued CHEBTECH object with sin(x):
     f = testclass.make(@(x) x);
-    g = compose(f, @sin, [], pref);
+    g = compose(f, @sin, [], [], pref);
     h = testclass.make(@sin);
     pass(n, 1) = norm(h.coeffs - g.coeffs, inf) < 10*h.vscale.*h.epslevel;
 
     % Compose an array-valued CHEBTECH object with sin(x):
     f = testclass.make(@(x) [x x]);
-    g = compose(f, @sin, [], pref);
+    g = compose(f, @sin, [], [], pref);
     h = testclass.make(@(x) [sin(x) sin(x)]);
     pass(n, 2) = norm(h.coeffs - g.coeffs, inf) < ...
         10*max(h.vscale.*h.epslevel);
 
     % Compose an array-valued CHEBTECH object with sin(x):
     f = testclass.make(@(x) [x x.^2]);
-    g = compose(f, @sin, [], pref);
+    g = compose(f, @sin, [], [], pref);
     x = g.points();
     values = g.coeffs2vals(g.coeffs);
     pass(n, 3) = norm(sin([x, x.^2])- values, inf) < ...
@@ -44,7 +44,7 @@ for n = 1:4
     
     % Compose an array-valued CHEBTECH object with sin(x):
     f = testclass.make(@(x) [x x x.^2]);
-    g = compose(f, @sin, [], pref);
+    g = compose(f, @sin, [], [], pref);
     x = g.points();
     values = g.coeffs2vals(g.coeffs);
     pass(n, 4) = norm(sin([x x x.^2]) - values, inf) < ...
@@ -53,7 +53,7 @@ for n = 1:4
     % Compose 2 CHEBTECH objects with a binary function:
     f1 = testclass.make(@(x) sin(x));
     f2 = testclass.make(@(x) cos(x));
-    g = compose(f1, @plus, f2, pref);
+    g = compose(f1, @plus, f2, [], pref);
     x = g.points;
     h = testclass.make(sin(x) + cos(x));
     hvalues = h.coeffs2vals(h.coeffs);
@@ -63,7 +63,7 @@ for n = 1:4
     % Compose 2 array-valued CHEBTECH objects with a binary function:
     f1 = testclass.make(@(x) [sin(x) cos(x)]);
     f2 = testclass.make(@(x) [cos(x) exp(x)]);
-    g = compose(f1, @times, f2, pref);
+    g = compose(f1, @times, f2, [], pref);
     h = testclass.make(@(x) [sin(x).*cos(x) cos(x).*exp(x)]);    
     hvalues = h.coeffs2vals(h.coeffs);
     gvalues = g.coeffs2vals(g.coeffs);
@@ -116,14 +116,15 @@ for n = 1:4
         pass(n, 11) = strcmp(ME.identifier, 'CHEBFUN:CHEBTECH:compose:dim');
     end
     
-    try
-        f = testclass.make(@(x) sin(x));
-        g = testclass.make(@(x) 100*cos(x));
-        compose(g,f);
-        pass(n, 12) = false;
-    catch ME
-        pass(n, 12) = strcmp(ME.identifier, 'CHEBFUN:CHEBTECH:compose:range');
-    end
+    % Removed by NH Apr 2014. This should be checked at a hgiher level.
+%     try
+%         f = testclass.make(@(x) sin(x));
+%         g = testclass.make(@(x) 100*cos(x));
+%         compose(g,f);
+%         pass(n, 12) = false;
+%     catch ME
+%         pass(n, 12) = strcmp(ME.identifier, 'CHEBFUN:CHEBTECH:compose:range');
+%     end
 end
 
 end

@@ -10,7 +10,7 @@ end
 
 % Test 1 confirms that the elements of the array-valued chebfun p 
 % are Legendre polynomials: 
-p = legpoly(900:1100, [-1 0 1]);
+p = legpoly(900:1100, [-1 1]);
 xx = linspace(-1, 1, 10);
 P = legendre(900, xx); 
 err = norm(feval(p(:,1), xx) - P(1, :), inf);
@@ -24,7 +24,7 @@ tol = 5e1*epslevel(p)*vscale(p);
 pass(2) = err < tol;
 
 % Test 3 confirms othonormality:
-p = legpoly(900:1100, [-1 0 1], 'normalize');
+p = legpoly(900:1100, [-1 1], 'normalize');
 err = norm(p'*p - eye(201));
 tol = 5e3*epslevel(p)*vscale(p);
 pass(3) = err < tol;
@@ -54,13 +54,13 @@ pass(6) = err < tol;
 %% Test method 1 on [0 10000]:
 
 % Test 7 confirms orthogonality:
-p = legpoly(900:1100, [0 100 10000], 'normalize');
+p = legpoly(900:1100, [0 10000], 'normalize');
 err = norm(p'*p - diag(diag(p'*p)));
 tol = 1e5*epslevel(p)*vscale(p);
 pass(7) = err < tol;
 
 % Test 8 confirms othonormality:
-p = legpoly(900:1100, [0 50 10000], 'normalize');
+p = legpoly(900:1100, [0 10000], 'normalize');
 err = norm(p'*p - eye(201));
 tol = 1e5*epslevel(p)*vscale(p);
 pass(8) = err < tol;

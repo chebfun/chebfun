@@ -9,13 +9,27 @@ function out = roots(f, varargin)
 %       [0] - Return only real-valued roots in [-1,1].
 %        1  - Return roots outside of [-1,1] (including complex roots).
 %
+%   COMPLEX:
+%       [0]
+%        1  - Return real and complex roots inside a Bernstein ellipse. 
+%
 %   RECURSE:
 %        0  - Compute roots without interval subdivision (slower).
-%       [1] - Subdivide until length(F) < 50. (causes additional complex roots).
+%       [1] - Subdivide until length(F) < 50. (can cause additional complex roots).
 %
 %   PRUNE:
 %       [0]
 %        1  - Prune 'spurious' complex roots if ALL == 1 and RECURSE == 0.
+%
+%   QZ: 
+%       [0] - Use the colleague matrix linearization and the QR algorithm.
+%        1  - Use the colleague matrix pencil linearization and the QZ 
+%             algorithm for potentially extra numerical stability. 
+%
+%   FILTER:
+%       [ ]
+%   @filter(R,F) - A function handle which accepts the sorted computed roots, R, 
+%                  and the CHEBTECH, F, and filters the roots as it see fit.
 %
 %   If F is an array-valued CHEBTECH then there is no reason to expect each
 %   column to have the same number of roots. In order to return a useful output,
@@ -104,7 +118,8 @@ end
 function out = roots_scalar(f, varargin)
 
 % Default preferences:
-rootsPref = struct('all', 0, 'recurse', 1, 'prune', 0, 'zeroFun', 1, 'qz', 0);
+rootsPref = struct('all', 0, 'recurse', 1, 'prune', 0, 'zeroFun', 1, ...
+    'qz', 0, 'filter', []);
 % Subdivision maps [-1,1] into [-1, splitPoint] and [splitPoint, 1].
 splitPoint = -0.004849834917525; % This is an arbitrary number.
 
@@ -147,6 +162,12 @@ c = flipud(f.coeffs)/f.vscale;
 
 % Call the recursive rootsunit function:
 r = rootsunit_coeffs(c, 100*eps*max(f.hscale, 1));
+
+% Try to filter out spurious roots:
+if ( ~isempty(rootsPref.filter) )
+    r = sort(r, 'ascend');
+    r = rootsPref.filter(r, f);
+end
 
 % Prune the roots, if required:
 if ( rootsPref.prune && ~rootsPref.recurse )

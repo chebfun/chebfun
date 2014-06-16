@@ -15,11 +15,11 @@ for n = 1:2
     end
 
     % Test a scalar-valued function:
-    f = testclass.make(@(x) x, [], [], p);
+    f = testclass.make(@(x) x, [], p);
     pass(n, 1) = ~isnan(f);
 
     % Test an array-valued function:
-    f = testclass.make(@(x) [x, x.^2], [], [], p);
+    f = testclass.make(@(x) [x, x.^2], [], p);
     pass(n, 2) = ~isnan(f);
 
     % Artificially construct and test a NaN-valued function:

@@ -1,23 +1,25 @@
 function varargout = pde15s(pdeFun, tt, u0, bc, varargin)
-%PDE15S   Solve PDEs using the CHEBFUN system.
+%PDE15S   Solve PDEs using Chebfun.
+%
 %   UU = PDE15s(PDEFUN, TT, U0, BC) where PDEFUN is a handle to a function with
-%   arguments u, t, x, and D, TT is a vector, U0 is a chebfun, and BC is a
-%   chebop boundary condition structure will solve the PDE dUdt = PDEFUN(UU, t,
-%   x) with the initial condition U0 and boundary conditions BC over the time
-%   interval TT.
+%   arguments u, t, x, and D, TT is a vector, U0 is a CHEBFUN or a CHEBMATRIX,
+%   and BC is a CHEBOP boundary condition structure will solve the PDE dUdt =
+%   PDEFUN(UU, t, x) with the initial condition U0 and boundary conditions BC
+%   over the time interval TT.
 %
 %   PDEFUN should take the form @(T, X, U1, U2, ..., UN), where U1, ..., UN are
 %   the unknown dependent variables to be solved for, T is time, and X is space.
 %
-%   For backwards compatability, the syntax @(U1, U2, ..., UN, T, X, D, S, C)
+%   For backwards compatibility, the syntax @(U1, U2, ..., UN, T, X, D, S, C)
 %   for PDEFUN, where U1, ..., UN are the unknown dependent variables to be
 %   solved for, T is time, X is space, D is the differential operator, S is the
 %   definite integral operator (i.e., 'sum'), and C the indefinite integral
 %   operator (i.e., 'cumsum') is also supported.
 %
-%   For equations of one variable, UU is output as an array valued chebfun,
-%   where UU(:, k) is the solution at TT(k). For systems, the solution is
-%   returned as a cell array of array valued chebfuns.
+%   For equations of one variable, UU is output as an array-valued CHEBFUN,
+%   where UU(:, k) is the solution at TT(k). For systems, the solution UU is
+%   returned as a CHEBMATRIX with the different variables along the rows, and
+%   time slices along the columns.
 %
 % Example 1: Nonuniform advection
 %     x = chebfun('x', [-1 1]);
@@ -30,8 +32,8 @@ function varargout = pde15s(pdeFun, tt, u0, bc, varargin)
 % Example 2: Kuramoto-Sivashinsky
 %     x = chebfun('x');
 %     u = 1 + 0.5*exp(-40*x.^2);
-%     bc.left = @(u) [u - 1, diff(u)];
-%     bc.right = @(u) [u - 1, diff(u)];
+%     bc.left = @(u) [u - 1 ; diff(u)];
+%     bc.right = @(u) [u - 1 ; diff(u)];
 %     f = @(u) u.*diff(u) - diff(u, 2) - 0.006*diff(u, 4);
 %     opts = pdeset('Ylim', [-30 30], 'PlotStyle', {'LineWidth', 2});
 %     uu = pde15s(f, 0:.01:.5, u, bc, opts);
@@ -39,9 +41,9 @@ function varargout = pde15s(pdeFun, tt, u0, bc, varargin)
 %
 % Example 3: Chemical reaction (system)
 %      x = chebfun('x');
-%      u = [ 1 - erf(10*(x+0.7)) , 1 + erf(10*(x-0.7)) , 0 ];
-%      f = @(u, v, w)  [ .1*diff(u, 2) - 100*u.*v , ...
-%                        .2*diff(v, 2) - 100*u.*v , ...
+%      u = [ 1 - erf(10*(x+0.7)) ; 1 + erf(10*(x-0.7)) ; 0 ];
+%      f = @(u, v, w)  [ .1*diff(u, 2) - 100*u.*v ; ...
+%                        .2*diff(v, 2) - 100*u.*v ; ...
 %                        .001*diff(w, 2) + 2*100*u.*v ];
 %      opts = pdeset('Ylim', [0 2], 'PlotStyle', {'LineWidth', 2});
 %      uu = pde15s(f, 0:.1:3, u, 'neumann', opts);
@@ -66,15 +68,13 @@ function varargout = pde15s(pdeFun, tt, u0, bc, varargin)
 %       bc.right = 0;
 %       opts = pdeset('Ylim', [0 2], 'PlotStyle', {'LineWidth', 2});
 %       uu = pde15s(f, 0:.1:2, u, bc, opts);
-%       waterfall(u);
+%       waterfall(uu);
 %   with the input format being the same as PDEFUN described above.
 %
 % See also PDESET, ODE15S.
 
 % Copyright 2014 by The University of Oxford and The Chebfun Developers. See
 % http://www.chebfun.org/ for Chebfun information.
-
-% TODO: Syncronise with CHEBOP syntax. (In particular, .lbc, .rbc, and .bc).
 
 global DIFFORDER SYSSIZE
 DIFFORDER = 0;
@@ -119,17 +119,20 @@ if ( ~isempty(opt.PlotStyle) )
     plotOpts = opt.PlotStyle;
 end
 
-% Experimental feature for coupled ode/pde systems: (An entry equal to 1 denotes
-% that the corresponding variable appears with a time derivative. 0 otherwise.)
-if ( isfield(opt, 'PDEflag') )
-    pdeFlag = opt.PDEflag;
+userMassSet = false;
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%  EVENT & PLOTTING  SETUP  %%%%%%%%%%%%%%%%%%%%%%%%%
+
+done = false;
+ctr = 1;
+if ( ~isnan(optN) )
+    opt.OutputFcn = @nonAdaptiveEvent;
 else
-    pdeFlag = true;
+    opt.OutputFcn = @adaptiveEvent;
 end
 
 % Determine which figure to plot to (for CHEBGUI) and set default display values
 % for variables.
-% TODO: Ensure this still works when CHEBGUI gets merged into development.
 YLim = opt.YLim;
 gridOn = 0;
 guiFlag = false;
@@ -152,12 +155,213 @@ else
     tlabel = 't';
 end
 
-% ODE tolerances: (AbsTol and RelTol must be <= Tol/10)
-aTol = odeget(opt, 'AbsTol', tol/10);
-rTol = odeget(opt, 'RelTol', tol/10);
+    function status = nonAdaptiveEvent(t, U, flag)
+        % This event is called at the end of each chunk in non-adaptive mode.
+        status = false;
+        if ( ~isempty(flag) )
+            return
+        end
+        
+        % Sometimes we get given more than one time slice.
+        for kk = 1:numel(t)
+            
+            if ( ~any(abs(tSpan - t(kk)) < 1e-6) )
+                % This is not a designated time slice!
+                continue
+            end
+                
+            % Reshape solution:
+            Uk = reshape(U(:,kk), n, SYSSIZE);
+            uCurrent = chebfun(Uk, DOMAIN);
+            tCurrent = t(kk);
+            % Store for output:
+            ctr = ctr + 1;
+            uOut{ctr} = uCurrent;
+
+            % Plot current solution:
+            plotFun(uCurrent, t(kk));
+        end
+        
+        if ( guiFlag )
+            status = guiEvent(status);
+        end
+
+    end
+
+    function status = adaptiveEvent(t, U, flag)
+        % This event is called at the end of each chunk in adaptive mode.
+        status = false;
+        if ( ~isempty(flag) )
+            return
+        end
+        
+        % Sometimes we get given more than one time slice.
+        for kk = 1:numel(t)
+            % Reshape solution:
+            Uk = reshape(U(:,kk), currentLength, SYSSIZE);
+
+            % Happiness check:
+            c = (1+sin(1:SYSSIZE)).'; % Arbitrarily linear combination.
+            Uk2 = (Uk*c/sum(c));
+            uk2 = chebtech2(Uk2, pref);
+            [ishappy, epslevel, cutoff] = classicCheck(uk2, Uk2, pref);
+
+            if ( ishappy )  
+                
+                if ( ~any(abs(tSpan - t(kk)) < 1e-6) )
+                    % This is not a designated time slice!
+                    continue
+                end
+
+                % Store these values:
+                tCurrent = t(kk);
+                uCurrent = chebfun(Uk, DOMAIN);
+                
+                % Shorten the representation. The happiness cutoff seems to
+                % be safer than the epslevel simplification.
+%                 uCurrent = simplify(uCurrent, epslevel);
+                uPoly = chebpoly(uCurrent);
+                firstKept = size(uPoly, 2) - (cutoff-1);
+                if ( firstKept <= 0 )
+                    firstKept = 1;
+                end
+                uCurrent = chebfun(uPoly(:,firstKept:end).', DOMAIN, 'coeffs');
+                
+                ctr = ctr + 1;
+                uOut{ctr} = uCurrent;
+
+                % Plot current solution:
+                plotFun(uCurrent, tCurrent);
+
+                % TODO: Re-insert this.
+%                 % If we have 2.5 times as many coefficients as we need, shorten
+%                 % the representation and cause the integrator to stop. 
+%                 if ( cutoff < 0.4*n && n > 17)
+%                     currentLength = round(1.25*cutoff)';
+%                     %currentLength = floor( currentLength / 1.5  );
+%                     currentLength = currentLength + 1 - rem(currentLength,2);
+%                     currentLength = max(currentLength, 17);
+%                     status = true;
+%                     return
+%                 end
+                
+            else 
+
+                % Increase length and bail out:
+                currentLength = 2*currentLength-1;
+                status = true;
+                
+            end        
+            
+            if ( guiFlag )
+                status = guiEvent(status);
+            end
+            
+        end
+
+    end
+
+    function status = guiEvent(status)
+        %GUIEVENT   Deal with GUI events ('stop', 'pause', etc). 
+        % OUTPUTS:
+        %   status = true exits the current time chunk.
+        %   done = true exits PDE15S. (Note done is a GLOBAL variable).
+
+        % Interrupt computation if stop or pause button is pressed in the GUI.
+        if ( strcmp(get(solveButton, 'String'), 'Solve') )
+            % Stop.
+            tt = tt( tt <= tCurrent );
+            uOut(ctr+1:end) = [];
+            status = true;
+            done = true;
+        elseif ( strcmp(get(clearButton, 'String'), 'Continue') )
+            % Wait, pause.
+            
+            % Plot a waterfall plot to the bottom figure window:
+            axes(axesNorm)
+            uuTmp = prepare4output(uOut(1:ctr));
+            if ( SYSSIZE == 1 )
+                waterfall(uuTmp, tt(tt<=tCurrent), 'linewidth', 2);
+            else
+                cols = get(0, 'DefaultAxesColorOrder');
+                waterfall(uuTmp, tt(tt<=tCurrent), 'linewidth', 2, ...
+                    'EdgeColors', cols);
+            end
+            xlabel(xLabel), ylabel(tlabel), zlabel(varNames)
+            if ( gridOn )
+                grid on
+            end
+            view([322.5 30])
+            box off
+            axes(axesSol)
+            % Hang around until 'CONTINUE' or 'STOP' is presed.
+            waitfor(clearButton, 'String');
+            % Call again to see if 'STOP' was pressed.
+            status = guiEvent(status);
+        end
+    end
+
+
+    function varargout = plotFun(U, t)
+        %PLOTFUN    Plot current solution U at a time t.
+        
+        % Do we actually want to plot?
+        if ( ~doPlot )
+            return
+        end
+        % If we're not in GUI mode, ensure that figure receives focus.
+        if ( ~guiFlag )
+            cla, shg
+        end
+        set(gcf, 'doublebuf', 'on');
+
+        % Plot:
+        h = plot(U, plotOpts{:});
+
+        % Hold?
+        ish = ishold();
+        if ( doHold )
+            hold on
+        end
+
+        % Fix Y limits?
+        if ( ~isempty(YLim) )
+            ylim(YLim);
+        end
+
+        % Axis labels and legends:
+        xlabel(xLabel);
+        if ( numel(varNames) > 1 )
+            legend(varNames);
+        else
+            ylabel(varNames);
+        end
+
+        % Grid?
+        if ( gridOn )
+            grid on
+        end
+        
+        if ( nargin > 1 )
+            title(sprintf('%s = %.3f,  len = [%i, %i]', tlabel, t, ...
+                length(U), currentLength))
+        end
+        drawnow
+        
+        if ( nargout > 0 )
+            varargout{1} = h;
+        end
+
+    end
+
+%%%%%%%%%%%%%%%%%%%%% SETUP TOLERANCES AND INITIAL CONDITION %%%%%%%%%%%%%%%%%%%
+
+% ODE tolerances:
+aTol = odeget(opt, 'AbsTol', tol);
+rTol = odeget(opt, 'RelTol', tol);
 if ( isnan(optN) )
-    aTol = min(aTol, tol/10);
-    rTol = min(rTol, tol/10);
+    aTol = min(aTol, tol);
+    rTol = min(rTol, tol);
 end
 opt.AbsTol = aTol;
 opt.RelTol = rTol;
@@ -186,12 +390,12 @@ else
     end
 end
 
-% Get the domain and the independent variable 'x':
+% Get the domain:
 DOMAIN = domain(u0, 'ends');
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%  PARSE INPUTS TO PDEFUN  %%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Determine the size of the system, i.e. number of dependent variables.
+% Determine the size of the system, i.e., number of dependent variables.
 SYSSIZE = min(size(u0));
 pdeFun = parseFun(pdeFun);
 if ( isfield(opt, 'difforder') )
@@ -224,9 +428,9 @@ if ( ischar(bc) && strcmpi(bc, 'periodic') )
     r = cell(sum(DIFFORDER), 1);
     count = 1;
     for j = 1:SYSSIZE
-        for k = 1:DIFFORDER(j)
+        for k = 0:DIFFORDER(j)-1
             c = (diff(DOMAIN)/2)^k;
-            A = @(n) [1 zeros(1, n-2) -1]*diffmat(n, k)*c;
+            A = @(n) [1 zeros(1, n-2) -1]*colloc2.diffmat(n, k)*c;
             r{count} = @(n) [zeros(1, (j-1)*n) A(n) zeros(1,(SYSSIZE-j)*n)];
             count = count + 1;
         end
@@ -237,15 +441,13 @@ if ( ischar(bc) && strcmpi(bc, 'periodic') )
     BCRHS = num2cell(zeros(1, numel(r)));
     
 else
-    
+    %% %%%%%%%%%%%%%%%%%%%%%%%%% NONPERIODIC BCS  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     if ( isfield(bc, 'left') && ~isfield(bc, 'right') )
         bc.right = [];
     elseif ( isfield(bc, 'right') && ~isfield(bc, 'left') )
         bc.left = [];
     elseif ( ~isfield(bc, 'left') && ~isfield(bc, 'right') )
         bc = struct('left', [], 'right', [], 'middle', bc);
-%         bc.left = bc;
-%         bc.right = bc.left;
     end
     
     % Deal with struct and numeric input:
@@ -255,7 +457,7 @@ else
     if ( isempty(bc.left) )
         bc.left.op = [];
     elseif ( ischar(bc.left) || (iscell(bc.left) && ischar(bc.left{1})) )
-        %% %%%%%%%%%%%%%%%%%%%%% DIRICHLET AND NEUMANN BCS (LEFT) %%%%%%%%%%%%%%%%%%
+        %% %%%%%%%%%%%%%%%%%%%%% DIRICHLET AND NEUMANN BCS (LEFT) %%%%%%%%%%%%%%
         if ( iscell(bc.left) )
             v = bc.left{2};
             bc.left = bc.left{1};
@@ -269,7 +471,7 @@ else
             A = @(n) [1 zeros(1, n - 1)];
         elseif ( strcmpi(bc.left, 'neumann') )
             % TODO: Make left diff operator explicitly.
-            A = @(n) [1 zeros(1, n-1)]*diffmat(n)*diff(DOMAIN)/2;
+            A = @(n) [1 zeros(1, n-1)]*colloc2.diffmat(n)*diff(DOMAIN)/2;
         else
             error('Unknown BC syntax');
         end
@@ -280,10 +482,10 @@ else
         end
         BCRHS = num2cell(repmat(v, SYSSIZE, 1));
     elseif ( numel(bc.left) == 1 && isa(bc.left, 'function_handle') )
-        %% %%%%%%%%%%%%%%%%%%%%%%%%%  GENERAL BCS (LEFT)  %%%%%%%%%%%%%%%%%%%%%%%%%%
-        op = parseFun(bc.left);
-        tmp = chebdouble(ones(1, SYSSIZE));
-        sizeOp = size(op(0, mean(DOMAIN), tmp));
+        %% %%%%%%%%%%%%%%%%%%%%%%%%%  GENERAL BCS (LEFT)  %%%%%%%%%%%%%%%%%%%%%%
+        op = parseFun(bc.left, 'lbc');
+        uTmp = chebdouble(ones(1, SYSSIZE));
+        sizeOp = size(op(0, mean(DOMAIN), uTmp));
         leftNonlinBCLocs = 1:max(sizeOp);
         bc.left = [];
         bc.left.op = {@(n) zeros(max(sizeOp), SYSSIZE*n)}; % Dummy entries.
@@ -295,9 +497,9 @@ else
     
     if ( isfield(bc, 'middle') && isa(bc.middle, 'function_handle') )
         %% %%%%%%%%%%%%%%%%%%%%%  GENERAL BCS (MIDDLE)  %%%%%%%%%%%%%%%%%%%%%%%%
-        op = parseFun(bc.middle);
-        tmp = chebdouble(ones(1, SYSSIZE));
-        sizeOp = size(op(0, mean(DOMAIN), tmp));
+        op = parseFun(bc.middle, 'bc');
+        uTmp = chebdouble(ones(1, SYSSIZE));
+        sizeOp = size(op(0, mean(DOMAIN), uTmp));
         middleNonlinBCLocs = 1:max(sizeOp);
         bc.middle = [];
         bc.middle.op = {@(n) zeros(max(sizeOp), SYSSIZE*n)}; % Dummy entries.
@@ -308,7 +510,7 @@ else
     if ( isempty(bc.right) )
         bc.right.op = [];
     elseif ( ischar(bc.right) || (iscell(bc.right) && ischar(bc.right{1})) )
-        %% %%%%%%%%%%%%%%%%%%%%% DIRICHLET AND NEUMANN BCS (RIGHT) %%%%%%%%%%%%%%%%%
+        %% %%%%%%%%%%%%%%%%%%%%% DIRICHLET AND NEUMANN BCS (RIGHT) %%%%%%%%%%%%%
         if ( iscell(bc.right) )
             v = bc.right{2};
             bc.right = bc.right{1};
@@ -324,7 +526,7 @@ else
             A = @(n) [zeros(1, n-1), 1];
         elseif ( strcmpi(bc.right, 'neumann') )
             % TODO: Make right diff operator explicitly.
-            A = @(n) [zeros(1, n-1) 1]*diffmat(n)*diff(DOMAIN)/2;
+            A = @(n) [zeros(1, n-1) 1]*colloc2.diffmat(n)*diff(DOMAIN)/2;
         else
             error('Unknown BC syntax');
         end
@@ -335,10 +537,10 @@ else
         BCRHS = [BCRHS num2cell(repmat(v, SYSSIZE, 1))];
         
     elseif ( numel(bc.right) == 1 && isa(bc.right, 'function_handle') )
-        %% %%%%%%%%%%%%%%%%%%%%%%%%  GENERAL BCS (RIGHT)  %%%%%%%%%%%%%%%%%%%%%%%%%%
-        op = parseFun(bc.right);
-        tmp = chebdouble(ones(1, SYSSIZE));
-        sizeOp = size(op(0, mean(DOMAIN), tmp));
+        %% %%%%%%%%%%%%%%%%%%%%%%%%  GENERAL BCS (RIGHT)  %%%%%%%%%%%%%%%%%%%%%%
+        op = parseFun(bc.right, 'rbc');
+        uTmp = chebdouble(ones(1, SYSSIZE));
+        sizeOp = size(op(0, mean(DOMAIN), uTmp));
         rightNonlinBCLocs = 1:max(sizeOp);
         bc.right = [];
         bc.right.op = {@(n) zeros(max(sizeOp), SYSSIZE*n)};
@@ -354,65 +556,21 @@ if ( ~isfield(bc, 'middle') )
     bc.middle.op = [];
 end
 
-%% %%%%%%%%%%%%%%%%%%%%%%%% Support for coupled BVP-PDEs! %%%%%%%%%%%%%%%%%%%%%%
-% TODO: Test this!
-if ( ~all(pdeFlag) )
-    userMassSet = true;
-    userMass = @(n) [];
-    for k = 1:numel(pdeFlag)
-        if ( pdeFlag(k) )
-            A = @(n) eye(n);
-        else
-            A = @(n) zeros(n);
-        end
-        userMass = @(n) [userMass(n) ; ...
-            zeros(n,(k-1)*n), A(n), zeros(n,(SYSSIZE-k)*n)];
-    end
+
+%% %%%%%%%%%%%%%%%%%%%%%%% SUPPORT FOR COUPLED BVP-PDES! %%%%%%%%%%%%%%%%%%%%%%%
+% Experimental feature for coupled ode/pde systems: (An entry equal to 1 denotes
+% that the corresponding variable appears with a time derivative. 0 otherwise.)
+if ( isfield(opt, 'PDEflag') && ~isempty(opt.PDEflag) )
+    pdeFlag = opt.PDEflag;
 else
-    userMassSet = false;
+    pdeFlag = true;
+end
+if ( numel(pdeFlag) == 1 )
+    pdeFlag = repmat(pdeFlag, 1, SYSSIZE);
 end
 
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%  PLOTTING SETUP  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-if ( doPlot )
-    
-    if ( ~guiFlag )
-        cla, shg
-    end
-    set(gcf, 'doublebuf', 'on');
-    
-    % Plot:
-    plot(u0, plotOpts{:});
-    
-    % Hold?
-    ish = ishold(); % Store to be able to return to previous state once finished
-    if ( doHold )
-        hold on
-    end
-    
-    % Fix Y limits?
-    if ( ~isempty(YLim) )
-        ylim(YLim);
-    end
-    
-    % Axis labels and legends:
-    xlabel(xLabel);
-    if ( numel(varNames) > 1 )
-        legend(varNames);
-    else
-        ylabel(varNames);
-    end
-    
-    % Grid?
-    if ( gridOn )
-        grid on
-    end
-    drawnow
-end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% MISC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% The vertical scale of the intial condition:
-vscl = get(u0, 'vscale');
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% MISC %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Initial condition:
 uCurrent = u0;
@@ -421,116 +579,46 @@ uOut = cell(1, numel(tt));
 uOut{1} = uCurrent;
 
 % Initialise variables for ONESTEP():
-B = []; q = []; rows = []; M = []; n = [];
+B = []; q = []; rows = []; M = []; P = []; n = [];
 
 % Set the preferences:
-pref = chebfunpref;
-pref.techPrefs.eps = tol;
-pref.refinementFunction = 'resampling';
-pref.enableBreakpointDetection = 0;
-pref.techPrefs.sampleTest = 0;
-pref.enableSingularityDetection = 0;
+pref = chebtech.techPref();
+pref.eps = tol;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%% TIME CHUNKS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Begin time chunks
-for nt = 1:length(tt)-1
+
+% Plot initial condition:
+currentLength = length(u0);
+plotFun(u0, tt(1));
+
+done = false;
+if ( ~isnan(optN) )
+    % Non-adaptive in space:
+    tSpan = tt;
+    x = chebpts(optN, DOMAIN);
+    solvePDE(tSpan); % Do all chunks at once!
+else
+    % Adaptive in space
     
-    % Solve one chunk:
-    if ( isnan(optN) )
-        % Size of current length:
-        currentVscale = vscale(uCurrent);
-        tmp = max(currentVscale, vscl) - currentVscale;
-        currentLength = length(simplify(uCurrent + tmp, tol));
-        pref.techPrefs.minPoints = max(2*currentLength, 9);
-        vscl = max([vscl, currentVscale]);
-        chebfun( @(x) vscl + oneStep(x), DOMAIN, pref);
-    else
-        % Non-adaptive in space:
-        currentLength = optN;
-        oneStep(chebpts(optN, DOMAIN));
+    % Min-length is 9
+    currentLength = max(currentLength, 9);
+    tCurrent = tt(1);
+    tSpan = tt;
+    while ( tCurrent < tt(end) && ~done )
+        tSpan(tSpan < tCurrent) = [];
+        x = chebpts(currentLength, DOMAIN);
+        solvePDE(tSpan);
     end
-    
-    % Get chebfun of solution from this time chunk:
-    uCurrent = chebfun(unew, DOMAIN);
-    
-    % Store in uOut:
-    uOut{nt + 1} = uCurrent;
-    
-    % Plotting:
-    if ( doPlot )
-        plot(uCurrent, plotOpts{:});
-        if ( ~isempty(YLim) )
-            ylim(YLim);
-        end
-        if ( ~doHold )
-            hold off
-        end
-        % Axis labels
-        xlabel(xLabel);
-        if ( numel(varNames) > 1 )
-            legend(varNames);
-        else
-            ylabel(varNames);
-        end
-        % Determines whether grid is on
-        if ( gridOn )
-            grid on
-        end
-        title(sprintf('%s = %.3f,  len = %i', tlabel, tt(nt+1), currentLength)), drawnow
-        %     elseif ( guiFlag )
-        %         drawnow
-    end
-    
-    % TODO: Restore once CHEBGUI is operating.
-    %     if ( guiFlag )
-    %         % Interupt comutation if stop or pause  button is pressed in the GUI.
-    %         if ( strcmp(get(solveButton, 'String'), 'Solve') )
-    %             tt = tt(1:nt+1);
-    %             if SYSSIZE == 1,
-    %                 uOut = uOut(1:nt+1);
-    %             else
-    %                 for k = 1:SYSSIZE
-    %                     uOut{k} = uOut{k}(1:nt+1);
-    %                 end
-    %             end
-    %             break
-    %         elseif ( strcmp(get(clearButton, 'String'), 'Continue') )
-    %             defaultlinewidth = 2;
-    %             axes(axesNorm)
-    %             if ( ~iscell(uOut) )
-    %                 waterfall(uOut(1:nt+1), tt(1:nt+1), 'simple', 'linewidth', defaultlinewidth)
-    %                 xlabel(xLabel), ylabel(tlabel), zlabel(varnames)
-    %             else
-    %                 cols = get(0, 'DefaultAxesColorOrder');
-    %                 for k = 1:numel(uOut)
-    %                     plot(0, NaN, 'linewidth', defaultlinewidth, 'color', cols(k, :)), hold on
-    %                 end
-    %                 legend(varnames);
-    %                 for k = 1:numel(uOut)
-    %                     waterfall(uOut{k}, tt(1:nt+1), 'simple', 'linewidth', ...
-    %                           defaultlinewidth, 'edgecolor', cols(k, :)), hold on
-    %                     xlabel(xLabel), ylabel(tlabel)
-    %                 end
-    %                 view([322.5 30]), box off, grid on, hold off
-    %             end
-    %             axes(axesSol)
-    %             waitfor(clearButton, 'String');
-    %         end
-    %     end
+
 end
 
 if ( doPlot && ~ish )
     hold off
 end
 
-% If we only had one dependent variable, return an array valued CHEBFUN instead
-% of a QUASIMATRIX.
-% TODO: Determine what we want to output for systems of equations. CHEBMATRIX?
-if ( SYSSIZE == 1 )
-    uOut = horzcat(uOut{:});
-end
+uOut = prepare4output(uOut);
 
 switch nargout
     case 0
@@ -550,23 +638,32 @@ end
 clear global DIFFORDER
 clear global SYSSIZE
 
+    function uOut = prepare4output(uIn)
+        % If we only had one dependent variable, return an array valued CHEBFUN
+        % instead of a QUASIMATRIX.
+        if ( SYSSIZE == 1 )
+            uOut = horzcat(uIn{:});
+        else
+            blocks = cell(SYSSIZE, numel(uIn));
+            for kk = 1:SYSSIZE
+                blocks(kk,:) = cellfun(@(u) extractColumns(u, kk), uIn, ...
+                    'UniformOutput', false);
+            end
+            uOut = chebmatrix(blocks); % CHEBMATRIX
+        end
+    end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  ONESTEP  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    function U = oneStep(x)
+    function solvePDE(tSpan)
         % Constructs the result of one time chunk at fixed discretization.
-        
-        if ( length(x) == 2 )
-            U = [0 ; 0];
-            return
-        end
-        
+
         % Evaluate the chebfun at discrete points:
         U0 = feval(uCurrent, x);
         
         % This depends only on the size of n. If this is the same, reuse!
-        if ( isempty(n) || n ~= length(x) )
+        if ( isempty(n) || (n ~= length(x)) )
             
             % The new discretisation length
             n = length(x);
@@ -576,11 +673,15 @@ clear global SYSSIZE
             B = cell2mat(cellfun(@(f) feval(f, n), bcop, 'UniformOutput', false));
             
             % Project / mass matrix.
-            M = {};
+            P = cell(1, SYSSIZE);
+            M = cell(1, SYSSIZE);
+            
             for kk = 1:SYSSIZE
                 xk = chebpts(n-DIFFORDER(kk), DOMAIN, 1);
-                M{kk} = barymat(xk, x);
+                P{kk} = barymat(xk, x);
+                M{kk} = pdeFlag(kk)*P{kk};
             end
+            P = [ 0*B ; blkdiag(P{:})];
             M = [ 0*B ; blkdiag(M{:})];
             rows = 1:size(B, 1);
             
@@ -589,24 +690,31 @@ clear global SYSSIZE
                 M = feval(userMass, n)*M;
             end
             
+            % ODE options: (mass matrix)
+            opt = odeset(opt, 'Mass', M, 'MassSingular', 'yes', ...
+                'MStateDependence', 'none');
+            
         end
         
-        % ODE options: (mass matrix)
-        opt2 = odeset(opt, 'Mass', M, 'MassSingular', 'yes', ...
-            'InitialSlope', odeFun(tt(nt), U0), 'MStateDependence', 'none');
+        % We have to ensure the starting condition satisfies the boundary
+        % conditions, or else we will get a singularity in time. We do this by
+        % tweaking the BC values to match the reality. Changing the IC itself is
+        % much trickier. Find out what the BC deviance from nominal really is:
+        BCVALOFFSET = 0;            % recover nominal value in next call
+        F = odeFun(tSpan(1),U0(:)); % also assigns to "rows" and "q"
+        BCVALOFFSET = F(rows);
         
         % Solve ODE over time chunk with ode15s:
-        [ignored, U] = ode15s(@odeFun, tt(nt:nt+1), U0, opt2);
-        
-        % Reshape solution:
-        U = reshape(U(end, :).', n, SYSSIZE);
-        
-        % The solution we'll take out and store:
-        unew = U;
-        
-        % Collapse systems to single chebfun for constructor (is addition right?)
-        U = sum(U, 2);
-        
+        try
+            [ignored1, ignored2] = ode15s(@odeFun, tSpan, U0, opt);
+        catch ME
+            if ( strcmp(ME.identifier, 'MATLAB:odearguments:SizeIC') )
+                error('Dimension mismatch. Check boundary conditions.');
+            else
+                rethrow(ME)
+            end
+        end 
+
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %% %%%%%%%%%%%%%%%%%%%%%%%%%%%  ODEFUN  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -620,7 +728,7 @@ clear global SYSSIZE
             Utmp = chebdouble(U, DOMAIN);
             F = pdeFun(t, x, Utmp);
             F = double(F);
-            F = M*F(:);
+            F = P*F(:);
             
             % Get the algebraic right-hand sides: (may be time-dependent)
             for l = 1:numel(BCRHS)
@@ -637,12 +745,12 @@ clear global SYSSIZE
             % Replacements for the nonlinear BC conditions:
             if ( ~isempty(leftNonlinBCLocs) )
                 indx = 1:length(leftNonlinBCLocs);
-                tmp = leftNonlinBCFuns(t, x, Utmp);
-                tmp = double(tmp);
-                if ( size(tmp, 1) ~= n )
-                    tmp = reshape(tmp, n, numel(tmp)/n);
+                uTmp = leftNonlinBCFuns(t, x, Utmp);
+                uTmp = double(uTmp);
+                if ( size(uTmp, 1) ~= n )
+                    uTmp = reshape(uTmp, n, numel(uTmp)/n);
                 end
-                F(rows(indx)) = tmp(1, :);
+                F(rows(indx)) = uTmp(1, :);
             end
             if ( ~isempty(middleNonlinBCLocs) )
                 % TODO: This won't work if there are also left nonlin BCs
@@ -651,16 +759,20 @@ clear global SYSSIZE
             end            
             if ( ~isempty(rightNonlinBCLocs) )
                 indx = numel(BCRHS) + 1 - rightNonlinBCLocs;
-                tmp = rightNonlinBCFuns(t, x, Utmp);
-                tmp = double(tmp);
-                if ( size(tmp, 1) ~= n )
-                    tmp = reshape(tmp, n, numel(tmp)/n);
+                uTmp = rightNonlinBCFuns(t, x, Utmp);
+                uTmp = double(uTmp);
+                if ( size(uTmp, 1) ~= n )
+                    uTmp = reshape(uTmp, n, numel(uTmp)/n);
                 end
-                F(rows(indx)) = fliplr(tmp(end, :));
+                F(rows(indx)) = fliplr(uTmp(end, :));
             end
+            
+            % Adjust BC rows by the needed offset from original time:
+            F(rows) = F(rows) - BCVALOFFSET;
             
             % Reshape to back to a single column:
             F = F(:);
+            
         end
     end
 
@@ -668,22 +780,38 @@ end
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%  MISC  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function outFun = parseFun(inFun)
+function outFun = parseFun(inFun, bcFlag)
 % Rewrites the input function handle to call the right DIFF, SUM, methods, etc,
 % and convert the input @(t, x, u, v, w, ...) to @(t, x, U).
+%
+% For PARSEFUN(INFUN), if the INFUN has only one independent variable as an
+% input, we assume this is x. PARSEFUN(INFUN, 'lbc') or PARSEFUN(INFUN, 'rbc')
+% will assume the variable is t. PARSEFUN(INFUN, 'bc') will assume space, but
+% throw a warning.
 
 global SYSSIZE
 
-% Ensure backwards compatability by procesing the input function.
+% Ensure backwards compatibility by processing the input function.
 inFun = backCompat(inFun);
 
 % V4: We don't accept only time or space as input args (i.e., both or nothing).
-% V5: Actually, we now accept @(u, x) diff(u, 2) + sin(x).*u (for chebops).
+% V5: Actually, we now accept @(u, x) diff(u, 2) + sin(x).*u (for CHEBOPs).
 Nind = nargin(inFun) - SYSSIZE;
 if ( Nind == 0 )
     outFun = @(t, x, u) conv2cell(inFun, u);
 elseif ( Nind == 1 )
-    outFun = @(t, x, u) conv2cell(inFun, u, x);
+    if ( nargin > 1 )
+        if ( strcmp(bcFlag, 'bc') )
+            warning('CHEBFUN:pde15s:bcinput', ...
+                ['Please input both time and space independent variable to ' ...
+                 '.BC function handle inputs.\nAssuming given variable is time.']);
+             outFun = @(t, x, u) conv2cell(inFun, u, x);
+        else
+            outFun = @(t, x, u) conv2cell(inFun, u, t);
+        end
+    else
+        outFun = @(t, x, u) conv2cell(inFun, u, x);
+    end
 elseif ( Nind == 2 )
     outFun = @(t, x, u) conv2cell(inFun, u, t, x);
 else
@@ -694,15 +822,19 @@ end
 end
 
 function newFun = conv2cell(oldFun, u, varargin)
-% This function allows the use of different variables in the anonymous
-% function, rather than using the clunky quasi-matrix notation.
+% This function allows the use of different variables in the anonymous function,
+% rather than using the clunky quasi-matrix notation.
+%
+% Inputs: 
+%   oldFun in the original function handle
+%   u will be the solution we evaluate at
+%   varargin possibly contains the time and space variables
+% Output
+%   newFun the modified function handle
 
 global SYSSIZE
-
 % Note. This is faster than mat2cell!
 tmpCell = cell(1, SYSSIZE);
-
-d = get(u, 'domain');
 for qk = 1:SYSSIZE
     tmpCell{qk} = extractColumns(u, qk);
 end
@@ -712,15 +844,15 @@ end
 function getDIFFORDER(pdeFun)
 % Extract the DIFFORDER by evaluating the operator at some NaN values.
 global DIFFORDER SYSSIZE
-
 % Find the order of each of the variables:
 tmp = chebdouble(zeros(SYSSIZE));
 v = pdeFun(0, 0, tmp);
 DIFFORDER = get(v, 'diffOrder');
-
 end
 
 function out = dealWithStructInput(in)
+% Parse the inputs for BCs.
+% Throw a warning or an error for a struct. Convert numeric value to 'dirichet'.
 if ( isstruct(in) )
     if ( numel(in) == 1)
         warning('CHEBFUN:pde15s:bcstruct', ...
@@ -747,7 +879,7 @@ function outFun = backCompat(inFun)
 % In V4 PDE15S required the user to pass in dummy function handles for the
 % differential operators. For example, u'' + u' + sum(u) would have needed
 %  pdefun = @(u, t, x, diff, sum) diff(u, 2) + diff(u) + sum(u).
-% V5 deals with this in a different way (by using the chebdouble class), but we
+% V5 deals with this in a different way (by using the CHEBDOUBLE class), but we
 % would still like to support the old syntax (at least for now).
 %
 % To do this, we parse the input function for the strings 'diff', 'Diff', and
@@ -780,8 +912,8 @@ if ( isempty(idx) )
 end
 
 warning('CHEBFUN:pde15s:oldSyntax', ...
-    ['The syntax\n ' str '\nis depricated and may not be supported in future releases.\n', ...
-    'Please see the PDE15S documentation for details.'] )
+    ['The syntax\n ' str '\nis deprecated and may not be supported in ', ...
+     'future releases.\n Please see the PDE15S documentation for details.'] )
 
 % Switch the order for V5 syntax:
 varNamesNewOrder = varNames([(1+SYSSIZE):(idx-1), 1:SYSSIZE]);
@@ -805,67 +937,5 @@ newStr = [newStr, ')'];
 
 % Make the new function handle:
 outFun = eval(newStr);
-
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% TODO: DIFFMAT and CUMSUMMAT are in @colloc2/private/. Below should be removed.
-
-function D = diffmat(N,k)
-
-%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
-% DIFFMAT  Chebyshev differentiation matrix
-% D = DIFFMAT(N) is the matrix that maps function values at N Chebyshev
-% points to values of the derivative of the interpolating polynomial at
-% those points.
-%
-% D = DIFFMAT(N,K) is the same, but for the Kth derivative.
-%
-% The matrices are computed using the 'hybrid' formula of Schneider &
-% Werner [1] and Welfert [2] proposed by Tee [3].
-
-% Copyright 2011 by The University of Oxford and The Chebfun Developers.
-% See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
-
-% References:
-%  [1] Schneider, C. and Werner, W., "Some new aspects of rational
-%   interpolation", Math. Comp. (47) 285--299, 1986.
-%  [2] Welfert, B. D., "Generation of pseudospectral matrices I", SINUM,
-%   (34) 1640--1657.
-%  [3] Tee, T. W., "An adaptive rational spectral method for differential
-%   equations with rapidly varying solutions", Oxford DPhil Thesis, 2006.
-
-if nargin < 2, k = 1; end
-if N == 0, D = []; return, end
-if N == 1, D = 0; return, end
-
-% construct Chebyshev grid and weights
-x = chebtech2.chebpts(N);
-w = [.5 ; ones(N-1,1)]; w(2:2:end) = -1; w(N) = .5*w(N);
-
-ii = (1:N+1:N^2)';              % indices of diagonal
-Dx = bsxfun(@minus,x,x');       % all pairwise differences
-Dx(ii) = Dx(ii) + 1;            % add identity
-Dxi = 1./Dx;                    % reciprocal
-Dw = bsxfun(@rdivide,w.',w);    % pairwise divisions
-Dw(ii) = Dw(ii) - 1;            % subtract identity
-
-% k = 1
-D = Dw .* Dxi;
-D(ii) = 0; D(ii) = - sum(D,2);              % negative sum trick
-
-if k == 1, return, end
-
-% k = 2
-D = 2*D .* (repmat(D(ii),1,N) - Dxi);
-D(ii) = 0; D(ii) = - sum(D,2);              % negative sum trick
-
-% higher orders
-for n = 3:k
-    D = n*Dxi .* (Dw.*repmat(D(ii),1,N) - D);
-    D(ii) = 0; D(ii) = - sum(D,2);          % negative sum trick
-end
 
 end

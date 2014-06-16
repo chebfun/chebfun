@@ -1,0 +1,8 @@
+'Double well Schrodinger'
+'scalar'
+domain = '[-5 5]';
+DE = '-.1*u'''' + 4*(sign(x+1)-sign(x-.9))*u = lambda*u';
+BC = {'u(-5) = 0'; 'u(5) = 0'};
+tol = '1e-12';
+type = 'eig';
+numeigs = '4';

@@ -9,7 +9,7 @@ dom = [-2 7];
 
 % Generate a few random points to use as test values:
 seedRNG(6178);
-x = diff(dom) * rand(100, 1) + dom(1);
+x = sort(diff(dom) * rand(100, 1) + dom(1));
 
 %% A positive function (the Runge function):
 op = @(x) 1./(1+25*x.^2);
@@ -65,16 +65,16 @@ pass(4) = ( norm(err, inf) < 1e2*epslevel(f).*norm(vals_exact, inf) );
 
 %% An array-valued CHEBFUN: 
 
-% op = @(x) [sin(x), sin(x)-.5];
-% opExact = @(x) [sqrt(sin(x)), sqrt(sin(x)-.5)];
-% f = chebfun(op, 'splitting', 'on');
-% g = sqrt(f);
-% vals_g = feval(g, x); 
-% 
-% vals_exact = feval(opExact, x);
-% err = vals_g - vals_exact;
-% pass(5) = ( norm(err, inf) < 1e2*get(f,'epslevel')*norm(vals_exact, inf) );
-pass(5) = 1;
+op = @(x) [sin(x), sin(x)-.5];
+opExact = @(x) [sqrt(sin(x)), sqrt(sin(x)-.5)];
+f = chebfun(op, dom);
+g = sqrt(f);
+vals_g = feval(g, x); 
+
+vals_exact = feval(opExact, x);
+err = norm(vals_g - vals_exact, inf);
+tol = 1e2*get(f,'epslevel')*norm(vals_exact, inf);
+pass(5) = err < tol;
 
 %% A positive piece-wise example with singularities:
 
@@ -86,9 +86,7 @@ pow = -1.5;
 op = @(x) (sin(50*x).^2+1).*(x-dom(1)).^pow;
 opExact = @(x) sqrt(sin(50*x).^2+1).*(x-dom(1)).^(pow/2);
 
-pref.singPrefs.exponents = [pow 0];
-pref.enableBreakpointDetection = 1;
-f = chebfun(op, dom, pref);
+f = chebfun(op, dom, 'exps', [pow 0], 'splitting', 'on');
 g = sqrt(f);
 vals_g = feval(g, x); 
 
@@ -120,13 +118,12 @@ pass(7) = norm(err, inf) < epslevel(g)*vscale(g);
 % Blow-up function:
 op = @(x) x.^2.*(1-exp(-x.^2))+2;
 opg = @(x) sqrt(x.^2.*(1-exp(-x.^2))+2);
-pref.singPrefs.exponents = [2 2];
-f = chebfun(op, dom, pref);
+f = chebfun(op, dom, 'exps', [2 2]);
 g = sqrt(f);
 gVals = feval(g, x);
 gExact = opg(x);
 err = gVals - gExact;
-pass(8) = norm(err, inf) < 1e1*epslevel(g)*vscale(g);
+pass(8) = norm(err, inf) < 1e2*epslevel(g)*vscale(g);
 
 %% Functions on [a inf]:
 

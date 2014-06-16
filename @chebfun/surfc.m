@@ -22,7 +22,7 @@ end
 if ( (numel(varargin) > 1) && strcmpi(varargin{1}, 'numpts') )
     numpts = varargin{2};
     varargin(1:2) = [];
-    warning('CHEBFUN:surf:numpts', 'NUMPTS option is depricated.');
+    warning('CHEBFUN:surf:numpts', 'NUMPTS option is deprecated.');
 end
 
 if ( length(t) ~= n )

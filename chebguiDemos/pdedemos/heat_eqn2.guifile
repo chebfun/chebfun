@@ -1,0 +1,10 @@
+'Heat equation with variable coefficient'
+'scalar
+domain = '[0 8]';
+t = '0:.005:.2';
+DE = 'u_t = (u''/(1+x^2))''';
+LBC = 'dirichlet'; RBC = 'dirichlet';
+init = 'u = sin(4*pi*x)';
+tol = '1e-6'; plotting = 'on';
+fixYaxisLower = '-1.2'; fixYaxisUpper = '1.2';
+type  = 'pde';

@@ -18,20 +18,20 @@ x = diff(dom) * rand(1000, 1) + dom(1);
 
 %%
 % Spot-check integrals for a couple of functions.
-f = bndfun(@(x) exp(x) - 1, dom, [], [], pref);
+f = bndfun(@(x) exp(x) - 1, struct('domain', dom), pref);
 pass(1) = (abs(sum(f) -  1.087497823145222e3) < ...
     10*get(f, 'vscale')*get(f, 'epslevel'));
 
-f = bndfun(@(x) 1./(1 + x.^2), dom, [], [], pref);
+f = bndfun(@(x) 1./(1 + x.^2), struct('domain', dom), pref);
 pass(2) = (abs(sum(f) - (atan(-dom(1))+atan(dom(2)))) < ...
     10*get(f, 'vscale')*get(f, 'epslevel'));
 
-f = bndfun(@(x) cos(1e4*x), dom, [], [], pref);
+f = bndfun(@(x) cos(1e4*x), struct('domain', dom), pref);
 exact = (sin(1e4*dom(2))-sin(1e4*dom(1)))/1e4;
 pass(3) = (abs(sum(f) - exact) < 10*get(f, 'vscale')*get(f, 'epslevel'));
 
 z = exp(2*pi*1i/6);
-f = bndfun(@(t) sinh(t*z), dom, [], [], pref);
+f = bndfun(@(t) sinh(t*z), struct('domain', dom), pref);
 exact = ((cos(sqrt(3) - 1i) - cos((7*sqrt(3))/2 - 7i/2))*(sqrt(3) + 1i)*1i)/2;
 pass(4) = (abs(sum(f)-exact) < 10*get(f, 'vscale')*get(f, 'epslevel'));
 
@@ -39,9 +39,9 @@ pass(4) = (abs(sum(f)-exact) < 10*get(f, 'vscale')*get(f, 'epslevel'));
 % Check a few basic properties.
 a = 2;
 b = -1i;
-f = bndfun(@(x) x.*sin(x.^2) - 1, dom, [], [], pref);
+f = bndfun(@(x) x.*sin(x.^2) - 1, struct('domain', dom), pref);
 df = diff(f);
-g = bndfun(@(x) exp(-(x/10).^2), dom, [], [], pref);
+g = bndfun(@(x) exp(-(x/10).^2), struct('domain', dom), pref);
 dg = diff(g);
 fg = f.*g;
 gdf = g.*df;
@@ -70,7 +70,7 @@ pass(8) = (abs(sum(dg) - (feval(g, dom(2)) - feval(g, dom(1)))) < ...
 
 %%
 % Check operation for array-valued bndfun objects.
-f = bndfun(@(x) [sin(x) x.^2 exp(1i*x)], dom, [], [], pref);
+f = bndfun(@(x) [sin(x) x.^2 exp(1i*x)], struct('domain', dom), pref);
 I = sum(f);
 I_exact = [(cos(dom(1)) - cos(dom(2))) (dom(2)^3 - dom(1)^3)/3 ...
     1i*(exp(1i*dom(1)) - exp(1i*dom(2)))];
@@ -83,7 +83,7 @@ pass(10) = (norm(feval(g, x) - h(x), inf) < ...
     10*max(get(g, 'vscale').*get(f, 'epslevel')));
 
 % DIM option with non-array-valued input should leave everything as it was.
-h = bndfun(@(x) cos(x), dom);
+h = bndfun(@(x) cos(x), struct('domain', dom), pref);
 sumh2 = sum(h, 2);
 pass(11) = all((feval(h, x) == feval(sumh2, x)));
 
@@ -91,8 +91,10 @@ pass(11) = all((feval(h, x) == feval(sumh2, x)));
 
 pow = -0.5;
 op = @(x) (x - dom(1)).^pow.*sin(x);
-pref.singPrefs.exponents = [pow 0];
-f = bndfun(op, dom, [], [], pref);
+pref.enableSingularityDetection = true;
+data.domain = dom;
+data.exponents = [pow 0];
+f = bndfun(op, data, pref);
 I = sum(f);
 I_exact = -1.92205524578386613;
 pass(12) = ( abs(I-I_exact) < 2*get(f, 'epslevel')*abs(I_exact) );

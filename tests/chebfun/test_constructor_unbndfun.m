@@ -38,8 +38,7 @@ pass(3) = norm(err, inf) < 1e1*epslevel(f)*vscale(f);
 
 % Blow-up function:
 op = @(x) x.^2.*(1-exp(-x.^2));
-pref.singPrefs.exponents = [2 2];
-f = chebfun(op, dom, pref); 
+f = chebfun(op, dom, 'exps', [2 2]);
 fVals = feval(f, x);
 fExact = op(x);
 err = fVals - fExact;

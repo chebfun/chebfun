@@ -2,7 +2,7 @@
 
 function pass = test_join(pref)
 
-if ( nargin < 1 )
+if ( nargin == 0  )
     pref = chebfunpref();
 end
 
@@ -72,8 +72,8 @@ h_exact1 = feval(op1, x(ind));
 h_exact2 = feval(op2, x(indComp)+1);
 h_exact = [h_exact1; h_exact2];
 err = h_exact - h_vals;
-pass(6) = isequal(h.domain, [-1 -0.5 0 1]) && ...
-    norm(err, inf) < 5e3*vscale(h)*epslevel(h);
+pass(8) = isequal(h.domain, [-1 -0.5 0 1]) && ...
+    norm(err, inf) < 1e4*vscale(h)*epslevel(h);
 
 % Test for function defined on unbounded domain:
 
@@ -98,7 +98,7 @@ h_exactf = feval(opf, x(ind));
 h_exactg = feval(opg, x(indComp) + (domg(1) - domf(2)));
 h_exact = [h_exactf; h_exactg];
 err = h_exact - h_vals;
-pass(7) = isequal(h.domain, [-Inf -3 Inf]) && ...
+pass(9) = isequal(h.domain, [-Inf -3 Inf]) && ...
     norm(err, inf) < vscale(h)*epslevel(h);
 
 end

@@ -13,8 +13,14 @@ function f = fix(f)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org for Chebfun information.
 
+% Evaluate at the two end points, and an arbitrary interior point:
 arbitraryPoint = 0.1273881594;
-f.coeffs = fix(feval(f, arbitraryPoint));
+fx = feval(f, [-1 ; arbitraryPoint ; 1]);
+% Take the mean:
+meanfx = mean(fx, 1);
+% Compute the fix:
+f.coeffs = fix(meanfx);
 f.vscale = abs(f.coeffs);
+f.epslevel = 0*f.vscale + eps;
 
 end

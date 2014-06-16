@@ -1,15 +1,14 @@
 function d = dirac(f, varargin)
 %DIRAC    Dirac delta function.
 % D = DIRAC(F) returns a CHEBFUN D which is zero on the domain of the CHEBFUN F
-% except at the simple roots of F, where it is infinite. This infinity may be
-% examined by looking at the second row of the matrix D.IMPS
+% except at the simple roots of F, where it is infinite.
 %
 % DIRAC(F, N) is the nth derivative of DIRAC(F).
 %
 % DIRAC(F) is not defined if F has a zero of order greater than one within the
 % domain of F.
 %
-% If F has break-points, they should not coinicde with the roots of F. However,
+% If F has break-points, they should not coincide with the roots of F. However,
 % F can have simple roots at either end points of its domain.
 %
 % See also HEAVISIDE.
@@ -55,7 +54,7 @@ if ( nargin > 1 )
     end
 end
     
-% Get the epsleevel and the domain:
+% Get the epslevel and the domain of f:
 tol = epslevel(f);
 dom = f.domain;
 a = dom(1);
@@ -66,20 +65,38 @@ r = roots(f, 'nojump', 'nozerofun');
 r = sort(r(:));
 
 % Check roots at the end points of f:
-if ( r(1) > a )
-    rootA = 0;
-elseif ( abs(feval(f, a, 'right')) < 100*tol*f.vscale )
-    rootA = 1;
-    if ( r(1) ~= a )
-        r = [a ; r];
+if ( isempty(r) )
+    % If there are no roots, still check roots at the end points:
+    if ( abs(feval(f, a, 'right')) < 100*tol*f.vscale )
+        rootA = 1;
+        r = [r; a];
+    else
+        rootA = 0;
     end
-end
-if ( r(end) < b )
-    rootB = 0;
-elseif ( abs(feval(f, b, 'left')) < 100*tol*f.vscale )
-    rootB = 1;
-    if ( r(end) ~= b )
-        r = [r ; b];
+    
+    if ( abs(feval(f, b, 'left')) < 100*tol*f.vscale )
+        rootB = 1;
+        r = [r; b];
+    else
+        rootB = 0;
+    end    
+else    
+    % If there are roots, check if they are at the end points:
+    if ( r(1) > a )
+        rootA = 0;
+    elseif ( abs(feval(f, a, 'right')) < 100*tol*f.vscale )
+        rootA = 1;
+        if ( r(1) ~= a )
+            r = [a ; r];
+        end
+    end
+    if ( r(end) < b )
+        rootB = 0;
+    elseif ( abs(feval(f, b, 'left')) < 100*tol*f.vscale )
+        rootB = 1;
+        if ( r(end) ~= b )
+            r = [r ; b];
+        end
     end
 end
 
@@ -104,20 +121,22 @@ else
     deltaMag = 1./abs(fpVals);
 end
 
-% Use half of the strength if there is a root at the extremal end points of the
-% input CHEBFUN:
+% Use half of the strength if there is a root at the end point of the
+% domain of the input CHEBFUN and update the pointValues:
+pointValues = [0; 0];
 if ( rootA )
     deltaMag(1) = deltaMag(1)/2;
+    pointValues(1) = sign(deltaMag(1))*inf;
 end
 if ( rootB )
     deltaMag(end) = deltaMag(end)/2;
+    pointValues(2) = sign(deltaMag(end))*inf;
 end
 
-% Enable DELTAFUNs:
-pref = chebfunpref();
-pref.enableDeltaFunctions = true;
-
 % Call the DELTAFUN constructor directly:
-d.funs{1} = fun.constructor(d.funs{1}, f.domain, deltaMag.', r.', pref);
-        
+data.deltaMag = deltaMag.';
+data.deltaLoc = r.';
+d.funs{1} = deltafun(d.funs{1}, data);
+d.pointValues = pointValues;
+
 end

@@ -9,6 +9,12 @@ function f = simplifyDeltas(f, pref)
 
 if ( nargin < 2 || isempty(pref) )
     pref = chebfunpref();
+elseif ( ~isa(pref, 'chebfunpref') )
+    % Something other than a chebfunpref structure is passed. Assume it is a
+    % tolerance:
+    deltaTol = pref;
+    pref = chebfunpref();
+    pref.deltaPrefs.deltaTol = deltaTol;
 end
 
 deltaLoc = f.deltaLoc;

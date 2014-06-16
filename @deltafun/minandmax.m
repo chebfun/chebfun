@@ -11,51 +11,41 @@ function [vals, pos] = minandmax(f)
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.chebfun.org/ for Chebfun information.
 
-if ( ~anyDelta(f) )
+% Check for the empty case:
+if ( isempty(f) )
+    vals = [];
+    pos = [];
+    return
+end
+
+% Take the minandmax of the funPart:
+[vals, pos] = minandmax(f.funPart);
     
-    % The function has no delta functions:
-    [vals, pos] = minandmax(f.funPart);
+f = simplifyDeltas(f);
+% Deal with the case when there are delta functions:
+% NOTE: Higer order delta functions have no effect on maxima or minima of the
+% function.
+if ( isa(f, 'deltafun') )
+    deltaMag = f.deltaMag;       % All delta functions in f.
+    deltaFuns = deltaMag(1, :);  % zeroth order delta functions.
+    deltaLoc = f.deltaLoc;   
     
-else
-    % If there are delta functions, maxima and minima are inf or -inf:
-    f = simplifyDeltas(f);
-    deltaFuns = f.deltaMag(1, :);
-    deltaLoc = f.deltaLoc;
-    if ( isempty(deltaFuns) )
-        % This means higher order deltas, return NaNs
-        vals = [NaN; NaN];
-        % Return the location of the first occurance of a higher order delta:
-        pos  = [deltaLoc(1); deltaLoc(1)];
-    else
-        % This means at least one delta function so maxima and minima are inf 
-        % and -inf regardless of the sign of the delta function.
-        vals = [-inf, inf];        
-        posIdx = deltaFuns > 0;
-        negIdx = deltaFuns < 0;
-        
-        if ( isempty(negIdx) )
-            % If there is no delta function with negative magnitude, return
-            % the location of the first delta function.
-            locMin = deltaLoc(1);
-        else
-            % If there is a delta function with negative magnitude, return the
-            % location of first such occurance.
-            locMin = deltaLoc(negIdx);
-            locMin = locMin(1);
-        end
-        
-        if ( isempty(posIdx) )
-            % If there is no delta function with positive magnitude, return
-            % the location of the first delta function.            
-            locMax = deltaLoc(1);
-        else
-            % If there is a delta function with positive magnitude, return the
-            % location of first such occurance.            
-            locMax = deltaLoc(posIdx);
-            locMax = locMax(1);
-        end
-        pos  = [locMin; locMax];
+    posIdx = find(deltaFuns > 0 );
+    negIdx = find(deltaFuns < 0 );    
+    
+    % If there is a positive delta function, maxima is Inf:
+    if ( ~isempty(posIdx) )
+        vals(2) = Inf;
+        loc = deltaLoc(posIdx);
+        pos(2) = loc(1);
     end
+    
+    % If there is a negative delta function, minima is Inf:
+    if ( ~isempty(negIdx) )
+        vals(1) = -Inf;
+        loc = deltaLoc(negIdx);
+        pos(1) = loc(1);
+    end        
 end
   
 end

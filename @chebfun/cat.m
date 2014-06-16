@@ -8,6 +8,9 @@ function out = cat(dim, varargin)
 %
 % See also HORZCAT, VERTCAT, NUM2CELL.
 
+% Copyright 2014 by The University of Oxford and The Chebfun Developers. 
+% See http://www.chebfun.org/ for Chebfun information.
+
 if ( isa(dim, 'chebfun') )
     error('CHEBFUN:cat:dim',['First input to CHEBFUN/CAT must be 1 or 2.\n',...
     '\n',...

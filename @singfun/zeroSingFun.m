@@ -11,7 +11,7 @@ function s = zeroSingFun()
 s = singfun();
 
 % Create a zero smooth part:
-s.smoothPart = singfun.constructSmoothPart(0, [], [], []);
+s.smoothPart = singfun.constructSmoothPart(0, [], []);
 
 % No singularities at any end points:
 s.exponents = [0, 0];

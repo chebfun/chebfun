@@ -61,7 +61,7 @@ end
 % Construct a CHEBFUN from the coefficients:
 f = chebfun(c, d([1, end]), 'coeffs');
 
-% Introudce interior breakpoints:
+% Introduce interior breakpoints:
 if ( numel(d) > 2 )
     f = restrict(f, d);
 end

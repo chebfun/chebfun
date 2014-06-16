@@ -39,7 +39,7 @@ cleg = legpoly(y, n+1).';
 % Convert to Chebyshev coeffs:
 c = zeros(size(cleg));
 for k = 1:size(c, 2)
-    c(:,k) = chebtech.leg2cheb(cleg(:,k));   
+    c(:,k) = leg2cheb(cleg(:,k));   
 end
 
 % Make a CHEBFUN:

@@ -143,8 +143,10 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Dispaly for delta functions:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-[deltaMag, deltaLoc] = getDeltaFunctions(f);
-if ( ~isempty(deltaMag) )    
+out = get(f, 'deltas');
+if ( ~isempty(out) )
+    deltaLoc = out(1, :);
+    deltaMag = out(2:end, :);
     s = [s, sprintf('\nDelta functions:\n')];
     m = size(deltaMag, 1);
     n = size(deltaMag, 2);

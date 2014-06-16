@@ -49,27 +49,12 @@ ff = feval(f, xx);
 gg = feval(g, xx);
 hh = atan2(ff, gg);
 pass(5) = norm(feval(h, xx) - hh, inf) <= 10*vscale(h)*epslevel(h);
-ends = h.domain;
-fi = feval(f, ends);
-fi(abs(fi) < tol) = 0;
-gi = feval(g, ends);
-gi(abs(gi) < 100*tol) = 0;
-hi = atan2(fi, gi).';
-pass(6) = norm(hi - h.pointValues) < epslevel(h);
 
 %% x has a zero FUN:
 h = atan2(g, f);
 tol = 10*epslevel(h);
 
 hh = atan2(gg, ff);
-pass(7) = norm(feval(h, xx) - hh, inf) <= 10*vscale(h)*epslevel(h);
-
-ends = h.domain;
-fi = feval(f, ends);
-fi(abs(fi) < tol) = 0;
-gi = feval(g, ends);
-gi(abs(gi) < 100*tol) = 0;
-hi = atan2(gi, fi).';
-pass(8) = norm(hi - h.pointValues) < tol;
+pass(6) = norm(feval(h, xx) - hh, inf) <= 10*vscale(h)*epslevel(h);
 
 end

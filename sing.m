@@ -1,6 +1,5 @@
 function song = sing(str, bpm)
 %SING   A basic keyboard for MATLAB using CHEBFUNs.
-%
 %   S = SING('STR1 STR2 STR3 ...') creates a CHEBFUN F corresponding to the
 %   musical notes in each of the STR which vaguely correspond to Helmholtz pitch
 %   notation (http://en.wikipedia.org/wiki/Helmholtz_pitch_notation).
@@ -39,8 +38,8 @@ function song = sing(str, bpm)
 %
 % See also SOUND, CHEBTUNE.
 
-%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org/ for Chebfun information.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
 
 % Set up basic frequencies.
 s0 = 2^(1/12);
@@ -115,7 +114,7 @@ dm = sin(fm1*s0^5*s);
 dms = sin(fm1*s0^6*s);
 em = sin(fm1*s0^7*s);
 fm = sin(fm1*s0^8*s);
-fm1s = sin(fm1*s0^9*s);
+fms = sin(fm1*s0^9*s);
 gm = sin(fm1*s0^10*s);
 gms = sin(fm1*s0^11*s);
 
@@ -166,7 +165,6 @@ if ( (nargin == 0) || isnumeric(str) )
 end
 
 % Build the CHEBFUN from the string of notes for the tune.
-n = length(str);
 song = chebfun;
 l = 0;
 while ( ~isempty(str) )
@@ -233,89 +231,89 @@ end
     % Nested function for mapping note strings to note CHEBFUNs defined above.
     function note = getNote(s)
         switch (s)
-            case {'A'}, note = A;
-            case {'B'}, note = B;
-            case {'C'}, note = C;
-            case {'D'}, note = D;
-            case {'E'}, note = E;
-            case {'F'}, note = F;
-            case {'G'}, note = G;
+            case 'A', note = A;
+            case 'B', note = B;
+            case 'C', note = C;
+            case 'D', note = D;
+            case 'E', note = E;
+            case 'F', note = F;
+            case 'G', note = G;
 
-            case {'a'}, note = a;
-            case {'b'}, note = b;
-            case {'c'}, note = c;
-            case {'d'}, note = d;
-            case {'e'}, note = e;
-            case {'f'}, note = f;
-            case {'g'}, note = g;
+            case 'a', note = a;
+            case 'b', note = b;
+            case 'c', note = c;
+            case 'd', note = d;
+            case 'e', note = e;
+            case 'f', note = f;
+            case 'g', note = g;
 
-            case {'A-'}, note = Am;
-            case {'B-'}, note = Bm;
-            case {'C-'}, note = Cm;
-            case {'D-'}, note = Dm;
-            case {'E-'}, note = Em;
-            case {'F-'}, note = Fm;
-            case {'G-'}, note = Gm;
+            case 'A-', note = Am;
+            case 'B-', note = Bm;
+            case 'C-', note = Cm;
+            case 'D-', note = Dm;
+            case 'E-', note = Em;
+            case 'F-', note = Fm;
+            case 'G-', note = Gm;
 
-            case {'a-'}, note = am;
-            case {'b-'}, note = bm;
-            case {'c-'}, note = cm;
-            case {'d-'}, note = dm;
-            case {'e-'}, note = em;
-            case {'f-'}, note = fm;
-            case {'g-'}, note = gm;
+            case 'a-', note = am;
+            case 'b-', note = bm;
+            case 'c-', note = cm;
+            case 'd-', note = dm;
+            case 'e-', note = em;
+            case 'f-', note = fm;
+            case 'g-', note = gm;
 
-            case {'A+'}, note = Ap;
-            case {'B+'}, note = Bp;
-            case {'C+'}, note = Cp;
-            case {'D+'}, note = Dp;
-            case {'E+'}, note = Ep;
-            case {'F+'}, note = Fp;
-            case {'G+'}, note = Gp;
+            case 'A+', note = Ap;
+            case 'B+', note = Bp;
+            case 'C+', note = Cp;
+            case 'D+', note = Dp;
+            case 'E+', note = Ep;
+            case 'F+', note = Fp;
+            case 'G+', note = Gp;
 
-            case {'a+'}, note = ap;
-            case {'b+'}, note = bp;
-            case {'c+'}, note = cp;
-            case {'d+'}, note = dp;
-            case {'e+'}, note = ep;
-            case {'f+'}, note = fp;
-            case {'g+'}, note = gp;
+            case 'a+', note = ap;
+            case 'b+', note = bp;
+            case 'c+', note = cp;
+            case 'd+', note = dp;
+            case 'e+', note = ep;
+            case 'f+', note = fp;
+            case 'g+', note = gp;
 
-            case {'a#'}, note = as;
-            case {'c#'}, note = cs;
-            case {'d#'}, note = ds;
-            case {'f#'}, note = fs;
-            case {'g#'}, note = gs;
+            case 'a#', note = as;
+            case 'c#', note = cs;
+            case 'd#', note = ds;
+            case 'f#', note = fs;
+            case 'g#', note = gs;
 
-            case {'A#'}, note = As;
-            case {'C#'}, note = Cs;
-            case {'D#'}, note = Ds;
-            case {'F#'}, note = Fs;
-            case {'G#'}, note = Gs;
+            case 'A#', note = As;
+            case 'C#', note = Cs;
+            case 'D#', note = Ds;
+            case 'F#', note = Fs;
+            case 'G#', note = Gs;
 
-            case {'a+#'}, note = aps;
-            case {'c+#'}, note = cps;
-            case {'d+#'}, note = dps;
-            case {'f+#'}, note = fps;
-            case {'g+#'}, note = gps;
+            case 'a+#', note = aps;
+            case 'c+#', note = cps;
+            case 'd+#', note = dps;
+            case 'f+#', note = fps;
+            case 'g+#', note = gps;
 
-            case {'A+#'}, note = Aps;
-            case {'C+#'}, note = Cps;
-            case {'D+#'}, note = Dps;
-            case {'F+#'}, note = Fps;
-            case {'G+#'}, note = Gps;
+            case 'A+#', note = Aps;
+            case 'C+#', note = Cps;
+            case 'D+#', note = Dps;
+            case 'F+#', note = Fps;
+            case 'G+#', note = Gps;
 
-            case {'a-#'}, note = ams;
-            case {'c-#'}, note = cms;
-            case {'d-#'}, note = dms;
-            case {'f-#'}, note = fms;
-            case {'g-#'}, note = gms;
+            case 'a-#', note = ams;
+            case 'c-#', note = cms;
+            case 'd-#', note = dms;
+            case 'f-#', note = fms;
+            case 'g-#', note = gms;
 
-            case {'A-#'}, note = Ams;
-            case {'C-#'}, note = Cms;
-            case {'D-#'}, note = Dms;
-            case {'F-#'}, note = Fms;
-            case {'G-#'}, note = Gms;
+            case 'A-#', note = Ams;
+            case 'C-#', note = Cms;
+            case 'D-#', note = Dms;
+            case 'F-#', note = Fms;
+            case 'G-#', note = Gms;
         end
     end
 

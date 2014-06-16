@@ -1,15 +1,16 @@
 function D = diffmat(n, m)
 %DIFFMAT   Differentiation matrices for ultraspherical spectral method.
-%
-% D = DIFFMAT(N, M) returns the differentiation matrix that takes N Chebyshev
-% coefficients and returns N C^{(M)} coefficients that represent the derivative
-% of the Chebyshev series. Here, C^{(K)} is the ultraspherical polynomial basis
-% with parameter K.
-%
-% This methods is static and private.
+%   D = DIFFMAT(N, M) returns the differentiation matrix that takes N Chebyshev
+%   coefficients and returns N C^{(M)} coefficients that represent the derivative
+%   of the Chebyshev series. Here, C^{(K)} is the ultraspherical polynomial basis
+%   with parameter K.
 
-%  Copyright 2014 by The University of Oxford and The Chebfun Developers.
-%  See http://www.chebfun.org for Chebfun information.
+% Copyright 2014 by The University of Oxford and The Chebfun Developers.
+% See http://www.chebfun.org/ for Chebfun information.
+
+if ( nargin == 1 )
+    m = 1;
+end
 
 % Create the differentation matrix.
 if ( m > 0 )
@@ -20,4 +21,5 @@ if ( m > 0 )
 else
     D = speye(n);
 end
+
 end

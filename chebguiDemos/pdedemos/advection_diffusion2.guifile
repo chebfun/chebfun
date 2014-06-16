@@ -1,0 +1,10 @@
+'Advection-diffusion equation 2'
+'scalar'
+domain = '[-1 1]';
+t = '0:.005:.25';
+DE = 'u_t = 0.3*u" + 10*u''';
+LBC = '0'; RBC = '0';
+init = 'u = exp(-10*x^4/(1-x^2))';
+tol = '1e-6'; plotting = 'on';
+fixYaxisLower = '0'; fixYaxisUpper = '1';
+type = 'pde';

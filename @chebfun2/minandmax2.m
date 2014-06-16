@@ -4,8 +4,9 @@ function [Y, X] = minandmax2( f )
 %   its domain. Y is a vector of length 2 such that Y(1) = min(f(x,y)) and Y(2)
 %   = max(f(x,y)).
 %
-%   [Y, X] = minandmax2(F) also returns the position of the minimum and maximum.
-%   That is,
+%   [Y, X] = minandmax2(F) also returns the position of the minimum and 
+%   maximum. For example,
+%
 %       F(X(1,1),X(1,2)) = Y(1)     and      F(X(2,1),X(2,2)) = Y(2)
 %
 % See also MAX2, MIN2, NORM.
@@ -13,7 +14,8 @@ function [Y, X] = minandmax2( f )
 % Copyright 2014 by The University of Oxford and The Chebfun Developers.
 % See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 
-if ( isempty( f ) ) % check for empty CHEBFUN2.
+% check for empty CHEBFUN2.
+if ( isempty( f ) )
     Y = []; 
     X = [];
     return
@@ -88,13 +90,13 @@ elseif ( length(f) <= maxsize )
 
     A = cvals*rvals.';
     % Maximum entry in discretisation.
-    [ignored, ind] = min( A(:) );
+    [ignored, ind] = min( A(:) ); %#ok<ASGLU>
     [row, col] = ind2sub(size(A), ind);
     X(1,1) = xpts( col );
     X(1,2) = ypts( row );
     Y(1) = feval( f, X(1,1), X(1,2) );
     % Minimum entry in discretisation.
-    [ignored, ind] = max(A(:));
+    [ignored, ind] = max(A(:)); %#ok<ASGLU>
     [row, col] = ind2sub(size(A), ind);
     X(2,1) = xpts(col);
     X(2,2) = ypts(row);
@@ -103,12 +105,15 @@ elseif ( length(f) <= maxsize )
     % Get more digits with optimisation algorithms.
     lb = [ dom(1) ; dom(3) ];
     ub = [ dom(2) ; dom(4) ];
-    % If the optimization toolbox is available then use it to get a better
-    % maximum.
+    
     try
+        
+        % If the optimization toolbox is available then use it to get a better maximum.
+
         warnstate = warning;
-        warning('off'); % Disable verbose warnings from fmincon.
-        options = optimset('Display', 'none', 'TolFun', eps, 'TolX', eps, 'algorithm', 'active-set');
+        warning('off'); %#ok<WNOFF> % Disable verbose warnings from fmincon.
+        options = optimset('Display', 'none', 'TolFun', eps, 'TolX', eps, ...
+            'algorithm', 'active-set');
         [mn, Y(1)] = fmincon(@(x,y) feval(f, x(1), x(2)), X(1, :), ...
             [], [], [], [], lb, ub, [], options);
         [mx, Y(2)] = fmincon(@(x) -feval(f, x(1), x(2)), X(2,:), ...
@@ -116,10 +121,40 @@ elseif ( length(f) <= maxsize )
         Y(2) = -Y(2);
         X(1,:) = mn;
         X(2,:) = mx;
-        warning(warning);
+        warning(warnstate);
+        
     catch
-        % Nothing is going to work so initial guesses will have to do.
-        mn = X(1,:); mx = X(2,:);
+        
+        try
+            % Try converting to an unconstrained problem and using built-in solver.
+            
+            % Maps from [-1, 1] to [dom(1:2)] and [dom(3:4)], respectively.
+            map1 = bndfun.createMap(dom(1:2));
+            map2 = bndfun.createMap(dom(3:4));
+            % Unconstrained initial guesses:
+            Z(:,1) = asin(map1.inv(X(:,1)));
+            Z(:,2) = asin(map2.inv(X(:,2)));
+            % Maps from R to [dom(1), dom(2)] and [dom(3), dom(4)], respectively.
+            map1 = @(x) map1.for(sin(x));
+            map2 = @(x) map2.for(sin(x));
+            % Set options:
+            options = optimset('Display', 'off', 'TolFun', eps, 'TolX', eps);
+            warnstate = warning;
+            warning('off'); %#ok<WNOFF> % Disable verbose warnings from fminsearch.
+            f_mapped = @(x) feval(f, map1(x(1)), map2(x(2)));
+            [mn, Y(1)] = fminsearch(@(x) f_mapped(x), Z(1, :), options);
+            [mx, Y(2)] = fminsearch(@(x) -f_mapped(x), Z(2, :), options);
+            Y(2) = -Y(2);            
+            X(1:2,1) = map1([mn(1) ; mx(1)]);
+            X(1:2,2) = map2([mn(2) ; mx(2)]);
+            warning(warnstate);
+            
+        catch
+            
+            % Nothing is going to work so initial guesses will have to do.
+            
+        end
+        
     end
     
     
