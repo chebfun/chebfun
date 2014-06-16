@@ -16,7 +16,8 @@ pass(1) = all(size(x) == [n, 1]);
 [x, w, v] = lagpts(n);
 pass(2) = all(size(x) == [n, 1]) && all(size(w) == [1, n]) && ...
     all(size(v) == [n, 1]);
-pass(3) = abs(w*x - 1) < tol && abs(w*x.^2 - 2) < tol;
+
+pass(3) = (abs(w*x - 1) <= tol) && (abs(w*x.^2 - 2) <= tol);
 pass(4) = abs(x(37) - 98.388267163326702) < 100*tol;
 pass(5) = abs(w(7) - 0.055372813167092) < tol;
 pass(6) = abs(v(17) - 0.002937421407003) < tol;

@@ -66,7 +66,7 @@ pass(11) = all(feval(f, linspace(-1, 1, 10)) == 1);
 % Test 'trunc', flag.
 f = chebfun(@abs, 'trunc', 10, 'splitting', 'on');
 c = get(f, 'coeffs');
-pass(12) = abs(-4/63/pi - c{1}(2)) < get(f, 'epslevel');
+pass(12) = abs(-4/63/pi - c(2)) < get(f, 'epslevel');
 
 % Test construction from cells of strings:
 f = chebfun({'x','x-1'}, [0 1 2]);

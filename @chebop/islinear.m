@@ -20,6 +20,6 @@ if ( nargin < 2 )
 end
 
 % Call LINEARIZE():
-[~, ~, out] = linearize(N, u, [], 0);
+[ignored1, ignored2, out] = linearize(N, u, [], 0);
 
 end

@@ -1,5 +1,6 @@
 function varargout = pde15s(varargin)
-%PDE15S   Solve PDEs using the CHEBFUN system.
+%PDE15S   Solve PDEs using Chebfun.
+%
 %   UU = PDE15s(PDEFUN, TT, U0, BC) where PDEFUN is a handle to a function with
 %   arguments u, t, x, and D, TT is a vector, U0 is a CHEBMATRIX, and BC is a
 %   chebop boundary condition structure will solve the PDE dUdt = PDEFUN(UU, t,
